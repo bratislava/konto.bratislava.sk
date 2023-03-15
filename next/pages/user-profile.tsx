@@ -1,6 +1,6 @@
-import UserProfileView from '@bratislava/ui-bratislava/UserProfile/UserProfileView'
 import { AsyncServerProps } from '@utils/types'
 import { isProductionDeployment } from '@utils/utils'
+import UserProfileView from 'components/forms/segments/UserProfile/UserProfileView'
 import { GetServerSidePropsContext } from 'next'
 import { useTranslation } from 'next-i18next'
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
@@ -8,7 +8,6 @@ import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
 import AccountSectionHeader from '../components/forms/segments/AccountSectionHeader/AccountSectionHeader'
 import AccountPageLayout from '../components/layouts/AccountPageLayout'
 import PageWrapper from '../components/layouts/PageWrapper'
-import TestUserProfileLayout from '../components/layouts/TestUserProfileLayout'
 
 export const getServerSideProps = async (ctx: GetServerSidePropsContext) => {
   if (isProductionDeployment()) return { notFound: true }

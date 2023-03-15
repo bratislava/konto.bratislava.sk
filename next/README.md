@@ -78,5 +78,3 @@ Bootstrap styles are also added to `app.tsx` becasue of `@rjsf/core`
   href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css"
 />
 ```
-
-(test change)

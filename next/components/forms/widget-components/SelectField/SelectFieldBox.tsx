@@ -61,6 +61,12 @@ const SelectFieldBoxComponent: ForwardRefRenderFunction<HTMLDivElement, SelectFi
     }
   }
 
+  const MAX_TEXT_SIZE = 17
+
+  const getOptionTitle = (selectOption: SelectOption) => {
+    return selectOption.title ?? String(selectOption.const)
+  }
+
   // RENDER
   return (
     <section
@@ -75,16 +81,24 @@ const SelectFieldBoxComponent: ForwardRefRenderFunction<HTMLDivElement, SelectFi
         /* TAGS */
         value && value.length > 0 ? (
           value.length < 3 ? (
-            (multiple ? value : value.slice(0, 1)).map((option: SelectOption, key: number) => (
-              <Tag
-                key={key}
-                text={option.title ?? String(option.const)}
-                size="small"
-                onRemove={() => onRemove(key)}
-                removable
-                shorthand
-              />
-            ))
+            multiple ? (
+              value.map((option: SelectOption, key: number) => (
+                <Tag
+                  key={key}
+                  text={getOptionTitle(option)}
+                  size="small"
+                  onRemove={() => onRemove(key)}
+                  removable
+                  shorthand
+                />
+              ))
+            ) : (
+              <p>
+                {`${getOptionTitle(value[0]).slice(0, MAX_TEXT_SIZE)}${
+                  getOptionTitle(value[0]).length > MAX_TEXT_SIZE ? '...' : ''
+                }`}
+              </p>
+            )
           ) : (
             <Tag text={multipleOptionsTagText} size="small" onRemove={onRemoveAll} removable />
           )

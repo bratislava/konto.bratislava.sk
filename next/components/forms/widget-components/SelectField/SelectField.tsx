@@ -8,8 +8,10 @@ import React, {
   RefObject,
   useEffect,
   useId,
+  useRef,
   useState,
 } from 'react'
+import { useOnClickOutside } from 'usehooks-ts'
 
 import FieldErrorMessage from '../../info-components/FieldErrorMessage'
 import FieldHeader from '../../info-components/FieldHeader'
@@ -66,9 +68,12 @@ const SelectFieldComponent: ForwardRefRenderFunction<HTMLDivElement, SelectField
 
   // STATE
   const [isDropdownOpened, setIsDropdownOpened] = useState<boolean>(false)
-  const [isOutsideClickProgressing, setIsOutsideClickProgressing] = useState<boolean>(false)
+  const [isClickedOutsideDropdown, setIsClickedOutsideDropdown] = useState<boolean>(false)
+  const [isClickedOutsideSelect, setIsClickedOutsideSelect] = useState<boolean>(false)
+  const [shouldCloseClick, setShouldCloseClick] = useState<boolean>(false)
   const [filter, setFilter] = useState<string>('')
   const [filterRef] = useState<RefObject<HTMLInputElement>>(React.createRef<HTMLInputElement>())
+  const clickOutsideRef = useRef<HTMLDivElement>(null)
 
   // STYLES
   const selectClassName = cx(
@@ -83,10 +88,24 @@ const SelectFieldComponent: ForwardRefRenderFunction<HTMLDivElement, SelectField
   )
 
   useEffect(() => {
-    if (!isDropdownOpened) {
-      setIsOutsideClickProgressing(false)
-    }
+    setIsClickedOutsideSelect(false)
+    setIsClickedOutsideDropdown(false)
+    setShouldCloseClick(false)
   }, [isDropdownOpened])
+
+  useEffect(() => {
+    if (isClickedOutsideDropdown && !shouldCloseClick && isClickedOutsideSelect) {
+      setIsDropdownOpened(false)
+    }
+  }, [isClickedOutsideDropdown, isClickedOutsideSelect])
+
+  useEffect(() => {
+    setIsDropdownOpened(false)
+  }, [shouldCloseClick])
+
+  useOnClickOutside(clickOutsideRef, () => {
+    setIsClickedOutsideSelect(true)
+  })
 
   const handleOnChangeSelect = (selectedOptions: SelectOption[], close?: boolean) => {
     if (!onChange) return
@@ -133,9 +152,15 @@ const SelectFieldComponent: ForwardRefRenderFunction<HTMLDivElement, SelectField
     const targetClassList = (event.target as Element).classList
     if (!isDropdownOpened && !targetClassList.contains('tag') && !disabled) {
       filterRef.current?.focus()
-      if (!isOutsideClickProgressing) {
-        setIsDropdownOpened(true)
-      }
+      setIsDropdownOpened(true)
+    }
+  }
+
+  const handleOnArrowClick = (event: React.MouseEvent) => {
+    if (isDropdownOpened) {
+      setShouldCloseClick(true)
+    } else {
+      handleOnSelectFieldClick(event)
     }
   }
 
@@ -154,9 +179,8 @@ const SelectFieldComponent: ForwardRefRenderFunction<HTMLDivElement, SelectField
     handleOnChangeSelect([])
   }
 
-  const handleOnClickOutside = () => {
-    setIsOutsideClickProgressing(true)
-    setIsDropdownOpened(false)
+  const handleOnClickOutsideDropdown = () => {
+    setIsClickedOutsideDropdown(true)
   }
 
   // HELPER FUNCTIONS
@@ -194,7 +218,7 @@ const SelectFieldComponent: ForwardRefRenderFunction<HTMLDivElement, SelectField
       />
 
       {/* SELECT PART */}
-      <div className={selectClassName} ref={ref} onClick={handleOnSelectFieldClick}>
+      <div className={selectClassName} ref={clickOutsideRef}>
         {/* MAIN BODY OF SELECT */}
         <SelectFieldBox
           ref={ref}
@@ -207,11 +231,15 @@ const SelectFieldComponent: ForwardRefRenderFunction<HTMLDivElement, SelectField
           onRemoveAll={handleOnDeselectAll}
           onFilterChange={setFilter}
           onDeleteLastValue={handleOnDeleteLastValue}
+          onClick={handleOnSelectFieldClick}
         />
 
         {/* DROPDOWN ARROW */}
-        <div className="dropdownButton flex flex-col items-center h-10 sm:h-12 cursor-pointer select-none rounded-lg px-3 sm:px-4 [&>svg]:m-1">
-          <div className="dropdownButton h-6 w-6 items-center relative flex h-full flex-col justify-center">
+        <div
+          className="dropdownButton flex flex-col items-center h-10 sm:h-12 cursor-pointer select-none rounded-lg px-3 sm:px-4 [&>svg]:m-1"
+          onClick={handleOnArrowClick}
+        >
+          <div className="dropdownButton h-full w-6 items-center relative flex flex-col justify-center">
             {isDropdownOpened ? <ArrowUpIcon /> : <ArrowDownIcon />}
             <div className="dropdownButton absolute inset-0 z-10" />
           </div>
@@ -237,7 +265,7 @@ const SelectFieldComponent: ForwardRefRenderFunction<HTMLDivElement, SelectField
             onDeselectAll={handleOnDeselectAll}
             onChooseMulti={handleOnChooseMulti}
             onUnChooseMulti={handleOnUnChooseMulti}
-            onClickOutside={handleOnClickOutside}
+            onClickOutside={handleOnClickOutsideDropdown}
           />
         )}
       </div>

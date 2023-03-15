@@ -14,6 +14,7 @@ interface SelectFieldBoxProps {
   onRemoveAll: () => void
   onFilterChange: (value: string) => void
   onDeleteLastValue: () => void
+  onClick?: (event: React.MouseEvent) => void
 }
 
 const SelectFieldBoxComponent: ForwardRefRenderFunction<HTMLDivElement, SelectFieldBoxProps> = (
@@ -31,6 +32,7 @@ const SelectFieldBoxComponent: ForwardRefRenderFunction<HTMLDivElement, SelectFi
     onRemoveAll,
     onFilterChange,
     onDeleteLastValue,
+    onClick,
   } = props
 
   const { t } = useTranslation('forms')
@@ -65,6 +67,9 @@ const SelectFieldBoxComponent: ForwardRefRenderFunction<HTMLDivElement, SelectFi
       ref={ref}
       className="flex items-center w-full flex-row flex-wrap gap-2 py-2 sm:py-2.5 sm:pl-4 pl-3"
       data-value={value}
+      onClick={(event: React.MouseEvent) => {
+        if (onClick) onClick(event)
+      }}
     >
       {
         /* TAGS */

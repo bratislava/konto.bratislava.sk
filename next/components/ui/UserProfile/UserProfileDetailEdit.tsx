@@ -163,7 +163,7 @@ const UserProfileDetailEdit = (props: UserProfileDetailEditProps) => {
         </div>
       </div>
       <div className="gap flex flex-wrap flex-row gap-x-6">
-        <div className="grow ">
+        <div className="w-1/2">
           <Controller
             name="phone_number"
             control={control}
@@ -176,9 +176,6 @@ const UserProfileDetailEdit = (props: UserProfileDetailEditProps) => {
               />
             )}
           />
-        </div>
-        <div className="grow invisible h-0">
-          <InputField label={t('profile_detail.phone_number')} />
         </div>
       </div>
       <div className="h-0 w-full border-b-2 border-gray-200" />

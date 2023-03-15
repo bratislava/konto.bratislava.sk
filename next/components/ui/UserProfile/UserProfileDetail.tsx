@@ -7,14 +7,15 @@ import UserProfileSectionHeader from '@bratislava/ui-bratislava/UserProfile/User
 import { UserData } from '@utils/useAccount'
 import cx from 'classnames'
 import { useTranslation } from 'next-i18next'
-import { MutableRefObject, useId, useRef } from 'react'
+import { useEffect, useId } from 'react'
+import { useSnackbar } from 'react-simple-snackbar'
 
 import Alert from '../../forms/info-components/Alert'
 
 interface UserProfileDetailProps {
   userData?: UserData | null
   isEditing?: boolean
-  alertType: 'success' | 'error'
+  alertType: 'success' | 'error' | null
   isAlertOpened: boolean
   onChangeIsEditing: (isEditing: boolean) => void
   onCancelEditing: () => void
@@ -35,6 +36,19 @@ const UserProfileDetail = (props: UserProfileDetailProps) => {
   } = props
   const { t } = useTranslation('account')
   const formId = `form-${useId()}`
+
+  const optionsSuccess = {
+    style: {
+      backgroundColor: 'rgb(var(--color-success-700))',
+    },
+  }
+  const [openSnackBar] = useSnackbar(optionsSuccess)
+
+  useEffect(() => {
+    if (isAlertOpened && alertType === 'success') {
+      openSnackBar(t(`profile_detail.success_alert`))
+    }
+  }, [alertType, isAlertOpened])
 
   const handleOnSubmit = (newUserData: UserData) => {
     onSubmit({
@@ -64,7 +78,7 @@ const UserProfileDetail = (props: UserProfileDetailProps) => {
           />
         </UserProfileSectionHeader>
         <div className="flex flex-col">
-          {isAlertOpened && (
+          {isAlertOpened && alertType === 'error' && (
             <div className="flex flex-row p-2">
               <Alert
                 className="max-w-none grow"

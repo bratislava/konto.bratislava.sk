@@ -1,7 +1,7 @@
 // this is non-production code
 // disabling eslint/ts checks instead of fixing them
 // @ts-nocheck
-import { getUserApi, resetRcApi } from '@utils/api'
+import { getForms, resetRcApi } from '@utils/api'
 import { AsyncServerProps } from '@utils/types'
 import useAccount from '@utils/useAccount'
 import { isProductionDeployment } from '@utils/utils'
@@ -22,8 +22,8 @@ const CognitoPrototype = ({ page }: AsyncServerProps<typeof getServerSideProps>)
       const token = await getAccessToken()
       if (token) {
         setAccessToken(token)
-        const user = await getUserApi(token)
-        console.log(user)
+        const forms = await getForms(token)
+        console.log(forms)
       }
     } catch (error) {
       console.log(error)

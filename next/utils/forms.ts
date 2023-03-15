@@ -7,11 +7,21 @@ import {
   StrictRJSFSchema,
 } from '@rjsf/utils'
 import { customizeValidator } from '@rjsf/validator-ajv8'
-import { ApiError, submitEform, validateKeyword } from '@utils/api'
+import {
+  ApiError,
+  createForm,
+  FormDto,
+  getForm,
+  submitEform,
+  updateForm,
+  validateKeyword,
+} from '@utils/api'
+import useAccount from '@utils/useAccount'
 import { AnySchemaObject, ErrorObject, FuncKeywordDefinition } from 'ajv'
 import { JSONSchema7, JSONSchema7Definition } from 'json-schema'
 import { get, merge } from 'lodash'
 import { useTranslation } from 'next-i18next'
+import { useRouter } from 'next/router'
 import { RefObject, useEffect, useRef, useState } from 'react'
 
 import { StepData } from '../components/forms/types/TransformedFormData'
@@ -244,10 +254,12 @@ export const useFormStepper = (eformSlug: string, schema: RJSFSchema) => {
   // also, our code expects directly RefObject otherwise it will complain of no `.current`
   // this is probably a bug in their typing therefore the cast
   const formRef = useRef<Form>() as RefObject<Form>
+  const { getAccessToken } = useAccount()
 
   const [nextStepIndex, setNextStepIndex] = useState<number | null>(null)
   const [stepIndex, setStepIndex] = useState<number>(0)
   const [formData, setFormData] = useState<RJSFSchema>({})
+  const [formId, setFormId] = useState<string | undefined>()
   const [errors, setErrors] = useState<RJSFValidationError[][]>([])
   const [extraErrors, setExtraErrors] = useState<ErrorSchema>({})
   const [stepData, setStepData] = useState<StepData[]>(getStepData(schema))
@@ -258,11 +270,37 @@ export const useFormStepper = (eformSlug: string, schema: RJSFSchema) => {
 
   const currentSchema = steps ? (steps[stepIndex] as RJSFSchema) : {}
 
+  const router = useRouter()
+  const initForm = async () => {
+    const token = await getAccessToken()
+    if (!token) {
+      return
+    }
+
+    const queryId =
+      router.query.id && typeof router.query.id === 'string' ? router.query.id : undefined
+    try {
+      if (queryId) {
+        const { formDataJson, id }: FormDto = await getForm(token, queryId)
+        setFormId(id)
+        if (formDataJson) {
+          setFormData(formDataJson)
+        }
+      } else {
+        const { id }: FormDto = await createForm(token, { pospID: eformSlug })
+        setFormId(id)
+      }
+    } catch (error) {
+      console.log(error)
+    }
+  }
+
   useEffect(() => {
     // effect to reset all internal state when critical input 'props' change
     setFormData({})
     setStepIndex(0)
     setStepData(getStepData(schema))
+    initForm()
   }, [eformSlug, schema])
 
   useEffect(() => {
@@ -363,12 +401,27 @@ export const useFormStepper = (eformSlug: string, schema: RJSFSchema) => {
     setFormData({ ...formData, ...stepFormData })
   }
 
+  const update = async () => {
+    const token = await getAccessToken()
+    if (!formId || !token) {
+      return
+    }
+
+    try {
+      const res = await updateForm(token, formId, { formDataJson: formData })
+      console.log(res)
+    } catch (error) {
+      console.log(error)
+    }
+  }
+
   const handleOnSubmit = async (newFormData: RJSFSchema) => {
     increaseStepErrors()
     setStepFormData(newFormData)
     const isFormValid = await validate()
 
     if (isFormValid) {
+      update()
       setUniqueErrors([], stepIndex)
     }
     if (isFormValid && !isSkipEnabled) {

@@ -14,25 +14,9 @@ jobs:
     uses: bratislava/github-actions/.github/workflows/cluster-deploy-conditions.yml@stable
 
   deploy-dev:
-    name: deploy dev Next
-    if: needs.conditions.outputs.dev == 'true'
-    needs: conditions
-    uses: bratislava/github-actions/.github/workflows/deploy-with-bratiska-cli.yml@beta
-    with:
-      directory: next/
-      cluster: tkg-innov-dev
-      url: https://tkg.dev.bratislava.sk
-      debug: --debug
-      version: beta
-    secrets:
-      service-account: ${{ secrets.DEV_STANDALONE_TOKEN }}
-      registry-pass: ${{ secrets.HARBOR_REGISTRY_PASSWORD }}
-      sentry-token: ${{ secrets.SENTRY_AUTH_TOKEN }}
-
-  deploy-dev-next:
     name: dev Next
     needs: conditions
-    if: needs.conditions.outputs.dev-next == 'true'
+    if: needs.conditions.outputs.dev == 'true'
     uses: bratislava/github-actions/.github/workflows/deploy-with-bratiska-cli.yml@beta
     with:
       directory: next/
@@ -46,25 +30,9 @@ jobs:
       sentry-token: ${{ secrets.SENTRY_AUTH_TOKEN }}
 
   deploy-staging:
-    name: deploy staging Next
-    if: needs.conditions.outputs.staging == 'true'
-    needs: conditions
-    uses: bratislava/github-actions/.github/workflows/deploy-with-bratiska-cli.yml@stable
-    with:
-      directory: next/
-      cluster: tkg-innov-staging
-      url: https://tkg.staging.bratislava.sk
-      debug: --debug
-      flag: --staging
-    secrets:
-      service-account: ${{ secrets.STAGING_STANDALONE_TOKEN }}
-      registry-pass: ${{ secrets.HARBOR_REGISTRY_PASSWORD }}
-      sentry-token: ${{ secrets.SENTRY_AUTH_TOKEN }}
-
-  deploy-staging-next:
     name: staging Next
     needs: conditions
-    if: needs.conditions.outputs.staging-next == 'true'
+    if: needs.conditions.outputs.staging == 'true'
     uses: bratislava/github-actions/.github/workflows/deploy-with-bratiska-cli.yml@stable
     with:
       directory: next/
@@ -78,24 +46,9 @@ jobs:
       sentry-token: ${{ secrets.SENTRY_AUTH_TOKEN }}
 
   deploy-prod:
-    name: after prod Strapi deploy Next
-    if: needs.conditions.outputs.prod == 'true'
-    needs: conditions
-    uses: bratislava/github-actions/.github/workflows/deploy-with-bratiska-cli.yml@stable
-    with:
-      directory: next/
-      cluster: tkg-innov-prod
-      url: https://tkg.bratislava.sk
-      flag: --production
-    secrets:
-      service-account: ${{ secrets.PROD_STANDALONE_TOKEN }}
-      registry-pass: ${{ secrets.HARBOR_REGISTRY_PASSWORD }}
-      sentry-token: ${{ secrets.SENTRY_AUTH_TOKEN }}
-
-  deploy-prod-next:
     name: prod Next
     needs: conditions
-    if: needs.conditions.outputs.prod-next == 'true'
+    if: needs.conditions.outputs.prod == 'true'
     uses: bratislava/github-actions/.github/workflows/deploy-with-bratiska-cli.yml@stable
     with:
       directory: next/

@@ -1,7 +1,3 @@
-// if you want to see 'nice' default components, uncomment this import
-// be aware it may break styling of the rest of the app, including custom components!
-// import 'bootstrap/dist/css/bootstrap.min.css'
-
 import { EFormValue } from '@backend/forms'
 import { getEform } from '@backend/utils/forms'
 import { pageStyle } from '@utils/page'

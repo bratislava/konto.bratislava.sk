@@ -1,7 +1,7 @@
 import NoResultsFound from '@assets/images/ERROR404.svg'
-import { useUIContext } from '@bratislava/common-frontend-ui-context'
-import { Button } from '@bratislava/ui-bratislava/Button/Button'
+import Button from 'components/forms/simple-components/Button'
 import { GetStaticProps } from 'next'
+import Link from 'next/link'
 import { useTranslation } from 'next-i18next'
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
 
@@ -16,7 +16,6 @@ export const getStaticProps: GetStaticProps = async ({ locale }) => {
 }
 
 const NotFoundPage = () => {
-  const { Link } = useUIContext()
   const { t } = useTranslation('common')
 
   return (
@@ -30,11 +29,7 @@ const NotFoundPage = () => {
             {t('sorryNoResultsFound')}
           </div>
           <Link href="/">
-            <Button
-              variant="transparent-black"
-              className="text-p1 px-6 py-3"
-              icon={<ChevronRight className="scale-75" />}
-            >
+            <Button className="text-p1 px-6 py-3" icon={<ChevronRight className="scale-75" />}>
               {t('toTheMainPage')}
             </Button>
           </Link>

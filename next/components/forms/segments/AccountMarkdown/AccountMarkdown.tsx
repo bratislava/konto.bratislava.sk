@@ -1,6 +1,6 @@
-import { useUIContext } from '@bratislava/common-frontend-ui-context'
 import cx from 'classnames'
 import Tooltip from 'components/forms/info-components/Tooltip/Tooltip'
+import Link from 'next/link'
 import ReactMarkdown from 'react-markdown'
 import rehypeRaw from 'rehype-raw'
 import remarkDirective from 'remark-directive'
@@ -24,7 +24,6 @@ const AccountMarkdown = ({
   variant = 'normal',
   uLinkVariant = 'default',
 }: AccountMarkdownBase) => {
-  const { Link: UILink } = useUIContext()
   return (
     <ReactMarkdown
       className={cx('flex flex-col gap-3', className)}
@@ -56,7 +55,7 @@ const AccountMarkdown = ({
             </li>
           ),
           a: ({ href, children }: { href?: string; children?: string }) => (
-            <UILink
+            <Link
               href={href ?? '#'}
               className={cx('break-words font-semibold  underline hover:text-category-600', {
                 'text-white': uLinkVariant === 'primary',
@@ -65,7 +64,7 @@ const AccountMarkdown = ({
               target={href?.startsWith('http') ? '_blank' : ''}
             >
               {children}
-            </UILink>
+            </Link>
           ),
           tooltip: TooltipComponent,
           // without casting object to 'any' it throws an error TS

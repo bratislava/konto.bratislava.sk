@@ -16,11 +16,11 @@ import TowIcon from '@assets/images/account/municipal-services/tow-icon.svg'
 import TransportIcon from '@assets/images/account/municipal-services/transport-icon.svg'
 import TreeIcon from '@assets/images/account/municipal-services/tree-icon.svg'
 import ZooIcon from '@assets/images/account/municipal-services/zoo-icon.svg'
-import { Pagination } from '@bratislava/ui-bratislava/index'
 import MunicipalServicesSectionHeader from 'components/forms/segments/AccountSectionHeader/MunicipalServicesSectionHeader'
 import ServiceCard from 'components/forms/simple-components/ServiceCard'
 import { useTranslation } from 'next-i18next'
 import { ReactNode, useState } from 'react'
+
 import { SelectOption } from '../../../widget-components/SelectField/SelectField'
 
 const ALL_CATEGORY = 'Všetky kategórie'
@@ -358,12 +358,12 @@ const MunicipalServicesSection = () => {
             ))}
         </div>
         <div className="my-4 lg:my-8">
-          <Pagination
+          {/* <Pagination
             totalPages={Math.ceil(filteredServiceCards.length / ITEMS_PER_PAGE)}
             totalCount={filteredServiceCards.length}
             currentPage={currentPage}
             pageHandler={setCurrentPage}
-          />
+          /> */}
         </div>
       </div>
     </div>

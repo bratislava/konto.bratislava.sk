@@ -86,7 +86,6 @@ const BannerBasic = ({
                   variant="category-outline"
                   text={buttonSecondaryText}
                   onPress={onPressSecondary}
-                  fullWidth
                 />
               </>
             )}
@@ -95,7 +94,6 @@ const BannerBasic = ({
                 <Button
                   className="hidden lg:flex"
                   variant="link-black"
-                  fullWidth
                   href={linkTertiary}
                   label={buttonTertiaryText}
                 />
@@ -103,7 +101,6 @@ const BannerBasic = ({
                   className="flex lg:hidden"
                   size="sm"
                   variant="link-black"
-                  fullWidth
                   href={linkTertiary}
                   label={buttonTertiaryText}
                 />

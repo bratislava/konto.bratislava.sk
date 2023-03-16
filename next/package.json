@@ -17,9 +17,7 @@
     "test": "jest --watch",
     "test:ci": "jest --ci",
     "sentry-cli": "sentry-cli",
-    "prettier": "prettier --write .",
-    "fix-botframework": "yarn --cwd ./node_modules/p-defer-es5 postinstall && yarn --cwd ./node_modules/abort-controller-es5 postinstall && yarn --cwd ./node_modules/markdown-it-attrs-es5 postinstall",
-    "postinstall": "yarn fix-botframework"
+    "prettier": "prettier --write ."
   },
   "dependencies": {
     "@bratislava/json-schema-xsd-tools": "^0.1.9",

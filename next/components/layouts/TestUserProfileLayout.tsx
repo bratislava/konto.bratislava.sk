@@ -1,5 +1,5 @@
-import { SectionContainer } from '@bratislava/ui-bratislava'
 import cx from 'classnames'
+import SectionContainer from 'components/forms/segments/SectionContainer/SectionContainer'
 import { usePageWrapperContext } from 'components/layouts/PageWrapper'
 import React from 'react'
 
@@ -16,7 +16,7 @@ const TestUserProfileLayout = ({
   const { locale } = usePageWrapperContext()
 
   return (
-    <div className={cx('flex', 'flex-col', 'h-screen', 'font-inter', className)}>
+    <div className={cx('flex', 'flex-col', 'h-screen', className)}>
       <div className="h-16 bg-white lg:h-14">
         <SectionContainer>
           <AccountNavBar currentLanguage={locale} menuItems={[]} />

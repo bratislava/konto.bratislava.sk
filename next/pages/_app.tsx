@@ -1,21 +1,15 @@
 /* eslint-disable @next/next/inline-script-id */
 import './index.css'
 
-import { UIContextProvider } from '@bratislava/common-frontend-ui-context'
 import { AccountProvider } from '@utils/useAccount'
 import { AppProps } from 'next/app'
 import { Inter } from 'next/font/google'
 import Head from 'next/head'
-import Link from 'next/link'
 import { appWithTranslation } from 'next-i18next'
 import { NextAdapter } from 'next-query-params'
 import { SSRProvider } from 'react-aria'
 import SnackbarProvider from 'react-simple-snackbar'
 import { QueryParamProvider } from 'use-query-params'
-
-import ContentImage from '../components/atoms/ContentImage'
-import { HomepageMarkdown } from '../components/atoms/HomepageMarkdown'
-import BAQueryClientProvider from '../components/providers/BAQueryClientProvider'
 
 const inter = Inter({
   variable: '--inter-font',
@@ -35,40 +29,17 @@ const MyApp = ({ Component, pageProps }: AppProps) => {
         <meta name="theme-color" content="#ffffff" />
         {/* look for CookieConsent component for 3rd party scripts you'd expect to find here */}
       </Head>
-      <UIContextProvider
-        components={{
-          Link: ({ href, className, children, locale, target, rel }) => {
-            if (href === undefined || href === null) return null
-            return (
-              <Link href={href} locale={locale} target={target} rel={rel} className={className}>
-                {children}
-              </Link>
-            )
-          },
-          Image: ({ alt, src, shadow }) => <ContentImage alt={alt} src={src} shadow={shadow} />,
-          Markdown: ({ className, content, numericalList }) => (
-            <HomepageMarkdown
-              className={className}
-              content={content}
-              numericalList={numericalList}
-            />
-          ),
-        }}
-      >
-        <BAQueryClientProvider>
-          <QueryParamProvider adapter={NextAdapter}>
-            <SSRProvider>
-              <AccountProvider>
-                <div className={`${inter.variable} font-sans`}>
-                  <SnackbarProvider>
-                    <Component {...pageProps} />
-                  </SnackbarProvider>
-                </div>
-              </AccountProvider>
-            </SSRProvider>
-          </QueryParamProvider>
-        </BAQueryClientProvider>
-      </UIContextProvider>
+      <QueryParamProvider adapter={NextAdapter}>
+        <SSRProvider>
+          <AccountProvider>
+            <div className={`${inter.variable} font-sans`}>
+              <SnackbarProvider>
+                <Component {...pageProps} />
+              </SnackbarProvider>
+            </div>
+          </AccountProvider>
+        </SSRProvider>
+      </QueryParamProvider>
     </>
   )
 }

@@ -1,4 +1,3 @@
-// @ts-strict-ignore
 /* eslint-disable react-hooks/exhaustive-deps */
 /* eslint-disable lodash/collection-ordering */
 import { localePath } from '@utils/page'
@@ -46,7 +45,9 @@ const PageWrapper = ({ children, locale, localizations, slug }: IProps) => {
   }, [localizations])
 
   return (
-    <PageWrapperContext.Provider value={{ locale: locale ?? language, localizations: pageLocalizations }}>
+    <PageWrapperContext.Provider
+      value={{ locale: locale ?? language, localizations: pageLocalizations }}
+    >
       {children}
     </PageWrapperContext.Provider>
   )

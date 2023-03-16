@@ -1,20 +1,14 @@
-// if you want to see 'nice' default components, uncomment this import
-// be aware it may break styling of the rest of the app, including custom components!
-// import 'bootstrap/dist/css/bootstrap.min.css'
-
 import { EFormValue } from '@backend/forms'
 import { getEform } from '@backend/utils/forms'
-import { PageHeader } from '@bratislava/ui-bratislava'
-import GeneratedFormRJSF from '@bratislava/ui-bratislava/FormRJSF/GeneratedFormRJSF'
 import { pageStyle } from '@utils/page'
 import { AsyncServerProps } from '@utils/types'
 import { forceString, isProductionDeployment } from '@utils/utils'
+import GeneratedFormRJSF from 'components/forms/GeneratedFormRJSF'
 import FormPageLayout from 'components/layouts/FormPageLayout'
+import PageWrapper from 'components/layouts/PageWrapper'
 import { GetServerSidePropsContext } from 'next'
-import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
 import { useRouter } from 'next/router'
-
-import PageWrapper from '../../components/layouts/PageWrapper'
+import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
 
 export const getServerSideProps = async (ctx: GetServerSidePropsContext) => {
   if (isProductionDeployment()) return { notFound: true }
@@ -85,16 +79,6 @@ const FormTestPage = ({ page, eform }: AsyncServerProps<typeof getServerSideProp
             __html: pageStyle('main'),
           }}
         />
-        {/* TODO replace with form header */}
-        <PageHeader
-          imageSrc=""
-          color="var(--category-color-200)"
-          transparentColor="var(--category-color-200--transparent)"
-          transparentColorMobile="var(--category-color-200--semi-transparent)"
-          className="header-main-bg bg-cover"
-        >
-          TODO form info
-        </PageHeader>
         <GeneratedFormRJSF eform={eform} escapedSlug={escapedSlug} formSlug={formSlug} />
       </FormPageLayout>
     </PageWrapper>

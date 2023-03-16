@@ -60,7 +60,7 @@ const MunicipalServicesSection = () => {
   const { t } = useTranslation('account')
   const [currentPage, setCurrentPage] = useState<number>(1)
   const [selectorValue, setSelectorValue] = useState<SelectOption[]>(enumOptions.slice(0, 1))
-  const selectorValuesArr: string = selectorValue[0]?.title || ''
+  const selectorValueTitle: string = selectorValue[0]?.title || ''
 
   type ServiceCardBase = {
     title: string
@@ -324,7 +324,7 @@ const MunicipalServicesSection = () => {
   ]
 
   const filteredServiceCards = serviceCards.filter((card) =>
-    selectorValuesArr?.includes(ALL_CATEGORY) ? true : card.category.includes(selectorValuesArr),
+    selectorValueTitle === ALL_CATEGORY ? true : card.category.includes(selectorValueTitle),
   )
 
   return (

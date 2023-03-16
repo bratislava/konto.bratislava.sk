@@ -6,7 +6,7 @@ import PlatbaDaneImg from '@assets/images/platba-dane2.png'
 import { ROUTES } from '@utils/constants'
 import useAccount from '@utils/useAccount'
 import AccountSectionHeader from 'components/forms/segments/AccountSectionHeader/AccountSectionHeader'
-import AnnouncementBlock from 'components/forms/segments/AccountSections/IntroSection/AnnouncementBlock'
+import BannerBasic from 'components/forms/segments/AccountSections/IntroSection/BannerBasic'
 import Banner from 'components/forms/simple-components/Banner'
 import Button from 'components/forms/simple-components/Button'
 import ServiceCard from 'components/forms/simple-components/ServiceCard'
@@ -35,11 +35,6 @@ const IntroSection = () => {
     'account_section_intro.banner_content',
   )}</span>`
 
-  const announcementContent = `
-<h4>${t('account_section_intro.announcement_card_title')}</h4><span>${t(
-    'account_section_intro.announcement_card_text',
-  )}</span>`
-
   return (
     <>
       {userData && (
@@ -58,11 +53,12 @@ const IntroSection = () => {
           text={t('account_section_intro.header_text')}
         />
         <div className="w-full max-w-screen-lg m-auto py-6 lg:py-16">
-          <AnnouncementBlock
-            announcementContent={announcementContent}
-            buttonTitle={t('account_section_intro.announcement_card_action')}
+          <BannerBasic
+            header={t('account_section_intro.announcement_card_title')}
+            content={t('account_section_intro.announcement_card_text')}
+            buttonPrimaryText={t('account_section_intro.announcement_card_action')}
             imagePath={PlatbaDaneImg}
-            onPress={() => router.push('/taxes-and-fees')}
+            onPressPrimary={() => router.push('/taxes-and-fees')}
           />
           <div className="w-full flex items-center justify-between mb-8 px-4 lg:px-0">
             <h2 className="text-h2">{t('account_section_services.navigation')}</h2>

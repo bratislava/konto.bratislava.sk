@@ -9,7 +9,10 @@ import {
 } from 'amazon-cognito-identity-js'
 import * as AWS from 'aws-sdk/global'
 import { AWSError } from 'aws-sdk/global'
+import { useRouter } from 'next/router'
+import { useTranslation } from 'next-i18next'
 import React, { ReactNode, useContext, useEffect, useState } from 'react'
+import { useSnackbar } from 'react-simple-snackbar'
 
 export enum AccountStatus {
   Idle,
@@ -101,6 +104,8 @@ interface Account {
 const AccountContext = React.createContext<Account>({} as Account)
 
 export const AccountProvider = ({ children }: { children: ReactNode }) => {
+  const router = useRouter()
+  const { t } = useTranslation('account')
   const [user, setUser] = useState<CognitoUser | null | undefined>()
   const [error, setError] = useState<AccountError | undefined | null>(null)
   const [status, setStatus] = useState<AccountStatus>(AccountStatus.Idle)
@@ -109,6 +114,16 @@ export const AccountProvider = ({ children }: { children: ReactNode }) => {
     Username: '',
   })
   const [lastMarketingConfirmation, setLastMarketingConfirmation] = useState(false)
+  const [openSnackbarSuccess] = useSnackbar({
+    style: {
+      backgroundColor: 'rgb(var(--color-success-700))',
+    },
+  })
+  const [openSnackbarError] = useSnackbar({
+    style: {
+      backgroundColor: 'rgb(var(--color-negative-700))',
+    },
+  })
 
   const userAttributesToObject = (attributes?: CognitoUserAttribute[]): UserData => {
     const data: any = {}
@@ -244,6 +259,7 @@ export const AccountProvider = ({ children }: { children: ReactNode }) => {
 
   const verifyIdentity = async (rc: string, idCard: string): Promise<boolean> => {
     const accessToken = await getAccessToken()
+
     if (!accessToken) {
       return false
     }
@@ -255,8 +271,16 @@ export const AccountProvider = ({ children }: { children: ReactNode }) => {
         accessToken,
       )
       setStatus(AccountStatus.IdentityVerificationSuccess)
+      router
+        .push('/taxes-and-fees')
+        .then(() => openSnackbarSuccess(t('identity_verification_success_title')))
+        .catch(() => {})
       return true
     } catch (error: any) {
+      router
+        .push('/taxes-and-fees')
+        .then(() => openSnackbarError(t('identity_verification_error_title')))
+        .catch(() => {})
       setError({
         code: error.message,
         message: error.message,

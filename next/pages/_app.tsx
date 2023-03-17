@@ -31,13 +31,13 @@ const MyApp = ({ Component, pageProps }: AppProps) => {
       </Head>
       <QueryParamProvider adapter={NextAdapter}>
         <SSRProvider>
-          <AccountProvider>
-            <div className={`${inter.variable} font-sans`}>
-              <SnackbarProvider>
+          <SnackbarProvider>
+            <AccountProvider>
+              <div className={`${inter.variable} font-sans`}>
                 <Component {...pageProps} />
-              </SnackbarProvider>
-            </div>
-          </AccountProvider>
+              </div>
+            </AccountProvider>
+          </SnackbarProvider>
         </SSRProvider>
       </QueryParamProvider>
     </>

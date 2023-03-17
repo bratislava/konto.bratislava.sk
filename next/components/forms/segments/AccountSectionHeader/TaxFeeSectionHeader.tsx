@@ -58,7 +58,7 @@ const TaxFeeSectionHeader = (props: AccountSectionHeaderBase) => {
           <button
             type="button"
             className="text-p3-medium underline-offset-2 underline"
-            onClick={() => router.push('/account/taxes-and-fees')}
+            onClick={() => router.push('/taxes-and-fees')}
           >
             {t('back_to_list')}
           </button>

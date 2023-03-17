@@ -20,7 +20,7 @@ const TaxDetails = (props: any) => {
         <AccordionTableTaxContent
           size="md"
           dataType="construction"
-          title={t('construction_tax')}
+          title={t('tax_constructions')}
           secondTitle="0 €"
           data={[]}
         />

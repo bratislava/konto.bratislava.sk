@@ -10,6 +10,7 @@ import { GetServerSidePropsContext } from 'next'
 import { useRouter } from 'next/router'
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
 import AccountPageLayout from 'components/layouts/AccountPageLayout'
+import FormHeader from 'components/forms/simple-components/FormHeader'
 
 export const getServerSideProps = async (ctx: GetServerSidePropsContext) => {
   if (isProductionDeployment()) return { notFound: true }
@@ -75,6 +76,7 @@ const FormTestPage = ({ page, eform }: AsyncServerProps<typeof getServerSideProp
       ]}
     >
       <AccountPageLayout hiddenHeaderNav>
+        <FormHeader />
         <GeneratedFormRJSF
           eform={eform}
           escapedSlug={escapedSlug}

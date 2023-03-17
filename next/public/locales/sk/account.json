@@ -307,7 +307,7 @@
         "verification": "<li>ste neoverili svoju identitu cez rodné číslo a číslo občianskeho preukazu (<a href='/register'>Overiť identitu</a>),</li>",
         "other": "<li>vaša nehnuteľnosť je v spoluvlastníctve,</li><li>vaše daňové priznanie ešte čaká na spracovanie,</li><li>nie ste vlastníkom či vlastníčkou nehnuteľnosti,</li><li>alebo ste nepodali priznanie k dani z nehnuteľností.</li>"
       },
-      "help_text": "<p>Viac informácií môžete nájsť v <a href='/account/i-have-a-problem'>často kladených otázkach</a>.</p>"
+      "help_text": "<p>Viac informácií môžete nájsť v <a href='/i-have-a-problem'>často kladených otázkach</a>.</p>"
     }
   },
   "account_section_help": {
@@ -374,7 +374,7 @@
     "description": "Prajete si, aby sme s vami v ojedinelých prípadoch komunikovali aj prostredníctvom SMS? Zanechajte nám vaše telefónne číslo a my vám pripomenieme, napríklad, blížiaci sa termín splatnosti dane aj cez SMS.\n\nTelefónne číslo môžete kedykoľvek doplniť do profilu.\n\n",
     "phoneNumber_not_required": "*Neposkytnutie telefónneho čísla nemá vplyv na využívanie služieb v Bratislavskom konte."
   },
-  "pay_tax": "Zaplatiť",
+  "pay_tax": "Zaplatiť daň",
   "back_to_list": "Naspäť na zoznam",
   "city": "Mesto",
   "tax_created": "Vytvorená",
@@ -389,7 +389,6 @@
   "contact": "Kontakt",
   "tax_liability_breakdown": "Rozpis daňovej povinnosti",
   "land_tax": "Daň z pozemkov",
-  "construction_tax": "Daň zo stavby",
   "apartments_tax": "Daň z bytov",
   "payment_data": "Platobné údaje",
   "constant_symbol": "Konštantný symbol",

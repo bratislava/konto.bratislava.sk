@@ -1,18 +1,17 @@
 import { AsyncServerProps } from '@utils/types'
 import { isProductionDeployment } from '@utils/utils'
-import UserProfileView from 'components/forms/segments/UserProfile/UserProfileView'
+import AccountPageLayout from 'components/layouts/AccountPageLayout'
+import PageWrapper from 'components/layouts/PageWrapper'
 import { GetServerSidePropsContext } from 'next'
-import { useTranslation } from 'next-i18next'
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
 
-import AccountSectionHeader from '../components/forms/segments/AccountSectionHeader/AccountSectionHeader'
-import AccountPageLayout from '../components/layouts/AccountPageLayout'
-import PageWrapper from '../components/layouts/PageWrapper'
+import TaxFeeSection from '../../components/forms/segments/AccountSections/TaxesFeesSection/TaxFeeSection'
 
 export const getServerSideProps = async (ctx: GetServerSidePropsContext) => {
   if (isProductionDeployment()) return { notFound: true }
 
   const locale = ctx.locale ?? 'sk'
+
   return {
     props: {
       page: {
@@ -29,17 +28,14 @@ export const getServerSideProps = async (ctx: GetServerSidePropsContext) => {
   }
 }
 
-const UserProfile = ({ page }: AsyncServerProps<typeof getServerSideProps>) => {
-  const { t } = useTranslation('account')
-
+const AccountTaxesFeesPage = ({ page }: AsyncServerProps<typeof getServerSideProps>) => {
   return (
     <PageWrapper locale={page.locale} localizations={page.localizations}>
       <AccountPageLayout>
-        <AccountSectionHeader title={t('my_profile')} />
-        <UserProfileView />
+        <TaxFeeSection />
       </AccountPageLayout>
     </PageWrapper>
   )
 }
 
-export default UserProfile
+export default AccountTaxesFeesPage

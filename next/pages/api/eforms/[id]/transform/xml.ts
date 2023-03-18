@@ -1,6 +1,5 @@
 import { EFormValue } from '@backend/forms'
 import { getEform, loadAndBuildXml } from '@backend/utils/forms'
-import { withSentry } from '@sentry/nextjs'
 import type { NextApiRequest, NextApiResponse } from 'next'
 
 const handler = async (req: NextApiRequest, res: NextApiResponse) => {
@@ -22,4 +21,4 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
   return res.end()
 }
 
-export default withSentry(handler)
+export default handler

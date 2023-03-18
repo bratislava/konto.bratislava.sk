@@ -1,6 +1,5 @@
 // TODO waiting on #305 to get merged, afterwards might move elsewhere
 // frontend code for calling api endpoints grouped
-import * as Sentry from '@sentry/react'
 import { ErrorObject } from 'ajv'
 
 export const API_ERROR_TEXT = 'API_ERROR'
@@ -42,9 +41,9 @@ const fetchJsonApi = async (path: string, options?: RequestInit) => {
       throw new Error(API_ERROR_TEXT)
     }
   } catch (error) {
-    // caught & rethrown so that we can handle Sentry in one place
+    // TODO: handle error with Faro
+    // caught & rethrown so that we can handle Faro in one place
     console.error(error)
-    Sentry.captureException(error)
     throw error
   }
 }

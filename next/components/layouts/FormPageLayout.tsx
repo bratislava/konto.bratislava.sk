@@ -2,10 +2,9 @@ import CityIcon from '@assets/images/account/city.svg'
 import HelpIcon from '@assets/images/account/help-icon.svg'
 import LogoutIcon from '@assets/images/account/logout.svg'
 import ProfileIcon from '@assets/images/account/profile.svg'
-import { SectionContainer } from '@bratislava/ui-bratislava'
-import * as Sentry from '@sentry/nextjs'
 import cx from 'classnames'
 import AccountNavBar from 'components/forms/segments/AccountNavBar/AccountNavBar'
+import SectionContainer from 'components/forms/segments/SectionContainer/SectionContainer'
 import { usePageWrapperContext } from 'components/layouts/PageWrapper'
 import { useTranslation } from 'next-i18next'
 import { useRouter } from 'next/router'
@@ -34,7 +33,7 @@ const menuItems = [
     id: 3,
     title: 'account:menu_help_link',
     icon: <HelpIcon />,
-    link: '/account/i-have-a-problem',
+    link: '/i-have-a-problem',
   },
   {
     id: 4,
@@ -56,7 +55,8 @@ const FormPageLayout = ({ className, navHidden, children }: FormPageLayoutBase) 
     try {
       await router.push(`/${path}`, undefined, { locale: key })
     } catch (error) {
-      Sentry.captureException(error)
+      // TODO send error to Faro
+      console.error(error)
     }
   }
 

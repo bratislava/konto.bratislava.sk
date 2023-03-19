@@ -83,24 +83,10 @@ export const AccountNavBar = ({
     if (selectedMenuItem) onRouteChange(selectedMenuItem)
   }
 
-  /**
-   * Matches `/account` URL with given param sectionItem link
-   * @match
-   * `/account`
-   * @param {MenuItem} sectionItem - Menu item object.
-   */
-  const isAccountPage = (sectionItem: MenuItem) =>
-    router.route.endsWith('/account') && router.route.includes(sectionItem.link)
-
-  /**
-   * Matches parent URL with children url (inner pages)
-   * @example
-   * `account/taxes-and-fees` and `account/taxes-and-fees/[id]` where `taxes-and-fees` is parent page
-   * It also excludes home page `/account` if we are on `account/taxes-and-fees`
-   * @param {MenuItem} sectionItem - Menu item object.
-   */
   const isActive = (sectionItem: MenuItem) =>
-    sectionItem?.link.includes(router.route.split('/')[2]) || isAccountPage(sectionItem)
+    sectionItem.link === '/'
+      ? router.pathname === '/'
+      : router.pathname.startsWith(sectionItem.link)
 
   return (
     <>

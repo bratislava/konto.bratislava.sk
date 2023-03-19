@@ -15,7 +15,6 @@ export type AccordionBase = {
   title: string
   data: any
   icon?: boolean
-  shadow?: boolean
   className?: string
 }
 export const isAccordionSizeType = (size: string) =>
@@ -84,7 +83,6 @@ const AccordionPaymentSchedule = ({
   title,
   size = 'sm',
   icon = false,
-  shadow = false,
   className,
 }: AccordionBase) => {
   const [isActive, setIsActive] = useState(false)
@@ -104,14 +102,8 @@ const AccordionPaymentSchedule = ({
     paddingStyles,
   )
   const accordionContainerStyle = cx(
-    'border-gray-200 flex flex-col w-full rounded-xl bg-gray-0',
+    'border-gray-200 flex flex-col w-full rounded-xl bg-gray-0 border-2 border-solid hover:border-gray-500',
     className,
-    {
-      'border-2 border-solid hover:border-gray-500': !shadow,
-      'hover:shadow-[0_8px_16px_0_rgba(0,0,0,0.08)]': shadow,
-      'shadow-[0_0_16px_0_rgba(0,0,0,0.08)]': isActive && shadow,
-      'shadow-[0_4px_16px_0_rgba(0,0,0,0.08)]': !isActive && shadow,
-    },
   )
   const { t } = useTranslation('account')
   return (

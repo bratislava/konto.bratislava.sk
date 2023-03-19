@@ -14,6 +14,7 @@ import Button from '../../simple-components/Button'
 type AccountSectionHeaderBase = {
   title: string
   status?: string
+  // TODO temp only for testing, remove the prop once server integration is ready
   who?: string
 }
 

@@ -1,19 +1,28 @@
 import useAccount, { Address } from '@utils/useAccount'
 import { useTranslation } from 'next-i18next'
 import { useState } from 'react'
+import { useSnackbar } from 'react-simple-snackbar'
 
+import SummaryRowSimple from '../../../simple-components/SummaryRowSimple'
 import SummaryRow from '../../../steps/Summary/SummaryRow'
 import CorrespondenceAddressModal from '../../CorrespondenceAddressModal/CorrespondenceAddressModal'
 
+const optionsSuccess = {
+  style: {
+    backgroundColor: 'rgb(var(--color-success-700))',
+  },
+}
 const ContactInformationSection = (props: any) => {
   const { t } = useTranslation('account')
   const { userData, updateUserData, error, resetError } = useAccount()
-
+  const [openSnackbarSuccess] = useSnackbar(optionsSuccess)
+  const postal_code_array = userData?.address?.postal_code?.replace(/\s/g, '').split('')
   const [correnspondenceAddressModalShow, setCorrenspondenceAddressModalShow] = useState(false)
 
   const onSubmitCorrespondenceAddress = async ({ data }: { data?: Address }) => {
     if (await updateUserData({ address: data })) {
       setCorrenspondenceAddressModalShow(false)
+      openSnackbarSuccess(t('profile_detail.success_alert'))
     }
   }
 
@@ -57,7 +66,11 @@ const ContactInformationSection = (props: any) => {
                 label: t('correspondence_address'),
                 value:
                   userData && userData.address
-                    ? `${userData.address.street_address}, ${userData.address.postal_code} ${userData.address.locality}`
+                    ? `${userData.address.street_address}, ${postal_code_array
+                        ?.slice(0, 3)
+                        .join('')} ${postal_code_array?.slice(3).join('')} ${
+                        userData.address.locality
+                      }`
                     : '',
                 schemaPath: '',
                 isError: false,
@@ -89,16 +102,22 @@ const ContactInformationSection = (props: any) => {
                 isError: false,
               }}
             />
-            <SummaryRow
-              size="small"
-              isEditable={false}
-              data={{
-                label: t('contact'),
-                value: '+421 2/553 559 38, meno.priezvisko@bratislava.sk',
-                schemaPath: '',
-                isError: false,
-              }}
-            />
+            <SummaryRowSimple size="small" isEditable={false} label={t('contact')} isError={false}>
+              <div className="flex gap-2">
+                <div>
+                  <a className="underline underline-offset-4" href="tel:+421 2/553 559 38">
+                    +421 2/553 559 38
+                  </a>
+                  ,
+                </div>
+                <a
+                  className="underline underline-offset-4"
+                  href="mailto:meno.priezvisko@bratislava.sk"
+                >
+                  meno.priezvisko@bratislava.sk
+                </a>
+              </div>
+            </SummaryRowSimple>
           </div>
         </div>
       </div>

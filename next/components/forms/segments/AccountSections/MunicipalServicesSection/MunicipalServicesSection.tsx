@@ -305,22 +305,22 @@ const MunicipalServicesSection = () => {
       category: [BASKET_CATEGORY],
       href: 'https://www.olo.sk/ponuka-sluzieb/objednavka-sluzieb-pre-obyvatelov/',
     },
-    {
-      title: t('account_section_services.cards.30.title'),
-      description: t('account_section_services.cards.30.description'),
-      buttonText: t('account_section_services.cards.30.buttonText'),
-      icon: <BasketIcon className="w-10 h-10 lg:w-12 lg:h-12" />,
-      category: [BASKET_CATEGORY],
-      href: '',
-    },
-    {
-      title: t('account_section_services.cards.31.title'),
-      description: t('account_section_services.cards.31.description'),
-      buttonText: t('account_section_services.cards.31.buttonText'),
-      icon: <BasketIcon className="w-10 h-10 lg:w-12 lg:h-12" />,
-      category: [BASKET_CATEGORY],
-      href: '',
-    },
+    // {
+    //   title: t('account_section_services.cards.30.title'),
+    //   description: t('account_section_services.cards.30.description'),
+    //   buttonText: t('account_section_services.cards.30.buttonText'),
+    //   icon: <BasketIcon className="w-10 h-10 lg:w-12 lg:h-12" />,
+    //   category: [BASKET_CATEGORY],
+    //   href: '',
+    // },
+    // {
+    //   title: t('account_section_services.cards.31.title'),
+    //   description: t('account_section_services.cards.31.description'),
+    //   buttonText: t('account_section_services.cards.31.buttonText'),
+    //   icon: <BasketIcon className="w-10 h-10 lg:w-12 lg:h-12" />,
+    //   category: [BASKET_CATEGORY],
+    //   href: '',
+    // },
   ]
 
   const filteredServiceCards = serviceCards.filter((card) =>

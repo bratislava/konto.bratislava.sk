@@ -2,7 +2,7 @@ import ArrowRightIcon from '@assets/images/forms/arrow-right.svg'
 import cx from 'classnames'
 import AccountMarkdown from 'components/forms/segments/AccountMarkdown/AccountMarkdown'
 import Button from 'components/forms/simple-components/Button'
-import Image from 'next/legacy/image'
+import Image from 'next/image'
 
 type BannerBasicProps = {
   header: string
@@ -33,7 +33,7 @@ const BannerBasic = ({
 }: BannerBasicProps) => {
   const imageElement = (
     <div className="lg:h-auto relative h-[180px] w-full lg:w-1/2 flex justify-center items-center">
-      <Image src={imagePath} alt="" layout="fill" objectFit="cover" objectPosition="left" />
+      <Image src={imagePath} className="object-cover object-left" alt="" fill />
     </div>
   )
   return (
@@ -64,7 +64,7 @@ const BannerBasic = ({
                 />
                 <Button
                   className="flex lg:hidden"
-                  endIcon={<ArrowRightIcon className="w-5 h-5" />}
+                  endIcon={<ArrowRightIcon className="w-6 h-6" />}
                   size="sm"
                   variant="category"
                   text={buttonPrimaryText}

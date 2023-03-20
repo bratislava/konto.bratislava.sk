@@ -135,7 +135,7 @@ const UserProfileDetailEdit = (props: UserProfileDetailEditProps) => {
         </div>
       </div>
       <div className="flex flex-row flex-wrap gap-4">
-        <div className="grow">
+        <div className="grow w-full md:w-fit">
           <Controller
             name="email"
             control={control}
@@ -205,7 +205,7 @@ const UserProfileDetailEdit = (props: UserProfileDetailEditProps) => {
             )}
           />
         </div>
-        <div className="w-52">
+        <div className="w-full md:w-52">
           <Controller
             name="postal_code"
             control={control}
@@ -220,6 +220,14 @@ const UserProfileDetailEdit = (props: UserProfileDetailEditProps) => {
           />
         </div>
       </div>
+      <Button
+        className="md:hidden w-full block"
+        variant="black"
+        size="sm"
+        text={t('profile_detail.save_edit_button')}
+        type="submit"
+        form={formId}
+      />
     </form>
   )
 }

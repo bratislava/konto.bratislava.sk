@@ -3,7 +3,7 @@ import React from 'react'
 
 import AccordionTableTaxContent from '../../../simple-components/AccordionTableTaxContent'
 
-const TaxDetails = () => {
+const TaxDetails = (props: any) => {
   const { t } = useTranslation('account')
 
   return (
@@ -20,7 +20,7 @@ const TaxDetails = () => {
         <AccordionTableTaxContent
           size="md"
           dataType="construction"
-          title={t('construction_tax')}
+          title={t('tax_constructions')}
           secondTitle="0 €"
           data={[]}
         />

@@ -1,7 +1,3 @@
-import getConfig from 'next/config'
-
-const { serverRuntimeConfig } = getConfig()
-
 export const arrayify = (input: string | string[] | undefined | null) => {
   if (input === undefined || input === null) {
     return [] as undefined[]

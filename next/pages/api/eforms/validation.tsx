@@ -1,4 +1,3 @@
-import { withSentry } from '@sentry/nextjs'
 import { ajvKeywords } from '@utils/forms'
 import { AnySchemaObject } from 'ajv/dist/types'
 import type { NextApiRequest, NextApiResponse } from 'next'
@@ -28,4 +27,4 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
   return res.status(200).json({ isValid })
 }
 
-export default withSentry(handler)
+export default handler

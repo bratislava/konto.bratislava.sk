@@ -1,9 +1,9 @@
 import cx from 'classnames'
-import { FC, useRef } from 'react'
+import React, { FC, useRef } from 'react'
+import { useOnClickOutside } from 'usehooks-ts'
 
 import DropdownRow from './DropdownRow'
 import SelectAllDropdownRow from './SelectAllDropdownRow'
-import { useOnClickOutside } from 'usehooks-ts'
 import { SelectOption } from './SelectField'
 
 interface DropdownProps {

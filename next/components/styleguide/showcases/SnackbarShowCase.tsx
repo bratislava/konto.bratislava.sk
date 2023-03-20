@@ -1,38 +1,14 @@
-import { useSnackbar } from 'react-simple-snackbar'
+import useSnackbar from '@utils/useSnackbar'
 
 import Button from '../../forms/simple-components/Button'
 import { Stack } from '../Stack'
 import { Wrapper } from '../Wrapper'
 
 const SnackbarShowCase = () => {
-  const optionsSuccess = {
-    style: {
-      backgroundColor: 'rgb(var(--color-success-700))',
-    },
-  }
-
-  const optionsWarning = {
-    style: {
-      backgroundColor: 'rgb(var(--color-warning-700))',
-    },
-  }
-
-  const optionsError = {
-    style: {
-      backgroundColor: 'rgb(var(--color-negative-700))',
-    },
-  }
-
-  const optionsInfo = {
-    style: {
-      backgroundColor: 'rgb(var(--color-gray-700))',
-    },
-  }
-
-  const [openSnackbarSuccess] = useSnackbar(optionsSuccess)
-  const [openSnackbarWarning] = useSnackbar(optionsWarning)
-  const [openSnackbarError] = useSnackbar(optionsError)
-  const [openSnackbarInfo] = useSnackbar(optionsInfo)
+  const [openSnackbarSuccess] = useSnackbar({ variant: 'success' })
+  const [openSnackbarWarning] = useSnackbar({ variant: 'warning' })
+  const [openSnackbarError] = useSnackbar({ variant: 'error' })
+  const [openSnackbarInfo] = useSnackbar({ variant: 'info' })
   return (
     <Wrapper direction="column" title="Snackbar">
       <Stack>

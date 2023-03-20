@@ -25,7 +25,7 @@ const ThankYouFormSection = () => {
           <div className="flex flex-col gap-3 mt-4 md:mt-6">
             <Button
               label="Často kladené otázky"
-              href="/account/i-have-a-problem"
+              href="/i-have-a-problem"
               variant="link-black"
               size="sm"
             />

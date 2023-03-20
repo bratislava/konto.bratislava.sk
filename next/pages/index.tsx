@@ -1,11 +1,15 @@
 import { AsyncServerProps } from '@utils/types'
+import { isProductionDeployment } from '@utils/utils'
+import IntroSection from 'components/forms/segments/AccountSections/IntroSection/IntroSection'
+import AccountPageLayout from 'components/layouts/AccountPageLayout'
+import PageWrapper from 'components/layouts/PageWrapper'
+import { GetServerSidePropsContext } from 'next'
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
-import React from 'react'
 
-import PageWrapper from '../components/layouts/PageWrapper'
+export const getServerSideProps = async (ctx: GetServerSidePropsContext) => {
+  if (isProductionDeployment()) return { notFound: true }
 
-export const getStaticProps = async (ctx: { locale: string }) => {
-  const locale: string = ctx.locale ?? 'sk'
+  const locale = ctx.locale ?? 'sk'
 
   return {
     props: {
@@ -18,17 +22,19 @@ export const getStaticProps = async (ctx: { locale: string }) => {
             locale: l,
           })),
       },
-      ...(await serverSideTranslations(locale, ['common', 'footer'])),
+      ...(await serverSideTranslations(locale)),
     },
   }
 }
 
-const Homepage = ({ page }: AsyncServerProps<typeof getStaticProps>) => {
+const AccountIntroPage = ({ page }: AsyncServerProps<typeof getServerSideProps>) => {
   return (
-    <PageWrapper locale={page.locale} localizations={page.localizations} slug="">
-      Temp - please go to /account
+    <PageWrapper locale={page.locale} localizations={page.localizations}>
+      <AccountPageLayout>
+        <IntroSection />
+      </AccountPageLayout>
     </PageWrapper>
   )
 }
 
-export default Homepage
+export default AccountIntroPage

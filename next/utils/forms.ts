@@ -10,6 +10,7 @@ import { customizeValidator } from '@rjsf/validator-ajv8'
 import {
   ApiError,
   createForm,
+  formDataToXml,
   FormDto,
   getForm,
   submitEform,
@@ -17,6 +18,7 @@ import {
   validateKeyword,
 } from '@utils/api'
 import useAccount from '@utils/useAccount'
+import useSnackbar from '@utils/useSnackbar'
 import { AnySchemaObject, ErrorObject, FuncKeywordDefinition } from 'ajv'
 import { JSONSchema7, JSONSchema7Definition } from 'json-schema'
 import { get, merge } from 'lodash'
@@ -100,7 +102,20 @@ export const ajvKeywords: KeywordDefinition[] = [
   {
     keyword: 'example',
   },
+  {
+    keyword: 'timeFromTo',
+  },
+  {
+    keyword: 'dateFromTo',
+  },
 ]
+
+export const ajvFormats = {
+  zip: /\b\d{5}\b/,
+  time: () => true,
+  'data-url': () => true,
+  ciselnik: () => true,
+}
 
 const validateAsyncProperties = async (
   schema: RJSFSchema,
@@ -415,6 +430,22 @@ export const useFormStepper = (eformSlug: string, schema: RJSFSchema) => {
     }
   }
 
+  const [openSnackbarError] = useSnackbar({ variant: 'error' })
+  const { t } = useTranslation('forms')
+
+  const exportXml = async () => {
+    try {
+      const xml = await formDataToXml(eformSlug, formData)
+      const link = document.createElement('a')
+      link.href = URL.createObjectURL(xml)
+      link.download = `${eformSlug}_output.xml`
+      link.click()
+      URL.revokeObjectURL(link.href)
+    } catch (error) {
+      openSnackbarError(t('errors.xml_export'))
+    }
+  }
+
   const handleOnSubmit = async (newFormData: RJSFSchema) => {
     increaseStepErrors()
     setStepFormData(newFormData)
@@ -470,6 +501,7 @@ export const useFormStepper = (eformSlug: string, schema: RJSFSchema) => {
     keywords: ajvKeywords,
     customFormats,
     validator,
+    exportXml,
   }
 }
 

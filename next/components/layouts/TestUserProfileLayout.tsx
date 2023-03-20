@@ -1,5 +1,5 @@
-import { SectionContainer } from '@bratislava/ui-bratislava'
 import cx from 'classnames'
+import SectionContainer from 'components/forms/segments/SectionContainer/SectionContainer'
 import { usePageWrapperContext } from 'components/layouts/PageWrapper'
 import React from 'react'
 

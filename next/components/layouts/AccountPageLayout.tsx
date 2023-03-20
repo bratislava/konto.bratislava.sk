@@ -4,12 +4,11 @@ import HomeIcon from '@assets/images/account/home-icon.svg'
 import LogoutIcon from '@assets/images/account/logout.svg'
 import PaymentIcon from '@assets/images/account/payment-icon.svg'
 import ProfileIcon from '@assets/images/account/profile.svg'
-import { SectionContainer } from '@bratislava/ui-bratislava'
-import * as Sentry from '@sentry/nextjs'
 import { ROUTES } from '@utils/constants'
 import useAccount from '@utils/useAccount'
 import cx from 'classnames'
 import AccountNavBar from 'components/forms/segments/AccountNavBar/AccountNavBar'
+import SectionContainer from 'components/forms/segments/SectionContainer/SectionContainer'
 import { usePageWrapperContext } from 'components/layouts/PageWrapper'
 import { useTranslation } from 'next-i18next'
 import { useRouter } from 'next/router'
@@ -26,25 +25,25 @@ const sectionsList = [
     id: 0,
     title: 'account:account_section_intro.navigation',
     icon: <HomeIcon />,
-    link: '/account',
+    link: '/',
   },
   {
     id: 1,
     title: 'account:account_section_services.navigation',
     icon: <BusinessIcon />,
-    link: '/account/municipal-services',
+    link: '/municipal-services',
   },
   {
     id: 2,
     title: 'account:account_section_payment.title',
     icon: <PaymentIcon className="w-6 h-6" />,
-    link: '/account/taxes-and-fees',
+    link: '/taxes-and-fees',
   },
   {
     id: 3,
     title: 'account:account_section_help.navigation',
     icon: <HelpIcon />,
-    link: '/account/i-have-a-problem',
+    link: '/i-have-a-problem',
   },
 ]
 
@@ -59,7 +58,7 @@ const menuItems = [
     id: 2,
     title: 'account:menu_help_link',
     icon: <HelpIcon />,
-    link: '/account/i-have-a-problem',
+    link: '/i-have-a-problem',
   },
   {
     id: 3,
@@ -87,7 +86,8 @@ const AccountPageLayout = ({ className, children, hiddenHeaderNav }: AccountPage
     try {
       await router.push(`/${path}`, undefined, { locale: key })
     } catch (error) {
-      Sentry.captureException(error)
+      // TODO send error to Faro
+      console.error(error)
     }
   }
 
@@ -107,7 +107,6 @@ const AccountPageLayout = ({ className, children, hiddenHeaderNav }: AccountPage
           ]}
         />
       </SectionContainer>
-
       <div className="bg-gray-0">{children}</div>
     </div>
   )

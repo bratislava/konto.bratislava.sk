@@ -1,5 +1,5 @@
 import ChevronRightIcon from '@assets/images/forms/chevron-right.svg'
-import FilledSelectedIcon from '@assets/images/forms/circle-filled-selected.svg'
+import FilledSelectedIcon from '@assets/images/forms/circle-empty-selected.svg'
 import cx from 'classnames'
 import React from 'react'
 
@@ -63,7 +63,7 @@ const DropdownRow = ({
       <RadioButtonIcon selected={selected} />
     ) : null
 
-  const MAX_TEXT_SIZE = 18
+  const MAX_TEXT_SIZE = 22
   const optionText = option.title ?? String(option.const)
   const transformedOptionText = `${optionText.slice(0, MAX_TEXT_SIZE)}${
     optionText.length > MAX_TEXT_SIZE ? '...' : ''

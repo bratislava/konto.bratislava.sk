@@ -16,6 +16,7 @@ import TowIcon from '@assets/images/account/municipal-services/tow-icon.svg'
 import TransportIcon from '@assets/images/account/municipal-services/transport-icon.svg'
 import TreeIcon from '@assets/images/account/municipal-services/tree-icon.svg'
 import ZooIcon from '@assets/images/account/municipal-services/zoo-icon.svg'
+import Alert from 'components/forms/info-components/Alert'
 import MunicipalServicesSectionHeader from 'components/forms/segments/AccountSectionHeader/MunicipalServicesSectionHeader'
 import ServiceCard from 'components/forms/simple-components/ServiceCard'
 import { useTranslation } from 'next-i18next'
@@ -338,6 +339,11 @@ const MunicipalServicesSection = () => {
         title={t('account_section_services.navigation')}
       />
       <div className="w-full max-w-screen-lg mx-auto py-4 lg:py-8">
+        <Alert
+          message="Priamo v Bratislavskom konte viete momentálne zaplatiť daň z nehunuteľností. Pri ostatných službách vás presmerujeme na externé webové stránky, ktoré môžu vyžadovať dodatočnú registráciu. Ďakujeme za pochopenie."
+          type="info"
+          className="max-w-none"
+        />
         <div className="sm:grid-cols-2 grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-8 place-content-center justify-items-center">
           {filteredServiceCards
             .filter(

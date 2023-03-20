@@ -109,12 +109,7 @@ const HelpSection = () => {
           title="Nenašli ste odpoveď na vašu otázku?"
           content={bannerContent}
           buttonText={t('account_section_help.banner_button_text')}
-          onPress={() => {
-            router
-              .push('mailto:info@bratislava.sk ')
-              .then(() => {})
-              .catch(() => {})
-          }}
+          onPress={() => router.push('mailto:info@bratislava.sk ')}
         />
       </div>
     </div>

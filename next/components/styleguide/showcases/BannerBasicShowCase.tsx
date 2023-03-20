@@ -15,10 +15,16 @@ const BannerShowCase = () => {
             incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud
             exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat."
           imagePath={PlatbaDaneImg}
-          buttonPrimaryText="Primary button"
+          buttonPrimaryText="Primary link button"
           onPressPrimary={() => {
             alert('Button was pressed')
           }}
+          buttonSecondaryText="Secondary link button"
+          onPressSecondary={() => {
+            alert('Button was pressed')
+          }}
+          buttonTertiaryText="Third link"
+          linkTertiary="#"
         />
       </Stack>
     </Wrapper>

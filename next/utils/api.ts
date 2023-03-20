@@ -108,6 +108,16 @@ export const formDataToXml = (eform: string, data: any) => {
   })
 }
 
+export const xmlToFormData = (eform: string, data: string) => {
+  return fetchJsonApi(`/api/eforms/${eform}/transform/xmlToJson`, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({ data }),
+  })
+}
+
 interface Identity {
   birthNumber: string
   identityCard: string

@@ -16,7 +16,9 @@ import {
   submitEform,
   updateForm,
   validateKeyword,
+  xmlToFormData,
 } from '@utils/api'
+import { readTextFile } from '@utils/file'
 import useAccount from '@utils/useAccount'
 import useSnackbar from '@utils/useSnackbar'
 import { AnySchemaObject, ErrorObject, FuncKeywordDefinition } from 'ajv'
@@ -24,7 +26,7 @@ import { JSONSchema7, JSONSchema7Definition } from 'json-schema'
 import { get, merge } from 'lodash'
 import { useTranslation } from 'next-i18next'
 import { useRouter } from 'next/router'
-import { RefObject, useEffect, useRef, useState } from 'react'
+import { ChangeEvent, RefObject, useEffect, useRef, useState } from 'react'
 
 import { StepData } from '../components/forms/types/TransformedFormData'
 
@@ -446,6 +448,16 @@ export const useFormStepper = (eformSlug: string, schema: RJSFSchema) => {
     }
   }
 
+  const importXml = async (e: ChangeEvent<HTMLInputElement>) => {
+    try {
+      const xmlData = await readTextFile(e)
+      const formData = await xmlToFormData(eformSlug, xmlData)
+      setFormData(formData)
+    } catch (error) {
+      openSnackbarError(t('errors.xml_import'))
+    }
+  }
+
   const handleOnSubmit = async (newFormData: RJSFSchema) => {
     increaseStepErrors()
     setStepFormData(newFormData)
@@ -502,6 +514,7 @@ export const useFormStepper = (eformSlug: string, schema: RJSFSchema) => {
     customFormats,
     validator,
     exportXml,
+    importXml,
   }
 }
 

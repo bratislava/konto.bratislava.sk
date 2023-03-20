@@ -7,13 +7,13 @@ import {
   StrictRJSFSchema,
 } from '@rjsf/utils'
 import { customizeValidator } from '@rjsf/validator-ajv8'
-import { ApiError, formDataToXml, submitEform, validateKeyword } from '@utils/api'
+import { ApiError, formDataToXml, submitEform, validateKeyword, xmlToFormData } from '@utils/api'
 import useSnackbar from '@utils/useSnackbar'
 import { AnySchemaObject, ErrorObject, FuncKeywordDefinition } from 'ajv'
 import { JSONSchema7, JSONSchema7Definition } from 'json-schema'
 import { get, merge } from 'lodash'
 import { useTranslation } from 'next-i18next'
-import { RefObject, useEffect, useRef, useState } from 'react'
+import { ChangeEvent, RefObject, useEffect, useRef, useState } from 'react'
 
 import { StepData } from '../components/forms/types/TransformedFormData'
 
@@ -393,6 +393,29 @@ export const useFormStepper = (eformSlug: string, schema: RJSFSchema) => {
     }
   }
 
+  const readTextFile = (event: ChangeEvent<HTMLInputElement>): Promise<string> => {
+    return new Promise((resolve, reject) => {
+      event.preventDefault()
+
+      const reader = new FileReader()
+      reader.addEventListener('load', () => {
+        resolve(reader.result as string)
+      })
+      reader.addEventListener('error', reject)
+      reader.readAsText(event.target.files[0])
+    })
+  }
+
+  const importXml = async (e: ChangeEvent<HTMLInputElement>) => {
+    try {
+      const xmlData = await readTextFile(e)
+      const formData = await xmlToFormData(eformSlug, xmlData)
+      setFormData(formData)
+    } catch (error) {
+      openSnackbarError(t('errors.xml_import'))
+    }
+  }
+
   const handleOnSubmit = async (newFormData: RJSFSchema) => {
     increaseStepErrors()
     setStepFormData(newFormData)
@@ -448,6 +471,7 @@ export const useFormStepper = (eformSlug: string, schema: RJSFSchema) => {
     customFormats,
     validator,
     exportXml,
+    importXml,
   }
 }
 

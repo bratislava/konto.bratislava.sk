@@ -12,7 +12,7 @@ import Button from 'components/forms/simple-components/Button'
 import ServiceCard from 'components/forms/simple-components/ServiceCard'
 import { useRouter } from 'next/router'
 import { useTranslation } from 'next-i18next'
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 
 import { PhoneNumberData } from '../../PhoneNumberForm/PhoneNumberForm'
 import PhoneNumberModal from '../../PhoneNumberModal/PhoneNumberModal'
@@ -21,9 +21,12 @@ const IntroSection = () => {
   const { t } = useTranslation('account')
   const { userData, updateUserData, error, resetError } = useAccount()
   const router = useRouter()
-  const [phoneNumberModalShow, setPhoneNumberModalShow] = useState<boolean>(
-    router.query.from === ROUTES.REGISTER,
-  )
+  const [phoneNumberModalShow, setPhoneNumberModalShow] = useState<boolean>(false)
+
+  useEffect(() => {
+    if (userData && !userData?.phone_number && ROUTES.REGISTER === router.query.from)
+      setPhoneNumberModalShow(true)
+  }, [userData])
 
   const onSubmitPhoneNumber = async ({ data }: { data?: PhoneNumberData }) => {
     if (await updateUserData({ phone_number: data?.phone_number })) {

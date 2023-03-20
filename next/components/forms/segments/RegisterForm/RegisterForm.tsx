@@ -2,7 +2,7 @@ import { formatUnicorn } from '@utils/string'
 import { AccountError, UserData } from '@utils/useAccount'
 import useHookForm from '@utils/useHookForm'
 import Alert from 'components/forms/info-components/Alert'
-import FieldErrorMessage from 'components/forms/info-components/FieldErrorMessage'
+import AccountMarkdown from 'components/forms/segments/AccountMarkdown/AccountMarkdown'
 import LoginAccountLink from 'components/forms/segments/LoginAccountLink/LoginAccountLink'
 import Button from 'components/forms/simple-components/Button'
 import SingleCheckbox from 'components/forms/widget-components/Checkbox/SingleCheckbox'
@@ -17,7 +17,6 @@ interface Data {
   family_name: string
   password: string
   passwordConfirmation: string
-  gdprConfirmation: boolean
   marketingConfirmation: boolean
 }
 
@@ -65,11 +64,6 @@ const schema = {
       type: 'string',
       errorMessage: { const: 'account:password_confirmation_required' },
     },
-    gdprConfirmation: {
-      const: true,
-      type: 'boolean',
-      errorMessage: { const: 'account:gdpr_confirmation_required' },
-    },
     marketingConfirmation: {
       type: 'boolean',
     },
@@ -80,7 +74,6 @@ const schema = {
     'family_name',
     'password',
     'passwordConfirmation',
-    'gdprConfirmation',
     'marketingConfirmation',
   ],
 }
@@ -100,7 +93,6 @@ const RegisterForm = ({ onSubmit, error, lastEmail }: Props) => {
       given_name: '',
       password: '',
       passwordConfirmation: '',
-      gdprConfirmation: true,
       marketingConfirmation: false,
     },
   })
@@ -197,25 +189,6 @@ const RegisterForm = ({ onSubmit, error, lastEmail }: Props) => {
           />
         )}
       />
-      <div>
-        <Controller
-          name="gdprConfirmation"
-          control={control}
-          render={({ field }) => (
-            <SingleCheckbox
-              value="gdprConfirmation"
-              isSelected={field.value}
-              onChange={field.onChange}
-              required
-              fullWidth
-              error={errors.gdprConfirmation?.length > 0}
-            >
-              {t('gdpr_confirmation_label')}
-            </SingleCheckbox>
-          )}
-        />
-        <FieldErrorMessage errorMessage={errors.gdprConfirmation} />
-      </div>
       <Controller
         name="marketingConfirmation"
         control={control}
@@ -237,6 +210,11 @@ const RegisterForm = ({ onSubmit, error, lastEmail }: Props) => {
         text={t('register_submit')}
         variant="category"
         disabled={isSubmitting}
+      />
+      <AccountMarkdown
+        variant="sm"
+        className="pb-5 md:pb-6 border-b-2 border-gray-200 text-center px-0 md:px-16"
+        content={`${t('gdpr_details_link')}`}
       />
       <LoginAccountLink />
     </form>

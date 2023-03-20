@@ -14,6 +14,7 @@ interface DropdownProps {
   isRowBold?: boolean
   type: 'one' | 'multiple' | 'arrow' | 'radio'
   divider?: boolean
+  hideScrollbar?: boolean
   className?: string
   onChooseOne?: (option: SelectOption, close?: boolean) => void
   onUnChooseOne?: (option: SelectOption, close?: boolean) => void
@@ -33,6 +34,7 @@ const Dropdown: FC<DropdownProps> = (props: DropdownProps) => {
     isRowBold,
     type,
     divider,
+    hideScrollbar,
     className,
     onChooseOne,
     onUnChooseOne,
@@ -78,7 +80,7 @@ const Dropdown: FC<DropdownProps> = (props: DropdownProps) => {
   // RENDER
   return (
     <div className={dropdownClassName} ref={clickOutsideRef}>
-      <div className="max-h-96 overflow-y-auto py-2">
+      <div className={cx('max-h-96 overflow-y-auto py-2', { 'scrollbar-hide': hideScrollbar })}>
         {selectAllOption && type === 'multiple' && (
           <SelectAllDropdownRow
             onSelectAll={handleOnSelectAllRowClick}

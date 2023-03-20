@@ -10,6 +10,7 @@ import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
 
 import AccordionShowCase from '../components/styleguide/showcases/AccordionShowCase'
 import AlertShowCase from '../components/styleguide/showcases/AlertShowCase'
+import BannerBasicShowCase from '../components/styleguide/showcases/BannerBasicShowCase'
 import BannerShowCase from '../components/styleguide/showcases/BannerShowCase'
 import ButtonShowCase from '../components/styleguide/showcases/ButtonShowCase'
 import CheckboxGroupShowCase from '../components/styleguide/showcases/CheckboxGroupedShowCase'
@@ -65,6 +66,7 @@ const Styleguide = ({ page }: AsyncServerProps<typeof getServerSideProps>) => {
         <StepperShowCase />
         <SummaryRowShowCase />
         <BannerShowCase />
+        <BannerBasicShowCase />
         <ServiceCardShowCase />
         <SnackbarShowCase />
       </StyleGuideWrapper>

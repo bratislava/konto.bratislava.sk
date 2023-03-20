@@ -73,7 +73,7 @@ const PaymentData = (props: any) => {
               <Button
                 variant="category"
                 size="lg"
-                text={t('pay_tax')}
+                text={t('to_pay')}
                 className="lg:block hidden min-w-max"
               />
 
@@ -81,7 +81,7 @@ const PaymentData = (props: any) => {
               <Button
                 variant="category"
                 size="sm"
-                text={t('pay_tax')}
+                text={t('to_pay')}
                 className="lg:hidden block min-w-full"
               />
             </div>

@@ -60,7 +60,6 @@ const fetchBlob = async (path: string, options?: RequestInit) => {
   } catch (error) {
     // caught & rethrown so that we can handle Sentry in one place
     console.error(error)
-    Sentry.captureException(error)
     throw error
   }
 }

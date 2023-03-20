@@ -52,7 +52,7 @@ const IntroSection = () => {
           title={`${t('account_section_intro.header_title')} ${userData?.given_name || ''}.`}
           text={t('account_section_intro.header_text')}
         />
-        <div className="w-full max-w-screen-lg m-auto py-6 lg:py-16">
+        <div className="w-full max-w-screen-lg m-auto py-6 lg:py-16 px-4">
           <BannerBasic
             header={t('account_section_intro.announcement_card_title')}
             content={t('account_section_intro.announcement_card_text')}
@@ -60,7 +60,7 @@ const IntroSection = () => {
             imagePath={PlatbaDaneImg}
             onPressPrimary={() => router.push('/taxes-and-fees')}
           />
-          <div className="w-full flex items-center justify-between mb-8 px-4 lg:px-0">
+          <div className="w-full flex items-center justify-between mb-8 lg:px-0">
             <h2 className="text-h2">{t('account_section_services.navigation')}</h2>
             <Button
               size="sm"
@@ -70,7 +70,7 @@ const IntroSection = () => {
               href="/municipal-services"
             />
           </div>
-          <div className="flex gap-3 lg:gap-8 overflow-x-scroll scrollbar-hide px-4 lg:px-0">
+          <div className="flex gap-3 lg:gap-8 overflow-x-scroll scrollbar-hide lg:px-0">
             <ServiceCard
               title={t('account_section_services.cards.1.title')}
               description={t('account_section_services.cards.1.description')}

@@ -39,7 +39,7 @@ const BannerBasic = ({
   return (
     <div
       className={cx(
-        'flex-col lg:flex-row flex h-full justify-between rounded-lg max-w-screen-lg m-auto border-2 mx-4 lg:mx-0',
+        'flex-col lg:flex-row flex h-full justify-between rounded-lg max-w-screen-lg m-auto border-2',
         className,
       )}
     >

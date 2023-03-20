@@ -2,7 +2,9 @@ import { UserData } from '@utils/useAccount'
 import cx from 'classnames'
 import Alert from 'components/forms/Alert'
 import { useTranslation } from 'next-i18next'
-import { MutableRefObject, useId, useRef } from 'react'
+import { useEffect, useId } from 'react'
+import { useSnackbar } from 'react-simple-snackbar'
+
 import UserProfileDetailEdit from './UserProfileDetailEdit'
 import UserProfileDetailsButtons from './UserProfileDetailsButtons'
 import UserProfileDetailView from './UserProfileDetailView'
@@ -13,7 +15,7 @@ import UserProfileSectionHeader from './UserProfileSectionHeader'
 interface UserProfileDetailProps {
   userData?: UserData | null
   isEditing?: boolean
-  alertType: 'success' | 'error'
+  alertType: 'success' | 'error' | null
   isAlertOpened: boolean
   onChangeIsEditing: (isEditing: boolean) => void
   onCancelEditing: () => void
@@ -34,6 +36,19 @@ const UserProfileDetail = (props: UserProfileDetailProps) => {
   } = props
   const { t } = useTranslation('account')
   const formId = `form-${useId()}`
+
+  const optionsSuccess = {
+    style: {
+      backgroundColor: 'rgb(var(--color-success-700))',
+    },
+  }
+  const [openSnackBar] = useSnackbar(optionsSuccess)
+
+  useEffect(() => {
+    if (isAlertOpened && alertType === 'success') {
+      openSnackBar(t(`profile_detail.success_alert`))
+    }
+  }, [alertType, isAlertOpened])
 
   const handleOnSubmit = (newUserData: UserData) => {
     onSubmit({
@@ -63,7 +78,7 @@ const UserProfileDetail = (props: UserProfileDetailProps) => {
           />
         </UserProfileSectionHeader>
         <div className="flex flex-col">
-          {isAlertOpened && (
+          {isAlertOpened && alertType === 'error' && (
             <div className="flex flex-row p-2">
               <Alert
                 className="max-w-none grow"
@@ -75,7 +90,7 @@ const UserProfileDetail = (props: UserProfileDetailProps) => {
           <div
             className={cx('flex p-4 flex-col gap-8', 'md:p-8 md:flex-row md:gap-16 md:flex-wrap')}
           >
-            <UserProfilePhoto userData={userData ?? {}} />
+            <UserProfilePhoto isEditing={isEditing} userData={userData ?? {}} />
             {isEditing ? (
               <UserProfileDetailEdit
                 formId={formId}

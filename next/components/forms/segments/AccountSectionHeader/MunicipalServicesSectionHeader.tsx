@@ -24,6 +24,7 @@ const MunicipalServicesSectionHeader = ({
         <h1 className="text-h1 mb-4 md:mb-6">{title}</h1>
         <SelectField
           label=""
+          className="max-w-none xs:max-w-[384px] pr-4"
           type="one"
           value={selectorValue}
           onChange={(val) => {

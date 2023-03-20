@@ -443,6 +443,7 @@
     "phoneNumber_not_required": "*Failure to provide a phone number does not affect the use of services in the Bratislava account."
   },
   "pay_tax": "To pay tax",
+  "to_pay": "To pay",
   "back_to_list": "Back to list",
   "city": "City",
   "tax_created": "Created",

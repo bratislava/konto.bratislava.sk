@@ -1,17 +1,12 @@
 import ContentCopy from '@assets/images/content_copy.svg'
+import useSnackbar from '@utils/useSnackbar'
 import { useTranslation } from 'next-i18next'
-import { useSnackbar } from 'react-simple-snackbar'
 import { useCopyToClipboard } from 'usehooks-ts'
 
-const optionsInfo = {
-  style: {
-    backgroundColor: 'rgb(var(--color-gray-700))',
-  },
-}
 const ClipboardCopy = ({ copyText }: { copyText: string }) => {
   const [_, copy] = useCopyToClipboard()
   const { t } = useTranslation('account')
-  const [openSnackbarInfo] = useSnackbar(optionsInfo)
+  const [openSnackbarInfo] = useSnackbar({})
   return (
     <button
       type="button"

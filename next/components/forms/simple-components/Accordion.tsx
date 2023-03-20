@@ -72,7 +72,7 @@ const Accordion = ({
             onClick={() => setIsActive(!isActive)}
           >
             <div
-              className={cx('flex grow', {
+              className={cx('flex grow text-left', {
                 'text-h6': accordionSize === 'xs',
                 'text-h5': accordionSize === 'sm',
                 'text-h4': accordionSize === 'md',

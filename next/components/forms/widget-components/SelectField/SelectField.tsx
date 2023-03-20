@@ -66,16 +66,17 @@ const SelectFieldComponent: ForwardRefRenderFunction<HTMLDivElement, SelectField
     onChange,
   } = props
 
-  // STATE
   const [isDropdownOpened, setIsDropdownOpened] = useState<boolean>(false)
+  // info if 'clickOutside event' was invoked by dropdown
   const [isClickedOutsideDropdown, setIsClickedOutsideDropdown] = useState<boolean>(false)
+  // info if 'clickOutside event' was invoked by select body
   const [isClickedOutsideSelect, setIsClickedOutsideSelect] = useState<boolean>(false)
+  // info if dropdown should be closed (used in combination with clickOutside)
   const [shouldCloseClick, setShouldCloseClick] = useState<boolean>(false)
   const [filter, setFilter] = useState<string>('')
   const [filterRef] = useState<RefObject<HTMLInputElement>>(React.createRef<HTMLInputElement>())
   const clickOutsideRef = useRef<HTMLDivElement>(null)
 
-  // STYLES
   const selectClassName = cx(
     'border-form-input-default flex flex-row bg-white rounded-lg border-2 items-center',
     {
@@ -87,18 +88,21 @@ const SelectFieldComponent: ForwardRefRenderFunction<HTMLDivElement, SelectField
     },
   )
 
+  // reset help states when dropdown is opened or closed
   useEffect(() => {
     setIsClickedOutsideSelect(false)
     setIsClickedOutsideDropdown(false)
     setShouldCloseClick(false)
   }, [isDropdownOpened])
 
+  // close dropdown if we click outside of dropdown or select body but not if clicked on arrow icon in select body (shouldCloseClick)
   useEffect(() => {
     if (isClickedOutsideDropdown && !shouldCloseClick && isClickedOutsideSelect) {
       setIsDropdownOpened(false)
     }
   }, [isClickedOutsideDropdown, isClickedOutsideSelect])
 
+  // close dropdown if it was opened and user clicked on arrow icon
   useEffect(() => {
     setIsDropdownOpened(false)
   }, [shouldCloseClick])
@@ -158,8 +162,12 @@ const SelectFieldComponent: ForwardRefRenderFunction<HTMLDivElement, SelectField
 
   const handleOnArrowClick = (event: React.MouseEvent) => {
     if (isDropdownOpened) {
+      // thanks to this state, we can ignore handling of 'clickOutside' and use custom behaviour for arrow icon
+      // click on arrow icon will open or close in opposite of actual state
       setShouldCloseClick(true)
     } else {
+      // if closed, handle it as whole select body
+      // click on body of select outside of arrow icon will always keep open dropdown and active filter
       handleOnSelectFieldClick(event)
     }
   }

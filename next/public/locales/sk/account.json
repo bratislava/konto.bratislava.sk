@@ -71,6 +71,7 @@
   "register_title": "Vytvorte si Bratislavské konto",
   "gdpr_confirmation_label": "Súhlas so spracovaním osobných údajov",
   "gdpr_confirmation_required": "Pre vytvorenie účtu je potrebné súhlasiť so spracovaním osobných údajov.",
+  "gdpr_details_link": "Bližšie informácie o spracúvaní vašich osobných údajov nájdete <a target='_blank' href='https://bratislava.sk/ochrana-osobnych-udajov'>na tomto odkaze</a>.",
   "marketing_confirmation_label": "Mám záujem dostávať informácie aj o iných digitálnych službách mesta Bratislava",
   "register_submit": "Vytvoriť konto",
   "email_verification_title": "Overte svoj e-mail",
@@ -446,6 +447,7 @@
     "phoneNumber_not_required": "*Neposkytnutie telefónneho čísla nemá vplyv na využívanie služieb v Bratislavskom konte."
   },
   "pay_tax": "Zaplatiť daň",
+  "to_pay": "Zaplatiť",
   "back_to_list": "Naspäť na zoznam",
   "city": "Mesto",
   "tax_created": "Vytvorená",
@@ -516,11 +518,41 @@
     "csob": "ČSOB, a.s.",
     "csob_iban": "SK31 7500 0000 0000 2574 7653"
   },
-  "tax_payable_within": "Daň je splatná v termíne do 15 dní",
+  "tax_payable_within": "Daň je splatná v termíne do 15 dní ",
   "validity_decision": "odo dňa právoplatnosti rozhodnutia.",
+  "validity_decision_with_schedule": "odo dňa právoplatnosti rozhodnutia ",
+  "according_schedule": "podľa splátkového kalendára.",
+  "tax_determined": "Splátky dane určené správcom dane v rozhodnutí",
   "account_activator": {
     "title": "Platili ste už daň z nehnuteľností digitálne?",
     "content": "Ak ste v minulosti platili daň z nehnuteľností digitálne, tento rok ju nájdete v novom Bratislavskom konte. <strong>Nepotrebujete prejsť celou registráciou.</strong> Stačí, ak si aktivujete konto <strong>overením e-mailu</strong> a <strong>vytvorením hesla</strong>.",
     "button_text": "Aktivovať konto"
-  }
+  },
+  "tax_footer": {
+    "register_ba": "Registrovaním sa do Bratislavského konta",
+    "register_ba_to": " do 19. apríla 2023, ",
+    "pay_tax_online": "a zároveň zaplatením dane online",
+    "pay_tax_online_to": " do 12. mája 2023 ",
+    "accept_terms": "súhlasíte s tým, že Vám nebude zaslané rozhodnutie o dani z nehnuteľností na korešpondenčnú adresu a Vy tak nemusíte ísť na poštu.",
+    "maybe_questions": "Radi by ste sa v niečom uistili alebo máte otázky? ",
+    "see_answers": "Pozrite si odpovede na tie, ktoré sú ",
+    "frequently_asked": "často kladené",
+    "contact_us_at": "Ak nenájdete odpoveď na Vašu otázku, neváhajte nás kontaktovať na adrese: ",
+    "mail_to_contact": "platbadane@bratislava.sk"
+  },
+  "payment_schedule": {
+    "title": "Splátkový kalendár",
+    "three_pieces": "Daň je splatná v troch splátkach, ",
+    "paid_at_once": "môže byť uhradená aj naraz, ",
+    "not_later": "najneskôr v lehote splatnosti prvej splátky.",
+    "pay_with_qr": "Zaplatiť môžete okrem platobných údajov aj pomocou QR kódu.",
+    "change_amount": "V bankovej aplikácii zmeňte sumu na vyššie uvedenú sumu splátky dane.",
+    "first_piece": "Prvá splátka v termíne ",
+    "first_piece_to": "do 15 dní ",
+    "second_piece": "Druhá splátka v termíne ",
+    "second_piece_to": "do 31. 8. 2022",
+    "third_piece": "Tretia splátka v termíne ",
+    "third_piece_to": "do 31. 10. 2022"
+  },
+  "iban_copied": "IBAN bol skopírovaný"
 }

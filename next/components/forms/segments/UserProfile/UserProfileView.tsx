@@ -12,7 +12,7 @@ const UserProfileView = () => {
   const { t } = useTranslation('account')
   const [isEditing, setIsEditing] = useState<boolean>(false)
   const [isAlertOpened, setIsAlertOpened] = useState(false)
-  const [alertType, setAlertType] = useState<'success' | 'error'>('success')
+  const [alertType, setAlertType] = useState<'success' | 'error' | null>(null)
   const [isEmailModalOpened, setIsEmailModalOpened] = useState<boolean>(false)
   const { userData, updateUserData, error } = useAccount()
 
@@ -46,7 +46,9 @@ const UserProfileView = () => {
     updateUserData(newUserData).then(() => {
       setIsEditing(false)
       setIsAlertOpened(true)
-      setTimeout(() => setIsAlertOpened(false), 3000)
+      setTimeout(() => {
+        setIsAlertOpened(false)
+      }, 3000)
     })
   }
 
@@ -65,6 +67,13 @@ const UserProfileView = () => {
         />
         <UserProfilePassword />
         <UserProfileConsents allConsents={allConsents} onChange={setAllConsents} />
+        <div className="bg-gray-100 md:bg-gray-0">
+          <AccountMarkdown
+            content={`<span className='text-p2'>${t('gdpr_details_link')}</span>`}
+            variant="sm"
+            className="w-full max-w-screen-lg mx-auto px-4 md:px-8 lg:px-0 pt-3 pb-5 md:pb-6 md:pt-4"
+          />
+        </div>
         <MessageModal
           show={isEmailModalOpened}
           excludeButtons

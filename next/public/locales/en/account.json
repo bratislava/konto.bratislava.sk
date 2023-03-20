@@ -71,6 +71,7 @@
   "register_title": "Register",
   "gdpr_confirmation_label": "GDPR",
   "gdpr_confirmation_required": "You must confirm",
+  "gdpr_details_link": "Bližšie informácie o spracúvaní vašich osobných údajov nájdete <a target='_blank' href='https://bratislava.sk/ochrana-osobnych-udajov'>na tomto odkaze</a>.",
   "marketing_confirmation_label": "Marketing confirmation",
   "register_submit": "Create account",
   "email_verification_title": "Verify your e-mail",

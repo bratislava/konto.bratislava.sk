@@ -32,6 +32,8 @@ const MunicipalServicesSectionHeader = ({
             setCurrentPage(1)
           }}
           dropdownDivider
+          hideScrollbar
+          alwaysOneSelected
           enumOptions={enumOptions}
         />
       </span>

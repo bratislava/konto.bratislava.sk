@@ -8,6 +8,7 @@ import {
 } from '@rjsf/utils'
 import { customizeValidator } from '@rjsf/validator-ajv8'
 import { ApiError, formDataToXml, submitEform, validateKeyword, xmlToFormData } from '@utils/api'
+import { readTextFile } from '@utils/file'
 import useSnackbar from '@utils/useSnackbar'
 import { AnySchemaObject, ErrorObject, FuncKeywordDefinition } from 'ajv'
 import { JSONSchema7, JSONSchema7Definition } from 'json-schema'
@@ -391,19 +392,6 @@ export const useFormStepper = (eformSlug: string, schema: RJSFSchema) => {
     } catch (error) {
       openSnackbarError(t('errors.xml_export'))
     }
-  }
-
-  const readTextFile = (event: ChangeEvent<HTMLInputElement>): Promise<string> => {
-    return new Promise((resolve, reject) => {
-      event.preventDefault()
-
-      const reader = new FileReader()
-      reader.addEventListener('load', () => {
-        resolve(reader.result as string)
-      })
-      reader.addEventListener('error', reject)
-      reader.readAsText(event.target.files[0])
-    })
   }
 
   const importXml = async (e: ChangeEvent<HTMLInputElement>) => {

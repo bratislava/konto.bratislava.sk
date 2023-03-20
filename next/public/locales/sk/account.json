@@ -4,7 +4,7 @@
   "email_description": "Zadajte e-mail, na ktorý si prajete dostávať od mesta informácie.",
   "email_placeholder": "E-mail",
   "email_required": "E-mail je povinný",
-  "email_format": "E-mail nie je valídny",
+  "email_format": "E-mail nie je platný",
   "postal_code_format": "PSČ musí obsahovať práve 5 číslic",
   "given_name_label": "Meno",
   "given_name_placeholder": "Meno",
@@ -26,7 +26,7 @@
   "password_confirmation_required": "Heslá sa nezhodujú",
   "phone_number_format": "Nesprávny formát - zadajte platné telefónne číslo vo formáte +421XXXXXX...",
   "login_submit": "Prihlásiť sa",
-  "login_description": "Máte už mestské konto?",
+  "login_description": "Máte už Bratislavské konto?",
   "login_link": "Prihlásiť sa",
   "register_description": "Nemáte ešte vytvorené konto?",
   "register_link": "Registrovať sa",
@@ -68,17 +68,18 @@
   "verification_code_required": "Overovací kód je povinný",
   "verification_code_format": "Overovací kód nie je správny",
   "account_continue_link": "Pokračovať do konta",
-  "register_title": "Vytvorte si mestské konto",
+  "register_title": "Vytvorte si Bratislavské konto",
   "gdpr_confirmation_label": "Súhlas so spracovaním osobných údajov",
   "gdpr_confirmation_required": "Pre vytvorenie účtu je potrebné súhlasiť so spracovaním osobných údajov.",
+  "gdpr_details_link": "Bližšie informácie o spracúvaní vašich osobných údajov nájdete <a target='_blank' href='https://bratislava.sk/ochrana-osobnych-udajov'>na tomto odkaze</a>.",
   "marketing_confirmation_label": "Mám záujem dostávať informácie aj o iných digitálnych službách mesta Bratislava",
   "register_submit": "Vytvoriť konto",
   "email_verification_title": "Overte svoj e-mail",
   "email_verification_description": "Na e-mail {email} sme vám odoslali overovací kód. Skopírujte ho do poľa nižšie.",
   "email_verification_submit": "Overiť e-mail",
   "register_success_title": "Overenie bolo úspešné a mestské konto vytvorené",
-  "register_success_description": "E-mailová adresa {email} bola overená a mestské konto vytvorené.",
-  "register_success_content": "Na to, aby ste mohli plne využívať služby mestského konta potrebujeme poznať vaše **rodné číslo** a **číslo občianskeho preukazu**. Bez týchto údajov nevieme overiť vašu identitu voči štátnym registrom, a preto nebudete schopný/á odoslať elektronicky všetky žiadosti.",
+  "register_success_description": "E-mailová adresa {email} bola overená a Bratislavské konto vytvorené.",
+  "register_success_content": "Na to, aby ste mohli plne využívať služby Bratislavského konta potrebujeme poznať vaše **rodné číslo** a **číslo občianskeho preukazu**. Bez týchto údajov nevieme overiť vašu identitu voči štátnym registrom, a preto nebudete schopný/á odoslať elektronicky všetky žiadosti.",
   "identity_verification_link": "Pokračovať",
   "identity_verification_skip": "Preskočiť a overiť neskôr",
   "identity_verification_title": "Overte svoju identitu",
@@ -110,6 +111,7 @@
   "migration_recognized_description": "Potrebujeme overiť váš e-mail {email}.",
   "migration_register_description": "Neplatili ste ešte daň digitálne?",
   "migration_new_password_title": "Zadajte overovací kód a vytvorte si heslo",
+  "migration_new_password_submit": "Overiť e-mail",
   "NotAuthorizedException": "Nesprávne prihlasovacie údaje",
   "CodeMismatchException": "E-mail {email} sa nepodarilo overiť. Skontrolujte správnosť kódu.",
   "LimitExceededException": "Skúste to znova neskôr.",
@@ -301,13 +303,90 @@
     "waiting_card_title": "Vašu daň z nehnuteľností pripravujeme.",
     "waiting_card_text": "Aj v tomto momente pracujeme na výpočte dane z nehnuteľností až pre 200.000 daňovníkov. Pripravené rozhodnutia budeme distribuovať v termíne <strong>od 20. apríla do 30. mája.</strong> Keď bude vaša daň z nehnuteľností pripravená, pošleme vám notifikačný e-mail.",
     "error_card_title": "Zatiaľ vás nevidíme v zozname daňovníkov daňovníčok.",
-    "error_card_text": "<p>Môže to tak byť, lebo:</p><ul><li>vaša nehnuteľnosť je v spoluvlastníctve,</li><li>vaše daňové priznanie ešte čaká na spracovanie,</li><li>nie ste vlastníkom či vlastníčkou nehnuteľnosti,</li><li>alebo ste nepodali priznanie k dani z nehnuteľností.</li></ul><br/><p>Viac informácií môžete nájsť v <a href='/account/i-have-a-problem'>často kladených otázkach</a>.</p>"
+    "error_card_content": {
+      "title": "<p>Môže to tak byť, lebo:</p>",
+      "list": {
+        "verification": "<li>ste neoverili svoju identitu cez rodné číslo a číslo občianskeho preukazu (<a href='/register'>Overiť identitu</a>),</li>",
+        "other": "<li>vaša nehnuteľnosť je v spoluvlastníctve,</li><li>vaše daňové priznanie ešte čaká na spracovanie,</li><li>nie ste vlastníkom či vlastníčkou nehnuteľnosti,</li><li>alebo ste nepodali priznanie k dani z nehnuteľností.</li>"
+      },
+      "help_text": "<p>Viac informácií môžete nájsť v <a href='/i-have-a-problem'>často kladených otázkach</a>.</p>"
+    }
   },
   "account_section_help": {
     "navigation": "Mám problém",
     "banner_title": "Nenašli ste odpoveď na vašu otázku?",
     "banner_content": "Kontaktujte nás a radi vás nasmerujeme na správnu odpoveď.",
-    "banner_button_text": "Napísať správu"
+    "banner_button_text": "Napísať správu",
+    "faq": {
+      "1": {
+        "question": "Prečo vzniká Bratislavské konto?",
+        "answer": "Projekt Bratislavské konto vzniká na základe testovania potrieb obyvateľov a obyvateliek mesta Bratislava, ktorí sa jasne vyjadrili, že by prijali digitalizáciu a transformáciu mestských služieb. Portál, ktorý bol vytvorený pred viac ako 4 rokmi a mal slúžiť na podávanie elektronických žiadostí, nenaplnil stanovené očakávania. Dôkazom toho je, že ho v súčasnosti používa menej ako 8% obyvateľstva v Bratislave. Okrem toho vnímame, že si Bratislavčania a Bratislavčanky želajú mať jedno miesto, na ktorom nájdu všetky služby, ktoré mesto poskytuje.<br /><br />Nové Bratislavské konto má za cieľ poskytovať elektronické služby na úrovni 21. storočia. Ide o miesto, kde budú postupne pribúdať všetky služby a obyvatelia a obyvateľky mesta Bratislava tak budú môcť s úradom komunikovať digitálne, jednoducho a pohodlne, kdekoľvek sa budú nachádzať."
+      },
+      "2": {
+        "question": "Prečo si založiť konto?",
+        "answer": "Bratislavské konto je rýchly, jednoduchý a efektívny nástroj ako komunikovať s magistrátom. Založte si Bratislavské konto, aby ste mohli podávať žiadosti digitálne, nemuseli chodiť na úrad fyzicky, videli aktuálny stav žiadostí cez nástroj sledovania podania a mali prehľad o všetkých povinnostiach, ktoré voči mestu máte (napr. platba daní).<br /><br /><a href='/'>Prečítajte si konkrétne výhody Bratislavského konta</a>"
+      },
+      "3": {
+        "question": "Aké služby nájdem v konte?",
+        "answer": "V Bratislavskom konte sa momentálne nachádza najmä služba digitálnej platby dane z nehnuteľností. V máji 2023 pribudú pilotné transformované služby mesta Bratislava - žiadosť o záväzné stanovisko k investičnej činnosti a žiadosť o dotáciu na kontajnerové stanovište. Aby sme šetrili váš čas strávený vyhľadávaním na internete, už teraz v konte nájdete odkazy na služby, ktoré poskytuje mesto a mestské organizácie cez iné portály a mohli by sa vám zísť.<br /><br />Postupne máme za cieľ pridať do konta všetky služby, ktoré mesto obyvateľom a obyvateľkám poskytuje. Ide však o komplexný proces, pretože služby, ktoré chceme v konte poskytovať z papierov len nekopírujeme, ale pozeráme sa na ne v celom ich kontexte z pohľadu žiadateľov a žiadateliek, ale aj z pohľadu nášho úradu. Chceme, aby boli žiadosti jednoduché, rýchle, efektívne a pýtali sme len tie údaje, ktoré naozaj potrebujeme. Všetko, čo ste doteraz s mestom riešili papierovo a fyzicky, tak budete môcť postupom času vybaviť digitálne kedykoľvek a kdekoľvek budete potrebovať."
+      },
+      "4": {
+        "question": "Aké služby v konte pribudnú najbližšie?",
+        "answer": "Najbližšie pribudne do Bratislavského konta služba digitálnej platby dane z nehnuteľností. Pozrite si celú časovú os služieb, ktoré pribudnú v konte v blízkej dobe."
+      },
+      "5": {
+        "question": "Nejde mi registrovať sa, čo mám robiť?",
+        "answer": "V prípade, že máte problém s registráciou do Bratislavského konta, kontaktujte nás, prosíme, na info@bratislava.sk."
+      },
+      "6": {
+        "question": "Nemám trvalý pobyt v Bratislave, viem napriek tomu využívať konto?",
+        "answer": "Áno, Bratislavské konto si môžete založiť aj v prípade, že nemáte v Bratislave trvalý pobyt. Relevantné služby sú dostupné aj obyvateľom a obyvateľkám s iným trvalým pobytom, než v Bratislave."
+      },
+      "7": {
+        "question": "Čo sú to elektronické služby?",
+        "answer": "Elektronické služby sú zdigitalizované služby a žiadosti, ktoré doteraz obyvatelia a obyvateľky žiadali najmä v papierovej forme. V Bratislavskom konte nájdete služby, ktoré poskytuje mesto Bratislava v elektronickej forme a budete môcť o jednotlivé služby žiadať online.<br /><br />Podľa zákona ide o elektronickú formu komunikácie s povinnými osobami pri vybavovaní podaní, oznámení, prístupe k informáciám a ich poskytovaní, alebo účasti verejnosti na správe verejných vecí."
+      },
+      "8": {
+        "question": "Prečo v konte nie sú služby mestských častí?",
+        "answer": "Našim cieľom je, aby boli raz v konte všetky služby, ktoré poskytuje magistrát, ale tiež úrady mestských častí. Ide však o zdĺhavý proces, ktorý si vyžaduje technickú pripravenosť všetkých zúčastnených strán. Na tom, aby v konte postupne pribúdali aj služby poskytované bratislavskými mestskými časťami intenzívne pracujeme a veríme, že vďaka vzájomnej spolupráci budú prvé služby mestských častí v Bratislavskom konte už čoskoro."
+      },
+      "9": {
+        "question": "Koľko stojí Bratislavské konto?",
+        "answer": "Vytvorenie a používanie Bratislavského konta je BEZPLATNÉ. Ide o projekt, ktorý vznikol na to, aby uľahčil život a ušetril čas ľuďom žijúcim v Bratislave."
+      },
+      "10": {
+        "question": "Budú služby spoplatnené?",
+        "answer": "Využívanie samotného Bratislavského konta je BEZPLATNÉ. V prípade, že však ide o službu, ktorá si vyžaduje zaplatenie dane či poplatku, bude potrebné ho uhradiť rovnakou sumou ako je tomu pri papierových žiadostiach (napr. Daň z nehnuteľnosti)."
+      },
+      "11": {
+        "question": "Prečo nemám v konte moju daň z nehnuteľností?",
+        "answer": "Pravdepodobne vás zatiaľ nevidíme v zozname daňovníkov a daňovníčok. Môže to tak byť, lebo:<ul><li>neoverili ste si totožnosť cez rodné číslo a číslo občianskeho preukazu,</li><li>vaša nehnuteľnosť je v spoluvlastníctve,</li><li>vaše daňové priznanie ešte čaká na spracovanie,</li><li>nie ste vlastníkom či vlastníčkou nehnuteľnosti,</li><li>alebo ste nepodali priznanie k dani z nehnuteľností.</li></ul><p>Ak sa vás tieto prípady netýkajú, dajte nám o tom vedieť na platbadane@bratislava.sk a my sa pokúsime problém vyriešiť.</p>"
+      },
+      "12": {
+        "question": "Čo je to digitálna platba dane z nehnuteľností?",
+        "answer": "Digitálna platba dane je proaktívna služba mesta Bratislava, ktorej cieľom je, aby ste daň z nehnuteľností mohli zaplatiť digitálne, rýchlo, pohodlne a kdekoľvek budete. Pilotne bola služba spustená v roku 2021. Službu sa snažíme neustále vyvíjať a vylepšovať."
+      },
+      "13": {
+        "question": "Kto je tvorcom Bratislavského konta?",
+        "answer": "Bratislavské konto vzniklo na Oddelení inovácií a digitálnych služieb. Ide o interný tím v rámci Hlavného mesta SR Bratislavy, o ktorom si môžete viac prečítať na <a target='_blank' href='https://inovacie.bratislava.sk/'>inovacie.bratislava.sk</a>."
+      },
+      "14": {
+        "question": "Čo sú Inovácie mesta Bratislava?",
+        "answer": "Oddelenie inovácií a digitálnych služieb je interný tím v rámci Hlavného mesta SR Bratislavy. Cieľom je priniesť nové, ako aj zlepšiť poskytované služby mesta a zjednodušiť každodenný život ľudí v Bratislave, ako aj fungovanie Magistrátu vďaka inováciám, technológiám a novým postupom. Viac informácií o Oddelení inovácií a digitálnych služieb, projektoch, tíme a možnostiach ako sa zapojiť nájdete na stránke <a target='_blank' href='https://inovacie.bratislava.sk/'>inovacie.bratislava.sk</a>."
+      },
+      "15": {
+        "question": "Zmenilo sa mi číslo OP, ako vám dám vedieť?",
+        "answer": "Zmenu čísla občianskeho preukazu nám nemusíte oznamovať. Overenie vašej totožnosti, ktoré prebehlo v konte nie je potrebné po vydaní nového občianskeho preukazu opakovať."
+      },
+      "16": {
+        "question": "Ako si viem konto deaktivovať?",
+        "answer": "V prípade, že si chcete konto deaktivovať, kontaktujte nás na info@bratislava.sk."
+      },
+      "17": {
+        "question": "Ako si zmením e-mailovú adresu, ktorou sa do konta prihlasujem?",
+        "answer": "V prípade, že chcete zmeniť e-mailovú adresu, ktorou sa do konta prihlasujete a na ktorú vám zasielame informácie týkajúce sa vášho konta, kontaktujte nás na info@bratislava.sk."
+      }
+    }
   },
   "menu_contacts_link": "Kontakty",
   "menu_account_link": "Bratislavské konto",
@@ -367,7 +446,8 @@
     "description": "Prajete si, aby sme s vami v ojedinelých prípadoch komunikovali aj prostredníctvom SMS? Zanechajte nám vaše telefónne číslo a my vám pripomenieme, napríklad, blížiaci sa termín splatnosti dane aj cez SMS.\n\nTelefónne číslo môžete kedykoľvek doplniť do profilu.\n\n",
     "phoneNumber_not_required": "*Neposkytnutie telefónneho čísla nemá vplyv na využívanie služieb v Bratislavskom konte."
   },
-  "pay_tax": "Zaplatiť",
+  "pay_tax": "Zaplatiť daň",
+  "to_pay": "Zaplatiť",
   "back_to_list": "Naspäť na zoznam",
   "city": "Mesto",
   "tax_created": "Vytvorená",
@@ -382,7 +462,6 @@
   "contact": "Kontakt",
   "tax_liability_breakdown": "Rozpis daňovej povinnosti",
   "land_tax": "Daň z pozemkov",
-  "construction_tax": "Daň zo stavby",
   "apartments_tax": "Daň z bytov",
   "payment_data": "Platobné údaje",
   "constant_symbol": "Konštantný symbol",
@@ -439,11 +518,41 @@
     "csob": "ČSOB, a.s.",
     "csob_iban": "SK31 7500 0000 0000 2574 7653"
   },
-  "tax_payable_within": "Daň je splatná v termíne do 15 dní",
+  "tax_payable_within": "Daň je splatná v termíne do 15 dní ",
   "validity_decision": "odo dňa právoplatnosti rozhodnutia.",
+  "validity_decision_with_schedule": "odo dňa právoplatnosti rozhodnutia ",
+  "according_schedule": "podľa splátkového kalendára.",
+  "tax_determined": "Splátky dane určené správcom dane v rozhodnutí",
   "account_activator": {
     "title": "Platili ste už daň z nehnuteľností digitálne?",
     "content": "Ak ste v minulosti platili daň z nehnuteľností digitálne, tento rok ju nájdete v novom Bratislavskom konte. <strong>Nepotrebujete prejsť celou registráciou.</strong> Stačí, ak si aktivujete konto <strong>overením e-mailu</strong> a <strong>vytvorením hesla</strong>.",
     "button_text": "Aktivovať konto"
-  }
+  },
+  "tax_footer": {
+    "register_ba": "Registrovaním sa do Bratislavského konta",
+    "register_ba_to": " do 19. apríla 2023, ",
+    "pay_tax_online": "a zároveň zaplatením dane online",
+    "pay_tax_online_to": " do 12. mája 2023 ",
+    "accept_terms": "súhlasíte s tým, že Vám nebude zaslané rozhodnutie o dani z nehnuteľností na korešpondenčnú adresu a Vy tak nemusíte ísť na poštu.",
+    "maybe_questions": "Radi by ste sa v niečom uistili alebo máte otázky? ",
+    "see_answers": "Pozrite si odpovede na tie, ktoré sú ",
+    "frequently_asked": "často kladené",
+    "contact_us_at": "Ak nenájdete odpoveď na Vašu otázku, neváhajte nás kontaktovať na adrese: ",
+    "mail_to_contact": "platbadane@bratislava.sk"
+  },
+  "payment_schedule": {
+    "title": "Splátkový kalendár",
+    "three_pieces": "Daň je splatná v troch splátkach, ",
+    "paid_at_once": "môže byť uhradená aj naraz, ",
+    "not_later": "najneskôr v lehote splatnosti prvej splátky.",
+    "pay_with_qr": "Zaplatiť môžete okrem platobných údajov aj pomocou QR kódu.",
+    "change_amount": "V bankovej aplikácii zmeňte sumu na vyššie uvedenú sumu splátky dane.",
+    "first_piece": "Prvá splátka v termíne ",
+    "first_piece_to": "do 15 dní ",
+    "second_piece": "Druhá splátka v termíne ",
+    "second_piece_to": "do 31. 8. 2022",
+    "third_piece": "Tretia splátka v termíne ",
+    "third_piece_to": "do 31. 10. 2022"
+  },
+  "iban_copied": "IBAN bol skopírovaný"
 }

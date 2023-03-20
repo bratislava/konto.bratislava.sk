@@ -7,7 +7,8 @@ import {
   StrictRJSFSchema,
 } from '@rjsf/utils'
 import { customizeValidator } from '@rjsf/validator-ajv8'
-import { ApiError, submitEform, validateKeyword } from '@utils/api'
+import { ApiError, formDataToXml, submitEform, validateKeyword } from '@utils/api'
+import useSnackbar from '@utils/useSnackbar'
 import { AnySchemaObject, ErrorObject, FuncKeywordDefinition } from 'ajv'
 import { JSONSchema7, JSONSchema7Definition } from 'json-schema'
 import { get, merge } from 'lodash'
@@ -90,7 +91,20 @@ export const ajvKeywords: KeywordDefinition[] = [
   {
     keyword: 'example',
   },
+  {
+    keyword: 'timeFromTo',
+  },
+  {
+    keyword: 'dateFromTo',
+  },
 ]
+
+export const ajvFormats = {
+  zip: /\b\d{5}\b/,
+  time: /^[0-2]\d:[0-5]\d$/,
+  'data-url': () => true,
+  ciselnik: () => true,
+}
 
 const validateAsyncProperties = async (
   schema: RJSFSchema,
@@ -321,7 +335,7 @@ export const useFormStepper = (eformSlug: string, schema: RJSFSchema) => {
   const previous = () => setStepIndex(stepIndex - 1)
   const next = () => setStepIndex(stepIndex + 1)
   const jumpToStep = () => {
-    if (nextStepIndex) {
+    if (nextStepIndex != null) {
       setStepIndex(nextStepIndex)
       setNextStepIndex(null)
     }
@@ -349,7 +363,7 @@ export const useFormStepper = (eformSlug: string, schema: RJSFSchema) => {
   // this is needed for skipping multiple steps through StepperView
   // TODO: could be reduced by wrapping nextStepIndex and isSkipEnabled to 1 object
   useEffect(() => {
-    if (nextStepIndex) {
+    if (nextStepIndex != null) {
       setIsSkipEnabled(true)
     }
   }, [nextStepIndex])
@@ -361,6 +375,22 @@ export const useFormStepper = (eformSlug: string, schema: RJSFSchema) => {
   const setStepFormData = (stepFormData: RJSFSchema) => {
     // transformNullToUndefined(stepFormData)
     setFormData({ ...formData, ...stepFormData })
+  }
+
+  const [openSnackbarError] = useSnackbar({ variant: 'error' })
+  const { t } = useTranslation('forms')
+
+  const exportXml = async () => {
+    try {
+      const xml = await formDataToXml(eformSlug, formData)
+      const link = document.createElement('a')
+      link.href = URL.createObjectURL(xml)
+      link.download = `${eformSlug}_output.xml`
+      link.click()
+      URL.revokeObjectURL(link.href)
+    } catch (error) {
+      openSnackbarError(t('errors.xml_export'))
+    }
   }
 
   const handleOnSubmit = async (newFormData: RJSFSchema) => {
@@ -417,6 +447,7 @@ export const useFormStepper = (eformSlug: string, schema: RJSFSchema) => {
     keywords: ajvKeywords,
     customFormats,
     validator,
+    exportXml,
   }
 }
 

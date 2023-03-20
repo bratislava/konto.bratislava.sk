@@ -57,7 +57,7 @@ const SingleCheckBox = ({
   )
 
   const containerStyle = cx(
-    'group flex flex-row items-center justify-center p-0 gap-3',
+    'group flex flex-row items-start justify-center p-0 gap-3',
     rest.className,
     {
       'py-3 px-4 bg-white border-2 border-solid rounded-lg': variant === 'boxed',

@@ -60,6 +60,7 @@ const IntroSection = () => {
             imagePath={PlatbaDaneImg}
             onPressPrimary={() => router.push('/taxes-and-fees')}
           />
+          <div className="my-6 lg:my-16 border-b-2 border-gray-200" />
           <div className="w-full flex items-center justify-between mb-8 lg:px-0">
             <h2 className="text-h2">{t('account_section_services.navigation')}</h2>
             <Button

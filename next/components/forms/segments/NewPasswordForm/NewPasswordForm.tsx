@@ -152,7 +152,7 @@ const NewPasswordForm = ({ onSubmit, error, onResend, lastEmail, fromMigration }
       <Button
         className="min-w-full"
         type="submit"
-        text={t('new_password_submit')}
+        text={fromMigration ? t('migration_new_password_submit') : t('new_password_submit')}
         variant="category"
         disabled={isSubmitting}
       />

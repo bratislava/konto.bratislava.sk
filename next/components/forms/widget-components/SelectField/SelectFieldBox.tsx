@@ -14,6 +14,7 @@ interface SelectFieldBoxProps {
   onRemoveAll: () => void
   onFilterChange: (value: string) => void
   onDeleteLastValue: () => void
+  onClick?: (event: React.MouseEvent) => void
 }
 
 const SelectFieldBoxComponent: ForwardRefRenderFunction<HTMLDivElement, SelectFieldBoxProps> = (
@@ -31,6 +32,7 @@ const SelectFieldBoxComponent: ForwardRefRenderFunction<HTMLDivElement, SelectFi
     onRemoveAll,
     onFilterChange,
     onDeleteLastValue,
+    onClick,
   } = props
 
   const { t } = useTranslation('forms')
@@ -59,27 +61,44 @@ const SelectFieldBoxComponent: ForwardRefRenderFunction<HTMLDivElement, SelectFi
     }
   }
 
+  const MAX_TEXT_SIZE = 17
+
+  const getOptionTitle = (selectOption: SelectOption) => {
+    return selectOption.title ?? String(selectOption.const)
+  }
+
   // RENDER
   return (
     <section
       ref={ref}
       className="flex items-center w-full flex-row flex-wrap gap-2 py-2 sm:py-2.5 sm:pl-4 pl-3"
       data-value={value}
+      onClick={(event: React.MouseEvent) => {
+        if (onClick) onClick(event)
+      }}
     >
       {
         /* TAGS */
         value && value.length > 0 ? (
           value.length < 3 ? (
-            (multiple ? value : value.slice(0, 1)).map((option: SelectOption, key: number) => (
-              <Tag
-                key={key}
-                text={option.title ?? String(option.const)}
-                size="small"
-                onRemove={() => onRemove(key)}
-                removable
-                shorthand
-              />
-            ))
+            multiple ? (
+              value.map((option: SelectOption, key: number) => (
+                <Tag
+                  key={key}
+                  text={getOptionTitle(option)}
+                  size="small"
+                  onRemove={() => onRemove(key)}
+                  removable
+                  shorthand
+                />
+              ))
+            ) : (
+              <p>
+                {`${getOptionTitle(value[0]).slice(0, MAX_TEXT_SIZE)}${
+                  getOptionTitle(value[0]).length > MAX_TEXT_SIZE ? '...' : ''
+                }`}
+              </p>
+            )
           ) : (
             <Tag text={multipleOptionsTagText} size="small" onRemove={onRemoveAll} removable />
           )

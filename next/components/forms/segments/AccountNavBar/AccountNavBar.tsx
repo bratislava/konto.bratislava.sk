@@ -3,9 +3,6 @@ import VolumeIcon from '@assets/images/account/volume.svg'
 import Hamburger from '@assets/images/ba-hamburger.svg'
 import HamburgerClose from '@assets/images/hamburger-close.svg'
 import SearchIcon from '@assets/images/search-icon.svg'
-import { useUIContext } from '@bratislava/common-frontend-ui-context'
-import Brand from '@bratislava/ui-bratislava/Brand/Brand'
-import Link from '@bratislava/ui-bratislava/Link/Link'
 import { ROUTES } from '@utils/constants'
 import useAccount, { UserData } from '@utils/useAccount'
 import { getLanguageKey } from '@utils/utils'
@@ -18,6 +15,9 @@ import { useRouter } from 'next/router'
 import { useTranslation } from 'next-i18next'
 import { ReactNode, useState } from 'react'
 import { Item } from 'react-stately'
+
+import Brand from '../../simple-components/Brand'
+import Link from './NavBarLink'
 
 interface IProps extends LanguageSelectProps {
   className?: string
@@ -63,7 +63,6 @@ export const AccountNavBar = ({
 
   const languageKey = getLanguageKey(languageSelectProps.currentLanguage)
   const anotherLanguage = languageSelectProps.languages?.find((l) => l.key !== languageKey)
-  const { Link: UILink } = useUIContext()
 
   const { t } = useTranslation(['common', 'account'])
   const router = useRouter()
@@ -84,24 +83,10 @@ export const AccountNavBar = ({
     if (selectedMenuItem) onRouteChange(selectedMenuItem)
   }
 
-  /**
-   * Matches `/account` URL with given param sectionItem link
-   * @match
-   * `/account`
-   * @param {MenuItem} sectionItem - Menu item object.
-   */
-  const isAccountPage = (sectionItem: MenuItem) =>
-    router.route.endsWith('/account') && router.route.includes(sectionItem.link)
-
-  /**
-   * Matches parent URL with children url (inner pages)
-   * @example
-   * `account/taxes-and-fees` and `account/taxes-and-fees/[id]` where `taxes-and-fees` is parent page
-   * It also excludes home page `/account` if we are on `account/taxes-and-fees`
-   * @param {MenuItem} sectionItem - Menu item object.
-   */
   const isActive = (sectionItem: MenuItem) =>
-    sectionItem?.link.includes(router.route.split('/')[2]) || isAccountPage(sectionItem)
+    sectionItem.link === '/'
+      ? router.pathname === '/'
+      : router.pathname.startsWith(sectionItem.link)
 
   return (
     <>
@@ -166,10 +151,6 @@ export const AccountNavBar = ({
                     <SearchIcon />
                   </Link>
 
-                  {/* This UILink set here just to prefetch EN version of page, this link is hidden */}
-                  <UILink href="/en" className="hidden">
-                    hidden
-                  </UILink>
                   <Divider />
                   {anotherLanguage && (
                     <Button

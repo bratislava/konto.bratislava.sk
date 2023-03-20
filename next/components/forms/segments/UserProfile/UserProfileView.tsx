@@ -65,6 +65,13 @@ const UserProfileView = () => {
         />
         <UserProfilePassword />
         <UserProfileConsents allConsents={allConsents} onChange={setAllConsents} />
+        <div className="bg-gray-100 md:bg-gray-0">
+          <AccountMarkdown
+            content={`<span className='text-p2'>${t('gdpr_details_link')}</span>`}
+            variant="sm"
+            className="w-full max-w-screen-lg mx-auto px-4 md:px-8 lg:px-0 pt-3 pb-5 md:pb-6 md:pt-4"
+          />
+        </div>
         <MessageModal
           show={isEmailModalOpened}
           excludeButtons

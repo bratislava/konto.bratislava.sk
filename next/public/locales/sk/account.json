@@ -516,8 +516,11 @@
     "csob": "ČSOB, a.s.",
     "csob_iban": "SK31 7500 0000 0000 2574 7653"
   },
-  "tax_payable_within": "Daň je splatná v termíne do 15 dní",
+  "tax_payable_within": "Daň je splatná v termíne do 15 dní ",
   "validity_decision": "odo dňa právoplatnosti rozhodnutia.",
+  "validity_decision_with_schedule": "odo dňa právoplatnosti rozhodnutia ",
+  "according_schedule": "podľa splátkového kalendára.",
+  "tax_determined": "Splátky dane určené správcom dane v rozhodnutí",
   "account_activator": {
     "title": "Platili ste už daň z nehnuteľností digitálne?",
     "content": "Ak ste v minulosti platili daň z nehnuteľností digitálne, tento rok ju nájdete v novom Bratislavskom konte. <strong>Nepotrebujete prejsť celou registráciou.</strong> Stačí, ak si aktivujete konto <strong>overením e-mailu</strong> a <strong>vytvorením hesla</strong>.",
@@ -527,5 +530,20 @@
     "first": "<div className=\"lg:text-20 inline text-16 lg:px-0 px-0 max-w-screen-lg m-auto md:whitespace-normal whitespace-pre-line\">Registrovaním sa do Bratislavského konta <div className=\"font-semibold inline\">do 19. apríla 2023,</div> a zároveň zaplatením dane online <div className=\"font-semibold inline\">do 12. mája 2023</div> súhlasíte s tým, že Vám nebude zaslané rozhodnutie o dani z nehnuteľností na korešpondenčnú adresu a Vy tak nemusíte ísť na poštu. </div>",
     "second": "<div className=\"lg:text-20 text-16 lg:px-0 px-0 md:whitespace-normal whitespace-pre-line mt-2\"><div className=\"inline\">Radi by ste sa v niečom uistili alebo máte otázky?</div> <div className=\"inline\">Pozrite si odpovede na tie, ktoré sú</div> <a href=\"https://bratislava-next.staging.bratislava.sk/account/i-have-a-problem\" className=\"underline underline-offset-4\">často kladené</a>. <div>Ak nenájdete odpoveď na Vašu otázku, neváhajte nás kontaktovať na adrese: <a href='mailto:platbadane@bratislava.sk' className=\"lg:text-20-medium text-16-medium underline-offset-4 underline\">platbadane@bratislava.sk</a></div></div>",
     "tax_wait": "<div className=\"lg:text-20 text-p3 md:px-16 lg:px-0 px-4 max-w-screen-lg m-auto md:whitespace-normal whitespace-pre-line\">Registrovaním sa do Bratislavského konta <div className=\"font-semibold inline\">do 19. apríla 2023,</div> a zároveň zaplatením dane online <div className=\"font-semibold inline\">do 12. mája 2023</div> súhlasíte s tým, že Vám nebude zaslané rozhodnutie o dani z nehnuteľností na korešpondenčnú adresu a Vy tak nemusíte ísť na poštu.</div>"
-  }
+  },
+  "payment_schedule": {
+    "title": "Splátkový kalendár",
+    "three_pieces": "Daň je splatná v troch splátkach, ",
+    "paid_at_once": "môže byť uhradená aj naraz, ",
+    "not_later": "najneskôr v lehote splatnosti prvej splátky.",
+    "pay_with_qr": "Zaplatiť môžete okrem platobných údajov aj pomocou QR kódu.",
+    "change_amount": "V bankovej aplikácii zmeňte sumu na vyššie uvedenú sumu splátky dane.",
+    "first_piece": "Prvá splátka v termíne ",
+    "first_piece_to": "do 15 dní ",
+    "second_piece": "Druhá splátka v termíne ",
+    "second_piece_to": "do 31. 8. 2022",
+    "third_piece": "Tretia splátka v termíne ",
+    "third_piece_to": "do 31. 10. 2022"
+  },
+  "iban_copied": "IBAN bol skopírovaný"
 }

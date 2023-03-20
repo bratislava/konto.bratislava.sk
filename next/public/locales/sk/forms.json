@@ -3,7 +3,8 @@
   "success": "Úspešne odoslané",
   "errors": {
     "API_ERROR": "Pri odosielaní formulára nastala chyba. Skúste to prosím znova.",
-    "unknown": "Nastala neznáma chyba. Skúste to prosím znova."
+    "unknown": "Nastala neznáma chyba. Skúste to prosím znova.",
+    "xml_export": "Export zlyhal. Skúste to prosím znova."
   },
   "selectAll": "Vybrať všetko",
   "deselectAll": "Odobrať všetko",

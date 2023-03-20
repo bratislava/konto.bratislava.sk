@@ -7,7 +7,6 @@ import React, {
   ForwardRefRenderFunction,
   RefObject,
   useEffect,
-  useId,
   useRef,
   useState,
 } from 'react'
@@ -39,6 +38,7 @@ interface SelectFieldProps {
   required?: boolean
   explicitOptional?: ExplicitOptionalType
   disabled?: boolean
+  hideScrollbar?: boolean
   className?: string
   onChange: (values: SelectOption[]) => void
 }
@@ -62,6 +62,7 @@ const SelectFieldComponent: ForwardRefRenderFunction<HTMLDivElement, SelectField
     required,
     explicitOptional,
     disabled,
+    hideScrollbar,
     className,
     onChange,
   } = props
@@ -265,6 +266,7 @@ const SelectFieldComponent: ForwardRefRenderFunction<HTMLDivElement, SelectField
             isRowBold={isRowBold}
             type={type}
             divider={dropdownDivider}
+            hideScrollbar={hideScrollbar}
             selectAllOption={selectAllOption}
             absolute
             onChooseOne={handleOnChooseOne}

@@ -8,6 +8,7 @@ import {
 } from '@rjsf/utils'
 import { customizeValidator } from '@rjsf/validator-ajv8'
 import { ApiError, formDataToXml, submitEform, validateKeyword } from '@utils/api'
+import useSnackbar from '@utils/useSnackbar'
 import { AnySchemaObject, ErrorObject, FuncKeywordDefinition } from 'ajv'
 import { JSONSchema7, JSONSchema7Definition } from 'json-schema'
 import { get, merge } from 'lodash'
@@ -376,6 +377,9 @@ export const useFormStepper = (eformSlug: string, schema: RJSFSchema) => {
     setFormData({ ...formData, ...stepFormData })
   }
 
+  const [openSnackbarError] = useSnackbar({ variant: 'error' })
+  const { t } = useTranslation('forms')
+
   const exportXml = async () => {
     try {
       const xml = await formDataToXml(eformSlug, formData)
@@ -385,7 +389,7 @@ export const useFormStepper = (eformSlug: string, schema: RJSFSchema) => {
       link.click()
       URL.revokeObjectURL(link.href)
     } catch (error) {
-      //todo show error msg
+      openSnackbarError(t('errors.xml_export'))
     }
   }
 

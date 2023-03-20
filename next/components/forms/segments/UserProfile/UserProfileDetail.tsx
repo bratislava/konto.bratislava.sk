@@ -2,16 +2,15 @@ import { UserData } from '@utils/useAccount'
 import cx from 'classnames'
 import Alert from 'components/forms/Alert'
 import { useTranslation } from 'next-i18next'
-import { MutableRefObject, useId, useRef } from 'react'
+import { useEffect, useId } from 'react'
+import { useSnackbar } from 'react-simple-snackbar'
+
 import UserProfileDetailEdit from './UserProfileDetailEdit'
 import UserProfileDetailsButtons from './UserProfileDetailsButtons'
 import UserProfileDetailView from './UserProfileDetailView'
 import UserProfilePhoto from './UserProfilePhoto'
 import UserProfileSection from './UserProfileSection'
 import UserProfileSectionHeader from './UserProfileSectionHeader'
-import { useSnackbar } from 'react-simple-snackbar'
-
-import Alert from '../../forms/info-components/Alert'
 
 interface UserProfileDetailProps {
   userData?: UserData | null

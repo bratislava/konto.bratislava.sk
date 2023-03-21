@@ -1,9 +1,9 @@
-import FileDownload from '@assets/images/account/file_download.svg'
-import PaymentIcon from '@assets/images/account/payment-icon.svg'
 import ChevronLeft from '@assets/images/chevron-left-2.svg'
 import ExclamationIcon from '@assets/images/forms/exclamation-icon.svg'
 import SuccessIcon from '@assets/images/forms/success.svg'
 import TimeIcon from '@assets/images/forms/warning-time-icon.svg'
+import PaymentIcon from '@assets/images/new-icons/ui/payment.svg'
+import FileDownload from '@assets/images/new-icons/ui/upload.svg'
 import cx from 'classnames'
 import { useRouter } from 'next/router'
 import { useTranslation } from 'next-i18next'
@@ -39,7 +39,7 @@ const statusHandler = (status: 'negative' | 'warning' | 'success'): ReactNode =>
     case 'warning':
       return statusNode(<TimeIcon />, 'Čiastočne uhradená')
     case 'success':
-      return statusNode(<SuccessIcon width={18} height={24} viewBox="0 0 24 18" />, 'Uhradená')
+      return statusNode(<SuccessIcon />, 'Uhradená')
 
     default:
       return null
@@ -70,14 +70,14 @@ const TaxFeeSectionHeader = (props: AccountSectionHeaderBase) => {
               <div className="text-h1 grow">Daň z nehnuteľností za rok 2023</div>
 
               <Button
-                startIcon={<PaymentIcon className="w-5 h-5" />}
+                startIcon={<PaymentIcon fill="white" className="w-6 h-6" />}
                 variant="black"
                 text={t('pay_tax')}
                 size="sm"
                 className="md:block hidden"
               />
               <Button
-                startIcon={<FileDownload />}
+                startIcon={<FileDownload className="w-5 h-5" />}
                 variant="black-outline"
                 text={t('download_pdf')}
                 size="sm"

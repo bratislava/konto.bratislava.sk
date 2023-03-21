@@ -265,3 +265,13 @@ export const updateForm = (token: string, id: string, data: UpdateFormDto) => {
     body: JSON.stringify(data),
   })
 }
+
+export const sendForm = (token: string, id: string) => {
+  return fetchJsonApi(`${process.env.NEXT_PUBLIC_FORMS_URL}/nases/send-form/${id}`, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      Authorization: `Bearer ${token}`,
+    },
+  })
+}

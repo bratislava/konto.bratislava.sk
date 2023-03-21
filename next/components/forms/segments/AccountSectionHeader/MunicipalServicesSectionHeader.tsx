@@ -2,7 +2,7 @@ import { useWindowSize } from '@utils/useWindowSize'
 import SelectField, {
   SelectOption,
 } from 'components/forms/widget-components/SelectField/SelectField'
-import { Dispatch, SetStateAction, useState } from 'react'
+import { Dispatch, SetStateAction } from 'react'
 
 type MunicipalServicesSectionHeaderBase = {
   title: string

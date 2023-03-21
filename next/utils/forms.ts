@@ -1,3 +1,4 @@
+import { EFormValue } from '@backend/forms'
 import Form from '@rjsf/core'
 import {
   ErrorSchema,
@@ -266,7 +267,8 @@ const getStepData = (schema: RJSFSchema): StepData[] => {
 // TODO prevent unmounting
 // TODO persist state for session
 // TODO figure out if we need to step over uiSchemas, or having a single one is enough (seems like it is for now)
-export const useFormStepper = (eformSlug: string, schema: RJSFSchema) => {
+export const useFormStepper = (eformSlug: string, eform: EFormValue) => {
+  const { schema } = eform
   // since Form can be undefined, useRef<Form> is understood as an overload of useRef returning MutableRef, which does not match expected Ref type be rjsf
   // also, our code expects directly RefObject otherwise it will complain of no `.current`
   // this is probably a bug in their typing therefore the cast
@@ -304,7 +306,14 @@ export const useFormStepper = (eformSlug: string, schema: RJSFSchema) => {
           setFormData(formDataJson)
         }
       } else {
-        const { id }: FormDto = await createForm(token, { pospID: eformSlug })
+        const { id }: FormDto = await createForm(token, {
+          pospID: eform.pospID,
+          pospVersion: eform.pospVersion,
+          messageSubject: eform.subject || eform.pospID,
+          isSigned: false,
+          formName: eform.formName || eform.pospID,
+          fromDescription: eform.formDescription || eform.pospID,
+        })
         setFormId(id)
       }
     } catch (error) {

@@ -16,4 +16,6 @@ export default {
   htmlStylesheet,
   data,
   pdfStylesheet,
+  pospID: 'kontajneroveStojiska',
+  pospVersion: '0.1',
 }

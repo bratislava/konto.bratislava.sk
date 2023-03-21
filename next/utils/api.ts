@@ -219,12 +219,12 @@ export const getForms = (token: string) => {
 }
 
 type CreateFormDto = {
-  pospID?: string
-  postVersion?: string
-  messageSubject?: string
-  isSigned?: boolean
-  formName?: string
-  fromDescription?: string
+  pospID: string
+  pospVersion: string
+  messageSubject: string
+  isSigned: boolean
+  formName: string
+  fromDescription: string
 }
 
 type UpdateFormDto = {

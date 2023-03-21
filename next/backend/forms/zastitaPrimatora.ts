@@ -16,4 +16,6 @@ export default {
   htmlStylesheet,
   data,
   pdfStylesheet,
+  pospID: 'zastitaPrimatora',
+  pospVersion: '0.1',
 }

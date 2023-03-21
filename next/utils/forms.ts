@@ -273,19 +273,6 @@ export const useFormStepper = (eformSlug: string, schema: RJSFSchema) => {
 
   const currentSchema = steps ? (cloneDeep(steps[stepIndex]) as RJSFSchema) : {}
 
-  const logIndex = 9
-  console.log(
-    typeof schema.allOf[logIndex] !== 'boolean'
-      ? typeof schema.allOf[logIndex].properties.checkBoxes !== 'boolean'
-        ? schema.allOf[logIndex].properties.checkBoxes.properties
-        : schema.allOf[logIndex]
-      : schema.allOf[logIndex],
-  )
-
-  useEffect(() => {
-    console.log('SCHEMA CHANGED')
-  }, [schema])
-
   useEffect(() => {
     // effect to reset all internal state when critical input 'props' change
     setFormData({})

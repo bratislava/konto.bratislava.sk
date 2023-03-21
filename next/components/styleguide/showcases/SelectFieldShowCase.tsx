@@ -44,6 +44,8 @@ const SelectFieldShowCase = () => {
           placeholder="Test placeholder"
           type="one"
           value={selectValueSecond}
+          hideScrollbar
+          alwaysOneSelected
           onChange={(value) => setSelectValueSecond(value)}
         />
         <SelectField
@@ -69,8 +71,10 @@ const SelectFieldShowCase = () => {
           selectAllOption
           placeholder="Multi-choice"
           value={selectValue4}
+          hideScrollbar
           onChange={(value) => setSelectValue4(value)}
           type="multiple"
+          alwaysOneSelected
         />
       </Stack>
       <Stack>
@@ -87,8 +91,10 @@ const SelectFieldShowCase = () => {
           enumOptions={enumOptions}
           placeholder="Radio"
           value={selectValue6}
+          hideScrollbar
           onChange={(value) => setSelectValue6(value)}
           type="radio"
+          alwaysOneSelected
         />
       </Stack>
       <Stack direction="column">

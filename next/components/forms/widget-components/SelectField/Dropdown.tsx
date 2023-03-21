@@ -15,6 +15,7 @@ interface DropdownProps {
   type: 'one' | 'multiple' | 'arrow' | 'radio'
   divider?: boolean
   hideScrollbar?: boolean
+  maxWordSize?: number
   className?: string
   onChooseOne?: (option: SelectOption, close?: boolean) => void
   onUnChooseOne?: (option: SelectOption, close?: boolean) => void
@@ -35,6 +36,7 @@ const Dropdown: FC<DropdownProps> = (props: DropdownProps) => {
     type,
     divider,
     hideScrollbar,
+    maxWordSize = 22,
     className,
     onChooseOne,
     onUnChooseOne,

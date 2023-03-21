@@ -23,13 +23,6 @@ const UserProfileView = () => {
   // TODO: handle change of consents in backend DB
   const [allConsents, setAllConsents] = useState<Consent[]>([
     {
-      id: 'personal_data',
-      title: t('consents.personal_data.title'),
-      text: t('consents.personal_data.text'),
-      isDisabled: true,
-      isSelected: true,
-    },
-    {
       id: 'receive_information',
       title: t('consents.receive_information.title'),
       text: t('consents.receive_information.text'),

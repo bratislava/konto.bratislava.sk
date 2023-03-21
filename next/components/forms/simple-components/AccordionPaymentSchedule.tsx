@@ -140,7 +140,7 @@ const AccordionPaymentSchedule = ({
             <div
               role="button"
               tabIndex={0}
-              className="flex cursor-pointer lg:items-start items-center gap-4"
+              className="no-tap-highlight flex cursor-pointer lg:items-start items-center gap-4"
               onClick={() => setIsActive(!isActive)}
               onKeyDown={() => setIsActive(!isActive)}
             >

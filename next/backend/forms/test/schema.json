@@ -355,7 +355,9 @@
         "checkBoxes": {
           "title": "Checkboxes",
           "type": "object",
-          "required": ["favouriteFruits"],
+          "required": [
+            "favouriteFruits"
+          ],
           "properties": {
             "favouriteFruits": {
               "type": "array",
@@ -393,32 +395,36 @@
               }
             }
           },
-          "if": {
-            "properties": {
-              "favouriteFruits": {
-                "const": ["plum"]
-              }
-            }
-          },
-          "then": {
-            "properties": {
-              "checkboxBonus": {
-                "title": "This will show when we will click plum",
-                "type": "object",
-                "required": ["firstBonus"],
+          "allOf": [
+            {
+              "if": {
                 "properties": {
-                  "firstBonus": {
-                    "type": "string",
-                    "title": "First bonus (conditional field)"
-                  },
-                  "secondBonus": {
-                    "type": "string",
-                    "title": "Second bonus (conditional field)"
+                  "favouriteFruits": {
+                    "const": ["plum"]
+                  }
+                }
+              },
+              "then": {
+                "properties": {
+                  "checkboxBonus": {
+                    "title": "This will show when we will click plum",
+                    "type": "object",
+                    "required": ["firstBonus"],
+                    "properties": {
+                      "firstBonus": {
+                        "type": "string",
+                        "title": "First bonus (conditional field)"
+                      },
+                      "secondBonus": {
+                        "type": "string",
+                        "title": "Second bonus (conditional field)"
+                      }
+                    }
                   }
                 }
               }
             }
-          }
+          ]
         }
       }
     },

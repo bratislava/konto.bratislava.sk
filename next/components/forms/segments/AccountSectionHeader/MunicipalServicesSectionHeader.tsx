@@ -1,7 +1,8 @@
+import { useWindowSize } from '@utils/useWindowSize'
 import SelectField, {
   SelectOption,
 } from 'components/forms/widget-components/SelectField/SelectField'
-import { Dispatch, SetStateAction } from 'react'
+import { Dispatch, SetStateAction, useState } from 'react'
 
 type MunicipalServicesSectionHeaderBase = {
   title: string
@@ -18,6 +19,7 @@ const MunicipalServicesSectionHeader = ({
   setCurrentPage,
   setSelectorValue,
 }: MunicipalServicesSectionHeaderBase) => {
+  const { width } = useWindowSize()
   return (
     <div className="bg-gray-50 mt-16 lg:mt-28">
       <span className="flex flex-col justify-end w-full h-full max-w-screen-lg m-auto pl-4 lg:px-0 pt-6 lg:pt-16 pb-4 lg:pb-8">
@@ -35,6 +37,7 @@ const MunicipalServicesSectionHeader = ({
           hideScrollbar
           alwaysOneSelected
           enumOptions={enumOptions}
+          maxWordSize={width > 480 ? 22 : 18}
         />
       </span>
     </div>

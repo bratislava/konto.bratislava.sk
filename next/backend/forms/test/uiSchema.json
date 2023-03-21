@@ -358,6 +358,10 @@
       "secondBonus": {
         "ui:widget": "InputField",
         "ui:label": false
+      },
+      "thirdBonus": {
+        "ui:widget": "InputField",
+        "ui:label": false
       }
     }
   },

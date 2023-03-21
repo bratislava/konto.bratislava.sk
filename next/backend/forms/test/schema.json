@@ -351,23 +351,6 @@
       }
     },
     {
-      "$async": true,
-      "properties": {
-        "user": {
-          "type": "object",
-          "title": "Example async validation",
-          "properties": {
-            "phone": {
-              "type": "string",
-              "isExampleAsyncValidation": {
-                "errorMsg": "Required input"
-              }
-            }
-          }
-        }
-      }
-    },
-    {
       "properties": {
         "checkBoxes": {
           "title": "Checkboxes",
@@ -433,6 +416,23 @@
                     "title": "Second bonus (conditional field)"
                   }
                 }
+              }
+            }
+          }
+        }
+      }
+    },
+    {
+      "$async": true,
+      "properties": {
+        "user": {
+          "type": "object",
+          "title": "Example async validation",
+          "properties": {
+            "phone": {
+              "type": "string",
+              "isExampleAsyncValidation": {
+                "errorMsg": "Required input"
               }
             }
           }

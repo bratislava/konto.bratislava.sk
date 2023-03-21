@@ -12,7 +12,7 @@ import { readTextFile } from '@utils/file'
 import useSnackbar from '@utils/useSnackbar'
 import { AnySchemaObject, ErrorObject, FuncKeywordDefinition } from 'ajv'
 import { JSONSchema7, JSONSchema7Definition } from 'json-schema'
-import { get, merge } from 'lodash'
+import { cloneDeep, get, merge } from 'lodash'
 import { useTranslation } from 'next-i18next'
 import { ChangeEvent, RefObject, useEffect, useRef, useState } from 'react'
 
@@ -30,7 +30,7 @@ export const getAllPossibleJsonSchemaProperties = (
     return {}
   }
 
-  const properties: JsonSchemaProperties = jsonSchema.properties ?? {}
+  const properties: JsonSchemaProperties = { ...jsonSchema.properties } ?? {}
 
   if (jsonSchema.then) {
     Object.assign(properties, getAllPossibleJsonSchemaProperties(jsonSchema.then))
@@ -271,7 +271,20 @@ export const useFormStepper = (eformSlug: string, schema: RJSFSchema) => {
   const stepsLength: number = steps?.length ?? -1
   const isComplete = stepIndex === stepsLength
 
-  const currentSchema = steps ? (steps[stepIndex] as RJSFSchema) : {}
+  const currentSchema = steps ? (cloneDeep(steps[stepIndex]) as RJSFSchema) : {}
+
+  const logIndex = 9
+  console.log(
+    typeof schema.allOf[logIndex] !== 'boolean'
+      ? typeof schema.allOf[logIndex].properties.checkBoxes !== 'boolean'
+        ? schema.allOf[logIndex].properties.checkBoxes.properties
+        : schema.allOf[logIndex]
+      : schema.allOf[logIndex],
+  )
+
+  useEffect(() => {
+    console.log('SCHEMA CHANGED')
+  }, [schema])
 
   useEffect(() => {
     // effect to reset all internal state when critical input 'props' change
@@ -375,8 +388,13 @@ export const useFormStepper = (eformSlug: string, schema: RJSFSchema) => {
 
   const setStepFormData = (stepFormData: RJSFSchema) => {
     // transformNullToUndefined(stepFormData)
+    // console.log('NEW STEP FORM DATA', stepFormData)
     setFormData({ ...formData, ...stepFormData })
   }
+
+  useEffect(() => {
+    // console.log('ACTUAL FORM DATA:', formData)
+  }, [formData])
 
   const [openSnackbarError] = useSnackbar({ variant: 'error' })
   const { t } = useTranslation('forms')

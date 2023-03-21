@@ -65,7 +65,12 @@ const fetchBlob = async (path: string, options?: RequestInit) => {
 }
 
 // TODO move error handling here
-export const submitEform = async (eformKey: string, formId: string, data: Record<string, any>) => {
+export const submitEform = async (
+  eformKey: string,
+  formId: string,
+  data: Record<string, any>,
+  token: string,
+) => {
   console.log('-------------------')
   console.log(eformKey)
   return fetchJsonApi(`/api/eforms/${eformKey}/submit`, {
@@ -73,7 +78,7 @@ export const submitEform = async (eformKey: string, formId: string, data: Record
     headers: {
       'Content-Type': 'application/json',
     },
-    body: JSON.stringify({ data, id: formId }),
+    body: JSON.stringify({ data, id: formId, token }),
   })
 }
 

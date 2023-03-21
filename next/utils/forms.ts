@@ -524,10 +524,12 @@ export const useFormSubmitter = (slug: string) => {
   const [successMessage, setSuccessMessage] = useState<string | null>(null)
   const { t } = useTranslation('forms')
 
+  const { getAccessToken } = useAccount()
   const submitForm = async (formId: string, formData: RJSFSchema) => {
     try {
       // TODO do something more with the result then just showing success
-      const result = await submitEform(slug, formId, formData)
+      const token = await getAccessToken()
+      const result = await submitEform(slug, formId, formData, token)
       setErrors([])
       setSuccessMessage(t('success'))
     } catch (error) {

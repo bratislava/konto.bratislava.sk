@@ -100,6 +100,12 @@ const ButtonShowCase = ({}: ButtonShowCaseProps) => {
         />
       </Stack>
       <Stack>
+        <Button text="Loading" loading />
+        <Button icon={<SearchIcon />} loading />
+        <Button text="Loading" size="sm" loading />
+        <Button icon={<SearchIcon />} size="sm" loading />
+      </Stack>
+      <Stack>
         <Button icon={<SearchIcon />} />
         <Button icon={<SearchIcon />} size="sm" />
         <Button icon={<SearchIcon />} disabled />

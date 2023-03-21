@@ -18,6 +18,11 @@ import { ChangeEvent, RefObject, useEffect, useRef, useState } from 'react'
 
 import { StepData } from '../components/forms/types/TransformedFormData'
 
+export type JsonSchemaPropertyTree = JsonSchemaPropertyTreeInterface | undefined
+export interface JsonSchemaPropertyTreeInterface {
+  [key: string]: JsonSchemaPropertyTree
+}
+
 export type JsonSchema = JSONSchema7Definition
 interface JsonSchemaProperties {
   [key: string]: JSONSchema7Definition
@@ -55,6 +60,39 @@ export const getAllPossibleJsonSchemaProperties = (
   }
 
   return properties
+}
+
+export const getJsonSchemaPropertyTree = (
+  jsonSchema: JsonSchema | undefined,
+): JsonSchemaPropertyTree => {
+  const properties = getAllPossibleJsonSchemaProperties(jsonSchema)
+  const propertiesEntries = Object.entries(properties)
+
+  if (propertiesEntries.length === 0) {
+    return undefined
+  }
+
+  const result = propertiesEntries.map(([key, value]: [string, JSONSchema7]) => {
+    return { [key]: getJsonSchemaPropertyTree(value) }
+  })
+
+  return Object.assign({}, ...result) as JsonSchemaPropertyTree
+}
+
+export const mergePropertyTreeToFormData = (formData: RJSFSchema, tree: JsonSchemaPropertyTree) => {
+  if (!tree || Array.isArray(formData)) return formData
+  const newFormData: RJSFSchema = formData ? { ...formData } : ({} as RJSFSchema)
+
+  Object.entries(tree).forEach(([key, value]: [string, JsonSchemaPropertyTree]) => {
+    if (key in newFormData) {
+      const merged = mergePropertyTreeToFormData(newFormData[key], value)
+      Object.assign(newFormData, { [key]: merged })
+    } else {
+      Object.assign(newFormData, { [key]: value })
+    }
+  })
+
+  return newFormData
 }
 
 const buildRJSFError = (path: string[], errorMsg: string | undefined): ErrorSchema => {
@@ -216,7 +254,7 @@ const validateRequiredFormat = (
 }
 
 const customValidate = (formData: RJSFSchema, errors: FormValidation, schema: StrictRJSFSchema) => {
-  validateRequiredFormat(formData, errors, schema)
+  // validateRequiredFormat(formData, errors, schema)
   validateDateFromToFormat(formData, errors, schema)
   validateTimeFromToFormat(formData, errors, schema)
   return errors
@@ -375,8 +413,11 @@ export const useFormStepper = (eformSlug: string, schema: RJSFSchema) => {
 
   const setStepFormData = (stepFormData: RJSFSchema) => {
     // transformNullToUndefined(stepFormData)
-    // console.log('NEW STEP FORM DATA', stepFormData)
-    setFormData({ ...formData, ...stepFormData })
+    const tree = getJsonSchemaPropertyTree(currentSchema)
+    const fullStepFormData = mergePropertyTreeToFormData(stepFormData, tree)
+    console.log('NEW STEP FORM DATA', stepFormData)
+    console.log('FULL STEP DATA', fullStepFormData, '\n\n')
+    setFormData({ ...formData, ...fullStepFormData })
   }
 
   useEffect(() => {

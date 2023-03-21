@@ -359,9 +359,11 @@
         "ui:widget": "InputField",
         "ui:label": false
       },
-      "thirdBonus": {
-        "ui:widget": "InputField",
-        "ui:label": false
+      "thirdLayer": {
+        "thirdBonus": {
+          "ui:widget": "InputField",
+          "ui:label": false
+        }
       }
     }
   },

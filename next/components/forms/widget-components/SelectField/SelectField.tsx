@@ -39,6 +39,8 @@ interface SelectFieldProps {
   required?: boolean
   explicitOptional?: ExplicitOptionalType
   disabled?: boolean
+  hideScrollbar?: boolean
+  alwaysOneSelected?: boolean
   className?: string
   onChange: (values: SelectOption[]) => void
 }
@@ -62,6 +64,8 @@ const SelectFieldComponent: ForwardRefRenderFunction<HTMLDivElement, SelectField
     required,
     explicitOptional,
     disabled,
+    hideScrollbar,
+    alwaysOneSelected,
     className,
     onChange,
   } = props
@@ -113,6 +117,9 @@ const SelectFieldComponent: ForwardRefRenderFunction<HTMLDivElement, SelectField
 
   const handleOnChangeSelect = (selectedOptions: SelectOption[], close?: boolean) => {
     if (!onChange) return
+    if (alwaysOneSelected && selectedOptions.length === 0) {
+      selectedOptions.push(enumOptions[0])
+    }
     onChange(selectedOptions)
     if (type === 'multiple' || !close) {
       setIsDropdownOpened(true)
@@ -265,6 +272,7 @@ const SelectFieldComponent: ForwardRefRenderFunction<HTMLDivElement, SelectField
             isRowBold={isRowBold}
             type={type}
             divider={dropdownDivider}
+            hideScrollbar={hideScrollbar}
             selectAllOption={selectAllOption}
             absolute
             onChooseOne={handleOnChooseOne}

@@ -319,7 +319,7 @@ const AccordionTableTaxContent = ({
           <div className="flex w-full flex-col gap-2 lg:gap-4">
             <button
               type="button"
-              className="flex cursor-pointer items-center gap-4"
+              className="no-tap-highlight flex cursor-pointer items-center gap-4"
               onClick={() => setIsActive(!isActive)}
             >
               <div className="flex grow sm:flex-row flex-col items-start">

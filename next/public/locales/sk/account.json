@@ -399,10 +399,6 @@
   "consents": {
     "title": "Súhlasy",
     "text": "Spravujte udelené súhlasy",
-    "personal_data": {
-      "title": "Súhlas so spracovaním osobných údajov",
-      "text": "Súhlasím s tým, aby mesto pracovalo s údajmi, ktoré som vyplnil/a"
-    },
     "receive_information": {
       "title": "Mám záujem dostávať informácie aj o iných digitálnych službách mesta Bratislava",
       "text": "Chcem sa prihlásiť na odber noviniek a marketingových upozornení"
@@ -527,6 +523,18 @@
     "title": "Platili ste už daň z nehnuteľností digitálne?",
     "content": "Ak ste v minulosti platili daň z nehnuteľností digitálne, tento rok ju nájdete v novom Bratislavskom konte. <strong>Nepotrebujete prejsť celou registráciou.</strong> Stačí, ak si aktivujete konto <strong>overením e-mailu</strong> a <strong>vytvorením hesla</strong>.",
     "button_text": "Aktivovať konto"
+  },
+  "tax_footer": {
+    "register_ba": "Registrovaním sa do Bratislavského konta",
+    "register_ba_to": " do 19. apríla 2023, ",
+    "pay_tax_online": "a zároveň zaplatením dane online",
+    "pay_tax_online_to": " do 12. mája 2023 ",
+    "accept_terms": "súhlasíte s tým, že Vám nebude zaslané rozhodnutie o dani z nehnuteľností na korešpondenčnú adresu a Vy tak nemusíte ísť na poštu.",
+    "maybe_questions": "Radi by ste sa v niečom uistili alebo máte otázky? ",
+    "see_answers": "Pozrite si odpovede na tie, ktoré sú ",
+    "frequently_asked": "často kladené",
+    "contact_us_at": "Ak nenájdete odpoveď na Vašu otázku, neváhajte nás kontaktovať na adrese: ",
+    "mail_to_contact": "platbadane@bratislava.sk"
   },
   "payment_schedule": {
     "title": "Splátkový kalendár",

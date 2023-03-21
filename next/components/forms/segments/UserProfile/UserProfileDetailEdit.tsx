@@ -103,7 +103,7 @@ const UserProfileDetailEdit = (props: UserProfileDetailEditProps) => {
       onSubmit={handleSubmit(handleSubmitCallback)}
     >
       <div className="gap flex flex-wrap flex-row gap-6">
-        <div className="grow ">
+        <div className="grow w-full md:w-fit">
           <Controller
             name="given_name"
             control={control}
@@ -118,7 +118,7 @@ const UserProfileDetailEdit = (props: UserProfileDetailEditProps) => {
             )}
           />
         </div>
-        <div className="grow ">
+        <div className="grow w-full md:w-fit">
           <Controller
             name="family_name"
             control={control}
@@ -161,7 +161,7 @@ const UserProfileDetailEdit = (props: UserProfileDetailEditProps) => {
         </div>
       </div>
       <div className="gap flex flex-wrap flex-row gap-x-6">
-        <div className="w-1/2">
+        <div className="w-full md:w-1/2">
           <Controller
             name="phone_number"
             control={control}

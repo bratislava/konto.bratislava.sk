@@ -1,4 +1,5 @@
-import EditIcon from '@assets/images/forms/edit_icon.svg'
+// import EditIcon from '@assets/images/forms/edit_icon.svg'
+import EditIcon from '@assets/images/new-icons/ui/pen.svg'
 import cx from 'classnames'
 
 import { TransformedFormData } from './TransformedFormData'

@@ -1,3 +1,4 @@
+import Check from '@assets/images/new-icons/ui/done.svg'
 import cx from 'classnames'
 import Tooltip from 'components/forms/info-components/Tooltip/Tooltip'
 import * as React from 'react'
@@ -64,7 +65,7 @@ const CheckboxGroupItem = ({
     'opacity-50 cursor-not-allowed': isDisabled,
   })
 
-  const labelStyle = cx('flex text-16 text-gray-700', {})
+  const labelStyle = cx('text-16 flex text-gray-700', {})
 
   return (
     <div>
@@ -76,20 +77,12 @@ const CheckboxGroupItem = ({
           <div>
             <div className={checkboxStyle}>
               {isSelected && !isIndeterminate && (
-                <svg
-                  className={cx('', {
+                <Check
+                  fill="white"
+                  className={cx('w-5 h-5', {
                     hidden: !isSelected,
                   })}
-                  width="16"
-                  height="12"
-                  fill="none"
-                  xmlns="http://www.w3.org/2000/svg"
-                >
-                  <path
-                    d="M5.49999 9.47504L2.02499 6.00004L0.845825 7.17921L5.49999 11.8334L15.5 1.83337L14.3208 0.654205L5.49999 9.47504Z"
-                    fill="white"
-                  />
-                </svg>
+                />
               )}
               {isIndeterminate && (
                 <svg

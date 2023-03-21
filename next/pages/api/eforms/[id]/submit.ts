@@ -22,12 +22,13 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
     return res.status(400).json({ message: 'Invalid form name or url' })
   }
 
+  const { data, id }: { data: any; id: string } = req.body
   let errors = []
-  errors = await validateDataWithJsonSchema(req.body, eform.schema)
+  errors = await validateDataWithJsonSchema(data, eform.schema)
   if (errors.length > 0)
     return res.status(400).json({ message: `Data did not pass JSON validation`, errors })
 
-  const xml = loadAndBuildXml(eform.xmlTemplate, req.body, eform.schema)
+  const xml = loadAndBuildXml(eform.xmlTemplate, data, eform.schema)
   errors = validateDataWithXsd(xml, eform.xsd)
   if (errors.length > 0)
     return res.status(400).json({ message: `Data did not pass XSD validation`, errors })

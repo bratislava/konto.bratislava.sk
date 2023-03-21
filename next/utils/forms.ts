@@ -515,6 +515,7 @@ export const useFormStepper = (eformSlug: string, schema: RJSFSchema) => {
     validator,
     exportXml,
     importXml,
+    formId,
   }
 }
 
@@ -523,10 +524,10 @@ export const useFormSubmitter = (slug: string) => {
   const [successMessage, setSuccessMessage] = useState<string | null>(null)
   const { t } = useTranslation('forms')
 
-  const submitForm = async (formData: RJSFSchema) => {
+  const submitForm = async (formId: string, formData: RJSFSchema) => {
     try {
       // TODO do something more with the result then just showing success
-      const result = await submitEform(slug, formData)
+      const result = await submitEform(slug, formId, formData)
       setErrors([])
       setSuccessMessage(t('success'))
     } catch (error) {

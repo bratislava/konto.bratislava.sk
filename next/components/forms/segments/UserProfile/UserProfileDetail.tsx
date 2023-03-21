@@ -75,7 +75,9 @@ const UserProfileDetail = (props: UserProfileDetailProps) => {
           <div
             className={cx('flex p-4 flex-col gap-8', 'md:p-8 md:flex-row md:gap-16 md:flex-wrap')}
           >
-            <UserProfilePhoto userData={userData ?? {}} />
+            <div className={cx({ 'hidden md:block': isEditing })}>
+              <UserProfilePhoto userData={userData ?? {}} />
+            </div>
             {isEditing ? (
               <UserProfileDetailEdit
                 formId={formId}

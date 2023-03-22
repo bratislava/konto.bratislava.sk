@@ -274,7 +274,6 @@ const Button = forwardRef<HTMLAnchorElement | HTMLButtonElement, PolymorphicProp
         {...buttonProps}
         disabled={disabled || loading}
       >
-        {/* display spinner with absolute position when loading is true */}
         {loading && (
           <div
             className={cx(

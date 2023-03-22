@@ -61,7 +61,6 @@ const PaymentData = (props: any) => {
                 </div>
               </div>
             </div>
-            <div className="sm:hidden block h-0.5 w-full bg-gray-200" />
           </div>
           <div className="flex flex-col gap-4 grow">
             <div className="lg:items-center items-start flex lg:flex-row flex-col lg:px-6 lg:py-8 p-4 gap-6 bg-main-200 rounded-lg w-full">

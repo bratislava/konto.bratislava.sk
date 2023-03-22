@@ -18,6 +18,7 @@ import { Item } from 'react-stately'
 
 import Brand from '../../simple-components/Brand'
 import Link from './NavBarLink'
+import { StatusBar, useStatusBarContext } from 'components/forms/info-components/StatusBar'
 
 interface IProps extends LanguageSelectProps {
   className?: string
@@ -99,6 +100,7 @@ export const AccountNavBar = ({
           'fixed top-0 left-0 w-full bg-white z-40 shadow',
         )}
       >
+        <StatusBar className="hidden lg:flex" />
         <div className="max-w-screen-lg m-auto hidden h-[57px] w-full items-center lg:flex gap-x-6">
           <Brand
             className="group grow"
@@ -191,7 +193,7 @@ export const AccountNavBar = ({
           </nav>
         </div>
         {isAuth && sectionsList && !hiddenHeaderNav && (
-          <div className="border-t border-gray-200 max-w-screen-lg m-auto h-[57px] w-full items-center justify-between lg:flex">
+          <div className="hidden border-t border-gray-200 max-w-screen-lg m-auto h-[57px] w-full items-center justify-between lg:flex">
             <ul className="w-full h-full flex items-center">
               {sectionsList.map((sectionItem) => (
                 <li className="w-full h-full" key={sectionItem.id}>
@@ -218,46 +220,45 @@ export const AccountNavBar = ({
       {/* Mobile */}
       <div
         id="mobile-navbar"
-        className={cx(
-          className,
-          'h-16 flex items-center py-5 px-8 -mx-8 border-b-2',
-          'lg:hidden fixed top-0 w-full bg-white z-40 gap-x-6',
-        )}
+        className={cx(className, 'lg:hidden fixed top-0 left-0 w-full bg-white z-40 gap-x-6')}
       >
-        <Brand url="/" className="grow" />
-        {!navHidden && (
-          <div className={cx('flex items-center gap-x-5')}>
-            <div className="text-h4 text-font/50 relative flex cursor-pointer items-center bg-transparent">
-              <Link href={t('searchLink')} variant="plain" className="p-4">
-                <SearchIcon />
-              </Link>
+        {!burgerOpen && <StatusBar className="flex lg:hidden" />}
+        <div className="h-16 flex items-center py-5 px-8 border-b-2">
+          <Brand url="/" className="grow" />
+          {!navHidden && (
+            <div className={cx('flex items-center gap-x-5')}>
+              <div className="text-h4 text-font/50 relative flex cursor-pointer items-center bg-transparent">
+                <Link href={t('searchLink')} variant="plain" className="p-4">
+                  <SearchIcon />
+                </Link>
+              </div>
             </div>
-          </div>
-        )}
+          )}
 
-        <button
-          onClick={() => (isAuth ? setBurgerOpen(!burgerOpen) : router.push(ROUTES.LOGIN))}
-          className="-mr-4 px-4 py-5"
-        >
-          <div className="flex w-6 items-center justify-center">
-            {burgerOpen ? (
-              <HamburgerClose />
-            ) : isAuth && sectionsList ? (
-              <Hamburger />
-            ) : (
-              <Avatar userData={userData} />
-            )}
-          </div>
-        </button>
+          <button
+            onClick={() => (isAuth ? setBurgerOpen(!burgerOpen) : router.push(ROUTES.LOGIN))}
+            className="-mr-4 px-4 py-5"
+          >
+            <div className="flex w-6 items-center justify-center">
+              {burgerOpen ? (
+                <HamburgerClose />
+              ) : isAuth && sectionsList ? (
+                <Hamburger />
+              ) : (
+                <Avatar userData={userData} />
+              )}
+            </div>
+          </button>
 
-        {burgerOpen && (
-          <HamburgerMenu
-            sectionsList={sectionsList}
-            menuItems={menuItems}
-            closeMenu={() => setBurgerOpen(false)}
-            onRouteChange={onRouteChange}
-          />
-        )}
+          {burgerOpen && (
+            <HamburgerMenu
+              sectionsList={sectionsList}
+              menuItems={menuItems}
+              closeMenu={() => setBurgerOpen(false)}
+              onRouteChange={onRouteChange}
+            />
+          )}
+        </div>
       </div>
     </>
   )

@@ -1,7 +1,6 @@
 import { EnumOptionsType, ErrorSchema, RJSFValidationError, StrictRJSFSchema } from '@rjsf/utils'
 import {
   getAllPossibleJsonSchemaExtraProperties,
-  getAllPossibleJsonSchemaProperties,
   JsonSchema,
   JsonSchemaExtraProperties,
   JsonSchemaExtraProperty,
@@ -62,7 +61,7 @@ function getFieldData(
       ? transformedFieldFormData.toString()
       : Array.isArray(transformedFieldFormData) && transformedFieldFormData.length > 0
       ? transformedFieldFormData.join(', ')
-      : '-'
+      : null
 
   return {
     label,
@@ -97,9 +96,6 @@ function getAllSchemaData(
     getAllPossibleJsonSchemaExtraProperties(schemaContent)
   Object.entries(properties).forEach(([key, value]: [string, JsonSchemaExtraProperty]) => {
     const isChildConditional = isConditional || !!properties.isConditional || !!value.isConditional
-    if (isChildConditional) {
-      console.log(key)
-    }
     const newSchemaPath = `${schemaPath}.${key}`
     const childExtraErrors = currentExtraErrors ? currentExtraErrors[key] : undefined
     const childFormData: JSONSchema7Definition | undefined =

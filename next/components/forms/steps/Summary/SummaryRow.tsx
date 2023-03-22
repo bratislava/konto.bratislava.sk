@@ -33,7 +33,7 @@ const SummaryRow = (props: SummaryRowProps) => {
     <div className={containerClassName}>
       <p className={labelClassName}>{data.label}</p>
       <div className="w-full flex flex-row items-center">
-        <p className={valueClassName}>{data.value}</p>
+        <p className={valueClassName}>{data.value ?? '-'}</p>
         {isEditable && <EditIcon className="cursor-pointer hidden" onClick={onGoToStep} />}
       </div>
     </div>

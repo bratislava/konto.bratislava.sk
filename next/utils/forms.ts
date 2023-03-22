@@ -415,13 +415,11 @@ export const useFormStepper = (eformSlug: string, schema: RJSFSchema) => {
     // transformNullToUndefined(stepFormData)
     const tree = getJsonSchemaPropertyTree(currentSchema)
     const fullStepFormData = mergePropertyTreeToFormData(stepFormData, tree)
-    console.log('NEW STEP FORM DATA', stepFormData)
-    console.log('FULL STEP DATA', fullStepFormData, '\n\n')
     setFormData({ ...formData, ...fullStepFormData })
   }
 
   useEffect(() => {
-    // console.log('ACTUAL FORM DATA:', formData)
+    console.log('ACTUAL FORM DATA:', formData)
   }, [formData])
 
   const [openSnackbarError] = useSnackbar({ variant: 'error' })

@@ -398,11 +398,22 @@
           "allOf": [
             {
               "if": {
-                "properties": {
-                  "favouriteFruits": {
-                    "const": ["plum"]
+                "oneOf": [
+                  {
+                    "properties": {
+                      "favouriteFruits": {
+                        "const": ["plum"]
+                      }
+                    }
+                  },
+                  {
+                    "properties": {
+                      "favouriteFruits": {
+                        "const": ["apple"]
+                      }
+                    }
                   }
-                }
+                ]
               },
               "then": {
                 "properties": {

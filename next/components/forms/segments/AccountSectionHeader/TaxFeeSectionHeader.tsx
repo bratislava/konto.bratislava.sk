@@ -2,8 +2,8 @@ import ChevronLeft from '@assets/images/chevron-left-2.svg'
 import ExclamationIcon from '@assets/images/forms/exclamation-icon.svg'
 import SuccessIcon from '@assets/images/forms/success.svg'
 import TimeIcon from '@assets/images/forms/warning-time-icon.svg'
+import FileDownload from '@assets/images/new-icons/ui/download.svg'
 import PaymentIcon from '@assets/images/new-icons/ui/payment.svg'
-import FileDownload from '@assets/images/new-icons/ui/upload.svg'
 import cx from 'classnames'
 import { useRouter } from 'next/router'
 import { useTranslation } from 'next-i18next'
@@ -119,7 +119,7 @@ const TaxFeeSectionHeader = (props: AccountSectionHeaderBase) => {
                   className="min-w-full"
                 />
                 <Button
-                  startIcon={<FileDownload />}
+                  startIcon={<FileDownload className="w-5 h-5" />}
                   variant="black-outline"
                   text={t('download_pdf')}
                   size="sm"

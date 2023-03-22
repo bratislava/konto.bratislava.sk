@@ -1,4 +1,4 @@
-import FileDownload from '@assets/images/new-icons/ui/upload.svg'
+import FileDownload from '@assets/images/new-icons/ui/download.svg'
 import { useTranslation } from 'next-i18next'
 import React from 'react'
 
@@ -93,7 +93,7 @@ const PaymentData = (props: any) => {
                 </div>
                 {/* Desktop 'download' button */}
                 <Button
-                  startIcon={<FileDownload />}
+                  startIcon={<FileDownload className="w-5 h-5" />}
                   variant="black-outline"
                   text={t('download_image')}
                   size="sm"

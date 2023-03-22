@@ -85,7 +85,7 @@ const Button = forwardRef<HTMLAnchorElement | HTMLButtonElement, PolymorphicProp
       'inline-flex items-center',
       rest.href
         ? 'underline underline-offset-4 focus-visible:outline-none'
-        : 'h-fit space-x-2 justify-center text-center align-middle focus:outline-none rounded-lg',
+        : 'h-fit justify-center text-center align-middle focus:outline-none rounded-lg',
       className,
       {
         'w-full': fullWidth,
@@ -252,6 +252,19 @@ const Button = forwardRef<HTMLAnchorElement | HTMLButtonElement, PolymorphicProp
       )
     }
 
+    const spinnerVariant = [
+      'category',
+      'category-outline',
+      'plain-category',
+      'link-category',
+    ].includes(variant)
+      ? 'category'
+      : ['black-outline', 'plain-black', 'link-black'].includes(variant)
+      ? 'black'
+      : ['negative', 'plain-negative'].includes(variant)
+      ? 'negative'
+      : 'gray'
+
     return (
       <button
         type="button"
@@ -270,7 +283,7 @@ const Button = forwardRef<HTMLAnchorElement | HTMLButtonElement, PolymorphicProp
               { 'h-5 w-5': size === 'sm' },
             )}
           >
-            <Spinner size="sm" />
+            <Spinner size="sm" variant={spinnerVariant} />
           </div>
         )}
         <div className={cx('justify-center flex items-center', { invisible: loading })}>

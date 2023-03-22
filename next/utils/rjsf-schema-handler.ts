@@ -47,6 +47,7 @@ function transformValueArray(
     : findTitle(fieldFormData, items)
 }
 
+// get data of field in format we need in Summary
 function getFieldData(
   label: string,
   schemaPath: string,
@@ -83,6 +84,8 @@ function isFieldError(
   })
 }
 
+// get all data from schema in 1D array (we use it for every step) in format we need for Summary
+// TODO: refactor and CLEAN CODE somehow... but it's really complicated with lot of recursions and data
 function getAllSchemaData(
   data: TransformedFormData[],
   schemaContent: JsonSchema,
@@ -92,9 +95,12 @@ function getAllSchemaData(
   currentExtraErrors?: ErrorSchema,
   isConditional?: boolean,
 ): void {
+  // read all properties (with info about conditions) we can from this layer of step
   const properties: JsonSchemaExtraProperties =
     getAllPossibleJsonSchemaExtraProperties(schemaContent)
+
   Object.entries(properties).forEach(([key, value]: [string, JsonSchemaExtraProperty]) => {
+    // init data every property of this layer of schema
     const isChildConditional = isConditional || !!properties.isConditional || !!value.isConditional
     const newSchemaPath = `${schemaPath}.${key}`
     const childExtraErrors = currentExtraErrors ? currentExtraErrors[key] : undefined
@@ -102,7 +108,9 @@ function getAllSchemaData(
       currentFormData && typeof currentFormData !== 'boolean'
         ? currentFormData[key as keyof JSONSchema7Definition]
         : undefined
+
     if (value && typeof value !== 'boolean' && (!value.type || value.type === 'object')) {
+      // if it's not field, continue recursively and go to deeper layer current schema
       getAllSchemaData(
         data,
         value,
@@ -113,9 +121,11 @@ function getAllSchemaData(
         isChildConditional,
       )
     } else if (value && typeof value !== 'boolean' && value.type) {
+      // if it's field, init data to get transformed data of field for usage in Summary
       const label = value.title ?? key
       const extraErrorCount: number = childExtraErrors?.__errors?.length ?? 0
       const isError: boolean = extraErrorCount > 0 || isFieldError(formErrors, schemaPath, key)
+      // transform data of field for usage in Summary
       const fieldData: TransformedFormData = getFieldData(
         label,
         newSchemaPath,
@@ -129,13 +139,15 @@ function getAllSchemaData(
   })
 }
 
-function transformStep(
+// transforming every step formData of form independently
+function transformStepFormData(
   step: JSONSchema7Definition,
   formData: Record<string, JsonSchema>,
   formErrors: RJSFValidationError[][],
   extraErrors: ErrorSchema,
 ): TransformedFormStep {
   if (typeof step === 'boolean' || !step?.properties) return { key: '', label: '', data: [] }
+  // init needed data to transform step formData
   const stepContent: JSONSchema7Definition = Object.values(step.properties)[0]
   const stepKey: string = Object.keys(step.properties)[0]
   const label: string =
@@ -144,12 +156,14 @@ function transformStep(
       : typeof step !== 'boolean' && step.properties
       ? Object.keys(step.properties)[0]
       : ''
-  const data: TransformedFormData[] = []
   const stepExtraErrors = extraErrors[stepKey]
+
+  const data: TransformedFormData[] = []
   getAllSchemaData(data, stepContent, `.${stepKey}`, formErrors, formData[stepKey], stepExtraErrors)
   return { key: stepKey, label, data }
 }
 
+// transforms formData to format which is used to show data in Summary
 export const useFormDataTransform = (
   formData: Record<string, JsonSchema>,
   formErrors: RJSFValidationError[][],
@@ -157,7 +171,7 @@ export const useFormDataTransform = (
   schema?: StrictRJSFSchema,
 ) => {
   const transformedSteps: TransformedFormStep[] = schema?.allOf
-    ? schema.allOf.map((step) => transformStep(step, formData, formErrors, extraErrors))
+    ? schema.allOf.map((step) => transformStepFormData(step, formData, formErrors, extraErrors))
     : []
 
   return {

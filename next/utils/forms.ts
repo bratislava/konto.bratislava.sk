@@ -75,6 +75,9 @@ export const getAllPossibleJsonSchemaExtraProperties = (
   jsonSchema?: JsonSchema,
   isConditional?: boolean,
 ): JsonSchemaExtraProperties => {
+  // same function as getAllPossibleJsonSchemaProperties but I need extra info if property is conditional
+  // dont want to broke function getAllPossibleJsonSchemaProperties which is used on different places
+  // TODO: simplify it together with getAllPossibleJsonSchemaProperties and do CLEAN CODE
   if (!jsonSchema || jsonSchema === true) {
     return {}
   }

@@ -3,6 +3,7 @@ export interface TransformedFormData {
   value: string
   schemaPath: string
   isError: boolean
+  isConditional?: boolean
 }
 
 export interface TransformedFormStep {

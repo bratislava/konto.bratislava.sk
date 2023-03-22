@@ -1,5 +1,11 @@
 import { EnumOptionsType, ErrorSchema, RJSFValidationError, StrictRJSFSchema } from '@rjsf/utils'
-import { getAllPossibleJsonSchemaProperties, JsonSchema } from '@utils/forms'
+import {
+  getAllPossibleJsonSchemaExtraProperties,
+  getAllPossibleJsonSchemaProperties,
+  JsonSchema,
+  JsonSchemaExtraProperties,
+  JsonSchemaExtraProperty,
+} from '@utils/forms'
 import { JSONSchema7Definition } from 'json-schema'
 
 import {
@@ -48,6 +54,7 @@ function getFieldData(
   isError: boolean,
   fieldFormData?: JSONSchema7Definition,
   fieldSchema?: JSONSchema7Definition,
+  isConditional?: boolean,
 ): TransformedFormData {
   const transformedFieldFormData = transformValueArray(fieldFormData, fieldSchema)
   const value =
@@ -62,6 +69,7 @@ function getFieldData(
     value,
     schemaPath,
     isError,
+    isConditional,
   }
 }
 
@@ -83,9 +91,15 @@ function getAllSchemaData(
   formErrors: RJSFValidationError[][],
   currentFormData?: JSONSchema7Definition,
   currentExtraErrors?: ErrorSchema,
+  isConditional?: boolean,
 ): void {
-  const properties = getAllPossibleJsonSchemaProperties(schemaContent)
-  Object.entries(properties).forEach(([key, value]: [string, JsonSchema]) => {
+  const properties: JsonSchemaExtraProperties =
+    getAllPossibleJsonSchemaExtraProperties(schemaContent)
+  Object.entries(properties).forEach(([key, value]: [string, JsonSchemaExtraProperty]) => {
+    const isChildConditional = isConditional || !!properties.isConditional || !!value.isConditional
+    if (isChildConditional) {
+      console.log(key)
+    }
     const newSchemaPath = `${schemaPath}.${key}`
     const childExtraErrors = currentExtraErrors ? currentExtraErrors[key] : undefined
     const childFormData: JSONSchema7Definition | undefined =
@@ -93,8 +107,16 @@ function getAllSchemaData(
         ? currentFormData[key as keyof JSONSchema7Definition]
         : undefined
     if (value && typeof value !== 'boolean' && (!value.type || value.type === 'object')) {
-      getAllSchemaData(data, value, newSchemaPath, formErrors, childFormData, childExtraErrors)
-    } else if (value && typeof value !== 'boolean') {
+      getAllSchemaData(
+        data,
+        value,
+        newSchemaPath,
+        formErrors,
+        childFormData,
+        childExtraErrors,
+        isChildConditional,
+      )
+    } else if (value && typeof value !== 'boolean' && value.type) {
       const label = value.title ?? key
       const extraErrorCount: number = childExtraErrors?.__errors?.length ?? 0
       const isError: boolean = extraErrorCount > 0 || isFieldError(formErrors, schemaPath, key)
@@ -104,6 +126,7 @@ function getAllSchemaData(
         isError,
         childFormData,
         value,
+        isChildConditional,
       )
       data.push(fieldData)
     }

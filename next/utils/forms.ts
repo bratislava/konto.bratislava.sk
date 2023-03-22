@@ -28,19 +28,28 @@ interface JsonSchemaProperties {
   [key: string]: JSONSchema7Definition
 }
 
+export type JsonSchemaExtraProperty = JSONSchema7Definition & { isConditional?: boolean }
+export interface JsonSchemaExtraProperties {
+  [key: string]: JsonSchemaExtraProperty
+  isConditional?: boolean
+}
+
 export const getAllPossibleJsonSchemaProperties = (
-  jsonSchema: JsonSchema | undefined,
+  jsonSchema?: JsonSchema,
 ): JsonSchemaProperties => {
   if (!jsonSchema || jsonSchema === true) {
     return {}
   }
 
-  const properties: JsonSchemaProperties = { ...jsonSchema.properties } ?? {}
+  const properties: JsonSchemaProperties = {}
+  if (jsonSchema.properties) {
+    Object.assign(properties, { ...jsonSchema.properties })
+  }
 
-  if (jsonSchema.then) {
+  if (jsonSchema.if && jsonSchema.then) {
     Object.assign(properties, getAllPossibleJsonSchemaProperties(jsonSchema.then))
   }
-  if (jsonSchema.else) {
+  if (jsonSchema.if && jsonSchema.else) {
     Object.assign(properties, getAllPossibleJsonSchemaProperties(jsonSchema.else))
   }
   if (jsonSchema.allOf) {
@@ -56,6 +65,49 @@ export const getAllPossibleJsonSchemaProperties = (
   if (jsonSchema.anyOf) {
     jsonSchema.anyOf.forEach((s) => {
       Object.assign(properties, getAllPossibleJsonSchemaProperties(s))
+    })
+  }
+
+  return properties
+}
+
+export const getAllPossibleJsonSchemaExtraProperties = (
+  jsonSchema?: JsonSchema,
+  isConditional?: boolean,
+): JsonSchemaExtraProperties => {
+  if (!jsonSchema || jsonSchema === true) {
+    return {}
+  }
+
+  const properties: JsonSchemaProperties = {}
+  if (jsonSchema.properties) {
+    const newProperties = {}
+    Object.entries(jsonSchema.properties).forEach(([key, value]) => {
+      const newValue = typeof value !== 'boolean' ? { ...value, isConditional } : value
+      Object.assign(newProperties, { [key]: newValue })
+    })
+    Object.assign(properties, newProperties)
+  }
+
+  if (jsonSchema.if && jsonSchema.then) {
+    Object.assign(properties, getAllPossibleJsonSchemaExtraProperties(jsonSchema.then, true))
+  }
+  if (jsonSchema.if && jsonSchema.else) {
+    Object.assign(properties, getAllPossibleJsonSchemaExtraProperties(jsonSchema.else, true))
+  }
+  if (jsonSchema.allOf) {
+    jsonSchema.allOf.forEach((s) => {
+      Object.assign(properties, getAllPossibleJsonSchemaExtraProperties(s, isConditional))
+    })
+  }
+  if (jsonSchema.oneOf) {
+    jsonSchema.oneOf.forEach((s) => {
+      Object.assign(properties, getAllPossibleJsonSchemaExtraProperties(s, isConditional))
+    })
+  }
+  if (jsonSchema.anyOf) {
+    jsonSchema.anyOf.forEach((s) => {
+      Object.assign(properties, getAllPossibleJsonSchemaExtraProperties(s, isConditional))
     })
   }
 
@@ -417,10 +469,6 @@ export const useFormStepper = (eformSlug: string, schema: RJSFSchema) => {
     const fullStepFormData = mergePropertyTreeToFormData(stepFormData, tree)
     setFormData({ ...formData, ...fullStepFormData })
   }
-
-  useEffect(() => {
-    console.log('ACTUAL FORM DATA:', formData)
-  }, [formData])
 
   const [openSnackbarError] = useSnackbar({ variant: 'error' })
   const { t } = useTranslation('forms')

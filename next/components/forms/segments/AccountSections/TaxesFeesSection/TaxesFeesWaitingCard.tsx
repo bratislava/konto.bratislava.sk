@@ -22,7 +22,7 @@ const TaxesFeesWaitingCard = ({ content }: TaxesFeesWaitingCardBase) => {
       <div className="md:hidden block px-4">
         <div className="w-full h-0.5 bg-gray-200" />
       </div>
-      <div className=" lg:text-20 text-p3 md:px-16 lg:px-0 px-4 max-w-screen-lg m-auto md:whitespace-normal whitespace-pre-line">
+      <div className="lg:text-p2 text-p3 md:px-16 lg:px-0 px-4 max-w-screen-lg m-auto md:whitespace-normal whitespace-pre-line">
         {t('tax_footer.register_ba')}
         <div className="font-semibold inline">{t('tax_footer.register_ba_to')}</div>
         {t('tax_footer.pay_tax_online')}

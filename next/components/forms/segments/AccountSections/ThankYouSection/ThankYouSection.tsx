@@ -8,9 +8,8 @@ import { ReactNode, useState } from 'react'
 
 const ThankYouSection = () => {
   const { t } = useTranslation('account')
-  const [isOn, setIsOn] = useState<'success' | 'error-1' | 'error-2' | 'error-3' | 'error-4'>(
-    'error-1',
-  )
+  const [isOn, setIsOn] =
+    useState<'success' | 'error-1' | 'error-2' | 'error-3' | 'error-4'>('error-1')
 
   const switcher = (): ReactNode => {
     const array: {
@@ -69,6 +68,8 @@ const ThankYouSection = () => {
             status="success"
             title={t('thank_you.success.title')}
             content={t('thank_you.success.content')}
+            firstButtonTitle={t('thank_you.success.button_to_formular_text')}
+            secondButtonTitle={t('thank_you.success.button_to_profil_text')}
           />
         )}
         {isOn === 'error-1' && (
@@ -76,6 +77,8 @@ const ThankYouSection = () => {
             status="error-1"
             title={t('thank_you.error.1.title')}
             content={t('thank_you.error.1.content')}
+            firstButtonTitle={t('thank_you.error.button_restart_text')}
+            secondButtonTitle={t('thank_you.error.button_cancel_text')}
           />
         )}
         {isOn === 'error-2' && (
@@ -83,6 +86,8 @@ const ThankYouSection = () => {
             status="error-2"
             title={t('thank_you.error.2.title')}
             content={t('thank_you.error.2.content')}
+            firstButtonTitle={t('thank_you.error.button_restart_text')}
+            secondButtonTitle={t('thank_you.error.button_cancel_text')}
           />
         )}
         {isOn === 'error-3' && (
@@ -90,6 +95,8 @@ const ThankYouSection = () => {
             status="error-3"
             title={t('thank_you.error.3.title')}
             content={t('thank_you.error.3.content')}
+            firstButtonTitle={t('thank_you.error.button_restart_text')}
+            secondButtonTitle={t('thank_you.error.button_cancel_text')}
           />
         )}
         {isOn === 'error-4' && (
@@ -97,6 +104,8 @@ const ThankYouSection = () => {
             status="error-4"
             title={t('thank_you.error.4.title')}
             content={t('thank_you.error.4.content')}
+            firstButtonTitle={t('thank_you.error.button_restart_text')}
+            secondButtonTitle={t('thank_you.error.button_cancel_text')}
           />
         )}
         <div className="max-w-[734px] lg:max-w-[800px] w-full mx-auto mt-0 md:mt-10 px-4 md:px-0">

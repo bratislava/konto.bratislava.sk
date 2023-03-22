@@ -5,16 +5,24 @@ import RestartIcon from '@assets/images/account/sync-icon.svg'
 import cx from 'classnames'
 import AccountMarkdown from 'components/forms/segments/AccountMarkdown/AccountMarkdown'
 import Button from 'components/forms/simple-components/Button'
-import { useTranslation } from 'next-i18next'
 import { useRouter } from 'next/router'
+import { useTranslation } from 'next-i18next'
 
 type ThankYouCardBase = {
   status?: 'success' | 'error-1' | 'error-2' | 'error-3' | 'error-4'
   title?: string
+  firstButtonTitle: string
+  secondButtonTitle: string
   content?: string
 }
 
-const ThankYouCard = ({ status, title, content }: ThankYouCardBase) => {
+const ThankYouCard = ({
+  status,
+  title,
+  firstButtonTitle,
+  secondButtonTitle,
+  content,
+}: ThankYouCardBase) => {
   const { t } = useTranslation('account')
   const router = useRouter()
   return (
@@ -41,24 +49,20 @@ const ThankYouCard = ({ status, title, content }: ThankYouCardBase) => {
       <div className="w-full flex flex-col sm:flex-row items-center gap-4 px-0 md:px-24">
         {status !== 'success' ? (
           <>
-            <Button
-              startIcon={<RestartIcon />}
-              text={t('thank_you.error.button_restart_text')}
-              fullWidth
-            />
+            <Button startIcon={<RestartIcon />} text={firstButtonTitle} fullWidth />
             <Button
               startIcon={<DisableIcon />}
               variant="black-outline"
-              text={t('thank_you.error.button_cancel_text')}
+              text={secondButtonTitle}
               fullWidth
             />
           </>
         ) : (
           <>
-            <Button text={t('thank_you.success.button_to_formular_text')} fullWidth />
+            <Button text={firstButtonTitle} fullWidth />
             <Button
               variant="black-outline"
-              text={t('thank_you.success.button_to_profil_text')}
+              text={secondButtonTitle}
               fullWidth
               onPress={() => {
                 router.push('/account').then(() => {})

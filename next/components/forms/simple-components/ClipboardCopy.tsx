@@ -6,7 +6,7 @@ import { useCopyToClipboard } from 'usehooks-ts'
 const ClipboardCopy = ({ copyText }: { copyText: string }) => {
   const [_, copy] = useCopyToClipboard()
   const { t } = useTranslation('account')
-  const [openSnackbarInfo] = useSnackbar({})
+  const [openSnackbarInfo] = useSnackbar({ variant: 'info' })
   return (
     <button
       type="button"

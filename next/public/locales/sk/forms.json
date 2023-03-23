@@ -5,7 +5,9 @@
     "API_ERROR": "Pri odosielaní formulára nastala chyba. Skúste to prosím znova.",
     "unknown": "Nastala neznáma chyba. Skúste to prosím znova.",
     "xml_export": "Export zlyhal. Skúste to prosím znova.",
-    "xml_import": "Import zlyhal. Skúste to prosím znova."
+    "xml_import": "Import zlyhal. Skúste to prosím znova.",
+    "form_init": "Načítanie formulára zlyhalo.",
+    "form_update": "Formulár sa nepodarilo uložiť do rozpracovaných."
   },
   "selectAll": "Vybrať všetko",
   "deselectAll": "Odobrať všetko",
@@ -31,7 +33,7 @@
     "previous": "Späť",
     "skip": "Preskočiť",
     "continue": "Pokračovať",
-    "send": "Odoslať"
+    "send": "Odoslať žiadosť"
   },
   "summary": "Sumár",
   "changes_submit": "Potvrdiť zmeny",

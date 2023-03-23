@@ -399,10 +399,6 @@
   "consents": {
     "title": "Súhlasy",
     "text": "Spravujte udelené súhlasy",
-    "personal_data": {
-      "title": "Súhlas so spracovaním osobných údajov",
-      "text": "Súhlasím s tým, aby mesto pracovalo s údajmi, ktoré som vyplnil/a"
-    },
     "receive_information": {
       "title": "Mám záujem dostávať informácie aj o iných digitálnych službách mesta Bratislava",
       "text": "Chcem sa prihlásiť na odber noviniek a marketingových upozornení"
@@ -537,7 +533,7 @@
     "maybe_questions": "Radi by ste sa v niečom uistili alebo máte otázky? ",
     "see_answers": "Pozrite si odpovede na tie, ktoré sú ",
     "frequently_asked": "často kladené",
-    "contact_us_at": "Ak nenájdete odpoveď na Vašu otázku, neváhajte nás kontaktovať na adrese: ",
+    "contact_us_at": "Ak nenájdete odpoveď na Vašu otázku, neváhajte nás kontaktovať na ",
     "mail_to_contact": "platbadane@bratislava.sk"
   },
   "payment_schedule": {

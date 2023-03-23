@@ -49,7 +49,6 @@ const PaymentScheduleView = (props: any) => {
             <div className="grow items-start">
               {t('payment_schedule.first_piece')}{' '}
               <div className="text-h5 inline">{t('payment_schedule.first_piece_to')}</div>
-              {t('validity_decision')}
             </div>
             <div className="text-h5">29,66 €</div>
           </div>

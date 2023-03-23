@@ -525,16 +525,8 @@
     "button_text": "Aktivovať konto"
   },
   "tax_footer": {
-    "register_ba": "Registrovaním sa do Bratislavského konta",
-    "register_ba_to": " do 19. apríla 2023, ",
-    "pay_tax_online": "a zároveň zaplatením dane online",
-    "pay_tax_online_to": " do 12. mája 2023 ",
-    "accept_terms": "súhlasíte s tým, že Vám nebude zaslané rozhodnutie o dani z nehnuteľností na korešpondenčnú adresu a Vy tak nemusíte ísť na poštu.",
-    "maybe_questions": "Radi by ste sa v niečom uistili alebo máte otázky? ",
-    "see_answers": "Pozrite si odpovede na tie, ktoré sú ",
-    "frequently_asked": "často kladené",
-    "contact_us_at": "Ak nenájdete odpoveď na Vašu otázku, neváhajte nás kontaktovať na ",
-    "mail_to_contact": "platbadane@bratislava.sk"
+    "register_info": "Registrovaním sa do Bratislavského konta <strong>do 19. apríla 2023</strong>, a zároveň zaplatením dane online <strong>do 12. mája 2023</strong> súhlasíte s tým, že Vám nebude zaslané rozhodnutie o dani z nehnuteľností na korešpondenčnú adresu a Vy tak nemusíte ísť na poštu.",
+    "register_info_help": "Radi by ste sa v niečom uistili alebo máte otázky? Pozrite si odpovede na tie, ktoré sú <a href='/i-have-a-problem'>často kladené</a>.<br />Ak nenájdete odpoveď na vašu otázku, neváhajte nás kontaktovať na platbadane@bratislava.sk."
   },
   "payment_schedule": {
     "title": "Splátkový kalendár",

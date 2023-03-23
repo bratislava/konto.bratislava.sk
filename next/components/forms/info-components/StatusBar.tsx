@@ -1,16 +1,17 @@
 /** A react component with state provided through context
  * which shows a red status bar with white text on top of the page
  */
-import React, { createContext, useContext, useState } from 'react'
 import cx from 'classnames'
-import SectionContainer from '../segments/SectionContainer/SectionContainer'
+import React, { createContext, useContext, useState } from 'react'
+
 import ErrorIcon from '../icon-components/ErrorIcon'
+import { SectionContainer } from '../segments/SectionContainer/SectionContainer'
 
 const StatusBarContext = createContext<{
-  StatusBarContent: React.ReactNode
+  statusBarContent: React.ReactNode
   setStatusBarContent: React.Dispatch<React.SetStateAction<React.ReactNode>>
 }>({
-  StatusBarContent: false,
+  statusBarContent: null,
   setStatusBarContent: () => undefined,
 })
 
@@ -19,9 +20,9 @@ interface StatusBarProviderProps {
 }
 
 export const StatusBarProvider: React.FC<StatusBarProviderProps> = ({ children }) => {
-  const [StatusBarContent, setStatusBarContent] = useState<React.ReactNode>(null)
+  const [statusBarContent, setStatusBarContent] = useState<React.ReactNode>(null)
   return (
-    <StatusBarContext.Provider value={{ StatusBarContent, setStatusBarContent }}>
+    <StatusBarContext.Provider value={{ statusBarContent, setStatusBarContent }}>
       {children}
     </StatusBarContext.Provider>
   )
@@ -34,10 +35,9 @@ interface StatusBarProps {
 }
 
 export const StatusBar: React.FC<StatusBarProps> = ({ className }) => {
-  const { StatusBarContent } = useStatusBarContext()
-
+  const { statusBarContent } = useStatusBarContext()
   return (
-    StatusBarContent && (
+    statusBarContent && (
       <div className={cx('w-full bg-negative-700 text-white', className)}>
         <div className="container mx-auto h-full flex items-center justify-center">
           <SectionContainer>
@@ -45,7 +45,7 @@ export const StatusBar: React.FC<StatusBarProps> = ({ className }) => {
               <span className="hidden md:flex mr-3">
                 <ErrorIcon solid className="w-5 h-5" />
               </span>
-              <p className="text-p2">{StatusBarContent}</p>
+              <p className="text-p2">{statusBarContent}</p>
             </div>
           </SectionContainer>
         </div>

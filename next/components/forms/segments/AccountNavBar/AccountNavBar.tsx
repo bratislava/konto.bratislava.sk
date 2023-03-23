@@ -18,7 +18,8 @@ import { Item } from 'react-stately'
 
 import Brand from '../../simple-components/Brand'
 import Link from './NavBarLink'
-import { StatusBar, useStatusBarContext } from 'components/forms/info-components/StatusBar'
+import { StatusBar } from 'components/forms/info-components/StatusBar'
+import { useElementSize } from 'usehooks-ts'
 
 interface IProps extends LanguageSelectProps {
   className?: string
@@ -61,6 +62,8 @@ export const AccountNavBar = ({
 }: IProps) => {
   const [burgerOpen, setBurgerOpen] = useState(false)
   const { isAuth, logout, userData } = useAccount()
+  const [desktopRef, { height: desktopHeight }] = useElementSize()
+  const [mobileRef, { height: mobileHeight }] = useElementSize()
 
   const languageKey = getLanguageKey(languageSelectProps.currentLanguage)
   const anotherLanguage = languageSelectProps.languages?.find((l) => l.key !== languageKey)
@@ -90,7 +93,7 @@ export const AccountNavBar = ({
       : router.pathname.startsWith(sectionItem.link)
 
   return (
-    <>
+    <div style={{ marginBottom: Math.max(desktopHeight, mobileHeight) }}>
       {/* Desktop */}
       <div
         id="desktop-navbar"
@@ -99,6 +102,7 @@ export const AccountNavBar = ({
           'text-p2 items-center',
           'fixed top-0 left-0 w-full bg-white z-40 shadow',
         )}
+        ref={desktopRef}
       >
         <StatusBar className="hidden lg:flex" />
         <div className="max-w-screen-lg m-auto hidden h-[57px] w-full items-center lg:flex gap-x-6">
@@ -221,6 +225,7 @@ export const AccountNavBar = ({
       <div
         id="mobile-navbar"
         className={cx(className, 'lg:hidden fixed top-0 left-0 w-full bg-white z-40 gap-x-6')}
+        ref={mobileRef}
       >
         {!burgerOpen && <StatusBar className="flex lg:hidden" />}
         <div className="h-16 flex items-center py-5 px-8 border-b-2">
@@ -260,7 +265,7 @@ export const AccountNavBar = ({
           )}
         </div>
       </div>
-    </>
+    </div>
   )
 }
 

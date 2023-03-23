@@ -5,8 +5,7 @@ import RestartIcon from '@assets/images/account/sync-icon.svg'
 import cx from 'classnames'
 import AccountMarkdown from 'components/forms/segments/AccountMarkdown/AccountMarkdown'
 import Button from 'components/forms/simple-components/Button'
-import { useRouter } from 'next/router'
-import { useTranslation } from 'next-i18next'
+import Link from 'next/link'
 
 type ThankYouCardBase = {
   status?: 'success' | 'error-1' | 'error-2' | 'error-3' | 'error-4'
@@ -23,8 +22,6 @@ const ThankYouCard = ({
   secondButtonTitle,
   content,
 }: ThankYouCardBase) => {
-  const { t } = useTranslation('account')
-  const router = useRouter()
   return (
     <div className="max-w-[734px] lg:max-w-[800px] w-full h-full mx-auto bg-gray-0 px-4 md:px-14 pb-4 pt-6 md:py-12 flex flex-col items-center gap-4 md:gap-6 rounded-none md:rounded-2xl">
       <span
@@ -60,14 +57,9 @@ const ThankYouCard = ({
         ) : (
           <>
             <Button text={firstButtonTitle} fullWidth />
-            <Button
-              variant="black-outline"
-              text={secondButtonTitle}
-              fullWidth
-              onPress={() => {
-                router.push('/account').then(() => {})
-              }}
-            />
+            <Link href="/" className="w-full">
+              <Button variant="black-outline" text={secondButtonTitle} fullWidth />
+            </Link>
           </>
         )}
       </div>

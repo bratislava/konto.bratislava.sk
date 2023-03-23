@@ -3,10 +3,9 @@ import cx from 'classnames'
 
 interface UserProfilePhotoProps {
   userData: UserData
-  isEditing?: boolean
 }
 
-const UserProfilePhoto = ({ userData, isEditing }: UserProfilePhotoProps) => {
+const UserProfilePhoto = ({ userData }: UserProfilePhotoProps) => {
   const { given_name, family_name, email } = userData
   const initialLetters =
     given_name || family_name
@@ -22,9 +21,7 @@ const UserProfilePhoto = ({ userData, isEditing }: UserProfilePhotoProps) => {
         'md:min-w-[168px] md:w-[168px] md:h-[168px]',
       )}
     >
-      <span className="text-p1-semibold md:text-h2">
-        {!isEditing ? initialLetters.toUpperCase() : ''}
-      </span>
+      <span className="text-p1-semibold md:text-h2">{initialLetters.toUpperCase()}</span>
     </div>
   )
 }

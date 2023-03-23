@@ -1,4 +1,4 @@
-import Link from 'next/link'
+import AccountMarkdown from 'components/forms/segments/AccountMarkdown/AccountMarkdown'
 import { useTranslation } from 'next-i18next'
 
 const TaxFooter = () => {
@@ -6,30 +6,8 @@ const TaxFooter = () => {
   return (
     <>
       <div className="md:hidden block w-full h-0.5 bg-gray-200 my-4" />
-      <div className="lg:text-20 text-16 lg:px-0 px-0 md:whitespace-normal whitespace-pre-line">
-        {t('tax_footer.register_ba')}
-        <div className="font-semibold inline">{t('tax_footer.register_ba_to')}</div>
-        {t('tax_footer.pay_tax_online')}
-        <div className="font-semibold inline">{t('tax_footer.pay_tax_online_to')}</div>
-        {t('tax_footer.accept_terms')}
-      </div>
-      <div className="lg:text-20 text-16 lg:px-0 px-0 md:whitespace-normal whitespace-pre-line mt-2">
-        <div className="inline">{t('tax_footer.maybe_questions')}</div>
-        <div className="inline">{t('tax_footer.see_answers')}</div>
-        <Link href="/i-have-a-problem" className="underline underline-offset-4">
-          {t('tax_footer.frequently_asked')}
-        </Link>
-        .
-        <div>
-          {t('tax_footer.contact_us_at')}
-          <Link
-            href={`mailto:${t('tax_footer.mail_to_contact')}`}
-            className="lg:text-20-medium text-16-medium underline-offset-4 underline"
-          >
-            {t('tax_footer.mail_to_contact')}
-          </Link>
-        </div>
-      </div>
+      <AccountMarkdown content={t('tax_footer.register_info')} className="mb-3 md:mb-0" />
+      <AccountMarkdown content={t('tax_footer.register_info_help')} />
     </>
   )
 }

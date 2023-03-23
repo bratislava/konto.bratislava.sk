@@ -2,7 +2,7 @@ import LockIcon from '@assets/images/new-icons/ui/lock.svg'
 import Button from 'components/forms/simple-components/Button'
 import { useRouter } from 'next/router'
 import { useTranslation } from 'next-i18next'
-import Button from 'components/forms/simple-components/Button'
+
 import UserProfileSection from './UserProfileSection'
 import UserProfileSectionHeader from './UserProfileSectionHeader'
 

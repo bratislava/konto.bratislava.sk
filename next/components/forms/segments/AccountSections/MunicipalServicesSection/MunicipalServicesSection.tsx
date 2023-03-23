@@ -159,7 +159,7 @@ const MunicipalServicesSection = () => {
       buttonText: t('account_section_services.cards.11.buttonText'),
       icon: <ExcavationsIcon className="w-10 h-10 lg:w-12 lg:h-12" />,
       category: [SECURITY_CATEGORY],
-      href: '',
+      href: 'https://inovacie.bratislava.sk/nahlasit-problem/',
     },
     {
       title: t('account_section_services.cards.12.title'),
@@ -193,14 +193,14 @@ const MunicipalServicesSection = () => {
       category: [GREEN_CATEGORY],
       href: 'https://10000stromov.sk/zapojit-sa',
     },
-    {
-      title: t('account_section_services.cards.16.title'),
-      description: t('account_section_services.cards.16.description'),
-      buttonText: t('account_section_services.cards.16.buttonText'),
-      icon: <MariniumIcon className="w-10 h-10 lg:w-12 lg:h-12" />,
-      category: [MARINIUM_CATEGORY],
-      href: 'https://marianum.sk/sluzby/hrobove-miesto/pridelenie-alebo-rezervacia-hroboveho-miesta',
-    },
+    // {
+    //   title: t('account_section_services.cards.16.title'),
+    //   description: t('account_section_services.cards.16.description'),
+    //   buttonText: t('account_section_services.cards.16.buttonText'),
+    //   icon: <MariniumIcon className="w-10 h-10 lg:w-12 lg:h-12" />,
+    //   category: [MARINIUM_CATEGORY],
+    //   href: 'https://marianum.sk/sluzby/hrobove-miesto/pridelenie-alebo-rezervacia-hroboveho-miesta',
+    // },
     {
       title: t('account_section_services.cards.17.title'),
       description: t('account_section_services.cards.17.description'),

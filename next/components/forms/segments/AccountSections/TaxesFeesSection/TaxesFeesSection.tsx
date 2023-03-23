@@ -1,5 +1,4 @@
 import useAccount, { AccountStatus } from '@utils/useAccount'
-import { isProductionDeployment } from '@utils/utils'
 import cx from 'classnames'
 import AccountSectionHeader from 'components/forms/segments/AccountSectionHeader/AccountSectionHeader'
 import TaxesFeesCard from 'components/forms/segments/AccountSections/TaxesFeesSection/TaxesFeesCard'
@@ -16,7 +15,6 @@ export type TaxesCardBase = {
   finishPrice: number
   paidDate?: string
   status: 'negative' | 'warning' | 'success'
-  isProductionDeployment?: boolean
 }
 
 const cards: TaxesCardBase[] = [
@@ -49,7 +47,11 @@ const cards: TaxesCardBase[] = [
   },
 ]
 
-const TaxesFeesSection = () => {
+interface TaxesFeesSectionProps {
+  isProductionDeployment?: boolean
+}
+
+const TaxesFeesSection = ({ isProductionDeployment }: TaxesFeesSectionProps) => {
   const [isOn, setIsOn] = useState<'default' | 'waiting' | 'error'>('waiting')
   const { t } = useTranslation('account')
   const { status } = useAccount()

@@ -1,4 +1,5 @@
 import useAccount, { AccountStatus } from '@utils/useAccount'
+import { isProductionDeployment } from '@utils/utils'
 import cx from 'classnames'
 import AccountSectionHeader from 'components/forms/segments/AccountSectionHeader/AccountSectionHeader'
 import TaxesFeesCard from 'components/forms/segments/AccountSections/TaxesFeesSection/TaxesFeesCard'
@@ -15,6 +16,7 @@ export type TaxesCardBase = {
   finishPrice: number
   paidDate?: string
   status: 'negative' | 'warning' | 'success'
+  isProductionDeployment?: boolean
 }
 
 const cards: TaxesCardBase[] = [
@@ -48,7 +50,7 @@ const cards: TaxesCardBase[] = [
 ]
 
 const TaxesFeesSection = () => {
-  const [isOn, setIsOn] = useState<'default' | 'waiting' | 'error'>('default')
+  const [isOn, setIsOn] = useState<'default' | 'waiting' | 'error'>('waiting')
   const { t } = useTranslation('account')
   const { status } = useAccount()
 
@@ -131,7 +133,7 @@ const TaxesFeesSection = () => {
       )}
       {isOn === 'waiting' && <TaxesFeesWaitingCard content={taxesFeesWaitingCardContent} />}
       {isOn === 'error' && <TaxesFeesErrorCard content={taxesFeesErrorCardContent} />}
-      {switcher()}
+      {isProductionDeployment ? null : switcher()}
     </div>
   )
 }

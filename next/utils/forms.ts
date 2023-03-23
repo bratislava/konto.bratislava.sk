@@ -9,12 +9,12 @@ import {
 import { customizeValidator } from '@rjsf/validator-ajv8'
 import { ApiError, formDataToXml, submitEform, validateKeyword, xmlToFormData } from '@utils/api'
 import { readTextFile } from '@utils/file'
+import useSnackbar from '@utils/useSnackbar'
 import { AnySchemaObject, ErrorObject, FuncKeywordDefinition } from 'ajv'
 import { JSONSchema7, JSONSchema7Definition } from 'json-schema'
 import { get, merge } from 'lodash'
 import { useTranslation } from 'next-i18next'
 import { ChangeEvent, RefObject, useEffect, useRef, useState } from 'react'
-import useSnackbar from 'react-simple-snackbar'
 
 import { StepData } from '../components/forms/types/TransformedFormData'
 
@@ -378,7 +378,7 @@ export const useFormStepper = (eformSlug: string, schema: RJSFSchema) => {
     setFormData({ ...formData, ...stepFormData })
   }
 
-  const [openSnackbarError] = useSnackbar()
+  const [openSnackbarError] = useSnackbar({ variant: 'error' })
   const { t } = useTranslation('forms')
 
   const exportXml = async () => {

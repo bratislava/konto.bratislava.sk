@@ -282,6 +282,8 @@ export const useFormStepper = (eformSlug: string, eform: EFormValue) => {
   const [errors, setErrors] = useState<RJSFValidationError[][]>([])
   const [extraErrors, setExtraErrors] = useState<ErrorSchema>({})
   const [stepData, setStepData] = useState<StepData[]>(getStepData(schema))
+  const [openSnackbarError] = useSnackbar({ variant: 'error' })
+  const [openSnackbarWarning] = useSnackbar({ variant: 'warning' })
 
   const steps = schema?.allOf
   const stepsLength: number = steps?.length ?? -1
@@ -317,7 +319,7 @@ export const useFormStepper = (eformSlug: string, eform: EFormValue) => {
         setFormId(id)
       }
     } catch (error) {
-      console.log(error)
+      openSnackbarError(t('errors.xml_export'))
     }
   }
 
@@ -434,14 +436,12 @@ export const useFormStepper = (eformSlug: string, eform: EFormValue) => {
     }
 
     try {
-      const res = await updateForm(token, formId, { formDataJson: formData })
-      console.log(res)
+      await updateForm(token, formId, { formDataJson: formData })
     } catch (error) {
-      console.log(error)
+      openSnackbarWarning(t('errors.form_update'))
     }
   }
 
-  const [openSnackbarError] = useSnackbar({ variant: 'error' })
   const { t } = useTranslation('forms')
 
   const exportXml = async () => {

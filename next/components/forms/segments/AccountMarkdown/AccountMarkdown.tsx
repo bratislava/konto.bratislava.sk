@@ -11,7 +11,7 @@ type AccountMarkdownBase = {
   className?: string
   content?: string
   variant?: 'sm' | 'normal'
-  uLinkVariant?: 'primary' | 'default'
+  uLinkVariant?: 'primary' | 'default' | 'error'
 }
 
 const TooltipComponent = ({ children }: never) => {
@@ -57,9 +57,10 @@ const AccountMarkdown = ({
           a: ({ href, children }: { href?: string; children?: string }) => (
             <Link
               href={href ?? '#'}
-              className={cx('break-words font-semibold  underline hover:text-category-600', {
-                'text-white': uLinkVariant === 'primary',
-                'text-font': uLinkVariant === 'default',
+              className={cx('break-words font-semibold  underline', {
+                'text-white hover:text-category-600': uLinkVariant === 'primary',
+                'text-font hover:text-category-600': uLinkVariant === 'default',
+                'text-white hover:text-white': uLinkVariant === 'error',
               })}
               target={href?.startsWith('http') ? '_blank' : ''}
             >

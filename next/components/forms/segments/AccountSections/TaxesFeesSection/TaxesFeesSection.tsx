@@ -60,7 +60,7 @@ const TaxesFeesSection = () => {
 <h4>${t('account_section_payment.error_card_title')}</h4>
 <div>${t('account_section_payment.error_card_content.title')}
 <ul>${
-    status === AccountStatus.IdentityVerificationRequired
+    status !== AccountStatus.IdentityVerificationSuccess
       ? t('account_section_payment.error_card_content.list.verification')
       : ''
   }${t('account_section_payment.error_card_content.list.other')}</ul><br />${t(

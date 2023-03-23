@@ -95,7 +95,7 @@ const IdentityVerificationForm = ({ onSubmit, error }: Props) => {
         type="submit"
         text={t('identity_verification_submit')}
         variant="category"
-        disabled={isSubmitting}
+        loading={isSubmitting}
       />
       <Button
         variant="plain-black"

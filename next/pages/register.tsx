@@ -18,6 +18,7 @@ import { useState } from 'react'
 
 import PageWrapper from '../components/layouts/PageWrapper'
 import { isProductionDeployment } from '../utils/utils'
+import AccountVerificationPendingAlert from 'components/forms/segments/AccountVerificationPendingAlert/AccountVerificationPendingAlert'
 
 export const getServerSideProps = async (ctx: GetServerSidePropsContext) => {
   if (isProductionDeployment()) return { notFound: true }
@@ -53,8 +54,19 @@ const RegisterPage = ({ page }: AsyncServerProps<typeof getServerSideProps>) => 
     setStatus,
     verifyIdentity,
     lastEmail,
+    refreshUserData,
   } = useAccount()
   const router = useRouter()
+
+  const verifyIdentityAndRefreshUserData = async (rc: string, idCard: string) => {
+    setLastRc(rc)
+    setLastIdCard(idCard)
+    await verifyIdentity(rc, idCard)
+    // give the queue a few seconds to process the verification
+    await new Promise((resolve) => setTimeout(resolve, 5000))
+    // status will be set according to current cognito tier - pending if still processing
+    await refreshUserData()
+  }
 
   return (
     <PageWrapper locale={page.locale} localizations={page.localizations}>
@@ -62,6 +74,8 @@ const RegisterPage = ({ page }: AsyncServerProps<typeof getServerSideProps>) => 
         backButtonHidden={[
           AccountStatus.EmailVerificationSuccess,
           AccountStatus.IdentityVerificationRequired,
+          AccountStatus.IdentityVerificationPending,
+          AccountStatus.IdentityVerificationFailed,
           AccountStatus.IdentityVerificationSuccess,
         ].includes(status)}
       >
@@ -99,13 +113,26 @@ const RegisterPage = ({ page }: AsyncServerProps<typeof getServerSideProps>) => 
             </AccountSuccessAlert>
           )}
           {status === AccountStatus.IdentityVerificationRequired && (
-            <IdentityVerificationForm
-              onSubmit={(rc, idCard) => {
-                setLastRc(rc)
-                setLastIdCard(idCard)
-                return verifyIdentity(rc, idCard)
-              }}
-              error={error}
+            <IdentityVerificationForm onSubmit={verifyIdentityAndRefreshUserData} error={error} />
+          )}
+          {status === AccountStatus.IdentityVerificationFailed && (
+            <IdentityVerificationForm onSubmit={verifyIdentityAndRefreshUserData} error={error} />
+          )}
+          {status === AccountStatus.IdentityVerificationPending && (
+            <AccountVerificationPendingAlert
+              title={t('identity_verification_pending_title')}
+              description={
+                lastRc && lastIdCard
+                  ? formatUnicorn(t('identity_verification_pending_description'), {
+                      rc: lastRc,
+                      idCard: lastIdCard,
+                    })
+                  : t('identity_verification_pending_description_without_data')
+              }
+              confirmLabel={t('account_continue_link')}
+              onConfirm={() =>
+                router.push({ pathname: ROUTES.ACCOUNT, query: { from: ROUTES.REGISTER } })
+              }
             />
           )}
           {status === AccountStatus.IdentityVerificationSuccess && (

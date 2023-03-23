@@ -1,21 +1,21 @@
-import BasketIcon from '@assets/images/account/municipal-services/basket-icon.svg'
-import ChristmasTreeIcon from '@assets/images/account/municipal-services/christmas-tree-icon.svg'
-import CityTreeIcon from '@assets/images/account/municipal-services/city-tree-icon.svg'
-import ExcavationsIcon from '@assets/images/account/municipal-services/excavations-icon.svg'
-import FrontGardensIcon from '@assets/images/account/municipal-services/front-gardens-icon.svg'
-import GardensIcon from '@assets/images/account/municipal-services/gardens-icon.svg'
-import LibraryIcon from '@assets/images/account/municipal-services/library-icon.svg'
-import MariniumIcon from '@assets/images/account/municipal-services/marinium-icon.svg'
-import MosquitoIcon from '@assets/images/account/municipal-services/mosquito-icon.svg'
-import ParkingIcon from '@assets/images/account/municipal-services/parking-icon.svg'
-import SecurityIcon from '@assets/images/account/municipal-services/security-icon.svg'
-import SewerageIcon from '@assets/images/account/municipal-services/sewerage-icon.svg'
-import TaxesIcon from '@assets/images/account/municipal-services/taxes-icon.svg'
-import TheatreIcon from '@assets/images/account/municipal-services/theatre-icon.svg'
-import TowIcon from '@assets/images/account/municipal-services/tow-icon.svg'
-import TransportIcon from '@assets/images/account/municipal-services/transport-icon.svg'
-import TreeIcon from '@assets/images/account/municipal-services/tree-icon.svg'
-import ZooIcon from '@assets/images/account/municipal-services/zoo-icon.svg'
+import TaxesIcon from '@assets/images/new-icons/other/city-bratislava/taxes.svg'
+import TheatreIcon from '@assets/images/new-icons/other/culture-communities/events-support.svg'
+import LibraryIcon from '@assets/images/new-icons/other/culture-communities/library.svg'
+import ZooIcon from '@assets/images/new-icons/other/culture-communities/zoo.svg'
+import CityTreeIcon from '@assets/images/new-icons/other/environment-construction/city-trees.svg'
+import GardensIcon from '@assets/images/new-icons/other/environment-construction/community-gardens.svg'
+import SewerageIcon from '@assets/images/new-icons/other/environment-construction/connector.svg'
+import FrontGardensIcon from '@assets/images/new-icons/other/environment-construction/front-gardens.svg'
+import TreeIcon from '@assets/images/new-icons/other/environment-construction/greenery.svg'
+import BasketIcon from '@assets/images/new-icons/other/environment-construction/waste.svg'
+import MariniumIcon from '@assets/images/new-icons/other/marianum.svg'
+import MosquitoIcon from '@assets/images/new-icons/other/mosquito-hunters.svg'
+import SecurityIcon from '@assets/images/new-icons/other/most-wanted-services/reporting-of-incentives.svg'
+import TransportIcon from '@assets/images/new-icons/other/transport-and-maps/city-​​transport.svg'
+import ExcavationsIcon from '@assets/images/new-icons/other/transport-and-maps/excavations.svg'
+import ParkingIcon from '@assets/images/new-icons/other/transport-and-maps/parking.svg'
+import TowIcon from '@assets/images/new-icons/other/transport-and-maps/towing.svg'
+import ChristmasTreeIcon from '@assets/images/new-icons/other/tree.svg'
 import MunicipalServicesSectionHeader from 'components/forms/segments/AccountSectionHeader/MunicipalServicesSectionHeader'
 import ServiceCard from 'components/forms/simple-components/ServiceCard'
 import { useTranslation } from 'next-i18next'
@@ -76,7 +76,7 @@ const MunicipalServicesSection = () => {
       title: t('account_section_services.cards.1.title'),
       description: t('account_section_services.cards.1.description'),
       buttonText: t('account_section_services.cards.1.buttonText'),
-      icon: <TaxesIcon className="w-10 h-10 lg:w-12 lg:h-12" />,
+      icon: <TaxesIcon className="w-10 h-10 lg:w-12 lg:h-12 text-category-600" />,
       category: TAXES_CATEGORY,
       href: '',
     },
@@ -84,7 +84,7 @@ const MunicipalServicesSection = () => {
       title: t('account_section_services.cards.2.title'),
       description: t('account_section_services.cards.2.description'),
       buttonText: t('account_section_services.cards.2.buttonText'),
-      icon: <TransportIcon className="w-10 h-10 lg:w-12 lg:h-12" />,
+      icon: <TransportIcon className="w-10 h-10 lg:w-12 lg:h-12 text-transport-700" />,
       category: TRANSPORT_CATEGORY,
       href: '',
     },
@@ -92,7 +92,7 @@ const MunicipalServicesSection = () => {
       title: t('account_section_services.cards.3.title'),
       description: t('account_section_services.cards.3.description'),
       buttonText: t('account_section_services.cards.3.buttonText'),
-      icon: <ParkingIcon className="w-10 h-10 lg:w-12 lg:h-12" />,
+      icon: <ParkingIcon className="w-10 h-10 lg:w-12 lg:h-12 text-transport-700" />,
       category: PARKING_CATEGORY,
       href: '',
     },
@@ -100,7 +100,7 @@ const MunicipalServicesSection = () => {
       title: t('account_section_services.cards.4.title'),
       description: t('account_section_services.cards.4.description'),
       buttonText: t('account_section_services.cards.4.buttonText'),
-      icon: <ParkingIcon className="w-10 h-10 lg:w-12 lg:h-12" />,
+      icon: <ParkingIcon className="w-10 h-10 lg:w-12 lg:h-12 text-transport-700" />,
       category: PARKING_CATEGORY,
       href: '',
     },
@@ -108,7 +108,7 @@ const MunicipalServicesSection = () => {
       title: t('account_section_services.cards.5.title'),
       description: t('account_section_services.cards.5.description'),
       buttonText: t('account_section_services.cards.5.buttonText'),
-      icon: <LibraryIcon className="w-10 h-10 lg:w-12 lg:h-12" />,
+      icon: <LibraryIcon className="w-10 h-10 lg:w-12 lg:h-12 text-culture-700" />,
       category: CULTURE_CATEGORY,
       href: '',
     },
@@ -116,7 +116,7 @@ const MunicipalServicesSection = () => {
       title: t('account_section_services.cards.6.title'),
       description: t('account_section_services.cards.6.description'),
       buttonText: t('account_section_services.cards.6.buttonText'),
-      icon: <TowIcon className="w-10 h-10 lg:w-12 lg:h-12" />,
+      icon: <TowIcon className="w-10 h-10 lg:w-12 lg:h-12 text-transport-700" />,
       category: TRANSPORT_CATEGORY,
       href: '',
     },
@@ -124,7 +124,7 @@ const MunicipalServicesSection = () => {
       title: t('account_section_services.cards.7.title'),
       description: t('account_section_services.cards.7.description'),
       buttonText: t('account_section_services.cards.7.buttonText'),
-      icon: <SecurityIcon className="w-10 h-10 lg:w-12 lg:h-12" />,
+      icon: <SecurityIcon className="w-10 h-10 lg:w-12 lg:h-12 text-category-600" />,
       category: SECURITY_CATEGORY,
       href: '',
     },
@@ -132,7 +132,7 @@ const MunicipalServicesSection = () => {
       title: t('account_section_services.cards.8.title'),
       description: t('account_section_services.cards.8.description'),
       buttonText: t('account_section_services.cards.8.buttonText'),
-      icon: <TreeIcon className="w-10 h-10 lg:w-12 lg:h-12" />,
+      icon: <TreeIcon className="text-environment-700 w-10 h-10 lg:w-12 lg:h-12" />,
       category: GREEN_CATEGORY,
       href: '',
     },
@@ -140,7 +140,7 @@ const MunicipalServicesSection = () => {
       title: t('account_section_services.cards.9.title'),
       description: t('account_section_services.cards.9.description'),
       buttonText: t('account_section_services.cards.9.buttonText'),
-      icon: <GardensIcon className="w-10 h-10 lg:w-12 lg:h-12" />,
+      icon: <GardensIcon className="w-10 h-10 lg:w-12 lg:h-12 text-environment-700" />,
       category: ENVIROMENTS_CATEGORY,
       href: '',
     },
@@ -148,7 +148,7 @@ const MunicipalServicesSection = () => {
       title: t('account_section_services.cards.10.title'),
       description: t('account_section_services.cards.10.description'),
       buttonText: t('account_section_services.cards.10.buttonText'),
-      icon: <TheatreIcon className="w-10 h-10 lg:w-12 lg:h-12" />,
+      icon: <TheatreIcon className="w-10 h-10 lg:w-12 lg:h-12 text-culture-700" />,
       category: CULTURE_CATEGORY,
       href: '',
     },
@@ -156,7 +156,7 @@ const MunicipalServicesSection = () => {
       title: t('account_section_services.cards.11.title'),
       description: t('account_section_services.cards.11.description'),
       buttonText: t('account_section_services.cards.11.buttonText'),
-      icon: <ExcavationsIcon className="w-10 h-10 lg:w-12 lg:h-12" />,
+      icon: <ExcavationsIcon className="w-10 h-10 lg:w-12 lg:h-12 text-transport-700" />,
       category: TAXES_CATEGORY,
       href: '',
     },
@@ -164,7 +164,7 @@ const MunicipalServicesSection = () => {
       title: t('account_section_services.cards.12.title'),
       description: t('account_section_services.cards.12.description'),
       buttonText: t('account_section_services.cards.12.buttonText'),
-      icon: <SecurityIcon className="w-10 h-10 lg:w-12 lg:h-12" />,
+      icon: <SecurityIcon className="w-10 h-10 lg:w-12 lg:h-12 text-category-600" />,
       category: SECURITY_CATEGORY,
       href: '',
     },
@@ -172,7 +172,7 @@ const MunicipalServicesSection = () => {
       title: t('account_section_services.cards.13.title'),
       description: t('account_section_services.cards.13.description'),
       buttonText: t('account_section_services.cards.13.buttonText'),
-      icon: <ZooIcon className="w-10 h-10 lg:w-12 lg:h-12" />,
+      icon: <ZooIcon className="w-10 h-10 lg:w-12 lg:h-12 text-culture-700" />,
       category: CULTURE_CATEGORY,
       href: '',
     },
@@ -180,7 +180,7 @@ const MunicipalServicesSection = () => {
       title: t('account_section_services.cards.14.title'),
       description: t('account_section_services.cards.14.description'),
       buttonText: t('account_section_services.cards.14.buttonText'),
-      icon: <MosquitoIcon className="w-10 h-10 lg:w-12 lg:h-12" />,
+      icon: <MosquitoIcon className="w-10 h-10 lg:w-12 lg:h-12 text-environment-700" />,
       category: JOIN_CATEGORY,
       href: '',
     },
@@ -188,7 +188,7 @@ const MunicipalServicesSection = () => {
       title: t('account_section_services.cards.15.title'),
       description: t('account_section_services.cards.15.description'),
       buttonText: t('account_section_services.cards.15.buttonText'),
-      icon: <TreeIcon className="w-10 h-10 lg:w-12 lg:h-12" />,
+      icon: <TreeIcon className="text-environment-700 w-10 h-10 lg:w-12 lg:h-12" />,
       category: GREEN_CATEGORY,
       href: '',
     },
@@ -204,7 +204,7 @@ const MunicipalServicesSection = () => {
       title: t('account_section_services.cards.17.title'),
       description: t('account_section_services.cards.17.description'),
       buttonText: t('account_section_services.cards.17.buttonText'),
-      icon: <SecurityIcon className="w-10 h-10 lg:w-12 lg:h-12" />,
+      icon: <SecurityIcon className="w-10 h-10 lg:w-12 lg:h-12 text-category-600" />,
       category: SECURITY_CATEGORY,
       href: '',
     },
@@ -212,7 +212,7 @@ const MunicipalServicesSection = () => {
       title: t('account_section_services.cards.18.title'),
       description: t('account_section_services.cards.18.description'),
       buttonText: t('account_section_services.cards.18.buttonText'),
-      icon: <ChristmasTreeIcon className="w-10 h-10 lg:w-12 lg:h-12" />,
+      icon: <ChristmasTreeIcon className="w-10 h-10 lg:w-12 lg:h-12 text-environment-700" />,
       category: JOIN_CATEGORY,
       href: '',
     },
@@ -220,7 +220,7 @@ const MunicipalServicesSection = () => {
       title: t('account_section_services.cards.19.title'),
       description: t('account_section_services.cards.19.description'),
       buttonText: t('account_section_services.cards.19.buttonText'),
-      icon: <FrontGardensIcon className="w-10 h-10 lg:w-12 lg:h-12" />,
+      icon: <FrontGardensIcon className="w-10 h-10 lg:w-12 lg:h-12 text-environment-700" />,
       category: ENVIROMENTS_CATEGORY,
       href: '',
     },
@@ -228,7 +228,7 @@ const MunicipalServicesSection = () => {
       title: t('account_section_services.cards.20.title'),
       description: t('account_section_services.cards.20.description'),
       buttonText: t('account_section_services.cards.20.buttonText'),
-      icon: <BasketIcon className="w-10 h-10 lg:w-12 lg:h-12" />,
+      icon: <BasketIcon className="w-10 h-10 lg:w-12 lg:h-12 text-environment-700" />,
       category: BASKET_CATEGORY,
       href: '',
     },
@@ -236,7 +236,7 @@ const MunicipalServicesSection = () => {
       title: t('account_section_services.cards.21.title'),
       description: t('account_section_services.cards.21.description'),
       buttonText: t('account_section_services.cards.21.buttonText'),
-      icon: <BasketIcon className="w-10 h-10 lg:w-12 lg:h-12" />,
+      icon: <BasketIcon className="w-10 h-10 lg:w-12 lg:h-12 text-environment-700" />,
       category: BASKET_CATEGORY,
       href: '',
     },
@@ -244,7 +244,7 @@ const MunicipalServicesSection = () => {
       title: t('account_section_services.cards.22.title'),
       description: t('account_section_services.cards.22.description'),
       buttonText: t('account_section_services.cards.22.buttonText'),
-      icon: <BasketIcon className="w-10 h-10 lg:w-12 lg:h-12" />,
+      icon: <BasketIcon className="w-10 h-10 lg:w-12 lg:h-12 text-environment-700" />,
       category: BASKET_CATEGORY,
       href: '',
     },
@@ -252,7 +252,7 @@ const MunicipalServicesSection = () => {
       title: t('account_section_services.cards.23.title'),
       description: t('account_section_services.cards.23.description'),
       buttonText: t('account_section_services.cards.23.buttonText'),
-      icon: <BasketIcon className="w-10 h-10 lg:w-12 lg:h-12" />,
+      icon: <BasketIcon className="w-10 h-10 lg:w-12 lg:h-12 text-environment-700" />,
       category: BASKET_CATEGORY,
       href: '',
     },
@@ -260,7 +260,7 @@ const MunicipalServicesSection = () => {
       title: t('account_section_services.cards.24.title'),
       description: t('account_section_services.cards.24.description'),
       buttonText: t('account_section_services.cards.24.buttonText'),
-      icon: <BasketIcon className="w-10 h-10 lg:w-12 lg:h-12" />,
+      icon: <BasketIcon className="w-10 h-10 lg:w-12 lg:h-12 text-environment-700" />,
       category: BASKET_CATEGORY,
       href: '',
     },
@@ -276,7 +276,7 @@ const MunicipalServicesSection = () => {
       title: t('account_section_services.cards.26.title'),
       description: t('account_section_services.cards.26.description'),
       buttonText: t('account_section_services.cards.26.buttonText'),
-      icon: <CityTreeIcon className="w-10 h-10 lg:w-12 lg:h-12" />,
+      icon: <CityTreeIcon className="w-10 h-10 lg:w-12 lg:h-12 text-environment-700" />,
       category: ENVIROMENTS_CATEGORY,
       href: '',
     },
@@ -292,7 +292,7 @@ const MunicipalServicesSection = () => {
       title: t('account_section_services.cards.28.title'),
       description: t('account_section_services.cards.28.description'),
       buttonText: t('account_section_services.cards.28.buttonText'),
-      icon: <SewerageIcon className="w-10 h-10 lg:w-12 lg:h-12" />,
+      icon: <SewerageIcon className="w-10 h-10 lg:w-12 lg:h-12 text-environment-700" />,
       category: TAXES_CATEGORY,
       href: '',
     },
@@ -300,7 +300,7 @@ const MunicipalServicesSection = () => {
       title: t('account_section_services.cards.29.title'),
       description: t('account_section_services.cards.29.description'),
       buttonText: t('account_section_services.cards.29.buttonText'),
-      icon: <BasketIcon className="w-10 h-10 lg:w-12 lg:h-12" />,
+      icon: <BasketIcon className="w-10 h-10 lg:w-12 lg:h-12 text-environment-700" />,
       category: BASKET_CATEGORY,
       href: '',
     },
@@ -308,7 +308,7 @@ const MunicipalServicesSection = () => {
       title: t('account_section_services.cards.30.title'),
       description: t('account_section_services.cards.30.description'),
       buttonText: t('account_section_services.cards.30.buttonText'),
-      icon: <BasketIcon className="w-10 h-10 lg:w-12 lg:h-12" />,
+      icon: <BasketIcon className="w-10 h-10 lg:w-12 lg:h-12 text-environment-700" />,
       category: BASKET_CATEGORY,
       href: '',
     },
@@ -316,7 +316,7 @@ const MunicipalServicesSection = () => {
       title: t('account_section_services.cards.31.title'),
       description: t('account_section_services.cards.31.description'),
       buttonText: t('account_section_services.cards.31.buttonText'),
-      icon: <BasketIcon className="w-10 h-10 lg:w-12 lg:h-12" />,
+      icon: <BasketIcon className="w-10 h-10 lg:w-12 lg:h-12 text-environment-700" />,
       category: BASKET_CATEGORY,
       href: '',
     },

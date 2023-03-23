@@ -135,7 +135,7 @@ const UserProfileDetailEdit = (props: UserProfileDetailEditProps) => {
         </div>
       </div>
       <div className="flex flex-row flex-wrap gap-4">
-        <div className="grow w-full md:w-fit">
+        <div className="grow">
           <Controller
             name="email"
             control={control}
@@ -175,6 +175,9 @@ const UserProfileDetailEdit = (props: UserProfileDetailEditProps) => {
             )}
           />
         </div>
+        <div className="grow invisible h-0">
+          <InputField label={t('profile_detail.phone_number')} />
+        </div>
       </div>
       <div className="h-0 w-full border-b-2 border-gray-200" />
       <h5 className="text-h5">{t('profile_detail.address')}</h5>
@@ -205,7 +208,7 @@ const UserProfileDetailEdit = (props: UserProfileDetailEditProps) => {
             )}
           />
         </div>
-        <div className="w-full md:w-52">
+        <div className="w-52">
           <Controller
             name="postal_code"
             control={control}
@@ -220,14 +223,6 @@ const UserProfileDetailEdit = (props: UserProfileDetailEditProps) => {
           />
         </div>
       </div>
-      <Button
-        className="md:hidden w-full block"
-        variant="black"
-        size="sm"
-        text={t('profile_detail.save_edit_button')}
-        type="submit"
-        form={formId}
-      />
     </form>
   )
 }

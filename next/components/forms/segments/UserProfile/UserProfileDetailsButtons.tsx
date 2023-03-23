@@ -22,7 +22,7 @@ const UserProfileDetailsButtons = (props: UserProfileDetailsButtonsProps) => {
       {isEditing ? (
         <div className="flex flex-row gap-5 items-center">
           <Button
-            className={cx('hidden focus:bg-white hover:bg-white h-full', 'md:block')}
+            className={cx('hidden focus:bg-white h-full', 'md:block')}
             variant="plain-black"
             size="sm"
             text={t('profile_detail.stop_edit_button')}
@@ -40,6 +40,20 @@ const UserProfileDetailsButtons = (props: UserProfileDetailsButtonsProps) => {
             className={cx('block cursor-pointer', 'md:hidden')}
             onClick={onCancelEditing}
           />
+          <div
+            className={cx(
+              'fixed bottom-0 left-0 right-0 bg-white z-50 drop-shadow-2xl flex flex-row justify-center py-2',
+              'md:hidden',
+            )}
+          >
+            <Button
+              variant="black"
+              size="sm"
+              text={t('profile_detail.save_edit_button')}
+              type="submit"
+              form={formId}
+            />
+          </div>
         </div>
       ) : (
         <div className="width-fit">

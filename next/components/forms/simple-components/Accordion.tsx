@@ -68,11 +68,11 @@ const Accordion = ({
         <div className="flex w-full flex-col gap-2 lg:gap-4">
           <button
             type="button"
-            className="flex cursor-pointer items-center gap-4"
+            className="no-tap-highlight flex cursor-pointer items-center gap-4"
             onClick={() => setIsActive(!isActive)}
           >
             <div
-              className={cx('flex grow', {
+              className={cx('flex grow text-left', {
                 'text-h6': accordionSize === 'xs',
                 'text-h5': accordionSize === 'sm',
                 'text-h4': accordionSize === 'md',
@@ -93,9 +93,9 @@ const Accordion = ({
             </div>
             <ExpandMore
               className={cx('flex items-center justify-center', {
-                'lg:w-10 lg:h-10 w-8 h-8': accordionSize === 'lg',
-                'lg:w-8 lg:h-8 w-6 h-6': accordionSize === 'md',
-                'w-6 h-6': accordionSize === 'sm' || accordionSize === 'xs',
+                'lg:min-w-[40px] lg:w-10 lg:h-10 w-8 h-8 min-w-[32px]': accordionSize === 'lg',
+                'lg:min-w-[32px] lg:w-8 lg:h-8 w-6 h-6 min-w-[24px]': accordionSize === 'md',
+                'w-6 h-6 min-w-[24px]': accordionSize === 'sm' || accordionSize === 'xs',
               })}
             />
           </button>

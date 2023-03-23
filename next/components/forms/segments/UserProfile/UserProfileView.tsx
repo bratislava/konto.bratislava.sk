@@ -12,7 +12,7 @@ const UserProfileView = () => {
   const { t } = useTranslation('account')
   const [isEditing, setIsEditing] = useState<boolean>(false)
   const [isAlertOpened, setIsAlertOpened] = useState(false)
-  const [alertType, setAlertType] = useState<'success' | 'error' | null>(null)
+  const [alertType, setAlertType] = useState<'success' | 'error'>('success')
   const [isEmailModalOpened, setIsEmailModalOpened] = useState<boolean>(false)
   const { userData, updateUserData, error } = useAccount()
 
@@ -22,13 +22,6 @@ const UserProfileView = () => {
 
   // TODO: handle change of consents in backend DB
   const [allConsents, setAllConsents] = useState<Consent[]>([
-    {
-      id: 'personal_data',
-      title: t('consents.personal_data.title'),
-      text: t('consents.personal_data.text'),
-      isDisabled: true,
-      isSelected: true,
-    },
     {
       id: 'receive_information',
       title: t('consents.receive_information.title'),
@@ -46,9 +39,7 @@ const UserProfileView = () => {
     updateUserData(newUserData).then(() => {
       setIsEditing(false)
       setIsAlertOpened(true)
-      setTimeout(() => {
-        setIsAlertOpened(false)
-      }, 3000)
+      setTimeout(() => setIsAlertOpened(false), 3000)
     })
   }
 

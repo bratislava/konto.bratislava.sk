@@ -13,7 +13,7 @@ const ThankYouFormSection = () => {
         <ThankYouCard
           status="success"
           title={t('thank_you.form_submit.title')}
-          firstButtonTitle="Nechať spätnú väzbu"
+          firstButtonTitle={t('thank_you.success.button_to_formular_text_2')}
           secondButtonTitle={t('thank_you.success.button_to_profil_text')}
           content={t('thank_you.form_submit.content')}
         />

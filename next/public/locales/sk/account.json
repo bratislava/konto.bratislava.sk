@@ -501,7 +501,8 @@
       "title": "Platba prebehla úspešne",
       "content": "<span className='text-p2'>Ďakujeme za zaplatenie dane z nehnuteľností.<br />Ohodnoťte službu a pomôžte mestu Bratislava zlepšovať sa.</span>",
       "button_to_formular_text": "Vyplniť dotazník",
-      "button_to_profil_text": "Pokračovať do konta"
+      "button_to_profil_text": "Pokračovať do konta",
+      "button_to_formular_text_2": "Nechať spätnú väzbu"
     },
     "form_submit": {
       "title": "Ďakujeme za odoslanie žiadosti",

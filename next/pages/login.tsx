@@ -46,13 +46,13 @@ const LoginPage = ({ page }: AsyncServerProps<typeof getServerSideProps>) => {
       typeof router.query.from === 'string' &&
       router.query.from.startsWith('/')
         ? decodeURIComponent(router.query.from)
-        : ROUTES.ACCOUNT
+        : ROUTES.HOME
     router.push(from)
   }
 
   useEffect(() => {
     if (user !== null && user !== undefined) {
-      router.push(ROUTES.ACCOUNT)
+      router.push(ROUTES.HOME)
     }
   }, [user])
 

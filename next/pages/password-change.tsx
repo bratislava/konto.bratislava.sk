@@ -6,9 +6,9 @@ import AccountSuccessAlert from 'components/forms/segments/AccountSuccessAlert/A
 import PasswordChangeForm from 'components/forms/segments/PasswordChangeForm/PasswordChangeForm'
 import LoginRegisterLayout from 'components/layouts/LoginRegisterLayout'
 import { GetServerSidePropsContext } from 'next'
+import { useRouter } from 'next/router'
 import { useTranslation } from 'next-i18next'
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
-import { useRouter } from 'next/router'
 import { useEffect } from 'react'
 
 import PageWrapper from '../components/layouts/PageWrapper'
@@ -46,7 +46,7 @@ const PasswordChangePage = ({ page }: AsyncServerProps<typeof getServerSideProps
   }, [isAuth])
 
   const onConfirm = () => {
-    router.push(ROUTES.ACCOUNT)
+    router.push(ROUTES.HOME)
   }
 
   return (

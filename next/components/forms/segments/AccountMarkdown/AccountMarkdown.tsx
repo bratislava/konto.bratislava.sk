@@ -57,10 +57,13 @@ const AccountMarkdown = ({
           a: ({ href, children }: { href?: string; children?: string }) => (
             <Link
               href={href ?? '#'}
-              className={cx('break-words font-semibold  underline hover:text-category-600', {
-                'text-white': uLinkVariant === 'primary',
-                'text-font': uLinkVariant === 'default',
-              })}
+              className={cx(
+                'break-words font-semibold underline-offset-4 underline hover:text-category-600',
+                {
+                  'text-white': uLinkVariant === 'primary',
+                  'text-font': uLinkVariant === 'default',
+                },
+              )}
               target={href?.startsWith('http') ? '_blank' : ''}
             >
               {children}

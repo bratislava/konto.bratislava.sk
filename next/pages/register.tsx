@@ -130,7 +130,7 @@ const RegisterPage = ({ page }: AsyncServerProps<typeof getServerSideProps>) => 
               }
               confirmLabel={t('account_continue_link')}
               onConfirm={() =>
-                router.push({ pathname: ROUTES.ACCOUNT, query: { from: ROUTES.REGISTER } })
+                router.push({ pathname: ROUTES.HOME, query: { from: ROUTES.REGISTER } })
               }
             />
           )}

@@ -21,8 +21,6 @@ import { isProductionDeployment } from '../utils/utils'
 import AccountVerificationPendingAlert from 'components/forms/segments/AccountVerificationPendingAlert/AccountVerificationPendingAlert'
 
 export const getServerSideProps = async (ctx: GetServerSidePropsContext) => {
-  if (isProductionDeployment()) return { notFound: true }
-
   const locale = ctx.locale ?? 'sk'
 
   return {
@@ -36,6 +34,7 @@ export const getServerSideProps = async (ctx: GetServerSidePropsContext) => {
             locale: l,
           })),
       },
+      isProductionDeployment: isProductionDeployment(),
       ...(await serverSideTranslations(locale)),
     },
   }
@@ -102,7 +101,7 @@ const RegisterPage = ({ page }: AsyncServerProps<typeof getServerSideProps>) => 
               onConfirm={() => setStatus(AccountStatus.IdentityVerificationRequired)}
               cancelLabel={t('identity_verification_skip')}
               onCancel={() =>
-                router.push({ pathname: ROUTES.ACCOUNT, query: { from: ROUTES.REGISTER } })
+                router.push({ pathname: ROUTES.HOME, query: { from: ROUTES.REGISTER } })
               }
             >
               <AccountMarkdown
@@ -148,7 +147,7 @@ const RegisterPage = ({ page }: AsyncServerProps<typeof getServerSideProps>) => 
               }
               confirmLabel={t('account_continue_link')}
               onConfirm={() =>
-                router.push({ pathname: ROUTES.ACCOUNT, query: { from: ROUTES.REGISTER } })
+                router.push({ pathname: ROUTES.HOME, query: { from: ROUTES.REGISTER } })
               }
             />
           )}

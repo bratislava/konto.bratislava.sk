@@ -47,8 +47,12 @@ const cards: TaxesCardBase[] = [
   },
 ]
 
-const TaxesFeesSection = () => {
-  const [isOn, setIsOn] = useState<'default' | 'waiting' | 'error'>('default')
+interface TaxesFeesSectionProps {
+  isProductionDeployment?: boolean
+}
+
+const TaxesFeesSection = ({ isProductionDeployment }: TaxesFeesSectionProps) => {
+  const [isOn, setIsOn] = useState<'default' | 'waiting' | 'error'>('waiting')
   const { t } = useTranslation('account')
   const { status } = useAccount()
 
@@ -131,7 +135,7 @@ const TaxesFeesSection = () => {
       )}
       {isOn === 'waiting' && <TaxesFeesWaitingCard content={taxesFeesWaitingCardContent} />}
       {isOn === 'error' && <TaxesFeesErrorCard content={taxesFeesErrorCardContent} />}
-      {switcher()}
+      {isProductionDeployment ? null : switcher()}
     </div>
   )
 }

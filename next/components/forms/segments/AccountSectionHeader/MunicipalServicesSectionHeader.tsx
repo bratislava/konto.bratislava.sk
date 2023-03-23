@@ -1,8 +1,8 @@
-import { useWindowSize } from '@utils/useWindowSize'
 import SelectField, {
   SelectOption,
 } from 'components/forms/widget-components/SelectField/SelectField'
 import { Dispatch, SetStateAction } from 'react'
+import { useWindowSize } from 'usehooks-ts'
 
 type MunicipalServicesSectionHeaderBase = {
   title: string

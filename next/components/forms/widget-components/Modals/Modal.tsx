@@ -1,4 +1,4 @@
-import ArrowLeft from '@assets/images/forms/arrow-left.svg'
+import ArrowLeft from '@assets/images/new-icons/ui/arrow-left.svg'
 import cx from 'classnames'
 import { Dispatch, SetStateAction, useState } from 'react'
 

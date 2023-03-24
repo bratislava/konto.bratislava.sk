@@ -531,8 +531,18 @@ export const AccountProvider = ({ children }: { children: ReactNode }) => {
 
   // map tier to status, TODO think about dropping global status and using only tier
   useEffect(() => {
+    // TODO these serve to guide users through multiple steps and should be dismissed only by them - don't update status automatically when here
+    const tempStatuses = [
+      AccountStatus.NewPasswordSuccess,
+      AccountStatus.NewPasswordRequired,
+      AccountStatus.EmailVerificationSuccess,
+      AccountStatus.EmailVerificationRequired,
+    ]
+    if (tempStatuses.includes(status)) {
+      return
+    }
     setStatus(userData ? mapTierToStatus(userData.tier) : AccountStatus.Idle)
-  }, [userData])
+  }, [status, userData])
 
   useEffect(() => {
     // this overrides the 'global' status notification (i.e. crashed servers), but since we don't have design for multiple, showing failed notification probably takes precedence

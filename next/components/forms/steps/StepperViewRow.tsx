@@ -1,4 +1,4 @@
-import SelectedIcon from '@assets/images/forms/selected.svg'
+import SelectedIcon from '@assets/images/new-icons/ui/done.svg'
 import cx from 'classnames'
 import { useTranslation } from 'next-i18next'
 
@@ -32,7 +32,7 @@ const StepperViewRow = (props: StepperViewRowProps) => {
         }}
       >
         <div className={iconClassName}>
-          {isCurrent || !isFilled ? order : <SelectedIcon className="scale-125" />}
+          {isCurrent || !isFilled ? order : <SelectedIcon fill="white" className="w-6 h-6" />}
         </div>
         <p className="text-p3-medium">{title}</p>
       </div>

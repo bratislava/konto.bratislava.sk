@@ -120,9 +120,7 @@ const IntroSection = () => {
             title={t('account_section_intro.banner_title')}
             content={bannerContent}
             buttonText={t('account_section_intro.banner_button_text')}
-            onPress={() => {
-              alert('Button was pressed')
-            }}
+            onPress={() => router.push('/i-have-a-problem')}
           />
         </div>
       </div>

@@ -1,4 +1,4 @@
-import HelpIcon from '@assets/images/forms/icon-help.svg'
+import HelpIcon from '@assets/images/new-icons/ui/help.svg'
 import TooltipPopup from 'components/forms/info-components/Tooltip/TooltipPopup'
 import { useRef, useState } from 'react'
 import { TooltipTriggerProps, useHover } from 'react-aria'

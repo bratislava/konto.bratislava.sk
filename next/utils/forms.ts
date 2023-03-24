@@ -7,12 +7,14 @@ import {
   StrictRJSFSchema,
 } from '@rjsf/utils'
 import { customizeValidator } from '@rjsf/validator-ajv8'
-import { ApiError, submitEform, validateKeyword } from '@utils/api'
+import { ApiError, formDataToXml, submitEform, validateKeyword, xmlToFormData } from '@utils/api'
+import { readTextFile } from '@utils/file'
+import useSnackbar from '@utils/useSnackbar'
 import { AnySchemaObject, ErrorObject, FuncKeywordDefinition } from 'ajv'
 import { JSONSchema7, JSONSchema7Definition } from 'json-schema'
 import { get, merge } from 'lodash'
 import { useTranslation } from 'next-i18next'
-import { RefObject, useEffect, useRef, useState } from 'react'
+import { ChangeEvent, RefObject, useEffect, useRef, useState } from 'react'
 
 import { StepData } from '../components/forms/types/TransformedFormData'
 
@@ -90,7 +92,20 @@ export const ajvKeywords: KeywordDefinition[] = [
   {
     keyword: 'example',
   },
+  {
+    keyword: 'timeFromTo',
+  },
+  {
+    keyword: 'dateFromTo',
+  },
 ]
+
+export const ajvFormats = {
+  zip: /\b\d{5}\b/,
+  time: /^[0-2]\d:[0-5]\d$/,
+  'data-url': () => true,
+  ciselnik: () => true,
+}
 
 const validateAsyncProperties = async (
   schema: RJSFSchema,
@@ -363,6 +378,32 @@ export const useFormStepper = (eformSlug: string, schema: RJSFSchema) => {
     setFormData({ ...formData, ...stepFormData })
   }
 
+  const [openSnackbarError] = useSnackbar({ variant: 'error' })
+  const { t } = useTranslation('forms')
+
+  const exportXml = async () => {
+    try {
+      const xml = await formDataToXml(eformSlug, formData)
+      const link = document.createElement('a')
+      link.href = URL.createObjectURL(xml)
+      link.download = `${eformSlug}_output.xml`
+      link.click()
+      URL.revokeObjectURL(link.href)
+    } catch (error) {
+      openSnackbarError(t('errors.xml_export'))
+    }
+  }
+
+  const importXml = async (e: ChangeEvent<HTMLInputElement>) => {
+    try {
+      const xmlData = await readTextFile(e)
+      const formData = await xmlToFormData(eformSlug, xmlData)
+      setFormData(formData)
+    } catch (error) {
+      openSnackbarError(t('errors.xml_import'))
+    }
+  }
+
   const handleOnSubmit = async (newFormData: RJSFSchema) => {
     increaseStepErrors()
     setStepFormData(newFormData)
@@ -417,6 +458,8 @@ export const useFormStepper = (eformSlug: string, schema: RJSFSchema) => {
     keywords: ajvKeywords,
     customFormats,
     validator,
+    exportXml,
+    importXml,
   }
 }
 

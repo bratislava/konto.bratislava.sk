@@ -9,7 +9,11 @@ import {
 } from 'amazon-cognito-identity-js'
 import * as AWS from 'aws-sdk/global'
 import { AWSError } from 'aws-sdk/global'
-import React, { ReactNode, useContext, useEffect, useState } from 'react'
+import { useStatusBarContext } from 'components/forms/info-components/StatusBar'
+import AccountMarkdown from 'components/forms/segments/AccountMarkdown/AccountMarkdown'
+import { useTranslation } from 'next-i18next'
+import React, { ReactNode, useCallback, useContext, useEffect, useState } from 'react'
+import { useInterval } from 'usehooks-ts'
 
 export enum AccountStatus {
   Idle,
@@ -18,11 +22,17 @@ export enum AccountStatus {
   EmailVerificationRequired,
   EmailVerificationSuccess,
   IdentityVerificationRequired,
+  IdentityVerificationPending,
+  IdentityVerificationFailed,
   IdentityVerificationSuccess,
 }
 
 export enum Tier {
-  IdentityCard = 'IDENTITY_CARD',
+  NEW = 'NEW',
+  QUEUE_IDENTITY_CARD = 'QUEUE_IDENTITY_CARD',
+  NOT_VERIFIED_IDENTITY_CARD = 'NOT_VERIFIED_IDENTITY_CARD',
+  IDENTITY_CARD = 'IDENTITY_CARD',
+  EID = 'EID',
 }
 
 export interface Address {
@@ -78,6 +88,7 @@ interface Account {
   error: AccountError | undefined | null
   forgotPassword: (email?: string) => Promise<boolean>
   confirmPassword: (verificationCode: string, password: string) => Promise<boolean>
+  refreshUserData: () => Promise<void>
   status: AccountStatus
   setStatus: (status: AccountStatus) => void
   userData: UserData | null
@@ -109,6 +120,25 @@ export const AccountProvider = ({ children }: { children: ReactNode }) => {
     Username: '',
   })
   const [lastMarketingConfirmation, setLastMarketingConfirmation] = useState(false)
+  const { setStatusBarContent } = useStatusBarContext()
+  const { t } = useTranslation()
+
+  // TODO - could be better, currently used only after login, AccountStatus should be replaced or rewritten
+  const mapTierToStatus = (tier: Tier): AccountStatus => {
+    switch (tier) {
+      case Tier.QUEUE_IDENTITY_CARD:
+        return AccountStatus.IdentityVerificationPending
+      case Tier.NOT_VERIFIED_IDENTITY_CARD:
+        return AccountStatus.IdentityVerificationFailed
+      case Tier.IDENTITY_CARD:
+      case Tier.EID:
+        return AccountStatus.IdentityVerificationSuccess
+      case Tier.NEW:
+        return AccountStatus.Idle
+      default:
+        return AccountStatus.IdentityVerificationRequired
+    }
+  }
 
   const userAttributesToObject = (attributes?: CognitoUserAttribute[]): UserData => {
     const data: any = {}
@@ -254,7 +284,7 @@ export const AccountProvider = ({ children }: { children: ReactNode }) => {
         { birthNumber: rc.replace('/', ''), identityCard: idCard },
         accessToken,
       )
-      setStatus(AccountStatus.IdentityVerificationSuccess)
+      // not refreshing user status immediately, instead leaving this to the registration flow
       return true
     } catch (error: any) {
       setError({
@@ -265,7 +295,7 @@ export const AccountProvider = ({ children }: { children: ReactNode }) => {
     }
   }
 
-  useEffect(() => {
+  const refreshUserData = useCallback(async () => {
     const cognitoUser = userPool.getCurrentUser()
     if (cognitoUser !== null) {
       cognitoUser.getSession((err: Error | null, result: CognitoUserSession | null) => {
@@ -284,11 +314,7 @@ export const AccountProvider = ({ children }: { children: ReactNode }) => {
           }
 
           const userData = userAttributesToObject(attributes)
-          setStatus(
-            userData.tier !== Tier.IdentityCard
-              ? AccountStatus.IdentityVerificationRequired
-              : AccountStatus.IdentityVerificationSuccess,
-          )
+          setStatus(mapTierToStatus(userData.tier))
           setUserData(userData)
           setUser(cognitoUser)
         })
@@ -297,6 +323,10 @@ export const AccountProvider = ({ children }: { children: ReactNode }) => {
       setUser(null)
     }
   }, [])
+
+  useEffect(() => {
+    refreshUserData().catch((err) => console.error(err))
+  }, [refreshUserData])
 
   const logout = () => {
     if (user) {
@@ -437,11 +467,7 @@ export const AccountProvider = ({ children }: { children: ReactNode }) => {
               resolve(false)
             } else {
               const userData = userAttributesToObject(attributes)
-              setStatus(
-                userData.tier !== Tier.IdentityCard
-                  ? AccountStatus.IdentityVerificationRequired
-                  : AccountStatus.IdentityVerificationSuccess,
-              )
+              setStatus(mapTierToStatus(userData.tier))
               setUserData(userData)
               setUser(cognitoUser)
 
@@ -496,6 +522,45 @@ export const AccountProvider = ({ children }: { children: ReactNode }) => {
     })
   }
 
+  useInterval(
+    () => {
+      refreshUserData().catch((err) => console.error(err))
+    },
+    status === AccountStatus.IdentityVerificationPending ? 5000 : null,
+  )
+
+  // map tier to status, TODO think about dropping global status and using only tier
+  useEffect(() => {
+    // TODO these serve to guide users through multiple steps and should be dismissed only by them - don't update status automatically when here
+    const tempStatuses = [
+      AccountStatus.NewPasswordSuccess,
+      AccountStatus.NewPasswordRequired,
+      AccountStatus.EmailVerificationSuccess,
+      AccountStatus.EmailVerificationRequired,
+    ]
+    if (tempStatuses.includes(status)) {
+      return
+    }
+    setStatus(userData ? mapTierToStatus(userData.tier) : AccountStatus.Idle)
+  }, [status, userData])
+
+  useEffect(() => {
+    // this overrides the 'global' status notification (i.e. crashed servers), but since we don't have design for multiple, showing failed notification probably takes precedence
+    // TODO rethink the status bar approach on product side
+    if (status === AccountStatus.IdentityVerificationFailed) {
+      setStatusBarContent(
+        <AccountMarkdown
+          uLinkVariant="error"
+          variant="sm"
+          content={t('account:identity_verification_failed')}
+        />,
+      )
+    } else {
+      // TODO here set to whatever is the 'global' error
+      setStatusBarContent('')
+    }
+  }, [setStatusBarContent, status, t])
+
   const resetError = () => {
     setError(null)
   }
@@ -509,6 +574,7 @@ export const AccountProvider = ({ children }: { children: ReactNode }) => {
         error,
         forgotPassword,
         confirmPassword,
+        refreshUserData,
         status,
         setStatus,
         userData,

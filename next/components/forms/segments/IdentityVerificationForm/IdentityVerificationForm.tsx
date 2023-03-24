@@ -6,8 +6,8 @@ import useHookForm from '@utils/useHookForm'
 import Alert from 'components/forms/info-components/Alert'
 import Button from 'components/forms/simple-components/Button'
 import InputField from 'components/forms/widget-components/InputField/InputField'
-import { useTranslation } from 'next-i18next'
 import { useRouter } from 'next/router'
+import { useTranslation } from 'next-i18next'
 import { Controller } from 'react-hook-form'
 
 interface Data {
@@ -95,12 +95,12 @@ const IdentityVerificationForm = ({ onSubmit, error }: Props) => {
         type="submit"
         text={t('identity_verification_submit')}
         variant="category"
-        disabled={isSubmitting}
+        loading={isSubmitting}
       />
       <Button
         variant="plain-black"
         className="min-w-full"
-        onPress={() => router.push({ pathname: ROUTES.ACCOUNT, query: { from: ROUTES.REGISTER } })}
+        onPress={() => router.push({ pathname: ROUTES.HOME, query: { from: ROUTES.REGISTER } })}
         text={t('identity_verification_skip')}
         endIcon={<ArrowRightIcon />}
       />

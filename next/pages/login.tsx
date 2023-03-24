@@ -15,8 +15,6 @@ import PageWrapper from '../components/layouts/PageWrapper'
 import { isProductionDeployment } from '../utils/utils'
 
 export const getServerSideProps = async (ctx: GetServerSidePropsContext) => {
-  if (isProductionDeployment()) return { notFound: true }
-
   const locale = ctx.locale ?? 'sk'
 
   return {
@@ -30,6 +28,7 @@ export const getServerSideProps = async (ctx: GetServerSidePropsContext) => {
             locale: l,
           })),
       },
+      isProductionDeployment: isProductionDeployment(),
       ...(await serverSideTranslations(locale)),
     },
   }
@@ -46,13 +45,13 @@ const LoginPage = ({ page }: AsyncServerProps<typeof getServerSideProps>) => {
       typeof router.query.from === 'string' &&
       router.query.from.startsWith('/')
         ? decodeURIComponent(router.query.from)
-        : ROUTES.ACCOUNT
+        : ROUTES.HOME
     router.push(from)
   }
 
   useEffect(() => {
     if (user !== null && user !== undefined) {
-      router.push(ROUTES.ACCOUNT)
+      router.push(ROUTES.HOME)
     }
   }, [user])
 

@@ -1,5 +1,5 @@
 import NoResultsFound from '@assets/images/ERROR404.svg'
-import ArrowRightIcon from '@assets/images/forms/arrow-right.svg'
+import ArrowRightIcon from '@assets/images/new-icons/ui/arrow-right.svg'
 import Button from 'components/forms/simple-components/Button'
 import { GetStaticProps } from 'next'
 import Link from 'next/link'

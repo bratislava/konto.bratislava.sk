@@ -100,11 +100,11 @@ const IntroSection = () => {
               href="https://mestskakniznica.sk/sluzby/citanie/ako-sa-prihlasit-do-kniznice"
             />
             <ServiceCard
-              title={t('account_section_services.cards.15.title')}
-              description={t('account_section_services.cards.15.description')}
+              title={t('account_section_services.cards.8.title')}
+              description={t('account_section_services.cards.8.description')}
               icon={<TreeIcon className="w-10 h-10 lg:w-12 lg:h-12" />}
-              buttonText={t('account_section_services.cards.15.buttonText')}
-              href="https://10000stromov.sk/zapojit-sa"
+              buttonText={t('account_section_services.cards.8.buttonText')}
+              href="https://10000stromov.sk"
             />
           </div>
           <Button

@@ -83,7 +83,7 @@ const GetJwt = ({ page }: AsyncServerProps<typeof getServerSideProps>) => {
 
 // TODO hide in production-production
 export const getServerSideProps = async (ctx: GetServerSidePropsContext) => {
-  if (isProductionDeployment()) return { notFound: true }
+  // if (isProductionDeployment()) return { notFound: true }
 
   const locale = ctx.locale ?? 'sk'
 

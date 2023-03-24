@@ -6,8 +6,8 @@ import cx from 'classnames'
 import AccountNavBar from 'components/forms/segments/AccountNavBar/AccountNavBar'
 import SectionContainer from 'components/forms/segments/SectionContainer/SectionContainer'
 import { usePageWrapperContext } from 'components/layouts/PageWrapper'
-import { useTranslation } from 'next-i18next'
 import { useRouter } from 'next/router'
+import { useTranslation } from 'next-i18next'
 import { ReactNode } from 'react'
 
 type FormPageLayoutBase = {
@@ -21,7 +21,7 @@ const menuItems = [
     id: 1,
     title: 'account:menu_account_link',
     icon: <CityIcon />,
-    link: '/account',
+    link: '/',
   },
   {
     id: 2,

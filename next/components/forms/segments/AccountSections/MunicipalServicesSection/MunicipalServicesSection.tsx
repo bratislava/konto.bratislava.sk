@@ -16,6 +16,7 @@ import ExcavationsIcon from '@assets/images/new-icons/other/transport-and-maps/e
 import ParkingIcon from '@assets/images/new-icons/other/transport-and-maps/parking.svg'
 import TowIcon from '@assets/images/new-icons/other/transport-and-maps/towing.svg'
 import ChristmasTreeIcon from '@assets/images/new-icons/other/tree.svg'
+import ArrowRightIcon from '@assets/images/new-icons/ui/arrow-right.svg'
 import Alert from 'components/forms/info-components/Alert'
 import MunicipalServicesSectionHeader from 'components/forms/segments/AccountSectionHeader/MunicipalServicesSectionHeader'
 import Pagination from 'components/forms/simple-components/Pagination/Pagination'
@@ -337,11 +338,11 @@ const MunicipalServicesSection = () => {
         setCurrentPage={setCurrentPage}
         title={t('account_section_services.navigation')}
       />
-      <div className="w-full max-w-screen-lg mx-auto py-4 lg:py-8">
+      <div className="w-full max-w-screen-lg mx-auto pt-4 lg:pt-8">
         <Alert
-          message="Priamo v Bratislavskom konte viete momentálne zaplatiť daň z nehunuteľností. Pri ostatných službách vás presmerujeme na externé webové stránky, ktoré môžu vyžadovať dodatočnú registráciu. Ďakujeme za pochopenie."
+          message={t('account_section_services.alert_text')}
           type="info"
-          className="max-w-none"
+          className="max-w-none mb-4 lg:mb-8"
         />
         <div className="flex flex-wrap gap-3 sm:gap-6 md:gap-8 px-4 lg:px-0">
           {filteredServiceCards

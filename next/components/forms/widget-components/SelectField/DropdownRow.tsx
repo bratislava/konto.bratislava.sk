@@ -1,5 +1,5 @@
 import ChevronRightIcon from '@assets/images/forms/chevron-right.svg'
-import FilledSelectedIcon from '@assets/images/forms/circle-empty-selected.svg'
+import FilledSelectedIcon from '@assets/images/new-icons/ui/check-mark.svg'
 import cx from 'classnames'
 import React from 'react'
 

@@ -1,5 +1,5 @@
-import ArrowDownIcon from '@assets/images/forms/chevron-down.svg'
-import ArrowUpIcon from '@assets/images/forms/chevron-up.svg'
+import ArrowDownIcon from '@assets/images/new-icons/ui/expand.svg'
+import ArrowUpIcon from '@assets/images/new-icons/ui/expand-less.svg'
 import cx from 'classnames'
 import React, {
   ForwardedRef,

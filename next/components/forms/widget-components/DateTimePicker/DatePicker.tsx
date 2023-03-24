@@ -1,4 +1,4 @@
-import CalendarIcon from '@assets/images/forms/calendar-icon.svg'
+import CalendarIcon from '@assets/images/new-icons/ui/calendar.svg'
 import { DateValue, parseDate } from '@internationalized/date'
 import cx from 'classnames'
 import FieldErrorMessage from 'components/forms/info-components/FieldErrorMessage'
@@ -145,7 +145,7 @@ const DatePicker = forwardRef<HTMLDivElement, DatePickerBase>(
               isOpen={state?.isOpen}
             >
               <Button {...buttonProps} className={disabled ? 'opacity-50' : ''}>
-                <CalendarIcon />
+                <CalendarIcon className="lg:w-6 lg:h-6 w-5 h-5" />
               </Button>
             </DateField>
           </div>

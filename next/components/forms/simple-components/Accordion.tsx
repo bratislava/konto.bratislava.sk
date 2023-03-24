@@ -1,9 +1,8 @@
 import ExpandMore from '@assets/images/expand-more.svg'
+import PersonIcon from '@assets/images/new-icons/ui/profile.svg'
 import cx from 'classnames'
 import AccountMarkdown from 'components/forms/segments/AccountMarkdown/AccountMarkdown'
 import React, { useState } from 'react'
-
-import PersonIcon from '../icon-components/PersonIcon'
 
 export type AccordionSizeType = 'xs' | 'sm' | 'md' | 'lg'
 
@@ -57,10 +56,10 @@ const Accordion = ({
             })}
           >
             <PersonIcon
-              className={cx('', {
-                'w-4 h-4': accordionSize === 'sm' || accordionSize === 'xs',
-                'w-5 h-5': accordionSize === 'md',
-                'w-6 h-6': accordionSize === 'lg',
+              className={cx('fill-main-700', {
+                'w-6 h-6': accordionSize === 'sm' || accordionSize === 'xs',
+                'w-8 h-8': accordionSize === 'md',
+                'w-10 h-10': accordionSize === 'lg',
               })}
             />
           </div>
@@ -96,6 +95,8 @@ const Accordion = ({
                 'lg:min-w-[40px] lg:w-10 lg:h-10 w-8 h-8 min-w-[32px]': accordionSize === 'lg',
                 'lg:min-w-[32px] lg:w-8 lg:h-8 w-6 h-6 min-w-[24px]': accordionSize === 'md',
                 'w-6 h-6 min-w-[24px]': accordionSize === 'sm' || accordionSize === 'xs',
+                'transform rotate-180': isActive,
+                'transform rotate-270 md:rotate-0': !isActive,
               })}
             />
           </button>

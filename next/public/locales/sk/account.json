@@ -97,6 +97,10 @@
   "identity_verification_submit": "Overiť údaje",
   "identity_verification_success_title": "Overenie bolo úspešné",
   "identity_verification_success_description": "Rodné číslo **{rc}** a číslo občianskeho preukazu **{idCard}** boli overené.",
+  "identity_verification_pending_title": "Prebieha overovanie",
+  "identity_verification_pending_description": "Ospravedlňujeme sa, ale rodné číslo **{rc}** a číslo občianskeho preukazu **{idCard}** ešte stále overujeme. Medzitým môžete pokračovať do konta a my vám dáme vedieť, až dokončíme overenie vašej totožnosti.",
+  "identity_verification_pending_description_without_data": "Ospravedlňujeme sa, ale rodné číslo a číslo občianskeho preukazu ešte stále overujeme. Medzitým môžete pokračovať do konta a my vám dáme vedieť, až dokončíme overenie vašej totožnosti.",
+  "identity_verification_failed": "Rodné číslo a číslo občianskeho preukazu sa nepodarilo overiť. Skontrolujte správnosť údajov a [opakujte overenie indentity](/register).",
   "password_change_title": "Zmena hesla",
   "old_password_label": "Staré heslo",
   "old_password_placeholder": "Staré heslo",
@@ -501,7 +505,8 @@
       "title": "Platba prebehla úspešne",
       "content": "<span className='text-p2'>Ďakujeme za zaplatenie dane z nehnuteľností.<br />Ohodnoťte službu a pomôžte mestu Bratislava zlepšovať sa.</span>",
       "button_to_formular_text": "Vyplniť dotazník",
-      "button_to_profil_text": "Pokračovať do konta"
+      "button_to_profil_text": "Pokračovať do konta",
+      "button_to_formular_text_2": "Nechať spätnú väzbu"
     },
     "form_submit": {
       "title": "Ďakujeme za odoslanie žiadosti",
@@ -536,7 +541,7 @@
     "pay_with_qr": "Zaplatiť môžete okrem platobných údajov aj pomocou QR kódu.",
     "change_amount": "V bankovej aplikácii zmeňte sumu na vyššie uvedenú sumu splátky dane.",
     "first_piece": "Prvá splátka v termíne ",
-    "first_piece_to": "do 15 dní ",
+    "first_piece_to": "do 15 dní odo dňa právoplatnosti rozhodnutia.",
     "second_piece": "Druhá splátka v termíne ",
     "second_piece_to": "do 31. 8. 2022",
     "third_piece": "Tretia splátka v termíne ",

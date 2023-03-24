@@ -8,10 +8,9 @@ import { ROUTES } from '@utils/constants'
 import useAccount from '@utils/useAccount'
 import cx from 'classnames'
 import AccountNavBar from 'components/forms/segments/AccountNavBar/AccountNavBar'
-import SectionContainer from 'components/forms/segments/SectionContainer/SectionContainer'
 import { usePageWrapperContext } from 'components/layouts/PageWrapper'
-import { useTranslation } from 'next-i18next'
 import { useRouter } from 'next/router'
+import { useTranslation } from 'next-i18next'
 import { ReactNode, useEffect } from 'react'
 
 type AccountPageLayoutBase = {
@@ -36,7 +35,7 @@ const sectionsList = [
   {
     id: 2,
     title: 'account:account_section_payment.title',
-    icon: <PaymentIcon className="w-6 h-6" />,
+    icon: <PaymentIcon />,
     link: '/taxes-and-fees',
   },
   {
@@ -93,20 +92,18 @@ const AccountPageLayout = ({ className, children, hiddenHeaderNav }: AccountPage
 
   return (
     <div className={cx('flex flex-col min-h-screen', className)}>
-      <SectionContainer>
-        <AccountNavBar
-          currentLanguage={locale}
-          onLanguageChange={handleLanguageChange}
-          sectionsList={sectionsList}
-          menuItems={menuItems}
-          navHidden
-          hiddenHeaderNav={hiddenHeaderNav}
-          languages={[
-            { key: 'sk', title: t('language_long.sk') },
-            { key: 'en', title: t('language_long.en') },
-          ]}
-        />
-      </SectionContainer>
+      <AccountNavBar
+        currentLanguage={locale}
+        onLanguageChange={handleLanguageChange}
+        sectionsList={sectionsList}
+        menuItems={menuItems}
+        navHidden
+        hiddenHeaderNav={hiddenHeaderNav}
+        languages={[
+          { key: 'sk', title: t('language_long.sk') },
+          { key: 'en', title: t('language_long.en') },
+        ]}
+      />
       <div className="bg-gray-0">{children}</div>
     </div>
   )

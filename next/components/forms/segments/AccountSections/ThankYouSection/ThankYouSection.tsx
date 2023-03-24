@@ -112,19 +112,21 @@ const ThankYouSection = () => {
           <span className="text-p2 flex">
             <AccountMarkdown
               variant="sm"
-              content={`<span className='text-p2'>V prípade akýchkoľvek otázok nás neváhajte kontaktovať na adrese:</span> <span className="text-p2-semibold underline">platbadane@bratislava.sk</span>`}
+              content={`<span className='text-p2'>${t(
+                'thank_you.subtitle_mail_platbadane',
+              )}</span>.`}
             />
           </span>
           <div className="flex flex-col gap-3 mt-4 md:mt-6">
             <Button
-              label="Často kladené otázky"
-              href="/i-have-a-problem"
+              label={t('thank_you.button_faq_text')}
+              href="https://www.bratislava.sk/mesto-bratislava/dane-a-poplatky/dan-z-nehnutelnosti/digitalna-platba"
               variant="link-black"
               size="sm"
             />
             <Button
-              label="Ochrana osobných údajov"
-              href="/ochrana-osobnych-udajov"
+              label={t('thank_you.button_privacy_text')}
+              href="https://bratislava.sk/ochrana-osobnych-udajov"
               variant="link-black"
               size="sm"
             />

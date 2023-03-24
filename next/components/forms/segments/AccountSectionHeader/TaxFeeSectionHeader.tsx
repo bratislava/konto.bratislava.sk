@@ -50,7 +50,7 @@ const TaxFeeSectionHeader = (props: AccountSectionHeaderBase) => {
   const { t } = useTranslation('account')
   const router = useRouter()
   return (
-    <div className="lg:px-0 bg-gray-50 h-full mt-16 lg:mt-28 px-4">
+    <div className="lg:px-0 bg-gray-50 h-full px-4">
       <div className="flex flex-col py-6 gap-4 max-w-screen-lg m-auto">
         <div className="flex items-center gap-0.5 cursor-pointer">
           <div className="w-5 h-5 flex justify-center items-center">

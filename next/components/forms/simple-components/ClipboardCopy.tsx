@@ -1,4 +1,4 @@
-import ContentCopy from '@assets/images/content_copy.svg'
+import ContentCopy from '@assets/images/new-icons/ui/copy.svg'
 import useSnackbar from '@utils/useSnackbar'
 import { useTranslation } from 'next-i18next'
 import { useCopyToClipboard } from 'usehooks-ts'

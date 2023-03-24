@@ -167,6 +167,8 @@ const AccordionPaymentSchedule = ({
                   'lg:w-10 lg:h-10 w-8 h-8': accordionSize === 'lg',
                   'lg:w-8 lg:h-8 w-6 h-6': accordionSize === 'md',
                   'w-6 h-6': accordionSize === 'sm' || accordionSize === 'xs',
+                  'transform rotate-180': isActive,
+                  'transform rotate-270 md:rotate-0': !isActive,
                 })}
               />
             </div>

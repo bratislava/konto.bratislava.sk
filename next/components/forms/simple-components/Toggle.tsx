@@ -1,11 +1,10 @@
+import UnCheck from '@assets/images/new-icons/ui/cross.svg'
+import Check from '@assets/images/new-icons/ui/done.svg'
 import cx from 'classnames'
 import * as React from 'react'
 import { useId } from 'react'
 import { useFocusRing, useSwitch, VisuallyHidden } from 'react-aria'
 import { ToggleState, useToggleState } from 'react-stately'
-
-import CheckedIcon from '../icon-components/CheckedIcon'
-import UnCheckedIcon from '../icon-components/UnCheckedIcon'
 
 type ToggleBase = {
   className?: string
@@ -58,14 +57,14 @@ const Toggle = ({ children, isDisabled = false, ...rest }: ToggleBase) => {
             hidden: !isSelected,
           })}
         >
-          <CheckedIcon />
+          <Check fill="white" />
         </div>
         <div
           className={cx('ml-[26px] absolute w-4 h-4 flex items-center justify-center', {
             hidden: isSelected,
           })}
         >
-          <UnCheckedIcon />
+          <UnCheck fill="white" />
         </div>
         <div className={toggleBall} />
       </div>

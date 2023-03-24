@@ -1,5 +1,5 @@
-import ArrowRightIcon from '@assets/images/forms/arrow-right.svg'
-import SearchIcon from '@assets/images/forms/search-icon-lg.svg'
+import ArrowRightIcon from '@assets/images/new-icons/ui/arrow-right.svg'
+import SearchIcon from '@assets/images/new-icons/ui/search.svg'
 
 import Button from '../../forms/simple-components/Button'
 import { Stack } from '../Stack'
@@ -11,7 +11,7 @@ const ButtonShowCase = ({}: ButtonShowCaseProps) => {
   return (
     <Wrapper direction="column" title="Button">
       <Stack>
-        <Button variant="category" icon={<SearchIcon />} />
+        <Button variant="category" icon={<SearchIcon className="fill-white" />} />
         <Button variant="category" icon={<SearchIcon />} size="sm" />
         <Button variant="category" text="Button" />
         <Button variant="category" text="Button" size="sm" />

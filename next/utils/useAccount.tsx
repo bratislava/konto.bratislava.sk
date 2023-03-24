@@ -531,7 +531,7 @@ export const AccountProvider = ({ children }: { children: ReactNode }) => {
 
   // map tier to status, TODO think about dropping global status and using only tier
   useEffect(() => {
-    setStatus(mapTierToStatus(userData?.tier))
+    setStatus(userData ? mapTierToStatus(userData.tier) : AccountStatus.Idle)
   }, [userData])
 
   useEffect(() => {

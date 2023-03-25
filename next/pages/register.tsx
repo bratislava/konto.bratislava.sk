@@ -57,12 +57,16 @@ const RegisterPage = ({ page }: AsyncServerProps<typeof getServerSideProps>) => 
   } = useAccount()
   const router = useRouter()
 
-  const verifyIdentityAndRefreshUserData = async (rc: string, idCard: string) => {
+  const verifyIdentityAndRefreshUserData = async (
+    rc: string,
+    idCard: string,
+    turnstileToken: string,
+  ) => {
     setLastRc(rc)
     setLastIdCard(idCard)
-    await verifyIdentity(rc, idCard)
+    await verifyIdentity(rc, idCard, turnstileToken)
     // give the queue a few seconds to process the verification
-    await new Promise((resolve) => setTimeout(resolve, 5000))
+    await new Promise((resolve) => setTimeout(resolve, 8000))
     // status will be set according to current cognito tier - pending if still processing
     await refreshUserData()
   }

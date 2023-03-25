@@ -1,5 +1,5 @@
-import ChevronIconLeft from '@assets/images/forms/chevron-left.svg'
-import ChevronIconRight from '@assets/images/forms/chevron-right.svg'
+import ChevronIconLeft from '@assets/images/new-icons/ui/chevron-left.svg'
+import ChevronIconRight from '@assets/images/new-icons/ui/chevron-right.svg'
 import { createCalendar } from '@internationalized/date'
 import Button from 'components/forms/simple-components/Button'
 import { useRef } from 'react'
@@ -41,7 +41,7 @@ const Calendar = ({ onSubmit, onReset, ...rest }: CalendarBase) => {
           type="button"
           {...prevButtonPropsBtn}
         >
-          <ChevronIconLeft />
+          <ChevronIconLeft className="w-6 h-6" />
         </button>
         <span className="text-p2-semibold">{title.charAt(0).toUpperCase() + title.slice(1)}</span>
         <button
@@ -50,7 +50,7 @@ const Calendar = ({ onSubmit, onReset, ...rest }: CalendarBase) => {
           type="button"
           {...nextButtonPropsBtn}
         >
-          <ChevronIconRight />
+          <ChevronIconRight className="w-6 h-6" />
         </button>
       </div>
       <CalendarGrid state={state} />

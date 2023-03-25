@@ -1,6 +1,6 @@
-import ArrowRightIcon from '@assets/images/forms/arrow-right.svg'
-import CloseIcon from '@assets/images/forms/close.svg'
-import CheckIcon from '@assets/images/forms/selected-dark.svg'
+import ArrowRightIcon from '@assets/images/new-icons/ui/arrow-right.svg'
+import CloseIcon from '@assets/images/new-icons/ui/cross.svg'
+import CheckIcon from '@assets/images/new-icons/ui/done.svg'
 import cx from 'classnames'
 import Link from 'next/link'
 import { useTranslation } from 'next-i18next'
@@ -88,7 +88,7 @@ const RegistrationModal = ({ show, onClose, className }: RegistrationModalBase) 
         <div className="flex flex-col gap-2 mb-6">
           <CloseIcon
             onClick={() => onClose()}
-            className="cursor-pointer absolute top-3 right-3 md:top-4 md:right-6"
+            className="cursor-pointer w-6 h-6 absolute top-3 right-3 md:top-4 md:right-6"
           />
           <h3 className="text-h3">{t('register_modal.header_title')}</h3>
           <p className="text-p1">{t('register_modal.header_subtitle')}</p>

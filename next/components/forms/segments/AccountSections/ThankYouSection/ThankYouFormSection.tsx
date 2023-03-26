@@ -13,6 +13,8 @@ const ThankYouFormSection = () => {
         <ThankYouCard
           status="success"
           title={t('thank_you.form_submit.title')}
+          firstButtonTitle={t('thank_you.success.button_to_formular_text_2')}
+          secondButtonTitle={t('thank_you.success.button_to_profil_text')}
           content={t('thank_you.form_submit.content')}
         />
         <div className="max-w-[734px] lg:max-w-[800px] w-full mx-auto mt-0 md:mt-10 px-4 md:px-0">

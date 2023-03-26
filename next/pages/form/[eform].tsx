@@ -75,12 +75,7 @@ const FormTestPage = ({ page, eform }: AsyncServerProps<typeof getServerSideProp
       ]}
     >
       <AccountPageLayout hiddenHeaderNav>
-        <GeneratedFormRJSF
-          eform={eform}
-          escapedSlug={escapedSlug}
-          formSlug={formSlug}
-          wrapperClassName="mt-16"
-        />
+        <GeneratedFormRJSF eform={eform} escapedSlug={escapedSlug} formSlug={formSlug} />
       </AccountPageLayout>
     </PageWrapper>
   )

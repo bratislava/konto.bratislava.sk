@@ -1,5 +1,5 @@
-import ResetIcon from '@assets/images/forms/circle-filled-reset.svg'
-import DarkSearchIcon from '@assets/images/forms/dark-search-icon.svg'
+import ResetIcon from '@assets/images/new-icons/ui/delete.svg'
+import DarkSearchIcon from '@assets/images/new-icons/ui/search.svg'
 import cx from 'classnames'
 import { RefObject, useRef, useState } from 'react'
 import { useTextField } from 'react-aria'

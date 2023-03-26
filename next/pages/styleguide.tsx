@@ -30,7 +30,9 @@ import TagShowCase from '../components/styleguide/showcases/TagShowCase'
 import TextAreaFieldShowCase from '../components/styleguide/showcases/TextAreaFieldShowCase'
 import ToggleShowCase from '../components/styleguide/showcases/ToggleShowCase'
 import UploadShowCase from '../components/styleguide/showcases/UploadShowCase'
+import StatusBarShowCase from '../components/styleguide/showcases/StatusBarShowCase'
 import StyleGuideWrapper from '../components/styleguide/StyleGuideWrapper'
+import { StatusBar } from 'components/forms/info-components/StatusBar'
 
 const Styleguide = ({ page }: AsyncServerProps<typeof getServerSideProps>) => {
   /**
@@ -38,37 +40,41 @@ const Styleguide = ({ page }: AsyncServerProps<typeof getServerSideProps>) => {
    * Path to StyleGuide showcase components should be ./next/components/styleguide/showcases
    * */
   return (
-    <PageWrapper locale={page.locale}>
-      <StyleGuideWrapper>
-        {/* HERE ADD SHOWCASES */}
-        <TagShowCase />
-        <TooltipShowCase />
-        <FieldHeaderShowCase />
-        <ButtonShowCase />
-        <DatePickerShowCase />
-        <InputFieldShowCase />
-        <SpinnerShowCase />
-        <TextAreaFieldShowCase />
-        <AlertShowCase />
-        <SearchFieldShowCase />
-        <ToggleShowCase />
-        <TimePickerShowCase />
-        <UploadShowCase />
-        <DropdownShowCase />
-        <SelectFieldShowCase />
-        <ModalShowCase />
-        <AccordionShowCase />
-        <ProgressBarShowCase />
-        <SingleCheckboxShowCase />
-        <CheckboxGroupShowCase />
-        <RadioButtonShowCase />
-        <StepperShowCase />
-        <SummaryRowShowCase />
-        <BannerShowCase />
-        <ServiceCardShowCase />
-        <SnackbarShowCase />
-      </StyleGuideWrapper>
-    </PageWrapper>
+    <>
+      <StatusBar />
+      <PageWrapper locale={page.locale}>
+        <StyleGuideWrapper>
+          {/* HERE ADD SHOWCASES */}
+          <StatusBarShowCase />
+          <TagShowCase />
+          <TooltipShowCase />
+          <FieldHeaderShowCase />
+          <ButtonShowCase />
+          <DatePickerShowCase />
+          <InputFieldShowCase />
+          <SpinnerShowCase />
+          <TextAreaFieldShowCase />
+          <AlertShowCase />
+          <SearchFieldShowCase />
+          <ToggleShowCase />
+          <TimePickerShowCase />
+          <UploadShowCase />
+          <DropdownShowCase />
+          <SelectFieldShowCase />
+          <ModalShowCase />
+          <AccordionShowCase />
+          <ProgressBarShowCase />
+          <SingleCheckboxShowCase />
+          <CheckboxGroupShowCase />
+          <RadioButtonShowCase />
+          <StepperShowCase />
+          <SummaryRowShowCase />
+          <BannerShowCase />
+          <ServiceCardShowCase />
+          <SnackbarShowCase />
+        </StyleGuideWrapper>
+      </PageWrapper>
+    </>
   )
 }
 

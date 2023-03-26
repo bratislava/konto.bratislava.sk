@@ -5,18 +5,23 @@ import RestartIcon from '@assets/images/account/sync-icon.svg'
 import cx from 'classnames'
 import AccountMarkdown from 'components/forms/segments/AccountMarkdown/AccountMarkdown'
 import Button from 'components/forms/simple-components/Button'
-import { useTranslation } from 'next-i18next'
-import { useRouter } from 'next/router'
+import Link from 'next/link'
 
 type ThankYouCardBase = {
   status?: 'success' | 'error-1' | 'error-2' | 'error-3' | 'error-4'
   title?: string
+  firstButtonTitle: string
+  secondButtonTitle: string
   content?: string
 }
 
-const ThankYouCard = ({ status, title, content }: ThankYouCardBase) => {
-  const { t } = useTranslation('account')
-  const router = useRouter()
+const ThankYouCard = ({
+  status,
+  title,
+  firstButtonTitle,
+  secondButtonTitle,
+  content,
+}: ThankYouCardBase) => {
   return (
     <div className="max-w-[734px] lg:max-w-[800px] w-full h-full mx-auto bg-gray-0 px-4 md:px-14 pb-4 pt-6 md:py-12 flex flex-col items-center gap-4 md:gap-6 rounded-none md:rounded-2xl">
       <span
@@ -41,29 +46,20 @@ const ThankYouCard = ({ status, title, content }: ThankYouCardBase) => {
       <div className="w-full flex flex-col sm:flex-row items-center gap-4 px-0 md:px-24">
         {status !== 'success' ? (
           <>
-            <Button
-              startIcon={<RestartIcon />}
-              text={t('thank_you.error.button_restart_text')}
-              fullWidth
-            />
+            <Button startIcon={<RestartIcon />} text={firstButtonTitle} fullWidth />
             <Button
               startIcon={<DisableIcon />}
               variant="black-outline"
-              text={t('thank_you.error.button_cancel_text')}
+              text={secondButtonTitle}
               fullWidth
             />
           </>
         ) : (
           <>
-            <Button text={t('thank_you.success.button_to_formular_text')} fullWidth />
-            <Button
-              variant="black-outline"
-              text={t('thank_you.success.button_to_profil_text')}
-              fullWidth
-              onPress={() => {
-                router.push('/account').then(() => {})
-              }}
-            />
+            <Button text={firstButtonTitle} fullWidth />
+            <Link href="/" className="w-full">
+              <Button variant="black-outline" text={secondButtonTitle} fullWidth />
+            </Link>
           </>
         )}
       </div>

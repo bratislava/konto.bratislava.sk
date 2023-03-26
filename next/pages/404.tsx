@@ -1,11 +1,10 @@
 import NoResultsFound from '@assets/images/ERROR404.svg'
+import ArrowRightIcon from '@assets/images/new-icons/ui/arrow-right.svg'
 import Button from 'components/forms/simple-components/Button'
 import { GetStaticProps } from 'next'
 import Link from 'next/link'
 import { useTranslation } from 'next-i18next'
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
-
-import ChevronRight from '../assets/images/chevron-right.svg'
 
 export const getStaticProps: GetStaticProps = async ({ locale }) => {
   return {
@@ -29,9 +28,7 @@ const NotFoundPage = () => {
             {t('sorryNoResultsFound')}
           </div>
           <Link href="/">
-            <Button className="text-p1 px-6 py-3" icon={<ChevronRight className="scale-75" />}>
-              {t('toTheMainPage')}
-            </Button>
+            <Button text={t('toTheMainPage')} endIcon={<ArrowRightIcon className="w-6 h-6" />} />
           </Link>
         </div>
       </div>

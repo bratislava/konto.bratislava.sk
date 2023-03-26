@@ -7,8 +7,6 @@ import { GetServerSidePropsContext } from 'next'
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
 
 export const getServerSideProps = async (ctx: GetServerSidePropsContext) => {
-  if (isProductionDeployment()) return { notFound: true }
-
   const locale = ctx.locale ?? 'sk'
 
   return {
@@ -22,16 +20,20 @@ export const getServerSideProps = async (ctx: GetServerSidePropsContext) => {
             locale: l,
           })),
       },
+      isProductionDeployment: isProductionDeployment(),
       ...(await serverSideTranslations(locale)),
     },
   }
 }
 
-const AccountTaxesFeesPage = ({ page }: AsyncServerProps<typeof getServerSideProps>) => {
+const AccountTaxesFeesPage = ({
+  page,
+  isProductionDeployment,
+}: AsyncServerProps<typeof getServerSideProps>) => {
   return (
     <PageWrapper locale={page.locale} localizations={page.localizations}>
       <AccountPageLayout>
-        <TaxesFeesSection />
+        <TaxesFeesSection isProductionDeployment={isProductionDeployment} />
       </AccountPageLayout>
     </PageWrapper>
   )

@@ -1,4 +1,4 @@
-import ArrowRightIcon from '@assets/images/forms/arrow-right.svg'
+import ArrowRightIcon from '@assets/images/new-icons/ui/arrow-right.svg'
 import { LinkButtonProps } from '@react-types/button'
 import cx from 'classnames'
 import { forwardRef, ReactNode, RefObject } from 'react'

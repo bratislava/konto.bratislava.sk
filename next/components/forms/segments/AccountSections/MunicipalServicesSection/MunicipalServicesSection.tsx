@@ -185,14 +185,6 @@ const MunicipalServicesSection = () => {
       category: [JOIN_CATEGORY],
       href: 'https://lovcikomarov.sk/',
     },
-    {
-      title: t('account_section_services.cards.15.title'),
-      description: t('account_section_services.cards.15.description'),
-      buttonText: t('account_section_services.cards.15.buttonText'),
-      icon: <TreeIcon className="text-environment-700 w-10 h-10 lg:w-12 lg:h-12" />,
-      category: [GREEN_CATEGORY],
-      href: 'https://10000stromov.sk/zapojit-sa',
-    },
     // {
     //   title: t('account_section_services.cards.16.title'),
     //   description: t('account_section_services.cards.16.description'),

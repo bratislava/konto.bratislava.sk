@@ -1,5 +1,5 @@
-import CalendarSchedule from '@assets/images/account/calendar-schedule.svg'
-import ExpandMore from '@assets/images/expand-more.svg'
+import CalendarSchedule from '@assets/images/new-icons/ui/calendar.svg'
+import ExpandMore from '@assets/images/new-icons/ui/expand.svg'
 import cx from 'classnames'
 import { useTranslation } from 'next-i18next'
 import React, { useState } from 'react'
@@ -163,7 +163,7 @@ const AccordionPaymentSchedule = ({
                 </div>
               </div>
               <ExpandMore
-                className={cx('flex items-center justify-center', {
+                className={cx('flex items-center justify-center text-main-700', {
                   'lg:w-10 lg:h-10 w-8 h-8': accordionSize === 'lg',
                   'lg:w-8 lg:h-8 w-6 h-6': accordionSize === 'md',
                   'w-6 h-6': accordionSize === 'sm' || accordionSize === 'xs',

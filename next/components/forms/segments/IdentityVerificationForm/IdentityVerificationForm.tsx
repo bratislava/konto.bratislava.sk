@@ -1,4 +1,4 @@
-import ArrowRightIcon from '@assets/images/forms/arrow-right.svg'
+import ArrowRightIcon from '@assets/images/new-icons/ui/arrow-right.svg'
 import { ROUTES } from '@utils/constants'
 import { formatUnicorn } from '@utils/string'
 import { AccountError } from '@utils/useAccount'

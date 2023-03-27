@@ -1,6 +1,4 @@
-import CloseIcon from '@assets/images/close.svg'
-import EditIcon from '@assets/images/forms/edit_icon.svg'
-// import WhiteEditIcon from '@assets/images/forms/edit_white.svg'
+import CloseIcon from '@assets/images/new-icons/ui/cross.svg'
 import WhiteEditIcon from '@assets/images/new-icons/ui/pen.svg'
 import cx from 'classnames'
 import Button from 'components/forms/simple-components/Button'
@@ -37,7 +35,7 @@ const UserProfileDetailsButtons = (props: UserProfileDetailsButtonsProps) => {
             form={formId}
           />
           <CloseIcon
-            className={cx('block cursor-pointer', 'md:hidden')}
+            className={cx('block cursor-pointer w-6 h-6', 'md:hidden')}
             onClick={onCancelEditing}
           />
           <div
@@ -65,8 +63,8 @@ const UserProfileDetailsButtons = (props: UserProfileDetailsButtonsProps) => {
             className="hidden md:block"
             onPress={() => onChangeIsEditing(true)}
           />
-          <EditIcon
-            className="block md:hidden cursor-pointer"
+          <WhiteEditIcon
+            className="block md:hidden cursor-pointer w-6 h-6"
             onClick={() => onChangeIsEditing(true)}
           />
         </div>

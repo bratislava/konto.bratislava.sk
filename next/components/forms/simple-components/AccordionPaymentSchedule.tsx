@@ -1,4 +1,4 @@
-import CalendarSchedule from '@assets/images/new-icons/ui/calendar.svg'
+import CalendarIcon from '@assets/images/new-icons/ui/calendar.svg'
 import ExpandMore from '@assets/images/new-icons/ui/expand.svg'
 import cx from 'classnames'
 import { useTranslation } from 'next-i18next'
@@ -40,7 +40,7 @@ const PaymentScheduleView = (props: any) => {
           <Button
             variant="black-outline"
             text="Pridať termíny do kalendára"
-            startIcon={<CalendarSchedule className="w-6 h-6" />}
+            startIcon={<CalendarIcon className="w-6 h-6" />}
             className="lg:w-max w-full"
           />
         </div>

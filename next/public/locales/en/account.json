@@ -131,6 +131,7 @@
   },
   "account_section_services": {
     "navigation": "Municipal services",
+    "alert_text": "Priamo v Bratislavskom konte viete momentálne zaplatiť daň z nehunuteľností. Pri ostatných službách vás presmerujeme na externé webové stránky, ktoré môžu vyžadovať dodatočnú registráciu. Ďakujeme za pochopenie.",
     "cards": {
       "1": {
         "title": "Digitálna platba dane z nehnuteľností",

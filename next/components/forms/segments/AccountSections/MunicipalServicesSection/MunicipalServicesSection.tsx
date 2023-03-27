@@ -1,8 +1,9 @@
+import AdministrationIcon from '@assets/images/new-icons/other/city-bratislava/city-administration.svg'
 import TaxesIcon from '@assets/images/new-icons/other/city-bratislava/taxes.svg'
 import TheatreIcon from '@assets/images/new-icons/other/culture-communities/events-support.svg'
 import LibraryIcon from '@assets/images/new-icons/other/culture-communities/library.svg'
 import ZooIcon from '@assets/images/new-icons/other/culture-communities/zoo.svg'
-import CityTreeIcon from '@assets/images/new-icons/other/environment-construction/city-trees.svg'
+import KidIcon from '@assets/images/new-icons/other/education-sport/kids-teenagers.svg'
 import GardensIcon from '@assets/images/new-icons/other/environment-construction/community-gardens.svg'
 import SewerageIcon from '@assets/images/new-icons/other/environment-construction/connector.svg'
 import FrontGardensIcon from '@assets/images/new-icons/other/environment-construction/front-gardens.svg'
@@ -99,7 +100,7 @@ const MunicipalServicesSection = () => {
       buttonText: t('account_section_services.cards.3.buttonText'),
       icon: <ParkingIcon className="w-10 h-10 lg:w-12 lg:h-12 text-transport-700" />,
       category: [PARKING_CATEGORY],
-      href: 'https://paas.sk/formular/',
+      href: 'http://paas.sk/',
     },
     {
       title: t('account_section_services.cards.4.title'),
@@ -129,7 +130,7 @@ const MunicipalServicesSection = () => {
       title: t('account_section_services.cards.7.title'),
       description: t('account_section_services.cards.7.description'),
       buttonText: t('account_section_services.cards.7.buttonText'),
-      icon: <SecurityIcon className="w-10 h-10 lg:w-12 lg:h-12 text-category-600" />,
+      icon: <KidIcon className="w-10 h-10 lg:w-12 lg:h-12 text-category-600" />,
       category: [JOIN_CATEGORY],
       href: 'https://mib.sk/mesto-pre-deti',
     },
@@ -201,7 +202,7 @@ const MunicipalServicesSection = () => {
       title: t('account_section_services.cards.17.title'),
       description: t('account_section_services.cards.17.description'),
       buttonText: t('account_section_services.cards.17.buttonText'),
-      icon: <SecurityIcon className="w-10 h-10 lg:w-12 lg:h-12 text-category-600" />,
+      icon: <KidIcon className="w-10 h-10 lg:w-12 lg:h-12 text-category-600" />,
       category: [JOIN_CATEGORY],
       href: 'https://www.detiprebratislavu.sk/prihlasit-projekt/',
     },
@@ -273,7 +274,7 @@ const MunicipalServicesSection = () => {
       title: t('account_section_services.cards.26.title'),
       description: t('account_section_services.cards.26.description'),
       buttonText: t('account_section_services.cards.26.buttonText'),
-      icon: <CityTreeIcon className="w-10 h-10 lg:w-12 lg:h-12 text-environment-700" />,
+      icon: <AdministrationIcon className="w-10 h-10 lg:w-12 lg:h-12 text-category-600" />,
       category: [ENVIROMENTS_CATEGORY],
       href: 'https://cdn-api.bratislava.sk/static-pages/non-residential-premises-map/index.html?lang=sk',
     },

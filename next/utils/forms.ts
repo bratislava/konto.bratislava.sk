@@ -2,6 +2,8 @@ import Form from '@rjsf/core'
 import {
   ErrorSchema,
   FormValidation,
+  getDefaultFormState,
+  retrieveSchema,
   RJSFSchema,
   RJSFValidationError,
   StrictRJSFSchema,
@@ -324,9 +326,12 @@ const validator = customizeValidator({
   ajvOptionsOverrides: { keywords: ajvKeywords },
 })
 
-const getStepData = (schema: RJSFSchema): StepData[] => {
-  if (!schema || !schema.allOf) return []
-  return schema.allOf
+const getStepData = (
+  schemaAllOf: JSONSchema7Definition[],
+  oldStepData?: StepData[],
+): StepData[] => {
+  if (!schemaAllOf || !Array.isArray(schemaAllOf)) return []
+  return schemaAllOf
     .map((step) => {
       if (typeof step === 'boolean') return null
       const transformedStep: JSONSchema7 = step
@@ -335,13 +340,56 @@ const getStepData = (schema: RJSFSchema): StepData[] => {
       const stepProperties = transformedStep.properties ?? {}
       const [key, value]: [string, JSONSchema7Definition] = Object.entries(stepProperties)[0]
       if (typeof value === 'boolean') return null
+      const reuseOldStep = oldStepData?.find((oldStep: StepData) => oldStep.stepKey === key)
       return {
         title: value.title ?? key,
         stepKey: key,
-        isFilled: false,
+        isFilled: reuseOldStep?.isFilled || false,
       }
     })
     .filter(Boolean) as StepData[]
+}
+
+function getInitFormData(schema: RJSFSchema): RJSFSchema {
+  const formData: RJSFSchema = {}
+
+  schema?.allOf.forEach((step) => {
+    if (typeof step !== 'boolean') {
+      const stepFormData = getDefaultFormState(validator, step, formData, schema, true)
+      Object.assign(formData, stepFormData)
+    }
+  })
+
+  return formData
+}
+
+function createTestFormData(formData: RJSFSchema) {
+  const newFormData: RJSFSchema = {}
+  if (typeof formData === 'boolean') return newFormData
+
+  Object.entries(formData).forEach(([key, value]: [string, RJSFSchema]) => {
+    if (typeof value !== 'boolean') {
+      if (value === undefined) {
+        Object.assign(newFormData, { [key]: '' })
+      } else if (typeof value === 'object' && !Array.isArray(value)) {
+        Object.assign(newFormData, { [key]: createTestFormData(value) })
+      } else {
+        Object.assign(newFormData, { [key]: value })
+      }
+    }
+  })
+
+  return newFormData
+}
+
+function getValidatedSteps(schema: RJSFSchema, formData: RJSFSchema) {
+  const testFormData = createTestFormData(formData)
+  return schema?.allOf
+    .map((step) => {
+      const typedStep = typeof step !== 'boolean' ? step : {}
+      return retrieveSchema(validator, typedStep, schema, testFormData)
+    })
+    .filter((step) => typeof step !== 'boolean' && Object.keys(step).length > 0)
 }
 
 // TODO prevent unmounting
@@ -355,23 +403,35 @@ export const useFormStepper = (eformSlug: string, schema: RJSFSchema) => {
 
   const [nextStepIndex, setNextStepIndex] = useState<number | null>(null)
   const [stepIndex, setStepIndex] = useState<number>(0)
-  const [formData, setFormData] = useState<RJSFSchema>({})
+  const [formData, setFormData] = useState<RJSFSchema>(getInitFormData(schema))
   const [errors, setErrors] = useState<RJSFValidationError[][]>([])
   const [extraErrors, setExtraErrors] = useState<ErrorSchema>({})
-  const [stepData, setStepData] = useState<StepData[]>(getStepData(schema))
 
-  const steps = schema?.allOf
+  const [isSkipEnabled, setIsSkipEnabled] = useState<boolean>(false)
+  const disableSkip = () => setIsSkipEnabled(false)
+
+  const [steps, setSteps] = useState<RJSFSchema[]>(getValidatedSteps(schema, formData))
+  const validateSteps = () => {
+    const newValidatedSteps = getValidatedSteps(schema, formData)
+    setSteps(newValidatedSteps)
+  }
+
+  const [stepData, setStepData] = useState<StepData[]>(getStepData(steps))
+
   const stepsLength: number = steps?.length ?? -1
   const isComplete = stepIndex === stepsLength
-
-  const currentSchema = steps ? (cloneDeep(steps[stepIndex]) as RJSFSchema) : {}
+  const currentSchema = steps ? cloneDeep(steps[stepIndex]) : {}
 
   useEffect(() => {
     // effect to reset all internal state when critical input 'props' change
-    setFormData({})
+    setFormData(getInitFormData(schema))
     setStepIndex(0)
-    setStepData(getStepData(schema))
+    validateSteps()
   }, [eformSlug, schema])
+
+  useEffect(() => {
+    setStepData(getStepData(steps, stepData))
+  }, [steps])
 
   useEffect(() => {
     // stepIndex allowed to climb one step above the length of steps - i.e. to render a final overview or other custom components but still allow to return back
@@ -427,16 +487,16 @@ export const useFormStepper = (eformSlug: string, schema: RJSFSchema) => {
   }
 
   const previous = () => setStepIndex(stepIndex - 1)
-  const next = () => setStepIndex(stepIndex + 1)
+  const next = () => {
+    validateSteps()
+    setStepIndex(stepIndex + 1)
+  }
   const jumpToStep = () => {
     if (nextStepIndex != null) {
       setStepIndex(nextStepIndex)
       setNextStepIndex(null)
     }
   }
-
-  const [isSkipEnabled, setIsSkipEnabled] = useState<boolean>(false)
-  const disableSkip = () => setIsSkipEnabled(false)
 
   const submitStep = () => {
     formRef?.current?.submit()

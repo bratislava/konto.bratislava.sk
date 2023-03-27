@@ -351,28 +351,13 @@
       }
     },
     {
-      "$async": true,
-      "properties": {
-        "user": {
-          "type": "object",
-          "title": "Example async validation",
-          "properties": {
-            "phone": {
-              "type": "string",
-              "isExampleAsyncValidation": {
-                "errorMsg": "Required input"
-              }
-            }
-          }
-        }
-      }
-    },
-    {
       "properties": {
         "checkBoxes": {
           "title": "Checkboxes",
           "type": "object",
-          "required": ["favouriteFruits"],
+          "required": [
+            "favouriteFruits"
+          ],
           "properties": {
             "favouriteFruits": {
               "type": "array",
@@ -410,29 +395,61 @@
               }
             }
           },
-          "if": {
-            "properties": {
-              "favouriteFruits": {
-                "const": ["plum"]
-              }
-            }
-          },
-          "then": {
-            "properties": {
-              "checkboxBonus": {
-                "title": "This will show when we will click plum",
-                "type": "object",
-                "required": ["firstBonus"],
-                "properties": {
-                  "firstBonus": {
-                    "type": "string",
-                    "title": "First bonus (conditional field)"
+          "allOf": [
+            {
+              "if": {
+                "oneOf": [
+                  {
+                    "properties": {
+                      "favouriteFruits": {
+                        "const": ["plum"]
+                      }
+                    }
                   },
-                  "secondBonus": {
-                    "type": "string",
-                    "title": "Second bonus (conditional field)"
+                  {
+                    "properties": {
+                      "favouriteFruits": {
+                        "const": ["apple"]
+                      }
+                    }
+                  }
+                ]
+              },
+              "then": {
+                "properties": {
+                  "checkboxBonus": {
+                    "title": "This will show when we will click plum",
+                    "type": "object",
+                    "required": ["firstBonus"],
+                    "properties": {
+                      "firstBonus": {
+                        "type": "string",
+                        "title": "First bonus (conditional field)"
+                      },
+                      "secondBonus": {
+                        "type": "string",
+                        "title": "Second bonus (conditional field)"
+                      }
+                    }
                   }
                 }
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "$async": true,
+      "properties": {
+        "user": {
+          "type": "object",
+          "title": "Example async validation",
+          "properties": {
+            "phone": {
+              "type": "string",
+              "isExampleAsyncValidation": {
+                "errorMsg": "Required input"
               }
             }
           }

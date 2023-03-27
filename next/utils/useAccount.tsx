@@ -97,11 +97,12 @@ interface Account {
     email: string,
     password: string,
     marketingConfirmation: boolean,
+    turnstileToken: string,
     data: UserData,
   ) => Promise<boolean>
   verifyEmail: (verificationCode: string) => Promise<boolean>
   resendVerificationCode: () => Promise<boolean>
-  verifyIdentity: (rc: string, idCard: string) => Promise<boolean>
+  verifyIdentity: (rc: string, idCard: string, turnstileToken: string) => Promise<boolean>
   getAccessToken: () => Promise<string | null>
   changePassword: (oldPassword: string, newPassword: string) => Promise<boolean>
   lastEmail: string
@@ -200,7 +201,7 @@ export const AccountProvider = ({ children }: { children: ReactNode }) => {
           resolve(false)
         } else {
           setStatus(AccountStatus.EmailVerificationSuccess)
-          const res = await login(lastCredentials.Username, lastCredentials.Password)
+          const res = await login(lastCredentials.Username, lastCredentials.Password, true)
           await subscribe()
           resolve(res)
         }
@@ -272,7 +273,11 @@ export const AccountProvider = ({ children }: { children: ReactNode }) => {
     })
   }
 
-  const verifyIdentity = async (rc: string, idCard: string): Promise<boolean> => {
+  const verifyIdentity = async (
+    rc: string,
+    idCard: string,
+    turnstileToken: string,
+  ): Promise<boolean> => {
     const accessToken = await getAccessToken()
     if (!accessToken) {
       return false
@@ -281,7 +286,7 @@ export const AccountProvider = ({ children }: { children: ReactNode }) => {
     try {
       setError(null)
       await verifyIdentityApi(
-        { birthNumber: rc.replace('/', ''), identityCard: idCard },
+        { birthNumber: rc.replace('/', ''), identityCard: idCard, turnstileToken },
         accessToken,
       )
       // not refreshing user status immediately, instead leaving this to the registration flow
@@ -341,23 +346,35 @@ export const AccountProvider = ({ children }: { children: ReactNode }) => {
     email: string,
     password: string,
     marketingConfirmation: boolean,
+    turnstileToken: string,
     data: UserData,
   ): Promise<boolean> => {
     const attributeList = objectToUserAttributes(data)
-
+    const validationDataAttributeList = [
+      new CognitoUserAttribute({
+        Name: 'custom:turnstile_token',
+        Value: turnstileToken,
+      }),
+    ]
     setLastCredentials({ Username: email, Password: password })
     setLastMarketingConfirmation(marketingConfirmation)
     setError(null)
     return new Promise((resolve) => {
-      userPool.signUp(email, password, attributeList, [], (err?: Error) => {
-        if (err) {
-          setError({ ...(err as AWSError) })
-          resolve(false)
-        } else {
-          setStatus(AccountStatus.EmailVerificationRequired)
-          resolve(true)
-        }
-      })
+      userPool.signUp(
+        email,
+        password,
+        attributeList,
+        validationDataAttributeList,
+        (err?: Error) => {
+          if (err) {
+            setError({ ...(err as AWSError) })
+            resolve(false)
+          } else {
+            setStatus(AccountStatus.EmailVerificationRequired)
+            resolve(true)
+          }
+        },
+      )
     })
   }
 
@@ -431,7 +448,11 @@ export const AccountProvider = ({ children }: { children: ReactNode }) => {
     })
   }
 
-  const login = (email: string, password: string | undefined): Promise<boolean> => {
+  const login = (
+    email: string,
+    password: string | undefined,
+    skipStatusUpdate?: boolean,
+  ): Promise<boolean> => {
     // login into cognito using aws sdk
     const credentials = {
       Username: email,
@@ -467,7 +488,11 @@ export const AccountProvider = ({ children }: { children: ReactNode }) => {
               resolve(false)
             } else {
               const userData = userAttributesToObject(attributes)
-              setStatus(mapTierToStatus(userData.tier))
+              // TODO an ugly workaround for first login during registration
+              // get rid of this together with global account status
+              if (!skipStatusUpdate) {
+                setStatus(mapTierToStatus(userData.tier))
+              }
               setUserData(userData)
               setUser(cognitoUser)
 

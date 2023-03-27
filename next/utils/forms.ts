@@ -597,6 +597,7 @@ export const useFormStepper = (eformSlug: string, schema: RJSFSchema) => {
     validate,
     setErrors: setUniqueErrors,
     stepData,
+    validatedSchema: { ...schema, allOf: [...steps] },
     previous,
     next,
     submitStep,

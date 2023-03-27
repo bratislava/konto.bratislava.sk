@@ -1,15 +1,20 @@
 import { EnumOptionsType, StrictRJSFSchema, WidgetProps } from '@rjsf/utils'
 import { WidgetOptions } from 'components/forms/types/WidgetOptions'
 import WidgetWrapper from 'components/forms/widget-wrappers/WidgetWrapper'
-import { useEffectOnce } from 'usehooks-ts'
 import React from 'react'
+import { useEffectOnce } from 'usehooks-ts'
 
+import { ExplicitOptionalType } from '../types/ExplicitOptional'
 import SelectField, { SelectOption } from '../widget-components/SelectField/SelectField'
 
 type SelectRJSFOptions = {
   enumOptions?: EnumOptionsType[]
   dropdownDivider?: boolean
   selectAllOption?: boolean
+  explicitOptional?: ExplicitOptionalType
+  hideScrollbar?: boolean
+  alwaysOneSelected?: boolean
+  maxWordSize?: number
   // selectType?: 'one' | 'multiple' | 'arrow' | 'radio'
 } & WidgetOptions
 
@@ -39,6 +44,9 @@ const SelectFieldWidgetRJSF = (props: SelectFieldWidgetRJSFProps) => {
     explicitOptional,
     spaceBottom = 'default',
     spaceTop = 'none',
+    hideScrollbar,
+    alwaysOneSelected,
+    maxWordSize,
   } = options
 
   const type = schema.type === 'array' ? 'multiple' : 'one'

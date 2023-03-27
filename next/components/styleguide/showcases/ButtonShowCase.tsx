@@ -1,5 +1,5 @@
-import ArrowRightIcon from '@assets/images/forms/arrow-right.svg'
-import SearchIcon from '@assets/images/forms/search-icon-lg.svg'
+import ArrowRightIcon from '@assets/images/new-icons/ui/arrow-right.svg'
+import SearchIcon from '@assets/images/new-icons/ui/search.svg'
 
 import Button from '../../forms/simple-components/Button'
 import { Stack } from '../Stack'
@@ -11,7 +11,7 @@ const ButtonShowCase = ({}: ButtonShowCaseProps) => {
   return (
     <Wrapper direction="column" title="Button">
       <Stack>
-        <Button variant="category" icon={<SearchIcon />} />
+        <Button variant="category" icon={<SearchIcon className="fill-white" />} />
         <Button variant="category" icon={<SearchIcon />} size="sm" />
         <Button variant="category" text="Button" />
         <Button variant="category" text="Button" size="sm" />
@@ -218,6 +218,55 @@ const ButtonShowCase = ({}: ButtonShowCaseProps) => {
       <Stack>
         <Button variant="link-black" href="#" label="Label value" />
         <Button variant="link-black" href="#" label="Label value" size="sm" />
+      </Stack>
+      <Stack>
+        <Stack>
+          <Button text="Not Loading" variant="category" />
+          <Button
+            text="Not Loading"
+            size="sm"
+            endIcon={<SearchIcon />}
+            variant="category-outline"
+          />
+          <Button text="Not Loading" variant="black" />
+          <Button icon={<SearchIcon />} size="sm" variant="black-outline" />
+          <Button text="Not Loading" variant="negative" />
+          <Button text="Not Loading" size="sm" endIcon={<SearchIcon />} variant="plain-black" />
+          <Button text="Not Loading" variant="plain-category" />
+          <Button icon={<SearchIcon />} size="sm" variant="plain-negative" />
+          <Button text="Not Loading" size="sm" endIcon={<SearchIcon />} variant="link-black" />
+          <Button text="Not Loading" variant="link-category" />
+        </Stack>
+        <Stack>
+          <Button text="Not Loading" loading variant="category" />
+          <Button
+            text="Not Loading"
+            size="sm"
+            endIcon={<SearchIcon />}
+            loading
+            variant="category-outline"
+          />
+          <Button text="Not Loading" variant="black" loading />
+          <Button icon={<SearchIcon />} size="sm" loading variant="black-outline" />
+          <Button text="Not Loading" loading variant="negative" />
+          <Button
+            text="Not Loading"
+            size="sm"
+            endIcon={<SearchIcon />}
+            loading
+            variant="plain-black"
+          />
+          <Button text="Not Loading" variant="plain-category" loading />
+          <Button icon={<SearchIcon />} size="sm" loading variant="plain-negative" />
+          <Button
+            text="Not Loading"
+            size="sm"
+            endIcon={<SearchIcon />}
+            loading
+            variant="link-black"
+          />
+          <Button text="Not Loading" variant="link-category" loading />
+        </Stack>
       </Stack>
     </Wrapper>
   )

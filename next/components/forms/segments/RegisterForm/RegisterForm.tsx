@@ -9,7 +9,10 @@ import SingleCheckbox from 'components/forms/widget-components/Checkbox/SingleCh
 import InputField from 'components/forms/widget-components/InputField/InputField'
 import PasswordField from 'components/forms/widget-components/PasswordField/PasswordField'
 import { useTranslation } from 'next-i18next'
+import { useState } from 'react'
 import { Controller } from 'react-hook-form'
+import Turnstile from 'react-turnstile'
+import { useCounter } from 'usehooks-ts'
 
 interface Data {
   email: string
@@ -18,6 +21,7 @@ interface Data {
   password: string
   passwordConfirmation: string
   marketingConfirmation: boolean
+  turnstileToken: string
 }
 
 interface Props {
@@ -25,6 +29,7 @@ interface Props {
     email: string,
     password: string,
     marketingConfirmation: boolean,
+    turnstileToken: string,
     userData: UserData,
   ) => Promise<any>
   error?: AccountError | null | undefined
@@ -67,6 +72,10 @@ const schema = {
     marketingConfirmation: {
       type: 'boolean',
     },
+    turnstileToken: {
+      type: 'string',
+      minLength: 1,
+    },
   },
   required: [
     'email',
@@ -75,11 +84,13 @@ const schema = {
     'password',
     'passwordConfirmation',
     'marketingConfirmation',
+    'turnstileToken',
   ],
 }
 
 const RegisterForm = ({ onSubmit, error, lastEmail }: Props) => {
   const { t } = useTranslation('account')
+  const turnstileKeyCounter = useCounter()
   const {
     handleSubmit,
     control,
@@ -106,8 +117,15 @@ const RegisterForm = ({ onSubmit, error, lastEmail }: Props) => {
           given_name: data.given_name,
           family_name: data.family_name,
         }
-
-        return onSubmit(data.email, data.password, data.marketingConfirmation, userData)
+        // force turnstile rerender as it's always available just for a single request
+        turnstileKeyCounter.increment()
+        return onSubmit(
+          data.email,
+          data.password,
+          data.marketingConfirmation,
+          data.turnstileToken,
+          userData,
+        )
       })}
     >
       <h1 className="text-h2">{t('register_title')}</h1>
@@ -202,6 +220,21 @@ const RegisterForm = ({ onSubmit, error, lastEmail }: Props) => {
           >
             {t('marketing_confirmation_label')}
           </SingleCheckbox>
+        )}
+      />
+      <Controller
+        name="turnstileToken"
+        control={control}
+        render={({ field: { onChange } }) => (
+          <Turnstile
+            key={turnstileKeyCounter.count}
+            sitekey={process.env.NEXT_PUBLIC_CLOUDFLARE_TURNSTILE_SITE_KEY}
+            onVerify={(token) => onChange(token)}
+            onError={() => onChange(null)}
+            onTimeout={() => onChange(null)}
+            onExpire={() => onChange(null)}
+            className="mb-2"
+          />
         )}
       />
       <Button

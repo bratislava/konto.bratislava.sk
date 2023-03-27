@@ -47,8 +47,12 @@ const cards: TaxesCardBase[] = [
   },
 ]
 
-const TaxesFeesSection = () => {
-  const [isOn, setIsOn] = useState<'default' | 'waiting' | 'error'>('default')
+interface TaxesFeesSectionProps {
+  isProductionDeployment?: boolean
+}
+
+const TaxesFeesSection = ({ isProductionDeployment }: TaxesFeesSectionProps) => {
+  const [isOn, setIsOn] = useState<'default' | 'waiting' | 'error'>('waiting')
   const { t } = useTranslation('account')
   const { status } = useAccount()
 
@@ -60,7 +64,7 @@ const TaxesFeesSection = () => {
 <h4>${t('account_section_payment.error_card_title')}</h4>
 <div>${t('account_section_payment.error_card_content.title')}
 <ul>${
-    status === AccountStatus.IdentityVerificationRequired
+    status !== AccountStatus.IdentityVerificationSuccess
       ? t('account_section_payment.error_card_content.list.verification')
       : ''
   }${t('account_section_payment.error_card_content.list.other')}</ul><br />${t(
@@ -131,7 +135,7 @@ const TaxesFeesSection = () => {
       )}
       {isOn === 'waiting' && <TaxesFeesWaitingCard content={taxesFeesWaitingCardContent} />}
       {isOn === 'error' && <TaxesFeesErrorCard content={taxesFeesErrorCardContent} />}
-      {switcher()}
+      {isProductionDeployment ? null : switcher()}
     </div>
   )
 }

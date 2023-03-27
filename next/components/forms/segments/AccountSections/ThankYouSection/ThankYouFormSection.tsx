@@ -32,7 +32,6 @@ const ThankYouFormSection = () => {
               size="sm"
             />
             <Button
-              target="_blank"
               label={t('thank_you.button_privacy_text')}
               href="https://bratislava.sk/ochrana-osobnych-udajov"
               variant="link-black"

@@ -119,14 +119,12 @@ const ThankYouSection = () => {
           </span>
           <div className="flex flex-col gap-3 mt-4 md:mt-6">
             <Button
-              target="_blank"
               label={t('thank_you.button_faq_text')}
               href="https://www.bratislava.sk/mesto-bratislava/dane-a-poplatky/dan-z-nehnutelnosti/digitalna-platba"
               variant="link-black"
               size="sm"
             />
             <Button
-              target="_blank"
               label={t('thank_you.button_privacy_text')}
               href="https://bratislava.sk/ochrana-osobnych-udajov"
               variant="link-black"

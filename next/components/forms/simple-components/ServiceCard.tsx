@@ -1,4 +1,4 @@
-import CircleArrowRight from '@assets/images/circle-arrow-right.svg'
+import ArrowRightIcon from '@assets/images/new-icons/ui/arrow-right.svg'
 import ExportIcon from '@assets/images/new-icons/ui/export.svg'
 import cx from 'classnames'
 import Link from 'next/link'
@@ -42,13 +42,13 @@ const ServiceCard = ({
       <div className="flex items-end w-full h-full">
         <div className="flex justify-between items-center h-max w-full">
           <div className="text-p2-semibold">{buttonText}</div>
-          {linkType === 'external' ? (
-            <div className="p2 flex items-center justify-center gap-1 rounded-full bg-gray-50 w-10 h-10">
+          <span className="w-10 h-10 min-w-[40px] rounded-full flex items-center justify-center bg-gray-50">
+            {href.includes('http') ? (
               <ExportIcon className="w-5 h-5" />
-            </div>
-          ) : (
-            <CircleArrowRight />
-          )}
+            ) : (
+              <ArrowRightIcon className="w-5 h-5" />
+            )}
+          </span>
         </div>
       </div>
     </>

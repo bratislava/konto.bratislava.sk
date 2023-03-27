@@ -63,9 +63,9 @@ const IntroSection = () => {
         <div className="w-full max-w-screen-lg m-auto py-6 lg:py-16">
           <AnnouncementBlock
             announcementContent={announcementContent}
-            buttonTitle={t('account_section_intro.announcement_card_action')}
+            // buttonTitle={t('account_section_intro.announcement_card_action')}
             imagePath={PlatbaDaneImg}
-            onPress={() => router.push('/taxes-and-fees')}
+            // onPress={() => router.push('/taxes-and-fees')}
           />
           <div className="w-full flex items-center justify-between mb-8 px-4 lg:px-0">
             <h2 className="text-h2">{t('account_section_services.navigation')}</h2>
@@ -100,11 +100,11 @@ const IntroSection = () => {
               href="https://mestskakniznica.sk/sluzby/citanie/ako-sa-prihlasit-do-kniznice"
             />
             <ServiceCard
-              title={t('account_section_services.cards.15.title')}
-              description={t('account_section_services.cards.15.description')}
+              title={t('account_section_services.cards.8.title')}
+              description={t('account_section_services.cards.8.description')}
               icon={<TreeIcon className="w-10 h-10 lg:w-12 lg:h-12 text-environment-700" />}
-              buttonText={t('account_section_services.cards.15.buttonText')}
-              href="https://10000stromov.sk/zapojit-sa"
+              buttonText={t('account_section_services.cards.8.buttonText')}
+              href="https://10000stromov.sk"
             />
           </div>
           <Button
@@ -120,9 +120,7 @@ const IntroSection = () => {
             title={t('account_section_intro.banner_title')}
             content={bannerContent}
             buttonText={t('account_section_intro.banner_button_text')}
-            onPress={() => {
-              alert('Button was pressed')
-            }}
+            onPress={() => router.push('/i-have-a-problem')}
           />
         </div>
       </div>

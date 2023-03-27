@@ -10,6 +10,7 @@ interface SelectFieldBoxProps {
   placeholder?: string
   filter: string
   filterRef?: React.RefObject<HTMLInputElement>
+  maxWordSize?: number
   onRemove: (optionId: number) => void
   onRemoveAll: () => void
   onFilterChange: (value: string) => void
@@ -28,6 +29,7 @@ const SelectFieldBoxComponent: ForwardRefRenderFunction<HTMLDivElement, SelectFi
     placeholder,
     filter,
     filterRef,
+    maxWordSize = 17,
     onRemove,
     onRemoveAll,
     onFilterChange,
@@ -61,8 +63,6 @@ const SelectFieldBoxComponent: ForwardRefRenderFunction<HTMLDivElement, SelectFi
     }
   }
 
-  const MAX_TEXT_SIZE = 17
-
   const getOptionTitle = (selectOption: SelectOption) => {
     return selectOption.title ?? String(selectOption.const)
   }
@@ -94,8 +94,8 @@ const SelectFieldBoxComponent: ForwardRefRenderFunction<HTMLDivElement, SelectFi
               ))
             ) : (
               <p>
-                {`${getOptionTitle(value[0]).slice(0, MAX_TEXT_SIZE)}${
-                  getOptionTitle(value[0]).length > MAX_TEXT_SIZE ? '...' : ''
+                {`${getOptionTitle(value[0]).slice(0, maxWordSize)}${
+                  getOptionTitle(value[0]).length > maxWordSize ? '...' : ''
                 }`}
               </p>
             )
@@ -104,16 +104,18 @@ const SelectFieldBoxComponent: ForwardRefRenderFunction<HTMLDivElement, SelectFi
           )
         ) : null
       }
-      <input
-        ref={filterRef}
-        className="text-16 max-w-[80px] xs:max-w-none border-0 outline-none"
-        type="text"
-        size={getInputSize()}
-        value={filter}
-        placeholder={getPlaceholder()}
-        onKeyDown={handleOnKeyDown}
-        onChange={(event) => onFilterChange(event.target.value)}
-      />
+      {(multiple || (!multiple && (!value || value.length === 0))) && (
+        <input
+          ref={filterRef}
+          className="text-16 max-w-[80px] xs:max-w-none border-0 outline-none"
+          type="text"
+          size={getInputSize()}
+          value={filter}
+          placeholder={getPlaceholder()}
+          onKeyDown={handleOnKeyDown}
+          onChange={(event) => onFilterChange(event.target.value)}
+        />
+      )}
     </section>
   )
 }

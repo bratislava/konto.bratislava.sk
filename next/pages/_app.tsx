@@ -10,6 +10,7 @@ import { NextAdapter } from 'next-query-params'
 import { SSRProvider } from 'react-aria'
 import SnackbarProvider from 'react-simple-snackbar'
 import { QueryParamProvider } from 'use-query-params'
+import { StatusBarProvider } from 'components/forms/info-components/StatusBar'
 
 const inter = Inter({
   variable: '--inter-font',
@@ -31,13 +32,15 @@ const MyApp = ({ Component, pageProps }: AppProps) => {
       </Head>
       <QueryParamProvider adapter={NextAdapter}>
         <SSRProvider>
-          <AccountProvider>
-            <div className={`${inter.variable} font-sans`}>
-              <SnackbarProvider>
-                <Component {...pageProps} />
-              </SnackbarProvider>
-            </div>
-          </AccountProvider>
+          <StatusBarProvider>
+            <AccountProvider>
+              <div className={`${inter.variable} font-sans`}>
+                <SnackbarProvider>
+                  <Component {...pageProps} />
+                </SnackbarProvider>
+              </div>
+            </AccountProvider>
+          </StatusBarProvider>
         </SSRProvider>
       </QueryParamProvider>
     </>

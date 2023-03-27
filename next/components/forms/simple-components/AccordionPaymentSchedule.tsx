@@ -49,7 +49,6 @@ const PaymentScheduleView = (props: any) => {
             <div className="grow items-start">
               {t('payment_schedule.first_piece')}{' '}
               <div className="text-h5 inline">{t('payment_schedule.first_piece_to')}</div>
-              {t('validity_decision')}
             </div>
             <div className="text-h5">29,66 €</div>
           </div>
@@ -140,7 +139,7 @@ const AccordionPaymentSchedule = ({
             <div
               role="button"
               tabIndex={0}
-              className="flex cursor-pointer lg:items-start items-center gap-4"
+              className="no-tap-highlight flex cursor-pointer lg:items-start items-center gap-4"
               onClick={() => setIsActive(!isActive)}
               onKeyDown={() => setIsActive(!isActive)}
             >
@@ -168,6 +167,8 @@ const AccordionPaymentSchedule = ({
                   'lg:w-10 lg:h-10 w-8 h-8': accordionSize === 'lg',
                   'lg:w-8 lg:h-8 w-6 h-6': accordionSize === 'md',
                   'w-6 h-6': accordionSize === 'sm' || accordionSize === 'xs',
+                  'transform rotate-180': isActive,
+                  'transform rotate-270 md:rotate-0': !isActive,
                 })}
               />
             </div>

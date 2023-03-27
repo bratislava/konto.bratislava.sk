@@ -1,4 +1,5 @@
 import useAccount, { UserData } from '@utils/useAccount'
+import useSnackbar from '@utils/useSnackbar'
 import MessageModal from 'components/forms/widget-components/Modals/MessageModal'
 import { useTranslation } from 'next-i18next'
 import React, { useEffect, useState } from 'react'
@@ -12,9 +13,10 @@ const UserProfileView = () => {
   const { t } = useTranslation('account')
   const [isEditing, setIsEditing] = useState<boolean>(false)
   const [isAlertOpened, setIsAlertOpened] = useState(false)
-  const [alertType, setAlertType] = useState<'success' | 'error' | null>(null)
+  const [alertType, setAlertType] = useState<'success' | 'error'>('success')
   const [isEmailModalOpened, setIsEmailModalOpened] = useState<boolean>(false)
   const { userData, updateUserData, error } = useAccount()
+  const [openSnackbarSuccess] = useSnackbar({ variant: 'success' })
 
   useEffect(() => {
     setAlertType(error ? 'error' : 'success')
@@ -22,13 +24,6 @@ const UserProfileView = () => {
 
   // TODO: handle change of consents in backend DB
   const [allConsents, setAllConsents] = useState<Consent[]>([
-    {
-      id: 'personal_data',
-      title: t('consents.personal_data.title'),
-      text: t('consents.personal_data.text'),
-      isDisabled: true,
-      isSelected: true,
-    },
     {
       id: 'receive_information',
       title: t('consents.receive_information.title'),
@@ -45,10 +40,14 @@ const UserProfileView = () => {
   const handleOnSubmitEditing = (newUserData: UserData) => {
     updateUserData(newUserData).then(() => {
       setIsEditing(false)
-      setIsAlertOpened(true)
-      setTimeout(() => {
-        setIsAlertOpened(false)
-      }, 3000)
+      if (alertType === 'error') {
+        setIsAlertOpened(true)
+        setTimeout(() => setIsAlertOpened(false), 3000)
+      }
+      if (alertType === 'success') {
+        // default is 5000 ms
+        openSnackbarSuccess(t('profile_detail.success_alert'), 3000)
+      }
     })
   }
 

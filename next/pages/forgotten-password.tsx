@@ -7,16 +7,14 @@ import ForgottenPasswordForm from 'components/forms/segments/ForgottenPasswordFo
 import NewPasswordForm from 'components/forms/segments/NewPasswordForm/NewPasswordForm'
 import LoginRegisterLayout from 'components/layouts/LoginRegisterLayout'
 import { GetServerSidePropsContext } from 'next'
+import { useRouter } from 'next/router'
 import { useTranslation } from 'next-i18next'
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
-import { useRouter } from 'next/router'
 
 import PageWrapper from '../components/layouts/PageWrapper'
 import { isProductionDeployment } from '../utils/utils'
 
 export const getServerSideProps = async (ctx: GetServerSidePropsContext) => {
-  if (isProductionDeployment()) return { notFound: true }
-
   const locale = ctx.locale ?? 'sk'
 
   return {
@@ -30,6 +28,7 @@ export const getServerSideProps = async (ctx: GetServerSidePropsContext) => {
             locale: l,
           })),
       },
+      isProductionDeployment: isProductionDeployment(),
       ...(await serverSideTranslations(locale)),
     },
   }
@@ -41,7 +40,7 @@ const ForgottenPasswordPage = ({ page }: AsyncServerProps<typeof getServerSidePr
   const router = useRouter()
 
   const onConfirm = () => {
-    router.push(ROUTES.ACCOUNT)
+    router.push(ROUTES.HOME)
   }
 
   return (

@@ -6,17 +6,20 @@ import useHookForm from '@utils/useHookForm'
 import Alert from 'components/forms/info-components/Alert'
 import Button from 'components/forms/simple-components/Button'
 import InputField from 'components/forms/widget-components/InputField/InputField'
-import { useTranslation } from 'next-i18next'
 import { useRouter } from 'next/router'
+import { useTranslation } from 'next-i18next'
 import { Controller } from 'react-hook-form'
+import Turnstile from 'react-turnstile'
+import { useCounter } from 'usehooks-ts'
 
 interface Data {
   rc: string
   idCard: string
+  turnstileToken: string
 }
 
 interface Props {
-  onSubmit: (rc: string, idCard: string) => void
+  onSubmit: (rc: string, idCard: string, turnstileToken: string) => void
   error?: AccountError | null | undefined
 }
 
@@ -35,12 +38,17 @@ const schema = {
       minLength: 1,
       errorMessage: { minLength: 'account:id_card_required' },
     },
+    turnstileToken: {
+      type: 'string',
+      minLength: 1,
+    },
   },
-  required: ['rc', 'idCard'],
+  required: ['rc', 'idCard', 'turnstileToken'],
 }
 
 const IdentityVerificationForm = ({ onSubmit, error }: Props) => {
   const { t } = useTranslation('account')
+  const turnstileKeyCounter = useCounter()
   const router = useRouter()
   const {
     handleSubmit,
@@ -55,7 +63,11 @@ const IdentityVerificationForm = ({ onSubmit, error }: Props) => {
   return (
     <form
       className="flex flex-col space-y-4"
-      onSubmit={handleSubmit((data: Data) => onSubmit(data.rc, data.idCard))}
+      onSubmit={handleSubmit((data: Data) => {
+        // force turnstile rerender as it's always available just for a single request
+        turnstileKeyCounter.increment()
+        return onSubmit(data.rc, data.idCard, data.turnstileToken)
+      })}
     >
       <h1 className="text-h3">{t('identity_verification_title')}</h1>
       {error && (
@@ -90,17 +102,32 @@ const IdentityVerificationForm = ({ onSubmit, error }: Props) => {
           />
         )}
       />
+      <Controller
+        name="turnstileToken"
+        control={control}
+        render={({ field: { onChange } }) => (
+          <Turnstile
+            key={turnstileKeyCounter.count}
+            sitekey={process.env.NEXT_PUBLIC_CLOUDFLARE_TURNSTILE_SITE_KEY}
+            onVerify={(token) => onChange(token)}
+            onError={() => onChange(null)}
+            onTimeout={() => onChange(null)}
+            onExpire={() => onChange(null)}
+            className="mb-2"
+          />
+        )}
+      />
       <Button
         className="min-w-full"
         type="submit"
         text={t('identity_verification_submit')}
         variant="category"
-        disabled={isSubmitting}
+        loading={isSubmitting}
       />
       <Button
         variant="plain-black"
         className="min-w-full"
-        onPress={() => router.push({ pathname: ROUTES.ACCOUNT, query: { from: ROUTES.REGISTER } })}
+        onPress={() => router.push({ pathname: ROUTES.HOME, query: { from: ROUTES.REGISTER } })}
         text={t('identity_verification_skip')}
         endIcon={<ArrowRightIcon />}
       />

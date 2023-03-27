@@ -479,7 +479,8 @@
   "tax_constructions": "Daň zo stavieb",
   "thank_you": {
     "footer_text": "© 2023 Hlavné mesto Bratislava",
-    "subtitle_mail": "<span className='text-p2'>V prípade akýchkoľvek otázok nás neváhajte kontaktovať na adrese:</span>",
+    "subtitle_mail_platbadane": "V prípade akýchkoľvek otázok nás neváhajte kontaktovať na platbadane@bratislava.sk",
+    "subtitle_mail_info": "V prípade akýchkoľvek otázok nás neváhajte kontaktovať na info@bratislava.sk",
     "button_faq_text": "Často kladené otázky",
     "button_privacy_text": "Ochrana osobných údajov",
     "error": {

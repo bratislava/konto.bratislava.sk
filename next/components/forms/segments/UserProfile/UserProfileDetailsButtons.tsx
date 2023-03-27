@@ -40,20 +40,6 @@ const UserProfileDetailsButtons = (props: UserProfileDetailsButtonsProps) => {
             className={cx('block cursor-pointer', 'md:hidden')}
             onClick={onCancelEditing}
           />
-          <div
-            className={cx(
-              'fixed bottom-0 left-0 right-0 bg-white z-50 drop-shadow-2xl flex flex-row justify-center py-2',
-              'md:hidden',
-            )}
-          >
-            <Button
-              variant="black"
-              size="sm"
-              text={t('profile_detail.save_edit_button')}
-              type="submit"
-              form={formId}
-            />
-          </div>
         </div>
       ) : (
         <div className="width-fit">

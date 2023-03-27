@@ -63,9 +63,9 @@ const IntroSection = () => {
         <div className="w-full max-w-screen-lg m-auto py-6 lg:py-16">
           <AnnouncementBlock
             announcementContent={announcementContent}
-            buttonTitle={t('account_section_intro.announcement_card_action')}
+            // buttonTitle={t('account_section_intro.announcement_card_action')}
             imagePath={PlatbaDaneImg}
-            onPress={() => router.push('/taxes-and-fees')}
+            // onPress={() => router.push('/taxes-and-fees')}
           />
           <div className="w-full flex items-center justify-between mb-8 px-4 lg:px-0">
             <h2 className="text-h2">{t('account_section_services.navigation')}</h2>

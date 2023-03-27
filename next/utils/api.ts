@@ -121,6 +121,7 @@ export const xmlToFormData = (eform: string, data: string) => {
 interface Identity {
   birthNumber: string
   identityCard: string
+  turnstileToken: string
 }
 
 export const verifyIdentityApi = (data: Identity, token: string) => {

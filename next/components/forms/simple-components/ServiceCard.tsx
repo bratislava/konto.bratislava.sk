@@ -1,14 +1,15 @@
+import ArrowRightIcon from '@assets/images/new-icons/ui/arrow-right.svg'
+import ExportIcon from '@assets/images/new-icons/ui/export.svg'
 import cx from 'classnames'
 import Link from 'next/link'
 import { ReactNode } from 'react'
-
-import CircleArrowRight from '../../../assets/images/circle-arrow-right.svg'
 
 type ServiceCardBase = {
   title: string
   description: string
   buttonText: string
   className?: string
+  linkType?: 'internal' | 'external'
   icon: ReactNode
   href?: string
   onPress?: () => void
@@ -19,6 +20,7 @@ const ServiceCard = ({
   description,
   buttonText,
   className,
+  linkType = 'external',
   icon,
   href,
   onPress,
@@ -40,7 +42,13 @@ const ServiceCard = ({
       <div className="flex items-end w-full h-full">
         <div className="flex justify-between items-center h-max w-full">
           <div className="text-p2-semibold">{buttonText}</div>
-          <CircleArrowRight />
+          <span className="w-10 h-10 min-w-[40px] rounded-full flex items-center justify-center bg-gray-50">
+            {href.includes('http') ? (
+              <ExportIcon className="w-5 h-5" />
+            ) : (
+              <ArrowRightIcon className="w-5 h-5" />
+            )}
+          </span>
         </div>
       </div>
     </>

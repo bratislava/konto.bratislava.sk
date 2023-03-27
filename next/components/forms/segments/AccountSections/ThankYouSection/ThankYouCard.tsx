@@ -1,7 +1,7 @@
-import DisableIcon from '@assets/images/account/disable-icon.svg'
-import DoneIcon from '@assets/images/account/done-icon.svg'
-import ErrorIcon from '@assets/images/account/error-cross.svg'
-import RestartIcon from '@assets/images/account/sync-icon.svg'
+import PaymentDeclined from '@assets/images/new-icons/other/payment-declined.svg'
+import DisableIcon from '@assets/images/new-icons/ui/cross.svg'
+import DoneIcon from '@assets/images/new-icons/ui/done.svg'
+import RestartIcon from '@assets/images/new-icons/ui/repeat.svg'
 import cx from 'classnames'
 import AccountMarkdown from 'components/forms/segments/AccountMarkdown/AccountMarkdown'
 import Button from 'components/forms/simple-components/Button'
@@ -34,9 +34,9 @@ const ThankYouCard = ({
         )}
       >
         {status !== 'success' ? (
-          <ErrorIcon className="w-8 md:w-10 h-8 md:h-10 flex justify-center items-center" />
+          <PaymentDeclined className="w-8 md:w-10 h-8 md:h-10 flex justify-center items-center text-negative-700" />
         ) : (
-          <DoneIcon className="w-8 md:w-10 h-8 md:h-10 flex justify-center items-center" />
+          <DoneIcon className="w-8 md:w-10 h-8 md:h-10 flex justify-center items-center text-success-700" />
         )}
       </span>
       <div className="flex flex-col items-center gap-4 md:gap-3">
@@ -48,7 +48,7 @@ const ThankYouCard = ({
           <>
             <Button startIcon={<RestartIcon />} text={firstButtonTitle} fullWidth />
             <Button
-              startIcon={<DisableIcon />}
+              startIcon={<DisableIcon className="w-6 h-6" />}
               variant="black-outline"
               text={secondButtonTitle}
               fullWidth

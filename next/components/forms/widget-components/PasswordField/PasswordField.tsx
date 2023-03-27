@@ -1,4 +1,4 @@
-import HiddenIcon from '@assets/images/forms/hidden.svg'
+import HiddenIcon from '@assets/images/new-icons/ui/eye.svg'
 import InputField from 'components/forms/widget-components/InputField/InputField'
 import { forwardRef, useState } from 'react'
 

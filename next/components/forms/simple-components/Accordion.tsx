@@ -1,4 +1,4 @@
-import ExpandMore from '@assets/images/expand-more.svg'
+import ExpandMore from '@assets/images/new-icons/ui/expand.svg'
 import PersonIcon from '@assets/images/new-icons/ui/profile.svg'
 import cx from 'classnames'
 import AccountMarkdown from 'components/forms/segments/AccountMarkdown/AccountMarkdown'
@@ -91,7 +91,7 @@ const Accordion = ({
               {secondTitle}
             </div>
             <ExpandMore
-              className={cx('flex items-center justify-center', {
+              className={cx('flex items-center justify-center text-negative-700', {
                 'lg:min-w-[40px] lg:w-10 lg:h-10 w-8 h-8 min-w-[32px]': accordionSize === 'lg',
                 'lg:min-w-[32px] lg:w-8 lg:h-8 w-6 h-6 min-w-[24px]': accordionSize === 'md',
                 'w-6 h-6 min-w-[24px]': accordionSize === 'sm' || accordionSize === 'xs',

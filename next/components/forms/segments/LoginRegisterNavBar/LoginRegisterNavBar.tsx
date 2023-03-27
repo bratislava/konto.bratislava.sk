@@ -1,10 +1,10 @@
-import { ArrowLeft } from '@assets/images'
+import ArrowLeft from '@assets/images/new-icons/ui/arrow-left.svg'
 import { getLanguageKey } from '@utils/utils'
 import cx from 'classnames'
+import { StatusBar } from 'components/forms/info-components/StatusBar'
 import Brand from 'components/forms/simple-components/Brand'
 import { useRouter } from 'next/router'
 import { useTranslation } from 'next-i18next'
-import { StatusBar } from 'components/forms/info-components/StatusBar'
 import { useElementSize } from 'usehooks-ts'
 
 interface IProps {

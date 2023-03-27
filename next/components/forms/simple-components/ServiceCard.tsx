@@ -9,6 +9,7 @@ type ServiceCardBase = {
   description: string
   buttonText: string
   className?: string
+  linkType?: 'internal' | 'external'
   icon: ReactNode
   href?: string
   onPress?: () => void
@@ -19,6 +20,7 @@ const ServiceCard = ({
   description,
   buttonText,
   className,
+  linkType = 'external',
   icon,
   href,
   onPress,

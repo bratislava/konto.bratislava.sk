@@ -1,5 +1,5 @@
 import BannerPhone from '@assets/images/banner-phone.png'
-import CallIcon from '@assets/images/forms/call.svg'
+import CallIcon from '@assets/images/new-icons/ui/telephone.svg'
 import cx from 'classnames'
 import AccountMarkdown from 'components/forms/segments/AccountMarkdown/AccountMarkdown'
 import Image from 'next/legacy/image'

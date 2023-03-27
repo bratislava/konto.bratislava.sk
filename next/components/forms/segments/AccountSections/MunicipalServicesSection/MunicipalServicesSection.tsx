@@ -16,6 +16,7 @@ import ExcavationsIcon from '@assets/images/new-icons/other/transport-and-maps/e
 import ParkingIcon from '@assets/images/new-icons/other/transport-and-maps/parking.svg'
 import TowIcon from '@assets/images/new-icons/other/transport-and-maps/towing.svg'
 import ChristmasTreeIcon from '@assets/images/new-icons/other/tree.svg'
+import Alert from 'components/forms/info-components/Alert'
 import MunicipalServicesSectionHeader from 'components/forms/segments/AccountSectionHeader/MunicipalServicesSectionHeader'
 import Pagination from 'components/forms/simple-components/Pagination/Pagination'
 import ServiceCard from 'components/forms/simple-components/ServiceCard'
@@ -67,6 +68,7 @@ const MunicipalServicesSection = () => {
     description: string
     buttonText: string
     className?: string
+    linkType?: 'internal' | 'external'
     icon: ReactNode
     href?: string
     category: string[]
@@ -79,6 +81,7 @@ const MunicipalServicesSection = () => {
       buttonText: t('account_section_services.cards.1.buttonText'),
       icon: <TaxesIcon className="w-10 h-10 lg:w-12 lg:h-12 text-category-600" />,
       category: [TAXES_CATEGORY],
+      linkType: 'internal',
       href: '/taxes-and-fees',
     },
     {
@@ -184,14 +187,6 @@ const MunicipalServicesSection = () => {
       icon: <MosquitoIcon className="w-10 h-10 lg:w-12 lg:h-12 text-environment-700" />,
       category: [JOIN_CATEGORY],
       href: 'https://lovcikomarov.sk/',
-    },
-    {
-      title: t('account_section_services.cards.15.title'),
-      description: t('account_section_services.cards.15.description'),
-      buttonText: t('account_section_services.cards.15.buttonText'),
-      icon: <TreeIcon className="text-environment-700 w-10 h-10 lg:w-12 lg:h-12" />,
-      category: [GREEN_CATEGORY],
-      href: 'https://10000stromov.sk/zapojit-sa',
     },
     // {
     //   title: t('account_section_services.cards.16.title'),
@@ -336,7 +331,12 @@ const MunicipalServicesSection = () => {
         setCurrentPage={setCurrentPage}
         title={t('account_section_services.navigation')}
       />
-      <div className="w-full max-w-screen-lg mx-auto py-4 lg:py-8">
+      <div className="w-full max-w-screen-lg mx-auto pt-4 lg:pt-8">
+        <Alert
+          message={t('account_section_services.alert_text')}
+          type="info"
+          className="max-w-none mb-4 lg:mb-8"
+        />
         <div className="flex flex-wrap gap-3 sm:gap-6 md:gap-8 px-4 lg:px-0">
           {filteredServiceCards
             .filter(
@@ -350,6 +350,7 @@ const MunicipalServicesSection = () => {
                 title={card.title}
                 description={card.description}
                 buttonText={card.buttonText}
+                linkType={card.linkType}
                 icon={card.icon}
                 href={card.href}
                 onPress={card.onPress}

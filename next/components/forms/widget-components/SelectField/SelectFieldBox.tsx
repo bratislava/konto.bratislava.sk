@@ -104,16 +104,18 @@ const SelectFieldBoxComponent: ForwardRefRenderFunction<HTMLDivElement, SelectFi
           )
         ) : null
       }
-      <input
-        ref={filterRef}
-        className="text-16 max-w-[80px] xs:max-w-none border-0 outline-none"
-        type="text"
-        size={getInputSize()}
-        value={filter}
-        placeholder={getPlaceholder()}
-        onKeyDown={handleOnKeyDown}
-        onChange={(event) => onFilterChange(event.target.value)}
-      />
+      {(multiple || (!multiple && (!value || value.length === 0))) && (
+        <input
+          ref={filterRef}
+          className="text-16 max-w-[80px] xs:max-w-none border-0 outline-none"
+          type="text"
+          size={getInputSize()}
+          value={filter}
+          placeholder={getPlaceholder()}
+          onKeyDown={handleOnKeyDown}
+          onChange={(event) => onFilterChange(event.target.value)}
+        />
+      )}
     </section>
   )
 }

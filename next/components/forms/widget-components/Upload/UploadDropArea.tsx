@@ -106,7 +106,7 @@ const UploadDropAreaComponent: ForwardRefRenderFunction<HTMLDivElement, UploadDr
       <div className={dragAndDropClassNames}>
         <div className="flex flex-row justify-center">
           <div className="flex h-12 w-12 flex-row justify-center items-center rounded-full bg-gray-200">
-            <UploadIcon />
+            <UploadIcon className="w-6 h-6" />
           </div>
         </div>
         <h5 className="text-16-semibold">Drag & drop upload</h5>

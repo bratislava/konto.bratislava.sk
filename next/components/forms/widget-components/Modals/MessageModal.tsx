@@ -1,7 +1,7 @@
+import CloseIcon from '@assets/images/new-icons/ui/cross.svg'
 import cx from 'classnames'
-import React, { useEffect } from 'react'
+import React from 'react'
 
-import CloseIcon from '../../icon-components/CloseIcon'
 import ErrorIcon from '../../icon-components/ErrorIcon'
 import InfoIcon from '../../icon-components/InfoIcon'
 import SuccessIcon from '../../icon-components/SuccessIcon'
@@ -55,7 +55,7 @@ const MessageModal = ({
     >
       <div className={cx('flex flex-col items-end rounded-lg bg-white p-3', className)}>
         <div className="absolute flex h-6 w-6 items-center justify-center">
-          <CloseIcon onClick={cancelHandler} type="info" />
+          <CloseIcon className="h-6 w-6" onClick={cancelHandler} type="info" />
         </div>
         <div className="p-3">
           <div className="flex flex-row items-start gap-6 p-0">

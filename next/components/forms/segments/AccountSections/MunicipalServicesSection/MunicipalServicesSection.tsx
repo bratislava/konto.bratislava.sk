@@ -22,6 +22,7 @@ import Pagination from 'components/forms/simple-components/Pagination/Pagination
 import ServiceCard from 'components/forms/simple-components/ServiceCard'
 import { useTranslation } from 'next-i18next'
 import { ReactNode, useState } from 'react'
+import { useWindowSize } from 'usehooks-ts'
 
 import { SelectOption } from '../../../widget-components/SelectField/SelectField'
 
@@ -55,13 +56,13 @@ const enumOptions: SelectOption[] = [
   { const: 'GREEN_CATEGORY', title: GREEN_CATEGORY, description: '' },
 ]
 
-const ITEMS_PER_PAGE = 20
-
 const MunicipalServicesSection = () => {
   const { t } = useTranslation('account')
+  const { width } = useWindowSize()
   const [currentPage, setCurrentPage] = useState<number>(1)
   const [selectorValue, setSelectorValue] = useState<SelectOption[]>(enumOptions.slice(0, 1))
   const selectorValueTitle: string = selectorValue[0]?.title || ''
+  const ITEMS_PER_PAGE = width > 480 ? 20 : 5
 
   type ServiceCardBase = {
     title: string
@@ -333,7 +334,8 @@ const MunicipalServicesSection = () => {
         <Alert
           message={t('account_section_services.alert_text')}
           type="info"
-          className="max-w-none mb-4 lg:mb-8"
+          fullWidth
+          className="mb-4 lg:mb-8 mx-4 lg:mx-0"
         />
         <div className="flex flex-wrap gap-3 sm:gap-6 md:gap-8 px-4 lg:px-0">
           {filteredServiceCards

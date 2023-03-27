@@ -300,6 +300,11 @@
         "title": "Vývoz odpadu pre správcovské spoločnosti",
         "description": "Objednanie odvozu odpadu pre správcovské spoločnosti.",
         "buttonText": "Objednať odvoz"
+      },
+      "32": {
+        "title": "Online lístky na kúpaliská",
+        "description": "Moťnosť kúpiť si online lístok alebo permanentku na všetky mestské kúpalíská v Bratislave pribudne do Bratislavského konta už v júni.",
+        "tag": "Pribudne čoskoro"
       }
     }
   },

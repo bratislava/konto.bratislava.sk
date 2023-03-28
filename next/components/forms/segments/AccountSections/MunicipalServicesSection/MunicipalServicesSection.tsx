@@ -111,7 +111,7 @@ const MunicipalServicesSection = () => {
       buttonText: t('account_section_services.cards.3.buttonText'),
       icon: <ParkingIcon className="w-10 h-10 lg:w-12 lg:h-12 text-transport-700" />,
       category: [PARKING_CATEGORY],
-      href: 'http://paas.sk/',
+      href: 'https://paas.sk/',
     },
     {
       title: t('account_section_services.cards.4.title'),

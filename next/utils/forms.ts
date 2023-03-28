@@ -603,7 +603,6 @@ export const useFormStepper = (eformSlug: string, schema: RJSFSchema) => {
   }
 
   const handleOnErrors = (newErrors: RJSFValidationError[]) => {
-    console.log('HANDLE ON ERRORS')
     setUniqueErrors(newErrors, stepIndex)
     if (isSkipEnabled) {
       changeStepData(stepIndex, false)

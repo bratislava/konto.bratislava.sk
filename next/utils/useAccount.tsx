@@ -12,6 +12,7 @@ import { AWSError } from 'aws-sdk/global'
 import { useStatusBarContext } from 'components/forms/info-components/StatusBar'
 import AccountMarkdown from 'components/forms/segments/AccountMarkdown/AccountMarkdown'
 import { useTranslation } from 'next-i18next'
+import { useRouter } from 'next/router'
 import React, { ReactNode, useCallback, useContext, useEffect, useState } from 'react'
 import { useInterval } from 'usehooks-ts'
 
@@ -330,7 +331,7 @@ export const AccountProvider = ({ children }: { children: ReactNode }) => {
   }, [])
 
   useEffect(() => {
-    refreshUserData().catch((err) => console.error(err))
+    refreshUserData().catch((error_) => console.error(error_))
   }, [refreshUserData])
 
   const logout = () => {
@@ -549,7 +550,7 @@ export const AccountProvider = ({ children }: { children: ReactNode }) => {
 
   useInterval(
     () => {
-      refreshUserData().catch((err) => console.error(err))
+      refreshUserData().catch((error_) => console.error(error_))
     },
     status === AccountStatus.IdentityVerificationPending ? 5000 : null,
   )
@@ -585,6 +586,11 @@ export const AccountProvider = ({ children }: { children: ReactNode }) => {
       setStatusBarContent('')
     }
   }, [setStatusBarContent, status, t])
+
+  const router = useRouter()
+  useEffect(() => {
+    setError(null)
+  }, [router.pathname])
 
   const resetError = () => {
     setError(null)

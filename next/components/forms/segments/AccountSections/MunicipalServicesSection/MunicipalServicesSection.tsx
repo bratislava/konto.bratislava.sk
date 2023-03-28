@@ -1,9 +1,10 @@
+import AdministrationIcon from '@assets/images/new-icons/other/city-bratislava/city-administration.svg'
 import TaxesIcon from '@assets/images/new-icons/other/city-bratislava/taxes.svg'
 import TheatreIcon from '@assets/images/new-icons/other/culture-communities/events-support.svg'
 import LibraryIcon from '@assets/images/new-icons/other/culture-communities/library.svg'
 import ZooIcon from '@assets/images/new-icons/other/culture-communities/zoo.svg'
+import KidIcon from '@assets/images/new-icons/other/education-sport/kids-teenagers.svg'
 import SwimmingPoolIcon from '@assets/images/new-icons/other/education-sport/swimming-pool.svg'
-import CityTreeIcon from '@assets/images/new-icons/other/environment-construction/city-trees.svg'
 import GardensIcon from '@assets/images/new-icons/other/environment-construction/community-gardens.svg'
 import SewerageIcon from '@assets/images/new-icons/other/environment-construction/connector.svg'
 import FrontGardensIcon from '@assets/images/new-icons/other/environment-construction/front-gardens.svg'
@@ -23,6 +24,7 @@ import Pagination from 'components/forms/simple-components/Pagination/Pagination
 import ServiceCard from 'components/forms/simple-components/ServiceCard'
 import { useTranslation } from 'next-i18next'
 import { ReactNode, useState } from 'react'
+import { useWindowSize } from 'usehooks-ts'
 
 import { SelectOption } from '../../../widget-components/SelectField/SelectField'
 
@@ -56,13 +58,13 @@ const enumOptions: SelectOption[] = [
   { const: 'GREEN_CATEGORY', title: GREEN_CATEGORY, description: '' },
 ]
 
-const ITEMS_PER_PAGE = 20
-
 const MunicipalServicesSection = () => {
   const { t } = useTranslation('account')
+  const { width } = useWindowSize()
   const [currentPage, setCurrentPage] = useState<number>(1)
   const [selectorValue, setSelectorValue] = useState<SelectOption[]>(enumOptions.slice(0, 1))
   const selectorValueTitle: string = selectorValue[0]?.title || ''
+  const ITEMS_PER_PAGE = width > 480 ? 20 : 5
 
   type ServiceCardBase = {
     title: string
@@ -109,7 +111,7 @@ const MunicipalServicesSection = () => {
       buttonText: t('account_section_services.cards.3.buttonText'),
       icon: <ParkingIcon className="w-10 h-10 lg:w-12 lg:h-12 text-transport-700" />,
       category: [PARKING_CATEGORY],
-      href: 'https://paas.sk/formular/',
+      href: 'https://paas.sk/',
     },
     {
       title: t('account_section_services.cards.4.title'),
@@ -139,7 +141,7 @@ const MunicipalServicesSection = () => {
       title: t('account_section_services.cards.7.title'),
       description: t('account_section_services.cards.7.description'),
       buttonText: t('account_section_services.cards.7.buttonText'),
-      icon: <SecurityIcon className="w-10 h-10 lg:w-12 lg:h-12 text-category-600" />,
+      icon: <KidIcon className="w-10 h-10 lg:w-12 lg:h-12 text-category-600" />,
       category: [JOIN_CATEGORY],
       href: 'https://mib.sk/mesto-pre-deti',
     },
@@ -211,7 +213,7 @@ const MunicipalServicesSection = () => {
       title: t('account_section_services.cards.17.title'),
       description: t('account_section_services.cards.17.description'),
       buttonText: t('account_section_services.cards.17.buttonText'),
-      icon: <SecurityIcon className="w-10 h-10 lg:w-12 lg:h-12 text-category-600" />,
+      icon: <KidIcon className="w-10 h-10 lg:w-12 lg:h-12 text-category-600" />,
       category: [JOIN_CATEGORY],
       href: 'https://www.detiprebratislavu.sk/prihlasit-projekt/',
     },
@@ -283,7 +285,7 @@ const MunicipalServicesSection = () => {
       title: t('account_section_services.cards.26.title'),
       description: t('account_section_services.cards.26.description'),
       buttonText: t('account_section_services.cards.26.buttonText'),
-      icon: <CityTreeIcon className="w-10 h-10 lg:w-12 lg:h-12 text-environment-700" />,
+      icon: <AdministrationIcon className="w-10 h-10 lg:w-12 lg:h-12 text-category-600" />,
       category: [ENVIROMENTS_CATEGORY],
       href: 'https://cdn-api.bratislava.sk/static-pages/non-residential-premises-map/index.html?lang=sk',
     },
@@ -346,9 +348,10 @@ const MunicipalServicesSection = () => {
         <Alert
           message={t('account_section_services.alert_text')}
           type="info"
-          className="max-w-none mb-4 lg:mb-8"
+          fullWidth
+          className="mb-4 lg:mb-8 mx-4 lg:mx-0"
         />
-        <div className="flex flex-wrap gap-3 sm:gap-6 md:gap-8 px-4 lg:px-0">
+        <div className="grid grid-cols-1 min-[615px]:grid-cols-2 min-[960px]:grid-cols-3 lg:grid-cols-4 gap-3 sm:gap-6 md:gap-8 px-4 lg:px-0">
           {filteredServiceCards
             .filter(
               (_, i) =>

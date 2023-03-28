@@ -1,21 +1,14 @@
 import HorizontalArrowIcon from '@assets/images/forms/tooltip-horizontal-arrow.svg'
 import VerticalArrowIcon from '@assets/images/forms/tooltip-vertical-arrow.svg'
 import cx from 'classnames'
+import { TooltipPositionType } from 'components/forms/info-components/Tooltip/Tooltip'
 import AccountMarkdown from 'components/forms/segments/AccountMarkdown/AccountMarkdown'
 
 type TooltipBase = {
   text?: string
   arrow?: boolean
   className?: string
-  position?:
-    | 'top-right'
-    | 'top-left'
-    | 'bottom-right'
-    | 'bottom-left'
-    | 'right-top'
-    | 'right-bottom'
-    | 'left-top'
-    | 'left-bottom'
+  position?: TooltipPositionType
 }
 
 const TooltipPopup = ({ arrow = true, className, text, position = 'top-left' }: TooltipBase) => {

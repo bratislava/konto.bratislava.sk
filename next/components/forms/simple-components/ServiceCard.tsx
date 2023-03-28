@@ -57,7 +57,7 @@ const ServiceCard = ({
           <div className="flex justify-between items-center h-max w-full">
             <div className="text-p2-semibold">{buttonText}</div>
             <span className="w-10 h-10 min-w-[40px] rounded-full flex items-center justify-center bg-gray-50">
-              {href.includes('http') ? (
+              {href?.includes('http') ? (
                 <ExportIcon className="w-5 h-5" />
               ) : (
                 <ArrowRightIcon className="w-5 h-5" />
@@ -70,7 +70,7 @@ const ServiceCard = ({
   )
 
   return href ? (
-    <Link target={href.includes('http') ? '_blank' : '_self'} href={href} className={style}>
+    <Link target={href?.includes('http') ? '_blank' : '_self'} href={href} className={style}>
       <Card />
     </Link>
   ) : (

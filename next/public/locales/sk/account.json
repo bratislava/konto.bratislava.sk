@@ -101,6 +101,7 @@
   "identity_verification_pending_description": "Ospravedlňujeme sa, ale rodné číslo **{rc}** a číslo občianskeho preukazu **{idCard}** ešte stále overujeme. Medzitým môžete pokračovať do konta a my vám dáme vedieť, až dokončíme overenie vašej totožnosti.",
   "identity_verification_pending_description_without_data": "Ospravedlňujeme sa, ale rodné číslo a číslo občianskeho preukazu ešte stále overujeme. Medzitým môžete pokračovať do konta a my vám dáme vedieť, až dokončíme overenie vašej totožnosti.",
   "identity_verification_failed": "Rodné číslo a číslo občianskeho preukazu sa nepodarilo overiť. Skontrolujte správnosť údajov a [opakujte overenie indentity](/register).",
+  "identity_verification_success": "Overenie bolo úspešné",
   "password_change_title": "Zmena hesla",
   "old_password_label": "Staré heslo",
   "old_password_placeholder": "Staré heslo",
@@ -136,7 +137,7 @@
     "all_services": "Všetky služby",
     "announcement_title": "Aktuálne",
     "announcement_card_title": "Digitálna platba dane z nehnuteľností",
-    "announcement_card_text": "Vašu daň z nehnuteľností pre rok 2023 ešte spracovávame a v konte pribudne <strong>28. apríla</strong>. Keď bude pripravená, pošleme vám informačný e-mail a nájdete ju v časti Dane a poplatky.",
+    "announcement_card_text": "V prípade, že sa vás týka platba dane z nehnuteľností pre rok 2023, vašu daň ešte spracovávame a v konte pribudne najskôr <strong>20. apríla</strong>. Až sa tak udeje, pošleme vám informačný e-mail a nájdete ju v časti Dane a poplatky.",
     "announcement_card_action": "Zaplatiť daň z nehnuteľností",
     "banner_title": "Potrebujete pomôcť?",
     "banner_content": "Aké služby nájdem v Bratislavskom konte? Prečo vzniklo Bratislavské konto? Ako si viem zmeniť heslo? Nevidím svoju daň, čo mám robiť?<br /><br />Aj toto sú niektoré z otázok, na ktoré nájdete odpovede v sekcii Najčastejšie kladené otázky.",
@@ -312,12 +313,12 @@
     "title": "Dane a poplatky",
     "waiting_card_title": "Vašu daň z nehnuteľností pripravujeme.",
     "waiting_card_text": "Aj v tomto momente pracujeme na výpočte dane z nehnuteľností až pre 200.000 daňovníkov. Pripravené rozhodnutia budeme distribuovať v termíne <strong>od 20. apríla do 30. mája.</strong> Keď bude vaša daň z nehnuteľností pripravená, pošleme vám notifikačný e-mail.",
-    "error_card_title": "Zatiaľ vás nevidíme v zozname daňovníkov daňovníčok.",
+    "error_card_title": "Vaša daň z nehnuteľnosti nie je k dispozícii",
     "error_card_content": {
       "title": "<p>Môže to tak byť, lebo:</p>",
       "list": {
         "verification": "<li>ste neoverili svoju identitu cez rodné číslo a číslo občianskeho preukazu (<a href='/register'>Overiť identitu</a>),</li>",
-        "other": "<li>vaša nehnuteľnosť je v spoluvlastníctve,</li><li>vaše daňové priznanie ešte čaká na spracovanie,</li><li>nie ste vlastníkom či vlastníčkou nehnuteľnosti,</li><li>alebo ste nepodali priznanie k dani z nehnuteľností.</li>"
+        "other": "<li>vašu daň ešte pripravujeme (v tom prípade bude k dispozícii najskôr 20. apríla)</li><li>vaša nehnuteľnosť je v spoluvlastníctve,</li><li>nie ste vlastníkom či vlastníčkou nehnuteľnosti,</li><li>ste nepodali priznanie k dani z nehnuteľností.</li>"
       },
       "help_text": "<p>Viac informácií môžete nájsť v <a href='/i-have-a-problem'>často kladených otázkach</a>.</p>"
     }
@@ -484,7 +485,8 @@
   "tax_constructions": "Daň zo stavieb",
   "thank_you": {
     "footer_text": "© 2023 Hlavné mesto Bratislava",
-    "subtitle_mail": "<span className='text-p2'>V prípade akýchkoľvek otázok nás neváhajte kontaktovať na adrese:</span>",
+    "subtitle_mail_platbadane": "V prípade akýchkoľvek otázok nás neváhajte kontaktovať na platbadane@bratislava.sk",
+    "subtitle_mail_info": "V prípade akýchkoľvek otázok nás neváhajte kontaktovať na info@bratislava.sk",
     "button_faq_text": "Často kladené otázky",
     "button_privacy_text": "Ochrana osobných údajov",
     "error": {

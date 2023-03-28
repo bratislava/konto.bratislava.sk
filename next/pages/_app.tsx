@@ -2,15 +2,15 @@
 import './index.css'
 
 import { AccountProvider } from '@utils/useAccount'
+import { StatusBarProvider } from 'components/forms/info-components/StatusBar'
+import { appWithTranslation } from 'next-i18next'
+import { NextAdapter } from 'next-query-params'
 import { AppProps } from 'next/app'
 import { Inter } from 'next/font/google'
 import Head from 'next/head'
-import { appWithTranslation } from 'next-i18next'
-import { NextAdapter } from 'next-query-params'
 import { SSRProvider } from 'react-aria'
 import SnackbarProvider from 'react-simple-snackbar'
 import { QueryParamProvider } from 'use-query-params'
-import { StatusBarProvider } from 'components/forms/info-components/StatusBar'
 
 const inter = Inter({
   variable: '--inter-font',
@@ -33,13 +33,13 @@ const MyApp = ({ Component, pageProps }: AppProps) => {
       <QueryParamProvider adapter={NextAdapter}>
         <SSRProvider>
           <StatusBarProvider>
-            <AccountProvider>
-              <div className={`${inter.variable} font-sans`}>
-                <SnackbarProvider>
+            <div className={`${inter.variable} font-sans`}>
+              <SnackbarProvider>
+                <AccountProvider>
                   <Component {...pageProps} />
-                </SnackbarProvider>
-              </div>
-            </AccountProvider>
+                </AccountProvider>
+              </SnackbarProvider>
+            </div>
           </StatusBarProvider>
         </SSRProvider>
       </QueryParamProvider>

@@ -1,9 +1,8 @@
 import { UserData } from '@utils/useAccount'
 import cx from 'classnames'
-import Alert from 'components/forms/Alert'
+import Alert from 'components/forms/info-components/Alert'
 import { useTranslation } from 'next-i18next'
-import { useEffect, useId } from 'react'
-import { useSnackbar } from 'react-simple-snackbar'
+import { useId } from 'react'
 
 import UserProfileDetailEdit from './UserProfileDetailEdit'
 import UserProfileDetailsButtons from './UserProfileDetailsButtons'
@@ -15,7 +14,7 @@ import UserProfileSectionHeader from './UserProfileSectionHeader'
 interface UserProfileDetailProps {
   userData?: UserData | null
   isEditing?: boolean
-  alertType: 'success' | 'error' | null
+  alertType: 'success' | 'error'
   isAlertOpened: boolean
   onChangeIsEditing: (isEditing: boolean) => void
   onCancelEditing: () => void
@@ -36,19 +35,6 @@ const UserProfileDetail = (props: UserProfileDetailProps) => {
   } = props
   const { t } = useTranslation('account')
   const formId = `form-${useId()}`
-
-  const optionsSuccess = {
-    style: {
-      backgroundColor: 'rgb(var(--color-success-700))',
-    },
-  }
-  const [openSnackBar] = useSnackbar(optionsSuccess)
-
-  useEffect(() => {
-    if (isAlertOpened && alertType === 'success') {
-      openSnackBar(t(`profile_detail.success_alert`))
-    }
-  }, [alertType, isAlertOpened])
 
   const handleOnSubmit = (newUserData: UserData) => {
     onSubmit({
@@ -78,11 +64,13 @@ const UserProfileDetail = (props: UserProfileDetailProps) => {
           />
         </UserProfileSectionHeader>
         <div className="flex flex-col">
-          {isAlertOpened && alertType === 'error' && (
+          {/* Alert only for alertType === error */}
+          {isAlertOpened && (
             <div className="flex flex-row p-2">
               <Alert
                 className="max-w-none grow"
                 type={alertType}
+                solid
                 message={t(`profile_detail.${alertType}_alert`)}
               />
             </div>

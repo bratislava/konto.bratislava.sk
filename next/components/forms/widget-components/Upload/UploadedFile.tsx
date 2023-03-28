@@ -1,8 +1,5 @@
-import PinFileErrorIcon from '@assets/images/forms/pin_file_error_icon.svg'
-import PinFileHoverIcon from '@assets/images/forms/pin_file_hover_icon.svg'
-import PinFileIcon from '@assets/images/forms/pin_file_icon.svg'
-import TrashBinErrorIcon from '@assets/images/forms/trash_bin_error_icon.svg'
-import TrashBinIcon from '@assets/images/forms/trash_bin_icon.svg'
+import PinFile from '@assets/images/new-icons/ui/attachment.svg'
+import TrashIcon from '@assets/images/new-icons/ui/basket.svg'
 import cx from 'classnames'
 import { useState } from 'react'
 
@@ -40,23 +37,15 @@ const UploadedFile = ({ fileName, errorMessage, isUploading, onRemove }: Uploade
     >
       <div className="mr-2 flex w-full flex-row gap-2">
         <div className="flex flex-col justify-center">
-          {isUploading ? (
-            <Spinner size="sm" className="self-center" />
-          ) : errorMessage ? (
-            <PinFileErrorIcon />
-          ) : isHovered ? (
-            <PinFileHoverIcon />
-          ) : (
-            <PinFileIcon />
-          )}
+          {isUploading ? <Spinner size="sm" className="self-center" /> : <PinFile />}
         </div>
         <p>{fileName}</p>
       </div>
       <div className="align-center flex w-5 flex-col justify-center gap-2">
         {errorMessage ? (
-          <TrashBinErrorIcon className="cursor-pointer" onClick={handleOnRemove} />
+          <TrashIcon className="cursor-pointer" onClick={handleOnRemove} />
         ) : (
-          <TrashBinIcon
+          <TrashIcon
             className="hidden cursor-pointer self-center group-hover:block"
             onClick={handleOnRemove}
           />

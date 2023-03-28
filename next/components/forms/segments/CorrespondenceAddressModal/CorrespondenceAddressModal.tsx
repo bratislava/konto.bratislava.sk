@@ -20,12 +20,12 @@ const CorrespondenceAddressModal = ({
   error,
   onHideError,
 }: Props) => {
-  const { t } = useTranslation('forms')
+  const { t } = useTranslation('account')
 
   return (
     <Modal
       divider
-      header={t('correspondece_address_title')}
+      header={t('correspondence_address')}
       show={show}
       onClose={onClose}
       onSubmit={onSubmit}

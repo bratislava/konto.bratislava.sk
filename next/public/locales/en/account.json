@@ -123,7 +123,7 @@
     "all_services": "All services",
     "announcement_title": "Actual",
     "announcement_card_title": "Digitálna platba dane z nehnuteľností",
-    "announcement_card_text": "Daň z nehnuteľností pre rok 2023 spracovávame od 20. apríla do 30. mája. Keď bude vaša daň z nehnuteľností pripravená, pošleme vám informačný e-mail a nájdete ju v konte, v časti Dane a poplatky.",
+    "announcement_card_text": "V prípade, že sa vás týka platba dane z nehnuteľností pre rok 2023, vašu daň ešte spracovávame a v konte pribudne najskôr <strong>20. apríla</strong>. Až sa tak udeje, pošleme vám informačný e-mail a nájdete ju v časti Dane a poplatky.",
     "announcement_card_action": "Zaplatiť daň z nehnuteľností",
     "banner_title": "Potrebujete pomôcť?",
     "banner_content": "Aké služby nájdem v Bratislavskom konte? Prečo vzniklo Bratislavské konto? Ako si viem zmeniť heslo? Nevidím svoju daň, čo mám robiť?<br /><br />Aj toto sú niektoré z otázok, na ktoré nájdete odpovede v sekcii Najčastejšie kladené otázky.",
@@ -131,6 +131,7 @@
   },
   "account_section_services": {
     "navigation": "Municipal services",
+    "alert_text": "Priamo v Bratislavskom konte viete momentálne zaplatiť daň z nehunuteľností. Pri ostatných službách vás presmerujeme na externé webové stránky, ktoré môžu vyžadovať dodatočnú registráciu. Ďakujeme za pochopenie.",
     "cards": {
       "1": {
         "title": "Digitálna platba dane z nehnuteľností",
@@ -286,6 +287,11 @@
         "title": "Vývoz odpadu pre správcovské spoločnosti",
         "description": "Objednanie odvozu odpadu pre správcovské spoločnosti.",
         "buttonText": "Objednať odvoz"
+      },
+      "32": {
+        "title": "Online lístky na kúpaliská",
+        "description": "Moťnosť kúpiť si online lístok alebo permanentku na všetky mestské kúpalíská v Bratislave pribudne do Bratislavského konta už v júni.",
+        "tag": "Pribudne čoskoro"
       }
     }
   },
@@ -293,12 +299,12 @@
     "title": "Taxes and fees",
     "waiting_card_title": "Vašu daň z nehnuteľností pripravujeme.",
     "waiting_card_text": "Aj v tomto momente pracujeme na výpočte dane z nehnuteľností až pre 200.000 daňovníkov. Pripravené rozhodnutia budeme distribuovať v termíne <strong>od 20. apríla do 30. mája.</strong> Keď bude vaša daň z nehnuteľností pripravená, pošleme vám notifikačný e-mail.",
-    "error_card_title": "Zatiaľ vás nevidíme v zozname daňovníkov daňovníčok.",
+    "error_card_title": "Vaša daň z nehnuteľnosti nie je k dispozícii",
     "error_card_content": {
       "title": "<p>Môže to tak byť, lebo:</p>",
       "list": {
         "verification": "<li>ste neoverili svoju identitu cez rodné číslo a číslo občianskeho preukazu (<a href='/register'>Overiť identitu</a>),</li>",
-        "other": "<li>vaša nehnuteľnosť je v spoluvlastníctve,</li><li>vaše daňové priznanie ešte čaká na spracovanie,</li><li>nie ste vlastníkom či vlastníčkou nehnuteľnosti,</li><li>alebo ste nepodali priznanie k dani z nehnuteľností.</li>"
+        "other": "<li>vašu daň ešte pripravujeme (v tom prípade bude k dispozícii najskôr 20. apríla)</li><li>vaša nehnuteľnosť je v spoluvlastníctve,</li><li>nie ste vlastníkom či vlastníčkou nehnuteľnosti,</li><li>ste nepodali priznanie k dani z nehnuteľností.</li>"
       },
       "help_text": "<p>Viac informácií môžete nájsť v <a href='/i-have-a-problem'>často kladených otázkach</a>.</p>"
     }
@@ -355,7 +361,7 @@
       },
       "12": {
         "question": "Čo je to digitálna platba dane z nehnuteľností?",
-        "answer": "Digitálna platba dane je proaktívna služba mesta Bratislava, ktorej cieľom je, aby ste daň z nehnuteľností mohli zaplatiť digitálne, rýchlo, pohodlne a kdekoľvek budete. Pilotne bola služba spustená v roku 2021. Službu sa snažíme neustále vyvíjať a vylepšovať."
+        "answer": "Digitálna platba dane je proaktívna služba mesta Bratislava, ktorej cieľom je, aby ste daň z nehnuteľností mohli zaplatiť digitálne, rýchlo, pohodlne a kdekoľvek budete. Pilotne bola služba spustená v roku 2021. Službu sa snažíme neustále vyvíjať a vylepšovať.<br /><br /><a target='_blank' href='https://www.bratislava.sk/mesto-bratislava/dane-a-poplatky/dan-z-nehnutelnosti/digitalna-platba'>Prečítajte si viac o digitálnej platbe dane z nehnuteľností</a>"
       },
       "13": {
         "question": "Kto je tvorcom Bratislavského konta?",
@@ -471,7 +477,8 @@
   "tax_constructions": "Construction tax",
   "thank_you": {
     "footer_text": "© 2023 Hlavné mesto Bratislava",
-    "subtitle_mail": "<span className='text-p2'>V prípade akýchkoľvek otázok nás neváhajte kontaktovať na adrese:</span>",
+    "subtitle_mail_platbadane": "V prípade akýchkoľvek otázok nás neváhajte kontaktovať na platbadane@bratislava.sk",
+    "subtitle_mail_info": "V prípade akýchkoľvek otázok nás neváhajte kontaktovať na info@bratislava.sk",
     "button_faq_text": "Často kladené otázky",
     "button_privacy_text": "Ochrana osobných údajov",
     "error": {
@@ -498,7 +505,8 @@
       "title": "Platba prebehla úspešne",
       "content": "<span className='text-p2'>Ďakujeme za zaplatenie dane z nehnuteľností.<br />Ohodnoťte službu a pomôžte mestu Bratislava zlepšovať sa.</span>",
       "button_to_formular_text": "Vyplniť dotazník",
-      "button_to_profil_text": "Pokračovať do konta"
+      "button_to_profil_text": "Pokračovať do konta",
+      "button_to_formular_text_2": "Nechať spätnú väzbu"
     },
     "form_submit": {
       "title": "Ďakujeme za odoslanie žiadosti",
@@ -518,16 +526,8 @@
     "button_text": "Aktivovať konto"
   },
   "tax_footer": {
-    "register_ba": "Registrovaním sa do Bratislavského konta",
-    "register_ba_to": " do 19. apríla 2023, ",
-    "pay_tax_online": "a zároveň zaplatením dane online",
-    "pay_tax_online_to": " do 12. mája 2023 ",
-    "accept_terms": "súhlasíte s tým, že Vám nebude zaslané rozhodnutie o dani z nehnuteľností na korešpondenčnú adresu a Vy tak nemusíte ísť na poštu.",
-    "maybe_questions": "Radi by ste sa v niečom uistili alebo máte otázky? ",
-    "see_answers": "Pozrite si odpovede na tie, ktoré sú ",
-    "frequently_asked": "často kladené",
-    "contact_us_at": "Ak nenájdete odpoveď na Vašu otázku, neváhajte nás kontaktovať na ",
-    "mail_to_contact": "platbadane@bratislava.sk"
+    "register_info": "Registrovaním sa do Bratislavského konta <strong>do 19. apríla 2023</strong>, a zároveň zaplatením dane online <strong>do 12. mája 2023</strong> súhlasíte s tým, že Vám nebude zaslané rozhodnutie o dani z nehnuteľností na korešpondenčnú adresu a Vy tak nemusíte ísť na poštu.",
+    "register_info_help": "Radi by ste sa v niečom uistili alebo máte otázky? Pozrite si odpovede na tie, ktoré sú <a href='/i-have-a-problem'>často kladené</a>.<br />Ak nenájdete odpoveď na vašu otázku, neváhajte nás kontaktovať na platbadane@bratislava.sk."
   },
   "payment_schedule": {
     "title": "Splátkový kalendár",

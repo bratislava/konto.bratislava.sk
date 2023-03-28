@@ -1,5 +1,5 @@
-import CalendarSchedule from '@assets/images/account/calendar-schedule.svg'
-import ExpandMore from '@assets/images/expand-more.svg'
+import CalendarIcon from '@assets/images/new-icons/ui/calendar.svg'
+import ExpandMore from '@assets/images/new-icons/ui/expand.svg'
 import cx from 'classnames'
 import { useTranslation } from 'next-i18next'
 import React, { useState } from 'react'
@@ -40,7 +40,7 @@ const PaymentScheduleView = (props: any) => {
           <Button
             variant="black-outline"
             text="Pridať termíny do kalendára"
-            startIcon={<CalendarSchedule className="w-6 h-6" />}
+            startIcon={<CalendarIcon className="w-6 h-6" />}
             className="lg:w-max w-full"
           />
         </div>
@@ -49,7 +49,6 @@ const PaymentScheduleView = (props: any) => {
             <div className="grow items-start">
               {t('payment_schedule.first_piece')}{' '}
               <div className="text-h5 inline">{t('payment_schedule.first_piece_to')}</div>
-              {t('validity_decision')}
             </div>
             <div className="text-h5">29,66 €</div>
           </div>
@@ -164,10 +163,12 @@ const AccordionPaymentSchedule = ({
                 </div>
               </div>
               <ExpandMore
-                className={cx('flex items-center justify-center', {
+                className={cx('flex items-center justify-center text-main-700', {
                   'lg:w-10 lg:h-10 w-8 h-8': accordionSize === 'lg',
                   'lg:w-8 lg:h-8 w-6 h-6': accordionSize === 'md',
                   'w-6 h-6': accordionSize === 'sm' || accordionSize === 'xs',
+                  'transform rotate-180': isActive,
+                  'transform rotate-270 md:rotate-0': !isActive,
                 })}
               />
             </div>

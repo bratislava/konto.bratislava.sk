@@ -8,8 +8,6 @@ import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
 import TaxFeeSection from '../../components/forms/segments/AccountSections/TaxesFeesSection/TaxFeeSection'
 
 export const getServerSideProps = async (ctx: GetServerSidePropsContext) => {
-  if (isProductionDeployment()) return { notFound: true }
-
   const locale = ctx.locale ?? 'sk'
 
   return {
@@ -23,6 +21,7 @@ export const getServerSideProps = async (ctx: GetServerSidePropsContext) => {
             locale: l,
           })),
       },
+      isProductionDeployment: isProductionDeployment(),
       ...(await serverSideTranslations(locale)),
     },
   }

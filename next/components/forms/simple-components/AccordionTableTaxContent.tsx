@@ -1,7 +1,7 @@
+import ExpandMore from '@assets/images/new-icons/ui/expand.svg'
 import cx from 'classnames'
 import React, { useState } from 'react'
 
-import ExpandMoreIcon from '../icon-components/ExpandMoreIcon'
 import PersonIcon from '../icon-components/PersonIcon'
 import AccountMarkdown from '../segments/AccountMarkdown/AccountMarkdown'
 import AccountMarkdownModal from '../segments/AccountModal/AccountModal'
@@ -344,21 +344,15 @@ const AccordionTableTaxContent = ({
                   {secondTitle}
                 </div>
               </div>
-              <div
-                className={cx('flex sm:items-center justify-center items-start', {
-                  'w-10 h-10': accordionSize === 'lg',
-                  'w-8 h-8': accordionSize === 'md',
+              <ExpandMore
+                className={cx('flex items-center justify-center text-main-700', {
+                  'lg:w-10 lg:h-10 w-8 h-8': accordionSize === 'lg',
+                  'lg:w-8 lg:h-8 w-6 h-6': accordionSize === 'md',
                   'w-6 h-6': accordionSize === 'sm' || accordionSize === 'xs',
+                  'transform rotate-180': isActive,
+                  'transform rotate-270 md:rotate-0': !isActive,
                 })}
-              >
-                <ExpandMoreIcon
-                  className={cx({
-                    'transform rotate-180': isActive,
-                    'transform rotate-270 md:rotate-0': !isActive,
-                  })}
-                  size={accordionSize}
-                />
-              </div>
+              />
             </button>
           </div>
         </div>

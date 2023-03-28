@@ -14264,6 +14264,11 @@ react-transition-group@^4.3.0, react-transition-group@^4.4.1:
     loose-envify "^1.4.0"
     prop-types "^15.6.2"
 
+react-turnstile@^1.1.0:
+  version "1.1.0"
+  resolved "https://registry.yarnpkg.com/react-turnstile/-/react-turnstile-1.1.0.tgz#4b69950f6cff287ecbaf58f1beae35808d54ad16"
+  integrity sha512-zHuMcBL8QAeU7JUjRigL+FF/Zat0dbE53Rr1MOtOGhNDYOFXIRNBCktfL5cJszcQJALk+qjOctTJY/I+6lVYvQ==
+
 react@18.2.0:
   version "18.2.0"
   resolved "https://registry.yarnpkg.com/react/-/react-18.2.0.tgz#555bd98592883255fa00de14f1151a917b5d77d5"

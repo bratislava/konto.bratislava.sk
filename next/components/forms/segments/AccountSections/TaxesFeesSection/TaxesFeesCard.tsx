@@ -1,7 +1,7 @@
-import ChevronRightIcon from '@assets/images/forms/chevron-right.svg'
-import ExclamationIcon from '@assets/images/forms/exclamation-icon.svg'
-import SuccessIcon from '@assets/images/forms/success.svg'
-import TimeIcon from '@assets/images/forms/warning-time-icon.svg'
+import ChevronRightIcon from '@assets/images/new-icons/ui/chevron-right.svg'
+import TimeIcon from '@assets/images/new-icons/ui/clock.svg'
+import SuccessIcon from '@assets/images/new-icons/ui/done.svg'
+import ExclamationIcon from '@assets/images/new-icons/ui/exclamation-mark.svg'
 import cx from 'classnames'
 import { TaxesCardBase } from 'components/forms/segments/AccountSections/TaxesFeesSection/TaxesFeesSection'
 import Link from 'next/link'
@@ -27,11 +27,11 @@ const TaxesFeesCard = (props: TaxesCardBase) => {
 
     switch (status) {
       case 'negative':
-        return statusNode(<ExclamationIcon />, 'Neuhradená')
+        return statusNode(<ExclamationIcon className="text-negative-700 w-6 h-6" />, 'Neuhradená')
       case 'warning':
-        return statusNode(<TimeIcon />, 'Čiastočne uhradená')
+        return statusNode(<TimeIcon className="text-warning-700 w-6 h-6" />, 'Čiastočne uhradená')
       case 'success':
-        return statusNode(<SuccessIcon width={18} height={13} viewBox="0 0 24 19" />, 'Uhradená')
+        return statusNode(<SuccessIcon className="text-success-700 w-6 h-6" />, 'Uhradená')
 
       default:
         break

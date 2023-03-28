@@ -1,6 +1,5 @@
-import CloseIcon from '@assets/images/close.svg'
-import EditIcon from '@assets/images/forms/edit_icon.svg'
-import WhiteEditIcon from '@assets/images/forms/edit_white.svg'
+import CloseIcon from '@assets/images/new-icons/ui/cross.svg'
+import WhiteEditIcon from '@assets/images/new-icons/ui/pen.svg'
 import cx from 'classnames'
 import Button from 'components/forms/simple-components/Button'
 import { useTranslation } from 'next-i18next'
@@ -21,7 +20,7 @@ const UserProfileDetailsButtons = (props: UserProfileDetailsButtonsProps) => {
       {isEditing ? (
         <div className="flex flex-row gap-5 items-center">
           <Button
-            className={cx('hidden focus:bg-white hover:bg-white h-full', 'md:block')}
+            className={cx('hidden focus:bg-white h-full', 'md:block')}
             variant="plain-black"
             size="sm"
             text={t('profile_detail.stop_edit_button')}
@@ -36,7 +35,7 @@ const UserProfileDetailsButtons = (props: UserProfileDetailsButtonsProps) => {
             form={formId}
           />
           <CloseIcon
-            className={cx('block cursor-pointer', 'md:hidden')}
+            className={cx('block cursor-pointer w-6 h-6', 'md:hidden')}
             onClick={onCancelEditing}
           />
         </div>
@@ -44,14 +43,14 @@ const UserProfileDetailsButtons = (props: UserProfileDetailsButtonsProps) => {
         <div className="width-fit">
           <Button
             variant="black"
-            startIcon={<WhiteEditIcon />}
+            startIcon={<WhiteEditIcon fill="white" className="w-6 h-6" />}
             size="sm"
             text={t('profile_detail.start_edit_button')}
             className="hidden md:block"
             onPress={() => onChangeIsEditing(true)}
           />
-          <EditIcon
-            className="block md:hidden cursor-pointer"
+          <WhiteEditIcon
+            className="block md:hidden cursor-pointer w-6 h-6"
             onClick={() => onChangeIsEditing(true)}
           />
         </div>

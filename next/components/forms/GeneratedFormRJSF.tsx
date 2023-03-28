@@ -89,7 +89,6 @@ const GeneratedFormRJSF = ({ eform, escapedSlug, formSlug, wrapperClassName }: F
               form.handleOnSubmit(e.formData)
             }}
             onChange={(e) => {
-              console.log(e)
               form.setStepFormData(e.formData)
             }}
             onError={form.handleOnErrors}

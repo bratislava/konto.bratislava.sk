@@ -401,11 +401,13 @@ export const useFormStepper = (eformSlug: string, schema: RJSFSchema) => {
   // this is probably a bug in their typing therefore the cast
   const formRef = useRef<Form>() as RefObject<Form>
 
-  const [nextStepIndex, setNextStepIndex] = useState<number | null>(null)
   const [stepIndex, setStepIndex] = useState<number>(0)
   const [formData, setFormData] = useState<RJSFSchema>(getInitFormData(schema))
   const [errors, setErrors] = useState<RJSFValidationError[][]>([])
   const [extraErrors, setExtraErrors] = useState<ErrorSchema>({})
+
+  const [nextStepIndex, setNextStepIndex] = useState<number | null>(null)
+  const [nextStep, setNextStep] = useState<RJSFSchema | null>(null)
 
   const [isSkipEnabled, setIsSkipEnabled] = useState<boolean>(false)
   const disableSkip = () => setIsSkipEnabled(false)
@@ -421,7 +423,7 @@ export const useFormStepper = (eformSlug: string, schema: RJSFSchema) => {
   const stepsLength: number = steps?.length ?? -1
   const isComplete = stepIndex === stepsLength
 
-  const currentSchema = steps ? (cloneDeep(steps[stepIndex]) as RJSFSchema) : {}
+  const currentSchema = steps ? cloneDeep(steps[stepIndex]) : {}
 
   useEffect(() => {
     // effect to reset all internal state when critical input 'props' change
@@ -494,10 +496,22 @@ export const useFormStepper = (eformSlug: string, schema: RJSFSchema) => {
   }
   const jumpToStep = () => {
     if (nextStepIndex != null) {
-      setStepIndex(nextStepIndex)
-      setNextStepIndex(null)
+      setNextStep(steps[nextStepIndex])
+      validateSteps()
     }
   }
+
+  useEffect(() => {
+    if (nextStepIndex != null && nextStep != null) {
+      const newNextStepIndex: number = steps.findIndex(
+        (step: RJSFSchema) => JSON.stringify(step) === JSON.stringify(nextStep),
+      )
+      const realNextStepIndex: number = newNextStepIndex >= 0 ? newNextStepIndex : nextStepIndex
+      setStepIndex(realNextStepIndex)
+      setNextStepIndex(null)
+      setNextStep(null)
+    }
+  }, [nextStep])
 
   const submitStep = () => {
     formRef?.current?.submit()

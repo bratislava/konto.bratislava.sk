@@ -100,21 +100,18 @@ export const getAllPossibleJsonSchemaExtraProperties = (
   if (jsonSchema.if && jsonSchema.else) {
     Object.assign(properties, getAllPossibleJsonSchemaExtraProperties(jsonSchema.else, true))
   }
-  if (jsonSchema.allOf) {
-    jsonSchema.allOf.forEach((s) => {
-      Object.assign(properties, getAllPossibleJsonSchemaExtraProperties(s, isConditional))
-    })
-  }
-  if (jsonSchema.oneOf) {
-    jsonSchema.oneOf.forEach((s) => {
-      Object.assign(properties, getAllPossibleJsonSchemaExtraProperties(s, isConditional))
-    })
-  }
-  if (jsonSchema.anyOf) {
-    jsonSchema.anyOf.forEach((s) => {
-      Object.assign(properties, getAllPossibleJsonSchemaExtraProperties(s, isConditional))
-    })
-  }
+
+  jsonSchema?.allOf?.forEach((s) => {
+    Object.assign(properties, getAllPossibleJsonSchemaExtraProperties(s, isConditional))
+  })
+
+  jsonSchema?.oneOf?.forEach((s) => {
+    Object.assign(properties, getAllPossibleJsonSchemaExtraProperties(s, isConditional))
+  })
+
+  jsonSchema?.anyOf?.forEach((s) => {
+    Object.assign(properties, getAllPossibleJsonSchemaExtraProperties(s, isConditional))
+  })
 
   return properties
 }

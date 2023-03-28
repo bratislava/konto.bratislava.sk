@@ -28,6 +28,7 @@ type AlertBase = {
   close?: () => void
   buttons?: FixedLengthArray<[AlertButtons, AlertButtons]>
   className?: string
+  fullWidth?: boolean
 }
 
 const Alert = ({
@@ -38,6 +39,7 @@ const Alert = ({
   content,
   message,
   className,
+  fullWidth = false,
   ...rest
 }: AlertBase) => {
   const icons = {
@@ -48,7 +50,7 @@ const Alert = ({
   }
 
   const alertContainer = cx(
-    'flex justify-between max-w-[480px] w-full rounded-lg lg:px-5 px-3',
+    'flex justify-between rounded-lg lg:px-5 px-3',
     className,
     {
       'text-gray-800 flex-col lg:py-4 py-3': variant === 'message',
@@ -63,6 +65,8 @@ const Alert = ({
       'bg-gray-700 text-white': type === 'info' && solid,
       'bg-warning-700 text-white': type === 'warning' && solid,
     },
+    { 'w-fit max-w-none': fullWidth },
+    { 'w-full max-w-[480px]': !fullWidth },
   )
 
   const contentStyle = cx('w-full', {

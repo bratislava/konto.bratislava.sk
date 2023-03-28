@@ -159,12 +159,12 @@
       },
       "3": {
         "title": "Podpora PAAS",
-        "description": "Kontaktný formulár PAAS. Poslúži, napríklad, ak potrebujete poradiť, doplniť informácie o parkovaní alebo máte problém s registráciou.",
+        "description": "Pomoc s registráciou, informácie o regulovanom parkovaní alebo podnety. Kontakt na podporu PAAS cez formulár.",
         "buttonText": "Kontaktovať PAAS"
       },
       "4": {
         "title": "Parkovacia karta",
-        "description": "Jednoduché vybavenie parkovacej karty a všetky potrebné informácie o parkovaní na jednom mieste.",
+        "description": "Jednoduché vybavenie parkovacej karty a všetky potrebné informácie o regulovanom parkovaní PAAS na jednom mieste.",
         "buttonText": "Vybaviť kartu"
       },
       "5": {
@@ -174,7 +174,7 @@
       },
       "6": {
         "title": "Odtiahli mi auto",
-        "description": "Presný postup, čo robiť, ak vám odtiahnu auto.",
+        "description": "Vyhľadávanie odtiahnutých a preložených vozidiel. Postup vrátenia odtiahnutého vozidla a potrebné kontakty.",
         "buttonText": "Prejsť na postup"
       },
       "7": {
@@ -184,12 +184,12 @@
       },
       "8": {
         "title": "10 000 stromov",
-        "description": "Odporučenie lokality, kde vysadiť nový strom a možnosť stať sa našim partnerom pri tvorbe zelenšej Bratislavy. Iniciatíva 10 000 stromov.",
+        "description": "Iniciatíva 10 000 stromov- možnosti zapojenia sa pre partnerov, informácie o zásadnom víkende alebo mapa výsadby zelene.",
         "buttonText": "Odporúčiť lokalitu"
       },
       "9": {
         "title": "Komunitné záhrady",
-        "description": "Potrebujete, ak si chcete vytvoriť komunitnú záhradu. Organizácia, financovanie i riešenie pozemku.",
+        "description": "Možnosť založenia komunitnej záhrady na mestskom pozemku a vytvorenia miesta pre aktívny susedský život.",
         "buttonText": "Vytvoriť si záhradu"
       },
       "10": {
@@ -198,13 +198,13 @@
         "buttonText": "Kúpiť lístok do divadla"
       },
       "11": {
-        "title": "Nahlásiť problém s rozkopávkami",
-        "description": "Monitorovanie problémov s rozkopávkami pomáha mestu s ich riešením a jeho obyvateľom a obyvateľkám s bezpečnosťou.",
+        "title": "Nahlásiť problém vo verejnom priestore",
+        "description": "Nahlásenie problému vo verejnom priestore, ktorý nastal kvôli stavebným prácam.",
         "buttonText": "Nahlásiť problém"
       },
       "12": {
         "title": "Rýchle zásahy",
-        "description": "Informovanie o drobnom nedostatku vo vašom okolí. Podnety zvyčajne riešime do 72 hodín.",
+        "description": "Podnety, ktoré spadajú do kategórie rýchlych zásahov. Mesto ich rieši do 72 hodín od nahlásenia.",
         "buttonText": "Nahlásiť rýchly zásah"
       },
       "13": {
@@ -239,7 +239,7 @@
       },
       "19": {
         "title": "Predzáhradky",
-        "description": "Návod na vytvorenie predzáhradky, čo všetko môže obsahovať a ako sa o vysadenú zeleň najlepšie starať.",
+        "description": "Vytvorenie alebo registrácia predzáhradky na mestskom pozemku. Odporúčania, ktoré rastliny je možné a dobré vysádzať.",
         "buttonText": "Vytvoriť predzáhradku"
       },
       "20": {

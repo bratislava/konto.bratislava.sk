@@ -30,7 +30,7 @@ const ServiceCard = ({
   onPress,
 }: ServiceCardBase) => {
   const style = cx(
-    'group min-w-[280px] max-w-[280px] bg-gray-0 border-gray-200 flex flex-col items-start p-4 gap-5 border-solid border-2 rounded-lg',
+    'group w-full min-w-[280px] bg-gray-0 border-gray-200 flex flex-col items-start p-4 gap-5 border-solid border-2 rounded-lg',
     className,
     { 'cursor-pointer': buttonText },
     { 'cursor-default': !buttonText },
@@ -52,10 +52,10 @@ const ServiceCard = ({
         </h5>
         <div className="text-p-sm flex items-center font-normal">{description}</div>
       </div>
-      {buttonText && (
-        <div className="flex items-end w-full h-full">
-          <div className="flex justify-between items-center h-max w-full">
-            <div className="text-p2-semibold">{buttonText}</div>
+      <div className="flex items-end w-full h-full">
+        <div className="flex justify-between items-center h-max w-full">
+          <div className="text-p2-semibold">{buttonText}</div>
+          {buttonText && (
             <span className="w-10 h-10 min-w-[40px] rounded-full flex items-center justify-center bg-gray-50">
               {href?.includes('http') ? (
                 <ExportIcon className="w-5 h-5" />
@@ -63,9 +63,9 @@ const ServiceCard = ({
                 <ArrowRightIcon className="w-5 h-5" />
               )}
             </span>
-          </div>
+          )}
         </div>
-      )}
+      </div>
     </>
   )
 

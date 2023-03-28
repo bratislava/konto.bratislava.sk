@@ -16,6 +16,7 @@ const customJestConfig = {
   moduleNameMapper: {
     '@backend/(.*)': '<rootDir>/backend/$1',
     '@utils/(.*)': '<rootDir>/utils/$1',
+    'react-markdown': '<rootDir>/node_modules/react-markdown/react-markdown.min.js',
   },
   testEnvironment: 'jest-environment-jsdom',
 }

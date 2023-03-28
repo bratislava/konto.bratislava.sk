@@ -1,4 +1,5 @@
 import { subscribeApi, verifyIdentityApi } from '@utils/api'
+import useSnackbar from '@utils/useSnackbar'
 import {
   AuthenticationDetails,
   CognitoUser,
@@ -300,6 +301,7 @@ export const AccountProvider = ({ children }: { children: ReactNode }) => {
     }
   }
 
+  const [openSnackbarSuccess] = useSnackbar({ variant: 'success' })
   const refreshUserData = useCallback(async () => {
     const cognitoUser = userPool.getCurrentUser()
     if (cognitoUser !== null) {
@@ -319,7 +321,15 @@ export const AccountProvider = ({ children }: { children: ReactNode }) => {
           }
 
           const userData = userAttributesToObject(attributes)
-          setStatus(mapTierToStatus(userData.tier))
+          const newStatus = mapTierToStatus(userData.tier)
+          if (
+            status === AccountStatus.IdentityVerificationPending &&
+            newStatus === AccountStatus.IdentityVerificationSuccess
+          ) {
+            openSnackbarSuccess(t('account:identity_verification_success'))
+          }
+
+          setStatus(newStatus)
           setUserData(userData)
           setUser(cognitoUser)
         })
@@ -327,10 +337,10 @@ export const AccountProvider = ({ children }: { children: ReactNode }) => {
     } else {
       setUser(null)
     }
-  }, [])
+  }, [status])
 
   useEffect(() => {
-    refreshUserData().catch((err) => console.error(err))
+    refreshUserData().catch((error_) => console.error(error_))
   }, [refreshUserData])
 
   const logout = () => {
@@ -549,7 +559,7 @@ export const AccountProvider = ({ children }: { children: ReactNode }) => {
 
   useInterval(
     () => {
-      refreshUserData().catch((err) => console.error(err))
+      refreshUserData().catch((error_) => console.error(error_))
     },
     status === AccountStatus.IdentityVerificationPending ? 5000 : null,
   )

@@ -31,7 +31,6 @@ const GeneratedFormRJSF = ({ eform, escapedSlug, formSlug, wrapperClassName }: F
       setIsOnShowSkipModal(true)
     }
   }
-
   const submitter = useFormSubmitter(formSlug)
 
   return (

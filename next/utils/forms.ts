@@ -420,7 +420,8 @@ export const useFormStepper = (eformSlug: string, schema: RJSFSchema) => {
 
   const stepsLength: number = steps?.length ?? -1
   const isComplete = stepIndex === stepsLength
-  const currentSchema = steps ? cloneDeep(steps[stepIndex]) : {}
+
+  const currentSchema = steps ? (cloneDeep(steps[stepIndex]) as RJSFSchema) : {}
 
   useEffect(() => {
     // effect to reset all internal state when critical input 'props' change

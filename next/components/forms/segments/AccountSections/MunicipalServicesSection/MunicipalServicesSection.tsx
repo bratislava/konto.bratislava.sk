@@ -4,6 +4,7 @@ import TheatreIcon from '@assets/images/new-icons/other/culture-communities/even
 import LibraryIcon from '@assets/images/new-icons/other/culture-communities/library.svg'
 import ZooIcon from '@assets/images/new-icons/other/culture-communities/zoo.svg'
 import KidIcon from '@assets/images/new-icons/other/education-sport/kids-teenagers.svg'
+import SwimmingPoolIcon from '@assets/images/new-icons/other/education-sport/swimming-pool.svg'
 import GardensIcon from '@assets/images/new-icons/other/environment-construction/community-gardens.svg'
 import SewerageIcon from '@assets/images/new-icons/other/environment-construction/connector.svg'
 import FrontGardensIcon from '@assets/images/new-icons/other/environment-construction/front-gardens.svg'
@@ -68,11 +69,13 @@ const MunicipalServicesSection = () => {
   type ServiceCardBase = {
     title: string
     description: string
-    buttonText: string
+    buttonText?: string
     className?: string
     linkType?: 'internal' | 'external'
     icon: ReactNode
     href?: string
+    tag?: string
+    tagStyle?: string
     category: string[]
     onPress?: () => void
   }
@@ -85,6 +88,14 @@ const MunicipalServicesSection = () => {
       category: [TAXES_CATEGORY],
       linkType: 'internal',
       href: '/taxes-and-fees',
+    },
+    {
+      title: t('account_section_services.cards.32.title'),
+      description: t('account_section_services.cards.32.description'),
+      tag: t('account_section_services.cards.32.tag'),
+      tagStyle: 'text-education-700 bg-education-100',
+      icon: <SwimmingPoolIcon className="w-10 h-10 lg:w-12 lg:h-12 text-education-700" />,
+      category: [CULTURE_CATEGORY],
     },
     {
       title: t('account_section_services.cards.2.title'),
@@ -356,6 +367,8 @@ const MunicipalServicesSection = () => {
                 linkType={card.linkType}
                 icon={card.icon}
                 href={card.href}
+                tag={card.tag}
+                tagStyle={card.tagStyle}
                 onPress={card.onPress}
               />
             ))}

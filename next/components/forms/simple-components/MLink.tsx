@@ -6,10 +6,11 @@ export type LinkProps = Omit<ComponentProps<typeof Link>, 'as' | 'passHref'> & {
   className?: string
   label?: string
   href?: string
+  target?: '_blank' | '_self' | '_parent' | '_top'
 }
 
 const MLink = forwardRef<HTMLAnchorElement, LinkProps>(
-  ({ href, label, children, className, ...rest }, ref) => {
+  ({ href, label, children, className, target, ...rest }, ref) => {
     const regEx = /^http/
 
     return !regEx.test(href) ? (
@@ -18,7 +19,14 @@ const MLink = forwardRef<HTMLAnchorElement, LinkProps>(
         {children}
       </Link>
     ) : (
-      <a ref={ref} {...rest} className={className} href={href}>
+      <a
+        ref={ref}
+        target={target || '_blank'}
+        rel="noreferrer"
+        {...rest}
+        className={className}
+        href={href}
+      >
         <p>{label}</p>
         {children}
       </a>

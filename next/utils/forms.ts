@@ -497,9 +497,14 @@ export const useFormStepper = (eformSlug: string, schema: RJSFSchema) => {
   const jumpToStep = () => {
     if (nextStepIndex != null) {
       setNextStep(steps[nextStepIndex])
-      validateSteps()
     }
   }
+
+  useEffect(() => {
+    if ((nextStepIndex != null && nextStep != null) || nextStepIndex === steps.length) {
+      validateSteps()
+    }
+  }, [nextStep])
 
   useEffect(() => {
     if (nextStepIndex != null && nextStep != null) {
@@ -510,8 +515,12 @@ export const useFormStepper = (eformSlug: string, schema: RJSFSchema) => {
       setStepIndex(realNextStepIndex)
       setNextStepIndex(null)
       setNextStep(null)
+    } else if (nextStepIndex != null && nextStep === undefined) {
+      setStepIndex(steps.length)
+      setNextStepIndex(null)
+      setNextStep(null)
     }
-  }, [nextStep])
+  }, [steps])
 
   const submitStep = () => {
     formRef?.current?.submit()
@@ -594,6 +603,7 @@ export const useFormStepper = (eformSlug: string, schema: RJSFSchema) => {
   }
 
   const handleOnErrors = (newErrors: RJSFValidationError[]) => {
+    console.log('HANDLE ON ERRORS')
     setUniqueErrors(newErrors, stepIndex)
     if (isSkipEnabled) {
       changeStepData(stepIndex, false)

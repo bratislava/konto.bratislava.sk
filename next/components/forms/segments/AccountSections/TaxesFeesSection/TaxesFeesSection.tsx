@@ -52,7 +52,7 @@ interface TaxesFeesSectionProps {
 }
 
 const TaxesFeesSection = ({ isProductionDeployment }: TaxesFeesSectionProps) => {
-  const [isOn, setIsOn] = useState<'default' | 'waiting' | 'error'>('waiting')
+  const [isOn, setIsOn] = useState<'default' | 'waiting' | 'error'>('error')
   const { t } = useTranslation('account')
   const { status } = useAccount()
 

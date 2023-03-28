@@ -351,7 +351,7 @@ const MunicipalServicesSection = () => {
           fullWidth
           className="mb-4 lg:mb-8 mx-4 lg:mx-0"
         />
-        <div className="flex flex-wrap gap-3 sm:gap-6 md:gap-8 px-4 lg:px-0">
+        <div className="grid grid-cols-1 min-[615px]:grid-cols-2 min-[960px]:grid-cols-3 lg:grid-cols-4 gap-3 sm:gap-6 md:gap-8 px-4 lg:px-0">
           {filteredServiceCards
             .filter(
               (_, i) =>

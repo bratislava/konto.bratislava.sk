@@ -323,30 +323,34 @@
               ]
             }
           },
-          "if": {
-            "properties": {
-              "chooseOneOfMore": {
-                "const": "overlay"
+          "allOf": [
+            {
+              "if": {
+                "properties": {
+                  "chooseOneOfMore": {
+                    "const": "overlay"
+                  }
+                }
+              },
+              "then": {
+                "required": ["overlayInput"],
+                "properties": {
+                  "overlayInput": {
+                    "type": "string",
+                    "title": "WRITE OVERLAY INPUT (conditional field)"
+                  }
+                }
+              },
+              "else": {
+                "properties": {
+                  "notOverlayInput": {
+                    "type": "string",
+                    "title": "some other input"
+                  }
+                }
               }
             }
-          },
-          "then": {
-            "required": ["overlayInput"],
-            "properties": {
-              "overlayInput": {
-                "type": "string",
-                "title": "WRITE OVERLAY INPUT (conditional field)"
-              }
-            }
-          },
-          "else": {
-            "properties": {
-              "notOverlayInput": {
-                "type": "string",
-                "title": "some other input"
-              }
-            }
-          }
+          ]
         }
       }
     },

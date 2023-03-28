@@ -11,6 +11,7 @@ import Head from 'next/head'
 import { SSRProvider } from 'react-aria'
 import SnackbarProvider from 'react-simple-snackbar'
 import { QueryParamProvider } from 'use-query-params'
+import CookieConsent from 'components/forms/segments/CookieConsent/CookieConsent'
 
 const inter = Inter({
   variable: '--inter-font',
@@ -37,6 +38,7 @@ const MyApp = ({ Component, pageProps }: AppProps) => {
               <SnackbarProvider>
                 <AccountProvider>
                   <Component {...pageProps} />
+                  <CookieConsent />
                 </AccountProvider>
               </SnackbarProvider>
             </div>

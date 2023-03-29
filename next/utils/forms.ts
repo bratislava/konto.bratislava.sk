@@ -94,7 +94,6 @@ export const useFormStepper = (eformSlug: string, schema: RJSFSchema) => {
     return isValid
   }
 
-  // TODO: update for conditional steps
   const setUniqueErrors = (newErrors: RJSFValidationError[], actualStepIndex: number) => {
     // update form errors - update even if there is no error
     const actualStepKey = stepData[actualStepIndex].stepKey

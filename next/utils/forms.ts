@@ -34,7 +34,7 @@ export const useFormStepper = (eformSlug: string, schema: RJSFSchema) => {
   // main state variables with the most important info
   const [stepIndex, setStepIndex] = useState<number>(0)
   const [formData, setFormData] = useState<RJSFSchema>(getInitFormData(schema))
-  const [errors, setErrors] = useState<RJSFValidationError[][]>([])
+  const [errors, setErrors] = useState<Record<string, RJSFValidationError[]>>({})
   const [extraErrors, setExtraErrors] = useState<ErrorSchema>({})
 
   // state variables helping in stepper
@@ -96,28 +96,23 @@ export const useFormStepper = (eformSlug: string, schema: RJSFSchema) => {
 
   // TODO: update for conditional steps
   const setUniqueErrors = (newErrors: RJSFValidationError[], actualStepIndex: number) => {
-    // update form errors - update for every step even if there is no error
-    const updatedErrors: RJSFValidationError[][] = []
-    const stepsRange = [...Array.from({ length: stepIndex + 1 }).keys()]
+    // update form errors - update even if there is no error
+    const actualStepKey = stepData[actualStepIndex].stepKey
+    const oldErrors: RJSFValidationError[] =
+      actualStepKey in errors ? [...errors[actualStepKey]] : []
 
-    stepsRange.forEach((id) => {
-      const stepErrors = errors[id]
-      if (id === actualStepIndex) {
-        updatedErrors.push([...newErrors])
-      } else if (stepErrors) {
-        updatedErrors.push([...stepErrors])
-      } else {
-        updatedErrors.push([])
-      }
-    })
+    const updatedErrors: Record<string, RJSFValidationError[]> = {
+      ...errors,
+      [actualStepKey]: [...oldErrors, ...newErrors].filter(
+        (item, index) => oldErrors.indexOf(item) !== index,
+      ),
+    }
 
     setErrors(updatedErrors)
   }
 
-  const increaseStepErrors = () => {
-    if (stepIndex - 1 === errors.length) {
-      setErrors([...errors, []])
-    }
+  const transformErrorsToArray = (): RJSFValidationError[][] => {
+    return stepData.map(({ stepKey }: StepData) => (stepKey in errors ? errors[stepKey] : []))
   }
 
   const previous = () => setStepIndex(stepIndex - 1)
@@ -228,7 +223,6 @@ export const useFormStepper = (eformSlug: string, schema: RJSFSchema) => {
   const handleOnSubmit = async (newFormData: RJSFSchema) => {
     // handles onSubmit event of form step
     // it is called also if we are going to skip step by 1
-    increaseStepErrors()
     setStepFormData(newFormData)
     const isFormValid = await validate()
 
@@ -262,7 +256,7 @@ export const useFormStepper = (eformSlug: string, schema: RJSFSchema) => {
     setStepIndex,
     formData,
     setStepFormData,
-    errors,
+    errors: transformErrorsToArray(),
     extraErrors,
     validate,
     setErrors: setUniqueErrors,
@@ -274,7 +268,6 @@ export const useFormStepper = (eformSlug: string, schema: RJSFSchema) => {
     skipToStep,
     isSkipEnabled,
     disableSkip,
-    increaseStepErrors,
     customValidate,
     handleOnSubmit,
     handleOnErrors,

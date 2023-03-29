@@ -52,7 +52,7 @@ const BannerBasic = ({
               <AccountMarkdown content={content} variant="sm" className="text-p2 text-gray-700" />
             )}
           </div>
-          <div className="flex flex-col lg:flex-row items-center gap-4">
+          <div className="flex flex-col flex-wrap lg:flex-row items-center gap-4">
             {onPressPrimary && buttonPrimaryText && (
               <>
                 <Button

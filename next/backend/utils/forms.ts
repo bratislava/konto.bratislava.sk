@@ -5,7 +5,7 @@ import {
   ajvKeywords,
   getAllPossibleJsonSchemaProperties,
   JsonSchema,
-} from '@utils/forms'
+} from '@utils/forms-helper'
 import { forceString } from '@utils/utils'
 import Ajv from 'ajv'
 import addFormats from 'ajv-formats'

@@ -1,5 +1,5 @@
 import { ErrorSchema, RJSFValidationError, StrictRJSFSchema } from '@rjsf/utils'
-import { JsonSchema } from '@utils/forms'
+import { JsonSchema } from '@utils/forms-helper'
 import { useFormDataTransform } from '@utils/rjsf-schema-handler'
 
 import SummaryStep from './SummaryStep'

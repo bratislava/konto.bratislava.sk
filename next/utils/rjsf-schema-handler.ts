@@ -4,7 +4,7 @@ import {
   JsonSchema,
   JsonSchemaExtraProperties,
   JsonSchemaExtraProperty,
-} from '@utils/forms'
+} from '@utils/forms-helper'
 import { JSONSchema7Definition } from 'json-schema'
 
 import {

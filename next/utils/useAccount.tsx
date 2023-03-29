@@ -197,6 +197,9 @@ export const AccountProvider = ({ children }: { children: ReactNode }) => {
     const cognitoUser = new CognitoUser({
       Username: lastCredentials?.Username,
       Pool: userPool,
+      Storage: new CookieStorage({
+        domain: process.env.NEXT_PUBLIC_COGNITO_COOKIE_STORAGE_DOMAIN,
+      }),
     })
 
     return new Promise((resolve) => {
@@ -218,6 +221,9 @@ export const AccountProvider = ({ children }: { children: ReactNode }) => {
     const cognitoUser = new CognitoUser({
       Username: lastCredentials.Username,
       Pool: userPool,
+      Storage: new CookieStorage({
+        domain: process.env.NEXT_PUBLIC_COGNITO_COOKIE_STORAGE_DOMAIN,
+      }),
     })
 
     setError(null)
@@ -420,6 +426,9 @@ export const AccountProvider = ({ children }: { children: ReactNode }) => {
     const cognitoUser = new CognitoUser({
       Username: lastCredentials.Username,
       Pool: userPool,
+      Storage: new CookieStorage({
+        domain: process.env.NEXT_PUBLIC_COGNITO_COOKIE_STORAGE_DOMAIN,
+      }),
     })
 
     return new Promise((resolve) => {
@@ -440,6 +449,9 @@ export const AccountProvider = ({ children }: { children: ReactNode }) => {
     const cognitoUser = new CognitoUser({
       Username: email || lastCredentials.Username,
       Pool: userPool,
+      Storage: new CookieStorage({
+        domain: process.env.NEXT_PUBLIC_COGNITO_COOKIE_STORAGE_DOMAIN,
+      }),
     })
 
     if (email) {
@@ -476,6 +488,9 @@ export const AccountProvider = ({ children }: { children: ReactNode }) => {
     const cognitoUser = new CognitoUser({
       Username: email,
       Pool: userPool,
+      Storage: new CookieStorage({
+        domain: process.env.NEXT_PUBLIC_COGNITO_COOKIE_STORAGE_DOMAIN,
+      }),
     })
 
     setLastCredentials(credentials)

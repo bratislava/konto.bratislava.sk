@@ -6,9 +6,9 @@ import {
   ajvKeywords,
   customFormats,
   customValidate,
+  getAllStepData,
   getInitFormData,
   getJsonSchemaPropertyTree,
-  getStepData,
   getValidatedSteps,
   mergePropertyTreeToFormData,
   validateAsyncProperties,
@@ -31,28 +31,29 @@ export const useFormStepper = (eformSlug: string, schema: RJSFSchema) => {
   // this is probably a bug in their typing therefore the cast
   const formRef = useRef<Form>() as RefObject<Form>
 
+  // main state variables with the most important info
   const [stepIndex, setStepIndex] = useState<number>(0)
   const [formData, setFormData] = useState<RJSFSchema>(getInitFormData(schema))
   const [errors, setErrors] = useState<RJSFValidationError[][]>([])
   const [extraErrors, setExtraErrors] = useState<ErrorSchema>({})
 
+  // state variables helping in stepper
   const [nextStepIndex, setNextStepIndex] = useState<number | null>(null)
   const [nextStep, setNextStep] = useState<RJSFSchema | null>(null)
-
   const [isSkipEnabled, setIsSkipEnabled] = useState<boolean>(false)
   const disableSkip = () => setIsSkipEnabled(false)
 
+  // state variables with info about steps for summary and stepper
   const [steps, setSteps] = useState<RJSFSchema[]>(getValidatedSteps(schema, formData))
   const validateSteps = () => {
     const newValidatedSteps = getValidatedSteps(schema, formData)
     setSteps(newValidatedSteps)
   }
+  const [stepData, setStepData] = useState<StepData[]>(getAllStepData(steps))
 
-  const [stepData, setStepData] = useState<StepData[]>(getStepData(steps))
-
+  // side info about steps
   const stepsLength: number = steps?.length ?? -1
   const isComplete = stepIndex === stepsLength
-
   const currentSchema = steps ? cloneDeep(steps[stepIndex]) : {}
 
   useEffect(() => {
@@ -61,10 +62,6 @@ export const useFormStepper = (eformSlug: string, schema: RJSFSchema) => {
     setStepIndex(0)
     validateSteps()
   }, [eformSlug, schema])
-
-  useEffect(() => {
-    setStepData(getStepData(steps, stepData))
-  }, [steps])
 
   useEffect(() => {
     // stepIndex allowed to climb one step above the length of steps - i.e. to render a final overview or other custom components but still allow to return back
@@ -77,6 +74,7 @@ export const useFormStepper = (eformSlug: string, schema: RJSFSchema) => {
   useEffect(() => window.scrollTo(0, 0), [stepIndex])
 
   const changeStepData = (targetIndex: number, value: boolean): void => {
+    // change isFilled state for last stepData
     const newStepData: StepData[] = stepData.map((step: StepData, index: number) =>
       index === targetIndex ? { ...step, isFilled: value } : { ...step },
     )
@@ -84,6 +82,7 @@ export const useFormStepper = (eformSlug: string, schema: RJSFSchema) => {
   }
 
   const validate = async (): Promise<boolean> => {
+    // validate submitted form step
     let isValid = formRef?.current?.validateForm() ?? false
 
     if (schema.$async === true) {
@@ -95,7 +94,9 @@ export const useFormStepper = (eformSlug: string, schema: RJSFSchema) => {
     return isValid
   }
 
+  // TODO: update for conditional steps
   const setUniqueErrors = (newErrors: RJSFValidationError[], actualStepIndex: number) => {
+    // update form errors - update for every step even if there is no error
     const updatedErrors: RJSFValidationError[][] = []
     const stepsRange = [...Array.from({ length: stepIndex + 1 }).keys()]
 
@@ -121,23 +122,29 @@ export const useFormStepper = (eformSlug: string, schema: RJSFSchema) => {
 
   const previous = () => setStepIndex(stepIndex - 1)
   const next = () => {
+    // if go next step, just validate steps (show/hide conditional steps) and got to next step
     validateSteps()
     setStepIndex(stepIndex + 1)
   }
   const jumpToStep = () => {
+    // jump through multiple steps
     if (nextStepIndex != null) {
+      // need to save nextStep, because after next step validation (conditional steps), we must jump to our original chosen step
       setNextStep(steps[nextStepIndex])
     }
   }
 
   useEffect(() => {
     if ((nextStepIndex != null && nextStep != null) || nextStepIndex === steps.length) {
+      // when we save nextStep, we will validate all (conditional) steps
       validateSteps()
     }
   }, [nextStep])
 
   useEffect(() => {
+    // after (conditional) steps are validated, do actions
     if (nextStepIndex != null && nextStep != null) {
+      // find saved next step and find it in new list of steps after validation
       const newNextStepIndex: number = steps.findIndex(
         (step: RJSFSchema) => JSON.stringify(step) === JSON.stringify(nextStep),
       )
@@ -146,31 +153,36 @@ export const useFormStepper = (eformSlug: string, schema: RJSFSchema) => {
       setNextStepIndex(null)
       setNextStep(null)
     } else if (nextStepIndex != null && nextStep === undefined) {
+      // if nextStep is undefined, it means we are going to Summary
       setStepIndex(steps.length)
       setNextStepIndex(null)
       setNextStep(null)
     }
+    setStepData(getAllStepData(steps, stepData))
   }, [steps])
 
   const submitStep = () => {
     formRef?.current?.submit()
   }
 
-  // need to handle skipping with submitting and validating (skip step means do submitting and validating but always go to next step)
   useEffect(() => {
+    // need to handle skipping with submitting and validating (skip step means do submitting and validating but always go to next step)
     if (isSkipEnabled) {
       if (isComplete) {
+        // if we are in Summary and want to jump to any step
         jumpToStep()
         disableSkip()
       } else {
+        // if we are in any other step (not Summary), we will submit Step
         submitStep()
       }
     }
   }, [isSkipEnabled])
 
-  // this is needed for skipping multiple steps through StepperView
   // TODO: could be reduced by wrapping nextStepIndex and isSkipEnabled to 1 object
   useEffect(() => {
+    // this is needed for skipping multiple steps through Stepper
+    // we must save it because we are going to submit step even if we are skipping it
     if (nextStepIndex != null) {
       setIsSkipEnabled(true)
     }
@@ -181,7 +193,7 @@ export const useFormStepper = (eformSlug: string, schema: RJSFSchema) => {
   }
 
   const setStepFormData = (stepFormData: RJSFSchema) => {
-    // transformNullToUndefined(stepFormData)
+    // save formData for step with all properties including conditional fields and unfilled fields
     const tree = getJsonSchemaPropertyTree(currentSchema)
     const fullStepFormData = mergePropertyTreeToFormData(stepFormData, tree)
     setFormData({ ...formData, ...fullStepFormData })
@@ -214,6 +226,8 @@ export const useFormStepper = (eformSlug: string, schema: RJSFSchema) => {
   }
 
   const handleOnSubmit = async (newFormData: RJSFSchema) => {
+    // handles onSubmit event of form step
+    // it is called also if we are going to skip step by 1
     increaseStepErrors()
     setStepFormData(newFormData)
     const isFormValid = await validate()
@@ -233,6 +247,8 @@ export const useFormStepper = (eformSlug: string, schema: RJSFSchema) => {
   }
 
   const handleOnErrors = (newErrors: RJSFValidationError[]) => {
+    // handles onErrors event of form step
+    // it is called also if we are going to skip step by 1
     setUniqueErrors(newErrors, stepIndex)
     if (isSkipEnabled) {
       changeStepData(stepIndex, false)
@@ -243,7 +259,7 @@ export const useFormStepper = (eformSlug: string, schema: RJSFSchema) => {
 
   return {
     stepIndex,
-    setStepIndex, // only for testing!
+    setStepIndex,
     formData,
     setStepFormData,
     errors,

@@ -5,6 +5,7 @@ import {
   retrieveSchema,
   RJSFSchema,
   StrictRJSFSchema,
+  ValidatorType,
 } from '@rjsf/utils'
 import { customizeValidator } from '@rjsf/validator-ajv8'
 import { validateKeyword } from '@utils/api'
@@ -48,21 +49,18 @@ export const getAllPossibleJsonSchemaProperties = (
   if (jsonSchema.if && jsonSchema.else) {
     Object.assign(properties, getAllPossibleJsonSchemaProperties(jsonSchema.else))
   }
-  if (jsonSchema.allOf) {
-    jsonSchema.allOf.forEach((s) => {
-      Object.assign(properties, getAllPossibleJsonSchemaProperties(s))
-    })
-  }
-  if (jsonSchema.oneOf) {
-    jsonSchema.oneOf.forEach((s) => {
-      Object.assign(properties, getAllPossibleJsonSchemaProperties(s))
-    })
-  }
-  if (jsonSchema.anyOf) {
-    jsonSchema.anyOf.forEach((s) => {
-      Object.assign(properties, getAllPossibleJsonSchemaProperties(s))
-    })
-  }
+
+  jsonSchema?.allOf?.forEach((s) => {
+    Object.assign(properties, getAllPossibleJsonSchemaProperties(s))
+  })
+
+  jsonSchema?.oneOf?.forEach((s) => {
+    Object.assign(properties, getAllPossibleJsonSchemaProperties(s))
+  })
+
+  jsonSchema?.anyOf?.forEach((s) => {
+    Object.assign(properties, getAllPossibleJsonSchemaProperties(s))
+  })
 
   return properties
 }
@@ -110,9 +108,7 @@ export const getAllPossibleJsonSchemaExtraProperties = (
   return properties
 }
 
-export const getJsonSchemaPropertyTree = (
-  jsonSchema: JsonSchema | undefined,
-): JsonSchemaPropertyTree => {
+export const getJsonSchemaPropertyTree = (jsonSchema?: JsonSchema): JsonSchemaPropertyTree => {
   const properties = getAllPossibleJsonSchemaProperties(jsonSchema)
   const propertiesEntries = Object.entries(properties)
 
@@ -127,7 +123,10 @@ export const getJsonSchemaPropertyTree = (
   return Object.assign({}, ...result) as JsonSchemaPropertyTree
 }
 
-export const mergePropertyTreeToFormData = (formData: RJSFSchema, tree: JsonSchemaPropertyTree) => {
+export const mergePropertyTreeToFormData = (
+  formData: RJSFSchema,
+  tree: JsonSchemaPropertyTree,
+): RJSFSchema => {
   if (!tree || Array.isArray(formData)) return formData
   const newFormData: RJSFSchema = formData ? { ...formData } : ({} as RJSFSchema)
 
@@ -321,16 +320,16 @@ export const customValidate = (
   return errors
 }
 
-export const customFormats = {
+export const customFormats: Record<string, RegExp> = {
   zip: /\b\d{5}\b/,
   time: /^[0-2]\d:[0-5]\d$/,
 }
-export const validator = customizeValidator({
+export const validator: ValidatorType = customizeValidator({
   customFormats,
   ajvOptionsOverrides: { keywords: ajvKeywords },
 })
 
-export const getStepData = (
+export const getAllStepData = (
   schemaAllOf: JSONSchema7Definition[],
   oldStepData?: StepData[],
 ): StepData[] => {

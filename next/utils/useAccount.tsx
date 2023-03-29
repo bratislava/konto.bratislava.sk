@@ -5,6 +5,7 @@ import {
   CognitoUser,
   CognitoUserAttribute,
   CognitoUserPool,
+  CookieStorage,
   CognitoUserSession,
   IAuthenticationDetailsData,
 } from 'amazon-cognito-identity-js'
@@ -74,6 +75,9 @@ const updatableAttributes = new Set([
 const poolData = {
   UserPoolId: process.env.NEXT_PUBLIC_COGNITO_USER_POOL_ID || '',
   ClientId: process.env.NEXT_PUBLIC_COGNITO_CLIENT_ID || '',
+  Storage: new CookieStorage({
+    domain: process.env.NEXT_PUBLIC_COGNITO_COOKIE_STORAGE_DOMAIN,
+  }),
 }
 const userPool = new CognitoUserPool(poolData)
 

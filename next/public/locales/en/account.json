@@ -181,7 +181,7 @@
       "8": {
         "title": "10 000 stromov",
         "description": "Iniciatíva 10 000 stromov- možnosti zapojenia sa pre partnerov, informácie o zásadnom víkende alebo mapa výsadby zelene.",
-        "buttonText": "Odporúčiť lokalitu"
+        "buttonText": "Viac o iniciatíve"
       },
       "9": {
         "title": "Komunitné záhrady",
@@ -314,7 +314,7 @@
       "title": "<p>Môže to tak byť, lebo:</p>",
       "list": {
         "verification": "<li>ste neoverili svoju identitu cez rodné číslo a číslo občianskeho preukazu (<a href='/register'>Overiť identitu</a>),</li>",
-        "other": "<li>vašu daň ešte pripravujeme (v tom prípade bude k dispozícii najskôr 20. apríla)</li><li>vaša nehnuteľnosť je v spoluvlastníctve,</li><li>nie ste vlastníkom či vlastníčkou nehnuteľnosti,</li><li>ste nepodali priznanie k dani z nehnuteľností.</li>"
+        "other": "<li>vašu daň ešte pripravujeme (v tom prípade bude k dispozícii najskôr 20. apríla)</li><li>za platbu dane je zodovedný/á spoluvlastník/čka nehnuteľnosti,</li><li>nie ste vlastníkom či vlastníčkou nehnuteľnosti,</li><li>ste nepodali priznanie k dani z nehnuteľností.</li>"
       },
       "help_text": "<p>Viac informácií môžete nájsť v <a href='/i-have-a-problem'>často kladených otázkach</a>.</p>"
     }

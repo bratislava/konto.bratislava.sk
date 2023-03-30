@@ -37,6 +37,8 @@ const UserProfileView = () => {
     setIsEditing(false)
   }
 
+  console.log('USER DATA', userData)
+
   const handleOnSubmitEditing = (newUserData: UserData) => {
     updateUserData(newUserData).then(() => {
       setIsEditing(false)

@@ -57,14 +57,14 @@ const Toggle = ({ children, isDisabled = false, ...rest }: ToggleBase) => {
             hidden: !isSelected,
           })}
         >
-          <Check fill="white" />
+          <Check className="text-gray-0" />
         </div>
         <div
           className={cx('ml-[26px] absolute w-4 h-4 flex items-center justify-center', {
             hidden: isSelected,
           })}
         >
-          <UnCheck fill="white" />
+          <UnCheck className="text-gray-0" />
         </div>
         <div className={toggleBall} />
       </div>

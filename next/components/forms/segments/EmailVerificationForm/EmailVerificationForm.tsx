@@ -1,7 +1,7 @@
 import { formatUnicorn } from '@utils/string'
 import { AccountError } from '@utils/useAccount'
 import useHookForm from '@utils/useHookForm'
-import Alert from 'components/forms/info-components/Alert'
+import AccountErrorAlert from 'components/forms/segments/AccountErrorAlert/AccountErrorAlert'
 import Button from 'components/forms/simple-components/Button'
 import InputField from 'components/forms/widget-components/InputField/InputField'
 import { useTranslation } from 'next-i18next'
@@ -74,16 +74,13 @@ const EmailVerificationForm = ({ onSubmit, error, onResend, lastEmail, cntDisabl
       <p className="text-p3 lg:text-p2">
         {formatUnicorn(t('email_verification_description'), { email: lastEmail })}
       </p>
-      {error && (
-        <Alert
-          message={formatUnicorn(t(error.code), {
-            email: lastEmail,
-            verificationCode: lastVerificationCode,
-          })}
-          type="error"
-          className="min-w-full"
-        />
-      )}
+      <AccountErrorAlert
+        error={error}
+        args={{
+          email: lastEmail,
+          verificationCode: lastVerificationCode,
+        }}
+      />
       <Controller
         name="verificationCode"
         control={control}

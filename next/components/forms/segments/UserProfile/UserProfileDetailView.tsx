@@ -1,5 +1,6 @@
 import { UserData } from '@utils/useAccount'
 import { useTranslation } from 'next-i18next'
+
 import UserProfileDetailViewRow from './UserProfileDetailViewRow'
 
 interface UserProfileDetailViewProps {
@@ -10,9 +11,11 @@ const UserProfileDetailView = ({ userData }: UserProfileDetailViewProps) => {
   const { t } = useTranslation('account')
   const { given_name, family_name, email, phone_number, address } = userData
   const fullName = `${given_name ?? ''} ${family_name ?? ''}`
-  const fullAddress = `${address?.street_address ?? ''}${address?.street_address ? ', ' : ''}${
-    address?.locality ?? ''
-  }${address?.locality || address?.postal_code ? ' ' : ''}${address?.postal_code ?? ''}`
+  const fullAddress = `${address?.street_address ?? ''}${
+    address?.street_address && (address?.locality || address?.postal_code) ? ', ' : ''
+  }${address?.locality}${address?.locality && address?.postal_code ? ' ' : ''}${
+    address?.postal_code ?? ''
+  }`
   return (
     <div className="flex flex-col grow gap-6">
       {/* <UserProfileDetailViewRow label={t('profile_detail.titles_before_name')} /> */}

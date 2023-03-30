@@ -36,8 +36,8 @@ const GeneratedFormRJSF = ({ eform, escapedSlug, formSlug, wrapperClassName }: F
   return (
     <div
       className={cx(
-        'flex flex-col md:gap-20 gap-10 py-10 w-full',
-        'md:flex-row md:gap-20',
+        'flex flex-col gap-10 py-10 w-full max-w-screen-lg mx-auto',
+        'lg:flex-row lg:gap-20',
         wrapperClassName,
       )}
     >
@@ -45,8 +45,8 @@ const GeneratedFormRJSF = ({ eform, escapedSlug, formSlug, wrapperClassName }: F
         <StepperView
           steps={form.stepData}
           currentStep={form.stepIndex}
-          // hook useFormStepper is prepared to skipping multiple steps but they will not be validated
-          // if not wanted because of broken validation when skipping multiple steps, comment out onChangeStep
+          // hook useFormStepper is prepared to skip multiple steps but they will not be validated
+          // if skip of multiple steps is not wanted, comment out onChangeStep
           onChangeStep={skipButtonHandler}
         />
         <SkipStepModal
@@ -62,7 +62,7 @@ const GeneratedFormRJSF = ({ eform, escapedSlug, formSlug, wrapperClassName }: F
           }}
         />
       </div>
-      <div className={cx('grow mx-8', 'lg:mx-28')}>
+      <div className={cx('grow')}>
         {form.isComplete ? (
           <FinalStep
             formData={form.formData}

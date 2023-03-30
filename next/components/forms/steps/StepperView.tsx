@@ -34,11 +34,11 @@ const StepperView = ({ steps, currentStep, forceMobileSize, onChangeStep }: Step
 
   return (
     <>
-      <div className={cx('hidden', { 'md:block': !forceMobileSize })}>
+      <div className={cx('hidden', { 'lg:block': !forceMobileSize })}>
         <StepperViewList steps={steps} currentStep={currentStep} onChangeStep={onChangeStep} />
       </div>
       <div
-        className={cx('flex flex-col', { 'md:hidden': !forceMobileSize })}
+        className={cx('flex flex-col', { 'lg:hidden': !forceMobileSize })}
         onClick={handleOnClickDropdownIcon}
         onKeyDown={handleOnClickDropdownIcon}
         role="button"

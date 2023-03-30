@@ -1,6 +1,6 @@
 import { AccountError } from '@utils/useAccount'
 import useHookForm from '@utils/useHookForm'
-import Alert from 'components/forms/info-components/Alert'
+import AccountErrorAlert from 'components/forms/segments/AccountErrorAlert/AccountErrorAlert'
 import LoginAccountLink from 'components/forms/segments/LoginAccountLink/LoginAccountLink'
 import Button from 'components/forms/simple-components/Button'
 import InputField from 'components/forms/widget-components/InputField/InputField'
@@ -48,7 +48,7 @@ const ForgottenPasswordForm = ({ onSubmit, error }: Props) => {
       onSubmit={handleSubmit((data: Data) => onSubmit(data.email))}
     >
       <h1 className="text-h3">{t('forgotten_password_title')}</h1>
-      {error && <Alert message={t(error.code)} type="error" className="min-w-full" />}
+      <AccountErrorAlert error={error} />
       <Controller
         name="email"
         control={control}

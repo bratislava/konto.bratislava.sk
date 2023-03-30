@@ -1,13 +1,12 @@
 import ArrowRightIcon from '@assets/images/new-icons/ui/arrow-right.svg'
 import { ROUTES } from '@utils/constants'
-import { formatUnicorn } from '@utils/string'
 import { AccountError } from '@utils/useAccount'
 import useHookForm from '@utils/useHookForm'
-import Alert from 'components/forms/info-components/Alert'
+import AccountErrorAlert from 'components/forms/segments/AccountErrorAlert/AccountErrorAlert'
 import Button from 'components/forms/simple-components/Button'
 import InputField from 'components/forms/widget-components/InputField/InputField'
-import { useRouter } from 'next/router'
 import { useTranslation } from 'next-i18next'
+import { useRouter } from 'next/router'
 import { Controller } from 'react-hook-form'
 import Turnstile from 'react-turnstile'
 import { useCounter } from 'usehooks-ts'
@@ -70,9 +69,7 @@ const IdentityVerificationForm = ({ onSubmit, error }: Props) => {
       })}
     >
       <h1 className="text-h3">{t('identity_verification_title')}</h1>
-      {error && (
-        <Alert message={formatUnicorn(t(error.code), {})} type="error" className="min-w-full" />
-      )}
+      <AccountErrorAlert error={error} />
       <Controller
         name="rc"
         control={control}

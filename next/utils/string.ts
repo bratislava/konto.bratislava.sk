@@ -1,4 +1,4 @@
-interface Args {
+export interface Args {
   [key: string]: string | number
 }
 

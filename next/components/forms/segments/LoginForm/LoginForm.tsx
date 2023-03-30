@@ -1,7 +1,7 @@
 import { ROUTES } from '@utils/constants'
 import { AccountError } from '@utils/useAccount'
 import useHookForm from '@utils/useHookForm'
-import Alert from 'components/forms/info-components/Alert'
+import AccountErrorAlert from 'components/forms/segments/AccountErrorAlert/AccountErrorAlert'
 import AccountLink from 'components/forms/segments/AccountLink/AccountLink'
 import Button from 'components/forms/simple-components/Button'
 import InputField from 'components/forms/widget-components/InputField/InputField'
@@ -57,7 +57,7 @@ const LoginForm = ({ onSubmit, error }: Props) => {
       onSubmit={handleSubmit((data: Data) => onSubmit(data.email, data.password))}
     >
       <h1 className="text-h3">{t('login_title')}</h1>
-      {error && <Alert message={t(error.code)} type="error" className="min-w-full" />}
+      <AccountErrorAlert error={error} />
       <Controller
         name="email"
         control={control}

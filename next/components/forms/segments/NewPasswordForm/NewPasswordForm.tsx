@@ -1,7 +1,7 @@
 import { formatUnicorn } from '@utils/string'
 import { AccountError } from '@utils/useAccount'
 import useHookForm from '@utils/useHookForm'
-import Alert from 'components/forms/info-components/Alert'
+import AccountErrorAlert from 'components/forms/segments/AccountErrorAlert/AccountErrorAlert'
 import LoginAccountLink from 'components/forms/segments/LoginAccountLink/LoginAccountLink'
 import Button from 'components/forms/simple-components/Button'
 import InputField from 'components/forms/widget-components/InputField/InputField'
@@ -93,16 +93,13 @@ const NewPasswordForm = ({ onSubmit, error, onResend, lastEmail, fromMigration }
       <p className="text-p3 lg:text-p2">
         {formatUnicorn(t('new_password_description'), { email: lastEmail })}
       </p>
-      {error && (
-        <Alert
-          message={formatUnicorn(t(error.code), {
-            verificationCode: lastVerificationCode,
-            email: lastEmail,
-          })}
-          type="error"
-          className="min-w-full"
-        />
-      )}
+      <AccountErrorAlert
+        error={error}
+        args={{
+          verificationCode: lastVerificationCode,
+          email: lastEmail,
+        }}
+      />
       <Controller
         name="verificationCode"
         control={control}

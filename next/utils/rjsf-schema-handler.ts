@@ -1,10 +1,10 @@
-import { EnumOptionsType, ErrorSchema, RJSFValidationError, StrictRJSFSchema } from '@rjsf/utils'
+import { ErrorSchema, RJSFValidationError, StrictRJSFSchema } from '@rjsf/utils'
 import {
   getAllPossibleJsonSchemaExtraProperties,
   JsonSchema,
   JsonSchemaExtraProperties,
   JsonSchemaExtraProperty,
-} from '@utils/forms-helper'
+} from '@utils/forms'
 import { JSONSchema7Definition } from 'json-schema'
 
 import {

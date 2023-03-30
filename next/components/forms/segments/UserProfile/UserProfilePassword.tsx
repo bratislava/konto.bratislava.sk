@@ -6,6 +6,8 @@ import { useTranslation } from 'next-i18next'
 
 import UserProfileSection from './UserProfileSection'
 import UserProfileSectionHeader from './UserProfileSectionHeader'
+import * as Constants from 'constants'
+import { ROUTES } from '@utils/constants'
 
 const UserProfilePassword = () => {
   const { t } = useTranslation('account')
@@ -22,7 +24,7 @@ const UserProfilePassword = () => {
           startIcon={<LockIcon fill="white" className="w-6 h-6" />}
           size="sm"
           text={t('password_change.button')}
-          onPress={() => (window.location.href = '/password-change')}
+          onPress={() => push(ROUTES.PASSWORD_CHANGE)}
           className={cx('w-full', 'md:w-fit')}
         />
       </UserProfileSectionHeader>

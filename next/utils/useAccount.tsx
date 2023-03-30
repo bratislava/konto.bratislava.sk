@@ -14,6 +14,7 @@ import { AWSError } from 'aws-sdk/global'
 import { useStatusBarContext } from 'components/forms/info-components/StatusBar'
 import AccountMarkdown from 'components/forms/segments/AccountMarkdown/AccountMarkdown'
 import { useTranslation } from 'next-i18next'
+import { useRouter } from 'next/router'
 import React, { ReactNode, useCallback, useContext, useEffect, useState } from 'react'
 import { useInterval } from 'usehooks-ts'
 
@@ -614,6 +615,11 @@ export const AccountProvider = ({ children }: { children: ReactNode }) => {
       setStatusBarContent('')
     }
   }, [setStatusBarContent, status, t])
+
+  const router = useRouter()
+  useEffect(() => {
+    setError(null)
+  }, [router.pathname])
 
   const resetError = () => {
     setError(null)

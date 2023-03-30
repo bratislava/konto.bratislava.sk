@@ -41,8 +41,8 @@ const CheckboxWidgetRJSF = (props: CheckboxesWidgetRJSFProps) => {
     enumOptions,
     className,
     accordion,
-    spaceBottom = 'default',
-    spaceTop = 'none',
+    spaceBottom = 'none',
+    spaceTop = 'large',
     checkboxOptions = [],
     variant = 'basic',
   } = options

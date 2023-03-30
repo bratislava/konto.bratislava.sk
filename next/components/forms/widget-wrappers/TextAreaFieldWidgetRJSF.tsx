@@ -37,8 +37,8 @@ const TextAreaFieldWidgetRJSF = (props: TextAreaFieldWidgetRJSFProps) => {
     accordion,
     explicitOptional,
     className,
-    spaceBottom = 'default',
-    spaceTop = 'none',
+    spaceBottom = 'none',
+    spaceTop = 'large',
   }: TextAreaRJSFOptions = options
 
   const handleOnChange = (newValue?: string) => {

@@ -42,10 +42,10 @@ const SelectFieldWidgetRJSF = (props: SelectFieldWidgetRJSFProps) => {
     dropdownDivider,
     className,
     explicitOptional,
-    spaceBottom = 'default',
-    spaceTop = 'none',
-    hideScrollbar,
-    alwaysOneSelected,
+    spaceBottom = 'none',
+    spaceTop = 'large',
+    hideScrollbar = false,
+    alwaysOneSelected = false,
     maxWordSize,
   } = options
 

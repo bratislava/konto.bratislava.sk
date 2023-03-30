@@ -36,7 +36,7 @@ const GeneratedFormRJSF = ({ eform, escapedSlug, formSlug, wrapperClassName }: F
   return (
     <div
       className={cx(
-        'flex flex-col md:gap-20 gap-10 w-full',
+        'flex flex-col md:gap-20 gap-10 py-10 w-full',
         'md:flex-row md:gap-20',
         wrapperClassName,
       )}

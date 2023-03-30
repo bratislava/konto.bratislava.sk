@@ -40,8 +40,8 @@ const RadioButtonsWidgetRJSF = (props: RadioButtonFieldWidgetRJSFProps) => {
     accordion,
     radioOptions = [],
     orientations,
-    spaceBottom = 'default',
-    spaceTop = 'none',
+    spaceBottom = 'none',
+    spaceTop = 'large',
   } = options
 
   if (!enumOptions || Array.isArray(value)) return null

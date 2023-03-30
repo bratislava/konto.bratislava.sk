@@ -1,6 +1,6 @@
 import { AccountError } from '@utils/useAccount'
 import useHookForm from '@utils/useHookForm'
-import Alert from 'components/forms/info-components/Alert'
+import AccountErrorAlert from 'components/forms/segments/AccountErrorAlert/AccountErrorAlert'
 import Button from 'components/forms/simple-components/Button'
 import InputField from 'components/forms/widget-components/InputField/InputField'
 import { useTranslation } from 'next-i18next'
@@ -48,15 +48,7 @@ const PhoneNumberForm = ({ error, onHideError, onSubmit, defaultValues }: Props)
         <div className="text-p2">{t('adding_phone_number_modal.description')}</div>
         <div className="text-p3">{t('adding_phone_number_modal.phoneNumber_not_required')}</div>
       </div>
-      {error && (
-        <Alert
-          message={t(error.code)}
-          type="error"
-          close={onHideError}
-          solid
-          className="min-w-full"
-        />
-      )}
+      <AccountErrorAlert error={error} close={onHideError} solid />
       <Controller
         name="phone_number"
         control={control}

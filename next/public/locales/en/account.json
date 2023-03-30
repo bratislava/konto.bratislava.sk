@@ -1,4 +1,20 @@
 {
+  "errors": {
+    "unknown": "An unknown error occurred - please try again later.",
+    "NotAuthorizedException": "Unauthorized",
+    "CodeMismatchException": "Code {verificationCode} could not be verified.",
+    "LimitExceededException": "Attempt limit exceeded, please try after some time.",
+    "UserNotConfirmedException": "User is not confirmed.",
+    "UsernameExistsException": "An account with the given email already exists.",
+    "ExpiredCodeException": "Invalid code provided, please request a code again.",
+    "IncorectPasswordException": "Incorrect password.",
+    "API_ERROR": "There was an error making the request - please try again later.",
+    "RFO_ACCESS_ERROR": "There was an error making the request - please try again later.",
+    "RFO_NOT_RESPONDING": "There was an error making the request - please try again later.",
+    "DEAD_PERSON": "Birth number and identity card not valid.",
+    "BIRTH_NUMBER_AND_IDENTITY_CARD_INCONSISTENCY": "Birth number and identity card not valid.",
+    "BIRTHNUMBER_IFO_DUPLICITY": "Tieto osobné údaje už boli použité pri inej e-mailovej adrese. Ak ste účet nevytvorili vy, kontaktujte nás na info@bratislava.sk."
+  },
   "login_title": "Login",
   "email_label": "E-mail",
   "email_description": "E-mail",
@@ -110,12 +126,6 @@
   "migration_recognized_description": "",
   "migration_register_description": "Don't have an account?",
   "migration_new_password_title": "New password",
-  "NotAuthorizedException": "Unauthorized",
-  "CodeMismatchException": "Code {verificationCode} could not be verified.",
-  "LimitExceededException": "Attempt limit exceeded, please try after some time.",
-  "UserNotConfirmedException": "User is not confirmed.",
-  "UsernameExistsException": "An account with the given email already exists.",
-  "IncorectPasswordException": "Incorrect password.",
   "account_section_intro": {
     "navigation": "Intro",
     "header_title": "Hello,",
@@ -171,7 +181,7 @@
       "8": {
         "title": "10 000 stromov",
         "description": "Iniciatíva 10 000 stromov- možnosti zapojenia sa pre partnerov, informácie o zásadnom víkende alebo mapa výsadby zelene.",
-        "buttonText": "Odporúčiť lokalitu"
+        "buttonText": "Viac o iniciatíve"
       },
       "9": {
         "title": "Komunitné záhrady",
@@ -290,7 +300,7 @@
       },
       "32": {
         "title": "Online lístky na kúpaliská",
-        "description": "Moťnosť kúpiť si online lístok alebo permanentku na všetky mestské kúpalíská v Bratislave pribudne do Bratislavského konta už v júni.",
+        "description": "Možnosť kúpiť si online lístok alebo permanentku na všetky mestské kúpalíská v Bratislave pribudne do Bratislavského konta už v júni.",
         "tag": "Pribudne čoskoro"
       }
     }
@@ -304,7 +314,7 @@
       "title": "<p>Môže to tak byť, lebo:</p>",
       "list": {
         "verification": "<li>ste neoverili svoju identitu cez rodné číslo a číslo občianskeho preukazu (<a href='/register'>Overiť identitu</a>),</li>",
-        "other": "<li>vašu daň ešte pripravujeme (v tom prípade bude k dispozícii najskôr 20. apríla)</li><li>vaša nehnuteľnosť je v spoluvlastníctve,</li><li>nie ste vlastníkom či vlastníčkou nehnuteľnosti,</li><li>ste nepodali priznanie k dani z nehnuteľností.</li>"
+        "other": "<li>vašu daň ešte pripravujeme (v tom prípade bude k dispozícii najskôr 20. apríla)</li><li>za platbu dane je zodovedný/á spoluvlastník/čka nehnuteľnosti,</li><li>nie ste vlastníkom či vlastníčkou nehnuteľnosti,</li><li>ste nepodali priznanie k dani z nehnuteľností.</li>"
       },
       "help_text": "<p>Viac informácií môžete nájsť v <a href='/i-have-a-problem'>často kladených otázkach</a>.</p>"
     }
@@ -321,7 +331,7 @@
       },
       "2": {
         "question": "Prečo si založiť konto?",
-        "answer": "Bratislavské konto je rýchly, jednoduchý a efektívny nástroj ako komunikovať s magistrátom. Založte si Bratislavské konto, aby ste mohli podávať žiadosti digitálne, nemuseli chodiť na úrad fyzicky, videli aktuálny stav žiadostí cez nástroj sledovania podania a mali prehľad o všetkých povinnostiach, ktoré voči mestu máte (napr. platba daní).<br /><br /><a href='/'>Prečítajte si konkrétne výhody Bratislavského konta</a>"
+        "answer": "Bratislavské konto je rýchly, jednoduchý a efektívny nástroj ako komunikovať s magistrátom. Založte si Bratislavské konto, aby ste mohli podávať žiadosti digitálne, nemuseli chodiť na úrad fyzicky, videli aktuálny stav žiadostí cez nástroj sledovania podania a mali prehľad o všetkých povinnostiach, ktoré voči mestu máte (napr. platba daní).<br /><br /><a target='_blank' href='https://bratislava.sk/mesto-bratislava/projekty/inovacie-mesta-bratislava/bratislavske-konto'>Prečítajte si konkrétne výhody Bratislavského konta</a>"
       },
       "3": {
         "question": "Aké služby nájdem v konte?",
@@ -329,7 +339,7 @@
       },
       "4": {
         "question": "Aké služby v konte pribudnú najbližšie?",
-        "answer": "Najbližšie pribudne do Bratislavského konta služba digitálnej platby dane z nehnuteľností. Pozrite si celú časovú os služieb, ktoré pribudnú v konte v blízkej dobe."
+        "answer": "Najbližšie pribudne do Bratislavského konta služba digitálnej platby dane z nehnuteľností. Pozrite si celú <a target='_blank' href='https://bratislava.sk/mesto-bratislava/projekty/inovacie-mesta-bratislava/bratislavske-konto'>časovú os</a> služieb, ktoré pribudnú v konte v blízkej dobe."
       },
       "5": {
         "question": "Nejde mi registrovať sa, čo mám robiť?",
@@ -392,13 +402,6 @@
   "menu_logout_link": "Log out",
   "menu_login_link": "Login",
   "menu_register_link": "Register",
-  "ExpiredCodeException": "Invalid code provided, please request a code again.",
-  "API_ERROR": "There was an error making the request - please try again later.",
-  "RFO_ACCESS_ERROR": "There was an error making the request - please try again later.",
-  "RFO_NOT_RESPONDING": "There was an error making the request - please try again later.",
-  "DEAD_PERSON": "Birth number and identity card not valid.",
-  "BIRTH_NUMBER_AND_IDENTITY_CARD_INCONSISTENCY": "Birth number and identity card not valid.",
-  "BIRTHNUMBER_IFO_DUPLICITY": "Tieto osobné údaje už boli použité pri inej e-mailovej adrese. Ak ste účet nevytvorili vy, kontaktujte nás na info@bratislava.sk.",
   "my_profile": "My profile",
   "consents": {
     "title": "Consents",

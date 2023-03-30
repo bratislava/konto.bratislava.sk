@@ -88,24 +88,23 @@ export const CookiesAndTracking = () => {
             <p className="text-p2 mb-8">
               {' '}
               {t('cookie_consent_body')}{' '}
-              <NextLink
+              <a
                 href={t('cookie_consent_privacy_policy_link')}
-                passHref
                 className="cursor-pointer font-semibold underline"
               >
                 {' '}
                 {t('cookie_consent_privacy_policy')}{' '}
-              </NextLink>
+              </a>
             </p>
-            <div className="block sm:flex">
+            <div className="flex flex-col md:flex-row gap-2">
               <Button
-                className="text-16-medium mb-3 h-12 px-6 sm:my-0 sm:mr-6"
+                className="text-16-medium h-12 px-6"
                 variant="category"
                 onPress={() => setConsents({ statistics: true })}
                 text={t('cookie_consent_accept')}
               />
               <Button
-                className="text-16-medium mt-0 h-12 px-6"
+                className="text-16-medium h-12 px-6"
                 variant="category-outline"
                 onPress={() => setConsents({ statistics: false })}
                 text={t('cookie_consent_reject')}

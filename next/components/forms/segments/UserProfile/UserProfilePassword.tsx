@@ -1,4 +1,5 @@
 import LockIcon from '@assets/images/new-icons/ui/lock.svg'
+import { ROUTES } from '@utils/constants'
 import cx from 'classnames'
 import Button from 'components/forms/simple-components/Button'
 import { useRouter } from 'next/router'
@@ -6,8 +7,6 @@ import { useTranslation } from 'next-i18next'
 
 import UserProfileSection from './UserProfileSection'
 import UserProfileSectionHeader from './UserProfileSectionHeader'
-import * as Constants from 'constants'
-import { ROUTES } from '@utils/constants'
 
 const UserProfilePassword = () => {
   const { t } = useTranslation('account')

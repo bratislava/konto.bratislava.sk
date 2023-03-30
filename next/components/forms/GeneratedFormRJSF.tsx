@@ -14,9 +14,10 @@ interface FormRJSF {
   eform: EFormValue
   escapedSlug: string
   formSlug: string
+  wrapperClassName?: string
 }
 
-const GeneratedFormRJSF = ({ eform, escapedSlug, formSlug }: FormRJSF) => {
+const GeneratedFormRJSF = ({ eform, escapedSlug, formSlug, wrapperClassName }: FormRJSF) => {
   const form = useFormStepper(escapedSlug, eform.schema)
   const [isOnShowSkipModal, setIsOnShowSkipModal] = useState<boolean>(false)
   const [skipModalWasShown, setSkipModalWasShown] = useState<boolean>(false)
@@ -33,7 +34,13 @@ const GeneratedFormRJSF = ({ eform, escapedSlug, formSlug }: FormRJSF) => {
   const submitter = useFormSubmitter(formSlug)
 
   return (
-    <div className={cx('flex flex-col  md:gap-20 gap-10 w-full', 'md:flex-row md:gap-20')}>
+    <div
+      className={cx(
+        'flex flex-col md:gap-20 gap-10 w-full',
+        'md:flex-row md:gap-20',
+        wrapperClassName,
+      )}
+    >
       <div className="">
         <StepperView
           steps={form.stepData}
@@ -81,6 +88,7 @@ const GeneratedFormRJSF = ({ eform, escapedSlug, formSlug }: FormRJSF) => {
               form.handleOnSubmit(e.formData)
             }}
             onChange={(e) => {
+              console.log(e)
               form.setStepFormData(e.formData)
             }}
             onError={form.handleOnErrors}

@@ -1,9 +1,10 @@
-import CallIcon from '@assets/images/forms/call.svg'
-import ResetIcon from '@assets/images/forms/circle-filled-reset.svg'
-import LockIcon from '@assets/images/forms/lock.svg'
 import MailIcon from '@assets/images/forms/mail.svg'
-import PersonIcon from '@assets/images/forms/person.svg'
+import ResetIcon from '@assets/images/new-icons/ui/delete.svg'
+import LockIcon from '@assets/images/new-icons/ui/lock.svg'
+import PersonIcon from '@assets/images/new-icons/ui/profile.svg'
+import CallIcon from '@assets/images/new-icons/ui/telephone.svg'
 import cx from 'classnames'
+import { TooltipPositionType } from 'components/forms/info-components/Tooltip/Tooltip'
 import { forwardRef, ReactNode, RefObject, useEffect, useState } from 'react'
 import { useTextField } from 'react-aria'
 
@@ -43,6 +44,7 @@ export type InputBase = {
   resetIcon?: boolean
   disabled?: boolean
   tooltip?: string
+  tooltipPosition?: TooltipPositionType
   onChange?: (value?: string) => void
   size?: SizeType
   endIcon?: ReactNode
@@ -58,6 +60,7 @@ const InputField = forwardRef<HTMLInputElement, InputBase>(
       errorMessage = [],
       helptext,
       tooltip,
+      tooltipPosition,
       required,
       explicitOptional,
       value = '',
@@ -168,6 +171,7 @@ const InputField = forwardRef<HTMLInputElement, InputBase>(
           required={required}
           explicitOptional={explicitOptional}
           tooltip={tooltip}
+          tooltipPosition={tooltipPosition}
         />
         <div className="relative">
           {leftIcon && (

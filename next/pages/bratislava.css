@@ -181,11 +181,22 @@ input[type='password']::-webkit-strong-password-auto-fill-button {
   @apply mr-8 pb-2;
 }
 
+/* https://stackoverflow.com/questions/17000562/removing-the-clear-and-reveal-password-icons-from-internet-explorer */
+input::-ms-reveal, /* remove eye icon */
+input::-ms-clear { /* remove clear input text icon */
+  display: none;
+}
+
 /* Remove arrows from input type='number' */
 input[type='number']::-webkit-inner-spin-button,
 input[type='number']::-webkit-outer-spin-button {
   -webkit-appearance: none;
   margin: 0;
+}
+
+/* Remove Gray Highlight When Tapping in Mobile Safari - used in accordions */
+.no-tap-highlight {
+  -webkit-tap-highlight-color: transparent;
 }
 
 .form-group label.control-label {
@@ -208,45 +219,4 @@ input[type='number']::-webkit-outer-spin-button {
   cursor: pointer;
 }
 
-/* styles for chatbot START */
-.webchat {
-  position: fixed;
-  height: 70%;
-  width: min(40%, 380px);
-  bottom: 96px;
-  left: 24px;
-  border-radius: 8px;
-  display: none;
-  overflow: hidden;
-  border: solid 2px RGB(51, 51, 51, 0.5);
-  z-index: 9999;
-}
 
-.webchat__imageAvatar__image img {
-  position: absolute;
-  top: 0;
-  left: 0;
-  bottom: 0;
-  right: 0;
-}
-
-.webchat__bubble__content {
-  border-radius: 20px !important;
-}
-
-.floating-button.hide-on-click svg:first-child {
-  display: block;
-}
-.floating-button.hide-on-click svg:last-child {
-  display: none;
-}
-
-@media (max-width: 768px) {
-  .webchat {
-    width: 100%;
-    height: calc(100% - 88px);
-    left: 0;
-    border-radius: 0;
-  }
-}
-/* styles for chatbot END*/

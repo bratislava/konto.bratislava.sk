@@ -1,6 +1,5 @@
 // TODO waiting on #305 to get merged, afterwards might move elsewhere
 // frontend code for calling api endpoints grouped
-import * as Sentry from '@sentry/react'
 import { ErrorObject } from 'ajv'
 
 export const API_ERROR_TEXT = 'API_ERROR'
@@ -42,9 +41,25 @@ const fetchJsonApi = async (path: string, options?: RequestInit) => {
       throw new Error(API_ERROR_TEXT)
     }
   } catch (error) {
+    // TODO: handle error with Faro
+    // caught & rethrown so that we can handle Faro in one place
+    console.error(error)
+    throw error
+  }
+}
+
+const fetchBlob = async (path: string, options?: RequestInit) => {
+  try {
+    const response = await fetch(path, options)
+    if (response.ok) {
+      return await response.blob()
+    }
+
+    const responseText = await response.text()
+    throw new Error(responseText)
+  } catch (error) {
     // caught & rethrown so that we can handle Sentry in one place
     console.error(error)
-    Sentry.captureException(error)
     throw error
   }
 }
@@ -83,9 +98,30 @@ export const validateKeyword = async (
   }
 }
 
+export const formDataToXml = (eform: string, data: any) => {
+  return fetchBlob(`/api/eforms/${eform}/transform/xml`, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({ data }),
+  })
+}
+
+export const xmlToFormData = (eform: string, data: string) => {
+  return fetchJsonApi(`/api/eforms/${eform}/transform/xmlToJson`, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({ data }),
+  })
+}
+
 interface Identity {
   birthNumber: string
   identityCard: string
+  turnstileToken: string
 }
 
 export const verifyIdentityApi = (data: Identity, token: string) => {

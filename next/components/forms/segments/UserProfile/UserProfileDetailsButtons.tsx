@@ -1,6 +1,5 @@
-import CloseIcon from '@assets/images/close.svg'
-import EditIcon from '@assets/images/forms/edit_icon.svg'
-import WhiteEditIcon from '@assets/images/forms/edit_white.svg'
+import CloseIcon from '@assets/images/new-icons/ui/cross.svg'
+import WhiteEditIcon from '@assets/images/new-icons/ui/pen.svg'
 import cx from 'classnames'
 import Button from 'components/forms/simple-components/Button'
 import { useTranslation } from 'next-i18next'
@@ -36,36 +35,22 @@ const UserProfileDetailsButtons = (props: UserProfileDetailsButtonsProps) => {
             form={formId}
           />
           <CloseIcon
-            className={cx('block cursor-pointer', 'md:hidden')}
+            className={cx('block cursor-pointer w-6 h-6', 'md:hidden')}
             onClick={onCancelEditing}
           />
-          <div
-            className={cx(
-              'fixed bottom-0 left-0 right-0 bg-white z-50 drop-shadow-2xl flex flex-row justify-center py-2',
-              'md:hidden',
-            )}
-          >
-            <Button
-              variant="black"
-              size="sm"
-              text={t('profile_detail.save_edit_button')}
-              type="submit"
-              form={formId}
-            />
-          </div>
         </div>
       ) : (
         <div className="width-fit">
           <Button
             variant="black"
-            startIcon={<WhiteEditIcon />}
+            startIcon={<WhiteEditIcon fill="white" className="w-6 h-6" />}
             size="sm"
             text={t('profile_detail.start_edit_button')}
             className="hidden md:block"
             onPress={() => onChangeIsEditing(true)}
           />
-          <EditIcon
-            className="block md:hidden cursor-pointer"
+          <WhiteEditIcon
+            className="block md:hidden cursor-pointer w-6 h-6"
             onClick={() => onChangeIsEditing(true)}
           />
         </div>

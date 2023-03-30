@@ -1,7 +1,5 @@
 import { EFormValue } from '@backend/forms'
 import { getEform } from '@backend/utils/forms'
-import { withSentry } from '@sentry/nextjs'
-import * as Sentry from '@sentry/react'
 import type { NextApiRequest, NextApiResponse } from 'next'
 
 const handler = async (req: NextApiRequest, res: NextApiResponse) => {
@@ -30,9 +28,8 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
     }
   } catch (error) {
     console.error(error)
-    Sentry.captureException(error)
     return res.status(500).json({ message: 'Internal server error' })
   }
 }
 
-export default withSentry(handler)
+export default handler

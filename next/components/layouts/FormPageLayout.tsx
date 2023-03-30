@@ -1,14 +1,13 @@
-import CityIcon from '@assets/images/account/city.svg'
-import HelpIcon from '@assets/images/account/help-icon.svg'
-import LogoutIcon from '@assets/images/account/logout.svg'
-import ProfileIcon from '@assets/images/account/profile.svg'
-import * as Sentry from '@sentry/nextjs'
+import HelpIcon from '@assets/images/new-icons/ui/help.svg'
+import LogoutIcon from '@assets/images/new-icons/ui/logout.svg'
+import CityIcon from '@assets/images/new-icons/ui/municipal-account.svg'
+import ProfileIcon from '@assets/images/new-icons/ui/profile.svg'
 import cx from 'classnames'
 import AccountNavBar from 'components/forms/segments/AccountNavBar/AccountNavBar'
 import SectionContainer from 'components/forms/segments/SectionContainer/SectionContainer'
 import { usePageWrapperContext } from 'components/layouts/PageWrapper'
-import { useTranslation } from 'next-i18next'
 import { useRouter } from 'next/router'
+import { useTranslation } from 'next-i18next'
 import { ReactNode } from 'react'
 
 type FormPageLayoutBase = {
@@ -21,25 +20,25 @@ const menuItems = [
   {
     id: 1,
     title: 'account:menu_account_link',
-    icon: <CityIcon />,
-    link: '/account',
+    icon: <CityIcon className="w-6 h-6" />,
+    link: '/',
   },
   {
     id: 2,
     title: 'account:menu_profile_link',
-    icon: <ProfileIcon />,
+    icon: <ProfileIcon className="w-6 h-6" />,
     link: '/user-profile',
   },
   {
     id: 3,
     title: 'account:menu_help_link',
-    icon: <HelpIcon />,
-    link: '/account/i-have-a-problem',
+    icon: <HelpIcon className="w-6 h-6" />,
+    link: '/i-have-a-problem',
   },
   {
     id: 4,
     title: 'account:menu_logout_link',
-    icon: <LogoutIcon />,
+    icon: <LogoutIcon className="w-6 h-6" />,
     link: '/logout',
   },
 ]
@@ -56,7 +55,8 @@ const FormPageLayout = ({ className, navHidden, children }: FormPageLayoutBase) 
     try {
       await router.push(`/${path}`, undefined, { locale: key })
     } catch (error) {
-      Sentry.captureException(error)
+      // TODO send error to Faro
+      console.error(error)
     }
   }
 

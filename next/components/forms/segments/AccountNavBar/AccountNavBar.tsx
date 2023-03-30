@@ -1,12 +1,13 @@
-import ProfileOutlinedIcon from '@assets/images/account/profile-outlined.svg'
-import VolumeIcon from '@assets/images/account/volume.svg'
-import Hamburger from '@assets/images/ba-hamburger.svg'
-import HamburgerClose from '@assets/images/hamburger-close.svg'
-import SearchIcon from '@assets/images/search-icon.svg'
+import HamburgerClose from '@assets/images/new-icons/ui/cross.svg'
+import Hamburger from '@assets/images/new-icons/ui/hamburger.svg'
+import ProfileOutlinedIcon from '@assets/images/new-icons/ui/profile.svg'
+import SearchIcon from '@assets/images/new-icons/ui/search.svg'
+import VolumeIcon from '@assets/images/new-icons/ui/speaker.svg'
 import { ROUTES } from '@utils/constants'
 import useAccount, { UserData } from '@utils/useAccount'
 import { getLanguageKey } from '@utils/utils'
 import cx from 'classnames'
+import { StatusBar } from 'components/forms/info-components/StatusBar'
 import HamburgerMenu from 'components/forms/segments/HambergerMenu/HamburgerMenu'
 import Button from 'components/forms/simple-components/Button'
 import Menu from 'components/forms/simple-components/Menu/Menu'
@@ -15,6 +16,7 @@ import { useRouter } from 'next/router'
 import { useTranslation } from 'next-i18next'
 import { ReactNode, useState } from 'react'
 import { Item } from 'react-stately'
+import { useElementSize } from 'usehooks-ts'
 
 import Brand from '../../simple-components/Brand'
 import Link from './NavBarLink'
@@ -48,6 +50,7 @@ export interface MenuItem {
   title: string
   icon: ReactNode
   link: string
+  backgroundColor?: string // ex. bg-negative-700
 }
 
 export const AccountNavBar = ({
@@ -60,6 +63,8 @@ export const AccountNavBar = ({
 }: IProps) => {
   const [burgerOpen, setBurgerOpen] = useState(false)
   const { isAuth, logout, userData } = useAccount()
+  const [desktopRef, { height: desktopHeight }] = useElementSize()
+  const [mobileRef, { height: mobileHeight }] = useElementSize()
 
   const languageKey = getLanguageKey(languageSelectProps.currentLanguage)
   const anotherLanguage = languageSelectProps.languages?.find((l) => l.key !== languageKey)
@@ -83,36 +88,24 @@ export const AccountNavBar = ({
     if (selectedMenuItem) onRouteChange(selectedMenuItem)
   }
 
-  /**
-   * Matches `/account` URL with given param sectionItem link
-   * @match
-   * `/account`
-   * @param {MenuItem} sectionItem - Menu item object.
-   */
-  const isAccountPage = (sectionItem: MenuItem) =>
-    router.route.endsWith('/account') && router.route.includes(sectionItem.link)
-
-  /**
-   * Matches parent URL with children url (inner pages)
-   * @example
-   * `account/taxes-and-fees` and `account/taxes-and-fees/[id]` where `taxes-and-fees` is parent page
-   * It also excludes home page `/account` if we are on `account/taxes-and-fees`
-   * @param {MenuItem} sectionItem - Menu item object.
-   */
   const isActive = (sectionItem: MenuItem) =>
-    sectionItem?.link.includes(router.route.split('/')[2]) || isAccountPage(sectionItem)
+    sectionItem.link === '/'
+      ? router.pathname === '/'
+      : router.pathname.startsWith(sectionItem.link)
 
   return (
-    <>
+    <div style={{ marginBottom: Math.max(desktopHeight, mobileHeight) }}>
       {/* Desktop */}
       <div
         id="desktop-navbar"
         className={cx(
           className,
           'text-p2 items-center',
-          'fixed top-0 left-0 w-full bg-white z-10 shadow',
+          'fixed top-0 left-0 w-full bg-white z-40 shadow',
         )}
+        ref={desktopRef}
       >
+        <StatusBar className="hidden lg:flex" />
         <div className="max-w-screen-lg m-auto hidden h-[57px] w-full items-center lg:flex gap-x-6">
           <Brand
             className="group grow"
@@ -162,7 +155,7 @@ export const AccountNavBar = ({
                   )}
 
                   <Link href={t('searchLink')} variant="plain">
-                    <SearchIcon />
+                    <SearchIcon className="w-6 h-6" />
                   </Link>
 
                   <Divider />
@@ -205,7 +198,7 @@ export const AccountNavBar = ({
           </nav>
         </div>
         {isAuth && sectionsList && !hiddenHeaderNav && (
-          <div className="border-t border-gray-200 max-w-screen-lg m-auto h-[57px] w-full items-center justify-between lg:flex">
+          <div className="hidden border-t border-gray-200 max-w-screen-lg m-auto h-[57px] w-full items-center justify-between lg:flex">
             <ul className="w-full h-full flex items-center">
               {sectionsList.map((sectionItem) => (
                 <li className="w-full h-full" key={sectionItem.id}>
@@ -232,48 +225,48 @@ export const AccountNavBar = ({
       {/* Mobile */}
       <div
         id="mobile-navbar"
-        className={cx(
-          className,
-          'h-16 flex items-center py-5 px-8 -mx-8 border-b-2',
-          'lg:hidden fixed top-0 w-full bg-white z-10 gap-x-6',
-        )}
+        className={cx(className, 'lg:hidden fixed top-0 left-0 w-full bg-white z-40 gap-x-6')}
+        ref={mobileRef}
       >
-        <Brand url="/" className="grow" />
-        {!navHidden && (
-          <div className={cx('flex items-center gap-x-5')}>
-            <div className="text-h4 text-font/50 relative flex cursor-pointer items-center bg-transparent">
-              <Link href={t('searchLink')} variant="plain" className="p-4">
-                <SearchIcon />
-              </Link>
+        {!burgerOpen && <StatusBar className="flex lg:hidden" />}
+        <div className="h-16 flex items-center py-5 px-8 border-b-2">
+          <Brand url="/" className="grow" />
+          {!navHidden && (
+            <div className={cx('flex items-center gap-x-5')}>
+              <div className="text-h4 text-font/50 relative flex cursor-pointer items-center bg-transparent">
+                <Link href={t('searchLink')} variant="plain" className="p-4">
+                  <SearchIcon className="w-6 h-6" />
+                </Link>
+              </div>
             </div>
-          </div>
-        )}
+          )}
 
-        <button
-          onClick={() => (isAuth ? setBurgerOpen(!burgerOpen) : router.push(ROUTES.LOGIN))}
-          className="-mr-4 px-4 py-5"
-        >
-          <div className="flex w-6 items-center justify-center">
-            {burgerOpen ? (
-              <HamburgerClose />
-            ) : isAuth && sectionsList ? (
-              <Hamburger />
-            ) : (
-              <Avatar userData={userData} />
-            )}
-          </div>
-        </button>
+          <button
+            onClick={() => (isAuth ? setBurgerOpen(!burgerOpen) : router.push(ROUTES.LOGIN))}
+            className="-mr-4 px-4 py-5"
+          >
+            <div className="flex w-6 items-center justify-center">
+              {burgerOpen ? (
+                <HamburgerClose className="w-6 h-6" />
+              ) : isAuth && sectionsList ? (
+                <Hamburger />
+              ) : (
+                <Avatar userData={userData} />
+              )}
+            </div>
+          </button>
 
-        {burgerOpen && (
-          <HamburgerMenu
-            sectionsList={sectionsList}
-            menuItems={menuItems}
-            closeMenu={() => setBurgerOpen(false)}
-            onRouteChange={onRouteChange}
-          />
-        )}
+          {burgerOpen && (
+            <HamburgerMenu
+              sectionsList={sectionsList}
+              menuItems={menuItems}
+              closeMenu={() => setBurgerOpen(false)}
+              onRouteChange={onRouteChange}
+            />
+          )}
+        </div>
       </div>
-    </>
+    </div>
   )
 }
 
@@ -282,7 +275,11 @@ const AccountMenuItem = ({ menuItem }: { menuItem: MenuItem }) => {
 
   return (
     <div className="cursor-pointer flex py-2 px-5">
-      <div className="flex relative flex-row items-start gap-2 rounded-xl p-4 bg-gray-50">
+      <div
+        className={`flex relative flex-row items-start gap-2 rounded-xl p-4 ${
+          menuItem.backgroundColor ?? 'bg-gray-50'
+        }`}
+      >
         <div className="flex h-2 w-2 items-center justify-center">
           <span>{menuItem.icon}</span>
         </div>
@@ -305,7 +302,7 @@ const Avatar = ({ userData }: { userData?: UserData | null }) => {
           {userData && userData.given_name && userData.family_name ? (
             userData.given_name[0] + userData.family_name[0]
           ) : (
-            <ProfileOutlinedIcon />
+            <ProfileOutlinedIcon className="w-6 h-6 text-main-700" />
           )}
         </span>
       </div>

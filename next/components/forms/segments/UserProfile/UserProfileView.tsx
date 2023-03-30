@@ -1,4 +1,5 @@
 import useAccount, { UserData } from '@utils/useAccount'
+import useSnackbar from '@utils/useSnackbar'
 import MessageModal from 'components/forms/widget-components/Modals/MessageModal'
 import { useTranslation } from 'next-i18next'
 import React, { useEffect, useState } from 'react'
@@ -15,6 +16,7 @@ const UserProfileView = () => {
   const [alertType, setAlertType] = useState<'success' | 'error'>('success')
   const [isEmailModalOpened, setIsEmailModalOpened] = useState<boolean>(false)
   const { userData, updateUserData, error } = useAccount()
+  const [openSnackbarSuccess] = useSnackbar({ variant: 'success' })
 
   useEffect(() => {
     setAlertType(error ? 'error' : 'success')
@@ -22,13 +24,6 @@ const UserProfileView = () => {
 
   // TODO: handle change of consents in backend DB
   const [allConsents, setAllConsents] = useState<Consent[]>([
-    {
-      id: 'personal_data',
-      title: t('consents.personal_data.title'),
-      text: t('consents.personal_data.text'),
-      isDisabled: true,
-      isSelected: true,
-    },
     {
       id: 'receive_information',
       title: t('consents.receive_information.title'),
@@ -45,8 +40,14 @@ const UserProfileView = () => {
   const handleOnSubmitEditing = (newUserData: UserData) => {
     updateUserData(newUserData).then(() => {
       setIsEditing(false)
-      setIsAlertOpened(true)
-      setTimeout(() => setIsAlertOpened(false), 3000)
+      if (alertType === 'error') {
+        setIsAlertOpened(true)
+        setTimeout(() => setIsAlertOpened(false), 3000)
+      }
+      if (alertType === 'success') {
+        // default is 5000 ms
+        openSnackbarSuccess(t('profile_detail.success_alert'), 3000)
+      }
     })
   }
 
@@ -65,6 +66,13 @@ const UserProfileView = () => {
         />
         <UserProfilePassword />
         <UserProfileConsents allConsents={allConsents} onChange={setAllConsents} />
+        <div className="bg-gray-100 md:bg-gray-0">
+          <AccountMarkdown
+            content={`<span className='text-p2'>${t('gdpr_details_link')}</span>`}
+            variant="sm"
+            className="w-full max-w-screen-lg mx-auto px-4 md:px-8 lg:px-0 pt-3 pb-5 md:pb-6 md:pt-4"
+          />
+        </div>
         <MessageModal
           show={isEmailModalOpened}
           excludeButtons

@@ -1,9 +1,9 @@
 import cx from 'classnames'
-import { FC, useRef } from 'react'
+import React, { FC, useRef } from 'react'
+import { useOnClickOutside } from 'usehooks-ts'
 
 import DropdownRow from './DropdownRow'
 import SelectAllDropdownRow from './SelectAllDropdownRow'
-import { useOnClickOutside } from 'usehooks-ts'
 import { SelectOption } from './SelectField'
 
 interface DropdownProps {
@@ -14,6 +14,8 @@ interface DropdownProps {
   isRowBold?: boolean
   type: 'one' | 'multiple' | 'arrow' | 'radio'
   divider?: boolean
+  hideScrollbar?: boolean
+  maxWordSize?: number
   className?: string
   onChooseOne?: (option: SelectOption, close?: boolean) => void
   onUnChooseOne?: (option: SelectOption, close?: boolean) => void
@@ -33,6 +35,8 @@ const Dropdown: FC<DropdownProps> = (props: DropdownProps) => {
     isRowBold,
     type,
     divider,
+    hideScrollbar,
+    maxWordSize = 22,
     className,
     onChooseOne,
     onUnChooseOne,
@@ -78,7 +82,7 @@ const Dropdown: FC<DropdownProps> = (props: DropdownProps) => {
   // RENDER
   return (
     <div className={dropdownClassName} ref={clickOutsideRef}>
-      <div className="max-h-96 overflow-y-auto py-2">
+      <div className={cx('max-h-96 overflow-y-auto py-2', { 'scrollbar-hide': hideScrollbar })}>
         {selectAllOption && type === 'multiple' && (
           <SelectAllDropdownRow
             onSelectAll={handleOnSelectAllRowClick}

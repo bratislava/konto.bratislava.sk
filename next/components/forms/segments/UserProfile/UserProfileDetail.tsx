@@ -1,8 +1,9 @@
 import { UserData } from '@utils/useAccount'
 import cx from 'classnames'
-import Alert from 'components/forms/Alert'
+import Alert from 'components/forms/info-components/Alert'
 import { useTranslation } from 'next-i18next'
-import { MutableRefObject, useId, useRef } from 'react'
+import { useId } from 'react'
+
 import UserProfileDetailEdit from './UserProfileDetailEdit'
 import UserProfileDetailsButtons from './UserProfileDetailsButtons'
 import UserProfileDetailView from './UserProfileDetailView'
@@ -63,11 +64,13 @@ const UserProfileDetail = (props: UserProfileDetailProps) => {
           />
         </UserProfileSectionHeader>
         <div className="flex flex-col">
+          {/* Alert only for alertType === error */}
           {isAlertOpened && (
             <div className="flex flex-row p-2">
               <Alert
                 className="max-w-none grow"
                 type={alertType}
+                solid
                 message={t(`profile_detail.${alertType}_alert`)}
               />
             </div>
@@ -75,7 +78,9 @@ const UserProfileDetail = (props: UserProfileDetailProps) => {
           <div
             className={cx('flex p-4 flex-col gap-8', 'md:p-8 md:flex-row md:gap-16 md:flex-wrap')}
           >
-            <UserProfilePhoto userData={userData ?? {}} />
+            <div className={cx({ 'hidden md:block': isEditing })}>
+              <UserProfilePhoto userData={userData ?? {}} />
+            </div>
             {isEditing ? (
               <UserProfileDetailEdit
                 formId={formId}

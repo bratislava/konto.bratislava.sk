@@ -2,14 +2,17 @@ import { formatUnicorn } from '@utils/string'
 import { AccountError, UserData } from '@utils/useAccount'
 import useHookForm from '@utils/useHookForm'
 import Alert from 'components/forms/info-components/Alert'
-import FieldErrorMessage from 'components/forms/info-components/FieldErrorMessage'
+import AccountMarkdown from 'components/forms/segments/AccountMarkdown/AccountMarkdown'
 import LoginAccountLink from 'components/forms/segments/LoginAccountLink/LoginAccountLink'
 import Button from 'components/forms/simple-components/Button'
 import SingleCheckbox from 'components/forms/widget-components/Checkbox/SingleCheckbox'
 import InputField from 'components/forms/widget-components/InputField/InputField'
 import PasswordField from 'components/forms/widget-components/PasswordField/PasswordField'
 import { useTranslation } from 'next-i18next'
+import { useState } from 'react'
 import { Controller } from 'react-hook-form'
+import Turnstile from 'react-turnstile'
+import { useCounter } from 'usehooks-ts'
 
 interface Data {
   email: string
@@ -17,8 +20,8 @@ interface Data {
   family_name: string
   password: string
   passwordConfirmation: string
-  gdprConfirmation: boolean
   marketingConfirmation: boolean
+  turnstileToken: string
 }
 
 interface Props {
@@ -26,6 +29,7 @@ interface Props {
     email: string,
     password: string,
     marketingConfirmation: boolean,
+    turnstileToken: string,
     userData: UserData,
   ) => Promise<any>
   error?: AccountError | null | undefined
@@ -65,13 +69,12 @@ const schema = {
       type: 'string',
       errorMessage: { const: 'account:password_confirmation_required' },
     },
-    gdprConfirmation: {
-      const: true,
-      type: 'boolean',
-      errorMessage: { const: 'account:gdpr_confirmation_required' },
-    },
     marketingConfirmation: {
       type: 'boolean',
+    },
+    turnstileToken: {
+      type: 'string',
+      minLength: 1,
     },
   },
   required: [
@@ -80,13 +83,14 @@ const schema = {
     'family_name',
     'password',
     'passwordConfirmation',
-    'gdprConfirmation',
     'marketingConfirmation',
+    'turnstileToken',
   ],
 }
 
 const RegisterForm = ({ onSubmit, error, lastEmail }: Props) => {
   const { t } = useTranslation('account')
+  const turnstileKeyCounter = useCounter()
   const {
     handleSubmit,
     control,
@@ -100,7 +104,6 @@ const RegisterForm = ({ onSubmit, error, lastEmail }: Props) => {
       given_name: '',
       password: '',
       passwordConfirmation: '',
-      gdprConfirmation: true,
       marketingConfirmation: false,
     },
   })
@@ -114,8 +117,15 @@ const RegisterForm = ({ onSubmit, error, lastEmail }: Props) => {
           given_name: data.given_name,
           family_name: data.family_name,
         }
-
-        return onSubmit(data.email, data.password, data.marketingConfirmation, userData)
+        // force turnstile rerender as it's always available just for a single request
+        turnstileKeyCounter.increment()
+        return onSubmit(
+          data.email,
+          data.password,
+          data.marketingConfirmation,
+          data.turnstileToken,
+          userData,
+        )
       })}
     >
       <h1 className="text-h2">{t('register_title')}</h1>
@@ -197,25 +207,6 @@ const RegisterForm = ({ onSubmit, error, lastEmail }: Props) => {
           />
         )}
       />
-      <div>
-        <Controller
-          name="gdprConfirmation"
-          control={control}
-          render={({ field }) => (
-            <SingleCheckbox
-              value="gdprConfirmation"
-              isSelected={field.value}
-              onChange={field.onChange}
-              required
-              fullWidth
-              error={errors.gdprConfirmation?.length > 0}
-            >
-              {t('gdpr_confirmation_label')}
-            </SingleCheckbox>
-          )}
-        />
-        <FieldErrorMessage errorMessage={errors.gdprConfirmation} />
-      </div>
       <Controller
         name="marketingConfirmation"
         control={control}
@@ -231,12 +222,32 @@ const RegisterForm = ({ onSubmit, error, lastEmail }: Props) => {
           </SingleCheckbox>
         )}
       />
+      <Controller
+        name="turnstileToken"
+        control={control}
+        render={({ field: { onChange } }) => (
+          <Turnstile
+            key={turnstileKeyCounter.count}
+            sitekey={process.env.NEXT_PUBLIC_CLOUDFLARE_TURNSTILE_SITE_KEY}
+            onVerify={(token) => onChange(token)}
+            onError={() => onChange(null)}
+            onTimeout={() => onChange(null)}
+            onExpire={() => onChange(null)}
+            className="mb-2"
+          />
+        )}
+      />
       <Button
         className="min-w-full"
         type="submit"
         text={t('register_submit')}
         variant="category"
         disabled={isSubmitting}
+      />
+      <AccountMarkdown
+        variant="sm"
+        className="pb-5 md:pb-6 border-b-2 border-gray-200 text-center px-0 md:px-16"
+        content={`${t('gdpr_details_link')}`}
       />
       <LoginAccountLink />
     </form>

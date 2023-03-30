@@ -9,6 +9,7 @@ import PageWrapper from 'components/layouts/PageWrapper'
 import { GetServerSidePropsContext } from 'next'
 import { useRouter } from 'next/router'
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
+import AccountPageLayout from 'components/layouts/AccountPageLayout'
 
 export const getServerSideProps = async (ctx: GetServerSidePropsContext) => {
   if (isProductionDeployment()) return { notFound: true }
@@ -73,14 +74,9 @@ const FormTestPage = ({ page, eform }: AsyncServerProps<typeof getServerSideProp
         { locale: 'en', slug: pageSlug },
       ]}
     >
-      <FormPageLayout navHidden>
-        <style
-          dangerouslySetInnerHTML={{
-            __html: pageStyle('main'),
-          }}
-        />
+      <AccountPageLayout hiddenHeaderNav>
         <GeneratedFormRJSF eform={eform} escapedSlug={escapedSlug} formSlug={formSlug} />
-      </FormPageLayout>
+      </AccountPageLayout>
     </PageWrapper>
   )
 }

@@ -8,9 +8,8 @@ import { ReactNode, useState } from 'react'
 
 const ThankYouSection = () => {
   const { t } = useTranslation('account')
-  const [isOn, setIsOn] = useState<'success' | 'error-1' | 'error-2' | 'error-3' | 'error-4'>(
-    'error-1',
-  )
+  const [isOn, setIsOn] =
+    useState<'success' | 'error-1' | 'error-2' | 'error-3' | 'error-4'>('error-1')
 
   const switcher = (): ReactNode => {
     const array: {
@@ -69,6 +68,8 @@ const ThankYouSection = () => {
             status="success"
             title={t('thank_you.success.title')}
             content={t('thank_you.success.content')}
+            firstButtonTitle={t('thank_you.success.button_to_formular_text')}
+            secondButtonTitle={t('thank_you.success.button_to_profil_text')}
           />
         )}
         {isOn === 'error-1' && (
@@ -76,6 +77,8 @@ const ThankYouSection = () => {
             status="error-1"
             title={t('thank_you.error.1.title')}
             content={t('thank_you.error.1.content')}
+            firstButtonTitle={t('thank_you.error.button_restart_text')}
+            secondButtonTitle={t('thank_you.error.button_cancel_text')}
           />
         )}
         {isOn === 'error-2' && (
@@ -83,6 +86,8 @@ const ThankYouSection = () => {
             status="error-2"
             title={t('thank_you.error.2.title')}
             content={t('thank_you.error.2.content')}
+            firstButtonTitle={t('thank_you.error.button_restart_text')}
+            secondButtonTitle={t('thank_you.error.button_cancel_text')}
           />
         )}
         {isOn === 'error-3' && (
@@ -90,6 +95,8 @@ const ThankYouSection = () => {
             status="error-3"
             title={t('thank_you.error.3.title')}
             content={t('thank_you.error.3.content')}
+            firstButtonTitle={t('thank_you.error.button_restart_text')}
+            secondButtonTitle={t('thank_you.error.button_cancel_text')}
           />
         )}
         {isOn === 'error-4' && (
@@ -97,25 +104,29 @@ const ThankYouSection = () => {
             status="error-4"
             title={t('thank_you.error.4.title')}
             content={t('thank_you.error.4.content')}
+            firstButtonTitle={t('thank_you.error.button_restart_text')}
+            secondButtonTitle={t('thank_you.error.button_cancel_text')}
           />
         )}
         <div className="max-w-[734px] lg:max-w-[800px] w-full mx-auto mt-0 md:mt-10 px-4 md:px-0">
           <span className="text-p2 flex">
             <AccountMarkdown
               variant="sm"
-              content={`<span className='text-p2'>V prípade akýchkoľvek otázok nás neváhajte kontaktovať na adrese:</span> <span className="text-p2-semibold underline">platbadane@bratislava.sk</span>`}
+              content={`<span className='text-p2'>${t(
+                'thank_you.subtitle_mail_platbadane',
+              )}</span>.`}
             />
           </span>
           <div className="flex flex-col gap-3 mt-4 md:mt-6">
             <Button
-              label="Často kladené otázky"
-              href="/account/i-have-a-problem"
+              label={t('thank_you.button_faq_text')}
+              href="https://www.bratislava.sk/mesto-bratislava/dane-a-poplatky/dan-z-nehnutelnosti/digitalna-platba"
               variant="link-black"
               size="sm"
             />
             <Button
-              label="Ochrana osobných údajov"
-              href="/ochrana-osobnych-udajov"
+              label={t('thank_you.button_privacy_text')}
+              href="https://bratislava.sk/ochrana-osobnych-udajov"
               variant="link-black"
               size="sm"
             />

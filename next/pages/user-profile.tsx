@@ -10,8 +10,6 @@ import AccountPageLayout from '../components/layouts/AccountPageLayout'
 import PageWrapper from '../components/layouts/PageWrapper'
 
 export const getServerSideProps = async (ctx: GetServerSidePropsContext) => {
-  if (isProductionDeployment()) return { notFound: true }
-
   const locale = ctx.locale ?? 'sk'
   return {
     props: {
@@ -24,6 +22,7 @@ export const getServerSideProps = async (ctx: GetServerSidePropsContext) => {
             locale: l,
           })),
       },
+      isProductionDeployment: isProductionDeployment(),
       ...(await serverSideTranslations(locale)),
     },
   }

@@ -1,5 +1,5 @@
 import ChevronRightIcon from '@assets/images/forms/chevron-right.svg'
-import FilledSelectedIcon from '@assets/images/forms/circle-filled-selected.svg'
+import FilledSelectedIcon from '@assets/images/new-icons/ui/check-mark.svg'
 import cx from 'classnames'
 import React from 'react'
 
@@ -13,6 +13,7 @@ interface DropdownRowProps {
   selected?: boolean
   type: 'one' | 'multiple' | 'arrow' | 'radio'
   divider?: boolean
+  maxWordSize?: number
   onChooseOne: (option: SelectOption, close?: boolean) => void
   onUnChooseOne: (option: SelectOption, close?: boolean) => void
   onChooseMulti: (option: SelectOption) => void
@@ -25,6 +26,7 @@ const DropdownRow = ({
   selected,
   type,
   divider,
+  maxWordSize,
   onChooseOne,
   onUnChooseOne,
   onChooseMulti,
@@ -63,10 +65,9 @@ const DropdownRow = ({
       <RadioButtonIcon selected={selected} />
     ) : null
 
-  const MAX_TEXT_SIZE = 18
   const optionText = option.title ?? String(option.const)
-  const transformedOptionText = `${optionText.slice(0, MAX_TEXT_SIZE)}${
-    optionText.length > MAX_TEXT_SIZE ? '...' : ''
+  const transformedOptionText = `${optionText.slice(0, maxWordSize)}${
+    optionText.length > maxWordSize ? '...' : ''
   }`
 
   // RENDER

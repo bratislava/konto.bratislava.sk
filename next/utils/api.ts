@@ -138,13 +138,24 @@ export const verifyIdentityApi = (data: Identity, token: string) => {
   )
 }
 
-interface Gdpr {
+export interface Gdpr {
   type: 'subscribe' | 'unsubscribe'
   category: 'SWIMMINGPOOLS' | 'TAXES' | 'CITY' | 'ESBS'
 }
 
 export const subscribeApi = (data: { gdprData?: Gdpr[] }, token: string) => {
   return fetchJsonApi(`${process.env.NEXT_PUBLIC_CITY_ACCOUNT_URL}/user/subscribe`, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      Authorization: `Bearer ${token}`,
+    },
+    body: JSON.stringify(data),
+  })
+}
+
+export const unsubscribeApi = (data: { gdprData?: Gdpr[] }, token: string) => {
+  return fetchJsonApi(`${process.env.NEXT_PUBLIC_CITY_ACCOUNT_URL}/user/unsubscribe`, {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',

@@ -12,30 +12,44 @@ import { readTextFile } from '@utils/file'
 import useSnackbar from '@utils/useSnackbar'
 import { AnySchemaObject, ErrorObject, FuncKeywordDefinition } from 'ajv'
 import { JSONSchema7, JSONSchema7Definition } from 'json-schema'
-import { get, merge } from 'lodash'
+import { cloneDeep, get, merge } from 'lodash'
 import { useTranslation } from 'next-i18next'
 import { ChangeEvent, RefObject, useEffect, useRef, useState } from 'react'
 
 import { StepData } from '../components/forms/types/TransformedFormData'
+
+export type JsonSchemaPropertyTree = JsonSchemaPropertyTreeInterface | undefined
+export interface JsonSchemaPropertyTreeInterface {
+  [key: string]: JsonSchemaPropertyTree
+}
 
 export type JsonSchema = JSONSchema7Definition
 interface JsonSchemaProperties {
   [key: string]: JSONSchema7Definition
 }
 
+export type JsonSchemaExtraProperty = JSONSchema7Definition & { isConditional?: boolean }
+export interface JsonSchemaExtraProperties {
+  [key: string]: JsonSchemaExtraProperty
+  isConditional?: boolean
+}
+
 export const getAllPossibleJsonSchemaProperties = (
-  jsonSchema: JsonSchema | undefined,
+  jsonSchema?: JsonSchema,
 ): JsonSchemaProperties => {
   if (!jsonSchema || jsonSchema === true) {
     return {}
   }
 
-  const properties: JsonSchemaProperties = jsonSchema.properties ?? {}
+  const properties: JsonSchemaProperties = {}
+  if (jsonSchema.properties) {
+    Object.assign(properties, { ...jsonSchema.properties })
+  }
 
-  if (jsonSchema.then) {
+  if (jsonSchema.if && jsonSchema.then) {
     Object.assign(properties, getAllPossibleJsonSchemaProperties(jsonSchema.then))
   }
-  if (jsonSchema.else) {
+  if (jsonSchema.if && jsonSchema.else) {
     Object.assign(properties, getAllPossibleJsonSchemaProperties(jsonSchema.else))
   }
   if (jsonSchema.allOf) {
@@ -55,6 +69,85 @@ export const getAllPossibleJsonSchemaProperties = (
   }
 
   return properties
+}
+
+export const getAllPossibleJsonSchemaExtraProperties = (
+  jsonSchema?: JsonSchema,
+  isConditional?: boolean,
+): JsonSchemaExtraProperties => {
+  // same function as getAllPossibleJsonSchemaProperties but I need extra info if property is conditional
+  // dont want to broke function getAllPossibleJsonSchemaProperties which is used on different places
+  // TODO: simplify it together with getAllPossibleJsonSchemaProperties and do CLEAN CODE
+  if (!jsonSchema || jsonSchema === true) {
+    return {}
+  }
+
+  const properties: JsonSchemaProperties = {}
+  if (jsonSchema.properties) {
+    const newProperties = {}
+    Object.entries(jsonSchema.properties).forEach(([key, value]) => {
+      const newValue = typeof value !== 'boolean' ? { ...value, isConditional } : value
+      Object.assign(newProperties, { [key]: newValue })
+    })
+    Object.assign(properties, newProperties)
+  }
+
+  if (jsonSchema.if && jsonSchema.then) {
+    Object.assign(properties, getAllPossibleJsonSchemaExtraProperties(jsonSchema.then, true))
+  }
+  if (jsonSchema.if && jsonSchema.else) {
+    Object.assign(properties, getAllPossibleJsonSchemaExtraProperties(jsonSchema.else, true))
+  }
+  if (jsonSchema.allOf) {
+    jsonSchema.allOf.forEach((s) => {
+      Object.assign(properties, getAllPossibleJsonSchemaExtraProperties(s, isConditional))
+    })
+  }
+  if (jsonSchema.oneOf) {
+    jsonSchema.oneOf.forEach((s) => {
+      Object.assign(properties, getAllPossibleJsonSchemaExtraProperties(s, isConditional))
+    })
+  }
+  if (jsonSchema.anyOf) {
+    jsonSchema.anyOf.forEach((s) => {
+      Object.assign(properties, getAllPossibleJsonSchemaExtraProperties(s, isConditional))
+    })
+  }
+
+  return properties
+}
+
+export const getJsonSchemaPropertyTree = (
+  jsonSchema: JsonSchema | undefined,
+): JsonSchemaPropertyTree => {
+  const properties = getAllPossibleJsonSchemaProperties(jsonSchema)
+  const propertiesEntries = Object.entries(properties)
+
+  if (propertiesEntries.length === 0) {
+    return undefined
+  }
+
+  const result = propertiesEntries.map(([key, value]: [string, JSONSchema7]) => {
+    return { [key]: getJsonSchemaPropertyTree(value) }
+  })
+
+  return Object.assign({}, ...result) as JsonSchemaPropertyTree
+}
+
+export const mergePropertyTreeToFormData = (formData: RJSFSchema, tree: JsonSchemaPropertyTree) => {
+  if (!tree || Array.isArray(formData)) return formData
+  const newFormData: RJSFSchema = formData ? { ...formData } : ({} as RJSFSchema)
+
+  Object.entries(tree).forEach(([key, value]: [string, JsonSchemaPropertyTree]) => {
+    if (key in newFormData) {
+      const merged = mergePropertyTreeToFormData(newFormData[key], value)
+      Object.assign(newFormData, { [key]: merged })
+    } else {
+      Object.assign(newFormData, { [key]: value })
+    }
+  })
+
+  return newFormData
 }
 
 const buildRJSFError = (path: string[], errorMsg: string | undefined): ErrorSchema => {
@@ -216,7 +309,7 @@ const validateRequiredFormat = (
 }
 
 const customValidate = (formData: RJSFSchema, errors: FormValidation, schema: StrictRJSFSchema) => {
-  validateRequiredFormat(formData, errors, schema)
+  // validateRequiredFormat(formData, errors, schema)
   validateDateFromToFormat(formData, errors, schema)
   validateTimeFromToFormat(formData, errors, schema)
   return errors
@@ -271,7 +364,7 @@ export const useFormStepper = (eformSlug: string, schema: RJSFSchema) => {
   const stepsLength: number = steps?.length ?? -1
   const isComplete = stepIndex === stepsLength
 
-  const currentSchema = steps ? (steps[stepIndex] as RJSFSchema) : {}
+  const currentSchema = steps ? (cloneDeep(steps[stepIndex]) as RJSFSchema) : {}
 
   useEffect(() => {
     // effect to reset all internal state when critical input 'props' change
@@ -375,7 +468,9 @@ export const useFormStepper = (eformSlug: string, schema: RJSFSchema) => {
 
   const setStepFormData = (stepFormData: RJSFSchema) => {
     // transformNullToUndefined(stepFormData)
-    setFormData({ ...formData, ...stepFormData })
+    const tree = getJsonSchemaPropertyTree(currentSchema)
+    const fullStepFormData = mergePropertyTreeToFormData(stepFormData, tree)
+    setFormData({ ...formData, ...fullStepFormData })
   }
 
   const [openSnackbarError] = useSnackbar({ variant: 'error' })

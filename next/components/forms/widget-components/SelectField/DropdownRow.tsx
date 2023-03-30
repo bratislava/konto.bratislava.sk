@@ -58,9 +58,9 @@ const DropdownRow = ({
     type === 'multiple' ? (
       <CheckboxIcon checked={selected} />
     ) : type === 'one' && selected ? (
-      <FilledSelectedIcon />
+      <FilledSelectedIcon className="w-6 h-6" />
     ) : type === 'arrow' ? (
-      <ChevronRightIcon />
+      <ChevronRightIcon className="w-6 h-6" />
     ) : type === 'radio' ? (
       <RadioButtonIcon selected={selected} />
     ) : null

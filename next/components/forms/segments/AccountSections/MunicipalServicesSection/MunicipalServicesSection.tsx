@@ -111,7 +111,7 @@ const MunicipalServicesSection = () => {
       buttonText: t('account_section_services.cards.3.buttonText'),
       icon: <ParkingIcon className="w-10 h-10 lg:w-12 lg:h-12 text-transport-700" />,
       category: [PARKING_CATEGORY],
-      href: 'https://paas.sk/',
+      href: 'https://paas.sk/formular/',
     },
     {
       title: t('account_section_services.cards.4.title'),
@@ -119,7 +119,7 @@ const MunicipalServicesSection = () => {
       buttonText: t('account_section_services.cards.4.buttonText'),
       icon: <ParkingIcon className="w-10 h-10 lg:w-12 lg:h-12 text-transport-700" />,
       category: [PARKING_CATEGORY],
-      href: 'https://api.parkdots.com/auth/realms/parkingrealm/protocol/openid-connect/registrations?client_id=parkingclient&redirect_uri=https%3A%2F%2Fpermits.parkdots.com%2Fwizard%2Fuser%3FprojectId%3D08b21098-3df8-4a0f-9e5c-75a21711aef7&state=f7127136-6bbf-4325-b603-5623cd086c3f&response_mode=fragment&response_type=code&scope=openid&nonce=33fa1798-098a-4ed6-89d8-7dc464bf5e30&kc_locale=sk',
+      href: 'https://paas.sk/',
     },
     {
       title: t('account_section_services.cards.5.title'),

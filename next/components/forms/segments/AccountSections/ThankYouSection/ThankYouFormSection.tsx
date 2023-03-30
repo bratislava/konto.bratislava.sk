@@ -21,19 +21,19 @@ const ThankYouFormSection = () => {
           <span className="text-p2 flex">
             <AccountMarkdown
               variant="sm"
-              content={`<span className='text-p2'>V prípade akýchkoľvek otázok nás neváhajte kontaktovať na adrese:</span> <span className="text-p2-semibold underline">info@bratislava.sk</span>`}
+              content={`<span className='text-p2'>${t('thank_you.subtitle_mail_info')}</span>.`}
             />
           </span>
           <div className="flex flex-col gap-3 mt-4 md:mt-6">
             <Button
-              label="Často kladené otázky"
+              label={t('thank_you.button_faq_text')}
               href="/i-have-a-problem"
               variant="link-black"
               size="sm"
             />
             <Button
-              label="Ochrana osobných údajov"
-              href="/ochrana-osobnych-udajov"
+              label={t('thank_you.button_privacy_text')}
+              href="https://bratislava.sk/ochrana-osobnych-udajov"
               variant="link-black"
               size="sm"
             />

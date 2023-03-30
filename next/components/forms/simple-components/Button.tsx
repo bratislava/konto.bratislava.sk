@@ -29,6 +29,7 @@ type ButtonBase = {
   hrefIconHidden?: boolean
   fullWidth?: boolean
   form?: string
+  hrefTarget?: '_blank' | '_self' | '_parent' | '_top'
 }
 
 export type ButtonProps = Omit<AriaButtonProps<'button'>, keyof LinkButtonProps> &
@@ -67,6 +68,7 @@ const Button = forwardRef<HTMLAnchorElement | HTMLButtonElement, PolymorphicProp
       fullWidth,
       form,
       loading,
+      hrefTarget,
       ...rest
     },
     ref,
@@ -232,6 +234,7 @@ const Button = forwardRef<HTMLAnchorElement | HTMLButtonElement, PolymorphicProp
       const buttonPropsFixed = { ...buttonProps, role: undefined }
       return (
         <MLink
+          target={hrefTarget}
           href={rest.href}
           label={rest.label}
           ref={ref as RefObject<HTMLAnchorElement>}

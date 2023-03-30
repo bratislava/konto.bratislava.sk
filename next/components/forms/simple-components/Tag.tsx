@@ -1,4 +1,4 @@
-import CloseIcon from '@assets/images/close.svg'
+import CloseIcon from '@assets/images/new-icons/ui/cross.svg'
 import cx from 'classnames'
 import { FC, useState } from 'react'
 
@@ -17,7 +17,7 @@ const Tag: FC<TagProps> = ({ text, removable, size, branded, shorthand, onRemove
 
   // STYLES
   const classStyles = cx(
-    'tag align-items-center min-w-14 h-5 inline-block px-2 gap-2.5 text-center',
+    'tag align-items-center min-w-14 flex items-center h-5 inline-block px-2 gap-2.5 text-center',
     {
       'text-16': size === 'large',
       'text-p3': size === 'small' || !size,

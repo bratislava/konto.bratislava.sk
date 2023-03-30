@@ -1,4 +1,4 @@
-import ArrowRightIcon from '@assets/images/forms/arrow-right.svg'
+import ArrowRightIcon from '@assets/images/new-icons/ui/arrow-right.svg'
 import { ROUTES } from '@utils/constants'
 import { formatUnicorn } from '@utils/string'
 import { AccountError } from '@utils/useAccount'
@@ -82,6 +82,7 @@ const IdentityVerificationForm = ({ onSubmit, error }: Props) => {
             label={t('rc_label')}
             placeholder={t('rc_placeholder')}
             tooltip={t('rc_tooltip')}
+            tooltipPosition="bottom-left"
             {...field}
             errorMessage={errors.rc}
           />
@@ -97,6 +98,7 @@ const IdentityVerificationForm = ({ onSubmit, error }: Props) => {
             placeholder={t('id_card_placeholder')}
             helptext={t('id_card_description')}
             tooltip={t('id_card_tooltip')}
+            tooltipPosition="bottom-left"
             {...field}
             errorMessage={errors.idCard}
           />

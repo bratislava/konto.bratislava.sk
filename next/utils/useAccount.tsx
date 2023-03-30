@@ -1,10 +1,12 @@
 import { subscribeApi, verifyIdentityApi } from '@utils/api'
+import useSnackbar from '@utils/useSnackbar'
 import {
   AuthenticationDetails,
   CognitoUser,
   CognitoUserAttribute,
   CognitoUserPool,
   CognitoUserSession,
+  CookieStorage,
   IAuthenticationDetailsData,
 } from 'amazon-cognito-identity-js'
 import * as AWS from 'aws-sdk/global'
@@ -12,6 +14,7 @@ import { AWSError } from 'aws-sdk/global'
 import { useStatusBarContext } from 'components/forms/info-components/StatusBar'
 import AccountMarkdown from 'components/forms/segments/AccountMarkdown/AccountMarkdown'
 import { useTranslation } from 'next-i18next'
+import { useRouter } from 'next/router'
 import React, { ReactNode, useCallback, useContext, useEffect, useState } from 'react'
 import { useInterval } from 'usehooks-ts'
 
@@ -73,6 +76,9 @@ const updatableAttributes = new Set([
 const poolData = {
   UserPoolId: process.env.NEXT_PUBLIC_COGNITO_USER_POOL_ID || '',
   ClientId: process.env.NEXT_PUBLIC_COGNITO_CLIENT_ID || '',
+  Storage: new CookieStorage({
+    domain: process.env.NEXT_PUBLIC_COGNITO_COOKIE_STORAGE_DOMAIN,
+  }),
 }
 const userPool = new CognitoUserPool(poolData)
 
@@ -192,6 +198,9 @@ export const AccountProvider = ({ children }: { children: ReactNode }) => {
     const cognitoUser = new CognitoUser({
       Username: lastCredentials?.Username,
       Pool: userPool,
+      Storage: new CookieStorage({
+        domain: process.env.NEXT_PUBLIC_COGNITO_COOKIE_STORAGE_DOMAIN,
+      }),
     })
 
     return new Promise((resolve) => {
@@ -213,6 +222,9 @@ export const AccountProvider = ({ children }: { children: ReactNode }) => {
     const cognitoUser = new CognitoUser({
       Username: lastCredentials.Username,
       Pool: userPool,
+      Storage: new CookieStorage({
+        domain: process.env.NEXT_PUBLIC_COGNITO_COOKIE_STORAGE_DOMAIN,
+      }),
     })
 
     setError(null)
@@ -286,7 +298,7 @@ export const AccountProvider = ({ children }: { children: ReactNode }) => {
     try {
       setError(null)
       await verifyIdentityApi(
-        { birthNumber: rc.replace('/', ''), identityCard: idCard, turnstileToken },
+        { birthNumber: rc.replace('/', ''), identityCard: idCard.toUpperCase(), turnstileToken },
         accessToken,
       )
       // not refreshing user status immediately, instead leaving this to the registration flow
@@ -300,6 +312,7 @@ export const AccountProvider = ({ children }: { children: ReactNode }) => {
     }
   }
 
+  const [openSnackbarSuccess] = useSnackbar({ variant: 'success' })
   const refreshUserData = useCallback(async () => {
     const cognitoUser = userPool.getCurrentUser()
     if (cognitoUser !== null) {
@@ -319,7 +332,15 @@ export const AccountProvider = ({ children }: { children: ReactNode }) => {
           }
 
           const userData = userAttributesToObject(attributes)
-          setStatus(mapTierToStatus(userData.tier))
+          const newStatus = mapTierToStatus(userData.tier)
+          if (
+            status === AccountStatus.IdentityVerificationPending &&
+            newStatus === AccountStatus.IdentityVerificationSuccess
+          ) {
+            openSnackbarSuccess(t('account:identity_verification_success'))
+          }
+
+          setStatus(newStatus)
           setUserData(userData)
           setUser(cognitoUser)
         })
@@ -327,10 +348,10 @@ export const AccountProvider = ({ children }: { children: ReactNode }) => {
     } else {
       setUser(null)
     }
-  }, [])
+  }, [status])
 
   useEffect(() => {
-    refreshUserData().catch((err) => console.error(err))
+    refreshUserData().catch((error_) => console.error(error_))
   }, [refreshUserData])
 
   const logout = () => {
@@ -406,6 +427,9 @@ export const AccountProvider = ({ children }: { children: ReactNode }) => {
     const cognitoUser = new CognitoUser({
       Username: lastCredentials.Username,
       Pool: userPool,
+      Storage: new CookieStorage({
+        domain: process.env.NEXT_PUBLIC_COGNITO_COOKIE_STORAGE_DOMAIN,
+      }),
     })
 
     return new Promise((resolve) => {
@@ -426,6 +450,9 @@ export const AccountProvider = ({ children }: { children: ReactNode }) => {
     const cognitoUser = new CognitoUser({
       Username: email || lastCredentials.Username,
       Pool: userPool,
+      Storage: new CookieStorage({
+        domain: process.env.NEXT_PUBLIC_COGNITO_COOKIE_STORAGE_DOMAIN,
+      }),
     })
 
     if (email) {
@@ -462,6 +489,9 @@ export const AccountProvider = ({ children }: { children: ReactNode }) => {
     const cognitoUser = new CognitoUser({
       Username: email,
       Pool: userPool,
+      Storage: new CookieStorage({
+        domain: process.env.NEXT_PUBLIC_COGNITO_COOKIE_STORAGE_DOMAIN,
+      }),
     })
 
     setLastCredentials(credentials)
@@ -549,7 +579,7 @@ export const AccountProvider = ({ children }: { children: ReactNode }) => {
 
   useInterval(
     () => {
-      refreshUserData().catch((err) => console.error(err))
+      refreshUserData().catch((error_) => console.error(error_))
     },
     status === AccountStatus.IdentityVerificationPending ? 5000 : null,
   )
@@ -585,6 +615,11 @@ export const AccountProvider = ({ children }: { children: ReactNode }) => {
       setStatusBarContent('')
     }
   }, [setStatusBarContent, status, t])
+
+  const router = useRouter()
+  useEffect(() => {
+    setError(null)
+  }, [router.pathname])
 
   const resetError = () => {
     setError(null)

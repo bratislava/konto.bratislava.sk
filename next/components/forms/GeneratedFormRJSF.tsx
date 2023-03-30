@@ -62,7 +62,7 @@ const GeneratedFormRJSF = ({ eform, escapedSlug, formSlug, wrapperClassName }: F
           }}
         />
       </div>
-      <div className={cx('grow')}>
+      <div className={cx('grow px-4', 'lg:px-0')}>
         {form.isComplete ? (
           <FinalStep
             formData={form.formData}

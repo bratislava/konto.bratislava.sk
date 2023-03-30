@@ -5,8 +5,8 @@ import {
   CognitoUser,
   CognitoUserAttribute,
   CognitoUserPool,
-  CookieStorage,
   CognitoUserSession,
+  CookieStorage,
   IAuthenticationDetailsData,
 } from 'amazon-cognito-identity-js'
 import * as AWS from 'aws-sdk/global'
@@ -298,7 +298,7 @@ export const AccountProvider = ({ children }: { children: ReactNode }) => {
     try {
       setError(null)
       await verifyIdentityApi(
-        { birthNumber: rc.replace('/', ''), identityCard: idCard, turnstileToken },
+        { birthNumber: rc.replace('/', ''), identityCard: idCard.toUpperCase(), turnstileToken },
         accessToken,
       )
       // not refreshing user status immediately, instead leaving this to the registration flow

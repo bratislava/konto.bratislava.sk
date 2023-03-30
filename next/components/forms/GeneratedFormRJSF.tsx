@@ -74,29 +74,32 @@ const GeneratedFormRJSF = ({ eform, escapedSlug, formSlug, wrapperClassName }: F
             submitMessage={submitter.successMessage}
           />
         ) : (
-          <ThemedForm
-            key={`form-${escapedSlug}-step-${form.stepIndex}`}
-            ref={form.formRef}
-            schema={form.currentSchema}
-            uiSchema={eform.uiSchema}
-            formData={form.formData}
-            validator={form.validator}
-            customValidate={(formData: RJSFSchema, errors: FormValidation) => {
-              return form.customValidate(formData, errors, form.currentSchema)
-            }}
-            onSubmit={(e) => {
-              form.handleOnSubmit(e.formData)
-            }}
-            onChange={(e) => {
-              console.log(e)
-              form.setStepFormData(e.formData)
-            }}
-            onError={form.handleOnErrors}
-            extraErrors={form.extraErrors}
-            showErrorList={false}
-            omitExtraData
-            liveOmit
-          />
+          <>
+            <h1 className="text-h1-medium font-semibold">{form.stepTitle}</h1>
+            <ThemedForm
+              className="[&_legend]:hidden"
+              key={`form-${escapedSlug}-step-${form.stepIndex}`}
+              ref={form.formRef}
+              schema={form.currentSchema}
+              uiSchema={eform.uiSchema}
+              formData={form.formData}
+              validator={form.validator}
+              customValidate={(formData: RJSFSchema, errors: FormValidation) => {
+                return form.customValidate(formData, errors, form.currentSchema)
+              }}
+              onSubmit={(e) => {
+                form.handleOnSubmit(e.formData)
+              }}
+              onChange={(e) => {
+                form.setStepFormData(e.formData)
+              }}
+              onError={form.handleOnErrors}
+              extraErrors={form.extraErrors}
+              showErrorList={false}
+              omitExtraData
+              liveOmit
+            />
+          </>
         )}
         <StepButtonGroup
           stepIndex={form.stepIndex}

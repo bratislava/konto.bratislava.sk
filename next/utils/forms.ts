@@ -531,6 +531,7 @@ export const useFormStepper = (eformSlug: string, schema: RJSFSchema) => {
     stepIndex,
     setStepIndex, // only for testing!
     formData,
+    stepTitle: stepData[stepIndex].title || stepData[stepIndex].stepKey || '',
     setStepFormData,
     errors,
     extraErrors,

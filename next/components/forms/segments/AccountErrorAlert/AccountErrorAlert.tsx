@@ -1,6 +1,7 @@
 import { Args, formatUnicorn } from '@utils/string'
 import { AccountError } from '@utils/useAccount'
 import Alert from 'components/forms/info-components/Alert'
+import AccountMarkdown from 'components/forms/segments/AccountMarkdown/AccountMarkdown'
 import { useTranslation } from 'next-i18next'
 
 interface Props {
@@ -21,7 +22,13 @@ const AccountErrorAlert = ({ error, close, solid, args = {} }: Props) => {
     ? formatUnicorn(t(`account:errors.${error.code}`), args)
     : t(`account:errors.unknown`)
   return (
-    <Alert message={errorMessage} type="error" className="min-w-full" close={close} solid={solid} />
+    <Alert
+      message={<AccountMarkdown content={errorMessage} variant="sm" />}
+      type="error"
+      className="min-w-full"
+      close={close}
+      solid={solid}
+    />
   )
 }
 

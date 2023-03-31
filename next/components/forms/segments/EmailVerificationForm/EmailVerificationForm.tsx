@@ -87,6 +87,7 @@ const EmailVerificationForm = ({ onSubmit, error, onResend, lastEmail, cntDisabl
         render={({ field }) => (
           <InputField
             required
+            autoComplete="off"
             label={t('verification_code_label')}
             placeholder={t('verification_code_placeholder')}
             {...field}

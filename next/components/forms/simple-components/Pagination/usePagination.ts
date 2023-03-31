@@ -128,6 +128,7 @@ export default function usePagination(props: {
       ? {
           onPress: (event: PressEvent) => {
             handlePress(event, item)
+            window?.scrollTo({ top: 0 })
           },
           type: 'page',
           page: item,

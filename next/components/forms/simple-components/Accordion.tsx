@@ -101,7 +101,7 @@ const Accordion = ({
                 'lg:min-w-[32px] lg:w-8 lg:h-8 w-6 h-6 min-w-[24px]': accordionSize === 'md',
                 'w-6 h-6 min-w-[24px]': accordionSize === 'sm' || accordionSize === 'xs',
                 'transform rotate-180': isActive,
-                'transform rotate-270 md:rotate-0': !isActive,
+                'transform rotate-0': !isActive,
               })}
             />
           </div>

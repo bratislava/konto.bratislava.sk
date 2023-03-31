@@ -1,6 +1,7 @@
 import HiddenIcon from '@assets/images/new-icons/ui/eye.svg'
 import InputField from 'components/forms/widget-components/InputField/InputField'
-import { forwardRef, useState } from 'react'
+import { forwardRef, RefObject, useRef, useState } from 'react'
+import { useButton } from 'react-aria'
 
 import { ExplicitOptionalType } from '../../types/ExplicitOptional'
 
@@ -39,6 +40,21 @@ const PasswordField = forwardRef<HTMLInputElement, Props>(
     ref,
   ) => {
     const [type, setType] = useState<'password' | 'text'>('password')
+    const buttonRef = useRef<HTMLButtonElement>(null)
+
+    const { buttonProps } = useButton(
+      {
+        elementType: 'button',
+        isDisabled: disabled,
+        onPressStart() {
+          setType('text')
+        },
+        onPressEnd() {
+          setType('password')
+        },
+      },
+      buttonRef as RefObject<HTMLButtonElement>,
+    )
 
     return (
       <InputField
@@ -59,10 +75,9 @@ const PasswordField = forwardRef<HTMLInputElement, Props>(
         endIcon={
           <button
             type="button"
-            tabIndex={0}
+            ref={buttonRef as RefObject<HTMLButtonElement>}
             className="flex items-center justify-center absolute inset-y-1/2 right-3 sm:right-4 h-6 w-6 -translate-y-2/4 cursor-pointer"
-            onPointerUp={() => setType('password')}
-            onPointerDown={() => setType('text')}
+            {...buttonProps}
           >
             <HiddenIcon />
           </button>

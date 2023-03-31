@@ -1,6 +1,7 @@
 {
   "errors": {
     "unknown": "An unknown error occurred - please try again later.",
+    "Bad Request": "Bad Request",
     "NotAuthorizedException": "Unauthorized",
     "CodeMismatchException": "Code {verificationCode} could not be verified.",
     "LimitExceededException": "Attempt limit exceeded, please try after some time.",
@@ -109,6 +110,7 @@
   "id_card_description": "",
   "id_card_tooltip": "",
   "id_card_required": "ID card number is required",
+  "id_card_format": "ID card is not valid",
   "identity_verification_submit": "Verify",
   "identity_verification_success_title": "Verification successful",
   "identity_verification_success_description": "",

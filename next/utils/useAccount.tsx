@@ -17,7 +17,7 @@ import { useTranslation } from 'next-i18next'
 import { useRouter } from 'next/router'
 import React, { ReactNode, useCallback, useContext, useEffect, useState } from 'react'
 import { useInterval } from 'usehooks-ts'
-import logger from './logger'
+import logger, { faro } from './logger'
 
 export enum AccountStatus {
   Idle,
@@ -577,6 +577,7 @@ export const AccountProvider = ({ children }: { children: ReactNode }) => {
 
   // map tier to status, TODO think about dropping global status and using only tier
   useEffect(() => {
+    faro.api.setUser(userData)
     // TODO these serve to guide users through multiple steps and should be dismissed only by them - don't update status automatically when here
     const tempStatuses = [
       AccountStatus.NewPasswordSuccess,
@@ -585,6 +586,7 @@ export const AccountProvider = ({ children }: { children: ReactNode }) => {
       AccountStatus.EmailVerificationRequired,
     ]
     if (tempStatuses.includes(status)) {
+      logger.trace('Account status changed - temp registration status', { status })
       return
     }
 
@@ -595,7 +597,10 @@ export const AccountProvider = ({ children }: { children: ReactNode }) => {
     ) {
       openSnackbarSuccess(t('account:identity_verification_success'))
     }
-    setStatus(newStatus)
+    if (newStatus !== status) {
+      logger.trace('Account status changed', { oldStatus: status, newStatus })
+      setStatus(newStatus)
+    }
   }, [openSnackbarSuccess, status, t, userData])
 
   useEffect(() => {

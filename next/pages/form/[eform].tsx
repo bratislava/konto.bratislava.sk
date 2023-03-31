@@ -10,6 +10,7 @@ import { GetServerSidePropsContext } from 'next'
 import { useRouter } from 'next/router'
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
 import AccountPageLayout from 'components/layouts/AccountPageLayout'
+import logger from '@utils/logger'
 
 export const getServerSideProps = async (ctx: GetServerSidePropsContext) => {
   if (isProductionDeployment()) return { notFound: true }
@@ -18,7 +19,7 @@ export const getServerSideProps = async (ctx: GetServerSidePropsContext) => {
   try {
     eform = getEform(ctx.query.eform)
   } catch (error) {
-    console.error(error)
+    logger.error(error)
     return { notFound: true }
   }
 

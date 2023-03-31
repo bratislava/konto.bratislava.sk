@@ -17,6 +17,7 @@ import { useTranslation } from 'next-i18next'
 import { useRouter } from 'next/router'
 import React, { ReactNode, useCallback, useContext, useEffect, useState } from 'react'
 import { useInterval } from 'usehooks-ts'
+import logger, { faro } from './logger'
 
 export enum AccountStatus {
   Idle,
@@ -190,7 +191,7 @@ export const AccountProvider = ({ children }: { children: ReactNode }) => {
       // the default behaviour when no channels are selected is to subscribe to everything
       await subscribeApi({}, token)
     } catch (error) {
-      console.error(error)
+      logger.error(error)
     }
   }
 
@@ -318,7 +319,7 @@ export const AccountProvider = ({ children }: { children: ReactNode }) => {
     if (cognitoUser !== null) {
       cognitoUser.getSession((err: Error | null, result: CognitoUserSession | null) => {
         if (err) {
-          console.error(err)
+          logger.error(err)
           setUser(null)
           return
         }
@@ -326,7 +327,7 @@ export const AccountProvider = ({ children }: { children: ReactNode }) => {
         // NOTE: getSession must be called to authenticate user before calling getUserAttributes
         cognitoUser.getUserAttributes((err?: Error, attributes?: CognitoUserAttribute[]) => {
           if (err) {
-            console.error(err)
+            logger.error(err)
             setUser(null)
             return
           }
@@ -342,7 +343,7 @@ export const AccountProvider = ({ children }: { children: ReactNode }) => {
   }, [])
 
   useEffect(() => {
-    refreshUserData().catch((error_) => console.error(error_))
+    refreshUserData().catch((error) => logger.error(error))
   }, [refreshUserData])
 
   const logout = () => {
@@ -453,7 +454,6 @@ export const AccountProvider = ({ children }: { children: ReactNode }) => {
     return new Promise((resolve) => {
       cognitoUser.forgotPassword({
         onSuccess: (data) => {
-          console.log(data)
           // successfully initiated reset password request
           setStatus(AccountStatus.NewPasswordRequired)
           resolve(true)
@@ -505,7 +505,7 @@ export const AccountProvider = ({ children }: { children: ReactNode }) => {
 
           cognitoUser.getUserAttributes((err?: Error, attributes?: CognitoUserAttribute[]) => {
             if (err) {
-              console.error(err)
+              logger.error(err)
               resolve(false)
             } else {
               const userData = userAttributesToObject(attributes)
@@ -520,7 +520,7 @@ export const AccountProvider = ({ children }: { children: ReactNode }) => {
               // refreshes credentials using AWS.CognitoIdentity.getCredentialsForIdentity()
               awsCredentials.refresh((err?: AWSError) => {
                 if (err) {
-                  console.error(err)
+                  logger.error(err)
                   resolve(false)
                 } else {
                   resolve(true)
@@ -540,28 +540,28 @@ export const AccountProvider = ({ children }: { children: ReactNode }) => {
         },
 
         newPasswordRequired: (userAttributes, requiredAttributes) => {
-          console.log('newPasswordRequired', userAttributes, requiredAttributes)
+          logger.warn('newPasswordRequired', userAttributes, requiredAttributes)
           resolve(false)
         },
         mfaRequired: (challengeName, challengeParameters) => {
-          console.log('mfaRequired', challengeName, challengeParameters)
+          logger.warn('mfaRequired', challengeName, challengeParameters)
           resolve(false)
         },
         totpRequired: (challengeName, challengeParameters) => {
-          console.log('totpRequired', challengeName, challengeParameters)
+          logger.warn('totpRequired', challengeName, challengeParameters)
           resolve(false)
         },
         customChallenge: (challengeParameters) => {
           const challengeName = 'challenge-answer'
-          console.log('customChallenge', challengeName, challengeParameters)
+          logger.warn('customChallenge', challengeName, challengeParameters)
           resolve(false)
         },
         mfaSetup: (challengeName, challengeParameters) => {
-          console.log('mfaSetup', challengeName, challengeParameters)
+          logger.warn('mfaSetup', challengeName, challengeParameters)
           resolve(false)
         },
         selectMFAType: (challengeName, challengeParameters) => {
-          console.log('selectmfatype', challengeName, challengeParameters)
+          logger.warn('selectmfatype', challengeName, challengeParameters)
           resolve(false)
         },
       })
@@ -570,13 +570,14 @@ export const AccountProvider = ({ children }: { children: ReactNode }) => {
 
   useInterval(
     () => {
-      refreshUserData().catch((error_) => console.error(error_))
+      refreshUserData().catch((error) => logger.error(error))
     },
     status === AccountStatus.IdentityVerificationPending ? 5000 : null,
   )
 
   // map tier to status, TODO think about dropping global status and using only tier
   useEffect(() => {
+    faro.api.setUser(userData)
     // TODO these serve to guide users through multiple steps and should be dismissed only by them - don't update status automatically when here
     const tempStatuses = [
       AccountStatus.NewPasswordSuccess,
@@ -585,6 +586,7 @@ export const AccountProvider = ({ children }: { children: ReactNode }) => {
       AccountStatus.EmailVerificationRequired,
     ]
     if (tempStatuses.includes(status)) {
+      logger.trace('Account status changed - temp registration status', { status })
       return
     }
 
@@ -595,7 +597,10 @@ export const AccountProvider = ({ children }: { children: ReactNode }) => {
     ) {
       openSnackbarSuccess(t('account:identity_verification_success'))
     }
-    setStatus(newStatus)
+    if (newStatus !== status) {
+      logger.trace('Account status changed', { oldStatus: status, newStatus })
+      setStatus(newStatus)
+    }
   }, [openSnackbarSuccess, status, t, userData])
 
   useEffect(() => {

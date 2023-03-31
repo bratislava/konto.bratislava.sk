@@ -443,10 +443,9 @@
     "modal_message": "If you would like to change the e-mail you use to log in to your account and to which we send you all information regarding your account, please contact us at <a href='mailto:info@bratislava.sk'>info@bratislava.sk</a>.",
     "modal_thanks": "Thank you!"
   },
-  "adding_phone_number": {
+  "adding_phone_number_modal": {
     "title": "Adding a phone number",
-    "description": "Would you like us to communicate with you via SMS in rare cases? Leave us your phone number and we will remind you, for example, of the approaching tax due date via SMS.\n\nYou can add a phone number to your profile at any time.\n\n",
-    "phoneNumber_not_required": "*Failure to provide a phone number does not affect the use of services in the Bratislava account."
+    "description": "Prajete si, aby sme s vami v ojedinelých prípadoch komunikovali aj prostredníctvom SMS? Zanechajte nám vaše telefónne číslo a my vám pripomenieme, napríklad, blížiaci sa termín splatnosti dane aj cez SMS.\n\nTelefónne číslo môžete kedykoľvek doplniť do profilu. Neposkytnutie telefónneho čísla nemá vplyv na využívanie služieb v Bratislavskom konte."
   },
   "pay_tax": "To pay tax",
   "to_pay": "To pay",

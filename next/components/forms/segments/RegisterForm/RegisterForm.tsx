@@ -192,6 +192,7 @@ const RegisterForm = ({ onSubmit, error, lastEmail }: Props) => {
         render={({ field }) => (
           <PasswordField
             required
+            autoComplete="new-password"
             label={t('password_confirmation_label')}
             placeholder={t('password_confirmation_placeholder')}
             {...field}

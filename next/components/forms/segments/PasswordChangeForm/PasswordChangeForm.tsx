@@ -83,6 +83,7 @@ const PasswordChangeForm = ({ onSubmit, error }: Props) => {
         render={({ field }) => (
           <PasswordField
             required
+            autoComplete="new-password"
             label={t('new_password_label')}
             placeholder={t('new_password_placeholder')}
             tooltip={t('password_description')}
@@ -97,6 +98,7 @@ const PasswordChangeForm = ({ onSubmit, error }: Props) => {
         render={({ field }) => (
           <PasswordField
             required
+            autoComplete="new-password"
             label={t('new_password_confirmation_label')}
             placeholder={t('new_password_confirmation_placeholder')}
             {...field}

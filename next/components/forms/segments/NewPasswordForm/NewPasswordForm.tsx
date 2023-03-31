@@ -106,6 +106,7 @@ const NewPasswordForm = ({ onSubmit, error, onResend, lastEmail, fromMigration }
         render={({ field }) => (
           <InputField
             required
+            autoComplete="off"
             label={t('verification_code_label')}
             placeholder={t('verification_code_placeholder')}
             {...field}
@@ -119,6 +120,7 @@ const NewPasswordForm = ({ onSubmit, error, onResend, lastEmail, fromMigration }
         render={({ field }) => (
           <PasswordField
             required
+            autoComplete="new-password"
             label={t(fromMigration ? 'password_label' : 'new_password_label')}
             placeholder={t(fromMigration ? 'password_placeholder' : 'new_password_placeholder')}
             tooltip={t('password_description')}
@@ -133,6 +135,7 @@ const NewPasswordForm = ({ onSubmit, error, onResend, lastEmail, fromMigration }
         render={({ field }) => (
           <PasswordField
             required
+            autoComplete="new-password"
             label={t(
               fromMigration ? 'password_confirmation_label' : 'new_password_confirmation_label',
             )}

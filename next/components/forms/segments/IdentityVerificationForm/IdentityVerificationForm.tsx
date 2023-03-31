@@ -35,7 +35,8 @@ const schema = {
     idCard: {
       type: 'string',
       minLength: 1,
-      errorMessage: { minLength: 'account:id_card_required' },
+      format: 'idCard',
+      errorMessage: { minLength: 'account:id_card_required', format: 'account:id_card_format' },
     },
     turnstileToken: {
       type: 'string',

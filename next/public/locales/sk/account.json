@@ -307,7 +307,7 @@
       },
       "32": {
         "title": "Online lístky na kúpaliská",
-        "description": "Moťnosť kúpiť si online lístok alebo permanentku na všetky mestské kúpalíská v Bratislave pribudne do Bratislavského konta už v júni.",
+        "description": "Možnosť kúpiť si online lístok alebo permanentku na všetky mestské kúpalíská v Bratislave pribudne do Bratislavského konta už v júni.",
         "tag": "Pribudne čoskoro"
       }
     }
@@ -338,7 +338,7 @@
       },
       "2": {
         "question": "Prečo si založiť konto?",
-        "answer": "Bratislavské konto je rýchly, jednoduchý a efektívny nástroj ako komunikovať s magistrátom. Založte si Bratislavské konto, aby ste mohli podávať žiadosti digitálne, nemuseli chodiť na úrad fyzicky, videli aktuálny stav žiadostí cez nástroj sledovania podania a mali prehľad o všetkých povinnostiach, ktoré voči mestu máte (napr. platba daní).<br /><br /><a href='/'>Prečítajte si konkrétne výhody Bratislavského konta</a>"
+        "answer": "Bratislavské konto je rýchly, jednoduchý a efektívny nástroj ako komunikovať s magistrátom. Založte si Bratislavské konto, aby ste mohli podávať žiadosti digitálne, nemuseli chodiť na úrad fyzicky, videli aktuálny stav žiadostí cez nástroj sledovania podania a mali prehľad o všetkých povinnostiach, ktoré voči mestu máte (napr. platba daní).<br /><br /><a target='_blank' href='https://bratislava.sk/mesto-bratislava/projekty/inovacie-mesta-bratislava/bratislavske-konto'>Prečítajte si konkrétne výhody Bratislavského konta</a>"
       },
       "3": {
         "question": "Aké služby nájdem v konte?",

@@ -9,6 +9,7 @@ import { usePageWrapperContext } from 'components/layouts/PageWrapper'
 import { useRouter } from 'next/router'
 import { useTranslation } from 'next-i18next'
 import { ReactNode } from 'react'
+import logger from '@utils/logger'
 
 type FormPageLayoutBase = {
   className?: string
@@ -55,8 +56,7 @@ const FormPageLayout = ({ className, navHidden, children }: FormPageLayoutBase) 
     try {
       await router.push(`/${path}`, undefined, { locale: key })
     } catch (error) {
-      // TODO send error to Faro
-      console.error(error)
+      logger.error(error)
     }
   }
 

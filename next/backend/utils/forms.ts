@@ -6,6 +6,7 @@ import {
   getAllPossibleJsonSchemaProperties,
   JsonSchema,
 } from '@utils/forms'
+import logger from '@utils/logger'
 import { forceString } from '@utils/utils'
 import Ajv from 'ajv'
 import addFormats from 'ajv-formats'
@@ -82,7 +83,7 @@ export const buildXmlRecursive = (
   } else if (node == null) {
     // noop
   } else {
-    console.log('Erroneous node:', node)
+    logger.error('Erroneous node:', node)
     throw new Error(
       `Unexpeted node type/value at path ${currentPath.join(' ')}, see the node in logs above.`,
     )

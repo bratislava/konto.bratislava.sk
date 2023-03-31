@@ -139,7 +139,8 @@ export const verifyIdentityApi = (data: Identity, token: string) => {
 }
 
 export interface Gdpr {
-  type: 'subscribe' | 'unsubscribe'
+  subType: 'subscribe' | 'unsubscribe'
+  type: 'ANALYTICS' | 'DATAPROCESSING' | 'MARKETING'
   category: 'SWIMMINGPOOLS' | 'TAXES' | 'CITY' | 'ESBS'
 }
 

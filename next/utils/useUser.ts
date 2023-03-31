@@ -23,7 +23,7 @@ export default function useUser() {
         const user = await getUserApi(token)
         setUser(user)
       } catch (error) {
-        console.log(error)
+        console.error(error)
       }
     }
 

@@ -1,8 +1,8 @@
 import ArrowLeft from '@assets/images/new-icons/ui/arrow-left.svg'
+import CloseIcon from '@assets/images/new-icons/ui/cross.svg'
 import cx from 'classnames'
 import { Dispatch, SetStateAction, useState } from 'react'
 
-import CloseIcon from '../../icon-components/CloseIcon'
 import Button from '../../simple-components/Button'
 
 type ModalBase = {
@@ -39,10 +39,13 @@ const ModalHeader = ({
   header,
   hasHeader,
 }: ModalHeaderBase) => {
-  const headerStyle = cx('flex py-4 px-6 gap-6 bg-white sm:rounded-t-lg justify-between', {
-    'border-b-solid border-b-form-input-default border-b-2': divider,
-  })
-  const headlineStyle = cx('text-20-semibold h-7', {
+  const headerStyle = cx(
+    'flex py-[18px] sm:py-4 px-4 sm:px-6 gap-6 bg-white sm:rounded-t-lg justify-between items-center',
+    {
+      'border-b-solid border-b-form-input-default border-b-2': divider,
+    },
+  )
+  const headlineStyle = cx('text-16-semibold sm:text-20-semibold leading-5 sm:leading-7', {
     'text-center ml-1': currentScreenIndex > 0,
   })
 
@@ -62,7 +65,7 @@ const ModalHeader = ({
       ) : null}
       <div className={headlineStyle}>{header}</div>
       <div className="ml-1 flex flex-row justify-end items-center">
-        <CloseIcon className="cursor-pointer" type="info" onClick={onClose} />
+        <CloseIcon className="cursor-pointer w-5 h-5 sm:w-6 sm:h-6" type="info" onClick={onClose} />
       </div>
     </div>
   )
@@ -138,7 +141,7 @@ const ModalBody = ({
 }) => {
   return (
     <div
-      className={cx('flex h-full w-full flex-col bg-white lg:p-6 p-4', {
+      className={cx('flex h-full w-full flex-col bg-white sm:p-6 p-4', {
         'rounded-t-10': !hasHeader,
         'rounded-b-10': !hasFooter,
       })}
@@ -148,7 +151,7 @@ const ModalBody = ({
           <CloseIcon className="cursor-pointer" type="info" onClick={onClose} />
         </div>
       ) : null}
-      <div className="h-[calc(100%-80px)] flex w-full flex-col items-start rounded-lg p-2">
+      <div className="h-[calc(100%-80px)] flex w-full flex-col items-start rounded-lg">
         {Array.isArray(content)
           ? content.length - 1 >= currentScreenIndex && content[currentScreenIndex]()
           : content({ onSubmit })}

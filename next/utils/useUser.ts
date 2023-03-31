@@ -30,23 +30,27 @@ export default function useUser() {
     init()
   }, [])
 
-  const subscribe = async () => {
+  const subscribe = async (): Promise<boolean> => {
     const token = await getAccessToken()
     try {
       const user = await subscribeApi({ gdprData: null }, token)
       setUser(user)
+      return true
     } catch (error) {
       console.error(error)
+      return false
     }
   }
 
-  const unsubscribe = async () => {
+  const unsubscribe = async (): Promise<boolean> => {
     const token = await getAccessToken()
     try {
       const user = await unsubscribeApi({ gdprData: null }, token)
       setUser(user)
+      return true
     } catch (error) {
       console.error(error)
+      return false
     }
   }
 

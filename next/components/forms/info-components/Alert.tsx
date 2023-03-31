@@ -1,9 +1,10 @@
 import SuccessIcon from '@assets/images/new-icons/ui/check-mark.svg'
 import CloseIcon from '@assets/images/new-icons/ui/cross.svg'
-import ErrorIcon from '@assets/images/new-icons/ui/exclamation-mark.svg'
 import WarningIcon from '@assets/images/new-icons/ui/exclamation-mark-triangle.svg'
+import ErrorIcon from '@assets/images/new-icons/ui/exclamation-mark.svg'
 import InfoIcon from '@assets/images/new-icons/ui/info.svg'
 import cx from 'classnames'
+import { ReactNode } from 'react'
 
 type AlertButtons = {
   title: string
@@ -24,7 +25,7 @@ type AlertBase = {
   variant?: 'basic' | 'message'
   solid?: boolean
   content?: string
-  message: string
+  message: ReactNode
   close?: () => void
   buttons?: FixedLengthArray<[AlertButtons, AlertButtons]>
   className?: string

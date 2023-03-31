@@ -35,8 +35,8 @@ const fetchJsonApi = async (path: string, options?: RequestInit) => {
     console.log('have json', responseJson)
     if (responseJson?.errors) {
       throw new ApiError(responseJson?.message || API_ERROR_TEXT, responseJson.errors)
-    } else if (responseJson.errorName) {
-      throw new Error(responseJson.errorName)
+    } else if (responseJson.error) {
+      throw new Error(responseJson.error)
     } else {
       throw new Error(API_ERROR_TEXT)
     }

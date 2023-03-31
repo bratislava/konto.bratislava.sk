@@ -1,6 +1,7 @@
 {
   "errors": {
     "unknown": "Nastala neočakávaná chyba. Skontrolujte svoje pripojenie alebo nás kontaktujte na info@bratislava.sk. Ďakujeme.",
+    "Bad Request": "Overenie bolo neúspešné. Skontrolujte správnosť údajov.",
     "NotAuthorizedException": "Nesprávne prihlasovacie údaje",
     "CodeMismatchException": "E-mail {email} sa nepodarilo overiť. Skontrolujte správnosť kódu.",
     "LimitExceededException": "Skúste to znova neskôr.",
@@ -110,6 +111,7 @@
   "id_card_description": "Zadávajte číslo občianskeho preukazu bez medzier, napr. XXXXXXXX",
   "id_card_tooltip": "**Číslo občianskeho preukazu** potrebujeme poznať na to, aby sme overili vašu identitu voči štátnym registrom. Bez toho nebudete schopný/á odoslať elektronicky všetky žiadosti.",
   "id_card_required": "Číslo občianskeho preukazu je povinné",
+  "id_card_format": "Číslo občianskeho preukazu nie je valídne",
   "identity_verification_submit": "Overiť údaje",
   "identity_verification_success_title": "Overenie bolo úspešné",
   "identity_verification_success_description": "Rodné číslo **{rc}** a číslo občianskeho preukazu **{idCard}** boli overené.",

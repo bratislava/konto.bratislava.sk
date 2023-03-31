@@ -1,6 +1,7 @@
 {
   "errors": {
     "unknown": "An unknown error occurred - please try again later.",
+    "Bad Request": "Bad Request",
     "NotAuthorizedException": "Unauthorized",
     "CodeMismatchException": "Code {verificationCode} could not be verified.",
     "LimitExceededException": "Attempt limit exceeded, please try after some time.",
@@ -109,6 +110,7 @@
   "id_card_description": "",
   "id_card_tooltip": "",
   "id_card_required": "ID card number is required",
+  "id_card_format": "ID card is not valid",
   "identity_verification_submit": "Verify",
   "identity_verification_success_title": "Verification successful",
   "identity_verification_success_description": "",
@@ -133,7 +135,7 @@
     "all_services": "All services",
     "announcement_title": "Actual",
     "announcement_card_title": "Digitálna platba dane z nehnuteľností",
-    "announcement_card_text": "V prípade, že sa vás týka platba dane z nehnuteľností pre rok 2023, vašu daň ešte spracovávame a v konte pribudne najskôr <strong>20. apríla</strong>. Až sa tak udeje, pošleme vám informačný e-mail a nájdete ju v časti Dane a poplatky.",
+    "announcement_card_text": "V prípade, že sa vás týka platba dane z nehnuteľností pre rok 2023, vašu daň ešte spracovávame a v konte pribudne najskôr <strong>20. apríla</strong>. Keď sa tak udeje, pošleme vám informačný e-mail a nájdete ju v časti Dane a poplatky.",
     "announcement_card_action": "Zaplatiť daň z nehnuteľností",
     "banner_title": "Potrebujete pomôcť?",
     "banner_content": "Aké služby nájdem v Bratislavskom konte? Prečo vzniklo Bratislavské konto? Ako si viem zmeniť heslo? Nevidím svoju daň, čo mám robiť?<br /><br />Aj toto sú niektoré z otázok, na ktoré nájdete odpovede v sekcii Najčastejšie kladené otázky.",
@@ -145,7 +147,7 @@
     "cards": {
       "1": {
         "title": "Digitálna platba dane z nehnuteľností",
-        "description": "Digitálna platba dane z nehnuteľnosti, pohodlne a online.",
+        "description": "Digitálna platba dane z nehnuteľností, pohodlne a online.",
         "buttonText": "Zaplatiť daň digitálne"
       },
       "2": {
@@ -443,10 +445,9 @@
     "modal_message": "If you would like to change the e-mail you use to log in to your account and to which we send you all information regarding your account, please contact us at <a href='mailto:info@bratislava.sk'>info@bratislava.sk</a>.",
     "modal_thanks": "Thank you!"
   },
-  "adding_phone_number": {
+  "adding_phone_number_modal": {
     "title": "Adding a phone number",
-    "description": "Would you like us to communicate with you via SMS in rare cases? Leave us your phone number and we will remind you, for example, of the approaching tax due date via SMS.\n\nYou can add a phone number to your profile at any time.\n\n",
-    "phoneNumber_not_required": "*Failure to provide a phone number does not affect the use of services in the Bratislava account."
+    "description": "Prajete si, aby sme s vami v ojedinelých prípadoch komunikovali aj prostredníctvom SMS? Zanechajte nám vaše telefónne číslo a my vám pripomenieme, napríklad, blížiaci sa termín splatnosti dane aj cez SMS.\n\nTelefónne číslo môžete kedykoľvek doplniť do profilu. Neposkytnutie telefónneho čísla nemá vplyv na využívanie služieb v Bratislavskom konte."
   },
   "pay_tax": "To pay tax",
   "to_pay": "To pay",

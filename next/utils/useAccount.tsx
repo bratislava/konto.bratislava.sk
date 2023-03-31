@@ -332,15 +332,6 @@ export const AccountProvider = ({ children }: { children: ReactNode }) => {
           }
 
           const userData = userAttributesToObject(attributes)
-          const newStatus = mapTierToStatus(userData.tier)
-          if (
-            status === AccountStatus.IdentityVerificationPending &&
-            newStatus === AccountStatus.IdentityVerificationSuccess
-          ) {
-            openSnackbarSuccess(t('account:identity_verification_success'))
-          }
-
-          setStatus(newStatus)
           setUserData(userData)
           setUser(cognitoUser)
         })
@@ -348,7 +339,7 @@ export const AccountProvider = ({ children }: { children: ReactNode }) => {
     } else {
       setUser(null)
     }
-  }, [status])
+  }, [])
 
   useEffect(() => {
     refreshUserData().catch((error_) => console.error(error_))
@@ -596,8 +587,16 @@ export const AccountProvider = ({ children }: { children: ReactNode }) => {
     if (tempStatuses.includes(status)) {
       return
     }
-    setStatus(userData ? mapTierToStatus(userData.tier) : AccountStatus.Idle)
-  }, [status, userData])
+
+    const newStatus = userData ? mapTierToStatus(userData.tier) : AccountStatus.Idle
+    if (
+      status === AccountStatus.IdentityVerificationPending &&
+      newStatus === AccountStatus.IdentityVerificationSuccess
+    ) {
+      openSnackbarSuccess(t('account:identity_verification_success'))
+    }
+    setStatus(newStatus)
+  }, [openSnackbarSuccess, status, t, userData])
 
   useEffect(() => {
     // this overrides the 'global' status notification (i.e. crashed servers), but since we don't have design for multiple, showing failed notification probably takes precedence

@@ -61,8 +61,10 @@ const PasswordField = forwardRef<HTMLInputElement, Props>(
             type="button"
             tabIndex={0}
             className="flex items-center justify-center absolute inset-y-1/2 right-3 sm:right-4 h-6 w-6 -translate-y-2/4 cursor-pointer"
-            onPointerUp={() => setType('password')}
             onPointerDown={() => setType('text')}
+            onPointerUp={() => setType('password')}
+            onKeyDown={(e) => (e.code === 'Enter' || e.code === 'Space') && setType('text')}
+            onKeyUp={(e) => (e.code === 'Enter' || e.code === 'Space') && setType('password')}
           >
             <HiddenIcon />
           </button>

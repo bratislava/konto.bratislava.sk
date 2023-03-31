@@ -60,7 +60,10 @@ const ContactInformationSection = (props: any) => {
               data={{
                 label: t('correspondence_address'),
                 value:
-                  userData && userData.address
+                  userData &&
+                  (userData.address.street_address ||
+                    userData.address.postal_code ||
+                    userData.address.locality)
                     ? `${userData.address.street_address}, ${postal_code_array
                         ?.slice(0, 3)
                         .join('')} ${postal_code_array?.slice(3).join('')} ${

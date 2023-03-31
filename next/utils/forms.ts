@@ -17,6 +17,7 @@ import { useTranslation } from 'next-i18next'
 import { ChangeEvent, RefObject, useEffect, useRef, useState } from 'react'
 
 import { StepData } from '../components/forms/types/TransformedFormData'
+import logger from './logger'
 
 export type JsonSchemaPropertyTree = JsonSchemaPropertyTreeInterface | undefined
 export interface JsonSchemaPropertyTreeInterface {
@@ -570,8 +571,7 @@ export const useFormSubmitter = (slug: string) => {
       setErrors([])
       setSuccessMessage(t('success'))
     } catch (error) {
-      console.log('Form submission error')
-      console.log(error)
+      logger.error(error)
       if (error instanceof ApiError) {
         setErrors(error.errors)
       } else if (error instanceof Error) {

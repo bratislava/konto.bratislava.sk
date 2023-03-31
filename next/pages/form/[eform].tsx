@@ -18,7 +18,7 @@ export const getServerSideProps = async (ctx: GetServerSidePropsContext) => {
   try {
     eform = getEform(ctx.query.eform)
   } catch (error) {
-    console.error(error)
+    logger.error(error)
     return { notFound: true }
   }
 

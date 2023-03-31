@@ -1,6 +1,7 @@
 import { EFormValue } from '@backend/forms'
 import { getEform } from '@backend/utils/forms'
 import { transform } from '@backend/utils/xslt'
+import logger from '@utils/logger'
 import type { NextApiRequest, NextApiResponse } from 'next'
 
 const handler = async (req: NextApiRequest, res: NextApiResponse) => {
@@ -11,7 +12,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
   try {
     eform = getEform(req.query.id)
   } catch (error) {
-    console.error(error)
+    logger.error(error)
     return res.status(400).json({ message: 'Invalid form name or url' })
   }
 

@@ -1,7 +1,7 @@
 import ArrowRightIcon from '@assets/images/new-icons/ui/arrow-right.svg'
 import { LinkButtonProps } from '@react-types/button'
 import cx from 'classnames'
-import { forwardRef, ReactNode, RefObject } from 'react'
+import { forwardRef, ReactNode, RefObject, useEffect } from 'react'
 import { AriaButtonProps, useButton } from 'react-aria'
 
 import MLink from './MLink'

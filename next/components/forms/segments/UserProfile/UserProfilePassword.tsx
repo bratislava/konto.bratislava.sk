@@ -1,4 +1,5 @@
 import LockIcon from '@assets/images/new-icons/ui/lock.svg'
+import { ROUTES } from '@utils/constants'
 import cx from 'classnames'
 import Button from 'components/forms/simple-components/Button'
 import { useRouter } from 'next/router'
@@ -22,7 +23,7 @@ const UserProfilePassword = () => {
           startIcon={<LockIcon fill="white" className="w-6 h-6" />}
           size="sm"
           text={t('password_change.button')}
-          onPress={() => (window.location.href = '/password-change')}
+          onPress={() => push(ROUTES.PASSWORD_CHANGE)}
           className={cx('w-full', 'md:w-fit')}
         />
       </UserProfileSectionHeader>

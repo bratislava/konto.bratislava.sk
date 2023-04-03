@@ -1,3 +1,4 @@
+import { ROUTES } from '@utils/constants'
 import useAccount, { AccountStatus } from '@utils/useAccount'
 import cx from 'classnames'
 import AccountSectionHeader from 'components/forms/segments/AccountSectionHeader/AccountSectionHeader'
@@ -65,10 +66,11 @@ const TaxesFeesSection = ({ isProductionDeployment }: TaxesFeesSectionProps) => 
 <div>${t('account_section_payment.error_card_content.title')}
 <ul>${
     status !== AccountStatus.IdentityVerificationSuccess
-      ? t('account_section_payment.error_card_content.list.verification')
+      ? t('account_section_payment.error_card_content.list.verification', { url: ROUTES.REGISTER })
       : ''
   }${t('account_section_payment.error_card_content.list.other')}</ul><br />${t(
     'account_section_payment.error_card_content.help_text',
+    { url: ROUTES.I_HAVE_A_PROBLEM },
   )}</div>
 `
 

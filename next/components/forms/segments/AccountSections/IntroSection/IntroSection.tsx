@@ -65,7 +65,7 @@ const IntroSection = () => {
             announcementContent={announcementContent}
             // buttonTitle={t('account_section_intro.announcement_card_action')}
             imagePath={PlatbaDaneImg}
-            // onPress={() => router.push('/taxes-and-fees')}
+            // onPress={() => router.push(ROUTES.TAXES_AND_FEES)}
           />
           <div className="w-full flex items-center justify-between mb-8 px-4 lg:px-0">
             <h2 className="text-h2">{t('account_section_services.navigation')}</h2>
@@ -74,7 +74,7 @@ const IntroSection = () => {
               className="sm:flex hidden pt-4 pl-4"
               label={t('account_section_intro.all_services')}
               variant="link-category"
-              href="/municipal-services"
+              href={ROUTES.MUNICIPAL_SERVICES}
             />
           </div>
           <div className="flex gap-3 lg:gap-8 overflow-x-scroll scrollbar-hide px-4 lg:px-0">
@@ -83,7 +83,7 @@ const IntroSection = () => {
               description={t('account_section_services.cards.1.description')}
               icon={<TaxesIcon className="w-10 h-10 lg:w-12 lg:h-12 text-category-600" />}
               buttonText={t('account_section_services.cards.1.buttonText')}
-              href="/taxes-and-fees"
+              href={ROUTES.TAXES_AND_FEES}
             />
             <ServiceCard
               title={t('account_section_services.cards.4.title')}
@@ -112,7 +112,7 @@ const IntroSection = () => {
             className="flex sm:hidden pt-4 pl-4"
             label={t('account_section_intro.all_services')}
             variant="link-category"
-            href="/municipal-services"
+            href={ROUTES.MUNICIPAL_SERVICES}
           />
         </div>
         <div className="bg-gray-50 py-0 lg:py-16">
@@ -120,7 +120,7 @@ const IntroSection = () => {
             title={t('account_section_intro.banner_title')}
             content={bannerContent}
             buttonText={t('account_section_intro.banner_button_text')}
-            onPress={() => router.push('/i-have-a-problem')}
+            onPress={() => router.push(ROUTES.I_HAVE_A_PROBLEM)}
           />
         </div>
       </div>

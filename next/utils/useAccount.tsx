@@ -1,4 +1,5 @@
 import { subscribeApi, verifyIdentityApi } from '@utils/api'
+import { ROUTES } from '@utils/constants'
 import useSnackbar from '@utils/useSnackbar'
 import {
   AuthenticationDetails,
@@ -608,7 +609,7 @@ export const AccountProvider = ({ children }: { children: ReactNode }) => {
         <AccountMarkdown
           uLinkVariant="error"
           variant="sm"
-          content={t('account:identity_verification_failed')}
+          content={t('account:identity_verification_failed', { url: ROUTES.REGISTER })}
         />,
       )
     } else {

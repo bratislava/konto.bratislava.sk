@@ -4,8 +4,8 @@ import { getLanguageKey } from '@utils/utils'
 import cx from 'classnames'
 import { StatusBar, useStatusBarContext } from 'components/forms/info-components/StatusBar'
 import Brand from 'components/forms/simple-components/Brand'
-import { useTranslation } from 'next-i18next'
 import { useRouter } from 'next/router'
+import { useTranslation } from 'next-i18next'
 
 interface IProps {
   className?: string

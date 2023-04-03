@@ -1,6 +1,7 @@
 // TODO waiting on #305 to get merged, afterwards might move elsewhere
 // frontend code for calling api endpoints grouped
 import { ErrorObject } from 'ajv'
+
 import logger from './logger'
 
 export const API_ERROR_TEXT = 'API_ERROR'

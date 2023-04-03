@@ -5,6 +5,7 @@ import LogoutIcon from '@assets/images/new-icons/ui/logout.svg'
 import PaymentIcon from '@assets/images/new-icons/ui/payment.svg'
 import ProfileIcon from '@assets/images/new-icons/ui/profile.svg'
 import { ROUTES } from '@utils/constants'
+import logger from '@utils/logger'
 import useAccount from '@utils/useAccount'
 import cx from 'classnames'
 import AccountNavBar from 'components/forms/segments/AccountNavBar/AccountNavBar'
@@ -12,7 +13,6 @@ import { usePageWrapperContext } from 'components/layouts/PageWrapper'
 import { useRouter } from 'next/router'
 import { useTranslation } from 'next-i18next'
 import { ReactNode, useEffect } from 'react'
-import logger from '@utils/logger'
 
 type AccountPageLayoutBase = {
   className?: string

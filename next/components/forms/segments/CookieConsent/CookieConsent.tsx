@@ -1,3 +1,4 @@
+import logger from '@utils/logger'
 import { isBrowser, isProductionDeployment } from '@utils/utils'
 import Button from 'components/forms/simple-components/Button'
 import Cookies from 'js-cookie'
@@ -6,7 +7,6 @@ import NextLink from 'next/link'
 import Script from 'next/script'
 import { useTranslation } from 'next-i18next'
 import React, { useCallback, useEffect, useState } from 'react'
-import logger from '@utils/logger'
 
 const availableConsents = ['statistics']
 const pickConsents = (consents: any) => mapValues(pick(consents, availableConsents), Boolean)

@@ -20,7 +20,7 @@
   "dependencies": {
     "@bratislava/json-schema-xsd-tools": "^0.1.9",
     "@grafana/faro-web-sdk": "^1.0.2",
-    "@hookform/resolvers": "^2.9.10",
+    "@hookform/resolvers": "^3.0.0",
     "@internationalized/date": "3.1.0",
     "@js-joda/core": "5.2.0",
     "@rjsf/core": "^5.0.0-beta.6",

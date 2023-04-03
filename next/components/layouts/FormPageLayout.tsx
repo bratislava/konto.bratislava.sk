@@ -33,7 +33,7 @@ const menuItems = [
     id: 3,
     title: 'account:menu_help_link',
     icon: <HelpIcon className="w-6 h-6" />,
-    link: '/i-have-a-problem',
+    link: '/mam-problem',
   },
   {
     id: 4,

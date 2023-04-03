@@ -42,7 +42,7 @@ const sectionsList = [
     id: 3,
     title: 'account:account_section_help.navigation',
     icon: <HelpIcon className="w-6 h-6" />,
-    link: '/i-have-a-problem',
+    link: '/mam-problem',
   },
 ]
 
@@ -57,7 +57,7 @@ const menuItems = [
     id: 2,
     title: 'account:menu_help_link',
     icon: <HelpIcon className="w-5 h-5" />,
-    link: '/i-have-a-problem',
+    link: '/mam-problem',
   },
   {
     id: 3,

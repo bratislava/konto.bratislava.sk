@@ -26,6 +26,11 @@ const nextConfig = {
         destination: '/dane-a-poplatky',
         permanent: true,
       },
+      {
+        source: 'i-have-a-problem',
+        destination: '/mam-problem',
+        permanent: true,
+      },
     ]
   },
   webpack(config) {

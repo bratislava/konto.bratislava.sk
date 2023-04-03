@@ -87,7 +87,7 @@ const MunicipalServicesSection = () => {
       icon: <TaxesIcon className="w-10 h-10 lg:w-12 lg:h-12 text-category-600" />,
       category: [TAXES_CATEGORY],
       linkType: 'internal',
-      href: '/taxes-and-fees',
+      href: '/dane-a-poplatky',
     },
     {
       title: t('account_section_services.cards.32.title'),

@@ -16,6 +16,16 @@ const nextConfig = {
         destination: '/api/robots',
         permanent: true,
       },
+      {
+        source: '/forgotten-password',
+        destination: '/zabudnute-heslo',
+        permanent: true,
+      },
+      {
+        source: '/taxes-and-fees',
+        destination: '/dane-a-poplatky',
+        permanent: true,
+      },
     ]
   },
   webpack(config) {

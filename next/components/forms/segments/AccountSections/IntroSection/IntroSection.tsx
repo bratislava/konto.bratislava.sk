@@ -74,7 +74,7 @@ const IntroSection = () => {
               className="sm:flex hidden pt-4 pl-4"
               label={t('account_section_intro.all_services')}
               variant="link-category"
-              href="/municipal-services"
+              href={ROUTES.MUNICIPAL_SERVICES}
             />
           </div>
           <div className="flex gap-3 lg:gap-8 overflow-x-scroll scrollbar-hide px-4 lg:px-0">
@@ -112,7 +112,7 @@ const IntroSection = () => {
             className="flex sm:hidden pt-4 pl-4"
             label={t('account_section_intro.all_services')}
             variant="link-category"
-            href="/municipal-services"
+            href={ROUTES.MUNICIPAL_SERVICES}
           />
         </div>
         <div className="bg-gray-50 py-0 lg:py-16">

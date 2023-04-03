@@ -42,6 +42,11 @@ const nextConfig = {
         destination: ROUTES.MIGRATION,
         permanent: true,
       },
+      {
+        source: '/municipal-services',
+        destination: ROUTES.MUNICIPAL_SERVICES,
+        permanent: true,
+      },
     ]
   },
   webpack(config) {

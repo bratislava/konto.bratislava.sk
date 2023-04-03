@@ -6,4 +6,5 @@ export const ROUTES = {
   I_HAVE_A_PROBLEM: '/mam-problem',
   TAXES_AND_FEES: 'dane-a-poplatky',
   MIGRATION: '/aktivacia-konta',
+  MUNICIPAL_SERVICES: '/mesteske-sluzby',
 }

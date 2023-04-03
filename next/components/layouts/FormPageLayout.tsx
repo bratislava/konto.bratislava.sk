@@ -2,6 +2,7 @@ import HelpIcon from '@assets/images/new-icons/ui/help.svg'
 import LogoutIcon from '@assets/images/new-icons/ui/logout.svg'
 import CityIcon from '@assets/images/new-icons/ui/municipal-account.svg'
 import ProfileIcon from '@assets/images/new-icons/ui/profile.svg'
+import { ROUTES } from '@utils/constants'
 import cx from 'classnames'
 import AccountNavBar from 'components/forms/segments/AccountNavBar/AccountNavBar'
 import SectionContainer from 'components/forms/segments/SectionContainer/SectionContainer'
@@ -33,7 +34,7 @@ const menuItems = [
     id: 3,
     title: 'account:menu_help_link',
     icon: <HelpIcon className="w-6 h-6" />,
-    link: '/mam-problem',
+    link: ROUTES.I_HAVE_A_PROBLEM,
   },
   {
     id: 4,

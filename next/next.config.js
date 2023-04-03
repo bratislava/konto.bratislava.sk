@@ -1,4 +1,5 @@
 const { i18n } = require('./next-i18next.config')
+const { ROUTES } = require('@utils/constants')
 
 /**
  * @type {import('next').NextConfig}
@@ -28,7 +29,7 @@ const nextConfig = {
       },
       {
         source: 'i-have-a-problem',
-        destination: '/mam-problem',
+        destination: ROUTES.I_HAVE_A_PROBLEM,
         permanent: true,
       },
     ]

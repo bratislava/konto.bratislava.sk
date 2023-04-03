@@ -1,4 +1,5 @@
 import BratislavaIcon from '@assets/images/account/bratislava-footer.svg'
+import { ROUTES } from '@utils/constants'
 import AccountMarkdown from 'components/forms/segments/AccountMarkdown/AccountMarkdown'
 import ThankYouCard from 'components/forms/segments/AccountSections/ThankYouSection/ThankYouCard'
 import Button from 'components/forms/simple-components/Button'
@@ -27,7 +28,7 @@ const ThankYouFormSection = () => {
           <div className="flex flex-col gap-3 mt-4 md:mt-6">
             <Button
               label={t('thank_you.button_faq_text')}
-              href="/mam-problem"
+              href={ROUTES.I_HAVE_A_PROBLEM}
               variant="link-black"
               size="sm"
             />

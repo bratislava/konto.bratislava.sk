@@ -37,6 +37,11 @@ const nextConfig = {
         destination: ROUTES.LOGIN,
         permanent: true,
       },
+      {
+        source: '/migration',
+        destination: ROUTES.MIGRATION,
+        permanent: true,
+      },
     ]
   },
   webpack(config) {

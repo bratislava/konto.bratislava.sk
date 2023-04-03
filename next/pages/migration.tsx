@@ -56,7 +56,11 @@ const MigrationPage = ({ page }: AsyncServerProps<typeof getServerSideProps>) =>
               fromMigration
             />
           ) : status === AccountStatus.Idle ? (
-            <MigrationForm onSubmit={forgotPassword} error={error} />
+            <MigrationForm
+              onSubmit={(email: string) => forgotPassword(email, true)}
+              lastEmail={lastEmail}
+              error={error}
+            />
           ) : (
             <AccountSuccessAlert
               title={t('migration_success_title')}

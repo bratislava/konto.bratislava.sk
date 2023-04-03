@@ -5,6 +5,7 @@
     "NotAuthorizedException": "Nesprávne prihlasovacie údaje",
     "CodeMismatchException": "E-mail {email} sa nepodarilo overiť. Skontrolujte správnosť kódu.",
     "LimitExceededException": "Skúste to znova neskôr.",
+    "UserNotFoundException": "Konto so zadanou e-mailovou adresou zatiaľ neexistuje.",
     "UserNotConfirmedException": "E-mail nie je verifikovaný.",
     "UsernameExistsException": "E-mail {email} už bol použitý. Ak ste daň platili digitálne už minulý rok, pokračujte [aktiváciou konta](/migration). V prípade, že sa vás tento prípad netýka, kontaktujte nás na <a href='mailto:info@bratislava.sk'>info@bratislava.sk</a>.",
     "ExpiredCodeException": "E-mail {email} sa nepodarilo overiť. Skontrolujte správnosť kódu.",

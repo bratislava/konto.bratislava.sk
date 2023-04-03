@@ -3,4 +3,5 @@ export const ROUTES = {
   REGISTER: '/register',
   LOGIN: '/login',
   FORGOTTEN_PASSWORD: '/forgotten-password',
+  PASSWORD_CHANGE: '/password-change',
 }

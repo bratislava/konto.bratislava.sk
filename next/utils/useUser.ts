@@ -2,6 +2,8 @@ import { Gdpr, getUserApi, subscribeApi, unsubscribeApi } from '@utils/api'
 import useAccount from '@utils/useAccount'
 import { useEffect, useState } from 'react'
 
+import logger from './logger'
+
 export interface User {
   id: string
   createdAt: Date
@@ -23,7 +25,7 @@ export default function useUser() {
         const user = await getUserApi(token)
         setUser(user)
       } catch (error) {
-        console.error(error)
+        logger.error(error)
       }
     }
 
@@ -37,7 +39,7 @@ export default function useUser() {
       setUser(user)
       return true
     } catch (error) {
-      console.error(error)
+      logger.error(error)
       return false
     }
   }
@@ -49,7 +51,7 @@ export default function useUser() {
       setUser(user)
       return true
     } catch (error) {
-      console.error(error)
+      logger.error(error)
       return false
     }
   }

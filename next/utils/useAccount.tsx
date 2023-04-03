@@ -213,7 +213,7 @@ export const AccountProvider = ({ children }: { children: ReactNode }) => {
           resolve(false)
         } else {
           setStatus(AccountStatus.EmailVerificationSuccess)
-          const res = await login(lastCredentials.Username, lastCredentials.Password, true)
+          const res = await login(lastCredentials.Username, lastCredentials.Password)
           await subscribe()
           resolve(res)
         }
@@ -353,7 +353,6 @@ export const AccountProvider = ({ children }: { children: ReactNode }) => {
       user.signOut()
       setUser(null)
       setUserData(null)
-      setStatus(AccountStatus.Idle)
     }
   }
 
@@ -473,11 +472,7 @@ export const AccountProvider = ({ children }: { children: ReactNode }) => {
     })
   }
 
-  const login = (
-    email: string,
-    password: string | undefined,
-    skipStatusUpdate?: boolean,
-  ): Promise<boolean> => {
+  const login = (email: string, password: string | undefined): Promise<boolean> => {
     // login into cognito using aws sdk
     const credentials = {
       Username: email,
@@ -516,11 +511,6 @@ export const AccountProvider = ({ children }: { children: ReactNode }) => {
               resolve(false)
             } else {
               const userData = userAttributesToObject(attributes)
-              // TODO an ugly workaround for first login during registration
-              // get rid of this together with global account status
-              if (!skipStatusUpdate) {
-                setStatus(mapTierToStatus(userData.tier))
-              }
               setUserData(userData)
               setUser(cognitoUser)
 

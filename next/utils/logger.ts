@@ -4,7 +4,6 @@ import {
   Faro,
   initializeFaro,
 } from '@grafana/faro-web-sdk'
-import { SessionInstrumentation } from '@grafana/faro-web-sdk/dist/types/instrumentations'
 import { ILogObj, Logger } from 'tslog'
 
 import { isBrowser, isProductionDeployment } from './utils'
@@ -19,11 +18,7 @@ if (isBrowser()) {
     _faro = initializeFaro({
       url: 'https://faro.bratislava.sk/collect',
       apiKey: process.env.NEXT_PUBLIC_FARO_SECRET,
-      instrumentations: [
-        new ErrorsInstrumentation(),
-        new ConsoleInstrumentation(),
-        new SessionInstrumentation(),
-      ],
+      instrumentations: [new ErrorsInstrumentation(), new ConsoleInstrumentation()],
       app: {
         name: 'city-account-next',
         version: '1.0.0',

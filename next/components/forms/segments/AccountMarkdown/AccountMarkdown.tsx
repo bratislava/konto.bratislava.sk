@@ -12,6 +12,9 @@ type AccountMarkdownBase = {
   content?: string
   variant?: 'sm' | 'normal'
   uLinkVariant?: 'primary' | 'default' | 'error'
+  disableRemarkGfm?: boolean
+  disableRemarkDirective?: boolean
+  disableRemarkDirectiveRehype?: boolean
 }
 
 const TooltipComponent = ({ children }: never) => {
@@ -21,13 +24,27 @@ const TooltipComponent = ({ children }: never) => {
 const AccountMarkdown = ({
   className,
   content,
+  disableRemarkGfm,
+  disableRemarkDirective,
+  disableRemarkDirectiveRehype,
   variant = 'normal',
   uLinkVariant = 'default',
 }: AccountMarkdownBase) => {
+  const remarkPlugins = []
+  if (!disableRemarkGfm) {
+    remarkPlugins.push(remarkGfm)
+  }
+  if (!disableRemarkDirective) {
+    remarkPlugins.push(remarkDirective)
+  }
+  if (!disableRemarkDirectiveRehype) {
+    remarkPlugins.push(remarkDirectiveRehype)
+  }
+
   return (
     <ReactMarkdown
       className={cx('flex flex-col gap-3', className)}
-      remarkPlugins={[remarkGfm, remarkDirective, remarkDirectiveRehype]}
+      remarkPlugins={remarkPlugins}
       rehypePlugins={[rehypeRaw, remarkDirective, remarkDirectiveRehype]}
       components={
         {

@@ -183,7 +183,7 @@ export const AccountNavBar = ({
                 </Menu>
               ) : (
                 <>
-                  <Link href="/login" variant="plain" className={`${linkClassName} ml-2`}>
+                  <Link href={ROUTES.LOGIN} variant="plain" className={`${linkClassName} ml-2`}>
                     {t('account:menu_login_link')}
                   </Link>
                   <Button

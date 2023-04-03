@@ -19,17 +19,22 @@ const nextConfig = {
       },
       {
         source: '/forgotten-password',
-        destination: '/zabudnute-heslo',
+        destination: ROUTES.FORGOTTEN_PASSWORD,
         permanent: true,
       },
       {
         source: '/taxes-and-fees',
-        destination: '/dane-a-poplatky',
+        destination: ROUTES.TAXES_AND_FEES,
         permanent: true,
       },
       {
-        source: 'i-have-a-problem',
+        source: '/i-have-a-problem',
         destination: ROUTES.I_HAVE_A_PROBLEM,
+        permanent: true,
+      },
+      {
+        source: '/login',
+        destination: ROUTES.LOGIN,
         permanent: true,
       },
     ]

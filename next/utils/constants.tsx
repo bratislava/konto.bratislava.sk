@@ -4,4 +4,5 @@ export const ROUTES = {
   LOGIN: '/login',
   FORGOTTEN_PASSWORD: '/zabudnute-heslo',
   I_HAVE_A_PROBLEM: '/mam-problem',
+  TAXES_AND_FEES: 'dane-a-poplatky',
 }

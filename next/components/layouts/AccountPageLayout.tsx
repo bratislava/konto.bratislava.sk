@@ -36,7 +36,7 @@ const sectionsList = [
     id: 2,
     title: 'account:account_section_payment.title',
     icon: <PaymentIcon className="w-6 h-6" />,
-    link: '/dane-a-poplatky',
+    link: ROUTES.TAXES_AND_FEES,
   },
   {
     id: 3,

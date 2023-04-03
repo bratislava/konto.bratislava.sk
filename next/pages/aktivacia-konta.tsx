@@ -7,9 +7,9 @@ import MigrationForm from 'components/forms/segments/MigrationForm/MigrationForm
 import NewPasswordForm from 'components/forms/segments/NewPasswordForm/NewPasswordForm'
 import LoginRegisterLayout from 'components/layouts/LoginRegisterLayout'
 import { GetServerSidePropsContext } from 'next'
-import { useRouter } from 'next/router'
 import { useTranslation } from 'next-i18next'
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
+import { useRouter } from 'next/router'
 
 import PageWrapper from '../components/layouts/PageWrapper'
 import { isProductionDeployment } from '../utils/utils'
@@ -55,14 +55,18 @@ const MigrationPage = ({ page }: AsyncServerProps<typeof getServerSideProps>) =>
               lastEmail={lastEmail}
               fromMigration
             />
-          ) : status === AccountStatus.NewPasswordSuccess ? (
+          ) : status === AccountStatus.Idle ? (
+            <MigrationForm
+              onSubmit={(email: string) => forgotPassword(email, true)}
+              lastEmail={lastEmail}
+              error={error}
+            />
+          ) : (
             <AccountSuccessAlert
               title={t('migration_success_title')}
               confirmLabel={t('account_continue_link')}
               onConfirm={onConfirm}
             />
-          ) : (
-            <MigrationForm onSubmit={forgotPassword} error={error} />
           )}
         </AccountContainer>
       </LoginRegisterLayout>

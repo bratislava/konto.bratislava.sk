@@ -5,18 +5,18 @@ import SearchIcon from '@assets/images/new-icons/ui/search.svg'
 import VolumeIcon from '@assets/images/new-icons/ui/speaker.svg'
 import { ROUTES } from '@utils/constants'
 import useAccount, { UserData } from '@utils/useAccount'
+import useElementSize from '@utils/useElementSize'
 import { getLanguageKey } from '@utils/utils'
 import cx from 'classnames'
-import { StatusBar } from 'components/forms/info-components/StatusBar'
+import { StatusBar, useStatusBarContext } from 'components/forms/info-components/StatusBar'
 import HamburgerMenu from 'components/forms/segments/HambergerMenu/HamburgerMenu'
 import Button from 'components/forms/simple-components/Button'
 import Menu from 'components/forms/simple-components/Menu/Menu'
+import { useTranslation } from 'next-i18next'
 import NextLink from 'next/link'
 import { useRouter } from 'next/router'
-import { useTranslation } from 'next-i18next'
 import { ReactNode, useState } from 'react'
 import { Item } from 'react-stately'
-import { useElementSize } from 'usehooks-ts'
 
 import Brand from '../../simple-components/Brand'
 import Link from './NavBarLink'
@@ -63,8 +63,10 @@ export const AccountNavBar = ({
 }: IProps) => {
   const [burgerOpen, setBurgerOpen] = useState(false)
   const { isAuth, logout, userData } = useAccount()
-  const [desktopRef, { height: desktopHeight }] = useElementSize()
-  const [mobileRef, { height: mobileHeight }] = useElementSize()
+
+  const { statusBarContent } = useStatusBarContext()
+  const [desktopRef, { height: desktopHeight }] = useElementSize([statusBarContent])
+  const [mobileRef, { height: mobileHeight }] = useElementSize([statusBarContent])
 
   const languageKey = getLanguageKey(languageSelectProps.currentLanguage)
   const anotherLanguage = languageSelectProps.languages?.find((l) => l.key !== languageKey)

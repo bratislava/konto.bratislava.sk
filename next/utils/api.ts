@@ -1,6 +1,7 @@
 // TODO waiting on #305 to get merged, afterwards might move elsewhere
 // frontend code for calling api endpoints grouped
 import { ErrorObject } from 'ajv'
+import logger from './logger'
 
 export const API_ERROR_TEXT = 'API_ERROR'
 
@@ -21,29 +22,24 @@ const fetchJsonApi = async (path: string, options?: RequestInit) => {
     if (response.ok) {
       return await response.json()
     }
-    console.log('response not ok')
     // try parsing errors - if they may apper in different format extend here
     const responseText = await response.text()
-    console.log('got text')
     let responseJson: any = {}
     try {
-      console.log('try json')
       responseJson = JSON.parse(responseText)
     } catch (error) {
       throw new Error(API_ERROR_TEXT)
     }
-    console.log('have json', responseJson)
     if (responseJson?.errors) {
       throw new ApiError(responseJson?.message || API_ERROR_TEXT, responseJson.errors)
-    } else if (responseJson.errorName) {
-      throw new Error(responseJson.errorName)
+    } else if (responseJson.error) {
+      throw new Error(responseJson.error)
     } else {
       throw new Error(API_ERROR_TEXT)
     }
   } catch (error) {
-    // TODO: handle error with Faro
-    // caught & rethrown so that we can handle Faro in one place
-    console.error(error)
+    // TODO originally caught & rethrown to ensure logging, might no longer be necessary
+    logger.error(error)
     throw error
   }
 }
@@ -58,16 +54,14 @@ const fetchBlob = async (path: string, options?: RequestInit) => {
     const responseText = await response.text()
     throw new Error(responseText)
   } catch (error) {
-    // caught & rethrown so that we can handle Sentry in one place
-    console.error(error)
+    // TODO originally caught & rethrown to ensure logging, might no longer be necessary
+    logger.error(error)
     throw error
   }
 }
 
 // TODO move error handling here
 export const submitEform = async (eformKey: string, data: Record<string, any>) => {
-  console.log('-------------------')
-  console.log(eformKey)
   return fetchJsonApi(`/api/eforms/${eformKey}/submit`, {
     method: 'POST',
     headers: {
@@ -138,13 +132,25 @@ export const verifyIdentityApi = (data: Identity, token: string) => {
   )
 }
 
-interface Gdpr {
-  type: 'subscribe' | 'unsubscribe'
+export interface Gdpr {
+  subType: 'subscribe' | 'unsubscribe'
+  type: 'ANALYTICS' | 'DATAPROCESSING' | 'MARKETING'
   category: 'SWIMMINGPOOLS' | 'TAXES' | 'CITY' | 'ESBS'
 }
 
 export const subscribeApi = (data: { gdprData?: Gdpr[] }, token: string) => {
   return fetchJsonApi(`${process.env.NEXT_PUBLIC_CITY_ACCOUNT_URL}/user/subscribe`, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      Authorization: `Bearer ${token}`,
+    },
+    body: JSON.stringify(data),
+  })
+}
+
+export const unsubscribeApi = (data: { gdprData?: Gdpr[] }, token: string) => {
+  return fetchJsonApi(`${process.env.NEXT_PUBLIC_CITY_ACCOUNT_URL}/user/unsubscribe`, {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',

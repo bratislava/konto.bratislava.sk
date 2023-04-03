@@ -23,6 +23,7 @@ export default function useHookForm<T extends FieldValues>({ schema, defaultValu
         password:
           /^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?\d)(?=.*?[ !"#$%&'()*+,./:;<=>?@[\\\]^_`{|}~-]).{8,}$/,
         postalCode: '^([0-9]{5}|)$',
+        idCard: '^([a-zA-Z]{2})([0-9]{6})$',
         rc: (value: string) => {
           value = value.replace('/', '')
 

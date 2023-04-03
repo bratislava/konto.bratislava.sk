@@ -12,6 +12,7 @@ import { usePageWrapperContext } from 'components/layouts/PageWrapper'
 import { useRouter } from 'next/router'
 import { useTranslation } from 'next-i18next'
 import { ReactNode, useEffect } from 'react'
+import logger from '@utils/logger'
 
 type AccountPageLayoutBase = {
   className?: string
@@ -86,8 +87,7 @@ const AccountPageLayout = ({ className, children, hiddenHeaderNav }: AccountPage
     try {
       await router.push(`/${path}`, undefined, { locale: key })
     } catch (error) {
-      // TODO send error to Faro
-      console.error(error)
+      logger.error(error)
     }
   }
 

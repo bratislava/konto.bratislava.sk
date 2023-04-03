@@ -1,12 +1,15 @@
 {
   "errors": {
-    "unknown": "Nastala neočakávaná chyba. Skontrolujte svoje pripojenie alebo nás kontaktujte na info@bratislava.sk. Ďakujeme.",
+    "unknown": "Nastala neočakávaná chyba. Skontrolujte svoje pripojenie alebo nás kontaktujte na <a href='mailto:info@bratislava.sk'>info@bratislava.sk</a>. Ďakujeme.",
+    "Bad Request": "Overenie bolo neúspešné. Skontrolujte správnosť údajov.",
     "NotAuthorizedException": "Nesprávne prihlasovacie údaje",
-    "CodeMismatchException": "E-mail {email} sa nepodarilo overiť. Skontrolujte správnosť kódu.",
+    "CodeMismatchException": "E-mail **{email}** sa nepodarilo overiť. Skontrolujte správnosť kódu.",
     "LimitExceededException": "Skúste to znova neskôr.",
+    "UserNotFoundException": "Konto so zadanou e-mailovou adresou zatiaľ neexistuje.",
+    "MigrationUserNotFoundException": "E-mail **{email}** sa nenachádza v našej databáze minuloročných používateľov a používateliek digitálnej platby dane. Skontrolujte správnosť e-mailu alebo sa [registrujte](/register).",
     "UserNotConfirmedException": "E-mail nie je verifikovaný.",
-    "UsernameExistsException": "E-mail {email} sa už používa.",
-    "ExpiredCodeException": "E-mail {email} sa nepodarilo overiť. Skontrolujte správnosť kódu.",
+    "UsernameExistsException": "E-mail **{email}** už bol použitý. Ak ste daň platili digitálne už minulý rok, pokračujte [aktiváciou konta](/migration). V prípade, že sa vás tento prípad netýka, kontaktujte nás na <a href='mailto:info@bratislava.sk'>info@bratislava.sk</a>.",
+    "ExpiredCodeException": "E-mail **{email}** sa nepodarilo overiť. Skontrolujte správnosť kódu.",
     "IncorectPasswordException": "Zadané heslo nie je správne.",
     "API_ERROR": "Pri odosielaní formulára nastala chyba. Skúste to prosím znova.",
     "RFO_ACCESS_ERROR": "Pri odosielaní formulára nastala chyba. Skúste to prosím znova neskôr.",
@@ -110,13 +113,14 @@
   "id_card_description": "Zadávajte číslo občianskeho preukazu bez medzier, napr. XXXXXXXX",
   "id_card_tooltip": "**Číslo občianskeho preukazu** potrebujeme poznať na to, aby sme overili vašu identitu voči štátnym registrom. Bez toho nebudete schopný/á odoslať elektronicky všetky žiadosti.",
   "id_card_required": "Číslo občianskeho preukazu je povinné",
+  "id_card_format": "Číslo občianskeho preukazu nie je valídne",
   "identity_verification_submit": "Overiť údaje",
   "identity_verification_success_title": "Overenie bolo úspešné",
   "identity_verification_success_description": "Rodné číslo **{rc}** a číslo občianskeho preukazu **{idCard}** boli overené.",
   "identity_verification_pending_title": "Prebieha overovanie",
   "identity_verification_pending_description": "Ospravedlňujeme sa, ale rodné číslo **{rc}** a číslo občianskeho preukazu **{idCard}** ešte stále overujeme. Medzitým môžete pokračovať do konta a my vám dáme vedieť, až dokončíme overenie vašej totožnosti.",
   "identity_verification_pending_description_without_data": "Ospravedlňujeme sa, ale rodné číslo a číslo občianskeho preukazu ešte stále overujeme. Medzitým môžete pokračovať do konta a my vám dáme vedieť, až dokončíme overenie vašej totožnosti.",
-  "identity_verification_failed": "Rodné číslo a číslo občianskeho preukazu sa nepodarilo overiť. Skontrolujte správnosť údajov a [opakujte overenie indentity]({{url}}).",
+  "identity_verification_failed": "Overenie rodného čísla a čísla občianskeho preukazu sa nepodarilo. Mohli ste zadať nesprávne údaje, v takom prípade [zopakujte overenie](/{{url}}). Tieto údaje tiež mohli byť použité na overenie iného konta. Ak o jeho existencii neviete, čím skôr sa obráťte na <a href='mailto:info@bratislava.sk'>info@bratislava.sk</a>.",
   "identity_verification_success": "Overenie bolo úspešné",
   "password_change_title": "Zmena hesla",
   "old_password_label": "Staré heslo",
@@ -140,7 +144,7 @@
     "all_services": "Všetky služby",
     "announcement_title": "Aktuálne",
     "announcement_card_title": "Digitálna platba dane z nehnuteľností",
-    "announcement_card_text": "V prípade, že sa vás týka platba dane z nehnuteľností pre rok 2023, vašu daň ešte spracovávame a v konte pribudne najskôr <strong>20. apríla</strong>. Až sa tak udeje, pošleme vám informačný e-mail a nájdete ju v časti Dane a poplatky.",
+    "announcement_card_text": "V prípade, že sa vás týka platba dane z nehnuteľností pre rok 2023, vašu daň ešte spracovávame a v konte pribudne najskôr <strong>20. apríla</strong>. Keď sa tak udeje, pošleme vám informačný e-mail a nájdete ju v časti Dane a poplatky.",
     "announcement_card_action": "Zaplatiť daň z nehnuteľností",
     "banner_title": "Potrebujete pomôcť?",
     "banner_content": "Aké služby nájdem v Bratislavskom konte? Prečo vzniklo Bratislavské konto? Ako si viem zmeniť heslo? Nevidím svoju daň, čo mám robiť?<br /><br />Aj toto sú niektoré z otázok, na ktoré nájdete odpovede v sekcii Najčastejšie kladené otázky.",
@@ -152,7 +156,7 @@
     "cards": {
       "1": {
         "title": "Digitálna platba dane z nehnuteľností",
-        "description": "Digitálna platba dane z nehnuteľnosti, pohodlne a online.",
+        "description": "Digitálna platba dane z nehnuteľností, pohodlne a online.",
         "buttonText": "Zaplatiť daň digitálne"
       },
       "2": {
@@ -453,8 +457,7 @@
   },
   "adding_phone_number_modal": {
     "title": "Doplnenie telefónneho čísla",
-    "description": "Prajete si, aby sme s vami v ojedinelých prípadoch komunikovali aj prostredníctvom SMS? Zanechajte nám vaše telefónne číslo a my vám pripomenieme, napríklad, blížiaci sa termín splatnosti dane aj cez SMS.\n\nTelefónne číslo môžete kedykoľvek doplniť do profilu.\n\n",
-    "phoneNumber_not_required": "*Neposkytnutie telefónneho čísla nemá vplyv na využívanie služieb v Bratislavskom konte."
+    "description": "Prajete si, aby sme s vami v ojedinelých prípadoch komunikovali aj prostredníctvom SMS? Zanechajte nám vaše telefónne číslo a my vám pripomenieme, napríklad, blížiaci sa termín splatnosti dane aj cez SMS.\n\nTelefónne číslo môžete kedykoľvek doplniť do profilu. Neposkytnutie telefónneho čísla nemá vplyv na využívanie služieb v Bratislavskom konte."
   },
   "pay_tax": "Zaplatiť daň",
   "to_pay": "Zaplatiť",

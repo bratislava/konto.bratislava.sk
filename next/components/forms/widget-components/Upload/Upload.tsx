@@ -1,5 +1,6 @@
 import { UploadMinioFile } from '@backend/dtos/minio/upload-minio-file.dto'
 import { deleteFile, uploadFile } from '@backend/services/minio'
+import logger from '@utils/logger'
 import cx from 'classnames'
 import FieldErrorMessage from 'components/forms/info-components/FieldErrorMessage'
 import React, { ForwardedRef, forwardRef, ForwardRefRenderFunction, useState } from 'react'
@@ -65,7 +66,7 @@ const UploadComponent: ForwardRefRenderFunction<HTMLDivElement, UploadProps> = (
         if (res.status !== 200) throw new Error(`Api response status: ${res.status}`)
         return res
       })
-      .catch((error) => console.log(error))
+      .catch((error) => logger.error(error))
   }
 
   const isFileInSizeLimit = (file: File) => {
@@ -123,17 +124,17 @@ const UploadComponent: ForwardRefRenderFunction<HTMLDivElement, UploadProps> = (
 
     sanitizedFiles.forEach((minioFile, id) => {
       uploadFile(minioFile.file)
-        .then((res) => {
-          console.log('RES UPLOAD:', res)
-          return res
-        })
         .catch((error) => {
-          console.log(error)
+          logger.error(error)
           sanitizedFiles[id].errorMessage = 'File not uploaded'
         })
         .finally(() => {
           sanitizedFiles[id].isUploading = false
           emitOnChange(sanitizedFiles, value)
+        })
+        // technically finally can throw
+        .catch((error) => {
+          logger.error(error)
         })
     })
   }
@@ -177,7 +178,7 @@ const UploadComponent: ForwardRefRenderFunction<HTMLDivElement, UploadProps> = (
         if (!value) throw new Error('Value not defined in component')
         return res
       })
-      .catch((error) => console.log(error))
+      .catch((error) => logger.error(error))
   }
 
   // RENDER

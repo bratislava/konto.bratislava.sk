@@ -5,12 +5,13 @@ import {
   validateDataWithJsonSchema,
   validateDataWithXsd,
 } from '@backend/utils/forms'
+import logger from '@utils/logger'
 import type { NextApiRequest, NextApiResponse } from 'next'
 
 const handler = async (req: NextApiRequest, res: NextApiResponse) => {
-  console.log('-------------------')
-  console.log('Validating form:', req.query.id)
-  console.log(req.body)
+  logger.silly('-------------------')
+  logger.silly('Validating form:', req.query.id)
+  logger.silly(req.body)
   if (req.method !== 'POST')
     return res.status(400).json({ message: 'Invalid method or missing "data" field on body' })
 
@@ -18,7 +19,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
   try {
     eform = getEform(req.query.id)
   } catch (error) {
-    console.error(error)
+    logger.error(error)
     return res.status(400).json({ message: 'Invalid form name or url' })
   }
 

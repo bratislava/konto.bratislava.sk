@@ -6,6 +6,7 @@ import NextLink from 'next/link'
 import Script from 'next/script'
 import { useTranslation } from 'next-i18next'
 import React, { useCallback, useEffect, useState } from 'react'
+import logger from '@utils/logger'
 
 const availableConsents = ['statistics']
 const pickConsents = (consents: any) => mapValues(pick(consents, availableConsents), Boolean)
@@ -21,12 +22,13 @@ export const CookiesAndTracking = () => {
   const refresh = useCallback(async () => {
     try {
       const consentValue = Cookies.get('gdpr-consents')
+      if (!consentValue) return
       const parsedConsent = await JSON.parse(consentValue)
       if (typeof parsedConsent === 'object') {
         setConsentsState(pickConsents(parsedConsent))
       }
     } catch (error) {
-      console.error(error)
+      logger.error(error)
     }
     setBannerDismissed(false)
   }, [])

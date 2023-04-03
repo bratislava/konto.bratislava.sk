@@ -282,14 +282,14 @@ const MunicipalServicesSection = () => {
       category: [MARINIUM_CATEGORY],
       href: 'https://marianum.sk/aktuality/zoznam-obradov',
     },
-    {
-      title: t('account_section_services.cards.26.title'),
-      description: t('account_section_services.cards.26.description'),
-      buttonText: t('account_section_services.cards.26.buttonText'),
-      icon: <AdministrationIcon className="w-10 h-10 lg:w-12 lg:h-12 text-category-600" />,
-      category: [ENVIROMENTS_CATEGORY],
-      href: 'https://cdn-api.bratislava.sk/static-pages/non-residential-premises-map/index.html?lang=sk',
-    },
+    // {
+    //   title: t('account_section_services.cards.26.title'),
+    //   description: t('account_section_services.cards.26.description'),
+    //   buttonText: t('account_section_services.cards.26.buttonText'),
+    //   icon: <AdministrationIcon className="w-10 h-10 lg:w-12 lg:h-12 text-category-600" />,
+    //   category: [ENVIROMENTS_CATEGORY],
+    //   href: 'https://cdn-api.bratislava.sk/static-pages/non-residential-premises-map/index.html?lang=sk',
+    // },
     {
       title: t('account_section_services.cards.27.title'),
       description: t('account_section_services.cards.27.description'),

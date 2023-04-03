@@ -34,7 +34,7 @@ const TAXES_CATEGORY = 'Dane'
 const CULTURE_CATEGORY = 'Kultúra a voľný čas'
 const TRANSPORT_CATEGORY = 'MHD'
 const SECURITY_CATEGORY = 'Nahlásiť problém'
-const ENVIROMENTS_CATEGORY = 'Nebytové priestory'
+// const ENVIROMENTS_CATEGORY = 'Nebytové priestory'
 const BASKET_CATEGORY = 'Odpady'
 const PARKING_CATEGORY = 'Parkovanie'
 const MARINIUM_CATEGORY = 'Pohrebníctvo Marianum'
@@ -49,7 +49,7 @@ const enumOptions: SelectOption[] = [
   { const: 'CULTURE_CATEGORY', title: CULTURE_CATEGORY, description: '' },
   { const: 'TRANSPORT_CATEGORY', title: TRANSPORT_CATEGORY, description: '' },
   { const: 'SECURITY_CATEGORY', title: SECURITY_CATEGORY, description: '' },
-  { const: 'ENVIROMENTS_CATEGORY', title: ENVIROMENTS_CATEGORY, description: '' },
+  // { const: 'ENVIROMENTS_CATEGORY', title: ENVIROMENTS_CATEGORY, description: '' },
   { const: 'BASKET_CATEGORY', title: BASKET_CATEGORY, description: '' },
   { const: 'PARKING_CATEGORY', title: PARKING_CATEGORY, description: '' },
   { const: 'MARINIUM_CATEGORY', title: MARINIUM_CATEGORY, description: '' },

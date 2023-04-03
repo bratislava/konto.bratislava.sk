@@ -17,6 +17,7 @@ import { useTranslation } from 'next-i18next'
 import { useRouter } from 'next/router'
 import React, { ReactNode, useCallback, useContext, useEffect, useState } from 'react'
 import { useInterval } from 'usehooks-ts'
+
 import logger, { faro } from './logger'
 
 export enum AccountStatus {
@@ -93,7 +94,7 @@ interface Account {
   logout: () => void
   user: CognitoUser | null | undefined
   error: AccountError | undefined | null
-  forgotPassword: (email?: string) => Promise<boolean>
+  forgotPassword: (email?: string, fromMigration?: boolean) => Promise<boolean>
   confirmPassword: (verificationCode: string, password: string) => Promise<boolean>
   refreshUserData: () => Promise<void>
   status: AccountStatus
@@ -438,7 +439,7 @@ export const AccountProvider = ({ children }: { children: ReactNode }) => {
     })
   }
 
-  const forgotPassword = (email = ''): Promise<boolean> => {
+  const forgotPassword = (email = '', fromMigration = false): Promise<boolean> => {
     const cognitoUser = new CognitoUser({
       Username: email || lastCredentials.Username,
       Pool: userPool,
@@ -459,7 +460,12 @@ export const AccountProvider = ({ children }: { children: ReactNode }) => {
           resolve(true)
         },
         onFailure: (err: Error) => {
-          setError({ ...(err as AWSError) })
+          const customErr = { ...(err as AWSError) }
+          if (fromMigration && customErr.code === 'UserNotFoundException') {
+            customErr.code = 'MigrationUserNotFoundException'
+            customErr.name = 'MigrationUserNotFoundException'
+          }
+          setError(customErr)
           resolve(false)
         },
       })

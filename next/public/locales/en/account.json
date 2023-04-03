@@ -6,6 +6,7 @@
     "CodeMismatchException": "Code {verificationCode} could not be verified.",
     "LimitExceededException": "Attempt limit exceeded, please try after some time.",
     "UserNotFoundException": "User does not exist.",
+    "MigrationUserNotFoundException": "User does not exist.",
     "UserNotConfirmedException": "User is not confirmed.",
     "UsernameExistsException": "An account with the given email already exists.",
     "ExpiredCodeException": "Invalid code provided, please request a code again.",

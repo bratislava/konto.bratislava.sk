@@ -23,7 +23,7 @@ const AccountErrorAlert = ({ error, close, solid, args = {} }: Props) => {
     : t(`account:errors.unknown`)
   return (
     <Alert
-      message={<AccountMarkdown content={errorMessage} variant="sm" />}
+      message={<AccountMarkdown content={errorMessage} variant="sm" disableRemarkGfm />}
       type="error"
       className="min-w-full"
       close={close}

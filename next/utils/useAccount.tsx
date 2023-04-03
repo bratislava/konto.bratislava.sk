@@ -577,7 +577,8 @@ export const AccountProvider = ({ children }: { children: ReactNode }) => {
 
   // map tier to status, TODO think about dropping global status and using only tier
   useEffect(() => {
-    // faro.api.setUser(userData)
+    // does nothing if faro isn't initialized yet
+    faro?.api?.setUser(userData)
     // TODO these serve to guide users through multiple steps and should be dismissed only by them - don't update status automatically when here
     const tempStatuses = [
       AccountStatus.NewPasswordSuccess,

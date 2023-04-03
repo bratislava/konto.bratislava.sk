@@ -11,7 +11,7 @@ const ContactInformationSection = (props: any) => {
   const { t } = useTranslation('account')
   const { userData, updateUserData, error, resetError } = useAccount()
   const [openSnackbarSuccess] = useSnackbar({ variant: 'success' })
-  const postal_code_array = userData?.address?.postal_code?.replace(/\s/g, '').split('')
+  const postal_code_array = userData?.address?.postal_code?.replace(/\s/g, '')
   const [correnspondenceAddressModalShow, setCorrenspondenceAddressModalShow] = useState(false)
 
   const onSubmitCorrespondenceAddress = async ({ data }: { data?: Address }) => {
@@ -20,6 +20,7 @@ const ContactInformationSection = (props: any) => {
       openSnackbarSuccess(t('profile_detail.success_alert'))
     }
   }
+  const postalCodeFormat = (code: string): string => `${code.slice(0, 3)} ${code.slice(3)}`
 
   return (
     <>
@@ -64,11 +65,9 @@ const ContactInformationSection = (props: any) => {
                   (userData.address.street_address ||
                     userData.address.postal_code ||
                     userData.address.locality)
-                    ? `${userData.address.street_address}, ${postal_code_array
-                        ?.slice(0, 3)
-                        .join('')} ${postal_code_array?.slice(3).join('')} ${
-                        userData.address.locality
-                      }`
+                    ? `${
+                        userData.address.street_address ? `${userData.address.street_address},` : ''
+                      } ${postalCodeFormat(postal_code_array)} ${userData.address.locality}`
                     : '',
                 schemaPath: '',
                 isError: false,

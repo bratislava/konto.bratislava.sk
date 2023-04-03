@@ -1,4 +1,5 @@
 import { subscribeApi, verifyIdentityApi } from '@utils/api'
+import { ROUTES } from '@utils/constants'
 import useSnackbar from '@utils/useSnackbar'
 import {
   AuthenticationDetails,
@@ -13,8 +14,8 @@ import * as AWS from 'aws-sdk/global'
 import { AWSError } from 'aws-sdk/global'
 import { useStatusBarContext } from 'components/forms/info-components/StatusBar'
 import AccountMarkdown from 'components/forms/segments/AccountMarkdown/AccountMarkdown'
-import { useTranslation } from 'next-i18next'
 import { useRouter } from 'next/router'
+import { useTranslation } from 'next-i18next'
 import React, { ReactNode, useCallback, useContext, useEffect, useState } from 'react'
 import { useInterval } from 'usehooks-ts'
 
@@ -607,7 +608,7 @@ export const AccountProvider = ({ children }: { children: ReactNode }) => {
         <AccountMarkdown
           uLinkVariant="error"
           variant="sm"
-          content={t('account:identity_verification_failed')}
+          content={t('account:identity_verification_failed', { url: ROUTES.REGISTER })}
         />,
       )
     } else {

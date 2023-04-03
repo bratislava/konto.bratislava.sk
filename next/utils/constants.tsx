@@ -1,6 +1,6 @@
 export const ROUTES = {
   HOME: '/',
-  REGISTER: '/register',
+  REGISTER: '/registracia',
   LOGIN: '/prihlasenie',
   FORGOTTEN_PASSWORD: '/zabudnute-heslo',
   PASSWORD_CHANGE: '/zmena-hesla',

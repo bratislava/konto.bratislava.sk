@@ -313,7 +313,7 @@
     "error_card_content": {
       "title": "<p>Môže to tak byť, lebo:</p>",
       "list": {
-        "verification": "<li>ste neoverili svoju identitu cez rodné číslo a číslo občianskeho preukazu (<a href='/register'>Overiť identitu</a>),</li>",
+        "verification": "<li>ste neoverili svoju identitu cez rodné číslo a číslo občianskeho preukazu (<a href={{url}}>Overiť identitu</a>),</li>",
         "other": "<li>vašu daň ešte pripravujeme (v tom prípade bude k dispozícii najskôr 20. apríla)</li><li>za platbu dane je zodovedný/á spoluvlastník/čka nehnuteľnosti,</li><li>nie ste vlastníkom či vlastníčkou nehnuteľnosti,</li><li>ste nepodali priznanie k dani z nehnuteľností.</li>"
       },
       "help_text": "<p>Viac informácií môžete nájsť v <a href={{url}}>často kladených otázkach</a>.</p>"

@@ -66,7 +66,7 @@ const TaxesFeesSection = ({ isProductionDeployment }: TaxesFeesSectionProps) => 
 <div>${t('account_section_payment.error_card_content.title')}
 <ul>${
     status !== AccountStatus.IdentityVerificationSuccess
-      ? t('account_section_payment.error_card_content.list.verification')
+      ? t('account_section_payment.error_card_content.list.verification', { url: ROUTES.REGISTER })
       : ''
   }${t('account_section_payment.error_card_content.list.other')}</ul><br />${t(
     'account_section_payment.error_card_content.help_text',

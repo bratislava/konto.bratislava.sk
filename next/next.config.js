@@ -38,6 +38,11 @@ const nextConfig = {
         permanent: true,
       },
       {
+        source: '/register',
+        destination: ROUTES.REGISTER,
+        permanent: true,
+      },
+      {
         source: '/migration',
         destination: ROUTES.MIGRATION,
         permanent: true,

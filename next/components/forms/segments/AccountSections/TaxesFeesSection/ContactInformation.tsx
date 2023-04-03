@@ -66,7 +66,10 @@ const ContactInformationSection = (props: any) => {
                     userData.address.postal_code ||
                     userData.address.locality)
                     ? `${
-                        userData.address.street_address ? `${userData.address.street_address},` : ''
+                        userData.address.street_address &&
+                        (postal_code_array || userData.address.locality)
+                          ? `${userData.address.street_address},`
+                          : userData.address.street_address
                       } ${postalCodeFormat(postal_code_array)} ${userData.address.locality}`
                     : '',
                 schemaPath: '',

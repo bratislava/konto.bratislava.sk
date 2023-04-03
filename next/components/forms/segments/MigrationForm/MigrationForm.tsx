@@ -18,9 +18,10 @@ interface Data {
 interface Props {
   onSubmit: (email: string) => Promise<any>
   error?: AccountError | null | undefined
+  lastEmail: string
 }
 
-const MigrationForm = ({ onSubmit, error }: Props) => {
+const MigrationForm = ({ onSubmit, error, lastEmail }: Props) => {
   const router = useRouter()
   const queryEmail =
     router.query.email && typeof router.query.email === 'string'
@@ -76,7 +77,7 @@ const MigrationForm = ({ onSubmit, error }: Props) => {
         )}
       </p>
       <p className="text-p3 lg:text-p2">{t('migration_submit_description')}</p>
-      <AccountErrorAlert error={error} />
+      <AccountErrorAlert error={error} args={{ email: lastEmail }} />
       {!queryEmail && (
         <Controller
           name="email"

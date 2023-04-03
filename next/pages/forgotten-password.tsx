@@ -55,7 +55,7 @@ const ForgottenPasswordPage = ({ page }: AsyncServerProps<typeof getServerSidePr
               lastEmail={lastEmail}
             />
           ) : status === AccountStatus.Idle ? (
-            <ForgottenPasswordForm onSubmit={forgotPassword} error={error} />
+            <ForgottenPasswordForm onSubmit={forgotPassword} error={error} lastEmail={lastEmail} />
           ) : (
             <AccountSuccessAlert
               title={t('forgotten_password_success_title')}

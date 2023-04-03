@@ -18,6 +18,7 @@ import ExcavationsIcon from '@assets/images/new-icons/other/transport-and-maps/e
 import ParkingIcon from '@assets/images/new-icons/other/transport-and-maps/parking.svg'
 import TowIcon from '@assets/images/new-icons/other/transport-and-maps/towing.svg'
 import ChristmasTreeIcon from '@assets/images/new-icons/other/tree.svg'
+import { ROUTES } from '@utils/constants'
 import Alert from 'components/forms/info-components/Alert'
 import MunicipalServicesSectionHeader from 'components/forms/segments/AccountSectionHeader/MunicipalServicesSectionHeader'
 import Pagination from 'components/forms/simple-components/Pagination/Pagination'
@@ -87,7 +88,7 @@ const MunicipalServicesSection = () => {
       icon: <TaxesIcon className="w-10 h-10 lg:w-12 lg:h-12 text-category-600" />,
       category: [TAXES_CATEGORY],
       linkType: 'internal',
-      href: '/taxes-and-fees',
+      href: ROUTES.TAXES_AND_FEES,
     },
     {
       title: t('account_section_services.cards.32.title'),

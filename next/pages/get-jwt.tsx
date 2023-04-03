@@ -2,6 +2,7 @@
 // disabling eslint/ts checks instead of fixing them
 // @ts-nocheck
 import { getUserApi, resetRcApi } from '@utils/api'
+import { ROUTES } from '@utils/constants'
 import { AsyncServerProps } from '@utils/types'
 import useAccount from '@utils/useAccount'
 import { isProductionDeployment } from '@utils/utils'
@@ -66,7 +67,7 @@ const GetJwt = ({ page }: AsyncServerProps<typeof getServerSideProps>) => {
               </div>
             ) : (
               <div className="flex flex-col">
-                <Button href="/login" label="No user - go to login" variant="link-category" />
+                <Button href={ROUTES.LOGIN} label="No user - go to login" variant="link-category" />
                 <Button onPress={logout} text="Logout" />
                 <Button
                   onPress={() => signUp(...signUpParams)}

@@ -120,7 +120,7 @@
   "identity_verification_pending_title": "Prebieha overovanie",
   "identity_verification_pending_description": "Ospravedlňujeme sa, ale rodné číslo **{rc}** a číslo občianskeho preukazu **{idCard}** ešte stále overujeme. Medzitým môžete pokračovať do konta a my vám dáme vedieť, až dokončíme overenie vašej totožnosti.",
   "identity_verification_pending_description_without_data": "Ospravedlňujeme sa, ale rodné číslo a číslo občianskeho preukazu ešte stále overujeme. Medzitým môžete pokračovať do konta a my vám dáme vedieť, až dokončíme overenie vašej totožnosti.",
-  "identity_verification_failed": "Overenie rodného čísla a čísla občianskeho preukazu sa nepodarilo. Mohli ste zadať nesprávne údaje, v takom prípade [zopakujte overenie](/register). Tieto údaje tiež mohli byť použité na overenie iného konta. Ak o jeho existencii neviete, čím skôr sa obráťte na <a href='mailto:info@bratislava.sk'>info@bratislava.sk</a>.",
+  "identity_verification_failed": "Overenie rodného čísla a čísla občianskeho preukazu sa nepodarilo. Mohli ste zadať nesprávne údaje, v takom prípade [zopakujte overenie](/{{url}}). Tieto údaje tiež mohli byť použité na overenie iného konta. Ak o jeho existencii neviete, čím skôr sa obráťte na <a href='mailto:info@bratislava.sk'>info@bratislava.sk</a>.",
   "identity_verification_success": "Overenie bolo úspešné",
   "password_change_title": "Zmena hesla",
   "old_password_label": "Staré heslo",
@@ -324,10 +324,10 @@
     "error_card_content": {
       "title": "<p>Môže to tak byť, lebo:</p>",
       "list": {
-        "verification": "<li>ste neoverili svoju identitu cez rodné číslo a číslo občianskeho preukazu (<a href='/register'>Overiť identitu</a>),</li>",
+        "verification": "<li>ste neoverili svoju identitu cez rodné číslo a číslo občianskeho preukazu (<a href={{url}}>Overiť identitu</a>),</li>",
         "other": "<li>vašu daň ešte pripravujeme (v tom prípade bude k dispozícii najskôr 20. apríla)</li><li>vaša nehnuteľnosť je v spoluvlastníctve,</li><li>nie ste vlastníkom či vlastníčkou nehnuteľnosti,</li><li>ste nepodali priznanie k dani z nehnuteľností.</li>"
       },
-      "help_text": "<p>Viac informácií môžete nájsť v <a href='/i-have-a-problem'>často kladených otázkach</a>.</p>"
+      "help_text": "<p>Viac informácií môžete nájsť v <a href={{url}}>často kladených otázkach</a>.</p>"
     }
   },
   "account_section_help": {
@@ -545,7 +545,7 @@
   },
   "tax_footer": {
     "register_info": "Registrovaním sa do Bratislavského konta <strong>do 19. apríla 2023</strong>, a zároveň zaplatením plnej sumy dane online <strong>do 12. mája 2023</strong> súhlasíte s tým, že vám nebude zaslané rozhodnutie o dani z nehnuteľností na korešpondenčnú adresu a vy tak nemusíte ísť na poštu.",
-    "register_info_help": "Radi by ste sa v niečom uistili alebo máte otázky? Pozrite si odpovede na tie, ktoré sú <a href='/i-have-a-problem'>často kladené</a>.<br />Ak nenájdete odpoveď na vašu otázku, neváhajte nás kontaktovať na platbadane@bratislava.sk."
+    "register_info_help": "Radi by ste sa v niečom uistili alebo máte otázky? Pozrite si odpovede na tie, ktoré sú <a href={{url}}>často kladené</a>.<br />Ak nenájdete odpoveď na vašu otázku, neváhajte nás kontaktovať na platbadane@bratislava.sk."
   },
   "payment_schedule": {
     "title": "Splátkový kalendár",

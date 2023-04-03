@@ -28,7 +28,7 @@ const menuItems = [
     id: 2,
     title: 'account:menu_profile_link',
     icon: <ProfileIcon className="w-6 h-6" />,
-    link: '/user-profile',
+    link: ROUTES.USER_PROFILE,
   },
   {
     id: 3,

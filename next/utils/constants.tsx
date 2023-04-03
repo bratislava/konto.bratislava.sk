@@ -9,4 +9,5 @@ export const ROUTES = {
   MIGRATION: '/aktivacia-konta',
   MUNICIPAL_SERVICES: '/mesteske-sluzby',
   THANK_YOU: '/vysledok-platby',
+  USER_PROFILE: '/moj-profil',
 }

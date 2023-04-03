@@ -1,5 +1,4 @@
 const { i18n } = require('./next-i18next.config')
-const { ROUTES } = require('@utils/constants')
 
 /**
  * @type {import('next').NextConfig}
@@ -19,47 +18,52 @@ const nextConfig = {
       },
       {
         source: '/forgotten-password',
-        destination: ROUTES.FORGOTTEN_PASSWORD,
+        destination: '/zabudnute-heslo',
         permanent: true,
       },
       {
         source: '/taxes-and-fees',
-        destination: ROUTES.TAXES_AND_FEES,
+        destination: '/dane-a-poplatky',
         permanent: true,
       },
       {
         source: '/i-have-a-problem',
-        destination: ROUTES.I_HAVE_A_PROBLEM,
+        destination: '/mam-problem',
         permanent: true,
       },
       {
         source: '/login',
-        destination: ROUTES.LOGIN,
+        destination: '/prihlasenie',
         permanent: true,
       },
       {
         source: '/register',
-        destination: ROUTES.REGISTER,
+        destination: '/registracia',
         permanent: true,
       },
       {
         source: '/migration',
-        destination: ROUTES.MIGRATION,
+        destination: '/aktivacia-konta',
         permanent: true,
       },
       {
         source: '/municipal-services',
-        destination: ROUTES.MUNICIPAL_SERVICES,
+        destination: '/mestske-sluzby',
         permanent: true,
       },
       {
         source: '/password-change',
-        destination: ROUTES.PASSWORD_CHANGE,
+        destination: '/zmena-hesla',
         permanent: true,
       },
       {
         source: '/thank-you',
-        destination: ROUTES.THANK_YOU,
+        destination: '/vysledok-platby',
+        permanent: true,
+      },
+      {
+        source: '/user-profile',
+        destination: '/moj-profil',
         permanent: true,
       },
     ]

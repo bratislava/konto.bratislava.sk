@@ -13,8 +13,8 @@ import * as AWS from 'aws-sdk/global'
 import { AWSError } from 'aws-sdk/global'
 import { useStatusBarContext } from 'components/forms/info-components/StatusBar'
 import AccountMarkdown from 'components/forms/segments/AccountMarkdown/AccountMarkdown'
-import { useTranslation } from 'next-i18next'
 import { useRouter } from 'next/router'
+import { useTranslation } from 'next-i18next'
 import React, { ReactNode, useCallback, useContext, useEffect, useState } from 'react'
 import { useInterval } from 'usehooks-ts'
 
@@ -212,7 +212,7 @@ export const AccountProvider = ({ children }: { children: ReactNode }) => {
           resolve(false)
         } else {
           setStatus(AccountStatus.EmailVerificationSuccess)
-          const res = await login(lastCredentials.Username, lastCredentials.Password, true)
+          const res = await login(lastCredentials.Username, lastCredentials.Password)
           await subscribe()
           resolve(res)
         }
@@ -352,7 +352,6 @@ export const AccountProvider = ({ children }: { children: ReactNode }) => {
       user.signOut()
       setUser(null)
       setUserData(null)
-      setStatus(AccountStatus.Idle)
     }
   }
 
@@ -472,11 +471,7 @@ export const AccountProvider = ({ children }: { children: ReactNode }) => {
     })
   }
 
-  const login = (
-    email: string,
-    password: string | undefined,
-    skipStatusUpdate?: boolean,
-  ): Promise<boolean> => {
+  const login = (email: string, password: string | undefined): Promise<boolean> => {
     // login into cognito using aws sdk
     const credentials = {
       Username: email,
@@ -515,11 +510,6 @@ export const AccountProvider = ({ children }: { children: ReactNode }) => {
               resolve(false)
             } else {
               const userData = userAttributesToObject(attributes)
-              // TODO an ugly workaround for first login during registration
-              // get rid of this together with global account status
-              if (!skipStatusUpdate) {
-                setStatus(mapTierToStatus(userData.tier))
-              }
               setUserData(userData)
               setUser(cognitoUser)
 

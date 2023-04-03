@@ -57,6 +57,11 @@ const nextConfig = {
         destination: ROUTES.PASSWORD_CHANGE,
         permanent: true,
       },
+      {
+        source: '/thank-you',
+        destination: ROUTES.THANK_YOU,
+        permanent: true,
+      },
     ]
   },
   webpack(config) {

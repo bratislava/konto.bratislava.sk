@@ -8,4 +8,5 @@ export const ROUTES = {
   TAXES_AND_FEES: 'dane-a-poplatky',
   MIGRATION: '/aktivacia-konta',
   MUNICIPAL_SERVICES: '/mesteske-sluzby',
+  THANK_YOU: '/vysledok-platby',
 }

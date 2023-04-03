@@ -39,14 +39,14 @@ const LoginPage = ({ page }: AsyncServerProps<typeof getServerSideProps>) => {
     useAccount()
   const router = useRouter()
 
-  const redirect = () => {
+  const redirect = async () => {
     const from =
       router.query.from &&
       typeof router.query.from === 'string' &&
       router.query.from.startsWith('/')
         ? decodeURIComponent(router.query.from)
         : ROUTES.HOME
-    router.push(from)
+    await router.push(from)
   }
 
   useEffect(() => {

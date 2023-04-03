@@ -47,6 +47,11 @@ const nextConfig = {
         destination: ROUTES.MUNICIPAL_SERVICES,
         permanent: true,
       },
+      {
+        source: '/password-change',
+        destination: ROUTES.PASSWORD_CHANGE,
+        permanent: true,
+      },
     ]
   },
   webpack(config) {

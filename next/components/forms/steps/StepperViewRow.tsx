@@ -14,7 +14,7 @@ interface StepperViewRowProps {
 
 const StepperViewRow = (props: StepperViewRowProps) => {
   const { title, order, isCurrent, isFilled, isLast, onClick, className } = props
-  const { t } = useTranslation('forms')
+
   const iconClassName = cx(
     'min-w-8 w-8 flex-row h-8 rounded-full flex justify-center items-center border-2 shrink-0',
     {

@@ -1,5 +1,3 @@
-import { EnumOptionsType } from '@rjsf/utils'
-
 import Dropdown from '../../forms/widget-components/SelectField/Dropdown'
 import { SelectOption } from '../../forms/widget-components/SelectField/SelectField'
 import { Stack } from '../Stack'

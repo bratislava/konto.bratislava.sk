@@ -38,6 +38,7 @@ const parseFormidableFile = async (req: NextApiRequest): Promise<UploadedFileInf
   return JSON.parse(JSON.stringify(data.files.file)) as UploadedFileInfo
 }
 
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 const handleBucketCreation = async () => {
   const isBucketExisting = await minioClient.bucketExists(bucketName)
   if (!isBucketExisting) {

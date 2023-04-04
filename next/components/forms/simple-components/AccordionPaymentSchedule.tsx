@@ -20,7 +20,7 @@ export type AccordionBase = {
 export const isAccordionSizeType = (size: string) =>
   ['xs', 'sm', 'md', 'lg'].includes(size) ? size : 'sm'
 
-const PaymentScheduleView = (props: any) => {
+const PaymentScheduleView = () => {
   const { t } = useTranslation('account')
   return (
     <div className="no-scrollbar flex flex-col items-start lg:gap-6 gap-4 w-full overflow-auto">

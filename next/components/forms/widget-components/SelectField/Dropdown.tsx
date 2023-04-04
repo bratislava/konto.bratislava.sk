@@ -98,6 +98,7 @@ const Dropdown: FC<DropdownProps> = (props: DropdownProps) => {
             selected={isSelected(option)}
             type={type}
             isBold={isRowBold}
+            maxWordSize={maxWordSize}
             onChooseOne={(opt: SelectOption, close?: boolean) =>
               onChooseOne ? onChooseOne(opt, close) : null
             }

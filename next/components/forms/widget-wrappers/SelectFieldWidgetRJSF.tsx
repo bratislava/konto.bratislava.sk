@@ -2,7 +2,6 @@ import { EnumOptionsType, StrictRJSFSchema, WidgetProps } from '@rjsf/utils'
 import { WidgetOptions } from 'components/forms/types/WidgetOptions'
 import WidgetWrapper from 'components/forms/widget-wrappers/WidgetWrapper'
 import React from 'react'
-import { useEffectOnce } from 'usehooks-ts'
 
 import { ExplicitOptionalType } from '../types/ExplicitOptional'
 import SelectField, { SelectOption } from '../widget-components/SelectField/SelectField'
@@ -131,6 +130,9 @@ const SelectFieldWidgetRJSF = (props: SelectFieldWidgetRJSFProps) => {
         className={className}
         onChange={handleOnChange}
         explicitOptional={explicitOptional}
+        hideScrollbar={hideScrollbar}
+        alwaysOneSelected={alwaysOneSelected}
+        maxWordSize={maxWordSize}
       />
     </WidgetWrapper>
   )

@@ -13,8 +13,6 @@ interface UploadedFileProps {
 }
 
 const UploadedFile = ({ fileName, errorMessage, isUploading, onRemove }: UploadedFileProps) => {
-  const [isHovered, setIsHovered] = useState<boolean>(false)
-
   const classNames = cx(
     'cursor:pointer group linear text-20 flex w-full flex-row gap-2 rounded-lg py-1 px-2 transition-all',
     {
@@ -30,11 +28,7 @@ const UploadedFile = ({ fileName, errorMessage, isUploading, onRemove }: Uploade
   }
 
   return (
-    <div
-      className={classNames}
-      onMouseEnter={() => setIsHovered(true)}
-      onMouseLeave={() => setIsHovered(false)}
-    >
+    <div className={classNames}>
       <div className="mr-2 flex w-full flex-row gap-2">
         <div className="flex flex-col justify-center">
           {isUploading ? <Spinner size="sm" className="self-center" /> : <PinFile />}

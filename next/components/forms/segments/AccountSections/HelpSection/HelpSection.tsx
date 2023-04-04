@@ -6,11 +6,11 @@ import { useTranslation } from 'next-i18next'
 
 const HelpSection = () => {
   const { t } = useTranslation('account')
-  const router = useRouter()
 
   const bannerContent = `<span className='text-p2'>${t(
     'account_section_help.banner_content',
   )}</span>`
+
   return (
     <div className="flex flex-col">
       <AccountSectionHeader title={t('account_section_help.navigation')} />

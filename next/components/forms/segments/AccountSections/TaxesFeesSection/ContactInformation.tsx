@@ -7,7 +7,7 @@ import SummaryRowSimple from '../../../simple-components/SummaryRowSimple'
 import SummaryRow from '../../../steps/Summary/SummaryRow'
 import CorrespondenceAddressModal from '../../CorrespondenceAddressModal/CorrespondenceAddressModal'
 
-const ContactInformationSection = (props: any) => {
+const ContactInformationSection = () => {
   const { t } = useTranslation('account')
   const { userData, updateUserData, error, resetError } = useAccount()
   const [openSnackbarSuccess] = useSnackbar({ variant: 'success' })

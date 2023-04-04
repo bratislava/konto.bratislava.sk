@@ -5,8 +5,6 @@ import FieldHeader from '../../forms/info-components/FieldHeader'
 import { Stack } from '../Stack'
 import { Wrapper } from '../Wrapper'
 
-interface FieldHeaderShowCaseProps {}
-
 const FieldHeaderShowCase = ({}: FieldHeaderShowCaseProps) => {
   return (
     <>

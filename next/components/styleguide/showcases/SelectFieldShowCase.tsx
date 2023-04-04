@@ -4,8 +4,6 @@ import SelectField, { SelectOption } from '../../forms/widget-components/SelectF
 import { Stack } from '../Stack'
 import { Wrapper } from '../Wrapper'
 
-interface SelectFieldShowCaseProps {}
-
 const SelectFieldShowCase = () => {
   const enumOptions: SelectOption[] = [
     {

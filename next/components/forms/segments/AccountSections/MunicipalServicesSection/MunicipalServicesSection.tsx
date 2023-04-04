@@ -1,4 +1,3 @@
-import AdministrationIcon from '@assets/images/new-icons/other/city-bratislava/city-administration.svg'
 import TaxesIcon from '@assets/images/new-icons/other/city-bratislava/taxes.svg'
 import TheatreIcon from '@assets/images/new-icons/other/culture-communities/events-support.svg'
 import LibraryIcon from '@assets/images/new-icons/other/culture-communities/library.svg'

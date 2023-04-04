@@ -35,11 +35,12 @@ export const getServerSideProps = async (ctx: GetServerSidePropsContext) => {
 }
 
 const ForgottenPasswordPage = ({ page }: AsyncServerProps<typeof getServerSideProps>) => {
-  const { confirmPassword, forgotPassword, error, status, lastEmail } = useAccount()
+  const { confirmPassword, forgotPassword, error, status, setStatus, lastEmail } = useAccount()
   const { t } = useTranslation('account')
   const router = useRouter()
 
   const onConfirm = () => {
+    setStatus(AccountStatus.Idle)
     router.push(ROUTES.HOME)
   }
 

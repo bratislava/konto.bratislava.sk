@@ -307,6 +307,7 @@ export const AccountProvider = ({ children }: { children: ReactNode }) => {
       // not refreshing user status immediately, instead leaving this to the registration flow
       return true
     } catch (error: any) {
+      logger.error('Failed verify identity request:', error)
       setError({
         code: error.message,
         message: error.message,

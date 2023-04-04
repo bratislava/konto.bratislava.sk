@@ -85,10 +85,10 @@ const GeneratedFormRJSF = ({ eform, escapedSlug, formSlug, wrapperClassName }: F
               return form.customValidate(formData, errors, form.currentSchema)
             }}
             onSubmit={async (e) => {
-              await form.handleOnSubmit(e.formData)
+              await form.handleOnSubmit(e.formData as RJSFSchema)
             }}
             onChange={(e) => {
-              form.setStepFormData(e.formData)
+              form.setStepFormData(e.formData as RJSFSchema)
             }}
             onError={form.handleOnErrors}
             extraErrors={form.extraErrors}

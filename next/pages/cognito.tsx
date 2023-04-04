@@ -48,7 +48,7 @@ const CognitoPrototype = ({ page }: AsyncServerProps<typeof getServerSideProps>)
   const [serializedUserData, setSerializedUserData] = useState('')
 
   const createUser = () => {
-    const attributeList = []
+    const attributeList: CognitoUserAttribute[] = []
 
     const dataEmail = {
       Name: 'email',

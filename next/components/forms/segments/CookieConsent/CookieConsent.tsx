@@ -21,7 +21,7 @@ export const CookiesAndTracking = () => {
   const refresh = useCallback(async () => {
     try {
       const consentValue = Cookies.get('gdpr-consents')
-      if (!consentValue) return
+      if (!consentValue || typeof consentValue !== 'string') return
       const parsedConsent = await JSON.parse(consentValue)
       if (typeof parsedConsent === 'object') {
         setConsentsState(pickConsents(parsedConsent))

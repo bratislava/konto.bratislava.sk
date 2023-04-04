@@ -18,6 +18,7 @@ export default function useHookForm<T extends FieldValues>({ schema, defaultValu
   const form = useForm({
     resolver: ajvResolver(schema as JSONSchemaType<T>, {
       formats: {
+        phone: '^\\+\\d{12}$',
         email:
           "^[a-zA-Z0-9!#$%&'*+/=?^_`{|}~-]+(?:\\.[a-zA-Z0-9!#$%&'*+/=?^_`{|}~-]+)*@(?:[a-zA-Z0-9](?:[a-zA-Z0-9-]*[a-zA-Z0-9])?\\.)+[a-zA-Z0-9](?:[a-zA-Z0-9-]*[a-zA-Z0-9])?$",
         password:

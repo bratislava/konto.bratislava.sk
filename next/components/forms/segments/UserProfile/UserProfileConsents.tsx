@@ -30,7 +30,9 @@ const UserProfileConsents = () => {
     }
   }
 
-  const isSelected = user.data?.gdprData.some((x) => x.subType === 'subscribe')
+  const isSelected = user.data?.gdprData
+    .filter((x) => x.type !== 'LICENSE')
+    .some((x) => x.subType === 'subscribe')
   return (
     <UserProfileSection>
       <UserProfileSectionHeader

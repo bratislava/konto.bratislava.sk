@@ -11,6 +11,7 @@ type BannerBase = {
   buttonText?: string
   mobileNumber?: string
   content?: string
+  href?: string
   onPress?: () => void
   className?: string
 }
@@ -20,6 +21,7 @@ const Banner = ({
   content,
   buttonText = 'Button',
   mobileNumber = '',
+  href,
   onPress,
   className,
 }: BannerBase) => {
@@ -37,18 +39,26 @@ const Banner = ({
         </div>
         <div className="flex flex-col lg:flex-row items-center gap-4">
           <Button
-            className="hidden lg:flex"
+            className="no-underline hidden lg:flex rounded-lg"
             variant="category"
             text={buttonText}
+            label={buttonText}
+            href={href}
+            hrefIconHidden
+            hrefLabelCenter
             onPress={onPress}
           />
           <Button
-            className="flex lg:hidden"
+            className="no-underline flex lg:hidden rounded-lg"
             size="sm"
             variant="category"
             text={buttonText}
-            onPress={onPress}
+            label={buttonText}
+            href={href}
+            hrefIconHidden
+            hrefLabelCenter
             fullWidth
+            onPress={onPress}
           />
           {mobileNumber && (
             <div className="text-gray-0 flex items-center gap-2 px-3 py-2">

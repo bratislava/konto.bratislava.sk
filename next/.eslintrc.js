@@ -9,6 +9,8 @@ module.exports = {
     'import/prefer-default-export': 'off',
     /** Too tedious to type every function return explicitly */
     '@typescript-eslint/explicit-function-return-type': 'off',
+    /** In api requests, req parameter body is always any */
+    '@typescript-eslint/no-unsafe-member-access': 'warn',
     /** We prefer arrow functions */
     'react/function-component-definition': [2, { namedComponents: 'arrow-function' }],
     /** It's annoying to refactor from one style to another */

@@ -59,8 +59,8 @@ const TaxFeeSection = () => {
     <div className="flex flex-col">
       <TaxFeeSectionHeader who={who} title="" />
       <TaxAndFeeMainContent>
-        <ContactInformationSection who={who} />
-        <TaxDetails who={who} />
+        <ContactInformationSection />
+        <TaxDetails />
         <PaymentData who={who} />
       </TaxAndFeeMainContent>
       {switcher()}

@@ -1,4 +1,5 @@
 import { ROUTES } from '@utils/constants'
+import logger from '@utils/logger'
 import { AsyncServerProps } from '@utils/types'
 import useAccount, { AccountStatus } from '@utils/useAccount'
 import { isProductionDeployment } from '@utils/utils'

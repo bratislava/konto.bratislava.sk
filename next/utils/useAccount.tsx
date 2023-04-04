@@ -429,6 +429,8 @@ export const AccountProvider = ({ children }: { children: ReactNode }) => {
       cognitoUser.confirmPassword(verificationCode, password, {
         async onSuccess() {
           setStatus(AccountStatus.NewPasswordSuccess)
+          // seems like user is set even without login but without attributes at this point - try refreshing user data
+          refreshUserData().catch((error) => logger.error(error))
           resolve(await login(lastCredentials.Username, password))
         },
         onFailure(err: Error) {

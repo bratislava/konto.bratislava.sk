@@ -4,7 +4,7 @@
     "Bad Request": "Overenie bolo neúspešné. Skontrolujte správnosť údajov.",
     "NotAuthorizedException": "Nesprávne prihlasovacie údaje",
     "CodeMismatchException": "E-mail **{email}** sa nepodarilo overiť. Skontrolujte správnosť kódu.",
-    "LimitExceededException": "Skúste to znova neskôr.",
+    "LimitExceededException": "Priveľa opakovaní. Skúste to znova neskôr.",
     "UserNotFoundException": "Konto so zadanou e-mailovou adresou zatiaľ neexistuje.",
     "MigrationUserNotFoundException": "E-mail **{email}** sa nenachádza v našej databáze minuloročných používateľov a používateliek digitálnej platby dane. Skontrolujte správnosť e-mailu alebo sa [registrujte](/register).",
     "UserNotConfirmedException": "E-mail nie je verifikovaný.",

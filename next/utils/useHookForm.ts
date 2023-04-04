@@ -15,13 +15,13 @@ interface Props<T> {
 
 export default function useHookForm<T extends FieldValues>({ schema, defaultValues }: Props<T>) {
   const { t } = useTranslation()
+  // if we want password to contain special symbol add (?=.*?[ !"#$%&'()*+,./:;<=>?@[\\\]^_`{|}~-])
   const form = useForm({
     resolver: ajvResolver(schema as JSONSchemaType<T>, {
       formats: {
         email:
           "^[a-zA-Z0-9!#$%&'*+/=?^_`{|}~-]+(?:\\.[a-zA-Z0-9!#$%&'*+/=?^_`{|}~-]+)*@(?:[a-zA-Z0-9](?:[a-zA-Z0-9-]*[a-zA-Z0-9])?\\.)+[a-zA-Z0-9](?:[a-zA-Z0-9-]*[a-zA-Z0-9])?$",
-        password:
-          /^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?\d)(?=.*?[ !"#$%&'()*+,./:;<=>?@[\\\]^_`{|}~-]).{8,}$/,
+        password: /^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?\d).{8,}$/,
         postalCode: '^([0-9]{5}|)$',
         idCard: '^([a-zA-Z]{2})([0-9]{6})$',
         rc: (value: string) => {

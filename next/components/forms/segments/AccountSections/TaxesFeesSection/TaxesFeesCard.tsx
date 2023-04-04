@@ -33,10 +33,10 @@ const TaxesFeesCard = (props: TaxesCardBase) => {
         return statusNode(<TimeIcon className="text-warning-700 w-6 h-6" />, 'Čiastočne uhradená')
       case 'success':
         return statusNode(<SuccessIcon className="text-success-700 w-6 h-6" />, 'Uhradená')
-
       default:
         break
     }
+    return null
   }
 
   const priceFormat = (price: number): string => {

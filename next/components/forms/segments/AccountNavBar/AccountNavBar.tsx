@@ -3,6 +3,7 @@ import Hamburger from '@assets/images/new-icons/ui/hamburger.svg'
 import ProfileOutlinedIcon from '@assets/images/new-icons/ui/profile.svg'
 import SearchIcon from '@assets/images/new-icons/ui/search.svg'
 import VolumeIcon from '@assets/images/new-icons/ui/speaker.svg'
+import { logger } from '@storybook/client-logger'
 import { ROUTES } from '@utils/constants'
 import useAccount, { UserData } from '@utils/useAccount'
 import useElementSize from '@utils/useElementSize'
@@ -74,12 +75,14 @@ export const AccountNavBar = ({
   const { t } = useTranslation(['common', 'account'])
   const router = useRouter()
 
-  const onRouteChange = (selectedMenuItem: MenuItem) => {
+  const onRouteChange = async (selectedMenuItem: MenuItem) => {
     if (selectedMenuItem.link === '/logout') {
       logout()
-      router.push(ROUTES.LOGIN)
+      await router.push(ROUTES.LOGIN).catch((error_) => logger.error('Failed redirect', error_))
     } else {
-      router.push(selectedMenuItem.link)
+      await router
+        .push(selectedMenuItem.link)
+        .catch((error_) => logger.error('Failed redirect', error_))
     }
   }
 

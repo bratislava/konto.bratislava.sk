@@ -1,4 +1,5 @@
 import { ROUTES } from '@utils/constants'
+import logger from '@utils/logger'
 import { AsyncServerProps } from '@utils/types'
 import useAccount, { AccountStatus } from '@utils/useAccount'
 import AccountActivator from 'components/forms/segments/AccountActivator/AccountActivator'
@@ -46,24 +47,24 @@ const LoginPage = ({ page }: AsyncServerProps<typeof getServerSideProps>) => {
       router.query.from.startsWith('/')
         ? decodeURIComponent(router.query.from)
         : ROUTES.HOME
-    await router.push(from)
+    await router.push(from).catch((error_) => logger.error('Failed redirect', error_))
   }
 
   useEffect(() => {
     if (user !== null && user !== undefined) {
-      router.push(ROUTES.HOME)
+      router.push(ROUTES.HOME).catch((error_) => logger.error('Failed redirect', error_))
     }
   }, [user])
 
   const onLogin = async (email: string, password: string) => {
     if (await login(email, password)) {
-      redirect()
+      await redirect()
     }
   }
 
   const onVerifyEmail = async (verificationCode: string) => {
     if (await verifyEmail(verificationCode)) {
-      redirect()
+      await redirect()
     }
   }
 

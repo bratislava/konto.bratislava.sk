@@ -1,6 +1,8 @@
+import { logger } from '@storybook/client-logger'
 import { ROUTES } from '@utils/constants'
 import { AsyncServerProps } from '@utils/types'
 import useAccount, { AccountStatus } from '@utils/useAccount'
+import { isProductionDeployment } from '@utils/utils'
 import AccountContainer from 'components/forms/segments/AccountContainer/AccountContainer'
 import AccountSuccessAlert from 'components/forms/segments/AccountSuccessAlert/AccountSuccessAlert'
 import ForgottenPasswordForm from 'components/forms/segments/ForgottenPasswordForm/ForgottenPasswordForm'
@@ -12,7 +14,6 @@ import { useTranslation } from 'next-i18next'
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
 
 import PageWrapper from '../components/layouts/PageWrapper'
-import { isProductionDeployment } from '../utils/utils'
 
 export const getServerSideProps = async (ctx: GetServerSidePropsContext) => {
   const locale = ctx.locale ?? 'sk'
@@ -39,8 +40,8 @@ const ForgottenPasswordPage = ({ page }: AsyncServerProps<typeof getServerSidePr
   const { t } = useTranslation('account')
   const router = useRouter()
 
-  const onConfirm = () => {
-    router.push(ROUTES.HOME)
+  const onConfirm = async () => {
+    await router.push(ROUTES.HOME).catch((error_) => logger.error('Failed redirect', error_))
   }
 
   return (

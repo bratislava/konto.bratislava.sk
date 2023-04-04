@@ -36,11 +36,12 @@ export const getServerSideProps = async (ctx: GetServerSidePropsContext) => {
 }
 
 const ForgottenPasswordPage = ({ page }: AsyncServerProps<typeof getServerSideProps>) => {
-  const { confirmPassword, forgotPassword, error, status, lastEmail } = useAccount()
+  const { confirmPassword, forgotPassword, error, status, setStatus, lastEmail } = useAccount()
   const { t } = useTranslation('account')
   const router = useRouter()
 
   const onConfirm = async () => {
+    setStatus(AccountStatus.Idle)
     await router.push(ROUTES.HOME).catch((error_) => logger.error('Failed redirect', error_))
   }
 

@@ -15,6 +15,8 @@ const schema = {
   properties: {
     phone_number: {
       type: 'string',
+      format: 'phone',
+      errorMessage: { format: 'forms:phone_format' },
     },
   },
   required: [],
@@ -57,7 +59,7 @@ const PhoneNumberForm = ({ error, onHideError, onSubmit, defaultValues }: Props)
             helptext={t('profile_detail.phone_number_pattern')}
             placeholder=""
             {...field}
-            errorMessage={errors.phoneNumber}
+            errorMessage={errors.phone_number}
           />
         )}
       />

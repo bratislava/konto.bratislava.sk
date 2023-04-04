@@ -599,7 +599,8 @@ export const AccountProvider = ({ children }: { children: ReactNode }) => {
       logger.trace('Account status changed', { oldStatus: status, newStatus })
       setStatus(newStatus)
     }
-  }, [openSnackbarSuccess, status, t, userData])
+    // TODO not sure if userData?.tier is needed, needs verifications (@mpinter)
+  }, [openSnackbarSuccess, status, t, userData, userData?.tier])
 
   useEffect(() => {
     // this overrides the 'global' status notification (i.e. crashed servers), but since we don't have design for multiple, showing failed notification probably takes precedence

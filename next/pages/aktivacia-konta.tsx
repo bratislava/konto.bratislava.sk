@@ -35,12 +35,14 @@ export const getServerSideProps = async (ctx: GetServerSidePropsContext) => {
 }
 
 const MigrationPage = ({ page }: AsyncServerProps<typeof getServerSideProps>) => {
-  const { confirmPassword, forgotPassword, error, status, lastEmail } = useAccount()
+  const { confirmPassword, forgotPassword, error, status, setStatus, lastEmail } = useAccount()
   const { t } = useTranslation('account')
   const router = useRouter()
 
   const onConfirm = async () => {
-    await router.push(ROUTES.HOME)
+    // we know all of the accounts from previous year are verified
+    setStatus(AccountStatus.IdentityVerificationSuccess)
+    await router.push(ROUTES.HOME).catch((error_) => logger.error('Redirect failed', error_))
   }
 
   return (

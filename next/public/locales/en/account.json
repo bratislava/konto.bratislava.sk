@@ -119,7 +119,7 @@
   "password_change_title": "Change password",
   "old_password_label": "Old password",
   "old_password_placeholder": "Old password",
-  "password_change_submit": "Submit",
+  "old_password_submit_new": "Submit",
   "password_change_success_title": "Password has been changed",
   "migration_title": "Enter an e-mail",
   "migration_description": "",

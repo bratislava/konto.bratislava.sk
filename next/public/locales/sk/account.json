@@ -125,7 +125,7 @@
   "password_change_title": "Zmena hesla",
   "old_password_label": "Staré heslo",
   "old_password_placeholder": "Staré heslo",
-  "password_change_submit": "Potvrdiť",
+  "old_password_submit_new": "Potvrdiť",
   "password_change_success_title": "Heslo bolo úspešne zmenené",
   "migration_title": "Zadajte svoj e-mail",
   "migration_description": "Potrebujeme overiť váš e-mail. Zadajte e-mail, ktorý ste používali pre digitálnu platbu dane z nehnuteľností v roku 2022.",

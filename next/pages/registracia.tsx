@@ -6,6 +6,7 @@ import AccountActivator from 'components/forms/segments/AccountActivator/Account
 import AccountContainer from 'components/forms/segments/AccountContainer/AccountContainer'
 import AccountMarkdown from 'components/forms/segments/AccountMarkdown/AccountMarkdown'
 import AccountSuccessAlert from 'components/forms/segments/AccountSuccessAlert/AccountSuccessAlert'
+import AccountVerificationPendingAlert from 'components/forms/segments/AccountVerificationPendingAlert/AccountVerificationPendingAlert'
 import EmailVerificationForm from 'components/forms/segments/EmailVerificationForm/EmailVerificationForm'
 import IdentityVerificationForm from 'components/forms/segments/IdentityVerificationForm/IdentityVerificationForm'
 import RegisterForm from 'components/forms/segments/RegisterForm/RegisterForm'
@@ -18,7 +19,6 @@ import { useState } from 'react'
 
 import PageWrapper from '../components/layouts/PageWrapper'
 import { isProductionDeployment } from '../utils/utils'
-import AccountVerificationPendingAlert from 'components/forms/segments/AccountVerificationPendingAlert/AccountVerificationPendingAlert'
 
 export const getServerSideProps = async (ctx: GetServerSidePropsContext) => {
   const locale = ctx.locale ?? 'sk'
@@ -73,15 +73,7 @@ const RegisterPage = ({ page }: AsyncServerProps<typeof getServerSideProps>) => 
 
   return (
     <PageWrapper locale={page.locale} localizations={page.localizations}>
-      <LoginRegisterLayout
-        backButtonHidden={[
-          AccountStatus.EmailVerificationSuccess,
-          AccountStatus.IdentityVerificationRequired,
-          AccountStatus.IdentityVerificationPending,
-          AccountStatus.IdentityVerificationFailed,
-          AccountStatus.IdentityVerificationSuccess,
-        ].includes(status)}
-      >
+      <LoginRegisterLayout backButtonHidden>
         {status === AccountStatus.Idle && <AccountActivator />}
         <AccountContainer className="md:pt-6 pt-0 mb-0 md:mb-8">
           {status === AccountStatus.Idle && (

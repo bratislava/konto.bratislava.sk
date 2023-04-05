@@ -6,6 +6,7 @@
 /* eslint-disable no-alert */
 /* eslint-disable no-restricted-syntax */
 // @ts-nocheck
+import logger from '@utils/logger'
 import { AsyncServerProps } from '@utils/types'
 import { isProductionDeployment } from '@utils/utils'
 import {
@@ -70,9 +71,9 @@ const CognitoPrototype = ({ page }: AsyncServerProps<typeof getServerSideProps>)
         alert(err.message || JSON.stringify(err))
         return
       }
-      const cognitoUser = result.user
-      alert(`user name is ${cognitoUser.getUsername()}`)
-      console.log(`user name is ${cognitoUser.getUsername()}`)
+
+      alert(`user name is ${result.user.getUsername()}`)
+      logger.log(`user name is ${result.user.getUsername()}`)
     })
   }
 
@@ -82,14 +83,14 @@ const CognitoPrototype = ({ page }: AsyncServerProps<typeof getServerSideProps>)
       Pool: userPool,
     }
 
-    const cognitoUser = new CognitoUser(userData)
-    cognitoUser.confirmRegistration(emailOtp, true, (err, result) => {
+    const newCognitoUser = new CognitoUser(userData)
+    newCognitoUser.confirmRegistration(emailOtp, true, (err, result) => {
       if (err) {
         alert(err.message || JSON.stringify(err))
         return
       }
       alert(`call result: ${result}`)
-      console.log(`call result: ${result}`)
+      logger.log(`call result: ${result}`)
     })
   }
 
@@ -99,8 +100,8 @@ const CognitoPrototype = ({ page }: AsyncServerProps<typeof getServerSideProps>)
       Pool: userPool,
     }
 
-    const cognitoUser = new CognitoUser(userData)
-    cognitoUser.resendConfirmationCode((err, result) => {
+    const newCognitoUser = new CognitoUser(userData)
+    newCognitoUser.resendConfirmationCode((err, result) => {
       if (err) {
         alert(err.message || JSON.stringify(err))
         return
@@ -122,12 +123,12 @@ const CognitoPrototype = ({ page }: AsyncServerProps<typeof getServerSideProps>)
       Username: loginEmail,
       Pool: userPool,
     }
-    const cognitoUser = new CognitoUser(userData)
+    const newCognitoUser = new CognitoUser(userData)
 
-    cognitoUser.authenticateUser(authenticationDetails, {
+    newCognitoUser.authenticateUser(authenticationDetails, {
       onSuccess(result) {
         const accessToken = result.getAccessToken().getJwtToken()
-        console.log('accessToken', accessToken)
+        logger.log('accessToken', accessToken)
         // POTENTIAL: Region needs to be set if not already set previously elsewhere.
         AWS.config.region = 'eu-central-1'
 

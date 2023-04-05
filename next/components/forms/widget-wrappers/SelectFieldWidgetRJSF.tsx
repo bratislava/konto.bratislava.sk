@@ -68,12 +68,12 @@ const SelectFieldWidgetRJSF = (props: SelectFieldWidgetRJSFProps) => {
   }
 
   const handleOnChange = (newValue?: SelectOption[]) => {
-    const originalNewValue = enumOptions?.filter(({ schema }: EnumOptionsType) => {
+    const originalNewValue = enumOptions?.filter((option: EnumOptionsType) => {
       return newValue?.some((value) => {
         return (
-          schema?.title === value.title &&
-          schema?.description === value.description &&
-          schema?.const === value.const
+          option.schema?.title === value.title &&
+          option.schema?.description === value.description &&
+          option.schema?.const === value.const
         )
       })
     })

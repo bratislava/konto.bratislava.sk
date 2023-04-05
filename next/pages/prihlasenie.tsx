@@ -70,7 +70,7 @@ const LoginPage = ({ page }: AsyncServerProps<typeof getServerSideProps>) => {
 
   return (
     <PageWrapper locale={page.locale} localizations={page.localizations}>
-      <LoginRegisterLayout>
+      <LoginRegisterLayout backButtonHidden>
         {status === AccountStatus.Idle && <AccountActivator />}
         <AccountContainer className="md:pt-6 pt-0 mb-0 md:mb-8">
           {status === AccountStatus.EmailVerificationRequired ? (

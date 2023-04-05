@@ -49,7 +49,7 @@ export const LoginRegisterNavBar = ({ className, currentLanguage, backButtonHidd
           {!backButtonHidden && <BackButton />}
           <Brand
             className="group"
-            url="/"
+            url="https://bratislava.sk/"
             title={
               <p className="text-p2 text-font group-hover:text-gray-600">
                 {languageKey === 'en' && <span className="font-semibold">Bratislava </span>}
@@ -70,7 +70,7 @@ export const LoginRegisterNavBar = ({ className, currentLanguage, backButtonHidd
         <div className="h-16 flex items-center py-5 px-8 border-b-2">
           {!backButtonHidden && <BackButton />}
           <Brand
-            url="/"
+            url="https://bratislava.sk/"
             className="mx-auto"
             title={
               <p className="text-p2 text-font group-hover:text-gray-600">

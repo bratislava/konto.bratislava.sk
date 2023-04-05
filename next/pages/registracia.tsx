@@ -64,26 +64,20 @@ const RegisterPage = ({ page }: AsyncServerProps<typeof getServerSideProps>) => 
   ) => {
     setLastRc(rc)
     setLastIdCard(idCard)
-    await verifyIdentity(rc, idCard, turnstileToken)
-    // give the queue a few seconds to process the verification
-    await new Promise((resolve) => {
-      setTimeout(resolve, 8000)
-    })
-    // status will be set according to current cognito tier - pending if still processing
-    await refreshUserData()
+    const result = await verifyIdentity(rc, idCard, turnstileToken)
+    if (result) {
+      // give the queue a few seconds to process the verification
+      await new Promise((resolve) => {
+        setTimeout(resolve, 8000)
+      })
+      // status will be set according to current cognito tier - pending if still processing
+      await refreshUserData()
+    }
   }
 
   return (
     <PageWrapper locale={page.locale} localizations={page.localizations}>
-      <LoginRegisterLayout
-        backButtonHidden={[
-          AccountStatus.EmailVerificationSuccess,
-          AccountStatus.IdentityVerificationRequired,
-          AccountStatus.IdentityVerificationPending,
-          AccountStatus.IdentityVerificationFailed,
-          AccountStatus.IdentityVerificationSuccess,
-        ].includes(status)}
-      >
+      <LoginRegisterLayout backButtonHidden>
         {status === AccountStatus.Idle && <AccountActivator />}
         <AccountContainer className="md:pt-6 pt-0 mb-0 md:mb-8">
           {status === AccountStatus.Idle && (

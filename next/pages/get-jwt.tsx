@@ -43,7 +43,7 @@ const GetJwt = ({ page }: AsyncServerProps<typeof getServerSideProps>) => {
     try {
       await resetRcApi(accessToken)
       const res = await updateUserData({ tier: null })
-      alert(`Res: ${res}`)
+      alert(`Res: ${JSON.stringify(res)}`)
     } catch (error) {
       console.log(error)
       alert(`ERROR`)

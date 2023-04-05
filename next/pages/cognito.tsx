@@ -89,8 +89,8 @@ const CognitoPrototype = ({ page }: AsyncServerProps<typeof getServerSideProps>)
         alert(err.message || JSON.stringify(err))
         return
       }
-      alert(`call result: ${result}`)
-      logger.log(`call result: ${result}`)
+      alert(`call result: ${JSON.stringify(result)}`)
+      logger.log(`call result: ${JSON.stringify(result)}`)
     })
   }
 
@@ -106,8 +106,8 @@ const CognitoPrototype = ({ page }: AsyncServerProps<typeof getServerSideProps>)
         alert(err.message || JSON.stringify(err))
         return
       }
-      alert(`call result: ${result}`)
-      console.log(`call result: ${result}`)
+      alert(`call result: ${JSON.stringify(result)}`)
+      logger.log(`call result: ${JSON.stringify(result)}`)
     })
   }
 
@@ -166,23 +166,27 @@ const CognitoPrototype = ({ page }: AsyncServerProps<typeof getServerSideProps>)
         console.log('newPasswordRequired', userAttributes, requiredAttributes)
       },
       mfaRequired: (challengeName, challengeParameters) => {
-        alert(`mfaRequired, ${challengeName}, ${challengeParameters}`)
+        alert(`mfaRequired, ${challengeName}, ${JSON.stringify(challengeParameters)}`)
         console.log('mfaRequired', challengeName, challengeParameters)
       },
       totpRequired: (challengeName, challengeParameters) => {
-        alert(`totpRequired, ${challengeName}, ${challengeParameters}`)
+        alert(`totpRequired, ${challengeName}, ${JSON.stringify(challengeParameters)}`)
         console.log('totpRequired', challengeName, challengeParameters)
       },
       customChallenge: (challengeParameters) => {
-        alert(`customChallenge, ${challengeName}, ${challengeParameters}`)
+        alert(
+          `customChallenge, ${JSON.stringify(challengeParameters)}, ${JSON.stringify(
+            challengeParameters,
+          )}`,
+        )
         console.log('customChallenge', challengeName, challengeParameters)
       },
       mfaSetup: (challengeName, challengeParameters) => {
-        alert(`mfaSetup, ${challengeName}, ${challengeParameters}`)
+        alert(`mfaSetup, ${challengeName}, ${JSON.stringify(challengeParameters)}`)
         console.log('mfaSetup', challengeName, challengeParameters)
       },
       selectMFAType: (challengeName, challengeParameters) => {
-        alert(`selectmfatype, ${challengeName}, ${challengeParameters}`)
+        alert(`selectmfatype, ${challengeName}, ${JSON.stringify(challengeParameters)}`)
         console.log('selectmfatype', challengeName, challengeParameters)
       },
     })
@@ -232,8 +236,8 @@ const CognitoPrototype = ({ page }: AsyncServerProps<typeof getServerSideProps>)
             alert(err.message || JSON.stringify(err))
             return
           }
-          alert(`call result: ${result}`)
-          console.log(`call result: ${result}`)
+          alert(`call result: ${JSON.stringify(result)}`)
+          console.log(`call result: ${JSON.stringify(result)}`)
         },
       )
     }
@@ -244,7 +248,7 @@ const CognitoPrototype = ({ page }: AsyncServerProps<typeof getServerSideProps>)
     if (cognitoUser) {
       cognitoUser.getAttributeVerificationCode('phone_number', {
         onSuccess(result) {
-          console.log(`call result: ${result}`)
+          console.log(`call result: ${JSON.stringify(result)}`)
         },
         onFailure(err) {
           alert(err.message || JSON.stringify(err))

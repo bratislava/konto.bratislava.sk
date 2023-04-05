@@ -3,6 +3,7 @@ module.exports = {
   plugins: [],
   rules: {
     'react/react-in-jsx-scope': 'off',
+    'react-hooks/exhaustive-deps': 'warn',
     /** We use this a lot with isDefined and hasAttributes */
     'unicorn/no-array-callback-reference': 'off',
     // Named export is easier to refactor automatically

@@ -53,6 +53,7 @@ module.exports = {
         },
       },
     ],
+    'lodash/prefer-noop': 'off'
   },
-  ignorePatterns: ['*.config.*', 'graphql', '.eslintrc.js'],
+  ignorePatterns: ['*.config.*', 'graphql', '.eslintrc.js']
 }

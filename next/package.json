@@ -23,6 +23,7 @@
     "@hookform/resolvers": "^2.9.10",
     "@internationalized/date": "3.1.0",
     "@js-joda/core": "5.2.0",
+    "@react-aria/overlays": "^3.13.0",
     "@rjsf/core": "^5.0.0-beta.6",
     "@rjsf/utils": "^5.0.0-beta.6",
     "@rjsf/validator-ajv8": "^5.0.0-beta.6",
@@ -86,6 +87,7 @@
     "use-immer": "0.8.1",
     "use-query-params": "^2.2.0",
     "usehooks-ts": "^2.9.1",
+    "uuid": "^9.0.0",
     "xml-loader": "^1.2.1",
     "xml2js": "^0.4.23"
   },

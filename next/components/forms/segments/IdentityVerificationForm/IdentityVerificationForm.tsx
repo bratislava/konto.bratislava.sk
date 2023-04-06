@@ -1,13 +1,13 @@
-import ArrowRightIcon from '@assets/images/forms/arrow-right.svg'
+import ArrowRightIcon from '@assets/images/new-icons/ui/arrow-right.svg'
 import { ROUTES } from '@utils/constants'
-import { formatUnicorn } from '@utils/string'
+import logger from '@utils/logger'
 import { AccountError } from '@utils/useAccount'
 import useHookForm from '@utils/useHookForm'
-import Alert from 'components/forms/info-components/Alert'
+import AccountErrorAlert from 'components/forms/segments/AccountErrorAlert/AccountErrorAlert'
 import Button from 'components/forms/simple-components/Button'
 import InputField from 'components/forms/widget-components/InputField/InputField'
-import { useRouter } from 'next/router'
 import { useTranslation } from 'next-i18next'
+import { useRouter } from 'next/router'
 import { Controller } from 'react-hook-form'
 import Turnstile from 'react-turnstile'
 import { useCounter } from 'usehooks-ts'
@@ -36,7 +36,8 @@ const schema = {
     idCard: {
       type: 'string',
       minLength: 1,
-      errorMessage: { minLength: 'account:id_card_required' },
+      format: 'idCard',
+      errorMessage: { minLength: 'account:id_card_required', format: 'account:id_card_format' },
     },
     turnstileToken: {
       type: 'string',
@@ -70,9 +71,7 @@ const IdentityVerificationForm = ({ onSubmit, error }: Props) => {
       })}
     >
       <h1 className="text-h3">{t('identity_verification_title')}</h1>
-      {error && (
-        <Alert message={formatUnicorn(t(error.code), {})} type="error" className="min-w-full" />
-      )}
+      <AccountErrorAlert error={error} />
       <Controller
         name="rc"
         control={control}
@@ -82,6 +81,7 @@ const IdentityVerificationForm = ({ onSubmit, error }: Props) => {
             label={t('rc_label')}
             placeholder={t('rc_placeholder')}
             tooltip={t('rc_tooltip')}
+            tooltipPosition="bottom-left"
             {...field}
             errorMessage={errors.rc}
           />
@@ -97,6 +97,7 @@ const IdentityVerificationForm = ({ onSubmit, error }: Props) => {
             placeholder={t('id_card_placeholder')}
             helptext={t('id_card_description')}
             tooltip={t('id_card_tooltip')}
+            tooltipPosition="bottom-left"
             {...field}
             errorMessage={errors.idCard}
           />
@@ -110,7 +111,10 @@ const IdentityVerificationForm = ({ onSubmit, error }: Props) => {
             key={turnstileKeyCounter.count}
             sitekey={process.env.NEXT_PUBLIC_CLOUDFLARE_TURNSTILE_SITE_KEY}
             onVerify={(token) => onChange(token)}
-            onError={() => onChange(null)}
+            onError={(error) => {
+              logger.error('Turnstile error:', error)
+              return onChange(null)
+            }}
             onTimeout={() => onChange(null)}
             onExpire={() => onChange(null)}
             className="mb-2"

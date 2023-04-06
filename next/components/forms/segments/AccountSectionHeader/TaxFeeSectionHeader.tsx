@@ -1,9 +1,10 @@
-import ChevronLeft from '@assets/images/chevron-left-2.svg'
-import ExclamationIcon from '@assets/images/forms/exclamation-icon.svg'
-import SuccessIcon from '@assets/images/forms/success.svg'
-import TimeIcon from '@assets/images/forms/warning-time-icon.svg'
+import ChevronLeft from '@assets/images/new-icons/ui/chevron-left.svg'
+import TimeIcon from '@assets/images/new-icons/ui/clock.svg'
+import SuccessIcon from '@assets/images/new-icons/ui/done.svg'
 import FileDownload from '@assets/images/new-icons/ui/download.svg'
+import ExclamationIcon from '@assets/images/new-icons/ui/exclamation-mark.svg'
 import PaymentIcon from '@assets/images/new-icons/ui/payment.svg'
+import { ROUTES } from '@utils/constants'
 import cx from 'classnames'
 import { useRouter } from 'next/router'
 import { useTranslation } from 'next-i18next'
@@ -35,11 +36,11 @@ const statusHandler = (status: 'negative' | 'warning' | 'success'): ReactNode =>
 
   switch (status) {
     case 'negative':
-      return statusNode(<ExclamationIcon />, 'Neuhradená')
+      return statusNode(<ExclamationIcon className="text-negative-700 w-6 h-6" />, 'Neuhradená')
     case 'warning':
-      return statusNode(<TimeIcon />, 'Čiastočne uhradená')
+      return statusNode(<TimeIcon className="text-warning-700 w-6 h-6" />, 'Čiastočne uhradená')
     case 'success':
-      return statusNode(<SuccessIcon />, 'Uhradená')
+      return statusNode(<SuccessIcon className="text-success-700 w-6 h-6" />, 'Uhradená')
 
     default:
       return null
@@ -54,12 +55,12 @@ const TaxFeeSectionHeader = (props: AccountSectionHeaderBase) => {
       <div className="flex flex-col py-6 gap-4 max-w-screen-lg m-auto">
         <div className="flex items-center gap-0.5 cursor-pointer">
           <div className="w-5 h-5 flex justify-center items-center">
-            <ChevronLeft />
+            <ChevronLeft className="w-5 h-5" />
           </div>
           <button
             type="button"
             className="text-p3-medium underline-offset-2 underline"
-            onClick={() => router.push('/taxes-and-fees')}
+            onClick={() => router.push(ROUTES.TAXES_AND_FEES)}
           >
             {t('back_to_list')}
           </button>

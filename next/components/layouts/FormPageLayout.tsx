@@ -1,7 +1,8 @@
-import CityIcon from '@assets/images/account/city.svg'
-import HelpIcon from '@assets/images/account/help-icon.svg'
-import LogoutIcon from '@assets/images/account/logout.svg'
-import ProfileIcon from '@assets/images/account/profile.svg'
+import HelpIcon from '@assets/images/new-icons/ui/help.svg'
+import LogoutIcon from '@assets/images/new-icons/ui/logout.svg'
+import CityIcon from '@assets/images/new-icons/ui/municipal-account.svg'
+import ProfileIcon from '@assets/images/new-icons/ui/profile.svg'
+import { ROUTES } from '@utils/constants'
 import cx from 'classnames'
 import AccountNavBar from 'components/forms/segments/AccountNavBar/AccountNavBar'
 import SectionContainer from 'components/forms/segments/SectionContainer/SectionContainer'
@@ -9,6 +10,7 @@ import { usePageWrapperContext } from 'components/layouts/PageWrapper'
 import { useRouter } from 'next/router'
 import { useTranslation } from 'next-i18next'
 import { ReactNode } from 'react'
+import logger from '@utils/logger'
 
 type FormPageLayoutBase = {
   className?: string
@@ -20,25 +22,25 @@ const menuItems = [
   {
     id: 1,
     title: 'account:menu_account_link',
-    icon: <CityIcon />,
+    icon: <CityIcon className="w-6 h-6" />,
     link: '/',
   },
   {
     id: 2,
     title: 'account:menu_profile_link',
-    icon: <ProfileIcon />,
-    link: '/user-profile',
+    icon: <ProfileIcon className="w-6 h-6" />,
+    link: ROUTES.USER_PROFILE,
   },
   {
     id: 3,
     title: 'account:menu_help_link',
-    icon: <HelpIcon />,
-    link: '/i-have-a-problem',
+    icon: <HelpIcon className="w-6 h-6" />,
+    link: ROUTES.I_HAVE_A_PROBLEM,
   },
   {
     id: 4,
     title: 'account:menu_logout_link',
-    icon: <LogoutIcon />,
+    icon: <LogoutIcon className="w-6 h-6" />,
     link: '/logout',
   },
 ]
@@ -55,8 +57,7 @@ const FormPageLayout = ({ className, navHidden, children }: FormPageLayoutBase) 
     try {
       await router.push(`/${path}`, undefined, { locale: key })
     } catch (error) {
-      // TODO send error to Faro
-      console.error(error)
+      logger.error(error)
     }
   }
 

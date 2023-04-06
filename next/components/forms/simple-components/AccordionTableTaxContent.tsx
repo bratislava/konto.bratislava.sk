@@ -1,8 +1,7 @@
-import ExpandMore from '@assets/images/expand-more.svg'
+import ExpandMore from '@assets/images/new-icons/ui/expand.svg'
 import cx from 'classnames'
 import React, { useState } from 'react'
 
-import ExpandMoreIcon from '../icon-components/ExpandMoreIcon'
 import PersonIcon from '../icon-components/PersonIcon'
 import AccountMarkdown from '../segments/AccountMarkdown/AccountMarkdown'
 import AccountMarkdownModal from '../segments/AccountModal/AccountModal'
@@ -283,6 +282,7 @@ const AccordionTableTaxContent = ({
     'border-gray-200': !isActive && !shadow,
     'border-gray-700': isActive && !shadow,
     'border-2 border-solid hover:border-gray-500': !shadow,
+    'border-2 border-solid hover:border-gray-700': !shadow && isActive,
     'hover:shadow-[0_8px_16px_0_rgba(0,0,0,0.08)]': shadow,
     'shadow-[0_0_16px_0_rgba(0,0,0,0.08)]': isActive && shadow,
     'shadow-[0_4px_16px_0_rgba(0,0,0,0.08)]': !isActive && shadow,
@@ -299,7 +299,11 @@ const AccordionTableTaxContent = ({
         />
       </div>
       <div className={accordionContainerStyle}>
-        <div className={cx('flex gap-4', accordionHeaderStyle)}>
+        <button
+          type="button"
+          onClick={() => setIsActive(!isActive)}
+          className={cx('no-tap-highlight flex gap-4', accordionHeaderStyle)}
+        >
           {icon && (
             <div
               className={cx('flex items-center justify-center', {
@@ -318,11 +322,7 @@ const AccordionTableTaxContent = ({
             </div>
           )}
           <div className="flex w-full flex-col gap-2 lg:gap-4">
-            <button
-              type="button"
-              className="no-tap-highlight flex cursor-pointer items-center gap-4"
-              onClick={() => setIsActive(!isActive)}
-            >
+            <div className="flex items-center gap-4">
               <div className="flex grow sm:flex-row flex-col items-start">
                 <div
                   className={cx('flex grow', {
@@ -346,7 +346,7 @@ const AccordionTableTaxContent = ({
                 </div>
               </div>
               <ExpandMore
-                className={cx('flex items-center justify-center', {
+                className={cx('flex items-center justify-center text-main-700', {
                   'lg:w-10 lg:h-10 w-8 h-8': accordionSize === 'lg',
                   'lg:w-8 lg:h-8 w-6 h-6': accordionSize === 'md',
                   'w-6 h-6': accordionSize === 'sm' || accordionSize === 'xs',
@@ -354,9 +354,9 @@ const AccordionTableTaxContent = ({
                   'transform rotate-270 md:rotate-0': !isActive,
                 })}
               />
-            </button>
+            </div>
           </div>
-        </div>
+        </button>
         <div
           className={cx('h-0.5 w-full bg-gray-200', {
             hidden: !isActive,

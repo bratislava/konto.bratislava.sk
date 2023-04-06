@@ -28,7 +28,7 @@ export const getServerSideProps = async (ctx: GetServerSidePropsContext) => {
   }
 }
 
-const UserProfile = ({ page }: AsyncServerProps<typeof getServerSideProps>) => {
+const MojProfil = ({ page }: AsyncServerProps<typeof getServerSideProps>) => {
   const { t } = useTranslation('account')
 
   return (
@@ -41,4 +41,4 @@ const UserProfile = ({ page }: AsyncServerProps<typeof getServerSideProps>) => {
   )
 }
 
-export default UserProfile
+export default MojProfil

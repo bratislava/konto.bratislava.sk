@@ -7,9 +7,9 @@ import ForgottenPasswordForm from 'components/forms/segments/ForgottenPasswordFo
 import NewPasswordForm from 'components/forms/segments/NewPasswordForm/NewPasswordForm'
 import LoginRegisterLayout from 'components/layouts/LoginRegisterLayout'
 import { GetServerSidePropsContext } from 'next'
-import { useRouter } from 'next/router'
 import { useTranslation } from 'next-i18next'
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
+import { useRouter } from 'next/router'
 
 import PageWrapper from '../components/layouts/PageWrapper'
 import { isProductionDeployment } from '../utils/utils'
@@ -35,11 +35,12 @@ export const getServerSideProps = async (ctx: GetServerSidePropsContext) => {
 }
 
 const ForgottenPasswordPage = ({ page }: AsyncServerProps<typeof getServerSideProps>) => {
-  const { confirmPassword, forgotPassword, error, status, lastEmail } = useAccount()
+  const { confirmPassword, forgotPassword, error, status, setStatus, lastEmail } = useAccount()
   const { t } = useTranslation('account')
   const router = useRouter()
 
   const onConfirm = () => {
+    setStatus(AccountStatus.Idle)
     router.push(ROUTES.HOME)
   }
 
@@ -54,14 +55,14 @@ const ForgottenPasswordPage = ({ page }: AsyncServerProps<typeof getServerSidePr
               error={error}
               lastEmail={lastEmail}
             />
-          ) : status === AccountStatus.NewPasswordSuccess ? (
+          ) : status === AccountStatus.Idle ? (
+            <ForgottenPasswordForm onSubmit={forgotPassword} error={error} lastEmail={lastEmail} />
+          ) : (
             <AccountSuccessAlert
               title={t('forgotten_password_success_title')}
               confirmLabel={t('account_continue_link')}
               onConfirm={onConfirm}
             />
-          ) : (
-            <ForgottenPasswordForm onSubmit={forgotPassword} error={error} />
           )}
         </AccountContainer>
       </LoginRegisterLayout>

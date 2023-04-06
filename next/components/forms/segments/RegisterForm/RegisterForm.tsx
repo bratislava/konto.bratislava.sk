@@ -1,7 +1,6 @@
-import { formatUnicorn } from '@utils/string'
 import { AccountError, UserData } from '@utils/useAccount'
 import useHookForm from '@utils/useHookForm'
-import Alert from 'components/forms/info-components/Alert'
+import AccountErrorAlert from 'components/forms/segments/AccountErrorAlert/AccountErrorAlert'
 import AccountMarkdown from 'components/forms/segments/AccountMarkdown/AccountMarkdown'
 import LoginAccountLink from 'components/forms/segments/LoginAccountLink/LoginAccountLink'
 import Button from 'components/forms/simple-components/Button'
@@ -9,7 +8,6 @@ import SingleCheckbox from 'components/forms/widget-components/Checkbox/SingleCh
 import InputField from 'components/forms/widget-components/InputField/InputField'
 import PasswordField from 'components/forms/widget-components/PasswordField/PasswordField'
 import { useTranslation } from 'next-i18next'
-import { useState } from 'react'
 import { Controller } from 'react-hook-form'
 import Turnstile from 'react-turnstile'
 import { useCounter } from 'usehooks-ts'
@@ -129,13 +127,7 @@ const RegisterForm = ({ onSubmit, error, lastEmail }: Props) => {
       })}
     >
       <h1 className="text-h2">{t('register_title')}</h1>
-      {error && (
-        <Alert
-          message={formatUnicorn(t(error.code), { email: lastEmail || '' })}
-          type="error"
-          className="min-w-full"
-        />
-      )}
+      <AccountErrorAlert error={error} args={{ email: lastEmail || '' }} />
       <Controller
         name="email"
         control={control}
@@ -200,6 +192,7 @@ const RegisterForm = ({ onSubmit, error, lastEmail }: Props) => {
         render={({ field }) => (
           <PasswordField
             required
+            autoComplete="new-password"
             label={t('password_confirmation_label')}
             placeholder={t('password_confirmation_placeholder')}
             {...field}

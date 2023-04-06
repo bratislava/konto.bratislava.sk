@@ -1,10 +1,10 @@
 // this is non-production code
 // disabling eslint/ts checks instead of fixing them
 // @ts-nocheck
-import { getForms, resetRcApi } from '@utils/api'
+import { resetRcApi } from '@utils/api'
+import { ROUTES } from '@utils/constants'
 import { AsyncServerProps } from '@utils/types'
 import useAccount from '@utils/useAccount'
-import { isProductionDeployment } from '@utils/utils'
 import Button from 'components/forms/simple-components/Button'
 import PageWrapper from 'components/layouts/PageWrapper'
 import { Wrapper } from 'components/styleguide/Wrapper'
@@ -31,8 +31,6 @@ const GetJwt = ({ page }: AsyncServerProps<typeof getServerSideProps>) => {
       const token = await getAccessToken()
       if (token) {
         setAccessToken(token)
-        const forms = await getForms(token)
-        console.log(forms)
       }
     })().catch((error) => {
       console.log(error)
@@ -66,7 +64,7 @@ const GetJwt = ({ page }: AsyncServerProps<typeof getServerSideProps>) => {
               </div>
             ) : (
               <div className="flex flex-col">
-                <Button href="/login" label="No user - go to login" variant="link-category" />
+                <Button href={ROUTES.LOGIN} label="No user - go to login" variant="link-category" />
                 <Button onPress={logout} text="Logout" />
                 <Button
                   onPress={() => signUp(...signUpParams)}

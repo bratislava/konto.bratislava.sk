@@ -1,6 +1,6 @@
 import { AccountError, Address } from '@utils/useAccount'
 import useHookForm from '@utils/useHookForm'
-import Alert from 'components/forms/info-components/Alert'
+import AccountErrorAlert from 'components/forms/segments/AccountErrorAlert/AccountErrorAlert'
 import Button from 'components/forms/simple-components/Button'
 import InputField from 'components/forms/widget-components/InputField/InputField'
 import { useTranslation } from 'next-i18next'
@@ -58,15 +58,7 @@ const CorrespondenceAddressForm = ({ error, onHideError, onSubmit, defaultValues
       onSubmit={handleSubmit((data: Address) => onSubmit({ data }))}
     >
       <p className="text-p3 lg:text-p2">{t('correspondece_address_description')}</p>
-      {error && (
-        <Alert
-          message={t(error.code)}
-          type="error"
-          close={onHideError}
-          solid
-          className="min-w-full"
-        />
-      )}
+      <AccountErrorAlert error={error} close={onHideError} solid />
       <Controller
         name="street_address"
         control={control}

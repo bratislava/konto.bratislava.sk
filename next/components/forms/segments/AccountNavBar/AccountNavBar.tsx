@@ -1,12 +1,14 @@
-import ProfileOutlinedIcon from '@assets/images/account/profile-outlined.svg'
-import VolumeIcon from '@assets/images/account/volume.svg'
-import Hamburger from '@assets/images/ba-hamburger.svg'
-import HamburgerClose from '@assets/images/hamburger-close.svg'
-import SearchIcon from '@assets/images/search-icon.svg'
+import HamburgerClose from '@assets/images/new-icons/ui/cross.svg'
+import Hamburger from '@assets/images/new-icons/ui/hamburger.svg'
+import ProfileOutlinedIcon from '@assets/images/new-icons/ui/profile.svg'
+import SearchIcon from '@assets/images/new-icons/ui/search.svg'
+import VolumeIcon from '@assets/images/new-icons/ui/speaker.svg'
 import { ROUTES } from '@utils/constants'
 import useAccount, { UserData } from '@utils/useAccount'
+import useElementSize from '@utils/useElementSize'
 import { getLanguageKey } from '@utils/utils'
 import cx from 'classnames'
+import { StatusBar, useStatusBarContext } from 'components/forms/info-components/StatusBar'
 import HamburgerMenu from 'components/forms/segments/HambergerMenu/HamburgerMenu'
 import Button from 'components/forms/simple-components/Button'
 import Menu from 'components/forms/simple-components/Menu/Menu'
@@ -18,8 +20,6 @@ import { Item } from 'react-stately'
 
 import Brand from '../../simple-components/Brand'
 import Link from './NavBarLink'
-import { StatusBar } from 'components/forms/info-components/StatusBar'
-import { useElementSize } from 'usehooks-ts'
 
 interface IProps extends LanguageSelectProps {
   className?: string
@@ -50,6 +50,7 @@ export interface MenuItem {
   title: string
   icon: ReactNode
   link: string
+  backgroundColor?: string // ex. bg-negative-700
 }
 
 export const AccountNavBar = ({
@@ -62,8 +63,10 @@ export const AccountNavBar = ({
 }: IProps) => {
   const [burgerOpen, setBurgerOpen] = useState(false)
   const { isAuth, logout, userData } = useAccount()
-  const [desktopRef, { height: desktopHeight }] = useElementSize()
-  const [mobileRef, { height: mobileHeight }] = useElementSize()
+
+  const { statusBarContent } = useStatusBarContext()
+  const [desktopRef, { height: desktopHeight }] = useElementSize([statusBarContent])
+  const [mobileRef, { height: mobileHeight }] = useElementSize([statusBarContent])
 
   const languageKey = getLanguageKey(languageSelectProps.currentLanguage)
   const anotherLanguage = languageSelectProps.languages?.find((l) => l.key !== languageKey)
@@ -108,7 +111,7 @@ export const AccountNavBar = ({
         <div className="max-w-screen-lg m-auto hidden h-[57px] w-full items-center lg:flex gap-x-6">
           <Brand
             className="group grow"
-            url="/"
+            url="https://bratislava.sk/"
             title={
               <p className="text-p2 text-font group-hover:text-gray-600">
                 {languageKey === 'en' && <span className="font-semibold">Bratislava </span>}
@@ -154,7 +157,7 @@ export const AccountNavBar = ({
                   )}
 
                   <Link href={t('searchLink')} variant="plain">
-                    <SearchIcon />
+                    <SearchIcon className="w-6 h-6" />
                   </Link>
 
                   <Divider />
@@ -182,7 +185,7 @@ export const AccountNavBar = ({
                 </Menu>
               ) : (
                 <>
-                  <Link href="/login" variant="plain" className={`${linkClassName} ml-2`}>
+                  <Link href={ROUTES.LOGIN} variant="plain" className={`${linkClassName} ml-2`}>
                     {t('account:menu_login_link')}
                   </Link>
                   <Button
@@ -229,12 +232,12 @@ export const AccountNavBar = ({
       >
         {!burgerOpen && <StatusBar className="flex lg:hidden" />}
         <div className="h-16 flex items-center py-5 px-8 border-b-2">
-          <Brand url="/" className="grow" />
+          <Brand url="https://bratislava.sk/" className="grow" />
           {!navHidden && (
             <div className={cx('flex items-center gap-x-5')}>
               <div className="text-h4 text-font/50 relative flex cursor-pointer items-center bg-transparent">
                 <Link href={t('searchLink')} variant="plain" className="p-4">
-                  <SearchIcon />
+                  <SearchIcon className="w-6 h-6" />
                 </Link>
               </div>
             </div>
@@ -246,7 +249,7 @@ export const AccountNavBar = ({
           >
             <div className="flex w-6 items-center justify-center">
               {burgerOpen ? (
-                <HamburgerClose />
+                <HamburgerClose className="w-6 h-6" />
               ) : isAuth && sectionsList ? (
                 <Hamburger />
               ) : (
@@ -274,7 +277,11 @@ const AccountMenuItem = ({ menuItem }: { menuItem: MenuItem }) => {
 
   return (
     <div className="cursor-pointer flex py-2 px-5">
-      <div className="flex relative flex-row items-start gap-2 rounded-xl p-4 bg-gray-50">
+      <div
+        className={`flex relative flex-row items-start gap-2 rounded-xl p-4 ${
+          menuItem.backgroundColor ?? 'bg-gray-50'
+        }`}
+      >
         <div className="flex h-2 w-2 items-center justify-center">
           <span>{menuItem.icon}</span>
         </div>
@@ -297,7 +304,7 @@ const Avatar = ({ userData }: { userData?: UserData | null }) => {
           {userData && userData.given_name && userData.family_name ? (
             userData.given_name[0] + userData.family_name[0]
           ) : (
-            <ProfileOutlinedIcon />
+            <ProfileOutlinedIcon className="w-6 h-6 text-main-700" />
           )}
         </span>
       </div>

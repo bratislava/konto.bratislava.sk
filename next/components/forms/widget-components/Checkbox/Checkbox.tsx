@@ -78,8 +78,7 @@ const CheckboxGroupItem = ({
             <div className={checkboxStyle}>
               {isSelected && !isIndeterminate && (
                 <Check
-                  fill="white"
-                  className={cx('w-5 h-5', {
+                  className={cx('w-5 h-5 text-gray-0', {
                     hidden: !isSelected,
                   })}
                 />

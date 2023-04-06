@@ -1,8 +1,10 @@
+import AdministrationIcon from '@assets/images/new-icons/other/city-bratislava/city-administration.svg'
 import TaxesIcon from '@assets/images/new-icons/other/city-bratislava/taxes.svg'
 import TheatreIcon from '@assets/images/new-icons/other/culture-communities/events-support.svg'
 import LibraryIcon from '@assets/images/new-icons/other/culture-communities/library.svg'
 import ZooIcon from '@assets/images/new-icons/other/culture-communities/zoo.svg'
-import CityTreeIcon from '@assets/images/new-icons/other/environment-construction/city-trees.svg'
+import KidIcon from '@assets/images/new-icons/other/education-sport/kids-teenagers.svg'
+import SwimmingPoolIcon from '@assets/images/new-icons/other/education-sport/swimming-pool.svg'
 import GardensIcon from '@assets/images/new-icons/other/environment-construction/community-gardens.svg'
 import SewerageIcon from '@assets/images/new-icons/other/environment-construction/connector.svg'
 import FrontGardensIcon from '@assets/images/new-icons/other/environment-construction/front-gardens.svg'
@@ -16,11 +18,14 @@ import ExcavationsIcon from '@assets/images/new-icons/other/transport-and-maps/e
 import ParkingIcon from '@assets/images/new-icons/other/transport-and-maps/parking.svg'
 import TowIcon from '@assets/images/new-icons/other/transport-and-maps/towing.svg'
 import ChristmasTreeIcon from '@assets/images/new-icons/other/tree.svg'
+import { ROUTES } from '@utils/constants'
+import Alert from 'components/forms/info-components/Alert'
 import MunicipalServicesSectionHeader from 'components/forms/segments/AccountSectionHeader/MunicipalServicesSectionHeader'
 import Pagination from 'components/forms/simple-components/Pagination/Pagination'
 import ServiceCard from 'components/forms/simple-components/ServiceCard'
 import { useTranslation } from 'next-i18next'
 import { ReactNode, useState } from 'react'
+import { useWindowSize } from 'usehooks-ts'
 
 import { SelectOption } from '../../../widget-components/SelectField/SelectField'
 
@@ -29,7 +34,7 @@ const TAXES_CATEGORY = 'Dane'
 const CULTURE_CATEGORY = 'Kultúra a voľný čas'
 const TRANSPORT_CATEGORY = 'MHD'
 const SECURITY_CATEGORY = 'Nahlásiť problém'
-const ENVIROMENTS_CATEGORY = 'Nebytové priestory'
+// const ENVIROMENTS_CATEGORY = 'Nebytové priestory'
 const BASKET_CATEGORY = 'Odpady'
 const PARKING_CATEGORY = 'Parkovanie'
 const MARINIUM_CATEGORY = 'Pohrebníctvo Marianum'
@@ -44,7 +49,7 @@ const enumOptions: SelectOption[] = [
   { const: 'CULTURE_CATEGORY', title: CULTURE_CATEGORY, description: '' },
   { const: 'TRANSPORT_CATEGORY', title: TRANSPORT_CATEGORY, description: '' },
   { const: 'SECURITY_CATEGORY', title: SECURITY_CATEGORY, description: '' },
-  { const: 'ENVIROMENTS_CATEGORY', title: ENVIROMENTS_CATEGORY, description: '' },
+  // { const: 'ENVIROMENTS_CATEGORY', title: ENVIROMENTS_CATEGORY, description: '' },
   { const: 'BASKET_CATEGORY', title: BASKET_CATEGORY, description: '' },
   { const: 'PARKING_CATEGORY', title: PARKING_CATEGORY, description: '' },
   { const: 'MARINIUM_CATEGORY', title: MARINIUM_CATEGORY, description: '' },
@@ -54,21 +59,24 @@ const enumOptions: SelectOption[] = [
   { const: 'GREEN_CATEGORY', title: GREEN_CATEGORY, description: '' },
 ]
 
-const ITEMS_PER_PAGE = 20
-
 const MunicipalServicesSection = () => {
   const { t } = useTranslation('account')
+  const { width } = useWindowSize()
   const [currentPage, setCurrentPage] = useState<number>(1)
   const [selectorValue, setSelectorValue] = useState<SelectOption[]>(enumOptions.slice(0, 1))
   const selectorValueTitle: string = selectorValue[0]?.title || ''
+  const ITEMS_PER_PAGE = width > 480 ? 20 : 5
 
   type ServiceCardBase = {
     title: string
     description: string
-    buttonText: string
+    buttonText?: string
     className?: string
+    linkType?: 'internal' | 'external'
     icon: ReactNode
     href?: string
+    tag?: string
+    tagStyle?: string
     category: string[]
     onPress?: () => void
   }
@@ -79,7 +87,16 @@ const MunicipalServicesSection = () => {
       buttonText: t('account_section_services.cards.1.buttonText'),
       icon: <TaxesIcon className="w-10 h-10 lg:w-12 lg:h-12 text-category-600" />,
       category: [TAXES_CATEGORY],
-      href: '/taxes-and-fees',
+      linkType: 'internal',
+      href: ROUTES.TAXES_AND_FEES,
+    },
+    {
+      title: t('account_section_services.cards.32.title'),
+      description: t('account_section_services.cards.32.description'),
+      tag: t('account_section_services.cards.32.tag'),
+      tagStyle: 'text-education-700 bg-education-100',
+      icon: <SwimmingPoolIcon className="w-10 h-10 lg:w-12 lg:h-12 text-education-700" />,
+      category: [CULTURE_CATEGORY],
     },
     {
       title: t('account_section_services.cards.2.title'),
@@ -103,7 +120,7 @@ const MunicipalServicesSection = () => {
       buttonText: t('account_section_services.cards.4.buttonText'),
       icon: <ParkingIcon className="w-10 h-10 lg:w-12 lg:h-12 text-transport-700" />,
       category: [PARKING_CATEGORY],
-      href: 'https://api.parkdots.com/auth/realms/parkingrealm/protocol/openid-connect/registrations?client_id=parkingclient&redirect_uri=https%3A%2F%2Fpermits.parkdots.com%2Fwizard%2Fuser%3FprojectId%3D08b21098-3df8-4a0f-9e5c-75a21711aef7&state=f7127136-6bbf-4325-b603-5623cd086c3f&response_mode=fragment&response_type=code&scope=openid&nonce=33fa1798-098a-4ed6-89d8-7dc464bf5e30&kc_locale=sk',
+      href: 'https://paas.sk/',
     },
     {
       title: t('account_section_services.cards.5.title'),
@@ -125,7 +142,7 @@ const MunicipalServicesSection = () => {
       title: t('account_section_services.cards.7.title'),
       description: t('account_section_services.cards.7.description'),
       buttonText: t('account_section_services.cards.7.buttonText'),
-      icon: <SecurityIcon className="w-10 h-10 lg:w-12 lg:h-12 text-category-600" />,
+      icon: <KidIcon className="w-10 h-10 lg:w-12 lg:h-12 text-category-600" />,
       category: [JOIN_CATEGORY],
       href: 'https://mib.sk/mesto-pre-deti',
     },
@@ -185,14 +202,6 @@ const MunicipalServicesSection = () => {
       category: [JOIN_CATEGORY],
       href: 'https://lovcikomarov.sk/',
     },
-    {
-      title: t('account_section_services.cards.15.title'),
-      description: t('account_section_services.cards.15.description'),
-      buttonText: t('account_section_services.cards.15.buttonText'),
-      icon: <TreeIcon className="text-environment-700 w-10 h-10 lg:w-12 lg:h-12" />,
-      category: [GREEN_CATEGORY],
-      href: 'https://10000stromov.sk/zapojit-sa',
-    },
     // {
     //   title: t('account_section_services.cards.16.title'),
     //   description: t('account_section_services.cards.16.description'),
@@ -205,7 +214,7 @@ const MunicipalServicesSection = () => {
       title: t('account_section_services.cards.17.title'),
       description: t('account_section_services.cards.17.description'),
       buttonText: t('account_section_services.cards.17.buttonText'),
-      icon: <SecurityIcon className="w-10 h-10 lg:w-12 lg:h-12 text-category-600" />,
+      icon: <KidIcon className="w-10 h-10 lg:w-12 lg:h-12 text-category-600" />,
       category: [JOIN_CATEGORY],
       href: 'https://www.detiprebratislavu.sk/prihlasit-projekt/',
     },
@@ -273,14 +282,14 @@ const MunicipalServicesSection = () => {
       category: [MARINIUM_CATEGORY],
       href: 'https://marianum.sk/aktuality/zoznam-obradov',
     },
-    {
-      title: t('account_section_services.cards.26.title'),
-      description: t('account_section_services.cards.26.description'),
-      buttonText: t('account_section_services.cards.26.buttonText'),
-      icon: <CityTreeIcon className="w-10 h-10 lg:w-12 lg:h-12 text-environment-700" />,
-      category: [ENVIROMENTS_CATEGORY],
-      href: 'https://cdn-api.bratislava.sk/static-pages/non-residential-premises-map/index.html?lang=sk',
-    },
+    // {
+    //   title: t('account_section_services.cards.26.title'),
+    //   description: t('account_section_services.cards.26.description'),
+    //   buttonText: t('account_section_services.cards.26.buttonText'),
+    //   icon: <AdministrationIcon className="w-10 h-10 lg:w-12 lg:h-12 text-category-600" />,
+    //   category: [ENVIROMENTS_CATEGORY],
+    //   href: 'https://cdn-api.bratislava.sk/static-pages/non-residential-premises-map/index.html?lang=sk',
+    // },
     {
       title: t('account_section_services.cards.27.title'),
       description: t('account_section_services.cards.27.description'),
@@ -336,8 +345,14 @@ const MunicipalServicesSection = () => {
         setCurrentPage={setCurrentPage}
         title={t('account_section_services.navigation')}
       />
-      <div className="w-full max-w-screen-lg mx-auto py-4 lg:py-8">
-        <div className="flex flex-wrap gap-3 sm:gap-6 md:gap-8 px-4 lg:px-0">
+      <div className="w-full max-w-screen-lg mx-auto pt-4 lg:pt-8">
+        <Alert
+          message={t('account_section_services.alert_text')}
+          type="info"
+          fullWidth
+          className="mb-4 lg:mb-8 mx-4 lg:mx-0"
+        />
+        <div className="grid grid-cols-1 min-[615px]:grid-cols-2 min-[960px]:grid-cols-3 lg:grid-cols-4 gap-3 sm:gap-6 md:gap-8 px-4 lg:px-0">
           {filteredServiceCards
             .filter(
               (_, i) =>
@@ -350,8 +365,11 @@ const MunicipalServicesSection = () => {
                 title={card.title}
                 description={card.description}
                 buttonText={card.buttonText}
+                linkType={card.linkType}
                 icon={card.icon}
                 href={card.href}
+                tag={card.tag}
+                tagStyle={card.tagStyle}
                 onPress={card.onPress}
               />
             ))}

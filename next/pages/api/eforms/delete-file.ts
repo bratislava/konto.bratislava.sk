@@ -1,3 +1,4 @@
+import logger from '@utils/logger'
 import { NextApiRequest, NextApiResponse } from 'next'
 
 import minioClient, { bucketName } from '../../../backend/utils/minio-client'
@@ -17,7 +18,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
     await handleDeleteRequest(req)
       .then((response) => res.status(200).json({ data: 'success', response }))
       .catch((error) => {
-        console.log(error)
+        logger.error(error)
         res.status(500).json({ error })
       })
     return res

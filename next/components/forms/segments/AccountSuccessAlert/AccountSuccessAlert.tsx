@@ -1,5 +1,5 @@
-import ArrowRightIcon from '@assets/images/forms/arrow-right.svg'
-import SuccessIcon from '@assets/images/forms/success.svg'
+import ArrowRightIcon from '@assets/images/new-icons/ui/arrow-right.svg'
+import SuccessIcon from '@assets/images/new-icons/ui/done.svg'
 import AccountMarkdown from 'components/forms/segments/AccountMarkdown/AccountMarkdown'
 import Button from 'components/forms/simple-components/Button'
 import { ReactNode } from 'react'
@@ -27,7 +27,7 @@ const AccountSuccessAlert = ({
     <div className="flex flex-col space-y-6">
       <div className="h-14 w-14 rounded-full p-4 bg-success-100 mx-auto">
         <div className="flex h-6 w-6 items-center justify-center">
-          <SuccessIcon />
+          <SuccessIcon className="w-6 h-6 text-success-700" />
         </div>
       </div>
       <h1 className="text-h3 text-center">{title}</h1>
@@ -42,7 +42,7 @@ const AccountSuccessAlert = ({
           className="min-w-full"
           onPress={onCancel}
           text={cancelLabel}
-          endIcon={<ArrowRightIcon />}
+          endIcon={<ArrowRightIcon className="w-6 h-6" />}
         />
       )}
     </div>

@@ -27,7 +27,7 @@
   "postal_code_description": "",
   "postal_code_required": "Postal code is required",
   "postal_code_format": "Postal code is not valid",
-  "phone_format": "Type in the correct form (+421...)",
+  "phone_format": "Type in the correct form (+421XXXXXXXXX)",
   "changes_submit": "Submit",
   "buttons": {
     "previous": "Previous",

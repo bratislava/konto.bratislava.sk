@@ -1,4 +1,4 @@
-import { subscribeApi, verifyIdentityApi } from '@utils/api'
+import { subscribeApi, UNAUTHORIZED_ERROR_TEXT, verifyIdentityApi } from '@utils/api'
 import { ROUTES } from '@utils/constants'
 import useSnackbar from '@utils/useSnackbar'
 import {
@@ -26,6 +26,7 @@ import React, { ReactNode, useCallback, useContext, useEffect, useState } from '
 import { useInterval } from 'usehooks-ts'
 
 import logger, { faro } from './logger'
+import { isBrowser } from './utils'
 
 export enum AccountStatus {
   Idle,
@@ -99,6 +100,7 @@ export interface AccountError {
 interface Account {
   login: (email: string, password: string | undefined) => Promise<boolean>
   logout: () => void
+  forceLogout: () => void
   user: CognitoUser | null | undefined
   error: AccountError | undefined | null
   forgotPassword: (email?: string, fromMigration?: boolean) => Promise<boolean>
@@ -185,6 +187,24 @@ export const AccountProvider = ({ children }: { children: ReactNode }) => {
     return attributeList
   }
 
+  const logout = () => {
+    if (user) {
+      user.signOut()
+      setUser(null)
+      setUserData(null)
+    }
+  }
+
+  // to be used when we find out login became invalid
+  const forceLogout = () => {
+    logout()
+    // reloading should clear up any incorrect state app could be in
+    // TODO - does not work nicely on user profile page - fix in another way
+    // if (isBrowser()) {
+    //   window.location.reload()
+    // }
+  }
+
   const subscribe = async () => {
     if (lastMarketingConfirmation === false) {
       return
@@ -199,6 +219,10 @@ export const AccountProvider = ({ children }: { children: ReactNode }) => {
       // the default behaviour when no channels are selected is to subscribe to everything
       await subscribeApi({}, token)
     } catch (error) {
+      // TODO temporary, pass better errors out of api requests
+      if (error?.message === UNAUTHORIZED_ERROR_TEXT) {
+        forceLogout()
+      }
       logger.error(error)
     }
   }
@@ -313,6 +337,13 @@ export const AccountProvider = ({ children }: { children: ReactNode }) => {
       // not refreshing user status immediately, instead leaving this to the registration flow
       return true
     } catch (error: any) {
+      // TODO temporary, pass better errors out of api requests
+      if (error?.message === UNAUTHORIZED_ERROR_TEXT) {
+        forceLogout()
+        if (isBrowser()) {
+          window.location.reload()
+        }
+      }
       logger.error('Failed verify identity request:', error)
       setError({
         code: error.message,
@@ -354,14 +385,6 @@ export const AccountProvider = ({ children }: { children: ReactNode }) => {
   useEffect(() => {
     refreshUserData().catch((error) => logger.error(error))
   }, [refreshUserData])
-
-  const logout = () => {
-    if (user) {
-      user.signOut()
-      setUser(null)
-      setUserData(null)
-    }
-  }
 
   const signUp = (
     email: string,
@@ -640,6 +663,7 @@ export const AccountProvider = ({ children }: { children: ReactNode }) => {
       value={{
         login,
         logout,
+        forceLogout,
         user,
         error,
         forgotPassword,

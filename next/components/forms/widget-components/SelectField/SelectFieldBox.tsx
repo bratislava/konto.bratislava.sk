@@ -10,10 +10,12 @@ interface SelectFieldBoxProps {
   placeholder?: string
   filter: string
   filterRef?: React.RefObject<HTMLInputElement>
+  maxWordSize?: number
   onRemove: (optionId: number) => void
   onRemoveAll: () => void
   onFilterChange: (value: string) => void
   onDeleteLastValue: () => void
+  onClick?: (event: React.MouseEvent) => void
 }
 
 const SelectFieldBoxComponent: ForwardRefRenderFunction<HTMLDivElement, SelectFieldBoxProps> = (
@@ -27,10 +29,12 @@ const SelectFieldBoxComponent: ForwardRefRenderFunction<HTMLDivElement, SelectFi
     placeholder,
     filter,
     filterRef,
+    maxWordSize = 17,
     onRemove,
     onRemoveAll,
     onFilterChange,
     onDeleteLastValue,
+    onClick,
   } = props
 
   const { t } = useTranslation('forms')
@@ -59,42 +63,59 @@ const SelectFieldBoxComponent: ForwardRefRenderFunction<HTMLDivElement, SelectFi
     }
   }
 
+  const getOptionTitle = (selectOption: SelectOption) => {
+    return selectOption.title ?? String(selectOption.const)
+  }
+
   // RENDER
   return (
     <section
       ref={ref}
       className="flex items-center w-full flex-row flex-wrap gap-2 py-2 sm:py-2.5 sm:pl-4 pl-3"
       data-value={value}
+      onClick={(event: React.MouseEvent) => {
+        if (onClick) onClick(event)
+      }}
     >
       {
         /* TAGS */
         value && value.length > 0 ? (
           value.length < 3 ? (
-            (multiple ? value : value.slice(0, 1)).map((option: SelectOption, key: number) => (
-              <Tag
-                key={key}
-                text={option.title ?? String(option.const)}
-                size="small"
-                onRemove={() => onRemove(key)}
-                removable
-                shorthand
-              />
-            ))
+            multiple ? (
+              value.map((option: SelectOption, key: number) => (
+                <Tag
+                  key={key}
+                  text={getOptionTitle(option)}
+                  size="small"
+                  onRemove={() => onRemove(key)}
+                  removable
+                  shorthand
+                />
+              ))
+            ) : (
+              <p>
+                {`${getOptionTitle(value[0]).slice(0, maxWordSize)}${
+                  getOptionTitle(value[0]).length > maxWordSize ? '...' : ''
+                }`}
+              </p>
+            )
           ) : (
             <Tag text={multipleOptionsTagText} size="small" onRemove={onRemoveAll} removable />
           )
         ) : null
       }
-      <input
-        ref={filterRef}
-        className="text-16 max-w-[80px] xs:max-w-none border-0 outline-none"
-        type="text"
-        size={getInputSize()}
-        value={filter}
-        placeholder={getPlaceholder()}
-        onKeyDown={handleOnKeyDown}
-        onChange={(event) => onFilterChange(event.target.value)}
-      />
+      {(multiple || (!multiple && (!value || value.length === 0))) && (
+        <input
+          ref={filterRef}
+          className="text-16 max-w-[80px] xs:max-w-none border-0 outline-none"
+          type="text"
+          size={getInputSize()}
+          value={filter}
+          placeholder={getPlaceholder()}
+          onKeyDown={handleOnKeyDown}
+          onChange={(event) => onFilterChange(event.target.value)}
+        />
+      )}
     </section>
   )
 }

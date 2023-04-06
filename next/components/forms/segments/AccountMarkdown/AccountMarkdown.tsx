@@ -11,7 +11,10 @@ type AccountMarkdownBase = {
   className?: string
   content?: string
   variant?: 'sm' | 'normal'
-  uLinkVariant?: 'primary' | 'default'
+  uLinkVariant?: 'primary' | 'default' | 'error'
+  disableRemarkGfm?: boolean
+  disableRemarkDirective?: boolean
+  disableRemarkDirectiveRehype?: boolean
 }
 
 const TooltipComponent = ({ children }: never) => {
@@ -21,13 +24,27 @@ const TooltipComponent = ({ children }: never) => {
 const AccountMarkdown = ({
   className,
   content,
+  disableRemarkGfm,
+  disableRemarkDirective,
+  disableRemarkDirectiveRehype,
   variant = 'normal',
   uLinkVariant = 'default',
 }: AccountMarkdownBase) => {
+  const remarkPlugins = []
+  if (!disableRemarkGfm) {
+    remarkPlugins.push(remarkGfm)
+  }
+  if (!disableRemarkDirective) {
+    remarkPlugins.push(remarkDirective)
+  }
+  if (!disableRemarkDirectiveRehype) {
+    remarkPlugins.push(remarkDirectiveRehype)
+  }
+
   return (
     <ReactMarkdown
       className={cx('flex flex-col gap-3', className)}
-      remarkPlugins={[remarkGfm, remarkDirective, remarkDirectiveRehype]}
+      remarkPlugins={remarkPlugins}
       rehypePlugins={[rehypeRaw, remarkDirective, remarkDirectiveRehype]}
       components={
         {
@@ -57,9 +74,10 @@ const AccountMarkdown = ({
           a: ({ href, children }: { href?: string; children?: string }) => (
             <Link
               href={href ?? '#'}
-              className={cx('break-words font-semibold  underline hover:text-category-600', {
-                'text-white': uLinkVariant === 'primary',
-                'text-font': uLinkVariant === 'default',
+              className={cx('break-words font-semibold underline-offset-4 underline', {
+                'text-white hover:text-category-600': uLinkVariant === 'primary',
+                'text-font hover:text-category-600': uLinkVariant === 'default',
+                'text-white hover:text-white': uLinkVariant === 'error',
               })}
               target={href?.startsWith('http') ? '_blank' : ''}
             >

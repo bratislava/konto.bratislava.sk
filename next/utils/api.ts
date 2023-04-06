@@ -2,7 +2,10 @@
 // frontend code for calling api endpoints grouped
 import { ErrorObject } from 'ajv'
 
+import logger from './logger'
+
 export const API_ERROR_TEXT = 'API_ERROR'
+export const UNAUTHORIZED_ERROR_TEXT = 'UNAUTHORIZED_ERROR'
 
 export class ApiError extends Error {
   errors: Array<ErrorObject>
@@ -21,37 +24,50 @@ const fetchJsonApi = async (path: string, options?: RequestInit) => {
     if (response.ok) {
       return await response.json()
     }
-    console.log('response not ok')
+    if (response.status === 401) {
+      throw new Error(UNAUTHORIZED_ERROR_TEXT)
+    }
     // try parsing errors - if they may apper in different format extend here
     const responseText = await response.text()
-    console.log('got text')
     let responseJson: any = {}
     try {
-      console.log('try json')
       responseJson = JSON.parse(responseText)
     } catch (error) {
-      throw new Error(API_ERROR_TEXT)
+      logger.error(API_ERROR_TEXT, response.status, response.statusText, responseText, response)
+      throw new Error(response.statusText || API_ERROR_TEXT)
     }
-    console.log('have json', responseJson)
     if (responseJson?.errors) {
       throw new ApiError(responseJson?.message || API_ERROR_TEXT, responseJson.errors)
-    } else if (responseJson.errorName) {
-      throw new Error(responseJson.errorName)
+    } else if (responseJson.error) {
+      throw new Error(responseJson.error)
     } else {
       throw new Error(API_ERROR_TEXT)
     }
   } catch (error) {
-    // TODO: handle error with Faro
-    // caught & rethrown so that we can handle Faro in one place
-    console.error(error)
+    // TODO originally caught & rethrown to ensure logging, might no longer be necessary
+    logger.error(error)
+    throw error
+  }
+}
+
+const fetchBlob = async (path: string, options?: RequestInit) => {
+  try {
+    const response = await fetch(path, options)
+    if (response.ok) {
+      return await response.blob()
+    }
+
+    const responseText = await response.text()
+    throw new Error(responseText)
+  } catch (error) {
+    // TODO originally caught & rethrown to ensure logging, might no longer be necessary
+    logger.error(error)
     throw error
   }
 }
 
 // TODO move error handling here
 export const submitEform = async (eformKey: string, data: Record<string, any>) => {
-  console.log('-------------------')
-  console.log(eformKey)
   return fetchJsonApi(`/api/eforms/${eformKey}/submit`, {
     method: 'POST',
     headers: {
@@ -82,9 +98,30 @@ export const validateKeyword = async (
   }
 }
 
+export const formDataToXml = (eform: string, data: any) => {
+  return fetchBlob(`/api/eforms/${eform}/transform/xml`, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({ data }),
+  })
+}
+
+export const xmlToFormData = (eform: string, data: string) => {
+  return fetchJsonApi(`/api/eforms/${eform}/transform/xmlToJson`, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({ data }),
+  })
+}
+
 interface Identity {
   birthNumber: string
   identityCard: string
+  turnstileToken: string
 }
 
 export const verifyIdentityApi = (data: Identity, token: string) => {
@@ -101,13 +138,25 @@ export const verifyIdentityApi = (data: Identity, token: string) => {
   )
 }
 
-interface Gdpr {
-  type: 'subscribe' | 'unsubscribe'
+export interface Gdpr {
+  subType: 'subscribe' | 'unsubscribe'
+  type: 'ANALYTICS' | 'DATAPROCESSING' | 'MARKETING' | 'LICENSE'
   category: 'SWIMMINGPOOLS' | 'TAXES' | 'CITY' | 'ESBS'
 }
 
 export const subscribeApi = (data: { gdprData?: Gdpr[] }, token: string) => {
   return fetchJsonApi(`${process.env.NEXT_PUBLIC_CITY_ACCOUNT_URL}/user/subscribe`, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      Authorization: `Bearer ${token}`,
+    },
+    body: JSON.stringify(data),
+  })
+}
+
+export const unsubscribeApi = (data: { gdprData?: Gdpr[] }, token: string) => {
+  return fetchJsonApi(`${process.env.NEXT_PUBLIC_CITY_ACCOUNT_URL}/user/unsubscribe`, {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',

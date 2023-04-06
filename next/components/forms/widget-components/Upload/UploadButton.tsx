@@ -1,4 +1,4 @@
-import UploadIcon from '@assets/images/forms/upload-icon.svg'
+import UploadIcon from '@assets/images/new-icons/ui/upload.svg'
 import { UploadMinioFile } from '@backend/dtos/minio/upload-minio-file.dto'
 import cx from 'classnames'
 import React, { ForwardedRef, forwardRef, ForwardRefRenderFunction } from 'react'
@@ -56,7 +56,7 @@ const UploadButtonComponent: ForwardRefRenderFunction<HTMLDivElement, UploadButt
       <div className={buttonClassNames} onClick={handleOnClick} ref={ref} data-value={value}>
         <div className="w-full flex gap-2">
           <div className="h-6 w-6 flex justify-center items-center">
-            <UploadIcon />
+            <UploadIcon className="w-6 h-6" />
           </div>
           <p className="text-16">Upload</p>
         </div>

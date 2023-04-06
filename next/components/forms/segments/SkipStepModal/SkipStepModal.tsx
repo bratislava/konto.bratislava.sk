@@ -1,5 +1,5 @@
-import CloseIcon from '@assets/images/forms/close-thin.svg'
 import ErrorIcon from '@assets/images/forms/error-icon.svg'
+import CloseIcon from '@assets/images/new-icons/ui/cross.svg'
 import cx from 'classnames'
 import Button from 'components/forms/simple-components/Button'
 import { useTranslation } from 'next-i18next'
@@ -35,7 +35,7 @@ const SkipStepModal = ({ show, onClose, onSkip, className }: SkipStepModalBase) 
         <div className="flex flex-col gap-2">
           <CloseIcon
             onClick={() => onClose()}
-            className="cursor-pointer absolute top-3 right-3 md:top-4 md:right-4"
+            className="cursor-pointer w-6 h-6 absolute top-3 right-3 md:top-4 md:right-4"
           />
           <div className="flex flex-col gap-6">
             <div className="flex gap-6">

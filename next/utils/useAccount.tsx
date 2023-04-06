@@ -1,15 +1,32 @@
-import { subscribeApi, verifyIdentityApi } from '@utils/api'
+import { subscribeApi, UNAUTHORIZED_ERROR_TEXT, verifyIdentityApi } from '@utils/api'
+import { ROUTES } from '@utils/constants'
+import useSnackbar from '@utils/useSnackbar'
 import {
   AuthenticationDetails,
   CognitoUser,
   CognitoUserAttribute,
   CognitoUserPool,
   CognitoUserSession,
+  // Cognito cookies are large and we were hitting limits on request header size on our infrastructure
+  // TODO once we need cross-domain login, write our own "hybrid" storage, share only necessary data in cookies
+  // sources:
+  // https://github.com/aws-amplify/amplify-js/issues/1545
+  // https://github.com/amazon-archives/amazon-cognito-identity-js/issues/688
+  // https://github.com/aws-amplify/amplify-js/issues/5330
+  //CookieStorage,
   IAuthenticationDetailsData,
 } from 'amazon-cognito-identity-js'
 import * as AWS from 'aws-sdk/global'
 import { AWSError } from 'aws-sdk/global'
-import React, { ReactNode, useContext, useEffect, useState } from 'react'
+import { useStatusBarContext } from 'components/forms/info-components/StatusBar'
+import AccountMarkdown from 'components/forms/segments/AccountMarkdown/AccountMarkdown'
+import { useRouter } from 'next/router'
+import { useTranslation } from 'next-i18next'
+import React, { ReactNode, useCallback, useContext, useEffect, useState } from 'react'
+import { useInterval } from 'usehooks-ts'
+
+import logger, { faro } from './logger'
+import { isBrowser } from './utils'
 
 export enum AccountStatus {
   Idle,
@@ -18,11 +35,17 @@ export enum AccountStatus {
   EmailVerificationRequired,
   EmailVerificationSuccess,
   IdentityVerificationRequired,
+  IdentityVerificationPending,
+  IdentityVerificationFailed,
   IdentityVerificationSuccess,
 }
 
 export enum Tier {
-  IdentityCard = 'IDENTITY_CARD',
+  NEW = 'NEW',
+  QUEUE_IDENTITY_CARD = 'QUEUE_IDENTITY_CARD',
+  NOT_VERIFIED_IDENTITY_CARD = 'NOT_VERIFIED_IDENTITY_CARD',
+  IDENTITY_CARD = 'IDENTITY_CARD',
+  EID = 'EID',
 }
 
 export interface Address {
@@ -63,6 +86,9 @@ const updatableAttributes = new Set([
 const poolData = {
   UserPoolId: process.env.NEXT_PUBLIC_COGNITO_USER_POOL_ID || '',
   ClientId: process.env.NEXT_PUBLIC_COGNITO_CLIENT_ID || '',
+  // Storage: new CookieStorage({
+  //   domain: process.env.NEXT_PUBLIC_COGNITO_COOKIE_STORAGE_DOMAIN,
+  // }),
 }
 const userPool = new CognitoUserPool(poolData)
 
@@ -74,10 +100,12 @@ export interface AccountError {
 interface Account {
   login: (email: string, password: string | undefined) => Promise<boolean>
   logout: () => void
+  forceLogout: () => void
   user: CognitoUser | null | undefined
   error: AccountError | undefined | null
-  forgotPassword: (email?: string) => Promise<boolean>
+  forgotPassword: (email?: string, fromMigration?: boolean) => Promise<boolean>
   confirmPassword: (verificationCode: string, password: string) => Promise<boolean>
+  refreshUserData: () => Promise<void>
   status: AccountStatus
   setStatus: (status: AccountStatus) => void
   userData: UserData | null
@@ -86,11 +114,12 @@ interface Account {
     email: string,
     password: string,
     marketingConfirmation: boolean,
+    turnstileToken: string,
     data: UserData,
   ) => Promise<boolean>
   verifyEmail: (verificationCode: string) => Promise<boolean>
   resendVerificationCode: () => Promise<boolean>
-  verifyIdentity: (rc: string, idCard: string) => Promise<boolean>
+  verifyIdentity: (rc: string, idCard: string, turnstileToken: string) => Promise<boolean>
   getAccessToken: () => Promise<string | null>
   changePassword: (oldPassword: string, newPassword: string) => Promise<boolean>
   lastEmail: string
@@ -109,6 +138,25 @@ export const AccountProvider = ({ children }: { children: ReactNode }) => {
     Username: '',
   })
   const [lastMarketingConfirmation, setLastMarketingConfirmation] = useState(false)
+  const { setStatusBarContent } = useStatusBarContext()
+  const { t } = useTranslation()
+
+  // TODO - could be better, currently used only after login, AccountStatus should be replaced or rewritten
+  const mapTierToStatus = (tier: Tier): AccountStatus => {
+    switch (tier) {
+      case Tier.QUEUE_IDENTITY_CARD:
+        return AccountStatus.IdentityVerificationPending
+      case Tier.NOT_VERIFIED_IDENTITY_CARD:
+        return AccountStatus.IdentityVerificationFailed
+      case Tier.IDENTITY_CARD:
+      case Tier.EID:
+        return AccountStatus.IdentityVerificationSuccess
+      case Tier.NEW:
+        return AccountStatus.Idle
+      default:
+        return AccountStatus.IdentityVerificationRequired
+    }
+  }
 
   const userAttributesToObject = (attributes?: CognitoUserAttribute[]): UserData => {
     const data: any = {}
@@ -139,6 +187,24 @@ export const AccountProvider = ({ children }: { children: ReactNode }) => {
     return attributeList
   }
 
+  const logout = () => {
+    if (user) {
+      user.signOut()
+      setUser(null)
+      setUserData(null)
+    }
+  }
+
+  // to be used when we find out login became invalid
+  const forceLogout = () => {
+    logout()
+    // reloading should clear up any incorrect state app could be in
+    // TODO - does not work nicely on user profile page - fix in another way
+    // if (isBrowser()) {
+    //   window.location.reload()
+    // }
+  }
+
   const subscribe = async () => {
     if (lastMarketingConfirmation === false) {
       return
@@ -153,7 +219,11 @@ export const AccountProvider = ({ children }: { children: ReactNode }) => {
       // the default behaviour when no channels are selected is to subscribe to everything
       await subscribeApi({}, token)
     } catch (error) {
-      console.error(error)
+      // TODO temporary, pass better errors out of api requests
+      if (error?.message === UNAUTHORIZED_ERROR_TEXT) {
+        forceLogout()
+      }
+      logger.error(error)
     }
   }
 
@@ -161,6 +231,9 @@ export const AccountProvider = ({ children }: { children: ReactNode }) => {
     const cognitoUser = new CognitoUser({
       Username: lastCredentials?.Username,
       Pool: userPool,
+      // Storage: new CookieStorage({
+      //   domain: process.env.NEXT_PUBLIC_COGNITO_COOKIE_STORAGE_DOMAIN,
+      // }),
     })
 
     return new Promise((resolve) => {
@@ -182,6 +255,9 @@ export const AccountProvider = ({ children }: { children: ReactNode }) => {
     const cognitoUser = new CognitoUser({
       Username: lastCredentials.Username,
       Pool: userPool,
+      // Storage: new CookieStorage({
+      //   domain: process.env.NEXT_PUBLIC_COGNITO_COOKIE_STORAGE_DOMAIN,
+      // }),
     })
 
     setError(null)
@@ -242,7 +318,11 @@ export const AccountProvider = ({ children }: { children: ReactNode }) => {
     })
   }
 
-  const verifyIdentity = async (rc: string, idCard: string): Promise<boolean> => {
+  const verifyIdentity = async (
+    rc: string,
+    idCard: string,
+    turnstileToken: string,
+  ): Promise<boolean> => {
     const accessToken = await getAccessToken()
     if (!accessToken) {
       return false
@@ -251,12 +331,20 @@ export const AccountProvider = ({ children }: { children: ReactNode }) => {
     try {
       setError(null)
       await verifyIdentityApi(
-        { birthNumber: rc.replace('/', ''), identityCard: idCard },
+        { birthNumber: rc.replace('/', ''), identityCard: idCard.toUpperCase(), turnstileToken },
         accessToken,
       )
-      setStatus(AccountStatus.IdentityVerificationSuccess)
+      // not refreshing user status immediately, instead leaving this to the registration flow
       return true
     } catch (error: any) {
+      // TODO temporary, pass better errors out of api requests
+      if (error?.message === UNAUTHORIZED_ERROR_TEXT) {
+        forceLogout()
+        if (isBrowser()) {
+          window.location.reload()
+        }
+      }
+      logger.error('Failed verify identity request:', error)
       setError({
         code: error.message,
         message: error.message,
@@ -265,12 +353,13 @@ export const AccountProvider = ({ children }: { children: ReactNode }) => {
     }
   }
 
-  useEffect(() => {
+  const [openSnackbarSuccess] = useSnackbar({ variant: 'success' })
+  const refreshUserData = useCallback(async () => {
     const cognitoUser = userPool.getCurrentUser()
     if (cognitoUser !== null) {
       cognitoUser.getSession((err: Error | null, result: CognitoUserSession | null) => {
         if (err) {
-          console.error(err)
+          logger.error(err)
           setUser(null)
           return
         }
@@ -278,17 +367,12 @@ export const AccountProvider = ({ children }: { children: ReactNode }) => {
         // NOTE: getSession must be called to authenticate user before calling getUserAttributes
         cognitoUser.getUserAttributes((err?: Error, attributes?: CognitoUserAttribute[]) => {
           if (err) {
-            console.error(err)
+            logger.error(err)
             setUser(null)
             return
           }
 
           const userData = userAttributesToObject(attributes)
-          setStatus(
-            userData.tier !== Tier.IdentityCard
-              ? AccountStatus.IdentityVerificationRequired
-              : AccountStatus.IdentityVerificationSuccess,
-          )
           setUserData(userData)
           setUser(cognitoUser)
         })
@@ -298,36 +382,43 @@ export const AccountProvider = ({ children }: { children: ReactNode }) => {
     }
   }, [])
 
-  const logout = () => {
-    if (user) {
-      user.signOut()
-      setUser(null)
-      setUserData(null)
-      setStatus(AccountStatus.Idle)
-    }
-  }
+  useEffect(() => {
+    refreshUserData().catch((error) => logger.error(error))
+  }, [refreshUserData])
 
   const signUp = (
     email: string,
     password: string,
     marketingConfirmation: boolean,
+    turnstileToken: string,
     data: UserData,
   ): Promise<boolean> => {
     const attributeList = objectToUserAttributes(data)
-
+    const validationDataAttributeList = [
+      new CognitoUserAttribute({
+        Name: 'custom:turnstile_token',
+        Value: turnstileToken,
+      }),
+    ]
     setLastCredentials({ Username: email, Password: password })
     setLastMarketingConfirmation(marketingConfirmation)
     setError(null)
     return new Promise((resolve) => {
-      userPool.signUp(email, password, attributeList, [], (err?: Error) => {
-        if (err) {
-          setError({ ...(err as AWSError) })
-          resolve(false)
-        } else {
-          setStatus(AccountStatus.EmailVerificationRequired)
-          resolve(true)
-        }
-      })
+      userPool.signUp(
+        email,
+        password,
+        attributeList,
+        validationDataAttributeList,
+        (err?: Error) => {
+          if (err) {
+            setError({ ...(err as AWSError) })
+            resolve(false)
+          } else {
+            setStatus(AccountStatus.EmailVerificationRequired)
+            resolve(true)
+          }
+        },
+      )
     })
   }
 
@@ -359,6 +450,9 @@ export const AccountProvider = ({ children }: { children: ReactNode }) => {
     const cognitoUser = new CognitoUser({
       Username: lastCredentials.Username,
       Pool: userPool,
+      // Storage: new CookieStorage({
+      //   domain: process.env.NEXT_PUBLIC_COGNITO_COOKIE_STORAGE_DOMAIN,
+      // }),
     })
 
     return new Promise((resolve) => {
@@ -375,10 +469,13 @@ export const AccountProvider = ({ children }: { children: ReactNode }) => {
     })
   }
 
-  const forgotPassword = (email = ''): Promise<boolean> => {
+  const forgotPassword = (email = '', fromMigration = false): Promise<boolean> => {
     const cognitoUser = new CognitoUser({
       Username: email || lastCredentials.Username,
       Pool: userPool,
+      // Storage: new CookieStorage({
+      //   domain: process.env.NEXT_PUBLIC_COGNITO_COOKIE_STORAGE_DOMAIN,
+      // }),
     })
 
     if (email) {
@@ -388,13 +485,17 @@ export const AccountProvider = ({ children }: { children: ReactNode }) => {
     return new Promise((resolve) => {
       cognitoUser.forgotPassword({
         onSuccess: (data) => {
-          console.log(data)
           // successfully initiated reset password request
           setStatus(AccountStatus.NewPasswordRequired)
           resolve(true)
         },
         onFailure: (err: Error) => {
-          setError({ ...(err as AWSError) })
+          const customErr = { ...(err as AWSError) }
+          if (fromMigration && customErr.code === 'UserNotFoundException') {
+            customErr.code = 'MigrationUserNotFoundException'
+            customErr.name = 'MigrationUserNotFoundException'
+          }
+          setError(customErr)
           resolve(false)
         },
       })
@@ -411,6 +512,9 @@ export const AccountProvider = ({ children }: { children: ReactNode }) => {
     const cognitoUser = new CognitoUser({
       Username: email,
       Pool: userPool,
+      // Storage: new CookieStorage({
+      //   domain: process.env.NEXT_PUBLIC_COGNITO_COOKIE_STORAGE_DOMAIN,
+      // }),
     })
 
     setLastCredentials(credentials)
@@ -433,22 +537,17 @@ export const AccountProvider = ({ children }: { children: ReactNode }) => {
 
           cognitoUser.getUserAttributes((err?: Error, attributes?: CognitoUserAttribute[]) => {
             if (err) {
-              console.error(err)
+              logger.error(err)
               resolve(false)
             } else {
               const userData = userAttributesToObject(attributes)
-              setStatus(
-                userData.tier !== Tier.IdentityCard
-                  ? AccountStatus.IdentityVerificationRequired
-                  : AccountStatus.IdentityVerificationSuccess,
-              )
               setUserData(userData)
               setUser(cognitoUser)
 
               // refreshes credentials using AWS.CognitoIdentity.getCredentialsForIdentity()
               awsCredentials.refresh((err?: AWSError) => {
                 if (err) {
-                  console.error(err)
+                  logger.error(err)
                   resolve(false)
                 } else {
                   resolve(true)
@@ -468,33 +567,92 @@ export const AccountProvider = ({ children }: { children: ReactNode }) => {
         },
 
         newPasswordRequired: (userAttributes, requiredAttributes) => {
-          console.log('newPasswordRequired', userAttributes, requiredAttributes)
+          logger.warn('newPasswordRequired', userAttributes, requiredAttributes)
           resolve(false)
         },
         mfaRequired: (challengeName, challengeParameters) => {
-          console.log('mfaRequired', challengeName, challengeParameters)
+          logger.warn('mfaRequired', challengeName, challengeParameters)
           resolve(false)
         },
         totpRequired: (challengeName, challengeParameters) => {
-          console.log('totpRequired', challengeName, challengeParameters)
+          logger.warn('totpRequired', challengeName, challengeParameters)
           resolve(false)
         },
         customChallenge: (challengeParameters) => {
           const challengeName = 'challenge-answer'
-          console.log('customChallenge', challengeName, challengeParameters)
+          logger.warn('customChallenge', challengeName, challengeParameters)
           resolve(false)
         },
         mfaSetup: (challengeName, challengeParameters) => {
-          console.log('mfaSetup', challengeName, challengeParameters)
+          logger.warn('mfaSetup', challengeName, challengeParameters)
           resolve(false)
         },
         selectMFAType: (challengeName, challengeParameters) => {
-          console.log('selectmfatype', challengeName, challengeParameters)
+          logger.warn('selectmfatype', challengeName, challengeParameters)
           resolve(false)
         },
       })
     })
   }
+
+  useInterval(
+    () => {
+      refreshUserData().catch((error) => logger.error(error))
+    },
+    status === AccountStatus.IdentityVerificationPending ? 5000 : null,
+  )
+
+  // map tier to status, TODO think about dropping global status and using only tier
+  useEffect(() => {
+    // does nothing if faro isn't initialized yet
+    faro?.api?.setUser(userData)
+    // TODO these serve to guide users through multiple steps and should be dismissed only by them - don't update status automatically when here
+    const tempStatuses = [
+      AccountStatus.NewPasswordSuccess,
+      AccountStatus.NewPasswordRequired,
+      AccountStatus.EmailVerificationSuccess,
+      AccountStatus.EmailVerificationRequired,
+    ]
+    if (tempStatuses.includes(status)) {
+      logger.trace('Account status changed - temp registration status', { status })
+      return
+    }
+
+    const newStatus = userData ? mapTierToStatus(userData.tier) : AccountStatus.Idle
+    if (
+      status === AccountStatus.IdentityVerificationPending &&
+      newStatus === AccountStatus.IdentityVerificationSuccess
+    ) {
+      openSnackbarSuccess(t('account:identity_verification_success'))
+    }
+    if (newStatus !== status) {
+      logger.trace('Account status changed', { oldStatus: status, newStatus })
+      setStatus(newStatus)
+    }
+    // TODO not sure if userData?.tier is needed, needs verifications (@mpinter)
+  }, [openSnackbarSuccess, status, t, userData, userData?.tier])
+
+  useEffect(() => {
+    // this overrides the 'global' status notification (i.e. crashed servers), but since we don't have design for multiple, showing failed notification probably takes precedence
+    // TODO rethink the status bar approach on product side
+    if (status === AccountStatus.IdentityVerificationFailed) {
+      setStatusBarContent(
+        <AccountMarkdown
+          uLinkVariant="error"
+          variant="sm"
+          content={t('account:identity_verification_failed', { url: ROUTES.REGISTER })}
+        />,
+      )
+    } else {
+      // TODO here set to whatever is the 'global' error
+      setStatusBarContent('')
+    }
+  }, [setStatusBarContent, status, t])
+
+  const router = useRouter()
+  useEffect(() => {
+    setError(null)
+  }, [router.pathname])
 
   const resetError = () => {
     setError(null)
@@ -505,10 +663,12 @@ export const AccountProvider = ({ children }: { children: ReactNode }) => {
       value={{
         login,
         logout,
+        forceLogout,
         user,
         error,
         forgotPassword,
         confirmPassword,
+        refreshUserData,
         status,
         setStatus,
         userData,

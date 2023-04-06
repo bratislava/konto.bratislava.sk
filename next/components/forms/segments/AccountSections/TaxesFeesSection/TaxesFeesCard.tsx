@@ -1,7 +1,8 @@
-import ChevronRightIcon from '@assets/images/forms/chevron-right.svg'
-import ExclamationIcon from '@assets/images/forms/exclamation-icon.svg'
-import SuccessIcon from '@assets/images/forms/success.svg'
-import TimeIcon from '@assets/images/forms/warning-time-icon.svg'
+import ChevronRightIcon from '@assets/images/new-icons/ui/chevron-right.svg'
+import TimeIcon from '@assets/images/new-icons/ui/clock.svg'
+import SuccessIcon from '@assets/images/new-icons/ui/done.svg'
+import ExclamationIcon from '@assets/images/new-icons/ui/exclamation-mark.svg'
+import { ROUTES } from '@utils/constants'
 import cx from 'classnames'
 import { TaxesCardBase } from 'components/forms/segments/AccountSections/TaxesFeesSection/TaxesFeesSection'
 import Link from 'next/link'
@@ -27,11 +28,11 @@ const TaxesFeesCard = (props: TaxesCardBase) => {
 
     switch (status) {
       case 'negative':
-        return statusNode(<ExclamationIcon />, 'Neuhradená')
+        return statusNode(<ExclamationIcon className="text-negative-700 w-6 h-6" />, 'Neuhradená')
       case 'warning':
-        return statusNode(<TimeIcon />, 'Čiastočne uhradená')
+        return statusNode(<TimeIcon className="text-warning-700 w-6 h-6" />, 'Čiastočne uhradená')
       case 'success':
-        return statusNode(<SuccessIcon width={18} height={13} viewBox="0 0 24 19" />, 'Uhradená')
+        return statusNode(<SuccessIcon className="text-success-700 w-6 h-6" />, 'Uhradená')
 
       default:
         break
@@ -76,7 +77,10 @@ const TaxesFeesCard = (props: TaxesCardBase) => {
           </div>
         </div>
         <div className="cursor-pointer w-16 min-w-[64px] h-full border-l-2">
-          <Link href="/taxes-and-fees/1" className="w-full h-full items-center flex justify-center">
+          <Link
+            href={`${ROUTES.TAXES_AND_FEES}/1`}
+            className="w-full h-full items-center flex justify-center"
+          >
             <ChevronRightIcon />
           </Link>
         </div>
@@ -86,7 +90,10 @@ const TaxesFeesCard = (props: TaxesCardBase) => {
         id="mobile-card"
         className="bg-white w-full h-24 flex lg:hidden items-center justify-between border-b-2 border-gray-200"
       >
-        <Link href="/taxes-and-fees/1" className="w-full h-full items-center flex justify-center">
+        <Link
+          href={`${ROUTES.TAXES_AND_FEES}/1`}
+          className="w-full h-full items-center flex justify-center"
+        >
           <div className="w-full flex items-start justify-between">
             <div className="flex flex-col">
               <span className="text-p2-semibold leading-5 mb-1">{`${title} za rok ${yearPay}`}</span>

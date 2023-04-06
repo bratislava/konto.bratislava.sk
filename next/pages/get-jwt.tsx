@@ -2,6 +2,7 @@
 // disabling eslint/ts checks instead of fixing them
 // @ts-nocheck
 import { getUserApi, resetRcApi } from '@utils/api'
+import { ROUTES } from '@utils/constants'
 import { AsyncServerProps } from '@utils/types'
 import useAccount from '@utils/useAccount'
 import { isProductionDeployment } from '@utils/utils'
@@ -13,21 +14,30 @@ import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
 import { useState } from 'react'
 import { useEffectOnce } from 'usehooks-ts'
 
-const CognitoPrototype = ({ page }: AsyncServerProps<typeof getServerSideProps>) => {
-  const { getAccessToken, isAuth, updateUserData } = useAccount()
+const signUpParams = [
+  'test@mail.com',
+  'Qwert12345!',
+  {
+    given_name: 'Test',
+    family_name: 'Test',
+  },
+]
+
+const GetJwt = ({ page }: AsyncServerProps<typeof getServerSideProps>) => {
+  const { getAccessToken, isAuth, updateUserData, logout, signUp } = useAccount()
   const [accessToken, setAccessToken] = useState('')
 
-  useEffectOnce(async () => {
-    try {
+  useEffectOnce(() => {
+    ;(async () => {
       const token = await getAccessToken()
       if (token) {
         setAccessToken(token)
         const user = await getUserApi(token)
         console.log(user)
       }
-    } catch (error) {
+    })().catch((error) => {
       console.log(error)
-    }
+    })
   })
 
   const resetRc = async () => {
@@ -50,12 +60,20 @@ const CognitoPrototype = ({ page }: AsyncServerProps<typeof getServerSideProps>)
             title="Below you can see the access token of currently logged-in user"
           >
             {isAuth ? (
-              <div>
+              <div className="flex flex-col">
                 <div>{accessToken}</div>
                 <Button onPress={resetRc} text="Reset RC" />
+                <Button onPress={logout} text="Logout" />
               </div>
             ) : (
-              <Button href="/login" label="No user - go to login" variant="link-category" />
+              <div className="flex flex-col">
+                <Button href={ROUTES.LOGIN} label="No user - go to login" variant="link-category" />
+                <Button onPress={logout} text="Logout" />
+                <Button
+                  onPress={() => signUp(...signUpParams)}
+                  text="SignUp - change hardcoded params in code"
+                />
+              </div>
             )}
           </Wrapper>
         </div>
@@ -64,8 +82,9 @@ const CognitoPrototype = ({ page }: AsyncServerProps<typeof getServerSideProps>)
   )
 }
 
+// TODO hide in production-production
 export const getServerSideProps = async (ctx: GetServerSidePropsContext) => {
-  if (isProductionDeployment()) return { notFound: true }
+  // if (isProductionDeployment()) return { notFound: true }
 
   const locale = ctx.locale ?? 'sk'
 
@@ -79,4 +98,4 @@ export const getServerSideProps = async (ctx: GetServerSidePropsContext) => {
   }
 }
 
-export default CognitoPrototype
+export default GetJwt

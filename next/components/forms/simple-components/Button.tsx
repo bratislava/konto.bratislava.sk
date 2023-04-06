@@ -1,10 +1,11 @@
-import ArrowRightIcon from '@assets/images/forms/arrow-right.svg'
+import ArrowRightIcon from '@assets/images/new-icons/ui/arrow-right.svg'
 import { LinkButtonProps } from '@react-types/button'
 import cx from 'classnames'
-import { forwardRef, ReactNode, RefObject } from 'react'
+import { forwardRef, ReactNode, RefObject, useEffect } from 'react'
 import { AriaButtonProps, useButton } from 'react-aria'
 
 import MLink from './MLink'
+import Spinner from './Spinner'
 
 type ButtonBase = {
   variant?:
@@ -28,18 +29,23 @@ type ButtonBase = {
   hrefIconHidden?: boolean
   fullWidth?: boolean
   form?: string
+  hrefTarget?: '_blank' | '_self' | '_parent' | '_top'
 }
 
 export type ButtonProps = Omit<AriaButtonProps<'button'>, keyof LinkButtonProps> &
   ButtonBase & {
     href?: undefined
     label?: string
+    hrefLabelCenter?: boolean
+    loading?: boolean
   }
 export type AnchorProps = AriaButtonProps<'a'> &
   ButtonBase & {
     href: string
     label: string
+    hrefLabelCenter?: boolean
     disabled?: false
+    loading?: undefined
   }
 
 export type PolymorphicProps = ButtonProps | AnchorProps
@@ -58,20 +64,24 @@ const Button = forwardRef<HTMLAnchorElement | HTMLButtonElement, PolymorphicProp
       size = 'lg',
       icon,
       text,
+      hrefLabelCenter,
       startIcon,
       endIcon,
       hrefIconHidden,
       fullWidth,
       form,
+      loading,
+      hrefTarget,
       ...rest
     },
     ref,
   ) => {
+    const disabledStyling = disabled || loading
     const { buttonProps } = useButton(
       {
         ...rest,
         elementType: rest.href ? 'a' : 'button',
-        isDisabled: disabled,
+        isDisabled: disabledStyling,
       },
       ref as RefObject<HTMLAnchorElement | HTMLButtonElement>,
     )
@@ -80,7 +90,7 @@ const Button = forwardRef<HTMLAnchorElement | HTMLButtonElement, PolymorphicProp
       'inline-flex items-center',
       rest.href
         ? 'underline underline-offset-4 focus-visible:outline-none'
-        : 'h-fit space-x-2 justify-center text-center align-middle focus:outline-none rounded-lg',
+        : 'h-fit justify-center text-center align-middle focus:outline-none rounded-lg',
       className,
       {
         'w-full': fullWidth,
@@ -196,24 +206,29 @@ const Button = forwardRef<HTMLAnchorElement | HTMLButtonElement, PolymorphicProp
         'text-gray-700 focus:text-gray-800': variant === 'link-black',
 
         // hover
-        'hover:bg-gray-600 hover:border-gray-600': variant === 'black' && !disabled,
-        'hover:border-gray-200 hover:text-gray-600': variant === 'black-outline' && !disabled,
-        'hover:bg-negative-600 hover:border-negative-600': variant === 'negative' && !disabled,
+        'hover:bg-gray-600 hover:border-gray-600': variant === 'black' && !disabledStyling,
+        'hover:border-gray-200 hover:text-gray-600':
+          variant === 'black-outline' && !disabledStyling,
+        'hover:bg-negative-600 hover:border-negative-600':
+          variant === 'negative' && !disabledStyling,
 
-        'hover:bg-category-600 hover:border-category-600': variant === 'category' && !disabled,
+        'hover:bg-category-600 hover:border-category-600':
+          variant === 'category' && !disabledStyling,
         'hover:border-category-600 hover:text-category-600':
-          variant === 'category-outline' && !disabled,
-        'hover:bg-category-100 hover:text-category-600': variant === 'plain-category' && !disabled,
-        'hover:bg-gray-100 hover:text-gray-600': variant === 'plain-black' && !disabled,
-        'hover:bg-negative-100 hover:text-negative-600': variant === 'plain-negative' && !disabled,
+          variant === 'category-outline' && !disabledStyling,
+        'hover:bg-category-100 hover:text-category-600':
+          variant === 'plain-category' && !disabledStyling,
+        'hover:bg-gray-100 hover:text-gray-600': variant === 'plain-black' && !disabledStyling,
+        'hover:bg-negative-100 hover:text-negative-600':
+          variant === 'plain-negative' && !disabledStyling,
 
-        'hover:text-category-600': variant === 'link-category' && !disabled,
-        'hover:text-gray-600': variant === 'link-black' && !disabled,
+        'hover:text-category-600': variant === 'link-category' && !disabledStyling,
+        'hover:text-gray-600': variant === 'link-black' && !disabledStyling,
 
         // text color
         'text-white': variant === 'negative' || variant === 'black' || variant === 'category',
 
-        // disabled
+        // opacity lowered only when explicitly disabled, not when loading
         'opacity-50': disabled,
       },
     )
@@ -222,8 +237,10 @@ const Button = forwardRef<HTMLAnchorElement | HTMLButtonElement, PolymorphicProp
       const buttonPropsFixed = { ...buttonProps, role: undefined }
       return (
         <MLink
+          target={hrefTarget}
           href={rest.href}
           label={rest.label}
+          labelCenter={hrefLabelCenter}
           ref={ref as RefObject<HTMLAnchorElement>}
           className={style}
           {...buttonPropsFixed}
@@ -242,6 +259,19 @@ const Button = forwardRef<HTMLAnchorElement | HTMLButtonElement, PolymorphicProp
       )
     }
 
+    const spinnerVariant = [
+      'category',
+      'category-outline',
+      'plain-category',
+      'link-category',
+    ].includes(variant)
+      ? 'category'
+      : ['black-outline', 'plain-black', 'link-black'].includes(variant)
+      ? 'black'
+      : ['negative', 'plain-negative'].includes(variant)
+      ? 'negative'
+      : 'gray'
+
     return (
       <button
         type="button"
@@ -249,11 +279,26 @@ const Button = forwardRef<HTMLAnchorElement | HTMLButtonElement, PolymorphicProp
         className={style}
         form={form}
         {...buttonProps}
+        disabled={disabled || loading}
       >
-        <div className="justify-center flex items-center">
+        {loading && (
+          <div
+            className={cx(
+              'absolute flex justify-center items-center',
+              { 'h-6 w-6': size === 'lg' },
+              { 'h-5 w-5': size === 'sm' },
+            )}
+          >
+            <Spinner size="sm" variant={spinnerVariant} />
+          </div>
+        )}
+        <div className={cx('justify-center flex items-center', { invisible: loading })}>
           {startIcon && (
             <span
-              className={cx({ 'mr-3 h-6 w-6': size === 'lg', 'mr-2.5 h-5 w-5': size === 'sm' })}
+              className={cx('flex justify-center items-center', {
+                'mr-3 h-6 w-6': size === 'lg',
+                'mr-2.5 h-5 w-5': size === 'sm',
+              })}
             >
               {startIcon}
             </span>

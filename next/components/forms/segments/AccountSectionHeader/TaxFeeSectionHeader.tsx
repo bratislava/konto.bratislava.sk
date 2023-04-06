@@ -1,9 +1,10 @@
-import FileDownload from '@assets/images/account/file_download.svg'
-import PaymentIcon from '@assets/images/account/payment-icon.svg'
-import ChevronLeft from '@assets/images/chevron-left-2.svg'
-import ExclamationIcon from '@assets/images/forms/exclamation-icon.svg'
-import SuccessIcon from '@assets/images/forms/success.svg'
-import TimeIcon from '@assets/images/forms/warning-time-icon.svg'
+import ChevronLeft from '@assets/images/new-icons/ui/chevron-left.svg'
+import TimeIcon from '@assets/images/new-icons/ui/clock.svg'
+import SuccessIcon from '@assets/images/new-icons/ui/done.svg'
+import FileDownload from '@assets/images/new-icons/ui/download.svg'
+import ExclamationIcon from '@assets/images/new-icons/ui/exclamation-mark.svg'
+import PaymentIcon from '@assets/images/new-icons/ui/payment.svg'
+import { ROUTES } from '@utils/constants'
 import cx from 'classnames'
 import { useRouter } from 'next/router'
 import { useTranslation } from 'next-i18next'
@@ -14,6 +15,8 @@ import Button from '../../simple-components/Button'
 type AccountSectionHeaderBase = {
   title: string
   status?: string
+  // TODO temp only for testing, remove the prop once server integration is ready
+  who?: string
 }
 
 const statusHandler = (status: 'negative' | 'warning' | 'success'): ReactNode => {
@@ -33,11 +36,11 @@ const statusHandler = (status: 'negative' | 'warning' | 'success'): ReactNode =>
 
   switch (status) {
     case 'negative':
-      return statusNode(<ExclamationIcon />, 'Neuhradená')
+      return statusNode(<ExclamationIcon className="text-negative-700 w-6 h-6" />, 'Neuhradená')
     case 'warning':
-      return statusNode(<TimeIcon />, 'Čiastočne uhradená')
+      return statusNode(<TimeIcon className="text-warning-700 w-6 h-6" />, 'Čiastočne uhradená')
     case 'success':
-      return statusNode(<SuccessIcon width={18} height={24} viewBox="0 0 24 18" />, 'Uhradená')
+      return statusNode(<SuccessIcon className="text-success-700 w-6 h-6" />, 'Uhradená')
 
     default:
       return null
@@ -48,16 +51,16 @@ const TaxFeeSectionHeader = (props: AccountSectionHeaderBase) => {
   const { t } = useTranslation('account')
   const router = useRouter()
   return (
-    <div className="lg:px-0 bg-gray-50 h-full mt-16 lg:mt-28 px-4">
+    <div className="lg:px-0 bg-gray-50 h-full px-4">
       <div className="flex flex-col py-6 gap-4 max-w-screen-lg m-auto">
         <div className="flex items-center gap-0.5 cursor-pointer">
           <div className="w-5 h-5 flex justify-center items-center">
-            <ChevronLeft />
+            <ChevronLeft className="w-5 h-5" />
           </div>
           <button
             type="button"
             className="text-p3-medium underline-offset-2 underline"
-            onClick={() => router.push('/taxes-and-fees')}
+            onClick={() => router.push(ROUTES.TAXES_AND_FEES)}
           >
             {t('back_to_list')}
           </button>
@@ -68,14 +71,14 @@ const TaxFeeSectionHeader = (props: AccountSectionHeaderBase) => {
               <div className="text-h1 grow">Daň z nehnuteľností za rok 2023</div>
 
               <Button
-                startIcon={<PaymentIcon className="w-5 h-5" />}
+                startIcon={<PaymentIcon fill="white" className="w-6 h-6" />}
                 variant="black"
                 text={t('pay_tax')}
                 size="sm"
                 className="md:block hidden"
               />
               <Button
-                startIcon={<FileDownload />}
+                startIcon={<FileDownload className="w-5 h-5" />}
                 variant="black-outline"
                 text={t('download_pdf')}
                 size="sm"
@@ -88,7 +91,9 @@ const TaxFeeSectionHeader = (props: AccountSectionHeaderBase) => {
                 <div className="lg:text-p2 text-p3">20. apríla 2023</div>
               </div>
               <div className="w-1.5 h-1.5 bg-black rounded-full md:block hidden" />
-              <div className="lg:text-p2-bold text-p3">89,00 €</div>
+              <div className="lg:text-p2-bold text-p3">
+                {props.who === 'splatkar' ? '29,66€ / 89,00 €' : '58,00 €'}
+              </div>
               <div className="w-1.5 h-1.5 bg-black rounded-full md:block hidden" />
               <div className="flex items-center gap-2">
                 <div className="flex items-center gap-2">
@@ -97,7 +102,7 @@ const TaxFeeSectionHeader = (props: AccountSectionHeaderBase) => {
                       'gap-1': props?.status === 'unpaid',
                     })}
                   >
-                    {statusHandler('success')}
+                    {props.who === 'splatkar' ? statusHandler('warning') : statusHandler('success')}
                   </div>
                   <div className="lg:text-p2 text-p3">24. apríla 2023</div>
                 </div>
@@ -115,7 +120,7 @@ const TaxFeeSectionHeader = (props: AccountSectionHeaderBase) => {
                   className="min-w-full"
                 />
                 <Button
-                  startIcon={<FileDownload />}
+                  startIcon={<FileDownload className="w-5 h-5" />}
                   variant="black-outline"
                   text={t('download_pdf')}
                   size="sm"

@@ -1,6 +1,6 @@
 import { AccountError } from '@utils/useAccount'
 import useHookForm from '@utils/useHookForm'
-import Alert from 'components/forms/info-components/Alert'
+import AccountErrorAlert from 'components/forms/segments/AccountErrorAlert/AccountErrorAlert'
 import Button from 'components/forms/simple-components/Button'
 import PasswordField from 'components/forms/widget-components/PasswordField/PasswordField'
 import { useTranslation } from 'next-i18next'
@@ -63,7 +63,7 @@ const PasswordChangeForm = ({ onSubmit, error }: Props) => {
       onSubmit={handleSubmit((data: Data) => onSubmit(data.oldPassword, data.password))}
     >
       <h1 className="text-h3">{t('password_change_title')}</h1>
-      {error && <Alert message={t(error.code)} type="error" className="min-w-full" />}
+      <AccountErrorAlert error={error} />
       <Controller
         name="oldPassword"
         control={control}
@@ -83,6 +83,7 @@ const PasswordChangeForm = ({ onSubmit, error }: Props) => {
         render={({ field }) => (
           <PasswordField
             required
+            autoComplete="new-password"
             label={t('new_password_label')}
             placeholder={t('new_password_placeholder')}
             tooltip={t('password_description')}
@@ -97,6 +98,7 @@ const PasswordChangeForm = ({ onSubmit, error }: Props) => {
         render={({ field }) => (
           <PasswordField
             required
+            autoComplete="new-password"
             label={t('new_password_confirmation_label')}
             placeholder={t('new_password_confirmation_placeholder')}
             {...field}

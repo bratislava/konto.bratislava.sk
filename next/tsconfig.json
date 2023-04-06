@@ -4,6 +4,7 @@
     "jsx": "preserve",
     "lib": ["dom", "dom.iterable", "esnext"],
     "allowJs": true,
+    "inlineSourceMap": true,
     "esModuleInterop": true,
     "skipLibCheck": true,
     "strict": false,

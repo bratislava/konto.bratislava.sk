@@ -1,3 +1,4 @@
+import { ROUTES } from '@utils/constants'
 import AccountContainer from 'components/forms/segments/AccountContainer/AccountContainer'
 import AccountMarkdown from 'components/forms/segments/AccountMarkdown/AccountMarkdown'
 import Button from 'components/forms/simple-components/Button'
@@ -15,7 +16,7 @@ const AccountActivator = () => {
           className="mt-2 md:mt-4"
           size="sm"
           variant="link-category"
-          href="/migration"
+          href={ROUTES.MIGRATION}
           label="Aktivovať konto"
           hrefIconHidden
         />

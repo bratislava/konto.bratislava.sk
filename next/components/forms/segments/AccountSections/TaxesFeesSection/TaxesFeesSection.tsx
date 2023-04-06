@@ -1,3 +1,4 @@
+import { ROUTES } from '@utils/constants'
 import useAccount, { AccountStatus } from '@utils/useAccount'
 import cx from 'classnames'
 import AccountSectionHeader from 'components/forms/segments/AccountSectionHeader/AccountSectionHeader'
@@ -47,8 +48,12 @@ const cards: TaxesCardBase[] = [
   },
 ]
 
-const TaxesFeesSection = () => {
-  const [isOn, setIsOn] = useState<'default' | 'waiting' | 'error'>('default')
+interface TaxesFeesSectionProps {
+  isProductionDeployment?: boolean
+}
+
+const TaxesFeesSection = ({ isProductionDeployment }: TaxesFeesSectionProps) => {
+  const [isOn, setIsOn] = useState<'default' | 'waiting' | 'error'>('error')
   const { t } = useTranslation('account')
   const { status } = useAccount()
 
@@ -60,11 +65,12 @@ const TaxesFeesSection = () => {
 <h4>${t('account_section_payment.error_card_title')}</h4>
 <div>${t('account_section_payment.error_card_content.title')}
 <ul>${
-    status === AccountStatus.IdentityVerificationRequired
-      ? t('account_section_payment.error_card_content.list.verification')
+    status !== AccountStatus.IdentityVerificationSuccess
+      ? t('account_section_payment.error_card_content.list.verification', { url: ROUTES.REGISTER })
       : ''
   }${t('account_section_payment.error_card_content.list.other')}</ul><br />${t(
     'account_section_payment.error_card_content.help_text',
+    { url: ROUTES.I_HAVE_A_PROBLEM },
   )}</div>
 `
 
@@ -131,7 +137,7 @@ const TaxesFeesSection = () => {
       )}
       {isOn === 'waiting' && <TaxesFeesWaitingCard content={taxesFeesWaitingCardContent} />}
       {isOn === 'error' && <TaxesFeesErrorCard content={taxesFeesErrorCardContent} />}
-      {switcher()}
+      {isProductionDeployment ? null : switcher()}
     </div>
   )
 }

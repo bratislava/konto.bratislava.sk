@@ -1,5 +1,5 @@
 import BallDelimiterIcon from '@assets/images/forms/ball_delimiter_icon.svg'
-import UploadIcon from '@assets/images/forms/upload-icon.svg'
+import UploadIcon from '@assets/images/new-icons/ui/upload.svg'
 import { UploadMinioFile } from '@backend/dtos/minio/upload-minio-file.dto'
 import cx from 'classnames'
 import React, { ForwardedRef, forwardRef, ForwardRefRenderFunction, useState } from 'react'
@@ -106,7 +106,7 @@ const UploadDropAreaComponent: ForwardRefRenderFunction<HTMLDivElement, UploadDr
       <div className={dragAndDropClassNames}>
         <div className="flex flex-row justify-center">
           <div className="flex h-12 w-12 flex-row justify-center items-center rounded-full bg-gray-200">
-            <UploadIcon />
+            <UploadIcon className="w-6 h-6" />
           </div>
         </div>
         <h5 className="text-16-semibold">Drag & drop upload</h5>

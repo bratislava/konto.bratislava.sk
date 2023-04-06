@@ -1,4 +1,4 @@
-import EditIcon from '@assets/images/forms/edit_icon.svg'
+import EditIcon from '@assets/images/new-icons/ui/pen.svg'
 import cx from 'classnames'
 
 import { TransformedFormData } from './TransformedFormData'
@@ -33,8 +33,10 @@ const SummaryRow = (props: SummaryRowProps) => {
     <div className={containerClassName}>
       <p className={labelClassName}>{data.label}</p>
       <div className="w-full flex flex-row items-center">
-        <p className={valueClassName}>{data.value}</p>
-        {isEditable && <EditIcon className="cursor-pointer hidden" onClick={onGoToStep} />}
+        <p className={valueClassName}>{data.value || '-'}</p>
+        {isEditable && (
+          <EditIcon className="cursor-pointer flex lg:hidden w-5 h-5" onClick={onGoToStep} />
+        )}
       </div>
     </div>
   )

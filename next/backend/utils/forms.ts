@@ -1,6 +1,12 @@
 import forms, { EFormKey, EFormValue } from '@backend/forms'
 import { firstCharToUpper } from '@backend/utils/strings'
-import { ajvKeywords, getAllPossibleJsonSchemaProperties, JsonSchema } from '@utils/forms'
+import {
+  ajvFormats,
+  ajvKeywords,
+  getAllPossibleJsonSchemaProperties,
+  JsonSchema,
+} from '@utils/forms'
+import logger from '@utils/logger'
 import { forceString } from '@utils/utils'
 import Ajv from 'ajv'
 import addFormats from 'ajv-formats'
@@ -77,7 +83,7 @@ export const buildXmlRecursive = (
   } else if (node == null) {
     // noop
   } else {
-    console.log('Erroneous node:', node)
+    logger.error('Erroneous node:', node)
     throw new Error(
       `Unexpeted node type/value at path ${currentPath.join(' ')}, see the node in logs above.`,
     )
@@ -188,11 +194,9 @@ export const removeNeedlessXmlTransformArraysRecursive = (
 export const validateDataWithJsonSchema = async (data: any, schema: any) => {
   const ajv = new Ajv({
     keywords: ajvKeywords,
+    formats: ajvFormats,
   })
-
   addFormats(ajv)
-  ajv.addFormat('data-url', () => true)
-  ajv.addFormat('ciselnik', () => true)
 
   const validate = ajv.compile(schema)
 

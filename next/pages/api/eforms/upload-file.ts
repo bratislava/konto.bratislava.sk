@@ -1,3 +1,4 @@
+import logger from '@utils/logger'
 import formidable, { PersistentFile } from 'formidable'
 import { NextApiRequest, NextApiResponse } from 'next'
 
@@ -48,7 +49,6 @@ const handleBucketCreation = async () => {
 
 const handlePostRequest = async (req: NextApiRequest) => {
   const file = await parseFormidableFile(req)
-  console.log('DATA:', file)
   // this is for the minio play env, in our own bucket we don't want to do this - should get removed as we progress
   // await handleBucketCreation()
   await minioClient.fPutObject(bucketName, file.originalFilename, file.filepath)
@@ -59,7 +59,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
     await handlePostRequest(req)
       .then((response) => res.status(200).json({ data: 'success', response }))
       .catch((error) => {
-        console.log(error)
+        logger.error(error)
         res.status(500).json({ error })
       })
     return res

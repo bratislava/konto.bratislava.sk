@@ -1,6 +1,8 @@
-import { ArrowLeft } from '@assets/images'
+import ArrowLeft from '@assets/images/new-icons/ui/arrow-left.svg'
+import useElementSize from '@utils/useElementSize'
 import { getLanguageKey } from '@utils/utils'
 import cx from 'classnames'
+import { StatusBar, useStatusBarContext } from 'components/forms/info-components/StatusBar'
 import Brand from 'components/forms/simple-components/Brand'
 import { useRouter } from 'next/router'
 import { useTranslation } from 'next-i18next'
@@ -25,23 +27,29 @@ const BackButton = () => {
 export const LoginRegisterNavBar = ({ className, currentLanguage, backButtonHidden }: IProps) => {
   const languageKey = getLanguageKey(currentLanguage)
 
+  const { statusBarContent } = useStatusBarContext()
+  const [desktopRef, { height: desktopHeight }] = useElementSize([statusBarContent])
+  const [mobileRef, { height: mobileHeight }] = useElementSize([statusBarContent])
+
   const { t } = useTranslation('account')
   return (
-    <>
+    <div style={{ marginBottom: Math.max(desktopHeight, mobileHeight) }}>
       {/* Desktop */}
       <div
         id="desktop-navbar"
         className={cx(
           className,
           'text-p2 items-center',
-          'fixed top-0 left-0 w-full bg-white z-10 shadow',
+          'fixed top-0 left-0 w-full bg-white z-40 shadow',
         )}
+        ref={desktopRef}
       >
+        <StatusBar className="hidden lg:flex" />
         <div className="max-w-screen-lg m-auto hidden h-[57px] w-full items-center lg:flex">
           {!backButtonHidden && <BackButton />}
           <Brand
             className="group"
-            url="/"
+            url="https://bratislava.sk/"
             title={
               <p className="text-p2 text-font group-hover:text-gray-600">
                 {languageKey === 'en' && <span className="font-semibold">Bratislava </span>}
@@ -55,24 +63,24 @@ export const LoginRegisterNavBar = ({ className, currentLanguage, backButtonHidd
       {/* Mobile */}
       <div
         id="mobile-navbar"
-        className={cx(
-          className,
-          'h-16 flex items-center py-5 px-8 -mx-8 border-b-2',
-          'lg:hidden fixed top-0 w-full bg-white z-10',
-        )}
+        className={cx(className, 'lg:hidden fixed top-0 left-0 w-full bg-white z-40 gap-x-6')}
+        ref={mobileRef}
       >
-        {!backButtonHidden && <BackButton />}
-        <Brand
-          url="/"
-          className="mx-auto"
-          title={
-            <p className="text-p2 text-font group-hover:text-gray-600">
-              <span className="font-semibold">Bratislava</span>
-            </p>
-          }
-        />
+        <StatusBar className="flex lg:hidden" />
+        <div className="h-16 flex items-center py-5 px-8 border-b-2">
+          {!backButtonHidden && <BackButton />}
+          <Brand
+            url="https://bratislava.sk/"
+            className="mx-auto"
+            title={
+              <p className="text-p2 text-font group-hover:text-gray-600">
+                <span className="font-semibold">Bratislava</span>
+              </p>
+            }
+          />
+        </div>
       </div>
-    </>
+    </div>
   )
 }
 

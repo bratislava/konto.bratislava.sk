@@ -1,5 +1,5 @@
-import ArrowDownIcon from '@assets/images/forms/chevron-down.svg'
-import ArrowUpIcon from '@assets/images/forms/chevron-up.svg'
+import ArrowDownIcon from '@assets/images/new-icons/ui/expand.svg'
+import ArrowUpIcon from '@assets/images/new-icons/ui/expand-less.svg'
 import cx from 'classnames'
 import React, {
   ForwardedRef,
@@ -8,8 +8,10 @@ import React, {
   RefObject,
   useEffect,
   useId,
+  useRef,
   useState,
 } from 'react'
+import { useOnClickOutside } from 'usehooks-ts'
 
 import FieldErrorMessage from '../../info-components/FieldErrorMessage'
 import FieldHeader from '../../info-components/FieldHeader'
@@ -37,6 +39,9 @@ interface SelectFieldProps {
   required?: boolean
   explicitOptional?: ExplicitOptionalType
   disabled?: boolean
+  hideScrollbar?: boolean
+  alwaysOneSelected?: boolean
+  maxWordSize?: number
   className?: string
   onChange: (values: SelectOption[]) => void
 }
@@ -60,17 +65,24 @@ const SelectFieldComponent: ForwardRefRenderFunction<HTMLDivElement, SelectField
     required,
     explicitOptional,
     disabled,
+    hideScrollbar,
+    alwaysOneSelected,
+    maxWordSize,
     className,
     onChange,
   } = props
 
-  // STATE
   const [isDropdownOpened, setIsDropdownOpened] = useState<boolean>(false)
-  const [isOutsideClickProgressing, setIsOutsideClickProgressing] = useState<boolean>(false)
+  // info if 'clickOutside event' was invoked by dropdown
+  const [isClickedOutsideDropdown, setIsClickedOutsideDropdown] = useState<boolean>(false)
+  // info if 'clickOutside event' was invoked by select body
+  const [isClickedOutsideSelect, setIsClickedOutsideSelect] = useState<boolean>(false)
+  // info if dropdown should be closed (used in combination with clickOutside)
+  const [shouldCloseClick, setShouldCloseClick] = useState<boolean>(false)
   const [filter, setFilter] = useState<string>('')
   const [filterRef] = useState<RefObject<HTMLInputElement>>(React.createRef<HTMLInputElement>())
+  const clickOutsideRef = useRef<HTMLDivElement>(null)
 
-  // STYLES
   const selectClassName = cx(
     'border-form-input-default flex flex-row bg-white rounded-lg border-2 items-center',
     {
@@ -82,14 +94,34 @@ const SelectFieldComponent: ForwardRefRenderFunction<HTMLDivElement, SelectField
     },
   )
 
+  // reset help states when dropdown is opened or closed
   useEffect(() => {
-    if (!isDropdownOpened) {
-      setIsOutsideClickProgressing(false)
-    }
+    setIsClickedOutsideSelect(false)
+    setIsClickedOutsideDropdown(false)
+    setShouldCloseClick(false)
   }, [isDropdownOpened])
+
+  // close dropdown if we click outside of dropdown or select body but not if clicked on arrow icon in select body (shouldCloseClick)
+  useEffect(() => {
+    if (isClickedOutsideDropdown && !shouldCloseClick && isClickedOutsideSelect) {
+      setIsDropdownOpened(false)
+    }
+  }, [isClickedOutsideDropdown, isClickedOutsideSelect])
+
+  // close dropdown if it was opened and user clicked on arrow icon
+  useEffect(() => {
+    setIsDropdownOpened(false)
+  }, [shouldCloseClick])
+
+  useOnClickOutside(clickOutsideRef, () => {
+    setIsClickedOutsideSelect(true)
+  })
 
   const handleOnChangeSelect = (selectedOptions: SelectOption[], close?: boolean) => {
     if (!onChange) return
+    if (alwaysOneSelected && selectedOptions.length === 0) {
+      selectedOptions.push(enumOptions[0])
+    }
     onChange(selectedOptions)
     if (type === 'multiple' || !close) {
       setIsDropdownOpened(true)
@@ -133,9 +165,19 @@ const SelectFieldComponent: ForwardRefRenderFunction<HTMLDivElement, SelectField
     const targetClassList = (event.target as Element).classList
     if (!isDropdownOpened && !targetClassList.contains('tag') && !disabled) {
       filterRef.current?.focus()
-      if (!isOutsideClickProgressing) {
-        setIsDropdownOpened(true)
-      }
+      setIsDropdownOpened(true)
+    }
+  }
+
+  const handleOnArrowClick = (event: React.MouseEvent) => {
+    if (isDropdownOpened) {
+      // thanks to this state, we can ignore handling of 'clickOutside' and use custom behaviour for arrow icon
+      // click on arrow icon will open or close in opposite of actual state
+      setShouldCloseClick(true)
+    } else {
+      // if closed, handle it as whole select body
+      // click on body of select outside of arrow icon will always keep open dropdown and active filter
+      handleOnSelectFieldClick(event)
     }
   }
 
@@ -154,9 +196,8 @@ const SelectFieldComponent: ForwardRefRenderFunction<HTMLDivElement, SelectField
     handleOnChangeSelect([])
   }
 
-  const handleOnClickOutside = () => {
-    setIsOutsideClickProgressing(true)
-    setIsDropdownOpened(false)
+  const handleOnClickOutsideDropdown = () => {
+    setIsClickedOutsideDropdown(true)
   }
 
   // HELPER FUNCTIONS
@@ -194,7 +235,7 @@ const SelectFieldComponent: ForwardRefRenderFunction<HTMLDivElement, SelectField
       />
 
       {/* SELECT PART */}
-      <div className={selectClassName} ref={ref} onClick={handleOnSelectFieldClick}>
+      <div className={selectClassName} ref={clickOutsideRef}>
         {/* MAIN BODY OF SELECT */}
         <SelectFieldBox
           ref={ref}
@@ -202,16 +243,21 @@ const SelectFieldComponent: ForwardRefRenderFunction<HTMLDivElement, SelectField
           multiple={type === 'multiple'}
           filter={filter}
           filterRef={filterRef}
+          maxWordSize={maxWordSize}
           placeholder={placeholder}
           onRemove={handleOnRemove}
           onRemoveAll={handleOnDeselectAll}
           onFilterChange={setFilter}
           onDeleteLastValue={handleOnDeleteLastValue}
+          onClick={handleOnSelectFieldClick}
         />
 
         {/* DROPDOWN ARROW */}
-        <div className="dropdownButton flex flex-col items-center h-10 sm:h-12 cursor-pointer select-none rounded-lg px-3 sm:px-4 [&>svg]:m-1">
-          <div className="dropdownButton h-6 w-6 items-center relative flex h-full flex-col justify-center">
+        <div
+          className="dropdownButton flex flex-col items-center h-10 sm:h-12 cursor-pointer select-none rounded-lg px-3 sm:px-4 [&>svg]:m-1"
+          onClick={handleOnArrowClick}
+        >
+          <div className="dropdownButton h-full w-6 items-center relative flex flex-col justify-center">
             {isDropdownOpened ? <ArrowUpIcon /> : <ArrowDownIcon />}
             <div className="dropdownButton absolute inset-0 z-10" />
           </div>
@@ -229,7 +275,9 @@ const SelectFieldComponent: ForwardRefRenderFunction<HTMLDivElement, SelectField
             isRowBold={isRowBold}
             type={type}
             divider={dropdownDivider}
+            hideScrollbar={hideScrollbar}
             selectAllOption={selectAllOption}
+            maxWordSize={maxWordSize + 5}
             absolute
             onChooseOne={handleOnChooseOne}
             onUnChooseOne={handleOnUnChooseOne}
@@ -237,7 +285,7 @@ const SelectFieldComponent: ForwardRefRenderFunction<HTMLDivElement, SelectField
             onDeselectAll={handleOnDeselectAll}
             onChooseMulti={handleOnChooseMulti}
             onUnChooseMulti={handleOnUnChooseMulti}
-            onClickOutside={handleOnClickOutside}
+            onClickOutside={handleOnClickOutsideDropdown}
           />
         )}
       </div>

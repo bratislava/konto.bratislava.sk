@@ -1,5 +1,5 @@
-import LeftIcon from '@assets/images/chevron-left.svg'
-import ArrowRightIcon from '@assets/images/forms/arrow-right.svg'
+import ArrowRightIcon from '@assets/images/new-icons/ui/arrow-right.svg'
+import LeftIcon from '@assets/images/new-icons/ui/chevron-left.svg'
 import { useTranslation } from 'next-i18next'
 
 import Button from '../../simple-components/Button'
@@ -25,7 +25,7 @@ const StepButtonGroup = (props: StepButtonGroupProps) => {
             variant="plain-black"
             onPress={previous}
             text={t('buttons.previous')}
-            startIcon={<LeftIcon />}
+            startIcon={<LeftIcon className="w-6 h-6" />}
           />
         )}
       </div>
@@ -34,7 +34,11 @@ const StepButtonGroup = (props: StepButtonGroupProps) => {
       ) : (
         <div className="flex flex-row flex-wrap gap-5">
           <Button variant="black-outline" onPress={skip} text={t('buttons.skip')} />
-          <Button onPress={submitStep} text={t('buttons.continue')} endIcon={<ArrowRightIcon />} />
+          <Button
+            onPress={submitStep}
+            text={t('buttons.continue')}
+            endIcon={<ArrowRightIcon className="w-6 h-6" />}
+          />
         </div>
       )}
     </div>

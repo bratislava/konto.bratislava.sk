@@ -1,10 +1,6 @@
 import { EFormValue } from '@backend/forms'
-import {
-  getEform,
-  loadAndBuildXml,
-  validateDataWithJsonSchema,
-  validateDataWithXsd,
-} from '@backend/utils/forms'
+import { getEform, loadAndBuildXml } from '@backend/utils/forms'
+import logger from '@utils/logger'
 import type { NextApiRequest, NextApiResponse } from 'next'
 
 const handler = async (req: NextApiRequest, res: NextApiResponse) => {
@@ -15,20 +11,11 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
   try {
     eform = getEform(req.query.id)
   } catch (error) {
-    console.error(error)
+    logger.error(error)
     return res.status(400).json({ message: 'Invalid form name or url' })
   }
 
-  let errors = []
-  errors = await validateDataWithJsonSchema(req.body.data, eform.schema)
-  if (errors.length > 0)
-    return res.status(400).json({ message: `Data did not pass JSON validation`, errors })
-
   const xml = loadAndBuildXml(eform.xmlTemplate, req.body.data, eform.schema)
-  errors = validateDataWithXsd(xml, eform.xsd)
-  if (errors.length > 0)
-    return res.status(400).json({ message: `Data did not pass XSD validation`, errors })
-
   res.setHeader('Content-Type', 'text/xml')
   res.setHeader('Content-Disposition', 'attachment; filename=test.xml')
   res.send(xml)

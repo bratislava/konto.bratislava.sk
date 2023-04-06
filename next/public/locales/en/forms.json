@@ -3,7 +3,9 @@
   "success": "Success",
   "errors": {
     "API_ERROR": "There was an error making the request - please try again later.",
-    "unknown": "An unknown error occurred - please try again later."
+    "unknown": "An unknown error occurred - please try again later.",
+    "xml_export": "XML export failed - please try again later.",
+    "xml_import": "XML export failed - please try again later."
   },
   "selectAll": "Select all",
   "deselectAll": "Deselect all",
@@ -25,12 +27,13 @@
   "postal_code_description": "",
   "postal_code_required": "Postal code is required",
   "postal_code_format": "Postal code is not valid",
+  "phone_format": "Type in the correct form (+421...)",
   "changes_submit": "Submit",
   "buttons": {
     "previous": "Previous",
     "skip": "Skip",
     "continue": "Continue",
-    "send": "Send"
+    "send": "Send the request"
   },
   "summary": "Summary",
   "all_steps": "All steps",

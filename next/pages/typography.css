@@ -203,7 +203,7 @@
     @apply font-bold text-p-base;
   }
 
-  .text-p3-bold {
+  .text-p3 {
     @apply font-normal text-p-sm;
   }
 

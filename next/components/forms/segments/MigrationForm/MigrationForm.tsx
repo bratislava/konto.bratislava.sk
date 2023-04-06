@@ -2,7 +2,7 @@ import { ROUTES } from '@utils/constants'
 import { formatUnicorn } from '@utils/string'
 import { AccountError } from '@utils/useAccount'
 import useHookForm from '@utils/useHookForm'
-import Alert from 'components/forms/info-components/Alert'
+import AccountErrorAlert from 'components/forms/segments/AccountErrorAlert/AccountErrorAlert'
 import AccountLink from 'components/forms/segments/AccountLink/AccountLink'
 import LoginAccountLink from 'components/forms/segments/LoginAccountLink/LoginAccountLink'
 import Button from 'components/forms/simple-components/Button'
@@ -18,9 +18,10 @@ interface Data {
 interface Props {
   onSubmit: (email: string) => Promise<any>
   error?: AccountError | null | undefined
+  lastEmail: string
 }
 
-const MigrationForm = ({ onSubmit, error }: Props) => {
+const MigrationForm = ({ onSubmit, error, lastEmail }: Props) => {
   const router = useRouter()
   const queryEmail =
     router.query.email && typeof router.query.email === 'string'
@@ -76,7 +77,7 @@ const MigrationForm = ({ onSubmit, error }: Props) => {
         )}
       </p>
       <p className="text-p3 lg:text-p2">{t('migration_submit_description')}</p>
-      {error && <Alert message={t(error.code)} type="error" className="min-w-full" />}
+      <AccountErrorAlert error={error} args={{ email: lastEmail }} />
       {!queryEmail && (
         <Controller
           name="email"

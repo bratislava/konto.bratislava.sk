@@ -307,6 +307,7 @@ export const AccountProvider = ({ children }: { children: ReactNode }) => {
       // not refreshing user status immediately, instead leaving this to the registration flow
       return true
     } catch (error: any) {
+      logger.error('Failed verify identity request:', error)
       setError({
         code: error.message,
         message: error.message,
@@ -599,7 +600,8 @@ export const AccountProvider = ({ children }: { children: ReactNode }) => {
       logger.trace('Account status changed', { oldStatus: status, newStatus })
       setStatus(newStatus)
     }
-  }, [openSnackbarSuccess, status, t, userData])
+    // TODO not sure if userData?.tier is needed, needs verifications (@mpinter)
+  }, [openSnackbarSuccess, status, t, userData, userData?.tier])
 
   useEffect(() => {
     // this overrides the 'global' status notification (i.e. crashed servers), but since we don't have design for multiple, showing failed notification probably takes precedence

@@ -12,9 +12,9 @@ import { StatusBar, useStatusBarContext } from 'components/forms/info-components
 import HamburgerMenu from 'components/forms/segments/HambergerMenu/HamburgerMenu'
 import Button from 'components/forms/simple-components/Button'
 import Menu from 'components/forms/simple-components/Menu/Menu'
-import { useTranslation } from 'next-i18next'
 import NextLink from 'next/link'
 import { useRouter } from 'next/router'
+import { useTranslation } from 'next-i18next'
 import { ReactNode, useState } from 'react'
 import { Item } from 'react-stately'
 
@@ -111,7 +111,7 @@ export const AccountNavBar = ({
         <div className="max-w-screen-lg m-auto hidden h-[57px] w-full items-center lg:flex gap-x-6">
           <Brand
             className="group grow"
-            url="/"
+            url="https://bratislava.sk/"
             title={
               <p className="text-p2 text-font group-hover:text-gray-600">
                 {languageKey === 'en' && <span className="font-semibold">Bratislava </span>}
@@ -232,7 +232,7 @@ export const AccountNavBar = ({
       >
         {!burgerOpen && <StatusBar className="flex lg:hidden" />}
         <div className="h-16 flex items-center py-5 px-8 border-b-2">
-          <Brand url="/" className="grow" />
+          <Brand url="https://bratislava.sk/" className="grow" />
           {!navHidden && (
             <div className={cx('flex items-center gap-x-5')}>
               <div className="text-h4 text-font/50 relative flex cursor-pointer items-center bg-transparent">

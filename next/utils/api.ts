@@ -1,6 +1,7 @@
 // TODO waiting on #305 to get merged, afterwards might move elsewhere
 // frontend code for calling api endpoints grouped
 import { ErrorObject } from 'ajv'
+
 import logger from './logger'
 
 export const API_ERROR_TEXT = 'API_ERROR'
@@ -134,7 +135,7 @@ export const verifyIdentityApi = (data: Identity, token: string) => {
 
 export interface Gdpr {
   subType: 'subscribe' | 'unsubscribe'
-  type: 'ANALYTICS' | 'DATAPROCESSING' | 'MARKETING'
+  type: 'ANALYTICS' | 'DATAPROCESSING' | 'MARKETING' | 'LICENSE'
   category: 'SWIMMINGPOOLS' | 'TAXES' | 'CITY' | 'ESBS'
 }
 

@@ -21,16 +21,25 @@ const IntroSection = () => {
   const { t } = useTranslation('account')
   const { userData, updateUserData, error, resetError } = useAccount()
   const router = useRouter()
-  const [phoneNumberModalShow, setPhoneNumberModalShow] = useState<boolean>(false)
+  const [phoneNumberModal, setPhoneNumberModal] =
+    useState<'hidden' | 'displayed' | 'dismissed'>('hidden')
 
+  // because the effect depends on userData, which may get refreshed every few seconds
+  // we need to track if the modal was dismissed and stop showing it afterwards if that's the case
   useEffect(() => {
-    if (userData && !userData?.phone_number && ROUTES.REGISTER === router.query.from)
-      setPhoneNumberModalShow(true)
-  }, [userData])
+    if (
+      phoneNumberModal === 'hidden' &&
+      userData &&
+      !userData?.phone_number &&
+      ROUTES.REGISTER === router.query.from
+    ) {
+      setPhoneNumberModal('displayed')
+    }
+  }, [phoneNumberModal, router.query.from, userData])
 
   const onSubmitPhoneNumber = async ({ data }: { data?: PhoneNumberData }) => {
     if (await updateUserData({ phone_number: data?.phone_number })) {
-      setPhoneNumberModalShow(false)
+      setPhoneNumberModal('dismissed')
     }
   }
 
@@ -47,8 +56,8 @@ const IntroSection = () => {
     <>
       {userData && (
         <PhoneNumberModal
-          show={phoneNumberModalShow}
-          onClose={() => setPhoneNumberModalShow(false)}
+          show={phoneNumberModal === 'displayed'}
+          onClose={() => setPhoneNumberModal('dismissed')}
           onSubmit={onSubmitPhoneNumber}
           error={error}
           onHideError={resetError}
@@ -120,7 +129,7 @@ const IntroSection = () => {
             title={t('account_section_intro.banner_title')}
             content={bannerContent}
             buttonText={t('account_section_intro.banner_button_text')}
-            onPress={() => router.push(ROUTES.I_HAVE_A_PROBLEM)}
+            href={ROUTES.I_HAVE_A_PROBLEM}
           />
         </div>
       </div>

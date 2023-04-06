@@ -7,7 +7,13 @@ import {
   CognitoUserAttribute,
   CognitoUserPool,
   CognitoUserSession,
-  CookieStorage,
+  // Cognito cookies are large and we were hitting limits on request header size on our infrastructure
+  // TODO once we need cross-domain login, write our own "hybrid" storage, share only necessary data in cookies
+  // sources:
+  // https://github.com/aws-amplify/amplify-js/issues/1545
+  // https://github.com/amazon-archives/amazon-cognito-identity-js/issues/688
+  // https://github.com/aws-amplify/amplify-js/issues/5330
+  //CookieStorage,
   IAuthenticationDetailsData,
 } from 'amazon-cognito-identity-js'
 import * as AWS from 'aws-sdk/global'
@@ -79,9 +85,9 @@ const updatableAttributes = new Set([
 const poolData = {
   UserPoolId: process.env.NEXT_PUBLIC_COGNITO_USER_POOL_ID || '',
   ClientId: process.env.NEXT_PUBLIC_COGNITO_CLIENT_ID || '',
-  Storage: new CookieStorage({
-    domain: process.env.NEXT_PUBLIC_COGNITO_COOKIE_STORAGE_DOMAIN,
-  }),
+  // Storage: new CookieStorage({
+  //   domain: process.env.NEXT_PUBLIC_COGNITO_COOKIE_STORAGE_DOMAIN,
+  // }),
 }
 const userPool = new CognitoUserPool(poolData)
 
@@ -201,9 +207,9 @@ export const AccountProvider = ({ children }: { children: ReactNode }) => {
     const cognitoUser = new CognitoUser({
       Username: lastCredentials?.Username,
       Pool: userPool,
-      Storage: new CookieStorage({
-        domain: process.env.NEXT_PUBLIC_COGNITO_COOKIE_STORAGE_DOMAIN,
-      }),
+      // Storage: new CookieStorage({
+      //   domain: process.env.NEXT_PUBLIC_COGNITO_COOKIE_STORAGE_DOMAIN,
+      // }),
     })
 
     return new Promise((resolve) => {
@@ -225,9 +231,9 @@ export const AccountProvider = ({ children }: { children: ReactNode }) => {
     const cognitoUser = new CognitoUser({
       Username: lastCredentials.Username,
       Pool: userPool,
-      Storage: new CookieStorage({
-        domain: process.env.NEXT_PUBLIC_COGNITO_COOKIE_STORAGE_DOMAIN,
-      }),
+      // Storage: new CookieStorage({
+      //   domain: process.env.NEXT_PUBLIC_COGNITO_COOKIE_STORAGE_DOMAIN,
+      // }),
     })
 
     setError(null)
@@ -421,9 +427,9 @@ export const AccountProvider = ({ children }: { children: ReactNode }) => {
     const cognitoUser = new CognitoUser({
       Username: lastCredentials.Username,
       Pool: userPool,
-      Storage: new CookieStorage({
-        domain: process.env.NEXT_PUBLIC_COGNITO_COOKIE_STORAGE_DOMAIN,
-      }),
+      // Storage: new CookieStorage({
+      //   domain: process.env.NEXT_PUBLIC_COGNITO_COOKIE_STORAGE_DOMAIN,
+      // }),
     })
 
     return new Promise((resolve) => {
@@ -444,9 +450,9 @@ export const AccountProvider = ({ children }: { children: ReactNode }) => {
     const cognitoUser = new CognitoUser({
       Username: email || lastCredentials.Username,
       Pool: userPool,
-      Storage: new CookieStorage({
-        domain: process.env.NEXT_PUBLIC_COGNITO_COOKIE_STORAGE_DOMAIN,
-      }),
+      // Storage: new CookieStorage({
+      //   domain: process.env.NEXT_PUBLIC_COGNITO_COOKIE_STORAGE_DOMAIN,
+      // }),
     })
 
     if (email) {
@@ -483,9 +489,9 @@ export const AccountProvider = ({ children }: { children: ReactNode }) => {
     const cognitoUser = new CognitoUser({
       Username: email,
       Pool: userPool,
-      Storage: new CookieStorage({
-        domain: process.env.NEXT_PUBLIC_COGNITO_COOKIE_STORAGE_DOMAIN,
-      }),
+      // Storage: new CookieStorage({
+      //   domain: process.env.NEXT_PUBLIC_COGNITO_COOKIE_STORAGE_DOMAIN,
+      // }),
     })
 
     setLastCredentials(credentials)

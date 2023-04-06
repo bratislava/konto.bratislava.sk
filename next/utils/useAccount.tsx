@@ -199,9 +199,10 @@ export const AccountProvider = ({ children }: { children: ReactNode }) => {
   const forceLogout = () => {
     logout()
     // reloading should clear up any incorrect state app could be in
-    if (isBrowser()) {
-      window.location.reload()
-    }
+    // TODO - does not work nicely on user profile page - fix in another way
+    // if (isBrowser()) {
+    //   window.location.reload()
+    // }
   }
 
   const subscribe = async () => {
@@ -339,6 +340,9 @@ export const AccountProvider = ({ children }: { children: ReactNode }) => {
       // TODO temporary, pass better errors out of api requests
       if (error?.message === UNAUTHORIZED_ERROR_TEXT) {
         forceLogout()
+        if (isBrowser()) {
+          window.location.reload()
+        }
       }
       logger.error('Failed verify identity request:', error)
       setError({

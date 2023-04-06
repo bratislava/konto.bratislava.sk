@@ -5,6 +5,7 @@ import { ErrorObject } from 'ajv'
 import logger from './logger'
 
 export const API_ERROR_TEXT = 'API_ERROR'
+export const UNAUTHORIZED_ERROR_TEXT = 'UNAUTHORIZED_ERROR'
 
 export class ApiError extends Error {
   errors: Array<ErrorObject>
@@ -23,13 +24,17 @@ const fetchJsonApi = async (path: string, options?: RequestInit) => {
     if (response.ok) {
       return await response.json()
     }
+    if (response.status === 401) {
+      throw new Error(UNAUTHORIZED_ERROR_TEXT)
+    }
     // try parsing errors - if they may apper in different format extend here
     const responseText = await response.text()
     let responseJson: any = {}
     try {
       responseJson = JSON.parse(responseText)
     } catch (error) {
-      throw new Error(API_ERROR_TEXT)
+      logger.error(API_ERROR_TEXT, response.status, response.statusText, responseText, response)
+      throw new Error(response.statusText || API_ERROR_TEXT)
     }
     if (responseJson?.errors) {
       throw new ApiError(responseJson?.message || API_ERROR_TEXT, responseJson.errors)

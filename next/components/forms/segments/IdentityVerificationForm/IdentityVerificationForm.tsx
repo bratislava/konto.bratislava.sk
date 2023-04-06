@@ -1,5 +1,6 @@
 import ArrowRightIcon from '@assets/images/new-icons/ui/arrow-right.svg'
 import { ROUTES } from '@utils/constants'
+import logger from '@utils/logger'
 import { AccountError } from '@utils/useAccount'
 import useHookForm from '@utils/useHookForm'
 import AccountErrorAlert from 'components/forms/segments/AccountErrorAlert/AccountErrorAlert'
@@ -110,7 +111,10 @@ const IdentityVerificationForm = ({ onSubmit, error }: Props) => {
             key={turnstileKeyCounter.count}
             sitekey={process.env.NEXT_PUBLIC_CLOUDFLARE_TURNSTILE_SITE_KEY}
             onVerify={(token) => onChange(token)}
-            onError={() => onChange(null)}
+            onError={(error) => {
+              logger.error('Turnstile error:', error)
+              return onChange(null)
+            }}
             onTimeout={() => onChange(null)}
             onExpire={() => onChange(null)}
             className="mb-2"

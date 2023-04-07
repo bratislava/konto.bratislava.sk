@@ -1,4 +1,6 @@
 {
+  "pospID": "kontajneroveStojiska",
+  "pospVersion": "0.1",
   "title": "Dotácia kontajnerové stanovištia",
   "type": "object",
   "required": [

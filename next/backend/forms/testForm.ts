@@ -16,6 +16,4 @@ export default {
   htmlStylesheet,
   data,
   pdfStylesheet,
-  pospID: 'test',
-  pospVersion: '0.1',
 }

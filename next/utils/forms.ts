@@ -10,9 +10,9 @@ import {
 import { customizeValidator } from '@rjsf/validator-ajv8'
 import {
   ApiError,
+  FormDto,
   createForm,
   formDataToXml,
-  FormDto,
   getForm,
   submitEform,
   updateForm,
@@ -204,6 +204,12 @@ export const ajvKeywords: KeywordDefinition[] = [
   },
   {
     keyword: 'dateFromTo',
+  },
+  {
+    keyword: 'pospID',
+  },
+  {
+    keyword: 'pospVersion',
   },
 ]
 
@@ -625,12 +631,12 @@ export const useFormFiller = (eform: EFormValue) => {
         formData = formDataJson
       } else {
         const { id }: FormDto = await createForm(token, {
-          pospID: eform.pospID,
-          pospVersion: eform.pospVersion,
-          messageSubject: eform.subject || eform.pospID,
+          pospID: eform.schema.pospID,
+          pospVersion: eform.schema.pospVersion,
+          messageSubject: eform.schema.pospID,
           isSigned: false,
-          formName: eform.formName || eform.pospID,
-          fromDescription: eform.formDescription || eform.pospID,
+          formName: eform.schema.title || eform.schema.pospID,
+          fromDescription: eform.schema.description || eform.schema.pospID,
         })
         setFormId(id)
       }

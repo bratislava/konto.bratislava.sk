@@ -16,6 +16,4 @@ export default {
   htmlStylesheet,
   data,
   pdfStylesheet,
-  pospID: 'zavazneStanoviskoKInvesticnejCinnosti',
-  pospVersion: '0.1',
 }

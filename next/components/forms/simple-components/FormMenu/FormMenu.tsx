@@ -1,53 +1,23 @@
-import type { AriaMenuProps, MenuTriggerProps } from '@react-types/menu'
-import Button from 'components/forms/simple-components/Button'
-import MenuButton from 'components/forms/simple-components/Menu/MenuButton'
-import MenuContainer from 'components/forms/simple-components/Menu/MenuContainer'
-import MenuPopover from 'components/forms/simple-components/Menu/MenuPopover'
-import React from 'react'
-import { OverlayProvider, useMenuTrigger } from 'react-aria'
-import { useMenuTriggerState } from 'react-stately'
+import FormMenuItem from 'components/forms/simple-components/FormMenu/FormMenuItem'
+import { useRef } from 'react'
+import type { AriaMenuProps } from 'react-aria'
+import { useMenu } from 'react-aria'
+import { useTreeState } from 'react-stately'
 
-interface MenuProps<T extends object> extends AriaMenuProps<T>, MenuTriggerProps {
-  label: string
-  buttonIcon?: React.ReactNode
-  containerHeaderEl?: React.ReactNode
-  className?: string
-}
-const FormMenu = <T extends object>(props: MenuProps<T>) => {
-  const state = useMenuTriggerState(props)
-  const { buttonIcon } = props
+const FormMenu = <T extends object>(props: AriaMenuProps<T>) => {
+  // Create menu state based on the incoming props
+  const state = useTreeState(props)
 
-  const ref = React.useRef(null)
-  const { menuTriggerProps, menuProps } = useMenuTrigger<T>({}, state, ref)
+  // Get props for the menu element
+  const ref = useRef(null)
+  const { menuProps } = useMenu(props, state, ref)
 
-  console.log(state)
   return (
-    <div className="focus:outline-none relative inline-block">
-      {/* <div {...menuTriggerProps} ref={ref}>
-        {buttonLeftEl}
-      </div> */}
-      <Button
-        size="sm"
-        variant="category-outline"
-        className="text-gray-700"
-        icon={buttonIcon}
-        {...menuTriggerProps}
-      />
-      {/* <MenuButton {...menuTriggerProps} isPressed={state.isOpen} ref={ref}> */}
-      {/* </MenuButton> */}
-      {state.isOpen && (
-        <OverlayProvider>
-          <MenuPopover state={state} triggerRef={ref} placement="bottom start">
-            <MenuContainer
-              {...menuProps}
-              {...props}
-              autoFocus={state.focusStrategy || true}
-              onClose={() => state.close()}
-            />
-          </MenuPopover>
-        </OverlayProvider>
-      )}
-    </div>
+    <ul {...menuProps} ref={ref} className="focus:outline-none flex flex-col py-2">
+      {[...state.collection].map((item) => (
+        <FormMenuItem key={item.key} item={item} state={state} />
+      ))}
+    </ul>
   )
 }
 

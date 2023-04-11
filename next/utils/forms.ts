@@ -1,3 +1,4 @@
+import { EFormValue } from '@backend/forms'
 import Form from '@rjsf/core'
 import {
   ErrorSchema,
@@ -7,13 +8,25 @@ import {
   StrictRJSFSchema,
 } from '@rjsf/utils'
 import { customizeValidator } from '@rjsf/validator-ajv8'
-import { ApiError, formDataToXml, submitEform, validateKeyword, xmlToFormData } from '@utils/api'
+import {
+  ApiError,
+  FormDto,
+  createForm,
+  formDataToXml,
+  getForm,
+  submitEform,
+  updateForm,
+  validateKeyword,
+  xmlToFormData,
+} from '@utils/api'
 import { readTextFile } from '@utils/file'
+import useAccount from '@utils/useAccount'
 import useSnackbar from '@utils/useSnackbar'
 import { AnySchemaObject, ErrorObject, FuncKeywordDefinition } from 'ajv'
 import { JSONSchema7, JSONSchema7Definition } from 'json-schema'
 import { cloneDeep, get, merge } from 'lodash'
 import { useTranslation } from 'next-i18next'
+import { useRouter } from 'next/router'
 import { ChangeEvent, RefObject, useEffect, useRef, useState } from 'react'
 
 import { StepData } from '../components/forms/types/TransformedFormData'
@@ -192,6 +205,12 @@ export const ajvKeywords: KeywordDefinition[] = [
   {
     keyword: 'dateFromTo',
   },
+  {
+    keyword: 'pospID',
+  },
+  {
+    keyword: 'pospVersion',
+  },
 ]
 
 export const ajvFormats = {
@@ -345,10 +364,16 @@ const getStepData = (schema: RJSFSchema): StepData[] => {
     .filter(Boolean) as StepData[]
 }
 
+interface Callbacks {
+  onStepSumbit?: (formData: any) => Promise<void>
+  onInit?: () => Promise<any>
+}
+
 // TODO prevent unmounting
 // TODO persist state for session
 // TODO figure out if we need to step over uiSchemas, or having a single one is enough (seems like it is for now)
-export const useFormStepper = (eformSlug: string, schema: RJSFSchema) => {
+export const useFormStepper = (eformSlug: string, eform: EFormValue, callbacks: Callbacks) => {
+  const { schema } = eform
   // since Form can be undefined, useRef<Form> is understood as an overload of useRef returning MutableRef, which does not match expected Ref type be rjsf
   // also, our code expects directly RefObject otherwise it will complain of no `.current`
   // this is probably a bug in their typing therefore the cast
@@ -360,6 +385,7 @@ export const useFormStepper = (eformSlug: string, schema: RJSFSchema) => {
   const [errors, setErrors] = useState<RJSFValidationError[][]>([])
   const [extraErrors, setExtraErrors] = useState<ErrorSchema>({})
   const [stepData, setStepData] = useState<StepData[]>(getStepData(schema))
+  const [openSnackbarError] = useSnackbar({ variant: 'error' })
 
   const steps = schema?.allOf
   const stepsLength: number = steps?.length ?? -1
@@ -367,11 +393,19 @@ export const useFormStepper = (eformSlug: string, schema: RJSFSchema) => {
 
   const currentSchema = steps ? (cloneDeep(steps[stepIndex]) as RJSFSchema) : {}
 
+  const init = async () => {
+    const formData = await callbacks.onInit?.()
+    if (formData) {
+      setFormData(formData)
+    }
+  }
+
   useEffect(() => {
     // effect to reset all internal state when critical input 'props' change
     setFormData({})
     setStepIndex(0)
     setStepData(getStepData(schema))
+    init()
   }, [eformSlug, schema])
 
   useEffect(() => {
@@ -474,7 +508,6 @@ export const useFormStepper = (eformSlug: string, schema: RJSFSchema) => {
     setFormData({ ...formData, ...fullStepFormData })
   }
 
-  const [openSnackbarError] = useSnackbar({ variant: 'error' })
   const { t } = useTranslation('forms')
 
   const exportXml = async () => {
@@ -506,6 +539,7 @@ export const useFormStepper = (eformSlug: string, schema: RJSFSchema) => {
     const isFormValid = await validate()
 
     if (isFormValid) {
+      await callbacks.onStepSumbit?.(formData)
       setUniqueErrors([], stepIndex)
     }
     if (isFormValid && !isSkipEnabled) {
@@ -556,6 +590,65 @@ export const useFormStepper = (eformSlug: string, schema: RJSFSchema) => {
     validator,
     exportXml,
     importXml,
+  }
+}
+
+export const useFormFiller = (eform: EFormValue) => {
+  const [formId, setFormId] = useState<string | undefined>()
+
+  const { getAccessToken } = useAccount()
+  const [openSnackbarWarning] = useSnackbar({ variant: 'warning' })
+  const [openSnackbarError] = useSnackbar({ variant: 'error' })
+  const { t } = useTranslation('forms')
+
+  const updateFormData = async (formData: any) => {
+    const token = await getAccessToken()
+    if (!formId || !token) {
+      return
+    }
+
+    try {
+      await updateForm(token, formId, { formDataJson: formData })
+    } catch (error) {
+      openSnackbarWarning(t('errors.form_update'))
+    }
+  }
+
+  const router = useRouter()
+  const initFormData = async () => {
+    let formData
+    const token = await getAccessToken()
+    if (!token) {
+      return
+    }
+
+    const queryId =
+      router.query.id && typeof router.query.id === 'string' ? router.query.id : undefined
+    try {
+      if (queryId) {
+        const { formDataJson, id }: FormDto = await getForm(token, queryId)
+        setFormId(id)
+        formData = formDataJson
+      } else {
+        const { id }: FormDto = await createForm(token, {
+          pospID: eform.schema.pospID,
+          pospVersion: eform.schema.pospVersion,
+          messageSubject: eform.schema.pospID,
+          isSigned: false,
+          formName: eform.schema.title || eform.schema.pospID,
+          fromDescription: eform.schema.description || eform.schema.pospID,
+        })
+        setFormId(id)
+      }
+    } catch (error) {
+      openSnackbarError(t('errors.form_init'))
+    }
+    return formData
+  }
+
+  return {
+    initFormData,
+    updateFormData,
   }
 }
 

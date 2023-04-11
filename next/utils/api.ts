@@ -185,3 +185,96 @@ export const resetRcApi = (token: string) => {
     },
   })
 }
+
+type List<T> = {
+  currentPage: number
+  pagination: number
+  countPages: number
+  items: T[]
+}
+
+export type FormDto = {
+  email: string
+  formDataXml: string
+  formDataJson: any
+  pospID?: string
+  pospVersion: string
+  messageSubject: string
+  isSigned?: false
+  formName?: string
+  fromDescription?: string
+  id: string
+  createdAt: Date
+  updatedAt: Date
+  externalId: string
+  userExternalId: string
+  uri?: string
+  state?: string
+  formDataGinis?: string
+  senderId: string
+  recipientId: string
+  finishSubmission: string
+}
+
+export const getForms = (token: string) => {
+  return fetchJsonApi(`${process.env.NEXT_PUBLIC_FORMS_URL}/nases/forms`, {
+    method: 'GET',
+    headers: {
+      'Content-Type': 'application/json',
+      Authorization: `Bearer ${token}`,
+    },
+  })
+}
+
+type CreateFormDto = {
+  pospID: string
+  pospVersion: string
+  messageSubject: string
+  isSigned: boolean
+  formName: string
+  fromDescription: string
+}
+
+type UpdateFormDto = {
+  email?: string
+  formDataXml?: string
+  formDataJson?: any
+  pospID?: string
+  pospVersion?: string
+  messageSubject?: string
+  isSigned?: boolean
+  formName?: string
+  fromDescription?: string
+}
+
+export const createForm = (token: string, data: CreateFormDto) => {
+  return fetchJsonApi(`${process.env.NEXT_PUBLIC_FORMS_URL}/nases/create-form`, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      Authorization: `Bearer ${token}`,
+    },
+    body: JSON.stringify(data),
+  })
+}
+
+export const getForm = (token: string, id: string) => {
+  return fetchJsonApi(`${process.env.NEXT_PUBLIC_FORMS_URL}/nases/form/${id}`, {
+    method: 'GET',
+    headers: {
+      'Content-Type': 'application/json',
+      Authorization: `Bearer ${token}`,
+    },
+  })
+}
+
+export const updateForm = (token: string, id: string, data: UpdateFormDto) => {
+  return fetchJsonApi(`${process.env.NEXT_PUBLIC_FORMS_URL}/nases/update-form/${id}`, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      Authorization: `Bearer ${token}`,
+    },
+    body: JSON.stringify(data),
+  })
+}

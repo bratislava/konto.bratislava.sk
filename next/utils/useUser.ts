@@ -36,10 +36,10 @@ export default function useUser() {
     init()
   }, [])
 
-  const subscribe = async (): Promise<boolean> => {
+  const subscribe = async (data: Gdpr[]): Promise<boolean> => {
     const token = await getAccessToken()
     try {
-      const user = await subscribeApi({ gdprData: null }, token)
+      const user = await subscribeApi({ gdprData: data }, token)
       setUser(user)
       return true
     } catch (error) {
@@ -52,10 +52,10 @@ export default function useUser() {
     }
   }
 
-  const unsubscribe = async (): Promise<boolean> => {
+  const unsubscribe = async (data: Gdpr[]): Promise<boolean> => {
     const token = await getAccessToken()
     try {
-      const user = await unsubscribeApi({ gdprData: null }, token)
+      const user = await unsubscribeApi({ gdprData: data }, token)
       setUser(user)
       return true
     } catch (error) {

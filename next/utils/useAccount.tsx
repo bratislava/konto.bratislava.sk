@@ -13,15 +13,15 @@ import {
   // https://github.com/aws-amplify/amplify-js/issues/1545
   // https://github.com/amazon-archives/amazon-cognito-identity-js/issues/688
   // https://github.com/aws-amplify/amplify-js/issues/5330
-  //CookieStorage,
+  // CookieStorage,
   IAuthenticationDetailsData,
 } from 'amazon-cognito-identity-js'
 import * as AWS from 'aws-sdk/global'
 import { AWSError } from 'aws-sdk/global'
 import { useStatusBarContext } from 'components/forms/info-components/StatusBar'
 import AccountMarkdown from 'components/forms/segments/AccountMarkdown/AccountMarkdown'
-import { useRouter } from 'next/router'
 import { useTranslation } from 'next-i18next'
+import { useRouter } from 'next/router'
 import React, { ReactNode, useCallback, useContext, useEffect, useState } from 'react'
 import { useInterval } from 'usehooks-ts'
 
@@ -640,7 +640,7 @@ export const AccountProvider = ({ children }: { children: ReactNode }) => {
         <AccountMarkdown
           uLinkVariant="error"
           variant="sm"
-          content={t('account:identity_verification_failed', { url: ROUTES.REGISTER })}
+          content={t('account:identity_verification_failed', { url: ROUTES.IDENTITY_VERIFICATION })}
         />,
       )
     } else {

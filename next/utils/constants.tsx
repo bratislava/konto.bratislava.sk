@@ -1,6 +1,7 @@
 export const ROUTES = {
   HOME: '/',
   REGISTER: '/registracia',
+  IDENTITY_VERIFICATION: '/overenie-identity',
   LOGIN: '/prihlasenie',
   FORGOTTEN_PASSWORD: '/zabudnute-heslo',
   PASSWORD_CHANGE: '/zmena-hesla',

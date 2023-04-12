@@ -42,6 +42,11 @@ const nextConfig = {
         permanent: true,
       },
       {
+        source: '/identity-verification',
+        destination: '/overenie-identity',
+        permanent: true,
+      },
+      {
         source: '/migration',
         destination: '/aktivacia-konta',
         permanent: true,

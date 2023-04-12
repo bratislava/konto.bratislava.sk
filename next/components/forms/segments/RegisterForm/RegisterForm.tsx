@@ -151,7 +151,10 @@ const RegisterForm = ({ onSubmit, error, lastEmail }: Props) => {
           email: data.email,
           given_name: data.given_name,
           family_name: data.family_name,
+          name: data.name,
+          account_type: data.account_type,
         }
+
         // force turnstile rerender as it's always available just for a single request
         turnstileKeyCounter.increment()
         return onSubmit(

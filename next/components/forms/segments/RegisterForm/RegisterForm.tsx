@@ -12,7 +12,7 @@ import RadioGroup from 'components/forms/widget-components/RadioButton/RadioGrou
 import { useTranslation } from 'next-i18next'
 import { Controller } from 'react-hook-form'
 import Turnstile from 'react-turnstile'
-import { useCounter } from 'usehooks-ts'
+import { useCounter, useWindowSize } from 'usehooks-ts'
 
 interface Data {
   email: string
@@ -142,6 +142,9 @@ const RegisterForm = ({ onSubmit, error, lastEmail }: Props) => {
     },
   })
 
+  const { width } = useWindowSize()
+  const isMobile = width < 768
+
   const type = watch('account_type')
   return (
     <form
@@ -177,7 +180,7 @@ const RegisterForm = ({ onSubmit, error, lastEmail }: Props) => {
             onChange={field.onChange}
             value={field.value}
             label={t('account_type_label')}
-            orientations="row"
+            orientations={isMobile ? 'column' : 'row'}
           >
             <Radio value="fo" variant="boxed">
               {t('fo_label')}

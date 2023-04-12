@@ -194,7 +194,7 @@ const RegisterForm = ({ onSubmit, error, lastEmail }: Props) => {
         render={({ field }) => (
           <InputField
             required
-            helptext={t('email_description')}
+            helptext={t(`email_${type}_description`)}
             label={t('email_label')}
             placeholder={t('email_placeholder')}
             autoComplete="username"

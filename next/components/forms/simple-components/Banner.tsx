@@ -1,4 +1,3 @@
-import BannerPhone from '@assets/images/banner-phone.png'
 import CallIcon from '@assets/images/new-icons/ui/telephone.svg'
 import cx from 'classnames'
 import AccountMarkdown from 'components/forms/segments/AccountMarkdown/AccountMarkdown'
@@ -14,6 +13,7 @@ type BannerBase = {
   href?: string
   onPress?: () => void
   className?: string
+  image: string
 }
 
 const Banner = ({
@@ -22,6 +22,7 @@ const Banner = ({
   buttonText = 'Button',
   mobileNumber = '',
   href,
+  image,
   onPress,
   className,
 }: BannerBase) => {
@@ -68,8 +69,8 @@ const Banner = ({
           )}
         </div>
       </div>
-      <div className="my-auto sm:w-1/2 w-full">
-        <Image src={BannerPhone} />
+      <div className="my-auto sm:w-1/2 w-full flex">
+        <Image src={image} />
       </div>
     </div>
   )

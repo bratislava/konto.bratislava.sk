@@ -3,13 +3,16 @@ import { ROUTES } from '@utils/constants'
 import logger from '@utils/logger'
 import { AccountError } from '@utils/useAccount'
 import useHookForm from '@utils/useHookForm'
+import { isBrowser } from '@utils/utils'
 import AccountErrorAlert from 'components/forms/segments/AccountErrorAlert/AccountErrorAlert'
 import Button from 'components/forms/simple-components/Button'
 import InputField from 'components/forms/widget-components/InputField/InputField'
-import { useTranslation } from 'next-i18next'
 import { useRouter } from 'next/router'
+import { useTranslation } from 'next-i18next'
+import { useState } from 'react'
 import { Controller } from 'react-hook-form'
 import Turnstile from 'react-turnstile'
+import { useTimeout } from 'usehooks-ts'
 
 interface Data {
   rc: string
@@ -58,6 +61,12 @@ const IdentityVerificationForm = ({ onSubmit, error }: Props) => {
     schema,
     defaultValues: { rc: '', idCard: '' },
   })
+  const [captchaWarning, setCaptchaWarning] = useState<'loading' | 'show' | 'hide'>('loading')
+
+  useTimeout(() => {
+    if (!isBrowser() || captchaWarning === 'hide') return
+    setCaptchaWarning('show')
+  }, 3000)
 
   return (
     <form
@@ -101,24 +110,32 @@ const IdentityVerificationForm = ({ onSubmit, error }: Props) => {
         name="turnstileToken"
         control={control}
         render={({ field: { onChange } }) => (
-          <Turnstile
-            theme="light"
-            sitekey={process.env.NEXT_PUBLIC_CLOUDFLARE_TURNSTILE_SITE_KEY}
-            onVerify={(token) => onChange(token)}
-            onError={(error) => {
-              logger.error('Turnstile error:', error)
-              return onChange(null)
-            }}
-            onTimeout={() => {
-              logger.error('Turnstile timeout')
-              onChange(null)
-            }}
-            onExpire={() => {
-              logger.error('Turnstile expire')
-              onChange(null)
-            }}
-            className="mb-2 self-center"
-          />
+          <>
+            <Turnstile
+              theme="light"
+              sitekey={process.env.NEXT_PUBLIC_CLOUDFLARE_TURNSTILE_SITE_KEY}
+              onVerify={(token) => {
+                setCaptchaWarning('hide')
+                onChange(token)
+              }}
+              onError={(error) => {
+                logger.error('Turnstile error:', error)
+                setCaptchaWarning('show')
+                return onChange(null)
+              }}
+              onTimeout={() => {
+                logger.error('Turnstile timeout')
+                setCaptchaWarning('show')
+                onChange(null)
+              }}
+              onExpire={() => {
+                logger.warn('Turnstile expire - should refresh automatically')
+                onChange(null)
+              }}
+              className="mb-2 self-center"
+            />
+            {captchaWarning === 'show' && <p className="text-p3 italic">{t('captcha_warning')}</p>}
+          </>
         )}
       />
       <Button

@@ -1,7 +1,9 @@
+import { MenuButton } from 'components/forms/simple-components/TestMenu/Menu'
 import SelectField, {
   SelectOption,
 } from 'components/forms/widget-components/SelectField/SelectField'
 import { Dispatch, SetStateAction } from 'react'
+import { Item, Section } from 'react-stately'
 import { useWindowSize } from 'usehooks-ts'
 
 type MunicipalServicesSectionHeaderBase = {
@@ -39,6 +41,20 @@ const MunicipalServicesSectionHeader = ({
           enumOptions={enumOptions}
           maxWordSize={width > 480 ? 45 : 25}
         />
+        <MenuButton label="Actions" onAction={(key) => console.log(key)}>
+          <Section>
+            <Item key="edit">Edit…</Item>
+            <Item key="duplicate">Duplicate</Item>
+          </Section>
+          <Section>
+            <Item key="move">Move…</Item>
+            <Item key="rename">Rename…</Item>
+          </Section>
+          <Section>
+            <Item key="archive">Archive</Item>
+            <Item key="delete">Delete…</Item>
+          </Section>
+        </MenuButton>
       </span>
     </div>
   )

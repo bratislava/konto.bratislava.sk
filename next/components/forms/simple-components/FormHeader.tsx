@@ -9,9 +9,11 @@ import Button from 'components/forms/simple-components/Button'
 import FormMenu from 'components/forms/simple-components/FormMenu/FormMenu'
 import FormMenuButton from 'components/forms/simple-components/FormMenu/FormMenuButton'
 import Menu from 'components/forms/simple-components/Menu/Menu'
+import { MenuButton } from 'components/forms/simple-components/TestMenu/Menu'
+import Link from 'next/link'
 import { useTranslation } from 'next-i18next'
 import { ReactNode } from 'react'
-import { Item } from 'react-stately'
+import { Item, Section } from 'react-stately'
 
 export interface MenuItem {
   id: number
@@ -61,13 +63,15 @@ const formHeaderMenuContent: FormHeaderMenuContentBase[] = [
 const FormHeader = () => {
   return (
     <div className="flex flex-col relative">
-      <div className="w-full h-[68px] bg-main-200">
-        <div className="max-w-screen-lg mx-auto h-full flex items-center">E-sluzby</div>
-      </div>
-      <div className="w-full h-full min-h-[120px] bg-main-200">
-        <div className="justify-between max-w-screen-lg mx-auto pt-6 flex">
-          <h1 className="text-h1">Záväzné stanovisko k investičnej činnosti</h1>
-          <div className="flex gap-3">
+      <div className="w-full h-full min-h-[120px] bg-main-200 py-12">
+        <div className="justify-between max-w-screen-lg mx-auto flex">
+          <div className="flex flex-col gap-4">
+            <h1 className="text-h1">Záväzné stanovisko k investičnej činnosti</h1>
+            <Link className="text-p1-underline w-max" href="/">
+              Viac informácií o službe
+            </Link>
+          </div>
+          <div className="h-full flex gap-3">
             <Button
               size="sm"
               variant="category-outline"
@@ -75,7 +79,21 @@ const FormHeader = () => {
               text="Uložiť ako koncept"
               className="text-gray-700 hover:text-gray-600 focus:text-gray-800"
             />
-            <FormMenuButton shouldFlip closeOnSelect={false} items={formHeaderMenuContent}>
+            <MenuButton label="Actions" onAction={(key) => console.log(key)}>
+              <Section>
+                <Item key="edit">Edit…</Item>
+                <Item key="duplicate">Duplicate</Item>
+              </Section>
+              <Section>
+                <Item key="move">Move…</Item>
+                <Item key="rename">Rename…</Item>
+              </Section>
+              <Section>
+                <Item key="archive">Archive</Item>
+                <Item key="delete">Delete…</Item>
+              </Section>
+            </MenuButton>
+            {/* <FormMenuButton shouldFlip items={formHeaderMenuContent}>
               {(item: FormHeaderMenuContentBase) => (
                 <Item>
                   <div className="font-sans flex items-center gap-3 min-w-[208px] cursor-pointer">
@@ -84,29 +102,7 @@ const FormHeader = () => {
                   </div>
                 </Item>
               )}
-              {/* {(item) => (
-                <Item key={item.key}>
-                  <div className="font-sans flex items-center justify-center gap-3">
-                    <span className="w-6 h-6">{item.icon}</span>
-                    <span className="text-p2 font-sans">{item.title}</span>
-                  </div>
-                </Item>
-              ))} */}
-            </FormMenuButton>
-            {/* <Menu buttonIcon={<ThreePointsIcon />} label="">
-              {[
-                { id: 1, title: 'Vyplniť cez eID', icon: <ThreePointsIcon />, link: '/' },
-                { id: 2, title: 'Stiahnuť ako XML', icon: <ThreePointsIcon />, link: '/' },
-              ].map((option) => (
-                <Item key={option.id}>{option.title}</Item>
-              ))}
-            </Menu> */}
-            {/* <Button
-              className="text-gray-700 hover:text-gray-600 focus:text-gray-800"
-              size="sm"
-              variant="category-outline"
-              icon={<ThreePointsIcon />}
-            /> */}
+            </FormMenuButton> */}
           </div>
         </div>
       </div>

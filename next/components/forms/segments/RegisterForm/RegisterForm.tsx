@@ -1,3 +1,4 @@
+import logger from '@utils/logger'
 import { AccountError, UserData } from '@utils/useAccount'
 import useHookForm from '@utils/useHookForm'
 import AccountErrorAlert from 'components/forms/segments/AccountErrorAlert/AccountErrorAlert'
@@ -10,7 +11,6 @@ import PasswordField from 'components/forms/widget-components/PasswordField/Pass
 import { useTranslation } from 'next-i18next'
 import { Controller } from 'react-hook-form'
 import Turnstile from 'react-turnstile'
-import { useCounter } from 'usehooks-ts'
 
 interface Data {
   email: string
@@ -88,7 +88,6 @@ const schema = {
 
 const RegisterForm = ({ onSubmit, error, lastEmail }: Props) => {
   const { t } = useTranslation('account')
-  const turnstileKeyCounter = useCounter()
   const {
     handleSubmit,
     control,
@@ -115,8 +114,6 @@ const RegisterForm = ({ onSubmit, error, lastEmail }: Props) => {
           given_name: data.given_name,
           family_name: data.family_name,
         }
-        // force turnstile rerender as it's always available just for a single request
-        turnstileKeyCounter.increment()
         return onSubmit(
           data.email,
           data.password,
@@ -220,13 +217,22 @@ const RegisterForm = ({ onSubmit, error, lastEmail }: Props) => {
         control={control}
         render={({ field: { onChange } }) => (
           <Turnstile
-            key={turnstileKeyCounter.count}
+            theme="light"
             sitekey={process.env.NEXT_PUBLIC_CLOUDFLARE_TURNSTILE_SITE_KEY}
             onVerify={(token) => onChange(token)}
-            onError={() => onChange(null)}
-            onTimeout={() => onChange(null)}
-            onExpire={() => onChange(null)}
-            className="mb-2"
+            onError={(error) => {
+              logger.error('Turnstile error:', error)
+              return onChange(null)
+            }}
+            onTimeout={() => {
+              logger.error('Turnstile timeout')
+              onChange(null)
+            }}
+            onExpire={() => {
+              logger.error('Turnstile expire')
+              onChange(null)
+            }}
+            className="mb-2 self-center"
           />
         )}
       />

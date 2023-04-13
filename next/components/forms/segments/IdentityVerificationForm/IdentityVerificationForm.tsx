@@ -10,7 +10,6 @@ import { useTranslation } from 'next-i18next'
 import { useRouter } from 'next/router'
 import { Controller } from 'react-hook-form'
 import Turnstile from 'react-turnstile'
-import { useCounter } from 'usehooks-ts'
 
 interface Data {
   rc: string
@@ -49,7 +48,6 @@ const schema = {
 
 const IdentityVerificationForm = ({ onSubmit, error }: Props) => {
   const { t } = useTranslation('account')
-  const turnstileKeyCounter = useCounter()
   const router = useRouter()
   const {
     handleSubmit,
@@ -64,11 +62,7 @@ const IdentityVerificationForm = ({ onSubmit, error }: Props) => {
   return (
     <form
       className="flex flex-col space-y-4"
-      onSubmit={handleSubmit((data: Data) => {
-        // force turnstile rerender as it's always available just for a single request
-        turnstileKeyCounter.increment()
-        return onSubmit(data.rc, data.idCard, data.turnstileToken)
-      })}
+      onSubmit={handleSubmit((data: Data) => onSubmit(data.rc, data.idCard, data.turnstileToken))}
     >
       <h1 className="text-h3">{t('identity_verification_title')}</h1>
       <AccountErrorAlert error={error} />
@@ -108,16 +102,22 @@ const IdentityVerificationForm = ({ onSubmit, error }: Props) => {
         control={control}
         render={({ field: { onChange } }) => (
           <Turnstile
-            key={turnstileKeyCounter.count}
+            theme="light"
             sitekey={process.env.NEXT_PUBLIC_CLOUDFLARE_TURNSTILE_SITE_KEY}
             onVerify={(token) => onChange(token)}
             onError={(error) => {
               logger.error('Turnstile error:', error)
               return onChange(null)
             }}
-            onTimeout={() => onChange(null)}
-            onExpire={() => onChange(null)}
-            className="mb-2"
+            onTimeout={() => {
+              logger.error('Turnstile timeout')
+              onChange(null)
+            }}
+            onExpire={() => {
+              logger.error('Turnstile expire')
+              onChange(null)
+            }}
+            className="mb-2 self-center"
           />
         )}
       />

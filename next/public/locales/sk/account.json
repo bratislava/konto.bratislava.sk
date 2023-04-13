@@ -137,6 +137,7 @@
   "migration_register_description": "Neplatili ste ešte daň digitálne?",
   "migration_new_password_title": "Zadajte overovací kód a vytvorte si heslo",
   "migration_new_password_submit": "Overiť e-mail",
+  "captcha_warning": "Nepodarilo sa overiť, či nie ste robot. Ak sa formulár nedá odoslať, vyskúšajte prosím iný prehliadač (Chrome, Edge alebo Safari).",
   "account_section_intro": {
     "navigation": "Úvod",
     "header_title": "Dobrý deň,",

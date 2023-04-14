@@ -80,6 +80,7 @@
   "new_password_description": "We've sent you a verification code",
   "verification_description": "Didn't receive a verification code?",
   "verification_cnt_description": "Wait {cnt}s.",
+  "verification_cnt_info": "<br />Môže sa stať, že sa pošta zatúla. <strong>Skúste skontrolovať všetky priečinky vašej e-mailovej schránky</strong>. Ak kód predsa len nedorazil, napíšte nám na info@bratislava.sk a radi vám pomôžeme.",
   "verification_resend": "Resend code",
   "new_password_submit": "Continue",
   "verification_code_label": "Code",

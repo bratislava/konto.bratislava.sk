@@ -74,6 +74,7 @@ const IdentityVerificationForm = ({ onSubmit, error }: Props) => {
       onSubmit={handleSubmit((data: Data) => onSubmit(data.rc, data.idCard, data.turnstileToken))}
     >
       <h1 className="text-h3">{t('identity_verification_title')}</h1>
+      <p className="text-p2">{t('identity_verification_subtitle')}</p>
       <AccountErrorAlert error={error} />
       <Controller
         name="rc"
@@ -83,8 +84,6 @@ const IdentityVerificationForm = ({ onSubmit, error }: Props) => {
             required
             label={t('rc_label')}
             placeholder={t('rc_placeholder')}
-            tooltip={t('rc_tooltip')}
-            tooltipPosition="bottom-left"
             {...field}
             errorMessage={errors.rc}
           />
@@ -99,8 +98,6 @@ const IdentityVerificationForm = ({ onSubmit, error }: Props) => {
             label={t('id_card_label')}
             placeholder={t('id_card_placeholder')}
             helptext={t('id_card_description')}
-            tooltip={t('id_card_tooltip')}
-            tooltipPosition="bottom-left"
             {...field}
             errorMessage={errors.idCard}
           />

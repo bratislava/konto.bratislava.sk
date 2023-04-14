@@ -102,6 +102,7 @@
   "identity_verification_link": "Continue",
   "identity_verification_skip": "Skip",
   "identity_verification_title": "Verify identity",
+  "identity_verification_subtitle": "Čísla dokladov potrebujeme poznať na to, aby sme overili vašu identitu voči štátnym registrom. Bez toho nebudete schopný/á odoslať elektronicky všetky žiadosti. Overenie je jednorazové, údaje neukladáme.",
   "rc_label": "Identification number",
   "rc_placeholder": "Identification number",
   "rc_description": "",

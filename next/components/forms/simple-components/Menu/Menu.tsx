@@ -1,6 +1,6 @@
 import ChevronDownSmall from '@assets/images/new-icons/ui/arrow-small-down.svg'
 import type { AriaMenuProps, MenuTriggerProps } from '@react-types/menu'
-import cx from 'classNames'
+import cx from 'classnames'
 import Button from 'components/forms/simple-components/Button'
 import MenuButton from 'components/forms/simple-components/Menu/MenuButton'
 import MenuContainer from 'components/forms/simple-components/Menu/MenuContainer'

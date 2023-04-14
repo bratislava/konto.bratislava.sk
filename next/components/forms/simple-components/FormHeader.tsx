@@ -39,6 +39,7 @@ const FormHeader = () => {
               items={formHeaderMenuContent}
               buttonClassName="w-10 h-10 flex justify-center items-center focus:outline-none rounded-lg border-2 border-main-700 hover:border-main-600 focus:border-main-800 hover:text-gray-600 focus:text-gray-800"
               buttonIcon={<ThreePointsIcon />}
+              offset={0}
             />
           </div>
         </div>

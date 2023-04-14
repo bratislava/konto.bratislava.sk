@@ -1,3 +1,4 @@
+import BannerPhone from '@assets/images/help-page-banner-image.png'
 import AccountSectionHeader from 'components/forms/segments/AccountSectionHeader/AccountSectionHeader'
 import Accordion from 'components/forms/simple-components/Accordion'
 import Banner from 'components/forms/simple-components/Banner'
@@ -110,6 +111,7 @@ const HelpSection = () => {
           content={bannerContent}
           buttonText={t('account_section_help.banner_button_text')}
           href="mailto:info@bratislava.sk"
+          image={BannerPhone}
         />
       </div>
     </div>

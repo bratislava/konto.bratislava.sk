@@ -13,7 +13,6 @@ interface MenuProps<T extends object> extends AriaMenuProps<T>, MenuTriggerProps
   label: string
   buttonLeftEl?: React.ReactNode
   containerHeaderEl?: React.ReactNode
-  className?: string
   buttonIcon?: React.ReactNode
 }
 

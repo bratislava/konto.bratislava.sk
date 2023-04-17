@@ -4,9 +4,7 @@ import Tooltip from '../../forms/info-components/Tooltip/Tooltip'
 import { Stack } from '../Stack'
 import { Wrapper } from '../Wrapper'
 
-interface TooltipShowCaseProps {}
-
-const TooltipShowCase: FC<TooltipShowCaseProps> = ({}: TooltipShowCaseProps) => {
+const TooltipShowCase = () => {
   return (
     <Wrapper title="Tooltip" direction="column">
       <Stack direction="row">

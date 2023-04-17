@@ -1,14 +1,12 @@
-import React, { FC, useState } from 'react'
+import { UploadMinioFile } from '@backend/dtos/minio/upload-minio-file.dto'
+import React, { useState } from 'react'
 
-import { UploadMinioFile } from '../../../backend/dtos/minio/upload-minio-file.dto'
 import Upload from '../../forms/widget-components/Upload/Upload'
 import UploadedFile from '../../forms/widget-components/Upload/UploadedFile'
 import { Stack } from '../Stack'
 import { Wrapper } from '../Wrapper'
 
-interface UploadShowCaseProps {}
-
-const UploadShowCase: FC<UploadShowCaseProps> = ({}: UploadShowCaseProps) => {
+const UploadShowCase = () => {
   const [files1, setFiles1] = useState<UploadMinioFile[]>([])
   const [files2, setFiles2] = useState<UploadMinioFile[]>([])
   const [files3, setFiles3] = useState<UploadMinioFile[]>([])

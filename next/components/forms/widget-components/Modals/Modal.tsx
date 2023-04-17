@@ -11,7 +11,7 @@ type ModalBase = {
   divider?: boolean
   onClose: () => void
   onSubmit: (params: OnSubmitParams) => void
-  content: (({}: any) => JSX.Element)[] | (({}: any) => JSX.Element)
+  content: ((value: any) => JSX.Element)[] | ((value: any) => JSX.Element)
   header?: string
   confirmLabel?: string
   cancelLabel?: string

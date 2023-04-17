@@ -4,9 +4,7 @@ import { useState } from 'react'
 import { Stack } from '../Stack'
 import { Wrapper } from '../Wrapper'
 
-interface TagShowCaseProps {}
-
-const TagShowCase = ({}: TagShowCaseProps) => {
+const TagShowCase = () => {
   const [removableTag, setRemovableTag] = useState<string | null>('Real onRemove')
 
   return (

@@ -4,9 +4,7 @@ import Button from '../../forms/simple-components/Button'
 import { Stack } from '../Stack'
 import { Wrapper } from '../Wrapper'
 
-interface StatusBarShowCaseProps {}
-
-const StatusBarShowCase = ({}: StatusBarShowCaseProps) => {
+const StatusBarShowCase = () => {
   const { setStatusBarContent } = useStatusBarContext()
   return (
     <Wrapper direction="column" title="StatusBar">

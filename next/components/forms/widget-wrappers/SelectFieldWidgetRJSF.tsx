@@ -53,7 +53,8 @@ const SelectFieldWidgetRJSF = (props: SelectFieldWidgetRJSFProps) => {
 
   const handleOnChangeMultiple = (newValue?: EnumOptionsType[]) => {
     if (newValue) {
-      const optionValues: any[] = newValue.map((option: EnumOptionsType) => option.value)
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-return
+      const optionValues = newValue.map((option: EnumOptionsType) => option.value)
       onChange(optionValues)
     } else {
       onChange()

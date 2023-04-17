@@ -19,11 +19,12 @@ const ProgressBar = ({
   maxValue = 100,
   className,
 }: ProgressBarBase) => {
+  const id = useId()
   const { progressBarProps, labelProps } = useProgressBar({
     value,
     minValue,
     maxValue,
-    label: label ?? useId(),
+    label: label ?? id,
   })
 
   const percentage = (value - minValue) / (maxValue - minValue)

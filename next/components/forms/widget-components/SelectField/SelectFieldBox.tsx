@@ -18,6 +18,10 @@ interface SelectFieldBoxProps {
   onClick?: (event: React.MouseEvent) => void
 }
 
+const getOptionTitle = (selectOption: SelectOption) => {
+  return selectOption.title ?? String(selectOption.const)
+}
+
 const SelectFieldBoxComponent: ForwardRefRenderFunction<HTMLDivElement, SelectFieldBoxProps> = (
   props: SelectFieldBoxProps,
   ref: ForwardedRef<HTMLDivElement>,
@@ -61,10 +65,6 @@ const SelectFieldBoxComponent: ForwardRefRenderFunction<HTMLDivElement, SelectFi
     if (['Backspace', 'Delete'].includes(key) && !filter) {
       onDeleteLastValue()
     }
-  }
-
-  const getOptionTitle = (selectOption: SelectOption) => {
-    return selectOption.title ?? String(selectOption.const)
   }
 
   // RENDER

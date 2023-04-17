@@ -15,6 +15,18 @@ interface UploadDropAreaProps {
   onDrop?: (newFiles: UploadMinioFile[]) => void
 }
 
+const reduceItemsToFiles = (
+  filtered: UploadMinioFile[],
+  item: DataTransferItem,
+): UploadMinioFile[] => {
+  if (item.kind !== 'file') return filtered
+  const file = item.getAsFile()
+  if (!file) return filtered
+  const minioFile: UploadMinioFile = { file, originalName: file.name }
+  filtered.push(minioFile)
+  return filtered
+}
+
 const UploadDropAreaComponent: ForwardRefRenderFunction<HTMLDivElement, UploadDropAreaProps> = (
   props: UploadDropAreaProps,
   ref: ForwardedRef<HTMLDivElement>,
@@ -59,17 +71,6 @@ const UploadDropAreaComponent: ForwardRefRenderFunction<HTMLDivElement, UploadDr
   )
 
   // EVENT HANDLERS
-  const reduceItemsToFiles = (
-    filtered: UploadMinioFile[],
-    item: DataTransferItem,
-  ): UploadMinioFile[] => {
-    if (item.kind !== 'file') return filtered
-    const file = item.getAsFile()
-    if (!file) return filtered
-    const minioFile: UploadMinioFile = { file, originalName: file.name }
-    filtered.push(minioFile)
-    return filtered
-  }
 
   const handleDrop = (event: React.DragEvent) => {
     event.preventDefault()

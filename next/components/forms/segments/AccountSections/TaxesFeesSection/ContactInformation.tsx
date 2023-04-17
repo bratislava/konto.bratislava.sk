@@ -7,6 +7,8 @@ import SummaryRowSimple from '../../../simple-components/SummaryRowSimple'
 import SummaryRow from '../../../steps/Summary/SummaryRow'
 import CorrespondenceAddressModal from '../../CorrespondenceAddressModal/CorrespondenceAddressModal'
 
+const postalCodeFormat = (code: string): string => `${code.slice(0, 3)} ${code.slice(3)}`
+
 const ContactInformationSection = () => {
   const { t } = useTranslation('account')
   const { userData, updateUserData, error, resetError } = useAccount()
@@ -20,7 +22,6 @@ const ContactInformationSection = () => {
       showSnackbar(t('profile_detail.success_alert'))
     }
   }
-  const postalCodeFormat = (code: string): string => `${code.slice(0, 3)} ${code.slice(3)}`
 
   return (
     <>

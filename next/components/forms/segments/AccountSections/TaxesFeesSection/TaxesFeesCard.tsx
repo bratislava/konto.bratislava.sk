@@ -8,6 +8,10 @@ import { TaxesCardBase } from 'components/forms/segments/AccountSections/TaxesFe
 import Link from 'next/link'
 import { ReactNode } from 'react'
 
+const priceFormat = (price: number): string => {
+  return Number.isInteger(price) ? `${price},00€` : `${price}€`.replace('.', ',')
+}
+
 const TaxesFeesCard = (props: TaxesCardBase) => {
   const { title, yearPay, createDate, currentPaid, finishPrice, paidDate = '', status } = props
 
@@ -37,10 +41,6 @@ const TaxesFeesCard = (props: TaxesCardBase) => {
         break
     }
     return null
-  }
-
-  const priceFormat = (price: number): string => {
-    return Number.isInteger(price) ? `${price},00€` : `${price}€`.replace('.', ',')
   }
 
   return (

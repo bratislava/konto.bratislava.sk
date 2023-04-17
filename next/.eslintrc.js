@@ -20,7 +20,7 @@ module.exports = {
     /** This are exceptions that we use with "__" */
     'no-underscore-dangle': [
       2,
-      { allow: ['__NEXT_DATA__', '__NEXT_LOADED_PAGES__', '__typename'] },
+      { allow: ['__NEXT_DATA__', '__NEXT_LOADED_PAGES__', '__typename', '__errors'] },
     ],
     /** Links get confused for secrets */
     'no-secrets/no-secrets': ['error', { ignoreContent: '^http' }],

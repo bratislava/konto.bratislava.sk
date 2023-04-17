@@ -13,9 +13,9 @@ import {
 import { customizeValidator } from '@rjsf/validator-ajv8'
 import {
   ApiError,
-  FormDto,
   createForm,
   formDataToXml,
+  FormDto,
   getForm,
   submitEform,
   updateForm,
@@ -28,8 +28,8 @@ import useSnackbar from '@utils/useSnackbar'
 import { AnySchemaObject, ErrorObject, FuncKeywordDefinition } from 'ajv'
 import { JSONSchema7, JSONSchema7Definition } from 'json-schema'
 import { cloneDeep, get, merge } from 'lodash'
-import { useTranslation } from 'next-i18next'
 import { useRouter } from 'next/router'
+import { useTranslation } from 'next-i18next'
 import { ChangeEvent, RefObject, useEffect, useRef, useState } from 'react'
 
 import { StepData } from '../components/forms/types/TransformedFormData'
@@ -455,19 +455,20 @@ export const useFormStepper = (eformSlug: string, eform: EFormValue, callbacks: 
   const isComplete = stepIndex === stepsLength
   const currentSchema = steps ? cloneDeep(steps[stepIndex]) : {}
 
-  const init = async () => {
+  const initFormData = async () => {
     const formData = await callbacks.onInit?.()
     if (formData) {
       setFormData(formData)
+    } else {
+      setFormData(getInitFormData(schema))
     }
   }
 
   useEffect(() => {
     // effect to reset all internal state when critical input 'props' change
-    setFormData(getInitFormData(schema))
+    initFormData()
     setStepIndex(0)
     validateSteps()
-    init()
   }, [eformSlug, schema])
 
   useEffect(() => {

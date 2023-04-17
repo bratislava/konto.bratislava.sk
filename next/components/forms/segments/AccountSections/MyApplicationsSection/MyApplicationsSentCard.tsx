@@ -38,10 +38,11 @@ const MyApplicationsSentCard = (props: MyApplicationsCardBase) => {
         return statusNode(<TimeIcon className="text-warning-700 w-6 h-6" />, 'Čaká na vybavenie')
       case 'success':
         return statusNode(<SuccessIcon className="text-success-700 w-6 h-6" />, 'Vybavené')
-
       default:
         break
     }
+
+    return null
   }
 
   const mobileStatusHandler = (): ReactNode => {

@@ -3,7 +3,6 @@ import MyApplicationsSentCard from 'components/forms/segments/AccountSections/My
 import Pagination from 'components/forms/simple-components/Pagination/Pagination'
 import { useTranslation } from 'next-i18next'
 import { useState } from 'react'
-import { useWindowSize } from 'usehooks-ts'
 
 export type MyApplicationsCardBase = {
   title: string
@@ -99,9 +98,8 @@ const cards: MyApplicationsCardBase[] = [
 
 const MyApplicationsSection = () => {
   const { t } = useTranslation('account')
-  const { width } = useWindowSize()
 
-  const ITEMS_PER_PAGE = width > 1216 ? 6 : 9
+  const ITEMS_PER_PAGE = 9
 
   const [applicationsState, setApplicationsState] = useState<'sent' | 'concept'>('sent')
   const [currentPage, setCurrentPage] = useState<number>(1)

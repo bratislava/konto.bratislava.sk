@@ -98,21 +98,21 @@ const MyApplicationsSentCard = (props: MyApplicationsCardBase) => {
       {/* Mobile */}
       <div
         id="mobile-card"
-        className="bg-white w-full h-[88px] max-[400px]:h-[92px] flex lg:hidden items-center justify-between border-b-2 border-gray-200"
+        className="bg-white w-full h-[88px] max-[389px]:h-[92px] flex lg:hidden items-center justify-between border-b-2 border-gray-200"
       >
         <Link
           href={`${ROUTES.MY_APPLICATIONS}/1`}
           className="w-full h-full items-center flex justify-center"
         >
           <div className="w-full flex items-start justify-between">
-            <div className="flex flex-col w-full max-[400px]:gap-1">
+            <div className="flex flex-col w-full max-[389px]:gap-1">
               <div className="flex items-center justify-between">
-                <span className="text-p3-semibold max-[400px]:max-w-[220px] text-main-700">
+                <span className="text-p3-semibold max-[389px]:max-w-[220px] text-main-700">
                   {category}
                 </span>
                 <span>{mobileStatusHandler()}</span>
               </div>
-              <span className="text-p2-semibold leading-5 max-[400px]:max-w-[220px]">{title}</span>
+              <span className="text-p2-semibold leading-5 max-[389px]:max-w-[220px]">{title}</span>
             </div>
           </div>
         </Link>

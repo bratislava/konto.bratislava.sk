@@ -10,14 +10,14 @@ import CorrespondenceAddressModal from '../../CorrespondenceAddressModal/Corresp
 const ContactInformationSection = () => {
   const { t } = useTranslation('account')
   const { userData, updateUserData, error, resetError } = useAccount()
-  const [openSnackbarSuccess] = useSnackbar({ variant: 'success' })
+  const [showSnackbar] = useSnackbar({ variant: 'success' })
   const postal_code_array = userData?.address?.postal_code?.replace(/\s/g, '')
-  const [correnspondenceAddressModalShow, setCorrenspondenceAddressModalShow] = useState(false)
+  const [correspondenceAddressModalShow, setCorrespondenceAddressModalShow] = useState(false)
 
   const onSubmitCorrespondenceAddress = async ({ data }: { data?: Address }) => {
     if (await updateUserData({ address: data })) {
-      setCorrenspondenceAddressModalShow(false)
-      openSnackbarSuccess(t('profile_detail.success_alert'))
+      setCorrespondenceAddressModalShow(false)
+      showSnackbar(t('profile_detail.success_alert'))
     }
   }
   const postalCodeFormat = (code: string): string => `${code.slice(0, 3)} ${code.slice(3)}`
@@ -25,8 +25,8 @@ const ContactInformationSection = () => {
   return (
     <>
       <CorrespondenceAddressModal
-        show={correnspondenceAddressModalShow}
-        onClose={() => setCorrenspondenceAddressModalShow(false)}
+        show={correspondenceAddressModalShow}
+        onClose={() => setCorrespondenceAddressModalShow(false)}
         onSubmit={onSubmitCorrespondenceAddress}
         defaultValues={userData?.address}
         error={error}
@@ -75,7 +75,7 @@ const ContactInformationSection = () => {
                 schemaPath: '',
                 isError: false,
               }}
-              onGoToStep={() => setCorrenspondenceAddressModalShow(true)}
+              onGoToStep={() => setCorrespondenceAddressModalShow(true)}
             />
             <SummaryRow
               size="small"

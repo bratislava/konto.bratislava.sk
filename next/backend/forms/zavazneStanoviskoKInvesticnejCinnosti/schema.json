@@ -7,6 +7,25 @@
   "allOf": [
     {
       "properties": {
+        "prilohy": {
+          "type": "object",
+          "title": "Prílohy",
+          "properties": {
+            "projektovaDokumentacia": {
+              "type": "array",
+              "title": "Projektová dokumentácia",
+              "items": {
+                "type": "string",
+                "format": "data-url"
+              }
+            }
+          },
+          "required": ["projektovaDokumentacia"]
+        }
+      }
+    },
+    {
+      "properties": {
         "ziadatel": {
           "type": "object",
           "title": "Žiadateľ",
@@ -622,57 +641,6 @@
               }
             }
           ]
-        }
-      }
-    },
-    {
-      "properties": {
-        "prilohy": {
-          "type": "object",
-          "title": "Prílohy",
-          "properties": {
-            "projektovaDokumentacia": {
-              "type": "array",
-              "title": "Projektová dokumentácia",
-              "items": {
-                "type": "string",
-                "format": "data-url"
-              }
-            },
-            "vykresy": {
-              "type": "array",
-              "title": "Iné výkresy situácií",
-              "items": {
-                "type": "string",
-                "format": "data-url"
-              }
-            },
-            "ulicnyPohlad": {
-              "type": "array",
-              "title": "Uličný pohľad so záberom najbližších stavieb",
-              "items": {
-                "type": "string",
-                "format": "data-url"
-              }
-            },
-            "podzemnePodlazie": {
-              "type": "array",
-              "title": "Vyhodnotenie podzemného podlažia pri bytových budovách",
-              "items": {
-                "type": "string",
-                "format": "data-url"
-              }
-            },
-            "vyjadrenieUradu": {
-              "type": "array",
-              "title": "Vyjadrenie Krajského pamiatkového úradu",
-              "items": {
-                "type": "string",
-                "format": "data-url"
-              }
-            }
-          },
-          "required": ["projektovaDokumentacia"]
         }
       }
     }

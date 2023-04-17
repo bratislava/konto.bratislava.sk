@@ -78,11 +78,9 @@ export const AccountNavBar = ({
   const onRouteChange = async (selectedMenuItem: MenuItem) => {
     if (selectedMenuItem.link === '/logout') {
       logout()
-      await router.push(ROUTES.LOGIN).catch((error_) => logger.error('Failed redirect', error_))
+      await router.push(ROUTES.LOGIN)
     } else {
-      await router
-        .push(selectedMenuItem.link)
-        .catch((error_) => logger.error('Failed redirect', error_))
+      await router.push(selectedMenuItem.link)
     }
   }
 
@@ -90,7 +88,9 @@ export const AccountNavBar = ({
 
   const onSelectMenuItem = (key: React.Key) => {
     const selectedMenuItem = menuItems?.find((opt) => opt.id.toString() === key)
-    if (selectedMenuItem) onRouteChange(selectedMenuItem)
+    if (selectedMenuItem) {
+      onRouteChange(selectedMenuItem).catch((error_) => logger.error('Failed redirect', error_))
+    }
   }
 
   const isActive = (sectionItem: MenuItem) =>

@@ -1,4 +1,5 @@
 import { ROUTES } from '@utils/constants'
+import logger from '@utils/logger'
 import { formatUnicorn } from '@utils/string'
 import { AsyncServerProps } from '@utils/types'
 import useAccount, { AccountStatus } from '@utils/useAccount'
@@ -66,7 +67,9 @@ const RegisterPage = ({ page }: AsyncServerProps<typeof getServerSideProps>) => 
               confirmLabel={t('identity_verification_link')}
               onConfirm={() => {
                 setStatus(AccountStatus.IdentityVerificationRequired)
-                router.push(ROUTES.IDENTITY_VERIFICATION)
+                router
+                  .push(ROUTES.IDENTITY_VERIFICATION)
+                  .catch((error_) => logger.error('Failed redirect', error_))
               }}
               cancelLabel={t('identity_verification_skip')}
               onCancel={() =>

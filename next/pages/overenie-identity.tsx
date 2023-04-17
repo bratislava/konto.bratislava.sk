@@ -1,4 +1,5 @@
 import { ROUTES } from '@utils/constants'
+import logger from '@utils/logger'
 import { formatUnicorn } from '@utils/string'
 import { AsyncServerProps } from '@utils/types'
 import useAccount, { AccountStatus } from '@utils/useAccount'
@@ -44,7 +45,9 @@ const IdentityVerificationPage = ({ page }: AsyncServerProps<typeof getServerSid
   const router = useRouter()
   useEffect(() => {
     if (!isAuth) {
-      router.push({ pathname: ROUTES.LOGIN, query: { from: router.route } })
+      router
+        .push({ pathname: ROUTES.LOGIN, query: { from: router.route } })
+        .catch((error_) => logger.error('Failed redirect', error_))
     }
   }, [isAuth])
 

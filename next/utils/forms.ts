@@ -662,6 +662,7 @@ export const useFormStepper = (eformSlug: string, eform: EFormValue, callbacks: 
     stepIndex,
     setStepIndex,
     formData,
+    stepTitle: stepData[stepIndex]?.title || stepData[stepIndex]?.stepKey || '',
     setStepFormData,
     errors: transformErrorsToArray(),
     extraErrors,

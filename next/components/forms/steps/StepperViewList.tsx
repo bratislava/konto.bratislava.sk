@@ -13,7 +13,7 @@ const StepperViewList = ({ steps, currentStep, onChangeStep }: StepperViewListPr
   const { t } = useTranslation('forms')
 
   return (
-    <div className="p-3">
+    <div>
       {steps.map((step: StepData, key: number) => (
         <StepperViewRow
           key={key}

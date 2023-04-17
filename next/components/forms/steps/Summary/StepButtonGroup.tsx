@@ -18,7 +18,7 @@ const StepButtonGroup = (props: StepButtonGroupProps) => {
   const { t } = useTranslation('forms')
 
   return (
-    <div className="flex flex-row flex-wrap gap-5">
+    <div className="mt-10 flex flex-row flex-wrap gap-5">
       <div className="grow">
         {stepIndex !== 0 && (
           <Button

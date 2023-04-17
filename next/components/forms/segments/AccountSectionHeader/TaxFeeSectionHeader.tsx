@@ -47,7 +47,7 @@ const statusHandler = (status: 'negative' | 'warning' | 'success'): ReactNode =>
   }
 }
 
-const TaxFeeSectionHeader = ({ who, status, title }: AccountSectionHeaderBase) => {
+const TaxFeeSectionHeader = ({ who, status }: AccountSectionHeaderBase) => {
   const { t } = useTranslation('account')
   const router = useRouter()
   return (

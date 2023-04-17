@@ -20,6 +20,8 @@ const SelectAllDropdownRow = ({
 
   return (
     <div
+      role="button"
+      tabIndex={0}
       className="dropdown flex h-14 w-full cursor-pointer flex-col bg-white px-5 hover:text-gray-600"
       onClick={handleOnClick}
       onKeyPress={(event: React.KeyboardEvent) => handleOnKeyPress(event, handleOnClick)}

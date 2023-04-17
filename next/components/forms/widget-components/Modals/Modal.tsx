@@ -56,6 +56,8 @@ const ModalHeader = ({
     <div className={headerStyle}>
       {currentScreenIndex > 0 ? (
         <div
+          role="button"
+          tabIndex={0}
           className="ml-1 flex flex-row cursor-pointer items-center"
           onClick={() => {
             setCurrentScreenIndex(currentScreenIndex - 1)
@@ -194,12 +196,16 @@ const Modal = ({
   const hasFooter = Array.isArray(content)
   return (
     <div
+      role="button"
+      tabIndex={0}
       className="z-50 h-full fixed w-full inset-x-0 top-0 flex items-center justify-center"
       style={{ background: 'rgba(var(--color-gray-800), .4)', marginTop: '0' }}
       onClick={handleOnClick}
       onKeyPress={(event: React.KeyboardEvent) => handleOnKeyPress(event, handleOnClick)}
     >
       <div
+        role="button"
+        tabIndex={0}
         onClick={(e) => e.stopPropagation()}
         onKeyPress={(event: React.KeyboardEvent) =>
           handleOnKeyPress(event, () => event.stopPropagation())

@@ -30,6 +30,8 @@ const Item = ({
 
   return (
     <div
+      role="button"
+      tabIndex={0}
       onClick={onClick}
       onKeyPress={(event) => handleOnKeyPress(event, onClick)}
       className={cx(

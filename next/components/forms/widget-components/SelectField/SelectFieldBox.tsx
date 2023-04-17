@@ -71,6 +71,8 @@ const SelectFieldBoxComponent: ForwardRefRenderFunction<HTMLDivElement, SelectFi
   // RENDER
   return (
     <section
+      role="button"
+      tabIndex={0}
       ref={ref}
       className="flex items-center w-full flex-row flex-wrap gap-2 py-2 sm:py-2.5 sm:pl-4 pl-3"
       data-value={value}

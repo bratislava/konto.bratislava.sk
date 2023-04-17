@@ -254,6 +254,8 @@ const SelectFieldComponent: ForwardRefRenderFunction<HTMLDivElement, SelectField
 
         {/* DROPDOWN ARROW */}
         <div
+          role="button"
+          tabIndex={0}
           className="dropdownButton flex flex-col items-center h-10 sm:h-12 cursor-pointer select-none rounded-lg px-3 sm:px-4 [&>svg]:m-1"
           onClick={handleOnArrowClick}
           onKeyPress={(event: React.KeyboardEvent) =>

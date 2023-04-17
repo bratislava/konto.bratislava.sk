@@ -74,12 +74,16 @@ const RegistrationModal = ({ show, onClose, className }: RegistrationModalBase) 
   }
   return (
     <div
+      role="button"
+      tabIndex={0}
       className="h-full fixed w-full z-50 top-0 flex items-center justify-center"
       style={{ background: 'rgba(var(--color-gray-800), .4)', marginTop: '0' }}
       onClick={onClose}
       onKeyPress={(event: React.KeyboardEvent) => handleOnKeyPress(event, onClose)}
     >
       <div
+        role="button"
+        tabIndex={0}
         onClick={(e) => e.stopPropagation()}
         onKeyPress={(event: React.KeyboardEvent) =>
           handleOnKeyPress(event, () => event.stopPropagation())

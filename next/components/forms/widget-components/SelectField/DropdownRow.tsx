@@ -74,6 +74,8 @@ const DropdownRow = ({
   // RENDER
   return (
     <div
+      role="button"
+      tabIndex={0}
       className={rowClassName}
       onClick={handleOnClick}
       onKeyPress={(event: React.KeyboardEvent) => handleOnKeyPress(event, handleOnClick)}

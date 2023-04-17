@@ -48,6 +48,8 @@ const UploadButtonComponent: ForwardRefRenderFunction<HTMLDivElement, UploadButt
   return (
     <div className="flex flex-row gap-4 w-fit h-fit">
       <div
+        role="button"
+        tabIndex={0}
         ref={ref}
         data-value={value}
         className={buttonClassNames}

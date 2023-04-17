@@ -50,6 +50,8 @@ const MessageModal = ({
   }
   return (
     <div
+      role="button"
+      tabIndex={0}
       className="h-full fixed w-full z-50 top-0 flex items-center justify-center"
       style={{ background: 'rgba(var(--color-gray-800), .4)', marginTop: '0' }}
       onClick={cancelHandler}
@@ -83,6 +85,8 @@ const MessageModal = ({
           {!excludeButtons && (
             <div className="order-1 flex flex-row items-center gap-6 p-0 justify-end mt-6">
               <div
+                role="button"
+                tabIndex={0}
                 className="text-p2 flex cursor-pointer flex-row items-center justify-center gap-2 py-1 px-2 font-semibold not-italic"
                 onClick={cancelHandler}
                 onKeyPress={(event: React.KeyboardEvent) => handleOnKeyPress(event, cancelHandler)}

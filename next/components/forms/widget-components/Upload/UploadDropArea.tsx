@@ -92,6 +92,8 @@ const UploadDropAreaComponent: ForwardRefRenderFunction<HTMLDivElement, UploadDr
   return (
     <div className="w-[180px] xs:w-[300px] sm:w-[480px] relative h-40" ref={ref} data-value={value}>
       <div
+        role="button"
+        tabIndex={0}
         className={dragAndDropOverlayClassNames}
         onClick={onClick}
         onKeyPress={(event: React.KeyboardEvent) => handleOnKeyPress(event, onClick)}

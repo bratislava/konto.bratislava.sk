@@ -27,6 +27,8 @@ const StepperViewRow = (props: StepperViewRowProps) => {
   return (
     <div className={cx('flex flex-col select-none', className)}>
       <div
+        role="button"
+        tabIndex={0}
         className="flex flex-row gap-3 items-center cursor-pointer"
         onClick={onClick}
         onKeyPress={(event: React.KeyboardEvent) => handleOnKeyPress(event, onClick)}

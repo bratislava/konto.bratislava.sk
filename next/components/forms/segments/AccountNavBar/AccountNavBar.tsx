@@ -54,6 +54,46 @@ export interface MenuItem {
   backgroundColor?: string // ex. bg-negative-700
 }
 
+const Avatar = ({ userData }: { userData?: UserData | null }) => {
+  return (
+    <div className="flex relative flex-row items-start gap-2 rounded-full p-2 bg-main-100">
+      <div className="flex h-6 w-6 items-center justify-center font-semibold text-main-700">
+        <span className="uppercase">
+          {userData && userData.given_name && userData.family_name ? (
+            userData.given_name[0] + userData.family_name[0]
+          ) : (
+            <ProfileOutlinedIcon className="w-6 h-6 text-main-700" />
+          )}
+        </span>
+      </div>
+    </div>
+  )
+}
+
+const AccountMenuItem = ({ menuItem }: { menuItem: MenuItem }) => {
+  const { t } = useTranslation()
+
+  return (
+    <div className="cursor-pointer flex py-2 px-5">
+      <div
+        className={`flex relative flex-row items-start gap-2 rounded-xl p-4 ${
+          menuItem.backgroundColor ?? 'bg-gray-50'
+        }`}
+      >
+        <div className="flex h-2 w-2 items-center justify-center">
+          <span>{menuItem.icon}</span>
+        </div>
+      </div>
+      <div
+        className="text-p2 hover:text-p2-semibold w-fit-title text-font p-2 whitespace-nowrap"
+        title={t(menuItem.title)}
+      >
+        {t(menuItem.title)}
+      </div>
+    </div>
+  )
+}
+
 export const AccountNavBar = ({
   className,
   sectionsList,
@@ -270,46 +310,6 @@ export const AccountNavBar = ({
             />
           )}
         </div>
-      </div>
-    </div>
-  )
-}
-
-const AccountMenuItem = ({ menuItem }: { menuItem: MenuItem }) => {
-  const { t } = useTranslation()
-
-  return (
-    <div className="cursor-pointer flex py-2 px-5">
-      <div
-        className={`flex relative flex-row items-start gap-2 rounded-xl p-4 ${
-          menuItem.backgroundColor ?? 'bg-gray-50'
-        }`}
-      >
-        <div className="flex h-2 w-2 items-center justify-center">
-          <span>{menuItem.icon}</span>
-        </div>
-      </div>
-      <div
-        className="text-p2 hover:text-p2-semibold w-fit-title text-font p-2 whitespace-nowrap"
-        title={t(menuItem.title)}
-      >
-        {t(menuItem.title)}
-      </div>
-    </div>
-  )
-}
-
-const Avatar = ({ userData }: { userData?: UserData | null }) => {
-  return (
-    <div className="flex relative flex-row items-start gap-2 rounded-full p-2 bg-main-100">
-      <div className="flex h-6 w-6 items-center justify-center font-semibold text-main-700">
-        <span className="uppercase">
-          {userData && userData.given_name && userData.family_name ? (
-            userData.given_name[0] + userData.family_name[0]
-          ) : (
-            <ProfileOutlinedIcon className="w-6 h-6 text-main-700" />
-          )}
-        </span>
       </div>
     </div>
   )

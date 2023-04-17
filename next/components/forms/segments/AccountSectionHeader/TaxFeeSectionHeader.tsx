@@ -47,7 +47,7 @@ const statusHandler = (status: 'negative' | 'warning' | 'success'): ReactNode =>
   }
 }
 
-const TaxFeeSectionHeader = (props: AccountSectionHeaderBase) => {
+const TaxFeeSectionHeader = ({ who, status, title }: AccountSectionHeaderBase) => {
   const { t } = useTranslation('account')
   const router = useRouter()
   return (
@@ -92,17 +92,17 @@ const TaxFeeSectionHeader = (props: AccountSectionHeaderBase) => {
               </div>
               <div className="w-1.5 h-1.5 bg-black rounded-full md:block hidden" />
               <div className="lg:text-p2-bold text-p3">
-                {props.who === 'splatkar' ? '29,66€ / 89,00 €' : '58,00 €'}
+                {who === 'splatkar' ? '29,66€ / 89,00 €' : '58,00 €'}
               </div>
               <div className="w-1.5 h-1.5 bg-black rounded-full md:block hidden" />
               <div className="flex items-center gap-2">
                 <div className="flex items-center gap-2">
                   <div
                     className={cx('flex items-center gap-2', {
-                      'gap-1': props?.status === 'unpaid',
+                      'gap-1': status === 'unpaid',
                     })}
                   >
-                    {props.who === 'splatkar' ? statusHandler('warning') : statusHandler('success')}
+                    {who === 'splatkar' ? statusHandler('warning') : statusHandler('success')}
                   </div>
                   <div className="lg:text-p2 text-p3">24. apríla 2023</div>
                 </div>

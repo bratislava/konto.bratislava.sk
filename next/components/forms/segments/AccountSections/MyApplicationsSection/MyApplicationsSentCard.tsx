@@ -7,12 +7,12 @@ import SuccessMobileIcon from '@assets/images/new-icons/ui/success-icon.svg'
 import WaitingMobileIcon from '@assets/images/new-icons/ui/waiting-icon.svg'
 import { ROUTES } from '@utils/constants'
 import cx from 'classnames'
-import { MyApplicationsCardBase } from 'components/forms/segments/AccountSections/MyApplicationsSection/MyApplicationsSection'
+import { MyApplicationsSentCardBase } from 'components/forms/segments/AccountSections/MyApplicationsSection/MyApplicationsSentList'
 import Link from 'next/link'
 import { useTranslation } from 'next-i18next'
 import { ReactNode } from 'react'
 
-const MyApplicationsSentCard = (props: MyApplicationsCardBase) => {
+const MyApplicationsSentCard = (props: MyApplicationsSentCardBase) => {
   const { title, subtitle, category, sentDate, statusDate = '', status } = props
   const { t } = useTranslation('account')
 

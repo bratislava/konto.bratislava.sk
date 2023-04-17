@@ -1,6 +1,7 @@
 import ArrowRightIcon from '@assets/images/new-icons/ui/arrow-right.svg'
 import CloseIcon from '@assets/images/new-icons/ui/cross.svg'
 import CheckIcon from '@assets/images/new-icons/ui/done.svg'
+import { ROUTES } from '@utils/constants'
 import cx from 'classnames'
 import Link from 'next/link'
 import { useTranslation } from 'next-i18next'
@@ -109,7 +110,7 @@ const RegistrationModal = ({ show, onClose, className }: RegistrationModalBase) 
           </div>
           <div className="bg-main-100 rounded-b-lg">
             <Link
-              href="/register"
+              href={ROUTES.REGISTER}
               className="text-p1-semibold text-gray-0 leading-6 text-center bg-main-700 py-2 sm:py-6 mb-4 md:mb-0 mx-4 md:mx-0 px-5 md:px-0 rounded-lg md:rounded-t-none md:rounded-b-lg flex justify-center hover:bg-main-600"
             >
               {/* eslint-disable-next-line jsx-a11y/anchor-is-valid */}
@@ -121,7 +122,7 @@ const RegistrationModal = ({ show, onClose, className }: RegistrationModalBase) 
           <div className="flex flex-col gap-1 sm:gap-0 sm:flex-row sm:justify-between sm:items-center my-3 md:my-6">
             <span className="text-p1-semibold">{t('register_modal.body_login_description')}</span>
             <Link
-              href="/register"
+              href={ROUTES.REGISTER}
               className="text-p1-semibold underline text-main-700 hover:text-main-600"
             >
               {/* eslint-disable-next-line jsx-a11y/anchor-is-valid */}

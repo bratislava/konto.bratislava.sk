@@ -2,23 +2,19 @@ import { ROUTES } from '@utils/constants'
 import { formatUnicorn } from '@utils/string'
 import { AsyncServerProps } from '@utils/types'
 import useAccount, { AccountStatus } from '@utils/useAccount'
-import AccountActivator from 'components/forms/segments/AccountActivator/AccountActivator'
 import AccountContainer from 'components/forms/segments/AccountContainer/AccountContainer'
-import AccountMarkdown from 'components/forms/segments/AccountMarkdown/AccountMarkdown'
 import AccountSuccessAlert from 'components/forms/segments/AccountSuccessAlert/AccountSuccessAlert'
-import EmailVerificationForm from 'components/forms/segments/EmailVerificationForm/EmailVerificationForm'
+import AccountVerificationPendingAlert from 'components/forms/segments/AccountVerificationPendingAlert/AccountVerificationPendingAlert'
 import IdentityVerificationForm from 'components/forms/segments/IdentityVerificationForm/IdentityVerificationForm'
-import RegisterForm from 'components/forms/segments/RegisterForm/RegisterForm'
 import LoginRegisterLayout from 'components/layouts/LoginRegisterLayout'
 import { GetServerSidePropsContext } from 'next'
-import { useRouter } from 'next/router'
 import { useTranslation } from 'next-i18next'
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
-import { useState } from 'react'
+import { useRouter } from 'next/router'
+import { useEffect, useState } from 'react'
 
 import PageWrapper from '../components/layouts/PageWrapper'
 import { isProductionDeployment } from '../utils/utils'
-import AccountVerificationPendingAlert from 'components/forms/segments/AccountVerificationPendingAlert/AccountVerificationPendingAlert'
 
 export const getServerSideProps = async (ctx: GetServerSidePropsContext) => {
   const locale = ctx.locale ?? 'sk'
@@ -40,22 +36,17 @@ export const getServerSideProps = async (ctx: GetServerSidePropsContext) => {
   }
 }
 
-const RegisterPage = ({ page }: AsyncServerProps<typeof getServerSideProps>) => {
+const IdentityVerificationPage = ({ page }: AsyncServerProps<typeof getServerSideProps>) => {
   const { t } = useTranslation('account')
   const [lastRc, setLastRc] = useState('')
   const [lastIdCard, setLastIdCard] = useState('')
-  const {
-    signUp,
-    resendVerificationCode,
-    verifyEmail,
-    error,
-    status,
-    setStatus,
-    verifyIdentity,
-    lastEmail,
-    refreshUserData,
-  } = useAccount()
+  const { error, status, verifyIdentity, isAuth, refreshUserData } = useAccount()
   const router = useRouter()
+  useEffect(() => {
+    if (!isAuth) {
+      router.push({ pathname: ROUTES.LOGIN, query: { from: router.route } })
+    }
+  }, [isAuth])
 
   const verifyIdentityAndRefreshUserData = async (
     rc: string,
@@ -64,57 +55,19 @@ const RegisterPage = ({ page }: AsyncServerProps<typeof getServerSideProps>) => 
   ) => {
     setLastRc(rc)
     setLastIdCard(idCard)
-    await verifyIdentity(rc, idCard, turnstileToken)
-    // give the queue a few seconds to process the verification
-    await new Promise((resolve) => setTimeout(resolve, 8000))
-    // status will be set according to current cognito tier - pending if still processing
-    await refreshUserData()
+    const result = await verifyIdentity(rc, idCard, turnstileToken)
+    if (result) {
+      // give the queue a few seconds to process the verification
+      await new Promise((resolve) => setTimeout(resolve, 8000))
+      // status will be set according to current cognito tier - pending if still processing
+      await refreshUserData()
+    }
   }
 
   return (
     <PageWrapper locale={page.locale} localizations={page.localizations}>
-      <LoginRegisterLayout
-        backButtonHidden={[
-          AccountStatus.EmailVerificationSuccess,
-          AccountStatus.IdentityVerificationRequired,
-          AccountStatus.IdentityVerificationPending,
-          AccountStatus.IdentityVerificationFailed,
-          AccountStatus.IdentityVerificationSuccess,
-        ].includes(status)}
-      >
-        {status === AccountStatus.Idle && <AccountActivator />}
+      <LoginRegisterLayout backButtonHidden>
         <AccountContainer className="md:pt-6 pt-0 mb-0 md:mb-8">
-          {status === AccountStatus.Idle && (
-            <RegisterForm lastEmail={lastEmail} onSubmit={signUp} error={error} />
-          )}
-          {status === AccountStatus.EmailVerificationRequired && (
-            <EmailVerificationForm
-              lastEmail={lastEmail}
-              onResend={resendVerificationCode}
-              onSubmit={verifyEmail}
-              error={error}
-            />
-          )}
-          {status === AccountStatus.EmailVerificationSuccess && (
-            <AccountSuccessAlert
-              title={t('register_success_title')}
-              description={formatUnicorn(t('register_success_description'), {
-                email: lastEmail,
-              })}
-              confirmLabel={t('identity_verification_link')}
-              onConfirm={() => setStatus(AccountStatus.IdentityVerificationRequired)}
-              cancelLabel={t('identity_verification_skip')}
-              onCancel={() =>
-                router.push({ pathname: ROUTES.HOME, query: { from: ROUTES.REGISTER } })
-              }
-            >
-              <AccountMarkdown
-                className="text-center"
-                content={t('register_success_content')}
-                variant="sm"
-              />
-            </AccountSuccessAlert>
-          )}
           {status === AccountStatus.IdentityVerificationRequired && (
             <IdentityVerificationForm onSubmit={verifyIdentityAndRefreshUserData} error={error} />
           )}
@@ -161,4 +114,4 @@ const RegisterPage = ({ page }: AsyncServerProps<typeof getServerSideProps>) => 
   )
 }
 
-export default RegisterPage
+export default IdentityVerificationPage

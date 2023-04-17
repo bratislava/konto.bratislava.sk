@@ -76,20 +76,17 @@ const ModalShowCase = () => {
     postal_code: '05801',
   })
   const [phoneNumberModalShow, setPhoneNumberModalShow] = useState(false)
-  const [phoneNumberModalData, setPhoneNumberModalData] = useState<string | undefined>(
-    '+421999999999',
-  )
+  const [phoneNumberModalData, setPhoneNumberModalData] =
+    useState<string | undefined>('+421999999999')
   const [registrationModal, setRegistrationModal] = useState(false)
   const [skipStepModal, setSkipStepModal] = useState(false)
 
   const onSubmitCorrespondenceAddress = ({ data }: { data?: Address }) => {
-    console.log(data)
     setAddressModalData(data)
     setCorrenspondenceAddressModalShow(false)
   }
 
   const onSubmitPhoneNumber = async ({ data }: { data?: PhoneNumberData }) => {
-    console.log(data)
     setPhoneNumberModalData(data?.phone_number)
     setPhoneNumberModalShow(false)
   }

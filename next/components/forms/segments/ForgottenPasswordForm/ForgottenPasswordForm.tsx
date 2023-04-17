@@ -14,6 +14,7 @@ interface Data {
 interface Props {
   onSubmit: (email: string) => Promise<any>
   error?: AccountError | null | undefined
+  lastEmail: string
 }
 
 // must use `minLength: 1` to implement required field
@@ -30,7 +31,7 @@ const schema = {
   required: ['email'],
 }
 
-const ForgottenPasswordForm = ({ onSubmit, error }: Props) => {
+const ForgottenPasswordForm = ({ onSubmit, error, lastEmail }: Props) => {
   const { t } = useTranslation('account')
   const {
     handleSubmit,
@@ -48,7 +49,7 @@ const ForgottenPasswordForm = ({ onSubmit, error }: Props) => {
       onSubmit={handleSubmit((data: Data) => onSubmit(data.email))}
     >
       <h1 className="text-h3">{t('forgotten_password_title')}</h1>
-      <AccountErrorAlert error={error} />
+      <AccountErrorAlert error={error} args={{ email: lastEmail }} />
       <Controller
         name="email"
         control={control}

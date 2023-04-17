@@ -1,3 +1,4 @@
+import BannerPhone from '@assets/images/banner-phone.png'
 import TaxesIcon from '@assets/images/new-icons/other/city-bratislava/taxes.svg'
 import LibraryIcon from '@assets/images/new-icons/other/culture-communities/library.svg'
 import TreeIcon from '@assets/images/new-icons/other/environment-construction/greenery.svg'
@@ -21,16 +22,25 @@ const IntroSection = () => {
   const { t } = useTranslation('account')
   const { userData, updateUserData, error, resetError } = useAccount()
   const router = useRouter()
-  const [phoneNumberModalShow, setPhoneNumberModalShow] = useState<boolean>(false)
+  const [phoneNumberModal, setPhoneNumberModal] =
+    useState<'hidden' | 'displayed' | 'dismissed'>('hidden')
 
+  // because the effect depends on userData, which may get refreshed every few seconds
+  // we need to track if the modal was dismissed and stop showing it afterwards if that's the case
   useEffect(() => {
-    if (userData && !userData?.phone_number && ROUTES.REGISTER === router.query.from)
-      setPhoneNumberModalShow(true)
-  }, [userData])
+    if (
+      phoneNumberModal === 'hidden' &&
+      userData &&
+      !userData?.phone_number &&
+      ROUTES.REGISTER === router.query.from
+    ) {
+      setPhoneNumberModal('displayed')
+    }
+  }, [phoneNumberModal, router.query.from, userData])
 
   const onSubmitPhoneNumber = async ({ data }: { data?: PhoneNumberData }) => {
     if (await updateUserData({ phone_number: data?.phone_number })) {
-      setPhoneNumberModalShow(false)
+      setPhoneNumberModal('dismissed')
     }
   }
 
@@ -47,8 +57,8 @@ const IntroSection = () => {
     <>
       {userData && (
         <PhoneNumberModal
-          show={phoneNumberModalShow}
-          onClose={() => setPhoneNumberModalShow(false)}
+          show={phoneNumberModal === 'displayed'}
+          onClose={() => setPhoneNumberModal('dismissed')}
           onSubmit={onSubmitPhoneNumber}
           error={error}
           onHideError={resetError}
@@ -65,7 +75,7 @@ const IntroSection = () => {
             announcementContent={announcementContent}
             // buttonTitle={t('account_section_intro.announcement_card_action')}
             imagePath={PlatbaDaneImg}
-            // onPress={() => router.push('/taxes-and-fees')}
+            // onPress={() => router.push(ROUTES.TAXES_AND_FEES)}
           />
           <div className="w-full flex items-center justify-between mb-8 px-4 lg:px-0">
             <h2 className="text-h2">{t('account_section_services.navigation')}</h2>
@@ -74,7 +84,7 @@ const IntroSection = () => {
               className="sm:flex hidden pt-4 pl-4"
               label={t('account_section_intro.all_services')}
               variant="link-category"
-              href="/municipal-services"
+              href={ROUTES.MUNICIPAL_SERVICES}
             />
           </div>
           <div className="flex gap-3 lg:gap-8 overflow-x-scroll scrollbar-hide px-4 lg:px-0">
@@ -83,14 +93,14 @@ const IntroSection = () => {
               description={t('account_section_services.cards.1.description')}
               icon={<TaxesIcon className="w-10 h-10 lg:w-12 lg:h-12 text-category-600" />}
               buttonText={t('account_section_services.cards.1.buttonText')}
-              href="/taxes-and-fees"
+              href={ROUTES.TAXES_AND_FEES}
             />
             <ServiceCard
               title={t('account_section_services.cards.4.title')}
               description={t('account_section_services.cards.4.description')}
               icon={<ParkingIcon className="w-10 h-10 lg:w-12 lg:h-12 text-transport-700" />}
               buttonText={t('account_section_services.cards.4.buttonText')}
-              href="https://api.parkdots.com/auth/realms/parkingrealm/protocol/openid-connect/registrations?client_id=parkingclient&redirect_uri=https%3A%2F%2Fpermits.parkdots.com%2Fwizard%2Fuser%3FprojectId%3D08b21098-3df8-4a0f-9e5c-75a21711aef7&state=f7127136-6bbf-4325-b603-5623cd086c3f&response_mode=fragment&response_type=code&scope=openid&nonce=33fa1798-098a-4ed6-89d8-7dc464bf5e30&kc_locale=sk"
+              href="https://paas.sk/"
             />
             <ServiceCard
               title={t('account_section_services.cards.5.title')}
@@ -112,7 +122,7 @@ const IntroSection = () => {
             className="flex sm:hidden pt-4 pl-4"
             label={t('account_section_intro.all_services')}
             variant="link-category"
-            href="/municipal-services"
+            href={ROUTES.MUNICIPAL_SERVICES}
           />
         </div>
         <div className="bg-gray-50 py-0 lg:py-16">
@@ -120,7 +130,8 @@ const IntroSection = () => {
             title={t('account_section_intro.banner_title')}
             content={bannerContent}
             buttonText={t('account_section_intro.banner_button_text')}
-            onPress={() => router.push('/i-have-a-problem')}
+            href={ROUTES.I_HAVE_A_PROBLEM}
+            image={BannerPhone}
           />
         </div>
       </div>

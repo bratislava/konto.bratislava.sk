@@ -2,7 +2,7 @@
 // TODO figure out what we need to export & which files we need for each eform
 // TODO figure out whether to store the schema files in this repo or in a different lib
 
-import { StrictRJSFSchema, UiSchema } from '@rjsf/utils'
+import { RJSFSchema, UiSchema } from '@rjsf/utils'
 
 import dopravneZnacenie from './dopravneZnacenie'
 import kontajneroveStojiska from './kontajneroveStojiska'
@@ -20,7 +20,7 @@ const eforms = {
 
 export type EFormKey = keyof typeof eforms
 export interface EFormValue {
-  schema: StrictRJSFSchema
+  schema: RJSFSchema
   uiSchema: UiSchema<any, any>
   xsd: string
   data: any

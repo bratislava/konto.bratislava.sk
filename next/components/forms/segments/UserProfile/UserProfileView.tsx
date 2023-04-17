@@ -34,11 +34,11 @@ const UserProfileView = () => {
         if (alertType === 'error') {
           setIsAlertOpened(true)
           setTimeout(() => setIsAlertOpened(false), 3000)
-        }
-        if (alertType === 'success') {
+        } else if (alertType === 'success') {
           // default is 5000 ms
           openSnackbarSuccess(t('profile_detail.success_alert'), 3000)
         }
+        return null
       })
       .catch((error_) => {
         logger.error('Update User Data failed', error_)

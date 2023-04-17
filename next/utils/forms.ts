@@ -414,7 +414,6 @@ const getValidatedSteps = (schema: RJSFSchema, formData: RJSFSchema): RJSFSchema
     .filter((step) => typeof step !== 'boolean' && Object.keys(step).length > 0)
 }
 
-export const useFormStepper = (eformSlug: string, schema: RJSFSchema) => {
 interface Callbacks {
   onStepSumbit?: (formData: any) => Promise<void>
   onInit?: () => Promise<any>

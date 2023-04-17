@@ -1,4 +1,4 @@
-import { subscribeApi, verifyIdentityApi } from '@utils/api'
+import { subscribeApi, UNAUTHORIZED_ERROR_TEXT, verifyIdentityApi } from '@utils/api'
 import { ROUTES } from '@utils/constants'
 import useSnackbar from '@utils/useSnackbar'
 import {
@@ -7,19 +7,26 @@ import {
   CognitoUserAttribute,
   CognitoUserPool,
   CognitoUserSession,
-  CookieStorage,
+  // Cognito cookies are large and we were hitting limits on request header size on our infrastructure
+  // TODO once we need cross-domain login, write our own "hybrid" storage, share only necessary data in cookies
+  // sources:
+  // https://github.com/aws-amplify/amplify-js/issues/1545
+  // https://github.com/amazon-archives/amazon-cognito-identity-js/issues/688
+  // https://github.com/aws-amplify/amplify-js/issues/5330
+  // CookieStorage,
   IAuthenticationDetailsData,
 } from 'amazon-cognito-identity-js'
 import * as AWS from 'aws-sdk/global'
 import { AWSError } from 'aws-sdk/global'
 import { useStatusBarContext } from 'components/forms/info-components/StatusBar'
 import AccountMarkdown from 'components/forms/segments/AccountMarkdown/AccountMarkdown'
-import { useRouter } from 'next/router'
 import { useTranslation } from 'next-i18next'
+import { useRouter } from 'next/router'
 import React, { ReactNode, useCallback, useContext, useEffect, useState } from 'react'
 import { useInterval } from 'usehooks-ts'
 
 import logger, { faro } from './logger'
+import { isBrowser } from './utils'
 
 export enum AccountStatus {
   Idle,
@@ -79,9 +86,9 @@ const updatableAttributes = new Set([
 const poolData = {
   UserPoolId: process.env.NEXT_PUBLIC_COGNITO_USER_POOL_ID || '',
   ClientId: process.env.NEXT_PUBLIC_COGNITO_CLIENT_ID || '',
-  Storage: new CookieStorage({
-    domain: process.env.NEXT_PUBLIC_COGNITO_COOKIE_STORAGE_DOMAIN,
-  }),
+  // Storage: new CookieStorage({
+  //   domain: process.env.NEXT_PUBLIC_COGNITO_COOKIE_STORAGE_DOMAIN,
+  // }),
 }
 const userPool = new CognitoUserPool(poolData)
 
@@ -93,6 +100,7 @@ export interface AccountError {
 interface Account {
   login: (email: string, password: string | undefined) => Promise<boolean>
   logout: () => void
+  forceLogout: () => void
   user: CognitoUser | null | undefined
   error: AccountError | undefined | null
   forgotPassword: (email?: string, fromMigration?: boolean) => Promise<boolean>
@@ -179,6 +187,24 @@ export const AccountProvider = ({ children }: { children: ReactNode }) => {
     return attributeList
   }
 
+  const logout = () => {
+    if (user) {
+      user.signOut()
+      setUser(null)
+      setUserData(null)
+    }
+  }
+
+  // to be used when we find out login became invalid
+  const forceLogout = () => {
+    logout()
+    // reloading should clear up any incorrect state app could be in
+    // TODO - does not work nicely on user profile page - fix in another way
+    // if (isBrowser()) {
+    //   window.location.reload()
+    // }
+  }
+
   const subscribe = async () => {
     if (lastMarketingConfirmation === false) {
       return
@@ -193,6 +219,10 @@ export const AccountProvider = ({ children }: { children: ReactNode }) => {
       // the default behaviour when no channels are selected is to subscribe to everything
       await subscribeApi({}, token)
     } catch (error) {
+      // TODO temporary, pass better errors out of api requests
+      if (error?.message === UNAUTHORIZED_ERROR_TEXT) {
+        forceLogout()
+      }
       logger.error(error)
     }
   }
@@ -201,9 +231,9 @@ export const AccountProvider = ({ children }: { children: ReactNode }) => {
     const cognitoUser = new CognitoUser({
       Username: lastCredentials?.Username,
       Pool: userPool,
-      Storage: new CookieStorage({
-        domain: process.env.NEXT_PUBLIC_COGNITO_COOKIE_STORAGE_DOMAIN,
-      }),
+      // Storage: new CookieStorage({
+      //   domain: process.env.NEXT_PUBLIC_COGNITO_COOKIE_STORAGE_DOMAIN,
+      // }),
     })
 
     return new Promise((resolve) => {
@@ -225,9 +255,9 @@ export const AccountProvider = ({ children }: { children: ReactNode }) => {
     const cognitoUser = new CognitoUser({
       Username: lastCredentials.Username,
       Pool: userPool,
-      Storage: new CookieStorage({
-        domain: process.env.NEXT_PUBLIC_COGNITO_COOKIE_STORAGE_DOMAIN,
-      }),
+      // Storage: new CookieStorage({
+      //   domain: process.env.NEXT_PUBLIC_COGNITO_COOKIE_STORAGE_DOMAIN,
+      // }),
     })
 
     setError(null)
@@ -307,6 +337,13 @@ export const AccountProvider = ({ children }: { children: ReactNode }) => {
       // not refreshing user status immediately, instead leaving this to the registration flow
       return true
     } catch (error: any) {
+      // TODO temporary, pass better errors out of api requests
+      if (error?.message === UNAUTHORIZED_ERROR_TEXT) {
+        forceLogout()
+        if (isBrowser()) {
+          window.location.reload()
+        }
+      }
       logger.error('Failed verify identity request:', error)
       setError({
         code: error.message,
@@ -348,14 +385,6 @@ export const AccountProvider = ({ children }: { children: ReactNode }) => {
   useEffect(() => {
     refreshUserData().catch((error) => logger.error(error))
   }, [refreshUserData])
-
-  const logout = () => {
-    if (user) {
-      user.signOut()
-      setUser(null)
-      setUserData(null)
-    }
-  }
 
   const signUp = (
     email: string,
@@ -421,9 +450,9 @@ export const AccountProvider = ({ children }: { children: ReactNode }) => {
     const cognitoUser = new CognitoUser({
       Username: lastCredentials.Username,
       Pool: userPool,
-      Storage: new CookieStorage({
-        domain: process.env.NEXT_PUBLIC_COGNITO_COOKIE_STORAGE_DOMAIN,
-      }),
+      // Storage: new CookieStorage({
+      //   domain: process.env.NEXT_PUBLIC_COGNITO_COOKIE_STORAGE_DOMAIN,
+      // }),
     })
 
     return new Promise((resolve) => {
@@ -444,9 +473,9 @@ export const AccountProvider = ({ children }: { children: ReactNode }) => {
     const cognitoUser = new CognitoUser({
       Username: email || lastCredentials.Username,
       Pool: userPool,
-      Storage: new CookieStorage({
-        domain: process.env.NEXT_PUBLIC_COGNITO_COOKIE_STORAGE_DOMAIN,
-      }),
+      // Storage: new CookieStorage({
+      //   domain: process.env.NEXT_PUBLIC_COGNITO_COOKIE_STORAGE_DOMAIN,
+      // }),
     })
 
     if (email) {
@@ -483,9 +512,9 @@ export const AccountProvider = ({ children }: { children: ReactNode }) => {
     const cognitoUser = new CognitoUser({
       Username: email,
       Pool: userPool,
-      Storage: new CookieStorage({
-        domain: process.env.NEXT_PUBLIC_COGNITO_COOKIE_STORAGE_DOMAIN,
-      }),
+      // Storage: new CookieStorage({
+      //   domain: process.env.NEXT_PUBLIC_COGNITO_COOKIE_STORAGE_DOMAIN,
+      // }),
     })
 
     setLastCredentials(credentials)
@@ -611,7 +640,7 @@ export const AccountProvider = ({ children }: { children: ReactNode }) => {
         <AccountMarkdown
           uLinkVariant="error"
           variant="sm"
-          content={t('account:identity_verification_failed', { url: ROUTES.REGISTER })}
+          content={t('account:identity_verification_failed', { url: ROUTES.IDENTITY_VERIFICATION })}
         />,
       )
     } else {
@@ -634,6 +663,7 @@ export const AccountProvider = ({ children }: { children: ReactNode }) => {
       value={{
         login,
         logout,
+        forceLogout,
         user,
         error,
         forgotPassword,

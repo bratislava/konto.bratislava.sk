@@ -20,7 +20,7 @@ const SummaryStep = ({ step, onGoToStep }: SummaryStepProps) => {
           })
           .map((stepData: TransformedFormData, key: number) => {
             return stepData ? (
-              <SummaryRow key={key} data={stepData} onGoToStep={onGoToStep} />
+              <SummaryRow key={key} data={stepData} onGoToStep={onGoToStep} isEditable />
             ) : null
           })}
       </div>

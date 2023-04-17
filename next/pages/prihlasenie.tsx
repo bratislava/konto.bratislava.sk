@@ -8,8 +8,8 @@ import EmailVerificationForm from 'components/forms/segments/EmailVerificationFo
 import LoginForm from 'components/forms/segments/LoginForm/LoginForm'
 import LoginRegisterLayout from 'components/layouts/LoginRegisterLayout'
 import { GetServerSidePropsContext } from 'next'
-import { useRouter } from 'next/router'
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
+import { useRouter } from 'next/router'
 import { useEffect } from 'react'
 
 import PageWrapper from '../components/layouts/PageWrapper'
@@ -52,7 +52,7 @@ const LoginPage = ({ page }: AsyncServerProps<typeof getServerSideProps>) => {
 
   useEffect(() => {
     if (user !== null && user !== undefined) {
-      router.push(ROUTES.HOME).catch((error_) => logger.error('Failed redirect', error_))
+      redirect().catch((error_) => logger.error('Failed redirect', error_))
     }
   }, [user])
 

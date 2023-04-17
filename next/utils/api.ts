@@ -5,6 +5,7 @@ import { ErrorObject } from 'ajv'
 import logger from './logger'
 
 export const API_ERROR_TEXT = 'API_ERROR'
+export const UNAUTHORIZED_ERROR_TEXT = 'UNAUTHORIZED_ERROR'
 
 export class ApiError extends Error {
   errors: Array<ErrorObject>
@@ -23,13 +24,17 @@ const fetchJsonApi = async (path: string, options?: RequestInit) => {
     if (response.ok) {
       return await response.json()
     }
+    if (response.status === 401) {
+      throw new Error(UNAUTHORIZED_ERROR_TEXT)
+    }
     // try parsing errors - if they may apper in different format extend here
     const responseText = await response.text()
     let responseJson: any = {}
     try {
       responseJson = JSON.parse(responseText)
     } catch (error) {
-      throw new Error(API_ERROR_TEXT)
+      logger.error(API_ERROR_TEXT, response.status, response.statusText, responseText, response)
+      throw new Error(response.statusText || API_ERROR_TEXT)
     }
     if (responseJson?.errors) {
       throw new ApiError(responseJson?.message || API_ERROR_TEXT, responseJson.errors)
@@ -134,7 +139,7 @@ export const verifyIdentityApi = (data: Identity, token: string) => {
 }
 
 export interface Gdpr {
-  subType: 'subscribe' | 'unsubscribe'
+  subType?: 'subscribe' | 'unsubscribe'
   type: 'ANALYTICS' | 'DATAPROCESSING' | 'MARKETING' | 'LICENSE'
   category: 'SWIMMINGPOOLS' | 'TAXES' | 'CITY' | 'ESBS'
 }
@@ -178,5 +183,98 @@ export const resetRcApi = (token: string) => {
       'Content-Type': 'application/json',
       Authorization: `Bearer ${token}`,
     },
+  })
+}
+
+type List<T> = {
+  currentPage: number
+  pagination: number
+  countPages: number
+  items: T[]
+}
+
+export type FormDto = {
+  email: string
+  formDataXml: string
+  formDataJson: any
+  pospID?: string
+  pospVersion: string
+  messageSubject: string
+  isSigned?: false
+  formName?: string
+  fromDescription?: string
+  id: string
+  createdAt: Date
+  updatedAt: Date
+  externalId: string
+  userExternalId: string
+  uri?: string
+  state?: string
+  formDataGinis?: string
+  senderId: string
+  recipientId: string
+  finishSubmission: string
+}
+
+export const getForms = (token: string) => {
+  return fetchJsonApi(`${process.env.NEXT_PUBLIC_FORMS_URL}/nases/forms`, {
+    method: 'GET',
+    headers: {
+      'Content-Type': 'application/json',
+      Authorization: `Bearer ${token}`,
+    },
+  })
+}
+
+type CreateFormDto = {
+  pospID: string
+  pospVersion: string
+  messageSubject: string
+  isSigned: boolean
+  formName: string
+  fromDescription: string
+}
+
+type UpdateFormDto = {
+  email?: string
+  formDataXml?: string
+  formDataJson?: any
+  pospID?: string
+  pospVersion?: string
+  messageSubject?: string
+  isSigned?: boolean
+  formName?: string
+  fromDescription?: string
+}
+
+export const createForm = (token: string, data: CreateFormDto) => {
+  return fetchJsonApi(`${process.env.NEXT_PUBLIC_FORMS_URL}/nases/create-form`, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      Authorization: `Bearer ${token}`,
+    },
+    body: JSON.stringify(data),
+  })
+}
+
+export const getForm = (token: string, id: string) => {
+  return fetchJsonApi(`${process.env.NEXT_PUBLIC_FORMS_URL}/nases/form/${id}`, {
+    method: 'GET',
+    headers: {
+      'Content-Type': 'application/json',
+      Authorization: `Bearer ${token}`,
+    },
+  })
+}
+
+export const updateForm = (token: string, id: string, data: UpdateFormDto) => {
+  return fetchJsonApi(`${process.env.NEXT_PUBLIC_FORMS_URL}/nases/update-form/${id}`, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      Authorization: `Bearer ${token}`,
+    },
+    body: JSON.stringify(data),
   })
 }

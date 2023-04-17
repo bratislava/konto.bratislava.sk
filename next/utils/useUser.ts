@@ -1,4 +1,4 @@
-import { Gdpr, getUserApi, subscribeApi, unsubscribeApi } from '@utils/api'
+import { Gdpr, getUserApi, subscribeApi, UNAUTHORIZED_ERROR_TEXT, unsubscribeApi } from '@utils/api'
 import useAccount from '@utils/useAccount'
 import { useEffect, useState } from 'react'
 
@@ -17,7 +17,7 @@ export interface User {
 export default function useUser() {
   const [user, setUser] = useState<User | undefined>()
 
-  const { getAccessToken } = useAccount()
+  const { getAccessToken, forceLogout } = useAccount()
   useEffect(() => {
     const init = async () => {
       const token = await getAccessToken()
@@ -26,32 +26,45 @@ export default function useUser() {
         setUser(user)
       } catch (error) {
         logger.error(error)
+        // TODO temporary, pass better errors out of api requests
+        if (error?.message === UNAUTHORIZED_ERROR_TEXT) {
+          forceLogout()
+        }
       }
     }
 
     init()
   }, [])
 
-  const subscribe = async (): Promise<boolean> => {
+  const subscribe = async (data: Gdpr[]): Promise<boolean> => {
     const token = await getAccessToken()
     try {
-      const user = await subscribeApi({ gdprData: null }, token)
+      const user = await subscribeApi({ gdprData: data }, token)
       setUser(user)
       return true
     } catch (error) {
       logger.error(error)
+      // TODO temporary, pass better errors out of api requests
+      if (error?.message === UNAUTHORIZED_ERROR_TEXT) {
+        forceLogout()
+      }
       return false
     }
   }
 
-  const unsubscribe = async (): Promise<boolean> => {
+  const unsubscribe = async (data: Gdpr[]): Promise<boolean> => {
     const token = await getAccessToken()
     try {
-      const user = await unsubscribeApi({ gdprData: null }, token)
+      const user = await unsubscribeApi({ gdprData: data }, token)
       setUser(user)
       return true
     } catch (error) {
       logger.error(error)
+      // TODO temporary, pass better errors out of api requests
+      if (error?.message === UNAUTHORIZED_ERROR_TEXT) {
+        forceLogout()
+      }
+
       return false
     }
   }

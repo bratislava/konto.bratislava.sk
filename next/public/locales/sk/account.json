@@ -80,6 +80,7 @@
   "new_password_description": "Na e-mail {email} sme vám odoslali overovací kód. Skopírujte ho do poľa nižšie.",
   "verification_description": "Nedostali ste overovací kód?",
   "verification_cnt_description": "Počkajte ešte {cnt}s a požiadajte o nový overovací kód.",
+  "verification_cnt_info": "<br />Môže sa stať, že sa pošta zatúla. <strong>Skúste skontrolovať všetky priečinky vašej e-mailovej schránky</strong>. Ak kód predsa len nedorazil, napíšte nám na info@bratislava.sk a radi vám pomôžeme.",
   "verification_resend": "Odoslať nový kód",
   "new_password_submit": "Pokračovať",
   "verification_code_label": "Overovací kód",
@@ -102,6 +103,7 @@
   "identity_verification_link": "Pokračovať",
   "identity_verification_skip": "Preskočiť a overiť neskôr",
   "identity_verification_title": "Overte svoju identitu",
+  "identity_verification_subtitle": "Čísla dokladov potrebujeme poznať na to, aby sme overili vašu identitu voči štátnym registrom. Bez toho nebudete schopný/á odoslať elektronicky všetky žiadosti. Overenie je jednorazové, údaje neukladáme.",
   "rc_label": "Rodné číslo",
   "rc_placeholder": "Rodné číslo",
   "rc_description": "Zadávajte rodné číslo vo formáte s lomítkom, napr. XXXXXX/XXXX",
@@ -137,6 +139,7 @@
   "migration_register_description": "Neplatili ste ešte daň digitálne?",
   "migration_new_password_title": "Zadajte overovací kód a vytvorte si heslo",
   "migration_new_password_submit": "Overiť e-mail",
+  "captcha_warning": "Nepodarilo sa overiť, či nie ste robot. Ak sa formulár nedá odoslať, vyskúšajte prosím iný prehliadač (Chrome, Edge alebo Safari).",
   "account_section_intro": {
     "navigation": "Úvod",
     "header_title": "Dobrý deň,",
@@ -325,7 +328,7 @@
       "title": "<p>Môže to tak byť, lebo:</p>",
       "list": {
         "verification": "<li>ste neoverili svoju identitu cez rodné číslo a číslo občianskeho preukazu (<a href={{url}}>Overiť identitu</a>),</li>",
-        "other": "<li>vašu daň ešte pripravujeme (v tom prípade bude k dispozícii najskôr 20. apríla)</li><li>vaša nehnuteľnosť je v spoluvlastníctve,</li><li>nie ste vlastníkom či vlastníčkou nehnuteľnosti,</li><li>ste nepodali priznanie k dani z nehnuteľností.</li>"
+        "other": "<li>vašu daň ešte pripravujeme (v tom prípade bude k dispozícii najskôr <strong>20. apríla</strong>)</li><li>vaša nehnuteľnosť je v spoluvlastníctve,</li><li>nie ste vlastníkom či vlastníčkou nehnuteľnosti,</li><li>ste nepodali priznanie k dani z nehnuteľností.</li>"
       },
       "help_text": "<p>Viac informácií môžete nájsť v <a href={{url}}>často kladených otázkach</a>.</p>"
     }
@@ -443,7 +446,7 @@
     "email_button": "Upraviť",
     "email_tooltip": "Ak by ste si priali zmeniť e-mail, ktorým sa do konta prihlasujete a na ktorý vám zasielame všetky informácie týkajúce sa vášho konta, kontaktuje nás na <a href='mailto:info@bratislava.sk'>info@bratislava.sk</a>.",
     "phone_number": "Telefónne číslo",
-    "phone_number_pattern": "V tvare +421...",
+    "phone_number_pattern": "V tvare +421XXXXXXXXX",
     "address": "Korešpondenčná adresa",
     "street": "Ulica a číslo",
     "city": "Mesto",

@@ -21,7 +21,10 @@ export const CookiesAndTracking = () => {
   const refresh = useCallback(async () => {
     try {
       const consentValue = Cookies.get('gdpr-consents')
-      if (!consentValue || typeof consentValue !== 'string') return
+      if (!consentValue || typeof consentValue !== 'string') {
+        setBannerDismissed(false)
+        return
+      }
       const parsedConsent = await JSON.parse(consentValue)
       if (typeof parsedConsent === 'object') {
         setConsentsState(pickConsents(parsedConsent))

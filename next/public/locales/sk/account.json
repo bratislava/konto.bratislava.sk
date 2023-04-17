@@ -319,6 +319,11 @@
       }
     }
   },
+  "account_section_applications": {
+    "navigation": "Moje žiadosti",
+    "navigation_sent": "Odoslané",
+    "navigation_concept": "Koncepty"
+  },
   "account_section_payment": {
     "title": "Dane a poplatky",
     "waiting_card_title": "Vašu daň z nehnuteľností pripravujeme.",
@@ -353,7 +358,7 @@
       },
       "4": {
         "question": "Aké služby v konte pribudnú najbližšie?",
-        "answer": "Najbližšie pribudne do Bratislavského konta služba digitálnej platby dane z nehnuteľností. Pozrite si celú <a target='_blank' href='https://bratislava.sk/mesto-bratislava/projekty/inovacie-mesta-bratislava/bratislavske-konto'>časovú os</a> služieb, ktoré pribudnú v konte v blízkej dobe."
+        "answer": "Najbližšie pribudne do Bratislavského konta služba digitálnej platby dane z nehnuteľností. Pozrite si celú <a target='_blank' href='https://bratislava.sk/konto'>časovú os</a> služieb, ktoré pribudnú v konte v blízkej dobe."
       },
       "5": {
         "question": "Nejde mi registrovať sa, čo mám robiť?",

@@ -11,4 +11,5 @@ export const ROUTES = {
   MUNICIPAL_SERVICES: '/mestske-sluzby',
   THANK_YOU: '/vysledok-platby',
   USER_PROFILE: '/moj-profil',
+  MY_APPLICATIONS: '/moje-ziadosti',
 }

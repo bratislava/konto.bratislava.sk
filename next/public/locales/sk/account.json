@@ -319,6 +319,11 @@
       }
     }
   },
+  "account_section_applications": {
+    "navigation": "Moje žiadosti",
+    "navigation_sent": "Odoslané",
+    "navigation_concept": "Koncepty"
+  },
   "account_section_payment": {
     "title": "Dane a poplatky",
     "waiting_card_title": "Vašu daň z nehnuteľností pripravujeme.",

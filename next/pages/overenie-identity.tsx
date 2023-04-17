@@ -61,7 +61,9 @@ const IdentityVerificationPage = ({ page }: AsyncServerProps<typeof getServerSid
     const result = await verifyIdentity(rc, idCard, turnstileToken)
     if (result) {
       // give the queue a few seconds to process the verification
-      await new Promise((resolve) => setTimeout(resolve, 8000))
+      await new Promise((resolve) => {
+        setTimeout(resolve, 8000)
+      })
       // status will be set according to current cognito tier - pending if still processing
       await refreshUserData()
     }

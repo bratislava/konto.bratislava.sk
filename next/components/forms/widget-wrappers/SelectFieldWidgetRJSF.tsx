@@ -4,7 +4,8 @@ import WidgetWrapper from 'components/forms/widget-wrappers/WidgetWrapper'
 import React from 'react'
 
 import { ExplicitOptionalType } from '../types/ExplicitOptional'
-import SelectField, { SelectOption } from '../widget-components/SelectField/SelectField'
+import SelectField from '../widget-components/SelectField/SelectField'
+import { SelectOption } from '../widget-components/SelectField/SelectOption.interface'
 
 type SelectRJSFOptions = {
   enumOptions?: EnumOptionsType[]

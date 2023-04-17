@@ -1,6 +1,7 @@
+import { SelectOption } from 'components/forms/widget-components/SelectField/SelectOption.interface'
 import React, { useState } from 'react'
 
-import SelectField, { SelectOption } from '../../forms/widget-components/SelectField/SelectField'
+import SelectField from '../../forms/widget-components/SelectField/SelectField'
 import { Stack } from '../Stack'
 import { Wrapper } from '../Wrapper'
 

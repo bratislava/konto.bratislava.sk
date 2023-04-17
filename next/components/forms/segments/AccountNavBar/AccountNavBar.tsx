@@ -287,6 +287,7 @@ export const AccountNavBar = ({
           )}
 
           <button
+            type="button"
             onClick={() => (isAuth ? setBurgerOpen(!burgerOpen) : router.push(ROUTES.LOGIN))}
             className="-mr-4 px-4 py-5"
           >

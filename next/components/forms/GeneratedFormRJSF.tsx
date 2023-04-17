@@ -35,6 +35,7 @@ const GeneratedFormRJSF = ({ eform, escapedSlug, formSlug, wrapperClassName }: F
       setIsOnShowSkipModal(true)
     }
   }
+
   const submitter = useFormSubmitter(formSlug)
 
   return (
@@ -72,7 +73,7 @@ const GeneratedFormRJSF = ({ eform, escapedSlug, formSlug, wrapperClassName }: F
             formData={form.formData}
             formErrors={form.errors}
             extraErrors={form.extraErrors}
-            schema={eform.schema}
+            schema={form.validatedSchema}
             onGoToStep={(step: number) => form.setStepIndex(step)}
             submitErrors={submitter.errors}
             submitMessage={submitter.successMessage}

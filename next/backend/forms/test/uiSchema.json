@@ -368,8 +368,7 @@
     }
   },
   "conditionalStep": {
-    "ui:order": ["customText"],
-    "customText": {
+    "randomInput": {
       "ui:widget": "InputField",
       "ui:label": false
     }

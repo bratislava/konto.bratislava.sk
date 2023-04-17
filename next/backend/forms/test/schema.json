@@ -27,6 +27,37 @@
       }
     },
     {
+      "allOf": [
+        {
+          "if": {
+            "properties": {
+              "mestoPSC": {
+                "properties": {
+                  "psc": {
+                    "const": "82103"
+                  }
+                }
+              }
+            }
+          },
+          "then": {
+            "properties": {
+              "conditionalStep": {
+                "type": "object",
+                "title": "Conditional step",
+                "properties": {
+                  "randomInput": {
+                    "type": "string",
+                    "title": "Input in conditional step"
+                  }
+                }
+              }
+            }
+          }
+        }
+      ]
+    },
+    {
       "properties": {
         "dateTimePicker": {
           "title": "Showcase of DateTime Picker",

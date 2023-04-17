@@ -26,7 +26,7 @@ import { useTranslation } from 'next-i18next'
 import { ReactNode, useState } from 'react'
 import { useWindowSize } from 'usehooks-ts'
 
-import { SelectOption } from '../../../widget-components/SelectField/SelectField'
+import { SelectOption } from '../../../widget-components/SelectField/SelectOption.interface'
 
 const ALL_CATEGORY = 'Všetky kategórie'
 const TAXES_CATEGORY = 'Dane'

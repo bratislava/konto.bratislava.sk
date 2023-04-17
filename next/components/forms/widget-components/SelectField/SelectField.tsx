@@ -18,12 +18,7 @@ import FieldHeader from '../../info-components/FieldHeader'
 import { ExplicitOptionalType } from '../../types/ExplicitOptional'
 import Dropdown from './Dropdown'
 import SelectFieldBox from './SelectFieldBox'
-
-export interface SelectOption {
-  const: string | number
-  title?: string
-  description?: string
-}
+import { SelectOption } from './SelectOption.interface'
 
 interface SelectFieldProps {
   label: string

@@ -2,7 +2,6 @@ import BannerPhone from '@assets/images/help-page-banner-image.png'
 import AccountSectionHeader from 'components/forms/segments/AccountSectionHeader/AccountSectionHeader'
 import Accordion from 'components/forms/simple-components/Accordion'
 import Banner from 'components/forms/simple-components/Banner'
-import { useRouter } from 'next/router'
 import { useTranslation } from 'next-i18next'
 
 const HelpSection = () => {

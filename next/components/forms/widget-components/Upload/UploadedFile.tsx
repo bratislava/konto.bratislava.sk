@@ -1,7 +1,6 @@
 import PinFile from '@assets/images/new-icons/ui/attachment.svg'
 import TrashIcon from '@assets/images/new-icons/ui/basket.svg'
 import cx from 'classnames'
-import { useState } from 'react'
 
 import Spinner from '../../simple-components/Spinner'
 

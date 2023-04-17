@@ -1,6 +1,5 @@
 import SelectedIcon from '@assets/images/new-icons/ui/done.svg'
 import cx from 'classnames'
-import { useTranslation } from 'next-i18next'
 
 interface StepperViewRowProps {
   title?: string

@@ -54,7 +54,7 @@ export const CookiesAndTracking = () => {
 
   useEffect(() => {
     if (isBrowser()) {
-      refresh()
+      refresh().catch((error_) => logger.error('Refresh failed', error_))
     }
   }, [refresh])
 

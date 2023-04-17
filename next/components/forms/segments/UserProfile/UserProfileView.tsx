@@ -2,10 +2,10 @@ import useAccount, { UserData } from '@utils/useAccount'
 import useSnackbar from '@utils/useSnackbar'
 import MessageModal from 'components/forms/widget-components/Modals/MessageModal'
 import { useTranslation } from 'next-i18next'
-import React, { useEffect, useState } from 'react'
+import { useEffect, useState } from 'react'
 
 import AccountMarkdown from '../AccountMarkdown/AccountMarkdown'
-import UserProfileConsents, { Consent } from './UserProfileConsents'
+import UserProfileConsents from './UserProfileConsents'
 import UserProfileDetail from './UserProfileDetail'
 import UserProfilePassword from './UserProfilePassword'
 
@@ -21,17 +21,6 @@ const UserProfileView = () => {
   useEffect(() => {
     setAlertType(error ? 'error' : 'success')
   }, [error])
-
-  // TODO: handle change of consents in backend DB
-  const [allConsents, setAllConsents] = useState<Consent[]>([
-    {
-      id: 'receive_information',
-      title: t('consents.receive_information.title'),
-      text: t('consents.receive_information.text'),
-      isDisabled: false,
-      isSelected: true,
-    },
-  ])
 
   const handleOnCancelEditing = () => {
     setIsEditing(false)
@@ -65,7 +54,7 @@ const UserProfileView = () => {
           onOpenEmailModal={() => setIsEmailModalOpened(true)}
         />
         <UserProfilePassword />
-        <UserProfileConsents allConsents={allConsents} onChange={setAllConsents} />
+        <UserProfileConsents />
         <div className="bg-gray-100 md:bg-gray-0">
           <AccountMarkdown
             content={`<span className='text-p2'>${t('gdpr_details_link')}</span>`}

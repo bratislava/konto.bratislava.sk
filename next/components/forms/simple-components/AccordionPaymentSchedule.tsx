@@ -103,6 +103,9 @@ const AccordionPaymentSchedule = ({
   const accordionContainerStyle = cx(
     'border-gray-200 flex flex-col w-full rounded-xl bg-gray-0 border-2 border-solid hover:border-gray-500',
     className,
+    {
+      'border-2 border-gray-700 hover:border-gray-700': isActive,
+    },
   )
   const { t } = useTranslation('account')
   return (
@@ -117,7 +120,12 @@ const AccordionPaymentSchedule = ({
         />
       </div>
       <div className={accordionContainerStyle}>
-        <div className={cx('flex gap-4', accordionHeaderStyle)}>
+        <button
+          type="button"
+          onClick={() => setIsActive(!isActive)}
+          onKeyDown={() => setIsActive(!isActive)}
+          className={cx('no-tap-highlight flex gap-4', accordionHeaderStyle)}
+        >
           {icon && (
             <div
               className={cx('flex lg:items-start items-center justify-center', {
@@ -136,15 +144,9 @@ const AccordionPaymentSchedule = ({
             </div>
           )}
           <div className="flex w-full flex-col gap-2 lg:gap-4">
-            <div
-              role="button"
-              tabIndex={0}
-              className="no-tap-highlight flex cursor-pointer lg:items-start items-center gap-4"
-              onClick={() => setIsActive(!isActive)}
-              onKeyDown={() => setIsActive(!isActive)}
-            >
+            <div className="flex lg:items-start items-center gap-4">
               <div className="flex grow sm:flex-row flex-col items-start">
-                <div className="flex flex-col grow items-start">
+                <div className="flex flex-col gap-3 grow items-start">
                   <div
                     className={cx('flex grow w-full', {
                       'text-h6': accordionSize === 'xs',
@@ -155,7 +157,7 @@ const AccordionPaymentSchedule = ({
                   >
                     {title}
                   </div>
-                  <div className={cx('text-20 flex grow w-full lg:block hidden')}>
+                  <div className={cx('text-20 flex grow w-max lg:block hidden')}>
                     {t('payment_schedule.three_pieces')}
                     <div className="text-h5 inline">{t('payment_schedule.paid_at_once')}</div>
                     {t('payment_schedule.not_later')}
@@ -173,7 +175,7 @@ const AccordionPaymentSchedule = ({
               />
             </div>
           </div>
-        </div>
+        </button>
         <div
           className={cx('h-0.5 w-full bg-gray-200', {
             hidden: !isActive,

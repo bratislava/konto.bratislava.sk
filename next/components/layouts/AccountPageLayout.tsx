@@ -12,6 +12,7 @@ import { usePageWrapperContext } from 'components/layouts/PageWrapper'
 import { useRouter } from 'next/router'
 import { useTranslation } from 'next-i18next'
 import { ReactNode, useEffect } from 'react'
+import logger from '@utils/logger'
 
 type AccountPageLayoutBase = {
   className?: string
@@ -30,19 +31,19 @@ const sectionsList = [
     id: 1,
     title: 'account:account_section_services.navigation',
     icon: <BusinessIcon className="w-6 h-6" />,
-    link: '/municipal-services',
+    link: ROUTES.MUNICIPAL_SERVICES,
   },
   {
     id: 2,
     title: 'account:account_section_payment.title',
     icon: <PaymentIcon className="w-6 h-6" />,
-    link: '/taxes-and-fees',
+    link: ROUTES.TAXES_AND_FEES,
   },
   {
     id: 3,
     title: 'account:account_section_help.navigation',
     icon: <HelpIcon className="w-6 h-6" />,
-    link: '/i-have-a-problem',
+    link: ROUTES.I_HAVE_A_PROBLEM,
   },
 ]
 
@@ -51,13 +52,13 @@ const menuItems = [
     id: 1,
     title: 'account:menu_profile_link',
     icon: <ProfileIcon className="w-5 h-5" />,
-    link: '/user-profile',
+    link: ROUTES.USER_PROFILE,
   },
   {
     id: 2,
     title: 'account:menu_help_link',
     icon: <HelpIcon className="w-5 h-5" />,
-    link: '/i-have-a-problem',
+    link: ROUTES.I_HAVE_A_PROBLEM,
   },
   {
     id: 3,
@@ -86,8 +87,7 @@ const AccountPageLayout = ({ className, children, hiddenHeaderNav }: AccountPage
     try {
       await router.push(`/${path}`, undefined, { locale: key })
     } catch (error) {
-      // TODO send error to Faro
-      console.error(error)
+      logger.error(error)
     }
   }
 

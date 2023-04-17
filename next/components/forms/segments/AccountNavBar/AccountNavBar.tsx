@@ -5,9 +5,10 @@ import SearchIcon from '@assets/images/new-icons/ui/search.svg'
 import VolumeIcon from '@assets/images/new-icons/ui/speaker.svg'
 import { ROUTES } from '@utils/constants'
 import useAccount, { UserData } from '@utils/useAccount'
+import useElementSize from '@utils/useElementSize'
 import { getLanguageKey } from '@utils/utils'
 import cx from 'classnames'
-import { StatusBar } from 'components/forms/info-components/StatusBar'
+import { StatusBar, useStatusBarContext } from 'components/forms/info-components/StatusBar'
 import HamburgerMenu from 'components/forms/segments/HambergerMenu/HamburgerMenu'
 import Button from 'components/forms/simple-components/Button'
 import Menu from 'components/forms/simple-components/Menu/Menu'
@@ -16,7 +17,6 @@ import { useRouter } from 'next/router'
 import { useTranslation } from 'next-i18next'
 import { ReactNode, useState } from 'react'
 import { Item } from 'react-stately'
-import { useElementSize } from 'usehooks-ts'
 
 import Brand from '../../simple-components/Brand'
 import Link from './NavBarLink'
@@ -63,8 +63,10 @@ export const AccountNavBar = ({
 }: IProps) => {
   const [burgerOpen, setBurgerOpen] = useState(false)
   const { isAuth, logout, userData } = useAccount()
-  const [desktopRef, { height: desktopHeight }] = useElementSize()
-  const [mobileRef, { height: mobileHeight }] = useElementSize()
+
+  const { statusBarContent } = useStatusBarContext()
+  const [desktopRef, { height: desktopHeight }] = useElementSize([statusBarContent])
+  const [mobileRef, { height: mobileHeight }] = useElementSize([statusBarContent])
 
   const languageKey = getLanguageKey(languageSelectProps.currentLanguage)
   const anotherLanguage = languageSelectProps.languages?.find((l) => l.key !== languageKey)
@@ -109,7 +111,7 @@ export const AccountNavBar = ({
         <div className="max-w-screen-lg m-auto hidden h-[57px] w-full items-center lg:flex gap-x-6">
           <Brand
             className="group grow"
-            url="/"
+            url="https://bratislava.sk/"
             title={
               <p className="text-p2 text-font group-hover:text-gray-600">
                 {languageKey === 'en' && <span className="font-semibold">Bratislava </span>}
@@ -183,7 +185,7 @@ export const AccountNavBar = ({
                 </Menu>
               ) : (
                 <>
-                  <Link href="/login" variant="plain" className={`${linkClassName} ml-2`}>
+                  <Link href={ROUTES.LOGIN} variant="plain" className={`${linkClassName} ml-2`}>
                     {t('account:menu_login_link')}
                   </Link>
                   <Button
@@ -230,7 +232,7 @@ export const AccountNavBar = ({
       >
         {!burgerOpen && <StatusBar className="flex lg:hidden" />}
         <div className="h-16 flex items-center py-5 px-8 border-b-2">
-          <Brand url="/" className="grow" />
+          <Brand url="https://bratislava.sk/" className="grow" />
           {!navHidden && (
             <div className={cx('flex items-center gap-x-5')}>
               <div className="text-h4 text-font/50 relative flex cursor-pointer items-center bg-transparent">

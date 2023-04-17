@@ -1,7 +1,7 @@
 import ArrowRightIcon from '@assets/images/new-icons/ui/arrow-right.svg'
 import { LinkButtonProps } from '@react-types/button'
 import cx from 'classnames'
-import { forwardRef, ReactNode, RefObject } from 'react'
+import { forwardRef, ReactNode, RefObject, useEffect } from 'react'
 import { AriaButtonProps, useButton } from 'react-aria'
 
 import MLink from './MLink'
@@ -36,12 +36,14 @@ export type ButtonProps = Omit<AriaButtonProps<'button'>, keyof LinkButtonProps>
   ButtonBase & {
     href?: undefined
     label?: string
+    hrefLabelCenter?: boolean
     loading?: boolean
   }
 export type AnchorProps = AriaButtonProps<'a'> &
   ButtonBase & {
     href: string
     label: string
+    hrefLabelCenter?: boolean
     disabled?: false
     loading?: undefined
   }
@@ -62,6 +64,7 @@ const Button = forwardRef<HTMLAnchorElement | HTMLButtonElement, PolymorphicProp
       size = 'lg',
       icon,
       text,
+      hrefLabelCenter,
       startIcon,
       endIcon,
       hrefIconHidden,
@@ -237,6 +240,7 @@ const Button = forwardRef<HTMLAnchorElement | HTMLButtonElement, PolymorphicProp
           target={hrefTarget}
           href={rest.href}
           label={rest.label}
+          labelCenter={hrefLabelCenter}
           ref={ref as RefObject<HTMLAnchorElement>}
           className={style}
           {...buttonPropsFixed}

@@ -1,17 +1,19 @@
 /* eslint-disable @next/next/inline-script-id */
 import './index.css'
+// initialize faro - TODO might need to ensure faro is initialized by providing it through react context and hook
+import '@utils/logger'
 
 import { AccountProvider } from '@utils/useAccount'
 import { StatusBarProvider } from 'components/forms/info-components/StatusBar'
-import { appWithTranslation } from 'next-i18next'
-import { NextAdapter } from 'next-query-params'
+import CookieConsent from 'components/forms/segments/CookieConsent/CookieConsent'
 import { AppProps } from 'next/app'
 import { Inter } from 'next/font/google'
 import Head from 'next/head'
+import { appWithTranslation } from 'next-i18next'
+import { NextAdapter } from 'next-query-params'
 import { SSRProvider } from 'react-aria'
 import SnackbarProvider from 'react-simple-snackbar'
 import { QueryParamProvider } from 'use-query-params'
-import CookieConsent from 'components/forms/segments/CookieConsent/CookieConsent'
 
 const inter = Inter({
   variable: '--inter-font',

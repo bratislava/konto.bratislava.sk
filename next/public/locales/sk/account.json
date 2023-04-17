@@ -1,16 +1,19 @@
 {
   "errors": {
-    "unknown": "Nastala neočakávaná chyba. Skontrolujte svoje pripojenie alebo nás kontaktujte na info@bratislava.sk. Ďakujeme.",
+    "unknown": "Nastala neočakávaná chyba. Skontrolujte svoje pripojenie alebo nás kontaktujte na <a href='mailto:info@bratislava.sk'>info@bratislava.sk</a>. Ďakujeme.",
+    "Bad Request": "Overenie bolo neúspešné. Skontrolujte správnosť údajov.",
     "NotAuthorizedException": "Nesprávne prihlasovacie údaje",
-    "CodeMismatchException": "E-mail {email} sa nepodarilo overiť. Skontrolujte správnosť kódu.",
-    "LimitExceededException": "Skúste to znova neskôr.",
+    "CodeMismatchException": "E-mail **{email}** sa nepodarilo overiť. Skontrolujte správnosť kódu.",
+    "LimitExceededException": "Priveľa opakovaní. Skúste to znova neskôr.",
+    "UserNotFoundException": "Konto so zadanou e-mailovou adresou zatiaľ neexistuje.",
+    "MigrationUserNotFoundException": "E-mail **{email}** sa nenachádza v našej databáze minuloročných používateľov a používateliek digitálnej platby dane. Skontrolujte správnosť e-mailu alebo sa [registrujte](/register).",
     "UserNotConfirmedException": "E-mail nie je verifikovaný.",
-    "UsernameExistsException": "E-mail {email} sa už používa.",
-    "ExpiredCodeException": "E-mail {email} sa nepodarilo overiť. Skontrolujte správnosť kódu.",
+    "UsernameExistsException": "E-mail **{email}** už bol použitý. Ak ste daň platili digitálne už minulý rok, pokračujte [aktiváciou konta](/migration). V prípade, že sa vás tento prípad netýka, kontaktujte nás na <a href='mailto:info@bratislava.sk'>info@bratislava.sk</a>.",
+    "ExpiredCodeException": "E-mail **{email}** sa nepodarilo overiť. Skontrolujte správnosť kódu.",
     "IncorectPasswordException": "Zadané heslo nie je správne.",
-    "API_ERROR": "Pri odosielaní formulára nastala chyba. Skúste to prosím znova.",
-    "RFO_ACCESS_ERROR": "Pri odosielaní formulára nastala chyba. Skúste to prosím znova neskôr.",
-    "RFO_NOT_RESPONDING": "Pri odosielaní formulára nastala chyba. Skúste to prosím znova neskôr.",
+    "API_ERROR": "Pri odosielaní nastala chyba. Skúste to, prosíme, znova.",
+    "RFO_ACCESS_ERROR": "Pri odosielaní nastala chyba. Skúste to, prosíme, znova.",
+    "RFO_NOT_RESPONDING": "Pri odosielaní nastala chyba. Skúste to, prosíme, znova.",
     "DEAD_PERSON": "Overenie bolo neúspešné. Skontrolujte správnosť údajov.",
     "BIRTH_NUMBER_AND_IDENTITY_CARD_INCONSISTENCY": "Overenie bolo neúspešné. Skontrolujte správnosť údajov.",
     "BIRTHNUMBER_IFO_DUPLICITY": "Tieto osobné údaje už boli použité pri inej e-mailovej adrese. Ak ste účet nevytvorili vy, kontaktujte nás na info@bratislava.sk."
@@ -36,9 +39,9 @@
   "password_placeholder": "Heslo",
   "password_confirmation_label": "Zopakujte heslo",
   "password_confirmation_placeholder": "Zopakujte heslo",
-  "password_description": "Heslo musí obsahovať minimálne 8 znakov, veľké a malé písmeno, číslo a špeciálny znak.",
+  "password_description": "Heslo musí obsahovať minimálne 8 znakov, veľké aj malé písmeno a číslo.",
   "password_required": "Heslo je povinné",
-  "password_format": "Heslo musí obsahovať minimálne 8 znakov, veľké a malé písmeno, číslo a špeciálny znak.",
+  "password_format": "Heslo musí obsahovať minimálne 8 znakov, veľké aj malé písmeno a číslo.",
   "password_confirmation_required": "Heslá sa nezhodujú",
   "phone_number_format": "Nesprávny formát - zadajte platné telefónne číslo vo formáte +421XXXXXX...",
   "login_submit": "Prihlásiť sa",
@@ -77,6 +80,7 @@
   "new_password_description": "Na e-mail {email} sme vám odoslali overovací kód. Skopírujte ho do poľa nižšie.",
   "verification_description": "Nedostali ste overovací kód?",
   "verification_cnt_description": "Počkajte ešte {cnt}s a požiadajte o nový overovací kód.",
+  "verification_cnt_info": "<br />Môže sa stať, že sa pošta zatúla. <strong>Skúste skontrolovať všetky priečinky vašej e-mailovej schránky</strong>. Ak kód predsa len nedorazil, napíšte nám na info@bratislava.sk a radi vám pomôžeme.",
   "verification_resend": "Odoslať nový kód",
   "new_password_submit": "Pokračovať",
   "verification_code_label": "Overovací kód",
@@ -99,6 +103,7 @@
   "identity_verification_link": "Pokračovať",
   "identity_verification_skip": "Preskočiť a overiť neskôr",
   "identity_verification_title": "Overte svoju identitu",
+  "identity_verification_subtitle": "Čísla dokladov potrebujeme poznať na to, aby sme overili vašu identitu voči štátnym registrom. Bez toho nebudete schopný/á odoslať elektronicky všetky žiadosti. Overenie je jednorazové, údaje neukladáme.",
   "rc_label": "Rodné číslo",
   "rc_placeholder": "Rodné číslo",
   "rc_description": "Zadávajte rodné číslo vo formáte s lomítkom, napr. XXXXXX/XXXX",
@@ -106,17 +111,18 @@
   "rc_required": "Rodné číslo je povinné",
   "rc_format": "Rodné číslo nie je valídne",
   "id_card_label": "Číslo občianskeho preukazu",
-  "id_card_placeholder": "Číslo občianskeho preukazu",
-  "id_card_description": "Zadávajte číslo občianskeho preukazu bez medzier, napr. XXXXXXXX",
-  "id_card_tooltip": "**Číslo občianskeho preukazu** potrebujeme poznať na to, aby sme overili vašu identitu voči štátnym registrom. Bez toho nebudete schopný/á odoslať elektronicky všetky žiadosti.",
-  "id_card_required": "Číslo občianskeho preukazu je povinné",
+  "id_card_placeholder": "Číslo dokladu",
+  "id_card_description": "Zadávajte číslo občianskeho preukazu alebo dokladu o prechodnom pobyte bez medzier.",
+  "id_card_tooltip": "**Číslo tohto dokladu** potrebujeme poznať na to, aby sme overili vašu identitu voči štátnym registrom. Bez toho nebudete schopný/á odoslať elektronicky všetky žiadosti.",
+  "id_card_required": "Pole je povinné",
+  "id_card_format": "Číslo nie je valídne",
   "identity_verification_submit": "Overiť údaje",
   "identity_verification_success_title": "Overenie bolo úspešné",
-  "identity_verification_success_description": "Rodné číslo **{rc}** a číslo občianskeho preukazu **{idCard}** boli overené.",
+  "identity_verification_success_description": "Rodné číslo **{rc}** a číslo dokladu **{idCard}** boli overené.",
   "identity_verification_pending_title": "Prebieha overovanie",
-  "identity_verification_pending_description": "Ospravedlňujeme sa, ale rodné číslo **{rc}** a číslo občianskeho preukazu **{idCard}** ešte stále overujeme. Medzitým môžete pokračovať do konta a my vám dáme vedieť, až dokončíme overenie vašej totožnosti.",
-  "identity_verification_pending_description_without_data": "Ospravedlňujeme sa, ale rodné číslo a číslo občianskeho preukazu ešte stále overujeme. Medzitým môžete pokračovať do konta a my vám dáme vedieť, až dokončíme overenie vašej totožnosti.",
-  "identity_verification_failed": "Rodné číslo a číslo občianskeho preukazu sa nepodarilo overiť. Skontrolujte správnosť údajov a [opakujte overenie indentity](/register).",
+  "identity_verification_pending_description": "Ospravedlňujeme sa, ale rodné číslo **{rc}** a číslo dokladu **{idCard}** ešte stále overujeme. Medzitým môžete pokračovať do konta a my vám dáme vedieť, až dokončíme overenie vašej totožnosti.",
+  "identity_verification_pending_description_without_data": "Ospravedlňujeme sa, ale rodné číslo a číslo dokladu ešte stále overujeme. Medzitým môžete pokračovať do konta a my vám dáme vedieť, až dokončíme overenie vašej totožnosti.",
+  "identity_verification_failed": "Overenie rodného čísla a čísla dokladu sa nepodarilo. Mohli ste zadať nesprávne údaje, v takom prípade [zopakujte overenie]({{url}}). Tieto údaje tiež mohli byť použité na overenie iného konta. Ak o jeho existencii neviete, čím skôr sa obráťte na <a href='mailto:info@bratislava.sk'>info@bratislava.sk</a>.",
   "identity_verification_success": "Overenie bolo úspešné",
   "password_change_title": "Zmena hesla",
   "old_password_label": "Staré heslo",
@@ -133,6 +139,7 @@
   "migration_register_description": "Neplatili ste ešte daň digitálne?",
   "migration_new_password_title": "Zadajte overovací kód a vytvorte si heslo",
   "migration_new_password_submit": "Overiť e-mail",
+  "captcha_warning": "Nepodarilo sa overiť, či nie ste robot. Ak sa formulár nedá odoslať, vyskúšajte prosím iný prehliadač (Chrome, Edge alebo Safari).",
   "account_section_intro": {
     "navigation": "Úvod",
     "header_title": "Dobrý deň,",
@@ -140,7 +147,7 @@
     "all_services": "Všetky služby",
     "announcement_title": "Aktuálne",
     "announcement_card_title": "Digitálna platba dane z nehnuteľností",
-    "announcement_card_text": "V prípade, že sa vás týka platba dane z nehnuteľností pre rok 2023, vašu daň ešte spracovávame a v konte pribudne najskôr <strong>20. apríla</strong>. Až sa tak udeje, pošleme vám informačný e-mail a nájdete ju v časti Dane a poplatky.",
+    "announcement_card_text": "V prípade, že sa vás týka platba dane z nehnuteľností pre rok 2023, vašu daň ešte spracovávame a v konte pribudne najskôr <strong>20. apríla</strong>. Keď sa tak udeje, pošleme vám informačný e-mail a nájdete ju v časti Dane a poplatky.",
     "announcement_card_action": "Zaplatiť daň z nehnuteľností",
     "banner_title": "Potrebujete pomôcť?",
     "banner_content": "Aké služby nájdem v Bratislavskom konte? Prečo vzniklo Bratislavské konto? Ako si viem zmeniť heslo? Nevidím svoju daň, čo mám robiť?<br /><br />Aj toto sú niektoré z otázok, na ktoré nájdete odpovede v sekcii Najčastejšie kladené otázky.",
@@ -152,7 +159,7 @@
     "cards": {
       "1": {
         "title": "Digitálna platba dane z nehnuteľností",
-        "description": "Digitálna platba dane z nehnuteľnosti, pohodlne a online.",
+        "description": "Digitálna platba dane z nehnuteľností, pohodlne a online.",
         "buttonText": "Zaplatiť daň digitálne"
       },
       "2": {
@@ -320,10 +327,10 @@
     "error_card_content": {
       "title": "<p>Môže to tak byť, lebo:</p>",
       "list": {
-        "verification": "<li>ste neoverili svoju identitu cez rodné číslo a číslo občianskeho preukazu (<a href='/register'>Overiť identitu</a>),</li>",
-        "other": "<li>vašu daň ešte pripravujeme (v tom prípade bude k dispozícii najskôr 20. apríla)</li><li>vaša nehnuteľnosť je v spoluvlastníctve,</li><li>nie ste vlastníkom či vlastníčkou nehnuteľnosti,</li><li>ste nepodali priznanie k dani z nehnuteľností.</li>"
+        "verification": "<li>ste neoverili svoju identitu cez rodné číslo a číslo občianskeho preukazu (<a href={{url}}>Overiť identitu</a>),</li>",
+        "other": "<li>vašu daň ešte pripravujeme (v tom prípade bude k dispozícii najskôr <strong>20. apríla</strong>)</li><li>vaša nehnuteľnosť je v spoluvlastníctve,</li><li>nie ste vlastníkom či vlastníčkou nehnuteľnosti,</li><li>ste nepodali priznanie k dani z nehnuteľností.</li>"
       },
-      "help_text": "<p>Viac informácií môžete nájsť v <a href='/i-have-a-problem'>často kladených otázkach</a>.</p>"
+      "help_text": "<p>Viac informácií môžete nájsť v <a href={{url}}>často kladených otázkach</a>.</p>"
     }
   },
   "account_section_help": {
@@ -439,7 +446,7 @@
     "email_button": "Upraviť",
     "email_tooltip": "Ak by ste si priali zmeniť e-mail, ktorým sa do konta prihlasujete a na ktorý vám zasielame všetky informácie týkajúce sa vášho konta, kontaktuje nás na <a href='mailto:info@bratislava.sk'>info@bratislava.sk</a>.",
     "phone_number": "Telefónne číslo",
-    "phone_number_pattern": "V tvare +421...",
+    "phone_number_pattern": "V tvare +421XXXXXXXXX",
     "address": "Korešpondenčná adresa",
     "street": "Ulica a číslo",
     "city": "Mesto",
@@ -453,8 +460,7 @@
   },
   "adding_phone_number_modal": {
     "title": "Doplnenie telefónneho čísla",
-    "description": "Prajete si, aby sme s vami v ojedinelých prípadoch komunikovali aj prostredníctvom SMS? Zanechajte nám vaše telefónne číslo a my vám pripomenieme, napríklad, blížiaci sa termín splatnosti dane aj cez SMS.\n\nTelefónne číslo môžete kedykoľvek doplniť do profilu.\n\n",
-    "phoneNumber_not_required": "*Neposkytnutie telefónneho čísla nemá vplyv na využívanie služieb v Bratislavskom konte."
+    "description": "Prajete si, aby sme s vami v ojedinelých prípadoch komunikovali aj prostredníctvom SMS? Zanechajte nám vaše telefónne číslo a my vám pripomenieme, napríklad, blížiaci sa termín splatnosti dane aj cez SMS.\n\nTelefónne číslo môžete kedykoľvek doplniť do profilu. Neposkytnutie telefónneho čísla nemá vplyv na využívanie služieb v Bratislavskom konte."
   },
   "pay_tax": "Zaplatiť daň",
   "to_pay": "Zaplatiť",
@@ -542,7 +548,7 @@
   },
   "tax_footer": {
     "register_info": "Registrovaním sa do Bratislavského konta <strong>do 19. apríla 2023</strong>, a zároveň zaplatením plnej sumy dane online <strong>do 12. mája 2023</strong> súhlasíte s tým, že vám nebude zaslané rozhodnutie o dani z nehnuteľností na korešpondenčnú adresu a vy tak nemusíte ísť na poštu.",
-    "register_info_help": "Radi by ste sa v niečom uistili alebo máte otázky? Pozrite si odpovede na tie, ktoré sú <a href='/i-have-a-problem'>často kladené</a>.<br />Ak nenájdete odpoveď na vašu otázku, neváhajte nás kontaktovať na platbadane@bratislava.sk."
+    "register_info_help": "Radi by ste sa v niečom uistili alebo máte otázky? Pozrite si odpovede na tie, ktoré sú <a href={{url}}>často kladené</a>.<br />Ak nenájdete odpoveď na vašu otázku, neváhajte nás kontaktovať na platbadane@bratislava.sk."
   },
   "payment_schedule": {
     "title": "Splátkový kalendár",

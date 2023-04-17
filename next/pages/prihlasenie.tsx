@@ -7,8 +7,8 @@ import EmailVerificationForm from 'components/forms/segments/EmailVerificationFo
 import LoginForm from 'components/forms/segments/LoginForm/LoginForm'
 import LoginRegisterLayout from 'components/layouts/LoginRegisterLayout'
 import { GetServerSidePropsContext } from 'next'
-import { useRouter } from 'next/router'
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
+import { useRouter } from 'next/router'
 import { useEffect } from 'react'
 
 import PageWrapper from '../components/layouts/PageWrapper'
@@ -51,7 +51,7 @@ const LoginPage = ({ page }: AsyncServerProps<typeof getServerSideProps>) => {
 
   useEffect(() => {
     if (user !== null && user !== undefined) {
-      router.push(ROUTES.HOME)
+      redirect()
     }
   }, [user])
 
@@ -69,9 +69,9 @@ const LoginPage = ({ page }: AsyncServerProps<typeof getServerSideProps>) => {
 
   return (
     <PageWrapper locale={page.locale} localizations={page.localizations}>
-      <LoginRegisterLayout>
+      <LoginRegisterLayout backButtonHidden>
         {status === AccountStatus.Idle && <AccountActivator />}
-        <AccountContainer className="md:pt-6 pt-0">
+        <AccountContainer className="md:pt-6 pt-0 mb-0 md:mb-8">
           {status === AccountStatus.EmailVerificationRequired ? (
             <EmailVerificationForm
               lastEmail={lastEmail}

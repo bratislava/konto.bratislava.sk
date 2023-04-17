@@ -15,6 +15,8 @@ const schema = {
   properties: {
     phone_number: {
       type: 'string',
+      format: 'phone',
+      errorMessage: { format: 'forms:phone_format' },
     },
   },
   required: [],
@@ -46,7 +48,6 @@ const PhoneNumberForm = ({ error, onHideError, onSubmit, defaultValues }: Props)
     >
       <div className="whitespace-pre-line">
         <div className="text-p2">{t('adding_phone_number_modal.description')}</div>
-        <div className="text-p3">{t('adding_phone_number_modal.phoneNumber_not_required')}</div>
       </div>
       <AccountErrorAlert error={error} close={onHideError} solid />
       <Controller
@@ -58,7 +59,7 @@ const PhoneNumberForm = ({ error, onHideError, onSubmit, defaultValues }: Props)
             helptext={t('profile_detail.phone_number_pattern')}
             placeholder=""
             {...field}
-            errorMessage={errors.phoneNumber}
+            errorMessage={errors.phone_number}
           />
         )}
       />

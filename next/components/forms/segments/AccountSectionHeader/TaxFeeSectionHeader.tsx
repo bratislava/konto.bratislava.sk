@@ -4,6 +4,7 @@ import SuccessIcon from '@assets/images/new-icons/ui/done.svg'
 import FileDownload from '@assets/images/new-icons/ui/download.svg'
 import ExclamationIcon from '@assets/images/new-icons/ui/exclamation-mark.svg'
 import PaymentIcon from '@assets/images/new-icons/ui/payment.svg'
+import { ROUTES } from '@utils/constants'
 import cx from 'classnames'
 import { useRouter } from 'next/router'
 import { useTranslation } from 'next-i18next'
@@ -59,7 +60,7 @@ const TaxFeeSectionHeader = (props: AccountSectionHeaderBase) => {
           <button
             type="button"
             className="text-p3-medium underline-offset-2 underline"
-            onClick={() => router.push('/taxes-and-fees')}
+            onClick={() => router.push(ROUTES.TAXES_AND_FEES)}
           >
             {t('back_to_list')}
           </button>

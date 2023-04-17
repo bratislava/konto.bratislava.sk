@@ -1,5 +1,6 @@
 import ChevronRightIcon from '@assets/images/forms/chevron-right.svg'
 import FilledSelectedIcon from '@assets/images/new-icons/ui/check-mark.svg'
+import { handleOnKeyPress } from '@utils/utils'
 import cx from 'classnames'
 import React from 'react'
 
@@ -72,7 +73,11 @@ const DropdownRow = ({
 
   // RENDER
   return (
-    <div className={rowClassName} onClick={handleOnClick}>
+    <div
+      className={rowClassName}
+      onClick={handleOnClick}
+      onKeyPress={(event: React.KeyboardEvent) => handleOnKeyPress(event, handleOnClick)}
+    >
       <div className="dropdown flex h-full flex-col justify-center">
         <div className="dropdown flex flex-row justify-center">
           <p className={optionClassName}>{transformedOptionText}</p>

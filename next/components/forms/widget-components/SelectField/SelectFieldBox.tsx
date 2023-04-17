@@ -1,3 +1,4 @@
+import { handleOnKeyPress } from '@utils/utils'
 import { useTranslation } from 'next-i18next'
 import React, { ForwardedRef, forwardRef, ForwardRefRenderFunction } from 'react'
 
@@ -15,7 +16,7 @@ interface SelectFieldBoxProps {
   onRemoveAll: () => void
   onFilterChange: (value: string) => void
   onDeleteLastValue: () => void
-  onClick?: (event: React.MouseEvent) => void
+  onClick?: (event: React.MouseEvent | React.KeyboardEvent) => void
 }
 
 const getOptionTitle = (selectOption: SelectOption) => {
@@ -73,9 +74,8 @@ const SelectFieldBoxComponent: ForwardRefRenderFunction<HTMLDivElement, SelectFi
       ref={ref}
       className="flex items-center w-full flex-row flex-wrap gap-2 py-2 sm:py-2.5 sm:pl-4 pl-3"
       data-value={value}
-      onClick={(event: React.MouseEvent) => {
-        if (onClick) onClick(event)
-      }}
+      onClick={(event: React.MouseEvent) => onClick?.(event)}
+      onKeyPress={(event: React.KeyboardEvent) => handleOnKeyPress(event, () => onClick?.(event))}
     >
       {
         /* TAGS */

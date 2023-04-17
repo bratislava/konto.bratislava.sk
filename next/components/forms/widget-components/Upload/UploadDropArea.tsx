@@ -1,6 +1,7 @@
 import BallDelimiterIcon from '@assets/images/forms/ball_delimiter_icon.svg'
 import UploadIcon from '@assets/images/new-icons/ui/upload.svg'
 import { UploadMinioFile } from '@backend/dtos/minio/upload-minio-file.dto'
+import { handleOnKeyPress } from '@utils/utils'
 import cx from 'classnames'
 import React, { ForwardedRef, forwardRef, ForwardRefRenderFunction, useState } from 'react'
 
@@ -87,18 +88,13 @@ const UploadDropAreaComponent: ForwardRefRenderFunction<HTMLDivElement, UploadDr
     }
   }
 
-  const handleOnClick = () => {
-    if (onClick) {
-      onClick()
-    }
-  }
-
   // RENDER
   return (
     <div className="w-[180px] xs:w-[300px] sm:w-[480px] relative h-40" ref={ref} data-value={value}>
       <div
         className={dragAndDropOverlayClassNames}
-        onClick={handleOnClick}
+        onClick={onClick}
+        onKeyPress={(event: React.KeyboardEvent) => handleOnKeyPress(event, onClick)}
         onDragEnter={() => setIsDraggedOver(true)}
         onDragOver={(event) => event.preventDefault()}
         onDragLeave={() => setIsDraggedOver(false)}

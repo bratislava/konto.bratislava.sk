@@ -1,4 +1,5 @@
 import CloseIcon from '@assets/images/new-icons/ui/cross.svg'
+import { handleOnKeyPress } from '@utils/utils'
 import cx from 'classnames'
 import React from 'react'
 
@@ -52,6 +53,7 @@ const MessageModal = ({
       className="h-full fixed w-full z-50 top-0 flex items-center justify-center"
       style={{ background: 'rgba(var(--color-gray-800), .4)', marginTop: '0' }}
       onClick={cancelHandler}
+      onKeyPress={(event: React.KeyboardEvent) => handleOnKeyPress(event, cancelHandler)}
     >
       <div className={cx('flex flex-col items-end rounded-lg bg-white p-3', className)}>
         <div className="absolute flex h-6 w-6 items-center justify-center">
@@ -83,6 +85,7 @@ const MessageModal = ({
               <div
                 className="text-p2 flex cursor-pointer flex-row items-center justify-center gap-2 py-1 px-2 font-semibold not-italic"
                 onClick={cancelHandler}
+                onKeyPress={(event: React.KeyboardEvent) => handleOnKeyPress(event, cancelHandler)}
               >
                 {cancelLabel}
               </div>

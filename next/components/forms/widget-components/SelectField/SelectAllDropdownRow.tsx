@@ -1,4 +1,6 @@
+import { handleOnKeyPress } from '@utils/utils'
 import { useTranslation } from 'next-i18next'
+import React from 'react'
 
 interface SelectAllDropdownRowProps {
   divider?: boolean
@@ -20,6 +22,7 @@ const SelectAllDropdownRow = ({
     <div
       className="dropdown flex h-14 w-full cursor-pointer flex-col bg-white px-5 hover:text-gray-600"
       onClick={handleOnClick}
+      onKeyPress={(event: React.KeyboardEvent) => handleOnKeyPress(event, handleOnClick)}
     >
       <div className="dropdown flex h-full flex-col justify-center">
         <div className="dropdown flex flex-row justify-center">

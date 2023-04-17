@@ -1,7 +1,8 @@
 import ArrowLeft from '@assets/images/new-icons/ui/arrow-left.svg'
 import CloseIcon from '@assets/images/new-icons/ui/cross.svg'
+import { handleOnKeyPress } from '@utils/utils'
 import cx from 'classnames'
-import { Dispatch, SetStateAction, useState } from 'react'
+import React, { Dispatch, SetStateAction, useState } from 'react'
 
 import Button from '../../simple-components/Button'
 
@@ -59,6 +60,9 @@ const ModalHeader = ({
           onClick={() => {
             setCurrentScreenIndex(currentScreenIndex - 1)
           }}
+          onKeyPress={(event: React.KeyboardEvent) =>
+            handleOnKeyPress(event, () => setCurrentScreenIndex(currentScreenIndex - 1))
+          }
         >
           <ArrowLeft />
         </div>
@@ -181,18 +185,27 @@ const Modal = ({
     return null
   }
 
+  const handleOnClick = () => {
+    setCurrentScreenIndex(0)
+    onClose()
+  }
+
   const hasHeader = Array.isArray(content) || Boolean(header)
   const hasFooter = Array.isArray(content)
   return (
     <div
       className="z-50 h-full fixed w-full inset-x-0 top-0 flex items-center justify-center"
       style={{ background: 'rgba(var(--color-gray-800), .4)', marginTop: '0' }}
-      onClick={() => {
-        setCurrentScreenIndex(0)
-        onClose()
-      }}
+      onClick={handleOnClick}
+      onKeyPress={(event: React.KeyboardEvent) => handleOnKeyPress(event, handleOnClick)}
     >
-      <div onClick={(e) => e.stopPropagation()} className={cx('rounded-full shadow-lg', className)}>
+      <div
+        onClick={(e) => e.stopPropagation()}
+        onKeyPress={(event: React.KeyboardEvent) =>
+          handleOnKeyPress(event, () => event.stopPropagation())
+        }
+        className={cx('rounded-full shadow-lg', className)}
+      >
         <ModalHeader
           header={header}
           currentScreenIndex={currentScreenIndex}

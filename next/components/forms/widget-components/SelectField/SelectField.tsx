@@ -1,5 +1,6 @@
 import ArrowDownIcon from '@assets/images/new-icons/ui/expand.svg'
 import ArrowUpIcon from '@assets/images/new-icons/ui/expand-less.svg'
+import { handleOnKeyPress } from '@utils/utils'
 import cx from 'classnames'
 import React, {
   ForwardedRef,
@@ -160,7 +161,7 @@ const SelectFieldComponent: ForwardRefRenderFunction<HTMLDivElement, SelectField
     handleOnChangeSelect(newValue)
   }
 
-  const handleOnSelectFieldClick = (event: React.MouseEvent) => {
+  const handleOnSelectFieldClick = (event: React.MouseEvent | React.KeyboardEvent) => {
     const targetClassList = (event.target as Element).classList
     if (!isDropdownOpened && !targetClassList.contains('tag') && !disabled) {
       filterRef.current?.focus()
@@ -168,7 +169,7 @@ const SelectFieldComponent: ForwardRefRenderFunction<HTMLDivElement, SelectField
     }
   }
 
-  const handleOnArrowClick = (event: React.MouseEvent) => {
+  const handleOnArrowClick = (event: React.MouseEvent | React.KeyboardEvent) => {
     if (isDropdownOpened) {
       // thanks to this state, we can ignore handling of 'clickOutside' and use custom behaviour for arrow icon
       // click on arrow icon will open or close in opposite of actual state
@@ -255,6 +256,9 @@ const SelectFieldComponent: ForwardRefRenderFunction<HTMLDivElement, SelectField
         <div
           className="dropdownButton flex flex-col items-center h-10 sm:h-12 cursor-pointer select-none rounded-lg px-3 sm:px-4 [&>svg]:m-1"
           onClick={handleOnArrowClick}
+          onKeyPress={(event: React.KeyboardEvent) =>
+            handleOnKeyPress(event, () => handleOnArrowClick(event))
+          }
         >
           <div className="dropdownButton h-full w-6 items-center relative flex flex-col justify-center">
             {isDropdownOpened ? <ArrowUpIcon /> : <ArrowDownIcon />}

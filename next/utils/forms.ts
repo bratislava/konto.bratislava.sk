@@ -349,6 +349,7 @@ export const getAllStepData = (
       const stepProperties = transformedStep.properties ?? {}
       const [key, value]: [string, JSONSchema7Definition] = Object.entries(stepProperties)[0]
       if (typeof value === 'boolean') return null
+      // if step was already filled, we need to find out
       const reuseOldStep = oldStepData?.find((oldStep: StepData) => oldStep.stepKey === key)
       return {
         title: value.title ?? key,
@@ -470,15 +471,15 @@ export const useFormStepper = (eformSlug: string, schema: RJSFSchema) => {
     return isValid
   }
 
-  const setUniqueErrors = (newErrors: RJSFValidationError[], actualStepIndex: number) => {
+  const setUniqueErrors = (newErrors: RJSFValidationError[], currentStepIndex: number) => {
     // update form errors - update even if there is no error
-    const actualStepKey = stepData[actualStepIndex].stepKey
+    const currentStepKey = stepData[currentStepIndex].stepKey
     const oldErrors: RJSFValidationError[] =
-      actualStepKey in errors ? [...errors[actualStepKey]] : []
+      currentStepKey in errors ? [...errors[currentStepKey]] : []
 
     const updatedErrors: Record<string, RJSFValidationError[]> = {
       ...errors,
-      [actualStepKey]: [...oldErrors, ...newErrors].filter(
+      [currentStepKey]: [...oldErrors, ...newErrors].filter(
         (item, index) => oldErrors.indexOf(item) !== index,
       ),
     }

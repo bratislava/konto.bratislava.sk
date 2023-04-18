@@ -1,6 +1,7 @@
 import SelectedIcon from '@assets/images/new-icons/ui/done.svg'
+import { handleOnKeyPress } from '@utils/utils'
 import cx from 'classnames'
-import { useTranslation } from 'next-i18next'
+import React from 'react'
 
 interface StepperViewRowProps {
   title?: string
@@ -14,6 +15,7 @@ interface StepperViewRowProps {
 
 const StepperViewRow = (props: StepperViewRowProps) => {
   const { title, order, isCurrent, isFilled, isLast, onClick, className } = props
+
   const iconClassName = cx(
     'min-w-8 w-8 flex-row h-8 rounded-full flex justify-center items-center border-2 shrink-0',
     {
@@ -25,10 +27,11 @@ const StepperViewRow = (props: StepperViewRowProps) => {
   return (
     <div className={cx('flex flex-col select-none', className)}>
       <div
+        role="button"
+        tabIndex={0}
         className="flex flex-row gap-3 items-center cursor-pointer"
-        onClick={() => {
-          if (onClick) onClick()
-        }}
+        onClick={onClick}
+        onKeyPress={(event: React.KeyboardEvent) => handleOnKeyPress(event, onClick)}
       >
         <div className={iconClassName}>
           {isCurrent || !isFilled ? order : <SelectedIcon fill="white" className="w-6 h-6" />}

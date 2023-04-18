@@ -10,7 +10,7 @@ export interface BrandProps {
   url?: string
 }
 
-export const Brand = ({ className, title, url = '#' }: BrandProps) => {
+const Brand = ({ className, title, url = '#' }: BrandProps) => {
   return (
     <div className={cx('flex', className)} aria-label="brand">
       <Link className="flex items-center space-x-3" href={url}>

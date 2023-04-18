@@ -8,8 +8,9 @@ import type { NextApiRequest, NextApiResponse } from 'next'
 
 // TODO needs verification & tests
 const handler = async (req: NextApiRequest, res: NextApiResponse) => {
-  if (req.method !== 'POST' || typeof req.body?.data !== 'string')
+  if (req.method !== 'POST' || typeof req.body?.data !== 'string') {
     return res.status(400).json({ message: 'Invalid method or missing "data" field on body' })
+  }
 
   let eform: EFormValue
   try {
@@ -19,7 +20,9 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
     return res.status(400).json({ message: 'Invalid form name or url' })
   }
 
-  const data = await xmlToJson(req.body.data, eform.schema)
+  const stringData: string = typeof req.body.data === 'string' ? req.body.data : ''
+  const data = await xmlToJson(stringData, eform.schema)
+
   return res.json(data)
 }
 

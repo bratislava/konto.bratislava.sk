@@ -1,8 +1,10 @@
 import ErrorIcon from '@assets/images/forms/error-icon.svg'
 import CloseIcon from '@assets/images/new-icons/ui/cross.svg'
+import { handleOnKeyPress } from '@utils/utils'
 import cx from 'classnames'
 import Button from 'components/forms/simple-components/Button'
 import { useTranslation } from 'next-i18next'
+import React from 'react'
 
 type SkipStepModalBase = {
   show: boolean
@@ -19,14 +21,20 @@ const SkipStepModal = ({ show, onClose, onSkip, className }: SkipStepModalBase) 
   }
   return (
     <div
+      role="button"
+      tabIndex={0}
       className="h-full fixed w-full z-50 top-0 flex items-center justify-center"
       style={{ background: 'rgba(var(--color-gray-800), .4)', marginTop: '0' }}
-      onClick={() => {
-        onClose()
-      }}
+      onClick={onClose}
+      onKeyPress={(event: React.KeyboardEvent) => handleOnKeyPress(event, onClose)}
     >
       <div
+        role="button"
+        tabIndex={0}
         onClick={(e) => e.stopPropagation()}
+        onKeyPress={(event: React.KeyboardEvent) =>
+          handleOnKeyPress(event, () => event.stopPropagation())
+        }
         className={cx(
           'md:h-min w-full max-w-none h-full md:max-w-[592px] rounded-none md:rounded-2xl bg-gray-0 px-4 md:px-6 pt-12 md:py-6 relative mx-0 md:mx-4 overflow-auto',
           className,

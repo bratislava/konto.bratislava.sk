@@ -2,9 +2,7 @@ import TimePicker from '../../forms/widget-components/DateTimePicker/TimePicker'
 import { Stack } from '../Stack'
 import { Wrapper } from '../Wrapper'
 
-interface TimePickerShowCaseProps {}
-
-const TimePickerShowCase = ({}: TimePickerShowCaseProps) => {
+const TimePickerShowCase = () => {
   return (
     <Wrapper direction="column" title="Time Picker">
       <Stack direction="column">

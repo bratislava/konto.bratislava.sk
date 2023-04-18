@@ -1,3 +1,4 @@
+import logger from '@utils/logger'
 import { formatUnicorn } from '@utils/string'
 import { AccountError } from '@utils/useAccount'
 import useHookForm from '@utils/useHookForm'
@@ -68,7 +69,7 @@ const EmailVerificationForm = ({ onSubmit, error, onResend, lastEmail, cntDisabl
       className="flex flex-col space-y-4"
       onSubmit={handleSubmit((data: Data) => {
         setLastVerificationCode(data.verificationCode)
-        onSubmit(data.verificationCode)
+        onSubmit(data.verificationCode).catch((error_) => logger.error('Submit failed', error_))
       })}
     >
       <h1 className="text-h3">{t('email_verification_title')}</h1>

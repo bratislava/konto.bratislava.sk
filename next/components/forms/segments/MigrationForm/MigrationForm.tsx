@@ -7,8 +7,8 @@ import AccountLink from 'components/forms/segments/AccountLink/AccountLink'
 import LoginAccountLink from 'components/forms/segments/LoginAccountLink/LoginAccountLink'
 import Button from 'components/forms/simple-components/Button'
 import InputField from 'components/forms/widget-components/InputField/InputField'
-import { useTranslation } from 'next-i18next'
 import { useRouter } from 'next/router'
+import { useTranslation } from 'next-i18next'
 import { Controller } from 'react-hook-form'
 
 interface Data {

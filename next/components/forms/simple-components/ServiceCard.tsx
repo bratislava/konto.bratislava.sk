@@ -22,7 +22,6 @@ const ServiceCard = ({
   description,
   buttonText,
   className,
-  linkType = 'external',
   tag,
   tagStyle,
   icon,

@@ -2,9 +2,11 @@ import BusinessIcon from '@assets/images/new-icons/ui/city-services.svg'
 import HelpIcon from '@assets/images/new-icons/ui/help.svg'
 import HomeIcon from '@assets/images/new-icons/ui/introduction.svg'
 import LogoutIcon from '@assets/images/new-icons/ui/logout.svg'
+import MySubmissionIcon from '@assets/images/new-icons/ui/my-submission.svg'
 import PaymentIcon from '@assets/images/new-icons/ui/payment.svg'
 import ProfileIcon from '@assets/images/new-icons/ui/profile.svg'
 import { ROUTES } from '@utils/constants'
+import logger from '@utils/logger'
 import useAccount from '@utils/useAccount'
 import cx from 'classnames'
 import AccountNavBar from 'components/forms/segments/AccountNavBar/AccountNavBar'
@@ -12,7 +14,6 @@ import { usePageWrapperContext } from 'components/layouts/PageWrapper'
 import { useRouter } from 'next/router'
 import { useTranslation } from 'next-i18next'
 import { ReactNode, useEffect } from 'react'
-import logger from '@utils/logger'
 
 type AccountPageLayoutBase = {
   className?: string
@@ -33,14 +34,20 @@ const sectionsList = [
     icon: <BusinessIcon className="w-6 h-6" />,
     link: ROUTES.MUNICIPAL_SERVICES,
   },
+  // {
+  //   id: 2,
+  //   title: 'account:account_section_applications.navigation',
+  //   icon: <MySubmissionIcon className="w-6 h-6" />,
+  //   link: ROUTES.MY_APPLICATIONS,
+  // },
   {
-    id: 2,
+    id: 3,
     title: 'account:account_section_payment.title',
     icon: <PaymentIcon className="w-6 h-6" />,
     link: ROUTES.TAXES_AND_FEES,
   },
   {
-    id: 3,
+    id: 4,
     title: 'account:account_section_help.navigation',
     icon: <HelpIcon className="w-6 h-6" />,
     link: ROUTES.I_HAVE_A_PROBLEM,
@@ -75,7 +82,9 @@ const AccountPageLayout = ({ className, children, hiddenHeaderNav }: AccountPage
   const { isAuth } = useAccount()
   useEffect(() => {
     if (!isAuth) {
-      router.push({ pathname: ROUTES.LOGIN, query: { from: router.route } })
+      router
+        .push({ pathname: ROUTES.LOGIN, query: { from: router.route } })
+        .catch((error_) => logger.error('Redirect failed', error_))
     }
   }, [isAuth])
 

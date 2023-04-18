@@ -1,7 +1,7 @@
 import SuccessIcon from '@assets/images/new-icons/ui/check-mark.svg'
 import CloseIcon from '@assets/images/new-icons/ui/cross.svg'
-import WarningIcon from '@assets/images/new-icons/ui/exclamation-mark-triangle.svg'
 import ErrorIcon from '@assets/images/new-icons/ui/exclamation-mark.svg'
+import WarningIcon from '@assets/images/new-icons/ui/exclamation-mark-triangle.svg'
 import InfoIcon from '@assets/images/new-icons/ui/info.svg'
 import cx from 'classnames'
 import { ReactNode } from 'react'

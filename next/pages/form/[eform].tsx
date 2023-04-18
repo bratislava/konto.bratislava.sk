@@ -1,16 +1,14 @@
 import { EFormValue } from '@backend/forms'
 import { getEform } from '@backend/utils/forms'
-import { pageStyle } from '@utils/page'
+import logger from '@utils/logger'
 import { AsyncServerProps } from '@utils/types'
 import { forceString, isProductionDeployment } from '@utils/utils'
 import GeneratedFormRJSF from 'components/forms/GeneratedFormRJSF'
-import FormPageLayout from 'components/layouts/FormPageLayout'
+import AccountPageLayout from 'components/layouts/AccountPageLayout'
 import PageWrapper from 'components/layouts/PageWrapper'
 import { GetServerSidePropsContext } from 'next'
 import { useRouter } from 'next/router'
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
-import AccountPageLayout from 'components/layouts/AccountPageLayout'
-import logger from '@utils/logger'
 
 export const getServerSideProps = async (ctx: GetServerSidePropsContext) => {
   if (isProductionDeployment()) return { notFound: true }

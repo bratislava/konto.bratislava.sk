@@ -7,26 +7,27 @@ import SummaryRowSimple from '../../../simple-components/SummaryRowSimple'
 import SummaryRow from '../../../steps/Summary/SummaryRow'
 import CorrespondenceAddressModal from '../../CorrespondenceAddressModal/CorrespondenceAddressModal'
 
-const ContactInformationSection = (props: any) => {
+const postalCodeFormat = (code: string): string => `${code.slice(0, 3)} ${code.slice(3)}`
+
+const ContactInformationSection = () => {
   const { t } = useTranslation('account')
   const { userData, updateUserData, error, resetError } = useAccount()
-  const [openSnackbarSuccess] = useSnackbar({ variant: 'success' })
+  const [showSnackbar] = useSnackbar({ variant: 'success' })
   const postal_code_array = userData?.address?.postal_code?.replace(/\s/g, '')
-  const [correnspondenceAddressModalShow, setCorrenspondenceAddressModalShow] = useState(false)
+  const [correspondenceAddressModalShow, setCorrespondenceAddressModalShow] = useState(false)
 
   const onSubmitCorrespondenceAddress = async ({ data }: { data?: Address }) => {
     if (await updateUserData({ address: data })) {
-      setCorrenspondenceAddressModalShow(false)
-      openSnackbarSuccess(t('profile_detail.success_alert'))
+      setCorrespondenceAddressModalShow(false)
+      showSnackbar(t('profile_detail.success_alert'))
     }
   }
-  const postalCodeFormat = (code: string): string => `${code.slice(0, 3)} ${code.slice(3)}`
 
   return (
     <>
       <CorrespondenceAddressModal
-        show={correnspondenceAddressModalShow}
-        onClose={() => setCorrenspondenceAddressModalShow(false)}
+        show={correspondenceAddressModalShow}
+        onClose={() => setCorrespondenceAddressModalShow(false)}
         onSubmit={onSubmitCorrespondenceAddress}
         defaultValues={userData?.address}
         error={error}
@@ -69,13 +70,13 @@ const ContactInformationSection = (props: any) => {
                         userData.address?.street_address &&
                         (postal_code_array || userData.address?.locality)
                           ? `${userData.address?.street_address},`
-                          : userData.address?.street_address
-                      } ${postalCodeFormat(postal_code_array)} ${userData.address?.locality}`
+                          : userData.address?.street_address || ''
+                      } ${postalCodeFormat(postal_code_array)} ${userData.address?.locality || ''}`
                     : '',
                 schemaPath: '',
                 isError: false,
               }}
-              onGoToStep={() => setCorrenspondenceAddressModalShow(true)}
+              onGoToStep={() => setCorrespondenceAddressModalShow(true)}
             />
             <SummaryRow
               size="small"

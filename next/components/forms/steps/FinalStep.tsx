@@ -17,7 +17,7 @@ interface FinalStepProps {
 }
 
 // TODO find out if we need to submit to multiple different endpoints and allow configuration if so
-export const FinalStep = ({
+const FinalStep = ({
   formData,
   formErrors,
   extraErrors,

@@ -12,7 +12,7 @@ const TaxesFeesErrorCard = ({ content }: TaxesFeesErrorCardBase) => {
         <Icon className="w-[145px] h-[140px] sm:w-[308px] sm:h-[296px]" />
       </span>
       <AccountMarkdown
-        className="flex flex-col justify-center max-w-none lg:max-w-[500px] mt-6 md:mt-0"
+        className="flex flex-col justify-center max-w-none lg:max-w-[528px] mt-6 md:mt-0"
         content={content}
       />
     </div>

@@ -4,7 +4,7 @@ import { useOnClickOutside } from 'usehooks-ts'
 
 import DropdownRow from './DropdownRow'
 import SelectAllDropdownRow from './SelectAllDropdownRow'
-import { SelectOption } from './SelectField'
+import { SelectOption } from './SelectOption.interface'
 
 interface DropdownProps {
   enumOptions: SelectOption[]
@@ -98,6 +98,7 @@ const Dropdown: FC<DropdownProps> = (props: DropdownProps) => {
             selected={isSelected(option)}
             type={type}
             isBold={isRowBold}
+            maxWordSize={maxWordSize}
             onChooseOne={(opt: SelectOption, close?: boolean) =>
               onChooseOne ? onChooseOne(opt, close) : null
             }

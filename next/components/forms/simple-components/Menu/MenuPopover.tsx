@@ -18,7 +18,7 @@ const MenuPopover = (props: PopoverProps) => {
   const { overlayProps } = useOverlay(
     {
       isOpen: state.isOpen,
-      onClose: state.close,
+      onClose: () => state.close(),
       isDismissable: true,
     },
     triggerRef,
@@ -32,7 +32,7 @@ const MenuPopover = (props: PopoverProps) => {
         className="z-20 shadow-lg bg-white rounded-lg mt-1 absolute"
       >
         {children}
-        <DismissButton onDismiss={state.close} />
+        <DismissButton onDismiss={() => state.close()} />
       </div>
     </FocusScope>
   )

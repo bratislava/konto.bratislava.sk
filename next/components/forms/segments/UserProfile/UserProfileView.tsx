@@ -1,3 +1,4 @@
+import logger from '@utils/logger'
 import useAccount, { UserData } from '@utils/useAccount'
 import useSnackbar from '@utils/useSnackbar'
 import MessageModal from 'components/forms/widget-components/Modals/MessageModal'
@@ -27,17 +28,23 @@ const UserProfileView = () => {
   }
 
   const handleOnSubmitEditing = (newUserData: UserData) => {
-    updateUserData(newUserData).then(() => {
-      setIsEditing(false)
-      if (alertType === 'error') {
+    updateUserData(newUserData)
+      .then(() => {
+        setIsEditing(false)
+        if (alertType === 'error') {
+          setIsAlertOpened(true)
+          setTimeout(() => setIsAlertOpened(false), 3000)
+        } else if (alertType === 'success') {
+          // default is 5000 ms
+          openSnackbarSuccess(t('profile_detail.success_alert'), 3000)
+        }
+        return null
+      })
+      .catch((error_) => {
+        logger.error('Update User Data failed', error_)
         setIsAlertOpened(true)
         setTimeout(() => setIsAlertOpened(false), 3000)
-      }
-      if (alertType === 'success') {
-        // default is 5000 ms
-        openSnackbarSuccess(t('profile_detail.success_alert'), 3000)
-      }
-    })
+      })
   }
 
   return (

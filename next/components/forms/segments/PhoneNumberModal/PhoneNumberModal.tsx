@@ -4,6 +4,8 @@ import { useTranslation } from 'next-i18next'
 
 import PhoneNumberForm, { PhoneNumberData } from '../PhoneNumberForm/PhoneNumberForm'
 
+/* eslint-disable @typescript-eslint/no-shadow */
+
 interface Props {
   show: boolean
   onClose: () => void
@@ -37,3 +39,5 @@ const PhoneNumberModal = ({
 }
 
 export default PhoneNumberModal
+
+/* eslint-enable @typescript-eslint/no-shadow */

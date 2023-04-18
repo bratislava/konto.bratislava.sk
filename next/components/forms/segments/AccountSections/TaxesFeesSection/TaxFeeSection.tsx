@@ -18,7 +18,7 @@ const TaxAndFeeMainContent = ({ children }: TaxAndFeeMainContentBase) => {
   )
 }
 
-const TaxFeeSection = (props: any) => {
+const TaxFeeSection = () => {
   const [who, setWho] = useState<'splatkar' | 'not_splatkar'>('splatkar')
 
   // Temporary switcher for presentation
@@ -59,8 +59,8 @@ const TaxFeeSection = (props: any) => {
     <div className="flex flex-col">
       <TaxFeeSectionHeader who={who} title="" />
       <TaxAndFeeMainContent>
-        <ContactInformationSection who={who} />
-        <TaxDetails who={who} />
+        <ContactInformationSection />
+        <TaxDetails />
         <PaymentData who={who} />
       </TaxAndFeeMainContent>
       {switcher()}

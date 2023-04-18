@@ -1,6 +1,13 @@
 import cx from 'classnames'
 import Toggle from 'components/forms/simple-components/Toggle'
-import { Consent } from './UserProfileConsents'
+
+interface Consent {
+  id: string
+  title: string
+  text: string
+  isDisabled: boolean
+  isSelected: boolean
+}
 
 interface UserConsentProps {
   consent: Consent

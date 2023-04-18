@@ -1,12 +1,28 @@
+import logger from '@utils/logger'
 import { isBrowser, isProductionDeployment } from '@utils/utils'
 import Button from 'components/forms/simple-components/Button'
 import Cookies from 'js-cookie'
-import { mapValues, pick } from 'lodash'
-import NextLink from 'next/link'
+import { mapValues, pick } from 'lodash/fp'
 import Script from 'next/script'
 import { useTranslation } from 'next-i18next'
 import React, { useCallback, useEffect, useState } from 'react'
-import logger from '@utils/logger'
+
+interface CookieOptions {
+  expires?: number | Date
+  path?: string
+  domain?: string
+  secure?: boolean
+  httpOnly?: boolean
+  sameSite?: 'strict' | 'lax' | 'none'
+}
+
+interface CookiesHandler {
+  get(name: string): string | undefined
+  set(name: string, value: string, options?: CookieOptions): void
+  remove(name: string, options?: CookieOptions): void
+}
+
+const cookiesHandler: CookiesHandler = Cookies as unknown as CookiesHandler
 
 const availableConsents = ['statistics']
 const pickConsents = (consents: any) => mapValues(pick(consents, availableConsents), Boolean)
@@ -21,8 +37,8 @@ export const CookiesAndTracking = () => {
 
   const refresh = useCallback(async () => {
     try {
-      const consentValue = Cookies.get('gdpr-consents')
-      if (!consentValue) {
+      const consentValue = cookiesHandler.get('gdpr-consents')
+      if (!consentValue || typeof consentValue !== 'string') {
         setBannerDismissed(false)
         return
       }
@@ -38,7 +54,7 @@ export const CookiesAndTracking = () => {
 
   useEffect(() => {
     if (isBrowser()) {
-      refresh()
+      refresh().catch((error_) => logger.error('Refresh failed', error_))
     }
   }, [refresh])
 
@@ -47,7 +63,7 @@ export const CookiesAndTracking = () => {
       if (typeof value !== 'object') return
       const consentValue = pickConsents(value)
       const mergedConsents = { ...consents, ...consentValue }
-      Cookies.set('gdpr-consents', JSON.stringify(mergedConsents), { expires: 365 })
+      cookiesHandler.set('gdpr-consents', JSON.stringify(mergedConsents), { expires: 365 })
       setConsentsState(mergedConsents)
     },
     [consents],

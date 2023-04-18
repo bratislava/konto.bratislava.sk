@@ -82,7 +82,9 @@ const AccountPageLayout = ({ className, children, hiddenHeaderNav }: AccountPage
   const { isAuth } = useAccount()
   useEffect(() => {
     if (!isAuth) {
-      router.push({ pathname: ROUTES.LOGIN, query: { from: router.route } })
+      router
+        .push({ pathname: ROUTES.LOGIN, query: { from: router.route } })
+        .catch((error_) => logger.error('Redirect failed', error_))
     }
   }, [isAuth])
 

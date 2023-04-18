@@ -8,6 +8,10 @@ import { TaxesCardBase } from 'components/forms/segments/AccountSections/TaxesFe
 import Link from 'next/link'
 import { ReactNode } from 'react'
 
+const priceFormat = (price: number): string => {
+  return Number.isInteger(price) ? `${price},00€` : `${price}€`.replace('.', ',')
+}
+
 const TaxesFeesCard = (props: TaxesCardBase) => {
   const { title, yearPay, createDate, currentPaid, finishPrice, paidDate = '', status } = props
 
@@ -33,14 +37,10 @@ const TaxesFeesCard = (props: TaxesCardBase) => {
         return statusNode(<TimeIcon className="text-warning-700 w-6 h-6" />, 'Čiastočne uhradená')
       case 'success':
         return statusNode(<SuccessIcon className="text-success-700 w-6 h-6" />, 'Uhradená')
-
       default:
         break
     }
-  }
-
-  const priceFormat = (price: number): string => {
-    return Number.isInteger(price) ? `${price},00€` : `${price}€`.replace('.', ',')
+    return null
   }
 
   return (

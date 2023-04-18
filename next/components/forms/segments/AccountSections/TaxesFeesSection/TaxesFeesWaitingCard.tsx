@@ -15,7 +15,7 @@ const TaxesFeesWaitingCard = ({ content }: TaxesFeesWaitingCardBase) => {
           <Icon className="w-[146px] h-[145px] sm:w-[298px] sm:h-[296px]" />
         </div>
         <AccountMarkdown
-          className="flex flex-col justify-center max-w-none lg:max-w-[500px] mt-5 md:mt-0"
+          className="flex flex-col justify-center max-w-none lg:max-w-[528px] mt-5 md:mt-0"
           content={content}
         />
       </div>

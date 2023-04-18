@@ -1,4 +1,3 @@
-import AdministrationIcon from '@assets/images/new-icons/other/city-bratislava/city-administration.svg'
 import TaxesIcon from '@assets/images/new-icons/other/city-bratislava/taxes.svg'
 import TheatreIcon from '@assets/images/new-icons/other/culture-communities/events-support.svg'
 import LibraryIcon from '@assets/images/new-icons/other/culture-communities/library.svg'
@@ -27,7 +26,7 @@ import { useTranslation } from 'next-i18next'
 import { ReactNode, useState } from 'react'
 import { useWindowSize } from 'usehooks-ts'
 
-import { SelectOption } from '../../../widget-components/SelectField/SelectField'
+import { SelectOption } from '../../../widget-components/SelectField/SelectOption.interface'
 
 const ALL_CATEGORY = 'Všetky kategórie'
 const TAXES_CATEGORY = 'Dane'

@@ -3,6 +3,8 @@ import CorrespondenceAddressForm from 'components/forms/segments/CorrespondenceA
 import Modal from 'components/forms/widget-components/Modals/Modal'
 import { useTranslation } from 'next-i18next'
 
+/* eslint-disable @typescript-eslint/no-shadow */
+
 interface Props {
   show: boolean
   onClose: () => void
@@ -38,3 +40,5 @@ const CorrespondenceAddressModal = ({
 }
 
 export default CorrespondenceAddressModal
+
+/* eslint-enable @typescript-eslint/no-shadow */

@@ -27,6 +27,14 @@ interface UploadProps {
   errorMessage?: string[]
 }
 
+const addTimeStampToFileName = (file: File) => {
+  const newName = `${Date.now()}_${createUuid()}_${file.name}`
+  return new File([file], newName, {
+    type: file.type,
+    lastModified: file.lastModified,
+  })
+}
+
 const UploadComponent: ForwardRefRenderFunction<HTMLDivElement, UploadProps> = (
   props: UploadProps,
   ref: ForwardedRef<HTMLDivElement>,
@@ -82,14 +90,6 @@ const UploadComponent: ForwardRefRenderFunction<HTMLDivElement, UploadProps> = (
 
     const fileExtension = file.name.slice(lastIndex)
     return supportedFormats.includes(fileExtension)
-  }
-
-  const addTimeStampToFileName = (file: File) => {
-    const newName = `${Date.now()}_${createUuid()}_${file.name}`
-    return new File([file], newName, {
-      type: file.type,
-      lastModified: file.lastModified,
-    })
   }
 
   const sanitizeClientFiles = (minioFiles: UploadMinioFile[]) => {

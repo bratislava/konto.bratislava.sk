@@ -123,17 +123,7 @@
             "typOsoby": {
               "title": "TypOsoby",
               "type": "string",
-              "format": "ciselnik",
-              "oneOf": [
-                {
-                  "const": "fo",
-                  "title": "FO"
-                },
-                {
-                  "const": "po",
-                  "title": "PO"
-                }
-              ]
+              "format": "ciselnik"
             },
             "kontakt": {
               "title": "Kontakt",

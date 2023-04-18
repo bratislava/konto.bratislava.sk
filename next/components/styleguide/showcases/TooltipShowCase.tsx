@@ -1,5 +1,3 @@
-import { FC } from 'react'
-
 import Tooltip from '../../forms/info-components/Tooltip/Tooltip'
 import { Stack } from '../Stack'
 import { Wrapper } from '../Wrapper'

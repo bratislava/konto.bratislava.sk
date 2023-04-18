@@ -764,9 +764,12 @@ export const useFormSubmitter = (slug: string) => {
       logger.error(error)
       if (error instanceof ApiError) {
         setErrors(error.errors)
+        logger.warn('Form api errors', error.errors)
       } else if (error instanceof Error) {
+        logger.warn('Form non-api errors', error.errors)
         setErrors([t([`errors.${error?.message}`, 'errors.unknown'])])
       } else {
+        logger.error('Form unknown error', error.errors)
         setErrors([t('errors.unknown')])
       }
     }

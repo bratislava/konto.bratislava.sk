@@ -7,6 +7,7 @@ import { GetServerSidePropsContext } from 'next'
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
 
 export const getServerSideProps = async (ctx: GetServerSidePropsContext) => {
+  if (isProductionDeployment()) return { notFound: true }
   const locale = ctx.locale ?? 'sk'
 
   return {

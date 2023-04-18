@@ -57,6 +57,7 @@ module.exports = {
     'lodash/prefer-noop': 'off',
     /** if comparing values in cx function or creating translations, it's overkill to create variables for that */
     'sonarjs/no-duplicate-string': 'warn',
+    'sonarjs/cognitive-complexity': 'warn',
   },
   ignorePatterns: ['*.config.*', 'graphql', '.eslintrc.js'],
 }

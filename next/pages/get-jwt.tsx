@@ -1,5 +1,6 @@
 import { resetRcApi } from '@utils/api'
 import { ROUTES } from '@utils/constants'
+import logger from '@utils/logger'
 import { AsyncServerProps } from '@utils/types'
 import useAccount, { UserData } from '@utils/useAccount'
 import Button from 'components/forms/simple-components/Button'
@@ -32,7 +33,7 @@ const GetJwt = ({ page }: AsyncServerProps<typeof getServerSideProps>) => {
         setAccessToken(token)
       }
     })().catch((error) => {
-      console.log(error)
+      logger.error(error)
     })
   })
 
@@ -42,7 +43,7 @@ const GetJwt = ({ page }: AsyncServerProps<typeof getServerSideProps>) => {
       const res = await updateUserData({ tier: null })
       alert(`Res: ${JSON.stringify(res)}`)
     } catch (error) {
-      console.log(error)
+      logger.error(error)
       alert(`ERROR`)
     }
   }

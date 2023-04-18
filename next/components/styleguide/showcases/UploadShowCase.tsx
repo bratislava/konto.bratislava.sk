@@ -1,4 +1,5 @@
 import { UploadMinioFile } from '@backend/dtos/minio/upload-minio-file.dto'
+import logger from '@utils/logger'
 import React, { useState } from 'react'
 
 import Upload from '../../forms/widget-components/Upload/Upload'
@@ -22,13 +23,13 @@ const UploadShowCase = () => {
     <Wrapper title="Upload" direction="column">
       <Stack direction="column">
         <div className="max-w-96 w-full">
-          <UploadedFile fileName="fish.jpg" onRemove={() => console.log('REMOVE')} />
+          <UploadedFile fileName="fish.jpg" onRemove={() => logger.info('Uploaded file deleted')} />
         </div>
         <div className="max-w-96 w-full">
           <UploadedFile
             fileName="something_wrong.jp"
             errorMessage="Error message"
-            onRemove={() => console.log('REMOVE')}
+            onRemove={() => logger.info('Uploaded file deleted')}
           />
         </div>
       </Stack>
@@ -39,7 +40,7 @@ const UploadShowCase = () => {
           value={files1}
           onChange={(newValue) => {
             setFiles1(newValue)
-            console.log('REF RESULT:', ref.current?.getAttribute('data-value'))
+            logger.info('REF RESULT:', ref.current?.getAttribute('data-value'))
           }}
         />
         <Upload type="button" disabled />

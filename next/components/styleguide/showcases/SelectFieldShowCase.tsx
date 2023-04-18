@@ -1,3 +1,4 @@
+import logger from '@utils/logger'
 import { SelectOption } from 'components/forms/widget-components/SelectField/SelectOption.interface'
 import React, { useState } from 'react'
 
@@ -52,7 +53,7 @@ const SelectFieldShowCase = () => {
           enumOptions={enumOptions}
           disabled
           type="one"
-          onChange={(value) => console.log(value)}
+          onChange={(value) => logger.info('Select change', value)}
         />
       </Stack>
       <Stack>
@@ -101,13 +102,13 @@ const SelectFieldShowCase = () => {
           label="Select Field"
           errorMessage={['Error message']}
           type="one"
-          onChange={(value) => console.log(value)}
+          onChange={(value) => logger.info('Select change', value)}
         />
         <SelectField
           label="Select Field"
           helptext="This is simple description"
           type="one"
-          onChange={(value) => console.log(value)}
+          onChange={(value) => logger.info('Select change', value)}
         />
       </Stack>
       <Stack>
@@ -115,14 +116,14 @@ const SelectFieldShowCase = () => {
           label="Select Field"
           tooltip="This is example of tooltip"
           type="one"
-          onChange={(value) => console.log(value)}
+          onChange={(value) => logger.info('Select change', value)}
         />
         <SelectField
           label="Select Field"
           tooltip="This is another example of tooltip"
           type="one"
           required
-          onChange={(value) => console.log(value)}
+          onChange={(value) => logger.info('Select change', value)}
         />
       </Stack>
     </Wrapper>

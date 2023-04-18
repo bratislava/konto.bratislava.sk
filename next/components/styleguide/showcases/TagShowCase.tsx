@@ -1,3 +1,4 @@
+import logger from '@utils/logger'
 import Tag from 'components/forms/simple-components/Tag'
 import { useState } from 'react'
 
@@ -30,7 +31,7 @@ const TagShowCase = () => {
         <Tag
           text="Console.log onRemove"
           size="small"
-          onRemove={() => console.log('\nTAG REMOVED\n')}
+          onRemove={() => logger.info('TAG REMOVED')}
           removable
         />
       </Stack>
@@ -48,14 +49,14 @@ const TagShowCase = () => {
         <Tag
           text="Console.log onRemove"
           size="large"
-          onRemove={() => console.log('\nTAG REMOVED\n')}
+          onRemove={() => logger.info('TAG REMOVED')}
           removable
           branded
         />
         <Tag
           text="Console.log onRemove"
           size="small"
-          onRemove={() => console.log('\nTAG REMOVED\n')}
+          onRemove={() => logger.info('TAG REMOVED')}
           removable
           branded
         />

@@ -145,11 +145,11 @@ const CognitoPrototype = ({ page }: AsyncServerProps<typeof getServerSideProps>)
         // refreshes credentials using AWS.CognitoIdentity.getCredentialsForIdentity()
         AWS.config.credentials.refresh((error) => {
           if (error) {
-            console.error(error)
+            logger.error(error)
           } else {
             // Instantiate aws sdk service objects now that the credentials have been updated.
             // example: var s3 = new AWS.S3();
-            console.log('Successfully logged!')
+            logger.info('Successfully logged!')
           }
         })
 
@@ -158,20 +158,20 @@ const CognitoPrototype = ({ page }: AsyncServerProps<typeof getServerSideProps>)
 
       onFailure(err) {
         alert(err.message || JSON.stringify(err))
-        console.log(err)
+        logger.error(err)
       },
 
       newPasswordRequired: (userAttributes, requiredAttributes) => {
         alert('newPasswordRequired', userAttributes, requiredAttributes)
-        console.log('newPasswordRequired', userAttributes, requiredAttributes)
+        logger.warn('newPasswordRequired', userAttributes, requiredAttributes)
       },
       mfaRequired: (challengeName, challengeParameters) => {
         alert(`mfaRequired, ${challengeName}, ${JSON.stringify(challengeParameters)}`)
-        console.log('mfaRequired', challengeName, challengeParameters)
+        logger.warn('mfaRequired', challengeName, challengeParameters)
       },
       totpRequired: (challengeName, challengeParameters) => {
         alert(`totpRequired, ${challengeName}, ${JSON.stringify(challengeParameters)}`)
-        console.log('totpRequired', challengeName, challengeParameters)
+        logger.warn('totpRequired', challengeName, challengeParameters)
       },
       customChallenge: (challengeParameters) => {
         alert(
@@ -179,15 +179,15 @@ const CognitoPrototype = ({ page }: AsyncServerProps<typeof getServerSideProps>)
             challengeParameters,
           )}`,
         )
-        console.log('customChallenge', challengeName, challengeParameters)
+        logger.warn('customChallenge', challengeName, challengeParameters)
       },
       mfaSetup: (challengeName, challengeParameters) => {
         alert(`mfaSetup, ${challengeName}, ${JSON.stringify(challengeParameters)}`)
-        console.log('mfaSetup', challengeName, challengeParameters)
+        logger.warn('mfaSetup', challengeName, challengeParameters)
       },
       selectMFAType: (challengeName, challengeParameters) => {
         alert(`selectmfatype, ${challengeName}, ${JSON.stringify(challengeParameters)}`)
-        console.log('selectmfatype', challengeName, challengeParameters)
+        logger.warn('selectmfatype', challengeName, challengeParameters)
       },
     })
   }
@@ -206,7 +206,7 @@ const CognitoPrototype = ({ page }: AsyncServerProps<typeof getServerSideProps>)
         }
         // JSON stringify pretty print obj
         setSerializedUserData(JSON.stringify(obj, null, 2))
-        console.log('obj', obj)
+        logger.info('obj', obj)
       })
     } else {
       setSerializedUserData('')
@@ -237,7 +237,7 @@ const CognitoPrototype = ({ page }: AsyncServerProps<typeof getServerSideProps>)
             return
           }
           alert(`call result: ${JSON.stringify(result)}`)
-          console.log(`call result: ${JSON.stringify(result)}`)
+          logger.info(`call result: ${JSON.stringify(result)}`)
         },
       )
     }
@@ -248,7 +248,7 @@ const CognitoPrototype = ({ page }: AsyncServerProps<typeof getServerSideProps>)
     if (cognitoUser) {
       cognitoUser.getAttributeVerificationCode('phone_number', {
         onSuccess(result) {
-          console.log(`call result: ${JSON.stringify(result)}`)
+          logger.info(`call result: ${JSON.stringify(result)}`)
         },
         onFailure(err) {
           alert(err.message || JSON.stringify(err))

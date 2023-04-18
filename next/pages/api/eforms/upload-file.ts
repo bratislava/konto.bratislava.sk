@@ -44,7 +44,7 @@ const handleBucketCreation = async () => {
   if (!isBucketExisting) {
     await minioClient
       .makeBucket(bucketName, region)
-      .then(() => console.log(`Bucket ${bucketName} created successfully in ${region}`))
+      .then(() => logger.info(`Bucket ${bucketName} created successfully in ${region}`))
   }
 }
 

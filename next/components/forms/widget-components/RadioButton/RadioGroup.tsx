@@ -24,7 +24,15 @@ type RadioGroupBase = {
 }
 
 const RadioGroup = (props: RadioGroupBase) => {
-  const { children, className, orientations = 'column', required, label } = props
+  const {
+    children,
+    className,
+    orientations = 'column',
+    required,
+    label,
+    isDisabled,
+    errorMessage,
+  } = props
   const state = useRadioGroupState(props)
   const { radioGroupProps, labelProps, errorMessageProps } = useRadioGroup(props, state)
 
@@ -46,11 +54,8 @@ const RadioGroup = (props: RadioGroupBase) => {
           {children}
         </div>
       </RadioContext.Provider>
-      {!props.isDisabled && (
-        <FieldErrorMessage
-          errorMessage={props.errorMessage}
-          errorMessageProps={errorMessageProps}
-        />
+      {!isDisabled && (
+        <FieldErrorMessage errorMessage={errorMessage} errorMessageProps={errorMessageProps} />
       )}
     </div>
   )

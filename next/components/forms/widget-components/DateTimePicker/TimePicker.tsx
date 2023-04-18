@@ -35,7 +35,7 @@ const Button = ({ children, disabled, ...rest }: ButtonBase) => {
 }
 
 export const convertTimeToValidFormat = (timeValue: string) => {
-  const [hours, minutes] = timeValue?.split(':')
+  const [hours, minutes] = timeValue ? timeValue.split(':') : ['00', '00']
   return `${hours ? padStart(hours, 2, '0') : ''}${hours || minutes ? ':' : ''}${
     minutes ? padStart(minutes, 2, '0') : ''
   }`

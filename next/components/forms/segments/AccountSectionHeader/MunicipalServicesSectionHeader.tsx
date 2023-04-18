@@ -1,6 +1,5 @@
-import SelectField, {
-  SelectOption,
-} from 'components/forms/widget-components/SelectField/SelectField'
+import SelectField from 'components/forms/widget-components/SelectField/SelectField'
+import { SelectOption } from 'components/forms/widget-components/SelectField/SelectOption.interface'
 import { Dispatch, SetStateAction } from 'react'
 import { useWindowSize } from 'usehooks-ts'
 

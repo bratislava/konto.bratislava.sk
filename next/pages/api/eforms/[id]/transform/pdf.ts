@@ -4,8 +4,9 @@ import logger from '@utils/logger'
 import type { NextApiRequest, NextApiResponse } from 'next'
 
 const handler = async (req: NextApiRequest, res: NextApiResponse) => {
-  if (req.method !== 'POST' || typeof req.body?.data !== 'string')
+  if (req.method !== 'POST' || typeof req.body?.data !== 'string') {
     return res.status(400).json({ message: 'Invalid method or missing "data" field on body' })
+  }
 
   let eform: EFormValue
   try {
@@ -22,11 +23,10 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
     })
     if (response.ok) {
       const stream = response.body as unknown as NodeJS.ReadableStream
-      stream.pipe(res)
-    } else {
-      const error = await response.json()
-      return res.status(response.status).json(error)
+      return stream.pipe(res)
     }
+    const error = await response.json()
+    return res.status(response.status).json(error)
   } catch (error) {
     logger.error(error)
     return res.status(500).json({ message: 'Internal server error' })

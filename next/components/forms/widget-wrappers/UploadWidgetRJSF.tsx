@@ -29,8 +29,8 @@ const UploadWidgetRJSF = (props: UploadWidgetRJSFProps) => {
     type = 'button',
     className,
     accordion,
-    spaceBottom = 'small',
-    spaceTop = 'none',
+    spaceBottom = 'none',
+    spaceTop = 'large',
   } = options
 
   const [innerValue, setInnerValue] = useState<UploadMinioFile[]>([])

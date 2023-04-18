@@ -2,10 +2,10 @@ import { EnumOptionsType, StrictRJSFSchema, WidgetProps } from '@rjsf/utils'
 import { WidgetOptions } from 'components/forms/types/WidgetOptions'
 import WidgetWrapper from 'components/forms/widget-wrappers/WidgetWrapper'
 import React from 'react'
-import { useEffectOnce } from 'usehooks-ts'
 
 import { ExplicitOptionalType } from '../types/ExplicitOptional'
-import SelectField, { SelectOption } from '../widget-components/SelectField/SelectField'
+import SelectField from '../widget-components/SelectField/SelectField'
+import { SelectOption } from '../widget-components/SelectField/SelectOption.interface'
 
 type SelectRJSFOptions = {
   enumOptions?: EnumOptionsType[]
@@ -42,10 +42,10 @@ const SelectFieldWidgetRJSF = (props: SelectFieldWidgetRJSFProps) => {
     dropdownDivider,
     className,
     explicitOptional,
-    spaceBottom = 'default',
-    spaceTop = 'none',
-    hideScrollbar,
-    alwaysOneSelected,
+    spaceBottom = 'none',
+    spaceTop = 'large',
+    hideScrollbar = false,
+    alwaysOneSelected = false,
     maxWordSize,
   } = options
 
@@ -53,7 +53,8 @@ const SelectFieldWidgetRJSF = (props: SelectFieldWidgetRJSFProps) => {
 
   const handleOnChangeMultiple = (newValue?: EnumOptionsType[]) => {
     if (newValue) {
-      const optionValues: any[] = newValue.map((option: EnumOptionsType) => option.value)
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-return
+      const optionValues = newValue.map((option: EnumOptionsType) => option.value)
       onChange(optionValues)
     } else {
       onChange()
@@ -69,12 +70,12 @@ const SelectFieldWidgetRJSF = (props: SelectFieldWidgetRJSFProps) => {
   }
 
   const handleOnChange = (newValue?: SelectOption[]) => {
-    const originalNewValue = enumOptions?.filter(({ schema }: EnumOptionsType) => {
+    const originalNewValue = enumOptions?.filter((option: EnumOptionsType) => {
       return newValue?.some((value) => {
         return (
-          schema?.title === value.title &&
-          schema?.description === value.description &&
-          schema?.const === value.const
+          option.schema?.title === value.title &&
+          option.schema?.description === value.description &&
+          option.schema?.const === value.const
         )
       })
     })
@@ -131,6 +132,9 @@ const SelectFieldWidgetRJSF = (props: SelectFieldWidgetRJSFProps) => {
         className={className}
         onChange={handleOnChange}
         explicitOptional={explicitOptional}
+        hideScrollbar={hideScrollbar}
+        alwaysOneSelected={alwaysOneSelected}
+        maxWordSize={maxWordSize}
       />
     </WidgetWrapper>
   )

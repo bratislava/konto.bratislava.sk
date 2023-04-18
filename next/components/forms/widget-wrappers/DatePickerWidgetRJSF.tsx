@@ -33,8 +33,8 @@ const DatePickerWidgetRJSF = ({
     tooltip,
     explicitOptional,
     accordion,
-    spaceBottom = 'default',
-    spaceTop = 'none',
+    spaceBottom = 'none',
+    spaceTop = 'large',
   } = options
 
   const handleOnChange = (newValue?: DateValue) =>

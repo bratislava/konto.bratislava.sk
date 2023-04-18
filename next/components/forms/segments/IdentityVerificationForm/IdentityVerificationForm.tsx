@@ -12,7 +12,7 @@ import { useTranslation } from 'next-i18next'
 import { useState } from 'react'
 import { Controller } from 'react-hook-form'
 import Turnstile from 'react-turnstile'
-import { useTimeout } from 'usehooks-ts'
+import { useCounter, useTimeout } from 'usehooks-ts'
 
 interface Data {
   rc: string
@@ -51,6 +51,7 @@ const schema = {
 
 const IdentityVerificationForm = ({ onSubmit, error }: Props) => {
   const { t } = useTranslation('account')
+  const { count: captchaKey, increment: incrementCaptchaKey } = useCounter(0)
   const router = useRouter()
   const {
     handleSubmit,
@@ -71,9 +72,13 @@ const IdentityVerificationForm = ({ onSubmit, error }: Props) => {
   return (
     <form
       className="flex flex-col space-y-4"
-      onSubmit={handleSubmit((data: Data) => onSubmit(data.rc, data.idCard, data.turnstileToken))}
+      onSubmit={handleSubmit((data: Data) => {
+        incrementCaptchaKey()
+        return onSubmit(data.rc, data.idCard, data.turnstileToken)
+      })}
     >
       <h1 className="text-h3">{t('identity_verification_title')}</h1>
+      <p className="text-p2">{t('identity_verification_subtitle')}</p>
       <AccountErrorAlert error={error} />
       <Controller
         name="rc"
@@ -83,8 +88,6 @@ const IdentityVerificationForm = ({ onSubmit, error }: Props) => {
             required
             label={t('rc_label')}
             placeholder={t('rc_placeholder')}
-            tooltip={t('rc_tooltip')}
-            tooltipPosition="bottom-left"
             {...field}
             errorMessage={errors.rc}
           />
@@ -99,8 +102,6 @@ const IdentityVerificationForm = ({ onSubmit, error }: Props) => {
             label={t('id_card_label')}
             placeholder={t('id_card_placeholder')}
             helptext={t('id_card_description')}
-            tooltip={t('id_card_tooltip')}
-            tooltipPosition="bottom-left"
             {...field}
             errorMessage={errors.idCard}
           />
@@ -113,6 +114,7 @@ const IdentityVerificationForm = ({ onSubmit, error }: Props) => {
           <>
             <Turnstile
               theme="light"
+              key={captchaKey}
               sitekey={process.env.NEXT_PUBLIC_CLOUDFLARE_TURNSTILE_SITE_KEY}
               onVerify={(token) => {
                 setCaptchaWarning('hide')

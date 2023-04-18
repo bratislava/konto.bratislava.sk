@@ -13,7 +13,7 @@ import { useTranslation } from 'next-i18next'
 import { useState } from 'react'
 import { Controller } from 'react-hook-form'
 import Turnstile from 'react-turnstile'
-import { useTimeout } from 'usehooks-ts'
+import { useCounter, useTimeout } from 'usehooks-ts'
 
 interface Data {
   email: string
@@ -91,6 +91,7 @@ const schema = {
 
 const RegisterForm = ({ onSubmit, error, lastEmail }: Props) => {
   const { t } = useTranslation('account')
+  const { count: captchaKey, increment: incrementCaptchaKey } = useCounter(0)
   const {
     handleSubmit,
     control,
@@ -123,6 +124,8 @@ const RegisterForm = ({ onSubmit, error, lastEmail }: Props) => {
           given_name: data.given_name,
           family_name: data.family_name,
         }
+        // force rerender on submit - captcha is valid only for single submit
+        incrementCaptchaKey()
         return onSubmit(
           data.email,
           data.password,
@@ -228,6 +231,7 @@ const RegisterForm = ({ onSubmit, error, lastEmail }: Props) => {
           <>
             <Turnstile
               theme="light"
+              key={captchaKey}
               sitekey={process.env.NEXT_PUBLIC_CLOUDFLARE_TURNSTILE_SITE_KEY}
               onVerify={(token) => {
                 setCaptchaWarning('hide')

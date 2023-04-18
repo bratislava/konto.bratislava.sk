@@ -1,7 +1,8 @@
 import ArrowLeft from '@assets/images/new-icons/ui/arrow-left.svg'
 import CloseIcon from '@assets/images/new-icons/ui/cross.svg'
+import { handleOnKeyPress } from '@utils/utils'
 import cx from 'classnames'
-import { Dispatch, SetStateAction, useState } from 'react'
+import React, { Dispatch, SetStateAction, useState } from 'react'
 
 import Button from '../../simple-components/Button'
 
@@ -10,7 +11,7 @@ type ModalBase = {
   divider?: boolean
   onClose: () => void
   onSubmit: (params: OnSubmitParams) => void
-  content: (({}: any) => JSX.Element)[] | (({}: any) => JSX.Element)
+  content: ((value: any) => JSX.Element)[] | ((value: any) => JSX.Element)
   header?: string
   confirmLabel?: string
   cancelLabel?: string
@@ -55,10 +56,15 @@ const ModalHeader = ({
     <div className={headerStyle}>
       {currentScreenIndex > 0 ? (
         <div
+          role="button"
+          tabIndex={0}
           className="ml-1 flex flex-row cursor-pointer items-center"
           onClick={() => {
             setCurrentScreenIndex(currentScreenIndex - 1)
           }}
+          onKeyPress={(event: React.KeyboardEvent) =>
+            handleOnKeyPress(event, () => setCurrentScreenIndex(currentScreenIndex - 1))
+          }
         >
           <ArrowLeft />
         </div>
@@ -181,18 +187,31 @@ const Modal = ({
     return null
   }
 
+  const handleOnClick = () => {
+    setCurrentScreenIndex(0)
+    onClose()
+  }
+
   const hasHeader = Array.isArray(content) || Boolean(header)
   const hasFooter = Array.isArray(content)
   return (
     <div
+      role="button"
+      tabIndex={0}
       className="z-50 h-full fixed w-full inset-x-0 top-0 flex items-center justify-center"
       style={{ background: 'rgba(var(--color-gray-800), .4)', marginTop: '0' }}
-      onClick={() => {
-        setCurrentScreenIndex(0)
-        onClose()
-      }}
+      onClick={handleOnClick}
+      onKeyPress={(event: React.KeyboardEvent) => handleOnKeyPress(event, handleOnClick)}
     >
-      <div onClick={(e) => e.stopPropagation()} className={cx('rounded-full shadow-lg', className)}>
+      <div
+        role="button"
+        tabIndex={0}
+        onClick={(e) => e.stopPropagation()}
+        onKeyPress={(event: React.KeyboardEvent) =>
+          handleOnKeyPress(event, () => event.stopPropagation())
+        }
+        className={cx('rounded-full shadow-lg', className)}
+      >
         <ModalHeader
           header={header}
           currentScreenIndex={currentScreenIndex}

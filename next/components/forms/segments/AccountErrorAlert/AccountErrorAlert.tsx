@@ -1,3 +1,4 @@
+import logger from '@utils/logger'
 import { Args, formatUnicorn } from '@utils/string'
 import { AccountError } from '@utils/useAccount'
 import Alert from 'components/forms/info-components/Alert'
@@ -18,9 +19,14 @@ const AccountErrorAlert = ({ error, close, solid, args = {} }: Props) => {
     return null
   }
 
-  const errorMessage = i18n.exists(`account:errors.${error.code}`)
-    ? formatUnicorn(t(`account:errors.${error.code}`), args)
-    : t(`account:errors.unknown`)
+  let errorMessage
+  if (i18n.exists(`account:errors.${error.code}`)) {
+    errorMessage = formatUnicorn(t(`account:errors.${error.code}`), args)
+    logger.error('Known error', error.code, errorMessage)
+  } else {
+    errorMessage = t(`account:errors.unknown`)
+    logger.error('Unknown error', error.code, errorMessage)
+  }
   return (
     <Alert
       message={<AccountMarkdown content={errorMessage} variant="sm" disableRemarkGfm />}

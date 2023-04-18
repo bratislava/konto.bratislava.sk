@@ -109,7 +109,7 @@ const PasswordChangeForm = ({ onSubmit, error }: Props) => {
       <Button
         className="min-w-full"
         type="submit"
-        text={t('password_change_submit')}
+        text={t('old_password_submit_new')}
         variant="category"
         disabled={isSubmitting}
       />

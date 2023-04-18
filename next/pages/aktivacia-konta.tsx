@@ -1,18 +1,19 @@
 import { ROUTES } from '@utils/constants'
+import logger from '@utils/logger'
 import { AsyncServerProps } from '@utils/types'
 import useAccount, { AccountStatus } from '@utils/useAccount'
+import { isProductionDeployment } from '@utils/utils'
 import AccountContainer from 'components/forms/segments/AccountContainer/AccountContainer'
 import AccountSuccessAlert from 'components/forms/segments/AccountSuccessAlert/AccountSuccessAlert'
 import MigrationForm from 'components/forms/segments/MigrationForm/MigrationForm'
 import NewPasswordForm from 'components/forms/segments/NewPasswordForm/NewPasswordForm'
 import LoginRegisterLayout from 'components/layouts/LoginRegisterLayout'
 import { GetServerSidePropsContext } from 'next'
+import { useRouter } from 'next/router'
 import { useTranslation } from 'next-i18next'
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
-import { useRouter } from 'next/router'
 
 import PageWrapper from '../components/layouts/PageWrapper'
-import { isProductionDeployment } from '../utils/utils'
 
 export const getServerSideProps = async (ctx: GetServerSidePropsContext) => {
   const locale = ctx.locale ?? 'sk'
@@ -28,7 +29,7 @@ export const getServerSideProps = async (ctx: GetServerSidePropsContext) => {
             locale: l,
           })),
       },
-      isProductionDeployment: isProductionDeployment(),
+      isProductionDeploy: isProductionDeployment(),
       ...(await serverSideTranslations(locale)),
     },
   }
@@ -39,10 +40,10 @@ const MigrationPage = ({ page }: AsyncServerProps<typeof getServerSideProps>) =>
   const { t } = useTranslation('account')
   const router = useRouter()
 
-  const onConfirm = () => {
+  const onConfirm = async () => {
     // we know all of the accounts from previous year are verified
     setStatus(AccountStatus.IdentityVerificationSuccess)
-    router.push(ROUTES.HOME)
+    await router.push(ROUTES.HOME).catch((error_) => logger.error('Redirect failed', error_))
   }
 
   return (

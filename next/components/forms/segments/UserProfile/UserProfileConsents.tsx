@@ -8,14 +8,6 @@ import UserConsent from './UserConsent'
 import UserProfileSection from './UserProfileSection'
 import UserProfileSectionHeader from './UserProfileSectionHeader'
 
-export interface Consent {
-  id: string
-  title: string
-  text: string
-  isDisabled: boolean
-  isSelected: boolean
-}
-
 const UserProfileConsents = () => {
   const { t } = useTranslation('account')
   const user = useUser()

@@ -1,3 +1,5 @@
+import React from 'react'
+
 export const arrayify = (input: string | string[] | undefined | null) => {
   if (input === undefined || input === null) {
     return [] as undefined[]
@@ -50,4 +52,14 @@ export const isObject = (value: any) =>
 
 export const getLanguageKey = (currentLanguage?: string) => {
   return currentLanguage === 'sk' ? 'sk' : 'en'
+}
+
+export const handleOnKeyPress = (
+  event: React.KeyboardEvent,
+  callback?: () => void,
+  key = 'Enter',
+) => {
+  if (event.key === key) {
+    callback?.()
+  }
 }

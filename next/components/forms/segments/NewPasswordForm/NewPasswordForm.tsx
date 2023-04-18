@@ -1,3 +1,4 @@
+import logger from '@utils/logger'
 import { formatUnicorn } from '@utils/string'
 import { AccountError } from '@utils/useAccount'
 import useHookForm from '@utils/useHookForm'
@@ -84,7 +85,9 @@ const NewPasswordForm = ({ onSubmit, error, onResend, lastEmail, fromMigration }
       className="flex flex-col space-y-4"
       onSubmit={handleSubmit((data: Data) => {
         setLastVerificationCode(data.verificationCode)
-        onSubmit(data.verificationCode, data.password)
+        onSubmit(data.verificationCode, data.password).catch((error_) =>
+          logger.error('Submit failed', error_),
+        )
       })}
     >
       <h1 className="text-h3">

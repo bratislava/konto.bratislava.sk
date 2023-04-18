@@ -4,6 +4,7 @@ import ProfileOutlinedIcon from '@assets/images/new-icons/ui/profile.svg'
 import SearchIcon from '@assets/images/new-icons/ui/search.svg'
 import VolumeIcon from '@assets/images/new-icons/ui/speaker.svg'
 import { ROUTES } from '@utils/constants'
+import logger from '@utils/logger'
 import useAccount, { UserData } from '@utils/useAccount'
 import useElementSize from '@utils/useElementSize'
 import { getLanguageKey } from '@utils/utils'
@@ -53,6 +54,46 @@ export interface MenuItem {
   backgroundColor?: string // ex. bg-negative-700
 }
 
+const Avatar = ({ userData }: { userData?: UserData | null }) => {
+  return (
+    <div className="flex relative flex-row items-start gap-2 rounded-full p-2 bg-main-100">
+      <div className="flex h-6 w-6 items-center justify-center font-semibold text-main-700">
+        <span className="uppercase">
+          {userData && userData.given_name && userData.family_name ? (
+            userData.given_name[0] + userData.family_name[0]
+          ) : (
+            <ProfileOutlinedIcon className="w-6 h-6 text-main-700" />
+          )}
+        </span>
+      </div>
+    </div>
+  )
+}
+
+const AccountMenuItem = ({ menuItem }: { menuItem: MenuItem }) => {
+  const { t } = useTranslation()
+
+  return (
+    <div className="cursor-pointer flex py-2 px-5">
+      <div
+        className={`flex relative flex-row items-start gap-2 rounded-xl p-4 ${
+          menuItem.backgroundColor ?? 'bg-gray-50'
+        }`}
+      >
+        <div className="flex h-2 w-2 items-center justify-center">
+          <span>{menuItem.icon}</span>
+        </div>
+      </div>
+      <div
+        className="text-p2 hover:text-p2-semibold w-fit-title text-font p-2 whitespace-nowrap"
+        title={t(menuItem.title)}
+      >
+        {t(menuItem.title)}
+      </div>
+    </div>
+  )
+}
+
 export const AccountNavBar = ({
   className,
   sectionsList,
@@ -74,12 +115,12 @@ export const AccountNavBar = ({
   const { t } = useTranslation(['common', 'account'])
   const router = useRouter()
 
-  const onRouteChange = (selectedMenuItem: MenuItem) => {
+  const onRouteChange = async (selectedMenuItem: MenuItem) => {
     if (selectedMenuItem.link === '/logout') {
       logout()
-      router.push(ROUTES.LOGIN)
+      await router.push(ROUTES.LOGIN)
     } else {
-      router.push(selectedMenuItem.link)
+      await router.push(selectedMenuItem.link)
     }
   }
 
@@ -87,7 +128,9 @@ export const AccountNavBar = ({
 
   const onSelectMenuItem = (key: React.Key) => {
     const selectedMenuItem = menuItems?.find((opt) => opt.id.toString() === key)
-    if (selectedMenuItem) onRouteChange(selectedMenuItem)
+    if (selectedMenuItem) {
+      onRouteChange(selectedMenuItem).catch((error_) => logger.error('Failed redirect', error_))
+    }
   }
 
   const isActive = (sectionItem: MenuItem) =>
@@ -244,6 +287,7 @@ export const AccountNavBar = ({
           )}
 
           <button
+            type="button"
             onClick={() => (isAuth ? setBurgerOpen(!burgerOpen) : router.push(ROUTES.LOGIN))}
             className="-mr-4 px-4 py-5"
           >
@@ -267,46 +311,6 @@ export const AccountNavBar = ({
             />
           )}
         </div>
-      </div>
-    </div>
-  )
-}
-
-const AccountMenuItem = ({ menuItem }: { menuItem: MenuItem }) => {
-  const { t } = useTranslation()
-
-  return (
-    <div className="cursor-pointer flex py-2 px-5">
-      <div
-        className={`flex relative flex-row items-start gap-2 rounded-xl p-4 ${
-          menuItem.backgroundColor ?? 'bg-gray-50'
-        }`}
-      >
-        <div className="flex h-2 w-2 items-center justify-center">
-          <span>{menuItem.icon}</span>
-        </div>
-      </div>
-      <div
-        className="text-p2 hover:text-p2-semibold w-fit-title text-font p-2 whitespace-nowrap"
-        title={t(menuItem.title)}
-      >
-        {t(menuItem.title)}
-      </div>
-    </div>
-  )
-}
-
-const Avatar = ({ userData }: { userData?: UserData | null }) => {
-  return (
-    <div className="flex relative flex-row items-start gap-2 rounded-full p-2 bg-main-100">
-      <div className="flex h-6 w-6 items-center justify-center font-semibold text-main-700">
-        <span className="uppercase">
-          {userData && userData.given_name && userData.family_name ? (
-            userData.given_name[0] + userData.family_name[0]
-          ) : (
-            <ProfileOutlinedIcon className="w-6 h-6 text-main-700" />
-          )}
-        </span>
       </div>
     </div>
   )

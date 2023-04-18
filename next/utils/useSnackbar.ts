@@ -2,9 +2,22 @@ import { useSnackbar as useSimpleSnackbar } from 'react-simple-snackbar'
 
 type Variant = 'info' | 'success' | 'error' | 'warning'
 
-type Options = {
+type SnackbarHookOptions = {
   variant?: Variant
 }
+
+type SnackbarOptions =
+  | {
+      message: string
+      variant: 'success' | 'warning' | 'error' | 'info'
+      duration?: number
+    }
+  | number
+
+type SnackbarHookResult = [
+  showSnackbar: (message: string, options?: SnackbarOptions) => void,
+  closeSnackbar: () => void,
+]
 
 const getBackgroundColor = (variant: Variant) => {
   switch (variant) {
@@ -20,10 +33,11 @@ const getBackgroundColor = (variant: Variant) => {
   }
 }
 
-export default function useSnackbar({ variant = 'info' }: Options) {
+export default function useSnackbar({ variant = 'info' }: SnackbarHookOptions): SnackbarHookResult {
+  // eslint-disable-next-line @typescript-eslint/no-unsafe-call
   return useSimpleSnackbar({
     style: {
       backgroundColor: getBackgroundColor(variant),
     },
-  })
+  }) as SnackbarHookResult
 }

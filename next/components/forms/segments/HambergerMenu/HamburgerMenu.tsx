@@ -1,8 +1,9 @@
+import { handleOnKeyPress } from '@utils/utils'
 import cx from 'classnames'
 import { MenuItem } from 'components/forms/segments/AccountNavBar/AccountNavBar'
-import { useTranslation } from 'next-i18next'
 import Link from 'next/link'
 import { useRouter } from 'next/router'
+import { useTranslation } from 'next-i18next'
 
 interface IProps {
   sectionsList?: MenuItem[]
@@ -29,7 +30,10 @@ const Item = ({
 
   return (
     <div
+      role="button"
+      tabIndex={0}
       onClick={onClick}
+      onKeyPress={(event) => handleOnKeyPress(event, onClick)}
       className={cx(
         'text-p2-semibold rounded-lg p-4 flex cursor-pointer border-b-2 border-transparent hover:text-main-700 hover:bg-main-100 transition-all',
         {

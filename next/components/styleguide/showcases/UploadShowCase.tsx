@@ -1,14 +1,13 @@
-import React, { FC, useState } from 'react'
+import { UploadMinioFile } from '@backend/dtos/minio/upload-minio-file.dto'
+import logger from '@utils/logger'
+import React, { useState } from 'react'
 
-import { UploadMinioFile } from '../../../backend/dtos/minio/upload-minio-file.dto'
 import Upload from '../../forms/widget-components/Upload/Upload'
 import UploadedFile from '../../forms/widget-components/Upload/UploadedFile'
 import { Stack } from '../Stack'
 import { Wrapper } from '../Wrapper'
 
-interface UploadShowCaseProps {}
-
-const UploadShowCase: FC<UploadShowCaseProps> = ({}: UploadShowCaseProps) => {
+const UploadShowCase = () => {
   const [files1, setFiles1] = useState<UploadMinioFile[]>([])
   const [files2, setFiles2] = useState<UploadMinioFile[]>([])
   const [files3, setFiles3] = useState<UploadMinioFile[]>([])
@@ -24,13 +23,13 @@ const UploadShowCase: FC<UploadShowCaseProps> = ({}: UploadShowCaseProps) => {
     <Wrapper title="Upload" direction="column">
       <Stack direction="column">
         <div className="max-w-96 w-full">
-          <UploadedFile fileName="fish.jpg" onRemove={() => console.log('REMOVE')} />
+          <UploadedFile fileName="fish.jpg" onRemove={() => logger.info('Uploaded file deleted')} />
         </div>
         <div className="max-w-96 w-full">
           <UploadedFile
             fileName="something_wrong.jp"
             errorMessage="Error message"
-            onRemove={() => console.log('REMOVE')}
+            onRemove={() => logger.info('Uploaded file deleted')}
           />
         </div>
       </Stack>
@@ -41,7 +40,7 @@ const UploadShowCase: FC<UploadShowCaseProps> = ({}: UploadShowCaseProps) => {
           value={files1}
           onChange={(newValue) => {
             setFiles1(newValue)
-            console.log('REF RESULT:', ref.current?.getAttribute('data-value'))
+            logger.info('REF RESULT:', ref.current?.getAttribute('data-value'))
           }}
         />
         <Upload type="button" disabled />

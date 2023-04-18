@@ -248,7 +248,6 @@ const AccordionTableTaxContent = ({
   size = 'sm',
   icon = false,
   dataType,
-  data,
   shadow = false,
   className,
 }: AccordionBase) => {

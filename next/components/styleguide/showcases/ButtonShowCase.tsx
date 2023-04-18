@@ -5,9 +5,7 @@ import Button from '../../forms/simple-components/Button'
 import { Stack } from '../Stack'
 import { Wrapper } from '../Wrapper'
 
-interface ButtonShowCaseProps {}
-
-const ButtonShowCase = ({}: ButtonShowCaseProps) => {
+const ButtonShowCase = () => {
   return (
     <Wrapper direction="column" title="Button">
       <Stack>

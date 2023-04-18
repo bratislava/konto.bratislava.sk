@@ -240,6 +240,7 @@ export const AccountProvider = ({ children }: { children: ReactNode }) => {
       cognitoUser.confirmRegistration(verificationCode, true, async (err?: AWSError) => {
         if (err) {
           setError({ ...err })
+          logger.error('AWS error confirmRegistration', err)
           resolve(false)
         } else {
           setStatus(AccountStatus.EmailVerificationSuccess)
@@ -265,6 +266,7 @@ export const AccountProvider = ({ children }: { children: ReactNode }) => {
       cognitoUser.resendConfirmationCode((err?: Error) => {
         if (err) {
           setError({ ...(err as AWSError) })
+          logger.error('AWS error resendVerificationCode', err)
           resolve(false)
         } else {
           resolve(true)
@@ -282,6 +284,7 @@ export const AccountProvider = ({ children }: { children: ReactNode }) => {
         user.updateAttributes(attributeList, (err?: Error) => {
           if (err) {
             setError({ ...(err as AWSError) })
+            logger.error('AWS error updateUserData', err)
             resolve(false)
           } else {
             setUserData((state) => ({
@@ -367,7 +370,7 @@ export const AccountProvider = ({ children }: { children: ReactNode }) => {
         // NOTE: getSession must be called to authenticate user before calling getUserAttributes
         cognitoUser.getUserAttributes((err?: Error, attributes?: CognitoUserAttribute[]) => {
           if (err) {
-            logger.error(err)
+            logger.error('AWS error getUserAttributes', err)
             setUser(null)
             return
           }
@@ -412,6 +415,7 @@ export const AccountProvider = ({ children }: { children: ReactNode }) => {
         (err?: Error) => {
           if (err) {
             setError({ ...(err as AWSError) })
+            logger.error('AWS error signUp', err)
             resolve(false)
           } else {
             setStatus(AccountStatus.EmailVerificationRequired)
@@ -434,6 +438,7 @@ export const AccountProvider = ({ children }: { children: ReactNode }) => {
               customErr.name = 'IncorectPasswordException'
             }
             setError(customErr)
+            logger.error('AWS error changePassword', err)
             resolve(false)
           } else {
             setStatus(AccountStatus.NewPasswordSuccess)
@@ -463,6 +468,7 @@ export const AccountProvider = ({ children }: { children: ReactNode }) => {
         },
         onFailure(err: Error) {
           setError({ ...(err as AWSError) })
+          logger.error('AWS error confirmPassword', err)
           resolve(false)
         },
       })
@@ -495,6 +501,7 @@ export const AccountProvider = ({ children }: { children: ReactNode }) => {
             customErr.code = 'MigrationUserNotFoundException'
             customErr.name = 'MigrationUserNotFoundException'
           }
+          logger.error('AWS error forgotPassword', err)
           setError(customErr)
           resolve(false)
         },
@@ -547,7 +554,7 @@ export const AccountProvider = ({ children }: { children: ReactNode }) => {
               // refreshes credentials using AWS.CognitoIdentity.getCredentialsForIdentity()
               awsCredentials.refresh((err?: AWSError) => {
                 if (err) {
-                  logger.error(err)
+                  logger.error('AWS error login refresh', err)
                   resolve(false)
                 } else {
                   resolve(true)
@@ -561,6 +568,7 @@ export const AccountProvider = ({ children }: { children: ReactNode }) => {
           if (err.code === 'UserNotConfirmedException') {
             setStatus(AccountStatus.EmailVerificationRequired)
           } else {
+            logger.error('AWS error login', err)
             setError({ ...err })
           }
           resolve(false)

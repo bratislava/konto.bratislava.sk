@@ -34,12 +34,12 @@ const sectionsList = [
     icon: <BusinessIcon className="w-6 h-6" />,
     link: ROUTES.MUNICIPAL_SERVICES,
   },
-  {
-    id: 2,
-    title: 'account:account_section_applications.navigation',
-    icon: <MySubmissionIcon className="w-6 h-6" />,
-    link: ROUTES.MY_APPLICATIONS,
-  },
+  // {
+  //   id: 2,
+  //   title: 'account:account_section_applications.navigation',
+  //   icon: <MySubmissionIcon className="w-6 h-6" />,
+  //   link: ROUTES.MY_APPLICATIONS,
+  // },
   {
     id: 3,
     title: 'account:account_section_payment.title',

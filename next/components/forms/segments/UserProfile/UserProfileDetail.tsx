@@ -55,6 +55,7 @@ const UserProfileDetail = (props: UserProfileDetailProps) => {
           text={t('profile_detail.text')}
           isEditing={isEditing}
           underline
+          mainHeader
         >
           <UserProfileDetailsButtons
             formId={formId}

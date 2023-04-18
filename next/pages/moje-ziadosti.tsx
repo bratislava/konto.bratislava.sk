@@ -1,4 +1,5 @@
 import { AsyncServerProps } from '@utils/types'
+import { isProductionDeployment } from '@utils/utils'
 import MyApplicationsSection from 'components/forms/segments/AccountSections/MyApplicationsSection/MyApplicationsSection'
 import AccountPageLayout from 'components/layouts/AccountPageLayout'
 import PageWrapper from 'components/layouts/PageWrapper'
@@ -19,16 +20,20 @@ export const getServerSideProps = async (ctx: GetServerSidePropsContext) => {
             locale: l,
           })),
       },
+      isProductionDeploy: isProductionDeployment(),
       ...(await serverSideTranslations(locale)),
     },
   }
 }
 
-const AccountMyApplicationsPage = ({ page }: AsyncServerProps<typeof getServerSideProps>) => {
+const AccountMyApplicationsPage = ({
+  page,
+  isProductionDeploy,
+}: AsyncServerProps<typeof getServerSideProps>) => {
   return (
     <PageWrapper locale={page.locale} localizations={page.localizations}>
       <AccountPageLayout>
-        <MyApplicationsSection />
+        <MyApplicationsSection isProductionDeploy={isProductionDeploy} />
       </AccountPageLayout>
     </PageWrapper>
   )

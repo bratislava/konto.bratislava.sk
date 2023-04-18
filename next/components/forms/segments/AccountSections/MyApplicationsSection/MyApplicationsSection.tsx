@@ -165,10 +165,15 @@ const conceptCards: MyApplicationsConceptCardBase[] = [
   },
 ]
 
-const MyApplicationsSection = () => {
+type MyApplicationsSectionBase = {
+  isProductionDeploy: boolean
+}
+
+const MyApplicationsSection = ({ isProductionDeploy }: MyApplicationsSectionBase) => {
   const { t } = useTranslation('account')
 
   const [applicationsState, setApplicationsState] = useState<'sent' | 'concept'>('sent')
+  const [isEmptyList, setIsEmptyList] = useState<boolean>(false)
 
   return (
     <div className="flex flex-col">
@@ -177,8 +182,22 @@ const MyApplicationsSection = () => {
         setApplicationsState={setApplicationsState}
         title={t('account_section_applications.navigation')}
       />
-      {applicationsState === 'sent' && <MyApplicationsSentList cards={sentCards} />}
-      {applicationsState === 'concept' && <MyApplicationsConceptList cards={conceptCards} />}
+      {applicationsState === 'sent' && (
+        <MyApplicationsSentList cards={!isEmptyList ? sentCards : []} />
+      )}
+      {applicationsState === 'concept' && (
+        <MyApplicationsConceptList cards={!isEmptyList ? conceptCards : []} />
+      )}
+      {/* Temporary button only for dev */}
+      {!isProductionDeploy && (
+        <button
+          className="text-p3-semibold bg-gray-200 w-max py-1 px-2 mt-4 lg:mt-0 ml-4 md:ml-0"
+          onClick={() => setIsEmptyList((prev) => !prev)}
+          type="button"
+        >
+          {!isEmptyList ? 'Show Placeholder' : 'Show Card List'}
+        </button>
+      )}
     </div>
   )
 }

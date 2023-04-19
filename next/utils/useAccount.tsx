@@ -20,8 +20,8 @@ import * as AWS from 'aws-sdk/global'
 import { AWSError } from 'aws-sdk/global'
 import { useStatusBarContext } from 'components/forms/info-components/StatusBar'
 import AccountMarkdown from 'components/forms/segments/AccountMarkdown/AccountMarkdown'
-import { useTranslation } from 'next-i18next'
 import { useRouter } from 'next/router'
+import { useTranslation } from 'next-i18next'
 import React, { ReactNode, useCallback, useContext, useEffect, useState } from 'react'
 import { useInterval } from 'usehooks-ts'
 
@@ -121,6 +121,7 @@ interface Account {
   resendVerificationCode: () => Promise<boolean>
   verifyIdentity: (rc: string, idCard: string, turnstileToken: string) => Promise<boolean>
   getAccessToken: () => Promise<string | null>
+  lastAccessToken: string
   changePassword: (oldPassword: string, newPassword: string) => Promise<boolean>
   lastEmail: string
   isAuth: boolean
@@ -138,6 +139,7 @@ export const AccountProvider = ({ children }: { children: ReactNode }) => {
     Username: '',
   })
   const [lastMarketingConfirmation, setLastMarketingConfirmation] = useState(false)
+  const [lastAccessToken, setLastAccessToken] = useState('')
   const { setStatusBarContent } = useStatusBarContext()
   const { t } = useTranslation()
 
@@ -312,6 +314,7 @@ export const AccountProvider = ({ children }: { children: ReactNode }) => {
             resolve(null)
           } else if (result) {
             const accessToken = result.getAccessToken().getJwtToken()
+            setLastAccessToken(accessToken)
             resolve(accessToken)
           } else {
             resolve(null)
@@ -378,6 +381,7 @@ export const AccountProvider = ({ children }: { children: ReactNode }) => {
           const userData = userAttributesToObject(attributes)
           setUserData(userData)
           setUser(cognitoUser)
+          setLastAccessToken(result?.getAccessToken().getJwtToken())
         })
       })
     } else {
@@ -389,7 +393,7 @@ export const AccountProvider = ({ children }: { children: ReactNode }) => {
     refreshUserData().catch((error) => logger.error(error))
   }, [refreshUserData])
 
-  const signUp = (
+  const signUp = async (
     email: string,
     password: string,
     marketingConfirmation: boolean,
@@ -540,6 +544,7 @@ export const AccountProvider = ({ children }: { children: ReactNode }) => {
                 result.getIdToken().getJwtToken(),
             },
           })
+          setLastAccessToken(result.getAccessToken().getJwtToken())
           AWS.config.credentials = awsCredentials
 
           cognitoUser.getUserAttributes((err?: Error, attributes?: CognitoUserAttribute[]) => {
@@ -686,6 +691,7 @@ export const AccountProvider = ({ children }: { children: ReactNode }) => {
         resendVerificationCode,
         verifyIdentity,
         getAccessToken,
+        lastAccessToken,
         changePassword,
         lastEmail: lastCredentials.Username,
         isAuth: user !== null,

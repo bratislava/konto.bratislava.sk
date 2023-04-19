@@ -1,4 +1,10 @@
 import FileDownload from '@assets/images/new-icons/ui/download.svg'
+import { getPaymentGatewayUrlApi } from '@utils/api'
+import logger from '@utils/logger'
+import { Tax } from '@utils/taxDto'
+import useAccount from '@utils/useAccount'
+import { taxStatusHelper } from '@utils/utils'
+import router from 'next/router'
 import { useTranslation } from 'next-i18next'
 import React from 'react'
 
@@ -8,11 +14,36 @@ import ClipboardCopy from '../../../simple-components/ClipboardCopy'
 import TaxFooter from './TaxFooter'
 
 interface PaymentDataProps {
-  who?: string
+  tax: Tax
 }
 
-const PaymentData = ({ who }: PaymentDataProps) => {
+const PaymentData = ({ tax }: PaymentDataProps) => {
+  const { lastAccessToken } = useAccount()
   const { t } = useTranslation('account')
+  const status = taxStatusHelper(tax)
+
+  const qrCodeBase64 = `data:image/png;base64,${tax?.qrCodeWeb}`
+
+  const downloadImage = () => {
+    const a = document.createElement('a')
+    a.href = qrCodeBase64
+    a.download = 'QR-dan-z-nehnutelnosti.png'
+    a.click()
+  }
+
+  const redirectToPaymentGateway = async () => {
+    try {
+      const result = await getPaymentGatewayUrlApi(lastAccessToken)
+      if (!result?.url) {
+        logger.error(result)
+        throw new Error('Payment gateway url is not defined')
+      }
+      await router.push(result.url)
+    } catch (error) {
+      logger.error(error)
+    }
+  }
+
   return (
     <div className="flex flex-col items-start lg:gap-6 gap-3 w-full lg:px-0 px-4">
       <div className="text-h3">{t('payment_data')}</div>
@@ -50,7 +81,7 @@ const PaymentData = ({ who }: PaymentDataProps) => {
                 </div>
                 <div className="flex lg:flex-row flex-col items-start lg:gap-6 self-stretch">
                   <div className="text-16-semibold">{t('variable_symbol')}</div>
-                  <div className="text-16">{t('variable_symbol_number')}</div>
+                  <div className="text-16">{tax?.variableSymbol}</div>
                 </div>
               </div>
               <div className="bg-gray-200 w-full h-0.5 sm:block hidden" />
@@ -67,27 +98,32 @@ const PaymentData = ({ who }: PaymentDataProps) => {
             </div>
           </div>
           <div className="flex flex-col gap-4 grow">
-            <div className="lg:items-center items-start flex lg:flex-row flex-col lg:px-6 lg:py-8 p-4 gap-6 bg-main-200 rounded-lg w-full">
-              <div className="flex-col flex items-start gap-2 grow">
-                <div className="text-h4">{t('card_payment')}</div>
-                <div className="text-16">{t('you_will_be_redirected_to_the_payment_gateway')}</div>
+            {status.paymentStatus !== 'unpaid' && (
+              <div className="lg:items-center items-start flex lg:flex-row flex-col lg:px-6 lg:py-8 p-4 gap-6 bg-main-200 rounded-lg w-full">
+                <div className="flex-col flex items-start gap-2 grow">
+                  <div className="text-h4">{t('card_payment')}</div>
+                  <div className="text-16">
+                    {t('you_will_be_redirected_to_the_payment_gateway')}
+                  </div>
+                </div>
+                {/* Desktop 'To pay' button */}
+                <Button
+                  variant="category"
+                  size="lg"
+                  text={t('to_pay')}
+                  className="lg:block hidden min-w-max"
+                  onPress={redirectToPaymentGateway}
+                />
+                {/* Mobile 'To pay' button */}
+                <Button
+                  variant="category"
+                  size="sm"
+                  text={t('to_pay')}
+                  className="lg:hidden block min-w-full"
+                  onPress={redirectToPaymentGateway}
+                />
               </div>
-              {/* Desktop 'To pay' button */}
-              <Button
-                variant="category"
-                size="lg"
-                text={t('to_pay')}
-                className="lg:block hidden min-w-max"
-              />
-
-              {/* Mobile 'To pay' button */}
-              <Button
-                variant="category"
-                size="sm"
-                text={t('to_pay')}
-                className="lg:hidden block min-w-full"
-              />
-            </div>
+            )}
             <div className="flex lg:flex-row flex-col lg:p-6 p-4 gap-4 border-2 border-solid border-gray-200 rounded-lg self-stretch grow">
               <div className="flex flex-col w-full justify-between items-start gap-2 grow self-stretch">
                 <div className="flex flex-col items-start gap-2">
@@ -101,11 +137,14 @@ const PaymentData = ({ who }: PaymentDataProps) => {
                   text={t('download_image')}
                   size="sm"
                   className="lg:block hidden"
+                  onPress={downloadImage}
                 />
               </div>
-              <div className="flex sm:max-w-[256px] sm:max-h-[256px] max-w-full max-h-max items-center justify-center bg-[red] aspect-square">
-                qr code
-              </div>
+              <img
+                className="flex self-center sm:max-w-[256px] sm:max-h-[256px] max-w-full max-h-max items-center justify-center bg-[red] aspect-square"
+                src={qrCodeBase64}
+                alt="QR code"
+              />
 
               {/* Mobile 'download' button */}
               <Button
@@ -114,12 +153,13 @@ const PaymentData = ({ who }: PaymentDataProps) => {
                 text={t('download_image')}
                 size="sm"
                 className="lg:hidden block min-w-full"
+                onPress={downloadImage}
               />
             </div>
           </div>
         </div>
-        {who === 'splatkar' && (
-          <AccordionPaymentSchedule size="md" title={t('payment_schedule.title')} data={[]} />
+        {status.hasMultipleInstallments && (
+          <AccordionPaymentSchedule size="md" title={t('payment_schedule.title')} tax={tax} />
         )}
       </div>
       <TaxFooter />

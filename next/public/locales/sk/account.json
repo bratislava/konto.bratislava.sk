@@ -336,7 +336,8 @@
         "other": "<li>vašu daň ešte pripravujeme (v tom prípade bude k dispozícii najskôr <strong>28. apríla</strong>)</li><li>vaša nehnuteľnosť je v spoluvlastníctve,</li><li>nie ste vlastníkom či vlastníčkou nehnuteľnosti,</li><li>ste nepodali priznanie k dani z nehnuteľností.</li>"
       },
       "help_text": "<p>Viac informácií môžete nájsť v <a href={{url}}>často kladených otázkach</a>.</p>"
-    }
+    },
+    "tax_card_title": "Daň z nehnuteľností"
   },
   "account_section_help": {
     "navigation": "Mám problém",
@@ -488,7 +489,6 @@
   "constant_symbol": "Konštantný symbol",
   "constant_symbol_number": "8147",
   "variable_symbol": "Variabilný symbol",
-  "variable_symbol_number": "312006100",
   "tax_due": "Splatnosť dane",
   "card_payment": "Platba kartou",
   "qr_code": "QR kód",
@@ -569,5 +569,110 @@
     "third_piece": "Tretia splátka v termíne ",
     "third_piece_to": "do 31. 10. 2022"
   },
-  "iban_copied": "IBAN bol skopírovaný"
+  "iban_copied": "IBAN bol skopírovaný",
+  "tax_detail_section": {
+    "title": "Daň z nehnuteľností za rok {{year}}",
+    "tax_status": {
+      "negative": "Neuhradená",
+      "warning": "Čiastočne uhradená",
+      "success": "Uhradená"
+    },
+    "tax_type": {
+      "GROUND": {
+        "title": "Daň z pozemkov",
+        "ground_type": {
+          "A": {
+            "title": "Orná pôda, chmeľnice, vinice, ovocné sady",
+            "description": "(§ 6 ods. 1 písm. a) zákona)"
+          },
+          "B": {
+            "title": "Trvalé trávnaté porasty",
+            "description": "(§ 6 ods. 1 písm. a) zákona)"
+          },
+          "C": {
+            "title": "Záhrady",
+            "description": "(§ 6 ods. 1 písm. b) zákona)"
+          },
+          "D": {
+            "title": "Lesné pozemky, na ktorých sú hospodárske lesy",
+            "description": "(§ 6 ods. 1 písm. d) zákona)"
+          },
+          "E": {
+            "title": "Rybníky s chovom rýb a ostatné hospodársky využívané vodné plochy",
+            "description": "(§ 6 ods. 1 písm. d) zákona)"
+          },
+          "F": {
+            "title": "Zastavané plochy a nádvoria",
+            "description": "(§ 6 ods. 1 písm. c) zákona)"
+          },
+          "G": {
+            "title": "Stavebné pozemky",
+            "description": "(§ 6 ods. 1 písm. e) zákona)"
+          },
+          "H": {
+            "title": "Ostatné plochy",
+            "description": "(§ 6 ods. 1 písm. c) zákona)"
+          }
+        }
+      },
+      "CONSTRUCTION": {
+        "title": "Daň zo stavieb",
+        "ground_type": {
+          "A": {
+            "title": "Stavba na bývanie",
+            "description": "(§ 10 ods. 1 písm. a) zákona)"
+          },
+          "B": {
+            "title": "Stavby na pôdohospodársku produkciu",
+            "description": "(§ 10 ods. 1 písm. b) zákona)"
+          },
+          "C": {
+            "title": "Chaty",
+            "description": "(§ 10 ods. 1 písm. c) zákona)"
+          },
+          "D": {
+            "title": "Samostatne stojace garáže",
+            "description": "(§ 10 ods. 1 písm. d) zákona)"
+          },
+          "E": {
+            "title": "Stavby hromadných garáží",
+            "description": "(§ 10 ods. 1 písm. e) zákona)"
+          },
+          "F": {
+            "title": "Stavby hromadných garáží umiestnených pod zemou",
+            "description": "(§ 10 ods. 1 písm. f) zákona)"
+          },
+          "G": {
+            "title": "Priemyselné stavby",
+            "description": "(§ 10 ods. 1 písm. g) zákona)"
+          },
+          "jH": {
+            "title": "Stavba na ost. podnik. a zárobk. činnosť, skladovanie a administratívu",
+            "description": "(§ 10 ods. 1 písm. h) zákona)"
+          },
+          "jI": {
+            "title": "Ostatné stavby",
+            "description": "(§ 10 ods. 1 písm. i) zákona)"
+          },
+          "H": {
+            "title": "Viacúčelová stavba",
+            "description": "(§ 12 ods. 6 zákona)"
+          }
+        }
+      },
+      "APARTMENT": {
+        "title": "Daň z bytov",
+        "ground_type": {
+          "byt": {
+            "title": "Byt",
+            "description": "(§ 14 zákona)"
+          },
+          "nebyt": {
+            "title": "Nebytový priestor",
+            "description": "(§ 14 zákona)"
+          }
+        }
+      }
+    }
+  }
 }

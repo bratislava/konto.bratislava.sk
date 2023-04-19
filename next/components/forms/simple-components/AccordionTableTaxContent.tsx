@@ -5,6 +5,9 @@ import React, { useState } from 'react'
 import PersonIcon from '../icon-components/PersonIcon'
 import AccountMarkdown from '../segments/AccountMarkdown/AccountMarkdown'
 import AccountMarkdownModal from '../segments/AccountModal/AccountModal'
+import { Tax } from '@utils/taxDto'
+import { useTranslation } from 'next-i18next'
+import { formatCurrency } from '@utils/utils'
 
 const tableHeaderData = {
   subject: 'Predmet dane',
@@ -20,9 +23,9 @@ const tableTotal = {
 }
 
 const matchHeader = {
-  ground: [tableHeaderData.area, tableHeaderData.base, tableHeaderData.total],
-  construction: [tableHeaderData.base, tableHeaderData.total],
-  apartment: [tableHeaderData.base, tableHeaderData.total],
+  GROUND: [tableHeaderData.area, tableHeaderData.base, tableHeaderData.total],
+  CONSTRUCTION: [tableHeaderData.base, tableHeaderData.total],
+  APARTMENT: [tableHeaderData.base, tableHeaderData.total],
 }
 export type AccordionSizeType = 'xs' | 'sm' | 'md' | 'lg'
 const groundData = {
@@ -171,8 +174,8 @@ export type AccordionBase = {
   size: AccordionSizeType
   title: string
   secondTitle?: string
-  dataType: 'ground' | 'construction' | 'apartment'
-  data: any
+  dataType: string
+  data: Tax['taxDetails']
   icon?: boolean
   shadow?: boolean
   className?: string
@@ -180,8 +183,8 @@ export type AccordionBase = {
 export const isAccordionSizeType = (size: string) =>
   ['xs', 'sm', 'md', 'lg'].includes(size) ? size : 'sm'
 
-const TableHeaderRow = ({ dataType }: { dataType: 'ground' | 'construction' | 'apartment' }) => {
-  const headerData = matchHeader[dataType]
+const TableHeaderRow = ({ dataType }: { dataType: string }) => {
+  const headerData = matchHeader[dataType] || matchHeader['APARTMENT']
 
   return (
     <thead className="lg:bg-gray-0 bg-gray-200 self-stretch">
@@ -201,29 +204,36 @@ const TableHeaderRow = ({ dataType }: { dataType: 'ground' | 'construction' | 'a
   )
 }
 
-const TableRow = ({ dataType }: { dataType: 'ground' | 'construction' | 'apartment' }) => {
-  const mainData = matchMainData[dataType] as Record<any, any>
-  const mainDataKeys = Object.keys(mainData)
+const TableRow = ({ dataType, data }: { dataType: string; data: Tax['taxDetails'] }) => {
+  const { t } = useTranslation('account')
   return (
     <tbody>
-      {mainDataKeys.map((k) => {
+      {data.map((taxDetail) => {
         return (
           <tr>
             <td className="[&:not(:first-child)]:text-20-semibold border-r-2 [&:not(:first-child)]:text-center last:border-r-0 lg:py-4 h-max lg:p-0 p-4">
-              <div className="h-0 font-semibold inline">{mainData[k].title}</div>
+              <div className="h-0 font-semibold inline">
+                {t(
+                  `tax_detail_section.tax_type.${dataType}.ground_type.${taxDetail.areaType}.title`,
+                )}
+              </div>
               <br />
-              {mainData[k].description}
+              {t(
+                `tax_detail_section.tax_type.${dataType}.ground_type.${taxDetail.areaType}.description`,
+              )}
             </td>
-            {dataType === 'ground' && (
+            {dataType === 'GROUND' && (
               <td className="lg:[&:not(:first-child)]:text-20-semibold [&:not(:first-child)]:text-16-semibold w-[15%] border-r-2 [&:not(:first-child)]:text-center last:border-r-0 lg:py-4 lg:p-0 p-4">
-                {mainData[k].area}
+                {taxDetail.area}
               </td>
             )}
             <td className="lg:[&:not(:first-child)]:text-20-semibold [&:not(:first-child)]:text-16-semibold w-[15%] border-r-2 [&:not(:first-child)]:text-center last:border-r-0 lg:py-4 lg:p-0 p-4">
-              {mainData[k].base}
+              {typeof taxDetail.base === 'number'
+                ? (taxDetail.base / 100).toFixed(2).replace('.', ',')
+                : taxDetail.base}
             </td>
             <td className="lg:[&:not(:first-child)]:text-20-semibold [&:not(:first-child)]:text-16-semibold w-[15%] border-r-2 [&:not(:first-child)]:text-center last:border-r-0 lg:py-4 lg:p-0 p-4">
-              {mainData[k].total}
+              {formatCurrency(taxDetail.amount)}
             </td>
           </tr>
         )
@@ -232,12 +242,12 @@ const TableRow = ({ dataType }: { dataType: 'ground' | 'construction' | 'apartme
   )
 }
 
-const Table = ({ dataType }: { dataType: 'ground' | 'construction' | 'apartment' }) => {
+const Table = ({ dataType, data }: { dataType: string; data: Tax['taxDetails'] }) => {
   return (
     <div className="no-scrollbar overflow-x-auto w-full">
       <table className="border-separate border-spacing-0 border-2 border-solid border-gray-200 lg:border-0 sm:w-full w-max table-auto lg:rounded-none rounded-lg last:border-b-2">
         <TableHeaderRow dataType={dataType} />
-        <TableRow dataType={dataType} />
+        <TableRow dataType={dataType} data={data} />
       </table>
     </div>
   )
@@ -248,6 +258,7 @@ const AccordionTableTaxContent = ({
   size = 'sm',
   icon = false,
   dataType,
+  data,
   shadow = false,
   className,
 }: AccordionBase) => {
@@ -257,10 +268,10 @@ const AccordionTableTaxContent = ({
 
   const TableContent = () => (
     <div className="h-full flex flex-col w-full gap-6">
-      <Table dataType={dataType} />
+      <Table dataType={dataType} data={data} />
       <div className="flex lg:bg-gray-0 bg-gray-100 lg:p-0 p-4 rounded-lg">
         <div className="text-h4-bold grow">Celkom</div>
-        <div className="text-h4-bold">{tableTotal[dataType]}</div>
+        <div className="text-h4-bold">{secondTitle}</div>
       </div>
     </div>
   )

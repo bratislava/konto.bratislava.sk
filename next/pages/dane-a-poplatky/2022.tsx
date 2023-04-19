@@ -21,17 +21,20 @@ export const getServerSideProps = async (ctx: GetServerSidePropsContext) => {
             locale: l,
           })),
       },
-      isProductionDeploy: isProductionDeployment(),
       ...(await serverSideTranslations(locale)),
+      isProductionDeployment: isProductionDeployment(),
     },
   }
 }
 
-const AccountTaxesFeesPage = ({ page }: AsyncServerProps<typeof getServerSideProps>) => {
+const AccountTaxesFeesPage = ({
+  page,
+  isProductionDeployment,
+}: AsyncServerProps<typeof getServerSideProps>) => {
   return (
     <PageWrapper locale={page.locale} localizations={page.localizations}>
       <AccountPageLayout>
-        <TaxFeeSection />
+        <TaxFeeSection isProductionDeployment={isProductionDeployment} />
       </AccountPageLayout>
     </PageWrapper>
   )

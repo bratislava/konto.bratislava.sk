@@ -101,6 +101,7 @@ const SelectFieldComponent: ForwardRefRenderFunction<HTMLDivElement, SelectField
     if (isClickedOutsideDropdown && !shouldCloseClick && isClickedOutsideSelect) {
       setIsDropdownOpened(false)
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isClickedOutsideDropdown, isClickedOutsideSelect])
 
   // close dropdown if it was opened and user clicked on arrow icon

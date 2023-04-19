@@ -49,7 +49,7 @@ const IdentityVerificationPage = ({ page }: AsyncServerProps<typeof getServerSid
         .push({ pathname: ROUTES.LOGIN, query: { from: router.route } })
         .catch((error_) => logger.error('Failed redirect', error_))
     }
-  }, [isAuth])
+  }, [isAuth, router])
 
   const verifyIdentityAndRefreshUserData = async (
     rc: string,

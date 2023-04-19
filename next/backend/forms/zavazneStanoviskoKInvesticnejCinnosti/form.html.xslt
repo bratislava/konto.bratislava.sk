@@ -10,6 +10,10 @@
   <xsl:template name="body">
     
   <xsl:call-template name="base_block_with_title">
+            <xsl:with-param name="template_name" select="'prilohy'"/>
+            <xsl:with-param name="title" select="'Prílohy'"/>
+            <xsl:with-param name="values" select="z:Body/z:Prilohy"/>
+          </xsl:call-template><xsl:call-template name="base_block_with_title">
             <xsl:with-param name="template_name" select="'ziadatel'"/>
             <xsl:with-param name="title" select="'Žiadateľ'"/>
             <xsl:with-param name="values" select="z:Body/z:Ziadatel"/>
@@ -29,10 +33,6 @@
             <xsl:with-param name="template_name" select="'konanie'"/>
             <xsl:with-param name="title" select="'Typ konania na stavebnom úrade'"/>
             <xsl:with-param name="values" select="z:Body/z:Konanie"/>
-          </xsl:call-template><xsl:call-template name="base_block_with_title">
-            <xsl:with-param name="template_name" select="'prilohy'"/>
-            <xsl:with-param name="title" select="'Prílohy'"/>
-            <xsl:with-param name="values" select="z:Body/z:Prilohy"/>
           </xsl:call-template></xsl:template>
 
   <!-- XSL cannot dynamically "yield" template, so here is simple mapping for each template based on name -->
@@ -43,7 +43,11 @@
     
     <xsl:choose>
       
-    <xsl:when test="$template = 'ziadatel'">
+    <xsl:when test="$template = 'prilohy'">
+            <xsl:call-template name="prilohy">
+              <xsl:with-param name="values" select="$values"/>
+            </xsl:call-template>
+          </xsl:when><xsl:when test="$template = 'ziadatel'">
             <xsl:call-template name="ziadatel">
               <xsl:with-param name="values" select="$values"/>
             </xsl:call-template>
@@ -61,10 +65,6 @@
             </xsl:call-template>
           </xsl:when><xsl:when test="$template = 'konanie'">
             <xsl:call-template name="konanie">
-              <xsl:with-param name="values" select="$values"/>
-            </xsl:call-template>
-          </xsl:when><xsl:when test="$template = 'prilohy'">
-            <xsl:call-template name="prilohy">
               <xsl:with-param name="values" select="$values"/>
             </xsl:call-template>
           </xsl:when></xsl:choose>
@@ -370,7 +370,18 @@
       }
     </script>
   </xsl:template>
-<xsl:template name="ziadatel"><xsl:param name="values"/><xsl:if test="$values/z:ZiatetelTyp"><xsl:call-template name="base_labeled_field">
+<xsl:template name="prilohy"><xsl:param name="values"/><xsl:for-each select="$values/z:ProjektovaDokumentacia">
+              <xsl:call-template name="base_labeled_field">
+                <xsl:with-param name="text" select="'Projektová dokumentácia'"/>
+                <xsl:with-param name="node" select="z:Nazov"/>
+              </xsl:call-template>
+            </xsl:for-each></xsl:template><xsl:template name="ziadatel_mesto_psc"><xsl:param name="values"/><xsl:if test="$values/z:ZiadatelMesto"><xsl:call-template name="base_labeled_field">
+              <xsl:with-param name="text" select="'Mesto'"/>
+              <xsl:with-param name="node" select="$values/z:ZiadatelMesto/z:Name"/>
+            </xsl:call-template></xsl:if><xsl:if test="$values/z:ZiadatelPsc"><xsl:call-template name="base_labeled_field">
+              <xsl:with-param name="text" select="'PSČ'"/>
+              <xsl:with-param name="node" select="$values/z:ZiadatelPsc"/>
+            </xsl:call-template></xsl:if></xsl:template><xsl:template name="ziadatel"><xsl:param name="values"/><xsl:if test="$values/z:ZiatetelTyp"><xsl:call-template name="base_labeled_field">
               <xsl:with-param name="text" select="'Žiadate ako'"/>
               <xsl:with-param name="node" select="$values/z:ZiatetelTyp"/>
             </xsl:call-template></xsl:if><xsl:if test="$values/z:ZiadatelMenoPriezvisko"><xsl:call-template name="base_labeled_field">
@@ -391,10 +402,9 @@
             </xsl:call-template></xsl:if><xsl:if test="$values/z:ZiadatelAdresaSidla"><xsl:call-template name="base_labeled_field">
               <xsl:with-param name="text" select="'Adresa sídla'"/>
               <xsl:with-param name="node" select="$values/z:ZiadatelAdresaSidla"/>
-            </xsl:call-template></xsl:if><xsl:if test="$values/z:ZiadatelMestoPsc"><xsl:call-template name="base_labeled_field">
-              <xsl:with-param name="text" select="'ziadatelMestoPsc'"/>
-              <xsl:with-param name="node" select="$values/z:ZiadatelMestoPsc"/>
-            </xsl:call-template></xsl:if><xsl:if test="$values/z:ZiadatelKontaktnaOsoba"><xsl:call-template name="base_labeled_field">
+            </xsl:call-template></xsl:if><xsl:call-template name="ziadatel_mesto_psc">
+              <xsl:with-param name="values" select="$values/*[local-name() = 'ZiadatelMestoPsc']"/>
+            </xsl:call-template><xsl:if test="$values/z:ZiadatelKontaktnaOsoba"><xsl:call-template name="base_labeled_field">
               <xsl:with-param name="text" select="'Kontaktná osoba'"/>
               <xsl:with-param name="node" select="$values/z:ZiadatelKontaktnaOsoba"/>
             </xsl:call-template></xsl:if><xsl:if test="$values/z:ZiadatelEmail"><xsl:call-template name="base_labeled_field">
@@ -403,6 +413,12 @@
             </xsl:call-template></xsl:if><xsl:if test="$values/z:ZiadatelTelefon"><xsl:call-template name="base_labeled_field">
               <xsl:with-param name="text" select="'Telefónne číslo (v tvare +421...)'"/>
               <xsl:with-param name="node" select="$values/z:ZiadatelTelefon"/>
+            </xsl:call-template></xsl:if></xsl:template><xsl:template name="investor_mesto_psc"><xsl:param name="values"/><xsl:if test="$values/z:InvestorMesto"><xsl:call-template name="base_labeled_field">
+              <xsl:with-param name="text" select="'Mesto'"/>
+              <xsl:with-param name="node" select="$values/z:InvestorMesto/z:Name"/>
+            </xsl:call-template></xsl:if><xsl:if test="$values/z:InvestorPsc"><xsl:call-template name="base_labeled_field">
+              <xsl:with-param name="text" select="'PSČ'"/>
+              <xsl:with-param name="node" select="$values/z:InvestorPsc"/>
             </xsl:call-template></xsl:if></xsl:template><xsl:template name="investor"><xsl:param name="values"/><xsl:if test="$values/z:InvestorZiadatelom"><xsl:call-template name="base_labeled_field">
               <xsl:with-param name="text" select="'Je investor rovnaká osoba ako žiadateľ?'"/>
               <xsl:with-param name="node"><xsl:call-template name="base_boolean"><xsl:with-param name="bool" select="$values/z:InvestorZiadatelom"/></xsl:call-template></xsl:with-param>
@@ -432,10 +448,9 @@
             </xsl:call-template></xsl:if><xsl:if test="$values/z:InvestorAdresaSidla"><xsl:call-template name="base_labeled_field">
               <xsl:with-param name="text" select="'Adresa sídla'"/>
               <xsl:with-param name="node" select="$values/z:InvestorAdresaSidla"/>
-            </xsl:call-template></xsl:if><xsl:if test="$values/z:InvestorMestoPsc"><xsl:call-template name="base_labeled_field">
-              <xsl:with-param name="text" select="'investorMestoPsc'"/>
-              <xsl:with-param name="node" select="$values/z:InvestorMestoPsc"/>
-            </xsl:call-template></xsl:if><xsl:if test="$values/z:InvestorKontaktnaOsoba"><xsl:call-template name="base_labeled_field">
+            </xsl:call-template></xsl:if><xsl:call-template name="investor_mesto_psc">
+              <xsl:with-param name="values" select="$values/*[local-name() = 'InvestorMestoPsc']"/>
+            </xsl:call-template><xsl:if test="$values/z:InvestorKontaktnaOsoba"><xsl:call-template name="base_labeled_field">
               <xsl:with-param name="text" select="'Kontaktná osoba'"/>
               <xsl:with-param name="node" select="$values/z:InvestorKontaktnaOsoba"/>
             </xsl:call-template></xsl:if><xsl:if test="$values/z:InvestorEmail"><xsl:call-template name="base_labeled_field">
@@ -493,31 +508,6 @@
             </xsl:for-each><xsl:for-each select="$values/z:StavbaPisomnosti">
               <xsl:call-template name="base_labeled_field">
                 <xsl:with-param name="text" select="'Relevantné písomnosti súvisiace so stavbou'"/>
-                <xsl:with-param name="node" select="z:Nazov"/>
-              </xsl:call-template>
-            </xsl:for-each></xsl:template><xsl:template name="prilohy"><xsl:param name="values"/><xsl:for-each select="$values/z:ProjektovaDokumentacia">
-              <xsl:call-template name="base_labeled_field">
-                <xsl:with-param name="text" select="'Projektová dokumentácia'"/>
-                <xsl:with-param name="node" select="z:Nazov"/>
-              </xsl:call-template>
-            </xsl:for-each><xsl:for-each select="$values/z:Vykresy">
-              <xsl:call-template name="base_labeled_field">
-                <xsl:with-param name="text" select="'Iné výkresy situácií'"/>
-                <xsl:with-param name="node" select="z:Nazov"/>
-              </xsl:call-template>
-            </xsl:for-each><xsl:for-each select="$values/z:UlicnyPohlad">
-              <xsl:call-template name="base_labeled_field">
-                <xsl:with-param name="text" select="'Uličný pohľad so záberom najbližších stavieb'"/>
-                <xsl:with-param name="node" select="z:Nazov"/>
-              </xsl:call-template>
-            </xsl:for-each><xsl:for-each select="$values/z:PodzemnePodlazie">
-              <xsl:call-template name="base_labeled_field">
-                <xsl:with-param name="text" select="'Vyhodnotenie podzemného podlažia pri bytových budovách'"/>
-                <xsl:with-param name="node" select="z:Nazov"/>
-              </xsl:call-template>
-            </xsl:for-each><xsl:for-each select="$values/z:VyjadrenieUradu">
-              <xsl:call-template name="base_labeled_field">
-                <xsl:with-param name="text" select="'Vyjadrenie Krajského pamiatkového úradu'"/>
                 <xsl:with-param name="node" select="z:Nazov"/>
               </xsl:call-template>
             </xsl:for-each></xsl:template></xsl:stylesheet>

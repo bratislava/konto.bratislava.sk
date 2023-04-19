@@ -1,6 +1,6 @@
 {
   "prilohy": {
-    "projektovaDokumentacia": ["string"]
+    "architektonickaStudia": ["string"]
   },
   "ziadatel": {
     "ziatetelTyp": "Právnicka osoba",
@@ -42,11 +42,5 @@
     "stavbaUlica": "string",
     "stavbaParcela": "string",
     "stavbaKataster": ["1", "2", "3"]
-  },
-  "konanie": {
-    "konanieTyp": "Konanie o dodatočnom povolení stavby",
-    "ziadostOdovodnenie": "Dodatočné povolenie zmeny stavby pred dokončením",
-    "stavbaFotodokumentacia": ["string", "string"],
-    "stavbaPisomnosti": ["string", "string"]
   }
 }

@@ -70,8 +70,8 @@ const ContactInformationSection = () => {
                         userData.address?.street_address &&
                         (postal_code_array || userData.address?.locality)
                           ? `${userData.address?.street_address},`
-                          : userData.address?.street_address
-                      } ${postalCodeFormat(postal_code_array)} ${userData.address?.locality}`
+                          : userData.address?.street_address || ''
+                      } ${postalCodeFormat(postal_code_array)} ${userData.address?.locality || ''}`
                     : '',
                 schemaPath: '',
                 isError: false,

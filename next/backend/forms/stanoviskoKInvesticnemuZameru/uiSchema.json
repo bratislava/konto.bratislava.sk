@@ -4,7 +4,7 @@
   },
   "prilohy": {
     "ui:hideError": true,
-    "projektovaDokumentacia": {
+    "architektonickaStudia": {
       "ui:widget": "Upload",
       "ui:label": false,
       "ui:options": {
@@ -253,42 +253,6 @@
       "ui:options": {
         "helptext": "Vyberte jedno alebo viacero katastrálnych území, v ktorých sa pozemok nachádza",
         "dropdownDivider": true
-      }
-    }
-  },
-  "konanie": {
-    "ui:hideError": true,
-    "konanieTyp": {
-      "ui:widget": "RadioButton",
-      "ui:label": false,
-      "ui:options": {
-        "variant": "boxed"
-      }
-    },
-    "ziadostOdovodnenie": {
-      "ui:widget": "RadioButton",
-      "ui:label": false,
-      "ui:options": {
-        "variant": "boxed"
-      }
-    },
-    "stavbaFotodokumentacia": {
-      "ui:widget": "Upload",
-      "ui:label": false,
-      "ui:options": {
-        "size": 5,
-        "accept": ".jpg,.pdf",
-        "type": "button"
-      }
-    },
-    "stavbaPisomnosti": {
-      "ui:widget": "Upload",
-      "ui:label": false,
-      "ui:options": {
-        "helptext": "napr. vydané stavebné povolenie, stanoviská hlavného mesta",
-        "size": 5,
-        "accept": ".jpg,.pdf",
-        "type": "button"
       }
     }
   }

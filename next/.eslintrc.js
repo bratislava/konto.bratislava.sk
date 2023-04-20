@@ -59,6 +59,8 @@ module.exports = {
     'sonarjs/no-duplicate-string': 'warn',
     'sonarjs/cognitive-complexity': 'warn',
     'unicorn/no-array-reduce': 'off',
+    // quite annoying as it conflicts with VS Code's auto import
+    'lodash/import-scope': 'off',
   },
   ignorePatterns: ['*.config.*', 'graphql', '.eslintrc.js'],
 }

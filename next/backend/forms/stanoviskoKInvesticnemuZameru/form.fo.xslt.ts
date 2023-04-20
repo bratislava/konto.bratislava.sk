@@ -1,16 +1,13 @@
-<?xml version="1.0" encoding="utf-8" standalone="yes"?>
-
-<xsl:stylesheet version="1.0" xmlns:xsl="http://www.w3.org/1999/XSL/Transform" xmlns:z="http://schemas.gov.sk/doc/eform/form/0.1">
-  <xsl:output method="text" encoding="utf-8" indent="no"/>
-  <xsl:preserve-space elements="*"/>
+export default `<?xml version="1.0" encoding="utf-8"?>
+<xsl:stylesheet xml:lang="en" xmlns:xsl="http://www.w3.org/1999/XSL/Transform" xmlns:fo="http://www.w3.org/1999/XSL/Format" xmlns:z="http://schemas.gov.sk/doc/eform/form/0.1" version="1.0" xmlns:Xsl="http://www.w3.org/1999/XSL/Transform">
 
   <xsl:template match="/z:E-form">
     <xsl:call-template name="base_eform"/>
   </xsl:template>
 
   <!-- this is the template which gets called inside the FO structure -->
-  <xsl:template name="body">  
-
+  <xsl:template name="body">
+    
   <xsl:call-template name="base_block_with_title">
             <xsl:with-param name="template_name" select="'prilohy'"/>
             <xsl:with-param name="title" select="'Prílohy'"/>
@@ -31,10 +28,6 @@
             <xsl:with-param name="template_name" select="'stavba'"/>
             <xsl:with-param name="title" select="'Informácie o stavbe'"/>
             <xsl:with-param name="values" select="z:Body/z:Stavba"/>
-          </xsl:call-template><xsl:call-template name="base_block_with_title">
-            <xsl:with-param name="template_name" select="'konanie'"/>
-            <xsl:with-param name="title" select="'Typ konania na stavebnom úrade'"/>
-            <xsl:with-param name="values" select="z:Body/z:Konanie"/>
           </xsl:call-template></xsl:template>
 
   <!-- XSL cannot dynamically "yield" template, so here is simple mapping for each template based on name -->
@@ -42,11 +35,10 @@
   <xsl:template name="map">
     <xsl:param name="template"/>
     <xsl:param name="values"/>
-    
-    <xsl:choose>
 
-    
-  <xsl:when test="$template = 'prilohy'">
+    <xsl:choose>
+      
+    <xsl:when test="$template = 'prilohy'">
             <xsl:call-template name="prilohy">
               <xsl:with-param name="values" select="$values"/>
             </xsl:call-template>
@@ -66,19 +58,42 @@
             <xsl:call-template name="stavba">
               <xsl:with-param name="values" select="$values"/>
             </xsl:call-template>
-          </xsl:when><xsl:when test="$template = 'konanie'">
-            <xsl:call-template name="konanie">
-              <xsl:with-param name="values" select="$values"/>
-            </xsl:call-template>
-          </xsl:when></xsl:choose></xsl:template>
+          </xsl:when></xsl:choose>
+  </xsl:template>
 
   <!-- ########################## -->
   <!-- ALL templates below, prefixed with "base_", are format-specific and should not be modified. -->
   <!-- ########################## -->
 
   <xsl:template name="base_eform">
-    <xsl:value-of select="concat(z:Meta/z:Name, '&#10;')"/>
-    <xsl:call-template name="body"/>
+    <fo:root xmlns:fo="http://www.w3.org/1999/XSL/Format">
+      <fo:layout-master-set>
+        <fo:simple-page-master master-name="A4" page-height="842px" page-width="595px" margin-top="10px" margin-bottom="10px" margin-left="10px" margin-right="10px">
+          <fo:region-body margin-bottom="20mm"/>
+          <fo:region-after region-name="footer" extent="10mm"/>
+        </fo:simple-page-master>
+        <fo:page-sequence-master master-name="document">
+          <fo:repeatable-page-master-alternatives>
+            <fo:conditional-page-master-reference master-reference="A4"/>
+          </fo:repeatable-page-master-alternatives>
+        </fo:page-sequence-master>
+      </fo:layout-master-set>
+      <fo:page-sequence master-reference="document" font-family="Arial">
+        <fo:static-content flow-name="footer">
+          <fo:block text-align="end"><fo:page-number/></fo:block>
+        </fo:static-content>
+        <fo:flow flow-name="xsl-region-body">
+          <fo:block font-size="20pt" text-align="center">
+            <xsl:value-of select="z:Meta/z:Name"/>
+          </fo:block>
+          <fo:block color="white">|</fo:block>
+          <fo:block/>
+
+          <xsl:call-template name="body"/>
+
+        </fo:flow>
+      </fo:page-sequence>
+    </fo:root>
   </xsl:template>
 
   <xsl:template name="base_block_with_title">
@@ -98,15 +113,16 @@
     </xsl:call-template>
   </xsl:template>
 
-  <!-- todo you cannot actually wrap text inside block, so the spacing is off in the result -->
   <xsl:template name="base_block">
     <xsl:param name="template_name"/>
     <xsl:param name="values"/>
 
-    <xsl:call-template name="map">
-      <xsl:with-param name="template" select="$template_name"/>
-      <xsl:with-param name="values" select="$values"/>
-    </xsl:call-template>
+    <fo:block margin-left="5mm">
+      <xsl:call-template name="map">
+        <xsl:with-param name="template" select="$template_name"/>
+        <xsl:with-param name="values" select="$values"/>
+      </xsl:call-template>
+    </fo:block>
   </xsl:template>
 
   <xsl:template name="base_format_telefonne_cislo">
@@ -161,20 +177,46 @@
 
   <xsl:template name="base_title">
     <xsl:param name="title"/>
-    <xsl:value-of select="concat($title, '&#10;')"/>
+
+    <fo:block margin-left="5mm" margin-top="2mm">
+      <fo:block padding-left="2mm">
+        <xsl:value-of select="$title"/>
+      </fo:block>
+    </fo:block>
   </xsl:template>
 
   <xsl:template name="base_labeled_field">
     <xsl:param name="text"/>
     <xsl:param name="node"/>
-    <xsl:choose>
-      <xsl:when test="$node">
-        <xsl:value-of select="concat('&#09;', $text, ': ', $node, '&#10;')"/>
-      </xsl:when>
-      <xsl:otherwise>
-        <xsl:value-of select="concat('&#09;', $text, '&#10;')"/>
-      </xsl:otherwise>
-    </xsl:choose>
+
+    <fo:table space-before="2mm">
+      <fo:table-column/>
+      <fo:table-column column-width="300px"/>
+      <fo:table-body>
+        <fo:table-row>
+          <fo:table-cell>
+            <fo:block>
+              <xsl:value-of select="$text"/>
+            </fo:block>
+          </fo:table-cell>
+          <xsl:choose>
+            <xsl:when test="$node">
+              <fo:table-cell border-width="0.6pt" border-style="solid" background-color="white" padding="1pt">
+                <fo:block>
+                  <xsl:value-of select="$node"/>
+                  <fo:inline color="white">___</fo:inline>
+                </fo:block>
+              </fo:table-cell>
+            </xsl:when>
+            <xsl:otherwise>
+              <fo:table-cell>
+                <fo:block/>
+              </fo:table-cell>
+            </xsl:otherwise>
+          </xsl:choose>
+        </fo:table-row>
+      </fo:table-body>
+    </fo:table>
   </xsl:template>
 
   <xsl:template name="base_labeled_textarea">
@@ -186,9 +228,9 @@
       <xsl:with-param name="node" select="$node"/>
     </xsl:call-template>
   </xsl:template>
-<xsl:template name="prilohy"><xsl:param name="values"/><xsl:for-each select="$values/z:ProjektovaDokumentacia">
+<xsl:template name="prilohy"><xsl:param name="values"/><xsl:for-each select="$values/z:ArchitektonickaStudia">
               <xsl:call-template name="base_labeled_field">
-                <xsl:with-param name="text" select="'Projektová dokumentácia'"/>
+                <xsl:with-param name="text" select="'Architektonická štúdia'"/>
                 <xsl:with-param name="node" select="z:Nazov"/>
               </xsl:call-template>
             </xsl:for-each></xsl:template><xsl:template name="ziadatel_mesto_psc"><xsl:param name="values"/><xsl:if test="$values/z:ZiadatelMesto"><xsl:call-template name="base_labeled_field">
@@ -310,20 +352,4 @@
                 <xsl:with-param name="text" select="'Katastrálne územie'"/>
                 <xsl:with-param name="node" select="."/>
               </xsl:call-template>
-            </xsl:for-each></xsl:template><xsl:template name="konanie"><xsl:param name="values"/><xsl:if test="$values/z:KonanieTyp"><xsl:call-template name="base_labeled_field">
-              <xsl:with-param name="text" select="'Typ konania'"/>
-              <xsl:with-param name="node" select="$values/z:KonanieTyp"/>
-            </xsl:call-template></xsl:if><xsl:if test="$values/z:ZiadostOdovodnenie"><xsl:call-template name="base_labeled_field">
-              <xsl:with-param name="text" select="'Upresnenie konania'"/>
-              <xsl:with-param name="node" select="$values/z:ZiadostOdovodnenie"/>
-            </xsl:call-template></xsl:if><xsl:for-each select="$values/z:StavbaFotodokumentacia">
-              <xsl:call-template name="base_labeled_field">
-                <xsl:with-param name="text" select="'Fotodokumentácia stavby'"/>
-                <xsl:with-param name="node" select="z:Nazov"/>
-              </xsl:call-template>
-            </xsl:for-each><xsl:for-each select="$values/z:StavbaPisomnosti">
-              <xsl:call-template name="base_labeled_field">
-                <xsl:with-param name="text" select="'Relevantné písomnosti súvisiace so stavbou'"/>
-                <xsl:with-param name="node" select="z:Nazov"/>
-              </xsl:call-template>
-            </xsl:for-each></xsl:template></xsl:stylesheet>
+            </xsl:for-each></xsl:template></xsl:stylesheet>`

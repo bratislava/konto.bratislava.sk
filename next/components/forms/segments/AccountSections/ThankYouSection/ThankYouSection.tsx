@@ -4,10 +4,24 @@ import AccountMarkdown from 'components/forms/segments/AccountMarkdown/AccountMa
 import ThankYouCard from 'components/forms/segments/AccountSections/ThankYouSection/ThankYouCard'
 import Button from 'components/forms/simple-components/Button'
 import { useTranslation } from 'next-i18next'
+// import { useRouter } from 'next/router'
 import { ReactNode, useState } from 'react'
+
+// const paymentStatusOptions = [
+//   'failed-to-verify',
+//   'payment-already-paid',
+//   'payment-failed',
+//   'payment-success',
+// ]
 
 const ThankYouSection = () => {
   const { t } = useTranslation('account')
+  // const router = useRouter()
+  // const status =
+  //   typeof router.query.status === 'string' && paymentStatusOptions.includes(router.query.status)
+  //     ? router.query.status
+  //     : 'failed-to-verify'
+
   const [isOn, setIsOn] =
     useState<'success' | 'error-1' | 'error-2' | 'error-3' | 'error-4'>('error-1')
 

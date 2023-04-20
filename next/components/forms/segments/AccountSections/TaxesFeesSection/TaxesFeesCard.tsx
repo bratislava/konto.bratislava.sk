@@ -3,14 +3,11 @@ import TimeIcon from '@assets/images/new-icons/ui/clock.svg'
 import SuccessIcon from '@assets/images/new-icons/ui/done.svg'
 import ExclamationIcon from '@assets/images/new-icons/ui/exclamation-mark.svg'
 import { ROUTES } from '@utils/constants'
+import { formatCurrency } from '@utils/utils'
 import cx from 'classnames'
 import { TaxesCardBase } from 'components/forms/segments/AccountSections/TaxesFeesSection/TaxesFeesSection'
 import Link from 'next/link'
 import { ReactNode } from 'react'
-
-const priceFormat = (price: number): string => {
-  return Number.isInteger(price) ? `${price},00€` : `${price}€`.replace('.', ',')
-}
 
 const TaxesFeesCard = (props: TaxesCardBase) => {
   const { title, yearPay, createDate, currentPaid, finishPrice, paidDate = '', status } = props
@@ -63,11 +60,11 @@ const TaxesFeesCard = (props: TaxesCardBase) => {
             <div className="flex flex-col px-10 border-x-2">
               <span className="text-16-semibold mb-1">Suma</span>
               {status === 'warning' && currentPaid ? (
-                <span className="w-max flex items-center">{`${priceFormat(
+                <span className="w-max flex items-center">{`${formatCurrency(
                   currentPaid,
-                )} / ${priceFormat(finishPrice)}`}</span>
+                )} / ${formatCurrency(finishPrice)}`}</span>
               ) : (
-                <span>{priceFormat(finishPrice)}</span>
+                <span>{formatCurrency(finishPrice)}</span>
               )}
             </div>
             <div className="flex flex-col items-center px-10">
@@ -78,7 +75,7 @@ const TaxesFeesCard = (props: TaxesCardBase) => {
         </div>
         <div className="cursor-pointer w-16 min-w-[64px] h-full border-l-2">
           <Link
-            href={`${ROUTES.TAXES_AND_FEES}/1`}
+            href={`${ROUTES.TAXES_AND_FEES}/2022`}
             className="w-full h-full items-center flex justify-center"
           >
             <ChevronRightIcon />
@@ -91,7 +88,7 @@ const TaxesFeesCard = (props: TaxesCardBase) => {
         className="bg-white w-full h-24 flex lg:hidden items-center justify-between border-b-2 border-gray-200"
       >
         <Link
-          href={`${ROUTES.TAXES_AND_FEES}/1`}
+          href={`${ROUTES.TAXES_AND_FEES}/2022`}
           className="w-full h-full items-center flex justify-center"
         >
           <div className="w-full flex items-start justify-between">
@@ -99,11 +96,11 @@ const TaxesFeesCard = (props: TaxesCardBase) => {
               <span className="text-p2-semibold leading-5 mb-1">{`${title} za rok ${yearPay}`}</span>
               <div className="flex items-center flex-wrap">
                 {status === 'warning' && currentPaid ? (
-                  <span className="text-p3 w-max flex items-center">{`${priceFormat(
+                  <span className="text-p3 w-max flex items-center">{`${formatCurrency(
                     currentPaid,
-                  )} / ${priceFormat(finishPrice)}`}</span>
+                  )} / ${formatCurrency(finishPrice)}`}</span>
                 ) : (
-                  <span className="text-p3">{priceFormat(finishPrice)}</span>
+                  <span className="text-p3">{formatCurrency(finishPrice)}</span>
                 )}
                 <div className="flex items-center">
                   <span className="rounded-full w-1 h-1 bg-gray-700 mx-3" />

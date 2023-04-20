@@ -1,5 +1,7 @@
 import CalendarIcon from '@assets/images/new-icons/ui/calendar.svg'
 import ExpandMore from '@assets/images/new-icons/ui/expand.svg'
+import { Tax } from '@utils/taxDto'
+import { formatCurrency } from '@utils/utils'
 import cx from 'classnames'
 import { useTranslation } from 'next-i18next'
 import React, { useState } from 'react'
@@ -13,14 +15,18 @@ export type AccordionSizeType = 'xs' | 'sm' | 'md' | 'lg'
 export type AccordionBase = {
   size: AccordionSizeType
   title: string
-  data: any
   icon?: boolean
   className?: string
+  tax: Tax
 }
 export const isAccordionSizeType = (size: string) =>
   ['xs', 'sm', 'md', 'lg'].includes(size) ? size : 'sm'
 
-const PaymentScheduleView = () => {
+interface PaymentScheduleViewProps {
+  tax: Tax
+}
+
+const PaymentScheduleView = ({ tax }: PaymentScheduleViewProps) => {
   const { t } = useTranslation('account')
   return (
     <div className="no-scrollbar flex flex-col items-start lg:gap-6 gap-4 w-full overflow-auto">
@@ -45,29 +51,48 @@ const PaymentScheduleView = () => {
           />
         </div>
         <div className="flex flex-col items-start p-6 lg:gap-6 gap-4 w-full bg-gray-50 rounded-lg">
-          <div id="content" className="flex lg:flex-row flex-col items-start lg:gap-6 gap-3 w-full">
-            <div className="grow items-start">
-              {t('payment_schedule.first_piece')}{' '}
-              <div className="text-h5 inline">{t('payment_schedule.first_piece_to')}</div>
+          {tax?.taxInstallments?.[0] && (
+            <div
+              id="content"
+              className="flex lg:flex-row flex-col items-start lg:gap-6 gap-3 w-full"
+            >
+              <div className="grow items-start">
+                {t('payment_schedule.first_piece')}{' '}
+                <div className="text-h5 inline">{t('payment_schedule.first_piece_to')}</div>
+              </div>
+              <div className="text-h5">{formatCurrency(tax.taxInstallments[0]?.amount)}</div>
             </div>
-            <div className="text-h5">29,66 €</div>
-          </div>
-          <div id="divider" className="w-full h-0.5 bg-gray-200" />
-          <div id="content" className="flex lg:flex-row flex-col items-start lg:gap-6 gap-3 w-full">
-            <div className="grow items-start">
-              {t('payment_schedule.second_piece')}
-              <div className="text-h5 inline">{t('payment_schedule.second_piece_to')}</div>
-            </div>
-            <div className="text-h5">29,66 €</div>
-          </div>
-          <div id="divider" className="w-full h-0.5 bg-gray-200" />
-          <div id="content" className="flex lg:flex-row flex-col items-start lg:gap-6 gap-3 w-full">
-            <div className="grow items-start">
-              {t('payment_schedule.third_piece')}
-              <div className="text-h5 inline">{t('payment_schedule.third_piece_to')}</div>
-            </div>
-            <div className="text-h5">29,66 €</div>
-          </div>
+          )}
+          {tax?.taxInstallments?.[1] && (
+            <>
+              <div id="divider" className="w-full h-0.5 bg-gray-200" />
+              <div
+                id="content"
+                className="flex lg:flex-row flex-col items-start lg:gap-6 gap-3 w-full"
+              >
+                <div className="grow items-start">
+                  {t('payment_schedule.second_piece')}
+                  <div className="text-h5 inline">{t('payment_schedule.second_piece_to')}</div>
+                </div>
+                <div className="text-h5">{formatCurrency(tax.taxInstallments[1]?.amount)}</div>
+              </div>
+            </>
+          )}
+          {tax?.taxInstallments?.[2] && (
+            <>
+              <div id="divider" className="w-full h-0.5 bg-gray-200" />
+              <div
+                id="content"
+                className="flex lg:flex-row flex-col items-start lg:gap-6 gap-3 w-full"
+              >
+                <div className="grow items-start">
+                  {t('payment_schedule.third_piece')}
+                  <div className="text-h5 inline">{t('payment_schedule.third_piece_to')}</div>
+                </div>
+                <div className="text-h5">{formatCurrency(tax.taxInstallments[2]?.amount)}</div>
+              </div>
+            </>
+          )}
         </div>
       </div>
       <div className="gap-3 lg:gap-0 flex flex-col">
@@ -83,6 +108,7 @@ const AccordionPaymentSchedule = ({
   size = 'sm',
   icon = false,
   className,
+  tax,
 }: AccordionBase) => {
   const [isActive, setIsActive] = useState(false)
 
@@ -114,7 +140,7 @@ const AccordionPaymentSchedule = ({
         <AccountMarkdownModal
           show={isActive}
           onClose={() => setIsActive(false)}
-          content={<PaymentScheduleView />}
+          content={<PaymentScheduleView tax={tax} />}
           onSubmit={() => {}}
           header={title}
         />
@@ -188,7 +214,7 @@ const AccordionPaymentSchedule = ({
               'text-20': accordionSize === 'lg' || accordionSize === 'md',
             })}
           >
-            <PaymentScheduleView />
+            <PaymentScheduleView tax={tax} />
           </div>
         )}
       </div>

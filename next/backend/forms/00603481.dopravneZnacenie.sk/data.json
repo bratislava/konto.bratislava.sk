@@ -1,44 +1,19 @@
 {
   "zoznamPriloh": {
-    "projektOrganizacieDopravy": {
-      "nazov": "POD.pdf",
-      "prilozena": true
-    },
-    "zavazneStanoviskoKrajskehoDopravnehoInspektoratu": {
-      "nazov": "KDI.pdf",
-      "prilozena": true
-    },
-    "stanoviskaSpravcovCiest": [
-      {
-        "nazov": "Ruzinov.pdf",
-        "prilozena": true
-      },
-      {
-        "nazov": "NoveMesto.pdf",
-        "prilozena": true
-      }
-    ],
-    "vyhradenehoParkovanieVztahKPrevadzke": {
-      "nazov": "NajomnaZmluva.pdf",
-      "prilozena": true
-    },
-    "splnomocnenieNaZastupovanie": {
-      "nazov": "splnomocnenie.pdf",
-      "prilozena": true
-    }
+    "projektOrganizacieDopravy": ["POD.pdf"],
+    "zavazneStanoviskoKrajskehoDopravnehoInspektoratu": ["KDI.pdf"],
+    "stanoviskaSpravcovCiest": ["Ruzinov.pdf", "NoveMesto.pdf"],
+    "vyhradenehoParkovanieVztahKPrevadzke": ["NajomnaZmluva.pdf"],
+    "splnomocnenieNaZastupovanie": ["splnomocnenie.pdf"]
   },
   "ziadatel": {
     "voSvojomMene": true,
-    "typOsoby": {
-      "code": 1,
-      "name": "Fyzická osoba",
-      "wsEnumCode": "UPVSIAM_001"
-    },
+    "typOsoby": "1",
     "kontakt": {
       "telefonneCislo": {
         "medzinarodneVolacieCislo": "+421",
-        "predvolba": 904,
-        "cislo": 123456
+        "predvolba": "904",
+        "cislo": "123456"
       },
       "email": "hruska@example.com",
       "kontaktnaOsoba": {
@@ -52,19 +27,11 @@
       "ulicaACislo": {
         "ulica": "Hlboká cesta",
         "supisneCislo": 970,
-        "orientacneCislo": 5
+        "orientacneCislo": "5"
       },
-      "pSC": 81104,
-      "obec": {
-        "code": "SK0101528595",
-        "name": "Bratislava - mestská časť Staré Mesto",
-        "wsEnumCode": "SUSR_0025"
-      },
-      "stat": {
-        "code": 703,
-        "name": "Slovenská republika",
-        "wsEnumCode": "SUSR_0086"
-      }
+      "pSC": "81104",
+      "obec": "SK0101528595",
+      "stat": "703"
     }
   },
   "dopravneZnacenie": {
@@ -73,8 +40,8 @@
     "vyhradeneParkovanie": {
       "typ": "Nove",
       "pocetParkovacichMiest": 2,
-      "uzivanaPlochaJednehoMiestaDlzka": 6,
-      "uzivanaPlochaJednehoMiestaSirka": 2.8,
+      "uzivanaPlochaJednehoMiestaDlzka": "6",
+      "uzivanaPlochaJednehoMiestaSirka": "2.8",
       "terminVyhradeniaMiestaOd": "2022-01-01",
       "terminVyhradeniaMiestaDo": "2023-01-01"
     },
@@ -84,11 +51,11 @@
   },
   "uzavierka": {
     "typ": "Ciastocna",
-    "sirkaVolnehoJazdnehoPruhu": 5,
+    "sirkaVolnehoJazdnehoPruhu": "5",
     "uliceOd": "Robotnicka ulica",
     "uliceDo": "Kvetinova ulica",
-    "dlzkaVMetroch": 50,
-    "sirkaVMetroch": 10,
+    "dlzkaVMetroch": "50",
+    "sirkaVMetroch": "10",
     "datumACasOd": "2022-01-01T05:00:00",
     "datumACasDo": "2022-05-01T17:00:00",
     "popis": "Bude uzatvorena cesta"
@@ -97,8 +64,8 @@
   "kontaktnaOsoba": {
     "telefonneCislo": {
       "medzinarodneVolacieCislo": "+421",
-      "predvolba": 905,
-      "cislo": 987654
+      "predvolba": "905",
+      "cislo": "987654"
     },
     "email": "jozefina.hruskova@example.com",
     "kontaktnaOsoba": {
@@ -108,12 +75,12 @@
   },
   "zodpovednyProjektant": {
     "obchodneMeno": "Kutyil, s.r.o.",
-    "iCO": 12345678,
+    "iCO": "12345678",
     "kontakt": {
       "telefonneCislo": {
         "medzinarodneVolacieCislo": "+421",
-        "predvolba": 905,
-        "cislo": 246135
+        "predvolba": "905",
+        "cislo": "246135"
       },
       "email": "lazslo@example.com",
       "kontaktnaOsoba": {
@@ -139,17 +106,9 @@
           "ulica": "Hlboká cesta",
           "supisneCislo": 970
         },
-        "pSC": 81104,
-        "obec": {
-          "code": "SK0101528595",
-          "name": "Bratislava - mestská časť Staré Mesto",
-          "wsEnumCode": "SUSR_0025"
-        },
-        "stat": {
-          "code": 703,
-          "name": "Slovenská republika",
-          "wsEnumCode": "SUSR_0086"
-        }
+        "pSC": "81104",
+        "obec": "SK0101528595",
+        "stat": "703"
       }
     }
   },

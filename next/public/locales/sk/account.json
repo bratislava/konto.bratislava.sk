@@ -316,6 +316,11 @@
         "title": "Online lístky na kúpaliská",
         "description": "Možnosť kúpiť si online lístok alebo permanentku na všetky mestské kúpalíská v Bratislave pribudne do Bratislavského konta už v júni.",
         "tag": "Pribudne čoskoro"
+      },
+      "33": {
+        "title": "Vstupenky do Galérie mesta Bratislava",
+        "description": "Nákup online vstupeniek alebo ročnej permanentky na všetky výstavy a programy v oboch palácoch GMB za zvýhodnenú cenu.",
+        "buttonText": "Kúpiť lístok do GMB"
       }
     }
   },

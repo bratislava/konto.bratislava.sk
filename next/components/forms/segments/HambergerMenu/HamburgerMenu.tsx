@@ -1,9 +1,13 @@
+import { ROUTES } from '@utils/constants'
 import { handleOnKeyPress } from '@utils/utils'
 import cx from 'classnames'
 import { MenuItem } from 'components/forms/segments/AccountNavBar/AccountNavBar'
+import IdentityVerificationStatus from 'components/forms/simple-components/IdentityVerificationStatus'
 import Link from 'next/link'
 import { useRouter } from 'next/router'
 import { useTranslation } from 'next-i18next'
+
+// const MY_PROFILE_ITEM_ID = 1
 
 interface IProps {
   sectionsList?: MenuItem[]
@@ -35,14 +39,17 @@ const Item = ({
       onClick={onClick}
       onKeyPress={(event) => handleOnKeyPress(event, onClick)}
       className={cx(
-        'text-p2-semibold rounded-lg p-4 flex cursor-pointer border-b-2 border-transparent hover:text-main-700 hover:bg-main-100 transition-all',
+        ' text-p2-semibold rounded-lg p-4 flex items-center justify-between cursor-pointer border-b-2 border-transparent hover:text-main-700 hover:bg-main-100 transition-all',
         {
           'text-main-700 bg-main-100': isSelected,
         },
       )}
     >
-      {menuItem.icon}
-      <span className="ml-3">{t(menuItem?.title)}</span>
+      <div className="flex items-center gap-3">
+        {menuItem.icon}
+        <span>{t(menuItem?.title)}</span>
+      </div>
+      {menuItem.link === ROUTES.USER_PROFILE && <IdentityVerificationStatus />}
     </div>
   )
 }

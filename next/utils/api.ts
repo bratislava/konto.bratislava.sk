@@ -281,7 +281,7 @@ export const updateForm = (token: string, id: string, data: UpdateFormDto) => {
 
 export const getTaxApi = (token: string) => {
   return fetchJsonApi(
-    `https://nest-tax-backend.staging.bratislava.sk/tax/get-tax-by-year?year=2022`,
+    `https://nest-tax-backend.staging.bratislava.sk/tax/get-tax-by-year?year=2023`,
     {
       method: 'GET',
       headers: {
@@ -294,7 +294,7 @@ export const getTaxApi = (token: string) => {
 
 export const getTaxPdfApi = (token: string) => {
   return fetchJsonApi(
-    `https://nest-tax-backend.staging.bratislava.sk/tax/get-tax-pdf-by-year?year=2022`,
+    `https://nest-tax-backend.staging.bratislava.sk/tax/get-tax-pdf-by-year?year=2023`,
     {
       method: 'GET',
       headers: {
@@ -307,7 +307,7 @@ export const getTaxPdfApi = (token: string) => {
 
 export const getPaymentGatewayUrlApi = (token: string) => {
   return fetchJsonApi(
-    `https://nest-tax-backend.staging.bratislava.sk/payment/cardpay/by-year/2022`,
+    `https://nest-tax-backend.staging.bratislava.sk/payment/cardpay/by-year/2023`,
     {
       method: 'POST',
       headers: {

@@ -2,6 +2,7 @@ import PaymentDeclined from '@assets/images/new-icons/other/payment-declined.svg
 import DisableIcon from '@assets/images/new-icons/ui/cross.svg'
 import DoneIcon from '@assets/images/new-icons/ui/done.svg'
 import RestartIcon from '@assets/images/new-icons/ui/repeat.svg'
+import { ROUTES } from '@utils/constants'
 import cx from 'classnames'
 import AccountMarkdown from 'components/forms/segments/AccountMarkdown/AccountMarkdown'
 import Button from 'components/forms/simple-components/Button'
@@ -46,13 +47,17 @@ const ThankYouCard = ({
       <div className="w-full flex flex-col sm:flex-row items-center gap-4 px-0 md:px-24">
         {status !== 'success' ? (
           <>
-            <Button startIcon={<RestartIcon />} text={firstButtonTitle} fullWidth />
-            <Button
-              startIcon={<DisableIcon className="w-6 h-6" />}
-              variant="black-outline"
-              text={secondButtonTitle}
-              fullWidth
-            />
+            <Link href={`${ROUTES.TAXES_AND_FEES}/2022`} className="w-full">
+              <Button startIcon={<RestartIcon />} text={firstButtonTitle} fullWidth />
+            </Link>
+            <Link href="/" className="w-full">
+              <Button
+                startIcon={<DisableIcon className="w-6 h-6" />}
+                variant="black-outline"
+                text={secondButtonTitle}
+                fullWidth
+              />
+            </Link>
           </>
         ) : (
           <>

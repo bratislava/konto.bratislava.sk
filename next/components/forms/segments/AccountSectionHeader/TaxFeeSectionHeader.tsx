@@ -73,7 +73,7 @@ const TaxFeeSectionHeader = ({ tax }: AccountSectionHeaderBase) => {
 
   // https://stackoverflow.com/questions/32545632/how-can-i-download-a-file-using-window-fetch
   const downloadPdf = () =>
-    fetch('https://nest-tax-backend.staging.bratislava.sk/tax/get-tax-pdf-by-year?year=2022', {
+    fetch('https://nest-tax-backend.staging.bratislava.sk/tax/get-tax-pdf-by-year?year=2023', {
       headers: {
         Authorization: `Bearer ${lastAccessToken}`,
       },

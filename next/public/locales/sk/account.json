@@ -412,6 +412,10 @@
       "17": {
         "question": "Ako si zmením e-mailovú adresu, ktorou sa do konta prihlasujem?",
         "answer": "V prípade, že chcete zmeniť e-mailovú adresu, ktorou sa do konta prihlasujete a na ktorú vám zasielame informácie týkajúce sa vášho konta, kontaktujte nás na info@bratislava.sk."
+      },
+      "18": {
+        "question": "Prečo žiadate overenie identity? ",
+        "answer": "Čísla dokladov potrebujeme poznať na to, aby sme overili vašu identitu voči štátnym registrom. Rodné číslo zároveň slúži ako jedinečný identifikátor, bez ktorého nevieme sprístupniť detaily dane z nehnuteľností. Bez overenia nebudete schopný/á zaplatiť daň z nehnuteľností digitálne či odoslať všetky elektronické žiadosti. Overenie je jednorazové, údaje neukladáme."
       }
     }
   },

@@ -9,7 +9,7 @@ import Button from 'components/forms/simple-components/Button'
 import Link from 'next/link'
 
 type ThankYouCardBase = {
-  status?: 'success' | 'error-1' | 'error-2' | 'error-3' | 'error-4'
+  success?: boolean
   title?: string
   firstButtonTitle: string
   secondButtonTitle: string
@@ -17,7 +17,7 @@ type ThankYouCardBase = {
 }
 
 const ThankYouCard = ({
-  status,
+  success,
   title,
   firstButtonTitle,
   secondButtonTitle,
@@ -29,15 +29,15 @@ const ThankYouCard = ({
         className={cx(
           'min-w-14 md:min-w-[88px] w-14 md:w-[88px] h-14 md:h-[88px] bg-negative-100 flex justify-center items-center rounded-full',
           {
-            'bg-negative-100': status?.includes('error'),
-            'bg-success-100': status === 'success',
+            'bg-negative-100': !success,
+            'bg-success-100': success,
           },
         )}
       >
-        {status !== 'success' ? (
-          <PaymentDeclined className="w-8 md:w-10 h-8 md:h-10 flex justify-center items-center text-negative-700" />
-        ) : (
+        {success ? (
           <DoneIcon className="w-8 md:w-10 h-8 md:h-10 flex justify-center items-center text-success-700" />
+        ) : (
+          <PaymentDeclined className="w-8 md:w-10 h-8 md:h-10 flex justify-center items-center text-negative-700" />
         )}
       </span>
       <div className="flex flex-col items-center gap-4 md:gap-3">
@@ -45,9 +45,23 @@ const ThankYouCard = ({
         <AccountMarkdown variant="sm" className="text-center" content={content} />
       </div>
       <div className="w-full flex flex-col sm:flex-row items-center gap-4 px-0 md:px-24">
-        {status !== 'success' ? (
+        {success ? (
           <>
-            <Link href={`${ROUTES.TAXES_AND_FEES}/2022`} className="w-full">
+            <a
+              href="https://forms.office.com/Pages/ResponsePage.aspx?id=Tudp_mYey0-ZxVjkotKgYzPfQUHlnllIsPHBW0o8KeNUQlMzWEw1WEZIWEM2SThRNVBUREhWNFlISC4u"
+              className="w-full"
+              target="_blank"
+              rel="noreferrer"
+            >
+              <Button text={firstButtonTitle} fullWidth />
+            </a>
+            <Link href="/" className="w-full">
+              <Button variant="black-outline" text={secondButtonTitle} fullWidth />
+            </Link>
+          </>
+        ) : (
+          <>
+            <Link href={`${ROUTES.TAXES_AND_FEES}/2023`} className="w-full">
               <Button startIcon={<RestartIcon />} text={firstButtonTitle} fullWidth />
             </Link>
             <Link href="/" className="w-full">
@@ -57,13 +71,6 @@ const ThankYouCard = ({
                 text={secondButtonTitle}
                 fullWidth
               />
-            </Link>
-          </>
-        ) : (
-          <>
-            <Button text={firstButtonTitle} fullWidth />
-            <Link href="/" className="w-full">
-              <Button variant="black-outline" text={secondButtonTitle} fullWidth />
             </Link>
           </>
         )}

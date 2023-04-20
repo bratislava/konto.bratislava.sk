@@ -1,12 +1,10 @@
 import ExpandMore from '@assets/images/new-icons/ui/expand.svg'
-import { parseDate } from '@internationalized/date'
-import logger from '@utils/logger'
 import { Tax } from '@utils/taxDto'
 import { formatCurrency } from '@utils/utils'
 import { AddToCalendarButton } from 'add-to-calendar-button-react'
 import cx from 'classnames'
 import { useTranslation } from 'next-i18next'
-import React, { useMemo, useState } from 'react'
+import React, { useState } from 'react'
 
 import PersonIcon from '../icon-components/PersonIcon'
 import AccountMarkdownModal from '../segments/AccountModal/AccountModal'
@@ -29,23 +27,6 @@ interface PaymentScheduleViewProps {
 
 const PaymentScheduleView = ({ tax }: PaymentScheduleViewProps) => {
   const { t } = useTranslation('account')
-
-  const dateCreateTaxIsoString = useMemo(() => {
-    try {
-      const isoFormat = tax.dateCreateTax.split('.').reverse().join('-')
-      return parseDate(isoFormat).add({ days: 15 }).toString()
-    } catch (error) {
-      logger.error('Error parsing dateCreateTax for schedule, fallback on createdAt', error)
-      try {
-        const fallback = tax.createdAt.split('T')[0]
-        return parseDate(fallback).add({ days: 15 }).toString()
-      } catch (error) {
-        logger.error('Error parsing dateCreateTax for schedule, no fallback available', error)
-        return '2023-05-12'
-      }
-    }
-  }, [tax.dateCreateTax, tax.createdAt])
-
   return (
     <div className="no-scrollbar flex flex-col items-start lg:gap-6 gap-4 w-full overflow-auto">
       <div className="flex flex-col items-start lg:gap-6 gap-4 w-full">
@@ -62,18 +43,14 @@ const PaymentScheduleView = ({ tax }: PaymentScheduleViewProps) => {
         <div className=" flex md:flex-row flex-col items-center lg:gap-6 gap-4 w-full">
           <div className="text-h6 font-semibold md:text-h-md grow">{t('tax_determined')}</div>
           <AddToCalendarButton
-            name="Splátka dane za nehnuteľnosť 2023"
+            name="Splátka dane za nehnuteľností 2023"
             dates={`[
               {
-                "name":"Splátka dane za nehnuteľnosť 2023 1/3",
-                "startDate":"${dateCreateTaxIsoString}"
-              },
-              {
-                "name":"Splátka dane za nehnuteľnosť 2023 2/3",
+                "name":"Splátka dane z nehnuteľností 2023 2/3",
                 "startDate":"2023-08-31"
               },
               {
-                "name":"Splátka dane za nehnuteľnosť 2023 3/3",
+                "name":"Splátka dane z nehnuteľností 2023 3/3",
                 "startDate":"2023-10-31"
               }
             ]`}

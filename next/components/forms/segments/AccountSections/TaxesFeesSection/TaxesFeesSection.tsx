@@ -1,5 +1,6 @@
 import { useTaxes } from '@utils/apiHooks'
 import { ROUTES } from '@utils/constants'
+import logger from '@utils/logger'
 import useAccount, { AccountStatus } from '@utils/useAccount'
 import AccountSectionHeader from 'components/forms/segments/AccountSectionHeader/AccountSectionHeader'
 import TaxesFeesCard from 'components/forms/segments/AccountSections/TaxesFeesSection/TaxesFeesCard'
@@ -26,7 +27,7 @@ const TaxesFeesSection = ({ isProductionDeployment }: TaxesFeesSectionProps) => 
   const { t } = useTranslation('account')
   const { status } = useAccount()
 
-  const { data, error, isLoading } = useTaxes()
+  const { data, isLoading } = useTaxes()
 
   const taxesFeesWaitingCardContent = `
 <h4>${t('account_section_payment.waiting_card_title')}</h4>
@@ -68,23 +69,24 @@ const TaxesFeesSection = ({ isProductionDeployment }: TaxesFeesSectionProps) => 
             createDate={new Date(data?.createdAt).toLocaleDateString('sk-SK')}
             currentPaid={data?.payedAmount}
             finishPrice={data?.amount}
-            status={'negative'}
+            status="negative"
             paidDate={data?.updatedAt}
           />
         </li>
       </ul>
     )
   } else {
-    content = 'TODO continue here error content'
+    logger.error('TaxesFeesSection.tsx: unknown error - shoud never happen')
+    content =
+      'Neočakávaná chyba pri načítaní dát - kontaktujte prosím podporu na info@bratislava.sk'
   }
 
-  if (data)
-    return (
-      <div className="flex flex-col">
-        <AccountSectionHeader title={t('account_section_payment.title')} />
-        <div className="max-w-screen-lg w-full m-auto">{content}</div>
-      </div>
-    )
+  return (
+    <div className="flex flex-col">
+      <AccountSectionHeader title={t('account_section_payment.title')} />
+      <div className="max-w-screen-lg w-full m-auto">{content}</div>
+    </div>
+  )
 }
 
 export default TaxesFeesSection

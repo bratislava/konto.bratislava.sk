@@ -1,13 +1,13 @@
 import ExpandMore from '@assets/images/new-icons/ui/expand.svg'
+import { Tax } from '@utils/taxDto'
+import { formatCurrency } from '@utils/utils'
 import cx from 'classnames'
+import { useTranslation } from 'next-i18next'
 import React, { useState } from 'react'
 
 import PersonIcon from '../icon-components/PersonIcon'
 import AccountMarkdown from '../segments/AccountMarkdown/AccountMarkdown'
 import AccountMarkdownModal from '../segments/AccountModal/AccountModal'
-import { Tax } from '@utils/taxDto'
-import { useTranslation } from 'next-i18next'
-import { formatCurrency } from '@utils/utils'
 
 const tableHeaderData = {
   subject: 'Predmet dane',
@@ -16,160 +16,13 @@ const tableHeaderData = {
   total: 'Daň v EUR',
 }
 
-const tableTotal = {
-  ground: '0,00 €',
-  construction: '0,00 €',
-  apartment: '58,00 €',
-}
-
 const matchHeader = {
   GROUND: [tableHeaderData.area, tableHeaderData.base, tableHeaderData.total],
   CONSTRUCTION: [tableHeaderData.base, tableHeaderData.total],
   APARTMENT: [tableHeaderData.base, tableHeaderData.total],
 }
 export type AccordionSizeType = 'xs' | 'sm' | 'md' | 'lg'
-const groundData = {
-  A: {
-    title: 'Orná pôda, chmeľnice, vinice, ovocné sady',
-    description: '(§ 6 ods. 1 písm. a) zákona)',
-    area: '0,00',
-    base: '0,00',
-    total: '0,00',
-  },
-  B: {
-    title: 'Trvalé trávnaté porasty',
-    description: '(§ 6 ods. 1 písm. a) zákona)',
-    area: '0,00',
-    base: '0,00',
-    total: '0,00',
-  },
-  C: {
-    title: 'Záhrady',
-    description: '(§ 6 ods. 1 písm. b) zákona)',
-    area: '0,00',
-    base: '0,00',
-    total: '0,00',
-  },
-  D: {
-    title: 'Lesné pozemky, na ktorých sú hospodárske lesy',
-    description: '(§ 6 ods. 1 písm. d) zákona)',
-    area: '0,00',
-    base: '0,00',
-    total: '0,00',
-  },
-  E: {
-    title: 'Rybníky s chovom rýb a ostatné hospodársky využívané vodné plochy',
-    description: '(§ 6 ods. 1 písm. d) zákona)',
-    area: '0,00',
-    base: '0,00',
-    total: '0,00',
-  },
-  F: {
-    title: 'Zastavané plochy a nádvoria',
-    description: '(§ 6 ods. 1 písm. c) zákona)',
-    area: '0,00',
-    base: '0,00',
-    total: '0,00',
-  },
-  G: {
-    title: 'Stavebné pozemky',
-    description: '(§ 6 ods. 1 písm. e) zákona)',
-    area: '0,00',
-    base: '0,00',
-    total: '0,00',
-  },
-  H: {
-    title: 'Ostatné plochy',
-    description: '(§ 6 ods. 1 písm. c) zákona)',
-    area: '0,00',
-    base: '0,00',
-    total: '0,00',
-  },
-}
 
-const constructionData = {
-  A: {
-    title: 'Stavba na bývanie',
-    description: '(§ 10 ods. 1 písm. a) zákona)',
-    base: '0,00',
-    total: '0,00',
-  },
-  B: {
-    title: 'Stavby na pôdohospodársku produkciu',
-    description: '(§ 10 ods. 1 písm. b) zákona)',
-    base: '0,00',
-    total: '0,00',
-  },
-  C: {
-    title: 'Chaty',
-    description: '(§ 10 ods. 1 písm. c) zákona)',
-    base: '0,00',
-    total: '0,00',
-  },
-  D: {
-    title: 'Samostatne stojace garáže',
-    description: '(§ 10 ods. 1 písm. d) zákona)',
-    base: '0,00',
-    total: '0,00',
-  },
-  E: {
-    title: 'Stavby hromadných garáží',
-    description: '(§ 10 ods. 1 písm. e) zákona)',
-    base: '0,00',
-    total: '0,00',
-  },
-  F: {
-    title: 'Stavby hromadných garáží umiestnených pod zemou',
-    description: '(§ 10 ods. 1 písm. f) zákona)',
-    base: '0,00',
-    total: '0,00',
-  },
-  G: {
-    title: 'Priemyselné stavby',
-    description: '(§ 10 ods. 1 písm. g) zákona)',
-    base: '0,00',
-    total: '0,00',
-  },
-  jH: {
-    title: 'Stavba na ost. podnik. a zárobk. činnosť, skladovanie a administratívu',
-    description: '(§ 10 ods. 1 písm. h) zákona)',
-    base: '0,00',
-    total: '0,00',
-  },
-  jI: {
-    title: 'Ostatné stavby',
-    description: '(§ 10 ods. 1 písm. i) zákona)',
-    base: '0,00',
-    total: '0,00',
-  },
-  H: {
-    title: 'Viacúčelová stavba',
-    description: '(§ 12 ods. 6 zákona)',
-    base: '0,00',
-    total: '0,00',
-  },
-}
-
-const apartmentData = {
-  residential: {
-    title: 'Byt',
-    description: '(§ 14 zákona)',
-    base: '58,00',
-    total: '58,00',
-  },
-  nonResidential: {
-    title: 'Nebytový priestor',
-    description: '(§ 14 zákona)',
-    base: '0,00',
-    total: '0,00',
-  },
-}
-
-const matchMainData = {
-  ground: groundData,
-  construction: constructionData,
-  apartment: apartmentData,
-}
 export type AccordionBase = {
   size: AccordionSizeType
   title: string
@@ -184,7 +37,13 @@ export const isAccordionSizeType = (size: string) =>
   ['xs', 'sm', 'md', 'lg'].includes(size) ? size : 'sm'
 
 const TableHeaderRow = ({ dataType }: { dataType: string }) => {
-  const headerData = matchHeader[dataType] || matchHeader['APARTMENT']
+  // TODO types can be better if validated as they come from API
+  const headerData = Object.keys(matchHeader).includes(dataType)
+    ? (matchHeader[dataType] as
+        | typeof matchHeader.GROUND
+        | typeof matchHeader.CONSTRUCTION
+        | typeof matchHeader.APARTMENT)
+    : matchHeader.APARTMENT
 
   return (
     <thead className="lg:bg-gray-0 bg-gray-200 self-stretch">
@@ -192,7 +51,7 @@ const TableHeaderRow = ({ dataType }: { dataType: string }) => {
         <th className="text-16 first:rounded-tl last:rounded-tr [&:not(:first-child)]:text-center border-spacing-0 border-b-2 text-left lg:py-4 lg:p-0 p-4">
           Predmet dane
         </th>
-        {headerData.map((header) => {
+        {headerData?.map((header) => {
           return (
             <th className="text-16 first:rounded-tl last:rounded-tr [&:not(:first-child)]:text-center border-spacing-0 border-b-2 text-left lg:py-4 lg:p-0 p-4">
               <AccountMarkdown content={`<div class="text-16 p-2">${header}</div>`} />
@@ -374,7 +233,7 @@ const AccordionTableTaxContent = ({
         />
         {isActive && (
           <div
-            className={cx('flex flex-col font-normal lg:block hidden', paddingStyles, {
+            className={cx('flex-col font-normal lg:block hidden', paddingStyles, {
               'text-h6': accordionSize === 'sm' || accordionSize === 'xs',
               'text-20': accordionSize === 'lg' || accordionSize === 'md',
             })}

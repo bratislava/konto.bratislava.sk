@@ -1,5 +1,5 @@
 import { AsyncServerProps } from '@utils/types'
-import { isProductionDeployment } from '@utils/utils'
+import { isProductionDeployment as isProductionDeploymentFn } from '@utils/utils'
 import AccountPageLayout from 'components/layouts/AccountPageLayout'
 import PageWrapper from 'components/layouts/PageWrapper'
 import { GetServerSidePropsContext } from 'next'
@@ -22,7 +22,7 @@ export const getServerSideProps = async (ctx: GetServerSidePropsContext) => {
           })),
       },
       ...(await serverSideTranslations(locale)),
-      isProductionDeployment: isProductionDeployment(),
+      isProductionDeployment: isProductionDeploymentFn(),
     },
   }
 }

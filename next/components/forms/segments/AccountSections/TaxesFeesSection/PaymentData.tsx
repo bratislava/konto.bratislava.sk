@@ -34,11 +34,13 @@ const PaymentData = ({ tax }: PaymentDataProps) => {
   const redirectToPaymentGateway = async () => {
     try {
       const result = await getPaymentGatewayUrlApi(lastAccessToken)
-      if (!result?.url) {
+      const resultUrl = result?.url
+      if (typeof resultUrl === 'string') {
+        await router.push(resultUrl)
+      } else {
         logger.error(result)
         throw new Error('Payment gateway url is not defined')
       }
-      await router.push(result.url)
     } catch (error) {
       logger.error(error)
     }

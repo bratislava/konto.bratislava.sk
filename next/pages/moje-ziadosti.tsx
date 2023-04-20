@@ -33,7 +33,7 @@ const AccountMyApplicationsPage = ({
 }: AsyncServerProps<typeof getServerSideProps>) => {
   return (
     <PageWrapper locale={page.locale} localizations={page.localizations}>
-      <AccountPageLayout>
+      <AccountPageLayout isProductionDeploy={isProductionDeploy}>
         <MyApplicationsSection isProductionDeploy={isProductionDeploy} />
       </AccountPageLayout>
     </PageWrapper>

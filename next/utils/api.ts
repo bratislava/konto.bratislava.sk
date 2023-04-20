@@ -278,3 +278,42 @@ export const updateForm = (token: string, id: string, data: UpdateFormDto) => {
     body: JSON.stringify(data),
   })
 }
+
+export const getTaxApi = (token: string) => {
+  return fetchJsonApi(
+    `https://nest-tax-backend.staging.bratislava.sk/tax/get-tax-by-year?year=2022`,
+    {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${token}`,
+      },
+    },
+  )
+}
+
+export const getTaxPdfApi = (token: string) => {
+  return fetchJsonApi(
+    `https://nest-tax-backend.staging.bratislava.sk/tax/get-tax-pdf-by-year?year=2022`,
+    {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${token}`,
+      },
+    },
+  )
+}
+
+export const getPaymentGatewayUrlApi = (token: string) => {
+  return fetchJsonApi(
+    `https://nest-tax-backend.staging.bratislava.sk/payment/cardpay/by-year/2022`,
+    {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${token}`,
+      },
+    },
+  )
+}

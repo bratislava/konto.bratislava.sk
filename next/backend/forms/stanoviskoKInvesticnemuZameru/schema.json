@@ -10,7 +10,6 @@
         "prilohy": {
           "type": "object",
           "title": "Prílohy",
-          "description": "Jednotlivé časti štúdie môžete nahrať samostatne alebo ako jeden súbor.",
           "properties": {
             "architektonickaStudia": {
               "type": "array",

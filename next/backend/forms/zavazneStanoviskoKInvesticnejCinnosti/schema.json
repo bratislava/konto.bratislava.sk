@@ -534,7 +534,69 @@
               "type": "array",
               "uniqueItems": true,
               "items": {
-                "type": "string"
+                "type": "string",
+                "oneOf": [
+                  {
+                    "const": "Čuňovo"
+                  },
+                  {
+                    "const": "Devín"
+                  },
+                  {
+                    "const": "Devínska Nová Ves"
+                  },
+                  {
+                    "const": "Dúbravka"
+                  },
+                  {
+                    "const": "Jarovce"
+                  },
+                  {
+                    "const": "Karlova Ves"
+                  },
+                  {
+                    "const": "Lamač"
+                  },
+                  {
+                    "const": "Nivy"
+                  },
+                  {
+                    "const": "Nové Mesto"
+                  },
+                  {
+                    "const": "Petržalka"
+                  },
+                  {
+                    "const": "Podunajské Biskupice"
+                  },
+                  {
+                    "const": "Rača"
+                  },
+                  {
+                    "const": "Rusovce"
+                  },
+                  {
+                    "const": "Ružinov"
+                  },
+                  {
+                    "const": "Staré mesto"
+                  },
+                  {
+                    "const": "Trnávka"
+                  },
+                  {
+                    "const": "Vajnory"
+                  },
+                  {
+                    "const": "Vinohrady"
+                  },
+                  {
+                    "const": "Vrakuňa"
+                  },
+                  {
+                    "const": "Záhorská Bystrica"
+                  }
+                ]
               }
             }
           },
@@ -574,11 +636,7 @@
               "if": {
                 "properties": {
                   "konanieTyp": {
-                    "oneOf": [
-                      {
-                        "const": "Konanie o dodatočnom povolení stavby"
-                      }
-                    ]
+                    "const": "Konanie o dodatočnom povolení stavby"
                   }
                 }
               },
@@ -593,51 +651,53 @@
                     ]
                   }
                 },
+                "allOf": [
+                  {
+                    "if": {
+                      "properties": {
+                        "ziadostOdovodnenie": {
+                          "const": "Dodatočné povolenie zmeny stavby pred dokončením"
+                        }
+                      }
+                    },
+                    "then": {
+                      "properties": {
+                        "stavbaFotodokumentacia": {
+                          "type": "array",
+                          "title": "Fotodokumentácia stavby",
+                          "items": {
+                            "type": "string",
+                            "format": "data-url"
+                          }
+                        }
+                      },
+                      "required": ["stavbaFotodokumentacia"]
+                    }
+                  },
+                  {
+                    "if": {
+                      "properties": {
+                        "ziadostOdovodnenie": {
+                          "const": "Dodatočné povolenie zmeny stavby pred dokončením"
+                        }
+                      }
+                    },
+                    "then": {
+                      "properties": {
+                        "stavbaPisomnosti": {
+                          "type": "array",
+                          "title": "Relevantné písomnosti súvisiace so stavbou",
+                          "items": {
+                            "type": "string",
+                            "format": "data-url"
+                          }
+                        }
+                      },
+                      "required": ["stavbaPisomnosti"]
+                    }
+                  }
+                ],
                 "required": ["ziadostOdovodnenie"]
-              }
-            },
-            {
-              "if": {
-                "properties": {
-                  "ziadostOdovodnenie": {
-                    "const": "Dodatočné povolenie zmeny stavby pred dokončením"
-                  }
-                }
-              },
-              "then": {
-                "properties": {
-                  "stavbaFotodokumentacia": {
-                    "type": "array",
-                    "title": "Fotodokumentácia stavby",
-                    "items": {
-                      "type": "string",
-                      "format": "data-url"
-                    }
-                  }
-                },
-                "required": ["stavbaFotodokumentacia"]
-              }
-            },
-            {
-              "if": {
-                "properties": {
-                  "ziadostOdovodnenie": {
-                    "const": "Dodatočné povolenie zmeny stavby pred dokončením"
-                  }
-                }
-              },
-              "then": {
-                "properties": {
-                  "stavbaPisomnosti": {
-                    "type": "array",
-                    "title": "Relevantné písomnosti súvisiace so stavbou",
-                    "items": {
-                      "type": "string",
-                      "format": "data-url"
-                    }
-                  }
-                },
-                "required": ["stavbaPisomnosti"]
               }
             }
           ]

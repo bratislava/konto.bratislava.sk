@@ -12,7 +12,7 @@ const ThankYouFormSection = () => {
     <div className="h-screen bg-gray-0 md:bg-gray-50 pt-16 md:pt-28 flex flex-col justify-between">
       <div className="flex flex-col">
         <ThankYouCard
-          status="success"
+          success
           title={t('thank_you.form_submit.title')}
           firstButtonTitle={t('thank_you.success.button_to_formular_text_2')}
           secondButtonTitle={t('thank_you.success.button_to_profil_text')}

@@ -41,7 +41,7 @@ const TaxesFeesCard = (props: TaxesCardBase) => {
   }
 
   return (
-    <>
+    <Link href={`${ROUTES.TAXES_AND_FEES}/2023`}>
       {/* Desktop */}
       <div
         id="desktop-card"
@@ -74,12 +74,9 @@ const TaxesFeesCard = (props: TaxesCardBase) => {
           </div>
         </div>
         <div className="cursor-pointer w-16 min-w-[64px] h-full border-l-2">
-          <Link
-            href={`${ROUTES.TAXES_AND_FEES}/2022`}
-            className="w-full h-full items-center flex justify-center"
-          >
+          <div className="w-full h-full items-center flex justify-center">
             <ChevronRightIcon />
-          </Link>
+          </div>
         </div>
       </div>
       {/* Mobile */}
@@ -88,7 +85,7 @@ const TaxesFeesCard = (props: TaxesCardBase) => {
         className="bg-white w-full h-24 flex lg:hidden items-center justify-between border-b-2 border-gray-200"
       >
         <Link
-          href={`${ROUTES.TAXES_AND_FEES}/2022`}
+          href={`${ROUTES.TAXES_AND_FEES}/2023`}
           className="w-full h-full items-center flex justify-center"
         >
           <div className="w-full flex items-start justify-between">
@@ -114,7 +111,7 @@ const TaxesFeesCard = (props: TaxesCardBase) => {
           </div>
         </Link>
       </div>
-    </>
+    </Link>
   )
 }
 

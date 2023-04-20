@@ -53,7 +53,10 @@ const TableHeaderRow = ({ dataType }: { dataType: string }) => {
         </th>
         {headerData?.map((header) => {
           return (
-            <th className="text-16 first:rounded-tl last:rounded-tr [&:not(:first-child)]:text-center border-spacing-0 border-b-2 text-left lg:py-4 lg:p-0 p-4">
+            <th
+              className="text-16 first:rounded-tl last:rounded-tr [&:not(:first-child)]:text-center border-spacing-0 border-b-2 text-left lg:py-4 lg:p-0 p-4"
+              key={header}
+            >
               <AccountMarkdown content={`<div class="text-16 p-2">${header}</div>`} />
             </th>
           )
@@ -69,7 +72,7 @@ const TableRow = ({ dataType, data }: { dataType: string; data: Tax['taxDetails'
     <tbody>
       {data.map((taxDetail) => {
         return (
-          <tr>
+          <tr key={taxDetail.id}>
             <td className="[&:not(:first-child)]:text-20-semibold border-r-2 [&:not(:first-child)]:text-center last:border-r-0 lg:py-4 h-max lg:p-0 p-4">
               <div className="h-0 font-semibold inline">
                 {t(

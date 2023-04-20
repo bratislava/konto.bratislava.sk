@@ -69,7 +69,7 @@ const UserProfileDetail = (props: UserProfileDetailProps) => {
           {isAlertOpened && (
             <div className="flex flex-row p-2">
               <Alert
-                className="max-w-none grow"
+                fullWidth
                 type={alertType}
                 solid
                 message={t(`profile_detail.${alertType}_alert`)}

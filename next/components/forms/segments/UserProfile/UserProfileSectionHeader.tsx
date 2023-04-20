@@ -52,13 +52,16 @@ const UserProfileSectionHeader = ({
       </div>
       {mainHeader && status !== AccountStatus.IdentityVerificationSuccess && (
         <Alert
+          message="Vaša identita zatiaľ nebola overená voči štátnym registrom. Bratislavské konto môžete preto používať len v obmedzenom režime, bez možnosti odoslať elektronicky všetky žiadosti či využiť službu online platby dane z nehnuteľností."
+          type="warning"
+          buttonsPosition="right"
           buttons={[
-            { title: 'Button', handler: () => {} },
-            { title: 'Button', handler: () => {} },
+            {
+              title: 'Overiť identitu',
+              link: '/overenie-identity',
+            },
           ]}
           fullWidth
-          type="warning"
-          message="Vaša identita zatiaľ nebola overená voči štátnym registrom. Bratislavské konto môžete preto používať len v obmedzenom režime, bez možnosti odoslať elektronicky všetky žiadosti či využiť službu online platby dane z nehnuteľností."
         />
       )}
     </div>

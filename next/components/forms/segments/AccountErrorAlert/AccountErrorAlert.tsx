@@ -29,7 +29,15 @@ const AccountErrorAlert = ({ error, close, solid, args = {} }: Props) => {
   }
   return (
     <Alert
-      message={<AccountMarkdown content={errorMessage} variant="sm" disableRemarkGfm />}
+      message={
+        <AccountMarkdown
+          // not sure, but maybe there need to be error variant
+          // uLinkVariant="error"
+          content={errorMessage}
+          variant="sm"
+          disableRemarkGfm
+        />
+      }
       type="error"
       className="min-w-full"
       close={close}

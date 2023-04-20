@@ -100,7 +100,7 @@ const PaymentData = ({ tax }: PaymentDataProps) => {
             </div>
           </div>
           <div className="flex flex-col gap-4 grow">
-            {status.paymentStatus !== 'unpaid' && (
+            {status.paymentStatus === 'unpaid' && (
               <div className="lg:items-center items-start flex lg:flex-row flex-col lg:px-6 lg:py-8 p-4 gap-6 bg-main-200 rounded-lg w-full">
                 <div className="flex-col flex items-start gap-2 grow">
                   <div className="text-h4">{t('card_payment')}</div>

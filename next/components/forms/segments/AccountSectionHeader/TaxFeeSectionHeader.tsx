@@ -82,7 +82,7 @@ const TaxFeeSectionHeader = ({ tax }: AccountSectionHeaderBase) => {
       .then((blob) => {
         const a = document.createElement('a')
         a.href = URL.createObjectURL(blob)
-        a.setAttribute('download', 'dan-z-nehnutelnosti-2022.pdf')
+        a.setAttribute('download', 'dan-z-nehnutelnosti-2023.pdf')
         a.click()
         return null
       })

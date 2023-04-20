@@ -1,16 +1,16 @@
+import BannerPhone from '@assets/images/help-page-banner-image.png'
 import AccountSectionHeader from 'components/forms/segments/AccountSectionHeader/AccountSectionHeader'
 import Accordion from 'components/forms/simple-components/Accordion'
 import Banner from 'components/forms/simple-components/Banner'
-import { useRouter } from 'next/router'
 import { useTranslation } from 'next-i18next'
 
 const HelpSection = () => {
   const { t } = useTranslation('account')
-  const router = useRouter()
 
   const bannerContent = `<span className='text-p2'>${t(
     'account_section_help.banner_content',
   )}</span>`
+
   return (
     <div className="flex flex-col">
       <AccountSectionHeader title={t('account_section_help.navigation')} />
@@ -110,6 +110,7 @@ const HelpSection = () => {
           content={bannerContent}
           buttonText={t('account_section_help.banner_button_text')}
           href="mailto:info@bratislava.sk"
+          image={BannerPhone}
         />
       </div>
     </div>

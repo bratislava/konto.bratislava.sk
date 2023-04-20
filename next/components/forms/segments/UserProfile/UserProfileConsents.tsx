@@ -1,3 +1,4 @@
+import { Gdpr } from '@utils/api'
 import useSnackbar from '@utils/useSnackbar'
 import useUser from '@utils/useUser'
 import cx from 'classnames'
@@ -7,14 +8,6 @@ import UserConsent from './UserConsent'
 import UserProfileSection from './UserProfileSection'
 import UserProfileSectionHeader from './UserProfileSectionHeader'
 
-export interface Consent {
-  id: string
-  title: string
-  text: string
-  isDisabled: boolean
-  isSelected: boolean
-}
-
 const UserProfileConsents = () => {
   const { t } = useTranslation('account')
   const user = useUser()
@@ -22,7 +15,8 @@ const UserProfileConsents = () => {
   const [openSnackbarSuccess] = useSnackbar({ variant: 'success' })
   const [openSnackbarError] = useSnackbar({ variant: 'error' })
   const handleOnChangeConsent = async (isSelected: boolean) => {
-    const res = isSelected ? await user.subscribe() : await user.unsubscribe()
+    const gdprData: Gdpr[] = [{ category: 'ESBS', type: 'MARKETING' }]
+    const res = isSelected ? await user.subscribe(gdprData) : await user.unsubscribe(gdprData)
     if (res) {
       openSnackbarSuccess(t('profile_detail.success_alert'), 3000)
     } else {
@@ -31,7 +25,7 @@ const UserProfileConsents = () => {
   }
 
   const isSelected = user.data?.gdprData
-    .filter((x) => x.type !== 'LICENSE')
+    .filter((x) => x.type === 'MARKETING' && x.category === 'ESBS')
     .some((x) => x.subType === 'subscribe')
   return (
     <UserProfileSection>

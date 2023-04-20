@@ -12,7 +12,7 @@ const StatusBarContext = createContext<{
   setStatusBarContent: React.Dispatch<React.SetStateAction<React.ReactNode>>
 }>({
   statusBarContent: null,
-  setStatusBarContent: () => undefined,
+  setStatusBarContent: () => {},
 })
 
 interface StatusBarProviderProps {

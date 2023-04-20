@@ -1,4 +1,4 @@
-import { EnumOptionsType, ErrorSchema, RJSFValidationError, StrictRJSFSchema } from '@rjsf/utils'
+import { ErrorSchema, RJSFValidationError, StrictRJSFSchema } from '@rjsf/utils'
 import {
   getAllPossibleJsonSchemaExtraProperties,
   JsonSchema,

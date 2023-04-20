@@ -5,8 +5,9 @@ import logger from '@utils/logger'
 import type { NextApiRequest, NextApiResponse } from 'next'
 
 const handler = async (req: NextApiRequest, res: NextApiResponse) => {
-  if (req.method !== 'POST' || typeof req.body?.data !== 'string')
+  if (req.method !== 'POST' || typeof req.body?.data !== 'string') {
     return res.status(400).json({ message: 'Invalid method or missing "data" field on body' })
+  }
 
   let eform: EFormValue
   try {
@@ -16,7 +17,8 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
     return res.status(400).json({ message: 'Invalid form name or url' })
   }
 
-  const data = await transform(eform.htmlStylesheet, req.body.data)
+  const stringData: string = typeof req.body.data === 'string' ? req.body.data : ''
+  const data = await transform(eform.htmlStylesheet, stringData)
 
   res.setHeader('Content-Type', 'text/html')
   return res.send(data)

@@ -1,3 +1,8 @@
+import currency from 'currency.js'
+import React from 'react'
+
+import { Tax } from './taxDto'
+
 export const arrayify = (input: string | string[] | undefined | null) => {
   if (input === undefined || input === null) {
     return [] as undefined[]
@@ -50,4 +55,34 @@ export const isObject = (value: any) =>
 
 export const getLanguageKey = (currentLanguage?: string) => {
   return currentLanguage === 'sk' ? 'sk' : 'en'
+}
+
+export const handleOnKeyPress = (
+  event: React.KeyboardEvent,
+  callback?: () => void,
+  key = 'Enter',
+) => {
+  if (event.key === key) {
+    callback?.()
+  }
+}
+
+export const formatDate = (dateISOString: string | undefined | null) => {
+  if (!dateISOString) return ''
+  const date = new Date(dateISOString)
+  return date.toLocaleDateString('sk-SK')
+}
+
+// TODO types
+export const formatCurrency = (amount: number | undefined | null) => {
+  if (typeof amount !== 'number') return '-- €'
+  return currency(amount, { fromCents: true }).format({ symbol: '€', decimal: ',', separator: ' ' })
+}
+
+export const taxStatusHelper = (tax: Tax) => {
+  // ignoring case when both tax paid and tax amount is not available
+  const paymentStatus: 'paid' | 'unpaid' | 'partially_paid' =
+    tax?.payedAmount === tax?.amount ? 'paid' : tax.payedAmount > 0 ? 'partially_paid' : 'unpaid'
+  const hasMultipleInstallments = tax?.taxInstallments?.length > 1
+  return { paymentStatus, hasMultipleInstallments }
 }

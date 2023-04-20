@@ -1,7 +1,9 @@
+import logger from '@utils/logger'
 import { formatUnicorn } from '@utils/string'
 import { AccountError } from '@utils/useAccount'
 import useHookForm from '@utils/useHookForm'
 import AccountErrorAlert from 'components/forms/segments/AccountErrorAlert/AccountErrorAlert'
+import AccountMarkdown from 'components/forms/segments/AccountMarkdown/AccountMarkdown'
 import Button from 'components/forms/simple-components/Button'
 import InputField from 'components/forms/widget-components/InputField/InputField'
 import { useTranslation } from 'next-i18next'
@@ -67,7 +69,7 @@ const EmailVerificationForm = ({ onSubmit, error, onResend, lastEmail, cntDisabl
       className="flex flex-col space-y-4"
       onSubmit={handleSubmit((data: Data) => {
         setLastVerificationCode(data.verificationCode)
-        onSubmit(data.verificationCode)
+        onSubmit(data.verificationCode).catch((error_) => logger.error('Submit failed', error_))
       })}
     >
       <h1 className="text-h3">{t('email_verification_title')}</h1>
@@ -105,6 +107,7 @@ const EmailVerificationForm = ({ onSubmit, error, onResend, lastEmail, cntDisabl
       <div className="text-p3 lg:text-p2">
         <span>{t('verification_description')}</span>
         {cnt > 0 && <span>{` ${formatUnicorn(t('verification_cnt_description'), { cnt })}`}</span>}
+        <AccountMarkdown variant="sm" content={t('verification_cnt_info')} />
       </div>
       <Button
         onPress={handleResend}

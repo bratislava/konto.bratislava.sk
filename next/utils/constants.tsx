@@ -1,6 +1,7 @@
 export const ROUTES = {
   HOME: '/',
   REGISTER: '/registracia',
+  IDENTITY_VERIFICATION: '/overenie-identity',
   LOGIN: '/prihlasenie',
   FORGOTTEN_PASSWORD: '/zabudnute-heslo',
   PASSWORD_CHANGE: '/zmena-hesla',
@@ -10,4 +11,5 @@ export const ROUTES = {
   MUNICIPAL_SERVICES: '/mestske-sluzby',
   THANK_YOU: '/vysledok-platby',
   USER_PROFILE: '/moj-profil',
+  MY_APPLICATIONS: '/moje-ziadosti',
 }

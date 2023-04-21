@@ -327,7 +327,15 @@
   "account_section_applications": {
     "navigation": "Moje žiadosti",
     "navigation_sent": "Odoslané",
-    "navigation_concept": "Koncepty"
+    "navigation_concept": "Koncepty",
+    "navigation_concept_card": {
+      "createDate": "Vytvorené",
+      "button_text": "Pokračovať"
+    },
+    "placeholder": {
+      "title": "Zatiaľ ste neodoslali žiadne podanie",
+      "subtitle": "Pozrite si ponuku <a href='/mestske-sluzby'>dostupných mestských služieb</a>."
+    }
   },
   "account_section_payment": {
     "title": "Dane a poplatky",

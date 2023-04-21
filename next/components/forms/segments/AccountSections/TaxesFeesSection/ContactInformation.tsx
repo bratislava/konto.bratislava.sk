@@ -57,7 +57,11 @@ const ContactInformationSection = ({ tax }: ContactInformationSectionProps) => {
               isEditable={false}
               data={{
                 label: t('permanent_address'),
-                value: tax.taxPayer?.permanentResidenceAddress,
+                value: `${tax.taxPayer?.permanentResidenceStreet}${
+                  tax.taxPayer?.permanentResidenceZip && ` ${tax.taxPayer?.permanentResidenceZip}`
+                }${
+                  tax.taxPayer?.permanentResidenceCity && ` ${tax.taxPayer?.permanentResidenceCity}`
+                }`,
                 schemaPath: '',
                 isError: false,
               }}

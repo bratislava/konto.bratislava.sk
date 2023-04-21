@@ -1,3 +1,4 @@
+import { TaxApiError } from '@utils/api'
 import { useTaxes } from '@utils/apiHooks'
 import { ROUTES } from '@utils/constants'
 import logger from '@utils/logger'
@@ -26,16 +27,16 @@ interface TaxesFeeSectionProps {
   isProductionDeployment?: boolean
 }
 
-const TaxFeeSection = ({ isProductionDeployment }: TaxesFeeSectionProps) => {
+const TaxFeeSection: React.FC<TaxesFeeSectionProps> = () => {
   const { data, error, isLoading } = useTaxes()
   const router = useRouter()
 
-  // TODO effect redirect to index if no data
-
+  // TODO change this once we have multiple taxes
+  // if there's a problem deal with it on the taxes page which loads the same data
   useEffect(() => {
     if (error) {
-      logger.error('Tax detail error ', error)
-      if (error?.status === 422) {
+      logger.error('Tax detail error', error)
+      if (error instanceof TaxApiError && error.status === 422) {
         router
           .push(ROUTES.TAXES_AND_FEES)
           .catch((error) => logger.error('Tax detail redirect error', error))
@@ -43,21 +44,29 @@ const TaxFeeSection = ({ isProductionDeployment }: TaxesFeeSectionProps) => {
     }
   }, [error, router])
 
-  if (isLoading || isProductionDeployment || (!isLoading && !data))
-    return <Spinner className="mt-10 m-auto" />
+  let content = <Spinner className="mt-10 m-auto" />
+  if (!isLoading && !data) {
+    content = (
+      <div>
+        Neočakávaná chyba pri načítaní dát - kontaktujte prosím podporu na info@bratislava.sk
+      </div>
+    )
+  } else if (data) {
+    content = (
+      <>
+        <TaxFeeSectionHeader tax={data} />
+        <TaxAndFeeMainContent>
+          <ContactInformationSection tax={data} />
+          <TaxDetails tax={data} />
+          <PaymentData tax={data} />
+        </TaxAndFeeMainContent>
+      </>
+    )
+  }
 
   // TODO error page
 
-  return (
-    <div className="flex flex-col">
-      <TaxFeeSectionHeader tax={data} />
-      <TaxAndFeeMainContent>
-        <ContactInformationSection tax={data} />
-        <TaxDetails tax={data} />
-        <PaymentData tax={data} />
-      </TaxAndFeeMainContent>
-    </div>
-  )
+  return <div className="flex flex-col">{content}</div>
 }
 
 export default TaxFeeSection

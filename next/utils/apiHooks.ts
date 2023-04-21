@@ -3,7 +3,7 @@ import addFormats from 'ajv-formats'
 import { useEffect } from 'react'
 import useSWR from 'swr'
 
-import { getTaxApi } from './api'
+import { TaxApiError, getTaxApi } from './api'
 import { ajvFormats, ajvKeywords } from './forms'
 import logger from './logger'
 import { Tax, TaxJSONSchema } from './taxDto'
@@ -16,7 +16,18 @@ export const useTaxes = () => {
   const swrResult = useSWR<Tax>(
     () => (lastAccessToken ? ['/api/taxes', lastAccessToken] : null),
     ([_, token]) => getTaxApi(token),
+    { shouldRetryOnError: false },
   )
+
+  useEffect(() => {
+    if (
+      swrResult.error &&
+      swrResult.error instanceof TaxApiError &&
+      swrResult.error.status !== 422
+    ) {
+      logger.error('Error while fetching tax data', swrResult.error)
+    }
+  }, [swrResult.error])
 
   // validate data according to schema
   // if they don't look right, we still try to display them, but we'

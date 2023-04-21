@@ -28,6 +28,11 @@ const HelpSection = () => {
             content={t('account_section_help.faq.2.answer')}
           />
           <Accordion
+            title={t('account_section_help.faq.18.question')}
+            size="md"
+            content={t('account_section_help.faq.18.answer')}
+          />
+          <Accordion
             title={t('account_section_help.faq.3.question')}
             size="md"
             content={t('account_section_help.faq.3.answer')}

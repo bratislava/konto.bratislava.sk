@@ -23,6 +23,7 @@
     "@hookform/resolvers": "^2.9.10",
     "@internationalized/date": "3.1.0",
     "@js-joda/core": "5.2.0",
+    "@radix-ui/react-dropdown-menu": "^2.0.4",
     "@react-aria/overlays": "^3.13.0",
     "@rjsf/core": "^5.0.0-beta.6",
     "@rjsf/utils": "^5.0.0-beta.6",

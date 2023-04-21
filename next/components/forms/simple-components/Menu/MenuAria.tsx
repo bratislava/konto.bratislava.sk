@@ -1,13 +1,7 @@
 import FormMenuItem from 'components/forms/simple-components/Menu/FormMenuItem'
+import { MenuItemBase } from 'components/forms/simple-components/MenuDropdown/MenuDropdown'
 import React, { ReactNode } from 'react'
 import { Button, Menu, MenuTrigger, Popover } from 'react-aria-components'
-
-export type MenuItemBase = {
-  title: string
-  icon?: ReactNode
-  key?: string
-  url: string
-}
 
 type MenuBase = {
   items: MenuItemBase[]

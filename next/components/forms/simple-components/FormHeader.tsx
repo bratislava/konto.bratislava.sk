@@ -1,19 +1,20 @@
 import DiskIcon from '@assets/images/forms/disk-icon.svg'
-import ThreePointsIcon from '@assets/images/forms/three-points-icon.svg'
 import ArrowsDownUpIcon from '@assets/images/new-icons/ui/arrows-down-up.svg'
 import DownloadIcon from '@assets/images/new-icons/ui/download.svg'
 import LockIcon from '@assets/images/new-icons/ui/lock.svg'
 import PdfIcon from '@assets/images/new-icons/ui/pdf.svg'
 import Waves from 'components/forms/icon-components/Waves'
 import Button from 'components/forms/simple-components/Button'
-import MenuAria, { MenuItemBase } from 'components/forms/simple-components/Menu/MenuAria'
+import MenuDropdown, {
+  MenuItemBase,
+} from 'components/forms/simple-components/MenuDropdown/MenuDropdown'
 import Link from 'next/link'
 
 const formHeaderMenuContent: MenuItemBase[] = [
-  { title: 'Vyplniť cez eID', icon: <LockIcon />, key: 'eID', url: '/acc' },
-  { title: 'Stiahnuť ako XML', icon: <DownloadIcon />, key: 'xmlDownload', url: '/' },
-  { title: 'Stiahnuť ako PDF', icon: <PdfIcon />, key: 'pdf', url: '/' },
-  { title: 'Nahrať z XML', icon: <ArrowsDownUpIcon />, key: 'xmlUpload', url: '/' },
+  { title: 'Vyplniť cez eID', icon: <LockIcon className="w-6 h-6" />, onPress: () => {} },
+  { title: 'Stiahnuť ako XML', icon: <DownloadIcon className="w-6 h-6" />, onPress: () => {} },
+  { title: 'Stiahnuť ako PDF', icon: <PdfIcon className="w-6 h-6" />, url: '/' },
+  { title: 'Nahrať z XML', icon: <ArrowsDownUpIcon className="w-6 h-6" />, url: '/' },
 ]
 
 const FormHeader = () => {
@@ -35,12 +36,7 @@ const FormHeader = () => {
               text="Uložiť ako koncept"
               className="text-gray-700 hover:text-gray-600 focus:text-gray-800"
             />
-            <MenuAria
-              items={formHeaderMenuContent}
-              buttonClassName="w-10 h-10 flex justify-center items-center focus:outline-none rounded-lg border-2 border-main-700 hover:border-main-600 focus:border-main-800 hover:text-gray-600 focus:text-gray-800"
-              buttonIcon={<ThreePointsIcon />}
-              offset={0}
-            />
+            <MenuDropdown itemVariant="header" items={formHeaderMenuContent} />
           </div>
         </div>
       </div>

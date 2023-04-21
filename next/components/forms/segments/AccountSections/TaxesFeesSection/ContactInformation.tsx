@@ -58,9 +58,13 @@ const ContactInformationSection = ({ tax }: ContactInformationSectionProps) => {
               data={{
                 label: t('permanent_address'),
                 value: `${tax.taxPayer?.permanentResidenceStreet}${
-                  tax.taxPayer?.permanentResidenceZip && ` ${tax.taxPayer?.permanentResidenceZip}`
+                  tax.taxPayer?.permanentResidenceZip
+                    ? ` ${tax.taxPayer?.permanentResidenceZip}`
+                    : ''
                 }${
-                  tax.taxPayer?.permanentResidenceCity && ` ${tax.taxPayer?.permanentResidenceCity}`
+                  tax.taxPayer?.permanentResidenceCity
+                    ? ` ${tax.taxPayer?.permanentResidenceCity}`
+                    : ''
                 }`,
                 schemaPath: '',
                 isError: false,

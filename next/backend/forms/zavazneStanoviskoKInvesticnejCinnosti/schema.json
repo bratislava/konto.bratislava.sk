@@ -537,64 +537,84 @@
                 "type": "string",
                 "oneOf": [
                   {
-                    "const": "Čuňovo"
+                    "const": "Čuňovo",
+                    "title": "Čuňovo"
                   },
                   {
-                    "const": "Devín"
+                    "const": "Devín",
+                    "title": "Devín"
                   },
                   {
-                    "const": "Devínska Nová Ves"
+                    "const": "Devínska Nová Ves",
+                    "title": "Devínska Nová Ves"
                   },
                   {
-                    "const": "Dúbravka"
+                    "const": "Dúbravka",
+                    "title": "Dúbravka"
                   },
                   {
-                    "const": "Jarovce"
+                    "const": "Jarovce",
+                    "title": "Jarovce"
                   },
                   {
-                    "const": "Karlova Ves"
+                    "const": "Karlova Ves",
+                    "title": "Karlova Ves"
                   },
                   {
-                    "const": "Lamač"
+                    "const": "Lamač",
+                    "title": "Lamač"
                   },
                   {
-                    "const": "Nivy"
+                    "const": "Nivy",
+                    "title": "Nivy"
                   },
                   {
-                    "const": "Nové Mesto"
+                    "const": "Nové Mesto",
+                    "title": "Nové Mesto"
                   },
                   {
-                    "const": "Petržalka"
+                    "const": "Petržalka",
+                    "title": "Petržalka"
                   },
                   {
-                    "const": "Podunajské Biskupice"
+                    "const": "Podunajské Biskupice",
+                    "title": "Podunajské Biskupice"
                   },
                   {
-                    "const": "Rača"
+                    "const": "Rača",
+                    "title": "Rača"
                   },
                   {
-                    "const": "Rusovce"
+                    "const": "Rusovce",
+                    "title": "Rusovce"
                   },
                   {
-                    "const": "Ružinov"
+                    "const": "Ružinov",
+                    "title": "Ružinov"
                   },
                   {
-                    "const": "Staré mesto"
+                    "const": "Staré mesto",
+                    "title": "Staré mesto"
                   },
                   {
-                    "const": "Trnávka"
+                    "const": "Trnávka",
+                    "title": "Trnávka"
                   },
                   {
-                    "const": "Vajnory"
+                    "const": "Vajnory",
+                    "title": "Vajnory"
                   },
                   {
-                    "const": "Vinohrady"
+                    "const": "Vinohrady",
+                    "title": "Vinohrady"
                   },
                   {
-                    "const": "Vrakuňa"
+                    "const": "Vrakuňa",
+                    "title": "Vrakuňa"
                   },
                   {
-                    "const": "Záhorská Bystrica"
+                    "const": "Záhorská Bystrica",
+                    "title": "Záhorská Bystrica"
                   }
                 ]
               }

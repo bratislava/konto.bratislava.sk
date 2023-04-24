@@ -534,7 +534,89 @@
               "type": "array",
               "uniqueItems": true,
               "items": {
-                "type": "string"
+                "type": "string",
+                "oneOf": [
+                  {
+                    "const": "Čuňovo",
+                    "title": "Čuňovo"
+                  },
+                  {
+                    "const": "Devín",
+                    "title": "Devín"
+                  },
+                  {
+                    "const": "Devínska Nová Ves",
+                    "title": "Devínska Nová Ves"
+                  },
+                  {
+                    "const": "Dúbravka",
+                    "title": "Dúbravka"
+                  },
+                  {
+                    "const": "Jarovce",
+                    "title": "Jarovce"
+                  },
+                  {
+                    "const": "Karlova Ves",
+                    "title": "Karlova Ves"
+                  },
+                  {
+                    "const": "Lamač",
+                    "title": "Lamač"
+                  },
+                  {
+                    "const": "Nivy",
+                    "title": "Nivy"
+                  },
+                  {
+                    "const": "Nové Mesto",
+                    "title": "Nové Mesto"
+                  },
+                  {
+                    "const": "Petržalka",
+                    "title": "Petržalka"
+                  },
+                  {
+                    "const": "Podunajské Biskupice",
+                    "title": "Podunajské Biskupice"
+                  },
+                  {
+                    "const": "Rača",
+                    "title": "Rača"
+                  },
+                  {
+                    "const": "Rusovce",
+                    "title": "Rusovce"
+                  },
+                  {
+                    "const": "Ružinov",
+                    "title": "Ružinov"
+                  },
+                  {
+                    "const": "Staré mesto",
+                    "title": "Staré mesto"
+                  },
+                  {
+                    "const": "Trnávka",
+                    "title": "Trnávka"
+                  },
+                  {
+                    "const": "Vajnory",
+                    "title": "Vajnory"
+                  },
+                  {
+                    "const": "Vinohrady",
+                    "title": "Vinohrady"
+                  },
+                  {
+                    "const": "Vrakuňa",
+                    "title": "Vrakuňa"
+                  },
+                  {
+                    "const": "Záhorská Bystrica",
+                    "title": "Záhorská Bystrica"
+                  }
+                ]
               }
             }
           },

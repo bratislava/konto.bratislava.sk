@@ -315,6 +315,7 @@
             "chooseOneOfMore": {
               "type": "string",
               "title": "Some random choose",
+              "default": "screen",
               "oneOf": [
                 {
                   "const": "screen",

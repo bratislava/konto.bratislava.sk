@@ -30,7 +30,7 @@ import { JSONSchema7, JSONSchema7Definition } from 'json-schema'
 import { cloneDeep, get, merge } from 'lodash'
 import { useRouter } from 'next/router'
 import { useTranslation } from 'next-i18next'
-import { ChangeEvent, RefObject, useCallback, useEffect, useRef, useState } from 'react'
+import { ChangeEvent, RefObject, useEffect, useRef, useState } from 'react'
 
 import { StepData } from '../components/forms/types/TransformedFormData'
 import logger from './logger'
@@ -409,12 +409,12 @@ export const getInitFormData = (schema: RJSFSchema): RJSFSchema => {
 
 export const createTestFormData = (formData: RJSFSchema): RJSFSchema => {
   const newFormData: RJSFSchema = {}
-  if (typeof formData === 'boolean') return newFormData
+  if (!formData || typeof formData === 'boolean') return newFormData
 
   Object.entries(formData).forEach(([key, value]: [string, RJSFSchema]) => {
     if (typeof value !== 'boolean') {
       if (value === undefined) {
-        Object.assign(newFormData, { [key]: '' })
+        Object.assign(newFormData, { [key]: null })
       } else if (typeof value === 'object' && !Array.isArray(value)) {
         Object.assign(newFormData, { [key]: createTestFormData(value) })
       } else {

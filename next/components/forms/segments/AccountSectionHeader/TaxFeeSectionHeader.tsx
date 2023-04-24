@@ -73,7 +73,7 @@ const TaxFeeSectionHeader = ({ tax }: AccountSectionHeaderBase) => {
 
   // https://stackoverflow.com/questions/32545632/how-can-i-download-a-file-using-window-fetch
   const downloadPdf = () =>
-    fetch('https://nest-tax-backend.staging.bratislava.sk/tax/get-tax-pdf-by-year?year=2023', {
+    fetch(`${process.env.NEXT_PUBLIC_TAXES_URL}/tax/get-tax-pdf-by-year?year=2023`, {
       headers: {
         Authorization: `Bearer ${lastAccessToken}`,
       },
@@ -156,7 +156,7 @@ const TaxFeeSectionHeader = ({ tax }: AccountSectionHeaderBase) => {
                       ? statusHandler('warning', t('tax_detail_section.tax_status.warning'))
                       : statusHandler('success', t('tax_detail_section.tax_status.success'))}
                   </div>
-                  <div className="lg:text-p2 text-p3">{formatDate(tax?.updatedAt)}</div>
+                  {/* <div className="lg:text-p2 text-p3">{formatDate(tax?.updatedAt)}</div> */}
                 </div>
               </div>
             </div>
@@ -180,6 +180,7 @@ const TaxFeeSectionHeader = ({ tax }: AccountSectionHeaderBase) => {
                   text={t('download_pdf')}
                   size="sm"
                   className="min-w-full"
+                  onPress={downloadPdf}
                 />
               </div>
             </div>

@@ -1,4 +1,5 @@
 import DiskIcon from '@assets/images/forms/disk-icon.svg'
+import ThreePointsIcon from '@assets/images/forms/three-points-icon.svg'
 import ArrowsDownUpIcon from '@assets/images/new-icons/ui/arrows-down-up.svg'
 import DownloadIcon from '@assets/images/new-icons/ui/download.svg'
 import LockIcon from '@assets/images/new-icons/ui/lock.svg'
@@ -36,7 +37,11 @@ const FormHeader = () => {
               text="Uložiť ako koncept"
               className="text-gray-700 hover:text-gray-600 focus:text-gray-800"
             />
-            <MenuDropdown itemVariant="header" items={formHeaderMenuContent} />
+            <MenuDropdown
+              buttonTrigger={<ThreePointsIcon />}
+              buttonVariant="main"
+              items={formHeaderMenuContent}
+            />
           </div>
         </div>
       </div>

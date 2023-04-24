@@ -10,22 +10,21 @@ type FormMenuItemBase = {
 }
 
 const FormMenuItem = ({ title, icon, url, onPress }: FormMenuItemBase) => {
-  return (
+  return url ? (
+    // eslint-disable-next-line jsx-a11y/anchor-is-valid
+    <Link href={url} className="flex items-center gap-3">
+      <DropdownMenu.Item className="text-p2 hover:text-p2-semibold focus:text-p2-semibold font-sans flex items-center gap-3 px-5 py-3 cursor-pointer focus:outline-none">
+        <span className="w-6 h-6">{icon}</span>
+        <span className="min-w-[172px]">{title}</span>
+      </DropdownMenu.Item>
+    </Link>
+  ) : (
     <DropdownMenu.Item
       onClick={onPress}
       className="text-p2 hover:text-p2-semibold focus:text-p2-semibold font-sans flex items-center gap-3 px-5 py-3 cursor-pointer focus:outline-none"
     >
-      {url ? (
-        <Link className="flex items-center gap-3" href={url}>
-          <span className="w-6 h-6">{icon}</span>
-          <span className="min-w-[172px]">{title}</span>
-        </Link>
-      ) : (
-        <>
-          <span className="w-6 h-6">{icon}</span>
-          <span className="min-w-[172px]">{title}</span>
-        </>
-      )}
+      <span className="w-6 h-6">{icon}</span>
+      <span className="min-w-[172px]">{title}</span>
     </DropdownMenu.Item>
   )
 }

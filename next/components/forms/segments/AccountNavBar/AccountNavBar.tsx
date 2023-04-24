@@ -17,6 +17,7 @@ import NextLink from 'next/link'
 import { useRouter } from 'next/router'
 import { useTranslation } from 'next-i18next'
 import { ReactNode, useState } from 'react'
+import { RemoveScroll } from 'react-remove-scroll'
 import { Item } from 'react-stately'
 
 import Brand from '../../simple-components/Brand'
@@ -150,122 +151,126 @@ export const AccountNavBar = ({
         )}
         ref={desktopRef}
       >
-        <StatusBar className="hidden lg:flex" />
-        <div className="max-w-screen-lg m-auto hidden h-[57px] w-full items-center lg:flex gap-x-6">
-          <Brand
-            className="group grow"
-            url="https://bratislava.sk/"
-            title={
-              <p className="text-p2 text-font group-hover:text-gray-600">
-                {languageKey === 'en' && <span className="font-semibold">Bratislava </span>}
-                {t('common:capitalCity')}
-                {languageKey !== 'en' && <span className="font-semibold"> Bratislava</span>}
-              </p>
-            }
-          />
-          <nav className="text-font/75 flex gap-x-8 font-semibold">
-            <div className="text-font/75 flex items-center gap-x-6 font-semibold">
-              {!navHidden ? (
-                <>
-                  <Link href="/" variant="plain">
-                    <VolumeIcon />
-                  </Link>
-                  <Divider className="mx-2" />
-                  <Link href="/" variant="plain" className={linkClassName}>
-                    {t('account:menu_contacts_link')}
-                  </Link>
-                  {isAuth ? (
-                    <>
-                      <Divider />
-                      <Menu
-                        buttonLeftEl={<Avatar userData={userData} />}
-                        label={userData?.given_name || userData?.family_name || ''}
-                        onAction={onSelectMenuItem}
-                      >
-                        {menuItems.map((option) => (
-                          <Item key={option.id}>
-                            <AccountMenuItem menuItem={option} />
-                          </Item>
-                        ))}
-                      </Menu>
-                      <Divider />
-                    </>
-                  ) : (
+        <div className={RemoveScroll.classNames.fullWidth}>
+          <StatusBar className="hidden lg:flex" />
+          <div
+            className={cx('max-w-screen-lg m-auto hidden h-[57px] items-center lg:flex gap-x-6')}
+          >
+            <Brand
+              className="group grow"
+              url="https://bratislava.sk/"
+              title={
+                <p className="text-p2 text-font group-hover:text-gray-600">
+                  {languageKey === 'en' && <span className="font-semibold">Bratislava </span>}
+                  {t('common:capitalCity')}
+                  {languageKey !== 'en' && <span className="font-semibold"> Bratislava</span>}
+                </p>
+              }
+            />
+            <nav className="text-font/75 flex gap-x-8 font-semibold">
+              <div className="text-font/75 flex items-center gap-x-6 font-semibold">
+                {!navHidden ? (
+                  <>
+                    <Link href="/" variant="plain">
+                      <VolumeIcon />
+                    </Link>
+                    <Divider className="mx-2" />
+                    <Link href="/" variant="plain" className={linkClassName}>
+                      {t('account:menu_contacts_link')}
+                    </Link>
+                    {isAuth ? (
+                      <>
+                        <Divider />
+                        <Menu
+                          buttonLeftEl={<Avatar userData={userData} />}
+                          label={userData?.given_name || userData?.family_name || ''}
+                          onAction={onSelectMenuItem}
+                        >
+                          {menuItems.map((option) => (
+                            <Item key={option.id}>
+                              <AccountMenuItem menuItem={option} />
+                            </Item>
+                          ))}
+                        </Menu>
+                        <Divider />
+                      </>
+                    ) : (
+                      <Button
+                        onPress={() => router.push(ROUTES.REGISTER)}
+                        variant="negative"
+                        text={t('account:menu_account_link')}
+                        size="sm"
+                      />
+                    )}
+
+                    <Link href={t('searchLink')} variant="plain">
+                      <SearchIcon className="w-6 h-6" />
+                    </Link>
+
+                    <Divider />
+                    {anotherLanguage && (
+                      <Button
+                        size="sm"
+                        className="underline underline-offset-4"
+                        variant="link-black"
+                        onPress={() => languageSelectProps.onLanguageChange?.(anotherLanguage)}
+                        text={anotherLanguage?.title}
+                      />
+                    )}
+                  </>
+                ) : isAuth ? (
+                  <Menu
+                    buttonLeftEl={<Avatar userData={userData} />}
+                    label={userData?.given_name || userData?.family_name || ''}
+                    onAction={onSelectMenuItem}
+                  >
+                    {menuItems.map((option) => (
+                      <Item key={option.id}>
+                        <AccountMenuItem menuItem={option} />
+                      </Item>
+                    ))}
+                  </Menu>
+                ) : (
+                  <>
+                    <Link href={ROUTES.LOGIN} variant="plain" className={`${linkClassName} ml-2`}>
+                      {t('account:menu_login_link')}
+                    </Link>
                     <Button
                       onPress={() => router.push(ROUTES.REGISTER)}
                       variant="negative"
-                      text={t('account:menu_account_link')}
+                      text={t('account:menu_register_link')}
                       size="sm"
                     />
-                  )}
-
-                  <Link href={t('searchLink')} variant="plain">
-                    <SearchIcon className="w-6 h-6" />
-                  </Link>
-
-                  <Divider />
-                  {anotherLanguage && (
-                    <Button
-                      size="sm"
-                      className="underline underline-offset-4"
-                      variant="link-black"
-                      onPress={() => languageSelectProps.onLanguageChange?.(anotherLanguage)}
-                      text={anotherLanguage?.title}
-                    />
-                  )}
-                </>
-              ) : isAuth ? (
-                <Menu
-                  buttonLeftEl={<Avatar userData={userData} />}
-                  label={userData?.given_name || userData?.family_name || ''}
-                  onAction={onSelectMenuItem}
-                >
-                  {menuItems.map((option) => (
-                    <Item key={option.id}>
-                      <AccountMenuItem menuItem={option} />
-                    </Item>
-                  ))}
-                </Menu>
-              ) : (
-                <>
-                  <Link href={ROUTES.LOGIN} variant="plain" className={`${linkClassName} ml-2`}>
-                    {t('account:menu_login_link')}
-                  </Link>
-                  <Button
-                    onPress={() => router.push(ROUTES.REGISTER)}
-                    variant="negative"
-                    text={t('account:menu_register_link')}
-                    size="sm"
-                  />
-                </>
-              )}
-            </div>
-          </nav>
-        </div>
-        {isAuth && sectionsList && !hiddenHeaderNav && (
-          <div className="hidden border-t border-gray-200 max-w-screen-lg m-auto h-[57px] w-full items-center justify-between lg:flex">
-            <ul className="w-full h-full flex items-center">
-              {sectionsList.map((sectionItem) => (
-                <li className="w-full h-full" key={sectionItem.id}>
-                  <NextLink href={sectionItem.link}>
-                    <div
-                      className={cx(
-                        'text-p2-semibold w-full h-full flex items-center justify-center cursor-pointer border-b-2 hover:text-main-700 hover:border-main-700 transition-all',
-                        {
-                          'text-main-700 border-main-700': isActive(sectionItem),
-                          'border-transparent': !isActive(sectionItem),
-                        },
-                      )}
-                    >
-                      {sectionItem.icon}
-                      <span className="ml-3">{t(sectionItem?.title)}</span>
-                    </div>
-                  </NextLink>
-                </li>
-              ))}
-            </ul>
+                  </>
+                )}
+              </div>
+            </nav>
           </div>
-        )}
+          {isAuth && sectionsList && !hiddenHeaderNav && (
+            <div className="hidden border-t border-gray-200 max-w-screen-lg m-auto h-[57px] w-full items-center justify-between lg:flex">
+              <ul className="w-full h-full flex items-center">
+                {sectionsList.map((sectionItem) => (
+                  <li className="w-full h-full" key={sectionItem.id}>
+                    <NextLink href={sectionItem.link}>
+                      <div
+                        className={cx(
+                          'text-p2-semibold w-full h-full flex items-center justify-center cursor-pointer border-b-2 hover:text-main-700 hover:border-main-700 transition-all',
+                          {
+                            'text-main-700 border-main-700': isActive(sectionItem),
+                            'border-transparent': !isActive(sectionItem),
+                          },
+                        )}
+                      >
+                        {sectionItem.icon}
+                        <span className="ml-3">{t(sectionItem?.title)}</span>
+                      </div>
+                    </NextLink>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          )}
+        </div>
       </div>
       {/* Mobile */}
       <div
@@ -273,43 +278,45 @@ export const AccountNavBar = ({
         className={cx(className, 'lg:hidden fixed top-0 left-0 w-full bg-white z-40 gap-x-6')}
         ref={mobileRef}
       >
-        {!burgerOpen && <StatusBar className="flex lg:hidden" />}
-        <div className="h-16 flex items-center py-5 px-8 border-b-2">
-          <Brand url="https://bratislava.sk/" className="grow" />
-          {!navHidden && (
-            <div className={cx('flex items-center gap-x-5')}>
-              <div className="text-h4 text-font/50 relative flex cursor-pointer items-center bg-transparent">
-                <Link href={t('searchLink')} variant="plain" className="p-4">
-                  <SearchIcon className="w-6 h-6" />
-                </Link>
+        <div className={RemoveScroll.classNames.fullWidth}>
+          {!burgerOpen && <StatusBar className="flex lg:hidden" />}
+          <div className="h-16 flex items-center py-5 px-8 border-b-2">
+            <Brand url="https://bratislava.sk/" className="grow" />
+            {!navHidden && (
+              <div className={cx('flex items-center gap-x-5')}>
+                <div className="text-h4 text-font/50 relative flex cursor-pointer items-center bg-transparent">
+                  <Link href={t('searchLink')} variant="plain" className="p-4">
+                    <SearchIcon className="w-6 h-6" />
+                  </Link>
+                </div>
               </div>
-            </div>
-          )}
+            )}
 
-          <button
-            type="button"
-            onClick={() => (isAuth ? setBurgerOpen(!burgerOpen) : router.push(ROUTES.LOGIN))}
-            className="-mr-4 px-4 py-5"
-          >
-            <div className="flex w-6 items-center justify-center">
-              {burgerOpen ? (
-                <HamburgerClose className="w-6 h-6" />
-              ) : isAuth && sectionsList ? (
-                <Hamburger />
-              ) : (
-                <Avatar userData={userData} />
-              )}
-            </div>
-          </button>
+            <button
+              type="button"
+              onClick={() => (isAuth ? setBurgerOpen(!burgerOpen) : router.push(ROUTES.LOGIN))}
+              className="-mr-4 px-4 py-5"
+            >
+              <div className="flex w-6 items-center justify-center">
+                {burgerOpen ? (
+                  <HamburgerClose className="w-6 h-6" />
+                ) : isAuth && sectionsList ? (
+                  <Hamburger />
+                ) : (
+                  <Avatar userData={userData} />
+                )}
+              </div>
+            </button>
 
-          {burgerOpen && (
-            <HamburgerMenu
-              sectionsList={sectionsList}
-              menuItems={menuItems}
-              closeMenu={() => setBurgerOpen(false)}
-              onRouteChange={onRouteChange}
-            />
-          )}
+            {burgerOpen && (
+              <HamburgerMenu
+                sectionsList={sectionsList}
+                menuItems={menuItems}
+                closeMenu={() => setBurgerOpen(false)}
+                onRouteChange={onRouteChange}
+              />
+            )}
+          </div>
         </div>
       </div>
     </div>

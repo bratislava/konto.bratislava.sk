@@ -1,9 +1,7 @@
-import ThreePointsIcon from '@assets/images/forms/three-points-icon.svg'
 import * as DropdownMenu from '@radix-ui/react-dropdown-menu'
-import cx from 'classnames'
-// import Button from 'components/forms/simple-components/Button'
 import FormMenuItem from 'components/forms/simple-components/MenuDropdown/FormMenuItem'
 import HeaderMenuItem from 'components/forms/simple-components/MenuDropdown/HeaderMenuItem'
+import MenuTrigger from 'components/forms/simple-components/MenuDropdown/MenuTrigger'
 import React, { ReactNode, useState } from 'react'
 
 export type MenuItemBase = {
@@ -16,23 +14,21 @@ export type MenuItemBase = {
 type MenuDropdownBase = {
   items: MenuItemBase[]
   itemVariant?: 'form' | 'header'
+  buttonTrigger?: ReactNode
+  buttonVariant?: 'gray' | 'main' | 'none'
 }
 
-const MenuDropdown = ({ items, itemVariant = 'form' }: MenuDropdownBase) => {
+const MenuDropdown = ({
+  items,
+  itemVariant = 'form',
+  buttonTrigger,
+  buttonVariant = 'none',
+}: MenuDropdownBase) => {
   const [isOpen, setIsOpen] = useState<boolean>(false)
   return (
     <DropdownMenu.Root onOpenChange={() => setIsOpen((prev) => !prev)}>
       <DropdownMenu.Trigger asChild>
-        {/* <Button size="sm" variant="category-outline" icon={<ThreePointsIcon />} /> */}
-        <button
-          type="button"
-          className={cx(
-            'w-10 h-10 border-2 border-main-700 flex justify-center items-center rounded-lg focus:outline-none focus:border-main-800 focus:text-gray-800',
-            { 'text-gray-800 border-main-800': isOpen },
-          )}
-        >
-          <ThreePointsIcon />
-        </button>
+        <MenuTrigger buttonTrigger={buttonTrigger} buttonVariant={buttonVariant} isOpen={isOpen} />
       </DropdownMenu.Trigger>
 
       <DropdownMenu.Portal>

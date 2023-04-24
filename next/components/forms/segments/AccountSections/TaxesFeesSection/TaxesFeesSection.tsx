@@ -74,7 +74,7 @@ const TaxesFeesSection: React.FC<TaxesFeesSectionProps> = () => {
             currentPaid={data?.payedAmount}
             finishPrice={data?.amount}
             status={taxStatusHelper(data).paymentStatus}
-            paidDate={data?.updatedAt}
+            // paidDate={data?.updatedAt}
           />
         </li>
       </ul>

@@ -11,7 +11,7 @@ import {
   validateDataWithJsonSchema,
   validateDataWithXsd,
   xmlToJson,
-} from '../backend/utils/forms'
+} from '@backend/utils/forms'
 import { transform } from '../backend/utils/xslt'
 
 const excludeKeys = new Set(['test'])

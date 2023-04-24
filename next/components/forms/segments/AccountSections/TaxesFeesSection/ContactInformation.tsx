@@ -1,3 +1,4 @@
+import { Tax } from '@utils/taxDto'
 import useAccount, { Address } from '@utils/useAccount'
 import useSnackbar from '@utils/useSnackbar'
 import { useTranslation } from 'next-i18next'
@@ -7,9 +8,13 @@ import SummaryRowSimple from '../../../simple-components/SummaryRowSimple'
 import SummaryRow from '../../../steps/Summary/SummaryRow'
 import CorrespondenceAddressModal from '../../CorrespondenceAddressModal/CorrespondenceAddressModal'
 
+interface ContactInformationSectionProps {
+  tax: Tax
+}
+
 const postalCodeFormat = (code: string): string => `${code.slice(0, 3)} ${code.slice(3)}`
 
-const ContactInformationSection = () => {
+const ContactInformationSection = ({ tax }: ContactInformationSectionProps) => {
   const { t } = useTranslation('account')
   const { userData, updateUserData, error, resetError } = useAccount()
   const [showSnackbar] = useSnackbar({ variant: 'success' })
@@ -42,7 +47,7 @@ const ContactInformationSection = () => {
               isEditable={false}
               data={{
                 label: t('name_and_surname'),
-                value: 'Michal Mrkvička',
+                value: tax.taxPayer?.name || `${userData?.given_name} ${userData?.family_name}`,
                 schemaPath: '',
                 isError: false,
               }}
@@ -52,7 +57,15 @@ const ContactInformationSection = () => {
               isEditable={false}
               data={{
                 label: t('permanent_address'),
-                value: 'Námestie hraničiarov 12/A, 811 01 Bratislava',
+                value: `${tax.taxPayer?.permanentResidenceStreet}${
+                  tax.taxPayer?.permanentResidenceZip
+                    ? ` ${tax.taxPayer?.permanentResidenceZip}`
+                    : ''
+                }${
+                  tax.taxPayer?.permanentResidenceCity
+                    ? ` ${tax.taxPayer?.permanentResidenceCity}`
+                    : ''
+                }`,
                 schemaPath: '',
                 isError: false,
               }}
@@ -83,7 +96,7 @@ const ContactInformationSection = () => {
               isEditable={false}
               data={{
                 label: t('taxpayer_id'),
-                value: '111 222',
+                value: tax.taxPayer?.externalId,
                 schemaPath: '',
                 isError: false,
               }}
@@ -98,7 +111,7 @@ const ContactInformationSection = () => {
               isEditable={false}
               data={{
                 label: t('name_and_surname'),
-                value: 'Meno Správcu/Správkyne',
+                value: tax?.taxEmployees?.name,
                 schemaPath: '',
                 isError: false,
               }}
@@ -106,16 +119,19 @@ const ContactInformationSection = () => {
             <SummaryRowSimple size="small" isEditable={false} label={t('contact')} isError={false}>
               <div className="flex gap-2">
                 <div>
-                  <a className="underline underline-offset-4" href="tel:+421 2/553 559 38">
-                    +421 2/553 559 38
+                  <a
+                    className="underline underline-offset-4"
+                    href={`tel:${tax?.taxEmployees?.phoneNumber}`}
+                  >
+                    {tax?.taxEmployees?.phoneNumber}
                   </a>
                   ,
                 </div>
                 <a
                   className="underline underline-offset-4"
-                  href="mailto:meno.priezvisko@bratislava.sk"
+                  href={`mailto:${tax?.taxEmployees?.email}`}
                 >
-                  meno.priezvisko@bratislava.sk
+                  {tax?.taxEmployees?.email}
                 </a>
               </div>
             </SummaryRowSimple>

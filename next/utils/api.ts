@@ -1,5 +1,7 @@
 // TODO waiting on #305 to get merged, afterwards might move elsewhere
 // frontend code for calling api endpoints grouped
+// TODO refactor, get rid of Api error, make TaxApiError format the default and handle errors accordingly
+// eslint-disable-next-line max-classes-per-file
 import { ErrorObject } from 'ajv'
 
 import logger from './logger'
@@ -15,6 +17,25 @@ export class ApiError extends Error {
     // Set the prototype explicitly - workaround while target is es5, cosnsider bumping target so we don't have to deal with this
     Object.setPrototypeOf(this, ApiError.prototype)
     this.errors = errors
+  }
+}
+
+export class TaxApiError extends Error {
+  response: Record<string, any>
+
+  status?: number
+
+  statusText?: string
+
+  constructor(message?: string, responseJson?: Record<string, any>) {
+    // TODO better error handling - this is to ensure logging in Faro
+    super(`${message} ${JSON.stringify(responseJson)}`)
+    // Set the prototype explicitly - workaround while target is es5, cosnsider bumping target so we don't have to deal with this
+    Object.setPrototypeOf(this, TaxApiError.prototype)
+    this.response = responseJson
+    this.status = typeof responseJson?.statusCode === 'number' ? responseJson.statusCode : undefined
+    this.statusText =
+      typeof responseJson?.statusText === 'string' ? responseJson.statusText : undefined
   }
 }
 
@@ -38,10 +59,10 @@ const fetchJsonApi = async (path: string, options?: RequestInit) => {
     }
     if (responseJson?.errors) {
       throw new ApiError(responseJson?.message || API_ERROR_TEXT, responseJson.errors)
-    } else if (responseJson.error) {
-      throw new Error(responseJson.error)
+    } else if (responseJson?.errorName) {
+      throw new TaxApiError(responseJson.errorName, responseJson)
     } else {
-      throw new Error(API_ERROR_TEXT)
+      throw new TaxApiError(API_ERROR_TEXT, responseJson)
     }
   } catch (error) {
     // TODO originally caught & rethrown to ensure logging, might no longer be necessary
@@ -277,4 +298,43 @@ export const updateForm = (token: string, id: string, data: UpdateFormDto) => {
     },
     body: JSON.stringify(data),
   })
+}
+
+export const getTaxApi = (token: string) => {
+  return fetchJsonApi(
+    `https://nest-tax-backend.staging.bratislava.sk/tax/get-tax-by-year?year=2023`,
+    {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${token}`,
+      },
+    },
+  )
+}
+
+export const getTaxPdfApi = (token: string) => {
+  return fetchJsonApi(
+    `https://nest-tax-backend.staging.bratislava.sk/tax/get-tax-pdf-by-year?year=2023`,
+    {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${token}`,
+      },
+    },
+  )
+}
+
+export const getPaymentGatewayUrlApi = (token: string) => {
+  return fetchJsonApi(
+    `https://nest-tax-backend.staging.bratislava.sk/payment/cardpay/by-year/2023`,
+    {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${token}`,
+      },
+    },
+  )
 }

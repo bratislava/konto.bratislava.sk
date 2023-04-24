@@ -1,5 +1,5 @@
 import { AsyncServerProps } from '@utils/types'
-import { isProductionDeployment } from '@utils/utils'
+import { isProductionDeployment as isProductionDeploymentFn } from '@utils/utils'
 import AccountPageLayout from 'components/layouts/AccountPageLayout'
 import PageWrapper from 'components/layouts/PageWrapper'
 import { GetServerSidePropsContext } from 'next'
@@ -21,17 +21,20 @@ export const getServerSideProps = async (ctx: GetServerSidePropsContext) => {
             locale: l,
           })),
       },
-      isProductionDeploy: isProductionDeployment(),
       ...(await serverSideTranslations(locale)),
+      isProductionDeployment: isProductionDeploymentFn(),
     },
   }
 }
 
-const AccountTaxesFeesPage = ({ page }: AsyncServerProps<typeof getServerSideProps>) => {
+const AccountTaxesFeesPage = ({
+  page,
+  isProductionDeployment,
+}: AsyncServerProps<typeof getServerSideProps>) => {
   return (
     <PageWrapper locale={page.locale} localizations={page.localizations}>
-      <AccountPageLayout>
-        <TaxFeeSection />
+      <AccountPageLayout isProductionDeploy={isProductionDeployment}>
+        <TaxFeeSection isProductionDeployment={isProductionDeployment} />
       </AccountPageLayout>
     </PageWrapper>
   )

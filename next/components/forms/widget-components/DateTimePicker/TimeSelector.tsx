@@ -85,7 +85,7 @@ const TimeSelector = ({
     if (onChange && timeValueFormat) {
       onChange(timeValueFormat)
     }
-  }, [timeValueFormat])
+  }, [timeValueFormat, onChange])
 
   useDidMount(() => {
     const hoursItemOffset = hoursItemRef?.current?.[+timeFormatArray[0]]?.offsetTop || 0

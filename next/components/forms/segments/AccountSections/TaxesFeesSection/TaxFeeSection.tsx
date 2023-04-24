@@ -1,6 +1,11 @@
-import cx from 'classnames'
+import { TaxApiError } from '@utils/api'
+import { useTaxes } from '@utils/apiHooks'
+import { ROUTES } from '@utils/constants'
+import logger from '@utils/logger'
 import TaxFeeSectionHeader from 'components/forms/segments/AccountSectionHeader/TaxFeeSectionHeader'
-import { ReactNode, useState } from 'react'
+import Spinner from 'components/forms/simple-components/Spinner'
+import { useRouter } from 'next/router'
+import { ReactNode, useEffect } from 'react'
 
 import ContactInformationSection from './ContactInformation'
 import PaymentData from './PaymentData'
@@ -18,54 +23,50 @@ const TaxAndFeeMainContent = ({ children }: TaxAndFeeMainContentBase) => {
   )
 }
 
-const TaxFeeSection = () => {
-  const [who, setWho] = useState<'splatkar' | 'not_splatkar'>('splatkar')
+interface TaxesFeeSectionProps {
+  isProductionDeployment?: boolean
+}
 
-  // Temporary switcher for presentation
-  const switcher = (): ReactNode => {
-    const array: { id: 'splatkar' | 'not_splatkar'; title: string }[] = [
-      {
-        id: 'splatkar',
-        title: 'Splátkar',
-      },
-      {
-        id: 'not_splatkar',
-        title: 'Nesplátkar',
-      },
-    ]
+const TaxFeeSection: React.FC<TaxesFeeSectionProps> = () => {
+  const { data, error, isLoading } = useTaxes()
+  const router = useRouter()
 
-    return (
-      <div className="flex flex-col w-full max-w-screen-lg m-auto mt-8 px-4 lg:px-0 mb-10">
-        <span className="text-p2-semibold mb-2">Temporary switcher</span>
-        <div className="flex">
-          {array.map((item) => (
-            <button
-              type="button"
-              key={item.id}
-              onClick={() => setWho(item.id)}
-              className={cx('w-max h-6 flex justify-center items-center px-4 py-4 cursor-pointer', {
-                'bg-gray-200': who !== item.id,
-                'bg-gray-700 text-gray-100': who === item.id,
-              })}
-            >
-              {item.title}
-            </button>
-          ))}
-        </div>
+  // TODO change this once we have multiple taxes
+  // if there's a problem deal with it on the taxes page which loads the same data
+  useEffect(() => {
+    if (error) {
+      logger.error('Tax detail error', error)
+      if (error instanceof TaxApiError && error.status === 422) {
+        router
+          .push(ROUTES.TAXES_AND_FEES)
+          .catch((error) => logger.error('Tax detail redirect error', error))
+      }
+    }
+  }, [error, router])
+
+  let content = <Spinner className="mt-10 m-auto" />
+  if (!isLoading && !data) {
+    content = (
+      <div>
+        Neočakávaná chyba pri načítaní dát - kontaktujte prosím podporu na info@bratislava.sk
       </div>
     )
+  } else if (data) {
+    content = (
+      <>
+        <TaxFeeSectionHeader tax={data} />
+        <TaxAndFeeMainContent>
+          <ContactInformationSection tax={data} />
+          <TaxDetails tax={data} />
+          <PaymentData tax={data} />
+        </TaxAndFeeMainContent>
+      </>
+    )
   }
-  return (
-    <div className="flex flex-col">
-      <TaxFeeSectionHeader who={who} title="" />
-      <TaxAndFeeMainContent>
-        <ContactInformationSection />
-        <TaxDetails />
-        <PaymentData who={who} />
-      </TaxAndFeeMainContent>
-      {switcher()}
-    </div>
-  )
+
+  // TODO error page
+
+  return <div className="flex flex-col">{content}</div>
 }
 
 export default TaxFeeSection

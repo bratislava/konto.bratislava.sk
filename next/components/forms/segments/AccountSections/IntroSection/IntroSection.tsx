@@ -41,8 +41,8 @@ const IntroSection = () => {
     }
   }, [phoneNumberModal, router.query.from, userData])
 
-  const onSubmitPhoneNumber = async (phoneData?: PhoneNumberData) => {
-    if (await updateUserData({ phone_number: phoneData?.phone_number })) {
+  const onSubmitPhoneNumber = async (submitData: { data?: PhoneNumberData }) => {
+    if (await updateUserData({ phone_number: submitData.data?.phone_number })) {
       setPhoneNumberModal('dismissed')
     }
   }

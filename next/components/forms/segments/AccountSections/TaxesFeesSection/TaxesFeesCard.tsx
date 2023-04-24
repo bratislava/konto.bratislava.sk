@@ -3,7 +3,7 @@ import TimeIcon from '@assets/images/new-icons/ui/clock.svg'
 import SuccessIcon from '@assets/images/new-icons/ui/done.svg'
 import ExclamationIcon from '@assets/images/new-icons/ui/exclamation-mark.svg'
 import { ROUTES } from '@utils/constants'
-import { formatCurrency } from '@utils/utils'
+import { formatCurrency, formatDate } from '@utils/utils'
 import cx from 'classnames'
 import { TaxesCardBase } from 'components/forms/segments/AccountSections/TaxesFeesSection/TaxesFeesSection'
 import Link from 'next/link'
@@ -69,7 +69,7 @@ const TaxesFeesCard = (props: TaxesCardBase) => {
             </div>
             <div className="flex flex-col items-center px-10">
               <div className="flex">{statusHandler()}</div>
-              {status !== 'unpaid' && paidDate && <span className="">{paidDate}</span>}
+              {status !== 'unpaid' && paidDate && <span className="">{formatDate(paidDate)}</span>}
             </div>
           </div>
         </div>

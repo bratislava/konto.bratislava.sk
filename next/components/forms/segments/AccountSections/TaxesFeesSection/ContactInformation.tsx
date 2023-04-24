@@ -59,11 +59,11 @@ const ContactInformationSection = ({ tax }: ContactInformationSectionProps) => {
                 label: t('permanent_address'),
                 value: `${tax.taxPayer?.permanentResidenceStreet}${
                   tax.taxPayer?.permanentResidenceZip
-                    ? ` ${tax.taxPayer?.permanentResidenceZip}`
+                    ? `, ${tax.taxPayer?.permanentResidenceZip}`
                     : ''
                 }${
                   tax.taxPayer?.permanentResidenceCity
-                    ? ` ${tax.taxPayer?.permanentResidenceCity}`
+                    ? `, ${tax.taxPayer?.permanentResidenceCity}`
                     : ''
                 }`,
                 schemaPath: '',

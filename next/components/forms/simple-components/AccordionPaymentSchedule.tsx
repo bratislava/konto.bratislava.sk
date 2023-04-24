@@ -43,7 +43,7 @@ const PaymentScheduleView = ({ tax }: PaymentScheduleViewProps) => {
         <div className=" flex md:flex-row flex-col items-center lg:gap-6 gap-4 w-full">
           <div className="text-h6 font-semibold md:text-h-md grow">{t('tax_determined')}</div>
           <AddToCalendarButton
-            name="Splátka dane za nehnuteľností 2023"
+            name="Splátka dane z nehnuteľností 2023"
             dates={`[
               {
                 "name":"Splátka dane z nehnuteľností 2023 2/3",

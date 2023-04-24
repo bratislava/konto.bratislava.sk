@@ -466,11 +466,10 @@ export const useFormStepper = (eformSlug: string, eform: EFormValue, callbacks: 
 
   // state variables with info about steps for summary and stepper
   const [steps, setSteps] = useState<RJSFSchema[]>(getValidatedSteps(schema, formData))
-  const validateSteps = useCallback(() => {
+  const validateSteps = () => {
     const newValidatedSteps = getValidatedSteps(schema, formData)
     setSteps(newValidatedSteps)
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [schema])
+  }
   const [stepData, setStepData] = useState<StepData[]>(getAllStepData(steps))
 
   // side info about steps
@@ -478,7 +477,7 @@ export const useFormStepper = (eformSlug: string, eform: EFormValue, callbacks: 
   const isComplete = stepIndex === stepsLength
   const currentSchema = steps ? cloneDeep(steps[stepIndex]) : {}
 
-  const initFormData = useCallback(async () => {
+  const initFormData = async () => {
     const loadedFormData: RJSFSchema = await callbacks.onInit?.()
     if (loadedFormData) {
       setFormData(loadedFormData)
@@ -486,7 +485,7 @@ export const useFormStepper = (eformSlug: string, eform: EFormValue, callbacks: 
       setFormData(getInitFormData(schema))
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [schema])
+  }
 
   useEffect(() => {
     // effect to reset all internal state when critical input 'props' change
@@ -497,7 +496,8 @@ export const useFormStepper = (eformSlug: string, eform: EFormValue, callbacks: 
         return null
       })
       .catch((error_) => logger.error('Init FormData failed', error_))
-  }, [eformSlug, schema, initFormData, validateSteps])
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [eformSlug, schema])
 
   useEffect(() => {
     // stepIndex allowed to climb one step above the length of steps - i.e. to render a final overview or other custom components but still allow to return back

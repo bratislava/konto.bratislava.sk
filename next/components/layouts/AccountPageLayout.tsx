@@ -95,7 +95,7 @@ const AccountPageLayout = ({
         .push({ pathname: ROUTES.LOGIN, query: { from: router.route } })
         .catch((error_) => logger.error('Redirect failed', error_))
     }
-  }, [isAuth])
+  }, [isAuth, router])
 
   const [t] = useTranslation('common')
 

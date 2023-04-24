@@ -100,32 +100,30 @@ const PaymentData = ({ tax }: PaymentDataProps) => {
             </div>
           </div>
           <div className="flex flex-col gap-4 grow">
-            {status.paymentStatus === 'unpaid' && (
-              <div className="lg:items-center items-start flex lg:flex-row flex-col lg:px-6 lg:py-8 p-4 gap-6 bg-main-200 rounded-lg w-full">
-                <div className="flex-col flex items-start gap-2 grow">
-                  <div className="text-h4">{t('card_payment')}</div>
-                  <div className="text-16">
-                    {t('you_will_be_redirected_to_the_payment_gateway')}
-                  </div>
-                </div>
-                {/* Desktop 'To pay' button */}
-                <Button
-                  variant="category"
-                  size="lg"
-                  text={t('to_pay')}
-                  className="lg:block hidden min-w-max"
-                  onPress={redirectToPaymentGateway}
-                />
-                {/* Mobile 'To pay' button */}
-                <Button
-                  variant="category"
-                  size="sm"
-                  text={t('to_pay')}
-                  className="lg:hidden block min-w-full"
-                  onPress={redirectToPaymentGateway}
-                />
+            <div className="lg:items-center items-start flex lg:flex-row flex-col lg:px-6 lg:py-8 p-4 gap-6 bg-main-200 rounded-lg w-full">
+              <div className="flex-col flex items-start gap-2 grow">
+                <div className="text-h4">{t('card_payment')}</div>
+                <div className="text-16">{t('you_will_be_redirected_to_the_payment_gateway')}</div>
               </div>
-            )}
+              {/* Desktop 'To pay' button */}
+              <Button
+                variant="category"
+                size="lg"
+                text={t('to_pay')}
+                className="lg:block hidden min-w-max"
+                onPress={redirectToPaymentGateway}
+                disabled={status?.paymentStatus === 'paid'}
+              />
+              {/* Mobile 'To pay' button */}
+              <Button
+                variant="category"
+                size="sm"
+                text={t('to_pay')}
+                className="lg:hidden block min-w-full"
+                onPress={redirectToPaymentGateway}
+                disabled={status?.paymentStatus === 'paid'}
+              />
+            </div>
             <div className="flex lg:flex-row flex-col lg:p-6 p-4 gap-4 border-2 border-solid border-gray-200 rounded-lg self-stretch grow">
               <div className="flex flex-col w-full justify-between items-start gap-2 grow self-stretch">
                 <div className="flex flex-col items-start gap-2">

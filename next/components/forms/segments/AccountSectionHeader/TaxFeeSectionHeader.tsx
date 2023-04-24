@@ -11,7 +11,6 @@ import { Tax } from '@utils/taxDto'
 import useAccount from '@utils/useAccount'
 import { formatCurrency, formatDate, taxStatusHelper } from '@utils/utils'
 import cx from 'classnames'
-import download from 'downloadjs'
 import { useRouter } from 'next/router'
 import { useTranslation } from 'next-i18next'
 import { ReactNode } from 'react'
@@ -81,7 +80,11 @@ const TaxFeeSectionHeader = ({ tax }: AccountSectionHeaderBase) => {
     })
       .then((res) => res.blob())
       .then((blob) => {
-        return download(blob, 'dan-z-nehnutelnosti-2023.pdf', 'application/pdf')
+        const a = document.createElement('a')
+        a.href = URL.createObjectURL(blob)
+        a.setAttribute('download', 'dan-z-nehnutelnosti-2023.pdf')
+        a.click()
+        return null
       })
       .catch((error) => {
         logger.error('Error downloading pdf', error)
@@ -177,6 +180,7 @@ const TaxFeeSectionHeader = ({ tax }: AccountSectionHeaderBase) => {
                   text={t('download_pdf')}
                   size="sm"
                   className="min-w-full"
+                  onPress={downloadPdf}
                 />
               </div>
             </div>

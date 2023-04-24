@@ -37,6 +37,7 @@ export const getServerSideProps = async (ctx: GetServerSidePropsContext) => {
             locale: l,
           })),
       },
+      isProductionDeploy: isProductionDeployment(),
       ...(await serverSideTranslations(locale)),
     },
   }
@@ -57,7 +58,11 @@ export const getServerSideProps = async (ctx: GetServerSidePropsContext) => {
 //   })
 // }
 
-const FormTestPage = ({ page, eform }: AsyncServerProps<typeof getServerSideProps>) => {
+const FormTestPage = ({
+  page,
+  eform,
+  isProductionDeploy,
+}: AsyncServerProps<typeof getServerSideProps>) => {
   const router = useRouter()
 
   const formSlug = forceString(router.query.eform)
@@ -74,7 +79,7 @@ const FormTestPage = ({ page, eform }: AsyncServerProps<typeof getServerSideProp
         { locale: 'en', slug: pageSlug },
       ]}
     >
-      <AccountPageLayout hiddenHeaderNav>
+      <AccountPageLayout hiddenHeaderNav isProductionDeploy={isProductionDeploy}>
         <FormHeader />
         <GeneratedFormRJSF eform={eform} escapedSlug={escapedSlug} formSlug={formSlug} />
       </AccountPageLayout>

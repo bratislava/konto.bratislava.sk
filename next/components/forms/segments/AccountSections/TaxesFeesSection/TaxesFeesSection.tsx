@@ -3,6 +3,7 @@ import { useTaxes } from '@utils/apiHooks'
 import { ROUTES } from '@utils/constants'
 import logger from '@utils/logger'
 import useAccount, { AccountStatus } from '@utils/useAccount'
+import { taxStatusHelper } from '@utils/utils'
 import AccountSectionHeader from 'components/forms/segments/AccountSectionHeader/AccountSectionHeader'
 import TaxesFeesCard from 'components/forms/segments/AccountSections/TaxesFeesSection/TaxesFeesCard'
 import TaxesFeesErrorCard from 'components/forms/segments/AccountSections/TaxesFeesSection/TaxesFeesErrorCard'
@@ -17,7 +18,7 @@ export type TaxesCardBase = {
   currentPaid: number
   finishPrice: number
   paidDate?: string
-  status: 'negative' | 'warning' | 'success'
+  status: 'paid' | 'unpaid' | 'partially_paid'
 }
 
 interface TaxesFeesSectionProps {
@@ -72,7 +73,7 @@ const TaxesFeesSection: React.FC<TaxesFeesSectionProps> = () => {
             createDate={new Date(data?.createdAt).toLocaleDateString('sk-SK')}
             currentPaid={data?.payedAmount}
             finishPrice={data?.amount}
-            status="negative"
+            status={taxStatusHelper(data).paymentStatus}
             paidDate={data?.updatedAt}
           />
         </li>

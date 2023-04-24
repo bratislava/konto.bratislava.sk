@@ -33,7 +33,7 @@ const AccountTaxesFeesPage = ({
 }: AsyncServerProps<typeof getServerSideProps>) => {
   return (
     <PageWrapper locale={page.locale} localizations={page.localizations}>
-      <AccountPageLayout>
+      <AccountPageLayout isProductionDeploy={isProductionDeployment}>
         <TaxFeeSection isProductionDeployment={isProductionDeployment} />
       </AccountPageLayout>
     </PageWrapper>

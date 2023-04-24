@@ -87,6 +87,7 @@ const SelectFieldWidgetRJSF = (props: SelectFieldWidgetRJSFProps) => {
     }
   }
 
+
   const transformedEnumOptions = enumOptions?.map((option) => option.schema as SelectOption) ?? []
 
   const handleTransformOne = (): SelectOption[] => {

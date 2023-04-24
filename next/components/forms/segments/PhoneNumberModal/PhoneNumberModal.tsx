@@ -9,7 +9,7 @@ import PhoneNumberForm, { PhoneNumberData } from '../PhoneNumberForm/PhoneNumber
 interface Props {
   show: boolean
   onClose: () => void
-  onSubmit: (phoneData?: PhoneNumberData ) => void
+  onSubmit: ({ data }: { data?: PhoneNumberData }) => void
   defaultValues: PhoneNumberData
   error?: AccountError | null
   onHideError?: () => void
@@ -31,7 +31,7 @@ const PhoneNumberModal = ({
       header={t('adding_phone_number_modal.title')}
       show={show}
       onClose={onClose}
-      onSubmit={({data}: {data?: PhoneNumberData}) => onSubmit(data)}
+      onSubmit={onSubmit}
       content={({ onSubmit }) => PhoneNumberForm({ error, onHideError, onSubmit, defaultValues })}
       className="w-[592px] sm:h-max h-full"
     />

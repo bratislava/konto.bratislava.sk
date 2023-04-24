@@ -211,6 +211,7 @@
             "school": {
               "type": "string",
               "title": "University",
+              "default": "stu_fei",
               "oneOf": [
                 {
                   "const": "stu_fei",
@@ -268,7 +269,61 @@
                 }
               ]
             }
-          }
+          },
+          "allOf": [
+            {
+              "if": {
+                "properties": {
+                  "school": {
+                    "const": "stu_fchpt"
+                  }
+                }
+              },
+              "then": {
+                "properties": {
+                  "conditionalSchool": {
+                    "type": "string",
+                    "title": "Was fchpt good? (conditional field)"
+                  }
+                }
+              }
+            },
+            {
+              "if": {
+                "oneOf": [
+                  {
+                    "properties": {
+                      "diplomas": {
+                        "const": ["stu_fei", "stu_fiit"]
+                      }
+                    }
+                  },
+                  {
+                    "properties": {
+                      "diplomas": {
+                        "const": ["stu_fiit"]
+                      }
+                    }
+                  },
+                  {
+                    "properties": {
+                      "diplomas": {
+                        "const": ["stu_fei"]
+                      }
+                    }
+                  }
+                ]
+              },
+              "then": {
+                "properties": {
+                  "conditionalDiplomas": {
+                    "type": "string",
+                    "title": "How was your IT experience? (conditional field)"
+                  }
+                }
+              }
+            }
+          ]
         }
       }
     },

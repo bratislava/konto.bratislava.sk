@@ -29,17 +29,16 @@
         "ziadatel": {
           "type": "object",
           "title": "Žiadateľ",
+          "properties": {
+            "ziatetelTyp": {
+              "title": "Žiadate ako",
+              "type": "string",
+              "default": "Fyzická osoba",
+              "enum": ["Fyzická osoba", "Fyzická osoba - podnikateľ", "Právnicka osoba"]
+            }
+          },
+          "required": ["ziatetelTyp"],
           "allOf": [
-            {
-              "properties": {
-                "ziatetelTyp": {
-                  "title": "Žiadate ako",
-                  "type": "string",
-                  "enum": ["Fyzická osoba", "Fyzická osoba - podnikateľ", "Právnicka osoba"]
-                }
-              },
-              "required": ["ziatetelTyp"]
-            },
             {
               "if": {
                 "properties": {
@@ -217,16 +216,15 @@
         "investor": {
           "type": "object",
           "title": "Investor",
+          "properties": {
+            "investorZiadatelom": {
+              "title": "Je investor rovnaká osoba ako žiadateľ?",
+              "default": true,
+              "type": "boolean"
+            }
+          },
+          "required": ["investorZiadatelom"],
           "allOf": [
-            {
-              "properties": {
-                "investorZiadatelom": {
-                  "title": "Je investor rovnaká osoba ako žiadateľ?",
-                  "type": "boolean"
-                }
-              },
-              "required": ["investorZiadatelom"]
-            },
             {
               "if": {
                 "properties": {
@@ -272,6 +270,7 @@
                       "investorTyp": {
                         "title": "Typ investora",
                         "type": "string",
+                        "default": "Fyzická osoba",
                         "enum": ["Fyzická osoba", "Fyzická osoba - podnikateľ", "Právnicka osoba"]
                       }
                     },
@@ -635,24 +634,22 @@
         "konanie": {
           "type": "object",
           "title": "Typ konania na stavebnom úrade",
+          "properties": {
+            "konanieTyp": {
+              "title": "Typ konania",
+              "type": "string",
+              "default": "Územné konanie",
+              "enum": [
+                "Územné konanie",
+                "Územné konanie spojené so stavebným konaním",
+                "Zmena stavby pred dokončením",
+                "Zmena v užívaní stavby",
+                "Konanie o dodatočnom povolení stavby"
+              ]
+            }
+          },
+          "required": ["konanieTyp"],
           "allOf": [
-            {
-              "properties": {
-                "konanieTyp": {
-                  "title": "Typ konania",
-                  "type": "string",
-                  "default": "Územné konanie",
-                  "enum": [
-                    "Územné konanie",
-                    "Územné konanie spojené so stavebným konaním",
-                    "Zmena stavby pred dokončením",
-                    "Zmena v užívaní stavby",
-                    "Konanie o dodatočnom povolení stavby"
-                  ]
-                }
-              },
-              "required": ["konanieTyp"]
-            },
             {
               "if": {
                 "properties": {

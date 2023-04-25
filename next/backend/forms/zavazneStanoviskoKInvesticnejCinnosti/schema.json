@@ -641,6 +641,7 @@
                 "konanieTyp": {
                   "title": "Typ konania",
                   "type": "string",
+                  "default": "Územné konanie",
                   "enum": [
                     "Územné konanie",
                     "Územné konanie spojené so stavebným konaním",
@@ -665,6 +666,7 @@
                   "ziadostOdovodnenie": {
                     "type": "string",
                     "title": "Upresnenie konania",
+                    "default": "Realizácia stavby, resp. jej úprav bez akéhokoľvek povolenia",
                     "enum": [
                       "Realizácia stavby, resp. jej úprav bez akéhokoľvek povolenia",
                       "Dodatočné povolenie zmeny stavby pred dokončením"
@@ -689,21 +691,7 @@
                             "type": "string",
                             "format": "data-url"
                           }
-                        }
-                      },
-                      "required": ["stavbaFotodokumentacia"]
-                    }
-                  },
-                  {
-                    "if": {
-                      "properties": {
-                        "ziadostOdovodnenie": {
-                          "const": "Dodatočné povolenie zmeny stavby pred dokončením"
-                        }
-                      }
-                    },
-                    "then": {
-                      "properties": {
+                        },
                         "stavbaPisomnosti": {
                           "type": "array",
                           "title": "Relevantné písomnosti súvisiace so stavbou",
@@ -713,7 +701,7 @@
                           }
                         }
                       },
-                      "required": ["stavbaPisomnosti"]
+                      "required": ["stavbaFotodokumentacia", "stavbaPisomnosti"]
                     }
                   }
                 ],

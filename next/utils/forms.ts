@@ -461,8 +461,10 @@ const updateUploadWidgets = (folderName: string, schema?: JSONSchema7Definition)
   }
 }
 
-const updateUploadWidgetsInSchema = (schema: RJSFSchema) => {
-  const folderName = `/${String(schema.pospID)}-ver-${String(schema.pospVersion).replace(".","-")}`
+const updateUploadWidgetsInSchema = (schema: RJSFSchema, formId?: string) => {
+  if (!formId) return
+
+  const folderName = `/${String(schema.pospID)}-ver-${String(schema.pospVersion).replace(".","-")}/${formId}`
 
   schema.allOf.forEach(step => {
     updateUploadWidgets(folderName, step)
@@ -473,7 +475,7 @@ const updateUploadWidgetsInSchema = (schema: RJSFSchema) => {
 // TODO prevent unmounting
 // TODO persist state for session
 // TODO figure out if we need to step over uiSchemas, or having a single one is enough (seems like it is for now)
-export const useFormStepper = (eformSlug: string, eform: EFormValue, callbacks: Callbacks) => {
+export const useFormStepper = (eformSlug: string, eform: EFormValue, callbacks: Callbacks, formId?: string) => {
   const { schema } = eform
   // since Form can be undefined, useRef<Form> is understood as an overload of useRef returning MutableRef, which does not match expected Ref type be rjsf
   // also, our code expects directly RefObject otherwise it will complain of no `.current`
@@ -517,7 +519,6 @@ export const useFormStepper = (eformSlug: string, eform: EFormValue, callbacks: 
 
   useEffect(() => {
     // effect to reset all internal state when critical input 'props' change
-    updateUploadWidgetsInSchema(schema)
     initFormData()
       .then(() => {
         setStepIndex(0)
@@ -527,6 +528,10 @@ export const useFormStepper = (eformSlug: string, eform: EFormValue, callbacks: 
       .catch((error_) => logger.error('Init FormData failed', error_))
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [eformSlug, schema])
+
+  useEffect(() => {
+    updateUploadWidgetsInSchema(schema, formId)
+  }, [schema, formId])
 
   useEffect(() => {
     // stepIndex allowed to climb one step above the length of steps - i.e. to render a final overview or other custom components but still allow to return back
@@ -813,6 +818,7 @@ export const useFormFiller = (eform: EFormValue) => {
   return {
     initFormData,
     updateFormData,
+    formId
   }
 }
 

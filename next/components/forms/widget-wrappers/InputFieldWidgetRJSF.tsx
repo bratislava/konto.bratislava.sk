@@ -48,7 +48,6 @@ const InputFieldWidgetRJSF = ({
   } = options
 
   const handleOnChange = (newValue?: string) => {
-    console.log(newValue)
     if (newValue && newValue !== '') {
       onChange(newValue)
     } else {

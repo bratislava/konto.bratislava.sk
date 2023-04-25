@@ -524,7 +524,14 @@ export const useFormStepper = (eformSlug: string, eform: EFormValue, callbacks: 
     if (schema.$async === true) {
       const newExtraErrors = await validateAsyncProperties(currentSchema, formData, [])
       isValid = isValid && Object.keys(newExtraErrors).length === 0
-      setExtraErrors({ ...extraErrors, ...newExtraErrors })
+      const currentStepKey: string = Object.keys(currentSchema.properties)[0]
+      if (!(currentStepKey in newExtraErrors)) {
+        const updatedExtraErrors = { ...extraErrors }
+        delete updatedExtraErrors[currentStepKey]
+        setExtraErrors(updatedExtraErrors)
+      } else {
+        setExtraErrors({ ...extraErrors, ...newExtraErrors })
+      }
     }
 
     return isValid

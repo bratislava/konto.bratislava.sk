@@ -45,7 +45,7 @@ const SelectFieldWidgetRJSF = (props: SelectFieldWidgetRJSFProps) => {
     spaceBottom = 'none',
     spaceTop = 'large',
     hideScrollbar = false,
-    alwaysOneSelected = false,
+    alwaysOneSelected = true,
     maxWordSize,
   } = options
 

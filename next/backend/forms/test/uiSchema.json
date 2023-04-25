@@ -240,7 +240,7 @@
   },
   "selectFields": {
     "ui:hideError": true,
-    "ui:order": ["school", "diplomas", "years"],
+    "ui:order": ["school", "conditionalSchool", "diplomas", "conditionalDiplomas", "years"],
     "school": {
       "ui:widget": "SelectField",
       "ui:label": false,
@@ -265,6 +265,14 @@
     },
     "years": {
       "ui:widget": "SelectField",
+      "ui:label": false
+    },
+    "conditionalSchool": {
+      "ui:widget": "InputField",
+      "ui:label": false
+    },
+    "conditionalDiplomas": {
+      "ui:widget": "InputField",
       "ui:label": false
     }
   },

@@ -22,7 +22,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
   }
 
   const isValid = keywordDefinition.validate
-    ? await keywordDefinition.validate(schema, value, parentSchema)
+    ? await keywordDefinition.validate(schema as AnySchemaObject, value, parentSchema)
     : true
   return res.status(200).json({ isValid })
 }

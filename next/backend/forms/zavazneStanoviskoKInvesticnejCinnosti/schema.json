@@ -219,8 +219,8 @@
           "properties": {
             "investorZiadatelom": {
               "title": "Je investor rovnaká osoba ako žiadateľ?",
-              "default": true,
-              "type": "boolean"
+              "type": "boolean",
+              "default": true
             }
           },
           "required": ["investorZiadatelom"],

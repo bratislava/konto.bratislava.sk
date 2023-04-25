@@ -21,17 +21,20 @@ export const getServerSideProps = async (ctx: GetServerSidePropsContext) => {
             locale: l,
           })),
       },
-      isProductionDeployment: isProductionDeployment(),
+      isProductionDeploy: isProductionDeployment(),
       ...(await serverSideTranslations(locale)),
     },
   }
 }
 
-const AccountMyApplicationsPage = ({ page }: AsyncServerProps<typeof getServerSideProps>) => {
+const AccountMyApplicationsPage = ({
+  page,
+  isProductionDeploy,
+}: AsyncServerProps<typeof getServerSideProps>) => {
   return (
     <PageWrapper locale={page.locale} localizations={page.localizations}>
-      <AccountPageLayout>
-        <MyApplicationsSection />
+      <AccountPageLayout isProductionDeploy={isProductionDeploy}>
+        <MyApplicationsSection isProductionDeploy={isProductionDeploy} />
       </AccountPageLayout>
     </PageWrapper>
   )

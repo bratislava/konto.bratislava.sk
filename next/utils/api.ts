@@ -301,40 +301,31 @@ export const updateForm = (token: string, id: string, data: UpdateFormDto) => {
 }
 
 export const getTaxApi = (token: string) => {
-  return fetchJsonApi(
-    `https://nest-tax-backend.staging.bratislava.sk/tax/get-tax-by-year?year=2023`,
-    {
-      method: 'GET',
-      headers: {
-        'Content-Type': 'application/json',
-        Authorization: `Bearer ${token}`,
-      },
+  return fetchJsonApi(`${process.env.NEXT_PUBLIC_TAXES_URL}/tax/get-tax-by-year?year=2023`, {
+    method: 'GET',
+    headers: {
+      'Content-Type': 'application/json',
+      Authorization: `Bearer ${token}`,
     },
-  )
+  })
 }
 
 export const getTaxPdfApi = (token: string) => {
-  return fetchJsonApi(
-    `https://nest-tax-backend.staging.bratislava.sk/tax/get-tax-pdf-by-year?year=2023`,
-    {
-      method: 'GET',
-      headers: {
-        'Content-Type': 'application/json',
-        Authorization: `Bearer ${token}`,
-      },
+  return fetchJsonApi(`${process.env.NEXT_PUBLIC_TAXES_URL}/tax/get-tax-pdf-by-year?year=2023`, {
+    method: 'GET',
+    headers: {
+      'Content-Type': 'application/json',
+      Authorization: `Bearer ${token}`,
     },
-  )
+  })
 }
 
 export const getPaymentGatewayUrlApi = (token: string) => {
-  return fetchJsonApi(
-    `https://nest-tax-backend.staging.bratislava.sk/payment/cardpay/by-year/2023`,
-    {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        Authorization: `Bearer ${token}`,
-      },
+  return fetchJsonApi(`${process.env.NEXT_PUBLIC_TAXES_URL}/payment/cardpay/by-year/2023`, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      Authorization: `Bearer ${token}`,
     },
-  )
+  })
 }

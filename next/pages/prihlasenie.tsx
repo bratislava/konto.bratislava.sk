@@ -11,7 +11,7 @@ import LoginRegisterLayout from 'components/layouts/LoginRegisterLayout'
 import { GetServerSidePropsContext } from 'next'
 import { useRouter } from 'next/router'
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
-import { useEffect } from 'react'
+import { useCallback, useEffect } from 'react'
 
 import PageWrapper from '../components/layouts/PageWrapper'
 
@@ -40,7 +40,7 @@ const LoginPage = ({ page }: AsyncServerProps<typeof getServerSideProps>) => {
     useAccount()
   const router = useRouter()
 
-  const redirect = async () => {
+  const redirect = useCallback(async () => {
     const from =
       router.query.from &&
       typeof router.query.from === 'string' &&
@@ -48,13 +48,13 @@ const LoginPage = ({ page }: AsyncServerProps<typeof getServerSideProps>) => {
         ? decodeURIComponent(router.query.from)
         : ROUTES.HOME
     await router.push(from).catch((error_) => logger.error('Failed redirect', error_))
-  }
+  }, [router])
 
   useEffect(() => {
     if (user !== null && user !== undefined) {
       redirect().catch((error_) => logger.error('Failed redirect', error_))
     }
-  }, [user])
+  }, [user, redirect])
 
   const onLogin = async (email: string, password: string) => {
     if (await login(email, password)) {

@@ -26,10 +26,13 @@ export const getServerSideProps = async (ctx: GetServerSidePropsContext) => {
   }
 }
 
-const AccountMunicipalServicesPage = ({ page }: AsyncServerProps<typeof getServerSideProps>) => {
+const AccountMunicipalServicesPage = ({
+  page,
+  isProductionDeploy,
+}: AsyncServerProps<typeof getServerSideProps>) => {
   return (
     <PageWrapper locale={page.locale} localizations={page.localizations}>
-      <AccountPageLayout>
+      <AccountPageLayout isProductionDeploy={isProductionDeploy}>
         <MunicipalServicesSection />
       </AccountPageLayout>
     </PageWrapper>

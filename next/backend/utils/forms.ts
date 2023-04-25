@@ -69,7 +69,9 @@ export const buildXmlRecursive = (
       const format =
         jsonSchema.type === 'array' ? getFormatFromItems(jsonSchema.items) : jsonSchema.format
       if (format === 'ciselnik') {
-        node = `<Code>${node}</Code><Name>${node}</Name><WsEnumCode>${jsonSchema.ciselnik?.id}</WsEnumCode>`
+        node = `<Code>${node}</Code><Name>${node}</Name><WsEnumCode>${
+          (jsonSchema as Record<string, any>).ciselnik?.id
+        }</WsEnumCode>`
       } else if (format === 'data-url') {
         node = `<Nazov>${node}</Nazov><Prilozena>true</Prilozena>`
       }

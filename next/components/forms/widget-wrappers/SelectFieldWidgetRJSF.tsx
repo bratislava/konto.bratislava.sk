@@ -69,7 +69,7 @@ const SelectFieldWidgetRJSF = (props: SelectFieldWidgetRJSFProps) => {
     }
   }
 
-  const { data }: { data: SelectOption[] } = useEnum(schema.ciselnik?.id as string)
+  const { data } = useEnum(schema.ciselnik?.id as string)
   const transformedEnumOptions = enumOptions
     ? enumOptions.map((option) => option.schema as SelectOption)
     : data

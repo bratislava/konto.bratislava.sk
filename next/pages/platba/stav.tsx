@@ -26,10 +26,17 @@ export const getServerSideProps = async (ctx: GetServerSidePropsContext) => {
   }
 }
 
-const AccountThankYouPage = ({ page }: AsyncServerProps<typeof getServerSideProps>) => {
+const AccountThankYouPage = ({
+  page,
+  isProductionDeploy,
+}: AsyncServerProps<typeof getServerSideProps>) => {
   return (
     <PageWrapper locale={page.locale} localizations={page.localizations}>
-      <AccountPageLayout hiddenHeaderNav className="bg-gray-50">
+      <AccountPageLayout
+        isProductionDeploy={isProductionDeploy}
+        hiddenHeaderNav
+        className="bg-gray-50"
+      >
         <ThankYouSection />
       </AccountPageLayout>
     </PageWrapper>

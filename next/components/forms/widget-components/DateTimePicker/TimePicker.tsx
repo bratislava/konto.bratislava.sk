@@ -6,6 +6,7 @@ import padStart from 'lodash/padStart'
 import { forwardRef, ReactNode, RefObject, useEffect, useRef, useState } from 'react'
 import { I18nProvider, OverlayProvider, useButton, useDatePicker } from 'react-aria'
 import { useDatePickerState } from 'react-stately'
+import { useEffectOnce } from 'usehooks-ts'
 
 import { usePageWrapperContext } from '../../../layouts/PageWrapper'
 import { ExplicitOptionalType } from '../../types/ExplicitOptional'
@@ -155,11 +156,11 @@ const TimePicker = forwardRef<HTMLDivElement, TimePickerBase>(
       }
     }, [isInputEdited])
 
-    useEffect(() => {
+    useEffectOnce(() => {
       const convertedTimeToValidFormat = convertTimeToValidFormat(value)
       if (value) setPrevValue(convertedTimeToValidFormat)
       if (onChange) onChange(convertedTimeToValidFormat)
-    }, [])
+    })
 
     return (
       <I18nProvider locale={locale}>

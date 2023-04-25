@@ -359,6 +359,9 @@
     "banner_content": "Kontaktujte nás a radi vás nasmerujeme na správnu odpoveď.",
     "banner_button_text": "Napísať správu",
     "faq": {
+      "title": "Často kladené otázky",
+      "general_category": "Všeobecné",
+      "taxes_category": "Daň z nehnuteľností",
       "1": {
         "question": "Prečo vzniká Bratislavské konto?",
         "answer": "Projekt Bratislavské konto vzniká na základe testovania potrieb obyvateľov a obyvateliek mesta Bratislava, ktorí sa jasne vyjadrili, že by prijali digitalizáciu a transformáciu mestských služieb. Portál, ktorý bol vytvorený pred viac ako 4 rokmi a mal slúžiť na podávanie elektronických žiadostí, nenaplnil stanovené očakávania. Dôkazom toho je, že ho v súčasnosti používa menej ako 8% obyvateľstva v Bratislave. Okrem toho vnímame, že si Bratislavčania a Bratislavčanky želajú mať jedno miesto, na ktorom nájdu všetky služby, ktoré mesto poskytuje.<br /><br />Nové Bratislavské konto má za cieľ poskytovať elektronické služby na úrovni 21. storočia. Ide o miesto, kde budú postupne pribúdať všetky služby a obyvatelia a obyvateľky mesta Bratislava tak budú môcť s úradom komunikovať digitálne, jednoducho a pohodlne, kdekoľvek sa budú nachádzať."

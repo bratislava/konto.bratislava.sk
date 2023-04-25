@@ -18,7 +18,7 @@
     "prettier": "prettier --write ."
   },
   "dependencies": {
-    "@bratislava/json-schema-xsd-tools": "^0.1.9",
+    "@bratislava/json-schema-xsd-tools": "^0.2.0",
     "@grafana/faro-web-sdk": "^1.0.2",
     "@hookform/resolvers": "^2.9.10",
     "@internationalized/date": "3.1.0",

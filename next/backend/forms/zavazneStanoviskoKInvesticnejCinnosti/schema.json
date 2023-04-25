@@ -16,7 +16,7 @@
               "title": "Projektová dokumentácia",
               "items": {
                 "type": "string",
-                "format": "data-url"
+                "format": "file"
               }
             }
           },
@@ -242,7 +242,7 @@
                     "title": "Splnomocnenie na zastupovanie",
                     "items": {
                       "type": "string",
-                      "format": "data-url"
+                      "format": "file"
                     }
                   }
                 },
@@ -266,7 +266,7 @@
                         "title": "Splnomocnenie na zastupovanie",
                         "items": {
                           "type": "string",
-                          "format": "data-url"
+                          "format": "file"
                         }
                       },
                       "investorTyp": {

@@ -62,7 +62,7 @@ const SelectFieldComponent: ForwardRefRenderFunction<HTMLDivElement, SelectField
     disabled,
     hideScrollbar,
     alwaysOneSelected,
-    maxWordSize,
+    maxWordSize = 17,
     className,
     onChange,
   } = props

@@ -1,4 +1,4 @@
-import BannerPhone from '@assets/images/banner-phone.png'
+import BannerImage from '@assets/images/bratislava-dog.png'
 import TaxesIcon from '@assets/images/new-icons/other/city-bratislava/taxes.svg'
 import LibraryIcon from '@assets/images/new-icons/other/culture-communities/library.svg'
 import TreeIcon from '@assets/images/new-icons/other/environment-construction/greenery.svg'
@@ -141,7 +141,7 @@ const IntroSection = () => {
             content={bannerContent}
             buttonText={t('account_section_intro.banner_button_text')}
             href={ROUTES.I_HAVE_A_PROBLEM}
-            image={BannerPhone}
+            image={BannerImage}
           />
         </div>
       </div>

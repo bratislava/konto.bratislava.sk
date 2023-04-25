@@ -2,6 +2,7 @@
 // frontend code for calling api endpoints grouped
 // TODO refactor, get rid of Api error, make TaxApiError format the default and handle errors accordingly
 // eslint-disable-next-line max-classes-per-file
+import { RJSFSchema } from '@rjsf/utils'
 import { ErrorObject } from 'ajv'
 
 import logger from './logger'
@@ -129,14 +130,14 @@ export const formDataToXml = (eform: string, data: any) => {
   })
 }
 
-export const xmlToFormData = (eform: string, data: string) => {
+export const xmlToFormData = (eform: string, data: string): Promise<RJSFSchema> => {
   return fetchJsonApi(`/api/eforms/${eform}/transform/xmlToJson`, {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
     },
     body: JSON.stringify({ data }),
-  })
+  }) as Promise<RJSFSchema>
 }
 
 interface Identity {

@@ -45,7 +45,7 @@ const SelectFieldWidgetRJSF = (props: SelectFieldWidgetRJSFProps) => {
     spaceBottom = 'none',
     spaceTop = 'large',
     hideScrollbar = false,
-    alwaysOneSelected = false,
+    alwaysOneSelected = true,
     maxWordSize,
   } = options
 
@@ -86,6 +86,7 @@ const SelectFieldWidgetRJSF = (props: SelectFieldWidgetRJSFProps) => {
       handleOnChangeOne(originalNewValue)
     }
   }
+
 
   const transformedEnumOptions = enumOptions?.map((option) => option.schema as SelectOption) ?? []
 

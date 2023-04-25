@@ -90,11 +90,22 @@ const PaymentData = ({ tax }: PaymentDataProps) => {
               <div className="flex flex-col items-start w-full gap-2">
                 <div className="text-16-semibold">{t('tax_due')}</div>
                 <div className="text-16">
-                  <div className="inline">{t('tax_payable_within')}</div>
-                  <div className="text-16-semibold inline">
-                    {t('validity_decision_with_schedule')}
-                  </div>{' '}
-                  <div className="inline">{t('according_schedule')}</div>
+                  {tax?.taxInstallments?.length > 1 ? (
+                    <>
+                      <div className="inline">{t('tax_payable_in_installments_1')}</div>
+                      <div className="text-16-semibold inline">
+                        {t('tax_payable_in_installments_2')}
+                      </div>{' '}
+                      <div className="inline">{t('tax_payable_in_installments_3')}</div>
+                    </>
+                  ) : (
+                    <>
+                      <div className="inline">{t('tax_payable_within')}</div>
+                      <div className="text-16-semibold inline">
+                        {t('validity_decision_with_schedule')}
+                      </div>
+                    </>
+                  )}
                 </div>
               </div>
             </div>

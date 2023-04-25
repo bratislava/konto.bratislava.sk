@@ -28,7 +28,7 @@ const DoubledInputWidgetFieldRJSF = ({
   const handleOnChange = (name: string, event?: string) => {
     onChange({
       ...formData,
-      [name]: event,
+      [name]: event === '' ? undefined : event,
     })
   }
 

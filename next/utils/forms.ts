@@ -445,9 +445,14 @@ interface Callbacks {
 const updateUploadWidgets = (folderName: string, schema?: JSONSchema7Definition) => {
   if (!schema || typeof schema !== 'object') return
 
+  const isSchemaUploadWidget = (schema.type === 'string' && ['file', 'data-url'].includes(schema.format)) ||
+    ( schema.type === 'array' && schema.items &&
+      typeof schema.items === 'object' && !Array.isArray(schema.items) &&
+      schema.items.type === 'string' && ['file', 'data-url'].includes(schema.items.format) )
+
   if (Array.isArray(schema)) {
     schema.forEach((property: JSONSchema7Definition) => updateUploadWidgets(folderName, property))
-  } else if ((schema.type === 'string' || schema.type === 'array') && ['file', 'data-url'].includes(schema.format) ) {
+  } else if (isSchemaUploadWidget ) {
     Object.assign(schema, { folder: folderName })
   } else {
     Object.values(schema).forEach((value: JSONSchema7Definition) => {
@@ -462,8 +467,6 @@ const updateUploadWidgetsInSchema = (schema: RJSFSchema) => {
   schema.allOf.forEach(step => {
     updateUploadWidgets(folderName, step)
   })
-
-  console.log('UPDATED SCHEMA:', schema)
 }
 
 

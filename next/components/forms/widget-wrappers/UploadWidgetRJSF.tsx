@@ -7,9 +7,13 @@ import { useEffectOnce } from 'usehooks-ts'
 import Upload from '../widget-components/Upload/Upload'
 import UploadRJSFOptions from '../widget-components/Upload/UploadRJSFOptions'
 
+interface UploadRJSFSchema extends StrictRJSFSchema {
+  folder: string
+}
+
 interface UploadWidgetRJSFProps extends WidgetProps {
   options: UploadRJSFOptions
-  schema: StrictRJSFSchema
+  schema: UploadRJSFSchema
   label: string
   required?: boolean
   value: string | string[] | null
@@ -48,7 +52,7 @@ const UploadWidgetRJSF = (props: UploadWidgetRJSFProps) => {
       originalName,
     }
   }
-  console.log(schema)
+  console.log("upload schema:", schema)
   useEffectOnce(() => {
     // I need to save multiple pieces of info about the file - this isn't stored in rjsf, but needed DURING upload
     // I am saving this info only in innerValue of widget

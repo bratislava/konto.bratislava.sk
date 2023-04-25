@@ -109,7 +109,9 @@ const Alert = ({
           <span className="flex min-w-[22px] justify-center">{icons[type]}</span>
           <div className={contentStyle}>{title || message}</div>
         </div>
-        {buttonsPosition === 'right' && <AlertButtons className="pl-3" buttons={buttons} />}
+        {buttonsPosition === 'right' && (
+          <AlertButtons className="hidden lg:flex pl-3" buttons={buttons} />
+        )}
         {close && (
           <span className="flex h-6 w-6 items-center justify-center cursor-pointer">
             <CloseIcon onClick={close} className="w-6 h-6" />
@@ -127,6 +129,9 @@ const Alert = ({
         </div>
       )}
       {buttonsPosition === 'bottom' && <AlertButtons className="pl-9" buttons={buttons} />}
+      {buttonsPosition === 'right' && (
+        <AlertButtons className="flex lg:hidden pl-9" buttons={buttons} />
+      )}
     </div>
   )
 }

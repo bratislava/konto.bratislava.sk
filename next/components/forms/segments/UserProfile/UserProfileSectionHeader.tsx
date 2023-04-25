@@ -1,6 +1,7 @@
 import useAccount, { AccountStatus } from '@utils/useAccount'
 import cx from 'classnames'
 import Alert from 'components/forms/info-components/Alert'
+import { useTranslation } from 'next-i18next'
 import React from 'react'
 
 interface UserProfileSectionHeaderProps {
@@ -23,7 +24,7 @@ const UserProfileSectionHeader = ({
   mainHeader,
 }: UserProfileSectionHeaderProps) => {
   const { status } = useAccount()
-
+  const { t } = useTranslation('account')
   return (
     <div
       className={cx(
@@ -52,12 +53,12 @@ const UserProfileSectionHeader = ({
       </div>
       {mainHeader && status !== AccountStatus.IdentityVerificationSuccess && (
         <Alert
-          message="Vaša identita zatiaľ nebola overená voči štátnym registrom. Bratislavské konto môžete preto používať len v obmedzenom režime, bez možnosti odoslať elektronicky všetky žiadosti či využiť službu online platby dane z nehnuteľností."
+          title={t('verification_status_required')}
+          message={t('verification_status_required_alert')}
           type="warning"
-          buttonsPosition="right"
           buttons={[
             {
-              title: 'Overiť identitu',
+              title: t('verification_url_text'),
               link: '/overenie-identity',
             },
           ]}

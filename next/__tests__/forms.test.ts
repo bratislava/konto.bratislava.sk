@@ -38,11 +38,7 @@ describe('forms test', () => {
       const json = await xmlToJson(xml, eform.schema)
       expect(eform.data).toEqual(json)
 
-      // ignore title, description, items in JSON schema
-      const options = {
-        ignore: ['title', 'description', 'items'],
-      }
-      const errors = loadAndValidate(eform.xsd, eform.schema, options)
+      const errors = loadAndValidate(eform.xsd, eform.schema)
       expect(errors).toHaveLength(0)
     },
   )

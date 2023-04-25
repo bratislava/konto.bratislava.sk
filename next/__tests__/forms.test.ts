@@ -38,9 +38,9 @@ describe('forms test', () => {
       const json = await xmlToJson(xml, eform.schema)
       expect(eform.data).toEqual(json)
 
-      // We don't have JSON schema of form "dopravneZnacenie", empty schema is valid.
+      // ignore title, description, items in JSON schema
       const options = {
-        ignore: key === 'dopravneZnacenie' ? ['empty'] : undefined,
+        ignore: ['title', 'description', 'items'],
       }
       const errors = loadAndValidate(eform.xsd, eform.schema, options)
       expect(errors).toHaveLength(0)

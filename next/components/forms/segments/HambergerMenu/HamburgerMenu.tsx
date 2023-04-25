@@ -7,8 +7,6 @@ import Link from 'next/link'
 import { useRouter } from 'next/router'
 import { useTranslation } from 'next-i18next'
 
-// const MY_PROFILE_ITEM_ID = 1
-
 interface IProps {
   sectionsList?: MenuItem[]
   menuItems: MenuItem[]

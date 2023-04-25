@@ -54,7 +54,6 @@ type AlertBase = {
   close?: () => void
   className?: string
   buttons?: AlertButtonBase[]
-  buttonsPosition?: 'bottom' | 'right'
   fullWidth?: boolean
   solid?: boolean
 }
@@ -66,7 +65,6 @@ const Alert = ({
   close,
   className,
   buttons,
-  buttonsPosition = 'bottom',
   fullWidth = false,
   solid = false,
 }: AlertBase) => {
@@ -109,9 +107,6 @@ const Alert = ({
           <span className="flex min-w-[22px] justify-center">{icons[type]}</span>
           <div className={contentStyle}>{title || message}</div>
         </div>
-        {buttonsPosition === 'right' && (
-          <AlertButtons className="hidden lg:flex pl-3" buttons={buttons} />
-        )}
         {close && (
           <span className="flex h-6 w-6 items-center justify-center cursor-pointer">
             <CloseIcon onClick={close} className="w-6 h-6" />
@@ -128,10 +123,7 @@ const Alert = ({
           {title && message}
         </div>
       )}
-      {buttonsPosition === 'bottom' && <AlertButtons className="pl-9" buttons={buttons} />}
-      {buttonsPosition === 'right' && (
-        <AlertButtons className="flex lg:hidden pl-9" buttons={buttons} />
-      )}
+      <AlertButtons className="pl-9" buttons={buttons} />
     </div>
   )
 }

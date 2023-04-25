@@ -107,17 +107,9 @@ const AlertShowCase = () => {
           message="Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua."
         />
         <Alert
-          title="Link button"
-          type="warning"
-          buttons={[{ title: 'Button', link: '/' }]}
-          buttonsPosition="right"
-          message="Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua."
-        />
-        <Alert
           fullWidth
           type="warning"
           buttons={[{ title: 'Button', link: '/' }]}
-          buttonsPosition="right"
           message="Link button dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua."
         />
       </Stack>

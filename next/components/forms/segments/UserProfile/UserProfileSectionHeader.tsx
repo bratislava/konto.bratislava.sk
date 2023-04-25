@@ -43,7 +43,7 @@ const UserProfileSectionHeader = ({
             <h5 className={cx('text-h5-bold', 'md:text-h4-bold')}>{title}</h5>
             {mainHeader && status === AccountStatus.IdentityVerificationSuccess && (
               <span className="text-p3-medium px-2 bg-success-100 text-success-700 rounded-[4px]">
-                Overený profil
+                {t('verification_status_success')}
               </span>
             )}
           </div>

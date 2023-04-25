@@ -218,8 +218,8 @@ export const ajvKeywords: KeywordDefinition[] = [
 export const ajvFormats = {
   zip: /\b\d{5}\b/,
   time: /^[0-2]\d:[0-5]\d$/,
-  'data-url': () => true,
   ciselnik: () => true,
+  file: () => true,
 }
 
 const validateAsyncProperties = async (

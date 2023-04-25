@@ -47,7 +47,13 @@ const InputFieldWidgetRJSF = ({
     spaceTop = 'large',
   } = options
 
-  const handleOnChange = (newValue?: string) => (newValue ? onChange(newValue) : onChange())
+  const handleOnChange = (newValue?: string) => {
+    if (newValue && newValue !== '') {
+      onChange(newValue)
+    } else {
+      onChange()
+    }
+  }
 
   return (
     <WidgetWrapper accordion={accordion} spaceBottom={spaceBottom} spaceTop={spaceTop}>

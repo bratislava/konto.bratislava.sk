@@ -25,11 +25,12 @@ interface UploadProps {
   className?: string
   onChange?: (value: UploadMinioFile[]) => void
   errorMessage?: string[]
+  bucketFolderName: string
 }
 
-const getBucketFileName = (file: File) => {
+const getBucketFileName = (file: File, folderName: string) => {
   const extension = file.type.split("/").pop()
-  const newName = `${createUuid()}.${extension}`
+  const newName = `${folderName}/${createUuid()}.${extension}`
   return new File([file], newName, {
     type: file.type,
     lastModified: file.lastModified,
@@ -53,6 +54,7 @@ const UploadComponent: ForwardRefRenderFunction<HTMLDivElement, UploadProps> = (
     className,
     onChange,
     errorMessage,
+    bucketFolderName
   }: UploadProps = props
 
   // STATES
@@ -103,9 +105,9 @@ const UploadComponent: ForwardRefRenderFunction<HTMLDivElement, UploadProps> = (
       } else if (!isFileInSizeLimit(minioFile.file)) {
         messages.push(`${minioFile.file.name} is too large.`)
       } else {
-        console.log(getBucketFileName(minioFile.file))
+        console.log(getBucketFileName(minioFile.file, bucketFolderName))
         const sanitizedFile: UploadMinioFile = {
-          file: getBucketFileName(minioFile.file),
+          file: getBucketFileName(minioFile.file, bucketFolderName),
           isUploading: true,
           originalName: minioFile.originalName,
         }

@@ -52,7 +52,7 @@ const UploadWidgetRJSF = (props: UploadWidgetRJSFProps) => {
       originalName,
     }
   }
-  console.log("upload schema:", schema)
+
   useEffectOnce(() => {
     // I need to save multiple pieces of info about the file - this isn't stored in rjsf, but needed DURING upload
     // I am saving this info only in innerValue of widget
@@ -112,6 +112,7 @@ const UploadWidgetRJSF = (props: UploadWidgetRJSFProps) => {
         sizeLimit={size}
         supportedFormats={supportedFormats}
         disabled={disabled}
+        bucketFolderName={schema.folder}
         onChange={handleOnChange}
       />
     </WidgetWrapper>

@@ -27,8 +27,9 @@ interface UploadProps {
   errorMessage?: string[]
 }
 
-const addTimeStampToFileName = (file: File) => {
-  const newName = `${Date.now()}_${createUuid()}_${file.name}`
+const getBucketFileName = (file: File) => {
+  const extension = file.type.split("/").pop()
+  const newName = `${createUuid()}.${extension}`
   return new File([file], newName, {
     type: file.type,
     lastModified: file.lastModified,
@@ -102,8 +103,9 @@ const UploadComponent: ForwardRefRenderFunction<HTMLDivElement, UploadProps> = (
       } else if (!isFileInSizeLimit(minioFile.file)) {
         messages.push(`${minioFile.file.name} is too large.`)
       } else {
+        console.log(getBucketFileName(minioFile.file))
         const sanitizedFile: UploadMinioFile = {
-          file: addTimeStampToFileName(minioFile.file),
+          file: getBucketFileName(minioFile.file),
           isUploading: true,
           originalName: minioFile.originalName,
         }

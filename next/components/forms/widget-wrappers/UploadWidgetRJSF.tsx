@@ -48,7 +48,7 @@ const UploadWidgetRJSF = (props: UploadWidgetRJSFProps) => {
       originalName,
     }
   }
-
+  console.log(schema)
   useEffectOnce(() => {
     // I need to save multiple pieces of info about the file - this isn't stored in rjsf, but needed DURING upload
     // I am saving this info only in innerValue of widget

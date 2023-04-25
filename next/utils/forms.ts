@@ -219,6 +219,7 @@ export const ajvFormats = {
   zip: /\b\d{5}\b/,
   time: /^[0-2]\d:[0-5]\d$/,
   'data-url': () => true,
+  'file': () => true,
   ciselnik: () => true,
 }
 
@@ -441,6 +442,31 @@ interface Callbacks {
   onInit?: () => Promise<any>
 }
 
+const updateUploadWidgets = (folderName: string, schema?: JSONSchema7Definition) => {
+  if (!schema || typeof schema !== 'object') return
+
+  if (Array.isArray(schema)) {
+    schema.forEach((property: JSONSchema7Definition) => updateUploadWidgets(folderName, property))
+  } else if ((schema.type === 'string' || schema.type === 'array') && ['file', 'data-url'].includes(schema.format) ) {
+    Object.assign(schema, { folder: folderName })
+  } else {
+    Object.values(schema).forEach((value: JSONSchema7Definition) => {
+      updateUploadWidgets(folderName, value)
+    })
+  }
+}
+
+const updateUploadWidgetsInSchema = (schema: RJSFSchema) => {
+  const folderName = `/${String(schema.pospID)}-ver-${String(schema.pospVersion).replace(".","-")}`
+
+  schema.allOf.forEach(step => {
+    updateUploadWidgets(folderName, step)
+  })
+
+  console.log('UPDATED SCHEMA:', schema)
+}
+
+
 // TODO prevent unmounting
 // TODO persist state for session
 // TODO figure out if we need to step over uiSchemas, or having a single one is enough (seems like it is for now)
@@ -488,6 +514,7 @@ export const useFormStepper = (eformSlug: string, eform: EFormValue, callbacks: 
 
   useEffect(() => {
     // effect to reset all internal state when critical input 'props' change
+    updateUploadWidgetsInSchema(schema)
     initFormData()
       .then(() => {
         setStepIndex(0)

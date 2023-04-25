@@ -428,8 +428,68 @@
         "answer": "V prípade, že chcete zmeniť e-mailovú adresu, ktorou sa do konta prihlasujete a na ktorú vám zasielame informácie týkajúce sa vášho konta, kontaktujte nás na info@bratislava.sk."
       },
       "18": {
-        "question": "Prečo žiadate overenie identity? ",
+        "question": "Prečo žiadate overenie identity?",
         "answer": "Čísla dokladov potrebujeme poznať na to, aby sme overili vašu identitu voči štátnym registrom. Rodné číslo zároveň slúži ako jedinečný identifikátor, bez ktorého nevieme sprístupniť detaily dane z nehnuteľností. Bez overenia nebudete schopný/á zaplatiť daň z nehnuteľností digitálne či odoslať všetky elektronické žiadosti. Overenie je jednorazové, údaje neukladáme."
+      },
+      "19": {
+        "question": "Pre koho je táto služba určená?",
+        "answer": "Pre všetkých daňovníkov (fyzické osoby, nepodnikateľov), ktorí v Bratislave vlastnia nehnuteľnosť. Daňovníkom je pre nás obyvateľka alebo obyvateľ, ktorý podával daňové priznanie."
+      },
+      "20": {
+        "question": "Môžem zaplatiť daň z nehnuteľností za niekoho iného?",
+        "answer": "Informácie, ktoré uvádzame v Bratislavskom konte, podliehajú daňovému tajomstvu a môžu byť sprístupnené len daňovníkovi, teda osobe, ktorá podala priznanie k dani z nehnuteľností.<br /><br />V prípade, že vám daňovník sprístupní platobné informacie, ktoré získal cez našu službu digitálna platba dane, môžete za neho zaplatiť daň prostredníctvom QR kódu. Napríklad cez mobilnú aplikáciu vašej preferovanej banky."
+      },
+      "21": {
+        "question": "Prečo túto službu poskytujete?",
+        "answer": "Naším cieľom je zjednodušiť a spríjemniť služby mesta. V roku 2021 sme spustili pilotnú platbu dane pre uzatvorenú skupinu obyvateľov. Na základe ich spätnej väzby a pozitívnej skúsenosti sme sa rozhodli sprístupniť túto možnosť všetkým Bratislavčankám a Bratislavčanom. Aby ste svoju daň za nehnuteľnosť mohli zaplatiť digitálne, rýchlo a kdekoľvek budete."
+      },
+      "22": {
+        "question": "Ako funguje overenie daňovníka a prečo potrebujete rodné číslo a OP?",
+        "answer": "Čísla dokladov potrebujeme poznať na to, aby sme <strong>overili Vašu identitu voči štátnym registrom</strong>. Rodné číslo zároveň <strong>slúži ako jedinečný identifikátor</strong>, bez ktorého Vám <strong>nevieme sprístupniť detaily Vašej dane z nehnuteľností</strong>. Bez overenia nebudete schopný/á zaplatiť daň z nehnuteľností digitálne. Overenie je jednorazové, údaje neukladáme."
+      },
+      "23": {
+        "question": "Za akých podmienok mi nepošlete rozhodnutie o dani z nehnuteľností?",
+        "answer": "Registrovaním sa do Bratislavského konta do 19. apríla 2023, a zároveň zaplatením plnej sumy dane online do 12. mája 2023."
+      },
+      "24": {
+        "question": "Kedy nájdem svoju daň v Bratislavskom konte?",
+        "answer": "Každý rok pracujeme na výpočte dane z nehnuteľností až pre 210 000 daňovníkov. Pripravené rozhodnutia budeme distribuovať v termíne od 20. apríla.<br />Keď bude vaša daň z nehnuteľností pripravená, pošleme vám notifikačný e-mail."
+      },
+      "25": {
+        "question": "Prečo nemám svoju daň vo svojom Bratislavskom konte?",
+        "answer": "Táto situácia mohla nastať najmä z troch dôvodov:<ul><li><strong>Vaša nehnuteľnosť je pravdepodobne v spoluvlastníctve.</strong> V prípade bezpodielového spoluvlastníctva je rozhodnutie o dani z nehnuteľností distribuované osobe, ktorá podávala daňové priznanie. V prípade podielového spoluvlastníctva je rozhodnutie o dani z nehnuteľností distribuované osobe (zástupca alebo zástupkyňa spoluvlastníkov), ktorá podala daňové priznanie.</li><li><strong>Vaše daňové priznanie ešte čaká na spracovanie, čo znamená, že o vás zatiaľ nevieme.</strong> Počas jedného zdaňovacieho obdobia je podaných až 25 000 daňových priznaní, ktoré sú postupne spracovávané. Prosíme, aby ste sa skúsili pozrieť do konta neskôr.</li><li><strong>Je možné, že ste nepodali priznanie z dane z nehnuteľností.</strong> Viac informácií nájdete tu <strong>https://bratislava.sk/mesto-bratislava/dane-a-poplatky/dan-z-nehnutelnosti</strong>.</li></ul>"
+      },
+      "26": {
+        "question": "Ako môžem zaplatiť svoju daň?",
+        "answer": "Pripravené rozhodnutia budeme distribuovať v termíne od 20. apríla. Keď bude vaša daň z nehnuteľností pripravená, pošleme vám notifikačný e-mail. Zaplatiť môžete aj cez email, ktorý vám v tento deň zašleme."
+      },
+      "27": {
+        "question": "Prečo poskytujete práve tieto platobné metódy?",
+        "answer": "Poskytujeme platobné metódy, ktoré sa najčastejšie využívajú v súkromnom sektore. Ak máte návrh na pridanie konkrétnych platobných metód, neváhajte nám napísať na platbadane@bratislava.sk."
+      },
+      "28": {
+        "question": "Ako zaplatím QR kódom?",
+        "answer": "Pri platbe QR kódom si otvorte mobilnú aplikáciu vašej preferovanej banky. V aplikácii nájdite možnosť skenovania QR kódu, následne QR kód naskenujte. Všetky informácie potrebné k úspešnej platbe dane budú predvyplnené po oskenovaní kódu. Potom stačí platbu už len potvrdiť a odoslať."
+      },
+      "29": {
+        "question": "Ako môžem zaplatiť daň na splátky pomocou QR kódu?",
+        "answer": "Pri platbe na splátky použitím QR kódu si otvorte mobilnú aplikáciu vašej preferovanej banky. V aplikácii nájdite možnosť skenovania QR kódu. Tento kód následne oskenujte. Všetky informácie potrebné k úspešnej platbe dane budú predvyplnené po oskenovaní, avšak je nutné, aby ste zmenili  výšku platby na sumu splátky, ktorú chcete uhradiť. Následne už platbu stačí len potvrdiť a odoslať."
+      },
+      "30": {
+        "question": "Prečo som obdržal duplicitne rozhodnutie o dani z nehnuteľností aj po tom, ako som ho dostal do Bratislavského konta?",
+        "answer": "Neposielanie rozhodnutí garantujeme len za splnenia nasledovných podmienok: registrovaním sa do Bratislavského konta do 19. apríla 2023, a zároveň zaplatením plnej sumy dane online do 12. mája 2023."
+      },
+      "31": {
+        "question": "Ako môžem poskytnúť spätnú väzbu?",
+        "answer": "Spätnú väzbu môžete poskytnúť po zaplatení dane pomocou dotazníka. Následne môžete byť oslovený k hĺbkovému rozhovoru s členmi oddelenia inovácií a digitálnych služieb."
+      },
+      "32": {
+        "question": "Prečo neposielate rozhodnutie o dani z nehnuteľností?",
+        "answer": "Naším cieľom je zjednodušovať a spríjemnovať služby mesta. Projekt digitálnej platby dane z nehnuteľností je proaktívna služba mesta Bratislava. Od roku 2021 je v štádiu neustáleho zlepšovania.<br /><br />Na základe spätnej väzby od viac ako 1500 daňovníkov z roku 2022,  sme sa rozhodli v roku 2023 neposielať rozhodnutia o dani z nehnuteľností poštou alebo do elektronickej schránky daňovníkom, ktorí sa registrujú do 19. apríla 2023 Bratislavského konta a zaplatia plnú sumu vyrúbenej dane do 12. mája. Umožní nám to ušetriť náklady na poštovné a vám zrýchliť prístup k platbe.<br /><br />Vaše rozhodnutie o dani z nehnuteľností nájdete v Bratislavskom konte v sekcii dane a poplatky. Môžete si ho stiahnuť v pdf formáte.<br /><br />Zapojenie do digitálnej platby je dobrovoľné a stále sa môžete rozhodnúť, že svoje rozhodnutie dostanete doporučene poštou alebo do elektronickej schránky tak, ako ste zvyknutý každý rok."
+      },
+      "33": {
+        "question": "Potrebujem zmeniť svoje telefónne číslo alebo korešpondenčnú adresu. Ako mám postupovať?",
+        "answer": "Tieto údaje si môžete pohodlne zmeniť v Bratislavskom konte, v časti Môj profil."
       }
     }
   },

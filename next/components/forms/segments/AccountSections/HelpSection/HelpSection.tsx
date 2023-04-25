@@ -14,9 +14,10 @@ const HelpSection = () => {
   return (
     <div className="flex flex-col">
       <AccountSectionHeader title={t('account_section_help.navigation')} />
-      <div className="w-full max-w-screen-lg mx-auto">
-        <h2 className="text-h2 justify-center hidden md:flex mt-8">Často kladené otázky</h2>
-        <div className="flex flex-col gap-2 md:gap-3 px-4 lg:px-0 my-4 md:my-6">
+      <div className="w-full max-w-screen-lg mx-auto py-6 lg:py-16">
+        <h2 className="text-h2 justify-start flex px-4 lg:px-0">Často kladené otázky</h2>
+        <div className="flex flex-col gap-2 md:gap-3 px-4 lg:px-0">
+          <h4 className="text-h4 justify-start flex mt-6">Všeobecné</h4>
           <Accordion
             title={t('account_section_help.faq.1.question')}
             size="md"
@@ -106,6 +107,82 @@ const HelpSection = () => {
             title={t('account_section_help.faq.17.question')}
             size="md"
             content={t('account_section_help.faq.17.answer')}
+          />
+          <h4 className="text-h4 justify-start flex mt-6 lg:mt-12">Daň z nehnuteľností</h4>
+          <Accordion
+            title={t('account_section_help.faq.19.question')}
+            size="md"
+            content={t('account_section_help.faq.19.answer')}
+          />
+          <Accordion
+            title={t('account_section_help.faq.20.question')}
+            size="md"
+            content={t('account_section_help.faq.20.answer')}
+          />
+          <Accordion
+            title={t('account_section_help.faq.21.question')}
+            size="md"
+            content={t('account_section_help.faq.21.answer')}
+          />
+          <Accordion
+            title={t('account_section_help.faq.22.question')}
+            size="md"
+            content={t('account_section_help.faq.22.answer')}
+          />
+          <Accordion
+            title={t('account_section_help.faq.23.question')}
+            size="md"
+            content={t('account_section_help.faq.23.answer')}
+          />
+          <Accordion
+            title={t('account_section_help.faq.24.question')}
+            size="md"
+            content={t('account_section_help.faq.24.answer')}
+          />
+          <Accordion
+            title={t('account_section_help.faq.25.question')}
+            size="md"
+            content={t('account_section_help.faq.25.answer')}
+          />
+          <Accordion
+            title={t('account_section_help.faq.26.question')}
+            size="md"
+            content={t('account_section_help.faq.26.answer')}
+          />
+          <Accordion
+            title={t('account_section_help.faq.27.question')}
+            size="md"
+            content={t('account_section_help.faq.27.answer')}
+          />
+          <Accordion
+            title={t('account_section_help.faq.28.question')}
+            size="md"
+            content={t('account_section_help.faq.28.answer')}
+          />
+          <Accordion
+            title={t('account_section_help.faq.29.question')}
+            size="md"
+            content={t('account_section_help.faq.29.answer')}
+          />
+          <Accordion
+            title={t('account_section_help.faq.30.question')}
+            size="md"
+            content={t('account_section_help.faq.30.answer')}
+          />
+          <Accordion
+            title={t('account_section_help.faq.31.question')}
+            size="md"
+            content={t('account_section_help.faq.31.answer')}
+          />
+          <Accordion
+            title={t('account_section_help.faq.32.question')}
+            size="md"
+            content={t('account_section_help.faq.32.answer')}
+          />
+          <Accordion
+            title={t('account_section_help.faq.33.question')}
+            size="md"
+            content={t('account_section_help.faq.33.answer')}
           />
         </div>
       </div>

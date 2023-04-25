@@ -105,7 +105,6 @@ const UploadComponent: ForwardRefRenderFunction<HTMLDivElement, UploadProps> = (
       } else if (!isFileInSizeLimit(minioFile.file)) {
         messages.push(`${minioFile.file.name} is too large.`)
       } else {
-        console.log(getBucketFileName(minioFile.file, bucketFolderName))
         const sanitizedFile: UploadMinioFile = {
           file: getBucketFileName(minioFile.file, bucketFolderName),
           isUploading: true,

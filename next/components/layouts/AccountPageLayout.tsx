@@ -2,7 +2,7 @@ import BusinessIcon from '@assets/images/new-icons/ui/city-services.svg'
 import HelpIcon from '@assets/images/new-icons/ui/help.svg'
 import HomeIcon from '@assets/images/new-icons/ui/introduction.svg'
 import LogoutIcon from '@assets/images/new-icons/ui/logout.svg'
-// import MySubmissionIcon from '@assets/images/new-icons/ui/my-submission.svg'
+import MySubmissionIcon from '@assets/images/new-icons/ui/my-submission.svg'
 import PaymentIcon from '@assets/images/new-icons/ui/payment.svg'
 import ProfileIcon from '@assets/images/new-icons/ui/profile.svg'
 import { ROUTES } from '@utils/constants'
@@ -19,6 +19,7 @@ type AccountPageLayoutBase = {
   className?: string
   children: ReactNode
   hiddenHeaderNav?: boolean
+  isProductionDeploy?: boolean
 }
 
 const sectionsList = [
@@ -34,12 +35,12 @@ const sectionsList = [
     icon: <BusinessIcon className="w-6 h-6" />,
     link: ROUTES.MUNICIPAL_SERVICES,
   },
-  // {
-  //   id: 2,
-  //   title: 'account:account_section_applications.navigation',
-  //   icon: <MySubmissionIcon className="w-6 h-6" />,
-  //   link: ROUTES.MY_APPLICATIONS,
-  // },
+  {
+    id: 2,
+    title: 'account:account_section_applications.navigation',
+    icon: <MySubmissionIcon className="w-6 h-6" />,
+    link: ROUTES.MY_APPLICATIONS,
+  },
   {
     id: 3,
     title: 'account:account_section_payment.title',
@@ -76,17 +77,25 @@ const menuItems = [
   },
 ]
 
-const AccountPageLayout = ({ className, children, hiddenHeaderNav }: AccountPageLayoutBase) => {
+const AccountPageLayout = ({
+  className,
+  children,
+  hiddenHeaderNav,
+  isProductionDeploy,
+}: AccountPageLayoutBase) => {
   const { locale, localizations = [] } = usePageWrapperContext()
   const router = useRouter()
   const { isAuth } = useAccount()
+
+  const prodHideSectionsListIds: Set<number> = isProductionDeploy ? new Set([2]) : new Set([])
+
   useEffect(() => {
-    if (!isAuth) {
+    if (!isAuth && router.route !== ROUTES.PAYMENT_RESULT) {
       router
         .push({ pathname: ROUTES.LOGIN, query: { from: router.route } })
         .catch((error_) => logger.error('Redirect failed', error_))
     }
-  }, [isAuth])
+  }, [isAuth, router])
 
   const [t] = useTranslation('common')
 
@@ -105,7 +114,7 @@ const AccountPageLayout = ({ className, children, hiddenHeaderNav }: AccountPage
       <AccountNavBar
         currentLanguage={locale}
         onLanguageChange={handleLanguageChange}
-        sectionsList={sectionsList}
+        sectionsList={sectionsList.filter((item) => !prodHideSectionsListIds.has(item.id))}
         menuItems={menuItems}
         navHidden
         hiddenHeaderNav={hiddenHeaderNav}

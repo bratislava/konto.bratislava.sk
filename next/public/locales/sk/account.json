@@ -9,7 +9,7 @@
     "MigrationUserNotFoundException": "E-mail **{email}** sa nenachádza v našej databáze minuloročných používateľov a používateliek digitálnej platby dane. Skontrolujte správnosť e-mailu alebo sa [registrujte](/register).",
     "UserNotConfirmedException": "E-mail nie je verifikovaný.",
     "UsernameExistsException": "E-mail **{email}** už bol použitý. Ak ste daň platili digitálne už minulý rok, pokračujte [aktiváciou konta](/migration). V prípade, že sa vás tento prípad netýka, kontaktujte nás na <a href='mailto:info@bratislava.sk'>info@bratislava.sk</a>.",
-    "ExpiredCodeException": "E-mail **{email}** sa nepodarilo overiť. Skontrolujte správnosť kódu.",
+    "ExpiredCodeException": "Platnosť zadaného kódu vypršala. Požiadajte o nový kód kliknutím na Odoslať nový kód. Platnosť overovacieho kódu je 60 minút.",
     "IncorectPasswordException": "Zadané heslo nie je správne.",
     "API_ERROR": "Pri odosielaní nastala chyba. Skúste to, prosíme, znova.",
     "RFO_ACCESS_ERROR": "Pri odosielaní nastala chyba. Skúste to, prosíme, znova.",
@@ -148,6 +148,7 @@
     "announcement_title": "Aktuálne",
     "announcement_card_title": "Digitálna platba dane z nehnuteľností",
     "announcement_card_text": "V prípade, že že sa vás týka platba dane z nehnuteľností pre rok 2023, vašu daň ešte spracovávame a v konte pribudne najskôr <strong>28. apríla.</strong> Keď sa tak udeje, pošleme vám informačný e-mail a nájdete ju v časti Dane a poplatky.",
+    "announcement_card_text_tax_ready": "Vygenerovali sme vašu daň z nehnuteľností za rok 2023. Zaplaťte ju jednoducho, digitálne, priamo v konte.",
     "announcement_card_action": "Zaplatiť daň z nehnuteľností",
     "banner_title": "Potrebujete pomôcť?",
     "banner_content": "Aké služby nájdem v Bratislavskom konte? Prečo vzniklo Bratislavské konto? Ako si viem zmeniť heslo? Nevidím svoju daň, čo mám robiť?<br /><br />Aj toto sú niektoré z otázok, na ktoré nájdete odpovede v sekcii Najčastejšie kladené otázky.",
@@ -316,24 +317,37 @@
         "title": "Online lístky na kúpaliská",
         "description": "Možnosť kúpiť si online lístok alebo permanentku na všetky mestské kúpalíská v Bratislave pribudne do Bratislavského konta už v júni.",
         "tag": "Pribudne čoskoro"
+      },
+      "33": {
+        "title": "Vstupenky do Galérie mesta Bratislava",
+        "description": "Nákup online vstupeniek alebo ročnej permanentky na všetky výstavy a programy v oboch palácoch GMB za zvýhodnenú cenu.",
+        "buttonText": "Kúpiť lístok do GMB"
       }
     }
   },
   "account_section_applications": {
     "navigation": "Moje žiadosti",
     "navigation_sent": "Odoslané",
-    "navigation_concept": "Koncepty"
+    "navigation_concept": "Koncepty",
+    "navigation_concept_card": {
+      "createDate": "Vytvorené",
+      "button_text": "Pokračovať"
+    },
+    "placeholder": {
+      "title": "Zatiaľ ste neodoslali žiadne podanie",
+      "subtitle": "Pozrite si ponuku <a href='/mestske-sluzby'>dostupných mestských služieb</a>."
+    }
   },
   "account_section_payment": {
     "title": "Dane a poplatky",
     "waiting_card_title": "Vašu daň z nehnuteľností pripravujeme.",
-    "waiting_card_text": "Aj v tomto momente pracujeme na výpočte dane z nehnuteľností až pre 210.000 daňovníkov a daňovníčok. Pripravené rozhodnutia budú v kontách pribúdať od <strong>28. apríla.</strong> Keď bude vaša daň z nehnuteľností pripravená, pošleme vám notifikačný e-mail.",
+    "waiting_card_text": "Aj v tomto momente pracujeme na výpočte dane z nehnuteľností až pre 210 000 daňovníkov a daňovníčok. Pripravené rozhodnutia budú v kontách pribúdať od <strong>28. apríla.</strong> Keď bude vaša daň z nehnuteľností pripravená, pošleme vám notifikačný e-mail.",
     "error_card_title": "Vaša daň z nehnuteľnosti nie je k dispozícii",
     "error_card_content": {
       "title": "<p>Môže to tak byť, lebo:</p>",
       "list": {
         "verification": "<li>ste neoverili svoju identitu cez rodné číslo a číslo občianskeho preukazu (<a href={{url}}>Overiť identitu</a>),</li>",
-        "other": "<li>vašu daň ešte pripravujeme (v tom prípade bude k dispozícii najskôr <strong>28. apríla</strong>)</li><li>vaša nehnuteľnosť je v spoluvlastníctve,</li><li>nie ste vlastníkom či vlastníčkou nehnuteľnosti,</li><li>ste nepodali priznanie k dani z nehnuteľností.</li>"
+        "other": "<li>vašu daň ešte pripravujeme (v tom prípade bude k dispozícii najskôr <strong>28. apríla</strong>)</li><li>za platbu dane je zodovedný/á spoluvlastník/čka nehnuteľnosti,</li><li>nie ste vlastníkom či vlastníčkou nehnuteľnosti,</li><li>ste nepodali priznanie k dani z nehnuteľností.</li>"
       },
       "help_text": "<p>Viac informácií môžete nájsť v <a href={{url}}>často kladených otázkach</a>.</p>"
     },
@@ -387,7 +401,7 @@
       },
       "11": {
         "question": "Prečo nemám v konte moju daň z nehnuteľností?",
-        "answer": "Pravdepodobne vás zatiaľ nevidíme v zozname daňovníkov a daňovníčok. Môže to tak byť, lebo:<ul><li>neoverili ste si totožnosť cez rodné číslo a číslo občianskeho preukazu,</li><li>vaša nehnuteľnosť je v spoluvlastníctve,</li><li>vaše daňové priznanie ešte čaká na spracovanie,</li><li>nie ste vlastníkom či vlastníčkou nehnuteľnosti,</li><li>alebo ste nepodali priznanie k dani z nehnuteľností.</li></ul><p>Ak sa vás tieto prípady netýkajú, dajte nám o tom vedieť na platbadane@bratislava.sk a my sa pokúsime problém vyriešiť.</p>"
+        "answer": "Pravdepodobne vás zatiaľ nevidíme v zozname daňovníkov a daňovníčok. Môže to tak byť, lebo:<ul><li>neoverili ste si totožnosť cez rodné číslo a číslo občianskeho preukazu,</li><li>za platbu dane je zodovedný/á spoluvlastník/čka nehnuteľnosti,</li><li>vaše daňové priznanie ešte čaká na spracovanie,</li><li>nie ste vlastníkom či vlastníčkou nehnuteľnosti,</li><li>alebo ste nepodali priznanie k dani z nehnuteľností.</li></ul><p>Ak sa vás tieto prípady netýkajú, dajte nám o tom vedieť na platbadane@bratislava.sk a my sa pokúsime problém vyriešiť.</p>"
       },
       "12": {
         "question": "Čo je to digitálna platba dane z nehnuteľností?",
@@ -412,6 +426,10 @@
       "17": {
         "question": "Ako si zmením e-mailovú adresu, ktorou sa do konta prihlasujem?",
         "answer": "V prípade, že chcete zmeniť e-mailovú adresu, ktorou sa do konta prihlasujete a na ktorú vám zasielame informácie týkajúce sa vášho konta, kontaktujte nás na info@bratislava.sk."
+      },
+      "18": {
+        "question": "Prečo žiadate overenie identity? ",
+        "answer": "Čísla dokladov potrebujeme poznať na to, aby sme overili vašu identitu voči štátnym registrom. Rodné číslo zároveň slúži ako jedinečný identifikátor, bez ktorého nevieme sprístupniť detaily dane z nehnuteľností. Bez overenia nebudete schopný/á zaplatiť daň z nehnuteľností digitálne či odoslať všetky elektronické žiadosti. Overenie je jednorazové, údaje neukladáme."
       }
     }
   },
@@ -537,10 +555,13 @@
     "csob": "ČSOB, a.s.",
     "csob_iban": "SK31 7500 0000 0000 2574 7653"
   },
-  "tax_payable_within": "Daň je splatná v termíne do 15 dní ",
+  "tax_payable_within": "Daň je splatná v termíne ",
   "validity_decision": "odo dňa právoplatnosti rozhodnutia.",
-  "validity_decision_with_schedule": "odo dňa právoplatnosti rozhodnutia ",
+  "validity_decision_with_schedule": " do 15 dní odo dňa právoplatnosti rozhodnutia.",
   "according_schedule": "podľa splátkového kalendára.",
+  "tax_payable_in_installments_1": "Daň je splatná v troch splátkach, ",
+  "tax_payable_in_installments_2": "môže byť uhradená aj naraz, ",
+  "tax_payable_in_installments_3": "najneskôr v lehote splatnosti prvej splátky.",
   "tax_determined": "Splátky dane určené správcom dane v rozhodnutí",
   "account_activator": {
     "title": "Platili ste už daň z nehnuteľností digitálne?",

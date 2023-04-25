@@ -28,12 +28,12 @@ export const getServerSideProps = async (ctx: GetServerSidePropsContext) => {
   }
 }
 
-const MojProfil = ({ page }: AsyncServerProps<typeof getServerSideProps>) => {
+const MojProfil = ({ page, isProductionDeploy }: AsyncServerProps<typeof getServerSideProps>) => {
   const { t } = useTranslation('account')
 
   return (
     <PageWrapper locale={page.locale} localizations={page.localizations}>
-      <AccountPageLayout>
+      <AccountPageLayout isProductionDeploy={isProductionDeploy}>
         <AccountSectionHeader title={t('my_profile')} />
         <UserProfileView />
       </AccountPageLayout>

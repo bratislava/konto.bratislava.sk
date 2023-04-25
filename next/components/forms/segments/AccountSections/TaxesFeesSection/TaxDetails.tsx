@@ -31,6 +31,7 @@ const TaxDetails = ({ tax }: TaxDetailsProps) => {
       <div className="gap-4 flex flex-col w-full">
         {Object.keys(groupedTaxDetails).map((key) => (
           <AccordionTableTaxContent
+            key={key}
             size="md"
             dataType={key}
             title={t(`tax_detail_section.tax_type.${key}.title`)}
@@ -42,7 +43,7 @@ const TaxDetails = ({ tax }: TaxDetailsProps) => {
       <div className="rounded-lg flex flex-col items-start lg:px-8 lg:py-6 p-4 bg-gray-50 w-full lg:gap-6 gap-4">
         <div className="flex flex-col items-start lg:gap-5 gap-3 w-full">
           {Object.keys(groupedTaxDetails).map((key) => (
-            <div className="flex flex-row items-start gap-6 w-full">
+            <div className="flex flex-row items-start gap-6 w-full" key={key}>
               <div className="text-p1 grow">{t(`tax_detail_section.tax_type.${key}.title`)}</div>
               <div className="text-p1">{formatCurrency(sums[key])}</div>
             </div>

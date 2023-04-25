@@ -39,11 +39,12 @@ const PasswordChangePage = ({ page }: AsyncServerProps<typeof getServerSideProps
   const { changePassword, error, status, isAuth } = useAccount()
   const { t } = useTranslation('account')
   const router = useRouter()
+
   useEffect(() => {
     if (!isAuth) {
       router.push(ROUTES.LOGIN).catch((error_) => logger.error('Failed redirect', error_))
     }
-  }, [isAuth])
+  }, [isAuth, router])
 
   const onConfirm = async () => {
     await router.push(ROUTES.HOME).catch((error_) => logger.error('Failed redirect', error_))

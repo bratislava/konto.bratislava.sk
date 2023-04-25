@@ -23,15 +23,23 @@ export const getServerSideProps = async (ctx: GetServerSidePropsContext) => {
             locale: l,
           })),
       },
+      isProductionDeploy: isProductionDeployment(),
       ...(await serverSideTranslations(locale)),
     },
   }
 }
 
-const AccountThankYouFormPage = ({ page }: AsyncServerProps<typeof getServerSideProps>) => {
+const AccountThankYouFormPage = ({
+  page,
+  isProductionDeploy,
+}: AsyncServerProps<typeof getServerSideProps>) => {
   return (
     <PageWrapper locale={page.locale} localizations={page.localizations}>
-      <AccountPageLayout hiddenHeaderNav className="bg-gray-50">
+      <AccountPageLayout
+        isProductionDeploy={isProductionDeploy}
+        hiddenHeaderNav
+        className="bg-gray-50"
+      >
         <ThankYouFormSection />
       </AccountPageLayout>
     </PageWrapper>

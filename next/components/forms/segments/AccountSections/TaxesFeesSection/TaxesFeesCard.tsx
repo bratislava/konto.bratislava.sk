@@ -3,7 +3,7 @@ import TimeIcon from '@assets/images/new-icons/ui/clock.svg'
 import SuccessIcon from '@assets/images/new-icons/ui/done.svg'
 import ExclamationIcon from '@assets/images/new-icons/ui/exclamation-mark.svg'
 import { ROUTES } from '@utils/constants'
-import { formatCurrency } from '@utils/utils'
+import { formatCurrency, formatDate } from '@utils/utils'
 import cx from 'classnames'
 import { TaxesCardBase } from 'components/forms/segments/AccountSections/TaxesFeesSection/TaxesFeesSection'
 import Link from 'next/link'
@@ -14,9 +14,9 @@ const TaxesFeesCard = (props: TaxesCardBase) => {
 
   const statusHandler = (): ReactNode => {
     const statusStyle: string = cx('text-p3-semibold lg:text-16-semibold w-max ml-0 lg:ml-2', {
-      'text-negative-700': status === 'negative',
-      'text-warning-700': status === 'warning',
-      'text-success-700': status === 'success',
+      'text-negative-700': status === 'unpaid',
+      'text-warning-700': status === 'partially_paid',
+      'text-success-700': status === 'paid',
     })
     const statusNode = (icon: ReactNode, statusTitle: string): ReactNode => {
       return (
@@ -28,11 +28,11 @@ const TaxesFeesCard = (props: TaxesCardBase) => {
     }
 
     switch (status) {
-      case 'negative':
+      case 'unpaid':
         return statusNode(<ExclamationIcon className="text-negative-700 w-6 h-6" />, 'Neuhradená')
-      case 'warning':
+      case 'partially_paid':
         return statusNode(<TimeIcon className="text-warning-700 w-6 h-6" />, 'Čiastočne uhradená')
-      case 'success':
+      case 'paid':
         return statusNode(<SuccessIcon className="text-success-700 w-6 h-6" />, 'Uhradená')
       default:
         break
@@ -59,7 +59,7 @@ const TaxesFeesCard = (props: TaxesCardBase) => {
             </div>
             <div className="flex flex-col px-10 border-x-2">
               <span className="text-16-semibold mb-1">Suma</span>
-              {status === 'warning' && currentPaid ? (
+              {status === 'partially_paid' && currentPaid ? (
                 <span className="w-max flex items-center">{`${formatCurrency(
                   currentPaid,
                 )} / ${formatCurrency(finishPrice)}`}</span>
@@ -69,7 +69,7 @@ const TaxesFeesCard = (props: TaxesCardBase) => {
             </div>
             <div className="flex flex-col items-center px-10">
               <div className="flex">{statusHandler()}</div>
-              {status !== 'negative' && paidDate && <span className="">{paidDate}</span>}
+              {status !== 'unpaid' && paidDate && <span className="">{formatDate(paidDate)}</span>}
             </div>
           </div>
         </div>
@@ -92,7 +92,7 @@ const TaxesFeesCard = (props: TaxesCardBase) => {
             <div className="flex flex-col">
               <span className="text-p2-semibold leading-5 mb-1">{`${title} za rok ${yearPay}`}</span>
               <div className="flex items-center flex-wrap">
-                {status === 'warning' && currentPaid ? (
+                {status === 'partially_paid' && currentPaid ? (
                   <span className="text-p3 w-max flex items-center">{`${formatCurrency(
                     currentPaid,
                   )} / ${formatCurrency(finishPrice)}`}</span>

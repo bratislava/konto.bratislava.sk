@@ -1,14 +1,13 @@
-import CalendarIcon from '@assets/images/new-icons/ui/calendar.svg'
 import ExpandMore from '@assets/images/new-icons/ui/expand.svg'
 import { Tax } from '@utils/taxDto'
 import { formatCurrency } from '@utils/utils'
+import { AddToCalendarButton } from 'add-to-calendar-button-react'
 import cx from 'classnames'
 import { useTranslation } from 'next-i18next'
 import React, { useState } from 'react'
 
 import PersonIcon from '../icon-components/PersonIcon'
 import AccountMarkdownModal from '../segments/AccountModal/AccountModal'
-import Button from './Button'
 
 export type AccordionSizeType = 'xs' | 'sm' | 'md' | 'lg'
 
@@ -43,11 +42,20 @@ const PaymentScheduleView = ({ tax }: PaymentScheduleViewProps) => {
         </div>
         <div className=" flex md:flex-row flex-col items-center lg:gap-6 gap-4 w-full">
           <div className="text-h6 font-semibold md:text-h-md grow">{t('tax_determined')}</div>
-          <Button
-            variant="black-outline"
-            text="Pridať termíny do kalendára"
-            startIcon={<CalendarIcon className="w-6 h-6" />}
-            className="lg:w-max w-full"
+          <AddToCalendarButton
+            name="Splátka dane z nehnuteľností 2023"
+            dates={`[
+              {
+                "name":"Splátka dane z nehnuteľností 2023 2/3",
+                "startDate":"2023-08-31"
+              },
+              {
+                "name":"Splátka dane z nehnuteľností 2023 3/3",
+                "startDate":"2023-10-31"
+              }
+            ]`}
+            label="Pridať termíny do kalendára"
+            options={['Google', 'Microsoft365', 'Apple', 'iCal']}
           />
         </div>
         <div className="flex flex-col items-start p-6 lg:gap-6 gap-4 w-full bg-gray-50 rounded-lg">

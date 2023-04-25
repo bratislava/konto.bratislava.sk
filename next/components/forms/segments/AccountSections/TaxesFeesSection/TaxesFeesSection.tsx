@@ -1,7 +1,9 @@
+import { TaxApiError } from '@utils/api'
 import { useTaxes } from '@utils/apiHooks'
 import { ROUTES } from '@utils/constants'
 import logger from '@utils/logger'
 import useAccount, { AccountStatus } from '@utils/useAccount'
+import { taxStatusHelper } from '@utils/utils'
 import AccountSectionHeader from 'components/forms/segments/AccountSectionHeader/AccountSectionHeader'
 import TaxesFeesCard from 'components/forms/segments/AccountSections/TaxesFeesSection/TaxesFeesCard'
 import TaxesFeesErrorCard from 'components/forms/segments/AccountSections/TaxesFeesSection/TaxesFeesErrorCard'
@@ -16,18 +18,18 @@ export type TaxesCardBase = {
   currentPaid: number
   finishPrice: number
   paidDate?: string
-  status: 'negative' | 'warning' | 'success'
+  status: 'paid' | 'unpaid' | 'partially_paid'
 }
 
 interface TaxesFeesSectionProps {
   isProductionDeployment?: boolean
 }
 
-const TaxesFeesSection = ({ isProductionDeployment }: TaxesFeesSectionProps) => {
+const TaxesFeesSection: React.FC<TaxesFeesSectionProps> = () => {
   const { t } = useTranslation('account')
   const { status } = useAccount()
 
-  const { data, isLoading } = useTaxes()
+  const { data, error, isLoading } = useTaxes()
 
   const taxesFeesWaitingCardContent = `
 <h4>${t('account_section_payment.waiting_card_title')}</h4>
@@ -50,15 +52,17 @@ const TaxesFeesSection = ({ isProductionDeployment }: TaxesFeesSectionProps) => 
 
   let content = null
 
-  // TODO nicer loading
   if (isLoading) {
     content = <Spinner className="mt-10 m-auto" />
-  } else if (isProductionDeployment) {
-    // TOOD add if status !== AccountStatus.IdentityVerificationSuccess
-    // prod shows no available taxes yet
+  } else if (status !== AccountStatus.IdentityVerificationSuccess) {
     content = <TaxesFeesErrorCard content={taxesFeesErrorCardContent} />
   } else if (!isLoading && !data) {
-    content = <TaxesFeesWaitingCard content={taxesFeesWaitingCardContent} />
+    content =
+      error instanceof TaxApiError && error.status === 422 ? (
+        <TaxesFeesWaitingCard content={taxesFeesWaitingCardContent} />
+      ) : (
+        <TaxesFeesErrorCard content={taxesFeesErrorCardContent} />
+      )
   } else if (data) {
     content = (
       <ul className="lg:px-0 my-2 lg:my-8 px-4 sm:px-6">
@@ -69,16 +73,19 @@ const TaxesFeesSection = ({ isProductionDeployment }: TaxesFeesSectionProps) => 
             createDate={new Date(data?.createdAt).toLocaleDateString('sk-SK')}
             currentPaid={data?.payedAmount}
             finishPrice={data?.amount}
-            status="negative"
-            paidDate={data?.updatedAt}
+            status={taxStatusHelper(data).paymentStatus}
+            // paidDate={data?.updatedAt}
           />
         </li>
       </ul>
     )
   } else {
     logger.error('TaxesFeesSection.tsx: unknown error - shoud never happen')
-    content =
-      'Neočakávaná chyba pri načítaní dát - kontaktujte prosím podporu na info@bratislava.sk'
+    content = (
+      <div>
+        Neočakávaná chyba pri načítaní dát - kontaktujte prosím podporu na info@bratislava.sk
+      </div>
+    )
   }
 
   return (

@@ -1,9 +1,10 @@
-import BannerPhone from '@assets/images/banner-phone.png'
+import BannerImage from '@assets/images/bratislava-dog.png'
 import TaxesIcon from '@assets/images/new-icons/other/city-bratislava/taxes.svg'
 import LibraryIcon from '@assets/images/new-icons/other/culture-communities/library.svg'
 import TreeIcon from '@assets/images/new-icons/other/environment-construction/greenery.svg'
 import ParkingIcon from '@assets/images/new-icons/other/transport-and-maps/parking.svg'
 import PlatbaDaneImg from '@assets/images/platba-dane2.png'
+import { useTaxes } from '@utils/apiHooks'
 import { ROUTES } from '@utils/constants'
 import useAccount from '@utils/useAccount'
 import AccountSectionHeader from 'components/forms/segments/AccountSectionHeader/AccountSectionHeader'
@@ -11,6 +12,7 @@ import AnnouncementBlock from 'components/forms/segments/AccountSections/IntroSe
 import Banner from 'components/forms/simple-components/Banner'
 import Button from 'components/forms/simple-components/Button'
 import ServiceCard from 'components/forms/simple-components/ServiceCard'
+import Spinner from 'components/forms/simple-components/Spinner'
 import { useRouter } from 'next/router'
 import { useTranslation } from 'next-i18next'
 import { useEffect, useState } from 'react'
@@ -21,6 +23,7 @@ import PhoneNumberModal from '../../PhoneNumberModal/PhoneNumberModal'
 const IntroSection = () => {
   const { t } = useTranslation('account')
   const { userData, updateUserData, error, resetError } = useAccount()
+  const { data, isLoading } = useTaxes()
   const router = useRouter()
   const [phoneNumberModal, setPhoneNumberModal] =
     useState<'hidden' | 'displayed' | 'dismissed'>('hidden')
@@ -38,8 +41,8 @@ const IntroSection = () => {
     }
   }, [phoneNumberModal, router.query.from, userData])
 
-  const onSubmitPhoneNumber = async ({ data }: { data?: PhoneNumberData }) => {
-    if (await updateUserData({ phone_number: data?.phone_number })) {
+  const onSubmitPhoneNumber = async (submitData: { data?: PhoneNumberData }) => {
+    if (await updateUserData({ phone_number: submitData.data?.phone_number })) {
       setPhoneNumberModal('dismissed')
     }
   }
@@ -50,7 +53,7 @@ const IntroSection = () => {
 
   const announcementContent = `
 <h4>${t('account_section_intro.announcement_card_title')}</h4><span>${t(
-    'account_section_intro.announcement_card_text',
+    `account_section_intro.${data ? 'announcement_card_text_tax_ready' : 'announcement_card_text'}`,
   )}</span>`
 
   return (
@@ -71,12 +74,19 @@ const IntroSection = () => {
           text={t('account_section_intro.header_text')}
         />
         <div className="w-full max-w-screen-lg m-auto py-6 lg:py-16">
-          <AnnouncementBlock
-            announcementContent={announcementContent}
-            // buttonTitle={t('account_section_intro.announcement_card_action')}
-            imagePath={PlatbaDaneImg}
-            // onPress={() => router.push(ROUTES.TAXES_AND_FEES)}
-          />
+          {isLoading ? (
+            <div className="flex justify-center">
+              <Spinner />
+            </div>
+          ) : (
+            <AnnouncementBlock
+              announcementContent={announcementContent}
+              buttonTitle={data ? t('account_section_intro.announcement_card_action') : null}
+              imagePath={PlatbaDaneImg}
+              onPress={() => router.push(ROUTES.TAXES_AND_FEES)}
+            />
+          )}
+
           <div className="w-full flex items-center justify-between mb-8 px-4 lg:px-0">
             <h2 className="text-h2">{t('account_section_services.navigation')}</h2>
             <Button
@@ -131,7 +141,7 @@ const IntroSection = () => {
             content={bannerContent}
             buttonText={t('account_section_intro.banner_button_text')}
             href={ROUTES.I_HAVE_A_PROBLEM}
-            image={BannerPhone}
+            image={BannerImage}
           />
         </div>
       </div>

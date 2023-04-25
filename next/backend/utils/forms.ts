@@ -1,10 +1,10 @@
 import forms, { EFormKey, EFormValue } from '@backend/forms'
 import { firstCharToUpper } from '@backend/utils/strings'
 import {
+  JsonSchema,
   ajvFormats,
   ajvKeywords,
   getAllPossibleJsonSchemaProperties,
-  JsonSchema,
 } from '@utils/forms'
 import logger from '@utils/logger'
 import { forceString } from '@utils/utils'
@@ -69,8 +69,7 @@ export const buildXmlRecursive = (
       const format =
         jsonSchema.type === 'array' ? getFormatFromItems(jsonSchema.items) : jsonSchema.format
       if (format === 'ciselnik') {
-        // TODO fill name
-        node = `<Code>${node}</Code><Name>${node}</Name><WsEnumCode>${node}</WsEnumCode>`
+        node = `<Code>${node}</Code><Name>${node}</Name><WsEnumCode>${jsonSchema.ciselnik?.id}</WsEnumCode>`
       } else if (format === 'data-url') {
         node = `<Nazov>${node}</Nazov><Prilozena>true</Prilozena>`
       }

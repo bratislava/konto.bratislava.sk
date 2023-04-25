@@ -213,6 +213,9 @@ export const ajvKeywords: KeywordDefinition[] = [
   {
     keyword: 'pospVersion',
   },
+  {
+    keyword: 'ciselnik',
+  },
 ]
 
 export const ajvFormats = {

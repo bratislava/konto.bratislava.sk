@@ -273,6 +273,7 @@
             "city": {
               "type": "string",
               "title": "City (ciselnik)",
+              "format": "ciselnik",
               "ciselnik": { "id": "SUSR_0025" }
             }
           },

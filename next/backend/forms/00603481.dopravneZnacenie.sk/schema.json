@@ -123,7 +123,8 @@
             "typOsoby": {
               "title": "TypOsoby",
               "type": "string",
-              "format": "ciselnik"
+              "format": "ciselnik",
+              "ciselnik": { "id": "UPVSIAM_001" }
             },
             "kontakt": {
               "title": "Kontakt",
@@ -229,7 +230,8 @@
                   "title": "Obec",
                   "type": "string",
                   "description": "Položka číselníka",
-                  "format": "ciselnik"
+                  "format": "ciselnik",
+                  "ciselnik": { "id": "SUSR_0025" }
                 },
                 "castObce": {
                   "title": "CastObce",
@@ -239,7 +241,8 @@
                   "title": "Stat",
                   "type": "string",
                   "description": "Číselník SUSR_0086 - Krajiny OSN",
-                  "format": "ciselnik"
+                  "format": "ciselnik",
+                  "ciselnik": { "id": "SUSR_0086" }
                 }
               },
               "required": ["obec"]
@@ -585,7 +588,8 @@
                   "title": "MestskaCast",
                   "type": "string",
                   "description": "Položka číselníka",
-                  "format": "ciselnik"
+                  "format": "ciselnik",
+                  "ciselnik": { "id": "SUSR_0025" }
                 }
               },
               "required": ["adresatPodania"]
@@ -674,7 +678,8 @@
                       "title": "Obec",
                       "type": "string",
                       "description": "Položka číselníka",
-                      "format": "ciselnik"
+                      "format": "ciselnik",
+                      "ciselnik": { "id": "SUSR_0025" }
                     },
                     "castObce": {
                       "title": "CastObce",
@@ -684,7 +689,8 @@
                       "title": "Stat",
                       "type": "string",
                       "description": "Číselník SUSR_0086 - Krajiny OSN",
-                      "format": "ciselnik"
+                      "format": "ciselnik",
+                      "ciselnik": { "id": "SUSR_0086" }
                     }
                   },
                   "required": ["obec"]
@@ -698,7 +704,8 @@
                   "title": "MestskaCast",
                   "type": "string",
                   "description": "Položka číselníka",
-                  "format": "ciselnik"
+                  "format": "ciselnik",
+                  "ciselnik": { "id": "SUSR_0025" }
                 },
                 "faxPreDorucenie": {
                   "title": "FaxPreDorucenie",

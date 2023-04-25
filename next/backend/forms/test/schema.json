@@ -211,6 +211,7 @@
             "school": {
               "type": "string",
               "title": "University",
+              "comment": "Single choice select need to have default value",
               "default": "stu_fei",
               "oneOf": [
                 {
@@ -370,6 +371,7 @@
             "chooseOneOfMore": {
               "type": "string",
               "title": "Some random choose",
+              "comment": "Radio buttons need to have default value",
               "default": "screen",
               "oneOf": [
                 {

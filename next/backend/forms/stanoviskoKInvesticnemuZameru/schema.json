@@ -3,13 +3,7 @@
   "pospVersion": "0.1",
   "title": "Stanovisko k investičnému zámeru",
   "type": "object",
-  "required": [
-    "ziadatel",
-    "investor",
-    "projektant",
-    "stavba",
-    "prilohy"
-  ],
+  "required": ["ziadatel", "investor", "projektant", "stavba", "prilohy"],
   "allOf": [
     {
       "properties": {
@@ -26,9 +20,7 @@
               }
             }
           },
-          "required": [
-            "architektonickaStudia"
-          ]
+          "required": ["architektonickaStudia"]
         }
       }
     },
@@ -37,23 +29,16 @@
         "ziadatel": {
           "type": "object",
           "title": "Žiadateľ",
+          "properties": {
+            "ziatetelTyp": {
+              "title": "Žiadate ako",
+              "type": "string",
+              "default": "Fyzická osoba",
+              "enum": ["Fyzická osoba", "Fyzická osoba - podnikateľ", "Právnicka osoba"]
+            }
+          },
+          "required": ["ziatetelTyp"],
           "allOf": [
-            {
-              "properties": {
-                "ziatetelTyp": {
-                  "title": "Žiadate ako",
-                  "type": "string",
-                  "enum": [
-                    "Fyzická osoba",
-                    "Fyzická osoba - podnikateľ",
-                    "Právnicka osoba"
-                  ]
-                }
-              },
-              "required": [
-                "ziatetelTyp"
-              ]
-            },
             {
               "if": {
                 "properties": {
@@ -70,9 +55,7 @@
                     "title": "Meno a priezvisko"
                   }
                 },
-                "required": [
-                  "ziadatelMenoPriezvisko"
-                ]
+                "required": ["ziadatelMenoPriezvisko"]
               }
             },
             {
@@ -97,9 +80,7 @@
                     "title": "Obchodné meno"
                   }
                 },
-                "required": [
-                  "ziadatelObchodneMeno"
-                ]
+                "required": ["ziadatelObchodneMeno"]
               }
             },
             {
@@ -117,9 +98,7 @@
                     "title": "IČO"
                   }
                 },
-                "required": [
-                  "ziadatelIco"
-                ]
+                "required": ["ziadatelIco"]
               }
             },
             {
@@ -137,9 +116,7 @@
                     "title": "Adresa trvalého pobytu"
                   }
                 },
-                "required": [
-                  "ziadatelAdresaPobytu"
-                ]
+                "required": ["ziadatelAdresaPobytu"]
               }
             },
             {
@@ -157,9 +134,7 @@
                     "title": "Miesto podnikania"
                   }
                 },
-                "required": [
-                  "ziadatelMiestoPodnikania"
-                ]
+                "required": ["ziadatelMiestoPodnikania"]
               }
             },
             {
@@ -177,9 +152,7 @@
                     "title": "Adresa sídla"
                   }
                 },
-                "required": [
-                  "ziadatelAdresaSidla"
-                ]
+                "required": ["ziadatelAdresaSidla"]
               }
             },
             {
@@ -197,10 +170,7 @@
                       "title": "PSČ"
                     }
                   },
-                  "required": [
-                    "ziadatelMesto",
-                    "ziadatelPsc"
-                  ]
+                  "required": ["ziadatelMesto", "ziadatelPsc"]
                 }
               }
             },
@@ -219,9 +189,7 @@
                     "title": "Kontaktná osoba"
                   }
                 },
-                "required": [
-                  "ziadatelKontaktnaOsoba"
-                ]
+                "required": ["ziadatelKontaktnaOsoba"]
               }
             },
             {
@@ -237,10 +205,7 @@
                   "pattern": "((([+][1-9])|([+][1-9][0-9]{1,8}))|((00[1-9])|(00[1-9][0-9]{1,7})))"
                 }
               },
-              "required": [
-                "ziadatelEmail",
-                "ziadatelTelefon"
-              ]
+              "required": ["ziadatelEmail", "ziadatelTelefon"]
             }
           ]
         }
@@ -251,18 +216,15 @@
         "investor": {
           "type": "object",
           "title": "Investor",
+          "properties": {
+            "investorZiadatelom": {
+              "title": "Je investor rovnaká osoba ako žiadateľ?",
+              "type": "boolean",
+              "default": true
+            }
+          },
+          "required": ["investorZiadatelom"],
           "allOf": [
-            {
-              "properties": {
-                "investorZiadatelom": {
-                  "title": "Je investor rovnaká osoba ako žiadateľ?",
-                  "type": "boolean"
-                }
-              },
-              "required": [
-                "investorZiadatelom"
-              ]
-            },
             {
               "if": {
                 "properties": {
@@ -282,9 +244,7 @@
                     }
                   }
                 },
-                "required": [
-                  "splnomocnenie"
-                ]
+                "required": ["splnomocnenie"]
               }
             },
             {
@@ -310,17 +270,11 @@
                       "investorTyp": {
                         "title": "Typ investora",
                         "type": "string",
-                        "enum": [
-                          "Fyzická osoba",
-                          "Fyzická osoba - podnikateľ",
-                          "Právnicka osoba"
-                        ]
+                        "default": "Fyzická osoba",
+                        "enum": ["Fyzická osoba", "Fyzická osoba - podnikateľ", "Právnicka osoba"]
                       }
                     },
-                    "required": [
-                      "splnomocnenie",
-                      "investorTyp"
-                    ]
+                    "required": ["splnomocnenie", "investorTyp"]
                   },
                   {
                     "if": {
@@ -338,9 +292,7 @@
                           "title": "Meno a priezvisko"
                         }
                       },
-                      "required": [
-                        "investorMenoPriezvisko"
-                      ]
+                      "required": ["investorMenoPriezvisko"]
                     }
                   },
                   {
@@ -365,9 +317,7 @@
                           "title": "Obchodné meno"
                         }
                       },
-                      "required": [
-                        "investorObchodneMeno"
-                      ]
+                      "required": ["investorObchodneMeno"]
                     }
                   },
                   {
@@ -385,9 +335,7 @@
                           "title": "IČO"
                         }
                       },
-                      "required": [
-                        "investorIco"
-                      ]
+                      "required": ["investorIco"]
                     }
                   },
                   {
@@ -405,9 +353,7 @@
                           "title": "Adresa trvalého pobytu"
                         }
                       },
-                      "required": [
-                        "investorAdresaPobytu"
-                      ]
+                      "required": ["investorAdresaPobytu"]
                     }
                   },
                   {
@@ -425,9 +371,7 @@
                           "title": "Miesto podnikania"
                         }
                       },
-                      "required": [
-                        "investorMiestoPodnikania"
-                      ]
+                      "required": ["investorMiestoPodnikania"]
                     }
                   },
                   {
@@ -445,9 +389,7 @@
                           "title": "Adresa sídla"
                         }
                       },
-                      "required": [
-                        "investorAdresaSidla"
-                      ]
+                      "required": ["investorAdresaSidla"]
                     }
                   },
                   {
@@ -465,10 +407,7 @@
                             "title": "PSČ"
                           }
                         },
-                        "required": [
-                          "investorMesto",
-                          "investorPsc"
-                        ]
+                        "required": ["investorMesto", "investorPsc"]
                       }
                     }
                   },
@@ -487,9 +426,7 @@
                           "title": "Kontaktná osoba"
                         }
                       },
-                      "required": [
-                        "investorKontaktnaOsoba"
-                      ]
+                      "required": ["investorKontaktnaOsoba"]
                     }
                   },
                   {
@@ -505,10 +442,7 @@
                         "pattern": "((([+][1-9])|([+][1-9][0-9]{1,8}))|((00[1-9])|(00[1-9][0-9]{1,7})))"
                       }
                     },
-                    "required": [
-                      "investorEmail",
-                      "investorTelefon"
-                    ]
+                    "required": ["investorEmail", "investorTelefon"]
                   }
                 ]
               }

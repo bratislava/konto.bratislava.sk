@@ -3,17 +3,20 @@ import './index.css'
 // initialize faro - TODO might need to ensure faro is initialized by providing it through react context and hook
 import '@utils/logger'
 
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import { AccountProvider } from '@utils/useAccount'
 import { StatusBarProvider } from 'components/forms/info-components/StatusBar'
 import CookieConsent from 'components/forms/segments/CookieConsent/CookieConsent'
+import { appWithTranslation } from 'next-i18next'
+import { NextAdapter } from 'next-query-params'
 import { AppProps } from 'next/app'
 import { Inter } from 'next/font/google'
 import Head from 'next/head'
-import { appWithTranslation } from 'next-i18next'
-import { NextAdapter } from 'next-query-params'
 import { SSRProvider } from 'react-aria'
 import SnackbarProvider from 'react-simple-snackbar'
 import { QueryParamProvider } from 'use-query-params'
+
+const queryClient = new QueryClient()
 
 const inter = Inter({
   variable: '--inter-font',
@@ -37,12 +40,14 @@ const MyApp = ({ Component, pageProps }: AppProps) => {
         <SSRProvider>
           <StatusBarProvider>
             <div className={`${inter.variable} font-sans`}>
-              <SnackbarProvider>
-                <AccountProvider>
-                  <Component {...pageProps} />
-                  <CookieConsent />
-                </AccountProvider>
-              </SnackbarProvider>
+              <QueryClientProvider client={queryClient}>
+                <SnackbarProvider>
+                  <AccountProvider>
+                    <Component {...pageProps} />
+                    <CookieConsent />
+                  </AccountProvider>
+                </SnackbarProvider>
+              </QueryClientProvider>
             </div>
           </StatusBarProvider>
         </SSRProvider>

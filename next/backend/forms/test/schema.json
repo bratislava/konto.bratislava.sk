@@ -269,6 +269,11 @@
                   "const": 3
                 }
               ]
+            },
+            "city": {
+              "type": "string",
+              "title": "City (ciselnik)",
+              "ciselnik": { "id": "SUSR_0025" }
             }
           },
           "allOf": [

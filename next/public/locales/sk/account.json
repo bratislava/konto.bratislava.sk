@@ -9,7 +9,7 @@
     "MigrationUserNotFoundException": "E-mail **{email}** sa nenachádza v našej databáze minuloročných používateľov a používateliek digitálnej platby dane. Skontrolujte správnosť e-mailu alebo sa [registrujte](/register).",
     "UserNotConfirmedException": "E-mail nie je verifikovaný.",
     "UsernameExistsException": "E-mail **{email}** už bol použitý. Ak ste daň platili digitálne už minulý rok, pokračujte [aktiváciou konta](/migration). V prípade, že sa vás tento prípad netýka, kontaktujte nás na <a href='mailto:info@bratislava.sk'>info@bratislava.sk</a>.",
-    "ExpiredCodeException": "E-mail **{email}** sa nepodarilo overiť. Skontrolujte správnosť kódu.",
+    "ExpiredCodeException": "Platnosť zadaného kódu vypršala. Požiadajte o nový kód kliknutím na Odoslať nový kód. Platnosť overovacieho kódu je 60 minút.",
     "IncorectPasswordException": "Zadané heslo nie je správne.",
     "API_ERROR": "Pri odosielaní nastala chyba. Skúste to, prosíme, znova.",
     "RFO_ACCESS_ERROR": "Pri odosielaní nastala chyba. Skúste to, prosíme, znova.",
@@ -341,7 +341,7 @@
   "account_section_payment": {
     "title": "Dane a poplatky",
     "waiting_card_title": "Vašu daň z nehnuteľností pripravujeme.",
-    "waiting_card_text": "Aj v tomto momente pracujeme na výpočte dane z nehnuteľností až pre 210.000 daňovníkov a daňovníčok. Pripravené rozhodnutia budú v kontách pribúdať od <strong>28. apríla.</strong> Keď bude vaša daň z nehnuteľností pripravená, pošleme vám notifikačný e-mail.",
+    "waiting_card_text": "Aj v tomto momente pracujeme na výpočte dane z nehnuteľností až pre 210 000 daňovníkov a daňovníčok. Pripravené rozhodnutia budú v kontách pribúdať od <strong>28. apríla.</strong> Keď bude vaša daň z nehnuteľností pripravená, pošleme vám notifikačný e-mail.",
     "error_card_title": "Vaša daň z nehnuteľnosti nie je k dispozícii",
     "error_card_content": {
       "title": "<p>Môže to tak byť, lebo:</p>",

@@ -26,7 +26,7 @@
               "description": "Priložená príloha",
               "items": {
                 "type": "string",
-                "format": "data-url"
+                "format": "file"
               }
             },
             "zavazneStanoviskoKrajskehoDopravnehoInspektoratu": {
@@ -35,7 +35,7 @@
               "description": "Priložená príloha",
               "items": {
                 "type": "string",
-                "format": "data-url"
+                "format": "file"
               }
             },
             "situaciaSirsichVztahov": {
@@ -44,7 +44,7 @@
               "description": "Priložená príloha",
               "items": {
                 "type": "string",
-                "format": "data-url"
+                "format": "file"
               }
             },
             "stanoviskaSpravcovCiest": {
@@ -53,7 +53,7 @@
               "description": "Priložená príloha",
               "items": {
                 "type": "string",
-                "format": "data-url"
+                "format": "file"
               }
             },
             "kopiaPovoleniaStavebnehoUradu": {
@@ -62,7 +62,7 @@
               "description": "Priložená príloha",
               "items": {
                 "type": "string",
-                "format": "data-url"
+                "format": "file"
               }
             },
             "stanoviskoDopravnehoPodnikuBratislava": {
@@ -71,7 +71,7 @@
               "description": "Priložená príloha",
               "items": {
                 "type": "string",
-                "format": "data-url"
+                "format": "file"
               }
             },
             "vyhradenehoParkovanieVztahKPrevadzke": {
@@ -80,7 +80,7 @@
               "description": "Priložená príloha",
               "items": {
                 "type": "string",
-                "format": "data-url"
+                "format": "file"
               }
             },
             "vyhradenehoParkovaniePreukazTZP": {
@@ -89,7 +89,7 @@
               "description": "Priložená príloha",
               "items": {
                 "type": "string",
-                "format": "data-url"
+                "format": "file"
               }
             },
             "splnomocnenieNaZastupovanie": {
@@ -98,7 +98,7 @@
               "description": "Priložená príloha",
               "items": {
                 "type": "string",
-                "format": "data-url"
+                "format": "file"
               }
             }
           },
@@ -150,7 +150,11 @@
                       "pattern": "[0-9]*"
                     }
                   },
-                  "required": ["medzinarodneVolacieCislo", "predvolba", "cislo"]
+                  "required": [
+                    "medzinarodneVolacieCislo",
+                    "predvolba",
+                    "cislo"
+                  ]
                 },
                 "telefonneCisloCele": {
                   "title": "TelefonneCisloCele",
@@ -174,7 +178,10 @@
                       "type": "string"
                     }
                   },
-                  "required": ["meno", "priezvisko"]
+                  "required": [
+                    "meno",
+                    "priezvisko"
+                  ]
                 }
               },
               "required": []
@@ -212,7 +219,9 @@
                       "type": "string"
                     }
                   },
-                  "required": ["ulica"]
+                  "required": [
+                    "ulica"
+                  ]
                 },
                 "pOBOX": {
                   "title": "POBOX",
@@ -245,10 +254,17 @@
                   "ciselnik": { "id": "SUSR_0086" }
                 }
               },
-              "required": ["obec"]
+              "required": [
+                "obec"
+              ]
             }
           },
-          "required": ["voSvojomMene", "typOsoby", "kontakt", "adresa"]
+          "required": [
+            "voSvojomMene",
+            "typOsoby",
+            "kontakt",
+            "adresa"
+          ]
         }
       }
     },
@@ -282,7 +298,12 @@
                 "typ": {
                   "title": "Typ",
                   "type": "string",
-                  "enum": ["Nove", "Predlzenie", "Zmena", "Zrusenie"]
+                  "enum": [
+                    "Nove",
+                    "Predlzenie",
+                    "Zmena",
+                    "Zrusenie"
+                  ]
                 },
                 "pocetParkovacichMiest": {
                   "title": "PocetParkovacichMiest",
@@ -337,7 +358,9 @@
                   "format": "date"
                 }
               },
-              "required": ["typ"]
+              "required": [
+                "typ"
+              ]
             },
             "nazovStavby": {
               "title": "NazovStavby",
@@ -354,7 +377,10 @@
             "trvacnostDopravnehoZnacenia": {
               "title": "TrvacnostDopravnehoZnacenia",
               "type": "string",
-              "enum": ["Trvale", "Docasne"]
+              "enum": [
+                "Trvale",
+                "Docasne"
+              ]
             },
             "datumUmiestneniaDopravnehoZnacenia": {
               "title": "DatumUmiestneniaDopravnehoZnacenia",
@@ -367,7 +393,11 @@
               "format": "date"
             }
           },
-          "required": ["nazvyUlic", "dovodZmenyVDopravnomZnaceni", "trvacnostDopravnehoZnacenia"]
+          "required": [
+            "nazvyUlic",
+            "dovodZmenyVDopravnomZnaceni",
+            "trvacnostDopravnehoZnacenia"
+          ]
         }
       }
     },
@@ -381,7 +411,10 @@
             "typ": {
               "title": "Typ",
               "type": "string",
-              "enum": ["Ciastocna", "Uplna"]
+              "enum": [
+                "Ciastocna",
+                "Uplna"
+              ]
             },
             "sirkaVolnehoJazdnehoPruhu": {
               "title": "SirkaVolnehoJazdnehoPruhu",
@@ -465,7 +498,11 @@
                   "pattern": "[0-9]*"
                 }
               },
-              "required": ["medzinarodneVolacieCislo", "predvolba", "cislo"]
+              "required": [
+                "medzinarodneVolacieCislo",
+                "predvolba",
+                "cislo"
+              ]
             },
             "telefonneCisloCele": {
               "title": "TelefonneCisloCele",
@@ -489,7 +526,10 @@
                   "type": "string"
                 }
               },
-              "required": ["meno", "priezvisko"]
+              "required": [
+                "meno",
+                "priezvisko"
+              ]
             }
           },
           "required": []
@@ -535,7 +575,11 @@
                       "pattern": "[0-9]*"
                     }
                   },
-                  "required": ["medzinarodneVolacieCislo", "predvolba", "cislo"]
+                  "required": [
+                    "medzinarodneVolacieCislo",
+                    "predvolba",
+                    "cislo"
+                  ]
                 },
                 "telefonneCisloCele": {
                   "title": "TelefonneCisloCele",
@@ -559,13 +603,20 @@
                       "type": "string"
                     }
                   },
-                  "required": ["meno", "priezvisko"]
+                  "required": [
+                    "meno",
+                    "priezvisko"
+                  ]
                 }
               },
               "required": []
             }
           },
-          "required": ["obchodneMeno", "iCO", "kontakt"]
+          "required": [
+            "obchodneMeno",
+            "iCO",
+            "kontakt"
+          ]
         }
       }
     },
@@ -582,7 +633,10 @@
                 "adresatPodania": {
                   "title": "AdresatPodania",
                   "type": "string",
-                  "enum": ["Mesto", "Mestská časť"]
+                  "enum": [
+                    "Mesto",
+                    "Mestská časť"
+                  ]
                 },
                 "mestskaCast": {
                   "title": "MestskaCast",
@@ -592,7 +646,9 @@
                   "ciselnik": { "id": "SUSR_0025" }
                 }
               },
-              "required": ["adresatPodania"]
+              "required": [
+                "adresatPodania"
+              ]
             },
             "checkbox": {
               "title": "Checkbox",
@@ -608,7 +664,10 @@
             "formaOdoslaniaZiadosti": {
               "title": "FormaOdoslaniaZiadosti",
               "type": "string",
-              "enum": ["Elektronicky", "Listinne"]
+              "enum": [
+                "Elektronicky",
+                "Listinne"
+              ]
             },
             "formaDoruceniaRozhodnutia": {
               "title": "FormaDoruceniaRozhodnutia",
@@ -660,7 +719,9 @@
                           "type": "string"
                         }
                       },
-                      "required": ["ulica"]
+                      "required": [
+                        "ulica"
+                      ]
                     },
                     "pOBOX": {
                       "title": "POBOX",
@@ -693,12 +754,17 @@
                       "ciselnik": { "id": "SUSR_0086" }
                     }
                   },
-                  "required": ["obec"]
+                  "required": [
+                    "obec"
+                  ]
                 },
                 "adresatPodania": {
                   "title": "AdresatPodania",
                   "type": "string",
-                  "enum": ["Mesto", "Mestská časť"]
+                  "enum": [
+                    "Mesto",
+                    "Mestská časť"
+                  ]
                 },
                 "mestskaCast": {
                   "title": "MestskaCast",
@@ -727,7 +793,11 @@
                       "pattern": "[0-9]*"
                     }
                   },
-                  "required": ["medzinarodneVolacieCislo", "predvolba", "cislo"]
+                  "required": [
+                    "medzinarodneVolacieCislo",
+                    "predvolba",
+                    "cislo"
+                  ]
                 },
                 "telefonPreDorucenie": {
                   "title": "TelefonPreDorucenie",
@@ -749,7 +819,11 @@
                       "pattern": "[0-9]*"
                     }
                   },
-                  "required": ["medzinarodneVolacieCislo", "predvolba", "cislo"]
+                  "required": [
+                    "medzinarodneVolacieCislo",
+                    "predvolba",
+                    "cislo"
+                  ]
                 },
                 "emailPreDorucenie": {
                   "title": "EmailPreDorucenie",
@@ -757,10 +831,15 @@
                   "pattern": "([a-zA-Z0-9_\\-\\.]+)@((\\[[0-9]{1,3}\\.[0-9]{1,3}\\.[0-9]{1,3}\\.)|(([a-zA-Z0-9\\-]+\\.)+))([a-zA-Z]{2,6}|[0-9]{1,3})(\\]?)"
                 }
               },
-              "required": ["typSposobuDorucenia"]
+              "required": [
+                "typSposobuDorucenia"
+              ]
             }
           },
-          "required": ["adresatPodania", "formaOdoslaniaZiadosti"]
+          "required": [
+            "adresatPodania",
+            "formaOdoslaniaZiadosti"
+          ]
         }
       }
     },

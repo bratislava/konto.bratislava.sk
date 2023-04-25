@@ -72,7 +72,7 @@ export const buildXmlRecursive = (
         node = `<Code>${node}</Code><Name>${node}</Name><WsEnumCode>${
           (jsonSchema as Record<string, any>).ciselnik?.id
         }</WsEnumCode>`
-      } else if (format === 'data-url') {
+      } else if (format === 'file') {
         node = `<Nazov>${node}</Nazov><Prilozena>true</Prilozena>`
       }
     }
@@ -161,13 +161,13 @@ export const removeNeedlessXmlTransformArraysRecursive = (
         }
       } else if (childSchema.type === 'array') {
         const format = getFormatFromItems(childSchema.items)
-        if (format === 'data-url') {
+        if (format === 'file') {
           obj[k] = obj[k].map((x: any) => x.nazov[0])
         } else if (format === 'ciselnik') {
           obj[k] = obj[k].map((x: any) => x.code[0])
         }
       } else if (childSchema.type === 'string') {
-        if (childSchema.format === 'data-url') {
+        if (childSchema.format === 'file') {
           obj[k] = obj[k][0].nazov[0]
         } else if (childSchema.format === 'ciselnik') {
           obj[k] = obj[k][0].code[0]

@@ -90,7 +90,7 @@ const AccountPageLayout = ({
   const prodHideSectionsListIds: Set<number> = isProductionDeploy ? new Set([2]) : new Set([])
 
   useEffect(() => {
-    if (!isAuth) {
+    if (!isAuth && router.route !== ROUTES.PAYMENT_RESULT) {
       router
         .push({ pathname: ROUTES.LOGIN, query: { from: router.route } })
         .catch((error_) => logger.error('Redirect failed', error_))

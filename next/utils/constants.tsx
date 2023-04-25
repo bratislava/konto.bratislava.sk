@@ -12,4 +12,5 @@ export const ROUTES = {
   THANK_YOU: '/vysledok-platby',
   USER_PROFILE: '/moj-profil',
   MY_APPLICATIONS: '/moje-ziadosti',
+  PAYMENT_RESULT: '/platba/stav',
 }

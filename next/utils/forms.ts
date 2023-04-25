@@ -484,7 +484,6 @@ export const useFormStepper = (eformSlug: string, eform: EFormValue, callbacks: 
     } else {
       setFormData(getInitFormData(schema))
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }
 
   useEffect(() => {

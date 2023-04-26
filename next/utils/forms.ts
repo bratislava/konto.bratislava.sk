@@ -30,7 +30,7 @@ import { JSONSchema7, JSONSchema7Definition } from 'json-schema'
 import { cloneDeep, get, merge } from 'lodash'
 import { useRouter } from 'next/router'
 import { useTranslation } from 'next-i18next'
-import { ChangeEvent, RefObject, useEffect, useRef, useState } from 'react'
+import { ChangeEvent, RefObject, useEffect, useMemo, useRef, useState } from 'react'
 
 import { StepData } from '../components/forms/types/TransformedFormData'
 import logger from './logger'
@@ -458,6 +458,16 @@ export const useFormRJSFContext = (eform: EFormValue, formId?: string): FormRJSF
   return {
     bucketFolderName
   }
+}
+
+export const useFormContext = (eform: EFormValue, formId?: string) => {
+  return useMemo(() => {
+    const { schema } = eform
+    return {
+      bucketFolderName: formId && schema?.pospID
+        ? `/${String(schema.pospID)}/${formId}`
+        : undefined
+  }}, [eform, formId])
 }
 
 // TODO prevent unmounting

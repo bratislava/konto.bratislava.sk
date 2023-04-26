@@ -16,7 +16,7 @@ const nextConfig = {
       'pages',
       'utils'
     ],
-    ignore: [
+    ignoreDuringBuilds: [
       './backend/forms/**',
       './backend/forms/*',
       './backend/forms/**/*',

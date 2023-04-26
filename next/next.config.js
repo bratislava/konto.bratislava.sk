@@ -17,9 +17,10 @@ const nextConfig = {
       'utils'
     ],
     ignore: [
-      'backend/forms/**',
-      'backend/forms/*',
-      'backend/forms/**/*'
+      './backend/forms/**',
+      './backend/forms/*',
+      './backend/forms/**/*',
+      './backend/forms/00603481.dopravneZacenie.sk/data.xml.ts'
     ]
   },
   async redirects() {

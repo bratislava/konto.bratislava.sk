@@ -8,13 +8,9 @@ import { useEffectOnce } from 'usehooks-ts'
 import Upload from '../widget-components/Upload/Upload'
 import UploadRJSFOptions from '../widget-components/Upload/UploadRJSFOptions'
 
-interface UploadRJSFSchema extends StrictRJSFSchema {
-  folder: string
-}
-
 interface UploadWidgetRJSFProps extends WidgetProps {
   options: UploadRJSFOptions
-  schema: UploadRJSFSchema
+  schema: StrictRJSFSchema
   label: string
   required?: boolean
   value: string | string[] | null

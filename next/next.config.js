@@ -11,10 +11,14 @@ const nextConfig = {
   },
   eslint: {
     dirs: [
-      'components',
-      'pages',
-      'utils'
+      'components/',
+      'pages/',
+      'utils/',
+      'forms/'
     ],
+    ignorePatterns: [
+      'forms/backend/'
+    ]
   },
   async redirects() {
     return [

@@ -14,8 +14,10 @@ const nextConfig = {
       'backend',
       'components',
       'pages',
-      'utils',
-
+      'utils'
+    ],
+    ignore: [
+      'backend/forms'
     ]
   },
   async redirects() {

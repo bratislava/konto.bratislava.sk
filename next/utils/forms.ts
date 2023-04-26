@@ -461,6 +461,7 @@ const updateUploadWidgets = (folderName: string, schema?: JSONSchema7Definition)
 }
 
 const updateUploadWidgetsInSchema = (schema: RJSFSchema, formId?: string) => {
+  // we need to add folder name of bucket to schema like this, because component Upload needs this info and there is no other way to get it inside
   if (!formId) return
 
   const folderName = `/${String(schema.pospID)}/${formId}`

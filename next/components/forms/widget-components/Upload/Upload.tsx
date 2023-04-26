@@ -25,12 +25,12 @@ interface UploadProps {
   className?: string
   onChange?: (value: UploadMinioFile[]) => void
   errorMessage?: string[]
-  bucketFolderName: string
+  bucketFolderName?: string
 }
 
 const getBucketFileName = (file: File, folderName: string) => {
   const extension = file.type.split("/").pop()
-  const newName = `${folderName}/${createUuid()}.${extension}`
+  const newName = folderName ? `${folderName}/${createUuid()}.${extension}` : `${createUuid()}.${extension}`
   return new File([file], newName, {
     type: file.type,
     lastModified: file.lastModified,

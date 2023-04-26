@@ -51,6 +51,10 @@ export interface JsonSchemaExtraProperties {
   isConditional?: boolean
 }
 
+export interface FormRJSFContext {
+  bucketFolderName?: string
+}
+
 export const getAllPossibleJsonSchemaProperties = (
   jsonSchema?: JsonSchema,
 ): JsonSchemaProperties => {
@@ -441,41 +445,25 @@ interface Callbacks {
   onInit?: () => Promise<any>
 }
 
-const updateUploadWidgets = (folderName: string, schema?: JSONSchema7Definition) => {
-  if (!schema || typeof schema !== 'object') return
+export const useFormRJSFContext = (eform: EFormValue, formId?: string): FormRJSFContext => {
+  const { schema } = eform
+  const [bucketFolderName, setBucketFolderName] = useState<string>()
 
-  const isSchemaUploadWidget = (schema.type === 'string' && ['file', 'data-url'].includes(schema.format)) ||
-    ( schema.type === 'array' && schema.items &&
-      typeof schema.items === 'object' && !Array.isArray(schema.items) &&
-      schema.items.type === 'string' && ['file', 'data-url'].includes(schema.items.format) )
+  useEffect(() => {
+    if (schema.pospID && formId) {
+      setBucketFolderName(`/${String(schema.pospID)}/${formId}`)
+    }
+  }, [schema, formId, setBucketFolderName])
 
-  if (Array.isArray(schema)) {
-    schema.forEach((property: JSONSchema7Definition) => updateUploadWidgets(folderName, property))
-  } else if (isSchemaUploadWidget ) {
-    Object.assign(schema, { folder: folderName })
-  } else {
-    Object.values(schema).forEach((value: JSONSchema7Definition) => {
-      updateUploadWidgets(folderName, value)
-    })
+  return {
+    bucketFolderName
   }
 }
-
-const updateUploadWidgetsInSchema = (schema: RJSFSchema, formId?: string) => {
-  // we need to add folder name of bucket to schema like this, because component Upload needs this info and there is no other way to get it inside
-  if (!formId) return
-
-  const folderName = `/${String(schema.pospID)}/${formId}`
-
-  schema.allOf.forEach(step => {
-    updateUploadWidgets(folderName, step)
-  })
-}
-
 
 // TODO prevent unmounting
 // TODO persist state for session
 // TODO figure out if we need to step over uiSchemas, or having a single one is enough (seems like it is for now)
-export const useFormStepper = (eformSlug: string, eform: EFormValue, callbacks: Callbacks, formId?: string) => {
+export const useFormStepper = (eformSlug: string, eform: EFormValue, callbacks: Callbacks) => {
   const { schema } = eform
   // since Form can be undefined, useRef<Form> is understood as an overload of useRef returning MutableRef, which does not match expected Ref type be rjsf
   // also, our code expects directly RefObject otherwise it will complain of no `.current`
@@ -528,10 +516,6 @@ export const useFormStepper = (eformSlug: string, eform: EFormValue, callbacks: 
       .catch((error_) => logger.error('Init FormData failed', error_))
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [eformSlug, schema])
-
-  useEffect(() => {
-    updateUploadWidgetsInSchema(schema, formId)
-  }, [schema, formId])
 
   useEffect(() => {
     // stepIndex allowed to climb one step above the length of steps - i.e. to render a final overview or other custom components but still allow to return back

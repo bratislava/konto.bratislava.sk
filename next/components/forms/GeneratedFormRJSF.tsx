@@ -1,6 +1,6 @@
 import { EFormValue } from '@backend/forms'
 import { FormValidation, RJSFSchema } from '@rjsf/utils'
-import { useFormFiller, useFormStepper, useFormSubmitter } from '@utils/forms'
+import { useFormFiller, useFormRJSFContext, useFormStepper, useFormSubmitter } from '@utils/forms'
 import cx from 'classnames'
 import SkipStepModal from 'components/forms/segments/SkipStepModal/SkipStepModal'
 import { useState } from 'react'
@@ -19,10 +19,11 @@ interface FormRJSF {
 
 const GeneratedFormRJSF = ({ eform, escapedSlug, formSlug, wrapperClassName }: FormRJSF) => {
   const filler = useFormFiller(eform)
+  const formContext = useFormRJSFContext(eform, filler.formId)
   const form = useFormStepper(escapedSlug, eform, {
     onStepSumbit: filler.updateFormData,
     onInit: filler.initFormData,
-  }, filler.formId)
+  })
   const [isOnShowSkipModal, setIsOnShowSkipModal] = useState<boolean>(false)
   const [skipModalWasShown, setSkipModalWasShown] = useState<boolean>(false)
   const [skipModalNextStepIndex, setSkipModalNextStepIndex] = useState<number>(form.stepIndex)
@@ -100,6 +101,7 @@ const GeneratedFormRJSF = ({ eform, escapedSlug, formSlug, wrapperClassName }: F
               }}
               onError={form.handleOnErrors}
               extraErrors={form.extraErrors}
+              formContext={formContext}
               showErrorList={false}
               omitExtraData
               liveOmit

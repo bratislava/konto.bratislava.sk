@@ -61,5 +61,5 @@ module.exports = {
     // quite annoying as it conflicts with VS Code's auto import
     'lodash/import-scope': 'off',
   },
-  ignorePatterns: ['*.config.*', 'graphql', '.eslintrc.js'],
+  ignorePatterns: ['*.config.*', 'graphql', '.eslintrc.js', '/backend/forms/'],
 }

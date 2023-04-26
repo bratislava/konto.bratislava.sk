@@ -17,7 +17,9 @@ const nextConfig = {
       'utils'
     ],
     ignore: [
-      'backend/forms/**'
+      'backend/forms/**',
+      'backend/forms/*',
+      'backend/forms/**/*'
     ]
   },
   async redirects() {

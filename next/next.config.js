@@ -11,17 +11,10 @@ const nextConfig = {
   },
   eslint: {
     dirs: [
-      'backend',
       'components',
       'pages',
       'utils'
     ],
-    ignoreDuringBuilds: [
-      './backend/forms/**',
-      './backend/forms/*',
-      './backend/forms/**/*',
-      './backend/forms/00603481.dopravneZnacenie.sk/data.xml.ts'
-    ]
   },
   async redirects() {
     return [

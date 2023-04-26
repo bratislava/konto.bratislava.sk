@@ -464,7 +464,7 @@ const updateUploadWidgets = (folderName: string, schema?: JSONSchema7Definition)
 const updateUploadWidgetsInSchema = (schema: RJSFSchema, formId?: string) => {
   if (!formId) return
 
-  const folderName = `/${String(schema.pospID)}-ver-${String(schema.pospVersion).replace(".","-")}/${formId}`
+  const folderName = `/${String(schema.pospID)}_${String(schema.pospVersion).replace(".","-")}/${formId}`
 
   schema.allOf.forEach(step => {
     updateUploadWidgets(folderName, step)

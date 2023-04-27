@@ -330,3 +330,29 @@ export const getPaymentGatewayUrlApi = (token: string) => {
     },
   })
 }
+
+export const getEnum = async (id?: string) => {
+  if (!id) {
+    return []
+  }
+
+  try {
+    const response = await fetch(`https://www.slovensko.sk/static/util/filler/lookup.aspx?id=${id}`)
+    const responseText = await response.text()
+
+    if (response.ok) {
+      // remove rounded brackets and parse
+      const data: { aaData: string[][] } = JSON.parse(responseText.slice(1, -2))
+      return data.aaData?.map((x: string[]) => ({
+        const: x[0],
+        title: x[1],
+      }))
+    }
+
+    throw new Error(responseText)
+  } catch (error) {
+    // TODO originally caught & rethrown to ensure logging, might no longer be necessary
+    logger.error(error)
+    throw error
+  }
+}

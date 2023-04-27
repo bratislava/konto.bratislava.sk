@@ -57,12 +57,12 @@ const TaxesFeesSection: React.FC<TaxesFeesSectionProps> = () => {
   } else if (status !== AccountStatus.IdentityVerificationSuccess) {
     content = <TaxesFeesErrorCard content={taxesFeesErrorCardContent} />
   } else if (!isLoading && !data) {
-    content =
-      error instanceof TaxApiError && error.status === 422 ? (
-        <TaxesFeesWaitingCard content={taxesFeesWaitingCardContent} />
-      ) : (
-        <TaxesFeesErrorCard content={taxesFeesErrorCardContent} />
-      )
+    content = (
+      // error instanceof TaxApiError && error.status === 422 ? (
+      //   <TaxesFeesWaitingCard content={taxesFeesWaitingCardContent} />
+      // ) : (
+      <TaxesFeesErrorCard content={taxesFeesErrorCardContent} />
+    )
   } else if (data) {
     content = (
       <ul className="lg:px-0 my-2 lg:my-8 px-4 sm:px-6">

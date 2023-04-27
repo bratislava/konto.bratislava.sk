@@ -4,44 +4,69 @@ import ErrorIcon from '@assets/images/new-icons/ui/exclamation-mark.svg'
 import WarningIcon from '@assets/images/new-icons/ui/exclamation-mark-triangle.svg'
 import InfoIcon from '@assets/images/new-icons/ui/info.svg'
 import cx from 'classnames'
-import { ReactNode } from 'react'
+import Link from 'next/link'
+import React, { ReactNode } from 'react'
 
-type AlertButtons = {
+type AlertButtonBase = {
   title: string
-  handler: () => void
+  handler?: () => void | Promise<boolean>
+  link?: string
 }
 
-type ArrayLengthMutationKeys = 'splice' | 'push' | 'pop' | 'shift' | 'unshift' | number
-type ArrayItems<T extends Array<AlertButtons>> = T extends Array<infer TItems> ? TItems : never
-type FixedLengthArray<T extends AlertButtons[]> = Pick<
-  T,
-  Exclude<keyof T, ArrayLengthMutationKeys>
-> & {
-  [Symbol.iterator]: () => IterableIterator<ArrayItems<T>>
+type AlertButtonsBase = {
+  buttons: AlertButtonBase[]
+  className?: string
+}
+
+const AlertButtons = ({ buttons, className }: AlertButtonsBase) => {
+  return (
+    buttons?.length > 0 && (
+      <div className={cx('w-max flex items-start gap-5', className)}>
+        {buttons?.map((button, i) => (
+          <React.Fragment key={i}>
+            {button.link ? (
+              <Link
+                className="text-16-medium w-max underline underline-offset-4"
+                href={button.link}
+              >
+                {button.title}
+              </Link>
+            ) : (
+              <button
+                type="button"
+                className="text-16-medium w-max underline underline-offset-4"
+                onClick={button.handler}
+              >
+                {button.title}
+              </button>
+            )}
+          </React.Fragment>
+        ))}
+      </div>
+    )
+  )
 }
 
 type AlertBase = {
+  title?: string
+  message?: ReactNode
   type: 'error' | 'success' | 'info' | 'warning'
-  variant?: 'basic' | 'message'
-  solid?: boolean
-  content?: string
-  message: ReactNode
   close?: () => void
-  buttons?: FixedLengthArray<[AlertButtons, AlertButtons]>
   className?: string
+  buttons?: AlertButtonBase[]
   fullWidth?: boolean
+  solid?: boolean
 }
 
 const Alert = ({
-  solid = false,
-  close,
-  type,
-  variant = 'basic',
-  content,
+  title,
   message,
+  type,
+  close,
   className,
+  buttons,
   fullWidth = false,
-  ...rest
+  solid = false,
 }: AlertBase) => {
   const icons = {
     error: <ErrorIcon className="w-6 h-6" />,
@@ -51,70 +76,54 @@ const Alert = ({
   }
 
   const alertContainer = cx(
-    'flex justify-between rounded-lg lg:px-5 px-3',
+    'flex flex-col items-start gap-2 rounded-lg lg:px-5 px-3 lg:py-4 py-3',
     className,
     {
-      'text-gray-800 flex-col lg:py-4 py-3': variant === 'message',
       'bg-negative-100 text-negative-700': type === 'error' && !solid,
       'bg-success-50 text-success-700': type === 'success' && !solid,
       'bg-gray-100 text-gray-700': type === 'info' && !solid,
       'bg-warning-50 text-warning-700': type === 'warning' && !solid,
 
-      'lg:py-4 p-3 items-center': variant === 'basic',
       'bg-negative-700 text-white': type === 'error' && solid,
       'bg-success-700 text-white': type === 'success' && solid,
       'bg-gray-700 text-white': type === 'info' && solid,
       'bg-warning-700 text-white': type === 'warning' && solid,
     },
-    { 'w-fit max-w-none': fullWidth },
+    { 'w-full max-w-none': fullWidth },
     { 'w-full max-w-[480px]': !fullWidth },
   )
 
-  const contentStyle = cx('w-full', {
-    'text-16': variant === 'basic',
-    'text-16-semibold': variant === 'message',
-    'text-gray-0': solid,
+  const contentStyle = cx('', {
+    'text-16-semibold': title,
+    'text-16': !title,
+    'text-white': solid,
     'text-gray-700': !solid,
   })
 
-  const extraButtonStyle = cx('text-16-medium underline underline-offset-4')
-
-  return variant === 'basic' ? (
+  return (
     <div className={alertContainer}>
-      <div className="flex items-center gap-[14px]">
-        <span className="flex min-w-[22px] justify-center">{icons[type]}</span>
-        <div className={contentStyle}>{message}</div>
-      </div>
-      {close && (
-        <span className="flex h-6 w-6 items-center justify-center">
-          <CloseIcon onClick={close} className="w-6 h-6" />
-        </span>
-      )}
-    </div>
-  ) : (
-    <div className={alertContainer}>
-      <div className="flex flex-row items-center gap-[14px]">
-        <span className="flex min-w-[22px] justify-center">{icons[type]}</span>
-        <div className={contentStyle}>{message}</div>
-      </div>
-      <div
-        className={cx('text-p2 mt-2 w-full pl-9 font-normal', {
-          'text-gray-0': solid,
-          'text-gray-700': !solid,
-        })}
-      >
-        {content}
-      </div>
-      {rest.buttons ? (
-        <div className="lg:mt-5 mt-3 flex w-full gap-5 pl-9">
-          <button type="button" className={extraButtonStyle} onClick={rest.buttons[0].handler}>
-            {rest.buttons[0].title}
-          </button>
-          <button type="button" className={extraButtonStyle} onClick={rest.buttons[1].handler}>
-            {rest.buttons[1].title}
-          </button>
+      <div className="w-full flex justify-between">
+        <div className="flex gap-[14px]">
+          <span className="flex min-w-[22px] justify-center">{icons[type]}</span>
+          <div className={contentStyle}>{title || message}</div>
         </div>
-      ) : null}
+        {close && (
+          <span className="flex h-6 w-6 items-center justify-center cursor-pointer">
+            <CloseIcon onClick={close} className="w-6 h-6" />
+          </span>
+        )}
+      </div>
+      {message && title && (
+        <div
+          className={cx('text-p2 w-full pl-9 font-normal', {
+            'text-gray-0': solid,
+            'text-gray-700': !solid,
+          })}
+        >
+          {title && message}
+        </div>
+      )}
+      <AlertButtons className="pl-9" buttons={buttons} />
     </div>
   )
 }

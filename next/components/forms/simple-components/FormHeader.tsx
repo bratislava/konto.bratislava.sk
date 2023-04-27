@@ -4,11 +4,11 @@ import ArrowsDownUpIcon from '@assets/images/new-icons/ui/arrows-down-up.svg'
 import DownloadIcon from '@assets/images/new-icons/ui/download.svg'
 import LockIcon from '@assets/images/new-icons/ui/lock.svg'
 import PdfIcon from '@assets/images/new-icons/ui/pdf.svg'
-import Waves from 'components/forms/icon-components/Waves'
 import Button from 'components/forms/simple-components/Button'
 import MenuDropdown, {
   MenuItemBase,
 } from 'components/forms/simple-components/MenuDropdown/MenuDropdown'
+import Waves from 'components/forms/simple-components/Waves/Waves'
 import Link from 'next/link'
 
 const formHeaderMenuContent: MenuItemBase[] = [
@@ -46,7 +46,7 @@ const FormHeader = () => {
         </div>
       </div>
       <span className="overflow-hidden">
-        <Waves className="mt-[-1px]" waveColor="rgb(var(--color-main-200))" />
+        <Waves waveColor="rgb(var(--color-main-200))" wavePosition="bottom" />
       </span>
     </div>
   )

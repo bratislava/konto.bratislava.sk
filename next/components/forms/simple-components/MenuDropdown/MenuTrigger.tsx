@@ -31,7 +31,6 @@ const MenuTrigger = React.forwardRef<HTMLButtonElement, ButtonProps>((props, ref
         },
         {
           '': buttonVariant === 'none',
-          d: isOpen && buttonVariant === 'none',
         },
       )}
     >

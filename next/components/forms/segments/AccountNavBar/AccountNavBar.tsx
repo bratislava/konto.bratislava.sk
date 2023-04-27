@@ -18,7 +18,6 @@ import NextLink from 'next/link'
 import { useRouter } from 'next/router'
 import { useTranslation } from 'next-i18next'
 import { ReactNode, useState } from 'react'
-import { RemoveScroll } from 'react-remove-scroll'
 import { Item } from 'react-stately'
 
 import Brand from '../../simple-components/Brand'
@@ -152,7 +151,9 @@ export const AccountNavBar = ({
         )}
         ref={desktopRef}
       >
-        <div className={RemoveScroll.classNames.fullWidth}>
+        <div
+        // className={RemoveScroll.classNames.fullWidth}
+        >
           <StatusBar className="hidden lg:flex" />
           <div
             className={cx('max-w-screen-lg m-auto hidden h-[57px] items-center lg:flex gap-x-6')}
@@ -280,7 +281,9 @@ export const AccountNavBar = ({
         className={cx(className, 'lg:hidden fixed top-0 left-0 w-full bg-white z-40 gap-x-6')}
         ref={mobileRef}
       >
-        <div className={RemoveScroll.classNames.fullWidth}>
+        <div
+        // className={RemoveScroll.classNames.fullWidth}
+        >
           {!burgerOpen && <StatusBar className="flex lg:hidden" />}
           <div className="h-16 flex items-center py-5 px-8 border-b-2">
             <Brand url="https://bratislava.sk/" className="grow" />

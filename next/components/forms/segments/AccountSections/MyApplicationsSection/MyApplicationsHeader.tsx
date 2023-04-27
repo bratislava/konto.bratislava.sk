@@ -1,10 +1,9 @@
 import cx from 'classnames'
+import { useMyApplicationPageStateContext } from 'components/forms/states/MyApplicationPageState'
 import { useTranslation } from 'next-i18next'
 
 type MyApplicationsHeaderBase = {
   title: string
-  applicationsState: 'sent' | 'concept'
-  setApplicationsState: (item: 'sent' | 'concept') => void
 }
 
 type HeaderNavigationItemBase = {
@@ -13,8 +12,9 @@ type HeaderNavigationItemBase = {
 }
 
 const MyApplicationsHeader = (props: MyApplicationsHeaderBase) => {
-  const { title, applicationsState, setApplicationsState } = props
+  const { title } = props
   const { t } = useTranslation('account')
+  const { applicationsState, setApplicationsState } = useMyApplicationPageStateContext()
 
   const headerNavigationList: HeaderNavigationItemBase[] = [
     { title: t('account_section_applications.navigation_sent'), tag: 'sent' },

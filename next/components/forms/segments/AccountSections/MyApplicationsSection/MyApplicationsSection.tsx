@@ -5,6 +5,7 @@ import MyApplicationsHeader from 'components/forms/segments/AccountSections/MyAp
 import MyApplicationsSentList, {
   MyApplicationsSentCardBase,
 } from 'components/forms/segments/AccountSections/MyApplicationsSection/MyApplicationsSentList'
+import { useMyApplicationPageStateContext } from 'components/forms/states/MyApplicationPageState'
 import { useTranslation } from 'next-i18next'
 import { useState } from 'react'
 
@@ -171,17 +172,12 @@ type MyApplicationsSectionBase = {
 
 const MyApplicationsSection = ({ isProductionDeploy }: MyApplicationsSectionBase) => {
   const { t } = useTranslation('account')
-
-  const [applicationsState, setApplicationsState] = useState<'sent' | 'concept'>('sent')
+  const { applicationsState } = useMyApplicationPageStateContext()
   const [isEmptyList, setIsEmptyList] = useState<boolean>(false)
 
   return (
     <div className="flex flex-col">
-      <MyApplicationsHeader
-        applicationsState={applicationsState}
-        setApplicationsState={setApplicationsState}
-        title={t('account_section_applications.navigation')}
-      />
+      <MyApplicationsHeader title={t('account_section_applications.navigation')} />
       {applicationsState === 'sent' && (
         <MyApplicationsSentList cards={!isEmptyList ? sentCards : []} />
       )}

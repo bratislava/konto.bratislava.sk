@@ -3,14 +3,7 @@
   "pospVersion": "0.1",
   "title": "Záväzné stanovisko k investičnej činnosti",
   "type": "object",
-  "required": [
-    "ziadatel",
-    "investor",
-    "projektant",
-    "stavba",
-    "konanie",
-    "prilohy"
-  ],
+  "required": ["ziadatel", "investor", "projektant", "stavba", "konanie", "prilohy"],
   "allOf": [
     {
       "properties": {
@@ -27,9 +20,7 @@
               }
             }
           },
-          "required": [
-            "projektovaDokumentacia"
-          ]
+          "required": ["projektovaDokumentacia"]
         }
       }
     },
@@ -38,23 +29,16 @@
         "ziadatel": {
           "type": "object",
           "title": "Žiadateľ",
+          "properties": {
+            "ziatetelTyp": {
+              "title": "Žiadate ako",
+              "type": "string",
+              "default": "Fyzická osoba",
+              "enum": ["Fyzická osoba", "Fyzická osoba - podnikateľ", "Právnicka osoba"]
+            }
+          },
+          "required": ["ziatetelTyp"],
           "allOf": [
-            {
-              "properties": {
-                "ziatetelTyp": {
-                  "title": "Žiadate ako",
-                  "type": "string",
-                  "enum": [
-                    "Fyzická osoba",
-                    "Fyzická osoba - podnikateľ",
-                    "Právnicka osoba"
-                  ]
-                }
-              },
-              "required": [
-                "ziatetelTyp"
-              ]
-            },
             {
               "if": {
                 "properties": {
@@ -71,9 +55,7 @@
                     "title": "Meno a priezvisko"
                   }
                 },
-                "required": [
-                  "ziadatelMenoPriezvisko"
-                ]
+                "required": ["ziadatelMenoPriezvisko"]
               }
             },
             {
@@ -98,9 +80,7 @@
                     "title": "Obchodné meno"
                   }
                 },
-                "required": [
-                  "ziadatelObchodneMeno"
-                ]
+                "required": ["ziadatelObchodneMeno"]
               }
             },
             {
@@ -118,9 +98,7 @@
                     "title": "IČO"
                   }
                 },
-                "required": [
-                  "ziadatelIco"
-                ]
+                "required": ["ziadatelIco"]
               }
             },
             {
@@ -138,9 +116,7 @@
                     "title": "Adresa trvalého pobytu"
                   }
                 },
-                "required": [
-                  "ziadatelAdresaPobytu"
-                ]
+                "required": ["ziadatelAdresaPobytu"]
               }
             },
             {
@@ -158,9 +134,7 @@
                     "title": "Miesto podnikania"
                   }
                 },
-                "required": [
-                  "ziadatelMiestoPodnikania"
-                ]
+                "required": ["ziadatelMiestoPodnikania"]
               }
             },
             {
@@ -178,9 +152,7 @@
                     "title": "Adresa sídla"
                   }
                 },
-                "required": [
-                  "ziadatelAdresaSidla"
-                ]
+                "required": ["ziadatelAdresaSidla"]
               }
             },
             {
@@ -198,10 +170,7 @@
                       "title": "PSČ"
                     }
                   },
-                  "required": [
-                    "ziadatelMesto",
-                    "ziadatelPsc"
-                  ]
+                  "required": ["ziadatelMesto", "ziadatelPsc"]
                 }
               }
             },
@@ -220,9 +189,7 @@
                     "title": "Kontaktná osoba"
                   }
                 },
-                "required": [
-                  "ziadatelKontaktnaOsoba"
-                ]
+                "required": ["ziadatelKontaktnaOsoba"]
               }
             },
             {
@@ -238,10 +205,7 @@
                   "pattern": "((([+][1-9])|([+][1-9][0-9]{1,8}))|((00[1-9])|(00[1-9][0-9]{1,7})))"
                 }
               },
-              "required": [
-                "ziadatelEmail",
-                "ziadatelTelefon"
-              ]
+              "required": ["ziadatelEmail", "ziadatelTelefon"]
             }
           ]
         }
@@ -252,18 +216,15 @@
         "investor": {
           "type": "object",
           "title": "Investor",
+          "properties": {
+            "investorZiadatelom": {
+              "title": "Je investor rovnaká osoba ako žiadateľ?",
+              "type": "boolean",
+              "default": true
+            }
+          },
+          "required": ["investorZiadatelom"],
           "allOf": [
-            {
-              "properties": {
-                "investorZiadatelom": {
-                  "title": "Je investor rovnaká osoba ako žiadateľ?",
-                  "type": "boolean"
-                }
-              },
-              "required": [
-                "investorZiadatelom"
-              ]
-            },
             {
               "if": {
                 "properties": {
@@ -283,9 +244,7 @@
                     }
                   }
                 },
-                "required": [
-                  "splnomocnenie"
-                ]
+                "required": ["splnomocnenie"]
               }
             },
             {
@@ -311,17 +270,11 @@
                       "investorTyp": {
                         "title": "Typ investora",
                         "type": "string",
-                        "enum": [
-                          "Fyzická osoba",
-                          "Fyzická osoba - podnikateľ",
-                          "Právnicka osoba"
-                        ]
+                        "default": "Fyzická osoba",
+                        "enum": ["Fyzická osoba", "Fyzická osoba - podnikateľ", "Právnicka osoba"]
                       }
                     },
-                    "required": [
-                      "splnomocnenie",
-                      "investorTyp"
-                    ]
+                    "required": ["splnomocnenie", "investorTyp"]
                   },
                   {
                     "if": {
@@ -339,9 +292,7 @@
                           "title": "Meno a priezvisko"
                         }
                       },
-                      "required": [
-                        "investorMenoPriezvisko"
-                      ]
+                      "required": ["investorMenoPriezvisko"]
                     }
                   },
                   {
@@ -366,9 +317,7 @@
                           "title": "Obchodné meno"
                         }
                       },
-                      "required": [
-                        "investorObchodneMeno"
-                      ]
+                      "required": ["investorObchodneMeno"]
                     }
                   },
                   {
@@ -386,9 +335,7 @@
                           "title": "IČO"
                         }
                       },
-                      "required": [
-                        "investorIco"
-                      ]
+                      "required": ["investorIco"]
                     }
                   },
                   {
@@ -406,9 +353,7 @@
                           "title": "Adresa trvalého pobytu"
                         }
                       },
-                      "required": [
-                        "investorAdresaPobytu"
-                      ]
+                      "required": ["investorAdresaPobytu"]
                     }
                   },
                   {
@@ -426,9 +371,7 @@
                           "title": "Miesto podnikania"
                         }
                       },
-                      "required": [
-                        "investorMiestoPodnikania"
-                      ]
+                      "required": ["investorMiestoPodnikania"]
                     }
                   },
                   {
@@ -446,9 +389,7 @@
                           "title": "Adresa sídla"
                         }
                       },
-                      "required": [
-                        "investorAdresaSidla"
-                      ]
+                      "required": ["investorAdresaSidla"]
                     }
                   },
                   {
@@ -466,10 +407,7 @@
                             "title": "PSČ"
                           }
                         },
-                        "required": [
-                          "investorMesto",
-                          "investorPsc"
-                        ]
+                        "required": ["investorMesto", "investorPsc"]
                       }
                     }
                   },
@@ -488,9 +426,7 @@
                           "title": "Kontaktná osoba"
                         }
                       },
-                      "required": [
-                        "investorKontaktnaOsoba"
-                      ]
+                      "required": ["investorKontaktnaOsoba"]
                     }
                   },
                   {
@@ -506,10 +442,7 @@
                         "pattern": "((([+][1-9])|([+][1-9][0-9]{1,8}))|((00[1-9])|(00[1-9][0-9]{1,7})))"
                       }
                     },
-                    "required": [
-                      "investorEmail",
-                      "investorTelefon"
-                    ]
+                    "required": ["investorEmail", "investorTelefon"]
                   }
                 ]
               }
@@ -600,7 +533,89 @@
               "type": "array",
               "uniqueItems": true,
               "items": {
-                "type": "string"
+                "type": "string",
+                "oneOf": [
+                  {
+                    "const": "Čuňovo",
+                    "title": "Čuňovo"
+                  },
+                  {
+                    "const": "Devín",
+                    "title": "Devín"
+                  },
+                  {
+                    "const": "Devínska Nová Ves",
+                    "title": "Devínska Nová Ves"
+                  },
+                  {
+                    "const": "Dúbravka",
+                    "title": "Dúbravka"
+                  },
+                  {
+                    "const": "Jarovce",
+                    "title": "Jarovce"
+                  },
+                  {
+                    "const": "Karlova Ves",
+                    "title": "Karlova Ves"
+                  },
+                  {
+                    "const": "Lamač",
+                    "title": "Lamač"
+                  },
+                  {
+                    "const": "Nivy",
+                    "title": "Nivy"
+                  },
+                  {
+                    "const": "Nové Mesto",
+                    "title": "Nové Mesto"
+                  },
+                  {
+                    "const": "Petržalka",
+                    "title": "Petržalka"
+                  },
+                  {
+                    "const": "Podunajské Biskupice",
+                    "title": "Podunajské Biskupice"
+                  },
+                  {
+                    "const": "Rača",
+                    "title": "Rača"
+                  },
+                  {
+                    "const": "Rusovce",
+                    "title": "Rusovce"
+                  },
+                  {
+                    "const": "Ružinov",
+                    "title": "Ružinov"
+                  },
+                  {
+                    "const": "Staré mesto",
+                    "title": "Staré mesto"
+                  },
+                  {
+                    "const": "Trnávka",
+                    "title": "Trnávka"
+                  },
+                  {
+                    "const": "Vajnory",
+                    "title": "Vajnory"
+                  },
+                  {
+                    "const": "Vinohrady",
+                    "title": "Vinohrady"
+                  },
+                  {
+                    "const": "Vrakuňa",
+                    "title": "Vrakuňa"
+                  },
+                  {
+                    "const": "Záhorská Bystrica",
+                    "title": "Záhorská Bystrica"
+                  }
+                ]
               }
             }
           },
@@ -619,34 +634,27 @@
         "konanie": {
           "type": "object",
           "title": "Typ konania na stavebnom úrade",
-          "allOf": [
-            {
-              "properties": {
-                "konanieTyp": {
-                  "title": "Typ konania",
-                  "type": "string",
-                  "enum": [
-                    "Územné konanie",
-                    "Územné konanie spojené so stavebným konaním",
-                    "Zmena stavby pred dokončením",
-                    "Zmena v užívaní stavby",
-                    "Konanie o dodatočnom povolení stavby"
-                  ]
-                }
-              },
-              "required": [
-                "konanieTyp"
+          "properties": {
+            "konanieTyp": {
+              "title": "Typ konania",
+              "type": "string",
+              "default": "Územné konanie",
+              "enum": [
+                "Územné konanie",
+                "Územné konanie spojené so stavebným konaním",
+                "Zmena stavby pred dokončením",
+                "Zmena v užívaní stavby",
+                "Konanie o dodatočnom povolení stavby"
               ]
-            },
+            }
+          },
+          "required": ["konanieTyp"],
+          "allOf": [
             {
               "if": {
                 "properties": {
                   "konanieTyp": {
-                    "oneOf": [
-                      {
-                        "const": "Konanie o dodatočnom povolení stavby"
-                      }
-                    ]
+                    "const": "Konanie o dodatočnom povolení stavby"
                   }
                 }
               },
@@ -655,63 +663,46 @@
                   "ziadostOdovodnenie": {
                     "type": "string",
                     "title": "Upresnenie konania",
+                    "default": "Realizácia stavby, resp. jej úprav bez akéhokoľvek povolenia",
                     "enum": [
                       "Realizácia stavby, resp. jej úprav bez akéhokoľvek povolenia",
                       "Dodatočné povolenie zmeny stavby pred dokončením"
                     ]
                   }
                 },
-                "required": [
-                  "ziadostOdovodnenie"
-                ]
-              }
-            },
-            {
-              "if": {
-                "properties": {
-                  "ziadostOdovodnenie": {
-                    "const": "Dodatočné povolenie zmeny stavby pred dokončením"
-                  }
-                }
-              },
-              "then": {
-                "properties": {
-                  "stavbaFotodokumentacia": {
-                    "type": "array",
-                    "title": "Fotodokumentácia stavby",
-                    "items": {
-                      "type": "string",
-                      "format": "file"
+                "allOf": [
+                  {
+                    "if": {
+                      "properties": {
+                        "ziadostOdovodnenie": {
+                          "const": "Dodatočné povolenie zmeny stavby pred dokončením"
+                        }
+                      }
+                    },
+                    "then": {
+                      "properties": {
+                        "stavbaFotodokumentacia": {
+                          "type": "array",
+                          "title": "Fotodokumentácia stavby",
+                          "items": {
+                            "type": "string",
+                            "format": "file"
+                          }
+                        },
+                        "stavbaPisomnosti": {
+                          "type": "array",
+                          "title": "Relevantné písomnosti súvisiace so stavbou",
+                          "items": {
+                            "type": "string",
+                            "format": "file"
+                          }
+                        }
+                      },
+                      "required": ["stavbaFotodokumentacia", "stavbaPisomnosti"]
                     }
                   }
-                },
-                "required": [
-                  "stavbaFotodokumentacia"
-                ]
-              }
-            },
-            {
-              "if": {
-                "properties": {
-                  "ziadostOdovodnenie": {
-                    "const": "Dodatočné povolenie zmeny stavby pred dokončením"
-                  }
-                }
-              },
-              "then": {
-                "properties": {
-                  "stavbaPisomnosti": {
-                    "type": "array",
-                    "title": "Relevantné písomnosti súvisiace so stavbou",
-                    "items": {
-                      "type": "string",
-                      "format": "file"
-                    }
-                  }
-                },
-                "required": [
-                  "stavbaPisomnosti"
-                ]
+                ],
+                "required": ["ziadostOdovodnenie"]
               }
             }
           ]

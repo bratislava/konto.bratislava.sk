@@ -582,6 +582,7 @@
   "you_will_be_redirected_to_the_payment_gateway": "Budete presmerovaný na platobnú bránu.",
   "use_your_banking_app_to_load": "Na načítanie použite bankovú aplikáciu.",
   "tax_constructions": "Daň zo stavieb",
+  "tax_bank_transfer_slow_info": "Spracovanie platby pri platbe prevodom môže trvať niekoľko dní.",
   "thank_you": {
     "footer_text": "© 2023 Hlavné mesto Bratislava",
     "subtitle_mail_platbadane": "V prípade akýchkoľvek otázok nás neváhajte kontaktovať na platbadane@bratislava.sk",

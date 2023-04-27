@@ -53,6 +53,9 @@ const PaymentData = ({ tax }: PaymentDataProps) => {
         <div className="flex-col-reverse flex md:flex-row lg:gap-8 gap-6 w-full">
           <div className="flex-col flex md:w-[488px] w-full sm:px-6 sm:py-5 p-0 gap-5 sm:border-2 border-0 border-solid border-gray-200 rounded-lg">
             <div className="text-p2">{t('use_one_of_ibans_to_pay')}</div>
+            <div className="text-p2 p-3 rounded-5 bg-warning-100">
+              {t('tax_bank_transfer_slow_info')}
+            </div>
             <div className="flex flex-col items-start gap-4">
               <div className="flex flex-col items-start gap-1 isolate self-stretch">
                 <div className="text-p2">{t('bank_info.slovak_sporitelna')}</div>

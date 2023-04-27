@@ -1,4 +1,4 @@
-import { TaxApiError } from '@utils/api'
+// import { TaxApiError } from '@utils/api'
 import { useTaxes } from '@utils/apiHooks'
 import { ROUTES } from '@utils/constants'
 import logger from '@utils/logger'
@@ -7,7 +7,7 @@ import { taxStatusHelper } from '@utils/utils'
 import AccountSectionHeader from 'components/forms/segments/AccountSectionHeader/AccountSectionHeader'
 import TaxesFeesCard from 'components/forms/segments/AccountSections/TaxesFeesSection/TaxesFeesCard'
 import TaxesFeesErrorCard from 'components/forms/segments/AccountSections/TaxesFeesSection/TaxesFeesErrorCard'
-import TaxesFeesWaitingCard from 'components/forms/segments/AccountSections/TaxesFeesSection/TaxesFeesWaitingCard'
+// import TaxesFeesWaitingCard from 'components/forms/segments/AccountSections/TaxesFeesSection/TaxesFeesWaitingCard'
 import Spinner from 'components/forms/simple-components/Spinner'
 import { useTranslation } from 'next-i18next'
 
@@ -29,12 +29,12 @@ const TaxesFeesSection: React.FC<TaxesFeesSectionProps> = () => {
   const { t } = useTranslation('account')
   const { status } = useAccount()
 
-  const { data, error, isLoading } = useTaxes()
+  const { data, isLoading } = useTaxes()
 
-  const taxesFeesWaitingCardContent = `
-<h4>${t('account_section_payment.waiting_card_title')}</h4>
-<p>${t('account_section_payment.waiting_card_text')}</p>
-`
+  //   const taxesFeesWaitingCardContent = `
+  // <h4>${t('account_section_payment.waiting_card_title')}</h4>
+  // <p>${t('account_section_payment.waiting_card_text')}</p>
+  // `
   const taxesFeesErrorCardContent = `
 <h4>${t('account_section_payment.error_card_title')}</h4>
 <div>${t('account_section_payment.error_card_content.title')}

@@ -25,6 +25,7 @@ import { useTranslation } from 'next-i18next'
 import React, { ReactNode, useCallback, useContext, useEffect, useState } from 'react'
 import { useInterval } from 'usehooks-ts'
 
+import { objectToCognitoUserAttributes, Tier, UserData } from './cognito'
 import logger, { faro } from './logger'
 import { isBrowser } from './utils'
 
@@ -40,55 +41,9 @@ export enum AccountStatus {
   IdentityVerificationSuccess,
 }
 
-export enum Tier {
-  NEW = 'NEW',
-  QUEUE_IDENTITY_CARD = 'QUEUE_IDENTITY_CARD',
-  NOT_VERIFIED_IDENTITY_CARD = 'NOT_VERIFIED_IDENTITY_CARD',
-  IDENTITY_CARD = 'IDENTITY_CARD',
-  EID = 'EID',
-}
-
-export interface Address {
-  formatted?: string
-  street_address?: string
-  locality?: string
-  region?: string
-  postal_code?: string
-  country?: string
-  phone_number?: string
-}
-
-export interface UserData {
-  sub?: string
-  email_verified?: string
-  email?: string
-  name?: string
-  given_name?: string
-  family_name?: string
-  phone_number?: string
-  phone_verified?: string
-  address?: Address
-  ifo?: string
-  tier?: Tier
-}
-
-// non standard, has prefix custom: in cognito
-const customAttributes = new Set(['ifo', 'tier'])
-const updatableAttributes = new Set([
-  'name',
-  'given_name',
-  'family_name',
-  'phone_number',
-  'address',
-  'tier',
-])
-
 const poolData = {
   UserPoolId: process.env.NEXT_PUBLIC_COGNITO_USER_POOL_ID || '',
   ClientId: process.env.NEXT_PUBLIC_COGNITO_CLIENT_ID || '',
-  // Storage: new CookieStorage({
-  //   domain: process.env.NEXT_PUBLIC_COGNITO_COOKIE_STORAGE_DOMAIN,
-  // }),
 }
 const userPool = new CognitoUserPool(poolData)
 
@@ -144,50 +99,21 @@ export const AccountProvider = ({ children }: { children: ReactNode }) => {
   const { t } = useTranslation()
 
   // TODO - could be better, currently used only after login, AccountStatus should be replaced or rewritten
-  const mapTierToStatus = (tier: Tier): AccountStatus => {
-    switch (tier) {
-      case Tier.QUEUE_IDENTITY_CARD:
-        return AccountStatus.IdentityVerificationPending
-      case Tier.NOT_VERIFIED_IDENTITY_CARD:
-        return AccountStatus.IdentityVerificationFailed
-      case Tier.IDENTITY_CARD:
-      case Tier.EID:
-        return AccountStatus.IdentityVerificationSuccess
-      case Tier.NEW:
-        return AccountStatus.Idle
-      default:
-        return AccountStatus.IdentityVerificationRequired
-    }
-  }
-
-  const userAttributesToObject = (attributes?: CognitoUserAttribute[]): UserData => {
-    const data: any = {}
-    attributes?.forEach((attribute: CognitoUserAttribute) => {
-      const attributeKey: string = attribute.getName().replace(/^custom:/, '')
-      data[attributeKey] =
-        attributeKey === 'address' ? JSON.parse(attribute.getValue()) : attribute.getValue()
-    })
-    return data
-  }
-
-  const objectToUserAttributes = (data: UserData | Address): CognitoUserAttribute[] => {
-    const attributeList: CognitoUserAttribute[] = []
-    Object.entries(data).forEach(([key, value]) => {
-      if (updatableAttributes.has(key)) {
-        const attribute = new CognitoUserAttribute({
-          Name: customAttributes.has(key) ? `custom:${key}` : key,
-          Value:
-            key === 'address'
-              ? JSON.stringify(value)
-              : key === 'phone_number'
-              ? value?.replace(' ', '')
-              : value,
-        })
-        attributeList.push(attribute)
-      }
-    })
-    return attributeList
-  }
+  // const mapTierToStatus = (tier: Tier): AccountStatus => {
+  //   switch (tier) {
+  //     case Tier.QUEUE_IDENTITY_CARD:
+  //       return AccountStatus.IdentityVerificationPending
+  //     case Tier.NOT_VERIFIED_IDENTITY_CARD:
+  //       return AccountStatus.IdentityVerificationFailed
+  //     case Tier.IDENTITY_CARD:
+  //     case Tier.EID:
+  //       return AccountStatus.IdentityVerificationSuccess
+  //     case Tier.NEW:
+  //       return AccountStatus.Idle
+  //     default:
+  //       return AccountStatus.IdentityVerificationRequired
+  //   }
+  // }
 
   const logout = () => {
     if (user) {
@@ -229,6 +155,7 @@ export const AccountProvider = ({ children }: { children: ReactNode }) => {
     }
   }
 
+  // TODO continue here user
   const verifyEmail = (verificationCode: string): Promise<boolean> => {
     const cognitoUser = new CognitoUser({
       Username: lastCredentials?.Username,
@@ -254,6 +181,7 @@ export const AccountProvider = ({ children }: { children: ReactNode }) => {
     })
   }
 
+  // TODO continue here user
   const resendVerificationCode = (): Promise<boolean> => {
     const cognitoUser = new CognitoUser({
       Username: lastCredentials.Username,
@@ -278,7 +206,7 @@ export const AccountProvider = ({ children }: { children: ReactNode }) => {
   }
 
   const updateUserData = (data: UserData): Promise<boolean> => {
-    const attributeList = objectToUserAttributes(data)
+    const attributeList = objectToCognitoUserAttributes(data)
 
     setError(null)
     return new Promise((resolve) => {
@@ -378,7 +306,7 @@ export const AccountProvider = ({ children }: { children: ReactNode }) => {
             return
           }
 
-          const userData = userAttributesToObject(attributes)
+          const userData = cognitoUserAttributesToObject(attributes)
           setUserData(userData)
           setUser(cognitoUser)
           setLastAccessToken(result?.getAccessToken().getJwtToken())
@@ -400,7 +328,7 @@ export const AccountProvider = ({ children }: { children: ReactNode }) => {
     turnstileToken: string,
     data: UserData,
   ): Promise<boolean> => {
-    const attributeList = objectToUserAttributes(data)
+    const attributeList = objectToCognitoUserAttributes(data)
     const validationDataAttributeList = [
       new CognitoUserAttribute({
         Name: 'custom:turnstile_token',
@@ -459,9 +387,6 @@ export const AccountProvider = ({ children }: { children: ReactNode }) => {
     const cognitoUser = new CognitoUser({
       Username: lastCredentials.Username,
       Pool: userPool,
-      // Storage: new CookieStorage({
-      //   domain: process.env.NEXT_PUBLIC_COGNITO_COOKIE_STORAGE_DOMAIN,
-      // }),
     })
 
     return new Promise((resolve) => {
@@ -552,7 +477,7 @@ export const AccountProvider = ({ children }: { children: ReactNode }) => {
               logger.error(err)
               resolve(false)
             } else {
-              const userData = userAttributesToObject(attributes)
+              const userData = cognitoUserAttributesToObject(attributes)
               setUserData(userData)
               setUser(cognitoUser)
 

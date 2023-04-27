@@ -123,7 +123,7 @@ const PaymentData = ({ tax }: PaymentDataProps) => {
                 text={t('to_pay')}
                 className="lg:block hidden min-w-max"
                 onPress={redirectToPaymentGateway}
-                disabled={status?.paymentStatus === 'paid'}
+                disabled={status?.paymentStatus !== 'unpaid'}
               />
               {/* Mobile 'To pay' button */}
               <Button
@@ -132,7 +132,7 @@ const PaymentData = ({ tax }: PaymentDataProps) => {
                 text={t('to_pay')}
                 className="lg:hidden block min-w-full"
                 onPress={redirectToPaymentGateway}
-                disabled={status?.paymentStatus === 'paid'}
+                disabled={status?.paymentStatus !== 'unpaid'}
               />
             </div>
             <div className="flex lg:flex-row flex-col lg:p-6 p-4 gap-4 border-2 border-solid border-gray-200 rounded-lg self-stretch grow">

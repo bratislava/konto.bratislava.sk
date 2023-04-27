@@ -62,6 +62,7 @@
     "react-hook-form": "^7.42.1",
     "react-markdown": "8.0.3",
     "react-query": "^3.39.3",
+    "react-remove-scroll": "^2.5.5",
     "react-resize-detector": "^8.0.3",
     "react-select": "^5.4.0",
     "react-simple-snackbar": "^1.1.11",

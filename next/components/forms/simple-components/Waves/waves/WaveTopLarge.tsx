@@ -1,4 +1,4 @@
-import { WavesSvgProps } from '@components/ui/Waves/wavesTypes'
+import { WavesSvgProps } from '../wavesTypes'
 
 const WaveTopLarge = ({ className }: WavesSvgProps) => {
   return (

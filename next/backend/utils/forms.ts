@@ -1,10 +1,10 @@
 import forms, { EFormKey, EFormValue } from '@backend/forms'
 import { firstCharToUpper } from '@backend/utils/strings'
 import {
+  JsonSchema,
   ajvFormats,
   ajvKeywords,
   getAllPossibleJsonSchemaProperties,
-  JsonSchema,
 } from '@utils/forms'
 import logger from '@utils/logger'
 import { forceString } from '@utils/utils'
@@ -69,9 +69,10 @@ export const buildXmlRecursive = (
       const format =
         jsonSchema.type === 'array' ? getFormatFromItems(jsonSchema.items) : jsonSchema.format
       if (format === 'ciselnik') {
-        // TODO fill name
-        node = `<Code>${node}</Code><Name>${node}</Name><WsEnumCode>${node}</WsEnumCode>`
-      } else if (format === 'data-url') {
+        node = `<Code>${node}</Code><Name>${node}</Name><WsEnumCode>${
+          (jsonSchema as Record<string, any>).ciselnik?.id
+        }</WsEnumCode>`
+      } else if (format === 'file') {
         node = `<Nazov>${node}</Nazov><Prilozena>true</Prilozena>`
       }
     }
@@ -160,13 +161,13 @@ export const removeNeedlessXmlTransformArraysRecursive = (
         }
       } else if (childSchema.type === 'array') {
         const format = getFormatFromItems(childSchema.items)
-        if (format === 'data-url') {
+        if (format === 'file') {
           obj[k] = obj[k].map((x: any) => x.nazov[0])
         } else if (format === 'ciselnik') {
           obj[k] = obj[k].map((x: any) => x.code[0])
         }
       } else if (childSchema.type === 'string') {
-        if (childSchema.format === 'data-url') {
+        if (childSchema.format === 'file') {
           obj[k] = obj[k][0].nazov[0]
         } else if (childSchema.format === 'ciselnik') {
           obj[k] = obj[k][0].code[0]

@@ -41,7 +41,7 @@
     "stavbaDruh": "Bytový dom",
     "stavbaUlica": "string",
     "stavbaParcela": "string",
-    "stavbaKataster": ["1", "2", "3"]
+    "stavbaKataster": ["Karlova Ves"]
   },
   "konanie": {
     "konanieTyp": "Konanie o dodatočnom povolení stavby",

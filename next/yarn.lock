@@ -1146,10 +1146,10 @@
   resolved "https://registry.yarnpkg.com/@bcoe/v8-coverage/-/v8-coverage-0.2.3.tgz#75a2e8b51cb758a7553d6804a5932d7aace75c39"
   integrity sha512-0hYQ8SB4Db5zvZB4axdMHGwEaQjkZzFjQiN9LVYvIFB2nSUHW9tYpxWriPrWDASIxiaXax83REcLxuSdnGPZtw==
 
-"@bratislava/json-schema-xsd-tools@^0.1.9":
-  version "0.1.9"
-  resolved "https://registry.yarnpkg.com/@bratislava/json-schema-xsd-tools/-/json-schema-xsd-tools-0.1.9.tgz#ee2a26be317de77f56c6ab6d2fb059093049dfe8"
-  integrity sha512-96FWlFHuZSLUmgHi6kvA6Z0lm6ycRvPz3ju4ZgLYC4v6VA0VxDWluscDLE/B26VUi3IKUGQzHCTQBJTFmbLTNA==
+"@bratislava/json-schema-xsd-tools@^0.2.1":
+  version "0.2.1"
+  resolved "https://registry.yarnpkg.com/@bratislava/json-schema-xsd-tools/-/json-schema-xsd-tools-0.2.1.tgz#6e6886870ea36ac1c38a2e97703ba77781a22f5d"
+  integrity sha512-Z/z5LgSMgETCPUvH8EeSImDUqKgxexaPZsI4Nc2tRMfYxWQr8KRg6vsvY4PKnNTKLp5sMGRyKz1VB1b0ueDXcw==
   dependencies:
     chalk "2.4"
     cheerio "^1.0.0-rc.12"
@@ -4214,6 +4214,19 @@
   version "0.4.2"
   resolved "https://registry.yarnpkg.com/@tailwindcss/line-clamp/-/line-clamp-0.4.2.tgz#f353c5a8ab2c939c6267ac5b907f012e5ee130f9"
   integrity sha512-HFzAQuqYCjyy/SX9sLGB1lroPzmcnWv1FHkIpmypte10hptf4oPUfucryMKovZh2u0uiS9U5Ty3GghWfEJGwVw==
+
+"@tanstack/query-core@4.29.5":
+  version "4.29.5"
+  resolved "https://registry.yarnpkg.com/@tanstack/query-core/-/query-core-4.29.5.tgz#a0273e88bf2fc102c4c893dc7c034127b67fd5d9"
+  integrity sha512-xXIiyQ/4r9KfaJ3k6kejqcaqFXXBTzN2aOJ5H1J6aTJE9hl/nbgAdfF6oiIu0CD5xowejJEJ6bBg8TO7BN4NuQ==
+
+"@tanstack/react-query@^4.29.5":
+  version "4.29.5"
+  resolved "https://registry.yarnpkg.com/@tanstack/react-query/-/react-query-4.29.5.tgz#3890741291f9f925933243d78bd74dfc59d64208"
+  integrity sha512-F87cibC3s3eG0Q90g2O+hqntpCrudKFnR8P24qkH9uccEhXErnJxBC/AAI4cJRV2bfMO8IeGZQYf3WyYgmSg0w==
+  dependencies:
+    "@tanstack/query-core" "4.29.5"
+    use-sync-external-store "^1.2.0"
 
 "@testing-library/dom@^8.11.1", "@testing-library/dom@^8.5.0":
   version "8.20.0"

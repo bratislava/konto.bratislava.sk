@@ -28,8 +28,8 @@ import useSnackbar from '@utils/useSnackbar'
 import { AnySchemaObject, ErrorObject, FuncKeywordDefinition } from 'ajv'
 import { JSONSchema7, JSONSchema7Definition } from 'json-schema'
 import { cloneDeep, get, merge } from 'lodash'
-import { useRouter } from 'next/router'
 import { useTranslation } from 'next-i18next'
+import { useRouter } from 'next/router'
 import { ChangeEvent, RefObject, useEffect, useRef, useState } from 'react'
 
 import { StepData } from '../components/forms/types/TransformedFormData'
@@ -152,7 +152,8 @@ export const mergePropertyTreeToFormData = (
 
   Object.entries(tree).forEach(([key, value]: [string, JsonSchemaPropertyTree]) => {
     if (key in newFormData) {
-      const merged = mergePropertyTreeToFormData(newFormData[key], value)
+      const property: RJSFSchema = newFormData[key]
+      const merged = mergePropertyTreeToFormData(property, value)
       Object.assign(newFormData, { [key]: merged })
     } else {
       Object.assign(newFormData, { [key]: value })
@@ -165,18 +166,17 @@ export const mergePropertyTreeToFormData = (
 export const buildRJSFError = (path: string[], errorMsg: string | undefined): ErrorSchema => {
   return path.reduceRight(
     (memo: object, arrayValue: string) => {
-      const error: any = {}
+      const error: ErrorSchema = {}
       error[arrayValue] = memo
       return error
     },
     { __errors: [errorMsg || 'error'] },
-  )
+  ) as ErrorSchema
 }
 
 export const exampleAsyncValidation = (
-  schema: any,
-  value: any,
-  parentSchema?: AnySchemaObject,
+  schema: AnySchemaObject,
+  value: unknown,
 ): Promise<boolean> => {
   return new Promise((resolve) => {
     setTimeout(() => resolve(!!value), 500)
@@ -184,7 +184,11 @@ export const exampleAsyncValidation = (
 }
 
 export interface KeywordDefinition extends FuncKeywordDefinition {
-  validate?: (schema: any, value: any, parentSchema?: AnySchemaObject) => boolean | Promise<boolean>
+  validate?: (
+    schema: AnySchemaObject,
+    value: unknown,
+    parentSchema?: AnySchemaObject,
+  ) => boolean | Promise<boolean>
 }
 
 export const ajvKeywords: KeywordDefinition[] = [
@@ -209,21 +213,24 @@ export const ajvKeywords: KeywordDefinition[] = [
   {
     keyword: 'pospVersion',
   },
+  {
+    keyword: 'ciselnik',
+  },
 ]
 
 export const ajvFormats = {
   zip: /\b\d{5}\b/,
   time: /^[0-2]\d:[0-5]\d$/,
-  'data-url': () => true,
   ciselnik: () => true,
+  file: () => true,
 }
 
 const validateAsyncProperties = async (
   schema: RJSFSchema,
-  data: any,
+  data: unknown,
   path: string[],
 ): Promise<ErrorSchema> => {
-  const errors = {}
+  let errors = {}
 
   await Promise.all(
     ajvKeywords.map(async (k: KeywordDefinition) => {
@@ -231,7 +238,8 @@ const validateAsyncProperties = async (
       if (k.async === true && schema[keyword]) {
         const isValid = await validateKeyword(keyword, schema[keyword], get(data, path), schema)
         if (!isValid) {
-          merge(errors, buildRJSFError(path, schema[keyword].errorMsg))
+          const schemaErrorMessage: string = (schema[keyword] as RJSFSchema).errorMsg as string
+          errors = merge(errors, buildRJSFError(path, schemaErrorMessage))
         }
       }
     }),
@@ -241,7 +249,7 @@ const validateAsyncProperties = async (
   await Promise.all(
     Object.keys(properties).map(async (key) => {
       const childSchema = properties[key] as RJSFSchema
-      merge(errors, await validateAsyncProperties(childSchema, data, [...path, key]))
+      errors = merge(errors, await validateAsyncProperties(childSchema, data, [...path, key]))
     }),
   )
 
@@ -249,13 +257,13 @@ const validateAsyncProperties = async (
 }
 
 const isFieldRequired = (fieldKey: string, schema: StrictRJSFSchema): boolean => {
-  return Object.entries(schema).some(([key, value]: [string, RJSFSchema]) => {
+  return Object.entries(schema).some(([key, value]: [string, StrictRJSFSchema]) => {
     if (key === 'required' && Array.isArray(value) && value.includes(fieldKey)) {
       return true
     }
     let isRequired = false
     if (key !== 'required' && value && Array.isArray(value)) {
-      value.forEach((item) => {
+      value.forEach((item: StrictRJSFSchema) => {
         isRequired = isRequired || isFieldRequired(fieldKey, item)
       })
     } else if (key !== 'required' && value && typeof value === 'object') {
@@ -265,17 +273,25 @@ const isFieldRequired = (fieldKey: string, schema: StrictRJSFSchema): boolean =>
   })
 }
 
-const validateDateFromToFormat = (formData: RJSFSchema, errors: FormValidation, schema: any) => {
-  const formDataKeys = Object.keys(formData)
-  formDataKeys?.forEach((key) => {
+const validateDateFromToFormat = (
+  formData: RJSFSchema,
+  errors: FormValidation,
+  schema: RJSFSchema,
+) => {
+  const formDataKeys = Object.entries(formData)
+  formDataKeys?.forEach(([key, value]: [string, RJSFSchema]) => {
+    const schemaProperty: any =
+      typeof schema.properties[key] === 'boolean' ? {} : schema.properties[key]
     if (
       schema?.properties &&
-      schema?.properties[key]?.dateFromTo &&
-      formData[key].startDate &&
-      formData[key].endDate
+      schemaProperty &&
+      'dateFromTo' in schemaProperty &&
+      schemaProperty.dateFromTo &&
+      value.startDate &&
+      value.endDate
     ) {
-      const startDate = new Date(formData[key].startDate)
-      const endDate = new Date(formData[key].endDate)
+      const startDate = new Date(value.startDate as string)
+      const endDate = new Date(value.endDate as string)
 
       if (endDate <= startDate) {
         errors[key]?.endDate?.addError('End date must be greater than start date')
@@ -283,20 +299,28 @@ const validateDateFromToFormat = (formData: RJSFSchema, errors: FormValidation, 
     }
   })
 }
-const validateTimeFromToFormat = (formData: RJSFSchema, errors: FormValidation, schema: any) => {
-  const formDataKeys = Object.keys(formData)
-  formDataKeys?.forEach((key) => {
+const validateTimeFromToFormat = (
+  formData: RJSFSchema,
+  errors: FormValidation,
+  schema: RJSFSchema,
+) => {
+  const formDataKeys = Object.entries(formData)
+  formDataKeys?.forEach(([key, value]: [string, RJSFSchema]) => {
+    const schemaProperty: any =
+      typeof schema.properties[key] === 'boolean' ? {} : schema.properties[key]
     if (
       schema?.properties &&
-      schema?.properties[key]?.timeFromTo &&
-      formData[key].startTime &&
-      formData[key].endTime
+      schemaProperty &&
+      'timeFromTo' in schemaProperty &&
+      schemaProperty.timeFromTo &&
+      value.startTime &&
+      value.endTime
     ) {
-      const startTime: number[] = formData[key].startTime
+      const startTime: number[] = (value.startTime as string)
         ?.split(':')
         .map((time: string) => parseInt(time, 10))
 
-      const endTime: number[] = formData[key].endTime
+      const endTime: number[] = (value.endTime as string)
         ?.split(':')
         .map((time: string) => parseInt(time, 10))
 
@@ -310,6 +334,7 @@ const validateTimeFromToFormat = (formData: RJSFSchema, errors: FormValidation, 
   })
 }
 
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 const validateRequiredFormat = (
   formData: RJSFSchema,
   errors: FormValidation,
@@ -387,12 +412,12 @@ export const getInitFormData = (schema: RJSFSchema): RJSFSchema => {
 
 export const createTestFormData = (formData: RJSFSchema): RJSFSchema => {
   const newFormData: RJSFSchema = {}
-  if (typeof formData === 'boolean') return newFormData
+  if (!formData || typeof formData === 'boolean') return newFormData
 
   Object.entries(formData).forEach(([key, value]: [string, RJSFSchema]) => {
     if (typeof value !== 'boolean') {
       if (value === undefined) {
-        Object.assign(newFormData, { [key]: '' })
+        Object.assign(newFormData, { [key]: null })
       } else if (typeof value === 'object' && !Array.isArray(value)) {
         Object.assign(newFormData, { [key]: createTestFormData(value) })
       } else {
@@ -456,9 +481,9 @@ export const useFormStepper = (eformSlug: string, eform: EFormValue, callbacks: 
   const currentSchema = steps ? cloneDeep(steps[stepIndex]) : {}
 
   const initFormData = async () => {
-    const formData = await callbacks.onInit?.()
-    if (formData) {
-      setFormData(formData)
+    const loadedFormData: RJSFSchema = await callbacks.onInit?.()
+    if (loadedFormData) {
+      setFormData(loadedFormData)
     } else {
       setFormData(getInitFormData(schema))
     }
@@ -467,8 +492,13 @@ export const useFormStepper = (eformSlug: string, eform: EFormValue, callbacks: 
   useEffect(() => {
     // effect to reset all internal state when critical input 'props' change
     initFormData()
-    setStepIndex(0)
-    validateSteps()
+      .then(() => {
+        setStepIndex(0)
+        validateSteps()
+        return null
+      })
+      .catch((error_) => logger.error('Init FormData failed', error_))
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [eformSlug, schema])
 
   useEffect(() => {
@@ -496,7 +526,14 @@ export const useFormStepper = (eformSlug: string, eform: EFormValue, callbacks: 
     if (schema.$async === true) {
       const newExtraErrors = await validateAsyncProperties(currentSchema, formData, [])
       isValid = isValid && Object.keys(newExtraErrors).length === 0
-      setExtraErrors({ ...extraErrors, ...newExtraErrors })
+      const currentStepKey: string = Object.keys(currentSchema.properties)[0]
+      if (!(currentStepKey in newExtraErrors)) {
+        const updatedExtraErrors = { ...extraErrors }
+        delete updatedExtraErrors[currentStepKey]
+        setExtraErrors(updatedExtraErrors)
+      } else {
+        setExtraErrors({ ...extraErrors, ...newExtraErrors })
+      }
     }
 
     return isValid
@@ -541,6 +578,7 @@ export const useFormStepper = (eformSlug: string, eform: EFormValue, callbacks: 
       // when we save nextStep, we will validate all (conditional) steps
       validateSteps()
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [nextStep])
 
   useEffect(() => {
@@ -561,6 +599,7 @@ export const useFormStepper = (eformSlug: string, eform: EFormValue, callbacks: 
       setNextStep(null)
     }
     setStepData(getAllStepData(steps, stepData))
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [steps])
 
   const submitStep = () => {
@@ -579,6 +618,7 @@ export const useFormStepper = (eformSlug: string, eform: EFormValue, callbacks: 
         submitStep()
       }
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isSkipEnabled])
 
   // TODO: could be reduced by wrapping nextStepIndex and isSkipEnabled to 1 object
@@ -619,8 +659,8 @@ export const useFormStepper = (eformSlug: string, eform: EFormValue, callbacks: 
   const importXml = async (e: ChangeEvent<HTMLInputElement>) => {
     try {
       const xmlData = await readTextFile(e)
-      const formData = await xmlToFormData(eformSlug, xmlData)
-      setFormData(formData)
+      const transformedFormData: RJSFSchema = await xmlToFormData(eformSlug, xmlData)
+      setFormData(transformedFormData)
     } catch (error) {
       openSnackbarError(t('errors.xml_import'))
     }
@@ -712,11 +752,11 @@ export const useFormFiller = (eform: EFormValue) => {
   }
 
   const router = useRouter()
-  const initFormData = async () => {
-    let formData
+  const initFormData = async (): Promise<RJSFSchema> => {
+    let formData: RJSFSchema
     const token = await getAccessToken()
     if (!token) {
-      return
+      return undefined
     }
 
     const queryId =
@@ -757,6 +797,7 @@ export const useFormSubmitter = (slug: string) => {
   const submitForm = async (formData: RJSFSchema) => {
     try {
       // TODO do something more with the result then just showing success
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
       const result = await submitEform(slug, formData)
       setErrors([])
       setSuccessMessage(t('success'))

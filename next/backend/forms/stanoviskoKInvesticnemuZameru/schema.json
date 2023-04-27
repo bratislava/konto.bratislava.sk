@@ -10,14 +10,13 @@
         "prilohy": {
           "type": "object",
           "title": "Prílohy",
-          "description": "Jednotlivé časti štúdie môžete nahrať samostatne alebo ako jeden súbor.",
           "properties": {
             "architektonickaStudia": {
               "type": "array",
               "title": "Architektonická štúdia",
               "items": {
                 "type": "string",
-                "format": "data-url"
+                "format": "file"
               }
             }
           },
@@ -30,17 +29,16 @@
         "ziadatel": {
           "type": "object",
           "title": "Žiadateľ",
+          "properties": {
+            "ziatetelTyp": {
+              "title": "Žiadate ako",
+              "type": "string",
+              "default": "Fyzická osoba",
+              "enum": ["Fyzická osoba", "Fyzická osoba - podnikateľ", "Právnicka osoba"]
+            }
+          },
+          "required": ["ziatetelTyp"],
           "allOf": [
-            {
-              "properties": {
-                "ziatetelTyp": {
-                  "title": "Žiadate ako",
-                  "type": "string",
-                  "enum": ["Fyzická osoba", "Fyzická osoba - podnikateľ", "Právnicka osoba"]
-                }
-              },
-              "required": ["ziatetelTyp"]
-            },
             {
               "if": {
                 "properties": {
@@ -218,16 +216,15 @@
         "investor": {
           "type": "object",
           "title": "Investor",
+          "properties": {
+            "investorZiadatelom": {
+              "title": "Je investor rovnaká osoba ako žiadateľ?",
+              "type": "boolean",
+              "default": true
+            }
+          },
+          "required": ["investorZiadatelom"],
           "allOf": [
-            {
-              "properties": {
-                "investorZiadatelom": {
-                  "title": "Je investor rovnaká osoba ako žiadateľ?",
-                  "type": "boolean"
-                }
-              },
-              "required": ["investorZiadatelom"]
-            },
             {
               "if": {
                 "properties": {
@@ -243,7 +240,7 @@
                     "title": "Splnomocnenie na zastupovanie",
                     "items": {
                       "type": "string",
-                      "format": "data-url"
+                      "format": "file"
                     }
                   }
                 },
@@ -267,12 +264,13 @@
                         "title": "Splnomocnenie na zastupovanie",
                         "items": {
                           "type": "string",
-                          "format": "data-url"
+                          "format": "file"
                         }
                       },
                       "investorTyp": {
                         "title": "Typ investora",
                         "type": "string",
+                        "default": "Fyzická osoba",
                         "enum": ["Fyzická osoba", "Fyzická osoba - podnikateľ", "Právnicka osoba"]
                       }
                     },
@@ -535,7 +533,89 @@
               "type": "array",
               "uniqueItems": true,
               "items": {
-                "type": "string"
+                "type": "string",
+                "oneOf": [
+                  {
+                    "const": "Čuňovo",
+                    "title": "Čuňovo"
+                  },
+                  {
+                    "const": "Devín",
+                    "title": "Devín"
+                  },
+                  {
+                    "const": "Devínska Nová Ves",
+                    "title": "Devínska Nová Ves"
+                  },
+                  {
+                    "const": "Dúbravka",
+                    "title": "Dúbravka"
+                  },
+                  {
+                    "const": "Jarovce",
+                    "title": "Jarovce"
+                  },
+                  {
+                    "const": "Karlova Ves",
+                    "title": "Karlova Ves"
+                  },
+                  {
+                    "const": "Lamač",
+                    "title": "Lamač"
+                  },
+                  {
+                    "const": "Nivy",
+                    "title": "Nivy"
+                  },
+                  {
+                    "const": "Nové Mesto",
+                    "title": "Nové Mesto"
+                  },
+                  {
+                    "const": "Petržalka",
+                    "title": "Petržalka"
+                  },
+                  {
+                    "const": "Podunajské Biskupice",
+                    "title": "Podunajské Biskupice"
+                  },
+                  {
+                    "const": "Rača",
+                    "title": "Rača"
+                  },
+                  {
+                    "const": "Rusovce",
+                    "title": "Rusovce"
+                  },
+                  {
+                    "const": "Ružinov",
+                    "title": "Ružinov"
+                  },
+                  {
+                    "const": "Staré mesto",
+                    "title": "Staré mesto"
+                  },
+                  {
+                    "const": "Trnávka",
+                    "title": "Trnávka"
+                  },
+                  {
+                    "const": "Vajnory",
+                    "title": "Vajnory"
+                  },
+                  {
+                    "const": "Vinohrady",
+                    "title": "Vinohrady"
+                  },
+                  {
+                    "const": "Vrakuňa",
+                    "title": "Vrakuňa"
+                  },
+                  {
+                    "const": "Záhorská Bystrica",
+                    "title": "Záhorská Bystrica"
+                  }
+                ]
               }
             }
           },

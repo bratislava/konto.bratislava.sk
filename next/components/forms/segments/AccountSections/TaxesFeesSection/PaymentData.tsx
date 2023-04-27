@@ -53,6 +53,11 @@ const PaymentData = ({ tax }: PaymentDataProps) => {
         <div className="flex-col-reverse flex md:flex-row lg:gap-8 gap-6 w-full">
           <div className="flex-col flex md:w-[488px] w-full sm:px-6 sm:py-5 p-0 gap-5 sm:border-2 border-0 border-solid border-gray-200 rounded-lg">
             <div className="text-p2">{t('use_one_of_ibans_to_pay')}</div>
+            {status?.paymentStatus !== 'paid' ? (
+              <div className="text-p2 p-3 rounded-5 bg-warning-100">
+                {t('tax_bank_transfer_slow_info')}
+              </div>
+            ) : null}
             <div className="flex flex-col items-start gap-4">
               <div className="flex flex-col items-start gap-1 isolate self-stretch">
                 <div className="text-p2">{t('bank_info.slovak_sporitelna')}</div>
@@ -90,11 +95,22 @@ const PaymentData = ({ tax }: PaymentDataProps) => {
               <div className="flex flex-col items-start w-full gap-2">
                 <div className="text-16-semibold">{t('tax_due')}</div>
                 <div className="text-16">
-                  <div className="inline">{t('tax_payable_within')}</div>
-                  <div className="text-16-semibold inline">
-                    {t('validity_decision_with_schedule')}
-                  </div>{' '}
-                  <div className="inline">{t('according_schedule')}</div>
+                  {tax?.taxInstallments?.length > 1 ? (
+                    <>
+                      <div className="inline">{t('tax_payable_in_installments_1')}</div>
+                      <div className="text-16-semibold inline">
+                        {t('tax_payable_in_installments_2')}
+                      </div>{' '}
+                      <div className="inline">{t('tax_payable_in_installments_3')}</div>
+                    </>
+                  ) : (
+                    <>
+                      <div className="inline">{t('tax_payable_within')}</div>
+                      <div className="text-16-semibold inline">
+                        {t('validity_decision_with_schedule')}
+                      </div>
+                    </>
+                  )}
                 </div>
               </div>
             </div>
@@ -112,7 +128,7 @@ const PaymentData = ({ tax }: PaymentDataProps) => {
                 text={t('to_pay')}
                 className="lg:block hidden min-w-max"
                 onPress={redirectToPaymentGateway}
-                disabled={status?.paymentStatus === 'paid'}
+                disabled={status?.paymentStatus !== 'unpaid'}
               />
               {/* Mobile 'To pay' button */}
               <Button
@@ -121,7 +137,7 @@ const PaymentData = ({ tax }: PaymentDataProps) => {
                 text={t('to_pay')}
                 className="lg:hidden block min-w-full"
                 onPress={redirectToPaymentGateway}
-                disabled={status?.paymentStatus === 'paid'}
+                disabled={status?.paymentStatus !== 'unpaid'}
               />
             </div>
             <div className="flex lg:flex-row flex-col lg:p-6 p-4 gap-4 border-2 border-solid border-gray-200 rounded-lg self-stretch grow">

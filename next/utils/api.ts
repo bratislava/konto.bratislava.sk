@@ -2,6 +2,7 @@
 // frontend code for calling api endpoints grouped
 // TODO refactor, get rid of Api error, make TaxApiError format the default and handle errors accordingly
 // eslint-disable-next-line max-classes-per-file
+import { RJSFSchema } from '@rjsf/utils'
 import { ErrorObject } from 'ajv'
 
 import logger from './logger'
@@ -129,14 +130,14 @@ export const formDataToXml = (eform: string, data: any) => {
   })
 }
 
-export const xmlToFormData = (eform: string, data: string) => {
+export const xmlToFormData = (eform: string, data: string): Promise<RJSFSchema> => {
   return fetchJsonApi(`/api/eforms/${eform}/transform/xmlToJson`, {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
     },
     body: JSON.stringify({ data }),
-  })
+  }) as Promise<RJSFSchema>
 }
 
 interface Identity {
@@ -328,4 +329,30 @@ export const getPaymentGatewayUrlApi = (token: string) => {
       Authorization: `Bearer ${token}`,
     },
   })
+}
+
+export const getEnum = async (id?: string) => {
+  if (!id) {
+    return []
+  }
+
+  try {
+    const response = await fetch(`https://www.slovensko.sk/static/util/filler/lookup.aspx?id=${id}`)
+    const responseText = await response.text()
+
+    if (response.ok) {
+      // remove rounded brackets and parse
+      const data: { aaData: string[][] } = JSON.parse(responseText.slice(1, -2))
+      return data.aaData?.map((x: string[]) => ({
+        const: x[0],
+        title: x[1],
+      }))
+    }
+
+    throw new Error(responseText)
+  } catch (error) {
+    // TODO originally caught & rethrown to ensure logging, might no longer be necessary
+    logger.error(error)
+    throw error
+  }
 }

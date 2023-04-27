@@ -12,6 +12,7 @@ import cx from 'classnames'
 import { StatusBar, useStatusBarContext } from 'components/forms/info-components/StatusBar'
 import HamburgerMenu from 'components/forms/segments/HambergerMenu/HamburgerMenu'
 import Button from 'components/forms/simple-components/Button'
+import IdentityVerificationStatus from 'components/forms/simple-components/IdentityVerificationStatus'
 import Menu from 'components/forms/simple-components/Menu/Menu'
 import NextLink from 'next/link'
 import { useRouter } from 'next/router'
@@ -167,6 +168,7 @@ export const AccountNavBar = ({
                 </p>
               }
             />
+            <IdentityVerificationStatus />
             <nav className="text-font/75 flex gap-x-8 font-semibold">
               <div className="text-font/75 flex items-center gap-x-6 font-semibold">
                 {!navHidden ? (

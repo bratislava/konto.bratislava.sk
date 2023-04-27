@@ -3,6 +3,7 @@ import { FormValidation, RJSFSchema } from '@rjsf/utils'
 import { useFormFiller, useFormStepper, useFormSubmitter } from '@utils/forms'
 import cx from 'classnames'
 import SkipStepModal from 'components/forms/segments/SkipStepModal/SkipStepModal'
+import MenuList from 'components/forms/steps/MenuList'
 import { useState } from 'react'
 
 import FinalStep from './steps/FinalStep'
@@ -41,7 +42,7 @@ const GeneratedFormRJSF = ({ eform, escapedSlug, formSlug, wrapperClassName }: F
   return (
     <div
       className={cx(
-        'flex flex-col gap-10 py-10 w-full max-w-screen-lg mx-auto',
+        'flex flex-col gap-10 pt-0 pb-6 lg:py-10 w-full max-w-screen-lg mx-auto',
         'lg:flex-row lg:gap-20',
         wrapperClassName,
       )}
@@ -114,6 +115,7 @@ const GeneratedFormRJSF = ({ eform, escapedSlug, formSlug, wrapperClassName }: F
           submitStep={form.submitStep}
           submitForm={() => submitter.submitForm(form.formData)}
         />
+        <MenuList />
       </div>
     </div>
   )

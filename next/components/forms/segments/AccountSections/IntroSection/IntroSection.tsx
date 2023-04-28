@@ -25,8 +25,9 @@ const IntroSection = () => {
   const { userData, updateUserData, error, resetError } = useAccount()
   const { data, isLoading } = useTaxes()
   const router = useRouter()
-  const [phoneNumberModal, setPhoneNumberModal] =
-    useState<'hidden' | 'displayed' | 'dismissed'>('hidden')
+  const [phoneNumberModal, setPhoneNumberModal] = useState<'hidden' | 'displayed' | 'dismissed'>(
+    'hidden',
+  )
 
   // because the effect depends on userData, which may get refreshed every few seconds
   // we need to track if the modal was dismissed and stop showing it afterwards if that's the case
@@ -140,7 +141,7 @@ const IntroSection = () => {
             title={t('account_section_intro.banner_title')}
             content={bannerContent}
             buttonText={t('account_section_intro.banner_button_text')}
-            href={ROUTES.I_HAVE_A_PROBLEM}
+            href={ROUTES.HELP}
             image={BannerImage}
           />
         </div>

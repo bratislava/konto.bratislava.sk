@@ -155,7 +155,7 @@
     "announcement_card_text_tax_ready": "Vygenerovali sme vašu daň z nehnuteľností za rok 2023. Zaplaťte ju jednoducho, digitálne, priamo v konte.",
     "announcement_card_action": "Zaplatiť daň z nehnuteľností",
     "banner_title": "Potrebujete pomôcť?",
-    "banner_content": "Aké služby nájdem v Bratislavskom konte? Prečo vzniklo Bratislavské konto? Ako si viem zmeniť heslo? Nevidím svoju daň, čo mám robiť?<br /><br />Aj toto sú niektoré z otázok, na ktoré nájdete odpovede v sekcii Najčastejšie kladené otázky.",
+    "banner_content": "Aké služby nájdem v Bratislavskom konte? Prečo vzniklo Bratislavské konto? Ako si viem zmeniť heslo? Nevidím svoju daň, čo mám robiť?<br /><br />Aj toto sú niektoré z otázok, na ktoré nájdete odpovede v časti Pomoc.",
     "banner_button_text": "Prejsť na otázky"
   },
   "account_section_services": {
@@ -358,7 +358,7 @@
     "tax_card_title": "Daň z nehnuteľností"
   },
   "account_section_help": {
-    "navigation": "Mám problém",
+    "navigation": "Pomoc",
     "banner_title": "Nenašli ste odpoveď na vašu otázku?",
     "banner_content": "Kontaktujte nás a radi vás nasmerujeme na správnu odpoveď.",
     "banner_button_text": "Napísať správu",

@@ -1,10 +1,9 @@
 import cx from 'classnames'
+import { useGlobalStateContext } from 'components/forms/states/GlobalState'
 import { useTranslation } from 'next-i18next'
 
 type MyApplicationsHeaderBase = {
   title: string
-  applicationsState: 'sent' | 'concept'
-  setApplicationsState: (item: 'sent' | 'concept') => void
 }
 
 type HeaderNavigationItemBase = {
@@ -13,8 +12,9 @@ type HeaderNavigationItemBase = {
 }
 
 const MyApplicationsHeader = (props: MyApplicationsHeaderBase) => {
-  const { title, applicationsState, setApplicationsState } = props
+  const { title } = props
   const { t } = useTranslation('account')
+  const { globalState, setGlobalState } = useGlobalStateContext()
 
   const headerNavigationList: HeaderNavigationItemBase[] = [
     { title: t('account_section_applications.navigation_sent'), tag: 'sent' },
@@ -29,15 +29,16 @@ const MyApplicationsHeader = (props: MyApplicationsHeaderBase) => {
             <li className="lg:w-max w-full" key={i}>
               <button
                 type="button"
-                onClick={() => setApplicationsState(item.tag)}
+                onClick={() => setGlobalState({ applicationsActiveMenuItem: item.tag })}
                 className={cx(
                   'text-20 w-full lg:w-[92px] transition-all py-4 border-b-2 cursor-pointer',
                   'hover:text-20-semibold hover:border-gray-700 ',
                   {
-                    'text-20-semibold border-b-2 border-gray-700': applicationsState === item.tag,
+                    'text-20-semibold border-b-2 border-gray-700':
+                      globalState.applicationsActiveMenuItem === item.tag,
                   },
                   {
-                    'border-transparent': applicationsState !== item.tag,
+                    'border-transparent': globalState.applicationsActiveMenuItem !== item.tag,
                   },
                 )}
               >

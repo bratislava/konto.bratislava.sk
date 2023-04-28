@@ -6,6 +6,7 @@ import React, { useState } from 'react'
 const ITEMS_PER_PAGE = 9
 
 export type MyApplicationsSentCardBase = {
+  id?: string
   title: string
   subtitle: string
   category: string

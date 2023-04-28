@@ -33,11 +33,20 @@ const MyApplicationsSentCard = (props: MyApplicationsSentCardBase) => {
 
     switch (status) {
       case 'negative':
-        return statusNode(<CrossIcon className="text-negative-700 w-6 h-6" />, 'Zamietnuté')
+        return statusNode(
+          <CrossIcon className="text-negative-700 w-6 h-6" />,
+          t('account_section_applications.status.negative'),
+        )
       case 'warning':
-        return statusNode(<TimeIcon className="text-warning-700 w-6 h-6" />, 'Čaká na vybavenie')
+        return statusNode(
+          <TimeIcon className="text-warning-700 w-6 h-6" />,
+          t('account_section_applications.status.waiting'),
+        )
       case 'success':
-        return statusNode(<SuccessIcon className="text-success-700 w-6 h-6" />, 'Vybavené')
+        return statusNode(
+          <SuccessIcon className="text-success-700 w-6 h-6" />,
+          t('account_section_applications.status.success'),
+        )
       default:
         break
     }

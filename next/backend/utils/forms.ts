@@ -1,16 +1,17 @@
 import forms, { EFormKey, EFormValue } from '@backend/forms'
 import { firstCharToUpper } from '@backend/utils/strings'
 import {
-  JsonSchema,
   ajvFormats,
   ajvKeywords,
   getAllPossibleJsonSchemaProperties,
+  JsonSchema,
 } from '@utils/forms'
 import logger from '@utils/logger'
 import { forceString } from '@utils/utils'
 import Ajv from 'ajv'
 import addFormats from 'ajv-formats'
 import * as cheerio from 'cheerio'
+import { MyApplicationsSentCardBase } from 'components/forms/segments/AccountSections/MyApplicationsSection/MyApplicationsSentList'
 // @ts-ignore
 import { parseXml } from 'libxmljs2'
 import { dropRight, find, last } from 'lodash'
@@ -225,4 +226,20 @@ export const getEform = (id: string | string[] | undefined): EFormValue => {
 
   if (!eform) throw new Error(`Invalid form name - validateFormName returned: ${formSlug}`)
   return eform
+}
+
+// mock-up data
+export const getAplicationData = (id: string | string[]): MyApplicationsSentCardBase => {
+  const myAplicationData: MyApplicationsSentCardBase[] = [
+    {
+      id: '1',
+      title: 'Názov stavby dotiahnutý zo žiadosti',
+      subtitle: 'Názov stavby/projektu',
+      category: 'Záväzné stanovisko k investičnej činnosti',
+      sentDate: '29. september 2022',
+      status: 'success',
+      statusDate: '29. september 2022',
+    },
+  ]
+  return myAplicationData.find((item) => id === item.id)
 }

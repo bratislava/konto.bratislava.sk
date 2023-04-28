@@ -340,6 +340,12 @@
     "placeholder": {
       "title": "Zatiaľ ste neodoslali žiadne podanie",
       "subtitle": "Pozrite si ponuku <a href='/mestske-sluzby'>dostupných mestských služieb</a>."
+    },
+    "last_change": "Posledná zmena:",
+    "status": {
+      "success": "Vybavené",
+      "warning": "Čaká na vybavenie",
+      "negative": "Zamietnuté"
     }
   },
   "account_section_payment": {

@@ -1,4 +1,4 @@
-import * as SaxonJS from 'saxon-js'
+import { transform } from 'saxon-js'
 
 /**
  * Returns XSLT 3.0 transformation
@@ -11,8 +11,14 @@ import * as SaxonJS from 'saxon-js'
  * @param data - Data in XML format
  * @returns transformed data
  */
-export const transform = async (stylesheet: any, data: string): Promise<string> => {
-  const output = await SaxonJS.transform(
+
+interface SaxonJsOutput {
+  principalResult?: string
+}
+
+export const transformSaxon = async (stylesheet: any, data: string): Promise<string> => {
+  // eslint-disable-next-line @typescript-eslint/no-unsafe-call,@typescript-eslint/no-unsafe-member-access
+  const output: SaxonJsOutput = await transform(
     {
       stylesheetInternal: stylesheet,
       sourceText: data,

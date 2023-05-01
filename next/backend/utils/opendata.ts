@@ -94,7 +94,7 @@ class OpenDataClient {
     const cacheKey = this.getCacheKey({ type, id, action })
     const cacheData = this.cache[cacheKey]
     if (cacheData) {
-      return cacheData
+      return cacheData as T
     }
 
     const slugs = [type, id, action]
@@ -114,7 +114,7 @@ class OpenDataClient {
       )
     }
 
-    const data = await res.json()
+    const data: T = await res.json()
 
     this.cache[cacheKey] = data
 

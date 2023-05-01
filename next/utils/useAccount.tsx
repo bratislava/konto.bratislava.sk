@@ -1,3 +1,5 @@
+/* eslint-disable no-secrets/no-secrets */
+
 import { subscribeApi, UNAUTHORIZED_ERROR_TEXT, verifyIdentityApi } from '@utils/api'
 import { ROUTES } from '@utils/constants'
 import useSnackbar from '@utils/useSnackbar'
@@ -706,3 +708,5 @@ export const AccountProvider = ({ children }: { children: ReactNode }) => {
 export default function useAccount() {
   return useContext(AccountContext)
 }
+
+

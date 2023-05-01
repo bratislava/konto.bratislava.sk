@@ -2,7 +2,7 @@
 
 import { EFormValue } from '@backend/forms'
 import { getEform } from '@backend/utils/forms'
-import { transform } from '@backend/utils/xslt'
+import { transformSaxon } from '@backend/utils/xslt'
 import logger from '@utils/logger'
 import type { NextApiRequest, NextApiResponse } from 'next'
 
@@ -20,7 +20,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
   }
 
   const stringData: string = typeof req.body.data === 'string' ? req.body.data : ''
-  const data = await transform(eform.htmlStylesheet, stringData)
+  const data = await transformSaxon(eform.htmlStylesheet, stringData)
 
   res.setHeader('Content-Type', 'text/html')
   return res.send(data)

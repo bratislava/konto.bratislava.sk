@@ -40,12 +40,15 @@ export class TaxApiError extends Error {
   }
 }
 
-const fetchJsonApi = async (path: string, options?: RequestInit) => {
+const fetchJsonApi = async <T=any>(path: string, options?: RequestInit): Promise<T> => {
   try {
     const response = await fetch(path, options)
     if (response.ok) {
-      // eslint-disable-next-line @typescript-eslint/no-unsafe-return
-      return await response.json()
+      try {
+        return await response.json() as T
+      } catch (error) {
+        throw new Error(API_ERROR_TEXT)
+      }
     }
     if (response.status === 401) {
       throw new Error(UNAUTHORIZED_ERROR_TEXT)
@@ -140,7 +143,7 @@ export const xmlToFormData = (eform: string, data: string): Promise<RJSFSchema> 
       'Content-Type': 'application/json',
     },
     body: JSON.stringify({ data }),
-  }) as Promise<RJSFSchema>
+  })
 }
 
 interface Identity {
@@ -265,6 +268,10 @@ type UpdateFormDto = {
   fromDescription?: string
 }
 
+export interface UrlResult {
+  url: string
+}
+
 export const createForm = (token: string, data: CreateFormDto) => {
   return fetchJsonApi(`${process.env.NEXT_PUBLIC_FORMS_URL}/nases/create-form`, {
     method: 'POST',
@@ -317,8 +324,8 @@ export const getTaxPdfApi = (token: string) => {
   })
 }
 
-export const getPaymentGatewayUrlApi = (token: string) => {
-  return fetchJsonApi(`${process.env.NEXT_PUBLIC_TAXES_URL}/payment/cardpay/by-year/2023`, {
+export const getPaymentGatewayUrlApi = (token: string): Promise<UrlResult> => {
+  return fetchJsonApi<UrlResult>(`${process.env.NEXT_PUBLIC_TAXES_URL}/payment/cardpay/by-year/2023`, {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',

@@ -291,14 +291,14 @@ export const AccountProvider = ({ children }: { children: ReactNode }) => {
               logger.error(err)
               resolve(false)
             } else {
-              const userData = userAttributesToObject(attributes)
-              setUserData(userData)
+              const cognitoUserData = userAttributesToObject(attributes)
+              setUserData(cognitoUserData)
               setUser(cognitoUser)
 
               // refreshes credentials using AWS.CognitoIdentity.getCredentialsForIdentity()
-              awsCredentials.refresh((err?: AWSError) => {
-                if (err) {
-                  logger.error('AWS error login refresh', err)
+              awsCredentials.refresh((awsError?: AWSError) => {
+                if (awsError) {
+                  logger.error('AWS error login refresh', awsError)
                   resolve(false)
                 } else {
                   resolve(true)
@@ -468,17 +468,16 @@ export const AccountProvider = ({ children }: { children: ReactNode }) => {
         }
 
         // NOTE: getSession must be called to authenticate user before calling getUserAttributes
-        cognitoUser.getUserAttributes((err?: Error, attributes?: CognitoUserAttribute[]) => {
-          if (err) {
-            logger.error('AWS error getUserAttributes', err)
+        cognitoUser.getUserAttributes((cognitoError?: Error, attributes?: CognitoUserAttribute[]) => {
+          if (cognitoError) {
+            logger.error('AWS error getUserAttributes', cognitoError)
             setUser(null)
-            return
+          } else {
+            const cognitoUserData = userAttributesToObject(attributes)
+            setUserData(cognitoUserData)
+            setUser(cognitoUser)
+            setLastAccessToken(result?.getAccessToken().getJwtToken())
           }
-
-          const userData = userAttributesToObject(attributes)
-          setUserData(userData)
-          setUser(cognitoUser)
-          setLastAccessToken(result?.getAccessToken().getJwtToken())
         })
       })
     } else {

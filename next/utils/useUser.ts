@@ -22,8 +22,8 @@ export default function useUser() {
     const init = async () => {
       const token = await getAccessToken()
       try {
-        const user: User = await getUserApi(token)
-        setUser(user)
+        const loadedUser: User = await getUserApi(token)
+        setUser(loadedUser)
       } catch (error) {
         logger.error(error)
         // TODO temporary, pass better errors out of api requests
@@ -39,8 +39,8 @@ export default function useUser() {
   const subscribe = async (data: Gdpr[]): Promise<boolean> => {
     const token = await getAccessToken()
     try {
-      const user: User = await subscribeApi({ gdprData: data }, token)
-      setUser(user)
+      const loadedUser: User = await subscribeApi({ gdprData: data }, token)
+      setUser(loadedUser)
       return true
     } catch (error) {
       logger.error(error)
@@ -55,8 +55,8 @@ export default function useUser() {
   const unsubscribe = async (data: Gdpr[]): Promise<boolean> => {
     const token = await getAccessToken()
     try {
-      const user: User = await unsubscribeApi({ gdprData: data }, token)
-      setUser(user)
+      const loadedUser: User = await unsubscribeApi({ gdprData: data }, token)
+      setUser(loadedUser)
       return true
     } catch (error) {
       logger.error(error)

@@ -14,12 +14,10 @@ const nextConfig = {
       'components/',
       'pages/',
       'utils/',
-      'forms/meili/',
-      'forms/services/',
-      'forms/utils/'
+      'backend/'
     ],
     ignorePatterns: [
-      'forms/backend/'
+      'backend/forms/'
     ]
   },
   async redirects() {

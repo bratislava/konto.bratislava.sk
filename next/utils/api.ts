@@ -211,13 +211,6 @@ export const resetRcApi = (token: string) => {
   })
 }
 
-type List<T> = {
-  currentPage: number
-  pagination: number
-  countPages: number
-  items: T[]
-}
-
 export type FormDto = {
   email: string
   formDataXml: string

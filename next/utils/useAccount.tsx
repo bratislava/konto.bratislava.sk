@@ -494,7 +494,7 @@ export const AccountProvider = ({ children }: { children: ReactNode }) => {
     setError(null)
     return new Promise((resolve) => {
       cognitoUser.forgotPassword({
-        onSuccess: (data) => {
+        onSuccess: () => {
           // successfully initiated reset password request
           setStatus(AccountStatus.NewPasswordRequired)
           resolve(true)

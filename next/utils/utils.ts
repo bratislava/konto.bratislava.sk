@@ -41,8 +41,6 @@ export const isPresent = <U>(a: U | null | undefined | void): a is U => {
   return true
 }
 
-type Awaited<T> = T extends PromiseLike<infer U> ? Awaited<U> : T
-
 const isServer = () => typeof window === 'undefined'
 
 export const isBrowser = () => !isServer()

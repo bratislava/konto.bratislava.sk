@@ -33,7 +33,7 @@ export default function useUser() {
       }
     }
 
-    init()
+    init().catch((error_) => logger.error('Init error', error_))
   }, [])
 
   const subscribe = async (data: Gdpr[]): Promise<boolean> => {

@@ -245,6 +245,7 @@ export const AccountProvider = ({ children }: { children: ReactNode }) => {
       await subscribeApi({}, token)
     } catch (error) {
       // TODO temporary, pass better errors out of api requests
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
       if (error?.message === UNAUTHORIZED_ERROR_TEXT) {
         forceLogout()
       }
@@ -440,8 +441,10 @@ export const AccountProvider = ({ children }: { children: ReactNode }) => {
       )
       // not refreshing user status immediately, instead leaving this to the registration flow
       return true
-    } catch (error: any) {
+    } catch (error) {
       // TODO temporary, pass better errors out of api requests
+
+      /* eslint-disable @typescript-eslint/no-unsafe-member-access */
       if (error?.message === UNAUTHORIZED_ERROR_TEXT) {
         forceLogout()
         if (isBrowser()) {
@@ -453,6 +456,8 @@ export const AccountProvider = ({ children }: { children: ReactNode }) => {
         code: error.message,
         message: error.message,
       })
+      /* eslint-enable @typescript-eslint/no-unsafe-member-access */
+
       return false
     }
   }

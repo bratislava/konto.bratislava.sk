@@ -3,6 +3,15 @@ import React from 'react'
 
 import { Tax } from './taxDto'
 
+export interface DocumentsWrapper {
+  mainDocument?: {
+    url: string
+  }
+  amedmentDocument?: []
+  cancellationDocument?: []
+  consolidatedText?: unknown
+}
+
 export const arrayify = (input: string | string[] | undefined | null) => {
   if (input === undefined || input === null) {
     return [] as undefined[]
@@ -19,18 +28,16 @@ export const forceString = (input: unknown) => {
   return ''
 }
 
-export const fileCountVzns = (data: any) => {
+export const fileCountVzns = (data: DocumentsWrapper) => {
   let count = 0
   if (data?.mainDocument?.url) {
     count += 1
   }
   if (data?.amedmentDocument) {
-    const documentLength = Number.isNaN(data?.amedmentDocument.length) ? 0 : data.amedmentDocument.length
-    count += documentLength
+    count += data.amedmentDocument.length
   }
   if (data?.cancellationDocument) {
-    const documentLength = Number.isNaN(data?.cancellationDocument.length) ? 0 : data.cancellationDocument.length
-    count += documentLength
+    count += data.cancellationDocument.length
   }
   if (data?.consolidatedText) {
     count += 1

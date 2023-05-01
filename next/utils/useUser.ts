@@ -28,6 +28,7 @@ export default function useUser() {
     } catch (error) {
       logger.error(error)
       // TODO temporary, pass better errors out of api requests
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
       if (error?.message === UNAUTHORIZED_ERROR_TEXT) {
         forceLogout()
       }
@@ -47,6 +48,7 @@ export default function useUser() {
     } catch (error) {
       logger.error(error)
       // TODO temporary, pass better errors out of api requests
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
       if (error?.message === UNAUTHORIZED_ERROR_TEXT) {
         forceLogout()
       }
@@ -63,6 +65,7 @@ export default function useUser() {
     } catch (error) {
       logger.error(error)
       // TODO temporary, pass better errors out of api requests
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
       if (error?.message === UNAUTHORIZED_ERROR_TEXT) {
         forceLogout()
       }

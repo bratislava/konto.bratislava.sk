@@ -1,4 +1,4 @@
-import { FieldProps } from '@rjsf/utils'
+import { FieldProps, RJSFSchema } from '@rjsf/utils'
 import React from 'react'
 
 import { TimeFromTo } from '../../groups'
@@ -6,13 +6,17 @@ import { ExplicitOptionalType } from '../../types/ExplicitOptional'
 import { FormSpacingType } from '../../types/WidgetOptions'
 import WidgetWrapper, { isFormSpacingType } from '../WidgetWrapper'
 
+interface TimeFromToWidgetRJSFProps extends FieldProps{
+  formData: RJSFSchema
+}
+
 const TimeFromToWidgetRJSF = ({
   formData,
   onChange,
   schema,
   uiSchema,
   errorSchema,
-}: FieldProps) => {
+}: TimeFromToWidgetRJSFProps) => {
   const schemaProperties = {
     ...(schema.properties as Record<string, { type: string; title: string }>),
   }

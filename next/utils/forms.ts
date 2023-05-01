@@ -28,9 +28,9 @@ import useSnackbar from '@utils/useSnackbar'
 import { AnySchemaObject, ErrorObject, FuncKeywordDefinition } from 'ajv'
 import { JSONSchema7, JSONSchema7Definition } from 'json-schema'
 import { cloneDeep, get, merge } from 'lodash'
-import { useTranslation } from 'next-i18next'
 import { useRouter } from 'next/router'
-import { ChangeEvent, RefObject, useEffect, useRef, useState } from 'react'
+import { useTranslation } from 'next-i18next'
+import { ChangeEvent, RefObject, useEffect, useMemo, useRef, useState } from 'react'
 
 import { StepData } from '../components/forms/types/TransformedFormData'
 import logger from './logger'
@@ -49,6 +49,10 @@ export type JsonSchemaExtraProperty = JSONSchema7Definition & { isConditional?: 
 export interface JsonSchemaExtraProperties {
   [key: string]: JsonSchemaExtraProperty
   isConditional?: boolean
+}
+
+export interface FormRJSFContext {
+  bucketFolderName?: string
 }
 
 export const getAllPossibleJsonSchemaProperties = (
@@ -444,6 +448,16 @@ interface Callbacks {
   onInit?: () => Promise<any>
 }
 
+export const useFormRJSFContextMemo = (eform: EFormValue, formId?: string) => {
+  return useMemo(() => {
+    const { schema } = eform
+    return {
+      bucketFolderName: formId && schema?.pospID
+        ? `/${String(schema.pospID)}/${formId}`
+        : undefined
+  }}, [eform, formId])
+}
+
 // TODO prevent unmounting
 // TODO persist state for session
 // TODO figure out if we need to step over uiSchemas, or having a single one is enough (seems like it is for now)
@@ -786,6 +800,7 @@ export const useFormFiller = (eform: EFormValue) => {
   return {
     initFormData,
     updateFormData,
+    formId
   }
 }
 

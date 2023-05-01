@@ -1,5 +1,5 @@
 // @ts-ignore
-import * as SaxonJS from 'saxon-js'
+import { transform } from 'saxon-js'
 
 /**
  * Returns XSLT 3.0 transformation
@@ -17,8 +17,9 @@ interface SaxonJsOutput {
   principalResult?: string
 }
 
-export const transform = async (stylesheet: any, data: string): Promise<string> => {
-  const output: SaxonJsOutput = await SaxonJS.transform(
+export const transformSaxon = async (stylesheet: any, data: string): Promise<string> => {
+  // eslint-disable-next-line @typescript-eslint/no-unsafe-call,@typescript-eslint/no-unsafe-member-access
+  const output: SaxonJsOutput = await transform(
     {
       stylesheetInternal: stylesheet,
       sourceText: data,

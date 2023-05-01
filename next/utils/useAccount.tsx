@@ -174,7 +174,7 @@ export const AccountProvider = ({ children }: { children: ReactNode }) => {
 
   const objectToUserAttributes = (data: UserData | Address): CognitoUserAttribute[] => {
     const attributeList: CognitoUserAttribute[] = []
-    Object.entries(data).forEach(([key, value]) => {
+    Object.entries(data).forEach(([key, value]: [string, string|Tier|Address]) => {
       if (updatableAttributes.has(key)) {
         const attribute = new CognitoUserAttribute({
           Name: customAttributes.has(key) ? `custom:${key}` : key,
@@ -182,8 +182,8 @@ export const AccountProvider = ({ children }: { children: ReactNode }) => {
             key === 'address'
               ? JSON.stringify(value)
               : key === 'phone_number'
-              ? value?.replace(' ', '')
-              : value,
+              ? typeof value === 'string' && value?.replace(' ', '')
+              : JSON.stringify(value)
         })
         attributeList.push(attribute)
       }

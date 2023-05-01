@@ -5,6 +5,7 @@ import MyApplicationsHeader from 'components/forms/segments/AccountSections/MyAp
 import MyApplicationsSentList, {
   MyApplicationsSentCardBase,
 } from 'components/forms/segments/AccountSections/MyApplicationsSection/MyApplicationsSentList'
+import { useGlobalStateContext } from 'components/forms/states/GlobalState'
 import { useTranslation } from 'next-i18next'
 import { useState } from 'react'
 
@@ -171,21 +172,16 @@ type MyApplicationsSectionBase = {
 
 const MyApplicationsSection = ({ isProductionDeploy }: MyApplicationsSectionBase) => {
   const { t } = useTranslation('account')
-
-  const [applicationsState, setApplicationsState] = useState<'sent' | 'concept'>('sent')
+  const { globalState } = useGlobalStateContext()
   const [isEmptyList, setIsEmptyList] = useState<boolean>(false)
 
   return (
     <div className="flex flex-col">
-      <MyApplicationsHeader
-        applicationsState={applicationsState}
-        setApplicationsState={setApplicationsState}
-        title={t('account_section_applications.navigation')}
-      />
-      {applicationsState === 'sent' && (
+      <MyApplicationsHeader title={t('account_section_applications.navigation')} />
+      {globalState.applicationsActiveMenuItem === 'sent' && (
         <MyApplicationsSentList cards={!isEmptyList ? sentCards : []} />
       )}
-      {applicationsState === 'concept' && (
+      {globalState.applicationsActiveMenuItem === 'concept' && (
         <MyApplicationsConceptList cards={!isEmptyList ? conceptCards : []} />
       )}
       {/* Temporary button only for dev */}

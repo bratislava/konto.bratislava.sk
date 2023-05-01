@@ -51,7 +51,7 @@ const sectionsList = [
     id: 4,
     title: 'account:account_section_help.navigation',
     icon: <HelpIcon className="w-6 h-6" />,
-    link: ROUTES.I_HAVE_A_PROBLEM,
+    link: ROUTES.HELP,
   },
 ]
 
@@ -66,7 +66,7 @@ const menuItems = [
     id: 2,
     title: 'account:menu_help_link',
     icon: <HelpIcon className="w-5 h-5" />,
-    link: ROUTES.I_HAVE_A_PROBLEM,
+    link: ROUTES.HELP,
   },
   {
     id: 3,

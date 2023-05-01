@@ -28,9 +28,10 @@ import useSnackbar from '@utils/useSnackbar'
 import { AnySchemaObject, ErrorObject, FuncKeywordDefinition } from 'ajv'
 import { JSONSchema7, JSONSchema7Definition } from 'json-schema'
 import { cloneDeep, get, merge } from 'lodash'
-import { useRouter } from 'next/router'
 import { useTranslation } from 'next-i18next'
 import { ChangeEvent, RefObject, useEffect, useMemo, useRef, useState } from 'react'
+import { useRouter } from 'next/router'
+import { ChangeEvent, RefObject, useEffect, useRef, useState } from 'react'
 
 import { StepData } from '../components/forms/types/TransformedFormData'
 import logger from './logger'
@@ -216,6 +217,9 @@ export const ajvKeywords: KeywordDefinition[] = [
   },
   {
     keyword: 'pospVersion',
+  },
+  {
+    keyword: 'ciselnik',
   },
 ]
 

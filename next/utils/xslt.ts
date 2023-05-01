@@ -12,8 +12,13 @@ import * as SaxonJS from 'saxon-js'
  * @param data - Data in XML format
  * @returns transformed data
  */
+
+interface SaxonJsOutput {
+  principalResult?: string
+}
+
 export const transform = async (stylesheet: any, data: string): Promise<string> => {
-  const output = await SaxonJS.transform(
+  const output: SaxonJsOutput = await SaxonJS.transform(
     {
       stylesheetInternal: stylesheet,
       sourceText: data,

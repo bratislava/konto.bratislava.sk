@@ -44,6 +44,7 @@ const fetchJsonApi = async (path: string, options?: RequestInit) => {
   try {
     const response = await fetch(path, options)
     if (response.ok) {
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-return
       return await response.json()
     }
     if (response.status === 401) {

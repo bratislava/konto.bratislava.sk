@@ -161,7 +161,7 @@ export const AccountProvider = ({ children }: { children: ReactNode }) => {
   }
 
   const userAttributesToObject = (attributes?: CognitoUserAttribute[]): UserData => {
-    const data: any = {}
+    const data: UserData = {}
     attributes?.forEach((attribute: CognitoUserAttribute) => {
       const attributeKey: string = attribute.getName().replace(/^custom:/, '')
       data[attributeKey] =

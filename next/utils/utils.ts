@@ -25,10 +25,12 @@ export const fileCountVzns = (data: any) => {
     count += 1
   }
   if (data?.amedmentDocument) {
-    count += data?.amedmentDocument.length
+    const documentLength = Number.isNaN(data?.amedmentDocument.length) ? 0 : data.amedmentDocument.length
+    count += documentLength
   }
   if (data?.cancellationDocument) {
-    count += data?.cancellationDocument.length
+    const documentLength = Number.isNaN(data?.cancellationDocument.length) ? 0 : data.cancellationDocument.length
+    count += documentLength
   }
   if (data?.consolidatedText) {
     count += 1

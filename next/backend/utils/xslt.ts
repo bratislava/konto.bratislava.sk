@@ -1,5 +1,3 @@
-// Declaration file for module 'saxon-js' not exists.
-// @ts-ignore
 import * as SaxonJS from 'saxon-js'
 
 /**

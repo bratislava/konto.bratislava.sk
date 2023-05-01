@@ -43,7 +43,7 @@ function transformValueArray(
   if (!items || typeof items === 'boolean' || !Array.isArray(items)) return fieldFormData
 
   return Array.isArray(fieldFormData)
-    ? fieldFormData.map((value) => findTitle(value, items))
+    ? fieldFormData.map((value: JSONSchema7Definition) => findTitle(value, items))
     : findTitle(fieldFormData, items)
 }
 

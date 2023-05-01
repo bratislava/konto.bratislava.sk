@@ -52,7 +52,7 @@ const fetchJsonApi = async (path: string, options?: RequestInit) => {
     }
     // try parsing errors - if they may apper in different format extend here
     const responseText = await response.text()
-    let responseJson: any = {}
+    let responseJson: Record<string, any> = {}
     try {
       responseJson = JSON.parse(responseText)
     } catch (error) {
@@ -60,9 +60,11 @@ const fetchJsonApi = async (path: string, options?: RequestInit) => {
       throw new Error(response.statusText || API_ERROR_TEXT)
     }
     if (responseJson?.errors) {
-      throw new ApiError(responseJson?.message || API_ERROR_TEXT, responseJson.errors)
+      const responseMessage = String(responseJson?.message || API_ERROR_TEXT)
+      const responseErrors: ErrorObject[] = Array.isArray(responseJson.errors) ? responseJson.errors : []
+      throw new ApiError(responseMessage, responseErrors)
     } else if (responseJson?.errorName) {
-      throw new TaxApiError(responseJson.errorName, responseJson)
+      throw new TaxApiError(String(responseJson.errorName), responseJson)
     } else {
       throw new TaxApiError(API_ERROR_TEXT, responseJson)
     }

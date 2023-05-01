@@ -1,9 +1,9 @@
 import { EFormValue } from '@backend/forms'
 import { FormValidation, RJSFSchema } from '@rjsf/utils'
-import { useFormContext, useFormFiller, useFormRJSFContext, useFormStepper, useFormSubmitter } from '@utils/forms'
+import { useFormFiller, useFormRJSFContextMemo, useFormStepper, useFormSubmitter } from '@utils/forms'
 import cx from 'classnames'
 import SkipStepModal from 'components/forms/segments/SkipStepModal/SkipStepModal'
-import { useMemo, useState } from 'react'
+import { useState } from 'react'
 
 import FinalStep from './steps/FinalStep'
 import StepperView from './steps/StepperView'
@@ -19,7 +19,7 @@ interface FormRJSF {
 
 const GeneratedFormRJSF = ({ eform, escapedSlug, formSlug, wrapperClassName }: FormRJSF) => {
   const filler = useFormFiller(eform)
-  const formContext =  useFormContext(eform, filler.formId)
+  const formContext =  useFormRJSFContextMemo(eform, filler.formId)
   const form = useFormStepper(escapedSlug, eform, {
     onStepSumbit: filler.updateFormData,
     onInit: filler.initFormData,

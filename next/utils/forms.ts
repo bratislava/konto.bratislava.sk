@@ -445,22 +445,7 @@ interface Callbacks {
   onInit?: () => Promise<any>
 }
 
-export const useFormRJSFContext = (eform: EFormValue, formId?: string): FormRJSFContext => {
-  const { schema } = eform
-  const [bucketFolderName, setBucketFolderName] = useState<string>()
-
-  useEffect(() => {
-    if (schema.pospID && formId) {
-      setBucketFolderName(`/${String(schema.pospID)}/${formId}`)
-    }
-  }, [schema, formId, setBucketFolderName])
-
-  return {
-    bucketFolderName
-  }
-}
-
-export const useFormContext = (eform: EFormValue, formId?: string) => {
+export const useFormRJSFContextMemo = (eform: EFormValue, formId?: string) => {
   return useMemo(() => {
     const { schema } = eform
     return {

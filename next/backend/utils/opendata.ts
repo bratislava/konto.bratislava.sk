@@ -79,10 +79,11 @@ class OpenDataClient {
         data: resultData,
       } as FetchOpenDataResult
     } catch (error) {
-      throw new Error(`OpenDataClient error while getting data: ${error}`)
+      throw new Error(`OpenDataClient error while getting data: ${String(error)}`)
     }
   }
 
+  // eslint-disable-next-line class-methods-use-this
   private getCacheKey = ({ type, id, action }: IFetchOptions) => `${type}@${id}@${action}`
 
   private handleFetch = async <T>({ type, id, action }: IFetchOptions): Promise<T> => {

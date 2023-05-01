@@ -150,21 +150,18 @@ class OpenDataClient {
   }
 
   private downloadAllFiles = async (datasetFiles: IDatasetFile[], resultFileType: IResultFileType) => {
-    const downloadedFiles: IJSONFile[] = []
-
-    for (const file of datasetFiles) {
-      if (file.type === resultFileType) {
-        const data = await this.handleFetch<JSONData>({
-          type: 'file',
-          id: file.id,
-          action: 'download',
+    return Promise.all(
+      datasetFiles
+        .filter(file => file.type === resultFileType)
+        .map(async file => {
+          const data = await this.handleFetch<JSONData>({
+            type: 'file',
+            id: file.id,
+            action: 'download',
+          })
+          return { name: file.name, jsonData: data }
         })
-
-        downloadedFiles.push({ name: file.name, jsonData: data })
-      }
-    }
-
-    return downloadedFiles
+    )
   }
 }
 

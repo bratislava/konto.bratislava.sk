@@ -40,6 +40,76 @@ export class TaxApiError extends Error {
   }
 }
 
+export interface Identity {
+  birthNumber: string
+  identityCard: string
+  turnstileToken: string
+}
+
+export interface Gdpr {
+  subType?: 'subscribe' | 'unsubscribe'
+  type: 'ANALYTICS' | 'DATAPROCESSING' | 'MARKETING' | 'LICENSE'
+  category: 'SWIMMINGPOOLS' | 'TAXES' | 'CITY' | 'ESBS'
+}
+
+export interface User {
+  id: string
+  createdAt: Date
+  updatedAt: Date
+  externalId?: string
+  email: string
+  birthNumber: string
+  gdprData: Gdpr[]
+}
+
+export interface UrlResult {
+  url: string
+}
+
+export type CreateFormDto = {
+  pospID: string
+  pospVersion: string
+  messageSubject: string
+  isSigned: boolean
+  formName: string
+  fromDescription: string
+}
+
+export type UpdateFormDto = {
+  email?: string
+  formDataXml?: string
+  formDataJson?: any
+  pospID?: string
+  pospVersion?: string
+  messageSubject?: string
+  isSigned?: boolean
+  formName?: string
+  fromDescription?: string
+}
+
+export type FormDto = {
+  email: string
+  formDataXml: string
+  formDataJson: any
+  pospID?: string
+  pospVersion: string
+  messageSubject: string
+  isSigned?: false
+  formName?: string
+  fromDescription?: string
+  id: string
+  createdAt: Date
+  updatedAt: Date
+  externalId: string
+  userExternalId: string
+  uri?: string
+  state?: string
+  formDataGinis?: string
+  senderId: string
+  recipientId: string
+  finishSubmission: string
+}
+
 const fetchJsonApi = async <T=any>(path: string, options?: RequestInit): Promise<T> => {
   try {
     const response = await fetch(path, options)
@@ -137,19 +207,13 @@ export const formDataToXml = (eform: string, data: any) => {
 }
 
 export const xmlToFormData = (eform: string, data: string): Promise<RJSFSchema> => {
-  return fetchJsonApi(`/api/eforms/${eform}/transform/xmlToJson`, {
+  return fetchJsonApi<RJSFSchema>(`/api/eforms/${eform}/transform/xmlToJson`, {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
     },
     body: JSON.stringify({ data }),
   })
-}
-
-interface Identity {
-  birthNumber: string
-  identityCard: string
-  turnstileToken: string
 }
 
 export const verifyIdentityApi = (data: Identity, token: string) => {
@@ -166,14 +230,8 @@ export const verifyIdentityApi = (data: Identity, token: string) => {
   )
 }
 
-export interface Gdpr {
-  subType?: 'subscribe' | 'unsubscribe'
-  type: 'ANALYTICS' | 'DATAPROCESSING' | 'MARKETING' | 'LICENSE'
-  category: 'SWIMMINGPOOLS' | 'TAXES' | 'CITY' | 'ESBS'
-}
-
-export const subscribeApi = (data: { gdprData?: Gdpr[] }, token: string) => {
-  return fetchJsonApi(`${process.env.NEXT_PUBLIC_CITY_ACCOUNT_URL}/user/subscribe`, {
+export const subscribeApi = (data: { gdprData?: Gdpr[] }, token: string): Promise<User> => {
+  return fetchJsonApi<User>(`${process.env.NEXT_PUBLIC_CITY_ACCOUNT_URL}/user/subscribe`, {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
@@ -183,8 +241,8 @@ export const subscribeApi = (data: { gdprData?: Gdpr[] }, token: string) => {
   })
 }
 
-export const unsubscribeApi = (data: { gdprData?: Gdpr[] }, token: string) => {
-  return fetchJsonApi(`${process.env.NEXT_PUBLIC_CITY_ACCOUNT_URL}/user/unsubscribe`, {
+export const unsubscribeApi = (data: { gdprData?: Gdpr[] }, token: string): Promise<User> => {
+  return fetchJsonApi<User>(`${process.env.NEXT_PUBLIC_CITY_ACCOUNT_URL}/user/unsubscribe`, {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
@@ -194,8 +252,8 @@ export const unsubscribeApi = (data: { gdprData?: Gdpr[] }, token: string) => {
   })
 }
 
-export const getUserApi = (token: string) => {
-  return fetchJsonApi(`${process.env.NEXT_PUBLIC_CITY_ACCOUNT_URL}/user/get-or-create`, {
+export const getUserApi = (token: string): Promise<User> => {
+  return fetchJsonApi<User>(`${process.env.NEXT_PUBLIC_CITY_ACCOUNT_URL}/user/get-or-create`, {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
@@ -214,29 +272,6 @@ export const resetRcApi = (token: string) => {
   })
 }
 
-export type FormDto = {
-  email: string
-  formDataXml: string
-  formDataJson: any
-  pospID?: string
-  pospVersion: string
-  messageSubject: string
-  isSigned?: false
-  formName?: string
-  fromDescription?: string
-  id: string
-  createdAt: Date
-  updatedAt: Date
-  externalId: string
-  userExternalId: string
-  uri?: string
-  state?: string
-  formDataGinis?: string
-  senderId: string
-  recipientId: string
-  finishSubmission: string
-}
-
 export const getForms = (token: string) => {
   return fetchJsonApi(`${process.env.NEXT_PUBLIC_FORMS_URL}/nases/forms`, {
     method: 'GET',
@@ -247,33 +282,8 @@ export const getForms = (token: string) => {
   })
 }
 
-type CreateFormDto = {
-  pospID: string
-  pospVersion: string
-  messageSubject: string
-  isSigned: boolean
-  formName: string
-  fromDescription: string
-}
-
-type UpdateFormDto = {
-  email?: string
-  formDataXml?: string
-  formDataJson?: any
-  pospID?: string
-  pospVersion?: string
-  messageSubject?: string
-  isSigned?: boolean
-  formName?: string
-  fromDescription?: string
-}
-
-export interface UrlResult {
-  url: string
-}
-
-export const createForm = (token: string, data: CreateFormDto) => {
-  return fetchJsonApi(`${process.env.NEXT_PUBLIC_FORMS_URL}/nases/create-form`, {
+export const createForm = (token: string, data: CreateFormDto): Promise<FormDto> => {
+  return fetchJsonApi<FormDto>(`${process.env.NEXT_PUBLIC_FORMS_URL}/nases/create-form`, {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
@@ -283,8 +293,8 @@ export const createForm = (token: string, data: CreateFormDto) => {
   })
 }
 
-export const getForm = (token: string, id: string) => {
-  return fetchJsonApi(`${process.env.NEXT_PUBLIC_FORMS_URL}/nases/form/${id}`, {
+export const getForm = (token: string, id: string): Promise<FormDto> => {
+  return fetchJsonApi<FormDto>(`${process.env.NEXT_PUBLIC_FORMS_URL}/nases/form/${id}`, {
     method: 'GET',
     headers: {
       'Content-Type': 'application/json',

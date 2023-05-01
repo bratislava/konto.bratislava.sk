@@ -1,19 +1,9 @@
-import { Gdpr, getUserApi, subscribeApi, UNAUTHORIZED_ERROR_TEXT, unsubscribeApi } from '@utils/api'
+import { Gdpr, getUserApi, subscribeApi, UNAUTHORIZED_ERROR_TEXT, unsubscribeApi, User } from '@utils/api'
 import useAccount from '@utils/useAccount'
 import { useCallback, useState } from 'react'
 import { useEffectOnce } from 'usehooks-ts'
 
 import logger from './logger'
-
-export interface User {
-  id: string
-  createdAt: Date
-  updatedAt: Date
-  externalId?: string
-  email: string
-  birthNumber: string
-  gdprData: Gdpr[]
-}
 
 export default function useUser() {
   const [user, setUser] = useState<User | undefined>()

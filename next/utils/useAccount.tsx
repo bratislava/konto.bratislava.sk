@@ -209,6 +209,27 @@ export const AccountProvider = ({ children }: { children: ReactNode }) => {
     // }
   }
 
+  const getAccessToken = async (): Promise<string | null> => {
+    return new Promise((resolve) => {
+      const cognitoUser = userPool.getCurrentUser()
+      if (cognitoUser == null) {
+        resolve(null)
+      } else {
+        cognitoUser.getSession((err: Error | null, result: CognitoUserSession | null) => {
+          if (err) {
+            resolve(null)
+          } else if (result) {
+            const accessToken = result.getAccessToken().getJwtToken()
+            setLastAccessToken(accessToken)
+            resolve(accessToken)
+          } else {
+            resolve(null)
+          }
+        })
+      }
+    })
+  }
+
   const subscribe = async () => {
     if (lastMarketingConfirmation === false) {
       return
@@ -229,6 +250,101 @@ export const AccountProvider = ({ children }: { children: ReactNode }) => {
       }
       logger.error(error)
     }
+  }
+
+  const login = (email: string, password: string | undefined): Promise<boolean> => {
+    // login into cognito using aws sdk
+    const credentials = {
+      Username: email,
+      Password: password,
+    }
+
+    const cognitoUser = new CognitoUser({
+      Username: email,
+      Pool: userPool,
+      // Storage: new CookieStorage({
+      //   domain: process.env.NEXT_PUBLIC_COGNITO_COOKIE_STORAGE_DOMAIN,
+      // }),
+    })
+
+    setLastCredentials(credentials)
+    setError(null)
+    return new Promise((resolve) => {
+      cognitoUser.authenticateUser(new AuthenticationDetails(credentials), {
+        onSuccess(result: CognitoUserSession) {
+          // POTENTIAL: Region needs to be set if not already set previously elsewhere.
+          AWS.config.region = process.env.NEXT_PUBLIC_AWS_REGION
+
+          const awsCredentials = new AWS.CognitoIdentityCredentials({
+            IdentityPoolId: process.env.NEXT_PUBLIC_COGNITO_IDENTITY_POOL_ID || '',
+            Logins: {
+              // Change the key below according to the specific region your user pool is in.
+              [`cognito-idp.${process.env.NEXT_PUBLIC_AWS_REGION}.amazonaws.com/${process.env.NEXT_PUBLIC_COGNITO_USER_POOL_ID}`]:
+                result.getIdToken().getJwtToken(),
+            },
+          })
+          setLastAccessToken(result.getAccessToken().getJwtToken())
+          AWS.config.credentials = awsCredentials
+
+          cognitoUser.getUserAttributes((err?: Error, attributes?: CognitoUserAttribute[]) => {
+            if (err) {
+              logger.error(err)
+              resolve(false)
+            } else {
+              const userData = userAttributesToObject(attributes)
+              setUserData(userData)
+              setUser(cognitoUser)
+
+              // refreshes credentials using AWS.CognitoIdentity.getCredentialsForIdentity()
+              awsCredentials.refresh((err?: AWSError) => {
+                if (err) {
+                  logger.error('AWS error login refresh', err)
+                  resolve(false)
+                } else {
+                  resolve(true)
+                }
+              })
+            }
+          })
+        },
+
+        onFailure(err: AWSError) {
+          if (err.code === 'UserNotConfirmedException') {
+            setStatus(AccountStatus.EmailVerificationRequired)
+          } else {
+            logger.error('AWS error login', err)
+            setError({ ...err })
+          }
+          resolve(false)
+        },
+
+        newPasswordRequired: (userAttributes, requiredAttributes) => {
+          logger.warn('newPasswordRequired', userAttributes, requiredAttributes)
+          resolve(false)
+        },
+        mfaRequired: (challengeName, challengeParameters) => {
+          logger.warn('mfaRequired', challengeName, challengeParameters)
+          resolve(false)
+        },
+        totpRequired: (challengeName, challengeParameters) => {
+          logger.warn('totpRequired', challengeName, challengeParameters)
+          resolve(false)
+        },
+        customChallenge: (challengeParameters) => {
+          const challengeName = 'challenge-answer'
+          logger.warn('customChallenge', challengeName, challengeParameters)
+          resolve(false)
+        },
+        mfaSetup: (challengeName, challengeParameters) => {
+          logger.warn('mfaSetup', challengeName, challengeParameters)
+          resolve(false)
+        },
+        selectMFAType: (challengeName, challengeParameters) => {
+          logger.warn('selectmfatype', challengeName, challengeParameters)
+          resolve(false)
+        },
+      })
+    })
   }
 
   const verifyEmail = (verificationCode: string): Promise<boolean> => {
@@ -301,27 +417,6 @@ export const AccountProvider = ({ children }: { children: ReactNode }) => {
         })
       } else {
         resolve(false)
-      }
-    })
-  }
-
-  const getAccessToken = async (): Promise<string | null> => {
-    return new Promise((resolve) => {
-      const cognitoUser = userPool.getCurrentUser()
-      if (cognitoUser == null) {
-        resolve(null)
-      } else {
-        cognitoUser.getSession((err: Error | null, result: CognitoUserSession | null) => {
-          if (err) {
-            resolve(null)
-          } else if (result) {
-            const accessToken = result.getAccessToken().getJwtToken()
-            setLastAccessToken(accessToken)
-            resolve(accessToken)
-          } else {
-            resolve(null)
-          }
-        })
       }
     })
   }
@@ -509,101 +604,6 @@ export const AccountProvider = ({ children }: { children: ReactNode }) => {
           }
           logger.error('AWS error forgotPassword', err)
           setError(customErr)
-          resolve(false)
-        },
-      })
-    })
-  }
-
-  const login = (email: string, password: string | undefined): Promise<boolean> => {
-    // login into cognito using aws sdk
-    const credentials = {
-      Username: email,
-      Password: password,
-    }
-
-    const cognitoUser = new CognitoUser({
-      Username: email,
-      Pool: userPool,
-      // Storage: new CookieStorage({
-      //   domain: process.env.NEXT_PUBLIC_COGNITO_COOKIE_STORAGE_DOMAIN,
-      // }),
-    })
-
-    setLastCredentials(credentials)
-    setError(null)
-    return new Promise((resolve) => {
-      cognitoUser.authenticateUser(new AuthenticationDetails(credentials), {
-        onSuccess(result: CognitoUserSession) {
-          // POTENTIAL: Region needs to be set if not already set previously elsewhere.
-          AWS.config.region = process.env.NEXT_PUBLIC_AWS_REGION
-
-          const awsCredentials = new AWS.CognitoIdentityCredentials({
-            IdentityPoolId: process.env.NEXT_PUBLIC_COGNITO_IDENTITY_POOL_ID || '',
-            Logins: {
-              // Change the key below according to the specific region your user pool is in.
-              [`cognito-idp.${process.env.NEXT_PUBLIC_AWS_REGION}.amazonaws.com/${process.env.NEXT_PUBLIC_COGNITO_USER_POOL_ID}`]:
-                result.getIdToken().getJwtToken(),
-            },
-          })
-          setLastAccessToken(result.getAccessToken().getJwtToken())
-          AWS.config.credentials = awsCredentials
-
-          cognitoUser.getUserAttributes((err?: Error, attributes?: CognitoUserAttribute[]) => {
-            if (err) {
-              logger.error(err)
-              resolve(false)
-            } else {
-              const userData = userAttributesToObject(attributes)
-              setUserData(userData)
-              setUser(cognitoUser)
-
-              // refreshes credentials using AWS.CognitoIdentity.getCredentialsForIdentity()
-              awsCredentials.refresh((err?: AWSError) => {
-                if (err) {
-                  logger.error('AWS error login refresh', err)
-                  resolve(false)
-                } else {
-                  resolve(true)
-                }
-              })
-            }
-          })
-        },
-
-        onFailure(err: AWSError) {
-          if (err.code === 'UserNotConfirmedException') {
-            setStatus(AccountStatus.EmailVerificationRequired)
-          } else {
-            logger.error('AWS error login', err)
-            setError({ ...err })
-          }
-          resolve(false)
-        },
-
-        newPasswordRequired: (userAttributes, requiredAttributes) => {
-          logger.warn('newPasswordRequired', userAttributes, requiredAttributes)
-          resolve(false)
-        },
-        mfaRequired: (challengeName, challengeParameters) => {
-          logger.warn('mfaRequired', challengeName, challengeParameters)
-          resolve(false)
-        },
-        totpRequired: (challengeName, challengeParameters) => {
-          logger.warn('totpRequired', challengeName, challengeParameters)
-          resolve(false)
-        },
-        customChallenge: (challengeParameters) => {
-          const challengeName = 'challenge-answer'
-          logger.warn('customChallenge', challengeName, challengeParameters)
-          resolve(false)
-        },
-        mfaSetup: (challengeName, challengeParameters) => {
-          logger.warn('mfaSetup', challengeName, challengeParameters)
-          resolve(false)
-        },
-        selectMFAType: (challengeName, challengeParameters) => {
-          logger.warn('selectmfatype', challengeName, challengeParameters)
           resolve(false)
         },
       })

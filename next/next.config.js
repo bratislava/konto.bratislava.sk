@@ -39,7 +39,7 @@ const nextConfig = {
       },
       {
         source: '/i-have-a-problem',
-        destination: '/mam-problem',
+        destination: '/pomoc',
         permanent: true,
       },
       {
@@ -80,6 +80,11 @@ const nextConfig = {
       {
         source: '/user-profile',
         destination: '/moj-profil',
+        permanent: true,
+      },
+      {
+        source: '/mam-problem',
+        destination: '/pomoc',
         permanent: true,
       },
     ]

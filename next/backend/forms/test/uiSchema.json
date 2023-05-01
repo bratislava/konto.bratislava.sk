@@ -177,7 +177,12 @@
   },
   "fileUploads": {
     "ui:hideError": true,
-    "ui:order": ["importButtonOneFile", "importButtonMultipleFiles", "importDragAndDropOneFile", "importDragAndDropMultipleFiles"],
+    "ui:order": [
+      "importButtonOneFile",
+      "importButtonMultipleFiles",
+      "importDragAndDropOneFile",
+      "importDragAndDropMultipleFiles"
+    ],
     "importButtonOneFile": {
       "ui:widget": "Upload",
       "ui:label": false,
@@ -240,7 +245,7 @@
   },
   "selectFields": {
     "ui:hideError": true,
-    "ui:order": ["school", "conditionalSchool", "diplomas", "conditionalDiplomas", "years"],
+    "ui:order": ["school", "conditionalSchool", "diplomas", "conditionalDiplomas", "years", "city"],
     "school": {
       "ui:widget": "SelectField",
       "ui:label": false,
@@ -264,6 +269,10 @@
       }
     },
     "years": {
+      "ui:widget": "SelectField",
+      "ui:label": false
+    },
+    "city": {
       "ui:widget": "SelectField",
       "ui:label": false
     },

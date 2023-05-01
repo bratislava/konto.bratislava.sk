@@ -28,7 +28,7 @@ const ThankYouFormSection = () => {
           <div className="flex flex-col gap-3 mt-4 md:mt-6">
             <Button
               label={t('thank_you.button_faq_text')}
-              href={ROUTES.I_HAVE_A_PROBLEM}
+              href={ROUTES.HELP}
               variant="link-black"
               size="sm"
             />

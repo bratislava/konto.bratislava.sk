@@ -269,6 +269,12 @@
                   "const": 3
                 }
               ]
+            },
+            "city": {
+              "type": "string",
+              "title": "City (ciselnik)",
+              "format": "ciselnik",
+              "ciselnik": { "id": "SUSR_0025" }
             }
           },
           "allOf": [
@@ -337,24 +343,28 @@
           "properties": {
             "importButtonOneFile": {
               "title": "Importuj jeden subor",
-              "type": "string"
+              "type": "string",
+              "format": "file"
             },
             "importButtonMultipleFiles": {
               "title": "Importuj viac suborov",
               "type": "array",
               "items": {
-                "type": "string"
+                "type": "string",
+                "format": "file"
               }
             },
             "importDragAndDropOneFile": {
               "title": "Presun sem jeden subor",
-              "type": "string"
+              "type": "string",
+              "format": "file"
             },
             "importDragAndDropMultipleFiles": {
               "title": "Presun sem viac suborov",
               "type": "array",
               "items": {
-                "type": "string"
+                "type": "string",
+                "format": "file"
               }
             }
           }

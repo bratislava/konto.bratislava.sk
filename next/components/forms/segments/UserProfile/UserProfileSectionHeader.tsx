@@ -12,6 +12,7 @@ interface UserProfileSectionHeaderProps {
   isEditing?: boolean
   children?: React.ReactNode
   mainHeader?: boolean
+  childrenToColumn?: boolean
 }
 
 const UserProfileSectionHeader = ({
@@ -22,6 +23,7 @@ const UserProfileSectionHeader = ({
   isEditing,
   children,
   mainHeader,
+  childrenToColumn,
 }: UserProfileSectionHeaderProps) => {
   const { status } = useAccount()
   const { t } = useTranslation('account')
@@ -37,8 +39,13 @@ const UserProfileSectionHeader = ({
         },
       )}
     >
-      <div className="w-full flex items-center justify-between">
-        <div className="flex flex-col grow gap-2">
+      <div
+        className={cx('w-full flex justify-between', {
+          'flex-col md:flex-row items-start md:items-center  gap-4 md:gap-0': childrenToColumn,
+          'items-center': !childrenToColumn,
+        })}
+      >
+        <div className="flex flex-col grow gap-1 md:gap-2">
           <div className="flex items-center gap-3 md:gap-2">
             <h5 className={cx('text-h5-bold', 'md:text-h4-bold')}>{title}</h5>
             {mainHeader && status === AccountStatus.IdentityVerificationSuccess && (
@@ -49,7 +56,7 @@ const UserProfileSectionHeader = ({
           </div>
           <p className={cx('text-p2-normal', 'md:block', { hidden: isEditing })}>{text}</p>
         </div>
-        {children && <div>{children}</div>}
+        {children && <div className={cx({ 'md:w-fit w-full': childrenToColumn })}>{children}</div>}
       </div>
       {mainHeader && status !== AccountStatus.IdentityVerificationSuccess && (
         <Alert

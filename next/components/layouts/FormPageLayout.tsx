@@ -35,7 +35,7 @@ const menuItems = [
     id: 3,
     title: 'account:menu_help_link',
     icon: <HelpIcon className="w-6 h-6" />,
-    link: ROUTES.I_HAVE_A_PROBLEM,
+    link: ROUTES.HELP,
   },
   {
     id: 4,

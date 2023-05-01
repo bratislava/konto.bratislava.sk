@@ -357,6 +357,7 @@ export const AccountProvider = ({ children }: { children: ReactNode }) => {
     })
 
     return new Promise((resolve) => {
+      // eslint-disable-next-line @typescript-eslint/no-misused-promises
       cognitoUser.confirmRegistration(verificationCode, true, async (err?: AWSError) => {
         if (err) {
           setError({ ...err })
@@ -562,6 +563,7 @@ export const AccountProvider = ({ children }: { children: ReactNode }) => {
 
     return new Promise((resolve) => {
       cognitoUser.confirmPassword(verificationCode, password, {
+        // eslint-disable-next-line @typescript-eslint/no-misused-promises
         async onSuccess() {
           setStatus(AccountStatus.NewPasswordSuccess)
           resolve(await login(lastCredentials.Username, password))

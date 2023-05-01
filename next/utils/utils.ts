@@ -39,8 +39,7 @@ export const fileCountVzns = (data: any) => {
 }
 
 export const isPresent = <U>(a: U | null | undefined | void): a is U => {
-  if (a === null || a === undefined) return false
-  return true
+  return !(a === null || a === undefined)
 }
 
 const isServer = () => typeof window === 'undefined'

@@ -14,7 +14,9 @@ const nextConfig = {
       'components/',
       'pages/',
       'utils/',
-      'forms/'
+      'forms/meili/',
+      'forms/services/',
+      'forms/utils/'
     ],
     ignorePatterns: [
       'forms/backend/'

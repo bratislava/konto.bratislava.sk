@@ -1,6 +1,7 @@
 import { Gdpr, getUserApi, subscribeApi, UNAUTHORIZED_ERROR_TEXT, unsubscribeApi } from '@utils/api'
 import useAccount from '@utils/useAccount'
-import { useEffect, useState } from 'react'
+import { useCallback, useState } from 'react'
+import { useEffectOnce } from 'usehooks-ts'
 
 import logger from './logger'
 
@@ -18,23 +19,24 @@ export default function useUser() {
   const [user, setUser] = useState<User | undefined>()
 
   const { getAccessToken, forceLogout } = useAccount()
-  useEffect(() => {
-    const init = async () => {
-      const token = await getAccessToken()
-      try {
-        const loadedUser: User = await getUserApi(token)
-        setUser(loadedUser)
-      } catch (error) {
-        logger.error(error)
-        // TODO temporary, pass better errors out of api requests
-        if (error?.message === UNAUTHORIZED_ERROR_TEXT) {
-          forceLogout()
-        }
+
+  const init = useCallback(async () => {
+    const token = await getAccessToken()
+    try {
+      const loadedUser: User = await getUserApi(token)
+      setUser(loadedUser)
+    } catch (error) {
+      logger.error(error)
+      // TODO temporary, pass better errors out of api requests
+      if (error?.message === UNAUTHORIZED_ERROR_TEXT) {
+        forceLogout()
       }
     }
+  }, [forceLogout, getAccessToken])
 
+  useEffectOnce(() => {
     init().catch((error_) => logger.error('Init error', error_))
-  }, [])
+  })
 
   const subscribe = async (data: Gdpr[]): Promise<boolean> => {
     const token = await getAccessToken()

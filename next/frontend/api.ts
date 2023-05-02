@@ -5,6 +5,7 @@
 import { RJSFSchema } from '@rjsf/utils'
 import { ErrorObject } from 'ajv'
 
+import { CreateFormDto, FormDto, UpdateFormDto } from './dtos/formDto'
 import logger from './logger'
 
 export const API_ERROR_TEXT = 'API_ERROR'
@@ -64,50 +65,6 @@ export interface User {
 
 export interface UrlResult {
   url: string
-}
-
-export type CreateFormDto = {
-  pospID: string
-  pospVersion: string
-  messageSubject: string
-  isSigned: boolean
-  formName: string
-  fromDescription: string
-}
-
-export type UpdateFormDto = {
-  email?: string
-  formDataXml?: string
-  formDataJson?: any
-  pospID?: string
-  pospVersion?: string
-  messageSubject?: string
-  isSigned?: boolean
-  formName?: string
-  fromDescription?: string
-}
-
-export type FormDto = {
-  email: string
-  formDataXml: string
-  formDataJson: any
-  pospID?: string
-  pospVersion: string
-  messageSubject: string
-  isSigned?: false
-  formName?: string
-  fromDescription?: string
-  id: string
-  createdAt: Date
-  updatedAt: Date
-  externalId: string
-  userExternalId: string
-  uri?: string
-  state?: string
-  formDataGinis?: string
-  senderId: string
-  recipientId: string
-  finishSubmission: string
 }
 
 const fetchJsonApi = async <T=any>(path: string, options?: RequestInit): Promise<T> => {

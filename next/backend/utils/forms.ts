@@ -12,8 +12,9 @@ import { forceString } from '@utils/utils'
 import Ajv from 'ajv'
 import addFormats from 'ajv-formats'
 import * as cheerio from 'cheerio'
-import { parseXml } from 'libxmljs2'
+import { MyApplicationHistoryDataBase } from 'components/forms/segments/AccountSections/MyApplicationsSection/MyApplicationHistory'
 import { MyApplicationsSentCardBase } from 'components/forms/segments/AccountSections/MyApplicationsSection/MyApplicationsSentList'
+import { parseXml } from 'libxmljs2'
 import { dropRight, find, last } from 'lodash'
 import { parseStringPromise } from 'xml2js'
 import { firstCharLowerCase } from 'xml2js/lib/processors'
@@ -240,8 +241,8 @@ export const getEform = (id: string | string[] | undefined): EFormValue => {
 }
 
 // mock-up data
-export const getAplicationData = (id: string | string[]): MyApplicationsSentCardBase => {
-  const myAplicationData: MyApplicationsSentCardBase[] = [
+export const getAplicationDetailsData = (id: string | string[]): MyApplicationsSentCardBase => {
+  const myAplicationDetailsData: MyApplicationsSentCardBase[] = [
     {
       id: '1',
       title: 'Názov stavby dotiahnutý zo žiadosti',
@@ -252,5 +253,28 @@ export const getAplicationData = (id: string | string[]): MyApplicationsSentCard
       statusDate: '29. september 2022',
     },
   ]
-  return myAplicationData.find((item) => id === item.id)
+  return myAplicationDetailsData.find((item) => id === item.id)
+}
+
+// mock-up data
+export const getAplicationHistoryData = (): MyApplicationHistoryDataBase[] => {
+  const myAplicationHistoryData: MyApplicationHistoryDataBase[] = [
+    {
+      editDate: '28. október 2022, 16:32',
+      description: 'Žiadosť bola vybavená',
+    },
+    {
+      editDate: '28. október 2022, 16:32',
+      description: 'Žiadosť bola vybavená',
+    },
+    {
+      editDate: '28. október 2022, 16:32',
+      description: 'Žiadosť bola vybavená',
+    },
+    {
+      editDate: '28. október 2022, 16:32',
+      description: 'Žiadosť bola vybavená',
+    },
+  ]
+  return myAplicationHistoryData
 }

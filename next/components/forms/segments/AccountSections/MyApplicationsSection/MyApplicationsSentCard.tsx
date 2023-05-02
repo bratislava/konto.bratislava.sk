@@ -40,7 +40,7 @@ const MyApplicationsSentCard = (props: MyApplicationsSentCardBase) => {
       case 'warning':
         return statusNode(
           <TimeIcon className="text-warning-700 w-6 h-6" />,
-          t('account_section_applications.status.waiting'),
+          t('account_section_applications.status.warning'),
         )
       case 'success':
         return statusNode(

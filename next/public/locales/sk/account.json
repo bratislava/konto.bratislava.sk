@@ -346,6 +346,20 @@
       "success": "Vybavené",
       "warning": "Čaká na vybavenie",
       "negative": "Zamietnuté"
+    },
+    "details": {
+      "application_details": {
+        "title": "Detail žiadosti",
+        "record_number": "Číslo záznamu",
+        "file_number": "Číslo spisu",
+        "handle_person": "Vybavuje",
+        "contact": "Kontakt"
+      },
+      "application_history": {
+        "title": "História zmien",
+        "edit_date": "Dátum zmeny",
+        "description": "Popis"
+      }
     }
   },
   "account_section_payment": {

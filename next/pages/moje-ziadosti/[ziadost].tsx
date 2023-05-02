@@ -1,4 +1,4 @@
-import { getAplicationData } from '@backend/utils/forms'
+import { getAplicationDetailsData, getAplicationHistoryData } from '@backend/utils/forms'
 import logger from '@utils/logger'
 import { AsyncServerProps } from '@utils/types'
 import { isProductionDeployment } from '@utils/utils'
@@ -12,9 +12,11 @@ export const getServerSideProps = async (ctx: GetServerSidePropsContext) => {
   if (isProductionDeployment()) return { notFound: true }
   const locale = ctx.locale ?? 'sk'
 
-  let myAplicationData
+  let myAplicationDetailsData
+  let myAplicationHistoryData
   try {
-    myAplicationData = getAplicationData(ctx.query.ziadost)
+    myAplicationDetailsData = getAplicationDetailsData(ctx.query.ziadost)
+    myAplicationHistoryData = getAplicationHistoryData()
   } catch (error) {
     logger.error(error)
     return { notFound: true }
@@ -22,7 +24,8 @@ export const getServerSideProps = async (ctx: GetServerSidePropsContext) => {
 
   return {
     props: {
-      myAplicationData,
+      myAplicationDetailsData,
+      myAplicationHistoryData,
       page: {
         locale: ctx.locale,
         localizations: ['sk', 'en']
@@ -40,13 +43,17 @@ export const getServerSideProps = async (ctx: GetServerSidePropsContext) => {
 
 const AccountMyApplicationsPage = ({
   page,
-  myAplicationData,
+  myAplicationDetailsData,
+  myAplicationHistoryData,
   isProductionDeploy,
 }: AsyncServerProps<typeof getServerSideProps>) => {
   return (
     <PageWrapper locale={page.locale} localizations={page.localizations}>
       <AccountPageLayout isProductionDeploy={isProductionDeploy}>
-        <MyApplicationDetails data={myAplicationData} />
+        <MyApplicationDetails
+          historyData={myAplicationHistoryData}
+          detailsData={myAplicationDetailsData}
+        />
       </AccountPageLayout>
     </PageWrapper>
   )

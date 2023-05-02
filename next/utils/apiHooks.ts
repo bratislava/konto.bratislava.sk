@@ -3,7 +3,7 @@ import addFormats from 'ajv-formats'
 import { useEffect } from 'react'
 import useSWR from 'swr'
 
-import { TaxApiError, getTaxApi } from './api'
+import { getTaxApi,TaxApiError } from './api'
 import { ajvFormats, ajvKeywords } from './forms'
 import logger from './logger'
 import { Tax, TaxJSONSchema } from './taxDto'
@@ -15,7 +15,7 @@ export const useTaxes = () => {
   // TODO handle 401 & token refreshing - for now, this should work reasonably as along as the page isn't opened for too long
   const swrResult = useSWR<Tax>(
     () => (lastAccessToken ? ['/api/taxes', lastAccessToken] : null),
-    ([_, token]) => getTaxApi(token),
+    ([, token]: [void, string]) => getTaxApi(token),
     { shouldRetryOnError: false },
   )
 

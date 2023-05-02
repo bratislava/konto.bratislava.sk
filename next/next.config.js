@@ -9,6 +9,17 @@ const nextConfig = {
   images: {
     domains: ['localhost', 'cdn-api.bratislava.sk'],
   },
+  eslint: {
+    dirs: [
+      'components/',
+      'pages/',
+      'utils/',
+      'backend/'
+    ],
+    ignorePatterns: [
+      'backend/forms/'
+    ]
+  },
   async redirects() {
     return [
       {

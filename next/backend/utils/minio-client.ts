@@ -13,6 +13,7 @@ const minioClient = new Client({
   port: 443,
   useSSL: true,
   accessKey: 'FORMS_DEV_ALL',
+  // eslint-disable-next-line no-secrets/no-secrets
   secretKey: 'cfB1t2jBVi39fHT5Mxae3gz70b8TBbDh',
 })
 

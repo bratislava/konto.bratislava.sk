@@ -11,8 +11,10 @@ const postalCodeFormat = (code: string): string => `${code?.slice(0, 3)} ${code?
 
 const UserProfileDetailView = ({ userData }: UserProfileDetailViewProps) => {
   const { t } = useTranslation('account')
-  const { given_name, family_name, email, phone_number, address } = userData
-  const fullName = `${given_name ?? ''} ${family_name ?? ''}`
+  const { account_type, name, given_name, family_name, email, phone_number, address } = userData
+  const fullName = account_type === 'po' && name
+    ? name
+    : `${given_name ?? ''}${given_name && family_name ? ' ' : ''}${family_name ?? ''}`
   const fullAddress = address
     ? address.street_address || address.postal_code || address.locality
       ? `${
@@ -22,10 +24,12 @@ const UserProfileDetailView = ({ userData }: UserProfileDetailViewProps) => {
         } ${postalCodeFormat(address?.postal_code)} ${address?.locality}`
       : ''
     : ''
+  const nameLabel = account_type === 'po' ? 'profile_detail.business_name' : 'profile_detail.full_name'
+
   return (
     <div className="flex flex-col grow gap-6">
       {/* <UserProfileDetailViewRow label={t('profile_detail.titles_before_name')} /> */}
-      <UserProfileDetailViewRow label={t('profile_detail.full_name')} value={fullName} />
+      <UserProfileDetailViewRow label={t(nameLabel)} value={fullName} />
       {/* <UserProfileDetailViewRow label={t('profile_detail.titles_after_name')} /> */}
       <UserProfileDetailViewRow
         label={t('profile_detail.email')}

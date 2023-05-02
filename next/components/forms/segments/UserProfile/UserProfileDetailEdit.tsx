@@ -9,8 +9,9 @@ import { Controller } from 'react-hook-form'
 
 interface Data {
   email: string
-  given_name: string
-  family_name: string
+  business_name?: string
+  given_name?: string
+  family_name?: string
   phone_number: string
   street_address: string
   city: string
@@ -18,7 +19,7 @@ interface Data {
 }
 
 // must use `minLength: 1` to implement required field
-const schema = {
+const foSchema = {
   type: 'object',
   properties: {
     given_name: {
@@ -55,6 +56,38 @@ const schema = {
   required: ['email', 'given_name', 'family_name'],
 }
 
+const poSchema = {
+  type: 'object',
+  properties: {
+    business_name: {
+      type: 'string',
+      minLength: 1,
+      errorMessage: { minLength: 'account:business_name_required' },
+    },
+    email: {
+      type: 'string',
+      minLength: 1,
+      format: 'email',
+      errorMessage: { minLength: 'account:email_required', format: 'account:email_format' },
+    },
+    phone_number: {
+      type: 'string',
+    },
+    street_address: {
+      type: 'string',
+    },
+    city: {
+      type: 'string',
+    },
+    postal_code: {
+      type: 'string',
+      format: 'postalCode',
+      errorMessage: { format: 'account:postal_code_format' },
+    },
+  },
+  required: ['email', 'name'],
+}
+
 interface UserProfileDetailEditProps {
   formId: string
   userData: UserData
@@ -66,8 +99,9 @@ const UserProfileDetailEdit = (props: UserProfileDetailEditProps) => {
   const { formId, userData, onOpenEmailModal, onSubmit } = props
   const { t } = useTranslation('account')
   const { handleSubmit, control, errors, setError } = useHookForm<Data>({
-    schema,
+    schema: userData.account_type === 'fo' ? foSchema : poSchema,
     defaultValues: {
+      business_name: userData.name,
       family_name: userData.family_name,
       given_name: userData.given_name,
       email: userData.email,

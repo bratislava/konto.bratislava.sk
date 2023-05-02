@@ -59,7 +59,7 @@ const TaxFeeSectionHeader = ({ tax }: AccountSectionHeaderBase) => {
   const redirectToPaymentGateway = async () => {
     try {
       const result = await getPaymentGatewayUrlApi(lastAccessToken)
-      const resultUrl = result?.url
+      const resultUrl = result.url
       if (typeof resultUrl === 'string') {
         await router.push(resultUrl)
       } else {

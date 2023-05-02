@@ -1,5 +1,6 @@
 import { UploadMinioFile } from '@backend/dtos/minio/upload-minio-file.dto'
 import { StrictRJSFSchema, WidgetProps } from '@rjsf/utils'
+import { FormRJSFContext } from '@utils/forms'
 import WidgetWrapper from 'components/forms/widget-wrappers/WidgetWrapper'
 import React, { useState } from 'react'
 import { useEffectOnce } from 'usehooks-ts'
@@ -17,10 +18,11 @@ interface UploadWidgetRJSFProps extends WidgetProps {
   multiple?: boolean
   onChange: (value?: string | string[]) => void
   rawErrors?: string[]
+  formContext: FormRJSFContext
 }
 
 const UploadWidgetRJSF = (props: UploadWidgetRJSFProps) => {
-  const { options, schema, label, required, value, disabled, onChange, rawErrors } = props
+  const { options, schema, label, required, value, disabled, onChange, rawErrors, formContext } = props
 
   const {
     size,
@@ -108,6 +110,7 @@ const UploadWidgetRJSF = (props: UploadWidgetRJSFProps) => {
         sizeLimit={size}
         supportedFormats={supportedFormats}
         disabled={disabled}
+        bucketFolderName={formContext.bucketFolderName}
         onChange={handleOnChange}
       />
     </WidgetWrapper>

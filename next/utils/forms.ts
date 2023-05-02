@@ -27,10 +27,10 @@ import useAccount from '@utils/useAccount'
 import useSnackbar from '@utils/useSnackbar'
 import { AnySchemaObject, ErrorObject, FuncKeywordDefinition } from 'ajv'
 import { JSONSchema7, JSONSchema7Definition } from 'json-schema'
-import { cloneDeep, get, merge } from 'lodash'
+import { cloneDeep, get, merge, set } from 'lodash'
 import { useTranslation } from 'next-i18next'
 import { useRouter } from 'next/router'
-import { ChangeEvent, RefObject, useEffect, useRef, useState } from 'react'
+import { ChangeEvent, RefObject, useEffect, useMemo, useRef, useState } from 'react'
 
 import { StepData } from '../components/forms/types/TransformedFormData'
 import logger from './logger'
@@ -49,6 +49,10 @@ export type JsonSchemaExtraProperty = JSONSchema7Definition & { isConditional?: 
 export interface JsonSchemaExtraProperties {
   [key: string]: JsonSchemaExtraProperty
   isConditional?: boolean
+}
+
+export interface FormRJSFContext {
+  bucketFolderName?: string
 }
 
 export const getAllPossibleJsonSchemaProperties = (
@@ -280,11 +284,11 @@ const validateDateFromToFormat = (
 ) => {
   const formDataKeys = Object.entries(formData)
   formDataKeys?.forEach(([key, value]: [string, RJSFSchema]) => {
-    const schemaProperty: any =
-      typeof schema.properties[key] === 'boolean' ? {} : schema.properties[key]
+    const schemaProperty: JSONSchema7Definition = schema.properties[key]
     if (
       schema?.properties &&
       schemaProperty &&
+      typeof schemaProperty !== 'boolean' &&
       'dateFromTo' in schemaProperty &&
       schemaProperty.dateFromTo &&
       value.startDate &&
@@ -306,11 +310,11 @@ const validateTimeFromToFormat = (
 ) => {
   const formDataKeys = Object.entries(formData)
   formDataKeys?.forEach(([key, value]: [string, RJSFSchema]) => {
-    const schemaProperty: any =
-      typeof schema.properties[key] === 'boolean' ? {} : schema.properties[key]
+    const schemaProperty: JSONSchema7Definition = schema.properties[key]
     if (
       schema?.properties &&
       schemaProperty &&
+      typeof schemaProperty !== 'boolean' &&
       'timeFromTo' in schemaProperty &&
       schemaProperty.timeFromTo &&
       value.startTime &&
@@ -397,8 +401,24 @@ interface Callbacks {
   onInit?: () => Promise<any>
 }
 
+const getDefaults = (schema: RJSFSchema, path: string[], obj: object) => {
+  if (schema.default) {
+    // lodash modify obj param
+    // eslint-disable-next-line lodash-fp/no-unused-result
+    set(obj, path, schema.default)
+  }
+
+  const properties = getAllPossibleJsonSchemaProperties(schema)
+  Object.keys(properties).forEach((key) => {
+    const childSchema = properties[key] as RJSFSchema
+    getDefaults(childSchema, [...path, key], obj)
+  })
+
+  return obj
+}
+
 export const getInitFormData = (schema: RJSFSchema): RJSFSchema => {
-  const formData: RJSFSchema = {}
+  const formData: RJSFSchema = getDefaults(schema, [], {})
 
   schema?.allOf.forEach((step) => {
     if (typeof step !== 'boolean') {
@@ -442,6 +462,16 @@ const getValidatedSteps = (schema: RJSFSchema, formData: RJSFSchema): RJSFSchema
 interface Callbacks {
   onStepSumbit?: (formData: any) => Promise<void>
   onInit?: () => Promise<any>
+}
+
+export const useFormRJSFContextMemo = (eform: EFormValue, formId?: string) => {
+  return useMemo(() => {
+    const { schema } = eform
+    return {
+      bucketFolderName:
+        formId && schema?.pospID ? `/${String(schema.pospID)}/${formId}` : undefined,
+    }
+  }, [eform, formId])
 }
 
 // TODO prevent unmounting
@@ -786,6 +816,7 @@ export const useFormFiller = (eform: EFormValue) => {
   return {
     initFormData,
     updateFormData,
+    formId,
   }
 }
 

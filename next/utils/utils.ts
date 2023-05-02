@@ -3,6 +3,15 @@ import React from 'react'
 
 import { Tax } from './taxDto'
 
+export interface DocumentsWrapper {
+  mainDocument?: {
+    url: string
+  }
+  amedmentDocument?: []
+  cancellationDocument?: []
+  consolidatedText?: unknown
+}
+
 export const arrayify = (input: string | string[] | undefined | null) => {
   if (input === undefined || input === null) {
     return [] as undefined[]
@@ -19,16 +28,16 @@ export const forceString = (input: unknown) => {
   return ''
 }
 
-export const fileCountVzns = (data: any) => {
+export const fileCountVzns = (data: DocumentsWrapper) => {
   let count = 0
   if (data?.mainDocument?.url) {
     count += 1
   }
   if (data?.amedmentDocument) {
-    count += data?.amedmentDocument.length
+    count += data.amedmentDocument.length
   }
   if (data?.cancellationDocument) {
-    count += data?.cancellationDocument.length
+    count += data.cancellationDocument.length
   }
   if (data?.consolidatedText) {
     count += 1
@@ -37,11 +46,8 @@ export const fileCountVzns = (data: any) => {
 }
 
 export const isPresent = <U>(a: U | null | undefined | void): a is U => {
-  if (a === null || a === undefined) return false
-  return true
+  return !(a === null || a === undefined)
 }
-
-type Awaited<T> = T extends PromiseLike<infer U> ? Awaited<U> : T
 
 const isServer = () => typeof window === 'undefined'
 

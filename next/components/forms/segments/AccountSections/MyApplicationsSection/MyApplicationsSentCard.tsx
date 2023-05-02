@@ -73,38 +73,40 @@ const MyApplicationsSentCard = (props: MyApplicationsSentCardBase) => {
   return (
     <>
       {/* Desktop */}
-      <div
-        id="desktop-card"
-        className="rounded-lg bg-white w-full h-[124px] lg:flex hidden items-center justify-between border-2 border-gray-200"
+      <Link
+        href={`${ROUTES.MY_APPLICATIONS}/1`}
+        className="w-full h-full items-center flex justify-center"
       >
-        <div className="flex items-center justify-between w-full">
-          <div className="w-full flex flex-col gap-1 pl-6">
-            <span className="text-p3-semibold text-main-700">{category}</span>
-            <span className="text-20-semibold">{title}</span>
-            <span className="text-p3">{subtitle}</span>
+        <div
+          id="desktop-card"
+          className="rounded-lg bg-white w-full h-[124px] lg:flex hidden items-center justify-between border-2 border-gray-200 cursor-pointer"
+        >
+          <div className="flex items-center justify-between w-full">
+            <div className="w-full flex flex-col gap-1 pl-6">
+              <span className="text-p3-semibold text-main-700">{category}</span>
+              <span className="text-20-semibold">{title}</span>
+              <span className="text-p3">{subtitle}</span>
+            </div>
+            <div className="w-full justify-end flex items-center gap-6">
+              <div className="flex flex-col w-full max-w-[200px]">
+                <span className="text-16-semibold mb-1">
+                  {t('account_section_applications.navigation_sent')}
+                </span>
+                <span className="w-max">{sentDate}</span>
+              </div>
+              <div className="flex flex-col gap-1 mr-6 w-full max-w-[200px]">
+                <div className="flex">{desktopStatusHandler()}</div>
+                {status !== 'warning' && statusDate && <span className="pl-8">{statusDate}</span>}
+              </div>
+            </div>
           </div>
-          <div className="w-full justify-end flex items-center gap-6">
-            <div className="flex flex-col w-full max-w-[200px]">
-              <span className="text-16-semibold mb-1">
-                {t('account_section_applications.navigation_sent')}
-              </span>
-              <span className="w-max">{sentDate}</span>
-            </div>
-            <div className="flex flex-col gap-1 mr-6 w-full max-w-[200px]">
-              <div className="flex">{desktopStatusHandler()}</div>
-              {status !== 'warning' && statusDate && <span className="pl-8">{statusDate}</span>}
-            </div>
+          <div className="w-16 min-w-[64px] h-full border-l-2">
+            <span className="w-full h-full items-center flex justify-center">
+              <ChevronRightIcon />
+            </span>
           </div>
         </div>
-        <div className="cursor-pointer w-16 min-w-[64px] h-full border-l-2">
-          <Link
-            href={`${ROUTES.MY_APPLICATIONS}/1`}
-            className="w-full h-full items-center flex justify-center"
-          >
-            <ChevronRightIcon />
-          </Link>
-        </div>
-      </div>
+      </Link>
       {/* Mobile */}
       <div
         id="mobile-card"

@@ -29,7 +29,7 @@ function transformValueArray(
   fieldFormData?: JSONSchema7Definition,
   fieldSchema?: JSONSchema7Definition,
 ) {
-  if (!fieldFormData || typeof fieldFormData === 'boolean') return
+  if (!fieldFormData || typeof fieldFormData === 'boolean') return null
   if (!fieldSchema || typeof fieldSchema === 'boolean') return fieldFormData
 
   const items =
@@ -43,7 +43,7 @@ function transformValueArray(
   if (!items || typeof items === 'boolean' || !Array.isArray(items)) return fieldFormData
 
   return Array.isArray(fieldFormData)
-    ? fieldFormData.map((value) => findTitle(value, items))
+    ? fieldFormData.map((value: JSONSchema7Definition) => findTitle(value, items))
     : findTitle(fieldFormData, items)
 }
 
@@ -61,8 +61,8 @@ function getFieldData(
     transformedFieldFormData && !Array.isArray(transformedFieldFormData)
       ? transformedFieldFormData.toString()
       : Array.isArray(transformedFieldFormData) && transformedFieldFormData.length > 0
-      ? transformedFieldFormData.join(', ')
-      : null
+        ? transformedFieldFormData.join(', ')
+        : null
 
   return {
     label,

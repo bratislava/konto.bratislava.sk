@@ -10,8 +10,6 @@ module.exports = {
     '@typescript-eslint/no-shadow': ['error', { allow: ['event', 'value', 'key', 'error'] }],
     /** Too tedious to type every function return explicitly */
     '@typescript-eslint/explicit-function-return-type': 'off',
-    /** In api requests, req parameter body is always any */
-    '@typescript-eslint/no-unsafe-member-access': 'warn',
     /** We prefer arrow functions */
     'react/function-component-definition': [2, { namedComponents: 'arrow-function' }],
     /** It's annoying to refactor from one style to another */
@@ -50,7 +48,7 @@ module.exports = {
         checksVoidReturn: {
           attributes: false,
         },
-      },
+      }
     ],
     /** better to use empty function */
     'lodash/prefer-noop': 'off',
@@ -61,5 +59,5 @@ module.exports = {
     // quite annoying as it conflicts with VS Code's auto import
     'lodash/import-scope': 'off',
   },
-  ignorePatterns: ['*.config.*', 'graphql', '.eslintrc.js'],
+  ignorePatterns: ['*.config.*', 'graphql', '.eslintrc.js', '/backend/forms/'],
 }

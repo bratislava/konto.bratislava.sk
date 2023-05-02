@@ -1,3 +1,5 @@
+/* eslint @typescript-eslint/no-unsafe-member-access: "warn" */
+
 import { EFormValue } from '@backend/forms'
 import { getEform } from '@backend/utils/forms'
 import logger from '@utils/logger'

@@ -182,8 +182,8 @@ export const AccountProvider = ({ children }: { children: ReactNode }) => {
             key === 'address'
               ? JSON.stringify(value)
               : key === 'phone_number'
-              ? typeof value === 'string' && value?.replace(' ', '')
-              : JSON.stringify(value)
+                ? typeof value === 'string' && value?.replace(' ', '')
+                : String(value)
         })
         attributeList.push(attribute)
       }

@@ -15,7 +15,7 @@ import { useTranslation } from 'next-i18next'
 import { useState } from 'react'
 import { Controller } from 'react-hook-form'
 import Turnstile from 'react-turnstile'
-import { useCounter, useWindowSize, useTimeout } from 'usehooks-ts'
+import { useCounter, useTimeout,useWindowSize } from 'usehooks-ts'
 
 interface Data {
   email: string

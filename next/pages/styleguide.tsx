@@ -1,5 +1,5 @@
-import { AsyncServerProps } from '@utils/types'
-import { isProductionDeployment } from '@utils/utils'
+import { AsyncServerProps } from '../frontend/types'
+import { isProductionDeployment } from '../frontend/utils'
 import { StatusBar } from 'components/forms/info-components/StatusBar'
 import PageWrapper from 'components/layouts/PageWrapper'
 import DatePickerShowCase from 'components/styleguide/showcases/DatePickerShowCase'

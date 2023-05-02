@@ -1,4 +1,4 @@
-import { ajvKeywords } from '@utils/forms'
+import { ajvKeywords } from '../../../frontend/forms'
 import { AnySchemaObject } from 'ajv/dist/types'
 import type { NextApiRequest, NextApiResponse } from 'next'
 

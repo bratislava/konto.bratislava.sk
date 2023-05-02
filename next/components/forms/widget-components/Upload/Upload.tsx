@@ -1,6 +1,6 @@
 import { UploadMinioFile } from '@backend/dtos/minio/upload-minio-file.dto'
 import { deleteFile, uploadFile } from '@backend/services/minio'
-import logger from '@utils/logger'
+import logger from '../../../../frontend/logger'
 import cx from 'classnames'
 import FieldErrorMessage from 'components/forms/info-components/FieldErrorMessage'
 import React, { ForwardedRef, forwardRef, ForwardRefRenderFunction, useState } from 'react'

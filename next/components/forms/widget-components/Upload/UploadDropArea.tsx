@@ -1,7 +1,7 @@
 import BallDelimiterIcon from '@assets/images/forms/ball_delimiter_icon.svg'
 import UploadIcon from '@assets/images/new-icons/ui/upload.svg'
 import { UploadMinioFile } from '@backend/dtos/minio/upload-minio-file.dto'
-import { handleOnKeyPress } from '@utils/utils'
+import { handleOnKeyPress } from '../../../../frontend/utils'
 import cx from 'classnames'
 import React, { ForwardedRef, forwardRef, ForwardRefRenderFunction, useState } from 'react'
 

@@ -1,15 +1,16 @@
 // import { TaxApiError } from '@utils/api'
-import { useTaxes } from '@utils/apiHooks'
-import { ROUTES } from '@utils/constants'
-import logger from '@utils/logger'
-import useAccount, { AccountStatus } from '@utils/useAccount'
-import { taxStatusHelper } from '@utils/utils'
 import AccountSectionHeader from 'components/forms/segments/AccountSectionHeader/AccountSectionHeader'
 import TaxesFeesCard from 'components/forms/segments/AccountSections/TaxesFeesSection/TaxesFeesCard'
 import TaxesFeesErrorCard from 'components/forms/segments/AccountSections/TaxesFeesSection/TaxesFeesErrorCard'
 // import TaxesFeesWaitingCard from 'components/forms/segments/AccountSections/TaxesFeesSection/TaxesFeesWaitingCard'
 import Spinner from 'components/forms/simple-components/Spinner'
 import { useTranslation } from 'next-i18next'
+
+import { ROUTES } from '../../../../../frontend/constants'
+import { useTaxes } from '../../../../../frontend/hooks/apiHooks'
+import useAccount, { AccountStatus } from '../../../../../frontend/hooks/useAccount'
+import logger from '../../../../../frontend/logger'
+import { taxStatusHelper } from '../../../../../frontend/utils'
 
 export type TaxesCardBase = {
   title: string

@@ -1,4 +1,4 @@
-import { ROUTES } from '@utils/constants'
+import { ROUTES } from '../../../../frontend/constants'
 import AccountContainer from 'components/forms/segments/AccountContainer/AccountContainer'
 import AccountMarkdown from 'components/forms/segments/AccountMarkdown/AccountMarkdown'
 import Button from 'components/forms/simple-components/Button'

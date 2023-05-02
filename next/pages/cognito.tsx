@@ -6,9 +6,9 @@
 /* eslint-disable no-alert */
 /* eslint-disable no-restricted-syntax */
 // @ts-nocheck
-import logger from '@utils/logger'
-import { AsyncServerProps } from '@utils/types'
-import { isProductionDeployment } from '@utils/utils'
+import logger from '../frontend/logger'
+import { AsyncServerProps } from '../frontend/types'
+import { isProductionDeployment } from '../frontend/utils'
 import {
   AuthenticationDetails,
   CognitoUser,

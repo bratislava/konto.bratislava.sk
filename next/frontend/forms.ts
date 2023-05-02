@@ -21,10 +21,10 @@ import {
   updateForm,
   validateKeyword,
   xmlToFormData,
-} from '@utils/api'
-import { readTextFile } from '@utils/file'
-import useAccount from '@utils/useAccount'
-import useSnackbar from '@utils/useSnackbar'
+} from './/api'
+import { readTextFile } from './/file'
+import useAccount from './/useAccount'
+import useSnackbar from './/useSnackbar'
 import { AnySchemaObject, ErrorObject, FuncKeywordDefinition } from 'ajv'
 import { JSONSchema7, JSONSchema7Definition } from 'json-schema'
 import { cloneDeep, get, merge } from 'lodash'

@@ -1,8 +1,3 @@
-import { resetRcApi } from '@utils/api'
-import { ROUTES } from '@utils/constants'
-import logger from '@utils/logger'
-import { AsyncServerProps } from '@utils/types'
-import useAccount, { UserData } from '@utils/useAccount'
 import Button from 'components/forms/simple-components/Button'
 import PageWrapper from 'components/layouts/PageWrapper'
 import { Wrapper } from 'components/styleguide/Wrapper'
@@ -10,6 +5,12 @@ import { GetServerSidePropsContext } from 'next'
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
 import { useState } from 'react'
 import { useEffectOnce } from 'usehooks-ts'
+
+import { resetRcApi } from '../frontend/api'
+import { ROUTES } from '../frontend/constants'
+import useAccount, { UserData } from '../frontend/hooks/useAccount'
+import logger from '../frontend/logger'
+import { AsyncServerProps } from '../frontend/types'
 
 const signUpParams: [string, string, boolean, string, UserData] = [
   'test@mail.com',

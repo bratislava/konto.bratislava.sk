@@ -1,9 +1,9 @@
-import { Gdpr } from '@utils/api'
-import useSnackbar from '@utils/useSnackbar'
-import useUser from '@utils/useUser'
 import cx from 'classnames'
 import { useTranslation } from 'next-i18next'
 
+import { Gdpr } from '../../../../frontend/api'
+import useSnackbar from '../../../../frontend/hooks/useSnackbar'
+import useUser from '../../../../frontend/hooks/useUser'
 import UserConsent from './UserConsent'
 import UserProfileSection from './UserProfileSection'
 import UserProfileSectionHeader from './UserProfileSectionHeader'

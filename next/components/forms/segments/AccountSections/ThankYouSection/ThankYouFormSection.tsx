@@ -1,5 +1,5 @@
 import BratislavaIcon from '@assets/images/account/bratislava-footer.svg'
-import { ROUTES } from '@utils/constants'
+import { ROUTES } from '../../../../../frontend/constants'
 import AccountMarkdown from 'components/forms/segments/AccountMarkdown/AccountMarkdown'
 import ThankYouCard from 'components/forms/segments/AccountSections/ThankYouSection/ThankYouCard'
 import Button from 'components/forms/simple-components/Button'

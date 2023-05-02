@@ -1,7 +1,3 @@
-import { ROUTES } from '@utils/constants'
-import { formatUnicorn } from '@utils/string'
-import { AccountError } from '@utils/useAccount'
-import useHookForm from '@utils/useHookForm'
 import AccountErrorAlert from 'components/forms/segments/AccountErrorAlert/AccountErrorAlert'
 import AccountLink from 'components/forms/segments/AccountLink/AccountLink'
 import LoginAccountLink from 'components/forms/segments/LoginAccountLink/LoginAccountLink'
@@ -10,6 +6,11 @@ import InputField from 'components/forms/widget-components/InputField/InputField
 import { useRouter } from 'next/router'
 import { useTranslation } from 'next-i18next'
 import { Controller } from 'react-hook-form'
+
+import { ROUTES } from '../../../../frontend/constants'
+import { AccountError } from '../../../../frontend/hooks/useAccount'
+import useHookForm from '../../../../frontend/hooks/useHookForm'
+import { formatUnicorn } from '../../../../frontend/string'
 
 interface Data {
   email: string

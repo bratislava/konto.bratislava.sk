@@ -1,4 +1,4 @@
-import logger from '@utils/logger'
+import logger from '../../../frontend/logger'
 import formidable, { PersistentFile } from 'formidable'
 import { NextApiRequest, NextApiResponse } from 'next'
 

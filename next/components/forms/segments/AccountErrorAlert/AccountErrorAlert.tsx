@@ -1,9 +1,10 @@
-import logger from '@utils/logger'
-import { Args, formatUnicorn } from '@utils/string'
-import { AccountError } from '@utils/useAccount'
 import Alert from 'components/forms/info-components/Alert'
 import AccountMarkdown from 'components/forms/segments/AccountMarkdown/AccountMarkdown'
 import { useTranslation } from 'next-i18next'
+
+import { AccountError } from '../../../../frontend/hooks/useAccount'
+import logger from '../../../../frontend/logger'
+import { Args, formatUnicorn } from '../../../../frontend/string'
 
 interface Props {
   error?: AccountError | null

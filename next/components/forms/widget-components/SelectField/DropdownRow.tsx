@@ -1,6 +1,6 @@
 import ChevronRightIcon from '@assets/images/forms/chevron-right.svg'
 import FilledSelectedIcon from '@assets/images/new-icons/ui/check-mark.svg'
-import { handleOnKeyPress } from '@utils/utils'
+import { handleOnKeyPress } from '../../../../frontend/utils'
 import cx from 'classnames'
 import React from 'react'
 

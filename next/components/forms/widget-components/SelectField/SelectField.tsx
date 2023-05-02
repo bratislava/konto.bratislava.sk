@@ -1,6 +1,6 @@
 import ArrowDownIcon from '@assets/images/new-icons/ui/expand.svg'
 import ArrowUpIcon from '@assets/images/new-icons/ui/expand-less.svg'
-import { handleOnKeyPress } from '@utils/utils'
+import { handleOnKeyPress } from '../../../../frontend/utils'
 import cx from 'classnames'
 import React, {
   ForwardedRef,

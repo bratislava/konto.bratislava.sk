@@ -1,4 +1,4 @@
-import { ROUTES } from '@utils/constants'
+import { ROUTES } from '../../../../../frontend/constants'
 import AccountMarkdown from 'components/forms/segments/AccountMarkdown/AccountMarkdown'
 import { useTranslation } from 'next-i18next'
 

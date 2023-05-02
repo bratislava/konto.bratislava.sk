@@ -1,4 +1,4 @@
-import logger from '@utils/logger'
+import logger from '../../../frontend/logger'
 import Tag from 'components/forms/simple-components/Tag'
 import { useState } from 'react'
 

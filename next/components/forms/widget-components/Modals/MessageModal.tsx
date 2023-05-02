@@ -1,5 +1,5 @@
 import CloseIcon from '@assets/images/new-icons/ui/cross.svg'
-import { handleOnKeyPress } from '@utils/utils'
+import { handleOnKeyPress } from '../../../../frontend/utils'
 import cx from 'classnames'
 import React from 'react'
 

@@ -1,5 +1,5 @@
-import { AsyncServerProps } from '@utils/types'
-import { isProductionDeployment } from '@utils/utils'
+import { AsyncServerProps } from '../frontend/types'
+import { isProductionDeployment } from '../frontend/utils'
 import MyApplicationsSection from 'components/forms/segments/AccountSections/MyApplicationsSection/MyApplicationsSection'
 import AccountPageLayout from 'components/layouts/AccountPageLayout'
 import PageWrapper from 'components/layouts/PageWrapper'

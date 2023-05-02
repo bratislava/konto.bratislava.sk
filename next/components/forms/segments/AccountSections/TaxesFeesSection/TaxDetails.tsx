@@ -1,9 +1,9 @@
-import { Tax } from '@utils/taxDto'
-import { formatCurrency } from '@utils/utils'
 import _ from 'lodash'
 import { useTranslation } from 'next-i18next'
 import React from 'react'
 
+import { Tax } from '../../../../../frontend/dtos/taxDto'
+import { formatCurrency } from '../../../../../frontend/utils'
 import AccordionTableTaxContent from '../../../simple-components/AccordionTableTaxContent'
 
 interface TaxDetailsProps {

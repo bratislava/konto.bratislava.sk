@@ -1,4 +1,4 @@
-import logger from '@utils/logger'
+import logger from '../../../frontend/logger'
 import { NextApiRequest, NextApiResponse } from 'next'
 
 import minioClient, { bucketName } from '../../../backend/utils/minio-client'

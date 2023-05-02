@@ -1,5 +1,5 @@
 import { EnumOptionsType, RJSFSchema, WidgetProps } from '@rjsf/utils'
-import useEnum from '@utils/useEnum'
+import useEnum from '../../../frontend/useEnum'
 import { WidgetOptions } from 'components/forms/types/WidgetOptions'
 import WidgetWrapper from 'components/forms/widget-wrappers/WidgetWrapper'
 

@@ -1,5 +1,5 @@
 import { ErrorSchema, RJSFValidationError, StrictRJSFSchema } from '@rjsf/utils'
-import { JsonSchema } from '@utils/forms'
+import { JsonSchema } from '../../../frontend/forms'
 import { ErrorObject } from 'ajv'
 import { useTranslation } from 'next-i18next'
 

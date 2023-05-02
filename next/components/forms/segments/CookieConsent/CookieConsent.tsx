@@ -1,5 +1,5 @@
-import logger from '@utils/logger'
-import { isBrowser, isProductionDeployment } from '@utils/utils'
+import logger from '../../../../frontend/logger'
+import { isBrowser, isProductionDeployment } from '../../../../frontend/utils'
 import Button from 'components/forms/simple-components/Button'
 import Cookies from 'js-cookie'
 import { mapValues, pick } from 'lodash'

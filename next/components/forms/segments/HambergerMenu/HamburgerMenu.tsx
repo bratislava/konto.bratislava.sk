@@ -1,5 +1,5 @@
-import { ROUTES } from '@utils/constants'
-import { handleOnKeyPress } from '@utils/utils'
+import { ROUTES } from '../../../../frontend/constants'
+import { handleOnKeyPress } from '../../../../frontend/utils'
 import cx from 'classnames'
 import { MenuItem } from 'components/forms/segments/AccountNavBar/AccountNavBar'
 import IdentityVerificationStatus from 'components/forms/simple-components/IdentityVerificationStatus'

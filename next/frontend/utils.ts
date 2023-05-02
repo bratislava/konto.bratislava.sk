@@ -1,7 +1,7 @@
 import currency from 'currency.js'
 import React from 'react'
 
-import { Tax } from './taxDto'
+import { Tax } from './dtos/taxDto'
 
 export interface DocumentsWrapper {
   mainDocument?: {

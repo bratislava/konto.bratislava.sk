@@ -1,4 +1,4 @@
-import { handleOnKeyPress } from '@utils/utils'
+import { handleOnKeyPress } from '../../../../frontend/utils'
 import { useTranslation } from 'next-i18next'
 import React, { ForwardedRef, forwardRef, ForwardRefRenderFunction } from 'react'
 

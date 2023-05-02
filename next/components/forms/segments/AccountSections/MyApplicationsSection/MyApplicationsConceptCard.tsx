@@ -1,6 +1,6 @@
 import DownloadIcon from '@assets/images/new-icons/ui/download.svg'
 import ExportIcon from '@assets/images/new-icons/ui/export.svg'
-import { ROUTES } from '@utils/constants'
+import { ROUTES } from '../../../../../frontend/constants'
 import { MyApplicationsConceptCardBase } from 'components/forms/segments/AccountSections/MyApplicationsSection/MyApplicationsConceptList'
 import Button from 'components/forms/simple-components/Button'
 import Link from 'next/link'

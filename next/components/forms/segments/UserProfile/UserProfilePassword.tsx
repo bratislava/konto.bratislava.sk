@@ -1,5 +1,5 @@
 import LockIcon from '@assets/images/new-icons/ui/lock.svg'
-import { ROUTES } from '@utils/constants'
+import { ROUTES } from '../../../../frontend/constants'
 import Button from 'components/forms/simple-components/Button'
 import { useRouter } from 'next/router'
 import { useTranslation } from 'next-i18next'

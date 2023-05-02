@@ -6,9 +6,9 @@ import {
   ajvKeywords,
   getAllPossibleJsonSchemaProperties,
   JsonSchema,
-} from '@utils/forms'
-import logger from '@utils/logger'
-import { forceString } from '@utils/utils'
+} from '../../frontend/forms'
+import logger from '../../frontend/logger'
+import { forceString } from '../../frontend/utils'
 import Ajv from 'ajv'
 import addFormats from 'ajv-formats'
 import * as cheerio from 'cheerio'

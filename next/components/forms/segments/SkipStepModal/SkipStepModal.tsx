@@ -1,6 +1,6 @@
 import ErrorIcon from '@assets/images/forms/error-icon.svg'
 import CloseIcon from '@assets/images/new-icons/ui/cross.svg'
-import { handleOnKeyPress } from '@utils/utils'
+import { handleOnKeyPress } from '../../../../frontend/utils'
 import cx from 'classnames'
 import Button from 'components/forms/simple-components/Button'
 import { useTranslation } from 'next-i18next'

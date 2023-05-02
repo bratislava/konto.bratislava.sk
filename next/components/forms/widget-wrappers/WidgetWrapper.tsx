@@ -1,4 +1,4 @@
-import { isObject } from '@utils/utils'
+import { isObject } from '../../../frontend/utils'
 import cx from 'classnames'
 import { FormSpacingType } from 'components/forms/types/WidgetOptions'
 import React, { ReactNode, useId } from 'react'

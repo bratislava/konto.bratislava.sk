@@ -1,9 +1,4 @@
 import ArrowRightIcon from '@assets/images/new-icons/ui/arrow-right.svg'
-import { ROUTES } from '@utils/constants'
-import logger from '@utils/logger'
-import { AccountError } from '@utils/useAccount'
-import useHookForm from '@utils/useHookForm'
-import { isBrowser } from '@utils/utils'
 import AccountErrorAlert from 'components/forms/segments/AccountErrorAlert/AccountErrorAlert'
 import Button from 'components/forms/simple-components/Button'
 import InputField from 'components/forms/widget-components/InputField/InputField'
@@ -13,6 +8,12 @@ import { useState } from 'react'
 import { Controller } from 'react-hook-form'
 import Turnstile from 'react-turnstile'
 import { useCounter, useTimeout } from 'usehooks-ts'
+
+import { ROUTES } from '../../../../frontend/constants'
+import { AccountError } from '../../../../frontend/hooks/useAccount'
+import useHookForm from '../../../../frontend/hooks/useHookForm'
+import logger from '../../../../frontend/logger'
+import { isBrowser } from '../../../../frontend/utils'
 
 interface Data {
   rc: string

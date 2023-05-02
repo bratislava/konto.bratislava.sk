@@ -1,10 +1,10 @@
-import logger from '@utils/logger'
-import useAccount, { UserData } from '@utils/useAccount'
-import useSnackbar from '@utils/useSnackbar'
 import MessageModal from 'components/forms/widget-components/Modals/MessageModal'
 import { useTranslation } from 'next-i18next'
 import { useEffect, useState } from 'react'
 
+import useAccount, { UserData } from '../../../../frontend/hooks/useAccount'
+import useSnackbar from '../../../../frontend/hooks/useSnackbar'
+import logger from '../../../../frontend/logger'
 import AccountMarkdown from '../AccountMarkdown/AccountMarkdown'
 import UserProfileConsents from './UserProfileConsents'
 import UserProfileDetail from './UserProfileDetail'

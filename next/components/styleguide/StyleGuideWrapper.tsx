@@ -1,4 +1,4 @@
-import { CategoriesType, COLOR_VARIABLES, pageStyle } from '@utils/page'
+import { CategoriesType, COLOR_VARIABLES, pageStyle } from '../../frontend/page'
 import { ReactNode, useState } from 'react'
 import * as React from 'react'
 

@@ -1,5 +1,5 @@
-import { AsyncServerProps } from '@utils/types'
-import { isProductionDeployment } from '@utils/utils'
+import { AsyncServerProps } from '../frontend/types'
+import { isProductionDeployment } from '../frontend/utils'
 import UserProfileView from 'components/forms/segments/UserProfile/UserProfileView'
 import { GetServerSidePropsContext } from 'next'
 import { useTranslation } from 'next-i18next'

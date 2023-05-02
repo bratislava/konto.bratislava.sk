@@ -2,7 +2,7 @@
 
 import { EFormValue } from '@backend/forms'
 import { getEform, xmlToJson } from '@backend/utils/forms'
-import logger from '@utils/logger'
+import logger from '../../../../../frontend/logger'
 import type { NextApiRequest, NextApiResponse } from 'next'
 
 // takes slovensko.sk-ready xml (perhaps serialized from previously filled in eFrom and loaded into browser by user) and converts back to json which we can work with

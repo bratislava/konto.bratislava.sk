@@ -1,5 +1,5 @@
-import { AsyncServerProps } from '@utils/types'
-import { isProductionDeployment as isProductionDeploymentFn } from '@utils/utils'
+import { AsyncServerProps } from '../../frontend/types'
+import { isProductionDeployment as isProductionDeploymentFn } from '../../frontend/utils'
 import AccountPageLayout from 'components/layouts/AccountPageLayout'
 import PageWrapper from 'components/layouts/PageWrapper'
 import { GetServerSidePropsContext } from 'next'

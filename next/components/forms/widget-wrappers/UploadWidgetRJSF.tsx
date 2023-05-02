@@ -1,6 +1,6 @@
 import { UploadMinioFile } from '@backend/dtos/minio/upload-minio-file.dto'
 import { StrictRJSFSchema, WidgetProps } from '@rjsf/utils'
-import { FormRJSFContext } from '@utils/forms'
+import { FormRJSFContext } from '../../../frontend/forms'
 import WidgetWrapper from 'components/forms/widget-wrappers/WidgetWrapper'
 import React, { useState } from 'react'
 import { useEffectOnce } from 'usehooks-ts'

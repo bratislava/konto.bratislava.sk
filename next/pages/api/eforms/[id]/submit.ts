@@ -5,7 +5,7 @@ import {
   validateDataWithJsonSchema,
   validateDataWithXsd,
 } from '@backend/utils/forms'
-import logger from '@utils/logger'
+import logger from '../../../../frontend/logger'
 import type { NextApiRequest, NextApiResponse } from 'next'
 
 const handler = async (req: NextApiRequest, res: NextApiResponse) => {

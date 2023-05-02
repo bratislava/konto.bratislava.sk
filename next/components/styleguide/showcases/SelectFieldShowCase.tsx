@@ -1,4 +1,4 @@
-import logger from '@utils/logger'
+import logger from '../../../frontend/logger'
 import { SelectOption } from 'components/forms/widget-components/SelectField/SelectOption.interface'
 import React, { useState } from 'react'
 

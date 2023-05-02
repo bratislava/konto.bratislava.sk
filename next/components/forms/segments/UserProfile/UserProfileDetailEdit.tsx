@@ -85,7 +85,7 @@ const poSchema = {
       errorMessage: { format: 'account:postal_code_format' },
     },
   },
-  required: ['email', 'name'],
+  required: ['email', 'business_name'],
 }
 
 interface UserProfileDetailEditProps {
@@ -98,7 +98,6 @@ interface UserProfileDetailEditProps {
 const UserProfileDetailEdit = (props: UserProfileDetailEditProps) => {
   const { formId, userData, onOpenEmailModal, onSubmit } = props
   const { t } = useTranslation('account')
-  console.log('RECEIVED DATA', userData)
   const { handleSubmit, control, errors, setError } = useHookForm<Data>({
     schema: userData.account_type === 'po' ? poSchema : foSchema,
     defaultValues: {
@@ -114,7 +113,6 @@ const UserProfileDetailEdit = (props: UserProfileDetailEditProps) => {
   })
 
   const handleSubmitCallback = (data: Data) => {
-    console.log('DATA FOR UPDATE', data)
     if (!data.phone_number || isValidPhoneNumber(data.phone_number)) {
       const newUserData: UserData = {
         email: data.email,
@@ -125,7 +123,7 @@ const UserProfileDetailEdit = (props: UserProfileDetailEditProps) => {
         address: {
           street_address: data.street_address,
           locality: data.city,
-          postal_code: data.postal_code.replaceAll(' ', ''),
+          postal_code: data.postal_code ? data.postal_code.replaceAll(' ', '') : data.postal_code
         },
       }
       return onSubmit(newUserData)

@@ -8,14 +8,14 @@ import { useTranslation } from 'next-i18next'
 import { Controller } from 'react-hook-form'
 
 interface Data {
-  email: string
+  email?: string
   business_name?: string
   given_name?: string
   family_name?: string
-  phone_number: string
-  street_address: string
-  city: string
-  postal_code: string
+  phone_number?: string
+  street_address?: string
+  city?: string
+  postal_code?: string
 }
 
 // must use `minLength: 1` to implement required field
@@ -98,6 +98,7 @@ interface UserProfileDetailEditProps {
 const UserProfileDetailEdit = (props: UserProfileDetailEditProps) => {
   const { formId, userData, onOpenEmailModal, onSubmit } = props
   const { t } = useTranslation('account')
+  console.log('RECEIVED DATA', userData)
   const { handleSubmit, control, errors, setError } = useHookForm<Data>({
     schema: userData.account_type === 'po' ? poSchema : foSchema,
     defaultValues: {
@@ -113,7 +114,7 @@ const UserProfileDetailEdit = (props: UserProfileDetailEditProps) => {
   })
 
   const handleSubmitCallback = (data: Data) => {
-    console.log(data)
+    console.log('DATA FOR UPDATE', data)
     if (!data.phone_number || isValidPhoneNumber(data.phone_number)) {
       const newUserData: UserData = {
         email: data.email,
@@ -194,7 +195,6 @@ const UserProfileDetailEdit = (props: UserProfileDetailEditProps) => {
               </>
             )
         }
-
       </div>
       <div className="flex flex-row flex-wrap gap-4">
         <div className={cx('grow w-full', 'md:w-fit')}>

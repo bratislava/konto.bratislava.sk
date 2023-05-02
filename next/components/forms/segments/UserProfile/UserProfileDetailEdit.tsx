@@ -113,9 +113,11 @@ const UserProfileDetailEdit = (props: UserProfileDetailEditProps) => {
   })
 
   const handleSubmitCallback = (data: Data) => {
+    console.log(data)
     if (!data.phone_number || isValidPhoneNumber(data.phone_number)) {
       const newUserData: UserData = {
         email: data.email,
+        name: data.business_name,
         given_name: data.given_name,
         family_name: data.family_name,
         phone_number: data.phone_number,
@@ -138,36 +140,61 @@ const UserProfileDetailEdit = (props: UserProfileDetailEditProps) => {
       onSubmit={handleSubmit(handleSubmitCallback)}
     >
       <div className="gap flex flex-wrap flex-row gap-6">
-        <div className="grow w-full md:w-fit">
-          <Controller
-            name="given_name"
-            control={control}
-            render={({ field }) => (
-              <InputField
-                required
-                capitalize
-                label={t('profile_detail.given_name')}
-                {...field}
-                errorMessage={errors.given_name}
-              />
-            )}
-          />
-        </div>
-        <div className="grow w-full md:w-fit">
-          <Controller
-            name="family_name"
-            control={control}
-            render={({ field }) => (
-              <InputField
-                required
-                capitalize
-                label={t('profile_detail.family_name')}
-                {...field}
-                errorMessage={errors.family_name}
-              />
-            )}
-          />
-        </div>
+        {
+          userData.account_type === 'fo'
+            ? (
+              <div className="grow w-full md:w-fit">
+                <Controller
+                  name="business_name"
+                  control={control}
+                  render={({ field }) => (
+                    <InputField
+                      required
+                      capitalize
+                      label={t('profile_detail.business_name')}
+                      {...field}
+                      errorMessage={errors.given_name}
+                    />
+                  )}
+                />
+              </div>
+            )
+            : (
+              <>
+                <div className="grow w-full md:w-fit">
+                  <Controller
+                    name="given_name"
+                    control={control}
+                    render={({ field }) => (
+                      <InputField
+                        required
+                        capitalize
+                        label={t('profile_detail.given_name')}
+                        {...field}
+                        errorMessage={errors.given_name}
+                      />
+                    )}
+                  />
+                </div>
+                <div className="grow w-full md:w-fit">
+                  <Controller
+                    name="family_name"
+                    control={control}
+                    render={({ field }) => (
+                      <InputField
+                        required
+                        capitalize
+                        label={t('profile_detail.family_name')}
+                        {...field}
+                        errorMessage={errors.family_name}
+                      />
+                    )}
+                  />
+                </div>
+              </>
+            )
+        }
+
       </div>
       <div className="flex flex-row flex-wrap gap-4">
         <div className={cx('grow w-full', 'md:w-fit')}>

@@ -37,6 +37,7 @@ const UserProfileDetail = (props: UserProfileDetailProps) => {
   const formId = `form-${useId()}`
 
   const handleOnSubmit = (newUserData: UserData) => {
+    console.log(newUserData)
     onSubmit({
       ...newUserData,
       phone_number: newUserData.phone_number?.replace(' ', ''),

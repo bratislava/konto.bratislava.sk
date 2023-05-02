@@ -3,9 +3,11 @@ export interface Args {
 }
 
 export const formatUnicorn = (str: string, args: Args): string => {
+  let formattedString: string = str
+
   Object.keys(args).forEach((key: string) => {
-    str = str.replace(new RegExp(`\\{${key}\\}`, 'gi'), args[key].toString())
+    formattedString = formattedString.replace(new RegExp(`\\{${key}\\}`, 'gi'), args[key].toString())
   })
 
-  return str
+  return formattedString
 }

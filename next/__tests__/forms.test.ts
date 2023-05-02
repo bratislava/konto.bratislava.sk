@@ -12,7 +12,7 @@ import {
   validateDataWithXsd,
   xmlToJson,
 } from '../backend/utils/forms'
-import { transform } from '../backend/utils/xslt'
+import { transformSaxon } from '../backend/utils/xslt'
 
 const excludeKeys = new Set(['test'])
 describe('forms test', () => {
@@ -29,10 +29,10 @@ describe('forms test', () => {
       const xmlErrors = validateDataWithXsd(xml, eform.xsd)
       expect(xmlErrors).toHaveLength(0)
 
-      const text = await transform(eform.textStylesheet, xml)
+      const text = await transformSaxon(eform.textStylesheet, xml)
       expect(text).toBeTruthy()
 
-      const html = await transform(eform.htmlStylesheet, xml)
+      const html = await transformSaxon(eform.htmlStylesheet, xml)
       expect(html).toBeTruthy()
 
       const json = await xmlToJson(xml, eform.schema)

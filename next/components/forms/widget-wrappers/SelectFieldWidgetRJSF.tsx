@@ -18,6 +18,12 @@ type SelectRJSFOptions = {
   // selectType?: 'one' | 'multiple' | 'arrow' | 'radio'
 } & WidgetOptions
 
+interface RJSFSelectSchema extends RJSFSchema{
+  ciselnik?: {
+    id: string
+  }
+}
+
 interface SelectFieldWidgetRJSFProps extends WidgetProps {
   label: string
   options: SelectRJSFOptions
@@ -25,7 +31,7 @@ interface SelectFieldWidgetRJSFProps extends WidgetProps {
   required?: boolean
   disabled?: boolean
   placeholder?: string
-  schema: RJSFSchema
+  schema: RJSFSelectSchema
   onChange: (value?: any | any[]) => void
   rawErrors?: string[]
 }
@@ -69,7 +75,7 @@ const SelectFieldWidgetRJSF = (props: SelectFieldWidgetRJSFProps) => {
     }
   }
 
-  const { data } = useEnum(schema.ciselnik?.id as string)
+  const { data } = useEnum(schema.ciselnik?.id)
   const transformedEnumOptions = enumOptions
     ? enumOptions.map((option) => option.schema as SelectOption)
     : data

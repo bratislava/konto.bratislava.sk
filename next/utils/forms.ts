@@ -284,11 +284,11 @@ const validateDateFromToFormat = (
 ) => {
   const formDataKeys = Object.entries(formData)
   formDataKeys?.forEach(([key, value]: [string, RJSFSchema]) => {
-    const schemaProperty: any =
-      typeof schema.properties[key] === 'boolean' ? {} : schema.properties[key]
+    const schemaProperty: JSONSchema7Definition = schema.properties[key]
     if (
       schema?.properties &&
       schemaProperty &&
+      typeof schemaProperty !== 'boolean' &&
       'dateFromTo' in schemaProperty &&
       schemaProperty.dateFromTo &&
       value.startDate &&
@@ -310,11 +310,11 @@ const validateTimeFromToFormat = (
 ) => {
   const formDataKeys = Object.entries(formData)
   formDataKeys?.forEach(([key, value]: [string, RJSFSchema]) => {
-    const schemaProperty: any =
-      typeof schema.properties[key] === 'boolean' ? {} : schema.properties[key]
+    const schemaProperty: JSONSchema7Definition = schema.properties[key]
     if (
       schema?.properties &&
       schemaProperty &&
+      typeof schemaProperty !== 'boolean' &&
       'timeFromTo' in schemaProperty &&
       schemaProperty.timeFromTo &&
       value.startTime &&

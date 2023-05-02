@@ -28,16 +28,16 @@ export default function useHookForm<T extends FieldValues>({ schema, defaultValu
         // postalCode: '^([0-9]{5}|)$',
         idCard: '^([a-zA-Z]{2})([0-9]{6})([0-9]?)$',
         rc: (value: string) => {
-          value = value.replace('/', '')
+          const formattedValue = value.replace('/', '')
 
-          const rc = Number(value)
+          const rc = Number(formattedValue)
           if (Number.isNaN(rc)) {
             return false
           }
-          if (value.length === 9) {
+          if (formattedValue.length === 9) {
             return true
           }
-          if (value.length === 10) {
+          if (formattedValue.length === 10) {
             return rc % 11 === 0 || (rc % 10 === 0 && (rc / 10) % 11 === 10)
           }
           return false

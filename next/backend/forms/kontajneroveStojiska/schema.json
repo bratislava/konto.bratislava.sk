@@ -129,6 +129,7 @@
             "typStanovistaUpresnenie": {
               "title": "Upresnite o aký typ stanovišťa sa jedná",
               "type": "string",
+              "default": "Nové",
               "enum": [
                 "Nové",
                 "Rekonštrukcia existujúceho stanovišťa",
@@ -231,6 +232,7 @@
             "zaujem": {
               "type": "string",
               "title": "Mám záujem o",
+              "default": "Dotáciu na kontajnerové stojisko",
               "enum": [
                 "Dotáciu na kontajnerové stojisko",
                 "Nájom mestského pozemku pod stojiskom",

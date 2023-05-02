@@ -99,7 +99,7 @@ const UserProfileDetailEdit = (props: UserProfileDetailEditProps) => {
   const { formId, userData, onOpenEmailModal, onSubmit } = props
   const { t } = useTranslation('account')
   const { handleSubmit, control, errors, setError } = useHookForm<Data>({
-    schema: userData.account_type === 'fo' ? foSchema : poSchema,
+    schema: userData.account_type === 'po' ? poSchema : foSchema,
     defaultValues: {
       business_name: userData.name,
       family_name: userData.family_name,
@@ -113,6 +113,7 @@ const UserProfileDetailEdit = (props: UserProfileDetailEditProps) => {
   })
 
   const handleSubmitCallback = (data: Data) => {
+    console.log(data)
     if (!data.phone_number || isValidPhoneNumber(data.phone_number)) {
       const newUserData: UserData = {
         email: data.email,
@@ -140,7 +141,7 @@ const UserProfileDetailEdit = (props: UserProfileDetailEditProps) => {
     >
       <div className="gap flex flex-wrap flex-row gap-6">
         {
-          userData.account_type === 'fo'
+          userData.account_type === 'po'
             ? (
               <div className="grow w-full md:w-fit">
                 <Controller

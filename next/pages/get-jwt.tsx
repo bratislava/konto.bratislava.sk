@@ -6,11 +6,11 @@ import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
 import { useState } from 'react'
 import { useEffectOnce } from 'usehooks-ts'
 
-import { resetRcApi } from '../frontend/api'
-import { ROUTES } from '../frontend/constants'
+import { resetRcApi } from '../frontend/api/api'
+import { ROUTES } from '../frontend/api/constants'
 import useAccount, { UserData } from '../frontend/hooks/useAccount'
-import logger from '../frontend/logger'
-import { AsyncServerProps } from '../frontend/types'
+import logger from '../frontend/utils/logger'
+import { AsyncServerProps } from '../frontend/utils/types'
 
 const signUpParams: [string, string, boolean, string, UserData] = [
   'test@mail.com',

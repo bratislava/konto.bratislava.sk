@@ -1,12 +1,13 @@
 import ArrowRightIcon from '@assets/images/new-icons/ui/arrow-right.svg'
 import CloseIcon from '@assets/images/new-icons/ui/cross.svg'
 import CheckIcon from '@assets/images/new-icons/ui/done.svg'
-import { ROUTES } from '../../../../frontend/constants'
-import { handleOnKeyPress } from '../../../../frontend/utils'
 import cx from 'classnames'
 import Link from 'next/link'
 import { useTranslation } from 'next-i18next'
 import React, { ReactNode } from 'react'
+
+import { ROUTES } from '../../../../frontend/api/constants'
+import { handleOnKeyPress } from '../../../../frontend/utils/general'
 
 type ButtonDesktopBase = {
   text: string

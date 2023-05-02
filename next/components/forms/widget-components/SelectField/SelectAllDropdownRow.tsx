@@ -1,6 +1,7 @@
-import { handleOnKeyPress } from '../../../../frontend/utils'
 import { useTranslation } from 'next-i18next'
 import React from 'react'
+
+import { handleOnKeyPress } from '../../../../frontend/utils/general'
 
 interface SelectAllDropdownRowProps {
   divider?: boolean

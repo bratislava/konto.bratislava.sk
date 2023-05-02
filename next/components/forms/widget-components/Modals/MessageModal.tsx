@@ -1,8 +1,8 @@
 import CloseIcon from '@assets/images/new-icons/ui/cross.svg'
-import { handleOnKeyPress } from '../../../../frontend/utils'
 import cx from 'classnames'
 import React from 'react'
 
+import { handleOnKeyPress } from '../../../../frontend/utils/general'
 import ErrorIcon from '../../icon-components/ErrorIcon'
 import InfoIcon from '../../icon-components/InfoIcon'
 import SuccessIcon from '../../icon-components/SuccessIcon'

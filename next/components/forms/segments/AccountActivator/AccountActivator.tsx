@@ -1,9 +1,10 @@
-import { ROUTES } from '../../../../frontend/constants'
 import AccountContainer from 'components/forms/segments/AccountContainer/AccountContainer'
 import AccountMarkdown from 'components/forms/segments/AccountMarkdown/AccountMarkdown'
 import Button from 'components/forms/simple-components/Button'
 import { useTranslation } from 'next-i18next'
 import React from 'react'
+
+import { ROUTES } from '../../../../frontend/api/constants'
 
 const AccountActivator = () => {
   const { t } = useTranslation('account')

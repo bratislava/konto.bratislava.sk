@@ -4,7 +4,7 @@ import { useEffect, useState } from 'react'
 
 import useAccount, { UserData } from '../../../../frontend/hooks/useAccount'
 import useSnackbar from '../../../../frontend/hooks/useSnackbar'
-import logger from '../../../../frontend/logger'
+import logger from '../../../../frontend/utils/logger'
 import AccountMarkdown from '../AccountMarkdown/AccountMarkdown'
 import UserProfileConsents from './UserProfileConsents'
 import UserProfileDetail from './UserProfileDetail'

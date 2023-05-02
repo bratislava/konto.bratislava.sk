@@ -1,7 +1,7 @@
 import cx from 'classnames'
 import { useTranslation } from 'next-i18next'
 
-import { Gdpr } from '../../../../frontend/api'
+import { Gdpr } from '../../../../frontend/api/api'
 import useSnackbar from '../../../../frontend/hooks/useSnackbar'
 import useUser from '../../../../frontend/hooks/useUser'
 import UserConsent from './UserConsent'

@@ -2,8 +2,6 @@ import HelpIcon from '@assets/images/new-icons/ui/help.svg'
 import LogoutIcon from '@assets/images/new-icons/ui/logout.svg'
 import CityIcon from '@assets/images/new-icons/ui/municipal-account.svg'
 import ProfileIcon from '@assets/images/new-icons/ui/profile.svg'
-import { ROUTES } from '../../frontend/constants'
-import logger from '../../frontend/logger'
 import cx from 'classnames'
 import AccountNavBar from 'components/forms/segments/AccountNavBar/AccountNavBar'
 import SectionContainer from 'components/forms/segments/SectionContainer/SectionContainer'
@@ -11,6 +9,9 @@ import { usePageWrapperContext } from 'components/layouts/PageWrapper'
 import { useRouter } from 'next/router'
 import { useTranslation } from 'next-i18next'
 import { ReactNode } from 'react'
+
+import { ROUTES } from '../../frontend/api/constants'
+import logger from '../../frontend/utils/logger'
 
 type FormPageLayoutBase = {
   className?: string

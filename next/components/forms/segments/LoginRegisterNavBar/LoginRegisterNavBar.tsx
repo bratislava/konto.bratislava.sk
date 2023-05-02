@@ -6,7 +6,7 @@ import { useRouter } from 'next/router'
 import { useTranslation } from 'next-i18next'
 
 import useElementSize from '../../../../frontend/hooks/useElementSize'
-import { getLanguageKey } from '../../../../frontend/utils'
+import { getLanguageKey } from '../../../../frontend/utils/general'
 
 interface IProps {
   className?: string

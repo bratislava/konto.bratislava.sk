@@ -13,8 +13,8 @@ import { useCounter, useTimeout } from 'usehooks-ts'
 
 import { AccountError, UserData } from '../../../../frontend/hooks/useAccount'
 import useHookForm from '../../../../frontend/hooks/useHookForm'
-import logger from '../../../../frontend/logger'
-import { isBrowser } from '../../../../frontend/utils'
+import { isBrowser } from '../../../../frontend/utils/general'
+import logger from '../../../../frontend/utils/logger'
 
 interface Data {
   email: string

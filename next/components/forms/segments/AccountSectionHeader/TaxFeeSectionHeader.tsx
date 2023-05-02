@@ -9,12 +9,12 @@ import { useRouter } from 'next/router'
 import { useTranslation } from 'next-i18next'
 import { ReactNode } from 'react'
 
-import { getPaymentGatewayUrlApi } from '../../../../frontend/api'
-import { ROUTES } from '../../../../frontend/constants'
+import { getPaymentGatewayUrlApi } from '../../../../frontend/api/api'
+import { ROUTES } from '../../../../frontend/api/constants'
 import { Tax } from '../../../../frontend/dtos/taxDto'
 import useAccount from '../../../../frontend/hooks/useAccount'
-import logger from '../../../../frontend/logger'
-import { formatCurrency, formatDate, taxStatusHelper } from '../../../../frontend/utils'
+import { formatCurrency, formatDate, taxStatusHelper } from '../../../../frontend/utils/general'
+import logger from '../../../../frontend/utils/logger'
 import Button from '../../simple-components/Button'
 
 interface AccountSectionHeaderBase {

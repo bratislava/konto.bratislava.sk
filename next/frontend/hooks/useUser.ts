@@ -2,8 +2,8 @@ import { useCallback, useState } from 'react'
 import { useEffectOnce } from 'usehooks-ts'
 
 // eslint-disable-next-line import/extensions
-import { Gdpr, getUserApi, subscribeApi, UNAUTHORIZED_ERROR_TEXT, unsubscribeApi, User } from "../api"
-import logger from '../logger'
+import { Gdpr, getUserApi, subscribeApi, UNAUTHORIZED_ERROR_TEXT, unsubscribeApi, User } from "../api/api"
+import logger from '../utils/logger'
 import useAccount from "./useAccount"
 
 export default function useUser() {

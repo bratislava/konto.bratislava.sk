@@ -1,10 +1,11 @@
-import { AsyncServerProps } from '../../frontend/types'
-import { isProductionDeployment } from '../../frontend/utils'
 import TaxesFeesSection from 'components/forms/segments/AccountSections/TaxesFeesSection/TaxesFeesSection'
 import AccountPageLayout from 'components/layouts/AccountPageLayout'
 import PageWrapper from 'components/layouts/PageWrapper'
 import { GetServerSidePropsContext } from 'next'
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
+
+import { isProductionDeployment } from '../../frontend/utils/general'
+import { AsyncServerProps } from '../../frontend/utils/types'
 
 export const getServerSideProps = async (ctx: GetServerSidePropsContext) => {
   const locale = ctx.locale ?? 'sk'

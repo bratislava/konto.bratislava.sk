@@ -3,8 +3,8 @@ import AccountMarkdown from 'components/forms/segments/AccountMarkdown/AccountMa
 import { useTranslation } from 'next-i18next'
 
 import { AccountError } from '../../../../frontend/hooks/useAccount'
-import logger from '../../../../frontend/logger'
-import { Args, formatUnicorn } from '../../../../frontend/string'
+import logger from '../../../../frontend/utils/logger'
+import { Args, formatUnicorn } from '../../../../frontend/utils/string'
 
 interface Props {
   error?: AccountError | null

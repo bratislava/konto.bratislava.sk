@@ -18,7 +18,6 @@ import ExcavationsIcon from '@assets/images/new-icons/other/transport-and-maps/e
 import ParkingIcon from '@assets/images/new-icons/other/transport-and-maps/parking.svg'
 import TowIcon from '@assets/images/new-icons/other/transport-and-maps/towing.svg'
 import ChristmasTreeIcon from '@assets/images/new-icons/other/tree.svg'
-import { ROUTES } from '../../../../../frontend/constants'
 import Alert from 'components/forms/info-components/Alert'
 import MunicipalServicesSectionHeader from 'components/forms/segments/AccountSectionHeader/MunicipalServicesSectionHeader'
 import Pagination from 'components/forms/simple-components/Pagination/Pagination'
@@ -27,6 +26,7 @@ import { useTranslation } from 'next-i18next'
 import { ReactNode, useState } from 'react'
 import { useWindowSize } from 'usehooks-ts'
 
+import { ROUTES } from '../../../../../frontend/api/constants'
 import { SelectOption } from '../../../widget-components/SelectField/SelectOption.interface'
 
 const ALL_CATEGORY = 'Všetky kategórie'

@@ -2,12 +2,13 @@ import ChevronRightIcon from '@assets/images/new-icons/ui/chevron-right.svg'
 import TimeIcon from '@assets/images/new-icons/ui/clock.svg'
 import SuccessIcon from '@assets/images/new-icons/ui/done.svg'
 import ExclamationIcon from '@assets/images/new-icons/ui/exclamation-mark.svg'
-import { ROUTES } from '../../../../../frontend/constants'
-import { formatCurrency, formatDate } from '../../../../../frontend/utils'
 import cx from 'classnames'
 import { TaxesCardBase } from 'components/forms/segments/AccountSections/TaxesFeesSection/TaxesFeesSection'
 import Link from 'next/link'
 import { ReactNode } from 'react'
+
+import { ROUTES } from '../../../../../frontend/api/constants'
+import { formatCurrency, formatDate } from '../../../../../frontend/utils/general'
 
 const TaxesFeesCard = (props: TaxesCardBase) => {
   const { title, yearPay, createDate, currentPaid, finishPrice, paidDate = '', status } = props

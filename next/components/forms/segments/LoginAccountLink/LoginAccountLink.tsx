@@ -1,6 +1,7 @@
-import { ROUTES } from '../../../../frontend/constants'
 import AccountLink from 'components/forms/segments/AccountLink/AccountLink'
 import { useTranslation } from 'next-i18next'
+
+import { ROUTES } from '../../../../frontend/api/constants'
 
 const LoginAccountLink = () => {
   const { t } = useTranslation('account')

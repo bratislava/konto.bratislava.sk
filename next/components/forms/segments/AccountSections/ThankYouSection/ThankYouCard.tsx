@@ -2,11 +2,12 @@ import PaymentDeclined from '@assets/images/new-icons/other/payment-declined.svg
 import DisableIcon from '@assets/images/new-icons/ui/cross.svg'
 import DoneIcon from '@assets/images/new-icons/ui/done.svg'
 import RestartIcon from '@assets/images/new-icons/ui/repeat.svg'
-import { ROUTES } from '../../../../../frontend/constants'
 import cx from 'classnames'
 import AccountMarkdown from 'components/forms/segments/AccountMarkdown/AccountMarkdown'
 import Button from 'components/forms/simple-components/Button'
 import Link from 'next/link'
+
+import { ROUTES } from '../../../../../frontend/api/constants'
 
 type ThankYouCardBase = {
   success?: boolean

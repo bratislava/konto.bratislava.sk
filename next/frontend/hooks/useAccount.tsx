@@ -24,10 +24,10 @@ import { useTranslation } from 'next-i18next'
 import React, { ReactNode, useCallback, useContext, useEffect, useState } from 'react'
 import { useInterval } from 'usehooks-ts'
 
-import { subscribeApi, UNAUTHORIZED_ERROR_TEXT, verifyIdentityApi } from "../api"
-import { ROUTES } from "../constants"
-import logger, { faro } from '../logger'
-import { isBrowser } from '../utils'
+import { subscribeApi, UNAUTHORIZED_ERROR_TEXT, verifyIdentityApi } from "../api/api"
+import { ROUTES } from "../api/constants"
+import { isBrowser } from '../utils/general'
+import logger, { faro } from '../utils/logger'
 import useSnackbar from "./useSnackbar"
 
 export enum AccountStatus {

@@ -1,7 +1,7 @@
 /* eslint-disable @next/next/inline-script-id */
 import './index.css'
 // initialize faro - TODO might need to ensure faro is initialized by providing it through react context and hook
-import '../frontend/logger'
+import '../frontend/utils/logger'
 
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import { StatusBarProvider } from 'components/forms/info-components/StatusBar'

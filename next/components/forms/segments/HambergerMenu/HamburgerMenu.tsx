@@ -1,11 +1,12 @@
-import { ROUTES } from '../../../../frontend/constants'
-import { handleOnKeyPress } from '../../../../frontend/utils'
 import cx from 'classnames'
 import { MenuItem } from 'components/forms/segments/AccountNavBar/AccountNavBar'
 import IdentityVerificationStatus from 'components/forms/simple-components/IdentityVerificationStatus'
 import Link from 'next/link'
 import { useRouter } from 'next/router'
 import { useTranslation } from 'next-i18next'
+
+import { ROUTES } from '../../../../frontend/api/constants'
+import { handleOnKeyPress } from '../../../../frontend/utils/general'
 
 interface IProps {
   sectionsList?: MenuItem[]

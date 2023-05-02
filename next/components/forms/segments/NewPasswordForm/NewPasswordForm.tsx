@@ -9,8 +9,8 @@ import { Controller } from 'react-hook-form'
 
 import { AccountError } from '../../../../frontend/hooks/useAccount'
 import useHookForm from '../../../../frontend/hooks/useHookForm'
-import logger from '../../../../frontend/logger'
-import { formatUnicorn } from '../../../../frontend/string'
+import logger from '../../../../frontend/utils/logger'
+import { formatUnicorn } from '../../../../frontend/utils/string'
 
 interface Data {
   verificationCode: string

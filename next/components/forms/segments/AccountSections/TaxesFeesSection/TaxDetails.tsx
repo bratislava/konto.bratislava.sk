@@ -3,7 +3,7 @@ import { useTranslation } from 'next-i18next'
 import React from 'react'
 
 import { Tax } from '../../../../../frontend/dtos/taxDto'
-import { formatCurrency } from '../../../../../frontend/utils'
+import { formatCurrency } from '../../../../../frontend/utils/general'
 import AccordionTableTaxContent from '../../../simple-components/AccordionTableTaxContent'
 
 interface TaxDetailsProps {

@@ -4,7 +4,7 @@ import { useTranslation } from 'next-i18next'
 import React, { useState } from 'react'
 
 import { Tax } from '../../../frontend/dtos/taxDto'
-import { formatCurrency } from '../../../frontend/utils'
+import { formatCurrency } from '../../../frontend/utils/general'
 import PersonIcon from '../icon-components/PersonIcon'
 import AccountMarkdown from '../segments/AccountMarkdown/AccountMarkdown'
 import AccountMarkdownModal from '../segments/AccountModal/AccountModal'

@@ -1,7 +1,7 @@
-import logger from '../../../frontend/logger'
 import { SelectOption } from 'components/forms/widget-components/SelectField/SelectOption.interface'
 import React, { useState } from 'react'
 
+import logger from '../../../frontend/utils/logger'
 import SelectField from '../../forms/widget-components/SelectField/SelectField'
 import { Stack } from '../Stack'
 import { Wrapper } from '../Wrapper'

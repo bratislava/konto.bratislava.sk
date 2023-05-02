@@ -10,12 +10,12 @@ import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
 import { useEffect, useState } from 'react'
 
 import PageWrapper from '../components/layouts/PageWrapper'
-import { ROUTES } from '../frontend/constants'
+import { ROUTES } from '../frontend/api/constants'
 import useAccount, { AccountStatus } from '../frontend/hooks/useAccount'
-import logger from '../frontend/logger'
-import { formatUnicorn } from '../frontend/string'
-import { AsyncServerProps } from '../frontend/types'
-import { isProductionDeployment } from '../frontend/utils'
+import { isProductionDeployment } from '../frontend/utils/general'
+import logger from '../frontend/utils/logger'
+import { formatUnicorn } from '../frontend/utils/string'
+import { AsyncServerProps } from '../frontend/utils/types'
 
 export const getServerSideProps = async (ctx: GetServerSidePropsContext) => {
   const locale = ctx.locale ?? 'sk'

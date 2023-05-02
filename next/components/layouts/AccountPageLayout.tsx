@@ -12,9 +12,9 @@ import { useRouter } from 'next/router'
 import { useTranslation } from 'next-i18next'
 import { ReactNode, useEffect } from 'react'
 
-import { ROUTES } from '../../frontend/constants'
+import { ROUTES } from '../../frontend/api/constants'
 import useAccount from '../../frontend/hooks/useAccount'
-import logger from '../../frontend/logger'
+import logger from '../../frontend/utils/logger'
 
 type AccountPageLayoutBase = {
   className?: string

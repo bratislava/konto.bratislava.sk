@@ -14,7 +14,7 @@ import { useRouter } from 'next/router'
 import { useTranslation } from 'next-i18next'
 import { useEffect, useState } from 'react'
 
-import { ROUTES } from '../../../../../frontend/constants'
+import { ROUTES } from '../../../../../frontend/api/constants'
 import { useTaxes } from '../../../../../frontend/hooks/apiHooks'
 import useAccount from '../../../../../frontend/hooks/useAccount'
 import { PhoneNumberData } from '../../PhoneNumberForm/PhoneNumberForm'

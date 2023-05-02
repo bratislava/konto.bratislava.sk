@@ -1,5 +1,3 @@
-import { AsyncServerProps } from '../frontend/types'
-import { isProductionDeployment } from '../frontend/utils'
 import { StatusBar } from 'components/forms/info-components/StatusBar'
 import PageWrapper from 'components/layouts/PageWrapper'
 import DatePickerShowCase from 'components/styleguide/showcases/DatePickerShowCase'
@@ -33,6 +31,8 @@ import TextAreaFieldShowCase from '../components/styleguide/showcases/TextAreaFi
 import ToggleShowCase from '../components/styleguide/showcases/ToggleShowCase'
 import UploadShowCase from '../components/styleguide/showcases/UploadShowCase'
 import StyleGuideWrapper from '../components/styleguide/StyleGuideWrapper'
+import { isProductionDeployment } from '../frontend/utils/general'
+import { AsyncServerProps } from '../frontend/utils/types'
 
 const Styleguide = ({ page }: AsyncServerProps<typeof getServerSideProps>) => {
   /**

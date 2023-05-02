@@ -3,7 +3,7 @@ import { useTranslation } from 'next-i18next'
 import { useCopyToClipboard } from 'usehooks-ts'
 
 import useSnackbar from '../../../frontend/hooks/useSnackbar'
-import logger from '../../../frontend/logger'
+import logger from '../../../frontend/utils/logger'
 
 const ClipboardCopy = ({ copyText }: { copyText: string }) => {
   const [, copy] = useCopyToClipboard()

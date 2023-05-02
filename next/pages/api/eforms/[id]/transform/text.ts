@@ -3,8 +3,9 @@
 import { EFormValue } from '@backend/forms'
 import { getEform } from '@backend/utils/forms'
 import { transformSaxon } from '@backend/utils/xslt'
-import logger from '../../../../../frontend/logger'
 import type { NextApiRequest, NextApiResponse } from 'next'
+
+import logger from '../../../../../frontend/utils/logger'
 
 const handler = async (req: NextApiRequest, res: NextApiResponse) => {
   if (req.method !== 'POST' || typeof req.body?.data !== 'string') {

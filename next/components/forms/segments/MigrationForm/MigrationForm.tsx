@@ -7,10 +7,10 @@ import { useRouter } from 'next/router'
 import { useTranslation } from 'next-i18next'
 import { Controller } from 'react-hook-form'
 
-import { ROUTES } from '../../../../frontend/constants'
+import { ROUTES } from '../../../../frontend/api/constants'
 import { AccountError } from '../../../../frontend/hooks/useAccount'
 import useHookForm from '../../../../frontend/hooks/useHookForm'
-import { formatUnicorn } from '../../../../frontend/string'
+import { formatUnicorn } from '../../../../frontend/utils/string'
 
 interface Data {
   email: string

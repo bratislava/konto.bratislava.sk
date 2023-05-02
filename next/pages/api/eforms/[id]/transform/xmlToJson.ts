@@ -2,8 +2,9 @@
 
 import { EFormValue } from '@backend/forms'
 import { getEform, xmlToJson } from '@backend/utils/forms'
-import logger from '../../../../../frontend/logger'
 import type { NextApiRequest, NextApiResponse } from 'next'
+
+import logger from '../../../../../frontend/utils/logger'
 
 // takes slovensko.sk-ready xml (perhaps serialized from previously filled in eFrom and loaded into browser by user) and converts back to json which we can work with
 // TODO figure out if usable or if it should be rewritten

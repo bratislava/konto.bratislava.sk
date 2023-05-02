@@ -9,11 +9,11 @@ import { Controller } from 'react-hook-form'
 import Turnstile from 'react-turnstile'
 import { useCounter, useTimeout } from 'usehooks-ts'
 
-import { ROUTES } from '../../../../frontend/constants'
+import { ROUTES } from '../../../../frontend/api/constants'
 import { AccountError } from '../../../../frontend/hooks/useAccount'
 import useHookForm from '../../../../frontend/hooks/useHookForm'
-import logger from '../../../../frontend/logger'
-import { isBrowser } from '../../../../frontend/utils'
+import { isBrowser } from '../../../../frontend/utils/general'
+import logger from '../../../../frontend/utils/logger'
 
 interface Data {
   rc: string

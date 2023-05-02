@@ -1,7 +1,7 @@
-import logger from '../../../frontend/logger'
 import { NextApiRequest, NextApiResponse } from 'next'
 
 import minioClient, { bucketName } from '../../../backend/utils/minio-client'
+import logger from '../../../frontend/utils/logger'
 
 const handleDeleteRequest = async (req: NextApiRequest) => {
   const {

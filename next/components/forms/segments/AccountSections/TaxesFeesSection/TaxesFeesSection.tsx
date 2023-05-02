@@ -6,11 +6,11 @@ import TaxesFeesErrorCard from 'components/forms/segments/AccountSections/TaxesF
 import Spinner from 'components/forms/simple-components/Spinner'
 import { useTranslation } from 'next-i18next'
 
-import { ROUTES } from '../../../../../frontend/constants'
+import { ROUTES } from '../../../../../frontend/api/constants'
 import { useTaxes } from '../../../../../frontend/hooks/apiHooks'
 import useAccount, { AccountStatus } from '../../../../../frontend/hooks/useAccount'
-import logger from '../../../../../frontend/logger'
-import { taxStatusHelper } from '../../../../../frontend/utils'
+import { taxStatusHelper } from '../../../../../frontend/utils/general'
+import logger from '../../../../../frontend/utils/logger'
 
 export type TaxesCardBase = {
   title: string

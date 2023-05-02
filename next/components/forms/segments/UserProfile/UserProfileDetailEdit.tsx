@@ -113,7 +113,6 @@ const UserProfileDetailEdit = (props: UserProfileDetailEditProps) => {
   })
 
   const handleSubmitCallback = (data: Data) => {
-    console.log(data)
     if (!data.phone_number || isValidPhoneNumber(data.phone_number)) {
       const newUserData: UserData = {
         email: data.email,

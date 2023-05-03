@@ -11,6 +11,14 @@ import {
   ValidatorType,
 } from '@rjsf/utils'
 import { customizeValidator } from '@rjsf/validator-ajv8'
+import { AnySchemaObject, ErrorObject, FuncKeywordDefinition } from 'ajv'
+import { JSONSchema7, JSONSchema7Definition } from 'json-schema'
+import { cloneDeep, get, merge, set } from 'lodash'
+import { useRouter } from 'next/router'
+import { useTranslation } from 'next-i18next'
+import { ChangeEvent, RefObject, useEffect, useMemo, useRef, useState } from 'react'
+
+import { StepData } from '../components/forms/types/TransformedFormData'
 import {
   createForm,
   formDataToXml,
@@ -26,14 +34,6 @@ import useAccount from "./hooks/useAccount"
 import useSnackbar from "./hooks/useSnackbar"
 import { readTextFile } from "./utils/file"
 import logger from './utils/logger'
-import { AnySchemaObject, ErrorObject, FuncKeywordDefinition } from 'ajv'
-import { JSONSchema7, JSONSchema7Definition } from 'json-schema'
-import { cloneDeep, get, merge, set } from 'lodash'
-import { useRouter } from 'next/router'
-import { useTranslation } from 'next-i18next'
-import { ChangeEvent, RefObject, useEffect, useMemo, useRef, useState } from 'react'
-
-import { StepData } from '../components/forms/types/TransformedFormData'
 
 export type JsonSchemaPropertyTree = JsonSchemaPropertyTreeInterface | undefined
 export interface JsonSchemaPropertyTreeInterface {
@@ -820,36 +820,3 @@ export const useFormFiller = (eform: EFormValue) => {
   }
 }
 
-export const useFormSubmitter = (slug: string) => {
-  const [errors, setErrors] = useState<Array<ErrorObject | string>>([])
-  const [successMessage, setSuccessMessage] = useState<string | null>(null)
-  const { t } = useTranslation('forms')
-
-  const submitForm = async (formData: RJSFSchema) => {
-    try {
-      // TODO do something more with the result then just showing success
-      // eslint-disable-next-line @typescript-eslint/no-unused-vars
-      const result = await submitEform(slug, formData)
-      setErrors([])
-      setSuccessMessage(t('success'))
-    } catch (error) {
-      logger.error(error)
-      if (error instanceof ApiError) {
-        setErrors(error.errors)
-        logger.warn('Form api errors', error.errors)
-      } else if (error instanceof Error) {
-        logger.warn('Form non-api errors', error?.message)
-        setErrors([t([`errors.${error?.message}`, 'errors.unknown'])])
-      } else {
-        logger.error('Form unknown error', error)
-        setErrors([t('errors.unknown')])
-      }
-    }
-  }
-
-  return {
-    submitForm,
-    errors,
-    successMessage,
-  }
-}

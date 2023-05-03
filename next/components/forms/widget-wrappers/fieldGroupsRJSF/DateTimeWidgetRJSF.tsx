@@ -1,4 +1,4 @@
-import { FieldProps } from '@rjsf/utils'
+import { FieldProps, RJSFSchema } from '@rjsf/utils'
 import React from 'react'
 
 import { DateTimePicker } from '../../groups'
@@ -6,13 +6,17 @@ import { ExplicitOptionalType } from '../../types/ExplicitOptional'
 import { FormSpacingType } from '../../types/WidgetOptions'
 import WidgetWrapper, { isFormSpacingType } from '../WidgetWrapper'
 
+interface DateTimeWidgetRJSFProps extends FieldProps{
+  formData: RJSFSchema
+}
+
 const DateTimeWidgetRJSF = ({
   formData = {},
   onChange,
   schema,
   uiSchema,
   errorSchema,
-}: FieldProps) => {
+}: DateTimeWidgetRJSFProps) => {
   const schemaProperties = {
     ...(schema.properties as Record<string, { type: string; title: string }>),
   }

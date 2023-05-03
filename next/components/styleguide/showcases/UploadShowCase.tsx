@@ -1,7 +1,7 @@
 import { UploadMinioFile } from '@backend/dtos/minio/upload-minio-file.dto'
-import logger from '@utils/logger'
 import React, { useState } from 'react'
 
+import logger from '../../../frontend/utils/logger'
 import Upload from '../../forms/widget-components/Upload/Upload'
 import UploadedFile from '../../forms/widget-components/Upload/UploadedFile'
 import { Stack } from '../Stack'

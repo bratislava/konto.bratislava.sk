@@ -3,10 +3,11 @@ import addFormats from 'ajv-formats'
 import { useEffect } from 'react'
 import useSWR from 'swr'
 
-import { TaxApiError, getTaxApi } from './api'
-import { ajvFormats, ajvKeywords } from './forms'
-import logger from './logger'
-import { Tax, TaxJSONSchema } from './taxDto'
+import { getTaxApi } from '../api/api'
+import { ajvFormats, ajvKeywords } from '../dtos/formStepperDto'
+import { TaxApiError } from '../dtos/generalApiDto'
+import { Tax, TaxJSONSchema } from '../dtos/taxDto'
+import logger from '../utils/logger'
 import useAccount from './useAccount'
 
 // TODO test for no tax, not yet tax, legit tax unpaid, partially paid, paid
@@ -15,7 +16,7 @@ export const useTaxes = () => {
   // TODO handle 401 & token refreshing - for now, this should work reasonably as along as the page isn't opened for too long
   const swrResult = useSWR<Tax>(
     () => (lastAccessToken ? ['/api/taxes', lastAccessToken] : null),
-    ([_, token]) => getTaxApi(token),
+    ([, token]: [void, string]) => getTaxApi(token),
     { shouldRetryOnError: false },
   )
 

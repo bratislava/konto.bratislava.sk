@@ -1,7 +1,10 @@
+/* eslint @typescript-eslint/no-unsafe-member-access: "warn" */
+
 import { EFormValue } from '@backend/forms'
 import { getEform } from '@backend/utils/forms'
-import logger from '@utils/logger'
 import type { NextApiRequest, NextApiResponse } from 'next'
+
+import logger from '../../../../../frontend/utils/logger'
 
 const handler = async (req: NextApiRequest, res: NextApiResponse) => {
   if (req.method !== 'POST' || typeof req.body?.data !== 'string') {

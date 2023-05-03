@@ -1,8 +1,11 @@
+/* eslint @typescript-eslint/no-unsafe-member-access: "warn" */
+
 import { EFormValue } from '@backend/forms'
 import { getEform } from '@backend/utils/forms'
-import { transform } from '@backend/utils/xslt'
-import logger from '@utils/logger'
+import { transformSaxon } from '@backend/utils/xslt'
 import type { NextApiRequest, NextApiResponse } from 'next'
+
+import logger from '../../../../../frontend/utils/logger'
 
 const handler = async (req: NextApiRequest, res: NextApiResponse) => {
   if (req.method !== 'POST' || typeof req.body?.data !== 'string') {
@@ -18,7 +21,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
   }
 
   const stringData: string = typeof req.body.data === 'string' ? req.body.data : ''
-  const data = await transform(eform.textStylesheet, stringData)
+  const data = await transformSaxon(eform.textStylesheet, stringData)
 
   res.setHeader('Content-Type', 'text/plain')
   return res.send(data)

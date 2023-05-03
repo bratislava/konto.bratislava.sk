@@ -1,9 +1,9 @@
 import ChevronRightIcon from '@assets/images/forms/chevron-right.svg'
 import FilledSelectedIcon from '@assets/images/new-icons/ui/check-mark.svg'
-import { handleOnKeyPress } from '@utils/utils'
 import cx from 'classnames'
 import React from 'react'
 
+import { handleOnKeyPress } from '../../../../frontend/utils/general'
 import CheckboxIcon from '../../icon-components/CheckboxIcon'
 import RadioButtonIcon from '../../icon-components/RadioButtonIcon'
 import { SelectOption } from './SelectOption.interface'

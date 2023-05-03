@@ -1,6 +1,5 @@
-import { subscribeApi, UNAUTHORIZED_ERROR_TEXT, verifyIdentityApi } from '@utils/api'
-import { ROUTES } from '@utils/constants'
-import useSnackbar from '@utils/useSnackbar'
+/* eslint-disable no-secrets/no-secrets */
+
 import {
   AuthenticationDetails,
   CognitoUser,
@@ -25,8 +24,11 @@ import { useTranslation } from 'next-i18next'
 import React, { ReactNode, useCallback, useContext, useEffect, useState } from 'react'
 import { useInterval } from 'usehooks-ts'
 
-import logger, { faro } from './logger'
-import { isBrowser } from './utils'
+import { subscribeApi, UNAUTHORIZED_ERROR_TEXT, verifyIdentityApi } from "../api/api"
+import { ROUTES } from "../api/constants"
+import { isBrowser } from '../utils/general'
+import logger, { faro } from '../utils/logger'
+import useSnackbar from "./useSnackbar"
 
 export enum AccountStatus {
   Idle,
@@ -161,7 +163,7 @@ export const AccountProvider = ({ children }: { children: ReactNode }) => {
   }
 
   const userAttributesToObject = (attributes?: CognitoUserAttribute[]): UserData => {
-    const data: any = {}
+    const data: UserData = {}
     attributes?.forEach((attribute: CognitoUserAttribute) => {
       const attributeKey: string = attribute.getName().replace(/^custom:/, '')
       data[attributeKey] =
@@ -172,7 +174,7 @@ export const AccountProvider = ({ children }: { children: ReactNode }) => {
 
   const objectToUserAttributes = (data: UserData | Address): CognitoUserAttribute[] => {
     const attributeList: CognitoUserAttribute[] = []
-    Object.entries(data).forEach(([key, value]) => {
+    Object.entries(data).forEach(([key, value]: [string, string|Tier|Address]) => {
       if (updatableAttributes.has(key)) {
         const attribute = new CognitoUserAttribute({
           Name: customAttributes.has(key) ? `custom:${key}` : key,
@@ -180,8 +182,8 @@ export const AccountProvider = ({ children }: { children: ReactNode }) => {
             key === 'address'
               ? JSON.stringify(value)
               : key === 'phone_number'
-              ? value?.replace(' ', '')
-              : value,
+                ? typeof value === 'string' && value?.replace(' ', '')
+                : String(value)
         })
         attributeList.push(attribute)
       }
@@ -207,6 +209,27 @@ export const AccountProvider = ({ children }: { children: ReactNode }) => {
     // }
   }
 
+  const getAccessToken = async (): Promise<string | null> => {
+    return new Promise((resolve) => {
+      const cognitoUser = userPool.getCurrentUser()
+      if (cognitoUser == null) {
+        resolve(null)
+      } else {
+        cognitoUser.getSession((err: Error | null, result: CognitoUserSession | null) => {
+          if (err) {
+            resolve(null)
+          } else if (result) {
+            const accessToken = result.getAccessToken().getJwtToken()
+            setLastAccessToken(accessToken)
+            resolve(accessToken)
+          } else {
+            resolve(null)
+          }
+        })
+      }
+    })
+  }
+
   const subscribe = async () => {
     if (lastMarketingConfirmation === false) {
       return
@@ -222,11 +245,107 @@ export const AccountProvider = ({ children }: { children: ReactNode }) => {
       await subscribeApi({}, token)
     } catch (error) {
       // TODO temporary, pass better errors out of api requests
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
       if (error?.message === UNAUTHORIZED_ERROR_TEXT) {
         forceLogout()
       }
       logger.error(error)
     }
+  }
+
+  const login = (email: string, password: string | undefined): Promise<boolean> => {
+    // login into cognito using aws sdk
+    const credentials = {
+      Username: email,
+      Password: password,
+    }
+
+    const cognitoUser = new CognitoUser({
+      Username: email,
+      Pool: userPool,
+      // Storage: new CookieStorage({
+      //   domain: process.env.NEXT_PUBLIC_COGNITO_COOKIE_STORAGE_DOMAIN,
+      // }),
+    })
+
+    setLastCredentials(credentials)
+    setError(null)
+    return new Promise((resolve) => {
+      cognitoUser.authenticateUser(new AuthenticationDetails(credentials), {
+        onSuccess(result: CognitoUserSession) {
+          // POTENTIAL: Region needs to be set if not already set previously elsewhere.
+          AWS.config.region = process.env.NEXT_PUBLIC_AWS_REGION
+
+          const awsCredentials = new AWS.CognitoIdentityCredentials({
+            IdentityPoolId: process.env.NEXT_PUBLIC_COGNITO_IDENTITY_POOL_ID || '',
+            Logins: {
+              // Change the key below according to the specific region your user pool is in.
+              [`cognito-idp.${process.env.NEXT_PUBLIC_AWS_REGION}.amazonaws.com/${process.env.NEXT_PUBLIC_COGNITO_USER_POOL_ID}`]:
+                result.getIdToken().getJwtToken(),
+            },
+          })
+          setLastAccessToken(result.getAccessToken().getJwtToken())
+          AWS.config.credentials = awsCredentials
+
+          cognitoUser.getUserAttributes((err?: Error, attributes?: CognitoUserAttribute[]) => {
+            if (err) {
+              logger.error(err)
+              resolve(false)
+            } else {
+              const cognitoUserData = userAttributesToObject(attributes)
+              setUserData(cognitoUserData)
+              setUser(cognitoUser)
+
+              // refreshes credentials using AWS.CognitoIdentity.getCredentialsForIdentity()
+              awsCredentials.refresh((awsError?: AWSError) => {
+                if (awsError) {
+                  logger.error('AWS error login refresh', awsError)
+                  resolve(false)
+                } else {
+                  resolve(true)
+                }
+              })
+            }
+          })
+        },
+
+        onFailure(err: AWSError) {
+          if (err.code === 'UserNotConfirmedException') {
+            setStatus(AccountStatus.EmailVerificationRequired)
+          } else {
+            logger.error('AWS error login', err)
+            setError({ ...err })
+          }
+          resolve(false)
+        },
+
+        newPasswordRequired: (userAttributes, requiredAttributes) => {
+          logger.warn('newPasswordRequired', userAttributes, requiredAttributes)
+          resolve(false)
+        },
+        mfaRequired: (challengeName, challengeParameters) => {
+          logger.warn('mfaRequired', challengeName, challengeParameters)
+          resolve(false)
+        },
+        totpRequired: (challengeName, challengeParameters) => {
+          logger.warn('totpRequired', challengeName, challengeParameters)
+          resolve(false)
+        },
+        customChallenge: (challengeParameters) => {
+          const challengeName = 'challenge-answer'
+          logger.warn('customChallenge', challengeName, challengeParameters)
+          resolve(false)
+        },
+        mfaSetup: (challengeName, challengeParameters) => {
+          logger.warn('mfaSetup', challengeName, challengeParameters)
+          resolve(false)
+        },
+        selectMFAType: (challengeName, challengeParameters) => {
+          logger.warn('selectmfatype', challengeName, challengeParameters)
+          resolve(false)
+        },
+      })
+    })
   }
 
   const verifyEmail = (verificationCode: string): Promise<boolean> => {
@@ -239,6 +358,7 @@ export const AccountProvider = ({ children }: { children: ReactNode }) => {
     })
 
     return new Promise((resolve) => {
+      // eslint-disable-next-line @typescript-eslint/no-misused-promises
       cognitoUser.confirmRegistration(verificationCode, true, async (err?: AWSError) => {
         if (err) {
           setError({ ...err })
@@ -303,27 +423,6 @@ export const AccountProvider = ({ children }: { children: ReactNode }) => {
     })
   }
 
-  const getAccessToken = async (): Promise<string | null> => {
-    return new Promise((resolve) => {
-      const cognitoUser = userPool.getCurrentUser()
-      if (cognitoUser == null) {
-        resolve(null)
-      } else {
-        cognitoUser.getSession((err: Error | null, result: CognitoUserSession | null) => {
-          if (err) {
-            resolve(null)
-          } else if (result) {
-            const accessToken = result.getAccessToken().getJwtToken()
-            setLastAccessToken(accessToken)
-            resolve(accessToken)
-          } else {
-            resolve(null)
-          }
-        })
-      }
-    })
-  }
-
   const verifyIdentity = async (
     rc: string,
     idCard: string,
@@ -342,8 +441,10 @@ export const AccountProvider = ({ children }: { children: ReactNode }) => {
       )
       // not refreshing user status immediately, instead leaving this to the registration flow
       return true
-    } catch (error: any) {
+    } catch (error) {
       // TODO temporary, pass better errors out of api requests
+
+      /* eslint-disable @typescript-eslint/no-unsafe-member-access */
       if (error?.message === UNAUTHORIZED_ERROR_TEXT) {
         forceLogout()
         if (isBrowser()) {
@@ -355,6 +456,8 @@ export const AccountProvider = ({ children }: { children: ReactNode }) => {
         code: error.message,
         message: error.message,
       })
+      /* eslint-enable @typescript-eslint/no-unsafe-member-access */
+
       return false
     }
   }
@@ -371,17 +474,16 @@ export const AccountProvider = ({ children }: { children: ReactNode }) => {
         }
 
         // NOTE: getSession must be called to authenticate user before calling getUserAttributes
-        cognitoUser.getUserAttributes((err?: Error, attributes?: CognitoUserAttribute[]) => {
-          if (err) {
-            logger.error('AWS error getUserAttributes', err)
+        cognitoUser.getUserAttributes((cognitoError?: Error, attributes?: CognitoUserAttribute[]) => {
+          if (cognitoError) {
+            logger.error('AWS error getUserAttributes', cognitoError)
             setUser(null)
-            return
+          } else {
+            const cognitoUserData = userAttributesToObject(attributes)
+            setUserData(cognitoUserData)
+            setUser(cognitoUser)
+            setLastAccessToken(result?.getAccessToken().getJwtToken())
           }
-
-          const userData = userAttributesToObject(attributes)
-          setUserData(userData)
-          setUser(cognitoUser)
-          setLastAccessToken(result?.getAccessToken().getJwtToken())
         })
       })
     } else {
@@ -466,6 +568,7 @@ export const AccountProvider = ({ children }: { children: ReactNode }) => {
 
     return new Promise((resolve) => {
       cognitoUser.confirmPassword(verificationCode, password, {
+        // eslint-disable-next-line @typescript-eslint/no-misused-promises
         async onSuccess() {
           setStatus(AccountStatus.NewPasswordSuccess)
           resolve(await login(lastCredentials.Username, password))
@@ -494,7 +597,7 @@ export const AccountProvider = ({ children }: { children: ReactNode }) => {
     setError(null)
     return new Promise((resolve) => {
       cognitoUser.forgotPassword({
-        onSuccess: (data) => {
+        onSuccess: () => {
           // successfully initiated reset password request
           setStatus(AccountStatus.NewPasswordRequired)
           resolve(true)
@@ -507,101 +610,6 @@ export const AccountProvider = ({ children }: { children: ReactNode }) => {
           }
           logger.error('AWS error forgotPassword', err)
           setError(customErr)
-          resolve(false)
-        },
-      })
-    })
-  }
-
-  const login = (email: string, password: string | undefined): Promise<boolean> => {
-    // login into cognito using aws sdk
-    const credentials = {
-      Username: email,
-      Password: password,
-    }
-
-    const cognitoUser = new CognitoUser({
-      Username: email,
-      Pool: userPool,
-      // Storage: new CookieStorage({
-      //   domain: process.env.NEXT_PUBLIC_COGNITO_COOKIE_STORAGE_DOMAIN,
-      // }),
-    })
-
-    setLastCredentials(credentials)
-    setError(null)
-    return new Promise((resolve) => {
-      cognitoUser.authenticateUser(new AuthenticationDetails(credentials), {
-        onSuccess(result: CognitoUserSession) {
-          // POTENTIAL: Region needs to be set if not already set previously elsewhere.
-          AWS.config.region = process.env.NEXT_PUBLIC_AWS_REGION
-
-          const awsCredentials = new AWS.CognitoIdentityCredentials({
-            IdentityPoolId: process.env.NEXT_PUBLIC_COGNITO_IDENTITY_POOL_ID || '',
-            Logins: {
-              // Change the key below according to the specific region your user pool is in.
-              [`cognito-idp.${process.env.NEXT_PUBLIC_AWS_REGION}.amazonaws.com/${process.env.NEXT_PUBLIC_COGNITO_USER_POOL_ID}`]:
-                result.getIdToken().getJwtToken(),
-            },
-          })
-          setLastAccessToken(result.getAccessToken().getJwtToken())
-          AWS.config.credentials = awsCredentials
-
-          cognitoUser.getUserAttributes((err?: Error, attributes?: CognitoUserAttribute[]) => {
-            if (err) {
-              logger.error(err)
-              resolve(false)
-            } else {
-              const userData = userAttributesToObject(attributes)
-              setUserData(userData)
-              setUser(cognitoUser)
-
-              // refreshes credentials using AWS.CognitoIdentity.getCredentialsForIdentity()
-              awsCredentials.refresh((err?: AWSError) => {
-                if (err) {
-                  logger.error('AWS error login refresh', err)
-                  resolve(false)
-                } else {
-                  resolve(true)
-                }
-              })
-            }
-          })
-        },
-
-        onFailure(err: AWSError) {
-          if (err.code === 'UserNotConfirmedException') {
-            setStatus(AccountStatus.EmailVerificationRequired)
-          } else {
-            logger.error('AWS error login', err)
-            setError({ ...err })
-          }
-          resolve(false)
-        },
-
-        newPasswordRequired: (userAttributes, requiredAttributes) => {
-          logger.warn('newPasswordRequired', userAttributes, requiredAttributes)
-          resolve(false)
-        },
-        mfaRequired: (challengeName, challengeParameters) => {
-          logger.warn('mfaRequired', challengeName, challengeParameters)
-          resolve(false)
-        },
-        totpRequired: (challengeName, challengeParameters) => {
-          logger.warn('totpRequired', challengeName, challengeParameters)
-          resolve(false)
-        },
-        customChallenge: (challengeParameters) => {
-          const challengeName = 'challenge-answer'
-          logger.warn('customChallenge', challengeName, challengeParameters)
-          resolve(false)
-        },
-        mfaSetup: (challengeName, challengeParameters) => {
-          logger.warn('mfaSetup', challengeName, challengeParameters)
-          resolve(false)
-        },
-        selectMFAType: (challengeName, challengeParameters) => {
-          logger.warn('selectmfatype', challengeName, challengeParameters)
           resolve(false)
         },
       })
@@ -706,3 +714,5 @@ export const AccountProvider = ({ children }: { children: ReactNode }) => {
 export default function useAccount() {
   return useContext(AccountContext)
 }
+
+

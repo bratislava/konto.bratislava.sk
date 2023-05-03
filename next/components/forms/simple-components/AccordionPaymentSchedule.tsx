@@ -1,11 +1,11 @@
 import ExpandMore from '@assets/images/new-icons/ui/expand.svg'
-import { Tax } from '@utils/taxDto'
-import { formatCurrency } from '@utils/utils'
 import { AddToCalendarButton } from 'add-to-calendar-button-react'
 import cx from 'classnames'
 import { useTranslation } from 'next-i18next'
 import React, { useState } from 'react'
 
+import { Tax } from '../../../frontend/dtos/taxDto'
+import { formatCurrency } from '../../../frontend/utils/general'
 import PersonIcon from '../icon-components/PersonIcon'
 import AccountMarkdownModal from '../segments/AccountModal/AccountModal'
 

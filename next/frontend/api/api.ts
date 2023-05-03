@@ -4,8 +4,8 @@ import { RJSFSchema } from '@rjsf/utils'
 import { ErrorObject } from 'ajv'
 
 import { CreateFormDto, FormDto, UpdateFormDto } from '../dtos/formDto'
+import { ApiError, Gdpr, Identity, TaxApiError, UrlResult, User } from '../dtos/generalApiDto'
 import logger from '../utils/logger'
-import { ApiError, Gdpr, Identity, TaxApiError, UrlResult, User } from './data'
 
 export const API_ERROR_TEXT = 'API_ERROR'
 export const UNAUTHORIZED_ERROR_TEXT = 'UNAUTHORIZED_ERROR'

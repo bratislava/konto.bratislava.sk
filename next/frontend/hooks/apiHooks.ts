@@ -4,9 +4,9 @@ import { useEffect } from 'react'
 import useSWR from 'swr'
 
 import { getTaxApi } from '../api/api'
-import { TaxApiError } from '../api/data'
+import { ajvFormats, ajvKeywords } from '../dtos/formStepperDto'
+import { TaxApiError } from '../dtos/generalApiDto'
 import { Tax, TaxJSONSchema } from '../dtos/taxDto'
-import { ajvFormats, ajvKeywords } from '../utils/formStepperData'
 import logger from '../utils/logger'
 import useAccount from './useAccount'
 

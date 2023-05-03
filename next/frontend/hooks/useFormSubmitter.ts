@@ -4,7 +4,7 @@ import { useTranslation } from 'next-i18next'
 import { useState } from 'react'
 
 import { submitEform } from '../api/api'
-import { ApiError } from '../api/data'
+import { ApiError } from '../dtos/generalApiDto'
 import logger from '../utils/logger'
 
 export const useFormSubmitter = (slug: string) => {

@@ -4,7 +4,7 @@ import { useRouter } from 'next/router'
 import { ReactNode, useEffect } from 'react'
 
 import { ROUTES } from '../../../../../frontend/api/constants'
-import { TaxApiError } from '../../../../../frontend/api/data'
+import { TaxApiError } from '../../../../../frontend/dtos/generalApiDto'
 import { useTaxes } from '../../../../../frontend/hooks/apiHooks'
 import logger from '../../../../../frontend/utils/logger'
 import ContactInformationSection from './ContactInformation'

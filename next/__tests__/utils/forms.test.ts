@@ -8,7 +8,7 @@ import {
 } from '@backend/utils/forms'
 import { describe } from '@jest/globals'
 
-import { JsonSchema } from '../../frontend/utils/formStepperData'
+import { JsonSchema } from '../../frontend/dtos/formStepperDto'
 
 
 const xsd =

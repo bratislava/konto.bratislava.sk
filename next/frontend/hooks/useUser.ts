@@ -3,7 +3,7 @@ import { useEffectOnce } from 'usehooks-ts'
 
 // eslint-disable-next-line import/extensions
 import { getUserApi, subscribeApi, UNAUTHORIZED_ERROR_TEXT, unsubscribeApi } from "../api/api"
-import { Gdpr, User } from '../api/data'
+import { Gdpr, User } from '../dtos/generalApiDto'
 import logger from '../utils/logger'
 import useAccount from "./useAccount"
 

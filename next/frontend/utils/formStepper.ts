@@ -18,7 +18,7 @@ import {
   JsonSchemaProperties,
   JsonSchemaPropertyTree,
   KeywordDefinition, validator,
-} from './formStepperData'
+} from '../dtos/formStepperDto'
 
 
 export const getAllPossibleJsonSchemaProperties = (

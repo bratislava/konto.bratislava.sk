@@ -9,6 +9,7 @@ import { useFormRJSFContextMemo } from '../../frontend/hooks/useFormRJSFContextM
 import { useFormStepper } from '../../frontend/hooks/useFormStepper'
 import { useFormSubmitter } from '../../frontend/hooks/useFormSubmitter'
 import { customValidate } from '../../frontend/utils/formStepper'
+import { validator } from '../../frontend/utils/formStepperData'
 import FinalStep from './steps/FinalStep'
 import StepperView from './steps/StepperView'
 import StepButtonGroup from './steps/Summary/StepButtonGroup'
@@ -79,7 +80,7 @@ const GeneratedFormRJSF = ({ eform, escapedSlug, formSlug, wrapperClassName }: F
             formErrors={form.errors}
             extraErrors={form.extraErrors}
             schema={form.validatedSchema}
-            onGoToStep={(step: number) => form.setStepIndex(step)}
+            onGoToStep={form.setStepIndex}
             submitErrors={submitter.errors}
             submitMessage={submitter.successMessage}
           />
@@ -93,7 +94,7 @@ const GeneratedFormRJSF = ({ eform, escapedSlug, formSlug, wrapperClassName }: F
               schema={form.currentSchema}
               uiSchema={eform.uiSchema}
               formData={form.formData}
-              validator={form.validator}
+              validator={validator}
               customValidate={(formData: RJSFSchema, errors: FormValidation) => {
                 return customValidate(formData, errors, form.currentSchema)
               }}

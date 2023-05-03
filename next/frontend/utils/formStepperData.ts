@@ -3,8 +3,6 @@ import { customizeValidator } from '@rjsf/validator-ajv8'
 import { AnySchemaObject, FuncKeywordDefinition } from 'ajv'
 import { JSONSchema7Definition } from 'json-schema'
 
-import { exampleAsyncValidation } from '../forms'
-
 export type JsonSchemaPropertyTree = JsonSchemaPropertyTreeInterface | undefined
 export interface JsonSchemaPropertyTreeInterface {
   [key: string]: JsonSchemaPropertyTree
@@ -31,6 +29,15 @@ export interface KeywordDefinition extends FuncKeywordDefinition {
     value: unknown,
     parentSchema?: AnySchemaObject,
   ) => boolean | Promise<boolean>
+}
+
+export const exampleAsyncValidation = (
+  schema: AnySchemaObject,
+  value: unknown,
+): Promise<boolean> => {
+  return new Promise((resolve) => {
+    setTimeout(() => resolve(!!value), 500)
+  })
 }
 
 export const ajvKeywords: KeywordDefinition[] = [

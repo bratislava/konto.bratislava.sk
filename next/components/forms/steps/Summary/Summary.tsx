@@ -1,6 +1,6 @@
 import { ErrorSchema, RJSFValidationError, StrictRJSFSchema } from '@rjsf/utils'
 
-import { JsonSchema } from '../../../../frontend/forms'
+import { JsonSchema } from '../../../../frontend/utils/formStepperData'
 import { useFormDataTransform } from '../../../../frontend/utils/rjsfSchemaHandler'
 import SummaryStep from './SummaryStep'
 import { TransformedFormStep } from './TransformedFormData'

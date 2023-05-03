@@ -4,19 +4,21 @@ import {
   getDefaultFormState,
   retrieveSchema,
   RJSFSchema,
-  StrictRJSFSchema, ValidatorType,
+  StrictRJSFSchema,
 } from '@rjsf/utils'
-import { customizeValidator } from '@rjsf/validator-ajv8'
-import { AnySchemaObject, FuncKeywordDefinition } from 'ajv'
 import { JSONSchema7, JSONSchema7Definition } from 'json-schema'
 import { get, merge, set } from 'lodash'
 
 import { StepData } from '../../components/forms/types/TransformedFormData'
 import { validateKeyword } from '../api/api'
 import {
-  buildRJSFError, exampleAsyncValidation,
-  getAllPossibleJsonSchemaProperties,
-} from '../forms'
+  ajvKeywords,
+  JsonSchema,
+  JsonSchemaExtraProperties,
+  JsonSchemaProperties,
+  JsonSchemaPropertyTree,
+  KeywordDefinition, validator,
+} from './formStepperData'
 
 
 export const getAllPossibleJsonSchemaProperties = (
@@ -142,14 +144,6 @@ export const buildRJSFError = (path: string[], errorMsg: string | undefined): Er
   ) as ErrorSchema
 }
 
-export const exampleAsyncValidation = (
-  schema: AnySchemaObject,
-  value: unknown,
-): Promise<boolean> => {
-  return new Promise((resolve) => {
-    setTimeout(() => resolve(!!value), 500)
-  })
-}
 
 export const getAllStepData = (
   schemaAllOf: JSONSchema7Definition[],

@@ -4,7 +4,7 @@ import WidgetWrapper from 'components/forms/widget-wrappers/WidgetWrapper'
 import React, { useState } from 'react'
 import { useEffectOnce } from 'usehooks-ts'
 
-import { FormRJSFContext } from '../../../frontend/forms'
+import { FormRJSFContext } from '../../../frontend/utils/formStepperData'
 import Upload from '../widget-components/Upload/Upload'
 import UploadRJSFOptions from '../widget-components/Upload/UploadRJSFOptions'
 

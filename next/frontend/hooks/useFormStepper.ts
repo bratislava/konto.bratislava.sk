@@ -14,15 +14,14 @@ import { ChangeEvent, RefObject, useEffect, useRef, useState } from 'react'
 
 import { StepData } from '../../components/forms/types/TransformedFormData'
 import { formDataToXml, xmlToFormData } from '../api/api'
+import { readTextFile } from '../utils/file'
 import {
-  ajvKeywords,
-  customFormats,
+  getAllStepData,
   getInitFormData,
   getJsonSchemaPropertyTree,
-  mergePropertyTreeToFormData, validator,
-} from '../forms'
-import { readTextFile } from '../utils/file'
-import { getAllStepData, getValidatedSteps, validateAsyncProperties } from '../utils/formStepper'
+  getValidatedSteps, mergePropertyTreeToFormData,
+  validateAsyncProperties,
+} from '../utils/formStepper'
 import logger from '../utils/logger'
 import useSnackbar from './useSnackbar'
 
@@ -293,24 +292,17 @@ export const useFormStepper = (eformSlug: string, eform: EFormValue, callbacks: 
     setStepFormData,
     errors: transformErrorsToArray(),
     extraErrors,
-    validate,
-    setErrors: setUniqueErrors,
     stepData,
     validatedSchema: { ...schema, allOf: [...steps] },
     previous,
     next,
     submitStep,
     skipToStep,
-    isSkipEnabled,
-    disableSkip,
     handleOnSubmit,
     handleOnErrors,
     currentSchema,
     isComplete,
     formRef,
-    keywords: ajvKeywords,
-    customFormats,
-    validator,
     exportXml,
     importXml,
   }

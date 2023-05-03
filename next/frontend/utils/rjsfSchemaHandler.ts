@@ -5,12 +5,8 @@ import {
   TransformedFormData,
   TransformedFormStep,
 } from '../../components/forms/steps/Summary/TransformedFormData'
-import {
-  getAllPossibleJsonSchemaExtraProperties,
-  JsonSchema,
-  JsonSchemaExtraProperties,
-  JsonSchemaExtraProperty,
-} from '../forms'
+import { getAllPossibleJsonSchemaExtraProperties } from './formStepper'
+import { JsonSchema, JsonSchemaExtraProperties, JsonSchemaExtraProperty } from './formStepperData'
 
 function findTitle(value: JSONSchema7Definition, items: JSONSchema7Definition[]) {
   if (typeof items === 'boolean') return value

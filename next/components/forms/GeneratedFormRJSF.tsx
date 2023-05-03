@@ -119,7 +119,7 @@ const GeneratedFormRJSF = ({ eform, escapedSlug, formSlug, wrapperClassName }: F
           previous={form.previous}
           skip={() => skipButtonHandler(form.stepIndex + 1)}
           submitStep={form.submitStep}
-          submitForm={() => submitter.submitForm(form.formId, form.formData)}
+          submitForm={() => submitter.submitForm(filler.formId, form.formData)}
         />
       </div>
     </div>

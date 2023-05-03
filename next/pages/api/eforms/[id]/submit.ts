@@ -5,7 +5,7 @@ import {
   validateDataWithJsonSchema,
   validateDataWithXsd,
 } from '@backend/utils/forms'
-import { sendForm } from '@utils/api'
+import { sendForm } from 'frontend/api/api'
 import type { NextApiRequest, NextApiResponse } from 'next'
 
 import logger from '../../../../frontend/utils/logger'

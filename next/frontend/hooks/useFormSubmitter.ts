@@ -3,6 +3,7 @@ import { ErrorObject } from 'ajv'
 import { useTranslation } from 'next-i18next'
 import { useState } from 'react'
 
+import useAccount from 'frontend/hooks/useAccount'
 import { submitEform } from '../api/api'
 import { ApiError } from '../dtos/generalApiDto'
 import logger from '../utils/logger'
@@ -12,11 +13,13 @@ export const useFormSubmitter = (slug: string) => {
   const [successMessage, setSuccessMessage] = useState<string | null>(null)
   const { t } = useTranslation('forms')
 
-  const submitForm = async (formData: RJSFSchema) => {
+  const { getAccessToken } = useAccount()
+  const submitForm = async (formId: string, formData: RJSFSchema) => {
     try {
+      const token = await getAccessToken()
       // TODO do something more with the result then just showing success
       // eslint-disable-next-line @typescript-eslint/no-unused-vars
-      const result = await submitEform(slug, formData)
+      const result = await submitEform(slug, formId, formData, token)
       setErrors([])
       setSuccessMessage(t('success'))
     } catch (error) {

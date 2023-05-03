@@ -10,12 +10,12 @@ import logger from '../utils/logger'
 export const API_ERROR_TEXT = 'API_ERROR'
 export const UNAUTHORIZED_ERROR_TEXT = 'UNAUTHORIZED_ERROR'
 
-const fetchJsonApi = async <T=any>(path: string, options?: RequestInit): Promise<T> => {
+const fetchJsonApi = async <T = any>(path: string, options?: RequestInit): Promise<T> => {
   try {
     const response = await fetch(path, options)
     if (response.ok) {
       try {
-        return await response.json() as T
+        return (await response.json()) as T
       } catch (error) {
         throw new Error(API_ERROR_TEXT)
       }
@@ -34,7 +34,9 @@ const fetchJsonApi = async <T=any>(path: string, options?: RequestInit): Promise
     }
     if (responseJson?.errors) {
       const responseMessage = String(responseJson?.message || API_ERROR_TEXT)
-      const responseErrors: ErrorObject[] = Array.isArray(responseJson.errors) ? responseJson.errors : []
+      const responseErrors: ErrorObject[] = Array.isArray(responseJson.errors)
+        ? responseJson.errors
+        : []
       throw new ApiError(responseMessage, responseErrors)
     } else if (responseJson?.errorName) {
       throw new TaxApiError(String(responseJson.errorName), responseJson)
@@ -65,13 +67,18 @@ const fetchBlob = async (path: string, options?: RequestInit) => {
 }
 
 // TODO move error handling here
-export const submitEform = async (eformKey: string, data: Record<string, any>) => {
+export const submitEform = async (
+  eformKey: string,
+  formId: string,
+  data: Record<string, any>,
+  token: string,
+) => {
   return fetchJsonApi(`/api/eforms/${eformKey}/submit`, {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
     },
-    body: JSON.stringify(data),
+    body: JSON.stringify({ data, id: formId, token }),
   })
 }
 
@@ -235,13 +242,16 @@ export const getTaxPdfApi = (token: string) => {
 }
 
 export const getPaymentGatewayUrlApi = (token: string): Promise<UrlResult> => {
-  return fetchJsonApi<UrlResult>(`${process.env.NEXT_PUBLIC_TAXES_URL}/payment/cardpay/by-year/2023`, {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-      Authorization: `Bearer ${token}`,
+  return fetchJsonApi<UrlResult>(
+    `${process.env.NEXT_PUBLIC_TAXES_URL}/payment/cardpay/by-year/2023`,
+    {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${token}`,
+      },
     },
-  })
+  )
 }
 
 export const getEnum = async (id?: string) => {
@@ -268,4 +278,14 @@ export const getEnum = async (id?: string) => {
     logger.error(error)
     throw error
   }
+}
+
+export const sendForm = (token: string, id: string) => {
+  return fetchJsonApi(`${process.env.NEXT_PUBLIC_FORMS_URL}/nases/send-form/${id}`, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      Authorization: `Bearer ${token}`,
+    },
+  })
 }

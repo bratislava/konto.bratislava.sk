@@ -1,18 +1,19 @@
-import { ROUTES } from '@utils/constants'
-import { AsyncServerProps } from '@utils/types'
-import useAccount, { AccountStatus } from '@utils/useAccount'
 import AccountContainer from 'components/forms/segments/AccountContainer/AccountContainer'
 import AccountSuccessAlert from 'components/forms/segments/AccountSuccessAlert/AccountSuccessAlert'
 import ForgottenPasswordForm from 'components/forms/segments/ForgottenPasswordForm/ForgottenPasswordForm'
 import NewPasswordForm from 'components/forms/segments/NewPasswordForm/NewPasswordForm'
 import LoginRegisterLayout from 'components/layouts/LoginRegisterLayout'
 import { GetServerSidePropsContext } from 'next'
+import { useRouter } from 'next/router'
 import { useTranslation } from 'next-i18next'
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
-import { useRouter } from 'next/router'
 
 import PageWrapper from '../components/layouts/PageWrapper'
-import { isProductionDeployment } from '../utils/utils'
+import { ROUTES } from '../frontend/api/constants'
+import useAccount, { AccountStatus } from '../frontend/hooks/useAccount'
+import { isProductionDeployment } from '../frontend/utils/general'
+import logger from '../frontend/utils/logger'
+import { AsyncServerProps } from '../frontend/utils/types'
 
 export const getServerSideProps = async (ctx: GetServerSidePropsContext) => {
   const locale = ctx.locale ?? 'sk'
@@ -28,7 +29,7 @@ export const getServerSideProps = async (ctx: GetServerSidePropsContext) => {
             locale: l,
           })),
       },
-      isProductionDeployment: isProductionDeployment(),
+      isProductionDeploy: isProductionDeployment(),
       ...(await serverSideTranslations(locale)),
     },
   }
@@ -39,9 +40,9 @@ const ForgottenPasswordPage = ({ page }: AsyncServerProps<typeof getServerSidePr
   const { t } = useTranslation('account')
   const router = useRouter()
 
-  const onConfirm = () => {
+  const onConfirm = async () => {
     setStatus(AccountStatus.Idle)
-    router.push(ROUTES.HOME)
+    await router.push(ROUTES.HOME).catch((error_) => logger.error('Failed redirect', error_))
   }
 
   return (

@@ -3,9 +3,10 @@ import FilledSelectedIcon from '@assets/images/new-icons/ui/check-mark.svg'
 import cx from 'classnames'
 import React from 'react'
 
+import { handleOnKeyPress } from '../../../../frontend/utils/general'
 import CheckboxIcon from '../../icon-components/CheckboxIcon'
 import RadioButtonIcon from '../../icon-components/RadioButtonIcon'
-import { SelectOption } from './SelectField'
+import { SelectOption } from './SelectOption.interface'
 
 interface DropdownRowProps {
   option: SelectOption
@@ -72,7 +73,13 @@ const DropdownRow = ({
 
   // RENDER
   return (
-    <div className={rowClassName} onClick={handleOnClick}>
+    <div
+      role="button"
+      tabIndex={0}
+      className={rowClassName}
+      onClick={handleOnClick}
+      onKeyPress={(event: React.KeyboardEvent) => handleOnKeyPress(event, handleOnClick)}
+    >
       <div className="dropdown flex h-full flex-col justify-center">
         <div className="dropdown flex flex-row justify-center">
           <p className={optionClassName}>{transformedOptionText}</p>

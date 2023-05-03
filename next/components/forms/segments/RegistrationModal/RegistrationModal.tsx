@@ -1,11 +1,13 @@
 import ArrowRightIcon from '@assets/images/new-icons/ui/arrow-right.svg'
 import CloseIcon from '@assets/images/new-icons/ui/cross.svg'
 import CheckIcon from '@assets/images/new-icons/ui/done.svg'
-import { ROUTES } from '@utils/constants'
 import cx from 'classnames'
 import Link from 'next/link'
 import { useTranslation } from 'next-i18next'
-import { ReactNode } from 'react'
+import React, { ReactNode } from 'react'
+
+import { ROUTES } from '../../../../frontend/api/constants'
+import { handleOnKeyPress } from '../../../../frontend/utils/general'
 
 type ButtonDesktopBase = {
   text: string
@@ -73,14 +75,20 @@ const RegistrationModal = ({ show, onClose, className }: RegistrationModalBase) 
   }
   return (
     <div
+      role="button"
+      tabIndex={0}
       className="h-full fixed w-full z-50 top-0 flex items-center justify-center"
       style={{ background: 'rgba(var(--color-gray-800), .4)', marginTop: '0' }}
-      onClick={() => {
-        onClose()
-      }}
+      onClick={onClose}
+      onKeyPress={(event: React.KeyboardEvent) => handleOnKeyPress(event, onClose)}
     >
       <div
+        role="button"
+        tabIndex={0}
         onClick={(e) => e.stopPropagation()}
+        onKeyPress={(event: React.KeyboardEvent) =>
+          handleOnKeyPress(event, () => event.stopPropagation())
+        }
         className={cx(
           'md:h-min w-full max-w-none h-full md:max-w-[796px] rounded-none md:rounded-2xl bg-gray-0 px-4 md:px-6 pt-12 md:py-8 relative mx-0 md:mx-4 overflow-auto',
           className,
@@ -88,7 +96,7 @@ const RegistrationModal = ({ show, onClose, className }: RegistrationModalBase) 
       >
         <div className="flex flex-col gap-2 mb-6">
           <CloseIcon
-            onClick={() => onClose()}
+            onClick={onClose}
             className="cursor-pointer w-6 h-6 absolute top-3 right-3 md:top-4 md:right-6"
           />
           <h3 className="text-h3">{t('register_modal.header_title')}</h3>

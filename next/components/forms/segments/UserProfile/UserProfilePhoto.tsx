@@ -1,5 +1,6 @@
-import { UserData } from '@utils/useAccount'
 import cx from 'classnames'
+
+import { UserData } from '../../../../frontend/hooks/useAccount'
 
 interface UserProfilePhotoProps {
   userData: UserData

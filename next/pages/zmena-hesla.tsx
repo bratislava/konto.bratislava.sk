@@ -1,6 +1,3 @@
-import { ROUTES } from '@utils/constants'
-import { AsyncServerProps } from '@utils/types'
-import useAccount, { AccountStatus } from '@utils/useAccount'
 import AccountContainer from 'components/forms/segments/AccountContainer/AccountContainer'
 import AccountSuccessAlert from 'components/forms/segments/AccountSuccessAlert/AccountSuccessAlert'
 import PasswordChangeForm from 'components/forms/segments/PasswordChangeForm/PasswordChangeForm'
@@ -12,7 +9,11 @@ import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
 import { useEffect } from 'react'
 
 import PageWrapper from '../components/layouts/PageWrapper'
-import { isProductionDeployment } from '../utils/utils'
+import { ROUTES } from '../frontend/api/constants'
+import useAccount, { AccountStatus } from '../frontend/hooks/useAccount'
+import { isProductionDeployment } from '../frontend/utils/general'
+import logger from '../frontend/utils/logger'
+import { AsyncServerProps } from '../frontend/utils/types'
 
 export const getServerSideProps = async (ctx: GetServerSidePropsContext) => {
   const locale = ctx.locale ?? 'sk'
@@ -28,7 +29,7 @@ export const getServerSideProps = async (ctx: GetServerSidePropsContext) => {
             locale: l,
           })),
       },
-      isProductionDeployment: isProductionDeployment(),
+      isProductionDeploy: isProductionDeployment(),
       ...(await serverSideTranslations(locale)),
     },
   }
@@ -38,14 +39,15 @@ const PasswordChangePage = ({ page }: AsyncServerProps<typeof getServerSideProps
   const { changePassword, error, status, isAuth } = useAccount()
   const { t } = useTranslation('account')
   const router = useRouter()
+
   useEffect(() => {
     if (!isAuth) {
-      router.push(ROUTES.LOGIN)
+      router.push(ROUTES.LOGIN).catch((error_) => logger.error('Failed redirect', error_))
     }
-  }, [isAuth])
+  }, [isAuth, router])
 
-  const onConfirm = () => {
-    router.push(ROUTES.HOME)
+  const onConfirm = async () => {
+    await router.push(ROUTES.HOME).catch((error_) => logger.error('Failed redirect', error_))
   }
 
   return (

@@ -1,6 +1,3 @@
-import { formatUnicorn } from '@utils/string'
-import { AccountError } from '@utils/useAccount'
-import useHookForm from '@utils/useHookForm'
 import AccountErrorAlert from 'components/forms/segments/AccountErrorAlert/AccountErrorAlert'
 import LoginAccountLink from 'components/forms/segments/LoginAccountLink/LoginAccountLink'
 import Button from 'components/forms/simple-components/Button'
@@ -9,6 +6,11 @@ import PasswordField from 'components/forms/widget-components/PasswordField/Pass
 import { useTranslation } from 'next-i18next'
 import { useEffect, useState } from 'react'
 import { Controller } from 'react-hook-form'
+
+import { AccountError } from '../../../../frontend/hooks/useAccount'
+import useHookForm from '../../../../frontend/hooks/useHookForm'
+import logger from '../../../../frontend/utils/logger'
+import { formatUnicorn } from '../../../../frontend/utils/string'
 
 interface Data {
   verificationCode: string
@@ -84,7 +86,9 @@ const NewPasswordForm = ({ onSubmit, error, onResend, lastEmail, fromMigration }
       className="flex flex-col space-y-4"
       onSubmit={handleSubmit((data: Data) => {
         setLastVerificationCode(data.verificationCode)
-        onSubmit(data.verificationCode, data.password)
+        onSubmit(data.verificationCode, data.password).catch((error_) =>
+          logger.error('Submit failed', error_),
+        )
       })}
     >
       <h1 className="text-h3">

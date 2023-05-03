@@ -1,10 +1,11 @@
-import { AsyncServerProps } from '@utils/types'
-import { isProductionDeployment } from '@utils/utils'
 import TaxesFeesSection from 'components/forms/segments/AccountSections/TaxesFeesSection/TaxesFeesSection'
 import AccountPageLayout from 'components/layouts/AccountPageLayout'
 import PageWrapper from 'components/layouts/PageWrapper'
 import { GetServerSidePropsContext } from 'next'
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
+
+import { isProductionDeployment } from '../../frontend/utils/general'
+import { AsyncServerProps } from '../../frontend/utils/types'
 
 export const getServerSideProps = async (ctx: GetServerSidePropsContext) => {
   const locale = ctx.locale ?? 'sk'
@@ -20,7 +21,7 @@ export const getServerSideProps = async (ctx: GetServerSidePropsContext) => {
             locale: l,
           })),
       },
-      isProductionDeployment: isProductionDeployment(),
+      isProductionDeploy: isProductionDeployment(),
       ...(await serverSideTranslations(locale)),
     },
   }
@@ -28,12 +29,12 @@ export const getServerSideProps = async (ctx: GetServerSidePropsContext) => {
 
 const AccountTaxesFeesPage = ({
   page,
-  isProductionDeployment,
+  isProductionDeploy,
 }: AsyncServerProps<typeof getServerSideProps>) => {
   return (
     <PageWrapper locale={page.locale} localizations={page.localizations}>
-      <AccountPageLayout>
-        <TaxesFeesSection isProductionDeployment={isProductionDeployment} />
+      <AccountPageLayout isProductionDeploy={isProductionDeploy}>
+        <TaxesFeesSection isProductionDeployment={isProductionDeploy} />
       </AccountPageLayout>
     </PageWrapper>
   )

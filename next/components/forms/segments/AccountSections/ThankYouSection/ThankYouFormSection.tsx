@@ -1,9 +1,10 @@
 import BratislavaIcon from '@assets/images/account/bratislava-footer.svg'
-import { ROUTES } from '@utils/constants'
 import AccountMarkdown from 'components/forms/segments/AccountMarkdown/AccountMarkdown'
 import ThankYouCard from 'components/forms/segments/AccountSections/ThankYouSection/ThankYouCard'
 import Button from 'components/forms/simple-components/Button'
 import { useTranslation } from 'next-i18next'
+
+import { ROUTES } from '../../../../../frontend/api/constants'
 
 const ThankYouFormSection = () => {
   const { t } = useTranslation('account')
@@ -12,7 +13,7 @@ const ThankYouFormSection = () => {
     <div className="h-screen bg-gray-0 md:bg-gray-50 pt-16 md:pt-28 flex flex-col justify-between">
       <div className="flex flex-col">
         <ThankYouCard
-          status="success"
+          success
           title={t('thank_you.form_submit.title')}
           firstButtonTitle={t('thank_you.success.button_to_formular_text_2')}
           secondButtonTitle={t('thank_you.success.button_to_profil_text')}
@@ -28,7 +29,7 @@ const ThankYouFormSection = () => {
           <div className="flex flex-col gap-3 mt-4 md:mt-6">
             <Button
               label={t('thank_you.button_faq_text')}
-              href={ROUTES.I_HAVE_A_PROBLEM}
+              href={ROUTES.HELP}
               variant="link-black"
               size="sm"
             />

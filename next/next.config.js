@@ -9,6 +9,18 @@ const nextConfig = {
   images: {
     domains: ['localhost', 'cdn-api.bratislava.sk'],
   },
+  eslint: {
+    dirs: [
+      'components/',
+      'pages/',
+      'utils/',
+      'backend/',
+      'frontend/'
+    ],
+    ignorePatterns: [
+      'backend/forms/'
+    ]
+  },
   async redirects() {
     return [
       {
@@ -28,7 +40,7 @@ const nextConfig = {
       },
       {
         source: '/i-have-a-problem',
-        destination: '/mam-problem',
+        destination: '/pomoc',
         permanent: true,
       },
       {
@@ -69,6 +81,11 @@ const nextConfig = {
       {
         source: '/user-profile',
         destination: '/moj-profil',
+        permanent: true,
+      },
+      {
+        source: '/mam-problem',
+        destination: '/pomoc',
         permanent: true,
       },
     ]

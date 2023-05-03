@@ -27,6 +27,37 @@
       }
     },
     {
+      "allOf": [
+        {
+          "if": {
+            "properties": {
+              "mestoPSC": {
+                "properties": {
+                  "psc": {
+                    "const": "82103"
+                  }
+                }
+              }
+            }
+          },
+          "then": {
+            "properties": {
+              "conditionalStep": {
+                "type": "object",
+                "title": "Conditional step",
+                "properties": {
+                  "randomInput": {
+                    "type": "string",
+                    "title": "Input in conditional step"
+                  }
+                }
+              }
+            }
+          }
+        }
+      ]
+    },
+    {
       "properties": {
         "dateTimePicker": {
           "title": "Showcase of DateTime Picker",
@@ -180,6 +211,8 @@
             "school": {
               "type": "string",
               "title": "University",
+              "comment": "Single choice select need to have default value",
+              "default": "stu_fei",
               "oneOf": [
                 {
                   "const": "stu_fei",
@@ -236,8 +269,74 @@
                   "const": 3
                 }
               ]
+            },
+            "street": {
+              "type": "string",
+              "title": "Street (ciselnik)",
+              "format": "ciselnik",
+              "ciselnik": { "id": "POST_STREET" }
+            },
+            "city": {
+              "type": "string",
+              "title": "City (ciselnik)",
+              "format": "ciselnik",
+              "ciselnik": { "id": "SUSR_0025" }
             }
-          }
+          },
+          "allOf": [
+            {
+              "if": {
+                "properties": {
+                  "school": {
+                    "const": "stu_fchpt"
+                  }
+                }
+              },
+              "then": {
+                "properties": {
+                  "conditionalSchool": {
+                    "type": "string",
+                    "title": "Was fchpt good? (conditional field)"
+                  }
+                }
+              }
+            },
+            {
+              "if": {
+                "oneOf": [
+                  {
+                    "properties": {
+                      "diplomas": {
+                        "const": ["stu_fei", "stu_fiit"]
+                      }
+                    }
+                  },
+                  {
+                    "properties": {
+                      "diplomas": {
+                        "const": ["stu_fiit"]
+                      }
+                    }
+                  },
+                  {
+                    "properties": {
+                      "diplomas": {
+                        "const": ["stu_fei"]
+                      }
+                    }
+                  }
+                ]
+              },
+              "then": {
+                "properties": {
+                  "conditionalDiplomas": {
+                    "type": "string",
+                    "title": "How was your IT experience? (conditional field)"
+                  }
+                }
+              }
+            }
+          ]
         }
       }
     },
@@ -250,24 +349,28 @@
           "properties": {
             "importButtonOneFile": {
               "title": "Importuj jeden subor",
-              "type": "string"
+              "type": "string",
+              "format": "file"
             },
             "importButtonMultipleFiles": {
               "title": "Importuj viac suborov",
               "type": "array",
               "items": {
-                "type": "string"
+                "type": "string",
+                "format": "file"
               }
             },
             "importDragAndDropOneFile": {
               "title": "Presun sem jeden subor",
-              "type": "string"
+              "type": "string",
+              "format": "file"
             },
             "importDragAndDropMultipleFiles": {
               "title": "Presun sem viac suborov",
               "type": "array",
               "items": {
-                "type": "string"
+                "type": "string",
+                "format": "file"
               }
             }
           }
@@ -284,6 +387,8 @@
             "chooseOneOfMore": {
               "type": "string",
               "title": "Some random choose",
+              "comment": "Radio buttons need to have default value",
+              "default": "screen",
               "oneOf": [
                 {
                   "const": "screen",

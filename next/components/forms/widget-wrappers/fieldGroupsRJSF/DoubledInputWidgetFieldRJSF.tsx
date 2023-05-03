@@ -1,4 +1,4 @@
-import { FieldProps } from '@rjsf/utils'
+import { FieldProps, RJSFSchema } from '@rjsf/utils'
 import React from 'react'
 
 import { DoubledInputField } from '../../groups'
@@ -11,13 +11,17 @@ import {
 } from '../../widget-components/InputField/InputField'
 import WidgetWrapper, { isFormSpacingType } from '../WidgetWrapper'
 
+interface DoubledInputWidgetFieldRJSFProps extends FieldProps {
+  formData: RJSFSchema
+}
+
 const DoubledInputWidgetFieldRJSF = ({
   formData,
   onChange,
   schema,
   uiSchema,
   errorSchema,
-}: FieldProps) => {
+}: DoubledInputWidgetFieldRJSFProps) => {
   const keys = Object.keys({ ...schema.properties })
 
   const schemaProperties = {
@@ -28,7 +32,7 @@ const DoubledInputWidgetFieldRJSF = ({
   const handleOnChange = (name: string, event?: string) => {
     onChange({
       ...formData,
-      [name]: event,
+      [name]: event === '' ? undefined : event,
     })
   }
 

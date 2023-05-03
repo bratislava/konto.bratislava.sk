@@ -2,22 +2,25 @@ import BusinessIcon from '@assets/images/new-icons/ui/city-services.svg'
 import HelpIcon from '@assets/images/new-icons/ui/help.svg'
 import HomeIcon from '@assets/images/new-icons/ui/introduction.svg'
 import LogoutIcon from '@assets/images/new-icons/ui/logout.svg'
+import MySubmissionIcon from '@assets/images/new-icons/ui/my-submission.svg'
 import PaymentIcon from '@assets/images/new-icons/ui/payment.svg'
 import ProfileIcon from '@assets/images/new-icons/ui/profile.svg'
-import { ROUTES } from '@utils/constants'
-import useAccount from '@utils/useAccount'
 import cx from 'classnames'
 import AccountNavBar from 'components/forms/segments/AccountNavBar/AccountNavBar'
 import { usePageWrapperContext } from 'components/layouts/PageWrapper'
 import { useRouter } from 'next/router'
 import { useTranslation } from 'next-i18next'
 import { ReactNode, useEffect } from 'react'
-import logger from '@utils/logger'
+
+import { ROUTES } from '../../frontend/api/constants'
+import useAccount from '../../frontend/hooks/useAccount'
+import logger from '../../frontend/utils/logger'
 
 type AccountPageLayoutBase = {
   className?: string
   children: ReactNode
   hiddenHeaderNav?: boolean
+  isProductionDeploy?: boolean
 }
 
 const sectionsList = [
@@ -35,15 +38,21 @@ const sectionsList = [
   },
   {
     id: 2,
+    title: 'account:account_section_applications.navigation',
+    icon: <MySubmissionIcon className="w-6 h-6" />,
+    link: ROUTES.MY_APPLICATIONS,
+  },
+  {
+    id: 3,
     title: 'account:account_section_payment.title',
     icon: <PaymentIcon className="w-6 h-6" />,
     link: ROUTES.TAXES_AND_FEES,
   },
   {
-    id: 3,
+    id: 4,
     title: 'account:account_section_help.navigation',
     icon: <HelpIcon className="w-6 h-6" />,
-    link: ROUTES.I_HAVE_A_PROBLEM,
+    link: ROUTES.HELP,
   },
 ]
 
@@ -58,7 +67,7 @@ const menuItems = [
     id: 2,
     title: 'account:menu_help_link',
     icon: <HelpIcon className="w-5 h-5" />,
-    link: ROUTES.I_HAVE_A_PROBLEM,
+    link: ROUTES.HELP,
   },
   {
     id: 3,
@@ -69,15 +78,25 @@ const menuItems = [
   },
 ]
 
-const AccountPageLayout = ({ className, children, hiddenHeaderNav }: AccountPageLayoutBase) => {
+const AccountPageLayout = ({
+  className,
+  children,
+  hiddenHeaderNav,
+  isProductionDeploy,
+}: AccountPageLayoutBase) => {
   const { locale, localizations = [] } = usePageWrapperContext()
   const router = useRouter()
   const { isAuth } = useAccount()
+
+  const prodHideSectionsListIds: Set<number> = isProductionDeploy ? new Set([2]) : new Set([])
+
   useEffect(() => {
-    if (!isAuth) {
-      router.push({ pathname: ROUTES.LOGIN, query: { from: router.route } })
+    if (!isAuth && router.route !== ROUTES.PAYMENT_RESULT) {
+      router
+        .push({ pathname: ROUTES.LOGIN, query: { from: router.route } })
+        .catch((error_) => logger.error('Redirect failed', error_))
     }
-  }, [isAuth])
+  }, [isAuth, router])
 
   const [t] = useTranslation('common')
 
@@ -96,7 +115,7 @@ const AccountPageLayout = ({ className, children, hiddenHeaderNav }: AccountPage
       <AccountNavBar
         currentLanguage={locale}
         onLanguageChange={handleLanguageChange}
-        sectionsList={sectionsList}
+        sectionsList={sectionsList.filter((item) => !prodHideSectionsListIds.has(item.id))}
         menuItems={menuItems}
         navHidden
         hiddenHeaderNav={hiddenHeaderNav}

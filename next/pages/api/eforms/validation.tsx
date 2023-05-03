@@ -1,6 +1,8 @@
-import { ajvKeywords } from '@utils/forms'
 import { AnySchemaObject } from 'ajv/dist/types'
 import type { NextApiRequest, NextApiResponse } from 'next'
+
+import { ajvKeywords } from '../../../frontend/dtos/formStepperDto'
+
 
 interface Body {
   parentSchema: AnySchemaObject
@@ -22,7 +24,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
   }
 
   const isValid = keywordDefinition.validate
-    ? await keywordDefinition.validate(schema, value, parentSchema)
+    ? await keywordDefinition.validate(schema as AnySchemaObject, value, parentSchema)
     : true
   return res.status(200).json({ isValid })
 }

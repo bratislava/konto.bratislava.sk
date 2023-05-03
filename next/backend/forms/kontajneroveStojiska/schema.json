@@ -15,7 +15,9 @@
     {
       "properties": {
         "ziadatel": {
-          "required": ["ziatetelTyp"],
+          "required": [
+            "ziatetelTyp"
+          ],
           "type": "object",
           "title": "Žiadateľ",
           "properties": {
@@ -38,11 +40,13 @@
                 "title": "Splnomocnenie na zastupovanie",
                 "items": {
                   "type": "string",
-                  "format": "data-url"
+                  "format": "file"
                 }
               }
             },
-            "required": ["splnomocnenie"]
+            "required": [
+              "splnomocnenie"
+            ]
           }
         }
       }
@@ -118,11 +122,14 @@
         "typStanovista": {
           "title": "Typ stanovišťa",
           "type": "object",
-          "required": ["typStanovistaUpresnenie"],
+          "required": [
+            "typStanovistaUpresnenie"
+          ],
           "properties": {
             "typStanovistaUpresnenie": {
               "title": "Upresnite o aký typ stanovišťa sa jedná",
               "type": "string",
+              "default": "Nové",
               "enum": [
                 "Nové",
                 "Rekonštrukcia existujúceho stanovišťa",
@@ -176,7 +183,12 @@
         "miestoUmiestnenia": {
           "title": "Miesto umiestnenia",
           "type": "object",
-          "required": ["kataster", "parcela", "adresaUmiestnenia", "velkost"],
+          "required": [
+            "kataster",
+            "parcela",
+            "adresaUmiestnenia",
+            "velkost"
+          ],
           "properties": {
             "kataster": {
               "title": "Katasttrálne územie pozemku",
@@ -213,11 +225,14 @@
         "dovodZiadosti": {
           "title": "Dôvod žiadosti",
           "type": "object",
-          "required": ["zaujem"],
+          "required": [
+            "zaujem"
+          ],
           "properties": {
             "zaujem": {
               "type": "string",
               "title": "Mám záujem o",
+              "default": "Dotáciu na kontajnerové stojisko",
               "enum": [
                 "Dotáciu na kontajnerové stojisko",
                 "Nájom mestského pozemku pod stojiskom",
@@ -237,11 +252,13 @@
               "title": "Zmluva o výkone správy / Zmluva o bytovom spoločenstve",
               "items": {
                 "type": "string",
-                "format": "data-url"
+                "format": "file"
               }
             }
           },
-          "required": ["zmluva"]
+          "required": [
+            "zmluva"
+          ]
         },
         {
           "if": {
@@ -278,11 +295,13 @@
                 "title": "Stanovisko OLO",
                 "items": {
                   "type": "string",
-                  "format": "data-url"
+                  "format": "file"
                 }
               }
             },
-            "required": ["stanovisko"]
+            "required": [
+              "stanovisko"
+            ]
           }
         },
         {
@@ -327,11 +346,13 @@
                 "title": "Relevantný doklad potvrdzujúci súčasný odvoz",
                 "items": {
                   "type": "string",
-                  "format": "data-url"
+                  "format": "file"
                 }
               }
             },
-            "required": ["doklad"]
+            "required": [
+              "doklad"
+            ]
           }
         },
         {
@@ -354,11 +375,13 @@
                 "title": "Zmluva o nájme pozemku / List vlastníctva / Zmluva o zriadení vecného bremena",
                 "items": {
                   "type": "string",
-                  "format": "data-url"
+                  "format": "file"
                 }
               }
             },
-            "required": ["listVlastnictva"]
+            "required": [
+              "listVlastnictva"
+            ]
           }
         },
         {
@@ -368,11 +391,13 @@
               "title": "Snímka z katastrálnej mapy so zakresleným kontajnerovým stanovišťom",
               "items": {
                 "type": "string",
-                "format": "data-url"
+                "format": "file"
               }
             }
           },
-          "required": ["snimkaZMapy"]
+          "required": [
+            "snimkaZMapy"
+          ]
         },
         {
           "properties": {
@@ -381,11 +406,13 @@
               "title": "Pôdorys kontajnerového stanovišťa so zakreslením rozmiestnenia zberných nádob",
               "items": {
                 "type": "string",
-                "format": "data-url"
+                "format": "file"
               }
             }
           },
-          "required": ["podorysStanovista"]
+          "required": [
+            "podorysStanovista"
+          ]
         },
         {
           "properties": {
@@ -394,11 +421,13 @@
               "title": "Vizuál kontajnerového stanovišťa - ilustračná alebo reálna fotografia / vizualizácia",
               "items": {
                 "type": "string",
-                "format": "data-url"
+                "format": "file"
               }
             }
           },
-          "required": ["vizualStanovista"]
+          "required": [
+            "vizualStanovista"
+          ]
         },
         {
           "properties": {
@@ -414,11 +443,13 @@
                       "type": "array",
                       "items": {
                         "type": "string",
-                        "format": "data-url"
+                        "format": "file"
                       }
                     }
                   },
-                  "required": ["technickyVykresPrilohy"]
+                  "required": [
+                    "technickyVykresPrilohy"
+                  ]
                 },
                 {
                   "title": "Text",
@@ -428,12 +459,16 @@
                       "type": "string"
                     }
                   },
-                  "required": ["technickyVykresText"]
+                  "required": [
+                    "technickyVykresText"
+                  ]
                 }
               ]
             }
           },
-          "required": ["technickyVykres"]
+          "required": [
+            "technickyVykres"
+          ]
         },
         {
           "properties": {
@@ -442,11 +477,13 @@
               "title": "Stavebná dokumentácia kontajnerového stanovišťa alebo výber z poskytnutých stavebných dokumentácií",
               "items": {
                 "type": "string",
-                "format": "data-url"
+                "format": "file"
               }
             }
           },
-          "required": ["stavebnaDokumentacia"]
+          "required": [
+            "stavebnaDokumentacia"
+          ]
         },
         {
           "properties": {
@@ -462,11 +499,13 @@
                       "type": "array",
                       "items": {
                         "type": "string",
-                        "format": "data-url"
+                        "format": "file"
                       }
                     }
                   },
-                  "required": ["rozpocetPrilohy"]
+                  "required": [
+                    "rozpocetPrilohy"
+                  ]
                 },
                 {
                   "title": "Text",
@@ -476,12 +515,16 @@
                       "type": "string"
                     }
                   },
-                  "required": ["rozpocetText"]
+                  "required": [
+                    "rozpocetText"
+                  ]
                 }
               ]
             }
           },
-          "required": ["rozpocet"]
+          "required": [
+            "rozpocet"
+          ]
         },
         {
           "properties": {
@@ -490,7 +533,7 @@
               "title": "Iné",
               "items": {
                 "type": "string",
-                "format": "data-url"
+                "format": "file"
               }
             }
           }

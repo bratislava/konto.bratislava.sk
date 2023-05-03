@@ -1,10 +1,11 @@
-import { AsyncServerProps } from '@utils/types'
-import { isProductionDeployment } from '@utils/utils'
 import IntroSection from 'components/forms/segments/AccountSections/IntroSection/IntroSection'
 import AccountPageLayout from 'components/layouts/AccountPageLayout'
 import PageWrapper from 'components/layouts/PageWrapper'
 import { GetServerSidePropsContext } from 'next'
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
+
+import { isProductionDeployment } from '../frontend/utils/general'
+import { AsyncServerProps } from '../frontend/utils/types'
 
 export const getServerSideProps = async (ctx: GetServerSidePropsContext) => {
   const locale = ctx.locale ?? 'sk'
@@ -20,16 +21,19 @@ export const getServerSideProps = async (ctx: GetServerSidePropsContext) => {
             locale: l,
           })),
       },
-      isProductionDeployment: isProductionDeployment(),
+      isProductionDeploy: isProductionDeployment(),
       ...(await serverSideTranslations(locale)),
     },
   }
 }
 
-const AccountIntroPage = ({ page }: AsyncServerProps<typeof getServerSideProps>) => {
+const AccountIntroPage = ({
+  page,
+  isProductionDeploy,
+}: AsyncServerProps<typeof getServerSideProps>) => {
   return (
     <PageWrapper locale={page.locale} localizations={page.localizations}>
-      <AccountPageLayout>
+      <AccountPageLayout isProductionDeploy={isProductionDeploy}>
         <IntroSection />
       </AccountPageLayout>
     </PageWrapper>

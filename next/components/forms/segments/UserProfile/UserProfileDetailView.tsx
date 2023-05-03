@@ -1,15 +1,16 @@
-import { UserData } from '@utils/useAccount'
 import { useTranslation } from 'next-i18next'
 
+import { UserData } from '../../../../frontend/hooks/useAccount'
 import UserProfileDetailViewRow from './UserProfileDetailViewRow'
 
 interface UserProfileDetailViewProps {
   userData: UserData
 }
 
+const postalCodeFormat = (code: string): string => `${code?.slice(0, 3)} ${code?.slice(3)}`
+
 const UserProfileDetailView = ({ userData }: UserProfileDetailViewProps) => {
   const { t } = useTranslation('account')
-  const postalCodeFormat = (code: string): string => `${code?.slice(0, 3)} ${code?.slice(3)}`
   const { given_name, family_name, email, phone_number, address } = userData
   const fullName = `${given_name ?? ''} ${family_name ?? ''}`
   const fullAddress = address

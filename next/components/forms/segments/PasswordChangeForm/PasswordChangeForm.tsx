@@ -1,10 +1,11 @@
-import { AccountError } from '@utils/useAccount'
-import useHookForm from '@utils/useHookForm'
 import AccountErrorAlert from 'components/forms/segments/AccountErrorAlert/AccountErrorAlert'
 import Button from 'components/forms/simple-components/Button'
 import PasswordField from 'components/forms/widget-components/PasswordField/PasswordField'
 import { useTranslation } from 'next-i18next'
 import { Controller } from 'react-hook-form'
+
+import { AccountError } from '../../../../frontend/hooks/useAccount'
+import useHookForm from '../../../../frontend/hooks/useHookForm'
 
 interface Data {
   oldPassword: string
@@ -109,7 +110,7 @@ const PasswordChangeForm = ({ onSubmit, error }: Props) => {
       <Button
         className="min-w-full"
         type="submit"
-        text={t('password_change_submit')}
+        text={t('old_password_submit_new')}
         variant="category"
         disabled={isSubmitting}
       />

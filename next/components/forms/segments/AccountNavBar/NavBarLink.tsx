@@ -13,7 +13,7 @@ interface IProps {
   variant?: 'primary' | 'plain'
 }
 
-export const Link = ({
+const Link = ({
   className,
   href,
   target,

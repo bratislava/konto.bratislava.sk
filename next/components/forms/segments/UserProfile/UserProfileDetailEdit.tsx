@@ -1,11 +1,12 @@
-import { UserData } from '@utils/useAccount'
-import useHookForm from '@utils/useHookForm'
 import cx from 'classnames'
 import Button from 'components/forms/simple-components/Button'
 import InputField from 'components/forms/widget-components/InputField/InputField'
 import { isValidPhoneNumber } from 'libphonenumber-js'
 import { useTranslation } from 'next-i18next'
 import { Controller } from 'react-hook-form'
+
+import { UserData } from '../../../../frontend/hooks/useAccount'
+import useHookForm from '../../../../frontend/hooks/useHookForm'
 
 interface Data {
   email: string
@@ -88,7 +89,7 @@ const UserProfileDetailEdit = (props: UserProfileDetailEditProps) => {
         address: {
           street_address: data.street_address,
           locality: data.city,
-          postal_code: data.postal_code,
+          postal_code: data.postal_code.replaceAll(' ', ''),
         },
       }
       return onSubmit(newUserData)

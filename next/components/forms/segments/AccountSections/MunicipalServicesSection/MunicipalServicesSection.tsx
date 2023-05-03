@@ -1,5 +1,5 @@
-import AdministrationIcon from '@assets/images/new-icons/other/city-bratislava/city-administration.svg'
 import TaxesIcon from '@assets/images/new-icons/other/city-bratislava/taxes.svg'
+import CulturalOrganizationIcon from '@assets/images/new-icons/other/culture-communities/cultural-organizations.svg'
 import TheatreIcon from '@assets/images/new-icons/other/culture-communities/events-support.svg'
 import LibraryIcon from '@assets/images/new-icons/other/culture-communities/library.svg'
 import ZooIcon from '@assets/images/new-icons/other/culture-communities/zoo.svg'
@@ -18,7 +18,6 @@ import ExcavationsIcon from '@assets/images/new-icons/other/transport-and-maps/e
 import ParkingIcon from '@assets/images/new-icons/other/transport-and-maps/parking.svg'
 import TowIcon from '@assets/images/new-icons/other/transport-and-maps/towing.svg'
 import ChristmasTreeIcon from '@assets/images/new-icons/other/tree.svg'
-import { ROUTES } from '@utils/constants'
 import Alert from 'components/forms/info-components/Alert'
 import MunicipalServicesSectionHeader from 'components/forms/segments/AccountSectionHeader/MunicipalServicesSectionHeader'
 import Pagination from 'components/forms/simple-components/Pagination/Pagination'
@@ -27,7 +26,8 @@ import { useTranslation } from 'next-i18next'
 import { ReactNode, useState } from 'react'
 import { useWindowSize } from 'usehooks-ts'
 
-import { SelectOption } from '../../../widget-components/SelectField/SelectField'
+import { ROUTES } from '../../../../../frontend/api/constants'
+import { SelectOption } from '../../../widget-components/SelectField/SelectOption.interface'
 
 const ALL_CATEGORY = 'Všetky kategórie'
 const TAXES_CATEGORY = 'Dane'
@@ -201,6 +201,14 @@ const MunicipalServicesSection = () => {
       icon: <MosquitoIcon className="w-10 h-10 lg:w-12 lg:h-12 text-environment-700" />,
       category: [JOIN_CATEGORY],
       href: 'https://lovcikomarov.sk/',
+    },
+    {
+      title: t('account_section_services.cards.33.title'),
+      description: t('account_section_services.cards.33.description'),
+      buttonText: t('account_section_services.cards.33.buttonText'),
+      icon: <CulturalOrganizationIcon className="w-10 h-10 lg:w-12 lg:h-12 text-culture-700" />,
+      category: [CULTURE_CATEGORY],
+      href: 'https://gmb.sk/detail/online-predaj-vstupeniek-do-gmb',
     },
     // {
     //   title: t('account_section_services.cards.16.title'),

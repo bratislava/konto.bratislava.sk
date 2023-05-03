@@ -1,3 +1,4 @@
+import BannerPhone from '@assets/images/banner-phone.png'
 import React from 'react'
 
 import Banner from '../../forms/simple-components/Banner'
@@ -13,6 +14,7 @@ const BannerShowCase = () => {
             incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud
             exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat."
           title="Banner Headline"
+          image={BannerPhone}
           onPress={() => {
             alert('Button was pressed')
           }}

@@ -1,8 +1,8 @@
-import logger from '@utils/logger'
 import formidable, { PersistentFile } from 'formidable'
 import { NextApiRequest, NextApiResponse } from 'next'
 
 import minioClient, { bucketName, region } from '../../../backend/utils/minio-client'
+import logger from '../../../frontend/utils/logger'
 
 export const config = {
   api: {
@@ -38,12 +38,13 @@ const parseFormidableFile = async (req: NextApiRequest): Promise<UploadedFileInf
   return JSON.parse(JSON.stringify(data.files.file)) as UploadedFileInfo
 }
 
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 const handleBucketCreation = async () => {
   const isBucketExisting = await minioClient.bucketExists(bucketName)
   if (!isBucketExisting) {
     await minioClient
       .makeBucket(bucketName, region)
-      .then(() => console.log(`Bucket ${bucketName} created successfully in ${region}`))
+      .then(() => logger.info(`Bucket ${bucketName} created successfully in ${region}`))
   }
 }
 

@@ -1,10 +1,11 @@
-import { AccountError, Address } from '@utils/useAccount'
-import useHookForm from '@utils/useHookForm'
 import AccountErrorAlert from 'components/forms/segments/AccountErrorAlert/AccountErrorAlert'
 import Button from 'components/forms/simple-components/Button'
 import InputField from 'components/forms/widget-components/InputField/InputField'
 import { useTranslation } from 'next-i18next'
 import { Controller } from 'react-hook-form'
+
+import { AccountError, Address } from '../../../../frontend/hooks/useAccount'
+import useHookForm from '../../../../frontend/hooks/useHookForm'
 
 const schema = {
   type: 'object',
@@ -55,7 +56,13 @@ const CorrespondenceAddressForm = ({ error, onHideError, onSubmit, defaultValues
   return (
     <form
       className="flex flex-col space-y-4 w-full"
-      onSubmit={handleSubmit((data: Address) => onSubmit({ data }))}
+      onSubmit={handleSubmit((data: Address) => {
+        const modifyData: Address = {
+          ...data,
+          postal_code: data.postal_code.replaceAll(' ', ''),
+        }
+        return onSubmit({ data: modifyData })
+      })}
     >
       <p className="text-p3 lg:text-p2">{t('correspondece_address_description')}</p>
       <AccountErrorAlert error={error} close={onHideError} solid />

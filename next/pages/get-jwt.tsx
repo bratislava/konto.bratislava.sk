@@ -1,10 +1,3 @@
-// this is non-production code
-// disabling eslint/ts checks instead of fixing them
-// @ts-nocheck
-import { resetRcApi } from '@utils/api'
-import { ROUTES } from '@utils/constants'
-import { AsyncServerProps } from '@utils/types'
-import useAccount from '@utils/useAccount'
 import Button from 'components/forms/simple-components/Button'
 import PageWrapper from 'components/layouts/PageWrapper'
 import { Wrapper } from 'components/styleguide/Wrapper'
@@ -13,9 +6,17 @@ import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
 import { useState } from 'react'
 import { useEffectOnce } from 'usehooks-ts'
 
-const signUpParams = [
+import { resetRcApi } from '../frontend/api/api'
+import { ROUTES } from '../frontend/api/constants'
+import useAccount, { UserData } from '../frontend/hooks/useAccount'
+import logger from '../frontend/utils/logger'
+import { AsyncServerProps } from '../frontend/utils/types'
+
+const signUpParams: [string, string, boolean, string, UserData] = [
   'test@mail.com',
   'Qwert12345!',
+  true,
+  '',
   {
     given_name: 'Test',
     family_name: 'Test',
@@ -33,7 +34,7 @@ const GetJwt = ({ page }: AsyncServerProps<typeof getServerSideProps>) => {
         setAccessToken(token)
       }
     })().catch((error) => {
-      console.log(error)
+      logger.error(error)
     })
   })
 
@@ -41,9 +42,9 @@ const GetJwt = ({ page }: AsyncServerProps<typeof getServerSideProps>) => {
     try {
       await resetRcApi(accessToken)
       const res = await updateUserData({ tier: null })
-      alert(`Res: ${res}`)
+      alert(`Res: ${JSON.stringify(res)}`)
     } catch (error) {
-      console.log(error)
+      logger.error(error)
       alert(`ERROR`)
     }
   }

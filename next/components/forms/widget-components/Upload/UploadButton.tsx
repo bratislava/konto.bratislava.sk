@@ -3,6 +3,8 @@ import { UploadMinioFile } from '@backend/dtos/minio/upload-minio-file.dto'
 import cx from 'classnames'
 import React, { ForwardedRef, forwardRef, ForwardRefRenderFunction } from 'react'
 
+import { handleOnKeyPress } from '../../../../frontend/utils/general'
+
 interface UploadButtonProps {
   value?: UploadMinioFile[]
   disabled?: boolean
@@ -43,17 +45,18 @@ const UploadButtonComponent: ForwardRefRenderFunction<HTMLDivElement, UploadButt
     'min-w-40': supportedFormats || sizeLimit,
   })
 
-  // EVENT HANDLERS
-  const handleOnClick = () => {
-    if (onClick) {
-      onClick()
-    }
-  }
-
   // RENDER
   return (
     <div className="flex flex-row gap-4 w-fit h-fit">
-      <div className={buttonClassNames} onClick={handleOnClick} ref={ref} data-value={value}>
+      <div
+        role="button"
+        tabIndex={0}
+        ref={ref}
+        data-value={value}
+        className={buttonClassNames}
+        onClick={onClick}
+        onKeyPress={(event: React.KeyboardEvent) => handleOnKeyPress(event, onClick)}
+      >
         <div className="w-full flex gap-2">
           <div className="h-6 w-6 flex justify-center items-center">
             <UploadIcon className="w-6 h-6" />

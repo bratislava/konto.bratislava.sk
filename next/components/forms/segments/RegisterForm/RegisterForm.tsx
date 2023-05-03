@@ -1,5 +1,3 @@
-import { AccountError, UserData } from '@utils/useAccount'
-import useHookForm from '@utils/useHookForm'
 import AccountErrorAlert from 'components/forms/segments/AccountErrorAlert/AccountErrorAlert'
 import AccountMarkdown from 'components/forms/segments/AccountMarkdown/AccountMarkdown'
 import LoginAccountLink from 'components/forms/segments/LoginAccountLink/LoginAccountLink'
@@ -10,9 +8,15 @@ import PasswordField from 'components/forms/widget-components/PasswordField/Pass
 import Radio from 'components/forms/widget-components/RadioButton/Radio'
 import RadioGroup from 'components/forms/widget-components/RadioButton/RadioGroup'
 import { useTranslation } from 'next-i18next'
+import { useState } from 'react'
 import { Controller } from 'react-hook-form'
 import Turnstile from 'react-turnstile'
 import { useCounter, useWindowSize } from 'usehooks-ts'
+
+import { AccountError, UserData } from '../../../../frontend/hooks/useAccount'
+import useHookForm from '../../../../frontend/hooks/useHookForm'
+import { isBrowser } from '../../../../frontend/utils/general'
+import logger from '../../../../frontend/utils/logger'
 
 interface Data {
   email: string
@@ -121,7 +125,7 @@ const schema = {
 
 const RegisterForm = ({ onSubmit, error, lastEmail }: Props) => {
   const { t } = useTranslation('account')
-  const turnstileKeyCounter = useCounter()
+  const { count: captchaKey, increment: incrementCaptchaKey } = useCounter(0)
   const {
     handleSubmit,
     control,
@@ -141,6 +145,12 @@ const RegisterForm = ({ onSubmit, error, lastEmail }: Props) => {
       marketingConfirmation: false,
     },
   })
+  const [captchaWarning, setCaptchaWarning] = useState<'loading' | 'show' | 'hide'>('loading')
+
+  useTimeout(() => {
+    if (!isBrowser() || captchaWarning === 'hide') return
+    setCaptchaWarning('show')
+  }, 3000)
 
   const { width } = useWindowSize()
   const isMobile = width < 768
@@ -157,9 +167,8 @@ const RegisterForm = ({ onSubmit, error, lastEmail }: Props) => {
           name: data.name,
           account_type: data.account_type,
         }
-
-        // force turnstile rerender as it's always available just for a single request
-        turnstileKeyCounter.increment()
+        // force rerender on submit - captcha is valid only for single submit
+        incrementCaptchaKey()
         return onSubmit(
           data.email,
           data.password,
@@ -302,15 +311,33 @@ const RegisterForm = ({ onSubmit, error, lastEmail }: Props) => {
         name="turnstileToken"
         control={control}
         render={({ field: { onChange } }) => (
-          <Turnstile
-            key={turnstileKeyCounter.count}
-            sitekey={process.env.NEXT_PUBLIC_CLOUDFLARE_TURNSTILE_SITE_KEY}
-            onVerify={(token) => onChange(token)}
-            onError={() => onChange(null)}
-            onTimeout={() => onChange(null)}
-            onExpire={() => onChange(null)}
-            className="mb-2"
-          />
+          <>
+            <Turnstile
+              theme="light"
+              key={captchaKey}
+              sitekey={process.env.NEXT_PUBLIC_CLOUDFLARE_TURNSTILE_SITE_KEY}
+              onVerify={(token) => {
+                setCaptchaWarning('hide')
+                onChange(token)
+              }}
+              onError={(error) => {
+                logger.error('Turnstile error:', error)
+                setCaptchaWarning('show')
+                return onChange(null)
+              }}
+              onTimeout={() => {
+                logger.error('Turnstile timeout')
+                setCaptchaWarning('show')
+                onChange(null)
+              }}
+              onExpire={() => {
+                logger.warn('Turnstile expire - should refresh automatically')
+                onChange(null)
+              }}
+              className="mb-2 self-center"
+            />
+            {captchaWarning === 'show' && <p className="text-p3 italic">{t('captcha_warning')}</p>}
+          </>
         )}
       />
       <Button

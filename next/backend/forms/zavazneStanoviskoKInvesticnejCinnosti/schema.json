@@ -7,20 +7,38 @@
   "allOf": [
     {
       "properties": {
+        "prilohy": {
+          "type": "object",
+          "title": "Prílohy",
+          "properties": {
+            "projektovaDokumentacia": {
+              "type": "array",
+              "title": "Projektová dokumentácia",
+              "items": {
+                "type": "string",
+                "format": "file"
+              }
+            }
+          },
+          "required": ["projektovaDokumentacia"]
+        }
+      }
+    },
+    {
+      "properties": {
         "ziadatel": {
           "type": "object",
           "title": "Žiadateľ",
+          "properties": {
+            "ziatetelTyp": {
+              "title": "Žiadate ako",
+              "type": "string",
+              "default": "Fyzická osoba",
+              "enum": ["Fyzická osoba", "Fyzická osoba - podnikateľ", "Právnicka osoba"]
+            }
+          },
+          "required": ["ziatetelTyp"],
           "allOf": [
-            {
-              "properties": {
-                "ziatetelTyp": {
-                  "title": "Žiadate ako",
-                  "type": "string",
-                  "enum": ["Fyzická osoba", "Fyzická osoba - podnikateľ", "Právnicka osoba"]
-                }
-              },
-              "required": ["ziatetelTyp"]
-            },
             {
               "if": {
                 "properties": {
@@ -198,16 +216,15 @@
         "investor": {
           "type": "object",
           "title": "Investor",
+          "properties": {
+            "investorZiadatelom": {
+              "title": "Je investor rovnaká osoba ako žiadateľ?",
+              "type": "boolean",
+              "default": true
+            }
+          },
+          "required": ["investorZiadatelom"],
           "allOf": [
-            {
-              "properties": {
-                "investorZiadatelom": {
-                  "title": "Je investor rovnaká osoba ako žiadateľ?",
-                  "type": "boolean"
-                }
-              },
-              "required": ["investorZiadatelom"]
-            },
             {
               "if": {
                 "properties": {
@@ -223,7 +240,7 @@
                     "title": "Splnomocnenie na zastupovanie",
                     "items": {
                       "type": "string",
-                      "format": "data-url"
+                      "format": "file"
                     }
                   }
                 },
@@ -247,12 +264,13 @@
                         "title": "Splnomocnenie na zastupovanie",
                         "items": {
                           "type": "string",
-                          "format": "data-url"
+                          "format": "file"
                         }
                       },
                       "investorTyp": {
                         "title": "Typ investora",
                         "type": "string",
+                        "default": "Fyzická osoba",
                         "enum": ["Fyzická osoba", "Fyzická osoba - podnikateľ", "Právnicka osoba"]
                       }
                     },
@@ -488,6 +506,7 @@
             "stavbaDruh": {
               "type": "string",
               "title": "Druh stavby",
+              "default": "Bytový dom",
               "enum": [
                 "Bytový dom",
                 "Rodinný dom",
@@ -515,7 +534,89 @@
               "type": "array",
               "uniqueItems": true,
               "items": {
-                "type": "string"
+                "type": "string",
+                "oneOf": [
+                  {
+                    "const": "Čuňovo",
+                    "title": "Čuňovo"
+                  },
+                  {
+                    "const": "Devín",
+                    "title": "Devín"
+                  },
+                  {
+                    "const": "Devínska Nová Ves",
+                    "title": "Devínska Nová Ves"
+                  },
+                  {
+                    "const": "Dúbravka",
+                    "title": "Dúbravka"
+                  },
+                  {
+                    "const": "Jarovce",
+                    "title": "Jarovce"
+                  },
+                  {
+                    "const": "Karlova Ves",
+                    "title": "Karlova Ves"
+                  },
+                  {
+                    "const": "Lamač",
+                    "title": "Lamač"
+                  },
+                  {
+                    "const": "Nivy",
+                    "title": "Nivy"
+                  },
+                  {
+                    "const": "Nové Mesto",
+                    "title": "Nové Mesto"
+                  },
+                  {
+                    "const": "Petržalka",
+                    "title": "Petržalka"
+                  },
+                  {
+                    "const": "Podunajské Biskupice",
+                    "title": "Podunajské Biskupice"
+                  },
+                  {
+                    "const": "Rača",
+                    "title": "Rača"
+                  },
+                  {
+                    "const": "Rusovce",
+                    "title": "Rusovce"
+                  },
+                  {
+                    "const": "Ružinov",
+                    "title": "Ružinov"
+                  },
+                  {
+                    "const": "Staré mesto",
+                    "title": "Staré mesto"
+                  },
+                  {
+                    "const": "Trnávka",
+                    "title": "Trnávka"
+                  },
+                  {
+                    "const": "Vajnory",
+                    "title": "Vajnory"
+                  },
+                  {
+                    "const": "Vinohrady",
+                    "title": "Vinohrady"
+                  },
+                  {
+                    "const": "Vrakuňa",
+                    "title": "Vrakuňa"
+                  },
+                  {
+                    "const": "Záhorská Bystrica",
+                    "title": "Záhorská Bystrica"
+                  }
+                ]
               }
             }
           },
@@ -534,32 +635,27 @@
         "konanie": {
           "type": "object",
           "title": "Typ konania na stavebnom úrade",
+          "properties": {
+            "konanieTyp": {
+              "title": "Typ konania",
+              "type": "string",
+              "default": "Územné konanie",
+              "enum": [
+                "Územné konanie",
+                "Územné konanie spojené so stavebným konaním",
+                "Zmena stavby pred dokončením",
+                "Zmena v užívaní stavby",
+                "Konanie o dodatočnom povolení stavby"
+              ]
+            }
+          },
+          "required": ["konanieTyp"],
           "allOf": [
-            {
-              "properties": {
-                "konanieTyp": {
-                  "title": "Typ konania",
-                  "type": "string",
-                  "enum": [
-                    "Územné konanie",
-                    "Územné konanie spojené so stavebným konaním",
-                    "Zmena stavby pred dokončením",
-                    "Zmena v užívaní stavby",
-                    "Konanie o dodatočnom povolení stavby"
-                  ]
-                }
-              },
-              "required": ["konanieTyp"]
-            },
             {
               "if": {
                 "properties": {
                   "konanieTyp": {
-                    "oneOf": [
-                      {
-                        "const": "Konanie o dodatočnom povolení stavby"
-                      }
-                    ]
+                    "const": "Konanie o dodatočnom povolení stavby"
                   }
                 }
               },
@@ -568,111 +664,49 @@
                   "ziadostOdovodnenie": {
                     "type": "string",
                     "title": "Upresnenie konania",
+                    "default": "Realizácia stavby, resp. jej úprav bez akéhokoľvek povolenia",
                     "enum": [
                       "Realizácia stavby, resp. jej úprav bez akéhokoľvek povolenia",
                       "Dodatočné povolenie zmeny stavby pred dokončením"
                     ]
                   }
                 },
+                "allOf": [
+                  {
+                    "if": {
+                      "properties": {
+                        "ziadostOdovodnenie": {
+                          "const": "Dodatočné povolenie zmeny stavby pred dokončením"
+                        }
+                      }
+                    },
+                    "then": {
+                      "properties": {
+                        "stavbaFotodokumentacia": {
+                          "type": "array",
+                          "title": "Fotodokumentácia stavby",
+                          "items": {
+                            "type": "string",
+                            "format": "file"
+                          }
+                        },
+                        "stavbaPisomnosti": {
+                          "type": "array",
+                          "title": "Relevantné písomnosti súvisiace so stavbou",
+                          "items": {
+                            "type": "string",
+                            "format": "file"
+                          }
+                        }
+                      },
+                      "required": ["stavbaFotodokumentacia", "stavbaPisomnosti"]
+                    }
+                  }
+                ],
                 "required": ["ziadostOdovodnenie"]
-              }
-            },
-            {
-              "if": {
-                "properties": {
-                  "ziadostOdovodnenie": {
-                    "const": "Dodatočné povolenie zmeny stavby pred dokončením"
-                  }
-                }
-              },
-              "then": {
-                "properties": {
-                  "stavbaFotodokumentacia": {
-                    "type": "array",
-                    "title": "Fotodokumentácia stavby",
-                    "items": {
-                      "type": "string",
-                      "format": "data-url"
-                    }
-                  }
-                },
-                "required": ["stavbaFotodokumentacia"]
-              }
-            },
-            {
-              "if": {
-                "properties": {
-                  "ziadostOdovodnenie": {
-                    "const": "Dodatočné povolenie zmeny stavby pred dokončením"
-                  }
-                }
-              },
-              "then": {
-                "properties": {
-                  "stavbaPisomnosti": {
-                    "type": "array",
-                    "title": "Relevantné písomnosti súvisiace so stavbou",
-                    "items": {
-                      "type": "string",
-                      "format": "data-url"
-                    }
-                  }
-                },
-                "required": ["stavbaPisomnosti"]
               }
             }
           ]
-        }
-      }
-    },
-    {
-      "properties": {
-        "prilohy": {
-          "type": "object",
-          "title": "Prílohy",
-          "properties": {
-            "projektovaDokumentacia": {
-              "type": "array",
-              "title": "Projektová dokumentácia",
-              "items": {
-                "type": "string",
-                "format": "data-url"
-              }
-            },
-            "vykresy": {
-              "type": "array",
-              "title": "Iné výkresy situácií",
-              "items": {
-                "type": "string",
-                "format": "data-url"
-              }
-            },
-            "ulicnyPohlad": {
-              "type": "array",
-              "title": "Uličný pohľad so záberom najbližších stavieb",
-              "items": {
-                "type": "string",
-                "format": "data-url"
-              }
-            },
-            "podzemnePodlazie": {
-              "type": "array",
-              "title": "Vyhodnotenie podzemného podlažia pri bytových budovách",
-              "items": {
-                "type": "string",
-                "format": "data-url"
-              }
-            },
-            "vyjadrenieUradu": {
-              "type": "array",
-              "title": "Vyjadrenie Krajského pamiatkového úradu",
-              "items": {
-                "type": "string",
-                "format": "data-url"
-              }
-            }
-          },
-          "required": ["projektovaDokumentacia"]
         }
       }
     }

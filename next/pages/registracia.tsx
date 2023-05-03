@@ -1,7 +1,3 @@
-import { ROUTES } from '@utils/constants'
-import { formatUnicorn } from '@utils/string'
-import { AsyncServerProps } from '@utils/types'
-import useAccount, { AccountStatus } from '@utils/useAccount'
 import AccountActivator from 'components/forms/segments/AccountActivator/AccountActivator'
 import AccountContainer from 'components/forms/segments/AccountContainer/AccountContainer'
 import AccountMarkdown from 'components/forms/segments/AccountMarkdown/AccountMarkdown'
@@ -10,12 +6,17 @@ import EmailVerificationForm from 'components/forms/segments/EmailVerificationFo
 import RegisterForm from 'components/forms/segments/RegisterForm/RegisterForm'
 import LoginRegisterLayout from 'components/layouts/LoginRegisterLayout'
 import { GetServerSidePropsContext } from 'next'
+import { useRouter } from 'next/router'
 import { useTranslation } from 'next-i18next'
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
-import { useRouter } from 'next/router'
 
 import PageWrapper from '../components/layouts/PageWrapper'
-import { isProductionDeployment } from '../utils/utils'
+import { ROUTES } from '../frontend/api/constants'
+import useAccount, { AccountStatus } from '../frontend/hooks/useAccount'
+import { isProductionDeployment } from '../frontend/utils/general'
+import logger from '../frontend/utils/logger'
+import { formatUnicorn } from '../frontend/utils/string'
+import { AsyncServerProps } from '../frontend/utils/types'
 
 export const getServerSideProps = async (ctx: GetServerSidePropsContext) => {
   const locale = ctx.locale ?? 'sk'
@@ -31,7 +32,7 @@ export const getServerSideProps = async (ctx: GetServerSidePropsContext) => {
             locale: l,
           })),
       },
-      isProductionDeployment: isProductionDeployment(),
+      isProductionDeploy: isProductionDeployment(),
       ...(await serverSideTranslations(locale)),
     },
   }
@@ -66,7 +67,9 @@ const RegisterPage = ({ page }: AsyncServerProps<typeof getServerSideProps>) => 
               confirmLabel={t('identity_verification_link')}
               onConfirm={() => {
                 setStatus(AccountStatus.IdentityVerificationRequired)
-                router.push(ROUTES.IDENTITY_VERIFICATION)
+                router
+                  .push(ROUTES.IDENTITY_VERIFICATION)
+                  .catch((error_) => logger.error('Failed redirect', error_))
               }}
               cancelLabel={t('identity_verification_skip')}
               onCancel={() =>

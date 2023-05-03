@@ -7,7 +7,9 @@ import {
   xmlToJson,
 } from '@backend/utils/forms'
 import { describe } from '@jest/globals'
-import { JsonSchema } from '../../frontend/forms'
+
+import { JsonSchema } from '../../frontend/utils/formStepperData'
+
 
 const xsd =
   '<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema"><xs:element name="comment"><xs:complexType><xs:all><xs:element name="author" type="xs:string"/><xs:element name="content" type="xs:string"/></xs:all></xs:complexType></xs:element></xs:schema>'

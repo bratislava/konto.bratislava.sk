@@ -6,7 +6,7 @@ import useSWR from 'swr'
 import { getTaxApi } from '../api/api'
 import { TaxApiError } from '../api/data'
 import { Tax, TaxJSONSchema } from '../dtos/taxDto'
-import { ajvFormats, ajvKeywords } from '../forms'
+import { ajvFormats, ajvKeywords } from '../utils/formStepperData'
 import logger from '../utils/logger'
 import useAccount from './useAccount'
 

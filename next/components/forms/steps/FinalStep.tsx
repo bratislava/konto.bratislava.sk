@@ -2,7 +2,7 @@ import { ErrorSchema, RJSFValidationError, StrictRJSFSchema } from '@rjsf/utils'
 import { ErrorObject } from 'ajv'
 import { useTranslation } from 'next-i18next'
 
-import { JsonSchema } from '../../../frontend/forms'
+import { JsonSchema } from '../../../frontend/utils/formStepperData'
 import Summary from './Summary/Summary'
 import SummaryMessages from './Summary/SummaryMessages'
 

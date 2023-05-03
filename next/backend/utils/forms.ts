@@ -9,12 +9,8 @@ import { dropRight, find, last } from 'lodash'
 import { parseStringPromise } from 'xml2js'
 import { firstCharLowerCase } from 'xml2js/lib/processors'
 
-import {
-  ajvFormats,
-  ajvKeywords,
-  getAllPossibleJsonSchemaProperties,
-  JsonSchema,
-} from '../../frontend/forms'
+import { getAllPossibleJsonSchemaProperties } from '../../frontend/utils/formStepper'
+import { ajvFormats, ajvKeywords, JsonSchema } from '../../frontend/utils/formStepperData'
 import { forceString } from '../../frontend/utils/general'
 import logger from '../../frontend/utils/logger'
 

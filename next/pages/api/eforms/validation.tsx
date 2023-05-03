@@ -1,7 +1,8 @@
 import { AnySchemaObject } from 'ajv/dist/types'
 import type { NextApiRequest, NextApiResponse } from 'next'
 
-import { ajvKeywords } from '../../../frontend/forms'
+import { ajvKeywords } from '../../../frontend/utils/formStepperData'
+
 
 interface Body {
   parentSchema: AnySchemaObject

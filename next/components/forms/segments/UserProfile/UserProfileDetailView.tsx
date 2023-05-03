@@ -24,12 +24,12 @@ const UserProfileDetailView = ({ userData }: UserProfileDetailViewProps) => {
         } ${postalCodeFormat(address?.postal_code)} ${address?.locality}`
       : ''
     : ''
-  const nameLabel = account_type === 'po' ? 'profile_detail.business_name' : 'profile_detail.full_name'
+  const nameLabel = account_type === 'po' ? t('profile_detail.business_name') : t('profile_detail.full_name')
 
   return (
     <div className="flex flex-col grow gap-6">
       {/* <UserProfileDetailViewRow label={t('profile_detail.titles_before_name')} /> */}
-      <UserProfileDetailViewRow label={t(nameLabel)} value={fullName} />
+      <UserProfileDetailViewRow label={nameLabel} value={fullName} />
       {/* <UserProfileDetailViewRow label={t('profile_detail.titles_after_name')} /> */}
       <UserProfileDetailViewRow
         label={t('profile_detail.email')}

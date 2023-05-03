@@ -1,10 +1,10 @@
 import { UploadMinioFile } from '@backend/dtos/minio/upload-minio-file.dto'
 import { StrictRJSFSchema, WidgetProps } from '@rjsf/utils'
-import { FormRJSFContext } from '@utils/forms'
 import WidgetWrapper from 'components/forms/widget-wrappers/WidgetWrapper'
 import React, { useState } from 'react'
 import { useEffectOnce } from 'usehooks-ts'
 
+import { FormRJSFContext } from '../../../frontend/dtos/formStepperDto'
 import Upload from '../widget-components/Upload/Upload'
 import UploadRJSFOptions from '../widget-components/Upload/UploadRJSFOptions'
 

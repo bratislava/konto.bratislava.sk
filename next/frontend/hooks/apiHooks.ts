@@ -3,10 +3,11 @@ import addFormats from 'ajv-formats'
 import { useEffect } from 'react'
 import useSWR from 'swr'
 
-import { getTaxApi,TaxApiError } from './api'
-import { ajvFormats, ajvKeywords } from './forms'
-import logger from './logger'
-import { Tax, TaxJSONSchema } from './taxDto'
+import { getTaxApi } from '../api/api'
+import { ajvFormats, ajvKeywords } from '../dtos/formStepperDto'
+import { TaxApiError } from '../dtos/generalApiDto'
+import { Tax, TaxJSONSchema } from '../dtos/taxDto'
+import logger from '../utils/logger'
 import useAccount from './useAccount'
 
 // TODO test for no tax, not yet tax, legit tax unpaid, partially paid, paid

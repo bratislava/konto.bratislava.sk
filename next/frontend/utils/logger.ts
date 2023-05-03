@@ -6,7 +6,7 @@ import {
 } from '@grafana/faro-web-sdk'
 import { ILogObj, Logger } from 'tslog'
 
-import { isBrowser, isProductionDeployment } from './utils'
+import { isBrowser, isProductionDeployment } from './general'
 
 let mutableLogger: Logger<ILogObj>
 let mutableFaro: Faro

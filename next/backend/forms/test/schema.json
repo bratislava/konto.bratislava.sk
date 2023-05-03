@@ -270,6 +270,12 @@
                 }
               ]
             },
+            "street": {
+              "type": "string",
+              "title": "Street (ciselnik)",
+              "format": "ciselnik",
+              "ciselnik": { "id": "POST_STREET" }
+            },
             "city": {
               "type": "string",
               "title": "City (ciselnik)",

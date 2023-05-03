@@ -6,9 +6,6 @@
 /* eslint-disable no-alert */
 /* eslint-disable no-restricted-syntax */
 // @ts-nocheck
-import logger from '@utils/logger'
-import { AsyncServerProps } from '@utils/types'
-import { isProductionDeployment } from '@utils/utils'
 import {
   AuthenticationDetails,
   CognitoUser,
@@ -23,6 +20,10 @@ import { Wrapper } from 'components/styleguide/Wrapper'
 import { GetServerSidePropsContext } from 'next'
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
 import { useEffect, useState } from 'react'
+
+import { isProductionDeployment } from '../frontend/utils/general'
+import logger from '../frontend/utils/logger'
+import { AsyncServerProps } from '../frontend/utils/types'
 
 const TEST_USER_POOL_ID = 'eu-central-1_FZDV0j2ZK'
 const TEST_CLIENT_ID = '1pdeai19927kshpgikd6l1ptc6'

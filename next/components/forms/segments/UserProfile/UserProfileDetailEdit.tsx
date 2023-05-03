@@ -1,11 +1,12 @@
-import { UserData } from '@utils/useAccount'
-import useHookForm from '@utils/useHookForm'
 import cx from 'classnames'
 import Button from 'components/forms/simple-components/Button'
 import InputField from 'components/forms/widget-components/InputField/InputField'
 import { isValidPhoneNumber } from 'libphonenumber-js'
 import { useTranslation } from 'next-i18next'
 import { Controller } from 'react-hook-form'
+
+import { UserData } from '../../../../frontend/hooks/useAccount'
+import useHookForm from '../../../../frontend/hooks/useHookForm'
 
 interface Data {
   email?: string

@@ -1,6 +1,6 @@
-import { UserData } from '@utils/useAccount'
 import { useTranslation } from 'next-i18next'
 
+import { UserData } from '../../../../frontend/hooks/useAccount'
 import UserProfileDetailViewRow from './UserProfileDetailViewRow'
 
 interface UserProfileDetailViewProps {

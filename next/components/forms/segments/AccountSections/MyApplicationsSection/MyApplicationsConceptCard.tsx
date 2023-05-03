@@ -1,11 +1,12 @@
 import DownloadIcon from '@assets/images/new-icons/ui/download.svg'
 import ExportIcon from '@assets/images/new-icons/ui/export.svg'
-import { ROUTES } from '@utils/constants'
 import { MyApplicationsConceptCardBase } from 'components/forms/segments/AccountSections/MyApplicationsSection/MyApplicationsConceptList'
 import Button from 'components/forms/simple-components/Button'
 import Link from 'next/link'
 import { useRouter } from 'next/router'
 import { useTranslation } from 'next-i18next'
+
+import { ROUTES } from '../../../../../frontend/api/constants'
 
 const MyApplicationsConceptCard = (props: MyApplicationsConceptCardBase) => {
   const { title, subtitle, category, createDate } = props

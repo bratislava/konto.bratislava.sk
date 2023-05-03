@@ -1,9 +1,3 @@
-import { ROUTES } from '@utils/constants'
-import logger from '@utils/logger'
-import { formatUnicorn } from '@utils/string'
-import { AsyncServerProps } from '@utils/types'
-import useAccount, { AccountStatus } from '@utils/useAccount'
-import { isProductionDeployment } from '@utils/utils'
 import AccountContainer from 'components/forms/segments/AccountContainer/AccountContainer'
 import AccountSuccessAlert from 'components/forms/segments/AccountSuccessAlert/AccountSuccessAlert'
 import AccountVerificationPendingAlert from 'components/forms/segments/AccountVerificationPendingAlert/AccountVerificationPendingAlert'
@@ -16,6 +10,12 @@ import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
 import { useEffect, useState } from 'react'
 
 import PageWrapper from '../components/layouts/PageWrapper'
+import { ROUTES } from '../frontend/api/constants'
+import useAccount, { AccountStatus } from '../frontend/hooks/useAccount'
+import { isProductionDeployment } from '../frontend/utils/general'
+import logger from '../frontend/utils/logger'
+import { formatUnicorn } from '../frontend/utils/string'
+import { AsyncServerProps } from '../frontend/utils/types'
 
 export const getServerSideProps = async (ctx: GetServerSidePropsContext) => {
   const locale = ctx.locale ?? 'sk'

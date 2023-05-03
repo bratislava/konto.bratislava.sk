@@ -1,7 +1,8 @@
-import useAccount, { AccountStatus } from '@utils/useAccount'
 import Button from 'components/forms/simple-components/Button'
 import { useRouter } from 'next/router'
 import { useTranslation } from 'next-i18next'
+
+import useAccount, { AccountStatus } from '../../../frontend/hooks/useAccount'
 
 const IdentityVerificationStatus = () => {
   const { status } = useAccount()

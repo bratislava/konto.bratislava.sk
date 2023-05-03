@@ -11,7 +11,7 @@ import { useTranslation } from 'next-i18next'
 import { useState } from 'react'
 import { Controller } from 'react-hook-form'
 import Turnstile from 'react-turnstile'
-import { useCounter, useWindowSize } from 'usehooks-ts'
+import { useCounter, useTimeout, useWindowSize } from 'usehooks-ts'
 
 import { AccountError, UserData } from '../../../../frontend/hooks/useAccount'
 import useHookForm from '../../../../frontend/hooks/useHookForm'

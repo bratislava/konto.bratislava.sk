@@ -290,14 +290,3 @@ export const createTestFormData = (formData: RJSFSchema): RJSFSchema => {
   return newFormData
 }
 
-
-
-export const useFormRJSFContextMemo = (eform: EFormValue, formId?: string) => {
-  return useMemo(() => {
-    const { schema } = eform
-    return {
-      bucketFolderName:
-        formId && schema?.pospID ? `/${String(schema.pospID)}/${formId}` : undefined,
-    }
-  }, [eform, formId])
-}

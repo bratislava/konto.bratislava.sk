@@ -6,8 +6,6 @@
 /* eslint-disable no-alert */
 /* eslint-disable no-restricted-syntax */
 // @ts-nocheck
-import { AsyncServerProps } from '@utils/types'
-import { isProductionDeployment } from '@utils/utils'
 import {
   AuthenticationDetails,
   CognitoUser,
@@ -22,6 +20,10 @@ import { Wrapper } from 'components/styleguide/Wrapper'
 import { GetServerSidePropsContext } from 'next'
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
 import { useEffect, useState } from 'react'
+
+import { isProductionDeployment } from '../frontend/utils/general'
+import logger from '../frontend/utils/logger'
+import { AsyncServerProps } from '../frontend/utils/types'
 
 const TEST_USER_POOL_ID = 'eu-central-1_FZDV0j2ZK'
 const TEST_CLIENT_ID = '1pdeai19927kshpgikd6l1ptc6'
@@ -48,7 +50,7 @@ const CognitoPrototype = ({ page }: AsyncServerProps<typeof getServerSideProps>)
   const [serializedUserData, setSerializedUserData] = useState('')
 
   const createUser = () => {
-    const attributeList = []
+    const attributeList: CognitoUserAttribute[] = []
 
     const dataEmail = {
       Name: 'email',
@@ -70,9 +72,9 @@ const CognitoPrototype = ({ page }: AsyncServerProps<typeof getServerSideProps>)
         alert(err.message || JSON.stringify(err))
         return
       }
-      const cognitoUser = result.user
-      alert(`user name is ${cognitoUser.getUsername()}`)
-      console.log(`user name is ${cognitoUser.getUsername()}`)
+
+      alert(`user name is ${result.user.getUsername()}`)
+      logger.log(`user name is ${result.user.getUsername()}`)
     })
   }
 
@@ -82,14 +84,14 @@ const CognitoPrototype = ({ page }: AsyncServerProps<typeof getServerSideProps>)
       Pool: userPool,
     }
 
-    const cognitoUser = new CognitoUser(userData)
-    cognitoUser.confirmRegistration(emailOtp, true, (err, result) => {
+    const newCognitoUser = new CognitoUser(userData)
+    newCognitoUser.confirmRegistration(emailOtp, true, (err, result) => {
       if (err) {
         alert(err.message || JSON.stringify(err))
         return
       }
-      alert(`call result: ${result}`)
-      console.log(`call result: ${result}`)
+      alert(`call result: ${JSON.stringify(result)}`)
+      logger.log(`call result: ${JSON.stringify(result)}`)
     })
   }
 
@@ -99,14 +101,14 @@ const CognitoPrototype = ({ page }: AsyncServerProps<typeof getServerSideProps>)
       Pool: userPool,
     }
 
-    const cognitoUser = new CognitoUser(userData)
-    cognitoUser.resendConfirmationCode((err, result) => {
+    const newCognitoUser = new CognitoUser(userData)
+    newCognitoUser.resendConfirmationCode((err, result) => {
       if (err) {
         alert(err.message || JSON.stringify(err))
         return
       }
-      alert(`call result: ${result}`)
-      console.log(`call result: ${result}`)
+      alert(`call result: ${JSON.stringify(result)}`)
+      logger.log(`call result: ${JSON.stringify(result)}`)
     })
   }
 
@@ -122,12 +124,12 @@ const CognitoPrototype = ({ page }: AsyncServerProps<typeof getServerSideProps>)
       Username: loginEmail,
       Pool: userPool,
     }
-    const cognitoUser = new CognitoUser(userData)
+    const newCognitoUser = new CognitoUser(userData)
 
-    cognitoUser.authenticateUser(authenticationDetails, {
+    newCognitoUser.authenticateUser(authenticationDetails, {
       onSuccess(result) {
         const accessToken = result.getAccessToken().getJwtToken()
-        console.log('accessToken', accessToken)
+        logger.log('accessToken', accessToken)
         // POTENTIAL: Region needs to be set if not already set previously elsewhere.
         AWS.config.region = 'eu-central-1'
 
@@ -144,11 +146,11 @@ const CognitoPrototype = ({ page }: AsyncServerProps<typeof getServerSideProps>)
         // refreshes credentials using AWS.CognitoIdentity.getCredentialsForIdentity()
         AWS.config.credentials.refresh((error) => {
           if (error) {
-            console.error(error)
+            logger.error(error)
           } else {
             // Instantiate aws sdk service objects now that the credentials have been updated.
             // example: var s3 = new AWS.S3();
-            console.log('Successfully logged!')
+            logger.info('Successfully logged!')
           }
         })
 
@@ -157,32 +159,36 @@ const CognitoPrototype = ({ page }: AsyncServerProps<typeof getServerSideProps>)
 
       onFailure(err) {
         alert(err.message || JSON.stringify(err))
-        console.log(err)
+        logger.error(err)
       },
 
       newPasswordRequired: (userAttributes, requiredAttributes) => {
         alert('newPasswordRequired', userAttributes, requiredAttributes)
-        console.log('newPasswordRequired', userAttributes, requiredAttributes)
+        logger.warn('newPasswordRequired', userAttributes, requiredAttributes)
       },
       mfaRequired: (challengeName, challengeParameters) => {
-        alert(`mfaRequired, ${challengeName}, ${challengeParameters}`)
-        console.log('mfaRequired', challengeName, challengeParameters)
+        alert(`mfaRequired, ${challengeName}, ${JSON.stringify(challengeParameters)}`)
+        logger.warn('mfaRequired', challengeName, challengeParameters)
       },
       totpRequired: (challengeName, challengeParameters) => {
-        alert(`totpRequired, ${challengeName}, ${challengeParameters}`)
-        console.log('totpRequired', challengeName, challengeParameters)
+        alert(`totpRequired, ${challengeName}, ${JSON.stringify(challengeParameters)}`)
+        logger.warn('totpRequired', challengeName, challengeParameters)
       },
       customChallenge: (challengeParameters) => {
-        alert(`customChallenge, ${challengeName}, ${challengeParameters}`)
-        console.log('customChallenge', challengeName, challengeParameters)
+        alert(
+          `customChallenge, ${JSON.stringify(challengeParameters)}, ${JSON.stringify(
+            challengeParameters,
+          )}`,
+        )
+        logger.warn('customChallenge', challengeName, challengeParameters)
       },
       mfaSetup: (challengeName, challengeParameters) => {
-        alert(`mfaSetup, ${challengeName}, ${challengeParameters}`)
-        console.log('mfaSetup', challengeName, challengeParameters)
+        alert(`mfaSetup, ${challengeName}, ${JSON.stringify(challengeParameters)}`)
+        logger.warn('mfaSetup', challengeName, challengeParameters)
       },
       selectMFAType: (challengeName, challengeParameters) => {
-        alert(`selectmfatype, ${challengeName}, ${challengeParameters}`)
-        console.log('selectmfatype', challengeName, challengeParameters)
+        alert(`selectmfatype, ${challengeName}, ${JSON.stringify(challengeParameters)}`)
+        logger.warn('selectmfatype', challengeName, challengeParameters)
       },
     })
   }
@@ -201,7 +207,7 @@ const CognitoPrototype = ({ page }: AsyncServerProps<typeof getServerSideProps>)
         }
         // JSON stringify pretty print obj
         setSerializedUserData(JSON.stringify(obj, null, 2))
-        console.log('obj', obj)
+        logger.info('obj', obj)
       })
     } else {
       setSerializedUserData('')
@@ -231,8 +237,8 @@ const CognitoPrototype = ({ page }: AsyncServerProps<typeof getServerSideProps>)
             alert(err.message || JSON.stringify(err))
             return
           }
-          alert(`call result: ${result}`)
-          console.log(`call result: ${result}`)
+          alert(`call result: ${JSON.stringify(result)}`)
+          logger.info(`call result: ${JSON.stringify(result)}`)
         },
       )
     }
@@ -243,7 +249,7 @@ const CognitoPrototype = ({ page }: AsyncServerProps<typeof getServerSideProps>)
     if (cognitoUser) {
       cognitoUser.getAttributeVerificationCode('phone_number', {
         onSuccess(result) {
-          console.log(`call result: ${result}`)
+          logger.info(`call result: ${JSON.stringify(result)}`)
         },
         onFailure(err) {
           alert(err.message || JSON.stringify(err))

@@ -1,10 +1,12 @@
-import { UserData } from '@utils/useAccount'
-import useHookForm from '@utils/useHookForm'
+import cx from 'classnames'
 import Button from 'components/forms/simple-components/Button'
 import InputField from 'components/forms/widget-components/InputField/InputField'
 import { isValidPhoneNumber } from 'libphonenumber-js'
 import { useTranslation } from 'next-i18next'
 import { Controller } from 'react-hook-form'
+
+import { UserData } from '../../../../frontend/hooks/useAccount'
+import useHookForm from '../../../../frontend/hooks/useHookForm'
 
 interface Data {
   email: string
@@ -87,7 +89,7 @@ const UserProfileDetailEdit = (props: UserProfileDetailEditProps) => {
         address: {
           street_address: data.street_address,
           locality: data.city,
-          postal_code: data.postal_code,
+          postal_code: data.postal_code.replaceAll(' ', ''),
         },
       }
       return onSubmit(newUserData)
@@ -135,7 +137,7 @@ const UserProfileDetailEdit = (props: UserProfileDetailEditProps) => {
         </div>
       </div>
       <div className="flex flex-row flex-wrap gap-4">
-        <div className="grow">
+        <div className={cx('grow w-full', 'md:w-fit')}>
           <Controller
             name="email"
             control={control}
@@ -161,7 +163,7 @@ const UserProfileDetailEdit = (props: UserProfileDetailEditProps) => {
         </div>
       </div>
       <div className="gap flex flex-wrap flex-row gap-x-6">
-        <div className="w-full md:w-1/2">
+        <div className="grow w-full md:w-fit">
           <Controller
             name="phone_number"
             control={control}
@@ -175,7 +177,7 @@ const UserProfileDetailEdit = (props: UserProfileDetailEditProps) => {
             )}
           />
         </div>
-        <div className="grow invisible h-0">
+        <div className="grow invisible h-0 w-full md:w-fit">
           <InputField label={t('profile_detail.phone_number')} />
         </div>
       </div>
@@ -208,7 +210,7 @@ const UserProfileDetailEdit = (props: UserProfileDetailEditProps) => {
             )}
           />
         </div>
-        <div className="w-52">
+        <div className={cx('w-full', 'md:w-52')}>
           <Controller
             name="postal_code"
             control={control}
@@ -222,6 +224,16 @@ const UserProfileDetailEdit = (props: UserProfileDetailEditProps) => {
             )}
           />
         </div>
+      </div>
+      <div className={cx('py-2', 'md:hidden')}>
+        <Button
+          variant="black"
+          size="sm"
+          text={t('profile_detail.save_edit_button')}
+          type="submit"
+          form={formId}
+          className="w-full"
+        />
       </div>
     </form>
   )

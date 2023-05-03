@@ -4,6 +4,8 @@ import ThankYouCard from 'components/forms/segments/AccountSections/ThankYouSect
 import Button from 'components/forms/simple-components/Button'
 import { useTranslation } from 'next-i18next'
 
+import { ROUTES } from '../../../../../frontend/api/constants'
+
 const ThankYouFormSection = () => {
   const { t } = useTranslation('account')
 
@@ -11,7 +13,7 @@ const ThankYouFormSection = () => {
     <div className="h-screen bg-gray-0 md:bg-gray-50 pt-16 md:pt-28 flex flex-col justify-between">
       <div className="flex flex-col">
         <ThankYouCard
-          status="success"
+          success
           title={t('thank_you.form_submit.title')}
           firstButtonTitle={t('thank_you.success.button_to_formular_text_2')}
           secondButtonTitle={t('thank_you.success.button_to_profil_text')}
@@ -21,19 +23,19 @@ const ThankYouFormSection = () => {
           <span className="text-p2 flex">
             <AccountMarkdown
               variant="sm"
-              content={`<span className='text-p2'>V prípade akýchkoľvek otázok nás neváhajte kontaktovať na adrese:</span> <span className="text-p2-semibold underline">info@bratislava.sk</span>`}
+              content={`<span className='text-p2'>${t('thank_you.subtitle_mail_info')}</span>.`}
             />
           </span>
           <div className="flex flex-col gap-3 mt-4 md:mt-6">
             <Button
-              label="Často kladené otázky"
-              href="/i-have-a-problem"
+              label={t('thank_you.button_faq_text')}
+              href={ROUTES.HELP}
               variant="link-black"
               size="sm"
             />
             <Button
-              label="Ochrana osobných údajov"
-              href="/ochrana-osobnych-udajov"
+              label={t('thank_you.button_privacy_text')}
+              href="https://bratislava.sk/ochrana-osobnych-udajov"
               variant="link-black"
               size="sm"
             />

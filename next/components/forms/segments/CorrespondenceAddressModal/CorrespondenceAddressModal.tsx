@@ -1,7 +1,10 @@
-import { AccountError, Address } from '@utils/useAccount'
 import CorrespondenceAddressForm from 'components/forms/segments/CorrespondenceAddressForm/CorrespondenceAddressForm'
 import Modal from 'components/forms/widget-components/Modals/Modal'
 import { useTranslation } from 'next-i18next'
+
+import { AccountError, Address } from '../../../../frontend/hooks/useAccount'
+
+/* eslint-disable @typescript-eslint/no-shadow */
 
 interface Props {
   show: boolean
@@ -38,3 +41,5 @@ const CorrespondenceAddressModal = ({
 }
 
 export default CorrespondenceAddressModal
+
+/* eslint-enable @typescript-eslint/no-shadow */

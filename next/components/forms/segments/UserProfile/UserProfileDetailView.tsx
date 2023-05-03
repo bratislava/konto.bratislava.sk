@@ -1,18 +1,27 @@
-import { UserData } from '@utils/useAccount'
 import { useTranslation } from 'next-i18next'
+
+import { UserData } from '../../../../frontend/hooks/useAccount'
 import UserProfileDetailViewRow from './UserProfileDetailViewRow'
 
 interface UserProfileDetailViewProps {
   userData: UserData
 }
 
+const postalCodeFormat = (code: string): string => `${code?.slice(0, 3)} ${code?.slice(3)}`
+
 const UserProfileDetailView = ({ userData }: UserProfileDetailViewProps) => {
   const { t } = useTranslation('account')
   const { given_name, family_name, email, phone_number, address } = userData
   const fullName = `${given_name ?? ''} ${family_name ?? ''}`
-  const fullAddress = `${address?.street_address ?? ''}${address?.street_address ? ', ' : ''}${
-    address?.locality ?? ''
-  }${address?.locality || address?.postal_code ? ' ' : ''}${address?.postal_code ?? ''}`
+  const fullAddress = address
+    ? address.street_address || address.postal_code || address.locality
+      ? `${
+          address?.street_address && (address?.postal_code || address?.locality)
+            ? `${address?.street_address},`
+            : address?.street_address
+        } ${postalCodeFormat(address?.postal_code)} ${address?.locality}`
+      : ''
+    : ''
   return (
     <div className="flex flex-col grow gap-6">
       {/* <UserProfileDetailViewRow label={t('profile_detail.titles_before_name')} /> */}

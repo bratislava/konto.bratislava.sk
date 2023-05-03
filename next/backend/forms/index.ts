@@ -6,6 +6,7 @@ import { RJSFSchema, UiSchema } from '@rjsf/utils'
 
 import dopravneZnacenie from './dopravneZnacenie'
 import kontajneroveStojiska from './kontajneroveStojiska'
+import stanoviskoKInvesticnemuZameru from './stanoviskoKInvesticnemuZameru'
 import test from './testForm'
 import zastitaPrimatora from './zastitaPrimatora'
 import zavazneStanoviskoKInvesticnejCinnosti from './zavazneStanoviskoKInvesticnejCinnosti'
@@ -16,6 +17,7 @@ const eforms = {
   test,
   zavazneStanoviskoKInvesticnejCinnosti,
   zastitaPrimatora,
+  stanoviskoKInvesticnemuZameru,
 }
 
 export type EFormKey = keyof typeof eforms

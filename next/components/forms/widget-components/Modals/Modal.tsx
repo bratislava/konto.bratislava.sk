@@ -1,8 +1,9 @@
 import ArrowLeft from '@assets/images/new-icons/ui/arrow-left.svg'
+import CloseIcon from '@assets/images/new-icons/ui/cross.svg'
 import cx from 'classnames'
-import { Dispatch, SetStateAction, useState } from 'react'
+import React, { Dispatch, SetStateAction, useState } from 'react'
 
-import CloseIcon from '../../icon-components/CloseIcon'
+import { handleOnKeyPress } from '../../../../frontend/utils/general'
 import Button from '../../simple-components/Button'
 
 type ModalBase = {
@@ -10,7 +11,7 @@ type ModalBase = {
   divider?: boolean
   onClose: () => void
   onSubmit: (params: OnSubmitParams) => void
-  content: (({}: any) => JSX.Element)[] | (({}: any) => JSX.Element)
+  content: ((value: any) => JSX.Element)[] | ((value: any) => JSX.Element)
   header?: string
   confirmLabel?: string
   cancelLabel?: string
@@ -39,10 +40,13 @@ const ModalHeader = ({
   header,
   hasHeader,
 }: ModalHeaderBase) => {
-  const headerStyle = cx('flex py-4 px-6 gap-6 bg-white sm:rounded-t-lg justify-between', {
-    'border-b-solid border-b-form-input-default border-b-2': divider,
-  })
-  const headlineStyle = cx('text-20-semibold h-7', {
+  const headerStyle = cx(
+    'flex py-[18px] sm:py-4 px-4 sm:px-6 gap-6 bg-white sm:rounded-t-lg justify-between items-center',
+    {
+      'border-b-solid border-b-form-input-default border-b-2': divider,
+    },
+  )
+  const headlineStyle = cx('text-16-semibold sm:text-20-semibold leading-5 sm:leading-7', {
     'text-center ml-1': currentScreenIndex > 0,
   })
 
@@ -52,17 +56,22 @@ const ModalHeader = ({
     <div className={headerStyle}>
       {currentScreenIndex > 0 ? (
         <div
+          role="button"
+          tabIndex={0}
           className="ml-1 flex flex-row cursor-pointer items-center"
           onClick={() => {
             setCurrentScreenIndex(currentScreenIndex - 1)
           }}
+          onKeyPress={(event: React.KeyboardEvent) =>
+            handleOnKeyPress(event, () => setCurrentScreenIndex(currentScreenIndex - 1))
+          }
         >
           <ArrowLeft />
         </div>
       ) : null}
       <div className={headlineStyle}>{header}</div>
       <div className="ml-1 flex flex-row justify-end items-center">
-        <CloseIcon className="cursor-pointer" type="info" onClick={onClose} />
+        <CloseIcon className="cursor-pointer w-5 h-5 sm:w-6 sm:h-6" type="info" onClick={onClose} />
       </div>
     </div>
   )
@@ -138,7 +147,7 @@ const ModalBody = ({
 }) => {
   return (
     <div
-      className={cx('flex h-full w-full flex-col bg-white lg:p-6 p-4', {
+      className={cx('flex h-full w-full flex-col bg-white sm:p-6 p-4', {
         'rounded-t-10': !hasHeader,
         'rounded-b-10': !hasFooter,
       })}
@@ -148,7 +157,7 @@ const ModalBody = ({
           <CloseIcon className="cursor-pointer" type="info" onClick={onClose} />
         </div>
       ) : null}
-      <div className="h-[calc(100%-80px)] flex w-full flex-col items-start rounded-lg p-2">
+      <div className="h-[calc(100%-80px)] flex w-full flex-col items-start rounded-lg">
         {Array.isArray(content)
           ? content.length - 1 >= currentScreenIndex && content[currentScreenIndex]()
           : content({ onSubmit })}
@@ -178,18 +187,31 @@ const Modal = ({
     return null
   }
 
+  const handleOnClick = () => {
+    setCurrentScreenIndex(0)
+    onClose()
+  }
+
   const hasHeader = Array.isArray(content) || Boolean(header)
   const hasFooter = Array.isArray(content)
   return (
     <div
+      role="button"
+      tabIndex={0}
       className="z-50 h-full fixed w-full inset-x-0 top-0 flex items-center justify-center"
       style={{ background: 'rgba(var(--color-gray-800), .4)', marginTop: '0' }}
-      onClick={() => {
-        setCurrentScreenIndex(0)
-        onClose()
-      }}
+      onClick={handleOnClick}
+      onKeyPress={(event: React.KeyboardEvent) => handleOnKeyPress(event, handleOnClick)}
     >
-      <div onClick={(e) => e.stopPropagation()} className={cx('rounded-full shadow-lg', className)}>
+      <div
+        role="button"
+        tabIndex={0}
+        onClick={(e) => e.stopPropagation()}
+        onKeyPress={(event: React.KeyboardEvent) =>
+          handleOnKeyPress(event, () => event.stopPropagation())
+        }
+        className={cx('rounded-full shadow-lg', className)}
+      >
         <ModalHeader
           header={header}
           currentScreenIndex={currentScreenIndex}

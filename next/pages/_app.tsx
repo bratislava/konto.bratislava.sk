@@ -1,7 +1,12 @@
 /* eslint-disable @next/next/inline-script-id */
 import './index.css'
+// initialize faro - TODO might need to ensure faro is initialized by providing it through react context and hook
+import '../frontend/utils/logger'
 
-import { AccountProvider } from '@utils/useAccount'
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
+import { StatusBarProvider } from 'components/forms/info-components/StatusBar'
+import CookieConsent from 'components/forms/segments/CookieConsent/CookieConsent'
+import { GlobalStateProvider } from 'components/forms/states/GlobalState'
 import { AppProps } from 'next/app'
 import { Inter } from 'next/font/google'
 import Head from 'next/head'
@@ -10,7 +15,10 @@ import { NextAdapter } from 'next-query-params'
 import { SSRProvider } from 'react-aria'
 import SnackbarProvider from 'react-simple-snackbar'
 import { QueryParamProvider } from 'use-query-params'
-import { StatusBarProvider } from 'components/forms/info-components/StatusBar'
+
+import { AccountProvider } from '../frontend/hooks/useAccount'
+
+const queryClient = new QueryClient()
 
 const inter = Inter({
   variable: '--inter-font',
@@ -33,13 +41,18 @@ const MyApp = ({ Component, pageProps }: AppProps) => {
       <QueryParamProvider adapter={NextAdapter}>
         <SSRProvider>
           <StatusBarProvider>
-            <AccountProvider>
-              <div className={`${inter.variable} font-sans`}>
+            <div className={`${inter.variable} font-sans`}>
+              <QueryClientProvider client={queryClient}>
                 <SnackbarProvider>
-                  <Component {...pageProps} />
+                  <AccountProvider>
+                    <GlobalStateProvider>
+                      <Component {...pageProps} />
+                      <CookieConsent />
+                    </GlobalStateProvider>
+                  </AccountProvider>
                 </SnackbarProvider>
-              </div>
-            </AccountProvider>
+              </QueryClientProvider>
+            </div>
           </StatusBarProvider>
         </SSRProvider>
       </QueryParamProvider>

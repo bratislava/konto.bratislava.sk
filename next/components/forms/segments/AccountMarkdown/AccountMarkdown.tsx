@@ -1,6 +1,7 @@
 import cx from 'classnames'
 import Tooltip from 'components/forms/info-components/Tooltip/Tooltip'
 import Link from 'next/link'
+import React from 'react'
 import ReactMarkdown from 'react-markdown'
 import rehypeRaw from 'rehype-raw'
 import remarkDirective from 'remark-directive'
@@ -12,65 +13,86 @@ type AccountMarkdownBase = {
   content?: string
   variant?: 'sm' | 'normal'
   uLinkVariant?: 'primary' | 'default' | 'error'
+  disableRemarkGfm?: boolean
+  disableRemarkDirective?: boolean
+  disableRemarkDirectiveRehype?: boolean
 }
 
-const TooltipComponent = ({ children }: never) => {
-  return children ? <Tooltip text={children} position="top-right" /> : null
+interface ChildrenParent {
+  children?: React.ReactNode | string
+  href?: string
+  [key: string]: unknown
 }
 
 const AccountMarkdown = ({
   className,
   content,
+  disableRemarkGfm,
+  disableRemarkDirective,
+  disableRemarkDirectiveRehype,
   variant = 'normal',
   uLinkVariant = 'default',
 }: AccountMarkdownBase) => {
+  const remarkPlugins = []
+  if (!disableRemarkGfm) {
+    remarkPlugins.push(remarkGfm)
+  }
+  if (!disableRemarkDirective) {
+    remarkPlugins.push(remarkDirective)
+  }
+  if (!disableRemarkDirectiveRehype) {
+    remarkPlugins.push(remarkDirectiveRehype)
+  }
+
+  const componentsGroup: Record<string, React.FC<ChildrenParent>> = {
+    h3: ({ children }: ChildrenParent) => <h3 className="text-h3">{children}</h3>,
+    h4: ({ children }: ChildrenParent) => <h4 className="text-h4">{children}</h4>,
+    h5: ({ children }: ChildrenParent) => <h5 className="text-h5">{children}</h5>,
+    h6: ({ children }: ChildrenParent) => <h6 className="text-h6">{children}</h6>,
+    p: ({ children }: ChildrenParent) => (
+      <p className={variant === 'sm' ? 'text-p3 lg:text-p2' : 'text-p1'}>{children}</p>
+    ),
+    strong: ({ children }: ChildrenParent) => <strong className="font-semibold">{children}</strong>,
+    ol: ({ children, ordered, ...props }: ChildrenParent) => (
+      <ol className="list-decimal pl-8" {...props}>
+        {children}
+      </ol>
+    ),
+    ul: ({ children, ordered, ...props }: ChildrenParent) => (
+      <ul className="list-disc pl-8" {...props}>
+        {children}
+      </ul>
+    ),
+    li: ({ children, ordered, ...props }: ChildrenParent) => (
+      <li className="text-p1" {...props}>
+        {children}
+      </li>
+    ),
+    a: ({ href, children }: ChildrenParent) => (
+      <Link
+        href={href ?? '#'}
+        className={cx('break-words font-semibold underline-offset-4 underline', {
+          'text-white hover:text-category-600': uLinkVariant === 'primary',
+          'text-font hover:text-category-600': uLinkVariant === 'default',
+          'text-white hover:text-white': uLinkVariant === 'error',
+        })}
+        target={href?.startsWith('http') ? '_blank' : ''}
+      >
+        {children}
+      </Link>
+    ),
+    tooltip: ({ children }: ChildrenParent) =>
+      children && typeof children === 'string' ? (
+        <Tooltip text={children} position="top-right" />
+      ) : null,
+  }
+
   return (
     <ReactMarkdown
       className={cx('flex flex-col gap-3', className)}
-      remarkPlugins={[remarkGfm, remarkDirective, remarkDirectiveRehype]}
+      remarkPlugins={remarkPlugins}
       rehypePlugins={[rehypeRaw, remarkDirective, remarkDirectiveRehype]}
-      components={
-        {
-          h3: ({ children }: any) => <h3 className="text-h3">{children}</h3>,
-          h4: ({ children }: any) => <h4 className="text-h4">{children}</h4>,
-          h5: ({ children }: any) => <h5 className="text-h5">{children}</h5>,
-          h6: ({ children }: any) => <h6 className="text-h6">{children}</h6>,
-          p: ({ children }: any) => (
-            <p className={variant === 'sm' ? 'text-p3 lg:text-p2' : 'text-p1'}>{children}</p>
-          ),
-          strong: ({ children }: any) => <strong className="font-semibold">{children}</strong>,
-          ol: ({ children, ordered, ...props }: any) => (
-            <ol className="list-decimal pl-8" {...props}>
-              {children}
-            </ol>
-          ),
-          ul: ({ children, ordered, ...props }: any) => (
-            <ul className="list-disc pl-8" {...props}>
-              {children}
-            </ul>
-          ),
-          li: ({ children, ordered, ...props }: any) => (
-            <li className="text-p1" {...props}>
-              {children}
-            </li>
-          ),
-          a: ({ href, children }: { href?: string; children?: string }) => (
-            <Link
-              href={href ?? '#'}
-              className={cx('break-words font-semibold underline-offset-4 underline', {
-                'text-white hover:text-category-600': uLinkVariant === 'primary',
-                'text-font hover:text-category-600': uLinkVariant === 'default',
-                'text-white hover:text-white': uLinkVariant === 'error',
-              })}
-              target={href?.startsWith('http') ? '_blank' : ''}
-            >
-              {children}
-            </Link>
-          ),
-          tooltip: TooltipComponent,
-          // without casting object to 'any' it throws an error TS
-        } as any
-      }
+      components={componentsGroup}
     >
       {content ?? ''}
     </ReactMarkdown>

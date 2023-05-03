@@ -1,27 +1,29 @@
 import forms, { EFormKey, EFormValue } from '@backend/forms'
 import { firstCharToUpper } from '@backend/utils/strings'
-import {
-  ajvFormats,
-  ajvKeywords,
-  getAllPossibleJsonSchemaProperties,
-  JsonSchema,
-} from '@utils/forms'
-import { forceString } from '@utils/utils'
+import { RJSFSchema } from '@rjsf/utils'
 import Ajv from 'ajv'
 import addFormats from 'ajv-formats'
 import * as cheerio from 'cheerio'
-// @ts-ignore
 import { parseXml } from 'libxmljs2'
 import { dropRight, find, last } from 'lodash'
 import { parseStringPromise } from 'xml2js'
 import { firstCharLowerCase } from 'xml2js/lib/processors'
 
+import { ajvFormats, ajvKeywords, JsonSchema } from '../../frontend/dtos/formStepperDto'
+import { getAllPossibleJsonSchemaProperties } from '../../frontend/utils/formStepper'
+import { forceString } from '../../frontend/utils/general'
+import logger from '../../frontend/utils/logger'
+
 export type Json = any
+
+const getFormatFromItems = (items: JsonSchema | JsonSchema[] | undefined): string | undefined => {
+  return items && items !== true && !Array.isArray(items) ? items.format : undefined
+}
 
 export const buildXmlRecursive = (
   currentPath: string[],
   cheerioInstance: cheerio.CheerioAPI,
-  node: Json,
+  node: unknown,
   jsonSchema: JsonSchema | undefined,
 ) => {
   const nodeName = firstCharToUpper(last(currentPath))
@@ -64,25 +66,29 @@ export const buildXmlRecursive = (
       })
     }
   } else if (node && typeof node === 'string') {
+    let stringNode: string = node
     if (jsonSchema && jsonSchema !== true) {
       const format =
         jsonSchema.type === 'array' ? getFormatFromItems(jsonSchema.items) : jsonSchema.format
       if (format === 'ciselnik') {
-        // TODO fill name
-        node = `<Code>${node}</Code><Name>${node}</Name><WsEnumCode>${node}</WsEnumCode>`
-      } else if (format === 'data-url') {
-        node = `<Nazov>${node}</Nazov><Prilozena>true</Prilozena>`
+        const ciselnikProperty: { id?: string } = typeof jsonSchema !== 'boolean' && 'ciselnik' in jsonSchema
+          ? jsonSchema.ciselnik : {}
+        stringNode = `<Code>${node}</Code><Name>${node}</Name><WsEnumCode>${
+          ciselnikProperty?.id
+        }</WsEnumCode>`
+      } else if (format === 'file') {
+        stringNode = `<Nazov>${node}</Nazov><Prilozena>true</Prilozena>`
       }
     }
 
-    parentNode.append(`<${nodeName}>${node}</${nodeName}>`)
+    parentNode.append(`<${nodeName}>${stringNode}</${nodeName}>`)
   } else if (['number', 'boolean'].includes(typeof node)) {
     // only 'basic' types add actual information and not just nesting
-    parentNode.append(`<${nodeName}>${node}</${nodeName}>`)
+    parentNode.append(`<${nodeName}>${String(node)}</${nodeName}>`)
   } else if (node == null) {
     // noop
   } else {
-    console.log('Erroneous node:', node)
+    logger.error('Erroneous node:', node)
     throw new Error(
       `Unexpeted node type/value at path ${currentPath.join(' ')}, see the node in logs above.`,
     )
@@ -95,22 +101,12 @@ export const loadAndBuildXml = (xmlTemplate: string, data: Json, jsonSchema: Jso
   return $.html()
 }
 
-export const xmlToJson = async (data: string, jsonSchema: JsonSchema): Promise<Json> => {
-  // xml2js has issues when top level element isn't a single node
-  const wrappedXmlString = `<wrapper>${data}</wrapper>`
-  const obj = await parseStringPromise(wrappedXmlString, {
-    tagNameProcessors: [firstCharLowerCase],
-  })
-  const body = obj.wrapper['e-form'] ? obj.wrapper['e-form'][0].body[0] : obj.wrapper
-  removeNeedlessXmlTransformArraysRecursive(body, [], jsonSchema)
-  return body
-}
-
 export const getJsonSchemaNodeAtPath = (
   jsonSchema: JsonSchema,
   path: string[],
 ): JsonSchema | null => {
   let currentNode = jsonSchema
+  // eslint-disable-next-line no-restricted-syntax
   for (const key of path) {
     const properties = getAllPossibleJsonSchemaProperties(currentNode)
     currentNode = properties[key]
@@ -119,75 +115,90 @@ export const getJsonSchemaNodeAtPath = (
   return currentNode
 }
 
-const getFormatFromItems = (items: JsonSchema | JsonSchema[] | undefined): string | undefined => {
-  return items && items !== true && !Array.isArray(items) ? items.format : undefined
-}
-
 export const removeNeedlessXmlTransformArraysRecursive = (
-  obj: any,
+  obj: unknown,
   path: string[],
   schema: JsonSchema,
 ) => {
   if (typeof obj !== 'object') {
     return obj
   }
+  const transformedObj = obj
 
-  Object.keys(obj).forEach((k) => {
-    const newPath = [...path, k]
-
+  Object.entries(transformedObj).forEach(([key, value]) => {
+    const newPath = [...path, key]
     // skip index of array
-    if (Number.isNaN(Number(k))) {
+    if (Number.isNaN(Number(key))) {
       const childSchema = getJsonSchemaNodeAtPath(schema, newPath)
       if (!childSchema || childSchema === true) {
-        if (Array.isArray(obj[k]) && obj[k].length < 2) {
-          if (obj[k][0] === 'true') {
-            obj[k] = true
-          } else if (obj[k][0] === 'false') {
-            obj[k] = false
+        if (Array.isArray(value) && value.length < 2) {
+          if (value[0] === 'true') {
+            transformedObj[key] = true
+          } else if (value[0] === 'false') {
+            transformedObj[key] = false
           } else {
-            const numValue = Number(obj[k][0])
+            const numValue = Number(value[0])
             if (
-              typeof obj[k][0] === 'string' &&
-              !obj[k][0].startsWith('+') &&
+              typeof value[0] === 'string' &&
+              !value[0].startsWith('+') &&
               !Number.isNaN(numValue)
             ) {
-              obj[k] = numValue
+              transformedObj[key] = numValue
             } else {
-              obj[k] = obj[k][0]
+              const [firstElement] = value
+              transformedObj[key] = firstElement
             }
           }
         }
       } else if (childSchema.type === 'array') {
         const format = getFormatFromItems(childSchema.items)
-        if (format === 'data-url') {
-          obj[k] = obj[k].map((x: any) => x.nazov[0])
-        } else if (format === 'ciselnik') {
-          obj[k] = obj[k].map((x: any) => x.code[0])
+        if (format === 'file' && Array.isArray(value)) {
+          transformedObj[key] = value.map((x: { nazov: unknown[] }) => x.nazov[0] ?? '')
+        } else if (format === 'ciselnik' && Array.isArray(value)) {
+          transformedObj[key] = value.map((x: { code: unknown[] }) => x.code[0] ?? '')
         }
       } else if (childSchema.type === 'string') {
-        if (childSchema.format === 'data-url') {
-          obj[k] = obj[k][0].nazov[0]
+        /* eslint-disable @typescript-eslint/no-unsafe-member-access */
+        if (childSchema.format === 'file') {
+          const [firstNazov] = value[0].nazov
+          transformedObj[key] = firstNazov
         } else if (childSchema.format === 'ciselnik') {
-          obj[k] = obj[k][0].code[0]
+          const [firstCode] = value[0].code
+          transformedObj[key] = firstCode
         } else {
-          obj[k] = obj[k][0]
+          const [firstElement] = value
+          transformedObj[key] = firstElement
         }
       } else if (find(['integer', 'int32', 'int64'], (t) => t === childSchema.type)) {
-        obj[k] = Number.parseInt(obj[k][0])
+        transformedObj[key] = Number.parseInt(String(value[0]), 10)
       } else if (find(['float', 'double', 'number'], (t) => t === childSchema.type)) {
-        obj[k] = Number.parseFloat(obj[k][0])
+        transformedObj[key] = Number.parseFloat(String(value[0]))
       } else if (childSchema.type === 'boolean') {
         // again very forgiving in what we can receive
-        obj[k] = obj[k][0] == null ? null : obj[k][0] === 'false' ? false : Boolean(obj[k][0])
+        transformedObj[key] = value[0] == null ? null : value[0] === 'false' ? false : Boolean(value[0])
       } else {
-        obj[k] = obj[k][0]
+        const [firstElement] = value
+        transformedObj[key] = firstElement
       }
+      /* eslint-enable @typescript-eslint/no-unsafe-member-access */
     }
 
-    removeNeedlessXmlTransformArraysRecursive(obj[k], newPath, schema)
+    removeNeedlessXmlTransformArraysRecursive(transformedObj[key], newPath, schema)
   })
 
-  return obj
+  return transformedObj
+}
+
+export const xmlToJson = async (data: string, jsonSchema: JsonSchema): Promise<RJSFSchema> => {
+  // xml2js has issues when top level element isn't a single node
+  const wrappedXmlString = `<wrapper>${data}</wrapper>`
+  const obj: { wrapper: object } = await parseStringPromise(wrappedXmlString, {
+    tagNameProcessors: [firstCharLowerCase],
+  })
+  // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
+  const body: RJSFSchema = obj.wrapper['e-form'] ? obj.wrapper['e-form'][0].body[0] : obj.wrapper
+  removeNeedlessXmlTransformArraysRecursive(body, [], jsonSchema)
+  return body
 }
 
 export const validateDataWithJsonSchema = async (data: any, schema: any) => {
@@ -200,7 +211,7 @@ export const validateDataWithJsonSchema = async (data: any, schema: any) => {
   const validate = ajv.compile(schema)
 
   try {
-    await validate(data)
+    validate(data)
     return validate.errors || []
   } catch (error) {
     if (!(error instanceof Ajv.ValidationError)) throw error
@@ -209,7 +220,7 @@ export const validateDataWithJsonSchema = async (data: any, schema: any) => {
   }
 }
 
-export const validateDataWithXsd = (data: any, xsd: any) => {
+export const validateDataWithXsd = (data: string, xsd: string) => {
   const xsdDoc = parseXml(xsd)
   const xmlDoc = parseXml(data)
 

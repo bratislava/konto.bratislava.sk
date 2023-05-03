@@ -1,12 +1,11 @@
 import Tag from 'components/forms/simple-components/Tag'
 import { useState } from 'react'
 
+import logger from '../../../frontend/utils/logger'
 import { Stack } from '../Stack'
 import { Wrapper } from '../Wrapper'
 
-interface TagShowCaseProps {}
-
-const TagShowCase = ({}: TagShowCaseProps) => {
+const TagShowCase = () => {
   const [removableTag, setRemovableTag] = useState<string | null>('Real onRemove')
 
   return (
@@ -32,7 +31,7 @@ const TagShowCase = ({}: TagShowCaseProps) => {
         <Tag
           text="Console.log onRemove"
           size="small"
-          onRemove={() => console.log('\nTAG REMOVED\n')}
+          onRemove={() => logger.info('TAG REMOVED')}
           removable
         />
       </Stack>
@@ -50,14 +49,14 @@ const TagShowCase = ({}: TagShowCaseProps) => {
         <Tag
           text="Console.log onRemove"
           size="large"
-          onRemove={() => console.log('\nTAG REMOVED\n')}
+          onRemove={() => logger.info('TAG REMOVED')}
           removable
           branded
         />
         <Tag
           text="Console.log onRemove"
           size="small"
-          onRemove={() => console.log('\nTAG REMOVED\n')}
+          onRemove={() => logger.info('TAG REMOVED')}
           removable
           branded
         />

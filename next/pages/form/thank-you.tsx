@@ -1,11 +1,11 @@
-import { AsyncServerProps } from '@utils/types'
-import { isProductionDeployment } from '@utils/utils'
 import AccountPageLayout from 'components/layouts/AccountPageLayout'
 import PageWrapper from 'components/layouts/PageWrapper'
 import { GetServerSidePropsContext } from 'next'
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
 
 import ThankYouFormSection from '../../components/forms/segments/AccountSections/ThankYouSection/ThankYouFormSection'
+import { isProductionDeployment } from '../../frontend/utils/general'
+import { AsyncServerProps } from '../../frontend/utils/types'
 
 export const getServerSideProps = async (ctx: GetServerSidePropsContext) => {
   if (isProductionDeployment()) return { notFound: true }
@@ -23,15 +23,23 @@ export const getServerSideProps = async (ctx: GetServerSidePropsContext) => {
             locale: l,
           })),
       },
+      isProductionDeploy: isProductionDeployment(),
       ...(await serverSideTranslations(locale)),
     },
   }
 }
 
-const AccountThankYouFormPage = ({ page }: AsyncServerProps<typeof getServerSideProps>) => {
+const AccountThankYouFormPage = ({
+  page,
+  isProductionDeploy,
+}: AsyncServerProps<typeof getServerSideProps>) => {
   return (
     <PageWrapper locale={page.locale} localizations={page.localizations}>
-      <AccountPageLayout hiddenHeaderNav className="bg-gray-50">
+      <AccountPageLayout
+        isProductionDeploy={isProductionDeploy}
+        hiddenHeaderNav
+        className="bg-gray-50"
+      >
         <ThankYouFormSection />
       </AccountPageLayout>
     </PageWrapper>

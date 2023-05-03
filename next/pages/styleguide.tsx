@@ -1,5 +1,4 @@
-import { AsyncServerProps } from '@utils/types'
-import { isProductionDeployment } from '@utils/utils'
+import { StatusBar } from 'components/forms/info-components/StatusBar'
 import PageWrapper from 'components/layouts/PageWrapper'
 import DatePickerShowCase from 'components/styleguide/showcases/DatePickerShowCase'
 import InputFieldShowCase from 'components/styleguide/showcases/InputFieldShowCase'
@@ -24,15 +23,16 @@ import ServiceCardShowCase from '../components/styleguide/showcases/ServiceCardS
 import SingleCheckboxShowCase from '../components/styleguide/showcases/SingleCheckboxShowCase'
 import SnackbarShowCase from '../components/styleguide/showcases/SnackbarShowCase'
 import SpinnerShowCase from '../components/styleguide/showcases/SpinnerShowCase'
+import StatusBarShowCase from '../components/styleguide/showcases/StatusBarShowCase'
 import StepperShowCase from '../components/styleguide/showcases/StepperShowCase'
 import SummaryRowShowCase from '../components/styleguide/showcases/SummaryRowShowCase'
 import TagShowCase from '../components/styleguide/showcases/TagShowCase'
 import TextAreaFieldShowCase from '../components/styleguide/showcases/TextAreaFieldShowCase'
 import ToggleShowCase from '../components/styleguide/showcases/ToggleShowCase'
 import UploadShowCase from '../components/styleguide/showcases/UploadShowCase'
-import StatusBarShowCase from '../components/styleguide/showcases/StatusBarShowCase'
 import StyleGuideWrapper from '../components/styleguide/StyleGuideWrapper'
-import { StatusBar } from 'components/forms/info-components/StatusBar'
+import { isProductionDeployment } from '../frontend/utils/general'
+import { AsyncServerProps } from '../frontend/utils/types'
 
 const Styleguide = ({ page }: AsyncServerProps<typeof getServerSideProps>) => {
   /**

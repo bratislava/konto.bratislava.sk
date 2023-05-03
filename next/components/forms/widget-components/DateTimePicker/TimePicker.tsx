@@ -6,6 +6,7 @@ import padStart from 'lodash/padStart'
 import { forwardRef, ReactNode, RefObject, useEffect, useRef, useState } from 'react'
 import { I18nProvider, OverlayProvider, useButton, useDatePicker } from 'react-aria'
 import { useDatePickerState } from 'react-stately'
+import { useEffectOnce } from 'usehooks-ts'
 
 import { usePageWrapperContext } from '../../../layouts/PageWrapper'
 import { ExplicitOptionalType } from '../../types/ExplicitOptional'
@@ -35,7 +36,7 @@ const Button = ({ children, disabled, ...rest }: ButtonBase) => {
 }
 
 export const convertTimeToValidFormat = (timeValue: string) => {
-  const [hours, minutes] = timeValue?.split(':')
+  const [hours, minutes] = timeValue ? timeValue.split(':') : ['00', '00']
   return `${hours ? padStart(hours, 2, '0') : ''}${hours || minutes ? ':' : ''}${
     minutes ? padStart(minutes, 2, '0') : ''
   }`
@@ -155,11 +156,11 @@ const TimePicker = forwardRef<HTMLDivElement, TimePickerBase>(
       }
     }, [isInputEdited])
 
-    useEffect(() => {
+    useEffectOnce(() => {
       const convertedTimeToValidFormat = convertTimeToValidFormat(value)
       if (value) setPrevValue(convertedTimeToValidFormat)
       if (onChange) onChange(convertedTimeToValidFormat)
-    }, [])
+    })
 
     return (
       <I18nProvider locale={locale}>

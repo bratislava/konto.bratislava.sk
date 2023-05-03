@@ -1,4 +1,3 @@
-import { Address } from '@utils/useAccount'
 import CorrespondenceAddressModal from 'components/forms/segments/CorrespondenceAddressModal/CorrespondenceAddressModal'
 import { PhoneNumberData } from 'components/forms/segments/PhoneNumberForm/PhoneNumberForm'
 import RegistrationModal from 'components/forms/segments/RegistrationModal/RegistrationModal'
@@ -6,6 +5,7 @@ import SkipStepModal from 'components/forms/segments/SkipStepModal/SkipStepModal
 import Modal from 'components/forms/widget-components/Modals/Modal'
 import { useState } from 'react'
 
+import { Address } from '../../../frontend/hooks/useAccount'
 import PhoneNumberModal from '../../forms/segments/PhoneNumberModal/PhoneNumberModal'
 import Button from '../../forms/simple-components/Button'
 import MessageModal from '../../forms/widget-components/Modals/MessageModal'
@@ -32,12 +32,12 @@ const thirdScreen = () => {
   return (
     <div className="flex w-full items-center justify-center rounded-lg bg-[purple] p-2 text-white">
       Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has
-      been the industry's standard dummy text ever since the 1500s, when an unknown printer took a
-      galley of type and scrambled it to make a type specimen book. It has survived not only five
-      centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It
-      was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum
-      passages, and more recently with desktop publishing software like Aldus PageMaker including
-      versions of Lorem Ipsum.
+      been the industry&apos;s standard dummy text ever since the 1500s, when an unknown printer
+      took a galley of type and scrambled it to make a type specimen book. It has survived not only
+      five centuries, but also the leap into electronic typesetting, remaining essentially
+      unchanged. It was popularised in the 1960s with the release of Letraset sheets containing
+      Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker
+      including versions of Lorem Ipsum.
     </div>
   )
 }
@@ -47,12 +47,12 @@ const singleModalContent = ({ onSubmit }: any) => {
     <div>
       <div className="flex w-full items-center justify-center rounded-lg bg-[green] p-2 text-white">
         Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has
-        been the industry's standard dummy text ever since the 1500s, when an unknown printer took a
-        galley of type and scrambled it to make a type specimen book. It has survived not only five
-        centuries, but also the leap into electronic typesetting, remaining essentially unchanged.
-        It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum
-        passages, and more recently with desktop publishing software like Aldus PageMaker including
-        versions of Lorem Ipsum.
+        been the industry&apos;s standard dummy text ever since the 1500s, when an unknown printer
+        took a galley of type and scrambled it to make a type specimen book. It has survived not
+        only five centuries, but also the leap into electronic typesetting, remaining essentially
+        unchanged. It was popularised in the 1960s with the release of Letraset sheets containing
+        Lorem Ipsum passages, and more recently with desktop publishing software like Aldus
+        PageMaker including versions of Lorem Ipsum.
       </div>
       <div className="flex justify-between mt-2">
         <Button text="First" variant="black-outline" onPress={onSubmit} />
@@ -76,20 +76,17 @@ const ModalShowCase = () => {
     postal_code: '05801',
   })
   const [phoneNumberModalShow, setPhoneNumberModalShow] = useState(false)
-  const [phoneNumberModalData, setPhoneNumberModalData] = useState<string | undefined>(
-    '+421999999999',
-  )
+  const [phoneNumberModalData, setPhoneNumberModalData] =
+    useState<string | undefined>('+421999999999')
   const [registrationModal, setRegistrationModal] = useState(false)
   const [skipStepModal, setSkipStepModal] = useState(false)
 
   const onSubmitCorrespondenceAddress = ({ data }: { data?: Address }) => {
-    console.log(data)
     setAddressModalData(data)
     setCorrenspondenceAddressModalShow(false)
   }
 
   const onSubmitPhoneNumber = async ({ data }: { data?: PhoneNumberData }) => {
-    console.log(data)
     setPhoneNumberModalData(data?.phone_number)
     setPhoneNumberModalShow(false)
   }

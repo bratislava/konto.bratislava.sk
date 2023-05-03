@@ -1,8 +1,10 @@
-import ExpandMore from '@assets/images/expand-more.svg'
+import ExpandMore from '@assets/images/new-icons/ui/expand.svg'
 import cx from 'classnames'
+import { useTranslation } from 'next-i18next'
 import React, { useState } from 'react'
 
-import ExpandMoreIcon from '../icon-components/ExpandMoreIcon'
+import { Tax } from '../../../frontend/dtos/taxDto'
+import { formatCurrency } from '../../../frontend/utils/general'
 import PersonIcon from '../icon-components/PersonIcon'
 import AccountMarkdown from '../segments/AccountMarkdown/AccountMarkdown'
 import AccountMarkdownModal from '../segments/AccountModal/AccountModal'
@@ -14,166 +16,19 @@ const tableHeaderData = {
   total: 'Daň v EUR',
 }
 
-const tableTotal = {
-  ground: '0,00 €',
-  construction: '0,00 €',
-  apartment: '58,00 €',
-}
-
 const matchHeader = {
-  ground: [tableHeaderData.area, tableHeaderData.base, tableHeaderData.total],
-  construction: [tableHeaderData.base, tableHeaderData.total],
-  apartment: [tableHeaderData.base, tableHeaderData.total],
+  GROUND: [tableHeaderData.area, tableHeaderData.base, tableHeaderData.total],
+  CONSTRUCTION: [tableHeaderData.base, tableHeaderData.total],
+  APARTMENT: [tableHeaderData.base, tableHeaderData.total],
 }
 export type AccordionSizeType = 'xs' | 'sm' | 'md' | 'lg'
-const groundData = {
-  A: {
-    title: 'Orná pôda, chmeľnice, vinice, ovocné sady',
-    description: '(§ 6 ods. 1 písm. a) zákona)',
-    area: '0,00',
-    base: '0,00',
-    total: '0,00',
-  },
-  B: {
-    title: 'Trvalé trávnaté porasty',
-    description: '(§ 6 ods. 1 písm. a) zákona)',
-    area: '0,00',
-    base: '0,00',
-    total: '0,00',
-  },
-  C: {
-    title: 'Záhrady',
-    description: '(§ 6 ods. 1 písm. b) zákona)',
-    area: '0,00',
-    base: '0,00',
-    total: '0,00',
-  },
-  D: {
-    title: 'Lesné pozemky, na ktorých sú hospodárske lesy',
-    description: '(§ 6 ods. 1 písm. d) zákona)',
-    area: '0,00',
-    base: '0,00',
-    total: '0,00',
-  },
-  E: {
-    title: 'Rybníky s chovom rýb a ostatné hospodársky využívané vodné plochy',
-    description: '(§ 6 ods. 1 písm. d) zákona)',
-    area: '0,00',
-    base: '0,00',
-    total: '0,00',
-  },
-  F: {
-    title: 'Zastavané plochy a nádvoria',
-    description: '(§ 6 ods. 1 písm. c) zákona)',
-    area: '0,00',
-    base: '0,00',
-    total: '0,00',
-  },
-  G: {
-    title: 'Stavebné pozemky',
-    description: '(§ 6 ods. 1 písm. e) zákona)',
-    area: '0,00',
-    base: '0,00',
-    total: '0,00',
-  },
-  H: {
-    title: 'Ostatné plochy',
-    description: '(§ 6 ods. 1 písm. c) zákona)',
-    area: '0,00',
-    base: '0,00',
-    total: '0,00',
-  },
-}
 
-const constructionData = {
-  A: {
-    title: 'Stavba na bývanie',
-    description: '(§ 10 ods. 1 písm. a) zákona)',
-    base: '0,00',
-    total: '0,00',
-  },
-  B: {
-    title: 'Stavby na pôdohospodársku produkciu',
-    description: '(§ 10 ods. 1 písm. b) zákona)',
-    base: '0,00',
-    total: '0,00',
-  },
-  C: {
-    title: 'Chaty',
-    description: '(§ 10 ods. 1 písm. c) zákona)',
-    base: '0,00',
-    total: '0,00',
-  },
-  D: {
-    title: 'Samostatne stojace garáže',
-    description: '(§ 10 ods. 1 písm. d) zákona)',
-    base: '0,00',
-    total: '0,00',
-  },
-  E: {
-    title: 'Stavby hromadných garáží',
-    description: '(§ 10 ods. 1 písm. e) zákona)',
-    base: '0,00',
-    total: '0,00',
-  },
-  F: {
-    title: 'Stavby hromadných garáží umiestnených pod zemou',
-    description: '(§ 10 ods. 1 písm. f) zákona)',
-    base: '0,00',
-    total: '0,00',
-  },
-  G: {
-    title: 'Priemyselné stavby',
-    description: '(§ 10 ods. 1 písm. g) zákona)',
-    base: '0,00',
-    total: '0,00',
-  },
-  jH: {
-    title: 'Stavba na ost. podnik. a zárobk. činnosť, skladovanie a administratívu',
-    description: '(§ 10 ods. 1 písm. h) zákona)',
-    base: '0,00',
-    total: '0,00',
-  },
-  jI: {
-    title: 'Ostatné stavby',
-    description: '(§ 10 ods. 1 písm. i) zákona)',
-    base: '0,00',
-    total: '0,00',
-  },
-  H: {
-    title: 'Viacúčelová stavba',
-    description: '(§ 12 ods. 6 zákona)',
-    base: '0,00',
-    total: '0,00',
-  },
-}
-
-const apartmentData = {
-  residential: {
-    title: 'Byt',
-    description: '(§ 14 zákona)',
-    base: '58,00',
-    total: '58,00',
-  },
-  nonResidential: {
-    title: 'Nebytový priestor',
-    description: '(§ 14 zákona)',
-    base: '0,00',
-    total: '0,00',
-  },
-}
-
-const matchMainData = {
-  ground: groundData,
-  construction: constructionData,
-  apartment: apartmentData,
-}
 export type AccordionBase = {
   size: AccordionSizeType
   title: string
   secondTitle?: string
-  dataType: 'ground' | 'construction' | 'apartment'
-  data: any
+  dataType: string
+  data: Tax['taxDetails']
   icon?: boolean
   shadow?: boolean
   className?: string
@@ -181,8 +36,14 @@ export type AccordionBase = {
 export const isAccordionSizeType = (size: string) =>
   ['xs', 'sm', 'md', 'lg'].includes(size) ? size : 'sm'
 
-const TableHeaderRow = ({ dataType }: { dataType: 'ground' | 'construction' | 'apartment' }) => {
-  const headerData = matchHeader[dataType]
+const TableHeaderRow = ({ dataType }: { dataType: string }) => {
+  // TODO types can be better if validated as they come from API
+  const headerData = Object.keys(matchHeader).includes(dataType)
+    ? (matchHeader[dataType] as
+        | typeof matchHeader.GROUND
+        | typeof matchHeader.CONSTRUCTION
+        | typeof matchHeader.APARTMENT)
+    : matchHeader.APARTMENT
 
   return (
     <thead className="lg:bg-gray-0 bg-gray-200 self-stretch">
@@ -190,9 +51,12 @@ const TableHeaderRow = ({ dataType }: { dataType: 'ground' | 'construction' | 'a
         <th className="text-16 first:rounded-tl last:rounded-tr [&:not(:first-child)]:text-center border-spacing-0 border-b-2 text-left lg:py-4 lg:p-0 p-4">
           Predmet dane
         </th>
-        {headerData.map((header) => {
+        {headerData?.map((header) => {
           return (
-            <th className="text-16 first:rounded-tl last:rounded-tr [&:not(:first-child)]:text-center border-spacing-0 border-b-2 text-left lg:py-4 lg:p-0 p-4">
+            <th
+              className="text-16 first:rounded-tl last:rounded-tr [&:not(:first-child)]:text-center border-spacing-0 border-b-2 text-left lg:py-4 lg:p-0 p-4"
+              key={header}
+            >
               <AccountMarkdown content={`<div class="text-16 p-2">${header}</div>`} />
             </th>
           )
@@ -202,29 +66,36 @@ const TableHeaderRow = ({ dataType }: { dataType: 'ground' | 'construction' | 'a
   )
 }
 
-const TableRow = ({ dataType }: { dataType: 'ground' | 'construction' | 'apartment' }) => {
-  const mainData = matchMainData[dataType] as Record<any, any>
-  const mainDataKeys = Object.keys(mainData)
+const TableRow = ({ dataType, data }: { dataType: string; data: Tax['taxDetails'] }) => {
+  const { t } = useTranslation('account')
   return (
     <tbody>
-      {mainDataKeys.map((k) => {
+      {data.map((taxDetail) => {
         return (
-          <tr>
+          <tr key={taxDetail.id}>
             <td className="[&:not(:first-child)]:text-20-semibold border-r-2 [&:not(:first-child)]:text-center last:border-r-0 lg:py-4 h-max lg:p-0 p-4">
-              <div className="h-0 font-semibold inline">{mainData[k].title}</div>
+              <div className="h-0 font-semibold inline">
+                {t(
+                  `tax_detail_section.tax_type.${dataType}.ground_type.${taxDetail.areaType}.title`,
+                )}
+              </div>
               <br />
-              {mainData[k].description}
+              {t(
+                `tax_detail_section.tax_type.${dataType}.ground_type.${taxDetail.areaType}.description`,
+              )}
             </td>
-            {dataType === 'ground' && (
+            {dataType === 'GROUND' && (
               <td className="lg:[&:not(:first-child)]:text-20-semibold [&:not(:first-child)]:text-16-semibold w-[15%] border-r-2 [&:not(:first-child)]:text-center last:border-r-0 lg:py-4 lg:p-0 p-4">
-                {mainData[k].area}
+                {taxDetail.area}
               </td>
             )}
             <td className="lg:[&:not(:first-child)]:text-20-semibold [&:not(:first-child)]:text-16-semibold w-[15%] border-r-2 [&:not(:first-child)]:text-center last:border-r-0 lg:py-4 lg:p-0 p-4">
-              {mainData[k].base}
+              {typeof taxDetail.base === 'number'
+                ? (taxDetail.base / 100).toFixed(2).replace('.', ',')
+                : taxDetail.base}
             </td>
             <td className="lg:[&:not(:first-child)]:text-20-semibold [&:not(:first-child)]:text-16-semibold w-[15%] border-r-2 [&:not(:first-child)]:text-center last:border-r-0 lg:py-4 lg:p-0 p-4">
-              {mainData[k].total}
+              {formatCurrency(taxDetail.amount)}
             </td>
           </tr>
         )
@@ -233,12 +104,12 @@ const TableRow = ({ dataType }: { dataType: 'ground' | 'construction' | 'apartme
   )
 }
 
-const Table = ({ dataType }: { dataType: 'ground' | 'construction' | 'apartment' }) => {
+const Table = ({ dataType, data }: { dataType: string; data: Tax['taxDetails'] }) => {
   return (
     <div className="no-scrollbar overflow-x-auto w-full">
       <table className="border-separate border-spacing-0 border-2 border-solid border-gray-200 lg:border-0 sm:w-full w-max table-auto lg:rounded-none rounded-lg last:border-b-2">
         <TableHeaderRow dataType={dataType} />
-        <TableRow dataType={dataType} />
+        <TableRow dataType={dataType} data={data} />
       </table>
     </div>
   )
@@ -259,10 +130,10 @@ const AccordionTableTaxContent = ({
 
   const TableContent = () => (
     <div className="h-full flex flex-col w-full gap-6">
-      <Table dataType={dataType} />
+      <Table dataType={dataType} data={data} />
       <div className="flex lg:bg-gray-0 bg-gray-100 lg:p-0 p-4 rounded-lg">
         <div className="text-h4-bold grow">Celkom</div>
-        <div className="text-h4-bold">{tableTotal[dataType]}</div>
+        <div className="text-h4-bold">{secondTitle}</div>
       </div>
     </div>
   )
@@ -283,6 +154,7 @@ const AccordionTableTaxContent = ({
     'border-gray-200': !isActive && !shadow,
     'border-gray-700': isActive && !shadow,
     'border-2 border-solid hover:border-gray-500': !shadow,
+    'border-2 border-solid hover:border-gray-700': !shadow && isActive,
     'hover:shadow-[0_8px_16px_0_rgba(0,0,0,0.08)]': shadow,
     'shadow-[0_0_16px_0_rgba(0,0,0,0.08)]': isActive && shadow,
     'shadow-[0_4px_16px_0_rgba(0,0,0,0.08)]': !isActive && shadow,
@@ -299,7 +171,11 @@ const AccordionTableTaxContent = ({
         />
       </div>
       <div className={accordionContainerStyle}>
-        <div className={cx('flex gap-4', accordionHeaderStyle)}>
+        <button
+          type="button"
+          onClick={() => setIsActive(!isActive)}
+          className={cx('no-tap-highlight flex gap-4', accordionHeaderStyle)}
+        >
           {icon && (
             <div
               className={cx('flex items-center justify-center', {
@@ -318,11 +194,7 @@ const AccordionTableTaxContent = ({
             </div>
           )}
           <div className="flex w-full flex-col gap-2 lg:gap-4">
-            <button
-              type="button"
-              className="no-tap-highlight flex cursor-pointer items-center gap-4"
-              onClick={() => setIsActive(!isActive)}
-            >
+            <div className="flex items-center gap-4">
               <div className="flex grow sm:flex-row flex-col items-start">
                 <div
                   className={cx('flex grow', {
@@ -346,7 +218,7 @@ const AccordionTableTaxContent = ({
                 </div>
               </div>
               <ExpandMore
-                className={cx('flex items-center justify-center', {
+                className={cx('flex items-center justify-center text-main-700', {
                   'lg:w-10 lg:h-10 w-8 h-8': accordionSize === 'lg',
                   'lg:w-8 lg:h-8 w-6 h-6': accordionSize === 'md',
                   'w-6 h-6': accordionSize === 'sm' || accordionSize === 'xs',
@@ -354,9 +226,9 @@ const AccordionTableTaxContent = ({
                   'transform rotate-270 md:rotate-0': !isActive,
                 })}
               />
-            </button>
+            </div>
           </div>
-        </div>
+        </button>
         <div
           className={cx('h-0.5 w-full bg-gray-200', {
             hidden: !isActive,
@@ -364,7 +236,7 @@ const AccordionTableTaxContent = ({
         />
         {isActive && (
           <div
-            className={cx('flex flex-col font-normal lg:block hidden', paddingStyles, {
+            className={cx('flex-col font-normal lg:block hidden', paddingStyles, {
               'text-h6': accordionSize === 'sm' || accordionSize === 'xs',
               'text-20': accordionSize === 'lg' || accordionSize === 'md',
             })}

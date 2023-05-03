@@ -1,11 +1,12 @@
-import { ArrowLeft } from '@assets/images'
-import { getLanguageKey } from '@utils/utils'
+import ArrowLeft from '@assets/images/new-icons/ui/arrow-left.svg'
 import cx from 'classnames'
+import { StatusBar, useStatusBarContext } from 'components/forms/info-components/StatusBar'
 import Brand from 'components/forms/simple-components/Brand'
 import { useRouter } from 'next/router'
 import { useTranslation } from 'next-i18next'
-import { StatusBar } from 'components/forms/info-components/StatusBar'
-import { useElementSize } from 'usehooks-ts'
+
+import useElementSize from '../../../../frontend/hooks/useElementSize'
+import { getLanguageKey } from '../../../../frontend/utils/general'
 
 interface IProps {
   className?: string
@@ -26,8 +27,10 @@ const BackButton = () => {
 
 export const LoginRegisterNavBar = ({ className, currentLanguage, backButtonHidden }: IProps) => {
   const languageKey = getLanguageKey(currentLanguage)
-  const [desktopRef, { height: desktopHeight }] = useElementSize()
-  const [mobileRef, { height: mobileHeight }] = useElementSize()
+
+  const { statusBarContent } = useStatusBarContext()
+  const [desktopRef, { height: desktopHeight }] = useElementSize([statusBarContent])
+  const [mobileRef, { height: mobileHeight }] = useElementSize([statusBarContent])
 
   const { t } = useTranslation('account')
   return (
@@ -47,7 +50,7 @@ export const LoginRegisterNavBar = ({ className, currentLanguage, backButtonHidd
           {!backButtonHidden && <BackButton />}
           <Brand
             className="group"
-            url="/"
+            url="https://bratislava.sk/"
             title={
               <p className="text-p2 text-font group-hover:text-gray-600">
                 {languageKey === 'en' && <span className="font-semibold">Bratislava </span>}
@@ -68,7 +71,7 @@ export const LoginRegisterNavBar = ({ className, currentLanguage, backButtonHidd
         <div className="h-16 flex items-center py-5 px-8 border-b-2">
           {!backButtonHidden && <BackButton />}
           <Brand
-            url="/"
+            url="https://bratislava.sk/"
             className="mx-auto"
             title={
               <p className="text-p2 text-font group-hover:text-gray-600">

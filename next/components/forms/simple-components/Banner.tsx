@@ -1,5 +1,4 @@
-import BannerPhone from '@assets/images/banner-phone.png'
-import CallIcon from '@assets/images/forms/call.svg'
+import CallIcon from '@assets/images/new-icons/ui/telephone.svg'
 import cx from 'classnames'
 import AccountMarkdown from 'components/forms/segments/AccountMarkdown/AccountMarkdown'
 import Image from 'next/legacy/image'
@@ -11,8 +10,10 @@ type BannerBase = {
   buttonText?: string
   mobileNumber?: string
   content?: string
+  href?: string
   onPress?: () => void
   className?: string
+  image: string
 }
 
 const Banner = ({
@@ -20,6 +21,8 @@ const Banner = ({
   content,
   buttonText = 'Button',
   mobileNumber = '',
+  href,
+  image,
   onPress,
   className,
 }: BannerBase) => {
@@ -37,18 +40,26 @@ const Banner = ({
         </div>
         <div className="flex flex-col lg:flex-row items-center gap-4">
           <Button
-            className="hidden lg:flex"
+            className="no-underline hidden lg:flex rounded-lg"
             variant="category"
             text={buttonText}
+            label={buttonText}
+            href={href}
+            hrefIconHidden
+            hrefLabelCenter
             onPress={onPress}
           />
           <Button
-            className="flex lg:hidden"
+            className="no-underline flex lg:hidden rounded-lg"
             size="sm"
             variant="category"
             text={buttonText}
-            onPress={onPress}
+            label={buttonText}
+            href={href}
+            hrefIconHidden
+            hrefLabelCenter
             fullWidth
+            onPress={onPress}
           />
           {mobileNumber && (
             <div className="text-gray-0 flex items-center gap-2 px-3 py-2">
@@ -58,8 +69,8 @@ const Banner = ({
           )}
         </div>
       </div>
-      <div className="my-auto sm:w-1/2 w-full">
-        <Image src={BannerPhone} />
+      <div className="my-auto sm:w-1/2 w-full flex">
+        <Image src={image} />
       </div>
     </div>
   )

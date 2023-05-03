@@ -1,13 +1,14 @@
-import { ROUTES } from '@utils/constants'
-import { AccountError } from '@utils/useAccount'
-import useHookForm from '@utils/useHookForm'
-import Alert from 'components/forms/info-components/Alert'
+import AccountErrorAlert from 'components/forms/segments/AccountErrorAlert/AccountErrorAlert'
 import AccountLink from 'components/forms/segments/AccountLink/AccountLink'
 import Button from 'components/forms/simple-components/Button'
 import InputField from 'components/forms/widget-components/InputField/InputField'
 import PasswordField from 'components/forms/widget-components/PasswordField/PasswordField'
 import { useTranslation } from 'next-i18next'
 import { Controller } from 'react-hook-form'
+
+import { ROUTES } from '../../../../frontend/api/constants'
+import { AccountError } from '../../../../frontend/hooks/useAccount'
+import useHookForm from '../../../../frontend/hooks/useHookForm'
 
 interface Data {
   email: string
@@ -57,7 +58,7 @@ const LoginForm = ({ onSubmit, error }: Props) => {
       onSubmit={handleSubmit((data: Data) => onSubmit(data.email, data.password))}
     >
       <h1 className="text-h3">{t('login_title')}</h1>
-      {error && <Alert message={t(error.code)} type="error" className="min-w-full" />}
+      <AccountErrorAlert error={error} />
       <Controller
         name="email"
         control={control}

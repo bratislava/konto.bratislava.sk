@@ -1,11 +1,16 @@
-import useAccount, { AccountStatus } from '@utils/useAccount'
-import cx from 'classnames'
+// import { TaxApiError } from '@utils/api'
 import AccountSectionHeader from 'components/forms/segments/AccountSectionHeader/AccountSectionHeader'
 import TaxesFeesCard from 'components/forms/segments/AccountSections/TaxesFeesSection/TaxesFeesCard'
 import TaxesFeesErrorCard from 'components/forms/segments/AccountSections/TaxesFeesSection/TaxesFeesErrorCard'
-import TaxesFeesWaitingCard from 'components/forms/segments/AccountSections/TaxesFeesSection/TaxesFeesWaitingCard'
+// import TaxesFeesWaitingCard from 'components/forms/segments/AccountSections/TaxesFeesSection/TaxesFeesWaitingCard'
+import Spinner from 'components/forms/simple-components/Spinner'
 import { useTranslation } from 'next-i18next'
-import { ReactNode, useState } from 'react'
+
+import { ROUTES } from '../../../../../frontend/api/constants'
+import { useTaxes } from '../../../../../frontend/hooks/apiHooks'
+import useAccount, { AccountStatus } from '../../../../../frontend/hooks/useAccount'
+import { taxStatusHelper } from '../../../../../frontend/utils/general'
+import logger from '../../../../../frontend/utils/logger'
 
 export type TaxesCardBase = {
   title: string
@@ -14,99 +19,72 @@ export type TaxesCardBase = {
   currentPaid: number
   finishPrice: number
   paidDate?: string
-  status: 'negative' | 'warning' | 'success'
+  status: 'paid' | 'unpaid' | 'partially_paid'
 }
-
-const cards: TaxesCardBase[] = [
-  {
-    title: 'Daň z danoveho uradu',
-    yearPay: 2023,
-    createDate: '21. april 2023',
-    currentPaid: 0,
-    finishPrice: 58,
-    status: 'negative',
-    paidDate: '21. apríl 2023',
-  },
-  {
-    title: 'Daň z nehnuteľností',
-    yearPay: 2023,
-    createDate: '18. april 2023',
-    currentPaid: 19.33,
-    finishPrice: 58,
-    status: 'warning',
-    paidDate: '18. apríl 2023',
-  },
-  {
-    title: 'Daň za zivnost',
-    yearPay: 2023,
-    createDate: '16. april 2023',
-    currentPaid: 0,
-    finishPrice: 58,
-    status: 'success',
-    paidDate: '16. apríl 2023',
-  },
-]
 
 interface TaxesFeesSectionProps {
   isProductionDeployment?: boolean
 }
 
-const TaxesFeesSection = ({ isProductionDeployment }: TaxesFeesSectionProps) => {
-  const [isOn, setIsOn] = useState<'default' | 'waiting' | 'error'>('waiting')
+const TaxesFeesSection: React.FC<TaxesFeesSectionProps> = () => {
   const { t } = useTranslation('account')
   const { status } = useAccount()
 
-  const taxesFeesWaitingCardContent = `
-<h4>${t('account_section_payment.waiting_card_title')}</h4>
-<p>${t('account_section_payment.waiting_card_text')}</p>
-`
+  const { data, isLoading } = useTaxes()
+
+  //   const taxesFeesWaitingCardContent = `
+  // <h4>${t('account_section_payment.waiting_card_title')}</h4>
+  // <p>${t('account_section_payment.waiting_card_text')}</p>
+  // `
   const taxesFeesErrorCardContent = `
 <h4>${t('account_section_payment.error_card_title')}</h4>
 <div>${t('account_section_payment.error_card_content.title')}
 <ul>${
     status !== AccountStatus.IdentityVerificationSuccess
-      ? t('account_section_payment.error_card_content.list.verification')
+      ? t('account_section_payment.error_card_content.list.verification', {
+          url: ROUTES.IDENTITY_VERIFICATION,
+        })
       : ''
   }${t('account_section_payment.error_card_content.list.other')}</ul><br />${t(
     'account_section_payment.error_card_content.help_text',
+    { url: ROUTES.HELP },
   )}</div>
 `
 
-  // Temporary switcher for presentation
-  const switcher = (): ReactNode => {
-    const array: { id: 'default' | 'waiting' | 'error'; title: string }[] = [
-      {
-        id: 'default',
-        title: 'Default',
-      },
-      {
-        id: 'waiting',
-        title: 'Waiting',
-      },
-      {
-        id: 'error',
-        title: 'Error',
-      },
-    ]
+  let content = null
 
-    return (
-      <div className="flex flex-col w-full max-w-screen-lg m-auto mt-8 px-4 lg:px-0">
-        <span className="text-p2-semibold mb-2">Temporary switcher</span>
-        <div className="flex">
-          {array.map((item) => (
-            <button
-              type="button"
-              key={item.id}
-              onClick={() => setIsOn(item.id)}
-              className={cx('w-max h-6 flex justify-center items-center px-4 py-4 cursor-pointer', {
-                'bg-gray-200': isOn !== item.id,
-                'bg-gray-700 text-gray-100': isOn === item.id,
-              })}
-            >
-              {item.title}
-            </button>
-          ))}
-        </div>
+  if (isLoading) {
+    content = <Spinner className="mt-10 m-auto" />
+  } else if (status !== AccountStatus.IdentityVerificationSuccess) {
+    content = <TaxesFeesErrorCard content={taxesFeesErrorCardContent} />
+  } else if (!isLoading && !data) {
+    content = (
+      // error instanceof TaxApiError && error.status === 422 ? (
+      //   <TaxesFeesWaitingCard content={taxesFeesWaitingCardContent} />
+      // ) : (
+      <TaxesFeesErrorCard content={taxesFeesErrorCardContent} />
+    )
+  } else if (data) {
+    content = (
+      <ul className="lg:px-0 my-2 lg:my-8 px-4 sm:px-6">
+        <li className="mb-2 lg:mb-6">
+          <TaxesFeesCard
+            title={t('account_section_payment.tax_card_title')}
+            yearPay={data?.year}
+            createDate={new Date(data?.createdAt).toLocaleDateString('sk-SK')}
+            currentPaid={data?.payedAmount}
+            finishPrice={data?.amount}
+            status={taxStatusHelper(data).paymentStatus}
+            // paidDate={data?.updatedAt}
+          />
+        </li>
+      </ul>
+    )
+  } else {
+    logger.error('TaxesFeesSection.tsx: unknown error - shoud never happen')
+    content = (
+      <div>
+        Neočakávaná chyba pri načítaní dát - kontaktujte prosím podporu na info@bratislava.sk
       </div>
     )
   }
@@ -114,28 +92,7 @@ const TaxesFeesSection = ({ isProductionDeployment }: TaxesFeesSectionProps) => 
   return (
     <div className="flex flex-col">
       <AccountSectionHeader title={t('account_section_payment.title')} />
-      {isOn === 'default' && (
-        <div className="max-w-screen-lg w-full m-auto">
-          <ul className="lg:px-0 my-2 lg:my-8 px-4 sm:px-6">
-            {cards.map((card, i) => (
-              <li className="mb-2 lg:mb-6" key={i}>
-                <TaxesFeesCard
-                  title={card.title}
-                  yearPay={card.yearPay}
-                  createDate={card.createDate}
-                  currentPaid={card.currentPaid}
-                  finishPrice={card.finishPrice}
-                  status={card.status}
-                  paidDate={card.paidDate}
-                />
-              </li>
-            ))}
-          </ul>
-        </div>
-      )}
-      {isOn === 'waiting' && <TaxesFeesWaitingCard content={taxesFeesWaitingCardContent} />}
-      {isOn === 'error' && <TaxesFeesErrorCard content={taxesFeesErrorCardContent} />}
-      {isProductionDeployment ? null : switcher()}
+      <div className="max-w-screen-lg w-full m-auto">{content}</div>
     </div>
   )
 }

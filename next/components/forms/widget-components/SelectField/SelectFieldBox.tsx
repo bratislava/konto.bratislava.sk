@@ -1,8 +1,9 @@
 import { useTranslation } from 'next-i18next'
 import React, { ForwardedRef, forwardRef, ForwardRefRenderFunction } from 'react'
 
+import { handleOnKeyPress } from '../../../../frontend/utils/general'
 import Tag from '../../simple-components/Tag'
-import { SelectOption } from './SelectField'
+import { SelectOption } from './SelectOption.interface'
 
 interface SelectFieldBoxProps {
   value?: SelectOption[]
@@ -15,7 +16,11 @@ interface SelectFieldBoxProps {
   onRemoveAll: () => void
   onFilterChange: (value: string) => void
   onDeleteLastValue: () => void
-  onClick?: (event: React.MouseEvent) => void
+  onClick?: (event: React.MouseEvent | React.KeyboardEvent) => void
+}
+
+const getOptionTitle = (selectOption: SelectOption) => {
+  return selectOption.title ?? String(selectOption.const)
 }
 
 const SelectFieldBoxComponent: ForwardRefRenderFunction<HTMLDivElement, SelectFieldBoxProps> = (
@@ -63,19 +68,16 @@ const SelectFieldBoxComponent: ForwardRefRenderFunction<HTMLDivElement, SelectFi
     }
   }
 
-  const getOptionTitle = (selectOption: SelectOption) => {
-    return selectOption.title ?? String(selectOption.const)
-  }
-
   // RENDER
   return (
     <section
+      role="button"
+      tabIndex={0}
       ref={ref}
       className="flex items-center w-full flex-row flex-wrap gap-2 py-2 sm:py-2.5 sm:pl-4 pl-3"
       data-value={value}
-      onClick={(event: React.MouseEvent) => {
-        if (onClick) onClick(event)
-      }}
+      onClick={(event: React.MouseEvent) => onClick?.(event)}
+      onKeyPress={(event: React.KeyboardEvent) => handleOnKeyPress(event, () => onClick?.(event))}
     >
       {
         /* TAGS */
@@ -104,16 +106,18 @@ const SelectFieldBoxComponent: ForwardRefRenderFunction<HTMLDivElement, SelectFi
           )
         ) : null
       }
-      <input
-        ref={filterRef}
-        className="text-16 max-w-[80px] xs:max-w-none border-0 outline-none"
-        type="text"
-        size={getInputSize()}
-        value={filter}
-        placeholder={getPlaceholder()}
-        onKeyDown={handleOnKeyDown}
-        onChange={(event) => onFilterChange(event.target.value)}
-      />
+      {(multiple || (!multiple && (!value || value.length === 0))) && (
+        <input
+          ref={filterRef}
+          className="text-16 max-w-[80px] xs:max-w-none border-0 outline-none"
+          type="text"
+          size={getInputSize()}
+          value={filter}
+          placeholder={getPlaceholder()}
+          onKeyDown={handleOnKeyDown}
+          onChange={(event) => onFilterChange(event.target.value)}
+        />
+      )}
     </section>
   )
 }

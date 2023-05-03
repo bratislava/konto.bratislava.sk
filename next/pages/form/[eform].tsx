@@ -1,15 +1,15 @@
 import { EFormValue } from '@backend/forms'
 import { getEform } from '@backend/utils/forms'
-import { pageStyle } from '@utils/page'
-import { AsyncServerProps } from '@utils/types'
-import { forceString, isProductionDeployment } from '@utils/utils'
 import GeneratedFormRJSF from 'components/forms/GeneratedFormRJSF'
-import FormPageLayout from 'components/layouts/FormPageLayout'
+import AccountPageLayout from 'components/layouts/AccountPageLayout'
 import PageWrapper from 'components/layouts/PageWrapper'
 import { GetServerSidePropsContext } from 'next'
 import { useRouter } from 'next/router'
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
-import AccountPageLayout from 'components/layouts/AccountPageLayout'
+
+import { forceString, isProductionDeployment } from '../../frontend/utils/general'
+import logger from '../../frontend/utils/logger'
+import { AsyncServerProps } from '../../frontend/utils/types'
 
 export const getServerSideProps = async (ctx: GetServerSidePropsContext) => {
   if (isProductionDeployment()) return { notFound: true }
@@ -18,7 +18,7 @@ export const getServerSideProps = async (ctx: GetServerSidePropsContext) => {
   try {
     eform = getEform(ctx.query.eform)
   } catch (error) {
-    console.error(error)
+    logger.error(error)
     return { notFound: true }
   }
 
@@ -37,6 +37,7 @@ export const getServerSideProps = async (ctx: GetServerSidePropsContext) => {
             locale: l,
           })),
       },
+      isProductionDeploy: isProductionDeployment(),
       ...(await serverSideTranslations(locale)),
     },
   }
@@ -57,7 +58,11 @@ export const getServerSideProps = async (ctx: GetServerSidePropsContext) => {
 //   })
 // }
 
-const FormTestPage = ({ page, eform }: AsyncServerProps<typeof getServerSideProps>) => {
+const FormTestPage = ({
+  page,
+  eform,
+  isProductionDeploy,
+}: AsyncServerProps<typeof getServerSideProps>) => {
   const router = useRouter()
 
   const formSlug = forceString(router.query.eform)
@@ -74,7 +79,7 @@ const FormTestPage = ({ page, eform }: AsyncServerProps<typeof getServerSideProp
         { locale: 'en', slug: pageSlug },
       ]}
     >
-      <AccountPageLayout hiddenHeaderNav>
+      <AccountPageLayout hiddenHeaderNav isProductionDeploy={isProductionDeploy}>
         <GeneratedFormRJSF eform={eform} escapedSlug={escapedSlug} formSlug={formSlug} />
       </AccountPageLayout>
     </PageWrapper>

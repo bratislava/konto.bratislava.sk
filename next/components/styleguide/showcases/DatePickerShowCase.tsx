@@ -2,9 +2,7 @@ import DatePicker from '../../forms/widget-components/DateTimePicker/DatePicker'
 import { Stack } from '../Stack'
 import { Wrapper } from '../Wrapper'
 
-interface DatePickerShowCaseProps {}
-
-const DatePickerShowCase = ({}: DatePickerShowCaseProps) => {
+const DatePickerShowCase = () => {
   return (
     <Wrapper direction="column" title="Date Picker">
       <Stack direction="column">

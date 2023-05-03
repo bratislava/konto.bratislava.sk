@@ -1,10 +1,15 @@
 import { EFormValue } from '@backend/forms'
 import { FormValidation, RJSFSchema } from '@rjsf/utils'
-import { useFormFiller, useFormStepper, useFormSubmitter } from '@utils/forms'
 import cx from 'classnames'
 import SkipStepModal from 'components/forms/segments/SkipStepModal/SkipStepModal'
 import { useState } from 'react'
 
+import { validator } from '../../frontend/dtos/formStepperDto'
+import { useFormFiller } from '../../frontend/hooks/useFormFiller'
+import { useFormRJSFContextMemo } from '../../frontend/hooks/useFormRJSFContextMemo'
+import { useFormStepper } from '../../frontend/hooks/useFormStepper'
+import { useFormSubmitter } from '../../frontend/hooks/useFormSubmitter'
+import { customValidate } from '../../frontend/utils/formStepper'
 import FinalStep from './steps/FinalStep'
 import StepperView from './steps/StepperView'
 import StepButtonGroup from './steps/Summary/StepButtonGroup'
@@ -19,6 +24,7 @@ interface FormRJSF {
 
 const GeneratedFormRJSF = ({ eform, escapedSlug, formSlug, wrapperClassName }: FormRJSF) => {
   const filler = useFormFiller(eform)
+  const formContext = useFormRJSFContextMemo(eform, filler.formId)
   const form = useFormStepper(escapedSlug, eform, {
     onStepSumbit: filler.updateFormData,
     onInit: filler.initFormData,
@@ -35,13 +41,14 @@ const GeneratedFormRJSF = ({ eform, escapedSlug, formSlug, wrapperClassName }: F
       setIsOnShowSkipModal(true)
     }
   }
+
   const submitter = useFormSubmitter(formSlug)
 
   return (
     <div
       className={cx(
-        'flex flex-col md:gap-20 gap-10 w-full',
-        'md:flex-row md:gap-20',
+        'flex flex-col gap-10 py-10 w-full max-w-screen-lg mx-auto',
+        'lg:flex-row lg:gap-20',
         wrapperClassName,
       )}
     >
@@ -49,8 +56,8 @@ const GeneratedFormRJSF = ({ eform, escapedSlug, formSlug, wrapperClassName }: F
         <StepperView
           steps={form.stepData}
           currentStep={form.stepIndex}
-          // hook useFormStepper is prepared to skipping multiple steps but they will not be validated
-          // if not wanted because of broken validation when skipping multiple steps, comment out onChangeStep
+          // hook useFormStepper is prepared to skip multiple steps but they will not be validated
+          // if skip of multiple steps is not wanted, comment out onChangeStep
           onChangeStep={skipButtonHandler}
         />
         <SkipStepModal
@@ -66,40 +73,45 @@ const GeneratedFormRJSF = ({ eform, escapedSlug, formSlug, wrapperClassName }: F
           }}
         />
       </div>
-      <div className={cx('grow mx-8', 'lg:mx-28')}>
+      <div className={cx('grow px-4', 'lg:px-0')}>
         {form.isComplete ? (
           <FinalStep
             formData={form.formData}
             formErrors={form.errors}
             extraErrors={form.extraErrors}
-            schema={eform.schema}
-            onGoToStep={(step: number) => form.setStepIndex(step)}
+            schema={form.validatedSchema}
+            onGoToStep={form.setStepIndex}
             submitErrors={submitter.errors}
             submitMessage={submitter.successMessage}
           />
         ) : (
-          <ThemedForm
-            key={`form-${escapedSlug}-step-${form.stepIndex}`}
-            ref={form.formRef}
-            schema={form.currentSchema}
-            uiSchema={eform.uiSchema}
-            formData={form.formData}
-            validator={form.validator}
-            customValidate={(formData: RJSFSchema, errors: FormValidation) => {
-              return form.customValidate(formData, errors, form.currentSchema)
-            }}
-            onSubmit={(e) => {
-              form.handleOnSubmit(e.formData)
-            }}
-            onChange={(e) => {
-              form.setStepFormData(e.formData)
-            }}
-            onError={form.handleOnErrors}
-            extraErrors={form.extraErrors}
-            showErrorList={false}
-            omitExtraData
-            liveOmit
-          />
+          <>
+            <h1 className="text-h1-medium font-semibold">{form.stepTitle}</h1>
+            <ThemedForm
+              className="[&_legend]:hidden"
+              key={`form-${escapedSlug}-step-${form.stepIndex}`}
+              ref={form.formRef}
+              schema={form.currentSchema}
+              uiSchema={eform.uiSchema}
+              formData={form.formData}
+              validator={validator}
+              customValidate={(formData: RJSFSchema, errors: FormValidation) => {
+                return customValidate(formData, errors, form.currentSchema)
+              }}
+              onSubmit={async (e) => {
+                await form.handleOnSubmit(e.formData as RJSFSchema)
+              }}
+              onChange={(e) => {
+                form.setStepFormData(e.formData as RJSFSchema)
+              }}
+              onError={form.handleOnErrors}
+              extraErrors={form.extraErrors}
+              formContext={formContext}
+              showErrorList={false}
+              omitExtraData
+              liveOmit
+            />
+          </>
         )}
         <StepButtonGroup
           stepIndex={form.stepIndex}

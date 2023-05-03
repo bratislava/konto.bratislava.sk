@@ -85,7 +85,7 @@ const TimeSelector = ({
     if (onChange && timeValueFormat) {
       onChange(timeValueFormat)
     }
-  }, [timeValueFormat])
+  }, [timeValueFormat, onChange])
 
   useDidMount(() => {
     const hoursItemOffset = hoursItemRef?.current?.[+timeFormatArray[0]]?.offsetTop || 0
@@ -103,9 +103,9 @@ const TimeSelector = ({
               <span className="pt-[84px] focus:outline-none" />
               {hoursArray?.map((item) => (
                 <button
-                  ref={(el: HTMLButtonElement) =>
-                    hoursItemRef ? (hoursItemRef.current[item] = el) : null
-                  }
+                  ref={(el: HTMLButtonElement) => {
+                    if (hoursItemRef) hoursItemRef.current[item] = el
+                  }}
                   id={`btn-${item}`}
                   type="button"
                   key={item}
@@ -142,9 +142,9 @@ const TimeSelector = ({
               <span className="pt-[84px] focus:outline-none" />
               {minutesArray?.map((item) => (
                 <button
-                  ref={(el: HTMLButtonElement) =>
-                    minutesItemRef ? (minutesItemRef.current[item] = el) : null
-                  }
+                  ref={(el: HTMLButtonElement) => {
+                    if (minutesItemRef) minutesItemRef.current[item] = el
+                  }}
                   id={`btn-${item}`}
                   type="button"
                   key={item}

@@ -4,9 +4,7 @@ import React from 'react'
 import { Stack } from '../Stack'
 import { Wrapper } from '../Wrapper'
 
-interface InputFieldShowCaseBase {}
-
-const InputFieldShowCase = ({}: InputFieldShowCaseBase) => {
+const InputFieldShowCase = () => {
   return (
     <Wrapper direction="column" title="Input Field">
       <Stack direction="column">

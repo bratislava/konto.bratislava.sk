@@ -1,8 +1,8 @@
 import { ErrorSchema, RJSFValidationError, StrictRJSFSchema } from '@rjsf/utils'
-import { JsonSchema } from '@utils/forms'
 import { ErrorObject } from 'ajv'
 import { useTranslation } from 'next-i18next'
 
+import { JsonSchema } from '../../../frontend/dtos/formStepperDto'
 import Summary from './Summary/Summary'
 import SummaryMessages from './Summary/SummaryMessages'
 
@@ -17,7 +17,7 @@ interface FinalStepProps {
 }
 
 // TODO find out if we need to submit to multiple different endpoints and allow configuration if so
-export const FinalStep = ({
+const FinalStep = ({
   formData,
   formErrors,
   extraErrors,

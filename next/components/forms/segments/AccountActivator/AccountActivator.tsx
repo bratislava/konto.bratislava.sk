@@ -4,6 +4,8 @@ import Button from 'components/forms/simple-components/Button'
 import { useTranslation } from 'next-i18next'
 import React from 'react'
 
+import { ROUTES } from '../../../../frontend/api/constants'
+
 const AccountActivator = () => {
   const { t } = useTranslation('account')
   return (
@@ -15,7 +17,7 @@ const AccountActivator = () => {
           className="mt-2 md:mt-4"
           size="sm"
           variant="link-category"
-          href="/migration"
+          href={ROUTES.MIGRATION}
           label="Aktivovať konto"
           hrefIconHidden
         />

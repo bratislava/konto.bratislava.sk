@@ -5,6 +5,7 @@ import FieldErrorMessage from 'components/forms/info-components/FieldErrorMessag
 import React, { ForwardedRef, forwardRef, ForwardRefRenderFunction, useState } from 'react'
 import { v4 as createUuid } from 'uuid'
 
+import logger from '../../../../frontend/utils/logger'
 import UploadBrokenMessages from '../../info-components/UploadBrokenMessages'
 import UploadFieldHeader from '../../info-components/UploadFieldHeader'
 import UploadButton from './UploadButton'
@@ -24,6 +25,16 @@ interface UploadProps {
   className?: string
   onChange?: (value: UploadMinioFile[]) => void
   errorMessage?: string[]
+  bucketFolderName?: string
+}
+
+const getBucketFileName = (file: File, folderName: string) => {
+  const extension = file.type.split("/").pop()
+  const newName = folderName ? `${folderName}/${createUuid()}.${extension}` : `${createUuid()}.${extension}`
+  return new File([file], newName, {
+    type: file.type,
+    lastModified: file.lastModified,
+  })
 }
 
 const UploadComponent: ForwardRefRenderFunction<HTMLDivElement, UploadProps> = (
@@ -43,6 +54,7 @@ const UploadComponent: ForwardRefRenderFunction<HTMLDivElement, UploadProps> = (
     className,
     onChange,
     errorMessage,
+    bucketFolderName
   }: UploadProps = props
 
   // STATES
@@ -65,7 +77,7 @@ const UploadComponent: ForwardRefRenderFunction<HTMLDivElement, UploadProps> = (
         if (res.status !== 200) throw new Error(`Api response status: ${res.status}`)
         return res
       })
-      .catch((error) => console.log(error))
+      .catch((error) => logger.error(error))
   }
 
   const isFileInSizeLimit = (file: File) => {
@@ -83,14 +95,6 @@ const UploadComponent: ForwardRefRenderFunction<HTMLDivElement, UploadProps> = (
     return supportedFormats.includes(fileExtension)
   }
 
-  const addTimeStampToFileName = (file: File) => {
-    const newName = `${Date.now()}_${createUuid()}_${file.name}`
-    return new File([file], newName, {
-      type: file.type,
-      lastModified: file.lastModified,
-    })
-  }
-
   const sanitizeClientFiles = (minioFiles: UploadMinioFile[]) => {
     const messages: string[] = []
     const chosenFiles: UploadMinioFile[] = []
@@ -102,7 +106,7 @@ const UploadComponent: ForwardRefRenderFunction<HTMLDivElement, UploadProps> = (
         messages.push(`${minioFile.file.name} is too large.`)
       } else {
         const sanitizedFile: UploadMinioFile = {
-          file: addTimeStampToFileName(minioFile.file),
+          file: getBucketFileName(minioFile.file, bucketFolderName),
           isUploading: true,
           originalName: minioFile.originalName,
         }
@@ -123,17 +127,17 @@ const UploadComponent: ForwardRefRenderFunction<HTMLDivElement, UploadProps> = (
 
     sanitizedFiles.forEach((minioFile, id) => {
       uploadFile(minioFile.file)
-        .then((res) => {
-          console.log('RES UPLOAD:', res)
-          return res
-        })
         .catch((error) => {
-          console.log(error)
+          logger.error(error)
           sanitizedFiles[id].errorMessage = 'File not uploaded'
         })
         .finally(() => {
           sanitizedFiles[id].isUploading = false
           emitOnChange(sanitizedFiles, value)
+        })
+        // technically finally can throw
+        .catch((error) => {
+          logger.error(error)
         })
     })
   }
@@ -177,7 +181,7 @@ const UploadComponent: ForwardRefRenderFunction<HTMLDivElement, UploadProps> = (
         if (!value) throw new Error('Value not defined in component')
         return res
       })
-      .catch((error) => console.log(error))
+      .catch((error) => logger.error(error))
   }
 
   // RENDER

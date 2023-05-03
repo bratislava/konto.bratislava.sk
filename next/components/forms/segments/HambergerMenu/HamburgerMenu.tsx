@@ -1,8 +1,12 @@
 import cx from 'classnames'
 import { MenuItem } from 'components/forms/segments/AccountNavBar/AccountNavBar'
-import { useTranslation } from 'next-i18next'
+import IdentityVerificationStatus from 'components/forms/simple-components/IdentityVerificationStatus'
 import Link from 'next/link'
 import { useRouter } from 'next/router'
+import { useTranslation } from 'next-i18next'
+
+import { ROUTES } from '../../../../frontend/api/constants'
+import { handleOnKeyPress } from '../../../../frontend/utils/general'
 
 interface IProps {
   sectionsList?: MenuItem[]
@@ -29,16 +33,22 @@ const Item = ({
 
   return (
     <div
+      role="button"
+      tabIndex={0}
       onClick={onClick}
+      onKeyPress={(event) => handleOnKeyPress(event, onClick)}
       className={cx(
-        'text-p2-semibold rounded-lg p-4 flex cursor-pointer border-b-2 border-transparent hover:text-main-700 hover:bg-main-100 transition-all',
+        ' text-p2-semibold rounded-lg p-4 flex items-center justify-between cursor-pointer border-b-2 border-transparent hover:text-main-700 hover:bg-main-100 transition-all',
         {
           'text-main-700 bg-main-100': isSelected,
         },
       )}
     >
-      {menuItem.icon}
-      <span className="ml-3">{t(menuItem?.title)}</span>
+      <div className="flex items-center gap-3">
+        {menuItem.icon}
+        <span>{t(menuItem?.title)}</span>
+      </div>
+      {menuItem.link === ROUTES.USER_PROFILE && <IdentityVerificationStatus />}
     </div>
   )
 }

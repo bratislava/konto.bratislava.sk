@@ -1,8 +1,9 @@
-import { UserData } from '@utils/useAccount'
 import cx from 'classnames'
-import Alert from 'components/forms/Alert'
+import Alert from 'components/forms/info-components/Alert'
 import { useTranslation } from 'next-i18next'
-import { MutableRefObject, useId, useRef } from 'react'
+import { useId } from 'react'
+
+import { UserData } from '../../../../frontend/hooks/useAccount'
 import UserProfileDetailEdit from './UserProfileDetailEdit'
 import UserProfileDetailsButtons from './UserProfileDetailsButtons'
 import UserProfileDetailView from './UserProfileDetailView'
@@ -54,6 +55,7 @@ const UserProfileDetail = (props: UserProfileDetailProps) => {
           text={t('profile_detail.text')}
           isEditing={isEditing}
           underline
+          mainHeader
         >
           <UserProfileDetailsButtons
             formId={formId}
@@ -63,11 +65,13 @@ const UserProfileDetail = (props: UserProfileDetailProps) => {
           />
         </UserProfileSectionHeader>
         <div className="flex flex-col">
+          {/* Alert only for alertType === error */}
           {isAlertOpened && (
             <div className="flex flex-row p-2">
               <Alert
-                className="max-w-none grow"
+                fullWidth
                 type={alertType}
+                solid
                 message={t(`profile_detail.${alertType}_alert`)}
               />
             </div>

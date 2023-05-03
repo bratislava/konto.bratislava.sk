@@ -12,7 +12,7 @@ const StatusBarContext = createContext<{
   setStatusBarContent: React.Dispatch<React.SetStateAction<React.ReactNode>>
 }>({
   statusBarContent: null,
-  setStatusBarContent: () => undefined,
+  setStatusBarContent: () => {},
 })
 
 interface StatusBarProviderProps {
@@ -45,7 +45,7 @@ export const StatusBar: React.FC<StatusBarProps> = ({ className }) => {
               <span className="hidden md:flex mr-3">
                 <ErrorIcon solid className="w-5 h-5" />
               </span>
-              <p className="text-p2">{statusBarContent}</p>
+              <div className="text-p2">{statusBarContent}</div>
             </div>
           </SectionContainer>
         </div>

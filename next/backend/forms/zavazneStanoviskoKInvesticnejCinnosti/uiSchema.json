@@ -2,6 +2,19 @@
   "ui:submitButtonOptions": {
     "norender": true
   },
+  "prilohy": {
+    "ui:hideError": true,
+    "projektovaDokumentacia": {
+      "ui:widget": "Upload",
+      "ui:label": false,
+      "ui:options": {
+        "helptext": "Jednotlivé časti štúdie môžete nahrať samostatne alebo ako jeden súbor.",
+        "size": 5,
+        "accept": ".jpg,.pdf",
+        "type": "dragAndDrop"
+      }
+    }
+  },
   "ziadatel": {
     "ui:hideError": true,
     "ziatetelTyp": {
@@ -276,59 +289,6 @@
         "size": 5,
         "accept": ".jpg,.pdf",
         "type": "button"
-      }
-    }
-  },
-  "prilohy": {
-    "ui:hideError": true,
-    "projektovaDokumentacia": {
-      "ui:widget": "Upload",
-      "ui:label": false,
-      "ui:options": {
-        "helptext": "Jednotlivé časti štúdie môžete nahrať samostatne alebo ako jeden súbor.",
-        "size": 5,
-        "accept": ".jpg,.pdf",
-        "type": "dragAndDrop"
-      }
-    },
-    "vykresy": {
-      "ui:widget": "Upload",
-      "ui:label": false,
-      "ui:options": {
-        "helptext": "pešie ťahy, plochy zelene a iné",
-        "size": 5,
-        "accept": ".jpg,.pdf",
-        "type": "dragAndDrop"
-      }
-    },
-    "ulicnyPohlad": {
-      "ui:widget": "Upload",
-      "ui:label": false,
-      "ui:options": {
-        "helptext": "povinné v zastavanom území",
-        "size": 5,
-        "accept": ".jpg,.pdf",
-        "type": "dragAndDrop"
-      }
-    },
-    "podzemnePodlazie": {
-      "ui:widget": "Upload",
-      "ui:label": false,
-      "ui:options": {
-        "helptext": "podľa platnej STN 73 4301 - bytové budovy",
-        "size": 5,
-        "accept": ".jpg,.pdf",
-        "type": "dragAndDrop"
-      }
-    },
-    "vyjadrenieUradu": {
-      "ui:widget": "Upload",
-      "ui:label": false,
-      "ui:options": {
-        "helptext": "ak je riešený objekt národnou kultúrnou pamiatkou,\n resp. ide o novostavbu v pamiatkovej zóne Bratislavy - centrálna mestská oblasť (PZ CMO)",
-        "size": 5,
-        "accept": ".jpg,.pdf",
-        "type": "dragAndDrop"
       }
     }
   }

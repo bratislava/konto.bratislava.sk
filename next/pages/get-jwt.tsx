@@ -1,10 +1,3 @@
-// this is non-production code
-// disabling eslint/ts checks instead of fixing them
-// @ts-nocheck
-import { getForms, resetRcApi } from '@utils/api'
-import { AsyncServerProps } from '@utils/types'
-import useAccount from '@utils/useAccount'
-import { isProductionDeployment } from '@utils/utils'
 import Button from 'components/forms/simple-components/Button'
 import PageWrapper from 'components/layouts/PageWrapper'
 import { Wrapper } from 'components/styleguide/Wrapper'
@@ -13,9 +6,17 @@ import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
 import { useState } from 'react'
 import { useEffectOnce } from 'usehooks-ts'
 
-const signUpParams = [
+import { resetRcApi } from '../frontend/api/api'
+import { ROUTES } from '../frontend/api/constants'
+import useAccount, { UserData } from '../frontend/hooks/useAccount'
+import logger from '../frontend/utils/logger'
+import { AsyncServerProps } from '../frontend/utils/types'
+
+const signUpParams: [string, string, boolean, string, UserData] = [
   'test@mail.com',
   'Qwert12345!',
+  true,
+  '',
   {
     given_name: 'Test',
     family_name: 'Test',
@@ -31,11 +32,9 @@ const GetJwt = ({ page }: AsyncServerProps<typeof getServerSideProps>) => {
       const token = await getAccessToken()
       if (token) {
         setAccessToken(token)
-        const forms = await getForms(token)
-        console.log(forms)
       }
     })().catch((error) => {
-      console.log(error)
+      logger.error(error)
     })
   })
 
@@ -43,9 +42,9 @@ const GetJwt = ({ page }: AsyncServerProps<typeof getServerSideProps>) => {
     try {
       await resetRcApi(accessToken)
       const res = await updateUserData({ tier: null })
-      alert(`Res: ${res}`)
+      alert(`Res: ${JSON.stringify(res)}`)
     } catch (error) {
-      console.log(error)
+      logger.error(error)
       alert(`ERROR`)
     }
   }
@@ -66,7 +65,7 @@ const GetJwt = ({ page }: AsyncServerProps<typeof getServerSideProps>) => {
               </div>
             ) : (
               <div className="flex flex-col">
-                <Button href="/login" label="No user - go to login" variant="link-category" />
+                <Button href={ROUTES.LOGIN} label="No user - go to login" variant="link-category" />
                 <Button onPress={logout} text="Logout" />
                 <Button
                   onPress={() => signUp(...signUpParams)}

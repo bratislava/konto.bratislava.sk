@@ -1,4 +1,4 @@
-import CloseIcon from '@assets/images/close.svg'
+import CloseIcon from '@assets/images/new-icons/ui/cross.svg'
 import cx from 'classnames'
 import { useTranslation } from 'next-i18next'
 import { useState } from 'react'
@@ -34,11 +34,11 @@ const StepperView = ({ steps, currentStep, forceMobileSize, onChangeStep }: Step
 
   return (
     <>
-      <div className={cx('hidden', { 'md:block': !forceMobileSize })}>
+      <div className={cx('hidden', { 'lg:block': !forceMobileSize })}>
         <StepperViewList steps={steps} currentStep={currentStep} onChangeStep={onChangeStep} />
       </div>
       <div
-        className={cx('flex flex-col', { 'md:hidden': !forceMobileSize })}
+        className={cx('flex flex-col', { 'lg:hidden': !forceMobileSize })}
         onClick={handleOnClickDropdownIcon}
         onKeyDown={handleOnClickDropdownIcon}
         role="button"
@@ -68,10 +68,10 @@ const StepperView = ({ steps, currentStep, forceMobileSize, onChangeStep }: Step
               className="h-full cursor-pointer flex flex-col justify-center"
               onClick={() => setIsCollapsed(true)}
             >
-              <CloseIcon />
+              <CloseIcon className="w-6 h-6" />
             </button>
           </div>
-          <div className="bg-white grow overflow-y-scroll overscroll-none pb-20">
+          <div className="bg-white grow overflow-y-scroll overscroll-none pb-20 px-4 pt-4">
             <StepperViewList
               steps={steps}
               currentStep={currentStep}

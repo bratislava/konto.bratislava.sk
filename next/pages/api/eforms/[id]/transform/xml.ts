@@ -1,6 +1,10 @@
+/* eslint @typescript-eslint/no-unsafe-member-access: "warn" */
+
 import { EFormValue } from '@backend/forms'
 import { getEform, loadAndBuildXml } from '@backend/utils/forms'
 import type { NextApiRequest, NextApiResponse } from 'next'
+
+import logger from '../../../../../frontend/utils/logger'
 
 const handler = async (req: NextApiRequest, res: NextApiResponse) => {
   if (req.method !== 'POST' || !req.body?.data)
@@ -10,7 +14,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
   try {
     eform = getEform(req.query.id)
   } catch (error) {
-    console.error(error)
+    logger.error(error)
     return res.status(400).json({ message: 'Invalid form name or url' })
   }
 

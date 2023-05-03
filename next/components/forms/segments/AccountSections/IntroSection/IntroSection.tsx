@@ -1,36 +1,50 @@
-import LibraryIcon from '@assets/images/account/municipal-services/library-icon.svg'
-import ParkingIcon from '@assets/images/account/municipal-services/parking-icon.svg'
-import TaxesIcon from '@assets/images/account/municipal-services/taxes-icon.svg'
-import TreeIcon from '@assets/images/account/municipal-services/tree-icon.svg'
+import BannerImage from '@assets/images/bratislava-dog.png'
+import TaxesIcon from '@assets/images/new-icons/other/city-bratislava/taxes.svg'
+import LibraryIcon from '@assets/images/new-icons/other/culture-communities/library.svg'
+import TreeIcon from '@assets/images/new-icons/other/environment-construction/greenery.svg'
+import ParkingIcon from '@assets/images/new-icons/other/transport-and-maps/parking.svg'
 import PlatbaDaneImg from '@assets/images/platba-dane2.png'
-import { ROUTES } from '@utils/constants'
-import useAccount from '@utils/useAccount'
 import AccountSectionHeader from 'components/forms/segments/AccountSectionHeader/AccountSectionHeader'
 import AnnouncementBlock from 'components/forms/segments/AccountSections/IntroSection/AnnouncementBlock'
 import Banner from 'components/forms/simple-components/Banner'
 import Button from 'components/forms/simple-components/Button'
 import ServiceCard from 'components/forms/simple-components/ServiceCard'
+import Spinner from 'components/forms/simple-components/Spinner'
 import { useRouter } from 'next/router'
 import { useTranslation } from 'next-i18next'
 import { useEffect, useState } from 'react'
 
+import { ROUTES } from '../../../../../frontend/api/constants'
+import { useTaxes } from '../../../../../frontend/hooks/apiHooks'
+import useAccount from '../../../../../frontend/hooks/useAccount'
 import { PhoneNumberData } from '../../PhoneNumberForm/PhoneNumberForm'
 import PhoneNumberModal from '../../PhoneNumberModal/PhoneNumberModal'
 
 const IntroSection = () => {
   const { t } = useTranslation('account')
   const { userData, updateUserData, error, resetError } = useAccount()
+  const { data, isLoading } = useTaxes()
   const router = useRouter()
-  const [phoneNumberModalShow, setPhoneNumberModalShow] = useState<boolean>(false)
+  const [phoneNumberModal, setPhoneNumberModal] = useState<'hidden' | 'displayed' | 'dismissed'>(
+    'hidden',
+  )
 
+  // because the effect depends on userData, which may get refreshed every few seconds
+  // we need to track if the modal was dismissed and stop showing it afterwards if that's the case
   useEffect(() => {
-    if (userData && !userData?.phone_number && ROUTES.REGISTER === router.query.from)
-      setPhoneNumberModalShow(true)
-  }, [userData])
+    if (
+      phoneNumberModal === 'hidden' &&
+      userData &&
+      !userData?.phone_number &&
+      ROUTES.REGISTER === router.query.from
+    ) {
+      setPhoneNumberModal('displayed')
+    }
+  }, [phoneNumberModal, router.query.from, userData])
 
-  const onSubmitPhoneNumber = async ({ data }: { data?: PhoneNumberData }) => {
-    if (await updateUserData({ phone_number: data?.phone_number })) {
-      setPhoneNumberModalShow(false)
+  const onSubmitPhoneNumber = async (submitData: { data?: PhoneNumberData }) => {
+    if (await updateUserData({ phone_number: submitData.data?.phone_number })) {
+      setPhoneNumberModal('dismissed')
     }
   }
 
@@ -40,15 +54,15 @@ const IntroSection = () => {
 
   const announcementContent = `
 <h4>${t('account_section_intro.announcement_card_title')}</h4><span>${t(
-    'account_section_intro.announcement_card_text',
+    `account_section_intro.${data ? 'announcement_card_text_tax_ready' : 'announcement_card_text'}`,
   )}</span>`
 
   return (
     <>
       {userData && (
         <PhoneNumberModal
-          show={phoneNumberModalShow}
-          onClose={() => setPhoneNumberModalShow(false)}
+          show={phoneNumberModal === 'displayed'}
+          onClose={() => setPhoneNumberModal('dismissed')}
           onSubmit={onSubmitPhoneNumber}
           error={error}
           onHideError={resetError}
@@ -61,12 +75,19 @@ const IntroSection = () => {
           text={t('account_section_intro.header_text')}
         />
         <div className="w-full max-w-screen-lg m-auto py-6 lg:py-16">
-          <AnnouncementBlock
-            announcementContent={announcementContent}
-            buttonTitle={t('account_section_intro.announcement_card_action')}
-            imagePath={PlatbaDaneImg}
-            onPress={() => router.push('/taxes-and-fees')}
-          />
+          {isLoading ? (
+            <div className="flex justify-center">
+              <Spinner />
+            </div>
+          ) : (
+            <AnnouncementBlock
+              announcementContent={announcementContent}
+              buttonTitle={data ? t('account_section_intro.announcement_card_action') : null}
+              imagePath={PlatbaDaneImg}
+              onPress={() => router.push(ROUTES.TAXES_AND_FEES)}
+            />
+          )}
+
           <div className="w-full flex items-center justify-between mb-8 px-4 lg:px-0">
             <h2 className="text-h2">{t('account_section_services.navigation')}</h2>
             <Button
@@ -74,37 +95,37 @@ const IntroSection = () => {
               className="sm:flex hidden pt-4 pl-4"
               label={t('account_section_intro.all_services')}
               variant="link-category"
-              href="/municipal-services"
+              href={ROUTES.MUNICIPAL_SERVICES}
             />
           </div>
           <div className="flex gap-3 lg:gap-8 overflow-x-scroll scrollbar-hide px-4 lg:px-0">
             <ServiceCard
               title={t('account_section_services.cards.1.title')}
               description={t('account_section_services.cards.1.description')}
-              icon={<TaxesIcon className="w-10 h-10 lg:w-12 lg:h-12" />}
+              icon={<TaxesIcon className="w-10 h-10 lg:w-12 lg:h-12 text-category-600" />}
               buttonText={t('account_section_services.cards.1.buttonText')}
-              href="/taxes-and-fees"
+              href={ROUTES.TAXES_AND_FEES}
             />
             <ServiceCard
               title={t('account_section_services.cards.4.title')}
               description={t('account_section_services.cards.4.description')}
-              icon={<ParkingIcon className="w-10 h-10 lg:w-12 lg:h-12" />}
+              icon={<ParkingIcon className="w-10 h-10 lg:w-12 lg:h-12 text-transport-700" />}
               buttonText={t('account_section_services.cards.4.buttonText')}
-              href="https://api.parkdots.com/auth/realms/parkingrealm/protocol/openid-connect/registrations?client_id=parkingclient&redirect_uri=https%3A%2F%2Fpermits.parkdots.com%2Fwizard%2Fuser%3FprojectId%3D08b21098-3df8-4a0f-9e5c-75a21711aef7&state=f7127136-6bbf-4325-b603-5623cd086c3f&response_mode=fragment&response_type=code&scope=openid&nonce=33fa1798-098a-4ed6-89d8-7dc464bf5e30&kc_locale=sk"
+              href="https://paas.sk/"
             />
             <ServiceCard
               title={t('account_section_services.cards.5.title')}
               description={t('account_section_services.cards.5.description')}
-              icon={<LibraryIcon className="w-10 h-10 lg:w-12 lg:h-12" />}
+              icon={<LibraryIcon className="w-10 h-10 lg:w-12 lg:h-12 text-culture-700" />}
               buttonText={t('account_section_services.cards.5.buttonText')}
               href="https://mestskakniznica.sk/sluzby/citanie/ako-sa-prihlasit-do-kniznice"
             />
             <ServiceCard
-              title={t('account_section_services.cards.15.title')}
-              description={t('account_section_services.cards.15.description')}
-              icon={<TreeIcon className="w-10 h-10 lg:w-12 lg:h-12" />}
-              buttonText={t('account_section_services.cards.15.buttonText')}
-              href="https://10000stromov.sk/zapojit-sa"
+              title={t('account_section_services.cards.8.title')}
+              description={t('account_section_services.cards.8.description')}
+              icon={<TreeIcon className="w-10 h-10 lg:w-12 lg:h-12 text-environment-700" />}
+              buttonText={t('account_section_services.cards.8.buttonText')}
+              href="https://10000stromov.sk"
             />
           </div>
           <Button
@@ -112,7 +133,7 @@ const IntroSection = () => {
             className="flex sm:hidden pt-4 pl-4"
             label={t('account_section_intro.all_services')}
             variant="link-category"
-            href="/municipal-services"
+            href={ROUTES.MUNICIPAL_SERVICES}
           />
         </div>
         <div className="bg-gray-50 py-0 lg:py-16">
@@ -120,9 +141,8 @@ const IntroSection = () => {
             title={t('account_section_intro.banner_title')}
             content={bannerContent}
             buttonText={t('account_section_intro.banner_button_text')}
-            onPress={() => {
-              alert('Button was pressed')
-            }}
+            href={ROUTES.HELP}
+            image={BannerImage}
           />
         </div>
       </div>

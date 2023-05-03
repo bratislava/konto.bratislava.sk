@@ -1,6 +1,5 @@
-import SelectField, {
-  SelectOption,
-} from 'components/forms/widget-components/SelectField/SelectField'
+import SelectField from 'components/forms/widget-components/SelectField/SelectField'
+import { SelectOption } from 'components/forms/widget-components/SelectField/SelectOption.interface'
 import { Dispatch, SetStateAction } from 'react'
 import { useWindowSize } from 'usehooks-ts'
 
@@ -26,7 +25,7 @@ const MunicipalServicesSectionHeader = ({
         <h1 className="text-h1 mb-4 md:mb-6">{title}</h1>
         <SelectField
           label=""
-          className="max-w-none xs:max-w-[384px] pr-4"
+          className="max-w-none xs:max-w-[400px] pr-4"
           type="one"
           value={selectorValue}
           onChange={(val) => {
@@ -37,7 +36,7 @@ const MunicipalServicesSectionHeader = ({
           hideScrollbar
           alwaysOneSelected
           enumOptions={enumOptions}
-          maxWordSize={width > 480 ? 22 : 18}
+          maxWordSize={width > 480 ? 45 : 25}
         />
       </span>
     </div>

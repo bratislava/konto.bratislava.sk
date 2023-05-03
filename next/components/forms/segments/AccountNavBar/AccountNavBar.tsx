@@ -1,14 +1,13 @@
-import ProfileOutlinedIcon from '@assets/images/account/profile-outlined.svg'
-import VolumeIcon from '@assets/images/account/volume.svg'
-import Hamburger from '@assets/images/ba-hamburger.svg'
-import HamburgerClose from '@assets/images/hamburger-close.svg'
-import SearchIcon from '@assets/images/search-icon.svg'
-import { ROUTES } from '@utils/constants'
-import useAccount, { UserData } from '@utils/useAccount'
-import { getLanguageKey } from '@utils/utils'
+import HamburgerClose from '@assets/images/new-icons/ui/cross.svg'
+import Hamburger from '@assets/images/new-icons/ui/hamburger.svg'
+import ProfileOutlinedIcon from '@assets/images/new-icons/ui/profile.svg'
+import SearchIcon from '@assets/images/new-icons/ui/search.svg'
+import VolumeIcon from '@assets/images/new-icons/ui/speaker.svg'
 import cx from 'classnames'
+import { StatusBar, useStatusBarContext } from 'components/forms/info-components/StatusBar'
 import HamburgerMenu from 'components/forms/segments/HambergerMenu/HamburgerMenu'
 import Button from 'components/forms/simple-components/Button'
+import IdentityVerificationStatus from 'components/forms/simple-components/IdentityVerificationStatus'
 import Menu from 'components/forms/simple-components/Menu/Menu'
 import NextLink from 'next/link'
 import { useRouter } from 'next/router'
@@ -16,10 +15,13 @@ import { useTranslation } from 'next-i18next'
 import { ReactNode, useState } from 'react'
 import { Item } from 'react-stately'
 
+import { ROUTES } from '../../../../frontend/api/constants'
+import useAccount, { UserData } from '../../../../frontend/hooks/useAccount'
+import useElementSize from '../../../../frontend/hooks/useElementSize'
+import { getLanguageKey } from '../../../../frontend/utils/general'
+import logger from '../../../../frontend/utils/logger'
 import Brand from '../../simple-components/Brand'
 import Link from './NavBarLink'
-import { StatusBar } from 'components/forms/info-components/StatusBar'
-import { useElementSize } from 'usehooks-ts'
 
 interface IProps extends LanguageSelectProps {
   className?: string
@@ -50,6 +52,47 @@ export interface MenuItem {
   title: string
   icon: ReactNode
   link: string
+  backgroundColor?: string // ex. bg-negative-700
+}
+
+const Avatar = ({ userData }: { userData?: UserData | null }) => {
+  return (
+    <div className="flex relative flex-row items-start gap-2 rounded-full p-2 bg-main-100">
+      <div className="flex h-6 w-6 items-center justify-center font-semibold text-main-700">
+        <span className="uppercase">
+          {userData && userData.given_name && userData.family_name ? (
+            userData.given_name[0] + userData.family_name[0]
+          ) : (
+            <ProfileOutlinedIcon className="w-6 h-6 text-main-700" />
+          )}
+        </span>
+      </div>
+    </div>
+  )
+}
+
+const AccountMenuItem = ({ menuItem }: { menuItem: MenuItem }) => {
+  const { t } = useTranslation()
+
+  return (
+    <div className="cursor-pointer flex py-2 px-5">
+      <div
+        className={`flex relative flex-row items-start gap-2 rounded-xl p-4 ${
+          menuItem.backgroundColor ?? 'bg-gray-50'
+        }`}
+      >
+        <div className="flex h-2 w-2 items-center justify-center">
+          <span>{menuItem.icon}</span>
+        </div>
+      </div>
+      <div
+        className="text-p2 hover:text-p2-semibold w-fit-title text-font p-2 whitespace-nowrap"
+        title={t(menuItem.title)}
+      >
+        {t(menuItem.title)}
+      </div>
+    </div>
+  )
 }
 
 export const AccountNavBar = ({
@@ -62,8 +105,10 @@ export const AccountNavBar = ({
 }: IProps) => {
   const [burgerOpen, setBurgerOpen] = useState(false)
   const { isAuth, logout, userData } = useAccount()
-  const [desktopRef, { height: desktopHeight }] = useElementSize()
-  const [mobileRef, { height: mobileHeight }] = useElementSize()
+
+  const { statusBarContent } = useStatusBarContext()
+  const [desktopRef, { height: desktopHeight }] = useElementSize([statusBarContent])
+  const [mobileRef, { height: mobileHeight }] = useElementSize([statusBarContent])
 
   const languageKey = getLanguageKey(languageSelectProps.currentLanguage)
   const anotherLanguage = languageSelectProps.languages?.find((l) => l.key !== languageKey)
@@ -71,12 +116,12 @@ export const AccountNavBar = ({
   const { t } = useTranslation(['common', 'account'])
   const router = useRouter()
 
-  const onRouteChange = (selectedMenuItem: MenuItem) => {
+  const onRouteChange = async (selectedMenuItem: MenuItem) => {
     if (selectedMenuItem.link === '/logout') {
       logout()
-      router.push(ROUTES.LOGIN)
+      await router.push(ROUTES.LOGIN)
     } else {
-      router.push(selectedMenuItem.link)
+      await router.push(selectedMenuItem.link)
     }
   }
 
@@ -84,7 +129,9 @@ export const AccountNavBar = ({
 
   const onSelectMenuItem = (key: React.Key) => {
     const selectedMenuItem = menuItems?.find((opt) => opt.id.toString() === key)
-    if (selectedMenuItem) onRouteChange(selectedMenuItem)
+    if (selectedMenuItem) {
+      onRouteChange(selectedMenuItem).catch((error_) => logger.error('Failed redirect', error_))
+    }
   }
 
   const isActive = (sectionItem: MenuItem) =>
@@ -108,7 +155,7 @@ export const AccountNavBar = ({
         <div className="max-w-screen-lg m-auto hidden h-[57px] w-full items-center lg:flex gap-x-6">
           <Brand
             className="group grow"
-            url="/"
+            url="https://bratislava.sk/"
             title={
               <p className="text-p2 text-font group-hover:text-gray-600">
                 {languageKey === 'en' && <span className="font-semibold">Bratislava </span>}
@@ -117,6 +164,7 @@ export const AccountNavBar = ({
               </p>
             }
           />
+          <IdentityVerificationStatus />
           <nav className="text-font/75 flex gap-x-8 font-semibold">
             <div className="text-font/75 flex items-center gap-x-6 font-semibold">
               {!navHidden ? (
@@ -154,7 +202,7 @@ export const AccountNavBar = ({
                   )}
 
                   <Link href={t('searchLink')} variant="plain">
-                    <SearchIcon />
+                    <SearchIcon className="w-6 h-6" />
                   </Link>
 
                   <Divider />
@@ -182,7 +230,7 @@ export const AccountNavBar = ({
                 </Menu>
               ) : (
                 <>
-                  <Link href="/login" variant="plain" className={`${linkClassName} ml-2`}>
+                  <Link href={ROUTES.LOGIN} variant="plain" className={`${linkClassName} ml-2`}>
                     {t('account:menu_login_link')}
                   </Link>
                   <Button
@@ -229,24 +277,25 @@ export const AccountNavBar = ({
       >
         {!burgerOpen && <StatusBar className="flex lg:hidden" />}
         <div className="h-16 flex items-center py-5 px-8 border-b-2">
-          <Brand url="/" className="grow" />
+          <Brand url="https://bratislava.sk/" className="grow" />
           {!navHidden && (
             <div className={cx('flex items-center gap-x-5')}>
               <div className="text-h4 text-font/50 relative flex cursor-pointer items-center bg-transparent">
                 <Link href={t('searchLink')} variant="plain" className="p-4">
-                  <SearchIcon />
+                  <SearchIcon className="w-6 h-6" />
                 </Link>
               </div>
             </div>
           )}
 
           <button
+            type="button"
             onClick={() => (isAuth ? setBurgerOpen(!burgerOpen) : router.push(ROUTES.LOGIN))}
             className="-mr-4 px-4 py-5"
           >
             <div className="flex w-6 items-center justify-center">
               {burgerOpen ? (
-                <HamburgerClose />
+                <HamburgerClose className="w-6 h-6" />
               ) : isAuth && sectionsList ? (
                 <Hamburger />
               ) : (
@@ -264,42 +313,6 @@ export const AccountNavBar = ({
             />
           )}
         </div>
-      </div>
-    </div>
-  )
-}
-
-const AccountMenuItem = ({ menuItem }: { menuItem: MenuItem }) => {
-  const { t } = useTranslation()
-
-  return (
-    <div className="cursor-pointer flex py-2 px-5">
-      <div className="flex relative flex-row items-start gap-2 rounded-xl p-4 bg-gray-50">
-        <div className="flex h-2 w-2 items-center justify-center">
-          <span>{menuItem.icon}</span>
-        </div>
-      </div>
-      <div
-        className="text-p2 hover:text-p2-semibold w-fit-title text-font p-2 whitespace-nowrap"
-        title={t(menuItem.title)}
-      >
-        {t(menuItem.title)}
-      </div>
-    </div>
-  )
-}
-
-const Avatar = ({ userData }: { userData?: UserData | null }) => {
-  return (
-    <div className="flex relative flex-row items-start gap-2 rounded-full p-2 bg-main-100">
-      <div className="flex h-6 w-6 items-center justify-center font-semibold text-main-700">
-        <span className="uppercase">
-          {userData && userData.given_name && userData.family_name ? (
-            userData.given_name[0] + userData.family_name[0]
-          ) : (
-            <ProfileOutlinedIcon />
-          )}
-        </span>
       </div>
     </div>
   )

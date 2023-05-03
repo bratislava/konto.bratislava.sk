@@ -4,6 +4,8 @@ import { UploadMinioFile } from '@backend/dtos/minio/upload-minio-file.dto'
 import cx from 'classnames'
 import React, { ForwardedRef, forwardRef, ForwardRefRenderFunction, useState } from 'react'
 
+import { handleOnKeyPress } from '../../../../frontend/utils/general'
+
 interface UploadDropAreaProps {
   value?: UploadMinioFile[]
   multiple?: boolean
@@ -13,6 +15,18 @@ interface UploadDropAreaProps {
   fileBrokenMessage?: string[]
   onClick?: () => void
   onDrop?: (newFiles: UploadMinioFile[]) => void
+}
+
+const reduceItemsToFiles = (
+  filtered: UploadMinioFile[],
+  item: DataTransferItem,
+): UploadMinioFile[] => {
+  if (item.kind !== 'file') return filtered
+  const file = item.getAsFile()
+  if (!file) return filtered
+  const minioFile: UploadMinioFile = { file, originalName: file.name }
+  filtered.push(minioFile)
+  return filtered
 }
 
 const UploadDropAreaComponent: ForwardRefRenderFunction<HTMLDivElement, UploadDropAreaProps> = (
@@ -59,17 +73,6 @@ const UploadDropAreaComponent: ForwardRefRenderFunction<HTMLDivElement, UploadDr
   )
 
   // EVENT HANDLERS
-  const reduceItemsToFiles = (
-    filtered: UploadMinioFile[],
-    item: DataTransferItem,
-  ): UploadMinioFile[] => {
-    if (item.kind !== 'file') return filtered
-    const file = item.getAsFile()
-    if (!file) return filtered
-    const minioFile: UploadMinioFile = { file, originalName: file.name }
-    filtered.push(minioFile)
-    return filtered
-  }
 
   const handleDrop = (event: React.DragEvent) => {
     event.preventDefault()
@@ -86,18 +89,16 @@ const UploadDropAreaComponent: ForwardRefRenderFunction<HTMLDivElement, UploadDr
     }
   }
 
-  const handleOnClick = () => {
-    if (onClick) {
-      onClick()
-    }
-  }
-
   // RENDER
   return (
     <div className="w-[180px] xs:w-[300px] sm:w-[480px] relative h-40" ref={ref} data-value={value}>
       <div
+        aria-label="Upload drop area"
+        role="button"
+        tabIndex={0}
         className={dragAndDropOverlayClassNames}
-        onClick={handleOnClick}
+        onClick={onClick}
+        onKeyPress={(event: React.KeyboardEvent) => handleOnKeyPress(event, onClick)}
         onDragEnter={() => setIsDraggedOver(true)}
         onDragOver={(event) => event.preventDefault()}
         onDragLeave={() => setIsDraggedOver(false)}
@@ -106,7 +107,7 @@ const UploadDropAreaComponent: ForwardRefRenderFunction<HTMLDivElement, UploadDr
       <div className={dragAndDropClassNames}>
         <div className="flex flex-row justify-center">
           <div className="flex h-12 w-12 flex-row justify-center items-center rounded-full bg-gray-200">
-            <UploadIcon />
+            <UploadIcon className="w-6 h-6" />
           </div>
         </div>
         <h5 className="text-16-semibold">Drag & drop upload</h5>

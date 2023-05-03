@@ -3,7 +3,7 @@ import SectionContainer from 'components/forms/segments/SectionContainer/Section
 import { usePageWrapperContext } from 'components/layouts/PageWrapper'
 import React from 'react'
 
-import AccountNavBar from '../forms/segments/AccountNavBar/AccountNavBar'
+import { AccountNavBar } from '../forms/segments/AccountNavBar/AccountNavBar'
 
 interface GeneralLayoutProps {
   className?: string

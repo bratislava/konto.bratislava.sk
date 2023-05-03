@@ -1,11 +1,12 @@
-import { AccountError } from '@utils/useAccount'
-import useHookForm from '@utils/useHookForm'
-import Alert from 'components/forms/info-components/Alert'
+import AccountErrorAlert from 'components/forms/segments/AccountErrorAlert/AccountErrorAlert'
 import LoginAccountLink from 'components/forms/segments/LoginAccountLink/LoginAccountLink'
 import Button from 'components/forms/simple-components/Button'
 import InputField from 'components/forms/widget-components/InputField/InputField'
 import { useTranslation } from 'next-i18next'
 import { Controller } from 'react-hook-form'
+
+import { AccountError } from '../../../../frontend/hooks/useAccount'
+import useHookForm from '../../../../frontend/hooks/useHookForm'
 
 interface Data {
   email: string
@@ -14,6 +15,7 @@ interface Data {
 interface Props {
   onSubmit: (email: string) => Promise<any>
   error?: AccountError | null | undefined
+  lastEmail: string
 }
 
 // must use `minLength: 1` to implement required field
@@ -30,7 +32,7 @@ const schema = {
   required: ['email'],
 }
 
-const ForgottenPasswordForm = ({ onSubmit, error }: Props) => {
+const ForgottenPasswordForm = ({ onSubmit, error, lastEmail }: Props) => {
   const { t } = useTranslation('account')
   const {
     handleSubmit,
@@ -48,7 +50,7 @@ const ForgottenPasswordForm = ({ onSubmit, error }: Props) => {
       onSubmit={handleSubmit((data: Data) => onSubmit(data.email))}
     >
       <h1 className="text-h3">{t('forgotten_password_title')}</h1>
-      {error && <Alert message={t(error.code)} type="error" className="min-w-full" />}
+      <AccountErrorAlert error={error} args={{ email: lastEmail }} />
       <Controller
         name="email"
         control={control}

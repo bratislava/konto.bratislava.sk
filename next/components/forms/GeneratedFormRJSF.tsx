@@ -4,9 +4,11 @@ import cx from 'classnames'
 import SkipStepModal from 'components/forms/segments/SkipStepModal/SkipStepModal'
 import { useState } from 'react'
 
-import { useFormRJSFContextMemo, useFormStepper } from '../../frontend/forms'
+import { useFormRJSFContextMemo } from '../../frontend/forms'
 import { useFormFiller } from '../../frontend/hooks/useFormFiller'
+import { useFormStepper } from '../../frontend/hooks/useFormStepper'
 import { useFormSubmitter } from '../../frontend/hooks/useFormSubmitter'
+import { customValidate } from '../../frontend/utils/formStepper'
 import FinalStep from './steps/FinalStep'
 import StepperView from './steps/StepperView'
 import StepButtonGroup from './steps/Summary/StepButtonGroup'
@@ -93,7 +95,7 @@ const GeneratedFormRJSF = ({ eform, escapedSlug, formSlug, wrapperClassName }: F
               formData={form.formData}
               validator={form.validator}
               customValidate={(formData: RJSFSchema, errors: FormValidation) => {
-                return form.customValidate(formData, errors, form.currentSchema)
+                return customValidate(formData, errors, form.currentSchema)
               }}
               onSubmit={async (e) => {
                 await form.handleOnSubmit(e.formData as RJSFSchema)

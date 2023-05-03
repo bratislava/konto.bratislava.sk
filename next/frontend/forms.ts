@@ -11,14 +11,6 @@ import {
   ValidatorType,
 } from '@rjsf/utils'
 import { customizeValidator } from '@rjsf/validator-ajv8'
-import { AnySchemaObject, ErrorObject, FuncKeywordDefinition } from 'ajv'
-import { JSONSchema7, JSONSchema7Definition } from 'json-schema'
-import { cloneDeep, get, merge, set } from 'lodash'
-import { useRouter } from 'next/router'
-import { useTranslation } from 'next-i18next'
-import { ChangeEvent, RefObject, useEffect, useMemo, useRef, useState } from 'react'
-
-import { StepData } from '../components/forms/types/TransformedFormData'
 import {
   createForm,
   formDataToXml,
@@ -34,6 +26,14 @@ import useAccount from "./hooks/useAccount"
 import useSnackbar from "./hooks/useSnackbar"
 import { readTextFile } from "./utils/file"
 import logger from './utils/logger'
+import { AnySchemaObject, ErrorObject, FuncKeywordDefinition } from 'ajv'
+import { JSONSchema7, JSONSchema7Definition } from 'json-schema'
+import { cloneDeep, get, merge, set } from 'lodash'
+import { useRouter } from 'next/router'
+import { useTranslation } from 'next-i18next'
+import { ChangeEvent, RefObject, useEffect, useMemo, useRef, useState } from 'react'
+
+import { StepData } from '../components/forms/types/TransformedFormData'
 
 export type JsonSchemaPropertyTree = JsonSchemaPropertyTreeInterface | undefined
 export interface JsonSchemaPropertyTreeInterface {

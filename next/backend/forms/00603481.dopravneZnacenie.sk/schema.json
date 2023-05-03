@@ -282,6 +282,7 @@
             "dovodZmenyVDopravnomZnaceni": {
               "title": "DovodZmenyVDopravnomZnaceni",
               "type": "string",
+              "default": "RozkopavkovePrace",
               "enum": [
                 "RozkopavkovePrace",
                 "StavebnePrace",
@@ -298,6 +299,7 @@
                 "typ": {
                   "title": "Typ",
                   "type": "string",
+                  "default": "Nove",
                   "enum": [
                     "Nove",
                     "Predlzenie",
@@ -377,6 +379,7 @@
             "trvacnostDopravnehoZnacenia": {
               "title": "TrvacnostDopravnehoZnacenia",
               "type": "string",
+              "default": "Trvale",
               "enum": [
                 "Trvale",
                 "Docasne"
@@ -411,6 +414,7 @@
             "typ": {
               "title": "Typ",
               "type": "string",
+              "default": "Ciastocna",
               "enum": [
                 "Ciastocna",
                 "Uplna"
@@ -633,6 +637,7 @@
                 "adresatPodania": {
                   "title": "AdresatPodania",
                   "type": "string",
+                  "default": "Mesto",
                   "enum": [
                     "Mesto",
                     "Mestská časť"
@@ -664,6 +669,7 @@
             "formaOdoslaniaZiadosti": {
               "title": "FormaOdoslaniaZiadosti",
               "type": "string",
+              "default": "Elektronicky",
               "enum": [
                 "Elektronicky",
                 "Listinne"
@@ -676,6 +682,7 @@
                 "typSposobuDorucenia": {
                   "title": "TypSposobuDorucenia",
                   "type": "string",
+                  "default": "Pošta",
                   "enum": [
                     "Pošta",
                     "Elektronická schránka",
@@ -761,6 +768,7 @@
                 "adresatPodania": {
                   "title": "AdresatPodania",
                   "type": "string",
+                  "default": "Mesto",
                   "enum": [
                     "Mesto",
                     "Mestská časť"

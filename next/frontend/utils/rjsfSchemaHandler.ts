@@ -1,16 +1,12 @@
 import { ErrorSchema, RJSFValidationError, StrictRJSFSchema } from '@rjsf/utils'
-import {
-  getAllPossibleJsonSchemaExtraProperties,
-  JsonSchema,
-  JsonSchemaExtraProperties,
-  JsonSchemaExtraProperty,
-} from '@utils/forms'
 import { JSONSchema7Definition } from 'json-schema'
 
 import {
   TransformedFormData,
   TransformedFormStep,
-} from '../components/forms/steps/Summary/TransformedFormData'
+} from '../../components/forms/steps/Summary/TransformedFormData'
+import { JsonSchema, JsonSchemaExtraProperties, JsonSchemaExtraProperty } from '../dtos/formStepperDto'
+import { getAllPossibleJsonSchemaExtraProperties } from './formStepper'
 
 function findTitle(value: JSONSchema7Definition, items: JSONSchema7Definition[]) {
   if (typeof items === 'boolean') return value
@@ -29,7 +25,7 @@ function transformValueArray(
   fieldFormData?: JSONSchema7Definition,
   fieldSchema?: JSONSchema7Definition,
 ) {
-  if (!fieldFormData || typeof fieldFormData === 'boolean') return
+  if (!fieldFormData || typeof fieldFormData === 'boolean') return null
   if (!fieldSchema || typeof fieldSchema === 'boolean') return fieldFormData
 
   const items =
@@ -43,7 +39,7 @@ function transformValueArray(
   if (!items || typeof items === 'boolean' || !Array.isArray(items)) return fieldFormData
 
   return Array.isArray(fieldFormData)
-    ? fieldFormData.map((value) => findTitle(value, items))
+    ? fieldFormData.map((value: JSONSchema7Definition) => findTitle(value, items))
     : findTitle(fieldFormData, items)
 }
 
@@ -61,8 +57,8 @@ function getFieldData(
     transformedFieldFormData && !Array.isArray(transformedFieldFormData)
       ? transformedFieldFormData.toString()
       : Array.isArray(transformedFieldFormData) && transformedFieldFormData.length > 0
-      ? transformedFieldFormData.join(', ')
-      : null
+        ? transformedFieldFormData.join(', ')
+        : null
 
   return {
     label,

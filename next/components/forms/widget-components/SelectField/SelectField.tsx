@@ -1,6 +1,5 @@
 import ArrowDownIcon from '@assets/images/new-icons/ui/expand.svg'
 import ArrowUpIcon from '@assets/images/new-icons/ui/expand-less.svg'
-import { handleOnKeyPress } from '@utils/utils'
 import cx from 'classnames'
 import React, {
   ForwardedRef,
@@ -13,6 +12,7 @@ import React, {
 } from 'react'
 import { useOnClickOutside } from 'usehooks-ts'
 
+import { handleOnKeyPress } from '../../../../frontend/utils/general'
 import FieldErrorMessage from '../../info-components/FieldErrorMessage'
 import FieldHeader from '../../info-components/FieldHeader'
 import { ExplicitOptionalType } from '../../types/ExplicitOptional'

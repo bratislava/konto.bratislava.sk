@@ -1,9 +1,10 @@
 import BratislavaIcon from '@assets/images/account/bratislava-footer.svg'
-import { ROUTES } from '@utils/constants'
 import AccountMarkdown from 'components/forms/segments/AccountMarkdown/AccountMarkdown'
 import ThankYouCard from 'components/forms/segments/AccountSections/ThankYouSection/ThankYouCard'
 import Button from 'components/forms/simple-components/Button'
 import { useTranslation } from 'next-i18next'
+
+import { ROUTES } from '../../../../../frontend/api/constants'
 
 const ThankYouFormSection = () => {
   const { t } = useTranslation('account')

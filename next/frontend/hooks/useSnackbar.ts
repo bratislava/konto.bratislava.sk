@@ -27,7 +27,6 @@ const getBackgroundColor = (variant: Variant) => {
       return 'rgb(var(--color-warning-700))'
     case 'success':
       return 'rgb(var(--color-success-700))'
-    case 'info':
     default:
       return 'rgb(var(--color-gray-700))'
   }

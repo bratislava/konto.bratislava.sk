@@ -1,10 +1,15 @@
 import { EFormValue } from '@backend/forms'
 import { FormValidation, RJSFSchema } from '@rjsf/utils'
-import { useFormFiller, useFormRJSFContextMemo, useFormStepper, useFormSubmitter } from '@utils/forms'
 import cx from 'classnames'
 import SkipStepModal from 'components/forms/segments/SkipStepModal/SkipStepModal'
 import { useState } from 'react'
 
+import { validator } from '../../frontend/dtos/formStepperDto'
+import { useFormFiller } from '../../frontend/hooks/useFormFiller'
+import { useFormRJSFContextMemo } from '../../frontend/hooks/useFormRJSFContextMemo'
+import { useFormStepper } from '../../frontend/hooks/useFormStepper'
+import { useFormSubmitter } from '../../frontend/hooks/useFormSubmitter'
+import { customValidate } from '../../frontend/utils/formStepper'
 import FinalStep from './steps/FinalStep'
 import StepperView from './steps/StepperView'
 import StepButtonGroup from './steps/Summary/StepButtonGroup'
@@ -75,7 +80,7 @@ const GeneratedFormRJSF = ({ eform, escapedSlug, formSlug, wrapperClassName }: F
             formErrors={form.errors}
             extraErrors={form.extraErrors}
             schema={form.validatedSchema}
-            onGoToStep={(step: number) => form.setStepIndex(step)}
+            onGoToStep={form.setStepIndex}
             submitErrors={submitter.errors}
             submitMessage={submitter.successMessage}
           />
@@ -89,9 +94,9 @@ const GeneratedFormRJSF = ({ eform, escapedSlug, formSlug, wrapperClassName }: F
               schema={form.currentSchema}
               uiSchema={eform.uiSchema}
               formData={form.formData}
-              validator={form.validator}
+              validator={validator}
               customValidate={(formData: RJSFSchema, errors: FormValidation) => {
-                return form.customValidate(formData, errors, form.currentSchema)
+                return customValidate(formData, errors, form.currentSchema)
               }}
               onSubmit={async (e) => {
                 await form.handleOnSubmit(e.formData as RJSFSchema)

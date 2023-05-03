@@ -1,8 +1,9 @@
-import useAccount, { AccountStatus } from '@utils/useAccount'
 import cx from 'classnames'
 import Alert from 'components/forms/info-components/Alert'
 import { useTranslation } from 'next-i18next'
 import React from 'react'
+
+import useAccount, { AccountStatus } from '../../../../frontend/hooks/useAccount'
 
 interface UserProfileSectionHeaderProps {
   title: string

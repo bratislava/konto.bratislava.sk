@@ -1,7 +1,8 @@
 import SelectedIcon from '@assets/images/new-icons/ui/done.svg'
-import { handleOnKeyPress } from '@utils/utils'
 import cx from 'classnames'
 import React from 'react'
+
+import { handleOnKeyPress } from '../../../frontend/utils/general'
 
 interface StepperViewRowProps {
   title?: string

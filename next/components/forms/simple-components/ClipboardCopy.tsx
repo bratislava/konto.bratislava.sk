@@ -1,8 +1,9 @@
 import ContentCopy from '@assets/images/new-icons/ui/copy.svg'
-import logger from '@utils/logger'
-import useSnackbar from '@utils/useSnackbar'
 import { useTranslation } from 'next-i18next'
 import { useCopyToClipboard } from 'usehooks-ts'
+
+import useSnackbar from '../../../frontend/hooks/useSnackbar'
+import logger from '../../../frontend/utils/logger'
 
 const ClipboardCopy = ({ copyText }: { copyText: string }) => {
   const [, copy] = useCopyToClipboard()

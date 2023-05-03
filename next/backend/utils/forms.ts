@@ -1,14 +1,6 @@
 import forms, { EFormKey, EFormValue } from '@backend/forms'
 import { firstCharToUpper } from '@backend/utils/strings'
 import { RJSFSchema } from '@rjsf/utils'
-import {
-  ajvFormats,
-  ajvKeywords,
-  getAllPossibleJsonSchemaProperties,
-  JsonSchema,
-} from '@utils/forms'
-import logger from '@utils/logger'
-import { forceString } from '@utils/utils'
 import Ajv from 'ajv'
 import addFormats from 'ajv-formats'
 import * as cheerio from 'cheerio'
@@ -16,6 +8,11 @@ import { parseXml } from 'libxmljs2'
 import { dropRight, find, last } from 'lodash'
 import { parseStringPromise } from 'xml2js'
 import { firstCharLowerCase } from 'xml2js/lib/processors'
+
+import { ajvFormats, ajvKeywords, JsonSchema } from '../../frontend/dtos/formStepperDto'
+import { getAllPossibleJsonSchemaProperties } from '../../frontend/utils/formStepper'
+import { forceString } from '../../frontend/utils/general'
+import logger from '../../frontend/utils/logger'
 
 export type Json = any
 

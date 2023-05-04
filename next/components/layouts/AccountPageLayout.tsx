@@ -21,6 +21,7 @@ type AccountPageLayoutBase = {
   children: ReactNode
   hiddenHeaderNav?: boolean
   isProductionDeploy?: boolean
+  isPublicPage?: boolean
 }
 
 const sectionsList = [
@@ -83,6 +84,7 @@ const AccountPageLayout = ({
   children,
   hiddenHeaderNav,
   isProductionDeploy,
+  isPublicPage,
 }: AccountPageLayoutBase) => {
   const { locale, localizations = [] } = usePageWrapperContext()
   const router = useRouter()
@@ -91,12 +93,12 @@ const AccountPageLayout = ({
   const prodHideSectionsListIds: Set<number> = isProductionDeploy ? new Set([2]) : new Set([])
 
   useEffect(() => {
-    if (!isAuth && router.route !== ROUTES.PAYMENT_RESULT) {
+    if (!isPublicPage && !isAuth && router.route !== ROUTES.PAYMENT_RESULT) {
       router
         .push({ pathname: ROUTES.LOGIN, query: { from: router.route } })
         .catch((error_) => logger.error('Redirect failed', error_))
     }
-  }, [isAuth, router])
+  }, [isAuth, isPublicPage, router])
 
   const [t] = useTranslation('common')
 

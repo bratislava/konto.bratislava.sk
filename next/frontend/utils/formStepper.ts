@@ -136,7 +136,7 @@ export const mergePropertyTreeToFormData = (
 export const buildRJSFError = (path: string[], errorMsg: string | undefined): ErrorSchema => {
   let error: ErrorSchema = { __errors: [errorMsg || 'error'] } as ErrorSchema
 
-  path.forEach((arrayValue: string) => {
+  path.reverse().forEach((arrayValue: string) => {
     const obj: ErrorSchema = {}
     obj[arrayValue] = error
     error = obj

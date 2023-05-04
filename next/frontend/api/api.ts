@@ -280,12 +280,13 @@ export const getEnum = async (id?: string) => {
   }
 }
 
-export const sendForm = (token: string, id: string) => {
-  return fetchJsonApi(`${process.env.NEXT_PUBLIC_FORMS_URL}/nases/send-form/${id}`, {
+export const sendForm = (token: string, id: string, formDataXml: string) => {
+  return fetchJsonApi(`${process.env.NEXT_PUBLIC_FORMS_URL}/nases/send-and-update-form/${id}`, {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
       Authorization: `Bearer ${token}`,
     },
+    body: JSON.stringify({ formDataXml }),
   })
 }

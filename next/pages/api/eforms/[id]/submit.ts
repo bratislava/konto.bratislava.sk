@@ -19,7 +19,6 @@ type Form = {
 const handler = async (req: NextApiRequest, res: NextApiResponse) => {
   logger.silly('-------------------')
   logger.silly('Validating form:', req.query.id)
-  logger.silly(req.body)
   if (req.method !== 'POST')
     return res.status(400).json({ message: 'Invalid method or missing "data" field on body' })
 
@@ -44,10 +43,10 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
 
   // TODO when no errors, send the xml to slovensko.sk BE
   try {
-    await sendForm(token, id)
-    return res.status(200)
+    await sendForm(token, id, xml)
+    return res.status(200).json({ message: 'OK' })
   } catch (error) {
-    return res.status(500)
+    return res.status(500).json({ message: 'Send form failed' })
   }
 }
 

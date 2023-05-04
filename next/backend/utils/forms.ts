@@ -4,8 +4,6 @@ import { RJSFSchema } from '@rjsf/utils'
 import Ajv from 'ajv'
 import addFormats from 'ajv-formats'
 import * as cheerio from 'cheerio'
-import { MyApplicationHistoryDataBase } from 'components/forms/segments/AccountSections/MyApplicationsSection/MyApplicationHistory'
-import { MyApplicationsSentCardBase } from 'components/forms/segments/AccountSections/MyApplicationsSection/MyApplicationsSentList'
 import { parseXml } from 'libxmljs2'
 import { dropRight, find, last } from 'lodash'
 import { parseStringPromise } from 'xml2js'
@@ -235,43 +233,4 @@ export const getEform = (id: string | string[] | undefined): EFormValue => {
 
   if (!eform) throw new Error(`Invalid form name - validateFormName returned: ${formSlug}`)
   return eform
-}
-
-// mock-up data
-export const getAplicationDetailsData = (id: string | string[]): MyApplicationsSentCardBase => {
-  const myAplicationDetailsData: MyApplicationsSentCardBase[] = [
-    {
-      id: '1',
-      title: 'Názov stavby dotiahnutý zo žiadosti',
-      subtitle: 'Názov stavby/projektu',
-      category: 'Záväzné stanovisko k investičnej činnosti',
-      sentDate: '29. september 2022',
-      status: 'success',
-      statusDate: '29. september 2022',
-    },
-  ]
-  return myAplicationDetailsData.find((item) => id === item.id)
-}
-
-// mock-up data
-export const getAplicationHistoryData = (): MyApplicationHistoryDataBase[] => {
-  const myAplicationHistoryData: MyApplicationHistoryDataBase[] = [
-    {
-      editDate: '28. október 2022, 16:32',
-      description: 'Žiadosť bola vybavená',
-    },
-    {
-      editDate: '28. október 2022, 16:32',
-      description: 'Žiadosť bola vybavená',
-    },
-    {
-      editDate: '28. október 2022, 16:32',
-      description: 'Žiadosť bola vybavená',
-    },
-    {
-      editDate: '28. október 2022, 16:32',
-      description: 'Žiadosť bola vybavená',
-    },
-  ]
-  return myAplicationHistoryData
 }

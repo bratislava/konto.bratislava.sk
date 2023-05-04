@@ -1,10 +1,5 @@
+import { MyApplicationHistoryDataBase } from 'frontend/api/mocks/mocks'
 import { useTranslation } from 'next-i18next'
-
-export type MyApplicationHistoryDataBase = {
-  id?: string
-  editDate: string
-  description: string
-}
 
 interface MyApplicationHistoryProps {
   historyData: MyApplicationHistoryDataBase[]

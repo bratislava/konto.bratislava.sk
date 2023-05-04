@@ -1,9 +1,7 @@
 import MyApplicationDetailsHeader from 'components/forms/segments/AccountSections/MyApplicationsSection/MyApplicationDetailsHeader'
-import MyApplicationHistory, {
-  MyApplicationHistoryDataBase,
-} from 'components/forms/segments/AccountSections/MyApplicationsSection/MyApplicationHistory'
-import { MyApplicationsSentCardBase } from 'components/forms/segments/AccountSections/MyApplicationsSection/MyApplicationsSentList'
+import MyApplicationHistory from 'components/forms/segments/AccountSections/MyApplicationsSection/MyApplicationHistory'
 import SummaryRow from 'components/forms/steps/Summary/SummaryRow'
+import { MyApplicationHistoryDataBase, MyApplicationsSentCardBase } from 'frontend/api/mocks/mocks'
 import { useTranslation } from 'next-i18next'
 
 type MyApplicationsDetailsBase = {
@@ -27,7 +25,7 @@ const MyApplicationDetails = ({ detailsData, historyData }: MyApplicationsDetail
               isEditable={false}
               data={{
                 label: t('account_section_applications.details.application_details.record_number'),
-                value: 'MAG 12345/2023',
+                value: detailsData?.recordNumber,
                 schemaPath: '',
                 isError: false,
               }}
@@ -37,7 +35,7 @@ const MyApplicationDetails = ({ detailsData, historyData }: MyApplicationsDetail
               isEditable={false}
               data={{
                 label: t('account_section_applications.details.application_details.file_number'),
-                value: 'MAG 12345/2023',
+                value: detailsData?.fileNumber,
                 schemaPath: '',
                 isError: false,
               }}
@@ -47,7 +45,7 @@ const MyApplicationDetails = ({ detailsData, historyData }: MyApplicationsDetail
               isEditable={false}
               data={{
                 label: t('account_section_applications.details.application_details.handle_person'),
-                value: 'Meno Riešiteľa / Riešiteľky',
+                value: detailsData?.handlePerson,
                 schemaPath: '',
                 isError: false,
               }}
@@ -57,7 +55,7 @@ const MyApplicationDetails = ({ detailsData, historyData }: MyApplicationsDetail
               isEditable={false}
               data={{
                 label: t('account_section_applications.details.application_details.contact'),
-                value: '+421 2/553 559 38, meno.priezvisko@bratislava.sk',
+                value: detailsData?.contact,
                 schemaPath: '',
                 isError: false,
               }}

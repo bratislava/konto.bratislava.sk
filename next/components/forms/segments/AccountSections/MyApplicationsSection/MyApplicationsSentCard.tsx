@@ -6,22 +6,26 @@ import NegativeMobileIcon from '@assets/images/new-icons/ui/negative-icon.svg'
 import SuccessMobileIcon from '@assets/images/new-icons/ui/success-icon.svg'
 import WaitingMobileIcon from '@assets/images/new-icons/ui/waiting-icon.svg'
 import cx from 'classnames'
-import { MyApplicationsSentCardBase } from 'components/forms/segments/AccountSections/MyApplicationsSection/MyApplicationsSentList'
+import { MyApplicationsSentCardBase } from 'frontend/api/mocks/mocks'
 import Link from 'next/link'
 import { useTranslation } from 'next-i18next'
 import { ReactNode } from 'react'
 
 import { ROUTES } from '../../../../../frontend/api/constants'
 
-const MyApplicationsSentCard = (props: MyApplicationsSentCardBase) => {
-  const { title, subtitle, category, sentDate, statusDate = '', status } = props
+type MyApplicationsSentCardProps = {
+  data: MyApplicationsSentCardBase
+}
+
+const MyApplicationsSentCard = (props: MyApplicationsSentCardProps) => {
+  const { data } = props
   const { t } = useTranslation('account')
 
   const desktopStatusHandler = (): ReactNode => {
     const statusStyle: string = cx('text-p3-semibold lg:text-16-semibold w-max ml-0 lg:ml-2', {
-      'text-negative-700': status === 'negative',
-      'text-warning-700': status === 'warning',
-      'text-success-700': status === 'success',
+      'text-negative-700': data?.status === 'negative',
+      'text-warning-700': data?.status === 'warning',
+      'text-success-700': data?.status === 'success',
     })
     const statusNode = (icon: ReactNode, statusTitle: string): ReactNode => {
       return (
@@ -32,7 +36,7 @@ const MyApplicationsSentCard = (props: MyApplicationsSentCardBase) => {
       )
     }
 
-    switch (status) {
+    switch (data?.status) {
       case 'negative':
         return statusNode(
           <CrossIcon className="text-negative-700 w-6 h-6" />,
@@ -59,14 +63,16 @@ const MyApplicationsSentCard = (props: MyApplicationsSentCardBase) => {
     return (
       <span
         className={cx('w-8 h-8 rounded-full flex justify-center items-center', {
-          'bg-negative-50': status === 'negative',
-          'bg-warning-50': status === 'warning',
-          'bg-success-50': status === 'success',
+          'bg-negative-50': data?.status === 'negative',
+          'bg-warning-50': data?.status === 'warning',
+          'bg-success-50': data?.status === 'success',
         })}
       >
-        {status === 'negative' && <NegativeMobileIcon className="w-5 h-5 text-negative-700" />}
-        {status === 'warning' && <WaitingMobileIcon className="w-5 h-5 text-warning-700" />}
-        {status === 'success' && <SuccessMobileIcon className="w-5 h-5 text-success-700" />}
+        {data?.status === 'negative' && (
+          <NegativeMobileIcon className="w-5 h-5 text-negative-700" />
+        )}
+        {data?.status === 'warning' && <WaitingMobileIcon className="w-5 h-5 text-warning-700" />}
+        {data?.status === 'success' && <SuccessMobileIcon className="w-5 h-5 text-success-700" />}
       </span>
     )
   }
@@ -84,20 +90,22 @@ const MyApplicationsSentCard = (props: MyApplicationsSentCardBase) => {
         >
           <div className="flex items-center justify-between w-full">
             <div className="w-full flex flex-col gap-1 pl-6">
-              <span className="text-p3-semibold text-main-700">{category}</span>
-              <span className="text-20-semibold">{title}</span>
-              <span className="text-p3">{subtitle}</span>
+              <span className="text-p3-semibold text-main-700">{data?.category}</span>
+              <span className="text-20-semibold">{data?.title}</span>
+              <span className="text-p3">{data?.subtitle}</span>
             </div>
             <div className="w-full justify-end flex items-center gap-6">
               <div className="flex flex-col w-full max-w-[200px]">
                 <span className="text-16-semibold mb-1">
                   {t('account_section_applications.navigation_sent')}
                 </span>
-                <span className="w-max">{sentDate}</span>
+                <span className="w-max">{data?.sentDate}</span>
               </div>
               <div className="flex flex-col gap-1 mr-6 w-full max-w-[200px]">
                 <div className="flex">{desktopStatusHandler()}</div>
-                {status !== 'warning' && statusDate && <span className="pl-8">{statusDate}</span>}
+                {data?.status !== 'warning' && data?.statusDate && (
+                  <span className="pl-8">{data?.statusDate}</span>
+                )}
               </div>
             </div>
           </div>
@@ -121,11 +129,13 @@ const MyApplicationsSentCard = (props: MyApplicationsSentCardBase) => {
             <div className="flex flex-col w-full max-[389px]:gap-1">
               <div className="flex items-center justify-between">
                 <span className="text-p3-semibold max-[389px]:max-w-[220px] text-main-700">
-                  {category}
+                  {data?.category}
                 </span>
                 <span>{mobileStatusHandler()}</span>
               </div>
-              <span className="text-p2-semibold leading-5 max-[389px]:max-w-[220px]">{title}</span>
+              <span className="text-p2-semibold leading-5 max-[389px]:max-w-[220px]">
+                {data?.title}
+              </span>
             </div>
           </div>
         </Link>

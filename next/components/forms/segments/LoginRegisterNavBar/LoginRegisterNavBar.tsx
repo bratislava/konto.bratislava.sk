@@ -1,11 +1,12 @@
 import ArrowLeft from '@assets/images/new-icons/ui/arrow-left.svg'
-import useElementSize from '@utils/useElementSize'
-import { getLanguageKey } from '@utils/utils'
 import cx from 'classnames'
 import { StatusBar, useStatusBarContext } from 'components/forms/info-components/StatusBar'
 import Brand from 'components/forms/simple-components/Brand'
 import { useRouter } from 'next/router'
 import { useTranslation } from 'next-i18next'
+
+import useElementSize from '../../../../frontend/hooks/useElementSize'
+import { getLanguageKey } from '../../../../frontend/utils/general'
 
 interface IProps {
   className?: string

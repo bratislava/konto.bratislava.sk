@@ -1,9 +1,11 @@
-import { Gdpr, getUserApi, subscribeApi, UNAUTHORIZED_ERROR_TEXT, unsubscribeApi, User } from '@utils/api'
-import useAccount from '@utils/useAccount'
 import { useCallback, useState } from 'react'
 import { useEffectOnce } from 'usehooks-ts'
 
-import logger from './logger'
+// eslint-disable-next-line import/extensions
+import { getUserApi, subscribeApi, UNAUTHORIZED_ERROR_TEXT, unsubscribeApi } from "../api/api"
+import { Gdpr, User } from '../dtos/generalApiDto'
+import logger from '../utils/logger'
+import useAccount from "./useAccount"
 
 export default function useUser() {
   const [user, setUser] = useState<User | undefined>()

@@ -1,9 +1,9 @@
-import { Tax } from '@utils/taxDto'
-import useAccount, { Address } from '@utils/useAccount'
-import useSnackbar from '@utils/useSnackbar'
 import { useTranslation } from 'next-i18next'
 import { useState } from 'react'
 
+import { Tax } from '../../../../../frontend/dtos/taxDto'
+import useAccount, { Address } from '../../../../../frontend/hooks/useAccount'
+import useSnackbar from '../../../../../frontend/hooks/useSnackbar'
 import SummaryRowSimple from '../../../simple-components/SummaryRowSimple'
 import SummaryRow from '../../../steps/Summary/SummaryRow'
 import CorrespondenceAddressModal from '../../CorrespondenceAddressModal/CorrespondenceAddressModal'

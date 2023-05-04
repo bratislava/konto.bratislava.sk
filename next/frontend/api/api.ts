@@ -1,114 +1,14 @@
 // TODO waiting on #305 to get merged, afterwards might move elsewhere
 // frontend code for calling api endpoints grouped
-// TODO refactor, get rid of Api error, make TaxApiError format the default and handle errors accordingly
-// eslint-disable-next-line max-classes-per-file
 import { RJSFSchema } from '@rjsf/utils'
 import { ErrorObject } from 'ajv'
 
-import logger from './logger'
+import { CreateFormDto, FormDto, UpdateFormDto } from '../dtos/formDto'
+import { ApiError, Gdpr, Identity, TaxApiError, UrlResult, User } from '../dtos/generalApiDto'
+import logger from '../utils/logger'
 
 export const API_ERROR_TEXT = 'API_ERROR'
 export const UNAUTHORIZED_ERROR_TEXT = 'UNAUTHORIZED_ERROR'
-
-export class ApiError extends Error {
-  errors: Array<ErrorObject>
-
-  constructor(m: string, errors: Array<ErrorObject>) {
-    super(m)
-    // Set the prototype explicitly - workaround while target is es5, cosnsider bumping target so we don't have to deal with this
-    Object.setPrototypeOf(this, ApiError.prototype)
-    this.errors = errors
-  }
-}
-
-export class TaxApiError extends Error {
-  response: Record<string, any>
-
-  status?: number
-
-  statusText?: string
-
-  constructor(message?: string, responseJson?: Record<string, any>) {
-    // TODO better error handling - this is to ensure logging in Faro
-    super(`${message} ${JSON.stringify(responseJson)}`)
-    // Set the prototype explicitly - workaround while target is es5, cosnsider bumping target so we don't have to deal with this
-    Object.setPrototypeOf(this, TaxApiError.prototype)
-    this.response = responseJson
-    this.status = typeof responseJson?.statusCode === 'number' ? responseJson.statusCode : undefined
-    this.statusText =
-      typeof responseJson?.statusText === 'string' ? responseJson.statusText : undefined
-  }
-}
-
-export interface Identity {
-  birthNumber: string
-  identityCard: string
-  turnstileToken: string
-}
-
-export interface Gdpr {
-  subType?: 'subscribe' | 'unsubscribe'
-  type: 'ANALYTICS' | 'DATAPROCESSING' | 'MARKETING' | 'LICENSE'
-  category: 'SWIMMINGPOOLS' | 'TAXES' | 'CITY' | 'ESBS'
-}
-
-export interface User {
-  id: string
-  createdAt: Date
-  updatedAt: Date
-  externalId?: string
-  email: string
-  birthNumber: string
-  gdprData: Gdpr[]
-}
-
-export interface UrlResult {
-  url: string
-}
-
-export type CreateFormDto = {
-  pospID: string
-  pospVersion: string
-  messageSubject: string
-  isSigned: boolean
-  formName: string
-  fromDescription: string
-}
-
-export type UpdateFormDto = {
-  email?: string
-  formDataXml?: string
-  formDataJson?: any
-  pospID?: string
-  pospVersion?: string
-  messageSubject?: string
-  isSigned?: boolean
-  formName?: string
-  fromDescription?: string
-}
-
-export type FormDto = {
-  email: string
-  formDataXml: string
-  formDataJson: any
-  pospID?: string
-  pospVersion: string
-  messageSubject: string
-  isSigned?: false
-  formName?: string
-  fromDescription?: string
-  id: string
-  createdAt: Date
-  updatedAt: Date
-  externalId: string
-  userExternalId: string
-  uri?: string
-  state?: string
-  formDataGinis?: string
-  senderId: string
-  recipientId: string
-  finishSubmission: string
-}
 
 const fetchJsonApi = async <T=any>(path: string, options?: RequestInit): Promise<T> => {
   try {

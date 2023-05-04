@@ -1,8 +1,9 @@
 import UploadIcon from '@assets/images/new-icons/ui/upload.svg'
 import { UploadMinioFile } from '@backend/dtos/minio/upload-minio-file.dto'
-import { handleOnKeyPress } from '@utils/utils'
 import cx from 'classnames'
 import React, { ForwardedRef, forwardRef, ForwardRefRenderFunction } from 'react'
+
+import { handleOnKeyPress } from '../../../../frontend/utils/general'
 
 interface UploadButtonProps {
   value?: UploadMinioFile[]

@@ -22,6 +22,7 @@
                 "ziatetelTyp": {
                   "title": "Žiadate ako",
                   "type": "string",
+                  "default": "Fyzická osoba",
                   "enum": ["Fyzická osoba", "Fyzická osoba - podnikateľ", "Právnicka osoba"]
                 }
               },
@@ -134,6 +135,7 @@
                 "podujatieTyp": {
                   "title": "Typ podujatia",
                   "type": "string",
+                  "default": "Natáčanie filmu",
                   "enum": [
                     "Natáčanie filmu",
                     "Kultúrne podujatie",
@@ -331,6 +333,7 @@
                   "ucastPrimatoraTyp": {
                     "type": "string",
                     "title": "O aký vstup sa jedná",
+                    "default": "Slávnostné otvorenie",
                     "enum": [
                       "Slávnostné otvorenie",
                       "Príhovor",
@@ -352,6 +355,7 @@
                 "propagaciaMestoUpresnenie": {
                   "type": "string",
                   "title": "O aké komunikačné kanály máte záujem?",
+                  "default": "Sociálne siete hlavného mesta (Facebook, Instagram)",
                   "enum": [
                     "Sociálne siete hlavného mesta (Facebook, Instagram)",
                     "Mestský web bratislava.sk",
@@ -368,6 +372,7 @@
                   "propagaciaMestoUpresnenie": {
                     "type": "string",
                     "title": "O aké komunikačné kanály máte záujem?",
+                    "default": "Sociálne siete hlavného mesta (Facebook, Instagram)",
                     "enum": [
                       "Sociálne siete hlavného mesta (Facebook, Instagram)",
                       "Mestský web bratislava.sk",
@@ -397,6 +402,7 @@
             "ziadostPodporaOrganizacieUpresnenie": {
               "title": "Vyberte, ktoré z inštitúcií:",
               "type": "string",
+              "default": "Bratislavské kultúrne a informačné stredisko (BKIS)",
               "enum": [
                 "Bratislavské kultúrne a informačné stredisko (BKIS)",
                 "Bratislava Tourist Board (BTB)",

@@ -1,8 +1,5 @@
 /* eslint-disable no-secrets/no-secrets */
 
-import { subscribeApi, UNAUTHORIZED_ERROR_TEXT, verifyIdentityApi } from '@utils/api'
-import { ROUTES } from '@utils/constants'
-import useSnackbar from '@utils/useSnackbar'
 import {
   AuthenticationDetails,
   CognitoUser,
@@ -27,8 +24,11 @@ import { useTranslation } from 'next-i18next'
 import React, { ReactNode, useCallback, useContext, useEffect, useState } from 'react'
 import { useInterval } from 'usehooks-ts'
 
-import logger, { faro } from './logger'
-import { isBrowser } from './utils'
+import { subscribeApi, UNAUTHORIZED_ERROR_TEXT, verifyIdentityApi } from "../api/api"
+import { ROUTES } from "../api/constants"
+import { isBrowser } from '../utils/general'
+import logger, { faro } from '../utils/logger'
+import useSnackbar from "./useSnackbar"
 
 export enum AccountStatus {
   Idle,
@@ -182,8 +182,8 @@ export const AccountProvider = ({ children }: { children: ReactNode }) => {
             key === 'address'
               ? JSON.stringify(value)
               : key === 'phone_number'
-              ? typeof value === 'string' && value?.replace(' ', '')
-              : JSON.stringify(value)
+                ? typeof value === 'string' && value?.replace(' ', '')
+                : String(value)
         })
         attributeList.push(attribute)
       }

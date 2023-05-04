@@ -37,19 +37,21 @@ interface StatusBarProps {
 export const StatusBar = ({ className }: StatusBarProps) => {
   const { statusBarContent } = useStatusBarContext()
   return (
-    statusBarContent && (
-      <div className={cx('w-full bg-negative-700 text-white', className)}>
-        <div className="container mx-auto h-full flex items-center justify-center">
-          <SectionContainer>
-            <div className="row flex items-center py-4">
-              <span className="hidden md:flex mr-3">
-                <ErrorIcon solid className="w-5 h-5" />
-              </span>
-              <div className="text-p2">{statusBarContent}</div>
-            </div>
-          </SectionContainer>
+    statusBarContent
+      ? (
+        <div className={cx('w-full bg-negative-700 text-white', className)}>
+          <div className="container mx-auto h-full flex items-center justify-center">
+            <SectionContainer>
+              <div className="row flex items-center py-4">
+                <span className="hidden md:flex mr-3">
+                  <ErrorIcon solid className="w-5 h-5" />
+                </span>
+                <div className="text-p2">{statusBarContent}</div>
+              </div>
+            </SectionContainer>
+          </div>
         </div>
-      </div>
-    )
+      )
+      : null
   )
 }

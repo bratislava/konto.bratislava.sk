@@ -89,7 +89,7 @@ const UserProfileDetailEdit = (props: UserProfileDetailEditProps) => {
         address: {
           street_address: data.street_address,
           locality: data.city,
-          postal_code: data.postal_code.replaceAll(' ', ''),
+          postal_code: data.postal_code?.replaceAll(' ', ''),
         },
       }
       return onSubmit(newUserData)

@@ -17,6 +17,7 @@
     "incremental": true,
     "downlevelIteration": true,
     "baseUrl": "./",
+    "noImplicitAny": false,
     "paths": {
       "@utils": ["./utils"],
       "@utils/*": ["./utils/*"],

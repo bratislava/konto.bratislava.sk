@@ -34,7 +34,7 @@ interface StatusBarProps {
   className?: string
 }
 
-export const StatusBar: React.FC<StatusBarProps> = ({ className }) => {
+export const StatusBar = ({ className }: StatusBarProps) => {
   const { statusBarContent } = useStatusBarContext()
   return (
     statusBarContent && (

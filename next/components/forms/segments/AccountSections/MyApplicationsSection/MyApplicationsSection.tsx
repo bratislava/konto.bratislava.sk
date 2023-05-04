@@ -1,176 +1,22 @@
-import MyApplicationsConceptList, {
-  MyApplicationsConceptCardBase,
-} from 'components/forms/segments/AccountSections/MyApplicationsSection/MyApplicationsConceptList'
+import MyApplicationsConceptList from 'components/forms/segments/AccountSections/MyApplicationsSection/MyApplicationsConceptList'
 import MyApplicationsHeader from 'components/forms/segments/AccountSections/MyApplicationsSection/MyApplicationsHeader'
-import MyApplicationsSentList, {
-  MyApplicationsSentCardBase,
-} from 'components/forms/segments/AccountSections/MyApplicationsSection/MyApplicationsSentList'
+import MyApplicationsSentList from 'components/forms/segments/AccountSections/MyApplicationsSection/MyApplicationsSentList'
 import { useGlobalStateContext } from 'components/forms/states/GlobalState'
+import { MyApplicationsConceptCardBase, MyApplicationsSentCardBase } from 'frontend/api/mocks/mocks'
 import { useTranslation } from 'next-i18next'
 import { useState } from 'react'
 
-const sentCards: MyApplicationsSentCardBase[] = [
-  {
-    title: 'Názov stavby dotiahnutý zo žiadosti',
-    subtitle: 'Názov stavby/projektu',
-    sentDate: '29. september 2022',
-    category: 'Záväzné stanovisko k investičnej činnosti',
-    status: 'success',
-    statusDate: '29. september 2022',
-  },
-  {
-    title: 'Názov podania',
-    subtitle: 'Subcontent',
-    category: 'Kategória',
-    sentDate: '29. september 2022',
-    status: 'warning',
-    statusDate: '29. september 2022',
-  },
-  {
-    title: 'Názov podania',
-    subtitle: 'Subcontent',
-    category: 'Kategória',
-    sentDate: '29. september 2022',
-    status: 'negative',
-    statusDate: '29. september 2022',
-  },
-  {
-    title: 'Názov stavby dotiahnutý zo žiadosti',
-    subtitle: 'Názov stavby/projektu',
-    sentDate: '29. september 2022',
-    category: 'Záväzné stanovisko k investičnej činnosti',
-    status: 'success',
-    statusDate: '29. september 2022',
-  },
-  {
-    title: 'Názov stavby dotiahnutý zo žiadosti',
-    subtitle: 'Názov stavby/projektu',
-    sentDate: '29. september 2022',
-    category: 'Záväzné stanovisko k investičnej činnosti',
-    status: 'success',
-    statusDate: '29. september 2022',
-  },
-  {
-    title: 'Názov stavby dotiahnutý zo žiadosti',
-    subtitle: 'Názov stavby/projektu',
-    sentDate: '29. september 2022',
-    category: 'Záväzné stanovisko k investičnej činnosti',
-    status: 'success',
-    statusDate: '29. september 2022',
-  },
-  {
-    title: 'Názov podania',
-    subtitle: 'Subcontent',
-    category: 'Kategória',
-    sentDate: '29. september 2022',
-    status: 'warning',
-    statusDate: '29. september 2022',
-  },
-  {
-    title: 'Názov podania',
-    subtitle: 'Subcontent',
-    category: 'Kategória',
-    sentDate: '29. september 2022',
-    status: 'negative',
-    statusDate: '29. september 2022',
-  },
-  {
-    title: 'Názov podania',
-    subtitle: 'Subcontent',
-    category: 'Kategória',
-    sentDate: '29. september 2022',
-    status: 'warning',
-    statusDate: '29. september 2022',
-  },
-  {
-    title: 'Názov podania',
-    subtitle: 'Subcontent',
-    category: 'Kategória',
-    sentDate: '29. september 2022',
-    status: 'negative',
-    statusDate: '29. september 2022',
-  },
-]
-const conceptCards: MyApplicationsConceptCardBase[] = [
-  {
-    title: 'Názov podania',
-    subtitle: 'Subcontent',
-    category: 'Kategória',
-    createDate: '29. september 2022',
-  },
-  {
-    title: 'Názov podania',
-    subtitle: 'Subcontent',
-    category: 'Kategória',
-    createDate: '29. september 2022',
-  },
-  {
-    title: 'Názov podania',
-    subtitle: 'Subcontent',
-    category: 'Kategória',
-    createDate: '29. september 2022',
-  },
-  {
-    title: 'Názov podania',
-    subtitle: 'Subcontent',
-    category: 'Kategória',
-    createDate: '29. september 2022',
-  },
-  {
-    title: 'Názov podania',
-    subtitle: 'Subcontent',
-    category: 'Kategória',
-    createDate: '29. september 2022',
-  },
-  {
-    title: 'Názov podania',
-    subtitle: 'Subcontent',
-    category: 'Kategória',
-    createDate: '29. september 2022',
-  },
-  {
-    title: 'Názov podania',
-    subtitle: 'Subcontent',
-    category: 'Kategória',
-    createDate: '29. september 2022',
-  },
-  {
-    title: 'Názov podania',
-    subtitle: 'Subcontent',
-    category: 'Kategória',
-    createDate: '29. september 2022',
-  },
-  {
-    title: 'Názov podania',
-    subtitle: 'Subcontent',
-    category: 'Kategória',
-    createDate: '29. september 2022',
-  },
-  {
-    title: 'Názov podania',
-    subtitle: 'Subcontent',
-    category: 'Kategória',
-    createDate: '29. september 2022',
-  },
-  {
-    title: 'Názov podania',
-    subtitle: 'Subcontent',
-    category: 'Kategória',
-    createDate: '29. september 2022',
-  },
-  {
-    title: 'Názov podania',
-    subtitle: 'Subcontent',
-    category: 'Kategória',
-    createDate: '29. september 2022',
-  },
-]
-
 type MyApplicationsSectionBase = {
   isProductionDeploy: boolean
+  conceptCardsList: MyApplicationsConceptCardBase[]
+  sentCardsList: MyApplicationsSentCardBase[]
 }
 
-const MyApplicationsSection = ({ isProductionDeploy }: MyApplicationsSectionBase) => {
+const MyApplicationsSection = ({
+  isProductionDeploy,
+  conceptCardsList,
+  sentCardsList,
+}: MyApplicationsSectionBase) => {
   const { t } = useTranslation('account')
   const { globalState } = useGlobalStateContext()
   const [isEmptyList, setIsEmptyList] = useState<boolean>(false)
@@ -179,10 +25,10 @@ const MyApplicationsSection = ({ isProductionDeploy }: MyApplicationsSectionBase
     <div className="flex flex-col">
       <MyApplicationsHeader title={t('account_section_applications.navigation')} />
       {globalState.applicationsActiveMenuItem === 'sent' && (
-        <MyApplicationsSentList cards={!isEmptyList ? sentCards : []} />
+        <MyApplicationsSentList cards={!isEmptyList ? sentCardsList : []} />
       )}
       {globalState.applicationsActiveMenuItem === 'concept' && (
-        <MyApplicationsConceptList cards={!isEmptyList ? conceptCards : []} />
+        <MyApplicationsConceptList cards={!isEmptyList ? conceptCardsList : []} />
       )}
       {/* Temporary button only for dev */}
       {!isProductionDeploy && (

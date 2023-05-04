@@ -19,6 +19,7 @@
   },
   "dependencies": {
     "@bratislava/json-schema-xsd-tools": "^0.2.1",
+    "@grafana/faro-core": "^1.0.5",
     "@grafana/faro-web-sdk": "^1.0.2",
     "@hookform/resolvers": "^2.9.10",
     "@internationalized/date": "3.1.0",

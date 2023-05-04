@@ -2,6 +2,11 @@
 // eslint-disable-next-line max-classes-per-file
 import { ErrorObject } from 'ajv'
 
+export interface GeneralError {
+  [key: string]: unknown
+  message?: string
+}
+
 export class ApiError extends Error {
   errors: Array<ErrorObject>
 

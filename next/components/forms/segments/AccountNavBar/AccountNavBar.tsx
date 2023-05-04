@@ -164,7 +164,7 @@ export const AccountNavBar = ({
               </p>
             }
           />
-          <IdentityVerificationStatus />
+          {isAuth && <IdentityVerificationStatus />}
           <nav className="text-font/75 flex gap-x-8 font-semibold">
             <div className="text-font/75 flex items-center gap-x-6 font-semibold">
               {!navHidden ? (

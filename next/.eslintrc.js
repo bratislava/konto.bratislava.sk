@@ -58,6 +58,7 @@ module.exports = {
     'unicorn/no-array-reduce': 'off',
     // quite annoying as it conflicts with VS Code's auto import
     'lodash/import-scope': 'off',
+    'unicorn/no-thenable': 'off'
   },
   ignorePatterns: ['*.config.*', 'graphql', '.eslintrc.js', '/backend/forms/'],
 }

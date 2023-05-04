@@ -79,7 +79,7 @@ const FormTestPage = ({
         { locale: 'en', slug: pageSlug },
       ]}
     >
-      <AccountPageLayout hiddenHeaderNav isProductionDeploy={isProductionDeploy}>
+      <AccountPageLayout isPublicPage hiddenHeaderNav isProductionDeploy={isProductionDeploy}>
         <GeneratedFormRJSF eform={eform} escapedSlug={escapedSlug} formSlug={formSlug} />
       </AccountPageLayout>
     </PageWrapper>

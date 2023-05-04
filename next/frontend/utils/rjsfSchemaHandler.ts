@@ -1,16 +1,12 @@
 import { ErrorSchema, RJSFValidationError, StrictRJSFSchema } from '@rjsf/utils'
-import {
-  getAllPossibleJsonSchemaExtraProperties,
-  JsonSchema,
-  JsonSchemaExtraProperties,
-  JsonSchemaExtraProperty,
-} from '@utils/forms'
 import { JSONSchema7Definition } from 'json-schema'
 
 import {
   TransformedFormData,
   TransformedFormStep,
-} from '../components/forms/steps/Summary/TransformedFormData'
+} from '../../components/forms/steps/Summary/TransformedFormData'
+import { JsonSchema, JsonSchemaExtraProperties, JsonSchemaExtraProperty } from '../dtos/formStepperDto'
+import { getAllPossibleJsonSchemaExtraProperties } from './formStepper'
 
 function findTitle(value: JSONSchema7Definition, items: JSONSchema7Definition[]) {
   if (typeof items === 'boolean') return value

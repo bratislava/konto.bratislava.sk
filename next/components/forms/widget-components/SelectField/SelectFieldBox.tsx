@@ -1,7 +1,7 @@
-import { handleOnKeyPress } from '@utils/utils'
 import { useTranslation } from 'next-i18next'
 import React, { ForwardedRef, forwardRef, ForwardRefRenderFunction } from 'react'
 
+import { handleOnKeyPress } from '../../../../frontend/utils/general'
 import Tag from '../../simple-components/Tag'
 import { SelectOption } from './SelectOption.interface'
 

@@ -165,31 +165,6 @@ const HelpSection = () => {
             size="md"
             content={t('account_section_help.faq.28.answer')}
           />
-          <Accordion
-            title={t('account_section_help.faq.29.question')}
-            size="md"
-            content={t('account_section_help.faq.29.answer')}
-          />
-          <Accordion
-            title={t('account_section_help.faq.30.question')}
-            size="md"
-            content={t('account_section_help.faq.30.answer')}
-          />
-          <Accordion
-            title={t('account_section_help.faq.31.question')}
-            size="md"
-            content={t('account_section_help.faq.31.answer')}
-          />
-          <Accordion
-            title={t('account_section_help.faq.32.question')}
-            size="md"
-            content={t('account_section_help.faq.32.answer')}
-          />
-          <Accordion
-            title={t('account_section_help.faq.33.question')}
-            size="md"
-            content={t('account_section_help.faq.33.answer')}
-          />
         </div>
       </div>
       <div className="bg-gray-50 py-0 lg:py-16">

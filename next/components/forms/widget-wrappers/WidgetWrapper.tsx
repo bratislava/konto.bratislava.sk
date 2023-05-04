@@ -1,8 +1,8 @@
-import { isObject } from '@utils/utils'
 import cx from 'classnames'
 import { FormSpacingType } from 'components/forms/types/WidgetOptions'
 import React, { ReactNode, useId } from 'react'
 
+import { isObject } from '../../../frontend/utils/general'
 import Accordion, { AccordionBase } from '../simple-components/Accordion'
 
 type WidgetWrapperBase = {

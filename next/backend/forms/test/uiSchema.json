@@ -245,7 +245,15 @@
   },
   "selectFields": {
     "ui:hideError": true,
-    "ui:order": ["school", "conditionalSchool", "diplomas", "conditionalDiplomas", "years", "city"],
+    "ui:order": [
+      "school",
+      "conditionalSchool",
+      "diplomas",
+      "conditionalDiplomas",
+      "years",
+      "street",
+      "city"
+    ],
     "school": {
       "ui:widget": "SelectField",
       "ui:label": false,
@@ -269,6 +277,10 @@
       }
     },
     "years": {
+      "ui:widget": "SelectField",
+      "ui:label": false
+    },
+    "street": {
       "ui:widget": "SelectField",
       "ui:label": false
     },

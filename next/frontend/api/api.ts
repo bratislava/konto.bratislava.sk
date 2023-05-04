@@ -9,7 +9,7 @@ import logger from '../utils/logger'
 
 export const API_ERROR_TEXT = 'API_ERROR'
 export const UNAUTHORIZED_ERROR_TEXT = 'UNAUTHORIZED_ERROR'
-
+export const MISSING_TOKEN = 'MISSING TOKEN'
 const fetchJsonApi = async <T=any>(path: string, options?: RequestInit): Promise<T> => {
   try {
     const response = await fetch(path, options)
@@ -116,9 +116,11 @@ export const xmlToFormData = (eform: string, data: string): Promise<RJSFSchema> 
   })
 }
 
-export const verifyIdentityApi = (data: Identity, token: string) => {
+export const verifyIdentityApi = (data: Identity, token?: string|null) => {
+  if (!token) throw new Error(MISSING_TOKEN)
+
   return fetchJsonApi(
-    `${process.env.NEXT_PUBLIC_CITY_ACCOUNT_URL}/user-verification/identity-card`,
+    `${String(process.env.NEXT_PUBLIC_CITY_ACCOUNT_URL)}/user-verification/identity-card`,
     {
       method: 'POST',
       headers: {
@@ -130,8 +132,10 @@ export const verifyIdentityApi = (data: Identity, token: string) => {
   )
 }
 
-export const subscribeApi = (data: { gdprData?: Gdpr[] }, token: string): Promise<User> => {
-  return fetchJsonApi<User>(`${process.env.NEXT_PUBLIC_CITY_ACCOUNT_URL}/user/subscribe`, {
+export const subscribeApi = (data: { gdprData?: Gdpr[] }, token?: string|null): Promise<User> => {
+  if (!token) throw new Error(MISSING_TOKEN)
+
+  return fetchJsonApi<User>(`${String(process.env.NEXT_PUBLIC_CITY_ACCOUNT_URL)}/user/subscribe`, {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
@@ -141,8 +145,10 @@ export const subscribeApi = (data: { gdprData?: Gdpr[] }, token: string): Promis
   })
 }
 
-export const unsubscribeApi = (data: { gdprData?: Gdpr[] }, token: string): Promise<User> => {
-  return fetchJsonApi<User>(`${process.env.NEXT_PUBLIC_CITY_ACCOUNT_URL}/user/unsubscribe`, {
+export const unsubscribeApi = (data: { gdprData?: Gdpr[] }, token?: string|null): Promise<User> => {
+  if (!token) throw new Error(MISSING_TOKEN)
+
+  return fetchJsonApi<User>(`${String(process.env.NEXT_PUBLIC_CITY_ACCOUNT_URL)}/user/unsubscribe`, {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
@@ -152,8 +158,10 @@ export const unsubscribeApi = (data: { gdprData?: Gdpr[] }, token: string): Prom
   })
 }
 
-export const getUserApi = (token: string): Promise<User> => {
-  return fetchJsonApi<User>(`${process.env.NEXT_PUBLIC_CITY_ACCOUNT_URL}/user/get-or-create`, {
+export const getUserApi = (token: string|null): Promise<User> => {
+  if (!token) throw new Error(MISSING_TOKEN)
+
+  return fetchJsonApi<User>(`${String(process.env.NEXT_PUBLIC_CITY_ACCOUNT_URL)}/user/get-or-create`, {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
@@ -162,8 +170,10 @@ export const getUserApi = (token: string): Promise<User> => {
   })
 }
 
-export const resetRcApi = (token: string) => {
-  return fetchJsonApi(`${process.env.NEXT_PUBLIC_CITY_ACCOUNT_URL}/user/remove-birthnumber`, {
+export const resetRcApi = (token: string|null) => {
+  if (!token) throw new Error(MISSING_TOKEN)
+
+  return fetchJsonApi(`${String(process.env.NEXT_PUBLIC_CITY_ACCOUNT_URL)}/user/remove-birthnumber`, {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
@@ -172,8 +182,10 @@ export const resetRcApi = (token: string) => {
   })
 }
 
-export const getForms = (token: string) => {
-  return fetchJsonApi(`${process.env.NEXT_PUBLIC_FORMS_URL}/nases/forms`, {
+export const getForms = (token: string|null) => {
+  if (!token) throw new Error(MISSING_TOKEN)
+
+  return fetchJsonApi(`${String(process.env.NEXT_PUBLIC_FORMS_URL)}/nases/forms`, {
     method: 'GET',
     headers: {
       'Content-Type': 'application/json',
@@ -182,29 +194,10 @@ export const getForms = (token: string) => {
   })
 }
 
-export const createForm = (token: string, data: CreateFormDto): Promise<FormDto> => {
-  return fetchJsonApi<FormDto>(`${process.env.NEXT_PUBLIC_FORMS_URL}/nases/create-form`, {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-      Authorization: `Bearer ${token}`,
-    },
-    body: JSON.stringify(data),
-  })
-}
+export const createForm = (token: string|null, data: CreateFormDto): Promise<FormDto> => {
+  if (!token) throw new Error(MISSING_TOKEN)
 
-export const getForm = (token: string, id: string): Promise<FormDto> => {
-  return fetchJsonApi<FormDto>(`${process.env.NEXT_PUBLIC_FORMS_URL}/nases/form/${id}`, {
-    method: 'GET',
-    headers: {
-      'Content-Type': 'application/json',
-      Authorization: `Bearer ${token}`,
-    },
-  })
-}
-
-export const updateForm = (token: string, id: string, data: UpdateFormDto) => {
-  return fetchJsonApi(`${process.env.NEXT_PUBLIC_FORMS_URL}/nases/update-form/${id}`, {
+  return fetchJsonApi<FormDto>(`${String(process.env.NEXT_PUBLIC_FORMS_URL)}/nases/create-form`, {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
@@ -214,8 +207,10 @@ export const updateForm = (token: string, id: string, data: UpdateFormDto) => {
   })
 }
 
-export const getTaxApi = (token: string) => {
-  return fetchJsonApi(`${process.env.NEXT_PUBLIC_TAXES_URL}/tax/get-tax-by-year?year=2023`, {
+export const getForm = (token: string|null, id: string): Promise<FormDto> => {
+  if (!token) throw new Error(MISSING_TOKEN)
+
+  return fetchJsonApi<FormDto>(`${String(process.env.NEXT_PUBLIC_FORMS_URL)}/nases/form/${id}`, {
     method: 'GET',
     headers: {
       'Content-Type': 'application/json',
@@ -224,8 +219,23 @@ export const getTaxApi = (token: string) => {
   })
 }
 
-export const getTaxPdfApi = (token: string) => {
-  return fetchJsonApi(`${process.env.NEXT_PUBLIC_TAXES_URL}/tax/get-tax-pdf-by-year?year=2023`, {
+export const updateForm = (token: string|null, id: string, data: UpdateFormDto) => {
+  if (!token) throw new Error(MISSING_TOKEN)
+
+  return fetchJsonApi(`${String(process.env.NEXT_PUBLIC_FORMS_URL)}/nases/update-form/${id}`, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      Authorization: `Bearer ${token}`,
+    },
+    body: JSON.stringify(data),
+  })
+}
+
+export const getTaxApi = (token: string|null) => {
+  if (!token) throw new Error(MISSING_TOKEN)
+
+  return fetchJsonApi(`${String(process.env.NEXT_PUBLIC_TAXES_URL)}/tax/get-tax-by-year?year=2023`, {
     method: 'GET',
     headers: {
       'Content-Type': 'application/json',
@@ -234,8 +244,22 @@ export const getTaxPdfApi = (token: string) => {
   })
 }
 
-export const getPaymentGatewayUrlApi = (token: string): Promise<UrlResult> => {
-  return fetchJsonApi<UrlResult>(`${process.env.NEXT_PUBLIC_TAXES_URL}/payment/cardpay/by-year/2023`, {
+export const getTaxPdfApi = (token: string|null) => {
+  if (!token) throw new Error(MISSING_TOKEN)
+
+  return fetchJsonApi(`${String(process.env.NEXT_PUBLIC_TAXES_URL)}/tax/get-tax-pdf-by-year?year=2023`, {
+    method: 'GET',
+    headers: {
+      'Content-Type': 'application/json',
+      Authorization: `Bearer ${token}`,
+    },
+  })
+}
+
+export const getPaymentGatewayUrlApi = (token: string|null): Promise<UrlResult> => {
+  if (!token) throw new Error(MISSING_TOKEN)
+
+  return fetchJsonApi<UrlResult>(`${String(process.env.NEXT_PUBLIC_TAXES_URL)}/payment/cardpay/by-year/2023`, {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',

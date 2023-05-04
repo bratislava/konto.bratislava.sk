@@ -17,7 +17,8 @@ import {
   JsonSchemaExtraProperties,
   JsonSchemaProperties,
   JsonSchemaPropertyTree,
-  KeywordDefinition, validator,
+  KeywordDefinition,
+  validator,
 } from '../dtos/formStepperDto'
 
 
@@ -134,13 +135,11 @@ export const mergePropertyTreeToFormData = (
 }
 
 export const buildRJSFError = (path: string[], errorMsg: string | undefined): ErrorSchema => {
-  let error: ErrorSchema = { __errors: [errorMsg || 'error'] } as ErrorSchema
+  const error: ErrorSchema = { __errors: [errorMsg || 'error'] } as ErrorSchema
 
   path.reverse().forEach((arrayValue: string) => {
-    const obj: ErrorSchema = {}
-    obj[arrayValue] = error
-    error = obj
-  });
+    error[arrayValue] = { [arrayValue]: error }
+  })
 
   return error
 }

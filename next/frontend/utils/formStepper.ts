@@ -134,14 +134,15 @@ export const mergePropertyTreeToFormData = (
 }
 
 export const buildRJSFError = (path: string[], errorMsg: string | undefined): ErrorSchema => {
-  return path.reduceRight(
-    (memo: object, arrayValue: string) => {
-      const error: ErrorSchema = {}
-      error[arrayValue] = memo
-      return error
-    },
-    { __errors: [errorMsg || 'error'] },
-  ) as ErrorSchema
+  let error: ErrorSchema = { __errors: [errorMsg || 'error'] } as ErrorSchema
+
+  path.forEach((arrayValue: string) => {
+    const obj: ErrorSchema = {}
+    obj[arrayValue] = error
+    error = obj
+  });
+
+  return error
 }
 
 

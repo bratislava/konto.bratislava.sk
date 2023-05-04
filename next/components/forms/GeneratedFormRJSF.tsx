@@ -1,7 +1,9 @@
 import { EFormValue } from '@backend/forms'
 import { FormValidation, RJSFSchema } from '@rjsf/utils'
 import cx from 'classnames'
+import RegistrationModal from 'components/forms/segments/RegistrationModal/RegistrationModal'
 import SkipStepModal from 'components/forms/segments/SkipStepModal/SkipStepModal'
+import useAccount from 'frontend/hooks/useAccount'
 import { useState } from 'react'
 
 import { validator } from '../../frontend/dtos/formStepperDto'
@@ -24,12 +26,14 @@ interface FormRJSF {
 
 const GeneratedFormRJSF = ({ eform, escapedSlug, formSlug, wrapperClassName }: FormRJSF) => {
   const filler = useFormFiller(eform)
-  const formContext =  useFormRJSFContextMemo(eform, filler.formId)
+  const formContext = useFormRJSFContextMemo(eform, filler.formId)
   const form = useFormStepper(escapedSlug, eform, {
     onStepSumbit: filler.updateFormData,
     onInit: filler.initFormData,
   })
+  const { isAuth } = useAccount()
   const [isOnShowSkipModal, setIsOnShowSkipModal] = useState<boolean>(false)
+  const [registrationModal, setRegistrationModal] = useState<boolean>(true)
   const [skipModalWasShown, setSkipModalWasShown] = useState<boolean>(false)
   const [skipModalNextStepIndex, setSkipModalNextStepIndex] = useState<number>(form.stepIndex)
 
@@ -72,6 +76,13 @@ const GeneratedFormRJSF = ({ eform, escapedSlug, formSlug, wrapperClassName }: F
             setSkipModalWasShown(true)
           }}
         />
+        {!isAuth && (
+          <RegistrationModal
+            isBottomButtons={false}
+            show={registrationModal}
+            onClose={() => setRegistrationModal(false)}
+          />
+        )}
       </div>
       <div className={cx('grow px-4', 'lg:px-0')}>
         {form.isComplete ? (

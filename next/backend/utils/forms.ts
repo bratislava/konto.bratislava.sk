@@ -71,11 +71,9 @@ export const buildXmlRecursive = (
       const format =
         jsonSchema.type === 'array' ? getFormatFromItems(jsonSchema.items) : jsonSchema.format
       if (format === 'ciselnik') {
-        const ciselnikProperty: { id?: string } = typeof jsonSchema !== 'boolean' && 'ciselnik' in jsonSchema
-          ? jsonSchema.ciselnik : {}
-        stringNode = `<Code>${node}</Code><Name>${node}</Name><WsEnumCode>${
-          ciselnikProperty?.id
-        }</WsEnumCode>`
+        const ciselnikProperty: { id?: string } =
+          typeof jsonSchema !== 'boolean' && 'ciselnik' in jsonSchema ? jsonSchema.ciselnik : {}
+        stringNode = `<Code>${node}</Code><Name>${node}</Name><WsEnumCode>${ciselnikProperty?.id}</WsEnumCode>`
       } else if (format === 'file') {
         stringNode = `<Nazov>${node}</Nazov><Prilozena>true</Prilozena>`
       }
@@ -175,7 +173,8 @@ export const removeNeedlessXmlTransformArraysRecursive = (
         transformedObj[key] = Number.parseFloat(String(value[0]))
       } else if (childSchema.type === 'boolean') {
         // again very forgiving in what we can receive
-        transformedObj[key] = value[0] == null ? null : value[0] === 'false' ? false : Boolean(value[0])
+        transformedObj[key] =
+          value[0] == null ? null : value[0] === 'false' ? false : Boolean(value[0])
       } else {
         const [firstElement] = value
         transformedObj[key] = firstElement

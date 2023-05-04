@@ -18,6 +18,7 @@
     "downlevelIteration": true,
     "baseUrl": "./",
     "noImplicitAny": false,
+    "suppressExcessPropertyErrors": true,
     "paths": {
       "@utils": ["./utils"],
       "@utils/*": ["./utils/*"],

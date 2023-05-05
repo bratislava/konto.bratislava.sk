@@ -1,6 +1,6 @@
 import HiddenIcon from '@assets/images/new-icons/ui/eye.svg'
 import InputField from 'components/forms/widget-components/InputField/InputField'
-import { forwardRef, RefObject, useRef, useState } from 'react'
+import { forwardRef, useRef, useState } from 'react'
 import { useButton } from 'react-aria'
 
 import { ExplicitOptionalType } from '../../types/ExplicitOptional'

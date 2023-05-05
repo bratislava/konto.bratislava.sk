@@ -1,5 +1,5 @@
 import cx from 'classnames'
-import React, { ReactNode, RefObject, useEffect, useRef, useState } from 'react'
+import React, { ReactNode, useEffect, useRef, useState } from 'react'
 import { useTextField } from 'react-aria'
 
 import FieldHeader from '../../info-components/FieldHeader'

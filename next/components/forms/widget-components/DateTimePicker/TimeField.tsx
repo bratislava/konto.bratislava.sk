@@ -69,7 +69,7 @@ const TimeField = ({
       errorMessage,
       ...rest,
     },
-    ref as RefObject<HTMLInputElement>,
+    ref ,
   )
   const timeFieldStyle = cx(
     'sm:text-16 w-full max-w-xs flex rounded-lg bg-white border-2 px-3 sm:px-4 py-1.5 sm:py-2.5 focus:border-gray-700 focus-visible:outline-none placeholder:text-gray-500',

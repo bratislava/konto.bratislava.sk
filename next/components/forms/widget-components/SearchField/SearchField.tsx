@@ -53,7 +53,7 @@ const SearchField = ({
       isRequired: required,
       isDisabled: disabled,
     },
-    ref as RefObject<HTMLInputElement>,
+    ref
   )
 
   const style = cx(

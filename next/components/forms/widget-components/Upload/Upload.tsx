@@ -60,7 +60,7 @@ const UploadComponent: ForwardRefRenderFunction<HTMLDivElement, UploadProps> = (
   }: UploadProps = props
 
   // STATES
-  const [fileBrokenMessages, setFileBrokenMessages] = useState<string[]>([MINIO_ERROR])
+  const [fileBrokenMessages, setFileBrokenMessages] = useState<string[]>([])
 
   // HELPER FUNCTIONS
   const emitOnChange = (newFiles: UploadMinioFile[], oldFiles?: UploadMinioFile[]) => {

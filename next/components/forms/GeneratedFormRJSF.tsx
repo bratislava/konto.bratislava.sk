@@ -1,9 +1,10 @@
 import { EFormValue } from '@backend/forms'
 import { FormValidation, RJSFSchema } from '@rjsf/utils'
 import cx from 'classnames'
+import IdentityVerificationModal from 'components/forms/segments/IdentityVerificationModal/IdentityVerificationModal'
 import RegistrationModal from 'components/forms/segments/RegistrationModal/RegistrationModal'
 import SkipStepModal from 'components/forms/segments/SkipStepModal/SkipStepModal'
-import useAccount from 'frontend/hooks/useAccount'
+import useAccount, { AccountStatus } from 'frontend/hooks/useAccount'
 import { useState } from 'react'
 
 import { validator } from '../../frontend/dtos/formStepperDto'
@@ -31,10 +32,11 @@ const GeneratedFormRJSF = ({ eform, escapedSlug, formSlug, wrapperClassName }: F
     onStepSumbit: filler.updateFormData,
     onInit: filler.initFormData,
   })
-  const { isAuth } = useAccount()
+  const { isAuth, status } = useAccount()
   const [isOnShowSkipModal, setIsOnShowSkipModal] = useState<boolean>(false)
   const [registrationModal, setRegistrationModal] = useState<boolean>(true)
   const [submitRegistrationModal, setSubmitRegistrationModal] = useState<boolean>(false)
+  const [identityVerificationModal, setIdentityVerificationModal] = useState(true)
   const [skipModalWasShown, setSkipModalWasShown] = useState<boolean>(false)
   const [skipModalNextStepIndex, setSkipModalNextStepIndex] = useState<number>(form.stepIndex)
 
@@ -88,6 +90,13 @@ const GeneratedFormRJSF = ({ eform, escapedSlug, formSlug, wrapperClassName }: F
           <RegistrationModal
             show={submitRegistrationModal}
             onClose={() => setSubmitRegistrationModal(false)}
+          />
+        )}
+        {isAuth && status !== AccountStatus.IdentityVerificationSuccess && (
+          <IdentityVerificationModal
+            show={identityVerificationModal}
+            onClose={() => setIdentityVerificationModal(false)}
+            userType="juridical"
           />
         )}
       </div>

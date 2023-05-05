@@ -34,6 +34,7 @@ const GeneratedFormRJSF = ({ eform, escapedSlug, formSlug, wrapperClassName }: F
   const { isAuth } = useAccount()
   const [isOnShowSkipModal, setIsOnShowSkipModal] = useState<boolean>(false)
   const [registrationModal, setRegistrationModal] = useState<boolean>(true)
+  const [submitRegistrationModal, setSubmitRegistrationModal] = useState<boolean>(false)
   const [skipModalWasShown, setSkipModalWasShown] = useState<boolean>(false)
   const [skipModalNextStepIndex, setSkipModalNextStepIndex] = useState<number>(form.stepIndex)
 
@@ -83,6 +84,12 @@ const GeneratedFormRJSF = ({ eform, escapedSlug, formSlug, wrapperClassName }: F
             onClose={() => setRegistrationModal(false)}
           />
         )}
+        {!isAuth && (
+          <RegistrationModal
+            show={submitRegistrationModal}
+            onClose={() => setSubmitRegistrationModal(false)}
+          />
+        )}
       </div>
       <div className={cx('grow px-4', 'lg:px-0')}>
         {form.isComplete ? (
@@ -130,7 +137,9 @@ const GeneratedFormRJSF = ({ eform, escapedSlug, formSlug, wrapperClassName }: F
           previous={form.previous}
           skip={() => skipButtonHandler(form.stepIndex + 1)}
           submitStep={form.submitStep}
-          submitForm={() => submitter.submitForm(form.formData)}
+          submitForm={() =>
+            isAuth ? submitter.submitForm(form.formData) : setSubmitRegistrationModal(true)
+          }
         />
       </div>
     </div>

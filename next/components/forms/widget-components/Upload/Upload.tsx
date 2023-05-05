@@ -2,10 +2,12 @@ import { UploadMinioFile } from '@backend/dtos/minio/upload-minio-file.dto'
 import { deleteFile, uploadFile } from '@backend/services/minio'
 import cx from 'classnames'
 import FieldErrorMessage from 'components/forms/info-components/FieldErrorMessage'
+import { useTranslation } from 'next-i18next'
 import React, { ForwardedRef, forwardRef, ForwardRefRenderFunction, useState } from 'react'
 import { v4 as createUuid } from 'uuid'
 
 import logger from '../../../../frontend/utils/logger'
+import Alert from '../../info-components/Alert'
 import UploadBrokenMessages from '../../info-components/UploadBrokenMessages'
 import UploadFieldHeader from '../../info-components/UploadFieldHeader'
 import UploadButton from './UploadButton'
@@ -58,6 +60,7 @@ const UploadComponent: ForwardRefRenderFunction<HTMLDivElement, UploadProps> = (
   }: UploadProps = props
 
   // STATES
+  const { t } = useTranslation('forms')
   const [fileBrokenMessages, setFileBrokenMessages] = useState<string[]>([])
 
   // HELPER FUNCTIONS
@@ -217,7 +220,16 @@ const UploadComponent: ForwardRefRenderFunction<HTMLDivElement, UploadProps> = (
           />
         ) : null
       }
-      <UploadBrokenMessages fileBrokenMessages={fileBrokenMessages} />
+      {
+        /* <UploadBrokenMessages fileBrokenMessages={fileBrokenMessages} /> */
+        fileBrokenMessages.length > 0 && (
+          <Alert
+            className="mt-4"
+            fullWidth
+            type="error"
+            message={t("errors.upload_size_format")} />
+        )
+      }
       <UploadedFilesList allFiles={value} handleOnRemoveFile={handleOnRemoveFile} />
       {!disabled && <FieldErrorMessage errorMessage={errorMessage} />}
     </section>

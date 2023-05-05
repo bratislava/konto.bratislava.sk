@@ -7,7 +7,8 @@
     "xml_export": "Export zlyhal. Skúste to prosím znova.",
     "xml_import": "Import zlyhal. Skúste to prosím znova.",
     "form_init": "Načítanie formulára zlyhalo.",
-    "form_update": "Formulár sa nepodarilo uložiť do rozpracovaných."
+    "form_update": "Formulár sa nepodarilo uložiť do rozpracovaných.",
+    "upload_size_format": "Prílohy nespĺňajú požadovaný formát a veľkosť"
   },
   "selectAll": "Vybrať všetko",
   "deselectAll": "Odobrať všetko",

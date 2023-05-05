@@ -13,11 +13,15 @@ const UserProfileDetailView = ({ userData }: UserProfileDetailViewProps) => {
   const { t } = useTranslation('account')
   const { given_name, family_name, email, phone_number, address } = userData
   const fullName = `${given_name ?? ''} ${family_name ?? ''}`
-  const { street_address, postal_code, locality} = address
+  // const { street_address, postal_code, locality} = address
   const fullAddress = address
-    ? `${street_address || ''}${street_address && (postal_code || locality) ? ', ' : ''}
-        ${postal_code ? postalCodeFormat(postal_code) : ''}${postal_code ? ' ' : ''}
-        ${locality || ''}`
+    ? `${address?.street_address || ''}${
+        address?.street_address && (address?.postal_code || address?.locality) ? ', ' : ''
+      }
+        ${address?.postal_code ? postalCodeFormat(address?.postal_code) : ''}${
+        address?.postal_code ? ' ' : ''
+      }
+        ${address?.locality || ''}`
     : ''
   return (
     <div className="flex flex-col grow gap-6">

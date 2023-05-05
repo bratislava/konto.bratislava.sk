@@ -8,7 +8,6 @@ import { v4 as createUuid } from 'uuid'
 
 import logger from '../../../../frontend/utils/logger'
 import Alert from '../../info-components/Alert'
-import UploadBrokenMessages from '../../info-components/UploadBrokenMessages'
 import UploadFieldHeader from '../../info-components/UploadFieldHeader'
 import UploadButton from './UploadButton'
 import UploadDropArea from './UploadDropArea'
@@ -32,7 +31,7 @@ interface UploadProps {
 
 const getBucketFileName = (file: File, folderName: string) => {
   const extension = file.type.split("/").pop()
-  const newName = folderName ? `${folderName}/${createUuid()}.${extension}` : `${createUuid()}.${extension}`
+  const newName = folderName ? `${folderName}/${createUuid()}.${extension || ''}` : `${createUuid()}.${extension || ''}`
   return new File([file], newName, {
     type: file.type,
     lastModified: file.lastModified,

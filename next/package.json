@@ -4,7 +4,7 @@
   "private": true,
   "license": "EUPL-1.2",
   "scripts": {
-    "dev": "next dev",
+    "dev": "next dev  -p 3003",
     "develop": "next dev",
     "build": "next build",
     "start": "next start",

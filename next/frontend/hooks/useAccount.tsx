@@ -24,11 +24,11 @@ import { useTranslation } from 'next-i18next'
 import React, { ReactNode, useCallback, useContext, useEffect, useState } from 'react'
 import { useInterval } from 'usehooks-ts'
 
-import { subscribeApi, UNAUTHORIZED_ERROR_TEXT, verifyIdentityApi } from "../api/api"
-import { ROUTES } from "../api/constants"
+import { subscribeApi, UNAUTHORIZED_ERROR_TEXT, verifyIdentityApi } from '../api/api'
+import { ROUTES } from '../api/constants'
 import { isBrowser } from '../utils/general'
 import logger, { faro } from '../utils/logger'
-import useSnackbar from "./useSnackbar"
+import useSnackbar from './useSnackbar'
 
 export enum AccountStatus {
   Idle,
@@ -174,7 +174,7 @@ export const AccountProvider = ({ children }: { children: ReactNode }) => {
 
   const objectToUserAttributes = (data: UserData | Address): CognitoUserAttribute[] => {
     const attributeList: CognitoUserAttribute[] = []
-    Object.entries(data).forEach(([key, value]: [string, string|Tier|Address]) => {
+    Object.entries(data).forEach(([key, value]: [string, string | Tier | Address]) => {
       if (updatableAttributes.has(key)) {
         const attribute = new CognitoUserAttribute({
           Name: customAttributes.has(key) ? `custom:${key}` : key,
@@ -182,8 +182,8 @@ export const AccountProvider = ({ children }: { children: ReactNode }) => {
             key === 'address'
               ? JSON.stringify(value)
               : key === 'phone_number'
-                ? typeof value === 'string' && value?.replace(' ', '')
-                : String(value)
+              ? typeof value === 'string' && value?.replace(' ', '')
+              : String(value),
         })
         attributeList.push(attribute)
       }
@@ -220,6 +220,35 @@ export const AccountProvider = ({ children }: { children: ReactNode }) => {
             resolve(null)
           } else if (result) {
             const accessToken = result.getAccessToken().getJwtToken()
+            const idToken = result.getIdToken().getJwtToken()
+            const refreshToken = result.getRefreshToken().getToken()
+            console.log({ accessToken, idToken, refreshToken })
+            window.top.postMessage({ accessToken, idToken, refreshToken }, 'http://localhost:3000')
+            console.log('sent message to parent')
+            setLastAccessToken(accessToken)
+            resolve(accessToken)
+          } else {
+            resolve(null)
+          }
+        })
+      }
+    })
+  }
+
+  const printAllTokens = async (): Promise<string | null> => {
+    return new Promise((resolve) => {
+      const cognitoUser = userPool.getCurrentUser()
+      if (cognitoUser == null) {
+        resolve(null)
+      } else {
+        cognitoUser.getSession((err: Error | null, result: CognitoUserSession | null) => {
+          if (err) {
+            resolve(null)
+          } else if (result) {
+            const accessToken = result.getAccessToken().getJwtToken()
+            const idToken = result.getIdToken().getJwtToken()
+            const refreshToken = result.getRefreshToken().getToken()
+            console.log({ accessToken, idToken, refreshToken })
             setLastAccessToken(accessToken)
             resolve(accessToken)
           } else {
@@ -474,17 +503,19 @@ export const AccountProvider = ({ children }: { children: ReactNode }) => {
         }
 
         // NOTE: getSession must be called to authenticate user before calling getUserAttributes
-        cognitoUser.getUserAttributes((cognitoError?: Error, attributes?: CognitoUserAttribute[]) => {
-          if (cognitoError) {
-            logger.error('AWS error getUserAttributes', cognitoError)
-            setUser(null)
-          } else {
-            const cognitoUserData = userAttributesToObject(attributes)
-            setUserData(cognitoUserData)
-            setUser(cognitoUser)
-            setLastAccessToken(result?.getAccessToken().getJwtToken())
-          }
-        })
+        cognitoUser.getUserAttributes(
+          (cognitoError?: Error, attributes?: CognitoUserAttribute[]) => {
+            if (cognitoError) {
+              logger.error('AWS error getUserAttributes', cognitoError)
+              setUser(null)
+            } else {
+              const cognitoUserData = userAttributesToObject(attributes)
+              setUserData(cognitoUserData)
+              setUser(cognitoUser)
+              setLastAccessToken(result?.getAccessToken().getJwtToken())
+            }
+          },
+        )
       })
     } else {
       setUser(null)
@@ -714,5 +745,3 @@ export const AccountProvider = ({ children }: { children: ReactNode }) => {
 export default function useAccount() {
   return useContext(AccountContext)
 }
-
-

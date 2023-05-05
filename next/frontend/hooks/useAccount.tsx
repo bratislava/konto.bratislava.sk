@@ -24,12 +24,33 @@ import { useTranslation } from 'next-i18next'
 import React, { ReactNode, useCallback, useContext, useEffect, useState } from 'react'
 import { useInterval } from 'usehooks-ts'
 
-import { subscribeApi, UNAUTHORIZED_ERROR_TEXT, verifyIdentityApi } from "../api/api"
-import { ROUTES } from "../api/constants"
+import { subscribeApi, UNAUTHORIZED_ERROR_TEXT, verifyIdentityApi } from '../api/api'
+import { ROUTES } from '../api/constants'
 import { GeneralError } from '../dtos/generalApiDto'
-import { isBrowser } from '../utils/general'
+import { isBrowser, isProductionDeployment } from '../utils/general'
 import logger, { faro } from '../utils/logger'
-import useSnackbar from "./useSnackbar"
+import useSnackbar from './useSnackbar'
+
+const approvedSSODomains = isProductionDeployment()
+  ? ['https://kupaliska.bratislava.sk', 'https://bratislava.sk']
+  : [
+      // multiple ports to make testing login across multiple apps running locally easier
+      'http://localhost:3000',
+      'http://localhost:3001',
+      'http://localhost:3002',
+      'http://localhost:3003',
+      'https://kupaliska.staging.bratislava.sk',
+    ]
+
+export enum PostMessageTypes {
+  ACCESS_TOKEN = 'ACCESS_TOKEN',
+  UNAUTHORIZED = 'UNAUTHORIZED',
+}
+
+export interface CityAccountPostMessage {
+  type: PostMessageTypes
+  payload?: Record<string, string>
+}
 
 export enum AccountStatus {
   Idle,
@@ -124,6 +145,7 @@ interface Account {
   resendVerificationCode: () => Promise<boolean>
   verifyIdentity: (rc: string, idCard: string, turnstileToken: string) => Promise<boolean>
   getAccessToken: () => Promise<string | null>
+  postAccessToken: () => void
   lastAccessToken: string
   changePassword: (oldPassword: string, newPassword: string) => Promise<boolean>
   lastEmail: string
@@ -175,7 +197,7 @@ export const AccountProvider = ({ children }: { children: ReactNode }) => {
 
   const objectToUserAttributes = (data: UserData | Address): CognitoUserAttribute[] => {
     const attributeList: CognitoUserAttribute[] = []
-    Object.entries(data).forEach(([key, value]: [string, string|Tier|Address]) => {
+    Object.entries(data).forEach(([key, value]: [string, string | Tier | Address]) => {
       if (updatableAttributes.has(key)) {
         const attribute = new CognitoUserAttribute({
           Name: customAttributes.has(key) ? `custom:${key}` : key,
@@ -183,8 +205,8 @@ export const AccountProvider = ({ children }: { children: ReactNode }) => {
             key === 'address'
               ? JSON.stringify(value)
               : key === 'phone_number' && typeof value === 'string'
-                ? value?.replace(' ', '')
-                : String(value)
+              ? value?.replace(' ', '')
+              : String(value),
         })
         attributeList.push(attribute)
       }
@@ -226,6 +248,40 @@ export const AccountProvider = ({ children }: { children: ReactNode }) => {
           } else {
             resolve(null)
           }
+        })
+      }
+    })
+  }
+
+  // postMessage to all approved domains at the window top
+  // in reality only one message will be sent, this exists to limit the possible domains only to hardcoded list in approvedSSODomains
+  const postMessageToApprovedDomains = (message: CityAccountPostMessage) => {
+    // TODO - log to faro if none of the origins match
+    approvedSSODomains.forEach((domain) => {
+      window.top.postMessage(message, domain)
+    })
+  }
+
+  // used in /sso, to send the jwt access token to approved domains where city-account is used for single sign on
+  const postAccessToken = () => {
+    const cognitoUser = userPool.getCurrentUser()
+    if (cognitoUser == null) {
+      postMessageToApprovedDomains({
+        type: PostMessageTypes.UNAUTHORIZED,
+      })
+      return
+    }
+    cognitoUser.getSession((err: Error | null, result: CognitoUserSession | null) => {
+      if (err) {
+        logger.error('Error getting session when sending access token: ', err)
+        postMessageToApprovedDomains({
+          type: PostMessageTypes.UNAUTHORIZED,
+        })
+      } else if (result) {
+        const accessToken = result.getAccessToken().getJwtToken()
+        postMessageToApprovedDomains({
+          type: PostMessageTypes.ACCESS_TOKEN,
+          payload: { accessToken },
         })
       }
     })
@@ -281,8 +337,9 @@ export const AccountProvider = ({ children }: { children: ReactNode }) => {
             IdentityPoolId: process.env.NEXT_PUBLIC_COGNITO_IDENTITY_POOL_ID || '',
             Logins: {
               // Change the key below according to the specific region your user pool is in.
-              [`cognito-idp.${String(process.env.NEXT_PUBLIC_AWS_REGION)}.amazonaws.com/${String(process.env.NEXT_PUBLIC_COGNITO_USER_POOL_ID)}`]:
-                result.getIdToken().getJwtToken(),
+              [`cognito-idp.${String(process.env.NEXT_PUBLIC_AWS_REGION)}.amazonaws.com/${String(
+                process.env.NEXT_PUBLIC_COGNITO_USER_POOL_ID,
+              )}`]: result.getIdToken().getJwtToken(),
             },
           })
           setLastAccessToken(result.getAccessToken().getJwtToken())
@@ -473,20 +530,22 @@ export const AccountProvider = ({ children }: { children: ReactNode }) => {
         }
 
         // NOTE: getSession must be called to authenticate user before calling getUserAttributes
-        cognitoUser.getUserAttributes((cognitoError?: Error, attributes?: CognitoUserAttribute[]) => {
-          if (cognitoError) {
-            logger.error('AWS error getUserAttributes', cognitoError)
-            setUser(null)
-          } else if (!result) {
-            logger.error('No result for access token')
-            setUser(null)
-          } else {
-            const cognitoUserData = userAttributesToObject(attributes)
-            setUserData(cognitoUserData)
-            setUser(cognitoUser)
-            setLastAccessToken(result?.getAccessToken().getJwtToken())
-          }
-        })
+        cognitoUser.getUserAttributes(
+          (cognitoError?: Error, attributes?: CognitoUserAttribute[]) => {
+            if (cognitoError) {
+              logger.error('AWS error getUserAttributes', cognitoError)
+              setUser(null)
+            } else if (!result) {
+              logger.error('No result for access token')
+              setUser(null)
+            } else {
+              const cognitoUserData = userAttributesToObject(attributes)
+              setUserData(cognitoUserData)
+              setUser(cognitoUser)
+              setLastAccessToken(result?.getAccessToken().getJwtToken())
+            }
+          },
+        )
       })
     } else {
       setUser(null)
@@ -701,6 +760,7 @@ export const AccountProvider = ({ children }: { children: ReactNode }) => {
         resendVerificationCode,
         verifyIdentity,
         getAccessToken,
+        postAccessToken,
         lastAccessToken,
         changePassword,
         lastEmail: lastCredentials.Username,
@@ -716,5 +776,3 @@ export const AccountProvider = ({ children }: { children: ReactNode }) => {
 export default function useAccount() {
   return useContext(AccountContext)
 }
-
-

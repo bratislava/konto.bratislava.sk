@@ -18,6 +18,7 @@
     "BIRTH_NUMBER_AND_IDENTITY_CARD_INCONSISTENCY": "Overenie bolo neúspešné. Skontrolujte správnosť údajov.",
     "BIRTHNUMBER_IFO_DUPLICITY": "Tieto osobné údaje už boli použité pri inej e-mailovej adrese. Ak ste účet nevytvorili vy, kontaktujte nás na info@bratislava.sk."
   },
+  "sso_placeholder": "Táto stránka slúži pre komunikáciu s ostatnými mestskými službami. <a href='/'>Späť domov</a>.",
   "login_title": "Prihláste sa do svojho konta",
   "email_label": "E-mail",
   "email_description": "Zadajte e-mail, na ktorý si prajete dostávať od mesta informácie.",

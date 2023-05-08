@@ -255,6 +255,8 @@ export const AccountProvider = ({ children }: { children: ReactNode }) => {
 
   // postMessage to all approved domains at the window top
   // in reality only one message will be sent, this exists to limit the possible domains only to hardcoded list in approvedSSODomains
+  // TODO refactor to different file
+  // eslint-disable-next-line unicorn/consistent-function-scoping
   const postMessageToApprovedDomains = (message: CityAccountPostMessage) => {
     // TODO - log to faro if none of the origins match
     approvedSSODomains.forEach((domain) => {
@@ -262,6 +264,7 @@ export const AccountProvider = ({ children }: { children: ReactNode }) => {
     })
   }
 
+  // TODO refactor to different file
   // used in /sso, to send the jwt access token to approved domains where city-account is used for single sign on
   const postAccessToken = () => {
     const cognitoUser = userPool.getCurrentUser()

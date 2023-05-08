@@ -5,7 +5,7 @@ import {
   TransformedFormData,
   TransformedFormStep,
 } from '../../components/forms/steps/Summary/TransformedFormData'
-import { JsonSchema, JsonSchemaExtraProperties, JsonSchemaExtraProperty } from '../dtos/formStepperDto'
+import { FileScan, JsonSchema, JsonSchemaExtraProperties, JsonSchemaExtraProperty } from '../dtos/formStepperDto'
 import { getAllPossibleJsonSchemaExtraProperties } from './formStepper'
 
 function findTitle(value: JSONSchema7Definition, items: JSONSchema7Definition[]) {
@@ -48,11 +48,13 @@ function getFieldData(
   label: string,
   schemaPath: string,
   isError: boolean,
+  fileScans: FileScan[],
   fieldFormData?: JSONSchema7Definition,
   fieldSchema?: JSONSchema7Definition,
   isConditional?: boolean,
 ): TransformedFormData {
   const transformedFieldFormData = transformValueArray(fieldFormData, fieldSchema)
+  const fileScan = fileScans.find(scan => scan.fileName === transformedFieldFormData)
   const value =
     transformedFieldFormData && !Array.isArray(transformedFieldFormData)
       ? transformedFieldFormData.toString()
@@ -62,10 +64,11 @@ function getFieldData(
 
   return {
     label,
-    value,
+    value: fileScan ? fileScan.originalName : value,
     schemaPath,
     isError,
     isConditional,
+    fileScanState: fileScan?.fileState
   }
 }
 
@@ -87,6 +90,7 @@ function getAllSchemaData(
   schemaContent: JsonSchema,
   schemaPath: string,
   formErrors: RJSFValidationError[][],
+  fileScans: FileScan[],
   currentFormData?: JSONSchema7Definition,
   currentExtraErrors?: ErrorSchema,
   isConditional?: boolean,
@@ -112,6 +116,7 @@ function getAllSchemaData(
         value,
         newSchemaPath,
         formErrors,
+        fileScans,
         childFormData,
         childExtraErrors,
         isChildConditional,
@@ -126,6 +131,7 @@ function getAllSchemaData(
         label,
         newSchemaPath,
         isError,
+        fileScans,
         childFormData,
         value,
         isChildConditional,
@@ -141,6 +147,7 @@ function transformStepFormData(
   formData: Record<string, JsonSchema>,
   formErrors: RJSFValidationError[][],
   extraErrors: ErrorSchema,
+  fileScans: FileScan[],
 ): TransformedFormStep {
   if (typeof step === 'boolean' || !step?.properties) return { key: '', label: '', data: [] }
   // init needed data to transform step formData
@@ -155,7 +162,7 @@ function transformStepFormData(
   const stepExtraErrors = extraErrors[stepKey]
 
   const data: TransformedFormData[] = []
-  getAllSchemaData(data, stepContent, `.${stepKey}`, formErrors, formData[stepKey], stepExtraErrors)
+  getAllSchemaData(data, stepContent, `.${stepKey}`, formErrors, fileScans, formData[stepKey], stepExtraErrors)
   return { key: stepKey, label, data }
 }
 
@@ -164,10 +171,11 @@ export const useFormDataTransform = (
   formData: Record<string, JsonSchema>,
   formErrors: RJSFValidationError[][],
   extraErrors: ErrorSchema,
+  fileScans: FileScan[],
   schema?: StrictRJSFSchema,
 ) => {
   const transformedSteps: TransformedFormStep[] = schema?.allOf
-    ? schema.allOf.map((step) => transformStepFormData(step, formData, formErrors, extraErrors))
+    ? schema.allOf.map((step) => transformStepFormData(step, formData, formErrors, extraErrors, fileScans))
     : []
 
   return {

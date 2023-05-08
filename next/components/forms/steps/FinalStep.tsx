@@ -46,6 +46,7 @@ const FinalStep = ({
         formData={formData}
         formErrors={formErrors}
         extraErrors={extraErrors}
+        fileScans={fileScans}
         onGoToStep={onGoToStep}
       />
       <SummaryMessages errors={submitErrors} successMessage={submitMessage} />

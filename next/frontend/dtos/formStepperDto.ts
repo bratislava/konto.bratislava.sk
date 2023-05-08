@@ -82,3 +82,11 @@ export const validator: ValidatorType = customizeValidator({
   customFormats,
   ajvOptionsOverrides: { keywords: ajvKeywords },
 })
+
+export type FileScanState = 'error'|'scan'|'finished'|'none'
+
+export interface FileScan {
+  schemaPath: string
+  fileName: string
+  fileState: FileScanState
+}

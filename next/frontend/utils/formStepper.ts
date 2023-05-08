@@ -12,7 +12,7 @@ import { get, merge, set } from 'lodash'
 import { StepData } from '../../components/forms/types/TransformedFormData'
 import { validateKeyword } from '../api/api'
 import {
-  ajvKeywords,
+  ajvKeywords, FileScan,
   JsonSchema,
   JsonSchemaExtraProperties,
   JsonSchemaProperties,
@@ -364,3 +364,36 @@ export const getValidatedSteps = (schema: RJSFSchema, formData: RJSFSchema): RJS
     .filter((step) => typeof step !== 'boolean' && Object.keys(step).length > 0)
 }
 
+const addFileScan = (fileScan: FileScan, allFileScans: FileScan[]) => {
+  if (allFileScans.every(scan => scan.fileName !== fileScan.fileName)) {
+    allFileScans.push(fileScan)
+  }
+}
+
+const addAllFileScans = (formData: RJSFSchema, schema: RJSFSchema, fileScans: FileScan[], schemaPath: string) => {
+  Object.entries(formData).forEach(([key, value]: [string, RJSFSchema]) => {
+    const schemaValue: RJSFSchema = schema[key]
+    if (key in schema && typeof schemaValue !== 'boolean') {
+      const newSchemaPath = `${schemaPath}.${key}`
+      if (typeof value === 'object' && value) {
+        const properties = getAllPossibleJsonSchemaProperties(schemaValue)
+        addAllFileScans(value, properties, fileScans, newSchemaPath)
+      } else if (typeof value !== 'object' && value && (schemaValue.format === 'file' || schemaValue.format === 'data-url')){
+        const newFileScan: FileScan =  {
+          schemaPath: newSchemaPath,
+          fileName: value,
+          fileState: "scan"
+        }
+        addFileScan(newFileScan, fileScans)
+      }
+    }
+  })
+}
+
+export const updateFileScans = (formData: RJSFSchema, schema: RJSFSchema, fileScans: FileScan[]): FileScan[] => {
+  const newFileScans: FileScan[] = [...fileScans]
+
+  addAllFileScans(formData, schema, newFileScans, '')
+
+  return newFileScans
+}

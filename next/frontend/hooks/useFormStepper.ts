@@ -14,12 +14,14 @@ import { ChangeEvent, RefObject, useEffect, useRef, useState } from 'react'
 
 import { StepData } from '../../components/forms/types/TransformedFormData'
 import { formDataToXml, xmlToFormData } from '../api/api'
+import { FileScan } from '../dtos/formStepperDto'
 import { readTextFile } from '../utils/file'
 import {
+  getAllPossibleJsonSchemaProperties,
   getAllStepData,
   getInitFormData,
-  getJsonSchemaPropertyTree,
-  getValidatedSteps, mergePropertyTreeToFormData,
+  getJsonSchemaPropertyTree,   getValidatedSteps, mergePropertyTreeToFormData,
+updateFileScans,
   validateAsyncProperties,
 } from '../utils/formStepper'
 import logger from '../utils/logger'
@@ -45,6 +47,7 @@ export const useFormStepper = (eformSlug: string, eform: EFormValue, callbacks: 
   const [formData, setFormData] = useState<RJSFSchema>(getInitFormData(schema))
   const [errors, setErrors] = useState<Record<string, RJSFValidationError[]>>({})
   const [extraErrors, setExtraErrors] = useState<ErrorSchema>({})
+  const [fileScans, setFileScans] = useState<FileScan[]>([])
   const [openSnackbarError] = useSnackbar({ variant: 'error' })
 
   // state variables helping in stepper
@@ -220,8 +223,15 @@ export const useFormStepper = (eformSlug: string, eform: EFormValue, callbacks: 
     setNextStepIndex(newNextStepIndex)
   }
 
+  const setNewFileScans = (stepFormData: RJSFSchema) => {
+    const currentProperties = getAllPossibleJsonSchemaProperties(currentSchema)
+    const newFileScans = updateFileScans(stepFormData, currentProperties, fileScans)
+    console.log(newFileScans)
+  }
+
   const setStepFormData = (stepFormData: RJSFSchema) => {
     // save formData for step with all properties including conditional fields and unfilled fields
+    setNewFileScans(stepFormData)
     const tree = getJsonSchemaPropertyTree(currentSchema)
     const fullStepFormData = mergePropertyTreeToFormData(stepFormData, tree)
     setFormData({ ...formData, ...fullStepFormData })

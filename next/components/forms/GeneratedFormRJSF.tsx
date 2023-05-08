@@ -79,6 +79,7 @@ const GeneratedFormRJSF = ({ eform, escapedSlug, formSlug, wrapperClassName }: F
             formData={form.formData}
             formErrors={form.errors}
             extraErrors={form.extraErrors}
+            fileScans={form.fileScans}
             schema={form.validatedSchema}
             onGoToStep={form.setStepIndex}
             submitErrors={submitter.errors}

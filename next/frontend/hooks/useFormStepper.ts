@@ -226,7 +226,7 @@ export const useFormStepper = (eformSlug: string, eform: EFormValue, callbacks: 
   const setNewFileScans = (stepFormData: RJSFSchema) => {
     const currentProperties = getAllPossibleJsonSchemaProperties(currentSchema)
     const newFileScans = updateFileScans(stepFormData, currentProperties, fileScans)
-    console.log(newFileScans)
+    setFileScans(newFileScans)
   }
 
   const setStepFormData = (stepFormData: RJSFSchema) => {
@@ -302,6 +302,7 @@ export const useFormStepper = (eformSlug: string, eform: EFormValue, callbacks: 
     setStepFormData,
     errors: transformErrorsToArray(),
     extraErrors,
+    fileScans,
     stepData,
     validatedSchema: { ...schema, allOf: [...steps] },
     previous,

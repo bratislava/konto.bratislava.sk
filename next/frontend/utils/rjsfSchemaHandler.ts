@@ -55,8 +55,9 @@ function getFieldData(
 ): TransformedFormData {
   const transformedFieldFormData = transformValueArray(fieldFormData, fieldSchema)
   const fileScan = fileScans.find(scan => scan.fileName === transformedFieldFormData)
-  const value =
-    transformedFieldFormData && !Array.isArray(transformedFieldFormData)
+  const value = fileScan
+    ? fileScan.originalName
+    : transformedFieldFormData && !Array.isArray(transformedFieldFormData)
       ? transformedFieldFormData.toString()
       : Array.isArray(transformedFieldFormData) && transformedFieldFormData.length > 0
         ? transformedFieldFormData.join(', ')
@@ -64,7 +65,7 @@ function getFieldData(
 
   return {
     label,
-    value: fileScan ? fileScan.originalName : value,
+    value,
     schemaPath,
     isError,
     isConditional,

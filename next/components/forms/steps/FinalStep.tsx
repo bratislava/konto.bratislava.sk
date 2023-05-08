@@ -3,6 +3,7 @@ import { ErrorObject } from 'ajv'
 import { useTranslation } from 'next-i18next'
 
 import { JsonSchema } from '../../../frontend/dtos/formStepperDto'
+import Alert from '../info-components/Alert'
 import Summary from './Summary/Summary'
 import SummaryMessages from './Summary/SummaryMessages'
 
@@ -35,6 +36,7 @@ const FinalStep = ({
   return (
     <div>
       <h1 className="text-h1-medium font-semibold">{t('summary')}</h1>
+      <Alert type="warning" message={t('warnings.file_scan')} fullWidth className="mt-4"/>
       <Summary
         schema={schema}
         formData={formData}

@@ -9,6 +9,9 @@
     "form_init": "Načítanie formulára zlyhalo.",
     "form_update": "Formulár sa nepodarilo uložiť do rozpracovaných."
   },
+  "warnings": {
+    "file_scan": "Prílohy, ktoré ste nahrali ešte seknujeme, aby sme predišli zavírovaniu. Žiadosť však môžete odoslať aj bez čakania na dokončenie skenovania. V prípade, že v nahratých prílohách objavíme vírus, budeme vás kontaktovať na e-mailovej adrese, ktorou sa prihlasujete do svojho konta."
+  },
   "selectAll": "Vybrať všetko",
   "deselectAll": "Odobrať všetko",
   "options_zero": "Možností",

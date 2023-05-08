@@ -30,7 +30,7 @@ interface UploadProps {
   bucketFolderName?: string
   // file info for Summary
   fileScans?: FileScan[]
-  onChangeFileScans?: (newFileScans: FileScan[]) => void
+  onChangeFileScans?: (newFileScans: FileScan[], removeFileScans: FileScan[]) => void
 }
 
 const getBucketFileName = (file: File, folderName: string) => {
@@ -64,10 +64,8 @@ const UploadComponent: ForwardRefRenderFunction<HTMLDivElement, UploadProps> = (
     onChangeFileScans
   }: UploadProps = props
 
-  // STATES
   const [fileBrokenMessages, setFileBrokenMessages] = useState<string[]>([])
 
-  // HELPER FUNCTIONS
   useEffect(() => {
     const newFileScans: FileScan[] = value
       .map(minioFile => {
@@ -78,7 +76,9 @@ const UploadComponent: ForwardRefRenderFunction<HTMLDivElement, UploadProps> = (
           fileState: oldFileScan ? oldFileScan.fileState : "scan"
         }
       })
-    onChangeFileScans?.(newFileScans)
+    const removeFileScans: FileScan[] = fileScans.filter(oldScan => newFileScans.every(newScan => newScan.fileName !== oldScan.fileName))
+
+    onChangeFileScans?.(newFileScans, removeFileScans)
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [value])
 

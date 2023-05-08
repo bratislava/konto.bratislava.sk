@@ -96,12 +96,12 @@ const UploadWidgetRJSF = (props: UploadWidgetRJSFProps) => {
     }
   }
 
-  const handleOnChangeFileScansContext = (newFileScans: FileScan[]) => {
+  const handleOnChangeFileScansContext = (newFileScans: FileScan[], removeFileScans: FileScan[]) => {
     const otherWidgetsFileScans = formContext.fileScans.filter(fileScan => (
       innerValue.every(value => value.file.name !== fileScan.fileName)
+      && removeFileScans.every(removeScan => removeScan.fileName !== fileScan.fileName)
     ))
     formContext.fileScans = [ ...otherWidgetsFileScans, ...newFileScans ]
-    console.log('CHANGE FILE SCANS', formContext.fileScans)
   }
 
   return (

@@ -2,7 +2,7 @@ import { UploadMinioFile } from '@backend/dtos/minio/upload-minio-file.dto'
 import { deleteFile, uploadFile } from '@backend/services/minio'
 import cx from 'classnames'
 import FieldErrorMessage from 'components/forms/info-components/FieldErrorMessage'
-import React, { ForwardedRef, forwardRef, ForwardRefRenderFunction, useState } from 'react'
+import React, { ForwardedRef, forwardRef, ForwardRefRenderFunction, useEffect, useState } from 'react'
 import { v4 as createUuid } from 'uuid'
 
 import { FileScan } from '../../../../frontend/dtos/formStepperDto'
@@ -68,18 +68,35 @@ const UploadComponent: ForwardRefRenderFunction<HTMLDivElement, UploadProps> = (
   const [fileBrokenMessages, setFileBrokenMessages] = useState<string[]>([])
 
   // HELPER FUNCTIONS
+  useEffect(() => {
+    const newFileScans: FileScan[] = value
+      .map(minioFile => {
+        const oldFileScan = fileScans.find(fileScan => fileScan.fileName === minioFile.file.name)
+        return {
+          originalName: minioFile.originalName,
+          fileName: minioFile.file.name,
+          fileState: oldFileScan ? oldFileScan.fileState : "scan"
+        }
+      })
+    onChangeFileScans?.(newFileScans)
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [value])
+
   const emitOnChange = (newFiles: UploadMinioFile[], oldFiles?: UploadMinioFile[]) => {
-    if (onChange) {
-      const changedValue = multiple && oldFiles ? [...oldFiles, ...newFiles] : [...newFiles]
-      onChange(changedValue)
-      onChangeFileScans?.([{ schemaPath: '', fileState: 'none', fileName: '', originalName: ''}])
-    }
+    const changedValue = multiple && oldFiles ? [...oldFiles, ...newFiles] : [...newFiles]
+    onChange?.(changedValue)
+  }
+
+  const removeFileOnClient = (fileName: string) => {
+    const updatedFiles = value ? value.filter((minioFile) => minioFile.file.name !== fileName) : []
+    emitOnChange(updatedFiles)
   }
 
   const removeFirstFile = () => {
     if (!value) return
     const fileName = value[0].file.name
 
+    removeFileOnClient(fileName)
     deleteFile(fileName)
       .then((res) => {
         if (res.status !== 200) throw new Error(`Api response status: ${res.status}`)
@@ -171,11 +188,6 @@ const UploadComponent: ForwardRefRenderFunction<HTMLDivElement, UploadProps> = (
 
   const handleOnDrop = (newFiles: UploadMinioFile[]) => {
     addNewFiles(newFiles)
-  }
-
-  const removeFileOnClient = (fileName: string) => {
-    const updatedFiles = value ? value.filter((minioFile) => minioFile.file.name !== fileName) : []
-    emitOnChange(updatedFiles)
   }
 
   const handleOnRemoveFile = (id: number) => {

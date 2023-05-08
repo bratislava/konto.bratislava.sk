@@ -87,7 +87,6 @@ export const validator: ValidatorType = customizeValidator({
 export type FileScanState = 'error'|'scan'|'finished'|'none'
 
 export interface FileScan {
-  schemaPath: string
   fileName: string
   originalName: string
   fileState: FileScanState

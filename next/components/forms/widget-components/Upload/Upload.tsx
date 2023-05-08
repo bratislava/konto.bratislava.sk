@@ -5,6 +5,7 @@ import FieldErrorMessage from 'components/forms/info-components/FieldErrorMessag
 import React, { ForwardedRef, forwardRef, ForwardRefRenderFunction, useState } from 'react'
 import { v4 as createUuid } from 'uuid'
 
+import { FileScan } from '../../../../frontend/dtos/formStepperDto'
 import logger from '../../../../frontend/utils/logger'
 import UploadBrokenMessages from '../../info-components/UploadBrokenMessages'
 import UploadFieldHeader from '../../info-components/UploadFieldHeader'
@@ -25,7 +26,11 @@ interface UploadProps {
   className?: string
   onChange?: (value: UploadMinioFile[]) => void
   errorMessage?: string[]
+  // name of folder in Bucket where files will be saved
   bucketFolderName?: string
+  // file info for Summary
+  fileScans?: FileScan[]
+  onChangeFileScans?: (newFileScans: FileScan[]) => void
 }
 
 const getBucketFileName = (file: File, folderName: string) => {
@@ -54,7 +59,9 @@ const UploadComponent: ForwardRefRenderFunction<HTMLDivElement, UploadProps> = (
     className,
     onChange,
     errorMessage,
-    bucketFolderName
+    bucketFolderName,
+    fileScans,
+    onChangeFileScans
   }: UploadProps = props
 
   // STATES
@@ -65,6 +72,7 @@ const UploadComponent: ForwardRefRenderFunction<HTMLDivElement, UploadProps> = (
     if (onChange) {
       const changedValue = multiple && oldFiles ? [...oldFiles, ...newFiles] : [...newFiles]
       onChange(changedValue)
+      onChangeFileScans?.([{ schemaPath: '', fileState: 'none', fileName: '', originalName: ''}])
     }
   }
 

@@ -223,15 +223,8 @@ export const useFormStepper = (eformSlug: string, eform: EFormValue, callbacks: 
     setNextStepIndex(newNextStepIndex)
   }
 
-  const setNewFileScans = (stepFormData: RJSFSchema) => {
-    const currentProperties = getAllPossibleJsonSchemaProperties(currentSchema)
-    const newFileScans = updateFileScans(stepFormData, currentProperties, fileScans)
-    setFileScans(newFileScans)
-  }
-
   const setStepFormData = (stepFormData: RJSFSchema) => {
     // save formData for step with all properties including conditional fields and unfilled fields
-    setNewFileScans(stepFormData)
     const tree = getJsonSchemaPropertyTree(currentSchema)
     const fullStepFormData = mergePropertyTreeToFormData(stepFormData, tree)
     setFormData({ ...formData, ...fullStepFormData })

@@ -21,6 +21,7 @@ export interface JsonSchemaExtraProperties {
 
 export interface FormRJSFContext {
   bucketFolderName?: string
+  fileScans?: FileScan[]
 }
 
 export interface KeywordDefinition extends FuncKeywordDefinition {
@@ -88,5 +89,6 @@ export type FileScanState = 'error'|'scan'|'finished'|'none'
 export interface FileScan {
   schemaPath: string
   fileName: string
+  originalName: string
   fileState: FileScanState
 }

@@ -4,7 +4,7 @@ import WidgetWrapper from 'components/forms/widget-wrappers/WidgetWrapper'
 import React, { useState } from 'react'
 import { useEffectOnce } from 'usehooks-ts'
 
-import { FormRJSFContext } from '../../../frontend/dtos/formStepperDto'
+import { FileScan, FormRJSFContext } from '../../../frontend/dtos/formStepperDto'
 import Upload from '../widget-components/Upload/Upload'
 import UploadRJSFOptions from '../widget-components/Upload/UploadRJSFOptions'
 
@@ -96,6 +96,10 @@ const UploadWidgetRJSF = (props: UploadWidgetRJSFProps) => {
     }
   }
 
+  const handleOnChangeFileScanContext = (newFileScans: FileScan[]) => {
+    formContext.fileScans = newFileScans
+  }
+
   return (
     <WidgetWrapper accordion={accordion} spaceBottom={spaceBottom} spaceTop={spaceTop}>
       <Upload
@@ -111,7 +115,9 @@ const UploadWidgetRJSF = (props: UploadWidgetRJSFProps) => {
         supportedFormats={supportedFormats}
         disabled={disabled}
         bucketFolderName={formContext.bucketFolderName}
+        fileScans={formContext.fileScans}
         onChange={handleOnChange}
+        onChangeFileScans={handleOnChangeFileScanContext}
       />
     </WidgetWrapper>
   )

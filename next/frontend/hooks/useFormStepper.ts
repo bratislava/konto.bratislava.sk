@@ -14,14 +14,11 @@ import { ChangeEvent, RefObject, useEffect, useRef, useState } from 'react'
 
 import { StepData } from '../../components/forms/types/TransformedFormData'
 import { formDataToXml, xmlToFormData } from '../api/api'
-import { FileScan } from '../dtos/formStepperDto'
 import { readTextFile } from '../utils/file'
 import {
-  getAllPossibleJsonSchemaProperties,
   getAllStepData,
   getInitFormData,
   getJsonSchemaPropertyTree,   getValidatedSteps, mergePropertyTreeToFormData,
-updateFileScans,
   validateAsyncProperties,
 } from '../utils/formStepper'
 import logger from '../utils/logger'
@@ -47,7 +44,6 @@ export const useFormStepper = (eformSlug: string, eform: EFormValue, callbacks: 
   const [formData, setFormData] = useState<RJSFSchema>(getInitFormData(schema))
   const [errors, setErrors] = useState<Record<string, RJSFValidationError[]>>({})
   const [extraErrors, setExtraErrors] = useState<ErrorSchema>({})
-  const [fileScans, setFileScans] = useState<FileScan[]>([])
   const [openSnackbarError] = useSnackbar({ variant: 'error' })
 
   // state variables helping in stepper
@@ -295,7 +291,6 @@ export const useFormStepper = (eformSlug: string, eform: EFormValue, callbacks: 
     setStepFormData,
     errors: transformErrorsToArray(),
     extraErrors,
-    fileScans,
     stepData,
     validatedSchema: { ...schema, allOf: [...steps] },
     previous,

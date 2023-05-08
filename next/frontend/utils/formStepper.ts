@@ -12,7 +12,7 @@ import { get, merge, set } from 'lodash'
 import { StepData } from '../../components/forms/types/TransformedFormData'
 import { validateKeyword } from '../api/api'
 import {
-  ajvKeywords, FileScan,
+  ajvKeywords,
   JsonSchema,
   JsonSchemaExtraProperties,
   JsonSchemaProperties,

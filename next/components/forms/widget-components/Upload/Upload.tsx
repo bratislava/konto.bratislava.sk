@@ -71,7 +71,7 @@ const UploadComponent: ForwardRefRenderFunction<HTMLDivElement, UploadProps> = (
   }
 
   const setMinioError = () => {
-    if (fileBrokenMessages.includes(MINIO_ERROR)) {
+    if (fileBrokenMessages.includes(String(MINIO_ERROR))) {
       setFileBrokenMessages([...fileBrokenMessages, MINIO_ERROR])
     }
   }

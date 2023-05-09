@@ -41,7 +41,7 @@ const Menu = <T extends object>(props: MenuProps<T>) => {
           <div className="ml-3 font-light lg:font-semibold">{label}</div>
           <ChevronDownSmall
             className={`ml-1 hidden w-5 h-5 mix-blend-normal lg:flex ${
-              state.isOpen && '-rotate-180'
+              state.isOpen ? '-rotate-180' : ''
             }`}
           />
         </MenuButton>

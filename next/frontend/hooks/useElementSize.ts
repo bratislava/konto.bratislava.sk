@@ -35,7 +35,7 @@ function useElementSize<T extends HTMLElement = HTMLDivElement>(
   useIsomorphicLayoutEffect(() => {
     handleSize()
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [ref?.offsetHeight, ref?.offsetWidth, ...deps])
+  }, [ref?.offsetHeight, ref?.offsetWidth, deps])
 
   return [setRef, size]
 }

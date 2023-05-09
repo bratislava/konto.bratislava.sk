@@ -68,7 +68,7 @@ const DropdownRow = ({
 
   const optionText = option.title ?? String(option.const)
   const transformedOptionText = `${optionText.slice(0, maxWordSize)}${
-    optionText.length > maxWordSize ? '...' : ''
+    maxWordSize && optionText.length > maxWordSize ? '...' : ''
   }`
 
   // RENDER

@@ -59,7 +59,7 @@ const CorrespondenceAddressForm = ({ error, onHideError, onSubmit, defaultValues
       onSubmit={handleSubmit((data: Address) => {
         const modifyData: Address = {
           ...data,
-          postal_code: data.postal_code.replaceAll(' ', ''),
+          postal_code: data.postal_code?.replaceAll(' ', ''),
         }
         return onSubmit({ data: modifyData })
       })}

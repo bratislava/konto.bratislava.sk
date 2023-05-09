@@ -260,7 +260,7 @@ export const AccountProvider = ({ children }: { children: ReactNode }) => {
   const postMessageToApprovedDomains = (message: CityAccountPostMessage) => {
     // TODO - log to faro if none of the origins match
     approvedSSODomains.forEach((domain) => {
-      window.top.postMessage(message, domain)
+      window?.top?.postMessage(message, domain)
     })
   }
 

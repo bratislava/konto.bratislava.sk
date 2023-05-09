@@ -21,7 +21,7 @@ export interface JsonSchemaExtraProperties {
 
 export interface FormRJSFContext {
   bucketFolderName?: string
-  fileScans?: FileScan[]
+  fileScans: FileScan[]
 }
 
 export interface KeywordDefinition extends FuncKeywordDefinition {

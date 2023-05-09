@@ -68,15 +68,17 @@ const UploadComponent: ForwardRefRenderFunction<HTMLDivElement, UploadProps> = (
 
   useEffect(() => {
     const newFileScans: FileScan[] = value
-      .map(minioFile => {
-        const oldFileScan = fileScans.find(fileScan => fileScan.fileName === minioFile.file.name)
+      ? value.map(minioFile => {
+        const oldFileScan = fileScans?.find(fileScan => fileScan.fileName === minioFile.file.name)
         return {
           originalName: minioFile.originalName,
           fileName: minioFile.file.name,
           fileState: oldFileScan ? oldFileScan.fileState : "scan"
-        }
-      })
-    const removeFileScans: FileScan[] = fileScans.filter(oldScan => newFileScans.every(newScan => newScan.fileName !== oldScan.fileName))
+        }})
+      : []
+    const removeFileScans: FileScan[] = fileScans
+      ? fileScans.filter(oldScan => newFileScans?.every(newScan => newScan.fileName !== oldScan.fileName))
+      : []
 
     onChangeFileScans?.(newFileScans, removeFileScans)
     // eslint-disable-next-line react-hooks/exhaustive-deps

@@ -2,6 +2,11 @@
 // eslint-disable-next-line max-classes-per-file
 import { ErrorObject } from 'ajv'
 
+export interface GeneralError {
+  [key: string]: unknown
+  message?: string
+}
+
 export class ApiError extends Error {
   errors: Array<ErrorObject>
 
@@ -14,7 +19,7 @@ export class ApiError extends Error {
 }
 
 export class TaxApiError extends Error {
-  response: Record<string, any>
+  response?: Record<string, any>
 
   status?: number
 
@@ -22,7 +27,7 @@ export class TaxApiError extends Error {
 
   constructor(message?: string, responseJson?: Record<string, any>) {
     // TODO better error handling - this is to ensure logging in Faro
-    super(`${message} ${JSON.stringify(responseJson)}`)
+    super(`${String(message)} ${JSON.stringify(responseJson)}`)
     // Set the prototype explicitly - workaround while target is es5, cosnsider bumping target so we don't have to deal with this
     Object.setPrototypeOf(this, TaxApiError.prototype)
     this.response = responseJson

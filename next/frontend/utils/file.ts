@@ -9,6 +9,8 @@ export const readTextFile = (event: ChangeEvent<HTMLInputElement>): Promise<stri
       resolve(reader.result as string)
     })
     reader.addEventListener('error', reject)
-    reader.readAsText(event.target.files[0])
+    if (event.target.files?.[0]) {
+      reader.readAsText(event.target.files[0])
+    }
   })
 }

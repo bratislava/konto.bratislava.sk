@@ -18,6 +18,7 @@
     "BIRTH_NUMBER_AND_IDENTITY_CARD_INCONSISTENCY": "Overenie bolo neúspešné. Skontrolujte správnosť údajov.",
     "BIRTHNUMBER_IFO_DUPLICITY": "Tieto osobné údaje už boli použité pri inej e-mailovej adrese. Ak ste účet nevytvorili vy, kontaktujte nás na info@bratislava.sk."
   },
+  "sso_placeholder": "Táto stránka slúži pre komunikáciu s ostatnými mestskými službami. <a href='/'>Späť domov</a>.",
   "login_title": "Prihláste sa do svojho konta",
   "email_label": "E-mail",
   "email_description": "Zadajte e-mail, na ktorý si prajete dostávať od mesta informácie.",
@@ -392,7 +393,7 @@
       },
       "2": {
         "question": "Prečo si založiť konto?",
-        "answer": "Bratislavské konto je rýchly, jednoduchý a efektívny nástroj ako komunikovať s magistrátom. Založte si Bratislavské konto, aby ste mohli podávať žiadosti digitálne, nemuseli chodiť na úrad fyzicky, videli aktuálny stav žiadostí cez nástroj sledovania podania a mali prehľad o všetkých povinnostiach, ktoré voči mestu máte (napr. platba daní).<br /><br /><a target='_blank' href='https://bratislava.sk/mesto-bratislava/projekty/inovacie-mesta-bratislava/bratislavske-konto'>Prečítajte si konkrétne výhody Bratislavského konta</a>"
+        "answer": "Bratislavské konto je rýchly, jednoduchý a efektívny nástroj ako komunikovať s magistrátom. Založte si Bratislavské konto, aby ste mohli podávať žiadosti digitálne, nemuseli chodiť na úrad fyzicky, videli aktuálny stav žiadostí cez nástroj sledovania podania a mali prehľad o všetkých povinnostiach, ktoré voči mestu máte (napr. platba daní).<br /><br /><a target='_blank' href='https://bratislava.sk/konto'>Prečítajte si konkrétne výhody Bratislavského konta</a>"
       },
       "3": {
         "question": "Prečo žiadate overenie identity?",
@@ -431,7 +432,7 @@
         "answer": "Vytvorenie a používanie Bratislavského konta je bezplatné. Ide o projekt, ktorý vznikol na to, aby uľahčil život a ušetril čas ľuďom žijúcim v Bratislave. Využívanie samotného Bratislavského konta je bezplatné. V prípade, že však ide o službu, ktorá si vyžaduje zaplatenie dane či poplatku, bude potrebné ho uhradiť rovnakou sumou ako je tomu pri papierových žiadostiach (napr. Daň z nehnuteľnosti)."
       },
       "12": {
-        "question": "Kto vytvoril Bratislavského konto?",
+        "question": "Kto vytvoril Bratislavské konto?",
         "answer": "Bratislavské konto vzniklo na oddelení inovácií a digitálnych služieb. Oddelenie inovácií a digitálnych služieb je interný tím v rámci Hlavného mesta SR Bratislavy. Cieľom je priniesť nové, ako aj zlepšiť poskytované služby mesta a zjednodušiť každodenný život ľudí v Bratislave, ako aj fungovanie Magistrátu vďaka inováciám, technológiám a novým postupom. Viac informácií o Oddelení inovácií a digitálnych služieb, projektoch, tíme a možnostiach ako sa zapojiť nájdete na stránke <a target='_blank' href='https://inovacie.bratislava.sk/'>inovacie.bratislava.sk</a>."
       },
       "13": {
@@ -452,7 +453,7 @@
       },
       "17": {
         "question": "Ako funguje overenie a prečo potrebujete rodné číslo a číslo občianskeho preukazu alebo dokladu o prechodnom pobyte?",
-        "answer": "Čísla potrebujeme poznať na to, aby sme <strong>overili Vašu identitu voči štátnym registrom</strong>. Rodné číslo zároveň <strong>slúži ako jedinečný identifikátor</strong>, bez ktorého vám <strong>nevieme sprístupniť detaily vašej dane z nehnuteľností</strong>. Bez overenia nebudete schopný/á zaplatiť daň z nehnuteľností digitálne či odoslať všetky elektronické žiadosti. Overenie je jednorazové, údaje neukladáme."
+        "answer": "Rodné číslo a číslo občianskeho preukazu/číslo dokladu o prechodnom pobyte potrebujeme poznať na to, aby sme overili vašu identitu voči štátnym registrom. Rodné číslo zároveň slúži ako jedinečný identifikátor, bez ktorého nevieme sprístupniť detaily dane z nehnuteľností. Bez overenia nebudete schopný/á zaplatiť daň z nehnuteľností digitálne či odoslať všetky elektronické žiadosti. Overenie je jednorazové, údaje neukladáme."
       },
       "18": {
         "question": "Za akých podmienok mi nepošlete rozhodnutie o dani z nehnuteľností?",
@@ -460,7 +461,7 @@
       },
       "19": {
         "question": "Kedy nájdem svoju daň v Bratislavskom konte?",
-        "answer": "Každý rok pracujeme na výpočte dane z nehnuteľností až pre 210 000 daňovníkov a daňovníčok. Pripravené rozhodnutia budeme distribuovať od 28. apríla.<br />Keď bude vaša daň z nehnuteľností pripravená, pošleme vám notifikačný e-mail."
+        "answer": "Každý rok pracujeme na výpočte dane z nehnuteľností až pre 210 000 daňovníkov a daňovníčok. Pripravené rozhodnutia budeme distribuovať od 28. apríla. Keď bude vaša daň z nehnuteľností pripravená, pošleme vám notifikačný e-mail."
       },
       "20": {
         "question": "Prečo nemám v konte moju daň z nehnuteľností?",

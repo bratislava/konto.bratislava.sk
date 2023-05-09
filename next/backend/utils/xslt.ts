@@ -16,7 +16,7 @@ interface SaxonJsOutput {
   principalResult?: string
 }
 
-export const transformSaxon = async (stylesheet: any, data: string): Promise<string> => {
+export const transformSaxon = async (stylesheet: any, data: string): Promise<string|undefined> => {
   // eslint-disable-next-line @typescript-eslint/no-unsafe-call,@typescript-eslint/no-unsafe-member-access
   const output: SaxonJsOutput = await transform(
     {

@@ -28,7 +28,7 @@ export type MyApplicationHistoryDataBase = {
   description: string
 }
 
-export const getAplicationDetailsData = (id: string | string[]): MyApplicationsSentCardBase => {
+export const getAplicationDetailsData = (id?: string | string[]): MyApplicationsSentCardBase|undefined => {
   const myAplicationDetailsData: MyApplicationsSentCardBase[] = applicationsSentList
   return myAplicationDetailsData.find((item) => id === item.id)
 }

@@ -115,7 +115,7 @@ const SelectFieldComponent: ForwardRefRenderFunction<HTMLDivElement, SelectField
 
   const handleOnChangeSelect = (selectedOptions: SelectOption[], close?: boolean) => {
     if (!onChange) return
-    if (alwaysOneSelected && selectedOptions.length === 0) {
+    if (alwaysOneSelected && selectedOptions.length === 0 && enumOptions) {
       selectedOptions.push(enumOptions[0])
     }
     onChange(selectedOptions)

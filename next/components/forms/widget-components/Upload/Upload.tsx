@@ -6,11 +6,13 @@ import React, { ForwardedRef, forwardRef, ForwardRefRenderFunction, useState } f
 import { v4 as createUuid } from 'uuid'
 
 import logger from '../../../../frontend/utils/logger'
-import UploadBrokenMessages from '../../info-components/UploadBrokenMessages'
+import UploadBrokenMessages, { MINIO_ERROR } from '../../info-components/UploadBrokenMessages'
 import UploadFieldHeader from '../../info-components/UploadFieldHeader'
 import UploadButton from './UploadButton'
 import UploadDropArea from './UploadDropArea'
 import UploadedFilesList from './UploadedFilesList'
+
+
 
 interface UploadProps {
   type: 'button' | 'dragAndDrop'
@@ -68,6 +70,12 @@ const UploadComponent: ForwardRefRenderFunction<HTMLDivElement, UploadProps> = (
     }
   }
 
+  const setMinioError = () => {
+    if (fileBrokenMessages.includes(String(MINIO_ERROR))) {
+      setFileBrokenMessages([...fileBrokenMessages, MINIO_ERROR])
+    }
+  }
+
   const removeFirstFile = () => {
     if (!value) return
     const fileName = value[0].file.name
@@ -77,7 +85,10 @@ const UploadComponent: ForwardRefRenderFunction<HTMLDivElement, UploadProps> = (
         if (res.status !== 200) throw new Error(`Api response status: ${res.status}`)
         return res
       })
-      .catch((error) => logger.error(error))
+      .catch((error) => {
+        setMinioError()
+        logger.error(error)
+      })
   }
 
   const isFileInSizeLimit = (file: File) => {
@@ -128,6 +139,7 @@ const UploadComponent: ForwardRefRenderFunction<HTMLDivElement, UploadProps> = (
     sanitizedFiles.forEach((minioFile, id) => {
       uploadFile(minioFile.file)
         .catch((error) => {
+          setMinioError()
           logger.error(error)
           sanitizedFiles[id].errorMessage = 'File not uploaded'
         })
@@ -135,8 +147,9 @@ const UploadComponent: ForwardRefRenderFunction<HTMLDivElement, UploadProps> = (
           sanitizedFiles[id].isUploading = false
           emitOnChange(sanitizedFiles, value)
         })
-        // technically finally can throw
+        // finally can throw error
         .catch((error) => {
+          setMinioError()
           logger.error(error)
         })
     })
@@ -181,7 +194,10 @@ const UploadComponent: ForwardRefRenderFunction<HTMLDivElement, UploadProps> = (
         if (!value) throw new Error('Value not defined in component')
         return res
       })
-      .catch((error) => logger.error(error))
+      .catch((error) => {
+        setMinioError()
+        logger.error(error)
+      })
   }
 
   // RENDER

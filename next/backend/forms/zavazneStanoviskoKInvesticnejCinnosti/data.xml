@@ -1,4 +1,4 @@
-export default `<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 <!-- Created with Liquid Technologies Online Tools 1.0 (https://www.liquid-technologies.com) -->
 <E-form xmlns="http://schemas.gov.sk/doc/eform/form/0.1" xsi:schemaLocation="http://schemas.gov.sk/doc/eform/form/0.1 schema.xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
   <Meta>
@@ -141,4 +141,4 @@ export default `<?xml version="1.0" encoding="utf-8"?>
       </VyjadrenieUradu>
     </Prilohy>
   </Body>
-</E-form>`
+</E-form>

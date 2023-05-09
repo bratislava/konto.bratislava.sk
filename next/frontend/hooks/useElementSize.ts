@@ -9,7 +9,7 @@ interface Size {
 // This hook helps you to dynamically recover the width and the height of an HTML element.
 // Dimensions are updated on load, on mount/un-mount, when resizing the window and when the ref or deps array (not supported by default) changes.
 function useElementSize<T extends HTMLElement = HTMLDivElement>(
-  deps?: DependencyList,
+  deps: DependencyList = [],
 ): [(node: T | null) => void, Size] {
   // Mutable values like 'ref.current' aren't valid dependencies
   // because mutating them doesn't re-render the component.
@@ -35,7 +35,7 @@ function useElementSize<T extends HTMLElement = HTMLDivElement>(
   useIsomorphicLayoutEffect(() => {
     handleSize()
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [ref?.offsetHeight, ref?.offsetWidth, deps])
+  }, [ref?.offsetHeight, ref?.offsetWidth, ...deps])
 
   return [setRef, size]
 }

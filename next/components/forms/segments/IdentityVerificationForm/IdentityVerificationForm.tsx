@@ -116,7 +116,7 @@ const IdentityVerificationForm = ({ onSubmit, error }: Props) => {
             <Turnstile
               theme="light"
               key={captchaKey}
-              sitekey={process.env.NEXT_PUBLIC_CLOUDFLARE_TURNSTILE_SITE_KEY}
+              sitekey={process.env.NEXT_PUBLIC_CLOUDFLARE_TURNSTILE_SITE_KEY || ''}
               onVerify={(token) => {
                 setCaptchaWarning('hide')
                 onChange(token)

@@ -1,4 +1,5 @@
 import CorrespondenceAddressModal from 'components/forms/segments/CorrespondenceAddressModal/CorrespondenceAddressModal'
+import IdentityVerificationModal from 'components/forms/segments/IdentityVerificationModal/IdentityVerificationModal'
 import { PhoneNumberData } from 'components/forms/segments/PhoneNumberForm/PhoneNumberForm'
 import RegistrationModal from 'components/forms/segments/RegistrationModal/RegistrationModal'
 import SkipStepModal from 'components/forms/segments/SkipStepModal/SkipStepModal'
@@ -76,10 +77,12 @@ const ModalShowCase = () => {
     postal_code: '05801',
   })
   const [phoneNumberModalShow, setPhoneNumberModalShow] = useState(false)
-  const [phoneNumberModalData, setPhoneNumberModalData] =
-    useState<string | undefined>('+421999999999')
+  const [phoneNumberModalData, setPhoneNumberModalData] = useState<string | undefined>(
+    '+421999999999',
+  )
   const [registrationModal, setRegistrationModal] = useState(false)
   const [skipStepModal, setSkipStepModal] = useState(false)
+  const [identityVerificationModal, setIdentityVerificationModal] = useState(false)
 
   const onSubmitCorrespondenceAddress = ({ data }: { data?: Address }) => {
     setAddressModalData(data)
@@ -153,6 +156,12 @@ const ModalShowCase = () => {
           variant="black"
           text="Open skip step modal"
           onPress={() => setSkipStepModal(true)}
+        />
+        <Button
+          size="sm"
+          variant="black"
+          text="Open Identity Verification Modal"
+          onPress={() => setIdentityVerificationModal(true)}
         />
         <Modal
           divider
@@ -264,6 +273,10 @@ const ModalShowCase = () => {
         />
         <RegistrationModal show={registrationModal} onClose={() => setRegistrationModal(false)} />
         <SkipStepModal show={skipStepModal} onClose={() => setSkipStepModal(false)} />
+        <IdentityVerificationModal
+          show={identityVerificationModal}
+          onClose={() => setIdentityVerificationModal(false)}
+        />
       </Stack>
     </Wrapper>
   )

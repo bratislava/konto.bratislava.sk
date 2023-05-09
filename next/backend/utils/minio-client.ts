@@ -1,7 +1,8 @@
 import { Client } from 'minio'
 
 export const region = "us-east-1"
-export const bucketName = "forms-dev"
+// export const bucketName = "forms-dev"
+export const bucketName = "calmav-unscanned-bucket"
 
 /*
 https://www.npmjs.com/package/minio

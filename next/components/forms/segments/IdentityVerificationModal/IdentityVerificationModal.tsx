@@ -69,10 +69,13 @@ const IdentityVerificationModal = ({
                     className="text-center"
                     variant="sm"
                     content={`<span className='text-p2'>${
-                      userType === 'individual' &&
-                      t('verification_modal.subtitle_individual_person')
+                      userType === 'individual'
+                        ? t('verification_modal.subtitle_individual_person')
+                        : ''
                     }${
-                      userType === 'juridical' && t('verification_modal.subtitle_juridical_person')
+                      userType === 'juridical'
+                        ? t('verification_modal.subtitle_juridical_person')
+                        : ''
                     }</span>`}
                   />
                   <p className="text-p3 text-center">{t('verification_modal.info')}</p>

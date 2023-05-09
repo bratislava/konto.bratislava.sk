@@ -35,7 +35,7 @@ const FormHeader = () => {
       <div className="min-h-none w-full h-full lg:min-h-[120px] bg-main-200 p-4 md:py-6 lg:py-12 lg:px-0">
         <div className="justify-between max-w-screen-lg mx-auto flex">
           <div className="flex flex-col gap-2 lg:gap-4">
-            <h1 className="text-h1">Záväzné stanovisko k investičnej činnosti</h1>
+            <h1 className="text-h1-form">Záväzné stanovisko k investičnej činnosti</h1>
             <Link className="text-p1-underline w-max" href="/">
               {t('form_header.services_link')}
             </Link>

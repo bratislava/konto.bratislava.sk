@@ -79,7 +79,7 @@ const GeneratedFormRJSF = ({ eform, escapedSlug, formSlug, wrapperClassName }: F
             formData={form.formData}
             formErrors={form.errors}
             extraErrors={form.extraErrors}
-            fileScans={formContext.fileScans}
+            fileScans={formContext.fileScans||[]}
             schema={form.validatedSchema}
             onGoToStep={form.setStepIndex}
             submitErrors={submitter.errors}
@@ -117,6 +117,7 @@ const GeneratedFormRJSF = ({ eform, escapedSlug, formSlug, wrapperClassName }: F
         <StepButtonGroup
           stepIndex={form.stepIndex}
           isFinalStep={form.isComplete}
+          fileScans={formContext.fileScans||[]}
           previous={form.previous}
           skip={() => skipButtonHandler(form.stepIndex + 1)}
           submitStep={form.submitStep}

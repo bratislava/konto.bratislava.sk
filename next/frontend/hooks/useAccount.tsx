@@ -1,5 +1,5 @@
 /* eslint-disable no-secrets/no-secrets */
-
+import { MetaUser } from '@grafana/faro-core'
 import {
   AuthenticationDetails,
   CognitoUser,
@@ -26,6 +26,7 @@ import { useInterval } from 'usehooks-ts'
 
 import { subscribeApi, UNAUTHORIZED_ERROR_TEXT, verifyIdentityApi } from "../api/api"
 import { ROUTES } from "../api/constants"
+import { GeneralError } from '../dtos/generalApiDto'
 import { isBrowser } from '../utils/general'
 import logger, { faro } from '../utils/logger'
 import useSnackbar from "./useSnackbar"
@@ -181,8 +182,8 @@ export const AccountProvider = ({ children }: { children: ReactNode }) => {
           Value:
             key === 'address'
               ? JSON.stringify(value)
-              : key === 'phone_number'
-                ? typeof value === 'string' && value?.replace(' ', '')
+              : key === 'phone_number' && typeof value === 'string'
+                ? value?.replace(' ', '')
                 : String(value)
         })
         attributeList.push(attribute)
@@ -243,9 +244,9 @@ export const AccountProvider = ({ children }: { children: ReactNode }) => {
     try {
       // the default behaviour when no channels are selected is to subscribe to everything
       await subscribeApi({}, token)
-    } catch (error) {
+    } catch (_error: unknown) {
       // TODO temporary, pass better errors out of api requests
-      // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
+      const error: GeneralError = _error as GeneralError
       if (error?.message === UNAUTHORIZED_ERROR_TEXT) {
         forceLogout()
       }
@@ -280,7 +281,7 @@ export const AccountProvider = ({ children }: { children: ReactNode }) => {
             IdentityPoolId: process.env.NEXT_PUBLIC_COGNITO_IDENTITY_POOL_ID || '',
             Logins: {
               // Change the key below according to the specific region your user pool is in.
-              [`cognito-idp.${process.env.NEXT_PUBLIC_AWS_REGION}.amazonaws.com/${process.env.NEXT_PUBLIC_COGNITO_USER_POOL_ID}`]:
+              [`cognito-idp.${String(process.env.NEXT_PUBLIC_AWS_REGION)}.amazonaws.com/${String(process.env.NEXT_PUBLIC_COGNITO_USER_POOL_ID)}`]:
                 result.getIdToken().getJwtToken(),
             },
           })
@@ -441,10 +442,9 @@ export const AccountProvider = ({ children }: { children: ReactNode }) => {
       )
       // not refreshing user status immediately, instead leaving this to the registration flow
       return true
-    } catch (error) {
+    } catch (_error: unknown) {
       // TODO temporary, pass better errors out of api requests
-
-      /* eslint-disable @typescript-eslint/no-unsafe-member-access */
+      const error: GeneralError = _error as GeneralError
       if (error?.message === UNAUTHORIZED_ERROR_TEXT) {
         forceLogout()
         if (isBrowser()) {
@@ -453,10 +453,9 @@ export const AccountProvider = ({ children }: { children: ReactNode }) => {
       }
       logger.error('Failed verify identity request:', error)
       setError({
-        code: error.message,
-        message: error.message,
+        code: error.message || 'error',
+        message: error.message || 'error',
       })
-      /* eslint-enable @typescript-eslint/no-unsafe-member-access */
 
       return false
     }
@@ -477,6 +476,9 @@ export const AccountProvider = ({ children }: { children: ReactNode }) => {
         cognitoUser.getUserAttributes((cognitoError?: Error, attributes?: CognitoUserAttribute[]) => {
           if (cognitoError) {
             logger.error('AWS error getUserAttributes', cognitoError)
+            setUser(null)
+          } else if (!result) {
+            logger.error('No result for access token')
             setUser(null)
           } else {
             const cognitoUserData = userAttributesToObject(attributes)
@@ -626,7 +628,7 @@ export const AccountProvider = ({ children }: { children: ReactNode }) => {
   // map tier to status, TODO think about dropping global status and using only tier
   useEffect(() => {
     // does nothing if faro isn't initialized yet
-    faro?.api?.setUser(userData)
+    faro?.api?.setUser(userData as MetaUser)
     // TODO these serve to guide users through multiple steps and should be dismissed only by them - don't update status automatically when here
     const tempStatuses = [
       AccountStatus.NewPasswordSuccess,
@@ -639,7 +641,7 @@ export const AccountProvider = ({ children }: { children: ReactNode }) => {
       return
     }
 
-    const newStatus = userData ? mapTierToStatus(userData.tier) : AccountStatus.Idle
+    const newStatus = userData?.tier ? mapTierToStatus(userData.tier) : AccountStatus.Idle
     if (
       status === AccountStatus.IdentityVerificationPending &&
       newStatus === AccountStatus.IdentityVerificationSuccess

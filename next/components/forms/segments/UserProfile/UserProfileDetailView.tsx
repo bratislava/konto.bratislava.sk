@@ -7,21 +7,16 @@ interface UserProfileDetailViewProps {
   userData: UserData
 }
 
-const postalCodeFormat = (code: string): string => `${code?.slice(0, 3)} ${code?.slice(3)}`
+const postalCodeFormat = (code?: string): string => code ? `${code?.slice(0, 3)} ${code?.slice(3)}` : ''
 
 const UserProfileDetailView = ({ userData }: UserProfileDetailViewProps) => {
   const { t } = useTranslation('account')
   const { given_name, family_name, email, phone_number, address } = userData
   const fullName = `${given_name ?? ''} ${family_name ?? ''}`
-  // const { street_address, postal_code, locality} = address
   const fullAddress = address
-    ? `${address?.street_address || ''}${
-        address?.street_address && (address?.postal_code || address?.locality) ? ', ' : ''
-      }
-        ${address?.postal_code ? postalCodeFormat(address?.postal_code) : ''}${
-        address?.postal_code ? ' ' : ''
-      }
-        ${address?.locality || ''}`
+    ? `${address.street_address || ''}${address.street_address && (address.postal_code || address.locality) ? ', ' : ''}
+        ${postalCodeFormat(address.postal_code)}${address.postal_code ? ' ' : ''}
+        ${address.locality || ''}`
     : ''
   return (
     <div className="flex flex-col grow gap-6">

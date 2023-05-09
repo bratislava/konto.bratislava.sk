@@ -30,7 +30,7 @@ interface UploadProps {
   bucketFolderName?: string
 }
 
-const getBucketFileName = (file: File, folderName: string) => {
+const getBucketFileName = (file: File, folderName?: string) => {
   const extension = file.type.split("/").pop()
   const newName = folderName ? `${folderName}/${createUuid()}.${extension || ''}` : `${createUuid()}.${extension || ''}`
   return new File([file], newName, {

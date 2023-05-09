@@ -44,7 +44,7 @@ interface LanguageOption {
 }
 
 const Divider = ({ className }: { className?: string }) => {
-  return <div className={`border-b-solid border-r-2 h-6 ${className}`} />
+  return <div className={`border-b-solid border-r-2 h-6 ${className || ''}`} />
 }
 
 export interface MenuItem {

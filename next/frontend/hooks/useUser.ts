@@ -3,7 +3,7 @@ import { useEffectOnce } from 'usehooks-ts'
 
 // eslint-disable-next-line import/extensions
 import { getUserApi, subscribeApi, UNAUTHORIZED_ERROR_TEXT, unsubscribeApi } from "../api/api"
-import { Gdpr, User } from '../dtos/generalApiDto'
+import { Gdpr, GeneralError, User } from '../dtos/generalApiDto'
 import logger from '../utils/logger'
 import useAccount from "./useAccount"
 
@@ -17,10 +17,10 @@ export default function useUser() {
     try {
       const loadedUser: User = await getUserApi(token)
       setUser(loadedUser)
-    } catch (error) {
+    } catch (_error: unknown) {
+      const error: GeneralError = _error as GeneralError
       logger.error(error)
       // TODO temporary, pass better errors out of api requests
-      // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
       if (error?.message === UNAUTHORIZED_ERROR_TEXT) {
         forceLogout()
       }
@@ -37,10 +37,10 @@ export default function useUser() {
       const loadedUser: User = await subscribeApi({ gdprData: data }, token)
       setUser(loadedUser)
       return true
-    } catch (error) {
+    } catch (_error: unknown) {
+      const error: GeneralError = _error as GeneralError
       logger.error(error)
       // TODO temporary, pass better errors out of api requests
-      // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
       if (error?.message === UNAUTHORIZED_ERROR_TEXT) {
         forceLogout()
       }
@@ -54,10 +54,10 @@ export default function useUser() {
       const loadedUser: User = await unsubscribeApi({ gdprData: data }, token)
       setUser(loadedUser)
       return true
-    } catch (error) {
+    } catch (_error: unknown) {
+      const error: GeneralError = _error as GeneralError
       logger.error(error)
       // TODO temporary, pass better errors out of api requests
-      // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
       if (error?.message === UNAUTHORIZED_ERROR_TEXT) {
         forceLogout()
       }

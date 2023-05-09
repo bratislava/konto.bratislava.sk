@@ -84,7 +84,7 @@ class OpenDataClient {
   }
 
   // eslint-disable-next-line class-methods-use-this
-  private getCacheKey = ({ type, id, action }: IFetchOptions) => `${type}@${id}@${action}`
+  private getCacheKey = ({ type, id, action }: IFetchOptions) => `${type}@${String(id)}@${String(action)}`
 
   private handleFetch = async <T>({ type, id, action }: IFetchOptions): Promise<T> => {
     if (!this.apiKey) {
@@ -110,7 +110,7 @@ class OpenDataClient {
 
     if (res.status >= 300) {
       throw new Error(
-        `Problem with server communication [status:${res.status}] [params: type:${type} id:${id} action:${action}]`
+        `Problem with server communication [status:${res.status}] [params: type:${type} id:${String(id)} action:${String(action)}]`
       )
     }
 

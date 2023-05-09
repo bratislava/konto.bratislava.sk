@@ -95,9 +95,9 @@ function getAllSchemaData(
   const properties: JsonSchemaExtraProperties =
     getAllPossibleJsonSchemaExtraProperties(schemaContent)
 
-  Object.entries(properties).forEach(([key, value]: [string, JsonSchemaExtraProperty]) => {
+  Object.entries(properties).forEach(([key, value]: [string, JsonSchemaExtraProperty|undefined]) => {
     // init data every property of this layer of schema
-    const isChildConditional = isConditional || !!properties.isConditional || !!value.isConditional
+    const isChildConditional = isConditional || !!properties.isConditional || !!value?.isConditional
     const newSchemaPath = `${schemaPath}.${key}`
     const childExtraErrors = currentExtraErrors ? currentExtraErrors[key] : undefined
     const childFormData: JSONSchema7Definition | undefined =

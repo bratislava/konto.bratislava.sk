@@ -33,11 +33,6 @@ const HelpSection = () => {
             content={t('account_section_help.faq.2.answer')}
           />
           <Accordion
-            title={t('account_section_help.faq.18.question')}
-            size="md"
-            content={t('account_section_help.faq.18.answer')}
-          />
-          <Accordion
             title={t('account_section_help.faq.3.question')}
             size="md"
             content={t('account_section_help.faq.3.answer')}
@@ -61,6 +56,11 @@ const HelpSection = () => {
             title={t('account_section_help.faq.7.question')}
             size="md"
             content={t('account_section_help.faq.7.answer')}
+          />
+          <Accordion
+            title={t('account_section_help.faq.28.question')}
+            size="md"
+            content={t('account_section_help.faq.28.answer')}
           />
           <Accordion
             title={t('account_section_help.faq.8.question')}
@@ -87,6 +87,9 @@ const HelpSection = () => {
             size="md"
             content={t('account_section_help.faq.12.answer')}
           />
+          <h4 className="text-h4 justify-start flex mt-6 lg:mt-12">
+            {t('account_section_help.faq.taxes_category')}
+          </h4>
           <Accordion
             title={t('account_section_help.faq.13.question')}
             size="md"
@@ -112,9 +115,11 @@ const HelpSection = () => {
             size="md"
             content={t('account_section_help.faq.17.answer')}
           />
-          <h4 className="text-h4 justify-start flex mt-6 lg:mt-12">
-            {t('account_section_help.faq.taxes_category')}
-          </h4>
+          <Accordion
+            title={t('account_section_help.faq.18.question')}
+            size="md"
+            content={t('account_section_help.faq.18.answer')}
+          />
           <Accordion
             title={t('account_section_help.faq.19.question')}
             size="md"
@@ -159,11 +164,6 @@ const HelpSection = () => {
             title={t('account_section_help.faq.27.question')}
             size="md"
             content={t('account_section_help.faq.27.answer')}
-          />
-          <Accordion
-            title={t('account_section_help.faq.28.question')}
-            size="md"
-            content={t('account_section_help.faq.28.answer')}
           />
         </div>
       </div>

@@ -102,7 +102,7 @@ const SelectFieldWidgetRJSF = (props: SelectFieldWidgetRJSFProps) => {
     const transformedValue: SelectOption[] = []
     if (!value || Array.isArray(value)) return transformedValue
 
-    const chosenOption = transformedEnumOptions.find((option) => value === option.const)
+    const chosenOption = transformedEnumOptions?.find((option) => value === option.const)
     return chosenOption ? [chosenOption] : []
   }
 
@@ -111,7 +111,7 @@ const SelectFieldWidgetRJSF = (props: SelectFieldWidgetRJSFProps) => {
     if (!value || !Array.isArray(value)) return transformedValue
 
     value.forEach((optionValue) => {
-      transformedEnumOptions.forEach((option) => {
+      transformedEnumOptions?.forEach((option) => {
         if (option.const === optionValue) {
           transformedValue.push(option)
         }

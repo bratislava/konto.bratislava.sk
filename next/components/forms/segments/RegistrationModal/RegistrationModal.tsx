@@ -57,9 +57,15 @@ type RegistrationModalBase = {
   show: boolean
   onClose: () => void
   className?: string
+  isBottomButtons?: boolean
 }
 
-const RegistrationModal = ({ show, onClose, className }: RegistrationModalBase) => {
+const RegistrationModal = ({
+  show,
+  onClose,
+  className,
+  isBottomButtons = true,
+}: RegistrationModalBase) => {
   const { t } = useTranslation('account')
 
   const modalBodyList: string[] = [
@@ -77,7 +83,7 @@ const RegistrationModal = ({ show, onClose, className }: RegistrationModalBase) 
     <div
       role="button"
       tabIndex={0}
-      className="h-full fixed w-full z-50 top-0 flex items-center justify-center"
+      className="h-full fixed w-full z-50 inset-0 flex items-center justify-center"
       style={{ background: 'rgba(var(--color-gray-800), .4)', marginTop: '0' }}
       onClick={onClose}
       onKeyPress={(event: React.KeyboardEvent) => handleOnKeyPress(event, onClose)}
@@ -127,10 +133,10 @@ const RegistrationModal = ({ show, onClose, className }: RegistrationModalBase) 
             </Link>
           </div>
 
-          <div className="flex flex-col gap-1 sm:gap-0 sm:flex-row sm:justify-between sm:items-center my-3 md:my-6">
+          <div className="flex flex-col gap-1 sm:gap-0 sm:flex-row sm:justify-between sm:items-center mt-3 md:mt-6">
             <span className="text-p1-semibold">{t('register_modal.body_login_description')}</span>
             <Link
-              href={ROUTES.REGISTER}
+              href={ROUTES.LOGIN}
               className="text-p1-semibold underline text-main-700 hover:text-main-600"
             >
               {/* eslint-disable-next-line jsx-a11y/anchor-is-valid */}
@@ -139,33 +145,35 @@ const RegistrationModal = ({ show, onClose, className }: RegistrationModalBase) 
             </Link>
           </div>
         </div>
-        <div className="flex flex-col gap-3 mb-4 md:mb-0 md:gap-6">
-          <div className="flex items-center">
-            <span className="w-full h-0.5 bg-gray-200" />
-            <span className="text-p1 px-6">{t('register_modal.footer_choice')}</span>
-            <span className="w-full h-0.5 bg-gray-200" />
+        {isBottomButtons && (
+          <div className="flex flex-col gap-3 mb-4 md:mb-0 md:gap-6">
+            <div className="flex items-center mt-3 md:mt-6">
+              <span className="w-full h-0.5 bg-gray-200" />
+              <span className="text-p1 px-6">{t('register_modal.footer_choice')}</span>
+              <span className="w-full h-0.5 bg-gray-200" />
+            </div>
+            <div className="flex flex-col md:flex-row md:justify-between md:items-center gap-3 md:gap-4">
+              <ButtonDesktop
+                text={t('register_modal.footer_desktop_button_eID_text')}
+                endIcon={<ArrowRightIcon className="w-6 h-6" />}
+              />
+              <ButtonDesktop
+                text={t('register_modal.footer_desktop_button_app_text')}
+                endIcon={<ArrowRightIcon className="w-6 h-6" />}
+              />
+              <ButtonMobile
+                title={t('register_modal.footer_mobile_button_eID_title')}
+                text={t('register_modal.footer_mobile_button_eID_text')}
+                endIcon={<ArrowRightIcon className="w-6 h-6" />}
+              />
+              <ButtonMobile
+                title={t('register_modal.footer_mobile_button_app_title')}
+                text={t('register_modal.footer_mobile_button_app_text')}
+                endIcon={<ArrowRightIcon className="w-6 h-6" />}
+              />
+            </div>
           </div>
-          <div className="flex flex-col md:flex-row md:justify-between md:items-center gap-3 md:gap-4">
-            <ButtonDesktop
-              text={t('register_modal.footer_desktop_button_eID_text')}
-              endIcon={<ArrowRightIcon className="w-6 h-6" />}
-            />
-            <ButtonDesktop
-              text={t('register_modal.footer_desktop_button_app_text')}
-              endIcon={<ArrowRightIcon className="w-6 h-6" />}
-            />
-            <ButtonMobile
-              title={t('register_modal.footer_mobile_button_eID_title')}
-              text={t('register_modal.footer_mobile_button_eID_text')}
-              endIcon={<ArrowRightIcon className="w-6 h-6" />}
-            />
-            <ButtonMobile
-              title={t('register_modal.footer_mobile_button_app_title')}
-              text={t('register_modal.footer_mobile_button_app_text')}
-              endIcon={<ArrowRightIcon className="w-6 h-6" />}
-            />
-          </div>
-        </div>
+        )}
       </div>
     </div>
   )

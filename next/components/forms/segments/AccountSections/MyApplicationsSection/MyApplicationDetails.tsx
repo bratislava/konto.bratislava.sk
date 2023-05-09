@@ -5,7 +5,7 @@ import { MyApplicationHistoryDataBase, MyApplicationsSentCardBase } from 'fronte
 import { useTranslation } from 'next-i18next'
 
 type MyApplicationsDetailsBase = {
-  detailsData: MyApplicationsSentCardBase
+  detailsData?: MyApplicationsSentCardBase
   historyData: MyApplicationHistoryDataBase[]
 }
 

@@ -1,3 +1,5 @@
+// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+// @ts-ignore
 import { transform } from 'saxon-js'
 
 /**
@@ -16,7 +18,7 @@ interface SaxonJsOutput {
   principalResult?: string
 }
 
-export const transformSaxon = async (stylesheet: any, data: string): Promise<string> => {
+export const transformSaxon = async (stylesheet: any, data: string): Promise<string|undefined> => {
   // eslint-disable-next-line @typescript-eslint/no-unsafe-call,@typescript-eslint/no-unsafe-member-access
   const output: SaxonJsOutput = await transform(
     {

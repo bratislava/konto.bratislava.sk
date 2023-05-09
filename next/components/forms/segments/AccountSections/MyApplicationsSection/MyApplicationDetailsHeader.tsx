@@ -11,17 +11,17 @@ import { useTranslation } from 'next-i18next'
 import { ReactNode } from 'react'
 
 type MyApplicationDetailsHeaderBase = {
-  data: MyApplicationsSentCardBase
+  data?: MyApplicationsSentCardBase
 }
 
 const MyApplicationDetailsHeader = (props: MyApplicationDetailsHeaderBase) => {
   const { data } = props
   const { t } = useTranslation('account')
 
-  const statusHandler = (status: 'negative' | 'warning' | 'success'): ReactNode => {
+  const statusHandler = (status?: 'negative' | 'warning' | 'success'): ReactNode => {
     const statusStyle: string = cx('text-p3-semibold lg:text-16-semibold w-max', {
       'text-negative-700': status === 'negative',
-      'text-warning-700': status === 'warning',
+      'text-warning-700': status === 'warning' || !status,
       'text-success-700': status === 'success',
     })
     const statusNode = (icon: ReactNode, statusTitle: string): ReactNode => {

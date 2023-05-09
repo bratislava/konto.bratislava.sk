@@ -82,7 +82,7 @@ const IntroSection = () => {
           ) : (
             <AnnouncementBlock
               announcementContent={announcementContent}
-              buttonTitle={data ? t('account_section_intro.announcement_card_action') : null}
+              buttonTitle={data ? t('account_section_intro.announcement_card_action') : undefined}
               imagePath={PlatbaDaneImg}
               onPress={() => router.push(ROUTES.TAXES_AND_FEES)}
             />

@@ -16,6 +16,10 @@ import logger from '../../frontend/utils/logger'
 
 export type Json = any
 
+export interface Ciselnik {
+  id?: string
+}
+
 const getFormatFromItems = (items: JsonSchema | JsonSchema[] | undefined): string | undefined => {
   return items && items !== true && !Array.isArray(items) ? items.format : undefined
 }
@@ -74,9 +78,13 @@ export const buildXmlRecursive = (
       const format =
         jsonSchema.type === 'array' ? getFormatFromItems(jsonSchema.items) : jsonSchema.format
       if (format === 'ciselnik') {
-        const ciselnikProperty: { id?: string } =
-          typeof jsonSchema !== 'boolean' && 'ciselnik' in jsonSchema ? jsonSchema.ciselnik : {}
-        stringNode = `<Code>${node}</Code><Name>${node}</Name><WsEnumCode>${ciselnikProperty?.id}</WsEnumCode>`
+        const ciselnikProperty: Ciselnik =
+          typeof jsonSchema !== 'boolean' && 'ciselnik' in jsonSchema
+            ? (jsonSchema.ciselnik as Ciselnik)
+            : ({} as Ciselnik)
+        stringNode = `<Code>${node}</Code><Name>${node}</Name><WsEnumCode>${String(
+          ciselnikProperty?.id,
+        )}</WsEnumCode>`
       } else if (format === 'file') {
         stringNode = `<Nazov>${node}</Nazov><Prilozena>true</Prilozena>`
       }
@@ -121,7 +129,7 @@ export const removeNeedlessXmlTransformArraysRecursive = (
   path: string[],
   schema: JsonSchema,
 ) => {
-  if (typeof obj !== 'object') {
+  if (typeof obj !== 'object' || !obj) {
     return obj
   }
   const transformedObj = obj

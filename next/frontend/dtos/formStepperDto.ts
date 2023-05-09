@@ -15,7 +15,7 @@ export interface JsonSchemaProperties {
 
 export type JsonSchemaExtraProperty = JSONSchema7Definition & { isConditional?: boolean }
 export interface JsonSchemaExtraProperties {
-  [key: string]: JsonSchemaExtraProperty
+  [key: string]: JsonSchemaExtraProperty | undefined
   isConditional?: boolean
 }
 

@@ -9,7 +9,7 @@ import { ILogObj, Logger } from 'tslog'
 import { isBrowser, isProductionDeployment } from './general'
 
 let mutableLogger: Logger<ILogObj>
-let mutableFaro: Faro
+let mutableFaro: Faro|null = null
 
 if (isBrowser()) {
   mutableLogger = new Logger({ type: isProductionDeployment() ? 'hidden' : 'pretty' })
@@ -27,7 +27,7 @@ if (isBrowser()) {
       },
     })
     mutableLogger.attachTransport((logObj) => {
-      mutableFaro.api.pushLog([JSON.stringify(logObj)])
+      mutableFaro?.api.pushLog([JSON.stringify(logObj)])
     })
   }
 } else {

@@ -31,8 +31,8 @@ export const useFormFiller = (eform: EFormValue) => {
   }
 
   const router = useRouter()
-  const initFormData = async (): Promise<RJSFSchema> => {
-    let formData: RJSFSchema
+  const initFormData = async (): Promise<RJSFSchema|undefined|null> => {
+    let formData: RJSFSchema|null = null
     const token = await getAccessToken()
     if (!token) {
       return undefined

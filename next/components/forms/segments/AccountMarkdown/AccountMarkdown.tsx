@@ -3,10 +3,12 @@ import Tooltip from 'components/forms/info-components/Tooltip/Tooltip'
 import Link from 'next/link'
 import React from 'react'
 import ReactMarkdown from 'react-markdown'
+import { PluggableList } from 'react-markdown/lib/react-markdown'
 import rehypeRaw from 'rehype-raw'
 import remarkDirective from 'remark-directive'
 import remarkDirectiveRehype from 'remark-directive-rehype'
 import remarkGfm from 'remark-gfm'
+
 
 type AccountMarkdownBase = {
   className?: string
@@ -33,7 +35,7 @@ const AccountMarkdown = ({
   variant = 'normal',
   uLinkVariant = 'default',
 }: AccountMarkdownBase) => {
-  const remarkPlugins = []
+  const remarkPlugins: PluggableList = []
   if (!disableRemarkGfm) {
     remarkPlugins.push(remarkGfm)
   }

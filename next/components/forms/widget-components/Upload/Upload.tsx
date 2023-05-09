@@ -33,9 +33,9 @@ interface UploadProps {
   onChangeFileScans?: (newFileScans: FileScan[], removeFileScans: FileScan[]) => void
 }
 
-const getBucketFileName = (file: File, folderName: string) => {
+const getBucketFileName = (file: File, folderName?: string) => {
   const extension = file.type.split("/").pop()
-  const newName = folderName ? `${folderName}/${createUuid()}.${extension}` : `${createUuid()}.${extension}`
+  const newName = folderName ? `${folderName}/${createUuid()}.${extension || ''}` : `${createUuid()}.${extension || ''}`
   return new File([file], newName, {
     type: file.type,
     lastModified: file.lastModified,

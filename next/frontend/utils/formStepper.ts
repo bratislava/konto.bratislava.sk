@@ -18,7 +18,8 @@ import {
   JsonSchemaExtraProperties,
   JsonSchemaProperties,
   JsonSchemaPropertyTree,
-  KeywordDefinition, validator,
+  KeywordDefinition,
+  validator,
 } from '../dtos/formStepperDto'
 
 
@@ -107,7 +108,7 @@ export const getJsonSchemaPropertyTree = (jsonSchema?: JsonSchema): JsonSchemaPr
     return undefined
   }
 
-  const result = propertiesEntries.map(([key, value]: [string, JSONSchema7]) => {
+  const result = propertiesEntries.map(([key, value]: [string, JSONSchema7Definition]) => {
     return { [key]: getJsonSchemaPropertyTree(value) }
   })
 
@@ -135,14 +136,13 @@ export const mergePropertyTreeToFormData = (
 }
 
 export const buildRJSFError = (path: string[], errorMsg: string | undefined): ErrorSchema => {
-  return path.reduceRight(
-    (memo: object, arrayValue: string) => {
-      const error: ErrorSchema = {}
-      error[arrayValue] = memo
-      return error
-    },
-    { __errors: [errorMsg || 'error'] },
-  ) as ErrorSchema
+  const error: ErrorSchema = { __errors: [errorMsg || 'error'] } as ErrorSchema
+
+  path.reverse().forEach((arrayValue: string) => {
+    error[arrayValue] = { [arrayValue]: error }
+  })
+
+  return error
 }
 
 
@@ -195,7 +195,7 @@ export const validateDateFromToFormat = (
 ) => {
   const formDataKeys = Object.entries(formData)
   formDataKeys?.forEach(([key, value]: [string, RJSFSchema]) => {
-    const schemaProperty: JSONSchema7Definition = schema.properties[key]
+    const schemaProperty: JSONSchema7Definition|undefined = schema.properties?.[key]
     if (
       schema?.properties &&
       schemaProperty &&
@@ -222,7 +222,7 @@ export const validateTimeFromToFormat = (
 ) => {
   const formDataKeys = Object.entries(formData)
   formDataKeys?.forEach(([key, value]: [string, RJSFSchema]) => {
-    const schemaProperty: JSONSchema7Definition = schema.properties[key]
+    const schemaProperty: JSONSchema7Definition|undefined = schema.properties?.[key]
     if (
       schema?.properties &&
       schemaProperty &&
@@ -325,7 +325,7 @@ export const getDefaults = (schema: RJSFSchema, path: string[], obj: object) => 
 export const getInitFormData = (schema: RJSFSchema): RJSFSchema => {
   const formData: RJSFSchema = getDefaults(schema, [], {})
 
-  schema?.allOf.forEach((step) => {
+  schema?.allOf?.forEach((step) => {
     if (typeof step !== 'boolean') {
       const stepFormData = getDefaultFormState(validator, step, formData, schema, true)
       Object.assign(formData, stepFormData)
@@ -357,12 +357,13 @@ export const createTestFormData = (formData: RJSFSchema): RJSFSchema => {
 
 export const getValidatedSteps = (schema: RJSFSchema, formData: RJSFSchema): RJSFSchema[] => {
   const testFormData = createTestFormData(formData)
-  return schema?.allOf
-    .map((step) => {
-      const typedStep = typeof step !== 'boolean' ? step : {}
-      return retrieveSchema(validator, typedStep, schema, testFormData)
-    })
-    .filter((step) => typeof step !== 'boolean' && Object.keys(step).length > 0)
+  return  schema.allOf
+    ? schema.allOf.map((step) => {
+        const typedStep = typeof step !== 'boolean' ? step : {}
+        return retrieveSchema(validator, typedStep, schema, testFormData)
+      })
+      .filter((step) => Object.keys(step).length > 0)
+    : []
 }
 
 export const getInitInnerValue = (value: string|string[]|null, schema: StrictRJSFSchema, fileScans: FileScan[]): UploadMinioFile[] => {

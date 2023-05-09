@@ -5,6 +5,7 @@ import IdentityVerificationModal from 'components/forms/segments/IdentityVerific
 import RegistrationModal from 'components/forms/segments/RegistrationModal/RegistrationModal'
 import SkipStepModal from 'components/forms/segments/SkipStepModal/SkipStepModal'
 import useAccount, { AccountStatus } from 'frontend/hooks/useAccount'
+import MenuList from 'components/forms/steps/MenuList'
 import { useState } from 'react'
 
 import { validator } from '../../frontend/dtos/formStepperDto'
@@ -54,7 +55,7 @@ const GeneratedFormRJSF = ({ eform, escapedSlug, formSlug, wrapperClassName }: F
   return (
     <div
       className={cx(
-        'flex flex-col gap-10 py-10 w-full max-w-screen-lg mx-auto',
+        'flex flex-col gap-10 pt-0 pb-6 lg:py-10 w-full max-w-screen-lg mx-auto',
         'lg:flex-row lg:gap-20',
         wrapperClassName,
       )}
@@ -150,6 +151,7 @@ const GeneratedFormRJSF = ({ eform, escapedSlug, formSlug, wrapperClassName }: F
             isAuth ? submitter.submitForm(form.formData) : setSubmitRegistrationModal(true)
           }
         />
+        <MenuList />
       </div>
     </div>
   )

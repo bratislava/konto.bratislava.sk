@@ -49,7 +49,7 @@
     @apply font-semibold text-p-base lg:text-p-md;
   }
   .text-p1-underline {
-    @apply underline font-medium text-p-base lg:text-p-md;
+    @apply underline underline-offset-4 font-medium text-p-base lg:text-p-md;
   }
 
   .text-p2 {
@@ -62,7 +62,7 @@
     @apply font-semibold text-p-base;
   }
   .text-p2-underline {
-    @apply underline font-normal text-p-base;
+    @apply underline underline-offset-4 font-normal text-p-base;
   }
 
   .text-p3 {
@@ -75,7 +75,7 @@
     @apply font-semibold text-p-sm;
   }
   .text-p3-underline {
-    @apply underline font-normal text-p-sm;
+    @apply underline underline-offset-4 font-normal text-p-sm;
   }
 
   /* buttons */

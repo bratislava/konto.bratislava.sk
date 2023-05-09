@@ -30,24 +30,24 @@ interface IJSONFile {
 type JSONData = Record<string, any>
 
 class OpenDataClient {
-  private _apiKey?: string
+  private readonly apiKey?: string
 
-  private _cache: { [key: string]: any }
+  private readonly cache: Record<string, any>
 
   constructor(apiKey: string | undefined) {
-    this._apiKey = apiKey
-    this._cache = {}
+    this.apiKey = apiKey
+    this.cache = {}
   }
 
   getCyclingData = async (resultFileType: IResultFileType = 'json') => {
-    return this._getData({
+    return this.getData({
       categorySlug: 'doprava',
       datasetSlug: 'cykloscitace-bratislava',
       resultFileType,
     })
   }
 
-  private _getData = async ({
+  private getData = async ({
     categorySlug,
     datasetSlug,
     resultFileType,
@@ -58,42 +58,43 @@ class OpenDataClient {
   }) => {
     try {
       // Firstly fetch the id of the right category based on categorySlug
-      const category = await this._fetchCategory(categorySlug)
+      const category = await this.fetchCategory(categorySlug)
 
       if (!category) throw new Error(`Category ${categorySlug} not found`)
 
       // Then fetch the id of the right dataset based on datasetSlug and categoryId
-      const dataset = await this._fetchDataset(datasetSlug, category.id)
+      const dataset = await this.fetchDataset(datasetSlug, category.id)
 
       if (!dataset) throw new Error(`Data set ${datasetSlug} not found`)
 
       // Then fetch all the files from this dataset
-      const datasetFiles = await this._fetchDatasetFiles(dataset.id)
+      const datasetFiles = await this.fetchDatasetFiles(dataset.id)
 
       if (datasetFiles.length === 0) throw new Error(`Data set with id ${dataset.id} has no files`)
 
       // Then download all JSON files from this dataset
-      const resultData = await this._downloadAllFiles(datasetFiles, resultFileType)
+      const resultData = await this.downloadAllFiles(datasetFiles, resultFileType)
 
       return {
         data: resultData,
       } as FetchOpenDataResult
     } catch (error) {
-      throw new Error(`OpenDataClient error while getting data: ${error}`)
+      throw new Error(`OpenDataClient error while getting data: ${String(error)}`)
     }
   }
 
-  private _getCacheKey = ({ type, id, action }: IFetchOptions) => `${type}@${id}@${action}`
+  // eslint-disable-next-line class-methods-use-this
+  private getCacheKey = ({ type, id, action }: IFetchOptions) => `${type}@${String(id)}@${String(action)}`
 
-  private _handleFetch = async <T>({ type, id, action }: IFetchOptions): Promise<T> => {
-    if (!this._apiKey) {
+  private handleFetch = async <T>({ type, id, action }: IFetchOptions): Promise<T> => {
+    if (!this.apiKey) {
       throw new Error('Invalid API Key')
     }
 
-    const cacheKey = this._getCacheKey({ type, id, action })
-    const cacheData = this._cache[cacheKey]
+    const cacheKey = this.getCacheKey({ type, id, action })
+    const cacheData = this.cache[cacheKey]
     if (cacheData) {
-      return cacheData
+      return cacheData as T
     }
 
     const slugs = [type, id, action]
@@ -103,33 +104,33 @@ class OpenDataClient {
 
     const res = await fetch(url, {
       headers: {
-        key: this._apiKey,
+        key: this.apiKey,
       },
     })
 
     if (res.status >= 300) {
       throw new Error(
-        `Problem with server communication [status:${res.status}] [params: type:${type} id:${id} action:${action}]`
+        `Problem with server communication [status:${res.status}] [params: type:${type} id:${String(id)} action:${String(action)}]`
       )
     }
 
-    const data = await res.json()
+    const data: T = await res.json()
 
-    this._cache[cacheKey] = data
+    this.cache[cacheKey] = data
 
     return data
   }
 
-  private _fetchCategory = async (slug: string) => {
-    const data = await this._handleFetch<{ categories: IDataset[] }>({
+  private fetchCategory = async (slug: string) => {
+    const data = await this.handleFetch<{ categories: IDataset[] }>({
       type: 'category',
     })
 
     return data.categories.find((category) => category.slug === slug)
   }
 
-  private _fetchDataset = async (slug: string, categoryId: string) => {
-    const data = await this._handleFetch<{ datasets: IDataset[] }>({
+  private fetchDataset = async (slug: string, categoryId: string) => {
+    const data = await this.handleFetch<{ datasets: IDataset[] }>({
       type: 'category',
       id: categoryId,
       action: 'datasets',
@@ -138,8 +139,8 @@ class OpenDataClient {
     return data.datasets.find((dataset) => dataset.slug === slug)
   }
 
-  private _fetchDatasetFiles = async (datasetId: string) => {
-    const data = await this._handleFetch<{ files: IDatasetFile[] }>({
+  private fetchDatasetFiles = async (datasetId: string) => {
+    const data = await this.handleFetch<{ files: IDatasetFile[] }>({
       type: 'dataset',
       id: datasetId,
       action: 'files',
@@ -148,22 +149,19 @@ class OpenDataClient {
     return data.files
   }
 
-  private _downloadAllFiles = async (datasetFiles: IDatasetFile[], resultFileType: IResultFileType) => {
-    const downloadedFiles: IJSONFile[] = []
-
-    for (const file of datasetFiles) {
-      if (file.type === resultFileType) {
-        const data = await this._handleFetch<JSONData>({
-          type: 'file',
-          id: file.id,
-          action: 'download',
+  private downloadAllFiles = async (datasetFiles: IDatasetFile[], resultFileType: IResultFileType) => {
+    return Promise.all(
+      datasetFiles
+        .filter(file => file.type === resultFileType)
+        .map(async file => {
+          const data = await this.handleFetch<JSONData>({
+            type: 'file',
+            id: file.id,
+            action: 'download',
+          })
+          return { name: file.name, jsonData: data }
         })
-
-        downloadedFiles.push({ name: file.name, jsonData: data })
-      }
-    }
-
-    return downloadedFiles
+    )
   }
 }
 

@@ -1,6 +1,6 @@
 export interface TransformedFormData {
   label: string
-  value: string | null
+  value?: string | null
   schemaPath: string
   isError: boolean
   isConditional?: boolean

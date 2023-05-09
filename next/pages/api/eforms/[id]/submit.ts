@@ -5,8 +5,10 @@ import {
   validateDataWithJsonSchema,
   validateDataWithXsd,
 } from '@backend/utils/forms'
-import logger from '@utils/logger'
+import { ErrorObject } from 'ajv'
 import type { NextApiRequest, NextApiResponse } from 'next'
+
+import logger from '../../../../frontend/utils/logger'
 
 const handler = async (req: NextApiRequest, res: NextApiResponse) => {
   logger.silly('-------------------')
@@ -23,7 +25,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
     return res.status(400).json({ message: 'Invalid form name or url' })
   }
 
-  let errors = []
+  let errors: Partial<ErrorObject>[] = []
   errors = await validateDataWithJsonSchema(req.body, eform.schema)
   if (errors.length > 0)
     return res.status(400).json({ message: `Data did not pass JSON validation`, errors })

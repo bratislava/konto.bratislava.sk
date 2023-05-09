@@ -1,7 +1,3 @@
-import logger from '@utils/logger'
-import { AccountError, UserData } from '@utils/useAccount'
-import useHookForm from '@utils/useHookForm'
-import { isBrowser } from '@utils/utils'
 import AccountErrorAlert from 'components/forms/segments/AccountErrorAlert/AccountErrorAlert'
 import AccountMarkdown from 'components/forms/segments/AccountMarkdown/AccountMarkdown'
 import LoginAccountLink from 'components/forms/segments/LoginAccountLink/LoginAccountLink'
@@ -14,6 +10,11 @@ import { useState } from 'react'
 import { Controller } from 'react-hook-form'
 import Turnstile from 'react-turnstile'
 import { useCounter, useTimeout } from 'usehooks-ts'
+
+import { AccountError, UserData } from '../../../../frontend/hooks/useAccount'
+import useHookForm from '../../../../frontend/hooks/useHookForm'
+import { isBrowser } from '../../../../frontend/utils/general'
+import logger from '../../../../frontend/utils/logger'
 
 interface Data {
   email: string
@@ -232,7 +233,7 @@ const RegisterForm = ({ onSubmit, error, lastEmail }: Props) => {
             <Turnstile
               theme="light"
               key={captchaKey}
-              sitekey={process.env.NEXT_PUBLIC_CLOUDFLARE_TURNSTILE_SITE_KEY}
+              sitekey={process.env.NEXT_PUBLIC_CLOUDFLARE_TURNSTILE_SITE_KEY || ''}
               onVerify={(token) => {
                 setCaptchaWarning('hide')
                 onChange(token)

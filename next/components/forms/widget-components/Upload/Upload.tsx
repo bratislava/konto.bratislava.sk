@@ -1,11 +1,11 @@
 import { UploadMinioFile } from '@backend/dtos/minio/upload-minio-file.dto'
 import { deleteFile, uploadFile } from '@backend/services/minio'
-import logger from '@utils/logger'
 import cx from 'classnames'
 import FieldErrorMessage from 'components/forms/info-components/FieldErrorMessage'
 import React, { ForwardedRef, forwardRef, ForwardRefRenderFunction, useState } from 'react'
 import { v4 as createUuid } from 'uuid'
 
+import logger from '../../../../frontend/utils/logger'
 import UploadBrokenMessages from '../../info-components/UploadBrokenMessages'
 import UploadFieldHeader from '../../info-components/UploadFieldHeader'
 import UploadButton from './UploadButton'
@@ -25,10 +25,12 @@ interface UploadProps {
   className?: string
   onChange?: (value: UploadMinioFile[]) => void
   errorMessage?: string[]
+  bucketFolderName?: string
 }
 
-const addTimeStampToFileName = (file: File) => {
-  const newName = `${Date.now()}_${createUuid()}_${file.name}`
+const getBucketFileName = (file: File, folderName?: string) => {
+  const extension = file.type.split("/").pop()
+  const newName = folderName ? `${folderName}/${createUuid()}.${extension || ''}` : `${createUuid()}.${extension || ''}`
   return new File([file], newName, {
     type: file.type,
     lastModified: file.lastModified,
@@ -52,6 +54,7 @@ const UploadComponent: ForwardRefRenderFunction<HTMLDivElement, UploadProps> = (
     className,
     onChange,
     errorMessage,
+    bucketFolderName
   }: UploadProps = props
 
   // STATES
@@ -103,7 +106,7 @@ const UploadComponent: ForwardRefRenderFunction<HTMLDivElement, UploadProps> = (
         messages.push(`${minioFile.file.name} is too large.`)
       } else {
         const sanitizedFile: UploadMinioFile = {
-          file: addTimeStampToFileName(minioFile.file),
+          file: getBucketFileName(minioFile.file, bucketFolderName),
           isUploading: true,
           originalName: minioFile.originalName,
         }

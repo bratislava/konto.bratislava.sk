@@ -1,11 +1,12 @@
 import BratislavaIcon from '@assets/images/account/bratislava-footer.svg'
-import logger from '@utils/logger'
 import AccountMarkdown from 'components/forms/segments/AccountMarkdown/AccountMarkdown'
 import ThankYouCard from 'components/forms/segments/AccountSections/ThankYouSection/ThankYouCard'
 import Button from 'components/forms/simple-components/Button'
 import { useRouter } from 'next/router'
 import { useTranslation } from 'next-i18next'
 import { useEffect, useMemo } from 'react'
+
+import logger from '../../../../../frontend/utils/logger'
 
 export const PaymentStatusOptions = {
   FAILED_TO_VERIFY: 'failed-to-verify',

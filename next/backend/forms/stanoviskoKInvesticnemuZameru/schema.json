@@ -506,6 +506,7 @@
             "stavbaDruh": {
               "type": "string",
               "title": "Druh stavby",
+              "default": "Bytový dom",
               "enum": [
                 "Bytový dom",
                 "Rodinný dom",

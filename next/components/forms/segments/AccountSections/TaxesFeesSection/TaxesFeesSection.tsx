@@ -1,15 +1,16 @@
-import { TaxApiError } from '@utils/api'
-import { useTaxes } from '@utils/apiHooks'
-import { ROUTES } from '@utils/constants'
-import logger from '@utils/logger'
-import useAccount, { AccountStatus } from '@utils/useAccount'
-import { taxStatusHelper } from '@utils/utils'
+// import { TaxApiError } from '@utils/api'
 import AccountSectionHeader from 'components/forms/segments/AccountSectionHeader/AccountSectionHeader'
 import TaxesFeesCard from 'components/forms/segments/AccountSections/TaxesFeesSection/TaxesFeesCard'
 import TaxesFeesErrorCard from 'components/forms/segments/AccountSections/TaxesFeesSection/TaxesFeesErrorCard'
-import TaxesFeesWaitingCard from 'components/forms/segments/AccountSections/TaxesFeesSection/TaxesFeesWaitingCard'
+// import TaxesFeesWaitingCard from 'components/forms/segments/AccountSections/TaxesFeesSection/TaxesFeesWaitingCard'
 import Spinner from 'components/forms/simple-components/Spinner'
 import { useTranslation } from 'next-i18next'
+
+import { ROUTES } from '../../../../../frontend/api/constants'
+import { useTaxes } from '../../../../../frontend/hooks/apiHooks'
+import useAccount, { AccountStatus } from '../../../../../frontend/hooks/useAccount'
+import { taxStatusHelper } from '../../../../../frontend/utils/general'
+import logger from '../../../../../frontend/utils/logger'
 
 export type TaxesCardBase = {
   title: string
@@ -29,12 +30,12 @@ const TaxesFeesSection: React.FC<TaxesFeesSectionProps> = () => {
   const { t } = useTranslation('account')
   const { status } = useAccount()
 
-  const { data, error, isLoading } = useTaxes()
+  const { data, isLoading } = useTaxes()
 
-  const taxesFeesWaitingCardContent = `
-<h4>${t('account_section_payment.waiting_card_title')}</h4>
-<p>${t('account_section_payment.waiting_card_text')}</p>
-`
+  //   const taxesFeesWaitingCardContent = `
+  // <h4>${t('account_section_payment.waiting_card_title')}</h4>
+  // <p>${t('account_section_payment.waiting_card_text')}</p>
+  // `
   const taxesFeesErrorCardContent = `
 <h4>${t('account_section_payment.error_card_title')}</h4>
 <div>${t('account_section_payment.error_card_content.title')}
@@ -46,23 +47,23 @@ const TaxesFeesSection: React.FC<TaxesFeesSectionProps> = () => {
       : ''
   }${t('account_section_payment.error_card_content.list.other')}</ul><br />${t(
     'account_section_payment.error_card_content.help_text',
-    { url: ROUTES.I_HAVE_A_PROBLEM },
+    { url: ROUTES.HELP },
   )}</div>
 `
 
-  let content = null
+  let content: JSX.Element|null = null
 
   if (isLoading) {
     content = <Spinner className="mt-10 m-auto" />
   } else if (status !== AccountStatus.IdentityVerificationSuccess) {
     content = <TaxesFeesErrorCard content={taxesFeesErrorCardContent} />
   } else if (!isLoading && !data) {
-    content =
-      error instanceof TaxApiError && error.status === 422 ? (
-        <TaxesFeesWaitingCard content={taxesFeesWaitingCardContent} />
-      ) : (
-        <TaxesFeesErrorCard content={taxesFeesErrorCardContent} />
-      )
+    content = (
+      // error instanceof TaxApiError && error.status === 422 ? (
+      //   <TaxesFeesWaitingCard content={taxesFeesWaitingCardContent} />
+      // ) : (
+      <TaxesFeesErrorCard content={taxesFeesErrorCardContent} />
+    )
   } else if (data) {
     content = (
       <ul className="lg:px-0 my-2 lg:my-8 px-4 sm:px-6">

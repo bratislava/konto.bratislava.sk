@@ -1,10 +1,9 @@
 import LockIcon from '@assets/images/new-icons/ui/lock.svg'
-import { ROUTES } from '@utils/constants'
-import cx from 'classnames'
 import Button from 'components/forms/simple-components/Button'
 import { useRouter } from 'next/router'
 import { useTranslation } from 'next-i18next'
 
+import { ROUTES } from '../../../../frontend/api/constants'
 import UserProfileSection from './UserProfileSection'
 import UserProfileSectionHeader from './UserProfileSectionHeader'
 
@@ -17,6 +16,7 @@ const UserProfilePassword = () => {
         title={t('password_change.title')}
         text={t('password_change.text')}
         isMobileColumn
+        childrenToColumn
       >
         <Button
           variant="black"
@@ -24,7 +24,7 @@ const UserProfilePassword = () => {
           size="sm"
           text={t('password_change.button')}
           onPress={() => push(ROUTES.PASSWORD_CHANGE)}
-          className={cx('w-full', 'md:w-fit')}
+          className="w-full md:w-fit"
         />
       </UserProfileSectionHeader>
     </UserProfileSection>

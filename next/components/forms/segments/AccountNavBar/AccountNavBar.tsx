@@ -3,11 +3,6 @@ import Hamburger from '@assets/images/new-icons/ui/hamburger.svg'
 import ProfileOutlinedIcon from '@assets/images/new-icons/ui/profile.svg'
 import SearchIcon from '@assets/images/new-icons/ui/search.svg'
 import VolumeIcon from '@assets/images/new-icons/ui/speaker.svg'
-import { ROUTES } from '@utils/constants'
-import logger from '@utils/logger'
-import useAccount, { UserData } from '@utils/useAccount'
-import useElementSize from '@utils/useElementSize'
-import { getLanguageKey } from '@utils/utils'
 import cx from 'classnames'
 import { StatusBar, useStatusBarContext } from 'components/forms/info-components/StatusBar'
 import HamburgerMenu from 'components/forms/segments/HambergerMenu/HamburgerMenu'
@@ -21,6 +16,11 @@ import { ReactNode, useState } from 'react'
 import { RemoveScroll } from 'react-remove-scroll'
 import { Item } from 'react-stately'
 
+import { ROUTES } from '../../../../frontend/api/constants'
+import useAccount, { UserData } from '../../../../frontend/hooks/useAccount'
+import useElementSize from '../../../../frontend/hooks/useElementSize'
+import { getLanguageKey } from '../../../../frontend/utils/general'
+import logger from '../../../../frontend/utils/logger'
 import Brand from '../../simple-components/Brand'
 import Link from './NavBarLink'
 
@@ -45,7 +45,7 @@ interface LanguageOption {
 }
 
 const Divider = ({ className }: { className?: string }) => {
-  return <div className={`border-b-solid border-r-2 h-6 ${className}`} />
+  return <div className={`border-b-solid border-r-2 h-6 ${className || ''}`} />
 }
 
 export interface MenuItem {

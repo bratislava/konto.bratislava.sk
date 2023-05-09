@@ -1,8 +1,5 @@
 import { EFormValue } from '@backend/forms'
 import { getEform } from '@backend/utils/forms'
-import logger from '@utils/logger'
-import { AsyncServerProps } from '@utils/types'
-import { forceString, isProductionDeployment } from '@utils/utils'
 import GeneratedFormRJSF from 'components/forms/GeneratedFormRJSF'
 import FormHeader from 'components/forms/simple-components/FormHeader'
 import AccountPageLayout from 'components/layouts/AccountPageLayout'
@@ -10,6 +7,10 @@ import PageWrapper from 'components/layouts/PageWrapper'
 import { GetServerSidePropsContext } from 'next'
 import { useRouter } from 'next/router'
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
+
+import { forceString, isProductionDeployment } from '../../frontend/utils/general'
+import logger from '../../frontend/utils/logger'
+import { AsyncServerProps } from '../../frontend/utils/types'
 
 export const getServerSideProps = async (ctx: GetServerSidePropsContext) => {
   if (isProductionDeployment()) return { notFound: true }
@@ -79,7 +80,7 @@ const FormTestPage = ({
         { locale: 'en', slug: pageSlug },
       ]}
     >
-      <AccountPageLayout hiddenHeaderNav isProductionDeploy={isProductionDeploy}>
+      <AccountPageLayout isPublicPage hiddenHeaderNav isProductionDeploy={isProductionDeploy}>
         <FormHeader />
         <GeneratedFormRJSF eform={eform} escapedSlug={escapedSlug} formSlug={formSlug} />
       </AccountPageLayout>

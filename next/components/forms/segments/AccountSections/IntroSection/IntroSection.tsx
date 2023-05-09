@@ -4,9 +4,6 @@ import LibraryIcon from '@assets/images/new-icons/other/culture-communities/libr
 import TreeIcon from '@assets/images/new-icons/other/environment-construction/greenery.svg'
 import ParkingIcon from '@assets/images/new-icons/other/transport-and-maps/parking.svg'
 import PlatbaDaneImg from '@assets/images/platba-dane2.png'
-import { useTaxes } from '@utils/apiHooks'
-import { ROUTES } from '@utils/constants'
-import useAccount from '@utils/useAccount'
 import AccountSectionHeader from 'components/forms/segments/AccountSectionHeader/AccountSectionHeader'
 import AnnouncementBlock from 'components/forms/segments/AccountSections/IntroSection/AnnouncementBlock'
 import Banner from 'components/forms/simple-components/Banner'
@@ -17,6 +14,9 @@ import { useRouter } from 'next/router'
 import { useTranslation } from 'next-i18next'
 import { useEffect, useState } from 'react'
 
+import { ROUTES } from '../../../../../frontend/api/constants'
+import { useTaxes } from '../../../../../frontend/hooks/apiHooks'
+import useAccount from '../../../../../frontend/hooks/useAccount'
 import { PhoneNumberData } from '../../PhoneNumberForm/PhoneNumberForm'
 import PhoneNumberModal from '../../PhoneNumberModal/PhoneNumberModal'
 
@@ -25,8 +25,9 @@ const IntroSection = () => {
   const { userData, updateUserData, error, resetError } = useAccount()
   const { data, isLoading } = useTaxes()
   const router = useRouter()
-  const [phoneNumberModal, setPhoneNumberModal] =
-    useState<'hidden' | 'displayed' | 'dismissed'>('hidden')
+  const [phoneNumberModal, setPhoneNumberModal] = useState<'hidden' | 'displayed' | 'dismissed'>(
+    'hidden',
+  )
 
   // because the effect depends on userData, which may get refreshed every few seconds
   // we need to track if the modal was dismissed and stop showing it afterwards if that's the case
@@ -81,7 +82,7 @@ const IntroSection = () => {
           ) : (
             <AnnouncementBlock
               announcementContent={announcementContent}
-              buttonTitle={data ? t('account_section_intro.announcement_card_action') : null}
+              buttonTitle={data ? t('account_section_intro.announcement_card_action') : undefined}
               imagePath={PlatbaDaneImg}
               onPress={() => router.push(ROUTES.TAXES_AND_FEES)}
             />
@@ -140,7 +141,7 @@ const IntroSection = () => {
             title={t('account_section_intro.banner_title')}
             content={bannerContent}
             buttonText={t('account_section_intro.banner_button_text')}
-            href={ROUTES.I_HAVE_A_PROBLEM}
+            href={ROUTES.HELP}
             image={BannerImage}
           />
         </div>

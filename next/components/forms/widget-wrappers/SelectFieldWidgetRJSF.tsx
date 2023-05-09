@@ -1,8 +1,8 @@
 import { EnumOptionsType, RJSFSchema, WidgetProps } from '@rjsf/utils'
-import useEnum from '@utils/useEnum'
 import { WidgetOptions } from 'components/forms/types/WidgetOptions'
 import WidgetWrapper from 'components/forms/widget-wrappers/WidgetWrapper'
 
+import useEnum from '../../../frontend/hooks/useEnum'
 import { ExplicitOptionalType } from '../types/ExplicitOptional'
 import SelectField from '../widget-components/SelectField/SelectField'
 import { SelectOption } from '../widget-components/SelectField/SelectOption.interface'
@@ -18,6 +18,12 @@ type SelectRJSFOptions = {
   // selectType?: 'one' | 'multiple' | 'arrow' | 'radio'
 } & WidgetOptions
 
+interface RJSFSelectSchema extends RJSFSchema{
+  ciselnik?: {
+    id: string
+  }
+}
+
 interface SelectFieldWidgetRJSFProps extends WidgetProps {
   label: string
   options: SelectRJSFOptions
@@ -25,7 +31,7 @@ interface SelectFieldWidgetRJSFProps extends WidgetProps {
   required?: boolean
   disabled?: boolean
   placeholder?: string
-  schema: RJSFSchema
+  schema: RJSFSelectSchema
   onChange: (value?: any | any[]) => void
   rawErrors?: string[]
 }
@@ -69,7 +75,7 @@ const SelectFieldWidgetRJSF = (props: SelectFieldWidgetRJSFProps) => {
     }
   }
 
-  const { data } = useEnum(schema.ciselnik?.id as string)
+  const { data } = useEnum(schema.ciselnik?.id)
   const transformedEnumOptions = enumOptions
     ? enumOptions.map((option) => option.schema as SelectOption)
     : data
@@ -96,7 +102,7 @@ const SelectFieldWidgetRJSF = (props: SelectFieldWidgetRJSFProps) => {
     const transformedValue: SelectOption[] = []
     if (!value || Array.isArray(value)) return transformedValue
 
-    const chosenOption = transformedEnumOptions.find((option) => value === option.const)
+    const chosenOption = transformedEnumOptions?.find((option) => value === option.const)
     return chosenOption ? [chosenOption] : []
   }
 
@@ -105,7 +111,7 @@ const SelectFieldWidgetRJSF = (props: SelectFieldWidgetRJSFProps) => {
     if (!value || !Array.isArray(value)) return transformedValue
 
     value.forEach((optionValue) => {
-      transformedEnumOptions.forEach((option) => {
+      transformedEnumOptions?.forEach((option) => {
         if (option.const === optionValue) {
           transformedValue.push(option)
         }

@@ -1,7 +1,7 @@
-import logger from '@utils/logger'
 import { NextApiRequest, NextApiResponse } from 'next'
 
 import minioClient, { bucketName } from '../../../backend/utils/minio-client'
+import logger from '../../../frontend/utils/logger'
 
 const handleDeleteRequest = async (req: NextApiRequest) => {
   const {
@@ -23,7 +23,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
       })
     return res
   }
-  return res.status(405).json({ error: `Method '${req.method}' Not Allowed` })
+  return res.status(405).json({ error: `Method '${String(req.method)}' Not Allowed` })
 }
 
 export default handler

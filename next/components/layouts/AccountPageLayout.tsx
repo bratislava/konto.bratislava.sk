@@ -5,9 +5,6 @@ import LogoutIcon from '@assets/images/new-icons/ui/logout.svg'
 import MySubmissionIcon from '@assets/images/new-icons/ui/my-submission.svg'
 import PaymentIcon from '@assets/images/new-icons/ui/payment.svg'
 import ProfileIcon from '@assets/images/new-icons/ui/profile.svg'
-import { ROUTES } from '@utils/constants'
-import logger from '@utils/logger'
-import useAccount from '@utils/useAccount'
 import cx from 'classnames'
 import AccountNavBar from 'components/forms/segments/AccountNavBar/AccountNavBar'
 import { usePageWrapperContext } from 'components/layouts/PageWrapper'
@@ -15,11 +12,16 @@ import { useRouter } from 'next/router'
 import { useTranslation } from 'next-i18next'
 import { ReactNode, useEffect } from 'react'
 
+import { ROUTES } from '../../frontend/api/constants'
+import useAccount from '../../frontend/hooks/useAccount'
+import logger from '../../frontend/utils/logger'
+
 type AccountPageLayoutBase = {
   className?: string
   children: ReactNode
   hiddenHeaderNav?: boolean
   isProductionDeploy?: boolean
+  isPublicPage?: boolean
 }
 
 const sectionsList = [
@@ -51,7 +53,7 @@ const sectionsList = [
     id: 4,
     title: 'account:account_section_help.navigation',
     icon: <HelpIcon className="w-6 h-6" />,
-    link: ROUTES.I_HAVE_A_PROBLEM,
+    link: ROUTES.HELP,
   },
 ]
 
@@ -66,7 +68,7 @@ const menuItems = [
     id: 2,
     title: 'account:menu_help_link',
     icon: <HelpIcon className="w-5 h-5" />,
-    link: ROUTES.I_HAVE_A_PROBLEM,
+    link: ROUTES.HELP,
   },
   {
     id: 3,
@@ -82,6 +84,7 @@ const AccountPageLayout = ({
   children,
   hiddenHeaderNav,
   isProductionDeploy,
+  isPublicPage,
 }: AccountPageLayoutBase) => {
   const { locale, localizations = [] } = usePageWrapperContext()
   const router = useRouter()
@@ -90,12 +93,12 @@ const AccountPageLayout = ({
   const prodHideSectionsListIds: Set<number> = isProductionDeploy ? new Set([2]) : new Set([])
 
   useEffect(() => {
-    if (!isAuth && router.route !== ROUTES.PAYMENT_RESULT) {
+    if (!isPublicPage && !isAuth && router.route !== ROUTES.PAYMENT_RESULT) {
       router
         .push({ pathname: ROUTES.LOGIN, query: { from: router.route } })
         .catch((error_) => logger.error('Redirect failed', error_))
     }
-  }, [isAuth, router])
+  }, [isAuth, isPublicPage, router])
 
   const [t] = useTranslation('common')
 

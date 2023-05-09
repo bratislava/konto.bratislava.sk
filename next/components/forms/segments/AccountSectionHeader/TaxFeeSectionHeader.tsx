@@ -4,17 +4,17 @@ import SuccessIcon from '@assets/images/new-icons/ui/done.svg'
 import FileDownload from '@assets/images/new-icons/ui/download.svg'
 import ExclamationIcon from '@assets/images/new-icons/ui/exclamation-mark.svg'
 import PaymentIcon from '@assets/images/new-icons/ui/payment.svg'
-import { getPaymentGatewayUrlApi } from '@utils/api'
-import { ROUTES } from '@utils/constants'
-import logger from '@utils/logger'
-import { Tax } from '@utils/taxDto'
-import useAccount from '@utils/useAccount'
-import { formatCurrency, formatDate, taxStatusHelper } from '@utils/utils'
 import cx from 'classnames'
 import { useRouter } from 'next/router'
 import { useTranslation } from 'next-i18next'
 import { ReactNode } from 'react'
 
+import { getPaymentGatewayUrlApi } from '../../../../frontend/api/api'
+import { ROUTES } from '../../../../frontend/api/constants'
+import { Tax } from '../../../../frontend/dtos/taxDto'
+import useAccount from '../../../../frontend/hooks/useAccount'
+import { formatCurrency, formatDate, taxStatusHelper } from '../../../../frontend/utils/general'
+import logger from '../../../../frontend/utils/logger'
 import Button from '../../simple-components/Button'
 
 interface AccountSectionHeaderBase {
@@ -59,7 +59,7 @@ const TaxFeeSectionHeader = ({ tax }: AccountSectionHeaderBase) => {
   const redirectToPaymentGateway = async () => {
     try {
       const result = await getPaymentGatewayUrlApi(lastAccessToken)
-      const resultUrl = result?.url
+      const resultUrl = result.url
       if (typeof resultUrl === 'string') {
         await router.push(resultUrl)
       } else {
@@ -73,7 +73,7 @@ const TaxFeeSectionHeader = ({ tax }: AccountSectionHeaderBase) => {
 
   // https://stackoverflow.com/questions/32545632/how-can-i-download-a-file-using-window-fetch
   const downloadPdf = () =>
-    fetch(`${process.env.NEXT_PUBLIC_TAXES_URL}/tax/get-tax-pdf-by-year?year=2023`, {
+    fetch(`${String(process.env.NEXT_PUBLIC_TAXES_URL)}/tax/get-tax-pdf-by-year?year=2023`, {
       headers: {
         Authorization: `Bearer ${lastAccessToken}`,
       },

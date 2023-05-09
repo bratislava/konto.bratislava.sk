@@ -14,6 +14,10 @@
     @apply text-h-lg lg:text-h-2xl font-semibold;
   }
 
+  .text-h1-form {
+    @apply text-h-md lg:text-h-2xl font-semibold;
+  }
+
   .text-h2 {
     @apply text-h-md lg:text-h-xl font-semibold;
   }
@@ -98,6 +102,19 @@
   }
   .text-h1-lg-bold {
     @apply text-h-xl lg:text-h-3xl font-bold;
+  }
+
+  .text-h1-form-light {
+    @apply text-h-md lg:text-h-2xl font-light;
+  }
+  .text-h1-form-normal {
+    @apply text-h-md lg:text-h-2xl font-normal;
+  }
+  .text-h1-form-medium {
+    @apply text-h-md lg:text-h-2xl font-medium;
+  }
+  .text-h1-form-bold {
+    @apply text-h-md lg:text-h-2xl font-bold;
   }
 
   .text-h1-light {

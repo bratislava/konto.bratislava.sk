@@ -1,12 +1,12 @@
 /* eslint-disable @next/next/inline-script-id */
 import './index.css'
 // initialize faro - TODO might need to ensure faro is initialized by providing it through react context and hook
-import '@utils/logger'
+import '../frontend/utils/logger'
 
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
-import { AccountProvider } from '@utils/useAccount'
 import { StatusBarProvider } from 'components/forms/info-components/StatusBar'
 import CookieConsent from 'components/forms/segments/CookieConsent/CookieConsent'
+import { GlobalStateProvider } from 'components/forms/states/GlobalState'
 import { AppProps } from 'next/app'
 import { Inter } from 'next/font/google'
 import Head from 'next/head'
@@ -15,6 +15,8 @@ import { NextAdapter } from 'next-query-params'
 import { SSRProvider } from 'react-aria'
 import SnackbarProvider from 'react-simple-snackbar'
 import { QueryParamProvider } from 'use-query-params'
+
+import { AccountProvider } from '../frontend/hooks/useAccount'
 
 const queryClient = new QueryClient()
 
@@ -43,8 +45,10 @@ const MyApp = ({ Component, pageProps }: AppProps) => {
               <QueryClientProvider client={queryClient}>
                 <SnackbarProvider>
                   <AccountProvider>
-                    <Component {...pageProps} />
-                    <CookieConsent />
+                    <GlobalStateProvider>
+                      <Component {...pageProps} />
+                      <CookieConsent />
+                    </GlobalStateProvider>
                   </AccountProvider>
                 </SnackbarProvider>
               </QueryClientProvider>

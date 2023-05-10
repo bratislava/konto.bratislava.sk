@@ -1,5 +1,5 @@
 export default `<?xml version="1.0" encoding="utf-8"?>
-<xs:schema elementFormDefault="qualified" xmlns="http://schemas.gov.sk/doc/eform/form/0.1" xmlns:xs="http://www.w3.org/2001/XMLSchema" targetNamespace="http://schemas.gov.sk/doc/eform/form/0.1">
+<xs:schema elementFormDefault="qualified" xmlns="http://schemas.gov.sk/doc/eform/00603481.zavazneStanoviskoKInvesticnejCinnosti.sk/0.1" xmlns:xs="http://www.w3.org/2001/XMLSchema" targetNamespace="http://schemas.gov.sk/doc/eform/00603481.zavazneStanoviskoKInvesticnejCinnosti.sk/0.1">
   <xs:element name="E-form">
     <xs:complexType>
       <xs:sequence>

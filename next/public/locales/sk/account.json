@@ -52,7 +52,7 @@
   "register_link": "Registrovať sa",
   "register_modal": {
     "header_title": "Žiadosť je možné odoslať až po prihlásení",
-    "header_subtitle": "Na to, aby ste žiadosť odoslali elektronicky, je potrebné vyplniť osobné údaje. Urobiť tak môžete cez Bratislavské konto alebo použitím eID.",
+    "header_subtitle": "Na to, aby ste žiadosť odoslali elektronicky, je potrebné overiť vašu identitu voči štátnym registrom. Urobiť tak môžete cez Bratislavské konto alebo použitím eID.",
     "body_title": "Vytvorte si Bratislavské konto",
     "body_list": {
       "1": "Nájdite všetky služby mesta na jednom mieste",
@@ -65,7 +65,7 @@
     "body_login_link": "Prihlásiť sa",
     "body_login_description": "Máte už konto?",
     "footer_choice": "alebo",
-    "footer_desktop_button_eID_text": "Vyplniť osobné údaje cez eID",
+    "footer_desktop_button_eID_text": "Pokračovať s eID",
     "footer_desktop_button_app_text": "Preskočiť na žiadosť",
     "footer_mobile_button_eID_text": "Použiť eID",
     "footer_mobile_button_app_text": "Preskočiť na žiadosť",
@@ -92,6 +92,12 @@
   "verification_status_success": "Overený profil",
   "verification_status_required": "Neoverený profil",
   "verification_status_required_alert": "Vaša identita zatiaľ nebola overená voči štátnym registrom. Bratislavské konto môžete preto používať len v obmedzenom režime, bez možnosti odoslať elektronicky všetky žiadosti či využiť službu online platby dane z nehnuteľností.",
+  "verification_modal": {
+    "title": "Overenie identity",
+    "subtitle_individual_person": "Na to, aby ste mohli plne využívať služby Bratislavského konta, potrebujeme poznať vaše <strong>rodné číslo</strong> a <strong>číslo občianskeho preukazu/dokladu o prechodnom pobyte</strong>.",
+    "subtitle_juridical_person": "Na to, aby ste mohli plne využívať služby Bratislavského konta potrebujeme poznať firemné <strong>IČO</strong> a <strong>číslo občianskeho preukazu konateľa/konateľky</strong>.",
+    "info": "Bez týchto údajov môžete žiadosť vyplniť, uložiť si ju do konceptov, ale nemôžete ju odoslať elektronicky. Odoslanie bude možné až po overení."
+  },
   "account_continue_link": "Pokračovať do konta",
   "register_title": "Vytvorte si Bratislavské konto",
   "gdpr_confirmation_label": "Súhlas so spracovaním osobných údajov",
@@ -152,7 +158,7 @@
     "all_services": "Všetky služby",
     "announcement_title": "Aktuálne",
     "announcement_card_title": "Digitálna platba dane z nehnuteľností",
-    "announcement_card_text": "V prípade, že že sa vás týka platba dane z nehnuteľností pre rok 2023, vašu daň ešte spracovávame a v konte pribudne najskôr <strong>28. apríla.</strong> Keď sa tak udeje, pošleme vám informačný e-mail a nájdete ju v časti Dane a poplatky.",
+    "announcement_card_text": "V prípade, že že sa vás týka platba dane z nehnuteľností pre rok 2023, vašu daň ešte spracovávame a v konte pribudne v termíne <strong>od 28. apríla do 20. mája</strong> Keď sa tak udeje, pošleme vám informačný e-mail a nájdete ju v časti Dane a poplatky.",
     "announcement_card_text_tax_ready": "Vygenerovali sme vašu daň z nehnuteľností za rok 2023. Zaplaťte ju jednoducho, digitálne, priamo v konte.",
     "announcement_card_action": "Zaplatiť daň z nehnuteľností",
     "banner_title": "Potrebujete pomôcť?",
@@ -366,13 +372,13 @@
   "account_section_payment": {
     "title": "Dane a poplatky",
     "waiting_card_title": "Vašu daň z nehnuteľností pripravujeme.",
-    "waiting_card_text": "Aj v tomto momente pracujeme na výpočte dane z nehnuteľností až pre 210 000 daňovníkov a daňovníčok. Pripravené rozhodnutia budú v kontách pribúdať od <strong>28. apríla.</strong> Keď bude vaša daň z nehnuteľností pripravená, pošleme vám notifikačný e-mail.",
+    "waiting_card_text": "Aj v tomto momente pracujeme na výpočte dane z nehnuteľností až pre 210 000 daňovníkov a daňovníčok. Pripravené rozhodnutia budú postupne v kontách pribúdať od <strong>28. apríla. do 20. mája</strong> Keď bude vaša daň z nehnuteľností pripravená, pošleme vám notifikačný e-mail.",
     "error_card_title": "Vaša daň z nehnuteľnosti nie je k dispozícii",
     "error_card_content": {
       "title": "<p>Môže to tak byť, lebo:</p>",
       "list": {
         "verification": "<li>ste neoverili svoju identitu cez rodné číslo a číslo občianskeho preukazu (<a href={{url}}>Overiť identitu</a>),</li>",
-        "other": "<li>vašu daň ešte pripravujeme (v tom prípade bude k dispozícii najskôr <strong>28. apríla</strong>)</li><li>za platbu dane je zodovedný/á spoluvlastník/čka nehnuteľnosti,</li><li>nie ste vlastníkom či vlastníčkou nehnuteľnosti,</li><li>ste nepodali priznanie k dani z nehnuteľností.</li>"
+        "other": "<li>vašu daň ešte pripravujeme (v tom prípade bude k dispozícii v termíne <strong>od 28. apríla do 20. mája</strong>)</li><li>za platbu dane je zodovedný/á spoluvlastník/čka nehnuteľnosti,</li><li>nie ste vlastníkom či vlastníčkou nehnuteľnosti,</li><li>ste nepodali priznanie k dani z nehnuteľností.</li>"
       },
       "help_text": "<p>Viac informácií môžete nájsť v <a href={{url}}>často kladených otázkach</a>.</p>"
     },

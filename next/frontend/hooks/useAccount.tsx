@@ -169,7 +169,7 @@ export const AccountProvider = ({ children }: { children: ReactNode }) => {
   const { t } = useTranslation()
 
   // TODO - could be better, currently used only after login, AccountStatus should be replaced or rewritten
-  const mapTierToStatus = (tier: Tier): AccountStatus => {
+  const mapTierToStatus = (tier?: Tier): AccountStatus => {
     switch (tier) {
       case Tier.QUEUE_IDENTITY_CARD:
         return AccountStatus.IdentityVerificationPending
@@ -703,7 +703,7 @@ export const AccountProvider = ({ children }: { children: ReactNode }) => {
       return
     }
 
-    const newStatus = userData?.tier ? mapTierToStatus(userData.tier) : AccountStatus.Idle
+    const newStatus = userData ? mapTierToStatus(userData.tier) : AccountStatus.Idle
     if (
       status === AccountStatus.IdentityVerificationPending &&
       newStatus === AccountStatus.IdentityVerificationSuccess

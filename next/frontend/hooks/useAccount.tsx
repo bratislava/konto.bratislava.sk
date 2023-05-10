@@ -703,7 +703,7 @@ export const AccountProvider = ({ children }: { children: ReactNode }) => {
       return
     }
 
-    const newStatus = mapTierToStatus(userData?.tier)
+    const newStatus = userData ? mapTierToStatus(userData.tier) : AccountStatus.Idle
     if (
       status === AccountStatus.IdentityVerificationPending &&
       newStatus === AccountStatus.IdentityVerificationSuccess

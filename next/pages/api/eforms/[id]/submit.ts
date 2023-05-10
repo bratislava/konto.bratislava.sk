@@ -1,11 +1,12 @@
 import { EFormValue } from '@backend/forms'
 import {
+  buildXmlRecursive,
   getEform,
-  loadAndBuildXml,
   validateDataWithJsonSchema,
   validateDataWithXsd,
 } from '@backend/utils/forms'
 import { ErrorObject } from 'ajv'
+import * as cheerio from 'cheerio'
 import { sendForm } from 'frontend/api/api'
 import type { NextApiRequest, NextApiResponse } from 'next'
 
@@ -37,14 +38,15 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
   if (errors.length > 0)
     return res.status(400).json({ message: `Data did not pass JSON validation`, errors })
 
-  const xml = loadAndBuildXml(eform.xmlTemplate, data, eform.schema)
-  errors = validateDataWithXsd(xml, eform.xsd)
+  const $ = cheerio.load(eform.xmlTemplate, { xmlMode: true, decodeEntities: false })
+  buildXmlRecursive(['E-form', 'Body'], $, data, eform.schema)
+  errors = validateDataWithXsd($.html(), eform.xsd)
   if (errors.length > 0)
     return res.status(400).json({ message: `Data did not pass XSD validation`, errors })
 
   // TODO when no errors, send the xml to slovensko.sk BE
   try {
-    await sendForm(token, id, xml)
+    await sendForm(id, $('E-form Body').html(), req.headers.authorization)
     return res.status(200).json({ message: 'OK' })
   } catch (error) {
     return res.status(500).json({ message: 'Send form failed' })

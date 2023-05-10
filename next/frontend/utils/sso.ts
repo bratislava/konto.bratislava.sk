@@ -19,8 +19,7 @@ export const getValidRedirectFromQuery = (path: unknown) => {
   if (path && typeof path === 'string') {
     // check if it's a local route
     if (path.startsWith('/')) {
-      // TODO decodeURIComponent used originally, check if it's needed for some edge-case
-      return decodeURIComponent(path)
+      return path
     }
     // check if it's an approved SSO domain
     try {

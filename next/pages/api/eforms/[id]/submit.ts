@@ -24,7 +24,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
   if (req.method !== 'POST')
     return res.status(400).json({ message: 'Invalid method or missing "data" field on body' })
 
-  const { data, id, token }: Form = req.body
+  const { data, id }: Form = req.body
   let eform: EFormValue
   try {
     eform = getEform(req.query.id)
@@ -44,9 +44,17 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
   if (errors.length > 0)
     return res.status(400).json({ message: `Data did not pass XSD validation`, errors })
 
-  // TODO when no errors, send the xml to slovensko.sk BE
+  const xmlBody = $('E-form Body').html()
+  if (!xmlBody) {
+    return res.status(500).json({ message: `Empty body` })
+  }
+
+  if (!req.headers.authorization) {
+    return res.status(401).json({ message: 'Missing authorization header' })
+  }
+
   try {
-    await sendForm(id, $('E-form Body').html(), req.headers.authorization)
+    await sendForm(id, xmlBody, req.headers.authorization)
     return res.status(200).json({ message: 'OK' })
   } catch (error) {
     return res.status(500).json({ message: 'Send form failed' })

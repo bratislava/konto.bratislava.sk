@@ -71,7 +71,7 @@ export const submitEform = async (
   eformKey: string,
   formId: string,
   data: Record<string, any>,
-  token: string,
+  token: string | null,
 ) => {
   return fetchJsonApi(`/api/eforms/${eformKey}/submit`, {
     method: 'POST',

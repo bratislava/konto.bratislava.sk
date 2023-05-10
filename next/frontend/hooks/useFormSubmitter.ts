@@ -1,9 +1,9 @@
 import { RJSFSchema } from '@rjsf/utils'
 import { ErrorObject } from 'ajv'
+import useAccount from 'frontend/hooks/useAccount'
 import { useTranslation } from 'next-i18next'
 import { useState } from 'react'
 
-import useAccount from 'frontend/hooks/useAccount'
 import { submitEform } from '../api/api'
 import { ApiError } from '../dtos/generalApiDto'
 import logger from '../utils/logger'

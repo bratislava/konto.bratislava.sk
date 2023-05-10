@@ -52,7 +52,7 @@
   "register_link": "Registrovať sa",
   "register_modal": {
     "header_title": "Žiadosť je možné odoslať až po prihlásení",
-    "header_subtitle": "Na to, aby ste žiadosť odoslali elektronicky, je potrebné vyplniť osobné údaje. Urobiť tak môžete cez Bratislavské konto alebo použitím eID.",
+    "header_subtitle": "Na to, aby ste žiadosť odoslali elektronicky, je potrebné overiť vašu identitu voči štátnym registrom. Urobiť tak môžete cez Bratislavské konto alebo použitím eID.",
     "body_title": "Vytvorte si Bratislavské konto",
     "body_list": {
       "1": "Nájdite všetky služby mesta na jednom mieste",
@@ -65,7 +65,7 @@
     "body_login_link": "Prihlásiť sa",
     "body_login_description": "Máte už konto?",
     "footer_choice": "alebo",
-    "footer_desktop_button_eID_text": "Vyplniť osobné údaje cez eID",
+    "footer_desktop_button_eID_text": "Pokračovať s eID",
     "footer_desktop_button_app_text": "Preskočiť na žiadosť",
     "footer_mobile_button_eID_text": "Použiť eID",
     "footer_mobile_button_app_text": "Preskočiť na žiadosť",

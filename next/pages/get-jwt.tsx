@@ -60,7 +60,6 @@ const GetJwt = ({ page }: AsyncServerProps<typeof getServerSideProps>) => {
             {isAuth ? (
               <div className="flex flex-col">
                 <div>{accessToken}</div>
-                <Button onPress={resetRc} text="Reset RC" />
                 <Button onPress={logout} text="Logout" />
               </div>
             ) : (

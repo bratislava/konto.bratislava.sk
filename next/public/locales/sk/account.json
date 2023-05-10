@@ -669,6 +669,10 @@
       "warning": "Čiastočne uhradená",
       "success": "Uhradená"
     },
+    "tax_remainder_text": "(zostáva uhradiť {{amount}})",
+    "tax_total": "Daň z nehnuteľností celkom",
+    "tax_already_paid": "Uhradené / Preplatok z minulého roka",
+    "tax_to_pay": "Zostáva uhradiť",
     "tax_type": {
       "GROUND": {
         "title": "Daň z pozemkov",

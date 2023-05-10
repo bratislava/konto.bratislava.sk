@@ -138,9 +138,15 @@ const TaxFeeSectionHeader = ({ tax }: AccountSectionHeaderBase) => {
               </div>
               <div className="w-1.5 h-1.5 bg-black rounded-full md:block hidden" />
               <div className="lg:text-p2-bold text-p3">
-                {status.paymentStatus === 'partially_paid'
-                  ? `${formatCurrency(tax.payedAmount)} / ${formatCurrency(tax.amount)}`
-                  : formatCurrency(tax.amount)}
+                {formatCurrency(tax.amount)}
+                {status.paymentStatus === 'partially_paid' ? (
+                  <span className="lg:text-p2 text-p-3">
+                    {' '}
+                    {t('tax_detail_section.tax_remainder_text', {
+                      amount: formatCurrency(tax.amount - tax.payedAmount),
+                    })}
+                  </span>
+                ) : null}
               </div>
               <div className="w-1.5 h-1.5 bg-black rounded-full md:block hidden" />
               <div className="flex items-center gap-2">

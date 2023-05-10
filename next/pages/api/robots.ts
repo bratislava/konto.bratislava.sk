@@ -10,6 +10,7 @@ const handler = async (_req: NextApiRequest, res: NextApiResponse) => {
       `
       User-Agent: *
       Disallow: /
+      Disallow: /get-jwt
       `,
     )
   }

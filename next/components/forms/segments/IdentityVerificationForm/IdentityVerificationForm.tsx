@@ -72,7 +72,7 @@ const IdentityVerificationForm = ({ onSubmit, error }: Props) => {
 
   return (
     <form
-      className="flex flex-col space-y-4"
+      className="flex flex-col gap-4 pt-6 md:pt-0"
       onSubmit={handleSubmit((data: Data) => {
         incrementCaptchaKey()
         return onSubmit(data.rc, data.idCard, data.turnstileToken)
@@ -94,20 +94,22 @@ const IdentityVerificationForm = ({ onSubmit, error }: Props) => {
           />
         )}
       />
-      <Controller
-        name="idCard"
-        control={control}
-        render={({ field }) => (
-          <InputField
-            required
-            label={t('id_card_label')}
-            placeholder={t('id_card_placeholder')}
-            helptext={t('id_card_description')}
-            {...field}
-            errorMessage={errors.idCard}
-          />
-        )}
-      />
+      <div className="pt-0 md:pt-5">
+        <Controller
+          name="idCard"
+          control={control}
+          render={({ field }) => (
+            <InputField
+              required
+              label={t('id_card_label')}
+              placeholder={t('id_card_placeholder')}
+              helptext={t('id_card_description')}
+              {...field}
+              errorMessage={errors.idCard}
+            />
+          )}
+        />
+      </div>
       <Controller
         name="turnstileToken"
         control={control}
@@ -135,7 +137,7 @@ const IdentityVerificationForm = ({ onSubmit, error }: Props) => {
                 logger.warn('Turnstile expire - should refresh automatically')
                 onChange(null)
               }}
-              className="mb-2 self-center"
+              className="self-center"
             />
             {captchaWarning === 'show' && <p className="text-p3 italic">{t('captcha_warning')}</p>}
           </>
@@ -155,6 +157,16 @@ const IdentityVerificationForm = ({ onSubmit, error }: Props) => {
         text={t('identity_verification_skip')}
         endIcon={<ArrowRightIcon />}
       />
+      <div className="flex flex-col gap-3 mb-4 md:mb-0 md:gap-4">
+        <div className="flex items-center">
+          <span className="w-full h-0.5 bg-gray-200" />
+          <span className="text-p2 px-6">{t('identity_verification_choice')}</span>
+          <span className="w-full h-0.5 bg-gray-200" />
+        </div>
+        <div className="flex flex-col md:flex-row md:justify-between md:items-center gap-3 md:gap-4">
+          <Button variant="black-outline" fullWidth text={t('identity_verification_eID')} />
+        </div>
+      </div>
     </form>
   )
 }

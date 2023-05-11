@@ -99,14 +99,6 @@ const IdentityVerificationPage = ({ page }: AsyncServerProps<typeof getServerSid
           {status === AccountStatus.IdentityVerificationSuccess && (
             <AccountSuccessAlert
               title={t('identity_verification_success_title')}
-              description={
-                lastRc &&
-                lastIdCard &&
-                formatUnicorn(t('identity_verification_success_description'), {
-                  rc: lastRc,
-                  idCard: lastIdCard,
-                })
-              }
               confirmLabel={t('account_continue_link')}
               onConfirm={() =>
                 router.push({ pathname: ROUTES.HOME, query: { from: ROUTES.REGISTER } })

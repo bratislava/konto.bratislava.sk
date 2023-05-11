@@ -9,6 +9,7 @@ export type MenuItemBase = {
   icon?: ReactNode
   onPress?: () => void
   url?: string
+  itemClassName?: string
 }
 
 type MenuDropdownBase = {
@@ -16,6 +17,7 @@ type MenuDropdownBase = {
   itemVariant?: 'form' | 'header'
   buttonTrigger?: ReactNode
   buttonVariant?: 'gray' | 'main' | 'none'
+  buttonSize?: 'sm' | 'lg'
 }
 
 const MenuDropdown = ({
@@ -23,12 +25,18 @@ const MenuDropdown = ({
   itemVariant = 'form',
   buttonTrigger,
   buttonVariant = 'none',
+  buttonSize = 'sm',
 }: MenuDropdownBase) => {
   const [isOpen, setIsOpen] = useState<boolean>(false)
   return (
     <DropdownMenu.Root onOpenChange={() => setIsOpen((prev) => !prev)}>
       <DropdownMenu.Trigger asChild>
-        <MenuTrigger buttonTrigger={buttonTrigger} buttonVariant={buttonVariant} isOpen={isOpen} />
+        <MenuTrigger
+          buttonSize={buttonSize}
+          buttonTrigger={buttonTrigger}
+          buttonVariant={buttonVariant}
+          isOpen={isOpen}
+        />
       </DropdownMenu.Trigger>
 
       <DropdownMenu.Portal>
@@ -42,6 +50,7 @@ const MenuDropdown = ({
             items?.map((item, i) => (
               <FormMenuItem
                 key={i}
+                className={item.itemClassName}
                 icon={item.icon}
                 title={item.title}
                 url={item.url}
@@ -52,6 +61,7 @@ const MenuDropdown = ({
             items?.map((item, i) => (
               <HeaderMenuItem
                 key={i}
+                className={item.itemClassName}
                 icon={item.icon}
                 title={item.title}
                 url={item.url}

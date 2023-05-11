@@ -340,6 +340,12 @@
     "navigation": "Moje žiadosti",
     "navigation_sent": "Odoslané",
     "navigation_concept": "Koncepty",
+    "concept_delete_modal": {
+      "title": "Vymazať koncept",
+      "text": "Naozaj si želáte vymazať koncept {{concept_name}}? Táto akcia je nevratná.",
+      "cancel": "Zrušiť",
+      "delete": "Vymazať"
+    },
     "navigation_concept_card": {
       "createDate": "Vytvorené",
       "button_text": "Pokračovať"
@@ -367,6 +373,11 @@
         "edit_date": "Dátum zmeny",
         "description": "Popis"
       }
+    },
+    "concept_menu_list": {
+      "download_xml": "Stiahnuť ako XML",
+      "download_pdf": "Stiahnuť ako PDF",
+      "delete": "Vymazať koncept"
     }
   },
   "account_section_payment": {

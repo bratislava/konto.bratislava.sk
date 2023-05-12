@@ -28,6 +28,9 @@ interface UploadProps {
   className?: string
   onChange?: (value: UploadMinioFile[]) => void
   errorMessage?: string[]
+  // info for uploading, if not set it will be parsed from bucketFolderName
+  formId?: string
+  pospId?: string
   // name of folder in Bucket where files will be saved
   bucketFolderName?: string
   // file info for Summary
@@ -61,6 +64,8 @@ const UploadComponent: ForwardRefRenderFunction<HTMLDivElement, UploadProps> = (
     className,
     onChange,
     errorMessage,
+    pospId,
+    formId,
     bucketFolderName,
     fileScans,
     onChangeFileScans
@@ -69,9 +74,12 @@ const UploadComponent: ForwardRefRenderFunction<HTMLDivElement, UploadProps> = (
   const [fileBrokenMessages, setFileBrokenMessages] = useState<string[]>([])
 
   const startScanFiles = async (newFileScans: FileScan[]) => {
+    const parsedBucketName: string[]|undefined = bucketFolderName?.split("/")
+    const requestPospId: string|undefined = pospId ?? parsedBucketName?.[1]
+    const requestFormId: string|undefined = formId ?? parsedBucketName?.[2]
     return Promise.all(
       newFileScans.map(async (scan) => {
-        await scanFile("", "", "", scan.fileName)
+        await scanFile(requestPospId, requestFormId, "a", scan.fileName)
       })
     )
   }

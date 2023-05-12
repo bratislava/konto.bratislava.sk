@@ -93,6 +93,8 @@ const UploadWidgetRJSF = (props: UploadWidgetRJSFProps) => {
         sizeLimit={size}
         supportedFormats={supportedFormats}
         disabled={disabled}
+        pospId={formContext.pospId}
+        formId={formContext.formId}
         bucketFolderName={formContext.bucketFolderName}
         fileScans={formContext.fileScans}
         onChange={handleOnChange}

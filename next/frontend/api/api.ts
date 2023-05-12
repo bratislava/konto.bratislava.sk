@@ -320,9 +320,11 @@ export const deleteFileFromBucket = async (fileName: string) => {
   })
 }
 
-export const scanFile = async (pospId: string, formId: string, useExternalId: string, fileUid: string) => {
+export const scanFile = async (pospId?: string, formId?: string, useExternalId?: string, fileUid?: string) => {
+  if (!pospId || !formId || !useExternalId || !fileUid) throw new Error(API_ERROR_TEXT)
   console.log("pospId",pospId)
   console.log("formId", formId)
   console.log("useExternalId", useExternalId)
   console.log("fileUid", fileUid)
+
 }

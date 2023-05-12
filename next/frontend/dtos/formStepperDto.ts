@@ -20,6 +20,8 @@ export interface JsonSchemaExtraProperties {
 }
 
 export interface FormRJSFContext {
+  formId?: string
+  pospId?: string
   bucketFolderName?: string
   fileScans: FileScan[]
 }

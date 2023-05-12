@@ -379,11 +379,11 @@ export const getInitInnerValue = (value: string|string[]|null, schema: StrictRJS
         ? [value]
         : []
   return  valueArray.map(fileName => {
-    const originalFileScan = fileScans.find(fileScan => fileScan.fileName === fileName)
+    const originalFileScan = fileScans.find((fileScan: FileScan) => fileScan.fileName === fileName)
     return {
       file: new File([], fileName),
       isUploading: false,
       originalName: originalFileScan ? originalFileScan.originalName : fileName
-    }
+    } as UploadMinioFile
   })
 }

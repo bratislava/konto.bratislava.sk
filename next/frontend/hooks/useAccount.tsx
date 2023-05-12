@@ -314,7 +314,6 @@ export const AccountProvider = ({ children }: { children: ReactNode }) => {
 
     setError(null)
     return new Promise((resolve) => {
-      console.log(cognitoUser)
       cognitoUser.resendConfirmationCode((err?: Error) => {
         if (err) {
           setError({ ...(err as AWSError) })
@@ -342,7 +341,6 @@ export const AccountProvider = ({ children }: { children: ReactNode }) => {
       // }),
     })
 
-    console.log('first')
     setLastCredentials(credentials)
     setError(null)
     return new Promise((resolve) => {
@@ -388,9 +386,6 @@ export const AccountProvider = ({ children }: { children: ReactNode }) => {
         onFailure(err: AWSError) {
           if (err.code === 'UserNotConfirmedException') {
             setStatus(AccountStatus.EmailVerificationRequired)
-            setLastCredentials(credentials)
-            console.log(lastCredentials)
-            resendVerificationCode().catch((error_) => logger.error(error_))
           } else {
             logger.error('AWS error login', err)
             setError({ ...err })

@@ -5,6 +5,7 @@ import InputField from 'components/forms/widget-components/InputField/InputField
 import { useTranslation } from 'next-i18next'
 import { useEffect, useState } from 'react'
 import { Controller } from 'react-hook-form'
+import { useDidMount } from 'rooks'
 
 import { AccountError } from '../../../../frontend/hooks/useAccount'
 import useHookForm from '../../../../frontend/hooks/useHookForm'
@@ -20,7 +21,7 @@ interface Props {
   onResend: () => Promise<any>
   error?: AccountError | null | undefined
   lastEmail: string
-  cntDisabled?: boolean
+  isLogin?: boolean
 }
 
 // must use `minLength: 1` to implement required field
@@ -40,9 +41,10 @@ const schema = {
   required: ['verificationCode'],
 }
 
-const EmailVerificationForm = ({ onSubmit, error, onResend, lastEmail, cntDisabled }: Props) => {
+const EmailVerificationForm = ({ onSubmit, error, onResend, lastEmail, isLogin }: Props) => {
   const [lastVerificationCode, setLastVerificationCode] = useState('')
   const { t } = useTranslation('account')
+  let resendCodeOnce = true
   const {
     handleSubmit,
     control,
@@ -52,8 +54,7 @@ const EmailVerificationForm = ({ onSubmit, error, onResend, lastEmail, cntDisabl
     schema,
     defaultValues: { verificationCode: '' },
   })
-
-  const [cnt, setCnt] = useState(cntDisabled ? 0 : 60)
+  const [cnt, setCnt] = useState(60)
   useEffect(() => {
     if (cnt > 0) {
       setTimeout(() => setCnt((state) => state - 1), 1000)
@@ -64,6 +65,19 @@ const EmailVerificationForm = ({ onSubmit, error, onResend, lastEmail, cntDisabl
     setCnt(60)
     await onResend()
   }
+
+  // turn off timer if error
+  useEffect(() => {
+    if (error === null || error === undefined) setCnt(0)
+  }, [error])
+
+  // resend once time verification code after login
+  // TODO send verification code twice but log just once
+  useDidMount(async () => {
+    if (cnt > 0 && isLogin && resendCodeOnce) await onResend()
+    if (cnt > 0 && isLogin && resendCodeOnce) console.log('verification')
+    resendCodeOnce = false
+  })
 
   return (
     <form

@@ -9,7 +9,7 @@ import useAccount, { AccountStatus } from 'frontend/hooks/useAccount'
 import { useState } from 'react'
 
 import { validator } from '../../frontend/dtos/formStepperDto'
-import { useFormFiller } from '../../frontend/hooks/useFormFiller'
+import { FormFiller, useFormFiller } from '../../frontend/hooks/useFormFiller'
 import { useFormRJSFContextMemo } from '../../frontend/hooks/useFormRJSFContextMemo'
 import { useFormStepper } from '../../frontend/hooks/useFormStepper'
 import { useFormSubmitter } from '../../frontend/hooks/useFormSubmitter'
@@ -27,8 +27,8 @@ interface FormRJSF {
 }
 
 const GeneratedFormRJSF = ({ eform, escapedSlug, formSlug, wrapperClassName }: FormRJSF) => {
-  const filler = useFormFiller(eform)
-  const formContext = useFormRJSFContextMemo(eform, filler.formId)
+  const filler: FormFiller = useFormFiller(eform)
+  const formContext = useFormRJSFContextMemo(eform, filler)
   const form = useFormStepper(escapedSlug, eform, {
     onStepSumbit: filler.updateFormData,
     onInit: filler.initFormData,

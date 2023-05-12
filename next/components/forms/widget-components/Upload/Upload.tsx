@@ -28,7 +28,10 @@ interface UploadProps {
   className?: string
   onChange?: (value: UploadMinioFile[]) => void
   errorMessage?: string[]
-  // info for uploading, if not set it will be parsed from bucketFolderName
+  isScanningAllowed?: boolean
+  // info for file scanning, if not set it will throw error later
+  userExternalId?: string
+  // info for file scanning, if not set it will be parsed from bucketFolderName
   formId?: string
   pospId?: string
   // name of folder in Bucket where files will be saved
@@ -64,6 +67,8 @@ const UploadComponent: ForwardRefRenderFunction<HTMLDivElement, UploadProps> = (
     className,
     onChange,
     errorMessage,
+    isScanningAllowed = true,
+    userExternalId,
     pospId,
     formId,
     bucketFolderName,
@@ -79,12 +84,14 @@ const UploadComponent: ForwardRefRenderFunction<HTMLDivElement, UploadProps> = (
     const requestFormId: string|undefined = formId ?? parsedBucketName?.[2]
     return Promise.all(
       newFileScans.map(async (scan) => {
-        await scanFile(requestPospId, requestFormId, "a", scan.fileName)
+        await scanFile(requestPospId, requestFormId, userExternalId, scan.fileName)
       })
     )
   }
 
   useEffect(() => {
+    if (!isScanningAllowed) return
+
     const newFileScans: FileScan[] = value
       ? value.map(minioFile => {
         const oldFileScan = fileScans?.find(fileScan => fileScan.fileName === minioFile.file.name)

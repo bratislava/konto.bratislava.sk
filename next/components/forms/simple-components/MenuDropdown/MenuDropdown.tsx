@@ -5,10 +5,12 @@ import MenuTrigger from 'components/forms/simple-components/MenuDropdown/MenuTri
 import React, { ReactNode, useState } from 'react'
 
 export type MenuItemBase = {
+  id?: number
   title: string
   icon?: ReactNode
-  onPress?: () => void
+  onPress?: () => Promise<void> | void
   url?: string
+  itemClassName?: string
 }
 
 type MenuDropdownBase = {
@@ -35,7 +37,7 @@ const MenuDropdown = ({
         <DropdownMenu.Content
           loop
           align="end"
-          className="bg-gray-0 shadow-md rounded-lg py-2"
+          className="bg-gray-0 shadow-md rounded-lg py-2 z-50"
           sideOffset={2}
         >
           {itemVariant === 'form' &&

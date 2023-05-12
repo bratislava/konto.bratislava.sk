@@ -1,34 +1,32 @@
+import ChevronDownSmall from '@assets/images/new-icons/ui/arrow-small-down.svg'
 import HamburgerClose from '@assets/images/new-icons/ui/cross.svg'
 import Hamburger from '@assets/images/new-icons/ui/hamburger.svg'
 import ProfileOutlinedIcon from '@assets/images/new-icons/ui/profile.svg'
-import SearchIcon from '@assets/images/new-icons/ui/search.svg'
-import VolumeIcon from '@assets/images/new-icons/ui/speaker.svg'
 import cx from 'classnames'
 import { StatusBar, useStatusBarContext } from 'components/forms/info-components/StatusBar'
 import HamburgerMenu from 'components/forms/segments/HambergerMenu/HamburgerMenu'
 import Button from 'components/forms/simple-components/Button'
 import IdentityVerificationStatus from 'components/forms/simple-components/IdentityVerificationStatus'
-import Menu from 'components/forms/simple-components/Menu/Menu'
+import MenuDropdown, {
+  MenuItemBase,
+} from 'components/forms/simple-components/MenuDropdown/MenuDropdown'
 import NextLink from 'next/link'
 import { useRouter } from 'next/router'
 import { useTranslation } from 'next-i18next'
 import { ReactNode, useState } from 'react'
 import { RemoveScroll } from 'react-remove-scroll'
-import { Item } from 'react-stately'
 
 import { ROUTES } from '../../../../frontend/api/constants'
 import useAccount, { UserData } from '../../../../frontend/hooks/useAccount'
 import useElementSize from '../../../../frontend/hooks/useElementSize'
-import { getLanguageKey } from '../../../../frontend/utils/general'
-import logger from '../../../../frontend/utils/logger'
 import Brand from '../../simple-components/Brand'
 import Link from './NavBarLink'
 
 interface IProps extends LanguageSelectProps {
   className?: string
   navHidden?: boolean
-  sectionsList?: MenuItem[]
-  menuItems: MenuItem[]
+  sectionsList?: MenuSectionItemBase[]
+  menuItems: MenuItemBase[]
   hiddenHeaderNav?: boolean
 }
 
@@ -44,16 +42,11 @@ interface LanguageOption {
   title: string
 }
 
-const Divider = ({ className }: { className?: string }) => {
-  return <div className={`border-b-solid border-r-2 h-6 ${className || ''}`} />
-}
-
-export interface MenuItem {
+export interface MenuSectionItemBase {
   id: number
   title: string
   icon: ReactNode
-  link: string
-  backgroundColor?: string // ex. bg-negative-700
+  url: string
 }
 
 const Avatar = ({ userData }: { userData?: UserData | null }) => {
@@ -72,73 +65,19 @@ const Avatar = ({ userData }: { userData?: UserData | null }) => {
   )
 }
 
-const AccountMenuItem = ({ menuItem }: { menuItem: MenuItem }) => {
-  const { t } = useTranslation()
-
-  return (
-    <div className="cursor-pointer flex py-2 px-5">
-      <div
-        className={`flex relative flex-row items-start gap-2 rounded-xl p-4 ${
-          menuItem.backgroundColor ?? 'bg-gray-50'
-        }`}
-      >
-        <div className="flex h-2 w-2 items-center justify-center">
-          <span>{menuItem.icon}</span>
-        </div>
-      </div>
-      <div
-        className="text-p2 hover:text-p2-semibold w-fit-title text-font p-2 whitespace-nowrap"
-        title={t(menuItem.title)}
-      >
-        {t(menuItem.title)}
-      </div>
-    </div>
-  )
-}
-
-export const AccountNavBar = ({
-  className,
-  sectionsList,
-  menuItems,
-  navHidden,
-  hiddenHeaderNav,
-  ...languageSelectProps
-}: IProps) => {
+export const AccountNavBar = ({ className, sectionsList, menuItems, hiddenHeaderNav }: IProps) => {
   const [burgerOpen, setBurgerOpen] = useState(false)
-  const { isAuth, logout, userData } = useAccount()
+  const { isAuth, userData } = useAccount()
 
   const { statusBarContent } = useStatusBarContext()
   const [desktopRef, { height: desktopHeight }] = useElementSize([statusBarContent])
   const [mobileRef, { height: mobileHeight }] = useElementSize([statusBarContent])
 
-  const languageKey = getLanguageKey(languageSelectProps.currentLanguage)
-  const anotherLanguage = languageSelectProps.languages?.find((l) => l.key !== languageKey)
-
   const { t } = useTranslation(['common', 'account'])
   const router = useRouter()
 
-  const onRouteChange = async (selectedMenuItem: MenuItem) => {
-    if (selectedMenuItem.link === '/logout') {
-      logout()
-      await router.push(ROUTES.LOGIN)
-    } else {
-      await router.push(selectedMenuItem.link)
-    }
-  }
-
-  const linkClassName = 'whitespace-nowrap py-4'
-
-  const onSelectMenuItem = (key: React.Key) => {
-    const selectedMenuItem = menuItems?.find((opt) => opt.id.toString() === key)
-    if (selectedMenuItem) {
-      onRouteChange(selectedMenuItem).catch((error_) => logger.error('Failed redirect', error_))
-    }
-  }
-
-  const isActive = (sectionItem: MenuItem) =>
-    sectionItem.link === '/'
-      ? router.pathname === '/'
-      : router.pathname.startsWith(sectionItem.link)
+  const isActive = (sectionItem: MenuSectionItemBase) =>
+    sectionItem.url === '/' ? router.pathname === '/' : router.pathname.startsWith(sectionItem.url)
 
   return (
     <div style={{ marginBottom: Math.max(desktopHeight, mobileHeight) }}>
@@ -162,79 +101,39 @@ export const AccountNavBar = ({
               url="https://bratislava.sk/"
               title={
                 <p className="text-p2 text-font group-hover:text-gray-600">
-                  {languageKey === 'en' && <span className="font-semibold">Bratislava </span>}
                   {t('common:capitalCity')}
-                  {languageKey !== 'en' && <span className="font-semibold"> Bratislava</span>}
+                  <span className="font-semibold"> Bratislava</span>
                 </p>
               }
             />
             <IdentityVerificationStatus />
             <nav className="text-font/75 flex gap-x-8 font-semibold">
               <div className="text-font/75 flex items-center gap-x-6 font-semibold">
-                {!navHidden ? (
-                  <>
-                    <Link href="/" variant="plain">
-                      <VolumeIcon />
-                    </Link>
-                    <Divider className="mx-2" />
-                    <Link href="/" variant="plain" className={linkClassName}>
-                      {t('account:menu_contacts_link')}
-                    </Link>
-                    {isAuth ? (
+                {isAuth ? (
+                  <MenuDropdown
+                    buttonTrigger={
                       <>
-                        <Divider />
-                        <Menu
-                          buttonLeftEl={<Avatar userData={userData} />}
-                          label={userData?.given_name || userData?.family_name || ''}
-                          onAction={onSelectMenuItem}
-                        >
-                          {menuItems.map((option) => (
-                            <Item key={option.id}>
-                              <AccountMenuItem menuItem={option} />
-                            </Item>
-                          ))}
-                        </Menu>
-                        <Divider />
+                        <Avatar userData={userData} />
+                        <div className="ml-3 font-light lg:font-semibold">
+                          {userData?.given_name}
+                        </div>
+                        <ChevronDownSmall
+                          className={`ml-1 hidden w-5 h-5 mix-blend-normal lg:flex ${
+                            true ? '-rotate-180' : ''
+                          }`}
+                        />
                       </>
-                    ) : (
-                      <Button
-                        onPress={() => router.push(ROUTES.REGISTER)}
-                        variant="negative"
-                        text={t('account:menu_account_link')}
-                        size="sm"
-                      />
-                    )}
-
-                    <Link href={t('searchLink')} variant="plain">
-                      <SearchIcon className="w-6 h-6" />
-                    </Link>
-
-                    <Divider />
-                    {anotherLanguage && (
-                      <Button
-                        size="sm"
-                        className="underline underline-offset-4"
-                        variant="link-black"
-                        onPress={() => languageSelectProps.onLanguageChange?.(anotherLanguage)}
-                        text={anotherLanguage?.title}
-                      />
-                    )}
-                  </>
-                ) : isAuth ? (
-                  <Menu
-                    buttonLeftEl={<Avatar userData={userData} />}
-                    label={userData?.given_name || userData?.family_name || ''}
-                    onAction={onSelectMenuItem}
-                  >
-                    {menuItems.map((option) => (
-                      <Item key={option.id}>
-                        <AccountMenuItem menuItem={option} />
-                      </Item>
-                    ))}
-                  </Menu>
+                    }
+                    itemVariant="header"
+                    items={menuItems}
+                  />
                 ) : (
                   <>
-                    <Link href={ROUTES.LOGIN} variant="plain" className={`${linkClassName} ml-2`}>
+                    <Link
+                      href={ROUTES.LOGIN}
+                      variant="plain"
+                      className="whitespace-nowrap py-4 ml-2"
+                    >
                       {t('account:menu_login_link')}
                     </Link>
                     <Button
@@ -248,12 +147,13 @@ export const AccountNavBar = ({
               </div>
             </nav>
           </div>
+          {/* Header bottom navigation */}
           {isAuth && sectionsList && !hiddenHeaderNav && (
             <div className="hidden border-t border-gray-200 max-w-screen-lg m-auto h-[57px] w-full items-center justify-between lg:flex">
               <ul className="w-full h-full flex items-center">
                 {sectionsList.map((sectionItem) => (
                   <li className="w-full h-full" key={sectionItem.id}>
-                    <NextLink href={sectionItem.link}>
+                    <NextLink href={sectionItem.url}>
                       <div
                         className={cx(
                           'text-p2-semibold w-full h-full flex items-center justify-center cursor-pointer border-b-2 hover:text-main-700 hover:border-main-700 transition-all',
@@ -284,16 +184,6 @@ export const AccountNavBar = ({
           {!burgerOpen && <StatusBar className="flex lg:hidden" />}
           <div className="h-16 flex items-center py-5 px-8 border-b-2">
             <Brand url="https://bratislava.sk/" className="grow" />
-            {!navHidden && (
-              <div className={cx('flex items-center gap-x-5')}>
-                <div className="text-h4 text-font/50 relative flex cursor-pointer items-center bg-transparent">
-                  <Link href={t('searchLink')} variant="plain" className="p-4">
-                    <SearchIcon className="w-6 h-6" />
-                  </Link>
-                </div>
-              </div>
-            )}
-
             <button
               type="button"
               onClick={() => (isAuth ? setBurgerOpen(!burgerOpen) : router.push(ROUTES.LOGIN))}
@@ -315,7 +205,6 @@ export const AccountNavBar = ({
                 sectionsList={sectionsList}
                 menuItems={menuItems}
                 closeMenu={() => setBurgerOpen(false)}
-                onRouteChange={onRouteChange}
               />
             )}
           </div>

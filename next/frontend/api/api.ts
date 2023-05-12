@@ -295,21 +295,20 @@ export const getEnum = async (id?: string) => {
   }
 }
 
-export const uploadFile = async (file: File) => {
+export const uploadFileToBucket = async (file: File) => {
   const formData = new FormData()
   formData.append('file', file)
 
   return fetchJsonApi('/api/eforms/upload-file', {
     method: 'POST',
     headers: {
-      'Content-Type': 'multipart/form-data',
       'Accept': 'application/json'
     },
-    body: JSON.stringify(formData),
+    body: formData
   })
 }
 
-export const deleteFile = async (fileName: string) => {
+export const deleteFileFromBucket = async (fileName: string) => {
   const url = new URL('/api/eforms/upload-file');
   url.search = new URLSearchParams({ fileName }).toString()
 
@@ -319,4 +318,11 @@ export const deleteFile = async (fileName: string) => {
       'Content-Type': 'application/json',
     },
   })
+}
+
+export const scanFile = async (pospId: string, formId: string, useExternalId: string, fileUid: string) => {
+  console.log("pospId",pospId)
+  console.log("formId", formId)
+  console.log("useExternalId", useExternalId)
+  console.log("fileUid", fileUid)
 }

@@ -4,7 +4,7 @@ import FieldErrorMessage from 'components/forms/info-components/FieldErrorMessag
 import React, { ForwardedRef, forwardRef, ForwardRefRenderFunction, useEffect, useState } from 'react'
 import { v4 as createUuid } from 'uuid'
 
-import { deleteFile, uploadFile } from '../../../../frontend/api/api'
+import { deleteFileFromBucket, scanFile, uploadFileToBucket } from '../../../../frontend/api/api'
 import { FileScan } from '../../../../frontend/dtos/formStepperDto'
 import logger from '../../../../frontend/utils/logger'
 import UploadBrokenMessages, { MINIO_ERROR } from '../../info-components/UploadBrokenMessages'
@@ -68,6 +68,14 @@ const UploadComponent: ForwardRefRenderFunction<HTMLDivElement, UploadProps> = (
 
   const [fileBrokenMessages, setFileBrokenMessages] = useState<string[]>([])
 
+  const startScanFiles = async (newFileScans: FileScan[]) => {
+    return Promise.all(
+      newFileScans.map(async (scan) => {
+        await scanFile("", "", "", scan.fileName)
+      })
+    )
+  }
+
   useEffect(() => {
     const newFileScans: FileScan[] = value
       ? value.map(minioFile => {
@@ -82,7 +90,14 @@ const UploadComponent: ForwardRefRenderFunction<HTMLDivElement, UploadProps> = (
       ? fileScans.filter(oldScan => newFileScans?.every(newScan => newScan.fileName !== oldScan.fileName))
       : []
 
-    onChangeFileScans?.(newFileScans, removeFileScans)
+    startScanFiles(newFileScans)
+      .finally(() => {
+        onChangeFileScans?.(newFileScans, removeFileScans)
+      })
+      .catch((error) => {
+        logger.error(error)
+      })
+
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [value])
 
@@ -107,7 +122,7 @@ const UploadComponent: ForwardRefRenderFunction<HTMLDivElement, UploadProps> = (
     const fileName = value[0].file.name
 
     removeFileOnClient(fileName)
-    deleteFile(fileName)
+    deleteFileFromBucket(fileName)
       .catch((error) => {
         setMinioError()
         logger.error(error)
@@ -160,7 +175,7 @@ const UploadComponent: ForwardRefRenderFunction<HTMLDivElement, UploadProps> = (
     emitOnChange(sanitizedFiles, value)
 
     sanitizedFiles.forEach((minioFile, id) => {
-      uploadFile(minioFile.file)
+      uploadFileToBucket(minioFile.file)
         .catch((error) => {
           setMinioError()
           logger.error(error)
@@ -206,7 +221,7 @@ const UploadComponent: ForwardRefRenderFunction<HTMLDivElement, UploadProps> = (
     const fileName = value[id].file.name
 
     removeFileOnClient(fileName)
-    deleteFile(fileName)
+    deleteFileFromBucket(fileName)
       .catch((error) => {
         setMinioError()
         logger.error(error)

@@ -3,7 +3,7 @@
 import { RJSFSchema } from '@rjsf/utils'
 import { ErrorObject } from 'ajv'
 
-import { CreateFormDto, FormDto, UpdateFormDto } from '../dtos/formDto'
+import { CreateFormDto, FormDto, ScanFileDto, UpdateFormDto } from '../dtos/formDto'
 import { ApiError, Gdpr, Identity, TaxApiError, UrlResult, User } from '../dtos/generalApiDto'
 import logger from '../utils/logger'
 
@@ -319,11 +319,14 @@ export const deleteFileFromBucket = async (fileName: string) => {
   })
 }
 
-export const scanFile = async (pospId?: string, formId?: string, userExternalId?: string, fileUid?: string) => {
-  if (!pospId || !formId || !userExternalId || !fileUid) throw new Error(API_ERROR_TEXT)
-  console.log("pospId",pospId)
-  console.log("formId", formId)
-  console.log("useExternalId", userExternalId)
-  console.log("fileUid", fileUid)
+export const scanFile = async (data: ScanFileDto) => {
+  if (!data.pospId || !data.formId || !data.userExternalId || !data.fileUid) throw new Error(API_ERROR_TEXT)
 
+  return fetchJsonApi(`${String(process.env.NEXT_PUBLIC_FORMS_URL)}/files/scan`, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify(data)
+  })
 }

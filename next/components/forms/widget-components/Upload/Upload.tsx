@@ -5,6 +5,7 @@ import React, { ForwardedRef, forwardRef, ForwardRefRenderFunction, useEffect, u
 import { v4 as createUuid } from 'uuid'
 
 import { deleteFileFromBucket, scanFile, uploadFileToBucket } from '../../../../frontend/api/api'
+import { ScanFileDto } from '../../../../frontend/dtos/formDto'
 import { FileScan } from '../../../../frontend/dtos/formStepperDto'
 import logger from '../../../../frontend/utils/logger'
 import UploadBrokenMessages, { MINIO_ERROR } from '../../info-components/UploadBrokenMessages'
@@ -80,11 +81,17 @@ const UploadComponent: ForwardRefRenderFunction<HTMLDivElement, UploadProps> = (
 
   const startScanFiles = async (newFileScans: FileScan[]) => {
     const parsedBucketName: string[]|undefined = bucketFolderName?.split("/")
-    const requestPospId: string|undefined = pospId ?? parsedBucketName?.[1]
-    const requestFormId: string|undefined = formId ?? parsedBucketName?.[2]
     return Promise.all(
       newFileScans.map(async (scan) => {
-        await scanFile(requestPospId, requestFormId, userExternalId, scan.fileName)
+        const data: ScanFileDto = {
+          pospId: pospId ?? parsedBucketName?.[1],
+          formId: formId ?? parsedBucketName?.[2],
+          userExternalId,
+          fileUid: scan.fileName
+        }
+        scanFile(data)
+          .then(res => console.log(res))
+          .catch((error) => console.log(error))
       })
     )
   }

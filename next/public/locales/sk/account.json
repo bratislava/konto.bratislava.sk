@@ -116,7 +116,7 @@
   "identity_verification_eID": "Overiť identitu cez eID",
   "identity_verification_choice": "alebo",
   "identity_verification_title": "Overte svoju identitu",
-  "identity_verification_subtitle": "Rodné číslo a číslo dokladu potrebujeme poznať na to, aby sme overili vašu identitu voči štátnym registrom. Bez overenia nebudete schopný/á zaplatiť daň z nehnuteľností digitálne či odoslať všetky elektronické žiadosti. Overenie je jednorazové, údaje neukladáme.",
+  "identity_verification_subtitle": "Čísla potrebujeme poznať na to, aby sme overili vašu identitu voči štátnym registrom. Bez overenia nebudete schopný/á zaplatiť daň z nehnuteľností digitálne či odoslať všetky elektronické žiadosti. Overenie je jednorazové, údaje neukladáme.",
   "rc_label": "Rodné číslo",
   "rc_placeholder": "Rodné číslo",
   "rc_description": "Zadávajte rodné číslo vo formáte s lomítkom, napr. XXXXXX/XXXX",

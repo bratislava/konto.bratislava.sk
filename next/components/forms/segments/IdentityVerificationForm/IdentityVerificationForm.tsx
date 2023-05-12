@@ -164,7 +164,12 @@ const IdentityVerificationForm = ({ onSubmit, error }: Props) => {
           <span className="w-full h-0.5 bg-gray-200" />
         </div>
         <div className="flex flex-col md:flex-row md:justify-between md:items-center gap-3 md:gap-4">
-          <Button variant="black-outline" fullWidth text={t('identity_verification_eID')} />
+          <Button
+            variant="black-outline"
+            fullWidth
+            text={t('identity_verification_eID')}
+            onPress={() => router.push('https://www.slovensko.sk/')}
+          />
         </div>
       </div>
     </form>

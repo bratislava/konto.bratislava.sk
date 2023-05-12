@@ -15,7 +15,5 @@ export default {
   textStylesheet,
   htmlStylesheet,
   data,
-  pdfStylesheet,
-  pospID: '00603481.dopravneZnacenie.sk',
-  pospVersion: '0.2',
+  pdfStylesheet
 }

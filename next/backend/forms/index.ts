@@ -30,11 +30,6 @@ export interface EFormValue {
   textStylesheet?: any
   htmlStylesheet?: any
   pdfStylesheet?: string
-  pospID: string
-  pospVersion: string
-  formName?: string
-  formDescription?: string
-  subject?: string
 }
 
 export default eforms

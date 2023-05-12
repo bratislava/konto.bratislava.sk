@@ -85,7 +85,7 @@ const UserProfileDetailEdit = (props: UserProfileDetailEditProps) => {
         email: data.email,
         given_name: data.given_name,
         family_name: data.family_name,
-        phone_number: data.phone_number,
+        phone_number: data.phone_number || '',
         address: {
           street_address: data.street_address,
           locality: data.city,

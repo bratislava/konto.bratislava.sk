@@ -136,13 +136,14 @@ export const mergePropertyTreeToFormData = (
 }
 
 export const buildRJSFError = (path: string[], errorMsg: string | undefined): ErrorSchema => {
-  const error: ErrorSchema = { __errors: [errorMsg || 'error'] } as ErrorSchema
-
-  path.reverse().forEach((arrayValue: string) => {
-    error[arrayValue] = { [arrayValue]: error }
-  })
-
-  return error
+  return path.reduceRight(
+    (memo: ErrorSchema, arrayValue: string) => {
+      const error: ErrorSchema = {}
+      error[arrayValue] = memo
+      return error
+    },
+    { __errors: [errorMsg || 'error'] } as ErrorSchema,
+  ) as unknown as ErrorSchema
 }
 
 
@@ -337,7 +338,7 @@ export const getInitFormData = (schema: RJSFSchema): RJSFSchema => {
 
 export const createTestFormData = (formData: RJSFSchema): RJSFSchema => {
   const newFormData: RJSFSchema = {}
-  if (!formData || typeof formData === 'boolean') return newFormData
+  if (!formData) return newFormData
 
   Object.entries(formData).forEach(([key, value]: [string, RJSFSchema]) => {
     if (typeof value !== 'boolean') {
@@ -357,6 +358,7 @@ export const createTestFormData = (formData: RJSFSchema): RJSFSchema => {
 
 export const getValidatedSteps = (schema: RJSFSchema, formData: RJSFSchema): RJSFSchema[] => {
   const testFormData = createTestFormData(formData)
+
   return  schema.allOf
     ? schema.allOf.map((step) => {
         const typedStep = typeof step !== 'boolean' ? step : {}

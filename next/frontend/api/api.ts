@@ -77,7 +77,7 @@ export const submitEform = async (
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
-      Authorization: `Bearer ${token}`,
+      Authorization: token ? `Bearer ${token}` : '',
     },
     body: JSON.stringify({ data, id: formId }),
   })
@@ -324,12 +324,15 @@ export const getEnum = async (id?: string) => {
 }
 
 export const sendForm = (id: string, formDataXml: string, authorizationHeader: string) => {
-  return fetchJsonApi(`${process.env.NEXT_PUBLIC_FORMS_URL}/nases/send-and-update-form/${id}`, {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-      Authorization: authorizationHeader,
+  return fetchJsonApi(
+    `${String(process.env.NEXT_PUBLIC_FORMS_URL)}/nases/send-and-update-form/${id}`,
+    {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: authorizationHeader,
+      },
+      body: JSON.stringify({ formDataXml }),
     },
-    body: JSON.stringify({ formDataXml }),
-  })
+  )
 }

@@ -3,6 +3,7 @@ import AccountContainer from 'components/forms/segments/AccountContainer/Account
 import EmailVerificationForm from 'components/forms/segments/EmailVerificationForm/EmailVerificationForm'
 import LoginForm from 'components/forms/segments/LoginForm/LoginForm'
 import LoginRegisterLayout from 'components/layouts/LoginRegisterLayout'
+import { getValidRedirectFromQuery } from 'frontend/utils/sso'
 import { GetServerSidePropsContext } from 'next'
 import { useRouter } from 'next/router'
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
@@ -40,14 +41,14 @@ const LoginPage = ({ page }: AsyncServerProps<typeof getServerSideProps>) => {
     useAccount()
   const router = useRouter()
 
+  // TODO move to general util
   const redirect = useCallback(async () => {
-    const from =
-      router.query.from &&
-      typeof router.query.from === 'string' &&
-      router.query.from.startsWith('/')
-        ? decodeURIComponent(router.query.from)
-        : ROUTES.HOME
-    await router.push(from).catch((error_) => logger.error('Failed redirect', error_))
+    const from = getValidRedirectFromQuery(router.query.from) || ROUTES.HOME
+    if (from.startsWith('/')) {
+      await router.push(from).catch((error_) => logger.error('Failed redirect', error_))
+    } else {
+      window.location.href = from
+    }
   }, [router])
 
   useEffect(() => {

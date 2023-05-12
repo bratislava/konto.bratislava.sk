@@ -19,6 +19,7 @@ import * as AWS from 'aws-sdk/global'
 import { AWSError } from 'aws-sdk/global'
 import { useStatusBarContext } from 'components/forms/info-components/StatusBar'
 import AccountMarkdown from 'components/forms/segments/AccountMarkdown/AccountMarkdown'
+import { APPROVED_SSO_ORIGINS } from 'frontend/utils/sso'
 import { useRouter } from 'next/router'
 import { useTranslation } from 'next-i18next'
 import React, { ReactNode, useCallback, useContext, useEffect, useState } from 'react'
@@ -27,20 +28,9 @@ import { useInterval } from 'usehooks-ts'
 import { subscribeApi, UNAUTHORIZED_ERROR_TEXT, verifyIdentityApi } from '../api/api'
 import { ROUTES } from '../api/constants'
 import { GeneralError } from '../dtos/generalApiDto'
-import { isBrowser, isProductionDeployment } from '../utils/general'
+import { isBrowser } from '../utils/general'
 import logger, { faro } from '../utils/logger'
 import useSnackbar from './useSnackbar'
-
-const approvedSSODomains = isProductionDeployment()
-  ? ['https://kupaliska.bratislava.sk', 'https://bratislava.sk']
-  : [
-      // multiple ports to make testing login across multiple apps running locally easier
-      'http://localhost:3000',
-      'http://localhost:3001',
-      'http://localhost:3002',
-      'http://localhost:3003',
-      'https://kupaliska.staging.bratislava.sk',
-    ]
 
 export enum PostMessageTypes {
   ACCESS_TOKEN = 'ACCESS_TOKEN',
@@ -169,7 +159,7 @@ export const AccountProvider = ({ children }: { children: ReactNode }) => {
   const { t } = useTranslation()
 
   // TODO - could be better, currently used only after login, AccountStatus should be replaced or rewritten
-  const mapTierToStatus = (tier: Tier): AccountStatus => {
+  const mapTierToStatus = (tier?: Tier): AccountStatus => {
     switch (tier) {
       case Tier.QUEUE_IDENTITY_CARD:
         return AccountStatus.IdentityVerificationPending
@@ -254,12 +244,12 @@ export const AccountProvider = ({ children }: { children: ReactNode }) => {
   }
 
   // postMessage to all approved domains at the window top
-  // in reality only one message will be sent, this exists to limit the possible domains only to hardcoded list in approvedSSODomains
+  // in reality only one message will be sent, this exists to limit the possible domains only to hardcoded list in APPROVED_SSO_ORIGINS
   // TODO refactor to different file
   // eslint-disable-next-line unicorn/consistent-function-scoping
   const postMessageToApprovedDomains = (message: CityAccountPostMessage) => {
     // TODO - log to faro if none of the origins match
-    approvedSSODomains.forEach((domain) => {
+    APPROVED_SSO_ORIGINS.forEach((domain) => {
       window?.top?.postMessage(message, domain)
     })
   }
@@ -708,7 +698,7 @@ export const AccountProvider = ({ children }: { children: ReactNode }) => {
       return
     }
 
-    const newStatus = userData?.tier ? mapTierToStatus(userData.tier) : AccountStatus.Idle
+    const newStatus = userData ? mapTierToStatus(userData.tier) : AccountStatus.Idle
     if (
       status === AccountStatus.IdentityVerificationPending &&
       newStatus === AccountStatus.IdentityVerificationSuccess

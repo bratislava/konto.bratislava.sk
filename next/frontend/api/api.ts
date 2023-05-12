@@ -309,10 +309,10 @@ export const uploadFileToBucket = async (file: File) => {
 }
 
 export const deleteFileFromBucket = async (fileName: string) => {
-  const url = new URL('/api/eforms/upload-file');
-  url.search = new URLSearchParams({ fileName }).toString()
+  const params = new URLSearchParams()
+  params.append('fileName', fileName)
 
-  return fetchJsonApi(url.toString(), {
+  return fetchJsonApi(`/api/eforms/delete-file?${params.toString()}`, {
     method: 'DELETE',
     headers: {
       'Content-Type': 'application/json',

@@ -1,10 +1,10 @@
 import { UploadMinioFile } from '@backend/dtos/minio/upload-minio-file.dto'
-import { deleteFile, uploadFile } from '@backend/services/minio'
 import cx from 'classnames'
 import FieldErrorMessage from 'components/forms/info-components/FieldErrorMessage'
 import React, { ForwardedRef, forwardRef, ForwardRefRenderFunction, useEffect, useState } from 'react'
 import { v4 as createUuid } from 'uuid'
 
+import { deleteFile, uploadFile } from '../../../../frontend/api/api'
 import { FileScan } from '../../../../frontend/dtos/formStepperDto'
 import logger from '../../../../frontend/utils/logger'
 import UploadBrokenMessages, { MINIO_ERROR } from '../../info-components/UploadBrokenMessages'
@@ -108,10 +108,6 @@ const UploadComponent: ForwardRefRenderFunction<HTMLDivElement, UploadProps> = (
 
     removeFileOnClient(fileName)
     deleteFile(fileName)
-      .then((res) => {
-        if (res.status !== 200) throw new Error(`Api response status: ${res.status}`)
-        return res
-      })
       .catch((error) => {
         setMinioError()
         logger.error(error)
@@ -211,11 +207,6 @@ const UploadComponent: ForwardRefRenderFunction<HTMLDivElement, UploadProps> = (
 
     removeFileOnClient(fileName)
     deleteFile(fileName)
-      .then((res) => {
-        if (res.status !== 200) throw new Error(`Api response status: ${res.status}`)
-        if (!value) throw new Error('Value not defined in component')
-        return res
-      })
       .catch((error) => {
         setMinioError()
         logger.error(error)

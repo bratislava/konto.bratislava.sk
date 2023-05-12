@@ -10,6 +10,7 @@ import logger from '../utils/logger'
 export const API_ERROR_TEXT = 'API_ERROR'
 export const UNAUTHORIZED_ERROR_TEXT = 'UNAUTHORIZED_ERROR'
 export const MISSING_TOKEN = 'MISSING TOKEN'
+
 const fetchJsonApi = async <T=any>(path: string, options?: RequestInit): Promise<T> => {
   try {
     const response = await fetch(path, options)
@@ -292,4 +293,30 @@ export const getEnum = async (id?: string) => {
     logger.error(error)
     throw error
   }
+}
+
+export const uploadFile = async (file: File) => {
+  const formData = new FormData()
+  formData.append('file', file)
+
+  return fetchJsonApi('/api/eforms/upload-file', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'multipart/form-data',
+      'Accept': 'application/json'
+    },
+    body: JSON.stringify(formData),
+  })
+}
+
+export const deleteFile = async (fileName: string) => {
+  const url = new URL('/api/eforms/upload-file');
+  url.search = new URLSearchParams({ fileName }).toString()
+
+  return fetchJsonApi(url.toString(), {
+    method: 'DELETE',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+  })
 }

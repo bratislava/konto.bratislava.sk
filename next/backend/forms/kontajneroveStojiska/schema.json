@@ -15,9 +15,7 @@
     {
       "properties": {
         "ziadatel": {
-          "required": [
-            "ziatetelTyp"
-          ],
+          "required": ["ziatetelTyp"],
           "type": "object",
           "title": "Žiadateľ",
           "properties": {
@@ -44,9 +42,7 @@
                 }
               }
             },
-            "required": [
-              "splnomocnenie"
-            ]
+            "required": ["splnomocnenie"]
           }
         }
       }
@@ -111,7 +107,7 @@
             "telefon": {
               "type": "string",
               "title": "Telefónne číslo (v tvare +421...)",
-              "pattern": "((([+][1-9])|([+][1-9][0-9]{1,8}))|((00[1-9])|(00[1-9][0-9]{1,7})))"
+              "pattern": "((([+][1-9])|([+][1-9][0-9]{1,12}))|((00[1-9])|(00[1-9][0-9]{1,11})))"
             }
           }
         }
@@ -122,9 +118,7 @@
         "typStanovista": {
           "title": "Typ stanovišťa",
           "type": "object",
-          "required": [
-            "typStanovistaUpresnenie"
-          ],
+          "required": ["typStanovistaUpresnenie"],
           "properties": {
             "typStanovistaUpresnenie": {
               "title": "Upresnite o aký typ stanovišťa sa jedná",
@@ -183,12 +177,7 @@
         "miestoUmiestnenia": {
           "title": "Miesto umiestnenia",
           "type": "object",
-          "required": [
-            "kataster",
-            "parcela",
-            "adresaUmiestnenia",
-            "velkost"
-          ],
+          "required": ["kataster", "parcela", "adresaUmiestnenia", "velkost"],
           "properties": {
             "kataster": {
               "title": "Katasttrálne územie pozemku",
@@ -225,9 +214,7 @@
         "dovodZiadosti": {
           "title": "Dôvod žiadosti",
           "type": "object",
-          "required": [
-            "zaujem"
-          ],
+          "required": ["zaujem"],
           "properties": {
             "zaujem": {
               "type": "string",
@@ -256,9 +243,7 @@
               }
             }
           },
-          "required": [
-            "zmluva"
-          ]
+          "required": ["zmluva"]
         },
         {
           "if": {
@@ -299,9 +284,7 @@
                 }
               }
             },
-            "required": [
-              "stanovisko"
-            ]
+            "required": ["stanovisko"]
           }
         },
         {
@@ -350,9 +333,7 @@
                 }
               }
             },
-            "required": [
-              "doklad"
-            ]
+            "required": ["doklad"]
           }
         },
         {
@@ -379,9 +360,7 @@
                 }
               }
             },
-            "required": [
-              "listVlastnictva"
-            ]
+            "required": ["listVlastnictva"]
           }
         },
         {
@@ -395,9 +374,7 @@
               }
             }
           },
-          "required": [
-            "snimkaZMapy"
-          ]
+          "required": ["snimkaZMapy"]
         },
         {
           "properties": {
@@ -410,9 +387,7 @@
               }
             }
           },
-          "required": [
-            "podorysStanovista"
-          ]
+          "required": ["podorysStanovista"]
         },
         {
           "properties": {
@@ -425,9 +400,7 @@
               }
             }
           },
-          "required": [
-            "vizualStanovista"
-          ]
+          "required": ["vizualStanovista"]
         },
         {
           "properties": {
@@ -447,9 +420,7 @@
                       }
                     }
                   },
-                  "required": [
-                    "technickyVykresPrilohy"
-                  ]
+                  "required": ["technickyVykresPrilohy"]
                 },
                 {
                   "title": "Text",
@@ -459,16 +430,12 @@
                       "type": "string"
                     }
                   },
-                  "required": [
-                    "technickyVykresText"
-                  ]
+                  "required": ["technickyVykresText"]
                 }
               ]
             }
           },
-          "required": [
-            "technickyVykres"
-          ]
+          "required": ["technickyVykres"]
         },
         {
           "properties": {
@@ -481,9 +448,7 @@
               }
             }
           },
-          "required": [
-            "stavebnaDokumentacia"
-          ]
+          "required": ["stavebnaDokumentacia"]
         },
         {
           "properties": {
@@ -503,9 +468,7 @@
                       }
                     }
                   },
-                  "required": [
-                    "rozpocetPrilohy"
-                  ]
+                  "required": ["rozpocetPrilohy"]
                 },
                 {
                   "title": "Text",
@@ -515,16 +478,12 @@
                       "type": "string"
                     }
                   },
-                  "required": [
-                    "rozpocetText"
-                  ]
+                  "required": ["rozpocetText"]
                 }
               ]
             }
           },
-          "required": [
-            "rozpocet"
-          ]
+          "required": ["rozpocet"]
         },
         {
           "properties": {

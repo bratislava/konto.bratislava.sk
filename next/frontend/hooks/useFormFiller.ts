@@ -10,7 +10,7 @@ import useAccount from './useAccount'
 import useSnackbar from './useSnackbar'
 
 export const useFormFiller = (eform: EFormValue) => {
-  const [formId, setFormId] = useState<string | undefined>()
+  const [formId, setFormId] = useState<string>('')
 
   const { getAccessToken } = useAccount()
   const [openSnackbarWarning] = useSnackbar({ variant: 'warning' })
@@ -31,8 +31,8 @@ export const useFormFiller = (eform: EFormValue) => {
   }
 
   const router = useRouter()
-  const initFormData = async (): Promise<RJSFSchema|undefined|null> => {
-    let formData: RJSFSchema|null = null
+  const initFormData = async (): Promise<RJSFSchema | undefined | null> => {
+    let formData: RJSFSchema | null = null
     const token = await getAccessToken()
     if (!token) {
       return undefined

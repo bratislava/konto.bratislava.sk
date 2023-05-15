@@ -15,5 +15,5 @@ export default {
   textStylesheet,
   htmlStylesheet,
   data,
-  pdfStylesheet,
+  pdfStylesheet
 }

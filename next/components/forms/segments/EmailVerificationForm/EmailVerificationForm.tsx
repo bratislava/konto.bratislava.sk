@@ -42,6 +42,7 @@ const schema = {
 const EmailVerificationForm = ({ onSubmit, error, onResend, lastEmail }: Props) => {
   const [lastVerificationCode, setLastVerificationCode] = useState('')
   const { t } = useTranslation('account')
+  const isError: boolean = error === null || error === undefined
   const {
     handleSubmit,
     control,
@@ -62,11 +63,6 @@ const EmailVerificationForm = ({ onSubmit, error, onResend, lastEmail }: Props) 
     setCnt(60)
     await onResend()
   }
-
-  // turn off timer if error
-  useEffect(() => {
-    if (error === null || error === undefined) setCnt(0)
-  }, [error])
 
   return (
     <form
@@ -108,17 +104,26 @@ const EmailVerificationForm = ({ onSubmit, error, onResend, lastEmail }: Props) 
         variant="category"
         disabled={isSubmitting}
       />
+      {/* turn off timer if error */}
+
       <div className="text-p3 lg:text-p2">
-        <span>{t('verification_description')}</span>
-        {cnt > 0 && <span>{` ${formatUnicorn(t('verification_cnt_description'), { cnt })}`}</span>}
+        {isError && (
+          <>
+            <span>{t('verification_description')}</span>
+            {cnt > 0 && (
+              <span>{` ${formatUnicorn(t('verification_cnt_description'), { cnt })}`}</span>
+            )}
+          </>
+        )}
         <AccountMarkdown variant="sm" content={t('verification_cnt_info')} />
       </div>
+
       <Button
         onPress={handleResend}
         className="min-w-full"
         text={t('verification_resend')}
         variant="category-outline"
-        disabled={cnt > 0}
+        disabled={cnt > 0 || isError}
       />
     </form>
   )

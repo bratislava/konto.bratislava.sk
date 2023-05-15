@@ -44,30 +44,33 @@ export const buildXmlRecursive = (
       buildXmlRecursive(currentPath, cheerioInstance, item, jsonSchema)
     })
   } else if (node && typeof node === 'object') {
-    // objects add one level of nesting to xml
-    parentNode.append(`<${nodeName}></${nodeName}>`)
+    // skip empty node
+    if (Object.keys(node).length > 0) {
+      // objects add one level of nesting to xml
+      parentNode.append(`<${nodeName}></${nodeName}>`)
 
-    const properties = getAllPossibleJsonSchemaProperties(jsonSchema)
-    if (Object.keys(properties).length === 0) {
-      Object.keys(node).forEach((key) => {
-        buildXmlRecursive(
-          [...currentPath, firstCharToUpper(key)],
-          cheerioInstance,
-          node[key],
-          properties[key],
-        )
-      })
-    } else {
-      Object.keys(properties).forEach((key) => {
-        if (node[key] !== undefined) {
+      const properties = getAllPossibleJsonSchemaProperties(jsonSchema)
+      if (Object.keys(properties).length === 0) {
+        Object.keys(node).forEach((key) => {
           buildXmlRecursive(
             [...currentPath, firstCharToUpper(key)],
             cheerioInstance,
             node[key],
             properties[key],
           )
-        }
-      })
+        })
+      } else {
+        Object.keys(properties).forEach((key) => {
+          if (node[key] !== undefined) {
+            buildXmlRecursive(
+              [...currentPath, firstCharToUpper(key)],
+              cheerioInstance,
+              node[key],
+              properties[key],
+            )
+          }
+        })
+      }
     }
   } else if (node && typeof node === 'string') {
     let stringNode: string = node
@@ -75,10 +78,13 @@ export const buildXmlRecursive = (
       const format =
         jsonSchema.type === 'array' ? getFormatFromItems(jsonSchema.items) : jsonSchema.format
       if (format === 'ciselnik') {
-        const ciselnikProperty: Ciselnik = typeof jsonSchema !== 'boolean' && 'ciselnik' in jsonSchema
-          ? jsonSchema.ciselnik as Ciselnik
-          : {} as Ciselnik
-        stringNode = `<Code>${node}</Code><Name>${node}</Name><WsEnumCode>${String(ciselnikProperty?.id)}</WsEnumCode>`
+        const ciselnikProperty: Ciselnik =
+          typeof jsonSchema !== 'boolean' && 'ciselnik' in jsonSchema
+            ? (jsonSchema.ciselnik as Ciselnik)
+            : ({} as Ciselnik)
+        stringNode = `<Code>${node}</Code><Name>${node}</Name><WsEnumCode>${String(
+          ciselnikProperty?.id,
+        )}</WsEnumCode>`
       } else if (format === 'file') {
         stringNode = `<Nazov>${node}</Nazov><Prilozena>true</Prilozena>`
       }

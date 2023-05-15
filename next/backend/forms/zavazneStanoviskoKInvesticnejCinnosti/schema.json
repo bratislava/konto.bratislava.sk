@@ -1,5 +1,5 @@
 {
-  "pospID": "zavazneStanoviskoKInvesticnejCinnosti",
+  "pospID": "00603481.zavazneStanoviskoKInvesticnejCinnosti.sk",
   "pospVersion": "0.1",
   "title": "Záväzné stanovisko k investičnej činnosti",
   "type": "object",
@@ -202,7 +202,7 @@
                 "ziadatelTelefon": {
                   "type": "string",
                   "title": "Telefónne číslo (v tvare +421...)",
-                  "pattern": "((([+][1-9])|([+][1-9][0-9]{1,8}))|((00[1-9])|(00[1-9][0-9]{1,7})))"
+                  "pattern": "((([+][1-9])|([+][1-9][0-9]{1,12}))|((00[1-9])|(00[1-9][0-9]{1,11})))"
                 }
               },
               "required": ["ziadatelEmail", "ziadatelTelefon"]
@@ -439,7 +439,7 @@
                       "investorTelefon": {
                         "type": "string",
                         "title": "Telefónne číslo (v tvare +421...)",
-                        "pattern": "((([+][1-9])|([+][1-9][0-9]{1,8}))|((00[1-9])|(00[1-9][0-9]{1,7})))"
+                        "pattern": "((([+][1-9])|([+][1-9][0-9]{1,12}))|((00[1-9])|(00[1-9][0-9]{1,11})))"
                       }
                     },
                     "required": ["investorEmail", "investorTelefon"]
@@ -470,7 +470,7 @@
             "projektantTelefon": {
               "type": "string",
               "title": "Telefónne číslo (v tvare +421...)",
-              "pattern": "((([+][1-9])|([+][1-9][0-9]{1,8}))|((00[1-9])|(00[1-9][0-9]{1,7})))"
+              "pattern": "((([+][1-9])|([+][1-9][0-9]{1,12}))|((00[1-9])|(00[1-9][0-9]{1,11})))"
             },
             "autorizacneOsvedcenie": {
               "type": "string",

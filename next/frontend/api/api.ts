@@ -16,7 +16,7 @@ const fetchJsonApi = async <T=any>(path: string, options?: RequestInit): Promise
     const response = await fetch(path, options)
     if (response.ok) {
       try {
-        return await response.json() as T
+        return (await response.json()) as T
       } catch (error) {
         throw new Error(API_ERROR_TEXT)
       }
@@ -35,7 +35,9 @@ const fetchJsonApi = async <T=any>(path: string, options?: RequestInit): Promise
     }
     if (responseJson?.errors) {
       const responseMessage = String(responseJson?.message || API_ERROR_TEXT)
-      const responseErrors: ErrorObject[] = Array.isArray(responseJson.errors) ? responseJson.errors : []
+      const responseErrors: ErrorObject[] = Array.isArray(responseJson.errors)
+        ? responseJson.errors
+        : []
       throw new ApiError(responseMessage, responseErrors)
     } else if (responseJson?.errorName) {
       throw new TaxApiError(String(responseJson.errorName), responseJson)
@@ -66,13 +68,19 @@ const fetchBlob = async (path: string, options?: RequestInit) => {
 }
 
 // TODO move error handling here
-export const submitEform = async (eformKey: string, data: Record<string, any>) => {
+export const submitEform = async (
+  eformKey: string,
+  formId: string,
+  data: Record<string, any>,
+  token: string | null,
+) => {
   return fetchJsonApi(`/api/eforms/${eformKey}/submit`, {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
+      Authorization: token ? `Bearer ${token}` : '',
     },
-    body: JSON.stringify(data),
+    body: JSON.stringify({ data, id: formId }),
   })
 }
 
@@ -117,7 +125,7 @@ export const xmlToFormData = (eform: string, data: string): Promise<RJSFSchema> 
   })
 }
 
-export const verifyIdentityApi = (data: Identity, token?: string|null) => {
+export const verifyIdentityApi = (data: Identity, token?: string | null) => {
   if (!token) throw new Error(MISSING_TOKEN)
 
   return fetchJsonApi(
@@ -133,7 +141,7 @@ export const verifyIdentityApi = (data: Identity, token?: string|null) => {
   )
 }
 
-export const subscribeApi = (data: { gdprData?: Gdpr[] }, token?: string|null): Promise<User> => {
+export const subscribeApi = (data: { gdprData?: Gdpr[] }, token?: string | null): Promise<User> => {
   if (!token) throw new Error(MISSING_TOKEN)
 
   return fetchJsonApi<User>(`${String(process.env.NEXT_PUBLIC_CITY_ACCOUNT_URL)}/user/subscribe`, {
@@ -146,44 +154,56 @@ export const subscribeApi = (data: { gdprData?: Gdpr[] }, token?: string|null): 
   })
 }
 
-export const unsubscribeApi = (data: { gdprData?: Gdpr[] }, token?: string|null): Promise<User> => {
+export const unsubscribeApi = (
+  data: { gdprData?: Gdpr[] },
+  token?: string | null,
+): Promise<User> => {
   if (!token) throw new Error(MISSING_TOKEN)
 
-  return fetchJsonApi<User>(`${String(process.env.NEXT_PUBLIC_CITY_ACCOUNT_URL)}/user/unsubscribe`, {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-      Authorization: `Bearer ${token}`,
+  return fetchJsonApi<User>(
+    `${String(process.env.NEXT_PUBLIC_CITY_ACCOUNT_URL)}/user/unsubscribe`,
+    {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${token}`,
+      },
+      body: JSON.stringify(data),
     },
-    body: JSON.stringify(data),
-  })
+  )
 }
 
 export const getUserApi = (token: string|null): Promise<User> => {
   if (!token) throw new Error(MISSING_TOKEN)
 
-  return fetchJsonApi<User>(`${String(process.env.NEXT_PUBLIC_CITY_ACCOUNT_URL)}/user/get-or-create`, {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-      Authorization: `Bearer ${token}`,
+  return fetchJsonApi<User>(
+    `${String(process.env.NEXT_PUBLIC_CITY_ACCOUNT_URL)}/user/get-or-create`,
+    {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${token}`,
+      },
     },
-  })
+  )
 }
 
-export const resetRcApi = (token: string|null) => {
+export const resetRcApi = (token: string | null) => {
   if (!token) throw new Error(MISSING_TOKEN)
 
-  return fetchJsonApi(`${String(process.env.NEXT_PUBLIC_CITY_ACCOUNT_URL)}/user/remove-birthnumber`, {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-      Authorization: `Bearer ${token}`,
+  return fetchJsonApi(
+    `${String(process.env.NEXT_PUBLIC_CITY_ACCOUNT_URL)}/user/remove-birthnumber`,
+    {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${token}`,
+      },
     },
-  })
+  )
 }
 
-export const getForms = (token: string|null) => {
+export const getForms = (token: string | null) => {
   if (!token) throw new Error(MISSING_TOKEN)
 
   return fetchJsonApi(`${String(process.env.NEXT_PUBLIC_FORMS_URL)}/nases/forms`, {
@@ -195,7 +215,7 @@ export const getForms = (token: string|null) => {
   })
 }
 
-export const createForm = (token: string|null, data: CreateFormDto): Promise<FormDto> => {
+export const createForm = (token: string | null, data: CreateFormDto): Promise<FormDto> => {
   if (!token) throw new Error(MISSING_TOKEN)
 
   return fetchJsonApi<FormDto>(`${String(process.env.NEXT_PUBLIC_FORMS_URL)}/nases/create-form`, {
@@ -208,7 +228,7 @@ export const createForm = (token: string|null, data: CreateFormDto): Promise<For
   })
 }
 
-export const getForm = (token: string|null, id: string): Promise<FormDto> => {
+export const getForm = (token: string | null, id: string): Promise<FormDto> => {
   if (!token) throw new Error(MISSING_TOKEN)
 
   return fetchJsonApi<FormDto>(`${String(process.env.NEXT_PUBLIC_FORMS_URL)}/nases/form/${id}`, {
@@ -220,7 +240,7 @@ export const getForm = (token: string|null, id: string): Promise<FormDto> => {
   })
 }
 
-export const updateForm = (token: string|null, id: string, data: UpdateFormDto) => {
+export const updateForm = (token: string | null, id: string, data: UpdateFormDto) => {
   if (!token) throw new Error(MISSING_TOKEN)
 
   return fetchJsonApi(`${String(process.env.NEXT_PUBLIC_FORMS_URL)}/nases/update-form/${id}`, {
@@ -233,40 +253,49 @@ export const updateForm = (token: string|null, id: string, data: UpdateFormDto) 
   })
 }
 
-export const getTaxApi = (token: string|null) => {
+export const getTaxApi = (token: string | null) => {
   if (!token) throw new Error(MISSING_TOKEN)
 
-  return fetchJsonApi(`${String(process.env.NEXT_PUBLIC_TAXES_URL)}/tax/get-tax-by-year?year=2023`, {
-    method: 'GET',
-    headers: {
-      'Content-Type': 'application/json',
-      Authorization: `Bearer ${token}`,
+  return fetchJsonApi(
+    `${String(process.env.NEXT_PUBLIC_TAXES_URL)}/tax/get-tax-by-year?year=2023`,
+    {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${token}`,
+      },
     },
-  })
+  )
 }
 
-export const getTaxPdfApi = (token: string|null) => {
+export const getTaxPdfApi = (token: string | null) => {
   if (!token) throw new Error(MISSING_TOKEN)
 
-  return fetchJsonApi(`${String(process.env.NEXT_PUBLIC_TAXES_URL)}/tax/get-tax-pdf-by-year?year=2023`, {
-    method: 'GET',
-    headers: {
-      'Content-Type': 'application/json',
-      Authorization: `Bearer ${token}`,
+  return fetchJsonApi(
+    `${String(process.env.NEXT_PUBLIC_TAXES_URL)}/tax/get-tax-pdf-by-year?year=2023`,
+    {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${token}`,
+      },
     },
-  })
+  )
 }
 
-export const getPaymentGatewayUrlApi = (token: string|null): Promise<UrlResult> => {
+export const getPaymentGatewayUrlApi = (token: string | null): Promise<UrlResult> => {
   if (!token) throw new Error(MISSING_TOKEN)
 
-  return fetchJsonApi<UrlResult>(`${String(process.env.NEXT_PUBLIC_TAXES_URL)}/payment/cardpay/by-year/2023`, {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-      Authorization: `Bearer ${token}`,
+  return fetchJsonApi<UrlResult>(
+    `${String(process.env.NEXT_PUBLIC_TAXES_URL)}/payment/cardpay/by-year/2023`,
+    {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${token}`,
+      },
     },
-  })
+  )
 }
 
 export const getEnum = async (id?: string) => {
@@ -293,6 +322,20 @@ export const getEnum = async (id?: string) => {
     logger.error(error)
     throw error
   }
+}
+
+export const sendForm = (id: string, formDataXml: string, authorizationHeader: string) => {
+  return fetchJsonApi(
+    `${String(process.env.NEXT_PUBLIC_FORMS_URL)}/nases/send-and-update-form/${id}`,
+    {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: authorizationHeader,
+      },
+      body: JSON.stringify({ formDataXml }),
+    },
+  )
 }
 
 export const uploadFileToBucket = async (file: File) => {

@@ -87,11 +87,12 @@ const UploadComponent: ForwardRefRenderFunction<HTMLDivElement, UploadProps> = (
           pospId: pospId ?? parsedBucketName?.[1],
           formId: formId ?? parsedBucketName?.[2],
           userExternalId,
-          fileUid: scan.fileName
+          fileUid: scan.fileName.split("/").pop()
         }
+
         scanFile(data)
-          .then(res => console.log(res))
-          .catch((error) => console.log(error))
+          .then(res => console.log('scan file response:', res))
+          .catch((error) => console.log('scan file error:', error))
       })
     )
   }

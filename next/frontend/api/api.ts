@@ -321,7 +321,7 @@ export const deleteFileFromBucket = async (fileName: string) => {
 
 export const scanFile = async (data: ScanFileDto) => {
   if (!data.pospId || !data.formId || !data.userExternalId || !data.fileUid) throw new Error(API_ERROR_TEXT)
-
+  console.log("SEND POST REQUEST TO /scan/file WITH DATA:", JSON.stringify(data))
   return fetchJsonApi(`${String(process.env.NEXT_PUBLIC_FORMS_URL)}/files/scan`, {
     method: 'POST',
     headers: {

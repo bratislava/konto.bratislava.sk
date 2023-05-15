@@ -9,6 +9,10 @@ export const useFormRJSFContextMemo = (eform: EFormValue, formFiller: FormFiller
 
   return useMemo((): FormRJSFContext => {
     const { schema } = eform
+
+    console.log("schema pospId:", schema.pospID)
+    console.log("formId:", formId)
+
     return {
       formId,
       pospId: schema.pospID,

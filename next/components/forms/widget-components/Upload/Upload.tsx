@@ -91,8 +91,8 @@ const UploadComponent: ForwardRefRenderFunction<HTMLDivElement, UploadProps> = (
         }
 
         scanFile(data)
-          .then(res => console.log('scan file response:', res))
-          .catch((error) => console.log('scan file error:', error))
+          .then(res => console.log('scan file response:', JSON.stringify(res)))
+          .catch((error) => console.log('scan file error:', JSON.stringify(error)))
       })
     )
   }

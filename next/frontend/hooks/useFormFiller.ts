@@ -17,7 +17,7 @@ export interface FormFiller {
 }
 
 export const useFormFiller = (eform: EFormValue): FormFiller => {
-  const [formId, setFormId] = useState<string>('')
+  const [formId, setFormId] = useState<string|undefined>()
   const [formUserExternalId, setFormUserExternalId] = useState<string|undefined>()
   const { getAccessToken } = useAccount()
   const [openSnackbarWarning] = useSnackbar({ variant: 'warning' })

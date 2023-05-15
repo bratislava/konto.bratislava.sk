@@ -341,7 +341,7 @@ export const sendForm = (id: string, formDataXml: string, authorizationHeader: s
 export const uploadFileToBucket = async (file: File) => {
   const formData = new FormData()
   formData.append('file', file)
-
+  console.log("SEND POST REQUEST to /eforms/upload-file WITH DATA:", JSON.stringify(file))
   return fetchJsonApi('/api/eforms/upload-file', {
     method: 'POST',
     headers: {

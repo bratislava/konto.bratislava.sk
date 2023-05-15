@@ -4,7 +4,7 @@ import InputField from 'components/forms/widget-components/InputField/InputField
 import WidgetWrapper from 'components/forms/widget-wrappers/WidgetWrapper'
 import React from 'react'
 
-type InputFieldRJSFOptions = {
+export type InputFieldRJSFOptions = {
   type?: 'text' | 'password'
   resetIcon?: boolean
   leftIcon?: 'person' | 'mail' | 'call' | 'lock'
@@ -55,6 +55,7 @@ const InputFieldWidgetRJSF = ({
     }
   }
 
+  console.log(rawErrors)
   return (
     <WidgetWrapper accordion={accordion} spaceBottom={spaceBottom} spaceTop={spaceTop}>
       <InputField

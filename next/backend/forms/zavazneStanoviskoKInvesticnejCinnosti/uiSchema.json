@@ -83,8 +83,9 @@
     },
     "ziadatelMestoPsc": {
       "ui:field": "doubledInput",
-      "ui:hideError": true,
+      "//ui:hideError": true,
       "ui:options": {
+        "spaceTop": "large",
         "FirstInputClassNames": "w-full",
         "SecondInputClassNames": "w-1/4"
       }

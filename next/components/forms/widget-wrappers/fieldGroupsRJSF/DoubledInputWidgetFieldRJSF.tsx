@@ -1,4 +1,4 @@
-import { FieldProps, RJSFSchema } from '@rjsf/utils'
+import { FieldProps, RJSFSchema, WidgetProps } from '@rjsf/utils'
 import React from 'react'
 
 import { DoubledInputField } from '../../groups'
@@ -11,8 +11,11 @@ import {
 } from '../../widget-components/InputField/InputField'
 import WidgetWrapper, { isFormSpacingType } from '../WidgetWrapper'
 
+type InputFieldBase = WidgetProps
+
 interface DoubledInputWidgetFieldRJSFProps extends FieldProps {
   formData: RJSFSchema
+  rawErrors: string[]
 }
 
 const DoubledInputWidgetFieldRJSF = ({
@@ -21,7 +24,9 @@ const DoubledInputWidgetFieldRJSF = ({
   schema,
   uiSchema,
   errorSchema,
-}: DoubledInputWidgetFieldRJSFProps) => {
+  rawErrors,
+}: DoubledInputWidgetFieldRJSFProps & InputFieldBase) => {
+  console.log(errorSchema, rawErrors)
   const keys = Object.keys({ ...schema.properties })
 
   const schemaProperties = {
@@ -61,11 +66,11 @@ const DoubledInputWidgetFieldRJSF = ({
     const formSpacingTypeVariant = localUiSchema?.[formSpacingType]
     return typeof formSpacingTypeVariant === 'string' && isFormSpacingType(formSpacingTypeVariant)
       ? formSpacingTypeVariant
-      : undefined
+      : 'none'
   }
 
   // TODO: fix this code block. Re check what kind of error message it returns and fix in a new way according new task
-  const getErrorMessage = (propKey: string): string[] => errorSchema?.[propKey]?.__errors || []
+  // const getErrorMessage = (propKey: string): string[] => rawErrors || []
   return (
     <WidgetWrapper
       accordion={uiSchema?.['ui:accordion']}
@@ -102,8 +107,8 @@ const DoubledInputWidgetFieldRJSF = ({
           SecondInputResetIcon={localUiSchema?.SecondInputResetIcon as unknown as boolean}
           FirstInputClassNames={localUiSchema?.FirstInputClassNames as string}
           SecondInputClassNames={localUiSchema?.SecondInputClassNames as string}
-          FirstInputErrorMessage={getErrorMessage(keys[0])}
-          SecondInputErrorMessage={getErrorMessage(keys[1])}
+          FirstInputErrorMessage={rawErrors}
+          SecondInputErrorMessage={rawErrors}
           FirstInputDisabled={localUiSchema?.FirstInputDisabled as unknown as boolean}
           SecondInputDisabled={localUiSchema?.SecondInputDisabled as unknown as boolean}
           FirstInputSize={getInputSize('FirstInputSize')}

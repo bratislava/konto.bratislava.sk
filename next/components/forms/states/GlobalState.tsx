@@ -1,8 +1,9 @@
+import { MenuDropdownStateBase } from 'components/forms/simple-components/MenuDropdown/MenuDropdown'
 import React, { createContext, useContext, useState } from 'react'
 
 type GlobalStateBase = {
   applicationsActiveMenuItem?: 'sent' | 'concept'
-  dropdownMenuIsOpen?: boolean
+  dropdownMenuState?: MenuDropdownStateBase
 }
 
 const GlobalStateContext = createContext<{
@@ -20,7 +21,7 @@ interface GlobalStateProviderProps {
 export const GlobalStateProvider: React.FC<GlobalStateProviderProps> = ({ children }) => {
   const [globalState, setGlobalState] = useState<GlobalStateBase>({
     applicationsActiveMenuItem: 'sent',
-    dropdownMenuIsOpen: false,
+    dropdownMenuState: { id: '', isOpen: false },
   })
   return (
     <GlobalStateContext.Provider value={{ globalState, setGlobalState }}>

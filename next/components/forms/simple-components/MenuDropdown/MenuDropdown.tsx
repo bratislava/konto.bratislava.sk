@@ -5,6 +5,11 @@ import MenuTrigger from 'components/forms/simple-components/MenuDropdown/MenuTri
 import { useGlobalStateContext } from 'components/forms/states/GlobalState'
 import React, { ReactNode } from 'react'
 
+export type MenuDropdownStateBase = {
+  id: string
+  isOpen: boolean
+}
+
 export type MenuItemBase = {
   id?: number
   title: string
@@ -15,34 +20,33 @@ export type MenuItemBase = {
 }
 
 type MenuDropdownBase = {
+  id: string
   items: MenuItemBase[]
   itemVariant?: 'form' | 'header'
   buttonTrigger?: ReactNode
-  buttonVariant?: 'gray' | 'main' | 'none'
-  buttonSize?: 'sm' | 'lg'
+  buttonClassName?: string
 }
 
 const MenuDropdown = ({
+  id,
   items,
   itemVariant = 'form',
   buttonTrigger,
-  buttonVariant = 'none',
-  buttonSize = 'sm',
+  buttonClassName,
 }: MenuDropdownBase) => {
   const { setGlobalState, globalState } = useGlobalStateContext()
 
   return (
     <DropdownMenu.Root
       onOpenChange={() =>
-        setGlobalState({ ...globalState, dropdownMenuIsOpen: !globalState.dropdownMenuIsOpen })
+        setGlobalState({
+          ...globalState,
+          dropdownMenuState: { id, isOpen: !globalState.dropdownMenuState?.isOpen },
+        })
       }
     >
       <DropdownMenu.Trigger asChild>
-        <MenuTrigger
-          buttonSize={buttonSize}
-          buttonTrigger={buttonTrigger}
-          buttonVariant={buttonVariant}
-        />
+        <MenuTrigger className={buttonClassName} buttonTrigger={buttonTrigger} />
       </DropdownMenu.Trigger>
 
       <DropdownMenu.Portal>

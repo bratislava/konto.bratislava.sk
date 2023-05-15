@@ -87,7 +87,8 @@ export const validator: ValidatorType = customizeValidator({
   ajvOptionsOverrides: { keywords: ajvKeywords },
 })
 
-export type FileScanState = 'error'|'scan'|'finished'|'none'
+// export type FileScanState = "ACCEPTED"|"QUEUED"|"SCANNING"|"SAFE"|"INFECTED"|"NOT FOUND"|"MOVE ERROR SAFE"|"MOVE ERROR INFECTED"|"SCAN ERROR"|"SCAN TIMEOUT"
+export type FileScanState = "scan"|"error"
 
 export interface FileScan {
   fileName: string

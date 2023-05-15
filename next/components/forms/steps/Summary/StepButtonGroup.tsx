@@ -16,7 +16,7 @@ interface StepButtonGroupProps {
 }
 
 const StepButtonGroup = (props: StepButtonGroupProps) => {
-  const { stepIndex, isFinalStep, fileScans, previous, skip, submitStep, submitForm } = props
+  const { stepIndex, isFinalStep, fileScans=[], previous, skip, submitStep, submitForm } = props
   const { t } = useTranslation('forms')
 
   const isSubmitFormAllowed = !fileScans.some(scan => scan.fileState === 'error')

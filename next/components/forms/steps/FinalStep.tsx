@@ -23,7 +23,7 @@ const FinalStep = ({
   formData,
   formErrors,
   extraErrors,
-  fileScans,
+  fileScans=[],
   schema,
   onGoToStep,
   submitErrors,

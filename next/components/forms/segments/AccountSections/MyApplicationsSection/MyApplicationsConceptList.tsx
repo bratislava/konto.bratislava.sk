@@ -21,9 +21,12 @@ const MyApplicationsConceptList = ({ cards }: MyApplicationsListBase) => {
               (_, i) =>
                 i + 1 <= currentPage * ITEMS_PER_PAGE && i + 1 > (currentPage - 1) * ITEMS_PER_PAGE,
             )
-            .map((card, i) => (
-              <li key={i}>
-                <MyApplicationsConceptCard data={card} />
+            .map((card) => (
+              <li key={+card.id}>
+                <MyApplicationsConceptCard
+                  onDeleteCard={() => cards.splice(+card.id, 1)}
+                  data={card}
+                />
               </li>
             ))
         ) : (

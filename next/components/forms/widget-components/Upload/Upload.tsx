@@ -7,6 +7,7 @@ import { v4 as createUuid } from 'uuid'
 import { deleteFileFromBucket, scanFile, uploadFileToBucket } from '../../../../frontend/api/api'
 import { ScanFileDto } from '../../../../frontend/dtos/formDto'
 import { FileScan } from '../../../../frontend/dtos/formStepperDto'
+import useAccount from '../../../../frontend/hooks/useAccount'
 import logger from '../../../../frontend/utils/logger'
 import UploadBrokenMessages, { MINIO_ERROR } from '../../info-components/UploadBrokenMessages'
 import UploadFieldHeader from '../../info-components/UploadFieldHeader'
@@ -78,9 +79,12 @@ const UploadComponent: ForwardRefRenderFunction<HTMLDivElement, UploadProps> = (
   }: UploadProps = props
 
   const [fileBrokenMessages, setFileBrokenMessages] = useState<string[]>([])
+  const { getAccessToken } = useAccount()
 
   const startScanFiles = async (newFileScans: FileScan[]) => {
     const parsedBucketName: string[]|undefined = bucketFolderName?.split("/")
+    const token = await getAccessToken()
+
     return Promise.all(
       newFileScans.map(async (scan) => {
         const data: ScanFileDto = {
@@ -90,7 +94,7 @@ const UploadComponent: ForwardRefRenderFunction<HTMLDivElement, UploadProps> = (
           fileUid: scan.fileName.split("/").pop()
         }
 
-        scanFile(data)
+        scanFile(token, data)
           .then(res => console.log('scan file response:', res))
           .catch((error) => console.log('scan file error:', error))
       })

@@ -303,9 +303,9 @@ export const AccountProvider = ({ children }: { children: ReactNode }) => {
     }
   }
 
-  const resendVerificationCode = (): Promise<boolean> => {
+  const resendVerificationCode = (username = lastCredentials.Username): Promise<boolean> => {
     const cognitoUser = new CognitoUser({
-      Username: lastCredentials.Username,
+      Username: username,
       Pool: userPool,
       // Storage: new CookieStorage({
       //   domain: process.env.NEXT_PUBLIC_COGNITO_COOKIE_STORAGE_DOMAIN,
@@ -385,6 +385,7 @@ export const AccountProvider = ({ children }: { children: ReactNode }) => {
 
         onFailure(err: AWSError) {
           if (err.code === 'UserNotConfirmedException') {
+            resendVerificationCode(email).catch((error) => logger.error(error))
             setStatus(AccountStatus.EmailVerificationRequired)
           } else {
             logger.error('AWS error login', err)

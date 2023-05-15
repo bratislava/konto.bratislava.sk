@@ -5,7 +5,6 @@ import InputField from 'components/forms/widget-components/InputField/InputField
 import { useTranslation } from 'next-i18next'
 import { useEffect, useState } from 'react'
 import { Controller } from 'react-hook-form'
-import { useDidMount } from 'rooks'
 
 import { AccountError } from '../../../../frontend/hooks/useAccount'
 import useHookForm from '../../../../frontend/hooks/useHookForm'
@@ -44,7 +43,6 @@ const schema = {
 const EmailVerificationForm = ({ onSubmit, error, onResend, lastEmail, isLogin }: Props) => {
   const [lastVerificationCode, setLastVerificationCode] = useState('')
   const { t } = useTranslation('account')
-  let resendCodeOnce = true
   const {
     handleSubmit,
     control,
@@ -70,14 +68,6 @@ const EmailVerificationForm = ({ onSubmit, error, onResend, lastEmail, isLogin }
   useEffect(() => {
     if (error === null || error === undefined) setCnt(0)
   }, [error])
-
-  // resend once time verification code after login
-  // TODO send verification code twice but log just once
-  useDidMount(async () => {
-    if (cnt > 0 && isLogin && resendCodeOnce) await onResend()
-    if (cnt > 0 && isLogin && resendCodeOnce) console.log('verification')
-    resendCodeOnce = false
-  })
 
   return (
     <form

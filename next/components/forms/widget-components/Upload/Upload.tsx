@@ -202,7 +202,9 @@ const UploadComponent: ForwardRefRenderFunction<HTMLDivElement, UploadProps> = (
     emitOnChange(sanitizedFiles, value)
 
     sanitizedFiles.forEach((minioFile, id) => {
+      console.log("START UPLOAD FILE")
       uploadFileToBucket(minioFile.file)
+        .then((res) => console.log("upload file finished", res))
         .catch((error) => {
           setMinioError()
           logger.error(error)

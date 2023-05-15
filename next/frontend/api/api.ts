@@ -14,7 +14,6 @@ export const MISSING_TOKEN = 'MISSING TOKEN'
 const fetchJsonApi = async <T=any>(path: string, options?: RequestInit): Promise<T> => {
   try {
     const response = await fetch(path, options)
-    console.log(response)
     if (response.ok) {
       try {
         return (await response.json()) as T
@@ -342,7 +341,7 @@ export const sendForm = (id: string, formDataXml: string, authorizationHeader: s
 export const uploadFileToBucket = async (file: File) => {
   const formData = new FormData()
   formData.append('file', file)
-  console.log("SEND POST REQUEST to /eforms/upload-file WITH DATA:", file)
+
   return fetchJsonApi('/api/eforms/upload-file', {
     method: 'POST',
     headers: {

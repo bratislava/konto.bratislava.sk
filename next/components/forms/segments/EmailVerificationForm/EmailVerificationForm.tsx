@@ -20,7 +20,6 @@ interface Props {
   onResend: () => Promise<any>
   error?: AccountError | null | undefined
   lastEmail: string
-  isLogin?: boolean
 }
 
 // must use `minLength: 1` to implement required field
@@ -40,7 +39,7 @@ const schema = {
   required: ['verificationCode'],
 }
 
-const EmailVerificationForm = ({ onSubmit, error, onResend, lastEmail, isLogin }: Props) => {
+const EmailVerificationForm = ({ onSubmit, error, onResend, lastEmail }: Props) => {
   const [lastVerificationCode, setLastVerificationCode] = useState('')
   const { t } = useTranslation('account')
   const {

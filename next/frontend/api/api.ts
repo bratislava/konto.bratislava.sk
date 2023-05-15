@@ -341,7 +341,7 @@ export const sendForm = (id: string, formDataXml: string, authorizationHeader: s
 export const uploadFileToBucket = async (file: File) => {
   const formData = new FormData()
   formData.append('file', file)
-  console.log("SEND POST REQUEST to /eforms/upload-file WITH DATA:", JSON.stringify(file))
+  console.log("SEND POST REQUEST to /eforms/upload-file WITH DATA:", file)
   return fetchJsonApi('/api/eforms/upload-file', {
     method: 'POST',
     headers: {
@@ -364,7 +364,7 @@ export const deleteFileFromBucket = async (fileName: string) => {
 
 export const scanFile = async (data: ScanFileDto) => {
   if (!data.pospId || !data.formId || !data.userExternalId || !data.fileUid) throw new Error(API_ERROR_TEXT)
-  console.log("SEND POST REQUEST TO /scan/file WITH DATA:", JSON.stringify(data))
+  console.log("SEND POST REQUEST TO /scan/file WITH DATA:", data)
   return fetchJsonApi(`${String(process.env.NEXT_PUBLIC_FORMS_URL)}/files/scan`, {
     method: 'POST',
     headers: {

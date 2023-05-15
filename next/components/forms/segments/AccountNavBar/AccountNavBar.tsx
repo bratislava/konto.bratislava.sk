@@ -10,6 +10,7 @@ import IdentityVerificationStatus from 'components/forms/simple-components/Ident
 import MenuDropdown, {
   MenuItemBase,
 } from 'components/forms/simple-components/MenuDropdown/MenuDropdown'
+import { useGlobalStateContext } from 'components/forms/states/GlobalState'
 import NextLink from 'next/link'
 import { useRouter } from 'next/router'
 import { useTranslation } from 'next-i18next'
@@ -70,6 +71,7 @@ export const AccountNavBar = ({ className, sectionsList, menuItems, hiddenHeader
   const { isAuth, userData } = useAccount()
 
   const { statusBarContent } = useStatusBarContext()
+  const { globalState } = useGlobalStateContext()
   const [desktopRef, { height: desktopHeight }] = useElementSize([statusBarContent])
   const [mobileRef, { height: mobileHeight }] = useElementSize([statusBarContent])
 
@@ -119,7 +121,7 @@ export const AccountNavBar = ({ className, sectionsList, menuItems, hiddenHeader
                         </div>
                         <ChevronDownSmall
                           className={`ml-1 hidden w-5 h-5 mix-blend-normal lg:flex ${
-                            true ? '-rotate-180' : ''
+                            globalState.dropdownMenuIsOpen ? '-rotate-180' : ''
                           }`}
                         />
                       </>

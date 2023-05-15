@@ -1,4 +1,5 @@
 import cx from 'classnames'
+import { useGlobalStateContext } from 'components/forms/states/GlobalState'
 import React, { ReactNode } from 'react'
 
 interface ButtonProps {
@@ -6,20 +7,12 @@ interface ButtonProps {
   buttonTrigger?: ReactNode
   className?: string
   buttonVariant: 'gray' | 'main' | 'none'
-  isOpen: boolean
   buttonSize?: 'sm' | 'lg'
 }
 
 const MenuTrigger = React.forwardRef<HTMLButtonElement, ButtonProps>((props, ref) => {
-  const {
-    icon,
-    className,
-    buttonTrigger,
-    buttonVariant,
-    isOpen,
-    buttonSize = 'sm',
-    ...rest
-  } = props
+  const { globalState } = useGlobalStateContext()
+  const { icon, className, buttonTrigger, buttonVariant, buttonSize = 'sm', ...rest } = props
 
   return (
     <button
@@ -31,12 +24,14 @@ const MenuTrigger = React.forwardRef<HTMLButtonElement, ButtonProps>((props, ref
         {
           'w-10 h-10 rounded-lg border-2 border-gray-200 bg-transparent text-gray-700 focus:border-gray-300 focus:text-gray-800':
             buttonVariant === 'gray',
-          'text-gray-800 border-gray-300': isOpen && buttonVariant === 'gray',
+          'text-gray-800 border-gray-300':
+            globalState.dropdownMenuIsOpen && buttonVariant === 'gray',
         },
         {
           'w-10 h-10 rounded-lg border-2 border-main-700 bg-transparent text-gray-700 focus:border-main-800 focus:text-gray-800':
             buttonVariant === 'main',
-          'text-gray-800 border-main-800': isOpen && buttonVariant === 'main',
+          'text-gray-800 border-main-800':
+            globalState.dropdownMenuIsOpen && buttonVariant === 'main',
         },
         {
           '': buttonVariant === 'none',

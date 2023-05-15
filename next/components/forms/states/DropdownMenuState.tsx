@@ -3,6 +3,7 @@ import React, { createContext, useContext, useState } from 'react'
 
 type DropdownMenuStateBase = {
   applicationsActiveMenuItem?: 'sent' | 'concept'
+  dropdownMenuIsOpen?: boolean
 }
 
 const DropdownMenuStateStateContext = createContext<{
@@ -22,6 +23,7 @@ export const DropdownMenuStateStateProvider: React.FC<GlobalStateProviderProps> 
 }) => {
   const [globalState, setGlobalState] = useState<DropdownMenuStateBase>({
     applicationsActiveMenuItem: 'sent',
+    dropdownMenuIsOpen: false,
   })
   return (
     <DropdownMenuStateStateContext.Provider value={{ globalState, setGlobalState }}>

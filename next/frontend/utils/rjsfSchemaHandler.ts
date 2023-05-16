@@ -9,13 +9,25 @@ import { FileScan, JsonSchema, JsonSchemaExtraProperties, JsonSchemaExtraPropert
 import { getAllPossibleJsonSchemaExtraProperties } from './formStepper'
 
 function findTitle(value: JSONSchema7Definition, items: JSONSchema7Definition[]) {
-  if (typeof items === 'boolean') return value
   const enumOption = items.find(
     (item: JSONSchema7Definition) => typeof item !== 'boolean' && item.const === value,
   )
+
   return enumOption && typeof enumOption !== 'boolean' && enumOption.title
     ? enumOption.title
     : value
+}
+
+function replaceScannedNames (fieldFormData: JSONSchema7Definition, fileScans: FileScan[]) {
+  if (!Array.isArray(fieldFormData)) {
+    const fileScan = fileScans.find(scan => scan.fileName === fieldFormData)
+    return fileScan ? fileScan.originalName : fieldFormData
+  }
+
+  return fieldFormData.map(data => {
+    const fileScan = fileScans.find(scan => scan.fileName === data)
+    return (fileScan ? fileScan.originalName : data) as JSONSchema7Definition
+  })
 }
 
 // transform value from formData which is array to simple text for Summary
@@ -24,6 +36,7 @@ function findTitle(value: JSONSchema7Definition, items: JSONSchema7Definition[])
 function transformValueArray(
   fieldFormData?: JSONSchema7Definition,
   fieldSchema?: JSONSchema7Definition,
+  fileScans: FileScan[] = []
 ) {
   if (!fieldFormData || typeof fieldFormData === 'boolean') return null
   if (!fieldSchema || typeof fieldSchema === 'boolean') return fieldFormData
@@ -36,7 +49,9 @@ function transformValueArray(
       ? fieldSchema.items.anyOf ?? fieldSchema.items.oneOf ?? fieldSchema.items.allOf
       : fieldSchema.oneOf
 
-  if (!items || typeof items === 'boolean' || !Array.isArray(items)) return fieldFormData
+  if (!items || !Array.isArray(items)) {
+    return replaceScannedNames(fieldFormData, fileScans)
+  }
 
   return Array.isArray(fieldFormData)
     ? fieldFormData.map((value: JSONSchema7Definition) => findTitle(value, items))
@@ -53,15 +68,13 @@ function getFieldData(
   fieldSchema?: JSONSchema7Definition,
   isConditional?: boolean,
 ): TransformedFormData {
-  const transformedFieldFormData = transformValueArray(fieldFormData, fieldSchema)
-  const fileScan = fileScans.find(scan => scan.fileName === transformedFieldFormData)
-  const value = fileScan
-    ? fileScan.originalName
-    : transformedFieldFormData && !Array.isArray(transformedFieldFormData)
-      ? transformedFieldFormData.toString()
-      : Array.isArray(transformedFieldFormData) && transformedFieldFormData.length > 0
-        ? transformedFieldFormData.join(', ')
-        : null
+
+  const transformedFieldFormData = transformValueArray(fieldFormData, fieldSchema, fileScans)
+  const value = transformedFieldFormData && !Array.isArray(transformedFieldFormData)
+    ? transformedFieldFormData.toString()
+    : Array.isArray(transformedFieldFormData) && transformedFieldFormData.length > 0
+      ? transformedFieldFormData.join(', ')
+      : null
 
   return {
     label,
@@ -69,7 +82,7 @@ function getFieldData(
     schemaPath,
     isError,
     isConditional,
-    fileScanState: fileScan?.fileState
+    fileScanState: "scan"
   }
 }
 

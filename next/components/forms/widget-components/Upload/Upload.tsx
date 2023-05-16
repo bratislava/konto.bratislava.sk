@@ -137,6 +137,8 @@ const UploadComponent: ForwardRefRenderFunction<HTMLDivElement, UploadProps> = (
   const removeFileOnClient = (fileName: string) => {
     const updatedFiles = value ? value.filter((minioFile) => minioFile.file.name !== fileName) : []
     emitOnChange(updatedFiles)
+    // const deleteScans = fileScans ? fileScans.filter((fileScan) => fileScan.fileName === fileName) : []
+    // onChangeFileScans?.([], deleteScans)
   }
 
   const setMinioError = () => {

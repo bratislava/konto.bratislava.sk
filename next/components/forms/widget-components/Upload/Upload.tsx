@@ -101,18 +101,16 @@ const UploadComponent: ForwardRefRenderFunction<HTMLDivElement, UploadProps> = (
     )
   }
 
-  useEffect(() => {
+  const scanAllFiles = (files: UploadMinioFile[]) => {
     if (!isScanningAllowed) return
 
-    const newFileScans: FileScan[] = value
-      ? value.map(minioFile => {
-        const oldFileScan = fileScans?.find(fileScan => fileScan.fileName === minioFile.file.name)
-        return {
-          originalName: minioFile.originalName,
-          fileName: minioFile.file.name,
-          fileState: oldFileScan ? oldFileScan.fileState : "scan"
-        }})
-      : []
+    const newFileScans: FileScan[] = files.map(minioFile => {
+      const oldFileScan = fileScans?.find(fileScan => fileScan.fileName === minioFile.file.name)
+      return {
+        originalName: minioFile.originalName,
+        fileName: minioFile.file.name,
+        fileState: oldFileScan ? oldFileScan.fileState : "scan"
+      }})
     const removeFileScans: FileScan[] = fileScans
       ? fileScans.filter(oldScan => newFileScans?.every(newScan => newScan.fileName !== oldScan.fileName))
       : []
@@ -124,13 +122,12 @@ const UploadComponent: ForwardRefRenderFunction<HTMLDivElement, UploadProps> = (
       .catch((error) => {
         logger.error(error)
       })
+  }
 
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [value])
-
-  const emitOnChange = (newFiles: UploadMinioFile[], oldFiles?: UploadMinioFile[]) => {
+  const emitOnChange = (newFiles: UploadMinioFile[], oldFiles?: UploadMinioFile[], allowFileScan?: boolean) => {
     const changedValue = multiple && oldFiles ? [...oldFiles, ...newFiles] : [...newFiles]
     onChange?.(changedValue)
+    if (allowFileScan) scanAllFiles(changedValue)
   }
 
   const removeFileOnClient = (fileName: string) => {
@@ -204,20 +201,18 @@ const UploadComponent: ForwardRefRenderFunction<HTMLDivElement, UploadProps> = (
     sanitizedFiles.forEach((minioFile, id) => {
       console.log("START UPLOAD FILE")
       uploadFileToBucket(minioFile.file)
-        .then((res) => console.log("upload file finished", res))
+        .then((res) => {
+          console.log("upload file finished", res)
+          sanitizedFiles[id].isUploading = false
+          emitOnChange(sanitizedFiles, value, true)
+          return null
+        })
         .catch((error) => {
           setMinioError()
           logger.error(error)
           sanitizedFiles[id].errorMessage = 'File not uploaded'
-        })
-        .finally(() => {
           sanitizedFiles[id].isUploading = false
           emitOnChange(sanitizedFiles, value)
-        })
-        // finally can throw error
-        .catch((error) => {
-          setMinioError()
-          logger.error(error)
         })
     })
   }

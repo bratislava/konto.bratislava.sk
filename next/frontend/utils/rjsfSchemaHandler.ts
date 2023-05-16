@@ -5,7 +5,13 @@ import {
   TransformedFormData,
   TransformedFormStep,
 } from '../../components/forms/steps/Summary/TransformedFormData'
-import { FileScan, JsonSchema, JsonSchemaExtraProperties, JsonSchemaExtraProperty } from '../dtos/formStepperDto'
+import {
+  FileScan,
+  FileScanState,
+  JsonSchema,
+  JsonSchemaExtraProperties,
+  JsonSchemaExtraProperty,
+} from '../dtos/formStepperDto'
 import { getAllPossibleJsonSchemaExtraProperties } from './formStepper'
 
 function findTitle(value: JSONSchema7Definition, items: JSONSchema7Definition[]) {
@@ -58,6 +64,26 @@ function transformValueArray(
     : findTitle(fieldFormData, items)
 }
 
+function getFileScanState (fieldFormData?: JSONSchema7Definition, fileScans?: FileScan[]): FileScanState|undefined {
+  if (!fieldFormData || !fileScans) return undefined
+
+  if (!Array.isArray(fieldFormData)) {
+    const fileScan = fileScans.find(scan => scan.fileName === fieldFormData)
+    return fileScan ? fileScan.fileState : undefined
+  }
+
+  const allScanStates = fieldFormData.map(data => {
+    const fileScan = fileScans.find(scan => scan.fileName === data)
+    return fileScan ? fileScan.fileState : undefined
+  })
+
+  return allScanStates?.some(state => state === 'error')
+    ? 'error'
+    : allScanStates?.some(state => state === 'scan')
+      ? 'scan'
+      : undefined
+}
+
 // get data of field in format we need in Summary
 function getFieldData(
   label: string,
@@ -82,7 +108,7 @@ function getFieldData(
     schemaPath,
     isError,
     isConditional,
-    fileScanState: "scan"
+    fileScanState: getFileScanState(fieldFormData, fileScans)
   }
 }
 

@@ -42,7 +42,7 @@ const schema = {
 const EmailVerificationForm = ({ onSubmit, error, onResend, lastEmail }: Props) => {
   const [lastVerificationCode, setLastVerificationCode] = useState('')
   const { t } = useTranslation('account')
-  const isError: boolean = error === null || error === undefined
+  const noError: boolean = error === null || error === undefined
   const {
     handleSubmit,
     control,
@@ -104,10 +104,10 @@ const EmailVerificationForm = ({ onSubmit, error, onResend, lastEmail }: Props) 
         variant="category"
         disabled={isSubmitting}
       />
-      {/* turn off timer if error */}
+      {/* don't show timer if error */}
 
       <div className="text-p3 lg:text-p2">
-        {isError && (
+        {noError && (
           <>
             <span>{t('verification_description')}</span>
             {cnt > 0 && (
@@ -123,7 +123,7 @@ const EmailVerificationForm = ({ onSubmit, error, onResend, lastEmail }: Props) 
         className="min-w-full"
         text={t('verification_resend')}
         variant="category-outline"
-        disabled={cnt > 0 || isError}
+        disabled={cnt > 0 || noError}
       />
     </form>
   )

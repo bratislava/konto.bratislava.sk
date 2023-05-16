@@ -303,6 +303,29 @@ export const AccountProvider = ({ children }: { children: ReactNode }) => {
     }
   }
 
+  const resendVerificationCode = (username = lastCredentials.Username): Promise<boolean> => {
+    const cognitoUser = new CognitoUser({
+      Username: username,
+      Pool: userPool,
+      // Storage: new CookieStorage({
+      //   domain: process.env.NEXT_PUBLIC_COGNITO_COOKIE_STORAGE_DOMAIN,
+      // }),
+    })
+
+    setError(null)
+    return new Promise((resolve) => {
+      cognitoUser.resendConfirmationCode((err?: Error) => {
+        if (err) {
+          setError({ ...(err as AWSError) })
+          logger.error('AWS error resendVerificationCode', err)
+          resolve(false)
+        } else {
+          resolve(true)
+        }
+      })
+    })
+  }
+
   const login = (email: string, password: string | undefined): Promise<boolean> => {
     // login into cognito using aws sdk
     const credentials = {
@@ -362,6 +385,7 @@ export const AccountProvider = ({ children }: { children: ReactNode }) => {
 
         onFailure(err: AWSError) {
           if (err.code === 'UserNotConfirmedException') {
+            resendVerificationCode(email).catch((error) => logger.error(error))
             setStatus(AccountStatus.EmailVerificationRequired)
           } else {
             logger.error('AWS error login', err)
@@ -420,29 +444,6 @@ export const AccountProvider = ({ children }: { children: ReactNode }) => {
           const res = await login(lastCredentials.Username, lastCredentials.Password)
           await subscribe()
           resolve(res)
-        }
-      })
-    })
-  }
-
-  const resendVerificationCode = (): Promise<boolean> => {
-    const cognitoUser = new CognitoUser({
-      Username: lastCredentials.Username,
-      Pool: userPool,
-      // Storage: new CookieStorage({
-      //   domain: process.env.NEXT_PUBLIC_COGNITO_COOKIE_STORAGE_DOMAIN,
-      // }),
-    })
-
-    setError(null)
-    return new Promise((resolve) => {
-      cognitoUser.resendConfirmationCode((err?: Error) => {
-        if (err) {
-          setError({ ...(err as AWSError) })
-          logger.error('AWS error resendVerificationCode', err)
-          resolve(false)
-        } else {
-          resolve(true)
         }
       })
     })

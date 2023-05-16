@@ -1,7 +1,7 @@
 import { UploadMinioFile } from '@backend/dtos/minio/upload-minio-file.dto'
 import cx from 'classnames'
 import FieldErrorMessage from 'components/forms/info-components/FieldErrorMessage'
-import React, { ForwardedRef, forwardRef, ForwardRefRenderFunction, useEffect, useState } from 'react'
+import React, { ForwardedRef, forwardRef, ForwardRefRenderFunction, useState } from 'react'
 import { v4 as createUuid } from 'uuid'
 
 import { deleteFileFromBucket, scanFile, uploadFileToBucket } from '../../../../frontend/api/api'
@@ -86,17 +86,20 @@ const UploadComponent: ForwardRefRenderFunction<HTMLDivElement, UploadProps> = (
     const token = await getAccessToken()
 
     return Promise.all(
-      newFileScans.map(async (scan) => {
+      newFileScans.filter(async (scan) => {
         const data: ScanFileDto = {
           pospId: pospId ?? parsedBucketName?.[1],
           formId: formId ?? parsedBucketName?.[2],
           userExternalId,
           fileUid: scan.fileName.split("/").pop()
         }
-
-        scanFile(token, data)
-          .then(res => console.log('scan file response:', res))
-          .catch((error) => console.log('scan file error:', error))
+        return scanFile(token, data)
+          // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
+          .then(res => res.status === 'UPLOADED')
+          .catch((error) => {
+            logger.error("Failed /scan/file:", error)
+            return false
+          })
       })
     )
   }
@@ -116,8 +119,9 @@ const UploadComponent: ForwardRefRenderFunction<HTMLDivElement, UploadProps> = (
       : []
 
     startScanFiles(newFileScans)
-      .finally(() => {
-        onChangeFileScans?.(newFileScans, removeFileScans)
+      .then((scannedNewFiles) => {
+        onChangeFileScans?.(scannedNewFiles, removeFileScans)
+        return true
       })
       .catch((error) => {
         logger.error(error)
@@ -191,30 +195,29 @@ const UploadComponent: ForwardRefRenderFunction<HTMLDivElement, UploadProps> = (
     return chosenFiles
   }
 
-  const addNewFiles = (newFiles: UploadMinioFile[]) => {
+  const addNewFiles = async (newFiles: UploadMinioFile[]) => {
     const sanitizedFiles = sanitizeClientFiles(newFiles)
-    if (multiple && value && value[0]) {
+    const oldFiles = value ? [...value] : []
+    if (multiple && oldFiles.length > 0 && oldFiles[0]) {
       removeFirstFile()
     }
-    emitOnChange(sanitizedFiles, value)
+    emitOnChange(sanitizedFiles, oldFiles)
 
-    sanitizedFiles.forEach((minioFile, id) => {
-      console.log("START UPLOAD FILE")
-      uploadFileToBucket(minioFile.file)
-        .then((res) => {
-          console.log("upload file finished", res)
-          sanitizedFiles[id].isUploading = false
-          emitOnChange(sanitizedFiles, value, true)
-          return null
-        })
-        .catch((error) => {
-          setMinioError()
-          logger.error(error)
-          sanitizedFiles[id].errorMessage = 'File not uploaded'
-          sanitizedFiles[id].isUploading = false
-          emitOnChange(sanitizedFiles, value)
-        })
-    })
+    const uploadFiles = await Promise.all(
+      sanitizedFiles.map((minioFile: UploadMinioFile) => {
+        return uploadFileToBucket(minioFile.file)
+          .then(() => {
+            return { ...minioFile, isUploading: false } as UploadMinioFile
+          })
+          .catch((error) => {
+            setMinioError()
+            logger.error(error)
+            return { ...minioFile, errorMessage: 'File not uploaded', isUploading: false } as UploadMinioFile
+          })
+      })
+    )
+
+    emitOnChange(uploadFiles, oldFiles, true)
   }
 
   const handleOnClickUpload = () => {
@@ -225,19 +228,20 @@ const UploadComponent: ForwardRefRenderFunction<HTMLDivElement, UploadProps> = (
     uploadInput.multiple = multiple === undefined ? false : multiple
     uploadInput.accept = supportedFormats?.toString() || ''
 
-    uploadInput.addEventListener('change', () => {
+    // eslint-disable-next-line @typescript-eslint/no-misused-promises
+    uploadInput.addEventListener('change', async () => {
       if (!uploadInput.files) return
       const newFiles = Array.from(uploadInput.files, (file) => {
         return { file, originalName: file.name }
       })
-      addNewFiles(newFiles)
+      await addNewFiles(newFiles)
     })
 
     uploadInput.click()
   }
 
-  const handleOnDrop = (newFiles: UploadMinioFile[]) => {
-    addNewFiles(newFiles)
+  const handleOnDrop = async (newFiles: UploadMinioFile[]) => {
+    await addNewFiles(newFiles)
   }
 
   const handleOnRemoveFile = (id: number) => {

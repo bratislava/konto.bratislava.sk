@@ -80,7 +80,6 @@ const LoginPage = ({ page }: AsyncServerProps<typeof getServerSideProps>) => {
               onResend={resendVerificationCode}
               onSubmit={onVerifyEmail}
               error={error}
-              cntDisabled
             />
           ) : (
             <LoginForm onSubmit={onLogin} error={error} />

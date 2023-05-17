@@ -34,7 +34,7 @@ const FinalStep = ({
   if (typeof formData !== 'object' || formData == null) {
     return null
   }
-  console.log(fileScans)
+
   return (
     <div>
       <h1 className="text-h1-medium font-semibold">{t('summary')}</h1>

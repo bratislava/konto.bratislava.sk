@@ -38,6 +38,9 @@ const FinalStep = ({
   return (
     <div>
       <h1 className="text-h1-medium font-semibold">{t('summary')}</h1>
+      {fileScans.some(scan => scan.fileState === 'error') && (
+        <Alert type="error" message={t('errors.file_scan')} fullWidth className="mt-4" solid/>
+      )}
       {fileScans.some(scan => scan.fileState === 'scan') && (
         <Alert type="warning" message={t('warnings.file_scan')} fullWidth className="mt-4"/>
       )}

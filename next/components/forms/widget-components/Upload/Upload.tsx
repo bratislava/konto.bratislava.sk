@@ -28,7 +28,6 @@ interface UploadProps {
   sizeLimit?: number
   supportedFormats?: string[]
   className?: string
-  onChange?: (value: UploadMinioFile[]) => void
   errorMessage?: string[]
   isScanningAllowed?: boolean
   // info for file scanning, if not set it will throw error later
@@ -40,6 +39,7 @@ interface UploadProps {
   bucketFolderName?: string
   // file info for Summary
   fileScans?: FileScan[]
+  onChange?: (value: UploadMinioFile[]) => void
   onAddFileScans?: (newFileScans: FileScan[]) => void
   onRemoveFileScan?: (removeScan?: FileScan) => void
 }

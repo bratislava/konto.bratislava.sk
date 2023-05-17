@@ -1,8 +1,12 @@
 import { ErrorSchema, RJSFValidationError, StrictRJSFSchema } from '@rjsf/utils'
 import { ErrorObject } from 'ajv'
 import { useTranslation } from 'next-i18next'
+import { useEffectOnce } from 'usehooks-ts'
 
+import { getFileScanState } from '../../../frontend/api/api'
 import { FileScan, JsonSchema } from '../../../frontend/dtos/formStepperDto'
+import useAccount from '../../../frontend/hooks/useAccount'
+import logger from '../../../frontend/utils/logger'
 import Alert from '../info-components/Alert'
 import Summary from './Summary/Summary'
 import SummaryMessages from './Summary/SummaryMessages'
@@ -13,9 +17,10 @@ interface FinalStepProps {
   extraErrors: ErrorSchema
   fileScans: FileScan[]
   schema?: StrictRJSFSchema
-  onGoToStep: (step: number) => void
   submitErrors?: Array<ErrorObject | string>
   submitMessage?: string | null
+  onGoToStep: (step: number) => void
+  onUpdateFileScans: (updatedScans: FileScan[]) => void
 }
 
 // TODO find out if we need to submit to multiple different endpoints and allow configuration if so
@@ -28,8 +33,38 @@ const FinalStep = ({
   onGoToStep,
   submitErrors,
   submitMessage,
+  onUpdateFileScans
 }: FinalStepProps) => {
   const { t } = useTranslation('forms')
+  const { getAccessToken } = useAccount()
+
+  const updateFileScans = async (): Promise<FileScan[]> => {
+    const token = await getAccessToken()
+    return Promise.all(
+      fileScans.map((scan: FileScan) => {
+        const fileId = scan.fileName.split("/").pop()
+        return getFileScanState(token, fileId)
+          .then(res => {
+            console.log(scan, res)
+            return { ...scan } as FileScan
+          })
+          .catch(error => {
+            logger.error("Fetch scan file statuses failed", error)
+            return { ...scan } as FileScan
+          })
+      })
+    )
+  }
+
+  useEffectOnce(() => {
+    updateFileScans()
+      .then((updatedFileScans: FileScan[]) => {
+        console.log("updated file scans", updatedFileScans)
+        onUpdateFileScans(updatedFileScans)
+        return true
+      })
+      .catch(error => logger.error("Fetch scan file statuses failed", error))
+  })
 
   if (typeof formData !== 'object' || formData == null) {
     return null

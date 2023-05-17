@@ -112,6 +112,7 @@ const GeneratedFormRJSF = ({ eform, escapedSlug, formSlug, wrapperClassName }: F
             onGoToStep={form.setStepIndex}
             submitErrors={submitter.errors}
             submitMessage={submitter.successMessage}
+            onUpdateFileScans={updatedScans => { formContext.fileScans = updatedScans }}
           />
         ) : (
           <>

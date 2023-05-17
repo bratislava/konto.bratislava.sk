@@ -370,8 +370,21 @@ export const scanFile = async (token: string | null, data: ScanFileDto) => {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
-      Authorization: `Bearer ${token}`,
+      'Authorization': `Bearer ${token}`,
     },
     body: JSON.stringify(data)
+  })
+}
+
+export const getFileScanState = async (token: string | null, fileId?: string) => {
+  if (!token) throw new Error(MISSING_TOKEN)
+  if (!fileId) throw new Error(API_ERROR_TEXT)
+
+  return fetchJsonApi(`${String(process.env.NEXT_PUBLIC_FORMS_URL)}/files/scan/${fileId}`, {
+    method: 'GET',
+    headers: {
+      'Content-Type': 'application/json',
+      'Authorization': `Bearer ${token}`
+    }
   })
 }

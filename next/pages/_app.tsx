@@ -28,6 +28,13 @@ const inter = Inter({
 const MyApp = ({ Component, pageProps }: AppProps) => {
   return (
     <>
+      {/* https://nextjs.org/docs/pages/building-your-application/optimizing/fonts#apply-the-font-in-head */}
+      {/* eslint-disable-next-line react/no-unknown-property */}
+      <style jsx global>{`
+        body {
+          font-family: ${inter.style.fontFamily};
+        }
+      `}</style>
       <Head>
         <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
         <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png" />
@@ -38,21 +45,20 @@ const MyApp = ({ Component, pageProps }: AppProps) => {
         <meta name="theme-color" content="#ffffff" />
         {/* look for CookieConsent component for 3rd party scripts you'd expect to find here */}
       </Head>
+
       <QueryParamProvider adapter={NextAdapter}>
         <SSRProvider>
           <StatusBarProvider>
-            <div className={`${inter.variable} font-sans`}>
-              <QueryClientProvider client={queryClient}>
-                <SnackbarProvider>
-                  <AccountProvider>
-                    <GlobalStateProvider>
-                      <Component {...pageProps} />
-                      <CookieConsent />
-                    </GlobalStateProvider>
-                  </AccountProvider>
-                </SnackbarProvider>
-              </QueryClientProvider>
-            </div>
+            <QueryClientProvider client={queryClient}>
+              <SnackbarProvider>
+                <AccountProvider>
+                  <GlobalStateProvider>
+                    <Component {...pageProps} />
+                    <CookieConsent />
+                  </GlobalStateProvider>
+                </AccountProvider>
+              </SnackbarProvider>
+            </QueryClientProvider>
           </StatusBarProvider>
         </SSRProvider>
       </QueryParamProvider>

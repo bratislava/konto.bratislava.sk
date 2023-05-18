@@ -1,7 +1,6 @@
 import ArrowsDownUpIcon from '@assets/images/new-icons/ui/arrows-down-up.svg'
 import DiskIcon from '@assets/images/new-icons/ui/disc.svg'
 import DownloadIcon from '@assets/images/new-icons/ui/download.svg'
-import InfoIcon from '@assets/images/new-icons/ui/info.svg'
 import LockIcon from '@assets/images/new-icons/ui/lock.svg'
 import PdfIcon from '@assets/images/new-icons/ui/pdf.svg'
 import Link from 'next/link'
@@ -43,11 +42,6 @@ const MenuList = () => {
       title: t('menu_list.upload_xml'),
       icon: <ArrowsDownUpIcon className="w-6 h-6" />,
       onPress: () => {},
-    },
-    {
-      title: t('menu_list.guide'),
-      icon: <InfoIcon className="w-6 h-6" />,
-      url: '/mam-problem',
     },
   ]
 

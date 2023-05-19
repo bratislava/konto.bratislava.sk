@@ -4,6 +4,7 @@ import WarningIcon from '@assets/images/new-icons/ui/exclamation-mark-triangle.s
 import cx from 'classnames'
 import AccountMarkdown from 'components/forms/segments/AccountMarkdown/AccountMarkdown'
 import Button from 'components/forms/simple-components/Button'
+import { AccountType } from 'frontend/hooks/useAccount'
 import { useRouter } from 'next/router'
 import { useTranslation } from 'next-i18next'
 import React from 'react'
@@ -14,14 +15,14 @@ type IdentityVerificationModalBase = {
   show: boolean
   onClose: () => void
   className?: string
-  userType?: 'individual' | 'juridical'
+  userType?: AccountType
 }
 
 const IdentityVerificationModal = ({
   show,
   onClose,
   className,
-  userType = 'individual',
+  userType = 'fo',
 }: IdentityVerificationModalBase) => {
   const { t } = useTranslation('account')
   const router = useRouter()
@@ -69,13 +70,9 @@ const IdentityVerificationModal = ({
                     className="text-center"
                     variant="sm"
                     content={`<span className='text-p2'>${
-                      userType === 'individual'
-                        ? t('verification_modal.subtitle_individual_person')
-                        : ''
+                      userType === 'fo' ? t('verification_modal.subtitle_individual_person') : ''
                     }${
-                      userType === 'juridical'
-                        ? t('verification_modal.subtitle_juridical_person')
-                        : ''
+                      userType === 'po' ? t('verification_modal.subtitle_juridical_person') : ''
                     }</span>`}
                   />
                   <p className="text-p3 text-center">{t('verification_modal.info')}</p>

@@ -1,0 +1,25 @@
+{
+  "prilohy": {
+    "architektonickaStudia": ["string"]
+  },
+  "ziadatel": {
+    "ziatetelTyp": "Právnicka osoba",
+    "ziadatelObchodneMeno": "string",
+    "ziadatelIco": -2736,
+    "ziadatelMiestoPodnikania": "string",
+    "ziadatelAdresaSidla": "string",
+    "ziadatelMestoPsc": {
+      "ziadatelMesto": "mesto",
+      "ziadatelPsc": "string"
+    },
+    "ziadatelKontaktnaOsoba": "test",
+    "ziadatelEmail": "ziadatel@test.sk",
+    "ziadatelTelefon": "+449"
+  },
+  "stavba": {
+    "stavbaDovod": "Stavba objektu",
+    "stavbaUlica": "string",
+    "stavbaParcela": "string",
+    "stavbaKataster": ["Karlova Ves"]
+  }
+}

@@ -10,6 +10,7 @@ import stanoviskoKInvesticnemuZameru from './stanoviskoKInvesticnemuZameru'
 import test from './testForm'
 import zastitaPrimatora from './zastitaPrimatora'
 import zavazneStanoviskoKInvesticnejCinnosti from './zavazneStanoviskoKInvesticnejCinnosti'
+import ziadostOUzemnoplanovaciuInformaciu from './ziadostOUzemnoplanovaciuInformaciu'
 
 const eforms = {
   dopravneZnacenie,
@@ -18,6 +19,7 @@ const eforms = {
   zavazneStanoviskoKInvesticnejCinnosti,
   zastitaPrimatora,
   stanoviskoKInvesticnemuZameru,
+  ziadostOUzemnoplanovaciuInformaciu,
 }
 
 export type EFormKey = keyof typeof eforms

@@ -373,7 +373,7 @@ export const deleteFileFromBucket = async (fileName: string) => {
 
 export const scanFile = async (token: string | null, data: ScanFileDto) => {
   if (!token) throw new Error(MISSING_TOKEN)
-  console.log("DATA FOR SCAN", data)
+  console.log("DATA FOR SCAN", '\nformId:', data.formId, '\npospId', data.pospId, '\nuserExternalId', data.userExternalId)
   if (!data.pospId || !data.formId || !data.userExternalId || !data.fileUid) throw new Error(API_ERROR_TEXT)
   console.log("LETS START FETCH POST ON /files/scan")
   return fetchJsonApi(`${String(process.env.NEXT_PUBLIC_FORMS_URL)}/files/scan`, {

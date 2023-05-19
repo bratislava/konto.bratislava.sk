@@ -17,7 +17,7 @@ const SSORedirectContext = React.createContext<SSORedirectState>({} as SSORedire
 export const SSORedirectProvider = ({ children }: { children: React.ReactNode }) => {
   const router = useRouter()
   const [redirectTarget, setRedirectTarget] = useState<string>(ROUTES.HOME)
-  const redirectTargetIsAnotherPage = redirectTarget.startsWith('/')
+  const redirectTargetIsAnotherPage = !redirectTarget.startsWith('/')
 
   const redirect = useCallback(() => {
     if (redirectTarget.startsWith('/')) {

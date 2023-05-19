@@ -18,6 +18,9 @@ const fetchJsonApi = async <T=any>(path: string, options?: RequestInit): Promise
       try {
         return (await response.json()) as T
       } catch (error) {
+        // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+        // @ts-ignore
+        console.log("FETCH JSON API RAW ERROR 1", error, error.message, error.statusCode)
         throw new Error(API_ERROR_TEXT)
       }
     }
@@ -30,6 +33,9 @@ const fetchJsonApi = async <T=any>(path: string, options?: RequestInit): Promise
     try {
       responseJson = JSON.parse(responseText)
     } catch (error) {
+      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+      // @ts-ignore
+      console.log("FETCH JSON API RAW ERROR 2", error, error.message, error.statusCode)
       logger.error(API_ERROR_TEXT, response.status, response.statusText, responseText, response)
       throw new Error(response.statusText || API_ERROR_TEXT)
     }
@@ -46,6 +52,9 @@ const fetchJsonApi = async <T=any>(path: string, options?: RequestInit): Promise
     }
   } catch (error) {
     // TODO originally caught & rethrown to ensure logging, might no longer be necessary
+    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+    // @ts-ignore
+    console.log("FETCH JSON API RAW ERROR 3", error, error.message, error.statusCode)
     logger.error(error)
     throw error
   }

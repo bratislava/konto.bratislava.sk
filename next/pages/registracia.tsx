@@ -5,7 +5,7 @@ import AccountSuccessAlert from 'components/forms/segments/AccountSuccessAlert/A
 import EmailVerificationForm from 'components/forms/segments/EmailVerificationForm/EmailVerificationForm'
 import RegisterForm from 'components/forms/segments/RegisterForm/RegisterForm'
 import LoginRegisterLayout from 'components/layouts/LoginRegisterLayout'
-import { getValidRedirectFromQuery } from 'frontend/utils/sso'
+import useSSORedirect from 'frontend/hooks/useSSORedirect'
 import { GetServerSidePropsContext } from 'next'
 import { useRouter } from 'next/router'
 import { useTranslation } from 'next-i18next'
@@ -44,10 +44,9 @@ const RegisterPage = ({ page }: AsyncServerProps<typeof getServerSideProps>) => 
   const { signUp, resendVerificationCode, verifyEmail, error, status, lastEmail, setStatus } =
     useAccount()
   const router = useRouter()
-  const possibleRedirect = getValidRedirectFromQuery(router.query.from)
+  const { redirect, redirectTargetIsAnotherPage } = useSSORedirect()
   // only divert user from verification if he's coming from another site
-  const preVerificationRedirect =
-    possibleRedirect && !possibleRedirect.startsWith('/') ? possibleRedirect : null
+  const preVerificationRedirect = redirectTargetIsAnotherPage
 
   return (
     <PageWrapper locale={page.locale} localizations={page.localizations}>
@@ -70,9 +69,7 @@ const RegisterPage = ({ page }: AsyncServerProps<typeof getServerSideProps>) => 
                 email: lastEmail,
               })}
               confirmLabel={t('identity_verification_link')}
-              onConfirm={() => {
-                window.location.href = preVerificationRedirect
-              }}
+              onConfirm={() => redirect()}
             />
           ) : (
             <AccountSuccessAlert

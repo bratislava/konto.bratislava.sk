@@ -81,11 +81,10 @@ const UploadComponent: ForwardRefRenderFunction<HTMLDivElement, UploadProps> = (
   }: UploadProps = props
 
   const [fileBrokenMessages, setFileBrokenMessages] = useState<string[]>([])
-  const { getAccessToken } = useAccount()
+  const { lastAccessToken } = useAccount()
 
   const startScanFiles = async (newFileScans: FileScan[]): Promise<FileScan[]> => {
     const parsedBucketName: string[]|undefined = bucketFolderName?.split("/")
-    const token = await getAccessToken()
 
     const updatedFileScans: FileScan[] = await Promise.all(
       newFileScans.map(async (scan) => {
@@ -95,8 +94,9 @@ const UploadComponent: ForwardRefRenderFunction<HTMLDivElement, UploadProps> = (
           userExternalId,
           fileUid: scan.fileName.split("/").pop()
         }
-        return scanFile(token, data)
+        return scanFile(lastAccessToken, data)
           .then((res: FileScanResponse) => {
+            console.log('scan:', scan, '\nres:', res)
             return { ...scan, fileStateStatus: res.status, scanId: res.id }
           })
           .catch((error) => {

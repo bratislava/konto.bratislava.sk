@@ -37,14 +37,13 @@ const FinalStep = ({
   onUpdateFileScans
 }: FinalStepProps) => {
   const { t } = useTranslation('forms')
-  const { getAccessToken } = useAccount()
+  const { lastAccessToken } = useAccount()
   const [testedFileScans, setTestedFileScans] = useState<FileScan[]>(fileScans)
 
   const updateFileScans = async (): Promise<FileScan[]> => {
-    const token = await getAccessToken()
     return Promise.all(
       fileScans.map((scan: FileScan) => {
-        return getFileScanState(token, scan.scanId)
+        return getFileScanState(lastAccessToken, scan.scanId)
           .then((res: FileScanResponse) => {
             const fileState: FileScanState = ['INFECTED', 'MOVE ERROR INFECTED'].includes(res.status)
               ? 'error'

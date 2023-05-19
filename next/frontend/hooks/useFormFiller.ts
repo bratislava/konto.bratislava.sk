@@ -40,8 +40,8 @@ export const useFormFiller = (eform: EFormValue): FormFiller => {
   const router = useRouter()
   const initFormData = async (): Promise<RJSFSchema | undefined | null> => {
     let formData: RJSFSchema | null = null
-    const token = await getAccessToken()
-    if (!token) {
+
+    if (!lastAccessToken) {
       return undefined
     }
 

@@ -6,7 +6,7 @@ import { v4 as createUuid } from 'uuid'
 
 import { deleteFileFromBucket, scanFile, uploadFileToBucket } from '../../../../frontend/api/api'
 import { ScanFileDto } from '../../../../frontend/dtos/formDto'
-import { FileScan } from '../../../../frontend/dtos/formStepperDto'
+import { FileScan, FileScanResponse, FileScanStatus } from '../../../../frontend/dtos/formStepperDto'
 import useAccount from '../../../../frontend/hooks/useAccount'
 import logger from '../../../../frontend/utils/logger'
 import UploadBrokenMessages, { MINIO_ERROR } from '../../info-components/UploadBrokenMessages'
@@ -83,12 +83,12 @@ const UploadComponent: ForwardRefRenderFunction<HTMLDivElement, UploadProps> = (
   const [fileBrokenMessages, setFileBrokenMessages] = useState<string[]>([])
   const { getAccessToken } = useAccount()
 
-  const startScanFiles = async (newFileScans: FileScan[]) => {
+  const startScanFiles = async (newFileScans: FileScan[]): Promise<FileScan[]> => {
     const parsedBucketName: string[]|undefined = bucketFolderName?.split("/")
     const token = await getAccessToken()
 
-    return Promise.all(
-      newFileScans.filter(async (scan) => {
+    const updatedFileScans: FileScan[] = await Promise.all(
+      newFileScans.map(async (scan) => {
         const data: ScanFileDto = {
           pospId: pospId ?? parsedBucketName?.[1],
           formId: formId ?? parsedBucketName?.[2],
@@ -96,14 +96,17 @@ const UploadComponent: ForwardRefRenderFunction<HTMLDivElement, UploadProps> = (
           fileUid: scan.fileName.split("/").pop()
         }
         return scanFile(token, data)
-          // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
-          .then(res => res.status === 'UPLOADED')
+          .then((res: FileScanResponse) => {
+            return { ...scan, fileStateStatus: res.status, scanId: res.id }
+          })
           .catch((error) => {
             logger.error("Failed /scan/file:", error)
-            return false
+            return { ...scan, fileState: 'error' }
           })
       })
     )
+
+    return updatedFileScans.filter(scan => scan.fileState !== 'error' || !scan.scanId)
   }
 
   const scanAllNewFiles = (newFiles: UploadMinioFile[]) => {

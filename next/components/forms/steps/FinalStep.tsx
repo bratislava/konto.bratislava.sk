@@ -4,7 +4,7 @@ import { useTranslation } from 'next-i18next'
 import { useEffectOnce } from 'usehooks-ts'
 
 import { getFileScanState } from '../../../frontend/api/api'
-import { FileScan, JsonSchema } from '../../../frontend/dtos/formStepperDto'
+import { FileScan, FileScanResponse, FileScanState, JsonSchema } from '../../../frontend/dtos/formStepperDto'
 import useAccount from '../../../frontend/hooks/useAccount'
 import logger from '../../../frontend/utils/logger'
 import Alert from '../info-components/Alert'
@@ -42,11 +42,14 @@ const FinalStep = ({
     const token = await getAccessToken()
     return Promise.all(
       fileScans.map((scan: FileScan) => {
-        const fileId = scan.fileName.split("/").pop()
-        return getFileScanState(token, fileId)
-          .then(res => {
-            console.log(scan, res)
-            return { ...scan } as FileScan
+        return getFileScanState(token, scan.scanId)
+          .then((res: FileScanResponse) => {
+            const fileState: FileScanState = ['INFECTED', 'MOVE ERROR INFECTED'].includes(res.status)
+              ? 'error'
+              : ['UPLOADED', 'ACCEPTED', 'NOT FOUND'].includes(res.status)
+                ? 'scan'
+                : 'finished'
+            return { ...scan, fileState, fileStateStatus: res.status } as FileScan
           })
           .catch(error => {
             logger.error("Fetch scan file statuses failed", error)

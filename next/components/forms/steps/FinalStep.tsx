@@ -1,7 +1,7 @@
 import { ErrorSchema, RJSFValidationError, StrictRJSFSchema } from '@rjsf/utils'
 import { ErrorObject } from 'ajv'
 import { useTranslation } from 'next-i18next'
-import { useEffect, useState } from 'react'
+import { useState } from 'react'
 import { useEffectOnce } from 'usehooks-ts'
 
 import { getFileScanState } from '../../../frontend/api/api'

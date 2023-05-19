@@ -30,6 +30,7 @@ type ButtonBase = {
   fullWidth?: boolean
   form?: string
   hrefTarget?: '_blank' | '_self' | '_parent' | '_top'
+  ref?: RefObject<HTMLButtonElement>
 }
 
 export type ButtonProps = Omit<AriaButtonProps<'button'>, keyof LinkButtonProps> &

@@ -19,7 +19,7 @@ export interface FormFiller {
 export const useFormFiller = (eform: EFormValue): FormFiller => {
   const [formId, setFormId] = useState<string|undefined>()
   const [formUserExternalId, setFormUserExternalId] = useState<string|undefined>()
-  const { getAccessToken } = useAccount()
+  const { getAccessToken, lastAccessToken } = useAccount()
   const [openSnackbarWarning] = useSnackbar({ variant: 'warning' })
   const [openSnackbarError] = useSnackbar({ variant: 'error' })
   const { t } = useTranslation('forms')
@@ -49,12 +49,12 @@ export const useFormFiller = (eform: EFormValue): FormFiller => {
       router.query.id && typeof router.query.id === 'string' ? router.query.id : undefined
     try {
       if (queryId) {
-        const { formDataJson, id, userExternalId }: FormDto = await getForm(token, queryId)
+        const { formDataJson, id, userExternalId }: FormDto = await getForm(lastAccessToken, queryId)
         setFormId(id)
         setFormUserExternalId(userExternalId)
         formData = formDataJson
       } else {
-        const { id, userExternalId }: FormDto = await createForm(token, {
+        const { id, userExternalId }: FormDto = await createForm(lastAccessToken, {
           pospID: eform.schema.pospID,
           pospVersion: eform.schema.pospVersion,
           messageSubject: eform.schema.pospID,

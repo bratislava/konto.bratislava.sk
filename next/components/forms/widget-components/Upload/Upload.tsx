@@ -100,7 +100,8 @@ const UploadComponent: ForwardRefRenderFunction<HTMLDivElement, UploadProps> = (
             return { ...scan, fileStateStatus: res.status, scanId: res.id }
           })
           .catch((error) => {
-            logger.error("Failed /scan/file:", error)
+            // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
+            logger.error("Failed /scan/file:", error, error.message, error.error, error.statusCode)
             return { ...scan, fileState: 'error' }
           })
       })

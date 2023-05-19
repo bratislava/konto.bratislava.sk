@@ -50,9 +50,22 @@ const TaxDetails = ({ tax }: TaxDetailsProps) => {
           ))}
         </div>
         <div className="bg-gray-200 h-0.5 w-full" />
+        <div className="flex flex-col items-start gap-3 w-full">
+          <div className="flex xs:flex-row flex-col gap-1 w-full">
+            <div className="text-p2 grow xs:w-min w-full">{t('tax_detail_section.tax_total')}</div>
+            <div className="text-p2 w-max">{formatCurrency(tax.amount)}</div>
+          </div>
+          <div className="flex xs:flex-row flex-col gap-1 w-full">
+            <div className="text-p2 grow xs:w-min w-full">
+              {t('tax_detail_section.tax_already_paid')}
+            </div>
+            <div className="text-p2 w-max">{formatCurrency(tax.payedAmount)}</div>
+          </div>
+        </div>
+        <div className="bg-gray-800 h-0.5 w-full" />
         <div className="flex xs:flex-row flex-col lg:gap-6 gap-2 w-full">
-          <div className="text-h4 grow xs:w-min w-full">Daň z nehnuteľností celkom</div>
-          <div className="text-h4 w-max">{formatCurrency(tax.amount)}</div>
+          <div className="text-h4 grow xs:w-min w-full">{t('tax_detail_section.tax_to_pay')}</div>
+          <div className="text-h4 w-max">{formatCurrency(tax.amount - tax.payedAmount)}</div>
         </div>
       </div>
     </div>

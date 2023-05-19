@@ -1,21 +1,51 @@
+import ThreePointsIcon from '@assets/images/forms/three-points-icon.svg'
+import TrashIcon from '@assets/images/new-icons/ui/basket.svg'
 import DownloadIcon from '@assets/images/new-icons/ui/download.svg'
 import ExportIcon from '@assets/images/new-icons/ui/export.svg'
+import PdfIcon from '@assets/images/new-icons/ui/pdf.svg'
+import ConceptDeleteModal from 'components/forms/segments/ConceptDeleteModal/ConceptDeleteModal'
 import Button from 'components/forms/simple-components/Button'
+import MenuDropdown, {
+  MenuItemBase,
+} from 'components/forms/simple-components/MenuDropdown/MenuDropdown'
 import { MyApplicationsConceptCardBase } from 'frontend/api/mocks/mocks'
 import Link from 'next/link'
 import { useRouter } from 'next/router'
 import { useTranslation } from 'next-i18next'
+import { useState } from 'react'
 
 import { ROUTES } from '../../../../../frontend/api/constants'
 
 type MyApplicationsConceptCardProps = {
   data: MyApplicationsConceptCardBase
+  onDeleteCard: () => void
 }
 
 const MyApplicationsConceptCard = (props: MyApplicationsConceptCardProps) => {
-  const { data } = props
+  const { data, onDeleteCard } = props
   const { t } = useTranslation('account')
   const router = useRouter()
+
+  const [conceptModalShow, setConceptModalShow] = useState<boolean>(false)
+
+  const conceptMenuContent: MenuItemBase[] = [
+    {
+      title: t('account_section_applications.concept_menu_list.download_xml'),
+      icon: <DownloadIcon className="w-6 h-6" />,
+      onPress: () => {},
+    },
+    {
+      title: t('account_section_applications.concept_menu_list.download_pdf'),
+      icon: <PdfIcon className="w-6 h-6" />,
+      onPress: () => {},
+    },
+    {
+      title: t('account_section_applications.concept_menu_list.delete'),
+      itemClassName: 'text-negative-700',
+      icon: <TrashIcon className="w-6 h-6" />,
+      onPress: () => setConceptModalShow(true),
+    },
+  ]
 
   return (
     <>
@@ -45,7 +75,12 @@ const MyApplicationsConceptCard = (props: MyApplicationsConceptCardProps) => {
               endIcon={<ExportIcon />}
               onPress={() => router.push(`${ROUTES.MY_APPLICATIONS}/1`)}
             />
-            <Button variant="black-outline" icon={<DownloadIcon />} />
+            <MenuDropdown
+              buttonVariant="gray"
+              buttonTrigger={<ThreePointsIcon />}
+              buttonSize="lg"
+              items={conceptMenuContent}
+            />
           </div>
         </div>
       </div>
@@ -72,6 +107,15 @@ const MyApplicationsConceptCard = (props: MyApplicationsConceptCardProps) => {
           </div>
         </Link>
       </div>
+      <ConceptDeleteModal
+        conceptData={data}
+        show={conceptModalShow}
+        onClose={() => setConceptModalShow(false)}
+        onDelete={() => {
+          onDeleteCard()
+          setConceptModalShow(false)
+        }}
+      />
     </>
   )
 }

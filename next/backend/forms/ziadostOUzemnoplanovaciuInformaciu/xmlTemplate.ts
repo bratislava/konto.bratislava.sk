@@ -1,10 +1,10 @@
 export default `<?xml version="1.0" encoding="utf-8"?>
-<E-form xmlns="http://schemas.gov.sk/doc/eform/00603481.zavazneStanoviskoKInvesticnejCinnosti.sk/0.1"
-        xsi:schemaLocation="http://schemas.gov.sk/doc/eform/00603481.zavazneStanoviskoKInvesticnejCinnosti.sk/0.1"
+<E-form xmlns="http://schemas.gov.sk/doc/eform/00603481.ziadostOUzemnoplanovaciuInformaciu.sk/0.1"
+        xsi:schemaLocation="http://schemas.gov.sk/doc/eform/00603481.ziadostOUzemnoplanovaciuInformaciu.sk/0.1"
         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
   <Meta>
-    <ID>00603481.zavazneStanoviskoKInvesticnejCinnosti.sk</ID>
-    <Name>00603481.zavazneStanoviskoKInvesticnejCinnosti.sk</Name>
+    <ID>00603481.ziadostOUzemnoplanovaciuInformaciu.sk</ID>
+    <Name>00603481.ziadostOUzemnoplanovaciuInformaciu.sk</Name>
     <Gestor></Gestor>
     <RecipientId></RecipientId>
     <Version>0.1</Version>

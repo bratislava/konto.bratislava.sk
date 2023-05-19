@@ -148,7 +148,9 @@ const GeneratedFormRJSF = ({ eform, escapedSlug, formSlug, wrapperClassName }: F
           skip={() => skipButtonHandler(form.stepIndex + 1)}
           submitStep={form.submitStep}
           submitForm={() =>
-            isAuth ? submitter.submitForm(form.formData) : setSubmitRegistrationModal(true)
+            isAuth
+              ? submitter.submitForm(filler.formId, form.formData)
+              : setSubmitRegistrationModal(true)
           }
         />
         <MenuList />

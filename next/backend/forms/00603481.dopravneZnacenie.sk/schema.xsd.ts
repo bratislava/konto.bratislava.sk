@@ -452,7 +452,7 @@ export default `<?xml version="1.0" encoding="utf-8"?>
       <xs:element name="MedzinarodneVolacieCislo">
         <xs:simpleType>
           <xs:restriction base="xs:string">
-            <xs:pattern value="((([+][1-9])|([+][1-9][0-9]{1,8}))|((00[1-9])|(00[1-9][0-9]{1,7})))"/>
+            <xs:pattern value="((([+][1-9])|([+][1-9][0-9]{1,12}))|((00[1-9])|(00[1-9][0-9]{1,11})))"/>
           </xs:restriction>
         </xs:simpleType>
       </xs:element>

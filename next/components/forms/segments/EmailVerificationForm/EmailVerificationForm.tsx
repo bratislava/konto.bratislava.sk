@@ -20,7 +20,6 @@ interface Props {
   onResend: () => Promise<any>
   error?: AccountError | null | undefined
   lastEmail: string
-  cntDisabled?: boolean
 }
 
 // must use `minLength: 1` to implement required field
@@ -40,9 +39,10 @@ const schema = {
   required: ['verificationCode'],
 }
 
-const EmailVerificationForm = ({ onSubmit, error, onResend, lastEmail, cntDisabled }: Props) => {
+const EmailVerificationForm = ({ onSubmit, error, onResend, lastEmail }: Props) => {
   const [lastVerificationCode, setLastVerificationCode] = useState('')
   const { t } = useTranslation('account')
+  const noError: boolean = error === null || error === undefined
   const {
     handleSubmit,
     control,
@@ -52,8 +52,7 @@ const EmailVerificationForm = ({ onSubmit, error, onResend, lastEmail, cntDisabl
     schema,
     defaultValues: { verificationCode: '' },
   })
-
-  const [cnt, setCnt] = useState(cntDisabled ? 0 : 60)
+  const [cnt, setCnt] = useState(60)
   useEffect(() => {
     if (cnt > 0) {
       setTimeout(() => setCnt((state) => state - 1), 1000)
@@ -105,17 +104,26 @@ const EmailVerificationForm = ({ onSubmit, error, onResend, lastEmail, cntDisabl
         variant="category"
         disabled={isSubmitting}
       />
+      {/* don't show timer if error */}
+
       <div className="text-p3 lg:text-p2">
-        <span>{t('verification_description')}</span>
-        {cnt > 0 && <span>{` ${formatUnicorn(t('verification_cnt_description'), { cnt })}`}</span>}
+        {noError && (
+          <>
+            <span>{t('verification_description')}</span>
+            {cnt > 0 && (
+              <span>{` ${formatUnicorn(t('verification_cnt_description'), { cnt })}`}</span>
+            )}
+          </>
+        )}
         <AccountMarkdown variant="sm" content={t('verification_cnt_info')} />
       </div>
+
       <Button
         onPress={handleResend}
         className="min-w-full"
         text={t('verification_resend')}
         variant="category-outline"
-        disabled={cnt > 0}
+        disabled={cnt > 0 || noError}
       />
     </form>
   )

@@ -6,7 +6,7 @@ import { v4 as createUuid } from 'uuid'
 
 import { deleteFileFromBucket, scanFile, uploadFileToBucket } from '../../../../frontend/api/api'
 import { ScanFileDto } from '../../../../frontend/dtos/formDto'
-import { FileScan, FileScanResponse, FileScanStatus } from '../../../../frontend/dtos/formStepperDto'
+import { FileScan, FileScanResponse } from '../../../../frontend/dtos/formStepperDto'
 import useAccount from '../../../../frontend/hooks/useAccount'
 import logger from '../../../../frontend/utils/logger'
 import UploadBrokenMessages, { MINIO_ERROR } from '../../info-components/UploadBrokenMessages'

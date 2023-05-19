@@ -97,6 +97,7 @@ const GeneratedFormRJSF = ({ eform, escapedSlug, formSlug, wrapperClassName }: F
           <IdentityVerificationModal
             show={identityVerificationModal}
             onClose={() => setIdentityVerificationModal(false)}
+            // TODO userData.account_type
             userType="juridical"
           />
         )}

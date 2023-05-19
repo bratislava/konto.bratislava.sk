@@ -1,5 +1,6 @@
 import ArrowRightIcon from '@assets/images/new-icons/ui/arrow-right.svg'
 import LeftIcon from '@assets/images/new-icons/ui/chevron-left.svg'
+import { PressEvent } from '@react-types/shared'
 import { useTranslation } from 'next-i18next'
 
 import Button from '../../simple-components/Button'
@@ -10,7 +11,7 @@ interface StepButtonGroupProps {
   previous: () => void
   skip: () => void
   submitStep: () => void
-  submitForm: () => void
+  submitForm: (e: PressEvent) => void
 }
 
 const StepButtonGroup = (props: StepButtonGroupProps) => {

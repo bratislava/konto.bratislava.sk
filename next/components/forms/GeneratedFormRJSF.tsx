@@ -1,7 +1,6 @@
 import { EFormValue } from '@backend/forms'
 import { FormValidation, RJSFSchema } from '@rjsf/utils'
 import cx from 'classnames'
-import IdentityVerificationModal from 'components/forms/segments/IdentityVerificationModal/IdentityVerificationModal'
 import RegistrationModal from 'components/forms/segments/RegistrationModal/RegistrationModal'
 import SkipStepModal from 'components/forms/segments/SkipStepModal/SkipStepModal'
 import MenuList from 'components/forms/steps/MenuList'
@@ -14,6 +13,7 @@ import { useFormRJSFContextMemo } from '../../frontend/hooks/useFormRJSFContextM
 import { useFormStepper } from '../../frontend/hooks/useFormStepper'
 import { useFormSubmitter } from '../../frontend/hooks/useFormSubmitter'
 import { customValidate } from '../../frontend/utils/formStepper'
+import IdentityVerificationModal from './segments/IdentityVerificationModal/IdentityVerificationModal'
 import FinalStep from './steps/FinalStep'
 import StepperView from './steps/StepperView'
 import StepButtonGroup from './steps/Summary/StepButtonGroup'
@@ -36,7 +36,6 @@ const GeneratedFormRJSF = ({ eform, escapedSlug, formSlug, wrapperClassName }: F
   const { isAuth, status } = useAccount()
   const [isOnShowSkipModal, setIsOnShowSkipModal] = useState<boolean>(false)
   const [registrationModal, setRegistrationModal] = useState<boolean>(true)
-  const [submitRegistrationModal, setSubmitRegistrationModal] = useState<boolean>(false)
   const [identityVerificationModal, setIdentityVerificationModal] = useState(true)
   const [skipModalWasShown, setSkipModalWasShown] = useState<boolean>(false)
   const [skipModalNextStepIndex, setSkipModalNextStepIndex] = useState<number>(form.stepIndex)
@@ -82,15 +81,8 @@ const GeneratedFormRJSF = ({ eform, escapedSlug, formSlug, wrapperClassName }: F
         />
         {!isAuth && (
           <RegistrationModal
-            isBottomButtons={false}
             show={registrationModal}
             onClose={() => setRegistrationModal(false)}
-          />
-        )}
-        {!isAuth && (
-          <RegistrationModal
-            show={submitRegistrationModal}
-            onClose={() => setSubmitRegistrationModal(false)}
           />
         )}
         {isAuth && status !== AccountStatus.IdentityVerificationSuccess && (
@@ -150,7 +142,7 @@ const GeneratedFormRJSF = ({ eform, escapedSlug, formSlug, wrapperClassName }: F
           submitForm={() =>
             isAuth
               ? submitter.submitForm(filler.formId, form.formData)
-              : setSubmitRegistrationModal(true)
+              : setRegistrationModal(true)
           }
         />
         <MenuList />

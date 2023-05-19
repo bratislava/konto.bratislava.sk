@@ -1,6 +1,7 @@
 import { ErrorSchema, RJSFValidationError, StrictRJSFSchema } from '@rjsf/utils'
 import { ErrorObject } from 'ajv'
 import { useTranslation } from 'next-i18next'
+import { useEffect, useState } from 'react'
 import { useEffectOnce } from 'usehooks-ts'
 
 import { getFileScanState } from '../../../frontend/api/api'
@@ -37,6 +38,7 @@ const FinalStep = ({
 }: FinalStepProps) => {
   const { t } = useTranslation('forms')
   const { getAccessToken } = useAccount()
+  const [testedFileScans, setTestedFileScans] = useState<FileScan[]>(fileScans)
 
   const updateFileScans = async (): Promise<FileScan[]> => {
     const token = await getAccessToken()
@@ -64,6 +66,7 @@ const FinalStep = ({
       .then((updatedFileScans: FileScan[]) => {
         console.log("updated file scans", updatedFileScans)
         onUpdateFileScans(updatedFileScans)
+        setTestedFileScans(updatedFileScans)
         return true
       })
       .catch(error => logger.error("Fetch scan file statuses failed", error))
@@ -76,10 +79,10 @@ const FinalStep = ({
   return (
     <div>
       <h1 className="text-h1-medium font-semibold">{t('summary')}</h1>
-      {fileScans.some(scan => scan.fileState === 'error') && (
+      {testedFileScans.some(scan => scan.fileState === 'error') && (
         <Alert type="error" message={t('errors.file_scan')} fullWidth className="mt-4" solid/>
       )}
-      {fileScans.some(scan => scan.fileState === 'scan') && (
+      {testedFileScans.some(scan => scan.fileState === 'scan') && (
         <Alert type="warning" message={t('warnings.file_scan')} fullWidth className="mt-4"/>
       )}
       <Summary
@@ -87,7 +90,7 @@ const FinalStep = ({
         formData={formData}
         formErrors={formErrors}
         extraErrors={extraErrors}
-        fileScans={fileScans}
+        fileScans={testedFileScans}
         onGoToStep={onGoToStep}
       />
       <SummaryMessages errors={submitErrors} successMessage={submitMessage} />

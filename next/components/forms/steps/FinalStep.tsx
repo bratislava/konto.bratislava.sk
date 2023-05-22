@@ -55,7 +55,7 @@ const FinalStep = ({
           })
           .catch(error => {
             logger.error("Fetch scan file statuses failed", error)
-            return { ...scan } as FileScan
+            return { ...scan, fileState: 'scan' } as FileScan
           })
       })
     )

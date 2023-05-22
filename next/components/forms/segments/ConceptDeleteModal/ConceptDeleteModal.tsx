@@ -1,5 +1,5 @@
-import ErrorIcon from '@assets/images/forms/error-icon.svg'
 import CloseIcon from '@assets/images/new-icons/ui/cross.svg'
+import ErrorIcon from '@assets/images/new-icons/ui/exclamation-mark.svg'
 import cx from 'classnames'
 import Button from 'components/forms/simple-components/Button'
 import { MyApplicationsConceptCardBase } from 'frontend/api/mocks/mocks'
@@ -57,7 +57,7 @@ const ConceptDeleteModal = ({
           <div className="flex flex-col gap-6">
             <div className="flex gap-6">
               <span className="min-w-[56px] w-14 h-14 rounded-full bg-negative-100 flex items-center justify-center">
-                <ErrorIcon />
+                <ErrorIcon className="w-6 h-6 text-main-700" />
               </span>
               <div>
                 <h5 className="text-h5 h-14 flex items-center">

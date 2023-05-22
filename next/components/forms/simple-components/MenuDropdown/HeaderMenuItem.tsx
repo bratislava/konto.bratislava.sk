@@ -13,7 +13,7 @@ const HeaderMenuItem = ({ title, icon, url, onPress }: MenuItemBase) => {
   ) : (
     <DropdownMenu.Item
       onClick={onPress}
-      className="text-p2 hover:text-p2-semibold focus:text-p2-semibold font-sans flex items-center gap-3 px-5 py-2 cursor-pointer focus:outline-none"
+      className="text-p2 hover:text-p2-semibold focus:text-p2-semibold flex items-center gap-3 px-5 py-2 cursor-pointer focus:outline-none"
     >
       <span className="p-[10px] bg-gray-50 rounded-xl">{icon}</span>
       <span className="min-w-[138px]">{title}</span>

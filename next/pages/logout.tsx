@@ -1,18 +1,15 @@
 import AccountContainer from 'components/forms/segments/AccountContainer/AccountContainer'
 import AccountSuccessAlert from 'components/forms/segments/AccountSuccessAlert/AccountSuccessAlert'
 import LoginRegisterLayout from 'components/layouts/LoginRegisterLayout'
-import { getValidRedirectFromQuery } from 'frontend/utils/sso'
+import useSSORedirect from 'frontend/hooks/useSSORedirect'
 import { GetServerSidePropsContext } from 'next'
-import { useRouter } from 'next/router'
 import { useTranslation } from 'next-i18next'
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
-import { useCallback, useEffect } from 'react'
+import { useEffect } from 'react'
 
 import PageWrapper from '../components/layouts/PageWrapper'
-import { ROUTES } from '../frontend/api/constants'
 import useAccount from '../frontend/hooks/useAccount'
 import { isProductionDeployment } from '../frontend/utils/general'
-import logger from '../frontend/utils/logger'
 import { AsyncServerProps } from '../frontend/utils/types'
 
 export const getServerSideProps = async (ctx: GetServerSidePropsContext) => {
@@ -38,20 +35,12 @@ export const getServerSideProps = async (ctx: GetServerSidePropsContext) => {
 const LogoutPage = ({ page }: AsyncServerProps<typeof getServerSideProps>) => {
   const { t } = useTranslation('account')
   const { logout, isAuth } = useAccount()
-  const router = useRouter()
-  const redirect = useCallback(() => {
-    const redirectUrl = getValidRedirectFromQuery(router.query.from) || ROUTES.HOME
-    if (redirectUrl.startsWith('/')) {
-      router.push(redirectUrl).catch((error_) => logger.error('Failed redirect', error_))
-    } else {
-      window.location.href = redirectUrl
-    }
-  }, [router])
+  const { redirect } = useSSORedirect()
   useEffect(() => {
     if (!isAuth) {
       redirect()
     }
-  }, [isAuth, router, redirect])
+  }, [isAuth, redirect])
 
   // TODO replace AccountSuccessAlert with something more fitting
   return (

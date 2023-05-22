@@ -4,6 +4,7 @@ import { PhoneNumberData } from 'components/forms/segments/PhoneNumberForm/Phone
 import RegistrationModal from 'components/forms/segments/RegistrationModal/RegistrationModal'
 import SkipStepModal from 'components/forms/segments/SkipStepModal/SkipStepModal'
 import Modal from 'components/forms/widget-components/Modals/Modal'
+import { useTranslation } from 'next-i18next'
 import { useState } from 'react'
 
 import { Address } from '../../../frontend/hooks/useAccount'
@@ -64,6 +65,8 @@ const singleModalContent = ({ onSubmit }: any) => {
 }
 
 const ModalShowCase = () => {
+  const { t } = useTranslation('account')
+
   const [modalSingleShow, setModalSingleShow] = useState(false)
   const [modalShow, setModalShow] = useState(false)
   const [modalShowSuccess, setModalShowSuccess] = useState(false)
@@ -271,7 +274,12 @@ const ModalShowCase = () => {
           onSubmit={onSubmitPhoneNumber}
           defaultValues={{ phone_number: phoneNumberModalData }}
         />
-        <RegistrationModal show={registrationModal} onClose={() => setRegistrationModal(false)} />
+        <RegistrationModal
+          title={t('register_modal.header_sent_title')}
+          subtitle={t('register_modal.header_sent_subtitle')}
+          show={registrationModal}
+          onClose={() => setRegistrationModal(false)}
+        />
         <SkipStepModal show={skipStepModal} onClose={() => setSkipStepModal(false)} />
         <IdentityVerificationModal
           show={identityVerificationModal}

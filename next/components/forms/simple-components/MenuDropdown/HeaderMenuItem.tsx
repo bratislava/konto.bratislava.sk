@@ -13,7 +13,7 @@ const HeaderMenuItem = ({ title, icon, url, onPress }: FormMenuItemBase) => {
   return (
     <DropdownMenu.Item
       onClick={onPress}
-      className="text-p2 hover:text-p2-semibold focus:text-p2-semibold font-sans flex items-center gap-3 px-5 py-2 cursor-pointer focus:outline-none"
+      className="text-p2 hover:text-p2-semibold focus:text-p2-semibold flex items-center gap-3 px-5 py-2 cursor-pointer focus:outline-none"
     >
       {url ? (
         <Link className="flex items-center gap-3" href={url}>

@@ -72,6 +72,8 @@ export interface Address {
   phone_number?: string
 }
 
+export type AccountType = 'fo' | 'po'
+
 export interface UserData {
   sub?: string
   email_verified?: string
@@ -84,10 +86,11 @@ export interface UserData {
   address?: Address
   ifo?: string
   tier?: Tier
+  account_type?: AccountType
 }
 
 // non standard, has prefix custom: in cognito
-const customAttributes = new Set(['ifo', 'tier'])
+const customAttributes = new Set(['ifo', 'tier', 'account_type'])
 const updatableAttributes = new Set([
   'name',
   'given_name',
@@ -95,6 +98,7 @@ const updatableAttributes = new Set([
   'phone_number',
   'address',
   'tier',
+  'account_type',
 ])
 
 const poolData = {
@@ -141,6 +145,7 @@ interface Account {
   lastEmail: string
   isAuth: boolean
   resetError: () => void
+  accountType: AccountType
 }
 
 const AccountContext = React.createContext<Account>({} as Account)
@@ -760,6 +765,7 @@ export const AccountProvider = ({ children }: { children: ReactNode }) => {
         lastEmail: lastCredentials.Username,
         isAuth: user !== null,
         resetError,
+        accountType: userData?.account_type || 'fo',
       }}
     >
       {children}

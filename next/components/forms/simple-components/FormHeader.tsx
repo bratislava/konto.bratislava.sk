@@ -1,6 +1,6 @@
 import ThreePointsIcon from '@assets/images/forms/three-points-icon.svg'
 import ArrowsDownUpIcon from '@assets/images/new-icons/ui/arrows-down-up.svg'
-import DiskIcon from '@assets/images/new-icons/ui/disc.svg'
+import DiskIcon from '@assets/images/new-icons/ui/disc-fill.svg'
 import DownloadIcon from '@assets/images/new-icons/ui/download.svg'
 import LockIcon from '@assets/images/new-icons/ui/lock.svg'
 import PdfIcon from '@assets/images/new-icons/ui/pdf.svg'

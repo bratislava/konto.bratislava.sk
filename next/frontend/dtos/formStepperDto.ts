@@ -90,14 +90,14 @@ export const validator: ValidatorType = customizeValidator({
 export type FileScanStatus = "UPLOADED"|"ACCEPTED"|"SCANNING"|"SAFE"|"INFECTED"|"NOT FOUND"|"MOVE ERROR SAFE"|"MOVE ERROR INFECTED"
 export type FileScanState = "scan"|"error"|"finished"
 
-export interface FileScanResponse {
+export interface FileScanResponse extends Record<string, unknown> {
   status: FileScanStatus
   id: string
   fileUid: string
   message: string
 }
 
-export interface FileScan {
+export interface FileScan extends Record<string, unknown> {
   fileName: string
   originalName: string
   fileState?: FileScanState

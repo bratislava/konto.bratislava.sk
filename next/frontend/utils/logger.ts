@@ -39,3 +39,17 @@ const logger = mutableLogger
 export const faro = mutableFaro
 
 export default logger
+
+export const developmentLog = (message: string, data: Record<string, unknown> = {}, isError?: boolean) => {
+  if (process.env.NODE_ENV === 'development') {
+    let dataString = ''
+    Object.entries(data).forEach(([key, value]: [string, unknown]) => {
+      dataString += `\n${key}: ${String(value)}`
+    })
+    if (isError) {
+      logger.error(`\n${message}:`, dataString)
+    } else {
+      logger.info(`\n${message}:`, dataString)
+    }
+  }
+}

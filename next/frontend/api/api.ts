@@ -5,7 +5,7 @@ import { ErrorObject } from 'ajv'
 
 import { CreateFormDto, FormDto, ScanFileDto, UpdateFormDto } from '../dtos/formDto'
 import { ApiError, Gdpr, Identity, TaxApiError, UrlResult, User } from '../dtos/generalApiDto'
-import logger from '../utils/logger'
+import logger, { developmentLog } from '../utils/logger'
 
 export const API_ERROR_TEXT = 'API_ERROR'
 export const UNAUTHORIZED_ERROR_TEXT = 'UNAUTHORIZED_ERROR'
@@ -18,9 +18,7 @@ const fetchJsonApi = async <T=any>(path: string, options?: RequestInit): Promise
       try {
         return (await response.json()) as T
       } catch (error) {
-        // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-        // @ts-ignore
-        console.log("FETCH JSON API RAW ERROR 1", error, error.message, error.statusCode)
+        developmentLog("FETCH JSON API RAW ERROR 1", error as Record<string, unknown>, true)
         throw new Error(API_ERROR_TEXT)
       }
     }
@@ -33,9 +31,7 @@ const fetchJsonApi = async <T=any>(path: string, options?: RequestInit): Promise
     try {
       responseJson = JSON.parse(responseText)
     } catch (error) {
-      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-      // @ts-ignore
-      console.log("FETCH JSON API RAW ERROR 2", error, error.message, error.statusCode)
+      developmentLog("FETCH JSON API RAW ERROR 2", error as Record<string, unknown>, true)
       logger.error(API_ERROR_TEXT, response.status, response.statusText, responseText, response)
       throw new Error(response.statusText || API_ERROR_TEXT)
     }
@@ -52,9 +48,7 @@ const fetchJsonApi = async <T=any>(path: string, options?: RequestInit): Promise
     }
   } catch (error) {
     // TODO originally caught & rethrown to ensure logging, might no longer be necessary
-    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-    // @ts-ignore
-    console.log("FETCH JSON API RAW ERROR 3", error, error.message, error.statusCode)
+    developmentLog("FETCH JSON API RAW ERROR 2", error as Record<string, unknown>, true)
     logger.error(error)
     throw error
   }
@@ -372,11 +366,10 @@ export const deleteFileFromBucket = async (fileName: string) => {
 }
 
 export const scanFile = async (token: string | null, data: ScanFileDto) => {
-  console.log("DATA FOR SCAN", '\nformId:', data.formId, '\npospId:', data.pospId, '\nuserExternalId:', data.userExternalId)
-  console.log('token:', token)
+  developmentLog("DATA FOR FILE SCAN", data)
   if (!token) throw new Error(MISSING_TOKEN)
   if (!data.pospId || !data.formId || !data.userExternalId || !data.fileUid) throw new Error(API_ERROR_TEXT)
-  console.log("LETS START FETCH POST ON /files/scan")
+
   return fetchJsonApi(`${String(process.env.NEXT_PUBLIC_FORMS_URL)}/files/scan`, {
     method: 'POST',
     headers: {

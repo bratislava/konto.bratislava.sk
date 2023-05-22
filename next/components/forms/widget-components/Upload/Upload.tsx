@@ -8,7 +8,7 @@ import { deleteFileFromBucket, scanFile, uploadFileToBucket } from '../../../../
 import { ScanFileDto } from '../../../../frontend/dtos/formDto'
 import { FileScan, FileScanResponse } from '../../../../frontend/dtos/formStepperDto'
 import useAccount from '../../../../frontend/hooks/useAccount'
-import logger from '../../../../frontend/utils/logger'
+import logger, { developmentLog } from '../../../../frontend/utils/logger'
 import UploadBrokenMessages, { MINIO_ERROR } from '../../info-components/UploadBrokenMessages'
 import UploadFieldHeader from '../../info-components/UploadFieldHeader'
 import UploadButton from './UploadButton'
@@ -97,7 +97,8 @@ const UploadComponent: ForwardRefRenderFunction<HTMLDivElement, UploadProps> = (
         }
         return scanFile(token, data)
           .then((res: FileScanResponse) => {
-            console.log('scan:', scan, '\nres:', res)
+            developmentLog('SCAN', scan)
+            developmentLog('SCAN RESPONSE', res)
             return { ...scan, fileStateStatus: res.status, scanId: res.id }
           })
           .catch((error) => {

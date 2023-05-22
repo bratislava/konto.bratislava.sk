@@ -7,7 +7,7 @@ import { useEffectOnce } from 'usehooks-ts'
 import { getFileScanState } from '../../../frontend/api/api'
 import { FileScan, FileScanResponse, FileScanState, JsonSchema } from '../../../frontend/dtos/formStepperDto'
 import useAccount from '../../../frontend/hooks/useAccount'
-import logger from '../../../frontend/utils/logger'
+import logger, { developmentLog } from '../../../frontend/utils/logger'
 import Alert from '../info-components/Alert'
 import Summary from './Summary/Summary'
 import SummaryMessages from './Summary/SummaryMessages'
@@ -61,10 +61,17 @@ const FinalStep = ({
     )
   }
 
+  const logAllFileScansOnDev = (updatedFileScans: FileScan[]) => {
+    developmentLog('\nALL UPDATED FILES SCANS')
+    updatedFileScans.forEach(scan => {
+      developmentLog("scan:", scan)
+    })
+  }
+
   useEffectOnce(() => {
     updateFileScans()
       .then((updatedFileScans: FileScan[]) => {
-        console.log("updated file scans", updatedFileScans)
+        logAllFileScansOnDev(updatedFileScans)
         onUpdateFileScans(updatedFileScans)
         setTestedFileScans(updatedFileScans)
         return true

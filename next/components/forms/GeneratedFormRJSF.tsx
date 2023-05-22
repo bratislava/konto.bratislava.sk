@@ -148,7 +148,7 @@ const GeneratedFormRJSF = ({ eform, escapedSlug, formSlug, wrapperClassName }: F
           submitStep={form.submitStep}
           submitForm={() =>
             isAuth
-              ? submitter.submitForm(filler.formId, form.formData)
+              ? submitter.submitForm(form.formData, filler.formId)
               : setRegistrationModal(true)
           }
         />

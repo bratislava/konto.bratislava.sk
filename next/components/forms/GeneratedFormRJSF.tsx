@@ -33,7 +33,7 @@ const GeneratedFormRJSF = ({ eform, escapedSlug, formSlug, wrapperClassName }: F
     onStepSumbit: filler.updateFormData,
     onInit: filler.initFormData,
   })
-  const { isAuth, status } = useAccount()
+  const { isAuth, status, userData } = useAccount()
   const [isOnShowSkipModal, setIsOnShowSkipModal] = useState<boolean>(false)
   const [registrationModal, setRegistrationModal] = useState<boolean>(true)
   const [submitRegistrationModal, setSubmitRegistrationModal] = useState<boolean>(false)
@@ -97,7 +97,7 @@ const GeneratedFormRJSF = ({ eform, escapedSlug, formSlug, wrapperClassName }: F
           <IdentityVerificationModal
             show={identityVerificationModal}
             onClose={() => setIdentityVerificationModal(false)}
-            userType="juridical"
+            userType={userData?.account_type}
           />
         )}
       </div>

@@ -1,19 +1,25 @@
 import ThreePointsIcon from '@assets/images/forms/three-points-icon.svg'
 import ArrowsDownUpIcon from '@assets/images/new-icons/ui/arrows-down-up.svg'
-import DiskIcon from '@assets/images/new-icons/ui/disc.svg'
+import DiskIcon from '@assets/images/new-icons/ui/disc-fill.svg'
 import DownloadIcon from '@assets/images/new-icons/ui/download.svg'
 import LockIcon from '@assets/images/new-icons/ui/lock.svg'
 import PdfIcon from '@assets/images/new-icons/ui/pdf.svg'
+import RegistrationModal from 'components/forms/segments/RegistrationModal/RegistrationModal'
 import Button from 'components/forms/simple-components/Button'
 import MenuDropdown, {
   MenuItemBase,
 } from 'components/forms/simple-components/MenuDropdown/MenuDropdown'
 import Waves from 'components/forms/simple-components/Waves/Waves'
+import useAccount from 'frontend/hooks/useAccount'
 import Link from 'next/link'
 import { useTranslation } from 'next-i18next'
+import { useState } from 'react'
 
 const FormHeader = () => {
   const { t } = useTranslation('forms')
+  const { isAuth } = useAccount()
+
+  const [registrationModal, setRegistrationModal] = useState<boolean>(false)
 
   const formHeaderMenuContent: MenuItemBase[] = [
     {
@@ -47,6 +53,9 @@ const FormHeader = () => {
               startIcon={<DiskIcon className="w-5 h-5" />}
               text={t('menu_list.save_concept')}
               className="text-gray-700 hover:text-gray-600 focus:text-gray-800"
+              onPress={() => {
+                if (!isAuth) setRegistrationModal(true)
+              }}
             />
             <MenuDropdown
               buttonTrigger={<ThreePointsIcon />}
@@ -61,6 +70,15 @@ const FormHeader = () => {
         waveColor="rgb(var(--color-main-200))"
         wavePosition="bottom"
       />
+      {!isAuth && (
+        <RegistrationModal
+          title={t('account:register_modal.header_save_title')}
+          subtitle={t('account:register_modal.header_save_subtitle')}
+          isBottomButtons={false}
+          show={registrationModal}
+          onClose={() => setRegistrationModal(false)}
+        />
+      )}
     </div>
   )
 }

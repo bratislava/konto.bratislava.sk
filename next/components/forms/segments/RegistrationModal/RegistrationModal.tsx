@@ -54,6 +54,8 @@ const ButtonMobile = ({ text, endIcon, href = '', title }: ButtonMobileBase) => 
 }
 
 type RegistrationModalBase = {
+  title: string
+  subtitle: string
   show: boolean
   onClose: () => void
   className?: string
@@ -61,6 +63,8 @@ type RegistrationModalBase = {
 }
 
 const RegistrationModal = ({
+  title,
+  subtitle,
   show,
   onClose,
   className,
@@ -105,8 +109,8 @@ const RegistrationModal = ({
             onClick={onClose}
             className="cursor-pointer w-6 h-6 absolute top-3 right-3 md:top-4 md:right-6"
           />
-          <h3 className="text-h3">{t('register_modal.header_title')}</h3>
-          <p className="text-p1">{t('register_modal.header_subtitle')}</p>
+          <h3 className="text-h3">{title}</h3>
+          <p className="text-p1">{subtitle}</p>
         </div>
         <div className="flex flex-col">
           <div className="p-4 md:px-6 bg-main-100 md:pt-5 md:pb-6 rounded-t-lg">
@@ -125,7 +129,7 @@ const RegistrationModal = ({
           <div className="bg-main-100 rounded-b-lg">
             <Link
               href={ROUTES.REGISTER}
-              className="text-p1-semibold text-gray-0 leading-6 text-center bg-main-700 py-2 sm:py-6 mb-4 md:mb-0 mx-4 md:mx-0 px-5 md:px-0 rounded-lg md:rounded-t-none md:rounded-b-lg flex justify-center hover:bg-main-600"
+              className="text-p1-semibold text-gray-0 leading-6 text-center bg-main-700 py-2 md:py-6 mb-4 md:mb-0 mx-4 md:mx-0 px-5 md:px-0 rounded-lg md:rounded-t-none md:rounded-b-lg flex justify-center hover:bg-main-600"
             >
               {/* eslint-disable-next-line jsx-a11y/anchor-is-valid */}
 

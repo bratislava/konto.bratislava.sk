@@ -6,6 +6,7 @@ import RegistrationModal from 'components/forms/segments/RegistrationModal/Regis
 import SkipStepModal from 'components/forms/segments/SkipStepModal/SkipStepModal'
 import MenuList from 'components/forms/steps/MenuList'
 import useAccount, { AccountStatus } from 'frontend/hooks/useAccount'
+import { useTranslation } from 'next-i18next'
 import { useState } from 'react'
 
 import { validator } from '../../frontend/dtos/formStepperDto'
@@ -27,6 +28,7 @@ interface FormRJSF {
 }
 
 const GeneratedFormRJSF = ({ eform, escapedSlug, formSlug, wrapperClassName }: FormRJSF) => {
+  const { t } = useTranslation('account')
   const filler = useFormFiller(eform)
   const formContext = useFormRJSFContextMemo(eform, filler.formId)
   const form = useFormStepper(escapedSlug, eform, {
@@ -82,6 +84,8 @@ const GeneratedFormRJSF = ({ eform, escapedSlug, formSlug, wrapperClassName }: F
         />
         {!isAuth && (
           <RegistrationModal
+            title={t('register_modal.header_sent_title')}
+            subtitle={t('register_modal.header_sent_subtitle')}
             isBottomButtons={false}
             show={registrationModal}
             onClose={() => setRegistrationModal(false)}
@@ -89,6 +93,8 @@ const GeneratedFormRJSF = ({ eform, escapedSlug, formSlug, wrapperClassName }: F
         )}
         {!isAuth && (
           <RegistrationModal
+            title={t('register_modal.header_sent_title')}
+            subtitle={t('register_modal.header_sent_subtitle')}
             show={submitRegistrationModal}
             onClose={() => setSubmitRegistrationModal(false)}
           />

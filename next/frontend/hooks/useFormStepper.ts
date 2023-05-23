@@ -254,6 +254,25 @@ export const useFormStepper = (eformSlug: string, eform: EFormValue, callbacks: 
     }
   }
 
+  const chooseFilesAndImportXml = () => {
+    const importInput = document.createElement('input')
+    importInput.type = 'file'
+    importInput.multiple = false
+    importInput.accept = '.xml'
+
+    importInput.addEventListener('change', e => {
+      if (!importInput.files) return
+      const changeEvent = e as unknown as ChangeEvent<HTMLInputElement>
+      importXml(changeEvent).catch(error => console.log('error', error))
+    })
+
+    importInput.click()
+  }
+
+  const exportPdf = async () => {
+    const xml = await formDataToXml(eformSlug, formData)
+  }
+
   const handleOnSubmit = async (newFormData: RJSFSchema) => {
     // handles onSubmit event of form step
     // it is called also if we are going to skip step by 1
@@ -306,6 +325,7 @@ export const useFormStepper = (eformSlug: string, eform: EFormValue, callbacks: 
     isComplete,
     formRef,
     exportXml,
-    importXml,
+    importXml: chooseFilesAndImportXml,
+    exportPdf
   }
 }

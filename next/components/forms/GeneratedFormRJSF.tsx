@@ -56,24 +56,13 @@ const GeneratedFormRJSF = ({ eform, escapedSlug, formSlug, wrapperClassName }: F
   }
 
   const saveConcept = () => filler.updateFormData(form.formData).catch(error => logger.error('Save concept failed', error))
-  const importXml = () => {
-    const importInput = document.createElement('input')
-    importInput.type = 'file'
-    importInput.multiple = false
-    importInput.accept = '.xml'
-
-    importInput.addEventListener('change', e => {
-      if (!importInput.files) return
-      const changeEvent = e as unknown as ChangeEvent<HTMLInputElement>
-      form.importXml(changeEvent).catch(error => console.log('error', error))
-    })
-
-    importInput.click()
-  }
 
   return (
     <>
-      <FormHeader onImportXml={importXml} onExportXml={form.exportXml} onSaveConcept={saveConcept}/>
+      <FormHeader onImportXml={form.importXml}
+                  onExportXml={form.exportXml}
+                  onSaveConcept={saveConcept}
+                  onExportPdf={form.exportPdf}/>
       <div
         className={cx(
           'flex flex-col gap-10 pt-0 pb-6 lg:py-10 w-full max-w-screen-lg mx-auto',
@@ -169,7 +158,10 @@ const GeneratedFormRJSF = ({ eform, escapedSlug, formSlug, wrapperClassName }: F
                 : setRegistrationModal(true)
             }
           />
-          <MenuList onExportXml={form.exportXml} onSaveConcept={saveConcept} onImportXml={importXml}/>
+          <MenuList onExportXml={form.exportXml}
+                    onSaveConcept={saveConcept}
+                    onImportXml={form.importXml}
+                    onExportPdf={form.exportPdf}/>
         </div>
       </div>
     </>

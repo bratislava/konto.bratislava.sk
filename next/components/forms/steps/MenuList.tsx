@@ -21,9 +21,10 @@ interface FormHeaderProps {
   onExportXml: () => void
   onSaveConcept: () => void
   onImportXml: () => void
+  onExportPdf: () => void
 }
 
-const MenuList = ({ onExportXml, onSaveConcept, onImportXml }: FormHeaderProps) => {
+const MenuList = ({ onExportXml, onSaveConcept, onImportXml, onExportPdf }: FormHeaderProps) => {
   const { t } = useTranslation('forms')
 
   const { isAuth } = useAccount()
@@ -56,7 +57,7 @@ const MenuList = ({ onExportXml, onSaveConcept, onImportXml }: FormHeaderProps) 
     {
       title: t('menu_list.pdf'),
       icon: <PdfIcon className="w-6 h-6" />,
-      onPress: () => {},
+      onPress: onExportPdf,
     },
     {
       title: t('menu_list.upload_xml'),

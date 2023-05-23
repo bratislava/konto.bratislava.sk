@@ -19,9 +19,10 @@ interface FormHeaderProps {
   onExportXml: () => void
   onSaveConcept: () => void
   onImportXml: () => void
+  onExportPdf: () => void
 }
 
-const FormHeader = ({ onExportXml, onSaveConcept, onImportXml }: FormHeaderProps) => {
+const FormHeader = ({ onExportXml, onSaveConcept, onImportXml, onExportPdf }: FormHeaderProps) => {
   const { t } = useTranslation('forms')
   const { isAuth } = useAccount()
 
@@ -38,7 +39,7 @@ const FormHeader = ({ onExportXml, onSaveConcept, onImportXml }: FormHeaderProps
       icon: <DownloadIcon className="w-6 h-6" />,
       onPress: onExportXml,
     },
-    { title: t('menu_list.pdf'), icon: <PdfIcon className="w-6 h-6" />, url: `/` },
+    { title: t('menu_list.pdf'), icon: <PdfIcon className="w-6 h-6" />, onPress: onExportPdf },
     { title: t('menu_list.upload_xml'), icon: <ArrowsDownUpIcon className="w-6 h-6" />, onPress: onImportXml },
   ]
 

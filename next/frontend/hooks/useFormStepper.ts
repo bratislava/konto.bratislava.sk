@@ -16,10 +16,9 @@ import { StepData } from '../../components/forms/types/TransformedFormData'
 import { formDataToXml, xmlToFormData } from '../api/api'
 import { readTextFile } from '../utils/file'
 import {
-  getAllStepData, getDefaults,
+  getAllStepData,
   getInitFormData,
-  getJsonSchemaPropertyTree,
-  getValidatedSteps, mergePropertyTreeToFormData,
+  getValidatedSteps,
   validateAsyncProperties,
 } from '../utils/formStepper'
 import logger from '../utils/logger'

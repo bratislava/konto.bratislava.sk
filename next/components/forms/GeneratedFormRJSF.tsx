@@ -6,7 +6,7 @@ import SkipStepModal from 'components/forms/segments/SkipStepModal/SkipStepModal
 import MenuList from 'components/forms/steps/MenuList'
 import useAccount, { AccountStatus } from 'frontend/hooks/useAccount'
 import { useTranslation } from 'next-i18next'
-import { useState } from 'react'
+import { ChangeEvent, useState } from 'react'
 
 import { validator } from '../../frontend/dtos/formStepperDto'
 import { useFormFiller } from '../../frontend/hooks/useFormFiller'
@@ -55,11 +55,25 @@ const GeneratedFormRJSF = ({ eform, escapedSlug, formSlug, wrapperClassName }: F
     }
   }
 
-  const saveConcept = () => filler.updateFormData(form.formData).catch(error => logger.error('Save concept failer', error))
+  const saveConcept = () => filler.updateFormData(form.formData).catch(error => logger.error('Save concept failed', error))
+  const importXml = () => {
+    const importInput = document.createElement('input')
+    importInput.type = 'file'
+    importInput.multiple = false
+    importInput.accept = '.xml'
+
+    importInput.addEventListener('change', e => {
+      if (!importInput.files) return
+      const changeEvent = e as unknown as ChangeEvent<HTMLInputElement>
+      form.importXml(changeEvent).catch(error => console.log('error', error))
+    })
+
+    importInput.click()
+  }
 
   return (
     <>
-      <FormHeader onExportXml={form.exportXml} onSaveConcept={saveConcept}/>
+      <FormHeader onImportXml={importXml} onExportXml={form.exportXml} onSaveConcept={saveConcept}/>
       <div
         className={cx(
           'flex flex-col gap-10 pt-0 pb-6 lg:py-10 w-full max-w-screen-lg mx-auto',

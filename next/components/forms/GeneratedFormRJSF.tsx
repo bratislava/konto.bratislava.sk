@@ -14,6 +14,7 @@ import { useFormRJSFContextMemo } from '../../frontend/hooks/useFormRJSFContextM
 import { useFormStepper } from '../../frontend/hooks/useFormStepper'
 import { useFormSubmitter } from '../../frontend/hooks/useFormSubmitter'
 import { customValidate } from '../../frontend/utils/formStepper'
+import logger from '../../frontend/utils/logger'
 import IdentityVerificationModal from './segments/IdentityVerificationModal/IdentityVerificationModal'
 import FormHeader from './simple-components/FormHeader'
 import FinalStep from './steps/FinalStep'
@@ -36,7 +37,9 @@ const GeneratedFormRJSF = ({ eform, escapedSlug, formSlug, wrapperClassName }: F
     onStepSumbit: filler.updateFormData,
     onInit: filler.initFormData,
   })
+  const submitter = useFormSubmitter(formSlug)
   const { isAuth, status, userData } = useAccount()
+
   const [isOnShowSkipModal, setIsOnShowSkipModal] = useState<boolean>(false)
   const [registrationModal, setRegistrationModal] = useState<boolean>(true)
   const [identityVerificationModal, setIdentityVerificationModal] = useState(true)
@@ -52,11 +55,11 @@ const GeneratedFormRJSF = ({ eform, escapedSlug, formSlug, wrapperClassName }: F
     }
   }
 
-  const submitter = useFormSubmitter(formSlug)
+  const saveConcept = () => filler.updateFormData(form.formData).catch(error => logger.error('Save concept failer', error))
 
   return (
     <>
-      <FormHeader onExportXml={form.exportXml}/>
+      <FormHeader onExportXml={form.exportXml} onSaveConcept={saveConcept}/>
       <div
         className={cx(
           'flex flex-col gap-10 pt-0 pb-6 lg:py-10 w-full max-w-screen-lg mx-auto',
@@ -152,7 +155,7 @@ const GeneratedFormRJSF = ({ eform, escapedSlug, formSlug, wrapperClassName }: F
                 : setRegistrationModal(true)
             }
           />
-          <MenuList onExportXml={form.exportXml}/>
+          <MenuList onExportXml={form.exportXml} onSaveConcept={saveConcept}/>
         </div>
       </div>
     </>

@@ -124,6 +124,16 @@ export const xmlToFormData = (eform: string, data: string): Promise<RJSFSchema> 
   })
 }
 
+export const xmlToPdf = (eform: string, data: string) => {
+  return fetchBlob(`/api/eforms/${eform}/transform/pdf`, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({ data }),
+  })
+}
+
 export const verifyIdentityApi = (data: Identity, token?: string | null) => {
   if (!token) throw new Error(MISSING_TOKEN)
 

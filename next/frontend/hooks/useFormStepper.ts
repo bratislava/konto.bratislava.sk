@@ -13,7 +13,7 @@ import { useTranslation } from 'next-i18next'
 import { ChangeEvent, RefObject, useEffect, useRef, useState } from 'react'
 
 import { StepData } from '../../components/forms/types/TransformedFormData'
-import { formDataToXml, xmlToFormData } from '../api/api'
+import { formDataToXml, xmlToFormData, xmlToPdf } from '../api/api'
 import { readTextFile } from '../utils/file'
 import {
   getAllStepData,
@@ -22,6 +22,7 @@ import {
   getValidatedSteps, mergePropertyTreeToFormData,
   validateAsyncProperties,
 } from '../utils/formStepper'
+import { blobToString, downloadBlob } from '../utils/general'
 import logger from '../utils/logger'
 import useSnackbar from './useSnackbar'
 
@@ -233,12 +234,9 @@ export const useFormStepper = (eformSlug: string, eform: EFormValue, callbacks: 
 
   const exportXml = async () => {
     try {
-      const xml = await formDataToXml(eformSlug, formData)
-      const link = document.createElement('a')
-      link.href = URL.createObjectURL(xml)
-      link.download = `${eformSlug}_output.xml`
-      link.click()
-      URL.revokeObjectURL(link.href)
+      const xml: Blob = await formDataToXml(eformSlug, formData)
+      const fileName = `${eformSlug}_output.xml`
+      downloadBlob(xml, fileName)
     } catch (error) {
       openSnackbarError(t('errors.xml_export'))
     }
@@ -246,7 +244,7 @@ export const useFormStepper = (eformSlug: string, eform: EFormValue, callbacks: 
 
   const importXml = async (e: ChangeEvent<HTMLInputElement>) => {
     try {
-      const xmlData = await readTextFile(e)
+      const xmlData: string = await readTextFile(e)
       const transformedFormData: RJSFSchema = await xmlToFormData(eformSlug, xmlData)
       setFormData(transformedFormData)
     } catch (error) {
@@ -270,7 +268,18 @@ export const useFormStepper = (eformSlug: string, eform: EFormValue, callbacks: 
   }
 
   const exportPdf = async () => {
-    const xml = await formDataToXml(eformSlug, formData)
+    try {
+      const xml: Blob = await formDataToXml(eformSlug, formData)
+      console.log(xml)
+      const xmlData: string = await blobToString(xml)
+      console.log(xmlData)
+      const pdf = await xmlToPdf(eformSlug, xmlData)
+      console.log(pdf)
+      const fileName = `${eformSlug}_output.pdf`
+      downloadBlob(pdf, fileName)
+    } catch (error) {
+      openSnackbarError(t('errors.pdf_export'))
+    }
   }
 
   const handleOnSubmit = async (newFormData: RJSFSchema) => {

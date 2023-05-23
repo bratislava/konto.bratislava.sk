@@ -29,12 +29,12 @@ const FormHeader = ({ onExportXml }: FormHeaderProps) => {
     {
       title: t('menu_list.eId'),
       icon: <LockIcon className="w-6 h-6" />,
-      onPress: onExportXml,
+      onPress: () => {},
     },
     {
       title: t('menu_list.download_xml'),
       icon: <DownloadIcon className="w-6 h-6" />,
-      onPress: () => {},
+      onPress: onExportXml,
     },
     { title: t('menu_list.pdf'), icon: <PdfIcon className="w-6 h-6" />, url: '/' },
     { title: t('menu_list.upload_xml'), icon: <ArrowsDownUpIcon className="w-6 h-6" />, url: '/' },

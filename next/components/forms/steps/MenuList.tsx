@@ -20,9 +20,10 @@ type MenuItem = {
 interface FormHeaderProps {
   onExportXml: () => void
   onSaveConcept: () => void
+  onImportXml: () => void
 }
 
-const MenuList = ({ onExportXml, onSaveConcept }: FormHeaderProps) => {
+const MenuList = ({ onExportXml, onSaveConcept, onImportXml }: FormHeaderProps) => {
   const { t } = useTranslation('forms')
 
   const { isAuth } = useAccount()
@@ -60,7 +61,7 @@ const MenuList = ({ onExportXml, onSaveConcept }: FormHeaderProps) => {
     {
       title: t('menu_list.upload_xml'),
       icon: <ArrowsDownUpIcon className="w-6 h-6" />,
-      onPress: () => {},
+      onPress: onImportXml,
     },
   ]
 

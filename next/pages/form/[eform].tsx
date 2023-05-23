@@ -81,7 +81,6 @@ const FormTestPage = ({
       ]}
     >
       <AccountPageLayout isPublicPage hiddenHeaderNav isProductionDeploy={isProductionDeploy}>
-        <FormHeader />
         <GeneratedFormRJSF eform={eform} escapedSlug={escapedSlug} formSlug={formSlug} />
       </AccountPageLayout>
     </PageWrapper>

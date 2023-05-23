@@ -15,7 +15,11 @@ import Link from 'next/link'
 import { useTranslation } from 'next-i18next'
 import { useState } from 'react'
 
-const FormHeader = () => {
+interface FormHeaderProps {
+  onExportXml: () => void
+}
+
+const FormHeader = ({ onExportXml }: FormHeaderProps) => {
   const { t } = useTranslation('forms')
   const { isAuth } = useAccount()
 
@@ -25,7 +29,7 @@ const FormHeader = () => {
     {
       title: t('menu_list.eId'),
       icon: <LockIcon className="w-6 h-6" />,
-      onPress: () => {},
+      onPress: onExportXml,
     },
     {
       title: t('menu_list.download_xml'),

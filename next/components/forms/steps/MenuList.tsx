@@ -14,7 +14,11 @@ type MenuItem = {
   onPress?: () => void
 }
 
-const MenuList = () => {
+interface FormHeaderProps {
+  onExportXml: () => void
+}
+
+const MenuList = ({ onExportXml }: FormHeaderProps) => {
   const { t } = useTranslation('forms')
 
   const menuList: MenuItem[] = [
@@ -31,7 +35,7 @@ const MenuList = () => {
     {
       title: t('menu_list.download_xml'),
       icon: <DownloadIcon className="w-6 h-6" />,
-      onPress: () => {},
+      onPress: onExportXml,
     },
     {
       title: t('menu_list.pdf'),

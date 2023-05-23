@@ -152,7 +152,7 @@ const GeneratedFormRJSF = ({ eform, escapedSlug, formSlug, wrapperClassName }: F
                 : setRegistrationModal(true)
             }
           />
-          <MenuList />
+          <MenuList onExportXml={form.exportXml}/>
         </div>
       </div>
     </>

@@ -6,7 +6,7 @@ import SkipStepModal from 'components/forms/segments/SkipStepModal/SkipStepModal
 import MenuList from 'components/forms/steps/MenuList'
 import useAccount, { AccountStatus } from 'frontend/hooks/useAccount'
 import { useTranslation } from 'next-i18next'
-import { ChangeEvent, useState } from 'react'
+import { useState } from 'react'
 
 import { validator } from '../../frontend/dtos/formStepperDto'
 import { FormFiller, useFormFiller } from '../../frontend/hooks/useFormFiller'

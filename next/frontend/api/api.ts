@@ -3,20 +3,22 @@
 import { RJSFSchema } from '@rjsf/utils'
 import { ErrorObject } from 'ajv'
 
-import { CreateFormDto, FormDto, UpdateFormDto } from '../dtos/formDto'
+import { CreateFormDto, FormDto, ScanFileDto, UpdateFormDto } from '../dtos/formDto'
 import { ApiError, Gdpr, Identity, TaxApiError, UrlResult, User } from '../dtos/generalApiDto'
-import logger from '../utils/logger'
+import logger, { developmentLog } from '../utils/logger'
 
 export const API_ERROR_TEXT = 'API_ERROR'
 export const UNAUTHORIZED_ERROR_TEXT = 'UNAUTHORIZED_ERROR'
 export const MISSING_TOKEN = 'MISSING TOKEN'
-const fetchJsonApi = async <T = any>(path: string, options?: RequestInit): Promise<T> => {
+
+const fetchJsonApi = async <T=any>(path: string, options?: RequestInit): Promise<T> => {
   try {
     const response = await fetch(path, options)
     if (response.ok) {
       try {
         return (await response.json()) as T
       } catch (error) {
+        developmentLog("FETCH JSON API RAW ERROR 1", error as Record<string, unknown>, true)
         throw new Error(API_ERROR_TEXT)
       }
     }
@@ -29,6 +31,7 @@ const fetchJsonApi = async <T = any>(path: string, options?: RequestInit): Promi
     try {
       responseJson = JSON.parse(responseText)
     } catch (error) {
+      developmentLog("FETCH JSON API RAW ERROR 2", error as Record<string, unknown>, true)
       logger.error(API_ERROR_TEXT, response.status, response.statusText, responseText, response)
       throw new Error(response.statusText || API_ERROR_TEXT)
     }
@@ -45,6 +48,7 @@ const fetchJsonApi = async <T = any>(path: string, options?: RequestInit): Promi
     }
   } catch (error) {
     // TODO originally caught & rethrown to ensure logging, might no longer be necessary
+    developmentLog("FETCH JSON API RAW ERROR 2", error as Record<string, unknown>, true)
     logger.error(error)
     throw error
   }
@@ -172,7 +176,7 @@ export const unsubscribeApi = (
   )
 }
 
-export const getUserApi = (token: string | null): Promise<User> => {
+export const getUserApi = (token: string|null): Promise<User> => {
   if (!token) throw new Error(MISSING_TOKEN)
 
   return fetchJsonApi<User>(
@@ -335,4 +339,56 @@ export const sendForm = (id: string, formDataXml: string, authorizationHeader: s
       body: JSON.stringify({ formDataXml }),
     },
   )
+}
+
+export const uploadFileToBucket = async (file: File) => {
+  const formData = new FormData()
+  formData.append('file', file)
+
+  return fetchJsonApi('/api/eforms/upload-file', {
+    method: 'POST',
+    headers: {
+      'Accept': 'application/json'
+    },
+    body: formData
+  })
+}
+
+export const deleteFileFromBucket = async (fileName: string) => {
+  const params = new URLSearchParams({ fileName })
+
+  return fetchJsonApi(`/api/eforms/delete-file?${params.toString()}`, {
+    method: 'DELETE',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+  })
+}
+
+export const scanFile = async (token: string | null, data: ScanFileDto) => {
+  developmentLog("DATA FOR FILE SCAN", data)
+  if (!token) throw new Error(MISSING_TOKEN)
+  if (!data.pospId || !data.formId || !data.userExternalId || !data.fileUid) throw new Error(API_ERROR_TEXT)
+
+  return fetchJsonApi(`${String(process.env.NEXT_PUBLIC_FORMS_URL)}/files/scan`, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      'Authorization': `Bearer ${token}`,
+    },
+    body: JSON.stringify(data)
+  })
+}
+
+export const getFileScanState = async (token: string | null, fileId?: string) => {
+  if (!token) throw new Error(MISSING_TOKEN)
+  if (!fileId) throw new Error(API_ERROR_TEXT)
+
+  return fetchJsonApi(`${String(process.env.NEXT_PUBLIC_FORMS_URL)}/files/scan/${fileId}`, {
+    method: 'GET',
+    headers: {
+      'Content-Type': 'application/json',
+      'Authorization': `Bearer ${token}`
+    }
+  })
 }

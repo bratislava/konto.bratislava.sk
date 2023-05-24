@@ -47,6 +47,8 @@ export const useFormStepper = (eformSlug: string, eform: EFormValue, callbacks: 
   const [errors, setErrors] = useState<Record<string, RJSFValidationError[]>>({})
   const [extraErrors, setExtraErrors] = useState<ErrorSchema>({})
   const [openSnackbarError] = useSnackbar({ variant: 'error' })
+  const [openSnackbarSuccess] = useSnackbar({ variant: 'success' })
+  const [openSnackbarInfo, closeSnackbarInfo] = useSnackbar({ variant: 'info' })
 
   // state variables helping in stepper
   const [nextStepIndex, setNextStepIndex] = useState<number | null>(null)
@@ -233,20 +235,26 @@ export const useFormStepper = (eformSlug: string, eform: EFormValue, callbacks: 
   const { t } = useTranslation('forms')
 
   const exportXml = async () => {
+    openSnackbarInfo(t('info_messages.xml_export'))
     try {
       const xml: Blob = await formDataToXml(eformSlug, formData)
       const fileName = `${eformSlug}_output.xml`
       downloadBlob(xml, fileName)
+      closeSnackbarInfo()
+      openSnackbarSuccess(t('success_messages.xml_export'))
     } catch (error) {
       openSnackbarError(t('errors.xml_export'))
     }
   }
 
   const importXml = async (e: ChangeEvent<HTMLInputElement>) => {
+    openSnackbarInfo(t('info_messages.xml_import'))
     try {
       const xmlData: string = await readTextFile(e)
       const transformedFormData: RJSFSchema = await xmlToFormData(eformSlug, xmlData)
       setFormData(transformedFormData)
+      closeSnackbarInfo()
+      openSnackbarSuccess(t('success_messages.xml_import'))
     } catch (error) {
       openSnackbarError(t('errors.xml_import'))
     }
@@ -268,12 +276,15 @@ export const useFormStepper = (eformSlug: string, eform: EFormValue, callbacks: 
   }
 
   const exportPdf = async () => {
+    openSnackbarInfo(t('info_messages.pdf_export'))
     try {
       const xml: Blob = await formDataToXml(eformSlug, formData)
       const xmlData: string = await blobToString(xml)
       const pdf = await xmlToPdf(eformSlug, xmlData)
       const fileName = `${eformSlug}_output.pdf`
       downloadBlob(pdf, fileName)
+      closeSnackbarInfo()
+      openSnackbarSuccess(t('success_messages.pdf_export'))
     } catch (error) {
       openSnackbarError(t('errors.pdf_export'))
     }

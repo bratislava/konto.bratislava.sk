@@ -203,9 +203,10 @@ const UploadComponent: ForwardRefRenderFunction<HTMLDivElement, UploadProps> = (
 
   const addNewFiles = async (newFiles: UploadMinioFile[]) => {
     const sanitizedFiles = sanitizeClientFiles(newFiles)
-    const oldFiles = value ? [...value] : []
-    if (multiple && oldFiles.length > 0 && oldFiles[0]) {
+    let oldFiles = value ? [...value] : []
+    if (!multiple && oldFiles.length === 1) {
       removeFirstFile()
+      oldFiles = []
     }
     emitOnChange(sanitizedFiles, oldFiles)
 
@@ -235,13 +236,12 @@ const UploadComponent: ForwardRefRenderFunction<HTMLDivElement, UploadProps> = (
     uploadInput.multiple = multiple === undefined ? false : multiple
     uploadInput.accept = supportedFormats?.toString() || ''
 
-    // eslint-disable-next-line @typescript-eslint/no-misused-promises
-    uploadInput.addEventListener('change', async () => {
+    uploadInput.addEventListener('change', () => {
       if (!uploadInput.files) return
       const newFiles = Array.from(uploadInput.files, (file) => {
         return { file, originalName: file.name }
       })
-      await addNewFiles(newFiles)
+      addNewFiles(newFiles).catch(error => logger.error('ADD NEW FILES FAILED', error))
     })
 
     uploadInput.click()

@@ -270,11 +270,11 @@ export const useFormStepper = (eformSlug: string, eform: EFormValue, callbacks: 
   const exportPdf = async () => {
     try {
       const xml: Blob = await formDataToXml(eformSlug, formData)
-      console.log(xml)
+      console.log('xml', xml)
       const xmlData: string = await blobToString(xml)
-      console.log(xmlData)
+      console.log('xmlData', xmlData)
       const pdf = await xmlToPdf(eformSlug, xmlData)
-      console.log(pdf)
+      console.log('pdf', pdf)
       const fileName = `${eformSlug}_output.pdf`
       downloadBlob(pdf, fileName)
     } catch (error) {

@@ -69,7 +69,7 @@ const FormTestPage = ({
   const formSlug = forceString(router.query.eform)
   // Using string.match because CodeQL tools ignore regex.test as SSRF prevention.
   // eslint-disable-next-line unicorn/prefer-regexp-test
-  const escapedSlug = formSlug.match(/^[\da-z-]+$/) ? formSlug : ''
+  const escapedSlug = formSlug.match(/^[\dA-Za-z-]+$/) ? formSlug : ''
   const pageSlug = `form/${escapedSlug}`
 
   return (

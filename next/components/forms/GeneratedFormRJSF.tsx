@@ -9,7 +9,7 @@ import { useTranslation } from 'next-i18next'
 import { ChangeEvent, useState } from 'react'
 
 import { validator } from '../../frontend/dtos/formStepperDto'
-import { useFormFiller } from '../../frontend/hooks/useFormFiller'
+import { FormFiller, useFormFiller } from '../../frontend/hooks/useFormFiller'
 import { useFormRJSFContextMemo } from '../../frontend/hooks/useFormRJSFContextMemo'
 import { useFormStepper } from '../../frontend/hooks/useFormStepper'
 import { useFormSubmitter } from '../../frontend/hooks/useFormSubmitter'
@@ -30,9 +30,9 @@ interface FormRJSF {
 }
 
 const GeneratedFormRJSF = ({ eform, escapedSlug, formSlug, wrapperClassName }: FormRJSF) => {
+  const filler: FormFiller = useFormFiller(eform)
+  const formContext = useFormRJSFContextMemo(eform, filler)
   const { t } = useTranslation('account')
-  const filler = useFormFiller(eform)
-  const formContext = useFormRJSFContextMemo(eform, filler.formId)
   const form = useFormStepper(escapedSlug, eform, {
     onStepSumbit: filler.updateFormData,
     onInit: filler.initFormData,
@@ -112,10 +112,12 @@ const GeneratedFormRJSF = ({ eform, escapedSlug, formSlug, wrapperClassName }: F
               formData={form.formData}
               formErrors={form.errors}
               extraErrors={form.extraErrors}
+              fileScans={formContext.fileScans}
               schema={form.validatedSchema}
               onGoToStep={form.setStepIndex}
               submitErrors={submitter.errors}
               submitMessage={submitter.successMessage}
+              onUpdateFileScans={updatedScans => { formContext.fileScans = updatedScans }}
             />
           ) : (
             <>
@@ -149,12 +151,13 @@ const GeneratedFormRJSF = ({ eform, escapedSlug, formSlug, wrapperClassName }: F
           <StepButtonGroup
             stepIndex={form.stepIndex}
             isFinalStep={form.isComplete}
+            fileScans={formContext.fileScans}
             previous={form.previous}
             skip={() => skipButtonHandler(form.stepIndex + 1)}
             submitStep={form.submitStep}
             submitForm={() =>
               isAuth
-                ? submitter.submitForm(filler.formId, form.formData)
+                ? submitter.submitForm(form.formData, filler.formId)
                 : setRegistrationModal(true)
             }
           />

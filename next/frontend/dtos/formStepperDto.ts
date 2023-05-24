@@ -20,7 +20,11 @@ export interface JsonSchemaExtraProperties {
 }
 
 export interface FormRJSFContext {
+  formId?: string
+  pospId?: string
+  userExternalId?: string
   bucketFolderName?: string
+  fileScans: FileScan[]
 }
 
 export interface KeywordDefinition extends FuncKeywordDefinition {
@@ -82,3 +86,21 @@ export const validator: ValidatorType = customizeValidator({
   customFormats,
   ajvOptionsOverrides: { keywords: ajvKeywords },
 })
+
+export type FileScanStatus = "UPLOADED"|"ACCEPTED"|"SCANNING"|"SAFE"|"INFECTED"|"NOT FOUND"|"MOVE ERROR SAFE"|"MOVE ERROR INFECTED"
+export type FileScanState = "scan"|"error"|"finished"
+
+export interface FileScanResponse extends Record<string, unknown> {
+  status: FileScanStatus
+  id: string
+  fileUid: string
+  message: string
+}
+
+export interface FileScan extends Record<string, unknown> {
+  fileName: string
+  originalName: string
+  fileState?: FileScanState
+  fileStateStatus?: FileScanStatus
+  scanId?: string
+}

@@ -1,3 +1,10 @@
+export type ScanFileDto = {
+  pospId?: string
+  formId?: string
+  userExternalId?: string
+  fileUid?: string
+}
+
 export type CreateFormDto = {
   pospID: string
   pospVersion: string

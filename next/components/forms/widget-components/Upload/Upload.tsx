@@ -266,7 +266,7 @@ const UploadComponent: ForwardRefRenderFunction<HTMLDivElement, UploadProps> = (
   // RENDER
   return (
     <section
-      className={cx('select-none w-fit h-fit', className)}
+      className={cx('select-none w-full h-fit', className)}
       style={{ transition: '0.2 all linear' }}
     >
       <UploadFieldHeader label={label ?? ''} required={required} helptext={helptext} />

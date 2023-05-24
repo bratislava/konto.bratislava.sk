@@ -323,8 +323,8 @@ export const getDefaults = (schema: RJSFSchema, path: string[], obj: object) => 
   return obj
 }
 
-export const getInitFormData = (schema: RJSFSchema): RJSFSchema => {
-  const formData: RJSFSchema = getDefaults(schema, [], {})
+export const getInitFormData = (schema: RJSFSchema, oldFormData: RJSFSchema = {}): RJSFSchema => {
+  const formData: RJSFSchema = getDefaults(schema, [], oldFormData)
 
   schema?.allOf?.forEach((step) => {
     if (typeof step !== 'boolean') {

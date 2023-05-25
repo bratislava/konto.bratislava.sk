@@ -49,18 +49,12 @@ const RadioButtonsWidgetRJSF = (props: RadioButtonFieldWidgetRJSFProps) => {
     return radioOptions.find((option) => option.value === radioValue)?.tooltip
   }
 
-  const handleOnChange = (data: string) => {
-    const option = enumOptions.find((enumOption: EnumOptionsType) => enumOption.value === data)
-    const newValue: string|boolean|number = option ? option.value : data
-    onChange(newValue)
-  }
-
   return (
     <WidgetWrapper accordion={accordion} spaceBottom={spaceBottom} spaceTop={spaceTop}>
       <RadioGroup
         errorMessage={rawErrors}
         value={value ?? undefined}
-        onChange={handleOnChange}
+        onChange={onChange}
         className={className}
         label={label}
         orientations={orientations}

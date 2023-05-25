@@ -91,7 +91,7 @@ const UploadDropAreaComponent: ForwardRefRenderFunction<HTMLDivElement, UploadDr
 
   // RENDER
   return (
-    <div className="w-[180px] xs:w-[300px] sm:w-[480px] relative h-40" ref={ref} data-value={value}>
+    <div className="w-full relative h-40" ref={ref} data-value={value}>
       <div
         aria-label="Upload drop area"
         role="button"

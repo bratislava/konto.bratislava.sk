@@ -1,17 +1,51 @@
+import ThreePointsIcon from '@assets/images/forms/three-points-icon.svg'
+import TrashIcon from '@assets/images/new-icons/ui/basket.svg'
 import DownloadIcon from '@assets/images/new-icons/ui/download.svg'
 import ExportIcon from '@assets/images/new-icons/ui/export.svg'
-import { MyApplicationsConceptCardBase } from 'components/forms/segments/AccountSections/MyApplicationsSection/MyApplicationsConceptList'
+import PdfIcon from '@assets/images/new-icons/ui/pdf.svg'
+import ConceptDeleteModal from 'components/forms/segments/ConceptDeleteModal/ConceptDeleteModal'
 import Button from 'components/forms/simple-components/Button'
+import MenuDropdown, {
+  MenuItemBase,
+} from 'components/forms/simple-components/MenuDropdown/MenuDropdown'
+import { MyApplicationsConceptCardBase } from 'frontend/api/mocks/mocks'
 import Link from 'next/link'
 import { useRouter } from 'next/router'
 import { useTranslation } from 'next-i18next'
+import { useState } from 'react'
 
 import { ROUTES } from '../../../../../frontend/api/constants'
 
-const MyApplicationsConceptCard = (props: MyApplicationsConceptCardBase) => {
-  const { title, subtitle, category, createDate } = props
+type MyApplicationsConceptCardProps = {
+  data: MyApplicationsConceptCardBase
+  onDeleteCard: () => void
+}
+
+const MyApplicationsConceptCard = (props: MyApplicationsConceptCardProps) => {
+  const { data, onDeleteCard } = props
   const { t } = useTranslation('account')
   const router = useRouter()
+
+  const [conceptModalShow, setConceptModalShow] = useState<boolean>(false)
+
+  const conceptMenuContent: MenuItemBase[] = [
+    {
+      title: t('account_section_applications.concept_menu_list.download_xml'),
+      icon: <DownloadIcon className="w-6 h-6" />,
+      onPress: () => {},
+    },
+    {
+      title: t('account_section_applications.concept_menu_list.download_pdf'),
+      icon: <PdfIcon className="w-6 h-6" />,
+      onPress: () => {},
+    },
+    {
+      title: t('account_section_applications.concept_menu_list.delete'),
+      itemClassName: 'text-negative-700',
+      icon: <TrashIcon className="w-6 h-6" />,
+      onPress: () => setConceptModalShow(true),
+    },
+  ]
 
   return (
     <>
@@ -22,16 +56,16 @@ const MyApplicationsConceptCard = (props: MyApplicationsConceptCardBase) => {
       >
         <div className="flex items-center justify-between w-full">
           <div className="w-full flex flex-col gap-1 pl-6">
-            <span className="text-p3-semibold text-main-700">{category}</span>
-            <span className="text-20-semibold">{title}</span>
-            <span className="text-p3">{subtitle}</span>
+            <span className="text-p3-semibold text-main-700">{data?.category}</span>
+            <span className="text-20-semibold">{data?.title}</span>
+            <span className="text-p3">{data?.subtitle}</span>
           </div>
           <div className="w-full justify-end flex items-center gap-6">
             <div className="flex flex-col w-full max-w-[200px]">
               <span className="text-16-semibold mb-1">
                 {t('account_section_applications.navigation_concept_card.createDate')}
               </span>
-              <span className="w-max">{createDate}</span>
+              <span className="w-max">{data?.createDate}</span>
             </div>
           </div>
           <div className="flex gap-4 mr-6">
@@ -41,7 +75,12 @@ const MyApplicationsConceptCard = (props: MyApplicationsConceptCardBase) => {
               endIcon={<ExportIcon />}
               onPress={() => router.push(`${ROUTES.MY_APPLICATIONS}/1`)}
             />
-            <Button variant="black-outline" icon={<DownloadIcon />} />
+            <MenuDropdown
+              buttonVariant="gray"
+              buttonTrigger={<ThreePointsIcon />}
+              buttonSize="lg"
+              items={conceptMenuContent}
+            />
           </div>
         </div>
       </div>
@@ -58,14 +97,25 @@ const MyApplicationsConceptCard = (props: MyApplicationsConceptCardBase) => {
             <div className="flex flex-col w-full max-[389px]:gap-1">
               <div className="flex items-center justify-between">
                 <span className="text-p3-semibold max-[389px]:max-w-[220px] text-main-700">
-                  {category}
+                  {data?.category}
                 </span>
               </div>
-              <span className="text-p2-semibold leading-5 max-[389px]:max-w-[220px]">{title}</span>
+              <span className="text-p2-semibold leading-5 max-[389px]:max-w-[220px]">
+                {data?.title}
+              </span>
             </div>
           </div>
         </Link>
       </div>
+      <ConceptDeleteModal
+        conceptData={data}
+        show={conceptModalShow}
+        onClose={() => setConceptModalShow(false)}
+        onDelete={() => {
+          onDeleteCard()
+          setConceptModalShow(false)
+        }}
+      />
     </>
   )
 }

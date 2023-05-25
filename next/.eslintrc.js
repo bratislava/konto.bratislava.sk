@@ -48,7 +48,7 @@ module.exports = {
         checksVoidReturn: {
           attributes: false,
         },
-      }
+      },
     ],
     /** better to use empty function */
     'lodash/prefer-noop': 'off',
@@ -58,7 +58,8 @@ module.exports = {
     'unicorn/no-array-reduce': 'off',
     // quite annoying as it conflicts with VS Code's auto import
     'lodash/import-scope': 'off',
-    'unicorn/no-thenable': 'off'
+    // json schema definitions may contain "then" keys
+    'unicorn/no-thenable': 'off',
   },
   ignorePatterns: ['*.config.*', 'graphql', '.eslintrc.js', '/backend/forms/'],
 }

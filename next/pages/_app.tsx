@@ -7,6 +7,7 @@ import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import { StatusBarProvider } from 'components/forms/info-components/StatusBar'
 import CookieConsent from 'components/forms/segments/CookieConsent/CookieConsent'
 import { GlobalStateProvider } from 'components/forms/states/GlobalState'
+import { SSORedirectProvider } from 'frontend/hooks/useSSORedirect'
 import { AppProps } from 'next/app'
 import { Inter } from 'next/font/google'
 import Head from 'next/head'
@@ -28,6 +29,13 @@ const inter = Inter({
 const MyApp = ({ Component, pageProps }: AppProps) => {
   return (
     <>
+      {/* https://nextjs.org/docs/pages/building-your-application/optimizing/fonts#apply-the-font-in-head */}
+      {/* eslint-disable-next-line react/no-unknown-property */}
+      <style jsx global>{`
+        body {
+          font-family: ${inter.style.fontFamily};
+        }
+      `}</style>
       <Head>
         <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
         <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png" />
@@ -38,21 +46,22 @@ const MyApp = ({ Component, pageProps }: AppProps) => {
         <meta name="theme-color" content="#ffffff" />
         {/* look for CookieConsent component for 3rd party scripts you'd expect to find here */}
       </Head>
+
       <QueryParamProvider adapter={NextAdapter}>
         <SSRProvider>
           <StatusBarProvider>
-            <div className={`${inter.variable} font-sans`}>
-              <QueryClientProvider client={queryClient}>
-                <SnackbarProvider>
-                  <AccountProvider>
-                    <GlobalStateProvider>
+            <QueryClientProvider client={queryClient}>
+              <SnackbarProvider>
+                <AccountProvider>
+                  <GlobalStateProvider>
+                    <SSORedirectProvider>
                       <Component {...pageProps} />
                       <CookieConsent />
-                    </GlobalStateProvider>
-                  </AccountProvider>
-                </SnackbarProvider>
-              </QueryClientProvider>
-            </div>
+                    </SSORedirectProvider>
+                  </GlobalStateProvider>
+                </AccountProvider>
+              </SnackbarProvider>
+            </QueryClientProvider>
           </StatusBarProvider>
         </SSRProvider>
       </QueryParamProvider>

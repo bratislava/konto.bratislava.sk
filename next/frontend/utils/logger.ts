@@ -9,7 +9,7 @@ import { ILogObj, Logger } from 'tslog'
 import { isBrowser, isProductionDeployment } from './general'
 
 let mutableLogger: Logger<ILogObj>
-let mutableFaro: Faro
+let mutableFaro: Faro|null = null
 
 if (isBrowser()) {
   mutableLogger = new Logger({ type: isProductionDeployment() ? 'hidden' : 'pretty' })
@@ -27,7 +27,7 @@ if (isBrowser()) {
       },
     })
     mutableLogger.attachTransport((logObj) => {
-      mutableFaro.api.pushLog([JSON.stringify(logObj)])
+      mutableFaro?.api.pushLog([JSON.stringify(logObj)])
     })
   }
 } else {
@@ -39,3 +39,17 @@ const logger = mutableLogger
 export const faro = mutableFaro
 
 export default logger
+
+export const developmentLog = (message: string, data: Record<string, unknown> = {}, isError?: boolean) => {
+  if (process.env.NODE_ENV === 'development') {
+    let dataString = ''
+    Object.entries(data).forEach(([key, value]: [string, unknown]) => {
+      dataString += `\n${key}: ${String(value)}`
+    })
+    if (isError) {
+      logger.error(`\n${message}:`, dataString)
+    } else {
+      logger.info(`\n${message}:`, dataString)
+    }
+  }
+}

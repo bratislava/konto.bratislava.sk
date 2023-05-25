@@ -42,7 +42,7 @@ const UserProfileConsents = () => {
             title: t('consents.receive_information.title'),
             text: t('consents.receive_information.text'),
             isDisabled: false,
-            isSelected,
+            isSelected: isSelected ?? false,
           }}
           isLast
           onChange={handleOnChangeConsent}

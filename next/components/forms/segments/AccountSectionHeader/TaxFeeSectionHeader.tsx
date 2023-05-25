@@ -73,7 +73,7 @@ const TaxFeeSectionHeader = ({ tax }: AccountSectionHeaderBase) => {
 
   // https://stackoverflow.com/questions/32545632/how-can-i-download-a-file-using-window-fetch
   const downloadPdf = () =>
-    fetch(`${process.env.NEXT_PUBLIC_TAXES_URL}/tax/get-tax-pdf-by-year?year=2023`, {
+    fetch(`${String(process.env.NEXT_PUBLIC_TAXES_URL)}/tax/get-tax-pdf-by-year?year=2023`, {
       headers: {
         Authorization: `Bearer ${lastAccessToken}`,
       },
@@ -138,9 +138,15 @@ const TaxFeeSectionHeader = ({ tax }: AccountSectionHeaderBase) => {
               </div>
               <div className="w-1.5 h-1.5 bg-black rounded-full md:block hidden" />
               <div className="lg:text-p2-bold text-p3">
-                {status.paymentStatus === 'partially_paid'
-                  ? `${formatCurrency(tax.payedAmount)} / ${formatCurrency(tax.amount)}`
-                  : formatCurrency(tax.amount)}
+                {formatCurrency(tax.amount)}
+                {status.paymentStatus === 'partially_paid' ? (
+                  <span className="lg:text-p2 text-p-3">
+                    {' '}
+                    {t('tax_detail_section.tax_remainder_text', {
+                      amount: formatCurrency(tax.amount - tax.payedAmount),
+                    })}
+                  </span>
+                ) : null}
               </div>
               <div className="w-1.5 h-1.5 bg-black rounded-full md:block hidden" />
               <div className="flex items-center gap-2">

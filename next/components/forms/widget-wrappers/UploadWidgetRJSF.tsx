@@ -2,9 +2,9 @@ import { UploadMinioFile } from '@backend/dtos/minio/upload-minio-file.dto'
 import { StrictRJSFSchema, WidgetProps } from '@rjsf/utils'
 import WidgetWrapper from 'components/forms/widget-wrappers/WidgetWrapper'
 import React, { useState } from 'react'
-import { useEffectOnce } from 'usehooks-ts'
 
-import { FormRJSFContext } from '../../../frontend/dtos/formStepperDto'
+import { FileScan, FormRJSFContext } from '../../../frontend/dtos/formStepperDto'
+import { getInitInnerValue } from '../../../frontend/utils/formStepper'
 import Upload from '../widget-components/Upload/Upload'
 import UploadRJSFOptions from '../widget-components/Upload/UploadRJSFOptions'
 
@@ -35,35 +35,10 @@ const UploadWidgetRJSF = (props: UploadWidgetRJSFProps) => {
     spaceTop = 'large',
   } = options
 
-  const [innerValue, setInnerValue] = useState<UploadMinioFile[]>([])
-
   const supportedFormats = accept?.split(',')
   const multiple = schema.type === 'array'
 
-  const fileNameToMinioFile = (fileName: string): UploadMinioFile => {
-    const fileNameArray = fileName.split('_')
-    fileNameArray.splice(0, 2)
-    const originalName = fileNameArray.join('_')
-    return {
-      file: new File([], fileName),
-      isUploading: false,
-      originalName,
-    }
-  }
-
-  useEffectOnce(() => {
-    // I need to save multiple pieces of info about the file - this isn't stored in rjsf, but needed DURING upload
-    // I am saving this info only in innerValue of widget
-    // but when I go to previous step of the stepper, component is rebuilt and I still need at least the fileName, so I read fileNames from rjsf state and transform them
-    const valueArray: string[] =
-      schema.type === 'array' && value && Array.isArray(value)
-        ? [...value]
-        : value && !Array.isArray(value)
-        ? [value]
-        : []
-    const initialInnerValue: UploadMinioFile[] = valueArray.map(fileNameToMinioFile)
-    setInnerValue(initialInnerValue)
-  })
+  const [innerValue, setInnerValue] = useState<UploadMinioFile[]>(getInitInnerValue(value, schema, formContext.fileScans))
 
   const handleOneFile = (files: UploadMinioFile[]) => {
     if (!files[0]?.isUploading && !files[0]?.errorMessage) {
@@ -96,8 +71,22 @@ const UploadWidgetRJSF = (props: UploadWidgetRJSFProps) => {
     }
   }
 
+  const getOwnFileScans = () => {
+    return formContext.fileScans.filter(fileScan => (
+      innerValue.some(value => value.file.name === fileScan.fileName)
+    ))
+  }
+
+  const handleOnAddFileScans = (newFileScans: FileScan[]) => {
+    formContext.fileScans = [ ...formContext.fileScans, ...newFileScans ]
+  }
+
+  const handleOnRemoveFileScan = (removeScan?: FileScan) => {
+    formContext.fileScans = formContext.fileScans.filter(scan => scan.fileName !== removeScan?.fileName)
+  }
+
   return (
-    <WidgetWrapper accordion={accordion} spaceBottom={spaceBottom} spaceTop={spaceTop}>
+    <WidgetWrapper accordion={accordion} spaceBottom={spaceBottom} spaceTop={spaceTop} className="w-full">
       <Upload
         errorMessage={rawErrors}
         type={type}
@@ -110,8 +99,14 @@ const UploadWidgetRJSF = (props: UploadWidgetRJSFProps) => {
         sizeLimit={size}
         supportedFormats={supportedFormats}
         disabled={disabled}
+        userExternalId={formContext.userExternalId}
+        pospId={formContext.pospId}
+        formId={formContext.formId}
         bucketFolderName={formContext.bucketFolderName}
+        fileScans={getOwnFileScans()}
         onChange={handleOnChange}
+        onAddFileScans={handleOnAddFileScans}
+        onRemoveFileScan={handleOnRemoveFileScan}
       />
     </WidgetWrapper>
   )

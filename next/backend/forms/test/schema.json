@@ -71,7 +71,7 @@
             },
             "timeValue": {
               "type": "string",
-              "format": "time",
+              "format": "localTime",
               "title": "Time"
             }
           }
@@ -87,12 +87,12 @@
           "properties": {
             "startTime": {
               "type": "string",
-              "format": "time",
+              "format": "localTime",
               "title": "Time From"
             },
             "endTime": {
               "type": "string",
-              "format": "time",
+              "format": "localTime",
               "title": "Time To"
             }
           }
@@ -147,7 +147,7 @@
                 "meeting-time": {
                   "type": "string",
                   "title": "Meeting time",
-                  "format": "time"
+                  "format": "localTime"
                 }
               }
             }

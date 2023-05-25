@@ -16,6 +16,10 @@ import logger from '../../frontend/utils/logger'
 
 export type Json = any
 
+export interface Ciselnik {
+  id?: string
+}
+
 const getFormatFromItems = (items: JsonSchema | JsonSchema[] | undefined): string | undefined => {
   return items && items !== true && !Array.isArray(items) ? items.format : undefined
 }
@@ -40,30 +44,33 @@ export const buildXmlRecursive = (
       buildXmlRecursive(currentPath, cheerioInstance, item, jsonSchema)
     })
   } else if (node && typeof node === 'object') {
-    // objects add one level of nesting to xml
-    parentNode.append(`<${nodeName}></${nodeName}>`)
+    // skip empty node
+    if (Object.keys(node).length > 0) {
+      // objects add one level of nesting to xml
+      parentNode.append(`<${nodeName}></${nodeName}>`)
 
-    const properties = getAllPossibleJsonSchemaProperties(jsonSchema)
-    if (Object.keys(properties).length === 0) {
-      Object.keys(node).forEach((key) => {
-        buildXmlRecursive(
-          [...currentPath, firstCharToUpper(key)],
-          cheerioInstance,
-          node[key],
-          properties[key],
-        )
-      })
-    } else {
-      Object.keys(properties).forEach((key) => {
-        if (node[key] !== undefined) {
+      const properties = getAllPossibleJsonSchemaProperties(jsonSchema)
+      if (Object.keys(properties).length === 0) {
+        Object.keys(node).forEach((key) => {
           buildXmlRecursive(
             [...currentPath, firstCharToUpper(key)],
             cheerioInstance,
             node[key],
             properties[key],
           )
-        }
-      })
+        })
+      } else {
+        Object.keys(properties).forEach((key) => {
+          if (node[key] !== undefined) {
+            buildXmlRecursive(
+              [...currentPath, firstCharToUpper(key)],
+              cheerioInstance,
+              node[key],
+              properties[key],
+            )
+          }
+        })
+      }
     }
   } else if (node && typeof node === 'string') {
     let stringNode: string = node
@@ -71,11 +78,13 @@ export const buildXmlRecursive = (
       const format =
         jsonSchema.type === 'array' ? getFormatFromItems(jsonSchema.items) : jsonSchema.format
       if (format === 'ciselnik') {
-        const ciselnikProperty: { id?: string } = typeof jsonSchema !== 'boolean' && 'ciselnik' in jsonSchema
-          ? jsonSchema.ciselnik : {}
-        stringNode = `<Code>${node}</Code><Name>${node}</Name><WsEnumCode>${
-          ciselnikProperty?.id
-        }</WsEnumCode>`
+        const ciselnikProperty: Ciselnik =
+          typeof jsonSchema !== 'boolean' && 'ciselnik' in jsonSchema
+            ? (jsonSchema.ciselnik as Ciselnik)
+            : ({} as Ciselnik)
+        stringNode = `<Code>${node}</Code><Name>${node}</Name><WsEnumCode>${String(
+          ciselnikProperty?.id,
+        )}</WsEnumCode>`
       } else if (format === 'file') {
         stringNode = `<Nazov>${node}</Nazov><Prilozena>true</Prilozena>`
       }
@@ -120,7 +129,7 @@ export const removeNeedlessXmlTransformArraysRecursive = (
   path: string[],
   schema: JsonSchema,
 ) => {
-  if (typeof obj !== 'object') {
+  if (typeof obj !== 'object' || !obj) {
     return obj
   }
   const transformedObj = obj
@@ -175,7 +184,8 @@ export const removeNeedlessXmlTransformArraysRecursive = (
         transformedObj[key] = Number.parseFloat(String(value[0]))
       } else if (childSchema.type === 'boolean') {
         // again very forgiving in what we can receive
-        transformedObj[key] = value[0] == null ? null : value[0] === 'false' ? false : Boolean(value[0])
+        transformedObj[key] =
+          value[0] == null ? null : value[0] === 'false' ? false : Boolean(value[0])
       } else {
         const [firstElement] = value
         transformedObj[key] = firstElement

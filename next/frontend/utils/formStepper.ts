@@ -1,3 +1,4 @@
+import { UploadMinioFile } from '@backend/dtos/minio/upload-minio-file.dto'
 import {
   ErrorSchema,
   FormValidation,
@@ -12,12 +13,13 @@ import { get, merge, set } from 'lodash'
 import { StepData } from '../../components/forms/types/TransformedFormData'
 import { validateKeyword } from '../api/api'
 import {
-  ajvKeywords,
+  ajvKeywords, FileScan,
   JsonSchema,
   JsonSchemaExtraProperties,
   JsonSchemaProperties,
   JsonSchemaPropertyTree,
-  KeywordDefinition, validator,
+  KeywordDefinition,
+  validator,
 } from '../dtos/formStepperDto'
 
 
@@ -106,7 +108,7 @@ export const getJsonSchemaPropertyTree = (jsonSchema?: JsonSchema): JsonSchemaPr
     return undefined
   }
 
-  const result = propertiesEntries.map(([key, value]: [string, JSONSchema7]) => {
+  const result = propertiesEntries.map(([key, value]: [string, JSONSchema7Definition]) => {
     return { [key]: getJsonSchemaPropertyTree(value) }
   })
 
@@ -135,13 +137,13 @@ export const mergePropertyTreeToFormData = (
 
 export const buildRJSFError = (path: string[], errorMsg: string | undefined): ErrorSchema => {
   return path.reduceRight(
-    (memo: object, arrayValue: string) => {
+    (memo: ErrorSchema, arrayValue: string) => {
       const error: ErrorSchema = {}
       error[arrayValue] = memo
       return error
     },
-    { __errors: [errorMsg || 'error'] },
-  ) as ErrorSchema
+    { __errors: [errorMsg || 'error'] } as ErrorSchema,
+  ) as unknown as ErrorSchema
 }
 
 
@@ -194,7 +196,7 @@ export const validateDateFromToFormat = (
 ) => {
   const formDataKeys = Object.entries(formData)
   formDataKeys?.forEach(([key, value]: [string, RJSFSchema]) => {
-    const schemaProperty: JSONSchema7Definition = schema.properties[key]
+    const schemaProperty: JSONSchema7Definition|undefined = schema.properties?.[key]
     if (
       schema?.properties &&
       schemaProperty &&
@@ -221,7 +223,7 @@ export const validateTimeFromToFormat = (
 ) => {
   const formDataKeys = Object.entries(formData)
   formDataKeys?.forEach(([key, value]: [string, RJSFSchema]) => {
-    const schemaProperty: JSONSchema7Definition = schema.properties[key]
+    const schemaProperty: JSONSchema7Definition|undefined = schema.properties?.[key]
     if (
       schema?.properties &&
       schemaProperty &&
@@ -321,10 +323,10 @@ export const getDefaults = (schema: RJSFSchema, path: string[], obj: object) => 
   return obj
 }
 
-export const getInitFormData = (schema: RJSFSchema): RJSFSchema => {
-  const formData: RJSFSchema = getDefaults(schema, [], {})
+export const getInitFormData = (schema: RJSFSchema, oldFormData: RJSFSchema = {}): RJSFSchema => {
+  const formData: RJSFSchema = getDefaults(schema, [], oldFormData)
 
-  schema?.allOf.forEach((step) => {
+  schema?.allOf?.forEach((step) => {
     if (typeof step !== 'boolean') {
       const stepFormData = getDefaultFormState(validator, step, formData, schema, true)
       Object.assign(formData, stepFormData)
@@ -336,7 +338,7 @@ export const getInitFormData = (schema: RJSFSchema): RJSFSchema => {
 
 export const createTestFormData = (formData: RJSFSchema): RJSFSchema => {
   const newFormData: RJSFSchema = {}
-  if (!formData || typeof formData === 'boolean') return newFormData
+  if (!formData) return newFormData
 
   Object.entries(formData).forEach(([key, value]: [string, RJSFSchema]) => {
     if (typeof value !== 'boolean') {
@@ -356,11 +358,32 @@ export const createTestFormData = (formData: RJSFSchema): RJSFSchema => {
 
 export const getValidatedSteps = (schema: RJSFSchema, formData: RJSFSchema): RJSFSchema[] => {
   const testFormData = createTestFormData(formData)
-  return schema?.allOf
-    .map((step) => {
-      const typedStep = typeof step !== 'boolean' ? step : {}
-      return retrieveSchema(validator, typedStep, schema, testFormData)
-    })
-    .filter((step) => typeof step !== 'boolean' && Object.keys(step).length > 0)
+
+  return  schema.allOf
+    ? schema.allOf.map((step) => {
+        const typedStep = typeof step !== 'boolean' ? step : {}
+        return retrieveSchema(validator, typedStep, schema, testFormData)
+      })
+      .filter((step) => Object.keys(step).length > 0)
+    : []
 }
 
+export const getInitInnerValue = (value: string|string[]|null, schema: StrictRJSFSchema, fileScans: FileScan[]): UploadMinioFile[] => {
+  // I need to save multiple pieces of info about the file - this isn't stored in rjsf, but needed DURING upload
+  // I am saving this info only in innerValue of widget
+  // but when I go to previous step of the stepper, component is rebuilt and I still need at least the fileName, so I read fileNames from rjsf state and transform them
+  const valueArray: string[] =
+    schema.type === 'array' && value && Array.isArray(value)
+      ? [...value]
+      : value && !Array.isArray(value)
+        ? [value]
+        : []
+  return  valueArray.map(fileName => {
+    const originalFileScan = fileScans.find((fileScan: FileScan) => fileScan.fileName === fileName)
+    return {
+      file: new File([], fileName),
+      isUploading: false,
+      originalName: originalFileScan ? originalFileScan.originalName : fileName
+    } as UploadMinioFile
+  })
+}

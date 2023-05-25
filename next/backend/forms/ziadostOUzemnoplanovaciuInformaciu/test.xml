@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Created with Liquid Technologies Online Tools 1.0 (https://www.liquid-technologies.com) -->
+<E-form xmlns="http://schemas.gov.sk/doc/eform/00603481.ziadostOUzemnoplanovaciuInformaciu.sk/0.1"
+    xsi:schemaLocation="http://schemas.gov.sk/doc/eform/00603481.ziadostOUzemnoplanovaciuInformaciu.sk/0.1 schema.xsd"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+    <Meta>
+        <ID>string</ID>
+        <Name>string</Name>
+        <Description>string</Description>
+        <Gestor>string</Gestor>
+        <RecipientId>string</RecipientId>
+        <Version>string</Version>
+        <ZepRequired>0</ZepRequired>
+        <EformUuid>string</EformUuid>
+        <SenderID>mailto:</SenderID>
+    </Meta>
+    <Body>
+        <Prilohy>
+            <ArchitektonickaStudia>
+                <Nazov>string</Nazov>
+                <Prilozena>true</Prilozena>
+            </ArchitektonickaStudia>
+        </Prilohy>
+        <Ziadatel>
+            <ZiatetelTyp>Právnicka osoba</ZiatetelTyp>
+            <ZiadatelObchodneMeno>string</ZiadatelObchodneMeno>
+            <ZiadatelIco>966</ZiadatelIco>
+            <ZiadatelAdresaPobytu>string</ZiadatelAdresaPobytu>
+            <ZiadatelMiestoPodnikania>string</ZiadatelMiestoPodnikania>
+            <ZiadatelMestoPsc>
+                <ZiadatelMesto>
+                    <Code>string</Code>
+                    <Name>string</Name>
+                    <WsEnumCode>string</WsEnumCode>
+                </ZiadatelMesto>
+                <ZiadatelPsc>QQ</ZiadatelPsc>
+            </ZiadatelMestoPsc>
+            <ZiadatelKontaktnaOsoba>ASDS</ZiadatelKontaktnaOsoba>
+            <ZiadatelEmail>qwewq</ZiadatelEmail>
+            <ZiadatelTelefon>+45255</ZiadatelTelefon>
+        </Ziadatel>
+        <Stavba>
+            <StavbaDovod>Stavba objektu</StavbaDovod>
+            <StavbaUlica>string</StavbaUlica>
+            <StavbaParcela>string</StavbaParcela>
+            <StavbaKataster>string</StavbaKataster>
+            <StavbaKataster>string</StavbaKataster>
+        </Stavba>
+    </Body>
+</E-form>

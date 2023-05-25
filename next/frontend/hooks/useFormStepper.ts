@@ -4,7 +4,7 @@
 import { EFormValue } from '@backend/forms'
 import Form from '@rjsf/core'
 import {
-  ErrorSchema,
+  ErrorSchema, mergeDefaultsWithFormData, mergeObjects,
   RJSFSchema,
   RJSFValidationError,
 } from '@rjsf/utils'
@@ -18,8 +18,7 @@ import { readTextFile } from '../utils/file'
 import {
   getAllStepData,
   getInitFormData,
-  getJsonSchemaPropertyTree,
-  getValidatedSteps, mergePropertyTreeToFormData,
+  getValidatedSteps,
   validateAsyncProperties,
 } from '../utils/formStepper'
 import logger from '../utils/logger'
@@ -112,8 +111,8 @@ export const useFormStepper = (eformSlug: string, eform: EFormValue, callbacks: 
     if (schema.$async === true) {
       const newExtraErrors = await validateAsyncProperties(currentSchema, formData, [])
       isValid = isValid && Object.keys(newExtraErrors).length === 0
-      const currentStepKey: string = Object.keys(currentSchema.properties)[0]
-      if (!(currentStepKey in newExtraErrors)) {
+      const currentStepKey = currentSchema.properties ? Object.keys(currentSchema.properties)[0] : null
+      if (currentStepKey && !(currentStepKey in newExtraErrors)) {
         const updatedExtraErrors = { ...extraErrors }
         delete updatedExtraErrors[currentStepKey]
         setExtraErrors(updatedExtraErrors)
@@ -128,6 +127,8 @@ export const useFormStepper = (eformSlug: string, eform: EFormValue, callbacks: 
   const setUniqueErrors = (newErrors: RJSFValidationError[], currentStepIndex: number) => {
     // update form errors - update even if there is no error
     const currentStepKey = stepData[currentStepIndex].stepKey
+    if (!currentStepKey) return
+
     const oldErrors: RJSFValidationError[] =
       currentStepKey in errors ? [...errors[currentStepKey]] : []
 
@@ -142,7 +143,7 @@ export const useFormStepper = (eformSlug: string, eform: EFormValue, callbacks: 
   }
 
   const transformErrorsToArray = (): RJSFValidationError[][] => {
-    return stepData.map(({ stepKey }: StepData) => (stepKey in errors ? errors[stepKey] : []))
+    return stepData.map(({ stepKey }: StepData) => (stepKey && stepKey in errors ? errors[stepKey] : []))
   }
 
   const previous = () => setStepIndex(stepIndex - 1)
@@ -222,9 +223,11 @@ export const useFormStepper = (eformSlug: string, eform: EFormValue, callbacks: 
 
   const setStepFormData = (stepFormData: RJSFSchema) => {
     // save formData for step with all properties including conditional fields and unfilled fields
-    const tree = getJsonSchemaPropertyTree(currentSchema)
-    const fullStepFormData = mergePropertyTreeToFormData(stepFormData, tree)
-    setFormData({ ...formData, ...fullStepFormData })
+    const initStepDefaultData: RJSFSchema = getInitFormData(currentSchema)
+    const fullStepFormData: RJSFSchema|undefined = mergeDefaultsWithFormData(initStepDefaultData, stepFormData)
+    if (!fullStepFormData) return
+    const mergedFormData: RJSFSchema = mergeObjects(formData, fullStepFormData)
+    setFormData(mergedFormData)
   }
 
   const { t } = useTranslation('forms')

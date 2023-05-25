@@ -20,7 +20,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
   }
 
   try {
-    const response = await fetch(`${process.env.FOP_URL}/fop`, {
+    const response = await fetch(`${String(process.env.FOP_URL)}/fop`, {
       method: 'POST',
       body: JSON.stringify({ data: req.body.data, xslt: eform.pdfStylesheet }),
     })

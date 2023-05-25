@@ -7,7 +7,7 @@ interface UserProfileDetailViewProps {
   userData: UserData
 }
 
-const postalCodeFormat = (code: string): string => `${code?.slice(0, 3)} ${code?.slice(3)}`
+const postalCodeFormat = (code?: string): string => code ? `${code?.slice(0, 3)} ${code?.slice(3)}` : ''
 
 const UserProfileDetailView = ({ userData }: UserProfileDetailViewProps) => {
   const { t } = useTranslation('account')
@@ -16,13 +16,9 @@ const UserProfileDetailView = ({ userData }: UserProfileDetailViewProps) => {
     ? name
     : `${given_name ?? ''}${given_name && family_name ? ' ' : ''}${family_name ?? ''}`
   const fullAddress = address
-    ? address.street_address || address.postal_code || address.locality
-      ? `${
-          address?.street_address && (address?.postal_code || address?.locality)
-            ? `${address?.street_address},`
-            : address?.street_address
-        } ${postalCodeFormat(address?.postal_code)} ${address?.locality}`
-      : ''
+    ? `${address.street_address || ''}${address.street_address && (address.postal_code || address.locality) ? ', ' : ''}
+        ${postalCodeFormat(address.postal_code)}${address.postal_code ? ' ' : ''}
+        ${address.locality || ''}`
     : ''
   const nameLabel = account_type === 'po' ? t('profile_detail.business_name') : t('profile_detail.full_name')
 

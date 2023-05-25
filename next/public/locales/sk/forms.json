@@ -7,7 +7,13 @@
     "xml_export": "Export zlyhal. Skúste to prosím znova.",
     "xml_import": "Import zlyhal. Skúste to prosím znova.",
     "form_init": "Načítanie formulára zlyhalo.",
-    "form_update": "Formulár sa nepodarilo uložiť do rozpracovaných."
+    "form_update": "Formulár sa nepodarilo uložiť do rozpracovaných.",
+    "upload_size_format": "Prílohy nespĺňajú požadovaný formát a veľkosť.",
+    "upload_minio": "Nastala chyba pri nahrávaní súborov. Skúste to znova neskôr.",
+    "file_scan": "Súbor \"name\" sa nepodarilo oskenovať a vykonať antivírovú kontrolu. Bez potrebných príloh nebudete vedieť žiadosť odoslať. Vráťte sa a nahrajte správne súbory. Ak ste si istý, že súbory, ktoré ste nahrali sú v poriadku, prosíme, kontaktujte nás na info@bratislava.sk"
+  },
+  "warnings": {
+    "file_scan": "Prílohy, ktoré ste nahrali ešte skenujeme. Žiadosť však môžete odoslať aj bez čakania na dokončenie skenovania. V prípade, že nahraté prílohy neprejdú skenovaním a antivírovou kontrolou, budeme vás kontaktovať na e-mailovej adrese, ktorou sa prihlasujete do svojho konta."
   },
   "selectAll": "Vybrať všetko",
   "deselectAll": "Odobrať všetko",
@@ -44,5 +50,16 @@
     "text": "Bez toho nebude možné formulár úspešne odoslať. K doplneniu polí sa môžete kedykoľvek vrátiť.",
     "button_skip_text": "Preskočiť",
     "button_submit_text": "Upraviť"
+  },
+  "form_header": {
+    "services_link": "Viac informácií o službe"
+  },
+  "menu_list": {
+    "save_concept": "Uložiť ako koncept",
+    "eId": "Vyplniť cez eID",
+    "download_xml": "Stiahnuť ako XML",
+    "pdf": "Stiahnuť ako PDF",
+    "upload_xml": "Nahrať z XML",
+    "guide": "Návod"
   }
 }

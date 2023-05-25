@@ -1,5 +1,6 @@
 import { RJSFSchema } from '@rjsf/utils'
 import { ErrorObject } from 'ajv'
+import useAccount from 'frontend/hooks/useAccount'
 import { useTranslation } from 'next-i18next'
 import { useState } from 'react'
 
@@ -12,11 +13,13 @@ export const useFormSubmitter = (slug: string) => {
   const [successMessage, setSuccessMessage] = useState<string | null>(null)
   const { t } = useTranslation('forms')
 
-  const submitForm = async (formData: RJSFSchema) => {
+  const { getAccessToken } = useAccount()
+  const submitForm = async (formData: RJSFSchema, formId= '') => {
     try {
+      const token = await getAccessToken()
       // TODO do something more with the result then just showing success
       // eslint-disable-next-line @typescript-eslint/no-unused-vars
-      const result = await submitEform(slug, formData)
+      const result = await submitEform(slug, formId, formData, token)
       setErrors([])
       setSuccessMessage(t('success'))
     } catch (error) {

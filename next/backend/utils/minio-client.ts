@@ -1,7 +1,7 @@
 import { Client } from 'minio'
 
 export const region = "us-east-1"
-export const bucketName = process.env.NEXT_PUBLIC_MINIO_UNSCANNED_BUCKET
+export const bucketName = process.env.NEXT_PUBLIC_MINIO_UNSCANNED_BUCKET || ''
 
 /*
 https://www.npmjs.com/package/minio

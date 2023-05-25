@@ -205,10 +205,10 @@ const UserProfileDetailEdit = (props: UserProfileDetailEditProps) => {
             )}
           />
         </div>
-        <div className="justify-end flex flex-col py-1">
+        <div className="justify-end flex flex-col pt-1">
           <Button
             variant="black"
-            size="sm"
+            size="lg"
             text={t('profile_detail.email_button')}
             onPress={onOpenEmailModal}
           />

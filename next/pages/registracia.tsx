@@ -39,7 +39,10 @@ export const getServerSideProps = async (ctx: GetServerSidePropsContext) => {
   }
 }
 
-const RegisterPage = ({ page }: AsyncServerProps<typeof getServerSideProps>) => {
+const RegisterPage = ({
+  page,
+  isProductionDeploy,
+}: AsyncServerProps<typeof getServerSideProps>) => {
   const { t } = useTranslation('account')
   const { signUp, resendVerificationCode, verifyEmail, error, status, lastEmail, setStatus } =
     useAccount()
@@ -54,7 +57,12 @@ const RegisterPage = ({ page }: AsyncServerProps<typeof getServerSideProps>) => 
         {status === AccountStatus.Idle && <AccountActivator />}
         <AccountContainer className="md:pt-6 pt-0 mb-0 md:mb-8">
           {status === AccountStatus.Idle ? (
-            <RegisterForm lastEmail={lastEmail} onSubmit={signUp} error={error} />
+            <RegisterForm
+              lastEmail={lastEmail}
+              onSubmit={signUp}
+              error={error}
+              disablePO={isProductionDeploy}
+            />
           ) : status === AccountStatus.EmailVerificationRequired ? (
             <EmailVerificationForm
               lastEmail={lastEmail}

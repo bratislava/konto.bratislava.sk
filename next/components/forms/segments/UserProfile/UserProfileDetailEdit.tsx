@@ -61,9 +61,7 @@ const poSchema = {
   type: 'object',
   properties: {
     business_name: {
-      type: 'string',
-      minLength: 1,
-      errorMessage: { minLength: 'account:business_name_required' },
+      type: 'string'
     },
     email: {
       type: 'string',
@@ -86,7 +84,7 @@ const poSchema = {
       errorMessage: { format: 'account:postal_code_format' },
     },
   },
-  required: ['email', 'business_name'],
+  required: ['email'],
 }
 
 interface UserProfileDetailEditProps {
@@ -147,7 +145,6 @@ const UserProfileDetailEdit = (props: UserProfileDetailEditProps) => {
               control={control}
               render={({ field }) => (
                 <InputField
-                  required
                   capitalize
                   label={t('profile_detail.business_name')}
                   {...field}

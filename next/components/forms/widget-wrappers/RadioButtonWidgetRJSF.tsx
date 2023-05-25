@@ -27,7 +27,7 @@ interface RadioButtonFieldWidgetRJSFProps extends WidgetProps {
   required?: boolean
   disabled?: boolean
   schema: StrictRJSFSchema
-  onChange: (value?: string | undefined) => void
+  onChange: (value?: string | boolean | number | undefined) => void
   rawErrors?: string[]
 }
 
@@ -48,12 +48,19 @@ const RadioButtonsWidgetRJSF = (props: RadioButtonFieldWidgetRJSFProps) => {
   const getTooltip = (radioValue: string) => {
     return radioOptions.find((option) => option.value === radioValue)?.tooltip
   }
+
+  const handleOnChange = (data: string) => {
+    const option = enumOptions.find((enumOption: EnumOptionsType) => enumOption.value === data)
+    const newValue: string|boolean|number = option ? option.value : data
+    onChange(newValue)
+  }
+
   return (
     <WidgetWrapper accordion={accordion} spaceBottom={spaceBottom} spaceTop={spaceTop}>
       <RadioGroup
         errorMessage={rawErrors}
         value={value ?? undefined}
-        onChange={onChange}
+        onChange={handleOnChange}
         className={className}
         label={label}
         orientations={orientations}

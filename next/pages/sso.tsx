@@ -1,5 +1,4 @@
 import AccountMarkdown from 'components/forms/segments/AccountMarkdown/AccountMarkdown'
-import { isProductionDeployment } from 'frontend/utils/general'
 import { GetServerSidePropsContext } from 'next'
 import { useTranslation } from 'next-i18next'
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
@@ -18,8 +17,6 @@ const SSOPage = () => {
 }
 
 export const getServerSideProps = async (ctx: GetServerSidePropsContext) => {
-  if (isProductionDeployment()) return { notFound: true }
-
   const locale = ctx.locale ?? 'sk'
 
   return {

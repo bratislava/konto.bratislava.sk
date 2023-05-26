@@ -1,3 +1,4 @@
+import { UploadMinioFile } from '@backend/dtos/minio/upload-minio-file.dto'
 import {
   ErrorSchema,
   FormValidation,
@@ -12,7 +13,7 @@ import { get, merge, set } from 'lodash'
 import { StepData } from '../../components/forms/types/TransformedFormData'
 import { validateKeyword } from '../api/api'
 import {
-  ajvKeywords,
+  ajvKeywords, FileScan,
   JsonSchema,
   JsonSchemaExtraProperties,
   JsonSchemaProperties,
@@ -322,8 +323,8 @@ export const getDefaults = (schema: RJSFSchema, path: string[], obj: object) => 
   return obj
 }
 
-export const getInitFormData = (schema: RJSFSchema): RJSFSchema => {
-  const formData: RJSFSchema = getDefaults(schema, [], {})
+export const getInitFormData = (schema: RJSFSchema, oldFormData: RJSFSchema = {}): RJSFSchema => {
+  const formData: RJSFSchema = getDefaults(schema, [], oldFormData)
 
   schema?.allOf?.forEach((step) => {
     if (typeof step !== 'boolean') {
@@ -367,3 +368,22 @@ export const getValidatedSteps = (schema: RJSFSchema, formData: RJSFSchema): RJS
     : []
 }
 
+export const getInitInnerValue = (value: string|string[]|null, schema: StrictRJSFSchema, fileScans: FileScan[]): UploadMinioFile[] => {
+  // I need to save multiple pieces of info about the file - this isn't stored in rjsf, but needed DURING upload
+  // I am saving this info only in innerValue of widget
+  // but when I go to previous step of the stepper, component is rebuilt and I still need at least the fileName, so I read fileNames from rjsf state and transform them
+  const valueArray: string[] =
+    schema.type === 'array' && value && Array.isArray(value)
+      ? [...value]
+      : value && !Array.isArray(value)
+        ? [value]
+        : []
+  return  valueArray.map(fileName => {
+    const originalFileScan = fileScans.find((fileScan: FileScan) => fileScan.fileName === fileName)
+    return {
+      file: new File([], fileName),
+      isUploading: false,
+      originalName: originalFileScan ? originalFileScan.originalName : fileName
+    } as UploadMinioFile
+  })
+}

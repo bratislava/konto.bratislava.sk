@@ -5,11 +5,13 @@ import Button from 'components/forms/simple-components/Button'
 import SingleCheckbox from 'components/forms/widget-components/Checkbox/SingleCheckbox'
 import InputField from 'components/forms/widget-components/InputField/InputField'
 import PasswordField from 'components/forms/widget-components/PasswordField/PasswordField'
+import Radio from 'components/forms/widget-components/RadioButton/Radio'
+import RadioGroup from 'components/forms/widget-components/RadioButton/RadioGroup'
 import { useTranslation } from 'next-i18next'
 import { useState } from 'react'
 import { Controller } from 'react-hook-form'
 import Turnstile from 'react-turnstile'
-import { useCounter, useTimeout } from 'usehooks-ts'
+import { useCounter, useTimeout, useWindowSize } from 'usehooks-ts'
 
 import { AccountError, UserData } from '../../../../frontend/hooks/useAccount'
 import useHookForm from '../../../../frontend/hooks/useHookForm'
@@ -18,12 +20,14 @@ import logger from '../../../../frontend/utils/logger'
 
 interface Data {
   email: string
-  given_name: string
-  family_name: string
+  name?: string
+  given_name?: string
+  family_name?: string
   password: string
   passwordConfirmation: string
   marketingConfirmation: boolean
   turnstileToken: string
+  account_type: 'fo' | 'po'
 }
 
 interface Props {
@@ -36,27 +40,23 @@ interface Props {
   ) => Promise<any>
   error?: AccountError | null | undefined
   lastEmail?: string
+  // used to disabled registration as a legal entity in production (for now)
+  disablePO?: boolean
 }
 
 // must use `minLength: 1` to implement required field
 const schema = {
   type: 'object',
   properties: {
+    account_type: {
+      type: 'string',
+      enum: ['fo', 'po'],
+    },
     email: {
       type: 'string',
       minLength: 1,
       format: 'email',
       errorMessage: { minLength: 'account:email_required', format: 'account:email_format' },
-    },
-    given_name: {
-      type: 'string',
-      minLength: 1,
-      errorMessage: { minLength: 'account:given_name_required' },
-    },
-    family_name: {
-      type: 'string',
-      minLength: 1,
-      errorMessage: { minLength: 'account:family_name_required' },
     },
     password: {
       type: 'string',
@@ -79,10 +79,45 @@ const schema = {
       minLength: 1,
     },
   },
+  allOf: [
+    {
+      if: {
+        properties: {
+          account_type: {
+            const: 'fo',
+          },
+        },
+      },
+      then: {
+        properties: {
+          given_name: {
+            type: 'string',
+            minLength: 1,
+            errorMessage: { minLength: 'account:given_name_required' },
+          },
+          family_name: {
+            type: 'string',
+            minLength: 1,
+            errorMessage: { minLength: 'account:family_name_required' },
+          },
+        },
+        required: ['given_name', 'family_name'],
+      },
+      else: {
+        properties: {
+          name: {
+            type: 'string',
+            minLength: 1,
+            errorMessage: { minLength: 'account:business_name_required' },
+          },
+        },
+        required: ['name'],
+      },
+    },
+  ],
   required: [
+    'account_type',
     'email',
-    'given_name',
-    'family_name',
     'password',
     'passwordConfirmation',
     'marketingConfirmation',
@@ -90,20 +125,23 @@ const schema = {
   ],
 }
 
-const RegisterForm = ({ onSubmit, error, lastEmail }: Props) => {
+const RegisterForm = ({ onSubmit, error, lastEmail, disablePO }: Props) => {
   const { t } = useTranslation('account')
   const { count: captchaKey, increment: incrementCaptchaKey } = useCounter(0)
   const {
     handleSubmit,
     control,
     errors,
+    watch,
     formState: { isSubmitting },
   } = useHookForm<Data>({
     schema,
     defaultValues: {
+      account_type: 'fo',
       email: '',
       family_name: '',
       given_name: '',
+      name: '',
       password: '',
       passwordConfirmation: '',
       marketingConfirmation: false,
@@ -116,6 +154,10 @@ const RegisterForm = ({ onSubmit, error, lastEmail }: Props) => {
     setCaptchaWarning('show')
   }, 3000)
 
+  const { width } = useWindowSize()
+  const isMobile = width < 768
+
+  const type = watch('account_type')
   return (
     <form
       className="flex flex-col space-y-4"
@@ -124,6 +166,8 @@ const RegisterForm = ({ onSubmit, error, lastEmail }: Props) => {
           email: data.email,
           given_name: data.given_name,
           family_name: data.family_name,
+          name: data.name,
+          account_type: data.account_type,
         }
         // force rerender on submit - captcha is valid only for single submit
         incrementCaptchaKey()
@@ -138,13 +182,35 @@ const RegisterForm = ({ onSubmit, error, lastEmail }: Props) => {
     >
       <h1 className="text-h2">{t('register_title')}</h1>
       <AccountErrorAlert error={error} args={{ email: lastEmail || '' }} />
+
+      {!disablePO ? (
+        <Controller
+          name="account_type"
+          control={control}
+          render={({ field }) => (
+            <RadioGroup
+              onChange={field.onChange}
+              value={field.value}
+              label={t('account_type_label')}
+              orientations={isMobile ? 'column' : 'row'}
+            >
+              <Radio value="fo" variant="boxed">
+                {t('fo_label')}
+              </Radio>
+              <Radio value="po" variant="boxed">
+                {t('po_label')}
+              </Radio>
+            </RadioGroup>
+          )}
+        />
+      ) : null}
       <Controller
         name="email"
         control={control}
         render={({ field }) => (
           <InputField
             required
-            helptext={t('email_description')}
+            helptext={t(`email_${type}_description`)}
             label={t('email_label')}
             placeholder={t('email_placeholder')}
             autoComplete="username"
@@ -153,34 +219,54 @@ const RegisterForm = ({ onSubmit, error, lastEmail }: Props) => {
           />
         )}
       />
-      <Controller
-        name="given_name"
-        control={control}
-        render={({ field }) => (
-          <InputField
-            required
-            label={t('given_name_label')}
-            placeholder={t('given_name_placeholder')}
-            capitalize
-            {...field}
-            errorMessage={errors.given_name}
+      {type === 'fo' && (
+        <>
+          <Controller
+            name="given_name"
+            control={control}
+            render={({ field }) => (
+              <InputField
+                required
+                label={t('given_name_label')}
+                placeholder={t('given_name_placeholder')}
+                capitalize
+                {...field}
+                errorMessage={errors.given_name}
+              />
+            )}
           />
-        )}
-      />
-      <Controller
-        name="family_name"
-        control={control}
-        render={({ field }) => (
-          <InputField
-            required
-            label={t('family_name_label')}
-            placeholder={t('family_name_placeholder')}
-            capitalize
-            {...field}
-            errorMessage={errors.family_name}
+          <Controller
+            name="family_name"
+            control={control}
+            render={({ field }) => (
+              <InputField
+                required
+                label={t('family_name_label')}
+                placeholder={t('family_name_placeholder')}
+                capitalize
+                {...field}
+                errorMessage={errors.family_name}
+              />
+            )}
           />
-        )}
-      />
+        </>
+      )}
+      {type === 'po' && (
+        <Controller
+          name="name"
+          control={control}
+          render={({ field }) => (
+            <InputField
+              required
+              label={t('business_name_label')}
+              placeholder={t('business_name_placeholder')}
+              capitalize
+              {...field}
+              errorMessage={errors.name}
+            />
+          )}
+        />
+      )}
       <Controller
         name="password"
         control={control}

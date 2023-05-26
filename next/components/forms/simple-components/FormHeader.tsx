@@ -7,23 +7,21 @@ import PdfIcon from '@assets/images/new-icons/ui/pdf.svg'
 import cx from 'classnames'
 import RegistrationModal from 'components/forms/segments/RegistrationModal/RegistrationModal'
 import Button from 'components/forms/simple-components/Button'
-import { FORM_HEADER_MENU } from 'components/forms/simple-components/MenuDropdown/menu-consts'
 import MenuDropdown, {
   MenuItemBase,
 } from 'components/forms/simple-components/MenuDropdown/MenuDropdown'
 import Waves from 'components/forms/simple-components/Waves/Waves'
 import useAccount from 'frontend/hooks/useAccount'
-import useGlobalState from 'frontend/hooks/useGlobalState'
 import Link from 'next/link'
 import { useTranslation } from 'next-i18next'
 import { useState } from 'react'
 
 const FormHeader = () => {
   const { t } = useTranslation('forms')
-  const { menuDropdownIsOpen } = useGlobalState()
   const { isAuth } = useAccount()
 
   const [registrationModal, setRegistrationModal] = useState<boolean>(false)
+  const [isMenuOpen, setIsMenuOpen] = useState<boolean>(false)
 
   const formHeaderMenuContent: MenuItemBase[] = [
     {
@@ -62,12 +60,12 @@ const FormHeader = () => {
               }}
             />
             <MenuDropdown
-              id={FORM_HEADER_MENU}
+              setIsOpen={setIsMenuOpen}
               buttonTrigger={<ThreePointsIcon />}
               buttonClassName={cx(
-                'flex justify-center items-center focus:outline-none w-10 h-10 rounded-lg border-2 border-main-700 bg-transparent text-gray-700 hover:text-gray-600 hover:border-main-600 focus:border-main-700 focus:text-gray-800',
+                'flex justify-center items-center focus:outline-none w-10 h-10 rounded-lg border-2 border-main-700 bg-transparent text-gray-700 hover:text-gray-600 hover:border-main-600 focus:border-main-800 focus:text-gray-800',
                 {
-                  'text-gray-800 border-main-800': menuDropdownIsOpen(FORM_HEADER_MENU),
+                  'text-gray-800 border-main-800': isMenuOpen,
                 },
               )}
               items={formHeaderMenuContent}

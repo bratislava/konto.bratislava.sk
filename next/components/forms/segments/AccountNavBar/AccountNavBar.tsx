@@ -7,11 +7,9 @@ import { StatusBar, useStatusBarContext } from 'components/forms/info-components
 import HamburgerMenu from 'components/forms/segments/HambergerMenu/HamburgerMenu'
 import Button from 'components/forms/simple-components/Button'
 import IdentityVerificationStatus from 'components/forms/simple-components/IdentityVerificationStatus'
-import { MAIN_HEADER_MENU } from 'components/forms/simple-components/MenuDropdown/menu-consts'
 import MenuDropdown, {
   MenuItemBase,
 } from 'components/forms/simple-components/MenuDropdown/MenuDropdown'
-import useGlobalState from 'frontend/hooks/useGlobalState'
 import NextLink from 'next/link'
 import { useRouter } from 'next/router'
 import { useTranslation } from 'next-i18next'
@@ -72,7 +70,7 @@ export const AccountNavBar = ({ className, sectionsList, menuItems, hiddenHeader
   const { isAuth, userData } = useAccount()
 
   const { statusBarContent } = useStatusBarContext()
-  const { menuDropdownIsOpen } = useGlobalState()
+  const [isMenuOpen, setIsMenuOpen] = useState<boolean>(false)
   const [desktopRef, { height: desktopHeight }] = useElementSize([statusBarContent])
   const [mobileRef, { height: mobileHeight }] = useElementSize([statusBarContent])
 
@@ -114,7 +112,7 @@ export const AccountNavBar = ({ className, sectionsList, menuItems, hiddenHeader
               <div className="text-font/75 flex items-center gap-x-6 font-semibold">
                 {isAuth ? (
                   <MenuDropdown
-                    id={MAIN_HEADER_MENU}
+                    setIsOpen={setIsMenuOpen}
                     buttonTrigger={
                       <>
                         <Avatar userData={userData} />
@@ -123,7 +121,7 @@ export const AccountNavBar = ({ className, sectionsList, menuItems, hiddenHeader
                         </div>
                         <ChevronDownSmall
                           className={`ml-1 hidden w-5 h-5 mix-blend-normal lg:flex ${
-                            menuDropdownIsOpen(MAIN_HEADER_MENU) ? '-rotate-180' : ''
+                            isMenuOpen ? '-rotate-180' : ''
                           }`}
                         />
                       </>

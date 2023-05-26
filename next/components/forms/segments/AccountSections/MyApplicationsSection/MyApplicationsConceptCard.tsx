@@ -6,12 +6,10 @@ import PdfIcon from '@assets/images/new-icons/ui/pdf.svg'
 import cx from 'classnames'
 import ConceptDeleteModal from 'components/forms/segments/ConceptDeleteModal/ConceptDeleteModal'
 import Button from 'components/forms/simple-components/Button'
-import { CONCEPT_CARD_MENU } from 'components/forms/simple-components/MenuDropdown/menu-consts'
 import MenuDropdown, {
   MenuItemBase,
 } from 'components/forms/simple-components/MenuDropdown/MenuDropdown'
 import { MyApplicationsConceptCardBase } from 'frontend/api/mocks/mocks'
-import useGlobalState from 'frontend/hooks/useGlobalState'
 import Link from 'next/link'
 import { useRouter } from 'next/router'
 import { useTranslation } from 'next-i18next'
@@ -28,7 +26,7 @@ const MyApplicationsConceptCard = (props: MyApplicationsConceptCardProps) => {
   const { data, onDeleteCard } = props
   const { t } = useTranslation('account')
   const router = useRouter()
-  const { menuDropdownIsOpen } = useGlobalState()
+  const [isMenuOpen, setIsMenuOpen] = useState<boolean>(false)
 
   const [conceptModalShow, setConceptModalShow] = useState<boolean>(false)
 
@@ -81,14 +79,14 @@ const MyApplicationsConceptCard = (props: MyApplicationsConceptCardProps) => {
             />
 
             <MenuDropdown
-              id={CONCEPT_CARD_MENU}
+              setIsOpen={setIsMenuOpen}
               buttonTrigger={
                 <button
                   type="button"
                   className={cx(
                     'flex justify-center items-center focus:outline-none w-12 h-12 rounded-lg border-2 border-gray-200 bg-transparent text-gray-700 hover:text-gray-600 focus:border-gray-300 focus:text-gray-800',
                     {
-                      'border-gray-300 text-gray-800': menuDropdownIsOpen(CONCEPT_CARD_MENU),
+                      'border-gray-300 text-gray-800': isMenuOpen,
                     },
                   )}
                 >

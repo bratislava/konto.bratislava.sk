@@ -2,13 +2,7 @@ import * as DropdownMenu from '@radix-ui/react-dropdown-menu'
 import FormMenuItem from 'components/forms/simple-components/MenuDropdown/FormMenuItem'
 import HeaderMenuItem from 'components/forms/simple-components/MenuDropdown/HeaderMenuItem'
 import MenuTrigger from 'components/forms/simple-components/MenuDropdown/MenuTrigger'
-import { useGlobalStateContext } from 'components/forms/states/GlobalState'
-import React, { ReactNode } from 'react'
-
-export type MenuDropdownStateBase = {
-  id: string
-  isOpen: boolean
-}
+import React, { Dispatch, ReactNode, SetStateAction } from 'react'
 
 export type MenuItemBase = {
   id?: number
@@ -20,31 +14,22 @@ export type MenuItemBase = {
 }
 
 type MenuDropdownBase = {
-  id: string
   items: MenuItemBase[]
   itemVariant?: 'form' | 'header'
   buttonTrigger?: ReactNode
   buttonClassName?: string
+  setIsOpen: Dispatch<SetStateAction<boolean>>
 }
 
 const MenuDropdown = ({
-  id,
   items,
   itemVariant = 'form',
   buttonTrigger,
   buttonClassName,
+  setIsOpen,
 }: MenuDropdownBase) => {
-  const { setGlobalState, globalState } = useGlobalStateContext()
-
   return (
-    <DropdownMenu.Root
-      onOpenChange={() =>
-        setGlobalState({
-          ...globalState,
-          dropdownMenuState: { id, isOpen: !globalState.dropdownMenuState?.isOpen },
-        })
-      }
-    >
+    <DropdownMenu.Root onOpenChange={() => setIsOpen((prev) => !prev)}>
       <DropdownMenu.Trigger asChild>
         <MenuTrigger className={buttonClassName} buttonTrigger={buttonTrigger} />
       </DropdownMenu.Trigger>

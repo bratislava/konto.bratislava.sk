@@ -15,7 +15,8 @@ const SummaryRow = (props: SummaryRowProps) => {
 
   const containerClassName = cx('border-b-2 md:flex-nowrap flex flex-wrap flex-row py-2.5 gap-2', {
     '[&>div>*]:block border-red-500': data.isError,
-    'border-gray-200 [&>div>*]:hover:block': !data.isError,
+    'border-gray-200 [&>div>*]:hover:block': !data.isError && data.fileScanState !== "scan",
+    'border-orange-400 [&>div>*]:block': !data.isError && data.fileScanState === "scan",
     'hover:border-gray-700': isEditable,
   })
 
@@ -35,7 +36,9 @@ const SummaryRow = (props: SummaryRowProps) => {
       <div className="w-full flex flex-row items-center">
         <p className={valueClassName}>{data.value || '-'}</p>
         {isEditable && (
-          <EditIcon className="cursor-pointer flex lg:hidden w-5 h-5" onClick={onGoToStep} />
+          <div className="w-5">
+            <EditIcon className="cursor-pointer flex lg:hidden w-5 h-5" onClick={onGoToStep} />
+          </div>
         )}
       </div>
     </div>

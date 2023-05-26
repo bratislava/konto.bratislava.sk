@@ -4,7 +4,7 @@
 import { EFormValue } from '@backend/forms'
 import Form from '@rjsf/core'
 import {
-  ErrorSchema,
+  ErrorSchema, mergeDefaultsWithFormData, mergeObjects,
   RJSFSchema,
   RJSFValidationError,
 } from '@rjsf/utils'
@@ -18,8 +18,7 @@ import { readTextFile } from '../utils/file'
 import {
   getAllStepData,
   getInitFormData,
-  getJsonSchemaPropertyTree,
-  getValidatedSteps, mergePropertyTreeToFormData,
+  getValidatedSteps,
   validateAsyncProperties,
 } from '../utils/formStepper'
 import logger from '../utils/logger'
@@ -224,9 +223,11 @@ export const useFormStepper = (eformSlug: string, eform: EFormValue, callbacks: 
 
   const setStepFormData = (stepFormData: RJSFSchema) => {
     // save formData for step with all properties including conditional fields and unfilled fields
-    const tree = getJsonSchemaPropertyTree(currentSchema)
-    const fullStepFormData = mergePropertyTreeToFormData(stepFormData, tree)
-    setFormData({ ...formData, ...fullStepFormData })
+    const initStepDefaultData: RJSFSchema = getInitFormData(currentSchema)
+    const fullStepFormData: RJSFSchema|undefined = mergeDefaultsWithFormData(initStepDefaultData, stepFormData)
+    if (!fullStepFormData) return
+    const mergedFormData: RJSFSchema = mergeObjects(formData, fullStepFormData)
+    setFormData(mergedFormData)
   }
 
   const { t } = useTranslation('forms')

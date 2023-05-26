@@ -92,3 +92,4 @@ export const taxStatusHelper = (tax: Tax) => {
   const hasMultipleInstallments = tax?.taxInstallments?.length > 1
   return { paymentStatus, hasMultipleInstallments }
 }
+

@@ -11,7 +11,7 @@ import { useTranslation } from 'next-i18next'
 import { useState } from 'react'
 import { Controller } from 'react-hook-form'
 import Turnstile from 'react-turnstile'
-import { useCounter, useTimeout,useWindowSize } from 'usehooks-ts'
+import { useCounter, useTimeout, useWindowSize } from 'usehooks-ts'
 
 import { AccountError, UserData } from '../../../../frontend/hooks/useAccount'
 import useHookForm from '../../../../frontend/hooks/useHookForm'
@@ -40,6 +40,8 @@ interface Props {
   ) => Promise<any>
   error?: AccountError | null | undefined
   lastEmail?: string
+  // used to disabled registration as a legal entity in production (for now)
+  disablePO?: boolean
 }
 
 // must use `minLength: 1` to implement required field
@@ -123,7 +125,7 @@ const schema = {
   ],
 }
 
-const RegisterForm = ({ onSubmit, error, lastEmail }: Props) => {
+const RegisterForm = ({ onSubmit, error, lastEmail, disablePO }: Props) => {
   const { t } = useTranslation('account')
   const { count: captchaKey, increment: incrementCaptchaKey } = useCounter(0)
   const {
@@ -181,25 +183,27 @@ const RegisterForm = ({ onSubmit, error, lastEmail }: Props) => {
       <h1 className="text-h2">{t('register_title')}</h1>
       <AccountErrorAlert error={error} args={{ email: lastEmail || '' }} />
 
-      <Controller
-        name="account_type"
-        control={control}
-        render={({ field }) => (
-          <RadioGroup
-            onChange={field.onChange}
-            value={field.value}
-            label={t('account_type_label')}
-            orientations={isMobile ? 'column' : 'row'}
-          >
-            <Radio value="fo" variant="boxed">
-              {t('fo_label')}
-            </Radio>
-            <Radio value="po" variant="boxed">
-              {t('po_label')}
-            </Radio>
-          </RadioGroup>
-        )}
-      />
+      {!disablePO ? (
+        <Controller
+          name="account_type"
+          control={control}
+          render={({ field }) => (
+            <RadioGroup
+              onChange={field.onChange}
+              value={field.value}
+              label={t('account_type_label')}
+              orientations={isMobile ? 'column' : 'row'}
+            >
+              <Radio value="fo" variant="boxed">
+                {t('fo_label')}
+              </Radio>
+              <Radio value="po" variant="boxed">
+                {t('po_label')}
+              </Radio>
+            </RadioGroup>
+          )}
+        />
+      ) : null}
       <Controller
         name="email"
         control={control}

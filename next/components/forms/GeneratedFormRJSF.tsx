@@ -1,19 +1,20 @@
 import { EFormValue } from '@backend/forms'
 import { FormValidation, RJSFSchema } from '@rjsf/utils'
 import cx from 'classnames'
-import IdentityVerificationModal from 'components/forms/segments/IdentityVerificationModal/IdentityVerificationModal'
 import RegistrationModal from 'components/forms/segments/RegistrationModal/RegistrationModal'
 import SkipStepModal from 'components/forms/segments/SkipStepModal/SkipStepModal'
 import MenuList from 'components/forms/steps/MenuList'
 import useAccount, { AccountStatus } from 'frontend/hooks/useAccount'
+import { useTranslation } from 'next-i18next'
 import { useState } from 'react'
 
 import { validator } from '../../frontend/dtos/formStepperDto'
-import { useFormFiller } from '../../frontend/hooks/useFormFiller'
+import { FormFiller, useFormFiller } from '../../frontend/hooks/useFormFiller'
 import { useFormRJSFContextMemo } from '../../frontend/hooks/useFormRJSFContextMemo'
 import { useFormStepper } from '../../frontend/hooks/useFormStepper'
 import { useFormSubmitter } from '../../frontend/hooks/useFormSubmitter'
 import { customValidate } from '../../frontend/utils/formStepper'
+import IdentityVerificationModal from './segments/IdentityVerificationModal/IdentityVerificationModal'
 import FinalStep from './steps/FinalStep'
 import StepperView from './steps/StepperView'
 import StepButtonGroup from './steps/Summary/StepButtonGroup'
@@ -27,8 +28,9 @@ interface FormRJSF {
 }
 
 const GeneratedFormRJSF = ({ eform, escapedSlug, formSlug, wrapperClassName }: FormRJSF) => {
-  const filler = useFormFiller(eform)
-  const formContext = useFormRJSFContextMemo(eform, filler.formId)
+  const filler: FormFiller = useFormFiller(eform)
+  const formContext = useFormRJSFContextMemo(eform, filler)
+  const { t } = useTranslation('account')
   const form = useFormStepper(escapedSlug, eform, {
     onStepSumbit: filler.updateFormData,
     onInit: filler.initFormData,
@@ -36,7 +38,6 @@ const GeneratedFormRJSF = ({ eform, escapedSlug, formSlug, wrapperClassName }: F
   const { isAuth, status, userData } = useAccount()
   const [isOnShowSkipModal, setIsOnShowSkipModal] = useState<boolean>(false)
   const [registrationModal, setRegistrationModal] = useState<boolean>(true)
-  const [submitRegistrationModal, setSubmitRegistrationModal] = useState<boolean>(false)
   const [identityVerificationModal, setIdentityVerificationModal] = useState(true)
   const [skipModalWasShown, setSkipModalWasShown] = useState<boolean>(false)
   const [skipModalNextStepIndex, setSkipModalNextStepIndex] = useState<number>(form.stepIndex)
@@ -82,15 +83,10 @@ const GeneratedFormRJSF = ({ eform, escapedSlug, formSlug, wrapperClassName }: F
         />
         {!isAuth && (
           <RegistrationModal
-            isBottomButtons={false}
+            title={t('register_modal.header_sent_title')}
+            subtitle={t('register_modal.header_sent_subtitle')}
             show={registrationModal}
             onClose={() => setRegistrationModal(false)}
-          />
-        )}
-        {!isAuth && (
-          <RegistrationModal
-            show={submitRegistrationModal}
-            onClose={() => setSubmitRegistrationModal(false)}
           />
         )}
         {isAuth && status !== AccountStatus.IdentityVerificationSuccess && (
@@ -107,10 +103,12 @@ const GeneratedFormRJSF = ({ eform, escapedSlug, formSlug, wrapperClassName }: F
             formData={form.formData}
             formErrors={form.errors}
             extraErrors={form.extraErrors}
+            fileScans={formContext.fileScans}
             schema={form.validatedSchema}
             onGoToStep={form.setStepIndex}
             submitErrors={submitter.errors}
             submitMessage={submitter.successMessage}
+            onUpdateFileScans={updatedScans => { formContext.fileScans = updatedScans }}
           />
         ) : (
           <>
@@ -144,13 +142,14 @@ const GeneratedFormRJSF = ({ eform, escapedSlug, formSlug, wrapperClassName }: F
         <StepButtonGroup
           stepIndex={form.stepIndex}
           isFinalStep={form.isComplete}
+          fileScans={formContext.fileScans}
           previous={form.previous}
           skip={() => skipButtonHandler(form.stepIndex + 1)}
           submitStep={form.submitStep}
           submitForm={() =>
             isAuth
-              ? submitter.submitForm(filler.formId, form.formData)
-              : setSubmitRegistrationModal(true)
+              ? submitter.submitForm(form.formData, filler.formId)
+              : setRegistrationModal(true)
           }
         />
         <MenuList />

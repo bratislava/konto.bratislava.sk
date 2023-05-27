@@ -794,7 +794,7 @@
   },
   "logout_page": {
     "title": "Odhlásenie",
-    "description": "Budete odhlásený zo všetkých aplikácii využívajúcich Mestské konto.",
+    "description": "Budete odhlásený zo všetkých aplikácii využívajúcich Bratislavské konto.",
     "confirm_label": "Odhlásiť sa",
     "cancel_label": "Späť"
   }

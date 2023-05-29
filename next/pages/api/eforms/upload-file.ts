@@ -1,7 +1,7 @@
 import formidable, { PersistentFile } from 'formidable'
 import { NextApiRequest, NextApiResponse } from 'next'
 
-import minioClient, { bucketName, region } from '../../../backend/utils/minio-client'
+import minioClient, { region,unscannedBucketName } from '../../../backend/utils/minio-client'
 import logger from '../../../frontend/utils/logger'
 
 export const config = {
@@ -40,11 +40,11 @@ const parseFormidableFile = async (req: NextApiRequest): Promise<UploadedFileInf
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 const handleBucketCreation = async () => {
-  const isBucketExisting = await minioClient.bucketExists(bucketName)
+  const isBucketExisting = await minioClient.bucketExists(unscannedBucketName)
   if (!isBucketExisting) {
     await minioClient
-      .makeBucket(bucketName, region)
-      .then(() => logger.info(`Bucket ${bucketName} created successfully in ${region}`))
+      .makeBucket(unscannedBucketName, region)
+      .then(() => logger.info(`Bucket ${unscannedBucketName} created successfully in ${region}`))
   }
 }
 
@@ -52,7 +52,7 @@ const handlePostRequest = async (req: NextApiRequest) => {
   const file = await parseFormidableFile(req)
   // this is for the minio play env, in our own bucket we don't want to do this - should get removed as we progress
   // await handleBucketCreation()
-  await minioClient.fPutObject(bucketName, file.originalFilename, file.filepath)
+  await minioClient.fPutObject(unscannedBucketName, file.originalFilename, file.filepath)
 }
 
 const handler = async (req: NextApiRequest, res: NextApiResponse) => {

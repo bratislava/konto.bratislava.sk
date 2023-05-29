@@ -41,8 +41,10 @@ const FinalStep = ({
 
   const updateFileScans = async (): Promise<FileScan[]> => {
     const token = await getAccessToken()
+    const unfinishedFileScans = fileScans.filter(scan => scan.fileState !== 'finished')
+
     return Promise.all(
-      fileScans.map((scan: FileScan) => {
+      unfinishedFileScans.map((scan: FileScan) => {
         return getFileScanState(token, scan.scanId)
           .then((res: FileScanResponse) => {
             const fileState: FileScanState = ['INFECTED', 'MOVE ERROR INFECTED'].includes(res.status)
@@ -74,7 +76,7 @@ const FinalStep = ({
           logAllFileScansOnDev(updatedFileScans)
           onUpdateFileScans(updatedFileScans)
           setTestedFileScans(updatedFileScans)
-          if (updatedFileScans.every(scan => !scan.fileState || scan.fileState === 'finished')) {
+          if (updatedFileScans.every(scan => scan.fileState === 'finished')) {
             clearInterval(interval)
           }
           return true

@@ -1,3 +1,4 @@
+import cx from 'classnames'
 import MessageModal from 'components/forms/widget-components/Modals/MessageModal'
 import { useTranslation } from 'next-i18next'
 import { useEffect, useState } from 'react'
@@ -82,8 +83,8 @@ const UserProfileView = () => {
           }}
           title={t('profile_detail.modal_title')}
         >
-          <AccountMarkdown content={t('profile_detail.modal_message')} variant="sm" />
-          <p className="mt-6">{t('profile_detail.modal_thanks')}</p>
+          <AccountMarkdown content={t('profile_detail.modal_message')} variant="sm" className={cx("text-center","md:text-left")} />
+          <p className={cx("mt-6 text-center","md:text-left")}>{t('profile_detail.modal_thanks')}</p>
         </MessageModal>
       </div>
     </section>

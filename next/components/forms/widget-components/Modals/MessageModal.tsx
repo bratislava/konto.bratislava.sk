@@ -62,7 +62,7 @@ const MessageModal = ({
           <CloseIcon className="h-6 w-6" onClick={cancelHandler} type="info" />
         </div>
         <div className="p-3">
-          <div className="flex flex-row items-start gap-6 p-0">
+          <div className={cx("flex flex-col items-center gap-5 p-0", "md:flex-row md:items-start md:gap-6")}>
             <div
               className={cx('flex relative flex-row items-start gap-2 rounded-full p-4', {
                 'bg-gray-100': type === 'info',
@@ -76,7 +76,7 @@ const MessageModal = ({
               </div>
             </div>
             <div className="flex flex-col items-end w-full gap-6 p-0">
-              <div className="flex flex-col items-start p-0">
+              <div className={cx("flex flex-col items-center p-0", "md:items-start")}>
                 <div className="flex h-14 items-center text-h-base font-semibold">{title}</div>
                 <div className="text-p2">{children}</div>
               </div>

@@ -12,7 +12,7 @@ const postalCodeFormat = (code?: string): string => code ? `${code?.slice(0, 3)}
 const UserProfileDetailView = ({ userData }: UserProfileDetailViewProps) => {
   const { t } = useTranslation('account')
   const { account_type, name, given_name, family_name, email, phone_number, address } = userData
-  const fullName = account_type === 'po' && name
+  const fullName = account_type === 'po'
     ? name
     : `${given_name ?? ''}${given_name && family_name ? ' ' : ''}${family_name ?? ''}`
   const fullAddress = address

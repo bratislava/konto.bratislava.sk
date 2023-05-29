@@ -24,7 +24,6 @@ interface Data {
   family_name?: string
   password: string
   passwordConfirmation: string
-  marketingConfirmation: boolean
   turnstileToken: string
   account_type: 'fo' | 'po'
 }
@@ -111,14 +110,7 @@ const schema = {
       },
     },
   ],
-  required: [
-    'account_type',
-    'email',
-    'password',
-    'passwordConfirmation',
-    'marketingConfirmation',
-    'turnstileToken',
-  ],
+  required: ['account_type', 'email', 'password', 'passwordConfirmation', 'turnstileToken'],
 }
 
 const RegisterForm = ({ onSubmit, error, lastEmail, disablePO }: Props) => {

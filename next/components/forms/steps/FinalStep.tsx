@@ -8,9 +8,9 @@ import { getFileScanState } from '../../../frontend/api/api'
 import { FileScan, FileScanResponse, FileScanState, JsonSchema } from '../../../frontend/dtos/formStepperDto'
 import useAccount from '../../../frontend/hooks/useAccount'
 import logger, { developmentLog } from '../../../frontend/utils/logger'
-import Alert from '../info-components/Alert'
 import Summary from './Summary/Summary'
 import SummaryMessages from './Summary/SummaryMessages'
+import SummaryHeader from './SummaryHeader'
 
 interface FinalStepProps {
   formData: Record<string, JsonSchema>
@@ -36,7 +36,6 @@ const FinalStep = ({
   submitMessage,
   onUpdateFileScans
 }: FinalStepProps) => {
-  const { t } = useTranslation('forms')
   const { getAccessToken } = useAccount()
   const [testedFileScans, setTestedFileScans] = useState<FileScan[]>(fileScans)
 
@@ -68,16 +67,16 @@ const FinalStep = ({
     })
   }
 
-  useEffectOnce(() => {
-    updateFileScans()
-      .then((updatedFileScans: FileScan[]) => {
-        logAllFileScansOnDev(updatedFileScans)
-        onUpdateFileScans(updatedFileScans)
-        setTestedFileScans(updatedFileScans)
-        return true
-      })
-      .catch(error => logger.error("Fetch scan file statuses failed", error))
-  })
+  // useEffectOnce(() => {
+  //   updateFileScans()
+  //     .then((updatedFileScans: FileScan[]) => {
+  //       logAllFileScansOnDev(updatedFileScans)
+  //       onUpdateFileScans(updatedFileScans)
+  //       setTestedFileScans(updatedFileScans)
+  //       return true
+  //     })
+  //     .catch(error => logger.error("Fetch scan file statuses failed", error))
+  // })
 
   if (typeof formData !== 'object' || formData == null) {
     return null
@@ -85,13 +84,7 @@ const FinalStep = ({
 
   return (
     <div>
-      <h1 className="text-h1-medium font-semibold">{t('summary')}</h1>
-      {testedFileScans.some(scan => scan.fileState === 'error') && (
-        <Alert type="error" message={t('errors.file_scan')} fullWidth className="mt-4" solid/>
-      )}
-      {testedFileScans.some(scan => scan.fileState === 'scan') && (
-        <Alert type="warning" message={t('warnings.file_scan')} fullWidth className="mt-4"/>
-      )}
+      <SummaryHeader fileScans={testedFileScans} />
       <Summary
         schema={schema}
         formData={formData}

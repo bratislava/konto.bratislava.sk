@@ -4,8 +4,6 @@ import Button from 'components/forms/simple-components/Button'
 import { useTranslation } from 'next-i18next'
 import React from 'react'
 
-import { ROUTES } from '../../../../frontend/api/constants'
-
 const AccountActivator = () => {
   const { t } = useTranslation('account')
   return (

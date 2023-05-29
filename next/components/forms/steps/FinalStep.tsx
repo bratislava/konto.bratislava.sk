@@ -1,6 +1,5 @@
 import { ErrorSchema, RJSFValidationError, StrictRJSFSchema } from '@rjsf/utils'
 import { ErrorObject } from 'ajv'
-import { useTranslation } from 'next-i18next'
 import { useState } from 'react'
 import { useEffectOnce } from 'usehooks-ts'
 

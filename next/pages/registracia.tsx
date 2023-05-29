@@ -77,7 +77,11 @@ const RegisterPage = ({
                 email: lastEmail,
               })}
               confirmLabel={t('identity_verification_link')}
-              onConfirm={() => redirect()}
+              onConfirm={() => {
+                // this does some black magic and needs to be fixed, until that - without changing the status before redirect the user won't stay logged in
+                setStatus(AccountStatus.IdentityVerificationRequired)
+                redirect()
+              }}
             />
           ) : (
             <AccountSuccessAlert

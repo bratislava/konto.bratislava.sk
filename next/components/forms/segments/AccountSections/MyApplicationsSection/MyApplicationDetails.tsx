@@ -1,11 +1,12 @@
 import MyApplicationDetailsHeader from 'components/forms/segments/AccountSections/MyApplicationsSection/MyApplicationDetailsHeader'
 import MyApplicationHistory from 'components/forms/segments/AccountSections/MyApplicationsSection/MyApplicationHistory'
+import SummaryRowSimple from 'components/forms/simple-components/SummaryRowSimple'
 import SummaryRow from 'components/forms/steps/Summary/SummaryRow'
 import { MyApplicationHistoryDataBase, MyApplicationsSentCardBase } from 'frontend/api/mocks/mocks'
 import { useTranslation } from 'next-i18next'
 
 type MyApplicationsDetailsBase = {
-  detailsData?: MyApplicationsSentCardBase
+  detailsData: MyApplicationsSentCardBase
   historyData: MyApplicationHistoryDataBase[]
 }
 
@@ -50,16 +51,25 @@ const MyApplicationDetails = ({ detailsData, historyData }: MyApplicationsDetail
                 isError: false,
               }}
             />
-            <SummaryRow
-              size="small"
-              isEditable={false}
-              data={{
-                label: t('account_section_applications.details.application_details.contact'),
-                value: detailsData?.contact,
-                schemaPath: '',
-                isError: false,
-              }}
-            />
+            <SummaryRowSimple size="small" isEditable={false} label={t('contact')} isError={false}>
+              <div className="flex gap-2">
+                <div>
+                  <a
+                    className="underline underline-offset-4"
+                    href={`tel:${detailsData?.phoneContact}`}
+                  >
+                    {detailsData?.phoneContact}
+                  </a>
+                  ,
+                </div>
+                <a
+                  className="underline underline-offset-4"
+                  href={`mailto:${detailsData?.mailContact}`}
+                >
+                  {detailsData?.mailContact}
+                </a>
+              </div>
+            </SummaryRowSimple>
           </div>
         </div>
         <div className="flex flex-col gap-2 px-4 lg:px-0">

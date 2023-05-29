@@ -12,7 +12,8 @@ export const applicationsSentList: MyApplicationsSentCardBase[] = [
     recordNumber: 'MAG 12345/2023',
     fileNumber: 'MAG 12345/2023',
     handlePerson: 'Meno Riešiteľa / Riešiteľky',
-    contact: '+421 2/553 559 38, meno.priezvisko@bratislava.sk',
+    phoneContact: '+421 2/553 559 38',
+    mailContact: 'meno.priezvisko@bratislava.sk',
   },
   {
     id: '2',
@@ -25,7 +26,8 @@ export const applicationsSentList: MyApplicationsSentCardBase[] = [
     recordNumber: 'MAG 12345/2023',
     fileNumber: 'MAG 12345/2023',
     handlePerson: 'Meno Riešiteľa / Riešiteľky',
-    contact: '+421 2/553 559 38, meno.priezvisko@bratislava.sk',
+    phoneContact: '+421 2/553 559 38',
+    mailContact: 'meno.priezvisko@bratislava.sk',
   },
   {
     id: '3',
@@ -38,7 +40,8 @@ export const applicationsSentList: MyApplicationsSentCardBase[] = [
     recordNumber: 'MAG 12345/2023',
     fileNumber: 'MAG 12345/2023',
     handlePerson: 'Meno Riešiteľa / Riešiteľky',
-    contact: '+421 2/553 559 38, meno.priezvisko@bratislava.sk',
+    phoneContact: '+421 2/553 559 38',
+    mailContact: 'meno.priezvisko@bratislava.sk',
   },
   {
     id: '4',
@@ -51,7 +54,8 @@ export const applicationsSentList: MyApplicationsSentCardBase[] = [
     recordNumber: 'MAG 12345/2023',
     fileNumber: 'MAG 12345/2023',
     handlePerson: 'Meno Riešiteľa / Riešiteľky',
-    contact: '+421 2/553 559 38, meno.priezvisko@bratislava.sk',
+    phoneContact: '+421 2/553 559 38',
+    mailContact: 'meno.priezvisko@bratislava.sk',
   },
   {
     id: '5',
@@ -64,7 +68,8 @@ export const applicationsSentList: MyApplicationsSentCardBase[] = [
     recordNumber: 'MAG 12345/2023',
     fileNumber: 'MAG 12345/2023',
     handlePerson: 'Meno Riešiteľa / Riešiteľky',
-    contact: '+421 2/553 559 38, meno.priezvisko@bratislava.sk',
+    phoneContact: '+421 2/553 559 38',
+    mailContact: 'meno.priezvisko@bratislava.sk',
   },
   {
     id: '6',
@@ -77,7 +82,8 @@ export const applicationsSentList: MyApplicationsSentCardBase[] = [
     recordNumber: 'MAG 12345/2023',
     fileNumber: 'MAG 12345/2023',
     handlePerson: 'Meno Riešiteľa / Riešiteľky',
-    contact: '+421 2/553 559 38, meno.priezvisko@bratislava.sk',
+    phoneContact: '+421 2/553 559 38',
+    mailContact: 'meno.priezvisko@bratislava.sk',
   },
   {
     id: '7',
@@ -90,7 +96,8 @@ export const applicationsSentList: MyApplicationsSentCardBase[] = [
     recordNumber: 'MAG 12345/2023',
     fileNumber: 'MAG 12345/2023',
     handlePerson: 'Meno Riešiteľa / Riešiteľky',
-    contact: '+421 2/553 559 38, meno.priezvisko@bratislava.sk',
+    phoneContact: '+421 2/553 559 38',
+    mailContact: 'meno.priezvisko@bratislava.sk',
   },
   {
     id: '8',
@@ -103,7 +110,8 @@ export const applicationsSentList: MyApplicationsSentCardBase[] = [
     recordNumber: 'MAG 12345/2023',
     fileNumber: 'MAG 12345/2023',
     handlePerson: 'Meno Riešiteľa / Riešiteľky',
-    contact: '+421 2/553 559 38, meno.priezvisko@bratislava.sk',
+    phoneContact: '+421 2/553 559 38',
+    mailContact: 'meno.priezvisko@bratislava.sk',
   },
   {
     id: '9',
@@ -116,7 +124,8 @@ export const applicationsSentList: MyApplicationsSentCardBase[] = [
     recordNumber: 'MAG 12345/2023',
     fileNumber: 'MAG 12345/2023',
     handlePerson: 'Meno Riešiteľa / Riešiteľky',
-    contact: '+421 2/553 559 38, meno.priezvisko@bratislava.sk',
+    phoneContact: '+421 2/553 559 38',
+    mailContact: 'meno.priezvisko@bratislava.sk',
   },
   {
     id: '10',
@@ -129,6 +138,7 @@ export const applicationsSentList: MyApplicationsSentCardBase[] = [
     recordNumber: 'MAG 12345/2023',
     fileNumber: 'MAG 12345/2023',
     handlePerson: 'Meno Riešiteľa / Riešiteľky',
-    contact: '+421 2/553 559 38, meno.priezvisko@bratislava.sk',
+    phoneContact: '+421 2/553 559 38',
+    mailContact: 'meno.priezvisko@bratislava.sk',
   },
 ]

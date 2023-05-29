@@ -37,7 +37,7 @@ const FinalStep = ({
 }: FinalStepProps) => {
   const { getAccessToken } = useAccount()
   const [testedFileScans, setTestedFileScans] = useState<FileScan[]>(fileScans)
-
+  console.log('SCANS:', fileScans)
   const updateFileScans = async (): Promise<FileScan[]> => {
     const token = await getAccessToken()
     const unfinishedFileScans = fileScans.filter(scan => scan.fileState !== 'finished')

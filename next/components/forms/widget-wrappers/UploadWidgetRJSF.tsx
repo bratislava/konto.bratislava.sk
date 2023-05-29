@@ -39,6 +39,7 @@ const UploadWidgetRJSF = (props: UploadWidgetRJSFProps) => {
   const multiple = schema.type === 'array'
 
   const [innerValue, setInnerValue] = useState<UploadMinioFile[]>(getInitInnerValue(value, schema, formContext.fileScans))
+  const [innerFileScans, setInnerFileScans] = useState<FileScan[]>(formContext.fileScans)
 
   const handleOneFile = (files: UploadMinioFile[]) => {
     if (!files[0]?.isUploading && !files[0]?.errorMessage) {
@@ -72,17 +73,34 @@ const UploadWidgetRJSF = (props: UploadWidgetRJSFProps) => {
   }
 
   const getOwnFileScans = () => {
-    return formContext.fileScans.filter(fileScan => (
+    // console.log('INNER VALUE', schema.title, innerValue)
+    // console.log('formContext', formContext.fileScans)
+    console.log('inner file scans',  schema.title, innerFileScans)
+    return innerFileScans.filter(fileScan => (
       innerValue.some(value => value.file.name === fileScan.fileName)
     ))
   }
 
   const handleOnAddFileScans = (newFileScans: FileScan[]) => {
-    formContext.fileScans = [ ...formContext.fileScans, ...newFileScans ]
+    const updatedFormContextFileScans = [ ...formContext.fileScans, ...newFileScans ]
+    const updatedInnerFileScans = [ ...innerFileScans, ...newFileScans ]
+    const updatedFileScans = updatedFormContextFileScans.concat(updatedInnerFileScans.filter(innerScan =>
+      !updatedFormContextFileScans.some(formContextScan => JSON.stringify(formContextScan) === JSON.stringify(innerScan))
+    ))
+
+    formContext.fileScans = updatedFileScans
+    setInnerFileScans(updatedFileScans)
   }
 
   const handleOnRemoveFileScan = (removeScan?: FileScan) => {
-    formContext.fileScans = formContext.fileScans.filter(scan => scan.fileName !== removeScan?.fileName)
+    const updatedFormContextFileScans = formContext.fileScans.filter(scan => scan.fileName !== removeScan?.fileName)
+    const updatedInnerFileScans = innerFileScans.filter(scan => scan.fileName !== removeScan?.fileName)
+    const updatedFileScans = updatedFormContextFileScans.concat(updatedInnerFileScans.filter(innerScan =>
+      !updatedFormContextFileScans.some(formContextScan => JSON.stringify(formContextScan) === JSON.stringify(innerScan))
+    ))
+
+    formContext.fileScans = updatedFileScans
+    setInnerFileScans(updatedFileScans)
   }
 
   return (

@@ -4,6 +4,7 @@ import { RJSFSchema } from '@rjsf/utils'
 import { ErrorObject } from 'ajv'
 
 import { CreateFormDto, FormDto, ScanFileDto, UpdateFormDto } from '../dtos/formDto'
+import { FileScanStatus } from '../dtos/formStepperDto'
 import { ApiError, Gdpr, Identity, TaxApiError, UrlResult, User } from '../dtos/generalApiDto'
 import logger, { developmentLog } from '../utils/logger'
 
@@ -354,8 +355,8 @@ export const uploadFileToBucket = async (file: File) => {
   })
 }
 
-export const deleteFileFromBucket = async (fileName: string) => {
-  const params = new URLSearchParams({ fileName })
+export const deleteFileFromBucket = async (fileName: string, fileScanStatus?: FileScanStatus) => {
+  const params = new URLSearchParams({ fileName, fileScanStatus: fileScanStatus || '' })
 
   return fetchJsonApi(`/api/eforms/delete-file?${params.toString()}`, {
     method: 'DELETE',

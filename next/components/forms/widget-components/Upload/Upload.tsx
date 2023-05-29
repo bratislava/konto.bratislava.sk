@@ -112,11 +112,11 @@ const UploadComponent: ForwardRefRenderFunction<HTMLDivElement, UploadProps> = (
     return updatedFileScans.filter(scan => scan.fileState !== 'error' || !scan.scanId)
   }
 
-  const scanAllNewFiles = (newFiles: UploadMinioFile[]) => {
+  const scanAllNewFiles = (newFiles: UploadMinioFile[], currentFileScans: FileScan[]) => {
     if (!isScanningAllowed) return
 
     const newFileScans: FileScan[] = newFiles.map(minioFile => {
-      const oldFileScan = fileScans?.find(fileScan => fileScan.fileName === minioFile.file.name)
+      const oldFileScan = currentFileScans?.find(fileScan => fileScan.fileName === minioFile.file.name)
       return {
         originalName: minioFile.originalName,
         fileName: minioFile.file.name,
@@ -151,16 +151,23 @@ const UploadComponent: ForwardRefRenderFunction<HTMLDivElement, UploadProps> = (
     }
   }
 
-  const removeFirstFile = () => {
-    if (!value) return
-    const fileName = value[0].file.name
+  const handleOnRemoveFile = async (id: number) => {
+    const valueFileName = value?.[id].file.name
+    const fileScan = fileScans?.[id]
+    if (!valueFileName || !fileScan || fileScan.fileName  !== valueFileName) return null
 
-    removeFileOnClient(fileName)
-    deleteFileFromBucket(fileName)
+    removeFileOnClient(valueFileName)
+    await deleteFileFromBucket(valueFileName, fileScan.fileStateStatus)
       .catch((error) => {
         setMinioError()
         logger.error(error)
       })
+
+    return valueFileName
+  }
+
+  const removeFirstFile = async () => {
+    return handleOnRemoveFile(0)
   }
 
   const isFileInSizeLimit = (file: File) => {
@@ -204,8 +211,10 @@ const UploadComponent: ForwardRefRenderFunction<HTMLDivElement, UploadProps> = (
   const addNewFiles = async (newFiles: UploadMinioFile[]) => {
     const sanitizedFiles = sanitizeClientFiles(newFiles)
     let oldFiles = value ? [...value] : []
+    let currentFileScans: FileScan[] = fileScans ?? []
     if (!multiple && oldFiles.length === 1) {
-      removeFirstFile()
+      const removeScanName = await removeFirstFile()
+      currentFileScans = currentFileScans.filter((fileScan) => fileScan.fileName !== removeScanName)
       oldFiles = []
     }
     emitOnChange(sanitizedFiles, oldFiles)
@@ -223,9 +232,11 @@ const UploadComponent: ForwardRefRenderFunction<HTMLDivElement, UploadProps> = (
           })
       })
     )
+    console.log('UPLOAD FILES:', uploadFiles)
+    console.log('FILE scans', currentFileScans)
 
     emitOnChange(uploadFiles, oldFiles)
-    scanAllNewFiles(uploadFiles)
+    scanAllNewFiles(uploadFiles, currentFileScans)
   }
 
   const handleOnClickUpload = () => {
@@ -251,17 +262,6 @@ const UploadComponent: ForwardRefRenderFunction<HTMLDivElement, UploadProps> = (
     await addNewFiles(newFiles)
   }
 
-  const handleOnRemoveFile = (id: number) => {
-    if (!value) return
-    const fileName = value[id].file.name
-
-    removeFileOnClient(fileName)
-    deleteFileFromBucket(fileName)
-      .catch((error) => {
-        setMinioError()
-        logger.error(error)
-      })
-  }
 
   // RENDER
   return (

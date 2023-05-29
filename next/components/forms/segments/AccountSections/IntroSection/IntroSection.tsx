@@ -22,7 +22,7 @@ import PhoneNumberModal from '../../PhoneNumberModal/PhoneNumberModal'
 
 const IntroSection = () => {
   const { t } = useTranslation('account')
-  const { userData, updateUserData, error, resetError } = useAccount()
+  const { userData, updateUserData, error, resetError, accountType } = useAccount()
   const { data, isLoading } = useTaxes()
   const router = useRouter()
   const [phoneNumberModal, setPhoneNumberModal] = useState<'hidden' | 'displayed' | 'dismissed'>(
@@ -48,6 +48,8 @@ const IntroSection = () => {
     }
   }
 
+  const name = accountType === 'po' ? userData?.name : userData?.given_name
+
   const bannerContent = `<span className='text-p2'>${t(
     'account_section_intro.banner_content',
   )}</span>`
@@ -71,7 +73,7 @@ const IntroSection = () => {
       )}
       <div className="flex flex-col">
         <AccountSectionHeader
-          title={`${t('account_section_intro.header_title')} ${userData?.given_name || ''}.`}
+          title={`${t('account_section_intro.header_title')} ${name || ''}.`}
           text={t('account_section_intro.header_text')}
         />
         <div className="w-full max-w-screen-lg m-auto py-6 lg:py-16">

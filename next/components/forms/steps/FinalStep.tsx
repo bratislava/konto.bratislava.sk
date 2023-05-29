@@ -67,16 +67,23 @@ const FinalStep = ({
     })
   }
 
-  // useEffectOnce(() => {
-  //   updateFileScans()
-  //     .then((updatedFileScans: FileScan[]) => {
-  //       logAllFileScansOnDev(updatedFileScans)
-  //       onUpdateFileScans(updatedFileScans)
-  //       setTestedFileScans(updatedFileScans)
-  //       return true
-  //     })
-  //     .catch(error => logger.error("Fetch scan file statuses failed", error))
-  // })
+  useEffectOnce(() => {
+    const interval = setInterval(() => {
+      updateFileScans()
+        .then((updatedFileScans: FileScan[]) => {
+          logAllFileScansOnDev(updatedFileScans)
+          onUpdateFileScans(updatedFileScans)
+          setTestedFileScans(updatedFileScans)
+          if (updatedFileScans.every(scan => !scan.fileState || scan.fileState === 'finished')) {
+            clearInterval(interval)
+          }
+          return true
+        })
+        .catch(error => logger.error("Fetch scan file statuses failed", error))
+    }, 30_000)
+
+    return () => clearInterval(interval)
+  })
 
   if (typeof formData !== 'object' || formData == null) {
     return null

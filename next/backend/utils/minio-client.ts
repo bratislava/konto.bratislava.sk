@@ -20,4 +20,7 @@ const minioClient = new Client({
   accessKey: process.env.MINIO_ACCESS_KEY || ''
 })
 
+console.log('MINIO ENDPOINT:');
+console.log(process.env.MINIO_ENDPOINT);
+
 export default minioClient

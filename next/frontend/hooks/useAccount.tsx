@@ -555,8 +555,6 @@ export const AccountProvider = ({ children }: { children: ReactNode }) => {
     refreshUserData().catch((error) => logger.error(error))
   }, [refreshUserData])
 
-  // with new legal texts marketing confirmation should always be set to true - kept as argument in case this changes again
-  // if it's past 2024 and it's still here it's safe to remove
   const signUp = async (
     email: string,
     password: string,

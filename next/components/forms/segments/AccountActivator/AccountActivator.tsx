@@ -17,8 +17,8 @@ const AccountActivator = () => {
           className="mt-2 md:mt-4"
           size="sm"
           variant="link-category"
-          href="https://www.bratislava.sk/konto"
-          label={t('account_activator.button_text')}
+          href={ROUTES.MIGRATION}
+          label="Aktivovať konto"
           hrefIconHidden
         />
       </div>

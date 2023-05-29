@@ -8,7 +8,7 @@
     "UserNotFoundException": "Konto so zadanou e-mailovou adresou zatiaľ neexistuje.",
     "MigrationUserNotFoundException": "E-mail **{email}** sa nenachádza v našej databáze minuloročných používateľov a používateliek digitálnej platby dane. Skontrolujte správnosť e-mailu alebo sa [registrujte](/register).",
     "UserNotConfirmedException": "E-mail nie je verifikovaný.",
-    "UsernameExistsException": " E-mail **{email}** sa už používa. Na každý e-mail je v Bratislavskom konte možné vytvoriť len jeden účet. V prípade nejasností nás kontaktujte na <a href='mailto:info@bratislava.sk'>info@bratislava.sk</a>.",
+    "UsernameExistsException": "E-mail **{email}** už bol použitý. Ak ste daň platili digitálne už minulý rok, pokračujte [aktiváciou konta](/migration). V prípade, že sa vás tento prípad netýka, kontaktujte nás na <a href='mailto:info@bratislava.sk'>info@bratislava.sk</a>.",
     "ExpiredCodeException": "Platnosť zadaného kódu vypršala. Požiadajte o nový kód kliknutím na Odoslať nový kód. Platnosť overovacieho kódu je 60 minút.",
     "IncorectPasswordException": "Zadané heslo nie je správne.",
     "API_ERROR": "Pri odosielaní nastala chyba. Skúste to, prosíme, znova.",
@@ -21,8 +21,8 @@
   "sso_placeholder": "Táto stránka slúži pre komunikáciu s ostatnými mestskými službami. <a href='/'>Späť domov</a>.",
   "login_title": "Prihláste sa do svojho konta",
   "email_label": "E-mail",
-  "email_fo_description": "Zadajte e-mail pre overenie registrácie.",
-  "email_po_description": "Zadajte e-mail pre overenie registrácie.",
+  "email_fo_description": "Zadajte e-mail, na ktorý si prajete dostávať od mesta informácie.",
+  "email_po_description": "Zadajte firemný e-mail, na ktorý si prajete dostávať informácie od mesta.",
   "email_placeholder": "E-mail",
   "email_required": "E-mail je povinný",
   "email_format": "E-mail nie je platný",
@@ -112,7 +112,7 @@
   "gdpr_confirmation_label": "Súhlas so spracovaním osobných údajov",
   "gdpr_confirmation_required": "Pre vytvorenie účtu je potrebné súhlasiť so spracovaním osobných údajov.",
   "gdpr_details_link": "Bližšie informácie o spracúvaní vašich osobných údajov nájdete <a target='_blank' href='https://bratislava.sk/ochrana-osobnych-udajov'>na tomto odkaze</a>.",
-  "marketing_confirmation_text": "Informácie o spracúvaní osobných údajov sú dostupné <a target='_blank' href='https://bratislava.sk/ochrana-osobnych-udajov'>na tomto odkaze</a>. Odoslaním požiadavky na vytvorenie konta potvrdzujem, že som sa oboznámil/a s podmienkami spracúvania osobných údajov.",
+  "marketing_confirmation_label": "Mám záujem dostávať informácie aj o iných digitálnych službách mesta Bratislava",
   "register_submit": "Vytvoriť konto",
   "email_verification_title": "Overte svoj e-mail",
   "email_verification_description": "Na e-mail {email} sme vám odoslali overovací kód. Skopírujte ho do poľa nižšie.",
@@ -660,9 +660,9 @@
   "tax_payable_in_installments_3": "najneskôr v lehote splatnosti prvej splátky.",
   "tax_determined": "Splátky dane určené správcom dane v rozhodnutí",
   "account_activator": {
-    "title": "Vitajte v Bratislavskom konte",
-    "content": "Vytvorte si svoj účet a majte rôzne služby mesta na jednom mieste, zaplaťte daň z nehnuteľností online alebo si kúpte lístok na kúpalisko bez čakania v rade.",
-    "button_text": "Viac informácií"
+    "title": "Platili ste už daň z nehnuteľností digitálne?",
+    "content": "Ak ste v minulosti platili daň z nehnuteľností digitálne, tento rok ju nájdete v novom Bratislavskom konte. <strong>Nepotrebujete prejsť celou registráciou.</strong> Stačí, ak si aktivujete konto <strong>overením e-mailu</strong> a <strong>vytvorením hesla</strong>.",
+    "button_text": "Aktivovať konto"
   },
   "tax_footer": {
     "register_info": "Registrovaním sa do Bratislavského konta <strong>do 19. apríla 2023</strong>, a zároveň zaplatením plnej sumy dane online <strong>do 12. mája 2023</strong> súhlasíte s tým, že vám nebude zaslané rozhodnutie o dani z nehnuteľností na korešpondenčnú adresu a vy tak nemusíte ísť na poštu.",

@@ -232,8 +232,6 @@ const UploadComponent: ForwardRefRenderFunction<HTMLDivElement, UploadProps> = (
           })
       })
     )
-    console.log('UPLOAD FILES:', uploadFiles)
-    console.log('FILE scans', currentFileScans)
 
     emitOnChange(uploadFiles, oldFiles)
     scanAllNewFiles(uploadFiles, currentFileScans)

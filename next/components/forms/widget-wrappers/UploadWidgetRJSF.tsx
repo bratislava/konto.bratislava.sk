@@ -73,9 +73,6 @@ const UploadWidgetRJSF = (props: UploadWidgetRJSFProps) => {
   }
 
   const getOwnFileScans = () => {
-    // console.log('INNER VALUE', schema.title, innerValue)
-    // console.log('formContext', formContext.fileScans)
-    console.log('inner file scans',  schema.title, innerFileScans)
     return innerFileScans.filter(fileScan => (
       innerValue.some(value => value.file.name === fileScan.fileName)
     ))

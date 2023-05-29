@@ -2,6 +2,7 @@ import * as DropdownMenu from '@radix-ui/react-dropdown-menu'
 import FormMenuItem from 'components/forms/simple-components/MenuDropdown/FormMenuItem'
 import HeaderMenuItem from 'components/forms/simple-components/MenuDropdown/HeaderMenuItem'
 import MenuTrigger from 'components/forms/simple-components/MenuDropdown/MenuTrigger'
+import MobileMenuDropdown from 'components/forms/simple-components/MenuDropdown/MobileMenuDropdown'
 import React, { ReactNode, useState } from 'react'
 
 export type MenuItemBase = {
@@ -18,6 +19,7 @@ type MenuDropdownBase = {
   buttonTrigger?: ReactNode
   buttonVariant?: 'gray' | 'main' | 'none'
   buttonSize?: 'sm' | 'lg'
+  mobileVariant?: boolean
 }
 
 const MenuDropdown = ({
@@ -26,6 +28,7 @@ const MenuDropdown = ({
   buttonTrigger,
   buttonVariant = 'none',
   buttonSize = 'sm',
+  mobileVariant,
 }: MenuDropdownBase) => {
   const [isOpen, setIsOpen] = useState<boolean>(false)
   return (
@@ -39,37 +42,41 @@ const MenuDropdown = ({
         />
       </DropdownMenu.Trigger>
 
-      <DropdownMenu.Portal>
-        <DropdownMenu.Content
-          loop
-          align="end"
-          className="bg-gray-0 shadow-md rounded-lg py-2"
-          sideOffset={2}
-        >
-          {itemVariant === 'form' &&
-            items?.map((item, i) => (
-              <FormMenuItem
-                key={i}
-                className={item.itemClassName}
-                icon={item.icon}
-                title={item.title}
-                url={item.url}
-                onPress={item.onPress}
-              />
-            ))}
-          {itemVariant === 'header' &&
-            items?.map((item, i) => (
-              <HeaderMenuItem
-                key={i}
-                className={item.itemClassName}
-                icon={item.icon}
-                title={item.title}
-                url={item.url}
-                onPress={item.onPress}
-              />
-            ))}
-        </DropdownMenu.Content>
-      </DropdownMenu.Portal>
+      {mobileVariant ? (
+        isOpen && <MobileMenuDropdown isOpen={isOpen} setIsOpen={setIsOpen} items={items} />
+      ) : (
+        <DropdownMenu.Portal>
+          <DropdownMenu.Content
+            loop
+            align="end"
+            className="bg-gray-0 shadow-md rounded-lg py-2"
+            sideOffset={2}
+          >
+            {itemVariant === 'form' &&
+              items?.map((item, i) => (
+                <FormMenuItem
+                  key={i}
+                  className={item.itemClassName}
+                  icon={item.icon}
+                  title={item.title}
+                  url={item.url}
+                  onPress={item.onPress}
+                />
+              ))}
+            {itemVariant === 'header' &&
+              items?.map((item, i) => (
+                <HeaderMenuItem
+                  key={i}
+                  className={item.itemClassName}
+                  icon={item.icon}
+                  title={item.title}
+                  url={item.url}
+                  onPress={item.onPress}
+                />
+              ))}
+          </DropdownMenu.Content>
+        </DropdownMenu.Portal>
+      )}
     </DropdownMenu.Root>
   )
 }

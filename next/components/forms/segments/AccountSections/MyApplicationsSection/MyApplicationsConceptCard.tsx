@@ -32,12 +32,14 @@ const MyApplicationsConceptCard = (props: MyApplicationsConceptCardProps) => {
     {
       title: t('account_section_applications.concept_menu_list.download_xml'),
       icon: <DownloadIcon className="w-6 h-6" />,
-      onPress: () => {},
+      onPress: () => {
+        console.log('ssss')
+      },
     },
     {
       title: t('account_section_applications.concept_menu_list.download_pdf'),
       icon: <PdfIcon className="w-6 h-6" />,
-      onPress: () => {},
+      url: '/',
     },
     {
       title: t('account_section_applications.concept_menu_list.delete'),
@@ -106,6 +108,12 @@ const MyApplicationsConceptCard = (props: MyApplicationsConceptCardProps) => {
             </div>
           </div>
         </Link>
+        <MenuDropdown
+          buttonTrigger={<ThreePointsIcon />}
+          buttonSize="lg"
+          items={conceptMenuContent}
+          mobileVariant
+        />
       </div>
       <ConceptDeleteModal
         conceptData={data}

@@ -4,8 +4,9 @@
   "errors": {
     "API_ERROR": "Pri odosielaní formulára nastala chyba. Skúste to prosím znova.",
     "unknown": "Nastala neznáma chyba. Skúste to prosím znova.",
-    "xml_export": "Export zlyhal. Skúste to prosím znova.",
-    "xml_import": "Import zlyhal. Skúste to prosím znova.",
+    "xml_export": "XML sa nepodarilo stiahnuť.",
+    "xml_import": "XML sa nepodarilo nahrať.",
+    "pdf_export": "PDF sa nepodarilo stiahnuť",
     "form_init": "Načítanie formulára zlyhalo.",
     "form_update": "Formulár sa nepodarilo uložiť do rozpracovaných.",
     "upload_size_format": "Prílohy nespĺňajú požadovaný formát a veľkosť.",
@@ -14,6 +15,16 @@
   },
   "warnings": {
     "file_scan": "Prílohy, ktoré ste nahrali ešte skenujeme. Žiadosť však môžete odoslať aj bez čakania na dokončenie skenovania. V prípade, že nahraté prílohy neprejdú skenovaním a antivírovou kontrolou, budeme vás kontaktovať na e-mailovej adrese, ktorou sa prihlasujete do svojho konta."
+  },
+  "success_messages": {
+    "xml_export": "XML bolo stiahnuté",
+    "xml_import": "XML bolo nahraté",
+    "pdf_export": "PDF bolo stiahnuté"
+  },
+  "info_messages": {
+    "xml_export": "XML sa sťahuje",
+    "xml_import": "XML sa sťahuje",
+    "pdf_export": "PDF sa sťahuje"
   },
   "selectAll": "Vybrať všetko",
   "deselectAll": "Odobrať všetko",

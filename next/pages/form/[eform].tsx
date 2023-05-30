@@ -1,7 +1,6 @@
 import { EFormValue } from '@backend/forms'
 import { getEform } from '@backend/utils/forms'
 import GeneratedFormRJSF from 'components/forms/GeneratedFormRJSF'
-import FormHeader from 'components/forms/simple-components/FormHeader'
 import AccountPageLayout from 'components/layouts/AccountPageLayout'
 import PageWrapper from 'components/layouts/PageWrapper'
 import { GetServerSidePropsContext } from 'next'
@@ -69,7 +68,7 @@ const FormTestPage = ({
   const formSlug = forceString(router.query.eform)
   // Using string.match because CodeQL tools ignore regex.test as SSRF prevention.
   // eslint-disable-next-line unicorn/prefer-regexp-test
-  const escapedSlug = formSlug.match(/^[\da-z-]+$/) ? formSlug : ''
+  const escapedSlug = formSlug.match(/^[\dA-Za-z-]+$/) ? formSlug : ''
   const pageSlug = `form/${escapedSlug}`
 
   return (
@@ -81,7 +80,6 @@ const FormTestPage = ({
       ]}
     >
       <AccountPageLayout isPublicPage hiddenHeaderNav isProductionDeploy={isProductionDeploy}>
-        <FormHeader />
         <GeneratedFormRJSF eform={eform} escapedSlug={escapedSlug} formSlug={formSlug} />
       </AccountPageLayout>
     </PageWrapper>

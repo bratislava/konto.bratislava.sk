@@ -90,7 +90,7 @@
   "new_password_description": "Na e-mail {email} sme vám odoslali overovací kód. Skopírujte ho do poľa nižšie.",
   "verification_description": "Nedostali ste overovací kód?",
   "verification_cnt_description": "Počkajte ešte {cnt}s a požiadajte o nový overovací kód.",
-  "verification_cnt_info": "<br />Môže sa stať, že sa pošta zatúla. <strong>Skúste skontrolovať všetky priečinky vašej e-mailovej schránky</strong>. Ak kód predsa len nedorazil, napíšte nám na info@bratislava.sk a radi vám pomôžeme.",
+  "verification_cnt_info": "Môže sa stať, že sa pošta zatúla. <strong>Skúste skontrolovať všetky priečinky vašej e-mailovej schránky</strong>. Ak kód predsa len nedorazil, napíšte nám na info@bratislava.sk a radi vám pomôžeme.",
   "verification_resend": "Odoslať nový kód",
   "new_password_submit": "Pokračovať",
   "verification_code_label": "Overovací kód",

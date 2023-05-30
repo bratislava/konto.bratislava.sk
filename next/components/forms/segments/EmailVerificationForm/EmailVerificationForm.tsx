@@ -107,13 +107,11 @@ const EmailVerificationForm = ({ onSubmit, error, onResend, lastEmail }: Props) 
       {/* don't show timer if error */}
 
       <div className="text-p3 lg:text-p2">
-        {noError && (
-          <>
+        {noError && cnt > 0 && (
+          <div className="mb-4">
             <span>{t('verification_description')}</span>
-            {cnt > 0 && (
-              <span>{` ${formatUnicorn(t('verification_cnt_description'), { cnt })}`}</span>
-            )}
-          </>
+            <span>{` ${formatUnicorn(t('verification_cnt_description'), { cnt })}`}</span>
+          </div>
         )}
         <AccountMarkdown variant="sm" content={t('verification_cnt_info')} />
       </div>
@@ -123,7 +121,7 @@ const EmailVerificationForm = ({ onSubmit, error, onResend, lastEmail }: Props) 
         className="min-w-full"
         text={t('verification_resend')}
         variant="category-outline"
-        disabled={cnt > 0 || noError}
+        disabled={cnt > 0 && noError}
       />
     </form>
   )

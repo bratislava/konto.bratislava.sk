@@ -13,7 +13,8 @@ export type MyApplicationsSentCardBase = {
   recordNumber?: string
   fileNumber?: string
   handlePerson?: string
-  contact?: string
+  phoneContact: string
+  mailContact: string
 }
 
 export type MyApplicationsConceptCardBase = {

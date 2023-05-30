@@ -65,12 +65,14 @@ const Radio = ({
     },
   )
 
+  const stringValue = rest.value ? rest.value.toString() : ""
+
   return (
     <div className="w-full">
-      <label htmlFor={rest.value.toString()} className={containerStyle}>
+      <label htmlFor={stringValue} className={containerStyle}>
         {variant === 'card' ? (
           <div className="w-full flex flex-col items-start gap-3 p-0 ">
-            <input id={rest.value.toString()} {...inputProps} ref={ref} className={inputStyle} />
+            <input id={stringValue} {...inputProps} ref={ref} className={inputStyle} />
             <div className="text-16 text-gray-700 break-words">
               {rest.children}
               {tooltip && (
@@ -82,7 +84,7 @@ const Radio = ({
           </div>
         ) : (
           <div className={cx('flex items-center gap-3', {})}>
-            <input id={rest.value.toString()} {...inputProps} ref={ref} className={inputStyle} />
+            <input id={stringValue} {...inputProps} ref={ref} className={inputStyle} />
             <div className={cx('text-16 flex text-gray-700 break-words', {})}>{rest.children}</div>
           </div>
         )}

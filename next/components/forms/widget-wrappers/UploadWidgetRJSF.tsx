@@ -79,35 +79,24 @@ const UploadWidgetRJSF = (props: UploadWidgetRJSFProps) => {
   }
 
   const handleOnUpdateFileScans = (updatedNewFileScans: FileScan[], removeFileScan?: FileScan|null) => {
-    console.log('ADD ACTION - inner:', innerFileScans)
-    console.log('ADD ACTION - updated inner:', updatedNewFileScans)
-    console.log('ADD ACTION - formContext:', formContext.fileScans)
-
     setInnerFileScans(updatedNewFileScans)
 
     const updatedFormContextFileScans = [ ...formContext.fileScans, ...updatedNewFileScans ]
       .filter(scan => scan.fileName !== removeFileScan?.fileName && scan.scanId !== removeFileScan?.scanId)
 
-    const updatedFileScans = updatedFormContextFileScans.concat(updatedNewFileScans.filter(innerScan =>
+    formContext.fileScans = updatedFormContextFileScans.concat(updatedNewFileScans.filter(innerScan =>
       !updatedFormContextFileScans.some(formContextScan => JSON.stringify(formContextScan) === JSON.stringify(innerScan))
     ))
-
-    formContext.fileScans = updatedFileScans
-
-    console.log('ADD ACTION - updated formContext:', updatedFileScans)
   }
 
   const handleOnRemoveFileScan = (removeScan?: FileScan) => {
     const updatedFormContextFileScans = formContext.fileScans.filter(scan => scan.fileName !== removeScan?.fileName)
     const updatedInnerFileScans = innerFileScans.filter(scan => scan.fileName !== removeScan?.fileName)
-    const updatedFileScans = updatedFormContextFileScans.concat(updatedInnerFileScans.filter(innerScan =>
+
+    formContext.fileScans = updatedFormContextFileScans.concat(updatedInnerFileScans.filter(innerScan =>
       !updatedFormContextFileScans.some(formContextScan => JSON.stringify(formContextScan) === JSON.stringify(innerScan))
     ))
 
-    console.log('REMOVE ACTION - inner:', updatedInnerFileScans)
-    console.log('REMOVE ACTION - formContext:', updatedFileScans)
-
-    formContext.fileScans = updatedFileScans
     setInnerFileScans(updatedInnerFileScans)
   }
 

@@ -110,6 +110,8 @@ export const validateKeyword = async (
 }
 
 export const formDataToXml = (eform: string, data: any) => {
+  if (!eform || eform === '') throw new Error(API_ERROR_TEXT)
+
   return fetchBlob(`/api/eforms/${eform}/transform/xml`, {
     method: 'POST',
     headers: {
@@ -120,7 +122,21 @@ export const formDataToXml = (eform: string, data: any) => {
 }
 
 export const xmlToFormData = (eform: string, data: string): Promise<RJSFSchema> => {
+  if (!eform || eform === '') throw new Error(API_ERROR_TEXT)
+
   return fetchJsonApi<RJSFSchema>(`/api/eforms/${eform}/transform/xmlToJson`, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({ data }),
+  })
+}
+
+export const xmlStringToPdf = (eform: string, data: string) => {
+  if (!eform || eform === '') throw new Error(API_ERROR_TEXT)
+
+  return fetchBlob(`/api/eforms/${eform}/transform/pdf`, {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',

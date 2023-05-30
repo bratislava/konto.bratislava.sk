@@ -13,7 +13,7 @@ import { useTranslation } from 'next-i18next'
 import { ChangeEvent, RefObject, useEffect, useRef, useState } from 'react'
 
 import { StepData } from '../../components/forms/types/TransformedFormData'
-import { formDataToXml, xmlToFormData } from '../api/api'
+import { formDataToXml, xmlStringToPdf,xmlToFormData } from '../api/api'
 import { readTextFile } from '../utils/file'
 import {
   getAllStepData,
@@ -21,6 +21,7 @@ import {
   getValidatedSteps,
   validateAsyncProperties,
 } from '../utils/formStepper'
+import { blobToString, downloadBlob } from '../utils/general'
 import logger from '../utils/logger'
 import useSnackbar from './useSnackbar'
 
@@ -45,6 +46,8 @@ export const useFormStepper = (eformSlug: string, eform: EFormValue, callbacks: 
   const [errors, setErrors] = useState<Record<string, RJSFValidationError[]>>({})
   const [extraErrors, setExtraErrors] = useState<ErrorSchema>({})
   const [openSnackbarError] = useSnackbar({ variant: 'error' })
+  const [openSnackbarSuccess] = useSnackbar({ variant: 'success' })
+  const [openSnackbarInfo, closeSnackbarInfo] = useSnackbar({ variant: 'info' })
 
   // state variables helping in stepper
   const [nextStepIndex, setNextStepIndex] = useState<number | null>(null)
@@ -233,25 +236,58 @@ export const useFormStepper = (eformSlug: string, eform: EFormValue, callbacks: 
   const { t } = useTranslation('forms')
 
   const exportXml = async () => {
+    openSnackbarInfo(t('info_messages.xml_export'))
     try {
-      const xml = await formDataToXml(eformSlug, formData)
-      const link = document.createElement('a')
-      link.href = URL.createObjectURL(xml)
-      link.download = `${eformSlug}_output.xml`
-      link.click()
-      URL.revokeObjectURL(link.href)
+      const xml: Blob = await formDataToXml(eformSlug, formData)
+      const fileName = `${eformSlug}_output.xml`
+      downloadBlob(xml, fileName)
+      closeSnackbarInfo()
+      openSnackbarSuccess(t('success_messages.xml_export'))
     } catch (error) {
       openSnackbarError(t('errors.xml_export'))
     }
   }
 
   const importXml = async (e: ChangeEvent<HTMLInputElement>) => {
+    openSnackbarInfo(t('info_messages.xml_import'))
     try {
-      const xmlData = await readTextFile(e)
+      const xmlData: string = await readTextFile(e)
       const transformedFormData: RJSFSchema = await xmlToFormData(eformSlug, xmlData)
       setFormData(transformedFormData)
+      closeSnackbarInfo()
+      openSnackbarSuccess(t('success_messages.xml_import'))
     } catch (error) {
       openSnackbarError(t('errors.xml_import'))
+    }
+  }
+
+  const chooseFilesAndImportXml = () => {
+    const importInput = document.createElement('input')
+    importInput.type = 'file'
+    importInput.multiple = false
+    importInput.accept = '.xml'
+
+    importInput.addEventListener('change', e => {
+      if (!importInput.files) return
+      const changeEvent = e as unknown as ChangeEvent<HTMLInputElement>
+      importXml(changeEvent).catch(error => console.log('error', error))
+    })
+
+    importInput.click()
+  }
+
+  const exportPdf = async () => {
+    openSnackbarInfo(t('info_messages.pdf_export'))
+    try {
+      const xml: Blob = await formDataToXml(eformSlug, formData)
+      const xmlData: string = await blobToString(xml)
+      const pdf = await xmlStringToPdf(eformSlug, xmlData)
+      const fileName = `${eformSlug}_output.pdf`
+      downloadBlob(pdf, fileName)
+      closeSnackbarInfo()
+      openSnackbarSuccess(t('success_messages.pdf_export'))
+    } catch (error) {
+      openSnackbarError(t('errors.pdf_export'))
     }
   }
 
@@ -307,6 +343,7 @@ export const useFormStepper = (eformSlug: string, eform: EFormValue, callbacks: 
     isComplete,
     formRef,
     exportXml,
-    importXml,
+    importXml: chooseFilesAndImportXml,
+    exportPdf
   }
 }

@@ -13,7 +13,6 @@ type FormMenuItemBase = {
 
 const FormMenuItem = ({ title, icon, url, onPress, className }: FormMenuItemBase) => {
   return url ? (
-    // eslint-disable-next-line jsx-a11y/anchor-is-valid
     <Link href={url} className="flex items-center gap-3">
       <DropdownMenu.Item
         className={cx(

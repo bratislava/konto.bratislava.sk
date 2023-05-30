@@ -4,6 +4,7 @@ import DiskIcon from '@assets/images/new-icons/ui/disc-fill.svg'
 import DownloadIcon from '@assets/images/new-icons/ui/download.svg'
 import LockIcon from '@assets/images/new-icons/ui/lock.svg'
 import PdfIcon from '@assets/images/new-icons/ui/pdf.svg'
+import cx from 'classnames'
 import RegistrationModal from 'components/forms/segments/RegistrationModal/RegistrationModal'
 import Button from 'components/forms/simple-components/Button'
 import MenuDropdown, {
@@ -27,6 +28,7 @@ const FormHeader = ({ onExportXml, onSaveConcept, onImportXml, onExportPdf }: Fo
   const { isAuth } = useAccount()
 
   const [registrationModal, setRegistrationModal] = useState<boolean>(false)
+  const [isMenuOpen, setIsMenuOpen] = useState<boolean>(false)
 
   const formHeaderMenuContent: MenuItemBase[] = [
     {
@@ -71,8 +73,14 @@ const FormHeader = ({ onExportXml, onSaveConcept, onImportXml, onExportPdf }: Fo
               onPress={handleOnPressSaveConcept}
             />
             <MenuDropdown
+              setIsOpen={setIsMenuOpen}
               buttonTrigger={<ThreePointsIcon />}
-              buttonVariant="main"
+              buttonClassName={cx(
+                'flex justify-center items-center focus:outline-none w-10 h-10 rounded-lg border-2 border-main-700 bg-transparent text-gray-700 hover:text-gray-600 hover:border-main-600 focus:border-main-800 focus:text-gray-800',
+                {
+                  'text-gray-800 border-main-800': isMenuOpen,
+                },
+              )}
               items={formHeaderMenuContent}
             />
           </div>

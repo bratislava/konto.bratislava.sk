@@ -13,7 +13,7 @@ import { useTranslation } from 'next-i18next'
 import { ChangeEvent, RefObject, useEffect, useRef, useState } from 'react'
 
 import { StepData } from '../../components/forms/types/TransformedFormData'
-import { formDataToXml, xmlToFormData, xmlToPdf } from '../api/api'
+import { formDataToXml, xmlStringToPdf,xmlToFormData } from '../api/api'
 import { readTextFile } from '../utils/file'
 import {
   getAllStepData,
@@ -281,7 +281,7 @@ export const useFormStepper = (eformSlug: string, eform: EFormValue, callbacks: 
     try {
       const xml: Blob = await formDataToXml(eformSlug, formData)
       const xmlData: string = await blobToString(xml)
-      const pdf = await xmlToPdf(eformSlug, xmlData)
+      const pdf = await xmlStringToPdf(eformSlug, xmlData)
       const fileName = `${eformSlug}_output.pdf`
       downloadBlob(pdf, fileName)
       closeSnackbarInfo()

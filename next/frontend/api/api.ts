@@ -132,7 +132,7 @@ export const xmlToFormData = (eform: string, data: string): Promise<RJSFSchema> 
   })
 }
 
-export const xmlToPdf = (eform: string, data: string) => {
+export const xmlStringToPdf = (eform: string, data: string) => {
   if (!eform || eform === '') throw new Error(API_ERROR_TEXT)
 
   return fetchBlob(`/api/eforms/${eform}/transform/pdf`, {

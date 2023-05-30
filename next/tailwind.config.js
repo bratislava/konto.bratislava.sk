@@ -36,6 +36,7 @@ module.exports = {
       md: '768px',
       lg: '1216px',
       xl: '1280px',
+      hBase: { raw: '(max-height: 830px)' },
     },
     boxShadow: {
       lg: '0px 16px 24px rgba(0, 0, 0, 0.12)',

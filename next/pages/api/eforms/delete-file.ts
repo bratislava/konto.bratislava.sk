@@ -11,6 +11,7 @@ const handleDeleteRequest = async (req: NextApiRequest) => {
   const {
     query: { fileName, fileScanStatus },
   } = req
+
   if (!fileScanStatus && Array.isArray(fileScanStatus)) throw new Error('Wrong fileScanStatus')
   let bucketName = unscannedBucketName
   if (["SAFE"].includes(fileScanStatus as string)){

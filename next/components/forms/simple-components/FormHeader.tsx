@@ -16,7 +16,14 @@ import Link from 'next/link'
 import { useTranslation } from 'next-i18next'
 import { useState } from 'react'
 
-const FormHeader = () => {
+interface FormHeaderProps {
+  onExportXml: () => void
+  onSaveConcept: () => void
+  onImportXml: () => void
+  onExportPdf: () => void
+}
+
+const FormHeader = ({ onExportXml, onSaveConcept, onImportXml, onExportPdf }: FormHeaderProps) => {
   const { t } = useTranslation('forms')
   const { isAuth } = useAccount()
 
@@ -32,11 +39,19 @@ const FormHeader = () => {
     {
       title: t('menu_list.download_xml'),
       icon: <DownloadIcon className="w-6 h-6" />,
-      onPress: () => {},
+      onPress: onExportXml,
     },
-    { title: t('menu_list.pdf'), icon: <PdfIcon className="w-6 h-6" />, url: '/' },
-    { title: t('menu_list.upload_xml'), icon: <ArrowsDownUpIcon className="w-6 h-6" />, url: '/' },
+    { title: t('menu_list.pdf'), icon: <PdfIcon className="w-6 h-6" />, onPress: onExportPdf },
+    { title: t('menu_list.upload_xml'), icon: <ArrowsDownUpIcon className="w-6 h-6" />, onPress: onImportXml },
   ]
+
+  const handleOnPressSaveConcept = () => {
+    if (!isAuth) {
+      setRegistrationModal(true)
+    } else {
+      onSaveConcept()
+    }
+  }
 
   return (
     <div className="flex flex-col relative">
@@ -55,9 +70,7 @@ const FormHeader = () => {
               startIcon={<DiskIcon className="w-5 h-5" />}
               text={t('menu_list.save_concept')}
               className="text-gray-700 hover:text-gray-600 focus:text-gray-800"
-              onPress={() => {
-                if (!isAuth) setRegistrationModal(true)
-              }}
+              onPress={handleOnPressSaveConcept}
             />
             <MenuDropdown
               setIsOpen={setIsMenuOpen}

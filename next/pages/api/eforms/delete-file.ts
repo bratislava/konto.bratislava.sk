@@ -1,16 +1,16 @@
 import { NextApiRequest, NextApiResponse } from 'next'
 
-import minioClient, { bucketName } from '../../../backend/utils/minio-client'
+import minioClient, { unscannedBucketName } from '../../../backend/utils/minio-client'
 import logger from '../../../frontend/utils/logger'
 
 const handleDeleteRequest = async (req: NextApiRequest) => {
   const {
     query: { fileName },
   } = req
-  const isBucketExisting = await minioClient.bucketExists(bucketName)
+  const isBucketExisting = await minioClient.bucketExists(unscannedBucketName)
   if (!isBucketExisting) throw new Error('S3 Bucket does not exists')
   if (!fileName || Array.isArray(fileName)) throw new Error('Wrong query params')
-  await minioClient.removeObject(bucketName, fileName)
+  await minioClient.removeObject(unscannedBucketName, fileName)
 }
 
 const handler = async (req: NextApiRequest, res: NextApiResponse) => {

@@ -26,6 +26,7 @@ const Radio = ({
   const state = React.useContext(RadioContext)
   const ref = React.useRef(null)
   const { inputProps } = useRadio({ ...rest, isDisabled: isDisabled || error }, state, ref)
+
   const inputStyle = cx(
     'focus-visible:outline-none focus:outline-none appearance-none bg-white m-0 w-6 h-6 min-w-[24px] min-h-[24px] grid place-content-center left-0 right-0 top-0 bottom-0 rounded-full border-2 border-solid',
     {
@@ -64,12 +65,14 @@ const Radio = ({
     },
   )
 
+  const stringValue = rest.value ? rest.value.toString() : ""
+
   return (
     <div className="w-full">
-      <label htmlFor={rest.value} className={containerStyle}>
+      <label htmlFor={stringValue} className={containerStyle}>
         {variant === 'card' ? (
           <div className="w-full flex flex-col items-start gap-3 p-0 ">
-            <input id={rest.value} {...inputProps} ref={ref} className={inputStyle} />
+            <input id={stringValue} {...inputProps} ref={ref} className={inputStyle} />
             <div className="text-16 text-gray-700 break-words">
               {rest.children}
               {tooltip && (
@@ -81,7 +84,7 @@ const Radio = ({
           </div>
         ) : (
           <div className={cx('flex items-center gap-3', {})}>
-            <input id={rest.value} {...inputProps} ref={ref} className={inputStyle} />
+            <input id={stringValue} {...inputProps} ref={ref} className={inputStyle} />
             <div className={cx('text-16 flex text-gray-700 break-words', {})}>{rest.children}</div>
           </div>
         )}

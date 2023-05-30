@@ -13,6 +13,8 @@ const SummaryHeader = ({ fileScans }: SummaryHeaderProps) => {
   const errorFileScans: FileScan[] = fileScans.filter(scan => scan.fileState === 'error')
   const errorFileScansNames = errorFileScans.map(scan => scan.originalName).join(", ")
 
+  console.log('FILE SCANS:', fileScans)
+
   return (
     <>
       <h1 className="text-h1-medium font-semibold">{t('summary')}</h1>

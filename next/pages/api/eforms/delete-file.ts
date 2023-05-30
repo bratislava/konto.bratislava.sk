@@ -17,7 +17,7 @@ const handleDeleteRequest = async (req: NextApiRequest) => {
     bucketName = safeBucketName
   } else if (["INFECTED"].includes(fileScanStatus as string)) {
     bucketName = infectedBucketName
-  }
+  } else if (fileScanStatus === 'NOT FOUND') return
 
   const isBucketExisting = await minioClient.bucketExists(bucketName)
   if (!isBucketExisting) throw new Error('S3 Bucket does not exists')

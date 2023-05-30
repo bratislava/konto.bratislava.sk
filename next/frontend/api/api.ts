@@ -393,3 +393,16 @@ export const getFileScanState = async (token: string | null, fileId?: string) =>
     }
   })
 }
+
+export const deleteFileScan = async (token: string | null, fileId?: string) => {
+  if (!token) throw new Error(MISSING_TOKEN)
+  if (!fileId) throw new Error(API_ERROR_TEXT)
+
+  return fetchJsonApi(`${String(process.env.NEXT_PUBLIC_FORMS_URL)}/files/scan/${fileId}`, {
+    method: 'DELETE',
+    headers: {
+      'Content-Type': 'application/json',
+      'Authorization': `Bearer ${token}`
+    }
+  })
+}

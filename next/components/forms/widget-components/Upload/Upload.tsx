@@ -4,9 +4,15 @@ import FieldErrorMessage from 'components/forms/info-components/FieldErrorMessag
 import React, { ForwardedRef, forwardRef, ForwardRefRenderFunction, useState } from 'react'
 import { v4 as createUuid } from 'uuid'
 
-import { deleteFileFromBucket, scanFile, uploadFileToBucket } from '../../../../frontend/api/api'
+import {
+  deleteFileFromBucket,
+  deleteFileScan,
+  getFileScanState,
+  scanFile,
+  uploadFileToBucket,
+} from '../../../../frontend/api/api'
 import { ScanFileDto } from '../../../../frontend/dtos/formDto'
-import { FileScan, FileScanResponse } from '../../../../frontend/dtos/formStepperDto'
+import { FileScan, FileScanResponse, FileScanStatus } from '../../../../frontend/dtos/formStepperDto'
 import useAccount from '../../../../frontend/hooks/useAccount'
 import logger, { developmentLog } from '../../../../frontend/utils/logger'
 import UploadBrokenMessages, { MINIO_ERROR } from '../../info-components/UploadBrokenMessages'
@@ -157,10 +163,26 @@ const UploadComponent: ForwardRefRenderFunction<HTMLDivElement, UploadProps> = (
     if (!valueFileName || !fileScan || fileScan.fileName  !== valueFileName) return null
 
     removeFileOnClient(valueFileName)
-    await deleteFileFromBucket(valueFileName, fileScan.fileStateStatus)
+
+    const token = await getAccessToken()
+
+    const fileStateStatus: FileScanStatus = await getFileScanState(token, fileScan.scanId)
+      .then((res: FileScanResponse) => res.status)
+      .catch(error => {
+        logger.error("Fetch scan file statuses failed", error)
+        return "NOT FOUND"
+      })
+
+    await deleteFileFromBucket(valueFileName, fileStateStatus)
       .catch((error) => {
         setMinioError()
-        logger.error(error)
+        logger.error("Delete from bucket failed",error)
+      })
+
+    await deleteFileScan(token, fileScan.scanId)
+      .catch((error) => {
+        setMinioError()
+        logger.error("Delete file scan from server failed", error)
       })
 
     return valueFileName

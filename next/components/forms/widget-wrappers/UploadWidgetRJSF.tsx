@@ -85,9 +85,8 @@ const UploadWidgetRJSF = (props: UploadWidgetRJSFProps) => {
 
     setInnerFileScans(updatedNewFileScans)
 
-    const updatedFormContextFileScans = formContext.fileScans.filter(scan => (
-      scan.fileName !== removeFileScan?.fileName && scan.scanId !== removeFileScan?.scanId
-    ))
+    const updatedFormContextFileScans = [ ...formContext.fileScans, ...updatedNewFileScans ]
+      .filter(scan => scan.fileName !== removeFileScan?.fileName && scan.scanId !== removeFileScan?.scanId)
 
     const updatedFileScans = updatedFormContextFileScans.concat(updatedNewFileScans.filter(innerScan =>
       !updatedFormContextFileScans.some(formContextScan => JSON.stringify(formContextScan) === JSON.stringify(innerScan))

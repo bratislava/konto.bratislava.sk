@@ -2,12 +2,13 @@ import * as DropdownMenu from '@radix-ui/react-dropdown-menu'
 import FormMenuItem from 'components/forms/simple-components/MenuDropdown/FormMenuItem'
 import HeaderMenuItem from 'components/forms/simple-components/MenuDropdown/HeaderMenuItem'
 import MenuTrigger from 'components/forms/simple-components/MenuDropdown/MenuTrigger'
-import React, { ReactNode, useState } from 'react'
+import React, { Dispatch, ReactNode, SetStateAction } from 'react'
 
 export type MenuItemBase = {
+  id?: number
   title: string
   icon?: ReactNode
-  onPress?: () => void
+  onPress?: () => Promise<void> | void
   url?: string
   itemClassName?: string
 }
@@ -16,34 +17,28 @@ type MenuDropdownBase = {
   items: MenuItemBase[]
   itemVariant?: 'form' | 'header'
   buttonTrigger?: ReactNode
-  buttonVariant?: 'gray' | 'main' | 'none'
-  buttonSize?: 'sm' | 'lg'
+  buttonClassName?: string
+  setIsOpen: Dispatch<SetStateAction<boolean>>
 }
 
 const MenuDropdown = ({
   items,
   itemVariant = 'form',
   buttonTrigger,
-  buttonVariant = 'none',
-  buttonSize = 'sm',
+  buttonClassName,
+  setIsOpen,
 }: MenuDropdownBase) => {
-  const [isOpen, setIsOpen] = useState<boolean>(false)
   return (
     <DropdownMenu.Root onOpenChange={() => setIsOpen((prev) => !prev)}>
       <DropdownMenu.Trigger asChild>
-        <MenuTrigger
-          buttonSize={buttonSize}
-          buttonTrigger={buttonTrigger}
-          buttonVariant={buttonVariant}
-          isOpen={isOpen}
-        />
+        <MenuTrigger className={buttonClassName} buttonTrigger={buttonTrigger} />
       </DropdownMenu.Trigger>
 
       <DropdownMenu.Portal>
         <DropdownMenu.Content
           loop
           align="end"
-          className="bg-gray-0 shadow-md rounded-lg py-2"
+          className="bg-gray-0 shadow-md rounded-lg py-2 z-50"
           sideOffset={2}
         >
           {itemVariant === 'form' &&

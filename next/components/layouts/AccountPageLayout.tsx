@@ -6,7 +6,10 @@ import MySubmissionIcon from '@assets/images/new-icons/ui/my-submission.svg'
 import PaymentIcon from '@assets/images/new-icons/ui/payment.svg'
 import ProfileIcon from '@assets/images/new-icons/ui/profile.svg'
 import cx from 'classnames'
-import AccountNavBar from 'components/forms/segments/AccountNavBar/AccountNavBar'
+import AccountNavBar, {
+  MenuSectionItemBase,
+} from 'components/forms/segments/AccountNavBar/AccountNavBar'
+import { MenuItemBase } from 'components/forms/simple-components/MenuDropdown/MenuDropdown'
 import { usePageWrapperContext } from 'components/layouts/PageWrapper'
 import { useRouter } from 'next/router'
 import { useTranslation } from 'next-i18next'
@@ -24,61 +27,6 @@ type AccountPageLayoutBase = {
   isPublicPage?: boolean
 }
 
-const sectionsList = [
-  {
-    id: 0,
-    title: 'account:account_section_intro.navigation',
-    icon: <HomeIcon className="w-6 h-6" />,
-    link: '/',
-  },
-  {
-    id: 1,
-    title: 'account:account_section_services.navigation',
-    icon: <BusinessIcon className="w-6 h-6" />,
-    link: ROUTES.MUNICIPAL_SERVICES,
-  },
-  {
-    id: 2,
-    title: 'account:account_section_applications.navigation',
-    icon: <MySubmissionIcon className="w-6 h-6" />,
-    link: ROUTES.MY_APPLICATIONS,
-  },
-  {
-    id: 3,
-    title: 'account:account_section_payment.title',
-    icon: <PaymentIcon className="w-6 h-6" />,
-    link: ROUTES.TAXES_AND_FEES,
-  },
-  {
-    id: 4,
-    title: 'account:account_section_help.navigation',
-    icon: <HelpIcon className="w-6 h-6" />,
-    link: ROUTES.HELP,
-  },
-]
-
-const menuItems = [
-  {
-    id: 1,
-    title: 'account:menu_profile_link',
-    icon: <ProfileIcon className="w-5 h-5" />,
-    link: ROUTES.USER_PROFILE,
-  },
-  {
-    id: 2,
-    title: 'account:menu_help_link',
-    icon: <HelpIcon className="w-5 h-5" />,
-    link: ROUTES.HELP,
-  },
-  {
-    id: 3,
-    title: 'account:menu_logout_link',
-    icon: <LogoutIcon className="text-negative-700 w-5 h-5" />,
-    link: '/logout',
-    backgroundColor: 'bg-negative-50',
-  },
-]
-
 const AccountPageLayout = ({
   className,
   children,
@@ -88,7 +36,7 @@ const AccountPageLayout = ({
 }: AccountPageLayoutBase) => {
   const { locale, localizations = [] } = usePageWrapperContext()
   const router = useRouter()
-  const { isAuth } = useAccount()
+  const { isAuth, logout } = useAccount()
 
   const prodHideSectionsListIds: Set<number> = isProductionDeploy ? new Set([2]) : new Set([])
 
@@ -111,6 +59,66 @@ const AccountPageLayout = ({
       logger.error(error)
     }
   }
+
+  const logoutHandler = async () => {
+    logout()
+    await router.push(ROUTES.LOGIN)
+  }
+
+  const sectionsList: MenuSectionItemBase[] = [
+    {
+      id: 0,
+      title: 'account:account_section_intro.navigation',
+      icon: <HomeIcon className="w-6 h-6" />,
+      url: '/',
+    },
+    {
+      id: 1,
+      title: 'account:account_section_services.navigation',
+      icon: <BusinessIcon className="w-6 h-6" />,
+      url: ROUTES.MUNICIPAL_SERVICES,
+    },
+    {
+      id: 2,
+      title: 'account:account_section_applications.navigation',
+      icon: <MySubmissionIcon className="w-6 h-6" />,
+      url: ROUTES.MY_APPLICATIONS,
+    },
+    {
+      id: 3,
+      title: 'account:account_section_payment.title',
+      icon: <PaymentIcon className="w-6 h-6" />,
+      url: ROUTES.TAXES_AND_FEES,
+    },
+    {
+      id: 4,
+      title: 'account:account_section_help.navigation',
+      icon: <HelpIcon className="w-6 h-6" />,
+      url: ROUTES.HELP,
+    },
+  ]
+
+  const menuItems: MenuItemBase[] = [
+    {
+      id: 1,
+      title: t('account:menu_profile_link'),
+      icon: <ProfileIcon className="w-5 h-5" />,
+      url: ROUTES.USER_PROFILE,
+    },
+    {
+      id: 2,
+      title: t('account:menu_help_link'),
+      icon: <HelpIcon className="w-5 h-5" />,
+      url: ROUTES.HELP,
+    },
+    {
+      id: 3,
+      title: t('account:menu_logout_link'),
+      icon: <LogoutIcon className="text-negative-700 w-5 h-5" />,
+      onPress: logoutHandler,
+      itemClassName: 'bg-negative-50',
+    },
+  ]
 
   return (
     <div className={cx('flex flex-col min-h-screen', className)}>

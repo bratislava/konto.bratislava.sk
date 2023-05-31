@@ -1,6 +1,8 @@
 import cx from 'classnames'
-import { MenuItem } from 'components/forms/segments/AccountNavBar/AccountNavBar'
+import { MenuSectionItemBase } from 'components/forms/segments/AccountNavBar/AccountNavBar'
 import IdentityVerificationStatus from 'components/forms/simple-components/IdentityVerificationStatus'
+import { MenuItemBase } from 'components/forms/simple-components/MenuDropdown/MenuDropdown'
+import useAccount from 'frontend/hooks/useAccount'
 import Link from 'next/link'
 import { useRouter } from 'next/router'
 import { useTranslation } from 'next-i18next'
@@ -9,11 +11,10 @@ import { ROUTES } from '../../../../frontend/api/constants'
 import { handleOnKeyPress } from '../../../../frontend/utils/general'
 
 interface IProps {
-  sectionsList?: MenuItem[]
-  menuItems: MenuItem[]
+  sectionsList?: MenuSectionItemBase[]
+  menuItems: MenuItemBase[]
   className?: string
   closeMenu: () => void
-  onRouteChange: (selectedMenuItem: MenuItem) => void
 }
 
 const Divider = () => {
@@ -25,7 +26,7 @@ const Item = ({
   isSelected,
   onClick,
 }: {
-  menuItem: MenuItem
+  menuItem: MenuItemBase
   isSelected?: boolean
   onClick: () => void
 }) => {
@@ -48,19 +49,20 @@ const Item = ({
         {menuItem.icon}
         <span>{t(menuItem?.title)}</span>
       </div>
-      {menuItem.link === ROUTES.USER_PROFILE && <IdentityVerificationStatus />}
+      {menuItem.url === ROUTES.USER_PROFILE && <IdentityVerificationStatus />}
     </div>
   )
 }
 
-export const HamburgerMenu = ({
-  sectionsList,
-  menuItems,
-  onRouteChange,
-  className,
-  closeMenu,
-}: IProps) => {
+export const HamburgerMenu = ({ sectionsList, menuItems, className, closeMenu }: IProps) => {
   const router = useRouter()
+  const { logout } = useAccount()
+
+  const logoutHandler = async () => {
+    logout()
+    await router.push(ROUTES.LOGIN)
+    closeMenu()
+  }
 
   return (
     <div
@@ -73,10 +75,10 @@ export const HamburgerMenu = ({
         {sectionsList && (
           <>
             {sectionsList.map((sectionItem) => (
-              <Link key={sectionItem.id} href={sectionItem.link}>
+              <Link key={sectionItem.id} href={sectionItem.url}>
                 <Item
                   menuItem={sectionItem}
-                  isSelected={router.route.endsWith(sectionItem?.link)}
+                  isSelected={router.route.endsWith(sectionItem?.url)}
                   onClick={closeMenu}
                 />
               </Link>
@@ -85,26 +87,19 @@ export const HamburgerMenu = ({
           </>
         )}
         {menuItems.map((sectionItem) => {
-          if (sectionItem.link === '/logout') {
-            return (
+          if (sectionItem.url === '/logout') {
+            return sectionItem.url ? (
               <>
                 <Divider />
-                <Item
-                  key={sectionItem.id}
-                  menuItem={sectionItem}
-                  onClick={() => {
-                    onRouteChange(sectionItem)
-                    closeMenu()
-                  }}
-                />
+                <Item key={sectionItem.id} menuItem={sectionItem} onClick={logoutHandler} />
               </>
-            )
+            ) : null
           }
-          return (
-            <Link key={sectionItem.id} href={sectionItem.link}>
+          return sectionItem.url ? (
+            <Link key={sectionItem.id} href={sectionItem.url}>
               <Item menuItem={sectionItem} onClick={closeMenu} />
             </Link>
-          )
+          ) : null
         })}
       </div>
     </div>

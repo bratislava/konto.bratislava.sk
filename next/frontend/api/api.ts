@@ -4,6 +4,7 @@ import { RJSFSchema } from '@rjsf/utils'
 import { ErrorObject } from 'ajv'
 
 import { CreateFormDto, FormDto, ScanFileDto, UpdateFormDto } from '../dtos/formDto'
+import { FileScanStatus } from '../dtos/formStepperDto'
 import { ApiError, Gdpr, Identity, TaxApiError, UrlResult, User } from '../dtos/generalApiDto'
 import logger, { developmentLog } from '../utils/logger'
 
@@ -370,8 +371,8 @@ export const uploadFileToBucket = async (file: File) => {
   })
 }
 
-export const deleteFileFromBucket = async (fileName: string) => {
-  const params = new URLSearchParams({ fileName })
+export const deleteFileFromBucket = async (fileName: string, fileScanStatus?: FileScanStatus) => {
+  const params = new URLSearchParams({ fileName, fileScanStatus: fileScanStatus || '' })
 
   return fetchJsonApi(`/api/eforms/delete-file?${params.toString()}`, {
     method: 'DELETE',
@@ -402,6 +403,19 @@ export const getFileScanState = async (token: string | null, fileId?: string) =>
 
   return fetchJsonApi(`${String(process.env.NEXT_PUBLIC_FORMS_URL)}/files/scan/${fileId}`, {
     method: 'GET',
+    headers: {
+      'Content-Type': 'application/json',
+      'Authorization': `Bearer ${token}`
+    }
+  })
+}
+
+export const deleteFileScan = async (token: string | null, fileId?: string) => {
+  if (!token) throw new Error(MISSING_TOKEN)
+  if (!fileId) throw new Error(API_ERROR_TEXT)
+
+  return fetchJsonApi(`${String(process.env.NEXT_PUBLIC_FORMS_URL)}/files/scan/${fileId}`, {
+    method: 'DELETE',
     headers: {
       'Content-Type': 'application/json',
       'Authorization': `Bearer ${token}`

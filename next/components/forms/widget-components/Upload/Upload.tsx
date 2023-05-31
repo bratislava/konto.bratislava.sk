@@ -4,9 +4,15 @@ import FieldErrorMessage from 'components/forms/info-components/FieldErrorMessag
 import React, { ForwardedRef, forwardRef, ForwardRefRenderFunction, useState } from 'react'
 import { v4 as createUuid } from 'uuid'
 
-import { deleteFileFromBucket, scanFile, uploadFileToBucket } from '../../../../frontend/api/api'
+import {
+  deleteFileFromBucket,
+  deleteFileScan,
+  getFileScanState,
+  scanFile,
+  uploadFileToBucket,
+} from '../../../../frontend/api/api'
 import { ScanFileDto } from '../../../../frontend/dtos/formDto'
-import { FileScan, FileScanResponse } from '../../../../frontend/dtos/formStepperDto'
+import { FileScan, FileScanResponse, FileScanStatus } from '../../../../frontend/dtos/formStepperDto'
 import useAccount from '../../../../frontend/hooks/useAccount'
 import logger, { developmentLog } from '../../../../frontend/utils/logger'
 import UploadBrokenMessages, { MINIO_ERROR } from '../../info-components/UploadBrokenMessages'
@@ -40,7 +46,7 @@ interface UploadProps {
   // file info for Summary
   fileScans?: FileScan[]
   onChange?: (value: UploadMinioFile[]) => void
-  onAddFileScans?: (newFileScans: FileScan[]) => void
+  onUpdateFileScans?: (newFileScans: FileScan[], removeFileScan?: FileScan|null) => void
   onRemoveFileScan?: (removeScan?: FileScan) => void
 }
 
@@ -76,7 +82,7 @@ const UploadComponent: ForwardRefRenderFunction<HTMLDivElement, UploadProps> = (
     formId,
     bucketFolderName,
     fileScans,
-    onAddFileScans,
+    onUpdateFileScans,
     onRemoveFileScan
   }: UploadProps = props
 
@@ -112,11 +118,11 @@ const UploadComponent: ForwardRefRenderFunction<HTMLDivElement, UploadProps> = (
     return updatedFileScans.filter(scan => scan.fileState !== 'error' || !scan.scanId)
   }
 
-  const scanAllNewFiles = (newFiles: UploadMinioFile[]) => {
+  const scanAllNewFiles = (newFiles: UploadMinioFile[], currentFileScans: FileScan[], removeFileScan?: FileScan|null) => {
     if (!isScanningAllowed) return
 
     const newFileScans: FileScan[] = newFiles.map(minioFile => {
-      const oldFileScan = fileScans?.find(fileScan => fileScan.fileName === minioFile.file.name)
+      const oldFileScan = currentFileScans?.find(fileScan => fileScan.fileName === minioFile.file.name)
       return {
         originalName: minioFile.originalName,
         fileName: minioFile.file.name,
@@ -124,8 +130,8 @@ const UploadComponent: ForwardRefRenderFunction<HTMLDivElement, UploadProps> = (
       }})
 
     startScanFiles(newFileScans)
-      .then((scannedNewFiles) => {
-        onAddFileScans?.(scannedNewFiles)
+      .then((scannedNewFiles: FileScan[]) => {
+        onUpdateFileScans?.(scannedNewFiles, removeFileScan)
         return true
       })
       .catch((error) => {
@@ -151,16 +157,48 @@ const UploadComponent: ForwardRefRenderFunction<HTMLDivElement, UploadProps> = (
     }
   }
 
-  const removeFirstFile = () => {
-    if (!value) return
-    const fileName = value[0].file.name
+  const removeFileOnServer = async (fileName: string, scanId: string) => {
+    const token = await getAccessToken()
 
-    removeFileOnClient(fileName)
-    deleteFileFromBucket(fileName)
+    const fileStateStatus: FileScanStatus = await getFileScanState(token, scanId)
+      .then((res: FileScanResponse) => res.status)
+      .catch(error => {
+        logger.error("Fetch scan file statuses failed", error)
+        return "NOT FOUND"
+      })
+
+    await deleteFileFromBucket(fileName, fileStateStatus)
       .catch((error) => {
         setMinioError()
-        logger.error(error)
+        logger.error("Delete from bucket failed",error)
       })
+
+    await deleteFileScan(token, scanId)
+      .catch((error) => {
+        setMinioError()
+        logger.error("Delete file scan from server failed", error)
+      })
+  }
+
+  const handleOnRemoveFile = async (id: number) => {
+    const valueFileName = value?.[id].file.name
+    const fileScan = fileScans?.[id]
+    if (!valueFileName || !fileScan || fileScan.fileName  !== valueFileName || !fileScan.scanId) return null
+
+    removeFileOnClient(valueFileName)
+    await removeFileOnServer(valueFileName, fileScan.scanId)
+
+    return valueFileName
+  }
+
+  const removeFirstFile = async () => {
+    const valueFileName = value?.[0].file.name
+    const fileScan = fileScans?.[0]
+    if (!valueFileName || !fileScan || fileScan.fileName  !== valueFileName || !fileScan.scanId) return null
+
+    await removeFileOnServer(valueFileName, fileScan.scanId)
+
+    return fileScan
   }
 
   const isFileInSizeLimit = (file: File) => {
@@ -204,11 +242,16 @@ const UploadComponent: ForwardRefRenderFunction<HTMLDivElement, UploadProps> = (
   const addNewFiles = async (newFiles: UploadMinioFile[]) => {
     const sanitizedFiles = sanitizeClientFiles(newFiles)
     let oldFiles = value ? [...value] : []
+    let currentFileScans: FileScan[] = fileScans ?? []
+    let removeFileScan: FileScan|undefined|null
     if (!multiple && oldFiles.length === 1) {
-      removeFirstFile()
       oldFiles = []
+      emitOnChange(sanitizedFiles, oldFiles)
+      removeFileScan = await removeFirstFile()
+      currentFileScans = currentFileScans.filter((fileScan) => fileScan.fileName !== removeFileScan?.fileName)
+    } else {
+      emitOnChange(sanitizedFiles, oldFiles)
     }
-    emitOnChange(sanitizedFiles, oldFiles)
 
     const uploadFiles = await Promise.all(
       sanitizedFiles.map((minioFile: UploadMinioFile) => {
@@ -225,7 +268,7 @@ const UploadComponent: ForwardRefRenderFunction<HTMLDivElement, UploadProps> = (
     )
 
     emitOnChange(uploadFiles, oldFiles)
-    scanAllNewFiles(uploadFiles)
+    scanAllNewFiles(uploadFiles, currentFileScans, removeFileScan)
   }
 
   const handleOnClickUpload = () => {
@@ -251,17 +294,6 @@ const UploadComponent: ForwardRefRenderFunction<HTMLDivElement, UploadProps> = (
     await addNewFiles(newFiles)
   }
 
-  const handleOnRemoveFile = (id: number) => {
-    if (!value) return
-    const fileName = value[id].file.name
-
-    removeFileOnClient(fileName)
-    deleteFileFromBucket(fileName)
-      .catch((error) => {
-        setMinioError()
-        logger.error(error)
-      })
-  }
 
   // RENDER
   return (

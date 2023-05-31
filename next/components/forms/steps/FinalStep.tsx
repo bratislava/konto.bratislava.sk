@@ -1,6 +1,5 @@
 import { ErrorSchema, RJSFValidationError, StrictRJSFSchema } from '@rjsf/utils'
 import { ErrorObject } from 'ajv'
-import { useTranslation } from 'next-i18next'
 import { useState } from 'react'
 import { useEffectOnce } from 'usehooks-ts'
 
@@ -8,9 +7,9 @@ import { getFileScanState } from '../../../frontend/api/api'
 import { FileScan, FileScanResponse, FileScanState, JsonSchema } from '../../../frontend/dtos/formStepperDto'
 import useAccount from '../../../frontend/hooks/useAccount'
 import logger, { developmentLog } from '../../../frontend/utils/logger'
-import Alert from '../info-components/Alert'
 import Summary from './Summary/Summary'
 import SummaryMessages from './Summary/SummaryMessages'
+import SummaryHeader from './SummaryHeader'
 
 interface FinalStepProps {
   formData: Record<string, JsonSchema>
@@ -36,14 +35,15 @@ const FinalStep = ({
   submitMessage,
   onUpdateFileScans
 }: FinalStepProps) => {
-  const { t } = useTranslation('forms')
   const { getAccessToken } = useAccount()
   const [testedFileScans, setTestedFileScans] = useState<FileScan[]>(fileScans)
 
   const updateFileScans = async (): Promise<FileScan[]> => {
     const token = await getAccessToken()
+    const unfinishedFileScans = fileScans.filter(scan => scan.fileState !== 'finished')
+
     return Promise.all(
-      fileScans.map((scan: FileScan) => {
+      unfinishedFileScans.map((scan: FileScan) => {
         return getFileScanState(token, scan.scanId)
           .then((res: FileScanResponse) => {
             const fileState: FileScanState = ['INFECTED', 'MOVE ERROR INFECTED'].includes(res.status)
@@ -55,7 +55,7 @@ const FinalStep = ({
           })
           .catch(error => {
             logger.error("Fetch scan file statuses failed", error)
-            return { ...scan, fileState: 'scan' } as FileScan
+            return { ...scan, fileState: 'error' } as FileScan
           })
       })
     )
@@ -69,14 +69,21 @@ const FinalStep = ({
   }
 
   useEffectOnce(() => {
-    updateFileScans()
-      .then((updatedFileScans: FileScan[]) => {
-        logAllFileScansOnDev(updatedFileScans)
-        onUpdateFileScans(updatedFileScans)
-        setTestedFileScans(updatedFileScans)
-        return true
-      })
-      .catch(error => logger.error("Fetch scan file statuses failed", error))
+    const interval = setInterval(() => {
+      updateFileScans()
+        .then((updatedFileScans: FileScan[]) => {
+          logAllFileScansOnDev(updatedFileScans)
+          onUpdateFileScans(updatedFileScans)
+          setTestedFileScans(updatedFileScans)
+          if (updatedFileScans.every(scan => scan.fileState === 'finished')) {
+            clearInterval(interval)
+          }
+          return true
+        })
+        .catch(error => logger.error("Fetch scan file statuses failed", error))
+    }, 30_000)
+
+    return () => clearInterval(interval)
   })
 
   if (typeof formData !== 'object' || formData == null) {
@@ -85,13 +92,7 @@ const FinalStep = ({
 
   return (
     <div>
-      <h1 className="text-h1-medium font-semibold">{t('summary')}</h1>
-      {testedFileScans.some(scan => scan.fileState === 'error') && (
-        <Alert type="error" message={t('errors.file_scan')} fullWidth className="mt-4" solid/>
-      )}
-      {testedFileScans.some(scan => scan.fileState === 'scan') && (
-        <Alert type="warning" message={t('warnings.file_scan')} fullWidth className="mt-4"/>
-      )}
+      <SummaryHeader fileScans={testedFileScans} />
       <Summary
         schema={schema}
         formData={formData}

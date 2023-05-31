@@ -39,6 +39,7 @@ const UploadWidgetRJSF = (props: UploadWidgetRJSFProps) => {
   const multiple = schema.type === 'array'
 
   const [innerValue, setInnerValue] = useState<UploadMinioFile[]>(getInitInnerValue(value, schema, formContext.fileScans))
+  const [innerFileScans, setInnerFileScans] = useState<FileScan[]>(formContext.fileScans)
 
   const handleOneFile = (files: UploadMinioFile[]) => {
     if (!files[0]?.isUploading && !files[0]?.errorMessage) {
@@ -72,17 +73,31 @@ const UploadWidgetRJSF = (props: UploadWidgetRJSFProps) => {
   }
 
   const getOwnFileScans = () => {
-    return formContext.fileScans.filter(fileScan => (
+    return innerFileScans.filter(fileScan => (
       innerValue.some(value => value.file.name === fileScan.fileName)
     ))
   }
 
-  const handleOnAddFileScans = (newFileScans: FileScan[]) => {
-    formContext.fileScans = [ ...formContext.fileScans, ...newFileScans ]
+  const handleOnUpdateFileScans = (updatedNewFileScans: FileScan[], removeFileScan?: FileScan|null) => {
+    setInnerFileScans(updatedNewFileScans)
+
+    const updatedFormContextFileScans = [ ...formContext.fileScans, ...updatedNewFileScans ]
+      .filter(scan => scan.fileName !== removeFileScan?.fileName && scan.scanId !== removeFileScan?.scanId)
+
+    formContext.fileScans = updatedFormContextFileScans.concat(updatedNewFileScans.filter(innerScan =>
+      !updatedFormContextFileScans.some(formContextScan => JSON.stringify(formContextScan) === JSON.stringify(innerScan))
+    ))
   }
 
   const handleOnRemoveFileScan = (removeScan?: FileScan) => {
-    formContext.fileScans = formContext.fileScans.filter(scan => scan.fileName !== removeScan?.fileName)
+    const updatedFormContextFileScans = formContext.fileScans.filter(scan => scan.fileName !== removeScan?.fileName)
+    const updatedInnerFileScans = innerFileScans.filter(scan => scan.fileName !== removeScan?.fileName)
+
+    formContext.fileScans = updatedFormContextFileScans.concat(updatedInnerFileScans.filter(innerScan =>
+      !updatedFormContextFileScans.some(formContextScan => JSON.stringify(formContextScan) === JSON.stringify(innerScan))
+    ))
+
+    setInnerFileScans(updatedInnerFileScans)
   }
 
   return (
@@ -105,7 +120,7 @@ const UploadWidgetRJSF = (props: UploadWidgetRJSFProps) => {
         bucketFolderName={formContext.bucketFolderName}
         fileScans={getOwnFileScans()}
         onChange={handleOnChange}
-        onAddFileScans={handleOnAddFileScans}
+        onUpdateFileScans={handleOnUpdateFileScans}
         onRemoveFileScan={handleOnRemoveFileScan}
       />
     </WidgetWrapper>

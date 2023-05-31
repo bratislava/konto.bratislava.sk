@@ -17,7 +17,7 @@ const SummaryHeader = ({ fileScans }: SummaryHeaderProps) => {
     <>
       <h1 className="text-h1-medium font-semibold">{t('summary')}</h1>
       {errorFileScans.length === 1 && (
-        <Alert type="error" message={t('errors.file_scan')} fullWidth className="mt-4" solid/>
+        <Alert type="error" message={t('errors.file_scan', {name: errorFileScansNames})} fullWidth className="mt-4" solid/>
       )}
       {errorFileScans.length > 1 && (
         <Alert type="error"

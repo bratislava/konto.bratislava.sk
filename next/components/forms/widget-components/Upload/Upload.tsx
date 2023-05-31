@@ -126,7 +126,7 @@ const UploadComponent: ForwardRefRenderFunction<HTMLDivElement, UploadProps> = (
       return {
         originalName: minioFile.originalName,
         fileName: minioFile.file.name,
-        fileState: oldFileScan ? oldFileScan.fileState : "scan"
+        fileState: oldFileScan ? oldFileScan.fileState : "error"
       }})
 
     startScanFiles(newFileScans)

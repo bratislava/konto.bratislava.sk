@@ -210,6 +210,14 @@ const UserProfileDetailEdit = (props: UserProfileDetailEditProps) => {
             variant="black"
             size="lg"
             text={t('profile_detail.email_button')}
+            className="hidden md:block"
+            onPress={onOpenEmailModal}
+          />
+          <Button
+            variant="black"
+            size="sm"
+            text={t('profile_detail.email_button')}
+            className="md:hidden block"
             onPress={onOpenEmailModal}
           />
         </div>

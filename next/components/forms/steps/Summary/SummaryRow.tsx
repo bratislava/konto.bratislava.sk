@@ -1,4 +1,5 @@
 import EditIcon from '@assets/images/new-icons/ui/pen.svg'
+import UnionWaitIcon from '@assets/images/new-icons/ui/union-wait-icon.svg'
 import cx from 'classnames'
 
 import { TransformedFormData } from './TransformedFormData'
@@ -36,8 +37,11 @@ const SummaryRow = (props: SummaryRowProps) => {
       <div className="w-full flex flex-row items-center">
         <p className={valueClassName}>{data.value || '-'}</p>
         {isEditable && (
-          <div className="w-5">
-            <EditIcon className="cursor-pointer flex lg:hidden w-5 h-5" onClick={onGoToStep} />
+          <div className="w-5 lg:hidden hover:lg:block">
+            {data.fileScanState === "scan"
+              ? <UnionWaitIcon className="cursor-pointer flex w-5 h-5" onClick={onGoToStep} />
+              : <EditIcon className="cursor-pointer flex w-5 h-5" onClick={onGoToStep} />
+            }
           </div>
         )}
       </div>

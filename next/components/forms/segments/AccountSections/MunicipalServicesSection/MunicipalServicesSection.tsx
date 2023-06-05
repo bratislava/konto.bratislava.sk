@@ -93,10 +93,11 @@ const MunicipalServicesSection = () => {
     {
       title: t('account_section_services.cards.32.title'),
       description: t('account_section_services.cards.32.description'),
-      tag: t('account_section_services.cards.32.tag'),
+      buttonText: t('account_section_services.cards.32.buttonText'),
       tagStyle: 'text-education-700 bg-education-100',
       icon: <SwimmingPoolIcon className="w-10 h-10 lg:w-12 lg:h-12 text-education-700" />,
       category: [CULTURE_CATEGORY],
+      href: 'https://kupaliska.bratislava.sk',
     },
     {
       title: t('account_section_services.cards.2.title'),

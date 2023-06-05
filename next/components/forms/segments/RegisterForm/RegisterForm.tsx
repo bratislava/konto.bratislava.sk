@@ -2,7 +2,6 @@ import AccountErrorAlert from 'components/forms/segments/AccountErrorAlert/Accou
 import AccountMarkdown from 'components/forms/segments/AccountMarkdown/AccountMarkdown'
 import LoginAccountLink from 'components/forms/segments/LoginAccountLink/LoginAccountLink'
 import Button from 'components/forms/simple-components/Button'
-import SingleCheckbox from 'components/forms/widget-components/Checkbox/SingleCheckbox'
 import InputField from 'components/forms/widget-components/InputField/InputField'
 import PasswordField from 'components/forms/widget-components/PasswordField/PasswordField'
 import Radio from 'components/forms/widget-components/RadioButton/Radio'
@@ -25,7 +24,6 @@ interface Data {
   family_name?: string
   password: string
   passwordConfirmation: string
-  marketingConfirmation: boolean
   turnstileToken: string
   account_type: 'fo' | 'po'
 }
@@ -71,9 +69,6 @@ const schema = {
       type: 'string',
       errorMessage: { const: 'account:password_confirmation_required' },
     },
-    marketingConfirmation: {
-      type: 'boolean',
-    },
     turnstileToken: {
       type: 'string',
       minLength: 1,
@@ -115,14 +110,7 @@ const schema = {
       },
     },
   ],
-  required: [
-    'account_type',
-    'email',
-    'password',
-    'passwordConfirmation',
-    'marketingConfirmation',
-    'turnstileToken',
-  ],
+  required: ['account_type', 'email', 'password', 'passwordConfirmation', 'turnstileToken'],
 }
 
 const RegisterForm = ({ onSubmit, error, lastEmail, disablePO }: Props) => {
@@ -144,7 +132,6 @@ const RegisterForm = ({ onSubmit, error, lastEmail, disablePO }: Props) => {
       name: '',
       password: '',
       passwordConfirmation: '',
-      marketingConfirmation: false,
     },
   })
   const [captchaWarning, setCaptchaWarning] = useState<'loading' | 'show' | 'hide'>('loading')
@@ -171,13 +158,8 @@ const RegisterForm = ({ onSubmit, error, lastEmail, disablePO }: Props) => {
         }
         // force rerender on submit - captcha is valid only for single submit
         incrementCaptchaKey()
-        return onSubmit(
-          data.email,
-          data.password,
-          data.marketingConfirmation,
-          data.turnstileToken,
-          userData,
-        )
+        // marketing confirmation always set to true (with new gdpr document we get consent with the registration itself)
+        return onSubmit(data.email, data.password, true, data.turnstileToken, userData)
       })}
     >
       <h1 className="text-h2">{t('register_title')}</h1>
@@ -296,20 +278,10 @@ const RegisterForm = ({ onSubmit, error, lastEmail, disablePO }: Props) => {
           />
         )}
       />
-      <Controller
-        name="marketingConfirmation"
-        control={control}
-        render={({ field }) => (
-          <SingleCheckbox
-            value="marketingConfirmation"
-            isSelected={field.value}
-            onChange={field.onChange}
-            fullWidth
-            error={errors.marketingConfirmation?.length > 0}
-          >
-            {t('marketing_confirmation_label')}
-          </SingleCheckbox>
-        )}
+      <AccountMarkdown
+        variant="sm"
+        className="text-center"
+        content={`${t('marketing_confirmation_text')}`}
       />
       <Controller
         name="turnstileToken"
@@ -350,11 +322,6 @@ const RegisterForm = ({ onSubmit, error, lastEmail, disablePO }: Props) => {
         text={t('register_submit')}
         variant="category"
         disabled={isSubmitting}
-      />
-      <AccountMarkdown
-        variant="sm"
-        className="pb-5 md:pb-6 border-b-2 border-gray-200 text-center px-0 md:px-16"
-        content={`${t('gdpr_details_link')}`}
       />
       <LoginAccountLink />
     </form>

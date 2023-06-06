@@ -15,7 +15,7 @@ const AccountActivator = () => {
           className="mt-2 md:mt-4"
           size="sm"
           variant="link-category"
-          href="https://www.bratislava.sk/konto"
+          href="https://kupaliska.bratislava.sk"
           label={t('account_activator.button_text')}
           hrefIconHidden
         />

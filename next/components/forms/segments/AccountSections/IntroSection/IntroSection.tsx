@@ -1,9 +1,9 @@
 import BannerImage from '@assets/images/bratislava-dog.png'
+import KupaliskaImg from '@assets/images/kupaliska.png'
 import TaxesIcon from '@assets/images/new-icons/other/city-bratislava/taxes.svg'
 import LibraryIcon from '@assets/images/new-icons/other/culture-communities/library.svg'
-import TreeIcon from '@assets/images/new-icons/other/environment-construction/greenery.svg'
+import SwimmingPoolIcon from '@assets/images/new-icons/other/education-sport/swimming-pool.svg'
 import ParkingIcon from '@assets/images/new-icons/other/transport-and-maps/parking.svg'
-import PlatbaDaneImg from '@assets/images/platba-dane2.png'
 import AccountSectionHeader from 'components/forms/segments/AccountSectionHeader/AccountSectionHeader'
 import AnnouncementBlock from 'components/forms/segments/AccountSections/IntroSection/AnnouncementBlock'
 import Banner from 'components/forms/simple-components/Banner'
@@ -23,7 +23,7 @@ import PhoneNumberModal from '../../PhoneNumberModal/PhoneNumberModal'
 const IntroSection = () => {
   const { t } = useTranslation('account')
   const { userData, updateUserData, error, resetError, accountType } = useAccount()
-  const { data, isLoading } = useTaxes()
+  const { isLoading } = useTaxes()
   const router = useRouter()
   const [phoneNumberModal, setPhoneNumberModal] = useState<'hidden' | 'displayed' | 'dismissed'>(
     'hidden',
@@ -56,7 +56,7 @@ const IntroSection = () => {
 
   const announcementContent = `
 <h4>${t('account_section_intro.announcement_card_title')}</h4><span>${t(
-    `account_section_intro.${data ? 'announcement_card_text_tax_ready' : 'announcement_card_text'}`,
+    'account_section_intro.announcement_card_text',
   )}</span>`
 
   return (
@@ -84,9 +84,11 @@ const IntroSection = () => {
           ) : (
             <AnnouncementBlock
               announcementContent={announcementContent}
-              buttonTitle={data ? t('account_section_intro.announcement_card_action') : undefined}
-              imagePath={PlatbaDaneImg}
-              onPress={() => router.push(ROUTES.TAXES_AND_FEES)}
+              buttonTitle={t('account_section_intro.announcement_card_action')}
+              imagePath={KupaliskaImg}
+              onPress={() => {
+                window.location.href = 'https://kupaliska.bratislava.sk'
+              }}
             />
           )}
 
@@ -101,6 +103,13 @@ const IntroSection = () => {
             />
           </div>
           <div className="flex gap-3 lg:gap-8 overflow-x-scroll scrollbar-hide px-4 lg:px-0">
+            <ServiceCard
+              title={t('account_section_services.cards.32.title')}
+              description={t('account_section_services.cards.32.description')}
+              icon={<SwimmingPoolIcon className="w-10 h-10 lg:w-12 lg:h-12 text-education-700" />}
+              buttonText={t('account_section_services.cards.32.buttonText')}
+              href="https://kupaliska.bratislava.sk"
+            />
             <ServiceCard
               title={t('account_section_services.cards.1.title')}
               description={t('account_section_services.cards.1.description')}
@@ -121,13 +130,6 @@ const IntroSection = () => {
               icon={<LibraryIcon className="w-10 h-10 lg:w-12 lg:h-12 text-culture-700" />}
               buttonText={t('account_section_services.cards.5.buttonText')}
               href="https://mestskakniznica.sk/sluzby/citanie/ako-sa-prihlasit-do-kniznice"
-            />
-            <ServiceCard
-              title={t('account_section_services.cards.8.title')}
-              description={t('account_section_services.cards.8.description')}
-              icon={<TreeIcon className="w-10 h-10 lg:w-12 lg:h-12 text-environment-700" />}
-              buttonText={t('account_section_services.cards.8.buttonText')}
-              href="https://10000stromov.sk"
             />
           </div>
           <Button

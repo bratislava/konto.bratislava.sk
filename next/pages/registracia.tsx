@@ -4,12 +4,14 @@ import AccountMarkdown from 'components/forms/segments/AccountMarkdown/AccountMa
 import AccountSuccessAlert from 'components/forms/segments/AccountSuccessAlert/AccountSuccessAlert'
 import EmailVerificationForm from 'components/forms/segments/EmailVerificationForm/EmailVerificationForm'
 import RegisterForm from 'components/forms/segments/RegisterForm/RegisterForm'
+import Spinner from 'components/forms/simple-components/Spinner'
 import LoginRegisterLayout from 'components/layouts/LoginRegisterLayout'
 import useSSORedirect from 'frontend/hooks/useSSORedirect'
 import { GetServerSidePropsContext } from 'next'
 import { useRouter } from 'next/router'
 import { useTranslation } from 'next-i18next'
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
+import { useState } from 'react'
 
 import PageWrapper from '../components/layouts/PageWrapper'
 import { ROUTES } from '../frontend/api/constants'
@@ -44,6 +46,8 @@ const RegisterPage = ({
   isProductionDeploy,
 }: AsyncServerProps<typeof getServerSideProps>) => {
   const { t } = useTranslation('account')
+  // needed because of the slow useAccount behaviour after email verification - TODO should get thrown out when amazon-cognito-identity-js is replaced for amplify
+  const [awaitingRedirect, setAwaitingRedirect] = useState(true)
   const { signUp, resendVerificationCode, verifyEmail, error, status, lastEmail, setStatus } =
     useAccount()
   const router = useRouter()
@@ -56,7 +60,11 @@ const RegisterPage = ({
       <LoginRegisterLayout backButtonHidden>
         {status === AccountStatus.Idle && <AccountActivator />}
         <AccountContainer className="md:pt-6 pt-0 mb-0 md:mb-8">
-          {status === AccountStatus.Idle ? (
+          {awaitingRedirect ? (
+            <div className="flex justify-center">
+              <Spinner size="md" variant="black" />
+            </div>
+          ) : status === AccountStatus.Idle ? (
             <RegisterForm
               lastEmail={lastEmail}
               onSubmit={signUp}
@@ -78,7 +86,9 @@ const RegisterPage = ({
               })}
               confirmLabel={t('identity_verification_link')}
               onConfirm={async () => {
-                // this does some black magic and needs to be fixed, until that - without changing the status before redirect the user won't stay logged in
+                // this does some black magic and needs to be fixed, until that - without changing the status and waiting for a short while the user won't stay logged in
+                // awaitingRedirect loading toggle
+                setAwaitingRedirect(true)
                 setStatus(AccountStatus.IdentityVerificationRequired)
                 await new Promise((resolve) => {
                   setTimeout(resolve, 1000)

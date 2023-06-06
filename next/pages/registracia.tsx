@@ -47,7 +47,7 @@ const RegisterPage = ({
 }: AsyncServerProps<typeof getServerSideProps>) => {
   const { t } = useTranslation('account')
   // needed because of the slow useAccount behaviour after email verification - TODO should get thrown out when amazon-cognito-identity-js is replaced for amplify
-  const [awaitingRedirect, setAwaitingRedirect] = useState(true)
+  const [awaitingRedirect, setAwaitingRedirect] = useState(false)
   const { signUp, resendVerificationCode, verifyEmail, error, status, lastEmail, setStatus } =
     useAccount()
   const router = useRouter()

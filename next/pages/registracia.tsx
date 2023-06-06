@@ -86,12 +86,13 @@ const RegisterPage = ({
               })}
               confirmLabel={t('identity_verification_link')}
               onConfirm={async () => {
-                // this does some black magic and needs to be fixed, until that - without changing the status and waiting for a short while the user won't stay logged in
-                // awaitingRedirect loading toggle
+                // no idea what's behind this, but if we redirect immediately the user won't stay logged in - some login requests probably need to happen in the background ?
+                // a stupid way to fix this - for most people - is to way long enough.
+                // TODO should be fixable by replacing amazon-cognito-identity-js with amplify
                 setAwaitingRedirect(true)
                 setStatus(AccountStatus.IdentityVerificationRequired)
                 await new Promise((resolve) => {
-                  setTimeout(resolve, 1000)
+                  setTimeout(resolve, 4000)
                 })
                 redirect()
               }}

@@ -5,11 +5,13 @@ import { useRouter } from 'next/router'
 import React, { useCallback, useState } from 'react'
 import { useEffectOnce } from 'usehooks-ts'
 
+import useAccount from './useAccount'
+
 interface SSORedirectState {
   redirectTarget: string
   redirectTargetIsAnotherPage: boolean
   setRedirect: (newTarget: string) => void
-  redirect: () => void
+  redirect: () => Promise<void>
 }
 
 const SSORedirectContext = React.createContext<SSORedirectState>({} as SSORedirectState)
@@ -17,15 +19,24 @@ const SSORedirectContext = React.createContext<SSORedirectState>({} as SSORedire
 export const SSORedirectProvider = ({ children }: { children: React.ReactNode }) => {
   const router = useRouter()
   const [redirectTarget, setRedirectTarget] = useState<string>(ROUTES.HOME)
+  const { getAccessToken } = useAccount()
   const redirectTargetIsAnotherPage = !redirectTarget.startsWith('/')
 
-  const redirect = useCallback(() => {
+  const redirect = useCallback(async () => {
     if (redirectTarget.startsWith('/')) {
       router.push(redirectTarget).catch((error_) => logger.error('Failed redirect', error_))
     } else {
-      window.location.href = redirectTarget
+      let accessToken: string | null = null
+      try {
+        accessToken = await getAccessToken()
+      } catch (error) {
+        logger.error('Failed to get access token for redirect', error)
+      }
+      window.location.href = accessToken
+        ? `${redirectTarget}?access_token=${accessToken}`
+        : redirectTarget
     }
-  }, [redirectTarget, router])
+  }, [getAccessToken, redirectTarget, router])
 
   // if trying to set incorrect redirect target, throws and keeps the previous value
   const setRedirect = useCallback((newTarget: string) => {

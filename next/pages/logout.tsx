@@ -2,6 +2,7 @@ import AccountContainer from 'components/forms/segments/AccountContainer/Account
 import AccountSuccessAlert from 'components/forms/segments/AccountSuccessAlert/AccountSuccessAlert'
 import LoginRegisterLayout from 'components/layouts/LoginRegisterLayout'
 import useSSORedirect from 'frontend/hooks/useSSORedirect'
+import logger from 'frontend/utils/logger'
 import { GetServerSidePropsContext } from 'next'
 import { useTranslation } from 'next-i18next'
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
@@ -38,7 +39,7 @@ const LogoutPage = ({ page }: AsyncServerProps<typeof getServerSideProps>) => {
   const { redirect } = useSSORedirect()
   useEffect(() => {
     if (!isAuth) {
-      redirect()
+      redirect().catch((error) => logger.error('Failed redirect logout useEffect', error))
     }
   }, [isAuth, redirect])
 

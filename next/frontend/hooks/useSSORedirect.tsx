@@ -33,9 +33,9 @@ export const SSORedirectProvider = ({ children }: { children: React.ReactNode })
         logger.error('Failed to get access token for redirect', error)
       }
       if (accessToken) {
-        // append to query which may exist already
-        const separator = redirectTarget.includes('?') ? '&' : '?'
-        window.location.href = `${redirectTarget}${separator}access_token=${accessToken}`
+        const redirectUrlWithToken = new URL(redirectTarget)
+        redirectUrlWithToken.searchParams.set('access_token', accessToken)
+        window.location.href = redirectUrlWithToken.href
       } else {
         window.location.href = redirectTarget
       }

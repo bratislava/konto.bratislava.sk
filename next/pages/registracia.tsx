@@ -94,7 +94,7 @@ const RegisterPage = ({
                 await new Promise((resolve) => {
                   setTimeout(resolve, 4000)
                 })
-                redirect()
+                await redirect()
               }}
             />
           ) : (

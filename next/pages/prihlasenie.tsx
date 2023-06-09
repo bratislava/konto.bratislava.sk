@@ -4,6 +4,7 @@ import EmailVerificationForm from 'components/forms/segments/EmailVerificationFo
 import LoginForm from 'components/forms/segments/LoginForm/LoginForm'
 import LoginRegisterLayout from 'components/layouts/LoginRegisterLayout'
 import useSSORedirect from 'frontend/hooks/useSSORedirect'
+import logger from 'frontend/utils/logger'
 import { GetServerSidePropsContext } from 'next'
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
 import { useEffect } from 'react'
@@ -40,19 +41,19 @@ const LoginPage = ({ page }: AsyncServerProps<typeof getServerSideProps>) => {
 
   useEffect(() => {
     if (user !== null && user !== undefined) {
-      redirect()
+      redirect().catch((error) => logger.error('Failed redirect login useEffect', error))
     }
   }, [user, redirect])
 
   const onLogin = async (email: string, password: string) => {
     if (await login(email, password)) {
-      redirect()
+      await redirect()
     }
   }
 
   const onVerifyEmail = async (verificationCode: string) => {
     if (await verifyEmail(verificationCode)) {
-      redirect()
+      await redirect()
     }
   }
 

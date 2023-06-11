@@ -44,6 +44,9 @@ const FinalStep = ({
 
     return Promise.all(
       unfinishedFileScans.map((scan: FileScan) => {
+        if (scan.fileStateStatus && ['INFECTED', 'SAFE'].includes(scan.fileStateStatus)) {
+          return scan
+        }
         return getFileScanState(token, scan.scanId)
           .then((res: FileScanResponse) => {
             const fileState: FileScanState = ['INFECTED', 'MOVE ERROR INFECTED'].includes(res.status)

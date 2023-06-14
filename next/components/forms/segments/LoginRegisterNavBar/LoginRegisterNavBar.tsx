@@ -28,9 +28,9 @@ const BackButton = () => {
 export const LoginRegisterNavBar = ({ className, currentLanguage, backButtonHidden }: IProps) => {
   const languageKey = getLanguageKey(currentLanguage)
 
-  const { statusBarContent } = useStatusBarContext()
-  const [desktopRef, { height: desktopHeight }] = useElementSize([statusBarContent])
-  const [mobileRef, { height: mobileHeight }] = useElementSize([statusBarContent])
+  const { statusBarConfiguration } = useStatusBarContext()
+  const [desktopRef, { height: desktopHeight }] = useElementSize([statusBarConfiguration.content])
+  const [mobileRef, { height: mobileHeight }] = useElementSize([statusBarConfiguration.content])
 
   const { t } = useTranslation('account')
   return (

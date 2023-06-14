@@ -69,10 +69,10 @@ export const AccountNavBar = ({ className, sectionsList, menuItems, hiddenHeader
   const [burgerOpen, setBurgerOpen] = useState(false)
   const { isAuth, userData } = useAccount()
 
-  const { statusBarContent } = useStatusBarContext()
+  const { statusBarConfiguration } = useStatusBarContext()
   const [isMenuOpen, setIsMenuOpen] = useState<boolean>(false)
-  const [desktopRef, { height: desktopHeight }] = useElementSize([statusBarContent])
-  const [mobileRef, { height: mobileHeight }] = useElementSize([statusBarContent])
+  const [desktopRef, { height: desktopHeight }] = useElementSize([statusBarConfiguration.content])
+  const [mobileRef, { height: mobileHeight }] = useElementSize([statusBarConfiguration.content])
 
   const { t } = useTranslation(['common', 'account'])
   const router = useRouter()

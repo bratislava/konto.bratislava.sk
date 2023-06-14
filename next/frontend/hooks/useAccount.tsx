@@ -160,7 +160,7 @@ export const AccountProvider = ({ children }: { children: ReactNode }) => {
   })
   const [lastMarketingConfirmation, setLastMarketingConfirmation] = useState(false)
   const [lastAccessToken, setLastAccessToken] = useState('')
-  const { setStatusBarContent } = useStatusBarContext()
+  const { setStatusBarContent, setStatusBarVariant } = useStatusBarContext()
   const { t } = useTranslation()
 
   // TODO - could be better, currently used only after login, AccountStatus should be replaced or rewritten
@@ -728,9 +728,13 @@ export const AccountProvider = ({ children }: { children: ReactNode }) => {
       )
     } else {
       // TODO here set to whatever is the 'global' error
-      setStatusBarContent('')
+      setStatusBarVariant('warning')
+      setStatusBarContent(
+        // If translation is empty, status bar will be hidden
+        t('common:statusBarContent'),
+      )
     }
-  }, [setStatusBarContent, status, t])
+  }, [setStatusBarContent, setStatusBarVariant, status, t])
 
   const router = useRouter()
   useEffect(() => {

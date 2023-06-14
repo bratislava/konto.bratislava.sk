@@ -160,7 +160,7 @@ export const AccountProvider = ({ children }: { children: ReactNode }) => {
   })
   const [lastMarketingConfirmation, setLastMarketingConfirmation] = useState(false)
   const [lastAccessToken, setLastAccessToken] = useState('')
-  const { setStatusBarContent, setStatusBarVariant } = useStatusBarContext()
+  const { setStatusBarConfiguration } = useStatusBarContext()
   const { t } = useTranslation()
 
   // TODO - could be better, currently used only after login, AccountStatus should be replaced or rewritten
@@ -719,22 +719,27 @@ export const AccountProvider = ({ children }: { children: ReactNode }) => {
     // this overrides the 'global' status notification (i.e. crashed servers), but since we don't have design for multiple, showing failed notification probably takes precedence
     // TODO rethink the status bar approach on product side
     if (status === AccountStatus.IdentityVerificationFailed) {
-      setStatusBarContent(
-        <AccountMarkdown
-          uLinkVariant="error"
-          variant="sm"
-          content={t('account:identity_verification_failed', { url: ROUTES.IDENTITY_VERIFICATION })}
-        />,
-      )
+      setStatusBarConfiguration({
+        content: (
+          <AccountMarkdown
+            uLinkVariant="error"
+            variant="sm"
+            content={t('account:identity_verification_failed', {
+              url: ROUTES.IDENTITY_VERIFICATION,
+            })}
+          />
+        ),
+        variant: 'error',
+      })
     } else {
       // TODO here set to whatever is the 'global' error
-      setStatusBarVariant('warning')
-      setStatusBarContent(
+      setStatusBarConfiguration({
         // If translation is empty, status bar will be hidden
-        t('common:statusBarContent'),
-      )
+        content: t('common:statusBarContent'),
+        variant: 'warning',
+      })
     }
-  }, [setStatusBarContent, setStatusBarVariant, status, t])
+  }, [setStatusBarConfiguration, status, t])
 
   const router = useRouter()
   useEffect(() => {

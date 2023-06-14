@@ -9,16 +9,20 @@ import { SectionContainer } from '../segments/SectionContainer/SectionContainer'
 
 type StatusBarVariantBase = 'warning' | 'error'
 
+type StatusBarConfigurationBase = {
+  content: React.ReactNode
+  variant: StatusBarVariantBase
+}
+
 const StatusBarContext = createContext<{
-  statusBarContent: React.ReactNode
-  setStatusBarContent: React.Dispatch<React.SetStateAction<React.ReactNode>>
-  statusBarVariant: React.ReactNode
-  setStatusBarVariant: React.Dispatch<React.SetStateAction<StatusBarVariantBase>>
+  statusBarConfiguration: StatusBarConfigurationBase
+  setStatusBarConfiguration: React.Dispatch<React.SetStateAction<StatusBarConfigurationBase>>
 }>({
-  statusBarContent: null,
-  setStatusBarContent: () => {},
-  statusBarVariant: 'warning',
-  setStatusBarVariant: () => {},
+  statusBarConfiguration: {
+    content: null,
+    variant: 'warning',
+  },
+  setStatusBarConfiguration: () => {},
 })
 
 interface StatusBarProviderProps {
@@ -26,11 +30,17 @@ interface StatusBarProviderProps {
 }
 
 export const StatusBarProvider: React.FC<StatusBarProviderProps> = ({ children }) => {
-  const [statusBarContent, setStatusBarContent] = useState<React.ReactNode>(null)
-  const [statusBarVariant, setStatusBarVariant] = useState<StatusBarVariantBase>('warning')
+  const [statusBarConfiguration, setStatusBarConfiguration] = useState<StatusBarConfigurationBase>({
+    content: null,
+    variant: 'warning',
+  })
+
   return (
     <StatusBarContext.Provider
-      value={{ statusBarContent, setStatusBarContent, statusBarVariant, setStatusBarVariant }}
+      value={{
+        statusBarConfiguration,
+        setStatusBarConfiguration,
+      }}
     >
       {children}
     </StatusBarContext.Provider>
@@ -44,12 +54,12 @@ interface StatusBarProps {
 }
 
 export const StatusBar = ({ className }: StatusBarProps) => {
-  const { statusBarContent, statusBarVariant } = useStatusBarContext()
-  return statusBarContent ? (
+  const { statusBarConfiguration } = useStatusBarContext()
+  return statusBarConfiguration.content ? (
     <div
       className={cx('w-full text-white', className, {
-        'bg-negative-700': statusBarVariant === 'error',
-        'bg-warning-700': statusBarVariant === 'warning',
+        'bg-negative-700': statusBarConfiguration.variant === 'error',
+        'bg-warning-700': statusBarConfiguration.variant === 'warning',
       })}
     >
       <div className="container mx-auto h-full flex items-center justify-center">
@@ -58,7 +68,7 @@ export const StatusBar = ({ className }: StatusBarProps) => {
             <span className="hidden md:flex mr-3">
               <ErrorIcon solid className="w-5 h-5" />
             </span>
-            <div className="text-p2">{statusBarContent}</div>
+            <div className="text-p2">{statusBarConfiguration.content}</div>
           </div>
         </SectionContainer>
       </div>

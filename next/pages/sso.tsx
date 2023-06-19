@@ -10,7 +10,9 @@ const SSOPage = () => {
   const { postAccessToken } = useAccount()
   const { t } = useTranslation('account')
   useEffectOnce(() => {
-    postAccessToken()
+    setTimeout(() => {
+      postAccessToken()
+    }, 1000)
   })
 
   return <AccountMarkdown content={t('sso_placeholder')} />

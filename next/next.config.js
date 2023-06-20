@@ -13,6 +13,10 @@ const nextConfig = {
   eslint: {
     dirs: ['components/', 'pages/', 'utils/', 'backend/', 'frontend/'],
   },
+  // https://github.com/vercel/next.js/discussions/49251#discussioncomment-5812479
+  experimental: {
+    appDir: false,
+  },
   async redirects() {
     return [
       {

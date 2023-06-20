@@ -10,7 +10,7 @@ import { useState } from 'react'
 
 import { validator } from '../../frontend/dtos/formStepperDto'
 import { FormFiller, useFormFiller } from '../../frontend/hooks/useFormFiller'
-import { useFormRJSFContextMemo } from '../../frontend/hooks/useFormRJSFContextMemo'
+import { useFormRJSFContext } from '../../frontend/hooks/useFormRJSFContext'
 import { useFormStepper } from '../../frontend/hooks/useFormStepper'
 import { useFormSubmitter } from '../../frontend/hooks/useFormSubmitter'
 import { customValidate } from '../../frontend/utils/formStepper'
@@ -31,7 +31,7 @@ interface FormRJSF {
 
 const GeneratedFormRJSF = ({ eform, escapedSlug, formSlug, wrapperClassName }: FormRJSF) => {
   const filler: FormFiller = useFormFiller(eform)
-  const formContext = useFormRJSFContextMemo(eform, filler)
+  const formContext = useFormRJSFContext(eform, filler)
   const { t } = useTranslation('account')
   const form = useFormStepper(escapedSlug, eform, {
     onStepSumbit: filler.updateFormData,
@@ -123,7 +123,7 @@ const GeneratedFormRJSF = ({ eform, escapedSlug, formSlug, wrapperClassName }: F
               submitErrors={submitter.errors}
               submitMessage={submitter.successMessage}
               onUpdateFileScans={(updatedScans) => {
-                formContext.fileScans = updatedScans
+                formContext.setFileScans(updatedScans)
               }}
             />
           ) : (

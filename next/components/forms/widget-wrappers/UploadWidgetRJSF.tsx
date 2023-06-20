@@ -92,12 +92,14 @@ const UploadWidgetRJSF = (props: UploadWidgetRJSFProps) => {
         scan.fileName !== removeFileScan?.fileName && scan.scanId !== removeFileScan?.scanId,
     )
 
-    formContext.fileScans = updatedFormContextFileScans.concat(
-      updatedNewFileScans.filter(
-        (innerScan) =>
-          !updatedFormContextFileScans.some(
-            (formContextScan) => JSON.stringify(formContextScan) === JSON.stringify(innerScan),
-          ),
+    formContext.setFileScans(
+      updatedFormContextFileScans.concat(
+        updatedNewFileScans.filter(
+          (innerScan) =>
+            !updatedFormContextFileScans.some(
+              (formContextScan) => JSON.stringify(formContextScan) === JSON.stringify(innerScan),
+            ),
+        ),
       ),
     )
   }
@@ -110,12 +112,14 @@ const UploadWidgetRJSF = (props: UploadWidgetRJSFProps) => {
       (scan) => scan.fileName !== removeScan?.fileName,
     )
 
-    formContext.fileScans = updatedFormContextFileScans.concat(
-      updatedInnerFileScans.filter(
-        (innerScan) =>
-          !updatedFormContextFileScans.some(
-            (formContextScan) => JSON.stringify(formContextScan) === JSON.stringify(innerScan),
-          ),
+    formContext.setFileScans(
+      updatedFormContextFileScans.concat(
+        updatedInnerFileScans.filter(
+          (innerScan) =>
+            !updatedFormContextFileScans.some(
+              (formContextScan) => JSON.stringify(formContextScan) === JSON.stringify(innerScan),
+            ),
+        ),
       ),
     )
 

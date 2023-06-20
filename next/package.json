@@ -51,7 +51,6 @@
     "libphonenumber-js": "^1.10.21",
     "libxmljs2": "^0.31.0",
     "lodash": "4.17.21",
-    "meilisearch": "0.30.0",
     "minio": "^7.0.32",
     "next": "13.2.3",
     "next-i18next": "12.1.0",

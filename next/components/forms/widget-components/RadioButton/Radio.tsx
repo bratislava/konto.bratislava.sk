@@ -61,11 +61,12 @@ const Radio = ({
         (variant === 'boxed' || variant === 'card') && !error && !inputProps.checked && !isDisabled,
 
       'opacity-50': isDisabled,
+      'cursor-pointer': !isDisabled && !error,
       'cursor-not-allowed': isDisabled || error,
     },
   )
 
-  const stringValue = rest.value ? rest.value.toString() : ""
+  const stringValue = rest.value ? rest.value.toString() : ''
 
   return (
     <div className="w-full">

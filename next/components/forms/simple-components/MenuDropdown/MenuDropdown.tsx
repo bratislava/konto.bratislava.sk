@@ -56,7 +56,7 @@ const MenuDropdown = ({
             items?.map((item, i) => (
               <HeaderMenuItem
                 key={i}
-                className={item.itemClassName}
+                itemClassName={item.itemClassName}
                 icon={item.icon}
                 title={item.title}
                 url={item.url}

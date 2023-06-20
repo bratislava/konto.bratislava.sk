@@ -26,7 +26,7 @@ const Toggle = ({ children, isDisabled = false, isSelected = true, ...rest }: To
   const { inputProps } = useSwitch(
     { ...rest, isDisabled, children, 'aria-label': generatedOrProvidedId },
     state,
-    ref ,
+    ref,
   )
   const { focusProps } = useFocusRing()
 

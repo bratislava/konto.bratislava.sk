@@ -4,16 +4,18 @@
 import { EFormValue } from '@backend/forms'
 import Form from '@rjsf/core'
 import {
-  ErrorSchema, mergeDefaultsWithFormData, mergeObjects,
+  ErrorSchema,
+  mergeDefaultsWithFormData,
+  mergeObjects,
   RJSFSchema,
   RJSFValidationError,
 } from '@rjsf/utils'
-import { cloneDeep, } from 'lodash'
+import { cloneDeep } from 'lodash'
 import { useTranslation } from 'next-i18next'
 import { ChangeEvent, RefObject, useEffect, useRef, useState } from 'react'
 
 import { StepData } from '../../components/forms/types/TransformedFormData'
-import { formDataToXml, xmlStringToPdf,xmlToFormData } from '../api/api'
+import { formDataToXml, xmlStringToPdf, xmlToFormData } from '../api/api'
 import { readTextFile } from '../utils/file'
 import {
   getAllStepData,
@@ -29,9 +31,6 @@ interface Callbacks {
   onStepSumbit?: (formData: any) => Promise<void>
   onInit?: () => Promise<any>
 }
-
-
-
 
 export const useFormStepper = (eformSlug: string, eform: EFormValue, callbacks: Callbacks) => {
   const { schema } = eform
@@ -114,7 +113,9 @@ export const useFormStepper = (eformSlug: string, eform: EFormValue, callbacks: 
     if (schema.$async === true) {
       const newExtraErrors = await validateAsyncProperties(currentSchema, formData, [])
       isValid = isValid && Object.keys(newExtraErrors).length === 0
-      const currentStepKey = currentSchema.properties ? Object.keys(currentSchema.properties)[0] : null
+      const currentStepKey = currentSchema.properties
+        ? Object.keys(currentSchema.properties)[0]
+        : null
       if (currentStepKey && !(currentStepKey in newExtraErrors)) {
         const updatedExtraErrors = { ...extraErrors }
         delete updatedExtraErrors[currentStepKey]
@@ -146,7 +147,9 @@ export const useFormStepper = (eformSlug: string, eform: EFormValue, callbacks: 
   }
 
   const transformErrorsToArray = (): RJSFValidationError[][] => {
-    return stepData.map(({ stepKey }: StepData) => (stepKey && stepKey in errors ? errors[stepKey] : []))
+    return stepData.map(({ stepKey }: StepData) =>
+      stepKey && stepKey in errors ? errors[stepKey] : [],
+    )
   }
 
   const previous = () => setStepIndex(stepIndex - 1)
@@ -227,7 +230,10 @@ export const useFormStepper = (eformSlug: string, eform: EFormValue, callbacks: 
   const setStepFormData = (stepFormData: RJSFSchema) => {
     // save formData for step with all properties including conditional fields and unfilled fields
     const initStepDefaultData: RJSFSchema = getInitFormData(currentSchema)
-    const fullStepFormData: RJSFSchema|undefined = mergeDefaultsWithFormData(initStepDefaultData, stepFormData)
+    const fullStepFormData: RJSFSchema | undefined = mergeDefaultsWithFormData(
+      initStepDefaultData,
+      stepFormData,
+    )
     if (!fullStepFormData) return
     const mergedFormData: RJSFSchema = mergeObjects(formData, fullStepFormData)
     setFormData(mergedFormData)
@@ -267,10 +273,10 @@ export const useFormStepper = (eformSlug: string, eform: EFormValue, callbacks: 
     importInput.multiple = false
     importInput.accept = '.xml'
 
-    importInput.addEventListener('change', e => {
+    importInput.addEventListener('change', (e) => {
       if (!importInput.files) return
       const changeEvent = e as unknown as ChangeEvent<HTMLInputElement>
-      importXml(changeEvent).catch(error => console.log('error', error))
+      importXml(changeEvent).catch((error) => console.log('error', error))
     })
 
     importInput.click()
@@ -344,6 +350,6 @@ export const useFormStepper = (eformSlug: string, eform: EFormValue, callbacks: 
     formRef,
     exportXml,
     importXml: chooseFilesAndImportXml,
-    exportPdf
+    exportPdf,
   }
 }

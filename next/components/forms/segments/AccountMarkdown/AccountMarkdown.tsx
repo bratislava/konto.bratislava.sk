@@ -9,7 +9,6 @@ import remarkDirective from 'remark-directive'
 import remarkDirectiveRehype from 'remark-directive-rehype'
 import remarkGfm from 'remark-gfm'
 
-
 type AccountMarkdownBase = {
   className?: string
   content?: string

@@ -1,9 +1,7 @@
 {
   "ziadatel": {
     "ziatetelTyp": true,
-    "splnomocnenie": [
-      "test"
-    ]
+    "splnomocnenie": ["test"]
   },
   "ziadatelUdaje": {
     "nazov": "string",
@@ -36,43 +34,19 @@
   "dovodZiadosti": {
     "zaujem": "Dotáciu na kontajnerové stojisko"
   },
-  "zmluva": [
-    "string"
-  ],
-  "snimkaZMapy": [
-    "asda"
-  ],
-  "podorysStanovista": [
-    "asd"
-  ],
-  "vizualStanovista": [
-    "qwe",
-    "qweqwe"
-  ],
+  "zmluva": ["string"],
+  "snimkaZMapy": ["asda"],
+  "podorysStanovista": ["asd"],
+  "vizualStanovista": ["qwe", "qweqwe"],
   "technickyVykres": {
-    "technickyVykresPrilohy": [
-      "qweqw"
-    ]
+    "technickyVykresPrilohy": ["qweqw"]
   },
-  "stavebnaDokumentacia": [
-    "sdf",
-    "ertr"
-  ],
+  "stavebnaDokumentacia": ["sdf", "ertr"],
   "rozpocet": {
-    "rozpocetPrilohy": [
-      "qweqw"
-    ]
+    "rozpocetPrilohy": ["qweqw"]
   },
-  "inePrilohy": [
-    "qwe"
-  ],
-  "stanovisko": [
-    "qweq"
-  ],
-  "doklad": [
-    "qweq"
-  ],
-  "listVlastnictva": [
-    "test"
-  ]
+  "inePrilohy": ["qwe"],
+  "stanovisko": ["qweq"],
+  "doklad": ["qweq"],
+  "listVlastnictva": ["test"]
 }

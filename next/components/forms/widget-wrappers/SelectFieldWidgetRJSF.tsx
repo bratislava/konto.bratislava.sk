@@ -18,7 +18,7 @@ type SelectRJSFOptions = {
   // selectType?: 'one' | 'multiple' | 'arrow' | 'radio'
 } & WidgetOptions
 
-interface RJSFSelectSchema extends RJSFSchema{
+interface RJSFSelectSchema extends RJSFSchema {
   ciselnik?: {
     id: string
   }

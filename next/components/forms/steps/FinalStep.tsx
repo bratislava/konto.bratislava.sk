@@ -4,7 +4,12 @@ import { useState } from 'react'
 import { useEffectOnce } from 'usehooks-ts'
 
 import { getFileScanState } from '../../../frontend/api/api'
-import { FileScan, FileScanResponse, FileScanState, JsonSchema } from '../../../frontend/dtos/formStepperDto'
+import {
+  FileScan,
+  FileScanResponse,
+  FileScanState,
+  JsonSchema,
+} from '../../../frontend/dtos/formStepperDto'
 import useAccount from '../../../frontend/hooks/useAccount'
 import logger, { developmentLog } from '../../../frontend/utils/logger'
 import Summary from './Summary/Summary'
@@ -28,19 +33,19 @@ const FinalStep = ({
   formData,
   formErrors,
   extraErrors,
-  fileScans=[],
+  fileScans = [],
   schema,
   onGoToStep,
   submitErrors,
   submitMessage,
-  onUpdateFileScans
+  onUpdateFileScans,
 }: FinalStepProps) => {
   const { getAccessToken } = useAccount()
   const [testedFileScans, setTestedFileScans] = useState<FileScan[]>(fileScans)
 
   const updateFileScans = async (): Promise<FileScan[]> => {
     const token = await getAccessToken()
-    const unfinishedFileScans = fileScans.filter(scan => scan.fileState !== 'finished')
+    const unfinishedFileScans = fileScans.filter((scan) => scan.fileState !== 'finished')
 
     return Promise.all(
       unfinishedFileScans.map((scan: FileScan) => {
@@ -49,25 +54,27 @@ const FinalStep = ({
         }
         return getFileScanState(token, scan.scanId)
           .then((res: FileScanResponse) => {
-            const fileState: FileScanState = ['INFECTED', 'MOVE ERROR INFECTED'].includes(res.status)
+            const fileState: FileScanState = ['INFECTED', 'MOVE ERROR INFECTED'].includes(
+              res.status,
+            )
               ? 'error'
               : ['UPLOADED', 'ACCEPTED', 'NOT FOUND'].includes(res.status)
-                ? 'scan'
-                : 'finished'
+              ? 'scan'
+              : 'finished'
             return { ...scan, fileState, fileStateStatus: res.status } as FileScan
           })
-          .catch(error => {
-            logger.error("Fetch scan file statuses failed", error)
+          .catch((error) => {
+            logger.error('Fetch scan file statuses failed', error)
             return { ...scan, fileState: 'error' } as FileScan
           })
-      })
+      }),
     )
   }
 
   const logAllFileScansOnDev = (updatedFileScans: FileScan[]) => {
     developmentLog('\nALL UPDATED FILES SCANS')
-    updatedFileScans.forEach(scan => {
-      developmentLog("scan:", scan)
+    updatedFileScans.forEach((scan) => {
+      developmentLog('scan:', scan)
     })
   }
 
@@ -78,12 +85,12 @@ const FinalStep = ({
           logAllFileScansOnDev(updatedFileScans)
           onUpdateFileScans(updatedFileScans)
           setTestedFileScans(updatedFileScans)
-          if (updatedFileScans.every(scan => scan.fileState === 'finished')) {
+          if (updatedFileScans.every((scan) => scan.fileState === 'finished')) {
             clearInterval(interval)
           }
           return true
         })
-        .catch(error => logger.error("Fetch scan file statuses failed", error))
+        .catch((error) => logger.error('Fetch scan file statuses failed', error))
     }, 30_000)
 
     return () => clearInterval(interval)

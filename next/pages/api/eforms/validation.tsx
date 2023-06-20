@@ -3,7 +3,6 @@ import type { NextApiRequest, NextApiResponse } from 'next'
 
 import { ajvKeywords } from '../../../frontend/dtos/formStepperDto'
 
-
 interface Body {
   parentSchema: AnySchemaObject
   schema: any

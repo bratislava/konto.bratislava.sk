@@ -14,8 +14,21 @@ interface SummaryProps {
   onGoToStep: (step: number) => void
 }
 
-const Summary = ({ schema, formData, formErrors, extraErrors, fileScans, onGoToStep }: SummaryProps) => {
-  const { transformedSteps } = useFormDataTransform(formData, formErrors, extraErrors, fileScans, schema)
+const Summary = ({
+  schema,
+  formData,
+  formErrors,
+  extraErrors,
+  fileScans,
+  onGoToStep,
+}: SummaryProps) => {
+  const { transformedSteps } = useFormDataTransform(
+    formData,
+    formErrors,
+    extraErrors,
+    fileScans,
+    schema,
+  )
 
   return (
     <div className="my-10">

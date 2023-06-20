@@ -11,17 +11,13 @@ interface UploadBrokenMessagesProps {
 
 const UploadBrokenMessages = ({ fileBrokenMessages }: UploadBrokenMessagesProps) => {
   const { t } = useTranslation('forms')
-  const message = fileBrokenMessages.includes(MINIO_ERROR) ? t("errors.upload_minio") : t("errors.upload_size_format")
+  const message = fileBrokenMessages.includes(MINIO_ERROR)
+    ? t('errors.upload_minio')
+    : t('errors.upload_size_format')
 
-  return fileBrokenMessages.length > 0
-    ? (
-        <Alert
-          className="mt-4"
-          fullWidth
-          type="error"
-          message={message} />
-      )
-    : null
+  return fileBrokenMessages.length > 0 ? (
+    <Alert className="mt-4" fullWidth type="error" message={message} />
+  ) : null
 }
 
 export default UploadBrokenMessages

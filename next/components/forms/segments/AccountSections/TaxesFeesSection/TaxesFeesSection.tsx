@@ -51,7 +51,7 @@ const TaxesFeesSection: React.FC<TaxesFeesSectionProps> = () => {
   )}</div>
 `
 
-  let content: JSX.Element|null = null
+  let content: JSX.Element | null = null
 
   if (isLoading) {
     content = <Spinner className="mt-10 m-auto" />

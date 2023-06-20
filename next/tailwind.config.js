@@ -210,7 +210,7 @@ module.exports = {
       },
     },
   },
-  plugins: [require('tailwind-scrollbar-hide'), require('@tailwindcss/line-clamp')],
+  plugins: [require('tailwind-scrollbar-hide')],
   corePlugins: {
     container: false,
   },

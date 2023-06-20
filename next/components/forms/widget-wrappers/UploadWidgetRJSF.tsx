@@ -22,7 +22,8 @@ interface UploadWidgetRJSFProps extends WidgetProps {
 }
 
 const UploadWidgetRJSF = (props: UploadWidgetRJSFProps) => {
-  const { options, schema, label, required, value, disabled, onChange, rawErrors, formContext } = props
+  const { options, schema, label, required, value, disabled, onChange, rawErrors, formContext } =
+    props
 
   const {
     size,
@@ -38,7 +39,9 @@ const UploadWidgetRJSF = (props: UploadWidgetRJSFProps) => {
   const supportedFormats = accept?.split(',')
   const multiple = schema.type === 'array'
 
-  const [innerValue, setInnerValue] = useState<UploadMinioFile[]>(getInitInnerValue(value, schema, formContext.fileScans))
+  const [innerValue, setInnerValue] = useState<UploadMinioFile[]>(
+    getInitInnerValue(value, schema, formContext.fileScans),
+  )
   const [innerFileScans, setInnerFileScans] = useState<FileScan[]>(formContext.fileScans)
 
   const handleOneFile = (files: UploadMinioFile[]) => {
@@ -73,35 +76,59 @@ const UploadWidgetRJSF = (props: UploadWidgetRJSFProps) => {
   }
 
   const getOwnFileScans = () => {
-    return innerFileScans.filter(fileScan => (
-      innerValue.some(value => value.file.name === fileScan.fileName)
-    ))
+    return innerFileScans.filter((fileScan) =>
+      innerValue.some((value) => value.file.name === fileScan.fileName),
+    )
   }
 
-  const handleOnUpdateFileScans = (updatedNewFileScans: FileScan[], removeFileScan?: FileScan|null) => {
+  const handleOnUpdateFileScans = (
+    updatedNewFileScans: FileScan[],
+    removeFileScan?: FileScan | null,
+  ) => {
     setInnerFileScans(updatedNewFileScans)
 
-    const updatedFormContextFileScans = [ ...formContext.fileScans, ...updatedNewFileScans ]
-      .filter(scan => scan.fileName !== removeFileScan?.fileName && scan.scanId !== removeFileScan?.scanId)
+    const updatedFormContextFileScans = [...formContext.fileScans, ...updatedNewFileScans].filter(
+      (scan) =>
+        scan.fileName !== removeFileScan?.fileName && scan.scanId !== removeFileScan?.scanId,
+    )
 
-    formContext.fileScans = updatedFormContextFileScans.concat(updatedNewFileScans.filter(innerScan =>
-      !updatedFormContextFileScans.some(formContextScan => JSON.stringify(formContextScan) === JSON.stringify(innerScan))
-    ))
+    formContext.fileScans = updatedFormContextFileScans.concat(
+      updatedNewFileScans.filter(
+        (innerScan) =>
+          !updatedFormContextFileScans.some(
+            (formContextScan) => JSON.stringify(formContextScan) === JSON.stringify(innerScan),
+          ),
+      ),
+    )
   }
 
   const handleOnRemoveFileScan = (removeScan?: FileScan) => {
-    const updatedFormContextFileScans = formContext.fileScans.filter(scan => scan.fileName !== removeScan?.fileName)
-    const updatedInnerFileScans = innerFileScans.filter(scan => scan.fileName !== removeScan?.fileName)
+    const updatedFormContextFileScans = formContext.fileScans.filter(
+      (scan) => scan.fileName !== removeScan?.fileName,
+    )
+    const updatedInnerFileScans = innerFileScans.filter(
+      (scan) => scan.fileName !== removeScan?.fileName,
+    )
 
-    formContext.fileScans = updatedFormContextFileScans.concat(updatedInnerFileScans.filter(innerScan =>
-      !updatedFormContextFileScans.some(formContextScan => JSON.stringify(formContextScan) === JSON.stringify(innerScan))
-    ))
+    formContext.fileScans = updatedFormContextFileScans.concat(
+      updatedInnerFileScans.filter(
+        (innerScan) =>
+          !updatedFormContextFileScans.some(
+            (formContextScan) => JSON.stringify(formContextScan) === JSON.stringify(innerScan),
+          ),
+      ),
+    )
 
     setInnerFileScans(updatedInnerFileScans)
   }
 
   return (
-    <WidgetWrapper accordion={accordion} spaceBottom={spaceBottom} spaceTop={spaceTop} className="w-full">
+    <WidgetWrapper
+      accordion={accordion}
+      spaceBottom={spaceBottom}
+      spaceTop={spaceTop}
+      className="w-full"
+    >
       <Upload
         errorMessage={rawErrors}
         type={type}

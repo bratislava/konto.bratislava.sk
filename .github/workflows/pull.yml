@@ -13,7 +13,7 @@ jobs:
         with:
           node-version: '16'
       - run: yarn --frozen-lockfile
-      - name: Typescript check
+      - name: Typescript reviewdog check
         uses: EPMatt/reviewdog-action-tsc@v1
         with:
           # Change reviewdog reporter if you need
@@ -27,7 +27,7 @@ jobs:
           # https://github.com/reviewdog/reviewdog#reporters
           level: warning
           workdir: ./next
-      - name: Typescript strict plugin check
+      - name: Typescript check
         run: yarn typecheck
 
       - name: Tests

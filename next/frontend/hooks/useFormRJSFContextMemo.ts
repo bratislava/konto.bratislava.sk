@@ -4,7 +4,10 @@ import { useMemo } from 'react'
 import { FormRJSFContext } from '../dtos/formStepperDto'
 import { FormFiller } from './useFormFiller'
 
-export const useFormRJSFContextMemo = (eform: EFormValue, formFiller: FormFiller,): FormRJSFContext => {
+export const useFormRJSFContextMemo = (
+  eform: EFormValue,
+  formFiller: FormFiller,
+): FormRJSFContext => {
   const { formId, formUserExternalId } = formFiller
 
   return useMemo((): FormRJSFContext => {
@@ -16,7 +19,7 @@ export const useFormRJSFContextMemo = (eform: EFormValue, formFiller: FormFiller
       userExternalId: formUserExternalId,
       bucketFolderName:
         formId && schema?.pospID ? `/${String(schema.pospID)}/${formId}` : undefined,
-      fileScans: []
+      fileScans: [],
     } as FormRJSFContext
   }, [eform, formId, formUserExternalId])
 }

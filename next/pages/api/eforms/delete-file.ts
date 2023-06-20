@@ -14,9 +14,9 @@ const handleDeleteRequest = async (req: NextApiRequest) => {
 
   if (!fileScanStatus && Array.isArray(fileScanStatus)) throw new Error('Wrong fileScanStatus')
   let bucketName = unscannedBucketName
-  if (["SAFE"].includes(fileScanStatus as string)){
+  if (['SAFE'].includes(fileScanStatus as string)) {
     bucketName = safeBucketName
-  } else if (["INFECTED"].includes(fileScanStatus as string)) {
+  } else if (['INFECTED'].includes(fileScanStatus as string)) {
     bucketName = infectedBucketName
   } else if (fileScanStatus === 'NOT FOUND') return
 

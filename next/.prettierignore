@@ -2,4 +2,5 @@
 
 yarn.lock
 .next
-graphql/index.ts
+
+backend/forms/*/form.*.sef.json

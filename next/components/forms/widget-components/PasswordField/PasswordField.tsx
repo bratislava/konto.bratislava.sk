@@ -53,7 +53,7 @@ const PasswordField = forwardRef<HTMLInputElement, Props>(
           setType('password')
         },
       },
-      buttonRef ,
+      buttonRef,
     )
 
     return (

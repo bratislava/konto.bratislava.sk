@@ -61,7 +61,7 @@ const poSchema = {
   type: 'object',
   properties: {
     business_name: {
-      type: 'string'
+      type: 'string',
     },
     email: {
       type: 'string',

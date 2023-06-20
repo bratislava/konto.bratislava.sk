@@ -84,7 +84,8 @@ class OpenDataClient {
   }
 
   // eslint-disable-next-line class-methods-use-this
-  private getCacheKey = ({ type, id, action }: IFetchOptions) => `${type}@${String(id)}@${String(action)}`
+  private getCacheKey = ({ type, id, action }: IFetchOptions) =>
+    `${type}@${String(id)}@${String(action)}`
 
   private handleFetch = async <T>({ type, id, action }: IFetchOptions): Promise<T> => {
     if (!this.apiKey) {
@@ -110,7 +111,9 @@ class OpenDataClient {
 
     if (res.status >= 300) {
       throw new Error(
-        `Problem with server communication [status:${res.status}] [params: type:${type} id:${String(id)} action:${String(action)}]`
+        `Problem with server communication [status:${res.status}] [params: type:${type} id:${String(
+          id,
+        )} action:${String(action)}]`,
       )
     }
 
@@ -149,18 +152,21 @@ class OpenDataClient {
     return data.files
   }
 
-  private downloadAllFiles = async (datasetFiles: IDatasetFile[], resultFileType: IResultFileType) => {
+  private downloadAllFiles = async (
+    datasetFiles: IDatasetFile[],
+    resultFileType: IResultFileType,
+  ) => {
     return Promise.all(
       datasetFiles
-        .filter(file => file.type === resultFileType)
-        .map(async file => {
+        .filter((file) => file.type === resultFileType)
+        .map(async (file) => {
           const data = await this.handleFetch<JSONData>({
             type: 'file',
             id: file.id,
             action: 'download',
           })
           return { name: file.name, jsonData: data }
-        })
+        }),
     )
   }
 }

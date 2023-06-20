@@ -1,7 +1,7 @@
 import formidable, { PersistentFile } from 'formidable'
 import { NextApiRequest, NextApiResponse } from 'next'
 
-import minioClient, { region,unscannedBucketName } from '../../../backend/utils/minio-client'
+import minioClient, { region, unscannedBucketName } from '../../../backend/utils/minio-client'
 import logger from '../../../frontend/utils/logger'
 
 export const config = {

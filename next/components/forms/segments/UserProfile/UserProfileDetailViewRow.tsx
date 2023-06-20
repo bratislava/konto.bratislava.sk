@@ -13,7 +13,9 @@ const UserProfileDetailViewRow = ({ label, value, tooltip }: UserProfileDetailVi
         <span className="text-p2-semibold">{label}</span>
         {tooltip && <Tooltip position="top-right" text={tooltip} />}
       </div>
-      <span className={cx('text-p2', 'md:break-normal')}>{!value || value === '' ? '-' : value}</span>
+      <span className={cx('text-p2', 'md:break-normal')}>
+        {!value || value === '' ? '-' : value}
+      </span>
     </div>
   )
 }

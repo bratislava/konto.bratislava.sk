@@ -6,7 +6,7 @@ import { ExplicitOptionalType } from '../../types/ExplicitOptional'
 import { FormSpacingType } from '../../types/WidgetOptions'
 import WidgetWrapper, { isFormSpacingType } from '../WidgetWrapper'
 
-interface DateTimeWidgetRJSFProps extends FieldProps{
+interface DateTimeWidgetRJSFProps extends FieldProps {
   formData: RJSFSchema
 }
 

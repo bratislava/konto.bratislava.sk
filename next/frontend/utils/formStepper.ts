@@ -13,7 +13,8 @@ import { get, merge, set } from 'lodash'
 import { StepData } from '../../components/forms/types/TransformedFormData'
 import { validateKeyword } from '../api/api'
 import {
-  ajvKeywords, FileScan,
+  ajvKeywords,
+  FileScan,
   JsonSchema,
   JsonSchemaExtraProperties,
   JsonSchemaProperties,
@@ -21,7 +22,6 @@ import {
   KeywordDefinition,
   validator,
 } from '../dtos/formStepperDto'
-
 
 export const getAllPossibleJsonSchemaProperties = (
   jsonSchema?: JsonSchema,
@@ -146,7 +146,6 @@ export const buildRJSFError = (path: string[], errorMsg: string | undefined): Er
   ) as unknown as ErrorSchema
 }
 
-
 export const getAllStepData = (
   schemaAllOf: JSONSchema7Definition[],
   oldStepData?: StepData[],
@@ -196,7 +195,7 @@ export const validateDateFromToFormat = (
 ) => {
   const formDataKeys = Object.entries(formData)
   formDataKeys?.forEach(([key, value]: [string, RJSFSchema]) => {
-    const schemaProperty: JSONSchema7Definition|undefined = schema.properties?.[key]
+    const schemaProperty: JSONSchema7Definition | undefined = schema.properties?.[key]
     if (
       schema?.properties &&
       schemaProperty &&
@@ -223,7 +222,7 @@ export const validateTimeFromToFormat = (
 ) => {
   const formDataKeys = Object.entries(formData)
   formDataKeys?.forEach(([key, value]: [string, RJSFSchema]) => {
-    const schemaProperty: JSONSchema7Definition|undefined = schema.properties?.[key]
+    const schemaProperty: JSONSchema7Definition | undefined = schema.properties?.[key]
     if (
       schema?.properties &&
       schemaProperty &&
@@ -268,7 +267,11 @@ export const validateRequiredFormat = (
   })
 }
 
-export const customValidate = (formData: RJSFSchema, errors: FormValidation, schema: StrictRJSFSchema) => {
+export const customValidate = (
+  formData: RJSFSchema,
+  errors: FormValidation,
+  schema: StrictRJSFSchema,
+) => {
   // validateRequiredFormat(formData, errors, schema)
   validateDateFromToFormat(formData, errors, schema)
   validateTimeFromToFormat(formData, errors, schema)
@@ -305,7 +308,6 @@ export const validateAsyncProperties = async (
 
   return errors
 }
-
 
 export const getDefaults = (schema: RJSFSchema, path: string[], obj: object) => {
   if (schema.default) {
@@ -355,20 +357,24 @@ export const createTestFormData = (formData: RJSFSchema): RJSFSchema => {
   return newFormData
 }
 
-
 export const getValidatedSteps = (schema: RJSFSchema, formData: RJSFSchema): RJSFSchema[] => {
   const testFormData = createTestFormData(formData)
 
-  return  schema.allOf
-    ? schema.allOf.map((step) => {
-        const typedStep = typeof step !== 'boolean' ? step : {}
-        return retrieveSchema(validator, typedStep, schema, testFormData)
-      })
-      .filter((step) => Object.keys(step).length > 0)
+  return schema.allOf
+    ? schema.allOf
+        .map((step) => {
+          const typedStep = typeof step !== 'boolean' ? step : {}
+          return retrieveSchema(validator, typedStep, schema, testFormData)
+        })
+        .filter((step) => Object.keys(step).length > 0)
     : []
 }
 
-export const getInitInnerValue = (value: string|string[]|null, schema: StrictRJSFSchema, fileScans: FileScan[]): UploadMinioFile[] => {
+export const getInitInnerValue = (
+  value: string | string[] | null,
+  schema: StrictRJSFSchema,
+  fileScans: FileScan[],
+): UploadMinioFile[] => {
   // I need to save multiple pieces of info about the file - this isn't stored in rjsf, but needed DURING upload
   // I am saving this info only in innerValue of widget
   // but when I go to previous step of the stepper, component is rebuilt and I still need at least the fileName, so I read fileNames from rjsf state and transform them
@@ -376,14 +382,14 @@ export const getInitInnerValue = (value: string|string[]|null, schema: StrictRJS
     schema.type === 'array' && value && Array.isArray(value)
       ? [...value]
       : value && !Array.isArray(value)
-        ? [value]
-        : []
-  return  valueArray.map(fileName => {
+      ? [value]
+      : []
+  return valueArray.map((fileName) => {
     const originalFileScan = fileScans.find((fileScan: FileScan) => fileScan.fileName === fileName)
     return {
       file: new File([], fileName),
       isUploading: false,
-      originalName: originalFileScan ? originalFileScan.originalName : fileName
+      originalName: originalFileScan ? originalFileScan.originalName : fileName,
     } as UploadMinioFile
   })
 }

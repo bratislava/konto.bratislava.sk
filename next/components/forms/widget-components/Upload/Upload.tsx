@@ -12,7 +12,11 @@ import {
   uploadFileToBucket,
 } from '../../../../frontend/api/api'
 import { ScanFileDto } from '../../../../frontend/dtos/formDto'
-import { FileScan, FileScanResponse, FileScanStatus } from '../../../../frontend/dtos/formStepperDto'
+import {
+  FileScan,
+  FileScanResponse,
+  FileScanStatus,
+} from '../../../../frontend/dtos/formStepperDto'
 import useAccount from '../../../../frontend/hooks/useAccount'
 import logger, { developmentLog } from '../../../../frontend/utils/logger'
 import UploadBrokenMessages, { MINIO_ERROR } from '../../info-components/UploadBrokenMessages'
@@ -20,8 +24,6 @@ import UploadFieldHeader from '../../info-components/UploadFieldHeader'
 import UploadButton from './UploadButton'
 import UploadDropArea from './UploadDropArea'
 import UploadedFilesList from './UploadedFilesList'
-
-
 
 interface UploadProps {
   type: 'button' | 'dragAndDrop'
@@ -46,13 +48,15 @@ interface UploadProps {
   // file info for Summary
   fileScans?: FileScan[]
   onChange?: (value: UploadMinioFile[]) => void
-  onUpdateFileScans?: (newFileScans: FileScan[], removeFileScan?: FileScan|null) => void
+  onUpdateFileScans?: (newFileScans: FileScan[], removeFileScan?: FileScan | null) => void
   onRemoveFileScan?: (removeScan?: FileScan) => void
 }
 
 const getBucketFileName = (file: File, folderName?: string) => {
-  const extension = file.type.split("/").pop()
-  const newName = folderName ? `${folderName}/${createUuid()}.${extension || ''}` : `${createUuid()}.${extension || ''}`
+  const extension = file.type.split('/').pop()
+  const newName = folderName
+    ? `${folderName}/${createUuid()}.${extension || ''}`
+    : `${createUuid()}.${extension || ''}`
   return new File([file], newName, {
     type: file.type,
     lastModified: file.lastModified,
@@ -83,7 +87,7 @@ const UploadComponent: ForwardRefRenderFunction<HTMLDivElement, UploadProps> = (
     bucketFolderName,
     fileScans,
     onUpdateFileScans,
-    onRemoveFileScan
+    onRemoveFileScan,
   }: UploadProps = props
 
   const [fileBrokenMessages, setFileBrokenMessages] = useState<string[]>([])
@@ -91,7 +95,7 @@ const UploadComponent: ForwardRefRenderFunction<HTMLDivElement, UploadProps> = (
 
   const startScanFiles = async (newFileScans: FileScan[]): Promise<FileScan[]> => {
     const token = await getAccessToken()
-    const parsedBucketName: string[]|undefined = bucketFolderName?.split("/")
+    const parsedBucketName: string[] | undefined = bucketFolderName?.split('/')
 
     const updatedFileScans: FileScan[] = await Promise.all(
       newFileScans.map(async (scan) => {
@@ -99,7 +103,7 @@ const UploadComponent: ForwardRefRenderFunction<HTMLDivElement, UploadProps> = (
           pospId: pospId ?? parsedBucketName?.[1],
           formId: formId ?? parsedBucketName?.[2],
           userExternalId,
-          fileUid: scan.fileName.split("/").pop()
+          fileUid: scan.fileName.split('/').pop(),
         }
         return scanFile(token, data)
           .then((res: FileScanResponse) => {
@@ -109,25 +113,32 @@ const UploadComponent: ForwardRefRenderFunction<HTMLDivElement, UploadProps> = (
           })
           .catch((error) => {
             // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
-            logger.error("Failed /scan/file:", error, error.message, error.error, error.statusCode)
+            logger.error('Failed /scan/file:', error, error.message, error.error, error.statusCode)
             return { ...scan, fileState: 'error' }
           })
-      })
+      }),
     )
 
-    return updatedFileScans.filter(scan => scan.fileState !== 'error' || !scan.scanId)
+    return updatedFileScans.filter((scan) => scan.fileState !== 'error' || !scan.scanId)
   }
 
-  const scanAllNewFiles = (newFiles: UploadMinioFile[], currentFileScans: FileScan[], removeFileScan?: FileScan|null) => {
+  const scanAllNewFiles = (
+    newFiles: UploadMinioFile[],
+    currentFileScans: FileScan[],
+    removeFileScan?: FileScan | null,
+  ) => {
     if (!isScanningAllowed) return
 
-    const newFileScans: FileScan[] = newFiles.map(minioFile => {
-      const oldFileScan = currentFileScans?.find(fileScan => fileScan.fileName === minioFile.file.name)
+    const newFileScans: FileScan[] = newFiles.map((minioFile) => {
+      const oldFileScan = currentFileScans?.find(
+        (fileScan) => fileScan.fileName === minioFile.file.name,
+      )
       return {
         originalName: minioFile.originalName,
         fileName: minioFile.file.name,
-        fileState: oldFileScan ? oldFileScan.fileState : "scan"
-      }})
+        fileState: oldFileScan ? oldFileScan.fileState : 'scan',
+      }
+    })
 
     startScanFiles(newFileScans)
       .then((scannedNewFiles: FileScan[]) => {
@@ -162,28 +173,27 @@ const UploadComponent: ForwardRefRenderFunction<HTMLDivElement, UploadProps> = (
 
     const fileStateStatus: FileScanStatus = await getFileScanState(token, scanId)
       .then((res: FileScanResponse) => res.status)
-      .catch(error => {
-        logger.error("Fetch scan file statuses failed", error)
-        return "NOT FOUND"
+      .catch((error) => {
+        logger.error('Fetch scan file statuses failed', error)
+        return 'NOT FOUND'
       })
 
-    await deleteFileFromBucket(fileName, fileStateStatus)
-      .catch((error) => {
-        setMinioError()
-        logger.error("Delete from bucket failed",error)
-      })
+    await deleteFileFromBucket(fileName, fileStateStatus).catch((error) => {
+      setMinioError()
+      logger.error('Delete from bucket failed', error)
+    })
 
-    await deleteFileScan(token, scanId)
-      .catch((error) => {
-        setMinioError()
-        logger.error("Delete file scan from server failed", error)
-      })
+    await deleteFileScan(token, scanId).catch((error) => {
+      setMinioError()
+      logger.error('Delete file scan from server failed', error)
+    })
   }
 
   const handleOnRemoveFile = async (id: number) => {
     const valueFileName = value?.[id].file.name
     const fileScan = fileScans?.[id]
-    if (!valueFileName || !fileScan || fileScan.fileName  !== valueFileName || !fileScan.scanId) return null
+    if (!valueFileName || !fileScan || fileScan.fileName !== valueFileName || !fileScan.scanId)
+      return null
 
     removeFileOnClient(valueFileName)
     await removeFileOnServer(valueFileName, fileScan.scanId)
@@ -194,7 +204,8 @@ const UploadComponent: ForwardRefRenderFunction<HTMLDivElement, UploadProps> = (
   const removeFirstFile = async () => {
     const valueFileName = value?.[0].file.name
     const fileScan = fileScans?.[0]
-    if (!valueFileName || !fileScan || fileScan.fileName  !== valueFileName || !fileScan.scanId) return null
+    if (!valueFileName || !fileScan || fileScan.fileName !== valueFileName || !fileScan.scanId)
+      return null
 
     await removeFileOnServer(valueFileName, fileScan.scanId)
 
@@ -243,12 +254,14 @@ const UploadComponent: ForwardRefRenderFunction<HTMLDivElement, UploadProps> = (
     const sanitizedFiles = sanitizeClientFiles(newFiles)
     let oldFiles = value ? [...value] : []
     let currentFileScans: FileScan[] = fileScans ?? []
-    let removeFileScan: FileScan|undefined|null
+    let removeFileScan: FileScan | undefined | null
     if (!multiple && oldFiles.length === 1) {
       oldFiles = []
       emitOnChange(sanitizedFiles, oldFiles)
       removeFileScan = await removeFirstFile()
-      currentFileScans = currentFileScans.filter((fileScan) => fileScan.fileName !== removeFileScan?.fileName)
+      currentFileScans = currentFileScans.filter(
+        (fileScan) => fileScan.fileName !== removeFileScan?.fileName,
+      )
     } else {
       emitOnChange(sanitizedFiles, oldFiles)
     }
@@ -262,9 +275,13 @@ const UploadComponent: ForwardRefRenderFunction<HTMLDivElement, UploadProps> = (
           .catch((error) => {
             setMinioError()
             logger.error(error)
-            return { ...minioFile, errorMessage: 'File not uploaded', isUploading: false } as UploadMinioFile
+            return {
+              ...minioFile,
+              errorMessage: 'File not uploaded',
+              isUploading: false,
+            } as UploadMinioFile
           })
-      })
+      }),
     )
 
     emitOnChange(uploadFiles, oldFiles)
@@ -284,7 +301,7 @@ const UploadComponent: ForwardRefRenderFunction<HTMLDivElement, UploadProps> = (
       const newFiles = Array.from(uploadInput.files, (file) => {
         return { file, originalName: file.name }
       })
-      addNewFiles(newFiles).catch(error => logger.error('ADD NEW FILES FAILED', error))
+      addNewFiles(newFiles).catch((error) => logger.error('ADD NEW FILES FAILED', error))
     })
 
     uploadInput.click()
@@ -293,7 +310,6 @@ const UploadComponent: ForwardRefRenderFunction<HTMLDivElement, UploadProps> = (
   const handleOnDrop = async (newFiles: UploadMinioFile[]) => {
     await addNewFiles(newFiles)
   }
-
 
   // RENDER
   return (

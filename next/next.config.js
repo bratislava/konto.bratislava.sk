@@ -12,7 +12,6 @@ const nextConfig = {
   output: 'standalone',
   eslint: {
     dirs: ['components/', 'pages/', 'utils/', 'backend/', 'frontend/'],
-    ignorePatterns: ['backend/forms/'],
   },
   async redirects() {
     return [

@@ -19,33 +19,27 @@ type AlertButtonsBase = {
 }
 
 const AlertButtons = ({ buttons, className }: AlertButtonsBase) => {
-  return (
-    buttons && buttons?.length > 0
-      ? (<div className={cx('w-max flex items-start gap-5', className)}>
-          {buttons?.map((button, i) => (
-            <React.Fragment key={i}>
-              {button.link ? (
-                <Link
-                  className="text-16-medium w-max underline underline-offset-4"
-                  href={button.link}
-                >
-                  {button.title}
-                  </Link>
-                ) : (
-                  <button
-                    type="button"
-                    className="text-16-medium w-max underline underline-offset-4"
-                    onClick={button.handler}
-                  >
-                    {button.title}
-                  </button>
-                )}
-              </React.Fragment>
-            ))}
-          </div>
-        )
-      : null
-  )
+  return buttons && buttons?.length > 0 ? (
+    <div className={cx('w-max flex items-start gap-5', className)}>
+      {buttons?.map((button, i) => (
+        <React.Fragment key={i}>
+          {button.link ? (
+            <Link className="text-16-medium w-max underline underline-offset-4" href={button.link}>
+              {button.title}
+            </Link>
+          ) : (
+            <button
+              type="button"
+              className="text-16-medium w-max underline underline-offset-4"
+              onClick={button.handler}
+            >
+              {button.title}
+            </button>
+          )}
+        </React.Fragment>
+      ))}
+    </div>
+  ) : null
 }
 
 type AlertBase = {

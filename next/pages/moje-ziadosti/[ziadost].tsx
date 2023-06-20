@@ -1,7 +1,7 @@
 import MyApplicationDetails from 'components/forms/segments/AccountSections/MyApplicationsSection/MyApplicationDetails'
 import AccountPageLayout from 'components/layouts/AccountPageLayout'
 import PageWrapper from 'components/layouts/PageWrapper'
-import { getAplicationDetailsData, getAplicationHistoryData } from 'frontend/api/mocks/mocks'
+import { getApplicationDetailsData, getApplicationHistoryData } from 'frontend/api/mocks/mocks'
 import { isProductionDeployment } from 'frontend/utils/general'
 import logger from 'frontend/utils/logger'
 import { AsyncServerProps } from 'frontend/utils/types'
@@ -12,11 +12,11 @@ export const getServerSideProps = async (ctx: GetServerSidePropsContext) => {
   if (isProductionDeployment()) return { notFound: true }
   const locale = ctx.locale ?? 'sk'
 
-  let myAplicationDetailsData
-  let myAplicationHistoryData
+  let myApplicationDetailsData
+  let myApplicationHistoryData
   try {
-    myAplicationDetailsData = getAplicationDetailsData(ctx.query.ziadost)
-    myAplicationHistoryData = getAplicationHistoryData()
+    myApplicationDetailsData = getApplicationDetailsData(ctx.query.ziadost)
+    myApplicationHistoryData = getApplicationHistoryData()
   } catch (error) {
     logger.error(error)
     return { notFound: true }
@@ -24,8 +24,8 @@ export const getServerSideProps = async (ctx: GetServerSidePropsContext) => {
 
   return {
     props: {
-      myAplicationDetailsData,
-      myAplicationHistoryData,
+      myApplicationDetailsData,
+      myApplicationHistoryData,
       page: {
         locale: ctx.locale,
         localizations: ['sk', 'en']
@@ -43,16 +43,16 @@ export const getServerSideProps = async (ctx: GetServerSidePropsContext) => {
 
 const AccountMyApplicationsPage = ({
   page,
-  myAplicationDetailsData,
-  myAplicationHistoryData,
+  myApplicationDetailsData,
+  myApplicationHistoryData,
   isProductionDeploy,
 }: AsyncServerProps<typeof getServerSideProps>) => {
   return (
     <PageWrapper locale={page.locale} localizations={page.localizations}>
       <AccountPageLayout isProductionDeploy={isProductionDeploy}>
         <MyApplicationDetails
-          historyData={myAplicationHistoryData}
-          detailsData={myAplicationDetailsData}
+          historyData={myApplicationHistoryData}
+          detailsData={myApplicationDetailsData}
         />
       </AccountPageLayout>
     </PageWrapper>

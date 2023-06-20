@@ -1,7 +1,7 @@
 import MyApplicationsSection from 'components/forms/segments/AccountSections/MyApplicationsSection/MyApplicationsSection'
 import AccountPageLayout from 'components/layouts/AccountPageLayout'
 import PageWrapper from 'components/layouts/PageWrapper'
-import { getAplicationConceptList, getAplicationSentList } from 'frontend/api/mocks/mocks'
+import { getApplicationConceptList, getApplicationSentList } from 'frontend/api/mocks/mocks'
 import { isProductionDeployment } from 'frontend/utils/general'
 import logger from 'frontend/utils/logger'
 import { AsyncServerProps } from 'frontend/utils/types'
@@ -12,11 +12,11 @@ export const getServerSideProps = async (ctx: GetServerSidePropsContext) => {
   if (isProductionDeployment()) return { notFound: true }
   const locale = ctx.locale ?? 'sk'
 
-  let myAplicationSentList
-  let myAplicationConceptList
+  let myApplicationSentList
+  let myApplicationConceptList
   try {
-    myAplicationSentList = getAplicationSentList()
-    myAplicationConceptList = getAplicationConceptList()
+    myApplicationSentList = getApplicationSentList()
+    myApplicationConceptList = getApplicationConceptList()
   } catch (error) {
     logger.error(error)
     return { notFound: true }
@@ -24,8 +24,8 @@ export const getServerSideProps = async (ctx: GetServerSidePropsContext) => {
 
   return {
     props: {
-      myAplicationSentList,
-      myAplicationConceptList,
+      myApplicationSentList,
+      myApplicationConceptList,
       page: {
         locale: ctx.locale,
         localizations: ['sk', 'en']
@@ -43,16 +43,16 @@ export const getServerSideProps = async (ctx: GetServerSidePropsContext) => {
 
 const AccountMyApplicationsPage = ({
   page,
-  myAplicationSentList,
-  myAplicationConceptList,
+  myApplicationSentList,
+  myApplicationConceptList,
   isProductionDeploy,
 }: AsyncServerProps<typeof getServerSideProps>) => {
   return (
     <PageWrapper locale={page.locale} localizations={page.localizations}>
       <AccountPageLayout isProductionDeploy={isProductionDeploy}>
         <MyApplicationsSection
-          conceptCardsList={myAplicationConceptList}
-          sentCardsList={myAplicationSentList}
+          conceptCardsList={myApplicationConceptList}
+          sentCardsList={myApplicationSentList}
           isProductionDeploy={isProductionDeploy}
         />
       </AccountPageLayout>

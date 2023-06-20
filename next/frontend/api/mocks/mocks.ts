@@ -30,24 +30,24 @@ export type MyApplicationHistoryDataBase = {
   description: string
 }
 
-export const getAplicationDetailsData = (
+export const getApplicationDetailsData = (
   id?: string | string[],
 ): MyApplicationsSentCardBase | undefined => {
-  const myAplicationDetailsData: MyApplicationsSentCardBase[] = applicationsSentList
-  return myAplicationDetailsData.find((item) => id === item.id)
+  const myApplicationDetailsData: MyApplicationsSentCardBase[] = applicationsSentList
+  return myApplicationDetailsData.find((item) => id === item.id)
 }
 
-export const getAplicationHistoryData = (): MyApplicationHistoryDataBase[] => {
-  const myAplicationHistoryData: MyApplicationHistoryDataBase[] = applicationsHistoryData
-  return myAplicationHistoryData
+export const getApplicationHistoryData = (): MyApplicationHistoryDataBase[] => {
+  const myApplicationHistoryData: MyApplicationHistoryDataBase[] = applicationsHistoryData
+  return myApplicationHistoryData
 }
 
-export const getAplicationSentList = (): MyApplicationsSentCardBase[] => {
-  const myAplicationSentList: MyApplicationsSentCardBase[] = applicationsSentList
-  return myAplicationSentList
+export const getApplicationSentList = (): MyApplicationsSentCardBase[] => {
+  const myApplicationSentList: MyApplicationsSentCardBase[] = applicationsSentList
+  return myApplicationSentList
 }
 
-export const getAplicationConceptList = (): MyApplicationsConceptCardBase[] => {
-  const myAplicationConceptList: MyApplicationsConceptCardBase[] = applicationsConceptList
-  return myAplicationConceptList
+export const getApplicationConceptList = (): MyApplicationsConceptCardBase[] => {
+  const myApplicationConceptList: MyApplicationsConceptCardBase[] = applicationsConceptList
+  return myApplicationConceptList
 }

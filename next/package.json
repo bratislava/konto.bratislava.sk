@@ -51,7 +51,7 @@
     "libxmljs2": "^0.31.0",
     "lodash": "4.17.21",
     "minio": "^7.0.32",
-    "next": "13.4.6",
+    "next": "13.4.5",
     "next-i18next": "12.1.0",
     "next-query-params": "^4.1.0",
     "react": "18.2.0",

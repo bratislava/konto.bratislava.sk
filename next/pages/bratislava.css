@@ -183,7 +183,8 @@ input[type='password']::-webkit-strong-password-auto-fill-button {
 
 /* https://stackoverflow.com/questions/17000562/removing-the-clear-and-reveal-password-icons-from-internet-explorer */
 input::-ms-reveal, /* remove eye icon */
-input::-ms-clear { /* remove clear input text icon */
+input::-ms-clear {
+  /* remove clear input text icon */
   display: none;
 }
 
@@ -218,5 +219,3 @@ input[type='number']::-webkit-outer-spin-button {
   color: #333333;
   cursor: pointer;
 }
-
-

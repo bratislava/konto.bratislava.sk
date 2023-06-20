@@ -10,15 +10,15 @@ import useAccount from './useAccount'
 import useSnackbar from './useSnackbar'
 
 export interface FormFiller {
-  initFormData: () => Promise<RJSFSchema|undefined|null>
+  initFormData: () => Promise<RJSFSchema | undefined | null>
   updateFormData: (formData: any) => Promise<void>
   formId?: string
   formUserExternalId?: string
 }
 
 export const useFormFiller = (eform: EFormValue): FormFiller => {
-  const [formId, setFormId] = useState<string|undefined>()
-  const [formUserExternalId, setFormUserExternalId] = useState<string|undefined>()
+  const [formId, setFormId] = useState<string | undefined>()
+  const [formUserExternalId, setFormUserExternalId] = useState<string | undefined>()
   const { getAccessToken } = useAccount()
   const [openSnackbarWarning] = useSnackbar({ variant: 'warning' })
   const [openSnackbarError] = useSnackbar({ variant: 'error' })
@@ -76,6 +76,6 @@ export const useFormFiller = (eform: EFormValue): FormFiller => {
     initFormData,
     updateFormData,
     formId,
-    formUserExternalId
+    formUserExternalId,
   }
 }

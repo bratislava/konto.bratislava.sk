@@ -42,7 +42,11 @@ const FormHeader = ({ onExportXml, onSaveConcept, onImportXml, onExportPdf }: Fo
       onPress: onExportXml,
     },
     { title: t('menu_list.pdf'), icon: <PdfIcon className="w-6 h-6" />, onPress: onExportPdf },
-    { title: t('menu_list.upload_xml'), icon: <ArrowsDownUpIcon className="w-6 h-6" />, onPress: onImportXml },
+    {
+      title: t('menu_list.upload_xml'),
+      icon: <ArrowsDownUpIcon className="w-6 h-6" />,
+      onPress: onImportXml,
+    },
   ]
 
   const handleOnPressSaveConcept = () => {

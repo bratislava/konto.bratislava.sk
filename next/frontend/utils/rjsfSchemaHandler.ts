@@ -24,14 +24,14 @@ function findTitle(value: JSONSchema7Definition, items: JSONSchema7Definition[])
     : value
 }
 
-function replaceScannedNames (fieldFormData: JSONSchema7Definition, fileScans: FileScan[]) {
+function replaceScannedNames(fieldFormData: JSONSchema7Definition, fileScans: FileScan[]) {
   if (!Array.isArray(fieldFormData)) {
-    const fileScan = fileScans.find(scan => scan.fileName === fieldFormData)
+    const fileScan = fileScans.find((scan) => scan.fileName === fieldFormData)
     return fileScan ? fileScan.originalName : fieldFormData
   }
 
-  return fieldFormData.map(data => {
-    const fileScan = fileScans.find(scan => scan.fileName === data)
+  return fieldFormData.map((data) => {
+    const fileScan = fileScans.find((scan) => scan.fileName === data)
     return (fileScan ? fileScan.originalName : data) as JSONSchema7Definition
   })
 }
@@ -42,7 +42,7 @@ function replaceScannedNames (fieldFormData: JSONSchema7Definition, fileScans: F
 function transformValueArray(
   fieldFormData?: JSONSchema7Definition,
   fieldSchema?: JSONSchema7Definition,
-  fileScans: FileScan[] = []
+  fileScans: FileScan[] = [],
 ) {
   if (!fieldFormData || typeof fieldFormData === 'boolean') return null
   if (!fieldSchema || typeof fieldSchema === 'boolean') return fieldFormData
@@ -64,24 +64,27 @@ function transformValueArray(
     : findTitle(fieldFormData, items)
 }
 
-function getFileScanState (fieldFormData?: JSONSchema7Definition, fileScans?: FileScan[]): FileScanState|undefined {
+function getFileScanState(
+  fieldFormData?: JSONSchema7Definition,
+  fileScans?: FileScan[],
+): FileScanState | undefined {
   if (!fieldFormData || !fileScans) return undefined
 
   if (!Array.isArray(fieldFormData)) {
-    const fileScan = fileScans.find(scan => scan.fileName === fieldFormData)
+    const fileScan = fileScans.find((scan) => scan.fileName === fieldFormData)
     return fileScan ? fileScan.fileState : undefined
   }
 
-  const allScanStates = fieldFormData.map(data => {
-    const fileScan = fileScans.find(scan => scan.fileName === data)
+  const allScanStates = fieldFormData.map((data) => {
+    const fileScan = fileScans.find((scan) => scan.fileName === data)
     return fileScan ? fileScan.fileState : undefined
   })
 
-  return allScanStates?.some(state => state === 'error')
+  return allScanStates?.some((state) => state === 'error')
     ? 'error'
-    : allScanStates?.some(state => state === 'scan')
-      ? 'scan'
-      : undefined
+    : allScanStates?.some((state) => state === 'scan')
+    ? 'scan'
+    : undefined
 }
 
 // get data of field in format we need in Summary
@@ -94,11 +97,11 @@ function getFieldData(
   fieldSchema?: JSONSchema7Definition,
   isConditional?: boolean,
 ): TransformedFormData {
-
   const transformedFieldFormData = transformValueArray(fieldFormData, fieldSchema, fileScans)
-  const value = transformedFieldFormData && !Array.isArray(transformedFieldFormData)
-    ? transformedFieldFormData.toString()
-    : Array.isArray(transformedFieldFormData) && transformedFieldFormData.length > 0
+  const value =
+    transformedFieldFormData && !Array.isArray(transformedFieldFormData)
+      ? transformedFieldFormData.toString()
+      : Array.isArray(transformedFieldFormData) && transformedFieldFormData.length > 0
       ? transformedFieldFormData.join(', ')
       : null
 
@@ -108,7 +111,7 @@ function getFieldData(
     schemaPath,
     isError,
     isConditional,
-    fileScanState: getFileScanState(fieldFormData, fileScans)
+    fileScanState: getFileScanState(fieldFormData, fileScans),
   }
 }
 
@@ -139,46 +142,49 @@ function getAllSchemaData(
   const properties: JsonSchemaExtraProperties =
     getAllPossibleJsonSchemaExtraProperties(schemaContent)
 
-  Object.entries(properties).forEach(([key, value]: [string, JsonSchemaExtraProperty|undefined]) => {
-    // init data every property of this layer of schema
-    const isChildConditional = isConditional || !!properties.isConditional || !!value?.isConditional
-    const newSchemaPath = `${schemaPath}.${key}`
-    const childExtraErrors = currentExtraErrors ? currentExtraErrors[key] : undefined
-    const childFormData: JSONSchema7Definition | undefined =
-      currentFormData && typeof currentFormData !== 'boolean'
-        ? currentFormData[key as keyof JSONSchema7Definition]
-        : undefined
+  Object.entries(properties).forEach(
+    ([key, value]: [string, JsonSchemaExtraProperty | undefined]) => {
+      // init data every property of this layer of schema
+      const isChildConditional =
+        isConditional || !!properties.isConditional || !!value?.isConditional
+      const newSchemaPath = `${schemaPath}.${key}`
+      const childExtraErrors = currentExtraErrors ? currentExtraErrors[key] : undefined
+      const childFormData: JSONSchema7Definition | undefined =
+        currentFormData && typeof currentFormData !== 'boolean'
+          ? currentFormData[key as keyof JSONSchema7Definition]
+          : undefined
 
-    if (value && typeof value !== 'boolean' && (!value.type || value.type === 'object')) {
-      // if it's not field, continue recursively and go to deeper layer current schema
-      getAllSchemaData(
-        data,
-        value,
-        newSchemaPath,
-        formErrors,
-        fileScans,
-        childFormData,
-        childExtraErrors,
-        isChildConditional,
-      )
-    } else if (value && typeof value !== 'boolean' && value.type) {
-      // if it's field, init data to get transformed data of field for usage in Summary
-      const label = value.title ?? key
-      const extraErrorCount: number = childExtraErrors?.__errors?.length ?? 0
-      const isError: boolean = extraErrorCount > 0 || isFieldError(formErrors, schemaPath, key)
-      // transform data of field for usage in Summary
-      const fieldData: TransformedFormData = getFieldData(
-        label,
-        newSchemaPath,
-        isError,
-        fileScans,
-        childFormData,
-        value,
-        isChildConditional,
-      )
-      data.push(fieldData)
-    }
-  })
+      if (value && typeof value !== 'boolean' && (!value.type || value.type === 'object')) {
+        // if it's not field, continue recursively and go to deeper layer current schema
+        getAllSchemaData(
+          data,
+          value,
+          newSchemaPath,
+          formErrors,
+          fileScans,
+          childFormData,
+          childExtraErrors,
+          isChildConditional,
+        )
+      } else if (value && typeof value !== 'boolean' && value.type) {
+        // if it's field, init data to get transformed data of field for usage in Summary
+        const label = value.title ?? key
+        const extraErrorCount: number = childExtraErrors?.__errors?.length ?? 0
+        const isError: boolean = extraErrorCount > 0 || isFieldError(formErrors, schemaPath, key)
+        // transform data of field for usage in Summary
+        const fieldData: TransformedFormData = getFieldData(
+          label,
+          newSchemaPath,
+          isError,
+          fileScans,
+          childFormData,
+          value,
+          isChildConditional,
+        )
+        data.push(fieldData)
+      }
+    },
+  )
 }
 
 // transforming every step formData of form independently
@@ -202,7 +208,15 @@ function transformStepFormData(
   const stepExtraErrors = extraErrors[stepKey]
 
   const data: TransformedFormData[] = []
-  getAllSchemaData(data, stepContent, `.${stepKey}`, formErrors, fileScans, formData[stepKey], stepExtraErrors)
+  getAllSchemaData(
+    data,
+    stepContent,
+    `.${stepKey}`,
+    formErrors,
+    fileScans,
+    formData[stepKey],
+    stepExtraErrors,
+  )
   return { key: stepKey, label, data }
 }
 
@@ -215,7 +229,9 @@ export const useFormDataTransform = (
   schema?: StrictRJSFSchema,
 ) => {
   const transformedSteps: TransformedFormStep[] = schema?.allOf
-    ? schema.allOf.map((step) => transformStepFormData(step, formData, formErrors, extraErrors, fileScans))
+    ? schema.allOf.map((step) =>
+        transformStepFormData(step, formData, formErrors, extraErrors, fileScans),
+      )
     : []
 
   return {

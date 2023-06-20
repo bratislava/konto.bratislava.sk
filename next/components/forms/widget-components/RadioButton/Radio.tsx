@@ -65,7 +65,7 @@ const Radio = ({
     },
   )
 
-  const stringValue = rest.value ? rest.value.toString() : ""
+  const stringValue = rest.value ? rest.value.toString() : ''
 
   return (
     <div className="w-full">

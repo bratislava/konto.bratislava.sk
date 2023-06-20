@@ -12,7 +12,8 @@ interface ContactInformationSectionProps {
   tax: Tax
 }
 
-const postalCodeFormat = (code?: string): string => code ? `${code.slice(0, 3)} ${code.slice(3)}` : ''
+const postalCodeFormat = (code?: string): string =>
+  code ? `${code.slice(0, 3)} ${code.slice(3)}` : ''
 
 const ContactInformationSection = ({ tax }: ContactInformationSectionProps) => {
   const { t } = useTranslation('account')
@@ -47,7 +48,9 @@ const ContactInformationSection = ({ tax }: ContactInformationSectionProps) => {
               isEditable={false}
               data={{
                 label: t('name_and_surname'),
-                value: tax.taxPayer?.name || `${userData?.given_name || ''} ${userData?.family_name || ''}`,
+                value:
+                  tax.taxPayer?.name ||
+                  `${userData?.given_name || ''} ${userData?.family_name || ''}`,
                 schemaPath: '',
                 isError: false,
               }}

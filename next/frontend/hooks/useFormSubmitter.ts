@@ -14,7 +14,7 @@ export const useFormSubmitter = (slug: string) => {
   const { t } = useTranslation('forms')
 
   const { getAccessToken } = useAccount()
-  const submitForm = async (formData: RJSFSchema, formId= '') => {
+  const submitForm = async (formData: RJSFSchema, formId = '') => {
     try {
       const token = await getAccessToken()
       // TODO do something more with the result then just showing success

@@ -83,8 +83,14 @@ const UserProfileView = () => {
           }}
           title={t('profile_detail.modal_title')}
         >
-          <AccountMarkdown content={t('profile_detail.modal_message')} variant="sm" className={cx("text-center","md:text-left")} />
-          <p className={cx("text-p3 lg:text-p2 mt-6 text-center","md:text-left")}>{t('profile_detail.modal_thanks')}</p>
+          <AccountMarkdown
+            content={t('profile_detail.modal_message')}
+            variant="sm"
+            className={cx('text-center', 'md:text-left')}
+          />
+          <p className={cx('text-p3 lg:text-p2 mt-6 text-center', 'md:text-left')}>
+            {t('profile_detail.modal_thanks')}
+          </p>
         </MessageModal>
       </div>
     </section>

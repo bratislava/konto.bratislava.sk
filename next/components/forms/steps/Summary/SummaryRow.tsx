@@ -16,8 +16,8 @@ const SummaryRow = (props: SummaryRowProps) => {
 
   const containerClassName = cx('border-b-2 md:flex-nowrap flex flex-wrap flex-row py-2.5 gap-2', {
     '[&>div>*]:block border-red-500': data.isError,
-    'border-gray-200 [&>div>*]:hover:block': !data.isError && data.fileScanState !== "scan",
-    'border-orange-400 [&>div>*]:block': !data.isError && data.fileScanState === "scan",
+    'border-gray-200 [&>div>*]:hover:block': !data.isError && data.fileScanState !== 'scan',
+    'border-orange-400 [&>div>*]:block': !data.isError && data.fileScanState === 'scan',
     'hover:border-gray-700': isEditable,
   })
 
@@ -38,10 +38,11 @@ const SummaryRow = (props: SummaryRowProps) => {
         <p className={valueClassName}>{data.value || '-'}</p>
         {isEditable && (
           <div className="w-5 lg:hidden hover:lg:block">
-            {data.fileScanState === "scan"
-              ? <UnionWaitIcon className="cursor-pointer flex w-5 h-5" onClick={onGoToStep} />
-              : <EditIcon className="cursor-pointer flex w-5 h-5" onClick={onGoToStep} />
-            }
+            {data.fileScanState === 'scan' ? (
+              <UnionWaitIcon className="cursor-pointer flex w-5 h-5" onClick={onGoToStep} />
+            ) : (
+              <EditIcon className="cursor-pointer flex w-5 h-5" onClick={onGoToStep} />
+            )}
           </div>
         )}
       </div>

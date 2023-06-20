@@ -55,14 +55,19 @@ const GeneratedFormRJSF = ({ eform, escapedSlug, formSlug, wrapperClassName }: F
     }
   }
 
-  const saveConcept = () => filler.updateFormData(form.formData).catch(error => logger.error('Save concept failed', error))
+  const saveConcept = () =>
+    filler
+      .updateFormData(form.formData)
+      .catch((error) => logger.error('Save concept failed', error))
 
   return (
     <>
-      <FormHeader onImportXml={form.importXml}
-                  onExportXml={form.exportXml}
-                  onSaveConcept={saveConcept}
-                  onExportPdf={form.exportPdf}/>
+      <FormHeader
+        onImportXml={form.importXml}
+        onExportXml={form.exportXml}
+        onSaveConcept={saveConcept}
+        onExportPdf={form.exportPdf}
+      />
       <div
         className={cx(
           'flex flex-col gap-10 pt-0 pb-6 lg:py-10 w-full max-w-screen-lg mx-auto',
@@ -117,7 +122,9 @@ const GeneratedFormRJSF = ({ eform, escapedSlug, formSlug, wrapperClassName }: F
               onGoToStep={form.setStepIndex}
               submitErrors={submitter.errors}
               submitMessage={submitter.successMessage}
-              onUpdateFileScans={updatedScans => { formContext.fileScans = updatedScans }}
+              onUpdateFileScans={(updatedScans) => {
+                formContext.fileScans = updatedScans
+              }}
             />
           ) : (
             <>
@@ -161,10 +168,12 @@ const GeneratedFormRJSF = ({ eform, escapedSlug, formSlug, wrapperClassName }: F
                 : setRegistrationModal(true)
             }
           />
-          <MenuList onExportXml={form.exportXml}
-                    onSaveConcept={saveConcept}
-                    onImportXml={form.importXml}
-                    onExportPdf={form.exportPdf}/>
+          <MenuList
+            onExportXml={form.exportXml}
+            onSaveConcept={saveConcept}
+            onImportXml={form.importXml}
+            onExportPdf={form.exportPdf}
+          />
         </div>
       </div>
     </>

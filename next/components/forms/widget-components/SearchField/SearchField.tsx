@@ -53,7 +53,7 @@ const SearchField = ({
       isRequired: required,
       isDisabled: disabled,
     },
-    ref
+    ref,
   )
 
   const style = cx(

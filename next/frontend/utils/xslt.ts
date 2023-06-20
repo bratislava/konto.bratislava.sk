@@ -18,7 +18,10 @@ interface SaxonJsOutput {
   principalResult?: string
 }
 
-export const transformSaxon = async (stylesheet: any, data: string): Promise<string|undefined> => {
+export const transformSaxon = async (
+  stylesheet: any,
+  data: string,
+): Promise<string | undefined> => {
   // eslint-disable-next-line @typescript-eslint/no-unsafe-call,@typescript-eslint/no-unsafe-member-access
   const output: SaxonJsOutput = await transform(
     {
@@ -26,7 +29,7 @@ export const transformSaxon = async (stylesheet: any, data: string): Promise<str
       sourceText: data,
       destination: 'serialized',
     },
-    'async'
+    'async',
   )
 
   return output.principalResult

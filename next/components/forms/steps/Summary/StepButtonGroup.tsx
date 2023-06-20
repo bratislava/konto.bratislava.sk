@@ -16,10 +16,10 @@ interface StepButtonGroupProps {
 }
 
 const StepButtonGroup = (props: StepButtonGroupProps) => {
-  const { stepIndex, isFinalStep, fileScans=[], previous, skip, submitStep, submitForm } = props
+  const { stepIndex, isFinalStep, fileScans = [], previous, skip, submitStep, submitForm } = props
   const { t } = useTranslation('forms')
 
-  const isSubmitFormAllowed = !fileScans.some(scan => scan.fileState === 'error')
+  const isSubmitFormAllowed = !fileScans.some((scan) => scan.fileState === 'error')
 
   return (
     <>
@@ -36,7 +36,7 @@ const StepButtonGroup = (props: StepButtonGroupProps) => {
           )}
         </div>
         {isFinalStep ? (
-          <Button onPress={submitForm} text={t('buttons.send')} disabled={isSubmitFormAllowed}/>
+          <Button onPress={submitForm} text={t('buttons.send')} disabled={isSubmitFormAllowed} />
         ) : (
           <div className="flex flex-row flex-wrap gap-5">
             <Button variant="black-outline" onPress={skip} text={t('buttons.skip')} />
@@ -51,7 +51,13 @@ const StepButtonGroup = (props: StepButtonGroupProps) => {
       {/* Mobile */}
       <div className="flex-col flex mt-4 md:hidden gap-2">
         {isFinalStep ? (
-          <Button size="sm" fullWidth onPress={submitForm} text={t('buttons.send')} disabled={isSubmitFormAllowed}/>
+          <Button
+            size="sm"
+            fullWidth
+            onPress={submitForm}
+            text={t('buttons.send')}
+            disabled={isSubmitFormAllowed}
+          />
         ) : (
           <Button size="sm" fullWidth onPress={submitStep} text={t('buttons.continue')} />
         )}

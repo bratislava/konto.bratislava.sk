@@ -34,7 +34,7 @@ const GeneratedFormRJSF = ({ eform, escapedSlug, formSlug, wrapperClassName }: F
   const formContext = useFormRJSFContext(eform, filler)
   const { t } = useTranslation('account')
   const form = useFormStepper(escapedSlug, eform, {
-    onStepSumbit: filler.updateFormData,
+    onStepSubmit: filler.updateFormData,
     onInit: filler.initFormData,
   })
   const submitter = useFormSubmitter(formSlug)

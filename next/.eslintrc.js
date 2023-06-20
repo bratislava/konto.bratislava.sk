@@ -1,5 +1,5 @@
 module.exports = {
-  extends: ['auto', 'plugin:tailwindcss/recommended', 'plugin:@next/next/recommended'],
+  extends: ['auto', 'plugin:tailwindcss/recommended', 'plugin:@next/next/recommended', 'prettier'],
   plugins: [],
   rules: {
     'react/react-in-jsx-scope': 'off',
@@ -61,5 +61,5 @@ module.exports = {
     // json schema definitions may contain "then" keys
     'unicorn/no-thenable': 'off',
   },
-  ignorePatterns: ['*.config.*', 'graphql', '.eslintrc.js', '/backend/forms/'],
+  ignorePatterns: ['*.config.*', '.eslintrc.js', '/backend/forms/'],
 }

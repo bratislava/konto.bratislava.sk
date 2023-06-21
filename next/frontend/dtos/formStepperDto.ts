@@ -1,3 +1,4 @@
+import { FileUpdatedResponseDtoStatusEnum } from '@backend/client-openapi-forms'
 import { ValidatorType } from '@rjsf/utils'
 import { customizeValidator } from '@rjsf/validator-ajv8'
 import { AnySchemaObject, FuncKeywordDefinition } from 'ajv'
@@ -87,28 +88,12 @@ export const validator: ValidatorType = customizeValidator({
   ajvOptionsOverrides: { keywords: ajvKeywords },
 })
 
-export type FileScanStatus =
-  | 'UPLOADED'
-  | 'ACCEPTED'
-  | 'SCANNING'
-  | 'SAFE'
-  | 'INFECTED'
-  | 'NOT FOUND'
-  | 'MOVE ERROR SAFE'
-  | 'MOVE ERROR INFECTED'
 export type FileScanState = 'scan' | 'error' | 'finished'
-
-export interface FileScanResponse extends Record<string, unknown> {
-  status: FileScanStatus
-  id: string
-  fileUid: string
-  message: string
-}
 
 export interface FileScan extends Record<string, unknown> {
   fileName: string
   originalName: string
   fileState?: FileScanState
-  fileStateStatus?: FileScanStatus
+  fileStateStatus?: FileUpdatedResponseDtoStatusEnum
   scanId?: string
 }

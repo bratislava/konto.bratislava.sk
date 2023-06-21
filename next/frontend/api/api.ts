@@ -1,10 +1,9 @@
 // TODO waiting on #305 to get merged, afterwards might move elsewhere
 // frontend code for calling api endpoints grouped
+import { FileUpdatedResponseDtoStatusEnum } from '@backend/client-openapi-forms'
 import { RJSFSchema } from '@rjsf/utils'
 import { ErrorObject } from 'ajv'
 
-import { CreateFormDto, FormDto, ScanFileDto, UpdateFormDto } from '../dtos/formDto'
-import { FileScanStatus } from '../dtos/formStepperDto'
 import { ApiError, Gdpr, Identity, TaxApiError, UrlResult, User } from '../dtos/generalApiDto'
 import logger, { developmentLog } from '../utils/logger'
 
@@ -223,56 +222,6 @@ export const resetRcApi = (token: string | null) => {
   )
 }
 
-export const getForms = (token: string | null) => {
-  if (!token) throw new Error(MISSING_TOKEN)
-
-  return fetchJsonApi(`${String(process.env.NEXT_PUBLIC_FORMS_URL)}/nases/forms`, {
-    method: 'GET',
-    headers: {
-      'Content-Type': 'application/json',
-      Authorization: `Bearer ${token}`,
-    },
-  })
-}
-
-export const createForm = (token: string | null, data: CreateFormDto): Promise<FormDto> => {
-  if (!token) throw new Error(MISSING_TOKEN)
-
-  return fetchJsonApi<FormDto>(`${String(process.env.NEXT_PUBLIC_FORMS_URL)}/nases/create-form`, {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-      Authorization: `Bearer ${token}`,
-    },
-    body: JSON.stringify(data),
-  })
-}
-
-export const getForm = (token: string | null, id: string): Promise<FormDto> => {
-  if (!token) throw new Error(MISSING_TOKEN)
-
-  return fetchJsonApi<FormDto>(`${String(process.env.NEXT_PUBLIC_FORMS_URL)}/nases/form/${id}`, {
-    method: 'GET',
-    headers: {
-      'Content-Type': 'application/json',
-      Authorization: `Bearer ${token}`,
-    },
-  })
-}
-
-export const updateForm = (token: string | null, id: string, data: UpdateFormDto) => {
-  if (!token) throw new Error(MISSING_TOKEN)
-
-  return fetchJsonApi(`${String(process.env.NEXT_PUBLIC_FORMS_URL)}/nases/update-form/${id}`, {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-      Authorization: `Bearer ${token}`,
-    },
-    body: JSON.stringify(data),
-  })
-}
-
 export const getTaxApi = (token: string | null) => {
   if (!token) throw new Error(MISSING_TOKEN)
 
@@ -344,20 +293,6 @@ export const getEnum = async (id?: string) => {
   }
 }
 
-export const sendForm = (id: string, formDataXml: string, authorizationHeader: string) => {
-  return fetchJsonApi(
-    `${String(process.env.NEXT_PUBLIC_FORMS_URL)}/nases/send-and-update-form/${id}`,
-    {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        Authorization: authorizationHeader,
-      },
-      body: JSON.stringify({ formDataXml }),
-    },
-  )
-}
-
 export const uploadFileToBucket = async (file: File) => {
   const formData = new FormData()
   formData.append('file', file)
@@ -371,55 +306,16 @@ export const uploadFileToBucket = async (file: File) => {
   })
 }
 
-export const deleteFileFromBucket = async (fileName: string, fileScanStatus?: FileScanStatus) => {
+export const deleteFileFromBucket = async (
+  fileName: string,
+  fileScanStatus?: FileUpdatedResponseDtoStatusEnum,
+) => {
   const params = new URLSearchParams({ fileName, fileScanStatus: fileScanStatus || '' })
 
   return fetchJsonApi(`/api/eforms/delete-file?${params.toString()}`, {
     method: 'DELETE',
     headers: {
       'Content-Type': 'application/json',
-    },
-  })
-}
-
-export const scanFile = async (token: string | null, data: ScanFileDto) => {
-  developmentLog('DATA FOR FILE SCAN', data)
-  if (!token) throw new Error(MISSING_TOKEN)
-  if (!data.pospId || !data.formId || !data.userExternalId || !data.fileUid)
-    throw new Error(API_ERROR_TEXT)
-
-  return fetchJsonApi(`${String(process.env.NEXT_PUBLIC_FORMS_URL)}/files/scan`, {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-      Authorization: `Bearer ${token}`,
-    },
-    body: JSON.stringify(data),
-  })
-}
-
-export const getFileScanState = async (token: string | null, fileId?: string) => {
-  if (!token) throw new Error(MISSING_TOKEN)
-  if (!fileId) throw new Error(API_ERROR_TEXT)
-
-  return fetchJsonApi(`${String(process.env.NEXT_PUBLIC_FORMS_URL)}/files/scan/${fileId}`, {
-    method: 'GET',
-    headers: {
-      'Content-Type': 'application/json',
-      Authorization: `Bearer ${token}`,
-    },
-  })
-}
-
-export const deleteFileScan = async (token: string | null, fileId?: string) => {
-  if (!token) throw new Error(MISSING_TOKEN)
-  if (!fileId) throw new Error(API_ERROR_TEXT)
-
-  return fetchJsonApi(`${String(process.env.NEXT_PUBLIC_FORMS_URL)}/files/scan/${fileId}`, {
-    method: 'DELETE',
-    headers: {
-      'Content-Type': 'application/json',
-      Authorization: `Bearer ${token}`,
     },
   })
 }

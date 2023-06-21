@@ -1,15 +1,10 @@
+import { filesApi } from '@backend/client/client-forms'
 import { ErrorSchema, RJSFValidationError, StrictRJSFSchema } from '@rjsf/utils'
 import { ErrorObject } from 'ajv'
 import { useState } from 'react'
 import { useEffectOnce } from 'usehooks-ts'
 
-import { getFileScanState } from '../../../frontend/api/api'
-import {
-  FileScan,
-  FileScanResponse,
-  FileScanState,
-  JsonSchema,
-} from '../../../frontend/dtos/formStepperDto'
+import { FileScan, FileScanState, JsonSchema } from '../../../frontend/dtos/formStepperDto'
 import useAccount from '../../../frontend/hooks/useAccount'
 import logger, { developmentLog } from '../../../frontend/utils/logger'
 import Summary from './Summary/Summary'
@@ -49,19 +44,23 @@ const FinalStep = ({
 
     return Promise.all(
       unfinishedFileScans.map((scan: FileScan) => {
-        if (scan.fileStateStatus && ['INFECTED', 'SAFE'].includes(scan.fileStateStatus)) {
+        if (
+          (scan.fileStateStatus && ['INFECTED', 'SAFE'].includes(scan.fileStateStatus)) ||
+          !scan.scanId
+        ) {
           return scan
         }
-        return getFileScanState(token, scan.scanId)
-          .then((res: FileScanResponse) => {
+        return filesApi
+          .filesControllerGetFileScanStatus(scan.scanId, { accessToken: token })
+          .then((response) => {
             const fileState: FileScanState = ['INFECTED', 'MOVE ERROR INFECTED'].includes(
-              res.status,
+              response.data.status,
             )
               ? 'error'
-              : ['UPLOADED', 'ACCEPTED', 'NOT FOUND'].includes(res.status)
+              : ['UPLOADED', 'ACCEPTED', 'NOT FOUND'].includes(response.data.status)
               ? 'scan'
               : 'finished'
-            return { ...scan, fileState, fileStateStatus: res.status } as FileScan
+            return { ...scan, fileState, fileStateStatus: response.data.status } as FileScan
           })
           .catch((error) => {
             logger.error('Fetch scan file statuses failed', error)

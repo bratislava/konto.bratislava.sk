@@ -1,3 +1,4 @@
+import { nasesApi } from '@backend/client/client-forms'
 import { EFormValue } from '@backend/forms'
 import {
   buildXmlRecursive,
@@ -7,7 +8,6 @@ import {
 } from '@backend/utils/forms'
 import { ErrorObject } from 'ajv'
 import * as cheerio from 'cheerio'
-import { sendForm } from 'frontend/api/api'
 import type { NextApiRequest, NextApiResponse } from 'next'
 
 import logger from '../../../../frontend/utils/logger'
@@ -54,7 +54,15 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
   }
 
   try {
-    await sendForm(id, xmlBody, req.headers.authorization)
+    await nasesApi.nasesControllerSendAndUpdateForm(
+      id,
+      /// TS2345: Argument of type '{ formDataXml: string; }' is not assignable to parameter of type 'UpdateFormRequestDto'.
+      // Type '{ formDataXml: string; }' is missing the following properties from type 'UpdateFormRequestDto': 'email', 'formDataJson', 'pospVersion', 'messageSubject
+      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+      // @ts-expect-error
+      { formDataXml: xmlBody },
+      { accessToken: req.headers.authorization },
+    )
     return res.status(200).json({ message: 'OK' })
   } catch (error) {
     return res.status(500).json({ message: 'Send form failed' })

@@ -4,3 +4,4 @@ yarn.lock
 .next
 
 backend/forms/*/form.*.sef.json
+backend/client-openapi-forms/

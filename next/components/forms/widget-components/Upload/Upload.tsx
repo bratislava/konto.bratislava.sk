@@ -1,4 +1,4 @@
-import { filesApi } from '@backend/client/client-forms'
+import { formsApi } from '@backend/client/client-forms'
 import { UploadMinioFile } from '@backend/dtos/minio/upload-minio-file.dto'
 import cx from 'classnames'
 import FieldErrorMessage from 'components/forms/info-components/FieldErrorMessage'
@@ -89,7 +89,7 @@ const UploadComponent: ForwardRefRenderFunction<HTMLDivElement, UploadProps> = (
 
     const updatedFileScans: FileScan[] = await Promise.all(
       newFileScans.map(async (scan) => {
-        return filesApi
+        return formsApi
           .filesControllerPostFileToScanner(
             {
               pospId: pospId ?? (parsedBucketName?.[1] as string),
@@ -164,7 +164,7 @@ const UploadComponent: ForwardRefRenderFunction<HTMLDivElement, UploadProps> = (
   const removeFileOnServer = async (fileName: string, scanId: string) => {
     const token = await getAccessToken()
 
-    const fileStateStatus = await filesApi
+    const fileStateStatus = await formsApi
       .filesControllerGetFileScanStatus(scanId, { accessToken: token })
       .then((response) => response.data.status)
       .catch((error) => {
@@ -177,7 +177,7 @@ const UploadComponent: ForwardRefRenderFunction<HTMLDivElement, UploadProps> = (
       logger.error('Delete from bucket failed', error)
     })
 
-    await filesApi.filesControllerDeleteFile(fileName, { accessToken: token }).catch((error) => {
+    await formsApi.filesControllerDeleteFile(fileName, { accessToken: token }).catch((error) => {
       setMinioError()
       logger.error('Delete file scan from server failed', error)
     })

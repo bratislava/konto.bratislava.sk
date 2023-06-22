@@ -1,4 +1,4 @@
-import { nasesApi } from '@backend/client/client-forms'
+import { formsApi } from '@backend/client/client-forms'
 import { EFormValue } from '@backend/forms'
 import {
   buildXmlRecursive,
@@ -54,7 +54,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
   }
 
   try {
-    await nasesApi.nasesControllerSendAndUpdateForm(
+    await formsApi.nasesControllerSendAndUpdateForm(
       id,
       /// TS2345: Argument of type '{ formDataXml: string; }' is not assignable to parameter of type 'UpdateFormRequestDto'.
       // Type '{ formDataXml: string; }' is missing the following properties from type 'UpdateFormRequestDto': 'email', 'formDataJson', 'pospVersion', 'messageSubject

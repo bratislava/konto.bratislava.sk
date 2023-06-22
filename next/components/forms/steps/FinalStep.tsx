@@ -1,4 +1,4 @@
-import { filesApi } from '@backend/client/client-forms'
+import { formsApi } from '@backend/client/client-forms'
 import { ErrorSchema, RJSFValidationError, StrictRJSFSchema } from '@rjsf/utils'
 import { ErrorObject } from 'ajv'
 import { useState } from 'react'
@@ -50,7 +50,7 @@ const FinalStep = ({
         ) {
           return scan
         }
-        return filesApi
+        return formsApi
           .filesControllerGetFileScanStatus(scan.scanId, { accessToken: token })
           .then((response) => {
             const fileState: FileScanState = ['INFECTED', 'MOVE ERROR INFECTED'].includes(

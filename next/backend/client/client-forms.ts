@@ -13,7 +13,9 @@ const args = [
   axiosInstance,
 ] as const
 
-export const defaultApi = DefaultApiFactory(...args)
-export const filesApi = FilesApiFactory(...args)
-export const statusesApi = StatusesApiFactory(...args)
-export const nasesApi = NasesApiFactory(...args)
+export const formsApi = {
+  ...DefaultApiFactory(...args),
+  ...FilesApiFactory(...args),
+  ...StatusesApiFactory(...args),
+  ...NasesApiFactory(...args),
+}

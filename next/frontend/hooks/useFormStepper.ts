@@ -28,7 +28,7 @@ import logger from '../utils/logger'
 import useSnackbar from './useSnackbar'
 
 interface Callbacks {
-  onStepSumbit?: (formData: any) => Promise<void>
+  onStepSubmit?: (formData: any) => Promise<void>
   onInit?: () => Promise<any>
 }
 
@@ -304,7 +304,7 @@ export const useFormStepper = (eformSlug: string, eform: EFormValue, callbacks: 
     const isFormValid = await validate()
 
     if (isFormValid) {
-      await callbacks.onStepSumbit?.(formData)
+      await callbacks.onStepSubmit?.(formData)
       setUniqueErrors([], stepIndex)
     }
     if (isFormValid && !isSkipEnabled) {

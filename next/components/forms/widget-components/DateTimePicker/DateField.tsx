@@ -19,7 +19,7 @@ const DateSegmentComponent = ({ segment, state }: DateSegmentBase) => {
     <div
       {...segmentProps}
       ref={ref}
-      className="text-16 hover:bg-gray-100 focus:bg-gray-100 focus:outline-none"
+      className={cx('text-16', { 'focus:bg-gray-100 focus:outline-none': segment.isEditable })}
     >
       <span
         className={cx('w-full text-center uppercase group-focus:text-white', {

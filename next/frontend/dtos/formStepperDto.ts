@@ -25,6 +25,7 @@ export interface FormRJSFContext {
   userExternalId?: string
   bucketFolderName?: string
   fileScans: FileScan[]
+  setFileScans: (fileScans: FileScan[]) => void
 }
 
 export interface KeywordDefinition extends FuncKeywordDefinition {

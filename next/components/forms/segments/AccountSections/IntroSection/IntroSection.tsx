@@ -9,13 +9,11 @@ import AnnouncementBlock from 'components/forms/segments/AccountSections/IntroSe
 import Banner from 'components/forms/simple-components/Banner'
 import Button from 'components/forms/simple-components/Button'
 import ServiceCard from 'components/forms/simple-components/ServiceCard'
-import Spinner from 'components/forms/simple-components/Spinner'
 import { useRouter } from 'next/router'
 import { useTranslation } from 'next-i18next'
 import { useEffect, useState } from 'react'
 
 import { ROUTES } from '../../../../../frontend/api/constants'
-import { useTaxes } from '../../../../../frontend/hooks/apiHooks'
 import useAccount from '../../../../../frontend/hooks/useAccount'
 import { PhoneNumberData } from '../../PhoneNumberForm/PhoneNumberForm'
 import PhoneNumberModal from '../../PhoneNumberModal/PhoneNumberModal'
@@ -23,7 +21,6 @@ import PhoneNumberModal from '../../PhoneNumberModal/PhoneNumberModal'
 const IntroSection = () => {
   const { t } = useTranslation('account')
   const { userData, updateUserData, error, resetError, accountType } = useAccount()
-  const { isLoading } = useTaxes()
   const router = useRouter()
   const [phoneNumberModal, setPhoneNumberModal] = useState<'hidden' | 'displayed' | 'dismissed'>(
     'hidden',
@@ -77,20 +74,14 @@ const IntroSection = () => {
           text={t('account_section_intro.header_text')}
         />
         <div className="w-full max-w-screen-lg m-auto py-6 lg:py-16">
-          {isLoading ? (
-            <div className="flex justify-center">
-              <Spinner />
-            </div>
-          ) : (
-            <AnnouncementBlock
-              announcementContent={announcementContent}
-              buttonTitle={t('account_section_intro.announcement_card_action')}
-              imagePath={KupaliskaImg}
-              onPress={() => {
-                window.location.href = 'https://kupaliska.bratislava.sk'
-              }}
-            />
-          )}
+          <AnnouncementBlock
+            announcementContent={announcementContent}
+            buttonTitle={t('account_section_intro.announcement_card_action')}
+            imagePath={KupaliskaImg}
+            onPress={() => {
+              window.location.href = 'https://kupaliska.bratislava.sk'
+            }}
+          />
 
           <div className="w-full flex items-center justify-between mb-8 px-4 lg:px-0">
             <h2 className="text-h2">{t('account_section_services.navigation')}</h2>

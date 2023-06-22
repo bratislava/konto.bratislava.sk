@@ -49,7 +49,7 @@ export interface CreateFormEidRequestDto {
     'messageSubject'?: string;
     /**
      * Is it signed by Eid?
-     * @type {object}
+     * @type {boolean}
      * @memberof CreateFormEidRequestDto
      */
     'isSigned': boolean;
@@ -98,7 +98,7 @@ export interface CreateFormRequestDto {
     'messageSubject'?: string;
     /**
      * Is it signed by Eid?
-     * @type {object}
+     * @type {boolean}
      * @memberof CreateFormRequestDto
      */
     'isSigned': boolean;
@@ -264,7 +264,7 @@ export interface GetFormResponseDto {
     'messageSubject': string;
     /**
      * Is it signed by Eid?
-     * @type {object}
+     * @type {boolean}
      * @memberof GetFormResponseDto
      */
     'isSigned'?: boolean;
@@ -422,7 +422,7 @@ export interface GetFormsResponseDtoItems {
     'messageSubject': string;
     /**
      * Is it signed by Eid?
-     * @type {object}
+     * @type {boolean}
      * @memberof GetFormsResponseDtoItems
      */
     'isSigned'?: boolean;
@@ -593,7 +593,7 @@ export interface UpdateFormRequestDto {
     'messageSubject': string;
     /**
      * Is it signed by Eid?
-     * @type {object}
+     * @type {boolean}
      * @memberof UpdateFormRequestDto
      */
     'isSigned'?: boolean;
@@ -1283,7 +1283,6 @@ export const NasesApiAxiosParamCreator = function (configuration?: Configuration
         },
         /**
          * 
-         * @summary 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
@@ -1317,7 +1316,6 @@ export const NasesApiAxiosParamCreator = function (configuration?: Configuration
         },
         /**
          * 
-         * @summary 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
@@ -1423,7 +1421,6 @@ export const NasesApiAxiosParamCreator = function (configuration?: Configuration
         },
         /**
          * 
-         * @summary 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
@@ -1457,7 +1454,6 @@ export const NasesApiAxiosParamCreator = function (configuration?: Configuration
         },
         /**
          * 
-         * @summary 
          * @param {string} id 
          * @param {UpdateFormRequestDto} updateFormRequestDto 
          * @param {*} [options] Override http request option.
@@ -1501,7 +1497,6 @@ export const NasesApiAxiosParamCreator = function (configuration?: Configuration
         },
         /**
          * 
-         * @summary 
          * @param {string} id 
          * @param {UpdateFormRequestDto} updateFormRequestDto 
          * @param {*} [options] Override http request option.
@@ -1545,7 +1540,6 @@ export const NasesApiAxiosParamCreator = function (configuration?: Configuration
         },
         /**
          * 
-         * @summary 
          * @param {string} id 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
@@ -1583,7 +1577,6 @@ export const NasesApiAxiosParamCreator = function (configuration?: Configuration
         },
         /**
          * 
-         * @summary 
          * @param {string} id 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
@@ -1741,7 +1734,6 @@ export const NasesApiFp = function(configuration?: Configuration) {
         },
         /**
          * 
-         * @summary 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
@@ -1751,7 +1743,6 @@ export const NasesApiFp = function(configuration?: Configuration) {
         },
         /**
          * 
-         * @summary 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
@@ -1782,7 +1773,6 @@ export const NasesApiFp = function(configuration?: Configuration) {
         },
         /**
          * 
-         * @summary 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
@@ -1792,47 +1782,43 @@ export const NasesApiFp = function(configuration?: Configuration) {
         },
         /**
          * 
-         * @summary 
          * @param {string} id 
          * @param {UpdateFormRequestDto} updateFormRequestDto 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        async nasesControllerSendAndUpdateForm(id: string, updateFormRequestDto: UpdateFormRequestDto, options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<object>> {
+        async nasesControllerSendAndUpdateForm(id: string, updateFormRequestDto: UpdateFormRequestDto, options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<void>> {
             const localVarAxiosArgs = await localVarAxiosParamCreator.nasesControllerSendAndUpdateForm(id, updateFormRequestDto, options);
             return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
         },
         /**
          * 
-         * @summary 
          * @param {string} id 
          * @param {UpdateFormRequestDto} updateFormRequestDto 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        async nasesControllerSendAndUpdateFormEid(id: string, updateFormRequestDto: UpdateFormRequestDto, options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<object>> {
+        async nasesControllerSendAndUpdateFormEid(id: string, updateFormRequestDto: UpdateFormRequestDto, options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<void>> {
             const localVarAxiosArgs = await localVarAxiosParamCreator.nasesControllerSendAndUpdateFormEid(id, updateFormRequestDto, options);
             return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
         },
         /**
          * 
-         * @summary 
          * @param {string} id 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        async nasesControllerSendForm(id: string, options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<object>> {
+        async nasesControllerSendForm(id: string, options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<void>> {
             const localVarAxiosArgs = await localVarAxiosParamCreator.nasesControllerSendForm(id, options);
             return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
         },
         /**
          * 
-         * @summary 
          * @param {string} id 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        async nasesControllerSendFormEid(id: string, options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<object>> {
+        async nasesControllerSendFormEid(id: string, options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<void>> {
             const localVarAxiosArgs = await localVarAxiosParamCreator.nasesControllerSendFormEid(id, options);
             return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
         },
@@ -1892,7 +1878,6 @@ export const NasesApiFactory = function (configuration?: Configuration, basePath
         },
         /**
          * 
-         * @summary 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
@@ -1901,7 +1886,6 @@ export const NasesApiFactory = function (configuration?: Configuration, basePath
         },
         /**
          * 
-         * @summary 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
@@ -1929,7 +1913,6 @@ export const NasesApiFactory = function (configuration?: Configuration, basePath
         },
         /**
          * 
-         * @summary 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
@@ -1938,44 +1921,40 @@ export const NasesApiFactory = function (configuration?: Configuration, basePath
         },
         /**
          * 
-         * @summary 
          * @param {string} id 
          * @param {UpdateFormRequestDto} updateFormRequestDto 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        nasesControllerSendAndUpdateForm(id: string, updateFormRequestDto: UpdateFormRequestDto, options?: any): AxiosPromise<object> {
+        nasesControllerSendAndUpdateForm(id: string, updateFormRequestDto: UpdateFormRequestDto, options?: any): AxiosPromise<void> {
             return localVarFp.nasesControllerSendAndUpdateForm(id, updateFormRequestDto, options).then((request) => request(axios, basePath));
         },
         /**
          * 
-         * @summary 
          * @param {string} id 
          * @param {UpdateFormRequestDto} updateFormRequestDto 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        nasesControllerSendAndUpdateFormEid(id: string, updateFormRequestDto: UpdateFormRequestDto, options?: any): AxiosPromise<object> {
+        nasesControllerSendAndUpdateFormEid(id: string, updateFormRequestDto: UpdateFormRequestDto, options?: any): AxiosPromise<void> {
             return localVarFp.nasesControllerSendAndUpdateFormEid(id, updateFormRequestDto, options).then((request) => request(axios, basePath));
         },
         /**
          * 
-         * @summary 
          * @param {string} id 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        nasesControllerSendForm(id: string, options?: any): AxiosPromise<object> {
+        nasesControllerSendForm(id: string, options?: any): AxiosPromise<void> {
             return localVarFp.nasesControllerSendForm(id, options).then((request) => request(axios, basePath));
         },
         /**
          * 
-         * @summary 
          * @param {string} id 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        nasesControllerSendFormEid(id: string, options?: any): AxiosPromise<object> {
+        nasesControllerSendFormEid(id: string, options?: any): AxiosPromise<void> {
             return localVarFp.nasesControllerSendFormEid(id, options).then((request) => request(axios, basePath));
         },
         /**
@@ -2036,7 +2015,6 @@ export class NasesApi extends BaseAPI {
 
     /**
      * 
-     * @summary 
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      * @memberof NasesApi
@@ -2047,7 +2025,6 @@ export class NasesApi extends BaseAPI {
 
     /**
      * 
-     * @summary 
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      * @memberof NasesApi
@@ -2081,7 +2058,6 @@ export class NasesApi extends BaseAPI {
 
     /**
      * 
-     * @summary 
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      * @memberof NasesApi
@@ -2092,7 +2068,6 @@ export class NasesApi extends BaseAPI {
 
     /**
      * 
-     * @summary 
      * @param {string} id 
      * @param {UpdateFormRequestDto} updateFormRequestDto 
      * @param {*} [options] Override http request option.
@@ -2105,7 +2080,6 @@ export class NasesApi extends BaseAPI {
 
     /**
      * 
-     * @summary 
      * @param {string} id 
      * @param {UpdateFormRequestDto} updateFormRequestDto 
      * @param {*} [options] Override http request option.
@@ -2118,7 +2092,6 @@ export class NasesApi extends BaseAPI {
 
     /**
      * 
-     * @summary 
      * @param {string} id 
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
@@ -2130,7 +2103,6 @@ export class NasesApi extends BaseAPI {
 
     /**
      * 
-     * @summary 
      * @param {string} id 
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}

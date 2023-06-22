@@ -9,6 +9,7 @@ export const useFormRJSFContext = (eform: EFormValue, formFiller: FormFiller): F
   const { schema } = eform
   const [fileScans, setFileScans] = useState<FileScan[]>([])
 
+  console.log(formId)
   return {
     formId,
     pospId: schema.pospID,

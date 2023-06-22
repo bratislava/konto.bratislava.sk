@@ -232,7 +232,7 @@ const UploadComponent: ForwardRefRenderFunction<HTMLDivElement, UploadProps> = (
         messages.push(`${minioFile.file.name} is too large.`)
       } else {
         const sanitizedFile: UploadMinioFile = {
-          file: getBucketFileName(minioFile.file, bucketFolderName),
+          file: minioFile.file,
           isUploading: true,
           originalName: minioFile.originalName,
         }
@@ -247,22 +247,22 @@ const UploadComponent: ForwardRefRenderFunction<HTMLDivElement, UploadProps> = (
   const addNewFiles = async (newFiles: UploadMinioFile[]) => {
     const sanitizedFiles = sanitizeClientFiles(newFiles)
     let oldFiles = value ? [...value] : []
-    let currentFileScans: FileScan[] = fileScans ?? []
-    let removeFileScan: FileScan | undefined | null
+    // let currentFileScans: FileScan[] = fileScans ?? []
+    // let removeFileScan: FileScan | undefined | null
     if (!multiple && oldFiles.length === 1) {
       oldFiles = []
       emitOnChange(sanitizedFiles, oldFiles)
-      removeFileScan = await removeFirstFile()
-      currentFileScans = currentFileScans.filter(
-        (fileScan) => fileScan.fileName !== removeFileScan?.fileName,
-      )
+      // removeFileScan = await removeFirstFile()
+      // currentFileScans = currentFileScans.filter(
+      //   (fileScan) => fileScan.fileName !== removeFileScan?.fileName,
+      // )
     } else {
       emitOnChange(sanitizedFiles, oldFiles)
     }
 
     const uploadFiles = await Promise.all(
       sanitizedFiles.map((minioFile: UploadMinioFile) => {
-        return uploadFileToBucket(minioFile.file)
+        return uploadFileToBucket(minioFile.file, formId as string)
           .then(() => {
             return { ...minioFile, isUploading: false } as UploadMinioFile
           })
@@ -279,7 +279,7 @@ const UploadComponent: ForwardRefRenderFunction<HTMLDivElement, UploadProps> = (
     )
 
     emitOnChange(uploadFiles, oldFiles)
-    scanAllNewFiles(uploadFiles, currentFileScans, removeFileScan)
+    // scanAllNewFiles(uploadFiles, currentFileScans, removeFileScan)
   }
 
   const handleOnClickUpload = () => {

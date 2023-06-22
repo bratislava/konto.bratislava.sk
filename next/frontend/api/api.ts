@@ -1,6 +1,6 @@
 // TODO waiting on #305 to get merged, afterwards might move elsewhere
 // frontend code for calling api endpoints grouped
-import { FileUpdatedResponseDtoStatusEnum } from '@backend/client-openapi-forms'
+import { FileUpdatedResponseDtoStatusEnum } from '@clients/openapi-forms'
 import { RJSFSchema } from '@rjsf/utils'
 import { ErrorObject } from 'ajv'
 

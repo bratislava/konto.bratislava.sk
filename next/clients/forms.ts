@@ -1,11 +1,11 @@
+import { axiosInstance } from './axios-instance'
 import {
   Configuration,
   DefaultApiFactory,
   FilesApiFactory,
   NasesApiFactory,
   StatusesApiFactory,
-} from '@backend/client-openapi-forms'
-import { axiosInstance } from '@backend/utils/axios-instance'
+} from './openapi-forms'
 
 const args = [
   {} as Configuration,

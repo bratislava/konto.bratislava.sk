@@ -1,4 +1,4 @@
-import { FileUpdatedResponseDtoStatusEnum } from '@backend/client-openapi-forms'
+import { FileUpdatedResponseDtoStatusEnum } from '@clients/openapi-forms'
 import { ValidatorType } from '@rjsf/utils'
 import { customizeValidator } from '@rjsf/validator-ajv8'
 import { AnySchemaObject, FuncKeywordDefinition } from 'ajv'

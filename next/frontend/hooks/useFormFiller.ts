@@ -1,5 +1,5 @@
-import { formsApi } from '@backend/client/client-forms'
 import { EFormValue } from '@backend/forms'
+import { formsApi } from '@clients/forms'
 import { RJSFSchema } from '@rjsf/utils'
 import { useRouter } from 'next/router'
 import { useTranslation } from 'next-i18next'

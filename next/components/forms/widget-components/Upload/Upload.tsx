@@ -1,22 +1,12 @@
 import { UploadMinioFile } from '@backend/dtos/minio/upload-minio-file.dto'
+import { formsApi } from '@clients/forms'
 import cx from 'classnames'
 import FieldErrorMessage from 'components/forms/info-components/FieldErrorMessage'
 import React, { ForwardedRef, forwardRef, ForwardRefRenderFunction, useState } from 'react'
 import { v4 as createUuid } from 'uuid'
 
-import {
-  deleteFileFromBucket,
-  deleteFileScan,
-  getFileScanState,
-  scanFile,
-  uploadFileToBucket,
-} from '../../../../frontend/api/api'
-import { ScanFileDto } from '../../../../frontend/dtos/formDto'
-import {
-  FileScan,
-  FileScanResponse,
-  FileScanStatus,
-} from '../../../../frontend/dtos/formStepperDto'
+import { deleteFileFromBucket, uploadFileToBucket } from '../../../../frontend/api/api'
+import { FileScan } from '../../../../frontend/dtos/formStepperDto'
 import useAccount from '../../../../frontend/hooks/useAccount'
 import logger, { developmentLog } from '../../../../frontend/utils/logger'
 import UploadBrokenMessages, { MINIO_ERROR } from '../../info-components/UploadBrokenMessages'
@@ -99,17 +89,20 @@ const UploadComponent: ForwardRefRenderFunction<HTMLDivElement, UploadProps> = (
 
     const updatedFileScans: FileScan[] = await Promise.all(
       newFileScans.map(async (scan) => {
-        const data: ScanFileDto = {
-          pospId: pospId ?? parsedBucketName?.[1],
-          formId: formId ?? parsedBucketName?.[2],
-          userExternalId,
-          fileUid: scan.fileName.split('/').pop(),
-        }
-        return scanFile(token, data)
-          .then((res: FileScanResponse) => {
+        return formsApi
+          .filesControllerPostFileToScanner(
+            {
+              pospId: pospId ?? (parsedBucketName?.[1] as string),
+              formId: formId ?? (parsedBucketName?.[2] as string),
+              userExternalId: userExternalId as string,
+              fileUid: scan.fileName.split('/').pop() as string,
+            },
+            { accessToken: token },
+          )
+          .then((response) => {
             developmentLog('SCAN', scan)
-            developmentLog('SCAN RESPONSE', res)
-            return { ...scan, fileStateStatus: res.status, scanId: res.id }
+            developmentLog('SCAN RESPONSE', response.data)
+            return { ...scan, fileStateStatus: response.data.status, scanId: response.data.id }
           })
           .catch((error) => {
             // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
@@ -171,11 +164,12 @@ const UploadComponent: ForwardRefRenderFunction<HTMLDivElement, UploadProps> = (
   const removeFileOnServer = async (fileName: string, scanId: string) => {
     const token = await getAccessToken()
 
-    const fileStateStatus: FileScanStatus = await getFileScanState(token, scanId)
-      .then((res: FileScanResponse) => res.status)
+    const fileStateStatus = await formsApi
+      .filesControllerGetFileScanStatus(scanId, { accessToken: token })
+      .then((response) => response.data.status)
       .catch((error) => {
         logger.error('Fetch scan file statuses failed', error)
-        return 'NOT FOUND'
+        return 'NOT FOUND' as const
       })
 
     await deleteFileFromBucket(fileName, fileStateStatus).catch((error) => {
@@ -183,7 +177,7 @@ const UploadComponent: ForwardRefRenderFunction<HTMLDivElement, UploadProps> = (
       logger.error('Delete from bucket failed', error)
     })
 
-    await deleteFileScan(token, scanId).catch((error) => {
+    await formsApi.filesControllerDeleteFile(fileName, { accessToken: token }).catch((error) => {
       setMinioError()
       logger.error('Delete file scan from server failed', error)
     })

@@ -61,5 +61,10 @@ module.exports = {
     // json schema definitions may contain "then" keys
     'unicorn/no-thenable': 'off',
   },
-  ignorePatterns: ['*.config.*', '.eslintrc.js', '/backend/forms/'],
+  ignorePatterns: [
+    '*.config.*',
+    '.eslintrc.js',
+    '/backend/forms/',
+    '/backend/client-openapi-forms/',
+  ],
 }

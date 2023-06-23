@@ -7,9 +7,9 @@ import { useRef } from 'react'
 
 import { validator } from '../../frontend/dtos/formStepperDto'
 import { useFormRJSFContext } from '../../frontend/hooks/useFormRJSFContext'
-import { useFormStepper } from '../../frontend/hooks/useFormStepper'
 import { useFormSubmitter } from '../../frontend/hooks/useFormSubmitter'
 import { customValidate } from '../../frontend/utils/formStepper'
+import { useFormState } from './FormStateProvider'
 import FormModals, { FormModalsRef } from './segments/FormModals/FormModals'
 import FormHeader from './simple-components/FormHeader'
 import FinalStep from './steps/FinalStep'
@@ -34,7 +34,7 @@ const GeneratedFormRJSF = ({
   initialFormData,
 }: FormRJSF) => {
   const formContext = useFormRJSFContext(formDefinition, initialFormData)
-  const form = useFormStepper(escapedSlug, formDefinition, initialFormData)
+  const formState = useFormState()
   const submitter = useFormSubmitter(formSlug)
   const formModalsRef = useRef<FormModalsRef>(null)
   const { isAuth } = useAccount()
@@ -47,10 +47,10 @@ const GeneratedFormRJSF = ({
   return (
     <>
       <FormHeader
-        onImportXml={form.importXml}
-        onExportXml={form.exportXml}
+        onImportXml={formState.importXml}
+        onExportXml={formState.exportXml}
         onSaveConcept={saveConcept}
-        onExportPdf={form.exportPdf}
+        onExportPdf={formState.exportPdf}
       />
       <div
         className={cx(
@@ -61,23 +61,27 @@ const GeneratedFormRJSF = ({
       >
         <div className="">
           <StepperView
-            steps={form.stepData}
-            currentStep={form.stepIndex}
+            steps={formState.stepData}
+            currentStep={formState.stepIndex}
             // hook useFormStepper is prepared to skip multiple steps but they will not be validated
             // if skip of multiple steps is not wanted, comment out onChangeStep
             onChangeStep={formModalsRef.current?.skipButtonHandler}
           />
-          <FormModals stepIndex={form.stepIndex} skipToStep={form.skipToStep} ref={formModalsRef} />
+          <FormModals
+            stepIndex={formState.stepIndex}
+            skipToStep={formState.skipToStep}
+            ref={formModalsRef}
+          />
         </div>
         <div className={cx('grow px-4', 'lg:px-0')}>
-          {form.isComplete ? (
+          {formState.isComplete ? (
             <FinalStep
-              formData={form.formData}
-              formErrors={form.errors}
-              extraErrors={form.extraErrors}
+              formData={formState.formData}
+              formErrors={formState.errors}
+              extraErrors={formState.extraErrors}
               fileScans={formContext.fileScans}
-              schema={form.validatedSchema}
-              onGoToStep={form.setStepIndex}
+              schema={formState.validatedSchema}
+              onGoToStep={formState.setStepIndex}
               submitErrors={submitter.errors}
               submitMessage={submitter.successMessage}
               onUpdateFileScans={(updatedScans) => {
@@ -86,26 +90,26 @@ const GeneratedFormRJSF = ({
             />
           ) : (
             <>
-              <h1 className="text-h1-medium font-semibold">{form.stepTitle}</h1>
+              <h1 className="text-h1-medium font-semibold">{formState.stepTitle}</h1>
               <ThemedForm
                 className="[&_legend]:hidden"
-                key={`form-${escapedSlug}-step-${form.stepIndex}`}
-                ref={form.formRef}
-                schema={form.currentSchema}
+                key={`form-${escapedSlug}-step-${formState.stepIndex}`}
+                ref={formState.formRef}
+                schema={formState.currentSchema}
                 uiSchema={formDefinition.uiSchema}
-                formData={form.formData}
+                formData={formState.formData}
                 validator={validator}
                 customValidate={(formData: RJSFSchema, errors: FormValidation) => {
-                  return customValidate(formData, errors, form.currentSchema)
+                  return customValidate(formData, errors, formState.currentSchema)
                 }}
                 onSubmit={async (e) => {
-                  await form.handleOnSubmit(e.formData as RJSFSchema)
+                  await formState.handleOnSubmit(e.formData as RJSFSchema)
                 }}
                 onChange={(e) => {
-                  form.setStepFormData(e.formData as RJSFSchema)
+                  formState.setStepFormData(e.formData as RJSFSchema)
                 }}
-                onError={form.handleOnErrors}
-                extraErrors={form.extraErrors}
+                onError={formState.handleOnErrors}
+                extraErrors={formState.extraErrors}
                 formContext={formContext}
                 showErrorList={false}
                 omitExtraData
@@ -114,23 +118,23 @@ const GeneratedFormRJSF = ({
             </>
           )}
           <StepButtonGroup
-            stepIndex={form.stepIndex}
-            isFinalStep={form.isComplete}
+            stepIndex={formState.stepIndex}
+            isFinalStep={formState.isComplete}
             fileScans={formContext.fileScans}
-            previous={form.previous}
-            skip={() => formModalsRef.current?.skipButtonHandler(form.stepIndex + 1)}
-            submitStep={form.submitStep}
+            previous={formState.previous}
+            skip={() => formModalsRef.current?.skipButtonHandler(formState.stepIndex + 1)}
+            submitStep={formState.submitStep}
             submitForm={() =>
               isAuth
-                ? submitter.submitForm(form.formData, initialFormData.formId)
+                ? submitter.submitForm(formState.formData, initialFormData.formId)
                 : formModalsRef.current?.openRegistrationModal()
             }
           />
           <MenuList
-            onExportXml={form.exportXml}
+            onExportXml={formState.exportXml}
             onSaveConcept={saveConcept}
-            onImportXml={form.importXml}
-            onExportPdf={form.exportPdf}
+            onImportXml={formState.importXml}
+            onExportPdf={formState.exportPdf}
           />
         </div>
       </div>

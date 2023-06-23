@@ -7,6 +7,7 @@ import { GetServerSidePropsContext } from 'next'
 import { useRouter } from 'next/router'
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
 
+import { FormStateProvider } from '../../components/forms/FormStateProvider'
 import { useFormDataLoader } from '../../components/forms/useFormDataLoader'
 import { forceString, isProductionDeployment } from '../../frontend/utils/general'
 import logger from '../../frontend/utils/logger'
@@ -83,12 +84,18 @@ const FormTestPage = ({
     >
       <AccountPageLayout isPublicPage hiddenHeaderNav isProductionDeploy={isProductionDeploy}>
         {initialFormData && (
-          <GeneratedFormRJSF
+          <FormStateProvider
+            eformSlug={escapedSlug}
             formDefinition={formDefinition}
-            escapedSlug={escapedSlug}
-            formSlug={formSlug}
             initialFormData={initialFormData}
-          />
+          >
+            <GeneratedFormRJSF
+              formDefinition={formDefinition}
+              escapedSlug={escapedSlug}
+              formSlug={formSlug}
+              initialFormData={initialFormData}
+            />
+          </FormStateProvider>
         )}
       </AccountPageLayout>
     </PageWrapper>

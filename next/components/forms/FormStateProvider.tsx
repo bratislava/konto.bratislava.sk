@@ -1,6 +1,3 @@
-// TODO prevent unmounting
-// TODO persist state for session
-// TODO figure out if we need to step over uiSchemas, or having a single one is enough (seems like it is for now)
 import { FormDefinition } from '@backend/forms/types'
 import { formsApi } from '@clients/forms'
 import Form from '@rjsf/core'
@@ -13,27 +10,71 @@ import {
 } from '@rjsf/utils'
 import { cloneDeep } from 'lodash'
 import { useTranslation } from 'next-i18next'
-import { ChangeEvent, RefObject, useEffect, useRef, useState } from 'react'
+import React, {
+  ChangeEvent,
+  createContext,
+  PropsWithChildren,
+  RefObject,
+  useContext,
+  useEffect,
+  useRef,
+  useState,
+} from 'react'
 
-import { StepData } from '../../components/forms/types/TransformedFormData'
-import { InitialFormData } from '../../components/forms/useFormDataLoader'
-import { formDataToXml, xmlStringToPdf, xmlToFormData } from '../api/api'
-import { readTextFile } from '../utils/file'
+import { formDataToXml, xmlStringToPdf, xmlToFormData } from '../../frontend/api/api'
+import useAccount from '../../frontend/hooks/useAccount'
+import useSnackbar from '../../frontend/hooks/useSnackbar'
+import { readTextFile } from '../../frontend/utils/file'
 import {
   getAllStepData,
   getInitFormData,
   getValidatedSteps,
   validateAsyncProperties,
-} from '../utils/formStepper'
-import { blobToString, downloadBlob } from '../utils/general'
-import useAccount from './useAccount'
-import useSnackbar from './useSnackbar'
+} from '../../frontend/utils/formStepper'
+import { blobToString, downloadBlob } from '../../frontend/utils/general'
+import { StepData } from './types/TransformedFormData'
+import { InitialFormData } from './useFormDataLoader'
 
-export const useFormStepper = (
-  eformSlug: string,
-  formDefinition: FormDefinition,
-  initialFormData: InitialFormData,
-) => {
+interface FormState {
+  stepIndex: number
+  setStepIndex: (newIndex: number) => void
+  formData: RJSFSchema
+  stepTitle: string
+  setStepFormData: (stepFormData: RJSFSchema) => void
+  errors: RJSFValidationError[][]
+  extraErrors: ErrorSchema
+  stepData: StepData[]
+  validatedSchema: RJSFSchema & { allOf: RJSFSchema[] }
+  previous: () => void
+  next: () => void
+  submitStep: () => void
+  skipToStep: (newNextStepIndex: number) => void
+  handleOnSubmit: (newFormData: RJSFSchema) => Promise<void>
+  handleOnErrors: (newErrors: RJSFValidationError[]) => void
+  currentSchema: RJSFSchema
+  isComplete: boolean
+  // TODO: improve type
+  formRef: RefObject<Form<any, RJSFSchema, any>>
+  exportXml: () => Promise<void>
+  importXml: () => void
+  exportPdf: () => Promise<void>
+}
+
+const FormStateContext = createContext<FormState | undefined>(undefined)
+
+interface FormStateProviderProps {
+  eformSlug: string
+  formDefinition: FormDefinition
+  initialFormData: InitialFormData
+}
+
+// TODO figure out if we need to step over uiSchemas, or having a single one is enough (seems like it is for now)
+export const FormStateProvider = ({
+  eformSlug,
+  formDefinition,
+  initialFormData,
+  children,
+}: PropsWithChildren<FormStateProviderProps>) => {
   const { schema } = formDefinition
   // since Form can be undefined, useRef<Form> is understood as an overload of useRef returning MutableRef, which does not match expected Ref type be rjsf
   // also, our code expects directly RefObject otherwise it will complain of no `.current`
@@ -333,10 +374,11 @@ export const useFormStepper = (
       changeStepData(stepIndex, false)
       jumpToStep()
       disableSkip()
+      //   ^?
     }
   }
 
-  return {
+  const context = {
     stepIndex,
     setStepIndex,
     formData,
@@ -359,4 +401,14 @@ export const useFormStepper = (
     importXml: chooseFilesAndImportXml,
     exportPdf,
   }
+
+  return <FormStateContext.Provider value={context}>{children}</FormStateContext.Provider>
+}
+
+export const useFormState = (): FormState => {
+  const context = useContext<FormState | undefined>(FormStateContext)
+  if (!context) {
+    throw new Error('useFormState must be used within a FormStateProvider')
+  }
+  return context
 }

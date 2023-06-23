@@ -21,22 +21,34 @@ import FinalStep from './steps/FinalStep'
 import StepperView from './steps/StepperView'
 import StepButtonGroup from './steps/Summary/StepButtonGroup'
 import { ThemedForm } from './ThemedForm'
+import { InitialFormData } from './useFormDataLoader'
 
 interface FormRJSF {
   eform: EFormValue
   escapedSlug: string
   formSlug: string
   wrapperClassName?: string
+  initialFormData: InitialFormData
 }
 
-const GeneratedFormRJSF = ({ eform, escapedSlug, formSlug, wrapperClassName }: FormRJSF) => {
-  const filler: FormFiller = useFormFiller(eform)
-  const formContext = useFormRJSFContext(eform, filler)
+const GeneratedFormRJSF = ({
+  eform,
+  escapedSlug,
+  formSlug,
+  wrapperClassName,
+  initialFormData,
+}: FormRJSF) => {
+  const filler: FormFiller = useFormFiller(initialFormData)
+  const formContext = useFormRJSFContext(eform, initialFormData)
   const { t } = useTranslation('account')
-  const form = useFormStepper(escapedSlug, eform, {
-    onStepSubmit: filler.updateFormData,
-    onInit: filler.initFormData,
-  })
+  const form = useFormStepper(
+    escapedSlug,
+    eform,
+    {
+      onStepSubmit: filler.updateFormData,
+    },
+    initialFormData,
+  )
   const submitter = useFormSubmitter(formSlug)
   const { isAuth, status, userData } = useAccount()
 
@@ -164,7 +176,7 @@ const GeneratedFormRJSF = ({ eform, escapedSlug, formSlug, wrapperClassName }: F
             submitStep={form.submitStep}
             submitForm={() =>
               isAuth
-                ? submitter.submitForm(form.formData, filler.formId)
+                ? submitter.submitForm(form.formData, initialFormData.formId)
                 : setRegistrationModal(true)
             }
           />

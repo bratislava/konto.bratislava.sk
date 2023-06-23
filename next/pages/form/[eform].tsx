@@ -7,6 +7,7 @@ import { GetServerSidePropsContext } from 'next'
 import { useRouter } from 'next/router'
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
 
+import { useFormDataLoader } from '../../components/forms/useFormDataLoader'
 import { forceString, isProductionDeployment } from '../../frontend/utils/general'
 import logger from '../../frontend/utils/logger'
 import { AsyncServerProps } from '../../frontend/utils/types'
@@ -70,6 +71,7 @@ const FormTestPage = ({
   // eslint-disable-next-line unicorn/prefer-regexp-test
   const escapedSlug = formSlug.match(/^[\dA-Za-z-]+$/) ? formSlug : ''
   const pageSlug = `form/${escapedSlug}`
+  const initialFormData = useFormDataLoader(eform)
 
   return (
     <PageWrapper
@@ -80,7 +82,14 @@ const FormTestPage = ({
       ]}
     >
       <AccountPageLayout isPublicPage hiddenHeaderNav isProductionDeploy={isProductionDeploy}>
-        <GeneratedFormRJSF eform={eform} escapedSlug={escapedSlug} formSlug={formSlug} />
+        {initialFormData && (
+          <GeneratedFormRJSF
+            eform={eform}
+            escapedSlug={escapedSlug}
+            formSlug={formSlug}
+            initialFormData={initialFormData}
+          />
+        )}
       </AccountPageLayout>
     </PageWrapper>
   )

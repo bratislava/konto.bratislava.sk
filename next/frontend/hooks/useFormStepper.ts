@@ -24,15 +24,18 @@ import {
   validateAsyncProperties,
 } from '../utils/formStepper'
 import { blobToString, downloadBlob } from '../utils/general'
-import logger from '../utils/logger'
 import useSnackbar from './useSnackbar'
 
 interface Callbacks {
   onStepSubmit?: (formData: any) => Promise<void>
-  onInit?: () => Promise<any>
 }
 
-export const useFormStepper = (eformSlug: string, eform: EFormValue, callbacks: Callbacks) => {
+export const useFormStepper = (
+  eformSlug: string,
+  eform: EFormValue,
+  callbacks: Callbacks,
+  initialFormDataJson: RJSFSchema,
+) => {
   const { schema } = eform
   // since Form can be undefined, useRef<Form> is understood as an overload of useRef returning MutableRef, which does not match expected Ref type be rjsf
   // also, our code expects directly RefObject otherwise it will complain of no `.current`
@@ -41,7 +44,7 @@ export const useFormStepper = (eformSlug: string, eform: EFormValue, callbacks: 
 
   // main state variables with the most important info
   const [stepIndex, setStepIndex] = useState<number>(0)
-  const [formData, setFormData] = useState<RJSFSchema>(getInitFormData(schema))
+  const [formData, setFormData] = useState<RJSFSchema>(initialFormDataJson)
   const [errors, setErrors] = useState<Record<string, RJSFValidationError[]>>({})
   const [extraErrors, setExtraErrors] = useState<ErrorSchema>({})
   const [openSnackbarError] = useSnackbar({ variant: 'error' })
@@ -66,27 +69,6 @@ export const useFormStepper = (eformSlug: string, eform: EFormValue, callbacks: 
   const stepsLength: number = steps?.length ?? -1
   const isComplete = stepIndex === stepsLength
   const currentSchema = steps ? cloneDeep(steps[stepIndex]) : {}
-
-  const initFormData = async () => {
-    const loadedFormData: RJSFSchema = await callbacks.onInit?.()
-    if (loadedFormData) {
-      setFormData(loadedFormData)
-    } else {
-      setFormData(getInitFormData(schema))
-    }
-  }
-
-  useEffect(() => {
-    // effect to reset all internal state when critical input 'props' change
-    initFormData()
-      .then(() => {
-        setStepIndex(0)
-        validateSteps()
-        return null
-      })
-      .catch((error_) => logger.error('Init FormData failed', error_))
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [eformSlug, schema])
 
   useEffect(() => {
     // stepIndex allowed to climb one step above the length of steps - i.e. to render a final overview or other custom components but still allow to return back

@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import { UploadMinioFile } from '@backend/dtos/minio/upload-minio-file.dto'
 import { formsApi } from '@clients/forms'
 import cx from 'classnames'
@@ -193,17 +194,6 @@ const UploadComponent: ForwardRefRenderFunction<HTMLDivElement, UploadProps> = (
     await removeFileOnServer(valueFileName, fileScan.scanId)
 
     return valueFileName
-  }
-
-  const removeFirstFile = async () => {
-    const valueFileName = value?.[0].file.name
-    const fileScan = fileScans?.[0]
-    if (!valueFileName || !fileScan || fileScan.fileName !== valueFileName || !fileScan.scanId)
-      return null
-
-    await removeFileOnServer(valueFileName, fileScan.scanId)
-
-    return fileScan
   }
 
   const isFileInSizeLimit = (file: File) => {

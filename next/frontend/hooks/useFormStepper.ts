@@ -1,7 +1,7 @@
 // TODO prevent unmounting
 // TODO persist state for session
 // TODO figure out if we need to step over uiSchemas, or having a single one is enough (seems like it is for now)
-import { EFormValue } from '@backend/forms'
+import { FormDefinition } from '@backend/forms/types'
 import Form from '@rjsf/core'
 import {
   ErrorSchema,
@@ -32,11 +32,11 @@ interface Callbacks {
 
 export const useFormStepper = (
   eformSlug: string,
-  eform: EFormValue,
+  formDefinition: FormDefinition,
   callbacks: Callbacks,
   initialFormDataJson: RJSFSchema,
 ) => {
-  const { schema } = eform
+  const { schema } = formDefinition
   // since Form can be undefined, useRef<Form> is understood as an overload of useRef returning MutableRef, which does not match expected Ref type be rjsf
   // also, our code expects directly RefObject otherwise it will complain of no `.current`
   // this is probably a bug in their typing therefore the cast

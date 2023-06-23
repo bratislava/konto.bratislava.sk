@@ -6,9 +6,11 @@ import schema from './stanoviskoKInvesticnemuZameru/schema.json'
 import xsd from './stanoviskoKInvesticnemuZameru/schema.xsd'
 import uiSchema from './stanoviskoKInvesticnemuZameru/uiSchema.json'
 import xmlTemplate from './stanoviskoKInvesticnemuZameru/xmlTemplate'
+import { RJSFSchema } from '@rjsf/utils'
+import { FormDefinition } from '@backend/forms/types'
 
 export default {
-  schema,
+  schema: schema as unknown as RJSFSchema,
   uiSchema,
   xsd,
   xmlTemplate,
@@ -16,4 +18,4 @@ export default {
   htmlStylesheet,
   pdfStylesheet,
   data,
-}
+} as FormDefinition

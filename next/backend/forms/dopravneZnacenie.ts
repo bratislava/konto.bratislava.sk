@@ -6,9 +6,11 @@ import schema from './00603481.dopravneZnacenie.sk/schema.json'
 import xsd from './00603481.dopravneZnacenie.sk/schema.xsd'
 import uiSchema from './00603481.dopravneZnacenie.sk/uiSchema.json'
 import xmlTemplate from './00603481.dopravneZnacenie.sk/xmlTemplate'
+import { RJSFSchema } from '@rjsf/utils'
+import { FormDefinition } from '@backend/forms/types'
 
 export default {
-  schema,
+  schema: schema as unknown as RJSFSchema,
   uiSchema,
   xsd,
   xmlTemplate,
@@ -16,4 +18,4 @@ export default {
   htmlStylesheet,
   data,
   pdfStylesheet,
-}
+} as FormDefinition

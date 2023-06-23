@@ -1,11 +1,12 @@
 // TODO publish to @types: https://github.com/DefinitelyTyped/DefinitelyTyped
 // eslint-disable-next-line @typescript-eslint/ban-ts-comment
 // @ts-ignore
+import { FormDefinition } from '@backend/forms/types'
 import { loadAndValidate } from '@bratislava/json-schema-xsd-tools'
 import { describe } from '@jest/globals'
 import each from 'jest-each'
 
-import eforms, { EFormKey, EFormValue } from '../backend/forms'
+import formDefinitions, { FormDefinitionsKeys } from '../backend/forms'
 import {
   loadAndBuildXml,
   validateDataWithJsonSchema,
@@ -16,10 +17,10 @@ import { transformSaxon } from '../backend/utils/xslt'
 
 const excludeKeys = new Set(['test'])
 describe('forms test', () => {
-  each(Object.keys(eforms).filter((k: string) => !excludeKeys.has(k))).test(
+  each(Object.keys(formDefinitions).filter((k: string) => !excludeKeys.has(k))).test(
     'form %s',
-    async (key: EFormKey) => {
-      const eform = eforms[key] as EFormValue
+    async (key: FormDefinitionsKeys) => {
+      const eform = formDefinitions[key] as FormDefinition
 
       const xml = loadAndBuildXml(eform.xmlTemplate, eform.data, eform.schema)
 

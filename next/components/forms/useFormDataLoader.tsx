@@ -1,4 +1,4 @@
-import { EFormValue } from '@backend/forms'
+import { FormDefinition } from '@backend/forms/types'
 import { formsApi } from '@clients/forms'
 import { GetFormResponseDto } from '@clients/openapi-forms'
 import { useRouter } from 'next/router'
@@ -23,7 +23,7 @@ export type InitialFormData = {
  *
  * TODO: Remove after auth refactor.
  */
-export const useFormDataLoader = (eform: EFormValue) => {
+export const useFormDataLoader = (formDefinition: FormDefinition) => {
   const router = useRouter()
   const { getAccessToken } = useAccount()
   const [openSnackbarError] = useSnackbar({ variant: 'error' })
@@ -45,12 +45,12 @@ export const useFormDataLoader = (eform: EFormValue) => {
         : () =>
             formsApi.nasesControllerCreateForm(
               {
-                pospID: eform.schema.pospID,
-                pospVersion: eform.schema.pospVersion,
-                messageSubject: eform.schema.pospID,
+                pospID: formDefinition.schema.pospID,
+                pospVersion: formDefinition.schema.pospVersion,
+                messageSubject: formDefinition.schema.pospID,
                 isSigned: false,
-                formName: eform.schema.title || eform.schema.pospID,
-                fromDescription: eform.schema.description || eform.schema.pospID,
+                formName: formDefinition.schema.title || formDefinition.schema.pospID,
+                fromDescription: formDefinition.schema.description || formDefinition.schema.pospID,
               },
               { accessToken: token },
             )
@@ -72,8 +72,8 @@ export const useFormDataLoader = (eform: EFormValue) => {
     if (responseData == null) {
       return null
     }
-    return queryId ? responseData.formDataJson : getInitFormData(eform.schema)
-  }, [eform.schema, queryId, responseData])
+    return queryId ? responseData.formDataJson : getInitFormData(formDefinition.schema)
+  }, [formDefinition.schema, queryId, responseData])
 
   if (responseData !== null) {
     return {

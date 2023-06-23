@@ -1,4 +1,4 @@
-import { EFormValue } from '@backend/forms'
+import { FormDefinition } from '@backend/forms/types'
 import { FormValidation, RJSFSchema } from '@rjsf/utils'
 import cx from 'classnames'
 import RegistrationModal from 'components/forms/segments/RegistrationModal/RegistrationModal'
@@ -24,7 +24,7 @@ import { ThemedForm } from './ThemedForm'
 import { InitialFormData } from './useFormDataLoader'
 
 interface FormRJSF {
-  eform: EFormValue
+  formDefinition: FormDefinition
   escapedSlug: string
   formSlug: string
   wrapperClassName?: string
@@ -32,18 +32,18 @@ interface FormRJSF {
 }
 
 const GeneratedFormRJSF = ({
-  eform,
+  formDefinition,
   escapedSlug,
   formSlug,
   wrapperClassName,
   initialFormData,
 }: FormRJSF) => {
   const filler: FormFiller = useFormFiller(initialFormData)
-  const formContext = useFormRJSFContext(eform, initialFormData)
+  const formContext = useFormRJSFContext(formDefinition, initialFormData)
   const { t } = useTranslation('account')
   const form = useFormStepper(
     escapedSlug,
-    eform,
+    formDefinition,
     {
       onStepSubmit: filler.updateFormData,
     },
@@ -146,7 +146,7 @@ const GeneratedFormRJSF = ({
                 key={`form-${escapedSlug}-step-${form.stepIndex}`}
                 ref={form.formRef}
                 schema={form.currentSchema}
-                uiSchema={eform.uiSchema}
+                uiSchema={formDefinition.uiSchema}
                 formData={form.formData}
                 validator={validator}
                 customValidate={(formData: RJSFSchema, errors: FormValidation) => {

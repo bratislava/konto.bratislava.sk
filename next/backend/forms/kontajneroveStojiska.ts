@@ -6,9 +6,11 @@ import schema from './kontajneroveStojiska/schema.json'
 import xsd from './kontajneroveStojiska/schema.xsd'
 import uiSchema from './kontajneroveStojiska/uiSchema.json'
 import xmlTemplate from './kontajneroveStojiska/xmlTemplate'
+import { RJSFSchema } from '@rjsf/utils'
+import { FormDefinition } from '@backend/forms/types'
 
 export default {
-  schema,
+  schema: schema as unknown as RJSFSchema,
   uiSchema,
   xsd,
   xmlTemplate,
@@ -16,4 +18,4 @@ export default {
   htmlStylesheet,
   data,
   pdfStylesheet,
-}
+} as FormDefinition

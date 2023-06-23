@@ -6,12 +6,10 @@ import useAccount from 'frontend/hooks/useAccount'
 import { useRef } from 'react'
 
 import { validator } from '../../frontend/dtos/formStepperDto'
-import { FormFiller, useFormFiller } from '../../frontend/hooks/useFormFiller'
 import { useFormRJSFContext } from '../../frontend/hooks/useFormRJSFContext'
 import { useFormStepper } from '../../frontend/hooks/useFormStepper'
 import { useFormSubmitter } from '../../frontend/hooks/useFormSubmitter'
 import { customValidate } from '../../frontend/utils/formStepper'
-import logger from '../../frontend/utils/logger'
 import FormModals, { FormModalsRef } from './segments/FormModals/FormModals'
 import FormHeader from './simple-components/FormHeader'
 import FinalStep from './steps/FinalStep'
@@ -35,24 +33,16 @@ const GeneratedFormRJSF = ({
   wrapperClassName,
   initialFormData,
 }: FormRJSF) => {
-  const filler: FormFiller = useFormFiller(initialFormData)
   const formContext = useFormRJSFContext(formDefinition, initialFormData)
-  const form = useFormStepper(
-    escapedSlug,
-    formDefinition,
-    {
-      onStepSubmit: filler.updateFormData,
-    },
-    initialFormData,
-  )
+  const form = useFormStepper(escapedSlug, formDefinition, initialFormData)
   const submitter = useFormSubmitter(formSlug)
   const formModalsRef = useRef<FormModalsRef>(null)
   const { isAuth } = useAccount()
 
-  const saveConcept = () =>
-    filler
-      .updateFormData(form.formData)
-      .catch((error) => logger.error('Save concept failed', error))
+  // eslint-disable-next-line unicorn/consistent-function-scoping
+  const saveConcept = async () => {
+    throw new Error('Not implemented')
+  }
 
   return (
     <>

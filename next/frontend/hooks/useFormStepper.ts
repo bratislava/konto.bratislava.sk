@@ -2,6 +2,7 @@
 // TODO persist state for session
 // TODO figure out if we need to step over uiSchemas, or having a single one is enough (seems like it is for now)
 import { FormDefinition } from '@backend/forms/types'
+import { formsApi } from '@clients/forms'
 import Form from '@rjsf/core'
 import {
   ErrorSchema,
@@ -15,6 +16,7 @@ import { useTranslation } from 'next-i18next'
 import { ChangeEvent, RefObject, useEffect, useRef, useState } from 'react'
 
 import { StepData } from '../../components/forms/types/TransformedFormData'
+import { InitialFormData } from '../../components/forms/useFormDataLoader'
 import { formDataToXml, xmlStringToPdf, xmlToFormData } from '../api/api'
 import { readTextFile } from '../utils/file'
 import {
@@ -24,17 +26,13 @@ import {
   validateAsyncProperties,
 } from '../utils/formStepper'
 import { blobToString, downloadBlob } from '../utils/general'
+import useAccount from './useAccount'
 import useSnackbar from './useSnackbar'
-
-interface Callbacks {
-  onStepSubmit?: (formData: any) => Promise<void>
-}
 
 export const useFormStepper = (
   eformSlug: string,
   formDefinition: FormDefinition,
-  callbacks: Callbacks,
-  initialFormDataJson: RJSFSchema,
+  initialFormData: InitialFormData,
 ) => {
   const { schema } = formDefinition
   // since Form can be undefined, useRef<Form> is understood as an overload of useRef returning MutableRef, which does not match expected Ref type be rjsf
@@ -42,19 +40,23 @@ export const useFormStepper = (
   // this is probably a bug in their typing therefore the cast
   const formRef = useRef<Form>() as RefObject<Form>
 
+  const { getAccessToken } = useAccount()
+
   // main state variables with the most important info
   const [stepIndex, setStepIndex] = useState<number>(0)
-  const [formData, setFormData] = useState<RJSFSchema>(initialFormDataJson)
+  const [formData, setFormData] = useState<RJSFSchema>(initialFormData.formDataJson)
   const [errors, setErrors] = useState<Record<string, RJSFValidationError[]>>({})
   const [extraErrors, setExtraErrors] = useState<ErrorSchema>({})
   const [openSnackbarError] = useSnackbar({ variant: 'error' })
   const [openSnackbarSuccess] = useSnackbar({ variant: 'success' })
   const [openSnackbarInfo, closeSnackbarInfo] = useSnackbar({ variant: 'info' })
+  const [openSnackbarWarning] = useSnackbar({ variant: 'warning' })
 
   // state variables helping in stepper
   const [nextStepIndex, setNextStepIndex] = useState<number | null>(null)
   const [nextStep, setNextStep] = useState<RJSFSchema | null>(null)
   const [isSkipEnabled, setIsSkipEnabled] = useState<boolean>(false)
+
   const disableSkip = () => setIsSkipEnabled(false)
 
   // state variables with info about steps for summary and stepper
@@ -279,6 +281,29 @@ export const useFormStepper = (
     }
   }
 
+  const updateFormData = async () => {
+    const token = await getAccessToken()
+    if (!initialFormData || !token) {
+      return
+    }
+
+    try {
+      await formsApi.nasesControllerUpdateForm(
+        initialFormData.formId,
+        /// TS2345: Argument of type '{ formDataJson: string; }' is not assignable to parameter of type 'UpdateFormRequestDto'.
+        // Type '{ formDataXml: string; }' is missing the following properties from type 'UpdateFormRequestDto': 'email', 'formDataXml', 'pospVersion', 'messageSubject
+        // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+        // @ts-expect-error
+        {
+          formDataJson: formData,
+        },
+        { accessToken: token },
+      )
+    } catch (error) {
+      openSnackbarWarning(t('errors.form_update'))
+    }
+  }
+
   const handleOnSubmit = async (newFormData: RJSFSchema) => {
     // handles onSubmit event of form step
     // it is called also if we are going to skip step by 1
@@ -286,7 +311,7 @@ export const useFormStepper = (
     const isFormValid = await validate()
 
     if (isFormValid) {
-      await callbacks.onStepSubmit?.(formData)
+      await updateFormData()
       setUniqueErrors([], stepIndex)
     }
     if (isFormValid && !isSkipEnabled) {

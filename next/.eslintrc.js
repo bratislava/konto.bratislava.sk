@@ -54,7 +54,7 @@ module.exports = {
     'lodash/prefer-noop': 'off',
     /** if comparing values in cx function or creating translations, it's overkill to create variables for that */
     'sonarjs/no-duplicate-string': 'warn',
-    'sonarjs/cognitive-complexity': 'warn',
+    'sonarjs/cognitive-complexity': 'off',
     'unicorn/no-array-reduce': 'off',
     // quite annoying as it conflicts with VS Code's auto import
     'lodash/import-scope': 'off',

@@ -1,12 +1,9 @@
 import { FormDefinition } from '@backend/forms/types'
 import { FormValidation, RJSFSchema } from '@rjsf/utils'
 import cx from 'classnames'
-import RegistrationModal from 'components/forms/segments/RegistrationModal/RegistrationModal'
-import SkipStepModal from 'components/forms/segments/SkipStepModal/SkipStepModal'
 import MenuList from 'components/forms/steps/MenuList'
-import useAccount, { AccountStatus } from 'frontend/hooks/useAccount'
-import { useTranslation } from 'next-i18next'
-import { useState } from 'react'
+import useAccount from 'frontend/hooks/useAccount'
+import { useRef } from 'react'
 
 import { validator } from '../../frontend/dtos/formStepperDto'
 import { FormFiller, useFormFiller } from '../../frontend/hooks/useFormFiller'
@@ -15,7 +12,7 @@ import { useFormStepper } from '../../frontend/hooks/useFormStepper'
 import { useFormSubmitter } from '../../frontend/hooks/useFormSubmitter'
 import { customValidate } from '../../frontend/utils/formStepper'
 import logger from '../../frontend/utils/logger'
-import IdentityVerificationModal from './segments/IdentityVerificationModal/IdentityVerificationModal'
+import FormModals, { FormModalsRef } from './segments/FormModals/FormModals'
 import FormHeader from './simple-components/FormHeader'
 import FinalStep from './steps/FinalStep'
 import StepperView from './steps/StepperView'
@@ -40,7 +37,6 @@ const GeneratedFormRJSF = ({
 }: FormRJSF) => {
   const filler: FormFiller = useFormFiller(initialFormData)
   const formContext = useFormRJSFContext(formDefinition, initialFormData)
-  const { t } = useTranslation('account')
   const form = useFormStepper(
     escapedSlug,
     formDefinition,
@@ -50,22 +46,8 @@ const GeneratedFormRJSF = ({
     initialFormData,
   )
   const submitter = useFormSubmitter(formSlug)
-  const { isAuth, status, userData } = useAccount()
-
-  const [isOnShowSkipModal, setIsOnShowSkipModal] = useState<boolean>(false)
-  const [registrationModal, setRegistrationModal] = useState<boolean>(true)
-  const [identityVerificationModal, setIdentityVerificationModal] = useState(true)
-  const [skipModalWasShown, setSkipModalWasShown] = useState<boolean>(false)
-  const [skipModalNextStepIndex, setSkipModalNextStepIndex] = useState<number>(form.stepIndex)
-
-  const skipButtonHandler = (nextStepIndex: number = form.stepIndex + 1) => {
-    if (skipModalWasShown) {
-      form.skipToStep(nextStepIndex)
-    } else {
-      setSkipModalNextStepIndex(nextStepIndex)
-      setIsOnShowSkipModal(true)
-    }
-  }
+  const formModalsRef = useRef<FormModalsRef>(null)
+  const { isAuth } = useAccount()
 
   const saveConcept = () =>
     filler
@@ -93,35 +75,9 @@ const GeneratedFormRJSF = ({
             currentStep={form.stepIndex}
             // hook useFormStepper is prepared to skip multiple steps but they will not be validated
             // if skip of multiple steps is not wanted, comment out onChangeStep
-            onChangeStep={skipButtonHandler}
+            onChangeStep={formModalsRef.current?.skipButtonHandler}
           />
-          <SkipStepModal
-            show={isOnShowSkipModal && !skipModalWasShown}
-            onClose={() => {
-              setIsOnShowSkipModal(false)
-              setSkipModalWasShown(true)
-            }}
-            onSkip={() => {
-              form.skipToStep(skipModalNextStepIndex)
-              setIsOnShowSkipModal(false)
-              setSkipModalWasShown(true)
-            }}
-          />
-          {!isAuth && (
-            <RegistrationModal
-              title={t('register_modal.header_sent_title')}
-              subtitle={t('register_modal.header_sent_subtitle')}
-              show={registrationModal}
-              onClose={() => setRegistrationModal(false)}
-            />
-          )}
-          {isAuth && status !== AccountStatus.IdentityVerificationSuccess && (
-            <IdentityVerificationModal
-              show={identityVerificationModal}
-              onClose={() => setIdentityVerificationModal(false)}
-              userType={userData?.account_type}
-            />
-          )}
+          <FormModals stepIndex={form.stepIndex} skipToStep={form.skipToStep} ref={formModalsRef} />
         </div>
         <div className={cx('grow px-4', 'lg:px-0')}>
           {form.isComplete ? (
@@ -172,12 +128,12 @@ const GeneratedFormRJSF = ({
             isFinalStep={form.isComplete}
             fileScans={formContext.fileScans}
             previous={form.previous}
-            skip={() => skipButtonHandler(form.stepIndex + 1)}
+            skip={() => formModalsRef.current?.skipButtonHandler(form.stepIndex + 1)}
             submitStep={form.submitStep}
             submitForm={() =>
               isAuth
                 ? submitter.submitForm(form.formData, initialFormData.formId)
-                : setRegistrationModal(true)
+                : formModalsRef.current?.openRegistrationModal()
             }
           />
           <MenuList

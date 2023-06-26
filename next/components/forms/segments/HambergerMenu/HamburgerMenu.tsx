@@ -2,7 +2,7 @@ import cx from 'classnames'
 import { MenuSectionItemBase } from 'components/forms/segments/AccountNavBar/AccountNavBar'
 import IdentityVerificationStatus from 'components/forms/simple-components/IdentityVerificationStatus'
 import { MenuItemBase } from 'components/forms/simple-components/MenuDropdown/MenuDropdown'
-import useAccount from 'frontend/hooks/useAccount'
+import logger from 'frontend/utils/logger'
 import Link from 'next/link'
 import { useRouter } from 'next/router'
 import { useTranslation } from 'next-i18next'
@@ -56,14 +56,6 @@ const Item = ({
 
 export const HamburgerMenu = ({ sectionsList, menuItems, className, closeMenu }: IProps) => {
   const router = useRouter()
-  const { logout } = useAccount()
-
-  const logoutHandler = async () => {
-    logout()
-    await router.push(ROUTES.LOGIN)
-    closeMenu()
-  }
-
   return (
     <div
       className={cx(
@@ -87,13 +79,20 @@ export const HamburgerMenu = ({ sectionsList, menuItems, className, closeMenu }:
           </>
         )}
         {menuItems.map((sectionItem) => {
-          if (sectionItem.url === '/logout') {
-            return sectionItem.url ? (
-              <>
-                <Divider />
-                <Item key={sectionItem.id} menuItem={sectionItem} onClick={logoutHandler} />
-              </>
-            ) : null
+          // TODO clean up this logic & move menu items closer to where they are used
+          if (sectionItem.onPress) {
+            return (
+              <Item
+                key={sectionItem.id}
+                menuItem={sectionItem}
+                onClick={() => {
+                  if (sectionItem.onPress) {
+                    sectionItem.onPress()?.catch((error) => logger.error(error))
+                    closeMenu()
+                  }
+                }}
+              />
+            )
           }
           return sectionItem.url ? (
             <Link key={sectionItem.id} href={sectionItem.url}>

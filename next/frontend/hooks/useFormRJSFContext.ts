@@ -1,15 +1,12 @@
-import { FormDefinition } from '@backend/forms/types'
+import { EFormValue } from '@backend/forms'
 import { useState } from 'react'
 
-import { InitialFormData } from '../../components/forms/useFormDataLoader'
 import { FileScan, FormRJSFContext } from '../dtos/formStepperDto'
+import { FormFiller } from './useFormFiller'
 
-export const useFormRJSFContext = (
-  formDefinition: FormDefinition,
-  initialFormData: InitialFormData,
-): FormRJSFContext => {
-  const { formId, formUserExternalId } = initialFormData
-  const { schema } = formDefinition
+export const useFormRJSFContext = (eform: EFormValue, formFiller: FormFiller): FormRJSFContext => {
+  const { formId, formUserExternalId } = formFiller
+  const { schema } = eform
   const [fileScans, setFileScans] = useState<FileScan[]>([])
 
   return {

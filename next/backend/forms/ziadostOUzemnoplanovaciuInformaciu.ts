@@ -6,11 +6,9 @@ import schema from './ziadostOUzemnoplanovaciuInformaciu/schema.json'
 import xsd from './ziadostOUzemnoplanovaciuInformaciu/schema.xsd'
 import uiSchema from './ziadostOUzemnoplanovaciuInformaciu/uiSchema.json'
 import xmlTemplate from './ziadostOUzemnoplanovaciuInformaciu/xmlTemplate'
-import { RJSFSchema } from '@rjsf/utils'
-import { FormDefinition } from '@backend/forms/types'
 
 export default {
-  schema: schema as unknown as RJSFSchema,
+  schema,
   uiSchema,
   xsd,
   xmlTemplate,
@@ -18,4 +16,4 @@ export default {
   htmlStylesheet,
   data,
   pdfStylesheet,
-} as FormDefinition
+}

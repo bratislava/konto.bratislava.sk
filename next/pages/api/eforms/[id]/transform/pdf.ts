@@ -1,7 +1,7 @@
 /* eslint @typescript-eslint/no-unsafe-member-access: "warn" */
 
-import { FormDefinition } from '@backend/forms/types'
-import { getFormDefinition } from '@backend/utils/forms'
+import { EFormValue } from '@backend/forms'
+import { getEform } from '@backend/utils/forms'
 import type { NextApiRequest, NextApiResponse } from 'next'
 
 import logger from '../../../../../frontend/utils/logger'
@@ -11,9 +11,9 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
     return res.status(400).json({ message: 'Invalid method or missing "data" field on body' })
   }
 
-  let formDefinition: FormDefinition
+  let eform: EFormValue
   try {
-    formDefinition = getFormDefinition(req.query.id)
+    eform = getEform(req.query.id)
   } catch (error) {
     logger.error(error)
     return res.status(400).json({ message: 'Invalid form name or url' })
@@ -22,7 +22,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
   try {
     const response = await fetch(`${String(process.env.FOP_URL)}/fop`, {
       method: 'POST',
-      body: JSON.stringify({ data: req.body.data, xslt: formDefinition.pdfStylesheet }),
+      body: JSON.stringify({ data: req.body.data, xslt: eform.pdfStylesheet }),
     })
     if (response.ok) {
       const stream = response.body as unknown as NodeJS.ReadableStream

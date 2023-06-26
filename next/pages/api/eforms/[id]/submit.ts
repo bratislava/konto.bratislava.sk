@@ -1,7 +1,7 @@
-import { FormDefinition } from '@backend/forms/types'
+import { EFormValue } from '@backend/forms'
 import {
   buildXmlRecursive,
-  getFormDefinition,
+  getEform,
   validateDataWithJsonSchema,
   validateDataWithXsd,
 } from '@backend/utils/forms'
@@ -25,22 +25,22 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
     return res.status(400).json({ message: 'Invalid method or missing "data" field on body' })
 
   const { data, id }: Form = req.body
-  let formDefinition: FormDefinition
+  let eform: EFormValue
   try {
-    formDefinition = getFormDefinition(req.query.id)
+    eform = getEform(req.query.id)
   } catch (error) {
     logger.error(error)
     return res.status(400).json({ message: 'Invalid form name or url' })
   }
 
   let errors: Partial<ErrorObject>[] = []
-  errors = await validateDataWithJsonSchema(data, formDefinition.schema)
+  errors = await validateDataWithJsonSchema(data, eform.schema)
   if (errors.length > 0)
     return res.status(400).json({ message: `Data did not pass JSON validation`, errors })
 
-  const $ = cheerio.load(formDefinition.xmlTemplate, { xmlMode: true, decodeEntities: false })
-  buildXmlRecursive(['E-form', 'Body'], $, data, formDefinition.schema)
-  errors = validateDataWithXsd($.html(), formDefinition.xsd)
+  const $ = cheerio.load(eform.xmlTemplate, { xmlMode: true, decodeEntities: false })
+  buildXmlRecursive(['E-form', 'Body'], $, data, eform.schema)
+  errors = validateDataWithXsd($.html(), eform.xsd)
   if (errors.length > 0)
     return res.status(400).json({ message: `Data did not pass XSD validation`, errors })
 

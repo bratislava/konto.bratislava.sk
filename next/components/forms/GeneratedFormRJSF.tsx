@@ -1,72 +1,56 @@
-import { EFormValue } from '@backend/forms'
+import { FormDefinition } from '@backend/forms/types'
 import { FormValidation, RJSFSchema } from '@rjsf/utils'
 import cx from 'classnames'
-import RegistrationModal from 'components/forms/segments/RegistrationModal/RegistrationModal'
-import SkipStepModal from 'components/forms/segments/SkipStepModal/SkipStepModal'
 import MenuList from 'components/forms/steps/MenuList'
-import useAccount, { AccountStatus } from 'frontend/hooks/useAccount'
-import { useTranslation } from 'next-i18next'
-import { useState } from 'react'
+import useAccount from 'frontend/hooks/useAccount'
+import { useRef } from 'react'
 
 import { validator } from '../../frontend/dtos/formStepperDto'
-import { FormFiller, useFormFiller } from '../../frontend/hooks/useFormFiller'
 import { useFormRJSFContext } from '../../frontend/hooks/useFormRJSFContext'
-import { useFormStepper } from '../../frontend/hooks/useFormStepper'
 import { useFormSubmitter } from '../../frontend/hooks/useFormSubmitter'
 import { customValidate } from '../../frontend/utils/formStepper'
-import logger from '../../frontend/utils/logger'
-import IdentityVerificationModal from './segments/IdentityVerificationModal/IdentityVerificationModal'
+import { useFormState } from './FormStateProvider'
+import FormModals, { FormModalsRef } from './segments/FormModals/FormModals'
 import FormHeader from './simple-components/FormHeader'
 import FinalStep from './steps/FinalStep'
 import StepperView from './steps/StepperView'
 import StepButtonGroup from './steps/Summary/StepButtonGroup'
 import { ThemedForm } from './ThemedForm'
+import { InitialFormData } from './useFormDataLoader'
 
 interface FormRJSF {
-  eform: EFormValue
+  formDefinition: FormDefinition
   escapedSlug: string
   formSlug: string
   wrapperClassName?: string
+  initialFormData: InitialFormData
 }
 
-const GeneratedFormRJSF = ({ eform, escapedSlug, formSlug, wrapperClassName }: FormRJSF) => {
-  const filler: FormFiller = useFormFiller(eform)
-  const formContext = useFormRJSFContext(eform, filler)
-  const { t } = useTranslation('account')
-  const form = useFormStepper(escapedSlug, eform, {
-    onStepSubmit: filler.updateFormData,
-    onInit: filler.initFormData,
-  })
+const GeneratedFormRJSF = ({
+  formDefinition,
+  escapedSlug,
+  formSlug,
+  wrapperClassName,
+  initialFormData,
+}: FormRJSF) => {
+  const formContext = useFormRJSFContext(formDefinition, initialFormData)
+  const formState = useFormState()
   const submitter = useFormSubmitter(formSlug)
-  const { isAuth, status, userData } = useAccount()
+  const formModalsRef = useRef<FormModalsRef>(null)
+  const { isAuth } = useAccount()
 
-  const [isOnShowSkipModal, setIsOnShowSkipModal] = useState<boolean>(false)
-  const [registrationModal, setRegistrationModal] = useState<boolean>(true)
-  const [identityVerificationModal, setIdentityVerificationModal] = useState(true)
-  const [skipModalWasShown, setSkipModalWasShown] = useState<boolean>(false)
-  const [skipModalNextStepIndex, setSkipModalNextStepIndex] = useState<number>(form.stepIndex)
-
-  const skipButtonHandler = (nextStepIndex: number = form.stepIndex + 1) => {
-    if (skipModalWasShown) {
-      form.skipToStep(nextStepIndex)
-    } else {
-      setSkipModalNextStepIndex(nextStepIndex)
-      setIsOnShowSkipModal(true)
-    }
+  // eslint-disable-next-line unicorn/consistent-function-scoping
+  const saveConcept = async () => {
+    throw new Error('Not implemented')
   }
-
-  const saveConcept = () =>
-    filler
-      .updateFormData(form.formData)
-      .catch((error) => logger.error('Save concept failed', error))
 
   return (
     <>
       <FormHeader
-        onImportXml={form.importXml}
-        onExportXml={form.exportXml}
+        onImportXml={formState.importXml}
+        onExportXml={formState.exportXml}
         onSaveConcept={saveConcept}
-        onExportPdf={form.exportPdf}
+        onExportPdf={formState.exportPdf}
       />
       <div
         className={cx(
@@ -77,49 +61,27 @@ const GeneratedFormRJSF = ({ eform, escapedSlug, formSlug, wrapperClassName }: F
       >
         <div className="">
           <StepperView
-            steps={form.stepData}
-            currentStep={form.stepIndex}
+            steps={formState.stepData}
+            currentStep={formState.stepIndex}
             // hook useFormStepper is prepared to skip multiple steps but they will not be validated
             // if skip of multiple steps is not wanted, comment out onChangeStep
-            onChangeStep={skipButtonHandler}
+            onChangeStep={formModalsRef.current?.skipButtonHandler}
           />
-          <SkipStepModal
-            show={isOnShowSkipModal && !skipModalWasShown}
-            onClose={() => {
-              setIsOnShowSkipModal(false)
-              setSkipModalWasShown(true)
-            }}
-            onSkip={() => {
-              form.skipToStep(skipModalNextStepIndex)
-              setIsOnShowSkipModal(false)
-              setSkipModalWasShown(true)
-            }}
+          <FormModals
+            stepIndex={formState.stepIndex}
+            skipToStep={formState.skipToStep}
+            ref={formModalsRef}
           />
-          {!isAuth && (
-            <RegistrationModal
-              title={t('register_modal.header_sent_title')}
-              subtitle={t('register_modal.header_sent_subtitle')}
-              show={registrationModal}
-              onClose={() => setRegistrationModal(false)}
-            />
-          )}
-          {isAuth && status !== AccountStatus.IdentityVerificationSuccess && (
-            <IdentityVerificationModal
-              show={identityVerificationModal}
-              onClose={() => setIdentityVerificationModal(false)}
-              userType={userData?.account_type}
-            />
-          )}
         </div>
         <div className={cx('grow px-4', 'lg:px-0')}>
-          {form.isComplete ? (
+          {formState.isComplete ? (
             <FinalStep
-              formData={form.formData}
-              formErrors={form.errors}
-              extraErrors={form.extraErrors}
+              formData={formState.formData}
+              formErrors={formState.errors}
+              extraErrors={formState.extraErrors}
               fileScans={formContext.fileScans}
-              schema={form.validatedSchema}
-              onGoToStep={form.setStepIndex}
+              schema={formState.validatedSchema}
+              onGoToStep={formState.setStepIndex}
               submitErrors={submitter.errors}
               submitMessage={submitter.successMessage}
               onUpdateFileScans={(updatedScans) => {
@@ -128,26 +90,26 @@ const GeneratedFormRJSF = ({ eform, escapedSlug, formSlug, wrapperClassName }: F
             />
           ) : (
             <>
-              <h1 className="text-h1-medium font-semibold">{form.stepTitle}</h1>
+              <h1 className="text-h1-medium font-semibold">{formState.stepTitle}</h1>
               <ThemedForm
                 className="[&_legend]:hidden"
-                key={`form-${escapedSlug}-step-${form.stepIndex}`}
-                ref={form.formRef}
-                schema={form.currentSchema}
-                uiSchema={eform.uiSchema}
-                formData={form.formData}
+                key={`form-${escapedSlug}-step-${formState.stepIndex}`}
+                ref={formState.formRef}
+                schema={formState.currentSchema}
+                uiSchema={formDefinition.uiSchema}
+                formData={formState.formData}
                 validator={validator}
                 customValidate={(formData: RJSFSchema, errors: FormValidation) => {
-                  return customValidate(formData, errors, form.currentSchema)
+                  return customValidate(formData, errors, formState.currentSchema)
                 }}
                 onSubmit={async (e) => {
-                  await form.handleOnSubmit(e.formData as RJSFSchema)
+                  await formState.handleOnSubmit(e.formData as RJSFSchema)
                 }}
                 onChange={(e) => {
-                  form.setStepFormData(e.formData as RJSFSchema)
+                  formState.setStepFormData(e.formData as RJSFSchema)
                 }}
-                onError={form.handleOnErrors}
-                extraErrors={form.extraErrors}
+                onError={formState.handleOnErrors}
+                extraErrors={formState.extraErrors}
                 formContext={formContext}
                 showErrorList={false}
                 omitExtraData
@@ -156,23 +118,23 @@ const GeneratedFormRJSF = ({ eform, escapedSlug, formSlug, wrapperClassName }: F
             </>
           )}
           <StepButtonGroup
-            stepIndex={form.stepIndex}
-            isFinalStep={form.isComplete}
+            stepIndex={formState.stepIndex}
+            isFinalStep={formState.isComplete}
             fileScans={formContext.fileScans}
-            previous={form.previous}
-            skip={() => skipButtonHandler(form.stepIndex + 1)}
-            submitStep={form.submitStep}
+            previous={formState.previous}
+            skip={() => formModalsRef.current?.skipButtonHandler(formState.stepIndex + 1)}
+            submitStep={formState.submitStep}
             submitForm={() =>
               isAuth
-                ? submitter.submitForm(form.formData, filler.formId)
-                : setRegistrationModal(true)
+                ? submitter.submitForm(formState.formData, initialFormData.formId)
+                : formModalsRef.current?.openRegistrationModal()
             }
           />
           <MenuList
-            onExportXml={form.exportXml}
+            onExportXml={formState.exportXml}
             onSaveConcept={saveConcept}
-            onImportXml={form.importXml}
-            onExportPdf={form.exportPdf}
+            onImportXml={formState.importXml}
+            onExportPdf={formState.exportPdf}
           />
         </div>
       </div>

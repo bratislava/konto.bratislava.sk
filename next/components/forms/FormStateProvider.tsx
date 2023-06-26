@@ -1,7 +1,5 @@
-// TODO prevent unmounting
-// TODO persist state for session
-// TODO figure out if we need to step over uiSchemas, or having a single one is enough (seems like it is for now)
-import { EFormValue } from '@backend/forms'
+import { FormDefinition } from '@backend/forms/types'
+import { formsApi } from '@clients/forms'
 import Form from '@rjsf/core'
 import {
   ErrorSchema,
@@ -12,46 +10,94 @@ import {
 } from '@rjsf/utils'
 import { cloneDeep } from 'lodash'
 import { useTranslation } from 'next-i18next'
-import { ChangeEvent, RefObject, useEffect, useRef, useState } from 'react'
+import React, {
+  ChangeEvent,
+  createContext,
+  PropsWithChildren,
+  RefObject,
+  useContext,
+  useEffect,
+  useRef,
+  useState,
+} from 'react'
 
-import { StepData } from '../../components/forms/types/TransformedFormData'
-import { formDataToXml, xmlStringToPdf, xmlToFormData } from '../api/api'
-import { readTextFile } from '../utils/file'
+import { formDataToXml, xmlStringToPdf, xmlToFormData } from '../../frontend/api/api'
+import useAccount from '../../frontend/hooks/useAccount'
+import useSnackbar from '../../frontend/hooks/useSnackbar'
+import { readTextFile } from '../../frontend/utils/file'
 import {
   getAllStepData,
   getInitFormData,
   getValidatedSteps,
   validateAsyncProperties,
-} from '../utils/formStepper'
-import { blobToString, downloadBlob } from '../utils/general'
-import logger from '../utils/logger'
-import useSnackbar from './useSnackbar'
+} from '../../frontend/utils/formStepper'
+import { blobToString, downloadBlob } from '../../frontend/utils/general'
+import { StepData } from './types/TransformedFormData'
+import { InitialFormData } from './useFormDataLoader'
 
-interface Callbacks {
-  onStepSubmit?: (formData: any) => Promise<void>
-  onInit?: () => Promise<any>
+interface FormState {
+  stepIndex: number
+  setStepIndex: (newIndex: number) => void
+  formData: RJSFSchema
+  stepTitle: string
+  setStepFormData: (stepFormData: RJSFSchema) => void
+  errors: RJSFValidationError[][]
+  extraErrors: ErrorSchema
+  stepData: StepData[]
+  validatedSchema: RJSFSchema & { allOf: RJSFSchema[] }
+  previous: () => void
+  next: () => void
+  submitStep: () => void
+  skipToStep: (newNextStepIndex: number) => void
+  handleOnSubmit: (newFormData: RJSFSchema) => Promise<void>
+  handleOnErrors: (newErrors: RJSFValidationError[]) => void
+  currentSchema: RJSFSchema
+  isComplete: boolean
+  // TODO: improve type
+  formRef: RefObject<Form<any, RJSFSchema, any>>
+  exportXml: () => Promise<void>
+  importXml: () => void
+  exportPdf: () => Promise<void>
 }
 
-export const useFormStepper = (eformSlug: string, eform: EFormValue, callbacks: Callbacks) => {
-  const { schema } = eform
+const FormStateContext = createContext<FormState | undefined>(undefined)
+
+interface FormStateProviderProps {
+  eformSlug: string
+  formDefinition: FormDefinition
+  initialFormData: InitialFormData
+}
+
+// TODO figure out if we need to step over uiSchemas, or having a single one is enough (seems like it is for now)
+export const FormStateProvider = ({
+  eformSlug,
+  formDefinition,
+  initialFormData,
+  children,
+}: PropsWithChildren<FormStateProviderProps>) => {
+  const { schema } = formDefinition
   // since Form can be undefined, useRef<Form> is understood as an overload of useRef returning MutableRef, which does not match expected Ref type be rjsf
   // also, our code expects directly RefObject otherwise it will complain of no `.current`
   // this is probably a bug in their typing therefore the cast
   const formRef = useRef<Form>() as RefObject<Form>
 
+  const { getAccessToken } = useAccount()
+
   // main state variables with the most important info
   const [stepIndex, setStepIndex] = useState<number>(0)
-  const [formData, setFormData] = useState<RJSFSchema>(getInitFormData(schema))
+  const [formData, setFormData] = useState<RJSFSchema>(initialFormData.formDataJson)
   const [errors, setErrors] = useState<Record<string, RJSFValidationError[]>>({})
   const [extraErrors, setExtraErrors] = useState<ErrorSchema>({})
   const [openSnackbarError] = useSnackbar({ variant: 'error' })
   const [openSnackbarSuccess] = useSnackbar({ variant: 'success' })
   const [openSnackbarInfo, closeSnackbarInfo] = useSnackbar({ variant: 'info' })
+  const [openSnackbarWarning] = useSnackbar({ variant: 'warning' })
 
   // state variables helping in stepper
   const [nextStepIndex, setNextStepIndex] = useState<number | null>(null)
   const [nextStep, setNextStep] = useState<RJSFSchema | null>(null)
   const [isSkipEnabled, setIsSkipEnabled] = useState<boolean>(false)
+
   const disableSkip = () => setIsSkipEnabled(false)
 
   // state variables with info about steps for summary and stepper
@@ -66,27 +112,6 @@ export const useFormStepper = (eformSlug: string, eform: EFormValue, callbacks: 
   const stepsLength: number = steps?.length ?? -1
   const isComplete = stepIndex === stepsLength
   const currentSchema = steps ? cloneDeep(steps[stepIndex]) : {}
-
-  const initFormData = async () => {
-    const loadedFormData: RJSFSchema = await callbacks.onInit?.()
-    if (loadedFormData) {
-      setFormData(loadedFormData)
-    } else {
-      setFormData(getInitFormData(schema))
-    }
-  }
-
-  useEffect(() => {
-    // effect to reset all internal state when critical input 'props' change
-    initFormData()
-      .then(() => {
-        setStepIndex(0)
-        validateSteps()
-        return null
-      })
-      .catch((error_) => logger.error('Init FormData failed', error_))
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [eformSlug, schema])
 
   useEffect(() => {
     // stepIndex allowed to climb one step above the length of steps - i.e. to render a final overview or other custom components but still allow to return back
@@ -297,6 +322,29 @@ export const useFormStepper = (eformSlug: string, eform: EFormValue, callbacks: 
     }
   }
 
+  const updateFormData = async () => {
+    const token = await getAccessToken()
+    if (!initialFormData || !token) {
+      return
+    }
+
+    try {
+      await formsApi.nasesControllerUpdateForm(
+        initialFormData.formId,
+        /// TS2345: Argument of type '{ formDataJson: string; }' is not assignable to parameter of type 'UpdateFormRequestDto'.
+        // Type '{ formDataXml: string; }' is missing the following properties from type 'UpdateFormRequestDto': 'email', 'formDataXml', 'pospVersion', 'messageSubject
+        // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+        // @ts-expect-error
+        {
+          formDataJson: formData,
+        },
+        { accessToken: token },
+      )
+    } catch (error) {
+      openSnackbarWarning(t('errors.form_update'))
+    }
+  }
+
   const handleOnSubmit = async (newFormData: RJSFSchema) => {
     // handles onSubmit event of form step
     // it is called also if we are going to skip step by 1
@@ -304,7 +352,7 @@ export const useFormStepper = (eformSlug: string, eform: EFormValue, callbacks: 
     const isFormValid = await validate()
 
     if (isFormValid) {
-      await callbacks.onStepSubmit?.(formData)
+      await updateFormData()
       setUniqueErrors([], stepIndex)
     }
     if (isFormValid && !isSkipEnabled) {
@@ -326,10 +374,11 @@ export const useFormStepper = (eformSlug: string, eform: EFormValue, callbacks: 
       changeStepData(stepIndex, false)
       jumpToStep()
       disableSkip()
+      //   ^?
     }
   }
 
-  return {
+  const context = {
     stepIndex,
     setStepIndex,
     formData,
@@ -352,4 +401,14 @@ export const useFormStepper = (eformSlug: string, eform: EFormValue, callbacks: 
     importXml: chooseFilesAndImportXml,
     exportPdf,
   }
+
+  return <FormStateContext.Provider value={context}>{children}</FormStateContext.Provider>
+}
+
+export const useFormState = (): FormState => {
+  const context = useContext<FormState | undefined>(FormStateContext)
+  if (!context) {
+    throw new Error('useFormState must be used within a FormStateProvider')
+  }
+  return context
 }

@@ -1,4 +1,5 @@
-import forms, { EFormKey, EFormValue } from '@backend/forms'
+import formDefinitions, { FormDefinitionsKeys } from '@backend/forms'
+import { FormDefinition } from '@backend/forms/types'
 import { firstCharToUpper } from '@backend/utils/strings'
 import { RJSFSchema } from '@rjsf/utils'
 import Ajv from 'ajv'
@@ -238,10 +239,10 @@ export const validateDataWithXsd = (data: string, xsd: string) => {
   return xmlDoc.validationErrors
 }
 
-export const getEform = (id: string | string[] | undefined): EFormValue => {
-  const formSlug: EFormKey = forceString(id) as any
-  const eform: EFormValue = forms[formSlug] as EFormValue
+export const getFormDefinition = (id: string | string[] | undefined) => {
+  const formSlug = forceString(id)
+  const formDefinition = formDefinitions[formSlug]
 
-  if (!eform) throw new Error(`Invalid form name - validateFormName returned: ${formSlug}`)
-  return eform
+  if (!formDefinition) throw new Error(`Invalid form name - validateFormName returned: ${formSlug}`)
+  return formDefinition as FormDefinition
 }

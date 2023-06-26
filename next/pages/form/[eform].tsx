@@ -1,5 +1,5 @@
-import { EFormValue } from '@backend/forms'
-import { getEform } from '@backend/utils/forms'
+import { FormDefinition } from '@backend/forms/types'
+import { getFormDefinition } from '@backend/utils/forms'
 import GeneratedFormRJSF from 'components/forms/GeneratedFormRJSF'
 import AccountPageLayout from 'components/layouts/AccountPageLayout'
 import PageWrapper from 'components/layouts/PageWrapper'
@@ -7,6 +7,8 @@ import { GetServerSidePropsContext } from 'next'
 import { useRouter } from 'next/router'
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
 
+import { FormStateProvider } from '../../components/forms/FormStateProvider'
+import { useFormDataLoader } from '../../components/forms/useFormDataLoader'
 import { forceString, isProductionDeployment } from '../../frontend/utils/general'
 import logger from '../../frontend/utils/logger'
 import { AsyncServerProps } from '../../frontend/utils/types'
@@ -14,9 +16,9 @@ import { AsyncServerProps } from '../../frontend/utils/types'
 export const getServerSideProps = async (ctx: GetServerSidePropsContext) => {
   if (isProductionDeployment()) return { notFound: true }
 
-  let eform: EFormValue
+  let formDefinition: FormDefinition
   try {
-    eform = getEform(ctx.query.eform)
+    formDefinition = getFormDefinition(ctx.query.eform)
   } catch (error) {
     logger.error(error)
     return { notFound: true }
@@ -27,7 +29,7 @@ export const getServerSideProps = async (ctx: GetServerSidePropsContext) => {
 
   return {
     props: {
-      eform,
+      formDefinition,
       page: {
         locale: ctx.locale,
         localizations: ['sk', 'en']
@@ -60,7 +62,7 @@ export const getServerSideProps = async (ctx: GetServerSidePropsContext) => {
 
 const FormTestPage = ({
   page,
-  eform,
+  formDefinition,
   isProductionDeploy,
 }: AsyncServerProps<typeof getServerSideProps>) => {
   const router = useRouter()
@@ -70,6 +72,7 @@ const FormTestPage = ({
   // eslint-disable-next-line unicorn/prefer-regexp-test
   const escapedSlug = formSlug.match(/^[\dA-Za-z-]+$/) ? formSlug : ''
   const pageSlug = `form/${escapedSlug}`
+  const initialFormData = useFormDataLoader(formDefinition)
 
   return (
     <PageWrapper
@@ -80,7 +83,20 @@ const FormTestPage = ({
       ]}
     >
       <AccountPageLayout isPublicPage hiddenHeaderNav isProductionDeploy={isProductionDeploy}>
-        <GeneratedFormRJSF eform={eform} escapedSlug={escapedSlug} formSlug={formSlug} />
+        {initialFormData && (
+          <FormStateProvider
+            eformSlug={escapedSlug}
+            formDefinition={formDefinition}
+            initialFormData={initialFormData}
+          >
+            <GeneratedFormRJSF
+              formDefinition={formDefinition}
+              escapedSlug={escapedSlug}
+              formSlug={formSlug}
+              initialFormData={initialFormData}
+            />
+          </FormStateProvider>
+        )}
       </AccountPageLayout>
     </PageWrapper>
   )

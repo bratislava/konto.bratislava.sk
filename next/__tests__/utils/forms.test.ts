@@ -1,6 +1,6 @@
 import xmlTemplate from '@backend/forms/test/xmlTemplate'
 import {
-  getEform,
+  getFormDefinition,
   loadAndBuildXml,
   validateDataWithJsonSchema,
   validateDataWithXsd,
@@ -29,17 +29,17 @@ describe('forms utils', () => {
     expect(errors).toHaveLength(2)
   })
 
-  test('test eform', () => {
-    const eform = getEform('test')
-    expect(eform).toBeTruthy()
+  test('test formDefinition', () => {
+    const formDefinition = getFormDefinition('test')
+    expect(formDefinition).toBeTruthy()
   })
 
-  test('test not-exists eform', () => {
-    const getNotExistsEform = () => {
-      return getEform('')
+  test('test not-exists formDefinition', () => {
+    const getNotExistsFormDefinition = () => {
+      return getFormDefinition('')
     }
 
-    expect(getNotExistsEform).toThrow('Invalid form name')
+    expect(getNotExistsFormDefinition).toThrow('Invalid form name')
   })
 
   test('test validate data with JSON schema', async () => {

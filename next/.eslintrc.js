@@ -10,6 +10,7 @@ module.exports = {
     '@typescript-eslint/no-shadow': ['error', { allow: ['event', 'value', 'key', 'error'] }],
     /** Too tedious to type every function return explicitly */
     '@typescript-eslint/explicit-function-return-type': 'off',
+    '@typescript-eslint/no-unused-vars': 'warn',
     /** We prefer arrow functions */
     'react/function-component-definition': [2, { namedComponents: 'arrow-function' }],
     /** It's annoying to refactor from one style to another */
@@ -54,7 +55,7 @@ module.exports = {
     'lodash/prefer-noop': 'off',
     /** if comparing values in cx function or creating translations, it's overkill to create variables for that */
     'sonarjs/no-duplicate-string': 'warn',
-    'sonarjs/cognitive-complexity': 'warn',
+    'sonarjs/cognitive-complexity': 'off',
     'unicorn/no-array-reduce': 'off',
     // quite annoying as it conflicts with VS Code's auto import
     'lodash/import-scope': 'off',

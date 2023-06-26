@@ -10,7 +10,6 @@ module.exports = {
     '@typescript-eslint/no-shadow': ['error', { allow: ['event', 'value', 'key', 'error'] }],
     /** Too tedious to type every function return explicitly */
     '@typescript-eslint/explicit-function-return-type': 'off',
-    '@typescript-eslint/no-unused-vars': 'warn',
     /** We prefer arrow functions */
     'react/function-component-definition': [2, { namedComponents: 'arrow-function' }],
     /** It's annoying to refactor from one style to another */

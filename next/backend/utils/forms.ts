@@ -1,4 +1,4 @@
-import formDefinitions, { FormDefinitionsKeys } from '@backend/forms'
+import formDefinitions from '@backend/forms'
 import { FormDefinition } from '@backend/forms/types'
 import { firstCharToUpper } from '@backend/utils/strings'
 import { RJSFSchema } from '@rjsf/utils'

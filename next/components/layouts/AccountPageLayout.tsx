@@ -105,6 +105,7 @@ const AccountPageLayout = ({
       icon: <ProfileIcon className="w-5 h-5" />,
       url: ROUTES.USER_PROFILE,
     },
+    // TODO this is duplicated today in mobile menu, we need a flag or two different lists for mobile & desktop
     {
       id: 2,
       title: t('account:menu_help_link'),

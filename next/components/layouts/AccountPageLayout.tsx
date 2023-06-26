@@ -105,13 +105,13 @@ const AccountPageLayout = ({
       icon: <ProfileIcon className="w-5 h-5" />,
       url: ROUTES.USER_PROFILE,
     },
-    // TODO recheck if help should be in this sections - today it is duplicated
-    // {
-    //   id: 2,
-    //   title: t('account:menu_help_link'),
-    //   icon: <HelpIcon className="w-5 h-5" />,
-    //   url: ROUTES.HELP,
-    // },
+    // TODO this is duplicated today in mobile menu, we need a flag or two different lists for mobile & desktop
+    {
+      id: 2,
+      title: t('account:menu_help_link'),
+      icon: <HelpIcon className="w-5 h-5" />,
+      url: ROUTES.HELP,
+    },
     {
       id: 3,
       title: t('account:menu_logout_link'),

@@ -68,7 +68,6 @@ interface FormStateProviderProps {
   initialFormData: InitialFormData
 }
 
-// TODO figure out if we need to step over uiSchemas, or having a single one is enough (seems like it is for now)
 export const FormStateProvider = ({
   eformSlug,
   formDefinition,
@@ -374,7 +373,6 @@ export const FormStateProvider = ({
       changeStepData(stepIndex, false)
       jumpToStep()
       disableSkip()
-      //   ^?
     }
   }
 

@@ -9,6 +9,7 @@ import SkipStepModal from '../SkipStepModal/SkipStepModal'
 export type FormModalsRef = {
   skipButtonHandler: (nextStepIndex?: number) => void
   openRegistrationModal: () => void
+  isAnyModalOpen: boolean
 }
 type FormModalsProps = { skipToStep: (stepIndex: number) => void; stepIndex: number }
 
@@ -19,8 +20,8 @@ const FormModals = forwardRef<FormModalsRef, FormModalsProps>(
     const { isAuth, status, userData } = useAccount()
 
     const [isOnShowSkipModal, setIsOnShowSkipModal] = useState<boolean>(false)
-    const [registrationModal, setRegistrationModal] = useState<boolean>(true)
-    const [identityVerificationModal, setIdentityVerificationModal] = useState(true)
+    const [registrationModal, setRegistrationModal] = useState<boolean>(!isAuth)
+    const [identityVerificationModal, setIdentityVerificationModal] = useState(isAuth && status !== AccountStatus.IdentityVerificationSuccess)
     const [skipModalWasShown, setSkipModalWasShown] = useState<boolean>(false)
     const [skipModalNextStepIndex, setSkipModalNextStepIndex] = useState<number>(stepIndex)
 
@@ -36,6 +37,7 @@ const FormModals = forwardRef<FormModalsRef, FormModalsProps>(
     useImperativeHandle(ref, () => ({
       skipButtonHandler,
       openRegistrationModal: () => setRegistrationModal(true),
+      isAnyModalOpen: registrationModal || identityVerificationModal,
     }))
 
     return (

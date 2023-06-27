@@ -3,6 +3,7 @@
 import { FileUpdatedResponseDtoStatusEnum } from '@clients/openapi-forms'
 import { RJSFSchema } from '@rjsf/utils'
 import { ErrorObject } from 'ajv'
+import { v4 as createUuid } from 'uuid'
 
 import { ApiError, Gdpr, Identity, TaxApiError, UrlResult, User } from '../dtos/generalApiDto'
 import logger, { developmentLog } from '../utils/logger'
@@ -294,9 +295,10 @@ export const getEnum = async (id?: string) => {
 }
 
 export const uploadFileToBucket = async (file: File, formId: string) => {
-  console.log(file)
   const formData = new FormData()
   formData.append('file', file)
+  formData.append('filename', file.name)
+  formData.append('id', createUuid())
 
   return fetchJsonApi(`${String(process.env.NEXT_PUBLIC_FORMS_URL)}/files/upload/${formId}`, {
     method: 'POST',

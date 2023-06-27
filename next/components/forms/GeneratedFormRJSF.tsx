@@ -57,6 +57,7 @@ const GeneratedFormRJSF = ({
           'flex flex-col gap-10 pt-0 pb-6 lg:py-10 w-full max-w-screen-lg mx-auto',
           'lg:flex-row lg:gap-20',
           wrapperClassName,
+          {"overflow-hidden fixed": registrationModal || identityVerificationModal}
         )}
       >
         <div className="">

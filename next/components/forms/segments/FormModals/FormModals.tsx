@@ -1,5 +1,5 @@
 import { useTranslation } from 'next-i18next'
-import React, { forwardRef, useImperativeHandle, useState } from 'react'
+import React, { forwardRef, useEffect, useImperativeHandle, useState } from 'react'
 
 import useAccount, { AccountStatus } from '../../../../frontend/hooks/useAccount'
 import IdentityVerificationModal from '../IdentityVerificationModal/IdentityVerificationModal'
@@ -9,9 +9,12 @@ import SkipStepModal from '../SkipStepModal/SkipStepModal'
 export type FormModalsRef = {
   skipButtonHandler: (nextStepIndex?: number) => void
   openRegistrationModal: () => void
-  isAnyModalOpen: boolean
 }
-type FormModalsProps = { skipToStep: (stepIndex: number) => void; stepIndex: number }
+
+interface FormModalsProps {
+  skipToStep: (stepIndex: number) => void;
+  stepIndex: number;
+}
 
 const FormModals = forwardRef<FormModalsRef, FormModalsProps>(
   ({ skipToStep, stepIndex }: FormModalsProps, ref) => {
@@ -34,10 +37,18 @@ const FormModals = forwardRef<FormModalsRef, FormModalsProps>(
       }
     }
 
+    useEffect(() => {
+      if (registrationModal || identityVerificationModal) {
+        document.body.style.overflow = "hidden"
+      }
+      return () => {
+        document.body.style.overflow = "visible"
+      }
+    }, [registrationModal, identityVerificationModal])
+
     useImperativeHandle(ref, () => ({
       skipButtonHandler,
       openRegistrationModal: () => setRegistrationModal(true),
-      isAnyModalOpen: registrationModal || identityVerificationModal,
     }))
 
     return (

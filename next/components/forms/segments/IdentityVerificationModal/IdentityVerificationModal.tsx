@@ -34,7 +34,8 @@ const IdentityVerificationModal = ({
     <div
       role="button"
       tabIndex={0}
-      className="h-full fixed w-full z-50 inset-0 flex pt-2 md:pt-0 items-start md:items-center justify-center"
+      id="identity-verification-modal"
+      className="h-full fixed w-full z-50 inset-0 flex pt-2 md:pt-0 items-start md:items-center justify-center overflow-scroll"
       style={{ background: 'rgba(var(--color-gray-800), .4)', marginTop: '0' }}
       onClick={onClose}
       onKeyPress={(event: React.KeyboardEvent) => handleOnKeyPress(event, onClose)}

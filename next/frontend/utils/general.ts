@@ -1,6 +1,7 @@
 import currency from 'currency.js'
 import React from 'react'
 
+import { environment } from '../../environment'
 import { Tax } from '../dtos/taxDto'
 
 export interface DocumentsWrapper {
@@ -53,7 +54,7 @@ const isServer = () => typeof window === 'undefined'
 
 export const isBrowser = () => !isServer()
 
-export const isProductionDeployment = () => process.env.NEXT_PUBLIC_IS_STAGING !== 'true'
+export const isProductionDeployment = () => !environment.isStaging
 
 // https://stackoverflow.com/questions/8511281/check-if-a-value-is-an-object-in-javascript
 export const isObject = (value: any) =>

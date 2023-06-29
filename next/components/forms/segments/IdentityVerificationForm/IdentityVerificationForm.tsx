@@ -9,6 +9,7 @@ import { Controller } from 'react-hook-form'
 import Turnstile from 'react-turnstile'
 import { useCounter, useTimeout } from 'usehooks-ts'
 
+import { environment } from '../../../../environment'
 import { ROUTES } from '../../../../frontend/api/constants'
 import { AccountError } from '../../../../frontend/hooks/useAccount'
 import useHookForm from '../../../../frontend/hooks/useHookForm'
@@ -116,7 +117,7 @@ const IdentityVerificationForm = ({ onSubmit, error }: Props) => {
             <Turnstile
               theme="light"
               key={captchaKey}
-              sitekey={process.env.NEXT_PUBLIC_CLOUDFLARE_TURNSTILE_SITE_KEY || ''}
+              sitekey={environment.cloudflareTurnstileSiteKey}
               onVerify={(token) => {
                 setCaptchaWarning('hide')
                 onChange(token)

@@ -12,6 +12,7 @@ import { Controller } from 'react-hook-form'
 import Turnstile from 'react-turnstile'
 import { useCounter, useTimeout, useWindowSize } from 'usehooks-ts'
 
+import { environment } from '../../../../environment'
 import { AccountError, UserData } from '../../../../frontend/hooks/useAccount'
 import useHookForm from '../../../../frontend/hooks/useHookForm'
 import { isBrowser } from '../../../../frontend/utils/general'
@@ -291,7 +292,7 @@ const RegisterForm = ({ onSubmit, error, lastEmail, disablePO }: Props) => {
             <Turnstile
               theme="light"
               key={captchaKey}
-              sitekey={process.env.NEXT_PUBLIC_CLOUDFLARE_TURNSTILE_SITE_KEY || ''}
+              sitekey={environment.cloudflareTurnstileSiteKey}
               onVerify={(token) => {
                 setCaptchaWarning('hide')
                 onChange(token)

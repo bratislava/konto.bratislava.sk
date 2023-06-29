@@ -3,11 +3,11 @@ import DiskIcon from '@assets/images/new-icons/ui/disc.svg'
 import DownloadIcon from '@assets/images/new-icons/ui/download.svg'
 import LockIcon from '@assets/images/new-icons/ui/lock.svg'
 import PdfIcon from '@assets/images/new-icons/ui/pdf.svg'
+import { usePageWrapperContext } from 'components/layouts/PageWrapper'
 import Link from 'next/link'
 import { useTranslation } from 'next-i18next'
 import { ReactNode, useState } from 'react'
 
-import useAccount from '../../../frontend/hooks/useAccount'
 import RegistrationModal from '../segments/RegistrationModal/RegistrationModal'
 
 type MenuItem = {
@@ -27,11 +27,13 @@ interface FormHeaderProps {
 const MenuList = ({ onExportXml, onSaveConcept, onImportXml, onExportPdf }: FormHeaderProps) => {
   const { t } = useTranslation('forms')
 
-  const { isAuth } = useAccount()
+  const {
+    auth: { isAuthenticated },
+  } = usePageWrapperContext()
   const [registrationModal, setRegistrationModal] = useState<boolean>(false)
 
   const handleOnPressSaveConcept = () => {
-    if (!isAuth) {
+    if (!isAuthenticated) {
       setRegistrationModal(true)
     } else {
       onSaveConcept()
@@ -91,7 +93,7 @@ const MenuList = ({ onExportXml, onSaveConcept, onImportXml, onExportPdf }: Form
           ),
         )}
       </ul>
-      {isAuth && (
+      {isAuthenticated && (
         <RegistrationModal
           title={t('account:register_modal.header_save_title')}
           subtitle={t('account:register_modal.header_save_subtitle')}

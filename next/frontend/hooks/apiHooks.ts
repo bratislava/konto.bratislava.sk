@@ -8,17 +8,13 @@ import { ajvFormats, ajvKeywords } from '../dtos/formStepperDto'
 import { TaxApiError } from '../dtos/generalApiDto'
 import { Tax, TaxJSONSchema } from '../dtos/taxDto'
 import logger from '../utils/logger'
-import useAccount from './useAccount'
 
 // TODO test for no tax, not yet tax, legit tax unpaid, partially paid, paid
 export const useTaxes = () => {
-  const { lastAccessToken } = useAccount()
   // TODO handle 401 & token refreshing - for now, this should work reasonably as along as the page isn't opened for too long
-  const swrResult = useSWR<Tax>(
-    () => (lastAccessToken ? ['/api/taxes', lastAccessToken] : null),
-    ([, token]: [void, string]) => getTaxApi(token),
-    { shouldRetryOnError: false },
-  )
+  // TODO make sure log out -> log in as different user -> loading data does not load the data of previous user - without futher change it will now
+  // TODO move towards react query
+  const swrResult = useSWR<Tax>(['/api/taxes'], () => getTaxApi(), { shouldRetryOnError: false })
 
   useEffect(() => {
     if (

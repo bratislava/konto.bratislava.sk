@@ -11,7 +11,7 @@ import MenuDropdown, {
   MenuItemBase,
 } from 'components/forms/simple-components/MenuDropdown/MenuDropdown'
 import Waves from 'components/forms/simple-components/Waves/Waves'
-import useAccount from 'frontend/hooks/useAccount'
+import { usePageWrapperContext } from 'components/layouts/PageWrapper'
 import Link from 'next/link'
 import { useTranslation } from 'next-i18next'
 import { useState } from 'react'
@@ -25,7 +25,9 @@ interface FormHeaderProps {
 
 const FormHeader = ({ onExportXml, onSaveConcept, onImportXml, onExportPdf }: FormHeaderProps) => {
   const { t } = useTranslation('forms')
-  const { isAuth } = useAccount()
+  const {
+    auth: { isAuthenticated },
+  } = usePageWrapperContext()
 
   const [registrationModal, setRegistrationModal] = useState<boolean>(false)
   const [isMenuOpen, setIsMenuOpen] = useState<boolean>(false)
@@ -50,7 +52,7 @@ const FormHeader = ({ onExportXml, onSaveConcept, onImportXml, onExportPdf }: Fo
   ]
 
   const handleOnPressSaveConcept = () => {
-    if (!isAuth) {
+    if (!isAuthenticated) {
       setRegistrationModal(true)
     } else {
       onSaveConcept()
@@ -95,7 +97,7 @@ const FormHeader = ({ onExportXml, onSaveConcept, onImportXml, onExportPdf }: Fo
         waveColor="rgb(var(--color-main-200))"
         wavePosition="bottom"
       />
-      {!isAuth && (
+      {!isAuthenticated && (
         <RegistrationModal
           title={t('account:register_modal.header_save_title')}
           subtitle={t('account:register_modal.header_save_subtitle')}

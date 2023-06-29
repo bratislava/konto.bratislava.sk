@@ -1,9 +1,9 @@
 import cx from 'classnames'
 import Alert from 'components/forms/info-components/Alert'
+import { UserData } from 'frontend/utils/amplify'
 import { useTranslation } from 'next-i18next'
 import { useId } from 'react'
 
-import { UserData } from '../../../../frontend/hooks/useAccount'
 import UserProfileDetailEdit from './UserProfileDetailEdit'
 import UserProfileDetailsButtons from './UserProfileDetailsButtons'
 import UserProfileDetailView from './UserProfileDetailView'

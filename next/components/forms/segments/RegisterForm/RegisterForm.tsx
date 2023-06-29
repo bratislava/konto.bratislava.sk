@@ -6,16 +6,15 @@ import InputField from 'components/forms/widget-components/InputField/InputField
 import PasswordField from 'components/forms/widget-components/PasswordField/PasswordField'
 import Radio from 'components/forms/widget-components/RadioButton/Radio'
 import RadioGroup from 'components/forms/widget-components/RadioButton/RadioGroup'
+import useHookForm from 'frontend/hooks/useHookForm'
+import { AccountError, UserData } from 'frontend/utils/amplify'
+import { isBrowser } from 'frontend/utils/general'
+import logger from 'frontend/utils/logger'
 import { useTranslation } from 'next-i18next'
 import { useState } from 'react'
 import { Controller } from 'react-hook-form'
 import Turnstile from 'react-turnstile'
 import { useCounter, useTimeout, useWindowSize } from 'usehooks-ts'
-
-import { AccountError, UserData } from '../../../../frontend/hooks/useAccount'
-import useHookForm from '../../../../frontend/hooks/useHookForm'
-import { isBrowser } from '../../../../frontend/utils/general'
-import logger from '../../../../frontend/utils/logger'
 
 interface Data {
   email: string
@@ -32,7 +31,6 @@ interface Props {
   onSubmit: (
     email: string,
     password: string,
-    marketingConfirmation: boolean,
     turnstileToken: string,
     userData: UserData,
   ) => Promise<any>
@@ -154,12 +152,12 @@ const RegisterForm = ({ onSubmit, error, lastEmail, disablePO }: Props) => {
           given_name: data.given_name,
           family_name: data.family_name,
           name: data.name,
-          account_type: data.account_type,
+          'custom:account_type': data.account_type,
         }
         // force rerender on submit - captcha is valid only for single submit
         incrementCaptchaKey()
         // marketing confirmation always set to true (with new gdpr document we get consent with the registration itself)
-        return onSubmit(data.email, data.password, true, data.turnstileToken, userData)
+        return onSubmit(data.email, data.password, data.turnstileToken, userData)
       })}
     >
       <h1 className="text-h2">{t('register_title')}</h1>

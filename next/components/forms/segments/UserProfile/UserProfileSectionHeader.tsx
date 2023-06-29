@@ -1,9 +1,9 @@
 import cx from 'classnames'
 import Alert from 'components/forms/info-components/Alert'
+import { usePageWrapperContext } from 'components/layouts/PageWrapper'
+import { AccountStatus, mapTierToStatus } from 'frontend/utils/amplify'
 import { useTranslation } from 'next-i18next'
 import React from 'react'
-
-import useAccount, { AccountStatus } from '../../../../frontend/hooks/useAccount'
 
 interface UserProfileSectionHeaderProps {
   title: string
@@ -26,7 +26,8 @@ const UserProfileSectionHeader = ({
   mainHeader,
   childrenToColumn,
 }: UserProfileSectionHeaderProps) => {
-  const { status } = useAccount()
+  const { auth } = usePageWrapperContext()
+  const status = mapTierToStatus(auth.userData?.['custom:tier'])
   const { t } = useTranslation('account')
   return (
     <div

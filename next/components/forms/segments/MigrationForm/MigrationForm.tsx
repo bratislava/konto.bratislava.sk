@@ -3,14 +3,13 @@ import AccountLink from 'components/forms/segments/AccountLink/AccountLink'
 import LoginAccountLink from 'components/forms/segments/LoginAccountLink/LoginAccountLink'
 import Button from 'components/forms/simple-components/Button'
 import InputField from 'components/forms/widget-components/InputField/InputField'
+import { ROUTES } from 'frontend/api/constants'
+import useHookForm from 'frontend/hooks/useHookForm'
+import { AccountError } from 'frontend/utils/amplify'
+import { formatUnicorn } from 'frontend/utils/string'
 import { useRouter } from 'next/router'
 import { useTranslation } from 'next-i18next'
 import { Controller } from 'react-hook-form'
-
-import { ROUTES } from '../../../../frontend/api/constants'
-import { AccountError } from '../../../../frontend/hooks/useAccount'
-import useHookForm from '../../../../frontend/hooks/useHookForm'
-import { formatUnicorn } from '../../../../frontend/utils/string'
 
 interface Data {
   email: string
@@ -20,9 +19,10 @@ interface Props {
   onSubmit: (email: string) => Promise<any>
   error?: AccountError | null | undefined
   lastEmail: string
+  setLastEmail: (email: string) => void
 }
 
-const MigrationForm = ({ onSubmit, error, lastEmail }: Props) => {
+const MigrationForm = ({ onSubmit, error, lastEmail, setLastEmail }: Props) => {
   const router = useRouter()
   const queryEmail =
     router.query.email && typeof router.query.email === 'string'
@@ -62,7 +62,10 @@ const MigrationForm = ({ onSubmit, error, lastEmail }: Props) => {
   return (
     <form
       className="flex flex-col space-y-4"
-      onSubmit={handleSubmit((data: Data) => onSubmit(data.email))}
+      onSubmit={handleSubmit((data: Data) => {
+        setLastEmail(data.email)
+        return onSubmit(data.email)
+      })}
     >
       <h1 className="text-h3">
         {formatUnicorn(t(queryEmail ? 'migration_recognized_title' : 'migration_title'), {

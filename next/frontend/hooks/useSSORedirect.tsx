@@ -1,11 +1,10 @@
 import { ROUTES } from 'frontend/api/constants'
+import { getAccessToken } from 'frontend/utils/amplify'
 import logger from 'frontend/utils/logger'
 import { getValidRedirectFromQuery } from 'frontend/utils/sso'
 import { useRouter } from 'next/router'
 import React, { useCallback, useState } from 'react'
 import { useEffectOnce } from 'usehooks-ts'
-
-import useAccount from './useAccount'
 
 interface SSORedirectState {
   redirectTarget: string
@@ -19,19 +18,13 @@ const SSORedirectContext = React.createContext<SSORedirectState>({} as SSORedire
 export const SSORedirectProvider = ({ children }: { children: React.ReactNode }) => {
   const router = useRouter()
   const [redirectTarget, setRedirectTarget] = useState<string>(ROUTES.HOME)
-  const { getAccessToken } = useAccount()
   const redirectTargetIsAnotherPage = !redirectTarget.startsWith('/')
 
   const redirect = useCallback(async () => {
     if (redirectTarget.startsWith('/')) {
       router.push(redirectTarget).catch((error_) => logger.error('Failed redirect', error_))
     } else {
-      let accessToken: string | null = null
-      try {
-        accessToken = await getAccessToken()
-      } catch (error) {
-        logger.error('Failed to get access token for redirect', error)
-      }
+      const accessToken = await getAccessToken()
       if (accessToken) {
         const redirectUrlWithToken = new URL(redirectTarget)
         redirectUrlWithToken.searchParams.set('access_token', accessToken)
@@ -40,7 +33,7 @@ export const SSORedirectProvider = ({ children }: { children: React.ReactNode })
         window.location.href = redirectTarget
       }
     }
-  }, [getAccessToken, redirectTarget, router])
+  }, [redirectTarget, router])
 
   // if trying to set incorrect redirect target, throws and keeps the previous value
   const setRedirect = useCallback((newTarget: string) => {

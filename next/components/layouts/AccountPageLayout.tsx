@@ -5,6 +5,7 @@ import LogoutIcon from '@assets/images/new-icons/ui/logout.svg'
 import MySubmissionIcon from '@assets/images/new-icons/ui/my-submission.svg'
 import PaymentIcon from '@assets/images/new-icons/ui/payment.svg'
 import ProfileIcon from '@assets/images/new-icons/ui/profile.svg'
+import { Auth } from 'aws-amplify'
 import cx from 'classnames'
 import AccountNavBar, {
   MenuSectionItemBase,
@@ -16,7 +17,6 @@ import { useTranslation } from 'next-i18next'
 import { ReactNode, useEffect } from 'react'
 
 import { ROUTES } from '../../frontend/api/constants'
-import useAccount from '../../frontend/hooks/useAccount'
 import logger from '../../frontend/utils/logger'
 
 type AccountPageLayoutBase = {
@@ -34,19 +34,22 @@ const AccountPageLayout = ({
   isProductionDeploy,
   isPublicPage,
 }: AccountPageLayoutBase) => {
-  const { locale, localizations = [] } = usePageWrapperContext()
+  const {
+    locale,
+    localizations = [],
+    auth: { isAuthenticated },
+  } = usePageWrapperContext()
   const router = useRouter()
-  const { isAuth, logout } = useAccount()
 
   const prodHideSectionsListIds: Set<number> = isProductionDeploy ? new Set([2]) : new Set([])
 
   useEffect(() => {
-    if (!isPublicPage && !isAuth && router.route !== ROUTES.PAYMENT_RESULT) {
+    if (!isPublicPage && !isAuthenticated && router.route !== ROUTES.PAYMENT_RESULT) {
       router
         .push({ pathname: ROUTES.LOGIN, query: { from: router.route } })
         .catch((error_) => logger.error('Redirect failed', error_))
     }
-  }, [isAuth, isPublicPage, router])
+  }, [isAuthenticated, isPublicPage, router])
 
   const [t] = useTranslation('common')
 
@@ -61,7 +64,7 @@ const AccountPageLayout = ({
   }
 
   const logoutHandler = async () => {
-    logout()
+    await Auth.signOut()
     await router.push(ROUTES.LOGIN)
   }
 

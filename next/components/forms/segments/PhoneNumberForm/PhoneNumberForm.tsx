@@ -1,11 +1,10 @@
 import AccountErrorAlert from 'components/forms/segments/AccountErrorAlert/AccountErrorAlert'
 import Button from 'components/forms/simple-components/Button'
 import InputField from 'components/forms/widget-components/InputField/InputField'
+import useHookForm from 'frontend/hooks/useHookForm'
+import { AccountError } from 'frontend/utils/amplify'
 import { useTranslation } from 'next-i18next'
 import { Controller } from 'react-hook-form'
-
-import { AccountError } from '../../../../frontend/hooks/useAccount'
-import useHookForm from '../../../../frontend/hooks/useHookForm'
 
 export interface PhoneNumberData {
   phone_number?: string

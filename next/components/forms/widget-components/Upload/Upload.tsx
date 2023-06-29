@@ -2,12 +2,12 @@ import { UploadMinioFile } from '@backend/dtos/minio/upload-minio-file.dto'
 import { formsApi } from '@clients/forms'
 import cx from 'classnames'
 import FieldErrorMessage from 'components/forms/info-components/FieldErrorMessage'
+import { getAccessToken } from 'frontend/utils/amplify'
 import React, { ForwardedRef, forwardRef, ForwardRefRenderFunction, useState } from 'react'
 import { v4 as createUuid } from 'uuid'
 
 import { deleteFileFromBucket, uploadFileToBucket } from '../../../../frontend/api/api'
 import { FileScan } from '../../../../frontend/dtos/formStepperDto'
-import useAccount from '../../../../frontend/hooks/useAccount'
 import logger, { developmentLog } from '../../../../frontend/utils/logger'
 import UploadBrokenMessages, { MINIO_ERROR } from '../../info-components/UploadBrokenMessages'
 import UploadFieldHeader from '../../info-components/UploadFieldHeader'
@@ -81,11 +81,10 @@ const UploadComponent: ForwardRefRenderFunction<HTMLDivElement, UploadProps> = (
   }: UploadProps = props
 
   const [fileBrokenMessages, setFileBrokenMessages] = useState<string[]>([])
-  const { getAccessToken } = useAccount()
 
   const startScanFiles = async (newFileScans: FileScan[]): Promise<FileScan[]> => {
-    const token = await getAccessToken()
     const parsedBucketName: string[] | undefined = bucketFolderName?.split('/')
+    const token = await getAccessToken()
 
     const updatedFileScans: FileScan[] = await Promise.all(
       newFileScans.map(async (scan) => {

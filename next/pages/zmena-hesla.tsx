@@ -1,16 +1,22 @@
+import { Auth } from 'aws-amplify'
 import AccountContainer from 'components/forms/segments/AccountContainer/AccountContainer'
 import AccountSuccessAlert from 'components/forms/segments/AccountSuccessAlert/AccountSuccessAlert'
 import PasswordChangeForm from 'components/forms/segments/PasswordChangeForm/PasswordChangeForm'
 import LoginRegisterLayout from 'components/layouts/LoginRegisterLayout'
+import {
+  AccountError,
+  AccountStatus,
+  getSSRCurrentAuth,
+  mapTierToStatus,
+} from 'frontend/utils/amplify'
 import { GetServerSidePropsContext } from 'next'
 import { useRouter } from 'next/router'
 import { useTranslation } from 'next-i18next'
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
-import { useEffect } from 'react'
+import { useEffect, useState } from 'react'
 
 import PageWrapper from '../components/layouts/PageWrapper'
 import { ROUTES } from '../frontend/api/constants'
-import useAccount, { AccountStatus } from '../frontend/hooks/useAccount'
 import { isProductionDeployment } from '../frontend/utils/general'
 import logger from '../frontend/utils/logger'
 import { AsyncServerProps } from '../frontend/utils/types'
@@ -20,6 +26,7 @@ export const getServerSideProps = async (ctx: GetServerSidePropsContext) => {
 
   return {
     props: {
+      auth: await getSSRCurrentAuth(ctx.req),
       page: {
         locale: ctx.locale,
         localizations: ['sk', 'en']
@@ -35,23 +42,34 @@ export const getServerSideProps = async (ctx: GetServerSidePropsContext) => {
   }
 }
 
-const PasswordChangePage = ({ page }: AsyncServerProps<typeof getServerSideProps>) => {
-  const { changePassword, error, status, isAuth } = useAccount()
+const PasswordChangePage = ({ page, auth }: AsyncServerProps<typeof getServerSideProps>) => {
   const { t } = useTranslation('account')
   const router = useRouter()
+  const [passwordChangeError, setPasswordChangeError] = useState<AccountError | null>(null)
+  const status = mapTierToStatus(auth.userData?.['custom:tier'])
 
   useEffect(() => {
-    if (!isAuth) {
+    if (!auth.isAuthenticated) {
       router.push(ROUTES.LOGIN).catch((error_) => logger.error('Failed redirect', error_))
     }
-  }, [isAuth, router])
+  }, [auth.isAuthenticated, router])
 
   const onConfirm = async () => {
     await router.push(ROUTES.HOME).catch((error_) => logger.error('Failed redirect', error_))
   }
 
+  const changePassword = async (oldPassword, newPassword) => {
+    try {
+      setPasswordChangeError(null)
+      const user = await Auth.currentAuthenticatedUser()
+      await Auth.changePassword(user, oldPassword, newPassword)
+    } catch (error) {
+      setPasswordChangeError({ code: error?.message, message: error?.message })
+    }
+  }
+
   return (
-    <PageWrapper locale={page.locale} localizations={page.localizations}>
+    <PageWrapper locale={page.locale} localizations={page.localizations} auth={auth}>
       <LoginRegisterLayout backButtonHidden={status === AccountStatus.NewPasswordSuccess}>
         <AccountContainer>
           {status === AccountStatus.NewPasswordSuccess ? (
@@ -61,7 +79,7 @@ const PasswordChangePage = ({ page }: AsyncServerProps<typeof getServerSideProps
               onConfirm={onConfirm}
             />
           ) : (
-            <PasswordChangeForm onSubmit={changePassword} error={error} />
+            <PasswordChangeForm onSubmit={changePassword} error={passwordChangeError} />
           )}
         </AccountContainer>
       </LoginRegisterLayout>

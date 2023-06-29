@@ -1,5 +1,6 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 /* eslint-disable lodash/collection-ordering */
+import { GetSSRCurrentAuth } from 'frontend/utils/amplify'
 import orderBy from 'lodash/orderBy'
 import { useTranslation } from 'next-i18next'
 import { createContext, useContext, useMemo } from 'react'
@@ -14,10 +15,16 @@ interface PageLocalization {
 interface IPageWrapperContext {
   locale?: string
   localizations: PageLocalization[]
+  auth: GetSSRCurrentAuth
 }
 
 const PageWrapperContext = createContext<IPageWrapperContext>({
   localizations: [],
+  auth: {
+    userData: null,
+    accessToken: '',
+    isAuthenticated: false,
+  },
 })
 
 interface IProps {
@@ -25,9 +32,10 @@ interface IProps {
   locale?: string
   localizations?: PageLocalization[]
   slug?: string
+  auth: GetSSRCurrentAuth
 }
 
-const PageWrapper = ({ children, locale, localizations, slug }: IProps) => {
+const PageWrapper = ({ children, locale, localizations, slug, auth }: IProps) => {
   const [, { language }] = useTranslation()
   const pageLocalizations: PageLocalization[] = useMemo(() => {
     const base: PageLocalization[] = []
@@ -47,7 +55,7 @@ const PageWrapper = ({ children, locale, localizations, slug }: IProps) => {
 
   return (
     <PageWrapperContext.Provider
-      value={{ locale: locale ?? language, localizations: pageLocalizations }}
+      value={{ locale: locale ?? language, localizations: pageLocalizations, auth }}
     >
       {children}
     </PageWrapperContext.Provider>

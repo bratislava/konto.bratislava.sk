@@ -1,11 +1,12 @@
 import Button from 'components/forms/simple-components/Button'
+import { usePageWrapperContext } from 'components/layouts/PageWrapper'
+import { AccountStatus, mapTierToStatus } from 'frontend/utils/amplify'
 import { useRouter } from 'next/router'
 import { useTranslation } from 'next-i18next'
 
-import useAccount, { AccountStatus } from '../../../frontend/hooks/useAccount'
-
 const IdentityVerificationStatus = () => {
-  const { status } = useAccount()
+  const { auth } = usePageWrapperContext()
+  const status = mapTierToStatus(auth.userData?.['custom:tier'])
   const { t } = useTranslation('account')
   const router = useRouter()
 

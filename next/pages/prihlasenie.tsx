@@ -1,16 +1,22 @@
+import { Auth } from 'aws-amplify'
 import AccountActivator from 'components/forms/segments/AccountActivator/AccountActivator'
 import AccountContainer from 'components/forms/segments/AccountContainer/AccountContainer'
 import EmailVerificationForm from 'components/forms/segments/EmailVerificationForm/EmailVerificationForm'
 import LoginForm from 'components/forms/segments/LoginForm/LoginForm'
 import LoginRegisterLayout from 'components/layouts/LoginRegisterLayout'
 import useSSORedirect from 'frontend/hooks/useSSORedirect'
+import {
+  AccountError,
+  AccountStatus,
+  getSSRCurrentAuth,
+  mapTierToStatus,
+} from 'frontend/utils/amplify'
 import logger from 'frontend/utils/logger'
 import { GetServerSidePropsContext } from 'next'
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
-import { useEffect } from 'react'
+import { useEffect, useState } from 'react'
 
 import PageWrapper from '../components/layouts/PageWrapper'
-import useAccount, { AccountStatus } from '../frontend/hooks/useAccount'
 import { isProductionDeployment } from '../frontend/utils/general'
 import { AsyncServerProps } from '../frontend/utils/types'
 
@@ -19,6 +25,7 @@ export const getServerSideProps = async (ctx: GetServerSidePropsContext) => {
 
   return {
     props: {
+      auth: await getSSRCurrentAuth(ctx.req),
       page: {
         locale: ctx.locale,
         localizations: ['sk', 'en']
@@ -34,43 +41,50 @@ export const getServerSideProps = async (ctx: GetServerSidePropsContext) => {
   }
 }
 
-const LoginPage = ({ page }: AsyncServerProps<typeof getServerSideProps>) => {
-  const { login, error, status, resendVerificationCode, verifyEmail, lastEmail, user } =
-    useAccount()
+const LoginPage = ({ page, auth }: AsyncServerProps<typeof getServerSideProps>) => {
   const { redirect } = useSSORedirect()
+  const status = mapTierToStatus(auth.userData?.['custom:tier'])
+  const [loginError, setLoginError] = useState<AccountError | null>(null)
 
   useEffect(() => {
-    if (user !== null && user !== undefined) {
+    if (auth.isAuthenticated) {
       redirect().catch((error) => logger.error('Failed redirect login useEffect', error))
     }
-  }, [user, redirect])
+  }, [auth.isAuthenticated, redirect])
 
   const onLogin = async (email: string, password: string) => {
-    if (await login(email, password)) {
-      await redirect()
+    try {
+      if (await Auth.signIn(email, password)) {
+        await redirect()
+      }
+    } catch (error) {
+      setLoginError({ code: error?.code, message: error?.message })
     }
   }
 
   const onVerifyEmail = async (verificationCode: string) => {
-    if (await verifyEmail(verificationCode)) {
-      await redirect()
+    try {
+      if (await Auth.verifyCurrentUserAttributeSubmit('email', verificationCode)) {
+        await redirect()
+      }
+    } catch (error) {
+      setLoginError({ code: error?.code, message: error?.message })
     }
   }
 
   return (
-    <PageWrapper locale={page.locale} localizations={page.localizations}>
+    <PageWrapper locale={page.locale} localizations={page.localizations} auth={auth}>
       <LoginRegisterLayout backButtonHidden>
         {status === AccountStatus.Idle && <AccountActivator />}
         <AccountContainer className="md:pt-6 pt-0 mb-0 md:mb-8">
           {status === AccountStatus.EmailVerificationRequired ? (
             <EmailVerificationForm
-              lastEmail={lastEmail}
-              onResend={resendVerificationCode}
+              onResend={() => Auth.verifyCurrentUserAttribute('email')}
               onSubmit={onVerifyEmail}
-              error={error}
+              error={loginError}
             />
           ) : (
-            <LoginForm onSubmit={onLogin} error={error} />
+            <LoginForm onSubmit={onLogin} error={loginError} />
           )}
         </AccountContainer>
       </LoginRegisterLayout>

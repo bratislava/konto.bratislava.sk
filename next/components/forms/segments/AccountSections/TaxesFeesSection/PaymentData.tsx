@@ -5,7 +5,6 @@ import React from 'react'
 
 import { getPaymentGatewayUrlApi } from '../../../../../frontend/api/api'
 import { Tax } from '../../../../../frontend/dtos/taxDto'
-import useAccount from '../../../../../frontend/hooks/useAccount'
 import { taxStatusHelper } from '../../../../../frontend/utils/general'
 import logger from '../../../../../frontend/utils/logger'
 import AccordionPaymentSchedule from '../../../simple-components/AccordionPaymentSchedule'
@@ -18,7 +17,6 @@ interface PaymentDataProps {
 }
 
 const PaymentData = ({ tax }: PaymentDataProps) => {
-  const { lastAccessToken } = useAccount()
   const { t } = useTranslation('account')
   const status = taxStatusHelper(tax)
 
@@ -33,7 +31,7 @@ const PaymentData = ({ tax }: PaymentDataProps) => {
 
   const redirectToPaymentGateway = async () => {
     try {
-      const result = await getPaymentGatewayUrlApi(lastAccessToken)
+      const result = await getPaymentGatewayUrlApi()
       const resultUrl = result?.url
       if (typeof resultUrl === 'string') {
         await router.push(resultUrl)

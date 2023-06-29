@@ -1,11 +1,14 @@
+import { Auth } from 'aws-amplify'
 import cx from 'classnames'
 import MessageModal from 'components/forms/widget-components/Modals/MessageModal'
+import { usePageWrapperContext } from 'components/layouts/PageWrapper'
+import useSnackbar from 'frontend/hooks/useSnackbar'
+import { AccountError, UserData, useRefreshServerSideProps } from 'frontend/utils/amplify'
+import logger from 'frontend/utils/logger'
+import { identity, mapValues, pickBy } from 'lodash'
 import { useTranslation } from 'next-i18next'
 import { useEffect, useState } from 'react'
 
-import useAccount, { UserData } from '../../../../frontend/hooks/useAccount'
-import useSnackbar from '../../../../frontend/hooks/useSnackbar'
-import logger from '../../../../frontend/utils/logger'
 import AccountMarkdown from '../AccountMarkdown/AccountMarkdown'
 import UserProfileConsents from './UserProfileConsents'
 import UserProfileDetail from './UserProfileDetail'
@@ -17,35 +20,35 @@ const UserProfileView = () => {
   const [isAlertOpened, setIsAlertOpened] = useState(false)
   const [alertType, setAlertType] = useState<'success' | 'error'>('success')
   const [isEmailModalOpened, setIsEmailModalOpened] = useState<boolean>(false)
-  const { userData, updateUserData, error } = useAccount()
+  const {
+    auth: { userData },
+  } = usePageWrapperContext()
   const [openSnackbarSuccess] = useSnackbar({ variant: 'success' })
 
+  const [updateUserDataError, setUpdateUserDataError] = useState<AccountError | null>(null)
+  const { refreshData } = useRefreshServerSideProps(userData)
+
   useEffect(() => {
-    setAlertType(error ? 'error' : 'success')
-  }, [error])
+    setAlertType(updateUserDataError ? 'error' : 'success')
+  }, [updateUserDataError])
 
   const handleOnCancelEditing = () => {
     setIsEditing(false)
   }
 
-  const handleOnSubmitEditing = (newUserData: UserData) => {
-    updateUserData(newUserData)
-      .then(() => {
-        setIsEditing(false)
-        if (alertType === 'error') {
-          setIsAlertOpened(true)
-          setTimeout(() => setIsAlertOpened(false), 3000)
-        } else if (alertType === 'success') {
-          // default is 5000 ms
-          openSnackbarSuccess(t('profile_detail.success_alert'), 3000)
-        }
-        return null
-      })
-      .catch((error_) => {
-        logger.error('Update User Data failed', error_)
-        setIsAlertOpened(true)
-        setTimeout(() => setIsAlertOpened(false), 3000)
-      })
+  const handleOnSubmitEditing = async (newUserData: UserData) => {
+    try {
+      const user = await Auth.currentAuthenticatedUser()
+      await Auth.updateUserAttributes(user, mapValues(pickBy(newUserData, identity)))
+      // TODO why it's openSnackbarSuccess on success and setIsAlertOpened on error ?
+      openSnackbarSuccess(t('profile_detail.success_alert'), 3000)
+      await refreshData()
+    } catch (error) {
+      logger.error('Update User Data failed', error)
+      setUpdateUserDataError({ code: error?.code, message: error?.message })
+      setIsAlertOpened(true)
+      setTimeout(() => setIsAlertOpened(false), 3000)
+    }
   }
 
   return (

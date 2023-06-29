@@ -1,12 +1,14 @@
+import { Auth } from 'aws-amplify'
 import AccountActivator from 'components/forms/segments/AccountActivator/AccountActivator'
 import AccountContainer from 'components/forms/segments/AccountContainer/AccountContainer'
 import AccountMarkdown from 'components/forms/segments/AccountMarkdown/AccountMarkdown'
 import AccountSuccessAlert from 'components/forms/segments/AccountSuccessAlert/AccountSuccessAlert'
 import EmailVerificationForm from 'components/forms/segments/EmailVerificationForm/EmailVerificationForm'
 import RegisterForm from 'components/forms/segments/RegisterForm/RegisterForm'
-import Spinner from 'components/forms/simple-components/Spinner'
 import LoginRegisterLayout from 'components/layouts/LoginRegisterLayout'
+import { subscribeApi } from 'frontend/api/api'
 import useSSORedirect from 'frontend/hooks/useSSORedirect'
+import { AccountError, AccountStatus, getSSRCurrentAuth, UserData } from 'frontend/utils/amplify'
 import { GetServerSidePropsContext } from 'next'
 import { useRouter } from 'next/router'
 import { useTranslation } from 'next-i18next'
@@ -15,7 +17,6 @@ import { useState } from 'react'
 
 import PageWrapper from '../components/layouts/PageWrapper'
 import { ROUTES } from '../frontend/api/constants'
-import useAccount, { AccountStatus } from '../frontend/hooks/useAccount'
 import { isProductionDeployment } from '../frontend/utils/general'
 import logger from '../frontend/utils/logger'
 import { formatUnicorn } from '../frontend/utils/string'
@@ -26,6 +27,7 @@ export const getServerSideProps = async (ctx: GetServerSidePropsContext) => {
 
   return {
     props: {
+      auth: await getSSRCurrentAuth(ctx.req),
       page: {
         locale: ctx.locale,
         localizations: ['sk', 'en']
@@ -43,40 +45,93 @@ export const getServerSideProps = async (ctx: GetServerSidePropsContext) => {
 
 const RegisterPage = ({
   page,
+  auth,
   isProductionDeploy,
 }: AsyncServerProps<typeof getServerSideProps>) => {
   const { t } = useTranslation('account')
-  // needed because of the slow useAccount behaviour after email verification - TODO should get thrown out when amazon-cognito-identity-js is replaced for amplify
-  const [awaitingRedirect, setAwaitingRedirect] = useState(false)
-  const { signUp, resendVerificationCode, verifyEmail, error, status, lastEmail, setStatus } =
-    useAccount()
+  const [registrationStatus, setRegistrationStatus] = useState<AccountStatus>(AccountStatus.Idle)
+  const [registrationError, setRegistrationError] = useState<AccountError | null>(null)
+  const [lastEmail, setLastEmail] = useState<string>('')
   const router = useRouter()
   const { redirect, redirectTargetIsAnotherPage } = useSSORedirect()
   // only divert user from verification if he's coming from another site
   const preVerificationRedirect = redirectTargetIsAnotherPage
 
+  const signUp = async (
+    email: string,
+    password: string,
+    turnstileToken: string,
+    data: UserData,
+  ) => {
+    try {
+      setRegistrationError(null)
+      setLastEmail(email)
+      console.log('reg')
+      console.log({
+        username: email,
+        password,
+        attributes: data,
+        autoSignIn: {
+          enabled: true,
+        },
+        validationData: {
+          'custom:turnstile_token': turnstileToken,
+        },
+      })
+      await Auth.signUp({
+        username: email,
+        password,
+        attributes: data,
+        autoSignIn: {
+          enabled: true,
+        },
+        validationData: {
+          'custom:turnstile_token': turnstileToken,
+        },
+      })
+      setRegistrationStatus(AccountStatus.EmailVerificationRequired)
+      // subscribeApi({}).catch((error) => logger.error('Failed to subscribe', email, error))
+    } catch (error) {
+      setRegistrationError({ code: error?.code, message: error?.message })
+    }
+  }
+
+  const resendVerificationCode = async () => {
+    try {
+      setRegistrationError(null)
+      await Auth.resendSignUp(lastEmail)
+    } catch (error) {
+      setRegistrationError({ code: error?.code, message: error?.message })
+    }
+  }
+
+  const verifyEmail = async (code: string) => {
+    try {
+      setRegistrationError(null)
+      await Auth.confirmSignUp(lastEmail, code)
+    } catch (error) {
+      setRegistrationError({ code: error?.code, message: error?.message })
+    }
+  }
+
   return (
-    <PageWrapper locale={page.locale} localizations={page.localizations}>
+    <PageWrapper locale={page.locale} localizations={page.localizations} auth={auth}>
       <LoginRegisterLayout backButtonHidden>
-        {status === AccountStatus.Idle && <AccountActivator />}
+        {registrationStatus === AccountStatus.Idle && <AccountActivator />}
         <AccountContainer className="md:pt-6 pt-0 mb-0 md:mb-8">
-          {awaitingRedirect ? (
-            <div className="flex justify-center">
-              <Spinner size="md" variant="black" />
-            </div>
-          ) : status === AccountStatus.Idle ? (
+          {registrationStatus === AccountStatus.Idle ? (
             <RegisterForm
               lastEmail={lastEmail}
               onSubmit={signUp}
-              error={error}
+              error={registrationError}
               disablePO={isProductionDeploy}
             />
-          ) : status === AccountStatus.EmailVerificationRequired ? (
+          ) : registrationStatus === AccountStatus.EmailVerificationRequired ? (
             <EmailVerificationForm
               lastEmail={lastEmail}
               onResend={resendVerificationCode}
               onSubmit={verifyEmail}
-              error={error}
+              error={registrationError}
             />
           ) : preVerificationRedirect ? (
             <AccountSuccessAlert
@@ -85,17 +140,7 @@ const RegisterPage = ({
                 email: lastEmail,
               })}
               confirmLabel={t('identity_verification_link')}
-              onConfirm={async () => {
-                // no idea what's behind this, but if we redirect immediately the user won't stay logged in - some login requests probably need to happen in the background ?
-                // a stupid way to fix this - for most people - is to way long enough.
-                // TODO should be fixable by replacing amazon-cognito-identity-js with amplify
-                setAwaitingRedirect(true)
-                setStatus(AccountStatus.IdentityVerificationRequired)
-                await new Promise((resolve) => {
-                  setTimeout(resolve, 4000)
-                })
-                await redirect()
-              }}
+              onConfirm={redirect}
             />
           ) : (
             <AccountSuccessAlert
@@ -105,7 +150,7 @@ const RegisterPage = ({
               })}
               confirmLabel={t('identity_verification_link')}
               onConfirm={() => {
-                setStatus(AccountStatus.IdentityVerificationRequired)
+                setRegistrationStatus(AccountStatus.IdentityVerificationRequired)
                 router
                   .push(ROUTES.IDENTITY_VERIFICATION)
                   .catch((error_) => logger.error('Failed redirect', error_))

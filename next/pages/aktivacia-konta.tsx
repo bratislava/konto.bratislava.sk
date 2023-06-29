@@ -3,6 +3,7 @@ import AccountSuccessAlert from 'components/forms/segments/AccountSuccessAlert/A
 import MigrationForm from 'components/forms/segments/MigrationForm/MigrationForm'
 import NewPasswordForm from 'components/forms/segments/NewPasswordForm/NewPasswordForm'
 import LoginRegisterLayout from 'components/layouts/LoginRegisterLayout'
+import { AccountError, AccountStatus, getSSRCurrentAuth } from 'frontend/utils/amplify'
 import { GetServerSidePropsContext } from 'next'
 import { useRouter } from 'next/router'
 import { useTranslation } from 'next-i18next'
@@ -10,16 +11,18 @@ import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
 
 import PageWrapper from '../components/layouts/PageWrapper'
 import { ROUTES } from '../frontend/api/constants'
-import useAccount, { AccountStatus } from '../frontend/hooks/useAccount'
 import { isProductionDeployment } from '../frontend/utils/general'
 import logger from '../frontend/utils/logger'
 import { AsyncServerProps } from '../frontend/utils/types'
+import { useState } from 'react'
+import { Auth } from 'aws-amplify'
 
 export const getServerSideProps = async (ctx: GetServerSidePropsContext) => {
   const locale = ctx.locale ?? 'sk'
 
   return {
     props: {
+      auth: await getSSRCurrentAuth(ctx.req),
       page: {
         locale: ctx.locale,
         localizations: ['sk', 'en']
@@ -35,34 +38,66 @@ export const getServerSideProps = async (ctx: GetServerSidePropsContext) => {
   }
 }
 
-const MigrationPage = ({ page }: AsyncServerProps<typeof getServerSideProps>) => {
-  const { confirmPassword, forgotPassword, error, status, setStatus, lastEmail } = useAccount()
+const MigrationPage = ({ page, auth }: AsyncServerProps<typeof getServerSideProps>) => {
+  const [lastEmail, setLastEmail] = useState('')
+  const [activateAccountError, setActivateAccountError] = useState<AccountError | null>(null)
+  const [activateAccountStatus, setActivateAccountStatus] = useState<AccountStatus>(
+    AccountStatus.Idle,
+  )
   const { t } = useTranslation('account')
   const router = useRouter()
 
   const onConfirm = async () => {
-    // we know all of the accounts from previous year are verified
-    setStatus(AccountStatus.IdentityVerificationSuccess)
-    await router.push(ROUTES.HOME).catch((error_) => logger.error('Redirect failed', error_))
+    await router.push(ROUTES.HOME).catch((error) => logger.error('Failed redirect', error))
+  }
+
+  const forgotPassword = async () => {
+    try {
+      await Auth.forgotPassword(lastEmail)
+      setActivateAccountStatus(AccountStatus.NewPasswordRequired)
+    } catch (error) {
+      logger.error('Failed forgotPassword in account migration', error)
+      if (error?.code === 'UserNotFoundException') {
+        setActivateAccountError({
+          code: 'MigrationUserNotFoundException',
+          message: 'MigrationUserNotFoundException',
+        })
+      } else {
+        setActivateAccountError({ code: error?.code, message: error?.message })
+      }
+    }
+  }
+
+  const forgotPasswordSubmit = async (verificationCode: string, newPassword: string) => {
+    try {
+      await Auth.forgotPasswordSubmit(lastEmail, verificationCode, newPassword)
+      setActivateAccountStatus(AccountStatus.NewPasswordSuccess)
+    } catch (error) {
+      logger.error('Failed forgotPasswordSubmit', error)
+      setActivateAccountError({ code: error?.code, message: error?.message })
+    }
   }
 
   return (
-    <PageWrapper locale={page.locale} localizations={page.localizations}>
+    <PageWrapper locale={page.locale} localizations={page.localizations} auth={auth}>
       <LoginRegisterLayout backButtonHidden>
         <AccountContainer>
-          {status === AccountStatus.NewPasswordRequired ? (
+          {activateAccountStatus === AccountStatus.NewPasswordRequired ? (
             <NewPasswordForm
-              onSubmit={confirmPassword}
+              onSubmit={(verificationCode, newPassword) =>
+                forgotPasswordSubmit(verificationCode, newPassword)
+              }
               onResend={forgotPassword}
-              error={error}
+              error={activateAccountError}
               lastEmail={lastEmail}
               fromMigration
             />
-          ) : status === AccountStatus.Idle ? (
+          ) : activateAccountStatus === AccountStatus.Idle ? (
             <MigrationForm
-              onSubmit={(email: string) => forgotPassword(email, true)}
+              onSubmit={forgotPassword}
               lastEmail={lastEmail}
-              error={error}
+              setLastEmail={setLastEmail}
+              error={activateAccountError}
             />
           ) : (
             <AccountSuccessAlert

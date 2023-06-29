@@ -3,12 +3,11 @@ import AccountLink from 'components/forms/segments/AccountLink/AccountLink'
 import Button from 'components/forms/simple-components/Button'
 import InputField from 'components/forms/widget-components/InputField/InputField'
 import PasswordField from 'components/forms/widget-components/PasswordField/PasswordField'
+import { ROUTES } from 'frontend/api/constants'
+import useHookForm from 'frontend/hooks/useHookForm'
+import { AccountError } from 'frontend/utils/amplify'
 import { useTranslation } from 'next-i18next'
 import { Controller } from 'react-hook-form'
-
-import { ROUTES } from '../../../../frontend/api/constants'
-import { AccountError } from '../../../../frontend/hooks/useAccount'
-import useHookForm from '../../../../frontend/hooks/useHookForm'
 
 interface Data {
   email: string

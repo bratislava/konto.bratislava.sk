@@ -1,8 +1,8 @@
 import Alert from 'components/forms/info-components/Alert'
 import AccountMarkdown from 'components/forms/segments/AccountMarkdown/AccountMarkdown'
+import { AccountError } from 'frontend/utils/amplify'
 import { useTranslation } from 'next-i18next'
 
-import { AccountError } from '../../../../frontend/hooks/useAccount'
 import logger from '../../../../frontend/utils/logger'
 import { Args, formatUnicorn } from '../../../../frontend/utils/string'
 

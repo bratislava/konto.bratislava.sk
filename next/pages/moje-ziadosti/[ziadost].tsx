@@ -2,6 +2,7 @@ import MyApplicationDetails from 'components/forms/segments/AccountSections/MyAp
 import AccountPageLayout from 'components/layouts/AccountPageLayout'
 import PageWrapper from 'components/layouts/PageWrapper'
 import { getApplicationDetailsData, getApplicationHistoryData } from 'frontend/api/mocks/mocks'
+import { getSSRCurrentAuth } from 'frontend/utils/amplify'
 import { isProductionDeployment } from 'frontend/utils/general'
 import logger from 'frontend/utils/logger'
 import { AsyncServerProps } from 'frontend/utils/types'
@@ -26,6 +27,7 @@ export const getServerSideProps = async (ctx: GetServerSidePropsContext) => {
     props: {
       myApplicationDetailsData,
       myApplicationHistoryData,
+      auth: await getSSRCurrentAuth(ctx.req),
       page: {
         locale: ctx.locale,
         localizations: ['sk', 'en']
@@ -43,12 +45,13 @@ export const getServerSideProps = async (ctx: GetServerSidePropsContext) => {
 
 const AccountMyApplicationsPage = ({
   page,
+  auth,
   myApplicationDetailsData,
   myApplicationHistoryData,
   isProductionDeploy,
 }: AsyncServerProps<typeof getServerSideProps>) => {
   return (
-    <PageWrapper locale={page.locale} localizations={page.localizations}>
+    <PageWrapper locale={page.locale} localizations={page.localizations} auth={auth}>
       <AccountPageLayout isProductionDeploy={isProductionDeploy}>
         <MyApplicationDetails
           historyData={myApplicationHistoryData}

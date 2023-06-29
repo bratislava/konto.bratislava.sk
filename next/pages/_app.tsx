@@ -2,6 +2,8 @@
 import './index.css'
 // initialize faro - TODO might need to ensure faro is initialized by providing it through react context and hook
 import '../frontend/utils/logger'
+// configure Amplify
+import '../frontend/utils/amplify'
 
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import { StatusBarProvider } from 'components/forms/info-components/StatusBar'
@@ -16,8 +18,6 @@ import { NextAdapter } from 'next-query-params'
 import { SSRProvider } from 'react-aria'
 import SnackbarProvider from 'react-simple-snackbar'
 import { QueryParamProvider } from 'use-query-params'
-
-import { AccountProvider } from '../frontend/hooks/useAccount'
 
 const queryClient = new QueryClient()
 
@@ -54,14 +54,12 @@ const MyApp = ({ Component, pageProps }: AppProps) => {
           <StatusBarProvider>
             <QueryClientProvider client={queryClient}>
               <SnackbarProvider>
-                <AccountProvider>
-                  <GlobalStateProvider>
-                    <SSORedirectProvider>
-                      <Component {...pageProps} />
-                      <CookieConsent />
-                    </SSORedirectProvider>
-                  </GlobalStateProvider>
-                </AccountProvider>
+                <GlobalStateProvider>
+                  <SSORedirectProvider>
+                    <Component {...pageProps} />
+                    <CookieConsent />
+                  </SSORedirectProvider>
+                </GlobalStateProvider>
               </SnackbarProvider>
             </QueryClientProvider>
           </StatusBarProvider>

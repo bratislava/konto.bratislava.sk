@@ -14,9 +14,9 @@ import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
 import { useState } from 'react'
 
 import PageWrapper from '../components/layouts/PageWrapper'
+import { environment } from '../environment'
 import { ROUTES } from '../frontend/api/constants'
 import useAccount, { AccountStatus } from '../frontend/hooks/useAccount'
-import { isProductionDeployment } from '../frontend/utils/general'
 import logger from '../frontend/utils/logger'
 import { formatUnicorn } from '../frontend/utils/string'
 import { AsyncServerProps } from '../frontend/utils/types'
@@ -35,16 +35,12 @@ export const getServerSideProps = async (ctx: GetServerSidePropsContext) => {
             locale: l,
           })),
       },
-      isProductionDeploy: isProductionDeployment(),
       ...(await serverSideTranslations(locale)),
     },
   }
 }
 
-const RegisterPage = ({
-  page,
-  isProductionDeploy,
-}: AsyncServerProps<typeof getServerSideProps>) => {
+const RegisterPage = ({ page }: AsyncServerProps<typeof getServerSideProps>) => {
   const { t } = useTranslation('account')
   // needed because of the slow useAccount behaviour after email verification - TODO should get thrown out when amazon-cognito-identity-js is replaced for amplify
   const [awaitingRedirect, setAwaitingRedirect] = useState(false)
@@ -69,7 +65,7 @@ const RegisterPage = ({
               lastEmail={lastEmail}
               onSubmit={signUp}
               error={error}
-              disablePO={isProductionDeploy}
+              disablePO={!environment.featureToggles.pravnickaOsobaRegistration}
             />
           ) : status === AccountStatus.EmailVerificationRequired ? (
             <EmailVerificationForm

@@ -9,12 +9,13 @@ import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
 
 import { FormStateProvider } from '../../components/forms/FormStateProvider'
 import { useFormDataLoader } from '../../components/forms/useFormDataLoader'
-import { forceString, isProductionDeployment } from '../../frontend/utils/general'
+import { environment } from '../../environment'
+import { forceString } from '../../frontend/utils/general'
 import logger from '../../frontend/utils/logger'
 import { AsyncServerProps } from '../../frontend/utils/types'
 
 export const getServerSideProps = async (ctx: GetServerSidePropsContext) => {
-  if (isProductionDeployment()) return { notFound: true }
+  if (!environment.featureToggles.forms) return { notFound: true }
 
   let formDefinition: FormDefinition
   try {
@@ -39,7 +40,6 @@ export const getServerSideProps = async (ctx: GetServerSidePropsContext) => {
             locale: l,
           })),
       },
-      isProductionDeploy: isProductionDeployment(),
       ...(await serverSideTranslations(locale)),
     },
   }
@@ -60,11 +60,7 @@ export const getServerSideProps = async (ctx: GetServerSidePropsContext) => {
 //   })
 // }
 
-const FormTestPage = ({
-  page,
-  formDefinition,
-  isProductionDeploy,
-}: AsyncServerProps<typeof getServerSideProps>) => {
+const FormTestPage = ({ page, formDefinition }: AsyncServerProps<typeof getServerSideProps>) => {
   const router = useRouter()
 
   const formSlug = forceString(router.query.eform)
@@ -82,7 +78,7 @@ const FormTestPage = ({
         { locale: 'en', slug: pageSlug },
       ]}
     >
-      <AccountPageLayout isPublicPage hiddenHeaderNav isProductionDeploy={isProductionDeploy}>
+      <AccountPageLayout isPublicPage hiddenHeaderNav>
         {initialFormData && (
           <FormStateProvider
             eformSlug={escapedSlug}

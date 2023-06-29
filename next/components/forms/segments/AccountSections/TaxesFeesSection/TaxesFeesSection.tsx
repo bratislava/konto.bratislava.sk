@@ -22,11 +22,7 @@ export type TaxesCardBase = {
   status: 'paid' | 'unpaid' | 'partially_paid'
 }
 
-interface TaxesFeesSectionProps {
-  isProductionDeployment?: boolean
-}
-
-const TaxesFeesSection: React.FC<TaxesFeesSectionProps> = () => {
+const TaxesFeesSection = () => {
   const { t } = useTranslation('account')
   const { status } = useAccount()
 

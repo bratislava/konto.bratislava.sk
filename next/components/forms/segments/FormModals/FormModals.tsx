@@ -39,10 +39,12 @@ const FormModals = forwardRef<FormModalsRef, FormModalsProps>(
 
     useEffect(() => {
       if (registrationModal || identityVerificationModal) {
-        document.body.style.overflow = "hidden"
+        // document.body.style.overflow = "hidden"
+        document.querySelector("body")?.classList.add("overflow-hidden");
       }
       return () => {
-        document.body.style.overflow = "visible"
+        // document.body.style.overflow = "visible"
+        document.querySelector("body")?.classList.remove("overflow-hidden");
       }
     }, [registrationModal, identityVerificationModal])
 

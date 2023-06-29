@@ -1,20 +1,19 @@
 import Button from 'components/forms/simple-components/Button'
-import { usePageWrapperContext } from 'components/layouts/PageWrapper'
-import { AccountStatus, mapTierToStatus } from 'frontend/utils/amplify'
+import { useDerivedServerSideAuthState, useTier } from 'frontend/hooks/useServerSideAuth'
+import { Tier, tierIdentityVerified } from 'frontend/utils/amplify'
 import { useRouter } from 'next/router'
 import { useTranslation } from 'next-i18next'
 
 const IdentityVerificationStatus = () => {
-  const { auth } = usePageWrapperContext()
-  const status = mapTierToStatus(auth.userData?.['custom:tier'])
+  const { tierStatus } = useDerivedServerSideAuthState()
   const { t } = useTranslation('account')
   const router = useRouter()
 
-  return status === AccountStatus.IdentityVerificationSuccess ? (
+  return tierStatus.isIdentityVerified ? (
     <div className="flex px-2 lg:px-3 py-0 lg:py-1.5 bg-success-100 rounded">
       <span className="text-p3-medium text-success-700">{t('verification_status_success')}</span>
     </div>
-  ) : status !== AccountStatus.Idle ? (
+  ) : tierStatus.isIdentityVerificationNotYetAttempted ? (
     <div className="flex items-center gap-1.5">
       <div className="flex gap-2 items-center px-2 lg:px-3 py-0 lg:py-1.5 bg-warning-100 rounded">
         <span className="text-p3-medium text-warning-700">{t('verification_status_required')}</span>

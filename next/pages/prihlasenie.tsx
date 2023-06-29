@@ -5,12 +5,7 @@ import EmailVerificationForm from 'components/forms/segments/EmailVerificationFo
 import LoginForm from 'components/forms/segments/LoginForm/LoginForm'
 import LoginRegisterLayout from 'components/layouts/LoginRegisterLayout'
 import useSSORedirect from 'frontend/hooks/useSSORedirect'
-import {
-  AccountError,
-  AccountStatus,
-  getSSRCurrentAuth,
-  mapTierToStatus,
-} from 'frontend/utils/amplify'
+import { AccountError, AccountStatus, getSSRCurrentAuth } from 'frontend/utils/amplify'
 import logger from 'frontend/utils/logger'
 import { GetServerSidePropsContext } from 'next'
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
@@ -19,13 +14,19 @@ import { useEffect, useState } from 'react'
 import PageWrapper from '../components/layouts/PageWrapper'
 import { isProductionDeployment } from '../frontend/utils/general'
 import { AsyncServerProps } from '../frontend/utils/types'
+import {
+  useDerivedServerSideAuthState,
+  useIsAuthenticated,
+  useServerSideAuth,
+  useTier,
+} from 'frontend/hooks/useServerSideAuth'
 
 export const getServerSideProps = async (ctx: GetServerSidePropsContext) => {
   const locale = ctx.locale ?? 'sk'
 
   return {
     props: {
-      auth: await getSSRCurrentAuth(ctx.req),
+      ssrCurrentAuthProps: await getSSRCurrentAuth(ctx.req),
       page: {
         locale: ctx.locale,
         localizations: ['sk', 'en']
@@ -41,16 +42,19 @@ export const getServerSideProps = async (ctx: GetServerSidePropsContext) => {
   }
 }
 
-const LoginPage = ({ page, auth }: AsyncServerProps<typeof getServerSideProps>) => {
+const LoginPage = ({ page }: AsyncServerProps<typeof getServerSideProps>) => {
   const { redirect } = useSSORedirect()
-  const status = mapTierToStatus(auth.userData?.['custom:tier'])
+  const { isAuthenticated, tierStatus } = useDerivedServerSideAuthState()
   const [loginError, setLoginError] = useState<AccountError | null>(null)
 
+  // TODO handle verification required through Hub
+  const [loginStatus, setLoginStatus] = useState<'Init' | 'EmailVerificationRequired'>('Init')
+
   useEffect(() => {
-    if (auth.isAuthenticated) {
+    if (isAuthenticated) {
       redirect().catch((error) => logger.error('Failed redirect login useEffect', error))
     }
-  }, [auth.isAuthenticated, redirect])
+  }, [isAuthenticated, redirect])
 
   const onLogin = async (email: string, password: string) => {
     try {
@@ -73,9 +77,9 @@ const LoginPage = ({ page, auth }: AsyncServerProps<typeof getServerSideProps>) 
   }
 
   return (
-    <PageWrapper locale={page.locale} localizations={page.localizations} auth={auth}>
+    <PageWrapper locale={page.locale} localizations={page.localizations}>
       <LoginRegisterLayout backButtonHidden>
-        {status === AccountStatus.Idle && <AccountActivator />}
+        {!isAuthenticated && <AccountActivator />}
         <AccountContainer className="md:pt-6 pt-0 mb-0 md:mb-8">
           {status === AccountStatus.EmailVerificationRequired ? (
             <EmailVerificationForm

@@ -12,6 +12,7 @@ import AccountNavBar, {
 } from 'components/forms/segments/AccountNavBar/AccountNavBar'
 import { MenuItemBase } from 'components/forms/simple-components/MenuDropdown/MenuDropdown'
 import { usePageWrapperContext } from 'components/layouts/PageWrapper'
+import { useDerivedServerSideAuthState } from 'frontend/hooks/useServerSideAuth'
 import { useRouter } from 'next/router'
 import { useTranslation } from 'next-i18next'
 import { ReactNode, useEffect } from 'react'
@@ -34,11 +35,8 @@ const AccountPageLayout = ({
   isProductionDeploy,
   isPublicPage,
 }: AccountPageLayoutBase) => {
-  const {
-    locale,
-    localizations = [],
-    auth: { isAuthenticated },
-  } = usePageWrapperContext()
+  const { locale, localizations = [] } = usePageWrapperContext()
+  const { isAuthenticated } = useDerivedServerSideAuthState()
   const router = useRouter()
 
   const prodHideSectionsListIds: Set<number> = isProductionDeploy ? new Set([2]) : new Set([])

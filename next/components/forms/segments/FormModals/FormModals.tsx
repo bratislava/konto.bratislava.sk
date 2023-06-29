@@ -1,5 +1,4 @@
-import { usePageWrapperContext } from 'components/layouts/PageWrapper'
-import { AccountStatus, mapTierToStatus } from 'frontend/utils/amplify'
+import { useDerivedServerSideAuthState } from 'frontend/hooks/useServerSideAuth'
 import { useTranslation } from 'next-i18next'
 import React, { forwardRef, useImperativeHandle, useState } from 'react'
 
@@ -17,10 +16,7 @@ const FormModals = forwardRef<FormModalsRef, FormModalsProps>(
   ({ skipToStep, stepIndex }: FormModalsProps, ref) => {
     const { t } = useTranslation('account')
 
-    const {
-      auth: { isAuthenticated, userData },
-    } = usePageWrapperContext()
-    const status = mapTierToStatus(userData?.['custom:tier'])
+    const { isAuthenticated, tierStatus, isLegalEntity } = useDerivedServerSideAuthState()
 
     const [isOnShowSkipModal, setIsOnShowSkipModal] = useState<boolean>(false)
     const [registrationModal, setRegistrationModal] = useState<boolean>(true)
@@ -64,11 +60,11 @@ const FormModals = forwardRef<FormModalsRef, FormModalsProps>(
             onClose={() => setRegistrationModal(false)}
           />
         )}
-        {isAuthenticated && status !== AccountStatus.IdentityVerificationSuccess && (
+        {isAuthenticated && tierStatus.isIdentityVerified && (
           <IdentityVerificationModal
             show={identityVerificationModal}
             onClose={() => setIdentityVerificationModal(false)}
-            userType={userData?.['custom:account_type']}
+            isLegalEntity={isLegalEntity}
           />
         )}
       </>

@@ -26,7 +26,7 @@ export const getServerSideProps = async (ctx: GetServerSidePropsContext) => {
 
   return {
     props: {
-      auth: await getSSRCurrentAuth(ctx.req),
+      ssrCurrentAuthProps: await getSSRCurrentAuth(ctx.req),
       page: {
         locale: ctx.locale,
         localizations: ['sk', 'en']
@@ -69,7 +69,7 @@ const PasswordChangePage = ({ page, auth }: AsyncServerProps<typeof getServerSid
   }
 
   return (
-    <PageWrapper locale={page.locale} localizations={page.localizations} auth={auth}>
+    <PageWrapper locale={page.locale} localizations={page.localizations}>
       <LoginRegisterLayout backButtonHidden={status === AccountStatus.NewPasswordSuccess}>
         <AccountContainer>
           {status === AccountStatus.NewPasswordSuccess ? (

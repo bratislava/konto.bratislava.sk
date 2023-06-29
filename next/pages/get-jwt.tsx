@@ -1,6 +1,8 @@
 import Button from 'components/forms/simple-components/Button'
 import PageWrapper from 'components/layouts/PageWrapper'
+import { ServerSideAuthProviderHOC } from 'components/logic/ServerSideAuthProvider'
 import { Wrapper } from 'components/styleguide/Wrapper'
+import { useServerSideAuth } from 'frontend/hooks/useServerSideAuth'
 import { getSSRAccessToken, getSSRCurrentAuth } from 'frontend/utils/amplify'
 import { GetServerSidePropsContext } from 'next'
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
@@ -9,7 +11,7 @@ import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
 import { ROUTES } from '../frontend/api/constants'
 import { AsyncServerProps } from '../frontend/utils/types'
 
-const GetJwt = ({ page, auth, accessToken }: AsyncServerProps<typeof getServerSideProps>) => {
+const GetJwt = ({ page, accessToken }: AsyncServerProps<typeof getServerSideProps>) => {
   // resetting the birth number was not used for some time - if needed, this needs to be updated
   // const resetRc = async () => {
   //   try {
@@ -22,15 +24,17 @@ const GetJwt = ({ page, auth, accessToken }: AsyncServerProps<typeof getServerSi
   //   }
   // }
 
+  const { isAuthenticated } = useServerSideAuth()
+
   return (
-    <PageWrapper locale={page.locale} auth={auth}>
+    <PageWrapper locale={page.locale}>
       <div className="min-h-screen bg-[#E5E5E5]">
         <div className="mx-auto max-w-screen-lg md:px-12 md:pt-12 pb-64">
           <Wrapper
             direction="column"
             title="Kód nižšie slúži na technické účeli a umožňuje prístup k Vášmu kontu. NIKDY HO S NIKÝM NEZDIEĽAJTE. This site is for development purposes, the code below allows anyone to access your account. NEVER SHARE IT WITH ANYONE."
           >
-            {auth.isAuthenticated ? (
+            {isAuthenticated ? (
               <div className="flex flex-col">
                 <div>{accessToken}</div>
               </div>
@@ -51,7 +55,7 @@ export const getServerSideProps = async (ctx: GetServerSidePropsContext) => {
 
   return {
     props: {
-      auth: await getSSRCurrentAuth(ctx.req),
+      ssrCurrentAuthProps: await getSSRCurrentAuth(ctx.req),
       accessToken: await getSSRAccessToken(ctx.req),
       page: {
         locale: ctx.locale,
@@ -61,4 +65,4 @@ export const getServerSideProps = async (ctx: GetServerSidePropsContext) => {
   }
 }
 
-export default GetJwt
+export default ServerSideAuthProviderHOC(GetJwt)

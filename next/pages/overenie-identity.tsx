@@ -1,15 +1,14 @@
-import { Auth } from 'aws-amplify'
 import AccountContainer from 'components/forms/segments/AccountContainer/AccountContainer'
 import AccountSuccessAlert from 'components/forms/segments/AccountSuccessAlert/AccountSuccessAlert'
 import AccountVerificationPendingAlert from 'components/forms/segments/AccountVerificationPendingAlert/AccountVerificationPendingAlert'
 import IdentityVerificationForm from 'components/forms/segments/IdentityVerificationForm/IdentityVerificationForm'
 import LoginRegisterLayout from 'components/layouts/LoginRegisterLayout'
 import { verifyIdentityApi } from 'frontend/api/api'
+import { useDerivedServerSideAuthState } from 'frontend/hooks/useServerSideAuth'
 import {
   AccountError,
-  AccountStatus,
   getSSRCurrentAuth,
-  mapTierToStatus,
+  Tier,
   useRefreshServerSideProps,
 } from 'frontend/utils/amplify'
 import { GetServerSidePropsContext } from 'next'
@@ -30,7 +29,7 @@ export const getServerSideProps = async (ctx: GetServerSidePropsContext) => {
 
   return {
     props: {
-      auth: await getSSRCurrentAuth(ctx.req),
+      ssrCurrentAuthProps: await getSSRCurrentAuth(ctx.req),
       page: {
         locale: ctx.locale,
         localizations: ['sk', 'en']
@@ -46,7 +45,7 @@ export const getServerSideProps = async (ctx: GetServerSidePropsContext) => {
   }
 }
 
-const IdentityVerificationPage = ({ page, auth }: AsyncServerProps<typeof getServerSideProps>) => {
+const IdentityVerificationPage = ({ page }: AsyncServerProps<typeof getServerSideProps>) => {
   const { t } = useTranslation('account')
   const [lastRc, setLastRc] = useState('')
   const [lastIdCard, setLastIdCard] = useState('')
@@ -54,17 +53,18 @@ const IdentityVerificationPage = ({ page, auth }: AsyncServerProps<typeof getSer
   const [identityVerificationError, setIdentityVerificationError] = useState<AccountError | null>(
     null,
   )
-  const status = mapTierToStatus(auth.userData?.['custom:tier'])
+
+  const { isAuthenticated, tierStatus } = useDerivedServerSideAuthState()
 
   const router = useRouter()
-  const { refreshData } = useRefreshServerSideProps(auth)
+  const { refreshData } = useRefreshServerSideProps(tierStatus)
   useEffect(() => {
-    if (!auth.isAuthenticated) {
+    if (!isAuthenticated) {
       router
         .push({ pathname: ROUTES.LOGIN, query: { from: router.route } })
         .catch((error_) => logger.error('Failed redirect', error_))
     }
-  }, [auth.isAuthenticated, router])
+  }, [isAuthenticated, router])
 
   const verifyIdentityAndRefreshUserData = async (
     rc: string,
@@ -92,22 +92,22 @@ const IdentityVerificationPage = ({ page, auth }: AsyncServerProps<typeof getSer
   }
 
   return (
-    <PageWrapper locale={page.locale} localizations={page.localizations} auth={auth}>
+    <PageWrapper locale={page.locale} localizations={page.localizations}>
       <LoginRegisterLayout backButtonHidden>
         <AccountContainer className="md:pt-6 pt-0 mb-0 md:mb-8">
-          {status === AccountStatus.IdentityVerificationRequired && (
+          {tierStatus.isIdentityVerificationNotYetAttempted && (
             <IdentityVerificationForm
               onSubmit={verifyIdentityAndRefreshUserData}
               error={identityVerificationError}
             />
           )}
-          {status === AccountStatus.IdentityVerificationFailed && (
+          {tierStatus.tier === Tier.NOT_VERIFIED_IDENTITY_CARD && (
             <IdentityVerificationForm
               onSubmit={verifyIdentityAndRefreshUserData}
               error={identityVerificationError}
             />
           )}
-          {status === AccountStatus.IdentityVerificationPending && (
+          {tierStatus.tier === Tier.QUEUE_IDENTITY_CARD && (
             <AccountVerificationPendingAlert
               title={t('identity_verification_pending_title')}
               description={
@@ -124,7 +124,7 @@ const IdentityVerificationPage = ({ page, auth }: AsyncServerProps<typeof getSer
               }
             />
           )}
-          {status === AccountStatus.IdentityVerificationSuccess && (
+          {tierStatus.isIdentityVerified && (
             <AccountSuccessAlert
               title={t('identity_verification_success_title')}
               description={

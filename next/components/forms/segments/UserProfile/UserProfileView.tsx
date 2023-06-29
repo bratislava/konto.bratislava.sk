@@ -2,6 +2,7 @@ import { Auth } from 'aws-amplify'
 import cx from 'classnames'
 import MessageModal from 'components/forms/widget-components/Modals/MessageModal'
 import { usePageWrapperContext } from 'components/layouts/PageWrapper'
+import { useServerSideAuth } from 'frontend/hooks/useServerSideAuth'
 import useSnackbar from 'frontend/hooks/useSnackbar'
 import { AccountError, UserData, useRefreshServerSideProps } from 'frontend/utils/amplify'
 import logger from 'frontend/utils/logger'
@@ -20,9 +21,7 @@ const UserProfileView = () => {
   const [isAlertOpened, setIsAlertOpened] = useState(false)
   const [alertType, setAlertType] = useState<'success' | 'error'>('success')
   const [isEmailModalOpened, setIsEmailModalOpened] = useState<boolean>(false)
-  const {
-    auth: { userData },
-  } = usePageWrapperContext()
+  const { userData } = useServerSideAuth()
   const [openSnackbarSuccess] = useSnackbar({ variant: 'success' })
 
   const [updateUserDataError, setUpdateUserDataError] = useState<AccountError | null>(null)

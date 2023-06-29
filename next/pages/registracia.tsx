@@ -6,7 +6,6 @@ import AccountSuccessAlert from 'components/forms/segments/AccountSuccessAlert/A
 import EmailVerificationForm from 'components/forms/segments/EmailVerificationForm/EmailVerificationForm'
 import RegisterForm from 'components/forms/segments/RegisterForm/RegisterForm'
 import LoginRegisterLayout from 'components/layouts/LoginRegisterLayout'
-import { subscribeApi } from 'frontend/api/api'
 import useSSORedirect from 'frontend/hooks/useSSORedirect'
 import { AccountError, AccountStatus, getSSRCurrentAuth, UserData } from 'frontend/utils/amplify'
 import { GetServerSidePropsContext } from 'next'
@@ -27,7 +26,7 @@ export const getServerSideProps = async (ctx: GetServerSidePropsContext) => {
 
   return {
     props: {
-      auth: await getSSRCurrentAuth(ctx.req),
+      ssrCurrentAuthProps: await getSSRCurrentAuth(ctx.req),
       page: {
         locale: ctx.locale,
         localizations: ['sk', 'en']
@@ -45,7 +44,6 @@ export const getServerSideProps = async (ctx: GetServerSidePropsContext) => {
 
 const RegisterPage = ({
   page,
-  auth,
   isProductionDeploy,
 }: AsyncServerProps<typeof getServerSideProps>) => {
   const { t } = useTranslation('account')
@@ -66,18 +64,6 @@ const RegisterPage = ({
     try {
       setRegistrationError(null)
       setLastEmail(email)
-      console.log('reg')
-      console.log({
-        username: email,
-        password,
-        attributes: data,
-        autoSignIn: {
-          enabled: true,
-        },
-        validationData: {
-          'custom:turnstile_token': turnstileToken,
-        },
-      })
       await Auth.signUp({
         username: email,
         password,
@@ -115,7 +101,7 @@ const RegisterPage = ({
   }
 
   return (
-    <PageWrapper locale={page.locale} localizations={page.localizations} auth={auth}>
+    <PageWrapper locale={page.locale} localizations={page.localizations}>
       <LoginRegisterLayout backButtonHidden>
         {registrationStatus === AccountStatus.Idle && <AccountActivator />}
         <AccountContainer className="md:pt-6 pt-0 mb-0 md:mb-8">

@@ -10,7 +10,7 @@ import IdentityVerificationStatus from 'components/forms/simple-components/Ident
 import MenuDropdown, {
   MenuItemBase,
 } from 'components/forms/simple-components/MenuDropdown/MenuDropdown'
-import { usePageWrapperContext } from 'components/layouts/PageWrapper'
+import { useServerSideAuth } from 'frontend/hooks/useServerSideAuth'
 import { UserData } from 'frontend/utils/amplify'
 import NextLink from 'next/link'
 import { useRouter } from 'next/router'
@@ -68,9 +68,7 @@ const Avatar = ({ userData }: { userData?: UserData | null }) => {
 
 export const AccountNavBar = ({ className, sectionsList, menuItems, hiddenHeaderNav }: IProps) => {
   const [burgerOpen, setBurgerOpen] = useState(false)
-  const {
-    auth: { isAuthenticated, userData },
-  } = usePageWrapperContext()
+  const { isAuthenticated, userData } = useServerSideAuth()
 
   const { statusBarConfiguration } = useStatusBarContext()
   const [isMenuOpen, setIsMenuOpen] = useState<boolean>(false)

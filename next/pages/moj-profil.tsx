@@ -14,7 +14,7 @@ export const getServerSideProps = async (ctx: GetServerSidePropsContext) => {
   const locale = ctx.locale ?? 'sk'
   return {
     props: {
-      auth: await getSSRCurrentAuth(ctx.req),
+      ssrCurrentAuthProps: await getSSRCurrentAuth(ctx.req),
       page: {
         locale: ctx.locale,
         localizations: ['sk', 'en']
@@ -30,15 +30,11 @@ export const getServerSideProps = async (ctx: GetServerSidePropsContext) => {
   }
 }
 
-const MojProfil = ({
-  page,
-  auth,
-  isProductionDeploy,
-}: AsyncServerProps<typeof getServerSideProps>) => {
+const MojProfil = ({ page, isProductionDeploy }: AsyncServerProps<typeof getServerSideProps>) => {
   const { t } = useTranslation('account')
 
   return (
-    <PageWrapper locale={page.locale} localizations={page.localizations} auth={auth}>
+    <PageWrapper locale={page.locale} localizations={page.localizations}>
       <AccountPageLayout isProductionDeploy={isProductionDeploy}>
         <AccountSectionHeader title={t('my_profile')} />
         <UserProfileView />

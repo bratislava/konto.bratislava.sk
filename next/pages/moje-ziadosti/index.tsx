@@ -27,7 +27,7 @@ export const getServerSideProps = async (ctx: GetServerSidePropsContext) => {
     props: {
       myApplicationSentList,
       myApplicationConceptList,
-      auth: await getSSRCurrentAuth(ctx.req),
+      ssrCurrentAuthProps: await getSSRCurrentAuth(ctx.req),
       page: {
         locale: ctx.locale,
         localizations: ['sk', 'en']
@@ -45,13 +45,12 @@ export const getServerSideProps = async (ctx: GetServerSidePropsContext) => {
 
 const AccountMyApplicationsPage = ({
   page,
-  auth,
   myApplicationSentList,
   myApplicationConceptList,
   isProductionDeploy,
 }: AsyncServerProps<typeof getServerSideProps>) => {
   return (
-    <PageWrapper locale={page.locale} localizations={page.localizations} auth={auth}>
+    <PageWrapper locale={page.locale} localizations={page.localizations}>
       <AccountPageLayout isProductionDeploy={isProductionDeploy}>
         <MyApplicationsSection
           conceptCardsList={myApplicationConceptList}

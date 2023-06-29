@@ -98,9 +98,10 @@ const UserProfileDetailEdit = (props: UserProfileDetailEditProps) => {
   const { formId, userData, onOpenEmailModal, onSubmit } = props
   const { t } = useTranslation('account')
   const { address, name, family_name, given_name, email, phone_number } = userData
+  const isPhysicalEntity = userData?.['custom:account_type'] === 'po'
   const parsedAddress = useJsonParseMemo<Address>(address)
   const { handleSubmit, control, errors, setError } = useHookForm<Data>({
-    schema: userData?.['custom:account_type'] === 'po' ? poSchema : foSchema,
+    schema: isPhysicalEntity ? poSchema : foSchema,
     defaultValues: {
       business_name: name,
       family_name,
@@ -140,7 +141,7 @@ const UserProfileDetailEdit = (props: UserProfileDetailEditProps) => {
       onSubmit={handleSubmit(handleSubmitCallback)}
     >
       <div className="gap flex flex-wrap flex-row gap-6">
-        {userData?.['custom:account_type'] === 'po' ? (
+        {isPhysicalEntity ? (
           <div className="grow w-full md:w-fit">
             <Controller
               name="business_name"

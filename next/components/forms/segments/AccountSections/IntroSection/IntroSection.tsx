@@ -10,7 +10,7 @@ import AnnouncementBlock from 'components/forms/segments/AccountSections/IntroSe
 import Banner from 'components/forms/simple-components/Banner'
 import Button from 'components/forms/simple-components/Button'
 import ServiceCard from 'components/forms/simple-components/ServiceCard'
-import { usePageWrapperContext } from 'components/layouts/PageWrapper'
+import { useDerivedServerSideAuthState, useServerSideAuth } from 'frontend/hooks/useServerSideAuth'
 import { AccountError } from 'frontend/utils/amplify'
 import { useRouter } from 'next/router'
 import { useTranslation } from 'next-i18next'
@@ -22,9 +22,8 @@ import PhoneNumberModal from '../../PhoneNumberModal/PhoneNumberModal'
 
 const IntroSection = () => {
   const { t } = useTranslation('account')
-  const {
-    auth: { userData },
-  } = usePageWrapperContext()
+  const { userData } = useServerSideAuth()
+  const { isLegalEntity } = useDerivedServerSideAuthState()
   const router = useRouter()
   const [phoneNumberModal, setPhoneNumberModal] = useState<'hidden' | 'displayed' | 'dismissed'>(
     'hidden',
@@ -65,7 +64,7 @@ const IntroSection = () => {
     }
   }
 
-  const name = userData?.['custom:account_type'] === 'po' ? userData?.name : userData?.given_name
+  const name = isLegalEntity ? userData?.name : userData?.given_name
 
   const bannerContent = `<span className='text-p2'>${t(
     'account_section_intro.banner_content',

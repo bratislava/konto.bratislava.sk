@@ -13,7 +13,7 @@ export const getServerSideProps = async (ctx: GetServerSidePropsContext) => {
 
   return {
     props: {
-      auth: await getSSRCurrentAuth(ctx.req),
+      ssrCurrentAuthProps: await getSSRCurrentAuth(ctx.req),
       page: {
         locale: ctx.locale,
         localizations: ['sk', 'en']
@@ -31,11 +31,10 @@ export const getServerSideProps = async (ctx: GetServerSidePropsContext) => {
 
 const AccountIntroPage = ({
   page,
-  auth,
   isProductionDeploy,
 }: AsyncServerProps<typeof getServerSideProps>) => {
   return (
-    <PageWrapper locale={page.locale} localizations={page.localizations} auth={auth}>
+    <PageWrapper locale={page.locale} localizations={page.localizations}>
       <AccountPageLayout isProductionDeploy={isProductionDeploy}>
         <IntroSection />
       </AccountPageLayout>

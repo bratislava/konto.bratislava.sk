@@ -4,8 +4,8 @@ import TaxesFeesCard from 'components/forms/segments/AccountSections/TaxesFeesSe
 import TaxesFeesErrorCard from 'components/forms/segments/AccountSections/TaxesFeesSection/TaxesFeesErrorCard'
 // import TaxesFeesWaitingCard from 'components/forms/segments/AccountSections/TaxesFeesSection/TaxesFeesWaitingCard'
 import Spinner from 'components/forms/simple-components/Spinner'
-import { usePageWrapperContext } from 'components/layouts/PageWrapper'
-import { AccountStatus, mapTierToStatus } from 'frontend/utils/amplify'
+import { useDerivedServerSideAuthState, useTier } from 'frontend/hooks/useServerSideAuth'
+import { tierIdentityVerified } from 'frontend/utils/amplify'
 import { useTranslation } from 'next-i18next'
 
 import { ROUTES } from '../../../../../frontend/api/constants'
@@ -29,9 +29,8 @@ interface TaxesFeesSectionProps {
 
 const TaxesFeesSection: React.FC<TaxesFeesSectionProps> = () => {
   const { t } = useTranslation('account')
-  const { auth } = usePageWrapperContext()
-  const status = mapTierToStatus(auth.userData?.['custom:tier'])
-
+  const { tierStatus } = useDerivedServerSideAuthState()
+  // todo continue here tier comparisons
   const { data, isLoading } = useTaxes()
 
   //   const taxesFeesWaitingCardContent = `
@@ -42,7 +41,7 @@ const TaxesFeesSection: React.FC<TaxesFeesSectionProps> = () => {
 <h4>${t('account_section_payment.error_card_title')}</h4>
 <div>${t('account_section_payment.error_card_content.title')}
 <ul>${
-    status !== AccountStatus.IdentityVerificationSuccess
+    !tierStatus.isIdentityVerified
       ? t('account_section_payment.error_card_content.list.verification', {
           url: ROUTES.IDENTITY_VERIFICATION,
         })
@@ -57,7 +56,7 @@ const TaxesFeesSection: React.FC<TaxesFeesSectionProps> = () => {
 
   if (isLoading) {
     content = <Spinner className="mt-10 m-auto" />
-  } else if (status !== AccountStatus.IdentityVerificationSuccess) {
+  } else if (!tierStatus.isIdentityVerified) {
     content = <TaxesFeesErrorCard content={taxesFeesErrorCardContent} />
   } else if (!isLoading && !data) {
     content = (

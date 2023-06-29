@@ -19,7 +19,7 @@ export const getServerSideProps = async (ctx: GetServerSidePropsContext) => {
 
   return {
     props: {
-      auth: await getSSRCurrentAuth(ctx.req),
+      ssrCurrentAuthProps: await getSSRCurrentAuth(ctx.req),
       page: {
         locale: ctx.locale,
         localizations: ['sk', 'en']
@@ -47,7 +47,7 @@ const LogoutPage = ({ page, auth }: AsyncServerProps<typeof getServerSideProps>)
 
   // TODO replace AccountSuccessAlert with something more fitting
   return (
-    <PageWrapper locale={page.locale} localizations={page.localizations} auth={auth}>
+    <PageWrapper locale={page.locale} localizations={page.localizations}>
       <LoginRegisterLayout backButtonHidden>
         <AccountContainer className="md:pt-6 pt-0 mb-0 md:mb-8">
           <AccountSuccessAlert

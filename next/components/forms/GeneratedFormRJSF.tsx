@@ -2,7 +2,7 @@ import { FormDefinition } from '@backend/forms/types'
 import { FormValidation, RJSFSchema } from '@rjsf/utils'
 import cx from 'classnames'
 import MenuList from 'components/forms/steps/MenuList'
-import { usePageWrapperContext } from 'components/layouts/PageWrapper'
+import { useServerSideAuth } from 'frontend/hooks/useServerSideAuth'
 import { useRef } from 'react'
 
 import { validator } from '../../frontend/dtos/formStepperDto'
@@ -37,9 +37,7 @@ const GeneratedFormRJSF = ({
   const formState = useFormState()
   const submitter = useFormSubmitter(formSlug)
   const formModalsRef = useRef<FormModalsRef>(null)
-  const {
-    auth: { isAuthenticated },
-  } = usePageWrapperContext()
+  const { isAuthenticated } = useServerSideAuth()
 
   // eslint-disable-next-line unicorn/consistent-function-scoping
   const saveConcept = async () => {

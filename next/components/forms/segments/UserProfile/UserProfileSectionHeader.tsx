@@ -1,7 +1,6 @@
 import cx from 'classnames'
 import Alert from 'components/forms/info-components/Alert'
-import { usePageWrapperContext } from 'components/layouts/PageWrapper'
-import { AccountStatus, mapTierToStatus } from 'frontend/utils/amplify'
+import { useDerivedServerSideAuthState } from 'frontend/hooks/useServerSideAuth'
 import { useTranslation } from 'next-i18next'
 import React from 'react'
 
@@ -26,8 +25,7 @@ const UserProfileSectionHeader = ({
   mainHeader,
   childrenToColumn,
 }: UserProfileSectionHeaderProps) => {
-  const { auth } = usePageWrapperContext()
-  const status = mapTierToStatus(auth.userData?.['custom:tier'])
+  const { tierStatus } = useDerivedServerSideAuthState()
   const { t } = useTranslation('account')
   return (
     <div
@@ -50,7 +48,7 @@ const UserProfileSectionHeader = ({
         <div className="flex flex-col grow gap-1 md:gap-2">
           <div className="flex items-center gap-3 md:gap-2">
             <h5 className={cx('text-h5-bold', 'md:text-h4-bold')}>{title}</h5>
-            {mainHeader && status === AccountStatus.IdentityVerificationSuccess && (
+            {mainHeader && tierStatus.isIdentityVerified && (
               <span className="text-p3-medium px-2 bg-success-100 text-success-700 rounded-[4px]">
                 {t('verification_status_success')}
               </span>
@@ -60,7 +58,7 @@ const UserProfileSectionHeader = ({
         </div>
         {children && <div className={cx({ 'md:w-fit w-full': childrenToColumn })}>{children}</div>}
       </div>
-      {mainHeader && status !== AccountStatus.IdentityVerificationSuccess && (
+      {mainHeader && tierStatus.isIdentityVerified && (
         <Alert
           title={t('verification_status_required')}
           message={t('verification_status_required_alert')}

@@ -1,12 +1,11 @@
 import { Amplify, Auth, withSSRContext } from 'aws-amplify'
 import { ROUTES } from 'frontend/api/constants'
+import { useRouter } from 'next/router'
 import { GetServerSidePropsContext } from 'next/types'
+import { useEffect, useState } from 'react'
 
 import logger from './logger'
 import { APPROVED_SSO_ORIGINS } from './sso'
-import { verifyIdentityApi } from 'frontend/api/api'
-import { useRouter } from 'next/router'
-import { useEffect, useState } from 'react'
 
 export enum PostMessageTypes {
   ACCESS_TOKEN = 'ACCESS_TOKEN',
@@ -73,18 +72,6 @@ export interface UserData {
   'custom:turnstile_token'?: string
 }
 
-// non standard, has prefix custom: in cognito
-const customAttributes = new Set(['ifo', 'tier', 'account_type'])
-const updatableAttributes = new Set([
-  'name',
-  'given_name',
-  'family_name',
-  'phone_number',
-  'address',
-  'tier',
-  'account_type',
-])
-
 Amplify.configure({
   Auth: {
     // REQUIRED only for Federated Authentication - Amazon Cognito Identity Pool ID
@@ -141,7 +128,6 @@ export const getAccessToken = async () => {
 
 export interface GetSSRCurrentAuth {
   userData: UserData | null
-  isAuthenticated: boolean
 }
 
 // provides all the user data frontend might need as server side props
@@ -151,17 +137,14 @@ export const getSSRCurrentAuth = async (
 ): Promise<GetSSRCurrentAuth> => {
   const SSR = withSSRContext({ req })
   let userData = null
-  let isAuthenticated = false
   try {
     const currentUser = await SSR.Auth.currentAuthenticatedUser()
     userData = currentUser.attributes || null
-    isAuthenticated = !!currentUser
-    return { userData, isAuthenticated }
   } catch (error) {
     // TODO filter out errors because of unauthenticated users
     logger.error('getServersideAuth error: ', error)
   }
-  return { userData, isAuthenticated }
+  return { userData }
 }
 
 export const getSSRAccessToken = async (req: GetServerSidePropsContext['req']): Promise<string> => {
@@ -185,44 +168,6 @@ export const postMessageToApprovedDomains = (message: CityAccountPostMessage) =>
   APPROVED_SSO_ORIGINS.forEach((domain) => {
     window?.top?.postMessage(message, domain)
   })
-}
-
-// temporal, move this to API
-export const verifyIdentity = async (
-  rc: string,
-  idCard: string,
-  turnstileToken: string,
-): Promise<boolean> => {
-  const accessToken = await getAccessToken()
-  if (!accessToken) {
-    return false
-  }
-
-  try {
-    await verifyIdentityApi({
-      birthNumber: rc.replace('/', ''),
-      identityCard: idCard.toUpperCase(),
-      turnstileToken,
-    })
-    // not refreshing user status immediately, instead leaving this to the registration flow
-    return true
-  } catch (_error: unknown) {
-    // TODO temporary, pass better errors out of api requests
-    const error: GeneralError = _error as GeneralError
-    if (error?.message === UNAUTHORIZED_ERROR_TEXT) {
-      forceLogout()
-      if (isBrowser()) {
-        window.location.reload()
-      }
-    }
-    logger.error('Failed verify identity request:', error)
-    setError({
-      code: error.message || 'error',
-      message: error.message || 'error',
-    })
-
-    return false
-  }
 }
 
 // based on https://www.joshwcomeau.com/nextjs/refreshing-server-side-props/

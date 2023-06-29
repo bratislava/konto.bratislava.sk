@@ -1,7 +1,7 @@
 import { Auth } from 'aws-amplify'
-import { usePageWrapperContext } from 'components/layouts/PageWrapper'
 import { Tax } from 'frontend/dtos/taxDto'
 import useJsonParseMemo from 'frontend/hooks/useJsonParseMemo'
+import { useServerSideAuth } from 'frontend/hooks/useServerSideAuth'
 import { AccountError, Address } from 'frontend/utils/amplify'
 import { useTranslation } from 'next-i18next'
 import { useState } from 'react'
@@ -20,9 +20,7 @@ const postalCodeFormat = (code?: string): string =>
 
 const ContactInformationSection = ({ tax }: ContactInformationSectionProps) => {
   const { t } = useTranslation('account')
-  const {
-    auth: { userData },
-  } = usePageWrapperContext()
+  const { userData } = useServerSideAuth()
   const [showSnackbar] = useSnackbar({ variant: 'success' })
   const address = userData?.address
   const parsedAddress = useJsonParseMemo<Address>(address)

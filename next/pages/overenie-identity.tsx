@@ -3,14 +3,11 @@ import AccountSuccessAlert from 'components/forms/segments/AccountSuccessAlert/A
 import AccountVerificationPendingAlert from 'components/forms/segments/AccountVerificationPendingAlert/AccountVerificationPendingAlert'
 import IdentityVerificationForm from 'components/forms/segments/IdentityVerificationForm/IdentityVerificationForm'
 import LoginRegisterLayout from 'components/layouts/LoginRegisterLayout'
+import { getSSRCurrentAuth } from 'components/logic/ServerSideAuthProvider'
 import { verifyIdentityApi } from 'frontend/api/api'
+import { AccountError, Tier } from 'frontend/dtos/accountDto'
+import { useRefreshServerSideProps } from 'frontend/hooks/useRefreshServerSideProps'
 import { useDerivedServerSideAuthState } from 'frontend/hooks/useServerSideAuth'
-import {
-  AccountError,
-  getSSRCurrentAuth,
-  Tier,
-  useRefreshServerSideProps,
-} from 'frontend/utils/amplify'
 import { GetServerSidePropsContext } from 'next'
 import { useRouter } from 'next/router'
 import { useTranslation } from 'next-i18next'

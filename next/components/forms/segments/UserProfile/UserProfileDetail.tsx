@@ -1,6 +1,6 @@
 import cx from 'classnames'
 import Alert from 'components/forms/info-components/Alert'
-import { UserData } from 'frontend/utils/amplify'
+import { UserData } from 'frontend/dtos/accountDto'
 import { useTranslation } from 'next-i18next'
 import { useId } from 'react'
 

@@ -1,5 +1,5 @@
+import { Address, UserData } from 'frontend/dtos/accountDto'
 import useJsonParseMemo from 'frontend/hooks/useJsonParseMemo'
-import { Address, UserData } from 'frontend/utils/amplify'
 import { useTranslation } from 'next-i18next'
 
 import UserProfileDetailViewRow from './UserProfileDetailViewRow'

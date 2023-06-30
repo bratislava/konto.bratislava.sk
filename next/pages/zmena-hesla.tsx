@@ -3,12 +3,8 @@ import AccountContainer from 'components/forms/segments/AccountContainer/Account
 import AccountSuccessAlert from 'components/forms/segments/AccountSuccessAlert/AccountSuccessAlert'
 import PasswordChangeForm from 'components/forms/segments/PasswordChangeForm/PasswordChangeForm'
 import LoginRegisterLayout from 'components/layouts/LoginRegisterLayout'
-import {
-  AccountError,
-  AccountStatus,
-  getSSRCurrentAuth,
-  mapTierToStatus,
-} from 'frontend/utils/amplify'
+import { getSSRCurrentAuth } from 'components/logic/ServerSideAuthProvider'
+import { AccountError } from 'frontend/dtos/accountDto'
 import { GetServerSidePropsContext } from 'next'
 import { useRouter } from 'next/router'
 import { useTranslation } from 'next-i18next'

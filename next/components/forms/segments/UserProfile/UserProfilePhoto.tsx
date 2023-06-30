@@ -1,5 +1,5 @@
 import cx from 'classnames'
-import { UserData } from 'frontend/utils/amplify'
+import { UserData } from 'frontend/dtos/accountDto'
 
 interface UserProfilePhotoProps {
   userData: UserData

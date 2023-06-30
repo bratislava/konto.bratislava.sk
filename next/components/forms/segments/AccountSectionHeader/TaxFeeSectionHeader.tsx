@@ -5,7 +5,7 @@ import FileDownload from '@assets/images/new-icons/ui/download.svg'
 import ExclamationIcon from '@assets/images/new-icons/ui/exclamation-mark.svg'
 import PaymentIcon from '@assets/images/new-icons/ui/payment.svg'
 import cx from 'classnames'
-import { getAccessToken } from 'frontend/utils/amplify'
+import { getAccessTokenOrLogout } from 'frontend/utils/amplify'
 import { useRouter } from 'next/router'
 import { useTranslation } from 'next-i18next'
 import { ReactNode } from 'react'
@@ -22,7 +22,7 @@ interface AccountSectionHeaderBase {
 }
 
 const downloadPdf = async () => {
-  const accessToken = await getAccessToken()
+  const accessToken = await getAccessTokenOrLogout()
   return fetch(`${String(process.env.NEXT_PUBLIC_TAXES_URL)}/tax/get-tax-pdf-by-year?year=2023`, {
     headers: {
       Authorization: `Bearer ${accessToken}`,

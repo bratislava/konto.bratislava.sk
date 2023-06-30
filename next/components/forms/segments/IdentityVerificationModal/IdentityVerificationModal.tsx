@@ -4,7 +4,6 @@ import WarningIcon from '@assets/images/new-icons/ui/exclamation-mark-triangle.s
 import cx from 'classnames'
 import AccountMarkdown from 'components/forms/segments/AccountMarkdown/AccountMarkdown'
 import Button from 'components/forms/simple-components/Button'
-import { AccountType } from 'frontend/utils/amplify'
 import { useRouter } from 'next/router'
 import { useTranslation } from 'next-i18next'
 import React from 'react'

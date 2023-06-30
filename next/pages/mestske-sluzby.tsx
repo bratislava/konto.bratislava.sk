@@ -1,7 +1,7 @@
 import MunicipalServicesSection from 'components/forms/segments/AccountSections/MunicipalServicesSection/MunicipalServicesSection'
 import AccountPageLayout from 'components/layouts/AccountPageLayout'
 import PageWrapper from 'components/layouts/PageWrapper'
-import { getSSRCurrentAuth } from 'frontend/utils/amplify'
+import { getSSRCurrentAuth } from 'components/logic/ServerSideAuthProvider'
 import { GetServerSidePropsContext } from 'next'
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
 

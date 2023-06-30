@@ -1,5 +1,4 @@
 import { ServerSideAuthContext } from 'components/logic/ServerSideAuthProvider'
-import { Tier } from 'frontend/utils/amplify'
 import { useContext } from 'react'
 
 export const useServerSideAuth = () => useContext(ServerSideAuthContext)

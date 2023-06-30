@@ -1,77 +1,9 @@
-import { Amplify, Auth, withSSRContext } from 'aws-amplify'
+import { Amplify, Auth } from 'aws-amplify'
 import { ROUTES } from 'frontend/api/constants'
-import { useRouter } from 'next/router'
-import { GetServerSidePropsContext } from 'next/types'
-import { useEffect, useState } from 'react'
 
 import logger from './logger'
-import { APPROVED_SSO_ORIGINS } from './sso'
 
-export enum PostMessageTypes {
-  ACCESS_TOKEN = 'ACCESS_TOKEN',
-  UNAUTHORIZED = 'UNAUTHORIZED',
-}
-
-export interface CityAccountPostMessage {
-  type: PostMessageTypes
-  payload?: Record<string, string>
-}
-
-export interface AccountError {
-  message: string
-  code: string
-}
-
-export enum AccountStatus {
-  Idle,
-  NewPasswordRequired,
-  NewPasswordSuccess,
-  EmailVerificationRequired,
-  EmailVerificationSuccess,
-  IdentityVerificationRequired,
-  IdentityVerificationPending,
-  IdentityVerificationFailed,
-  IdentityVerificationSuccess,
-}
-
-export enum Tier {
-  NEW = 'NEW',
-  QUEUE_IDENTITY_CARD = 'QUEUE_IDENTITY_CARD',
-  NOT_VERIFIED_IDENTITY_CARD = 'NOT_VERIFIED_IDENTITY_CARD',
-  IDENTITY_CARD = 'IDENTITY_CARD',
-  EID = 'EID',
-}
-
-export interface Address {
-  formatted?: string
-  street_address?: string
-  locality?: string
-  region?: string
-  postal_code?: string
-  country?: string
-  phone_number?: string
-}
-
-export type AccountType = 'fo' | 'po'
-
-// as returned by Amplify.Auth.currentAuthenticatedUser().attributes
-// sent from BE as server side props
-export interface UserData {
-  sub?: string
-  email_verified?: string
-  email?: string
-  name?: string
-  given_name?: string
-  family_name?: string
-  phone_number?: string
-  phone_verified?: string
-  address?: string
-  'custom:ifo'?: string
-  'custom:tier'?: Tier
-  'custom:account_type'?: AccountType
-  'custom:turnstile_token'?: string
-}
-
+// TODO once env handling is merged update not to use process.env directly
 Amplify.configure({
   Auth: {
     // REQUIRED only for Federated Authentication - Amazon Cognito Identity Pool ID
@@ -96,6 +28,19 @@ Amplify.configure({
   ssr: true,
 })
 
+// TODO continue here clear status
+export enum AccountStatus {
+  Idle,
+  NewPasswordRequired,
+  NewPasswordSuccess,
+  EmailVerificationRequired,
+  EmailVerificationSuccess,
+  IdentityVerificationRequired,
+  IdentityVerificationPending,
+  IdentityVerificationFailed,
+  IdentityVerificationSuccess,
+}
+
 // TODO - could be better, currently used only after login, AccountStatus should be replaced or rewritten
 export const mapTierToStatus = (tier?: Tier): AccountStatus => {
   switch (tier) {
@@ -113,7 +58,7 @@ export const mapTierToStatus = (tier?: Tier): AccountStatus => {
   }
 }
 
-export const getAccessToken = async () => {
+export const getAccessTokenOrLogout = async () => {
   try {
     const session = await Auth.currentSession()
     const jwtToken = session.getAccessToken().getJwtToken()
@@ -124,66 +69,4 @@ export const getAccessToken = async () => {
     window.location.assign(ROUTES.LOGIN)
     throw error
   }
-}
-
-export interface GetSSRCurrentAuth {
-  userData: UserData | null
-}
-
-// provides all the user data frontend might need as server side props
-// this way, FE can always access cognito data in a sync manner
-export const getSSRCurrentAuth = async (
-  req: GetServerSidePropsContext['req'],
-): Promise<GetSSRCurrentAuth> => {
-  const SSR = withSSRContext({ req })
-  let userData = null
-  try {
-    const currentUser = await SSR.Auth.currentAuthenticatedUser()
-    userData = currentUser.attributes || null
-  } catch (error) {
-    // TODO filter out errors because of unauthenticated users
-    logger.error('getServersideAuth error: ', error)
-  }
-  return { userData }
-}
-
-export const getSSRAccessToken = async (req: GetServerSidePropsContext['req']): Promise<string> => {
-  const SSR = withSSRContext({ req })
-  try {
-    const currentSession = await SSR.Auth.currentSession()
-    return (currentSession?.getAccessToken()?.getJwtToken() as string) || ''
-  } catch (error) {
-    // TODO filter out errors because of unauthenticated users
-    logger.error('getServersideAuth error: ', error)
-  }
-  return ''
-}
-
-// postMessage to all approved domains at the window top
-// in reality only one message will be sent, this exists to limit the possible domains only to hardcoded list in APPROVED_SSO_ORIGINS
-// TODO refactor to different file
-// eslint-disable-next-line unicorn/consistent-function-scoping
-export const postMessageToApprovedDomains = (message: CityAccountPostMessage) => {
-  // TODO - log to faro if none of the origins match
-  APPROVED_SSO_ORIGINS.forEach((domain) => {
-    window?.top?.postMessage(message, domain)
-  })
-}
-
-// based on https://www.joshwcomeau.com/nextjs/refreshing-server-side-props/
-// follow the link above if we need to add loading state
-export const useRefreshServerSideProps = (dataToRefresh: unknown) => {
-  const [refreshing, setRefreshing] = useState(false)
-  const router = useRouter()
-
-  const refreshData = async () => {
-    setRefreshing(true)
-    return router.replace(router.asPath)
-  }
-
-  useEffect(() => {
-    setRefreshing(false)
-  }, [dataToRefresh])
-
-  return { refreshing, refreshData }
 }

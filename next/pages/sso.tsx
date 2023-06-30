@@ -1,9 +1,6 @@
 import AccountMarkdown from 'components/forms/segments/AccountMarkdown/AccountMarkdown'
-import {
-  getSSRAccessToken,
-  postMessageToApprovedDomains,
-  PostMessageTypes,
-} from 'frontend/utils/amplify'
+import { getSSRAccessToken } from 'components/logic/ServerSideAuthProvider'
+import { postMessageToApprovedDomains, PostMessageTypes } from 'frontend/utils/sso'
 import { AsyncServerProps } from 'frontend/utils/types'
 import { GetServerSidePropsContext } from 'next'
 import { useTranslation } from 'next-i18next'

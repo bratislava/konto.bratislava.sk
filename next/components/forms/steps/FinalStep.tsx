@@ -1,7 +1,7 @@
 import { formsApi } from '@clients/forms'
 import { ErrorSchema, RJSFValidationError, StrictRJSFSchema } from '@rjsf/utils'
 import { ErrorObject } from 'ajv'
-import { Auth } from 'aws-amplify'
+import { getAccessTokenOrLogout } from 'frontend/utils/amplify'
 import { useState } from 'react'
 import { useEffectOnce } from 'usehooks-ts'
 
@@ -10,7 +10,6 @@ import logger, { developmentLog } from '../../../frontend/utils/logger'
 import Summary from './Summary/Summary'
 import SummaryMessages from './Summary/SummaryMessages'
 import SummaryHeader from './SummaryHeader'
-import { getAccessToken } from 'frontend/utils/amplify'
 
 interface FinalStepProps {
   formData: Record<string, JsonSchema>
@@ -41,7 +40,7 @@ const FinalStep = ({
   const updateFileScans = async (): Promise<FileScan[]> => {
     const unfinishedFileScans = fileScans.filter((scan) => scan.fileState !== 'finished')
 
-    const token = await getAccessToken()
+    const token = await getAccessTokenOrLogout()
 
     return Promise.all(
       unfinishedFileScans.map((scan: FileScan) => {

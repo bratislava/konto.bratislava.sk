@@ -1,7 +1,7 @@
 import { FormDefinition } from '@backend/forms/types'
 import { formsApi } from '@clients/forms'
 import { GetFormResponseDto } from '@clients/openapi-forms'
-import { Auth } from 'aws-amplify'
+import { getAccessTokenOrLogout } from 'frontend/utils/amplify'
 import { useRouter } from 'next/router'
 import { useTranslation } from 'next-i18next'
 import { useMemo, useState } from 'react'
@@ -10,7 +10,6 @@ import { useEffectOnce } from 'usehooks-ts'
 import useSnackbar from '../../frontend/hooks/useSnackbar'
 import { getInitFormData } from '../../frontend/utils/formStepper'
 import logger from '../../frontend/utils/logger'
-import { getAccessToken } from 'frontend/utils/amplify'
 
 export type InitialFormData = {
   formDataJson: object
@@ -36,7 +35,7 @@ export const useFormDataLoader = (formDefinition: FormDefinition) => {
   useEffectOnce(() => {
     // eslint-disable-next-line unicorn/consistent-function-scoping
     const load = async () => {
-      const token = await getAccessToken()
+      const token = await getAccessTokenOrLogout()
       const loadPromise = queryId
         ? () =>
             formsApi.nasesControllerGetForm(queryId, {

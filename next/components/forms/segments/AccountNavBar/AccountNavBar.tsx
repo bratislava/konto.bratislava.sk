@@ -10,8 +10,8 @@ import IdentityVerificationStatus from 'components/forms/simple-components/Ident
 import MenuDropdown, {
   MenuItemBase,
 } from 'components/forms/simple-components/MenuDropdown/MenuDropdown'
+import { UserData } from 'frontend/dtos/accountDto'
 import { useServerSideAuth } from 'frontend/hooks/useServerSideAuth'
-import { UserData } from 'frontend/utils/amplify'
 import NextLink from 'next/link'
 import { useRouter } from 'next/router'
 import { useTranslation } from 'next-i18next'

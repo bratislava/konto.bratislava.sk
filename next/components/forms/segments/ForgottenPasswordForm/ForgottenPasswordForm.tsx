@@ -2,7 +2,7 @@ import AccountErrorAlert from 'components/forms/segments/AccountErrorAlert/Accou
 import LoginAccountLink from 'components/forms/segments/LoginAccountLink/LoginAccountLink'
 import Button from 'components/forms/simple-components/Button'
 import InputField from 'components/forms/widget-components/InputField/InputField'
-import { AccountError } from 'frontend/utils/amplify'
+import { AccountError } from 'frontend/dtos/accountDto'
 import { useTranslation } from 'next-i18next'
 import { Controller } from 'react-hook-form'
 

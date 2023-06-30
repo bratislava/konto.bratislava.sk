@@ -1,5 +1,5 @@
 import UserProfileView from 'components/forms/segments/UserProfile/UserProfileView'
-import { getSSRCurrentAuth } from 'frontend/utils/amplify'
+import { getSSRCurrentAuth } from 'components/logic/ServerSideAuthProvider'
 import { GetServerSidePropsContext } from 'next'
 import { useTranslation } from 'next-i18next'
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations'

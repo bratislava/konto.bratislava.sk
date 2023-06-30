@@ -8,7 +8,7 @@ import {
   RJSFSchema,
   RJSFValidationError,
 } from '@rjsf/utils'
-import { Auth } from 'aws-amplify'
+import { getAccessTokenOrLogout } from 'frontend/utils/amplify'
 import { cloneDeep } from 'lodash'
 import { useTranslation } from 'next-i18next'
 import React, {
@@ -34,7 +34,6 @@ import {
 import { blobToString, downloadBlob } from '../../frontend/utils/general'
 import { StepData } from './types/TransformedFormData'
 import { InitialFormData } from './useFormDataLoader'
-import { getAccessToken } from 'frontend/utils/amplify'
 
 interface FormState {
   stepIndex: number
@@ -321,7 +320,7 @@ export const FormStateProvider = ({
   }
 
   const updateFormData = async () => {
-    const token = await getAccessToken()
+    const token = await getAccessTokenOrLogout()
     if (!initialFormData || !token) {
       return
     }

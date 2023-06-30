@@ -1,6 +1,5 @@
 import Button from 'components/forms/simple-components/Button'
-import { useDerivedServerSideAuthState, useTier } from 'frontend/hooks/useServerSideAuth'
-import { Tier, tierIdentityVerified } from 'frontend/utils/amplify'
+import { useDerivedServerSideAuthState } from 'frontend/hooks/useServerSideAuth'
 import { useRouter } from 'next/router'
 import { useTranslation } from 'next-i18next'
 

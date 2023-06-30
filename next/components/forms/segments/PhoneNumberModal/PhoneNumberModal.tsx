@@ -1,5 +1,5 @@
 import Modal from 'components/forms/widget-components/Modals/Modal'
-import { AccountError } from 'frontend/utils/amplify'
+import { AccountError } from 'frontend/dtos/accountDto'
 import { useTranslation } from 'next-i18next'
 
 import PhoneNumberForm, { PhoneNumberData } from '../PhoneNumberForm/PhoneNumberForm'

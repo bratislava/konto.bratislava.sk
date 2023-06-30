@@ -3,7 +3,7 @@
 import { FileUpdatedResponseDtoStatusEnum } from '@clients/openapi-forms'
 import { RJSFSchema } from '@rjsf/utils'
 import { ErrorObject } from 'ajv'
-import { getAccessToken } from 'frontend/utils/amplify'
+import { getAccessTokenOrLogout } from 'frontend/utils/amplify'
 
 import { ApiError, Gdpr, Identity, TaxApiError, UrlResult, User } from '../dtos/generalApiDto'
 import logger, { developmentLog } from '../utils/logger'
@@ -75,7 +75,7 @@ const fetchBlob = async (path: string, options?: RequestInit) => {
 
 // TODO move error handling here
 export const submitEform = async (eformKey: string, formId: string, data: Record<string, any>) => {
-  const token = await getAccessToken()
+  const token = await getAccessTokenOrLogout()
   return fetchJsonApi(`/api/eforms/${eformKey}/submit`, {
     method: 'POST',
     headers: {
@@ -144,7 +144,7 @@ export const xmlStringToPdf = (eform: string, data: string) => {
 }
 
 export const verifyIdentityApi = async (data: Identity) => {
-  const token = await getAccessToken()
+  const token = await getAccessTokenOrLogout()
 
   return fetchJsonApi(
     `${String(process.env.NEXT_PUBLIC_CITY_ACCOUNT_URL)}/user-verification/identity-card`,
@@ -160,7 +160,7 @@ export const verifyIdentityApi = async (data: Identity) => {
 }
 
 export const subscribeApi = async (data: { gdprData?: Gdpr[] }): Promise<User> => {
-  const token = await getAccessToken()
+  const token = await getAccessTokenOrLogout()
 
   return fetchJsonApi<User>(`${String(process.env.NEXT_PUBLIC_CITY_ACCOUNT_URL)}/user/subscribe`, {
     method: 'POST',
@@ -173,7 +173,7 @@ export const subscribeApi = async (data: { gdprData?: Gdpr[] }): Promise<User> =
 }
 
 export const unsubscribeApi = async (data: { gdprData?: Gdpr[] }): Promise<User> => {
-  const token = await getAccessToken()
+  const token = await getAccessTokenOrLogout()
 
   return fetchJsonApi<User>(
     `${String(process.env.NEXT_PUBLIC_CITY_ACCOUNT_URL)}/user/unsubscribe`,
@@ -189,7 +189,7 @@ export const unsubscribeApi = async (data: { gdprData?: Gdpr[] }): Promise<User>
 }
 
 export const getUserApi = async (): Promise<User> => {
-  const token = await getAccessToken()
+  const token = await getAccessTokenOrLogout()
 
   return fetchJsonApi<User>(
     `${String(process.env.NEXT_PUBLIC_CITY_ACCOUNT_URL)}/user/get-or-create`,
@@ -204,7 +204,7 @@ export const getUserApi = async (): Promise<User> => {
 }
 
 export const resetRcApi = async () => {
-  const token = await getAccessToken()
+  const token = await getAccessTokenOrLogout()
 
   return fetchJsonApi(
     `${String(process.env.NEXT_PUBLIC_CITY_ACCOUNT_URL)}/user/remove-birthnumber`,
@@ -219,7 +219,7 @@ export const resetRcApi = async () => {
 }
 
 export const getTaxApi = async () => {
-  const token = await getAccessToken()
+  const token = await getAccessTokenOrLogout()
 
   return fetchJsonApi(
     `${String(process.env.NEXT_PUBLIC_TAXES_URL)}/tax/get-tax-by-year?year=2023`,
@@ -234,7 +234,7 @@ export const getTaxApi = async () => {
 }
 
 export const getTaxPdfApi = async () => {
-  const token = await getAccessToken()
+  const token = await getAccessTokenOrLogout()
 
   return fetchJsonApi(
     `${String(process.env.NEXT_PUBLIC_TAXES_URL)}/tax/get-tax-pdf-by-year?year=2023`,
@@ -249,7 +249,7 @@ export const getTaxPdfApi = async () => {
 }
 
 export const getPaymentGatewayUrlApi = async (): Promise<UrlResult> => {
-  const token = await getAccessToken()
+  const token = await getAccessTokenOrLogout()
 
   return fetchJsonApi<UrlResult>(
     `${String(process.env.NEXT_PUBLIC_TAXES_URL)}/payment/cardpay/by-year/2023`,

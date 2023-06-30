@@ -4,8 +4,10 @@ import AccountContainer from 'components/forms/segments/AccountContainer/Account
 import EmailVerificationForm from 'components/forms/segments/EmailVerificationForm/EmailVerificationForm'
 import LoginForm from 'components/forms/segments/LoginForm/LoginForm'
 import LoginRegisterLayout from 'components/layouts/LoginRegisterLayout'
+import { getSSRCurrentAuth } from 'components/logic/ServerSideAuthProvider'
+import { AccountError } from 'frontend/dtos/accountDto'
+import { useDerivedServerSideAuthState } from 'frontend/hooks/useServerSideAuth'
 import useSSORedirect from 'frontend/hooks/useSSORedirect'
-import { AccountError, AccountStatus, getSSRCurrentAuth } from 'frontend/utils/amplify'
 import logger from 'frontend/utils/logger'
 import { GetServerSidePropsContext } from 'next'
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
@@ -14,12 +16,6 @@ import { useEffect, useState } from 'react'
 import PageWrapper from '../components/layouts/PageWrapper'
 import { isProductionDeployment } from '../frontend/utils/general'
 import { AsyncServerProps } from '../frontend/utils/types'
-import {
-  useDerivedServerSideAuthState,
-  useIsAuthenticated,
-  useServerSideAuth,
-  useTier,
-} from 'frontend/hooks/useServerSideAuth'
 
 export const getServerSideProps = async (ctx: GetServerSidePropsContext) => {
   const locale = ctx.locale ?? 'sk'
@@ -44,10 +40,10 @@ export const getServerSideProps = async (ctx: GetServerSidePropsContext) => {
 
 const LoginPage = ({ page }: AsyncServerProps<typeof getServerSideProps>) => {
   const { redirect } = useSSORedirect()
-  const { isAuthenticated, tierStatus } = useDerivedServerSideAuthState()
+  const { isAuthenticated } = useDerivedServerSideAuthState()
   const [loginError, setLoginError] = useState<AccountError | null>(null)
 
-  // TODO handle verification required through Hub
+  // TODO continue here handle verification required through Hub
   const [loginStatus, setLoginStatus] = useState<'Init' | 'EmailVerificationRequired'>('Init')
 
   useEffect(() => {

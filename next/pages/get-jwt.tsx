@@ -1,9 +1,12 @@
 import Button from 'components/forms/simple-components/Button'
 import PageWrapper from 'components/layouts/PageWrapper'
-import { ServerSideAuthProviderHOC } from 'components/logic/ServerSideAuthProvider'
+import {
+  getSSRAccessToken,
+  getSSRCurrentAuth,
+  ServerSideAuthProviderHOC,
+} from 'components/logic/ServerSideAuthProvider'
 import { Wrapper } from 'components/styleguide/Wrapper'
 import { useServerSideAuth } from 'frontend/hooks/useServerSideAuth'
-import { getSSRAccessToken, getSSRCurrentAuth } from 'frontend/utils/amplify'
 import { GetServerSidePropsContext } from 'next'
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
 

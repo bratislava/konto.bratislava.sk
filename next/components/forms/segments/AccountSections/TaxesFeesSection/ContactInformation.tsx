@@ -1,8 +1,8 @@
 import { Auth } from 'aws-amplify'
+import { AccountError, Address } from 'frontend/dtos/accountDto'
 import { Tax } from 'frontend/dtos/taxDto'
 import useJsonParseMemo from 'frontend/hooks/useJsonParseMemo'
 import { useServerSideAuth } from 'frontend/hooks/useServerSideAuth'
-import { AccountError, Address } from 'frontend/utils/amplify'
 import { useTranslation } from 'next-i18next'
 import { useState } from 'react'
 

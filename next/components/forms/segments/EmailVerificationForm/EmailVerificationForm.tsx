@@ -3,7 +3,7 @@ import AccountMarkdown from 'components/forms/segments/AccountMarkdown/AccountMa
 import Button from 'components/forms/simple-components/Button'
 import InputField from 'components/forms/widget-components/InputField/InputField'
 import useHookForm from 'frontend/hooks/useHookForm'
-import { AccountError } from 'frontend/utils/amplify'
+import { AccountError } from 'frontend/dtos/accountDto'
 import logger from 'frontend/utils/logger'
 import { formatUnicorn } from 'frontend/utils/string'
 import { useTranslation } from 'next-i18next'

@@ -2,7 +2,7 @@ import { UploadMinioFile } from '@backend/dtos/minio/upload-minio-file.dto'
 import { formsApi } from '@clients/forms'
 import cx from 'classnames'
 import FieldErrorMessage from 'components/forms/info-components/FieldErrorMessage'
-import { getAccessToken } from 'frontend/utils/amplify'
+import { getAccessTokenOrLogout } from 'frontend/utils/amplify'
 import React, { ForwardedRef, forwardRef, ForwardRefRenderFunction, useState } from 'react'
 import { v4 as createUuid } from 'uuid'
 
@@ -84,7 +84,7 @@ const UploadComponent: ForwardRefRenderFunction<HTMLDivElement, UploadProps> = (
 
   const startScanFiles = async (newFileScans: FileScan[]): Promise<FileScan[]> => {
     const parsedBucketName: string[] | undefined = bucketFolderName?.split('/')
-    const token = await getAccessToken()
+    const token = await getAccessTokenOrLogout()
 
     const updatedFileScans: FileScan[] = await Promise.all(
       newFileScans.map(async (scan) => {
@@ -161,7 +161,7 @@ const UploadComponent: ForwardRefRenderFunction<HTMLDivElement, UploadProps> = (
   }
 
   const removeFileOnServer = async (fileName: string, scanId: string) => {
-    const token = await getAccessToken()
+    const token = await getAccessTokenOrLogout()
 
     const fileStateStatus = await formsApi
       .filesControllerGetFileScanStatus(scanId, { accessToken: token })

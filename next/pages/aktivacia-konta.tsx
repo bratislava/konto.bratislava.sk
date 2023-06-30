@@ -1,21 +1,22 @@
+import { Auth } from 'aws-amplify'
 import AccountContainer from 'components/forms/segments/AccountContainer/AccountContainer'
 import AccountSuccessAlert from 'components/forms/segments/AccountSuccessAlert/AccountSuccessAlert'
 import MigrationForm from 'components/forms/segments/MigrationForm/MigrationForm'
 import NewPasswordForm from 'components/forms/segments/NewPasswordForm/NewPasswordForm'
 import LoginRegisterLayout from 'components/layouts/LoginRegisterLayout'
-import { AccountError, AccountStatus, getSSRCurrentAuth } from 'frontend/utils/amplify'
+import { getSSRCurrentAuth } from 'components/logic/ServerSideAuthProvider'
+import { AccountError } from 'frontend/dtos/accountDto'
 import { GetServerSidePropsContext } from 'next'
 import { useRouter } from 'next/router'
 import { useTranslation } from 'next-i18next'
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
+import { useState } from 'react'
 
 import PageWrapper from '../components/layouts/PageWrapper'
 import { ROUTES } from '../frontend/api/constants'
 import { isProductionDeployment } from '../frontend/utils/general'
 import logger from '../frontend/utils/logger'
 import { AsyncServerProps } from '../frontend/utils/types'
-import { useState } from 'react'
-import { Auth } from 'aws-amplify'
 
 export const getServerSideProps = async (ctx: GetServerSidePropsContext) => {
   const locale = ctx.locale ?? 'sk'
@@ -38,7 +39,7 @@ export const getServerSideProps = async (ctx: GetServerSidePropsContext) => {
   }
 }
 
-const MigrationPage = ({ page, auth }: AsyncServerProps<typeof getServerSideProps>) => {
+const MigrationPage = ({ page }: AsyncServerProps<typeof getServerSideProps>) => {
   const [lastEmail, setLastEmail] = useState('')
   const [activateAccountError, setActivateAccountError] = useState<AccountError | null>(null)
   const [activateAccountStatus, setActivateAccountStatus] = useState<AccountStatus>(

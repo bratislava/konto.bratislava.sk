@@ -1,5 +1,5 @@
 import { ROUTES } from 'frontend/api/constants'
-import { getAccessToken } from 'frontend/utils/amplify'
+import { getAccessTokenOrLogout } from 'frontend/utils/amplify'
 import logger from 'frontend/utils/logger'
 import { getValidRedirectFromQuery } from 'frontend/utils/sso'
 import { useRouter } from 'next/router'
@@ -24,7 +24,7 @@ export const SSORedirectProvider = ({ children }: { children: React.ReactNode })
     if (redirectTarget.startsWith('/')) {
       router.push(redirectTarget).catch((error_) => logger.error('Failed redirect', error_))
     } else {
-      const accessToken = await getAccessToken()
+      const accessToken = await getAccessTokenOrLogout()
       if (accessToken) {
         const redirectUrlWithToken = new URL(redirectTarget)
         redirectUrlWithToken.searchParams.set('access_token', accessToken)

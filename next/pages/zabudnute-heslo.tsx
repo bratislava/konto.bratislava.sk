@@ -18,6 +18,12 @@ import { isProductionDeployment } from '../frontend/utils/general'
 import logger from '../frontend/utils/logger'
 import { AsyncServerProps } from '../frontend/utils/types'
 
+enum ForgotPasswordStatus {
+  INIT = 'INIT',
+  NEW_PASSWORD_REQUIRED = 'NEW_PASSWORD_REQUIRED',
+  NEW_PASSWORD_SUCCESS = 'NEW_PASSWORD_SUCCESS',
+}
+
 export const getServerSideProps = async (ctx: GetServerSidePropsContext) => {
   const locale = ctx.locale ?? 'sk'
 
@@ -39,11 +45,11 @@ export const getServerSideProps = async (ctx: GetServerSidePropsContext) => {
   }
 }
 
-const ForgottenPasswordPage = ({ page, auth }: AsyncServerProps<typeof getServerSideProps>) => {
+const ForgottenPasswordPage = ({ page }: AsyncServerProps<typeof getServerSideProps>) => {
   const [lastEmail, setLastEmail] = useState('')
   const [forgotPasswordError, setForgotPasswordError] = useState<AccountError | null>(null)
-  const [forgotPasswordStatus, setForgotPasswordStatus] = useState<AccountStatus>(
-    AccountStatus.Idle,
+  const [forgotPasswordStatus, setForgotPasswordStatus] = useState<ForgotPasswordStatus>(
+    ForgotPasswordStatus.INIT,
   )
   const { t } = useTranslation('account')
   const router = useRouter()
@@ -55,7 +61,7 @@ const ForgottenPasswordPage = ({ page, auth }: AsyncServerProps<typeof getServer
   const forgotPassword = async () => {
     try {
       await Auth.forgotPassword(lastEmail)
-      setForgotPasswordStatus(AccountStatus.NewPasswordRequired)
+      setForgotPasswordStatus(ForgotPasswordStatus.NEW_PASSWORD_REQUIRED)
     } catch (error) {
       logger.error('Failed forgotPassword', error)
       setForgotPasswordError({ code: error?.code, message: error?.message })
@@ -65,7 +71,7 @@ const ForgottenPasswordPage = ({ page, auth }: AsyncServerProps<typeof getServer
   const forgotPasswordSubmit = async (verificationCode: string, newPassword: string) => {
     try {
       await Auth.forgotPasswordSubmit(lastEmail, verificationCode, newPassword)
-      setForgotPasswordStatus(AccountStatus.NewPasswordSuccess)
+      setForgotPasswordStatus(ForgotPasswordStatus.NEW_PASSWORD_SUCCESS)
     } catch (error) {
       logger.error('Failed forgotPasswordSubmit', error)
       setForgotPasswordError({ code: error?.code, message: error?.message })
@@ -75,10 +81,10 @@ const ForgottenPasswordPage = ({ page, auth }: AsyncServerProps<typeof getServer
   return (
     <PageWrapper locale={page.locale} localizations={page.localizations}>
       <LoginRegisterLayout
-        backButtonHidden={forgotPasswordStatus === AccountStatus.NewPasswordSuccess}
+        backButtonHidden={forgotPasswordStatus === ForgotPasswordStatus.NEW_PASSWORD_SUCCESS}
       >
         <AccountContainer>
-          {forgotPasswordStatus === AccountStatus.NewPasswordRequired ? (
+          {forgotPasswordStatus === ForgotPasswordStatus.NEW_PASSWORD_REQUIRED ? (
             <NewPasswordForm
               onSubmit={(verificationCode, newPassword) =>
                 forgotPasswordSubmit(verificationCode, newPassword)
@@ -87,7 +93,7 @@ const ForgottenPasswordPage = ({ page, auth }: AsyncServerProps<typeof getServer
               error={forgotPasswordError}
               lastEmail={lastEmail}
             />
-          ) : forgotPasswordStatus === AccountStatus.Idle ? (
+          ) : forgotPasswordStatus === ForgotPasswordStatus.INIT ? (
             <ForgottenPasswordForm
               onSubmit={forgotPassword}
               error={forgotPasswordError}

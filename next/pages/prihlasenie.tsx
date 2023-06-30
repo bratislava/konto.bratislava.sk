@@ -42,9 +42,8 @@ const LoginPage = ({ page }: AsyncServerProps<typeof getServerSideProps>) => {
   const { redirect } = useSSORedirect()
   const { isAuthenticated } = useDerivedServerSideAuthState()
   const [loginError, setLoginError] = useState<AccountError | null>(null)
-
-  // TODO continue here handle verification required through Hub
-  const [loginStatus, setLoginStatus] = useState<'Init' | 'EmailVerificationRequired'>('Init')
+  // if email is not yet verify login will fail - we stay on this page & render verification form for the last used email
+  const [emailToVerify, setEmailToVerify] = useState('')
 
   useEffect(() => {
     if (isAuthenticated) {
@@ -53,11 +52,19 @@ const LoginPage = ({ page }: AsyncServerProps<typeof getServerSideProps>) => {
   }, [isAuthenticated, redirect])
 
   const onLogin = async (email: string, password: string) => {
+    // TODO move this down
     try {
-      if (await Auth.signIn(email, password)) {
+      const loginResult = await Auth.signIn(email, password)
+      if (loginResult) {
         await redirect()
+      } else {
+        // TODO clean once validated
+        console.log(loginResult)
       }
     } catch (error) {
+      // TODO continue here - get the exact error, only then set emailToVerify
+      setEmailToVerify(email)
+      console.error(error)
       setLoginError({ code: error?.code, message: error?.message })
     }
   }
@@ -77,11 +84,12 @@ const LoginPage = ({ page }: AsyncServerProps<typeof getServerSideProps>) => {
       <LoginRegisterLayout backButtonHidden>
         {!isAuthenticated && <AccountActivator />}
         <AccountContainer className="md:pt-6 pt-0 mb-0 md:mb-8">
-          {status === AccountStatus.EmailVerificationRequired ? (
+          {emailToVerify ? (
             <EmailVerificationForm
               onResend={() => Auth.verifyCurrentUserAttribute('email')}
               onSubmit={onVerifyEmail}
               error={loginError}
+              lastEmail={emailToVerify}
             />
           ) : (
             <LoginForm onSubmit={onLogin} error={loginError} />

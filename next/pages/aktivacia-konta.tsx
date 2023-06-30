@@ -18,6 +18,12 @@ import { isProductionDeployment } from '../frontend/utils/general'
 import logger from '../frontend/utils/logger'
 import { AsyncServerProps } from '../frontend/utils/types'
 
+enum ActivateAccountStatus {
+  INIT = 'INIT',
+  NEW_PASSWORD_REQUIRED = 'NEW_PASSWORD_REQUIRED',
+  NEW_PASSWORD_SUCCESS = 'NEW_PASSWORD_SUCCESS',
+}
+
 export const getServerSideProps = async (ctx: GetServerSidePropsContext) => {
   const locale = ctx.locale ?? 'sk'
 
@@ -42,8 +48,8 @@ export const getServerSideProps = async (ctx: GetServerSidePropsContext) => {
 const MigrationPage = ({ page }: AsyncServerProps<typeof getServerSideProps>) => {
   const [lastEmail, setLastEmail] = useState('')
   const [activateAccountError, setActivateAccountError] = useState<AccountError | null>(null)
-  const [activateAccountStatus, setActivateAccountStatus] = useState<AccountStatus>(
-    AccountStatus.Idle,
+  const [activateAccountStatus, setActivateAccountStatus] = useState<ActivateAccountStatus>(
+    ActivateAccountStatus.INIT,
   )
   const { t } = useTranslation('account')
   const router = useRouter()
@@ -55,7 +61,7 @@ const MigrationPage = ({ page }: AsyncServerProps<typeof getServerSideProps>) =>
   const forgotPassword = async () => {
     try {
       await Auth.forgotPassword(lastEmail)
-      setActivateAccountStatus(AccountStatus.NewPasswordRequired)
+      setActivateAccountStatus(ActivateAccountStatus.NEW_PASSWORD_REQUIRED)
     } catch (error) {
       logger.error('Failed forgotPassword in account migration', error)
       if (error?.code === 'UserNotFoundException') {
@@ -72,7 +78,7 @@ const MigrationPage = ({ page }: AsyncServerProps<typeof getServerSideProps>) =>
   const forgotPasswordSubmit = async (verificationCode: string, newPassword: string) => {
     try {
       await Auth.forgotPasswordSubmit(lastEmail, verificationCode, newPassword)
-      setActivateAccountStatus(AccountStatus.NewPasswordSuccess)
+      setActivateAccountStatus(ActivateAccountStatus.NEW_PASSWORD_SUCCESS)
     } catch (error) {
       logger.error('Failed forgotPasswordSubmit', error)
       setActivateAccountError({ code: error?.code, message: error?.message })
@@ -83,7 +89,7 @@ const MigrationPage = ({ page }: AsyncServerProps<typeof getServerSideProps>) =>
     <PageWrapper locale={page.locale} localizations={page.localizations}>
       <LoginRegisterLayout backButtonHidden>
         <AccountContainer>
-          {activateAccountStatus === AccountStatus.NewPasswordRequired ? (
+          {activateAccountStatus === ActivateAccountStatus.NEW_PASSWORD_REQUIRED ? (
             <NewPasswordForm
               onSubmit={(verificationCode, newPassword) =>
                 forgotPasswordSubmit(verificationCode, newPassword)
@@ -93,7 +99,7 @@ const MigrationPage = ({ page }: AsyncServerProps<typeof getServerSideProps>) =>
               lastEmail={lastEmail}
               fromMigration
             />
-          ) : activateAccountStatus === AccountStatus.Idle ? (
+          ) : activateAccountStatus === ActivateAccountStatus.INIT ? (
             <MigrationForm
               onSubmit={forgotPassword}
               lastEmail={lastEmail}

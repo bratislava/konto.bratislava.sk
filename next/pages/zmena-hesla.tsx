@@ -5,6 +5,7 @@ import PasswordChangeForm from 'components/forms/segments/PasswordChangeForm/Pas
 import LoginRegisterLayout from 'components/layouts/LoginRegisterLayout'
 import { getSSRCurrentAuth } from 'components/logic/ServerSideAuthProvider'
 import { AccountError } from 'frontend/dtos/accountDto'
+import { useDerivedServerSideAuthState } from 'frontend/hooks/useServerSideAuth'
 import { GetServerSidePropsContext } from 'next'
 import { useRouter } from 'next/router'
 import { useTranslation } from 'next-i18next'
@@ -16,6 +17,11 @@ import { ROUTES } from '../frontend/api/constants'
 import { isProductionDeployment } from '../frontend/utils/general'
 import logger from '../frontend/utils/logger'
 import { AsyncServerProps } from '../frontend/utils/types'
+
+enum PasswordChangeStatus {
+  INIT = 'INIT',
+  NEW_PASSWORD_SUCCESS = 'NEW_PASSWORD_SUCCESS',
+}
 
 export const getServerSideProps = async (ctx: GetServerSidePropsContext) => {
   const locale = ctx.locale ?? 'sk'
@@ -38,17 +44,20 @@ export const getServerSideProps = async (ctx: GetServerSidePropsContext) => {
   }
 }
 
-const PasswordChangePage = ({ page, auth }: AsyncServerProps<typeof getServerSideProps>) => {
+const PasswordChangePage = ({ page }: AsyncServerProps<typeof getServerSideProps>) => {
   const { t } = useTranslation('account')
   const router = useRouter()
+  const { isAuthenticated } = useDerivedServerSideAuthState()
   const [passwordChangeError, setPasswordChangeError] = useState<AccountError | null>(null)
-  const status = mapTierToStatus(auth.userData?.['custom:tier'])
+  const [passwordChangeStatus, setPasswordChangeStatus] = useState<PasswordChangeStatus>(
+    PasswordChangeStatus.INIT,
+  )
 
   useEffect(() => {
-    if (!auth.isAuthenticated) {
+    if (!isAuthenticated) {
       router.push(ROUTES.LOGIN).catch((error_) => logger.error('Failed redirect', error_))
     }
-  }, [auth.isAuthenticated, router])
+  }, [isAuthenticated, router])
 
   const onConfirm = async () => {
     await router.push(ROUTES.HOME).catch((error_) => logger.error('Failed redirect', error_))
@@ -59,6 +68,7 @@ const PasswordChangePage = ({ page, auth }: AsyncServerProps<typeof getServerSid
       setPasswordChangeError(null)
       const user = await Auth.currentAuthenticatedUser()
       await Auth.changePassword(user, oldPassword, newPassword)
+      setPasswordChangeStatus(PasswordChangeStatus.NEW_PASSWORD_SUCCESS)
     } catch (error) {
       setPasswordChangeError({ code: error?.message, message: error?.message })
     }
@@ -66,9 +76,11 @@ const PasswordChangePage = ({ page, auth }: AsyncServerProps<typeof getServerSid
 
   return (
     <PageWrapper locale={page.locale} localizations={page.localizations}>
-      <LoginRegisterLayout backButtonHidden={status === AccountStatus.NewPasswordSuccess}>
+      <LoginRegisterLayout
+        backButtonHidden={passwordChangeStatus === PasswordChangeStatus.NEW_PASSWORD_SUCCESS}
+      >
         <AccountContainer>
-          {status === AccountStatus.NewPasswordSuccess ? (
+          {passwordChangeStatus === PasswordChangeStatus.NEW_PASSWORD_SUCCESS ? (
             <AccountSuccessAlert
               title={t('password_change_success_title')}
               confirmLabel={t('account_continue_link')}

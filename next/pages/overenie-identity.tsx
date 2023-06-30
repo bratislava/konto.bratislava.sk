@@ -50,7 +50,6 @@ const IdentityVerificationPage = ({ page }: AsyncServerProps<typeof getServerSid
   const [identityVerificationError, setIdentityVerificationError] = useState<AccountError | null>(
     null,
   )
-
   const { isAuthenticated, tierStatus } = useDerivedServerSideAuthState()
 
   const router = useRouter()

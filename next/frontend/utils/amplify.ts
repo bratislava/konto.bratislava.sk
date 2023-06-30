@@ -28,36 +28,6 @@ Amplify.configure({
   ssr: true,
 })
 
-// TODO continue here clear status
-export enum AccountStatus {
-  Idle,
-  NewPasswordRequired,
-  NewPasswordSuccess,
-  EmailVerificationRequired,
-  EmailVerificationSuccess,
-  IdentityVerificationRequired,
-  IdentityVerificationPending,
-  IdentityVerificationFailed,
-  IdentityVerificationSuccess,
-}
-
-// TODO - could be better, currently used only after login, AccountStatus should be replaced or rewritten
-export const mapTierToStatus = (tier?: Tier): AccountStatus => {
-  switch (tier) {
-    case Tier.QUEUE_IDENTITY_CARD:
-      return AccountStatus.IdentityVerificationPending
-    case Tier.NOT_VERIFIED_IDENTITY_CARD:
-      return AccountStatus.IdentityVerificationFailed
-    case Tier.IDENTITY_CARD:
-    case Tier.EID:
-      return AccountStatus.IdentityVerificationSuccess
-    case Tier.NEW:
-      return AccountStatus.Idle
-    default:
-      return AccountStatus.IdentityVerificationRequired
-  }
-}
-
 export const getAccessTokenOrLogout = async () => {
   try {
     const session = await Auth.currentSession()

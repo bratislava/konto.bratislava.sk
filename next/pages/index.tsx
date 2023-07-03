@@ -1,7 +1,10 @@
 import IntroSection from 'components/forms/segments/AccountSections/IntroSection/IntroSection'
 import AccountPageLayout from 'components/layouts/AccountPageLayout'
 import PageWrapper from 'components/layouts/PageWrapper'
-import { getSSRCurrentAuth } from 'components/logic/ServerSideAuthProvider'
+import {
+  getSSRCurrentAuth,
+  ServerSideAuthProviderHOC,
+} from 'components/logic/ServerSideAuthProvider'
 import { GetServerSidePropsContext } from 'next'
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
 
@@ -42,4 +45,4 @@ const AccountIntroPage = ({
   )
 }
 
-export default AccountIntroPage
+export default ServerSideAuthProviderHOC(AccountIntroPage)

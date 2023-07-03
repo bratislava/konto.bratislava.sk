@@ -3,9 +3,12 @@ import AccountContainer from 'components/forms/segments/AccountContainer/Account
 import AccountSuccessAlert from 'components/forms/segments/AccountSuccessAlert/AccountSuccessAlert'
 import PasswordChangeForm from 'components/forms/segments/PasswordChangeForm/PasswordChangeForm'
 import LoginRegisterLayout from 'components/layouts/LoginRegisterLayout'
-import { getSSRCurrentAuth } from 'components/logic/ServerSideAuthProvider'
-import { AccountError } from 'frontend/dtos/accountDto'
+import {
+  getSSRCurrentAuth,
+  ServerSideAuthProviderHOC,
+} from 'components/logic/ServerSideAuthProvider'
 import { useDerivedServerSideAuthState } from 'frontend/hooks/useServerSideAuth'
+import { isError } from 'frontend/utils/errors'
 import { GetServerSidePropsContext } from 'next'
 import { useRouter } from 'next/router'
 import { useTranslation } from 'next-i18next'
@@ -48,7 +51,7 @@ const PasswordChangePage = ({ page }: AsyncServerProps<typeof getServerSideProps
   const { t } = useTranslation('account')
   const router = useRouter()
   const { isAuthenticated } = useDerivedServerSideAuthState()
-  const [passwordChangeError, setPasswordChangeError] = useState<AccountError | null>(null)
+  const [passwordChangeError, setPasswordChangeError] = useState<Error | null>(null)
   const [passwordChangeStatus, setPasswordChangeStatus] = useState<PasswordChangeStatus>(
     PasswordChangeStatus.INIT,
   )
@@ -63,14 +66,19 @@ const PasswordChangePage = ({ page }: AsyncServerProps<typeof getServerSideProps
     await router.push(ROUTES.HOME).catch((error_) => logger.error('Failed redirect', error_))
   }
 
-  const changePassword = async (oldPassword, newPassword) => {
+  const changePassword = async (oldPassword: string, newPassword: string) => {
     try {
       setPasswordChangeError(null)
       const user = await Auth.currentAuthenticatedUser()
       await Auth.changePassword(user, oldPassword, newPassword)
       setPasswordChangeStatus(PasswordChangeStatus.NEW_PASSWORD_SUCCESS)
     } catch (error) {
-      setPasswordChangeError({ code: error?.message, message: error?.message })
+      if (isError(error)) {
+        setPasswordChangeError(error)
+      } else {
+        logger.error('Unexpected error - unexpected object thrown in forgotPasswordSubmit:', error)
+        setPasswordChangeError(new Error('Unknown error'))
+      }
     }
   }
 
@@ -95,4 +103,4 @@ const PasswordChangePage = ({ page }: AsyncServerProps<typeof getServerSideProps
   )
 }
 
-export default PasswordChangePage
+export default ServerSideAuthProviderHOC(PasswordChangePage)

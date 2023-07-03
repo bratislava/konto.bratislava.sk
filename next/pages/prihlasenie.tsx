@@ -4,10 +4,13 @@ import AccountContainer from 'components/forms/segments/AccountContainer/Account
 import EmailVerificationForm from 'components/forms/segments/EmailVerificationForm/EmailVerificationForm'
 import LoginForm from 'components/forms/segments/LoginForm/LoginForm'
 import LoginRegisterLayout from 'components/layouts/LoginRegisterLayout'
-import { getSSRCurrentAuth } from 'components/logic/ServerSideAuthProvider'
-import { AccountError } from 'frontend/dtos/accountDto'
+import {
+  getSSRCurrentAuth,
+  ServerSideAuthProviderHOC,
+} from 'components/logic/ServerSideAuthProvider'
 import { useDerivedServerSideAuthState } from 'frontend/hooks/useServerSideAuth'
 import useSSORedirect from 'frontend/hooks/useSSORedirect'
+import { isError } from 'frontend/utils/errors'
 import logger from 'frontend/utils/logger'
 import { GetServerSidePropsContext } from 'next'
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
@@ -41,7 +44,7 @@ export const getServerSideProps = async (ctx: GetServerSidePropsContext) => {
 const LoginPage = ({ page }: AsyncServerProps<typeof getServerSideProps>) => {
   const { redirect } = useSSORedirect()
   const { isAuthenticated } = useDerivedServerSideAuthState()
-  const [loginError, setLoginError] = useState<AccountError | null>(null)
+  const [loginError, setLoginError] = useState<Error | null>(null)
   // if email is not yet verify login will fail - we stay on this page & render verification form for the last used email
   const [emailToVerify, setEmailToVerify] = useState('')
 
@@ -65,7 +68,12 @@ const LoginPage = ({ page }: AsyncServerProps<typeof getServerSideProps>) => {
       // TODO continue here - get the exact error, only then set emailToVerify
       setEmailToVerify(email)
       console.error(error)
-      setLoginError({ code: error?.code, message: error?.message })
+      if (isError(error)) {
+        setLoginError(error)
+      } else {
+        logger.error('Unexpected error - unexpected object thrown in onVerifyEmail:', error)
+        setLoginError(new Error('Unknown error'))
+      }
     }
   }
 
@@ -75,7 +83,12 @@ const LoginPage = ({ page }: AsyncServerProps<typeof getServerSideProps>) => {
         await redirect()
       }
     } catch (error) {
-      setLoginError({ code: error?.code, message: error?.message })
+      if (isError(error)) {
+        setLoginError(error)
+      } else {
+        logger.error('Unexpected error - unexpected object thrown in onVerifyEmail:', error)
+        setLoginError(new Error('Unknown error'))
+      }
     }
   }
 
@@ -100,4 +113,4 @@ const LoginPage = ({ page }: AsyncServerProps<typeof getServerSideProps>) => {
   )
 }
 
-export default LoginPage
+export default ServerSideAuthProviderHOC(LoginPage)

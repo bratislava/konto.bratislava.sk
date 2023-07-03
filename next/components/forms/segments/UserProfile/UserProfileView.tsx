@@ -1,10 +1,11 @@
 import { Auth } from 'aws-amplify'
 import cx from 'classnames'
 import MessageModal from 'components/forms/widget-components/Modals/MessageModal'
-import { AccountError, UserData } from 'frontend/dtos/accountDto'
+import { UserData } from 'frontend/dtos/accountDto'
 import { useRefreshServerSideProps } from 'frontend/hooks/useRefreshServerSideProps'
 import { useServerSideAuth } from 'frontend/hooks/useServerSideAuth'
 import useSnackbar from 'frontend/hooks/useSnackbar'
+import { isError } from 'frontend/utils/errors'
 import logger from 'frontend/utils/logger'
 import { identity, mapValues, pickBy } from 'lodash'
 import { useTranslation } from 'next-i18next'
@@ -24,7 +25,7 @@ const UserProfileView = () => {
   const { userData } = useServerSideAuth()
   const [openSnackbarSuccess] = useSnackbar({ variant: 'success' })
 
-  const [updateUserDataError, setUpdateUserDataError] = useState<AccountError | null>(null)
+  const [updateUserDataError, setUpdateUserDataError] = useState<Error | null>(null)
   const { refreshData } = useRefreshServerSideProps(userData)
 
   useEffect(() => {
@@ -44,7 +45,12 @@ const UserProfileView = () => {
       await refreshData()
     } catch (error) {
       logger.error('Update User Data failed', error)
-      setUpdateUserDataError({ code: error?.code, message: error?.message })
+      if (isError(error)) {
+        setUpdateUserDataError(error)
+      } else {
+        logger.error('Unexpected error - unexpected object thrown in handleOnSubmitEditing:', error)
+        setUpdateUserDataError(new Error('Unknown error'))
+      }
       setIsAlertOpened(true)
       setTimeout(() => setIsAlertOpened(false), 3000)
     }

@@ -4,7 +4,6 @@ import LoginAccountLink from 'components/forms/segments/LoginAccountLink/LoginAc
 import Button from 'components/forms/simple-components/Button'
 import InputField from 'components/forms/widget-components/InputField/InputField'
 import { ROUTES } from 'frontend/api/constants'
-import { AccountError } from 'frontend/dtos/accountDto'
 import useHookForm from 'frontend/hooks/useHookForm'
 import { formatUnicorn } from 'frontend/utils/string'
 import { useRouter } from 'next/router'
@@ -17,7 +16,7 @@ interface Data {
 
 interface Props {
   onSubmit: (email: string) => Promise<any>
-  error?: AccountError | null | undefined
+  error?: Error | null
   lastEmail: string
   setLastEmail: (email: string) => void
 }

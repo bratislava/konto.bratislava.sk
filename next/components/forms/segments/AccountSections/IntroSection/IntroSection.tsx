@@ -10,8 +10,9 @@ import AnnouncementBlock from 'components/forms/segments/AccountSections/IntroSe
 import Banner from 'components/forms/simple-components/Banner'
 import Button from 'components/forms/simple-components/Button'
 import ServiceCard from 'components/forms/simple-components/ServiceCard'
-import { AccountError } from 'frontend/dtos/accountDto'
 import { useDerivedServerSideAuthState, useServerSideAuth } from 'frontend/hooks/useServerSideAuth'
+import { isError } from 'frontend/utils/errors'
+import logger from 'frontend/utils/logger'
 import { useRouter } from 'next/router'
 import { useTranslation } from 'next-i18next'
 import { useEffect, useState } from 'react'
@@ -35,7 +36,7 @@ const IntroSection = () => {
     if (
       phoneNumberModal === 'hidden' &&
       userData &&
-      !userData?.phone_number &&
+      !userData.phone_number &&
       ROUTES.REGISTER === router.query.from
     ) {
       setPhoneNumberModal('displayed')
@@ -43,7 +44,7 @@ const IntroSection = () => {
   }, [phoneNumberModal, router.query.from, userData])
 
   // TODO should be part of phonenumber modal, refactor
-  const [phoneNumberError, setPhoneNumberError] = useState<AccountError | null>(null)
+  const [phoneNumberError, setPhoneNumberError] = useState<Error | null>(null)
   const resetError = () => {
     setPhoneNumberError(null)
   }
@@ -59,8 +60,12 @@ const IntroSection = () => {
         setPhoneNumberModal('dismissed')
       }
     } catch (error) {
-      // TODO nicer errors
-      setPhoneNumberError({ code: error?.message, message: error?.message })
+      if (isError(error)) {
+        setPhoneNumberError(error)
+      } else {
+        logger.error('Unexpected error - unexpected object thrown in onSubmitPhoneNumber:', error)
+        setPhoneNumberError(new Error('Unknown error'))
+      }
     }
   }
 

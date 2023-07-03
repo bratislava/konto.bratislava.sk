@@ -2,7 +2,6 @@ import AccountErrorAlert from 'components/forms/segments/AccountErrorAlert/Accou
 import LoginAccountLink from 'components/forms/segments/LoginAccountLink/LoginAccountLink'
 import Button from 'components/forms/simple-components/Button'
 import InputField from 'components/forms/widget-components/InputField/InputField'
-import { AccountError } from 'frontend/dtos/accountDto'
 import { useTranslation } from 'next-i18next'
 import { Controller } from 'react-hook-form'
 
@@ -14,7 +13,7 @@ interface Data {
 
 interface Props {
   onSubmit: (email: string) => Promise<any>
-  error?: AccountError | null | undefined
+  error?: Error | null
   lastEmail: string
   setLastEmail: (email: string) => void
 }

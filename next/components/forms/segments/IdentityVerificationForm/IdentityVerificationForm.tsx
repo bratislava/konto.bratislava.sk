@@ -2,7 +2,6 @@ import ArrowRightIcon from '@assets/images/new-icons/ui/arrow-right.svg'
 import AccountErrorAlert from 'components/forms/segments/AccountErrorAlert/AccountErrorAlert'
 import Button from 'components/forms/simple-components/Button'
 import InputField from 'components/forms/widget-components/InputField/InputField'
-import { AccountError } from 'frontend/dtos/accountDto'
 import { useRouter } from 'next/router'
 import { useTranslation } from 'next-i18next'
 import { useState } from 'react'
@@ -23,7 +22,7 @@ interface Data {
 
 interface Props {
   onSubmit: (rc: string, idCard: string, turnstileToken: string) => void
-  error?: AccountError | null | undefined
+  error?: Error | null
 }
 
 // must use `minLength: 1` to implement required field

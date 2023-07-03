@@ -1,6 +1,6 @@
 import CorrespondenceAddressForm from 'components/forms/segments/CorrespondenceAddressForm/CorrespondenceAddressForm'
 import Modal from 'components/forms/widget-components/Modals/Modal'
-import { AccountError, Address } from 'frontend/dtos/accountDto'
+import { Address } from 'frontend/dtos/accountDto'
 import { useTranslation } from 'next-i18next'
 
 /* eslint-disable @typescript-eslint/no-shadow */
@@ -10,7 +10,7 @@ interface Props {
   onClose: () => void
   onSubmit: ({ data }: { data?: Address }) => void
   defaultValues?: Address
-  error?: AccountError | null
+  error?: Error | null
   onHideError?: () => void
 }
 

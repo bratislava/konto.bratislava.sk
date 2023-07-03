@@ -35,9 +35,3 @@ export interface UserData {
   'custom:account_type'?: AccountType
   'custom:turnstile_token'?: string
 }
-
-// TODO remove
-export interface AccountError {
-  message: string
-  code: string
-}

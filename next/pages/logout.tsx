@@ -2,7 +2,10 @@ import { Auth } from 'aws-amplify'
 import AccountContainer from 'components/forms/segments/AccountContainer/AccountContainer'
 import AccountSuccessAlert from 'components/forms/segments/AccountSuccessAlert/AccountSuccessAlert'
 import LoginRegisterLayout from 'components/layouts/LoginRegisterLayout'
-import { getSSRCurrentAuth } from 'components/logic/ServerSideAuthProvider'
+import {
+  ServerSideAuthProviderHOC,
+  getSSRCurrentAuth,
+} from 'components/logic/ServerSideAuthProvider'
 import useSSORedirect from 'frontend/hooks/useSSORedirect'
 import logger from 'frontend/utils/logger'
 import { GetServerSidePropsContext } from 'next'
@@ -13,6 +16,7 @@ import { useEffect } from 'react'
 import PageWrapper from '../components/layouts/PageWrapper'
 import { isProductionDeployment } from '../frontend/utils/general'
 import { AsyncServerProps } from '../frontend/utils/types'
+import { useDerivedServerSideAuthState } from 'frontend/hooks/useServerSideAuth'
 
 export const getServerSideProps = async (ctx: GetServerSidePropsContext) => {
   const locale = ctx.locale ?? 'sk'
@@ -35,9 +39,9 @@ export const getServerSideProps = async (ctx: GetServerSidePropsContext) => {
   }
 }
 
-const LogoutPage = ({ page, auth }: AsyncServerProps<typeof getServerSideProps>) => {
+const LogoutPage = ({ page }: AsyncServerProps<typeof getServerSideProps>) => {
   const { t } = useTranslation('account')
-  const { isAuthenticated } = auth
+  const { isAuthenticated } = useDerivedServerSideAuthState()
   const { redirect } = useSSORedirect()
   useEffect(() => {
     if (!isAuthenticated) {
@@ -64,4 +68,4 @@ const LogoutPage = ({ page, auth }: AsyncServerProps<typeof getServerSideProps>)
   )
 }
 
-export default LogoutPage
+export default ServerSideAuthProviderHOC(LogoutPage)

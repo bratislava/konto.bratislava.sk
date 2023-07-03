@@ -1,7 +1,10 @@
 import ThankYouSection from 'components/forms/segments/AccountSections/ThankYouSection/ThankYouSection'
 import AccountPageLayout from 'components/layouts/AccountPageLayout'
 import PageWrapper from 'components/layouts/PageWrapper'
-import { getSSRCurrentAuth } from 'components/logic/ServerSideAuthProvider'
+import {
+  getSSRCurrentAuth,
+  ServerSideAuthProviderHOC,
+} from 'components/logic/ServerSideAuthProvider'
 import { GetServerSidePropsContext } from 'next'
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
 
@@ -46,4 +49,4 @@ const AccountThankYouPage = ({
   )
 }
 
-export default AccountThankYouPage
+export default ServerSideAuthProviderHOC(AccountThankYouPage)

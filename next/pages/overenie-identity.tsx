@@ -3,11 +3,15 @@ import AccountSuccessAlert from 'components/forms/segments/AccountSuccessAlert/A
 import AccountVerificationPendingAlert from 'components/forms/segments/AccountVerificationPendingAlert/AccountVerificationPendingAlert'
 import IdentityVerificationForm from 'components/forms/segments/IdentityVerificationForm/IdentityVerificationForm'
 import LoginRegisterLayout from 'components/layouts/LoginRegisterLayout'
-import { getSSRCurrentAuth } from 'components/logic/ServerSideAuthProvider'
+import {
+  getSSRCurrentAuth,
+  ServerSideAuthProviderHOC,
+} from 'components/logic/ServerSideAuthProvider'
 import { verifyIdentityApi } from 'frontend/api/api'
-import { AccountError, Tier } from 'frontend/dtos/accountDto'
+import { Tier } from 'frontend/dtos/accountDto'
 import { useRefreshServerSideProps } from 'frontend/hooks/useRefreshServerSideProps'
 import { useDerivedServerSideAuthState } from 'frontend/hooks/useServerSideAuth'
+import { isError } from 'frontend/utils/errors'
 import { GetServerSidePropsContext } from 'next'
 import { useRouter } from 'next/router'
 import { useTranslation } from 'next-i18next'
@@ -47,9 +51,7 @@ const IdentityVerificationPage = ({ page }: AsyncServerProps<typeof getServerSid
   const [lastRc, setLastRc] = useState('')
   const [lastIdCard, setLastIdCard] = useState('')
 
-  const [identityVerificationError, setIdentityVerificationError] = useState<AccountError | null>(
-    null,
-  )
+  const [identityVerificationError, setIdentityVerificationError] = useState<Error | null>(null)
   const { isAuthenticated, tierStatus } = useDerivedServerSideAuthState()
 
   const router = useRouter()
@@ -82,8 +84,15 @@ const IdentityVerificationPage = ({ page }: AsyncServerProps<typeof getServerSid
       // status will be set according to current cognito tier - pending if still processing
       await refreshData()
     } catch (error) {
-      logger.error('Failed verify identity request:', error)
-      setIdentityVerificationError({ code: error?.message, message: error?.message })
+      if (isError(error)) {
+        setIdentityVerificationError(error)
+      } else {
+        logger.error(
+          'Unexpected error - unexpected object thrown in verifyIdentityAndRefreshUserData:',
+          error,
+        )
+        setIdentityVerificationError(new Error('Unknown error'))
+      }
     }
   }
 
@@ -143,4 +152,4 @@ const IdentityVerificationPage = ({ page }: AsyncServerProps<typeof getServerSid
   )
 }
 
-export default IdentityVerificationPage
+export default ServerSideAuthProviderHOC(IdentityVerificationPage)

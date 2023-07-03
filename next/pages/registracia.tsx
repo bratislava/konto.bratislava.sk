@@ -6,9 +6,13 @@ import AccountSuccessAlert from 'components/forms/segments/AccountSuccessAlert/A
 import EmailVerificationForm from 'components/forms/segments/EmailVerificationForm/EmailVerificationForm'
 import RegisterForm from 'components/forms/segments/RegisterForm/RegisterForm'
 import LoginRegisterLayout from 'components/layouts/LoginRegisterLayout'
-import { getSSRCurrentAuth } from 'components/logic/ServerSideAuthProvider'
-import { AccountError, UserData } from 'frontend/dtos/accountDto'
+import {
+  getSSRCurrentAuth,
+  ServerSideAuthProviderHOC,
+} from 'components/logic/ServerSideAuthProvider'
+import { UserData } from 'frontend/dtos/accountDto'
 import useSSORedirect from 'frontend/hooks/useSSORedirect'
+import { isError } from 'frontend/utils/errors'
 import { GetServerSidePropsContext } from 'next'
 import { useRouter } from 'next/router'
 import { useTranslation } from 'next-i18next'
@@ -57,7 +61,7 @@ const RegisterPage = ({
   const [registrationStatus, setRegistrationStatus] = useState<RegistrationStatus>(
     RegistrationStatus.INIT,
   )
-  const [registrationError, setRegistrationError] = useState<AccountError | null>(null)
+  const [registrationError, setRegistrationError] = useState<Error | null>(null)
   const [lastEmail, setLastEmail] = useState<string>('')
   const router = useRouter()
   const { redirect, redirectTargetIsAnotherPage } = useSSORedirect()
@@ -87,7 +91,12 @@ const RegisterPage = ({
       setRegistrationStatus(RegistrationStatus.EMAIL_VERIFICATION_REQUIRED)
       // subscribeApi({}).catch((error) => logger.error('Failed to subscribe', email, error))
     } catch (error) {
-      setRegistrationError({ code: error?.code, message: error?.message })
+      if (isError(error)) {
+        setRegistrationError(error)
+      } else {
+        logger.error('Unexpected error - unexpected object thrown in signUp:', error)
+        setRegistrationError(new Error('Unknown error'))
+      }
     }
   }
 
@@ -96,7 +105,15 @@ const RegisterPage = ({
       setRegistrationError(null)
       await Auth.resendSignUp(lastEmail)
     } catch (error) {
-      setRegistrationError({ code: error?.code, message: error?.message })
+      if (isError(error)) {
+        setRegistrationError(error)
+      } else {
+        logger.error(
+          'Unexpected error - unexpected object thrown in resendVerificationCode:',
+          error,
+        )
+        setRegistrationError(new Error('Unknown error'))
+      }
     }
   }
 
@@ -105,7 +122,12 @@ const RegisterPage = ({
       setRegistrationError(null)
       await Auth.confirmSignUp(lastEmail, code)
     } catch (error) {
-      setRegistrationError({ code: error?.code, message: error?.message })
+      if (isError(error)) {
+        setRegistrationError(error)
+      } else {
+        logger.error('Unexpected error - unexpected object thrown in verifyEmail:', error)
+        setRegistrationError(new Error('Unknown error'))
+      }
     }
   }
 
@@ -167,4 +189,4 @@ const RegisterPage = ({
   )
 }
 
-export default RegisterPage
+export default ServerSideAuthProviderHOC(RegisterPage)

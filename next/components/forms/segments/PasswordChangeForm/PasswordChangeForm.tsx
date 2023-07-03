@@ -1,7 +1,6 @@
 import AccountErrorAlert from 'components/forms/segments/AccountErrorAlert/AccountErrorAlert'
 import Button from 'components/forms/simple-components/Button'
 import PasswordField from 'components/forms/widget-components/PasswordField/PasswordField'
-import { AccountError } from 'frontend/dtos/accountDto'
 import useHookForm from 'frontend/hooks/useHookForm'
 import { useTranslation } from 'next-i18next'
 import { Controller } from 'react-hook-form'
@@ -14,7 +13,7 @@ interface Data {
 
 interface Props {
   onSubmit: (oldPassword: string, password: string) => Promise<any>
-  error?: AccountError | null | undefined
+  error?: Error | null
 }
 
 // must use `minLength: 1` to implement required field

@@ -4,8 +4,10 @@ import AccountSuccessAlert from 'components/forms/segments/AccountSuccessAlert/A
 import ForgottenPasswordForm from 'components/forms/segments/ForgottenPasswordForm/ForgottenPasswordForm'
 import NewPasswordForm from 'components/forms/segments/NewPasswordForm/NewPasswordForm'
 import LoginRegisterLayout from 'components/layouts/LoginRegisterLayout'
-import { getSSRCurrentAuth } from 'components/logic/ServerSideAuthProvider'
-import { AccountError } from 'frontend/dtos/accountDto'
+import {
+  ServerSideAuthProviderHOC,
+  getSSRCurrentAuth,
+} from 'components/logic/ServerSideAuthProvider'
 import { GetServerSidePropsContext } from 'next'
 import { useRouter } from 'next/router'
 import { useTranslation } from 'next-i18next'
@@ -17,6 +19,7 @@ import { ROUTES } from '../frontend/api/constants'
 import { isProductionDeployment } from '../frontend/utils/general'
 import logger from '../frontend/utils/logger'
 import { AsyncServerProps } from '../frontend/utils/types'
+import { isError } from 'frontend/utils/errors'
 
 enum ForgotPasswordStatus {
   INIT = 'INIT',
@@ -47,7 +50,7 @@ export const getServerSideProps = async (ctx: GetServerSidePropsContext) => {
 
 const ForgottenPasswordPage = ({ page }: AsyncServerProps<typeof getServerSideProps>) => {
   const [lastEmail, setLastEmail] = useState('')
-  const [forgotPasswordError, setForgotPasswordError] = useState<AccountError | null>(null)
+  const [forgotPasswordError, setForgotPasswordError] = useState<Error | null>(null)
   const [forgotPasswordStatus, setForgotPasswordStatus] = useState<ForgotPasswordStatus>(
     ForgotPasswordStatus.INIT,
   )
@@ -63,8 +66,12 @@ const ForgottenPasswordPage = ({ page }: AsyncServerProps<typeof getServerSidePr
       await Auth.forgotPassword(lastEmail)
       setForgotPasswordStatus(ForgotPasswordStatus.NEW_PASSWORD_REQUIRED)
     } catch (error) {
-      logger.error('Failed forgotPassword', error)
-      setForgotPasswordError({ code: error?.code, message: error?.message })
+      if (isError(error)) {
+        setForgotPasswordError(error)
+      } else {
+        logger.error('Unexpected error - unexpected object thrown in forgotPassword:', error)
+        setForgotPasswordError(new Error('Unknown error'))
+      }
     }
   }
 
@@ -73,8 +80,12 @@ const ForgottenPasswordPage = ({ page }: AsyncServerProps<typeof getServerSidePr
       await Auth.forgotPasswordSubmit(lastEmail, verificationCode, newPassword)
       setForgotPasswordStatus(ForgotPasswordStatus.NEW_PASSWORD_SUCCESS)
     } catch (error) {
-      logger.error('Failed forgotPasswordSubmit', error)
-      setForgotPasswordError({ code: error?.code, message: error?.message })
+      if (isError(error)) {
+        setForgotPasswordError(error)
+      } else {
+        logger.error('Unexpected error - unexpected object thrown in forgotPasswordSubmit:', error)
+        setForgotPasswordError(new Error('Unknown error'))
+      }
     }
   }
 
@@ -113,4 +124,4 @@ const ForgottenPasswordPage = ({ page }: AsyncServerProps<typeof getServerSidePr
   )
 }
 
-export default ForgottenPasswordPage
+export default ServerSideAuthProviderHOC(ForgottenPasswordPage)

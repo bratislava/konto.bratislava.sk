@@ -4,7 +4,6 @@ import Button from 'components/forms/simple-components/Button'
 import InputField from 'components/forms/widget-components/InputField/InputField'
 import PasswordField from 'components/forms/widget-components/PasswordField/PasswordField'
 import useHookForm from 'frontend/hooks/useHookForm'
-import { AccountError } from 'frontend/dtos/accountDto'
 import logger from 'frontend/utils/logger'
 import { formatUnicorn } from 'frontend/utils/string'
 import { useTranslation } from 'next-i18next'
@@ -20,7 +19,7 @@ interface Data {
 interface Props {
   onSubmit: (verificationCode: string, password: string) => Promise<any>
   onResend: () => Promise<any>
-  error?: AccountError | null | undefined
+  error?: Error | null
   lastEmail: string
   fromMigration?: boolean
 }

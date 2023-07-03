@@ -6,7 +6,7 @@ import InputField from 'components/forms/widget-components/InputField/InputField
 import PasswordField from 'components/forms/widget-components/PasswordField/PasswordField'
 import Radio from 'components/forms/widget-components/RadioButton/Radio'
 import RadioGroup from 'components/forms/widget-components/RadioButton/RadioGroup'
-import { AccountError, UserData } from 'frontend/dtos/accountDto'
+import { UserData } from 'frontend/dtos/accountDto'
 import useHookForm from 'frontend/hooks/useHookForm'
 import { isBrowser } from 'frontend/utils/general'
 import logger from 'frontend/utils/logger'
@@ -34,7 +34,7 @@ interface Props {
     turnstileToken: string,
     userData: UserData,
   ) => Promise<any>
-  error?: AccountError | null | undefined
+  error?: Error | null
   lastEmail?: string
   // used to disabled registration as a legal entity in production (for now)
   disablePO?: boolean

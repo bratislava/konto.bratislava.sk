@@ -1,8 +1,10 @@
 import { Auth } from 'aws-amplify'
-import { AccountError, Address } from 'frontend/dtos/accountDto'
+import { Address } from 'frontend/dtos/accountDto'
 import { Tax } from 'frontend/dtos/taxDto'
 import useJsonParseMemo from 'frontend/hooks/useJsonParseMemo'
 import { useServerSideAuth } from 'frontend/hooks/useServerSideAuth'
+import { isError } from 'frontend/utils/errors'
+import logger from 'frontend/utils/logger'
 import { useTranslation } from 'next-i18next'
 import { useState } from 'react'
 
@@ -27,9 +29,7 @@ const ContactInformationSection = ({ tax }: ContactInformationSectionProps) => {
   const postal_code_array = parsedAddress?.postal_code?.replace(/\s/g, '')
   const [correspondenceAddressModalShow, setCorrespondenceAddressModalShow] = useState(false)
 
-  const [correspondenceAddressError, setCorrespondenceAddressError] = useState<AccountError | null>(
-    null,
-  )
+  const [correspondenceAddressError, setCorrespondenceAddressError] = useState<Error | null>(null)
   const resetError = () => {
     setCorrespondenceAddressError(null)
   }
@@ -46,7 +46,15 @@ const ContactInformationSection = ({ tax }: ContactInformationSectionProps) => {
         showSnackbar(t('profile_detail.success_alert'))
       }
     } catch (error) {
-      setCorrespondenceAddressError({ message: error?.message, code: error?.message })
+      if (isError(error)) {
+        setCorrespondenceAddressError(error)
+      } else {
+        logger.error(
+          'Unexpected error - unexpected object thrown in onSubmitCorrespondenceAddress:',
+          error,
+        )
+        setCorrespondenceAddressError(new Error('Unknown error'))
+      }
     }
   }
 

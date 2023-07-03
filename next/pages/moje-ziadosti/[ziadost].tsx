@@ -1,7 +1,10 @@
 import MyApplicationDetails from 'components/forms/segments/AccountSections/MyApplicationsSection/MyApplicationDetails'
 import AccountPageLayout from 'components/layouts/AccountPageLayout'
 import PageWrapper from 'components/layouts/PageWrapper'
-import { getSSRCurrentAuth } from 'components/logic/ServerSideAuthProvider'
+import {
+  getSSRCurrentAuth,
+  ServerSideAuthProviderHOC,
+} from 'components/logic/ServerSideAuthProvider'
 import { getApplicationDetailsData, getApplicationHistoryData } from 'frontend/api/mocks/mocks'
 import { isProductionDeployment } from 'frontend/utils/general'
 import logger from 'frontend/utils/logger'
@@ -61,4 +64,4 @@ const AccountMyApplicationsPage = ({
   )
 }
 
-export default AccountMyApplicationsPage
+export default ServerSideAuthProviderHOC(AccountMyApplicationsPage)

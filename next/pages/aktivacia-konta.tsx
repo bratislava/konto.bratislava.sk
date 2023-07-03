@@ -4,8 +4,11 @@ import AccountSuccessAlert from 'components/forms/segments/AccountSuccessAlert/A
 import MigrationForm from 'components/forms/segments/MigrationForm/MigrationForm'
 import NewPasswordForm from 'components/forms/segments/NewPasswordForm/NewPasswordForm'
 import LoginRegisterLayout from 'components/layouts/LoginRegisterLayout'
-import { getSSRCurrentAuth } from 'components/logic/ServerSideAuthProvider'
-import { AccountError } from 'frontend/dtos/accountDto'
+import {
+  getSSRCurrentAuth,
+  ServerSideAuthProviderHOC,
+} from 'components/logic/ServerSideAuthProvider'
+import { ErrorWithCode, isError, isErrorWithCode } from 'frontend/utils/errors'
 import { GetServerSidePropsContext } from 'next'
 import { useRouter } from 'next/router'
 import { useTranslation } from 'next-i18next'
@@ -47,7 +50,7 @@ export const getServerSideProps = async (ctx: GetServerSidePropsContext) => {
 
 const MigrationPage = ({ page }: AsyncServerProps<typeof getServerSideProps>) => {
   const [lastEmail, setLastEmail] = useState('')
-  const [activateAccountError, setActivateAccountError] = useState<AccountError | null>(null)
+  const [activateAccountError, setActivateAccountError] = useState<Error | null>(null)
   const [activateAccountStatus, setActivateAccountStatus] = useState<ActivateAccountStatus>(
     ActivateAccountStatus.INIT,
   )
@@ -64,13 +67,19 @@ const MigrationPage = ({ page }: AsyncServerProps<typeof getServerSideProps>) =>
       setActivateAccountStatus(ActivateAccountStatus.NEW_PASSWORD_REQUIRED)
     } catch (error) {
       logger.error('Failed forgotPassword in account migration', error)
-      if (error?.code === 'UserNotFoundException') {
-        setActivateAccountError({
-          code: 'MigrationUserNotFoundException',
-          message: 'MigrationUserNotFoundException',
-        })
+      if (isErrorWithCode(error)) {
+        if (error?.code === 'UserNotFoundException') {
+          setActivateAccountError(
+            new ErrorWithCode(error.message, 'MigrationUserNotFoundException'),
+          )
+        } else {
+          setActivateAccountError(error)
+        }
+      } else if (isError(error)) {
+        setActivateAccountError(error)
       } else {
-        setActivateAccountError({ code: error?.code, message: error?.message })
+        logger.error('Unexpected error - unexpected object thrown in forgotPassword:', error)
+        setActivateAccountError(new Error('Unknown error'))
       }
     }
   }
@@ -80,8 +89,12 @@ const MigrationPage = ({ page }: AsyncServerProps<typeof getServerSideProps>) =>
       await Auth.forgotPasswordSubmit(lastEmail, verificationCode, newPassword)
       setActivateAccountStatus(ActivateAccountStatus.NEW_PASSWORD_SUCCESS)
     } catch (error) {
-      logger.error('Failed forgotPasswordSubmit', error)
-      setActivateAccountError({ code: error?.code, message: error?.message })
+      if (isError(error)) {
+        setActivateAccountError(error)
+      } else {
+        logger.error('Unexpected error - unexpected object thrown in forgotPasswordSubmit:', error)
+        setActivateAccountError(new Error('Unknown error'))
+      }
     }
   }
 
@@ -119,4 +132,4 @@ const MigrationPage = ({ page }: AsyncServerProps<typeof getServerSideProps>) =>
   )
 }
 
-export default MigrationPage
+export default ServerSideAuthProviderHOC(MigrationPage)

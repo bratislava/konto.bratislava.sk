@@ -1,4 +1,5 @@
 import { ServerSideAuthContext } from 'components/logic/ServerSideAuthProvider'
+import { Tier } from 'frontend/dtos/accountDto'
 import { useContext } from 'react'
 
 export const useServerSideAuth = () => useContext(ServerSideAuthContext)

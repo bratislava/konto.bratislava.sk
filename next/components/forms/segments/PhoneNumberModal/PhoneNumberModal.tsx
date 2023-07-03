@@ -1,5 +1,4 @@
 import Modal from 'components/forms/widget-components/Modals/Modal'
-import { AccountError } from 'frontend/dtos/accountDto'
 import { useTranslation } from 'next-i18next'
 
 import PhoneNumberForm, { PhoneNumberData } from '../PhoneNumberForm/PhoneNumberForm'
@@ -11,7 +10,7 @@ interface Props {
   onClose: () => void
   onSubmit: ({ data }: { data?: PhoneNumberData }) => void
   defaultValues: PhoneNumberData
-  error?: AccountError | null
+  error?: Error | null
   onHideError?: () => void
 }
 

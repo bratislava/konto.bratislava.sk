@@ -1,6 +1,9 @@
 import { StatusBar } from 'components/forms/info-components/StatusBar'
 import PageWrapper from 'components/layouts/PageWrapper'
-import { getSSRCurrentAuth } from 'components/logic/ServerSideAuthProvider'
+import {
+  getSSRCurrentAuth,
+  ServerSideAuthProviderHOC,
+} from 'components/logic/ServerSideAuthProvider'
 import DatePickerShowCase from 'components/styleguide/showcases/DatePickerShowCase'
 import InputFieldShowCase from 'components/styleguide/showcases/InputFieldShowCase'
 import TimePickerShowCase from 'components/styleguide/showcases/TimePickerShowCase'
@@ -95,4 +98,4 @@ export const getServerSideProps = async (ctx: GetServerSidePropsContext) => {
   }
 }
 
-export default Styleguide
+export default ServerSideAuthProviderHOC(Styleguide)

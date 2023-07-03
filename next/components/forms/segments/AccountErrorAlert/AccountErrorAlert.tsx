@@ -1,6 +1,6 @@
 import Alert from 'components/forms/info-components/Alert'
 import AccountMarkdown from 'components/forms/segments/AccountMarkdown/AccountMarkdown'
-import { GENERIC_ERROR_MESSAGE, isErrorWithCode } from 'frontend/utils/errors'
+import { GENERIC_ERROR_MESSAGE, isError, isErrorWithCode } from 'frontend/utils/errors'
 import { useTranslation } from 'next-i18next'
 import { useMemo } from 'react'
 
@@ -21,11 +21,20 @@ const AccountErrorAlert = ({ error, close, solid, args = {} }: Props) => {
     if (!error) {
       return ''
     }
+    // typescript should guard this mostly, but we're also passing in error from 3rd parties
+    if (!isError(error)) {
+      logger.error(
+        `${GENERIC_ERROR_MESSAGE} - something not error-like passed into AccountErrorAlert: `,
+        JSON.stringify(error),
+      )
+      return t(`account:errors.unknown`)
+    }
     if (!isErrorWithCode(error)) {
+      // JSON.stringify here because amplify returns custom errors which pino tries to serialize but fails (they either miss or have 'message' as private)
       logger.error(
         `${GENERIC_ERROR_MESSAGE} - unknown error without error code in AccountErrorAlert: `,
         error.message,
-        error,
+        JSON.stringify(error),
       )
       return t(`account:errors.unknown`)
     }

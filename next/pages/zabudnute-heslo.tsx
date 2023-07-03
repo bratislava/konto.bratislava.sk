@@ -59,9 +59,9 @@ const ForgottenPasswordPage = ({ page }: AsyncServerProps<typeof getServerSidePr
     await router.push(ROUTES.HOME).catch((error) => logger.error('Failed redirect', error))
   }
 
-  const forgotPassword = async () => {
+  const forgotPassword = async (email: string) => {
     try {
-      await Auth.forgotPassword(lastEmail)
+      await Auth.forgotPassword(email)
       setForgotPasswordStatus(ForgotPasswordStatus.NEW_PASSWORD_REQUIRED)
     } catch (error) {
       if (isError(error)) {
@@ -104,7 +104,7 @@ const ForgottenPasswordPage = ({ page }: AsyncServerProps<typeof getServerSidePr
             />
           ) : forgotPasswordStatus === ForgotPasswordStatus.INIT ? (
             <ForgottenPasswordForm
-              onSubmit={forgotPassword}
+              onSubmit={(email: string) => forgotPassword(email)}
               error={forgotPasswordError}
               lastEmail={lastEmail}
               setLastEmail={setLastEmail}

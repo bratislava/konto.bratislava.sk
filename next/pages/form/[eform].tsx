@@ -13,6 +13,10 @@ import { environment } from '../../environment'
 import { forceString } from '../../frontend/utils/general'
 import logger from '../../frontend/utils/logger'
 import { AsyncServerProps } from '../../frontend/utils/types'
+import {
+  getSSRCurrentAuth,
+  ServerSideAuthProviderHOC,
+} from 'components/logic/ServerSideAuthProvider'
 
 export const getServerSideProps = async (ctx: GetServerSidePropsContext) => {
   if (!environment.featureToggles.forms) return { notFound: true }
@@ -31,6 +35,7 @@ export const getServerSideProps = async (ctx: GetServerSidePropsContext) => {
   return {
     props: {
       formDefinition,
+      ssrCurrentAuthProps: await getSSRCurrentAuth(ctx.req),
       page: {
         locale: ctx.locale,
         localizations: ['sk', 'en']
@@ -98,4 +103,4 @@ const FormTestPage = ({ page, formDefinition }: AsyncServerProps<typeof getServe
   )
 }
 
-export default FormTestPage
+export default ServerSideAuthProviderHOC(FormTestPage)

@@ -9,6 +9,7 @@ import { useRouter } from 'next/router'
 import { useTranslation } from 'next-i18next'
 import { ReactNode } from 'react'
 
+import { environment } from '../../../../environment'
 import { getPaymentGatewayUrlApi } from '../../../../frontend/api/api'
 import { ROUTES } from '../../../../frontend/api/constants'
 import { Tax } from '../../../../frontend/dtos/taxDto'
@@ -73,7 +74,7 @@ const TaxFeeSectionHeader = ({ tax }: AccountSectionHeaderBase) => {
 
   // https://stackoverflow.com/questions/32545632/how-can-i-download-a-file-using-window-fetch
   const downloadPdf = () =>
-    fetch(`${String(process.env.NEXT_PUBLIC_TAXES_URL)}/tax/get-tax-pdf-by-year?year=2023`, {
+    fetch(`${environment.taxesUrl}/tax/get-tax-pdf-by-year?year=2023`, {
       headers: {
         Authorization: `Bearer ${lastAccessToken}`,
       },

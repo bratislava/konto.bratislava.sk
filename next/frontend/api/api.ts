@@ -4,6 +4,7 @@ import { FileUpdatedResponseDtoStatusEnum } from '@clients/openapi-forms'
 import { RJSFSchema } from '@rjsf/utils'
 import { ErrorObject } from 'ajv'
 
+import { environment } from '../../environment'
 import { ApiError, Gdpr, Identity, TaxApiError, UrlResult, User } from '../dtos/generalApiDto'
 import logger, { developmentLog } from '../utils/logger'
 
@@ -147,23 +148,20 @@ export const xmlStringToPdf = (eform: string, data: string) => {
 export const verifyIdentityApi = (data: Identity, token?: string | null) => {
   if (!token) throw new Error(MISSING_TOKEN)
 
-  return fetchJsonApi(
-    `${String(process.env.NEXT_PUBLIC_CITY_ACCOUNT_URL)}/user-verification/identity-card`,
-    {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        Authorization: `Bearer ${token}`,
-      },
-      body: JSON.stringify(data),
+  return fetchJsonApi(`${environment.cityAccountUrl}/user-verification/identity-card`, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      Authorization: `Bearer ${token}`,
     },
-  )
+    body: JSON.stringify(data),
+  })
 }
 
 export const subscribeApi = (data: { gdprData?: Gdpr[] }, token?: string | null): Promise<User> => {
   if (!token) throw new Error(MISSING_TOKEN)
 
-  return fetchJsonApi<User>(`${String(process.env.NEXT_PUBLIC_CITY_ACCOUNT_URL)}/user/subscribe`, {
+  return fetchJsonApi<User>(`${environment.cityAccountUrl}/user/subscribe`, {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
@@ -179,92 +177,74 @@ export const unsubscribeApi = (
 ): Promise<User> => {
   if (!token) throw new Error(MISSING_TOKEN)
 
-  return fetchJsonApi<User>(
-    `${String(process.env.NEXT_PUBLIC_CITY_ACCOUNT_URL)}/user/unsubscribe`,
-    {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        Authorization: `Bearer ${token}`,
-      },
-      body: JSON.stringify(data),
+  return fetchJsonApi<User>(`${environment.cityAccountUrl}/user/unsubscribe`, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      Authorization: `Bearer ${token}`,
     },
-  )
+    body: JSON.stringify(data),
+  })
 }
 
 export const getUserApi = (token: string | null): Promise<User> => {
   if (!token) throw new Error(MISSING_TOKEN)
 
-  return fetchJsonApi<User>(
-    `${String(process.env.NEXT_PUBLIC_CITY_ACCOUNT_URL)}/user/get-or-create`,
-    {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        Authorization: `Bearer ${token}`,
-      },
+  return fetchJsonApi<User>(`${environment.cityAccountUrl}/user/get-or-create`, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      Authorization: `Bearer ${token}`,
     },
-  )
+  })
 }
 
 export const resetRcApi = (token: string | null) => {
   if (!token) throw new Error(MISSING_TOKEN)
 
-  return fetchJsonApi(
-    `${String(process.env.NEXT_PUBLIC_CITY_ACCOUNT_URL)}/user/remove-birthnumber`,
-    {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        Authorization: `Bearer ${token}`,
-      },
+  return fetchJsonApi(`${environment.cityAccountUrl}/user/remove-birthnumber`, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      Authorization: `Bearer ${token}`,
     },
-  )
+  })
 }
 
 export const getTaxApi = (token: string | null) => {
   if (!token) throw new Error(MISSING_TOKEN)
 
-  return fetchJsonApi(
-    `${String(process.env.NEXT_PUBLIC_TAXES_URL)}/tax/get-tax-by-year?year=2023`,
-    {
-      method: 'GET',
-      headers: {
-        'Content-Type': 'application/json',
-        Authorization: `Bearer ${token}`,
-      },
+  return fetchJsonApi(`${environment.taxesUrl}/tax/get-tax-by-year?year=2023`, {
+    method: 'GET',
+    headers: {
+      'Content-Type': 'application/json',
+      Authorization: `Bearer ${token}`,
     },
-  )
+  })
 }
 
 export const getTaxPdfApi = (token: string | null) => {
   if (!token) throw new Error(MISSING_TOKEN)
 
-  return fetchJsonApi(
-    `${String(process.env.NEXT_PUBLIC_TAXES_URL)}/tax/get-tax-pdf-by-year?year=2023`,
-    {
-      method: 'GET',
-      headers: {
-        'Content-Type': 'application/json',
-        Authorization: `Bearer ${token}`,
-      },
+  return fetchJsonApi(`${environment.taxesUrl}/tax/get-tax-pdf-by-year?year=2023`, {
+    method: 'GET',
+    headers: {
+      'Content-Type': 'application/json',
+      Authorization: `Bearer ${token}`,
     },
-  )
+  })
 }
 
 export const getPaymentGatewayUrlApi = (token: string | null): Promise<UrlResult> => {
   if (!token) throw new Error(MISSING_TOKEN)
 
-  return fetchJsonApi<UrlResult>(
-    `${String(process.env.NEXT_PUBLIC_TAXES_URL)}/payment/cardpay/by-year/2023`,
-    {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        Authorization: `Bearer ${token}`,
-      },
+  return fetchJsonApi<UrlResult>(`${environment.taxesUrl}/payment/cardpay/by-year/2023`, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      Authorization: `Bearer ${token}`,
     },
-  )
+  })
 }
 
 export const getEnum = async (id?: string) => {

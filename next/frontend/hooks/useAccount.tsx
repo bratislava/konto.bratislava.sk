@@ -1,4 +1,4 @@
-/* eslint-disable no-secrets/no-secrets */
+/* eslint-disable no-secrets/no-secrets,no-process-env */
 import { MetaUser } from '@grafana/faro-core'
 import {
   AuthenticationDetails,

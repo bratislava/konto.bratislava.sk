@@ -6,17 +6,14 @@ import { MyApplicationsConceptCardBase, MyApplicationsSentCardBase } from 'front
 import { useTranslation } from 'next-i18next'
 import { useState } from 'react'
 
+import { isProductionDeployment } from '../../../../../frontend/utils/general'
+
 type MyApplicationsSectionBase = {
-  isProductionDeploy: boolean
   conceptCardsList: MyApplicationsConceptCardBase[]
   sentCardsList: MyApplicationsSentCardBase[]
 }
 
-const MyApplicationsSection = ({
-  isProductionDeploy,
-  conceptCardsList,
-  sentCardsList,
-}: MyApplicationsSectionBase) => {
+const MyApplicationsSection = ({ conceptCardsList, sentCardsList }: MyApplicationsSectionBase) => {
   const { t } = useTranslation('account')
   const { globalState } = useGlobalStateContext()
   const [isEmptyList, setIsEmptyList] = useState<boolean>(false)
@@ -31,7 +28,7 @@ const MyApplicationsSection = ({
         <MyApplicationsConceptList cards={!isEmptyList ? conceptCardsList : []} />
       )}
       {/* Temporary button only for dev */}
-      {!isProductionDeploy && (
+      {!isProductionDeployment() && (
         <button
           className="text-p3-semibold bg-gray-200 w-max py-1 px-2 mt-4 lg:mt-0 ml-4 md:ml-0"
           onClick={() => setIsEmptyList((prev) => !prev)}

@@ -15,15 +15,16 @@ import { useRouter } from 'next/router'
 import { useTranslation } from 'next-i18next'
 import { ReactNode, useEffect } from 'react'
 
+import { environment } from '../../environment'
 import { ROUTES } from '../../frontend/api/constants'
 import useAccount from '../../frontend/hooks/useAccount'
+import { isDefined } from '../../frontend/utils/general'
 import logger from '../../frontend/utils/logger'
 
 type AccountPageLayoutBase = {
   className?: string
   children: ReactNode
   hiddenHeaderNav?: boolean
-  isProductionDeploy?: boolean
   isPublicPage?: boolean
 }
 
@@ -31,14 +32,11 @@ const AccountPageLayout = ({
   className,
   children,
   hiddenHeaderNav,
-  isProductionDeploy,
   isPublicPage,
 }: AccountPageLayoutBase) => {
   const { locale, localizations = [] } = usePageWrapperContext()
   const router = useRouter()
   const { isAuth, logout } = useAccount()
-
-  const prodHideSectionsListIds: Set<number> = isProductionDeploy ? new Set([2]) : new Set([])
 
   useEffect(() => {
     if (!isPublicPage && !isAuth && router.route !== ROUTES.PAYMENT_RESULT) {
@@ -78,12 +76,14 @@ const AccountPageLayout = ({
       icon: <BusinessIcon className="w-6 h-6" />,
       url: ROUTES.MUNICIPAL_SERVICES,
     },
-    {
-      id: 2,
-      title: 'account:account_section_applications.navigation',
-      icon: <MySubmissionIcon className="w-6 h-6" />,
-      url: ROUTES.MY_APPLICATIONS,
-    },
+    environment.featureToggles.forms
+      ? {
+          id: 2,
+          title: 'account:account_section_applications.navigation',
+          icon: <MySubmissionIcon className="w-6 h-6" />,
+          url: ROUTES.MY_APPLICATIONS,
+        }
+      : null,
     {
       id: 3,
       title: 'account:account_section_payment.title',
@@ -96,7 +96,7 @@ const AccountPageLayout = ({
       icon: <HelpIcon className="w-6 h-6" />,
       url: ROUTES.HELP,
     },
-  ]
+  ].filter(isDefined)
 
   const menuItems: MenuItemBase[] = [
     {
@@ -126,7 +126,7 @@ const AccountPageLayout = ({
       <AccountNavBar
         currentLanguage={locale}
         onLanguageChange={handleLanguageChange}
-        sectionsList={sectionsList.filter((item) => !prodHideSectionsListIds.has(item.id))}
+        sectionsList={sectionsList}
         menuItems={menuItems}
         navHidden
         hiddenHeaderNav={hiddenHeaderNav}

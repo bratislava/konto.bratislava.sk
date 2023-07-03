@@ -1,3 +1,4 @@
+import { environment } from '../environment'
 import { axiosInstance } from './axios-instance'
 import {
   Configuration,
@@ -7,11 +8,7 @@ import {
   StatusesApiFactory,
 } from './openapi-forms'
 
-const args = [
-  {} as Configuration,
-  String(process.env.NEXT_PUBLIC_FORMS_URL),
-  axiosInstance,
-] as const
+const args = [{} as Configuration, environment.formsUrl, axiosInstance] as const
 
 export const formsApi = {
   ...DefaultApiFactory(...args),

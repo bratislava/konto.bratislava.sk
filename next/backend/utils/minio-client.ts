@@ -1,3 +1,4 @@
+/* eslint-disable no-process-env */
 import { Client } from 'minio'
 
 export const region = 'us-east-1'

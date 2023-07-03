@@ -11,7 +11,6 @@ import { useEffect } from 'react'
 
 import PageWrapper from '../components/layouts/PageWrapper'
 import useAccount, { AccountStatus } from '../frontend/hooks/useAccount'
-import { isProductionDeployment } from '../frontend/utils/general'
 import { AsyncServerProps } from '../frontend/utils/types'
 
 export const getServerSideProps = async (ctx: GetServerSidePropsContext) => {
@@ -28,7 +27,6 @@ export const getServerSideProps = async (ctx: GetServerSidePropsContext) => {
             locale: l,
           })),
       },
-      isProductionDeploy: isProductionDeployment(),
       ...(await serverSideTranslations(locale)),
     },
   }

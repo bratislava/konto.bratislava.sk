@@ -2,14 +2,15 @@ import MyApplicationsSection from 'components/forms/segments/AccountSections/MyA
 import AccountPageLayout from 'components/layouts/AccountPageLayout'
 import PageWrapper from 'components/layouts/PageWrapper'
 import { getApplicationConceptList, getApplicationSentList } from 'frontend/api/mocks/mocks'
-import { isProductionDeployment } from 'frontend/utils/general'
 import logger from 'frontend/utils/logger'
 import { AsyncServerProps } from 'frontend/utils/types'
 import { GetServerSidePropsContext } from 'next'
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
 
+import { environment } from '../../environment'
+
 export const getServerSideProps = async (ctx: GetServerSidePropsContext) => {
-  if (isProductionDeployment()) return { notFound: true }
+  if (!environment.featureToggles.forms) return { notFound: true }
   const locale = ctx.locale ?? 'sk'
 
   let myApplicationSentList
@@ -35,7 +36,6 @@ export const getServerSideProps = async (ctx: GetServerSidePropsContext) => {
             locale: l,
           })),
       },
-      isProductionDeploy: isProductionDeployment(),
       ...(await serverSideTranslations(locale)),
     },
   }
@@ -45,15 +45,13 @@ const AccountMyApplicationsPage = ({
   page,
   myApplicationSentList,
   myApplicationConceptList,
-  isProductionDeploy,
 }: AsyncServerProps<typeof getServerSideProps>) => {
   return (
     <PageWrapper locale={page.locale} localizations={page.localizations}>
-      <AccountPageLayout isProductionDeploy={isProductionDeploy}>
+      <AccountPageLayout>
         <MyApplicationsSection
           conceptCardsList={myApplicationConceptList}
           sentCardsList={myApplicationSentList}
-          isProductionDeploy={isProductionDeploy}
         />
       </AccountPageLayout>
     </PageWrapper>

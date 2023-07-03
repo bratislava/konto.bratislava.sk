@@ -23,11 +23,7 @@ const TaxAndFeeMainContent = ({ children }: TaxAndFeeMainContentBase) => {
   )
 }
 
-interface TaxesFeeSectionProps {
-  isProductionDeployment?: boolean
-}
-
-const TaxFeeSection: React.FC<TaxesFeeSectionProps> = () => {
+const TaxFeeSection = () => {
   const { data, error, isLoading } = useTaxes()
   const router = useRouter()
 

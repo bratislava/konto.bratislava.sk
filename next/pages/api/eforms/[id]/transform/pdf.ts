@@ -4,6 +4,7 @@ import { FormDefinition } from '@backend/forms/types'
 import { getFormDefinition } from '@backend/utils/forms'
 import type { NextApiRequest, NextApiResponse } from 'next'
 
+import { environmentServer } from '../../../../../environment.server'
 import logger from '../../../../../frontend/utils/logger'
 
 const handler = async (req: NextApiRequest, res: NextApiResponse) => {
@@ -20,7 +21,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
   }
 
   try {
-    const response = await fetch(`${String(process.env.FOP_URL)}/fop`, {
+    const response = await fetch(`${environmentServer.fopUrl}/fop`, {
       method: 'POST',
       body: JSON.stringify({ data: req.body.data, xslt: formDefinition.pdfStylesheet }),
     })

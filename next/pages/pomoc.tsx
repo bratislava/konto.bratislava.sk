@@ -8,7 +8,6 @@ import {
 import { GetServerSidePropsContext } from 'next'
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
 
-import { isProductionDeployment } from '../frontend/utils/general'
 import { AsyncServerProps } from '../frontend/utils/types'
 
 export const getServerSideProps = async (ctx: GetServerSidePropsContext) => {
@@ -26,19 +25,15 @@ export const getServerSideProps = async (ctx: GetServerSidePropsContext) => {
             locale: l,
           })),
       },
-      isProductionDeploy: isProductionDeployment(),
       ...(await serverSideTranslations(locale)),
     },
   }
 }
 
-const AccountHelpPage = ({
-  page,
-  isProductionDeploy,
-}: AsyncServerProps<typeof getServerSideProps>) => {
+const AccountHelpPage = ({ page }: AsyncServerProps<typeof getServerSideProps>) => {
   return (
     <PageWrapper locale={page.locale} localizations={page.localizations}>
-      <AccountPageLayout isProductionDeploy={isProductionDeploy}>
+      <AccountPageLayout>
         <HelpSection />
       </AccountPageLayout>
     </PageWrapper>

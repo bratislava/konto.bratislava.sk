@@ -8,7 +8,6 @@ import { GetServerSidePropsContext } from 'next'
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
 
 import TaxFeeSection from '../../components/forms/segments/AccountSections/TaxesFeesSection/TaxFeeSection'
-import { isProductionDeployment as isProductionDeploymentFn } from '../../frontend/utils/general'
 import { AsyncServerProps } from '../../frontend/utils/types'
 
 export const getServerSideProps = async (ctx: GetServerSidePropsContext) => {
@@ -27,19 +26,15 @@ export const getServerSideProps = async (ctx: GetServerSidePropsContext) => {
           })),
       },
       ...(await serverSideTranslations(locale)),
-      isProductionDeployment: isProductionDeploymentFn(),
     },
   }
 }
 
-const AccountTaxesFeesPage = ({
-  page,
-  isProductionDeployment,
-}: AsyncServerProps<typeof getServerSideProps>) => {
+const AccountTaxesFeesPage = ({ page }: AsyncServerProps<typeof getServerSideProps>) => {
   return (
     <PageWrapper locale={page.locale} localizations={page.localizations}>
-      <AccountPageLayout isProductionDeploy={isProductionDeployment}>
-        <TaxFeeSection isProductionDeployment={isProductionDeployment} />
+      <AccountPageLayout>
+        <TaxFeeSection />
       </AccountPageLayout>
     </PageWrapper>
   )

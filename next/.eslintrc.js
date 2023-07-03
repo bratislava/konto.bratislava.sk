@@ -60,6 +60,7 @@ module.exports = {
     'lodash/import-scope': 'off',
     // json schema definitions may contain "then" keys
     'unicorn/no-thenable': 'off',
+    'no-process-env': 'error',
   },
   ignorePatterns: [
     '*.config.*',

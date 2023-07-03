@@ -20,7 +20,6 @@ import { useEffect, useState } from 'react'
 
 import PageWrapper from '../components/layouts/PageWrapper'
 import { ROUTES } from '../frontend/api/constants'
-import { isProductionDeployment } from '../frontend/utils/general'
 import logger from '../frontend/utils/logger'
 import { formatUnicorn } from '../frontend/utils/string'
 import { AsyncServerProps } from '../frontend/utils/types'
@@ -40,7 +39,6 @@ export const getServerSideProps = async (ctx: GetServerSidePropsContext) => {
             locale: l,
           })),
       },
-      isProductionDeployment: isProductionDeployment(),
       ...(await serverSideTranslations(locale)),
     },
   }

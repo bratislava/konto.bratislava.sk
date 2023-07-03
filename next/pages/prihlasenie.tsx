@@ -17,7 +17,6 @@ import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
 import { useCallback, useEffect, useState } from 'react'
 
 import PageWrapper from '../components/layouts/PageWrapper'
-import { isProductionDeployment } from '../frontend/utils/general'
 import { AsyncServerProps } from '../frontend/utils/types'
 
 export const getServerSideProps = async (ctx: GetServerSidePropsContext) => {
@@ -35,7 +34,6 @@ export const getServerSideProps = async (ctx: GetServerSidePropsContext) => {
             locale: l,
           })),
       },
-      isProductionDeploy: isProductionDeployment(),
       ...(await serverSideTranslations(locale)),
     },
   }

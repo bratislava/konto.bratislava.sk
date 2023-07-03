@@ -10,6 +10,7 @@ import { useRouter } from 'next/router'
 import { useTranslation } from 'next-i18next'
 import { ReactNode } from 'react'
 
+import { environment } from '../../../../environment'
 import { getPaymentGatewayUrlApi } from '../../../../frontend/api/api'
 import { ROUTES } from '../../../../frontend/api/constants'
 import { Tax } from '../../../../frontend/dtos/taxDto'
@@ -91,6 +92,26 @@ const TaxFeeSectionHeader = ({ tax }: AccountSectionHeaderBase) => {
   }
 
   // https://stackoverflow.com/questions/32545632/how-can-i-download-a-file-using-window-fetch
+<<<<<<< HEAD
+=======
+  const downloadPdf = () =>
+    fetch(`${environment.taxesUrl}/tax/get-tax-pdf-by-year?year=2023`, {
+      headers: {
+        Authorization: `Bearer ${lastAccessToken}`,
+      },
+    })
+      .then((res) => res.blob())
+      .then((blob) => {
+        const a = document.createElement('a')
+        a.href = URL.createObjectURL(blob)
+        a.setAttribute('download', 'dan-z-nehnutelnosti-2023.pdf')
+        a.click()
+        return null
+      })
+      .catch((error) => {
+        logger.error('Error downloading pdf', error)
+      })
+>>>>>>> origin/master
 
   return (
     <div className="lg:px-0 bg-gray-50 h-full px-4">

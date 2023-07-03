@@ -21,8 +21,8 @@ import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
 import { useState } from 'react'
 
 import PageWrapper from '../components/layouts/PageWrapper'
+import { environment } from '../environment'
 import { ROUTES } from '../frontend/api/constants'
-import { isProductionDeployment } from '../frontend/utils/general'
 import logger from '../frontend/utils/logger'
 import { formatUnicorn } from '../frontend/utils/string'
 import { AsyncServerProps } from '../frontend/utils/types'
@@ -47,16 +47,12 @@ export const getServerSideProps = async (ctx: GetServerSidePropsContext) => {
             locale: l,
           })),
       },
-      isProductionDeploy: isProductionDeployment(),
       ...(await serverSideTranslations(locale)),
     },
   }
 }
 
-const RegisterPage = ({
-  page,
-  isProductionDeploy,
-}: AsyncServerProps<typeof getServerSideProps>) => {
+const RegisterPage = ({ page }: AsyncServerProps<typeof getServerSideProps>) => {
   const { t } = useTranslation('account')
   const [registrationStatus, setRegistrationStatus] = useState<RegistrationStatus>(
     RegistrationStatus.INIT,
@@ -143,7 +139,7 @@ const RegisterPage = ({
               lastEmail={lastEmail}
               onSubmit={signUp}
               error={registrationError}
-              disablePO={isProductionDeploy}
+              disablePO={!environment.featureToggles.pravnickaOsobaRegistration}
             />
           ) : registrationStatus === RegistrationStatus.EMAIL_VERIFICATION_REQUIRED ? (
             <EmailVerificationForm

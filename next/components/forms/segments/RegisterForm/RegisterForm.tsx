@@ -6,6 +6,7 @@ import InputField from 'components/forms/widget-components/InputField/InputField
 import PasswordField from 'components/forms/widget-components/PasswordField/PasswordField'
 import Radio from 'components/forms/widget-components/RadioButton/Radio'
 import RadioGroup from 'components/forms/widget-components/RadioButton/RadioGroup'
+import { environment } from 'environment'
 import { UserData } from 'frontend/dtos/accountDto'
 import useHookForm from 'frontend/hooks/useHookForm'
 import { isBrowser } from 'frontend/utils/general'
@@ -289,7 +290,7 @@ const RegisterForm = ({ onSubmit, error, lastEmail, disablePO }: Props) => {
             <Turnstile
               theme="light"
               key={captchaKey}
-              sitekey={process.env.NEXT_PUBLIC_CLOUDFLARE_TURNSTILE_SITE_KEY || ''}
+              sitekey={environment.cloudflareTurnstileSiteKey}
               onVerify={(token) => {
                 setCaptchaWarning('hide')
                 onChange(token)

@@ -5,6 +5,7 @@ import { RJSFSchema } from '@rjsf/utils'
 import { ErrorObject } from 'ajv'
 import { getAccessTokenOrLogout } from 'frontend/utils/amplify'
 
+import { environment } from '../../environment'
 import { ApiError, Gdpr, Identity, TaxApiError, UrlResult, User } from '../dtos/generalApiDto'
 import logger, { developmentLog } from '../utils/logger'
 
@@ -146,23 +147,20 @@ export const xmlStringToPdf = (eform: string, data: string) => {
 export const verifyIdentityApi = async (data: Identity) => {
   const token = await getAccessTokenOrLogout()
 
-  return fetchJsonApi(
-    `${String(process.env.NEXT_PUBLIC_CITY_ACCOUNT_URL)}/user-verification/identity-card`,
-    {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        Authorization: `Bearer ${token}`,
-      },
-      body: JSON.stringify(data),
+  return fetchJsonApi(`${environment.cityAccountUrl}/user-verification/identity-card`, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      Authorization: `Bearer ${token}`,
     },
-  )
+    body: JSON.stringify(data),
+  })
 }
 
 export const subscribeApi = async (data: { gdprData?: Gdpr[] }): Promise<User> => {
   const token = await getAccessTokenOrLogout()
 
-  return fetchJsonApi<User>(`${String(process.env.NEXT_PUBLIC_CITY_ACCOUNT_URL)}/user/subscribe`, {
+  return fetchJsonApi<User>(`${environment.cityAccountUrl}/user/subscribe`, {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
@@ -175,92 +173,74 @@ export const subscribeApi = async (data: { gdprData?: Gdpr[] }): Promise<User> =
 export const unsubscribeApi = async (data: { gdprData?: Gdpr[] }): Promise<User> => {
   const token = await getAccessTokenOrLogout()
 
-  return fetchJsonApi<User>(
-    `${String(process.env.NEXT_PUBLIC_CITY_ACCOUNT_URL)}/user/unsubscribe`,
-    {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        Authorization: `Bearer ${token}`,
-      },
-      body: JSON.stringify(data),
+  return fetchJsonApi<User>(`${environment.cityAccountUrl}/user/unsubscribe`, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      Authorization: `Bearer ${token}`,
     },
-  )
+    body: JSON.stringify(data),
+  })
 }
 
 export const getUserApi = async (): Promise<User> => {
   const token = await getAccessTokenOrLogout()
 
-  return fetchJsonApi<User>(
-    `${String(process.env.NEXT_PUBLIC_CITY_ACCOUNT_URL)}/user/get-or-create`,
-    {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        Authorization: `Bearer ${token}`,
-      },
+  return fetchJsonApi<User>(`${environment.cityAccountUrl}/user/get-or-create`, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      Authorization: `Bearer ${token}`,
     },
-  )
+  })
 }
 
 export const resetRcApi = async () => {
   const token = await getAccessTokenOrLogout()
 
-  return fetchJsonApi(
-    `${String(process.env.NEXT_PUBLIC_CITY_ACCOUNT_URL)}/user/remove-birthnumber`,
-    {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        Authorization: `Bearer ${token}`,
-      },
+  return fetchJsonApi(`${environment.cityAccountUrl}/user/remove-birthnumber`, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      Authorization: `Bearer ${token}`,
     },
-  )
+  })
 }
 
 export const getTaxApi = async () => {
   const token = await getAccessTokenOrLogout()
 
-  return fetchJsonApi(
-    `${String(process.env.NEXT_PUBLIC_TAXES_URL)}/tax/get-tax-by-year?year=2023`,
-    {
-      method: 'GET',
-      headers: {
-        'Content-Type': 'application/json',
-        Authorization: `Bearer ${token}`,
-      },
+  return fetchJsonApi(`${environment.taxesUrl}/tax/get-tax-by-year?year=2023`, {
+    method: 'GET',
+    headers: {
+      'Content-Type': 'application/json',
+      Authorization: `Bearer ${token}`,
     },
-  )
+  })
 }
 
 export const getTaxPdfApi = async () => {
   const token = await getAccessTokenOrLogout()
 
-  return fetchJsonApi(
-    `${String(process.env.NEXT_PUBLIC_TAXES_URL)}/tax/get-tax-pdf-by-year?year=2023`,
-    {
-      method: 'GET',
-      headers: {
-        'Content-Type': 'application/json',
-        Authorization: `Bearer ${token}`,
-      },
+  return fetchJsonApi(`${environment.taxesUrl}/tax/get-tax-pdf-by-year?year=2023`, {
+    method: 'GET',
+    headers: {
+      'Content-Type': 'application/json',
+      Authorization: `Bearer ${token}`,
     },
-  )
+  })
 }
 
 export const getPaymentGatewayUrlApi = async (): Promise<UrlResult> => {
   const token = await getAccessTokenOrLogout()
 
-  return fetchJsonApi<UrlResult>(
-    `${String(process.env.NEXT_PUBLIC_TAXES_URL)}/payment/cardpay/by-year/2023`,
-    {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        Authorization: `Bearer ${token}`,
-      },
+  return fetchJsonApi<UrlResult>(`${environment.taxesUrl}/payment/cardpay/by-year/2023`, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      Authorization: `Bearer ${token}`,
     },
-  )
+  })
 }
 
 export const getEnum = async (id?: string) => {

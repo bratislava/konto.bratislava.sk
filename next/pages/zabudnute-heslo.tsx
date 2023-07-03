@@ -5,9 +5,10 @@ import ForgottenPasswordForm from 'components/forms/segments/ForgottenPasswordFo
 import NewPasswordForm from 'components/forms/segments/NewPasswordForm/NewPasswordForm'
 import LoginRegisterLayout from 'components/layouts/LoginRegisterLayout'
 import {
-  ServerSideAuthProviderHOC,
   getSSRCurrentAuth,
+  ServerSideAuthProviderHOC,
 } from 'components/logic/ServerSideAuthProvider'
+import { GENERIC_ERROR_MESSAGE, isError } from 'frontend/utils/errors'
 import { GetServerSidePropsContext } from 'next'
 import { useRouter } from 'next/router'
 import { useTranslation } from 'next-i18next'
@@ -19,7 +20,6 @@ import { ROUTES } from '../frontend/api/constants'
 import { isProductionDeployment } from '../frontend/utils/general'
 import logger from '../frontend/utils/logger'
 import { AsyncServerProps } from '../frontend/utils/types'
-import { isError } from 'frontend/utils/errors'
 
 enum ForgotPasswordStatus {
   INIT = 'INIT',
@@ -70,7 +70,7 @@ const ForgottenPasswordPage = ({ page }: AsyncServerProps<typeof getServerSidePr
         setForgotPasswordError(error)
       } else {
         logger.error('Unexpected error - unexpected object thrown in forgotPassword:', error)
-        setForgotPasswordError(new Error('Unknown error'))
+        setForgotPasswordError(new Error(GENERIC_ERROR_MESSAGE))
       }
     }
   }
@@ -84,7 +84,7 @@ const ForgottenPasswordPage = ({ page }: AsyncServerProps<typeof getServerSidePr
         setForgotPasswordError(error)
       } else {
         logger.error('Unexpected error - unexpected object thrown in forgotPasswordSubmit:', error)
-        setForgotPasswordError(new Error('Unknown error'))
+        setForgotPasswordError(new Error(GENERIC_ERROR_MESSAGE))
       }
     }
   }

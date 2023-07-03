@@ -8,7 +8,7 @@ import {
   ServerSideAuthProviderHOC,
 } from 'components/logic/ServerSideAuthProvider'
 import { useDerivedServerSideAuthState } from 'frontend/hooks/useServerSideAuth'
-import { isError } from 'frontend/utils/errors'
+import { GENERIC_ERROR_MESSAGE, isError } from 'frontend/utils/errors'
 import { GetServerSidePropsContext } from 'next'
 import { useRouter } from 'next/router'
 import { useTranslation } from 'next-i18next'
@@ -77,7 +77,7 @@ const PasswordChangePage = ({ page }: AsyncServerProps<typeof getServerSideProps
         setPasswordChangeError(error)
       } else {
         logger.error('Unexpected error - unexpected object thrown in forgotPasswordSubmit:', error)
-        setPasswordChangeError(new Error('Unknown error'))
+        setPasswordChangeError(new Error(GENERIC_ERROR_MESSAGE))
       }
     }
   }

@@ -20,3 +20,5 @@ export const isError = (error: unknown): error is Error =>
 // i.e. many of errors returned by amplify-js return code on their errors which we match with translation keys
 export const isErrorWithCode = (error: unknown): error is ErrorWithCode =>
   isError(error) && 'code' in error && typeof error.code === 'string'
+
+export const GENERIC_ERROR_MESSAGE = 'UNEXPECTED_ERROR'

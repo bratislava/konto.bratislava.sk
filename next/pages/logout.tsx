@@ -3,9 +3,10 @@ import AccountContainer from 'components/forms/segments/AccountContainer/Account
 import AccountSuccessAlert from 'components/forms/segments/AccountSuccessAlert/AccountSuccessAlert'
 import LoginRegisterLayout from 'components/layouts/LoginRegisterLayout'
 import {
-  ServerSideAuthProviderHOC,
   getSSRCurrentAuth,
+  ServerSideAuthProviderHOC,
 } from 'components/logic/ServerSideAuthProvider'
+import { useDerivedServerSideAuthState } from 'frontend/hooks/useServerSideAuth'
 import useSSORedirect from 'frontend/hooks/useSSORedirect'
 import logger from 'frontend/utils/logger'
 import { GetServerSidePropsContext } from 'next'
@@ -16,7 +17,6 @@ import { useEffect } from 'react'
 import PageWrapper from '../components/layouts/PageWrapper'
 import { isProductionDeployment } from '../frontend/utils/general'
 import { AsyncServerProps } from '../frontend/utils/types'
-import { useDerivedServerSideAuthState } from 'frontend/hooks/useServerSideAuth'
 
 export const getServerSideProps = async (ctx: GetServerSidePropsContext) => {
   const locale = ctx.locale ?? 'sk'

@@ -1,5 +1,5 @@
 import FileDownload from '@assets/images/new-icons/ui/download.svg'
-import router from 'next/router'
+import { useRouter } from 'next/router'
 import { useTranslation } from 'next-i18next'
 import React from 'react'
 
@@ -19,6 +19,7 @@ interface PaymentDataProps {
 const PaymentData = ({ tax }: PaymentDataProps) => {
   const { t } = useTranslation('account')
   const status = taxStatusHelper(tax)
+  const router = useRouter()
 
   const qrCodeBase64 = `data:image/png;base64,${tax?.qrCodeWeb}`
 

@@ -39,6 +39,7 @@ const schema = {
 
 const EmailVerificationForm = ({ onSubmit, error, onResend, lastEmail }: Props) => {
   const [lastVerificationCode, setLastVerificationCode] = useState('')
+  const [resendIsLoading, setResendIsLoading] = useState(false)
   const { t } = useTranslation('account')
   const noError: boolean = error === null || error === undefined
   const {
@@ -59,7 +60,9 @@ const EmailVerificationForm = ({ onSubmit, error, onResend, lastEmail }: Props) 
 
   const handleResend = async () => {
     setCnt(60)
+    setResendIsLoading(true)
     await onResend()
+    setResendIsLoading(false)
   }
 
   return (
@@ -115,6 +118,7 @@ const EmailVerificationForm = ({ onSubmit, error, onResend, lastEmail }: Props) 
       </div>
 
       <Button
+        loading={resendIsLoading}
         onPress={handleResend}
         className="min-w-full"
         text={t('verification_resend')}

@@ -1,13 +1,14 @@
 import Alert from 'components/forms/info-components/Alert'
 import AccountMarkdown from 'components/forms/segments/AccountMarkdown/AccountMarkdown'
-import { isError, isErrorWithCode } from 'frontend/utils/errors'
+import { GENERIC_ERROR_MESSAGE, isErrorWithCode } from 'frontend/utils/errors'
 import { useTranslation } from 'next-i18next'
+import { useMemo } from 'react'
 
 import logger from '../../../../frontend/utils/logger'
 import { Args, formatUnicorn } from '../../../../frontend/utils/string'
 
 interface Props {
-  error?: unknown
+  error?: Error | null
   args?: Args
   close?: () => void
   solid?: boolean
@@ -16,33 +17,33 @@ interface Props {
 const AccountErrorAlert = ({ error, close, solid, args = {} }: Props) => {
   const { t, i18n } = useTranslation()
 
-  if (!error) {
-    return null
-  }
-
-  let errorMessage: string
-
-  if (!isError(error)) {
-    errorMessage = t(`account:errors.unknown`)
-    logger.error(
-      'Unexpected Error - instance without message passed into AccountErrorAlert as an error: ',
-      error,
-    )
-  } else if (!isErrorWithCode(error)) {
-    errorMessage = t(`account:errors.unknown`)
-    logger.error(
-      'Unexpected Error - unknown error without error code in AccountErrorAlert: ',
-      error.message,
-      error,
-    )
-  } else if (!i18n.exists(`account:errors.${error.code}`)) {
-    errorMessage = t(`account:errors.unknown`)
-    logger.error('Unexpected Error - unknown error with code', error.code, errorMessage)
-  } else {
+  const errorMessage = useMemo<string>(() => {
+    if (!error) {
+      return ''
+    }
+    if (!isErrorWithCode(error)) {
+      logger.error(
+        `${GENERIC_ERROR_MESSAGE} - unknown error without error code in AccountErrorAlert: `,
+        error.message,
+        error,
+      )
+      return t(`account:errors.unknown`)
+    }
+    if (!i18n.exists(`account:errors.${error.code}`)) {
+      logger.error(`${GENERIC_ERROR_MESSAGE} - unknown error with code`, error.code, errorMessage)
+      return t(`account:errors.unknown`)
+    }
     // this is the expected case - known error for which we have a translation string
-    errorMessage = formatUnicorn(t(`account:errors.${error.code}`), args)
-    logger.info('Known error', error.code, error.message, errorMessage, error)
-  }
+    const formattedMessage = formatUnicorn(t(`account:errors.${error.code}`), args)
+    logger.info('Known error', error.code, error.message, formattedMessage, error)
+    return formattedMessage
+    // ehaustive-deps disabled because args tend to be passed in as an object re-created on every render
+    // instead of fixing this, we may want to get rid of args/present version of formatUnicorn altogether
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [error])
+
+  if (!errorMessage) return null
+
   return (
     <Alert
       message={

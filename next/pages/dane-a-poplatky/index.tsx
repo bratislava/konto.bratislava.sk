@@ -2,8 +2,8 @@ import TaxesFeesSection from 'components/forms/segments/AccountSections/TaxesFee
 import AccountPageLayout from 'components/layouts/AccountPageLayout'
 import PageWrapper from 'components/layouts/PageWrapper'
 import {
-  ServerSideAuthProviderHOC,
   getSSRCurrentAuth,
+  ServerSideAuthProviderHOC,
 } from 'components/logic/ServerSideAuthProvider'
 import { GetServerSidePropsContext } from 'next'
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations'

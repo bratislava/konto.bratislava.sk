@@ -1,3 +1,6 @@
+// TODO remove eslint-disable when types are fixed in amplify-js v6 release
+/* eslint-disable @typescript-eslint/no-unsafe-call */
+/* eslint-disable @typescript-eslint/no-unsafe-member-access */
 import { withSSRContext } from 'aws-amplify'
 import { UserData } from 'frontend/dtos/accountDto'
 import logger from 'frontend/utils/logger'
@@ -10,7 +13,6 @@ export interface GetSSRCurrentAuth {
 
 // provides all the user data frontend might need as server side props
 // this way, FE can always access cognito data in a sync manner
-// TODO types should get fixed in amplify-js v6 release
 export const getSSRCurrentAuth = async (
   req: GetServerSidePropsContext['req'],
 ): Promise<GetSSRCurrentAuth> => {

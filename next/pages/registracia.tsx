@@ -10,9 +10,10 @@ import {
   getSSRCurrentAuth,
   ServerSideAuthProviderHOC,
 } from 'components/logic/ServerSideAuthProvider'
+import { subscribeApi } from 'frontend/api/api'
 import { UserData } from 'frontend/dtos/accountDto'
 import useSSORedirect from 'frontend/hooks/useSSORedirect'
-import { isError } from 'frontend/utils/errors'
+import { GENERIC_ERROR_MESSAGE, isError } from 'frontend/utils/errors'
 import { GetServerSidePropsContext } from 'next'
 import { useRouter } from 'next/router'
 import { useTranslation } from 'next-i18next'
@@ -29,7 +30,6 @@ import { AsyncServerProps } from '../frontend/utils/types'
 enum RegistrationStatus {
   INIT = 'INIT',
   EMAIL_VERIFICATION_REQUIRED = 'EMAIL_VERIFICATION_REQUIRED',
-  EMAIL_VERIFCATION_SUCCESS = 'EMAIL_VERIFCATION_SUCCESS',
 }
 
 export const getServerSideProps = async (ctx: GetServerSidePropsContext) => {
@@ -89,13 +89,15 @@ const RegisterPage = ({
         },
       })
       setRegistrationStatus(RegistrationStatus.EMAIL_VERIFICATION_REQUIRED)
-      // subscribeApi({}).catch((error) => logger.error('Failed to subscribe', email, error))
+      subscribeApi({}).catch((error) =>
+        logger.error('Failed to subscribe - ignoring and continuing', email, error),
+      )
     } catch (error) {
       if (isError(error)) {
         setRegistrationError(error)
       } else {
         logger.error('Unexpected error - unexpected object thrown in signUp:', error)
-        setRegistrationError(new Error('Unknown error'))
+        setRegistrationError(new Error(GENERIC_ERROR_MESSAGE))
       }
     }
   }
@@ -112,7 +114,7 @@ const RegisterPage = ({
           'Unexpected error - unexpected object thrown in resendVerificationCode:',
           error,
         )
-        setRegistrationError(new Error('Unknown error'))
+        setRegistrationError(new Error(GENERIC_ERROR_MESSAGE))
       }
     }
   }
@@ -126,7 +128,7 @@ const RegisterPage = ({
         setRegistrationError(error)
       } else {
         logger.error('Unexpected error - unexpected object thrown in verifyEmail:', error)
-        setRegistrationError(new Error('Unknown error'))
+        setRegistrationError(new Error(GENERIC_ERROR_MESSAGE))
       }
     }
   }

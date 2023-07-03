@@ -10,11 +10,11 @@ import {
 } from 'components/logic/ServerSideAuthProvider'
 import { useDerivedServerSideAuthState } from 'frontend/hooks/useServerSideAuth'
 import useSSORedirect from 'frontend/hooks/useSSORedirect'
-import { isError } from 'frontend/utils/errors'
+import { GENERIC_ERROR_MESSAGE, isError, isErrorWithCode } from 'frontend/utils/errors'
 import logger from 'frontend/utils/logger'
 import { GetServerSidePropsContext } from 'next'
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
-import { useEffect, useState } from 'react'
+import { useCallback, useEffect, useState } from 'react'
 
 import PageWrapper from '../components/layouts/PageWrapper'
 import { isProductionDeployment } from '../frontend/utils/general'
@@ -55,42 +55,41 @@ const LoginPage = ({ page }: AsyncServerProps<typeof getServerSideProps>) => {
   }, [isAuthenticated, redirect])
 
   const onLogin = async (email: string, password: string) => {
-    // TODO move this down
     try {
       const loginResult = await Auth.signIn(email, password)
       if (loginResult) {
         await redirect()
-      } else {
-        // TODO clean once validated
-        console.log(loginResult)
       }
     } catch (error) {
-      // TODO continue here - get the exact error, only then set emailToVerify
-      setEmailToVerify(email)
-      console.error(error)
       if (isError(error)) {
         setLoginError(error)
+        if (isErrorWithCode(error) && error.code === 'UserNotConfirmedException') {
+          setEmailToVerify(email)
+        }
       } else {
         logger.error('Unexpected error - unexpected object thrown in onVerifyEmail:', error)
-        setLoginError(new Error('Unknown error'))
+        setLoginError(new Error(GENERIC_ERROR_MESSAGE))
       }
     }
   }
 
-  const onVerifyEmail = async (verificationCode: string) => {
-    try {
-      if (await Auth.verifyCurrentUserAttributeSubmit('email', verificationCode)) {
-        await redirect()
+  const onVerifyEmail = useCallback(
+    async (verificationCode: string) => {
+      try {
+        if (await Auth.confirmSignUp(emailToVerify, verificationCode)) {
+          await redirect()
+        }
+      } catch (error) {
+        if (isError(error)) {
+          setLoginError(error)
+        } else {
+          logger.error('Unexpected error - unexpected object thrown in onVerifyEmail:', error)
+          setLoginError(new Error(GENERIC_ERROR_MESSAGE))
+        }
       }
-    } catch (error) {
-      if (isError(error)) {
-        setLoginError(error)
-      } else {
-        logger.error('Unexpected error - unexpected object thrown in onVerifyEmail:', error)
-        setLoginError(new Error('Unknown error'))
-      }
-    }
-  }
+    },
+    [emailToVerify, redirect],
+  )
 
   return (
     <PageWrapper locale={page.locale} localizations={page.localizations}>
@@ -99,7 +98,7 @@ const LoginPage = ({ page }: AsyncServerProps<typeof getServerSideProps>) => {
         <AccountContainer className="md:pt-6 pt-0 mb-0 md:mb-8">
           {emailToVerify ? (
             <EmailVerificationForm
-              onResend={() => Auth.verifyCurrentUserAttribute('email')}
+              onResend={() => Auth.resendSignUp(emailToVerify)}
               onSubmit={onVerifyEmail}
               error={loginError}
               lastEmail={emailToVerify}

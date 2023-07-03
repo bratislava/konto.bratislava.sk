@@ -8,7 +8,12 @@ import {
   getSSRCurrentAuth,
   ServerSideAuthProviderHOC,
 } from 'components/logic/ServerSideAuthProvider'
-import { ErrorWithCode, isError, isErrorWithCode } from 'frontend/utils/errors'
+import {
+  ErrorWithCode,
+  GENERIC_ERROR_MESSAGE,
+  isError,
+  isErrorWithCode,
+} from 'frontend/utils/errors'
 import { GetServerSidePropsContext } from 'next'
 import { useRouter } from 'next/router'
 import { useTranslation } from 'next-i18next'
@@ -70,6 +75,7 @@ const MigrationPage = ({ page }: AsyncServerProps<typeof getServerSideProps>) =>
       if (isErrorWithCode(error)) {
         if (error?.code === 'UserNotFoundException') {
           setActivateAccountError(
+            // eslint-disable-next-line no-secrets/no-secrets
             new ErrorWithCode(error.message, 'MigrationUserNotFoundException'),
           )
         } else {
@@ -79,7 +85,7 @@ const MigrationPage = ({ page }: AsyncServerProps<typeof getServerSideProps>) =>
         setActivateAccountError(error)
       } else {
         logger.error('Unexpected error - unexpected object thrown in forgotPassword:', error)
-        setActivateAccountError(new Error('Unknown error'))
+        setActivateAccountError(new Error(GENERIC_ERROR_MESSAGE))
       }
     }
   }
@@ -93,7 +99,7 @@ const MigrationPage = ({ page }: AsyncServerProps<typeof getServerSideProps>) =>
         setActivateAccountError(error)
       } else {
         logger.error('Unexpected error - unexpected object thrown in forgotPasswordSubmit:', error)
-        setActivateAccountError(new Error('Unknown error'))
+        setActivateAccountError(new Error(GENERIC_ERROR_MESSAGE))
       }
     }
   }

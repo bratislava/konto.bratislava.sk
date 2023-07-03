@@ -18,7 +18,7 @@ import { ReactNode, useEffect } from 'react'
 import { environment } from '../../environment'
 import { ROUTES } from '../../frontend/api/constants'
 import useAccount from '../../frontend/hooks/useAccount'
-import { isDefined } from '../../frontend/utils/isDefined'
+import { isDefined } from '../../frontend/utils/general'
 import logger from '../../frontend/utils/logger'
 
 type AccountPageLayoutBase = {

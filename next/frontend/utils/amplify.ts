@@ -1,4 +1,8 @@
-import { Amplify, Auth } from 'aws-amplify'
+/* eslint-disable import/no-extraneous-dependencies */
+// @aws-amplify/auth & @aws-amplify/core are part of aws-amplify & safe enough to import here like this
+// this import fixes issues with Jest not being able to parse esm lib imported in the root of aws-amplify
+import Auth from '@aws-amplify/auth'
+import Amplify from '@aws-amplify/core'
 import { environment } from 'environment'
 import { ROUTES } from 'frontend/api/constants'
 

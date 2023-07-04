@@ -2,8 +2,8 @@ import { useCallback, useState } from 'react'
 import { useEffectOnce } from 'usehooks-ts'
 
 // eslint-disable-next-line import/extensions
-import { getUserApi, subscribeApi, UNAUTHORIZED_ERROR_TEXT, unsubscribeApi } from '../api/api'
-import { Gdpr, GeneralError, User } from '../dtos/generalApiDto'
+import { getUserApi, subscribeApi, unsubscribeApi } from '../api/api'
+import { Gdpr, User } from '../dtos/generalApiDto'
 import logger from '../utils/logger'
 
 export default function useUser() {
@@ -13,13 +13,8 @@ export default function useUser() {
     try {
       const loadedUser: User = await getUserApi()
       setUser(loadedUser)
-    } catch (_error: unknown) {
-      const error: GeneralError = _error as GeneralError
+    } catch (error: unknown) {
       logger.error(error)
-      if (error?.message === UNAUTHORIZED_ERROR_TEXT) {
-        // TODO logout
-        logger.error('401 - user not logged in when updating consents')
-      }
     }
   }, [])
 
@@ -32,13 +27,8 @@ export default function useUser() {
       const loadedUser: User = await subscribeApi({ gdprData: data })
       setUser(loadedUser)
       return true
-    } catch (_error: unknown) {
-      const error: GeneralError = _error as GeneralError
+    } catch (error: unknown) {
       logger.error(error)
-      if (error?.message === UNAUTHORIZED_ERROR_TEXT) {
-        // TODO logout
-        logger.error('401 - user not logged in when updating consents')
-      }
       return false
     }
   }
@@ -48,14 +38,8 @@ export default function useUser() {
       const loadedUser: User = await unsubscribeApi({ gdprData: data })
       setUser(loadedUser)
       return true
-    } catch (_error: unknown) {
-      const error: GeneralError = _error as GeneralError
+    } catch (error: unknown) {
       logger.error(error)
-      if (error?.message === UNAUTHORIZED_ERROR_TEXT) {
-        // TODO logout
-        logger.error('401 - user not logged in when updating consents')
-      }
-
       return false
     }
   }

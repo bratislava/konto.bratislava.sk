@@ -3,7 +3,7 @@ import { Address } from 'frontend/dtos/accountDto'
 import { Tax } from 'frontend/dtos/taxDto'
 import useJsonParseMemo from 'frontend/hooks/useJsonParseMemo'
 import { useServerSideAuth } from 'frontend/hooks/useServerSideAuth'
-import { isError } from 'frontend/utils/errors'
+import { GENERIC_ERROR_MESSAGE, isError } from 'frontend/utils/errors'
 import logger from 'frontend/utils/logger'
 import { useTranslation } from 'next-i18next'
 import { useState } from 'react'
@@ -50,7 +50,7 @@ const ContactInformationSection = ({ tax }: ContactInformationSectionProps) => {
         setCorrespondenceAddressError(error)
       } else {
         logger.error(
-          'Unexpected error - unexpected object thrown in onSubmitCorrespondenceAddress:',
+          `${GENERIC_ERROR_MESSAGE} - unexpected object thrown in onSubmitCorrespondenceAddress:`,
           error,
         )
         setCorrespondenceAddressError(new Error('Unknown error'))

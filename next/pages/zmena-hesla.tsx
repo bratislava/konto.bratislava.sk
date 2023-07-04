@@ -74,7 +74,10 @@ const PasswordChangePage = ({ page }: AsyncServerProps<typeof getServerSideProps
       if (isError(error)) {
         setPasswordChangeError(error)
       } else {
-        logger.error('Unexpected error - unexpected object thrown in forgotPasswordSubmit:', error)
+        logger.error(
+          `${GENERIC_ERROR_MESSAGE} - unexpected object thrown in forgotPasswordSubmit:`,
+          error,
+        )
         setPasswordChangeError(new Error(GENERIC_ERROR_MESSAGE))
       }
     }

@@ -30,7 +30,7 @@ const AccountErrorAlert = ({ error, close, solid, args = {} }: Props) => {
       return t(`account:errors.unknown`)
     }
     if (!isErrorWithCode(error)) {
-      // JSON.stringify here because amplify returns custom errors which pino tries to serialize but fails (they either miss or have 'message' as private)
+      // JSON.stringify here because amplify returns custom errors which pino tries to serialize but fails (they either don't have 'message' attribute or have it as private)
       logger.error(
         `${GENERIC_ERROR_MESSAGE} - unknown error without error code in AccountErrorAlert: `,
         error.message,
@@ -46,7 +46,7 @@ const AccountErrorAlert = ({ error, close, solid, args = {} }: Props) => {
     const formattedMessage = formatUnicorn(t(`account:errors.${error.code}`), args)
     logger.info('Known error', error.code, error.message, formattedMessage, error)
     return formattedMessage
-    // ehaustive-deps disabled because args tend to be passed in as an object re-created on every render
+    // exhaustive-deps disabled because args tend to be passed in as an object re-created on every render
     // instead of fixing this, we may want to get rid of args/present version of formatUnicorn altogether
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [error])

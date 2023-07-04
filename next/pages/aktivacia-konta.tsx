@@ -82,7 +82,10 @@ const MigrationPage = ({ page }: AsyncServerProps<typeof getServerSideProps>) =>
       } else if (isError(error)) {
         setActivateAccountError(error)
       } else {
-        logger.error('Unexpected error - unexpected object thrown in forgotPassword:', error)
+        logger.error(
+          `${GENERIC_ERROR_MESSAGE} - unexpected object thrown in forgotPassword:`,
+          error,
+        )
         setActivateAccountError(new Error(GENERIC_ERROR_MESSAGE))
       }
     }
@@ -96,7 +99,10 @@ const MigrationPage = ({ page }: AsyncServerProps<typeof getServerSideProps>) =>
       if (isError(error)) {
         setActivateAccountError(error)
       } else {
-        logger.error('Unexpected error - unexpected object thrown in forgotPasswordSubmit:', error)
+        logger.error(
+          `${GENERIC_ERROR_MESSAGE} - unexpected object thrown in forgotPasswordSubmit:`,
+          error,
+        )
         setActivateAccountError(new Error(GENERIC_ERROR_MESSAGE))
       }
     }

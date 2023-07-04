@@ -25,7 +25,7 @@ interface AccountSectionHeaderBase {
 // https://stackoverflow.com/questions/32545632/how-can-i-download-a-file-using-window-fetch
 const downloadPdf = async () => {
   const accessToken = await getAccessTokenOrLogout()
-  return fetch(`${String(process.env.NEXT_PUBLIC_TAXES_URL)}/tax/get-tax-pdf-by-year?year=2023`, {
+  return fetch(`${String(environment.taxesUrl)}/tax/get-tax-pdf-by-year?year=2023`, {
     headers: {
       Authorization: `Bearer ${accessToken}`,
     },

@@ -65,7 +65,7 @@ const LoginPage = ({ page }: AsyncServerProps<typeof getServerSideProps>) => {
           setEmailToVerify(email)
         }
       } else {
-        logger.error('Unexpected error - unexpected object thrown in onVerifyEmail:', error)
+        logger.error(`${GENERIC_ERROR_MESSAGE} - unexpected object thrown in onVerifyEmail:`, error)
         setLoginError(new Error(GENERIC_ERROR_MESSAGE))
       }
     }
@@ -81,7 +81,10 @@ const LoginPage = ({ page }: AsyncServerProps<typeof getServerSideProps>) => {
         if (isError(error)) {
           setLoginError(error)
         } else {
-          logger.error('Unexpected error - unexpected object thrown in onVerifyEmail:', error)
+          logger.error(
+            `${GENERIC_ERROR_MESSAGE} - unexpected object thrown in onVerifyEmail:`,
+            error,
+          )
           setLoginError(new Error(GENERIC_ERROR_MESSAGE))
         }
       }

@@ -5,7 +5,7 @@ import { UserData } from 'frontend/dtos/accountDto'
 import { useRefreshServerSideProps } from 'frontend/hooks/useRefreshServerSideProps'
 import { useServerSideAuth } from 'frontend/hooks/useServerSideAuth'
 import useSnackbar from 'frontend/hooks/useSnackbar'
-import { isError } from 'frontend/utils/errors'
+import { GENERIC_ERROR_MESSAGE, isError } from 'frontend/utils/errors'
 import logger from 'frontend/utils/logger'
 import { identity, mapValues, pickBy } from 'lodash'
 import { useTranslation } from 'next-i18next'
@@ -48,7 +48,10 @@ const UserProfileView = () => {
       if (isError(error)) {
         setUpdateUserDataError(error)
       } else {
-        logger.error('Unexpected error - unexpected object thrown in handleOnSubmitEditing:', error)
+        logger.error(
+          `${GENERIC_ERROR_MESSAGE} - unexpected object thrown in handleOnSubmitEditing:`,
+          error,
+        )
         setUpdateUserDataError(new Error('Unknown error'))
       }
       setIsAlertOpened(true)

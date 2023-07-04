@@ -11,7 +11,7 @@ import Banner from 'components/forms/simple-components/Banner'
 import Button from 'components/forms/simple-components/Button'
 import ServiceCard from 'components/forms/simple-components/ServiceCard'
 import { useDerivedServerSideAuthState, useServerSideAuth } from 'frontend/hooks/useServerSideAuth'
-import { isError } from 'frontend/utils/errors'
+import { GENERIC_ERROR_MESSAGE, isError } from 'frontend/utils/errors'
 import logger from 'frontend/utils/logger'
 import { useRouter } from 'next/router'
 import { useTranslation } from 'next-i18next'
@@ -63,7 +63,10 @@ const IntroSection = () => {
       if (isError(error)) {
         setPhoneNumberError(error)
       } else {
-        logger.error('Unexpected error - unexpected object thrown in onSubmitPhoneNumber:', error)
+        logger.error(
+          `${GENERIC_ERROR_MESSAGE} - unexpected object thrown in onSubmitPhoneNumber:`,
+          error,
+        )
         setPhoneNumberError(new Error('Unknown error'))
       }
     }

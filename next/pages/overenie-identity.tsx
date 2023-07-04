@@ -11,7 +11,7 @@ import { verifyIdentityApi } from 'frontend/api/api'
 import { Tier } from 'frontend/dtos/accountDto'
 import { useRefreshServerSideProps } from 'frontend/hooks/useRefreshServerSideProps'
 import { useDerivedServerSideAuthState } from 'frontend/hooks/useServerSideAuth'
-import { isError } from 'frontend/utils/errors'
+import { GENERIC_ERROR_MESSAGE, isError } from 'frontend/utils/errors'
 import { GetServerSidePropsContext } from 'next'
 import { useRouter } from 'next/router'
 import { useTranslation } from 'next-i18next'
@@ -86,7 +86,7 @@ const IdentityVerificationPage = ({ page }: AsyncServerProps<typeof getServerSid
         setIdentityVerificationError(error)
       } else {
         logger.error(
-          'Unexpected error - unexpected object thrown in verifyIdentityAndRefreshUserData:',
+          `${GENERIC_ERROR_MESSAGE} - unexpected object thrown in verifyIdentityAndRefreshUserData:`,
           error,
         )
         setIdentityVerificationError(new Error('Unknown error'))

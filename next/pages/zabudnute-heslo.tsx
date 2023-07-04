@@ -68,7 +68,10 @@ const ForgottenPasswordPage = ({ page }: AsyncServerProps<typeof getServerSidePr
       if (isError(error)) {
         setForgotPasswordError(error)
       } else {
-        logger.error('Unexpected error - unexpected object thrown in forgotPassword:', error)
+        logger.error(
+          `${GENERIC_ERROR_MESSAGE} - unexpected object thrown in forgotPassword:`,
+          error,
+        )
         setForgotPasswordError(new Error(GENERIC_ERROR_MESSAGE))
       }
     }
@@ -82,7 +85,10 @@ const ForgottenPasswordPage = ({ page }: AsyncServerProps<typeof getServerSidePr
       if (isError(error)) {
         setForgotPasswordError(error)
       } else {
-        logger.error('Unexpected error - unexpected object thrown in forgotPasswordSubmit:', error)
+        logger.error(
+          `${GENERIC_ERROR_MESSAGE} - unexpected object thrown in forgotPasswordSubmit:`,
+          error,
+        )
         setForgotPasswordError(new Error(GENERIC_ERROR_MESSAGE))
       }
     }

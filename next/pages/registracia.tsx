@@ -90,7 +90,7 @@ const RegisterPage = ({ page }: AsyncServerProps<typeof getServerSideProps>) => 
       if (isError(error)) {
         setRegistrationError(error)
       } else {
-        logger.error('Unexpected error - unexpected object thrown in signUp:', error)
+        logger.error(`${GENERIC_ERROR_MESSAGE} - unexpected object thrown in signUp:`, error)
         setRegistrationError(new Error(GENERIC_ERROR_MESSAGE))
       }
     }
@@ -105,7 +105,7 @@ const RegisterPage = ({ page }: AsyncServerProps<typeof getServerSideProps>) => 
         setRegistrationError(error)
       } else {
         logger.error(
-          'Unexpected error - unexpected object thrown in resendVerificationCode:',
+          `${GENERIC_ERROR_MESSAGE} - unexpected object thrown in resendVerificationCode:`,
           error,
         )
         setRegistrationError(new Error(GENERIC_ERROR_MESSAGE))
@@ -122,7 +122,7 @@ const RegisterPage = ({ page }: AsyncServerProps<typeof getServerSideProps>) => 
       if (isError(error)) {
         setRegistrationError(error)
       } else {
-        logger.error('Unexpected error - unexpected object thrown in verifyEmail:', error)
+        logger.error(`${GENERIC_ERROR_MESSAGE} - unexpected object thrown in verifyEmail:`, error)
         setRegistrationError(new Error(GENERIC_ERROR_MESSAGE))
       }
     }

@@ -1,4 +1,5 @@
 import { Amplify, Auth } from 'aws-amplify'
+import { environment } from 'environment'
 import { ROUTES } from 'frontend/api/constants'
 
 import logger from './logger'
@@ -7,16 +8,16 @@ import logger from './logger'
 Amplify.configure({
   Auth: {
     // REQUIRED only for Federated Authentication - Amazon Cognito Identity Pool ID
-    identityPoolId: process.env.NEXT_PUBLIC_COGNITO_IDENTITY_POOL_ID,
+    identityPoolId: environment.cognitoIdentityPoolId,
 
     // REQUIRED - Amazon Cognito Region
-    region: process.env.NEXT_PUBLIC_AWS_REGION,
+    region: environment.awsRegion,
 
     // OPTIONAL - Amazon Cognito User Pool ID
-    userPoolId: process.env.NEXT_PUBLIC_COGNITO_USER_POOL_ID,
+    userPoolId: environment.cognitoUserPoolId,
 
     // OPTIONAL - Amazon Cognito Web Client ID (26-char alphanumeric string)
-    userPoolWebClientId: process.env.NEXT_PUBLIC_COGNITO_CLIENT_ID,
+    userPoolWebClientId: environment.cognitoClientId,
 
     // OPTIONAL - Enforce user authentication prior to accessing AWS resources or not
     mandatorySignIn: false,

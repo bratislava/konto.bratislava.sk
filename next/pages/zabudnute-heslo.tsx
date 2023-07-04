@@ -61,6 +61,7 @@ const ForgottenPasswordPage = ({ page }: AsyncServerProps<typeof getServerSidePr
 
   const forgotPassword = async (email: string) => {
     try {
+      setLastEmail(email)
       await Auth.forgotPassword(email)
       setForgotPasswordStatus(ForgotPasswordStatus.NEW_PASSWORD_REQUIRED)
     } catch (error) {
@@ -98,7 +99,7 @@ const ForgottenPasswordPage = ({ page }: AsyncServerProps<typeof getServerSidePr
               onSubmit={(verificationCode, newPassword) =>
                 forgotPasswordSubmit(verificationCode, newPassword)
               }
-              onResend={forgotPassword}
+              onResend={() => forgotPassword(lastEmail)}
               error={forgotPasswordError}
               lastEmail={lastEmail}
             />

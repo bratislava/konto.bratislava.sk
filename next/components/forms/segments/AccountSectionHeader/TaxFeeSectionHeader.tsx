@@ -22,6 +22,7 @@ interface AccountSectionHeaderBase {
   tax: Tax
 }
 
+// https://stackoverflow.com/questions/32545632/how-can-i-download-a-file-using-window-fetch
 const downloadPdf = async () => {
   const accessToken = await getAccessTokenOrLogout()
   return fetch(`${String(process.env.NEXT_PUBLIC_TAXES_URL)}/tax/get-tax-pdf-by-year?year=2023`, {
@@ -90,28 +91,6 @@ const TaxFeeSectionHeader = ({ tax }: AccountSectionHeaderBase) => {
       logger.error(error)
     }
   }
-
-  // https://stackoverflow.com/questions/32545632/how-can-i-download-a-file-using-window-fetch
-<<<<<<< HEAD
-=======
-  const downloadPdf = () =>
-    fetch(`${environment.taxesUrl}/tax/get-tax-pdf-by-year?year=2023`, {
-      headers: {
-        Authorization: `Bearer ${lastAccessToken}`,
-      },
-    })
-      .then((res) => res.blob())
-      .then((blob) => {
-        const a = document.createElement('a')
-        a.href = URL.createObjectURL(blob)
-        a.setAttribute('download', 'dan-z-nehnutelnosti-2023.pdf')
-        a.click()
-        return null
-      })
-      .catch((error) => {
-        logger.error('Error downloading pdf', error)
-      })
->>>>>>> origin/master
 
   return (
     <div className="lg:px-0 bg-gray-50 h-full px-4">

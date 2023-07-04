@@ -22,8 +22,10 @@ export const getSSRCurrentAuth = async (
     const currentUser = await SSR.Auth.currentAuthenticatedUser()
     userData = currentUser.attributes || null
   } catch (error) {
-    // TODO filter out errors because of unauthenticated users
-    logger.error('getServersideAuth error: ', error)
+    // TODO Auth throws this exact string, not an error object - refactor once amplify solves this
+    if (error !== 'The user is not authenticated') {
+      logger.error('getServersideAuth error: ', error)
+    }
   }
   return { userData }
 }
@@ -35,8 +37,9 @@ export const getSSRAccessToken = async (req: GetServerSidePropsContext['req']): 
     const currentSession = await SSR.Auth.currentSession()
     return (currentSession?.getAccessToken()?.getJwtToken() as string) || ''
   } catch (error) {
-    // TODO filter out errors because of unauthenticated users
-    logger.error('getServersideAuth error: ', error)
+    if (error !== 'The user is not authenticated') {
+      logger.error('getServersideAuth error: ', error)
+    }
   }
   return ''
 }

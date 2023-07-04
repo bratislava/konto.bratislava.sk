@@ -3,6 +3,10 @@ import { getFormDefinition } from '@backend/utils/forms'
 import GeneratedFormRJSF from 'components/forms/GeneratedFormRJSF'
 import AccountPageLayout from 'components/layouts/AccountPageLayout'
 import PageWrapper from 'components/layouts/PageWrapper'
+import {
+  getSSRCurrentAuth,
+  ServerSideAuthProviderHOC,
+} from 'components/logic/ServerSideAuthProvider'
 import { GetServerSidePropsContext } from 'next'
 import { useRouter } from 'next/router'
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
@@ -13,10 +17,6 @@ import { environment } from '../../environment'
 import { forceString } from '../../frontend/utils/general'
 import logger from '../../frontend/utils/logger'
 import { AsyncServerProps } from '../../frontend/utils/types'
-import {
-  getSSRCurrentAuth,
-  ServerSideAuthProviderHOC,
-} from 'components/logic/ServerSideAuthProvider'
 
 export const getServerSideProps = async (ctx: GetServerSidePropsContext) => {
   if (!environment.featureToggles.forms) return { notFound: true }

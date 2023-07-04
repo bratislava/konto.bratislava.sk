@@ -30,6 +30,7 @@ import { AsyncServerProps } from '../frontend/utils/types'
 enum RegistrationStatus {
   INIT = 'INIT',
   EMAIL_VERIFICATION_REQUIRED = 'EMAIL_VERIFICATION_REQUIRED',
+  EMAIL_VERIFICATION_SUCCESS = 'EMAIL_VERIFICATION_SUCCESS',
 }
 
 export const getServerSideProps = async (ctx: GetServerSidePropsContext) => {
@@ -85,9 +86,6 @@ const RegisterPage = ({ page }: AsyncServerProps<typeof getServerSideProps>) => 
         },
       })
       setRegistrationStatus(RegistrationStatus.EMAIL_VERIFICATION_REQUIRED)
-      subscribeApi({}).catch((error) =>
-        logger.error('Failed to subscribe - ignoring and continuing', email, error),
-      )
     } catch (error) {
       if (isError(error)) {
         setRegistrationError(error)
@@ -119,6 +117,7 @@ const RegisterPage = ({ page }: AsyncServerProps<typeof getServerSideProps>) => 
     try {
       setRegistrationError(null)
       await Auth.confirmSignUp(lastEmail, code)
+      setRegistrationStatus(RegistrationStatus.EMAIL_VERIFICATION_SUCCESS)
     } catch (error) {
       if (isError(error)) {
         setRegistrationError(error)
@@ -165,14 +164,30 @@ const RegisterPage = ({ page }: AsyncServerProps<typeof getServerSideProps>) => 
               })}
               confirmLabel={t('identity_verification_link')}
               onConfirm={() => {
+                // TODO move this to backend
+                subscribeApi({}).catch((error) =>
+                  logger.error(
+                    `${GENERIC_ERROR_MESSAGE} - Failed to subscribe - ignoring and continuing`,
+                    lastEmail,
+                    error,
+                  ),
+                )
                 router
                   .push(ROUTES.IDENTITY_VERIFICATION)
                   .catch((error_) => logger.error('Failed redirect', error_))
               }}
               cancelLabel={t('identity_verification_skip')}
-              onCancel={() =>
-                router.push({ pathname: ROUTES.HOME, query: { from: ROUTES.REGISTER } })
-              }
+              onCancel={() => {
+                // TODO move this to backend
+                subscribeApi({}).catch((error) =>
+                  logger.error(
+                    `${GENERIC_ERROR_MESSAGE} Failed to subscribe - ignoring and continuing`,
+                    lastEmail,
+                    error,
+                  ),
+                )
+                return router.push({ pathname: ROUTES.HOME, query: { from: ROUTES.REGISTER } })
+              }}
             >
               <AccountMarkdown
                 className="text-center"

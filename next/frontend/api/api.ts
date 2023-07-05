@@ -1,6 +1,5 @@
 // TODO waiting on #305 to get merged, afterwards might move elsewhere
 // frontend code for calling api endpoints grouped
-import { FileUpdatedResponseDtoStatusEnum } from '@clients/openapi-forms'
 import { RJSFSchema } from '@rjsf/utils'
 import { ErrorObject } from 'ajv'
 
@@ -271,31 +270,4 @@ export const getEnum = async (id?: string) => {
     logger.error(error)
     throw error
   }
-}
-
-export const uploadFileToBucket = async (file: File) => {
-  const formData = new FormData()
-  formData.append('file', file)
-
-  return fetchJsonApi('/api/eforms/upload-file', {
-    method: 'POST',
-    headers: {
-      Accept: 'application/json',
-    },
-    body: formData,
-  })
-}
-
-export const deleteFileFromBucket = async (
-  fileName: string,
-  fileScanStatus?: FileUpdatedResponseDtoStatusEnum,
-) => {
-  const params = new URLSearchParams({ fileName, fileScanStatus: fileScanStatus || '' })
-
-  return fetchJsonApi(`/api/eforms/delete-file?${params.toString()}`, {
-    method: 'DELETE',
-    headers: {
-      'Content-Type': 'application/json',
-    },
-  })
 }

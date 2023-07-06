@@ -10,6 +10,7 @@ export const APPROVED_SSO_ORIGINS = isProductionDeployment()
       'http://localhost:3002',
       'http://localhost:3003',
       'https://kupaliska.staging.bratislava.sk',
+      'https://kupaliska.dev.bratislava.sk',
       'https://kupaliska.bratislava.sk',
       'https://bratislava.sk',
     ]

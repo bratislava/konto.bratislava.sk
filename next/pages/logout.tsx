@@ -8,11 +8,12 @@ import {
 } from 'components/logic/ServerSideAuthProvider'
 import { useDerivedServerSideAuthState } from 'frontend/hooks/useServerSideAuth'
 import useSSORedirect from 'frontend/hooks/useSSORedirect'
+import { GENERIC_ERROR_MESSAGE } from 'frontend/utils/errors'
 import logger from 'frontend/utils/logger'
 import { GetServerSidePropsContext } from 'next'
 import { useTranslation } from 'next-i18next'
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
-import { useEffect } from 'react'
+import { useEffect, useState } from 'react'
 
 import PageWrapper from '../components/layouts/PageWrapper'
 import { AsyncServerProps } from '../frontend/utils/types'
@@ -41,13 +42,25 @@ const LogoutPage = ({ page }: AsyncServerProps<typeof getServerSideProps>) => {
   const { t } = useTranslation('account')
   const { isAuthenticated } = useDerivedServerSideAuthState()
   const { redirect } = useSSORedirect()
+  const [isLoading, setIsLoading] = useState(false)
   useEffect(() => {
     if (!isAuthenticated) {
       redirect().catch((error) => logger.error('Failed redirect logout useEffect', error))
     }
   }, [isAuthenticated, redirect])
 
-  // TODO replace AccountSuccessAlert with something more fitting
+  const logoutHandler = async () => {
+    setIsLoading(true)
+    try {
+      await Auth.signOut()
+      await redirect()
+    } catch (error) {
+      logger.error(`${GENERIC_ERROR_MESSAGE} logout screen`, error)
+    } finally {
+      setIsLoading(false)
+    }
+  }
+
   return (
     <PageWrapper locale={page.locale} localizations={page.localizations}>
       <LoginRegisterLayout backButtonHidden>
@@ -56,7 +69,8 @@ const LogoutPage = ({ page }: AsyncServerProps<typeof getServerSideProps>) => {
             title={t('logout_page.title')}
             description={t('logout_page.description')}
             confirmLabel={t('logout_page.confirm_label')}
-            onConfirm={() => Auth.signOut()}
+            onConfirm={logoutHandler}
+            confirmIsLoading={isLoading}
             cancelLabel={t('logout_page.cancel_label')}
             onCancel={() => redirect()}
           />

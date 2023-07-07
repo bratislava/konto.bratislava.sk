@@ -2,7 +2,7 @@ import { UploadMinioFile } from '@backend/dtos/minio/upload-minio-file.dto'
 import { formsApi } from '@clients/forms'
 import cx from 'classnames'
 import FieldErrorMessage from 'components/forms/info-components/FieldErrorMessage'
-import { getAccessTokenOrLogout } from 'frontend/utils/amplify'
+import { getAccessTokenOrLogout } from 'frontend/utils/auth'
 import React, { ForwardedRef, forwardRef, ForwardRefRenderFunction, useState } from 'react'
 import { v4 as createUuid } from 'uuid'
 

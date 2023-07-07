@@ -8,7 +8,7 @@ import {
   RJSFSchema,
   RJSFValidationError,
 } from '@rjsf/utils'
-import { getAccessTokenOrLogout } from 'frontend/utils/amplify'
+import { getAccessTokenOrLogout } from 'frontend/utils/auth'
 import { cloneDeep } from 'lodash'
 import { useTranslation } from 'next-i18next'
 import React, {

@@ -1,7 +1,7 @@
 import { formsApi } from '@clients/forms'
 import { ErrorSchema, RJSFValidationError, StrictRJSFSchema } from '@rjsf/utils'
 import { ErrorObject } from 'ajv'
-import { getAccessTokenOrLogout } from 'frontend/utils/amplify'
+import { getAccessTokenOrLogout } from 'frontend/utils/auth'
 import { useState } from 'react'
 import { useEffectOnce } from 'usehooks-ts'
 

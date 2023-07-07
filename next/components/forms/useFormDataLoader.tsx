@@ -1,7 +1,7 @@
 import { FormDefinition } from '@backend/forms/types'
 import { formsApi } from '@clients/forms'
 import { GetFormResponseDto } from '@clients/openapi-forms'
-import { getAccessTokenOrLogout } from 'frontend/utils/amplify'
+import { getAccessTokenOrLogout } from 'frontend/utils/auth'
 import { useRouter } from 'next/router'
 import { useTranslation } from 'next-i18next'
 import { useMemo, useState } from 'react'

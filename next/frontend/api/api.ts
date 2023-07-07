@@ -3,7 +3,7 @@
 import { FileUpdatedResponseDtoStatusEnum } from '@clients/openapi-forms'
 import { RJSFSchema } from '@rjsf/utils'
 import { ErrorObject } from 'ajv'
-import { getAccessTokenOrLogout } from 'frontend/utils/amplify'
+import { getAccessTokenOrLogout } from 'frontend/utils/auth'
 
 import { environment } from '../../environment'
 import { ApiError, Gdpr, Identity, TaxApiError, UrlResult, User } from '../dtos/generalApiDto'

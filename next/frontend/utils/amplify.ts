@@ -1,14 +1,9 @@
 /* eslint-disable import/no-extraneous-dependencies */
-// @aws-amplify/auth & @aws-amplify/core are part of aws-amplify & safe enough to import here like this
+// @aws-amplify/core is part of aws-amplify & safe enough to import here like this - though the export is deprecated so we use it only here
 // this import fixes issues with Jest not being able to parse esm lib imported in the root of aws-amplify
-import Auth from '@aws-amplify/auth'
 import Amplify from '@aws-amplify/core'
 import { environment } from 'environment'
-import { ROUTES } from 'frontend/api/constants'
 
-import logger from './logger'
-
-// TODO once env handling is merged update not to use process.env directly
 Amplify.configure({
   Auth: {
     // REQUIRED only for Federated Authentication - Amazon Cognito Identity Pool ID
@@ -32,16 +27,3 @@ Amplify.configure({
   },
   ssr: true,
 })
-
-export const getAccessTokenOrLogout = async () => {
-  try {
-    const session = await Auth.currentSession()
-    const jwtToken = session.getAccessToken().getJwtToken()
-    if (!jwtToken) throw new Error('no jwt token found in current session')
-    return jwtToken
-  } catch (error) {
-    logger.error('error getting access token - redirect to login', error)
-    window.location.assign(ROUTES.LOGIN)
-    throw error
-  }
-}

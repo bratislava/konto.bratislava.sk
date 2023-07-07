@@ -9,6 +9,7 @@ interface Props {
   description?: string
   confirmLabel: string
   onConfirm: () => void
+  confirmIsLoading?: boolean
   onCancel?: () => void
   cancelLabel?: string
   children?: ReactNode
@@ -18,6 +19,7 @@ const AccountSuccessAlert = ({
   title,
   confirmLabel,
   onConfirm,
+  confirmIsLoading,
   description,
   onCancel,
   cancelLabel,
@@ -35,7 +37,13 @@ const AccountSuccessAlert = ({
         <AccountMarkdown className="text-center" content={description} variant="sm" />
       )}
       {children}
-      <Button onPress={onConfirm} className="min-w-full" variant="category" text={confirmLabel} />
+      <Button
+        onPress={onConfirm}
+        className="min-w-full"
+        variant="category"
+        text={confirmLabel}
+        loading={confirmIsLoading}
+      />
       {onCancel && (
         <Button
           variant="plain-black"

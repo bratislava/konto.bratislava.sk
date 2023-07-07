@@ -1,5 +1,6 @@
 import { ROUTES } from 'frontend/api/constants'
-import { getAccessTokenOrLogout } from 'frontend/utils/amplify'
+import { getAccessTokenOrLogout, getCurrentAuthenticatedUser } from 'frontend/utils/auth'
+import { GENERIC_ERROR_MESSAGE } from 'frontend/utils/errors'
 import logger from 'frontend/utils/logger'
 import { getValidRedirectFromQuery } from 'frontend/utils/sso'
 import { useRouter } from 'next/router'
@@ -21,17 +22,22 @@ export const SSORedirectProvider = ({ children }: { children: React.ReactNode })
   const redirectTargetIsAnotherPage = !redirectTarget.startsWith('/')
 
   const redirect = useCallback(async () => {
-    if (redirectTarget.startsWith('/')) {
-      router.push(redirectTarget).catch((error_) => logger.error('Failed redirect', error_))
-    } else {
-      const accessToken = await getAccessTokenOrLogout()
-      if (accessToken) {
-        const redirectUrlWithToken = new URL(redirectTarget)
-        redirectUrlWithToken.searchParams.set('access_token', accessToken)
-        window.location.href = redirectUrlWithToken.href
+    try {
+      if (redirectTarget.startsWith('/')) {
+        const isAuthenticated = !!(await getCurrentAuthenticatedUser())
+        await (isAuthenticated ? router.push(redirectTarget) : router.push(ROUTES.LOGIN))
       } else {
-        window.location.href = redirectTarget
+        const accessToken = await getAccessTokenOrLogout()
+        if (accessToken) {
+          const redirectUrlWithToken = new URL(redirectTarget)
+          redirectUrlWithToken.searchParams.set('access_token', accessToken)
+          window.location.href = redirectUrlWithToken.href
+        } else {
+          window.location.href = redirectTarget
+        }
       }
+    } catch (error) {
+      logger.error(`${GENERIC_ERROR_MESSAGE} sso redirect error`, error)
     }
   }, [redirectTarget, router])
 

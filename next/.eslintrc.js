@@ -67,5 +67,6 @@ module.exports = {
     '.eslintrc.js',
     '/backend/forms/',
     '/backend/client-openapi-forms/',
+    '/backend/client-openapi-city-account/'
   ],
 }

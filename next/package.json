@@ -17,6 +17,7 @@
     "prettier": "prettier --write .",
     "generate-client-forms": "openapi-generator-cli generate -i https://nest-forms-backend.staging.bratislava.sk/api-json -g typescript-axios -o ./clients/openapi-forms --skip-validate-spec && node ./fix-client.js && prettier --write ./clients/openapi-forms",
     "generate-clients": "yarn generate-client-forms",
+    "generate-city-account": "yarn openapi-generator-cli generate -i https://nest-city-account.staging.bratislava.sk/api-json -g typescript-axios -o ./clients/openapi-city-account --skip-validate-spec && node ./fix-client.js &&  prettier --write ./clients/openapi-city-account",
     "postinstall": "patch-package"
   },
   "dependencies": {

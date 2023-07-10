@@ -1,131 +1,97 @@
 import BallDelimiterIcon from '@assets/images/forms/ball_delimiter_icon.svg'
 import UploadIcon from '@assets/images/new-icons/ui/upload.svg'
-import { UploadMinioFile } from '@backend/dtos/minio/upload-minio-file.dto'
 import cx from 'classnames'
-import React, { ForwardedRef, forwardRef, ForwardRefRenderFunction, useState } from 'react'
+import React, { forwardRef } from 'react'
+import { DropEvent } from 'react-aria'
+import { Button, DropZone, DropZoneRenderProps, FileTrigger } from 'react-aria-components'
 
-import { handleOnKeyPress } from '../../../../frontend/utils/general'
+import { isDefined } from '../../../../frontend/utils/general'
 
 interface UploadDropAreaProps {
-  value?: UploadMinioFile[]
-  multiple?: boolean
   disabled?: boolean
   sizeLimit?: number
   supportedFormats?: string[]
-  fileBrokenMessage?: string[]
-  onClick?: () => void
-  onDrop?: (newFiles: UploadMinioFile[]) => void
+  allowsMultiple?: boolean
+  onUpload?: (files: File[]) => void
 }
 
-const reduceItemsToFiles = (
-  filtered: UploadMinioFile[],
-  item: DataTransferItem,
-): UploadMinioFile[] => {
-  if (item.kind !== 'file') return filtered
-  const file = item.getAsFile()
-  if (!file) return filtered
-  const minioFile: UploadMinioFile = { file, originalName: file.name }
-  filtered.push(minioFile)
-  return filtered
-}
+const UploadDropArea = forwardRef<HTMLButtonElement, UploadDropAreaProps>(
+  ({ disabled, sizeLimit, supportedFormats, allowsMultiple, onUpload = () => {} }, ref) => {
+    const getDropZoneClassName = ({ isDropTarget }: DropZoneRenderProps) =>
+      cx('h-full w-full rounded-lg border-2 border-dashed border-gray-300', {
+        'bg-white': !disabled && !isDropTarget,
+        'opacity-50 bg-gray-200 cursor-not-allowed': disabled,
+        'cursor-pointer': !disabled,
+        'hover:border-gray-400 focus:border-gray-700 active:border-gray-700 hover:bg-gray-50':
+          !disabled && !isDropTarget,
+        'border-gray-400 bg-gray-50': !disabled && isDropTarget,
+      })
 
-const UploadDropAreaComponent: ForwardRefRenderFunction<HTMLDivElement, UploadDropAreaProps> = (
-  props: UploadDropAreaProps,
-  ref: ForwardedRef<HTMLDivElement>,
-) => {
-  // PROPS
-  const {
-    value,
-    multiple,
-    disabled,
-    sizeLimit,
-    supportedFormats,
-    fileBrokenMessage,
-    onClick,
-    onDrop,
-  }: UploadDropAreaProps = props
+    const handleOnChange = async (files: FileList | null) => {
+      if (disabled) {
+        return
+      }
 
-  // STATE
-  const [isDraggedOver, setIsDraggedOver] = useState<boolean>(false)
+      if (!files) {
+        onUpload([])
+        return
+      }
 
-  // STYLES
-  const dragAndDropClassNames = cx(
-    'flex flex-col justify-evenly h-full w-full p-6 bg-white rounded-lg text-center',
-    {
-      'opacity-50 bg-gray-200': disabled,
-    },
-  )
-
-  const dragAndDropOverlayClassNames = cx(
-    'absolute inset-[-1px] z-10 rounded-lg bg-transparent border-2 border-dashed border-gray-300',
-    {
-      'cursor-not-allowed': disabled,
-      'cursor-pointer': !disabled,
-      'border-red-500 hover:border-red-300':
-        !disabled && fileBrokenMessage && fileBrokenMessage.length > 0 && !isDraggedOver,
-      'border-red-300':
-        !disabled && fileBrokenMessage && fileBrokenMessage.length > 0 && isDraggedOver,
-      'hover:border-gray-400 focus:border-gray-700 active:border-gray-700':
-        !disabled && (!fileBrokenMessage || fileBrokenMessage.length === 0) && !isDraggedOver,
-      'border-gray-400':
-        !disabled && (!fileBrokenMessage || fileBrokenMessage.length === 0) && isDraggedOver,
-    },
-  )
-
-  // EVENT HANDLERS
-
-  const handleDrop = (event: React.DragEvent) => {
-    event.preventDefault()
-    if (disabled) return
-
-    const droppedItems: DataTransferItem[] = multiple
-      ? [...event.dataTransfer.items]
-      : [event.dataTransfer.items[0]]
-    const newFiles = droppedItems.reduce(reduceItemsToFiles, [])
-
-    setIsDraggedOver(false)
-    if (onDrop) {
-      onDrop(newFiles)
+      onUpload(Array.from(files))
     }
-  }
 
-  // RENDER
-  return (
-    <div className="w-full relative h-40" ref={ref} data-value={value}>
-      <div
-        aria-label="Upload drop area"
-        role="button"
-        tabIndex={0}
-        className={dragAndDropOverlayClassNames}
-        onClick={onClick}
-        onKeyPress={(event: React.KeyboardEvent) => handleOnKeyPress(event, onClick)}
-        onDragEnter={() => setIsDraggedOver(true)}
-        onDragOver={(event) => event.preventDefault()}
-        onDragLeave={() => setIsDraggedOver(false)}
-        onDrop={handleDrop}
-      />
-      <div className={dragAndDropClassNames}>
-        <div className="flex flex-row justify-center">
-          <div className="flex h-12 w-12 flex-row justify-center items-center rounded-full bg-gray-200">
-            <UploadIcon className="w-6 h-6" />
-          </div>
-        </div>
-        <h5 className="text-16-semibold">Drag & drop upload</h5>
-        <div className="text-p3 flex flex-row justify-center gap-1">
-          <p>
-            {sizeLimit} {sizeLimit && 'MB'}
-          </p>
-          {sizeLimit && supportedFormats && supportedFormats.length > 0 && (
-            <div className="grid grid-cols-1 content-center">
-              <BallDelimiterIcon />
-            </div>
-          )}
-          <p>{supportedFormats?.join(' ')}</p>
-        </div>
+    const handleOnDrop = async (event: DropEvent) => {
+      // DropZone doesn't yet support `isDisabled` prop.
+      if (disabled) {
+        return
+      }
+
+      const filePromises = event.items
+        .map((item) => {
+          if (item.kind === 'file') {
+            return item.getFile()
+          }
+          return null
+          // TODO: Consider implementing folder.
+        })
+        .filter(isDefined)
+
+      const files = await Promise.all(filePromises)
+      onUpload(files)
+    }
+
+    return (
+      <div className="w-full relative h-40">
+        <DropZone className={getDropZoneClassName} onDrop={handleOnDrop}>
+          <FileTrigger onChange={handleOnChange} allowsMultiple={allowsMultiple} className="h-full">
+            <Button
+              ref={ref}
+              className="w-full h-full flex flex-col items-center justify-evenly p-6 text-center"
+              isDisabled={disabled}
+            >
+              <div className="flex flex-row justify-center">
+                <div className="flex h-12 w-12 flex-row justify-center items-center rounded-full bg-gray-200">
+                  <UploadIcon className="w-6 h-6" />
+                </div>
+              </div>
+              <h5 className="text-16-semibold">Drag & drop upload</h5>
+              <div className="text-p3 flex flex-row justify-center gap-1">
+                <p>
+                  {sizeLimit} {sizeLimit && 'MB'}
+                </p>
+                {sizeLimit && supportedFormats && supportedFormats.length > 0 && (
+                  <div className="grid grid-cols-1 content-center">
+                    <BallDelimiterIcon />
+                  </div>
+                )}
+                <p>{supportedFormats?.join(' ')}</p>
+              </div>
+            </Button>
+          </FileTrigger>
+        </DropZone>
       </div>
-    </div>
-  )
-}
+    )
+  },
+)
 
-const UploadDropArea = forwardRef<HTMLDivElement, UploadDropAreaProps>(UploadDropAreaComponent)
 export default UploadDropArea

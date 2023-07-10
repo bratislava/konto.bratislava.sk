@@ -1,4 +1,3 @@
-import { FileUpdatedResponseDtoStatusEnum } from '@clients/openapi-forms'
 import { ValidatorType } from '@rjsf/utils'
 import { customizeValidator } from '@rjsf/validator-ajv8'
 import { AnySchemaObject, FuncKeywordDefinition } from 'ajv'
@@ -24,9 +23,6 @@ export interface FormRJSFContext {
   formId?: string
   pospId?: string
   userExternalId?: string
-  bucketFolderName?: string
-  fileScans: FileScan[]
-  setFileScans: (fileScans: FileScan[]) => void
 }
 
 export interface KeywordDefinition extends FuncKeywordDefinition {
@@ -95,6 +91,5 @@ export interface FileScan extends Record<string, unknown> {
   fileName: string
   originalName: string
   fileState?: FileScanState
-  fileStateStatus?: FileUpdatedResponseDtoStatusEnum
   scanId?: string
 }

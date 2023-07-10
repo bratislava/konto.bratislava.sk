@@ -2,13 +2,11 @@ import ArrowRightIcon from '@assets/images/new-icons/ui/arrow-right.svg'
 import LeftIcon from '@assets/images/new-icons/ui/chevron-left.svg'
 import { useTranslation } from 'next-i18next'
 
-import { FileScan } from '../../../../frontend/dtos/formStepperDto'
 import Button from '../../simple-components/Button'
 
 interface StepButtonGroupProps {
   stepIndex: number
   isFinalStep: boolean
-  fileScans: FileScan[]
   previous: () => void
   skip: () => void
   submitStep: () => void
@@ -16,10 +14,11 @@ interface StepButtonGroupProps {
 }
 
 const StepButtonGroup = (props: StepButtonGroupProps) => {
-  const { stepIndex, isFinalStep, fileScans = [], previous, skip, submitStep, submitForm } = props
+  const { stepIndex, isFinalStep, previous, skip, submitStep, submitForm } = props
   const { t } = useTranslation('forms')
 
-  const isSubmitFormAllowed = !fileScans.some((scan) => scan.fileState === 'error')
+  // TODO: Move from here and implement properly
+  const isSubmitFormAllowed = true
 
   return (
     <>

@@ -2,7 +2,7 @@ import { FormDefinition } from '@backend/forms/types'
 import { FormValidation, RJSFSchema } from '@rjsf/utils'
 import cx from 'classnames'
 import MenuList from 'components/forms/steps/MenuList'
-import useAccount from 'frontend/hooks/useAccount'
+import { useServerSideAuth } from 'frontend/hooks/useServerSideAuth'
 import { useRef } from 'react'
 
 import { validator } from '../../frontend/dtos/formStepperDto'
@@ -37,7 +37,7 @@ const GeneratedFormRJSF = ({
   const formState = useFormState()
   const submitter = useFormSubmitter(formSlug)
   const formModalsRef = useRef<FormModalsRef>(null)
-  const { isAuth } = useAccount()
+  const { isAuthenticated } = useServerSideAuth()
 
   // eslint-disable-next-line unicorn/consistent-function-scoping
   const saveConcept = async () => {
@@ -125,7 +125,7 @@ const GeneratedFormRJSF = ({
             skip={() => formModalsRef.current?.skipButtonHandler(formState.stepIndex + 1)}
             submitStep={formState.submitStep}
             submitForm={() =>
-              isAuth
+              isAuthenticated
                 ? submitter.submitForm(formState.formData, initialFormData.formId)
                 : formModalsRef.current?.openRegistrationModal()
             }

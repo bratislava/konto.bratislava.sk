@@ -3,14 +3,12 @@ import LoginAccountLink from 'components/forms/segments/LoginAccountLink/LoginAc
 import Button from 'components/forms/simple-components/Button'
 import InputField from 'components/forms/widget-components/InputField/InputField'
 import PasswordField from 'components/forms/widget-components/PasswordField/PasswordField'
+import useHookForm from 'frontend/hooks/useHookForm'
+import logger from 'frontend/utils/logger'
+import { formatUnicorn } from 'frontend/utils/string'
 import { useTranslation } from 'next-i18next'
 import { useEffect, useState } from 'react'
 import { Controller } from 'react-hook-form'
-
-import { AccountError } from '../../../../frontend/hooks/useAccount'
-import useHookForm from '../../../../frontend/hooks/useHookForm'
-import logger from '../../../../frontend/utils/logger'
-import { formatUnicorn } from '../../../../frontend/utils/string'
 
 interface Data {
   verificationCode: string
@@ -21,7 +19,7 @@ interface Data {
 interface Props {
   onSubmit: (verificationCode: string, password: string) => Promise<any>
   onResend: () => Promise<any>
-  error?: AccountError | null | undefined
+  error?: Error | null
   lastEmail: string
   fromMigration?: boolean
 }

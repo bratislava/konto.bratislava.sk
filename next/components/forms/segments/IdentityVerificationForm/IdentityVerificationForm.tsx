@@ -11,7 +11,6 @@ import { useCounter, useTimeout } from 'usehooks-ts'
 
 import { environment } from '../../../../environment'
 import { ROUTES } from '../../../../frontend/api/constants'
-import { AccountError } from '../../../../frontend/hooks/useAccount'
 import useHookForm from '../../../../frontend/hooks/useHookForm'
 import { isBrowser } from '../../../../frontend/utils/general'
 import logger from '../../../../frontend/utils/logger'
@@ -24,7 +23,7 @@ interface Data {
 
 interface Props {
   onSubmit: (rc: string, idCard: string, turnstileToken: string) => void
-  error?: AccountError | null | undefined
+  error?: Error | null
 }
 
 // must use `minLength: 1` to implement required field

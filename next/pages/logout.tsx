@@ -1,15 +1,21 @@
+import { Auth } from 'aws-amplify'
 import AccountContainer from 'components/forms/segments/AccountContainer/AccountContainer'
 import AccountSuccessAlert from 'components/forms/segments/AccountSuccessAlert/AccountSuccessAlert'
 import LoginRegisterLayout from 'components/layouts/LoginRegisterLayout'
+import {
+  getSSRCurrentAuth,
+  ServerSideAuthProviderHOC,
+} from 'components/logic/ServerSideAuthProvider'
+import { useServerSideAuth } from 'frontend/hooks/useServerSideAuth'
 import useSSORedirect from 'frontend/hooks/useSSORedirect'
+import { GENERIC_ERROR_MESSAGE } from 'frontend/utils/errors'
 import logger from 'frontend/utils/logger'
 import { GetServerSidePropsContext } from 'next'
 import { useTranslation } from 'next-i18next'
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
-import { useEffect } from 'react'
+import { useEffect, useState } from 'react'
 
 import PageWrapper from '../components/layouts/PageWrapper'
-import useAccount from '../frontend/hooks/useAccount'
 import { AsyncServerProps } from '../frontend/utils/types'
 
 export const getServerSideProps = async (ctx: GetServerSidePropsContext) => {
@@ -17,6 +23,7 @@ export const getServerSideProps = async (ctx: GetServerSidePropsContext) => {
 
   return {
     props: {
+      ssrCurrentAuthProps: await getSSRCurrentAuth(ctx.req),
       page: {
         locale: ctx.locale,
         localizations: ['sk', 'en']
@@ -33,15 +40,27 @@ export const getServerSideProps = async (ctx: GetServerSidePropsContext) => {
 
 const LogoutPage = ({ page }: AsyncServerProps<typeof getServerSideProps>) => {
   const { t } = useTranslation('account')
-  const { logout, isAuth } = useAccount()
+  const { isAuthenticated } = useServerSideAuth()
   const { redirect } = useSSORedirect()
+  const [isLoading, setIsLoading] = useState(false)
   useEffect(() => {
-    if (!isAuth) {
+    if (!isAuthenticated) {
       redirect().catch((error) => logger.error('Failed redirect logout useEffect', error))
     }
-  }, [isAuth, redirect])
+  }, [isAuthenticated, redirect])
 
-  // TODO replace AccountSuccessAlert with something more fitting
+  const logoutHandler = async () => {
+    setIsLoading(true)
+    try {
+      await Auth.signOut()
+      await redirect()
+    } catch (error) {
+      logger.error(`${GENERIC_ERROR_MESSAGE} logout screen`, error)
+    } finally {
+      setIsLoading(false)
+    }
+  }
+
   return (
     <PageWrapper locale={page.locale} localizations={page.localizations}>
       <LoginRegisterLayout backButtonHidden>
@@ -50,7 +69,8 @@ const LogoutPage = ({ page }: AsyncServerProps<typeof getServerSideProps>) => {
             title={t('logout_page.title')}
             description={t('logout_page.description')}
             confirmLabel={t('logout_page.confirm_label')}
-            onConfirm={() => logout()}
+            onConfirm={logoutHandler}
+            confirmIsLoading={isLoading}
             cancelLabel={t('logout_page.cancel_label')}
             onCancel={() => redirect()}
           />
@@ -60,4 +80,4 @@ const LogoutPage = ({ page }: AsyncServerProps<typeof getServerSideProps>) => {
   )
 }
 
-export default LogoutPage
+export default ServerSideAuthProviderHOC(LogoutPage)

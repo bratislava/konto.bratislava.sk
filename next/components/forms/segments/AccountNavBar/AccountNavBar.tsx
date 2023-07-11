@@ -10,6 +10,8 @@ import IdentityVerificationStatus from 'components/forms/simple-components/Ident
 import MenuDropdown, {
   MenuItemBase,
 } from 'components/forms/simple-components/MenuDropdown/MenuDropdown'
+import { UserData } from 'frontend/dtos/accountDto'
+import { useServerSideAuth } from 'frontend/hooks/useServerSideAuth'
 import NextLink from 'next/link'
 import { useRouter } from 'next/router'
 import { useTranslation } from 'next-i18next'
@@ -17,7 +19,6 @@ import { ReactNode, useState } from 'react'
 import { RemoveScroll } from 'react-remove-scroll'
 
 import { ROUTES } from '../../../../frontend/api/constants'
-import useAccount, { UserData } from '../../../../frontend/hooks/useAccount'
 import useElementSize from '../../../../frontend/hooks/useElementSize'
 import Brand from '../../simple-components/Brand'
 import Link from './NavBarLink'
@@ -67,7 +68,7 @@ const Avatar = ({ userData }: { userData?: UserData | null }) => {
 
 export const AccountNavBar = ({ className, sectionsList, menuItems, hiddenHeaderNav }: IProps) => {
   const [burgerOpen, setBurgerOpen] = useState(false)
-  const { isAuth, userData } = useAccount()
+  const { userData, isAuthenticated } = useServerSideAuth()
 
   const { statusBarConfiguration } = useStatusBarContext()
   const [isMenuOpen, setIsMenuOpen] = useState<boolean>(false)
@@ -110,7 +111,7 @@ export const AccountNavBar = ({ className, sectionsList, menuItems, hiddenHeader
             <IdentityVerificationStatus />
             <nav className="text-font/75 flex gap-x-8 font-semibold">
               <div className="text-font/75 flex items-center gap-x-6 font-semibold">
-                {isAuth ? (
+                {isAuthenticated ? (
                   <MenuDropdown
                     setIsOpen={setIsMenuOpen}
                     buttonTrigger={
@@ -150,7 +151,7 @@ export const AccountNavBar = ({ className, sectionsList, menuItems, hiddenHeader
             </nav>
           </div>
           {/* Header bottom navigation */}
-          {isAuth && sectionsList && !hiddenHeaderNav && (
+          {isAuthenticated && sectionsList && !hiddenHeaderNav && (
             <div className="hidden border-t border-gray-200 max-w-screen-lg m-auto h-[57px] w-full items-center justify-between lg:flex">
               <ul className="w-full h-full flex items-center">
                 {sectionsList.map((sectionItem) => (
@@ -188,13 +189,15 @@ export const AccountNavBar = ({ className, sectionsList, menuItems, hiddenHeader
             <Brand url="https://bratislava.sk/" className="grow" />
             <button
               type="button"
-              onClick={() => (isAuth ? setBurgerOpen(!burgerOpen) : router.push(ROUTES.LOGIN))}
+              onClick={() =>
+                isAuthenticated ? setBurgerOpen(!burgerOpen) : router.push(ROUTES.LOGIN)
+              }
               className="-mr-4 px-4 py-5"
             >
               <div className="flex w-6 items-center justify-center">
                 {burgerOpen ? (
                   <HamburgerClose className="w-6 h-6" />
-                ) : isAuth && sectionsList ? (
+                ) : isAuthenticated && sectionsList ? (
                   <Hamburger />
                 ) : (
                   <Avatar userData={userData} />

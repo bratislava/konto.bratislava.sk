@@ -4,11 +4,11 @@ import TaxesFeesCard from 'components/forms/segments/AccountSections/TaxesFeesSe
 import TaxesFeesErrorCard from 'components/forms/segments/AccountSections/TaxesFeesSection/TaxesFeesErrorCard'
 // import TaxesFeesWaitingCard from 'components/forms/segments/AccountSections/TaxesFeesSection/TaxesFeesWaitingCard'
 import Spinner from 'components/forms/simple-components/Spinner'
+import { useServerSideAuth } from 'frontend/hooks/useServerSideAuth'
 import { useTranslation } from 'next-i18next'
 
 import { ROUTES } from '../../../../../frontend/api/constants'
 import { useTaxes } from '../../../../../frontend/hooks/apiHooks'
-import useAccount, { AccountStatus } from '../../../../../frontend/hooks/useAccount'
 import { taxStatusHelper } from '../../../../../frontend/utils/general'
 import logger from '../../../../../frontend/utils/logger'
 
@@ -24,8 +24,7 @@ export type TaxesCardBase = {
 
 const TaxesFeesSection = () => {
   const { t } = useTranslation('account')
-  const { status } = useAccount()
-
+  const { tierStatus } = useServerSideAuth()
   const { data, isLoading } = useTaxes()
 
   //   const taxesFeesWaitingCardContent = `
@@ -36,7 +35,7 @@ const TaxesFeesSection = () => {
 <h4>${t('account_section_payment.error_card_title')}</h4>
 <div>${t('account_section_payment.error_card_content.title')}
 <ul>${
-    status !== AccountStatus.IdentityVerificationSuccess
+    !tierStatus.isIdentityVerified
       ? t('account_section_payment.error_card_content.list.verification', {
           url: ROUTES.IDENTITY_VERIFICATION,
         })
@@ -51,7 +50,7 @@ const TaxesFeesSection = () => {
 
   if (isLoading) {
     content = <Spinner className="mt-10 m-auto" />
-  } else if (status !== AccountStatus.IdentityVerificationSuccess) {
+  } else if (!tierStatus.isIdentityVerified) {
     content = <TaxesFeesErrorCard content={taxesFeesErrorCardContent} />
   } else if (!isLoading && !data) {
     content = (

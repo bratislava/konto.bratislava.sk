@@ -1,11 +1,11 @@
 import { ROUTES } from 'frontend/api/constants'
+import { getAccessTokenOrLogout, getCurrentAuthenticatedUser } from 'frontend/utils/amplify'
+import { GENERIC_ERROR_MESSAGE } from 'frontend/utils/errors'
 import logger from 'frontend/utils/logger'
 import { getValidRedirectFromQuery } from 'frontend/utils/sso'
 import { useRouter } from 'next/router'
 import React, { useCallback, useState } from 'react'
 import { useEffectOnce } from 'usehooks-ts'
-
-import useAccount from './useAccount'
 
 interface SSORedirectState {
   redirectTarget: string
@@ -19,28 +19,27 @@ const SSORedirectContext = React.createContext<SSORedirectState>({} as SSORedire
 export const SSORedirectProvider = ({ children }: { children: React.ReactNode }) => {
   const router = useRouter()
   const [redirectTarget, setRedirectTarget] = useState<string>(ROUTES.HOME)
-  const { getAccessToken } = useAccount()
   const redirectTargetIsAnotherPage = !redirectTarget.startsWith('/')
 
   const redirect = useCallback(async () => {
-    if (redirectTarget.startsWith('/')) {
-      router.push(redirectTarget).catch((error_) => logger.error('Failed redirect', error_))
-    } else {
-      let accessToken: string | null = null
-      try {
-        accessToken = await getAccessToken()
-      } catch (error) {
-        logger.error('Failed to get access token for redirect', error)
-      }
-      if (accessToken) {
-        const redirectUrlWithToken = new URL(redirectTarget)
-        redirectUrlWithToken.searchParams.set('access_token', accessToken)
-        window.location.href = redirectUrlWithToken.href
+    try {
+      if (redirectTarget.startsWith('/')) {
+        const isAuthenticated = !!(await getCurrentAuthenticatedUser())
+        await (isAuthenticated ? router.push(redirectTarget) : router.push(ROUTES.LOGIN))
       } else {
-        window.location.href = redirectTarget
+        const accessToken = await getAccessTokenOrLogout()
+        if (accessToken) {
+          const redirectUrlWithToken = new URL(redirectTarget)
+          redirectUrlWithToken.searchParams.set('access_token', accessToken)
+          window.location.href = redirectUrlWithToken.href
+        } else {
+          window.location.href = redirectTarget
+        }
       }
+    } catch (error) {
+      logger.error(`${GENERIC_ERROR_MESSAGE} sso redirect error`, error)
     }
-  }, [getAccessToken, redirectTarget, router])
+  }, [redirectTarget, router])
 
   // if trying to set incorrect redirect target, throws and keeps the previous value
   const setRedirect = useCallback((newTarget: string) => {

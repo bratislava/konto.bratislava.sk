@@ -4,11 +4,11 @@ import { useTranslation } from 'next-i18next'
 
 import { AccountError } from '../../../../frontend/hooks/useAccount'
 import logger from '../../../../frontend/utils/logger'
-import { Args, formatUnicorn } from '../../../../frontend/utils/string'
+import i18next from 'i18next'
 
 interface Props {
   error?: AccountError | null
-  args?: Args
+  args?: {[key: string]: string | number}
   close?: () => void
   solid?: boolean
 }
@@ -22,7 +22,7 @@ const AccountErrorAlert = ({ error, close, solid, args = {} }: Props) => {
 
   let errorMessage
   if (i18n.exists(`account:errors.${error.code}`)) {
-    errorMessage = formatUnicorn(t(`account:errors.${error.code}`), args)
+    errorMessage = i18next.t(t(`account:errors.${error.code}`), args)
     logger.error('Known error', error.code, errorMessage)
   } else {
     errorMessage = t(`account:errors.unknown`)

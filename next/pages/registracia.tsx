@@ -18,8 +18,8 @@ import { environment } from '../environment'
 import { ROUTES } from '../frontend/api/constants'
 import useAccount, { AccountStatus } from '../frontend/hooks/useAccount'
 import logger from '../frontend/utils/logger'
-import { formatUnicorn } from '../frontend/utils/string'
 import { AsyncServerProps } from '../frontend/utils/types'
+import i18next from 'i18next'
 
 export const getServerSideProps = async (ctx: GetServerSidePropsContext) => {
   const locale = ctx.locale ?? 'sk'
@@ -77,7 +77,7 @@ const RegisterPage = ({ page }: AsyncServerProps<typeof getServerSideProps>) => 
           ) : preVerificationRedirect ? (
             <AccountSuccessAlert
               title={t('register_success_title')}
-              description={formatUnicorn(t('register_success_description'), {
+              description={i18next.t(t('register_success_description'), {
                 email: lastEmail,
               })}
               confirmLabel={t('identity_verification_link')}
@@ -96,7 +96,7 @@ const RegisterPage = ({ page }: AsyncServerProps<typeof getServerSideProps>) => 
           ) : (
             <AccountSuccessAlert
               title={t('register_success_title')}
-              description={formatUnicorn(t('register_success_description'), {
+              description={i18next.t(t('register_success_description'), {
                 email: lastEmail,
               })}
               confirmLabel={t('identity_verification_link')}

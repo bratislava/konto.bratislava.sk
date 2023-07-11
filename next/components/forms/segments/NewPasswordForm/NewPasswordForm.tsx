@@ -10,7 +10,7 @@ import { Controller } from 'react-hook-form'
 import { AccountError } from '../../../../frontend/hooks/useAccount'
 import useHookForm from '../../../../frontend/hooks/useHookForm'
 import logger from '../../../../frontend/utils/logger'
-import { formatUnicorn } from '../../../../frontend/utils/string'
+import i18next from 'i18next'
 
 interface Data {
   verificationCode: string
@@ -95,7 +95,7 @@ const NewPasswordForm = ({ onSubmit, error, onResend, lastEmail, fromMigration }
         {t(fromMigration ? 'migration_new_password_title' : 'new_password_title')}
       </h1>
       <p className="text-p3 lg:text-p2">
-        {formatUnicorn(t('new_password_description'), { email: lastEmail })}
+        {` ${i18next.t(t('new_password_description'), { email: lastEmail })}`}
       </p>
       <AccountErrorAlert
         error={error}
@@ -162,7 +162,7 @@ const NewPasswordForm = ({ onSubmit, error, onResend, lastEmail, fromMigration }
       />
       <div className="text-p3 lg:text-p2">
         <span>{t('verification_description')}</span>
-        {cnt > 0 && <span>{` ${formatUnicorn(t('verification_cnt_description'), { cnt })}`}</span>}
+        {cnt > 0 && <span>{` ${i18next.t(t('verification_cnt_description'), { cnt: cnt })}`}</span>}
       </div>
       <Button
         onPress={handleResend}

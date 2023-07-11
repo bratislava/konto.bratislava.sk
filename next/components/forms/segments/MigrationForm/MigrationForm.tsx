@@ -10,7 +10,7 @@ import { Controller } from 'react-hook-form'
 import { ROUTES } from '../../../../frontend/api/constants'
 import { AccountError } from '../../../../frontend/hooks/useAccount'
 import useHookForm from '../../../../frontend/hooks/useHookForm'
-import { formatUnicorn } from '../../../../frontend/utils/string'
+import i18next from 'i18next'
 
 interface Data {
   email: string
@@ -65,17 +65,17 @@ const MigrationForm = ({ onSubmit, error, lastEmail }: Props) => {
       onSubmit={handleSubmit((data: Data) => onSubmit(data.email))}
     >
       <h1 className="text-h3">
-        {formatUnicorn(t(queryEmail ? 'migration_recognized_title' : 'migration_title'), {
+        {` ${i18next.t(t(queryEmail ? 'migration_recognized_title' : 'migration_title'), {
           fullname: queryFullname,
-        })}
+        })}`}
       </h1>
       <p className="text-p3 lg:text-p2">
-        {formatUnicorn(
+        {` ${i18next.t(
           t(queryEmail ? 'migration_recognized_description' : 'migration_description'),
           {
             email: queryEmail,
           },
-        )}
+        )}`}
       </p>
       <p className="text-p3 lg:text-p2">{t('migration_submit_description')}</p>
       <AccountErrorAlert error={error} args={{ email: lastEmail }} />

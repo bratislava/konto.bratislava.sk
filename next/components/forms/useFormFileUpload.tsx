@@ -13,7 +13,6 @@ import React, {
 } from 'react'
 import { useIsMounted } from 'usehooks-ts'
 
-import useAccount from '../../frontend/hooks/useAccount'
 import {
   FormFileUploadClientFileInfo,
   FormFileUploadClientFileStatus,
@@ -22,6 +21,7 @@ import {
   FormFileUploadFileInfo,
   FormFileUploadStatusEnum,
 } from '../../frontend/types/formFileUploadTypes'
+import { getAccessTokenOrLogout } from '../../frontend/utils/amplify'
 import {
   getFileInfoForNewFiles,
   mergeClientAndServerFiles,
@@ -62,7 +62,6 @@ export const FormFileUploadStateProvider = ({
 }: PropsWithChildren<FormFileUploadStateProviderProps>) => {
   const isMounted = useIsMounted()
   const queryClient = useQueryClient()
-  const { getAccessToken } = useAccount()
 
   // The client files are both stored in the state and in the ref. The state is used to trigger re-rendering of the
   // component, while the ref is used to get the current value of the client files. The ref is used in the functions
@@ -86,7 +85,7 @@ export const FormFileUploadStateProvider = ({
   const serverFilesQuery = useQuery(
     serverFilesQueryKey,
     async () => {
-      const accessToken = await getAccessToken()
+      const accessToken = await getAccessTokenOrLogout()
       const response = await formsApi.filesControllerGetFilesStatusByForm(initialFormData.formId, {
         accessToken,
       })
@@ -144,14 +143,14 @@ export const FormFileUploadStateProvider = ({
       const abortController = new AbortController()
       abortControllersRef.current[queuedFile.id] = abortController
 
-      // File must be set to uploading before calling `getAccessToken`, as it's async and the second call would trigger
-      // another upload if `getAccessToken` is not finished yet.
+      // File must be set to uploading before calling `getAccessTokenOrLogout`, as it's async and the second call would
+      // trigger another upload if `getAccessTokenOrLogout` is not finished yet.
       updateFileStatus({
         type: FormFileUploadStatusEnum.Uploading,
         progress: 0,
       })
 
-      const accessToken = await getAccessToken()
+      const accessToken = await getAccessTokenOrLogout()
       // TODO handle access token failure
       await uploadFile({
         formId: initialFormData.formId,

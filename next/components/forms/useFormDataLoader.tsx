@@ -6,8 +6,8 @@ import { useTranslation } from 'next-i18next'
 import { useMemo, useState } from 'react'
 import { useEffectOnce } from 'usehooks-ts'
 
-import useAccount from '../../frontend/hooks/useAccount'
 import useSnackbar from '../../frontend/hooks/useSnackbar'
+import { getAccessTokenOrLogout } from '../../frontend/utils/amplify'
 import { getInitFormData } from '../../frontend/utils/formStepper'
 import logger from '../../frontend/utils/logger'
 
@@ -26,7 +26,6 @@ export type InitialFormData = {
  */
 export const useFormDataLoader = (formDefinition: FormDefinition) => {
   const router = useRouter()
-  const { getAccessToken } = useAccount()
   const [openSnackbarError] = useSnackbar({ variant: 'error' })
   const { t } = useTranslation('forms')
   const [responseData, setResponseData] = useState<{
@@ -40,7 +39,7 @@ export const useFormDataLoader = (formDefinition: FormDefinition) => {
   useEffectOnce(() => {
     // eslint-disable-next-line unicorn/consistent-function-scoping
     const load = async () => {
-      const accessToken = await getAccessToken()
+      const accessToken = await getAccessTokenOrLogout()
       const loadPromise = queryId
         ? () =>
             [

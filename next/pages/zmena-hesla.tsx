@@ -7,7 +7,7 @@ import {
   getSSRCurrentAuth,
   ServerSideAuthProviderHOC,
 } from 'components/logic/ServerSideAuthProvider'
-import { useDerivedServerSideAuthState } from 'frontend/hooks/useServerSideAuth'
+import { useServerSideAuth } from 'frontend/hooks/useServerSideAuth'
 import { GENERIC_ERROR_MESSAGE, isError } from 'frontend/utils/errors'
 import { GetServerSidePropsContext } from 'next'
 import { useRouter } from 'next/router'
@@ -48,7 +48,7 @@ export const getServerSideProps = async (ctx: GetServerSidePropsContext) => {
 const PasswordChangePage = ({ page }: AsyncServerProps<typeof getServerSideProps>) => {
   const { t } = useTranslation('account')
   const router = useRouter()
-  const { isAuthenticated } = useDerivedServerSideAuthState()
+  const { isAuthenticated } = useServerSideAuth()
   const [passwordChangeError, setPasswordChangeError] = useState<Error | null>(null)
   const [passwordChangeStatus, setPasswordChangeStatus] = useState<PasswordChangeStatus>(
     PasswordChangeStatus.INIT,

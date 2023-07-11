@@ -10,7 +10,7 @@ import AnnouncementBlock from 'components/forms/segments/AccountSections/IntroSe
 import Banner from 'components/forms/simple-components/Banner'
 import Button from 'components/forms/simple-components/Button'
 import ServiceCard from 'components/forms/simple-components/ServiceCard'
-import { useDerivedServerSideAuthState, useServerSideAuth } from 'frontend/hooks/useServerSideAuth'
+import { useServerSideAuth } from 'frontend/hooks/useServerSideAuth'
 import { GENERIC_ERROR_MESSAGE, isError } from 'frontend/utils/errors'
 import logger from 'frontend/utils/logger'
 import { useRouter } from 'next/router'
@@ -23,8 +23,7 @@ import PhoneNumberModal from '../../PhoneNumberModal/PhoneNumberModal'
 
 const IntroSection = () => {
   const { t } = useTranslation('account')
-  const { userData } = useServerSideAuth()
-  const { isLegalEntity } = useDerivedServerSideAuthState()
+  const { userData, isLegalEntity } = useServerSideAuth()
   const router = useRouter()
   const [phoneNumberModal, setPhoneNumberModal] = useState<'hidden' | 'displayed' | 'dismissed'>(
     'hidden',

@@ -11,7 +11,7 @@ import MenuDropdown, {
   MenuItemBase,
 } from 'components/forms/simple-components/MenuDropdown/MenuDropdown'
 import { UserData } from 'frontend/dtos/accountDto'
-import { useDerivedServerSideAuthState, useServerSideAuth } from 'frontend/hooks/useServerSideAuth'
+import { useServerSideAuth } from 'frontend/hooks/useServerSideAuth'
 import NextLink from 'next/link'
 import { useRouter } from 'next/router'
 import { useTranslation } from 'next-i18next'
@@ -68,8 +68,7 @@ const Avatar = ({ userData }: { userData?: UserData | null }) => {
 
 export const AccountNavBar = ({ className, sectionsList, menuItems, hiddenHeaderNav }: IProps) => {
   const [burgerOpen, setBurgerOpen] = useState(false)
-  const { userData } = useServerSideAuth()
-  const { isAuthenticated } = useDerivedServerSideAuthState()
+  const { userData, isAuthenticated } = useServerSideAuth()
 
   const { statusBarConfiguration } = useStatusBarContext()
   const [isMenuOpen, setIsMenuOpen] = useState<boolean>(false)

@@ -1,6 +1,6 @@
 import cx from 'classnames'
 import Alert from 'components/forms/info-components/Alert'
-import { useDerivedServerSideAuthState } from 'frontend/hooks/useServerSideAuth'
+import { useServerSideAuth } from 'frontend/hooks/useServerSideAuth'
 import { useTranslation } from 'next-i18next'
 import React from 'react'
 
@@ -25,7 +25,7 @@ const UserProfileSectionHeader = ({
   mainHeader,
   childrenToColumn,
 }: UserProfileSectionHeaderProps) => {
-  const { tierStatus } = useDerivedServerSideAuthState()
+  const { tierStatus } = useServerSideAuth()
   const { t } = useTranslation('account')
   return (
     <div

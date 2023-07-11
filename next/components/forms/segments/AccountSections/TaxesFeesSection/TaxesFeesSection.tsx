@@ -4,7 +4,7 @@ import TaxesFeesCard from 'components/forms/segments/AccountSections/TaxesFeesSe
 import TaxesFeesErrorCard from 'components/forms/segments/AccountSections/TaxesFeesSection/TaxesFeesErrorCard'
 // import TaxesFeesWaitingCard from 'components/forms/segments/AccountSections/TaxesFeesSection/TaxesFeesWaitingCard'
 import Spinner from 'components/forms/simple-components/Spinner'
-import { useDerivedServerSideAuthState } from 'frontend/hooks/useServerSideAuth'
+import { useServerSideAuth } from 'frontend/hooks/useServerSideAuth'
 import { useTranslation } from 'next-i18next'
 
 import { ROUTES } from '../../../../../frontend/api/constants'
@@ -24,7 +24,7 @@ export type TaxesCardBase = {
 
 const TaxesFeesSection = () => {
   const { t } = useTranslation('account')
-  const { tierStatus } = useDerivedServerSideAuthState()
+  const { tierStatus } = useServerSideAuth()
   const { data, isLoading } = useTaxes()
 
   //   const taxesFeesWaitingCardContent = `

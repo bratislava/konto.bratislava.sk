@@ -1,10 +1,10 @@
 import Button from 'components/forms/simple-components/Button'
-import { useDerivedServerSideAuthState } from 'frontend/hooks/useServerSideAuth'
+import { useServerSideAuth } from 'frontend/hooks/useServerSideAuth'
 import { useRouter } from 'next/router'
 import { useTranslation } from 'next-i18next'
 
 const IdentityVerificationStatus = () => {
-  const { tierStatus } = useDerivedServerSideAuthState()
+  const { tierStatus } = useServerSideAuth()
   const { t } = useTranslation('account')
   const router = useRouter()
 

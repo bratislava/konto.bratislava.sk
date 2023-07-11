@@ -6,7 +6,7 @@ import {
   ServerSideAuthProviderHOC,
 } from 'components/logic/ServerSideAuthProvider'
 import { Wrapper } from 'components/styleguide/Wrapper'
-import { useDerivedServerSideAuthState } from 'frontend/hooks/useServerSideAuth'
+import { useServerSideAuth } from 'frontend/hooks/useServerSideAuth'
 import { GetServerSidePropsContext } from 'next'
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
 
@@ -27,7 +27,7 @@ const GetJwt = ({ page, accessToken }: AsyncServerProps<typeof getServerSideProp
   //   }
   // }
 
-  const { isAuthenticated } = useDerivedServerSideAuthState()
+  const { isAuthenticated } = useServerSideAuth()
 
   return (
     <PageWrapper locale={page.locale}>

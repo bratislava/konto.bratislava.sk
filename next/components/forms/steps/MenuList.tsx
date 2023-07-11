@@ -3,7 +3,7 @@ import DiskIcon from '@assets/images/new-icons/ui/disc.svg'
 import DownloadIcon from '@assets/images/new-icons/ui/download.svg'
 import LockIcon from '@assets/images/new-icons/ui/lock.svg'
 import PdfIcon from '@assets/images/new-icons/ui/pdf.svg'
-import { useDerivedServerSideAuthState } from 'frontend/hooks/useServerSideAuth'
+import { useServerSideAuth } from 'frontend/hooks/useServerSideAuth'
 import Link from 'next/link'
 import { useTranslation } from 'next-i18next'
 import { ReactNode, useState } from 'react'
@@ -27,7 +27,7 @@ interface FormHeaderProps {
 const MenuList = ({ onExportXml, onSaveConcept, onImportXml, onExportPdf }: FormHeaderProps) => {
   const { t } = useTranslation('forms')
 
-  const { isAuthenticated } = useDerivedServerSideAuthState()
+  const { isAuthenticated } = useServerSideAuth()
   const [registrationModal, setRegistrationModal] = useState<boolean>(false)
 
   const handleOnPressSaveConcept = () => {

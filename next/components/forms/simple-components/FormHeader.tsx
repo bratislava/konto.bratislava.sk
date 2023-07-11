@@ -11,7 +11,7 @@ import MenuDropdown, {
   MenuItemBase,
 } from 'components/forms/simple-components/MenuDropdown/MenuDropdown'
 import Waves from 'components/forms/simple-components/Waves/Waves'
-import { useDerivedServerSideAuthState } from 'frontend/hooks/useServerSideAuth'
+import { useServerSideAuth } from 'frontend/hooks/useServerSideAuth'
 import Link from 'next/link'
 import { useTranslation } from 'next-i18next'
 import { useState } from 'react'
@@ -25,7 +25,7 @@ interface FormHeaderProps {
 
 const FormHeader = ({ onExportXml, onSaveConcept, onImportXml, onExportPdf }: FormHeaderProps) => {
   const { t } = useTranslation('forms')
-  const { isAuthenticated } = useDerivedServerSideAuthState()
+  const { isAuthenticated } = useServerSideAuth()
 
   const [registrationModal, setRegistrationModal] = useState<boolean>(false)
   const [isMenuOpen, setIsMenuOpen] = useState<boolean>(false)

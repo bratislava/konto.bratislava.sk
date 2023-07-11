@@ -1,4 +1,4 @@
-import { useDerivedServerSideAuthState } from 'frontend/hooks/useServerSideAuth'
+import { useServerSideAuth } from 'frontend/hooks/useServerSideAuth'
 import { useTranslation } from 'next-i18next'
 import React, { forwardRef, useImperativeHandle, useState } from 'react'
 
@@ -16,7 +16,7 @@ const FormModals = forwardRef<FormModalsRef, FormModalsProps>(
   ({ skipToStep, stepIndex }: FormModalsProps, ref) => {
     const { t } = useTranslation('account')
 
-    const { isAuthenticated, tierStatus, isLegalEntity } = useDerivedServerSideAuthState()
+    const { isAuthenticated, tierStatus, isLegalEntity } = useServerSideAuth()
 
     const [isOnShowSkipModal, setIsOnShowSkipModal] = useState<boolean>(false)
     const [registrationModal, setRegistrationModal] = useState<boolean>(true)

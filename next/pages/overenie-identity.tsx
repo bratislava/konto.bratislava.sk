@@ -10,7 +10,7 @@ import {
 import { verifyIdentityApi } from 'frontend/api/api'
 import { Tier } from 'frontend/dtos/accountDto'
 import { useRefreshServerSideProps } from 'frontend/hooks/useRefreshServerSideProps'
-import { useDerivedServerSideAuthState } from 'frontend/hooks/useServerSideAuth'
+import { useServerSideAuth } from 'frontend/hooks/useServerSideAuth'
 import { GENERIC_ERROR_MESSAGE, isError } from 'frontend/utils/errors'
 import { GetServerSidePropsContext } from 'next'
 import { useRouter } from 'next/router'
@@ -50,7 +50,7 @@ const IdentityVerificationPage = ({ page }: AsyncServerProps<typeof getServerSid
   const [lastIdCard, setLastIdCard] = useState('')
 
   const [identityVerificationError, setIdentityVerificationError] = useState<Error | null>(null)
-  const { isAuthenticated, tierStatus } = useDerivedServerSideAuthState()
+  const { isAuthenticated, tierStatus } = useServerSideAuth()
 
   const router = useRouter()
   const { refreshData } = useRefreshServerSideProps(tierStatus)

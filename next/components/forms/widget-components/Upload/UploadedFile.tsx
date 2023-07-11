@@ -23,10 +23,10 @@ const UploadedFile = ({ fileInfo, onFileRetry, onFileRemove }: UploadedFileProps
       {fileInfo.status.type} <br />
       {fileSize} <br />
       {fileInfo.status.type === FormFileUploadStatusEnum.Uploading && (
-        <>{fileInfo.status.progress} %</>
+        <span>{fileInfo.status.progress} %</span>
       )}
       {fileInfo.status.type === FormFileUploadStatusEnum.UploadError && (
-        <>{fileInfo.status.error}</>
+        <span>{fileInfo.status.error}</span>
       )}
       {fileInfo.status.type === FormFileUploadStatusEnum.UploadError &&
         fileInfo.status.canRetry && <Button onPress={onFileRetry}>retry</Button>}

@@ -13,6 +13,7 @@ import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
 
 import { FormStateProvider } from '../../components/forms/FormStateProvider'
 import { useFormDataLoader } from '../../components/forms/useFormDataLoader'
+import { FormFileUploadStateProvider } from '../../components/forms/useFormFileUpload'
 import { environment } from '../../environment'
 import { forceString } from '../../frontend/utils/general'
 import logger from '../../frontend/utils/logger'
@@ -90,12 +91,14 @@ const FormTestPage = ({ page, formDefinition }: AsyncServerProps<typeof getServe
             formDefinition={formDefinition}
             initialFormData={initialFormData}
           >
-            <GeneratedFormRJSF
-              formDefinition={formDefinition}
-              escapedSlug={escapedSlug}
-              formSlug={formSlug}
-              initialFormData={initialFormData}
-            />
+            <FormFileUploadStateProvider initialFormData={initialFormData}>
+              <GeneratedFormRJSF
+                formDefinition={formDefinition}
+                escapedSlug={escapedSlug}
+                formSlug={formSlug}
+                initialFormData={initialFormData}
+              />
+            </FormFileUploadStateProvider>
           </FormStateProvider>
         )}
       </AccountPageLayout>

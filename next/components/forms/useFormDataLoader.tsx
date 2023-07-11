@@ -1,13 +1,13 @@
 import { FormDefinition } from '@backend/forms/types'
 import { formsApi } from '@clients/forms'
-import { GetFormResponseDto } from '@clients/openapi-forms'
-import { getAccessTokenOrLogout } from 'frontend/utils/amplify'
+import { GetFileResponseDto, GetFormResponseDto } from '@clients/openapi-forms'
 import { useRouter } from 'next/router'
 import { useTranslation } from 'next-i18next'
 import { useMemo, useState } from 'react'
 import { useEffectOnce } from 'usehooks-ts'
 
 import useSnackbar from '../../frontend/hooks/useSnackbar'
+import { getAccessTokenOrLogout } from '../../frontend/utils/amplify'
 import { getInitFormData } from '../../frontend/utils/formStepper'
 import logger from '../../frontend/utils/logger'
 
@@ -15,6 +15,7 @@ export type InitialFormData = {
   formDataJson: object
   formUserExternalId: string
   formId: string
+  files: GetFileResponseDto[]
 }
 
 /**
@@ -27,7 +28,10 @@ export const useFormDataLoader = (formDefinition: FormDefinition) => {
   const router = useRouter()
   const [openSnackbarError] = useSnackbar({ variant: 'error' })
   const { t } = useTranslation('forms')
-  const [responseData, setResponseData] = useState<GetFormResponseDto | null>(null)
+  const [responseData, setResponseData] = useState<{
+    form: GetFormResponseDto
+    files: GetFileResponseDto[]
+  } | null>(null)
 
   const queryId =
     router.query.id && typeof router.query.id === 'string' ? router.query.id : undefined
@@ -35,28 +39,37 @@ export const useFormDataLoader = (formDefinition: FormDefinition) => {
   useEffectOnce(() => {
     // eslint-disable-next-line unicorn/consistent-function-scoping
     const load = async () => {
-      const token = await getAccessTokenOrLogout()
+      const accessToken = await getAccessTokenOrLogout()
       const loadPromise = queryId
         ? () =>
-            formsApi.nasesControllerGetForm(queryId, {
-              accessToken: token,
-            })
+            [
+              formsApi.nasesControllerGetForm(queryId, {
+                accessToken,
+              }),
+              formsApi.filesControllerGetFilesStatusByForm(queryId, {
+                accessToken,
+              }),
+            ] as const
         : () =>
-            formsApi.nasesControllerCreateForm(
-              {
-                pospID: formDefinition.schema.pospID,
-                pospVersion: formDefinition.schema.pospVersion,
-                messageSubject: formDefinition.schema.pospID,
-                isSigned: false,
-                formName: formDefinition.schema.title || formDefinition.schema.pospID,
-                fromDescription: formDefinition.schema.description || formDefinition.schema.pospID,
-              },
-              { accessToken: token },
-            )
+            [
+              formsApi.nasesControllerCreateForm(
+                {
+                  pospID: formDefinition.schema.pospID,
+                  pospVersion: formDefinition.schema.pospVersion,
+                  messageSubject: formDefinition.schema.pospID,
+                  isSigned: false,
+                  formName: formDefinition.schema.title || formDefinition.schema.pospID,
+                  fromDescription:
+                    formDefinition.schema.description || formDefinition.schema.pospID,
+                },
+                { accessToken },
+              ),
+              Promise.resolve({ data: [] as GetFileResponseDto[] }),
+            ] as const
 
       try {
-        const response = await loadPromise()
-        setResponseData(response.data)
+        const [{ data: form }, { data: files }] = await Promise.all(loadPromise())
+        setResponseData({ form, files })
       } catch (error) {
         logger.error('Init FormData failed', error)
         openSnackbarError(t('errors.form_init'))
@@ -71,14 +84,15 @@ export const useFormDataLoader = (formDefinition: FormDefinition) => {
     if (responseData == null) {
       return null
     }
-    return queryId ? responseData.formDataJson : getInitFormData(formDefinition.schema)
+    return queryId ? responseData.form.formDataJson : getInitFormData(formDefinition.schema)
   }, [formDefinition.schema, queryId, responseData])
 
   if (responseData !== null) {
     return {
       formDataJson: formDataJson as object,
-      formUserExternalId: responseData.userExternalId,
-      formId: responseData.id,
+      formUserExternalId: responseData.form.userExternalId,
+      formId: responseData.form.id,
+      files: responseData.files,
     } as InitialFormData
   }
   return null

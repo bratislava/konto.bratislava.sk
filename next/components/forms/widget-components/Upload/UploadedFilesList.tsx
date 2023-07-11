@@ -1,30 +1,34 @@
-import { UploadMinioFile } from '@backend/dtos/minio/upload-minio-file.dto'
 import React from 'react'
 
+import { FormFileUploadFileInfo } from '../../../../frontend/types/formFileUploadTypes'
+import { isDefined } from '../../../../frontend/utils/general'
 import UploadedFile from './UploadedFile'
 
 interface UploadedFilesListProps {
-  allFiles?: UploadMinioFile[]
-  handleOnRemoveFile: (key: number) => void
+  value?: string | string[] | null
+  getFileInfoById: (id: string) => FormFileUploadFileInfo
+  onFileRemove?: (id: string) => void
+  onFileRetry?: (id: string) => void
 }
 
-const UploadedFilesList = ({ allFiles, handleOnRemoveFile }: UploadedFilesListProps) => {
+const UploadedFilesList = ({
+  value,
+  getFileInfoById,
+  onFileRetry = () => {},
+  onFileRemove = () => {},
+}: UploadedFilesListProps) => {
+  const valueArray = Array.isArray(value) ? value : [value]
+
   return (
-    <div className="mt-2">
-      {
-        /* FILES AREA */
-        allFiles?.map((minioFile: UploadMinioFile, key: number) => {
-          return (
-            <UploadedFile
-              key={key}
-              fileName={minioFile.originalName}
-              errorMessage={minioFile.errorMessage}
-              isUploading={minioFile.isUploading}
-              onRemove={() => handleOnRemoveFile(key)}
-            />
-          )
-        })
-      }
+    <div>
+      {valueArray.filter(isDefined).map((fileId) => (
+        <UploadedFile
+          key={fileId}
+          fileInfo={getFileInfoById(fileId)}
+          onFileRetry={() => onFileRetry(fileId)}
+          onFileRemove={() => onFileRemove(fileId)}
+        />
+      ))}
     </div>
   )
 }

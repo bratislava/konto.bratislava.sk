@@ -5,8 +5,8 @@ export const axiosInstance = axios.create()
 // Adds a possibility to provide `accessToken` to Axios request options.
 // TODO: Move to client factories after Cognito refactor.
 declare module 'axios' {
-  interface InternalAxiosRequestConfig {
-    accessToken: boolean
+  interface AxiosRequestConfig {
+    accessToken?: string | null
   }
 }
 axiosInstance.interceptors.request.use((config) => {

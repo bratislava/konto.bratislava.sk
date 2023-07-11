@@ -1,5 +1,7 @@
 import { GenericObjectType, RJSFSchema, UiSchema } from '@rjsf/utils'
+import { isProductionDeployment } from 'frontend/utils/general'
 import { JSONSchema7 } from 'json-schema'
+import { useRouter } from 'next/router'
 import { useTranslation } from 'next-i18next'
 import React, { createContext, PropsWithChildren, useContext, useMemo, useState } from 'react'
 
@@ -67,8 +69,11 @@ export const FormStateProvider = ({
   children,
 }: PropsWithChildren<FormStateProviderProps>) => {
   const { t } = useTranslation('forms')
+  const router = useRouter()
 
-  const [stepIndex, setStepIndex] = useState<FormStepIndex>(0)
+  const shouldPrefill = !isProductionDeployment() && router.query?.prefill === 'true'
+
+  const [stepIndex, setStepIndex] = useState<FormStepIndex>(shouldPrefill ? 'summary' : 0)
   const [formData, setFormData] = useState<GenericObjectType>(initialFormData.formDataJson)
 
   const [skipModal, setSkipModal] = useState<SkipModal>({ open: false, skipAllowed: false })

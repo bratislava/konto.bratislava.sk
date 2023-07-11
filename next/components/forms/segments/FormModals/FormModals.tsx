@@ -1,4 +1,6 @@
 import { useServerSideAuth } from 'frontend/hooks/useServerSideAuth'
+import { isProductionDeployment } from 'frontend/utils/general'
+import { useRouter } from 'next/router'
 import { useTranslation } from 'next-i18next'
 import React, { useState } from 'react'
 
@@ -11,6 +13,10 @@ const FormModals = () => {
   const { skipModal } = useFormState()
   const { t } = useTranslation('account')
 
+  // don't show modals when we prefill data automatically
+  const router = useRouter()
+  const shouldPrefill = router.query.prefill === 'true' && isProductionDeployment()
+
   const { isAuthenticated, tierStatus, isLegalEntity } = useServerSideAuth()
 
   const [registrationModal, setRegistrationModal] = useState<boolean>(true)
@@ -22,7 +28,7 @@ const FormModals = () => {
         <SkipStepModal show onClose={skipModal.onClose} onSkip={skipModal.onSkip} />
       )}
 
-      {!isAuthenticated && (
+      {!shouldPrefill && !isAuthenticated && (
         <RegistrationModal
           title={t('register_modal.header_sent_title')}
           subtitle={t('register_modal.header_sent_subtitle')}
@@ -30,7 +36,7 @@ const FormModals = () => {
           onClose={() => setRegistrationModal(false)}
         />
       )}
-      {isAuthenticated && !tierStatus.isIdentityVerified && (
+      {!shouldPrefill && isAuthenticated && !tierStatus.isIdentityVerified && (
         <IdentityVerificationModal
           show={identityVerificationModal}
           onClose={() => setIdentityVerificationModal(false)}

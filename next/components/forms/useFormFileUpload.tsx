@@ -32,7 +32,7 @@ import { InitialFormData } from './useFormDataLoader'
 
 const FormFileUploadContext = createContext<FormFileUploadContextType | undefined>(undefined)
 
-type FormFileUploadStateProviderProps = {
+export type FormFileUploadStateProviderProps = {
   initialFormData: Pick<InitialFormData, 'files' | 'formId'>
 }
 
@@ -150,13 +150,10 @@ export const FormFileUploadStateProvider = ({
         progress: 0,
       })
 
-      const accessToken = await getAccessTokenOrLogout()
-      // TODO handle access token failure
       await uploadFile({
         formId: initialFormData.formId,
         file: queuedFile.file,
         id: queuedFile.id,
-        accessToken,
         abortController,
         onSuccess: () => {
           updateFileStatus({ type: FormFileUploadStatusEnum.UploadDone })

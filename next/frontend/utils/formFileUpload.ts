@@ -14,12 +14,12 @@ import {
   FormFileUploadFileInfo,
   FormFileUploadStatusEnum,
 } from '../types/formFileUploadTypes'
+import { getAccessTokenOrLogout } from './amplify'
 
 export const uploadFile = async ({
   formId,
   file,
   id,
-  accessToken,
   abortController,
   onProgress,
   onSuccess,
@@ -28,12 +28,14 @@ export const uploadFile = async ({
   formId: string
   file: File
   id: string
-  accessToken: string | null
   abortController: AbortController
   onProgress: (progressPercentage: number) => void
   onSuccess: (response: AxiosResponse<PostFileResponseDto>) => void
   onError: (error: Error) => void
 }) => {
+  // TODO handle access token failure
+  const accessToken = await getAccessTokenOrLogout()
+
   const [err, response] = await to(
     formsApi.filesControllerUploadFile(formId, file, file.name, id, {
       onUploadProgress: (progressEvent: AxiosProgressEvent) => {

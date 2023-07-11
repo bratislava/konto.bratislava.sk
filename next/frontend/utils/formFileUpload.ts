@@ -4,7 +4,6 @@ import {
   GetFileResponseDtoStatusEnum,
   PostFileResponseDto,
 } from '@clients/openapi-forms'
-import to from 'await-to-js'
 import { AxiosProgressEvent, AxiosResponse } from 'axios'
 import { v4 as createUuid } from 'uuid'
 
@@ -36,8 +35,8 @@ export const uploadFile = async ({
   // TODO handle access token failure
   const accessToken = await getAccessTokenOrLogout()
 
-  const [err, response] = await to(
-    formsApi.filesControllerUploadFile(formId, file, file.name, id, {
+  try {
+    const response = await formsApi.filesControllerUploadFile(formId, file, file.name, id, {
       onUploadProgress: (progressEvent: AxiosProgressEvent) => {
         if (progressEvent.total == null) {
           return
@@ -46,15 +45,12 @@ export const uploadFile = async ({
       },
       signal: abortController.signal,
       accessToken,
-    }),
-  )
-
-  if (err) {
-    onError(err)
-    return
+    })
+    onSuccess(response)
+  } catch (error: any) {
+    // TODO: Error type
+    onError(error)
   }
-
-  onSuccess(response)
 }
 
 /**

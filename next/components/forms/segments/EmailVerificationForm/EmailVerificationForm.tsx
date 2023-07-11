@@ -74,7 +74,7 @@ const EmailVerificationForm = ({ onSubmit, error, onResend, lastEmail }: Props) 
     >
       <h1 className="text-h3">{t('email_verification_title')}</h1>
       <p className="text-p3 lg:text-p2">
-        {` ${i18next.t(t('email_verification_description'), { email: lastEmail })}`}
+        {` ${i18next.t('email_verification_description', { email: lastEmail })}`}
       </p>
       <AccountErrorAlert
         error={error}
@@ -110,7 +110,7 @@ const EmailVerificationForm = ({ onSubmit, error, onResend, lastEmail }: Props) 
         {noError && cnt > 0 && (
           <div className="mb-4">
             <span>{t('verification_description')}</span>
-            <span>{` ${i18next.t(t('verification_cnt_description'), { cnt: cnt })}`}</span>
+            <span>{` ${i18next.t('verification_cnt_description', { cnt: cnt })}`}</span>
           </div>
         )}
         <AccountMarkdown variant="sm" content={t('verification_cnt_info')} />

@@ -77,7 +77,7 @@ const RegisterPage = ({ page }: AsyncServerProps<typeof getServerSideProps>) => 
           ) : preVerificationRedirect ? (
             <AccountSuccessAlert
               title={t('register_success_title')}
-              description={i18next.t(t('register_success_description'), {
+              description={i18next.t('register_success_description', {
                 email: lastEmail,
               })}
               confirmLabel={t('identity_verification_link')}
@@ -96,7 +96,7 @@ const RegisterPage = ({ page }: AsyncServerProps<typeof getServerSideProps>) => 
           ) : (
             <AccountSuccessAlert
               title={t('register_success_title')}
-              description={i18next.t(t('register_success_description'), {
+              description={i18next.t('register_success_description', {
                 email: lastEmail,
               })}
               confirmLabel={t('identity_verification_link')}

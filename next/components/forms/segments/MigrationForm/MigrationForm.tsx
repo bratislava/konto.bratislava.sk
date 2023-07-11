@@ -65,13 +65,13 @@ const MigrationForm = ({ onSubmit, error, lastEmail }: Props) => {
       onSubmit={handleSubmit((data: Data) => onSubmit(data.email))}
     >
       <h1 className="text-h3">
-        {` ${i18next.t(t(queryEmail ? 'migration_recognized_title' : 'migration_title'), {
+        {` ${i18next.t(queryEmail ? 'migration_recognized_title' : 'migration_title', {
           fullname: queryFullname,
         })}`}
       </h1>
       <p className="text-p3 lg:text-p2">
         {` ${i18next.t(
-          t(queryEmail ? 'migration_recognized_description' : 'migration_description'),
+          queryEmail ? 'migration_recognized_description' : 'migration_description',
           {
             email: queryEmail,
           },

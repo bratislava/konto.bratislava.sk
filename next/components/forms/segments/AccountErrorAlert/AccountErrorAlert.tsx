@@ -22,7 +22,7 @@ const AccountErrorAlert = ({ error, close, solid, args = {} }: Props) => {
 
   let errorMessage
   if (i18n.exists(`account:errors.${error.code}`)) {
-    errorMessage = i18next.t(t(`account:errors.${error.code}`), args)
+    errorMessage = i18next.t(`account:errors.${error.code}`, args)
     logger.error('Known error', error.code, errorMessage)
   } else {
     errorMessage = t(`account:errors.unknown`)

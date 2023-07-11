@@ -82,7 +82,7 @@ const IdentityVerificationPage = ({ page }: AsyncServerProps<typeof getServerSid
               title={t('identity_verification_pending_title')}
               description={
                 lastRc && lastIdCard
-                  ? i18next.t(t('identity_verification_pending_description'), {
+                  ? i18next.t('identity_verification_pending_description', {
                       rc: lastRc,
                       idCard: lastIdCard,
                     })
@@ -100,7 +100,7 @@ const IdentityVerificationPage = ({ page }: AsyncServerProps<typeof getServerSid
               description={
                 lastRc &&
                 lastIdCard &&
-                i18next.t(t('identity_verification_success_description'), {
+                i18next.t('identity_verification_success_description', {
                   rc: lastRc,
                   idCard: lastIdCard,
                 })

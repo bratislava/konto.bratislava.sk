@@ -49,6 +49,7 @@ export const uploadFile = async ({
     onSuccess(response)
   } catch (error: any) {
     // TODO: Error type
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
     onError(error)
   }
 }

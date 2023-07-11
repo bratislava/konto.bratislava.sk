@@ -5,7 +5,6 @@ import InputField from 'components/forms/widget-components/InputField/InputField
 import { useTranslation } from 'next-i18next'
 import { Controller } from 'react-hook-form'
 
-import { AccountError } from '../../../../frontend/hooks/useAccount'
 import useHookForm from '../../../../frontend/hooks/useHookForm'
 
 interface Data {
@@ -14,8 +13,9 @@ interface Data {
 
 interface Props {
   onSubmit: (email: string) => Promise<any>
-  error?: AccountError | null | undefined
+  error?: Error | null
   lastEmail: string
+  setLastEmail: (email: string) => void
 }
 
 // must use `minLength: 1` to implement required field
@@ -32,7 +32,7 @@ const schema = {
   required: ['email'],
 }
 
-const ForgottenPasswordForm = ({ onSubmit, error, lastEmail }: Props) => {
+const ForgottenPasswordForm = ({ onSubmit, error, lastEmail, setLastEmail }: Props) => {
   const { t } = useTranslation('account')
   const {
     handleSubmit,
@@ -47,7 +47,10 @@ const ForgottenPasswordForm = ({ onSubmit, error, lastEmail }: Props) => {
   return (
     <form
       className="flex flex-col space-y-4"
-      onSubmit={handleSubmit((data: Data) => onSubmit(data.email))}
+      onSubmit={handleSubmit((data: Data) => {
+        setLastEmail(data.email)
+        return onSubmit(data.email)
+      })}
     >
       <h1 className="text-h3">{t('forgotten_password_title')}</h1>
       <AccountErrorAlert error={error} args={{ email: lastEmail }} />

@@ -5,19 +5,20 @@ import LogoutIcon from '@assets/images/new-icons/ui/logout.svg'
 import MySubmissionIcon from '@assets/images/new-icons/ui/my-submission.svg'
 import PaymentIcon from '@assets/images/new-icons/ui/payment.svg'
 import ProfileIcon from '@assets/images/new-icons/ui/profile.svg'
+import { Auth } from 'aws-amplify'
 import cx from 'classnames'
 import AccountNavBar, {
   MenuSectionItemBase,
 } from 'components/forms/segments/AccountNavBar/AccountNavBar'
 import { MenuItemBase } from 'components/forms/simple-components/MenuDropdown/MenuDropdown'
 import { usePageWrapperContext } from 'components/layouts/PageWrapper'
+import { useServerSideAuth } from 'frontend/hooks/useServerSideAuth'
 import { useRouter } from 'next/router'
 import { useTranslation } from 'next-i18next'
 import { ReactNode, useEffect } from 'react'
 
 import { environment } from '../../environment'
 import { ROUTES } from '../../frontend/api/constants'
-import useAccount from '../../frontend/hooks/useAccount'
 import { isDefined } from '../../frontend/utils/general'
 import logger from '../../frontend/utils/logger'
 
@@ -35,16 +36,16 @@ const AccountPageLayout = ({
   isPublicPage,
 }: AccountPageLayoutBase) => {
   const { locale, localizations = [] } = usePageWrapperContext()
+  const { isAuthenticated } = useServerSideAuth()
   const router = useRouter()
-  const { isAuth, logout } = useAccount()
 
   useEffect(() => {
-    if (!isPublicPage && !isAuth && router.route !== ROUTES.PAYMENT_RESULT) {
+    if (!isPublicPage && !isAuthenticated && router.route !== ROUTES.PAYMENT_RESULT) {
       router
         .push({ pathname: ROUTES.LOGIN, query: { from: router.route } })
         .catch((error_) => logger.error('Redirect failed', error_))
     }
-  }, [isAuth, isPublicPage, router])
+  }, [isAuthenticated, isPublicPage, router])
 
   const [t] = useTranslation('common')
 
@@ -59,7 +60,7 @@ const AccountPageLayout = ({
   }
 
   const logoutHandler = async () => {
-    logout()
+    await Auth.signOut()
     await router.push(ROUTES.LOGIN)
   }
 

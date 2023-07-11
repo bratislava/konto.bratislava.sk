@@ -1,7 +1,7 @@
+import { useServerSideAuth } from 'frontend/hooks/useServerSideAuth'
 import { useTranslation } from 'next-i18next'
 import React, { forwardRef, useImperativeHandle, useState } from 'react'
 
-import useAccount, { AccountStatus } from '../../../../frontend/hooks/useAccount'
 import IdentityVerificationModal from '../IdentityVerificationModal/IdentityVerificationModal'
 import RegistrationModal from '../RegistrationModal/RegistrationModal'
 import SkipStepModal from '../SkipStepModal/SkipStepModal'
@@ -16,7 +16,7 @@ const FormModals = forwardRef<FormModalsRef, FormModalsProps>(
   ({ skipToStep, stepIndex }: FormModalsProps, ref) => {
     const { t } = useTranslation('account')
 
-    const { isAuth, status, userData } = useAccount()
+    const { isAuthenticated, tierStatus, isLegalEntity } = useServerSideAuth()
 
     const [isOnShowSkipModal, setIsOnShowSkipModal] = useState<boolean>(false)
     const [registrationModal, setRegistrationModal] = useState<boolean>(true)
@@ -52,7 +52,7 @@ const FormModals = forwardRef<FormModalsRef, FormModalsProps>(
             setSkipModalWasShown(true)
           }}
         />
-        {!isAuth && (
+        {!isAuthenticated && (
           <RegistrationModal
             title={t('register_modal.header_sent_title')}
             subtitle={t('register_modal.header_sent_subtitle')}
@@ -60,11 +60,11 @@ const FormModals = forwardRef<FormModalsRef, FormModalsProps>(
             onClose={() => setRegistrationModal(false)}
           />
         )}
-        {isAuth && status !== AccountStatus.IdentityVerificationSuccess && (
+        {isAuthenticated && tierStatus.isIdentityVerified && (
           <IdentityVerificationModal
             show={identityVerificationModal}
             onClose={() => setIdentityVerificationModal(false)}
-            userType={userData?.account_type}
+            isLegalEntity={isLegalEntity}
           />
         )}
       </>

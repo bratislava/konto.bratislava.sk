@@ -1,43 +1,33 @@
 import Button from 'components/forms/simple-components/Button'
 import PageWrapper from 'components/layouts/PageWrapper'
+import {
+  getSSRAccessToken,
+  getSSRCurrentAuth,
+  ServerSideAuthProviderHOC,
+} from 'components/logic/ServerSideAuthProvider'
 import { Wrapper } from 'components/styleguide/Wrapper'
-import { isProductionDeployment } from 'frontend/utils/general'
+import { useServerSideAuth } from 'frontend/hooks/useServerSideAuth'
 import { GetServerSidePropsContext } from 'next'
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
-import { useState } from 'react'
-import { useEffectOnce } from 'usehooks-ts'
 
-import { resetRcApi } from '../frontend/api/api'
+// import { resetRcApi } from '../frontend/api/api'
 import { ROUTES } from '../frontend/api/constants'
-import useAccount from '../frontend/hooks/useAccount'
-import logger from '../frontend/utils/logger'
 import { AsyncServerProps } from '../frontend/utils/types'
 
-const GetJwt = ({ page }: AsyncServerProps<typeof getServerSideProps>) => {
-  const { getAccessToken, isAuth, updateUserData, logout } = useAccount()
-  const [accessToken, setAccessToken] = useState('')
+const GetJwt = ({ page, accessToken }: AsyncServerProps<typeof getServerSideProps>) => {
+  // resetting the birth number was not used for some time - if needed, this needs to be updated
+  // const resetRc = async () => {
+  //   try {
+  //     await resetRcApi()
+  // reset the birth number in cognito data here!
+  //     alert(`Res: ${JSON.stringify(res)}`)
+  //   } catch (error) {
+  //     logger.error(error)
+  //     alert(`ERROR`)
+  //   }
+  // }
 
-  useEffectOnce(() => {
-    ;(async () => {
-      const token = await getAccessToken()
-      if (token) {
-        setAccessToken(token)
-      }
-    })().catch((error) => {
-      logger.error(error)
-    })
-  })
-
-  const resetRc = async () => {
-    try {
-      await resetRcApi(accessToken)
-      const res = await updateUserData({ tier: undefined })
-      alert(`Res: ${JSON.stringify(res)}`)
-    } catch (error) {
-      logger.error(error)
-      alert(`ERROR`)
-    }
-  }
+  const { isAuthenticated } = useServerSideAuth()
 
   return (
     <PageWrapper locale={page.locale}>
@@ -47,15 +37,9 @@ const GetJwt = ({ page }: AsyncServerProps<typeof getServerSideProps>) => {
             direction="column"
             title="Kód nižšie slúži na technické účeli a umožňuje prístup k Vášmu kontu. NIKDY HO S NIKÝM NEZDIEĽAJTE. This site is for development purposes, the code below allows anyone to access your account. NEVER SHARE IT WITH ANYONE."
           >
-            {isAuth ? (
+            {isAuthenticated ? (
               <div className="flex flex-col">
                 <div>{accessToken}</div>
-                {!isProductionDeployment() ? (
-                  <>
-                    <Button onPress={resetRc} text="Reset RC" />
-                    <Button onPress={logout} text="Logout" />
-                  </>
-                ) : null}
               </div>
             ) : (
               <div className="flex flex-col">
@@ -74,6 +58,8 @@ export const getServerSideProps = async (ctx: GetServerSidePropsContext) => {
 
   return {
     props: {
+      ssrCurrentAuthProps: await getSSRCurrentAuth(ctx.req),
+      accessToken: await getSSRAccessToken(ctx.req),
       page: {
         locale: ctx.locale,
       },
@@ -82,4 +68,4 @@ export const getServerSideProps = async (ctx: GetServerSidePropsContext) => {
   }
 }
 
-export default GetJwt
+export default ServerSideAuthProviderHOC(GetJwt)

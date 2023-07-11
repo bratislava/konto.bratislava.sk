@@ -1,6 +1,10 @@
 import TaxesFeesSection from 'components/forms/segments/AccountSections/TaxesFeesSection/TaxesFeesSection'
 import AccountPageLayout from 'components/layouts/AccountPageLayout'
 import PageWrapper from 'components/layouts/PageWrapper'
+import {
+  getSSRCurrentAuth,
+  ServerSideAuthProviderHOC,
+} from 'components/logic/ServerSideAuthProvider'
 import { GetServerSidePropsContext } from 'next'
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
 
@@ -11,6 +15,7 @@ export const getServerSideProps = async (ctx: GetServerSidePropsContext) => {
 
   return {
     props: {
+      ssrCurrentAuthProps: await getSSRCurrentAuth(ctx.req),
       page: {
         locale: ctx.locale,
         localizations: ['sk', 'en']
@@ -35,4 +40,4 @@ const AccountTaxesFeesPage = ({ page }: AsyncServerProps<typeof getServerSidePro
   )
 }
 
-export default AccountTaxesFeesPage
+export default ServerSideAuthProviderHOC(AccountTaxesFeesPage)

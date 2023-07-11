@@ -19,7 +19,7 @@ type ButtonBase = {
 
 const Button = ({ children, className, ...rest }: ButtonBase) => {
   const ref = useRef<HTMLButtonElement>(null)
-  const { buttonProps } = useButton({ children, ...rest }, ref)
+  const { buttonProps } = useButton({ ...rest }, ref)
   return (
     <button
       className={cx('focus:outline-none', className)}

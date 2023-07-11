@@ -19,7 +19,7 @@ type ToggleBase = {
 }
 
 const Toggle = ({ children, isDisabled = false, isSelected = true, ...rest }: ToggleBase) => {
-  const state: ToggleState = useToggleState({ ...rest, isDisabled, isSelected, children })
+  const state: ToggleState = useToggleState({ ...rest, isDisabled, isSelected })
   const generatedId = useId()
   const generatedOrProvidedId = rest.id ?? generatedId
   const ref = React.useRef(null)

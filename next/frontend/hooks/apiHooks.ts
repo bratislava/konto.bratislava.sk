@@ -1,13 +1,13 @@
 import Ajv from 'ajv'
 import addFormats from 'ajv-formats'
 import { useEffect } from 'react'
-import { useQuery } from '@tanstack/react-query'
 
 import { getTaxApi } from '../api/api'
 import { ajvFormats, ajvKeywords } from '../dtos/formStepperDto'
 import { TaxApiError } from '../dtos/generalApiDto'
 import { Tax, TaxJSONSchema } from '../dtos/taxDto'
 import logger from '../utils/logger'
+import { useQuery } from '@tanstack/react-query'
 
 // TODO test for no tax, not yet tax, legit tax unpaid, partially paid, paid
 export const useTaxes = () => {

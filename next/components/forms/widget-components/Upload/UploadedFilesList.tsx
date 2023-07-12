@@ -20,16 +20,18 @@ const UploadedFilesList = ({
   const valueArray = Array.isArray(value) ? value : [value]
 
   return (
-    <div>
+    <ul>
       {valueArray.filter(isDefined).map((fileId) => (
-        <UploadedFile
-          key={fileId}
-          fileInfo={getFileInfoById(fileId)}
-          onFileRetry={() => onFileRetry(fileId)}
-          onFileRemove={() => onFileRemove(fileId)}
-        />
+        <li>
+          <UploadedFile
+            key={fileId}
+            fileInfo={getFileInfoById(fileId)}
+            onFileRetry={() => onFileRetry(fileId)}
+            onFileRemove={() => onFileRemove(fileId)}
+          />
+        </li>
       ))}
-    </div>
+    </ul>
   )
 }
 

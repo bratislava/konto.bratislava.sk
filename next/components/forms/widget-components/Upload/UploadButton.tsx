@@ -65,7 +65,7 @@ const UploadButton = forwardRef<HTMLButtonElement, UploadButtonProps>(
               <div className="h-6 w-6 flex justify-center items-center">
                 <UploadIcon className="w-6 h-6" />
               </div>
-              <p className="text-16">Upload</p>
+              <div className="text-16">Upload</div>
             </div>
           </Button>
         </FileTrigger>

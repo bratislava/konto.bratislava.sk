@@ -797,5 +797,11 @@
     "description": "Budete odhlásený zo všetkých aplikácii využívajúcich Bratislavské konto.",
     "confirm_label": "Odhlásiť sa",
     "cancel_label": "Späť"
+  },
+  "Upload": {
+    "aria": {
+      "removeFile": "Odstrániť súbor"
+    },
+    "retry": "Skúsiť znova"
   }
 }

@@ -16,14 +16,14 @@ import Link from 'next/link'
 import { useTranslation } from 'next-i18next'
 import { useState } from 'react'
 
+import { useFormExportImport } from '../../../frontend/hooks/useFormExportImport'
+
 interface FormHeaderProps {
-  onExportXml: () => void
   onSaveConcept: () => void
-  onImportXml: () => void
-  onExportPdf: () => void
 }
 
-const FormHeader = ({ onExportXml, onSaveConcept, onImportXml, onExportPdf }: FormHeaderProps) => {
+const FormHeader = ({ onSaveConcept }: FormHeaderProps) => {
+  const { exportXml, exportPdf, importXml } = useFormExportImport()
   const { t } = useTranslation('forms')
   const { isAuthenticated } = useServerSideAuth()
 
@@ -39,13 +39,13 @@ const FormHeader = ({ onExportXml, onSaveConcept, onImportXml, onExportPdf }: Fo
     {
       title: t('menu_list.download_xml'),
       icon: <DownloadIcon className="w-6 h-6" />,
-      onPress: onExportXml,
+      onPress: exportXml,
     },
-    { title: t('menu_list.pdf'), icon: <PdfIcon className="w-6 h-6" />, onPress: onExportPdf },
+    { title: t('menu_list.pdf'), icon: <PdfIcon className="w-6 h-6" />, onPress: exportPdf },
     {
       title: t('menu_list.upload_xml'),
       icon: <ArrowsDownUpIcon className="w-6 h-6" />,
-      onPress: onImportXml,
+      onPress: importXml,
     },
   ]
 

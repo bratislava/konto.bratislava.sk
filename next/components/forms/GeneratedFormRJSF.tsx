@@ -36,12 +36,7 @@ const GeneratedFormRJSF = ({ uiSchema, formSlug, wrapperClassName, initialFormDa
 
   return (
     <>
-      <FormHeader
-        onImportXml={formState.importXml}
-        onExportXml={formState.exportXml}
-        onSaveConcept={saveConcept}
-        onExportPdf={formState.exportPdf}
-      />
+      <FormHeader onSaveConcept={saveConcept} />
       <div
         className={cx(
           'flex flex-col gap-10 pt-0 pb-6 lg:py-10 w-full max-w-screen-lg mx-auto',
@@ -114,12 +109,7 @@ const GeneratedFormRJSF = ({ uiSchema, formSlug, wrapperClassName, initialFormDa
                 : formModalsRef.current?.openRegistrationModal()
             }
           />
-          <MenuList
-            onExportXml={formState.exportXml}
-            onSaveConcept={saveConcept}
-            onImportXml={formState.importXml}
-            onExportPdf={formState.exportPdf}
-          />
+          <MenuList onSaveConcept={saveConcept} />
         </div>
       </div>
     </>

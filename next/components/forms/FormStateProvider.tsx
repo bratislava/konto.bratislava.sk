@@ -1,4 +1,3 @@
-import { FormDefinition } from '@backend/forms/types'
 import { formsApi } from '@clients/forms'
 import Form from '@rjsf/core'
 import {
@@ -12,7 +11,6 @@ import { getAccessTokenOrLogout } from 'frontend/utils/amplify'
 import { cloneDeep } from 'lodash'
 import { useTranslation } from 'next-i18next'
 import React, {
-  ChangeEvent,
   createContext,
   PropsWithChildren,
   RefObject,
@@ -22,25 +20,24 @@ import React, {
   useState,
 } from 'react'
 
-import { formDataToXml, xmlStringToPdf, xmlToFormData } from '../../frontend/api/api'
 import useSnackbar from '../../frontend/hooks/useSnackbar'
 import { InitialFormData } from '../../frontend/types/initialFormData'
-import { readTextFile } from '../../frontend/utils/file'
 import {
   getAllStepData,
   getInitFormData,
   getValidatedSteps,
   validateAsyncProperties,
 } from '../../frontend/utils/formStepper'
-import { blobToString, downloadBlob } from '../../frontend/utils/general'
 import { StepData } from './types/TransformedFormData'
 
 interface FormState {
   stepIndex: number
   setStepIndex: (newIndex: number) => void
+  formSlug: string
   formData: RJSFSchema
   stepTitle: string
   setStepFormData: (stepFormData: RJSFSchema) => void
+  setImportedFormData: (importedFormData: RJSFSchema) => void
   errors: RJSFValidationError[][]
   extraErrors: ErrorSchema
   stepData: StepData[]
@@ -55,9 +52,6 @@ interface FormState {
   isComplete: boolean
   // TODO: improve type
   formRef: RefObject<Form<any, RJSFSchema, any>>
-  exportXml: () => Promise<void>
-  importXml: () => void
-  exportPdf: () => Promise<void>
 }
 
 const FormStateContext = createContext<FormState | undefined>(undefined)
@@ -84,9 +78,7 @@ export const FormStateProvider = ({
   const [formData, setFormData] = useState<RJSFSchema>(initialFormData.formDataJson)
   const [errors, setErrors] = useState<Record<string, RJSFValidationError[]>>({})
   const [extraErrors, setExtraErrors] = useState<ErrorSchema>({})
-  const [openSnackbarError] = useSnackbar({ variant: 'error' })
-  const [openSnackbarSuccess] = useSnackbar({ variant: 'success' })
-  const [openSnackbarInfo, closeSnackbarInfo] = useSnackbar({ variant: 'info' })
+
   const [openSnackbarWarning] = useSnackbar({ variant: 'warning' })
 
   // state variables helping in stepper
@@ -262,62 +254,6 @@ export const FormStateProvider = ({
 
   const { t } = useTranslation('forms')
 
-  const exportXml = async () => {
-    openSnackbarInfo(t('info_messages.xml_export'))
-    try {
-      const xml: Blob = await formDataToXml(formSlug, formData)
-      const fileName = `${formSlug}_output.xml`
-      downloadBlob(xml, fileName)
-      closeSnackbarInfo()
-      openSnackbarSuccess(t('success_messages.xml_export'))
-    } catch (error) {
-      openSnackbarError(t('errors.xml_export'))
-    }
-  }
-
-  const importXml = async (e: ChangeEvent<HTMLInputElement>) => {
-    openSnackbarInfo(t('info_messages.xml_import'))
-    try {
-      const xmlData: string = await readTextFile(e)
-      const transformedFormData: RJSFSchema = await xmlToFormData(formSlug, xmlData)
-      setFormData(transformedFormData)
-      closeSnackbarInfo()
-      openSnackbarSuccess(t('success_messages.xml_import'))
-    } catch (error) {
-      openSnackbarError(t('errors.xml_import'))
-    }
-  }
-
-  const chooseFilesAndImportXml = () => {
-    const importInput = document.createElement('input')
-    importInput.type = 'file'
-    importInput.multiple = false
-    importInput.accept = '.xml'
-
-    importInput.addEventListener('change', (e) => {
-      if (!importInput.files) return
-      const changeEvent = e as unknown as ChangeEvent<HTMLInputElement>
-      importXml(changeEvent).catch((error) => console.log('error', error))
-    })
-
-    importInput.click()
-  }
-
-  const exportPdf = async () => {
-    openSnackbarInfo(t('info_messages.pdf_export'))
-    try {
-      const xml: Blob = await formDataToXml(formSlug, formData)
-      const xmlData: string = await blobToString(xml)
-      const pdf = await xmlStringToPdf(formSlug, xmlData)
-      const fileName = `${formSlug}_output.pdf`
-      downloadBlob(pdf, fileName)
-      closeSnackbarInfo()
-      openSnackbarSuccess(t('success_messages.pdf_export'))
-    } catch (error) {
-      openSnackbarError(t('errors.pdf_export'))
-    }
-  }
-
   const updateFormData = async () => {
     const token = await getAccessTokenOrLogout()
     if (!initialFormData || !token) {
@@ -376,9 +312,12 @@ export const FormStateProvider = ({
   const context = {
     stepIndex,
     setStepIndex,
+    formSlug,
     formData,
     stepTitle: stepData[stepIndex]?.title || stepData[stepIndex]?.stepKey || '',
     setStepFormData,
+    // TODO: Rework
+    setImportedFormData: setFormData,
     errors: transformErrorsToArray(),
     extraErrors,
     stepData,
@@ -392,9 +331,6 @@ export const FormStateProvider = ({
     currentSchema,
     isComplete,
     formRef,
-    exportXml,
-    importXml: chooseFilesAndImportXml,
-    exportPdf,
   }
 
   return <FormStateContext.Provider value={context}>{children}</FormStateContext.Provider>

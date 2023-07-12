@@ -8,6 +8,7 @@ import Link from 'next/link'
 import { useTranslation } from 'next-i18next'
 import { ReactNode, useState } from 'react'
 
+import { useFormExportImport } from '../../../frontend/hooks/useFormExportImport'
 import RegistrationModal from '../segments/RegistrationModal/RegistrationModal'
 
 type MenuItem = {
@@ -17,14 +18,13 @@ type MenuItem = {
   onPress?: () => void
 }
 
-interface FormHeaderProps {
-  onExportXml: () => void
+interface MenuListProps {
   onSaveConcept: () => void
-  onImportXml: () => void
-  onExportPdf: () => void
 }
 
-const MenuList = ({ onExportXml, onSaveConcept, onImportXml, onExportPdf }: FormHeaderProps) => {
+const MenuList = ({ onSaveConcept }: MenuListProps) => {
+  const { exportXml, exportPdf, importXml } = useFormExportImport()
+
   const { t } = useTranslation('forms')
 
   const { isAuthenticated } = useServerSideAuth()
@@ -52,17 +52,17 @@ const MenuList = ({ onExportXml, onSaveConcept, onImportXml, onExportPdf }: Form
     {
       title: t('menu_list.download_xml'),
       icon: <DownloadIcon className="w-6 h-6" />,
-      onPress: onExportXml,
+      onPress: exportXml,
     },
     {
       title: t('menu_list.pdf'),
       icon: <PdfIcon className="w-6 h-6" />,
-      onPress: onExportPdf,
+      onPress: exportPdf,
     },
     {
       title: t('menu_list.upload_xml'),
       icon: <ArrowsDownUpIcon className="w-6 h-6" />,
-      onPress: onImportXml,
+      onPress: importXml,
     },
   ]
 

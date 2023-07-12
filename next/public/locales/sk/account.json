@@ -797,5 +797,21 @@
     "description": "Budete odhlásený zo všetkých aplikácii využívajúcich Bratislavské konto.",
     "confirm_label": "Odhlásiť sa",
     "cancel_label": "Späť"
+  },
+  "Upload": {
+    "aria": {
+      "removeFile": "Odstrániť súbor"
+    },
+    "retry": "Skúsiť znova",
+    "supportedFormats": "Podporované formáty",
+    "sizeLimit": "Maximálna veľkosť súboru",
+    "uploadFiles": "Nahrať súbory",
+    "dragAndDrop": "Drag & drop",
+    "uploadingList": "Nahrávané súbory",
+    "errors": {
+      "scanError": "TODO wording: Nepodarilo sa preskenovať súbor vooči výrusom",
+      "scanInfected": "TODO wording: V súbore sa našiel vírus.",
+      "unknownFile": "TODO wording: Nerozpoznaný súbor"
+    }
   }
 }

@@ -38,9 +38,8 @@ const UploadFilesList = ({
 
       <ul className="flex flex-col gap-2">
         {valueArray.filter(isDefined).map((fileId) => (
-          <li>
+          <li key={fileId}>
             <UploadFileCard
-              key={fileId}
               fileInfo={getFileInfoById(fileId)}
               onFileRetry={() => onFileRetry(fileId)}
               onFileRemove={() => onFileRemove(fileId)}

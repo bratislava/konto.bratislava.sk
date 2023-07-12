@@ -53,31 +53,36 @@ const Upload = forwardRef<HTMLButtonElement, UploadProps>(
         style={{ transition: '0.2 all linear' }}
       >
         <UploadFieldHeader label={label ?? ''} required={required} helptext={helptext} />
-        {type === 'button' ? (
-          <UploadButton
-            ref={ref}
-            sizeLimit={sizeLimit}
-            supportedFormats={supportedFormats}
-            disabled={disabled}
-            onUpload={onUpload}
-            allowsMultiple={multiple}
+        <div className="flex flex-col gap-6">
+          {type === 'button' && (
+            <UploadButton
+              ref={ref}
+              sizeLimit={sizeLimit}
+              supportedFormats={supportedFormats}
+              disabled={disabled}
+              onUpload={onUpload}
+              allowsMultiple={multiple}
+            />
+          )}
+          {type === 'dragAndDrop' && (
+            <UploadDropArea
+              ref={ref}
+              sizeLimit={sizeLimit}
+              supportedFormats={supportedFormats}
+              disabled={disabled}
+              onUpload={onUpload}
+              allowsMultiple={multiple}
+            />
+          )}
+
+          <UploadFilesList
+            value={value}
+            getFileInfoById={getFileInfoById}
+            onFileRemove={onFileRemove}
+            onFileRetry={onFileRetry}
           />
-        ) : type === 'dragAndDrop' ? (
-          <UploadDropArea
-            ref={ref}
-            sizeLimit={sizeLimit}
-            supportedFormats={supportedFormats}
-            disabled={disabled}
-            onUpload={onUpload}
-            allowsMultiple={multiple}
-          />
-        ) : null}
-        <UploadFilesList
-          value={value}
-          getFileInfoById={getFileInfoById}
-          onFileRemove={onFileRemove}
-          onFileRetry={onFileRetry}
-        />
+        </div>
+
         {!disabled && <FieldErrorMessage errorMessage={errorMessage} />}
       </section>
     )

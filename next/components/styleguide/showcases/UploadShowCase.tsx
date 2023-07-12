@@ -96,6 +96,18 @@ const UploadShowCase = () => {
         <UploadFileCard
           fileInfo={{
             fileName: 'test.jpg',
+            status: { type: FormFileUploadStatusEnum.Uploading, progress: 1 },
+          }}
+        />
+        <UploadFileCard
+          fileInfo={{
+            fileName: 'test.jpg',
+            status: { type: FormFileUploadStatusEnum.Uploading, progress: 100 },
+          }}
+        />
+        <UploadFileCard
+          fileInfo={{
+            fileName: 'test.jpg',
             status: {
               type: FormFileUploadStatusEnum.UploadError,
               error: 'Retryable error',

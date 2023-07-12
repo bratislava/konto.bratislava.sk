@@ -806,6 +806,8 @@
     "supportedFormats": "Podporované formáty",
     "sizeLimit": "Maximálna veľkosť súboru",
     "uploadFiles": "Nahrať súbory",
+    "dragAndDrop": "Drag & drop",
+    "uploadingList": "Nahrávané súbory",
     "errors": {
       "scanError": "TODO wording: Nepodarilo sa preskenovať súbor vooči výrusom",
       "scanInfected": "TODO wording: V súbore sa našiel vírus.",

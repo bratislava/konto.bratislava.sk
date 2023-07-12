@@ -77,12 +77,12 @@ const UploadDropArea = forwardRef<HTMLButtonElement, UploadDropAreaProps>(
               isDisabled={disabled}
             >
               <div className="flex justify-center">
-                <div className="flex h-12 w-12 justify-center items-center rounded-full bg-gray-200">
+                <div className="flex h-12 w-12 justify-center items-center rounded-full bg-gray-100">
                   <UploadIcon />
                 </div>
               </div>
 
-              <h5 className="text-16-semibold">Drag & drop upload</h5>
+              <div className="text-16-semibold">{t('dragAndDrop')}</div>
 
               {sizeLimit || supportedFormats?.length ? (
                 <dl className="text-p3 flex gap-2">

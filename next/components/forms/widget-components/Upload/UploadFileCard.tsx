@@ -98,7 +98,7 @@ const UploadFileCard = ({ fileInfo, onFileRetry, onFileRemove }: UploadedFilePro
       </div>
 
       {isErrorStyle && (
-        <div className="flex gap-6 justify-between">
+        <div className="flex gap-6 justify-between pb-2">
           <div className="text-error">
             {fileInfo.status.type === FormFileUploadStatusEnum.UploadError && fileInfo.status.error}
             {fileInfo.status.type === FormFileUploadStatusEnum.ScanError && t('errors.scanError')}

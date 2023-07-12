@@ -19,7 +19,6 @@ import {
 } from '../../../components/logic/ServerSideAuthProvider'
 import { environment } from '../../../environment'
 import { InitialFormData } from '../../../frontend/types/initialFormData'
-import { forceString } from '../../../frontend/utils/general'
 import logger from '../../../frontend/utils/logger'
 
 type FormTestPageProps = {
@@ -34,7 +33,7 @@ export const getServerSideProps = async (ctx: GetServerSidePropsContext) => {
 
   let formDefinition: FormDefinition
   try {
-    formDefinition = getFormDefinition(ctx.query.eform)
+    formDefinition = getFormDefinition(ctx.query.slug)
   } catch (error) {
     logger.error(error)
     return { notFound: true }
@@ -105,7 +104,7 @@ export const getServerSideProps = async (ctx: GetServerSidePropsContext) => {
 const FormTestPage = ({ page, formDefinition, initialFormData }: FormTestPageProps) => {
   const router = useRouter()
 
-  const formSlug = router.query.eform as string
+  const formSlug = router.query.slug as string
 
   return (
     <PageWrapper locale={page.locale}>

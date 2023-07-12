@@ -802,6 +802,11 @@
     "aria": {
       "removeFile": "Odstrániť súbor"
     },
-    "retry": "Skúsiť znova"
+    "retry": "Skúsiť znova",
+    "errors": {
+      "scanError": "TODO wording: Nepodarilo sa preskenovať súbor vooči výrusom",
+      "scanInfected": "TODO wording: V súbore sa našiel vírus.",
+      "unknownFile": "TODO wording: Nerozpoznaný súbor"
+    }
   }
 }

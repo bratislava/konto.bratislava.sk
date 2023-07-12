@@ -29,34 +29,35 @@ const UploadedFile = ({ fileInfo, onFileRetry, onFileRemove }: UploadedFileProps
   const { t } = useTranslation('account', { keyPrefix: 'Upload' })
   const fileSize = 500 // not yet implemented in FormFileUploadFileInfo
 
-  const isError =
+  const isErrorStyle =
     fileInfo.status.type === FormFileUploadStatusEnum.UploadError ||
     fileInfo.status.type === FormFileUploadStatusEnum.ScanError ||
+    fileInfo.status.type === FormFileUploadStatusEnum.ScanInfected ||
     fileInfo.status.type === FormFileUploadStatusEnum.UnknownFile
-  const isScanning = fileInfo.status.type === FormFileUploadStatusEnum.Scanning
-  const isDone = fileInfo.status.type === FormFileUploadStatusEnum.ScanDone
-  const isStale = !isError && !isDone && !isScanning
+  const isScanningStyle = fileInfo.status.type === FormFileUploadStatusEnum.Scanning
+  const isDoneStyle = fileInfo.status.type === FormFileUploadStatusEnum.ScanDone
+  const isDefaultStyle = !isErrorStyle && !isDoneStyle && !isScanningStyle
 
   return (
     <div className="w-full flex flex-col gap-2">
       <div
         className={cx('rounded-lg border-2 w-full p-4 flex gap-4 items-start', {
-          'bg-white': isStale || isScanning,
-          'border-success-700 bg-success-50': isDone,
-          'border-negative-600 bg-negative-50': isError,
+          'bg-white': isDefaultStyle || isScanningStyle,
+          'border-success-700 bg-success-50': isDoneStyle,
+          'border-negative-600 bg-negative-50': isErrorStyle,
         })}
       >
         <div
           className={cx('p-3 rounded-lg grow-0 shrink-0 max-md:hidden', {
-            'bg-gray-50': isStale || isScanning,
-            'bg-white': isError || isDone,
+            'bg-gray-50': isDefaultStyle || isScanningStyle,
+            'bg-white': isErrorStyle || isDoneStyle,
           })}
         >
-          {isError ? (
+          {isErrorStyle ? (
             <ErrorIcon className="text-error" />
-          ) : isScanning ? (
+          ) : isScanningStyle ? (
             <ScanningIcon />
-          ) : isDone ? (
+          ) : isDoneStyle ? (
             <CheckInCircleIcon className="text-success-700" />
           ) : (
             <AttachmentIcon />
@@ -82,8 +83,8 @@ const UploadedFile = ({ fileInfo, onFileRetry, onFileRemove }: UploadedFileProps
                 icon={<CrossInCircleIcon />}
                 aria-label={t('aria.removeFile')}
                 className={cx('-mr-2', {
-                  'hover:bg-negative-200 focus:bg-negative-300': isError,
-                  'hover:bg-success-200 focus:bg-success-300': isDone,
+                  'hover:bg-negative-200 focus:bg-negative-300': isErrorStyle,
+                  'hover:bg-success-200 focus:bg-success-300': isDoneStyle,
                 })}
                 onPress={onFileRemove}
               />
@@ -96,20 +97,27 @@ const UploadedFile = ({ fileInfo, onFileRetry, onFileRemove }: UploadedFileProps
         </div>
       </div>
 
-      {/* TODO errors for ScanError, ScanInfected, UnknownFile */}
-      {fileInfo.status.type === FormFileUploadStatusEnum.UploadError && (
+      {isErrorStyle && (
         <div className="flex gap-6 justify-between">
-          <div className="text-error">{fileInfo.status.error}</div>
+          <div className="text-error">
+            {fileInfo.status.type === FormFileUploadStatusEnum.UploadError && fileInfo.status.error}
+            {fileInfo.status.type === FormFileUploadStatusEnum.ScanError && t('errors.scanError')}
+            {fileInfo.status.type === FormFileUploadStatusEnum.ScanInfected &&
+              t('errors.scanInfected')}
+            {fileInfo.status.type === FormFileUploadStatusEnum.UnknownFile &&
+              t('errors.unknownFile')}
+          </div>
 
-          {fileInfo.status.canRetry && (
-            <Button
-              variant="link-black"
-              onPress={onFileRetry}
-              text={t('retry')}
-              size="sm"
-              className="font-bold"
-            />
-          )}
+          {fileInfo.status.type === FormFileUploadStatusEnum.UploadError &&
+            fileInfo.status.canRetry && (
+              <Button
+                variant="link-black"
+                onPress={onFileRetry}
+                text={t('retry')}
+                size="sm"
+                className="font-bold"
+              />
+            )}
         </div>
       )}
     </div>

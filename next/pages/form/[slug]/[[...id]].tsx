@@ -33,6 +33,16 @@ type FormTestPageProps = {
 export const getServerSideProps = async (ctx: GetServerSidePropsContext) => {
   if (!environment.featureToggles.forms) return { notFound: true }
 
+  const ssrCurrentAuthProps = await getSSRCurrentAuth(ctx.req)
+  if (!ssrCurrentAuthProps.userData) {
+    return {
+      redirect: {
+        destination: '/prihlasenie',
+        permanent: false,
+      },
+    }
+  }
+
   let formDefinition: FormDefinition
   try {
     formDefinition = getFormDefinition(ctx.query.slug)
@@ -90,7 +100,7 @@ export const getServerSideProps = async (ctx: GetServerSidePropsContext) => {
     props: {
       schema: formDefinition.schema,
       uiSchema: formDefinition.uiSchema,
-      ssrCurrentAuthProps: await getSSRCurrentAuth(ctx.req),
+      ssrCurrentAuthProps,
       page: {
         locale,
       },

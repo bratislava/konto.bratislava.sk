@@ -22,6 +22,7 @@ const StepperViewList = ({ steps, currentStep, onChangeStep }: StepperViewListPr
           isCurrent={key === currentStep}
           isFilled={step.isFilled}
           onClick={() => onChangeStep?.(key)}
+          isButton
         />
       ))}
       <StepperViewRow
@@ -30,6 +31,7 @@ const StepperViewList = ({ steps, currentStep, onChangeStep }: StepperViewListPr
         isLast
         isCurrent={currentStep === steps.length}
         onClick={() => onChangeStep?.(steps.length)}
+        isButton
       />
     </div>
   )

@@ -1,8 +1,7 @@
 import SelectedIcon from '@assets/images/new-icons/ui/done.svg'
 import cx from 'classnames'
-import React from 'react'
-
-import { handleOnKeyPress } from '../../../frontend/utils/general'
+import React, { useRef } from 'react'
+import { useButton } from 'react-aria'
 
 interface StepperViewRowProps {
   title?: string
@@ -12,10 +11,11 @@ interface StepperViewRowProps {
   isLast?: boolean
   onClick?: () => void
   className?: string
+  isButton?: boolean
 }
 
 const StepperViewRow = (props: StepperViewRowProps) => {
-  const { title, order, isCurrent, isFilled, isLast, onClick, className } = props
+  const { title, order, isCurrent, isFilled, isLast, onClick, className, isButton } = props
 
   const iconClassName = cx(
     'min-w-8 w-8 flex-row h-8 rounded-full flex justify-center items-center border-2 shrink-0',
@@ -25,14 +25,15 @@ const StepperViewRow = (props: StepperViewRowProps) => {
     },
   )
 
+  const buttonRef = useRef<HTMLDivElement>(null)
+  const { buttonProps } = useButton({ onPress: onClick, elementType: 'div' }, buttonRef)
+
   return (
     <div className={cx('flex flex-col select-none', className)}>
       <div
-        role="button"
-        tabIndex={0}
         className="flex flex-row gap-3 items-center cursor-pointer"
-        onClick={onClick}
-        onKeyPress={(event: React.KeyboardEvent) => handleOnKeyPress(event, onClick)}
+        {...(isButton ? buttonProps : {})}
+        ref={buttonRef}
       >
         <div className={iconClassName}>
           {isCurrent || !isFilled ? order : <SelectedIcon fill="white" className="w-6 h-6" />}

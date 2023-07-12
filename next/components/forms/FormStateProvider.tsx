@@ -24,6 +24,7 @@ import React, {
 
 import { formDataToXml, xmlStringToPdf, xmlToFormData } from '../../frontend/api/api'
 import useSnackbar from '../../frontend/hooks/useSnackbar'
+import { InitialFormData } from '../../frontend/types/initialFormData'
 import { readTextFile } from '../../frontend/utils/file'
 import {
   getAllStepData,
@@ -33,7 +34,6 @@ import {
 } from '../../frontend/utils/formStepper'
 import { blobToString, downloadBlob } from '../../frontend/utils/general'
 import { StepData } from './types/TransformedFormData'
-import { InitialFormData } from './useFormDataLoader'
 
 interface FormState {
   stepIndex: number

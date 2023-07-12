@@ -7,6 +7,7 @@ import { useRef } from 'react'
 
 import { validator } from '../../frontend/dtos/formStepperDto'
 import { useFormSubmitter } from '../../frontend/hooks/useFormSubmitter'
+import { InitialFormData } from '../../frontend/types/initialFormData'
 import { customValidate } from '../../frontend/utils/formStepper'
 import { useFormState } from './FormStateProvider'
 import FormModals, { FormModalsRef } from './segments/FormModals/FormModals'
@@ -15,7 +16,6 @@ import FinalStep from './steps/FinalStep'
 import StepperView from './steps/StepperView'
 import StepButtonGroup from './steps/Summary/StepButtonGroup'
 import { ThemedForm } from './ThemedForm'
-import { InitialFormData } from './useFormDataLoader'
 
 interface FormRJSF {
   formDefinition: FormDefinition

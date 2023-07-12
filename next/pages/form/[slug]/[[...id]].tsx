@@ -2,6 +2,7 @@ import { FormDefinition } from '@backend/forms/types'
 import { getFormDefinition } from '@backend/utils/forms'
 import { formsApi } from '@clients/forms'
 import { GetFileResponseDto } from '@clients/openapi-forms'
+import { RJSFSchema, UiSchema } from '@rjsf/utils'
 import { GetServerSidePropsContext } from 'next'
 import { useRouter } from 'next/router'
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
@@ -22,7 +23,8 @@ import { InitialFormData } from '../../../frontend/types/initialFormData'
 import logger from '../../../frontend/utils/logger'
 
 type FormTestPageProps = {
-  formDefinition: FormDefinition
+  schema: RJSFSchema
+  uiSchema: UiSchema
   page: { locale: string }
   initialFormData: InitialFormData
   ssrCurrentAuthProps: GetSSRCurrentAuth
@@ -86,7 +88,8 @@ export const getServerSideProps = async (ctx: GetServerSidePropsContext) => {
 
   return {
     props: {
-      formDefinition,
+      schema: formDefinition.schema,
+      uiSchema: formDefinition.uiSchema,
       ssrCurrentAuthProps: await getSSRCurrentAuth(ctx.req),
       page: {
         locale,
@@ -101,7 +104,7 @@ export const getServerSideProps = async (ctx: GetServerSidePropsContext) => {
   }
 }
 
-const FormTestPage = ({ page, formDefinition, initialFormData }: FormTestPageProps) => {
+const FormTestPage = ({ schema, uiSchema, page, initialFormData }: FormTestPageProps) => {
   const router = useRouter()
 
   const formSlug = router.query.slug as string
@@ -109,14 +112,10 @@ const FormTestPage = ({ page, formDefinition, initialFormData }: FormTestPagePro
   return (
     <PageWrapper locale={page.locale}>
       <AccountPageLayout isPublicPage hiddenHeaderNav>
-        <FormStateProvider
-          formSlug={formSlug}
-          formDefinition={formDefinition}
-          initialFormData={initialFormData}
-        >
+        <FormStateProvider schema={schema} formSlug={formSlug} initialFormData={initialFormData}>
           <FormFileUploadStateProvider initialFormData={initialFormData}>
             <GeneratedFormRJSF
-              formDefinition={formDefinition}
+              uiSchema={uiSchema}
               formSlug={formSlug}
               initialFormData={initialFormData}
             />

@@ -2,7 +2,7 @@ import { RJSFSchema, UiSchema } from '@rjsf/utils'
 
 export interface FormDefinition {
   schema: RJSFSchema
-  uiSchema: UiSchema<any, any>
+  uiSchema: UiSchema
   xsd: string
   data: any
   xmlTemplate: string

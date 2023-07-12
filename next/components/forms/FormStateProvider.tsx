@@ -64,17 +64,16 @@ const FormStateContext = createContext<FormState | undefined>(undefined)
 
 interface FormStateProviderProps {
   formSlug: string
-  formDefinition: FormDefinition
+  schema: RJSFSchema
   initialFormData: InitialFormData
 }
 
 export const FormStateProvider = ({
+  schema,
   formSlug,
-  formDefinition,
   initialFormData,
   children,
 }: PropsWithChildren<FormStateProviderProps>) => {
-  const { schema } = formDefinition
   // since Form can be undefined, useRef<Form> is understood as an overload of useRef returning MutableRef, which does not match expected Ref type be rjsf
   // also, our code expects directly RefObject otherwise it will complain of no `.current`
   // this is probably a bug in their typing therefore the cast

@@ -1,5 +1,4 @@
-import { FormDefinition } from '@backend/forms/types'
-import { FormValidation, RJSFSchema } from '@rjsf/utils'
+import { FormValidation, RJSFSchema, UiSchema } from '@rjsf/utils'
 import cx from 'classnames'
 import MenuList from 'components/forms/steps/MenuList'
 import { useServerSideAuth } from 'frontend/hooks/useServerSideAuth'
@@ -18,18 +17,13 @@ import StepButtonGroup from './steps/Summary/StepButtonGroup'
 import { ThemedForm } from './ThemedForm'
 
 interface FormRJSF {
-  formDefinition: FormDefinition
+  uiSchema: UiSchema
   formSlug: string
   wrapperClassName?: string
   initialFormData: InitialFormData
 }
 
-const GeneratedFormRJSF = ({
-  formDefinition,
-  formSlug,
-  wrapperClassName,
-  initialFormData,
-}: FormRJSF) => {
+const GeneratedFormRJSF = ({ uiSchema, formSlug, wrapperClassName, initialFormData }: FormRJSF) => {
   const formState = useFormState()
   const submitter = useFormSubmitter(formSlug)
   const formModalsRef = useRef<FormModalsRef>(null)
@@ -88,7 +82,7 @@ const GeneratedFormRJSF = ({
                 key={`form-step-${formState.stepIndex}`}
                 ref={formState.formRef}
                 schema={formState.currentSchema}
-                uiSchema={formDefinition.uiSchema}
+                uiSchema={uiSchema}
                 formData={formState.formData}
                 validator={validator}
                 customValidate={(formData: RJSFSchema, errors: FormValidation) => {

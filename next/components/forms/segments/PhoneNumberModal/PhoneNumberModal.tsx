@@ -1,7 +1,6 @@
 import Modal from 'components/forms/widget-components/Modals/Modal'
 import { useTranslation } from 'next-i18next'
 
-import { AccountError } from '../../../../frontend/hooks/useAccount'
 import PhoneNumberForm, { PhoneNumberData } from '../PhoneNumberForm/PhoneNumberForm'
 
 /* eslint-disable @typescript-eslint/no-shadow */
@@ -11,7 +10,7 @@ interface Props {
   onClose: () => void
   onSubmit: ({ data }: { data?: PhoneNumberData }) => void
   defaultValues: PhoneNumberData
-  error?: AccountError | null
+  error?: Error | null
   onHideError?: () => void
 }
 

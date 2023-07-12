@@ -8,6 +8,8 @@ const createJestConfig = nextJest({
 // Add any custom config to be passed to Jest
 /** @type {import('jest').Config} */
 const customJestConfig = {
+  // https://github.com/microsoft/accessibility-insights-web/pull/5421/commits/9ad4e618019298d82732d49d00aafb846fb6bac7
+  resolver: `<rootDir>/jest-resolver.js`,
   // Add more setup options before each test is run
   setupFilesAfterEnv: ['<rootDir>/jest.setup.js'],
   // if using TypeScript with a baseUrl set to the root directory then you need the below for alias' to work

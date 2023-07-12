@@ -1,10 +1,10 @@
 import AccountErrorAlert from 'components/forms/segments/AccountErrorAlert/AccountErrorAlert'
 import Button from 'components/forms/simple-components/Button'
 import InputField from 'components/forms/widget-components/InputField/InputField'
+import { Address } from 'frontend/dtos/accountDto'
 import { useTranslation } from 'next-i18next'
 import { Controller } from 'react-hook-form'
 
-import { AccountError, Address } from '../../../../frontend/hooks/useAccount'
 import useHookForm from '../../../../frontend/hooks/useHookForm'
 
 const schema = {
@@ -34,7 +34,7 @@ const schema = {
 }
 
 interface Props {
-  error?: AccountError | null
+  error?: Error | null
   onHideError?: () => void
   onSubmit: ({ data }: { data?: Address }) => void
   defaultValues?: Address

@@ -8,6 +8,7 @@ import {
   RJSFSchema,
   RJSFValidationError,
 } from '@rjsf/utils'
+import { getAccessTokenOrLogout } from 'frontend/utils/amplify'
 import { cloneDeep } from 'lodash'
 import { useTranslation } from 'next-i18next'
 import React, {
@@ -22,7 +23,6 @@ import React, {
 } from 'react'
 
 import { formDataToXml, xmlStringToPdf, xmlToFormData } from '../../frontend/api/api'
-import useAccount from '../../frontend/hooks/useAccount'
 import useSnackbar from '../../frontend/hooks/useSnackbar'
 import { readTextFile } from '../../frontend/utils/file'
 import {
@@ -79,8 +79,6 @@ export const FormStateProvider = ({
   // also, our code expects directly RefObject otherwise it will complain of no `.current`
   // this is probably a bug in their typing therefore the cast
   const formRef = useRef<Form>() as RefObject<Form>
-
-  const { getAccessToken } = useAccount()
 
   // main state variables with the most important info
   const [stepIndex, setStepIndex] = useState<number>(0)
@@ -322,7 +320,7 @@ export const FormStateProvider = ({
   }
 
   const updateFormData = async () => {
-    const token = await getAccessToken()
+    const token = await getAccessTokenOrLogout()
     if (!initialFormData || !token) {
       return
     }

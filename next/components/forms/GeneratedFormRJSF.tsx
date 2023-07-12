@@ -2,11 +2,10 @@ import { FormDefinition } from '@backend/forms/types'
 import { FormValidation, RJSFSchema } from '@rjsf/utils'
 import cx from 'classnames'
 import MenuList from 'components/forms/steps/MenuList'
-import useAccount from 'frontend/hooks/useAccount'
+import { useServerSideAuth } from 'frontend/hooks/useServerSideAuth'
 import { useRef } from 'react'
 
 import { validator } from '../../frontend/dtos/formStepperDto'
-import { useFormRJSFContext } from '../../frontend/hooks/useFormRJSFContext'
 import { useFormSubmitter } from '../../frontend/hooks/useFormSubmitter'
 import { customValidate } from '../../frontend/utils/formStepper'
 import { useFormState } from './FormStateProvider'
@@ -33,11 +32,10 @@ const GeneratedFormRJSF = ({
   wrapperClassName,
   initialFormData,
 }: FormRJSF) => {
-  const formContext = useFormRJSFContext(formDefinition, initialFormData)
   const formState = useFormState()
   const submitter = useFormSubmitter(formSlug)
   const formModalsRef = useRef<FormModalsRef>(null)
-  const { isAuth } = useAccount()
+  const { isAuthenticated } = useServerSideAuth()
 
   // eslint-disable-next-line unicorn/consistent-function-scoping
   const saveConcept = async () => {
@@ -79,14 +77,10 @@ const GeneratedFormRJSF = ({
               formData={formState.formData}
               formErrors={formState.errors}
               extraErrors={formState.extraErrors}
-              fileScans={formContext.fileScans}
               schema={formState.validatedSchema}
               onGoToStep={formState.setStepIndex}
               submitErrors={submitter.errors}
               submitMessage={submitter.successMessage}
-              onUpdateFileScans={(updatedScans) => {
-                formContext.setFileScans(updatedScans)
-              }}
             />
           ) : (
             <>
@@ -110,7 +104,6 @@ const GeneratedFormRJSF = ({
                 }}
                 onError={formState.handleOnErrors}
                 extraErrors={formState.extraErrors}
-                formContext={formContext}
                 showErrorList={false}
                 omitExtraData
                 liveOmit
@@ -120,12 +113,11 @@ const GeneratedFormRJSF = ({
           <StepButtonGroup
             stepIndex={formState.stepIndex}
             isFinalStep={formState.isComplete}
-            fileScans={formContext.fileScans}
             previous={formState.previous}
             skip={() => formModalsRef.current?.skipButtonHandler(formState.stepIndex + 1)}
             submitStep={formState.submitStep}
             submitForm={() =>
-              isAuth
+              isAuthenticated
                 ? submitter.submitForm(formState.formData, initialFormData.formId)
                 : formModalsRef.current?.openRegistrationModal()
             }

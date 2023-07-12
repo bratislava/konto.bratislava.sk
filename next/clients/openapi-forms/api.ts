@@ -12,371 +12,1321 @@
  * Do not edit the class manually.
  */
 
-
-import type { Configuration } from './configuration';
-import type { AxiosPromise, AxiosInstance, AxiosRequestConfig } from 'axios';
-import globalAxios from 'axios';
+import type { Configuration } from './configuration'
+import type { AxiosPromise, AxiosInstance, AxiosRequestConfig } from 'axios'
+import globalAxios from 'axios'
 // Some imports not used depending on template conditions
 // @ts-ignore
-import { DUMMY_BASE_URL, assertParamExists, setApiKeyToObject, setBasicAuthToObject, setBearerAuthToObject, setOAuthToObject, setSearchParams, serializeDataIfNeeded, toPathString, createRequestFunction } from './common';
-import type { RequestArgs } from './base';
+import {
+  DUMMY_BASE_URL,
+  assertParamExists,
+  setApiKeyToObject,
+  setBasicAuthToObject,
+  setBearerAuthToObject,
+  setOAuthToObject,
+  setSearchParams,
+  serializeDataIfNeeded,
+  toPathString,
+  createRequestFunction,
+} from './common'
+import type { RequestArgs } from './base'
 // @ts-ignore
-import { BASE_PATH, COLLECTION_FORMATS, BaseAPI, RequiredError } from './base';
+import { BASE_PATH, COLLECTION_FORMATS, BaseAPI, RequiredError } from './base'
 
 /**
- * 
+ *
+ * @export
+ * @interface BadRequestDecoratorErrorDto
+ */
+export interface BadRequestDecoratorErrorDto {
+  /**
+   *
+   * @type {number}
+   * @memberof BadRequestDecoratorErrorDto
+   */
+  statusCode: number
+  /**
+   *
+   * @type {Array<string>}
+   * @memberof BadRequestDecoratorErrorDto
+   */
+  message: Array<string>
+  /**
+   *
+   * @type {string}
+   * @memberof BadRequestDecoratorErrorDto
+   */
+  error: string
+}
+/**
+ *
  * @export
  * @interface CreateFormEidRequestDto
  */
 export interface CreateFormEidRequestDto {
-    /**
-     * Name of Form created as you can see here https://wiki.vicepremier.gov.sk/pages/viewpage.action?pageId=15564855
-     * @type {string}
-     * @memberof CreateFormEidRequestDto
-     */
-    'pospID'?: string;
-    /**
-     * Version of Form
-     * @type {string}
-     * @memberof CreateFormEidRequestDto
-     */
-    'pospVersion'?: string;
-    /**
-     * Subject of message for recipient
-     * @type {string}
-     * @memberof CreateFormEidRequestDto
-     */
-    'messageSubject'?: string;
-    /**
-     * Is it signed by Eid?
-     * @type {boolean}
-     * @memberof CreateFormEidRequestDto
-     */
-    'isSigned': boolean;
-    /**
-     * Name of form showned to user in Ginis
-     * @type {string}
-     * @memberof CreateFormEidRequestDto
-     */
-    'formName': string;
-    /**
-     * Description of form showned to user in Ginis
-     * @type {string}
-     * @memberof CreateFormEidRequestDto
-     */
-    'fromDescription': string;
-    /**
-     * Email, if it is not registered user by city account, and it is logged in only by Eid
-     * @type {string}
-     * @memberof CreateFormEidRequestDto
-     */
-    'email': string;
+  /**
+   * Name of Form created as you can see here https://wiki.vicepremier.gov.sk/pages/viewpage.action?pageId=15564855
+   * @type {string}
+   * @memberof CreateFormEidRequestDto
+   */
+  pospID?: string
+  /**
+   * Version of Form
+   * @type {string}
+   * @memberof CreateFormEidRequestDto
+   */
+  pospVersion?: string
+  /**
+   * Subject of message for recipient
+   * @type {string}
+   * @memberof CreateFormEidRequestDto
+   */
+  messageSubject?: string
+  /**
+   * Is it signed by Eid?
+   * @type {boolean}
+   * @memberof CreateFormEidRequestDto
+   */
+  isSigned: boolean
+  /**
+   * Name of form showned to user in Ginis
+   * @type {string}
+   * @memberof CreateFormEidRequestDto
+   */
+  formName: string
+  /**
+   * Description of form showned to user in Ginis
+   * @type {string}
+   * @memberof CreateFormEidRequestDto
+   */
+  fromDescription: string
+  /**
+   * Email, if it is not registered user by city account, and it is logged in only by Eid
+   * @type {string}
+   * @memberof CreateFormEidRequestDto
+   */
+  email: string
 }
 /**
- * 
+ *
  * @export
  * @interface CreateFormRequestDto
  */
 export interface CreateFormRequestDto {
-    /**
-     * Name of Form created as you can see here https://wiki.vicepremier.gov.sk/pages/viewpage.action?pageId=15564855
-     * @type {string}
-     * @memberof CreateFormRequestDto
-     */
-    'pospID'?: string;
-    /**
-     * Version of Form
-     * @type {string}
-     * @memberof CreateFormRequestDto
-     */
-    'pospVersion'?: string;
-    /**
-     * Subject of message for recipient
-     * @type {string}
-     * @memberof CreateFormRequestDto
-     */
-    'messageSubject'?: string;
-    /**
-     * Is it signed by Eid?
-     * @type {boolean}
-     * @memberof CreateFormRequestDto
-     */
-    'isSigned': boolean;
-    /**
-     * Name of form showned to user in Ginis
-     * @type {string}
-     * @memberof CreateFormRequestDto
-     */
-    'formName': string;
-    /**
-     * Description of form showned to user in Ginis
-     * @type {string}
-     * @memberof CreateFormRequestDto
-     */
-    'fromDescription': string;
+  /**
+   * Name of Form created as you can see here https://wiki.vicepremier.gov.sk/pages/viewpage.action?pageId=15564855
+   * @type {string}
+   * @memberof CreateFormRequestDto
+   */
+  pospID?: string
+  /**
+   * Version of Form
+   * @type {string}
+   * @memberof CreateFormRequestDto
+   */
+  pospVersion?: string
+  /**
+   * Subject of message for recipient
+   * @type {string}
+   * @memberof CreateFormRequestDto
+   */
+  messageSubject?: string
+  /**
+   * Is it signed by Eid?
+   * @type {boolean}
+   * @memberof CreateFormRequestDto
+   */
+  isSigned: boolean
+  /**
+   * Name of form showned to user in Ginis
+   * @type {string}
+   * @memberof CreateFormRequestDto
+   */
+  formName: string
+  /**
+   * Description of form showned to user in Ginis
+   * @type {string}
+   * @memberof CreateFormRequestDto
+   */
+  fromDescription: string
 }
 /**
- * 
+ *
  * @export
- * @interface FileStatusDto
+ * @interface DatabaseErrorDto
  */
-export interface FileStatusDto {
-    /**
-     * scan result
-     * @type {string}
-     * @memberof FileStatusDto
-     */
-    'status': FileStatusDtoStatusEnum;
+export interface DatabaseErrorDto {
+  /**
+   * Status Code
+   * @type {number}
+   * @memberof DatabaseErrorDto
+   */
+  statusCode: number
+  /**
+   * Detail error message
+   * @type {string}
+   * @memberof DatabaseErrorDto
+   */
+  message: string
+  /**
+   * status in text
+   * @type {string}
+   * @memberof DatabaseErrorDto
+   */
+  status: string
+  /**
+   * Exact error name
+   * @type {string}
+   * @memberof DatabaseErrorDto
+   */
+  errorName: DatabaseErrorDtoErrorNameEnum
+  /**
+   * Helper for sending additional data in error
+   * @type {object}
+   * @memberof DatabaseErrorDto
+   */
+  object?: object
 }
 
-export const FileStatusDtoStatusEnum = {
-    Uploaded: 'UPLOADED',
-    Accepted: 'ACCEPTED',
-    Scanning: 'SCANNING',
-    Safe: 'SAFE',
-    Infected: 'INFECTED',
-    NotFound: 'NOT FOUND',
-    MoveErrorSafe: 'MOVE ERROR SAFE',
-    MoveErrorInfected: 'MOVE ERROR INFECTED'
-} as const;
+export const DatabaseErrorDtoErrorNameEnum = {
+  NotFoundError: 'NOT_FOUND_ERROR',
+  DatabaseError: 'DATABASE_ERROR',
+  InternalServerError: 'INTERNAL_SERVER_ERROR',
+} as const
 
-export type FileStatusDtoStatusEnum = typeof FileStatusDtoStatusEnum[keyof typeof FileStatusDtoStatusEnum];
+export type DatabaseErrorDtoErrorNameEnum =
+  (typeof DatabaseErrorDtoErrorNameEnum)[keyof typeof DatabaseErrorDtoErrorNameEnum]
 
 /**
- * 
+ *
  * @export
- * @interface FileUpdatedResponseDto
+ * @interface DeleteFileResponseData
  */
-export interface FileUpdatedResponseDto {
-    /**
-     * scan result
-     * @type {string}
-     * @memberof FileUpdatedResponseDto
-     */
-    'status': FileUpdatedResponseDtoStatusEnum;
-    /**
-     * id of the record in db
-     * @type {string}
-     * @memberof FileUpdatedResponseDto
-     */
-    'id': string;
-    /**
-     * File Uid
-     * @type {string}
-     * @memberof FileUpdatedResponseDto
-     */
-    'fileUid': string;
-    /**
-     * more info
-     * @type {string}
-     * @memberof FileUpdatedResponseDto
-     */
-    'message': string;
+export interface DeleteFileResponseData {
+  /**
+   * scan result
+   * @type {string}
+   * @memberof DeleteFileResponseData
+   */
+  status: DeleteFileResponseDataStatusEnum
+  /**
+   * Hashed file uid under which is file stored in minio
+   * @type {string}
+   * @memberof DeleteFileResponseData
+   */
+  fileUid: string
+  /**
+   * Real file name of the file, but is used only for display
+   * @type {string}
+   * @memberof DeleteFileResponseData
+   */
+  fileName: string
+  /**
+   * Form type
+   * @type {string}
+   * @memberof DeleteFileResponseData
+   */
+  pospId: string
+  /**
+   * Identifier of sent form
+   * @type {string}
+   * @memberof DeleteFileResponseData
+   */
+  formId: string
+  /**
+   * more info
+   * @type {string}
+   * @memberof DeleteFileResponseData
+   */
+  message: string
 }
 
-export const FileUpdatedResponseDtoStatusEnum = {
-    Uploaded: 'UPLOADED',
-    Accepted: 'ACCEPTED',
-    Scanning: 'SCANNING',
-    Safe: 'SAFE',
-    Infected: 'INFECTED',
-    NotFound: 'NOT FOUND',
-    MoveErrorSafe: 'MOVE ERROR SAFE',
-    MoveErrorInfected: 'MOVE ERROR INFECTED'
-} as const;
+export const DeleteFileResponseDataStatusEnum = {
+  Uploaded: 'UPLOADED',
+  Accepted: 'ACCEPTED',
+  Scanning: 'SCANNING',
+  Safe: 'SAFE',
+  Infected: 'INFECTED',
+  NotFound: 'NOT FOUND',
+  MoveErrorSafe: 'MOVE ERROR SAFE',
+  MoveErrorInfected: 'MOVE ERROR INFECTED',
+} as const
 
-export type FileUpdatedResponseDtoStatusEnum = typeof FileUpdatedResponseDtoStatusEnum[keyof typeof FileUpdatedResponseDtoStatusEnum];
+export type DeleteFileResponseDataStatusEnum =
+  (typeof DeleteFileResponseDataStatusEnum)[keyof typeof DeleteFileResponseDataStatusEnum]
 
 /**
- * 
+ *
  * @export
- * @interface FilesStatusResponseDto
+ * @interface FileAlreadyProcessedErrorDto
  */
-export interface FilesStatusResponseDto {
-    /**
-     * scan result
-     * @type {string}
-     * @memberof FilesStatusResponseDto
-     */
-    'status': FilesStatusResponseDtoStatusEnum;
-    /**
-     * File name in hash format
-     * @type {string}
-     * @memberof FilesStatusResponseDto
-     */
-    'fileUid': string;
+export interface FileAlreadyProcessedErrorDto {
+  /**
+   * Status Code
+   * @type {number}
+   * @memberof FileAlreadyProcessedErrorDto
+   */
+  statusCode: number
+  /**
+   * Detail error message
+   * @type {string}
+   * @memberof FileAlreadyProcessedErrorDto
+   */
+  message: string
+  /**
+   * status in text
+   * @type {string}
+   * @memberof FileAlreadyProcessedErrorDto
+   */
+  status: string
+  /**
+   * Exact error name
+   * @type {string}
+   * @memberof FileAlreadyProcessedErrorDto
+   */
+  errorName: FileAlreadyProcessedErrorDtoErrorNameEnum
+  /**
+   * Helper for sending additional data in error
+   * @type {object}
+   * @memberof FileAlreadyProcessedErrorDto
+   */
+  object?: object
 }
 
-export const FilesStatusResponseDtoStatusEnum = {
-    Uploaded: 'UPLOADED',
-    Accepted: 'ACCEPTED',
-    Scanning: 'SCANNING',
-    Safe: 'SAFE',
-    Infected: 'INFECTED',
-    NotFound: 'NOT FOUND',
-    MoveErrorSafe: 'MOVE ERROR SAFE',
-    MoveErrorInfected: 'MOVE ERROR INFECTED'
-} as const;
+export const FileAlreadyProcessedErrorDtoErrorNameEnum = {
+  NotFoundError: 'NOT_FOUND_ERROR',
+  DatabaseError: 'DATABASE_ERROR',
+  InternalServerError: 'INTERNAL_SERVER_ERROR',
+} as const
 
-export type FilesStatusResponseDtoStatusEnum = typeof FilesStatusResponseDtoStatusEnum[keyof typeof FilesStatusResponseDtoStatusEnum];
+export type FileAlreadyProcessedErrorDtoErrorNameEnum =
+  (typeof FileAlreadyProcessedErrorDtoErrorNameEnum)[keyof typeof FileAlreadyProcessedErrorDtoErrorNameEnum]
 
 /**
- * 
+ *
+ * @export
+ * @interface FileByScannerIdNotFoundErrorDto
+ */
+export interface FileByScannerIdNotFoundErrorDto {
+  /**
+   * Status Code
+   * @type {number}
+   * @memberof FileByScannerIdNotFoundErrorDto
+   */
+  statusCode: number
+  /**
+   * Detail error message
+   * @type {string}
+   * @memberof FileByScannerIdNotFoundErrorDto
+   */
+  message: string
+  /**
+   * status in text
+   * @type {string}
+   * @memberof FileByScannerIdNotFoundErrorDto
+   */
+  status: string
+  /**
+   * Exact error name
+   * @type {string}
+   * @memberof FileByScannerIdNotFoundErrorDto
+   */
+  errorName: FileByScannerIdNotFoundErrorDtoErrorNameEnum
+  /**
+   * Helper for sending additional data in error
+   * @type {object}
+   * @memberof FileByScannerIdNotFoundErrorDto
+   */
+  object?: object
+}
+
+export const FileByScannerIdNotFoundErrorDtoErrorNameEnum = {
+  NotFoundError: 'NOT_FOUND_ERROR',
+  DatabaseError: 'DATABASE_ERROR',
+  InternalServerError: 'INTERNAL_SERVER_ERROR',
+} as const
+
+export type FileByScannerIdNotFoundErrorDtoErrorNameEnum =
+  (typeof FileByScannerIdNotFoundErrorDtoErrorNameEnum)[keyof typeof FileByScannerIdNotFoundErrorDtoErrorNameEnum]
+
+/**
+ *
+ * @export
+ * @interface FileHasUnsupportedMimeTypeErrorDto
+ */
+export interface FileHasUnsupportedMimeTypeErrorDto {
+  /**
+   * Status Code
+   * @type {number}
+   * @memberof FileHasUnsupportedMimeTypeErrorDto
+   */
+  statusCode: number
+  /**
+   * Detail error message
+   * @type {string}
+   * @memberof FileHasUnsupportedMimeTypeErrorDto
+   */
+  message: string
+  /**
+   * status in text
+   * @type {string}
+   * @memberof FileHasUnsupportedMimeTypeErrorDto
+   */
+  status: string
+  /**
+   * Exact error name
+   * @type {string}
+   * @memberof FileHasUnsupportedMimeTypeErrorDto
+   */
+  errorName: FileHasUnsupportedMimeTypeErrorDtoErrorNameEnum
+  /**
+   * Helper for sending additional data in error
+   * @type {object}
+   * @memberof FileHasUnsupportedMimeTypeErrorDto
+   */
+  object?: object
+}
+
+export const FileHasUnsupportedMimeTypeErrorDtoErrorNameEnum = {
+  NotFoundError: 'NOT_FOUND_ERROR',
+  DatabaseError: 'DATABASE_ERROR',
+  InternalServerError: 'INTERNAL_SERVER_ERROR',
+} as const
+
+export type FileHasUnsupportedMimeTypeErrorDtoErrorNameEnum =
+  (typeof FileHasUnsupportedMimeTypeErrorDtoErrorNameEnum)[keyof typeof FileHasUnsupportedMimeTypeErrorDtoErrorNameEnum]
+
+/**
+ *
+ * @export
+ * @interface FileIdAlreadyExistsErrorDto
+ */
+export interface FileIdAlreadyExistsErrorDto {
+  /**
+   * Status Code
+   * @type {number}
+   * @memberof FileIdAlreadyExistsErrorDto
+   */
+  statusCode: number
+  /**
+   * Detail error message
+   * @type {string}
+   * @memberof FileIdAlreadyExistsErrorDto
+   */
+  message: string
+  /**
+   * status in text
+   * @type {string}
+   * @memberof FileIdAlreadyExistsErrorDto
+   */
+  status: string
+  /**
+   * Exact error name
+   * @type {string}
+   * @memberof FileIdAlreadyExistsErrorDto
+   */
+  errorName: FileIdAlreadyExistsErrorDtoErrorNameEnum
+  /**
+   * Helper for sending additional data in error
+   * @type {object}
+   * @memberof FileIdAlreadyExistsErrorDto
+   */
+  object?: object
+}
+
+export const FileIdAlreadyExistsErrorDtoErrorNameEnum = {
+  NotFoundError: 'NOT_FOUND_ERROR',
+  DatabaseError: 'DATABASE_ERROR',
+  InternalServerError: 'INTERNAL_SERVER_ERROR',
+} as const
+
+export type FileIdAlreadyExistsErrorDtoErrorNameEnum =
+  (typeof FileIdAlreadyExistsErrorDtoErrorNameEnum)[keyof typeof FileIdAlreadyExistsErrorDtoErrorNameEnum]
+
+/**
+ *
+ * @export
+ * @interface FileInMinioNotFoundErrorDto
+ */
+export interface FileInMinioNotFoundErrorDto {
+  /**
+   * Status Code
+   * @type {number}
+   * @memberof FileInMinioNotFoundErrorDto
+   */
+  statusCode: number
+  /**
+   * Detail error message
+   * @type {string}
+   * @memberof FileInMinioNotFoundErrorDto
+   */
+  message: string
+  /**
+   * status in text
+   * @type {string}
+   * @memberof FileInMinioNotFoundErrorDto
+   */
+  status: string
+  /**
+   * Exact error name
+   * @type {string}
+   * @memberof FileInMinioNotFoundErrorDto
+   */
+  errorName: FileInMinioNotFoundErrorDtoErrorNameEnum
+  /**
+   * Helper for sending additional data in error
+   * @type {object}
+   * @memberof FileInMinioNotFoundErrorDto
+   */
+  object?: object
+}
+
+export const FileInMinioNotFoundErrorDtoErrorNameEnum = {
+  NotFoundError: 'NOT_FOUND_ERROR',
+  DatabaseError: 'DATABASE_ERROR',
+  InternalServerError: 'INTERNAL_SERVER_ERROR',
+} as const
+
+export type FileInMinioNotFoundErrorDtoErrorNameEnum =
+  (typeof FileInMinioNotFoundErrorDtoErrorNameEnum)[keyof typeof FileInMinioNotFoundErrorDtoErrorNameEnum]
+
+/**
+ *
+ * @export
+ * @interface FileInScannerNotFoundErrorDto
+ */
+export interface FileInScannerNotFoundErrorDto {
+  /**
+   * Status Code
+   * @type {number}
+   * @memberof FileInScannerNotFoundErrorDto
+   */
+  statusCode: number
+  /**
+   * Detail error message
+   * @type {string}
+   * @memberof FileInScannerNotFoundErrorDto
+   */
+  message: string
+  /**
+   * status in text
+   * @type {string}
+   * @memberof FileInScannerNotFoundErrorDto
+   */
+  status: string
+  /**
+   * Exact error name
+   * @type {string}
+   * @memberof FileInScannerNotFoundErrorDto
+   */
+  errorName: FileInScannerNotFoundErrorDtoErrorNameEnum
+  /**
+   * Helper for sending additional data in error
+   * @type {object}
+   * @memberof FileInScannerNotFoundErrorDto
+   */
+  object?: object
+}
+
+export const FileInScannerNotFoundErrorDtoErrorNameEnum = {
+  NotFoundError: 'NOT_FOUND_ERROR',
+  DatabaseError: 'DATABASE_ERROR',
+  InternalServerError: 'INTERNAL_SERVER_ERROR',
+} as const
+
+export type FileInScannerNotFoundErrorDtoErrorNameEnum =
+  (typeof FileInScannerNotFoundErrorDtoErrorNameEnum)[keyof typeof FileInScannerNotFoundErrorDtoErrorNameEnum]
+
+/**
+ *
+ * @export
+ * @interface FileOrUserNotFoundErrorDto
+ */
+export interface FileOrUserNotFoundErrorDto {
+  /**
+   * Status Code
+   * @type {number}
+   * @memberof FileOrUserNotFoundErrorDto
+   */
+  statusCode: number
+  /**
+   * Detail error message
+   * @type {string}
+   * @memberof FileOrUserNotFoundErrorDto
+   */
+  message: string
+  /**
+   * status in text
+   * @type {string}
+   * @memberof FileOrUserNotFoundErrorDto
+   */
+  status: string
+  /**
+   * Exact error name
+   * @type {string}
+   * @memberof FileOrUserNotFoundErrorDto
+   */
+  errorName: FileOrUserNotFoundErrorDtoErrorNameEnum
+  /**
+   * Helper for sending additional data in error
+   * @type {object}
+   * @memberof FileOrUserNotFoundErrorDto
+   */
+  object?: object
+}
+
+export const FileOrUserNotFoundErrorDtoErrorNameEnum = {
+  NotFoundError: 'NOT_FOUND_ERROR',
+  DatabaseError: 'DATABASE_ERROR',
+  InternalServerError: 'INTERNAL_SERVER_ERROR',
+} as const
+
+export type FileOrUserNotFoundErrorDtoErrorNameEnum =
+  (typeof FileOrUserNotFoundErrorDtoErrorNameEnum)[keyof typeof FileOrUserNotFoundErrorDtoErrorNameEnum]
+
+/**
+ *
+ * @export
+ * @interface FileSizeExceededErrorDto
+ */
+export interface FileSizeExceededErrorDto {
+  /**
+   * Status Code
+   * @type {number}
+   * @memberof FileSizeExceededErrorDto
+   */
+  statusCode: number
+  /**
+   * Detail error message
+   * @type {string}
+   * @memberof FileSizeExceededErrorDto
+   */
+  message: string
+  /**
+   * status in text
+   * @type {string}
+   * @memberof FileSizeExceededErrorDto
+   */
+  status: string
+  /**
+   * Exact error name
+   * @type {string}
+   * @memberof FileSizeExceededErrorDto
+   */
+  errorName: FileSizeExceededErrorDtoErrorNameEnum
+  /**
+   * Helper for sending additional data in error
+   * @type {object}
+   * @memberof FileSizeExceededErrorDto
+   */
+  object?: object
+}
+
+export const FileSizeExceededErrorDtoErrorNameEnum = {
+  NotFoundError: 'NOT_FOUND_ERROR',
+  DatabaseError: 'DATABASE_ERROR',
+  InternalServerError: 'INTERNAL_SERVER_ERROR',
+} as const
+
+export type FileSizeExceededErrorDtoErrorNameEnum =
+  (typeof FileSizeExceededErrorDtoErrorNameEnum)[keyof typeof FileSizeExceededErrorDtoErrorNameEnum]
+
+/**
+ *
+ * @export
+ * @interface FileSizeTooLargeErrorDto
+ */
+export interface FileSizeTooLargeErrorDto {
+  /**
+   * Status Code
+   * @type {number}
+   * @memberof FileSizeTooLargeErrorDto
+   */
+  statusCode: number
+  /**
+   * Detail error message
+   * @type {string}
+   * @memberof FileSizeTooLargeErrorDto
+   */
+  message: string
+  /**
+   * status in text
+   * @type {string}
+   * @memberof FileSizeTooLargeErrorDto
+   */
+  status: string
+  /**
+   * Exact error name
+   * @type {string}
+   * @memberof FileSizeTooLargeErrorDto
+   */
+  errorName: FileSizeTooLargeErrorDtoErrorNameEnum
+  /**
+   * Helper for sending additional data in error
+   * @type {object}
+   * @memberof FileSizeTooLargeErrorDto
+   */
+  object?: object
+}
+
+export const FileSizeTooLargeErrorDtoErrorNameEnum = {
+  NotFoundError: 'NOT_FOUND_ERROR',
+  DatabaseError: 'DATABASE_ERROR',
+  InternalServerError: 'INTERNAL_SERVER_ERROR',
+} as const
+
+export type FileSizeTooLargeErrorDtoErrorNameEnum =
+  (typeof FileSizeTooLargeErrorDtoErrorNameEnum)[keyof typeof FileSizeTooLargeErrorDtoErrorNameEnum]
+
+/**
+ *
+ * @export
+ * @interface FileWrongParamsErrorDto
+ */
+export interface FileWrongParamsErrorDto {
+  /**
+   * Status Code
+   * @type {number}
+   * @memberof FileWrongParamsErrorDto
+   */
+  statusCode: number
+  /**
+   * Detail error message
+   * @type {string}
+   * @memberof FileWrongParamsErrorDto
+   */
+  message: string
+  /**
+   * status in text
+   * @type {string}
+   * @memberof FileWrongParamsErrorDto
+   */
+  status: string
+  /**
+   * Exact error name
+   * @type {string}
+   * @memberof FileWrongParamsErrorDto
+   */
+  errorName: FileWrongParamsErrorDtoErrorNameEnum
+  /**
+   * Helper for sending additional data in error
+   * @type {object}
+   * @memberof FileWrongParamsErrorDto
+   */
+  object?: object
+}
+
+export const FileWrongParamsErrorDtoErrorNameEnum = {
+  NotFoundError: 'NOT_FOUND_ERROR',
+  DatabaseError: 'DATABASE_ERROR',
+  InternalServerError: 'INTERNAL_SERVER_ERROR',
+} as const
+
+export type FileWrongParamsErrorDtoErrorNameEnum =
+  (typeof FileWrongParamsErrorDtoErrorNameEnum)[keyof typeof FileWrongParamsErrorDtoErrorNameEnum]
+
+/**
+ *
+ * @export
+ * @interface FileWrongStatusNotAcceptedErrorDto
+ */
+export interface FileWrongStatusNotAcceptedErrorDto {
+  /**
+   * Status Code
+   * @type {number}
+   * @memberof FileWrongStatusNotAcceptedErrorDto
+   */
+  statusCode: number
+  /**
+   * Detail error message
+   * @type {string}
+   * @memberof FileWrongStatusNotAcceptedErrorDto
+   */
+  message: string
+  /**
+   * status in text
+   * @type {string}
+   * @memberof FileWrongStatusNotAcceptedErrorDto
+   */
+  status: string
+  /**
+   * Exact error name
+   * @type {string}
+   * @memberof FileWrongStatusNotAcceptedErrorDto
+   */
+  errorName: FileWrongStatusNotAcceptedErrorDtoErrorNameEnum
+  /**
+   * Helper for sending additional data in error
+   * @type {object}
+   * @memberof FileWrongStatusNotAcceptedErrorDto
+   */
+  object?: object
+}
+
+export const FileWrongStatusNotAcceptedErrorDtoErrorNameEnum = {
+  NotFoundError: 'NOT_FOUND_ERROR',
+  DatabaseError: 'DATABASE_ERROR',
+  InternalServerError: 'INTERNAL_SERVER_ERROR',
+} as const
+
+export type FileWrongStatusNotAcceptedErrorDtoErrorNameEnum =
+  (typeof FileWrongStatusNotAcceptedErrorDtoErrorNameEnum)[keyof typeof FileWrongStatusNotAcceptedErrorDtoErrorNameEnum]
+
+/**
+ *
+ * @export
+ * @interface FilesControllerPostFileToScanner400Response
+ */
+export interface FilesControllerPostFileToScanner400Response {
+  /**
+   * Status Code
+   * @type {number}
+   * @memberof FilesControllerPostFileToScanner400Response
+   */
+  statusCode: number
+  /**
+   * Detail error message
+   * @type {string}
+   * @memberof FilesControllerPostFileToScanner400Response
+   */
+  message: string
+  /**
+   * status in text
+   * @type {string}
+   * @memberof FilesControllerPostFileToScanner400Response
+   */
+  status: string
+  /**
+   * Exact error name
+   * @type {string}
+   * @memberof FilesControllerPostFileToScanner400Response
+   */
+  errorName: FilesControllerPostFileToScanner400ResponseErrorNameEnum
+  /**
+   * Helper for sending additional data in error
+   * @type {object}
+   * @memberof FilesControllerPostFileToScanner400Response
+   */
+  object?: object
+}
+
+export const FilesControllerPostFileToScanner400ResponseErrorNameEnum = {
+  NotFoundError: 'NOT_FOUND_ERROR',
+  DatabaseError: 'DATABASE_ERROR',
+  InternalServerError: 'INTERNAL_SERVER_ERROR',
+} as const
+
+export type FilesControllerPostFileToScanner400ResponseErrorNameEnum =
+  (typeof FilesControllerPostFileToScanner400ResponseErrorNameEnum)[keyof typeof FilesControllerPostFileToScanner400ResponseErrorNameEnum]
+
+/**
+ *
+ * @export
+ * @interface FilesControllerPostFileToScanner404Response
+ */
+export interface FilesControllerPostFileToScanner404Response {
+  /**
+   * Status Code
+   * @type {number}
+   * @memberof FilesControllerPostFileToScanner404Response
+   */
+  statusCode: number
+  /**
+   * Detail error message
+   * @type {string}
+   * @memberof FilesControllerPostFileToScanner404Response
+   */
+  message: string
+  /**
+   * status in text
+   * @type {string}
+   * @memberof FilesControllerPostFileToScanner404Response
+   */
+  status: string
+  /**
+   * Exact error name
+   * @type {string}
+   * @memberof FilesControllerPostFileToScanner404Response
+   */
+  errorName: FilesControllerPostFileToScanner404ResponseErrorNameEnum
+  /**
+   * Helper for sending additional data in error
+   * @type {object}
+   * @memberof FilesControllerPostFileToScanner404Response
+   */
+  object?: object
+}
+
+export const FilesControllerPostFileToScanner404ResponseErrorNameEnum = {
+  NotFoundError: 'NOT_FOUND_ERROR',
+  DatabaseError: 'DATABASE_ERROR',
+  InternalServerError: 'INTERNAL_SERVER_ERROR',
+} as const
+
+export type FilesControllerPostFileToScanner404ResponseErrorNameEnum =
+  (typeof FilesControllerPostFileToScanner404ResponseErrorNameEnum)[keyof typeof FilesControllerPostFileToScanner404ResponseErrorNameEnum]
+
+/**
+ *
+ * @export
+ * @interface FilesControllerPostFileToScanner500Response
+ */
+export interface FilesControllerPostFileToScanner500Response {
+  /**
+   * Status Code
+   * @type {number}
+   * @memberof FilesControllerPostFileToScanner500Response
+   */
+  statusCode: number
+  /**
+   * Detail error message
+   * @type {string}
+   * @memberof FilesControllerPostFileToScanner500Response
+   */
+  message: string
+  /**
+   * status in text
+   * @type {string}
+   * @memberof FilesControllerPostFileToScanner500Response
+   */
+  status: string
+  /**
+   * Exact error name
+   * @type {string}
+   * @memberof FilesControllerPostFileToScanner500Response
+   */
+  errorName: FilesControllerPostFileToScanner500ResponseErrorNameEnum
+  /**
+   * Helper for sending additional data in error
+   * @type {object}
+   * @memberof FilesControllerPostFileToScanner500Response
+   */
+  object?: object
+}
+
+export const FilesControllerPostFileToScanner500ResponseErrorNameEnum = {
+  NotFoundError: 'NOT_FOUND_ERROR',
+  DatabaseError: 'DATABASE_ERROR',
+  InternalServerError: 'INTERNAL_SERVER_ERROR',
+} as const
+
+export type FilesControllerPostFileToScanner500ResponseErrorNameEnum =
+  (typeof FilesControllerPostFileToScanner500ResponseErrorNameEnum)[keyof typeof FilesControllerPostFileToScanner500ResponseErrorNameEnum]
+
+/**
+ *
+ * @export
+ * @interface FilesControllerUploadFile400Response
+ */
+export interface FilesControllerUploadFile400Response {
+  /**
+   * Status Code
+   * @type {number}
+   * @memberof FilesControllerUploadFile400Response
+   */
+  statusCode: number
+  /**
+   * Detail error message
+   * @type {string}
+   * @memberof FilesControllerUploadFile400Response
+   */
+  message: string
+  /**
+   * status in text
+   * @type {string}
+   * @memberof FilesControllerUploadFile400Response
+   */
+  status: string
+  /**
+   * Exact error name
+   * @type {string}
+   * @memberof FilesControllerUploadFile400Response
+   */
+  errorName: FilesControllerUploadFile400ResponseErrorNameEnum
+  /**
+   * Helper for sending additional data in error
+   * @type {object}
+   * @memberof FilesControllerUploadFile400Response
+   */
+  object?: object
+  /**
+   *
+   * @type {string}
+   * @memberof FilesControllerUploadFile400Response
+   */
+  error: string
+}
+
+export const FilesControllerUploadFile400ResponseErrorNameEnum = {
+  NotFoundError: 'NOT_FOUND_ERROR',
+  DatabaseError: 'DATABASE_ERROR',
+  InternalServerError: 'INTERNAL_SERVER_ERROR',
+} as const
+
+export type FilesControllerUploadFile400ResponseErrorNameEnum =
+  (typeof FilesControllerUploadFile400ResponseErrorNameEnum)[keyof typeof FilesControllerUploadFile400ResponseErrorNameEnum]
+
+/**
+ *
+ * @export
+ * @interface FormOrFileOrUserNotFoundErrorDto
+ */
+export interface FormOrFileOrUserNotFoundErrorDto {
+  /**
+   * Status Code
+   * @type {number}
+   * @memberof FormOrFileOrUserNotFoundErrorDto
+   */
+  statusCode: number
+  /**
+   * Detail error message
+   * @type {string}
+   * @memberof FormOrFileOrUserNotFoundErrorDto
+   */
+  message: string
+  /**
+   * status in text
+   * @type {string}
+   * @memberof FormOrFileOrUserNotFoundErrorDto
+   */
+  status: string
+  /**
+   * Exact error name
+   * @type {string}
+   * @memberof FormOrFileOrUserNotFoundErrorDto
+   */
+  errorName: FormOrFileOrUserNotFoundErrorDtoErrorNameEnum
+  /**
+   * Helper for sending additional data in error
+   * @type {object}
+   * @memberof FormOrFileOrUserNotFoundErrorDto
+   */
+  object?: object
+}
+
+export const FormOrFileOrUserNotFoundErrorDtoErrorNameEnum = {
+  NotFoundError: 'NOT_FOUND_ERROR',
+  DatabaseError: 'DATABASE_ERROR',
+  InternalServerError: 'INTERNAL_SERVER_ERROR',
+} as const
+
+export type FormOrFileOrUserNotFoundErrorDtoErrorNameEnum =
+  (typeof FormOrFileOrUserNotFoundErrorDtoErrorNameEnum)[keyof typeof FormOrFileOrUserNotFoundErrorDtoErrorNameEnum]
+
+/**
+ *
+ * @export
+ * @interface FormOrUserNotFoundErrorDto
+ */
+export interface FormOrUserNotFoundErrorDto {
+  /**
+   * Status Code
+   * @type {number}
+   * @memberof FormOrUserNotFoundErrorDto
+   */
+  statusCode: number
+  /**
+   * Detail error message
+   * @type {string}
+   * @memberof FormOrUserNotFoundErrorDto
+   */
+  message: string
+  /**
+   * status in text
+   * @type {string}
+   * @memberof FormOrUserNotFoundErrorDto
+   */
+  status: string
+  /**
+   * Exact error name
+   * @type {string}
+   * @memberof FormOrUserNotFoundErrorDto
+   */
+  errorName: FormOrUserNotFoundErrorDtoErrorNameEnum
+  /**
+   * Helper for sending additional data in error
+   * @type {object}
+   * @memberof FormOrUserNotFoundErrorDto
+   */
+  object?: object
+}
+
+export const FormOrUserNotFoundErrorDtoErrorNameEnum = {
+  NotFoundError: 'NOT_FOUND_ERROR',
+  DatabaseError: 'DATABASE_ERROR',
+  InternalServerError: 'INTERNAL_SERVER_ERROR',
+} as const
+
+export type FormOrUserNotFoundErrorDtoErrorNameEnum =
+  (typeof FormOrUserNotFoundErrorDtoErrorNameEnum)[keyof typeof FormOrUserNotFoundErrorDtoErrorNameEnum]
+
+/**
+ *
+ * @export
+ * @interface GetFileResponseDto
+ */
+export interface GetFileResponseDto {
+  /**
+   * Hashed file uid under which is file stored in minio
+   * @type {string}
+   * @memberof GetFileResponseDto
+   */
+  fileUid: string
+  /**
+   * Real file name of the file, but is used only for display
+   * @type {string}
+   * @memberof GetFileResponseDto
+   */
+  fileName: string
+  /**
+   * Form type
+   * @type {string}
+   * @memberof GetFileResponseDto
+   */
+  pospId: string
+  /**
+   * Identifier of sent form
+   * @type {string}
+   * @memberof GetFileResponseDto
+   */
+  formId: string
+  /**
+   * External Id of user
+   * @type {string}
+   * @memberof GetFileResponseDto
+   */
+  userExternalId: string
+  /**
+   * scan result
+   * @type {string}
+   * @memberof GetFileResponseDto
+   */
+  status: GetFileResponseDtoStatusEnum
+  /**
+   * id of the record in db
+   * @type {string}
+   * @memberof GetFileResponseDto
+   */
+  id: string
+  /**
+   * File id under which is file stored in the scanner
+   * @type {string}
+   * @memberof GetFileResponseDto
+   */
+  scannerId: string
+  /**
+   * Date when file was created
+   * @type {string}
+   * @memberof GetFileResponseDto
+   */
+  createdAt: string
+  /**
+   * Date when file was updated
+   * @type {string}
+   * @memberof GetFileResponseDto
+   */
+  updatedAt: string
+}
+
+export const GetFileResponseDtoStatusEnum = {
+  Uploaded: 'UPLOADED',
+  Accepted: 'ACCEPTED',
+  Scanning: 'SCANNING',
+  Safe: 'SAFE',
+  Infected: 'INFECTED',
+  NotFound: 'NOT FOUND',
+  MoveErrorSafe: 'MOVE ERROR SAFE',
+  MoveErrorInfected: 'MOVE ERROR INFECTED',
+} as const
+
+export type GetFileResponseDtoStatusEnum =
+  (typeof GetFileResponseDtoStatusEnum)[keyof typeof GetFileResponseDtoStatusEnum]
+
+/**
+ *
+ * @export
+ * @interface GetFileStatusResponseDto
+ */
+export interface GetFileStatusResponseDto {
+  /**
+   * scan result
+   * @type {string}
+   * @memberof GetFileStatusResponseDto
+   */
+  status: GetFileStatusResponseDtoStatusEnum
+}
+
+export const GetFileStatusResponseDtoStatusEnum = {
+  Uploaded: 'UPLOADED',
+  Accepted: 'ACCEPTED',
+  Scanning: 'SCANNING',
+  Safe: 'SAFE',
+  Infected: 'INFECTED',
+  NotFound: 'NOT FOUND',
+  MoveErrorSafe: 'MOVE ERROR SAFE',
+  MoveErrorInfected: 'MOVE ERROR INFECTED',
+} as const
+
+export type GetFileStatusResponseDtoStatusEnum =
+  (typeof GetFileStatusResponseDtoStatusEnum)[keyof typeof GetFileStatusResponseDtoStatusEnum]
+
+/**
+ *
  * @export
  * @interface GetFormResponseDto
  */
 export interface GetFormResponseDto {
-    /**
-     * Change email, on which you can be contacted
-     * @type {string}
-     * @memberof GetFormResponseDto
-     */
-    'email': string;
-    /**
-     * Send XML body of form
-     * @type {string}
-     * @memberof GetFormResponseDto
-     */
-    'formDataXml': string;
-    /**
-     * Send XML body of form
-     * @type {object}
-     * @memberof GetFormResponseDto
-     */
-    'formDataJson': object;
-    /**
-     * Name of Form
-     * @type {string}
-     * @memberof GetFormResponseDto
-     */
-    'pospID'?: string;
-    /**
-     * Version of Form
-     * @type {string}
-     * @memberof GetFormResponseDto
-     */
-    'pospVersion': string;
-    /**
-     * Subject of message for recipient
-     * @type {string}
-     * @memberof GetFormResponseDto
-     */
-    'messageSubject': string;
-    /**
-     * Is it signed by Eid?
-     * @type {boolean}
-     * @memberof GetFormResponseDto
-     */
-    'isSigned'?: boolean;
-    /**
-     * Name of form showned to user in Ginis
-     * @type {string}
-     * @memberof GetFormResponseDto
-     */
-    'formName'?: string;
-    /**
-     * Description of form showned to user in Ginis
-     * @type {string}
-     * @memberof GetFormResponseDto
-     */
-    'fromDescription'?: string;
-    /**
-     * Id of record
-     * @type {string}
-     * @memberof GetFormResponseDto
-     */
-    'id': string;
-    /**
-     * Create date of record
-     * @type {string}
-     * @memberof GetFormResponseDto
-     */
-    'createdAt': string;
-    /**
-     * Update date of record
-     * @type {string}
-     * @memberof GetFormResponseDto
-     */
-    'updatedAt': string;
-    /**
-     * Id of send form from other system, (probably ginis)
-     * @type {string}
-     * @memberof GetFormResponseDto
-     */
-    'externalId': string;
-    /**
-     * User ID (from cognito) who submit this form, can be empty, if it was submitted by user through eID
-     * @type {string}
-     * @memberof GetFormResponseDto
-     */
-    'userExternalId': string;
-    /**
-     * Uri for defining electronic sendbox, if person has it
-     * @type {string}
-     * @memberof GetFormResponseDto
-     */
-    'uri'?: string;
-    /**
-     * State of form 
-     * @type {string}
-     * @memberof GetFormResponseDto
-     */
-    'state'?: string;
-    /**
-     * Data from ginis saved in our db
-     * @type {string}
-     * @memberof GetFormResponseDto
-     */
-    'formDataGinis'?: string;
-    /**
-     * Technical NASES id of sender
-     * @type {string}
-     * @memberof GetFormResponseDto
-     */
-    'senderId': string;
-    /**
-     * Technical NASES id of recipient
-     * @type {string}
-     * @memberof GetFormResponseDto
-     */
-    'recipientId': string;
-    /**
-     * end of submition
-     * @type {string}
-     * @memberof GetFormResponseDto
-     */
-    'finishSubmission': string;
+  /**
+   * Change email, on which you can be contacted
+   * @type {string}
+   * @memberof GetFormResponseDto
+   */
+  email: string
+  /**
+   * Send XML body of form
+   * @type {string}
+   * @memberof GetFormResponseDto
+   */
+  formDataXml: string
+  /**
+   * Send XML body of form
+   * @type {object}
+   * @memberof GetFormResponseDto
+   */
+  formDataJson: object
+  /**
+   * Name of Form
+   * @type {string}
+   * @memberof GetFormResponseDto
+   */
+  pospID?: string
+  /**
+   * Version of Form
+   * @type {string}
+   * @memberof GetFormResponseDto
+   */
+  pospVersion: string
+  /**
+   * Subject of message for recipient
+   * @type {string}
+   * @memberof GetFormResponseDto
+   */
+  messageSubject: string
+  /**
+   * Is it signed by Eid?
+   * @type {boolean}
+   * @memberof GetFormResponseDto
+   */
+  isSigned?: boolean
+  /**
+   * Name of form showned to user in Ginis
+   * @type {string}
+   * @memberof GetFormResponseDto
+   */
+  formName?: string
+  /**
+   * Description of form showned to user in Ginis
+   * @type {string}
+   * @memberof GetFormResponseDto
+   */
+  fromDescription?: string
+  /**
+   * Id of record
+   * @type {string}
+   * @memberof GetFormResponseDto
+   */
+  id: string
+  /**
+   * Create date of record
+   * @type {string}
+   * @memberof GetFormResponseDto
+   */
+  createdAt: string
+  /**
+   * Update date of record
+   * @type {string}
+   * @memberof GetFormResponseDto
+   */
+  updatedAt: string
+  /**
+   * Id of send form from other system, (probably ginis)
+   * @type {string}
+   * @memberof GetFormResponseDto
+   */
+  externalId: string
+  /**
+   * User ID (from cognito) who submit this form, can be empty, if it was submitted by user through eID
+   * @type {string}
+   * @memberof GetFormResponseDto
+   */
+  userExternalId: string
+  /**
+   * Uri for defining electronic sendbox, if person has it
+   * @type {string}
+   * @memberof GetFormResponseDto
+   */
+  uri?: string
+  /**
+   * State of form
+   * @type {string}
+   * @memberof GetFormResponseDto
+   */
+  state?: string
+  /**
+   * Data from ginis saved in our db
+   * @type {string}
+   * @memberof GetFormResponseDto
+   */
+  formDataGinis?: string
+  /**
+   * Technical NASES id of sender
+   * @type {string}
+   * @memberof GetFormResponseDto
+   */
+  senderId: string
+  /**
+   * Technical NASES id of recipient
+   * @type {string}
+   * @memberof GetFormResponseDto
+   */
+  recipientId: string
+  /**
+   * end of submition
+   * @type {string}
+   * @memberof GetFormResponseDto
+   */
+  finishSubmission: string
 }
 /**
- * 
+ *
  * @export
  * @interface GetFormsResponseDto
  */
 export interface GetFormsResponseDto {
-    /**
-     * actual page
-     * @type {number}
-     * @memberof GetFormsResponseDto
-     */
-    'currentPage': number;
-    /**
-     * number of items in one page
-     * @type {number}
-     * @memberof GetFormsResponseDto
-     */
-    'pagination': number;
-    /**
-     * Total number of items
-     * @type {number}
-     * @memberof GetFormsResponseDto
-     */
-    'countPages': number;
-    /**
-     * 
-     * @type {GetFormsResponseDtoItems}
-     * @memberof GetFormsResponseDto
-     */
-    'items': GetFormsResponseDtoItems;
+  /**
+   * actual page
+   * @type {number}
+   * @memberof GetFormsResponseDto
+   */
+  currentPage: number
+  /**
+   * number of items in one page
+   * @type {number}
+   * @memberof GetFormsResponseDto
+   */
+  pagination: number
+  /**
+   * Total number of items
+   * @type {number}
+   * @memberof GetFormsResponseDto
+   */
+  countPages: number
+  /**
+   *
+   * @type {GetFormsResponseDtoItems}
+   * @memberof GetFormsResponseDto
+   */
+  items: GetFormsResponseDtoItems
 }
 /**
  * Items
@@ -384,231 +1334,582 @@ export interface GetFormsResponseDto {
  * @interface GetFormsResponseDtoItems
  */
 export interface GetFormsResponseDtoItems {
-    /**
-     * Change email, on which you can be contacted
-     * @type {string}
-     * @memberof GetFormsResponseDtoItems
-     */
-    'email': string;
-    /**
-     * Send XML body of form
-     * @type {string}
-     * @memberof GetFormsResponseDtoItems
-     */
-    'formDataXml': string;
-    /**
-     * Send XML body of form
-     * @type {object}
-     * @memberof GetFormsResponseDtoItems
-     */
-    'formDataJson': object;
-    /**
-     * Name of Form
-     * @type {string}
-     * @memberof GetFormsResponseDtoItems
-     */
-    'pospID'?: string;
-    /**
-     * Version of Form
-     * @type {string}
-     * @memberof GetFormsResponseDtoItems
-     */
-    'pospVersion': string;
-    /**
-     * Subject of message for recipient
-     * @type {string}
-     * @memberof GetFormsResponseDtoItems
-     */
-    'messageSubject': string;
-    /**
-     * Is it signed by Eid?
-     * @type {boolean}
-     * @memberof GetFormsResponseDtoItems
-     */
-    'isSigned'?: boolean;
-    /**
-     * Name of form showned to user in Ginis
-     * @type {string}
-     * @memberof GetFormsResponseDtoItems
-     */
-    'formName'?: string;
-    /**
-     * Description of form showned to user in Ginis
-     * @type {string}
-     * @memberof GetFormsResponseDtoItems
-     */
-    'fromDescription'?: string;
-    /**
-     * Id of record
-     * @type {string}
-     * @memberof GetFormsResponseDtoItems
-     */
-    'id': string;
-    /**
-     * Create date of record
-     * @type {string}
-     * @memberof GetFormsResponseDtoItems
-     */
-    'createdAt': string;
-    /**
-     * Update date of record
-     * @type {string}
-     * @memberof GetFormsResponseDtoItems
-     */
-    'updatedAt': string;
-    /**
-     * Id of send form from other system, (probably ginis)
-     * @type {string}
-     * @memberof GetFormsResponseDtoItems
-     */
-    'externalId': string;
-    /**
-     * User ID (from cognito) who submit this form, can be empty, if it was submitted by user through eID
-     * @type {string}
-     * @memberof GetFormsResponseDtoItems
-     */
-    'userExternalId': string;
-    /**
-     * Uri for defining electronic sendbox, if person has it
-     * @type {string}
-     * @memberof GetFormsResponseDtoItems
-     */
-    'uri'?: string;
-    /**
-     * State of form 
-     * @type {string}
-     * @memberof GetFormsResponseDtoItems
-     */
-    'state'?: string;
-    /**
-     * Data from ginis saved in our db
-     * @type {string}
-     * @memberof GetFormsResponseDtoItems
-     */
-    'formDataGinis'?: string;
-    /**
-     * Technical NASES id of sender
-     * @type {string}
-     * @memberof GetFormsResponseDtoItems
-     */
-    'senderId': string;
-    /**
-     * Technical NASES id of recipient
-     * @type {string}
-     * @memberof GetFormsResponseDtoItems
-     */
-    'recipientId': string;
-    /**
-     * end of submition
-     * @type {string}
-     * @memberof GetFormsResponseDtoItems
-     */
-    'finishSubmission': string;
+  /**
+   * Change email, on which you can be contacted
+   * @type {string}
+   * @memberof GetFormsResponseDtoItems
+   */
+  email: string
+  /**
+   * Send XML body of form
+   * @type {string}
+   * @memberof GetFormsResponseDtoItems
+   */
+  formDataXml: string
+  /**
+   * Send XML body of form
+   * @type {object}
+   * @memberof GetFormsResponseDtoItems
+   */
+  formDataJson: object
+  /**
+   * Name of Form
+   * @type {string}
+   * @memberof GetFormsResponseDtoItems
+   */
+  pospID?: string
+  /**
+   * Version of Form
+   * @type {string}
+   * @memberof GetFormsResponseDtoItems
+   */
+  pospVersion: string
+  /**
+   * Subject of message for recipient
+   * @type {string}
+   * @memberof GetFormsResponseDtoItems
+   */
+  messageSubject: string
+  /**
+   * Is it signed by Eid?
+   * @type {boolean}
+   * @memberof GetFormsResponseDtoItems
+   */
+  isSigned?: boolean
+  /**
+   * Name of form showned to user in Ginis
+   * @type {string}
+   * @memberof GetFormsResponseDtoItems
+   */
+  formName?: string
+  /**
+   * Description of form showned to user in Ginis
+   * @type {string}
+   * @memberof GetFormsResponseDtoItems
+   */
+  fromDescription?: string
+  /**
+   * Id of record
+   * @type {string}
+   * @memberof GetFormsResponseDtoItems
+   */
+  id: string
+  /**
+   * Create date of record
+   * @type {string}
+   * @memberof GetFormsResponseDtoItems
+   */
+  createdAt: string
+  /**
+   * Update date of record
+   * @type {string}
+   * @memberof GetFormsResponseDtoItems
+   */
+  updatedAt: string
+  /**
+   * Id of send form from other system, (probably ginis)
+   * @type {string}
+   * @memberof GetFormsResponseDtoItems
+   */
+  externalId: string
+  /**
+   * User ID (from cognito) who submit this form, can be empty, if it was submitted by user through eID
+   * @type {string}
+   * @memberof GetFormsResponseDtoItems
+   */
+  userExternalId: string
+  /**
+   * Uri for defining electronic sendbox, if person has it
+   * @type {string}
+   * @memberof GetFormsResponseDtoItems
+   */
+  uri?: string
+  /**
+   * State of form
+   * @type {string}
+   * @memberof GetFormsResponseDtoItems
+   */
+  state?: string
+  /**
+   * Data from ginis saved in our db
+   * @type {string}
+   * @memberof GetFormsResponseDtoItems
+   */
+  formDataGinis?: string
+  /**
+   * Technical NASES id of sender
+   * @type {string}
+   * @memberof GetFormsResponseDtoItems
+   */
+  senderId: string
+  /**
+   * Technical NASES id of recipient
+   * @type {string}
+   * @memberof GetFormsResponseDtoItems
+   */
+  recipientId: string
+  /**
+   * end of submition
+   * @type {string}
+   * @memberof GetFormsResponseDtoItems
+   */
+  finishSubmission: string
 }
 /**
- * 
+ *
  * @export
- * @interface PostFileDto
+ * @interface NoFileUploadDataErrorDto
  */
-export interface PostFileDto {
-    /**
-     * Type of form
-     * @type {string}
-     * @memberof PostFileDto
-     */
-    'pospId': string;
-    /**
-     * Form record id
-     * @type {string}
-     * @memberof PostFileDto
-     */
-    'formId': string;
-    /**
-     * External Id of user
-     * @type {string}
-     * @memberof PostFileDto
-     */
-    'userExternalId': string;
-    /**
-     * File name in hash format
-     * @type {string}
-     * @memberof PostFileDto
-     */
-    'fileUid': string;
+export interface NoFileUploadDataErrorDto {
+  /**
+   * Status Code
+   * @type {number}
+   * @memberof NoFileUploadDataErrorDto
+   */
+  statusCode: number
+  /**
+   * Detail error message
+   * @type {string}
+   * @memberof NoFileUploadDataErrorDto
+   */
+  message: string
+  /**
+   * status in text
+   * @type {string}
+   * @memberof NoFileUploadDataErrorDto
+   */
+  status: string
+  /**
+   * Exact error name
+   * @type {string}
+   * @memberof NoFileUploadDataErrorDto
+   */
+  errorName: NoFileUploadDataErrorDtoErrorNameEnum
+  /**
+   * Helper for sending additional data in error
+   * @type {object}
+   * @memberof NoFileUploadDataErrorDto
+   */
+  object?: object
+}
+
+export const NoFileUploadDataErrorDtoErrorNameEnum = {
+  NotFoundError: 'NOT_FOUND_ERROR',
+  DatabaseError: 'DATABASE_ERROR',
+  InternalServerError: 'INTERNAL_SERVER_ERROR',
+} as const
+
+export type NoFileUploadDataErrorDtoErrorNameEnum =
+  (typeof NoFileUploadDataErrorDtoErrorNameEnum)[keyof typeof NoFileUploadDataErrorDtoErrorNameEnum]
+
+/**
+ *
+ * @export
+ * @interface PostFileRequestDto
+ */
+export interface PostFileRequestDto {
+  /**
+   * Hashed file uid under which is file stored in minio
+   * @type {string}
+   * @memberof PostFileRequestDto
+   */
+  fileUid: string
+  /**
+   * Real file name of the file, but is used only for display
+   * @type {string}
+   * @memberof PostFileRequestDto
+   */
+  fileName: string
+  /**
+   * Form type
+   * @type {string}
+   * @memberof PostFileRequestDto
+   */
+  pospId: string
+  /**
+   * Identifier of sent form
+   * @type {string}
+   * @memberof PostFileRequestDto
+   */
+  formId: string
+  /**
+   * Desired id of file in db
+   * @type {string}
+   * @memberof PostFileRequestDto
+   */
+  fileId: string
 }
 /**
- * 
+ *
+ * @export
+ * @interface PostFileResponseDto
+ */
+export interface PostFileResponseDto {
+  /**
+   * Hashed file uid under which is file stored in minio
+   * @type {string}
+   * @memberof PostFileResponseDto
+   */
+  fileUid: string
+  /**
+   * Real file name of the file, but is used only for display
+   * @type {string}
+   * @memberof PostFileResponseDto
+   */
+  fileName: string
+  /**
+   * Form type
+   * @type {string}
+   * @memberof PostFileResponseDto
+   */
+  pospId: string
+  /**
+   * Identifier of sent form
+   * @type {string}
+   * @memberof PostFileResponseDto
+   */
+  formId: string
+  /**
+   * External Id of user
+   * @type {string}
+   * @memberof PostFileResponseDto
+   */
+  userExternalId: string
+  /**
+   * scan result
+   * @type {string}
+   * @memberof PostFileResponseDto
+   */
+  status: PostFileResponseDtoStatusEnum
+  /**
+   * id of the record in db
+   * @type {string}
+   * @memberof PostFileResponseDto
+   */
+  id: string
+  /**
+   * File id under which is file stored in the scanner
+   * @type {string}
+   * @memberof PostFileResponseDto
+   */
+  scannerId: string
+  /**
+   * Date when file was created
+   * @type {string}
+   * @memberof PostFileResponseDto
+   */
+  createdAt: string
+  /**
+   * Date when file was updated
+   * @type {string}
+   * @memberof PostFileResponseDto
+   */
+  updatedAt: string
+  /**
+   * more info
+   * @type {string}
+   * @memberof PostFileResponseDto
+   */
+  message: string
+}
+
+export const PostFileResponseDtoStatusEnum = {
+  Uploaded: 'UPLOADED',
+  Accepted: 'ACCEPTED',
+  Scanning: 'SCANNING',
+  Safe: 'SAFE',
+  Infected: 'INFECTED',
+  NotFound: 'NOT FOUND',
+  MoveErrorSafe: 'MOVE ERROR SAFE',
+  MoveErrorInfected: 'MOVE ERROR INFECTED',
+} as const
+
+export type PostFileResponseDtoStatusEnum =
+  (typeof PostFileResponseDtoStatusEnum)[keyof typeof PostFileResponseDtoStatusEnum]
+
+/**
+ *
+ * @export
+ * @interface ProblemWithScannerErrorDto
+ */
+export interface ProblemWithScannerErrorDto {
+  /**
+   * Status Code
+   * @type {number}
+   * @memberof ProblemWithScannerErrorDto
+   */
+  statusCode: number
+  /**
+   * Detail error message
+   * @type {string}
+   * @memberof ProblemWithScannerErrorDto
+   */
+  message: string
+  /**
+   * status in text
+   * @type {string}
+   * @memberof ProblemWithScannerErrorDto
+   */
+  status: string
+  /**
+   * Exact error name
+   * @type {string}
+   * @memberof ProblemWithScannerErrorDto
+   */
+  errorName: ProblemWithScannerErrorDtoErrorNameEnum
+  /**
+   * Helper for sending additional data in error
+   * @type {object}
+   * @memberof ProblemWithScannerErrorDto
+   */
+  object?: object
+}
+
+export const ProblemWithScannerErrorDtoErrorNameEnum = {
+  NotFoundError: 'NOT_FOUND_ERROR',
+  DatabaseError: 'DATABASE_ERROR',
+  InternalServerError: 'INTERNAL_SERVER_ERROR',
+} as const
+
+export type ProblemWithScannerErrorDtoErrorNameEnum =
+  (typeof ProblemWithScannerErrorDtoErrorNameEnum)[keyof typeof ProblemWithScannerErrorDtoErrorNameEnum]
+
+/**
+ *
  * @export
  * @interface ServiceRunningDto
  */
 export interface ServiceRunningDto {
-    /**
-     * is service running?
-     * @type {boolean}
-     * @memberof ServiceRunningDto
-     */
-    'running': boolean;
+  /**
+   * is service running?
+   * @type {boolean}
+   * @memberof ServiceRunningDto
+   */
+  running: boolean
 }
 /**
- * 
+ *
+ * @export
+ * @interface StatusFileDto
+ */
+export interface StatusFileDto {
+  /**
+   * scan result
+   * @type {string}
+   * @memberof StatusFileDto
+   */
+  status: StatusFileDtoStatusEnum
+}
+
+export const StatusFileDtoStatusEnum = {
+  Uploaded: 'UPLOADED',
+  Accepted: 'ACCEPTED',
+  Scanning: 'SCANNING',
+  Safe: 'SAFE',
+  Infected: 'INFECTED',
+  NotFound: 'NOT FOUND',
+  MoveErrorSafe: 'MOVE ERROR SAFE',
+  MoveErrorInfected: 'MOVE ERROR INFECTED',
+} as const
+
+export type StatusFileDtoStatusEnum =
+  (typeof StatusFileDtoStatusEnum)[keyof typeof StatusFileDtoStatusEnum]
+
+/**
+ *
+ * @export
+ * @interface UnauthorizedErrorDto
+ */
+export interface UnauthorizedErrorDto {
+  /**
+   * Status Code
+   * @type {number}
+   * @memberof UnauthorizedErrorDto
+   */
+  statusCode: number
+  /**
+   * Detail error message
+   * @type {string}
+   * @memberof UnauthorizedErrorDto
+   */
+  message: string
+}
+/**
+ *
+ * @export
+ * @interface UpdateFileStatusRequestDto
+ */
+export interface UpdateFileStatusRequestDto {
+  /**
+   * scan result
+   * @type {string}
+   * @memberof UpdateFileStatusRequestDto
+   */
+  status: UpdateFileStatusRequestDtoStatusEnum
+}
+
+export const UpdateFileStatusRequestDtoStatusEnum = {
+  Uploaded: 'UPLOADED',
+  Accepted: 'ACCEPTED',
+  Scanning: 'SCANNING',
+  Safe: 'SAFE',
+  Infected: 'INFECTED',
+  NotFound: 'NOT FOUND',
+  MoveErrorSafe: 'MOVE ERROR SAFE',
+  MoveErrorInfected: 'MOVE ERROR INFECTED',
+} as const
+
+export type UpdateFileStatusRequestDtoStatusEnum =
+  (typeof UpdateFileStatusRequestDtoStatusEnum)[keyof typeof UpdateFileStatusRequestDtoStatusEnum]
+
+/**
+ *
+ * @export
+ * @interface UpdateFileStatusResponseDto
+ */
+export interface UpdateFileStatusResponseDto {
+  /**
+   * Hashed file uid under which is file stored in minio
+   * @type {string}
+   * @memberof UpdateFileStatusResponseDto
+   */
+  fileUid: string
+  /**
+   * Real file name of the file, but is used only for display
+   * @type {string}
+   * @memberof UpdateFileStatusResponseDto
+   */
+  fileName: string
+  /**
+   * Form type
+   * @type {string}
+   * @memberof UpdateFileStatusResponseDto
+   */
+  pospId: string
+  /**
+   * Identifier of sent form
+   * @type {string}
+   * @memberof UpdateFileStatusResponseDto
+   */
+  formId: string
+  /**
+   * External Id of user
+   * @type {string}
+   * @memberof UpdateFileStatusResponseDto
+   */
+  userExternalId: string
+  /**
+   * scan result
+   * @type {string}
+   * @memberof UpdateFileStatusResponseDto
+   */
+  status: UpdateFileStatusResponseDtoStatusEnum
+  /**
+   * id of the record in db
+   * @type {string}
+   * @memberof UpdateFileStatusResponseDto
+   */
+  id: string
+  /**
+   * File id under which is file stored in the scanner
+   * @type {string}
+   * @memberof UpdateFileStatusResponseDto
+   */
+  scannerId: string
+  /**
+   * Date when file was created
+   * @type {string}
+   * @memberof UpdateFileStatusResponseDto
+   */
+  createdAt: string
+  /**
+   * Date when file was updated
+   * @type {string}
+   * @memberof UpdateFileStatusResponseDto
+   */
+  updatedAt: string
+  /**
+   * more info
+   * @type {string}
+   * @memberof UpdateFileStatusResponseDto
+   */
+  message: string
+}
+
+export const UpdateFileStatusResponseDtoStatusEnum = {
+  Uploaded: 'UPLOADED',
+  Accepted: 'ACCEPTED',
+  Scanning: 'SCANNING',
+  Safe: 'SAFE',
+  Infected: 'INFECTED',
+  NotFound: 'NOT FOUND',
+  MoveErrorSafe: 'MOVE ERROR SAFE',
+  MoveErrorInfected: 'MOVE ERROR INFECTED',
+} as const
+
+export type UpdateFileStatusResponseDtoStatusEnum =
+  (typeof UpdateFileStatusResponseDtoStatusEnum)[keyof typeof UpdateFileStatusResponseDtoStatusEnum]
+
+/**
+ *
  * @export
  * @interface UpdateFormRequestDto
  */
 export interface UpdateFormRequestDto {
-    /**
-     * Change email, on which you can be contacted
-     * @type {string}
-     * @memberof UpdateFormRequestDto
-     */
-    'email': string;
-    /**
-     * Send XML body of form
-     * @type {string}
-     * @memberof UpdateFormRequestDto
-     */
-    'formDataXml': string;
-    /**
-     * Send XML body of form
-     * @type {object}
-     * @memberof UpdateFormRequestDto
-     */
-    'formDataJson': object;
-    /**
-     * Name of Form
-     * @type {string}
-     * @memberof UpdateFormRequestDto
-     */
-    'pospID'?: string;
-    /**
-     * Version of Form
-     * @type {string}
-     * @memberof UpdateFormRequestDto
-     */
-    'pospVersion': string;
-    /**
-     * Subject of message for recipient
-     * @type {string}
-     * @memberof UpdateFormRequestDto
-     */
-    'messageSubject': string;
-    /**
-     * Is it signed by Eid?
-     * @type {boolean}
-     * @memberof UpdateFormRequestDto
-     */
-    'isSigned'?: boolean;
-    /**
-     * Name of form showned to user in Ginis
-     * @type {string}
-     * @memberof UpdateFormRequestDto
-     */
-    'formName'?: string;
-    /**
-     * Description of form showned to user in Ginis
-     * @type {string}
-     * @memberof UpdateFormRequestDto
-     */
-    'fromDescription'?: string;
+  /**
+   * Change email, on which you can be contacted
+   * @type {string}
+   * @memberof UpdateFormRequestDto
+   */
+  email: string
+  /**
+   * Send XML body of form
+   * @type {string}
+   * @memberof UpdateFormRequestDto
+   */
+  formDataXml: string
+  /**
+   * Send XML body of form
+   * @type {object}
+   * @memberof UpdateFormRequestDto
+   */
+  formDataJson: object
+  /**
+   * Name of Form
+   * @type {string}
+   * @memberof UpdateFormRequestDto
+   */
+  pospID?: string
+  /**
+   * Version of Form
+   * @type {string}
+   * @memberof UpdateFormRequestDto
+   */
+  pospVersion: string
+  /**
+   * Subject of message for recipient
+   * @type {string}
+   * @memberof UpdateFormRequestDto
+   */
+  messageSubject: string
+  /**
+   * Is it signed by Eid?
+   * @type {boolean}
+   * @memberof UpdateFormRequestDto
+   */
+  isSigned?: boolean
+  /**
+   * Name of form showned to user in Ginis
+   * @type {string}
+   * @memberof UpdateFormRequestDto
+   */
+  formName?: string
+  /**
+   * Description of form showned to user in Ginis
+   * @type {string}
+   * @memberof UpdateFormRequestDto
+   */
+  fromDescription?: string
 }
 
 /**
@@ -616,78 +1917,86 @@ export interface UpdateFormRequestDto {
  * @export
  */
 export const DefaultApiAxiosParamCreator = function (configuration?: Configuration) {
-    return {
-        /**
-         * See if nest is working!
-         * @summary Hello world!
-         * @param {*} [options] Override http request option.
-         * @throws {RequiredError}
-         */
-        appControllerGetHello: async (options: AxiosRequestConfig = {}): Promise<RequestArgs> => {
-            const localVarPath = `/healthcheck`;
-            // use dummy base URL string because the URL constructor only accepts absolute URLs.
-            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
-            let baseOptions;
-            if (configuration) {
-                baseOptions = configuration.baseOptions;
-            }
+  return {
+    /**
+     * See if nest is working!
+     * @summary Hello world!
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    appControllerGetHello: async (options: AxiosRequestConfig = {}): Promise<RequestArgs> => {
+      const localVarPath = `/healthcheck`
+      // use dummy base URL string because the URL constructor only accepts absolute URLs.
+      const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL)
+      let baseOptions
+      if (configuration) {
+        baseOptions = configuration.baseOptions
+      }
 
-            const localVarRequestOptions = { method: 'GET', ...baseOptions, ...options};
-            const localVarHeaderParameter = {} as any;
-            const localVarQueryParameter = {} as any;
+      const localVarRequestOptions = { method: 'GET', ...baseOptions, ...options }
+      const localVarHeaderParameter = {} as any
+      const localVarQueryParameter = {} as any
 
+      setSearchParams(localVarUrlObj, localVarQueryParameter)
+      let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {}
+      localVarRequestOptions.headers = {
+        ...localVarHeaderParameter,
+        ...headersFromBaseOptions,
+        ...options.headers,
+      }
 
-    
-            setSearchParams(localVarUrlObj, localVarQueryParameter);
-            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
-            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
-
-            return {
-                url: toPathString(localVarUrlObj),
-                options: localVarRequestOptions,
-            };
-        },
-    }
-};
+      return {
+        url: toPathString(localVarUrlObj),
+        options: localVarRequestOptions,
+      }
+    },
+  }
+}
 
 /**
  * DefaultApi - functional programming interface
  * @export
  */
-export const DefaultApiFp = function(configuration?: Configuration) {
-    const localVarAxiosParamCreator = DefaultApiAxiosParamCreator(configuration)
-    return {
-        /**
-         * See if nest is working!
-         * @summary Hello world!
-         * @param {*} [options] Override http request option.
-         * @throws {RequiredError}
-         */
-        async appControllerGetHello(options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<string>> {
-            const localVarAxiosArgs = await localVarAxiosParamCreator.appControllerGetHello(options);
-            return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
-        },
-    }
-};
+export const DefaultApiFp = function (configuration?: Configuration) {
+  const localVarAxiosParamCreator = DefaultApiAxiosParamCreator(configuration)
+  return {
+    /**
+     * See if nest is working!
+     * @summary Hello world!
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    async appControllerGetHello(
+      options?: AxiosRequestConfig,
+    ): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<string>> {
+      const localVarAxiosArgs = await localVarAxiosParamCreator.appControllerGetHello(options)
+      return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)
+    },
+  }
+}
 
 /**
  * DefaultApi - factory interface
  * @export
  */
-export const DefaultApiFactory = function (configuration?: Configuration, basePath?: string, axios?: AxiosInstance) {
-    const localVarFp = DefaultApiFp(configuration)
-    return {
-        /**
-         * See if nest is working!
-         * @summary Hello world!
-         * @param {*} [options] Override http request option.
-         * @throws {RequiredError}
-         */
-        appControllerGetHello(options?: any): AxiosPromise<string> {
-            return localVarFp.appControllerGetHello(options).then((request) => request(axios, basePath));
-        },
-    };
-};
+export const DefaultApiFactory = function (
+  configuration?: Configuration,
+  basePath?: string,
+  axios?: AxiosInstance,
+) {
+  const localVarFp = DefaultApiFp(configuration)
+  return {
+    /**
+     * See if nest is working!
+     * @summary Hello world!
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    appControllerGetHello(options?: AxiosRequestConfig): AxiosPromise<string> {
+      return localVarFp.appControllerGetHello(options).then((request) => request(axios, basePath))
+    },
+  }
+}
 
 /**
  * DefaultApi - object-oriented interface
@@ -696,421 +2005,752 @@ export const DefaultApiFactory = function (configuration?: Configuration, basePa
  * @extends {BaseAPI}
  */
 export class DefaultApi extends BaseAPI {
-    /**
-     * See if nest is working!
-     * @summary Hello world!
-     * @param {*} [options] Override http request option.
-     * @throws {RequiredError}
-     * @memberof DefaultApi
-     */
-    public appControllerGetHello(options?: AxiosRequestConfig) {
-        return DefaultApiFp(this.configuration).appControllerGetHello(options).then((request) => request(this.axios, this.basePath));
-    }
+  /**
+   * See if nest is working!
+   * @summary Hello world!
+   * @param {*} [options] Override http request option.
+   * @throws {RequiredError}
+   * @memberof DefaultApi
+   */
+  public appControllerGetHello(options?: AxiosRequestConfig) {
+    return DefaultApiFp(this.configuration)
+      .appControllerGetHello(options)
+      .then((request) => request(this.axios, this.basePath))
+  }
 }
-
 
 /**
  * FilesApi - axios parameter creator
  * @export
  */
 export const FilesApiAxiosParamCreator = function (configuration?: Configuration) {
-    return {
-        /**
-         * You can delete file based on fileId. 
-         * @summary Delete file based on fileId
-         * @param {string} fileId 
-         * @param {*} [options] Override http request option.
-         * @throws {RequiredError}
-         */
-        filesControllerDeleteFile: async (fileId: string, options: AxiosRequestConfig = {}): Promise<RequestArgs> => {
-            // verify required parameter 'fileId' is not null or undefined
-            assertParamExists('filesControllerDeleteFile', 'fileId', fileId)
-            const localVarPath = `/files/scan/{fileId}`
-                .replace(`{${"fileId"}}`, encodeURIComponent(String(fileId)));
-            // use dummy base URL string because the URL constructor only accepts absolute URLs.
-            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
-            let baseOptions;
-            if (configuration) {
-                baseOptions = configuration.baseOptions;
-            }
+  return {
+    /**
+     * You can delete file based on fileId.
+     * @summary Delete file based on fileId
+     * @param {string} fileId
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    filesControllerDeleteFile: async (
+      fileId: string,
+      options: AxiosRequestConfig = {},
+    ): Promise<RequestArgs> => {
+      // verify required parameter 'fileId' is not null or undefined
+      assertParamExists('filesControllerDeleteFile', 'fileId', fileId)
+      const localVarPath = `/files/{fileId}`.replace(
+        `{${'fileId'}}`,
+        encodeURIComponent(String(fileId)),
+      )
+      // use dummy base URL string because the URL constructor only accepts absolute URLs.
+      const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL)
+      let baseOptions
+      if (configuration) {
+        baseOptions = configuration.baseOptions
+      }
 
-            const localVarRequestOptions = { method: 'DELETE', ...baseOptions, ...options};
-            const localVarHeaderParameter = {} as any;
-            const localVarQueryParameter = {} as any;
+      const localVarRequestOptions = { method: 'DELETE', ...baseOptions, ...options }
+      const localVarHeaderParameter = {} as any
+      const localVarQueryParameter = {} as any
 
-            // authentication bearer required
-            // http bearer authentication required
-            await setBearerAuthToObject(localVarHeaderParameter, configuration)
+      // authentication bearer required
+      // http bearer authentication required
+      await setBearerAuthToObject(localVarHeaderParameter, configuration)
 
+      setSearchParams(localVarUrlObj, localVarQueryParameter)
+      let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {}
+      localVarRequestOptions.headers = {
+        ...localVarHeaderParameter,
+        ...headersFromBaseOptions,
+        ...options.headers,
+      }
 
-    
-            setSearchParams(localVarUrlObj, localVarQueryParameter);
-            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
-            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+      return {
+        url: toPathString(localVarUrlObj),
+        options: localVarRequestOptions,
+      }
+    },
+    /**
+     * You get all file info based on fileId.
+     * @summary Get file by fileId
+     * @param {string} fileId
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    filesControllerGetFile: async (
+      fileId: string,
+      options: AxiosRequestConfig = {},
+    ): Promise<RequestArgs> => {
+      // verify required parameter 'fileId' is not null or undefined
+      assertParamExists('filesControllerGetFile', 'fileId', fileId)
+      const localVarPath = `/files/{fileId}`.replace(
+        `{${'fileId'}}`,
+        encodeURIComponent(String(fileId)),
+      )
+      // use dummy base URL string because the URL constructor only accepts absolute URLs.
+      const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL)
+      let baseOptions
+      if (configuration) {
+        baseOptions = configuration.baseOptions
+      }
 
-            return {
-                url: toPathString(localVarUrlObj),
-                options: localVarRequestOptions,
-            };
-        },
-        /**
-         * You get file status based on fileId which you obtained when you notified for file scanning.
-         * @summary Get file status based on fileId
-         * @param {string} fileId 
-         * @param {*} [options] Override http request option.
-         * @throws {RequiredError}
-         */
-        filesControllerGetFileScanStatus: async (fileId: string, options: AxiosRequestConfig = {}): Promise<RequestArgs> => {
-            // verify required parameter 'fileId' is not null or undefined
-            assertParamExists('filesControllerGetFileScanStatus', 'fileId', fileId)
-            const localVarPath = `/files/scan/{fileId}`
-                .replace(`{${"fileId"}}`, encodeURIComponent(String(fileId)));
-            // use dummy base URL string because the URL constructor only accepts absolute URLs.
-            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
-            let baseOptions;
-            if (configuration) {
-                baseOptions = configuration.baseOptions;
-            }
+      const localVarRequestOptions = { method: 'GET', ...baseOptions, ...options }
+      const localVarHeaderParameter = {} as any
+      const localVarQueryParameter = {} as any
 
-            const localVarRequestOptions = { method: 'GET', ...baseOptions, ...options};
-            const localVarHeaderParameter = {} as any;
-            const localVarQueryParameter = {} as any;
+      // authentication bearer required
+      // http bearer authentication required
+      await setBearerAuthToObject(localVarHeaderParameter, configuration)
 
-            // authentication bearer required
-            // http bearer authentication required
-            await setBearerAuthToObject(localVarHeaderParameter, configuration)
+      setSearchParams(localVarUrlObj, localVarQueryParameter)
+      let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {}
+      localVarRequestOptions.headers = {
+        ...localVarHeaderParameter,
+        ...headersFromBaseOptions,
+        ...options.headers,
+      }
 
+      return {
+        url: toPathString(localVarUrlObj),
+        options: localVarRequestOptions,
+      }
+    },
+    /**
+     * You get file status based on fileId which you obtained when you notified for file scanning.
+     * @summary Get file status based on fileId
+     * @param {string} fileId
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    filesControllerGetFileStatus: async (
+      fileId: string,
+      options: AxiosRequestConfig = {},
+    ): Promise<RequestArgs> => {
+      // verify required parameter 'fileId' is not null or undefined
+      assertParamExists('filesControllerGetFileStatus', 'fileId', fileId)
+      const localVarPath = `/files/scan/{fileId}`.replace(
+        `{${'fileId'}}`,
+        encodeURIComponent(String(fileId)),
+      )
+      // use dummy base URL string because the URL constructor only accepts absolute URLs.
+      const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL)
+      let baseOptions
+      if (configuration) {
+        baseOptions = configuration.baseOptions
+      }
 
-    
-            setSearchParams(localVarUrlObj, localVarQueryParameter);
-            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
-            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+      const localVarRequestOptions = { method: 'GET', ...baseOptions, ...options }
+      const localVarHeaderParameter = {} as any
+      const localVarQueryParameter = {} as any
 
-            return {
-                url: toPathString(localVarUrlObj),
-                options: localVarRequestOptions,
-            };
-        },
-        /**
-         * You get file status based on formId and fileUid.
-         * @summary Get file status based on formId and fileUid
-         * @param {string} formId 
-         * @param {string} fileUid 
-         * @param {*} [options] Override http request option.
-         * @throws {RequiredError}
-         */
-        filesControllerGetFileStatusByForm: async (formId: string, fileUid: string, options: AxiosRequestConfig = {}): Promise<RequestArgs> => {
-            // verify required parameter 'formId' is not null or undefined
-            assertParamExists('filesControllerGetFileStatusByForm', 'formId', formId)
-            // verify required parameter 'fileUid' is not null or undefined
-            assertParamExists('filesControllerGetFileStatusByForm', 'fileUid', fileUid)
-            const localVarPath = `/files/forms/{formId}/{fileUid}`
-                .replace(`{${"formId"}}`, encodeURIComponent(String(formId)))
-                .replace(`{${"fileUid"}}`, encodeURIComponent(String(fileUid)));
-            // use dummy base URL string because the URL constructor only accepts absolute URLs.
-            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
-            let baseOptions;
-            if (configuration) {
-                baseOptions = configuration.baseOptions;
-            }
+      // authentication bearer required
+      // http bearer authentication required
+      await setBearerAuthToObject(localVarHeaderParameter, configuration)
 
-            const localVarRequestOptions = { method: 'GET', ...baseOptions, ...options};
-            const localVarHeaderParameter = {} as any;
-            const localVarQueryParameter = {} as any;
+      setSearchParams(localVarUrlObj, localVarQueryParameter)
+      let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {}
+      localVarRequestOptions.headers = {
+        ...localVarHeaderParameter,
+        ...headersFromBaseOptions,
+        ...options.headers,
+      }
 
-            // authentication bearer required
-            // http bearer authentication required
-            await setBearerAuthToObject(localVarHeaderParameter, configuration)
+      return {
+        url: toPathString(localVarUrlObj),
+        options: localVarRequestOptions,
+      }
+    },
+    /**
+     * You get file status based on formId and fileUid.
+     * @summary Get file status based on formId and fileUid
+     * @param {string} formId
+     * @param {string} fileUid
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    filesControllerGetFileStatusByForm: async (
+      formId: string,
+      fileUid: string,
+      options: AxiosRequestConfig = {},
+    ): Promise<RequestArgs> => {
+      // verify required parameter 'formId' is not null or undefined
+      assertParamExists('filesControllerGetFileStatusByForm', 'formId', formId)
+      // verify required parameter 'fileUid' is not null or undefined
+      assertParamExists('filesControllerGetFileStatusByForm', 'fileUid', fileUid)
+      const localVarPath = `/files/forms/{formId}/{fileUid}`
+        .replace(`{${'formId'}}`, encodeURIComponent(String(formId)))
+        .replace(`{${'fileUid'}}`, encodeURIComponent(String(fileUid)))
+      // use dummy base URL string because the URL constructor only accepts absolute URLs.
+      const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL)
+      let baseOptions
+      if (configuration) {
+        baseOptions = configuration.baseOptions
+      }
 
+      const localVarRequestOptions = { method: 'GET', ...baseOptions, ...options }
+      const localVarHeaderParameter = {} as any
+      const localVarQueryParameter = {} as any
 
-    
-            setSearchParams(localVarUrlObj, localVarQueryParameter);
-            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
-            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+      // authentication bearer required
+      // http bearer authentication required
+      await setBearerAuthToObject(localVarHeaderParameter, configuration)
 
-            return {
-                url: toPathString(localVarUrlObj),
-                options: localVarRequestOptions,
-            };
-        },
-        /**
-         * If you need list of files and their file statuses based on formId.
-         * @summary List of files and statuses based on formId
-         * @param {string} formId 
-         * @param {*} [options] Override http request option.
-         * @throws {RequiredError}
-         */
-        filesControllerGetFilesStatusByForm: async (formId: string, options: AxiosRequestConfig = {}): Promise<RequestArgs> => {
-            // verify required parameter 'formId' is not null or undefined
-            assertParamExists('filesControllerGetFilesStatusByForm', 'formId', formId)
-            const localVarPath = `/files/forms/{formId}`
-                .replace(`{${"formId"}}`, encodeURIComponent(String(formId)));
-            // use dummy base URL string because the URL constructor only accepts absolute URLs.
-            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
-            let baseOptions;
-            if (configuration) {
-                baseOptions = configuration.baseOptions;
-            }
+      setSearchParams(localVarUrlObj, localVarQueryParameter)
+      let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {}
+      localVarRequestOptions.headers = {
+        ...localVarHeaderParameter,
+        ...headersFromBaseOptions,
+        ...options.headers,
+      }
 
-            const localVarRequestOptions = { method: 'GET', ...baseOptions, ...options};
-            const localVarHeaderParameter = {} as any;
-            const localVarQueryParameter = {} as any;
+      return {
+        url: toPathString(localVarUrlObj),
+        options: localVarRequestOptions,
+      }
+    },
+    /**
+     * If you need list of files and their file statuses based on formId.
+     * @summary List of files and statuses based on formId
+     * @param {string} formId
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    filesControllerGetFilesStatusByForm: async (
+      formId: string,
+      options: AxiosRequestConfig = {},
+    ): Promise<RequestArgs> => {
+      // verify required parameter 'formId' is not null or undefined
+      assertParamExists('filesControllerGetFilesStatusByForm', 'formId', formId)
+      const localVarPath = `/files/forms/{formId}`.replace(
+        `{${'formId'}}`,
+        encodeURIComponent(String(formId)),
+      )
+      // use dummy base URL string because the URL constructor only accepts absolute URLs.
+      const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL)
+      let baseOptions
+      if (configuration) {
+        baseOptions = configuration.baseOptions
+      }
 
-            // authentication bearer required
-            // http bearer authentication required
-            await setBearerAuthToObject(localVarHeaderParameter, configuration)
+      const localVarRequestOptions = { method: 'GET', ...baseOptions, ...options }
+      const localVarHeaderParameter = {} as any
+      const localVarQueryParameter = {} as any
 
+      // authentication bearer required
+      // http bearer authentication required
+      await setBearerAuthToObject(localVarHeaderParameter, configuration)
 
-    
-            setSearchParams(localVarUrlObj, localVarQueryParameter);
-            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
-            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+      setSearchParams(localVarUrlObj, localVarQueryParameter)
+      let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {}
+      localVarRequestOptions.headers = {
+        ...localVarHeaderParameter,
+        ...headersFromBaseOptions,
+        ...options.headers,
+      }
 
-            return {
-                url: toPathString(localVarUrlObj),
-                options: localVarRequestOptions,
-            };
-        },
-        /**
-         * When you hit this POST endpoint, you send file for scanning. You get file id and his current status in response.
-         * @summary Send file for scanning.
-         * @param {PostFileDto} postFileDto 
-         * @param {*} [options] Override http request option.
-         * @throws {RequiredError}
-         */
-        filesControllerPostFileToScanner: async (postFileDto: PostFileDto, options: AxiosRequestConfig = {}): Promise<RequestArgs> => {
-            // verify required parameter 'postFileDto' is not null or undefined
-            assertParamExists('filesControllerPostFileToScanner', 'postFileDto', postFileDto)
-            const localVarPath = `/files/scan`;
-            // use dummy base URL string because the URL constructor only accepts absolute URLs.
-            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
-            let baseOptions;
-            if (configuration) {
-                baseOptions = configuration.baseOptions;
-            }
+      return {
+        url: toPathString(localVarUrlObj),
+        options: localVarRequestOptions,
+      }
+    },
+    /**
+     * When you hit this POST endpoint, you send file for scanning. You get file id and his current status in response.
+     * @summary Send file for scanning.
+     * @param {PostFileRequestDto} postFileRequestDto
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    filesControllerPostFileToScanner: async (
+      postFileRequestDto: PostFileRequestDto,
+      options: AxiosRequestConfig = {},
+    ): Promise<RequestArgs> => {
+      // verify required parameter 'postFileRequestDto' is not null or undefined
+      assertParamExists(
+        'filesControllerPostFileToScanner',
+        'postFileRequestDto',
+        postFileRequestDto,
+      )
+      const localVarPath = `/files/scan`
+      // use dummy base URL string because the URL constructor only accepts absolute URLs.
+      const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL)
+      let baseOptions
+      if (configuration) {
+        baseOptions = configuration.baseOptions
+      }
 
-            const localVarRequestOptions = { method: 'POST', ...baseOptions, ...options};
-            const localVarHeaderParameter = {} as any;
-            const localVarQueryParameter = {} as any;
+      const localVarRequestOptions = { method: 'POST', ...baseOptions, ...options }
+      const localVarHeaderParameter = {} as any
+      const localVarQueryParameter = {} as any
 
-            // authentication bearer required
-            // http bearer authentication required
-            await setBearerAuthToObject(localVarHeaderParameter, configuration)
+      // authentication bearer required
+      // http bearer authentication required
+      await setBearerAuthToObject(localVarHeaderParameter, configuration)
 
+      localVarHeaderParameter['Content-Type'] = 'application/json'
 
-    
-            localVarHeaderParameter['Content-Type'] = 'application/json';
+      setSearchParams(localVarUrlObj, localVarQueryParameter)
+      let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {}
+      localVarRequestOptions.headers = {
+        ...localVarHeaderParameter,
+        ...headersFromBaseOptions,
+        ...options.headers,
+      }
+      localVarRequestOptions.data = serializeDataIfNeeded(
+        postFileRequestDto,
+        localVarRequestOptions,
+        configuration,
+      )
 
-            setSearchParams(localVarUrlObj, localVarQueryParameter);
-            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
-            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
-            localVarRequestOptions.data = serializeDataIfNeeded(postFileDto, localVarRequestOptions, configuration)
+      return {
+        url: toPathString(localVarUrlObj),
+        options: localVarRequestOptions,
+      }
+    },
+    /**
+     * You have to provide scannerId and status which you want to update. Service will return updated file with status saying that file was updated. If not then proper error will be propagated.
+     * @summary Endpoint for updating file status from scanner.
+     * @param {string} scannerId
+     * @param {UpdateFileStatusRequestDto} updateFileStatusRequestDto
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    filesControllerUpdateFileStatusScannerId: async (
+      scannerId: string,
+      updateFileStatusRequestDto: UpdateFileStatusRequestDto,
+      options: AxiosRequestConfig = {},
+    ): Promise<RequestArgs> => {
+      // verify required parameter 'scannerId' is not null or undefined
+      assertParamExists('filesControllerUpdateFileStatusScannerId', 'scannerId', scannerId)
+      // verify required parameter 'updateFileStatusRequestDto' is not null or undefined
+      assertParamExists(
+        'filesControllerUpdateFileStatusScannerId',
+        'updateFileStatusRequestDto',
+        updateFileStatusRequestDto,
+      )
+      const localVarPath = `/files/scan/{scannerId}`.replace(
+        `{${'scannerId'}}`,
+        encodeURIComponent(String(scannerId)),
+      )
+      // use dummy base URL string because the URL constructor only accepts absolute URLs.
+      const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL)
+      let baseOptions
+      if (configuration) {
+        baseOptions = configuration.baseOptions
+      }
 
-            return {
-                url: toPathString(localVarUrlObj),
-                options: localVarRequestOptions,
-            };
-        },
-        /**
-         * You have to provide scannerId and status which you want to update. Service will return updated file with status saying that file was updated. If not then proper error will be propagated.
-         * @summary Endpoint for updating file status from scanner.
-         * @param {string} scannerId 
-         * @param {FileStatusDto} fileStatusDto 
-         * @param {*} [options] Override http request option.
-         * @throws {RequiredError}
-         */
-        filesControllerUpdateFileStatusScannerId: async (scannerId: string, fileStatusDto: FileStatusDto, options: AxiosRequestConfig = {}): Promise<RequestArgs> => {
-            // verify required parameter 'scannerId' is not null or undefined
-            assertParamExists('filesControllerUpdateFileStatusScannerId', 'scannerId', scannerId)
-            // verify required parameter 'fileStatusDto' is not null or undefined
-            assertParamExists('filesControllerUpdateFileStatusScannerId', 'fileStatusDto', fileStatusDto)
-            const localVarPath = `/files/scan/{scannerId}`
-                .replace(`{${"scannerId"}}`, encodeURIComponent(String(scannerId)));
-            // use dummy base URL string because the URL constructor only accepts absolute URLs.
-            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
-            let baseOptions;
-            if (configuration) {
-                baseOptions = configuration.baseOptions;
-            }
+      const localVarRequestOptions = { method: 'PATCH', ...baseOptions, ...options }
+      const localVarHeaderParameter = {} as any
+      const localVarQueryParameter = {} as any
 
-            const localVarRequestOptions = { method: 'PATCH', ...baseOptions, ...options};
-            const localVarHeaderParameter = {} as any;
-            const localVarQueryParameter = {} as any;
+      // authentication bearer required
+      // http bearer authentication required
+      await setBearerAuthToObject(localVarHeaderParameter, configuration)
 
-            // authentication bearer required
-            // http bearer authentication required
-            await setBearerAuthToObject(localVarHeaderParameter, configuration)
+      // authentication basic required
+      // http basic authentication required
+      setBasicAuthToObject(localVarRequestOptions, configuration)
 
-            // authentication basic required
-            // http basic authentication required
-            setBasicAuthToObject(localVarRequestOptions, configuration)
+      localVarHeaderParameter['Content-Type'] = 'application/json'
 
+      setSearchParams(localVarUrlObj, localVarQueryParameter)
+      let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {}
+      localVarRequestOptions.headers = {
+        ...localVarHeaderParameter,
+        ...headersFromBaseOptions,
+        ...options.headers,
+      }
+      localVarRequestOptions.data = serializeDataIfNeeded(
+        updateFileStatusRequestDto,
+        localVarRequestOptions,
+        configuration,
+      )
 
-    
-            localVarHeaderParameter['Content-Type'] = 'application/json';
+      return {
+        url: toPathString(localVarUrlObj),
+        options: localVarRequestOptions,
+      }
+    },
+    /**
+     * You can upload file to form.
+     * @summary Upload file to form
+     * @param {string} formId
+     * @param {File} [file]
+     * @param {string} [filename]
+     * @param {string} [id]
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    filesControllerUploadFile: async (
+      formId: string,
+      file?: File,
+      filename?: string,
+      id?: string,
+      options: AxiosRequestConfig = {},
+    ): Promise<RequestArgs> => {
+      // verify required parameter 'formId' is not null or undefined
+      assertParamExists('filesControllerUploadFile', 'formId', formId)
+      const localVarPath = `/files/upload/{formId}`.replace(
+        `{${'formId'}}`,
+        encodeURIComponent(String(formId)),
+      )
+      // use dummy base URL string because the URL constructor only accepts absolute URLs.
+      const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL)
+      let baseOptions
+      if (configuration) {
+        baseOptions = configuration.baseOptions
+      }
 
-            setSearchParams(localVarUrlObj, localVarQueryParameter);
-            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
-            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
-            localVarRequestOptions.data = serializeDataIfNeeded(fileStatusDto, localVarRequestOptions, configuration)
+      const localVarRequestOptions = { method: 'POST', ...baseOptions, ...options }
+      const localVarHeaderParameter = {} as any
+      const localVarQueryParameter = {} as any
+      const localVarFormParams = new ((configuration && configuration.formDataCtor) || FormData)()
 
-            return {
-                url: toPathString(localVarUrlObj),
-                options: localVarRequestOptions,
-            };
-        },
-    }
-};
+      // authentication bearer required
+      // http bearer authentication required
+      await setBearerAuthToObject(localVarHeaderParameter, configuration)
+
+      if (file !== undefined) {
+        localVarFormParams.append('file', file as any)
+      }
+
+      if (filename !== undefined) {
+        localVarFormParams.append('filename', filename as any)
+      }
+
+      if (id !== undefined) {
+        localVarFormParams.append('id', id as any)
+      }
+
+      localVarHeaderParameter['Content-Type'] = 'multipart/form-data'
+
+      setSearchParams(localVarUrlObj, localVarQueryParameter)
+      let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {}
+      localVarRequestOptions.headers = {
+        ...localVarHeaderParameter,
+        ...headersFromBaseOptions,
+        ...options.headers,
+      }
+      localVarRequestOptions.data = localVarFormParams
+
+      return {
+        url: toPathString(localVarUrlObj),
+        options: localVarRequestOptions,
+      }
+    },
+  }
+}
 
 /**
  * FilesApi - functional programming interface
  * @export
  */
-export const FilesApiFp = function(configuration?: Configuration) {
-    const localVarAxiosParamCreator = FilesApiAxiosParamCreator(configuration)
-    return {
-        /**
-         * You can delete file based on fileId. 
-         * @summary Delete file based on fileId
-         * @param {string} fileId 
-         * @param {*} [options] Override http request option.
-         * @throws {RequiredError}
-         */
-        async filesControllerDeleteFile(fileId: string, options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<object>> {
-            const localVarAxiosArgs = await localVarAxiosParamCreator.filesControllerDeleteFile(fileId, options);
-            return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
-        },
-        /**
-         * You get file status based on fileId which you obtained when you notified for file scanning.
-         * @summary Get file status based on fileId
-         * @param {string} fileId 
-         * @param {*} [options] Override http request option.
-         * @throws {RequiredError}
-         */
-        async filesControllerGetFileScanStatus(fileId: string, options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<FileStatusDto>> {
-            const localVarAxiosArgs = await localVarAxiosParamCreator.filesControllerGetFileScanStatus(fileId, options);
-            return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
-        },
-        /**
-         * You get file status based on formId and fileUid.
-         * @summary Get file status based on formId and fileUid
-         * @param {string} formId 
-         * @param {string} fileUid 
-         * @param {*} [options] Override http request option.
-         * @throws {RequiredError}
-         */
-        async filesControllerGetFileStatusByForm(formId: string, fileUid: string, options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<FileStatusDto>> {
-            const localVarAxiosArgs = await localVarAxiosParamCreator.filesControllerGetFileStatusByForm(formId, fileUid, options);
-            return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
-        },
-        /**
-         * If you need list of files and their file statuses based on formId.
-         * @summary List of files and statuses based on formId
-         * @param {string} formId 
-         * @param {*} [options] Override http request option.
-         * @throws {RequiredError}
-         */
-        async filesControllerGetFilesStatusByForm(formId: string, options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<FilesStatusResponseDto>> {
-            const localVarAxiosArgs = await localVarAxiosParamCreator.filesControllerGetFilesStatusByForm(formId, options);
-            return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
-        },
-        /**
-         * When you hit this POST endpoint, you send file for scanning. You get file id and his current status in response.
-         * @summary Send file for scanning.
-         * @param {PostFileDto} postFileDto 
-         * @param {*} [options] Override http request option.
-         * @throws {RequiredError}
-         */
-        async filesControllerPostFileToScanner(postFileDto: PostFileDto, options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<FileUpdatedResponseDto>> {
-            const localVarAxiosArgs = await localVarAxiosParamCreator.filesControllerPostFileToScanner(postFileDto, options);
-            return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
-        },
-        /**
-         * You have to provide scannerId and status which you want to update. Service will return updated file with status saying that file was updated. If not then proper error will be propagated.
-         * @summary Endpoint for updating file status from scanner.
-         * @param {string} scannerId 
-         * @param {FileStatusDto} fileStatusDto 
-         * @param {*} [options] Override http request option.
-         * @throws {RequiredError}
-         */
-        async filesControllerUpdateFileStatusScannerId(scannerId: string, fileStatusDto: FileStatusDto, options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<FileUpdatedResponseDto>> {
-            const localVarAxiosArgs = await localVarAxiosParamCreator.filesControllerUpdateFileStatusScannerId(scannerId, fileStatusDto, options);
-            return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
-        },
-    }
-};
+export const FilesApiFp = function (configuration?: Configuration) {
+  const localVarAxiosParamCreator = FilesApiAxiosParamCreator(configuration)
+  return {
+    /**
+     * You can delete file based on fileId.
+     * @summary Delete file based on fileId
+     * @param {string} fileId
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    async filesControllerDeleteFile(
+      fileId: string,
+      options?: AxiosRequestConfig,
+    ): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<DeleteFileResponseData>> {
+      const localVarAxiosArgs = await localVarAxiosParamCreator.filesControllerDeleteFile(
+        fileId,
+        options,
+      )
+      return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)
+    },
+    /**
+     * You get all file info based on fileId.
+     * @summary Get file by fileId
+     * @param {string} fileId
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    async filesControllerGetFile(
+      fileId: string,
+      options?: AxiosRequestConfig,
+    ): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<GetFileResponseDto>> {
+      const localVarAxiosArgs = await localVarAxiosParamCreator.filesControllerGetFile(
+        fileId,
+        options,
+      )
+      return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)
+    },
+    /**
+     * You get file status based on fileId which you obtained when you notified for file scanning.
+     * @summary Get file status based on fileId
+     * @param {string} fileId
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    async filesControllerGetFileStatus(
+      fileId: string,
+      options?: AxiosRequestConfig,
+    ): Promise<
+      (axios?: AxiosInstance, basePath?: string) => AxiosPromise<GetFileStatusResponseDto>
+    > {
+      const localVarAxiosArgs = await localVarAxiosParamCreator.filesControllerGetFileStatus(
+        fileId,
+        options,
+      )
+      return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)
+    },
+    /**
+     * You get file status based on formId and fileUid.
+     * @summary Get file status based on formId and fileUid
+     * @param {string} formId
+     * @param {string} fileUid
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    async filesControllerGetFileStatusByForm(
+      formId: string,
+      fileUid: string,
+      options?: AxiosRequestConfig,
+    ): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<StatusFileDto>> {
+      const localVarAxiosArgs = await localVarAxiosParamCreator.filesControllerGetFileStatusByForm(
+        formId,
+        fileUid,
+        options,
+      )
+      return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)
+    },
+    /**
+     * If you need list of files and their file statuses based on formId.
+     * @summary List of files and statuses based on formId
+     * @param {string} formId
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    async filesControllerGetFilesStatusByForm(
+      formId: string,
+      options?: AxiosRequestConfig,
+    ): Promise<
+      (axios?: AxiosInstance, basePath?: string) => AxiosPromise<Array<GetFileResponseDto>>
+    > {
+      const localVarAxiosArgs = await localVarAxiosParamCreator.filesControllerGetFilesStatusByForm(
+        formId,
+        options,
+      )
+      return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)
+    },
+    /**
+     * When you hit this POST endpoint, you send file for scanning. You get file id and his current status in response.
+     * @summary Send file for scanning.
+     * @param {PostFileRequestDto} postFileRequestDto
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    async filesControllerPostFileToScanner(
+      postFileRequestDto: PostFileRequestDto,
+      options?: AxiosRequestConfig,
+    ): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<PostFileResponseDto>> {
+      const localVarAxiosArgs = await localVarAxiosParamCreator.filesControllerPostFileToScanner(
+        postFileRequestDto,
+        options,
+      )
+      return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)
+    },
+    /**
+     * You have to provide scannerId and status which you want to update. Service will return updated file with status saying that file was updated. If not then proper error will be propagated.
+     * @summary Endpoint for updating file status from scanner.
+     * @param {string} scannerId
+     * @param {UpdateFileStatusRequestDto} updateFileStatusRequestDto
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    async filesControllerUpdateFileStatusScannerId(
+      scannerId: string,
+      updateFileStatusRequestDto: UpdateFileStatusRequestDto,
+      options?: AxiosRequestConfig,
+    ): Promise<
+      (axios?: AxiosInstance, basePath?: string) => AxiosPromise<UpdateFileStatusResponseDto>
+    > {
+      const localVarAxiosArgs =
+        await localVarAxiosParamCreator.filesControllerUpdateFileStatusScannerId(
+          scannerId,
+          updateFileStatusRequestDto,
+          options,
+        )
+      return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)
+    },
+    /**
+     * You can upload file to form.
+     * @summary Upload file to form
+     * @param {string} formId
+     * @param {File} [file]
+     * @param {string} [filename]
+     * @param {string} [id]
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    async filesControllerUploadFile(
+      formId: string,
+      file?: File,
+      filename?: string,
+      id?: string,
+      options?: AxiosRequestConfig,
+    ): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<PostFileResponseDto>> {
+      const localVarAxiosArgs = await localVarAxiosParamCreator.filesControllerUploadFile(
+        formId,
+        file,
+        filename,
+        id,
+        options,
+      )
+      return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)
+    },
+  }
+}
 
 /**
  * FilesApi - factory interface
  * @export
  */
-export const FilesApiFactory = function (configuration?: Configuration, basePath?: string, axios?: AxiosInstance) {
-    const localVarFp = FilesApiFp(configuration)
-    return {
-        /**
-         * You can delete file based on fileId. 
-         * @summary Delete file based on fileId
-         * @param {string} fileId 
-         * @param {*} [options] Override http request option.
-         * @throws {RequiredError}
-         */
-        filesControllerDeleteFile(fileId: string, options?: any): AxiosPromise<object> {
-            return localVarFp.filesControllerDeleteFile(fileId, options).then((request) => request(axios, basePath));
-        },
-        /**
-         * You get file status based on fileId which you obtained when you notified for file scanning.
-         * @summary Get file status based on fileId
-         * @param {string} fileId 
-         * @param {*} [options] Override http request option.
-         * @throws {RequiredError}
-         */
-        filesControllerGetFileScanStatus(fileId: string, options?: any): AxiosPromise<FileStatusDto> {
-            return localVarFp.filesControllerGetFileScanStatus(fileId, options).then((request) => request(axios, basePath));
-        },
-        /**
-         * You get file status based on formId and fileUid.
-         * @summary Get file status based on formId and fileUid
-         * @param {string} formId 
-         * @param {string} fileUid 
-         * @param {*} [options] Override http request option.
-         * @throws {RequiredError}
-         */
-        filesControllerGetFileStatusByForm(formId: string, fileUid: string, options?: any): AxiosPromise<FileStatusDto> {
-            return localVarFp.filesControllerGetFileStatusByForm(formId, fileUid, options).then((request) => request(axios, basePath));
-        },
-        /**
-         * If you need list of files and their file statuses based on formId.
-         * @summary List of files and statuses based on formId
-         * @param {string} formId 
-         * @param {*} [options] Override http request option.
-         * @throws {RequiredError}
-         */
-        filesControllerGetFilesStatusByForm(formId: string, options?: any): AxiosPromise<FilesStatusResponseDto> {
-            return localVarFp.filesControllerGetFilesStatusByForm(formId, options).then((request) => request(axios, basePath));
-        },
-        /**
-         * When you hit this POST endpoint, you send file for scanning. You get file id and his current status in response.
-         * @summary Send file for scanning.
-         * @param {PostFileDto} postFileDto 
-         * @param {*} [options] Override http request option.
-         * @throws {RequiredError}
-         */
-        filesControllerPostFileToScanner(postFileDto: PostFileDto, options?: any): AxiosPromise<FileUpdatedResponseDto> {
-            return localVarFp.filesControllerPostFileToScanner(postFileDto, options).then((request) => request(axios, basePath));
-        },
-        /**
-         * You have to provide scannerId and status which you want to update. Service will return updated file with status saying that file was updated. If not then proper error will be propagated.
-         * @summary Endpoint for updating file status from scanner.
-         * @param {string} scannerId 
-         * @param {FileStatusDto} fileStatusDto 
-         * @param {*} [options] Override http request option.
-         * @throws {RequiredError}
-         */
-        filesControllerUpdateFileStatusScannerId(scannerId: string, fileStatusDto: FileStatusDto, options?: any): AxiosPromise<FileUpdatedResponseDto> {
-            return localVarFp.filesControllerUpdateFileStatusScannerId(scannerId, fileStatusDto, options).then((request) => request(axios, basePath));
-        },
-    };
-};
+export const FilesApiFactory = function (
+  configuration?: Configuration,
+  basePath?: string,
+  axios?: AxiosInstance,
+) {
+  const localVarFp = FilesApiFp(configuration)
+  return {
+    /**
+     * You can delete file based on fileId.
+     * @summary Delete file based on fileId
+     * @param {string} fileId
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    filesControllerDeleteFile(
+      fileId: string,
+      options?: AxiosRequestConfig,
+    ): AxiosPromise<DeleteFileResponseData> {
+      return localVarFp
+        .filesControllerDeleteFile(fileId, options)
+        .then((request) => request(axios, basePath))
+    },
+    /**
+     * You get all file info based on fileId.
+     * @summary Get file by fileId
+     * @param {string} fileId
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    filesControllerGetFile(
+      fileId: string,
+      options?: AxiosRequestConfig,
+    ): AxiosPromise<GetFileResponseDto> {
+      return localVarFp
+        .filesControllerGetFile(fileId, options)
+        .then((request) => request(axios, basePath))
+    },
+    /**
+     * You get file status based on fileId which you obtained when you notified for file scanning.
+     * @summary Get file status based on fileId
+     * @param {string} fileId
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    filesControllerGetFileStatus(
+      fileId: string,
+      options?: AxiosRequestConfig,
+    ): AxiosPromise<GetFileStatusResponseDto> {
+      return localVarFp
+        .filesControllerGetFileStatus(fileId, options)
+        .then((request) => request(axios, basePath))
+    },
+    /**
+     * You get file status based on formId and fileUid.
+     * @summary Get file status based on formId and fileUid
+     * @param {string} formId
+     * @param {string} fileUid
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    filesControllerGetFileStatusByForm(
+      formId: string,
+      fileUid: string,
+      options?: AxiosRequestConfig,
+    ): AxiosPromise<StatusFileDto> {
+      return localVarFp
+        .filesControllerGetFileStatusByForm(formId, fileUid, options)
+        .then((request) => request(axios, basePath))
+    },
+    /**
+     * If you need list of files and their file statuses based on formId.
+     * @summary List of files and statuses based on formId
+     * @param {string} formId
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    filesControllerGetFilesStatusByForm(
+      formId: string,
+      options?: AxiosRequestConfig,
+    ): AxiosPromise<Array<GetFileResponseDto>> {
+      return localVarFp
+        .filesControllerGetFilesStatusByForm(formId, options)
+        .then((request) => request(axios, basePath))
+    },
+    /**
+     * When you hit this POST endpoint, you send file for scanning. You get file id and his current status in response.
+     * @summary Send file for scanning.
+     * @param {PostFileRequestDto} postFileRequestDto
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    filesControllerPostFileToScanner(
+      postFileRequestDto: PostFileRequestDto,
+      options?: AxiosRequestConfig,
+    ): AxiosPromise<PostFileResponseDto> {
+      return localVarFp
+        .filesControllerPostFileToScanner(postFileRequestDto, options)
+        .then((request) => request(axios, basePath))
+    },
+    /**
+     * You have to provide scannerId and status which you want to update. Service will return updated file with status saying that file was updated. If not then proper error will be propagated.
+     * @summary Endpoint for updating file status from scanner.
+     * @param {string} scannerId
+     * @param {UpdateFileStatusRequestDto} updateFileStatusRequestDto
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    filesControllerUpdateFileStatusScannerId(
+      scannerId: string,
+      updateFileStatusRequestDto: UpdateFileStatusRequestDto,
+      options?: AxiosRequestConfig,
+    ): AxiosPromise<UpdateFileStatusResponseDto> {
+      return localVarFp
+        .filesControllerUpdateFileStatusScannerId(scannerId, updateFileStatusRequestDto, options)
+        .then((request) => request(axios, basePath))
+    },
+    /**
+     * You can upload file to form.
+     * @summary Upload file to form
+     * @param {string} formId
+     * @param {File} [file]
+     * @param {string} [filename]
+     * @param {string} [id]
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    filesControllerUploadFile(
+      formId: string,
+      file?: File,
+      filename?: string,
+      id?: string,
+      options?: AxiosRequestConfig,
+    ): AxiosPromise<PostFileResponseDto> {
+      return localVarFp
+        .filesControllerUploadFile(formId, file, filename, id, options)
+        .then((request) => request(axios, basePath))
+    },
+  }
+}
 
 /**
  * FilesApi - object-oriented interface
@@ -1119,868 +2759,1160 @@ export const FilesApiFactory = function (configuration?: Configuration, basePath
  * @extends {BaseAPI}
  */
 export class FilesApi extends BaseAPI {
-    /**
-     * You can delete file based on fileId. 
-     * @summary Delete file based on fileId
-     * @param {string} fileId 
-     * @param {*} [options] Override http request option.
-     * @throws {RequiredError}
-     * @memberof FilesApi
-     */
-    public filesControllerDeleteFile(fileId: string, options?: AxiosRequestConfig) {
-        return FilesApiFp(this.configuration).filesControllerDeleteFile(fileId, options).then((request) => request(this.axios, this.basePath));
-    }
+  /**
+   * You can delete file based on fileId.
+   * @summary Delete file based on fileId
+   * @param {string} fileId
+   * @param {*} [options] Override http request option.
+   * @throws {RequiredError}
+   * @memberof FilesApi
+   */
+  public filesControllerDeleteFile(fileId: string, options?: AxiosRequestConfig) {
+    return FilesApiFp(this.configuration)
+      .filesControllerDeleteFile(fileId, options)
+      .then((request) => request(this.axios, this.basePath))
+  }
 
-    /**
-     * You get file status based on fileId which you obtained when you notified for file scanning.
-     * @summary Get file status based on fileId
-     * @param {string} fileId 
-     * @param {*} [options] Override http request option.
-     * @throws {RequiredError}
-     * @memberof FilesApi
-     */
-    public filesControllerGetFileScanStatus(fileId: string, options?: AxiosRequestConfig) {
-        return FilesApiFp(this.configuration).filesControllerGetFileScanStatus(fileId, options).then((request) => request(this.axios, this.basePath));
-    }
+  /**
+   * You get all file info based on fileId.
+   * @summary Get file by fileId
+   * @param {string} fileId
+   * @param {*} [options] Override http request option.
+   * @throws {RequiredError}
+   * @memberof FilesApi
+   */
+  public filesControllerGetFile(fileId: string, options?: AxiosRequestConfig) {
+    return FilesApiFp(this.configuration)
+      .filesControllerGetFile(fileId, options)
+      .then((request) => request(this.axios, this.basePath))
+  }
 
-    /**
-     * You get file status based on formId and fileUid.
-     * @summary Get file status based on formId and fileUid
-     * @param {string} formId 
-     * @param {string} fileUid 
-     * @param {*} [options] Override http request option.
-     * @throws {RequiredError}
-     * @memberof FilesApi
-     */
-    public filesControllerGetFileStatusByForm(formId: string, fileUid: string, options?: AxiosRequestConfig) {
-        return FilesApiFp(this.configuration).filesControllerGetFileStatusByForm(formId, fileUid, options).then((request) => request(this.axios, this.basePath));
-    }
+  /**
+   * You get file status based on fileId which you obtained when you notified for file scanning.
+   * @summary Get file status based on fileId
+   * @param {string} fileId
+   * @param {*} [options] Override http request option.
+   * @throws {RequiredError}
+   * @memberof FilesApi
+   */
+  public filesControllerGetFileStatus(fileId: string, options?: AxiosRequestConfig) {
+    return FilesApiFp(this.configuration)
+      .filesControllerGetFileStatus(fileId, options)
+      .then((request) => request(this.axios, this.basePath))
+  }
 
-    /**
-     * If you need list of files and their file statuses based on formId.
-     * @summary List of files and statuses based on formId
-     * @param {string} formId 
-     * @param {*} [options] Override http request option.
-     * @throws {RequiredError}
-     * @memberof FilesApi
-     */
-    public filesControllerGetFilesStatusByForm(formId: string, options?: AxiosRequestConfig) {
-        return FilesApiFp(this.configuration).filesControllerGetFilesStatusByForm(formId, options).then((request) => request(this.axios, this.basePath));
-    }
+  /**
+   * You get file status based on formId and fileUid.
+   * @summary Get file status based on formId and fileUid
+   * @param {string} formId
+   * @param {string} fileUid
+   * @param {*} [options] Override http request option.
+   * @throws {RequiredError}
+   * @memberof FilesApi
+   */
+  public filesControllerGetFileStatusByForm(
+    formId: string,
+    fileUid: string,
+    options?: AxiosRequestConfig,
+  ) {
+    return FilesApiFp(this.configuration)
+      .filesControllerGetFileStatusByForm(formId, fileUid, options)
+      .then((request) => request(this.axios, this.basePath))
+  }
 
-    /**
-     * When you hit this POST endpoint, you send file for scanning. You get file id and his current status in response.
-     * @summary Send file for scanning.
-     * @param {PostFileDto} postFileDto 
-     * @param {*} [options] Override http request option.
-     * @throws {RequiredError}
-     * @memberof FilesApi
-     */
-    public filesControllerPostFileToScanner(postFileDto: PostFileDto, options?: AxiosRequestConfig) {
-        return FilesApiFp(this.configuration).filesControllerPostFileToScanner(postFileDto, options).then((request) => request(this.axios, this.basePath));
-    }
+  /**
+   * If you need list of files and their file statuses based on formId.
+   * @summary List of files and statuses based on formId
+   * @param {string} formId
+   * @param {*} [options] Override http request option.
+   * @throws {RequiredError}
+   * @memberof FilesApi
+   */
+  public filesControllerGetFilesStatusByForm(formId: string, options?: AxiosRequestConfig) {
+    return FilesApiFp(this.configuration)
+      .filesControllerGetFilesStatusByForm(formId, options)
+      .then((request) => request(this.axios, this.basePath))
+  }
 
-    /**
-     * You have to provide scannerId and status which you want to update. Service will return updated file with status saying that file was updated. If not then proper error will be propagated.
-     * @summary Endpoint for updating file status from scanner.
-     * @param {string} scannerId 
-     * @param {FileStatusDto} fileStatusDto 
-     * @param {*} [options] Override http request option.
-     * @throws {RequiredError}
-     * @memberof FilesApi
-     */
-    public filesControllerUpdateFileStatusScannerId(scannerId: string, fileStatusDto: FileStatusDto, options?: AxiosRequestConfig) {
-        return FilesApiFp(this.configuration).filesControllerUpdateFileStatusScannerId(scannerId, fileStatusDto, options).then((request) => request(this.axios, this.basePath));
-    }
+  /**
+   * When you hit this POST endpoint, you send file for scanning. You get file id and his current status in response.
+   * @summary Send file for scanning.
+   * @param {PostFileRequestDto} postFileRequestDto
+   * @param {*} [options] Override http request option.
+   * @throws {RequiredError}
+   * @memberof FilesApi
+   */
+  public filesControllerPostFileToScanner(
+    postFileRequestDto: PostFileRequestDto,
+    options?: AxiosRequestConfig,
+  ) {
+    return FilesApiFp(this.configuration)
+      .filesControllerPostFileToScanner(postFileRequestDto, options)
+      .then((request) => request(this.axios, this.basePath))
+  }
+
+  /**
+   * You have to provide scannerId and status which you want to update. Service will return updated file with status saying that file was updated. If not then proper error will be propagated.
+   * @summary Endpoint for updating file status from scanner.
+   * @param {string} scannerId
+   * @param {UpdateFileStatusRequestDto} updateFileStatusRequestDto
+   * @param {*} [options] Override http request option.
+   * @throws {RequiredError}
+   * @memberof FilesApi
+   */
+  public filesControllerUpdateFileStatusScannerId(
+    scannerId: string,
+    updateFileStatusRequestDto: UpdateFileStatusRequestDto,
+    options?: AxiosRequestConfig,
+  ) {
+    return FilesApiFp(this.configuration)
+      .filesControllerUpdateFileStatusScannerId(scannerId, updateFileStatusRequestDto, options)
+      .then((request) => request(this.axios, this.basePath))
+  }
+
+  /**
+   * You can upload file to form.
+   * @summary Upload file to form
+   * @param {string} formId
+   * @param {File} [file]
+   * @param {string} [filename]
+   * @param {string} [id]
+   * @param {*} [options] Override http request option.
+   * @throws {RequiredError}
+   * @memberof FilesApi
+   */
+  public filesControllerUploadFile(
+    formId: string,
+    file?: File,
+    filename?: string,
+    id?: string,
+    options?: AxiosRequestConfig,
+  ) {
+    return FilesApiFp(this.configuration)
+      .filesControllerUploadFile(formId, file, filename, id, options)
+      .then((request) => request(this.axios, this.basePath))
+  }
 }
-
 
 /**
  * NasesApi - axios parameter creator
  * @export
  */
 export const NasesApiAxiosParamCreator = function (configuration?: Configuration) {
-    return {
-        /**
-         * Create id in our backand, which you need to send in form as external id. Save also data necessary for envelope to send message to NASES
-         * @summary 
-         * @param {CreateFormRequestDto} createFormRequestDto 
-         * @param {*} [options] Override http request option.
-         * @throws {RequiredError}
-         */
-        nasesControllerCreateForm: async (createFormRequestDto: CreateFormRequestDto, options: AxiosRequestConfig = {}): Promise<RequestArgs> => {
-            // verify required parameter 'createFormRequestDto' is not null or undefined
-            assertParamExists('nasesControllerCreateForm', 'createFormRequestDto', createFormRequestDto)
-            const localVarPath = `/nases/create-form`;
-            // use dummy base URL string because the URL constructor only accepts absolute URLs.
-            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
-            let baseOptions;
-            if (configuration) {
-                baseOptions = configuration.baseOptions;
-            }
-
-            const localVarRequestOptions = { method: 'POST', ...baseOptions, ...options};
-            const localVarHeaderParameter = {} as any;
-            const localVarQueryParameter = {} as any;
-
-            // authentication bearer required
-            // http bearer authentication required
-            await setBearerAuthToObject(localVarHeaderParameter, configuration)
-
-
-    
-            localVarHeaderParameter['Content-Type'] = 'application/json';
-
-            setSearchParams(localVarUrlObj, localVarQueryParameter);
-            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
-            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
-            localVarRequestOptions.data = serializeDataIfNeeded(createFormRequestDto, localVarRequestOptions, configuration)
-
-            return {
-                url: toPathString(localVarUrlObj),
-                options: localVarRequestOptions,
-            };
-        },
-        /**
-         * Create only id in our backand, which you need to send in form as external id. There is only one mandatory paremeter - email, rest of body is not mandatory, you can add form name, category version and some tags
-         * @summary 
-         * @param {CreateFormEidRequestDto} createFormEidRequestDto 
-         * @param {*} [options] Override http request option.
-         * @throws {RequiredError}
-         */
-        nasesControllerCreateFormEid: async (createFormEidRequestDto: CreateFormEidRequestDto, options: AxiosRequestConfig = {}): Promise<RequestArgs> => {
-            // verify required parameter 'createFormEidRequestDto' is not null or undefined
-            assertParamExists('nasesControllerCreateFormEid', 'createFormEidRequestDto', createFormEidRequestDto)
-            const localVarPath = `/nases/eid/create-form`;
-            // use dummy base URL string because the URL constructor only accepts absolute URLs.
-            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
-            let baseOptions;
-            if (configuration) {
-                baseOptions = configuration.baseOptions;
-            }
-
-            const localVarRequestOptions = { method: 'POST', ...baseOptions, ...options};
-            const localVarHeaderParameter = {} as any;
-            const localVarQueryParameter = {} as any;
-
-            // authentication bearer required
-            // http bearer authentication required
-            await setBearerAuthToObject(localVarHeaderParameter, configuration)
-
-
-    
-            localVarHeaderParameter['Content-Type'] = 'application/json';
-
-            setSearchParams(localVarUrlObj, localVarQueryParameter);
-            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
-            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
-            localVarRequestOptions.data = serializeDataIfNeeded(createFormEidRequestDto, localVarRequestOptions, configuration)
-
-            return {
-                url: toPathString(localVarUrlObj),
-                options: localVarRequestOptions,
-            };
-        },
-        /**
-         * 
-         * @param {*} [options] Override http request option.
-         * @throws {RequiredError}
-         */
-        nasesControllerGetAdministrationJwt: async (options: AxiosRequestConfig = {}): Promise<RequestArgs> => {
-            const localVarPath = `/nases/administration-jwt`;
-            // use dummy base URL string because the URL constructor only accepts absolute URLs.
-            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
-            let baseOptions;
-            if (configuration) {
-                baseOptions = configuration.baseOptions;
-            }
-
-            const localVarRequestOptions = { method: 'GET', ...baseOptions, ...options};
-            const localVarHeaderParameter = {} as any;
-            const localVarQueryParameter = {} as any;
-
-            // authentication bearer required
-            // http bearer authentication required
-            await setBearerAuthToObject(localVarHeaderParameter, configuration)
-
-
-    
-            setSearchParams(localVarUrlObj, localVarQueryParameter);
-            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
-            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
-
-            return {
-                url: toPathString(localVarUrlObj),
-                options: localVarRequestOptions,
-            };
-        },
-        /**
-         * 
-         * @param {*} [options] Override http request option.
-         * @throws {RequiredError}
-         */
-        nasesControllerGetEidJwt: async (options: AxiosRequestConfig = {}): Promise<RequestArgs> => {
-            const localVarPath = `/nases/eid-jwt`;
-            // use dummy base URL string because the URL constructor only accepts absolute URLs.
-            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
-            let baseOptions;
-            if (configuration) {
-                baseOptions = configuration.baseOptions;
-            }
-
-            const localVarRequestOptions = { method: 'GET', ...baseOptions, ...options};
-            const localVarHeaderParameter = {} as any;
-            const localVarQueryParameter = {} as any;
-
-            // authentication bearer required
-            // http bearer authentication required
-            await setBearerAuthToObject(localVarHeaderParameter, configuration)
-
-
-    
-            setSearchParams(localVarUrlObj, localVarQueryParameter);
-            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
-            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
-
-            return {
-                url: toPathString(localVarUrlObj),
-                options: localVarRequestOptions,
-            };
-        },
-        /**
-         * Return form by ID and by logged user
-         * @summary 
-         * @param {string} id 
-         * @param {*} [options] Override http request option.
-         * @throws {RequiredError}
-         */
-        nasesControllerGetForm: async (id: string, options: AxiosRequestConfig = {}): Promise<RequestArgs> => {
-            // verify required parameter 'id' is not null or undefined
-            assertParamExists('nasesControllerGetForm', 'id', id)
-            const localVarPath = `/nases/form/{id}`
-                .replace(`{${"id"}}`, encodeURIComponent(String(id)));
-            // use dummy base URL string because the URL constructor only accepts absolute URLs.
-            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
-            let baseOptions;
-            if (configuration) {
-                baseOptions = configuration.baseOptions;
-            }
-
-            const localVarRequestOptions = { method: 'GET', ...baseOptions, ...options};
-            const localVarHeaderParameter = {} as any;
-            const localVarQueryParameter = {} as any;
-
-            // authentication bearer required
-            // http bearer authentication required
-            await setBearerAuthToObject(localVarHeaderParameter, configuration)
-
-
-    
-            setSearchParams(localVarUrlObj, localVarQueryParameter);
-            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
-            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
-
-            return {
-                url: toPathString(localVarUrlObj),
-                options: localVarRequestOptions,
-            };
-        },
-        /**
-         * Return top 10 forms
-         * @summary 
-         * @param {*} [options] Override http request option.
-         * @throws {RequiredError}
-         */
-        nasesControllerGetForms: async (options: AxiosRequestConfig = {}): Promise<RequestArgs> => {
-            const localVarPath = `/nases/forms`;
-            // use dummy base URL string because the URL constructor only accepts absolute URLs.
-            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
-            let baseOptions;
-            if (configuration) {
-                baseOptions = configuration.baseOptions;
-            }
-
-            const localVarRequestOptions = { method: 'GET', ...baseOptions, ...options};
-            const localVarHeaderParameter = {} as any;
-            const localVarQueryParameter = {} as any;
-
-            // authentication bearer required
-            // http bearer authentication required
-            await setBearerAuthToObject(localVarHeaderParameter, configuration)
-
-
-    
-            setSearchParams(localVarUrlObj, localVarQueryParameter);
-            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
-            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
-
-            return {
-                url: toPathString(localVarUrlObj),
-                options: localVarRequestOptions,
-            };
-        },
-        /**
-         * 
-         * @param {*} [options] Override http request option.
-         * @throws {RequiredError}
-         */
-        nasesControllerGetTechnicalJwt: async (options: AxiosRequestConfig = {}): Promise<RequestArgs> => {
-            const localVarPath = `/nases/technical-jwt`;
-            // use dummy base URL string because the URL constructor only accepts absolute URLs.
-            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
-            let baseOptions;
-            if (configuration) {
-                baseOptions = configuration.baseOptions;
-            }
-
-            const localVarRequestOptions = { method: 'GET', ...baseOptions, ...options};
-            const localVarHeaderParameter = {} as any;
-            const localVarQueryParameter = {} as any;
-
-            // authentication bearer required
-            // http bearer authentication required
-            await setBearerAuthToObject(localVarHeaderParameter, configuration)
-
-
-    
-            setSearchParams(localVarUrlObj, localVarQueryParameter);
-            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
-            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
-
-            return {
-                url: toPathString(localVarUrlObj),
-                options: localVarRequestOptions,
-            };
-        },
-        /**
-         * 
-         * @param {string} id 
-         * @param {UpdateFormRequestDto} updateFormRequestDto 
-         * @param {*} [options] Override http request option.
-         * @throws {RequiredError}
-         */
-        nasesControllerSendAndUpdateForm: async (id: string, updateFormRequestDto: UpdateFormRequestDto, options: AxiosRequestConfig = {}): Promise<RequestArgs> => {
-            // verify required parameter 'id' is not null or undefined
-            assertParamExists('nasesControllerSendAndUpdateForm', 'id', id)
-            // verify required parameter 'updateFormRequestDto' is not null or undefined
-            assertParamExists('nasesControllerSendAndUpdateForm', 'updateFormRequestDto', updateFormRequestDto)
-            const localVarPath = `/nases/send-and-update-form/{id}`
-                .replace(`{${"id"}}`, encodeURIComponent(String(id)));
-            // use dummy base URL string because the URL constructor only accepts absolute URLs.
-            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
-            let baseOptions;
-            if (configuration) {
-                baseOptions = configuration.baseOptions;
-            }
-
-            const localVarRequestOptions = { method: 'POST', ...baseOptions, ...options};
-            const localVarHeaderParameter = {} as any;
-            const localVarQueryParameter = {} as any;
-
-            // authentication bearer required
-            // http bearer authentication required
-            await setBearerAuthToObject(localVarHeaderParameter, configuration)
-
-
-    
-            localVarHeaderParameter['Content-Type'] = 'application/json';
-
-            setSearchParams(localVarUrlObj, localVarQueryParameter);
-            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
-            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
-            localVarRequestOptions.data = serializeDataIfNeeded(updateFormRequestDto, localVarRequestOptions, configuration)
-
-            return {
-                url: toPathString(localVarUrlObj),
-                options: localVarRequestOptions,
-            };
-        },
-        /**
-         * 
-         * @param {string} id 
-         * @param {UpdateFormRequestDto} updateFormRequestDto 
-         * @param {*} [options] Override http request option.
-         * @throws {RequiredError}
-         */
-        nasesControllerSendAndUpdateFormEid: async (id: string, updateFormRequestDto: UpdateFormRequestDto, options: AxiosRequestConfig = {}): Promise<RequestArgs> => {
-            // verify required parameter 'id' is not null or undefined
-            assertParamExists('nasesControllerSendAndUpdateFormEid', 'id', id)
-            // verify required parameter 'updateFormRequestDto' is not null or undefined
-            assertParamExists('nasesControllerSendAndUpdateFormEid', 'updateFormRequestDto', updateFormRequestDto)
-            const localVarPath = `/nases/eid/send-and-update-form/{id}`
-                .replace(`{${"id"}}`, encodeURIComponent(String(id)));
-            // use dummy base URL string because the URL constructor only accepts absolute URLs.
-            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
-            let baseOptions;
-            if (configuration) {
-                baseOptions = configuration.baseOptions;
-            }
-
-            const localVarRequestOptions = { method: 'POST', ...baseOptions, ...options};
-            const localVarHeaderParameter = {} as any;
-            const localVarQueryParameter = {} as any;
-
-            // authentication bearer required
-            // http bearer authentication required
-            await setBearerAuthToObject(localVarHeaderParameter, configuration)
-
-
-    
-            localVarHeaderParameter['Content-Type'] = 'application/json';
-
-            setSearchParams(localVarUrlObj, localVarQueryParameter);
-            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
-            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
-            localVarRequestOptions.data = serializeDataIfNeeded(updateFormRequestDto, localVarRequestOptions, configuration)
-
-            return {
-                url: toPathString(localVarUrlObj),
-                options: localVarRequestOptions,
-            };
-        },
-        /**
-         * 
-         * @param {string} id 
-         * @param {*} [options] Override http request option.
-         * @throws {RequiredError}
-         */
-        nasesControllerSendForm: async (id: string, options: AxiosRequestConfig = {}): Promise<RequestArgs> => {
-            // verify required parameter 'id' is not null or undefined
-            assertParamExists('nasesControllerSendForm', 'id', id)
-            const localVarPath = `/nases/send-form/{id}`
-                .replace(`{${"id"}}`, encodeURIComponent(String(id)));
-            // use dummy base URL string because the URL constructor only accepts absolute URLs.
-            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
-            let baseOptions;
-            if (configuration) {
-                baseOptions = configuration.baseOptions;
-            }
-
-            const localVarRequestOptions = { method: 'POST', ...baseOptions, ...options};
-            const localVarHeaderParameter = {} as any;
-            const localVarQueryParameter = {} as any;
-
-            // authentication bearer required
-            // http bearer authentication required
-            await setBearerAuthToObject(localVarHeaderParameter, configuration)
-
-
-    
-            setSearchParams(localVarUrlObj, localVarQueryParameter);
-            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
-            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
-
-            return {
-                url: toPathString(localVarUrlObj),
-                options: localVarRequestOptions,
-            };
-        },
-        /**
-         * 
-         * @param {string} id 
-         * @param {*} [options] Override http request option.
-         * @throws {RequiredError}
-         */
-        nasesControllerSendFormEid: async (id: string, options: AxiosRequestConfig = {}): Promise<RequestArgs> => {
-            // verify required parameter 'id' is not null or undefined
-            assertParamExists('nasesControllerSendFormEid', 'id', id)
-            const localVarPath = `/nases/eid/send-form/{id}`
-                .replace(`{${"id"}}`, encodeURIComponent(String(id)));
-            // use dummy base URL string because the URL constructor only accepts absolute URLs.
-            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
-            let baseOptions;
-            if (configuration) {
-                baseOptions = configuration.baseOptions;
-            }
-
-            const localVarRequestOptions = { method: 'POST', ...baseOptions, ...options};
-            const localVarHeaderParameter = {} as any;
-            const localVarQueryParameter = {} as any;
-
-            // authentication bearer required
-            // http bearer authentication required
-            await setBearerAuthToObject(localVarHeaderParameter, configuration)
-
-
-    
-            setSearchParams(localVarUrlObj, localVarQueryParameter);
-            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
-            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
-
-            return {
-                url: toPathString(localVarUrlObj),
-                options: localVarRequestOptions,
-            };
-        },
-        /**
-         * Update form
-         * @summary 
-         * @param {string} id 
-         * @param {UpdateFormRequestDto} updateFormRequestDto 
-         * @param {*} [options] Override http request option.
-         * @throws {RequiredError}
-         */
-        nasesControllerUpdateForm: async (id: string, updateFormRequestDto: UpdateFormRequestDto, options: AxiosRequestConfig = {}): Promise<RequestArgs> => {
-            // verify required parameter 'id' is not null or undefined
-            assertParamExists('nasesControllerUpdateForm', 'id', id)
-            // verify required parameter 'updateFormRequestDto' is not null or undefined
-            assertParamExists('nasesControllerUpdateForm', 'updateFormRequestDto', updateFormRequestDto)
-            const localVarPath = `/nases/update-form/{id}`
-                .replace(`{${"id"}}`, encodeURIComponent(String(id)));
-            // use dummy base URL string because the URL constructor only accepts absolute URLs.
-            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
-            let baseOptions;
-            if (configuration) {
-                baseOptions = configuration.baseOptions;
-            }
-
-            const localVarRequestOptions = { method: 'POST', ...baseOptions, ...options};
-            const localVarHeaderParameter = {} as any;
-            const localVarQueryParameter = {} as any;
-
-            // authentication bearer required
-            // http bearer authentication required
-            await setBearerAuthToObject(localVarHeaderParameter, configuration)
-
-
-    
-            localVarHeaderParameter['Content-Type'] = 'application/json';
-
-            setSearchParams(localVarUrlObj, localVarQueryParameter);
-            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
-            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
-            localVarRequestOptions.data = serializeDataIfNeeded(updateFormRequestDto, localVarRequestOptions, configuration)
-
-            return {
-                url: toPathString(localVarUrlObj),
-                options: localVarRequestOptions,
-            };
-        },
-        /**
-         * Create id in our backand, which you need to send in form as external id. Save also data necessary for envelope to send message to NASES
-         * @summary 
-         * @param {string} id 
-         * @param {UpdateFormRequestDto} updateFormRequestDto 
-         * @param {*} [options] Override http request option.
-         * @throws {RequiredError}
-         */
-        nasesControllerUpdateFormEid: async (id: string, updateFormRequestDto: UpdateFormRequestDto, options: AxiosRequestConfig = {}): Promise<RequestArgs> => {
-            // verify required parameter 'id' is not null or undefined
-            assertParamExists('nasesControllerUpdateFormEid', 'id', id)
-            // verify required parameter 'updateFormRequestDto' is not null or undefined
-            assertParamExists('nasesControllerUpdateFormEid', 'updateFormRequestDto', updateFormRequestDto)
-            const localVarPath = `/nases/eid/update-form/{id}`
-                .replace(`{${"id"}}`, encodeURIComponent(String(id)));
-            // use dummy base URL string because the URL constructor only accepts absolute URLs.
-            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
-            let baseOptions;
-            if (configuration) {
-                baseOptions = configuration.baseOptions;
-            }
-
-            const localVarRequestOptions = { method: 'POST', ...baseOptions, ...options};
-            const localVarHeaderParameter = {} as any;
-            const localVarQueryParameter = {} as any;
-
-            // authentication bearer required
-            // http bearer authentication required
-            await setBearerAuthToObject(localVarHeaderParameter, configuration)
-
-
-    
-            localVarHeaderParameter['Content-Type'] = 'application/json';
-
-            setSearchParams(localVarUrlObj, localVarQueryParameter);
-            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
-            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
-            localVarRequestOptions.data = serializeDataIfNeeded(updateFormRequestDto, localVarRequestOptions, configuration)
-
-            return {
-                url: toPathString(localVarUrlObj),
-                options: localVarRequestOptions,
-            };
-        },
-    }
-};
+  return {
+    /**
+     * Create id in our backand, which you need to send in form as external id. Save also data necessary for envelope to send message to NASES
+     * @summary
+     * @param {CreateFormRequestDto} createFormRequestDto
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    nasesControllerCreateForm: async (
+      createFormRequestDto: CreateFormRequestDto,
+      options: AxiosRequestConfig = {},
+    ): Promise<RequestArgs> => {
+      // verify required parameter 'createFormRequestDto' is not null or undefined
+      assertParamExists('nasesControllerCreateForm', 'createFormRequestDto', createFormRequestDto)
+      const localVarPath = `/nases/create-form`
+      // use dummy base URL string because the URL constructor only accepts absolute URLs.
+      const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL)
+      let baseOptions
+      if (configuration) {
+        baseOptions = configuration.baseOptions
+      }
+
+      const localVarRequestOptions = { method: 'POST', ...baseOptions, ...options }
+      const localVarHeaderParameter = {} as any
+      const localVarQueryParameter = {} as any
+
+      // authentication bearer required
+      // http bearer authentication required
+      await setBearerAuthToObject(localVarHeaderParameter, configuration)
+
+      localVarHeaderParameter['Content-Type'] = 'application/json'
+
+      setSearchParams(localVarUrlObj, localVarQueryParameter)
+      let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {}
+      localVarRequestOptions.headers = {
+        ...localVarHeaderParameter,
+        ...headersFromBaseOptions,
+        ...options.headers,
+      }
+      localVarRequestOptions.data = serializeDataIfNeeded(
+        createFormRequestDto,
+        localVarRequestOptions,
+        configuration,
+      )
+
+      return {
+        url: toPathString(localVarUrlObj),
+        options: localVarRequestOptions,
+      }
+    },
+    /**
+     * Create only id in our backand, which you need to send in form as external id. There is only one mandatory paremeter - email, rest of body is not mandatory, you can add form name, category version and some tags
+     * @summary
+     * @param {CreateFormEidRequestDto} createFormEidRequestDto
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    nasesControllerCreateFormEid: async (
+      createFormEidRequestDto: CreateFormEidRequestDto,
+      options: AxiosRequestConfig = {},
+    ): Promise<RequestArgs> => {
+      // verify required parameter 'createFormEidRequestDto' is not null or undefined
+      assertParamExists(
+        'nasesControllerCreateFormEid',
+        'createFormEidRequestDto',
+        createFormEidRequestDto,
+      )
+      const localVarPath = `/nases/eid/create-form`
+      // use dummy base URL string because the URL constructor only accepts absolute URLs.
+      const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL)
+      let baseOptions
+      if (configuration) {
+        baseOptions = configuration.baseOptions
+      }
+
+      const localVarRequestOptions = { method: 'POST', ...baseOptions, ...options }
+      const localVarHeaderParameter = {} as any
+      const localVarQueryParameter = {} as any
+
+      // authentication bearer required
+      // http bearer authentication required
+      await setBearerAuthToObject(localVarHeaderParameter, configuration)
+
+      localVarHeaderParameter['Content-Type'] = 'application/json'
+
+      setSearchParams(localVarUrlObj, localVarQueryParameter)
+      let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {}
+      localVarRequestOptions.headers = {
+        ...localVarHeaderParameter,
+        ...headersFromBaseOptions,
+        ...options.headers,
+      }
+      localVarRequestOptions.data = serializeDataIfNeeded(
+        createFormEidRequestDto,
+        localVarRequestOptions,
+        configuration,
+      )
+
+      return {
+        url: toPathString(localVarUrlObj),
+        options: localVarRequestOptions,
+      }
+    },
+    /**
+     *
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    nasesControllerGetAdministrationJwt: async (
+      options: AxiosRequestConfig = {},
+    ): Promise<RequestArgs> => {
+      const localVarPath = `/nases/administration-jwt`
+      // use dummy base URL string because the URL constructor only accepts absolute URLs.
+      const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL)
+      let baseOptions
+      if (configuration) {
+        baseOptions = configuration.baseOptions
+      }
+
+      const localVarRequestOptions = { method: 'GET', ...baseOptions, ...options }
+      const localVarHeaderParameter = {} as any
+      const localVarQueryParameter = {} as any
+
+      // authentication bearer required
+      // http bearer authentication required
+      await setBearerAuthToObject(localVarHeaderParameter, configuration)
+
+      setSearchParams(localVarUrlObj, localVarQueryParameter)
+      let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {}
+      localVarRequestOptions.headers = {
+        ...localVarHeaderParameter,
+        ...headersFromBaseOptions,
+        ...options.headers,
+      }
+
+      return {
+        url: toPathString(localVarUrlObj),
+        options: localVarRequestOptions,
+      }
+    },
+    /**
+     *
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    nasesControllerGetEidJwt: async (options: AxiosRequestConfig = {}): Promise<RequestArgs> => {
+      const localVarPath = `/nases/eid-jwt`
+      // use dummy base URL string because the URL constructor only accepts absolute URLs.
+      const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL)
+      let baseOptions
+      if (configuration) {
+        baseOptions = configuration.baseOptions
+      }
+
+      const localVarRequestOptions = { method: 'GET', ...baseOptions, ...options }
+      const localVarHeaderParameter = {} as any
+      const localVarQueryParameter = {} as any
+
+      // authentication bearer required
+      // http bearer authentication required
+      await setBearerAuthToObject(localVarHeaderParameter, configuration)
+
+      setSearchParams(localVarUrlObj, localVarQueryParameter)
+      let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {}
+      localVarRequestOptions.headers = {
+        ...localVarHeaderParameter,
+        ...headersFromBaseOptions,
+        ...options.headers,
+      }
+
+      return {
+        url: toPathString(localVarUrlObj),
+        options: localVarRequestOptions,
+      }
+    },
+    /**
+     * Return form by ID and by logged user
+     * @summary
+     * @param {string} id
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    nasesControllerGetForm: async (
+      id: string,
+      options: AxiosRequestConfig = {},
+    ): Promise<RequestArgs> => {
+      // verify required parameter 'id' is not null or undefined
+      assertParamExists('nasesControllerGetForm', 'id', id)
+      const localVarPath = `/nases/form/{id}`.replace(`{${'id'}}`, encodeURIComponent(String(id)))
+      // use dummy base URL string because the URL constructor only accepts absolute URLs.
+      const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL)
+      let baseOptions
+      if (configuration) {
+        baseOptions = configuration.baseOptions
+      }
+
+      const localVarRequestOptions = { method: 'GET', ...baseOptions, ...options }
+      const localVarHeaderParameter = {} as any
+      const localVarQueryParameter = {} as any
+
+      // authentication bearer required
+      // http bearer authentication required
+      await setBearerAuthToObject(localVarHeaderParameter, configuration)
+
+      setSearchParams(localVarUrlObj, localVarQueryParameter)
+      let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {}
+      localVarRequestOptions.headers = {
+        ...localVarHeaderParameter,
+        ...headersFromBaseOptions,
+        ...options.headers,
+      }
+
+      return {
+        url: toPathString(localVarUrlObj),
+        options: localVarRequestOptions,
+      }
+    },
+    /**
+     * Return top 10 forms
+     * @summary
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    nasesControllerGetForms: async (options: AxiosRequestConfig = {}): Promise<RequestArgs> => {
+      const localVarPath = `/nases/forms`
+      // use dummy base URL string because the URL constructor only accepts absolute URLs.
+      const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL)
+      let baseOptions
+      if (configuration) {
+        baseOptions = configuration.baseOptions
+      }
+
+      const localVarRequestOptions = { method: 'GET', ...baseOptions, ...options }
+      const localVarHeaderParameter = {} as any
+      const localVarQueryParameter = {} as any
+
+      // authentication bearer required
+      // http bearer authentication required
+      await setBearerAuthToObject(localVarHeaderParameter, configuration)
+
+      setSearchParams(localVarUrlObj, localVarQueryParameter)
+      let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {}
+      localVarRequestOptions.headers = {
+        ...localVarHeaderParameter,
+        ...headersFromBaseOptions,
+        ...options.headers,
+      }
+
+      return {
+        url: toPathString(localVarUrlObj),
+        options: localVarRequestOptions,
+      }
+    },
+    /**
+     *
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    nasesControllerGetTechnicalJwt: async (
+      options: AxiosRequestConfig = {},
+    ): Promise<RequestArgs> => {
+      const localVarPath = `/nases/technical-jwt`
+      // use dummy base URL string because the URL constructor only accepts absolute URLs.
+      const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL)
+      let baseOptions
+      if (configuration) {
+        baseOptions = configuration.baseOptions
+      }
+
+      const localVarRequestOptions = { method: 'GET', ...baseOptions, ...options }
+      const localVarHeaderParameter = {} as any
+      const localVarQueryParameter = {} as any
+
+      // authentication bearer required
+      // http bearer authentication required
+      await setBearerAuthToObject(localVarHeaderParameter, configuration)
+
+      setSearchParams(localVarUrlObj, localVarQueryParameter)
+      let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {}
+      localVarRequestOptions.headers = {
+        ...localVarHeaderParameter,
+        ...headersFromBaseOptions,
+        ...options.headers,
+      }
+
+      return {
+        url: toPathString(localVarUrlObj),
+        options: localVarRequestOptions,
+      }
+    },
+    /**
+     *
+     * @param {string} id
+     * @param {UpdateFormRequestDto} updateFormRequestDto
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    nasesControllerSendAndUpdateForm: async (
+      id: string,
+      updateFormRequestDto: UpdateFormRequestDto,
+      options: AxiosRequestConfig = {},
+    ): Promise<RequestArgs> => {
+      // verify required parameter 'id' is not null or undefined
+      assertParamExists('nasesControllerSendAndUpdateForm', 'id', id)
+      // verify required parameter 'updateFormRequestDto' is not null or undefined
+      assertParamExists(
+        'nasesControllerSendAndUpdateForm',
+        'updateFormRequestDto',
+        updateFormRequestDto,
+      )
+      const localVarPath = `/nases/send-and-update-form/{id}`.replace(
+        `{${'id'}}`,
+        encodeURIComponent(String(id)),
+      )
+      // use dummy base URL string because the URL constructor only accepts absolute URLs.
+      const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL)
+      let baseOptions
+      if (configuration) {
+        baseOptions = configuration.baseOptions
+      }
+
+      const localVarRequestOptions = { method: 'POST', ...baseOptions, ...options }
+      const localVarHeaderParameter = {} as any
+      const localVarQueryParameter = {} as any
+
+      // authentication bearer required
+      // http bearer authentication required
+      await setBearerAuthToObject(localVarHeaderParameter, configuration)
+
+      localVarHeaderParameter['Content-Type'] = 'application/json'
+
+      setSearchParams(localVarUrlObj, localVarQueryParameter)
+      let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {}
+      localVarRequestOptions.headers = {
+        ...localVarHeaderParameter,
+        ...headersFromBaseOptions,
+        ...options.headers,
+      }
+      localVarRequestOptions.data = serializeDataIfNeeded(
+        updateFormRequestDto,
+        localVarRequestOptions,
+        configuration,
+      )
+
+      return {
+        url: toPathString(localVarUrlObj),
+        options: localVarRequestOptions,
+      }
+    },
+    /**
+     *
+     * @param {string} id
+     * @param {UpdateFormRequestDto} updateFormRequestDto
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    nasesControllerSendAndUpdateFormEid: async (
+      id: string,
+      updateFormRequestDto: UpdateFormRequestDto,
+      options: AxiosRequestConfig = {},
+    ): Promise<RequestArgs> => {
+      // verify required parameter 'id' is not null or undefined
+      assertParamExists('nasesControllerSendAndUpdateFormEid', 'id', id)
+      // verify required parameter 'updateFormRequestDto' is not null or undefined
+      assertParamExists(
+        'nasesControllerSendAndUpdateFormEid',
+        'updateFormRequestDto',
+        updateFormRequestDto,
+      )
+      const localVarPath = `/nases/eid/send-and-update-form/{id}`.replace(
+        `{${'id'}}`,
+        encodeURIComponent(String(id)),
+      )
+      // use dummy base URL string because the URL constructor only accepts absolute URLs.
+      const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL)
+      let baseOptions
+      if (configuration) {
+        baseOptions = configuration.baseOptions
+      }
+
+      const localVarRequestOptions = { method: 'POST', ...baseOptions, ...options }
+      const localVarHeaderParameter = {} as any
+      const localVarQueryParameter = {} as any
+
+      // authentication bearer required
+      // http bearer authentication required
+      await setBearerAuthToObject(localVarHeaderParameter, configuration)
+
+      localVarHeaderParameter['Content-Type'] = 'application/json'
+
+      setSearchParams(localVarUrlObj, localVarQueryParameter)
+      let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {}
+      localVarRequestOptions.headers = {
+        ...localVarHeaderParameter,
+        ...headersFromBaseOptions,
+        ...options.headers,
+      }
+      localVarRequestOptions.data = serializeDataIfNeeded(
+        updateFormRequestDto,
+        localVarRequestOptions,
+        configuration,
+      )
+
+      return {
+        url: toPathString(localVarUrlObj),
+        options: localVarRequestOptions,
+      }
+    },
+    /**
+     *
+     * @param {string} id
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    nasesControllerSendForm: async (
+      id: string,
+      options: AxiosRequestConfig = {},
+    ): Promise<RequestArgs> => {
+      // verify required parameter 'id' is not null or undefined
+      assertParamExists('nasesControllerSendForm', 'id', id)
+      const localVarPath = `/nases/send-form/{id}`.replace(
+        `{${'id'}}`,
+        encodeURIComponent(String(id)),
+      )
+      // use dummy base URL string because the URL constructor only accepts absolute URLs.
+      const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL)
+      let baseOptions
+      if (configuration) {
+        baseOptions = configuration.baseOptions
+      }
+
+      const localVarRequestOptions = { method: 'POST', ...baseOptions, ...options }
+      const localVarHeaderParameter = {} as any
+      const localVarQueryParameter = {} as any
+
+      // authentication bearer required
+      // http bearer authentication required
+      await setBearerAuthToObject(localVarHeaderParameter, configuration)
+
+      setSearchParams(localVarUrlObj, localVarQueryParameter)
+      let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {}
+      localVarRequestOptions.headers = {
+        ...localVarHeaderParameter,
+        ...headersFromBaseOptions,
+        ...options.headers,
+      }
+
+      return {
+        url: toPathString(localVarUrlObj),
+        options: localVarRequestOptions,
+      }
+    },
+    /**
+     *
+     * @param {string} id
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    nasesControllerSendFormEid: async (
+      id: string,
+      options: AxiosRequestConfig = {},
+    ): Promise<RequestArgs> => {
+      // verify required parameter 'id' is not null or undefined
+      assertParamExists('nasesControllerSendFormEid', 'id', id)
+      const localVarPath = `/nases/eid/send-form/{id}`.replace(
+        `{${'id'}}`,
+        encodeURIComponent(String(id)),
+      )
+      // use dummy base URL string because the URL constructor only accepts absolute URLs.
+      const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL)
+      let baseOptions
+      if (configuration) {
+        baseOptions = configuration.baseOptions
+      }
+
+      const localVarRequestOptions = { method: 'POST', ...baseOptions, ...options }
+      const localVarHeaderParameter = {} as any
+      const localVarQueryParameter = {} as any
+
+      // authentication bearer required
+      // http bearer authentication required
+      await setBearerAuthToObject(localVarHeaderParameter, configuration)
+
+      setSearchParams(localVarUrlObj, localVarQueryParameter)
+      let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {}
+      localVarRequestOptions.headers = {
+        ...localVarHeaderParameter,
+        ...headersFromBaseOptions,
+        ...options.headers,
+      }
+
+      return {
+        url: toPathString(localVarUrlObj),
+        options: localVarRequestOptions,
+      }
+    },
+    /**
+     * Update form
+     * @summary
+     * @param {string} id
+     * @param {UpdateFormRequestDto} updateFormRequestDto
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    nasesControllerUpdateForm: async (
+      id: string,
+      updateFormRequestDto: UpdateFormRequestDto,
+      options: AxiosRequestConfig = {},
+    ): Promise<RequestArgs> => {
+      // verify required parameter 'id' is not null or undefined
+      assertParamExists('nasesControllerUpdateForm', 'id', id)
+      // verify required parameter 'updateFormRequestDto' is not null or undefined
+      assertParamExists('nasesControllerUpdateForm', 'updateFormRequestDto', updateFormRequestDto)
+      const localVarPath = `/nases/update-form/{id}`.replace(
+        `{${'id'}}`,
+        encodeURIComponent(String(id)),
+      )
+      // use dummy base URL string because the URL constructor only accepts absolute URLs.
+      const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL)
+      let baseOptions
+      if (configuration) {
+        baseOptions = configuration.baseOptions
+      }
+
+      const localVarRequestOptions = { method: 'POST', ...baseOptions, ...options }
+      const localVarHeaderParameter = {} as any
+      const localVarQueryParameter = {} as any
+
+      // authentication bearer required
+      // http bearer authentication required
+      await setBearerAuthToObject(localVarHeaderParameter, configuration)
+
+      localVarHeaderParameter['Content-Type'] = 'application/json'
+
+      setSearchParams(localVarUrlObj, localVarQueryParameter)
+      let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {}
+      localVarRequestOptions.headers = {
+        ...localVarHeaderParameter,
+        ...headersFromBaseOptions,
+        ...options.headers,
+      }
+      localVarRequestOptions.data = serializeDataIfNeeded(
+        updateFormRequestDto,
+        localVarRequestOptions,
+        configuration,
+      )
+
+      return {
+        url: toPathString(localVarUrlObj),
+        options: localVarRequestOptions,
+      }
+    },
+    /**
+     * Create id in our backand, which you need to send in form as external id. Save also data necessary for envelope to send message to NASES
+     * @summary
+     * @param {string} id
+     * @param {UpdateFormRequestDto} updateFormRequestDto
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    nasesControllerUpdateFormEid: async (
+      id: string,
+      updateFormRequestDto: UpdateFormRequestDto,
+      options: AxiosRequestConfig = {},
+    ): Promise<RequestArgs> => {
+      // verify required parameter 'id' is not null or undefined
+      assertParamExists('nasesControllerUpdateFormEid', 'id', id)
+      // verify required parameter 'updateFormRequestDto' is not null or undefined
+      assertParamExists(
+        'nasesControllerUpdateFormEid',
+        'updateFormRequestDto',
+        updateFormRequestDto,
+      )
+      const localVarPath = `/nases/eid/update-form/{id}`.replace(
+        `{${'id'}}`,
+        encodeURIComponent(String(id)),
+      )
+      // use dummy base URL string because the URL constructor only accepts absolute URLs.
+      const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL)
+      let baseOptions
+      if (configuration) {
+        baseOptions = configuration.baseOptions
+      }
+
+      const localVarRequestOptions = { method: 'POST', ...baseOptions, ...options }
+      const localVarHeaderParameter = {} as any
+      const localVarQueryParameter = {} as any
+
+      // authentication bearer required
+      // http bearer authentication required
+      await setBearerAuthToObject(localVarHeaderParameter, configuration)
+
+      localVarHeaderParameter['Content-Type'] = 'application/json'
+
+      setSearchParams(localVarUrlObj, localVarQueryParameter)
+      let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {}
+      localVarRequestOptions.headers = {
+        ...localVarHeaderParameter,
+        ...headersFromBaseOptions,
+        ...options.headers,
+      }
+      localVarRequestOptions.data = serializeDataIfNeeded(
+        updateFormRequestDto,
+        localVarRequestOptions,
+        configuration,
+      )
+
+      return {
+        url: toPathString(localVarUrlObj),
+        options: localVarRequestOptions,
+      }
+    },
+  }
+}
 
 /**
  * NasesApi - functional programming interface
  * @export
  */
-export const NasesApiFp = function(configuration?: Configuration) {
-    const localVarAxiosParamCreator = NasesApiAxiosParamCreator(configuration)
-    return {
-        /**
-         * Create id in our backand, which you need to send in form as external id. Save also data necessary for envelope to send message to NASES
-         * @summary 
-         * @param {CreateFormRequestDto} createFormRequestDto 
-         * @param {*} [options] Override http request option.
-         * @throws {RequiredError}
-         */
-        async nasesControllerCreateForm(createFormRequestDto: CreateFormRequestDto, options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<GetFormResponseDto>> {
-            const localVarAxiosArgs = await localVarAxiosParamCreator.nasesControllerCreateForm(createFormRequestDto, options);
-            return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
-        },
-        /**
-         * Create only id in our backand, which you need to send in form as external id. There is only one mandatory paremeter - email, rest of body is not mandatory, you can add form name, category version and some tags
-         * @summary 
-         * @param {CreateFormEidRequestDto} createFormEidRequestDto 
-         * @param {*} [options] Override http request option.
-         * @throws {RequiredError}
-         */
-        async nasesControllerCreateFormEid(createFormEidRequestDto: CreateFormEidRequestDto, options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<GetFormResponseDto>> {
-            const localVarAxiosArgs = await localVarAxiosParamCreator.nasesControllerCreateFormEid(createFormEidRequestDto, options);
-            return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
-        },
-        /**
-         * 
-         * @param {*} [options] Override http request option.
-         * @throws {RequiredError}
-         */
-        async nasesControllerGetAdministrationJwt(options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<string>> {
-            const localVarAxiosArgs = await localVarAxiosParamCreator.nasesControllerGetAdministrationJwt(options);
-            return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
-        },
-        /**
-         * 
-         * @param {*} [options] Override http request option.
-         * @throws {RequiredError}
-         */
-        async nasesControllerGetEidJwt(options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<string>> {
-            const localVarAxiosArgs = await localVarAxiosParamCreator.nasesControllerGetEidJwt(options);
-            return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
-        },
-        /**
-         * Return form by ID and by logged user
-         * @summary 
-         * @param {string} id 
-         * @param {*} [options] Override http request option.
-         * @throws {RequiredError}
-         */
-        async nasesControllerGetForm(id: string, options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<GetFormResponseDto>> {
-            const localVarAxiosArgs = await localVarAxiosParamCreator.nasesControllerGetForm(id, options);
-            return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
-        },
-        /**
-         * Return top 10 forms
-         * @summary 
-         * @param {*} [options] Override http request option.
-         * @throws {RequiredError}
-         */
-        async nasesControllerGetForms(options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<GetFormsResponseDto>> {
-            const localVarAxiosArgs = await localVarAxiosParamCreator.nasesControllerGetForms(options);
-            return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
-        },
-        /**
-         * 
-         * @param {*} [options] Override http request option.
-         * @throws {RequiredError}
-         */
-        async nasesControllerGetTechnicalJwt(options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<string>> {
-            const localVarAxiosArgs = await localVarAxiosParamCreator.nasesControllerGetTechnicalJwt(options);
-            return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
-        },
-        /**
-         * 
-         * @param {string} id 
-         * @param {UpdateFormRequestDto} updateFormRequestDto 
-         * @param {*} [options] Override http request option.
-         * @throws {RequiredError}
-         */
-        async nasesControllerSendAndUpdateForm(id: string, updateFormRequestDto: UpdateFormRequestDto, options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<void>> {
-            const localVarAxiosArgs = await localVarAxiosParamCreator.nasesControllerSendAndUpdateForm(id, updateFormRequestDto, options);
-            return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
-        },
-        /**
-         * 
-         * @param {string} id 
-         * @param {UpdateFormRequestDto} updateFormRequestDto 
-         * @param {*} [options] Override http request option.
-         * @throws {RequiredError}
-         */
-        async nasesControllerSendAndUpdateFormEid(id: string, updateFormRequestDto: UpdateFormRequestDto, options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<void>> {
-            const localVarAxiosArgs = await localVarAxiosParamCreator.nasesControllerSendAndUpdateFormEid(id, updateFormRequestDto, options);
-            return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
-        },
-        /**
-         * 
-         * @param {string} id 
-         * @param {*} [options] Override http request option.
-         * @throws {RequiredError}
-         */
-        async nasesControllerSendForm(id: string, options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<void>> {
-            const localVarAxiosArgs = await localVarAxiosParamCreator.nasesControllerSendForm(id, options);
-            return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
-        },
-        /**
-         * 
-         * @param {string} id 
-         * @param {*} [options] Override http request option.
-         * @throws {RequiredError}
-         */
-        async nasesControllerSendFormEid(id: string, options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<void>> {
-            const localVarAxiosArgs = await localVarAxiosParamCreator.nasesControllerSendFormEid(id, options);
-            return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
-        },
-        /**
-         * Update form
-         * @summary 
-         * @param {string} id 
-         * @param {UpdateFormRequestDto} updateFormRequestDto 
-         * @param {*} [options] Override http request option.
-         * @throws {RequiredError}
-         */
-        async nasesControllerUpdateForm(id: string, updateFormRequestDto: UpdateFormRequestDto, options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<GetFormResponseDto>> {
-            const localVarAxiosArgs = await localVarAxiosParamCreator.nasesControllerUpdateForm(id, updateFormRequestDto, options);
-            return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
-        },
-        /**
-         * Create id in our backand, which you need to send in form as external id. Save also data necessary for envelope to send message to NASES
-         * @summary 
-         * @param {string} id 
-         * @param {UpdateFormRequestDto} updateFormRequestDto 
-         * @param {*} [options] Override http request option.
-         * @throws {RequiredError}
-         */
-        async nasesControllerUpdateFormEid(id: string, updateFormRequestDto: UpdateFormRequestDto, options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<GetFormResponseDto>> {
-            const localVarAxiosArgs = await localVarAxiosParamCreator.nasesControllerUpdateFormEid(id, updateFormRequestDto, options);
-            return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
-        },
-    }
-};
+export const NasesApiFp = function (configuration?: Configuration) {
+  const localVarAxiosParamCreator = NasesApiAxiosParamCreator(configuration)
+  return {
+    /**
+     * Create id in our backand, which you need to send in form as external id. Save also data necessary for envelope to send message to NASES
+     * @summary
+     * @param {CreateFormRequestDto} createFormRequestDto
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    async nasesControllerCreateForm(
+      createFormRequestDto: CreateFormRequestDto,
+      options?: AxiosRequestConfig,
+    ): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<GetFormResponseDto>> {
+      const localVarAxiosArgs = await localVarAxiosParamCreator.nasesControllerCreateForm(
+        createFormRequestDto,
+        options,
+      )
+      return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)
+    },
+    /**
+     * Create only id in our backand, which you need to send in form as external id. There is only one mandatory paremeter - email, rest of body is not mandatory, you can add form name, category version and some tags
+     * @summary
+     * @param {CreateFormEidRequestDto} createFormEidRequestDto
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    async nasesControllerCreateFormEid(
+      createFormEidRequestDto: CreateFormEidRequestDto,
+      options?: AxiosRequestConfig,
+    ): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<GetFormResponseDto>> {
+      const localVarAxiosArgs = await localVarAxiosParamCreator.nasesControllerCreateFormEid(
+        createFormEidRequestDto,
+        options,
+      )
+      return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)
+    },
+    /**
+     *
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    async nasesControllerGetAdministrationJwt(
+      options?: AxiosRequestConfig,
+    ): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<string>> {
+      const localVarAxiosArgs = await localVarAxiosParamCreator.nasesControllerGetAdministrationJwt(
+        options,
+      )
+      return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)
+    },
+    /**
+     *
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    async nasesControllerGetEidJwt(
+      options?: AxiosRequestConfig,
+    ): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<string>> {
+      const localVarAxiosArgs = await localVarAxiosParamCreator.nasesControllerGetEidJwt(options)
+      return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)
+    },
+    /**
+     * Return form by ID and by logged user
+     * @summary
+     * @param {string} id
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    async nasesControllerGetForm(
+      id: string,
+      options?: AxiosRequestConfig,
+    ): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<GetFormResponseDto>> {
+      const localVarAxiosArgs = await localVarAxiosParamCreator.nasesControllerGetForm(id, options)
+      return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)
+    },
+    /**
+     * Return top 10 forms
+     * @summary
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    async nasesControllerGetForms(
+      options?: AxiosRequestConfig,
+    ): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<GetFormsResponseDto>> {
+      const localVarAxiosArgs = await localVarAxiosParamCreator.nasesControllerGetForms(options)
+      return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)
+    },
+    /**
+     *
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    async nasesControllerGetTechnicalJwt(
+      options?: AxiosRequestConfig,
+    ): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<string>> {
+      const localVarAxiosArgs = await localVarAxiosParamCreator.nasesControllerGetTechnicalJwt(
+        options,
+      )
+      return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)
+    },
+    /**
+     *
+     * @param {string} id
+     * @param {UpdateFormRequestDto} updateFormRequestDto
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    async nasesControllerSendAndUpdateForm(
+      id: string,
+      updateFormRequestDto: UpdateFormRequestDto,
+      options?: AxiosRequestConfig,
+    ): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<void>> {
+      const localVarAxiosArgs = await localVarAxiosParamCreator.nasesControllerSendAndUpdateForm(
+        id,
+        updateFormRequestDto,
+        options,
+      )
+      return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)
+    },
+    /**
+     *
+     * @param {string} id
+     * @param {UpdateFormRequestDto} updateFormRequestDto
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    async nasesControllerSendAndUpdateFormEid(
+      id: string,
+      updateFormRequestDto: UpdateFormRequestDto,
+      options?: AxiosRequestConfig,
+    ): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<void>> {
+      const localVarAxiosArgs = await localVarAxiosParamCreator.nasesControllerSendAndUpdateFormEid(
+        id,
+        updateFormRequestDto,
+        options,
+      )
+      return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)
+    },
+    /**
+     *
+     * @param {string} id
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    async nasesControllerSendForm(
+      id: string,
+      options?: AxiosRequestConfig,
+    ): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<void>> {
+      const localVarAxiosArgs = await localVarAxiosParamCreator.nasesControllerSendForm(id, options)
+      return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)
+    },
+    /**
+     *
+     * @param {string} id
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    async nasesControllerSendFormEid(
+      id: string,
+      options?: AxiosRequestConfig,
+    ): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<void>> {
+      const localVarAxiosArgs = await localVarAxiosParamCreator.nasesControllerSendFormEid(
+        id,
+        options,
+      )
+      return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)
+    },
+    /**
+     * Update form
+     * @summary
+     * @param {string} id
+     * @param {UpdateFormRequestDto} updateFormRequestDto
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    async nasesControllerUpdateForm(
+      id: string,
+      updateFormRequestDto: UpdateFormRequestDto,
+      options?: AxiosRequestConfig,
+    ): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<GetFormResponseDto>> {
+      const localVarAxiosArgs = await localVarAxiosParamCreator.nasesControllerUpdateForm(
+        id,
+        updateFormRequestDto,
+        options,
+      )
+      return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)
+    },
+    /**
+     * Create id in our backand, which you need to send in form as external id. Save also data necessary for envelope to send message to NASES
+     * @summary
+     * @param {string} id
+     * @param {UpdateFormRequestDto} updateFormRequestDto
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    async nasesControllerUpdateFormEid(
+      id: string,
+      updateFormRequestDto: UpdateFormRequestDto,
+      options?: AxiosRequestConfig,
+    ): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<GetFormResponseDto>> {
+      const localVarAxiosArgs = await localVarAxiosParamCreator.nasesControllerUpdateFormEid(
+        id,
+        updateFormRequestDto,
+        options,
+      )
+      return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)
+    },
+  }
+}
 
 /**
  * NasesApi - factory interface
  * @export
  */
-export const NasesApiFactory = function (configuration?: Configuration, basePath?: string, axios?: AxiosInstance) {
-    const localVarFp = NasesApiFp(configuration)
-    return {
-        /**
-         * Create id in our backand, which you need to send in form as external id. Save also data necessary for envelope to send message to NASES
-         * @summary 
-         * @param {CreateFormRequestDto} createFormRequestDto 
-         * @param {*} [options] Override http request option.
-         * @throws {RequiredError}
-         */
-        nasesControllerCreateForm(createFormRequestDto: CreateFormRequestDto, options?: any): AxiosPromise<GetFormResponseDto> {
-            return localVarFp.nasesControllerCreateForm(createFormRequestDto, options).then((request) => request(axios, basePath));
-        },
-        /**
-         * Create only id in our backand, which you need to send in form as external id. There is only one mandatory paremeter - email, rest of body is not mandatory, you can add form name, category version and some tags
-         * @summary 
-         * @param {CreateFormEidRequestDto} createFormEidRequestDto 
-         * @param {*} [options] Override http request option.
-         * @throws {RequiredError}
-         */
-        nasesControllerCreateFormEid(createFormEidRequestDto: CreateFormEidRequestDto, options?: any): AxiosPromise<GetFormResponseDto> {
-            return localVarFp.nasesControllerCreateFormEid(createFormEidRequestDto, options).then((request) => request(axios, basePath));
-        },
-        /**
-         * 
-         * @param {*} [options] Override http request option.
-         * @throws {RequiredError}
-         */
-        nasesControllerGetAdministrationJwt(options?: any): AxiosPromise<string> {
-            return localVarFp.nasesControllerGetAdministrationJwt(options).then((request) => request(axios, basePath));
-        },
-        /**
-         * 
-         * @param {*} [options] Override http request option.
-         * @throws {RequiredError}
-         */
-        nasesControllerGetEidJwt(options?: any): AxiosPromise<string> {
-            return localVarFp.nasesControllerGetEidJwt(options).then((request) => request(axios, basePath));
-        },
-        /**
-         * Return form by ID and by logged user
-         * @summary 
-         * @param {string} id 
-         * @param {*} [options] Override http request option.
-         * @throws {RequiredError}
-         */
-        nasesControllerGetForm(id: string, options?: any): AxiosPromise<GetFormResponseDto> {
-            return localVarFp.nasesControllerGetForm(id, options).then((request) => request(axios, basePath));
-        },
-        /**
-         * Return top 10 forms
-         * @summary 
-         * @param {*} [options] Override http request option.
-         * @throws {RequiredError}
-         */
-        nasesControllerGetForms(options?: any): AxiosPromise<GetFormsResponseDto> {
-            return localVarFp.nasesControllerGetForms(options).then((request) => request(axios, basePath));
-        },
-        /**
-         * 
-         * @param {*} [options] Override http request option.
-         * @throws {RequiredError}
-         */
-        nasesControllerGetTechnicalJwt(options?: any): AxiosPromise<string> {
-            return localVarFp.nasesControllerGetTechnicalJwt(options).then((request) => request(axios, basePath));
-        },
-        /**
-         * 
-         * @param {string} id 
-         * @param {UpdateFormRequestDto} updateFormRequestDto 
-         * @param {*} [options] Override http request option.
-         * @throws {RequiredError}
-         */
-        nasesControllerSendAndUpdateForm(id: string, updateFormRequestDto: UpdateFormRequestDto, options?: any): AxiosPromise<void> {
-            return localVarFp.nasesControllerSendAndUpdateForm(id, updateFormRequestDto, options).then((request) => request(axios, basePath));
-        },
-        /**
-         * 
-         * @param {string} id 
-         * @param {UpdateFormRequestDto} updateFormRequestDto 
-         * @param {*} [options] Override http request option.
-         * @throws {RequiredError}
-         */
-        nasesControllerSendAndUpdateFormEid(id: string, updateFormRequestDto: UpdateFormRequestDto, options?: any): AxiosPromise<void> {
-            return localVarFp.nasesControllerSendAndUpdateFormEid(id, updateFormRequestDto, options).then((request) => request(axios, basePath));
-        },
-        /**
-         * 
-         * @param {string} id 
-         * @param {*} [options] Override http request option.
-         * @throws {RequiredError}
-         */
-        nasesControllerSendForm(id: string, options?: any): AxiosPromise<void> {
-            return localVarFp.nasesControllerSendForm(id, options).then((request) => request(axios, basePath));
-        },
-        /**
-         * 
-         * @param {string} id 
-         * @param {*} [options] Override http request option.
-         * @throws {RequiredError}
-         */
-        nasesControllerSendFormEid(id: string, options?: any): AxiosPromise<void> {
-            return localVarFp.nasesControllerSendFormEid(id, options).then((request) => request(axios, basePath));
-        },
-        /**
-         * Update form
-         * @summary 
-         * @param {string} id 
-         * @param {UpdateFormRequestDto} updateFormRequestDto 
-         * @param {*} [options] Override http request option.
-         * @throws {RequiredError}
-         */
-        nasesControllerUpdateForm(id: string, updateFormRequestDto: UpdateFormRequestDto, options?: any): AxiosPromise<GetFormResponseDto> {
-            return localVarFp.nasesControllerUpdateForm(id, updateFormRequestDto, options).then((request) => request(axios, basePath));
-        },
-        /**
-         * Create id in our backand, which you need to send in form as external id. Save also data necessary for envelope to send message to NASES
-         * @summary 
-         * @param {string} id 
-         * @param {UpdateFormRequestDto} updateFormRequestDto 
-         * @param {*} [options] Override http request option.
-         * @throws {RequiredError}
-         */
-        nasesControllerUpdateFormEid(id: string, updateFormRequestDto: UpdateFormRequestDto, options?: any): AxiosPromise<GetFormResponseDto> {
-            return localVarFp.nasesControllerUpdateFormEid(id, updateFormRequestDto, options).then((request) => request(axios, basePath));
-        },
-    };
-};
+export const NasesApiFactory = function (
+  configuration?: Configuration,
+  basePath?: string,
+  axios?: AxiosInstance,
+) {
+  const localVarFp = NasesApiFp(configuration)
+  return {
+    /**
+     * Create id in our backand, which you need to send in form as external id. Save also data necessary for envelope to send message to NASES
+     * @summary
+     * @param {CreateFormRequestDto} createFormRequestDto
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    nasesControllerCreateForm(
+      createFormRequestDto: CreateFormRequestDto,
+      options?: AxiosRequestConfig,
+    ): AxiosPromise<GetFormResponseDto> {
+      return localVarFp
+        .nasesControllerCreateForm(createFormRequestDto, options)
+        .then((request) => request(axios, basePath))
+    },
+    /**
+     * Create only id in our backand, which you need to send in form as external id. There is only one mandatory paremeter - email, rest of body is not mandatory, you can add form name, category version and some tags
+     * @summary
+     * @param {CreateFormEidRequestDto} createFormEidRequestDto
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    nasesControllerCreateFormEid(
+      createFormEidRequestDto: CreateFormEidRequestDto,
+      options?: AxiosRequestConfig,
+    ): AxiosPromise<GetFormResponseDto> {
+      return localVarFp
+        .nasesControllerCreateFormEid(createFormEidRequestDto, options)
+        .then((request) => request(axios, basePath))
+    },
+    /**
+     *
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    nasesControllerGetAdministrationJwt(options?: AxiosRequestConfig): AxiosPromise<string> {
+      return localVarFp
+        .nasesControllerGetAdministrationJwt(options)
+        .then((request) => request(axios, basePath))
+    },
+    /**
+     *
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    nasesControllerGetEidJwt(options?: AxiosRequestConfig): AxiosPromise<string> {
+      return localVarFp
+        .nasesControllerGetEidJwt(options)
+        .then((request) => request(axios, basePath))
+    },
+    /**
+     * Return form by ID and by logged user
+     * @summary
+     * @param {string} id
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    nasesControllerGetForm(
+      id: string,
+      options?: AxiosRequestConfig,
+    ): AxiosPromise<GetFormResponseDto> {
+      return localVarFp
+        .nasesControllerGetForm(id, options)
+        .then((request) => request(axios, basePath))
+    },
+    /**
+     * Return top 10 forms
+     * @summary
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    nasesControllerGetForms(options?: AxiosRequestConfig): AxiosPromise<GetFormsResponseDto> {
+      return localVarFp.nasesControllerGetForms(options).then((request) => request(axios, basePath))
+    },
+    /**
+     *
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    nasesControllerGetTechnicalJwt(options?: AxiosRequestConfig): AxiosPromise<string> {
+      return localVarFp
+        .nasesControllerGetTechnicalJwt(options)
+        .then((request) => request(axios, basePath))
+    },
+    /**
+     *
+     * @param {string} id
+     * @param {UpdateFormRequestDto} updateFormRequestDto
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    nasesControllerSendAndUpdateForm(
+      id: string,
+      updateFormRequestDto: UpdateFormRequestDto,
+      options?: AxiosRequestConfig,
+    ): AxiosPromise<void> {
+      return localVarFp
+        .nasesControllerSendAndUpdateForm(id, updateFormRequestDto, options)
+        .then((request) => request(axios, basePath))
+    },
+    /**
+     *
+     * @param {string} id
+     * @param {UpdateFormRequestDto} updateFormRequestDto
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    nasesControllerSendAndUpdateFormEid(
+      id: string,
+      updateFormRequestDto: UpdateFormRequestDto,
+      options?: AxiosRequestConfig,
+    ): AxiosPromise<void> {
+      return localVarFp
+        .nasesControllerSendAndUpdateFormEid(id, updateFormRequestDto, options)
+        .then((request) => request(axios, basePath))
+    },
+    /**
+     *
+     * @param {string} id
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    nasesControllerSendForm(id: string, options?: AxiosRequestConfig): AxiosPromise<void> {
+      return localVarFp
+        .nasesControllerSendForm(id, options)
+        .then((request) => request(axios, basePath))
+    },
+    /**
+     *
+     * @param {string} id
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    nasesControllerSendFormEid(id: string, options?: AxiosRequestConfig): AxiosPromise<void> {
+      return localVarFp
+        .nasesControllerSendFormEid(id, options)
+        .then((request) => request(axios, basePath))
+    },
+    /**
+     * Update form
+     * @summary
+     * @param {string} id
+     * @param {UpdateFormRequestDto} updateFormRequestDto
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    nasesControllerUpdateForm(
+      id: string,
+      updateFormRequestDto: UpdateFormRequestDto,
+      options?: AxiosRequestConfig,
+    ): AxiosPromise<GetFormResponseDto> {
+      return localVarFp
+        .nasesControllerUpdateForm(id, updateFormRequestDto, options)
+        .then((request) => request(axios, basePath))
+    },
+    /**
+     * Create id in our backand, which you need to send in form as external id. Save also data necessary for envelope to send message to NASES
+     * @summary
+     * @param {string} id
+     * @param {UpdateFormRequestDto} updateFormRequestDto
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    nasesControllerUpdateFormEid(
+      id: string,
+      updateFormRequestDto: UpdateFormRequestDto,
+      options?: AxiosRequestConfig,
+    ): AxiosPromise<GetFormResponseDto> {
+      return localVarFp
+        .nasesControllerUpdateFormEid(id, updateFormRequestDto, options)
+        .then((request) => request(axios, basePath))
+    },
+  }
+}
 
 /**
  * NasesApi - object-oriented interface
@@ -1989,381 +3921,466 @@ export const NasesApiFactory = function (configuration?: Configuration, basePath
  * @extends {BaseAPI}
  */
 export class NasesApi extends BaseAPI {
-    /**
-     * Create id in our backand, which you need to send in form as external id. Save also data necessary for envelope to send message to NASES
-     * @summary 
-     * @param {CreateFormRequestDto} createFormRequestDto 
-     * @param {*} [options] Override http request option.
-     * @throws {RequiredError}
-     * @memberof NasesApi
-     */
-    public nasesControllerCreateForm(createFormRequestDto: CreateFormRequestDto, options?: AxiosRequestConfig) {
-        return NasesApiFp(this.configuration).nasesControllerCreateForm(createFormRequestDto, options).then((request) => request(this.axios, this.basePath));
-    }
+  /**
+   * Create id in our backand, which you need to send in form as external id. Save also data necessary for envelope to send message to NASES
+   * @summary
+   * @param {CreateFormRequestDto} createFormRequestDto
+   * @param {*} [options] Override http request option.
+   * @throws {RequiredError}
+   * @memberof NasesApi
+   */
+  public nasesControllerCreateForm(
+    createFormRequestDto: CreateFormRequestDto,
+    options?: AxiosRequestConfig,
+  ) {
+    return NasesApiFp(this.configuration)
+      .nasesControllerCreateForm(createFormRequestDto, options)
+      .then((request) => request(this.axios, this.basePath))
+  }
 
-    /**
-     * Create only id in our backand, which you need to send in form as external id. There is only one mandatory paremeter - email, rest of body is not mandatory, you can add form name, category version and some tags
-     * @summary 
-     * @param {CreateFormEidRequestDto} createFormEidRequestDto 
-     * @param {*} [options] Override http request option.
-     * @throws {RequiredError}
-     * @memberof NasesApi
-     */
-    public nasesControllerCreateFormEid(createFormEidRequestDto: CreateFormEidRequestDto, options?: AxiosRequestConfig) {
-        return NasesApiFp(this.configuration).nasesControllerCreateFormEid(createFormEidRequestDto, options).then((request) => request(this.axios, this.basePath));
-    }
+  /**
+   * Create only id in our backand, which you need to send in form as external id. There is only one mandatory paremeter - email, rest of body is not mandatory, you can add form name, category version and some tags
+   * @summary
+   * @param {CreateFormEidRequestDto} createFormEidRequestDto
+   * @param {*} [options] Override http request option.
+   * @throws {RequiredError}
+   * @memberof NasesApi
+   */
+  public nasesControllerCreateFormEid(
+    createFormEidRequestDto: CreateFormEidRequestDto,
+    options?: AxiosRequestConfig,
+  ) {
+    return NasesApiFp(this.configuration)
+      .nasesControllerCreateFormEid(createFormEidRequestDto, options)
+      .then((request) => request(this.axios, this.basePath))
+  }
 
-    /**
-     * 
-     * @param {*} [options] Override http request option.
-     * @throws {RequiredError}
-     * @memberof NasesApi
-     */
-    public nasesControllerGetAdministrationJwt(options?: AxiosRequestConfig) {
-        return NasesApiFp(this.configuration).nasesControllerGetAdministrationJwt(options).then((request) => request(this.axios, this.basePath));
-    }
+  /**
+   *
+   * @param {*} [options] Override http request option.
+   * @throws {RequiredError}
+   * @memberof NasesApi
+   */
+  public nasesControllerGetAdministrationJwt(options?: AxiosRequestConfig) {
+    return NasesApiFp(this.configuration)
+      .nasesControllerGetAdministrationJwt(options)
+      .then((request) => request(this.axios, this.basePath))
+  }
 
-    /**
-     * 
-     * @param {*} [options] Override http request option.
-     * @throws {RequiredError}
-     * @memberof NasesApi
-     */
-    public nasesControllerGetEidJwt(options?: AxiosRequestConfig) {
-        return NasesApiFp(this.configuration).nasesControllerGetEidJwt(options).then((request) => request(this.axios, this.basePath));
-    }
+  /**
+   *
+   * @param {*} [options] Override http request option.
+   * @throws {RequiredError}
+   * @memberof NasesApi
+   */
+  public nasesControllerGetEidJwt(options?: AxiosRequestConfig) {
+    return NasesApiFp(this.configuration)
+      .nasesControllerGetEidJwt(options)
+      .then((request) => request(this.axios, this.basePath))
+  }
 
-    /**
-     * Return form by ID and by logged user
-     * @summary 
-     * @param {string} id 
-     * @param {*} [options] Override http request option.
-     * @throws {RequiredError}
-     * @memberof NasesApi
-     */
-    public nasesControllerGetForm(id: string, options?: AxiosRequestConfig) {
-        return NasesApiFp(this.configuration).nasesControllerGetForm(id, options).then((request) => request(this.axios, this.basePath));
-    }
+  /**
+   * Return form by ID and by logged user
+   * @summary
+   * @param {string} id
+   * @param {*} [options] Override http request option.
+   * @throws {RequiredError}
+   * @memberof NasesApi
+   */
+  public nasesControllerGetForm(id: string, options?: AxiosRequestConfig) {
+    return NasesApiFp(this.configuration)
+      .nasesControllerGetForm(id, options)
+      .then((request) => request(this.axios, this.basePath))
+  }
 
-    /**
-     * Return top 10 forms
-     * @summary 
-     * @param {*} [options] Override http request option.
-     * @throws {RequiredError}
-     * @memberof NasesApi
-     */
-    public nasesControllerGetForms(options?: AxiosRequestConfig) {
-        return NasesApiFp(this.configuration).nasesControllerGetForms(options).then((request) => request(this.axios, this.basePath));
-    }
+  /**
+   * Return top 10 forms
+   * @summary
+   * @param {*} [options] Override http request option.
+   * @throws {RequiredError}
+   * @memberof NasesApi
+   */
+  public nasesControllerGetForms(options?: AxiosRequestConfig) {
+    return NasesApiFp(this.configuration)
+      .nasesControllerGetForms(options)
+      .then((request) => request(this.axios, this.basePath))
+  }
 
-    /**
-     * 
-     * @param {*} [options] Override http request option.
-     * @throws {RequiredError}
-     * @memberof NasesApi
-     */
-    public nasesControllerGetTechnicalJwt(options?: AxiosRequestConfig) {
-        return NasesApiFp(this.configuration).nasesControllerGetTechnicalJwt(options).then((request) => request(this.axios, this.basePath));
-    }
+  /**
+   *
+   * @param {*} [options] Override http request option.
+   * @throws {RequiredError}
+   * @memberof NasesApi
+   */
+  public nasesControllerGetTechnicalJwt(options?: AxiosRequestConfig) {
+    return NasesApiFp(this.configuration)
+      .nasesControllerGetTechnicalJwt(options)
+      .then((request) => request(this.axios, this.basePath))
+  }
 
-    /**
-     * 
-     * @param {string} id 
-     * @param {UpdateFormRequestDto} updateFormRequestDto 
-     * @param {*} [options] Override http request option.
-     * @throws {RequiredError}
-     * @memberof NasesApi
-     */
-    public nasesControllerSendAndUpdateForm(id: string, updateFormRequestDto: UpdateFormRequestDto, options?: AxiosRequestConfig) {
-        return NasesApiFp(this.configuration).nasesControllerSendAndUpdateForm(id, updateFormRequestDto, options).then((request) => request(this.axios, this.basePath));
-    }
+  /**
+   *
+   * @param {string} id
+   * @param {UpdateFormRequestDto} updateFormRequestDto
+   * @param {*} [options] Override http request option.
+   * @throws {RequiredError}
+   * @memberof NasesApi
+   */
+  public nasesControllerSendAndUpdateForm(
+    id: string,
+    updateFormRequestDto: UpdateFormRequestDto,
+    options?: AxiosRequestConfig,
+  ) {
+    return NasesApiFp(this.configuration)
+      .nasesControllerSendAndUpdateForm(id, updateFormRequestDto, options)
+      .then((request) => request(this.axios, this.basePath))
+  }
 
-    /**
-     * 
-     * @param {string} id 
-     * @param {UpdateFormRequestDto} updateFormRequestDto 
-     * @param {*} [options] Override http request option.
-     * @throws {RequiredError}
-     * @memberof NasesApi
-     */
-    public nasesControllerSendAndUpdateFormEid(id: string, updateFormRequestDto: UpdateFormRequestDto, options?: AxiosRequestConfig) {
-        return NasesApiFp(this.configuration).nasesControllerSendAndUpdateFormEid(id, updateFormRequestDto, options).then((request) => request(this.axios, this.basePath));
-    }
+  /**
+   *
+   * @param {string} id
+   * @param {UpdateFormRequestDto} updateFormRequestDto
+   * @param {*} [options] Override http request option.
+   * @throws {RequiredError}
+   * @memberof NasesApi
+   */
+  public nasesControllerSendAndUpdateFormEid(
+    id: string,
+    updateFormRequestDto: UpdateFormRequestDto,
+    options?: AxiosRequestConfig,
+  ) {
+    return NasesApiFp(this.configuration)
+      .nasesControllerSendAndUpdateFormEid(id, updateFormRequestDto, options)
+      .then((request) => request(this.axios, this.basePath))
+  }
 
-    /**
-     * 
-     * @param {string} id 
-     * @param {*} [options] Override http request option.
-     * @throws {RequiredError}
-     * @memberof NasesApi
-     */
-    public nasesControllerSendForm(id: string, options?: AxiosRequestConfig) {
-        return NasesApiFp(this.configuration).nasesControllerSendForm(id, options).then((request) => request(this.axios, this.basePath));
-    }
+  /**
+   *
+   * @param {string} id
+   * @param {*} [options] Override http request option.
+   * @throws {RequiredError}
+   * @memberof NasesApi
+   */
+  public nasesControllerSendForm(id: string, options?: AxiosRequestConfig) {
+    return NasesApiFp(this.configuration)
+      .nasesControllerSendForm(id, options)
+      .then((request) => request(this.axios, this.basePath))
+  }
 
-    /**
-     * 
-     * @param {string} id 
-     * @param {*} [options] Override http request option.
-     * @throws {RequiredError}
-     * @memberof NasesApi
-     */
-    public nasesControllerSendFormEid(id: string, options?: AxiosRequestConfig) {
-        return NasesApiFp(this.configuration).nasesControllerSendFormEid(id, options).then((request) => request(this.axios, this.basePath));
-    }
+  /**
+   *
+   * @param {string} id
+   * @param {*} [options] Override http request option.
+   * @throws {RequiredError}
+   * @memberof NasesApi
+   */
+  public nasesControllerSendFormEid(id: string, options?: AxiosRequestConfig) {
+    return NasesApiFp(this.configuration)
+      .nasesControllerSendFormEid(id, options)
+      .then((request) => request(this.axios, this.basePath))
+  }
 
-    /**
-     * Update form
-     * @summary 
-     * @param {string} id 
-     * @param {UpdateFormRequestDto} updateFormRequestDto 
-     * @param {*} [options] Override http request option.
-     * @throws {RequiredError}
-     * @memberof NasesApi
-     */
-    public nasesControllerUpdateForm(id: string, updateFormRequestDto: UpdateFormRequestDto, options?: AxiosRequestConfig) {
-        return NasesApiFp(this.configuration).nasesControllerUpdateForm(id, updateFormRequestDto, options).then((request) => request(this.axios, this.basePath));
-    }
+  /**
+   * Update form
+   * @summary
+   * @param {string} id
+   * @param {UpdateFormRequestDto} updateFormRequestDto
+   * @param {*} [options] Override http request option.
+   * @throws {RequiredError}
+   * @memberof NasesApi
+   */
+  public nasesControllerUpdateForm(
+    id: string,
+    updateFormRequestDto: UpdateFormRequestDto,
+    options?: AxiosRequestConfig,
+  ) {
+    return NasesApiFp(this.configuration)
+      .nasesControllerUpdateForm(id, updateFormRequestDto, options)
+      .then((request) => request(this.axios, this.basePath))
+  }
 
-    /**
-     * Create id in our backand, which you need to send in form as external id. Save also data necessary for envelope to send message to NASES
-     * @summary 
-     * @param {string} id 
-     * @param {UpdateFormRequestDto} updateFormRequestDto 
-     * @param {*} [options] Override http request option.
-     * @throws {RequiredError}
-     * @memberof NasesApi
-     */
-    public nasesControllerUpdateFormEid(id: string, updateFormRequestDto: UpdateFormRequestDto, options?: AxiosRequestConfig) {
-        return NasesApiFp(this.configuration).nasesControllerUpdateFormEid(id, updateFormRequestDto, options).then((request) => request(this.axios, this.basePath));
-    }
+  /**
+   * Create id in our backand, which you need to send in form as external id. Save also data necessary for envelope to send message to NASES
+   * @summary
+   * @param {string} id
+   * @param {UpdateFormRequestDto} updateFormRequestDto
+   * @param {*} [options] Override http request option.
+   * @throws {RequiredError}
+   * @memberof NasesApi
+   */
+  public nasesControllerUpdateFormEid(
+    id: string,
+    updateFormRequestDto: UpdateFormRequestDto,
+    options?: AxiosRequestConfig,
+  ) {
+    return NasesApiFp(this.configuration)
+      .nasesControllerUpdateFormEid(id, updateFormRequestDto, options)
+      .then((request) => request(this.axios, this.basePath))
+  }
 }
-
 
 /**
  * StatusesApi - axios parameter creator
  * @export
  */
 export const StatusesApiAxiosParamCreator = function (configuration?: Configuration) {
-    return {
-        /**
-         * This endpoint checks if forms backend is running
-         * @summary Check scanner backend status
-         * @param {*} [options] Override http request option.
-         * @throws {RequiredError}
-         */
-        statusControllerIsFormsRunning: async (options: AxiosRequestConfig = {}): Promise<RequestArgs> => {
-            const localVarPath = `/api/status/scanner`;
-            // use dummy base URL string because the URL constructor only accepts absolute URLs.
-            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
-            let baseOptions;
-            if (configuration) {
-                baseOptions = configuration.baseOptions;
-            }
+  return {
+    /**
+     * This endpoint checks if forms backend is running
+     * @summary Check scanner backend status
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    statusControllerIsFormsRunning: async (
+      options: AxiosRequestConfig = {},
+    ): Promise<RequestArgs> => {
+      const localVarPath = `/status/scanner`
+      // use dummy base URL string because the URL constructor only accepts absolute URLs.
+      const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL)
+      let baseOptions
+      if (configuration) {
+        baseOptions = configuration.baseOptions
+      }
 
-            const localVarRequestOptions = { method: 'GET', ...baseOptions, ...options};
-            const localVarHeaderParameter = {} as any;
-            const localVarQueryParameter = {} as any;
+      const localVarRequestOptions = { method: 'GET', ...baseOptions, ...options }
+      const localVarHeaderParameter = {} as any
+      const localVarQueryParameter = {} as any
 
+      setSearchParams(localVarUrlObj, localVarQueryParameter)
+      let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {}
+      localVarRequestOptions.headers = {
+        ...localVarHeaderParameter,
+        ...headersFromBaseOptions,
+        ...options.headers,
+      }
 
-    
-            setSearchParams(localVarUrlObj, localVarQueryParameter);
-            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
-            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+      return {
+        url: toPathString(localVarUrlObj),
+        options: localVarRequestOptions,
+      }
+    },
+    /**
+     * This endpoint checks if minio is running
+     * @summary Check minio status
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    statusControllerIsMinioRunning: async (
+      options: AxiosRequestConfig = {},
+    ): Promise<RequestArgs> => {
+      const localVarPath = `/status/minio`
+      // use dummy base URL string because the URL constructor only accepts absolute URLs.
+      const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL)
+      let baseOptions
+      if (configuration) {
+        baseOptions = configuration.baseOptions
+      }
 
-            return {
-                url: toPathString(localVarUrlObj),
-                options: localVarRequestOptions,
-            };
-        },
-        /**
-         * This endpoint checks if minio is running
-         * @summary Check minio status
-         * @param {*} [options] Override http request option.
-         * @throws {RequiredError}
-         */
-        statusControllerIsMinioRunning: async (options: AxiosRequestConfig = {}): Promise<RequestArgs> => {
-            const localVarPath = `/api/status/minio`;
-            // use dummy base URL string because the URL constructor only accepts absolute URLs.
-            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
-            let baseOptions;
-            if (configuration) {
-                baseOptions = configuration.baseOptions;
-            }
+      const localVarRequestOptions = { method: 'GET', ...baseOptions, ...options }
+      const localVarHeaderParameter = {} as any
+      const localVarQueryParameter = {} as any
 
-            const localVarRequestOptions = { method: 'GET', ...baseOptions, ...options};
-            const localVarHeaderParameter = {} as any;
-            const localVarQueryParameter = {} as any;
+      setSearchParams(localVarUrlObj, localVarQueryParameter)
+      let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {}
+      localVarRequestOptions.headers = {
+        ...localVarHeaderParameter,
+        ...headersFromBaseOptions,
+        ...options.headers,
+      }
 
+      return {
+        url: toPathString(localVarUrlObj),
+        options: localVarRequestOptions,
+      }
+    },
+    /**
+     * This endpoint checks if prisma is running
+     * @summary Check prisma status
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    statusControllerIsPrismaRunning: async (
+      options: AxiosRequestConfig = {},
+    ): Promise<RequestArgs> => {
+      const localVarPath = `/status/prisma`
+      // use dummy base URL string because the URL constructor only accepts absolute URLs.
+      const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL)
+      let baseOptions
+      if (configuration) {
+        baseOptions = configuration.baseOptions
+      }
 
-    
-            setSearchParams(localVarUrlObj, localVarQueryParameter);
-            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
-            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+      const localVarRequestOptions = { method: 'GET', ...baseOptions, ...options }
+      const localVarHeaderParameter = {} as any
+      const localVarQueryParameter = {} as any
 
-            return {
-                url: toPathString(localVarUrlObj),
-                options: localVarRequestOptions,
-            };
-        },
-        /**
-         * This endpoint checks if prisma is running
-         * @summary Check prisma status
-         * @param {*} [options] Override http request option.
-         * @throws {RequiredError}
-         */
-        statusControllerIsPrismaRunning: async (options: AxiosRequestConfig = {}): Promise<RequestArgs> => {
-            const localVarPath = `/api/status/prisma`;
-            // use dummy base URL string because the URL constructor only accepts absolute URLs.
-            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
-            let baseOptions;
-            if (configuration) {
-                baseOptions = configuration.baseOptions;
-            }
+      setSearchParams(localVarUrlObj, localVarQueryParameter)
+      let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {}
+      localVarRequestOptions.headers = {
+        ...localVarHeaderParameter,
+        ...headersFromBaseOptions,
+        ...options.headers,
+      }
 
-            const localVarRequestOptions = { method: 'GET', ...baseOptions, ...options};
-            const localVarHeaderParameter = {} as any;
-            const localVarQueryParameter = {} as any;
+      return {
+        url: toPathString(localVarUrlObj),
+        options: localVarRequestOptions,
+      }
+    },
+    /**
+     * This endpoint checks all services status
+     * @summary Check all services status
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    statusControllerStatus: async (options: AxiosRequestConfig = {}): Promise<RequestArgs> => {
+      const localVarPath = `/status`
+      // use dummy base URL string because the URL constructor only accepts absolute URLs.
+      const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL)
+      let baseOptions
+      if (configuration) {
+        baseOptions = configuration.baseOptions
+      }
 
+      const localVarRequestOptions = { method: 'GET', ...baseOptions, ...options }
+      const localVarHeaderParameter = {} as any
+      const localVarQueryParameter = {} as any
 
-    
-            setSearchParams(localVarUrlObj, localVarQueryParameter);
-            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
-            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+      setSearchParams(localVarUrlObj, localVarQueryParameter)
+      let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {}
+      localVarRequestOptions.headers = {
+        ...localVarHeaderParameter,
+        ...headersFromBaseOptions,
+        ...options.headers,
+      }
 
-            return {
-                url: toPathString(localVarUrlObj),
-                options: localVarRequestOptions,
-            };
-        },
-        /**
-         * This endpoint checks all services status
-         * @summary Check all services status
-         * @param {*} [options] Override http request option.
-         * @throws {RequiredError}
-         */
-        statusControllerStatus: async (options: AxiosRequestConfig = {}): Promise<RequestArgs> => {
-            const localVarPath = `/api/status`;
-            // use dummy base URL string because the URL constructor only accepts absolute URLs.
-            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
-            let baseOptions;
-            if (configuration) {
-                baseOptions = configuration.baseOptions;
-            }
-
-            const localVarRequestOptions = { method: 'GET', ...baseOptions, ...options};
-            const localVarHeaderParameter = {} as any;
-            const localVarQueryParameter = {} as any;
-
-
-    
-            setSearchParams(localVarUrlObj, localVarQueryParameter);
-            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
-            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
-
-            return {
-                url: toPathString(localVarUrlObj),
-                options: localVarRequestOptions,
-            };
-        },
-    }
-};
+      return {
+        url: toPathString(localVarUrlObj),
+        options: localVarRequestOptions,
+      }
+    },
+  }
+}
 
 /**
  * StatusesApi - functional programming interface
  * @export
  */
-export const StatusesApiFp = function(configuration?: Configuration) {
-    const localVarAxiosParamCreator = StatusesApiAxiosParamCreator(configuration)
-    return {
-        /**
-         * This endpoint checks if forms backend is running
-         * @summary Check scanner backend status
-         * @param {*} [options] Override http request option.
-         * @throws {RequiredError}
-         */
-        async statusControllerIsFormsRunning(options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<ServiceRunningDto>> {
-            const localVarAxiosArgs = await localVarAxiosParamCreator.statusControllerIsFormsRunning(options);
-            return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
-        },
-        /**
-         * This endpoint checks if minio is running
-         * @summary Check minio status
-         * @param {*} [options] Override http request option.
-         * @throws {RequiredError}
-         */
-        async statusControllerIsMinioRunning(options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<ServiceRunningDto>> {
-            const localVarAxiosArgs = await localVarAxiosParamCreator.statusControllerIsMinioRunning(options);
-            return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
-        },
-        /**
-         * This endpoint checks if prisma is running
-         * @summary Check prisma status
-         * @param {*} [options] Override http request option.
-         * @throws {RequiredError}
-         */
-        async statusControllerIsPrismaRunning(options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<ServiceRunningDto>> {
-            const localVarAxiosArgs = await localVarAxiosParamCreator.statusControllerIsPrismaRunning(options);
-            return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
-        },
-        /**
-         * This endpoint checks all services status
-         * @summary Check all services status
-         * @param {*} [options] Override http request option.
-         * @throws {RequiredError}
-         */
-        async statusControllerStatus(options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<object>> {
-            const localVarAxiosArgs = await localVarAxiosParamCreator.statusControllerStatus(options);
-            return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
-        },
-    }
-};
+export const StatusesApiFp = function (configuration?: Configuration) {
+  const localVarAxiosParamCreator = StatusesApiAxiosParamCreator(configuration)
+  return {
+    /**
+     * This endpoint checks if forms backend is running
+     * @summary Check scanner backend status
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    async statusControllerIsFormsRunning(
+      options?: AxiosRequestConfig,
+    ): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<ServiceRunningDto>> {
+      const localVarAxiosArgs = await localVarAxiosParamCreator.statusControllerIsFormsRunning(
+        options,
+      )
+      return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)
+    },
+    /**
+     * This endpoint checks if minio is running
+     * @summary Check minio status
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    async statusControllerIsMinioRunning(
+      options?: AxiosRequestConfig,
+    ): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<ServiceRunningDto>> {
+      const localVarAxiosArgs = await localVarAxiosParamCreator.statusControllerIsMinioRunning(
+        options,
+      )
+      return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)
+    },
+    /**
+     * This endpoint checks if prisma is running
+     * @summary Check prisma status
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    async statusControllerIsPrismaRunning(
+      options?: AxiosRequestConfig,
+    ): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<ServiceRunningDto>> {
+      const localVarAxiosArgs = await localVarAxiosParamCreator.statusControllerIsPrismaRunning(
+        options,
+      )
+      return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)
+    },
+    /**
+     * This endpoint checks all services status
+     * @summary Check all services status
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    async statusControllerStatus(
+      options?: AxiosRequestConfig,
+    ): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<object>> {
+      const localVarAxiosArgs = await localVarAxiosParamCreator.statusControllerStatus(options)
+      return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)
+    },
+  }
+}
 
 /**
  * StatusesApi - factory interface
  * @export
  */
-export const StatusesApiFactory = function (configuration?: Configuration, basePath?: string, axios?: AxiosInstance) {
-    const localVarFp = StatusesApiFp(configuration)
-    return {
-        /**
-         * This endpoint checks if forms backend is running
-         * @summary Check scanner backend status
-         * @param {*} [options] Override http request option.
-         * @throws {RequiredError}
-         */
-        statusControllerIsFormsRunning(options?: any): AxiosPromise<ServiceRunningDto> {
-            return localVarFp.statusControllerIsFormsRunning(options).then((request) => request(axios, basePath));
-        },
-        /**
-         * This endpoint checks if minio is running
-         * @summary Check minio status
-         * @param {*} [options] Override http request option.
-         * @throws {RequiredError}
-         */
-        statusControllerIsMinioRunning(options?: any): AxiosPromise<ServiceRunningDto> {
-            return localVarFp.statusControllerIsMinioRunning(options).then((request) => request(axios, basePath));
-        },
-        /**
-         * This endpoint checks if prisma is running
-         * @summary Check prisma status
-         * @param {*} [options] Override http request option.
-         * @throws {RequiredError}
-         */
-        statusControllerIsPrismaRunning(options?: any): AxiosPromise<ServiceRunningDto> {
-            return localVarFp.statusControllerIsPrismaRunning(options).then((request) => request(axios, basePath));
-        },
-        /**
-         * This endpoint checks all services status
-         * @summary Check all services status
-         * @param {*} [options] Override http request option.
-         * @throws {RequiredError}
-         */
-        statusControllerStatus(options?: any): AxiosPromise<object> {
-            return localVarFp.statusControllerStatus(options).then((request) => request(axios, basePath));
-        },
-    };
-};
+export const StatusesApiFactory = function (
+  configuration?: Configuration,
+  basePath?: string,
+  axios?: AxiosInstance,
+) {
+  const localVarFp = StatusesApiFp(configuration)
+  return {
+    /**
+     * This endpoint checks if forms backend is running
+     * @summary Check scanner backend status
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    statusControllerIsFormsRunning(options?: AxiosRequestConfig): AxiosPromise<ServiceRunningDto> {
+      return localVarFp
+        .statusControllerIsFormsRunning(options)
+        .then((request) => request(axios, basePath))
+    },
+    /**
+     * This endpoint checks if minio is running
+     * @summary Check minio status
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    statusControllerIsMinioRunning(options?: AxiosRequestConfig): AxiosPromise<ServiceRunningDto> {
+      return localVarFp
+        .statusControllerIsMinioRunning(options)
+        .then((request) => request(axios, basePath))
+    },
+    /**
+     * This endpoint checks if prisma is running
+     * @summary Check prisma status
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    statusControllerIsPrismaRunning(options?: AxiosRequestConfig): AxiosPromise<ServiceRunningDto> {
+      return localVarFp
+        .statusControllerIsPrismaRunning(options)
+        .then((request) => request(axios, basePath))
+    },
+    /**
+     * This endpoint checks all services status
+     * @summary Check all services status
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    statusControllerStatus(options?: AxiosRequestConfig): AxiosPromise<object> {
+      return localVarFp.statusControllerStatus(options).then((request) => request(axios, basePath))
+    },
+  }
+}
 
 /**
  * StatusesApi - object-oriented interface
@@ -2372,49 +4389,55 @@ export const StatusesApiFactory = function (configuration?: Configuration, baseP
  * @extends {BaseAPI}
  */
 export class StatusesApi extends BaseAPI {
-    /**
-     * This endpoint checks if forms backend is running
-     * @summary Check scanner backend status
-     * @param {*} [options] Override http request option.
-     * @throws {RequiredError}
-     * @memberof StatusesApi
-     */
-    public statusControllerIsFormsRunning(options?: AxiosRequestConfig) {
-        return StatusesApiFp(this.configuration).statusControllerIsFormsRunning(options).then((request) => request(this.axios, this.basePath));
-    }
+  /**
+   * This endpoint checks if forms backend is running
+   * @summary Check scanner backend status
+   * @param {*} [options] Override http request option.
+   * @throws {RequiredError}
+   * @memberof StatusesApi
+   */
+  public statusControllerIsFormsRunning(options?: AxiosRequestConfig) {
+    return StatusesApiFp(this.configuration)
+      .statusControllerIsFormsRunning(options)
+      .then((request) => request(this.axios, this.basePath))
+  }
 
-    /**
-     * This endpoint checks if minio is running
-     * @summary Check minio status
-     * @param {*} [options] Override http request option.
-     * @throws {RequiredError}
-     * @memberof StatusesApi
-     */
-    public statusControllerIsMinioRunning(options?: AxiosRequestConfig) {
-        return StatusesApiFp(this.configuration).statusControllerIsMinioRunning(options).then((request) => request(this.axios, this.basePath));
-    }
+  /**
+   * This endpoint checks if minio is running
+   * @summary Check minio status
+   * @param {*} [options] Override http request option.
+   * @throws {RequiredError}
+   * @memberof StatusesApi
+   */
+  public statusControllerIsMinioRunning(options?: AxiosRequestConfig) {
+    return StatusesApiFp(this.configuration)
+      .statusControllerIsMinioRunning(options)
+      .then((request) => request(this.axios, this.basePath))
+  }
 
-    /**
-     * This endpoint checks if prisma is running
-     * @summary Check prisma status
-     * @param {*} [options] Override http request option.
-     * @throws {RequiredError}
-     * @memberof StatusesApi
-     */
-    public statusControllerIsPrismaRunning(options?: AxiosRequestConfig) {
-        return StatusesApiFp(this.configuration).statusControllerIsPrismaRunning(options).then((request) => request(this.axios, this.basePath));
-    }
+  /**
+   * This endpoint checks if prisma is running
+   * @summary Check prisma status
+   * @param {*} [options] Override http request option.
+   * @throws {RequiredError}
+   * @memberof StatusesApi
+   */
+  public statusControllerIsPrismaRunning(options?: AxiosRequestConfig) {
+    return StatusesApiFp(this.configuration)
+      .statusControllerIsPrismaRunning(options)
+      .then((request) => request(this.axios, this.basePath))
+  }
 
-    /**
-     * This endpoint checks all services status
-     * @summary Check all services status
-     * @param {*} [options] Override http request option.
-     * @throws {RequiredError}
-     * @memberof StatusesApi
-     */
-    public statusControllerStatus(options?: AxiosRequestConfig) {
-        return StatusesApiFp(this.configuration).statusControllerStatus(options).then((request) => request(this.axios, this.basePath));
-    }
+  /**
+   * This endpoint checks all services status
+   * @summary Check all services status
+   * @param {*} [options] Override http request option.
+   * @throws {RequiredError}
+   * @memberof StatusesApi
+   */
+  public statusControllerStatus(options?: AxiosRequestConfig) {
+    return StatusesApiFp(this.configuration)
+      .statusControllerStatus(options)
+      .then((request) => request(this.axios, this.basePath))
+  }
 }
-
-

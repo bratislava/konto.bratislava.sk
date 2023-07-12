@@ -1,49 +1,36 @@
-import PinFile from '@assets/images/new-icons/ui/attachment.svg'
-import TrashIcon from '@assets/images/new-icons/ui/basket.svg'
-import cx from 'classnames'
+import React from 'react'
+import { Button } from 'react-aria-components'
 
-import Spinner from '../../simple-components/Spinner'
+import {
+  FormFileUploadFileInfo,
+  FormFileUploadStatusEnum,
+} from '../../../../frontend/types/formFileUploadTypes'
 
-interface UploadedFileProps {
-  fileName: string
-  errorMessage?: string
-  isUploading?: boolean
-  onRemove?: () => void
+type UploadedFileProps = {
+  fileInfo: FormFileUploadFileInfo
+  onFileRemove?: () => void
+  onFileRetry?: () => void
 }
 
-const UploadedFile = ({ fileName, errorMessage, isUploading, onRemove }: UploadedFileProps) => {
-  const classNames = cx(
-    'cursor:pointer group linear text-20 flex w-full flex-row gap-2 rounded-lg py-1 px-2 transition-all',
-    {
-      'text-error': errorMessage,
-      'hover:bg-gray-100 hover:text-gray-500': !errorMessage && !isUploading,
-    },
-  )
-
-  const handleOnRemove = () => {
-    if (onRemove) {
-      onRemove()
-    }
-  }
-
+/**
+ * TODO: Visual implementation.
+ */
+const UploadedFile = ({ fileInfo, onFileRetry, onFileRemove }: UploadedFileProps) => {
+  const fileSize = 500 // not yet implemented in FormFileUploadFileInfo
   return (
-    <div className={classNames}>
-      <div className="mr-2 flex w-full flex-row gap-2">
-        <div className="flex flex-col justify-center">
-          {isUploading ? <Spinner size="sm" className="self-center" /> : <PinFile />}
-        </div>
-        <p>{fileName}</p>
-      </div>
-      <div className="align-center flex w-5 flex-col justify-center gap-2">
-        {errorMessage ? (
-          <TrashIcon className="cursor-pointer" onClick={handleOnRemove} />
-        ) : (
-          <TrashIcon
-            className="hidden cursor-pointer self-center group-hover:block"
-            onClick={handleOnRemove}
-          />
-        )}
-      </div>
+    <div>
+      {fileInfo.fileName} <br />
+      {fileInfo.status.type} <br />
+      {fileSize} <br />
+      {fileInfo.status.type === FormFileUploadStatusEnum.Uploading && (
+        <span>{fileInfo.status.progress} %</span>
+      )}
+      {fileInfo.status.type === FormFileUploadStatusEnum.UploadError && (
+        <span>{fileInfo.status.error}</span>
+      )}
+      {fileInfo.status.type === FormFileUploadStatusEnum.UploadError &&
+        fileInfo.status.canRetry && <Button onPress={onFileRetry}>retry</Button>}
+      <Button onPress={onFileRemove}>remove</Button>
     </div>
   )
 }

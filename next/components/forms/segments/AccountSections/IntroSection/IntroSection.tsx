@@ -4,23 +4,26 @@ import TaxesIcon from '@assets/images/new-icons/other/city-bratislava/taxes.svg'
 import LibraryIcon from '@assets/images/new-icons/other/culture-communities/library.svg'
 import SwimmingPoolIcon from '@assets/images/new-icons/other/education-sport/swimming-pool.svg'
 import ParkingIcon from '@assets/images/new-icons/other/transport-and-maps/parking.svg'
+import { Auth } from 'aws-amplify'
 import AccountSectionHeader from 'components/forms/segments/AccountSectionHeader/AccountSectionHeader'
 import AnnouncementBlock from 'components/forms/segments/AccountSections/IntroSection/AnnouncementBlock'
 import Banner from 'components/forms/simple-components/Banner'
 import Button from 'components/forms/simple-components/Button'
 import ServiceCard from 'components/forms/simple-components/ServiceCard'
+import { useServerSideAuth } from 'frontend/hooks/useServerSideAuth'
+import { GENERIC_ERROR_MESSAGE, isError } from 'frontend/utils/errors'
+import logger from 'frontend/utils/logger'
 import { useRouter } from 'next/router'
 import { useTranslation } from 'next-i18next'
 import { useEffect, useState } from 'react'
 
 import { ROUTES } from '../../../../../frontend/api/constants'
-import useAccount from '../../../../../frontend/hooks/useAccount'
 import { PhoneNumberData } from '../../PhoneNumberForm/PhoneNumberForm'
 import PhoneNumberModal from '../../PhoneNumberModal/PhoneNumberModal'
 
 const IntroSection = () => {
   const { t } = useTranslation('account')
-  const { userData, updateUserData, error, resetError, accountType } = useAccount()
+  const { userData, isLegalEntity } = useServerSideAuth()
   const router = useRouter()
   const [phoneNumberModal, setPhoneNumberModal] = useState<'hidden' | 'displayed' | 'dismissed'>(
     'hidden',
@@ -32,20 +35,43 @@ const IntroSection = () => {
     if (
       phoneNumberModal === 'hidden' &&
       userData &&
-      !userData?.phone_number &&
+      !userData.phone_number &&
       ROUTES.REGISTER === router.query.from
     ) {
       setPhoneNumberModal('displayed')
     }
   }, [phoneNumberModal, router.query.from, userData])
 
+  // TODO should be part of phonenumber modal, refactor
+  const [phoneNumberError, setPhoneNumberError] = useState<Error | null>(null)
+  const resetError = () => {
+    setPhoneNumberError(null)
+  }
+
   const onSubmitPhoneNumber = async (submitData: { data?: PhoneNumberData }) => {
-    if (await updateUserData({ phone_number: submitData.data?.phone_number })) {
-      setPhoneNumberModal('dismissed')
+    try {
+      const user = await Auth.currentAuthenticatedUser()
+      if (
+        await Auth.updateUserAttributes(user, {
+          phone_number: submitData.data?.phone_number,
+        })
+      ) {
+        setPhoneNumberModal('dismissed')
+      }
+    } catch (error) {
+      if (isError(error)) {
+        setPhoneNumberError(error)
+      } else {
+        logger.error(
+          `${GENERIC_ERROR_MESSAGE} - unexpected object thrown in onSubmitPhoneNumber:`,
+          error,
+        )
+        setPhoneNumberError(new Error('Unknown error'))
+      }
     }
   }
 
-  const name = accountType === 'po' ? userData?.name : userData?.given_name
+  const name = isLegalEntity ? userData?.name : userData?.given_name
 
   const bannerContent = `<span className='text-p2'>${t(
     'account_section_intro.banner_content',
@@ -63,7 +89,7 @@ const IntroSection = () => {
           show={phoneNumberModal === 'displayed'}
           onClose={() => setPhoneNumberModal('dismissed')}
           onSubmit={onSubmitPhoneNumber}
-          error={error}
+          error={phoneNumberError}
           onHideError={resetError}
           defaultValues={{ phone_number: userData?.phone_number }}
         />

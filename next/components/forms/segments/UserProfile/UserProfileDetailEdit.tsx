@@ -1,12 +1,12 @@
 import cx from 'classnames'
 import Button from 'components/forms/simple-components/Button'
 import InputField from 'components/forms/widget-components/InputField/InputField'
+import { Address, UserData } from 'frontend/dtos/accountDto'
+import useHookForm from 'frontend/hooks/useHookForm'
+import useJsonParseMemo from 'frontend/hooks/useJsonParseMemo'
 import { isValidPhoneNumber } from 'libphonenumber-js'
 import { useTranslation } from 'next-i18next'
 import { Controller } from 'react-hook-form'
-
-import { UserData } from '../../../../frontend/hooks/useAccount'
-import useHookForm from '../../../../frontend/hooks/useHookForm'
 
 interface Data {
   email?: string
@@ -97,17 +97,20 @@ interface UserProfileDetailEditProps {
 const UserProfileDetailEdit = (props: UserProfileDetailEditProps) => {
   const { formId, userData, onOpenEmailModal, onSubmit } = props
   const { t } = useTranslation('account')
+  const { address, name, family_name, given_name, email, phone_number } = userData
+  const isPhysicalEntity = userData?.['custom:account_type'] === 'po'
+  const parsedAddress = useJsonParseMemo<Address>(address)
   const { handleSubmit, control, errors, setError } = useHookForm<Data>({
-    schema: userData.account_type === 'po' ? poSchema : foSchema,
+    schema: isPhysicalEntity ? poSchema : foSchema,
     defaultValues: {
-      business_name: userData.name,
-      family_name: userData.family_name,
-      given_name: userData.given_name,
-      email: userData.email,
-      phone_number: userData.phone_number,
-      street_address: userData.address?.street_address,
-      city: userData.address?.locality,
-      postal_code: userData.address?.postal_code,
+      business_name: name,
+      family_name,
+      given_name,
+      email,
+      phone_number,
+      street_address: parsedAddress?.street_address,
+      city: parsedAddress?.locality,
+      postal_code: parsedAddress?.postal_code,
     },
   })
 
@@ -119,11 +122,11 @@ const UserProfileDetailEdit = (props: UserProfileDetailEditProps) => {
         given_name: data.given_name,
         family_name: data.family_name,
         phone_number: data.phone_number || '',
-        address: {
+        address: JSON.stringify({
           street_address: data.street_address,
           locality: data.city,
           postal_code: data.postal_code?.replaceAll(' ', ''),
-        },
+        }),
       }
       return onSubmit(newUserData)
     }
@@ -138,7 +141,7 @@ const UserProfileDetailEdit = (props: UserProfileDetailEditProps) => {
       onSubmit={handleSubmit(handleSubmitCallback)}
     >
       <div className="gap flex flex-wrap flex-row gap-6">
-        {userData.account_type === 'po' ? (
+        {isPhysicalEntity ? (
           <div className="grow w-full md:w-fit">
             <Controller
               name="business_name"

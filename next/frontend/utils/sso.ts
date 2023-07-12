@@ -10,6 +10,7 @@ export const APPROVED_SSO_ORIGINS = isProductionDeployment()
       'http://localhost:3002',
       'http://localhost:3003',
       'https://kupaliska.staging.bratislava.sk',
+      'https://kupaliska.dev.bratislava.sk',
       'https://kupaliska.bratislava.sk',
       'https://bratislava.sk',
     ]
@@ -32,4 +33,23 @@ export const getValidRedirectFromQuery = (path: unknown) => {
     }
   }
   return null
+}
+
+export enum PostMessageTypes {
+  ACCESS_TOKEN = 'ACCESS_TOKEN',
+  UNAUTHORIZED = 'UNAUTHORIZED',
+}
+
+export interface CityAccountPostMessage {
+  type: PostMessageTypes
+  payload?: Record<string, string>
+}
+
+// postMessage to all approved domains at the window top
+// in reality only one message will be sent, this exists to limit the possible domains only to hardcoded list in APPROVED_SSO_ORIGINS
+export const postMessageToApprovedDomains = (message: CityAccountPostMessage) => {
+  // TODO - log to faro if none of the origins match
+  APPROVED_SSO_ORIGINS.forEach((domain) => {
+    window?.top?.postMessage(message, domain)
+  })
 }

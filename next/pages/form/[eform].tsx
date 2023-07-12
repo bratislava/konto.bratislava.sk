@@ -3,12 +3,17 @@ import { getFormDefinition } from '@backend/utils/forms'
 import GeneratedFormRJSF from 'components/forms/GeneratedFormRJSF'
 import AccountPageLayout from 'components/layouts/AccountPageLayout'
 import PageWrapper from 'components/layouts/PageWrapper'
+import {
+  getSSRCurrentAuth,
+  ServerSideAuthProviderHOC,
+} from 'components/logic/ServerSideAuthProvider'
 import { GetServerSidePropsContext } from 'next'
 import { useRouter } from 'next/router'
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
 
 import { FormStateProvider } from '../../components/forms/FormStateProvider'
 import { useFormDataLoader } from '../../components/forms/useFormDataLoader'
+import { FormFileUploadStateProvider } from '../../components/forms/useFormFileUpload'
 import { environment } from '../../environment'
 import { forceString } from '../../frontend/utils/general'
 import logger from '../../frontend/utils/logger'
@@ -31,6 +36,7 @@ export const getServerSideProps = async (ctx: GetServerSidePropsContext) => {
   return {
     props: {
       formDefinition,
+      ssrCurrentAuthProps: await getSSRCurrentAuth(ctx.req),
       page: {
         locale: ctx.locale,
         localizations: ['sk', 'en']
@@ -85,12 +91,14 @@ const FormTestPage = ({ page, formDefinition }: AsyncServerProps<typeof getServe
             formDefinition={formDefinition}
             initialFormData={initialFormData}
           >
-            <GeneratedFormRJSF
-              formDefinition={formDefinition}
-              escapedSlug={escapedSlug}
-              formSlug={formSlug}
-              initialFormData={initialFormData}
-            />
+            <FormFileUploadStateProvider initialFormData={initialFormData}>
+              <GeneratedFormRJSF
+                formDefinition={formDefinition}
+                escapedSlug={escapedSlug}
+                formSlug={formSlug}
+                initialFormData={initialFormData}
+              />
+            </FormFileUploadStateProvider>
           </FormStateProvider>
         )}
       </AccountPageLayout>
@@ -98,4 +106,4 @@ const FormTestPage = ({ page, formDefinition }: AsyncServerProps<typeof getServe
   )
 }
 
-export default FormTestPage
+export default ServerSideAuthProviderHOC(FormTestPage)

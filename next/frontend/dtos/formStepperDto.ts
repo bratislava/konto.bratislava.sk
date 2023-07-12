@@ -19,12 +19,6 @@ export interface JsonSchemaExtraProperties {
   isConditional?: boolean
 }
 
-export interface FormRJSFContext {
-  formId?: string
-  pospId?: string
-  userExternalId?: string
-}
-
 export interface KeywordDefinition extends FuncKeywordDefinition {
   validate?: (
     schema: AnySchemaObject,

@@ -105,30 +105,19 @@ export const getServerSideProps = async (ctx: GetServerSidePropsContext) => {
 const FormTestPage = ({ page, formDefinition, initialFormData }: FormTestPageProps) => {
   const router = useRouter()
 
-  const formSlug = forceString(router.query.eform)
-  // Using string.match because CodeQL tools ignore regex.test as SSRF prevention.
-  // eslint-disable-next-line unicorn/prefer-regexp-test
-  const escapedSlug = formSlug.match(/^[\dA-Za-z-]+$/) ? formSlug : ''
-  const pageSlug = `form/${escapedSlug}`
+  const formSlug = router.query.eform as string
 
   return (
-    <PageWrapper
-      locale={page.locale}
-      localizations={[
-        { locale: 'sk', slug: pageSlug },
-        { locale: 'en', slug: pageSlug },
-      ]}
-    >
+    <PageWrapper locale={page.locale}>
       <AccountPageLayout isPublicPage hiddenHeaderNav>
         <FormStateProvider
-          eformSlug={escapedSlug}
+          formSlug={formSlug}
           formDefinition={formDefinition}
           initialFormData={initialFormData}
         >
           <FormFileUploadStateProvider initialFormData={initialFormData}>
             <GeneratedFormRJSF
               formDefinition={formDefinition}
-              escapedSlug={escapedSlug}
               formSlug={formSlug}
               initialFormData={initialFormData}
             />

@@ -63,13 +63,13 @@ interface FormState {
 const FormStateContext = createContext<FormState | undefined>(undefined)
 
 interface FormStateProviderProps {
-  eformSlug: string
+  formSlug: string
   formDefinition: FormDefinition
   initialFormData: InitialFormData
 }
 
 export const FormStateProvider = ({
-  eformSlug,
+  formSlug,
   formDefinition,
   initialFormData,
   children,
@@ -266,8 +266,8 @@ export const FormStateProvider = ({
   const exportXml = async () => {
     openSnackbarInfo(t('info_messages.xml_export'))
     try {
-      const xml: Blob = await formDataToXml(eformSlug, formData)
-      const fileName = `${eformSlug}_output.xml`
+      const xml: Blob = await formDataToXml(formSlug, formData)
+      const fileName = `${formSlug}_output.xml`
       downloadBlob(xml, fileName)
       closeSnackbarInfo()
       openSnackbarSuccess(t('success_messages.xml_export'))
@@ -280,7 +280,7 @@ export const FormStateProvider = ({
     openSnackbarInfo(t('info_messages.xml_import'))
     try {
       const xmlData: string = await readTextFile(e)
-      const transformedFormData: RJSFSchema = await xmlToFormData(eformSlug, xmlData)
+      const transformedFormData: RJSFSchema = await xmlToFormData(formSlug, xmlData)
       setFormData(transformedFormData)
       closeSnackbarInfo()
       openSnackbarSuccess(t('success_messages.xml_import'))
@@ -307,10 +307,10 @@ export const FormStateProvider = ({
   const exportPdf = async () => {
     openSnackbarInfo(t('info_messages.pdf_export'))
     try {
-      const xml: Blob = await formDataToXml(eformSlug, formData)
+      const xml: Blob = await formDataToXml(formSlug, formData)
       const xmlData: string = await blobToString(xml)
-      const pdf = await xmlStringToPdf(eformSlug, xmlData)
-      const fileName = `${eformSlug}_output.pdf`
+      const pdf = await xmlStringToPdf(formSlug, xmlData)
+      const fileName = `${formSlug}_output.pdf`
       downloadBlob(pdf, fileName)
       closeSnackbarInfo()
       openSnackbarSuccess(t('success_messages.pdf_export'))

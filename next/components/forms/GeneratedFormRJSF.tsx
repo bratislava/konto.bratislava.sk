@@ -19,7 +19,6 @@ import { ThemedForm } from './ThemedForm'
 
 interface FormRJSF {
   formDefinition: FormDefinition
-  escapedSlug: string
   formSlug: string
   wrapperClassName?: string
   initialFormData: InitialFormData
@@ -27,7 +26,6 @@ interface FormRJSF {
 
 const GeneratedFormRJSF = ({
   formDefinition,
-  escapedSlug,
   formSlug,
   wrapperClassName,
   initialFormData,
@@ -87,7 +85,7 @@ const GeneratedFormRJSF = ({
               <h1 className="text-h1-medium font-semibold">{formState.stepTitle}</h1>
               <ThemedForm
                 className="[&_legend]:hidden"
-                key={`form-${escapedSlug}-step-${formState.stepIndex}`}
+                key={`form-step-${formState.stepIndex}`}
                 ref={formState.formRef}
                 schema={formState.currentSchema}
                 uiSchema={formDefinition.uiSchema}

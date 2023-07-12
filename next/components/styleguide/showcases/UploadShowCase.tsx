@@ -8,7 +8,7 @@ import {
 import Checkbox from '../../forms/widget-components/Checkbox/Checkbox'
 import CheckboxGroup from '../../forms/widget-components/Checkbox/CheckboxGroup'
 import Upload from '../../forms/widget-components/Upload/Upload'
-import UploadedFile from '../../forms/widget-components/Upload/UploadedFile'
+import UploadFileCard from '../../forms/widget-components/Upload/UploadFileCard'
 import { Stack } from '../Stack'
 import { Wrapper } from '../Wrapper'
 
@@ -80,20 +80,20 @@ const UploadShowCase = () => {
   return (
     <Wrapper title="Upload" direction="column">
       <Stack direction="column">
-        <UploadedFile
+        <UploadFileCard
           fileInfo={{
             fileName: 'test.jpg',
             status: { type: FormFileUploadStatusEnum.UploadQueued },
           }}
         />
 
-        <UploadedFile
+        <UploadFileCard
           fileInfo={{
             fileName: 'test.jpg',
             status: { type: FormFileUploadStatusEnum.Uploading, progress: 50 },
           }}
         />
-        <UploadedFile
+        <UploadFileCard
           fileInfo={{
             fileName: 'test.jpg',
             status: {
@@ -103,7 +103,7 @@ const UploadShowCase = () => {
             },
           }}
         />
-        <UploadedFile
+        <UploadFileCard
           fileInfo={{
             fileName: 'test.jpg',
             status: {
@@ -113,37 +113,37 @@ const UploadShowCase = () => {
             },
           }}
         />
-        <UploadedFile
+        <UploadFileCard
           fileInfo={{
             fileName: 'test.jpg',
             status: { type: FormFileUploadStatusEnum.UploadDone },
           }}
         />
-        <UploadedFile
+        <UploadFileCard
           fileInfo={{
             fileName: 'test.jpg',
             status: { type: FormFileUploadStatusEnum.UnknownFile },
           }}
         />
-        <UploadedFile
+        <UploadFileCard
           fileInfo={{
             fileName: 'test.jpg',
             status: { type: FormFileUploadStatusEnum.Scanning },
           }}
         />
-        <UploadedFile
+        <UploadFileCard
           fileInfo={{
             fileName: 'test.jpg',
             status: { type: FormFileUploadStatusEnum.ScanError },
           }}
         />
-        <UploadedFile
+        <UploadFileCard
           fileInfo={{
             fileName: 'test.jpg',
             status: { type: FormFileUploadStatusEnum.ScanDone },
           }}
         />
-        <UploadedFile
+        <UploadFileCard
           fileInfo={{
             fileName: 'test.jpg',
             status: { type: FormFileUploadStatusEnum.ScanInfected },

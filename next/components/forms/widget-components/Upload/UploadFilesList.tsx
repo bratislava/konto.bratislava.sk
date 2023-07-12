@@ -2,7 +2,7 @@ import React from 'react'
 
 import { FormFileUploadFileInfo } from '../../../../frontend/types/formFileUploadTypes'
 import { isDefined } from '../../../../frontend/utils/general'
-import UploadedFile from './UploadedFile'
+import UploadFileCard from './UploadFileCard'
 
 interface UploadedFilesListProps {
   value?: string | string[] | null
@@ -11,7 +11,7 @@ interface UploadedFilesListProps {
   onFileRetry?: (id: string) => void
 }
 
-const UploadedFilesList = ({
+const UploadFilesList = ({
   value,
   getFileInfoById,
   onFileRetry = () => {},
@@ -23,7 +23,7 @@ const UploadedFilesList = ({
     <ul>
       {valueArray.filter(isDefined).map((fileId) => (
         <li>
-          <UploadedFile
+          <UploadFileCard
             key={fileId}
             fileInfo={getFileInfoById(fileId)}
             onFileRetry={() => onFileRetry(fileId)}
@@ -35,4 +35,4 @@ const UploadedFilesList = ({
   )
 }
 
-export default UploadedFilesList
+export default UploadFilesList

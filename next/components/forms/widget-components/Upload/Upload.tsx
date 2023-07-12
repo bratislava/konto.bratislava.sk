@@ -6,7 +6,7 @@ import { FormFileUploadFileInfo } from '../../../../frontend/types/formFileUploa
 import UploadFieldHeader from '../../info-components/UploadFieldHeader'
 import UploadButton from './UploadButton'
 import UploadDropArea from './UploadDropArea'
-import UploadedFilesList from './UploadedFilesList'
+import UploadFilesList from './UploadFilesList'
 
 interface UploadProps {
   type: 'button' | 'dragAndDrop'
@@ -72,7 +72,7 @@ const Upload = forwardRef<HTMLButtonElement, UploadProps>(
             allowsMultiple={multiple}
           />
         ) : null}
-        <UploadedFilesList
+        <UploadFilesList
           value={value}
           getFileInfoById={getFileInfoById}
           onFileRemove={onFileRemove}

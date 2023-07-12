@@ -1,14 +1,14 @@
-import cx from 'classnames'
-import { useTranslation } from 'next-i18next'
-import React from 'react'
-
 import {
   AttachmentIcon,
   CheckInCircleIcon,
   CrossInCircleIcon,
   ErrorIcon,
   ScanningIcon,
-} from '../../../../assets/ui-icons'
+} from '@assets/ui-icons'
+import cx from 'classnames'
+import { useTranslation } from 'next-i18next'
+import React from 'react'
+
 import {
   FormFileUploadFileInfo,
   FormFileUploadStatusEnum,
@@ -25,7 +25,7 @@ type UploadedFileProps = {
 /**
  * TODO: fileSize
  */
-const UploadedFile = ({ fileInfo, onFileRetry, onFileRemove }: UploadedFileProps) => {
+const UploadFileCard = ({ fileInfo, onFileRetry, onFileRemove }: UploadedFileProps) => {
   const { t } = useTranslation('account', { keyPrefix: 'Upload' })
   const fileSize = 500 // not yet implemented in FormFileUploadFileInfo
 
@@ -124,4 +124,4 @@ const UploadedFile = ({ fileInfo, onFileRetry, onFileRemove }: UploadedFileProps
   )
 }
 
-export default UploadedFile
+export default UploadFileCard

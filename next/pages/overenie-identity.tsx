@@ -21,7 +21,7 @@ import { useEffect, useState } from 'react'
 import PageWrapper from '../components/layouts/PageWrapper'
 import { ROUTES } from '../frontend/api/constants'
 import logger from '../frontend/utils/logger'
-import { formatUnicorn } from '../frontend/utils/string'
+import i18next from 'i18next'
 import { AsyncServerProps } from '../frontend/utils/types'
 
 export const getServerSideProps = async (ctx: GetServerSidePropsContext) => {
@@ -115,7 +115,7 @@ const IdentityVerificationPage = ({ page }: AsyncServerProps<typeof getServerSid
               title={t('identity_verification_pending_title')}
               description={
                 lastRc && lastIdCard
-                  ? formatUnicorn(t('identity_verification_pending_description'), {
+                  ? i18next.t('identity_verification_pending_description', {
                       rc: lastRc,
                       idCard: lastIdCard,
                     })
@@ -133,7 +133,7 @@ const IdentityVerificationPage = ({ page }: AsyncServerProps<typeof getServerSid
               description={
                 lastRc &&
                 lastIdCard &&
-                formatUnicorn(t('identity_verification_success_description'), {
+                i18next.t('identity_verification_success_description', {
                   rc: lastRc,
                   idCard: lastIdCard,
                 })

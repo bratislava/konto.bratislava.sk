@@ -22,6 +22,7 @@
       "@utils": ["./utils"],
       "@utils/*": ["./utils/*"],
       "@assets/images": ["./assets/images/index.ts"],
+      "@assets/ui-icons": ["./assets/ui-icons/index.ts"],
       "@assets/images/*": ["./assets/images/*"],
       "@backend/*": ["./backend/*"],
       "@clients/*": ["./clients/*"]

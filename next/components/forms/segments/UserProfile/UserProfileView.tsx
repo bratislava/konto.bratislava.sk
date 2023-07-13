@@ -43,6 +43,7 @@ const UserProfileView = () => {
       // TODO why it's openSnackbarSuccess on success and setIsAlertOpened on error ?
       openSnackbarSuccess(t('profile_detail.success_alert'), 3000)
       await refreshData()
+      setIsEditing(false)
     } catch (error) {
       logger.error('Update User Data failed', error)
       if (isError(error)) {

@@ -160,7 +160,7 @@ const NewPasswordForm = ({ onSubmit, error, onResend, lastEmail, fromMigration }
       />
       <div className="text-p3 lg:text-p2">
         <span>{t('verification_description')}</span>
-        {cnt > 0 && <span>{` ${i18next.t('verification_cnt_description', { cnt: cnt })}`}</span>}
+        {cnt > 0 && <span>{` ${i18next.t('verification_cnt_description', { cnt })}`}</span>}
       </div>
       <Button
         onPress={handleResend}

@@ -111,7 +111,7 @@ const EmailVerificationForm = ({ onSubmit, error, onResend, lastEmail }: Props) 
         {noError && cnt > 0 && (
           <div className="mb-4">
             <span>{t('verification_description')}</span>
-            <span>{` ${i18next.t('verification_cnt_description', { cnt: cnt })}`}</span>
+            <span>{` ${i18next.t('verification_cnt_description', { cnt })}`}</span>
           </div>
         )}
         <AccountMarkdown variant="sm" content={t('verification_cnt_info')} />

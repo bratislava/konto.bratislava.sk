@@ -1,11 +1,11 @@
 import Alert from 'components/forms/info-components/Alert'
 import AccountMarkdown from 'components/forms/segments/AccountMarkdown/AccountMarkdown'
 import { GENERIC_ERROR_MESSAGE, isError, isErrorWithCode } from 'frontend/utils/errors'
+import i18next from 'i18next'
 import { useTranslation } from 'next-i18next'
 import { useMemo } from 'react'
 
 import logger from '../../../../frontend/utils/logger'
-import i18next from 'i18next'
 
 interface Props {
   error?: Error | null

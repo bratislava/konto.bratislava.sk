@@ -6,7 +6,7 @@ import StepperViewRow from './StepperViewRow'
 interface StepperViewListProps {
   steps: StepData[]
   currentStep: number
-  onChangeStep?: (stepIndex: number) => void
+  onChangeStep?: (step: number) => void
 }
 
 const StepperViewList = ({ steps, currentStep, onChangeStep }: StepperViewListProps) => {
@@ -21,7 +21,7 @@ const StepperViewList = ({ steps, currentStep, onChangeStep }: StepperViewListPr
           order={key + 1}
           isCurrent={key === currentStep}
           isFilled={step.isFilled}
-          onClick={() => onChangeStep?.(key)}
+          onClick={() => onChangeStep?.(step.index)}
           isButton
         />
       ))}

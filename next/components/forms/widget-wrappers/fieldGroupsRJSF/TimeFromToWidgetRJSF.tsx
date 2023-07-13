@@ -61,8 +61,8 @@ const TimeFromToWidgetRJSF = ({
           TimeToExplicitOptional={localUiSchema?.TimeToExplicitOptional as ExplicitOptionalType}
           TimeFromOnChange={(e) => handleOnChange('startTime', e?.toString())}
           TimeToOnChange={(e) => handleOnChange('endTime', e?.toString())}
-          TimeFromValue={formData.startTime}
-          TimeToValue={formData.endTime}
+          TimeFromValue={formData?.startTime}
+          TimeToValue={formData?.endTime}
           TimeFromLabel={schemaProperties?.startTime?.title}
           TimeToLabel={schemaProperties?.endTime?.title}
           TimeFromDisabled={localUiSchema?.TimeFromDisabled as unknown as boolean}

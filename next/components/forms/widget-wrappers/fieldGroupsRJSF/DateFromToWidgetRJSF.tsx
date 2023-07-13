@@ -22,6 +22,8 @@ const DateFromToWidgetRJSF = ({
   }
   const localUiSchema = uiSchema?.['ui:options']
 
+  console.log('dateFromTo', formData)
+
   const handleOnChange = (valueName: string, newValue?: string | undefined) => {
     onChange({
       ...formData,
@@ -61,8 +63,8 @@ const DateFromToWidgetRJSF = ({
           DateToExplicitOptional={localUiSchema?.DateToExplicitOptional as ExplicitOptionalType}
           DateFromOnChange={(e) => handleOnChange('startDate', e?.toString())}
           DateToOnChange={(e) => handleOnChange('endDate', e?.toString())}
-          DateFromValue={formData.startDate}
-          DateToValue={formData.endDate}
+          DateFromValue={formData?.startDate}
+          DateToValue={formData?.endDate}
           DateFromLabel={schemaProperties?.startDate?.title}
           DateToLabel={schemaProperties?.endDate?.title}
           DateFromDisabled={localUiSchema?.DateFromDisabled as unknown as boolean}

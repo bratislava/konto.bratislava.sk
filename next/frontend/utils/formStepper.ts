@@ -150,7 +150,7 @@ export const getAllStepData = (
 ): StepData[] => {
   if (!schemaAllOf || !Array.isArray(schemaAllOf)) return []
   return schemaAllOf
-    .map((step) => {
+    .map((step, index) => {
       if (typeof step === 'boolean') return null
       const transformedStep: JSONSchema7 = step
       if (!transformedStep.properties || Object.values(transformedStep.properties).length === 0)
@@ -161,6 +161,7 @@ export const getAllStepData = (
       // if step was already filled, we need to find out
       const reuseOldStep = oldStepData?.find((oldStep: StepData) => oldStep.stepKey === key)
       return {
+        index,
         title: value.title ?? key,
         stepKey: key,
         isFilled: reuseOldStep?.isFilled || false,
@@ -356,14 +357,15 @@ export const createTestFormData = (formData: RJSFSchema): RJSFSchema => {
 }
 
 export const getValidatedSteps = (schema: RJSFSchema, formData: RJSFSchema): RJSFSchema[] => {
-  const testFormData = createTestFormData(formData)
+  // const testFormData = createTestFormData(formData)
+  const testFormData = formData
 
   return schema.allOf
-    ? schema.allOf
-        .map((step) => {
-          const typedStep = typeof step !== 'boolean' ? step : {}
-          return retrieveSchema(validator, typedStep, schema, testFormData)
-        })
-        .filter((step) => Object.keys(step).length > 0)
+    ? schema.allOf.map((step) => {
+        const typedStep = typeof step !== 'boolean' ? step : {}
+        return retrieveSchema(validator, typedStep, schema, testFormData)
+      })
     : []
 }
+
+// .filter((step) => Object.keys(step).length > 0)

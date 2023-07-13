@@ -20,10 +20,9 @@ interface FormRJSF {
   uiSchema: UiSchema
   formSlug: string
   wrapperClassName?: string
-  initialFormData: InitialFormData
 }
 
-const GeneratedFormRJSF = ({ uiSchema, formSlug, wrapperClassName, initialFormData }: FormRJSF) => {
+const GeneratedFormRJSF = ({ uiSchema, formSlug, wrapperClassName }: FormRJSF) => {
   const formState = useFormState()
   const submitter = useFormSubmitter(formSlug)
 
@@ -31,6 +30,8 @@ const GeneratedFormRJSF = ({ uiSchema, formSlug, wrapperClassName, initialFormDa
   const saveConcept = async () => {
     throw new Error('Not implemented')
   }
+
+  console.log('GeneratedFormRJSF', { formState })
 
   return (
     <>
@@ -47,6 +48,15 @@ const GeneratedFormRJSF = ({ uiSchema, formSlug, wrapperClassName, initialFormDa
           <FormModals />
         </div>
         <div className={cx('grow px-4', 'lg:px-0')}>
+          <FinalStep
+            formData={formState.formData}
+            formErrors={formState.errors}
+            extraErrors={formState.extraErrors}
+            schema={formState.validatedSchema}
+            onGoToStep={formState.setStepIndex}
+            submitErrors={submitter.errors}
+            submitMessage={submitter.successMessage}
+          />
           {formState.isComplete ? (
             <FinalStep
               formData={formState.formData}
@@ -86,18 +96,6 @@ const GeneratedFormRJSF = ({ uiSchema, formSlug, wrapperClassName, initialFormDa
               </ThemedForm>
             </>
           )}
-          {/* <StepButtonGroup */}
-          {/*  stepIndex={formState.stepIndex} */}
-          {/*  isFinalStep={formState.isComplete} */}
-          {/*  previous={formState.previous} */}
-          {/*  skip={() => formModalsRef.current?.skipButtonHandler(formState.stepIndex + 1)} */}
-          {/*  submitStep={formState.submitStep} */}
-          {/*  submitForm={() => */}
-          {/*    isAuthenticated */}
-          {/*      ? submitter.submitForm(formState.formData, initialFormData.formId) */}
-          {/*      : formModalsRef.current?.openRegistrationModal() */}
-          {/*  } */}
-          {/* /> */}
           <MenuList onSaveConcept={saveConcept} />
         </div>
       </div>

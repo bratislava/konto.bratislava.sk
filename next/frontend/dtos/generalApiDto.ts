@@ -49,16 +49,6 @@ export interface Gdpr {
   category: 'SWIMMINGPOOLS' | 'TAXES' | 'CITY' | 'ESBS'
 }
 
-export interface User {
-  id: string
-  createdAt: Date
-  updatedAt: Date
-  externalId?: string
-  email: string
-  birthNumber: string
-  gdprData: Gdpr[]
-}
-
 export interface UrlResult {
   url: string
 }

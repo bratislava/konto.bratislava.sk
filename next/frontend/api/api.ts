@@ -5,7 +5,7 @@ import { ErrorObject } from 'ajv'
 import { getAccessTokenOrLogout } from 'frontend/utils/amplify'
 
 import { environment } from '../../environment'
-import { ApiError, Gdpr, Identity, TaxApiError, UrlResult, User } from '../dtos/generalApiDto'
+import { ApiError, Gdpr, Identity, TaxApiError, UrlResult } from '../dtos/generalApiDto'
 import logger, { developmentLog } from '../utils/logger'
 import { cityAccount } from '@clients/city-account'
 import { ResponseGdprDataDto, ResponseVerificationIdentityCardToQueueDto } from '@clients/openapi-city-account'

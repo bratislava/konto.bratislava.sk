@@ -1,3 +1,4 @@
+import { environment } from '../environment'
 import { axiosInstance } from './axios-instance';
 import {
   ADMINApiFactory,
@@ -11,8 +12,7 @@ import {
 
 const args = [
   {} as Configuration,
-  // eslint-disable-next-line no-process-env
-  String(process.env.NEXT_PUBLIC_FORMS_URL),
+  environment.cityAccountUrl,
   axiosInstance,
 ] as const
 

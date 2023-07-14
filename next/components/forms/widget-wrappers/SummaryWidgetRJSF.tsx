@@ -37,7 +37,7 @@ const SummaryWidgetRJSF = ({
           label: `${fieldWidgetType}/${label}`,
           value,
           schemaPath: '',
-          isError: Boolean(errors),
+          isError: Boolean(rawErrors && rawErrors.length > 0),
         }}
         onGoToStep={() => {
           goToStepOfField(id)

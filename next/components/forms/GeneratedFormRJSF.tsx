@@ -76,6 +76,7 @@ const GeneratedFormRJSF = ({ uiSchema, formSlug, wrapperClassName }: FormRJSF) =
                   formState.handleOnSubmit(e.formData as RJSFSchema)
                 }}
                 onChange={(e) => {
+                  console.log('onChange', e)
                   formState.handleOnChange(e.formData as RJSFSchema)
                 }}
                 onError={formState.handleOnErrors}

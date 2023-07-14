@@ -79,6 +79,8 @@ export const validator: ValidatorType = customizeValidator({
   ajvOptionsOverrides: { keywords: ajvKeywords },
 })
 
+// @ts-ignore
+
 export type FileScanState = 'scan' | 'error' | 'finished'
 
 export interface FileScan extends Record<string, unknown> {

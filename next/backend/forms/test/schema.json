@@ -1,7 +1,6 @@
 {
   "pospID": "test",
   "pospVersion": "0.1",
-  "$async": true,
   "title": "Example",
   "description": "Example schema",
   "type": "object",
@@ -33,10 +32,7 @@
             }
           }
         }
-      },
-      "required": [
-        "mestoPSC"
-      ]
+      }
     },
     {
       "allOf": [
@@ -401,7 +397,8 @@
               "items": {
                 "type": "string",
                 "format": "file"
-              }
+              },
+              "minItems": 1
             },
             "importDragAndDropOneFile": {
               "title": "Presun sem jeden subor",
@@ -589,23 +586,6 @@
               }
             }
           ]
-        }
-      }
-    },
-    {
-      "$async": true,
-      "properties": {
-        "user": {
-          "type": "object",
-          "title": "Example async validation",
-          "properties": {
-            "phone": {
-              "type": "string",
-              "isExampleAsyncValidation": {
-                "errorMsg": "Required input"
-              }
-            }
-          }
         }
       }
     }

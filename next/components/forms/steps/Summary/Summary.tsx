@@ -6,6 +6,8 @@ import {
   StrictRJSFSchema,
   UiSchema,
 } from '@rjsf/utils'
+import { focusManager } from '@tanstack/query-core'
+import { useEffect } from 'react'
 
 import { JsonSchema, validator } from '../../../../frontend/dtos/formStepperDto'
 import { customValidate } from '../../../../frontend/utils/formStepper'
@@ -26,6 +28,14 @@ interface SummaryProps {
 
 const Summary = ({ uiSchema, schema }: SummaryProps) => {
   const formState = useFormState()
+
+  useEffect(() => {
+    setTimeout(() => {
+      debugger
+      const x = validator.rawValidation(schema!, formState.formData)
+      console.log(x)
+    })
+  }, [schema, formState.formData])
 
   // const x = validator.validateFormData(schema!, formData)
   // const y = validator.rawValidation(schema!, formData)

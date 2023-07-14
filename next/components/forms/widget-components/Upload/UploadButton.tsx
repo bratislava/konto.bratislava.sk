@@ -1,7 +1,8 @@
-import UploadIcon from '@assets/images/new-icons/ui/upload.svg'
+import { UploadIcon } from '@assets/ui-icons'
 import cx from 'classnames'
+import { useTranslation } from 'next-i18next'
 import React, { forwardRef } from 'react'
-import { Button, FileTrigger } from 'react-aria-components'
+import { Button as ReactAriaButton, FileTrigger } from 'react-aria-components'
 
 interface UploadButtonProps {
   disabled?: boolean
@@ -24,8 +25,10 @@ const UploadButton = forwardRef<HTMLButtonElement, UploadButtonProps>(
     },
     ref,
   ) => {
+    const { t } = useTranslation('account', { keyPrefix: 'Upload' })
+
     const buttonClassNames = cx(
-      'h-full flex-col justify-center flex rounded-lg border-2 border-gray-300 py-3 px-4 bg-white',
+      'w-full lg:w-fit lg:py-3 justify-center flex items-center rounded-lg border-2 border-gray-300 py-2 px-6 bg-white',
       {
         'cursor-pointer': !disabled,
         'hover:border-gray-400 focus:border-gray-700 active:border-gray-700':
@@ -54,29 +57,39 @@ const UploadButton = forwardRef<HTMLButtonElement, UploadButtonProps>(
     }
 
     return (
-      <div className="flex flex-row gap-4 w-fit h-fit">
+      <div className="flex gap-x-6 gap-y-3 max-md:flex-col">
         <FileTrigger
           onChange={handleOnChange}
           acceptedFileTypes={supportedFormats}
           allowsMultiple={allowsMultiple}
+          className="flex"
         >
-          <Button className={buttonClassNames} ref={ref} isDisabled={disabled}>
-            <div className="w-full flex gap-2">
-              <div className="h-6 w-6 flex justify-center items-center">
-                <UploadIcon className="w-6 h-6" />
-              </div>
-              <p className="text-16">Upload</p>
+          <ReactAriaButton className={buttonClassNames} ref={ref} isDisabled={disabled}>
+            <div className="flex gap-2 justify-center items-center">
+              <span>
+                <UploadIcon />
+              </span>
+              <span>{t('uploadFiles')}</span>
             </div>
-          </Button>
+          </ReactAriaButton>
         </FileTrigger>
 
-        {sizeLimit || supportedFormats ? (
-          <div className={buttonInfoClassNames}>
-            <p>
-              {sizeLimit} {sizeLimit && 'MB'}
-            </p>
-            <p>{supportedFormats?.join(' ')}</p>
-          </div>
+        {sizeLimit || supportedFormats?.length ? (
+          <dl className={buttonInfoClassNames}>
+            {sizeLimit ? (
+              <>
+                <dt className="sr-only">{t('sizeLimit')}</dt>
+                {/* TODO format fileSize */}
+                <dd>{`${sizeLimit} MB`}</dd>
+              </>
+            ) : null}
+            {supportedFormats?.length ? (
+              <>
+                <dt className="sr-only">{t('supportedFormats')}</dt>
+                <dd>{supportedFormats.join(' ')}</dd>
+              </>
+            ) : null}
+          </dl>
         ) : null}
       </div>
     )

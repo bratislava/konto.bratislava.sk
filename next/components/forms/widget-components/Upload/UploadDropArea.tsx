@@ -1,9 +1,14 @@
-import BallDelimiterIcon from '@assets/images/forms/ball_delimiter_icon.svg'
-import UploadIcon from '@assets/images/new-icons/ui/upload.svg'
+import { UploadIcon } from '@assets/ui-icons'
 import cx from 'classnames'
+import { useTranslation } from 'next-i18next'
 import React, { forwardRef } from 'react'
 import { DropEvent } from 'react-aria'
-import { Button, DropZone, DropZoneRenderProps, FileTrigger } from 'react-aria-components'
+import {
+  Button as ReactAriaButton,
+  DropZone,
+  DropZoneRenderProps,
+  FileTrigger,
+} from 'react-aria-components'
 
 import { isDefined } from '../../../../frontend/utils/general'
 
@@ -17,6 +22,8 @@ interface UploadDropAreaProps {
 
 const UploadDropArea = forwardRef<HTMLButtonElement, UploadDropAreaProps>(
   ({ disabled, sizeLimit, supportedFormats, allowsMultiple, onUpload = () => {} }, ref) => {
+    const { t } = useTranslation('account', { keyPrefix: 'Upload' })
+
     const getDropZoneClassName = ({ isDropTarget }: DropZoneRenderProps) =>
       cx('h-full w-full rounded-lg border-2 border-dashed border-gray-300', {
         'bg-white': !disabled && !isDropTarget,
@@ -64,29 +71,40 @@ const UploadDropArea = forwardRef<HTMLButtonElement, UploadDropAreaProps>(
       <div className="w-full relative h-40">
         <DropZone className={getDropZoneClassName} onDrop={handleOnDrop}>
           <FileTrigger onChange={handleOnChange} allowsMultiple={allowsMultiple} className="h-full">
-            <Button
+            <ReactAriaButton
               ref={ref}
               className="w-full h-full flex flex-col items-center justify-evenly p-6 text-center"
               isDisabled={disabled}
             >
-              <div className="flex flex-row justify-center">
-                <div className="flex h-12 w-12 flex-row justify-center items-center rounded-full bg-gray-200">
-                  <UploadIcon className="w-6 h-6" />
+              <div className="flex justify-center">
+                <div className="flex h-12 w-12 justify-center items-center rounded-full bg-gray-100">
+                  <UploadIcon />
                 </div>
               </div>
-              <h5 className="text-16-semibold">Drag & drop upload</h5>
-              <div className="text-p3 flex flex-row justify-center gap-1">
-                <p>
-                  {sizeLimit} {sizeLimit && 'MB'}
-                </p>
-                {sizeLimit && supportedFormats && supportedFormats.length > 0 && (
-                  <div className="grid grid-cols-1 content-center">
-                    <BallDelimiterIcon />
-                  </div>
-                )}
-                <p>{supportedFormats?.join(' ')}</p>
-              </div>
-            </Button>
+
+              <div className="text-16-semibold">{t('dragAndDrop')}</div>
+
+              {sizeLimit || supportedFormats?.length ? (
+                <dl className="text-p3 flex gap-2">
+                  {sizeLimit ? (
+                    <>
+                      <dt className="sr-only">{t('sizeLimit')}</dt>
+                      {/* TODO format fileSize */}
+                      <dd>{`${sizeLimit} MB`}</dd>
+                    </>
+                  ) : null}
+                  {sizeLimit && supportedFormats && supportedFormats.length > 0 && (
+                    <div aria-hidden>&bull;</div>
+                  )}
+                  {supportedFormats?.length ? (
+                    <>
+                      <dt className="sr-only">{t('supportedFormats')}</dt>
+                      <dd>{supportedFormats.join(' ')}</dd>
+                    </>
+                  ) : null}
+                </dl>
+              ) : null}
+            </ReactAriaButton>
           </FileTrigger>
         </DropZone>
       </div>

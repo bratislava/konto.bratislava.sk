@@ -58,7 +58,7 @@ const UserProfileSectionHeader = ({
         </div>
         {children && <div className={cx({ 'md:w-fit w-full': childrenToColumn })}>{children}</div>}
       </div>
-      {mainHeader && tierStatus.isIdentityVerified && (
+      {mainHeader && !tierStatus.isIdentityVerified && (
         <Alert
           title={t('verification_status_required')}
           message={t('verification_status_required_alert')}

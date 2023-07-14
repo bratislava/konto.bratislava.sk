@@ -48,7 +48,9 @@ const ProgressBar = ({
             })}
           />
         </div>
-        <div className={cx('text-p2')}>{value}%</div>
+
+        {/* "before" creates space for percentage value, so the progressbar doesn't change width */}
+        <div className='text-p2 before:content-["100%"] before:h-0 before:block before:invisible before:overflow-hidden text-right'>{`${value}%`}</div>
       </div>
     </div>
   )

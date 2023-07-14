@@ -23,18 +23,16 @@ export const SSORedirectProvider = ({ children }: { children: React.ReactNode })
 
   const redirect = useCallback(async () => {
     try {
+      const isAuthenticated = !!(await getCurrentAuthenticatedUser())
       if (redirectTarget.startsWith('/')) {
-        const isAuthenticated = !!(await getCurrentAuthenticatedUser())
         await (isAuthenticated ? router.push(redirectTarget) : router.push(ROUTES.LOGIN))
-      } else {
+      } else if (isAuthenticated) {
         const accessToken = await getAccessTokenOrLogout()
-        if (accessToken) {
-          const redirectUrlWithToken = new URL(redirectTarget)
-          redirectUrlWithToken.searchParams.set('access_token', accessToken)
-          window.location.href = redirectUrlWithToken.href
-        } else {
-          window.location.href = redirectTarget
-        }
+        const redirectUrlWithToken = new URL(redirectTarget)
+        redirectUrlWithToken.searchParams.set('access_token', accessToken)
+        window.location.href = redirectUrlWithToken.href
+      } else {
+        window.location.href = redirectTarget
       }
     } catch (error) {
       logger.error(`${GENERIC_ERROR_MESSAGE} sso redirect error`, error)

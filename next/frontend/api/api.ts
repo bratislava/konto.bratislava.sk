@@ -7,6 +7,8 @@ import { getAccessTokenOrLogout } from 'frontend/utils/amplify'
 import { environment } from '../../environment'
 import { ApiError, Gdpr, Identity, TaxApiError, UrlResult, User } from '../dtos/generalApiDto'
 import logger, { developmentLog } from '../utils/logger'
+import { cityAccount } from '@clients/city-account'
+import { ResponseGdprDataDto, ResponseVerificationIdentityCardToQueueDto } from '@clients/openapi-city-account'
 
 export const API_ERROR_TEXT = 'API_ERROR'
 export const UNAUTHORIZED_ERROR_TEXT = 'UNAUTHORIZED_ERROR'
@@ -143,67 +145,35 @@ export const xmlStringToPdf = (eform: string, data: string) => {
   })
 }
 
-export const verifyIdentityApi = async (data: Identity) => {
-  const token = await getAccessTokenOrLogout()
-
-  return fetchJsonApi(`${environment.cityAccountUrl}/user-verification/identity-card`, {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-      Authorization: `Bearer ${token}`,
-    },
-    body: JSON.stringify(data),
-  })
+export const verifyIdentityApi = async (data: Identity): Promise<ResponseVerificationIdentityCardToQueueDto> => {
+  const accessToken = await getAccessTokenOrLogout()
+  const response = await cityAccount.verificationControllerVerifyBirthNumberAndIdentityCard(data, {accessToken});
+  return response.data
 }
 
-export const subscribeApi = async (data: { gdprData?: Gdpr[] }): Promise<User> => {
-  const token = await getAccessTokenOrLogout()
-
-  return fetchJsonApi<User>(`${environment.cityAccountUrl}/user/subscribe`, {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-      Authorization: `Bearer ${token}`,
-    },
-    body: JSON.stringify(data),
-  })
+export const subscribeApi = async (data: { gdprData: Gdpr[] }): Promise<ResponseGdprDataDto> => {
+  const accessToken = await getAccessTokenOrLogout()
+  const response = await cityAccount.userControllerSubscribeLoggedUser(data, {accessToken});
+  return response.data
 }
 
-export const unsubscribeApi = async (data: { gdprData?: Gdpr[] }): Promise<User> => {
-  const token = await getAccessTokenOrLogout()
-
-  return fetchJsonApi<User>(`${environment.cityAccountUrl}/user/unsubscribe`, {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-      Authorization: `Bearer ${token}`,
-    },
-    body: JSON.stringify(data),
-  })
+export const unsubscribeApi = async (data: { gdprData: Gdpr[] }): Promise<ResponseGdprDataDto> => {
+  const accessToken = await getAccessTokenOrLogout()
+  const response = await cityAccount.userControllerUnsubscribeLoggedUser(data, {accessToken});
+  return response.data;
 }
 
-export const getUserApi = async (): Promise<User> => {
-  const token = await getAccessTokenOrLogout()
-
-  return fetchJsonApi<User>(`${environment.cityAccountUrl}/user/get-or-create`, {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-      Authorization: `Bearer ${token}`,
-    },
-  })
+export const getUserApi = async (): Promise<ResponseGdprDataDto> => {
+  const accessToken = await getAccessTokenOrLogout()
+  const result = await cityAccount.userControllerGetOrCreateUser({accessToken, method: "POST"});
+  return result.data;
 }
 
 export const resetRcApi = async () => {
-  const token = await getAccessTokenOrLogout()
+  const accessToken = await getAccessTokenOrLogout()
 
-  return fetchJsonApi(`${environment.cityAccountUrl}/user/remove-birthnumber`, {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-      Authorization: `Bearer ${token}`,
-    },
-  })
+  const result = await cityAccount.userControllerRemoveBirthNumber({accessToken});
+  return result.data;
 }
 
 export const getTaxApi = async () => {

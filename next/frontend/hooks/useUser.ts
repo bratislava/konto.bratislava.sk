@@ -3,15 +3,16 @@ import { useEffectOnce } from 'usehooks-ts'
 
 // eslint-disable-next-line import/extensions
 import { getUserApi, subscribeApi, unsubscribeApi } from '../api/api'
-import { Gdpr, User } from '../dtos/generalApiDto'
+import { Gdpr } from '../dtos/generalApiDto'
 import logger from '../utils/logger'
+import { ResponseGdprDataDto } from '@clients/openapi-city-account'
 
 export default function useUser() {
-  const [user, setUser] = useState<User | undefined>()
+  const [user, setUser] = useState<ResponseGdprDataDto | undefined>()
 
   const init = useCallback(async () => {
     try {
-      const loadedUser: User = await getUserApi()
+      const loadedUser: ResponseGdprDataDto = await getUserApi()
       setUser(loadedUser)
     } catch (error: unknown) {
       logger.error(error)
@@ -24,7 +25,7 @@ export default function useUser() {
 
   const subscribe = async (data: Gdpr[]): Promise<boolean> => {
     try {
-      const loadedUser: User = await subscribeApi({ gdprData: data })
+      const loadedUser: ResponseGdprDataDto = await subscribeApi({ gdprData: data })
       setUser(loadedUser)
       return true
     } catch (error: unknown) {
@@ -35,7 +36,7 @@ export default function useUser() {
 
   const unsubscribe = async (data: Gdpr[]): Promise<boolean> => {
     try {
-      const loadedUser: User = await unsubscribeApi({ gdprData: data })
+      const loadedUser: ResponseGdprDataDto = await unsubscribeApi({ gdprData: data })
       setUser(loadedUser)
       return true
     } catch (error: unknown) {

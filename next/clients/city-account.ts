@@ -6,7 +6,7 @@ import {
   Configuration,
   DefaultApiFactory,
   UsersManipulationApiFactory,
-  UserVerificationsApiFactory
+  UserVerificationsApiFactory,
 } from './openapi-city-account';
 
 
@@ -16,10 +16,11 @@ const args = [
   axiosInstance,
 ] as const
 
-export const formsApi = {
+export const cityAccount = {
   ...DefaultApiFactory(...args),
   ...ADMINApiFactory(...args),
   ...AuthApiFactory(...args),
   ...UsersManipulationApiFactory(...args),
   ...UserVerificationsApiFactory(...args),
 }
+

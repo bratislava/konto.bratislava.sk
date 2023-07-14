@@ -146,6 +146,7 @@ export const buildRJSFError = (path: string[], errorMsg: string | undefined): Er
 
 export const getAllStepData = (
   schemaAllOf: JSONSchema7Definition[],
+  submittedSteps: Set<number>,
   oldStepData?: StepData[],
 ): StepData[] => {
   if (!schemaAllOf || !Array.isArray(schemaAllOf)) return []
@@ -164,7 +165,7 @@ export const getAllStepData = (
         index,
         title: value.title ?? key,
         stepKey: key,
-        isFilled: reuseOldStep?.isFilled || false,
+        isFilled: submittedSteps.has(index),
       }
     })
     .filter(Boolean) as StepData[]
@@ -272,8 +273,8 @@ export const customValidate = (
   schema: StrictRJSFSchema,
 ) => {
   // validateRequiredFormat(formData, errors, schema)
-  validateDateFromToFormat(formData, errors, schema)
-  validateTimeFromToFormat(formData, errors, schema)
+  // validateDateFromToFormat(formData, errors, schema)
+  // validateTimeFromToFormat(formData, errors, schema)
   return errors
 }
 

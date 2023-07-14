@@ -1,4 +1,4 @@
-import { ErrorSchema, RJSFValidationError, StrictRJSFSchema } from '@rjsf/utils'
+import { ErrorSchema, RJSFValidationError, StrictRJSFSchema, UiSchema } from '@rjsf/utils'
 import { ErrorObject } from 'ajv'
 
 import { JsonSchema } from '../../../frontend/dtos/formStepperDto'
@@ -14,6 +14,7 @@ interface FinalStepProps {
   submitErrors?: Array<ErrorObject | string>
   submitMessage?: string | null
   onGoToStep: (step: number) => void
+  uiSchema: UiSchema
 }
 
 // TODO find out if we need to submit to multiple different endpoints and allow configuration if so
@@ -25,6 +26,7 @@ const FinalStep = ({
   onGoToStep,
   submitErrors,
   submitMessage,
+  uiSchema,
 }: FinalStepProps) => {
   if (typeof formData !== 'object' || formData == null) {
     return null
@@ -34,6 +36,7 @@ const FinalStep = ({
     <div>
       <SummaryHeader />
       <Summary
+        uiSchema={uiSchema}
         schema={schema}
         formData={formData}
         formErrors={formErrors}

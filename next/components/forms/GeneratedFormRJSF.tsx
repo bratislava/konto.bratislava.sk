@@ -48,16 +48,7 @@ const GeneratedFormRJSF = ({ uiSchema, formSlug, wrapperClassName }: FormRJSF) =
           <FormModals />
         </div>
         <div className={cx('grow px-4', 'lg:px-0')}>
-          <FinalStep
-            formData={formState.formData}
-            formErrors={formState.errors}
-            extraErrors={formState.extraErrors}
-            schema={formState.validatedSchema}
-            onGoToStep={formState.setStepIndex}
-            submitErrors={submitter.errors}
-            submitMessage={submitter.successMessage}
-          />
-          {formState.isComplete ? (
+          {formState.stepIndex === 'summary' ? (
             <FinalStep
               formData={formState.formData}
               formErrors={formState.errors}
@@ -66,6 +57,7 @@ const GeneratedFormRJSF = ({ uiSchema, formSlug, wrapperClassName }: FormRJSF) =
               onGoToStep={formState.setStepIndex}
               submitErrors={submitter.errors}
               submitMessage={submitter.successMessage}
+              uiSchema={uiSchema}
             />
           ) : (
             <>
@@ -80,11 +72,11 @@ const GeneratedFormRJSF = ({ uiSchema, formSlug, wrapperClassName }: FormRJSF) =
                 customValidate={(formData: RJSFSchema, errors: FormValidation) => {
                   return customValidate(formData, errors, formState.currentSchema)
                 }}
-                onSubmit={async (e) => {
-                  await formState.handleOnSubmit(e.formData as RJSFSchema)
+                onSubmit={(e) => {
+                  formState.handleOnSubmit(e.formData as RJSFSchema)
                 }}
                 onChange={(e) => {
-                  formState.setStepFormData(e.formData as RJSFSchema)
+                  formState.handleOnChange(e.formData as RJSFSchema)
                 }}
                 onError={formState.handleOnErrors}
                 extraErrors={formState.extraErrors}

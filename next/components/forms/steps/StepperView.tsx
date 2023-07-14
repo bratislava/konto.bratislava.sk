@@ -13,7 +13,7 @@ import StepperViewRow from './StepperViewRow'
 
 interface StepperViewProps {
   steps: StepData[]
-  currentStep: number
+  currentStep: number | 'summary'
   forceMobileSize?: boolean
 }
 
@@ -28,7 +28,7 @@ const StepperView = ({ steps, currentStep, forceMobileSize }: StepperViewProps) 
     }
   }
 
-  const handleOnChangeStep = (stepIndex: number) => {
+  const handleOnChangeStep = (stepIndex: number | 'summary') => {
     setIsCollapsed(true)
     skipToStep(stepIndex)
   }
@@ -56,8 +56,9 @@ const StepperView = ({ steps, currentStep, forceMobileSize }: StepperViewProps) 
         <div className="h-14 p-4 w-full bg-white flex flex-row items-center gap-5 drop-shadow-lg cursor-pointer">
           <StepperViewRow
             className="grow"
-            title={currentStep === steps.length ? t('summary') : steps[currentStep]?.title}
-            order={currentStep + 1}
+            title={currentStep === 'summary' ? t('summary') : steps[currentStep]?.title}
+            // TODO order
+            order={0}
             isCurrent
             isLast
             isButton={false}

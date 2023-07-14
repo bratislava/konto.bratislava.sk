@@ -1,10 +1,7 @@
 {
-  "ui:submitButtonOptions": {
-    "norender": true
-  },
+  "mestoPSCstep": {
   "mestoPSC": {
     "ui:field": "doubledInput",
-    "ui:hideError": true,
     "ui:accordion": {
       "title": "Header name",
       "size": "sm",
@@ -22,6 +19,7 @@
       "SecondInputClassNames": "w-1/4",
       "spaceTop": "large"
     }
+  }
   },
   "dateTimePicker": {
     "ui:field": "dateTime",

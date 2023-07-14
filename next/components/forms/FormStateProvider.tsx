@@ -16,6 +16,7 @@ import React, {
   useState,
 } from 'react'
 
+import { validator } from '../../frontend/dtos/formStepperDto'
 import { InitialFormData } from '../../frontend/types/initialFormData'
 import {
   getAllStepData,
@@ -27,28 +28,30 @@ import { StepData } from './types/TransformedFormData'
 type SkipModal = { open: true; onSkip: () => void; onClose: () => void } | { open: false }
 
 interface FormState {
-  stepIndex: number
+  stepIndex: number | 'summary'
   setStepIndex: (newIndex: number) => void
   formSlug: string
   formData: RJSFSchema
   stepTitle: string
-  setStepFormData: (stepFormData: RJSFSchema) => void
+  // setStepFormData: (stepFormData: RJSFSchema) => void
   setImportedFormData: (importedFormData: RJSFSchema) => void
   errors: RJSFValidationError[][]
   extraErrors: ErrorSchema
   stepData: StepData[]
   validatedSchema: RJSFSchema & { allOf: RJSFSchema[] }
+  // goToStep: (newIndex: number | 'summary') => void
   canGoToPreviousStep: boolean
   goToPreviousStep: () => void
-  skipStep: () => void
   canGoToNextStep: boolean
   goToNextStep: () => void
-  skipToStep: (newNextStepIndex: number) => void
-  handleOnSubmit: (newFormData: RJSFSchema) => Promise<void>
+  skipToStep: (newIndex: number | 'summary') => void
+  handleOnChange: (newFormData: RJSFSchema) => void
+  handleOnSubmit: (newFormData: RJSFSchema) => void
   handleOnErrors: (newErrors: RJSFValidationError[]) => void
   currentSchema: RJSFSchema
   isComplete: boolean
   skipModal: SkipModal
+  goToStepOfField: (fieldId: string) => void
 }
 
 const FormStateContext = createContext<FormState | undefined>(undefined)
@@ -59,48 +62,92 @@ interface FormStateProviderProps {
   initialFormData: InitialFormData
 }
 
+const parseFieldId = (fieldId: string) => {
+  const arr = fieldId.split('_')
+  if (arr[0] === 'root' && arr[1]) {
+    return arr[1]
+  }
+  return null
+}
+
 export const FormStateProvider = ({
   schema,
   formSlug,
   initialFormData,
   children,
 }: PropsWithChildren<FormStateProviderProps>) => {
-  const [stepIndex, setStepIndex] = useState<number>(0)
+  const [stepIndex, setStepIndex] = useState<number | 'summary'>(0)
   const [formData, setFormData] = useState<RJSFSchema>(initialFormData.formDataJson)
 
   const [skipAllowed, setSkipAllowed] = useState(false)
   const [skipModal, setSkipModal] = useState<SkipModal>({ open: false })
 
+  const [submittedSteps, setSubmittedSteps] = useState<Set<number>>(new Set())
+
   const steps = useMemo(() => {
     return getValidatedSteps(schema, formData)
   }, [schema, formData])
 
-  console.log(steps)
-
   const stepData = useMemo(() => {
-    return getAllStepData(steps)
-  }, [steps])
+    return getAllStepData(steps, submittedSteps)
+  }, [steps, submittedSteps])
+
+  const errors = useMemo(() => {
+    return steps?.map((step) => (step ? validator.validateFormData(formData ?? {}, step) : null))
+  }, [steps, formData])
+
+  console.log('errors', errors)
 
   const validatedSchema = useMemo(() => ({ ...schema, allOf: [...steps] }), [schema, steps])
 
   // side info about steps
   const currentSchema = steps[stepIndex]
 
-  const canGoToPreviousStep = stepIndex > 0
-  const goToPreviousStep = () => {
-    if (!canGoToPreviousStep) return
-
-    setStepIndex(stepIndex - 1)
+  const goToStep = (newIndex: number | 'summary') => {
+    if (steps[newIndex] !== null || newIndex === 'summary') {
+      setStepIndex(newIndex)
+    }
   }
 
-  const skipToStep = (newStepIndex: number) => {
+  const getPreviousStep = () => {
+    const prevSteps = steps.slice(0, stepIndex !== 'summary' ? stepIndex : 0).reverse()
+    const prevStepIndex = prevSteps.findIndex((step) => step !== null)
+    return prevStepIndex !== -1 ? prevSteps.length - prevStepIndex - 1 : null
+  }
+
+  const canGoToPreviousStep = getPreviousStep() !== null
+
+  const goToPreviousStep = () => {
+    const prevStepIndex = getPreviousStep()
+    if (prevStepIndex !== null) {
+      goToStep(prevStepIndex)
+    }
+  }
+
+  const getNextStep = () => {
+    if (stepIndex === 'summary') return null
+    const nextSteps = steps.slice(stepIndex + 1)
+    const nextStepIndex = nextSteps.findIndex((step) => step !== null)
+    return nextStepIndex !== -1 ? stepIndex + nextStepIndex + 1 : 'summary'
+  }
+
+  const canGoToNextStep = getNextStep() !== null
+
+  const goToNextStep = () => {
+    const nextStepIndex = getNextStep()
+    if (nextStepIndex !== null) {
+      goToStep(nextStepIndex)
+    }
+  }
+
+  const skipToStep = (newStepIndex: number | 'summary') => {
     if (!skipAllowed) {
       setSkipModal({
         open: true,
         onSkip: () => {
           setSkipAllowed(true)
           setSkipModal({ open: false })
-          setStepIndex(newStepIndex)
+          goToStep(newStepIndex)
         },
         onClose: () => {
           setSkipModal({ open: false })
@@ -110,20 +157,7 @@ export const FormStateProvider = ({
       return
     }
 
-    setStepIndex(newStepIndex)
-  }
-
-  const skipStep = () => {
-    skipToStep(stepIndex + 1)
-  }
-
-  const canGoToNextStep = true // TODO: Implement
-  const goToNextStep = () => {
-    if (!canGoToNextStep) return
-    // todo: implement
-    // if go next step, just validate steps (show/hide conditional steps) and got to next step
-    // validateSteps()
-    setStepIndex(stepIndex + 1)
+    goToStep(newStepIndex)
   }
 
   const setStepFormData = (stepFormData: RJSFSchema) => {
@@ -141,11 +175,44 @@ export const FormStateProvider = ({
 
   const { t } = useTranslation('forms')
 
-  const handleOnSubmit = async (newFormData: RJSFSchema) => {
+  const handleOnChange = (newFormData: RJSFSchema) => {
+    if (stepIndex === 'summary') {
+      return
+    }
+    // remove stepIndex from submitted steps
+    setSubmittedSteps((prev) => {
+      const newSet = new Set(prev)
+      newSet.delete(stepIndex)
+      return newSet
+    })
+
+    setStepFormData(newFormData)
+  }
+  const handleOnSubmit = (newFormData: RJSFSchema) => {
+    if (stepIndex === 'summary') {
+      return
+    }
+
+    setSubmittedSteps((prev) => new Set([...prev, stepIndex]))
     goToNextStep()
     // handles onSubmit event of form step
     // it is called also if we are going to skip step by 1
     setStepFormData(newFormData)
+  }
+
+  const goToStepOfField = (fieldId: string) => {
+    const stepId = parseFieldId(fieldId)
+    if (!stepId) return
+
+    const getBlabla = (step: any) => {
+      if (!step?.properties) {
+        return null
+      }
+      const keys = Object.keys(step.properties)
+      return keys[0] ?? null
+    }
+    const index = steps.findIndex((step) => getBlabla(step) === stepId)
+    goToStep(index)
   }
 
   const handleOnErrors = (newErrors: RJSFValidationError[]) => {}
@@ -156,7 +223,6 @@ export const FormStateProvider = ({
     formSlug,
     formData,
     stepTitle: stepData[stepIndex]?.title || stepData[stepIndex]?.stepKey || '',
-    setStepFormData,
     // TODO: Rework
     setImportedFormData: setFormData,
     errors: [],
@@ -166,15 +232,17 @@ export const FormStateProvider = ({
     validatedSchema,
     canGoToPreviousStep,
     goToPreviousStep,
-    skipStep,
     canGoToNextStep,
     goToNextStep,
     skipToStep,
+    handleOnChange,
     handleOnSubmit,
     handleOnErrors,
     currentSchema,
     isComplete: false,
     skipModal,
+    steps,
+    goToStepOfField,
   }
 
   return <FormStateContext.Provider value={context}>{children}</FormStateContext.Provider>

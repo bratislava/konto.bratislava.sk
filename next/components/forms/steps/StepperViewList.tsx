@@ -5,11 +5,11 @@ import StepperViewRow from './StepperViewRow'
 
 interface StepperViewListProps {
   steps: StepData[]
-  currentStep: number
-  onChangeStep?: (step: number) => void
+  currentStep: number | 'summary'
+  onChangeStep?: (step: number | 'summary') => void
 }
 
-const StepperViewList = ({ steps, currentStep, onChangeStep }: StepperViewListProps) => {
+const StepperViewList = ({ steps, currentStep, onChangeStep = () => {} }: StepperViewListProps) => {
   const { t } = useTranslation('forms')
 
   return (
@@ -19,9 +19,9 @@ const StepperViewList = ({ steps, currentStep, onChangeStep }: StepperViewListPr
           key={key}
           title={step.title}
           order={key + 1}
-          isCurrent={key === currentStep}
+          isCurrent={step.index === currentStep}
           isFilled={step.isFilled}
-          onClick={() => onChangeStep?.(step.index)}
+          onClick={() => onChangeStep(step.index)}
           isButton
         />
       ))}
@@ -29,8 +29,8 @@ const StepperViewList = ({ steps, currentStep, onChangeStep }: StepperViewListPr
         order={steps.length + 1}
         title={t('summary')}
         isLast
-        isCurrent={currentStep === steps.length}
-        onClick={() => onChangeStep?.(steps.length)}
+        isCurrent={currentStep === 'summary'}
+        onClick={() => onChangeStep('summary')}
         isButton
       />
     </div>

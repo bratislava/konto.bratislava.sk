@@ -165,7 +165,7 @@ const RegisterPage = ({ page }: AsyncServerProps<typeof getServerSideProps>) => 
               confirmLabel={t('identity_verification_link')}
               onConfirm={() => {
                 // TODO move this to backend
-                subscribeApi({}).catch((error) =>
+                subscribeApi({gdprData: []}).catch((error) =>
                   logger.error(
                     `${GENERIC_ERROR_MESSAGE} - Failed to subscribe - ignoring and continuing`,
                     lastEmail,
@@ -179,7 +179,7 @@ const RegisterPage = ({ page }: AsyncServerProps<typeof getServerSideProps>) => 
               cancelLabel={t('identity_verification_skip')}
               onCancel={() => {
                 // TODO move this to backend
-                subscribeApi({}).catch((error) =>
+                subscribeApi({gdprData: []}).catch((error) =>
                   logger.error(
                     `${GENERIC_ERROR_MESSAGE} Failed to subscribe - ignoring and continuing`,
                     lastEmail,

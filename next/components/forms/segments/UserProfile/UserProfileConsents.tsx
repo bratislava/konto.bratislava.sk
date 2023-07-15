@@ -25,6 +25,9 @@ const UserProfileConsents = () => {
   }
 
   const isSelected = user.data?.gdprData
+    // TODO: gdprData type enum is not overlapping with GdprDataDtoTypeEnum
+    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+    // @ts-ignore
     .filter((x) => x.type === 'MARKETING' && x.category === 'ESBS')
     .some((x) => x.subType === 'subscribe')
   return (

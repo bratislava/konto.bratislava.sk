@@ -1,5 +1,7 @@
 // TODO waiting on #305 to get merged, afterwards might move elsewhere
 // frontend code for calling api endpoints grouped
+import { cityAccount } from '@clients/city-account'
+import { ResponseGdprDataDto, ResponseVerificationIdentityCardToQueueDto } from '@clients/openapi-city-account'
 import { RJSFSchema } from '@rjsf/utils'
 import { ErrorObject } from 'ajv'
 import { getAccessTokenOrLogout } from 'frontend/utils/amplify'
@@ -7,8 +9,6 @@ import { getAccessTokenOrLogout } from 'frontend/utils/amplify'
 import { environment } from '../../environment'
 import { ApiError, Gdpr, Identity, TaxApiError, UrlResult } from '../dtos/generalApiDto'
 import logger, { developmentLog } from '../utils/logger'
-import { cityAccount } from '@clients/city-account'
-import { ResponseGdprDataDto, ResponseVerificationIdentityCardToQueueDto } from '@clients/openapi-city-account'
 
 export const API_ERROR_TEXT = 'API_ERROR'
 export const UNAUTHORIZED_ERROR_TEXT = 'UNAUTHORIZED_ERROR'

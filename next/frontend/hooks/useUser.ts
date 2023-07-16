@@ -1,3 +1,4 @@
+import { ResponseGdprDataDto } from '@clients/openapi-city-account'
 import { useCallback, useState } from 'react'
 import { useEffectOnce } from 'usehooks-ts'
 
@@ -5,7 +6,6 @@ import { useEffectOnce } from 'usehooks-ts'
 import { getUserApi, subscribeApi, unsubscribeApi } from '../api/api'
 import { Gdpr } from '../dtos/generalApiDto'
 import logger from '../utils/logger'
-import { ResponseGdprDataDto } from '@clients/openapi-city-account'
 
 export default function useUser() {
   const [user, setUser] = useState<ResponseGdprDataDto | undefined>()

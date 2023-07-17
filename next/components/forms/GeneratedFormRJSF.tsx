@@ -1,10 +1,10 @@
-import { FormValidation, RJSFSchema, UiSchema } from '@rjsf/utils'
+import { FormValidation, getDefaultFormState, RJSFSchema, UiSchema } from '@rjsf/utils'
 import cx from 'classnames'
 import MenuList from 'components/forms/steps/MenuList'
+import { useEffectOnce } from 'usehooks-ts'
 
 import { validator } from '../../frontend/dtos/formStepperDto'
 import { useFormSubmitter } from '../../frontend/hooks/useFormSubmitter'
-import { customValidate } from '../../frontend/utils/formStepper'
 import FormControls from './FormControls'
 import { useFormState } from './FormStateProvider'
 import FormModals from './segments/FormModals/FormModals'
@@ -15,11 +15,12 @@ import { ThemedForm } from './ThemedForm'
 
 interface FormRJSF {
   uiSchema: UiSchema
+  schema: RJSFSchema
   formSlug: string
   wrapperClassName?: string
 }
 
-const GeneratedFormRJSF = ({ uiSchema, formSlug, wrapperClassName }: FormRJSF) => {
+const GeneratedFormRJSF = ({ uiSchema, schema, formSlug, wrapperClassName }: FormRJSF) => {
   const formState = useFormState()
   const submitter = useFormSubmitter(formSlug)
 
@@ -27,6 +28,13 @@ const GeneratedFormRJSF = ({ uiSchema, formSlug, wrapperClassName }: FormRJSF) =
   const saveConcept = async () => {
     throw new Error('Not implemented')
   }
+
+  useEffectOnce(() => {
+    const x = getDefaultFormState(validator, schema, {})
+    const y = validator.validateFormData({}, schema)
+    console.log('x', x)
+    console.log('y', y)
+  })
 
   return (
     <>
@@ -45,7 +53,7 @@ const GeneratedFormRJSF = ({ uiSchema, formSlug, wrapperClassName }: FormRJSF) =
         <div className={cx('grow px-4', 'lg:px-0')}>
           {formState.stepIndex === 'summary' ? (
             // TODO validatedSchema ?
-            <FormSummary uiSchema={uiSchema} schema={formState.validatedSchema} />
+            <FormSummary uiSchema={uiSchema} schema={schema} />
           ) : (
             <>
               <h1 className="text-h1-medium font-semibold">{formState.currentStepData.title}</h1>
@@ -56,16 +64,12 @@ const GeneratedFormRJSF = ({ uiSchema, formSlug, wrapperClassName }: FormRJSF) =
                 uiSchema={uiSchema}
                 formData={formState.formData}
                 validator={validator}
-                customValidate={(formData: RJSFSchema, errors: FormValidation) => {
-                  return customValidate(formData, errors, formState.currentSchema)
-                }}
                 onSubmit={(e) => {
                   formState.handleOnSubmit(e.formData as RJSFSchema)
                 }}
                 onChange={(e) => {
                   formState.handleOnChange(e.formData as RJSFSchema)
                 }}
-                onError={formState.handleOnErrors}
                 extraErrors={formState.extraErrors}
                 showErrorList={false}
                 omitExtraData

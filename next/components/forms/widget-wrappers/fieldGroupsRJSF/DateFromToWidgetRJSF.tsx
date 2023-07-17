@@ -7,7 +7,7 @@ import { FormSpacingType } from '../../types/WidgetOptions'
 import WidgetWrapper, { isFormSpacingType } from '../WidgetWrapper'
 
 interface DateFromToWidgetRJSFProps extends FieldProps {
-  formData: RJSFSchema
+  formData?: { startDate: string; endDate: string }
 }
 
 const DateFromToWidgetRJSF = ({

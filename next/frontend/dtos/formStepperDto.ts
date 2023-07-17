@@ -76,16 +76,5 @@ export const customFormats: Record<string, RegExp> = {
 }
 export const validator: ValidatorType = customizeValidator({
   customFormats,
-  ajvOptionsOverrides: { keywords: ajvKeywords, allErrors: true },
+  ajvOptionsOverrides: { keywords: ajvKeywords },
 })
-
-// @ts-ignore
-
-export type FileScanState = 'scan' | 'error' | 'finished'
-
-export interface FileScan extends Record<string, unknown> {
-  fileName: string
-  originalName: string
-  fileState?: FileScanState
-  scanId?: string
-}

@@ -1,7 +1,7 @@
 import Form from '@rjsf/core'
-import { StrictRJSFSchema, UiSchema } from '@rjsf/utils'
+import { getDefaultFormState, StrictRJSFSchema, UiSchema } from '@rjsf/utils'
 import cx from 'classnames'
-import { useEffect, useRef, useState } from 'react'
+import { useEffect, useMemo, useRef, useState } from 'react'
 
 import { validator } from '../../../../frontend/dtos/formStepperDto'
 import { useFormState } from '../../FormStateProvider'
@@ -16,38 +16,21 @@ interface SummaryProps {
 const FormSummary = ({ uiSchema, schema }: SummaryProps) => {
   const formState = useFormState()
 
-  const formRef = useRef<Form>(null)
-  const divRef = useRef<HTMLDivElement>(null)
-  const [errors] = useState(validator.validateFormData(formState.formData, schema))
-
-  useEffect(() => {
-    debugger
-    const x = validator.validateFormData(formState.formData, schema)
-    console.log(x)
-
-    // if (formRef.current) {
-    //   formRef.current.validateForm()
-    //   divRef.current?.className.replace('hidden', '')
-    // }
-  }, [])
-  // const x = validator.validateFormData(schema!, formData)
-  // const y = validator.rawValidation(schema!, formData)
-  // console.log('errors', x, y)
-  // console.log({ schema, formData, formErrors, extraErrors })
-  // const { transformedSteps } = useFormDataTransform(formData, formErrors, extraErrors, [], schema)
-  // console.log(transformedSteps)
+  const errors = useMemo(() => {
+    const defaultFormData = getDefaultFormState(validator, schema, formState.formData)
+    return validator.validateFormData(defaultFormData, schema)
+  }, [formState.formData, schema])
 
   return (
     <>
       <SummaryHeader />
-      <div className={cx('my-10')} ref={divRef}>
+      <div className={cx('my-10')}>
         <SummaryForm
           // className="[&_legend]:hidden"
           schema={schema}
           uiSchema={uiSchema}
           formData={formState.formData}
           validator={validator}
-          ref={formRef}
           // customValidate={(formData: RJSFSchema, errors: FormValidation) => {
           //   return customValidate(formData, errors, formState.currentSchema)
           // }}

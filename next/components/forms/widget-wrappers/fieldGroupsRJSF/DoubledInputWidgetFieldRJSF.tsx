@@ -21,7 +21,10 @@ const DoubledInputWidgetFieldRJSF = ({
   schema,
   uiSchema,
   errorSchema,
+  ...rest
 }: DoubledInputWidgetFieldRJSFProps) => {
+  console.log(rest)
+
   const keys = Object.keys({ ...schema.properties })
 
   const schemaProperties = {

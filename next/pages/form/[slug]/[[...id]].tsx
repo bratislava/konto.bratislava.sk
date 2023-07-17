@@ -124,7 +124,7 @@ const FormTestPage = ({ schema, uiSchema, page, initialFormData }: FormTestPageP
       <AccountPageLayout isPublicPage hiddenHeaderNav>
         <FormStateProvider schema={schema} formSlug={formSlug} initialFormData={initialFormData}>
           <FormFileUploadStateProvider initialFormData={initialFormData}>
-            <GeneratedFormRJSF uiSchema={uiSchema} formSlug={formSlug} />
+            <GeneratedFormRJSF uiSchema={uiSchema} formSlug={formSlug} schema={schema} />
           </FormFileUploadStateProvider>
         </FormStateProvider>
       </AccountPageLayout>

@@ -61,7 +61,6 @@ export const DateFromTo = ({
             disabled={DateFromDisabled}
             customErrorPlace
             value={DateFromValue}
-            maxValue={DateToValue}
             onChange={DateFromOnChange}
           />
           {/* Custom render error messages for both fields at small screens */}
@@ -81,7 +80,6 @@ export const DateFromTo = ({
             disabled={DateToDisabled}
             value={DateToValue}
             customErrorPlace
-            minValue={DateFromValue}
             onChange={DateToOnChange}
           />
           {/* Custom render error messages for both fields at small screens */}

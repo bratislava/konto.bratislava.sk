@@ -1,20 +1,9 @@
-import {
-  ErrorSchema,
-  mergeDefaultsWithFormData,
-  mergeObjects,
-  RJSFSchema,
-  RJSFValidationError,
-} from '@rjsf/utils'
+import { ErrorSchema, GenericObjectType, RJSFSchema, RJSFValidationError } from '@rjsf/utils'
 import { useTranslation } from 'next-i18next'
 import React, { createContext, PropsWithChildren, useContext, useMemo, useState } from 'react'
 
-import { validator } from '../../frontend/dtos/formStepperDto'
 import { InitialFormData } from '../../frontend/types/initialFormData'
-import {
-  getAllStepData,
-  getInitFormData,
-  getValidatedSteps,
-} from '../../frontend/utils/formStepper'
+import { getAllStepData, getValidatedSteps } from '../../frontend/utils/formStepper'
 import { StepData } from './types/TransformedFormData'
 
 type SkipModal =
@@ -25,7 +14,6 @@ interface FormState {
   stepIndex: number | 'summary'
   formSlug: string
   formData: RJSFSchema
-  // setStepFormData: (stepFormData: RJSFSchema) => void
   setImportedFormData: (importedFormData: RJSFSchema) => void
   errors: RJSFValidationError[][]
   extraErrors: ErrorSchema
@@ -72,7 +60,7 @@ export const FormStateProvider = ({
   const { t } = useTranslation('forms')
 
   const [stepIndex, setStepIndex] = useState<number | 'summary'>(0)
-  const [formData, setFormData] = useState<RJSFSchema>(initialFormData.formDataJson)
+  const [formData, setFormData] = useState<GenericObjectType>(initialFormData.formDataJson)
 
   const [skipModal, setSkipModal] = useState<SkipModal>({ open: false, skipAllowed: false })
 
@@ -82,17 +70,13 @@ export const FormStateProvider = ({
     return getValidatedSteps(schema, formData)
   }, [schema, formData])
 
-  console.log('steps', steps)
+  // console.log('steps', steps)
 
   const stepData = useMemo(() => {
     return getAllStepData(steps, submittedSteps, t('summary'))
   }, [steps, submittedSteps, t])
 
   const currentStepData = stepData.find((step) => step.index === stepIndex)!
-
-  const errors = useMemo(() => {
-    return steps?.map((step) => (step ? validator.validateFormData(formData ?? {}, step) : null))
-  }, [steps, formData])
 
   const validatedSchema = useMemo(() => ({ ...schema, allOf: [...steps] }), [schema, steps])
 
@@ -137,7 +121,12 @@ export const FormStateProvider = ({
   }
 
   const skipToStep = (newStepIndex: number | 'summary') => {
-    if (!skipModal.skipAllowed) {
+    if (stepIndex === newStepIndex) {
+      return
+    }
+    const isFilledStep = stepData.find((step) => step.index === newStepIndex)?.isFilled
+
+    if (!isFilledStep && !skipModal.skipAllowed) {
       setSkipModal({
         open: true,
         skipAllowed: skipModal.skipAllowed,
@@ -164,15 +153,8 @@ export const FormStateProvider = ({
   }
 
   const setStepFormData = (stepFormData: RJSFSchema) => {
-    // save formData for step with all properties including conditional fields and unfilled fields
-    const initStepDefaultData: RJSFSchema = getInitFormData(currentSchema)
-    const fullStepFormData: RJSFSchema | undefined = mergeDefaultsWithFormData(
-      initStepDefaultData,
-      stepFormData,
-    )
-    if (!fullStepFormData) return
-    const mergedFormData: RJSFSchema = mergeObjects(formData, fullStepFormData)
-    setFormData(mergedFormData)
+    console.log('setStepFormData', formData, stepFormData)
+    setFormData({ ...formData, ...stepFormData })
   }
 
   const handleOnChange = (newFormData: RJSFSchema) => {

@@ -22,8 +22,6 @@ const DateFromToWidgetRJSF = ({
   }
   const localUiSchema = uiSchema?.['ui:options']
 
-  console.log('dateFromTo', formData)
-
   const handleOnChange = (valueName: string, newValue?: string | undefined) => {
     onChange({
       ...formData,

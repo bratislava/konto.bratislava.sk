@@ -1,21 +1,11 @@
-import {
-  ErrorSchema,
-  FormValidation,
-  RJSFSchema,
-  RJSFValidationError,
-  StrictRJSFSchema,
-  UiSchema,
-} from '@rjsf/utils'
-import { focusManager } from '@tanstack/query-core'
-import { useEffect } from 'react'
+import Form from '@rjsf/core'
+import { ErrorSchema, RJSFValidationError, StrictRJSFSchema, UiSchema } from '@rjsf/utils'
+import cx from 'classnames'
+import { useEffect, useRef, useState } from 'react'
 
 import { JsonSchema, validator } from '../../../../frontend/dtos/formStepperDto'
-import { customValidate } from '../../../../frontend/utils/formStepper'
-import { useFormDataTransform } from '../../../../frontend/utils/rjsfSchemaHandler'
 import { useFormState } from '../../FormStateProvider'
 import SummaryForm from '../../SummaryForm'
-import SummaryStep from './SummaryStep'
-import { TransformedFormStep } from './TransformedFormData'
 
 interface SummaryProps {
   uiSchema: UiSchema
@@ -29,14 +19,21 @@ interface SummaryProps {
 const Summary = ({ uiSchema, schema }: SummaryProps) => {
   const formState = useFormState()
 
-  useEffect(() => {
-    setTimeout(() => {
-      debugger
-      const x = validator.rawValidation(schema!, formState.formData)
-      console.log(x)
-    })
-  }, [schema, formState.formData])
+  const formRef = useRef<Form>(null)
+  const divRef = useRef<HTMLDivElement>(null)
+  const [validated, setValidated] = useState(false)
+  const [errors] = useState(validator.validateFormData(formState.formData, schema!))
 
+  useEffect(() => {
+    debugger
+    const x = validator.validateFormData(formState.formData, schema!)
+    console.log(x)
+
+    // if (formRef.current) {
+    //   formRef.current.validateForm()
+    //   divRef.current?.className.replace('hidden', '')
+    // }
+  }, [])
   // const x = validator.validateFormData(schema!, formData)
   // const y = validator.rawValidation(schema!, formData)
   // console.log('errors', x, y)
@@ -45,28 +42,30 @@ const Summary = ({ uiSchema, schema }: SummaryProps) => {
   // console.log(transformedSteps)
 
   return (
-    <div className="my-10">
+    // { 'px-5': !validated }
+    <div className={cx('my-10')} ref={divRef}>
       <SummaryForm
         // className="[&_legend]:hidden"
         schema={schema!}
         uiSchema={uiSchema}
         formData={formState.formData}
         validator={validator}
+        ref={formRef}
         // customValidate={(formData: RJSFSchema, errors: FormValidation) => {
         //   return customValidate(formData, errors, formState.currentSchema)
         // }}
         onSubmit={(e) => {
-          console.log('onSubmit', e)
+          // console.log('onSubmit', e)
           // formState.handleOnSubmit(e.formData as RJSFSchema)
         }}
         onChange={(e) => {
           // formState.handleOnChange(e.formData as RJSFSchema)
         }}
         onError={(e) => {
-          console.log('onError', e)
+          // console.log('onError', e)
         }}
         // onError={formState.handleOnErrors}
-        extraErrors={formState.extraErrors}
+        extraErrors={errors.errorSchema}
         // showErrorList={false}
         // omitExtraData
         // liveOmit

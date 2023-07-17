@@ -7,20 +7,17 @@ import { Button as AriaButton } from 'react-aria-components'
 
 import ChevronDown from '../../../assets/images/forms/chevron-down.svg'
 import { useFormState } from '../FormStateProvider'
-import { StepData } from '../types/TransformedFormData'
 import StepperViewList from './StepperViewList'
 import StepperViewRow from './StepperViewRow'
 
 interface StepperViewProps {
-  steps: StepData[]
-  currentStep: number | 'summary'
   forceMobileSize?: boolean
 }
 
-const StepperView = ({ steps, currentStep, forceMobileSize }: StepperViewProps) => {
+const StepperView = ({ forceMobileSize }: StepperViewProps) => {
   const { t } = useTranslation('forms')
   const [isCollapsed, setIsCollapsed] = useState<boolean>(true)
-  const { skipToStep } = useFormState()
+  const { currentStepData, skipToStep } = useFormState()
 
   const handleOnClickDropdownIcon = () => {
     if (isCollapsed) {
@@ -28,7 +25,7 @@ const StepperView = ({ steps, currentStep, forceMobileSize }: StepperViewProps) 
     }
   }
 
-  const handleOnChangeStep = (stepIndex: number | 'summary') => {
+  const handleOnSkipToStep = (stepIndex: number | 'summary') => {
     setIsCollapsed(true)
     skipToStep(stepIndex)
   }
@@ -42,11 +39,7 @@ const StepperView = ({ steps, currentStep, forceMobileSize }: StepperViewProps) 
   return (
     <>
       <div className={cx('hidden', { 'lg:block': !forceMobileSize })}>
-        <StepperViewList
-          steps={steps}
-          currentStep={currentStep}
-          onChangeStep={handleOnChangeStep}
-        />
+        <StepperViewList onSkipToStep={handleOnSkipToStep} />
       </div>
       <div
         className={cx('flex flex-col', { 'lg:hidden': !forceMobileSize })}
@@ -54,15 +47,7 @@ const StepperView = ({ steps, currentStep, forceMobileSize }: StepperViewProps) 
         ref={buttonRef}
       >
         <div className="h-14 p-4 w-full bg-white flex flex-row items-center gap-5 drop-shadow-lg cursor-pointer">
-          <StepperViewRow
-            className="grow"
-            title={currentStep === 'summary' ? t('summary') : steps[currentStep]?.title}
-            // TODO order
-            order={0}
-            isCurrent
-            isLast
-            isButton={false}
-          />
+          <StepperViewRow className="grow" step={currentStepData} isCurrent isButton={false} />
           <ChevronDown className={cx({ 'rotate-180': !isCollapsed })} />
         </div>
         <div
@@ -82,11 +67,7 @@ const StepperView = ({ steps, currentStep, forceMobileSize }: StepperViewProps) 
             </AriaButton>
           </div>
           <div className="bg-white grow overflow-y-scroll overscroll-none pb-20 px-4 pt-4">
-            <StepperViewList
-              steps={steps}
-              currentStep={currentStep}
-              onChangeStep={handleOnChangeStep}
-            />
+            <StepperViewList onSkipToStep={handleOnSkipToStep} />
           </div>
         </div>
       </div>

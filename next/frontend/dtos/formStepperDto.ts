@@ -76,7 +76,7 @@ export const customFormats: Record<string, RegExp> = {
 }
 export const validator: ValidatorType = customizeValidator({
   customFormats,
-  ajvOptionsOverrides: { keywords: ajvKeywords },
+  ajvOptionsOverrides: { keywords: ajvKeywords, allErrors: true },
 })
 
 // @ts-ignore

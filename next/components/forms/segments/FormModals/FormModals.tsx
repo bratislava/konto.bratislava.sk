@@ -30,7 +30,7 @@ const FormModals = () => {
           onClose={() => setRegistrationModal(false)}
         />
       )}
-      {isAuthenticated && tierStatus.isIdentityVerified && (
+      {isAuthenticated && !tierStatus.isIdentityVerified && (
         <IdentityVerificationModal
           show={identityVerificationModal}
           onClose={() => setIdentityVerificationModal(false)}

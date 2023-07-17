@@ -31,7 +31,10 @@
               }
             }
           }
-        }
+        },
+        "required": [
+          "mestoPSCstep"
+        ]
       }
     },
     {
@@ -39,16 +42,23 @@
         {
           "if": {
             "properties": {
-              "mestoPSC": {
+              "mestoPSCstep": {
                 "properties": {
-                  "psc": {
-                    "const": "82103"
+                  "mestoPSC": {
+                    "required": [
+                      "psc"
+                    ],
+                    "properties": {
+                      "psc": {
+                        "const": "82103"
+                      }
+                    }
                   }
-                },
-                "required": [
-                  "psc"
-                ]
-              }
+                }
+              },
+              "required": [
+                "mestoPSCstep"
+              ]
             }
           },
           "then": {
@@ -63,7 +73,10 @@
                   }
                 }
               }
-            }
+            },
+            "required": [
+              "conditionalStep"
+            ]
           }
         }
       ]
@@ -90,7 +103,10 @@
             }
           }
         }
-      }
+      },
+      "required": [
+        "dateTimePicker"
+      ]
     },
     {
       "properties": {
@@ -111,7 +127,10 @@
             }
           }
         }
-      }
+      },
+      "required": [
+        "timeFromTo"
+      ]
     },
     {
       "properties": {
@@ -136,7 +155,10 @@
             }
           }
         }
-      }
+      },
+      "required": [
+        "dateDepartureArrival"
+      ]
     },
     {
       "properties": {
@@ -172,7 +194,10 @@
             }
           }
         }
-      }
+      },
+      "required": [
+        "datePickerWithTimePicker"
+      ]
     },
     {
       "properties": {
@@ -223,7 +248,10 @@
             }
           }
         }
-      }
+      },
+      "required": [
+        "inputFields"
+      ]
     },
     {
       "properties": {
@@ -375,7 +403,10 @@
             }
           ]
         }
-      }
+      },
+      "required": [
+        "selectFields"
+      ]
     },
     {
       "properties": {
@@ -415,7 +446,10 @@
             }
           }
         }
-      }
+      },
+      "required": [
+        "fileUploads"
+      ]
     },
     {
       "properties": {
@@ -492,7 +526,10 @@
             }
           ]
         }
-      }
+      },
+      "required": [
+        "chooseOneOf"
+      ]
     },
     {
       "properties": {
@@ -587,7 +624,10 @@
             }
           ]
         }
-      }
+      },
+      "required": [
+        "checkBoxes"
+      ]
     }
   ]
 }

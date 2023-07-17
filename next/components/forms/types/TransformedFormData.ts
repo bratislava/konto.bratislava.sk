@@ -1,7 +1,7 @@
 export interface StepData {
-  index: number
+  index: number | 'summary'
+  displayIndex: number
   title: string
-  stepKey?: string
-  isFilled?: boolean
-  fields?: []
+  isFilled: boolean
+  isSummary: boolean
 }

@@ -32,12 +32,12 @@ interface FormState {
   setStepIndex: (newIndex: number) => void
   formSlug: string
   formData: RJSFSchema
-  stepTitle: string
   // setStepFormData: (stepFormData: RJSFSchema) => void
   setImportedFormData: (importedFormData: RJSFSchema) => void
   errors: RJSFValidationError[][]
   extraErrors: ErrorSchema
   stepData: StepData[]
+  currentStepData: StepData
   validatedSchema: RJSFSchema & { allOf: RJSFSchema[] }
   // goToStep: (newIndex: number | 'summary') => void
   canGoToPreviousStep: boolean
@@ -76,6 +76,8 @@ export const FormStateProvider = ({
   initialFormData,
   children,
 }: PropsWithChildren<FormStateProviderProps>) => {
+  const { t } = useTranslation('forms')
+
   const [stepIndex, setStepIndex] = useState<number | 'summary'>(0)
   const [formData, setFormData] = useState<RJSFSchema>(initialFormData.formDataJson)
 
@@ -88,15 +90,17 @@ export const FormStateProvider = ({
     return getValidatedSteps(schema, formData)
   }, [schema, formData])
 
+  console.log('steps', steps)
+
   const stepData = useMemo(() => {
-    return getAllStepData(steps, submittedSteps)
-  }, [steps, submittedSteps])
+    return getAllStepData(steps, submittedSteps, t('summary'))
+  }, [steps, submittedSteps, t])
+
+  const currentStepData = stepData.find((step) => step.index === stepIndex)!
 
   const errors = useMemo(() => {
     return steps?.map((step) => (step ? validator.validateFormData(formData ?? {}, step) : null))
   }, [steps, formData])
-
-  console.log('errors', errors)
 
   const validatedSchema = useMemo(() => ({ ...schema, allOf: [...steps] }), [schema, steps])
 
@@ -111,7 +115,7 @@ export const FormStateProvider = ({
 
   const getPreviousStep = () => {
     const prevSteps = steps.slice(0, stepIndex !== 'summary' ? stepIndex : 0).reverse()
-    const prevStepIndex = prevSteps.findIndex((step) => step !== null)
+    const prevStepIndex = prevSteps.findIndex((step) => Object.keys(step).length > 0)
     return prevStepIndex !== -1 ? prevSteps.length - prevStepIndex - 1 : null
   }
 
@@ -127,7 +131,7 @@ export const FormStateProvider = ({
   const getNextStep = () => {
     if (stepIndex === 'summary') return null
     const nextSteps = steps.slice(stepIndex + 1)
-    const nextStepIndex = nextSteps.findIndex((step) => step !== null)
+    const nextStepIndex = nextSteps.findIndex((step) => Object.keys(step).length > 0)
     return nextStepIndex !== -1 ? stepIndex + nextStepIndex + 1 : 'summary'
   }
 
@@ -169,11 +173,8 @@ export const FormStateProvider = ({
     )
     if (!fullStepFormData) return
     const mergedFormData: RJSFSchema = mergeObjects(formData, fullStepFormData)
-    console.log('mergedFormData - setStepFormData', mergedFormData)
     setFormData(mergedFormData)
   }
-
-  const { t } = useTranslation('forms')
 
   const handleOnChange = (newFormData: RJSFSchema) => {
     if (stepIndex === 'summary') {
@@ -222,13 +223,13 @@ export const FormStateProvider = ({
     setStepIndex,
     formSlug,
     formData,
-    stepTitle: stepData[stepIndex]?.title || stepData[stepIndex]?.stepKey || '',
     // TODO: Rework
     setImportedFormData: setFormData,
     errors: [],
     // TODO extra errors
     extraErrors: {},
     stepData,
+    currentStepData,
     validatedSchema,
     canGoToPreviousStep,
     goToPreviousStep,

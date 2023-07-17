@@ -31,8 +31,6 @@ const GeneratedFormRJSF = ({ uiSchema, formSlug, wrapperClassName }: FormRJSF) =
     throw new Error('Not implemented')
   }
 
-  console.log('GeneratedFormRJSF', { formState })
-
   return (
     <>
       <FormHeader onSaveConcept={saveConcept} />
@@ -44,7 +42,7 @@ const GeneratedFormRJSF = ({ uiSchema, formSlug, wrapperClassName }: FormRJSF) =
         )}
       >
         <div className="">
-          <StepperView steps={formState.stepData} currentStep={formState.stepIndex} />
+          <StepperView />
           <FormModals />
         </div>
         <div className={cx('grow px-4', 'lg:px-0')}>
@@ -61,7 +59,7 @@ const GeneratedFormRJSF = ({ uiSchema, formSlug, wrapperClassName }: FormRJSF) =
             />
           ) : (
             <>
-              <h1 className="text-h1-medium font-semibold">{formState.stepTitle}</h1>
+              <h1 className="text-h1-medium font-semibold">{formState.currentStepData.title}</h1>
               <ThemedForm
                 className="[&_legend]:hidden"
                 key={`form-step-${formState.stepIndex}`}
@@ -76,7 +74,6 @@ const GeneratedFormRJSF = ({ uiSchema, formSlug, wrapperClassName }: FormRJSF) =
                   formState.handleOnSubmit(e.formData as RJSFSchema)
                 }}
                 onChange={(e) => {
-                  console.log('onChange', e)
                   formState.handleOnChange(e.formData as RJSFSchema)
                 }}
                 onError={formState.handleOnErrors}

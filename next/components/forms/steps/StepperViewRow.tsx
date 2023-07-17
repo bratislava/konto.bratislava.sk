@@ -3,20 +3,18 @@ import cx from 'classnames'
 import React, { useRef } from 'react'
 import { useButton } from 'react-aria'
 
+import { StepData } from '../types/TransformedFormData'
+
 interface StepperViewRowProps {
-  title?: string
-  order: number
+  step: StepData
   isCurrent?: boolean
-  isFilled?: boolean
-  isLast?: boolean
   onClick?: () => void
   className?: string
   isButton?: boolean
 }
 
-const StepperViewRow = (props: StepperViewRowProps) => {
-  const { title, order, isCurrent, isFilled, isLast, onClick, className, isButton } = props
-
+const StepperViewRow = ({ step, isCurrent, onClick, className, isButton }: StepperViewRowProps) => {
+  const { title, isSummary, isFilled, displayIndex } = step
   const iconClassName = cx(
     'min-w-8 w-8 flex-row h-8 rounded-full flex justify-center items-center border-2 shrink-0',
     {
@@ -36,11 +34,15 @@ const StepperViewRow = (props: StepperViewRowProps) => {
         ref={buttonRef}
       >
         <div className={iconClassName}>
-          {isCurrent || !isFilled ? order : <SelectedIcon fill="white" className="w-6 h-6" />}
+          {isCurrent || !isFilled ? (
+            displayIndex
+          ) : (
+            <SelectedIcon fill="white" className="w-6 h-6" />
+          )}
         </div>
         <p className="text-p3-medium w-72 ">{title}</p>
       </div>
-      {!isLast && (
+      {!isSummary && isButton && (
         <div className="w-8 h-8 flex flex-row justify-center items-center">
           <div className="w-0.5 h-4 bg-gray-300 py-2" />
         </div>

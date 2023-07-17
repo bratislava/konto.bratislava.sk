@@ -147,10 +147,12 @@ export const buildRJSFError = (path: string[], errorMsg: string | undefined): Er
 export const getAllStepData = (
   schemaAllOf: JSONSchema7Definition[],
   submittedSteps: Set<number>,
-  oldStepData?: StepData[],
+  summaryTitle?: string,
 ): StepData[] => {
   if (!schemaAllOf || !Array.isArray(schemaAllOf)) return []
-  return schemaAllOf
+  let displayIndex = 0
+
+  const steps = schemaAllOf
     .map((step, index) => {
       if (typeof step === 'boolean') return null
       const transformedStep: JSONSchema7 = step
@@ -159,16 +161,29 @@ export const getAllStepData = (
       const stepProperties = transformedStep.properties ?? {}
       const [key, value]: [string, JSONSchema7Definition] = Object.entries(stepProperties)[0]
       if (typeof value === 'boolean') return null
-      // if step was already filled, we need to find out
-      const reuseOldStep = oldStepData?.find((oldStep: StepData) => oldStep.stepKey === key)
+
+      displayIndex += 1
       return {
         index,
+        displayIndex,
         title: value.title ?? key,
-        stepKey: key,
         isFilled: submittedSteps.has(index),
+        isSummary: false,
       }
     })
     .filter(Boolean) as StepData[]
+
+  displayIndex += 1
+  return [
+    ...steps,
+    {
+      index: 'summary',
+      displayIndex,
+      title: summaryTitle,
+      isFilled: submittedSteps.has(steps.length),
+      isSummary: true,
+    } as StepData,
+  ]
 }
 
 export const isFieldRequired = (fieldKey: string, schema: StrictRJSFSchema): boolean => {
@@ -364,7 +379,8 @@ export const getValidatedSteps = (schema: RJSFSchema, formData: RJSFSchema): RJS
   return schema.allOf
     ? schema.allOf.map((step) => {
         const typedStep = typeof step !== 'boolean' ? step : {}
-        return retrieveSchema(validator, typedStep, schema, testFormData)
+        const retrievedSchema = retrieveSchema(validator, typedStep, schema, testFormData)
+        return Object.keys(retrievedSchema).length > 0 ? retrievedSchema : {}
       })
     : []
 }

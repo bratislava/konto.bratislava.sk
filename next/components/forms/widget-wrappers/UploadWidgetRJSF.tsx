@@ -85,8 +85,12 @@ const UploadWidgetRJSF = ({
       className="w-full"
     >
       <Upload
-        value={value}
         errorMessage={rawErrors}
+        onUpload={handleUpload}
+        onFileRemove={handleFileRemove}
+        onFileRetry={handleFileRetry}
+        getFileInfoById={formFileUpload.getFileInfoById}
+        value={value}
         type={type}
         label={label}
         required={required}
@@ -96,10 +100,6 @@ const UploadWidgetRJSF = ({
         sizeLimit={size}
         supportedFormats={supportedFormats}
         disabled={disabled}
-        onUpload={handleUpload}
-        onFileRemove={handleFileRemove}
-        onFileRetry={handleFileRetry}
-        getFileInfoById={formFileUpload.getFileInfoById}
       />
     </WidgetWrapper>
   )

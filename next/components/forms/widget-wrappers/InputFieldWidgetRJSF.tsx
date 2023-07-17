@@ -1,4 +1,4 @@
-import { StrictRJSFSchema, WidgetProps } from '@rjsf/utils'
+import { WidgetProps } from '@rjsf/utils'
 import { WidgetOptions } from 'components/forms/types/WidgetOptions'
 import InputField from 'components/forms/widget-components/InputField/InputField'
 import WidgetWrapper from 'components/forms/widget-wrappers/WidgetWrapper'
@@ -12,20 +12,26 @@ type InputFieldRJSFOptions = {
 } & WidgetOptions
 
 interface InputFieldWidgetRJSFProps extends WidgetProps {
-  label: string
   options: InputFieldRJSFOptions
   value: string | null
-  required?: boolean
-  disabled?: boolean
-  placeholder?: string
-  schema: StrictRJSFSchema
   onChange: (value?: string) => void
-  rawErrors?: string[]
 }
 
 const InputFieldWidgetRJSF = ({
+  options: {
+    helptext,
+    tooltip,
+    className,
+    resetIcon,
+    leftIcon,
+    explicitOptional,
+    type,
+    size = 'default',
+    accordion,
+    spaceBottom = 'none',
+    spaceTop = 'large',
+  },
   label,
-  options,
   placeholder = '',
   required,
   value,
@@ -33,36 +39,19 @@ const InputFieldWidgetRJSF = ({
   onChange,
   rawErrors,
 }: InputFieldWidgetRJSFProps) => {
-  const {
-    helptext,
-    tooltip,
-    className,
-    resetIcon,
-    leftIcon,
-    accordion,
-    explicitOptional,
-    type,
-    size = 'default',
-    spaceBottom = 'none',
-    spaceTop = 'large',
-  } = options
-
   const handleOnChange = (newValue?: string) => {
-    if (newValue && newValue !== '') {
-      onChange(newValue)
-    } else {
-      onChange()
-    }
+    onChange(newValue || undefined)
   }
 
   return (
     <WidgetWrapper accordion={accordion} spaceBottom={spaceBottom} spaceTop={spaceTop}>
       <InputField
+        value={value ?? undefined}
+        onChange={handleOnChange}
+        errorMessage={rawErrors}
         label={label}
         type={type}
         placeholder={placeholder}
-        value={value ?? undefined}
-        errorMessage={rawErrors}
         required={required}
         disabled={disabled}
         helptext={helptext}
@@ -70,7 +59,6 @@ const InputFieldWidgetRJSF = ({
         className={className}
         resetIcon={resetIcon}
         leftIcon={leftIcon}
-        onChange={handleOnChange}
         explicitOptional={explicitOptional}
         size={size}
       />

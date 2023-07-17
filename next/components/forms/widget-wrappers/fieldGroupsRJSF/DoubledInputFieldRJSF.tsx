@@ -26,6 +26,7 @@ const DoubledInputFieldRJSF = ({
   }
   const uiOptions = uiSchema?.['ui:options'] ?? {}
 
+  // TODO fix this
   // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
   const valueFirst = formData?.[keys[0]]
   // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access

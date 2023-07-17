@@ -1,4 +1,4 @@
-import { EnumOptionsType, StrictRJSFSchema, WidgetProps } from '@rjsf/utils'
+import { EnumOptionsType, WidgetProps } from '@rjsf/utils'
 import { WidgetOptions } from 'components/forms/types/WidgetOptions'
 import WidgetWrapper from 'components/forms/widget-wrappers/WidgetWrapper'
 import React from 'react'
@@ -20,20 +20,13 @@ type RadioButtonRJSFOptions = {
 } & WidgetOptions
 
 interface RadioButtonFieldWidgetRJSFProps extends WidgetProps {
-  label: string
   options: RadioButtonRJSFOptions
   value: string | null
-  errorMessage?: string
-  required?: boolean
-  disabled?: boolean
-  schema: StrictRJSFSchema
   onChange: (value?: string | boolean | number | undefined) => void
-  rawErrors?: string[]
 }
 
-const RadioButtonsWidgetRJSF = (props: RadioButtonFieldWidgetRJSFProps) => {
-  const { options, value, onChange, label, rawErrors, required } = props
-  const {
+const RadioButtonsWidgetRJSF = ({
+  options: {
     enumOptions,
     className,
     variant,
@@ -42,9 +35,15 @@ const RadioButtonsWidgetRJSF = (props: RadioButtonFieldWidgetRJSFProps) => {
     orientations,
     spaceBottom = 'none',
     spaceTop = 'large',
-  } = options
-
+  },
+  value,
+  onChange,
+  label,
+  rawErrors,
+  required,
+}: RadioButtonFieldWidgetRJSFProps) => {
   if (!enumOptions || Array.isArray(value)) return null
+
   const getTooltip = (radioValue: string) => {
     return radioOptions.find((option) => option.value === radioValue)?.tooltip
   }
@@ -52,8 +51,8 @@ const RadioButtonsWidgetRJSF = (props: RadioButtonFieldWidgetRJSFProps) => {
   return (
     <WidgetWrapper accordion={accordion} spaceBottom={spaceBottom} spaceTop={spaceTop}>
       <RadioGroup
-        errorMessage={rawErrors}
         value={value ?? undefined}
+        errorMessage={rawErrors}
         onChange={onChange}
         className={className}
         label={label}

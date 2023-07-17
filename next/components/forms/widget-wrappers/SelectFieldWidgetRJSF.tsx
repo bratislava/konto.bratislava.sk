@@ -25,21 +25,15 @@ interface RJSFSelectSchema extends RJSFSchema {
 }
 
 interface SelectFieldWidgetRJSFProps extends WidgetProps {
-  label: string
   options: SelectRJSFOptions
   value: any | any[] | null
-  required?: boolean
-  disabled?: boolean
-  placeholder?: string
   schema: RJSFSelectSchema
   onChange: (value?: any | any[]) => void
-  rawErrors?: string[]
 }
 
-const SelectFieldWidgetRJSF = (props: SelectFieldWidgetRJSFProps) => {
-  const { label, options, value, required, disabled, placeholder, schema, onChange, rawErrors } =
-    props
-  const {
+const SelectFieldWidgetRJSF = ({
+  label,
+  options: {
     enumOptions,
     selectAllOption,
     helptext,
@@ -53,18 +47,20 @@ const SelectFieldWidgetRJSF = (props: SelectFieldWidgetRJSFProps) => {
     hideScrollbar = false,
     alwaysOneSelected = true,
     maxWordSize,
-  } = options
-
+  },
+  value,
+  required,
+  disabled,
+  placeholder,
+  schema,
+  onChange,
+  rawErrors,
+}: SelectFieldWidgetRJSFProps) => {
   const type = schema.type === 'array' ? 'multiple' : 'one'
 
   const handleOnChangeMultiple = (newValue?: SelectOption[]) => {
-    if (newValue) {
-      // eslint-disable-next-line @typescript-eslint/no-unsafe-return
-      const optionValues = newValue.map((option: SelectOption) => option.const)
-      onChange(optionValues)
-    } else {
-      onChange()
-    }
+    const values = newValue?.map((option: SelectOption) => option.const)
+    onChange(values?.length ? values : undefined)
   }
 
   const handleOnChangeOne = (newValue?: SelectOption[]) => {
@@ -126,20 +122,20 @@ const SelectFieldWidgetRJSF = (props: SelectFieldWidgetRJSFProps) => {
   return (
     <WidgetWrapper accordion={accordion} spaceBottom={spaceBottom} spaceTop={spaceTop}>
       <SelectField
-        type={type}
-        label={label}
+        onChange={handleOnChange}
         enumOptions={transformedEnumOptions}
         value={transformedValue}
+        errorMessage={rawErrors}
+        type={type}
+        label={label}
         selectAllOption={selectAllOption}
         placeholder={placeholder}
         helptext={helptext}
         tooltip={tooltip}
         dropdownDivider={dropdownDivider}
-        errorMessage={rawErrors}
         required={required}
         disabled={disabled}
         className={className}
-        onChange={handleOnChange}
         explicitOptional={explicitOptional}
         hideScrollbar={hideScrollbar}
         alwaysOneSelected={alwaysOneSelected}

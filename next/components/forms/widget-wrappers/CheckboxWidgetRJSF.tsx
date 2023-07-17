@@ -1,4 +1,4 @@
-import { EnumOptionsType, StrictRJSFSchema, WidgetProps } from '@rjsf/utils'
+import { EnumOptionsType, WidgetProps } from '@rjsf/utils'
 import { WidgetOptions } from 'components/forms/types/WidgetOptions'
 import WidgetWrapper from 'components/forms/widget-wrappers/WidgetWrapper'
 import React from 'react'
@@ -20,24 +20,11 @@ type CheckboxesRJSFOptions = {
 interface CheckboxesWidgetRJSFProps extends WidgetProps {
   options: CheckboxesRJSFOptions
   value: string[] | null
-  label: string
-  schema: StrictRJSFSchema
   onChange: (value: string[]) => void
-  rawErrors?: string[]
-  required?: boolean
 }
 
-const CheckboxWidgetRJSF = (props: CheckboxesWidgetRJSFProps) => {
-  const {
-    options,
-    value,
-    onChange,
-    label,
-    schema: { maxItems },
-    rawErrors,
-    required,
-  } = props
-  const {
+const CheckboxWidgetRJSF = ({
+  options: {
     enumOptions,
     className,
     accordion,
@@ -45,14 +32,26 @@ const CheckboxWidgetRJSF = (props: CheckboxesWidgetRJSFProps) => {
     spaceTop = 'large',
     checkboxOptions = [],
     variant = 'basic',
-  } = options
-  if (!enumOptions) return <div />
+  },
+  value,
+  onChange,
+  label,
+  schema: { maxItems },
+  rawErrors,
+  required,
+}: CheckboxesWidgetRJSFProps) => {
+  if (!enumOptions) {
+    return null
+  }
+
   const getTooltip = (radioValue: string) => {
     return checkboxOptions.find((option) => option.value === radioValue)?.tooltip
   }
+
   const isDisabled = (valueName: string) => {
     return value?.length === maxItems && !value?.includes(valueName)
   }
+
   return (
     <WidgetWrapper accordion={accordion} spaceBottom={spaceBottom} spaceTop={spaceTop}>
       <CheckboxGroup

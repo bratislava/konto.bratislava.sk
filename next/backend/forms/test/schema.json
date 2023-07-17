@@ -8,71 +8,65 @@
   "allOf": [
     {
       "properties": {
-        "mestoPSC": {
-          "required": ["psc", "mesto"],
+        "step_mestoPsc": {
+          "title": "Showcase Mesto a PSČ",
           "type": "object",
           "properties": {
-            "mesto": {
-              "type": "string",
-              "title": "Mesto",
-              "default": "Košice"
+            "mestoPsc": {
+              "type": "object",
+              "required": ["psc", "mesto"],
+              "properties": {
+                "mesto": {
+                  "type": "string",
+                  "title": "Mesto trvaleho pobytu"
+                },
+                "psc": {
+                  "type": "string",
+                  "title": "PSČ",
+                  "format": "zip"
+                }
+              }
             },
-            "psc": {
-              "type": "string",
-              "title": "PSČ",
-              "format": "zip"
+            "mestoPsc2": {
+              "type": "object",
+              "required": ["psc", "mesto"],
+              "properties": {
+                "mesto": {
+                  "type": "string",
+                  "title": "Mesto prechodneho pobytu"
+                },
+                "psc": {
+                  "type": "string",
+                  "title": "PSČ",
+                  "format": "zip"
+                }
+              }
             }
           }
         }
       }
     },
     {
-      "allOf": [
-        {
-          "if": {
-            "properties": {
-              "mestoPSC": {
-                "properties": {
-                  "psc": {
-                    "const": "82103"
-                  }
-                }
-              }
-            }
-          },
-          "then": {
-            "properties": {
-              "conditionalStep": {
-                "type": "object",
-                "title": "Conditional step",
-                "properties": {
-                  "randomInput": {
-                    "type": "string",
-                    "title": "Input in conditional step"
-                  }
-                }
-              }
-            }
-          }
-        }
-      ]
-    },
-    {
       "properties": {
-        "dateTimePicker": {
+        "step_dateTimePicker": {
           "title": "Showcase of DateTime Picker",
-          "required": ["dateValue", "timeValue"],
           "type": "object",
           "properties": {
-            "dateValue": {
-              "type": "string",
-              "format": "date",
-              "title": "Date"
-            },
-            "timeValue": {
-              "type": "string",
-              "format": "localTime",
-              "title": "Time"
+            "dateTimePicker": {
+              "type": "object",
+              "required": ["dateValue", "timeValue"],
+              "properties": {
+                "dateValue": {
+                  "type": "string",
+                  "format": "date",
+                  "title": "Date"
+                },
+                "timeValue": {
+                  "type": "string",
+                  "format": "localTime",
+                  "title": "Time"
+                }
+              }
             }
           }
         }
@@ -80,20 +74,23 @@
     },
     {
       "properties": {
-        "timeFromTo": {
+        "step_timeFromTo": {
           "title": "Showcase of TimeFromTo Picker",
-          "timeFromTo": true,
           "type": "object",
           "properties": {
-            "startTime": {
-              "type": "string",
-              "format": "localTime",
-              "title": "Time From"
-            },
-            "endTime": {
-              "type": "string",
-              "format": "localTime",
-              "title": "Time To"
+            "timeFromTo": {
+              "type": "object",
+              "format": "timeFromTo",
+              "properties": {
+                "startTime": {
+                  "type": "string",
+                  "title": "Time From"
+                },
+                "endTime": {
+                  "type": "string",
+                  "title": "Time To"
+                }
+              }
             }
           }
         }
@@ -101,21 +98,25 @@
     },
     {
       "properties": {
-        "dateDepartureArrival": {
-          "title": "Showcase of DateFromTo Picker",
-          "required": ["startDate", "endDate"],
-          "dateFromTo": true,
+        "step_dateFromTo": {
           "type": "object",
+          "title": "Showcase of DateFromTo Picker",
           "properties": {
-            "startDate": {
-              "type": "string",
-              "format": "date",
-              "title": "Date From"
-            },
-            "endDate": {
-              "type": "string",
-              "format": "date",
-              "title": "Date To"
+            "dateFromTo": {
+              "required": ["startDate", "endDate"],
+              "dateFromTo": true,
+              "properties": {
+                "startDate": {
+                  "type": "string",
+                  "format": "date",
+                  "title": "Date From"
+                },
+                "endDate": {
+                  "type": "string",
+                  "format": "date",
+                  "title": "Date To"
+                }
+              }
             }
           }
         }
@@ -274,13 +275,17 @@
               "type": "string",
               "title": "Street (ciselnik)",
               "format": "ciselnik",
-              "ciselnik": { "id": "POST_STREET" }
+              "ciselnik": {
+                "id": "POST_STREET"
+              }
             },
             "city": {
               "type": "string",
               "title": "City (ciselnik)",
               "format": "ciselnik",
-              "ciselnik": { "id": "SUSR_0025" }
+              "ciselnik": {
+                "id": "SUSR_0025"
+              }
             }
           },
           "allOf": [
@@ -536,6 +541,37 @@
           ]
         }
       }
+    },
+    {
+      "allOf": [
+        {
+          "if": {
+            "properties": {
+              "mestoPSC": {
+                "properties": {
+                  "psc": {
+                    "const": "82103"
+                  }
+                }
+              }
+            }
+          },
+          "then": {
+            "properties": {
+              "conditionalStep": {
+                "type": "object",
+                "title": "Conditional step",
+                "properties": {
+                  "randomInput": {
+                    "type": "string",
+                    "title": "Input in conditional step"
+                  }
+                }
+              }
+            }
+          }
+        }
+      ]
     },
     {
       "$async": true,

@@ -1,19 +1,16 @@
 import { FormValidation, RJSFSchema, UiSchema } from '@rjsf/utils'
 import cx from 'classnames'
 import MenuList from 'components/forms/steps/MenuList'
-import { useServerSideAuth } from 'frontend/hooks/useServerSideAuth'
-import { useRef } from 'react'
 
 import { validator } from '../../frontend/dtos/formStepperDto'
 import { useFormSubmitter } from '../../frontend/hooks/useFormSubmitter'
-import { InitialFormData } from '../../frontend/types/initialFormData'
 import { customValidate } from '../../frontend/utils/formStepper'
 import FormControls from './FormControls'
 import { useFormState } from './FormStateProvider'
 import FormModals from './segments/FormModals/FormModals'
 import FormHeader from './simple-components/FormHeader'
-import FinalStep from './steps/FinalStep'
 import StepperView from './steps/StepperView'
+import FormSummary from './steps/Summary/FormSummary'
 import { ThemedForm } from './ThemedForm'
 
 interface FormRJSF {
@@ -41,22 +38,14 @@ const GeneratedFormRJSF = ({ uiSchema, formSlug, wrapperClassName }: FormRJSF) =
           wrapperClassName,
         )}
       >
-        <div className="">
+        <div>
           <StepperView />
           <FormModals />
         </div>
         <div className={cx('grow px-4', 'lg:px-0')}>
           {formState.stepIndex === 'summary' ? (
-            <FinalStep
-              formData={formState.formData}
-              formErrors={formState.errors}
-              extraErrors={formState.extraErrors}
-              schema={formState.validatedSchema}
-              onGoToStep={formState.setStepIndex}
-              submitErrors={submitter.errors}
-              submitMessage={submitter.successMessage}
-              uiSchema={uiSchema}
-            />
+            // TODO validatedSchema ?
+            <FormSummary uiSchema={uiSchema} schema={formState.validatedSchema} />
           ) : (
             <>
               <h1 className="text-h1-medium font-semibold">{formState.currentStepData.title}</h1>

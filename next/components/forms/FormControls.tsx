@@ -7,7 +7,7 @@ import { useFormState } from './FormStateProvider'
 import Button from './simple-components/Button'
 
 const FormControls = () => {
-  const { canGoToPreviousStep, goToPreviousStep, skipStep } = useFormState()
+  const { canGoToPreviousStep, goToPreviousStep, canGoToNextStep, skipToNextStep } = useFormState()
   const { t } = useTranslation('forms')
 
   return (
@@ -26,7 +26,9 @@ const FormControls = () => {
         </div>
 
         <div className="flex flex-row flex-wrap gap-5">
-          <Button variant="black-outline" onPress={skipStep} text={t('buttons.skip')} />
+          {canGoToNextStep && (
+            <Button variant="black-outline" onPress={skipToNextStep} text={t('buttons.skip')} />
+          )}
           <Button
             type="submit"
             text={t('buttons.continue')}
@@ -47,13 +49,15 @@ const FormControls = () => {
               text={t('buttons.previous')}
             />
           )}
-          <Button
-            size="sm"
-            fullWidth
-            variant="black-outline"
-            onPress={skipStep}
-            text={t('buttons.skip')}
-          />
+          {canGoToNextStep && (
+            <Button
+              size="sm"
+              fullWidth
+              variant="black-outline"
+              onPress={skipToNextStep}
+              text={t('buttons.skip')}
+            />
+          )}
         </div>
       </div>
     </>

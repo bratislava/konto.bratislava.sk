@@ -5,16 +5,8 @@ import {
   RJSFSchema,
   RJSFValidationError,
 } from '@rjsf/utils'
-import { cloneDeep } from 'lodash'
 import { useTranslation } from 'next-i18next'
-import React, {
-  createContext,
-  PropsWithChildren,
-  useContext,
-  useEffect,
-  useMemo,
-  useState,
-} from 'react'
+import React, { createContext, PropsWithChildren, useContext, useMemo, useState } from 'react'
 
 import { validator } from '../../frontend/dtos/formStepperDto'
 import { InitialFormData } from '../../frontend/types/initialFormData'
@@ -25,11 +17,12 @@ import {
 } from '../../frontend/utils/formStepper'
 import { StepData } from './types/TransformedFormData'
 
-type SkipModal = { open: true; onSkip: () => void; onClose: () => void } | { open: false }
+type SkipModal =
+  | { open: true; skipAllowed: false; onSkip: () => void; onClose: () => void }
+  | { open: false; skipAllowed: boolean }
 
 interface FormState {
   stepIndex: number | 'summary'
-  setStepIndex: (newIndex: number) => void
   formSlug: string
   formData: RJSFSchema
   // setStepFormData: (stepFormData: RJSFSchema) => void
@@ -44,12 +37,12 @@ interface FormState {
   goToPreviousStep: () => void
   canGoToNextStep: boolean
   goToNextStep: () => void
+  skipToNextStep: () => void
   skipToStep: (newIndex: number | 'summary') => void
   handleOnChange: (newFormData: RJSFSchema) => void
   handleOnSubmit: (newFormData: RJSFSchema) => void
   handleOnErrors: (newErrors: RJSFValidationError[]) => void
   currentSchema: RJSFSchema
-  isComplete: boolean
   skipModal: SkipModal
   goToStepOfField: (fieldId: string) => void
 }
@@ -81,8 +74,7 @@ export const FormStateProvider = ({
   const [stepIndex, setStepIndex] = useState<number | 'summary'>(0)
   const [formData, setFormData] = useState<RJSFSchema>(initialFormData.formDataJson)
 
-  const [skipAllowed, setSkipAllowed] = useState(false)
-  const [skipModal, setSkipModal] = useState<SkipModal>({ open: false })
+  const [skipModal, setSkipModal] = useState<SkipModal>({ open: false, skipAllowed: false })
 
   const [submittedSteps, setSubmittedSteps] = useState<Set<number>>(new Set())
 
@@ -145,16 +137,16 @@ export const FormStateProvider = ({
   }
 
   const skipToStep = (newStepIndex: number | 'summary') => {
-    if (!skipAllowed) {
+    if (!skipModal.skipAllowed) {
       setSkipModal({
         open: true,
+        skipAllowed: skipModal.skipAllowed,
         onSkip: () => {
-          setSkipAllowed(true)
-          setSkipModal({ open: false })
+          setSkipModal({ open: false, skipAllowed: true })
           goToStep(newStepIndex)
         },
         onClose: () => {
-          setSkipModal({ open: false })
+          setSkipModal((value) => ({ open: false, skipAllowed: value.skipAllowed }))
         },
       })
 
@@ -162,6 +154,13 @@ export const FormStateProvider = ({
     }
 
     goToStep(newStepIndex)
+  }
+
+  const skipToNextStep = () => {
+    const nextStepIndex = getNextStep()
+    if (nextStepIndex !== null) {
+      skipToStep(nextStepIndex)
+    }
   }
 
   const setStepFormData = (stepFormData: RJSFSchema) => {
@@ -180,7 +179,7 @@ export const FormStateProvider = ({
     if (stepIndex === 'summary') {
       return
     }
-    // remove stepIndex from submitted steps
+
     setSubmittedSteps((prev) => {
       const newSet = new Set(prev)
       newSet.delete(stepIndex)
@@ -201,7 +200,7 @@ export const FormStateProvider = ({
     setStepFormData(newFormData)
   }
 
-  const goToStepOfField = (fieldId: string) => {
+  const goToStepByFieldId = (fieldId: string) => {
     const stepId = parseFieldId(fieldId)
     if (!stepId) return
 
@@ -220,7 +219,6 @@ export const FormStateProvider = ({
 
   const context = {
     stepIndex,
-    setStepIndex,
     formSlug,
     formData,
     // TODO: Rework
@@ -236,14 +234,14 @@ export const FormStateProvider = ({
     canGoToNextStep,
     goToNextStep,
     skipToStep,
+    skipToNextStep,
     handleOnChange,
     handleOnSubmit,
     handleOnErrors,
     currentSchema,
-    isComplete: false,
     skipModal,
     steps,
-    goToStepOfField,
+    goToStepOfField: goToStepByFieldId,
   }
 
   return <FormStateContext.Provider value={context}>{children}</FormStateContext.Provider>

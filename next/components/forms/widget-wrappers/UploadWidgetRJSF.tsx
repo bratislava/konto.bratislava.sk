@@ -1,4 +1,4 @@
-import { StrictRJSFSchema, WidgetProps } from '@rjsf/utils'
+import { WidgetProps } from '@rjsf/utils'
 import WidgetWrapper from 'components/forms/widget-wrappers/WidgetWrapper'
 import React from 'react'
 
@@ -6,22 +6,14 @@ import { useFormFileUpload } from '../useFormFileUpload'
 import Upload from '../widget-components/Upload/Upload'
 import UploadRJSFOptions from '../widget-components/Upload/UploadRJSFOptions'
 
-interface UploadWidgetRJSFProps extends WidgetProps {
+type UploadWidgetRJSFProps = WidgetProps<string | string[] | null> & {
   options: UploadRJSFOptions
-  schema: StrictRJSFSchema
-  label: string
-  required?: boolean
   value: string | string[] | null
-  disabled?: boolean
-  multiple?: boolean
   onChange: (value?: string | string[] | null) => void
-  rawErrors?: string[]
 }
 
-const UploadWidgetRJSF = (props: UploadWidgetRJSFProps) => {
-  const { options, schema, label, required, value, disabled, onChange, rawErrors } = props
-
-  const {
+const UploadWidgetRJSF = ({
+  options: {
     size,
     accept,
     helptext,
@@ -30,8 +22,15 @@ const UploadWidgetRJSF = (props: UploadWidgetRJSFProps) => {
     accordion,
     spaceBottom = 'none',
     spaceTop = 'large',
-  } = options
-
+  },
+  schema,
+  label,
+  required,
+  value,
+  disabled,
+  onChange,
+  rawErrors,
+}: UploadWidgetRJSFProps) => {
   const supportedFormats = accept?.split(',')
   const multiple = schema.type === 'array'
   const constraints = { supportedFormats, maxFileSize: size }

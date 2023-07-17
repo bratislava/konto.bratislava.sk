@@ -10,7 +10,7 @@ interface DateTimeWidgetRJSFProps extends FieldProps {
   formData?: { dateValue: string; timeValue: string }
 }
 
-const DateTimeWidgetRJSF = ({
+const DateTimeFieldRJSF = ({
   formData,
   onChange,
   schema,
@@ -64,4 +64,4 @@ const DateTimeWidgetRJSF = ({
   )
 }
 
-export default DateTimeWidgetRJSF
+export default DateTimeFieldRJSF

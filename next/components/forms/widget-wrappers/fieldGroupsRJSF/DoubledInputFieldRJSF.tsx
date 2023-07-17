@@ -12,7 +12,7 @@ import {
 } from '../../widget-components/InputField/InputField'
 import WidgetWrapper, { isFormSpacingType } from '../WidgetWrapper'
 
-const DoubledInputWidgetFieldRJSF = ({
+const DoubledInputFieldRJSF = ({
   formData,
   onChange,
   schema,
@@ -113,4 +113,4 @@ const DoubledInputWidgetFieldRJSF = ({
     </WidgetWrapper>
   )
 }
-export default DoubledInputWidgetFieldRJSF
+export default DoubledInputFieldRJSF

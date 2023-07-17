@@ -10,7 +10,7 @@ interface TimeFromToWidgetRJSFProps extends FieldProps {
   formData?: { startTime: string; endTime: string }
 }
 
-const TimeFromToWidgetRJSF = ({
+const TimeFromToFieldRJSF = ({
   formData,
   onChange,
   schema,
@@ -64,4 +64,4 @@ const TimeFromToWidgetRJSF = ({
   )
 }
 
-export default TimeFromToWidgetRJSF
+export default TimeFromToFieldRJSF

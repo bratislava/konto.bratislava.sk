@@ -4,10 +4,10 @@ import InputFieldWidgetRJSF from 'components/forms/widget-wrappers/InputFieldWid
 import TimePickerWidgetRJSF from 'components/forms/widget-wrappers/TimePickerWidgetRJSF'
 
 import CheckboxWidgetRJSF from './widget-wrappers/CheckboxWidgetRJSF'
-import DateFromToWidgetRJSF from './widget-wrappers/fieldGroupsRJSF/DateFromToWidgetRJSF'
-import DateTimeWidgetRJSF from './widget-wrappers/fieldGroupsRJSF/DateTimeWidgetRJSF'
-import DoubledInputWidgetFieldRJSF from './widget-wrappers/fieldGroupsRJSF/DoubledInputWidgetFieldRJSF'
-import TimeFromToWidgetRJSF from './widget-wrappers/fieldGroupsRJSF/TimeFromToWidgetRJSF'
+import DateFromToFieldRJSF from './widget-wrappers/fieldGroupsRJSF/DateFromToFieldRJSF'
+import DateTimeFieldRJSF from './widget-wrappers/fieldGroupsRJSF/DateTimeFieldRJSF'
+import DoubledInputFieldRJSF from './widget-wrappers/fieldGroupsRJSF/DoubledInputFieldRJSF'
+import TimeFromToFieldRJSF from './widget-wrappers/fieldGroupsRJSF/TimeFromToFieldRJSF'
 import RadioButtonsWidgetRJSF from './widget-wrappers/RadioButtonWidgetRJSF'
 import SelectFieldWidgetRJSF from './widget-wrappers/SelectFieldWidgetRJSF'
 import TextAreaFieldWidgetRJSF from './widget-wrappers/TextAreaFieldWidgetRJSF'
@@ -27,10 +27,10 @@ const theme: ThemeProps = {
     TimePicker: TimePickerWidgetRJSF,
   },
   fields: {
-    doubledInput: DoubledInputWidgetFieldRJSF,
-    dateFromTo: DateFromToWidgetRJSF,
-    timeFromTo: TimeFromToWidgetRJSF,
-    dateTime: DateTimeWidgetRJSF,
+    doubledInput: DoubledInputFieldRJSF,
+    dateFromTo: DateFromToFieldRJSF,
+    timeFromTo: TimeFromToFieldRJSF,
+    dateTime: DateTimeFieldRJSF,
   },
 }
 

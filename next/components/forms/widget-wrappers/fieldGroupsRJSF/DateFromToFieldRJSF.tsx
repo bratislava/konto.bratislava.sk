@@ -10,7 +10,7 @@ interface DateFromToWidgetRJSFProps extends FieldProps {
   formData?: { startDate: string; endDate: string }
 }
 
-const DateFromToWidgetRJSF = ({
+const DateFromToFieldRJSF = ({
   formData,
   onChange,
   schema,
@@ -64,4 +64,4 @@ const DateFromToWidgetRJSF = ({
   )
 }
 
-export default DateFromToWidgetRJSF
+export default DateFromToFieldRJSF

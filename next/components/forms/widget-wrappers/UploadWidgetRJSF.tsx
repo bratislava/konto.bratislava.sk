@@ -6,7 +6,7 @@ import { useFormFileUpload } from '../useFormFileUpload'
 import Upload from '../widget-components/Upload/Upload'
 import UploadRJSFOptions from '../widget-components/Upload/UploadRJSFOptions'
 
-type UploadWidgetRJSFProps = WidgetProps<string | string[] | null> & {
+type UploadWidgetRJSFProps = WidgetProps & {
   options: UploadRJSFOptions
   value: string | string[] | null
   onChange: (value?: string | string[] | null) => void

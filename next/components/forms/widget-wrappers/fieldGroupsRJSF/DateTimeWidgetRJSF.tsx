@@ -1,17 +1,17 @@
-import { FieldProps, RJSFSchema } from '@rjsf/utils'
+import { FieldProps } from '@rjsf/utils'
 import React from 'react'
 
 import { DateTimePicker } from '../../groups'
 import { ExplicitOptionalType } from '../../types/ExplicitOptional'
-import { FormSpacingType } from '../../types/WidgetOptions'
-import WidgetWrapper, { isFormSpacingType } from '../WidgetWrapper'
+import WidgetWrapper from '../WidgetWrapper'
+import { getFormSpacingType } from './utils'
 
 interface DateTimeWidgetRJSFProps extends FieldProps {
-  formData: RJSFSchema
+  formData?: { dateValue: string; timeValue: string }
 }
 
 const DateTimeWidgetRJSF = ({
-  formData = {},
+  formData,
   onChange,
   schema,
   uiSchema,
@@ -20,7 +20,7 @@ const DateTimeWidgetRJSF = ({
   const schemaProperties = {
     ...(schema.properties as Record<string, { type: string; title: string }>),
   }
-  const localUiSchema = uiSchema?.['ui:options']
+  const uiOptions = uiSchema?.['ui:options'] ?? {}
 
   const handleOnChange = (valueName: string, newValue?: string | undefined) => {
     onChange({
@@ -29,44 +29,35 @@ const DateTimeWidgetRJSF = ({
     })
   }
 
-  const getFormSpacingType = (
-    formSpacingType: 'spaceTop' | 'spaceBottom',
-  ): FormSpacingType | undefined => {
-    const formSpacingTypeVariant = localUiSchema?.[formSpacingType]
-    return typeof formSpacingTypeVariant === 'string' && isFormSpacingType(formSpacingTypeVariant)
-      ? formSpacingTypeVariant
-      : undefined
-  }
-
   // TODO: fix this code block. Re check what kind of error message it returns and fix in a new way according new task
   const getErrorMessage = (propKey: string): string[] => errorSchema?.[propKey]?.__errors || []
 
   return (
     <WidgetWrapper
       accordion={uiSchema?.['ui:accordion']}
-      spaceTop={getFormSpacingType('spaceTop')}
-      spaceBottom={getFormSpacingType('spaceBottom')}
+      spaceTop={getFormSpacingType('spaceTop', uiOptions.spaceTop)}
+      spaceBottom={getFormSpacingType('spaceBottom', uiOptions.spaceBottom)}
     >
-      <div className={localUiSchema?.className as string}>
+      <div className={uiOptions?.className as string}>
         <DateTimePicker
-          DateTooltip={localUiSchema?.DateTooltip as string}
-          TimeTooltip={localUiSchema?.TimeTooltip as string}
-          DateDescription={localUiSchema?.DateDescription as string}
-          TimeDescription={localUiSchema?.TimeDescription as string}
-          DateExplicitOptional={localUiSchema?.DateExplicitOptional as ExplicitOptionalType}
-          TimeExplicitOptional={localUiSchema?.TimeExplicitOptional as ExplicitOptionalType}
+          DateTooltip={uiOptions?.DateTooltip as string}
+          TimeTooltip={uiOptions?.TimeTooltip as string}
+          DateDescription={uiOptions?.DateDescription as string}
+          TimeDescription={uiOptions?.TimeDescription as string}
+          DateExplicitOptional={uiOptions?.DateExplicitOptional as ExplicitOptionalType}
+          TimeExplicitOptional={uiOptions?.TimeExplicitOptional as ExplicitOptionalType}
           DateRequired={schema.required?.includes('dateValue')}
           TimeRequired={schema.required?.includes('timeValue')}
           DateErrorMessage={getErrorMessage('dateValue')}
           TimeErrorMessage={getErrorMessage('timeValue')}
           DateOnChange={(e) => handleOnChange('dateValue', e?.toString())}
           TimeOnChange={(e) => handleOnChange('timeValue', e?.toString())}
-          DateValue={formData.dateValue}
-          TimeValue={formData.timeValue}
+          DateValue={formData?.dateValue}
+          TimeValue={formData?.timeValue}
           DateLabel={schemaProperties?.dateValue?.title}
           TimeLabel={schemaProperties?.timeValue?.title}
-          DateDisabled={localUiSchema?.DateDisabled as unknown as boolean}
-          TimeDisabled={localUiSchema?.TimeDisabled as unknown as boolean}
+          DateDisabled={uiOptions?.DateDisabled as unknown as boolean}
+          TimeDisabled={uiOptions?.TimeDisabled as unknown as boolean}
         />
       </div>
     </WidgetWrapper>

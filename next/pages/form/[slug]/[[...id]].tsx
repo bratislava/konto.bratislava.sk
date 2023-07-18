@@ -59,7 +59,7 @@ export const getServerSideProps = async (ctx: GetServerSidePropsContext) => {
   if (hasIdQueryParam && (ctx.query.id as string[]).length !== 1) {
     return { notFound: true }
   }
-  const id = hasIdQueryParam ? hasIdQueryParam[0] : null
+  const id = hasIdQueryParam ? (ctx.query?.id?.[0] as string) : null
 
   const accessToken = await getSSRAccessToken(ctx.req)
   const getInitialFormData = () => {

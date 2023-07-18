@@ -26,11 +26,13 @@ const DoubledInputSummaryFieldRJSF = ({ id, formData, schema, errorSchema }: Fie
         <SummaryRow
           data={{
             label: `${getLabel(index)}`,
+            // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
             value: formData?.[keys[index]],
             schemaPath: '',
             isError: Boolean(errorSchema?.[keys[index]]?.__errors),
           }}
           onGoToStep={() => {
+            // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
             goToStepByFieldId(id!)
           }}
         />

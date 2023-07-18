@@ -1,13 +1,13 @@
 import SummaryRow, { SummaryRowData } from './SummaryRow'
 
-export interface SummaryStep {
+export interface SummaryStepWithLabel {
   key: string
   label: string
   data: SummaryRowData[]
 }
 
 interface SummaryStepProps {
-  step: SummaryStep
+  step: SummaryStepWithLabel
   onGoToStep: () => void
 }
 

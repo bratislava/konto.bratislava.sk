@@ -48,12 +48,14 @@ const MenuList = () => {
     {
       title: t('menu_list.download_xml'),
       icon: <DownloadIcon className="w-6 h-6" />,
-      onPress: exportXml,
+      // eslint-disable-next-line @typescript-eslint/no-misused-promises
+      onPress: () => exportXml(),
     },
     {
       title: t('menu_list.pdf'),
       icon: <PdfIcon className="w-6 h-6" />,
-      onPress: exportPdf,
+      // eslint-disable-next-line @typescript-eslint/no-misused-promises
+      onPress: () => exportPdf(),
     },
     {
       title: t('menu_list.upload_xml'),

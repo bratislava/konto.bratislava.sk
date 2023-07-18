@@ -1,44 +1,58 @@
 {
   "pospID": "test",
   "pospVersion": "0.1",
-  "$async": true,
   "title": "Example",
   "description": "Example schema",
   "type": "object",
   "allOf": [
     {
       "properties": {
-        "mestoPSC": {
-          "required": ["psc", "mesto"],
+        "mestoPSCstep": {
           "type": "object",
+          "title": "Mesto PSC step",
           "properties": {
-            "mesto": {
-              "type": "string",
-              "title": "Mesto",
-              "default": "Košice"
-            },
-            "psc": {
-              "type": "string",
-              "title": "PSČ",
-              "format": "zip"
+            "mestoPSC": {
+              "required": ["psc", "mesto"],
+              "type": "object",
+              "properties": {
+                "mesto": {
+                  "type": "string",
+                  "title": "Mesto",
+                  "default": "Košice"
+                },
+                "psc": {
+                  "type": "string",
+                  "title": "PSČ",
+                  "format": "zip"
+                }
+              }
             }
-          }
+          },
+          "required": ["mestoPSC"]
         }
-      }
+      },
+      "required": ["mestoPSCstep"]
     },
     {
       "allOf": [
         {
           "if": {
             "properties": {
-              "mestoPSC": {
+              "mestoPSCstep": {
                 "properties": {
-                  "psc": {
-                    "const": "82103"
+                  "mestoPSC": {
+                    "required": ["psc"],
+                    "properties": {
+                      "psc": {
+                        "const": "82103"
+                      }
+                    }
                   }
-                }
+                },
+                "required": ["mestoPSC"]
               }
-            }
+            },
+            "required": ["mestoPSCstep"]
           },
           "then": {
             "properties": {
@@ -52,74 +66,93 @@
                   }
                 }
               }
-            }
+            },
+            "required": ["conditionalStep"]
           }
         }
       ]
     },
     {
       "properties": {
-        "dateTimePicker": {
-          "title": "Showcase of DateTime Picker",
-          "required": ["dateValue", "timeValue"],
+        "dateTimePickerShowcase": {
           "type": "object",
           "properties": {
-            "dateValue": {
-              "type": "string",
-              "format": "date",
-              "title": "Date"
-            },
-            "timeValue": {
-              "type": "string",
-              "format": "localTime",
-              "title": "Time"
+            "dateTimePicker": {
+              "required": ["dateValue", "timeValue"],
+              "type": "object",
+              "properties": {
+                "dateValue": {
+                  "type": "string",
+                  "format": "date",
+                  "title": "Date"
+                },
+                "timeValue": {
+                  "type": "string",
+                  "format": "localTime",
+                  "title": "Time"
+                }
+              }
             }
-          }
+          },
+          "title": "Showcase of DateTime Picker"
         }
-      }
+      },
+      "required": ["dateTimePickerShowcase"]
     },
     {
       "properties": {
-        "timeFromTo": {
+        "timeFromToShowcase": {
           "title": "Showcase of TimeFromTo Picker",
-          "timeFromTo": true,
           "type": "object",
           "properties": {
-            "startTime": {
-              "type": "string",
-              "format": "localTime",
-              "title": "Time From"
-            },
-            "endTime": {
-              "type": "string",
-              "format": "localTime",
-              "title": "Time To"
+            "timeFromTo": {
+              "timeFromTo": true,
+              "type": "object",
+              "properties": {
+                "startTime": {
+                  "type": "string",
+                  "format": "localTime",
+                  "title": "Time From"
+                },
+                "endTime": {
+                  "type": "string",
+                  "format": "localTime",
+                  "title": "Time To"
+                }
+              }
             }
           }
         }
-      }
+      },
+      "required": ["timeFromToShowcase"]
     },
     {
       "properties": {
-        "dateDepartureArrival": {
+        "dateFromToShowcase": {
           "title": "Showcase of DateFromTo Picker",
-          "required": ["startDate", "endDate"],
-          "dateFromTo": true,
           "type": "object",
           "properties": {
-            "startDate": {
-              "type": "string",
-              "format": "date",
-              "title": "Date From"
-            },
-            "endDate": {
-              "type": "string",
-              "format": "date",
-              "title": "Date To"
+            "dateFromTo": {
+              "required": ["startDate", "endDate"],
+              "dateFromTo": true,
+              "type": "object",
+              "properties": {
+                "startDate": {
+                  "type": "string",
+                  "format": "date",
+                  "title": "Date From"
+                },
+                "endDate": {
+                  "type": "string",
+                  "format": "date",
+                  "title": "Date To"
+                }
+              }
             }
           }
         }
-      }
+      },
+      "required": ["dateFromToShowcase"]
     },
     {
       "properties": {
@@ -153,7 +186,8 @@
             }
           }
         }
-      }
+      },
+      "required": ["datePickerWithTimePicker"]
     },
     {
       "properties": {
@@ -199,7 +233,8 @@
             }
           }
         }
-      }
+      },
+      "required": ["inputFields"]
     },
     {
       "properties": {
@@ -274,13 +309,17 @@
               "type": "string",
               "title": "Street (ciselnik)",
               "format": "ciselnik",
-              "ciselnik": { "id": "POST_STREET" }
+              "ciselnik": {
+                "id": "POST_STREET"
+              }
             },
             "city": {
               "type": "string",
               "title": "City (ciselnik)",
               "format": "ciselnik",
-              "ciselnik": { "id": "SUSR_0025" }
+              "ciselnik": {
+                "id": "SUSR_0025"
+              }
             }
           },
           "allOf": [
@@ -338,7 +377,8 @@
             }
           ]
         }
-      }
+      },
+      "required": ["selectFields"]
     },
     {
       "properties": {
@@ -358,7 +398,8 @@
               "items": {
                 "type": "string",
                 "format": "file"
-              }
+              },
+              "minItems": 1
             },
             "importDragAndDropOneFile": {
               "title": "Presun sem jeden subor",
@@ -375,7 +416,8 @@
             }
           }
         }
-      }
+      },
+      "required": ["fileUploads"]
     },
     {
       "properties": {
@@ -388,7 +430,6 @@
               "type": "string",
               "title": "Some random choose",
               "comment": "Radio buttons need to have default value",
-              "default": "screen",
               "oneOf": [
                 {
                   "const": "screen",
@@ -448,7 +489,8 @@
             }
           ]
         }
-      }
+      },
+      "required": ["chooseOneOf"]
     },
     {
       "properties": {
@@ -535,24 +577,8 @@
             }
           ]
         }
-      }
-    },
-    {
-      "$async": true,
-      "properties": {
-        "user": {
-          "type": "object",
-          "title": "Example async validation",
-          "properties": {
-            "phone": {
-              "type": "string",
-              "isExampleAsyncValidation": {
-                "errorMsg": "Required input"
-              }
-            }
-          }
-        }
-      }
+      },
+      "required": ["checkBoxes"]
     }
   ]
 }

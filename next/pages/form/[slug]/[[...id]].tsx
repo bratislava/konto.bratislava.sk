@@ -123,9 +123,14 @@ const FormTestPage = ({ schema, uiSchema, page, initialFormData }: FormTestPageP
   return (
     <PageWrapper locale={page.locale}>
       <AccountPageLayout isPublicPage hiddenHeaderNav>
-        <FormStateProvider schema={schema} formSlug={formSlug} initialFormData={initialFormData}>
+        <FormStateProvider
+          schema={schema}
+          uiSchema={uiSchema}
+          formSlug={formSlug}
+          initialFormData={initialFormData}
+        >
           <FormFileUploadStateProvider initialFormData={initialFormData}>
-            <GeneratedFormRJSF uiSchema={uiSchema} schema={schema} />
+            <GeneratedFormRJSF />
           </FormFileUploadStateProvider>
         </FormStateProvider>
       </AccountPageLayout>

@@ -430,7 +430,6 @@
               "type": "string",
               "title": "Some random choose",
               "comment": "Radio buttons need to have default value",
-              "default": "screen",
               "oneOf": [
                 {
                   "const": "screen",

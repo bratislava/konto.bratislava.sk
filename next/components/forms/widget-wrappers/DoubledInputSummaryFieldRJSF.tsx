@@ -13,17 +13,15 @@ const DoubledInputSummaryFieldRJSF = ({ id, formData, schema, errorSchema }: Fie
 
   const getLabel = (index: 0 | 1) => schemaProperties[keys[index]].title
 
-  const getErrorMessage = (propKey: string): string[] => errorSchema?.[propKey]?.__errors || []
-
   const { goToStepOfField } = useFormState()
-  // console.log('SummaryWidgetRJSF', fieldWidgetType, label, value, rest)
+
   return (
     <div>
       {([0, 1] as const).map((index) => (
         <SummaryRow
           data={{
             label: `${getLabel(index)}`,
-            value: formData[keys[index]],
+            value: formData?.[keys[index]],
             schemaPath: '',
             isError: Boolean(errorSchema?.[keys[index]]?.__errors),
           }}
@@ -32,8 +30,6 @@ const DoubledInputSummaryFieldRJSF = ({ id, formData, schema, errorSchema }: Fie
           }}
         />
       ))}
-
-      {/* {type}/{label}: {value} */}
     </div>
   )
 }

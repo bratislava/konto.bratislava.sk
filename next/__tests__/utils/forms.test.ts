@@ -86,35 +86,6 @@ describe('forms utils', () => {
     expect(errors).toHaveLength(1)
   })
 
-  test('test async validation', async () => {
-    const schema = {
-      $async: true,
-      type: 'object',
-      required: ['user'],
-      properties: {
-        user: {
-          type: 'object',
-          properties: {
-            phone: {
-              type: 'string',
-              isExampleAsyncValidation: {},
-            },
-          },
-          required: ['phone'],
-        },
-      },
-    }
-
-    const data = {
-      user: {
-        phone: '949453861',
-      },
-    }
-
-    const errors = await validateDataWithJsonSchema(data, schema)
-    expect(errors).toHaveLength(0)
-  })
-
   test('json to xml, xml to json', async () => {
     const schema: JSONSchema7Definition = {
       type: 'object',

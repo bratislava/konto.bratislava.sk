@@ -71,7 +71,8 @@ const Styleguide = ({ page }: AsyncServerProps<typeof getServerSideProps>) => {
           <SingleCheckboxShowCase />
           <CheckboxGroupShowCase />
           <RadioButtonShowCase />
-          <StepperShowCase />
+          {/* TODO: Fix stepper showcase */}
+          {/* <StepperShowCase /> */}
           <SummaryRowShowCase />
           <BannerShowCase />
           <ServiceCardShowCase />

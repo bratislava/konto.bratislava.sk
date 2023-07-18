@@ -26,8 +26,23 @@ const SummaryWidgetRJSF = ({
   value,
   rawErrors,
   errors,
+  uiSchema,
+  schema,
   ...rest
 }: SummaryWidgetRJSFProps) => {
+  const keys = Object.keys({ ...schema.properties })
+
+  const schemaProperties = {
+    ...(schema.properties as Record<string, { type: string; title: string }>),
+  }
+  const localUiSchema = uiSchema?.['ui:options']
+
+  const getLabel = (index: 0 | 1) => schemaProperties[keys[index]].title
+
+  if (fieldWidgetType === 'doubledInput') {
+    console.log(rest)
+  }
+
   const { goToStepOfField } = useFormState()
   // console.log('SummaryWidgetRJSF', fieldWidgetType, label, value, rest)
   return (

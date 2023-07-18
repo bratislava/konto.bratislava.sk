@@ -12,10 +12,7 @@
           "title": "Mesto PSC step",
           "properties": {
             "mestoPSC": {
-              "required": [
-                "psc",
-                "mesto"
-              ],
+              "required": ["psc", "mesto"],
               "type": "object",
               "properties": {
                 "mesto": {
@@ -31,14 +28,10 @@
               }
             }
           },
-          "required": [
-            "mestoPSC"
-          ]
+          "required": ["mestoPSC"]
         }
       },
-      "required": [
-        "mestoPSCstep"
-      ]
+      "required": ["mestoPSCstep"]
     },
     {
       "allOf": [
@@ -48,9 +41,7 @@
               "mestoPSCstep": {
                 "properties": {
                   "mestoPSC": {
-                    "required": [
-                      "psc"
-                    ],
+                    "required": ["psc"],
                     "properties": {
                       "psc": {
                         "const": "82103"
@@ -58,14 +49,10 @@
                     }
                   }
                 },
-                "required": [
-                  "mestoPSC"
-                ]
+                "required": ["mestoPSC"]
               }
             },
-            "required": [
-              "mestoPSCstep"
-            ]
+            "required": ["mestoPSCstep"]
           },
           "then": {
             "properties": {
@@ -80,91 +67,92 @@
                 }
               }
             },
-            "required": [
-              "conditionalStep"
-            ]
+            "required": ["conditionalStep"]
           }
         }
       ]
     },
     {
       "properties": {
-        "dateTimePicker": {
-          "title": "Showcase of DateTime Picker",
-          "required": [
-            "dateValue",
-            "timeValue"
-          ],
+        "dateTimePickerShowcase": {
           "type": "object",
           "properties": {
-            "dateValue": {
-              "type": "string",
-              "format": "date",
-              "title": "Date"
-            },
-            "timeValue": {
-              "type": "string",
-              "format": "localTime",
-              "title": "Time"
+            "dateTimePicker": {
+              "required": ["dateValue", "timeValue"],
+              "type": "object",
+              "properties": {
+                "dateValue": {
+                  "type": "string",
+                  "format": "date",
+                  "title": "Date"
+                },
+                "timeValue": {
+                  "type": "string",
+                  "format": "localTime",
+                  "title": "Time"
+                }
+              }
             }
-          }
+          },
+          "title": "Showcase of DateTime Picker"
         }
       },
-      "required": [
-        "dateTimePicker"
-      ]
+      "required": ["dateTimePickerShowcase"]
     },
     {
       "properties": {
-        "timeFromTo": {
+        "timeFromToShowcase": {
           "title": "Showcase of TimeFromTo Picker",
-          "timeFromTo": true,
           "type": "object",
           "properties": {
-            "startTime": {
-              "type": "string",
-              "format": "localTime",
-              "title": "Time From"
-            },
-            "endTime": {
-              "type": "string",
-              "format": "localTime",
-              "title": "Time To"
+            "timeFromTo": {
+              "timeFromTo": true,
+              "type": "object",
+              "properties": {
+                "startTime": {
+                  "type": "string",
+                  "format": "localTime",
+                  "title": "Time From"
+                },
+                "endTime": {
+                  "type": "string",
+                  "format": "localTime",
+                  "title": "Time To"
+                }
+              }
             }
           }
         }
       },
-      "required": [
-        "timeFromTo"
-      ]
+      "required": ["timeFromToShowcase"]
     },
     {
       "properties": {
-        "dateDepartureArrival": {
+        "dateFromToShowcase": {
           "title": "Showcase of DateFromTo Picker",
-          "required": [
-            "startDate",
-            "endDate"
-          ],
-          "dateFromTo": true,
           "type": "object",
           "properties": {
-            "startDate": {
-              "type": "string",
-              "format": "date",
-              "title": "Date From"
-            },
-            "endDate": {
-              "type": "string",
-              "format": "date",
-              "title": "Date To"
+            "dateFromTo": {
+              "required": ["startDate", "endDate"],
+              "dateFromTo": true,
+              "type": "object",
+              "properties": {
+                "startDate": {
+                  "type": "string",
+                  "format": "date",
+                  "title": "Date From"
+                },
+                "endDate": {
+                  "type": "string",
+                  "format": "date",
+                  "title": "Date To"
+                }
+              }
             }
           }
         }
       },
-      "required": [
-        "dateDepartureArrival"
-      ]
+      "required": ["dateFromToShowcase"]
     },
     {
       "properties": {
@@ -186,9 +174,7 @@
             },
             "timePicker": {
               "title": "Showcase of TimePicker",
-              "required": [
-                "meeting-time"
-              ],
+              "required": ["meeting-time"],
               "type": "object",
               "properties": {
                 "meeting-time": {
@@ -201,19 +187,14 @@
           }
         }
       },
-      "required": [
-        "datePickerWithTimePicker"
-      ]
+      "required": ["datePickerWithTimePicker"]
     },
     {
       "properties": {
         "inputFields": {
           "title": "Showcase of InputField",
           "type": "object",
-          "required": [
-            "firstName",
-            "lastName"
-          ],
+          "required": ["firstName", "lastName"],
           "properties": {
             "firstName": {
               "type": "string",
@@ -237,9 +218,7 @@
             "textAreas": {
               "title": "Textove polia",
               "type": "object",
-              "required": [
-                "pros"
-              ],
+              "required": ["pros"],
               "properties": {
                 "pros": {
                   "title": "Pros",
@@ -255,18 +234,14 @@
           }
         }
       },
-      "required": [
-        "inputFields"
-      ]
+      "required": ["inputFields"]
     },
     {
       "properties": {
         "selectFields": {
           "title": "Ukazka Selectov",
           "type": "object",
-          "required": [
-            "school"
-          ],
+          "required": ["school"],
           "properties": {
             "school": {
               "type": "string",
@@ -371,28 +346,21 @@
                   {
                     "properties": {
                       "diplomas": {
-                        "const": [
-                          "stu_fei",
-                          "stu_fiit"
-                        ]
+                        "const": ["stu_fei", "stu_fiit"]
                       }
                     }
                   },
                   {
                     "properties": {
                       "diplomas": {
-                        "const": [
-                          "stu_fiit"
-                        ]
+                        "const": ["stu_fiit"]
                       }
                     }
                   },
                   {
                     "properties": {
                       "diplomas": {
-                        "const": [
-                          "stu_fei"
-                        ]
+                        "const": ["stu_fei"]
                       }
                     }
                   }
@@ -410,18 +378,14 @@
           ]
         }
       },
-      "required": [
-        "selectFields"
-      ]
+      "required": ["selectFields"]
     },
     {
       "properties": {
         "fileUploads": {
           "title": "Nahratie suborov",
           "type": "object",
-          "required": [
-            "importButtonMultipleFiles"
-          ],
+          "required": ["importButtonMultipleFiles"],
           "properties": {
             "importButtonOneFile": {
               "title": "Importuj jeden subor",
@@ -453,18 +417,14 @@
           }
         }
       },
-      "required": [
-        "fileUploads"
-      ]
+      "required": ["fileUploads"]
     },
     {
       "properties": {
         "chooseOneOf": {
           "title": "Radio button step",
           "type": "object",
-          "required": [
-            "chooseOneOfMore"
-          ],
+          "required": ["chooseOneOfMore"],
           "properties": {
             "chooseOneOfMore": {
               "type": "string",
@@ -511,9 +471,7 @@
                 }
               },
               "then": {
-                "required": [
-                  "overlayInput"
-                ],
+                "required": ["overlayInput"],
                 "properties": {
                   "overlayInput": {
                     "type": "string",
@@ -533,18 +491,14 @@
           ]
         }
       },
-      "required": [
-        "chooseOneOf"
-      ]
+      "required": ["chooseOneOf"]
     },
     {
       "properties": {
         "checkBoxes": {
           "title": "Checkboxes",
           "type": "object",
-          "required": [
-            "favouriteFruits"
-          ],
+          "required": ["favouriteFruits"],
           "properties": {
             "favouriteFruits": {
               "type": "array",
@@ -589,18 +543,14 @@
                   {
                     "properties": {
                       "favouriteFruits": {
-                        "const": [
-                          "plum"
-                        ]
+                        "const": ["plum"]
                       }
                     }
                   },
                   {
                     "properties": {
                       "favouriteFruits": {
-                        "const": [
-                          "apple"
-                        ]
+                        "const": ["apple"]
                       }
                     }
                   }
@@ -611,9 +561,7 @@
                   "checkboxBonus": {
                     "title": "This will show when we will click plum",
                     "type": "object",
-                    "required": [
-                      "firstBonus"
-                    ],
+                    "required": ["firstBonus"],
                     "properties": {
                       "firstBonus": {
                         "type": "string",
@@ -631,9 +579,7 @@
           ]
         }
       },
-      "required": [
-        "checkBoxes"
-      ]
+      "required": ["checkBoxes"]
     }
   ]
 }

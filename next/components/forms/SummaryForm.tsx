@@ -1,8 +1,7 @@
 import { ThemeProps, withTheme } from '@rjsf/core'
-import { FieldTemplateProps, ObjectFieldTemplateProps } from '@rjsf/utils'
-import { useFocus } from 'react-aria'
+import { ObjectFieldTemplateProps } from '@rjsf/utils'
 
-import { useFormState } from './FormStateProvider'
+import DoubledInputSummaryFieldRJSF from './widget-wrappers/DoubledInputSummaryFieldRJSF'
 import SummaryWidgetRJSF from './widget-wrappers/SummaryWidgetRJSF'
 
 const wrapWidget = <T,>(Widget: React.FC<T>, fieldWidgetType: string) =>
@@ -43,7 +42,7 @@ const theme: ThemeProps = {
     // TextWidget: wrapWidget(SummaryWidgetRJSF, 'text'),
   },
   fields: {
-    doubledInput: wrapWidget(SummaryWidgetRJSF, 'doubledInput'),
+    doubledInput: DoubledInputSummaryFieldRJSF,
     dateFromTo: wrapWidget(SummaryWidgetRJSF, 'dateFromTo'),
     timeFromTo: wrapWidget(SummaryWidgetRJSF, 'timeFromTo'),
     dateTime: wrapWidget(SummaryWidgetRJSF, 'dateTime'),

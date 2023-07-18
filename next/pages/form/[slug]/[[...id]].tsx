@@ -33,6 +33,17 @@ type FormTestPageProps = {
 export const getServerSideProps = async (ctx: GetServerSidePropsContext) => {
   if (!environment.featureToggles.forms) return { notFound: true }
 
+  // TODO: Remove and support non-auth version of the page
+  const ssrCurrentAuthProps = await getSSRCurrentAuth(ctx.req)
+  if (!ssrCurrentAuthProps.userData) {
+    return {
+      redirect: {
+        destination: '/prihlasenie',
+        permanent: false,
+      },
+    }
+  }
+
   let formDefinition: FormDefinition
   try {
     formDefinition = getFormDefinition(ctx.query.slug)
@@ -90,7 +101,7 @@ export const getServerSideProps = async (ctx: GetServerSidePropsContext) => {
     props: {
       schema: formDefinition.schema,
       uiSchema: formDefinition.uiSchema,
-      ssrCurrentAuthProps: await getSSRCurrentAuth(ctx.req),
+      ssrCurrentAuthProps,
       page: {
         locale,
       },
@@ -114,11 +125,7 @@ const FormTestPage = ({ schema, uiSchema, page, initialFormData }: FormTestPageP
       <AccountPageLayout isPublicPage hiddenHeaderNav>
         <FormStateProvider schema={schema} formSlug={formSlug} initialFormData={initialFormData}>
           <FormFileUploadStateProvider initialFormData={initialFormData}>
-            <GeneratedFormRJSF
-              uiSchema={uiSchema}
-              formSlug={formSlug}
-              initialFormData={initialFormData}
-            />
+            <GeneratedFormRJSF uiSchema={uiSchema} schema={schema} />
           </FormFileUploadStateProvider>
         </FormStateProvider>
       </AccountPageLayout>

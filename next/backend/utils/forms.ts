@@ -10,8 +10,12 @@ import { dropRight, find, last } from 'lodash'
 import { parseStringPromise } from 'xml2js'
 import { firstCharLowerCase } from 'xml2js/lib/processors'
 
-import { ajvFormats, ajvKeywords, JsonSchema } from '../../frontend/dtos/formStepperDto'
-import { getAllPossibleJsonSchemaProperties } from '../../frontend/utils/formStepper'
+import {
+  ajvFormats,
+  ajvKeywords,
+  JsonSchema,
+  JsonSchemaProperties,
+} from '../../frontend/dtos/formStepperDto'
 import { forceString } from '../../frontend/utils/general'
 import logger from '../../frontend/utils/logger'
 
@@ -19,6 +23,40 @@ export type Json = any
 
 export interface Ciselnik {
   id?: string
+}
+
+export const getAllPossibleJsonSchemaProperties = (
+  jsonSchema?: JsonSchema,
+): JsonSchemaProperties => {
+  if (!jsonSchema || jsonSchema === true) {
+    return {}
+  }
+
+  const properties: JsonSchemaProperties = {}
+  if (jsonSchema.properties) {
+    Object.assign(properties, { ...jsonSchema.properties })
+  }
+
+  if (jsonSchema.if && jsonSchema.then) {
+    Object.assign(properties, getAllPossibleJsonSchemaProperties(jsonSchema.then))
+  }
+  if (jsonSchema.if && jsonSchema.else) {
+    Object.assign(properties, getAllPossibleJsonSchemaProperties(jsonSchema.else))
+  }
+
+  jsonSchema?.allOf?.forEach((s) => {
+    Object.assign(properties, getAllPossibleJsonSchemaProperties(s))
+  })
+
+  jsonSchema?.oneOf?.forEach((s) => {
+    Object.assign(properties, getAllPossibleJsonSchemaProperties(s))
+  })
+
+  jsonSchema?.anyOf?.forEach((s) => {
+    Object.assign(properties, getAllPossibleJsonSchemaProperties(s))
+  })
+
+  return properties
 }
 
 const getFormatFromItems = (items: JsonSchema | JsonSchema[] | undefined): string | undefined => {

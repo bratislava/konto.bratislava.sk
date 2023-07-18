@@ -18,11 +18,7 @@ type MenuItem = {
   onPress?: () => void
 }
 
-interface MenuListProps {
-  onSaveConcept: () => void
-}
-
-const MenuList = ({ onSaveConcept }: MenuListProps) => {
+const MenuList = () => {
   const { exportXml, exportPdf, importXml } = useFormExportImport()
 
   const { t } = useTranslation('forms')
@@ -34,7 +30,7 @@ const MenuList = ({ onSaveConcept }: MenuListProps) => {
     if (!isAuthenticated) {
       setRegistrationModal(true)
     } else {
-      onSaveConcept()
+      throw new Error('Not implemented')
     }
   }
 
@@ -91,6 +87,7 @@ const MenuList = ({ onSaveConcept }: MenuListProps) => {
           ),
         )}
       </ul>
+      {/* TODO: Refactor save and move to FormModals */}
       {isAuthenticated && (
         <RegistrationModal
           title={t('account:register_modal.header_save_title')}

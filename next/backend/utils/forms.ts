@@ -5,24 +5,25 @@ import { RJSFSchema } from '@rjsf/utils'
 import Ajv from 'ajv'
 import addFormats from 'ajv-formats'
 import * as cheerio from 'cheerio'
+import { JSONSchema7Definition } from 'json-schema'
 import { parseXml } from 'libxmljs2'
 import { dropRight, find, last } from 'lodash'
 import { parseStringPromise } from 'xml2js'
 import { firstCharLowerCase } from 'xml2js/lib/processors'
 
-import {
-  ajvFormats,
-  ajvKeywords,
-  JsonSchema,
-  JsonSchemaProperties,
-} from '../../frontend/dtos/formStepperDto'
+import { ajvFormats, ajvKeywords } from '../../frontend/dtos/formStepperDto'
 import { forceString } from '../../frontend/utils/general'
 import logger from '../../frontend/utils/logger'
 
 export type Json = any
 
+type JsonSchema = JSONSchema7Definition
 export interface Ciselnik {
   id?: string
+}
+
+interface JsonSchemaProperties {
+  [key: string]: JSONSchema7Definition
 }
 
 export const getAllPossibleJsonSchemaProperties = (
@@ -251,6 +252,7 @@ export const xmlToJson = async (data: string, jsonSchema: JsonSchema): Promise<R
 }
 
 export const validateDataWithJsonSchema = async (data: any, schema: any) => {
+  // TODO: This instance of AJV needs to be reused between FE and Forms BE.
   const ajv = new Ajv({
     keywords: ajvKeywords,
     formats: ajvFormats,

@@ -1,36 +1,24 @@
-import { useTranslation } from 'next-i18next'
-
-import { StepData } from '../types/TransformedFormData'
+import { useFormState } from '../FormStateProvider'
+import { FormStepMetadata } from '../types/Steps'
 import StepperViewRow from './StepperViewRow'
 
-interface StepperViewListProps {
-  steps: StepData[]
-  currentStep: number
-  onChangeStep?: (stepIndex: number) => void
+type StepperViewListProps = {
+  onSkipToStep: (stepIndex: number | 'summary') => void
 }
-
-const StepperViewList = ({ steps, currentStep, onChangeStep }: StepperViewListProps) => {
-  const { t } = useTranslation('forms')
+const StepperViewList = ({ onSkipToStep = () => {} }: StepperViewListProps) => {
+  const { stepsMetadata, currentStepMetadata } = useFormState()
 
   return (
     <div>
-      {steps.map((step: StepData, key: number) => (
+      {stepsMetadata.map((step: FormStepMetadata, key: number) => (
         <StepperViewRow
           key={key}
-          title={step.title}
-          order={key + 1}
-          isCurrent={key === currentStep}
-          isFilled={step.isFilled}
-          onClick={() => onChangeStep?.(key)}
+          step={step}
+          onClick={() => onSkipToStep(step.index)}
+          isCurrent={step === currentStepMetadata}
+          isButton
         />
       ))}
-      <StepperViewRow
-        order={steps.length + 1}
-        title={t('summary')}
-        isLast
-        isCurrent={currentStep === steps.length}
-        onClick={() => onChangeStep?.(steps.length)}
-      />
     </div>
   )
 }

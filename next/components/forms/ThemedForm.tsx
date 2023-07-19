@@ -27,7 +27,6 @@ const theme: ThemeProps = {
     Upload: UploadWidgetRJSF,
     DatePicker: DatePickerWidgetRJSF,
     TimePicker: TimePickerWidgetRJSF,
-    TitleField: () => null,
   },
   fields: {
     // TODO: Fix types
@@ -41,6 +40,10 @@ const theme: ThemeProps = {
     // eslint-disable-next-line @typescript-eslint/ban-ts-comment
     // @ts-ignore
     dateTime: DateTimeWidgetRJSF,
+  },
+  templates: {
+    // Titles for steps are displayed externally, other titles are ignored.
+    TitleFieldTemplate: () => null,
   },
 }
 

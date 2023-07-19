@@ -1,4 +1,4 @@
-import { FieldProps, RJSFSchema } from '@rjsf/utils'
+import { FieldProps } from '@rjsf/utils'
 import React from 'react'
 
 import { DateFromTo } from '../../groups'
@@ -7,7 +7,8 @@ import { FormSpacingType } from '../../types/WidgetOptions'
 import WidgetWrapper, { isFormSpacingType } from '../WidgetWrapper'
 
 interface DateFromToWidgetRJSFProps extends FieldProps {
-  formData: RJSFSchema
+  // TODO: Fix type
+  formData?: { startDate: string; endDate: string }
 }
 
 const DateFromToWidgetRJSF = ({
@@ -61,8 +62,8 @@ const DateFromToWidgetRJSF = ({
           DateToExplicitOptional={localUiSchema?.DateToExplicitOptional as ExplicitOptionalType}
           DateFromOnChange={(e) => handleOnChange('startDate', e?.toString())}
           DateToOnChange={(e) => handleOnChange('endDate', e?.toString())}
-          DateFromValue={formData.startDate}
-          DateToValue={formData.endDate}
+          DateFromValue={formData?.startDate}
+          DateToValue={formData?.endDate}
           DateFromLabel={schemaProperties?.startDate?.title}
           DateToLabel={schemaProperties?.endDate?.title}
           DateFromDisabled={localUiSchema?.DateFromDisabled as unknown as boolean}

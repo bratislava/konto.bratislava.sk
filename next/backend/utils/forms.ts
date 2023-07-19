@@ -5,20 +5,59 @@ import { RJSFSchema } from '@rjsf/utils'
 import Ajv from 'ajv'
 import addFormats from 'ajv-formats'
 import * as cheerio from 'cheerio'
+import { JSONSchema7Definition } from 'json-schema'
 import { parseXml } from 'libxmljs2'
 import { dropRight, find, last } from 'lodash'
 import { parseStringPromise } from 'xml2js'
 import { firstCharLowerCase } from 'xml2js/lib/processors'
 
-import { ajvFormats, ajvKeywords, JsonSchema } from '../../frontend/dtos/formStepperDto'
-import { getAllPossibleJsonSchemaProperties } from '../../frontend/utils/formStepper'
+import { ajvFormats, ajvKeywords } from '../../frontend/dtos/formStepperDto'
 import { forceString } from '../../frontend/utils/general'
 import logger from '../../frontend/utils/logger'
 
 export type Json = any
 
+type JsonSchema = JSONSchema7Definition
 export interface Ciselnik {
   id?: string
+}
+
+interface JsonSchemaProperties {
+  [key: string]: JSONSchema7Definition
+}
+
+export const getAllPossibleJsonSchemaProperties = (
+  jsonSchema?: JsonSchema,
+): JsonSchemaProperties => {
+  if (!jsonSchema || jsonSchema === true) {
+    return {}
+  }
+
+  const properties: JsonSchemaProperties = {}
+  if (jsonSchema.properties) {
+    Object.assign(properties, { ...jsonSchema.properties })
+  }
+
+  if (jsonSchema.if && jsonSchema.then) {
+    Object.assign(properties, getAllPossibleJsonSchemaProperties(jsonSchema.then))
+  }
+  if (jsonSchema.if && jsonSchema.else) {
+    Object.assign(properties, getAllPossibleJsonSchemaProperties(jsonSchema.else))
+  }
+
+  jsonSchema?.allOf?.forEach((s) => {
+    Object.assign(properties, getAllPossibleJsonSchemaProperties(s))
+  })
+
+  jsonSchema?.oneOf?.forEach((s) => {
+    Object.assign(properties, getAllPossibleJsonSchemaProperties(s))
+  })
+
+  jsonSchema?.anyOf?.forEach((s) => {
+    Object.assign(properties, getAllPossibleJsonSchemaProperties(s))
+  })
+
+  return properties
 }
 
 const getFormatFromItems = (items: JsonSchema | JsonSchema[] | undefined): string | undefined => {
@@ -213,6 +252,7 @@ export const xmlToJson = async (data: string, jsonSchema: JsonSchema): Promise<R
 }
 
 export const validateDataWithJsonSchema = async (data: any, schema: any) => {
+  // TODO: This instance of AJV needs to be reused between FE and Forms BE.
   const ajv = new Ajv({
     keywords: ajvKeywords,
     formats: ajvFormats,

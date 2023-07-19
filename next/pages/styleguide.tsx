@@ -28,7 +28,6 @@ import SingleCheckboxShowCase from '../components/styleguide/showcases/SingleChe
 import SnackbarShowCase from '../components/styleguide/showcases/SnackbarShowCase'
 import SpinnerShowCase from '../components/styleguide/showcases/SpinnerShowCase'
 import StatusBarShowCase from '../components/styleguide/showcases/StatusBarShowCase'
-import StepperShowCase from '../components/styleguide/showcases/StepperShowCase'
 import SummaryRowShowCase from '../components/styleguide/showcases/SummaryRowShowCase'
 import TagShowCase from '../components/styleguide/showcases/TagShowCase'
 import TextAreaFieldShowCase from '../components/styleguide/showcases/TextAreaFieldShowCase'
@@ -71,7 +70,8 @@ const Styleguide = ({ page }: AsyncServerProps<typeof getServerSideProps>) => {
           <SingleCheckboxShowCase />
           <CheckboxGroupShowCase />
           <RadioButtonShowCase />
-          <StepperShowCase />
+          {/* TODO: Fix stepper showcase */}
+          {/* <StepperShowCase /> */}
           <SummaryRowShowCase />
           <BannerShowCase />
           <ServiceCardShowCase />

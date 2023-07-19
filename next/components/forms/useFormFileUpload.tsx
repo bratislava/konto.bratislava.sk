@@ -21,6 +21,7 @@ import {
   FormFileUploadFileInfo,
   FormFileUploadStatusEnum,
 } from '../../frontend/types/formFileUploadTypes'
+import { InitialFormData } from '../../frontend/types/initialFormData'
 import { getAccessTokenOrLogout } from '../../frontend/utils/amplify'
 import {
   getFileInfoForNewFiles,
@@ -28,7 +29,6 @@ import {
   shouldPollServerFiles,
   uploadFile,
 } from '../../frontend/utils/formFileUpload'
-import { InitialFormData } from './useFormDataLoader'
 
 const FormFileUploadContext = createContext<FormFileUploadContextType | undefined>(undefined)
 

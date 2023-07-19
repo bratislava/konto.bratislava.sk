@@ -3,7 +3,7 @@ import { getFormDefinition } from '@backend/utils/forms'
 import { formsApi } from '@clients/forms'
 import { GetFileResponseDto } from '@clients/openapi-forms'
 import { RJSFSchema, UiSchema } from '@rjsf/utils'
-import { GetServerSidePropsContext } from 'next'
+import { GetServerSideProps } from 'next'
 import { useRouter } from 'next/router'
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
 
@@ -22,6 +22,11 @@ import { environment } from '../../../environment'
 import { InitialFormData } from '../../../frontend/types/initialFormData'
 import logger from '../../../frontend/utils/logger'
 
+type Params = {
+  slug: string
+  id?: string[]
+}
+
 type FormTestPageProps = {
   schema: RJSFSchema
   uiSchema: UiSchema
@@ -30,8 +35,10 @@ type FormTestPageProps = {
   ssrCurrentAuthProps: GetSSRCurrentAuth
 }
 
-export const getServerSideProps = async (ctx: GetServerSidePropsContext) => {
-  if (!environment.featureToggles.forms) return { notFound: true }
+export const getServerSideProps: GetServerSideProps<FormTestPageProps, Params> = async (ctx) => {
+  if (!environment.featureToggles.forms || !ctx.params) return { notFound: true }
+
+  const { slug, id: idParams } = ctx.params
 
   // TODO: Remove and support non-auth version of the page
   const ssrCurrentAuthProps = await getSSRCurrentAuth(ctx.req)
@@ -46,20 +53,23 @@ export const getServerSideProps = async (ctx: GetServerSidePropsContext) => {
 
   let formDefinition: FormDefinition
   try {
-    formDefinition = getFormDefinition(ctx.query.slug)
+    formDefinition = getFormDefinition(slug)
   } catch (error) {
     logger.error(error)
     return { notFound: true }
   }
 
-  const hasIdQueryParam = Array.isArray(ctx.query.id)
+  const hasIdQueryParam = Array.isArray(idParams)
+  const hasOneQueryParam = (property: typeof idParams): property is [string] =>
+    Array.isArray(idParams) && idParams.length === 1
 
   // It is not possible to have only one optional route parameter ([[id]]), so we have to check if it is an array and
   // if it has only one element.
-  if (hasIdQueryParam && (ctx.query.id as string[]).length !== 1) {
+  // TODO: Split into two files.
+  if (hasIdQueryParam && !hasOneQueryParam(idParams)) {
     return { notFound: true }
   }
-  const id = hasIdQueryParam ? (ctx.query?.id?.[0] as string) : null
+  const id = hasIdQueryParam ? idParams[0] : null
 
   const accessToken = await getSSRAccessToken(ctx.req)
   const getInitialFormData = () => {

@@ -1,3 +1,4 @@
+import { ResponseTaxDto } from '@clients/openapi-tax'
 import { useQuery } from '@tanstack/react-query'
 import Ajv, { FuncKeywordDefinition } from 'ajv'
 import addFormats from 'ajv-formats'
@@ -6,7 +7,7 @@ import { useEffect } from 'react'
 import { getTaxApi } from '../api/api'
 import { ajvFormats } from '../dtos/formStepperDto'
 import { TaxApiError } from '../dtos/generalApiDto'
-import { Tax, TaxJSONSchema } from '../dtos/taxDto'
+import { TaxJSONSchema } from '../dtos/taxDto'
 import logger from '../utils/logger'
 
 export const ajvKeywords: FuncKeywordDefinition[] = [
@@ -38,7 +39,7 @@ export const useTaxes = () => {
   // TODO handle 401 & token refreshing - for now, this should work reasonably as along as the page isn't opened for too long
   // TODO make sure log out -> log in as different user -> loading data does not load the data of previous user - without futher change it will now
   // TODO move towards react query
-  const queryResult = useQuery<Tax>(['/api/taxes'], () => getTaxApi(), { retry: false })
+  const queryResult = useQuery<ResponseTaxDto>(['/api/taxes'], () => getTaxApi(), { retry: false })
 
   useEffect(() => {
     if (

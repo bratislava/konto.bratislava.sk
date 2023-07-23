@@ -2,11 +2,12 @@
 // frontend code for calling api endpoints grouped
 import { cityAccount } from '@clients/city-account'
 import { ResponseGdprDataDto, ResponseVerificationIdentityCardToQueueDto } from '@clients/openapi-city-account'
+import { ResponseTaxDto } from '@clients/openapi-tax'
+import { taxApi } from '@clients/tax'
 import { RJSFSchema } from '@rjsf/utils'
 import { ErrorObject } from 'ajv'
 import { getAccessTokenOrLogout } from 'frontend/utils/amplify'
 
-import { environment } from '../../environment'
 import { ApiError, Gdpr, Identity, TaxApiError, UrlResult } from '../dtos/generalApiDto'
 import logger, { developmentLog } from '../utils/logger'
 
@@ -176,40 +177,25 @@ export const resetRcApi = async () => {
   return result.data;
 }
 
-export const getTaxApi = async () => {
-  const token = await getAccessTokenOrLogout()
+export const getTaxApi = async (): Promise<ResponseTaxDto> => {
+  const accessToken = await getAccessTokenOrLogout()
 
-  return fetchJsonApi(`${environment.taxesUrl}/tax/get-tax-by-year?year=2023`, {
-    method: 'GET',
-    headers: {
-      'Content-Type': 'application/json',
-      Authorization: `Bearer ${token}`,
-    },
-  })
+  const response = await taxApi.taxControllerGetActualTaxes(2023, { accessToken })
+  return response.data
 }
 
 export const getTaxPdfApi = async () => {
-  const token = await getAccessTokenOrLogout()
+  const accessToken = await getAccessTokenOrLogout();
 
-  return fetchJsonApi(`${environment.taxesUrl}/tax/get-tax-pdf-by-year?year=2023`, {
-    method: 'GET',
-    headers: {
-      'Content-Type': 'application/json',
-      Authorization: `Bearer ${token}`,
-    },
-  })
+  const response = await taxApi.taxControllerGetTaxByYearPdf(2023, { accessToken })
+  return response.data
 }
 
 export const getPaymentGatewayUrlApi = async (): Promise<UrlResult> => {
-  const token = await getAccessTokenOrLogout()
+  const accessToken = await getAccessTokenOrLogout();
 
-  return fetchJsonApi<UrlResult>(`${environment.taxesUrl}/payment/cardpay/by-year/2023`, {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-      Authorization: `Bearer ${token}`,
-    },
-  })
+  const result = await taxApi.paymentControllerPayment("2023", { accessToken })
+  return result.data;
 }
 
 export const getEnum = async (id?: string) => {

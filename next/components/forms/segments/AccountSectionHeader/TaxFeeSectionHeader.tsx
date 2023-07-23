@@ -6,6 +6,7 @@ import {
   ErrorIcon,
   PaymentIcon,
 } from '@assets/ui-icons'
+import { taxApi } from '@clients/tax'
 import cx from 'classnames'
 import { getAccessTokenOrLogout } from 'frontend/utils/amplify'
 import { useRouter } from 'next/router'

@@ -47,7 +47,7 @@ export const ajvFormats = {
 export const getFileIds = (schema: RJSFSchema, formData: GenericObjectType) => {
   const files: string[] = []
   const instance = new Ajv({
-    // strict: true,
+    strict: true,
     allErrors: true,
     keywords: [
       ...ajvBaseKeywords,
@@ -92,6 +92,7 @@ export const validateSummary = (
   const validator: ValidatorType = customizeValidator({
     customFormats: ajvFormats,
     ajvOptionsOverrides: {
+      strict: true,
       keywords: [
         ...ajvBaseKeywords,
         {
@@ -156,10 +157,14 @@ export const validateSummary = (
 export const validator: ValidatorType = customizeValidator({
   customFormats: ajvFormats,
   ajvOptionsOverrides: {
+    strict: true,
     keywords: [
       ...ajvBaseKeywords,
       {
         keyword: 'file',
+      },
+      {
+        keyword: 'fileArray',
       },
     ],
   },

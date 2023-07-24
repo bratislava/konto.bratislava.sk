@@ -20,7 +20,7 @@ export type SummaryWidgetType =
   | 'datepicker'
   | 'timepicker'
 
-type X =
+type TypeAndOptions =
   | {
       widgetType: 'select'
       options: SelectRJSFOptions
@@ -42,7 +42,7 @@ export type SummaryWidgetRJSFProps = Pick<
   WidgetProps,
   'id' | 'label' | 'value' | 'rawErrors' | 'uiSchema'
 > &
-  X
+  TypeAndOptions
 
 const ValueComponent = ({
   widgetType,
@@ -118,7 +118,6 @@ const SummaryWidgetRJSF = ({
   rawErrors,
   options,
   uiSchema,
-  ...rest
 }: SummaryWidgetRJSFProps) => {
   const { goToStepByFieldId } = useFormState()
 
@@ -138,8 +137,7 @@ const SummaryWidgetRJSF = ({
           isError: Boolean(rawErrors && rawErrors.length > 0),
         }}
         onGoToStep={() => {
-          console.log(id, widgetType, label, value, rawErrors, rest)
-          // goToStepByFieldId(id)
+          goToStepByFieldId(id)
         }}
       />
     </div>

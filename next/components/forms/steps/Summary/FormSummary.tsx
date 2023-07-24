@@ -1,7 +1,11 @@
 import cx from 'classnames'
 import { useMemo } from 'react'
 
-import { validateSummary, validator } from '../../../../frontend/dtos/formStepperDto'
+import {
+  defaultFormStateBehavior,
+  validateSummary,
+  validator,
+} from '../../../../frontend/dtos/formStepperDto'
 import { useFormState } from '../../FormStateProvider'
 import { useFormFileUpload } from '../../useFormFileUpload'
 import SummaryHeader from '../SummaryHeader'
@@ -30,6 +34,7 @@ const FormSummary = () => {
           formData={formData}
           validator={validator}
           extraErrors={errorSchema}
+          experimental_defaultFormStateBehavior={defaultFormStateBehavior}
           readonly
         />
       </div>

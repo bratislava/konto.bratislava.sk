@@ -11,7 +11,7 @@ type CheckboxUiOptions = {
   tooltip: string
 }
 
-type CheckboxesRJSFOptions = {
+export type CheckboxesRJSFOptions = {
   enumOptions?: EnumOptionsType[]
   variant?: 'basic' | 'boxed'
   checkboxOptions?: CheckboxUiOptions[]

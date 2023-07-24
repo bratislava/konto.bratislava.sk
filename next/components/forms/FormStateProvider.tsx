@@ -1,11 +1,19 @@
 import { GenericObjectType, RJSFSchema, UiSchema } from '@rjsf/utils'
 import { JSONSchema7 } from 'json-schema'
+import pick from 'lodash/pick'
 import { useTranslation } from 'next-i18next'
 import React, { createContext, PropsWithChildren, useContext, useMemo, useState } from 'react'
 
+import { getFileIds } from '../../frontend/dtos/formStepperDto'
 import { InitialFormData } from '../../frontend/types/initialFormData'
-import { getEvaluatedStepsSchemas, getStepsMetadata } from '../../frontend/utils/formState'
+import {
+  getEvaluatedStepsSchemas,
+  getFileUidsNaive,
+  getStepsMetadata,
+} from '../../frontend/utils/formState'
+import { isDefined } from '../../frontend/utils/general'
 import { FormStepIndex, FormStepMetadata } from './types/Steps'
+import { useFormFileUpload } from './useFormFileUpload'
 
 type SkipModal =
   | { open: true; skipAllowed: false; onSkip: () => void; onClose: () => void }
@@ -67,6 +75,7 @@ export const FormStateProvider = ({
   children,
 }: PropsWithChildren<FormStateProviderProps>) => {
   const { t } = useTranslation('forms')
+  const { keepFiles } = useFormFileUpload()
 
   const [stepIndex, setStepIndex] = useState<FormStepIndex>(0)
   const [formData, setFormData] = useState<GenericObjectType>(initialFormData.formDataJson)
@@ -159,7 +168,23 @@ export const FormStateProvider = ({
 
   const setStepFormData = (stepFormData: GenericObjectType) => {
     // TODO: Remove conditional fields on disappearance
-    setFormData({ ...formData, ...stepFormData })
+    const newData = { ...formData, ...stepFormData }
+    const gg = getEvaluatedStepsSchemas(schema, newData)
+    const ll = gg
+      .filter(isDefined)
+      .map((b) => b.properties && Object.keys(b.properties)[0])
+      .filter(isDefined)
+    console.log(gg, ll)
+    const newnew = pick(newData, ll)
+    console.log(newnew)
+    const now = performance.now()
+    const x = getFileIds(schema, newnew)
+    console.log(x, performance.now() - now)
+    const now2 = performance.now()
+    const y = getFileUidsNaive(newnew)
+    keepFiles(y)
+    console.log(y, performance.now() - now2)
+    setFormData(newnew)
   }
 
   const handleFormOnChange = (newFormData: GenericObjectType | undefined) => {

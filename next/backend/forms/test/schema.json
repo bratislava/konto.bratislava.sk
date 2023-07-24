@@ -390,31 +390,71 @@
             "importButtonOneFile": {
               "title": "Importuj jeden subor",
               "type": "string",
-              "format": "file"
+              "isFile": true
             },
             "importButtonMultipleFiles": {
               "title": "Importuj viac suborov",
               "type": "array",
               "items": {
                 "type": "string",
-                "format": "file"
+                "isFile":  true
               },
               "minItems": 1
             },
             "importDragAndDropOneFile": {
               "title": "Presun sem jeden subor",
               "type": "string",
-              "format": "file"
+              "isFile":  true
             },
             "importDragAndDropMultipleFiles": {
               "title": "Presun sem viac suborov",
               "type": "array",
               "items": {
                 "type": "string",
-                "format": "file"
+                "isFile":  true
+              }
+            },
+            "showConditionalFile": {
+              "type": "array",
+              "title": "Show conditional file",
+              "minItems": 0,
+              "maxItems": 1,
+              "uniqueItems": true,
+              "items": {
+                "anyOf": [
+                  {
+                    "title": "Show",
+                    "const": "show"
+                  }
+                ]
               }
             }
-          }
+          },
+          "allOf": [
+            {
+              "if": {
+                "properties": {
+                  "showConditionalFile": {
+                    "contains": {
+                      "type": "string",
+                      "const": "show"
+                    }
+                  }
+                },
+                "required": ["showConditionalFile"]
+              },
+              "then": {
+                "properties": {
+                  "conditionalFile": {
+                    "title": "Presun sem jeden subor",
+                    "type": "string",
+                    "isFile":  true
+                  }
+                }
+              }
+            }
+          ]
+
         }
       },
       "required": ["fileUploads"]
@@ -467,7 +507,8 @@
                   "chooseOneOfMore": {
                     "const": "overlay"
                   }
-                }
+                },
+                "required": ["chooseOneOfMore"]
               },
               "then": {
                 "required": ["overlayInput"],

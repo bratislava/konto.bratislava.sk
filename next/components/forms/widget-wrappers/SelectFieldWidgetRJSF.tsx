@@ -7,7 +7,7 @@ import { ExplicitOptionalType } from '../types/ExplicitOptional'
 import SelectField from '../widget-components/SelectField/SelectField'
 import { SelectOption } from '../widget-components/SelectField/SelectOption.interface'
 
-type SelectRJSFOptions = {
+export type SelectRJSFOptions = {
   enumOptions?: EnumOptionsType[]
   dropdownDivider?: boolean
   selectAllOption?: boolean

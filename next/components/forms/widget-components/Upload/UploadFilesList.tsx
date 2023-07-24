@@ -1,5 +1,6 @@
 import { useTranslation } from 'next-i18next'
 import React from 'react'
+import { Button } from 'react-aria-components'
 
 import { FormFileUploadFileInfo } from '../../../../frontend/types/formFileUploadTypes'
 import { isDefined } from '../../../../frontend/utils/general'
@@ -10,6 +11,7 @@ interface UploadedFilesListProps {
   getFileInfoById: (id: string) => FormFileUploadFileInfo
   onFileRemove?: (id: string) => void
   onFileRetry?: (id: string) => void
+  onFileDownload?: (id: string) => void
 }
 
 const UploadFilesList = ({
@@ -17,6 +19,7 @@ const UploadFilesList = ({
   getFileInfoById,
   onFileRetry = () => {},
   onFileRemove = () => {},
+  onFileDownload = () => {},
 }: UploadedFilesListProps) => {
   const { t } = useTranslation('account', { keyPrefix: 'Upload' })
 
@@ -44,6 +47,7 @@ const UploadFilesList = ({
               onFileRetry={() => onFileRetry(fileId)}
               onFileRemove={() => onFileRemove(fileId)}
             />
+            <Button onPress={() => onFileDownload(fileId)}>Download file</Button>
           </li>
         ))}
       </ul>

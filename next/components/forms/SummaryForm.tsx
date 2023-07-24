@@ -1,32 +1,35 @@
 import { ThemeProps, withTheme } from '@rjsf/core'
-import { GenericObjectType, ObjectFieldTemplateProps } from '@rjsf/utils'
-import { FC } from 'react'
+import { FieldProps, GenericObjectType, ObjectFieldTemplateProps } from '@rjsf/utils'
+import { Fragment } from 'react'
 
-import DoubledInputSummaryFieldRJSF from './widget-wrappers/DoubledInputSummaryFieldRJSF'
-import SummaryWidgetRJSF from './widget-wrappers/SummaryWidgetRJSF'
+import SummaryFieldRJSF, {
+  SummaryFieldRJSFProps,
+  SummaryFieldType,
+} from './widget-wrappers/SummaryFieldRJSF'
+import SummaryWidgetRJSF, {
+  SummaryWidgetRJSFProps,
+  SummaryWidgetType,
+} from './widget-wrappers/SummaryWidgetRJSF'
 
-/**
- * TODO: WORKS IN PROGRESS
- *
- * TEMPORARY IMPLEMENTATION
- */
+const wrapWidget = (widgetType: SummaryWidgetType) =>
+  function wrap(props: Omit<SummaryWidgetRJSFProps, 'widgetType'>) {
+    return <SummaryWidgetRJSF {...props} widgetType={widgetType} />
+  }
 
-const wrapWidget = <T,>(Widget: FC<T>, fieldWidgetType: string) =>
-  function wrap(props: Omit<T, 'fieldWidgetType'>) {
-    return <Widget {...(props as T)} fieldWidgetType={fieldWidgetType} />
+const wrapField = (fieldType: SummaryFieldType) =>
+  function wrap(props: Omit<SummaryFieldRJSFProps, 'fieldType'>) {
+    return <SummaryFieldRJSF {...props} fieldType={fieldType} />
   }
 
 const ObjectFieldTemplate = ({ title, properties, idSchema }: ObjectFieldTemplateProps) => {
   const splitId = idSchema.$id.split('_')
-  const displayTitle = splitId.length === 2 && splitId[1] === 'root'
+  const isStepObject = splitId.length === 2 && splitId[0] === 'root'
 
   return (
     <div>
-      {displayTitle && <h2 className="text-h2-medium mb-6 mt-8">{title}</h2>}
+      {isStepObject && <h2 className="text-h2-medium mb-6 mt-8">{title}</h2>}
       {properties.map((element, index) => (
-        <div className="property-wrapper" key={index}>
-          {element.content}
-        </div>
+        <Fragment key={index}>{element.content}</Fragment>
       ))}
     </div>
   )
@@ -37,21 +40,20 @@ const theme: ThemeProps = {
     ObjectFieldTemplate,
   },
   widgets: {
-    SelectField: wrapWidget(SummaryWidgetRJSF, 'select'),
-    InputField: wrapWidget(SummaryWidgetRJSF, 'input'),
-    RadioButton: wrapWidget(SummaryWidgetRJSF, 'radio'),
-    TextArea: wrapWidget(SummaryWidgetRJSF, 'textarea'),
-    Checkboxes: wrapWidget(SummaryWidgetRJSF, 'checkboxes'),
-    Upload: wrapWidget(SummaryWidgetRJSF, 'upload'),
-    DatePicker: wrapWidget(SummaryWidgetRJSF, 'datepicker'),
-    TimePicker: wrapWidget(SummaryWidgetRJSF, 'timepicker'),
-    // TextWidget: wrapWidget(SummaryWidgetRJSF, 'text'),
+    SelectField: wrapWidget('select'),
+    InputField: wrapWidget('input'),
+    RadioButton: wrapWidget('radio'),
+    TextArea: wrapWidget('textarea'),
+    Checkboxes: wrapWidget('checkboxes'),
+    Upload: wrapWidget('upload'),
+    DatePicker: wrapWidget('datepicker'),
+    TimePicker: wrapWidget('timepicker'),
   },
   fields: {
-    doubledInput: DoubledInputSummaryFieldRJSF,
-    dateFromTo: wrapWidget(SummaryWidgetRJSF, 'dateFromTo'),
-    timeFromTo: wrapWidget(SummaryWidgetRJSF, 'timeFromTo'),
-    dateTime: wrapWidget(SummaryWidgetRJSF, 'dateTime'),
+    doubledInput: wrapField('doubledInput'),
+    dateFromTo: wrapField('dateFromTo'),
+    timeFromTo: wrapField('timeFromTo'),
+    dateTime: wrapField('dateTime'),
   },
 }
 

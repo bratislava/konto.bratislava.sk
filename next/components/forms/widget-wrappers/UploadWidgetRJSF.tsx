@@ -100,6 +100,7 @@ const UploadWidgetRJSF = (props: UploadWidgetRJSFProps) => {
         onUpload={handleUpload}
         onFileRemove={handleFileRemove}
         onFileRetry={handleFileRetry}
+        onFileDownload={formFileUpload.downloadFile}
         getFileInfoById={formFileUpload.getFileInfoById}
       />
     </WidgetWrapper>

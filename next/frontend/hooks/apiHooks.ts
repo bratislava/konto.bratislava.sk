@@ -4,7 +4,7 @@ import addFormats from 'ajv-formats'
 import { useEffect } from 'react'
 
 import { getTaxApi } from '../api/api'
-import { ajvFormats, ajvKeywords } from '../dtos/formStepperDto'
+import { ajvBaseKeywords, ajvFormats } from '../dtos/formStepperDto'
 import { TaxApiError } from '../dtos/generalApiDto'
 import { Tax, TaxJSONSchema } from '../dtos/taxDto'
 import logger from '../utils/logger'
@@ -32,7 +32,7 @@ export const useTaxes = () => {
     if (queryResult.data) {
       // todo use single ajv instance with multiple schemas, as per recommendations - https://ajv.js.org/guide/managing-schemas.html#compiling-during-initialization
       const ajv = new Ajv({
-        keywords: ajvKeywords,
+        keywords: ajvBaseKeywords,
         formats: ajvFormats,
       })
       addFormats(ajv)

@@ -13,6 +13,7 @@ import React, {
 } from 'react'
 import { useIsMounted } from 'usehooks-ts'
 
+import { environment } from '../../environment'
 import {
   FormFileUploadClientFileInfo,
   FormFileUploadClientFileStatus,
@@ -157,6 +158,10 @@ export const FormFileUploadStateProvider = ({
         abortController,
         onSuccess: () => {
           updateFileStatus({ type: FormFileUploadStatusEnum.UploadDone })
+
+          // This forces server files to be refetched and get scanning status for the uploaded file.
+          // eslint-disable-next-line @typescript-eslint/no-floating-promises
+          queryClient.refetchQueries({ queryKey: serverFilesQueryKey })
         },
         onError: (error) => {
           updateFileStatus({
@@ -165,10 +170,6 @@ export const FormFileUploadStateProvider = ({
             error: error.toString(),
             canRetry: true,
           })
-
-          // This forces server files to be refetched and get scanning status for the uploaded file.
-          // eslint-disable-next-line @typescript-eslint/no-floating-promises
-          queryClient.refetchQueries({ queryKey: serverFilesQueryKey })
         },
         onProgress: (progress) => {
           updateFileStatus({
@@ -204,6 +205,11 @@ export const FormFileUploadStateProvider = ({
     updateClientFiles(getClientFiles().filter((file) => !ids.includes(file.id)))
   }
 
+  const keepFiles = (ids: string[]) => {
+    const filesToRemove = getClientFiles().filter((file) => !ids.includes(file.id))
+    removeFiles(filesToRemove.map((file) => file.id))
+  }
+
   /**
    * Files are retried in a way that the same File object is reused, but a new id is generated for it.
    * It wouldn't be possible to reuse the same id as the server might flag it as used.
@@ -222,6 +228,20 @@ export const FormFileUploadStateProvider = ({
     updateClientFiles([...getClientFiles().filter((file) => file.id !== id), ...newFiles])
 
     return newFiles[0].id
+  }
+
+  // eslint-disable-next-line unicorn/consistent-function-scoping
+  const downloadFile = async (id: string) => {
+    try {
+      const accessToken = await getAccessTokenOrLogout()
+      const response = await formsApi.filesControllerDownloadToken(id, {
+        accessToken,
+      })
+      const { jwt } = response.data
+      window.open(`${environment.formsUrl}/files/download/file/${jwt}`, '_blank')
+    } catch (error) {
+      // TODO handle error
+    }
   }
 
   const mergedFiles = useMemo(() => {
@@ -264,7 +284,9 @@ export const FormFileUploadStateProvider = ({
   const context = {
     uploadFiles,
     removeFiles,
+    keepFiles,
     retryFile,
+    downloadFile,
     getFileInfoById,
   }
 

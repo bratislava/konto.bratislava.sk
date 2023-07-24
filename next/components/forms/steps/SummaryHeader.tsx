@@ -1,7 +1,16 @@
 import { useTranslation } from 'next-i18next'
 
+import { FormFileUploadFileInfo } from '../../../frontend/types/formFileUploadTypes'
+import Alert from '../info-components/Alert'
+
 // TODO: Show file upload info
-const SummaryHeader = () => {
+
+type SummaryHeaderProps = {
+  infectedFiles: FormFileUploadFileInfo[]
+  scanningFiles: FormFileUploadFileInfo[]
+}
+
+const SummaryHeader = ({ infectedFiles, scanningFiles }: SummaryHeaderProps) => {
   const { t } = useTranslation('forms')
 
   // const errorFileScans: FileScan[] = fileScans.filter((scan) => scan.fileState === 'error')
@@ -10,27 +19,29 @@ const SummaryHeader = () => {
   return (
     <>
       <h1 className="text-h1-medium font-semibold">{t('summary')}</h1>
-      {/* {errorFileScans.length === 1 && ( */}
-      {/*  <Alert */}
-      {/*    type="error" */}
-      {/*    message={t('errors.file_scan', { name: errorFileScansNames })} */}
-      {/*    fullWidth */}
-      {/*    className="mt-4" */}
-      {/*    solid */}
-      {/*  /> */}
-      {/* )} */}
-      {/* {errorFileScans.length > 1 && ( */}
-      {/*  <Alert */}
-      {/*    type="error" */}
-      {/*    message={t('errors.file_scan_multiple', { name: errorFileScansNames })} */}
-      {/*    fullWidth */}
-      {/*    className="mt-4" */}
-      {/*    solid */}
-      {/*  /> */}
-      {/* )} */}
-      {/* {fileScans.some((scan) => scan.fileState === 'scan') && ( */}
-      {/*  <Alert type="warning" message={t('warnings.file_scan')} fullWidth className="mt-4" /> */}
-      {/* )} */}
+      {infectedFiles.length === 1 && (
+        <Alert
+          type="error"
+          message={t('errors.file_scan', { name: infectedFiles[0].fileName })}
+          fullWidth
+          className="mt-4"
+          solid
+        />
+      )}
+      {infectedFiles.length > 1 && (
+        <Alert
+          type="error"
+          message={t('errors.file_scan_multiple', {
+            name: infectedFiles.map((file) => file.fileName).join(', '),
+          })}
+          fullWidth
+          className="mt-4"
+          solid
+        />
+      )}
+      {scanningFiles.length > 0 && (
+        <Alert type="warning" message={t('warnings.file_scan')} fullWidth className="mt-4" />
+      )}
     </>
   )
 }

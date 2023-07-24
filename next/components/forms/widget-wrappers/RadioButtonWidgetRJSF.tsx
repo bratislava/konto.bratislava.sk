@@ -11,7 +11,7 @@ type RadioUiOptions = {
   tooltip: string
 }
 
-type RadioButtonRJSFOptions = {
+export type RadioButtonRJSFOptions = {
   enumOptions?: EnumOptionsType[]
   className?: string
   radioOptions?: RadioUiOptions[]

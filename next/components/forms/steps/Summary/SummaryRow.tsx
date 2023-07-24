@@ -1,10 +1,11 @@
 import EditIcon from '@assets/images/new-icons/ui/pen.svg'
 import cx from 'classnames'
+import { ReactNode } from 'react'
 
 export interface SummaryRowData {
   label: string
-  value?: string | null
-  schemaPath: string
+  value?: ReactNode | string | null
+  schemaPath?: string
   isError: boolean
   isConditional?: boolean
 }
@@ -25,7 +26,7 @@ const SummaryRow = (props: SummaryRowProps) => {
     'hover:border-gray-700': isEditable,
   })
 
-  const labelClassName = cx('w-full', {
+  const labelClassName = cx('w-full flex-1', {
     'text-p1-semibold': size === 'large',
     'text-p2-semibold': size === 'small',
   })
@@ -38,7 +39,7 @@ const SummaryRow = (props: SummaryRowProps) => {
   return (
     <div className={containerClassName}>
       <p className={labelClassName}>{data.label}</p>
-      <div className="w-full flex flex-row items-center">
+      <div className="w-full flex flex-row items-center flex-1">
         <p className={valueClassName}>{data.value || '-'}</p>
         {isEditable && (
           <div className="w-5 lg:hidden hover:lg:block">

@@ -19,18 +19,18 @@ type MenuItem = {
 }
 
 const MenuList = () => {
-  const { exportXml, exportPdf, importXml } = useFormExportImport()
+  const { exportXml, exportPdf, importXml, saveConcept } = useFormExportImport()
 
   const { t } = useTranslation('forms')
 
   const { isAuthenticated } = useServerSideAuth()
   const [registrationModal, setRegistrationModal] = useState<boolean>(false)
 
-  const handleOnPressSaveConcept = () => {
+  const handleOnPressSaveConcept = async () => {
     if (!isAuthenticated) {
       setRegistrationModal(true)
     } else {
-      throw new Error('Not implemented')
+      await saveConcept()
     }
   }
 

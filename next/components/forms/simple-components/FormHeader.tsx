@@ -19,7 +19,7 @@ import { useState } from 'react'
 import { useFormExportImport } from '../../../frontend/hooks/useFormExportImport'
 
 const FormHeader = () => {
-  const { exportXml, exportPdf, importXml } = useFormExportImport()
+  const { exportXml, exportPdf, importXml, saveConcept } = useFormExportImport()
   const { t } = useTranslation('forms')
   const { isAuthenticated } = useServerSideAuth()
 
@@ -45,11 +45,11 @@ const FormHeader = () => {
     },
   ]
 
-  const handleOnPressSaveConcept = () => {
+  const handleOnPressSaveConcept = async () => {
     if (!isAuthenticated) {
       setRegistrationModal(true)
     } else {
-      throw new Error('Not implemented')
+      await saveConcept()
     }
   }
 

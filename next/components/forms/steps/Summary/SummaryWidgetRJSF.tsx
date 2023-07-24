@@ -3,11 +3,12 @@ import { WidgetProps } from '@rjsf/utils'
 import React from 'react'
 import { useDateFormatter } from 'react-aria'
 
-import { useFormState } from '../FormStateProvider'
-import SummaryRow from '../steps/Summary/SummaryRow'
-import { CheckboxesRJSFOptions } from './CheckboxWidgetRJSF'
-import { RadioButtonRJSFOptions } from './RadioButtonWidgetRJSF'
-import { SelectRJSFOptions } from './SelectFieldWidgetRJSF'
+import { useFormState } from '../../FormStateProvider'
+import { CheckboxesRJSFOptions } from '../../widget-wrappers/CheckboxWidgetRJSF'
+import { RadioButtonRJSFOptions } from '../../widget-wrappers/RadioButtonWidgetRJSF'
+import { SelectRJSFOptions } from '../../widget-wrappers/SelectFieldWidgetRJSF'
+import SummaryFiles from './SummaryFiles'
+import SummaryRow from './SummaryRow'
 
 export type SummaryWidgetType =
   | 'select'
@@ -59,7 +60,6 @@ const ValueComponent = ({
     case 'select':
       const selectOptions = options as SelectRJSFOptions
       return (
-        // eslint-disable-next-line react/jsx-no-useless-fragment
         <>
           {selectOptions.enumOptions?.find((option) => option.value === value)?.label ??
             (value as string)}
@@ -68,7 +68,6 @@ const ValueComponent = ({
     case 'radio':
       const radioOptions = options as RadioButtonRJSFOptions
       return (
-        // eslint-disable-next-line react/jsx-no-useless-fragment
         <>
           {radioOptions.enumOptions?.find((option) => option.value === value)?.label ??
             (value as string)}
@@ -90,18 +89,21 @@ const ValueComponent = ({
         </>
       )
     case 'upload':
-      return <a href={value}>File</a>
+      return <SummaryFiles files={value} />
     case 'datepicker':
-      const parsed = parseDate(value as string)
-      return <>{formatter.format(parsed.toDate(getLocalTimeZone()))}</>
+      try {
+        const parsed = parseDate(value as string)
+        return <>{formatter.format(parsed.toDate(getLocalTimeZone()))}</>
+      } catch (error) {
+        // TODO improve
+        return <>{value as string}</>
+      }
     case 'timepicker':
-      // eslint-disable-next-line react/jsx-no-useless-fragment
       return <>{value as string}</>
     case 'input':
       if (uiSchema?.['ui:options']?.type === 'password') {
         return <>{(value as string).replace(/./g, '●')}</>
       }
-      // eslint-disable-next-line react/jsx-no-useless-fragment
       return <>{value as string}</>
     default:
       return <>-</>

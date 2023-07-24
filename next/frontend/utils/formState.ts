@@ -71,7 +71,7 @@ export const getStepsMetadata = (
   ]
 }
 
-export const getFileUidsNaive = (formData: GenericObjectType) => {
+export const getFileUuidsNaive = (formData: GenericObjectType) => {
   return traverse(formData).reduce(function traverseFn(acc: string[], value) {
     if (
       this.isLeaf &&

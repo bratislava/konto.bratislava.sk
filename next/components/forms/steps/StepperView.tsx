@@ -39,7 +39,7 @@ const StepperView = ({ forceMobileSize }: StepperViewProps) => {
 
   return (
     <>
-      <div className={cx('hidden', { 'lg:block': !forceMobileSize })}>
+      <div className={cx('hidden sticky', { 'lg:block': !forceMobileSize })}>
         <StepperViewList onSkipToStep={handleOnSkipToStep} />
       </div>
       <div

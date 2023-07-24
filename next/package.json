@@ -94,6 +94,7 @@
     "@types/node": "18.11.18",
     "@types/react": "18.0.28",
     "@types/react-dom": "18.0.11",
+    "@types/traverse": "^0.6.32",
     "@types/xml2js": "^0.4.11",
     "@typescript-eslint/eslint-plugin": "^5.56.0",
     "@typescript-eslint/parser": "^5.54.0",

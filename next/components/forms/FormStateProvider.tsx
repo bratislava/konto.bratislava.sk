@@ -4,11 +4,10 @@ import pick from 'lodash/pick'
 import { useTranslation } from 'next-i18next'
 import React, { createContext, PropsWithChildren, useContext, useMemo, useState } from 'react'
 
-import { getFileIds } from '../../frontend/dtos/formStepperDto'
 import { InitialFormData } from '../../frontend/types/initialFormData'
 import {
   getEvaluatedStepsSchemas,
-  getFileUidsNaive,
+  getFileUuidsNaive,
   getStepsMetadata,
 } from '../../frontend/utils/formState'
 import { isDefined } from '../../frontend/utils/general'
@@ -22,6 +21,7 @@ type SkipModal =
 interface FormState {
   schema: RJSFSchema
   uiSchema: UiSchema
+  formId: string
   formSlug: string
   formData: GenericObjectType
   skipModal: SkipModal
@@ -167,24 +167,17 @@ export const FormStateProvider = ({
   }
 
   const setStepFormData = (stepFormData: GenericObjectType) => {
-    // TODO: Remove conditional fields on disappearance
     const newData = { ...formData, ...stepFormData }
-    const gg = getEvaluatedStepsSchemas(schema, newData)
-    const ll = gg
+    const evaluatedSchemas = getEvaluatedStepsSchemas(schema, newData)
+    const propertiesToKeep = evaluatedSchemas
       .filter(isDefined)
-      .map((b) => b.properties && Object.keys(b.properties)[0])
+      .map((innerSchema) => innerSchema.properties && Object.keys(innerSchema.properties)[0])
       .filter(isDefined)
-    console.log(gg, ll)
-    const newnew = pick(newData, ll)
-    console.log(newnew)
-    const now = performance.now()
-    const x = getFileIds(schema, newnew)
-    console.log(x, performance.now() - now)
-    const now2 = performance.now()
-    const y = getFileUidsNaive(newnew)
-    keepFiles(y)
-    console.log(y, performance.now() - now2)
-    setFormData(newnew)
+    const pickedPropertiesData = pick(newData, propertiesToKeep)
+    const fileUuids = getFileUuidsNaive(pickedPropertiesData)
+
+    keepFiles(fileUuids)
+    setFormData(pickedPropertiesData)
   }
 
   const handleFormOnChange = (newFormData: GenericObjectType | undefined) => {
@@ -222,6 +215,7 @@ export const FormStateProvider = ({
   const context = {
     schema,
     uiSchema,
+    formId: initialFormData.formId,
     formSlug,
     formData,
     skipModal,

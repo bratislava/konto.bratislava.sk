@@ -46,7 +46,7 @@ export const getFileIds = (schema: RJSFSchema, formData: GenericObjectType) => {
     keywords: [
       ...ajvBaseKeywords,
       {
-        keyword: 'isFile',
+        keyword: 'file',
         validate: (schema, data) => {
           if (data) {
             files.push(data)
@@ -62,6 +62,14 @@ export const getFileIds = (schema: RJSFSchema, formData: GenericObjectType) => {
   return files
 }
 
+const validateFile = (fileInfo: FormFileUploadFileInfo) => {
+  if (['ScanInfected', 'ScanError', 'UploadError', 'UnknownFile'].includes(fileInfo.status.type)) {
+    return false
+  }
+
+  return true
+}
+
 export const validateSummary = (
   schema: RJSFSchema,
   formData: GenericObjectType,
@@ -69,6 +77,7 @@ export const validateSummary = (
 ) => {
   const infectedFiles: FormFileUploadFileInfo[] = []
   const scanningFiles: FormFileUploadFileInfo[] = []
+  const scanErrorFiles: FormFileUploadFileInfo[] = []
 
   const validator: ValidatorType = customizeValidator({
     customFormats: ajvFormats,
@@ -76,24 +85,42 @@ export const validateSummary = (
       keywords: [
         ...ajvBaseKeywords,
         {
-          keyword: 'isFile',
-          validate: (schema, data) => {
+          keyword: 'file',
+          validate: (schemaInner, data) => {
             if (data) {
+              if (typeof data !== 'string') {
+                return false
+              }
               const fileInfo = getFileInfoById(data)
+
+              if (fileInfo.status.type === 'ScanError') {
+                scanErrorFiles.push(fileInfo)
+              }
               if (fileInfo.status.type === 'ScanInfected') {
                 infectedFiles.push(fileInfo)
-                return false
               }
               if (fileInfo.status.type === 'Scanning' || fileInfo.status.type === 'UploadDone') {
                 scanningFiles.push(fileInfo)
               }
-              if (
-                fileInfo.status.type === 'ScanError' ||
-                fileInfo.status.type === 'UploadError' ||
-                fileInfo.status.type === 'UnknownFile'
-              ) {
-                return false
-              }
+
+              return validateFile(fileInfo)
+            }
+
+            return true
+          },
+        },
+        {
+          keyword: 'fileArray',
+          validate: (schemaInner, data) => {
+            if (data && Array.isArray(data)) {
+              const validatedFiles = data.map((fileId) => {
+                if (typeof fileId !== 'string') {
+                  return false
+                }
+
+                return validateFile(getFileInfoById(fileId))
+              })
+              return validatedFiles.every(Boolean)
             }
 
             return true
@@ -106,7 +133,7 @@ export const validateSummary = (
   const defaultFormData = getDefaultFormState(validator, schema, formData)
   const { errorSchema } = validator.validateFormData(defaultFormData, schema)
 
-  return { infectedFiles, scanningFiles, errorSchema }
+  return { infectedFiles, scanningFiles, scanErrorFiles, errorSchema }
 }
 
 export const validator: ValidatorType = customizeValidator({
@@ -115,7 +142,7 @@ export const validator: ValidatorType = customizeValidator({
     keywords: [
       ...ajvBaseKeywords,
       {
-        keyword: 'isFile',
+        keyword: 'file',
       },
     ],
   },

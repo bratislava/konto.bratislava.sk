@@ -8,9 +8,10 @@ import Alert from '../info-components/Alert'
 type SummaryHeaderProps = {
   infectedFiles: FormFileUploadFileInfo[]
   scanningFiles: FormFileUploadFileInfo[]
+  scanErrorFiles: FormFileUploadFileInfo[]
 }
 
-const SummaryHeader = ({ infectedFiles, scanningFiles }: SummaryHeaderProps) => {
+const SummaryHeader = ({ infectedFiles, scanningFiles, scanErrorFiles }: SummaryHeaderProps) => {
   const { t } = useTranslation('forms')
 
   // const errorFileScans: FileScan[] = fileScans.filter((scan) => scan.fileState === 'error')
@@ -39,7 +40,8 @@ const SummaryHeader = ({ infectedFiles, scanningFiles }: SummaryHeaderProps) => 
           solid
         />
       )}
-      {scanningFiles.length > 0 && (
+      {/* TODO: Improve messages */}
+      {scanErrorFiles.length > 0 && (
         <Alert type="warning" message={t('warnings.file_scan')} fullWidth className="mt-4" />
       )}
     </>

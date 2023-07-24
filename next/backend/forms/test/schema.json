@@ -390,29 +390,31 @@
             "importButtonOneFile": {
               "title": "Importuj jeden subor",
               "type": "string",
-              "isFile": true
+              "file": true
             },
             "importButtonMultipleFiles": {
               "title": "Importuj viac suborov",
               "type": "array",
               "items": {
                 "type": "string",
-                "isFile":  true
+                "file":  true
               },
+              "fileArray": true,
               "minItems": 1
             },
             "importDragAndDropOneFile": {
               "title": "Presun sem jeden subor",
               "type": "string",
-              "isFile":  true
+              "file":  true
             },
             "importDragAndDropMultipleFiles": {
               "title": "Presun sem viac suborov",
               "type": "array",
               "items": {
                 "type": "string",
-                "isFile":  true
-              }
+                "file":  true
+              },
+              "fileArray": true
             },
             "showConditionalFile": {
               "type": "array",
@@ -448,7 +450,7 @@
                   "conditionalFile": {
                     "title": "Presun sem jeden subor",
                     "type": "string",
-                    "isFile":  true
+                    "file":  true
                   }
                 }
               }

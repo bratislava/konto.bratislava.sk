@@ -2,14 +2,8 @@ import { ThemeProps, withTheme } from '@rjsf/core'
 import { FieldProps, GenericObjectType, ObjectFieldTemplateProps } from '@rjsf/utils'
 import { Fragment } from 'react'
 
-import SummaryFieldRJSF, {
-  SummaryFieldRJSFProps,
-  SummaryFieldType,
-} from './widget-wrappers/SummaryFieldRJSF'
-import SummaryWidgetRJSF, {
-  SummaryWidgetRJSFProps,
-  SummaryWidgetType,
-} from './widget-wrappers/SummaryWidgetRJSF'
+import SummaryFieldRJSF, { SummaryFieldRJSFProps, SummaryFieldType } from './SummaryFieldRJSF'
+import SummaryWidgetRJSF, { SummaryWidgetRJSFProps, SummaryWidgetType } from './SummaryWidgetRJSF'
 
 const wrapWidget = (widgetType: SummaryWidgetType) =>
   function wrap(props: Omit<SummaryWidgetRJSFProps, 'widgetType'>) {

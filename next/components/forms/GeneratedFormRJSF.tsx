@@ -1,7 +1,7 @@
 import cx from 'classnames'
 import MenuList from 'components/forms/steps/MenuList'
 
-import { validator } from '../../frontend/dtos/formStepperDto'
+import { defaultFormStateBehavior, validator } from '../../frontend/dtos/formStepperDto'
 import FormControls from './FormControls'
 import { useFormState } from './FormStateProvider'
 import FormModals from './segments/FormModals/FormModals'
@@ -50,6 +50,7 @@ const GeneratedFormRJSF = () => {
                 showErrorList={false}
                 omitExtraData
                 liveOmit
+                experimental_defaultFormStateBehavior={defaultFormStateBehavior}
               >
                 <FormControls />
               </ThemedForm>

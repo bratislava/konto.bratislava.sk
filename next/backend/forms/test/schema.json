@@ -400,6 +400,7 @@
                 "file":  true
               },
               "fileArray": true,
+              "default": [],
               "minItems": 1
             },
             "importDragAndDropOneFile": {

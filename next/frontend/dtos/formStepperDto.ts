@@ -1,4 +1,10 @@
-import { GenericObjectType, getDefaultFormState, RJSFSchema, ValidatorType } from '@rjsf/utils'
+import {
+  Experimental_DefaultFormStateBehavior,
+  GenericObjectType,
+  getDefaultFormState,
+  RJSFSchema,
+  ValidatorType,
+} from '@rjsf/utils'
 import { customizeValidator } from '@rjsf/validator-ajv8'
 import Ajv, { FuncKeywordDefinition } from 'ajv'
 
@@ -70,6 +76,10 @@ const validateFile = (fileInfo: FormFileUploadFileInfo) => {
   return true
 }
 
+export const defaultFormStateBehavior: Experimental_DefaultFormStateBehavior = {
+  arrayMinItems: { populate: 'never' },
+}
+
 export const validateSummary = (
   schema: RJSFSchema,
   formData: GenericObjectType,
@@ -130,7 +140,14 @@ export const validateSummary = (
     },
   })
 
-  const defaultFormData = getDefaultFormState(validator, schema, formData)
+  const defaultFormData = getDefaultFormState(
+    validator,
+    schema,
+    formData,
+    undefined,
+    undefined,
+    defaultFormStateBehavior,
+  )
   const { errorSchema } = validator.validateFormData(defaultFormData, schema)
 
   return { infectedFiles, scanningFiles, scanErrorFiles, errorSchema }

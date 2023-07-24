@@ -1,10 +1,10 @@
 import { DownloadIcon } from '@assets/ui-icons'
+import type { ResponseTaxDto } from '@clients/openapi-tax'
 import { useRouter } from 'next/router'
 import { useTranslation } from 'next-i18next'
 import React from 'react'
 
 import { getPaymentGatewayUrlApi } from '../../../../../frontend/api/api'
-import { Tax } from '../../../../../frontend/dtos/taxDto'
 import { taxStatusHelper } from '../../../../../frontend/utils/general'
 import logger from '../../../../../frontend/utils/logger'
 import AccordionPaymentSchedule from '../../../simple-components/AccordionPaymentSchedule'
@@ -13,7 +13,7 @@ import ClipboardCopy from '../../../simple-components/ClipboardCopy'
 import TaxFooter from './TaxFooter'
 
 interface PaymentDataProps {
-  tax: Tax
+  tax: ResponseTaxDto
 }
 
 const PaymentData = ({ tax }: PaymentDataProps) => {

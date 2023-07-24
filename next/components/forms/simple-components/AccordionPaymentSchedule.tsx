@@ -1,10 +1,10 @@
 import { ChevronDownIcon } from '@assets/ui-icons'
+import type { ResponseTaxDto } from '@clients/openapi-tax'
 import { AddToCalendarButton } from 'add-to-calendar-button-react'
 import cx from 'classnames'
 import { useTranslation } from 'next-i18next'
 import React, { useState } from 'react'
 
-import { Tax } from '../../../frontend/dtos/taxDto'
 import { formatCurrency } from '../../../frontend/utils/general'
 import PersonIcon from '../icon-components/PersonIcon'
 import AccountMarkdownModal from '../segments/AccountModal/AccountModal'
@@ -16,13 +16,13 @@ export type AccordionBase = {
   title: string
   icon?: boolean
   className?: string
-  tax: Tax
+  tax: ResponseTaxDto
 }
 export const isAccordionSizeType = (size: string) =>
   ['xs', 'sm', 'md', 'lg'].includes(size) ? size : 'sm'
 
 interface PaymentScheduleViewProps {
-  tax: Tax
+  tax: ResponseTaxDto
 }
 
 const PaymentScheduleView = ({ tax }: PaymentScheduleViewProps) => {

@@ -1,6 +1,6 @@
+import type { ResponseTaxDto } from '@clients/openapi-tax'
 import { Auth } from 'aws-amplify'
 import { Address } from 'frontend/dtos/accountDto'
-import { Tax } from 'frontend/dtos/taxDto'
 import useJsonParseMemo from 'frontend/hooks/useJsonParseMemo'
 import { useServerSideAuth } from 'frontend/hooks/useServerSideAuth'
 import { GENERIC_ERROR_MESSAGE, isError } from 'frontend/utils/errors'
@@ -14,7 +14,7 @@ import SummaryRow from '../../../steps/Summary/SummaryRow'
 import CorrespondenceAddressModal from '../../CorrespondenceAddressModal/CorrespondenceAddressModal'
 
 interface ContactInformationSectionProps {
-  tax: Tax
+  tax: ResponseTaxDto
 }
 
 const postalCodeFormat = (code?: string): string =>

@@ -1,8 +1,8 @@
+import type { ResponseTaxDto } from '@clients/openapi-tax'
 import currency from 'currency.js'
 import React from 'react'
 
 import { environment } from '../../environment'
-import { Tax } from '../dtos/taxDto'
 
 export interface DocumentsWrapper {
   mainDocument?: {
@@ -86,7 +86,7 @@ export const formatCurrency = (amount: number | undefined | null) => {
   return currency(amount, { fromCents: true }).format({ symbol: '€', decimal: ',', separator: ' ' })
 }
 
-export const taxStatusHelper = (tax: Tax) => {
+export const taxStatusHelper = (tax: ResponseTaxDto) => {
   // ignoring case when both tax paid and tax amount is not available
   const paymentStatus: 'paid' | 'unpaid' | 'partially_paid' =
     tax?.payedAmount === tax?.amount ? 'paid' : tax.payedAmount > 0 ? 'partially_paid' : 'unpaid'

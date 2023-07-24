@@ -1,13 +1,13 @@
+import type { ResponseTaxDto } from '@clients/openapi-tax'
 import _ from 'lodash'
 import { useTranslation } from 'next-i18next'
 import React from 'react'
 
-import { Tax } from '../../../../../frontend/dtos/taxDto'
 import { formatCurrency } from '../../../../../frontend/utils/general'
 import AccordionTableTaxContent from '../../../simple-components/AccordionTableTaxContent'
 
 interface TaxDetailsProps {
-  tax: Tax
+  tax: ResponseTaxDto
 }
 
 const TaxDetails = ({ tax }: TaxDetailsProps) => {

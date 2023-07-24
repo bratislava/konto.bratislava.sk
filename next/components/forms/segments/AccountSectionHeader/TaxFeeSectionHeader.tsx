@@ -6,7 +6,7 @@ import {
   ErrorIcon,
   PaymentIcon,
 } from '@assets/ui-icons'
-import { taxApi } from '@clients/tax'
+import type { ResponseTaxDto } from '@clients/openapi-tax'
 import cx from 'classnames'
 import { getAccessTokenOrLogout } from 'frontend/utils/amplify'
 import { useRouter } from 'next/router'
@@ -16,13 +16,12 @@ import { ReactNode } from 'react'
 import { environment } from '../../../../environment'
 import { getPaymentGatewayUrlApi } from '../../../../frontend/api/api'
 import { ROUTES } from '../../../../frontend/api/constants'
-import { Tax } from '../../../../frontend/dtos/taxDto'
 import { formatCurrency, formatDate, taxStatusHelper } from '../../../../frontend/utils/general'
 import logger from '../../../../frontend/utils/logger'
 import Button from '../../simple-components/Button'
 
 interface AccountSectionHeaderBase {
-  tax: Tax
+  tax: ResponseTaxDto
 }
 
 // https://stackoverflow.com/questions/32545632/how-can-i-download-a-file-using-window-fetch

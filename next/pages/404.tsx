@@ -1,5 +1,5 @@
 import NoResultsFound from '@assets/images/ERROR404.svg'
-import ArrowRightIcon from '@assets/images/new-icons/ui/arrow-right.svg'
+import { ArrowRightIcon } from '@assets/ui-icons'
 import Button from 'components/forms/simple-components/Button'
 import { GetStaticProps } from 'next'
 import Link from 'next/link'
@@ -18,7 +18,7 @@ const NotFoundPage = () => {
   const { t } = useTranslation('common')
 
   return (
-    <div className="xl:pr-66 flex h-screen w-screen px-7 py-10 md:pl-36 md:pr-32 xl:pl-80">
+    <div className="flex h-screen w-screen px-7 py-10 md:pl-36 md:pr-32 xl:pl-80 xl:pr-66">
       <div className="flex w-full flex-col items-center md:flex-row-reverse md:justify-between">
         <NoResultsFound />
         <div className="flex flex-col items-center lg:items-start">
@@ -28,7 +28,7 @@ const NotFoundPage = () => {
             {t('sorryNoResultsFound')}
           </div>
           <Link href="/">
-            <Button text={t('toTheMainPage')} endIcon={<ArrowRightIcon className="w-6 h-6" />} />
+            <Button text={t('toTheMainPage')} endIcon={<ArrowRightIcon className="h-6 w-6" />} />
           </Link>
         </div>
       </div>

@@ -1,6 +1,6 @@
-import ArrowRightIcon from '@assets/images/new-icons/ui/arrow-right.svg'
 import CloseIcon from '@assets/images/new-icons/ui/cross.svg'
 import WarningIcon from '@assets/images/new-icons/ui/exclamation-mark-triangle.svg'
+import { ArrowRightIcon } from '@assets/ui-icons'
 import cx from 'classnames'
 import AccountMarkdown from 'components/forms/segments/AccountMarkdown/AccountMarkdown'
 import Button from 'components/forms/simple-components/Button'
@@ -33,7 +33,7 @@ const IdentityVerificationModal = ({
     <div
       role="button"
       tabIndex={0}
-      className="h-full fixed w-full z-50 inset-0 flex pt-2 md:pt-0 items-start md:items-center justify-center"
+      className="fixed inset-0 z-50 flex h-full w-full items-start justify-center pt-2 md:items-center md:pt-0"
       style={{ background: 'rgba(var(--color-gray-800), .4)', marginTop: '0' }}
       onClick={onClose}
       onKeyPress={(event: React.KeyboardEvent) => handleOnKeyPress(event, onClose)}
@@ -46,20 +46,20 @@ const IdentityVerificationModal = ({
           handleOnKeyPress(event, () => event.stopPropagation())
         }
         className={cx(
-          'w-full max-w-[592px] rounded-xl md:rounded-2xl bg-gray-0 px-4 md:px-6 py-4 pt-6 md:py-6 relative mx-4 overflow-auto',
+          'relative mx-4 w-full max-w-[592px] overflow-auto rounded-xl bg-gray-0 px-4 py-4 pt-6 md:rounded-2xl md:px-6 md:py-6',
           className,
         )}
       >
         <div className="flex flex-col gap-2">
           <CloseIcon
             onClick={() => onClose()}
-            className="cursor-pointer w-6 h-6 absolute top-3 right-4 md:top-4 md:right-4"
+            className="absolute right-4 top-3 h-6 w-6 cursor-pointer md:right-4 md:top-4"
           />
           <div className="flex flex-col gap-5 md:gap-6">
             <div className="flex flex-col gap-5 md:gap-6">
-              <div className="w-full flex justify-center">
-                <span className="min-w-[56px] md:min-w-[72px] w-14 h-14 md:w-18 md:h-18 rounded-full bg-warning-100 flex items-center justify-center">
-                  <WarningIcon className="w-6 h-6 md:w-8 md:h-8 text-warning-700" />
+              <div className="flex w-full justify-center">
+                <span className="flex h-14 w-14 min-w-[56px] items-center justify-center rounded-full bg-warning-100 md:h-18 md:w-18 md:min-w-[72px]">
+                  <WarningIcon className="h-6 w-6 text-warning-700 md:h-8 md:w-8" />
                 </span>
               </div>
               <div className="flex flex-col items-center gap-2">
@@ -78,14 +78,14 @@ const IdentityVerificationModal = ({
                 </div>
               </div>
             </div>
-            <div className="w-full flex flex-col items-center justify-end gap-4 md:gap-6">
+            <div className="flex w-full flex-col items-center justify-end gap-4 md:gap-6">
               <Button
                 text={t('verification_url_text')}
                 fullWidth
                 onPress={() => router.push('/overenie-identity')}
               />
               <Button
-                endIcon={<ArrowRightIcon className="w-6 h-6" />}
+                endIcon={<ArrowRightIcon className="h-6 w-6" />}
                 text="Preskočiť"
                 variant="plain-black"
                 fullWidth

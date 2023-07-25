@@ -1,4 +1,4 @@
-import ArrowRightIcon from '@assets/images/new-icons/ui/arrow-right.svg'
+import { ArrowRightIcon } from '@assets/ui-icons'
 import { LinkButtonProps } from '@react-types/button'
 import cx from 'classnames'
 import { forwardRef, ReactNode, RefObject } from 'react'
@@ -248,12 +248,12 @@ const Button = forwardRef<HTMLAnchorElement | HTMLButtonElement, PolymorphicProp
         >
           {!hrefIconHidden && (
             <span
-              className={cx('flex justify-center items-center', {
+              className={cx('flex items-center justify-center', {
                 'ml-2 h-6 w-6': size === 'lg',
-                'w-5 h-5 ml-1': size === 'sm',
+                'ml-1 h-5 w-5': size === 'sm',
               })}
             >
-              <ArrowRightIcon className="w-6 h-6" />
+              <ArrowRightIcon className="h-6 w-6" />
             </span>
           )}
         </MLink>
@@ -285,7 +285,7 @@ const Button = forwardRef<HTMLAnchorElement | HTMLButtonElement, PolymorphicProp
         {loading && (
           <div
             className={cx(
-              'absolute flex justify-center items-center',
+              'absolute flex items-center justify-center',
               { 'h-6 w-6': size === 'lg' },
               { 'h-5 w-5': size === 'sm' },
             )}
@@ -293,10 +293,10 @@ const Button = forwardRef<HTMLAnchorElement | HTMLButtonElement, PolymorphicProp
             <Spinner size="sm" variant={spinnerVariant} />
           </div>
         )}
-        <div className={cx('justify-center flex items-center', { invisible: loading })}>
+        <div className={cx('flex items-center justify-center', { invisible: loading })}>
           {startIcon && (
             <span
-              className={cx('flex justify-center items-center', {
+              className={cx('flex items-center justify-center', {
                 'mr-3 h-6 w-6': size === 'lg',
                 'mr-2.5 h-5 w-5': size === 'sm',
               })}
@@ -312,9 +312,9 @@ const Button = forwardRef<HTMLAnchorElement | HTMLButtonElement, PolymorphicProp
           )}
           {endIcon && (
             <span
-              className={cx('flex justify-center items-center', {
+              className={cx('flex items-center justify-center', {
                 'ml-3 h-6 w-6': size === 'lg',
-                'w-5 h-5 ml-2.5': size === 'sm',
+                'ml-2.5 h-5 w-5': size === 'sm',
               })}
             >
               {endIcon}

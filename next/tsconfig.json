@@ -24,6 +24,7 @@
       "@assets/images": ["./assets/images/index.ts"],
       "@assets/ui-icons": ["./assets/ui-icons/index.ts"],
       "@assets/images/*": ["./assets/images/*"],
+      "@assets/icons/*": ["./assets/icons/*"],
       "@backend/*": ["./backend/*"],
       "@clients/*": ["./clients/*"]
     }

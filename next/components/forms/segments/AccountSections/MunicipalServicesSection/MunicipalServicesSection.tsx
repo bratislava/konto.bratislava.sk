@@ -1,23 +1,3 @@
-import TaxesIcon from '@assets/images/new-icons/other/city-bratislava/taxes.svg'
-import CulturalOrganizationIcon from '@assets/images/new-icons/other/culture-communities/cultural-organizations.svg'
-import TheatreIcon from '@assets/images/new-icons/other/culture-communities/events-support.svg'
-import LibraryIcon from '@assets/images/new-icons/other/culture-communities/library.svg'
-import ZooIcon from '@assets/images/new-icons/other/culture-communities/zoo.svg'
-import KidIcon from '@assets/images/new-icons/other/education-sport/kids-teenagers.svg'
-import SwimmingPoolIcon from '@assets/images/new-icons/other/education-sport/swimming-pool.svg'
-import GardensIcon from '@assets/images/new-icons/other/environment-construction/community-gardens.svg'
-import SewerageIcon from '@assets/images/new-icons/other/environment-construction/connector.svg'
-import FrontGardensIcon from '@assets/images/new-icons/other/environment-construction/front-gardens.svg'
-import TreeIcon from '@assets/images/new-icons/other/environment-construction/greenery.svg'
-import BasketIcon from '@assets/images/new-icons/other/environment-construction/waste.svg'
-import MariniumIcon from '@assets/images/new-icons/other/marianum.svg'
-import MosquitoIcon from '@assets/images/new-icons/other/mosquito-hunters.svg'
-import SecurityIcon from '@assets/images/new-icons/other/most-wanted-services/reporting-of-incentives.svg'
-import TransportIcon from '@assets/images/new-icons/other/transport-and-maps/city-​​transport.svg'
-import ExcavationsIcon from '@assets/images/new-icons/other/transport-and-maps/excavations.svg'
-import ParkingIcon from '@assets/images/new-icons/other/transport-and-maps/parking.svg'
-import TowIcon from '@assets/images/new-icons/other/transport-and-maps/towing.svg'
-import ChristmasTreeIcon from '@assets/images/new-icons/other/tree.svg'
 import Alert from 'components/forms/info-components/Alert'
 import MunicipalServicesSectionHeader from 'components/forms/segments/AccountSectionHeader/MunicipalServicesSectionHeader'
 import Pagination from 'components/forms/simple-components/Pagination/Pagination'
@@ -26,6 +6,26 @@ import { useTranslation } from 'next-i18next'
 import { ReactNode, useState } from 'react'
 import { useWindowSize } from 'usehooks-ts'
 
+import TaxesIcon from '../../../../../assets/icons/city-bratislava/taxes.svg'
+import CulturalOrganizationIcon from '../../../../../assets/icons/culture-communities/cultural-organizations.svg'
+import TheatreIcon from '../../../../../assets/icons/culture-communities/events-support.svg'
+import LibraryIcon from '../../../../../assets/icons/culture-communities/library.svg'
+import ZooIcon from '../../../../../assets/icons/culture-communities/zoo.svg'
+import KidIcon from '../../../../../assets/icons/education-sport/kids-teenagers.svg'
+import SwimmingPoolIcon from '../../../../../assets/icons/education-sport/swimming-pool.svg'
+import GardensIcon from '../../../../../assets/icons/environment-construction/community-gardens.svg'
+import SewerageIcon from '../../../../../assets/icons/environment-construction/connector.svg'
+import FrontGardensIcon from '../../../../../assets/icons/environment-construction/front-gardens.svg'
+import TreeIcon from '../../../../../assets/icons/environment-construction/greenery.svg'
+import BasketIcon from '../../../../../assets/icons/environment-construction/waste.svg'
+import SecurityIcon from '../../../../../assets/icons/most-wanted-services/reporting-of-incentives.svg'
+import MariniumIcon from '../../../../../assets/icons/other/marianum.svg'
+import MosquitoIcon from '../../../../../assets/icons/other/mosquito-hunters.svg'
+import ChristmasTreeIcon from '../../../../../assets/icons/other/tree.svg'
+import TransportIcon from '../../../../../assets/icons/transport-and-maps/city-​​transport.svg'
+import ExcavationsIcon from '../../../../../assets/icons/transport-and-maps/excavations.svg'
+import ParkingIcon from '../../../../../assets/icons/transport-and-maps/parking.svg'
+import TowIcon from '../../../../../assets/icons/transport-and-maps/towing.svg'
 import { ROUTES } from '../../../../../frontend/api/constants'
 import { SelectOption } from '../../../widget-components/SelectField/SelectOption.interface'
 
@@ -85,7 +85,7 @@ const MunicipalServicesSection = () => {
       title: t('account_section_services.cards.1.title'),
       description: t('account_section_services.cards.1.description'),
       buttonText: t('account_section_services.cards.1.buttonText'),
-      icon: <TaxesIcon className="w-10 h-10 lg:w-12 lg:h-12 text-category-600" />,
+      icon: <TaxesIcon className="h-10 w-10 text-category-600 lg:h-12 lg:w-12" />,
       category: [TAXES_CATEGORY],
       linkType: 'internal',
       href: ROUTES.TAXES_AND_FEES,
@@ -95,7 +95,7 @@ const MunicipalServicesSection = () => {
       description: t('account_section_services.cards.32.description'),
       buttonText: t('account_section_services.cards.32.buttonText'),
       tagStyle: 'text-education-700 bg-education-100',
-      icon: <SwimmingPoolIcon className="w-10 h-10 lg:w-12 lg:h-12 text-education-700" />,
+      icon: <SwimmingPoolIcon className="h-10 w-10 text-education-700 lg:h-12 lg:w-12" />,
       category: [CULTURE_CATEGORY],
       href: 'https://kupaliska.bratislava.sk',
     },
@@ -103,7 +103,7 @@ const MunicipalServicesSection = () => {
       title: t('account_section_services.cards.2.title'),
       description: t('account_section_services.cards.2.description'),
       buttonText: t('account_section_services.cards.2.buttonText'),
-      icon: <TransportIcon className="w-10 h-10 lg:w-12 lg:h-12 text-transport-700" />,
+      icon: <TransportIcon className="h-10 w-10 text-transport-700 lg:h-12 lg:w-12" />,
       category: [TRANSPORT_CATEGORY],
       href: 'https://eshop.dopravnakarta.sk/DPB/Karta',
     },
@@ -111,7 +111,7 @@ const MunicipalServicesSection = () => {
       title: t('account_section_services.cards.3.title'),
       description: t('account_section_services.cards.3.description'),
       buttonText: t('account_section_services.cards.3.buttonText'),
-      icon: <ParkingIcon className="w-10 h-10 lg:w-12 lg:h-12 text-transport-700" />,
+      icon: <ParkingIcon className="h-10 w-10 text-transport-700 lg:h-12 lg:w-12" />,
       category: [PARKING_CATEGORY],
       href: 'https://paas.sk/formular/',
     },
@@ -119,7 +119,7 @@ const MunicipalServicesSection = () => {
       title: t('account_section_services.cards.4.title'),
       description: t('account_section_services.cards.4.description'),
       buttonText: t('account_section_services.cards.4.buttonText'),
-      icon: <ParkingIcon className="w-10 h-10 lg:w-12 lg:h-12 text-transport-700" />,
+      icon: <ParkingIcon className="h-10 w-10 text-transport-700 lg:h-12 lg:w-12" />,
       category: [PARKING_CATEGORY],
       href: 'https://paas.sk/',
     },
@@ -127,7 +127,7 @@ const MunicipalServicesSection = () => {
       title: t('account_section_services.cards.5.title'),
       description: t('account_section_services.cards.5.description'),
       buttonText: t('account_section_services.cards.5.buttonText'),
-      icon: <LibraryIcon className="w-10 h-10 lg:w-12 lg:h-12 text-culture-700" />,
+      icon: <LibraryIcon className="h-10 w-10 text-culture-700 lg:h-12 lg:w-12" />,
       category: [CULTURE_CATEGORY],
       href: 'https://mestskakniznica.sk/sluzby/citanie/ako-sa-prihlasit-do-kniznice',
     },
@@ -135,7 +135,7 @@ const MunicipalServicesSection = () => {
       title: t('account_section_services.cards.6.title'),
       description: t('account_section_services.cards.6.description'),
       buttonText: t('account_section_services.cards.6.buttonText'),
-      icon: <TowIcon className="w-10 h-10 lg:w-12 lg:h-12 text-transport-700" />,
+      icon: <TowIcon className="h-10 w-10 text-transport-700 lg:h-12 lg:w-12" />,
       category: [PARKING_CATEGORY],
       href: 'https://mepasys.sk/odtiahli-ma/',
     },
@@ -143,7 +143,7 @@ const MunicipalServicesSection = () => {
       title: t('account_section_services.cards.7.title'),
       description: t('account_section_services.cards.7.description'),
       buttonText: t('account_section_services.cards.7.buttonText'),
-      icon: <KidIcon className="w-10 h-10 lg:w-12 lg:h-12 text-category-600" />,
+      icon: <KidIcon className="h-10 w-10 text-category-600 lg:h-12 lg:w-12" />,
       category: [JOIN_CATEGORY],
       href: 'https://mib.sk/mesto-pre-deti',
     },
@@ -151,7 +151,7 @@ const MunicipalServicesSection = () => {
       title: t('account_section_services.cards.8.title'),
       description: t('account_section_services.cards.8.description'),
       buttonText: t('account_section_services.cards.8.buttonText'),
-      icon: <TreeIcon className="text-environment-700 w-10 h-10 lg:w-12 lg:h-12" />,
+      icon: <TreeIcon className="h-10 w-10 text-environment-700 lg:h-12 lg:w-12" />,
       category: [GREEN_CATEGORY],
       href: 'https://10000stromov.sk/',
     },
@@ -159,7 +159,7 @@ const MunicipalServicesSection = () => {
       title: t('account_section_services.cards.9.title'),
       description: t('account_section_services.cards.9.description'),
       buttonText: t('account_section_services.cards.9.buttonText'),
-      icon: <GardensIcon className="w-10 h-10 lg:w-12 lg:h-12 text-environment-700" />,
+      icon: <GardensIcon className="h-10 w-10 text-environment-700 lg:h-12 lg:w-12" />,
       category: [GREEN_CATEGORY, CULTURE_CATEGORY, JOIN_CATEGORY],
       href: 'https://bratislavskisusedia.sk/temy/komunitne-zahrady',
     },
@@ -167,7 +167,7 @@ const MunicipalServicesSection = () => {
       title: t('account_section_services.cards.10.title'),
       description: t('account_section_services.cards.10.description'),
       buttonText: t('account_section_services.cards.10.buttonText'),
-      icon: <TheatreIcon className="w-10 h-10 lg:w-12 lg:h-12 text-culture-700" />,
+      icon: <TheatreIcon className="h-10 w-10 text-culture-700 lg:h-12 lg:w-12" />,
       category: [CULTURE_CATEGORY],
       href: 'https://vstupenky.dpoh.sk/',
     },
@@ -175,7 +175,7 @@ const MunicipalServicesSection = () => {
       title: t('account_section_services.cards.11.title'),
       description: t('account_section_services.cards.11.description'),
       buttonText: t('account_section_services.cards.11.buttonText'),
-      icon: <ExcavationsIcon className="w-10 h-10 lg:w-12 lg:h-12 text-transport-700" />,
+      icon: <ExcavationsIcon className="h-10 w-10 text-transport-700 lg:h-12 lg:w-12" />,
       category: [SECURITY_CATEGORY],
       href: 'https://inovacie.bratislava.sk/nahlasit-problem/',
     },
@@ -183,7 +183,7 @@ const MunicipalServicesSection = () => {
       title: t('account_section_services.cards.12.title'),
       description: t('account_section_services.cards.12.description'),
       buttonText: t('account_section_services.cards.12.buttonText'),
-      icon: <SecurityIcon className="w-10 h-10 lg:w-12 lg:h-12 text-category-600" />,
+      icon: <SecurityIcon className="h-10 w-10 text-category-600 lg:h-12 lg:w-12" />,
       category: [ENTERTAINMENT_CATEGORY],
       href: 'https://bratislava.sk/rychle-zasahy',
     },
@@ -191,7 +191,7 @@ const MunicipalServicesSection = () => {
       title: t('account_section_services.cards.13.title'),
       description: t('account_section_services.cards.13.description'),
       buttonText: t('account_section_services.cards.13.buttonText'),
-      icon: <ZooIcon className="w-10 h-10 lg:w-12 lg:h-12 text-culture-700" />,
+      icon: <ZooIcon className="h-10 w-10 text-culture-700 lg:h-12 lg:w-12" />,
       category: [CULTURE_CATEGORY],
       href: 'https://www.zoobratislava.sk/vstupenky-online/',
     },
@@ -199,7 +199,7 @@ const MunicipalServicesSection = () => {
       title: t('account_section_services.cards.14.title'),
       description: t('account_section_services.cards.14.description'),
       buttonText: t('account_section_services.cards.14.buttonText'),
-      icon: <MosquitoIcon className="w-10 h-10 lg:w-12 lg:h-12 text-environment-700" />,
+      icon: <MosquitoIcon className="h-10 w-10 text-environment-700 lg:h-12 lg:w-12" />,
       category: [JOIN_CATEGORY],
       href: 'https://lovcikomarov.sk/',
     },
@@ -207,7 +207,7 @@ const MunicipalServicesSection = () => {
       title: t('account_section_services.cards.33.title'),
       description: t('account_section_services.cards.33.description'),
       buttonText: t('account_section_services.cards.33.buttonText'),
-      icon: <CulturalOrganizationIcon className="w-10 h-10 lg:w-12 lg:h-12 text-culture-700" />,
+      icon: <CulturalOrganizationIcon className="h-10 w-10 text-culture-700 lg:h-12 lg:w-12" />,
       category: [CULTURE_CATEGORY],
       href: 'https://gmb.sk/detail/online-predaj-vstupeniek-do-gmb',
     },
@@ -223,7 +223,7 @@ const MunicipalServicesSection = () => {
       title: t('account_section_services.cards.17.title'),
       description: t('account_section_services.cards.17.description'),
       buttonText: t('account_section_services.cards.17.buttonText'),
-      icon: <KidIcon className="w-10 h-10 lg:w-12 lg:h-12 text-category-600" />,
+      icon: <KidIcon className="h-10 w-10 text-category-600 lg:h-12 lg:w-12" />,
       category: [JOIN_CATEGORY],
       href: 'https://www.detiprebratislavu.sk/prihlasit-projekt/',
     },
@@ -231,7 +231,7 @@ const MunicipalServicesSection = () => {
       title: t('account_section_services.cards.18.title'),
       description: t('account_section_services.cards.18.description'),
       buttonText: t('account_section_services.cards.18.buttonText'),
-      icon: <ChristmasTreeIcon className="w-10 h-10 lg:w-12 lg:h-12 text-environment-700" />,
+      icon: <ChristmasTreeIcon className="h-10 w-10 text-environment-700 lg:h-12 lg:w-12" />,
       category: [BASKET_CATEGORY],
       href: 'https://www.olo.sk/stromceky/',
     },
@@ -239,7 +239,7 @@ const MunicipalServicesSection = () => {
       title: t('account_section_services.cards.19.title'),
       description: t('account_section_services.cards.19.description'),
       buttonText: t('account_section_services.cards.19.buttonText'),
-      icon: <FrontGardensIcon className="w-10 h-10 lg:w-12 lg:h-12 text-environment-700" />,
+      icon: <FrontGardensIcon className="h-10 w-10 text-environment-700 lg:h-12 lg:w-12" />,
       category: [GREEN_CATEGORY],
       href: 'https://bratislavskisusedia.sk/temy/predzahradky',
     },
@@ -247,7 +247,7 @@ const MunicipalServicesSection = () => {
       title: t('account_section_services.cards.20.title'),
       description: t('account_section_services.cards.20.description'),
       buttonText: t('account_section_services.cards.20.buttonText'),
-      icon: <BasketIcon className="w-10 h-10 lg:w-12 lg:h-12 text-environment-700" />,
+      icon: <BasketIcon className="h-10 w-10 text-environment-700 lg:h-12 lg:w-12" />,
       category: [BASKET_CATEGORY],
       href: 'https://www.olo.sk/evidencia-neodvezeneho-odpadu/',
     },
@@ -255,7 +255,7 @@ const MunicipalServicesSection = () => {
       title: t('account_section_services.cards.21.title'),
       description: t('account_section_services.cards.21.description'),
       buttonText: t('account_section_services.cards.21.buttonText'),
-      icon: <BasketIcon className="w-10 h-10 lg:w-12 lg:h-12 text-environment-700" />,
+      icon: <BasketIcon className="h-10 w-10 text-environment-700 lg:h-12 lg:w-12" />,
       category: [BASKET_CATEGORY],
       href: 'https://www.olo.sk/odvozovy-den-triedeneho-odpadu-vrecovy-zber/',
     },
@@ -263,7 +263,7 @@ const MunicipalServicesSection = () => {
       title: t('account_section_services.cards.22.title'),
       description: t('account_section_services.cards.22.description'),
       buttonText: t('account_section_services.cards.22.buttonText'),
-      icon: <BasketIcon className="w-10 h-10 lg:w-12 lg:h-12 text-environment-700" />,
+      icon: <BasketIcon className="h-10 w-10 text-environment-700 lg:h-12 lg:w-12" />,
       category: [BASKET_CATEGORY],
       href: 'https://www.olo.sk/odvozovy-den-bro/',
     },
@@ -271,7 +271,7 @@ const MunicipalServicesSection = () => {
       title: t('account_section_services.cards.23.title'),
       description: t('account_section_services.cards.23.description'),
       buttonText: t('account_section_services.cards.23.buttonText'),
-      icon: <BasketIcon className="w-10 h-10 lg:w-12 lg:h-12 text-environment-700" />,
+      icon: <BasketIcon className="h-10 w-10 text-environment-700 lg:h-12 lg:w-12" />,
       category: [BASKET_CATEGORY],
       href: 'https://www.olo.sk/odv_zko/',
     },
@@ -279,7 +279,7 @@ const MunicipalServicesSection = () => {
       title: t('account_section_services.cards.24.title'),
       description: t('account_section_services.cards.24.description'),
       buttonText: t('account_section_services.cards.24.buttonText'),
-      icon: <BasketIcon className="w-10 h-10 lg:w-12 lg:h-12 text-environment-700" />,
+      icon: <BasketIcon className="h-10 w-10 text-environment-700 lg:h-12 lg:w-12" />,
       category: [BASKET_CATEGORY],
       href: 'https://www.olo.sk/odvozovy-den-k-bro/',
     },
@@ -287,7 +287,7 @@ const MunicipalServicesSection = () => {
       title: t('account_section_services.cards.25.title'),
       description: t('account_section_services.cards.25.description'),
       buttonText: t('account_section_services.cards.25.buttonText'),
-      icon: <MariniumIcon className="w-10 h-10 lg:w-12 lg:h-12" />,
+      icon: <MariniumIcon className="h-10 w-10 lg:h-12 lg:w-12" />,
       category: [MARINIUM_CATEGORY],
       href: 'https://marianum.sk/aktuality/zoznam-obradov',
     },
@@ -303,7 +303,7 @@ const MunicipalServicesSection = () => {
       title: t('account_section_services.cards.27.title'),
       description: t('account_section_services.cards.27.description'),
       buttonText: t('account_section_services.cards.27.buttonText'),
-      icon: <MariniumIcon className="w-10 h-10 lg:w-12 lg:h-12" />,
+      icon: <MariniumIcon className="h-10 w-10 lg:h-12 lg:w-12" />,
       category: [MARINIUM_CATEGORY],
       href: 'https://marianum.sk/sluzby/hrobove-miesto/vyhladavanie-hrobovych-miest',
     },
@@ -311,7 +311,7 @@ const MunicipalServicesSection = () => {
       title: t('account_section_services.cards.28.title'),
       description: t('account_section_services.cards.28.description'),
       buttonText: t('account_section_services.cards.28.buttonText'),
-      icon: <SewerageIcon className="w-10 h-10 lg:w-12 lg:h-12 text-environment-700" />,
+      icon: <SewerageIcon className="h-10 w-10 text-environment-700 lg:h-12 lg:w-12" />,
       category: [CONSTRUCTION_CATEGORY],
       href: 'https://www.bvsas.sk/domacnosti/nove-pripojenie/',
     },
@@ -319,7 +319,7 @@ const MunicipalServicesSection = () => {
       title: t('account_section_services.cards.29.title'),
       description: t('account_section_services.cards.29.description'),
       buttonText: t('account_section_services.cards.29.buttonText'),
-      icon: <BasketIcon className="w-10 h-10 lg:w-12 lg:h-12 text-environment-700" />,
+      icon: <BasketIcon className="h-10 w-10 text-environment-700 lg:h-12 lg:w-12" />,
       category: [BASKET_CATEGORY],
       href: 'https://www.olo.sk/ponuka-sluzieb/objednavka-sluzieb-pre-obyvatelov/',
     },
@@ -354,14 +354,14 @@ const MunicipalServicesSection = () => {
         setCurrentPage={setCurrentPage}
         title={t('account_section_services.navigation')}
       />
-      <div className="w-full max-w-screen-lg mx-auto pt-4 lg:pt-8">
+      <div className="mx-auto w-full max-w-screen-lg pt-4 lg:pt-8">
         <Alert
           message={t('account_section_services.alert_text')}
           type="info"
           fullWidth
-          className="mb-4 lg:mb-8 mx-4 lg:mx-0"
+          className="mx-4 mb-4 lg:mx-0 lg:mb-8"
         />
-        <div className="grid grid-cols-1 min-[615px]:grid-cols-2 min-[960px]:grid-cols-3 lg:grid-cols-4 gap-3 sm:gap-6 md:gap-8 px-4 lg:px-0">
+        <div className="grid grid-cols-1 gap-3 px-4 sm:gap-6 min-[615px]:grid-cols-2 md:gap-8 min-[960px]:grid-cols-3 lg:grid-cols-4 lg:px-0">
           {filteredServiceCards
             .filter(
               (_, i) =>

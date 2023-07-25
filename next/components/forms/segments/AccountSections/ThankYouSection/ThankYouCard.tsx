@@ -1,4 +1,4 @@
-import PaymentDeclined from '@assets/images/new-icons/other/payment-declined.svg'
+import PaymentDeclined from '@assets/icons/other/payment-declined.svg'
 import { CheckIcon, CrossIcon, RepeatIcon } from '@assets/ui-icons'
 import cx from 'classnames'
 import AccountMarkdown from 'components/forms/segments/AccountMarkdown/AccountMarkdown'

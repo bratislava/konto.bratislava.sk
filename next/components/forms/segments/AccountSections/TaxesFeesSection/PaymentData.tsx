@@ -163,7 +163,7 @@ const PaymentData = ({ tax }: PaymentDataProps) => {
 
               {/* Mobile 'download' button */}
               <Button
-                startIcon={<FileDownload className="h-5 w-5" />}
+                startIcon={<DownloadIcon className="h-5 w-5" />}
                 variant="black-outline"
                 text={t('download_image')}
                 size="sm"

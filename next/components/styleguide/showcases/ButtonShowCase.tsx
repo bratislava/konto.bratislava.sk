@@ -1,5 +1,4 @@
-import SearchIcon from '@assets/images/new-icons/ui/search.svg'
-import { ArrowRightIcon } from '@assets/ui-icons'
+import { ArrowRightIcon, SearchIcon } from '@assets/ui-icons'
 
 import Button from '../../forms/simple-components/Button'
 import { Stack } from '../Stack'

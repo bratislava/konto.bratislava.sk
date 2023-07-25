@@ -1,8 +1,4 @@
-import ChevronLeftIcon from '@assets/images/new-icons/ui/chevron-left.svg'
-import TimeIcon from '@assets/images/new-icons/ui/clock.svg'
-import CrossIcon from '@assets/images/new-icons/ui/cross.svg'
-import SuccessIcon from '@assets/images/new-icons/ui/done.svg'
-import DownloadIcon from '@assets/images/new-icons/ui/download.svg'
+import { CheckIcon, ChevronLeftIcon, ClockIcon, CrossIcon, DownloadIcon } from '@assets/ui-icons'
 import cx from 'classnames'
 import Button from 'components/forms/simple-components/Button'
 import { MyApplicationsSentCardBase } from 'frontend/api/mocks/mocks'
@@ -27,7 +23,7 @@ const MyApplicationDetailsHeader = (props: MyApplicationDetailsHeaderBase) => {
     const statusNode = (icon: ReactNode, statusTitle: string): ReactNode => {
       return (
         <>
-          <span className="flex justify-center items-center">{icon}</span>
+          <span className="flex items-center justify-center">{icon}</span>
           <span className={statusStyle}>{statusTitle}</span>
         </>
       )
@@ -36,17 +32,17 @@ const MyApplicationDetailsHeader = (props: MyApplicationDetailsHeaderBase) => {
     switch (status) {
       case 'negative':
         return statusNode(
-          <CrossIcon className="text-negative-700 lg:w-6 lg:h-6 h-5 w-5" />,
+          <CrossIcon className="h-5 w-5 text-negative-700 lg:h-6 lg:w-6" />,
           t('account_section_applications.status.negative'),
         )
       case 'warning':
         return statusNode(
-          <TimeIcon className="text-warning-700 lg:w-6 lg:h-6 h-5 w-5" />,
+          <ClockIcon className="h-5 w-5 text-warning-700 lg:h-6 lg:w-6" />,
           t('account_section_applications.status.warning'),
         )
       case 'success':
         return statusNode(
-          <SuccessIcon className="text-success-700 lg:w-6 lg:h-6 h-5 w-5" />,
+          <CheckIcon className="h-5 w-5 text-success-700 lg:h-6 lg:w-6" />,
           t('account_section_applications.status.success'),
         )
       default:
@@ -58,34 +54,34 @@ const MyApplicationDetailsHeader = (props: MyApplicationDetailsHeaderBase) => {
 
   return (
     <div className="bg-gray-50">
-      <div className="py-4 lg:py-8 flex flex-col justify-end gap-4 lg:gap-6 w-full h-full max-w-screen-lg m-auto lg:px-0">
-        <div className="flex flex-col gap-4 lg:gap-6 px-4 lg:px-0">
-          <Link href="/moje-ziadosti" className="w-max flex items-center gap-1">
-            <ChevronLeftIcon className="w-5 h-5" />
-            <span className="text-p3-medium underline-offset-2 underline">{t('back_to_list')}</span>
+      <div className="m-auto flex h-full w-full max-w-screen-lg flex-col justify-end gap-4 py-4 lg:gap-6 lg:px-0 lg:py-8">
+        <div className="flex flex-col gap-4 px-4 lg:gap-6 lg:px-0">
+          <Link href="/moje-ziadosti" className="flex w-max items-center gap-1">
+            <ChevronLeftIcon className="h-5 w-5" />
+            <span className="text-p3-medium underline underline-offset-2">{t('back_to_list')}</span>
           </Link>
-          <div className="gap-4 flex flex-col lg:gap-6">
+          <div className="flex flex-col gap-4 lg:gap-6">
             <div className="flex flex-col gap-2">
               <p className="text-p2-semibold text-main-700">{data?.category}</p>
-              <div className="w-full flex items-center justify-between">
+              <div className="flex w-full items-center justify-between">
                 <h1 className="text-h1">{data?.title}</h1>
                 <Button
                   className="hidden md:flex"
-                  startIcon={<DownloadIcon className="w-6 h-6" />}
+                  startIcon={<DownloadIcon className="h-6 w-6" />}
                   text={t('download_pdf')}
                 />
               </div>
             </div>
-            <div className="flex flex-col lg:flex-row lg:items-center gap-1 lg:gap-4">
+            <div className="flex flex-col gap-1 lg:flex-row lg:items-center lg:gap-4">
               <div className="flex items-center gap-3">
                 <p className="text-p3-semibold lg:text-p2-semibold">
                   {t('account_section_applications.navigation_sent')}
                 </p>
                 <p className="text-p3 lg:text-p2">{data?.sentDate}</p>
               </div>
-              <span className="w-1.5 h-1.5 rounded-full bg-gray-700 hidden lg:block" />
+              <span className="hidden h-1.5 w-1.5 rounded-full bg-gray-700 lg:block" />
               <div className="flex items-center gap-1">{statusHandler(data?.status)}</div>
-              <span className="w-1.5 h-1.5 rounded-full bg-gray-700 hidden lg:block" />
+              <span className="hidden h-1.5 w-1.5 rounded-full bg-gray-700 lg:block" />
               <div className="flex items-center gap-1">
                 <p className="text-p3 lg:text-p2">
                   {t('account_section_applications.last_change')}
@@ -96,7 +92,7 @@ const MyApplicationDetailsHeader = (props: MyApplicationDetailsHeaderBase) => {
             <Button
               fullWidth
               className="flex md:hidden"
-              startIcon={<DownloadIcon className="w-6 h-6" />}
+              startIcon={<DownloadIcon className="h-6 w-6" />}
               text={t('download_pdf')}
             />
           </div>

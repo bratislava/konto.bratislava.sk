@@ -1,8 +1,4 @@
-import ArrowsDownUpIcon from '@assets/images/new-icons/ui/arrows-down-up.svg'
-import DiskIcon from '@assets/images/new-icons/ui/disc.svg'
-import DownloadIcon from '@assets/images/new-icons/ui/download.svg'
-import LockIcon from '@assets/images/new-icons/ui/lock.svg'
-import PdfIcon from '@assets/images/new-icons/ui/pdf.svg'
+import { ConnectionIcon, DiscIcon, DownloadIcon, LockIcon, PdfIcon } from '@assets/ui-icons'
 import { useServerSideAuth } from 'frontend/hooks/useServerSideAuth'
 import Link from 'next/link'
 import { useTranslation } from 'next-i18next'
@@ -37,37 +33,37 @@ const MenuList = () => {
   const menuList: MenuItem[] = [
     {
       title: t('menu_list.save_concept'),
-      icon: <DiskIcon className="w-6 h-6" />,
+      icon: <DiscIcon className="h-6 w-6" />,
       // eslint-disable-next-line @typescript-eslint/no-misused-promises
       onPress: handleOnPressSaveConcept,
     },
     {
       title: t('menu_list.eId'),
-      icon: <LockIcon className="w-6 h-6" />,
+      icon: <LockIcon className="h-6 w-6" />,
       onPress: () => {},
     },
     {
       title: t('menu_list.download_xml'),
-      icon: <DownloadIcon className="w-6 h-6" />,
+      icon: <DownloadIcon className="h-6 w-6" />,
       // eslint-disable-next-line @typescript-eslint/no-misused-promises
       onPress: () => exportXml(),
     },
     {
       title: t('menu_list.pdf'),
-      icon: <PdfIcon className="w-6 h-6" />,
+      icon: <PdfIcon className="h-6 w-6" />,
       // eslint-disable-next-line @typescript-eslint/no-misused-promises
       onPress: () => exportPdf(),
     },
     {
       title: t('menu_list.upload_xml'),
-      icon: <ArrowsDownUpIcon className="w-6 h-6" />,
+      icon: <ConnectionIcon className="h-6 w-6" />,
       onPress: importXml,
     },
   ]
 
   return (
     <>
-      <ul className="flex lg:hidden flex-col gap-3 border-t-2 border-gray-200 mt-4 pt-4">
+      <ul className="mt-4 flex flex-col gap-3 border-t-2 border-gray-200 pt-4 lg:hidden">
         {menuList.map((menuItem, i) =>
           menuItem.url ? (
             <li className="w-max" key={i}>

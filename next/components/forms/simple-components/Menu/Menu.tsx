@@ -1,4 +1,4 @@
-import ChevronDownSmall from '@assets/images/new-icons/ui/arrow-small-down.svg'
+import { ChevronDownSmallIcon } from '@assets/ui-icons'
 import type { AriaMenuProps, MenuTriggerProps } from '@react-types/menu'
 import cx from 'classnames'
 import Button from 'components/forms/simple-components/Button'
@@ -39,8 +39,8 @@ const Menu = <T extends object>(props: MenuProps<T>) => {
         <MenuButton {...menuTriggerProps} isPressed={state.isOpen} ref={ref}>
           {buttonLeftEl}
           <div className="ml-3 font-light lg:font-semibold">{label}</div>
-          <ChevronDownSmall
-            className={`ml-1 hidden w-5 h-5 mix-blend-normal lg:flex ${
+          <ChevronDownSmallIcon
+            className={`ml-1 hidden h-5 w-5 mix-blend-normal lg:flex ${
               state.isOpen ? '-rotate-180' : ''
             }`}
           />

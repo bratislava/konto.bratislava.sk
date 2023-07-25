@@ -1,6 +1,4 @@
-import CloseIcon from '@assets/images/new-icons/ui/cross.svg'
-import CheckIcon from '@assets/images/new-icons/ui/done.svg'
-import { ArrowRightIcon } from '@assets/ui-icons'
+import { ArrowRightIcon, CheckIcon, CrossIcon } from '@assets/ui-icons'
 import cx from 'classnames'
 import Link from 'next/link'
 import { useTranslation } from 'next-i18next'
@@ -84,6 +82,7 @@ const RegistrationModal = ({
     return null
   }
   return (
+    // FIXME use Button
     <div
       role="button"
       tabIndex={0}
@@ -92,6 +91,7 @@ const RegistrationModal = ({
       onClick={onClose}
       onKeyPress={(event: React.KeyboardEvent) => handleOnKeyPress(event, onClose)}
     >
+      {/* FIXME use Button */}
       <div
         role="button"
         tabIndex={0}
@@ -105,7 +105,8 @@ const RegistrationModal = ({
         )}
       >
         <div className="mb-6 flex flex-col gap-2">
-          <CloseIcon
+          {/* FIXME use Button */}
+          <CrossIcon
             onClick={onClose}
             className="absolute right-3 top-3 h-6 w-6 cursor-pointer md:right-6 md:top-4"
           />

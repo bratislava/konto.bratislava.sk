@@ -1,5 +1,4 @@
-import ExportIcon from '@assets/images/new-icons/ui/export.svg'
-import { ArrowRightIcon } from '@assets/ui-icons'
+import { ArrowRightIcon, ExportIcon } from '@assets/ui-icons'
 import cx from 'classnames'
 import Link from 'next/link'
 import { ReactNode } from 'react'

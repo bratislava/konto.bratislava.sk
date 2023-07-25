@@ -1,5 +1,4 @@
-import LeftIcon from '@assets/images/new-icons/ui/chevron-left.svg'
-import { ArrowRightIcon } from '@assets/ui-icons'
+import { ArrowRightIcon, ChevronLeftIcon } from '@assets/ui-icons'
 import { useTranslation } from 'next-i18next'
 
 import Button from '../../simple-components/Button'
@@ -30,7 +29,7 @@ const StepButtonGroup = (props: StepButtonGroupProps) => {
               variant="plain-black"
               onPress={previous}
               text={t('buttons.previous')}
-              startIcon={<LeftIcon className="h-6 w-6" />}
+              startIcon={<ChevronLeftIcon className="h-6 w-6" />}
             />
           )}
         </div>

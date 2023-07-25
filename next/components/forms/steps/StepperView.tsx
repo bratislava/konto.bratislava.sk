@@ -1,5 +1,4 @@
-import CloseIcon from '@assets/images/new-icons/ui/cross.svg'
-import { ChevronDownIcon } from '@assets/ui-icons'
+import { ChevronDownIcon, CrossIcon } from '@assets/ui-icons'
 import cx from 'classnames'
 import { useTranslation } from 'next-i18next'
 import { useRef, useState } from 'react'
@@ -64,7 +63,7 @@ const StepperView = ({ forceMobileSize }: StepperViewProps) => {
               className="flex h-full cursor-pointer flex-col justify-center"
               onPress={() => setIsCollapsed(true)}
             >
-              <CloseIcon className="h-6 w-6" />
+              <CrossIcon className="h-6 w-6" />
             </AriaButton>
           </div>
           <div className="grow overflow-y-scroll overscroll-none bg-white px-4 pb-20 pt-4">

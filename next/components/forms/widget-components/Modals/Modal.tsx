@@ -1,5 +1,4 @@
-import CloseIcon from '@assets/images/new-icons/ui/cross.svg'
-import { ArrowLeftIcon } from '@assets/ui-icons'
+import { ArrowLeftIcon, CrossIcon } from '@assets/ui-icons'
 import cx from 'classnames'
 import React, { Dispatch, SetStateAction, useState } from 'react'
 
@@ -71,7 +70,7 @@ const ModalHeader = ({
       ) : null}
       <div className={headlineStyle}>{header}</div>
       <div className="ml-1 flex flex-row items-center justify-end">
-        <CloseIcon className="h-5 w-5 cursor-pointer sm:h-6 sm:w-6" type="info" onClick={onClose} />
+        <CrossIcon className="h-5 w-5 cursor-pointer sm:h-6 sm:w-6" type="info" onClick={onClose} />
       </div>
     </div>
   )
@@ -154,7 +153,7 @@ const ModalBody = ({
     >
       {!hasHeader ? (
         <div className="ml-1 flex flex-row items-center justify-end">
-          <CloseIcon className="cursor-pointer" type="info" onClick={onClose} />
+          <CrossIcon className="cursor-pointer" type="info" onClick={onClose} />
         </div>
       ) : null}
       <div className="flex h-[calc(100%-80px)] w-full flex-col items-start rounded-lg">

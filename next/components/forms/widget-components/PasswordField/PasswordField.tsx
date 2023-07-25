@@ -1,4 +1,4 @@
-import HiddenIcon from '@assets/images/new-icons/ui/eye.svg'
+import { EyeIcon } from '@assets/ui-icons'
 import InputField from 'components/forms/widget-components/InputField/InputField'
 import { forwardRef, useRef, useState } from 'react'
 import { useButton } from 'react-aria'
@@ -76,10 +76,10 @@ const PasswordField = forwardRef<HTMLInputElement, Props>(
           <button
             type="button"
             ref={buttonRef}
-            className="flex items-center justify-center absolute inset-y-1/2 right-3 sm:right-4 h-6 w-6 -translate-y-2/4 cursor-pointer"
+            className="absolute inset-y-1/2 right-3 flex h-6 w-6 -translate-y-2/4 cursor-pointer items-center justify-center sm:right-4"
             {...buttonProps}
           >
-            <HiddenIcon />
+            <EyeIcon />
           </button>
         }
         {...rest}

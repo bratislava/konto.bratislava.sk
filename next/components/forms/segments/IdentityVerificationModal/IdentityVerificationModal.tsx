@@ -1,6 +1,4 @@
-import CloseIcon from '@assets/images/new-icons/ui/cross.svg'
-import WarningIcon from '@assets/images/new-icons/ui/exclamation-mark-triangle.svg'
-import { ArrowRightIcon } from '@assets/ui-icons'
+import { AlertIcon, ArrowRightIcon, CrossIcon } from '@assets/ui-icons'
 import cx from 'classnames'
 import AccountMarkdown from 'components/forms/segments/AccountMarkdown/AccountMarkdown'
 import Button from 'components/forms/simple-components/Button'
@@ -51,7 +49,7 @@ const IdentityVerificationModal = ({
         )}
       >
         <div className="flex flex-col gap-2">
-          <CloseIcon
+          <CrossIcon
             onClick={() => onClose()}
             className="absolute right-4 top-3 h-6 w-6 cursor-pointer md:right-4 md:top-4"
           />
@@ -59,7 +57,7 @@ const IdentityVerificationModal = ({
             <div className="flex flex-col gap-5 md:gap-6">
               <div className="flex w-full justify-center">
                 <span className="flex h-14 w-14 min-w-[56px] items-center justify-center rounded-full bg-warning-100 md:h-18 md:w-18 md:min-w-[72px]">
-                  <WarningIcon className="h-6 w-6 text-warning-700 md:h-8 md:w-8" />
+                  <AlertIcon className="h-6 w-6 text-warning-700 md:h-8 md:w-8" />
                 </span>
               </div>
               <div className="flex flex-col items-center gap-2">

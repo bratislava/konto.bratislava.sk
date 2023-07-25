@@ -1,10 +1,4 @@
-import ChevronRightIcon from '@assets/images/new-icons/ui/chevron-right.svg'
-import TimeIcon from '@assets/images/new-icons/ui/clock.svg'
-import CrossIcon from '@assets/images/new-icons/ui/cross.svg'
-import SuccessIcon from '@assets/images/new-icons/ui/done.svg'
-import NegativeMobileIcon from '@assets/images/new-icons/ui/negative-icon.svg'
-import SuccessMobileIcon from '@assets/images/new-icons/ui/success-icon.svg'
-import WaitingMobileIcon from '@assets/images/new-icons/ui/waiting-icon.svg'
+import { CheckIcon, ChevronRightIcon, ClockIcon, CrossIcon } from '@assets/ui-icons'
 import cx from 'classnames'
 import { MyApplicationsSentCardBase } from 'frontend/api/mocks/mocks'
 import Link from 'next/link'
@@ -30,7 +24,7 @@ const MyApplicationsSentCard = (props: MyApplicationsSentCardProps) => {
     const statusNode = (icon: ReactNode, statusTitle: string): ReactNode => {
       return (
         <>
-          <span className="h-6 w-6 hidden lg:flex justify-center items-center">{icon}</span>
+          <span className="hidden h-6 w-6 items-center justify-center lg:flex">{icon}</span>
           <span className={statusStyle}>{statusTitle}</span>
         </>
       )
@@ -39,17 +33,17 @@ const MyApplicationsSentCard = (props: MyApplicationsSentCardProps) => {
     switch (data?.status) {
       case 'negative':
         return statusNode(
-          <CrossIcon className="text-negative-700 w-6 h-6" />,
+          <CrossIcon className="h-6 w-6 text-negative-700" />,
           t('account_section_applications.status.negative'),
         )
       case 'warning':
         return statusNode(
-          <TimeIcon className="text-warning-700 w-6 h-6" />,
+          <ClockIcon className="h-6 w-6 text-warning-700" />,
           t('account_section_applications.status.warning'),
         )
       case 'success':
         return statusNode(
-          <SuccessIcon className="text-success-700 w-6 h-6" />,
+          <CheckIcon className="h-6 w-6 text-success-700" />,
           t('account_section_applications.status.success'),
         )
       default:
@@ -62,17 +56,15 @@ const MyApplicationsSentCard = (props: MyApplicationsSentCardProps) => {
   const mobileStatusHandler = (): ReactNode => {
     return (
       <span
-        className={cx('w-8 h-8 rounded-full flex justify-center items-center', {
+        className={cx('flex h-8 w-8 items-center justify-center rounded-full', {
           'bg-negative-50': data?.status === 'negative',
           'bg-warning-50': data?.status === 'warning',
           'bg-success-50': data?.status === 'success',
         })}
       >
-        {data?.status === 'negative' && (
-          <NegativeMobileIcon className="w-5 h-5 text-negative-700" />
-        )}
-        {data?.status === 'warning' && <WaitingMobileIcon className="w-5 h-5 text-warning-700" />}
-        {data?.status === 'success' && <SuccessMobileIcon className="w-5 h-5 text-success-700" />}
+        {data?.status === 'negative' && <CrossIcon className="h-5 w-5 text-negative-700" />}
+        {data?.status === 'warning' && <ClockIcon className="h-5 w-5 text-warning-700" />}
+        {data?.status === 'success' && <CheckIcon className="h-5 w-5 text-success-700" />}
       </span>
     )
   }
@@ -82,26 +74,26 @@ const MyApplicationsSentCard = (props: MyApplicationsSentCardProps) => {
       {/* Desktop */}
       <Link
         href={`${ROUTES.MY_APPLICATIONS}/1`}
-        className="w-full h-full items-center flex justify-center"
+        className="flex h-full w-full items-center justify-center"
       >
         <div
           id="desktop-card"
-          className="rounded-lg bg-white w-full h-[124px] lg:flex hidden items-center justify-between border-2 border-gray-200 cursor-pointer"
+          className="hidden h-[124px] w-full cursor-pointer items-center justify-between rounded-lg border-2 border-gray-200 bg-white lg:flex"
         >
-          <div className="flex items-center justify-between w-full">
-            <div className="w-full flex flex-col gap-1 pl-6">
+          <div className="flex w-full items-center justify-between">
+            <div className="flex w-full flex-col gap-1 pl-6">
               <span className="text-p3-semibold text-main-700">{data?.category}</span>
               <span className="text-20-semibold">{data?.title}</span>
               <span className="text-p3">{data?.subtitle}</span>
             </div>
-            <div className="w-full justify-end flex items-center gap-6">
-              <div className="flex flex-col w-full max-w-[200px]">
+            <div className="flex w-full items-center justify-end gap-6">
+              <div className="flex w-full max-w-[200px] flex-col">
                 <span className="text-16-semibold mb-1">
                   {t('account_section_applications.navigation_sent')}
                 </span>
                 <span className="w-max">{data?.sentDate}</span>
               </div>
-              <div className="flex flex-col gap-1 mr-6 w-full max-w-[200px]">
+              <div className="mr-6 flex w-full max-w-[200px] flex-col gap-1">
                 <div className="flex">{desktopStatusHandler()}</div>
                 {data?.status !== 'warning' && data?.statusDate && (
                   <span className="pl-8">{data?.statusDate}</span>
@@ -109,8 +101,8 @@ const MyApplicationsSentCard = (props: MyApplicationsSentCardProps) => {
               </div>
             </div>
           </div>
-          <div className="w-16 min-w-[64px] h-full border-l-2">
-            <span className="w-full h-full items-center flex justify-center">
+          <div className="h-full w-16 min-w-[64px] border-l-2">
+            <span className="flex h-full w-full items-center justify-center">
               <ChevronRightIcon />
             </span>
           </div>
@@ -119,16 +111,16 @@ const MyApplicationsSentCard = (props: MyApplicationsSentCardProps) => {
       {/* Mobile */}
       <div
         id="mobile-card"
-        className="bg-white w-full h-[88px] max-[389px]:h-[92px] flex lg:hidden items-center justify-between border-b-2 border-gray-200"
+        className="flex h-[88px] w-full items-center justify-between border-b-2 border-gray-200 bg-white max-[389px]:h-[92px] lg:hidden"
       >
         <Link
           href={`${ROUTES.MY_APPLICATIONS}/1`}
-          className="w-full h-full items-center flex justify-center"
+          className="flex h-full w-full items-center justify-center"
         >
-          <div className="w-full flex items-start justify-between">
-            <div className="flex flex-col w-full max-[389px]:gap-1">
+          <div className="flex w-full items-start justify-between">
+            <div className="flex w-full flex-col max-[389px]:gap-1">
               <div className="flex items-center justify-between">
-                <span className="text-p3-semibold max-[389px]:max-w-[220px] text-main-700">
+                <span className="text-p3-semibold text-main-700 max-[389px]:max-w-[220px]">
                   {data?.category}
                 </span>
                 <span>{mobileStatusHandler()}</span>

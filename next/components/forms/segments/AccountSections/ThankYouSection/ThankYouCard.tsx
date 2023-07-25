@@ -1,7 +1,5 @@
 import PaymentDeclined from '@assets/images/new-icons/other/payment-declined.svg'
-import DisableIcon from '@assets/images/new-icons/ui/cross.svg'
-import DoneIcon from '@assets/images/new-icons/ui/done.svg'
-import RestartIcon from '@assets/images/new-icons/ui/repeat.svg'
+import { CheckIcon, CrossIcon, RepeatIcon } from '@assets/ui-icons'
 import cx from 'classnames'
 import AccountMarkdown from 'components/forms/segments/AccountMarkdown/AccountMarkdown'
 import Button from 'components/forms/simple-components/Button'
@@ -25,10 +23,10 @@ const ThankYouCard = ({
   content,
 }: ThankYouCardBase) => {
   return (
-    <div className="max-w-[734px] lg:max-w-[800px] w-full h-full mx-auto bg-gray-0 px-4 md:px-14 pb-4 pt-6 md:py-12 flex flex-col items-center gap-4 md:gap-6 rounded-none md:rounded-2xl">
+    <div className="mx-auto flex h-full w-full max-w-[734px] flex-col items-center gap-4 rounded-none bg-gray-0 px-4 pb-4 pt-6 md:gap-6 md:rounded-2xl md:px-14 md:py-12 lg:max-w-[800px]">
       <span
         className={cx(
-          'min-w-14 md:min-w-[88px] w-14 md:w-[88px] h-14 md:h-[88px] bg-negative-100 flex justify-center items-center rounded-full',
+          'min-w-14 flex h-14 w-14 items-center justify-center rounded-full bg-negative-100 md:h-[88px] md:w-[88px] md:min-w-[88px]',
           {
             'bg-negative-100': !success,
             'bg-success-100': success,
@@ -36,16 +34,16 @@ const ThankYouCard = ({
         )}
       >
         {success ? (
-          <DoneIcon className="w-8 md:w-10 h-8 md:h-10 flex justify-center items-center text-success-700" />
+          <CheckIcon className="flex h-8 w-8 items-center justify-center text-success-700 md:h-10 md:w-10" />
         ) : (
-          <PaymentDeclined className="w-8 md:w-10 h-8 md:h-10 flex justify-center items-center text-negative-700" />
+          <PaymentDeclined className="flex h-8 w-8 items-center justify-center text-negative-700 md:h-10 md:w-10" />
         )}
       </span>
       <div className="flex flex-col items-center gap-4 md:gap-3">
         <h2 className="text-h2 text-center">{title}</h2>
         <AccountMarkdown variant="sm" className="text-center" content={content} />
       </div>
-      <div className="w-full flex flex-col sm:flex-row items-center gap-4 px-0 md:px-24">
+      <div className="flex w-full flex-col items-center gap-4 px-0 sm:flex-row md:px-24">
         {success ? (
           <>
             <a
@@ -63,11 +61,11 @@ const ThankYouCard = ({
         ) : (
           <>
             <Link href={`${ROUTES.TAXES_AND_FEES}/2023`} className="w-full">
-              <Button startIcon={<RestartIcon />} text={firstButtonTitle} fullWidth />
+              <Button startIcon={<RepeatIcon />} text={firstButtonTitle} fullWidth />
             </Link>
             <Link href="/" className="w-full">
               <Button
-                startIcon={<DisableIcon className="w-6 h-6" />}
+                startIcon={<CrossIcon className="h-6 w-6" />}
                 variant="black-outline"
                 text={secondButtonTitle}
                 fullWidth

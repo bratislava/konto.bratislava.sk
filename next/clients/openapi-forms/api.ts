@@ -69,19 +69,19 @@ export interface CreateFormEidRequestDto {
    * @type {string}
    * @memberof CreateFormEidRequestDto
    */
-  pospID?: string
+  pospID: string
   /**
    * Version of Form
    * @type {string}
    * @memberof CreateFormEidRequestDto
    */
-  pospVersion?: string
+  pospVersion: string
   /**
    * Subject of message for recipient
    * @type {string}
    * @memberof CreateFormEidRequestDto
    */
-  messageSubject?: string
+  messageSubject: string
   /**
    * Is it signed by Eid?
    * @type {boolean}
@@ -118,19 +118,19 @@ export interface CreateFormRequestDto {
    * @type {string}
    * @memberof CreateFormRequestDto
    */
-  pospID?: string
+  pospID: string
   /**
    * Version of Form
    * @type {string}
    * @memberof CreateFormRequestDto
    */
-  pospVersion?: string
+  pospVersion: string
   /**
    * Subject of message for recipient
    * @type {string}
    * @memberof CreateFormRequestDto
    */
-  messageSubject?: string
+  messageSubject: string
   /**
    * Is it signed by Eid?
    * @type {boolean}
@@ -1364,6 +1364,30 @@ export type FormOrUserNotFoundErrorDtoErrorNameEnum =
 /**
  *
  * @export
+ * @enum {string}
+ */
+
+export const FormState = {
+  Draft: 'DRAFT',
+  Queued: 'QUEUED',
+  QueuedError: 'QUEUED_ERROR',
+  Checking: 'CHECKING',
+  CheckingError: 'CHECKING_ERROR',
+  Sending: 'SENDING',
+  SendingError: 'SENDING_ERROR',
+  Sent: 'SENT',
+  SentError: 'SENT_ERROR',
+  Processing: 'PROCESSING',
+  ProcessingError: 'PROCESSING_ERROR',
+  Finished: 'FINISHED',
+  Rejected: 'REJECTED',
+} as const
+
+export type FormState = (typeof FormState)[keyof typeof FormState]
+
+/**
+ *
+ * @export
  * @interface GetFileResponseDto
  */
 export interface GetFileResponseDto {
@@ -1491,12 +1515,6 @@ export interface GetFormResponseDto {
   email: string
   /**
    * Send XML body of form
-   * @type {string}
-   * @memberof GetFormResponseDto
-   */
-  formDataXml: string
-  /**
-   * Send XML body of form
    * @type {object}
    * @memberof GetFormResponseDto
    */
@@ -1612,7 +1630,7 @@ export interface GetFormResponseDto {
 }
 
 export const GetFormResponseDtoStateEnum = {
-  Concept: 'CONCEPT',
+  Draft: 'DRAFT',
   Queued: 'QUEUED',
   QueuedError: 'QUEUED_ERROR',
   Checking: 'CHECKING',
@@ -2450,12 +2468,6 @@ export interface UpdateFormRequestDto {
    * @memberof UpdateFormRequestDto
    */
   email: string
-  /**
-   * Send XML body of form
-   * @type {string}
-   * @memberof UpdateFormRequestDto
-   */
-  formDataXml: string
   /**
    * Send XML body of form
    * @type {object}
@@ -3893,12 +3905,18 @@ export const NasesApiAxiosParamCreator = function (configuration?: Configuration
      * @summary Get paginated forms
      * @param {string} [currentPage] Page number
      * @param {string} [pagination] Number of items per page
+     * @param {string} [pospID] Posp ID of Form
+     * @param {string} [formName] Form Name
+     * @param {FormState} [state] State of form
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
     nasesControllerGetForms: async (
       currentPage?: string,
       pagination?: string,
+      pospID?: string,
+      formName?: string,
+      state?: FormState,
       options: AxiosRequestConfig = {},
     ): Promise<RequestArgs> => {
       const localVarPath = `/nases/forms`
@@ -3923,6 +3941,18 @@ export const NasesApiAxiosParamCreator = function (configuration?: Configuration
 
       if (pagination !== undefined) {
         localVarQueryParameter['pagination'] = pagination
+      }
+
+      if (pospID !== undefined) {
+        localVarQueryParameter['pospID'] = pospID
+      }
+
+      if (formName !== undefined) {
+        localVarQueryParameter['formName'] = formName
+      }
+
+      if (state !== undefined) {
+        localVarQueryParameter['state'] = state
       }
 
       setSearchParams(localVarUrlObj, localVarQueryParameter)
@@ -4388,17 +4418,26 @@ export const NasesApiFp = function (configuration?: Configuration) {
      * @summary Get paginated forms
      * @param {string} [currentPage] Page number
      * @param {string} [pagination] Number of items per page
+     * @param {string} [pospID] Posp ID of Form
+     * @param {string} [formName] Form Name
+     * @param {FormState} [state] State of form
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
     async nasesControllerGetForms(
       currentPage?: string,
       pagination?: string,
+      pospID?: string,
+      formName?: string,
+      state?: FormState,
       options?: AxiosRequestConfig,
     ): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<GetFormsResponseDto>> {
       const localVarAxiosArgs = await localVarAxiosParamCreator.nasesControllerGetForms(
         currentPage,
         pagination,
+        pospID,
+        formName,
+        state,
         options,
       )
       return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)
@@ -4611,16 +4650,22 @@ export const NasesApiFactory = function (
      * @summary Get paginated forms
      * @param {string} [currentPage] Page number
      * @param {string} [pagination] Number of items per page
+     * @param {string} [pospID] Posp ID of Form
+     * @param {string} [formName] Form Name
+     * @param {FormState} [state] State of form
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
     nasesControllerGetForms(
       currentPage?: string,
       pagination?: string,
+      pospID?: string,
+      formName?: string,
+      state?: FormState,
       options?: AxiosRequestConfig,
     ): AxiosPromise<GetFormsResponseDto> {
       return localVarFp
-        .nasesControllerGetForms(currentPage, pagination, options)
+        .nasesControllerGetForms(currentPage, pagination, pospID, formName, state, options)
         .then((request) => request(axios, basePath))
     },
     /**
@@ -4818,6 +4863,9 @@ export class NasesApi extends BaseAPI {
    * @summary Get paginated forms
    * @param {string} [currentPage] Page number
    * @param {string} [pagination] Number of items per page
+   * @param {string} [pospID] Posp ID of Form
+   * @param {string} [formName] Form Name
+   * @param {FormState} [state] State of form
    * @param {*} [options] Override http request option.
    * @throws {RequiredError}
    * @memberof NasesApi
@@ -4825,10 +4873,13 @@ export class NasesApi extends BaseAPI {
   public nasesControllerGetForms(
     currentPage?: string,
     pagination?: string,
+    pospID?: string,
+    formName?: string,
+    state?: FormState,
     options?: AxiosRequestConfig,
   ) {
     return NasesApiFp(this.configuration)
-      .nasesControllerGetForms(currentPage, pagination, options)
+      .nasesControllerGetForms(currentPage, pagination, pospID, formName, state, options)
       .then((request) => request(this.axios, this.basePath))
   }
 

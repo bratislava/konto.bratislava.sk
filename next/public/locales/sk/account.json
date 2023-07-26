@@ -365,9 +365,12 @@
     },
     "last_change": "Posledná zmena:",
     "status": {
-      "success": "Vybavené",
-      "warning": "Čaká na vybavenie",
-      "negative": "Zamietnuté"
+      "draft": "Koncept",
+      "toSend": "Na odoslanie",
+      "sent": "Odoslané",
+      "processing": "Vybavuje sa",
+      "finished": "Vybavené",
+      "rejected": "Zamietnuté"
     },
     "details": {
       "application_details": {

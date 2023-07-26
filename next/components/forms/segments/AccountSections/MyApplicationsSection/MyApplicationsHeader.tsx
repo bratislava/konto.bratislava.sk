@@ -11,6 +11,7 @@ type HeaderNavigationItemBase = {
   tag: 'sent' | 'concept'
 }
 
+// TODO accessibility - refactor to use Tabs from react-aria-components
 const MyApplicationsHeader = (props: MyApplicationsHeaderBase) => {
   const { title } = props
   const { t } = useTranslation('account')
@@ -20,6 +21,7 @@ const MyApplicationsHeader = (props: MyApplicationsHeaderBase) => {
     { title: t('account_section_applications.navigation_sent'), tag: 'sent' },
     { title: t('account_section_applications.navigation_concept'), tag: 'concept' },
   ]
+
   return (
     <div className="bg-gray-50">
       <span className="pt-6 flex flex-col justify-end gap-4 lg:gap-6 w-full h-full max-w-screen-lg m-auto lg:px-0 lg:pt-14">

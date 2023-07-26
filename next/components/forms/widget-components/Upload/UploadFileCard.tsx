@@ -15,6 +15,7 @@ import {
   FormFileUploadStatusEnum,
 } from '../../../../frontend/types/formFileUploadTypes'
 import Button from '../../simple-components/Button'
+import PrettyBytes from '../../simple-components/PrettyBytes'
 import ProgressBar from '../../simple-components/ProgressBar'
 
 type UploadedFileProps = {
@@ -24,9 +25,6 @@ type UploadedFileProps = {
   onFileDownload?: () => void
 }
 
-/**
- * TODO: fileSize
- */
 const UploadFileCard = ({
   fileInfo,
   onFileRetry,
@@ -34,7 +32,6 @@ const UploadFileCard = ({
   onFileDownload,
 }: UploadedFileProps) => {
   const { t } = useTranslation('account', { keyPrefix: 'Upload' })
-  const fileSize = 500 // not yet implemented in FormFileUploadFileInfo
 
   const isErrorStyle =
     fileInfo.status.type === FormFileUploadStatusEnum.UploadError ||
@@ -80,8 +77,7 @@ const UploadFileCard = ({
                 {fileInfo.canDownload && (
                   <ReactAriaButton onPress={onFileDownload}>DL</ReactAriaButton>
                 )}
-                {/* TODO filesize formatting and unit */}
-                <span>{fileSize}</span>
+                <span><PrettyBytes number={fileInfo.fileSize} /></span>
                 <span>&bull;</span>
                 <span>{fileInfo.status.type}</span>
               </div>

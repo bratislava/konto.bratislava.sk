@@ -1,4 +1,4 @@
-import ExpandMore from '@assets/images/new-icons/ui/expand.svg'
+import { ChevronDownIcon } from '@assets/ui-icons'
 import cx from 'classnames'
 import { useTranslation } from 'next-i18next'
 import React, { useState } from 'react'
@@ -46,15 +46,15 @@ const TableHeaderRow = ({ dataType }: { dataType: string }) => {
     : matchHeader.APARTMENT
 
   return (
-    <thead className="lg:bg-gray-0 bg-gray-200 self-stretch">
+    <thead className="self-stretch bg-gray-200 lg:bg-gray-0">
       <tr>
-        <th className="text-16 first:rounded-tl last:rounded-tr [&:not(:first-child)]:text-center border-spacing-0 border-b-2 text-left lg:py-4 lg:p-0 p-4">
+        <th className="text-16 border-spacing-0 border-b-2 p-4 text-left first:rounded-tl last:rounded-tr lg:p-0 lg:py-4 [&:not(:first-child)]:text-center">
           Predmet dane
         </th>
         {headerData?.map((header) => {
           return (
             <th
-              className="text-16 first:rounded-tl last:rounded-tr [&:not(:first-child)]:text-center border-spacing-0 border-b-2 text-left lg:py-4 lg:p-0 p-4"
+              className="text-16 border-spacing-0 border-b-2 p-4 text-left first:rounded-tl last:rounded-tr lg:p-0 lg:py-4 [&:not(:first-child)]:text-center"
               key={header}
             >
               <AccountMarkdown content={`<div class="text-16 p-2">${header}</div>`} />
@@ -73,8 +73,8 @@ const TableRow = ({ dataType, data }: { dataType: string; data: Tax['taxDetails'
       {data.map((taxDetail) => {
         return (
           <tr key={taxDetail.id}>
-            <td className="[&:not(:first-child)]:text-20-semibold border-r-2 [&:not(:first-child)]:text-center last:border-r-0 lg:py-4 h-max lg:p-0 p-4">
-              <div className="h-0 font-semibold inline">
+            <td className="[&:not(:first-child)]:text-20-semibold h-max border-r-2 p-4 last:border-r-0 lg:p-0 lg:py-4 [&:not(:first-child)]:text-center">
+              <div className="inline h-0 font-semibold">
                 {t(
                   `tax_detail_section.tax_type.${dataType}.ground_type.${taxDetail.areaType}.title`,
                 )}
@@ -85,16 +85,16 @@ const TableRow = ({ dataType, data }: { dataType: string; data: Tax['taxDetails'
               )}
             </td>
             {dataType === 'GROUND' && (
-              <td className="lg:[&:not(:first-child)]:text-20-semibold [&:not(:first-child)]:text-16-semibold w-[15%] border-r-2 [&:not(:first-child)]:text-center last:border-r-0 lg:py-4 lg:p-0 p-4">
+              <td className="lg:[&:not(:first-child)]:text-20-semibold [&:not(:first-child)]:text-16-semibold w-[15%] border-r-2 p-4 last:border-r-0 lg:p-0 lg:py-4 [&:not(:first-child)]:text-center">
                 {taxDetail.area}
               </td>
             )}
-            <td className="lg:[&:not(:first-child)]:text-20-semibold [&:not(:first-child)]:text-16-semibold w-[15%] border-r-2 [&:not(:first-child)]:text-center last:border-r-0 lg:py-4 lg:p-0 p-4">
+            <td className="lg:[&:not(:first-child)]:text-20-semibold [&:not(:first-child)]:text-16-semibold w-[15%] border-r-2 p-4 last:border-r-0 lg:p-0 lg:py-4 [&:not(:first-child)]:text-center">
               {typeof taxDetail.base === 'number'
                 ? (taxDetail.base / 100).toFixed(2).replace('.', ',')
                 : taxDetail.base}
             </td>
-            <td className="lg:[&:not(:first-child)]:text-20-semibold [&:not(:first-child)]:text-16-semibold w-[15%] border-r-2 [&:not(:first-child)]:text-center last:border-r-0 lg:py-4 lg:p-0 p-4">
+            <td className="lg:[&:not(:first-child)]:text-20-semibold [&:not(:first-child)]:text-16-semibold w-[15%] border-r-2 p-4 last:border-r-0 lg:p-0 lg:py-4 [&:not(:first-child)]:text-center">
               {formatCurrency(taxDetail.amount)}
             </td>
           </tr>
@@ -106,8 +106,8 @@ const TableRow = ({ dataType, data }: { dataType: string; data: Tax['taxDetails'
 
 const Table = ({ dataType, data }: { dataType: string; data: Tax['taxDetails'] }) => {
   return (
-    <div className="no-scrollbar overflow-x-auto w-full">
-      <table className="border-separate border-spacing-0 border-2 border-solid border-gray-200 lg:border-0 sm:w-full w-max table-auto lg:rounded-none rounded-lg last:border-b-2">
+    <div className="no-scrollbar w-full overflow-x-auto">
+      <table className="w-max table-auto border-separate border-spacing-0 rounded-lg border-2 border-solid border-gray-200 last:border-b-2 sm:w-full lg:rounded-none lg:border-0">
         <TableHeaderRow dataType={dataType} />
         <TableRow dataType={dataType} data={data} />
       </table>
@@ -129,9 +129,9 @@ const AccordionTableTaxContent = ({
   const accordionSize = isAccordionSizeType(size) as AccordionSizeType
 
   const TableContent = () => (
-    <div className="h-full flex flex-col w-full gap-6">
+    <div className="flex h-full w-full flex-col gap-6">
       <Table dataType={dataType} data={data} />
-      <div className="flex lg:bg-gray-0 bg-gray-100 lg:p-0 p-4 rounded-lg">
+      <div className="flex rounded-lg bg-gray-100 p-4 lg:bg-gray-0 lg:p-0">
         <div className="text-h4-bold grow">Celkom</div>
         <div className="text-h4-bold">{secondTitle}</div>
       </div>
@@ -161,7 +161,7 @@ const AccordionTableTaxContent = ({
   })
   return (
     <div className="h-auto w-full">
-      <div className="lg:hidden block">
+      <div className="block lg:hidden">
         <AccountMarkdownModal
           show={isActive}
           onClose={() => setIsActive(false)}
@@ -179,23 +179,23 @@ const AccordionTableTaxContent = ({
           {icon && (
             <div
               className={cx('flex items-center justify-center', {
-                'w-6 h-6': accordionSize === 'sm' || accordionSize === 'xs',
-                'w-8 h-8': accordionSize === 'md',
-                'w-10 h-10': accordionSize === 'lg',
+                'h-6 w-6': accordionSize === 'sm' || accordionSize === 'xs',
+                'h-8 w-8': accordionSize === 'md',
+                'h-10 w-10': accordionSize === 'lg',
               })}
             >
               <PersonIcon
                 className={cx('', {
-                  'w-4 h-4': accordionSize === 'sm' || accordionSize === 'xs',
-                  'w-5 h-5': accordionSize === 'md',
-                  'w-6 h-6': accordionSize === 'lg',
+                  'h-4 w-4': accordionSize === 'sm' || accordionSize === 'xs',
+                  'h-5 w-5': accordionSize === 'md',
+                  'h-6 w-6': accordionSize === 'lg',
                 })}
               />
             </div>
           )}
           <div className="flex w-full flex-col gap-2 lg:gap-4">
             <div className="flex items-center gap-4">
-              <div className="flex grow sm:flex-row flex-col items-start">
+              <div className="flex grow flex-col items-start sm:flex-row">
                 <div
                   className={cx('flex grow', {
                     'text-h6': accordionSize === 'xs',
@@ -210,20 +210,20 @@ const AccordionTableTaxContent = ({
                   className={cx('md:font-semibold', {
                     'text-p-base': size === 'xs',
                     'text-h-base': size === 'sm',
-                    'md:text-h-md text-p-base': size === 'md',
+                    'text-p-base md:text-h-md': size === 'md',
                     'text-h-lg': size === 'lg',
                   })}
                 >
                   {secondTitle}
                 </div>
               </div>
-              <ExpandMore
+              <ChevronDownIcon
                 className={cx('flex items-center justify-center text-main-700', {
-                  'lg:w-10 lg:h-10 w-8 h-8': accordionSize === 'lg',
-                  'lg:w-8 lg:h-8 w-6 h-6': accordionSize === 'md',
-                  'w-6 h-6': accordionSize === 'sm' || accordionSize === 'xs',
-                  'transform rotate-180': isActive,
-                  'transform rotate-270 md:rotate-0': !isActive,
+                  'h-8 w-8 lg:h-10 lg:w-10': accordionSize === 'lg',
+                  'h-6 w-6 lg:h-8 lg:w-8': accordionSize === 'md',
+                  'h-6 w-6': accordionSize === 'sm' || accordionSize === 'xs',
+                  'rotate-180 transform': isActive,
+                  'rotate-270 transform md:rotate-0': !isActive,
                 })}
               />
             </div>
@@ -236,7 +236,7 @@ const AccordionTableTaxContent = ({
         />
         {isActive && (
           <div
-            className={cx('flex-col font-normal lg:block hidden', paddingStyles, {
+            className={cx('hidden flex-col font-normal lg:block', paddingStyles, {
               'text-h6': accordionSize === 'sm' || accordionSize === 'xs',
               'text-20': accordionSize === 'lg' || accordionSize === 'md',
             })}

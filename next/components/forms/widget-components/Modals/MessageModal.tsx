@@ -1,4 +1,4 @@
-import CloseIcon from '@assets/images/new-icons/ui/cross.svg'
+import { CrossIcon } from '@assets/ui-icons'
 import cx from 'classnames'
 import React from 'react'
 
@@ -52,14 +52,14 @@ const MessageModal = ({
     <div
       role="button"
       tabIndex={0}
-      className="h-full fixed w-full z-50 top-0 flex items-center justify-center"
+      className="fixed top-0 z-50 flex h-full w-full items-center justify-center"
       style={{ background: 'rgba(var(--color-gray-800), .4)', marginTop: '0' }}
       onClick={cancelHandler}
       onKeyPress={(event: React.KeyboardEvent) => handleOnKeyPress(event, cancelHandler)}
     >
       <div className={cx('flex flex-col items-end rounded-lg bg-white p-3', className)}>
         <div className="absolute flex h-6 w-6 items-center justify-center">
-          <CloseIcon className="h-6 w-6" onClick={cancelHandler} type="info" />
+          <CrossIcon className="h-6 w-6" onClick={cancelHandler} type="info" />
         </div>
         <div className="p-3">
           <div
@@ -69,7 +69,7 @@ const MessageModal = ({
             )}
           >
             <div
-              className={cx('flex relative flex-row items-start gap-2 rounded-full p-4', {
+              className={cx('relative flex flex-row items-start gap-2 rounded-full p-4', {
                 'bg-gray-100': type === 'info',
                 'bg-warning-100': type === 'warning',
                 'bg-negative-100': type === 'error',
@@ -80,7 +80,7 @@ const MessageModal = ({
                 <span className="">{icons[type]}</span>
               </div>
             </div>
-            <div className="flex flex-col items-end w-full gap-6 p-0">
+            <div className="flex w-full flex-col items-end gap-6 p-0">
               <div className={cx('flex flex-col items-center p-0', 'md:items-start')}>
                 <div className="flex h-14 items-center text-h-base font-semibold">{title}</div>
                 <div className="text-p2">{children}</div>
@@ -88,11 +88,11 @@ const MessageModal = ({
             </div>
           </div>
           {!excludeButtons && (
-            <div className="order-1 flex flex-row items-center gap-6 p-0 justify-end mt-6">
+            <div className="order-1 mt-6 flex flex-row items-center justify-end gap-6 p-0">
               <div
                 role="button"
                 tabIndex={0}
-                className="text-p2 flex cursor-pointer flex-row items-center justify-center gap-2 py-1 px-2 font-semibold not-italic"
+                className="text-p2 flex cursor-pointer flex-row items-center justify-center gap-2 px-2 py-1 font-semibold not-italic"
                 onClick={cancelHandler}
                 onKeyPress={(event: React.KeyboardEvent) => handleOnKeyPress(event, cancelHandler)}
               >

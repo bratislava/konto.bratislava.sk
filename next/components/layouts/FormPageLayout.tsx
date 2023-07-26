@@ -1,7 +1,4 @@
-import HelpIcon from '@assets/images/new-icons/ui/help.svg'
-import LogoutIcon from '@assets/images/new-icons/ui/logout.svg'
-import CityIcon from '@assets/images/new-icons/ui/municipal-account.svg'
-import ProfileIcon from '@assets/images/new-icons/ui/profile.svg'
+import { CityAccountIcon, HelpIcon, LogoutIcon, ProfileIcon } from '@assets/ui-icons'
 import cx from 'classnames'
 import AccountNavBar from 'components/forms/segments/AccountNavBar/AccountNavBar'
 import SectionContainer from 'components/forms/segments/SectionContainer/SectionContainer'
@@ -23,25 +20,25 @@ const menuItems = [
   {
     id: 1,
     title: 'account:menu_account_link',
-    icon: <CityIcon className="w-6 h-6" />,
+    icon: <CityAccountIcon className="h-6 w-6" />,
     link: '/',
   },
   {
     id: 2,
     title: 'account:menu_profile_link',
-    icon: <ProfileIcon className="w-6 h-6" />,
+    icon: <ProfileIcon className="h-6 w-6" />,
     link: ROUTES.USER_PROFILE,
   },
   {
     id: 3,
     title: 'account:menu_help_link',
-    icon: <HelpIcon className="w-6 h-6" />,
+    icon: <HelpIcon className="h-6 w-6" />,
     link: ROUTES.HELP,
   },
   {
     id: 4,
     title: 'account:menu_logout_link',
-    icon: <LogoutIcon className="w-6 h-6" />,
+    icon: <LogoutIcon className="h-6 w-6" />,
     link: '/logout',
   },
 ]
@@ -63,7 +60,7 @@ const FormPageLayout = ({ className, navHidden, children }: FormPageLayoutBase) 
   }
 
   return (
-    <div className={cx('flex flex-col min-h-screen', className)}>
+    <div className={cx('flex min-h-screen flex-col', className)}>
       <SectionContainer>
         <AccountNavBar
           currentLanguage={locale}

@@ -1,7 +1,4 @@
-import ChevronRightIcon from '@assets/images/new-icons/ui/chevron-right.svg'
-import TimeIcon from '@assets/images/new-icons/ui/clock.svg'
-import SuccessIcon from '@assets/images/new-icons/ui/done.svg'
-import ExclamationIcon from '@assets/images/new-icons/ui/exclamation-mark.svg'
+import { CheckIcon, ChevronRightIcon, ClockIcon, ErrorIcon } from '@assets/ui-icons'
 import cx from 'classnames'
 import { TaxesCardBase } from 'components/forms/segments/AccountSections/TaxesFeesSection/TaxesFeesSection'
 import Link from 'next/link'
@@ -22,7 +19,7 @@ const TaxesFeesCard = (props: TaxesCardBase) => {
     const statusNode = (icon: ReactNode, statusTitle: string): ReactNode => {
       return (
         <>
-          <span className="h-6 w-6 hidden lg:flex justify-center items-center">{icon}</span>
+          <span className="hidden h-6 w-6 items-center justify-center lg:flex">{icon}</span>
           <span className={statusStyle}>{statusTitle}</span>
         </>
       )
@@ -30,11 +27,11 @@ const TaxesFeesCard = (props: TaxesCardBase) => {
 
     switch (status) {
       case 'unpaid':
-        return statusNode(<ExclamationIcon className="text-negative-700 w-6 h-6" />, 'Neuhradená')
+        return statusNode(<ErrorIcon className="h-6 w-6 text-negative-700" />, 'Neuhradená')
       case 'partially_paid':
-        return statusNode(<TimeIcon className="text-warning-700 w-6 h-6" />, 'Čiastočne uhradená')
+        return statusNode(<ClockIcon className="h-6 w-6 text-warning-700" />, 'Čiastočne uhradená')
       case 'paid':
-        return statusNode(<SuccessIcon className="text-success-700 w-6 h-6" />, 'Uhradená')
+        return statusNode(<CheckIcon className="h-6 w-6 text-success-700" />, 'Uhradená')
       default:
         break
     }
@@ -46,22 +43,22 @@ const TaxesFeesCard = (props: TaxesCardBase) => {
       {/* Desktop */}
       <div
         id="desktop-card"
-        className="rounded-lg bg-white w-full h-[104px] lg:flex hidden items-center justify-between border-2 border-gray-200"
+        className="hidden h-[104px] w-full items-center justify-between rounded-lg border-2 border-gray-200 bg-white lg:flex"
       >
-        <div className="flex items-center justify-between w-full">
-          <div className="w-full flex flex-col pl-6">
+        <div className="flex w-full items-center justify-between">
+          <div className="flex w-full flex-col pl-6">
             <span className="text-20-semibold mb-1">{title}</span>
             <span className="text-p3">{`za rok ${yearPay}`}</span>
           </div>
-          <div className="w-full justify-end flex items-center">
+          <div className="flex w-full items-center justify-end">
             <div className="flex flex-col px-10">
               <span className="text-16-semibold mb-1">Vytvorená</span>
               <span className="w-max">{createDate}</span>
             </div>
-            <div className="flex flex-col px-10 border-x-2">
+            <div className="flex flex-col border-x-2 px-10">
               <span className="text-16-semibold mb-1">Suma</span>
               {status === 'partially_paid' && currentPaid ? (
-                <span className="w-max flex items-center">{`${formatCurrency(
+                <span className="flex w-max items-center">{`${formatCurrency(
                   currentPaid,
                 )} / ${formatCurrency(finishPrice)}`}</span>
               ) : (
@@ -74,8 +71,8 @@ const TaxesFeesCard = (props: TaxesCardBase) => {
             </div>
           </div>
         </div>
-        <div className="cursor-pointer w-16 min-w-[64px] h-full border-l-2">
-          <div className="w-full h-full items-center flex justify-center">
+        <div className="h-full w-16 min-w-[64px] cursor-pointer border-l-2">
+          <div className="flex h-full w-full items-center justify-center">
             <ChevronRightIcon />
           </div>
         </div>
@@ -83,30 +80,30 @@ const TaxesFeesCard = (props: TaxesCardBase) => {
       {/* Mobile */}
       <div
         id="mobile-card"
-        className="bg-white w-full h-24 flex lg:hidden items-center justify-between border-b-2 border-gray-200"
+        className="flex h-24 w-full items-center justify-between border-b-2 border-gray-200 bg-white lg:hidden"
       >
         <Link
           href={`${ROUTES.TAXES_AND_FEES}/2023`}
-          className="w-full h-full items-center flex justify-center"
+          className="flex h-full w-full items-center justify-center"
         >
-          <div className="w-full flex items-start justify-between">
+          <div className="flex w-full items-start justify-between">
             <div className="flex flex-col">
-              <span className="text-p2-semibold leading-5 mb-1">{`${title} za rok ${yearPay}`}</span>
-              <div className="flex items-center flex-wrap">
+              <span className="text-p2-semibold mb-1 leading-5">{`${title} za rok ${yearPay}`}</span>
+              <div className="flex flex-wrap items-center">
                 {status === 'partially_paid' && currentPaid ? (
-                  <span className="text-p3 w-max flex items-center">{`${formatCurrency(
+                  <span className="text-p3 flex w-max items-center">{`${formatCurrency(
                     currentPaid,
                   )} / ${formatCurrency(finishPrice)}`}</span>
                 ) : (
                   <span className="text-p3">{formatCurrency(finishPrice)}</span>
                 )}
                 <div className="flex items-center">
-                  <span className="rounded-full w-1 h-1 bg-gray-700 mx-3" />
+                  <span className="mx-3 h-1 w-1 rounded-full bg-gray-700" />
                   <div className="flex">{statusHandler()}</div>
                 </div>
               </div>
             </div>
-            <span className="h-5 w-5 flex justify-center items-center">
+            <span className="flex h-5 w-5 items-center justify-center">
               <ChevronRightIcon />
             </span>
           </div>

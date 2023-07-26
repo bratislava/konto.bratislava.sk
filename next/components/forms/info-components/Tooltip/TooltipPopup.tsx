@@ -1,8 +1,9 @@
-import HorizontalArrowIcon from '@assets/images/forms/tooltip-horizontal-arrow.svg'
-import VerticalArrowIcon from '@assets/images/forms/tooltip-vertical-arrow.svg'
 import cx from 'classnames'
 import { TooltipPositionType } from 'components/forms/info-components/Tooltip/Tooltip'
 import AccountMarkdown from 'components/forms/segments/AccountMarkdown/AccountMarkdown'
+
+import HorizontalArrowIcon from './tooltip-horizontal-arrow.svg'
+import VerticalArrowIcon from './tooltip-vertical-arrow.svg'
 
 type TooltipBase = {
   text?: string
@@ -40,7 +41,7 @@ const TooltipPopup = ({ arrow = true, className, text, position = 'top-left' }: 
     <div className={tooltipPopupStyle}>
       <div
         className={cx(
-          'text-p3 sm:text-p2 w-fit z-20 m-0 border-0 flex flex-row justify-center min-w-[118px] max-w-[230px] sm:max-w-[280px] break-words rounded bg-gray-700 py-2 px-3 sm:py-3 sm:px-4 text-white',
+          'text-p3 sm:text-p2 z-20 m-0 flex w-fit min-w-[118px] max-w-[230px] flex-row justify-center break-words rounded border-0 bg-gray-700 px-3 py-2 text-white sm:max-w-[280px] sm:px-4 sm:py-3',
           className,
         )}
       >

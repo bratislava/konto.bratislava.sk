@@ -1,7 +1,4 @@
-import ChevronDownSmall from '@assets/images/new-icons/ui/arrow-small-down.svg'
-import HamburgerClose from '@assets/images/new-icons/ui/cross.svg'
-import Hamburger from '@assets/images/new-icons/ui/hamburger.svg'
-import ProfileOutlinedIcon from '@assets/images/new-icons/ui/profile.svg'
+import { ChevronDownSmallIcon, CrossIcon, HamburgerIcon, ProfileIcon } from '@assets/ui-icons'
 import cx from 'classnames'
 import { StatusBar, useStatusBarContext } from 'components/forms/info-components/StatusBar'
 import HamburgerMenu from 'components/forms/segments/HambergerMenu/HamburgerMenu'
@@ -52,13 +49,13 @@ export interface MenuSectionItemBase {
 
 const Avatar = ({ userData }: { userData?: UserData | null }) => {
   return (
-    <div className="flex relative flex-row items-start gap-2 rounded-full p-2 bg-main-100">
+    <div className="relative flex flex-row items-start gap-2 rounded-full bg-main-100 p-2">
       <div className="flex h-6 w-6 items-center justify-center font-semibold text-main-700">
         <span className="uppercase">
           {userData && userData.given_name && userData.family_name ? (
             userData.given_name[0] + userData.family_name[0]
           ) : (
-            <ProfileOutlinedIcon className="w-6 h-6 text-main-700" />
+            <ProfileIcon className="h-6 w-6 text-main-700" />
           )}
         </span>
       </div>
@@ -89,14 +86,14 @@ export const AccountNavBar = ({ className, sectionsList, menuItems, hiddenHeader
         className={cx(
           className,
           'text-p2 items-center',
-          'fixed top-0 left-0 w-full bg-white z-40 shadow',
+          'fixed left-0 top-0 z-40 w-full bg-white shadow',
         )}
         ref={desktopRef}
       >
         <div className={RemoveScroll.classNames.fullWidth}>
           <StatusBar className="hidden lg:flex" />
           <div
-            className={cx('max-w-screen-lg m-auto hidden h-[57px] items-center lg:flex gap-x-6')}
+            className={cx('m-auto hidden h-[57px] max-w-screen-lg items-center gap-x-6 lg:flex')}
           >
             <Brand
               className="group grow"
@@ -120,8 +117,8 @@ export const AccountNavBar = ({ className, sectionsList, menuItems, hiddenHeader
                         <div className="ml-3 font-light lg:font-semibold">
                           {userData?.given_name}
                         </div>
-                        <ChevronDownSmall
-                          className={`ml-1 hidden w-5 h-5 mix-blend-normal lg:flex ${
+                        <ChevronDownSmallIcon
+                          className={`ml-1 hidden h-5 w-5 mix-blend-normal lg:flex ${
                             isMenuOpen ? '-rotate-180' : ''
                           }`}
                         />
@@ -135,7 +132,7 @@ export const AccountNavBar = ({ className, sectionsList, menuItems, hiddenHeader
                     <Link
                       href={ROUTES.LOGIN}
                       variant="plain"
-                      className="whitespace-nowrap py-4 ml-2"
+                      className="ml-2 whitespace-nowrap py-4"
                     >
                       {t('account:menu_login_link')}
                     </Link>
@@ -152,16 +149,16 @@ export const AccountNavBar = ({ className, sectionsList, menuItems, hiddenHeader
           </div>
           {/* Header bottom navigation */}
           {isAuthenticated && sectionsList && !hiddenHeaderNav && (
-            <div className="hidden border-t border-gray-200 max-w-screen-lg m-auto h-[57px] w-full items-center justify-between lg:flex">
-              <ul className="w-full h-full flex items-center">
+            <div className="m-auto hidden h-[57px] w-full max-w-screen-lg items-center justify-between border-t border-gray-200 lg:flex">
+              <ul className="flex h-full w-full items-center">
                 {sectionsList.map((sectionItem) => (
-                  <li className="w-full h-full" key={sectionItem.id}>
+                  <li className="h-full w-full" key={sectionItem.id}>
                     <NextLink href={sectionItem.url}>
                       <div
                         className={cx(
-                          'text-p2-semibold w-full h-full flex items-center justify-center cursor-pointer border-b-2 hover:text-main-700 hover:border-main-700 transition-all',
+                          'text-p2-semibold flex h-full w-full cursor-pointer items-center justify-center border-b-2 transition-all hover:border-main-700 hover:text-main-700',
                           {
-                            'text-main-700 border-main-700': isActive(sectionItem),
+                            'border-main-700 text-main-700': isActive(sectionItem),
                             'border-transparent': !isActive(sectionItem),
                           },
                         )}
@@ -180,12 +177,12 @@ export const AccountNavBar = ({ className, sectionsList, menuItems, hiddenHeader
       {/* Mobile */}
       <div
         id="mobile-navbar"
-        className={cx(className, 'lg:hidden fixed top-0 left-0 w-full bg-white z-40 gap-x-6')}
+        className={cx(className, 'fixed left-0 top-0 z-40 w-full gap-x-6 bg-white lg:hidden')}
         ref={mobileRef}
       >
         <div className={RemoveScroll.classNames.fullWidth}>
           {!burgerOpen && <StatusBar className="flex lg:hidden" />}
-          <div className="h-16 flex items-center py-5 px-8 border-b-2">
+          <div className="flex h-16 items-center border-b-2 px-8 py-5">
             <Brand url="https://bratislava.sk/" className="grow" />
             <button
               type="button"
@@ -196,9 +193,9 @@ export const AccountNavBar = ({ className, sectionsList, menuItems, hiddenHeader
             >
               <div className="flex w-6 items-center justify-center">
                 {burgerOpen ? (
-                  <HamburgerClose className="w-6 h-6" />
+                  <CrossIcon className="h-6 w-6" />
                 ) : isAuthenticated && sectionsList ? (
-                  <Hamburger />
+                  <HamburgerIcon />
                 ) : (
                   <Avatar userData={userData} />
                 )}

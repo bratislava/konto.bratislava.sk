@@ -1,5 +1,4 @@
-import UnCheck from '@assets/images/new-icons/ui/cross.svg'
-import Check from '@assets/images/new-icons/ui/done.svg'
+import { CheckIcon, CrossIcon } from '@assets/ui-icons'
 import cx from 'classnames'
 import * as React from 'react'
 import { useId } from 'react'
@@ -52,18 +51,18 @@ const Toggle = ({ children, isDisabled = false, isSelected = true, ...rest }: To
       </VisuallyHidden>
       <div className={togglerContainer}>
         <div
-          className={cx('absolute w-4 h-4 flex items-center justify-center ml-1.5', {
+          className={cx('absolute ml-1.5 flex h-4 w-4 items-center justify-center', {
             hidden: !state.isSelected,
           })}
         >
-          <Check className="text-gray-0" />
+          <CheckIcon className="text-gray-0" />
         </div>
         <div
-          className={cx('ml-[26px] absolute w-4 h-4 flex items-center justify-center', {
+          className={cx('absolute ml-[26px] flex h-4 w-4 items-center justify-center', {
             hidden: state.isSelected,
           })}
         >
-          <UnCheck className="text-gray-0" />
+          <CrossIcon className="text-gray-0" />
         </div>
         <div className={toggleBall} />
       </div>

@@ -1,4 +1,4 @@
-import Icon from '@assets/images/account/mestske-konto-situacia-2-1.svg'
+import Icon from '@assets/images/mestske-konto-situacia-2-1.svg'
 import AccountMarkdown from 'components/forms/segments/AccountMarkdown/AccountMarkdown'
 
 type TaxesFeesErrorCardBase = {
@@ -7,12 +7,12 @@ type TaxesFeesErrorCardBase = {
 
 const TaxesFeesErrorCard = ({ content }: TaxesFeesErrorCardBase) => {
   return (
-    <div className="w-full max-w-screen-lg m-auto mt-0 lg:mt-8 px-4 md:px-16 pt-0 lg:py-10 flex flex-col lg:flex-row justify-around border-0 lg:border-2 border-gray-200 rounded-lg">
+    <div className="m-auto mt-0 flex w-full max-w-screen-lg flex-col justify-around rounded-lg border-0 border-gray-200 px-4 pt-0 md:px-16 lg:mt-8 lg:flex-row lg:border-2 lg:py-10">
       <span className="flex justify-center">
-        <Icon className="w-[145px] h-[140px] sm:w-[308px] sm:h-[296px]" />
+        <Icon className="h-[140px] w-[145px] sm:h-[296px] sm:w-[308px]" />
       </span>
       <AccountMarkdown
-        className="flex flex-col justify-center max-w-none lg:max-w-[528px] mt-6 md:mt-0"
+        className="mt-6 flex max-w-none flex-col justify-center md:mt-0 lg:max-w-[528px]"
         content={content}
       />
     </div>

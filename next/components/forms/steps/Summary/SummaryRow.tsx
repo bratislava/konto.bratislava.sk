@@ -1,4 +1,4 @@
-import EditIcon from '@assets/images/new-icons/ui/pen.svg'
+import { EditIcon } from '@assets/ui-icons'
 import cx from 'classnames'
 import { ReactNode } from 'react'
 
@@ -39,11 +39,11 @@ const SummaryRow = (props: SummaryRowProps) => {
   return (
     <div className={containerClassName}>
       <p className={labelClassName}>{data.label}</p>
-      <div className="w-full flex flex-row items-center flex-1">
+      <div className="flex w-full flex-row items-center flex-1">
         <p className={valueClassName}>{data.value || '-'}</p>
         {isEditable && (
           <div className="w-5 lg:hidden hover:lg:block">
-            <EditIcon className="cursor-pointer flex w-5 h-5" onClick={onGoToStep} />
+            <EditIcon className="flex h-5 w-5 cursor-pointer" onClick={onGoToStep} />
           </div>
         )}
       </div>

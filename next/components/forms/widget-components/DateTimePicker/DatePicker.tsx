@@ -1,4 +1,4 @@
-import CalendarIcon from '@assets/images/new-icons/ui/calendar.svg'
+import { CalendarIcon } from '@assets/ui-icons'
 import { DateValue, parseDate } from '@internationalized/date'
 import cx from 'classnames'
 import FieldErrorMessage from 'components/forms/info-components/FieldErrorMessage'
@@ -19,6 +19,8 @@ type ButtonBase = {
 const Button = ({ children, className, ...rest }: ButtonBase) => {
   const ref = useRef<HTMLButtonElement>(null)
   const { buttonProps } = useButton({ ...rest }, ref)
+
+  // TODO use Button from react aria
   return (
     <button
       className={cx('focus:outline-none', className)}
@@ -142,7 +144,7 @@ const DatePicker = forwardRef<HTMLDivElement, DatePickerBase>(
             isOpen={state?.isOpen}
           >
             <Button {...buttonProps} className={disabled ? 'opacity-50' : ''}>
-              <CalendarIcon className="lg:w-6 lg:h-6 w-5 h-5" />
+              <CalendarIcon className="h-5 w-5 lg:h-6 lg:w-6" />
             </Button>
           </DateField>
         </div>

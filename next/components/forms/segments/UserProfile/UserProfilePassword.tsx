@@ -1,4 +1,4 @@
-import LockIcon from '@assets/images/new-icons/ui/lock.svg'
+import { LockIcon } from '@assets/ui-icons'
 import Button from 'components/forms/simple-components/Button'
 import { useRouter } from 'next/router'
 import { useTranslation } from 'next-i18next'
@@ -20,7 +20,7 @@ const UserProfilePassword = () => {
       >
         <Button
           variant="black"
-          startIcon={<LockIcon fill="white" className="w-6 h-6" />}
+          startIcon={<LockIcon fill="white" className="h-6 w-6" />}
           size="sm"
           text={t('password_change.button')}
           onPress={() => push(ROUTES.PASSWORD_CHANGE)}

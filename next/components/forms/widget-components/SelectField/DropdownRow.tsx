@@ -1,5 +1,4 @@
-import ChevronRightIcon from '@assets/images/forms/chevron-right.svg'
-import FilledSelectedIcon from '@assets/images/new-icons/ui/check-mark.svg'
+import { CheckInCircleIcon, ChevronRightIcon } from '@assets/ui-icons'
 import cx from 'classnames'
 import React from 'react'
 
@@ -59,9 +58,9 @@ const DropdownRow = ({
     type === 'multiple' ? (
       <CheckboxIcon checked={selected} />
     ) : type === 'one' && selected ? (
-      <FilledSelectedIcon className="w-6 h-6" />
+      <CheckInCircleIcon className="h-6 w-6" />
     ) : type === 'arrow' ? (
-      <ChevronRightIcon className="w-6 h-6" />
+      <ChevronRightIcon className="h-6 w-6" />
     ) : type === 'radio' ? (
       <RadioButtonIcon selected={selected} />
     ) : null

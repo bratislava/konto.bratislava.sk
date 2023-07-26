@@ -1,5 +1,5 @@
 /* eslint-disable lodash-fp/no-extraneous-args */
-import TimeIcon from '@assets/images/new-icons/ui/clock.svg'
+import { ClockIcon } from '@assets/ui-icons'
 import cx from 'classnames'
 import FieldErrorMessage from 'components/forms/info-components/FieldErrorMessage'
 import padStart from 'lodash/padStart'
@@ -181,7 +181,7 @@ const TimePicker = forwardRef<HTMLDivElement, TimePickerBase>(
             setPrevValue={setPrevValue}
           >
             <Button {...buttonProps} disabled={disabled}>
-              <TimeIcon className="lg:w-6 lg:h-6 w-5 h-5" />
+              <ClockIcon className="h-5 w-5 lg:h-6 lg:w-6" />
             </Button>
           </TimeField>
         </div>

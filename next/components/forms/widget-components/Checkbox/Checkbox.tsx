@@ -1,4 +1,4 @@
-import Check from '@assets/images/new-icons/ui/done.svg'
+import { CheckIcon } from '@assets/ui-icons'
 import cx from 'classnames'
 import Tooltip from 'components/forms/info-components/Tooltip/Tooltip'
 import * as React from 'react'
@@ -73,12 +73,12 @@ const CheckboxGroupItem = ({
         <VisuallyHidden>
           <input id={rest.value} {...inputProps} {...focusProps} ref={ref} />
         </VisuallyHidden>
-        <div className="flex w-full gap-3 items-center">
+        <div className="flex w-full items-center gap-3">
           <div>
             <div className={checkboxStyle}>
               {isSelected && !isIndeterminate && (
-                <Check
-                  className={cx('w-5 h-5 text-gray-0', {
+                <CheckIcon
+                  className={cx('h-5 w-5 text-gray-0', {
                     hidden: !isSelected,
                   })}
                 />
@@ -98,7 +98,7 @@ const CheckboxGroupItem = ({
               )}
             </div>
           </div>
-          <div className="items-center justify-between w-full gap-3 flex">
+          <div className="flex w-full items-center justify-between gap-3">
             <div className={labelStyle}>{children}</div>
             {tooltip && <Tooltip text={tooltip} />}
           </div>

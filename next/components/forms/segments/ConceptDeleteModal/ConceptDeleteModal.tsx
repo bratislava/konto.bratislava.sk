@@ -1,5 +1,4 @@
-import CloseIcon from '@assets/images/new-icons/ui/cross.svg'
-import ErrorIcon from '@assets/images/new-icons/ui/exclamation-mark.svg'
+import { CrossIcon, ErrorIcon } from '@assets/ui-icons'
 import cx from 'classnames'
 import Button from 'components/forms/simple-components/Button'
 import { MyApplicationsConceptCardBase } from 'frontend/api/mocks/mocks'
@@ -32,7 +31,7 @@ const ConceptDeleteModal = ({
     <div
       role="button"
       tabIndex={0}
-      className="h-full fixed w-full z-50 inset-0 flex items-center justify-center"
+      className="fixed inset-0 z-50 flex h-full w-full items-center justify-center"
       style={{ background: 'rgba(var(--color-gray-800), .4)', marginTop: '0' }}
       onClick={onClose}
       onKeyPress={(event: React.KeyboardEvent) => handleOnKeyPress(event, onClose)}
@@ -45,22 +44,23 @@ const ConceptDeleteModal = ({
           handleOnKeyPress(event, () => event.stopPropagation())
         }
         className={cx(
-          'md:h-min w-full max-w-none h-full md:max-w-[592px] rounded-none md:rounded-2xl bg-gray-0 px-4 md:px-6 pt-12 md:py-6 relative mx-0 md:mx-4 overflow-auto',
+          'relative mx-0 h-full w-full max-w-none overflow-auto rounded-none bg-gray-0 px-4 pt-12 md:mx-4 md:h-min md:max-w-[592px] md:rounded-2xl md:px-6 md:py-6',
           className,
         )}
       >
         <div className="flex flex-col gap-2">
-          <CloseIcon
+          {/* FIXME use Button */}
+          <CrossIcon
             onClick={() => onClose()}
-            className="cursor-pointer w-6 h-6 absolute top-3 right-3 md:top-4 md:right-4"
+            className="absolute right-3 top-3 h-6 w-6 cursor-pointer md:right-4 md:top-4"
           />
           <div className="flex flex-col gap-6">
             <div className="flex gap-6">
-              <span className="min-w-[56px] w-14 h-14 rounded-full bg-negative-100 flex items-center justify-center">
-                <ErrorIcon className="w-6 h-6 text-main-700" />
+              <span className="flex h-14 w-14 min-w-[56px] items-center justify-center rounded-full bg-negative-100">
+                <ErrorIcon className="h-6 w-6 text-main-700" />
               </span>
               <div>
-                <h5 className="text-h5 h-14 flex items-center">
+                <h5 className="text-h5 flex h-14 items-center">
                   {t('account_section_applications.concept_delete_modal.title')}
                 </h5>
                 <p className="text-p2">

@@ -1,4 +1,4 @@
-import EditIcon from '@assets/images/new-icons/ui/pen.svg'
+import { EditIcon } from '@assets/ui-icons'
 import cx from 'classnames'
 import { ReactElement } from 'react'
 
@@ -33,9 +33,9 @@ const SummaryRowSimple = (props: SummaryRowProps) => {
   return (
     <div className={containerClassName}>
       <p className={labelClassName}>{label}</p>
-      <div className="w-full flex flex-row items-center">
+      <div className="flex w-full flex-row items-center">
         <div className={valueClassName}>{children}</div>
-        {isEditable && <EditIcon className="cursor-pointer hidden" onClick={onGoToStep} />}
+        {isEditable && <EditIcon className="hidden cursor-pointer" onClick={onGoToStep} />}
       </div>
     </div>
   )

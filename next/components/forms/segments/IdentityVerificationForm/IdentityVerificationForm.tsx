@@ -1,4 +1,4 @@
-import ArrowRightIcon from '@assets/images/new-icons/ui/arrow-right.svg'
+import { ArrowRightIcon } from '@assets/ui-icons'
 import AccountErrorAlert from 'components/forms/segments/AccountErrorAlert/AccountErrorAlert'
 import Button from 'components/forms/simple-components/Button'
 import InputField from 'components/forms/widget-components/InputField/InputField'

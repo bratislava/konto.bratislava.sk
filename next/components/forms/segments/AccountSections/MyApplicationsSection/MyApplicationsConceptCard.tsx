@@ -1,8 +1,4 @@
-import ThreePointsIcon from '@assets/images/forms/three-points-icon.svg'
-import TrashIcon from '@assets/images/new-icons/ui/basket.svg'
-import DownloadIcon from '@assets/images/new-icons/ui/download.svg'
-import ExportIcon from '@assets/images/new-icons/ui/export.svg'
-import PdfIcon from '@assets/images/new-icons/ui/pdf.svg'
+import { BinIcon, DownloadIcon, EllipsisVerticalIcon, ExportIcon, PdfIcon } from '@assets/ui-icons'
 import cx from 'classnames'
 import ConceptDeleteModal from 'components/forms/segments/ConceptDeleteModal/ConceptDeleteModal'
 import Button from 'components/forms/simple-components/Button'
@@ -33,18 +29,18 @@ const MyApplicationsConceptCard = (props: MyApplicationsConceptCardProps) => {
   const conceptMenuContent: MenuItemBase[] = [
     {
       title: t('account_section_applications.concept_menu_list.download_xml'),
-      icon: <DownloadIcon className="w-6 h-6" />,
+      icon: <DownloadIcon className="h-6 w-6" />,
       onPress: () => {},
     },
     {
       title: t('account_section_applications.concept_menu_list.download_pdf'),
-      icon: <PdfIcon className="w-6 h-6" />,
+      icon: <PdfIcon className="h-6 w-6" />,
       onPress: () => {},
     },
     {
       title: t('account_section_applications.concept_menu_list.delete'),
       itemClassName: 'text-negative-700',
-      icon: <TrashIcon className="w-6 h-6" />,
+      icon: <BinIcon className="h-6 w-6" />,
       onPress: () => setConceptModalShow(true),
     },
   ]
@@ -54,23 +50,23 @@ const MyApplicationsConceptCard = (props: MyApplicationsConceptCardProps) => {
       {/* Desktop */}
       <div
         id="desktop-card"
-        className="rounded-lg bg-white w-full h-[124px] lg:flex hidden items-center justify-between border-2 border-gray-200"
+        className="hidden h-[124px] w-full items-center justify-between rounded-lg border-2 border-gray-200 bg-white lg:flex"
       >
-        <div className="flex items-center justify-between w-full">
-          <div className="w-full flex flex-col gap-1 pl-6">
+        <div className="flex w-full items-center justify-between">
+          <div className="flex w-full flex-col gap-1 pl-6">
             <span className="text-p3-semibold text-main-700">{data?.category}</span>
             <span className="text-20-semibold">{data?.title}</span>
             <span className="text-p3">{data?.subtitle}</span>
           </div>
-          <div className="w-full justify-end flex items-center gap-6">
-            <div className="flex flex-col w-full max-w-[200px]">
+          <div className="flex w-full items-center justify-end gap-6">
+            <div className="flex w-full max-w-[200px] flex-col">
               <span className="text-16-semibold mb-1">
                 {t('account_section_applications.navigation_concept_card.createDate')}
               </span>
               <span className="w-max">{data?.createDate}</span>
             </div>
           </div>
-          <div className="flex gap-4 mr-6">
+          <div className="mr-6 flex gap-4">
             <Button
               variant="black-outline"
               text={t('account_section_applications.navigation_concept_card.button_text')}
@@ -84,13 +80,13 @@ const MyApplicationsConceptCard = (props: MyApplicationsConceptCardProps) => {
                 <button
                   type="button"
                   className={cx(
-                    'flex justify-center items-center focus:outline-none w-12 h-12 rounded-lg border-2 border-gray-200 bg-transparent text-gray-700 hover:text-gray-600 focus:border-gray-300 focus:text-gray-800',
+                    'flex h-12 w-12 items-center justify-center rounded-lg border-2 border-gray-200 bg-transparent text-gray-700 hover:text-gray-600 focus:border-gray-300 focus:text-gray-800 focus:outline-none',
                     {
                       'border-gray-300 text-gray-800': isMenuOpen,
                     },
                   )}
                 >
-                  <ThreePointsIcon />
+                  <EllipsisVerticalIcon />
                 </button>
               }
               items={conceptMenuContent}
@@ -101,16 +97,16 @@ const MyApplicationsConceptCard = (props: MyApplicationsConceptCardProps) => {
       {/* Mobile */}
       <div
         id="mobile-card"
-        className="bg-white w-full h-[88px] max-[389px]:h-[92px] flex lg:hidden items-center justify-between border-b-2 border-gray-200"
+        className="flex h-[88px] w-full items-center justify-between border-b-2 border-gray-200 bg-white max-[389px]:h-[92px] lg:hidden"
       >
         <Link
           href={`${ROUTES.MY_APPLICATIONS}/1`}
-          className="w-full h-full items-center flex justify-center"
+          className="flex h-full w-full items-center justify-center"
         >
-          <div className="w-full flex items-start justify-between">
-            <div className="flex flex-col w-full max-[389px]:gap-1">
+          <div className="flex w-full items-start justify-between">
+            <div className="flex w-full flex-col max-[389px]:gap-1">
               <div className="flex items-center justify-between">
-                <span className="text-p3-semibold max-[389px]:max-w-[220px] text-main-700">
+                <span className="text-p3-semibold text-main-700 max-[389px]:max-w-[220px]">
                   {data?.category}
                 </span>
               </div>

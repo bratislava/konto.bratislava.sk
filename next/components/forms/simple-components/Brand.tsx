@@ -1,8 +1,7 @@
+import BALogo from '@assets/images/BALogo.svg'
 import cx from 'classnames'
 import Link from 'next/link'
 import React from 'react'
-
-import BALogo from '../../../assets/images/BALogo.svg'
 
 export interface BrandProps {
   className?: string

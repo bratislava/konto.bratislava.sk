@@ -1,4 +1,4 @@
-import SelectedIcon from '@assets/images/new-icons/ui/done.svg'
+import { CheckIcon } from '@assets/ui-icons'
 import cx from 'classnames'
 
 interface SelectCheckboxProps {
@@ -23,7 +23,7 @@ const CheckboxIcon = ({ checked, className }: SelectCheckboxProps) => {
 
   // RENDER
   return (
-    <div className={checkboxClassName}>{checked && <SelectedIcon className={iconClassName} />}</div>
+    <div className={checkboxClassName}>{checked && <CheckIcon className={iconClassName} />}</div>
   )
 }
 

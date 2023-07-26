@@ -1,5 +1,4 @@
-import ChevronIconLeft from '@assets/images/new-icons/ui/chevron-left.svg'
-import ChevronIconRight from '@assets/images/new-icons/ui/chevron-right.svg'
+import { ChevronLeftIcon, ChevronRightIcon } from '@assets/ui-icons'
 import { createCalendar } from '@internationalized/date'
 import Button from 'components/forms/simple-components/Button'
 import { useRef } from 'react'
@@ -28,6 +27,7 @@ const Calendar = ({ onSubmit, onReset, ...rest }: CalendarBase) => {
   const { buttonProps: prevButtonPropsBtn } = useButton({ ...prevButtonProps }, prevTriggerRef)
   const { buttonProps: nextButtonPropsBtn } = useButton({ ...nextButtonProps }, nextTriggerRef)
 
+  // TODO use react aria Button
   return (
     <div
       {...calendarProps}
@@ -41,7 +41,7 @@ const Calendar = ({ onSubmit, onReset, ...rest }: CalendarBase) => {
           type="button"
           {...prevButtonPropsBtn}
         >
-          <ChevronIconLeft className="w-6 h-6" />
+          <ChevronLeftIcon className="h-6 w-6" />
         </button>
         <span className="text-p2-semibold">{title.charAt(0).toUpperCase() + title.slice(1)}</span>
         <button
@@ -50,11 +50,11 @@ const Calendar = ({ onSubmit, onReset, ...rest }: CalendarBase) => {
           type="button"
           {...nextButtonPropsBtn}
         >
-          <ChevronIconRight className="w-6 h-6" />
+          <ChevronRightIcon className="h-6 w-6" />
         </button>
       </div>
       <CalendarGrid state={state} />
-      <div className="flex items-center justify-between border-t-2 border-gray-700 py-3 px-4">
+      <div className="flex items-center justify-between border-t-2 border-gray-700 px-4 py-3">
         <Button onPress={onReset} text="Resetovať" variant="plain-black" size="sm" />
         <Button onPress={onSubmit} text="Potvrdiť" variant="black" size="sm" />
       </div>

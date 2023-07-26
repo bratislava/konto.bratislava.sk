@@ -1,4 +1,4 @@
-import SelectedIcon from '@assets/images/new-icons/ui/done.svg'
+import { CheckIcon } from '@assets/ui-icons'
 import cx from 'classnames'
 import React, { useRef } from 'react'
 import { useButton } from 'react-aria'
@@ -27,9 +27,9 @@ const StepperViewRow = ({ step, isCurrent, onClick, className, isButton }: Stepp
   const { buttonProps } = useButton({ onPress: onClick, elementType: 'div' }, buttonRef)
 
   return (
-    <div className={cx('flex flex-col select-none', className)}>
+    <div className={cx('flex select-none flex-col', className)}>
       <div
-        className="flex flex-row gap-3 items-center cursor-pointer"
+        className="flex cursor-pointer flex-row items-center gap-3"
         {...(isButton ? buttonProps : {})}
         ref={buttonRef}
       >
@@ -37,14 +37,14 @@ const StepperViewRow = ({ step, isCurrent, onClick, className, isButton }: Stepp
           {isCurrent || !isSubmitted ? (
             displayIndex
           ) : (
-            <SelectedIcon fill="white" className="w-6 h-6" />
+            <CheckIcon fill="white" className="h-6 w-6" />
           )}
         </div>
         <p className="text-p3-medium w-72 ">{title}</p>
       </div>
       {!isSummary && isButton && (
-        <div className="w-8 h-8 flex flex-row justify-center items-center">
-          <div className="w-0.5 h-4 bg-gray-300 py-2" />
+        <div className="flex h-8 w-8 flex-row items-center justify-center">
+          <div className="h-4 w-0.5 bg-gray-300 py-2" />
         </div>
       )}
     </div>

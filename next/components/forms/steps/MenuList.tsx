@@ -38,6 +38,7 @@ const MenuList = () => {
     {
       title: t('menu_list.save_concept'),
       icon: <DiskIcon className="w-6 h-6" />,
+      // eslint-disable-next-line @typescript-eslint/no-misused-promises
       onPress: handleOnPressSaveConcept,
     },
     {

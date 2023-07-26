@@ -80,11 +80,7 @@ export const getFileIds = (schema: RJSFSchema, formData: GenericObjectType) => {
 }
 
 const validateFile = (fileInfo: FormFileUploadFileInfo) => {
-  if (['ScanInfected', 'ScanError', 'UploadError', 'UnknownFile'].includes(fileInfo.status.type)) {
-    return false
-  }
-
-  return true
+  return !['ScanInfected', 'ScanError', 'UploadError', 'UnknownFile'].includes(fileInfo.status.type)
 }
 
 export const defaultFormStateBehavior: Experimental_DefaultFormStateBehavior = {

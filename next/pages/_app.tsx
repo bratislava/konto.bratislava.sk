@@ -6,16 +6,15 @@ import '../frontend/utils/logger'
 import '../frontend/utils/amplify'
 
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
-import { StatusBarProvider, useStatusBarContext } from 'components/forms/info-components/StatusBar'
+import { StatusBarProvider } from 'components/forms/info-components/StatusBar'
 import CookieConsent from 'components/forms/segments/CookieConsent/CookieConsent'
 import { GlobalStateProvider } from 'components/forms/states/GlobalState'
 import { SSORedirectProvider } from 'frontend/hooks/useSSORedirect'
 import { AppProps } from 'next/app'
 import { Inter } from 'next/font/google'
 import Head from 'next/head'
-import { appWithTranslation, useTranslation } from 'next-i18next'
+import { appWithTranslation } from 'next-i18next'
 import { NextAdapter } from 'next-query-params'
-import { useEffect } from 'react'
 import SnackbarProvider from 'react-simple-snackbar'
 import { QueryParamProvider } from 'use-query-params'
 
@@ -25,22 +24,6 @@ const inter = Inter({
   variable: '--inter-font',
   subsets: ['latin', 'latin-ext'],
 })
-
-const AlertBannerWrapper = ({ Component, ...pageProps }: AppProps) => {
-  const { t } = useTranslation(['common'])
-  const { setStatusBarConfiguration } = useStatusBarContext()
-  useEffect(() => {
-    // this overrides the 'global' status notification (i.e. crashed servers), but since we don't have design for multiple, showing failed notification probably takes precedence
-    // TODO rethink the status bar approach on product side
-    // TODO here set to whatever is the 'global' error
-    setStatusBarConfiguration({
-      // If translation is empty, status bar will be hidden
-      content: t('common:statusBarContent'),
-      variant: 'warning',
-    })
-  }, [setStatusBarConfiguration, t])
-  return <Component {...pageProps} />
-}
 
 const MyApp = ({ Component, pageProps }: AppProps) => {
   return (
@@ -71,7 +54,7 @@ const MyApp = ({ Component, pageProps }: AppProps) => {
             <SnackbarProvider>
               <GlobalStateProvider>
                 <SSORedirectProvider>
-                  <AlertBannerWrapper Component={Component} {...pageProps} />
+                  <Component {...pageProps} />
                   <CookieConsent />
                 </SSORedirectProvider>
               </GlobalStateProvider>

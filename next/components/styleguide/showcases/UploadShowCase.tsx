@@ -150,6 +150,7 @@ const UploadShowCase = () => {
             fileName: 'test.jpg',
             status: { type: FormFileUploadStatusEnum.UnknownFile },
             canDownload: false,
+            fileSize: null,
           }}
         />
         <UploadFileCard

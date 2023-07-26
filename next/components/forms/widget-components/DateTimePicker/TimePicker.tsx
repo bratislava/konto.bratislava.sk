@@ -4,7 +4,7 @@ import cx from 'classnames'
 import FieldErrorMessage from 'components/forms/info-components/FieldErrorMessage'
 import padStart from 'lodash/padStart'
 import { forwardRef, ReactNode, RefObject, useEffect, useRef, useState } from 'react'
-import { I18nProvider, OverlayProvider, useButton, useDatePicker } from 'react-aria'
+import { OverlayProvider, useButton, useDatePicker } from 'react-aria'
 import { useDatePickerState } from 'react-stately'
 import { useEffectOnce } from 'usehooks-ts'
 
@@ -79,8 +79,6 @@ const TimePicker = forwardRef<HTMLDivElement, TimePickerBase>(
     },
     ref,
   ) => {
-    const { locale } = usePageWrapperContext()
-
     const [hour, setHour] = useState<string>('')
     const [minute, setMinute] = useState<string>('')
 
@@ -163,61 +161,59 @@ const TimePicker = forwardRef<HTMLDivElement, TimePickerBase>(
     })
 
     return (
-      <I18nProvider locale={locale}>
-        <div className="relative w-full max-w-xs">
-          <div ref={ref}>
-            <TimeField
-              {...fieldProps}
-              label={label}
-              helptext={helptext}
-              required={required}
-              explicitOptional={explicitOptional}
-              disabled={disabled}
-              tooltip={tooltip}
-              errorMessage={errorMessage}
-              hour={hour}
-              minute={minute}
-              isOpen={state?.isOpen}
-              onChange={onChange}
-              value={value}
-              readOnly={readOnly}
-              setIsInputEdited={setIsInputEdited}
-              setPrevValue={setPrevValue}
-            >
-              <Button {...buttonProps} disabled={disabled}>
-                <TimeIcon className="lg:w-6 lg:h-6 w-5 h-5" />
-              </Button>
-            </TimeField>
-          </div>
-          {state?.isOpen && (
-            <OverlayProvider>
-              <Popover
-                {...dialogProps}
-                shouldCloseOnBlur={false}
-                isOpen={state?.isOpen}
-                onClose={closeFailedHandler}
-              >
-                <TimeSelector
-                  setHour={setHour}
-                  hour={hour}
-                  setMinute={setMinute}
-                  minute={minute}
-                  onReset={resetCloseHandler}
-                  onSubmit={closeSuccessHandler}
-                  onChange={onChange}
-                  value={value}
-                  minValue={minValue}
-                  maxValue={maxValue}
-                  setIsInputEdited={setIsInputEdited}
-                />
-              </Popover>
-            </OverlayProvider>
-          )}
-          {!disabled && !customErrorPlace && (
-            <FieldErrorMessage errorMessage={errorMessage} errorMessageProps={errorMessageProps} />
-          )}
+      <div className="relative w-full max-w-xs">
+        <div ref={ref}>
+          <TimeField
+            {...fieldProps}
+            label={label}
+            helptext={helptext}
+            required={required}
+            explicitOptional={explicitOptional}
+            disabled={disabled}
+            tooltip={tooltip}
+            errorMessage={errorMessage}
+            hour={hour}
+            minute={minute}
+            isOpen={state?.isOpen}
+            onChange={onChange}
+            value={value}
+            readOnly={readOnly}
+            setIsInputEdited={setIsInputEdited}
+            setPrevValue={setPrevValue}
+          >
+            <Button {...buttonProps} disabled={disabled}>
+              <TimeIcon className="lg:w-6 lg:h-6 w-5 h-5" />
+            </Button>
+          </TimeField>
         </div>
-      </I18nProvider>
+        {state?.isOpen && (
+          <OverlayProvider>
+            <Popover
+              {...dialogProps}
+              shouldCloseOnBlur={false}
+              isOpen={state?.isOpen}
+              onClose={closeFailedHandler}
+            >
+              <TimeSelector
+                setHour={setHour}
+                hour={hour}
+                setMinute={setMinute}
+                minute={minute}
+                onReset={resetCloseHandler}
+                onSubmit={closeSuccessHandler}
+                onChange={onChange}
+                value={value}
+                minValue={minValue}
+                maxValue={maxValue}
+                setIsInputEdited={setIsInputEdited}
+              />
+            </Popover>
+          </OverlayProvider>
+        )}
+        {!disabled && !customErrorPlace && (
+          <FieldErrorMessage errorMessage={errorMessage} errorMessageProps={errorMessageProps} />
+        )}
+      </div>
     )
   },
 )

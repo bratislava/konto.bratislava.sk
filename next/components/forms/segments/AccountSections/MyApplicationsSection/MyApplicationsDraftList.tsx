@@ -2,47 +2,42 @@ import { formsApi } from '@clients/forms'
 import { GetFormResponseDto } from '@clients/openapi-forms'
 import { useQuery } from '@tanstack/react-query'
 import MyApplicationCardsPlaceholder from 'components/forms/segments/AccountSections/MyApplicationsSection/MyApplicationCardsPlaceholder'
-import MyApplicationsSentCard, {
-  MyApplicationsSentCardProps,
-} from 'components/forms/segments/AccountSections/MyApplicationsSection/MyApplicationsSentCard'
 import Pagination from 'components/forms/simple-components/Pagination/Pagination'
 import React, { useState } from 'react'
 
 import { ROUTES } from '../../../../../frontend/api/constants'
 import { getAccessTokenOrLogout } from '../../../../../frontend/utils/amplify'
+import MyApplicationsDraftCard, { MyApplicationsDraftCardProps } from './MyApplicationsDraftCard'
 
-// TODO filter out DRAFT forms
-const getSentApplications = async () => {
+const getDraftApplications = async () => {
   const accessToken = await getAccessTokenOrLogout()
   const response = await formsApi.nasesControllerGetForms(
     '1',
     '10',
     undefined,
     undefined,
-    undefined,
+    'DRAFT',
     { accessToken },
   )
   return response.data
 }
 
-const transformFormToCardProps = (form: GetFormResponseDto): MyApplicationsSentCardProps => {
+const transformFormToCardProps = (form: GetFormResponseDto): MyApplicationsDraftCardProps => {
   return {
     title: form.formName ?? '',
     linkHref: `${ROUTES.MY_APPLICATIONS}/${form.id}`,
     category: 'Kategória TODO',
     subtext: 'Subtext TODO',
-    filedAt: form.createdAt,
-    status: form.state,
-    statusAt: form.updatedAt,
+    createdAt: form.createdAt,
   }
 }
 
-const MyApplicationsSentList = () => {
+const MyApplicationsDraftList = () => {
   const [page, setPage] = useState<number>(1)
 
   const { data } = useQuery({
     queryKey: ['myApplicationsSentList', page],
-    queryFn: () => getSentApplications(),
+    queryFn: () => getDraftApplications(),
     keepPreviousData: true,
   })
 
@@ -58,7 +53,7 @@ const MyApplicationsSentList = () => {
             {cards.map((card, index) => {
               return (
                 <li key={index}>
-                  <MyApplicationsSentCard {...transformFormToCardProps(card)} />
+                  <MyApplicationsDraftCard {...transformFormToCardProps(card)} />
                 </li>
               )
             })}
@@ -74,4 +69,4 @@ const MyApplicationsSentList = () => {
   )
 }
 
-export default MyApplicationsSentList
+export default MyApplicationsDraftList

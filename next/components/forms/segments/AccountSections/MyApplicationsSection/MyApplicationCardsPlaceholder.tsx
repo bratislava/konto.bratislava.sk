@@ -4,6 +4,7 @@ import { useTranslation } from 'next-i18next'
 
 const MyApplicationCardsPlaceholder = () => {
   const { t } = useTranslation('account')
+
   return (
     <div className="flex flex-col gap-6">
       <div className="m-auto mt-0 flex w-full max-w-screen-lg flex-col justify-around rounded-lg border-0 border-gray-200 px-0 pt-0 md:px-16 lg:mt-8 lg:flex-row lg:border-2 lg:py-10">

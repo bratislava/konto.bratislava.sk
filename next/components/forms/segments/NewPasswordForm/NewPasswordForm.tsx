@@ -5,7 +5,6 @@ import InputField from 'components/forms/widget-components/InputField/InputField
 import PasswordField from 'components/forms/widget-components/PasswordField/PasswordField'
 import useHookForm from 'frontend/hooks/useHookForm'
 import logger from 'frontend/utils/logger'
-import i18next from 'i18next'
 import { useTranslation } from 'next-i18next'
 import { useEffect, useState } from 'react'
 import { Controller } from 'react-hook-form'
@@ -93,7 +92,7 @@ const NewPasswordForm = ({ onSubmit, error, onResend, lastEmail, fromMigration }
         {t(fromMigration ? 'migration_new_password_title' : 'new_password_title')}
       </h1>
       <p className="text-p3 lg:text-p2">
-        {` ${i18next.t('new_password_description', { email: lastEmail })}`}
+        {`${t('new_password_description', { email: lastEmail })}`}
       </p>
       <AccountErrorAlert
         error={error}
@@ -160,7 +159,7 @@ const NewPasswordForm = ({ onSubmit, error, onResend, lastEmail, fromMigration }
       />
       <div className="text-p3 lg:text-p2">
         <span>{t('verification_description')}</span>
-        {cnt > 0 && <span>{` ${i18next.t('verification_cnt_description', { cnt })}`}</span>}
+        {cnt > 0 && <span>{`${t('verification_cnt_description', { cnt })}`}</span>}
       </div>
       <Button
         onPress={handleResend}

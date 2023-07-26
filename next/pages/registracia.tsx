@@ -14,7 +14,6 @@ import { subscribeApi } from 'frontend/api/api'
 import { UserData } from 'frontend/dtos/accountDto'
 import useSSORedirect from 'frontend/hooks/useSSORedirect'
 import { GENERIC_ERROR_MESSAGE, isError } from 'frontend/utils/errors'
-import i18next from 'i18next'
 import { GetServerSidePropsContext } from 'next'
 import { useRouter } from 'next/router'
 import { useTranslation } from 'next-i18next'
@@ -150,7 +149,7 @@ const RegisterPage = ({ page }: AsyncServerProps<typeof getServerSideProps>) => 
           ) : preVerificationRedirect ? (
             <AccountSuccessAlert
               title={t('register_success_title')}
-              description={i18next.t('register_success_description', {
+              description={t('register_success_description', {
                 email: lastEmail,
               })}
               confirmLabel={t('identity_verification_link')}
@@ -159,7 +158,7 @@ const RegisterPage = ({ page }: AsyncServerProps<typeof getServerSideProps>) => 
           ) : (
             <AccountSuccessAlert
               title={t('register_success_title')}
-              description={i18next.t('register_success_description', {
+              description={t('register_success_description', {
                 email: lastEmail,
               })}
               confirmLabel={t('identity_verification_link')}

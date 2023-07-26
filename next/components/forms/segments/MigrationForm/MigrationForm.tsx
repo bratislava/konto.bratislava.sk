@@ -5,7 +5,6 @@ import Button from 'components/forms/simple-components/Button'
 import InputField from 'components/forms/widget-components/InputField/InputField'
 import { ROUTES } from 'frontend/api/constants'
 import useHookForm from 'frontend/hooks/useHookForm'
-import i18next from 'i18next'
 import { useRouter } from 'next/router'
 import { useTranslation } from 'next-i18next'
 import { Controller } from 'react-hook-form'
@@ -67,13 +66,12 @@ const MigrationForm = ({ onSubmit, error, lastEmail, setLastEmail }: Props) => {
       })}
     >
       <h1 className="text-h3">
-        {` ${i18next.t(queryEmail ? 'migration_recognized_title' : 'migration_title', {
+        {`${t(queryEmail ? 'migration_recognized_title' : 'migration_title', {
           fullname: queryFullname,
         })}`}
       </h1>
       <p className="text-p3 lg:text-p2">
-        {`${i18next.
-          t(queryEmail ? 'migration_recognized_description' : 'migration_description',
+        {`${t(queryEmail ? 'migration_recognized_description' : 'migration_description',
           {
             email: queryEmail,
           },

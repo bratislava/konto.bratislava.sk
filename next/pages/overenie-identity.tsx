@@ -12,7 +12,6 @@ import { Tier } from 'frontend/dtos/accountDto'
 import { useRefreshServerSideProps } from 'frontend/hooks/useRefreshServerSideProps'
 import { useServerSideAuth } from 'frontend/hooks/useServerSideAuth'
 import { GENERIC_ERROR_MESSAGE, isError } from 'frontend/utils/errors'
-import i18next from 'i18next'
 import { GetServerSidePropsContext } from 'next'
 import { useRouter } from 'next/router'
 import { useTranslation } from 'next-i18next'
@@ -115,7 +114,7 @@ const IdentityVerificationPage = ({ page }: AsyncServerProps<typeof getServerSid
               title={t('identity_verification_pending_title')}
               description={
                 lastRc && lastIdCard
-                  ? i18next.t('identity_verification_pending_description', {
+                  ? t('identity_verification_pending_description', {
                       rc: lastRc,
                       idCard: lastIdCard,
                     })
@@ -133,7 +132,7 @@ const IdentityVerificationPage = ({ page }: AsyncServerProps<typeof getServerSid
               description={
                 lastRc &&
                 lastIdCard &&
-                i18next.t('identity_verification_success_description', {
+                t('identity_verification_success_description', {
                   rc: lastRc,
                   idCard: lastIdCard,
                 })

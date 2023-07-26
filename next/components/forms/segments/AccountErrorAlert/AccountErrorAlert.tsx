@@ -1,7 +1,6 @@
 import Alert from 'components/forms/info-components/Alert'
 import AccountMarkdown from 'components/forms/segments/AccountMarkdown/AccountMarkdown'
 import { GENERIC_ERROR_MESSAGE, isError, isErrorWithCode } from 'frontend/utils/errors'
-import i18next from 'i18next'
 import { useTranslation } from 'next-i18next'
 import { useMemo } from 'react'
 
@@ -43,7 +42,7 @@ const AccountErrorAlert = ({ error, close, solid, args = {} }: Props) => {
       return t(`account:errors.unknown`)
     }
     // this is the expected case - known error for which we have a translation string
-    const formattedMessage = i18next.t(`account:errors.${error.code}`, args)
+    const formattedMessage = t(`account:errors.${error.code}`, args)
     logger.info('Known error', error.code, error.message, formattedMessage, error)
     return formattedMessage
     // exhaustive-deps disabled because args tend to be passed in as an object re-created on every render

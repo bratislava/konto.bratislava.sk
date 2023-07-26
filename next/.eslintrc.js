@@ -25,17 +25,11 @@ module.exports = {
     '@typescript-eslint/no-unsafe-assignment': 'off',
     /** Doesn't work without changing our ts config */
     'unicorn/prefer-spread': 'off',
-    /** Use official sorting */
-    'tailwindcss/classnames-order': [
-      'warn',
-      { callees: ['classnames', 'cx'], officialSorting: true },
-    ],
     /** To remove optional parameter warning e.g. { page?: number } */
     'react/require-default-props': 'off',
     /** To Remove  */
     'react/no-array-index-key': 'off',
     'react/no-unused-prop-types': 'off',
-    'tailwindcss/no-custom-classname': 'off',
     '@next/next/no-img-element': 'off',
     'eslint-comments/disable-enable-pair': ['error', { allowWholeFile: true }],
     'switch-case/newline-between-switch-case': 'off',
@@ -73,5 +67,6 @@ module.exports = {
     '.eslintrc.js',
     '/backend/forms/',
     '/backend/client-openapi-forms/',
+    '/clients/openapi-forms/*.ts',
   ],
 }

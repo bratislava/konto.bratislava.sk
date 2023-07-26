@@ -268,6 +268,7 @@ export const FormFileUploadStateProvider = ({
           status: { type: FormFileUploadStatusEnum.UnknownFile as const },
           fileName: fileId,
           canDownload: false,
+          fileSize: null,
         } satisfies FormFileUploadFileInfo
       }
 

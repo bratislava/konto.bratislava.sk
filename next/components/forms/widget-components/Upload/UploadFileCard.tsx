@@ -15,6 +15,7 @@ import {
   FormFileUploadStatusEnum,
 } from '../../../../frontend/types/formFileUploadTypes'
 import Button from '../../simple-components/Button'
+import PrettyBytes from '../../simple-components/PrettyBytes'
 import ProgressBar from '../../simple-components/ProgressBar'
 
 type UploadedFileProps = {
@@ -24,9 +25,6 @@ type UploadedFileProps = {
   onFileDownload?: () => void
 }
 
-/**
- * TODO: fileSize
- */
 const UploadFileCard = ({
   fileInfo,
   onFileRetry,
@@ -34,7 +32,6 @@ const UploadFileCard = ({
   onFileDownload,
 }: UploadedFileProps) => {
   const { t } = useTranslation('account', { keyPrefix: 'Upload' })
-  const fileSize = 500 // not yet implemented in FormFileUploadFileInfo
 
   const isErrorStyle =
     fileInfo.status.type === FormFileUploadStatusEnum.UploadError ||
@@ -46,16 +43,16 @@ const UploadFileCard = ({
   const isDefaultStyle = !isErrorStyle && !isDoneStyle && !isScanningStyle
 
   return (
-    <div className="w-full flex flex-col gap-2">
+    <div className="flex w-full flex-col gap-2">
       <div
-        className={cx('rounded-lg border-2 w-full p-4 flex gap-4 items-start', {
+        className={cx('flex w-full items-start gap-4 rounded-lg border-2 p-4', {
           'bg-white': isDefaultStyle || isScanningStyle,
           'border-success-700 bg-success-50': isDoneStyle,
           'border-negative-600 bg-negative-50': isErrorStyle,
         })}
       >
         <div
-          className={cx('p-3 rounded-lg grow-0 shrink-0 max-md:hidden', {
+          className={cx('shrink-0 grow-0 rounded-lg p-3 max-md:hidden', {
             'bg-gray-50': isDefaultStyle || isScanningStyle,
             'bg-white': isErrorStyle || isDoneStyle,
           })}
@@ -71,18 +68,24 @@ const UploadFileCard = ({
           )}
         </div>
 
-        <div className="flex flex-col w-full gap-2">
-          <div className="flex gap-4 justify-between w-full items-center">
-            <div className="flex flex-col grow">
-              <h3 className="font-bold text-gray-800 break-words">{fileInfo.fileName}</h3>
+        <div className="flex w-full flex-col gap-2">
+          <div className="flex w-full items-center justify-between gap-4">
+            <div className="flex grow flex-col">
+              <h3 className="break-words font-bold text-gray-800">{fileInfo.fileName}</h3>
               <div className="flex gap-2">
                 {/* TODO: Improve */}
                 {fileInfo.canDownload && (
                   <ReactAriaButton onPress={onFileDownload}>DL</ReactAriaButton>
                 )}
-                {/* TODO filesize formatting and unit */}
-                <span>{fileSize}</span>
-                <span>&bull;</span>
+                {fileInfo.fileSize != null && (
+                  <>
+                    <span>
+                      <PrettyBytes number={fileInfo.fileSize} />
+                    </span>
+                    <span>&bull;</span>
+                  </>
+                )}
+
                 <span>{fileInfo.status.type}</span>
               </div>
             </div>
@@ -109,7 +112,7 @@ const UploadFileCard = ({
       </div>
 
       {isErrorStyle && (
-        <div className="flex gap-6 justify-between pb-2">
+        <div className="flex justify-between gap-6 pb-2">
           <div className="text-error">
             {fileInfo.status.type === FormFileUploadStatusEnum.UploadError && fileInfo.status.error}
             {fileInfo.status.type === FormFileUploadStatusEnum.ScanError && t('errors.scanError')}

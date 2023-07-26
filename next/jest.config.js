@@ -23,5 +23,12 @@ const customJestConfig = {
   testEnvironment: 'jest-environment-jsdom',
 }
 
-// createJestConfig is exported this way to ensure that next/jest can load the Next.js config which is async
-module.exports = createJestConfig(customJestConfig)
+// https://stackoverflow.com/a/72926763
+module.exports = async () => ({
+  ...(await createJestConfig(customJestConfig)()),
+  transformIgnorePatterns: [
+    // The regex below is just a guess, you might tweak it
+    // https://stackoverflow.com/a/49676319
+    'node_modules/(?!(pretty-bytes)/)',
+  ],
+})

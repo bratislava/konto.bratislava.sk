@@ -1,13 +1,37 @@
 import { useQuery } from '@tanstack/react-query'
-import Ajv from 'ajv'
+import Ajv, { FuncKeywordDefinition } from 'ajv'
 import addFormats from 'ajv-formats'
 import { useEffect } from 'react'
 
 import { getTaxApi } from '../api/api'
-import { ajvFormats, ajvKeywords } from '../dtos/formStepperDto'
+import { ajvFormats } from '../dtos/formStepperDto'
 import { TaxApiError } from '../dtos/generalApiDto'
 import { Tax, TaxJSONSchema } from '../dtos/taxDto'
 import logger from '../utils/logger'
+
+export const ajvKeywords: FuncKeywordDefinition[] = [
+  {
+    keyword: 'comment',
+  },
+  {
+    keyword: 'example',
+  },
+  {
+    keyword: 'timeFromTo',
+  },
+  {
+    keyword: 'dateFromTo',
+  },
+  {
+    keyword: 'pospID',
+  },
+  {
+    keyword: 'pospVersion',
+  },
+  {
+    keyword: 'ciselnik',
+  },
+]
 
 // TODO test for no tax, not yet tax, legit tax unpaid, partially paid, paid
 export const useTaxes = () => {

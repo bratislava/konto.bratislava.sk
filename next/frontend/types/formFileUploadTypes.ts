@@ -1,7 +1,9 @@
 export interface FormFileUploadContextType {
   uploadFiles: (files: File[], constraints: FormFileUploadConstraints) => string[]
   removeFiles: (ids: string[]) => void
+  keepFiles: (ids: string[]) => void
   retryFile: (id: string, constraints: FormFileUploadConstraints) => string | null
+  downloadFile: (id: string) => void
   getFileInfoById: (id: string) => FormFileUploadFileInfo
 }
 
@@ -47,4 +49,8 @@ export type FormFileUploadFileStatus =
   | FormFileUploadClientFileStatus
   | FormFileUploadServerFileStatus
 
-export type FormFileUploadFileInfo = { status: FormFileUploadFileStatus; fileName: string }
+export type FormFileUploadFileInfo = {
+  status: FormFileUploadFileStatus
+  fileName: string
+  canDownload: boolean
+}

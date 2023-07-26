@@ -84,6 +84,7 @@ const UploadShowCase = () => {
           fileInfo={{
             fileName: 'test.jpg',
             status: { type: FormFileUploadStatusEnum.UploadQueued },
+            canDownload: false,
           }}
         />
 
@@ -91,18 +92,21 @@ const UploadShowCase = () => {
           fileInfo={{
             fileName: 'test.jpg',
             status: { type: FormFileUploadStatusEnum.Uploading, progress: 50 },
+            canDownload: false,
           }}
         />
         <UploadFileCard
           fileInfo={{
             fileName: 'test.jpg',
             status: { type: FormFileUploadStatusEnum.Uploading, progress: 1 },
+            canDownload: false,
           }}
         />
         <UploadFileCard
           fileInfo={{
             fileName: 'test.jpg',
             status: { type: FormFileUploadStatusEnum.Uploading, progress: 100 },
+            canDownload: false,
           }}
         />
         <UploadFileCard
@@ -113,6 +117,7 @@ const UploadShowCase = () => {
               error: 'Retryable error',
               canRetry: true,
             },
+            canDownload: false,
           }}
         />
         <UploadFileCard
@@ -123,42 +128,49 @@ const UploadShowCase = () => {
               error: 'Nonretryable error',
               canRetry: false,
             },
+            canDownload: false,
           }}
         />
         <UploadFileCard
           fileInfo={{
             fileName: 'test.jpg',
             status: { type: FormFileUploadStatusEnum.UploadDone },
+            canDownload: true,
           }}
         />
         <UploadFileCard
           fileInfo={{
             fileName: 'test.jpg',
             status: { type: FormFileUploadStatusEnum.UnknownFile },
+            canDownload: false,
           }}
         />
         <UploadFileCard
           fileInfo={{
             fileName: 'test.jpg',
             status: { type: FormFileUploadStatusEnum.Scanning },
+            canDownload: true,
           }}
         />
         <UploadFileCard
           fileInfo={{
             fileName: 'test.jpg',
             status: { type: FormFileUploadStatusEnum.ScanError },
+            canDownload: false,
           }}
         />
         <UploadFileCard
           fileInfo={{
             fileName: 'test.jpg',
             status: { type: FormFileUploadStatusEnum.ScanDone },
+            canDownload: true,
           }}
         />
         <UploadFileCard
           fileInfo={{
             fileName: 'test.jpg',
             status: { type: FormFileUploadStatusEnum.ScanInfected },
+            canDownload: false,
           }}
         />
       </Stack>

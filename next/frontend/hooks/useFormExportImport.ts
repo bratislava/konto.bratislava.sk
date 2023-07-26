@@ -1,15 +1,18 @@
+import { formsApi } from '@clients/forms'
+import { UpdateFormRequestDto } from '@clients/openapi-forms'
 import { RJSFSchema } from '@rjsf/utils'
 import { useTranslation } from 'next-i18next'
 import { ChangeEvent } from 'react'
 
 import { useFormState } from '../../components/forms/FormStateProvider'
 import { formDataToXml, xmlStringToPdf, xmlToFormData } from '../api/api'
+import { getAccessTokenOrLogout } from '../utils/amplify'
 import { readTextFile } from '../utils/file'
 import { blobToString, downloadBlob } from '../utils/general'
 import useSnackbar from './useSnackbar'
 
 export const useFormExportImport = () => {
-  const { formData, formSlug, setImportedFormData } = useFormState()
+  const { formId, formData, formSlug, setImportedFormData } = useFormState()
   const { t } = useTranslation('forms')
 
   const [openSnackbarError] = useSnackbar({ variant: 'error' })
@@ -73,9 +76,26 @@ export const useFormExportImport = () => {
     }
   }
 
+  const saveConcept = async () => {
+    try {
+      const accessToken = await getAccessTokenOrLogout()
+      await formsApi.nasesControllerUpdateForm(
+        formId,
+        {
+          formDataJson: formData,
+        } as UpdateFormRequestDto,
+        { accessToken },
+      )
+      openSnackbarSuccess(t('success_messages.concept_save'))
+    } catch (error) {
+      openSnackbarError(t('errors.concept_save'))
+    }
+  }
+
   return {
     exportXml,
     importXml: chooseFilesAndImportXml,
     exportPdf,
+    saveConcept,
   }
 }

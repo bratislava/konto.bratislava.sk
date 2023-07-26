@@ -53,5 +53,5 @@ export type FormFileUploadFileInfo = {
   status: FormFileUploadFileStatus
   fileName: string
   canDownload: boolean
-  fileSize: number
+  fileSize: number | null
 }

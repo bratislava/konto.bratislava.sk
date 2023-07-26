@@ -185,7 +185,9 @@
       "importButtonOneFile",
       "importButtonMultipleFiles",
       "importDragAndDropOneFile",
-      "importDragAndDropMultipleFiles"
+      "importDragAndDropMultipleFiles",
+      "showConditionalFile",
+      "conditionalFile"
     ],
     "importButtonOneFile": {
       "ui:widget": "Upload",
@@ -219,6 +221,25 @@
       }
     },
     "importDragAndDropMultipleFiles": {
+      "ui:widget": "Upload",
+      "ui:label": false,
+      "ui:options": {
+        "type": "dragAndDrop"
+      }
+    },
+    "showConditionalFile": {
+      "ui:widget": "Checkboxes",
+      "ui:options": {
+        "variant": "boxed",
+        "checkboxOptions": [
+          {
+            "value": "show",
+            "tooltip": "Show conditional file"
+          }
+        ]
+      }
+    },
+    "conditionalFile": {
       "ui:widget": "Upload",
       "ui:label": false,
       "ui:options": {

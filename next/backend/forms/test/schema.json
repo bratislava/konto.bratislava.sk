@@ -6,6 +6,7 @@
   "type": "object",
   "allOf": [
     {
+      "type": "object",
       "properties": {
         "mestoPSCstep": {
           "type": "object",
@@ -37,11 +38,14 @@
       "allOf": [
         {
           "if": {
+            "type": "object",
             "properties": {
               "mestoPSCstep": {
+                "type": "object",
                 "properties": {
                   "mestoPSC": {
                     "required": ["psc"],
+                    "type": "object",
                     "properties": {
                       "psc": {
                         "const": "82103"
@@ -55,6 +59,7 @@
             "required": ["mestoPSCstep"]
           },
           "then": {
+            "type": "object",
             "properties": {
               "conditionalStep": {
                 "type": "object",
@@ -100,6 +105,7 @@
       "required": ["dateTimePickerShowcase"]
     },
     {
+      "type": "object",
       "properties": {
         "timeFromToShowcase": {
           "title": "Showcase of TimeFromTo Picker",
@@ -127,6 +133,7 @@
       "required": ["timeFromToShowcase"]
     },
     {
+      "type": "object",
       "properties": {
         "dateFromToShowcase": {
           "title": "Showcase of DateFromTo Picker",
@@ -155,6 +162,7 @@
       "required": ["dateFromToShowcase"]
     },
     {
+      "type": "object",
       "properties": {
         "datePickerWithTimePicker": {
           "title": "Showcase of DatePicker and TimePicker",
@@ -190,6 +198,7 @@
       "required": ["datePickerWithTimePicker"]
     },
     {
+      "type": "object",
       "properties": {
         "inputFields": {
           "title": "Showcase of InputField",
@@ -237,6 +246,7 @@
       "required": ["inputFields"]
     },
     {
+      "type": "object",
       "properties": {
         "selectFields": {
           "title": "Ukazka Selectov",
@@ -292,7 +302,6 @@
             "years": {
               "type": "number",
               "title": "Years in school",
-              "uniqueItems": true,
               "oneOf": [
                 {
                   "const": 1
@@ -325,6 +334,7 @@
           "allOf": [
             {
               "if": {
+                "type": "object",
                 "properties": {
                   "school": {
                     "const": "stu_fchpt"
@@ -332,6 +342,7 @@
                 }
               },
               "then": {
+                "type": "object",
                 "properties": {
                   "conditionalSchool": {
                     "type": "string",
@@ -344,6 +355,7 @@
               "if": {
                 "oneOf": [
                   {
+                    "type": "object",
                     "properties": {
                       "diplomas": {
                         "const": ["stu_fei", "stu_fiit"]
@@ -351,6 +363,7 @@
                     }
                   },
                   {
+                    "type": "object",
                     "properties": {
                       "diplomas": {
                         "const": ["stu_fiit"]
@@ -358,6 +371,7 @@
                     }
                   },
                   {
+                    "type": "object",
                     "properties": {
                       "diplomas": {
                         "const": ["stu_fei"]
@@ -367,6 +381,7 @@
                 ]
               },
               "then": {
+                "type": "object",
                 "properties": {
                   "conditionalDiplomas": {
                     "type": "string",
@@ -381,6 +396,7 @@
       "required": ["selectFields"]
     },
     {
+      "type": "object",
       "properties": {
         "fileUploads": {
           "title": "Nahratie suborov",
@@ -390,36 +406,83 @@
             "importButtonOneFile": {
               "title": "Importuj jeden subor",
               "type": "string",
-              "format": "file"
+              "file": true
             },
             "importButtonMultipleFiles": {
               "title": "Importuj viac suborov",
               "type": "array",
               "items": {
                 "type": "string",
-                "format": "file"
+                "file":  true
               },
+              "fileArray": true,
+              "default": [],
               "minItems": 1
             },
             "importDragAndDropOneFile": {
               "title": "Presun sem jeden subor",
               "type": "string",
-              "format": "file"
+              "file":  true
             },
             "importDragAndDropMultipleFiles": {
               "title": "Presun sem viac suborov",
               "type": "array",
               "items": {
                 "type": "string",
-                "format": "file"
+                "file":  true
+              },
+              "fileArray": true
+            },
+            "showConditionalFile": {
+              "type": "array",
+              "title": "Show conditional file",
+              "minItems": 0,
+              "maxItems": 1,
+              "uniqueItems": true,
+              "items": {
+                "anyOf": [
+                  {
+                    "title": "Show",
+                    "const": "show"
+                  }
+                ]
               }
             }
-          }
+          },
+          "allOf": [
+            {
+              "if": {
+                "type": "object",
+                "properties": {
+                  "showConditionalFile": {
+                    "type": "array",
+                    "contains": {
+                      "type": "string",
+                      "const": "show"
+                    }
+                  }
+                },
+                "required": ["showConditionalFile"]
+              },
+              "then": {
+                "type": "object",
+                "properties": {
+                  "conditionalFile": {
+                    "title": "Presun sem jeden subor",
+                    "type": "string",
+                    "file":  true
+                  }
+                }
+              }
+            }
+          ]
+
         }
       },
       "required": ["fileUploads"]
     },
     {
+      "type": "object",
       "properties": {
         "chooseOneOf": {
           "title": "Radio button step",
@@ -463,14 +526,17 @@
           "allOf": [
             {
               "if": {
+                "type": "object",
                 "properties": {
                   "chooseOneOfMore": {
                     "const": "overlay"
                   }
-                }
+                },
+                "required": ["chooseOneOfMore"]
               },
               "then": {
                 "required": ["overlayInput"],
+                "type": "object",
                 "properties": {
                   "overlayInput": {
                     "type": "string",
@@ -479,6 +545,7 @@
                 }
               },
               "else": {
+                "type": "object",
                 "properties": {
                   "notOverlayInput": {
                     "type": "string",
@@ -493,6 +560,7 @@
       "required": ["chooseOneOf"]
     },
     {
+      "type": "object",
       "properties": {
         "checkBoxes": {
           "title": "Checkboxes",
@@ -540,6 +608,7 @@
               "if": {
                 "oneOf": [
                   {
+                    "type": "object",
                     "properties": {
                       "favouriteFruits": {
                         "const": ["plum"]
@@ -547,6 +616,7 @@
                     }
                   },
                   {
+                    "type": "object",
                     "properties": {
                       "favouriteFruits": {
                         "const": ["apple"]
@@ -556,6 +626,7 @@
                 ]
               },
               "then": {
+                "type": "object",
                 "properties": {
                   "checkboxBonus": {
                     "title": "This will show when we will click plum",

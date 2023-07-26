@@ -1,31 +1,44 @@
-import { getDefaultFormState } from '@rjsf/utils'
 import cx from 'classnames'
 import { useMemo } from 'react'
 
-import { validator } from '../../../../frontend/dtos/formStepperDto'
+import {
+  defaultFormStateBehavior,
+  validateSummary,
+  validator,
+} from '../../../../frontend/dtos/formStepperDto'
 import { useFormState } from '../../FormStateProvider'
-import SummaryForm from '../../SummaryForm'
+import { useFormFileUpload } from '../../useFormFileUpload'
 import SummaryHeader from '../SummaryHeader'
+import SummaryForm from './SummaryForm'
 
 const FormSummary = () => {
   const { formData, schema, uiSchema } = useFormState()
+  const { getFileInfoById } = useFormFileUpload()
 
-  const errors = useMemo(() => {
-    const defaultFormData = getDefaultFormState(validator, schema, formData)
-    return validator.validateFormData(defaultFormData, schema)
-  }, [formData, schema])
+  const { errorSchema, infectedFiles, scanningFiles, scanErrorFiles } = useMemo(
+    () => validateSummary(schema, formData, getFileInfoById),
+    [formData, schema, getFileInfoById],
+  )
 
   return (
     <>
-      <SummaryHeader />
+      <SummaryHeader
+        infectedFiles={infectedFiles}
+        scanningFiles={scanningFiles}
+        scanErrorFiles={scanErrorFiles}
+      />
       <div className={cx('my-10')}>
         <SummaryForm
           schema={schema}
           uiSchema={uiSchema}
           formData={formData}
           validator={validator}
-          extraErrors={errors.errorSchema}
+          extraErrors={errorSchema}
+          experimental_defaultFormStateBehavior={defaultFormStateBehavior}
           readonly
+          onSubmit={(e) => {
+            console.log('form submit', e.formData)
+          }}
         />
       </div>
     </>

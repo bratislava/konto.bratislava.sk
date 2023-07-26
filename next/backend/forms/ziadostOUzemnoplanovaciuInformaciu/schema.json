@@ -16,9 +16,8 @@
               "title": "Architektonická štúdia",
               "items": {
                 "type": "string",
-                "file": true
-              },
-              "fileArray": true
+                "format": "file"
+              }
             }
           },
           "required": ["architektonickaStudia"]

@@ -16,9 +16,8 @@
               "title": "Projektová dokumentácia",
               "items": {
                 "type": "string",
-                "file": true
-              },
-              "fileArray": true
+                "format": "file"
+              }
             }
           },
           "required": ["projektovaDokumentacia"]
@@ -241,7 +240,7 @@
                     "title": "Splnomocnenie na zastupovanie",
                     "items": {
                       "type": "string",
-                      "file": true
+                      "format": "file"
                     }
                   }
                 },
@@ -265,7 +264,7 @@
                         "title": "Splnomocnenie na zastupovanie",
                         "items": {
                           "type": "string",
-                          "file": true
+                          "format": "file"
                         }
                       },
                       "investorTyp": {
@@ -688,7 +687,7 @@
                           "title": "Fotodokumentácia stavby",
                           "items": {
                             "type": "string",
-                            "file": true
+                            "format": "file"
                           }
                         },
                         "stavbaPisomnosti": {
@@ -696,7 +695,7 @@
                           "title": "Relevantné písomnosti súvisiace so stavbou",
                           "items": {
                             "type": "string",
-                            "file": true
+                            "format": "file"
                           }
                         }
                       },

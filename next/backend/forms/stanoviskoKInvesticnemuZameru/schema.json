@@ -16,9 +16,8 @@
               "title": "Architektonická štúdia",
               "items": {
                 "type": "string",
-                "file": true
-              },
-              "fileArray": true
+                "format": "file"
+              }
             }
           },
           "required": ["architektonickaStudia"]
@@ -241,7 +240,7 @@
                     "title": "Splnomocnenie na zastupovanie",
                     "items": {
                       "type": "string",
-                      "file": true
+                      "format": "file"
                     }
                   }
                 },
@@ -265,7 +264,7 @@
                         "title": "Splnomocnenie na zastupovanie",
                         "items": {
                           "type": "string",
-                          "file": true
+                          "format": "file"
                         }
                       },
                       "investorTyp": {

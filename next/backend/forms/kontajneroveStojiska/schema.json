@@ -38,9 +38,8 @@
                 "title": "Splnomocnenie na zastupovanie",
                 "items": {
                   "type": "string",
-                  "file": true
-                },
-                "fileArray": true
+                  "format": "file"
+                }
               }
             },
             "required": ["splnomocnenie"]
@@ -240,7 +239,7 @@
               "title": "Zmluva o výkone správy / Zmluva o bytovom spoločenstve",
               "items": {
                 "type": "string",
-                "file": true
+                "format": "file"
               }
             }
           },
@@ -281,7 +280,7 @@
                 "title": "Stanovisko OLO",
                 "items": {
                   "type": "string",
-                  "file": true
+                  "format": "file"
                 }
               }
             },
@@ -330,7 +329,7 @@
                 "title": "Relevantný doklad potvrdzujúci súčasný odvoz",
                 "items": {
                   "type": "string",
-                  "file": true
+                  "format": "file"
                 }
               }
             },
@@ -357,7 +356,7 @@
                 "title": "Zmluva o nájme pozemku / List vlastníctva / Zmluva o zriadení vecného bremena",
                 "items": {
                   "type": "string",
-                  "file": true
+                  "format": "file"
                 }
               }
             },
@@ -371,7 +370,7 @@
               "title": "Snímka z katastrálnej mapy so zakresleným kontajnerovým stanovišťom",
               "items": {
                 "type": "string",
-                "file": true
+                "format": "file"
               }
             }
           },
@@ -384,7 +383,7 @@
               "title": "Pôdorys kontajnerového stanovišťa so zakreslením rozmiestnenia zberných nádob",
               "items": {
                 "type": "string",
-                "file": true
+                "format": "file"
               }
             }
           },
@@ -397,7 +396,7 @@
               "title": "Vizuál kontajnerového stanovišťa - ilustračná alebo reálna fotografia / vizualizácia",
               "items": {
                 "type": "string",
-                "file": true
+                "format": "file"
               }
             }
           },
@@ -417,7 +416,7 @@
                       "type": "array",
                       "items": {
                         "type": "string",
-                        "file": true
+                        "format": "file"
                       }
                     }
                   },
@@ -445,7 +444,7 @@
               "title": "Stavebná dokumentácia kontajnerového stanovišťa alebo výber z poskytnutých stavebných dokumentácií",
               "items": {
                 "type": "string",
-                "file": true
+                "format": "file"
               }
             }
           },
@@ -465,7 +464,7 @@
                       "type": "array",
                       "items": {
                         "type": "string",
-                        "file": true
+                        "format": "file"
                       }
                     }
                   },
@@ -493,7 +492,7 @@
               "title": "Iné",
               "items": {
                 "type": "string",
-                "file": true
+                "format": "file"
               }
             }
           }

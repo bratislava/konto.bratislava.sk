@@ -69,7 +69,6 @@ describe('useFormFileUpload', () => {
       expect(setup.getHook().getFileInfoById(ids[0])).toEqual({
         fileName: 'filename.txt',
         status: { type: FormFileUploadStatusEnum.Uploading, progress: 0 },
-        canDownload: false,
       }),
     )
   })

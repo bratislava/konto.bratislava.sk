@@ -258,6 +258,19 @@ export type DeleteFileResponseDataStatusEnum =
 /**
  *
  * @export
+ * @interface DownloadTokenResponseDataDto
+ */
+export interface DownloadTokenResponseDataDto {
+  /**
+   * Download jwt token
+   * @type {string}
+   * @memberof DownloadTokenResponseDataDto
+   */
+  jwt: string
+}
+/**
+ *
+ * @export
  * @interface FileAlreadyProcessedErrorDto
  */
 export interface FileAlreadyProcessedErrorDto {
@@ -540,6 +553,53 @@ export type FileInScannerNotFoundErrorDtoErrorNameEnum =
 /**
  *
  * @export
+ * @interface FileNotFoundErrorDto
+ */
+export interface FileNotFoundErrorDto {
+  /**
+   * Status Code
+   * @type {number}
+   * @memberof FileNotFoundErrorDto
+   */
+  statusCode: number
+  /**
+   * Detail error message
+   * @type {string}
+   * @memberof FileNotFoundErrorDto
+   */
+  message: string
+  /**
+   * status in text
+   * @type {string}
+   * @memberof FileNotFoundErrorDto
+   */
+  status: string
+  /**
+   * Exact error name
+   * @type {string}
+   * @memberof FileNotFoundErrorDto
+   */
+  errorName: FileNotFoundErrorDtoErrorNameEnum
+  /**
+   * Helper for sending additional data in error
+   * @type {object}
+   * @memberof FileNotFoundErrorDto
+   */
+  object?: object
+}
+
+export const FileNotFoundErrorDtoErrorNameEnum = {
+  NotFoundError: 'NOT_FOUND_ERROR',
+  DatabaseError: 'DATABASE_ERROR',
+  InternalServerError: 'INTERNAL_SERVER_ERROR',
+} as const
+
+export type FileNotFoundErrorDtoErrorNameEnum =
+  (typeof FileNotFoundErrorDtoErrorNameEnum)[keyof typeof FileNotFoundErrorDtoErrorNameEnum]
+
+/**
+ *
+ * @export
  * @interface FileOrUserNotFoundErrorDto
  */
 export interface FileOrUserNotFoundErrorDto {
@@ -771,6 +831,147 @@ export const FileWrongStatusNotAcceptedErrorDtoErrorNameEnum = {
 
 export type FileWrongStatusNotAcceptedErrorDtoErrorNameEnum =
   (typeof FileWrongStatusNotAcceptedErrorDtoErrorNameEnum)[keyof typeof FileWrongStatusNotAcceptedErrorDtoErrorNameEnum]
+
+/**
+ *
+ * @export
+ * @interface FilesControllerDownloadFile400Response
+ */
+export interface FilesControllerDownloadFile400Response {
+  /**
+   * Status Code
+   * @type {number}
+   * @memberof FilesControllerDownloadFile400Response
+   */
+  statusCode: number
+  /**
+   * Detail error message
+   * @type {string}
+   * @memberof FilesControllerDownloadFile400Response
+   */
+  message: string
+  /**
+   * status in text
+   * @type {string}
+   * @memberof FilesControllerDownloadFile400Response
+   */
+  status: string
+  /**
+   * Exact error name
+   * @type {string}
+   * @memberof FilesControllerDownloadFile400Response
+   */
+  errorName: FilesControllerDownloadFile400ResponseErrorNameEnum
+  /**
+   * Helper for sending additional data in error
+   * @type {object}
+   * @memberof FilesControllerDownloadFile400Response
+   */
+  object?: object
+}
+
+export const FilesControllerDownloadFile400ResponseErrorNameEnum = {
+  NotFoundError: 'NOT_FOUND_ERROR',
+  DatabaseError: 'DATABASE_ERROR',
+  InternalServerError: 'INTERNAL_SERVER_ERROR',
+} as const
+
+export type FilesControllerDownloadFile400ResponseErrorNameEnum =
+  (typeof FilesControllerDownloadFile400ResponseErrorNameEnum)[keyof typeof FilesControllerDownloadFile400ResponseErrorNameEnum]
+
+/**
+ *
+ * @export
+ * @interface FilesControllerDownloadFile404Response
+ */
+export interface FilesControllerDownloadFile404Response {
+  /**
+   * Status Code
+   * @type {number}
+   * @memberof FilesControllerDownloadFile404Response
+   */
+  statusCode: number
+  /**
+   * Detail error message
+   * @type {string}
+   * @memberof FilesControllerDownloadFile404Response
+   */
+  message: string
+  /**
+   * status in text
+   * @type {string}
+   * @memberof FilesControllerDownloadFile404Response
+   */
+  status: string
+  /**
+   * Exact error name
+   * @type {string}
+   * @memberof FilesControllerDownloadFile404Response
+   */
+  errorName: FilesControllerDownloadFile404ResponseErrorNameEnum
+  /**
+   * Helper for sending additional data in error
+   * @type {object}
+   * @memberof FilesControllerDownloadFile404Response
+   */
+  object?: object
+}
+
+export const FilesControllerDownloadFile404ResponseErrorNameEnum = {
+  NotFoundError: 'NOT_FOUND_ERROR',
+  DatabaseError: 'DATABASE_ERROR',
+  InternalServerError: 'INTERNAL_SERVER_ERROR',
+} as const
+
+export type FilesControllerDownloadFile404ResponseErrorNameEnum =
+  (typeof FilesControllerDownloadFile404ResponseErrorNameEnum)[keyof typeof FilesControllerDownloadFile404ResponseErrorNameEnum]
+
+/**
+ *
+ * @export
+ * @interface FilesControllerDownloadToken404Response
+ */
+export interface FilesControllerDownloadToken404Response {
+  /**
+   * Status Code
+   * @type {number}
+   * @memberof FilesControllerDownloadToken404Response
+   */
+  statusCode: number
+  /**
+   * Detail error message
+   * @type {string}
+   * @memberof FilesControllerDownloadToken404Response
+   */
+  message: string
+  /**
+   * status in text
+   * @type {string}
+   * @memberof FilesControllerDownloadToken404Response
+   */
+  status: string
+  /**
+   * Exact error name
+   * @type {string}
+   * @memberof FilesControllerDownloadToken404Response
+   */
+  errorName: FilesControllerDownloadToken404ResponseErrorNameEnum
+  /**
+   * Helper for sending additional data in error
+   * @type {object}
+   * @memberof FilesControllerDownloadToken404Response
+   */
+  object?: object
+}
+
+export const FilesControllerDownloadToken404ResponseErrorNameEnum = {
+  NotFoundError: 'NOT_FOUND_ERROR',
+  DatabaseError: 'DATABASE_ERROR',
+  InternalServerError: 'INTERNAL_SERVER_ERROR',
+} as const
+
+export type FilesControllerDownloadToken404ResponseErrorNameEnum =
+  (typeof FilesControllerDownloadToken404ResponseErrorNameEnum)[keyof typeof FilesControllerDownloadToken404ResponseErrorNameEnum]
 
 /**
  *
@@ -1063,6 +1264,21 @@ export type FormOrUserNotFoundErrorDtoErrorNameEnum =
 /**
  *
  * @export
+ * @enum {string}
+ */
+
+export const FormStateEnum = {
+  New: 'NEW',
+  Send: 'SEND',
+  InProgress: 'IN_PROGRESS',
+  Finished: 'FINISHED',
+} as const
+
+export type FormStateEnum = (typeof FormStateEnum)[keyof typeof FormStateEnum]
+
+/**
+ *
+ * @export
  * @interface GetFileResponseDto
  */
 export interface GetFileResponseDto {
@@ -1267,11 +1483,11 @@ export interface GetFormResponseDto {
    */
   uri?: string
   /**
-   * State of form
-   * @type {string}
+   *
+   * @type {FormStateEnum}
    * @memberof GetFormResponseDto
    */
-  state?: string
+  state?: FormStateEnum
   /**
    * Data from ginis saved in our db
    * @type {string}
@@ -1297,6 +1513,7 @@ export interface GetFormResponseDto {
    */
   finishSubmission: string
 }
+
 /**
  *
  * @export
@@ -1425,11 +1642,11 @@ export interface GetFormsResponseDtoItems {
    */
   uri?: string
   /**
-   * State of form
-   * @type {string}
+   *
+   * @type {FormStateEnum}
    * @memberof GetFormsResponseDtoItems
    */
-  state?: string
+  state?: FormStateEnum
   /**
    * Data from ginis saved in our db
    * @type {string}
@@ -1455,6 +1672,101 @@ export interface GetFormsResponseDtoItems {
    */
   finishSubmission: string
 }
+
+/**
+ *
+ * @export
+ * @interface InvalidJwtTokenErrorDto
+ */
+export interface InvalidJwtTokenErrorDto {
+  /**
+   * Status Code
+   * @type {number}
+   * @memberof InvalidJwtTokenErrorDto
+   */
+  statusCode: number
+  /**
+   * Detail error message
+   * @type {string}
+   * @memberof InvalidJwtTokenErrorDto
+   */
+  message: string
+  /**
+   * status in text
+   * @type {string}
+   * @memberof InvalidJwtTokenErrorDto
+   */
+  status: string
+  /**
+   * Exact error name
+   * @type {string}
+   * @memberof InvalidJwtTokenErrorDto
+   */
+  errorName: InvalidJwtTokenErrorDtoErrorNameEnum
+  /**
+   * Helper for sending additional data in error
+   * @type {object}
+   * @memberof InvalidJwtTokenErrorDto
+   */
+  object?: object
+}
+
+export const InvalidJwtTokenErrorDtoErrorNameEnum = {
+  NotFoundError: 'NOT_FOUND_ERROR',
+  DatabaseError: 'DATABASE_ERROR',
+  InternalServerError: 'INTERNAL_SERVER_ERROR',
+} as const
+
+export type InvalidJwtTokenErrorDtoErrorNameEnum =
+  (typeof InvalidJwtTokenErrorDtoErrorNameEnum)[keyof typeof InvalidJwtTokenErrorDtoErrorNameEnum]
+
+/**
+ *
+ * @export
+ * @interface InvalidOrExpiredJwtTokenErrorDto
+ */
+export interface InvalidOrExpiredJwtTokenErrorDto {
+  /**
+   * Status Code
+   * @type {number}
+   * @memberof InvalidOrExpiredJwtTokenErrorDto
+   */
+  statusCode: number
+  /**
+   * Detail error message
+   * @type {string}
+   * @memberof InvalidOrExpiredJwtTokenErrorDto
+   */
+  message: string
+  /**
+   * status in text
+   * @type {string}
+   * @memberof InvalidOrExpiredJwtTokenErrorDto
+   */
+  status: string
+  /**
+   * Exact error name
+   * @type {string}
+   * @memberof InvalidOrExpiredJwtTokenErrorDto
+   */
+  errorName: InvalidOrExpiredJwtTokenErrorDtoErrorNameEnum
+  /**
+   * Helper for sending additional data in error
+   * @type {object}
+   * @memberof InvalidOrExpiredJwtTokenErrorDto
+   */
+  object?: object
+}
+
+export const InvalidOrExpiredJwtTokenErrorDtoErrorNameEnum = {
+  NotFoundError: 'NOT_FOUND_ERROR',
+  DatabaseError: 'DATABASE_ERROR',
+  InternalServerError: 'INTERNAL_SERVER_ERROR',
+} as const
+
+export type InvalidOrExpiredJwtTokenErrorDtoErrorNameEnum =
+  (typeof InvalidOrExpiredJwtTokenErrorDtoErrorNameEnum)[keyof typeof InvalidOrExpiredJwtTokenErrorDtoErrorNameEnum]
+
 /**
  *
  * @export
@@ -2071,6 +2383,96 @@ export const FilesApiAxiosParamCreator = function (configuration?: Configuration
       }
     },
     /**
+     * You can download file byt fileId.
+     * @summary Download file by jwt token
+     * @param {string} jwtToken
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    filesControllerDownloadFile: async (
+      jwtToken: string,
+      options: AxiosRequestConfig = {},
+    ): Promise<RequestArgs> => {
+      // verify required parameter 'jwtToken' is not null or undefined
+      assertParamExists('filesControllerDownloadFile', 'jwtToken', jwtToken)
+      const localVarPath = `/files/download/stream/{jwtToken}`.replace(
+        `{${'jwtToken'}}`,
+        encodeURIComponent(String(jwtToken)),
+      )
+      // use dummy base URL string because the URL constructor only accepts absolute URLs.
+      const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL)
+      let baseOptions
+      if (configuration) {
+        baseOptions = configuration.baseOptions
+      }
+
+      const localVarRequestOptions = { method: 'GET', ...baseOptions, ...options }
+      const localVarHeaderParameter = {} as any
+      const localVarQueryParameter = {} as any
+
+      // authentication bearer required
+      // http bearer authentication required
+      await setBearerAuthToObject(localVarHeaderParameter, configuration)
+
+      setSearchParams(localVarUrlObj, localVarQueryParameter)
+      let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {}
+      localVarRequestOptions.headers = {
+        ...localVarHeaderParameter,
+        ...headersFromBaseOptions,
+        ...options.headers,
+      }
+
+      return {
+        url: toPathString(localVarUrlObj),
+        options: localVarRequestOptions,
+      }
+    },
+    /**
+     * To be able to download file you need to obtain jwt token.
+     * @summary Obtain jwt token form file download
+     * @param {string} fileId
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    filesControllerDownloadToken: async (
+      fileId: string,
+      options: AxiosRequestConfig = {},
+    ): Promise<RequestArgs> => {
+      // verify required parameter 'fileId' is not null or undefined
+      assertParamExists('filesControllerDownloadToken', 'fileId', fileId)
+      const localVarPath = `/files/download/jwt/{fileId}`.replace(
+        `{${'fileId'}}`,
+        encodeURIComponent(String(fileId)),
+      )
+      // use dummy base URL string because the URL constructor only accepts absolute URLs.
+      const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL)
+      let baseOptions
+      if (configuration) {
+        baseOptions = configuration.baseOptions
+      }
+
+      const localVarRequestOptions = { method: 'GET', ...baseOptions, ...options }
+      const localVarHeaderParameter = {} as any
+      const localVarQueryParameter = {} as any
+
+      // authentication bearer required
+      // http bearer authentication required
+      await setBearerAuthToObject(localVarHeaderParameter, configuration)
+
+      setSearchParams(localVarUrlObj, localVarQueryParameter)
+      let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {}
+      localVarRequestOptions.headers = {
+        ...localVarHeaderParameter,
+        ...headersFromBaseOptions,
+        ...options.headers,
+      }
+
+      return {
+        url: toPathString(localVarUrlObj),
+        options: localVarRequestOptions,
+      }
+    },
+    /**
      * You get all file info based on fileId.
      * @summary Get file by fileId
      * @param {string} fileId
@@ -2465,6 +2867,42 @@ export const FilesApiFp = function (configuration?: Configuration) {
       return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)
     },
     /**
+     * You can download file byt fileId.
+     * @summary Download file by jwt token
+     * @param {string} jwtToken
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    async filesControllerDownloadFile(
+      jwtToken: string,
+      options?: AxiosRequestConfig,
+    ): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<void>> {
+      const localVarAxiosArgs = await localVarAxiosParamCreator.filesControllerDownloadFile(
+        jwtToken,
+        options,
+      )
+      return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)
+    },
+    /**
+     * To be able to download file you need to obtain jwt token.
+     * @summary Obtain jwt token form file download
+     * @param {string} fileId
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    async filesControllerDownloadToken(
+      fileId: string,
+      options?: AxiosRequestConfig,
+    ): Promise<
+      (axios?: AxiosInstance, basePath?: string) => AxiosPromise<DownloadTokenResponseDataDto>
+    > {
+      const localVarAxiosArgs = await localVarAxiosParamCreator.filesControllerDownloadToken(
+        fileId,
+        options,
+      )
+      return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)
+    },
+    /**
      * You get all file info based on fileId.
      * @summary Get file by fileId
      * @param {string} fileId
@@ -2635,6 +3073,36 @@ export const FilesApiFactory = function (
         .then((request) => request(axios, basePath))
     },
     /**
+     * You can download file byt fileId.
+     * @summary Download file by jwt token
+     * @param {string} jwtToken
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    filesControllerDownloadFile(
+      jwtToken: string,
+      options?: AxiosRequestConfig,
+    ): AxiosPromise<void> {
+      return localVarFp
+        .filesControllerDownloadFile(jwtToken, options)
+        .then((request) => request(axios, basePath))
+    },
+    /**
+     * To be able to download file you need to obtain jwt token.
+     * @summary Obtain jwt token form file download
+     * @param {string} fileId
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    filesControllerDownloadToken(
+      fileId: string,
+      options?: AxiosRequestConfig,
+    ): AxiosPromise<DownloadTokenResponseDataDto> {
+      return localVarFp
+        .filesControllerDownloadToken(fileId, options)
+        .then((request) => request(axios, basePath))
+    },
+    /**
      * You get all file info based on fileId.
      * @summary Get file by fileId
      * @param {string} fileId
@@ -2770,6 +3238,34 @@ export class FilesApi extends BaseAPI {
   public filesControllerDeleteFile(fileId: string, options?: AxiosRequestConfig) {
     return FilesApiFp(this.configuration)
       .filesControllerDeleteFile(fileId, options)
+      .then((request) => request(this.axios, this.basePath))
+  }
+
+  /**
+   * You can download file byt fileId.
+   * @summary Download file by jwt token
+   * @param {string} jwtToken
+   * @param {*} [options] Override http request option.
+   * @throws {RequiredError}
+   * @memberof FilesApi
+   */
+  public filesControllerDownloadFile(jwtToken: string, options?: AxiosRequestConfig) {
+    return FilesApiFp(this.configuration)
+      .filesControllerDownloadFile(jwtToken, options)
+      .then((request) => request(this.axios, this.basePath))
+  }
+
+  /**
+   * To be able to download file you need to obtain jwt token.
+   * @summary Obtain jwt token form file download
+   * @param {string} fileId
+   * @param {*} [options] Override http request option.
+   * @throws {RequiredError}
+   * @memberof FilesApi
+   */
+  public filesControllerDownloadToken(fileId: string, options?: AxiosRequestConfig) {
+    return FilesApiFp(this.configuration)
+      .filesControllerDownloadToken(fileId, options)
       .then((request) => request(this.axios, this.basePath))
   }
 
@@ -3117,12 +3613,18 @@ export const NasesApiAxiosParamCreator = function (configuration?: Configuration
       }
     },
     /**
-     * Return top 10 forms
-     * @summary
+     * Get paginated forms
+     * @summary Get paginated forms
+     * @param {string} [currentPage] Page number
+     * @param {string} [pagination] Number of items per page
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
-    nasesControllerGetForms: async (options: AxiosRequestConfig = {}): Promise<RequestArgs> => {
+    nasesControllerGetForms: async (
+      currentPage?: string,
+      pagination?: string,
+      options: AxiosRequestConfig = {},
+    ): Promise<RequestArgs> => {
       const localVarPath = `/nases/forms`
       // use dummy base URL string because the URL constructor only accepts absolute URLs.
       const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL)
@@ -3138,6 +3640,14 @@ export const NasesApiAxiosParamCreator = function (configuration?: Configuration
       // authentication bearer required
       // http bearer authentication required
       await setBearerAuthToObject(localVarHeaderParameter, configuration)
+
+      if (currentPage !== undefined) {
+        localVarQueryParameter['currentPage'] = currentPage
+      }
+
+      if (pagination !== undefined) {
+        localVarQueryParameter['pagination'] = pagination
+      }
 
       setSearchParams(localVarUrlObj, localVarQueryParameter)
       let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {}
@@ -3594,15 +4104,23 @@ export const NasesApiFp = function (configuration?: Configuration) {
       return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)
     },
     /**
-     * Return top 10 forms
-     * @summary
+     * Get paginated forms
+     * @summary Get paginated forms
+     * @param {string} [currentPage] Page number
+     * @param {string} [pagination] Number of items per page
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
     async nasesControllerGetForms(
+      currentPage?: string,
+      pagination?: string,
       options?: AxiosRequestConfig,
     ): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<GetFormsResponseDto>> {
-      const localVarAxiosArgs = await localVarAxiosParamCreator.nasesControllerGetForms(options)
+      const localVarAxiosArgs = await localVarAxiosParamCreator.nasesControllerGetForms(
+        currentPage,
+        pagination,
+        options,
+      )
       return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)
     },
     /**
@@ -3805,13 +4323,21 @@ export const NasesApiFactory = function (
         .then((request) => request(axios, basePath))
     },
     /**
-     * Return top 10 forms
-     * @summary
+     * Get paginated forms
+     * @summary Get paginated forms
+     * @param {string} [currentPage] Page number
+     * @param {string} [pagination] Number of items per page
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
-    nasesControllerGetForms(options?: AxiosRequestConfig): AxiosPromise<GetFormsResponseDto> {
-      return localVarFp.nasesControllerGetForms(options).then((request) => request(axios, basePath))
+    nasesControllerGetForms(
+      currentPage?: string,
+      pagination?: string,
+      options?: AxiosRequestConfig,
+    ): AxiosPromise<GetFormsResponseDto> {
+      return localVarFp
+        .nasesControllerGetForms(currentPage, pagination, options)
+        .then((request) => request(axios, basePath))
     },
     /**
      *
@@ -3994,15 +4520,21 @@ export class NasesApi extends BaseAPI {
   }
 
   /**
-   * Return top 10 forms
-   * @summary
+   * Get paginated forms
+   * @summary Get paginated forms
+   * @param {string} [currentPage] Page number
+   * @param {string} [pagination] Number of items per page
    * @param {*} [options] Override http request option.
    * @throws {RequiredError}
    * @memberof NasesApi
    */
-  public nasesControllerGetForms(options?: AxiosRequestConfig) {
+  public nasesControllerGetForms(
+    currentPage?: string,
+    pagination?: string,
+    options?: AxiosRequestConfig,
+  ) {
     return NasesApiFp(this.configuration)
-      .nasesControllerGetForms(options)
+      .nasesControllerGetForms(currentPage, pagination, options)
       .then((request) => request(this.axios, this.basePath))
   }
 

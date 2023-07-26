@@ -1,11 +1,18 @@
 import { GenericObjectType, RJSFSchema, UiSchema } from '@rjsf/utils'
 import { JSONSchema7 } from 'json-schema'
+import pick from 'lodash/pick'
 import { useTranslation } from 'next-i18next'
 import React, { createContext, PropsWithChildren, useContext, useMemo, useState } from 'react'
 
 import { InitialFormData } from '../../frontend/types/initialFormData'
-import { getEvaluatedStepsSchemas, getStepsMetadata } from '../../frontend/utils/formState'
+import {
+  getEvaluatedStepsSchemas,
+  getFileUuidsNaive,
+  getStepsMetadata,
+} from '../../frontend/utils/formState'
+import { isDefined } from '../../frontend/utils/general'
 import { FormStepIndex, FormStepMetadata } from './types/Steps'
+import { useFormFileUpload } from './useFormFileUpload'
 
 type SkipModal =
   | { open: true; skipAllowed: false; onSkip: () => void; onClose: () => void }
@@ -14,6 +21,7 @@ type SkipModal =
 interface FormState {
   schema: RJSFSchema
   uiSchema: UiSchema
+  formId: string
   formSlug: string
   formData: GenericObjectType
   skipModal: SkipModal
@@ -67,6 +75,7 @@ export const FormStateProvider = ({
   children,
 }: PropsWithChildren<FormStateProviderProps>) => {
   const { t } = useTranslation('forms')
+  const { keepFiles } = useFormFileUpload()
 
   const [stepIndex, setStepIndex] = useState<FormStepIndex>(0)
   const [formData, setFormData] = useState<GenericObjectType>(initialFormData.formDataJson)
@@ -157,9 +166,19 @@ export const FormStateProvider = ({
     }
   }
 
+  // TODO: Add explanation
   const setStepFormData = (stepFormData: GenericObjectType) => {
-    // TODO: Remove conditional fields on disappearance
-    setFormData({ ...formData, ...stepFormData })
+    const newData = { ...formData, ...stepFormData }
+    const evaluatedSchemas = getEvaluatedStepsSchemas(schema, newData)
+    const propertiesToKeep = evaluatedSchemas
+      .filter(isDefined)
+      .map((innerSchema) => innerSchema.properties && Object.keys(innerSchema.properties)[0])
+      .filter(isDefined)
+    const pickedPropertiesData = pick(newData, propertiesToKeep)
+    const fileUuids = getFileUuidsNaive(pickedPropertiesData)
+
+    keepFiles(fileUuids)
+    setFormData(pickedPropertiesData)
   }
 
   const handleFormOnChange = (newFormData: GenericObjectType | undefined) => {
@@ -197,6 +216,7 @@ export const FormStateProvider = ({
   const context = {
     schema,
     uiSchema,
+    formId: initialFormData.formId,
     formSlug,
     formData,
     skipModal,

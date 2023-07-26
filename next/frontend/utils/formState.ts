@@ -1,5 +1,7 @@
 import { GenericObjectType, retrieveSchema, RJSFSchema } from '@rjsf/utils'
 import { JSONSchema7 } from 'json-schema'
+import traverse from 'traverse'
+import { validate as validateUuid, version as uuidVersion } from 'uuid'
 
 import { FormStepIndex, FormStepMetadata } from '../../components/forms/types/Steps'
 import { validator } from '../dtos/formStepperDto'
@@ -67,4 +69,21 @@ export const getStepsMetadata = (
       isSummary: true,
     } as FormStepMetadata,
   ]
+}
+
+/**
+ * A naive implementation of getting file UUIDs from the form data.
+ */
+export const getFileUuidsNaive = (formData: GenericObjectType) => {
+  return traverse(formData).reduce(function traverseFn(acc: string[], value) {
+    if (
+      this.isLeaf &&
+      typeof value === 'string' &&
+      validateUuid(value) &&
+      uuidVersion(value) === 4
+    ) {
+      acc.push(value)
+    }
+    return acc
+  }, []) as string[]
 }

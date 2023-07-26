@@ -2,7 +2,8 @@
  * which shows a red status bar with white text on top of the page
  */
 import cx from 'classnames'
-import React, { createContext, useContext, useState } from 'react'
+import { useTranslation } from 'next-i18next'
+import React, { createContext, useContext, useEffect, useState } from 'react'
 
 import ErrorIcon from '../icon-components/ErrorIcon'
 import { SectionContainer } from '../segments/SectionContainer/SectionContainer'
@@ -34,6 +35,17 @@ export const StatusBarProvider: React.FC<StatusBarProviderProps> = ({ children }
     content: null,
     variant: 'warning',
   })
+  const { t } = useTranslation(['common'])
+  useEffect(() => {
+    // this overrides the 'global' status notification (i.e. crashed servers), but since we don't have design for multiple, showing failed notification probably takes precedence
+    // TODO rethink the status bar approach on product side
+    // TODO here set to whatever is the 'global' error
+    setStatusBarConfiguration({
+      // If translation is empty, status bar will be hidden
+      content: t('common:statusBarContent'),
+      variant: 'warning',
+    })
+  }, [setStatusBarConfiguration, t])
 
   return (
     <StatusBarContext.Provider

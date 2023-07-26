@@ -48,6 +48,8 @@ export const ajvFormats = {
   date: () => true,
   localTime: () => true,
   email: () => true,
+  // TODO: Remove and use only keyword
+  file: () => true,
 }
 
 export const getFileIds = (schema: RJSFSchema, formData: GenericObjectType) => {

@@ -26,8 +26,9 @@
               "description": "Priložená príloha",
               "items": {
                 "type": "string",
-                "format": "file"
-              }
+                "file": true
+              },
+              "fileArray": true
             },
             "zavazneStanoviskoKrajskehoDopravnehoInspektoratu": {
               "title": "ZavazneStanoviskoKrajskehoDopravnehoInspektoratu",
@@ -35,8 +36,9 @@
               "description": "Priložená príloha",
               "items": {
                 "type": "string",
-                "format": "file"
-              }
+                "file": true
+              },
+              "fileArray": true
             },
             "situaciaSirsichVztahov": {
               "title": "SituaciaSirsichVztahov",
@@ -44,7 +46,7 @@
               "description": "Priložená príloha",
               "items": {
                 "type": "string",
-                "format": "file"
+                "file": true
               }
             },
             "stanoviskaSpravcovCiest": {
@@ -53,7 +55,7 @@
               "description": "Priložená príloha",
               "items": {
                 "type": "string",
-                "format": "file"
+                "file": true
               }
             },
             "kopiaPovoleniaStavebnehoUradu": {
@@ -62,7 +64,7 @@
               "description": "Priložená príloha",
               "items": {
                 "type": "string",
-                "format": "file"
+                "file": true
               }
             },
             "stanoviskoDopravnehoPodnikuBratislava": {
@@ -71,7 +73,7 @@
               "description": "Priložená príloha",
               "items": {
                 "type": "string",
-                "format": "file"
+                "file": true
               }
             },
             "vyhradenehoParkovanieVztahKPrevadzke": {
@@ -80,7 +82,7 @@
               "description": "Priložená príloha",
               "items": {
                 "type": "string",
-                "format": "file"
+                "file": true
               }
             },
             "vyhradenehoParkovaniePreukazTZP": {
@@ -89,7 +91,7 @@
               "description": "Priložená príloha",
               "items": {
                 "type": "string",
-                "format": "file"
+                "file": true
               }
             },
             "splnomocnenieNaZastupovanie": {
@@ -98,7 +100,7 @@
               "description": "Priložená príloha",
               "items": {
                 "type": "string",
-                "format": "file"
+                "file": true
               }
             }
           },

@@ -306,7 +306,12 @@ const Button = forwardRef<HTMLAnchorElement | HTMLButtonElement, PolymorphicProp
           )}
           {text && !icon && text}
           {!text && icon && (
-            <span className={cx({ 'h-6 w-6': size === 'lg', 'h-5 w-5': size === 'sm' })}>
+            <span
+              className={cx('flex items-center justify-center', {
+                'h-6 w-6': size === 'lg',
+                'h-5 w-5': size === 'sm',
+              })}
+            >
               {icon}
             </span>
           )}

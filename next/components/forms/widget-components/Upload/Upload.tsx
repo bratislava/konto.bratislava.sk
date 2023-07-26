@@ -24,6 +24,7 @@ interface UploadProps {
   onUpload?: (files: File[]) => void
   onFileRemove?: (id: string) => void
   onFileRetry?: (id: string) => void
+  onFileDownload?: (id: string) => void
 }
 
 const Upload = forwardRef<HTMLButtonElement, UploadProps>(
@@ -44,6 +45,7 @@ const Upload = forwardRef<HTMLButtonElement, UploadProps>(
       onUpload = () => {},
       onFileRemove = () => {},
       onFileRetry = () => {},
+      onFileDownload = () => {},
     },
     ref,
   ) => {
@@ -80,6 +82,7 @@ const Upload = forwardRef<HTMLButtonElement, UploadProps>(
             getFileInfoById={getFileInfoById}
             onFileRemove={onFileRemove}
             onFileRetry={onFileRetry}
+            onFileDownload={onFileDownload}
           />
         </div>
 

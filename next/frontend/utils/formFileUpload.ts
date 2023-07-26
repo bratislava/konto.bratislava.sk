@@ -120,19 +120,27 @@ export const mergeClientAndServerFiles = (
     (file) =>
       [
         file.id,
-        { status: file.status, fileName: file.file.name } satisfies FormFileUploadFileInfo,
-      ] as const,
-  )
-  const serverMapped = serverFiles.map(
-    (file) =>
-      [
-        file.id,
         {
-          status: serverResponseToStatusMap[file.status],
-          fileName: file.fileName,
+          status: file.status,
+          fileName: file.file.name,
+          canDownload: false,
         } satisfies FormFileUploadFileInfo,
       ] as const,
   )
+  const serverMapped = serverFiles.map((file) => {
+    const status = serverResponseToStatusMap[file.status]
+    return [
+      file.id,
+      {
+        status: serverResponseToStatusMap[file.status],
+        fileName: file.fileName,
+        canDownload: [
+          FormFileUploadStatusEnum.Scanning,
+          FormFileUploadStatusEnum.ScanDone,
+        ].includes(status.type),
+      } satisfies FormFileUploadFileInfo,
+    ] as const
+  })
 
   return Object.fromEntries<FormFileUploadFileInfo>([
     ...clientMapped,

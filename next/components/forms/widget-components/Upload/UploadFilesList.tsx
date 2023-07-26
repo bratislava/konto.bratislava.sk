@@ -10,6 +10,7 @@ interface UploadedFilesListProps {
   getFileInfoById: (id: string) => FormFileUploadFileInfo
   onFileRemove?: (id: string) => void
   onFileRetry?: (id: string) => void
+  onFileDownload?: (id: string) => void
 }
 
 const UploadFilesList = ({
@@ -17,6 +18,7 @@ const UploadFilesList = ({
   getFileInfoById,
   onFileRetry = () => {},
   onFileRemove = () => {},
+  onFileDownload = () => {},
 }: UploadedFilesListProps) => {
   const { t } = useTranslation('account', { keyPrefix: 'Upload' })
 
@@ -43,6 +45,7 @@ const UploadFilesList = ({
               fileInfo={getFileInfoById(fileId)}
               onFileRetry={() => onFileRetry(fileId)}
               onFileRemove={() => onFileRemove(fileId)}
+              onFileDownload={() => onFileDownload(fileId)}
             />
           </li>
         ))}

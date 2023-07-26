@@ -210,17 +210,17 @@ export interface DeleteFileResponseData {
    */
   status: DeleteFileResponseDataStatusEnum
   /**
-   * Hashed file uid under which is file stored in minio
-   * @type {string}
-   * @memberof DeleteFileResponseData
-   */
-  fileUid: string
-  /**
    * Real file name of the file, but is used only for display
    * @type {string}
    * @memberof DeleteFileResponseData
    */
   fileName: string
+  /**
+   * Hashed file uid under which is file stored in minio
+   * @type {string}
+   * @memberof DeleteFileResponseData
+   */
+  fileUid: string
   /**
    * Form type
    * @type {string}
@@ -233,6 +233,12 @@ export interface DeleteFileResponseData {
    * @memberof DeleteFileResponseData
    */
   formId: string
+  /**
+   * File size in bytes
+   * @type {number}
+   * @memberof DeleteFileResponseData
+   */
+  fileSize: number
   /**
    * more info
    * @type {string}
@@ -741,6 +747,53 @@ export type FileSizeTooLargeErrorDtoErrorNameEnum =
 /**
  *
  * @export
+ * @interface FileSizeZeroErrorDto
+ */
+export interface FileSizeZeroErrorDto {
+  /**
+   * Status Code
+   * @type {number}
+   * @memberof FileSizeZeroErrorDto
+   */
+  statusCode: number
+  /**
+   * Detail error message
+   * @type {string}
+   * @memberof FileSizeZeroErrorDto
+   */
+  message: string
+  /**
+   * status in text
+   * @type {string}
+   * @memberof FileSizeZeroErrorDto
+   */
+  status: string
+  /**
+   * Exact error name
+   * @type {string}
+   * @memberof FileSizeZeroErrorDto
+   */
+  errorName: FileSizeZeroErrorDtoErrorNameEnum
+  /**
+   * Helper for sending additional data in error
+   * @type {object}
+   * @memberof FileSizeZeroErrorDto
+   */
+  object?: object
+}
+
+export const FileSizeZeroErrorDtoErrorNameEnum = {
+  NotFoundError: 'NOT_FOUND_ERROR',
+  DatabaseError: 'DATABASE_ERROR',
+  InternalServerError: 'INTERNAL_SERVER_ERROR',
+} as const
+
+export type FileSizeZeroErrorDtoErrorNameEnum =
+  (typeof FileSizeZeroErrorDtoErrorNameEnum)[keyof typeof FileSizeZeroErrorDtoErrorNameEnum]
+
+/**
+ *
+ * @export
  * @interface FileWrongParamsErrorDto
  */
 export interface FileWrongParamsErrorDto {
@@ -1170,6 +1223,53 @@ export type FilesControllerUploadFile400ResponseErrorNameEnum =
 /**
  *
  * @export
+ * @interface FormNotFoundErrorDto
+ */
+export interface FormNotFoundErrorDto {
+  /**
+   * Status Code
+   * @type {number}
+   * @memberof FormNotFoundErrorDto
+   */
+  statusCode: number
+  /**
+   * Detail error message
+   * @type {string}
+   * @memberof FormNotFoundErrorDto
+   */
+  message: string
+  /**
+   * status in text
+   * @type {string}
+   * @memberof FormNotFoundErrorDto
+   */
+  status: string
+  /**
+   * Exact error name
+   * @type {string}
+   * @memberof FormNotFoundErrorDto
+   */
+  errorName: FormNotFoundErrorDtoErrorNameEnum
+  /**
+   * Helper for sending additional data in error
+   * @type {object}
+   * @memberof FormNotFoundErrorDto
+   */
+  object?: object
+}
+
+export const FormNotFoundErrorDtoErrorNameEnum = {
+  NotFoundError: 'NOT_FOUND_ERROR',
+  DatabaseError: 'DATABASE_ERROR',
+  InternalServerError: 'INTERNAL_SERVER_ERROR',
+} as const
+
+export type FormNotFoundErrorDtoErrorNameEnum =
+  (typeof FormNotFoundErrorDtoErrorNameEnum)[keyof typeof FormNotFoundErrorDtoErrorNameEnum]
+
+/**
+ *
+ * @export
  * @interface FormOrFileOrUserNotFoundErrorDto
  */
 export interface FormOrFileOrUserNotFoundErrorDto {
@@ -1264,36 +1364,21 @@ export type FormOrUserNotFoundErrorDtoErrorNameEnum =
 /**
  *
  * @export
- * @enum {string}
- */
-
-export const FormStateEnum = {
-  New: 'NEW',
-  Send: 'SEND',
-  InProgress: 'IN_PROGRESS',
-  Finished: 'FINISHED',
-} as const
-
-export type FormStateEnum = (typeof FormStateEnum)[keyof typeof FormStateEnum]
-
-/**
- *
- * @export
  * @interface GetFileResponseDto
  */
 export interface GetFileResponseDto {
-  /**
-   * Hashed file uid under which is file stored in minio
-   * @type {string}
-   * @memberof GetFileResponseDto
-   */
-  fileUid: string
   /**
    * Real file name of the file, but is used only for display
    * @type {string}
    * @memberof GetFileResponseDto
    */
   fileName: string
+  /**
+   * Hashed file uid under which is file stored in minio
+   * @type {string}
+   * @memberof GetFileResponseDto
+   */
+  fileUid: string
   /**
    * Form type
    * @type {string}
@@ -1318,6 +1403,12 @@ export interface GetFileResponseDto {
    * @memberof GetFileResponseDto
    */
   status: GetFileResponseDtoStatusEnum
+  /**
+   * File size in bytes
+   * @type {number}
+   * @memberof GetFileResponseDto
+   */
+  fileSize: number
   /**
    * id of the record in db
    * @type {string}
@@ -1483,11 +1574,17 @@ export interface GetFormResponseDto {
    */
   uri?: string
   /**
-   *
-   * @type {FormStateEnum}
+   * State of form
+   * @type {string}
    * @memberof GetFormResponseDto
    */
-  state?: FormStateEnum
+  state: GetFormResponseDtoStateEnum
+  /**
+   * Specific error type
+   * @type {string}
+   * @memberof GetFormResponseDto
+   */
+  error: GetFormResponseDtoErrorEnum
   /**
    * Data from ginis saved in our db
    * @type {string}
@@ -1513,6 +1610,35 @@ export interface GetFormResponseDto {
    */
   finishSubmission: string
 }
+
+export const GetFormResponseDtoStateEnum = {
+  Concept: 'CONCEPT',
+  Queued: 'QUEUED',
+  QueuedError: 'QUEUED_ERROR',
+  Checking: 'CHECKING',
+  CheckingError: 'CHECKING_ERROR',
+  Sending: 'SENDING',
+  SendingError: 'SENDING_ERROR',
+  Sent: 'SENT',
+  SentError: 'SENT_ERROR',
+  Processing: 'PROCESSING',
+  ProcessingError: 'PROCESSING_ERROR',
+  Finished: 'FINISHED',
+  Rejected: 'REJECTED',
+} as const
+
+export type GetFormResponseDtoStateEnum =
+  (typeof GetFormResponseDtoStateEnum)[keyof typeof GetFormResponseDtoStateEnum]
+export const GetFormResponseDtoErrorEnum = {
+  RabbitmqMaxTries: 'RABBITMQ_MAX_TRIES',
+  FilesNotYetScanned: 'FILES_NOT_YET_SCANNED',
+  UnableToScanFiles: 'UNABLE_TO_SCAN_FILES',
+  InfectedFiles: 'INFECTED_FILES',
+  NasesSendError: 'NASES_SEND_ERROR',
+} as const
+
+export type GetFormResponseDtoErrorEnum =
+  (typeof GetFormResponseDtoErrorEnum)[keyof typeof GetFormResponseDtoErrorEnum]
 
 /**
  *
@@ -1539,140 +1665,12 @@ export interface GetFormsResponseDto {
    */
   countPages: number
   /**
-   *
-   * @type {GetFormsResponseDtoItems}
+   * Items
+   * @type {Array<GetFormResponseDto>}
    * @memberof GetFormsResponseDto
    */
-  items: GetFormsResponseDtoItems
+  items: Array<GetFormResponseDto>
 }
-/**
- * Items
- * @export
- * @interface GetFormsResponseDtoItems
- */
-export interface GetFormsResponseDtoItems {
-  /**
-   * Change email, on which you can be contacted
-   * @type {string}
-   * @memberof GetFormsResponseDtoItems
-   */
-  email: string
-  /**
-   * Send XML body of form
-   * @type {string}
-   * @memberof GetFormsResponseDtoItems
-   */
-  formDataXml: string
-  /**
-   * Send XML body of form
-   * @type {object}
-   * @memberof GetFormsResponseDtoItems
-   */
-  formDataJson: object
-  /**
-   * Name of Form
-   * @type {string}
-   * @memberof GetFormsResponseDtoItems
-   */
-  pospID?: string
-  /**
-   * Version of Form
-   * @type {string}
-   * @memberof GetFormsResponseDtoItems
-   */
-  pospVersion: string
-  /**
-   * Subject of message for recipient
-   * @type {string}
-   * @memberof GetFormsResponseDtoItems
-   */
-  messageSubject: string
-  /**
-   * Is it signed by Eid?
-   * @type {boolean}
-   * @memberof GetFormsResponseDtoItems
-   */
-  isSigned?: boolean
-  /**
-   * Name of form showned to user in Ginis
-   * @type {string}
-   * @memberof GetFormsResponseDtoItems
-   */
-  formName?: string
-  /**
-   * Description of form showned to user in Ginis
-   * @type {string}
-   * @memberof GetFormsResponseDtoItems
-   */
-  fromDescription?: string
-  /**
-   * Id of record
-   * @type {string}
-   * @memberof GetFormsResponseDtoItems
-   */
-  id: string
-  /**
-   * Create date of record
-   * @type {string}
-   * @memberof GetFormsResponseDtoItems
-   */
-  createdAt: string
-  /**
-   * Update date of record
-   * @type {string}
-   * @memberof GetFormsResponseDtoItems
-   */
-  updatedAt: string
-  /**
-   * Id of send form from other system, (probably ginis)
-   * @type {string}
-   * @memberof GetFormsResponseDtoItems
-   */
-  externalId: string
-  /**
-   * User ID (from cognito) who submit this form, can be empty, if it was submitted by user through eID
-   * @type {string}
-   * @memberof GetFormsResponseDtoItems
-   */
-  userExternalId: string
-  /**
-   * Uri for defining electronic sendbox, if person has it
-   * @type {string}
-   * @memberof GetFormsResponseDtoItems
-   */
-  uri?: string
-  /**
-   *
-   * @type {FormStateEnum}
-   * @memberof GetFormsResponseDtoItems
-   */
-  state?: FormStateEnum
-  /**
-   * Data from ginis saved in our db
-   * @type {string}
-   * @memberof GetFormsResponseDtoItems
-   */
-  formDataGinis?: string
-  /**
-   * Technical NASES id of sender
-   * @type {string}
-   * @memberof GetFormsResponseDtoItems
-   */
-  senderId: string
-  /**
-   * Technical NASES id of recipient
-   * @type {string}
-   * @memberof GetFormsResponseDtoItems
-   */
-  recipientId: string
-  /**
-   * end of submition
-   * @type {string}
-   * @memberof GetFormsResponseDtoItems
-   */
-  finishSubmission: string
-}
-
 /**
  *
  * @export
@@ -1770,6 +1768,147 @@ export type InvalidOrExpiredJwtTokenErrorDtoErrorNameEnum =
 /**
  *
  * @export
+ * @interface NasesControllerGetForm404Response
+ */
+export interface NasesControllerGetForm404Response {
+  /**
+   * Status Code
+   * @type {number}
+   * @memberof NasesControllerGetForm404Response
+   */
+  statusCode: number
+  /**
+   * Detail error message
+   * @type {string}
+   * @memberof NasesControllerGetForm404Response
+   */
+  message: string
+  /**
+   * status in text
+   * @type {string}
+   * @memberof NasesControllerGetForm404Response
+   */
+  status: string
+  /**
+   * Exact error name
+   * @type {string}
+   * @memberof NasesControllerGetForm404Response
+   */
+  errorName: NasesControllerGetForm404ResponseErrorNameEnum
+  /**
+   * Helper for sending additional data in error
+   * @type {object}
+   * @memberof NasesControllerGetForm404Response
+   */
+  object?: object
+}
+
+export const NasesControllerGetForm404ResponseErrorNameEnum = {
+  NotFoundError: 'NOT_FOUND_ERROR',
+  DatabaseError: 'DATABASE_ERROR',
+  InternalServerError: 'INTERNAL_SERVER_ERROR',
+} as const
+
+export type NasesControllerGetForm404ResponseErrorNameEnum =
+  (typeof NasesControllerGetForm404ResponseErrorNameEnum)[keyof typeof NasesControllerGetForm404ResponseErrorNameEnum]
+
+/**
+ *
+ * @export
+ * @interface NasesControllerGetForms500Response
+ */
+export interface NasesControllerGetForms500Response {
+  /**
+   * Status Code
+   * @type {number}
+   * @memberof NasesControllerGetForms500Response
+   */
+  statusCode: number
+  /**
+   * Detail error message
+   * @type {string}
+   * @memberof NasesControllerGetForms500Response
+   */
+  message: string
+  /**
+   * status in text
+   * @type {string}
+   * @memberof NasesControllerGetForms500Response
+   */
+  status: string
+  /**
+   * Exact error name
+   * @type {string}
+   * @memberof NasesControllerGetForms500Response
+   */
+  errorName: NasesControllerGetForms500ResponseErrorNameEnum
+  /**
+   * Helper for sending additional data in error
+   * @type {object}
+   * @memberof NasesControllerGetForms500Response
+   */
+  object?: object
+}
+
+export const NasesControllerGetForms500ResponseErrorNameEnum = {
+  NotFoundError: 'NOT_FOUND_ERROR',
+  DatabaseError: 'DATABASE_ERROR',
+  InternalServerError: 'INTERNAL_SERVER_ERROR',
+} as const
+
+export type NasesControllerGetForms500ResponseErrorNameEnum =
+  (typeof NasesControllerGetForms500ResponseErrorNameEnum)[keyof typeof NasesControllerGetForms500ResponseErrorNameEnum]
+
+/**
+ *
+ * @export
+ * @interface NasesControllerSendForm422Response
+ */
+export interface NasesControllerSendForm422Response {
+  /**
+   * Status Code
+   * @type {number}
+   * @memberof NasesControllerSendForm422Response
+   */
+  statusCode: number
+  /**
+   * Detail error message
+   * @type {string}
+   * @memberof NasesControllerSendForm422Response
+   */
+  message: string
+  /**
+   * status in text
+   * @type {string}
+   * @memberof NasesControllerSendForm422Response
+   */
+  status: string
+  /**
+   * Exact error name
+   * @type {string}
+   * @memberof NasesControllerSendForm422Response
+   */
+  errorName: NasesControllerSendForm422ResponseErrorNameEnum
+  /**
+   * Helper for sending additional data in error
+   * @type {object}
+   * @memberof NasesControllerSendForm422Response
+   */
+  object?: object
+}
+
+export const NasesControllerSendForm422ResponseErrorNameEnum = {
+  NotFoundError: 'NOT_FOUND_ERROR',
+  DatabaseError: 'DATABASE_ERROR',
+  InternalServerError: 'INTERNAL_SERVER_ERROR',
+} as const
+
+export type NasesControllerSendForm422ResponseErrorNameEnum =
+  (typeof NasesControllerSendForm422ResponseErrorNameEnum)[keyof typeof NasesControllerSendForm422ResponseErrorNameEnum]
+
+/**
+ *
+ * @export
  * @interface NoFileUploadDataErrorDto
  */
 export interface NoFileUploadDataErrorDto {
@@ -1817,21 +1956,68 @@ export type NoFileUploadDataErrorDtoErrorNameEnum =
 /**
  *
  * @export
+ * @interface NoFormXmlDataErrorDto
+ */
+export interface NoFormXmlDataErrorDto {
+  /**
+   * Status Code
+   * @type {number}
+   * @memberof NoFormXmlDataErrorDto
+   */
+  statusCode: number
+  /**
+   * Detail error message
+   * @type {string}
+   * @memberof NoFormXmlDataErrorDto
+   */
+  message: string
+  /**
+   * status in text
+   * @type {string}
+   * @memberof NoFormXmlDataErrorDto
+   */
+  status: string
+  /**
+   * Exact error name
+   * @type {string}
+   * @memberof NoFormXmlDataErrorDto
+   */
+  errorName: NoFormXmlDataErrorDtoErrorNameEnum
+  /**
+   * Helper for sending additional data in error
+   * @type {object}
+   * @memberof NoFormXmlDataErrorDto
+   */
+  object?: object
+}
+
+export const NoFormXmlDataErrorDtoErrorNameEnum = {
+  NotFoundError: 'NOT_FOUND_ERROR',
+  DatabaseError: 'DATABASE_ERROR',
+  InternalServerError: 'INTERNAL_SERVER_ERROR',
+} as const
+
+export type NoFormXmlDataErrorDtoErrorNameEnum =
+  (typeof NoFormXmlDataErrorDtoErrorNameEnum)[keyof typeof NoFormXmlDataErrorDtoErrorNameEnum]
+
+/**
+ *
+ * @export
  * @interface PostFileRequestDto
  */
 export interface PostFileRequestDto {
-  /**
-   * Hashed file uid under which is file stored in minio
-   * @type {string}
-   * @memberof PostFileRequestDto
-   */
-  fileUid: string
   /**
    * Real file name of the file, but is used only for display
    * @type {string}
    * @memberof PostFileRequestDto
    */
   fileName: string
+  /**
+   * Hashed file uid under which is file stored in minio
+   * @type {string}
+   * @memberof PostFileRequestDto
+   */
+  fileUid: string
   /**
    * Form type
    * @type {string}
@@ -1850,6 +2036,12 @@ export interface PostFileRequestDto {
    * @memberof PostFileRequestDto
    */
   fileId: string
+  /**
+   * File size in bytes
+   * @type {number}
+   * @memberof PostFileRequestDto
+   */
+  fileSize: number
 }
 /**
  *
@@ -1858,17 +2050,17 @@ export interface PostFileRequestDto {
  */
 export interface PostFileResponseDto {
   /**
-   * Hashed file uid under which is file stored in minio
-   * @type {string}
-   * @memberof PostFileResponseDto
-   */
-  fileUid: string
-  /**
    * Real file name of the file, but is used only for display
    * @type {string}
    * @memberof PostFileResponseDto
    */
   fileName: string
+  /**
+   * Hashed file uid under which is file stored in minio
+   * @type {string}
+   * @memberof PostFileResponseDto
+   */
+  fileUid: string
   /**
    * Form type
    * @type {string}
@@ -1893,6 +2085,12 @@ export interface PostFileResponseDto {
    * @memberof PostFileResponseDto
    */
   status: PostFileResponseDtoStatusEnum
+  /**
+   * File size in bytes
+   * @type {number}
+   * @memberof PostFileResponseDto
+   */
+  fileSize: number
   /**
    * id of the record in db
    * @type {string}
@@ -1989,6 +2187,31 @@ export type ProblemWithScannerErrorDtoErrorNameEnum =
 /**
  *
  * @export
+ * @interface SendFormResponseDto
+ */
+export interface SendFormResponseDto {
+  /**
+   * Id of record
+   * @type {string}
+   * @memberof SendFormResponseDto
+   */
+  id: string
+  /**
+   * Message response regarding the process
+   * @type {string}
+   * @memberof SendFormResponseDto
+   */
+  message?: string
+  /**
+   * Form state
+   * @type {object}
+   * @memberof SendFormResponseDto
+   */
+  state?: object
+}
+/**
+ *
+ * @export
  * @interface ServiceRunningDto
  */
 export interface ServiceRunningDto {
@@ -2026,6 +2249,53 @@ export const StatusFileDtoStatusEnum = {
 
 export type StatusFileDtoStatusEnum =
   (typeof StatusFileDtoStatusEnum)[keyof typeof StatusFileDtoStatusEnum]
+
+/**
+ *
+ * @export
+ * @interface UnableAddFormToRabbitErrorDto
+ */
+export interface UnableAddFormToRabbitErrorDto {
+  /**
+   * Status Code
+   * @type {number}
+   * @memberof UnableAddFormToRabbitErrorDto
+   */
+  statusCode: number
+  /**
+   * Detail error message
+   * @type {string}
+   * @memberof UnableAddFormToRabbitErrorDto
+   */
+  message: string
+  /**
+   * status in text
+   * @type {string}
+   * @memberof UnableAddFormToRabbitErrorDto
+   */
+  status: string
+  /**
+   * Exact error name
+   * @type {string}
+   * @memberof UnableAddFormToRabbitErrorDto
+   */
+  errorName: UnableAddFormToRabbitErrorDtoErrorNameEnum
+  /**
+   * Helper for sending additional data in error
+   * @type {object}
+   * @memberof UnableAddFormToRabbitErrorDto
+   */
+  object?: object
+}
+
+export const UnableAddFormToRabbitErrorDtoErrorNameEnum = {
+  NotFoundError: 'NOT_FOUND_ERROR',
+  DatabaseError: 'DATABASE_ERROR',
+  InternalServerError: 'INTERNAL_SERVER_ERROR',
+} as const
+
+export type UnableAddFormToRabbitErrorDtoErrorNameEnum =
+  (typeof UnableAddFormToRabbitErrorDtoErrorNameEnum)[keyof typeof UnableAddFormToRabbitErrorDtoErrorNameEnum]
 
 /**
  *
@@ -2081,17 +2351,17 @@ export type UpdateFileStatusRequestDtoStatusEnum =
  */
 export interface UpdateFileStatusResponseDto {
   /**
-   * Hashed file uid under which is file stored in minio
-   * @type {string}
-   * @memberof UpdateFileStatusResponseDto
-   */
-  fileUid: string
-  /**
    * Real file name of the file, but is used only for display
    * @type {string}
    * @memberof UpdateFileStatusResponseDto
    */
   fileName: string
+  /**
+   * Hashed file uid under which is file stored in minio
+   * @type {string}
+   * @memberof UpdateFileStatusResponseDto
+   */
+  fileUid: string
   /**
    * Form type
    * @type {string}
@@ -2116,6 +2386,12 @@ export interface UpdateFileStatusResponseDto {
    * @memberof UpdateFileStatusResponseDto
    */
   status: UpdateFileStatusResponseDtoStatusEnum
+  /**
+   * File size in bytes
+   * @type {number}
+   * @memberof UpdateFileStatusResponseDto
+   */
+  fileSize: number
   /**
    * id of the record in db
    * @type {string}
@@ -2395,7 +2671,7 @@ export const FilesApiAxiosParamCreator = function (configuration?: Configuration
     ): Promise<RequestArgs> => {
       // verify required parameter 'jwtToken' is not null or undefined
       assertParamExists('filesControllerDownloadFile', 'jwtToken', jwtToken)
-      const localVarPath = `/files/download/stream/{jwtToken}`.replace(
+      const localVarPath = `/files/download/file/{jwtToken}`.replace(
         `{${'jwtToken'}}`,
         encodeURIComponent(String(jwtToken)),
       )
@@ -3700,7 +3976,8 @@ export const NasesApiAxiosParamCreator = function (configuration?: Configuration
       }
     },
     /**
-     *
+     * This endpoint is used for updating from and sending it to NASES. First is form updated then send to rabbitmq, then is controlled if everything is okay and files are scanned and after that is send to NASES
+     * @summary
      * @param {string} id
      * @param {UpdateFormRequestDto} updateFormRequestDto
      * @param {*} [options] Override http request option.
@@ -3759,7 +4036,8 @@ export const NasesApiAxiosParamCreator = function (configuration?: Configuration
       }
     },
     /**
-     *
+     * This endpoint is used for updating from and sending it to NASES. First is form updated then send to rabbitmq, then is controlled if everything is okay and files are scanned and after that is send to NASES
+     * @summary
      * @param {string} id
      * @param {UpdateFormRequestDto} updateFormRequestDto
      * @param {*} [options] Override http request option.
@@ -3818,7 +4096,8 @@ export const NasesApiAxiosParamCreator = function (configuration?: Configuration
       }
     },
     /**
-     *
+     * This endpoint is used for sending form to NASES. First is form send to rabbitmq, then is controlled if everything is okay and files are scanned and after that is send to NASES
+     * @summary
      * @param {string} id
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
@@ -3862,7 +4141,8 @@ export const NasesApiAxiosParamCreator = function (configuration?: Configuration
       }
     },
     /**
-     *
+     * This endpoint is used for sending form to NASES. First is form send to rabbitmq, then is controlled if everything is okay and files are scanned and after that is send to NASES
+     * @summary
      * @param {string} id
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
@@ -3962,7 +4242,7 @@ export const NasesApiAxiosParamCreator = function (configuration?: Configuration
       }
     },
     /**
-     * Create id in our backand, which you need to send in form as external id. Save also data necessary for envelope to send message to NASES
+     * Create id in our backend, which you need to send in form as external id. Save also data necessary for envelope to send message to NASES
      * @summary
      * @param {string} id
      * @param {UpdateFormRequestDto} updateFormRequestDto
@@ -4137,7 +4417,8 @@ export const NasesApiFp = function (configuration?: Configuration) {
       return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)
     },
     /**
-     *
+     * This endpoint is used for updating from and sending it to NASES. First is form updated then send to rabbitmq, then is controlled if everything is okay and files are scanned and after that is send to NASES
+     * @summary
      * @param {string} id
      * @param {UpdateFormRequestDto} updateFormRequestDto
      * @param {*} [options] Override http request option.
@@ -4147,7 +4428,7 @@ export const NasesApiFp = function (configuration?: Configuration) {
       id: string,
       updateFormRequestDto: UpdateFormRequestDto,
       options?: AxiosRequestConfig,
-    ): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<void>> {
+    ): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<SendFormResponseDto>> {
       const localVarAxiosArgs = await localVarAxiosParamCreator.nasesControllerSendAndUpdateForm(
         id,
         updateFormRequestDto,
@@ -4156,7 +4437,8 @@ export const NasesApiFp = function (configuration?: Configuration) {
       return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)
     },
     /**
-     *
+     * This endpoint is used for updating from and sending it to NASES. First is form updated then send to rabbitmq, then is controlled if everything is okay and files are scanned and after that is send to NASES
+     * @summary
      * @param {string} id
      * @param {UpdateFormRequestDto} updateFormRequestDto
      * @param {*} [options] Override http request option.
@@ -4166,7 +4448,7 @@ export const NasesApiFp = function (configuration?: Configuration) {
       id: string,
       updateFormRequestDto: UpdateFormRequestDto,
       options?: AxiosRequestConfig,
-    ): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<void>> {
+    ): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<SendFormResponseDto>> {
       const localVarAxiosArgs = await localVarAxiosParamCreator.nasesControllerSendAndUpdateFormEid(
         id,
         updateFormRequestDto,
@@ -4175,7 +4457,8 @@ export const NasesApiFp = function (configuration?: Configuration) {
       return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)
     },
     /**
-     *
+     * This endpoint is used for sending form to NASES. First is form send to rabbitmq, then is controlled if everything is okay and files are scanned and after that is send to NASES
+     * @summary
      * @param {string} id
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
@@ -4183,12 +4466,13 @@ export const NasesApiFp = function (configuration?: Configuration) {
     async nasesControllerSendForm(
       id: string,
       options?: AxiosRequestConfig,
-    ): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<void>> {
+    ): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<SendFormResponseDto>> {
       const localVarAxiosArgs = await localVarAxiosParamCreator.nasesControllerSendForm(id, options)
       return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)
     },
     /**
-     *
+     * This endpoint is used for sending form to NASES. First is form send to rabbitmq, then is controlled if everything is okay and files are scanned and after that is send to NASES
+     * @summary
      * @param {string} id
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
@@ -4196,7 +4480,7 @@ export const NasesApiFp = function (configuration?: Configuration) {
     async nasesControllerSendFormEid(
       id: string,
       options?: AxiosRequestConfig,
-    ): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<void>> {
+    ): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<SendFormResponseDto>> {
       const localVarAxiosArgs = await localVarAxiosParamCreator.nasesControllerSendFormEid(
         id,
         options,
@@ -4224,7 +4508,7 @@ export const NasesApiFp = function (configuration?: Configuration) {
       return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)
     },
     /**
-     * Create id in our backand, which you need to send in form as external id. Save also data necessary for envelope to send message to NASES
+     * Create id in our backend, which you need to send in form as external id. Save also data necessary for envelope to send message to NASES
      * @summary
      * @param {string} id
      * @param {UpdateFormRequestDto} updateFormRequestDto
@@ -4350,7 +4634,8 @@ export const NasesApiFactory = function (
         .then((request) => request(axios, basePath))
     },
     /**
-     *
+     * This endpoint is used for updating from and sending it to NASES. First is form updated then send to rabbitmq, then is controlled if everything is okay and files are scanned and after that is send to NASES
+     * @summary
      * @param {string} id
      * @param {UpdateFormRequestDto} updateFormRequestDto
      * @param {*} [options] Override http request option.
@@ -4360,13 +4645,14 @@ export const NasesApiFactory = function (
       id: string,
       updateFormRequestDto: UpdateFormRequestDto,
       options?: AxiosRequestConfig,
-    ): AxiosPromise<void> {
+    ): AxiosPromise<SendFormResponseDto> {
       return localVarFp
         .nasesControllerSendAndUpdateForm(id, updateFormRequestDto, options)
         .then((request) => request(axios, basePath))
     },
     /**
-     *
+     * This endpoint is used for updating from and sending it to NASES. First is form updated then send to rabbitmq, then is controlled if everything is okay and files are scanned and after that is send to NASES
+     * @summary
      * @param {string} id
      * @param {UpdateFormRequestDto} updateFormRequestDto
      * @param {*} [options] Override http request option.
@@ -4376,29 +4662,37 @@ export const NasesApiFactory = function (
       id: string,
       updateFormRequestDto: UpdateFormRequestDto,
       options?: AxiosRequestConfig,
-    ): AxiosPromise<void> {
+    ): AxiosPromise<SendFormResponseDto> {
       return localVarFp
         .nasesControllerSendAndUpdateFormEid(id, updateFormRequestDto, options)
         .then((request) => request(axios, basePath))
     },
     /**
-     *
+     * This endpoint is used for sending form to NASES. First is form send to rabbitmq, then is controlled if everything is okay and files are scanned and after that is send to NASES
+     * @summary
      * @param {string} id
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
-    nasesControllerSendForm(id: string, options?: AxiosRequestConfig): AxiosPromise<void> {
+    nasesControllerSendForm(
+      id: string,
+      options?: AxiosRequestConfig,
+    ): AxiosPromise<SendFormResponseDto> {
       return localVarFp
         .nasesControllerSendForm(id, options)
         .then((request) => request(axios, basePath))
     },
     /**
-     *
+     * This endpoint is used for sending form to NASES. First is form send to rabbitmq, then is controlled if everything is okay and files are scanned and after that is send to NASES
+     * @summary
      * @param {string} id
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
-    nasesControllerSendFormEid(id: string, options?: AxiosRequestConfig): AxiosPromise<void> {
+    nasesControllerSendFormEid(
+      id: string,
+      options?: AxiosRequestConfig,
+    ): AxiosPromise<SendFormResponseDto> {
       return localVarFp
         .nasesControllerSendFormEid(id, options)
         .then((request) => request(axios, basePath))
@@ -4421,7 +4715,7 @@ export const NasesApiFactory = function (
         .then((request) => request(axios, basePath))
     },
     /**
-     * Create id in our backand, which you need to send in form as external id. Save also data necessary for envelope to send message to NASES
+     * Create id in our backend, which you need to send in form as external id. Save also data necessary for envelope to send message to NASES
      * @summary
      * @param {string} id
      * @param {UpdateFormRequestDto} updateFormRequestDto
@@ -4551,7 +4845,8 @@ export class NasesApi extends BaseAPI {
   }
 
   /**
-   *
+   * This endpoint is used for updating from and sending it to NASES. First is form updated then send to rabbitmq, then is controlled if everything is okay and files are scanned and after that is send to NASES
+   * @summary
    * @param {string} id
    * @param {UpdateFormRequestDto} updateFormRequestDto
    * @param {*} [options] Override http request option.
@@ -4569,7 +4864,8 @@ export class NasesApi extends BaseAPI {
   }
 
   /**
-   *
+   * This endpoint is used for updating from and sending it to NASES. First is form updated then send to rabbitmq, then is controlled if everything is okay and files are scanned and after that is send to NASES
+   * @summary
    * @param {string} id
    * @param {UpdateFormRequestDto} updateFormRequestDto
    * @param {*} [options] Override http request option.
@@ -4587,7 +4883,8 @@ export class NasesApi extends BaseAPI {
   }
 
   /**
-   *
+   * This endpoint is used for sending form to NASES. First is form send to rabbitmq, then is controlled if everything is okay and files are scanned and after that is send to NASES
+   * @summary
    * @param {string} id
    * @param {*} [options] Override http request option.
    * @throws {RequiredError}
@@ -4600,7 +4897,8 @@ export class NasesApi extends BaseAPI {
   }
 
   /**
-   *
+   * This endpoint is used for sending form to NASES. First is form send to rabbitmq, then is controlled if everything is okay and files are scanned and after that is send to NASES
+   * @summary
    * @param {string} id
    * @param {*} [options] Override http request option.
    * @throws {RequiredError}
@@ -4632,7 +4930,7 @@ export class NasesApi extends BaseAPI {
   }
 
   /**
-   * Create id in our backand, which you need to send in form as external id. Save also data necessary for envelope to send message to NASES
+   * Create id in our backend, which you need to send in form as external id. Save also data necessary for envelope to send message to NASES
    * @summary
    * @param {string} id
    * @param {UpdateFormRequestDto} updateFormRequestDto

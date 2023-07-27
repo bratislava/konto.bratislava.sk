@@ -4,6 +4,7 @@ import DatePickerWidgetRJSF from 'components/forms/widget-wrappers/DatePickerWid
 import InputFieldWidgetRJSF from 'components/forms/widget-wrappers/InputFieldWidgetRJSF'
 import TimePickerWidgetRJSF from 'components/forms/widget-wrappers/TimePickerWidgetRJSF'
 
+import { dateTimeDefinition } from '../../frontend/dtos/formStepperDto'
 import CheckboxWidgetRJSF from './widget-wrappers/CheckboxWidgetRJSF'
 import DateFromToWidgetRJSF from './widget-wrappers/fieldGroupsRJSF/DateFromToWidgetRJSF'
 import DateTimeWidgetRJSF from './widget-wrappers/fieldGroupsRJSF/DateTimeWidgetRJSF'

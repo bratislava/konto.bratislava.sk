@@ -5,23 +5,19 @@ import { useDateFormatter } from 'react-aria'
 
 import { useFormState } from '../../FormStateProvider'
 import SummaryRow from './SummaryRow'
+import { useFormSummary } from './useFormSummary'
 
 export type SummaryFieldType = 'doubledInput' | 'dateFromTo' | 'timeFromTo' | 'dateTime'
 
 export type SummaryFieldRJSFProps = Pick<
   FieldProps<GenericObjectType>,
-  'formData' | 'schema' | 'errorSchema' | 'idSchema'
+  'formData' | 'schema' | 'idSchema'
 > & {
   fieldType: SummaryFieldType
 }
 
-const SummaryFieldRJSF = ({
-  formData,
-  schema,
-  errorSchema,
-  idSchema,
-  fieldType,
-}: SummaryFieldRJSFProps) => {
+const SummaryFieldRJSF = ({ formData, schema, idSchema, fieldType }: SummaryFieldRJSFProps) => {
+  const { fieldHasError } = useFormSummary()
   const { goToStepByFieldId } = useFormState()
   const formatter = useDateFormatter()
 
@@ -62,10 +58,12 @@ const SummaryFieldRJSF = ({
       return formDataValue as string
     }
 
+    const fieldId = idSchema[key]?.$id as string
+
     return {
       label: value.title,
       value: getValue(),
-      isError: Boolean(errorSchema?.[key]?.__errors),
+      isError: fieldHasError(fieldId),
     }
   })
 

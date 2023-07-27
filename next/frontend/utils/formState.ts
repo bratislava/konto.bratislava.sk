@@ -4,7 +4,7 @@ import traverse from 'traverse'
 import { validate as validateUuid, version as uuidVersion } from 'uuid'
 
 import { FormStepIndex, FormStepMetadata } from '../../components/forms/types/Steps'
-import { validator } from '../dtos/formStepperDto'
+import { definitions, validator } from '../dtos/formStepperDto'
 import { isDefined } from './general'
 
 /**
@@ -23,7 +23,9 @@ export const getEvaluatedStepsSchemas = (
       }
       const retrievedSchema = retrieveSchema(validator, step, schema, formData)
 
-      return Object.keys(retrievedSchema).length > 0 ? retrievedSchema : null
+      return Object.keys(retrievedSchema).length > 0
+        ? { ...retrievedSchema, definitions: definitions as any }
+        : null
     }) ?? []
   )
 }

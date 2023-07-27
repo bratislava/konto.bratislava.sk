@@ -1,39 +1,23 @@
 import cx from 'classnames'
-import { useMemo } from 'react'
 
-import {
-  defaultFormStateBehavior,
-  validateSummary,
-  validator,
-} from '../../../../frontend/dtos/formStepperDto'
+import { defaultFormStateBehavior, validator } from '../../../../frontend/dtos/formStepperDto'
 import { useFormState } from '../../FormStateProvider'
-import { useFormFileUpload } from '../../useFormFileUpload'
 import SummaryHeader from '../SummaryHeader'
 import SummaryForm from './SummaryForm'
+import { FormSummaryProvider } from './useFormSummary'
 
 const FormSummary = () => {
-  const { formData, schema, uiSchema } = useFormState()
-  const { getFileInfoById } = useFormFileUpload()
-
-  const { errorSchema, infectedFiles, scanningFiles, scanErrorFiles } = useMemo(
-    () => validateSummary(schema, formData, getFileInfoById),
-    [formData, schema, getFileInfoById],
-  )
+  const { formData, schemaWithDefinitions, uiSchema } = useFormState()
 
   return (
-    <>
-      <SummaryHeader
-        infectedFiles={infectedFiles}
-        scanningFiles={scanningFiles}
-        scanErrorFiles={scanErrorFiles}
-      />
+    <FormSummaryProvider>
+      <SummaryHeader />
       <div className={cx('my-10')}>
         <SummaryForm
-          schema={schema}
+          schema={schemaWithDefinitions}
           uiSchema={uiSchema}
           formData={formData}
           validator={validator}
-          extraErrors={errorSchema}
           experimental_defaultFormStateBehavior={defaultFormStateBehavior}
           readonly
           onSubmit={(e) => {
@@ -41,7 +25,7 @@ const FormSummary = () => {
           }}
         />
       </div>
-    </>
+    </FormSummaryProvider>
   )
 }
 

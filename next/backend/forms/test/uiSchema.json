@@ -1,4 +1,5 @@
 {
+
   "mestoPSCstep": {
     "mestoPSC": {
       "ui:field": "doubledInput",
@@ -29,6 +30,26 @@
         "TimeTooltip": "Time tooltip",
         "DateTooltip": "Time tooltip",
         "DateDescription": "From desc"
+      }
+    },
+    "x": {
+      "y": {
+        "ui:field": "dateTime",
+        "ui:hideError": true,
+        "ui:options": {
+          "TimeTooltip": "Time tooltip",
+          "DateTooltip": "Time tooltip",
+          "DateDescription": "From desc"
+        }
+      },
+      "z": {
+        "ui:field": "dateTime",
+        "ui:hideError": true,
+        "ui:options": {
+          "TimeTooltip": "Time tooltip",
+          "DateTooltip": "Time tooltip",
+          "DateDescription": "From desc"
+        }
       }
     }
   },

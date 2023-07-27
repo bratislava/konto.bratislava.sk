@@ -7,12 +7,34 @@ import {
 } from '@rjsf/utils'
 import { customizeValidator } from '@rjsf/validator-ajv8'
 import Ajv from 'ajv'
+import { JSONSchema7 } from 'json-schema'
 
 import { FormFileUploadFileInfo } from '../types/formFileUploadTypes'
 
 /*
  TODO: Add explanation for the whole file and extract to separate package.
  */
+
+export const dateTimeDefinition: JSONSchema7 = {
+  required: ['dateValue', 'timeValue'],
+  type: 'object',
+  properties: {
+    dateValue: {
+      type: 'string',
+      format: 'date',
+      title: 'Date',
+    },
+    timeValue: {
+      type: 'string',
+      format: 'localTime',
+      title: 'Time',
+    },
+  },
+}
+
+export const definitions: JSONSchema7['definitions'] = {
+  dateTime: dateTimeDefinition,
+}
 
 export const getAjvKeywords = (withFiles = true) => {
   return [
@@ -37,7 +59,7 @@ export const getAjvKeywords = (withFiles = true) => {
     {
       keyword: 'ciselnik',
     },
-    ...(withFiles ? [{ keyword: 'file' }, { keyword: 'fileArray' }] : []),
+    ...(withFiles ? [{ keyword: 'file' }] : []),
   ]
 }
 export const ajvFormats = {
@@ -68,9 +90,6 @@ export const getFileIds = (schema: RJSFSchema, formData: GenericObjectType) => {
           return true
         },
       },
-      {
-        keyword: 'fileArray',
-      },
     ],
     formats: ajvFormats,
   })
@@ -92,6 +111,7 @@ export const validateSummary = (
   formData: GenericObjectType,
   getFileInfoById: (id: string) => FormFileUploadFileInfo,
 ) => {
+  const newSchema = { ...schema, definitions }
   const infectedFiles: FormFileUploadFileInfo[] = []
   const scanningFiles: FormFileUploadFileInfo[] = []
   const scanErrorFiles: FormFileUploadFileInfo[] = []
@@ -127,41 +147,28 @@ export const validateSummary = (
             return true
           },
         },
-        {
-          keyword: 'fileArray',
-          validate: (schemaInner, data) => {
-            if (data && Array.isArray(data)) {
-              const validatedFiles = data.map((fileId) => {
-                if (typeof fileId !== 'string') {
-                  return false
-                }
-
-                return validateFile(getFileInfoById(fileId))
-              })
-              return validatedFiles.every(Boolean)
-            }
-
-            return true
-          },
-        },
       ],
+      schemas: {
+        DateTime: dateTimeDefinition,
+      },
     },
   })
 
   const defaultFormData = getDefaultFormState(
     validator,
-    schema,
+    newSchema,
     formData,
-    undefined,
+    newSchema,
     undefined,
     defaultFormStateBehavior,
   )
-  const { errorSchema } = validator.validateFormData(defaultFormData, schema)
+  const { errorSchema } = validator.validateFormData(defaultFormData, newSchema)
 
   return { infectedFiles, scanningFiles, scanErrorFiles, errorSchema }
 }
 
 export const validator: ValidatorType = customizeValidator({
+  additionalMetaSchemas: [dateTimeDefinition],
   customFormats: ajvFormats,
   ajvOptionsOverrides: {
     keywords: getAjvKeywords(),

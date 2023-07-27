@@ -4,6 +4,7 @@ import pick from 'lodash/pick'
 import { useTranslation } from 'next-i18next'
 import React, { createContext, PropsWithChildren, useContext, useMemo, useState } from 'react'
 
+import { definitions } from '../../frontend/dtos/formStepperDto'
 import { InitialFormData } from '../../frontend/types/initialFormData'
 import {
   getEvaluatedStepsSchemas,
@@ -20,6 +21,7 @@ type SkipModal =
 
 interface FormState {
   schema: RJSFSchema
+  schemaWithDefinitions: RJSFSchema
   uiSchema: UiSchema
   formId: string
   formSlug: string
@@ -76,6 +78,8 @@ export const FormStateProvider = ({
 }: PropsWithChildren<FormStateProviderProps>) => {
   const { t } = useTranslation('forms')
   const { keepFiles } = useFormFileUpload()
+
+  const schemaWithDefinitions = useMemo(() => ({ ...schema, definitions }), [schema])
 
   const [stepIndex, setStepIndex] = useState<FormStepIndex>(0)
   const [formData, setFormData] = useState<GenericObjectType>(initialFormData.formDataJson)
@@ -215,6 +219,7 @@ export const FormStateProvider = ({
 
   const context = {
     schema,
+    schemaWithDefinitions,
     uiSchema,
     formId: initialFormData.formId,
     formSlug,

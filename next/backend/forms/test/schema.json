@@ -83,18 +83,42 @@
           "type": "object",
           "properties": {
             "dateTimePicker": {
-              "required": ["dateValue", "timeValue"],
+              "$ref": "#/definitions/dateTime"
+            },
+            "x": {
               "type": "object",
               "properties": {
-                "dateValue": {
-                  "type": "string",
-                  "format": "date",
-                  "title": "Date"
+                "y": {
+                  "required": ["dateValue", "timeValue"],
+                  "type": "object",
+                  "properties": {
+                    "dateValue": {
+                      "type": "string",
+                      "format": "date",
+                      "title": "Date"
+                    },
+                    "timeValue": {
+                      "type": "string",
+                      "format": "localTime",
+                      "title": "Time"
+                    }
+                  }
                 },
-                "timeValue": {
-                  "type": "string",
-                  "format": "localTime",
-                  "title": "Time"
+                "z": {
+                  "required": ["dateValue", "timeValue"],
+                  "type": "object",
+                  "properties": {
+                    "dateValue": {
+                      "type": "string",
+                      "format": "date",
+                      "title": "Date"
+                    },
+                    "timeValue": {
+                      "type": "string",
+                      "format": "localTime",
+                      "title": "Time"
+                    }
+                  }
                 }
               }
             }
@@ -415,7 +439,6 @@
                 "type": "string",
                 "file":  true
               },
-              "fileArray": true,
               "default": [],
               "minItems": 1
             },
@@ -429,9 +452,8 @@
               "type": "array",
               "items": {
                 "type": "string",
-                "file":  true
-              },
-              "fileArray": true
+                "file": true
+              }
             },
             "showConditionalFile": {
               "type": "array",

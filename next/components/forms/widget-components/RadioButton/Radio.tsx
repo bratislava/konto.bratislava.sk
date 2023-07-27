@@ -66,18 +66,18 @@ const Radio = ({
     },
   )
 
-  const stringValue = rest.value ? rest.value.toString() : ''
-
   return (
     <div className="w-full">
-      <label htmlFor={stringValue} className={containerStyle}>
+      {/* The input is inside of label, therefore it doesn't need an id. */}
+      {/* eslint-disable-next-line jsx-a11y/label-has-associated-control */}
+      <label className={containerStyle}>
         {variant === 'card' ? (
-          <div className="w-full flex flex-col items-start gap-3 p-0 ">
-            <input id={stringValue} {...inputProps} ref={ref} className={inputStyle} />
-            <div className="text-16 text-gray-700 break-words">
+          <div className="flex w-full flex-col items-start gap-3 p-0 ">
+            <input {...inputProps} ref={ref} className={inputStyle} />
+            <div className="text-16 break-words text-gray-700">
               {rest.children}
               {tooltip && (
-                <div className="mt-8 relative flex flex-row">
+                <div className="relative mt-8 flex flex-row">
                   <Tooltip position="top-right" text={tooltip} />
                 </div>
               )}
@@ -85,8 +85,8 @@ const Radio = ({
           </div>
         ) : (
           <div className={cx('flex items-center gap-3', {})}>
-            <input id={stringValue} {...inputProps} ref={ref} className={inputStyle} />
-            <div className={cx('text-16 flex text-gray-700 break-words', {})}>{rest.children}</div>
+            <input {...inputProps} ref={ref} className={inputStyle} />
+            <div className={cx('text-16 flex break-words text-gray-700', {})}>{rest.children}</div>
           </div>
         )}
         {tooltip && variant !== 'card' && <Tooltip text={tooltip} />}

@@ -1,7 +1,6 @@
 import { FormDefinition } from '@backend/forms/types'
 import { getFormDefinition } from '@backend/utils/forms'
 import { formsApi } from '@clients/forms'
-import { GetFileResponseDto } from '@clients/openapi-forms'
 import { GenericObjectType, RJSFSchema, UiSchema } from '@rjsf/utils'
 import { GetServerSideProps } from 'next'
 import { useRouter } from 'next/router'
@@ -24,7 +23,7 @@ import logger from '../../../frontend/utils/logger'
 
 type Params = {
   slug: string
-  id?: string[]
+  uuid: string
 }
 
 type FormTestPageProps = {
@@ -35,13 +34,20 @@ type FormTestPageProps = {
   ssrCurrentAuthProps: GetSSRCurrentAuth
 }
 
-export const getServerSideProps: GetServerSideProps<FormTestPageProps, Params> = async (ctx) => {
-  if (!environment.featureToggles.forms || !ctx.params) return { notFound: true }
+export const getServerSideProps: GetServerSideProps<FormTestPageProps, Params> = async ({
+  // locale is necessary for page wrappers common for entire web
+  locale = 'sk',
+  params,
+  req,
+}) => {
+  if (!environment.featureToggles.forms || !params) {
+    return { notFound: true }
+  }
 
-  const { slug, id: idParams } = ctx.params
+  const { slug, uuid } = params
 
   // TODO: Remove and support non-auth version of the page
-  const ssrCurrentAuthProps = await getSSRCurrentAuth(ctx.req)
+  const ssrCurrentAuthProps = await getSSRCurrentAuth(req)
   if (!ssrCurrentAuthProps.userData) {
     return {
       redirect: {
@@ -59,42 +65,11 @@ export const getServerSideProps: GetServerSideProps<FormTestPageProps, Params> =
     return { notFound: true }
   }
 
-  const hasIdQueryParam = Array.isArray(idParams)
-  const hasOneQueryParam = (property: typeof idParams): property is [string] =>
-    Array.isArray(idParams) && idParams.length === 1
-
-  // It is not possible to have only one optional route parameter ([[id]]), so we have to check if it is an array and
-  // if it has only one element.
-  // TODO: Split into two files.
-  if (hasIdQueryParam && !hasOneQueryParam(idParams)) {
-    return { notFound: true }
-  }
-  const id = hasIdQueryParam ? idParams[0] : null
-
-  const accessToken = await getSSRAccessToken(ctx.req)
+  const accessToken = await getSSRAccessToken(req)
   const getInitialFormData = () => {
-    if (!id) {
-      return Promise.all([
-        formsApi
-          .nasesControllerCreateForm(
-            {
-              pospID: formDefinition.schema.pospID,
-              pospVersion: formDefinition.schema.pospVersion,
-              messageSubject: formDefinition.schema.pospID,
-              isSigned: false,
-              formName: formDefinition.schema.title || formDefinition.schema.pospID,
-              fromDescription: formDefinition.schema.description || formDefinition.schema.pospID,
-            },
-            { accessToken },
-          )
-          .then((res) => res.data),
-        Promise.resolve([] as GetFileResponseDto[]),
-      ] as const)
-    }
-
     return Promise.all([
-      formsApi.nasesControllerGetForm(id, { accessToken }).then((res) => res.data),
-      formsApi.filesControllerGetFilesStatusByForm(id, { accessToken }).then((res) => res.data),
+      formsApi.nasesControllerGetForm(uuid, { accessToken }).then((res) => res.data),
+      formsApi.filesControllerGetFilesStatusByForm(uuid, { accessToken }).then((res) => res.data),
     ] as const)
   }
 
@@ -103,9 +78,6 @@ export const getServerSideProps: GetServerSideProps<FormTestPageProps, Params> =
   if (!form) {
     return { notFound: true }
   }
-
-  // necessary for page wrappers common for entire web
-  const locale = ctx.locale ?? 'sk'
 
   return {
     props: {
@@ -121,7 +93,7 @@ export const getServerSideProps: GetServerSideProps<FormTestPageProps, Params> =
         files,
       },
       ...(await serverSideTranslations(locale)),
-    } satisfies FormTestPageProps,
+    },
   }
 }
 

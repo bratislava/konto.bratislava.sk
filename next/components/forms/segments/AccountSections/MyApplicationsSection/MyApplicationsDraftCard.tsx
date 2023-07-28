@@ -9,12 +9,14 @@ import { useRouter } from 'next/router'
 import { useTranslation } from 'next-i18next'
 import { useState } from 'react'
 
+import FormatDate from '../../../simple-components/FormatDate'
+
 export type MyApplicationsDraftCardProps = {
   title: string
   linkHref: string
   category?: string
   subtext?: string
-  createdAt?: string
+  createdAt: string
   onDeleteCard?: (id: string) => void
 }
 
@@ -65,17 +67,19 @@ const MyApplicationsDraftCard = ({
             {subtext && <div className="text-p3">{subtext}</div>}
           </div>
 
-          <div className="flex items-center gap-8">
+          <div className="flex items-center gap-10">
             <div className="flex w-[200px] flex-col gap-1">
               <div className="text-16-semibold">
                 {t('account_section_applications.navigation_concept_card.createDate')}
               </div>
-              {/* TODO format date */}
-              <div>{createdAt}</div>
+              <div>
+                <FormatDate>{createdAt}</FormatDate>
+              </div>
             </div>
 
-            <div className="flex items-center gap-8">
-              {/* FIXME refactor to href */}
+            {/* Width of this div is computed to match layout of SentCard */}
+            <div className="flex w-[242px] items-center justify-end gap-4">
+              {/* FIXME refactor to href, open in new tab */}
               <Button
                 variant="black-outline"
                 text={t('account_section_applications.navigation_concept_card.button_text')}

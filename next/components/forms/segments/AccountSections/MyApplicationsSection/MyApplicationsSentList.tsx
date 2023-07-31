@@ -1,5 +1,5 @@
 import { formsApi } from '@clients/forms'
-import { GetFormResponseDto } from '@clients/openapi-forms'
+import { FormState, GetFormResponseDto } from '@clients/openapi-forms'
 import { useQuery } from '@tanstack/react-query'
 import MyApplicationCardsPlaceholder from 'components/forms/segments/AccountSections/MyApplicationsSection/MyApplicationCardsPlaceholder'
 import MyApplicationsSentCard, {
@@ -14,12 +14,29 @@ import { getAccessTokenOrLogout } from '../../../../../frontend/utils/amplify'
 // TODO filter out DRAFT forms
 const getSentApplications = async () => {
   const accessToken = await getAccessTokenOrLogout()
+
+  //  TODO get from swagger types
+  const statesToFetch = [
+    'QUEUED',
+    'QUEUED_ERROR',
+    'CHECKING',
+    'CHECKING_ERROR',
+    'SENDING',
+    'SENDING_ERROR',
+    'SENT',
+    'SENT_ERROR',
+    'PROCESSING',
+    'PROCESSING_ERROR',
+    'FINISHED',
+    'REJECTED',
+  ] as FormState[]
+
   const response = await formsApi.nasesControllerGetForms(
     '1',
     '10',
     undefined,
     undefined,
-    undefined,
+    statesToFetch,
     { accessToken },
   )
   return response.data

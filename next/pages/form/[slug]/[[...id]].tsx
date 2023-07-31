@@ -2,7 +2,7 @@ import { FormDefinition } from '@backend/forms/types'
 import { getFormDefinition } from '@backend/utils/forms'
 import { formsApi } from '@clients/forms'
 import { GetFileResponseDto } from '@clients/openapi-forms'
-import { RJSFSchema, UiSchema } from '@rjsf/utils'
+import { GenericObjectType, RJSFSchema, UiSchema } from '@rjsf/utils'
 import { GetServerSideProps } from 'next'
 import { useRouter } from 'next/router'
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
@@ -117,7 +117,7 @@ export const getServerSideProps: GetServerSideProps<FormTestPageProps, Params> =
       },
       initialFormData: {
         formId: form.id,
-        formDataJson: form.formDataJson,
+        formDataJson: form.formDataJson as GenericObjectType,
         files,
       },
       ...(await serverSideTranslations(locale)),

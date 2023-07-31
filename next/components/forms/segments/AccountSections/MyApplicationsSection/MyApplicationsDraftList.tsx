@@ -5,7 +5,6 @@ import MyApplicationCardsPlaceholder from 'components/forms/segments/AccountSect
 import Pagination from 'components/forms/simple-components/Pagination/Pagination'
 import React, { useState } from 'react'
 
-import { ROUTES } from '../../../../../frontend/api/constants'
 import { getAccessTokenOrLogout } from '../../../../../frontend/utils/amplify'
 import MyApplicationsDraftCard, { MyApplicationsDraftCardProps } from './MyApplicationsDraftCard'
 
@@ -16,16 +15,19 @@ const getDraftApplications = async () => {
     '10',
     undefined,
     undefined,
-    'DRAFT',
+    ['DRAFT'],
     { accessToken },
   )
   return response.data
 }
 
 const transformFormToCardProps = (form: GetFormResponseDto): MyApplicationsDraftCardProps => {
+  // TODO get "slug" from form
+  const formSlug = form.pospID?.split('.')[1] ?? '#'
+
   return {
     title: form.formName ?? '',
-    linkHref: `${ROUTES.MY_APPLICATIONS}/${form.id}`,
+    linkHref: `/form/${formSlug}`,
     category: 'Kategória TODO',
     subtext: 'Subtext TODO',
     createdAt: form.createdAt,

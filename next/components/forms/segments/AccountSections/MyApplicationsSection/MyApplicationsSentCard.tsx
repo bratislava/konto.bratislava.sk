@@ -5,12 +5,14 @@ import Link from 'next/link'
 import { useTranslation } from 'next-i18next'
 import { ReactNode } from 'react'
 
+import FormatDate from '../../../simple-components/FormatDate'
+
 export type MyApplicationsSentCardProps = {
   title: string
   linkHref: string
   category?: string
   subtext?: string
-  filedAt?: string
+  filedAt: string
   status: GetFormResponseDtoStateEnum
   statusAt?: string
 }
@@ -69,8 +71,11 @@ const StatusIndicator = ({
       <div>{statusObj[status].icon}</div>
       <div className="flex flex-col gap-1 max-md:hidden">
         <div className="text-16-semibold text-b">{statusObj[status].label}</div>
-        {/* TODO format date */}
-        {statusAt && <div className="text-gray-700">{statusAt}</div>}
+        {statusAt && (
+          <div className="text-gray-700">
+            <FormatDate>{statusAt}</FormatDate>
+          </div>
+        )}
       </div>
     </div>
   )
@@ -102,16 +107,17 @@ const MyApplicationsSentCard = ({
             {subtext && <div className="text-p3">{subtext}</div>}
           </div>
 
-          <div className="flex gap-10">
+          <div className="flex items-center gap-10">
             <div className="flex w-[200px] flex-col gap-1">
               <div className="text-16-semibold">
                 {t('account_section_applications.navigation_sent')}
               </div>
-              {/* TODO format date */}
-              <div>{filedAt}</div>
+              <div>
+                <FormatDate>{filedAt}</FormatDate>
+              </div>
             </div>
 
-            <div className="w-0.5 bg-gray-200" aria-hidden />
+            <div className="h-full w-0.5 bg-gray-200" aria-hidden />
 
             <div className="flex w-[200px] flex-col gap-1">
               <StatusIndicator status={status} statusAt={statusAt} />

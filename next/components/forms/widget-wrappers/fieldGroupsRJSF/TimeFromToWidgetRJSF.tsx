@@ -6,10 +6,10 @@ import { ExplicitOptionalType } from '../../types/ExplicitOptional'
 import { FormSpacingType } from '../../types/WidgetOptions'
 import WidgetWrapper, { isFormSpacingType } from '../WidgetWrapper'
 
-interface TimeFromToWidgetRJSFProps extends FieldProps {
-  // TODO: Fix type
-  formData?: { startTime?: string; endTime?: string }
-}
+type TimeFromToWidgetRJSFProps = FieldProps<{
+  startTime?: string | undefined
+  endTime?: string | undefined
+}>
 
 const TimeFromToWidgetRJSF = ({
   formData,

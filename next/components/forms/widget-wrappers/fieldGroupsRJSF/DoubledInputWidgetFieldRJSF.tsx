@@ -1,4 +1,4 @@
-import { FieldProps, RJSFSchema } from '@rjsf/utils'
+import { FieldProps, GenericObjectType, RJSFSchema } from '@rjsf/utils'
 import React from 'react'
 
 import { DoubledInputField } from '../../groups'
@@ -11,9 +11,7 @@ import {
 } from '../../widget-components/InputField/InputField'
 import WidgetWrapper, { isFormSpacingType } from '../WidgetWrapper'
 
-interface DoubledInputWidgetFieldRJSFProps extends FieldProps {
-  formData: RJSFSchema
-}
+type DoubledInputWidgetFieldRJSFProps = FieldProps<GenericObjectType>
 
 const DoubledInputWidgetFieldRJSF = ({
   formData,

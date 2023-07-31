@@ -6,10 +6,10 @@ import { ExplicitOptionalType } from '../../types/ExplicitOptional'
 import { FormSpacingType } from '../../types/WidgetOptions'
 import WidgetWrapper, { isFormSpacingType } from '../WidgetWrapper'
 
-interface DateTimeWidgetRJSFProps extends FieldProps {
-  formData: RJSFSchema
-}
-
+type DateTimeWidgetRJSFProps = FieldProps<{
+  dateValue?: string | undefined
+  timeValue?: string | undefined
+}>
 const DateTimeWidgetRJSF = ({
   formData = {},
   onChange,

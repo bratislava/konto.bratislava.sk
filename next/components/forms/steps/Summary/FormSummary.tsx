@@ -23,6 +23,7 @@ const FormSummary = () => {
           onSubmit={(e) => {
             console.log('form submit', e.formData)
           }}
+          showErrorList={false}
         />
       </div>
     </FormSummaryProvider>

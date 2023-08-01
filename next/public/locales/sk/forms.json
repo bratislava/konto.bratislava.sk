@@ -65,6 +65,10 @@
     "button_skip_text": "Preskočiť",
     "button_submit_text": "Upraviť"
   },
+  "steps": {
+    "current_sr": "Aktuálny: ",
+    "submitted_sr": "Dokončený: "
+  },
   "form_header": {
     "services_link": "Viac informácií o službe"
   },

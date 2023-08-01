@@ -9,7 +9,7 @@ const StepperViewList = ({ onSkipToStep = () => {} }: StepperViewListProps) => {
   const { stepsMetadata, currentStepMetadata } = useFormState()
 
   return (
-    <div>
+    <ol>
       {stepsMetadata.map((step: FormStepMetadata, key: number) => (
         <StepperViewRow
           key={key}
@@ -19,7 +19,7 @@ const StepperViewList = ({ onSkipToStep = () => {} }: StepperViewListProps) => {
           isButton
         />
       ))}
-    </div>
+    </ol>
   )
 }
 

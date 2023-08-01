@@ -1,5 +1,6 @@
 import { CheckIcon } from '@assets/ui-icons'
 import cx from 'classnames'
+import { useTranslation } from 'next-i18next'
 import React, { useRef } from 'react'
 import { useButton } from 'react-aria'
 
@@ -14,6 +15,8 @@ interface StepperViewRowProps {
 }
 
 const StepperViewRow = ({ step, isCurrent, onClick, className, isButton }: StepperViewRowProps) => {
+  const { t } = useTranslation('forms')
+
   const { title, isSummary, isSubmitted, displayIndex } = step
   const iconClassName = cx(
     'min-w-8 w-8 flex-row h-8 rounded-full flex justify-center items-center border-2 shrink-0',
@@ -27,7 +30,10 @@ const StepperViewRow = ({ step, isCurrent, onClick, className, isButton }: Stepp
   const { buttonProps } = useButton({ onPress: onClick, elementType: 'div' }, buttonRef)
 
   return (
-    <div className={cx('flex select-none flex-col', className)}>
+    <li
+      className={cx('flex select-none flex-col', className)}
+      aria-current={isCurrent ? 'step' : undefined}
+    >
       <div
         className="flex cursor-pointer flex-row items-center gap-3"
         {...(isButton ? buttonProps : {})}
@@ -40,14 +46,18 @@ const StepperViewRow = ({ step, isCurrent, onClick, className, isButton }: Stepp
             <CheckIcon fill="white" className="h-6 w-6" />
           )}
         </div>
-        <p className="text-p3-medium w-72 ">{title}</p>
+        <p className="text-p3-medium w-72 ">
+          {isCurrent ? <span className="sr-only">{t('steps.current_sr')}</span> : null}
+          {isSubmitted && !isCurrent ? <span className="sr-only">{t('submitted_sr')}</span> : null}
+          {title}
+        </p>
       </div>
       {!isSummary && isButton && (
         <div className="flex h-8 w-8 flex-row items-center justify-center">
           <div className="h-4 w-0.5 bg-gray-300 py-2" />
         </div>
       )}
-    </div>
+    </li>
   )
 }
 

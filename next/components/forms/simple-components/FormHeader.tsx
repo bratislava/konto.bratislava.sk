@@ -3,7 +3,6 @@ import {
   DiscIcon,
   DownloadIcon,
   EllipsisVerticalIcon,
-  LockIcon,
   PdfIcon,
 } from '@assets/ui-icons'
 import cx from 'classnames'
@@ -29,11 +28,6 @@ const FormHeader = () => {
   const [isMenuOpen, setIsMenuOpen] = useState<boolean>(false)
 
   const formHeaderMenuContent: MenuItemBase[] = [
-    {
-      title: t('menu_list.eId'),
-      icon: <LockIcon className="h-6 w-6" />,
-      onPress: () => {},
-    },
     {
       title: t('menu_list.download_xml'),
       icon: <DownloadIcon className="h-6 w-6" />,

@@ -39,7 +39,7 @@ const SummaryRow = (props: SummaryRowProps) => {
   return (
     <div className={containerClassName}>
       <p className={labelClassName}>{data.label}</p>
-      <div className="flex w-full flex-row items-center flex-1">
+      <div className="flex w-full flex-1 flex-row items-center">
         <p className={valueClassName}>{data.value || '-'}</p>
         {isEditable && (
           <div className="w-5 lg:hidden hover:lg:block">

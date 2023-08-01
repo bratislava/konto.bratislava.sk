@@ -1,4 +1,4 @@
-import { ConnectionIcon, DiscIcon, DownloadIcon, LockIcon, PdfIcon } from '@assets/ui-icons'
+import { ConnectionIcon, DiscIcon, DownloadIcon, PdfIcon } from '@assets/ui-icons'
 import { useServerSideAuth } from 'frontend/hooks/useServerSideAuth'
 import Link from 'next/link'
 import { useTranslation } from 'next-i18next'
@@ -36,11 +36,6 @@ const MenuList = () => {
       icon: <DiscIcon className="h-6 w-6" />,
       // eslint-disable-next-line @typescript-eslint/no-misused-promises
       onPress: handleOnPressSaveConcept,
-    },
-    {
-      title: t('menu_list.eId'),
-      icon: <LockIcon className="h-6 w-6" />,
-      onPress: () => {},
     },
     {
       title: t('menu_list.download_xml'),

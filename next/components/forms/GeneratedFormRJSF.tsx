@@ -23,7 +23,7 @@ const GeneratedFormRJSF = () => {
   return (
     <>
       <FormHeader />
-      <div className="flex flex-col gap-10 pt-0 pb-6 lg:py-10 w-full max-w-screen-lg mx-auto lg:flex-row lg:gap-20">
+      <div className="mx-auto flex w-full max-w-screen-lg flex-col gap-10 pb-6 pt-0 lg:flex-row lg:gap-20 lg:py-10">
         <div>
           <StepperView />
           <FormModals />
@@ -51,6 +51,7 @@ const GeneratedFormRJSF = () => {
                 omitExtraData
                 liveOmit
                 experimental_defaultFormStateBehavior={defaultFormStateBehavior}
+                noHtml5Validate
               >
                 <FormControls />
               </ThemedForm>

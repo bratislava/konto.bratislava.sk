@@ -6,10 +6,10 @@ import { ExplicitOptionalType } from '../../types/ExplicitOptional'
 import { FormSpacingType } from '../../types/WidgetOptions'
 import WidgetWrapper, { isFormSpacingType } from '../WidgetWrapper'
 
-interface TimeFromToWidgetRJSFProps extends FieldProps {
-  // TODO: Fix type
-  formData?: { startTime?: string; endTime?: string }
-}
+type TimeFromToWidgetRJSFProps = FieldProps<{
+  startTime?: string | undefined
+  endTime?: string | undefined
+}>
 
 const TimeFromToWidgetRJSF = ({
   formData,
@@ -40,7 +40,8 @@ const TimeFromToWidgetRJSF = ({
   }
 
   // TODO: fix this code block. Re check what kind of error message it returns and fix in a new way according new task
-  const getErrorMessage = (propKey: string): string[] => errorSchema?.[propKey]?.__errors || []
+  const getErrorMessage = (propKey: 'startTime' | 'endTime'): string[] =>
+    errorSchema?.[propKey]?.__errors || []
 
   return (
     <WidgetWrapper

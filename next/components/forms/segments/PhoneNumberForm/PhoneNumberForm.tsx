@@ -42,7 +42,7 @@ const PhoneNumberForm = ({ error, onHideError, onSubmit, defaultValues }: Props)
 
   return (
     <form
-      className="flex flex-col space-y-4 w-full"
+      className="flex w-full flex-col space-y-4"
       onSubmit={handleSubmit((data: PhoneNumberData) => onSubmit({ data }))}
     >
       <div className="whitespace-pre-line">

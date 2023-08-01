@@ -24,19 +24,19 @@ const UploadFieldHeader = (props: UploadFieldHeaderProps) => {
       .map((sentence, i) => <span key={i}>{sentence}</span>)
 
   return (
-    <div className="flex flex-col gap-1 mb-2">
+    <div className="mb-2 flex flex-col gap-1">
       <div className="flex">
         <label htmlFor={htmlFor} className={labelStyle}>
           {label}
         </label>
         {!required && (
-          <span className="text-p3 sm:text-16 leading-5 sm:leading-6 ml-2 flex items-center">
+          <span className="text-p3 sm:text-16 ml-2 flex items-center leading-5 sm:leading-6">
             (optional)
           </span>
         )}
       </div>
       {helptext && (
-        <div className="text-p3 sm:text-16 text-gray-700 flex flex-col">{helptextHandler()}</div>
+        <div className="text-p3 sm:text-16 flex flex-col text-gray-700">{helptextHandler()}</div>
       )}
     </div>
   )

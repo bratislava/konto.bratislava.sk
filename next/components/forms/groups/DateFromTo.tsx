@@ -49,7 +49,7 @@ export const DateFromTo = ({
 }: DateFrom & DateTo) => {
   return (
     <div className={cx('flex-col flex items-start')}>
-      <div className="items-left lg:flex-row flex-col flex gap-4">
+      <div className="items-left flex flex-col gap-4 lg:flex-row">
         <div className={cx('w-[320px] flex flex-col items-start justify-end')}>
           <DatePicker
             label={DateFromLabel}
@@ -92,7 +92,7 @@ export const DateFromTo = ({
       </div>
 
       {/* Custom render error messages for both fields */}
-      <div className="flex-row flex gap-4">
+      <div className="flex flex-row gap-4">
         <div className={cx('flex flex-col lg:block hidden lg:w-[320px]')}>
           <FieldErrorMessage errorMessage={DateFromErrorMessage} />
         </div>

@@ -6,10 +6,10 @@ import { ExplicitOptionalType } from '../../types/ExplicitOptional'
 import { FormSpacingType } from '../../types/WidgetOptions'
 import WidgetWrapper, { isFormSpacingType } from '../WidgetWrapper'
 
-interface DateFromToWidgetRJSFProps extends FieldProps {
-  // TODO: Fix type
-  formData?: { startDate: string; endDate: string }
-}
+type DateFromToWidgetRJSFProps = FieldProps<{
+  startDate?: string | undefined
+  endDate?: string | undefined
+}>
 
 const DateFromToWidgetRJSF = ({
   formData,
@@ -40,7 +40,8 @@ const DateFromToWidgetRJSF = ({
   }
 
   // TODO fix this code block. Re check what kind of error message it returns and fix in a new way according new task
-  const getErrorMessage = (propKey: string): string[] => errorSchema?.[propKey]?.__errors || []
+  const getErrorMessage = (propKey: 'startDate' | 'endDate'): string[] =>
+    errorSchema?.[propKey]?.__errors || []
 
   return (
     <WidgetWrapper

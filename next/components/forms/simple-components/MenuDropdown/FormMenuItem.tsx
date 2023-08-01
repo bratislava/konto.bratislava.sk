@@ -20,7 +20,7 @@ const FormMenuItem = ({ title, icon, url, onPress, className }: FormMenuItemBase
           className,
         )}
       >
-        <span className="w-6 h-6">{icon}</span>
+        <span className="h-6 w-6">{icon}</span>
         <span className="min-w-[172px]">{title}</span>
       </DropdownMenu.Item>
     </Link>
@@ -32,7 +32,7 @@ const FormMenuItem = ({ title, icon, url, onPress, className }: FormMenuItemBase
         className,
       )}
     >
-      <span className="w-6 h-6">{icon}</span>
+      <span className="h-6 w-6">{icon}</span>
       <span className="min-w-[172px]">{title}</span>
     </DropdownMenu.Item>
   )

@@ -75,7 +75,7 @@ export const FormStateProvider = ({
   children,
 }: PropsWithChildren<FormStateProviderProps>) => {
   const { t } = useTranslation('forms')
-  const { keepFiles } = useFormFileUpload()
+  const { keepFiles, refetchAfterImportIfNeeded } = useFormFileUpload()
 
   const [stepIndex, setStepIndex] = useState<FormStepIndex>(0)
   const [formData, setFormData] = useState<GenericObjectType>(initialFormData.formDataJson)
@@ -175,9 +175,29 @@ export const FormStateProvider = ({
       .map((innerSchema) => innerSchema.properties && Object.keys(innerSchema.properties)[0])
       .filter(isDefined)
     const pickedPropertiesData = pick(newData, propertiesToKeep)
-    const fileUuids = getFileUuidsNaive(pickedPropertiesData)
 
+    const fileUuids = getFileUuidsNaive(pickedPropertiesData)
     keepFiles(fileUuids)
+
+    setFormData(pickedPropertiesData)
+  }
+
+  const setImportedFormData = (importedFormData: GenericObjectType) => {
+    const evaluatedSchemas = getEvaluatedStepsSchemas(schema, importedFormData)
+
+    const propertiesToKeep = evaluatedSchemas
+      .filter(isDefined)
+      .map((innerSchema) => innerSchema.properties && Object.keys(innerSchema.properties)[0])
+      .filter(isDefined)
+    const pickedPropertiesData = pick(importedFormData, propertiesToKeep)
+
+    if (stepIndex !== 'summary' && evaluatedSchemas[stepIndex] == null) {
+      setStepIndex(0)
+    }
+
+    const fileUuids = getFileUuidsNaive(pickedPropertiesData)
+    refetchAfterImportIfNeeded(fileUuids)
+
     setFormData(pickedPropertiesData)
   }
 
@@ -232,8 +252,7 @@ export const FormStateProvider = ({
     handleFormOnChange,
     handleFormOnSubmit,
     goToStepByFieldId,
-    // TODO: Rework import
-    setImportedFormData: setFormData,
+    setImportedFormData,
   }
 
   return <FormStateContext.Provider value={context}>{children}</FormStateContext.Provider>

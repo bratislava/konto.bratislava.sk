@@ -38,9 +38,9 @@ const StepperView = ({ forceMobileSize }: StepperViewProps) => {
 
   return (
     <>
-      <div className={cx('hidden', { 'lg:block': !forceMobileSize })}>
+      <nav className={cx('hidden', { 'lg:block': !forceMobileSize })}>
         <StepperViewList onSkipToStep={handleOnSkipToStep} />
-      </div>
+      </nav>
       <div
         className={cx('flex flex-col', { 'lg:hidden': !forceMobileSize })}
         {...buttonProps}
@@ -66,9 +66,9 @@ const StepperView = ({ forceMobileSize }: StepperViewProps) => {
               <CrossIcon className="h-6 w-6" />
             </AriaButton>
           </div>
-          <div className="grow overflow-y-scroll overscroll-none bg-white px-4 pb-20 pt-4">
+          <nav className="grow overflow-y-scroll overscroll-none bg-white px-4 pb-20 pt-4">
             <StepperViewList onSkipToStep={handleOnSkipToStep} />
-          </div>
+          </nav>
         </div>
       </div>
     </>

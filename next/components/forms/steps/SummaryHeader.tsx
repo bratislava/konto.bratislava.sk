@@ -1,15 +1,10 @@
 import { useTranslation } from 'next-i18next'
 
-import { FormFileUploadFileInfo } from '../../../frontend/types/formFileUploadTypes'
 import Alert from '../info-components/Alert'
+import { useFormSummary } from './Summary/useFormSummary'
 
-type SummaryHeaderProps = {
-  infectedFiles: FormFileUploadFileInfo[]
-  scanningFiles: FormFileUploadFileInfo[]
-  scanErrorFiles: FormFileUploadFileInfo[]
-}
-
-const SummaryHeader = ({ infectedFiles, scanErrorFiles }: SummaryHeaderProps) => {
+const SummaryHeader = () => {
+  const { infectedFiles, scanErrorFiles } = useFormSummary()
   const { t } = useTranslation('forms')
 
   // TODO: Improve messages

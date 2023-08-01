@@ -45,11 +45,11 @@ const UserProfileSectionHeader = ({
           'items-center': !childrenToColumn,
         })}
       >
-        <div className="flex flex-col grow gap-1 md:gap-2">
+        <div className="flex grow flex-col gap-1 md:gap-2">
           <div className="flex items-center gap-3 md:gap-2">
             <h5 className={cx('text-h5-bold', 'md:text-h4-bold')}>{title}</h5>
             {mainHeader && tierStatus.isIdentityVerified && (
-              <span className="text-p3-medium px-2 bg-success-100 text-success-700 rounded-[4px]">
+              <span className="text-p3-medium rounded-[4px] bg-success-100 px-2 text-success-700">
                 {t('verification_status_success')}
               </span>
             )}

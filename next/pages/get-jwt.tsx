@@ -32,7 +32,7 @@ const GetJwt = ({ page, accessToken }: AsyncServerProps<typeof getServerSideProp
   return (
     <PageWrapper locale={page.locale}>
       <div className="min-h-screen bg-[#E5E5E5]">
-        <div className="mx-auto max-w-screen-lg md:px-12 md:pt-12 pb-64">
+        <div className="mx-auto max-w-screen-lg pb-64 md:px-12 md:pt-12">
           <Wrapper
             direction="column"
             title="Kód nižšie slúži na technické účeli a umožňuje prístup k Vášmu kontu. NIKDY HO S NIKÝM NEZDIEĽAJTE. This site is for development purposes, the code below allows anyone to access your account. NEVER SHARE IT WITH ANYONE."

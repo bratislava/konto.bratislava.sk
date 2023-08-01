@@ -32,7 +32,7 @@ const PhoneNumberModal = ({
       onClose={onClose}
       onSubmit={onSubmit}
       content={({ onSubmit }) => PhoneNumberForm({ error, onHideError, onSubmit, defaultValues })}
-      className="w-[592px] sm:h-max h-full"
+      className="h-full w-[592px] sm:h-max"
     />
   )
 }

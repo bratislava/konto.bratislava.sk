@@ -26,9 +26,9 @@ const TaxDetails = ({ tax }: TaxDetailsProps) => {
   })
 
   return (
-    <div className="flex flex-col items-start lg:gap-6 gap-3 w-full lg:px-0 px-4">
+    <div className="flex w-full flex-col items-start gap-3 px-4 lg:gap-6 lg:px-0">
       <div className="text-h3">{t('tax_liability_breakdown')}</div>
-      <div className="gap-4 flex flex-col w-full">
+      <div className="flex w-full flex-col gap-4">
         {Object.keys(groupedTaxDetails).map((key) => (
           <AccordionTableTaxContent
             key={key}
@@ -40,31 +40,31 @@ const TaxDetails = ({ tax }: TaxDetailsProps) => {
           />
         ))}
       </div>
-      <div className="rounded-lg flex flex-col items-start lg:px-8 lg:py-6 p-4 bg-gray-50 w-full lg:gap-6 gap-4">
-        <div className="flex flex-col items-start lg:gap-5 gap-3 w-full">
+      <div className="flex w-full flex-col items-start gap-4 rounded-lg bg-gray-50 p-4 lg:gap-6 lg:px-8 lg:py-6">
+        <div className="flex w-full flex-col items-start gap-3 lg:gap-5">
           {Object.keys(groupedTaxDetails).map((key) => (
-            <div className="flex flex-row items-start gap-6 w-full" key={key}>
+            <div className="flex w-full flex-row items-start gap-6" key={key}>
               <div className="text-p1 grow">{t(`tax_detail_section.tax_type.${key}.title`)}</div>
               <div className="text-p1">{formatCurrency(sums[key])}</div>
             </div>
           ))}
         </div>
-        <div className="bg-gray-200 h-0.5 w-full" />
-        <div className="flex flex-col items-start gap-3 w-full">
-          <div className="flex xs:flex-row flex-col gap-1 w-full">
-            <div className="text-p2 grow xs:w-min w-full">{t('tax_detail_section.tax_total')}</div>
+        <div className="h-0.5 w-full bg-gray-200" />
+        <div className="flex w-full flex-col items-start gap-3">
+          <div className="flex w-full flex-col gap-1 xs:flex-row">
+            <div className="text-p2 w-full grow xs:w-min">{t('tax_detail_section.tax_total')}</div>
             <div className="text-p2 w-max">{formatCurrency(tax.amount)}</div>
           </div>
-          <div className="flex xs:flex-row flex-col gap-1 w-full">
-            <div className="text-p2 grow xs:w-min w-full">
+          <div className="flex w-full flex-col gap-1 xs:flex-row">
+            <div className="text-p2 w-full grow xs:w-min">
               {t('tax_detail_section.tax_already_paid')}
             </div>
             <div className="text-p2 w-max">{formatCurrency(tax.payedAmount)}</div>
           </div>
         </div>
-        <div className="bg-gray-800 h-0.5 w-full" />
-        <div className="flex xs:flex-row flex-col lg:gap-6 gap-2 w-full">
-          <div className="text-h4 grow xs:w-min w-full">{t('tax_detail_section.tax_to_pay')}</div>
+        <div className="h-0.5 w-full bg-gray-800" />
+        <div className="flex w-full flex-col gap-2 xs:flex-row lg:gap-6">
+          <div className="text-h4 w-full grow xs:w-min">{t('tax_detail_section.tax_to_pay')}</div>
           <div className="text-h4 w-max">{formatCurrency(tax.amount - tax.payedAmount)}</div>
         </div>
       </div>

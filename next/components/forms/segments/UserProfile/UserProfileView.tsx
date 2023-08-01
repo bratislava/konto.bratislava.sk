@@ -61,8 +61,8 @@ const UserProfileView = () => {
   }
 
   return (
-    <section className="bg-gray-100 h-full">
-      <div className="flex flex-col gap-2 md:gap-0 h-full">
+    <section className="h-full bg-gray-100">
+      <div className="flex h-full flex-col gap-2 md:gap-0">
         <UserProfileDetail
           userData={userData}
           isEditing={isEditing}
@@ -79,13 +79,13 @@ const UserProfileView = () => {
           <AccountMarkdown
             content={`<span className='text-p2'>${t('gdpr_details_link')}</span>`}
             variant="sm"
-            className="w-full max-w-screen-lg mx-auto px-4 md:px-8 lg:px-0 pt-3 pb-5 md:pb-6 md:pt-4"
+            className="mx-auto w-full max-w-screen-lg px-4 pb-5 pt-3 md:px-8 md:pb-6 md:pt-4 lg:px-0"
           />
         </div>
         <MessageModal
           show={isEmailModalOpened}
           excludeButtons
-          className="w-[700px] m-5"
+          className="m-5 w-[700px]"
           type="warning"
           cancelHandler={() => {
             setIsEmailModalOpened(false)

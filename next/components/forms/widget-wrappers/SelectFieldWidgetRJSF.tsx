@@ -13,7 +13,6 @@ export type SelectRJSFOptions = {
   selectAllOption?: boolean
   explicitOptional?: ExplicitOptionalType
   hideScrollbar?: boolean
-  alwaysOneSelected?: boolean
   maxWordSize?: number
   // selectType?: 'one' | 'multiple' | 'arrow' | 'radio'
 } & WidgetOptions
@@ -51,7 +50,6 @@ const SelectFieldWidgetRJSF = (props: SelectFieldWidgetRJSFProps) => {
     spaceBottom = 'none',
     spaceTop = 'large',
     hideScrollbar = false,
-    alwaysOneSelected = true,
     maxWordSize,
   } = options
 
@@ -142,7 +140,7 @@ const SelectFieldWidgetRJSF = (props: SelectFieldWidgetRJSFProps) => {
         onChange={handleOnChange}
         explicitOptional={explicitOptional}
         hideScrollbar={hideScrollbar}
-        alwaysOneSelected={alwaysOneSelected}
+        alwaysOneSelected={false}
         maxWordSize={maxWordSize}
       />
     </WidgetWrapper>

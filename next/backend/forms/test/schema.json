@@ -415,7 +415,6 @@
                 "type": "string",
                 "file":  true
               },
-              "fileArray": true,
               "default": [],
               "minItems": 1
             },
@@ -429,9 +428,8 @@
               "type": "array",
               "items": {
                 "type": "string",
-                "file":  true
-              },
-              "fileArray": true
+                "file": true
+              }
             },
             "showConditionalFile": {
               "type": "array",

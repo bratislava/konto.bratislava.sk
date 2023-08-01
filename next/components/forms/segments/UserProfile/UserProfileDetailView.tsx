@@ -33,7 +33,7 @@ const UserProfileDetailView = ({ userData }: UserProfileDetailViewProps) => {
     account_type === 'po' ? t('profile_detail.business_name') : t('profile_detail.full_name')
 
   return (
-    <div className="flex flex-col grow gap-6">
+    <div className="flex grow flex-col gap-6">
       {/* <UserProfileDetailViewRow label={t('profile_detail.titles_before_name')} /> */}
       <UserProfileDetailViewRow label={nameLabel} value={fullName} />
       {/* <UserProfileDetailViewRow label={t('profile_detail.titles_after_name')} /> */}

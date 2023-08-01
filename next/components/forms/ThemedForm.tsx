@@ -29,16 +29,9 @@ const theme: ThemeProps = {
     TimePicker: TimePickerWidgetRJSF,
   },
   fields: {
-    // TODO: Fix types
-    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-    // @ts-ignore
     doubledInput: DoubledInputWidgetFieldRJSF,
     dateFromTo: DateFromToWidgetRJSF,
-    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-    // @ts-ignore
     timeFromTo: TimeFromToWidgetRJSF,
-    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-    // @ts-ignore
     dateTime: DateTimeWidgetRJSF,
   },
   templates: {

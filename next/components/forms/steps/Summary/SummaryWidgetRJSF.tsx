@@ -9,6 +9,7 @@ import { RadioButtonRJSFOptions } from '../../widget-wrappers/RadioButtonWidgetR
 import { SelectRJSFOptions } from '../../widget-wrappers/SelectFieldWidgetRJSF'
 import SummaryFiles from './SummaryFiles'
 import SummaryRow from './SummaryRow'
+import { useFormSummary } from './useFormSummary'
 
 export type SummaryWidgetType =
   | 'select'
@@ -38,10 +39,7 @@ type TypeAndOptions =
       options: WidgetProps['options']
     }
 
-export type SummaryWidgetRJSFProps = Pick<
-  WidgetProps,
-  'id' | 'label' | 'value' | 'rawErrors' | 'uiSchema'
-> &
+export type SummaryWidgetRJSFProps = Pick<WidgetProps, 'id' | 'label' | 'value' | 'uiSchema'> &
   TypeAndOptions
 
 const ValueComponent = ({
@@ -115,10 +113,10 @@ const SummaryWidgetRJSF = ({
   widgetType,
   label,
   value,
-  rawErrors,
   options,
   uiSchema,
 }: SummaryWidgetRJSFProps) => {
+  const { fieldHasError } = useFormSummary()
   const { goToStepByFieldId } = useFormState()
 
   return (
@@ -134,7 +132,7 @@ const SummaryWidgetRJSF = ({
               uiSchema={uiSchema}
             />
           ),
-          isError: Boolean(rawErrors && rawErrors.length > 0),
+          isError: fieldHasError(id),
         }}
         onGoToStep={() => {
           goToStepByFieldId(id)

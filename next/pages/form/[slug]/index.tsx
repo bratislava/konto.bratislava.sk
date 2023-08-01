@@ -26,7 +26,7 @@ type Params = {
   slug: string
 }
 
-type PageProps = {
+export type FormPageProps = {
   schema: RJSFSchema
   uiSchema: UiSchema
   page: { locale: string }
@@ -34,7 +34,7 @@ type PageProps = {
   ssrCurrentAuthProps: GetSSRCurrentAuth
 }
 
-export const getServerSideProps: GetServerSideProps<PageProps, Params> = async ({
+export const getServerSideProps: GetServerSideProps<FormPageProps, Params> = async ({
   // locale is necessary for page wrappers common for entire web
   locale = 'sk',
   params,
@@ -109,7 +109,7 @@ export const getServerSideProps: GetServerSideProps<PageProps, Params> = async (
   }
 }
 
-const FormPage = ({ schema, uiSchema, page, initialFormData }: PageProps) => {
+const FormPage = ({ schema, uiSchema, page, initialFormData }: FormPageProps) => {
   const router = useRouter()
 
   const formSlug = router.query.slug as string

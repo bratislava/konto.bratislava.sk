@@ -1,6 +1,6 @@
 import { formsApi } from '@clients/forms'
 import { GetFileResponseDto } from '@clients/openapi-forms'
-import { useQuery, useQueryClient } from '@tanstack/react-query'
+import { useQuery } from '@tanstack/react-query'
 import React, {
   createContext,
   PropsWithChildren,

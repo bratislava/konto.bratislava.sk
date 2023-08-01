@@ -74,11 +74,11 @@ export const StatusBar = ({ className }: StatusBarProps) => {
         'bg-warning-700': statusBarConfiguration.variant === 'warning',
       })}
     >
-      <div className="container mx-auto h-full flex items-center justify-center">
+      <div className="container mx-auto flex h-full items-center justify-center">
         <SectionContainer>
           <div className="row flex items-center py-4">
-            <span className="hidden md:flex mr-3">
-              <ErrorIcon solid className="w-5 h-5" />
+            <span className="mr-3 hidden md:flex">
+              <ErrorIcon solid className="h-5 w-5" />
             </span>
             <div className="text-p2">{statusBarConfiguration.content}</div>
           </div>

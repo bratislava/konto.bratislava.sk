@@ -96,7 +96,7 @@ const LoginPage = ({ page }: AsyncServerProps<typeof getServerSideProps>) => {
     <PageWrapper locale={page.locale} localizations={page.localizations}>
       <LoginRegisterLayout backButtonHidden>
         {!isAuthenticated && <AccountActivator />}
-        <AccountContainer className="md:pt-6 pt-0 mb-0 md:mb-8">
+        <AccountContainer className="mb-0 pt-0 md:mb-8 md:pt-6">
           {emailToVerify ? (
             <EmailVerificationForm
               onResend={() => Auth.resendSignUp(emailToVerify)}

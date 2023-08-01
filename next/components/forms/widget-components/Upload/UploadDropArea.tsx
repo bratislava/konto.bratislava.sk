@@ -87,7 +87,7 @@ const UploadDropArea = forwardRef<HTMLButtonElement, UploadDropAreaProps>(
     }
 
     return (
-      <div className="w-full relative h-40">
+      <div className="relative h-40 w-full">
         <DropZone className={getDropZoneClassName} onDrop={handleOnDrop}>
           <FileTrigger
             onChange={handleOnChange}
@@ -98,11 +98,11 @@ const UploadDropArea = forwardRef<HTMLButtonElement, UploadDropAreaProps>(
           >
             <ReactAriaButton
               ref={ref}
-              className="w-full h-full flex flex-col items-center justify-evenly p-6 text-center"
+              className="flex h-full w-full flex-col items-center justify-evenly p-6 text-center"
               isDisabled={disabled}
             >
               <div className="flex justify-center">
-                <div className="flex h-12 w-12 justify-center items-center rounded-full bg-gray-100">
+                <div className="flex h-12 w-12 items-center justify-center rounded-full bg-gray-100">
                   <UploadIcon />
                 </div>
               </div>

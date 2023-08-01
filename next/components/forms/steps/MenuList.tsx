@@ -1,4 +1,4 @@
-import { ConnectionIcon, DiscIcon, DownloadIcon, LockIcon, PdfIcon } from '@assets/ui-icons'
+import { ConnectionIcon, DiscIcon, DownloadIcon, PdfIcon } from '@assets/ui-icons'
 import { useServerSideAuth } from 'frontend/hooks/useServerSideAuth'
 import Link from 'next/link'
 import { useTranslation } from 'next-i18next'

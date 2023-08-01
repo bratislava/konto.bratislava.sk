@@ -64,7 +64,7 @@ const LogoutPage = ({ page }: AsyncServerProps<typeof getServerSideProps>) => {
   return (
     <PageWrapper locale={page.locale} localizations={page.localizations}>
       <LoginRegisterLayout backButtonHidden>
-        <AccountContainer className="md:pt-6 pt-0 mb-0 md:mb-8">
+        <AccountContainer className="mb-0 pt-0 md:mb-8 md:pt-6">
           <AccountSuccessAlert
             title={t('logout_page.title')}
             description={t('logout_page.description')}

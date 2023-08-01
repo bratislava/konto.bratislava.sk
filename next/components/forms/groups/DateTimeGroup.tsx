@@ -51,7 +51,7 @@ export const DateTimePicker = ({
 }: TDatePicker & TTimePicker) => {
   return (
     <div className={cx('flex-col flex items-start')}>
-      <div className="flex lg:flex-row flex-col gap-4 items-end">
+      <div className="flex flex-col items-end gap-4 lg:flex-row">
         <div className={cx('flex flex-col w-[320px]')}>
           <DatePicker
             label={DateLabel}
@@ -91,7 +91,7 @@ export const DateTimePicker = ({
       </div>
 
       {/* Custom render error messages for both fields */}
-      <div className="flex-row flex gap-4">
+      <div className="flex flex-row gap-4">
         <div className={cx('flex flex-col lg:block hidden lg:w-[320px]')}>
           <FieldErrorMessage errorMessage={DateErrorMessage} />
         </div>

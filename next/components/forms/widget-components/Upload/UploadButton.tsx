@@ -84,7 +84,7 @@ const UploadButton = forwardRef<HTMLButtonElement, UploadButtonProps>(
           ref={fileTriggerRef}
         >
           <ReactAriaButton className={buttonClassNames} ref={ref} isDisabled={disabled}>
-            <div className="flex gap-2 justify-center items-center">
+            <div className="flex items-center justify-center gap-2">
               <span>
                 <UploadIcon />
               </span>

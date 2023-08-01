@@ -1,4 +1,4 @@
-import { FieldProps, GenericObjectType, RJSFSchema } from '@rjsf/utils'
+import { FieldProps, GenericObjectType } from '@rjsf/utils'
 import React from 'react'
 
 import { DoubledInputField } from '../../groups'

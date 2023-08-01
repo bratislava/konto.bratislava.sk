@@ -40,7 +40,8 @@ const DateFromToWidgetRJSF = ({
   }
 
   // TODO fix this code block. Re check what kind of error message it returns and fix in a new way according new task
-  const getErrorMessage = (propKey: string): string[] => errorSchema?.[propKey]?.__errors || []
+  const getErrorMessage = (propKey: 'startDate' | 'endDate'): string[] =>
+    errorSchema?.[propKey]?.__errors || []
 
   return (
     <WidgetWrapper

@@ -21,11 +21,11 @@ const MunicipalServicesSectionHeader = ({
   const { width } = useWindowSize()
   return (
     <div className="bg-gray-50">
-      <span className="flex flex-col justify-end w-full h-full max-w-screen-lg m-auto pl-4 lg:px-0 pt-6 lg:pt-16 pb-4 lg:pb-8">
+      <span className="m-auto flex h-full w-full max-w-screen-lg flex-col justify-end pb-4 pl-4 pt-6 lg:px-0 lg:pb-8 lg:pt-16">
         <h1 className="text-h1 mb-4 md:mb-6">{title}</h1>
         <SelectField
           label=""
-          className="max-w-none xs:max-w-[400px] pr-4"
+          className="max-w-none pr-4 xs:max-w-[400px]"
           type="one"
           value={selectorValue}
           onChange={(val) => {

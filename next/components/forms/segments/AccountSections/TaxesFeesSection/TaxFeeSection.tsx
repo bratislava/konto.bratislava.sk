@@ -17,7 +17,7 @@ type TaxAndFeeMainContentBase = {
 
 const TaxAndFeeMainContent = ({ children }: TaxAndFeeMainContentBase) => {
   return (
-    <div className="flex flex-col items-center w-full max-w-screen-lg m-auto gap-12 py-12">
+    <div className="m-auto flex w-full max-w-screen-lg flex-col items-center gap-12 py-12">
       {children}
     </div>
   )
@@ -40,7 +40,7 @@ const TaxFeeSection = () => {
     }
   }, [error, router])
 
-  let content = <Spinner className="mt-10 m-auto" />
+  let content = <Spinner className="m-auto mt-10" />
   if (!isLoading && !data) {
     content = (
       <div>

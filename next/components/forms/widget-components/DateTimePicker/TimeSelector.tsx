@@ -98,7 +98,7 @@ const TimeSelector = ({
     <div className="w-full max-w-xs rounded-lg border-2 border-gray-700 bg-white">
       <div className="flex w-full flex-col justify-between py-10">
         <div className="flex h-fit max-h-52 justify-between overflow-hidden px-4">
-          <div className="overflow-x-hidden flex flex-col items-center justify-start">
+          <div className="flex flex-col items-center justify-start overflow-x-hidden">
             <div ref={hourRef} className="flex flex-col overflow-y-auto scrollbar-hide">
               <span className="pt-[84px] focus:outline-none" />
               {hoursArray?.map((item) => (
@@ -137,7 +137,7 @@ const TimeSelector = ({
           <div className="flex items-center">
             <span className="text-20 flex h-6 w-6 items-center justify-center">:</span>
           </div>
-          <div className="overflow-x-hidden flex flex-col items-center justify-start">
+          <div className="flex flex-col items-center justify-start overflow-x-hidden">
             <div ref={minuteRef} className="flex flex-col overflow-y-auto scrollbar-hide">
               <span className="pt-[84px] focus:outline-none" />
               {minutesArray?.map((item) => (
@@ -171,7 +171,7 @@ const TimeSelector = ({
           </div>
         </div>
       </div>
-      <div className="flex items-center justify-between border-t-2 border-gray-700 py-3 px-4">
+      <div className="flex items-center justify-between border-t-2 border-gray-700 px-4 py-3">
         <Button onPress={onReset} text="Resetovať" variant="plain-black" size="sm" />
         <Button onPress={onSubmit} text="Potvrdiť" variant="black" size="sm" />
       </div>

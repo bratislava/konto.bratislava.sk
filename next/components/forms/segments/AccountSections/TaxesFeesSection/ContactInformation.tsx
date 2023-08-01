@@ -68,10 +68,10 @@ const ContactInformationSection = ({ tax }: ContactInformationSectionProps) => {
         error={correspondenceAddressError}
         onHideError={resetError}
       />
-      <div className="lg:px-0 flex flex-col items-start sm:gap-8 gap-6 w-full px-4">
-        <div className="flex flex-col w-full items-start gap-2">
+      <div className="flex w-full flex-col items-start gap-6 px-4 sm:gap-8 lg:px-0">
+        <div className="flex w-full flex-col items-start gap-2">
           <div className="text-h3">{t('personal_info')}</div>
-          <div className="flex flex-col w-full">
+          <div className="flex w-full flex-col">
             <SummaryRow
               size="small"
               isEditable={false}
@@ -135,9 +135,9 @@ const ContactInformationSection = ({ tax }: ContactInformationSectionProps) => {
             />
           </div>
         </div>
-        <div className="flex flex-col w-full items-start gap-2">
+        <div className="flex w-full flex-col items-start gap-2">
           <div className="text-h3">{t('equips')}</div>
-          <div className="flex flex-col w-full">
+          <div className="flex w-full flex-col">
             <SummaryRow
               size="small"
               isEditable={false}

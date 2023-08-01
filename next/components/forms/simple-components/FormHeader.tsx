@@ -3,7 +3,6 @@ import {
   DiscIcon,
   DownloadIcon,
   EllipsisVerticalIcon,
-  LockIcon,
   PdfIcon,
 } from '@assets/ui-icons'
 import cx from 'classnames'

@@ -37,7 +37,7 @@ export const getAjvKeywords = (withFiles = true) => {
     {
       keyword: 'ciselnik',
     },
-    ...(withFiles ? [{ keyword: 'file' }, { keyword: 'fileArray' }] : []),
+    ...(withFiles ? [{ keyword: 'file' }] : []),
   ]
 }
 export const ajvFormats = {
@@ -67,9 +67,6 @@ export const getFileIds = (schema: RJSFSchema, formData: GenericObjectType) => {
           }
           return true
         },
-      },
-      {
-        keyword: 'fileArray',
       },
     ],
     formats: ajvFormats,
@@ -122,23 +119,6 @@ export const validateSummary = (
               }
 
               return validateFile(fileInfo)
-            }
-
-            return true
-          },
-        },
-        {
-          keyword: 'fileArray',
-          validate: (schemaInner, data) => {
-            if (data && Array.isArray(data)) {
-              const validatedFiles = data.map((fileId) => {
-                if (typeof fileId !== 'string') {
-                  return false
-                }
-
-                return validateFile(getFileInfoById(fileId))
-              })
-              return validatedFiles.every(Boolean)
             }
 
             return true

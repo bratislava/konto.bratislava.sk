@@ -39,10 +39,7 @@ type TypeAndOptions =
       options: WidgetProps['options']
     }
 
-export type SummaryWidgetRJSFProps = Pick<
-  WidgetProps,
-  'id' | 'label' | 'value' | 'rawErrors' | 'uiSchema'
-> &
+export type SummaryWidgetRJSFProps = Pick<WidgetProps, 'id' | 'label' | 'value' | 'uiSchema'> &
   TypeAndOptions
 
 const ValueComponent = ({
@@ -116,7 +113,6 @@ const SummaryWidgetRJSF = ({
   widgetType,
   label,
   value,
-  rawErrors,
   options,
   uiSchema,
 }: SummaryWidgetRJSFProps) => {

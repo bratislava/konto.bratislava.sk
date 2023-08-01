@@ -74,7 +74,6 @@
   },
   "menu_list": {
     "save_concept": "Uložiť ako koncept",
-    "eId": "Vyplniť cez eID",
     "download_xml": "Stiahnuť ako XML",
     "pdf": "Stiahnuť ako PDF",
     "upload_xml": "Nahrať z XML",

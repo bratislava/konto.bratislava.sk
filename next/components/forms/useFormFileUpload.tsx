@@ -68,7 +68,6 @@ export const FormFileUploadStateProvider = ({
   children,
 }: PropsWithChildren<FormFileUploadStateProviderProps>) => {
   const isMounted = useIsMounted()
-  const queryClient = useQueryClient()
 
   // The client files are both stored in the state and in the ref. The state is used to trigger re-rendering of the
   // component, while the ref is used to get the current value of the client files. The ref is used in the functions
@@ -88,10 +87,8 @@ export const FormFileUploadStateProvider = ({
       shouldPollServerFiles(data, clientFiles) ? REFETCH_INTERVAL : false
   }, [clientFiles])
 
-  const serverFilesQueryKey = ['serverFiles', initialFormData.formId]
-
   const serverFilesQuery = useQuery(
-    serverFilesQueryKey,
+    ['serverFiles', initialFormData.formId],
     async () => {
       const accessToken = await getAccessTokenOrLogout()
       const response = await formsApi.filesControllerGetFilesStatusByForm(initialFormData.formId, {
@@ -167,7 +164,7 @@ export const FormFileUploadStateProvider = ({
 
           // This forces server files to be refetched and get scanning status for the uploaded file.
           // eslint-disable-next-line @typescript-eslint/no-floating-promises
-          queryClient.refetchQueries({ queryKey: serverFilesQueryKey })
+          serverFilesQuery.refetch()
         },
         onError: (error) => {
           updateFileStatus({
@@ -309,7 +306,10 @@ export const FormFileUploadStateProvider = ({
           abortControllersRef.current[file.id]?.abort()
         }
       })
+      // Don't persist the data between page navigations.
+      serverFilesQuery.remove()
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
   const context = {

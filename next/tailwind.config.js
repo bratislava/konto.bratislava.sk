@@ -66,13 +66,24 @@ module.exports = {
       'h-2xl': ['40px', '48px'],
       'h-3xl': ['56px', '64px'],
     },
+
+    data: {
+      hovered: 'hovered',
+      pressed: 'pressed',
+      focused: 'focused',
+      'focus-visible': 'focus-visible',
+    },
+
     extend: {
       rotate: {
         270: '270deg',
       },
       colors: {
         error: 'var(--error-color)',
-        font: 'var(--font-color)',
+        font: {
+          DEFAULT: 'rgb(var(--font-color))',
+          contrast: 'rgb(var(--font-contrast-color))',
+        },
         main: {
           100: 'rgb(var(--color-main-100))',
           200: 'rgb(var(--color-main-200))',

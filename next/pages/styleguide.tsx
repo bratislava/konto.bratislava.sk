@@ -14,6 +14,7 @@ import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
 import AccordionShowCase from '../components/styleguide/showcases/AccordionShowCase'
 import AlertShowCase from '../components/styleguide/showcases/AlertShowCase'
 import BannerShowCase from '../components/styleguide/showcases/BannerShowCase'
+import ButtonNewShowCase from '../components/styleguide/showcases/ButtonNewShowCase'
 import ButtonShowCase from '../components/styleguide/showcases/ButtonShowCase'
 import CheckboxGroupShowCase from '../components/styleguide/showcases/CheckboxGroupedShowCase'
 import DropdownShowCase from '../components/styleguide/showcases/DropdownShowCase'
@@ -54,6 +55,7 @@ const Styleguide = ({ page }: AsyncServerProps<typeof getServerSideProps>) => {
           <TagShowCase />
           <TooltipShowCase />
           <FieldHeaderShowCase />
+          <ButtonNewShowCase />
           <ButtonShowCase />
           <DatePickerShowCase />
           <InputFieldShowCase />

@@ -53,6 +53,12 @@ const REFETCH_INTERVAL = 5000
  *  - The upload widget is rendered on the particular step, but the service also uploads the file on the background.
  *    as the id is immediately persisted in form data (before the upload even starts), there's no need for update of the
  *    form data when the upload is done by the widget that might not be rendered anymore.
+ *
+ *                      the upload component wouldn't be able to update the form data ˅
+ *    Form file upload component   |---------------| detached |----------------| detached
+ *    File upload                        |--------------------------------------------|
+ *                                       ^ file id is generated and persisted in form data
+ *
  *  - The form can be saved as a concept while the file is uploading.
  *
  *  At the end, the client and server files are merged and returned to the consumer.
@@ -83,6 +89,7 @@ export const FormFileUploadStateProvider = ({
   }, [clientFiles])
 
   const serverFilesQueryKey = ['serverFiles', initialFormData.formId]
+
   const serverFilesQuery = useQuery(
     serverFilesQueryKey,
     async () => {
@@ -93,9 +100,8 @@ export const FormFileUploadStateProvider = ({
       return response.data
     },
     {
-      // TODO: Add retry logic
-      // retry: Infinity, // Retry infinitely
-      // retryDelay: 5000, // Retry every 5 seconds
+      retry: Infinity, // Retry infinitely
+      retryDelay: 5000, // Retry every 5 seconds
       staleTime: Infinity,
       refetchInterval,
       initialData: initialFormData.files,
@@ -122,17 +128,17 @@ export const FormFileUploadStateProvider = ({
       const isAlreadyUploadingFile = newClientFiles.some(
         (item) => item.status.type === FormFileUploadStatusEnum.Uploading,
       )
-      const queuedFile = newClientFiles.find(
+      const firstQueuedFile = newClientFiles.find(
         (file) => file.status.type === FormFileUploadStatusEnum.UploadQueued,
       )
 
-      if (isAlreadyUploadingFile || !queuedFile) {
+      if (isAlreadyUploadingFile || !firstQueuedFile) {
         return
       }
 
       const updateFileStatus = (status: FormFileUploadClientFileStatus) => {
         const clientFilesWithUpdatedStatus = clientFilesRef.current.map((file) => {
-          if (file.id === queuedFile.id) {
+          if (file.id === firstQueuedFile.id) {
             return { ...file, status }
           }
           return file
@@ -142,7 +148,7 @@ export const FormFileUploadStateProvider = ({
       }
 
       const abortController = new AbortController()
-      abortControllersRef.current[queuedFile.id] = abortController
+      abortControllersRef.current[firstQueuedFile.id] = abortController
 
       // File must be set to uploading before calling `getAccessTokenOrLogout`, as it's async and the second call would
       // trigger another upload if `getAccessTokenOrLogout` is not finished yet.
@@ -153,8 +159,8 @@ export const FormFileUploadStateProvider = ({
 
       await uploadFile({
         formId: initialFormData.formId,
-        file: queuedFile.file,
-        id: queuedFile.id,
+        file: firstQueuedFile.file,
+        id: firstQueuedFile.id,
         abortController,
         onSuccess: () => {
           updateFileStatus({ type: FormFileUploadStatusEnum.UploadDone })
@@ -250,6 +256,18 @@ export const FormFileUploadStateProvider = ({
     }
   }
 
+  const refetchAfterImportIfNeeded = async (ids: string[]) => {
+    if (ids.length === 0) {
+      return
+    }
+
+    const fileNotInServerFiles =
+      !serverFilesQuery.data || ids.some((id) => !serverFilesQuery.data?.[id])
+    if (!serverFilesQuery.isFetched || fileNotInServerFiles) {
+      await serverFilesQuery.refetch()
+    }
+  }
+
   const mergedFiles = useMemo(() => {
     // TODO: Handle when server files are not loaded properly.
     const serverFiles = serverFilesQuery.data ?? []
@@ -265,7 +283,12 @@ export const FormFileUploadStateProvider = ({
         // The special case when the file is stored in the form data, but not in client nor server files, it can happen
         // when the form concept was saved, but the file upload hasn't finished yet and the user navigates away.
         return {
-          status: { type: FormFileUploadStatusEnum.UnknownFile as const },
+          status: serverFilesQuery.isFetched
+            ? { type: FormFileUploadStatusEnum.UnknownFile as const }
+            : {
+                type: FormFileUploadStatusEnum.UnknownStatus as const,
+                offline: serverFilesQuery.fetchStatus === 'paused',
+              },
           fileName: fileId,
           canDownload: false,
           fileSize: null,
@@ -274,7 +297,7 @@ export const FormFileUploadStateProvider = ({
 
       return file
     },
-    [mergedFiles],
+    [mergedFiles, serverFilesQuery.isFetched, serverFilesQuery.fetchStatus],
   )
 
   // Cleanup
@@ -295,6 +318,7 @@ export const FormFileUploadStateProvider = ({
     keepFiles,
     retryFile,
     downloadFile,
+    refetchAfterImportIfNeeded,
     getFileInfoById,
   }
 

@@ -24,6 +24,7 @@ import ModalShowCase from '../components/styleguide/showcases/ModalShowCase'
 import ProgressBarShowCase from '../components/styleguide/showcases/ProgressBarShowCase'
 import RadioButtonShowCase from '../components/styleguide/showcases/RadioButtonShowCase'
 import SearchFieldShowCase from '../components/styleguide/showcases/SearchFieldShowCase'
+import SelectFieldNewShowCase from '../components/styleguide/showcases/SelectFieldNewShowCase'
 import SelectFieldShowCase from '../components/styleguide/showcases/SelectFieldShowCase'
 import ServiceCardShowCase from '../components/styleguide/showcases/ServiceCardShowCase'
 import SingleCheckboxShowCase from '../components/styleguide/showcases/SingleCheckboxShowCase'
@@ -67,6 +68,7 @@ const Styleguide = ({ page }: AsyncServerProps<typeof getServerSideProps>) => {
           <TimePickerShowCase />
           <UploadShowCase />
           <DropdownShowCase />
+          <SelectFieldNewShowCase />
           <SelectFieldShowCase />
           <ModalShowCase />
           <AccordionShowCase />

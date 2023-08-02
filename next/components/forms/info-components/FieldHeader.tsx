@@ -4,7 +4,7 @@ import { DOMAttributes } from 'react'
 
 import { ExplicitOptionalType } from '../types/ExplicitOptional'
 
-interface FieldHeaderProps {
+export interface FieldHeaderProps {
   label: string
   htmlFor?: string
   required?: boolean
@@ -45,29 +45,23 @@ const FieldHeader = (props: FieldHeaderProps) => {
     <div className="w-full">
       <div className="mb-1 flex justify-between">
         <div className="flex w-full justify-between">
-          {/* LABEL */}
           <label htmlFor={htmlFor} className={labelStyle} {...labelProps}>
             {label}
           </label>
-          {
-            /* OPTIONAL */ !required && explicitOptional === 'left' && (
-              <p className="text-p3 sm:text-16 ml-2 flex items-center">(optional)</p>
-            )
-          }
+          {!required && explicitOptional === 'left' && (
+            <div className="text-p3 sm:text-16 ml-2 flex items-center">Optional</div>
+          )}
           <div className="flex-column flex items-center">
-            {
-              /* TOOLTIP */
-              tooltip && (
-                <div
-                  className={cx('flex-column flex items-center', {
-                    'ml-5': required,
-                    'ml-2': !required,
-                  })}
-                >
-                  <Tooltip text={tooltip} position={tooltipPosition} />
-                </div>
-              )
-            }
+            {tooltip && (
+              <div
+                className={cx('flex-column flex items-center', {
+                  'ml-5': required,
+                  'ml-2': !required,
+                })}
+              >
+                <Tooltip text={tooltip} position={tooltipPosition} />
+              </div>
+            )}
           </div>
         </div>
         {
@@ -76,14 +70,11 @@ const FieldHeader = (props: FieldHeaderProps) => {
           )
         }
       </div>
-      {
-        /* DESCRIPTION */
-        helptext && (
-          <div {...descriptionProps} className="text-p3 sm:text-16 mb-1 text-gray-700">
-            {helptextHandler()}
-          </div>
-        )
-      }
+      {helptext && (
+        <div {...descriptionProps} className="text-p3 sm:text-16 mb-1 text-gray-700">
+          {helptextHandler()}
+        </div>
+      )}
     </div>
   )
 }

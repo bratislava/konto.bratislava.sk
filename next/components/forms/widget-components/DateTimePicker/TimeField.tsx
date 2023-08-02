@@ -3,17 +3,10 @@ import React, { ReactNode, useEffect, useRef, useState } from 'react'
 import { useTextField } from 'react-aria'
 
 import FieldHeader from '../../info-components/FieldHeader'
-import { ExplicitOptionalType } from '../../types/ExplicitOptional'
+import { FieldBaseProps } from '../FieldBase'
 
-type TimeFieldBase = {
-  label?: string
-  helptext?: string
-  tooltip?: string
-  required?: boolean
-  explicitOptional?: ExplicitOptionalType
+type TimeFieldProps = FieldBaseProps & {
   children?: ReactNode
-  disabled?: boolean
-  errorMessage?: string[]
   hour: string
   minute: string
   isOpen: boolean
@@ -41,7 +34,7 @@ const TimeField = ({
   setIsInputEdited,
   readOnly,
   ...rest
-}: TimeFieldBase) => {
+}: TimeFieldProps) => {
   const [inputValue, setInputValue] = useState<string>('')
   const ref = useRef<HTMLInputElement>(null)
 

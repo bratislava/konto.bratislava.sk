@@ -5,7 +5,7 @@ import { Item, Text } from 'react-aria-components'
 
 import { ExplicitOptionalType } from '../../../types/ExplicitOptional'
 
-export type FieldBaseProps = {
+export type FieldBasePropsNew = {
   label: string
   tooltip?: string
   errorMessages?: string[]

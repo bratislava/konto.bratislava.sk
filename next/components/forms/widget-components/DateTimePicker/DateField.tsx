@@ -5,7 +5,7 @@ import { useDateField, useDateSegment, useLocale } from 'react-aria'
 import { DateFieldState, DateSegment, useDateFieldState } from 'react-stately'
 
 import FieldHeader from '../../info-components/FieldHeader'
-import { ExplicitOptionalType } from '../../types/ExplicitOptional'
+import { FieldBaseProps } from '../FieldBase'
 
 type DateSegmentBase = {
   segment: DateSegment
@@ -35,15 +35,9 @@ const DateSegmentComponent = ({ segment, state }: DateSegmentBase) => {
     </div>
   )
 }
-type DateFieldBase = {
-  label?: string
-  helptext?: string
-  tooltip?: string
-  required?: boolean
-  explicitOptional?: ExplicitOptionalType
+
+type DateFieldProps = FieldBaseProps & {
   children?: ReactNode
-  disabled?: boolean
-  errorMessage?: string[]
   isOpen?: boolean
 }
 
@@ -58,7 +52,7 @@ const DateField = ({
   required,
   explicitOptional,
   ...rest
-}: DateFieldBase) => {
+}: DateFieldProps) => {
   const ref = React.useRef<HTMLDivElement>(null)
   const { locale } = useLocale()
   const state = useDateFieldState({

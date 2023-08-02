@@ -1,29 +1,29 @@
 import cx from 'classnames'
 
 import FieldErrorMessage from '../info-components/FieldErrorMessage'
-import TimePicker, { TimePickerBase } from '../widget-components/DateTimePicker/TimePicker'
+import TimePicker, { TimePickerProps } from '../widget-components/DateTimePicker/TimePicker'
 
 type TimeFromBase = {
-  TimeFromLabel: TimePickerBase['label']
-  TimeFromDescription?: TimePickerBase['helptext']
-  TimeFromTooltip?: TimePickerBase['tooltip']
-  TimeFromRequired?: TimePickerBase['required']
-  TimeFromExplicitOptional?: TimePickerBase['explicitOptional']
-  TimeFromDisabled?: TimePickerBase['disabled']
-  TimeFromValue?: TimePickerBase['value']
-  TimeFromOnChange?: TimePickerBase['onChange']
-  TimeFromErrorMessage?: TimePickerBase['errorMessage']
+  TimeFromLabel: TimePickerProps['label']
+  TimeFromDescription?: TimePickerProps['helptext']
+  TimeFromTooltip?: TimePickerProps['tooltip']
+  TimeFromRequired?: TimePickerProps['required']
+  TimeFromExplicitOptional?: TimePickerProps['explicitOptional']
+  TimeFromDisabled?: TimePickerProps['disabled']
+  TimeFromValue?: TimePickerProps['value']
+  TimeFromOnChange?: TimePickerProps['onChange']
+  TimeFromErrorMessage?: TimePickerProps['errorMessage']
 }
 type TimeToBase = {
-  TimeToLabel: TimePickerBase['label']
-  TimeToDescription?: TimePickerBase['helptext']
-  TimeToTooltip?: TimePickerBase['tooltip']
-  TimeToRequired?: TimePickerBase['required']
-  TimeToExplicitOptional?: TimePickerBase['explicitOptional']
-  TimeToDisabled?: TimePickerBase['disabled']
-  TimeToValue?: TimePickerBase['value']
-  TimeToOnChange?: TimePickerBase['onChange']
-  TimeToErrorMessage?: TimePickerBase['errorMessage']
+  TimeToLabel: TimePickerProps['label']
+  TimeToDescription?: TimePickerProps['helptext']
+  TimeToTooltip?: TimePickerProps['tooltip']
+  TimeToRequired?: TimePickerProps['required']
+  TimeToExplicitOptional?: TimePickerProps['explicitOptional']
+  TimeToDisabled?: TimePickerProps['disabled']
+  TimeToValue?: TimePickerProps['value']
+  TimeToOnChange?: TimePickerProps['onChange']
+  TimeToErrorMessage?: TimePickerProps['errorMessage']
 }
 
 export const TimeFromTo = ({

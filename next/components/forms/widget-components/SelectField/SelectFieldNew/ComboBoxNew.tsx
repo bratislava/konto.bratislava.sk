@@ -5,13 +5,13 @@ import { Button, ComboBox, ComboBoxProps, Input, ListBox, Popover } from 'react-
 
 import FieldErrorMessage from '../../../info-components/FieldErrorMessage'
 import FieldHeader from '../../../info-components/FieldHeader'
-import ListBoxItem, { FieldBaseProps, SelectItem } from './ListBoxItem'
+import ListBoxItem, { FieldBasePropsNew, SelectItem } from './ListBoxItem'
 
 type ComboBoxFieldProps<T extends object> = {
   items: SelectItem[]
   isDivider?: boolean
 } & Omit<ComboBoxProps<T>, 'validationState'> &
-  FieldBaseProps
+  FieldBasePropsNew
 
 const ComboBoxNew = <T extends object>({
   className,

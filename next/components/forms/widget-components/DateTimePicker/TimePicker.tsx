@@ -8,7 +8,7 @@ import { OverlayProvider, useButton, useDatePicker } from 'react-aria'
 import { useDatePickerState } from 'react-stately'
 import { useEffectOnce } from 'usehooks-ts'
 
-import { ExplicitOptionalType } from '../../types/ExplicitOptional'
+import { FieldBaseProps } from '../FieldBase'
 import Popover from './Popover'
 import TimeField from './TimeField'
 import TimeSelector from './TimeSelector'
@@ -41,16 +41,9 @@ export const convertTimeToValidFormat = (timeValue: string) => {
   }`
 }
 
-export type TimePickerBase = {
-  label?: string
-  helptext?: string
-  tooltip?: string
-  required?: boolean
-  explicitOptional?: ExplicitOptionalType
-  disabled?: boolean
+export type TimePickerProps = FieldBaseProps & {
   // providing this 'prop' will disable error messages rendering inside this component
   customErrorPlace?: boolean
-  errorMessage?: string[]
   value?: string
   minValue?: string
   maxValue?: string
@@ -58,7 +51,7 @@ export type TimePickerBase = {
   onChange?: (value?: string) => void
 }
 
-const TimePicker = forwardRef<HTMLDivElement, TimePickerBase>(
+const TimePicker = forwardRef<HTMLDivElement, TimePickerProps>(
   (
     {
       label,

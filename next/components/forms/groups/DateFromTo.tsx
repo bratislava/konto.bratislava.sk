@@ -2,30 +2,30 @@ import { useControlledState } from '@react-stately/utils'
 import cx from 'classnames'
 
 import FieldErrorMessage from '../info-components/FieldErrorMessage'
-import DatePicker, { DatePickerBase } from '../widget-components/DateTimePicker/DatePicker'
+import DatePicker, { DatePickerProps } from '../widget-components/DateTimePicker/DatePicker'
 
 type DateFrom = {
-  DateFromLabel: DatePickerBase['label']
-  DateFromTooltip?: DatePickerBase['tooltip']
-  DateFromDescription?: DatePickerBase['helptext']
-  DateFromRequired?: DatePickerBase['required']
-  DateFromExplicitOptional?: DatePickerBase['explicitOptional']
-  DateFromDisabled?: DatePickerBase['disabled']
-  DateFromValue?: DatePickerBase['value']
-  DateFromOnChange?: DatePickerBase['onChange']
-  DateFromErrorMessage?: DatePickerBase['errorMessage']
+  DateFromLabel: DatePickerProps['label']
+  DateFromTooltip?: DatePickerProps['tooltip']
+  DateFromDescription?: DatePickerProps['helptext']
+  DateFromRequired?: DatePickerProps['required']
+  DateFromExplicitOptional?: DatePickerProps['explicitOptional']
+  DateFromDisabled?: DatePickerProps['disabled']
+  DateFromValue?: DatePickerProps['value']
+  DateFromOnChange?: DatePickerProps['onChange']
+  DateFromErrorMessage?: DatePickerProps['errorMessage']
 }
 
 type DateTo = {
-  DateToLabel: DatePickerBase['label']
-  DateToTooltip?: DatePickerBase['tooltip']
-  DateToDescription?: DatePickerBase['helptext']
-  DateToRequired?: DatePickerBase['required']
-  DateToExplicitOptional?: DatePickerBase['explicitOptional']
-  DateToDisabled?: DatePickerBase['disabled']
-  DateToValue?: DatePickerBase['value']
-  DateToOnChange?: DatePickerBase['onChange']
-  DateToErrorMessage?: DatePickerBase['errorMessage']
+  DateToLabel: DatePickerProps['label']
+  DateToTooltip?: DatePickerProps['tooltip']
+  DateToDescription?: DatePickerProps['helptext']
+  DateToRequired?: DatePickerProps['required']
+  DateToExplicitOptional?: DatePickerProps['explicitOptional']
+  DateToDisabled?: DatePickerProps['disabled']
+  DateToValue?: DatePickerProps['value']
+  DateToOnChange?: DatePickerProps['onChange']
+  DateToErrorMessage?: DatePickerProps['errorMessage']
 }
 
 export const DateFromTo = ({

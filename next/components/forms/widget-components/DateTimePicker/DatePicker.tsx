@@ -8,28 +8,21 @@ import { OverlayProvider, useDatePicker } from 'react-aria'
 import { useDatePickerState } from 'react-stately'
 
 import ButtonNew from '../../simple-components/ButtonNew'
-import { ExplicitOptionalType } from '../../types/ExplicitOptional'
+import { FieldBaseProps } from '../FieldBase'
 import Calendar from './Calendar/Calendar'
 import DateField from './DateField'
 import Popover from './Popover'
 
-export type DatePickerBase = {
-  label?: string
-  helptext?: string
-  tooltip?: string
-  required?: boolean
-  explicitOptional?: ExplicitOptionalType
-  disabled?: boolean
+export type DatePickerProps = FieldBaseProps & {
   // providing this 'prop' will disable error messages rendering inside this component
   customErrorPlace?: boolean
-  errorMessage?: string[]
   value?: string | null
   minValue?: string
   maxValue?: string
   onChange?: (value: string | null | undefined) => void
 }
 
-const DatePicker = forwardRef<HTMLDivElement, DatePickerBase>(
+const DatePicker = forwardRef<HTMLDivElement, DatePickerProps>(
   (
     {
       label,

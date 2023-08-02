@@ -12,27 +12,19 @@ import React, {
 import { useOnClickOutside } from 'usehooks-ts'
 
 import { handleOnKeyPress } from '../../../../frontend/utils/general'
-import FieldErrorMessage from '../../info-components/FieldErrorMessage'
-import FieldHeader from '../../info-components/FieldHeader'
-import { ExplicitOptionalType } from '../../types/ExplicitOptional'
+import { FieldBaseProps } from '../FieldBase'
+import FieldWrapper from '../FieldWrapper'
 import Dropdown from './Dropdown'
 import SelectFieldBox from './SelectFieldBox'
 import { SelectOption } from './SelectOption.interface'
 
-interface SelectFieldProps {
-  label: string
+type SelectFieldProps = FieldBaseProps & {
   type?: 'one' | 'multiple' | 'arrow' | 'radio'
   value?: SelectOption[]
   enumOptions?: SelectOption[]
-  tooltip?: string
   dropdownDivider?: boolean
   selectAllOption?: boolean
   placeholder?: string
-  errorMessage?: string[]
-  helptext?: string
-  required?: boolean
-  explicitOptional?: ExplicitOptionalType
-  disabled?: boolean
   hideScrollbar?: boolean
   alwaysOneSelected?: boolean
   maxWordSize?: number
@@ -221,77 +213,76 @@ const SelectFieldComponent: ForwardRefRenderFunction<HTMLDivElement, SelectField
       )}
     >
       {/* FIELD HEADER WITH DESCRIPTION AND LABEL */}
-      <FieldHeader
+      <FieldWrapper
         label={label}
         helptext={helptext}
         tooltip={tooltip}
         required={required}
         explicitOptional={explicitOptional}
-      />
+        errorMessage={errorMessage}
+        disabled={disabled}
+      >
+        {/* SELECT PART */}
+        <div className={selectClassName} ref={clickOutsideRef}>
+          {/* MAIN BODY OF SELECT */}
+          <SelectFieldBox
+            ref={ref}
+            value={value}
+            multiple={type === 'multiple'}
+            filter={filter}
+            filterRef={filterRef}
+            maxWordSize={maxWordSize}
+            placeholder={placeholder}
+            onRemove={handleOnRemove}
+            onRemoveAll={handleOnDeselectAll}
+            onFilterChange={setFilter}
+            onDeleteLastValue={handleOnDeleteLastValue}
+            onClick={handleOnSelectFieldClick}
+          />
 
-      {/* SELECT PART */}
-      <div className={selectClassName} ref={clickOutsideRef}>
-        {/* MAIN BODY OF SELECT */}
-        <SelectFieldBox
-          ref={ref}
-          value={value}
-          multiple={type === 'multiple'}
-          filter={filter}
-          filterRef={filterRef}
-          maxWordSize={maxWordSize}
-          placeholder={placeholder}
-          onRemove={handleOnRemove}
-          onRemoveAll={handleOnDeselectAll}
-          onFilterChange={setFilter}
-          onDeleteLastValue={handleOnDeleteLastValue}
-          onClick={handleOnSelectFieldClick}
-        />
-
-        {/* DROPDOWN ARROW */}
-        <div
-          role="button"
-          tabIndex={0}
-          className="dropdownButton flex h-10 cursor-pointer select-none flex-col items-center rounded-lg px-3 sm:h-12 sm:px-4 [&>svg]:m-1"
-          onClick={handleOnArrowClick}
-          onKeyPress={(event: React.KeyboardEvent) =>
-            handleOnKeyPress(event, () => handleOnArrowClick(event))
-          }
-        >
-          <div className="dropdownButton relative flex h-full w-6 flex-col items-center justify-center">
-            {isDropdownOpened ? <ChevronUpIcon /> : <ChevronDownIcon />}
-            <div className="dropdownButton absolute inset-0 z-10" />
+          {/* DROPDOWN ARROW */}
+          <div
+            role="button"
+            tabIndex={0}
+            className="dropdownButton flex h-10 cursor-pointer select-none flex-col items-center rounded-lg px-3 sm:h-12 sm:px-4 [&>svg]:m-1"
+            onClick={handleOnArrowClick}
+            onKeyPress={(event: React.KeyboardEvent) =>
+              handleOnKeyPress(event, () => handleOnArrowClick(event))
+            }
+          >
+            <div className="dropdownButton relative flex h-full w-6 flex-col items-center justify-center">
+              {isDropdownOpened ? <ChevronUpIcon /> : <ChevronDownIcon />}
+              <div className="dropdownButton absolute inset-0 z-10" />
+            </div>
           </div>
+
+          {disabled && <div className="absolute inset-0 z-20 rounded-lg" />}
         </div>
 
-        {disabled && <div className="absolute inset-0 z-20 rounded-lg" />}
-      </div>
-
-      {/* DROPDOWN */}
-      <div className="dropdown relative">
-        {isDropdownOpened && (
-          <Dropdown
-            enumOptions={getFilteredOptions()}
-            value={getDropdownValues()}
-            isRowBold={isRowBold}
-            type={type}
-            divider={dropdownDivider}
-            hideScrollbar={hideScrollbar}
-            selectAllOption={selectAllOption}
-            maxWordSize={maxWordSize + 5}
-            absolute
-            onChooseOne={handleOnChooseOne}
-            onUnChooseOne={handleOnUnChooseOne}
-            onSelectAll={handleOnSelectAll}
-            onDeselectAll={handleOnDeselectAll}
-            onChooseMulti={handleOnChooseMulti}
-            onUnChooseMulti={handleOnUnChooseMulti}
-            onClickOutside={handleOnClickOutsideDropdown}
-          />
-        )}
-      </div>
-
-      {/* ERROR MESSAGE */}
-      <FieldErrorMessage errorMessage={errorMessage} />
+        {/* DROPDOWN */}
+        <div className="dropdown relative">
+          {isDropdownOpened && (
+            <Dropdown
+              enumOptions={getFilteredOptions()}
+              value={getDropdownValues()}
+              isRowBold={isRowBold}
+              type={type}
+              divider={dropdownDivider}
+              hideScrollbar={hideScrollbar}
+              selectAllOption={selectAllOption}
+              maxWordSize={maxWordSize + 5}
+              absolute
+              onChooseOne={handleOnChooseOne}
+              onUnChooseOne={handleOnUnChooseOne}
+              onSelectAll={handleOnSelectAll}
+              onDeselectAll={handleOnDeselectAll}
+              onChooseMulti={handleOnChooseMulti}
+              onUnChooseMulti={handleOnUnChooseMulti}
+              onClickOutside={handleOnClickOutsideDropdown}
+            />
+          )}
+        </div>
+      </FieldWrapper>
     </section>
   )
 }

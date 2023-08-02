@@ -2,22 +2,14 @@ import cx from 'classnames'
 import React, { useState } from 'react'
 import { useTextField } from 'react-aria'
 
-import FieldErrorMessage from '../../info-components/FieldErrorMessage'
-import FieldHeader from '../../info-components/FieldHeader'
-import { ExplicitOptionalType } from '../../types/ExplicitOptional'
+import { FieldBaseProps } from '../FieldBase'
+import FieldWrapper from '../FieldWrapper'
 
-interface TextAreaBase {
-  label: string
+type TextAreaBase = FieldBaseProps & {
   placeholder?: string
-  errorMessage?: string[]
-  helptext?: string
   className?: string
   defaultValue?: string
   value?: string
-  required?: boolean
-  explicitOptional?: ExplicitOptionalType
-  disabled?: boolean
-  tooltip?: string
   onChange?: (value?: string) => void
 }
 
@@ -83,7 +75,7 @@ const TextAreaField = ({
   )
   return (
     <div className="flex w-full flex-col">
-      <FieldHeader
+      <FieldWrapper
         label={label}
         labelProps={labelProps}
         htmlFor={inputProps.id}
@@ -92,21 +84,21 @@ const TextAreaField = ({
         required={required}
         explicitOptional={explicitOptional}
         tooltip={tooltip}
-      />
-      <div className={containerStyle}>
-        <textarea
-          {...inputProps}
-          ref={ref}
-          name={inputProps.id}
-          className={textareaStyle}
-          onFocus={() => setIsFocused(true)}
-          onBlur={() => setIsFocused(false)}
-        />
-      </div>
-
-      {!disabled && (
-        <FieldErrorMessage errorMessage={errorMessage} errorMessageProps={errorMessageProps} />
-      )}
+        disabled={disabled}
+        errorMessage={errorMessage}
+        errorMessageProps={errorMessageProps}
+      >
+        <div className={containerStyle}>
+          <textarea
+            {...inputProps}
+            ref={ref}
+            name={inputProps.id}
+            className={textareaStyle}
+            onFocus={() => setIsFocused(true)}
+            onBlur={() => setIsFocused(false)}
+          />
+        </div>
+      </FieldWrapper>
     </div>
   )
 }

@@ -5,9 +5,8 @@ import { forwardRef, ReactNode, RefObject, useEffect, useState } from 'react'
 import { useTextField } from 'react-aria'
 
 import MailIcon from '../../../../assets/ui-icons/custom_mail.svg'
-import FieldErrorMessage from '../../info-components/FieldErrorMessage'
-import FieldHeader from '../../info-components/FieldHeader'
-import { ExplicitOptionalType } from '../../types/ExplicitOptional'
+import { FieldBaseProps } from '../FieldBase'
+import FieldWrapper from '../FieldWrapper'
 
 export type LeftIconVariants = 'person' | 'mail' | 'call' | 'lock'
 export type InputType = 'text' | 'password'
@@ -23,24 +22,17 @@ export const isInputSize = (value: string): value is SizeType => {
   return list.includes(value as SizeType)
 }
 
-export type InputBase = {
-  label: string
+export type InputProps = FieldBaseProps & {
   type?: InputType
   placeholder?: string
-  errorMessage?: string[]
-  helptext?: string
   // capitalize input value after field un-focus with type === text
   capitalize?: boolean
   className?: string
   value?: string
   leftIcon?: LeftIconVariants
-  required?: boolean
   // providing this 'prop' will disable error messages rendering inside this component
   customErrorPlace?: boolean
-  explicitOptional?: ExplicitOptionalType
   resetIcon?: boolean
-  disabled?: boolean
-  tooltip?: string
   tooltipPosition?: TooltipPositionType
   onChange?: (value?: string) => void
   size?: SizeType
@@ -48,7 +40,7 @@ export type InputBase = {
   autoComplete?: string
 }
 
-const InputField = forwardRef<HTMLInputElement, InputBase>(
+const InputField = forwardRef<HTMLInputElement, InputProps>(
   (
     {
       label,
@@ -159,7 +151,7 @@ const InputField = forwardRef<HTMLInputElement, InputBase>(
           'w-fit max-w-[200px]': size === 'small',
         })}
       >
-        <FieldHeader
+        <FieldWrapper
           label={label}
           labelProps={labelProps}
           htmlFor={inputProps.id}
@@ -169,36 +161,38 @@ const InputField = forwardRef<HTMLInputElement, InputBase>(
           explicitOptional={explicitOptional}
           tooltip={tooltip}
           tooltipPosition={tooltipPosition}
-        />
-        <div className="relative">
-          {leftIcon && (
-            <i
-              className={cx(
-                'absolute inset-y-1/2 left-3 flex h-6 w-6 -translate-y-2/4 items-center justify-center sm:left-4',
-                {
-                  'opacity-50': disabled,
-                },
-              )}
-            >
-              {leftIconSwitcher(leftIcon)}
-            </i>
-          )}
-          <input {...inputProps} ref={ref} name={inputProps.id} className={style} />
-          {resetIcon && valueState && (
-            <button
-              type="button"
-              tabIndex={0}
-              onClick={resetIconHandler}
-              className="absolute inset-y-1/2 right-3 flex h-6 w-6 -translate-y-2/4 cursor-pointer items-center justify-center sm:right-4"
-            >
-              <RemoveIcon />
-            </button>
-          )}
-          {endIcon}
-        </div>
-        {!disabled && !customErrorPlace && (
-          <FieldErrorMessage errorMessage={errorMessage} errorMessageProps={errorMessageProps} />
-        )}
+          disabled={disabled}
+          customErrorPlace={customErrorPlace}
+          errorMessage={errorMessage}
+          errorMessageProps={errorMessageProps}
+        >
+          <div className="relative">
+            {leftIcon && (
+              <i
+                className={cx(
+                  'absolute inset-y-1/2 left-3 flex h-6 w-6 -translate-y-2/4 items-center justify-center sm:left-4',
+                  {
+                    'opacity-50': disabled,
+                  },
+                )}
+              >
+                {leftIconSwitcher(leftIcon)}
+              </i>
+            )}
+            <input {...inputProps} ref={ref} name={inputProps.id} className={style} />
+            {resetIcon && valueState && (
+              <button
+                type="button"
+                tabIndex={0}
+                onClick={resetIconHandler}
+                className="absolute inset-y-1/2 right-3 flex h-6 w-6 -translate-y-2/4 cursor-pointer items-center justify-center sm:right-4"
+              >
+                <RemoveIcon />
+              </button>
+            )}
+            {endIcon}
+          </div>
+        </FieldWrapper>
       </div>
     )
   },

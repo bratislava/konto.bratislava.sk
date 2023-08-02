@@ -2,31 +2,31 @@ import { useControlledState } from '@react-stately/utils'
 import cx from 'classnames'
 
 import FieldErrorMessage from '../info-components/FieldErrorMessage'
-import DatePicker, { DatePickerBase } from '../widget-components/DateTimePicker/DatePicker'
-import TimePicker, { TimePickerBase } from '../widget-components/DateTimePicker/TimePicker'
+import DatePicker, { DatePickerProps } from '../widget-components/DateTimePicker/DatePicker'
+import TimePicker, { TimePickerProps } from '../widget-components/DateTimePicker/TimePicker'
 
 type TDatePicker = {
-  DateLabel?: DatePickerBase['label']
-  DateTooltip?: DatePickerBase['tooltip']
-  DateDescription?: DatePickerBase['helptext']
-  DateRequired?: DatePickerBase['required']
-  DateExplicitOptional?: DatePickerBase['explicitOptional']
-  DateDisabled?: DatePickerBase['disabled']
-  DateValue?: DatePickerBase['value']
-  DateOnChange?: DatePickerBase['onChange']
-  DateErrorMessage?: DatePickerBase['errorMessage']
+  DateLabel: DatePickerProps['label']
+  DateTooltip?: DatePickerProps['tooltip']
+  DateDescription?: DatePickerProps['helptext']
+  DateRequired?: DatePickerProps['required']
+  DateExplicitOptional?: DatePickerProps['explicitOptional']
+  DateDisabled?: DatePickerProps['disabled']
+  DateValue?: DatePickerProps['value']
+  DateOnChange?: DatePickerProps['onChange']
+  DateErrorMessage?: DatePickerProps['errorMessage']
 }
 
 type TTimePicker = {
-  TimeLabel?: TimePickerBase['label']
-  TimeTooltip?: TimePickerBase['tooltip']
-  TimeDescription?: TimePickerBase['helptext']
-  TimeRequired?: TimePickerBase['required']
-  TimeExplicitOptional?: TimePickerBase['explicitOptional']
-  TimeDisabled?: TimePickerBase['disabled']
-  TimeValue?: TimePickerBase['value']
-  TimeOnChange?: TimePickerBase['onChange']
-  TimeErrorMessage?: TimePickerBase['errorMessage']
+  TimeLabel: TimePickerProps['label']
+  TimeTooltip?: TimePickerProps['tooltip']
+  TimeDescription?: TimePickerProps['helptext']
+  TimeRequired?: TimePickerProps['required']
+  TimeExplicitOptional?: TimePickerProps['explicitOptional']
+  TimeDisabled?: TimePickerProps['disabled']
+  TimeValue?: TimePickerProps['value']
+  TimeOnChange?: TimePickerProps['onChange']
+  TimeErrorMessage?: TimePickerProps['errorMessage']
 }
 
 export const DateTimePicker = ({

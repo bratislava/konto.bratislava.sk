@@ -3,22 +3,14 @@ import cx from 'classnames'
 import { useRef, useState } from 'react'
 import { useTextField } from 'react-aria'
 
-import FieldErrorMessage from '../../info-components/FieldErrorMessage'
-import FieldHeader from '../../info-components/FieldHeader'
-import { ExplicitOptionalType } from '../../types/ExplicitOptional'
+import { FieldBaseProps } from '../FieldBase'
+import FieldWrapper from '../FieldWrapper'
 
-interface InputBase {
-  label: string
+type SearchFieldProps = FieldBaseProps & {
   placeholder: string
-  errorMessage?: string[]
-  helptext?: string
   className?: string
   value?: string
-  required?: boolean
-  explicitOptional?: ExplicitOptionalType
   resetIcon?: boolean
-  disabled?: boolean
-  tooltip?: string
   onChange?: (e: string) => void
 }
 
@@ -35,7 +27,7 @@ const SearchField = ({
   resetIcon,
   className,
   ...rest
-}: InputBase) => {
+}: SearchFieldProps) => {
   const [valueState, setValueState] = useState<string>(value)
   const ref = useRef<HTMLInputElement>(null)
   const { labelProps, inputProps, descriptionProps, errorMessageProps } = useTextField(
@@ -73,7 +65,7 @@ const SearchField = ({
 
   return (
     <div className="flex w-full max-w-xs flex-col">
-      <FieldHeader
+      <FieldWrapper
         label={label}
         labelProps={labelProps}
         htmlFor={inputProps?.id}
@@ -82,40 +74,41 @@ const SearchField = ({
         required={required}
         explicitOptional={explicitOptional}
         tooltip={tooltip}
-      />
-      <div className="relative">
-        <i
-          className={cx(
-            'absolute inset-y-1/2 left-3 flex h-6 w-6 -translate-y-2/4 items-center justify-center sm:left-4',
-            {
-              'opacity-50': disabled,
-            },
-          )}
-        >
-          <SearchIcon />
-        </i>
-        <input
-          {...inputProps}
-          ref={ref}
-          value={valueState}
-          name={inputProps.id}
-          className={style}
-        />
-        {resetIcon && valueState && (
+        errorMessage={errorMessage}
+        errorMessageProps={errorMessageProps}
+        disabled={disabled}
+      >
+        <div className="relative">
           <i
-            role="button"
-            tabIndex={0}
-            onKeyDown={() => setValueState('')}
-            onClick={() => setValueState('')}
-            className="absolute inset-y-1/2 right-3 flex h-6 w-6 -translate-y-2/4 cursor-pointer items-center justify-center sm:right-4"
+            className={cx(
+              'absolute inset-y-1/2 left-3 flex h-6 w-6 -translate-y-2/4 items-center justify-center sm:left-4',
+              {
+                'opacity-50': disabled,
+              },
+            )}
           >
-            <RemoveIcon />
+            <SearchIcon />
           </i>
-        )}
-      </div>
-      {!disabled && (
-        <FieldErrorMessage errorMessage={errorMessage} errorMessageProps={errorMessageProps} />
-      )}
+          <input
+            {...inputProps}
+            ref={ref}
+            value={valueState}
+            name={inputProps.id}
+            className={style}
+          />
+          {resetIcon && valueState && (
+            <i
+              role="button"
+              tabIndex={0}
+              onKeyDown={() => setValueState('')}
+              onClick={() => setValueState('')}
+              className="absolute inset-y-1/2 right-3 flex h-6 w-6 -translate-y-2/4 cursor-pointer items-center justify-center sm:right-4"
+            >
+              <RemoveIcon />
+            </i>
+          )}
+        </div>
+      </FieldWrapper>
     </div>
   )
 }

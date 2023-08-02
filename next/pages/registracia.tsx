@@ -149,18 +149,14 @@ const RegisterPage = ({ page }: AsyncServerProps<typeof getServerSideProps>) => 
           ) : preVerificationRedirect ? (
             <AccountSuccessAlert
               title={t('register_success_title')}
-              description={t('register_success_description', {
-                email: lastEmail,
-              })}
+              description={t('register_success_description', { email: lastEmail })}
               confirmLabel={t('identity_verification_link')}
               onConfirm={redirect}
             />
           ) : (
             <AccountSuccessAlert
               title={t('register_success_title')}
-              description={t('register_success_description', {
-                email: lastEmail,
-              })}
+              description={t('register_success_description', { email: lastEmail })}
               confirmLabel={t('identity_verification_link')}
               onConfirm={() => {
                 // TODO move this to backend

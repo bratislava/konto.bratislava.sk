@@ -91,9 +91,7 @@ const NewPasswordForm = ({ onSubmit, error, onResend, lastEmail, fromMigration }
       <h1 className="text-h3">
         {t(fromMigration ? 'migration_new_password_title' : 'new_password_title')}
       </h1>
-      <p className="text-p3 lg:text-p2">
-        {`${t('new_password_description', { email: lastEmail })}`}
-      </p>
+      <p className="text-p3 lg:text-p2">{t('new_password_description', { email: lastEmail })}</p>
       <AccountErrorAlert
         error={error}
         args={{
@@ -159,7 +157,7 @@ const NewPasswordForm = ({ onSubmit, error, onResend, lastEmail, fromMigration }
       />
       <div className="text-p3 lg:text-p2">
         <span>{t('verification_description')}</span>
-        {cnt > 0 && <span>{`${t('verification_cnt_description', { cnt })}`}</span>}
+        {cnt > 0 && <span>{t('verification_cnt_description', { cnt })}</span>}
       </div>
       <Button
         onPress={handleResend}

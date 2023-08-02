@@ -66,16 +66,14 @@ const MigrationForm = ({ onSubmit, error, lastEmail, setLastEmail }: Props) => {
       })}
     >
       <h1 className="text-h3">
-        {`${t(queryEmail ? 'migration_recognized_title' : 'migration_title', {
+        {t(queryEmail ? 'migration_recognized_title' : 'migration_title', {
           fullname: queryFullname,
-        })}`}
+        })}
       </h1>
       <p className="text-p3 lg:text-p2">
-        {`${t(queryEmail ? 'migration_recognized_description' : 'migration_description',
-          {
-            email: queryEmail,
-          },
-        )}`}
+        {t(queryEmail ? 'migration_recognized_description' : 'migration_description', {
+          email: queryEmail,
+        })}
       </p>
       <p className="text-p3 lg:text-p2">{t('migration_submit_description')}</p>
       <AccountErrorAlert error={error} args={{ email: lastEmail }} />

@@ -1,37 +1,16 @@
 import { CalendarIcon } from '@assets/ui-icons'
 import { DateValue, parseDate } from '@internationalized/date'
-import cx from 'classnames'
 import FieldErrorMessage from 'components/forms/info-components/FieldErrorMessage'
-import { forwardRef, ReactNode, RefObject, useRef, useState } from 'react'
-import { OverlayProvider, useButton, useDatePicker } from 'react-aria'
+import { useTranslation } from 'next-i18next'
+import { forwardRef, RefObject, useState } from 'react'
+import { OverlayProvider, useDatePicker } from 'react-aria'
 import { useDatePickerState } from 'react-stately'
 
+import ButtonNew from '../../simple-components/ButtonNew'
 import { ExplicitOptionalType } from '../../types/ExplicitOptional'
 import Calendar from './Calendar/Calendar'
 import DateField from './DateField'
 import Popover from './Popover'
-
-type ButtonBase = {
-  children?: ReactNode
-  className?: string
-}
-
-const Button = ({ children, className, ...rest }: ButtonBase) => {
-  const ref = useRef<HTMLButtonElement>(null)
-  const { buttonProps } = useButton({ ...rest }, ref)
-
-  // TODO use Button from react aria
-  return (
-    <button
-      className={cx('focus:outline-none', className)}
-      type="button"
-      {...buttonProps}
-      ref={ref}
-    >
-      {children}
-    </button>
-  )
-}
 
 export type DatePickerBase = {
   label?: string
@@ -68,22 +47,16 @@ const DatePicker = forwardRef<HTMLDivElement, DatePickerBase>(
     },
     ref,
   ) => {
+    const { t } = useTranslation('account', { keyPrefix: 'DatePicker' })
+
     const [valueState, setValueState] = useState<DateValue | null>(null)
-    const [prevValue, setPrevValue] = useState<string>('')
 
     const state = useDatePickerState({
       label,
       errorMessage,
-      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-      // @ts-ignore
+      // TODO Why there is '|| null'?
       value: onChange && value ? parseDate(value) : valueState || null,
-      onChange(inputValue) {
-        if (onChange) {
-          onChange(inputValue)
-        } else {
-          setValueState(inputValue)
-        }
-      },
+      onChange: onChange || setValueState,
       isRequired: required,
       isDisabled: disabled,
       ...rest,
@@ -102,30 +75,22 @@ const DatePicker = forwardRef<HTMLDivElement, DatePickerBase>(
         state,
         ref as RefObject<HTMLDivElement>,
       )
+    const buttonPropsFixed = {
+      ...buttonProps,
+      children: undefined,
+      href: undefined,
+      target: undefined,
+    }
 
-    const closeHandler = () => {
-      if (prevValue) {
-        state?.setDateValue(parseDate(prevValue))
-        setValueState(parseDate(prevValue))
-      }
-      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-      // @ts-ignore
-      else state?.setDateValue(null)
+    const handleConfirm = () => {
       state?.close()
     }
 
-    const submitCloseHandler = () => {
-      setPrevValue(onChange ? value : valueState ? valueState.toString() : '')
-      state?.close()
-    }
-
-    const resetCloseHandler = () => {
+    const handleReset = () => {
       // https://github.com/adobe/react-spectrum/discussions/3318
-      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
       // @ts-ignore
       state?.setDateValue(null)
       setValueState(null)
-      setPrevValue('')
       state?.close()
     }
 
@@ -143,19 +108,20 @@ const DatePicker = forwardRef<HTMLDivElement, DatePickerBase>(
             errorMessage={errorMessage}
             isOpen={state?.isOpen}
           >
-            <Button {...buttonProps} className={disabled ? 'opacity-50' : ''}>
-              <CalendarIcon className="h-5 w-5 lg:h-6 lg:w-6" />
-            </Button>
+            <ButtonNew
+              variant="icon-wrapped-negative-margin"
+              {...buttonPropsFixed}
+              isDisabled={disabled}
+              icon={<CalendarIcon />}
+              // TODO investigate why t can return undefined
+              aria-label={t('aria.openCalendar') ?? 'Open calendar'}
+            />
           </DateField>
         </div>
         {state?.isOpen && (
           <OverlayProvider>
-            <Popover {...dialogProps} isOpen={state?.isOpen} onClose={closeHandler}>
-              <Calendar
-                {...calendarProps}
-                onSubmit={submitCloseHandler}
-                onReset={resetCloseHandler}
-              />
+            <Popover {...dialogProps} isOpen={state?.isOpen} onClose={handleConfirm}>
+              <Calendar {...calendarProps} onConfirm={handleConfirm} onReset={handleReset} />
             </Popover>
           </OverlayProvider>
         )}

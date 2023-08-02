@@ -2,17 +2,18 @@ import { ChevronLeftIcon, ChevronRightIcon } from '@assets/ui-icons'
 import { createCalendar } from '@internationalized/date'
 import Button from 'components/forms/simple-components/Button'
 import { useRef } from 'react'
-import { useButton, useCalendar, useLocale } from 'react-aria'
+import { useCalendar, useLocale } from 'react-aria'
 import { useCalendarState } from 'react-stately'
 
+import ButtonNew from '../../../simple-components/ButtonNew'
 import CalendarGrid from './CalendarGrid'
 
 type CalendarBase = {
-  onSubmit?: () => void
+  onConfirm?: () => void
   onReset?: () => void
 }
 
-const Calendar = ({ onSubmit, onReset, ...rest }: CalendarBase) => {
+const Calendar = ({ onConfirm, onReset, ...rest }: CalendarBase) => {
   const { locale } = useLocale()
   const state = useCalendarState({
     ...rest,
@@ -20,14 +21,22 @@ const Calendar = ({ onSubmit, onReset, ...rest }: CalendarBase) => {
     createCalendar,
   })
   const ref = useRef<HTMLDivElement>(null)
-  const prevTriggerRef = useRef<HTMLButtonElement>(null)
-  const nextTriggerRef = useRef<HTMLButtonElement>(null)
   const { calendarProps, prevButtonProps, nextButtonProps, title } = useCalendar({ ...rest }, state)
 
-  const { buttonProps: prevButtonPropsBtn } = useButton({ ...prevButtonProps }, prevTriggerRef)
-  const { buttonProps: nextButtonPropsBtn } = useButton({ ...nextButtonProps }, nextTriggerRef)
+  const prevButtonPropsFixed = {
+    ...prevButtonProps,
+    children: undefined,
+    href: undefined,
+    target: undefined,
+  }
 
-  // TODO use react aria Button
+  const nextButtonPropsFixed = {
+    ...nextButtonProps,
+    children: undefined,
+    href: undefined,
+    target: undefined,
+  }
+
   return (
     <div
       {...calendarProps}
@@ -35,28 +44,24 @@ const Calendar = ({ onSubmit, onReset, ...rest }: CalendarBase) => {
       className="w-full max-w-xs rounded-lg border-2 border-gray-700 bg-white"
     >
       <div className="flex justify-between px-4 py-3">
-        <button
-          className="flex h-6 w-6 items-center justify-center focus:outline-none"
-          ref={prevTriggerRef}
-          type="button"
-          {...prevButtonPropsBtn}
-        >
-          <ChevronLeftIcon className="h-6 w-6" />
-        </button>
+        <ButtonNew
+          {...prevButtonPropsFixed}
+          variant="icon-wrapped-negative-margin"
+          icon={<ChevronLeftIcon />}
+          aria-label="Left"
+        />
         <span className="text-p2-semibold">{title.charAt(0).toUpperCase() + title.slice(1)}</span>
-        <button
-          className="flex h-6 w-6 items-center justify-center focus:outline-none"
-          ref={nextTriggerRef}
-          type="button"
-          {...nextButtonPropsBtn}
-        >
-          <ChevronRightIcon className="h-6 w-6" />
-        </button>
+        <ButtonNew
+          {...nextButtonPropsFixed}
+          variant="icon-wrapped-negative-margin"
+          icon={<ChevronRightIcon />}
+          aria-label="Right"
+        />
       </div>
       <CalendarGrid state={state} />
       <div className="flex items-center justify-between border-t-2 border-gray-700 px-4 py-3">
         <Button onPress={onReset} text="Resetovať" variant="plain-black" size="sm" />
-        <Button onPress={onSubmit} text="Potvrdiť" variant="black" size="sm" />
+        <Button onPress={onConfirm} text="Potvrdiť" variant="black" size="sm" />
       </div>
     </div>
   )

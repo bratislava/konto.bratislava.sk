@@ -816,5 +816,10 @@
       "scanInfected": "TODO wording: V súbore sa našiel vírus.",
       "unknownFile": "TODO wording: Nerozpoznaný súbor"
     }
+  },
+  "DatePicker": {
+    "aria": {
+      "openCalendar": "Otvoriť kalendár"
+    }
   }
 }

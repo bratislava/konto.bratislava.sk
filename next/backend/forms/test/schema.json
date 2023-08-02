@@ -413,7 +413,7 @@
               "type": "array",
               "items": {
                 "type": "string",
-                "file":  true
+                "file": true
               },
               "default": [],
               "minItems": 1
@@ -421,7 +421,7 @@
             "importDragAndDropOneFile": {
               "title": "Presun sem jeden subor",
               "type": "string",
-              "file":  true
+              "file": true
             },
             "importDragAndDropMultipleFiles": {
               "title": "Presun sem viac suborov",
@@ -468,13 +468,12 @@
                   "conditionalFile": {
                     "title": "Presun sem jeden subor",
                     "type": "string",
-                    "file":  true
+                    "file": true
                   }
                 }
               }
             }
           ]
-
         }
       },
       "required": ["fileUploads"]

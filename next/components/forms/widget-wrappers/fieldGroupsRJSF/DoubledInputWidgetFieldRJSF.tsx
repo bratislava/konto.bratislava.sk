@@ -2,7 +2,6 @@ import { FieldProps, GenericObjectType } from '@rjsf/utils'
 import React from 'react'
 
 import { DoubledInputField } from '../../groups'
-import { ExplicitOptionalType } from '../../types/ExplicitOptional'
 import { FormSpacingType } from '../../types/WidgetOptions'
 import {
   isInputSize,
@@ -90,12 +89,8 @@ const DoubledInputWidgetFieldRJSF = ({
           SecondInputRequired={schema.required?.includes(keys[1])}
           FirstInputLeftIcon={getLeftIcon('FirstInputLeftIcon')}
           SecondInputLeftIcon={getLeftIcon('SecondInputLeftIcon')}
-          FirstInputExplicitOptional={
-            localUiSchema?.FirstInputExplicitOptional as ExplicitOptionalType
-          }
-          SecondInputExplicitOptional={
-            localUiSchema?.SecondInputExplicitOptional as ExplicitOptionalType
-          }
+          FirstInputExplicitOptional={localUiSchema?.FirstInputExplicitOptional as boolean}
+          SecondInputExplicitOptional={localUiSchema?.SecondInputExplicitOptional as boolean}
           FirstInputResetIcon={localUiSchema?.FirstInputResetIcon as unknown as boolean}
           SecondInputResetIcon={localUiSchema?.SecondInputResetIcon as unknown as boolean}
           FirstInputClassNames={localUiSchema?.FirstInputClassNames as string}

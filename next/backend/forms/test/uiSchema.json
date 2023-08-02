@@ -120,7 +120,7 @@
         "resetIcon": true,
         "leftIcon": "call",
         "size": "default",
-        "explicitOptional": "left"
+        "explicitOptional": true
       }
     },
     "password": {
@@ -131,7 +131,7 @@
         "tooltip": "Password hint",
         "leftIcon": "lock",
         "type": "password",
-        "explicitOptional": "right"
+        "explicitOptional": true
       }
     },
     "psc": {

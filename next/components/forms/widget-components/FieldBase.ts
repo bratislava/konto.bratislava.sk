@@ -1,5 +1,3 @@
-import { ExplicitOptionalType } from '../types/ExplicitOptional'
-
 export type FieldBaseProps = {
   label: string
   helptext?: string
@@ -7,5 +5,5 @@ export type FieldBaseProps = {
   tooltip?: string
   required?: boolean
   disabled?: boolean
-  explicitOptional?: ExplicitOptionalType
+  explicitOptional?: boolean
 }

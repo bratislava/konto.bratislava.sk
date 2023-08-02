@@ -2,33 +2,26 @@ import cx from 'classnames'
 import Tooltip, { TooltipPositionType } from 'components/forms/info-components/Tooltip/Tooltip'
 import { DOMAttributes } from 'react'
 
-import { ExplicitOptionalType } from '../types/ExplicitOptional'
+import { FieldBaseProps } from '../widget-components/FieldBase'
 
-export interface FieldHeaderProps {
-  label: string
+export type FieldHeaderProps = FieldBaseProps & {
   htmlFor?: string
-  required?: boolean
-  explicitOptional?: ExplicitOptionalType
-  helptext?: string
   labelProps?: DOMAttributes<never>
   descriptionProps?: DOMAttributes<never>
-  tooltip?: string
   tooltipPosition?: TooltipPositionType
 }
 
-const FieldHeader = (props: FieldHeaderProps) => {
-  const {
-    label,
-    htmlFor,
-    required,
-    explicitOptional = 'none',
-    helptext = '',
-    labelProps,
-    descriptionProps,
-    tooltip,
-    tooltipPosition,
-  } = props
-
+const FieldHeader = ({
+  label,
+  htmlFor,
+  required,
+  explicitOptional = false,
+  helptext = '',
+  labelProps,
+  descriptionProps,
+  tooltip,
+  tooltipPosition,
+}: FieldHeaderProps) => {
   // STYLES
   const labelStyle = cx('text-p3-semibold sm:text-16-semibold relative text-gray-800', {
     'after:text-16-semibold after:content-["*"] after:ml-0.5 after:absolute after:bottom-0.5 after:text-main-700':
@@ -48,10 +41,11 @@ const FieldHeader = (props: FieldHeaderProps) => {
           <label htmlFor={htmlFor} className={labelStyle} {...labelProps}>
             {label}
           </label>
-          {!required && explicitOptional === 'left' && (
-            <div className="text-p3 sm:text-16 ml-2 flex items-center">Optional</div>
-          )}
-          <div className="flex-column flex items-center">
+
+          <div className="flex items-center">
+            {!required && explicitOptional && (
+              <div className="text-p3 sm:text-16 ml-2 flex items-center">(optional)</div>
+            )}
             {tooltip && (
               <div
                 className={cx('flex-column flex items-center', {
@@ -64,11 +58,6 @@ const FieldHeader = (props: FieldHeaderProps) => {
             )}
           </div>
         </div>
-        {
-          /* OPTIONAL */ !required && explicitOptional === 'right' && (
-            <p className="text-p3 sm:text-16 ml-2 flex items-center">(optional)</p>
-          )
-        }
       </div>
       {helptext && (
         <div {...descriptionProps} className="text-p3 sm:text-16 mb-1 text-gray-700">

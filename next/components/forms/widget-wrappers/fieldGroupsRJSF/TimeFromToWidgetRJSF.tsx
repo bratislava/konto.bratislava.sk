@@ -2,7 +2,6 @@ import { FieldProps } from '@rjsf/utils'
 import React from 'react'
 
 import { TimeFromTo } from '../../groups'
-import { ExplicitOptionalType } from '../../types/ExplicitOptional'
 import { FormSpacingType } from '../../types/WidgetOptions'
 import WidgetWrapper, { isFormSpacingType } from '../WidgetWrapper'
 
@@ -59,8 +58,8 @@ const TimeFromToWidgetRJSF = ({
           TimeToRequired={schema.required?.includes('endTime')}
           TimeFromErrorMessage={getErrorMessage('startTime')}
           TimeToErrorMessage={getErrorMessage('endTime')}
-          TimeFromExplicitOptional={localUiSchema?.TimeFromExplicitOptional as ExplicitOptionalType}
-          TimeToExplicitOptional={localUiSchema?.TimeToExplicitOptional as ExplicitOptionalType}
+          TimeFromExplicitOptional={localUiSchema?.TimeFromExplicitOptional as boolean}
+          TimeToExplicitOptional={localUiSchema?.TimeToExplicitOptional as boolean}
           TimeFromOnChange={(e) => handleOnChange('startTime', e?.toString())}
           TimeToOnChange={(e) => handleOnChange('endTime', e?.toString())}
           TimeFromValue={formData?.startTime}

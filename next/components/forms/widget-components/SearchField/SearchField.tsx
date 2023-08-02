@@ -1,5 +1,4 @@
-import ResetIcon from '@assets/images/new-icons/ui/delete.svg'
-import DarkSearchIcon from '@assets/images/new-icons/ui/search.svg'
+import { RemoveIcon, SearchIcon } from '@assets/ui-icons'
 import cx from 'classnames'
 import { useRef, useState } from 'react'
 import { useTextField } from 'react-aria'
@@ -87,13 +86,13 @@ const SearchField = ({
       <div className="relative">
         <i
           className={cx(
-            'flex items-center justify-center absolute inset-y-1/2 left-3 sm:left-4 h-6 w-6 -translate-y-2/4',
+            'absolute inset-y-1/2 left-3 flex h-6 w-6 -translate-y-2/4 items-center justify-center sm:left-4',
             {
               'opacity-50': disabled,
             },
           )}
         >
-          <DarkSearchIcon />
+          <SearchIcon />
         </i>
         <input
           {...inputProps}
@@ -108,9 +107,9 @@ const SearchField = ({
             tabIndex={0}
             onKeyDown={() => setValueState('')}
             onClick={() => setValueState('')}
-            className="flex items-center justify-center absolute inset-y-1/2 right-3 sm:right-4 h-6 w-6 -translate-y-2/4 cursor-pointer"
+            className="absolute inset-y-1/2 right-3 flex h-6 w-6 -translate-y-2/4 cursor-pointer items-center justify-center sm:right-4"
           >
-            <ResetIcon />
+            <RemoveIcon />
           </i>
         )}
       </div>

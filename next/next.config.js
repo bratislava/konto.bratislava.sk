@@ -89,8 +89,21 @@ const nextConfig = {
   webpack(config) {
     config.module.rules.push({
       test: /\.svg$/,
-      use: ['@svgr/webpack'],
+      use: {
+        loader: '@svgr/webpack',
+        options: {
+          svgoConfig: {
+            plugins: [
+              {
+                name: 'removeViewBox',
+                active: false,
+              },
+            ],
+          },
+        },
+      },
     })
+
     // used for loading eform xml template
     config.module.rules.push({ test: /\.xml$/, loader: 'xml-loader' })
 

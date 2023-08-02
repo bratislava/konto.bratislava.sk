@@ -1,13 +1,10 @@
-import MailIcon from '@assets/images/forms/mail.svg'
-import ResetIcon from '@assets/images/new-icons/ui/delete.svg'
-import LockIcon from '@assets/images/new-icons/ui/lock.svg'
-import PersonIcon from '@assets/images/new-icons/ui/profile.svg'
-import CallIcon from '@assets/images/new-icons/ui/telephone.svg'
+import { LockIcon, PhoneIcon, ProfileIcon, RemoveIcon } from '@assets/ui-icons'
 import cx from 'classnames'
 import { TooltipPositionType } from 'components/forms/info-components/Tooltip/Tooltip'
 import { forwardRef, ReactNode, RefObject, useEffect, useState } from 'react'
 import { useTextField } from 'react-aria'
 
+import MailIcon from '../../../../assets/ui-icons/custom_mail.svg'
 import FieldErrorMessage from '../../info-components/FieldErrorMessage'
 import FieldHeader from '../../info-components/FieldHeader'
 import { ExplicitOptionalType } from '../../types/ExplicitOptional'
@@ -118,11 +115,11 @@ const InputField = forwardRef<HTMLInputElement, InputBase>(
     const leftIconSwitcher = (icon: string): ReactNode | null => {
       switch (icon) {
         case 'person':
-          return <PersonIcon />
+          return <ProfileIcon />
         case 'mail':
           return <MailIcon />
         case 'call':
-          return <CallIcon />
+          return <PhoneIcon />
         case 'lock':
           return <LockIcon />
         default:
@@ -158,8 +155,8 @@ const InputField = forwardRef<HTMLInputElement, InputBase>(
       <div
         className={cx('flex flex-col', {
           'w-full': size === 'large',
-          'max-w-[388px] w-fit': size === 'default',
-          'max-w-[200px] w-fit': size === 'small',
+          'w-fit max-w-[388px]': size === 'default',
+          'w-fit max-w-[200px]': size === 'small',
         })}
       >
         <FieldHeader
@@ -177,7 +174,7 @@ const InputField = forwardRef<HTMLInputElement, InputBase>(
           {leftIcon && (
             <i
               className={cx(
-                'w-6 h-6 -translate-y-2/4 inset-y-1/2 absolute left-3 sm:left-4 flex items-center justify-center',
+                'absolute inset-y-1/2 left-3 flex h-6 w-6 -translate-y-2/4 items-center justify-center sm:left-4',
                 {
                   'opacity-50': disabled,
                 },
@@ -192,9 +189,9 @@ const InputField = forwardRef<HTMLInputElement, InputBase>(
               type="button"
               tabIndex={0}
               onClick={resetIconHandler}
-              className="flex items-center justify-center absolute inset-y-1/2 right-3 sm:right-4 h-6 w-6 -translate-y-2/4 cursor-pointer"
+              className="absolute inset-y-1/2 right-3 flex h-6 w-6 -translate-y-2/4 cursor-pointer items-center justify-center sm:right-4"
             >
-              <ResetIcon />
+              <RemoveIcon />
             </button>
           )}
           {endIcon}

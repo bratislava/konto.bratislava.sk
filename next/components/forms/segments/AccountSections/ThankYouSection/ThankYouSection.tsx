@@ -1,4 +1,4 @@
-import BratislavaIcon from '@assets/images/account/bratislava-footer.svg'
+import BratislavaIcon from '@assets/images/bratislava-footer.svg'
 import AccountMarkdown from 'components/forms/segments/AccountMarkdown/AccountMarkdown'
 import ThankYouCard from 'components/forms/segments/AccountSections/ThankYouSection/ThankYouCard'
 import Button from 'components/forms/simple-components/Button'
@@ -35,7 +35,7 @@ const ThankYouSection = () => {
   }, [router.query, status])
 
   return (
-    <div className="h-screen bg-gray-0 md:bg-gray-50 pt-16 md:pt-28 flex flex-col justify-between">
+    <div className="flex h-screen flex-col justify-between bg-gray-0 pt-16 md:bg-gray-50 md:pt-28">
       <div className="flex flex-col">
         {success ? (
           <ThankYouCard
@@ -54,7 +54,7 @@ const ThankYouSection = () => {
             secondButtonTitle={t('thank_you.button_cancel_text')}
           />
         )}
-        <div className="max-w-[734px] lg:max-w-[800px] w-full mx-auto mt-0 md:mt-10 px-4 md:px-0">
+        <div className="mx-auto mt-0 w-full max-w-[734px] px-4 md:mt-10 md:px-0 lg:max-w-[800px]">
           <span className="text-p2 flex">
             <AccountMarkdown
               variant="sm"
@@ -63,7 +63,7 @@ const ThankYouSection = () => {
               )}</span>.`}
             />
           </span>
-          <div className="flex flex-col gap-3 mt-4 md:mt-6">
+          <div className="mt-4 flex flex-col gap-3 md:mt-6">
             <Button
               label={t('thank_you.button_faq_text')}
               href="https://www.bratislava.sk/mesto-bratislava/dane-a-poplatky/dan-z-nehnutelnosti/digitalna-platba"
@@ -80,7 +80,7 @@ const ThankYouSection = () => {
         </div>
       </div>
 
-      <div className="w-full max-w-screen-lg mx-auto hidden lg:flex flex-col items-center gap-6 pb-6">
+      <div className="mx-auto hidden w-full max-w-screen-lg flex-col items-center gap-6 pb-6 lg:flex">
         <BratislavaIcon />
         <p className="text-p2">{t('thank_you.footer_text')}</p>
       </div>

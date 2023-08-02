@@ -5,8 +5,12 @@ import {
   PostFileResponseDto,
 } from '@clients/openapi-forms'
 import { AxiosProgressEvent, AxiosResponse } from 'axios'
+import flatten from 'lodash/flatten'
+import { extensions } from 'mime-types'
+import prettyBytes from 'pretty-bytes'
 import { v4 as createUuid } from 'uuid'
 
+import { environment } from '../../environment'
 import {
   FormFileUploadClientFileInfo,
   FormFileUploadConstraints,
@@ -120,19 +124,29 @@ export const mergeClientAndServerFiles = (
     (file) =>
       [
         file.id,
-        { status: file.status, fileName: file.file.name } satisfies FormFileUploadFileInfo,
-      ] as const,
-  )
-  const serverMapped = serverFiles.map(
-    (file) =>
-      [
-        file.id,
         {
-          status: serverResponseToStatusMap[file.status],
-          fileName: file.fileName,
+          status: file.status,
+          fileName: file.file.name,
+          canDownload: false,
+          fileSize: file.file.size,
         } satisfies FormFileUploadFileInfo,
       ] as const,
   )
+  const serverMapped = serverFiles.map((file) => {
+    const status = serverResponseToStatusMap[file.status]
+    return [
+      file.id,
+      {
+        status: serverResponseToStatusMap[file.status],
+        fileName: file.fileName,
+        canDownload: [
+          FormFileUploadStatusEnum.Scanning,
+          FormFileUploadStatusEnum.ScanDone,
+        ].includes(status.type),
+        fileSize: file.fileSize,
+      } satisfies FormFileUploadFileInfo,
+    ] as const
+  })
 
   return Object.fromEntries<FormFileUploadFileInfo>([
     ...clientMapped,
@@ -146,8 +160,80 @@ function getFileExtension(filename: string | null) {
     return null
   }
 
-  const match = filename.match(/\.[\da-z]+$/i)
+  // https://stackoverflow.com/a/680982
+  // eslint-disable-next-line security/detect-unsafe-regex
+  const match = filename.match(/(?:\.([^.]+))?$/i)
   return match ? match[0] : null
+}
+
+/**
+ * File types are defined by MIME types in the environmental variables (which are shared with a BE). However, some of
+ * the file extensions mapped from MIME are too exotic to support. This list contains all the file extensions that
+ * we want to exclude from the supported file extensions.
+ */
+const excludedFileExtensions = new Set([
+  '.jpe',
+  '.dot',
+  '.xlm',
+  '.xla',
+  '.xlc',
+  '.xlt',
+  '.xlw',
+  '.pps',
+  '.pot',
+])
+
+/**
+ * File extensions mapped from MIME types except of the excluded file extensions.
+ */
+const supportedFileExtensions = flatten(
+  environment.formsMimetypes.map((format) => extensions[format].map((ext) => `.${ext}`)),
+).filter((extension) => !excludedFileExtensions.has(extension))
+
+/**
+ * Returns an overlap of globally supported file extensions and the file extensions defined in the field if provided.
+ * @param fieldFileExtensions
+ */
+export const getSupportedFileExtensions = (fieldFileExtensions?: string[]) => {
+  if (!fieldFileExtensions) {
+    return supportedFileExtensions
+  }
+
+  return fieldFileExtensions.filter((format) => supportedFileExtensions.includes(format))
+}
+
+/**
+ * If field doesn't provide any specific file extensions, we display none because there are too many of them. However,
+ * the file upload dialog only allows to select files that are supported.
+ */
+export const getDisplaySupportedFileExtensions = (fieldFileExtensions?: string[]) => {
+  if (!fieldFileExtensions) {
+    return null
+  }
+
+  return getSupportedFileExtensions(fieldFileExtensions)
+}
+
+/**
+ * Returns a max file size out of global max size and the one defined in the field if provided.
+ * @param fieldMaxFileSize
+ */
+export const getMaxFileSize = (fieldMaxFileSize?: number) => {
+  const fieldMaxFileSizeBytes = fieldMaxFileSize ? fieldMaxFileSize * 1_000_000 : Infinity
+
+  return Math.min(fieldMaxFileSizeBytes, environment.formsMaxSize)
+}
+
+/**
+ * If field doesn't provide max file size, we display none. However, if the uploaded file is too big the upload will
+ * fail.
+ */
+export const getDisplayMaxFileSize = (fieldMaxFileSize?: number) => {
+  if (!fieldMaxFileSize) {
+    return null
+  }
+
+  return getMaxFileSize(fieldMaxFileSize)
 }
 
 /**
@@ -156,25 +242,24 @@ function getFileExtension(filename: string | null) {
  * passed to the service by the widget directly in the upload function.
  */
 const getStatusForNewFile = (file: File, constraints: FormFileUploadConstraints) => {
-  if (constraints.maxFileSize != null && file.size > constraints.maxFileSize * 1_000_000) {
+  const maxFileSize = getMaxFileSize(constraints.maxFileSize)
+  if (file.size > maxFileSize) {
     return {
       type: FormFileUploadStatusEnum.UploadError as const,
       // TODO: Improve error message.
-      error: 'File too big',
+      error: `File too big, max size: ${prettyBytes(maxFileSize)}`,
       canRetry: false,
     }
   }
 
-  // TODO: Add support for generally supported file extensions.
   const fileExtension = getFileExtension(file.name)
-  if (
-    constraints.supportedFormats != null &&
-    (fileExtension == null || !constraints.supportedFormats.includes(fileExtension))
-  ) {
+  const supported = getSupportedFileExtensions(constraints.supportedFormats)
+
+  if (fileExtension == null || !supported.includes(fileExtension.toLowerCase())) {
     return {
       type: FormFileUploadStatusEnum.UploadError as const,
       // TODO: Improve error message.
-      error: 'Invalid file type',
+      error: `Invalid file type, supported: ${supported.join(', ')}`,
       canRetry: false,
     }
   }

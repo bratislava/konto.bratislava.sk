@@ -55,7 +55,7 @@ const CorrespondenceAddressForm = ({ error, onHideError, onSubmit, defaultValues
 
   return (
     <form
-      className="flex flex-col space-y-4 w-full"
+      className="flex w-full flex-col space-y-4"
       onSubmit={handleSubmit((data: Address) => {
         const modifyData: Address = {
           ...data,

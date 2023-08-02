@@ -56,7 +56,7 @@ const singleModalContent = ({ onSubmit }: any) => {
         Lorem Ipsum passages, and more recently with desktop publishing software like Aldus
         PageMaker including versions of Lorem Ipsum.
       </div>
-      <div className="flex justify-between mt-2">
+      <div className="mt-2 flex justify-between">
         <Button text="First" variant="black-outline" onPress={onSubmit} />
         <Button text="Second" variant="black-outline" onPress={onSubmit} />
       </div>

@@ -131,7 +131,7 @@ const RegisterPage = ({ page }: AsyncServerProps<typeof getServerSideProps>) => 
     <PageWrapper locale={page.locale} localizations={page.localizations}>
       <LoginRegisterLayout backButtonHidden>
         {registrationStatus === RegistrationStatus.INIT && <AccountActivator />}
-        <AccountContainer className="md:pt-6 pt-0 mb-0 md:mb-8">
+        <AccountContainer className="mb-0 pt-0 md:mb-8 md:pt-6">
           {registrationStatus === RegistrationStatus.INIT ? (
             <RegisterForm
               lastEmail={lastEmail}

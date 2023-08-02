@@ -1,4 +1,4 @@
-import { FieldProps, RJSFSchema } from '@rjsf/utils'
+import { FieldProps } from '@rjsf/utils'
 import React from 'react'
 
 import { DateTimePicker } from '../../groups'
@@ -6,10 +6,10 @@ import { ExplicitOptionalType } from '../../types/ExplicitOptional'
 import { FormSpacingType } from '../../types/WidgetOptions'
 import WidgetWrapper, { isFormSpacingType } from '../WidgetWrapper'
 
-interface DateTimeWidgetRJSFProps extends FieldProps {
-  formData: RJSFSchema
-}
-
+type DateTimeWidgetRJSFProps = FieldProps<{
+  dateValue?: string | undefined
+  timeValue?: string | undefined
+}>
 const DateTimeWidgetRJSF = ({
   formData = {},
   onChange,
@@ -39,7 +39,8 @@ const DateTimeWidgetRJSF = ({
   }
 
   // TODO: fix this code block. Re check what kind of error message it returns and fix in a new way according new task
-  const getErrorMessage = (propKey: string): string[] => errorSchema?.[propKey]?.__errors || []
+  const getErrorMessage = (propKey: 'dateValue' | 'timeValue'): string[] =>
+    errorSchema?.[propKey]?.__errors || []
 
   return (
     <WidgetWrapper

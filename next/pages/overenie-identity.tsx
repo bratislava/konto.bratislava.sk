@@ -96,7 +96,7 @@ const IdentityVerificationPage = ({ page }: AsyncServerProps<typeof getServerSid
   return (
     <PageWrapper locale={page.locale} localizations={page.localizations}>
       <LoginRegisterLayout backButtonHidden>
-        <AccountContainer className="md:pt-6 pt-0 mb-0 md:mb-8">
+        <AccountContainer className="mb-0 pt-0 md:mb-8 md:pt-6">
           {tierStatus.isIdentityVerificationNotYetAttempted && (
             <IdentityVerificationForm
               onSubmit={verifyIdentityAndRefreshUserData}

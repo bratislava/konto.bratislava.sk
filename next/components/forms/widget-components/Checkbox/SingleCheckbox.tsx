@@ -1,4 +1,4 @@
-import Check from '@assets/images/new-icons/ui/done.svg'
+import { CheckIcon } from '@assets/ui-icons'
 import cx from 'classnames'
 import Tooltip from 'components/forms/info-components/Tooltip/Tooltip'
 import React from 'react'
@@ -86,8 +86,8 @@ const SingleCheckBox = ({
         </VisuallyHidden>
         <div className={checkboxStyle}>
           {isSelected && (
-            <Check
-              className={cx('w-5 h-5 text-gray-0', {
+            <CheckIcon
+              className={cx('h-5 w-5 text-gray-0', {
                 hidden: !isSelected,
               })}
             />
@@ -109,7 +109,7 @@ const SingleCheckBox = ({
         <div className={labelStyle}>
           <div
             className={cx('relative', {
-              'after:text-16-semibold after:content-["*"] after:ml-0.5 after:absolute after:bottom-0.5 after:text-main-700':
+              'after:text-16-semibold after:absolute after:bottom-0.5 after:ml-0.5 after:text-main-700 after:content-["*"]':
                 required,
             })}
           >

@@ -4,7 +4,7 @@ import { Wrapper } from '../Wrapper'
 
 const DatePickerShowCase = () => {
   return (
-    <Wrapper direction="column" title="Date Picker">
+    <Wrapper direction="row" title="Date Picker">
       <Stack direction="column">
         <DatePicker label="Label" />
         <DatePicker label="Label" errorMessage={['Error message']} />

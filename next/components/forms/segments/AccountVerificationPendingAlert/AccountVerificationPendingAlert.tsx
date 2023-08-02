@@ -1,5 +1,4 @@
-import ArrowRightIcon from '@assets/images/new-icons/ui/arrow-right.svg'
-import WarningTimeIcon from '@assets/images/new-icons/ui/clock.svg'
+import { ArrowRightIcon, ClockIcon } from '@assets/ui-icons'
 import AccountMarkdown from 'components/forms/segments/AccountMarkdown/AccountMarkdown'
 import Button from 'components/forms/simple-components/Button'
 import { ReactNode } from 'react'
@@ -25,9 +24,9 @@ const AccountVerificationPendingAlert = ({
 }: Props) => {
   return (
     <div className="flex flex-col space-y-6">
-      <div className="h-14 w-14 rounded-full p-4 bg-warning-100 mx-auto">
+      <div className="mx-auto h-14 w-14 rounded-full bg-warning-100 p-4">
         <div className="flex h-6 w-6 items-center justify-center">
-          <WarningTimeIcon className="w-6 h-6 text-warning-700" />
+          <ClockIcon className="h-6 w-6 text-warning-700" />
         </div>
       </div>
       <h1 className="text-h3 text-center">{title}</h1>
@@ -42,7 +41,7 @@ const AccountVerificationPendingAlert = ({
           className="min-w-full"
           onPress={onCancel}
           text={cancelLabel}
-          endIcon={<ArrowRightIcon className="w-6 h-6" />}
+          endIcon={<ArrowRightIcon className="h-6 w-6" />}
         />
       )}
     </div>

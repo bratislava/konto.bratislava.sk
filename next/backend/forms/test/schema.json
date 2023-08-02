@@ -1,46 +1,65 @@
 {
   "pospID": "test",
   "pospVersion": "0.1",
-  "$async": true,
   "title": "Example",
   "description": "Example schema",
   "type": "object",
   "allOf": [
     {
+      "type": "object",
       "properties": {
-        "mestoPSC": {
-          "required": ["psc", "mesto"],
+        "mestoPSCstep": {
           "type": "object",
+          "title": "Mesto PSC step",
           "properties": {
-            "mesto": {
-              "type": "string",
-              "title": "Mesto",
-              "default": "Košice"
-            },
-            "psc": {
-              "type": "string",
-              "title": "PSČ",
-              "format": "zip"
+            "mestoPSC": {
+              "required": ["psc", "mesto"],
+              "type": "object",
+              "properties": {
+                "mesto": {
+                  "type": "string",
+                  "title": "Mesto",
+                  "default": "Košice"
+                },
+                "psc": {
+                  "type": "string",
+                  "title": "PSČ",
+                  "format": "zip"
+                }
+              }
             }
-          }
+          },
+          "required": ["mestoPSC"]
         }
-      }
+      },
+      "required": ["mestoPSCstep"]
     },
     {
       "allOf": [
         {
           "if": {
+            "type": "object",
             "properties": {
-              "mestoPSC": {
+              "mestoPSCstep": {
+                "type": "object",
                 "properties": {
-                  "psc": {
-                    "const": "82103"
+                  "mestoPSC": {
+                    "required": ["psc"],
+                    "type": "object",
+                    "properties": {
+                      "psc": {
+                        "const": "82103"
+                      }
+                    }
                   }
-                }
+                },
+                "required": ["mestoPSC"]
               }
-            }
+            },
+            "required": ["mestoPSCstep"]
           },
           "then": {
+            "type": "object",
             "properties": {
               "conditionalStep": {
                 "type": "object",
@@ -52,76 +71,98 @@
                   }
                 }
               }
-            }
+            },
+            "required": ["conditionalStep"]
           }
         }
       ]
     },
     {
       "properties": {
-        "dateTimePicker": {
-          "title": "Showcase of DateTime Picker",
-          "required": ["dateValue", "timeValue"],
+        "dateTimePickerShowcase": {
           "type": "object",
           "properties": {
-            "dateValue": {
-              "type": "string",
-              "format": "date",
-              "title": "Date"
-            },
-            "timeValue": {
-              "type": "string",
-              "format": "localTime",
-              "title": "Time"
+            "dateTimePicker": {
+              "required": ["dateValue", "timeValue"],
+              "type": "object",
+              "properties": {
+                "dateValue": {
+                  "type": "string",
+                  "format": "date",
+                  "title": "Date"
+                },
+                "timeValue": {
+                  "type": "string",
+                  "format": "localTime",
+                  "title": "Time"
+                }
+              }
             }
-          }
+          },
+          "title": "Showcase of DateTime Picker"
         }
-      }
+      },
+      "required": ["dateTimePickerShowcase"]
     },
     {
+      "type": "object",
       "properties": {
-        "timeFromTo": {
+        "timeFromToShowcase": {
           "title": "Showcase of TimeFromTo Picker",
-          "timeFromTo": true,
           "type": "object",
           "properties": {
-            "startTime": {
-              "type": "string",
-              "format": "localTime",
-              "title": "Time From"
-            },
-            "endTime": {
-              "type": "string",
-              "format": "localTime",
-              "title": "Time To"
+            "timeFromTo": {
+              "timeFromTo": true,
+              "type": "object",
+              "properties": {
+                "startTime": {
+                  "type": "string",
+                  "format": "localTime",
+                  "title": "Time From"
+                },
+                "endTime": {
+                  "type": "string",
+                  "format": "localTime",
+                  "title": "Time To"
+                }
+              }
             }
           }
         }
-      }
+      },
+      "required": ["timeFromToShowcase"]
     },
     {
+      "type": "object",
       "properties": {
-        "dateDepartureArrival": {
+        "dateFromToShowcase": {
           "title": "Showcase of DateFromTo Picker",
-          "required": ["startDate", "endDate"],
-          "dateFromTo": true,
           "type": "object",
           "properties": {
-            "startDate": {
-              "type": "string",
-              "format": "date",
-              "title": "Date From"
-            },
-            "endDate": {
-              "type": "string",
-              "format": "date",
-              "title": "Date To"
+            "dateFromTo": {
+              "required": ["startDate", "endDate"],
+              "dateFromTo": true,
+              "type": "object",
+              "properties": {
+                "startDate": {
+                  "type": "string",
+                  "format": "date",
+                  "title": "Date From"
+                },
+                "endDate": {
+                  "type": "string",
+                  "format": "date",
+                  "title": "Date To"
+                }
+              }
             }
           }
         }
-      }
+      },
+      "required": ["dateFromToShowcase"]
     },
     {
+      "type": "object",
       "properties": {
         "datePickerWithTimePicker": {
           "title": "Showcase of DatePicker and TimePicker",
@@ -153,9 +194,11 @@
             }
           }
         }
-      }
+      },
+      "required": ["datePickerWithTimePicker"]
     },
     {
+      "type": "object",
       "properties": {
         "inputFields": {
           "title": "Showcase of InputField",
@@ -199,9 +242,11 @@
             }
           }
         }
-      }
+      },
+      "required": ["inputFields"]
     },
     {
+      "type": "object",
       "properties": {
         "selectFields": {
           "title": "Ukazka Selectov",
@@ -257,7 +302,6 @@
             "years": {
               "type": "number",
               "title": "Years in school",
-              "uniqueItems": true,
               "oneOf": [
                 {
                   "const": 1
@@ -274,18 +318,23 @@
               "type": "string",
               "title": "Street (ciselnik)",
               "format": "ciselnik",
-              "ciselnik": { "id": "POST_STREET" }
+              "ciselnik": {
+                "id": "POST_STREET"
+              }
             },
             "city": {
               "type": "string",
               "title": "City (ciselnik)",
               "format": "ciselnik",
-              "ciselnik": { "id": "SUSR_0025" }
+              "ciselnik": {
+                "id": "SUSR_0025"
+              }
             }
           },
           "allOf": [
             {
               "if": {
+                "type": "object",
                 "properties": {
                   "school": {
                     "const": "stu_fchpt"
@@ -293,6 +342,7 @@
                 }
               },
               "then": {
+                "type": "object",
                 "properties": {
                   "conditionalSchool": {
                     "type": "string",
@@ -305,6 +355,7 @@
               "if": {
                 "oneOf": [
                   {
+                    "type": "object",
                     "properties": {
                       "diplomas": {
                         "const": ["stu_fei", "stu_fiit"]
@@ -312,6 +363,7 @@
                     }
                   },
                   {
+                    "type": "object",
                     "properties": {
                       "diplomas": {
                         "const": ["stu_fiit"]
@@ -319,6 +371,7 @@
                     }
                   },
                   {
+                    "type": "object",
                     "properties": {
                       "diplomas": {
                         "const": ["stu_fei"]
@@ -328,6 +381,7 @@
                 ]
               },
               "then": {
+                "type": "object",
                 "properties": {
                   "conditionalDiplomas": {
                     "type": "string",
@@ -338,9 +392,11 @@
             }
           ]
         }
-      }
+      },
+      "required": ["selectFields"]
     },
     {
+      "type": "object",
       "properties": {
         "fileUploads": {
           "title": "Nahratie suborov",
@@ -350,34 +406,81 @@
             "importButtonOneFile": {
               "title": "Importuj jeden subor",
               "type": "string",
-              "format": "file"
+              "file": true
             },
             "importButtonMultipleFiles": {
               "title": "Importuj viac suborov",
               "type": "array",
               "items": {
                 "type": "string",
-                "format": "file"
-              }
+                "file":  true
+              },
+              "default": [],
+              "minItems": 1
             },
             "importDragAndDropOneFile": {
               "title": "Presun sem jeden subor",
               "type": "string",
-              "format": "file"
+              "file":  true
             },
             "importDragAndDropMultipleFiles": {
               "title": "Presun sem viac suborov",
               "type": "array",
               "items": {
                 "type": "string",
-                "format": "file"
+                "file": true
+              }
+            },
+            "showConditionalFile": {
+              "type": "array",
+              "title": "Show conditional file",
+              "minItems": 0,
+              "maxItems": 1,
+              "uniqueItems": true,
+              "items": {
+                "anyOf": [
+                  {
+                    "title": "Show",
+                    "const": "show"
+                  }
+                ]
               }
             }
-          }
+          },
+          "allOf": [
+            {
+              "if": {
+                "type": "object",
+                "properties": {
+                  "showConditionalFile": {
+                    "type": "array",
+                    "contains": {
+                      "type": "string",
+                      "const": "show"
+                    }
+                  }
+                },
+                "required": ["showConditionalFile"]
+              },
+              "then": {
+                "type": "object",
+                "properties": {
+                  "conditionalFile": {
+                    "title": "Presun sem jeden subor",
+                    "type": "string",
+                    "file":  true
+                  }
+                }
+              }
+            }
+          ]
+
         }
-      }
+      },
+      "required": ["fileUploads"]
     },
     {
+      "type": "object",
       "properties": {
         "chooseOneOf": {
           "title": "Radio button step",
@@ -388,7 +491,6 @@
               "type": "string",
               "title": "Some random choose",
               "comment": "Radio buttons need to have default value",
-              "default": "screen",
               "oneOf": [
                 {
                   "const": "screen",
@@ -422,14 +524,17 @@
           "allOf": [
             {
               "if": {
+                "type": "object",
                 "properties": {
                   "chooseOneOfMore": {
                     "const": "overlay"
                   }
-                }
+                },
+                "required": ["chooseOneOfMore"]
               },
               "then": {
                 "required": ["overlayInput"],
+                "type": "object",
                 "properties": {
                   "overlayInput": {
                     "type": "string",
@@ -438,6 +543,7 @@
                 }
               },
               "else": {
+                "type": "object",
                 "properties": {
                   "notOverlayInput": {
                     "type": "string",
@@ -448,9 +554,11 @@
             }
           ]
         }
-      }
+      },
+      "required": ["chooseOneOf"]
     },
     {
+      "type": "object",
       "properties": {
         "checkBoxes": {
           "title": "Checkboxes",
@@ -498,6 +606,7 @@
               "if": {
                 "oneOf": [
                   {
+                    "type": "object",
                     "properties": {
                       "favouriteFruits": {
                         "const": ["plum"]
@@ -505,6 +614,7 @@
                     }
                   },
                   {
+                    "type": "object",
                     "properties": {
                       "favouriteFruits": {
                         "const": ["apple"]
@@ -514,6 +624,7 @@
                 ]
               },
               "then": {
+                "type": "object",
                 "properties": {
                   "checkboxBonus": {
                     "title": "This will show when we will click plum",
@@ -535,24 +646,8 @@
             }
           ]
         }
-      }
-    },
-    {
-      "$async": true,
-      "properties": {
-        "user": {
-          "type": "object",
-          "title": "Example async validation",
-          "properties": {
-            "phone": {
-              "type": "string",
-              "isExampleAsyncValidation": {
-                "errorMsg": "Required input"
-              }
-            }
-          }
-        }
-      }
+      },
+      "required": ["checkBoxes"]
     }
   ]
 }

@@ -1,13 +1,10 @@
-import ArrowsDownUpIcon from '@assets/images/new-icons/ui/arrows-down-up.svg'
-import DiskIcon from '@assets/images/new-icons/ui/disc.svg'
-import DownloadIcon from '@assets/images/new-icons/ui/download.svg'
-import LockIcon from '@assets/images/new-icons/ui/lock.svg'
-import PdfIcon from '@assets/images/new-icons/ui/pdf.svg'
+import { ConnectionIcon, DiscIcon, DownloadIcon, PdfIcon } from '@assets/ui-icons'
 import { useServerSideAuth } from 'frontend/hooks/useServerSideAuth'
 import Link from 'next/link'
 import { useTranslation } from 'next-i18next'
 import { ReactNode, useState } from 'react'
 
+import { useFormExportImport } from '../../../frontend/hooks/useFormExportImport'
 import RegistrationModal from '../segments/RegistrationModal/RegistrationModal'
 
 type MenuItem = {
@@ -17,58 +14,51 @@ type MenuItem = {
   onPress?: () => void
 }
 
-interface FormHeaderProps {
-  onExportXml: () => void
-  onSaveConcept: () => void
-  onImportXml: () => void
-  onExportPdf: () => void
-}
+const MenuList = () => {
+  const { exportXml, exportPdf, importXml, saveConcept } = useFormExportImport()
 
-const MenuList = ({ onExportXml, onSaveConcept, onImportXml, onExportPdf }: FormHeaderProps) => {
   const { t } = useTranslation('forms')
 
   const { isAuthenticated } = useServerSideAuth()
   const [registrationModal, setRegistrationModal] = useState<boolean>(false)
 
-  const handleOnPressSaveConcept = () => {
+  const handleOnPressSaveConcept = async () => {
     if (!isAuthenticated) {
       setRegistrationModal(true)
     } else {
-      onSaveConcept()
+      await saveConcept()
     }
   }
 
   const menuList: MenuItem[] = [
     {
       title: t('menu_list.save_concept'),
-      icon: <DiskIcon className="w-6 h-6" />,
+      icon: <DiscIcon className="h-6 w-6" />,
+      // eslint-disable-next-line @typescript-eslint/no-misused-promises
       onPress: handleOnPressSaveConcept,
     },
     {
-      title: t('menu_list.eId'),
-      icon: <LockIcon className="w-6 h-6" />,
-      onPress: () => {},
-    },
-    {
       title: t('menu_list.download_xml'),
-      icon: <DownloadIcon className="w-6 h-6" />,
-      onPress: onExportXml,
+      icon: <DownloadIcon className="h-6 w-6" />,
+      // eslint-disable-next-line @typescript-eslint/no-misused-promises
+      onPress: () => exportXml(),
     },
     {
       title: t('menu_list.pdf'),
-      icon: <PdfIcon className="w-6 h-6" />,
-      onPress: onExportPdf,
+      icon: <PdfIcon className="h-6 w-6" />,
+      // eslint-disable-next-line @typescript-eslint/no-misused-promises
+      onPress: () => exportPdf(),
     },
     {
       title: t('menu_list.upload_xml'),
-      icon: <ArrowsDownUpIcon className="w-6 h-6" />,
-      onPress: onImportXml,
+      icon: <ConnectionIcon className="h-6 w-6" />,
+      onPress: importXml,
     },
   ]
 
   return (
     <>
-      <ul className="flex lg:hidden flex-col gap-3 border-t-2 border-gray-200 mt-4 pt-4">
+      <ul className="mt-4 flex flex-col gap-3 border-t-2 border-gray-200 pt-4 lg:hidden">
         {menuList.map((menuItem, i) =>
           menuItem.url ? (
             <li className="w-max" key={i}>
@@ -91,6 +81,7 @@ const MenuList = ({ onExportXml, onSaveConcept, onImportXml, onExportPdf }: Form
           ),
         )}
       </ul>
+      {/* TODO: Refactor save and move to FormModals */}
       {isAuthenticated && (
         <RegistrationModal
           title={t('account:register_modal.header_save_title')}

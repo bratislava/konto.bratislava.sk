@@ -1,95 +1,149 @@
-import { ValidatorType } from '@rjsf/utils'
+import {
+  Experimental_DefaultFormStateBehavior,
+  GenericObjectType,
+  getDefaultFormState,
+  RJSFSchema,
+  ValidatorType,
+} from '@rjsf/utils'
 import { customizeValidator } from '@rjsf/validator-ajv8'
-import { AnySchemaObject, FuncKeywordDefinition } from 'ajv'
-import { JSONSchema7Definition } from 'json-schema'
+import Ajv from 'ajv'
 
-export type JsonSchemaPropertyTree = JsonSchemaPropertyTreeInterface | undefined
-export interface JsonSchemaPropertyTreeInterface {
-  [key: string]: JsonSchemaPropertyTree
+import { FormFileUploadFileInfo } from '../types/formFileUploadTypes'
+
+/*
+ TODO: Add explanation for the whole file and extract to separate package.
+ */
+
+export const getAjvKeywords = (withFiles = true) => {
+  return [
+    {
+      keyword: 'comment',
+    },
+    {
+      keyword: 'example',
+    },
+    {
+      keyword: 'timeFromTo',
+    },
+    {
+      keyword: 'dateFromTo',
+    },
+    {
+      keyword: 'pospID',
+    },
+    {
+      keyword: 'pospVersion',
+    },
+    {
+      keyword: 'ciselnik',
+    },
+    ...(withFiles ? [{ keyword: 'file' }] : []),
+  ]
 }
-
-export type JsonSchema = JSONSchema7Definition
-export interface JsonSchemaProperties {
-  [key: string]: JSONSchema7Definition
-}
-
-export type JsonSchemaExtraProperty = JSONSchema7Definition & { isConditional?: boolean }
-export interface JsonSchemaExtraProperties {
-  [key: string]: JsonSchemaExtraProperty | undefined
-  isConditional?: boolean
-}
-
-export interface FormRJSFContext {
-  formId?: string
-  pospId?: string
-  userExternalId?: string
-}
-
-export interface KeywordDefinition extends FuncKeywordDefinition {
-  validate?: (
-    schema: AnySchemaObject,
-    value: unknown,
-    parentSchema?: AnySchemaObject,
-  ) => boolean | Promise<boolean>
-}
-
-export const exampleAsyncValidation = (
-  schema: AnySchemaObject,
-  value: unknown,
-): Promise<boolean> => {
-  return new Promise((resolve) => {
-    setTimeout(() => resolve(!!value), 500)
-  })
-}
-
-export const ajvKeywords: KeywordDefinition[] = [
-  {
-    keyword: 'isExampleAsyncValidation',
-    async: true,
-    type: 'string',
-    validate: exampleAsyncValidation,
-  },
-  {
-    keyword: 'example',
-  },
-  {
-    keyword: 'timeFromTo',
-  },
-  {
-    keyword: 'dateFromTo',
-  },
-  {
-    keyword: 'pospID',
-  },
-  {
-    keyword: 'pospVersion',
-  },
-  {
-    keyword: 'ciselnik',
-  },
-]
-
 export const ajvFormats = {
   zip: /\b\d{5}\b/,
   time: /^[0-2]\d:[0-5]\d$/,
+  // TODO: Formats
   ciselnik: () => true,
+  date: () => true,
+  localTime: () => true,
+  email: () => true,
+  // TODO: Remove and use only keyword
   file: () => true,
 }
 
-export const customFormats: Record<string, RegExp> = {
-  zip: /\b\d{5}\b/,
-  time: /^[0-2]\d:[0-5]\d$/,
+export const getFileIds = (schema: RJSFSchema, formData: GenericObjectType) => {
+  const files: string[] = []
+  const instance = new Ajv({
+    strict: true,
+    allErrors: true,
+    keywords: [
+      ...getAjvKeywords(false),
+      {
+        keyword: 'file',
+        validate: (innerSchema, data) => {
+          if (data) {
+            files.push(data as string)
+          }
+          return true
+        },
+      },
+    ],
+    formats: ajvFormats,
+  })
+  instance.validate(schema, formData)
+
+  return files
 }
+
+const validateFile = (fileInfo: FormFileUploadFileInfo) => {
+  return !['ScanInfected', 'ScanError', 'UploadError', 'UnknownFile'].includes(fileInfo.status.type)
+}
+
+export const defaultFormStateBehavior: Experimental_DefaultFormStateBehavior = {
+  arrayMinItems: { populate: 'never' },
+}
+
+export const validateSummary = (
+  schema: RJSFSchema,
+  formData: GenericObjectType,
+  getFileInfoById: (id: string) => FormFileUploadFileInfo,
+) => {
+  const infectedFiles: FormFileUploadFileInfo[] = []
+  const scanningFiles: FormFileUploadFileInfo[] = []
+  const scanErrorFiles: FormFileUploadFileInfo[] = []
+
+  const validator: ValidatorType = customizeValidator({
+    customFormats: ajvFormats,
+    ajvOptionsOverrides: {
+      strict: true,
+      keywords: [
+        ...getAjvKeywords(false),
+        {
+          keyword: 'file',
+          validate: (schemaInner, data) => {
+            if (data) {
+              if (typeof data !== 'string') {
+                return false
+              }
+              const fileInfo = getFileInfoById(data)
+
+              if (fileInfo.status.type === 'ScanError') {
+                scanErrorFiles.push(fileInfo)
+              }
+              if (fileInfo.status.type === 'ScanInfected') {
+                infectedFiles.push(fileInfo)
+              }
+              if (fileInfo.status.type === 'Scanning' || fileInfo.status.type === 'UploadDone') {
+                scanningFiles.push(fileInfo)
+              }
+
+              return validateFile(fileInfo)
+            }
+
+            return true
+          },
+        },
+      ],
+    },
+  })
+
+  const defaultFormData = getDefaultFormState(
+    validator,
+    schema,
+    formData,
+    undefined,
+    undefined,
+    defaultFormStateBehavior,
+  )
+  const { errorSchema } = validator.validateFormData(defaultFormData, schema)
+
+  return { infectedFiles, scanningFiles, scanErrorFiles, errorSchema }
+}
+
 export const validator: ValidatorType = customizeValidator({
-  customFormats,
-  ajvOptionsOverrides: { keywords: ajvKeywords },
+  customFormats: ajvFormats,
+  ajvOptionsOverrides: {
+    keywords: getAjvKeywords(),
+  },
 })
-
-export type FileScanState = 'scan' | 'error' | 'finished'
-
-export interface FileScan extends Record<string, unknown> {
-  fileName: string
-  originalName: string
-  fileState?: FileScanState
-  scanId?: string
-}

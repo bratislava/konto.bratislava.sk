@@ -1,0 +1,89 @@
+import { GenericObjectType, retrieveSchema, RJSFSchema } from '@rjsf/utils'
+import { JSONSchema7 } from 'json-schema'
+import traverse from 'traverse'
+import { validate as validateUuid, version as uuidVersion } from 'uuid'
+
+import { FormStepIndex, FormStepMetadata } from '../../components/forms/types/Steps'
+import { validator } from '../dtos/formStepperDto'
+import { isDefined } from './general'
+
+/**
+ * Evaluates each step with current form data and returns an array of schemas.
+ *
+ * Used for conditional steps, if the step doesn't satisfy its condition, it has an empty schema ({}).
+ */
+export const getEvaluatedStepsSchemas = (
+  schema: RJSFSchema,
+  formData: GenericObjectType,
+): (JSONSchema7 | null)[] => {
+  return (
+    schema.allOf?.map((step) => {
+      if (typeof step === 'boolean') {
+        return null
+      }
+      const retrievedSchema = retrieveSchema(validator, step, schema, formData)
+
+      return Object.keys(retrievedSchema).length > 0 ? retrievedSchema : null
+    }) ?? []
+  )
+}
+
+export const getStepsMetadata = (
+  stepsSchemas: (JSONSchema7 | null)[],
+  submittedSteps: Set<FormStepIndex>,
+  summaryTitle: string,
+): FormStepMetadata[] => {
+  if (!stepsSchemas || !Array.isArray(stepsSchemas)) return []
+  let displayIndex = 0
+
+  const steps = stepsSchemas
+    .map((step, index) => {
+      if (!step) {
+        return null
+      }
+
+      if (!step.properties || Object.values(step.properties).length !== 1) {
+        throw new Error('Step must have exactly one property.')
+      }
+
+      const { title } = Object.values(step.properties)[0] as JSONSchema7
+
+      displayIndex += 1
+      return {
+        index,
+        displayIndex,
+        title,
+        isSubmitted: submittedSteps.has(index),
+        isSummary: false,
+      } as FormStepMetadata
+    })
+    .filter(isDefined)
+
+  return [
+    ...steps,
+    {
+      index: 'summary',
+      displayIndex: displayIndex + 1,
+      title: summaryTitle,
+      isSubmitted: submittedSteps.has(steps.length),
+      isSummary: true,
+    } as FormStepMetadata,
+  ]
+}
+
+/**
+ * A naive implementation of getting file UUIDs from the form data.
+ */
+export const getFileUuidsNaive = (formData: GenericObjectType) => {
+  return traverse(formData).reduce(function traverseFn(acc: string[], value) {
+    if (
+      this.isLeaf &&
+      typeof value === 'string' &&
+      validateUuid(value) &&
+      uuidVersion(value) === 4
+    ) {
+      acc.push(value)
+    }
+    return acc
+  }, []) as string[]
+}

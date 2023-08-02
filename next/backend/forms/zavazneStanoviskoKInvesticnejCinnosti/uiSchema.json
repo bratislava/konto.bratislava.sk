@@ -1,7 +1,4 @@
 {
-  "ui:submitButtonOptions": {
-    "norender": true
-  },
   "prilohy": {
     "ui:hideError": true,
     "projektovaDokumentacia": {

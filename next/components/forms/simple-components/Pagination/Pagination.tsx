@@ -55,7 +55,7 @@ export const Pagination = ({ onChange, selectedPage, className, count }: Paginat
           }
 
           return (
-            <li className="text-p2-semibold w-10 md:w-12 flex justify-center" key={index}>
+            <li className="text-p2-semibold flex w-10 justify-center md:w-12" key={index}>
               {children}
             </li>
           )

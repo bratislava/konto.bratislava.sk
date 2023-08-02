@@ -18,7 +18,7 @@ interface IProps {
 }
 
 const Divider = () => {
-  return <div className="border-b-solid border-b-2 my-4" />
+  return <div className="border-b-solid my-4 border-b-2" />
 }
 
 const Item = ({

@@ -55,4 +55,11 @@ export const environment = {
         process.env.NEXT_PUBLIC_FEATURE_TOGGLE_PRAVNICKA_OSOBA_REGISTRATION,
       ) === 'true',
   },
+  formsMimetypes: assertEnv(
+    'NEXT_PUBLIC_FORMS_MIMETYPE_WHITELIST',
+    process.env.NEXT_PUBLIC_FORMS_MIMETYPE_WHITELIST,
+  ).split(' '),
+  formsMaxSize: Number(
+    assertEnv('NEXT_PUBLIC_FORMS_MAX_FILE_SIZE', process.env.NEXT_PUBLIC_FORMS_MAX_FILE_SIZE),
+  ),
 }

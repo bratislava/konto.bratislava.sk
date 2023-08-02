@@ -69,19 +69,19 @@ export interface CreateFormEidRequestDto {
    * @type {string}
    * @memberof CreateFormEidRequestDto
    */
-  pospID?: string
+  pospID: string
   /**
    * Version of Form
    * @type {string}
    * @memberof CreateFormEidRequestDto
    */
-  pospVersion?: string
+  pospVersion: string
   /**
    * Subject of message for recipient
    * @type {string}
    * @memberof CreateFormEidRequestDto
    */
-  messageSubject?: string
+  messageSubject: string
   /**
    * Is it signed by Eid?
    * @type {boolean}
@@ -118,19 +118,19 @@ export interface CreateFormRequestDto {
    * @type {string}
    * @memberof CreateFormRequestDto
    */
-  pospID?: string
+  pospID: string
   /**
    * Version of Form
    * @type {string}
    * @memberof CreateFormRequestDto
    */
-  pospVersion?: string
+  pospVersion: string
   /**
    * Subject of message for recipient
    * @type {string}
    * @memberof CreateFormRequestDto
    */
-  messageSubject?: string
+  messageSubject: string
   /**
    * Is it signed by Eid?
    * @type {boolean}
@@ -192,6 +192,7 @@ export const DatabaseErrorDtoErrorNameEnum = {
   NotFoundError: 'NOT_FOUND_ERROR',
   DatabaseError: 'DATABASE_ERROR',
   InternalServerError: 'INTERNAL_SERVER_ERROR',
+  UnauthorizedError: 'UNAUTHORIZED_ERROR',
 } as const
 
 export type DatabaseErrorDtoErrorNameEnum =
@@ -210,17 +211,17 @@ export interface DeleteFileResponseData {
    */
   status: DeleteFileResponseDataStatusEnum
   /**
-   * Hashed file uid under which is file stored in minio
-   * @type {string}
-   * @memberof DeleteFileResponseData
-   */
-  fileUid: string
-  /**
    * Real file name of the file, but is used only for display
    * @type {string}
    * @memberof DeleteFileResponseData
    */
   fileName: string
+  /**
+   * Hashed file uid under which is file stored in minio
+   * @type {string}
+   * @memberof DeleteFileResponseData
+   */
+  fileUid: string
   /**
    * Form type
    * @type {string}
@@ -233,6 +234,12 @@ export interface DeleteFileResponseData {
    * @memberof DeleteFileResponseData
    */
   formId: string
+  /**
+   * File size in bytes
+   * @type {number}
+   * @memberof DeleteFileResponseData
+   */
+  fileSize: number
   /**
    * more info
    * @type {string}
@@ -255,6 +262,19 @@ export const DeleteFileResponseDataStatusEnum = {
 export type DeleteFileResponseDataStatusEnum =
   (typeof DeleteFileResponseDataStatusEnum)[keyof typeof DeleteFileResponseDataStatusEnum]
 
+/**
+ *
+ * @export
+ * @interface DownloadTokenResponseDataDto
+ */
+export interface DownloadTokenResponseDataDto {
+  /**
+   * Download jwt token
+   * @type {string}
+   * @memberof DownloadTokenResponseDataDto
+   */
+  jwt: string
+}
 /**
  *
  * @export
@@ -297,6 +317,7 @@ export const FileAlreadyProcessedErrorDtoErrorNameEnum = {
   NotFoundError: 'NOT_FOUND_ERROR',
   DatabaseError: 'DATABASE_ERROR',
   InternalServerError: 'INTERNAL_SERVER_ERROR',
+  UnauthorizedError: 'UNAUTHORIZED_ERROR',
 } as const
 
 export type FileAlreadyProcessedErrorDtoErrorNameEnum =
@@ -344,6 +365,7 @@ export const FileByScannerIdNotFoundErrorDtoErrorNameEnum = {
   NotFoundError: 'NOT_FOUND_ERROR',
   DatabaseError: 'DATABASE_ERROR',
   InternalServerError: 'INTERNAL_SERVER_ERROR',
+  UnauthorizedError: 'UNAUTHORIZED_ERROR',
 } as const
 
 export type FileByScannerIdNotFoundErrorDtoErrorNameEnum =
@@ -391,6 +413,7 @@ export const FileHasUnsupportedMimeTypeErrorDtoErrorNameEnum = {
   NotFoundError: 'NOT_FOUND_ERROR',
   DatabaseError: 'DATABASE_ERROR',
   InternalServerError: 'INTERNAL_SERVER_ERROR',
+  UnauthorizedError: 'UNAUTHORIZED_ERROR',
 } as const
 
 export type FileHasUnsupportedMimeTypeErrorDtoErrorNameEnum =
@@ -438,6 +461,7 @@ export const FileIdAlreadyExistsErrorDtoErrorNameEnum = {
   NotFoundError: 'NOT_FOUND_ERROR',
   DatabaseError: 'DATABASE_ERROR',
   InternalServerError: 'INTERNAL_SERVER_ERROR',
+  UnauthorizedError: 'UNAUTHORIZED_ERROR',
 } as const
 
 export type FileIdAlreadyExistsErrorDtoErrorNameEnum =
@@ -485,6 +509,7 @@ export const FileInMinioNotFoundErrorDtoErrorNameEnum = {
   NotFoundError: 'NOT_FOUND_ERROR',
   DatabaseError: 'DATABASE_ERROR',
   InternalServerError: 'INTERNAL_SERVER_ERROR',
+  UnauthorizedError: 'UNAUTHORIZED_ERROR',
 } as const
 
 export type FileInMinioNotFoundErrorDtoErrorNameEnum =
@@ -532,10 +557,59 @@ export const FileInScannerNotFoundErrorDtoErrorNameEnum = {
   NotFoundError: 'NOT_FOUND_ERROR',
   DatabaseError: 'DATABASE_ERROR',
   InternalServerError: 'INTERNAL_SERVER_ERROR',
+  UnauthorizedError: 'UNAUTHORIZED_ERROR',
 } as const
 
 export type FileInScannerNotFoundErrorDtoErrorNameEnum =
   (typeof FileInScannerNotFoundErrorDtoErrorNameEnum)[keyof typeof FileInScannerNotFoundErrorDtoErrorNameEnum]
+
+/**
+ *
+ * @export
+ * @interface FileNotFoundErrorDto
+ */
+export interface FileNotFoundErrorDto {
+  /**
+   * Status Code
+   * @type {number}
+   * @memberof FileNotFoundErrorDto
+   */
+  statusCode: number
+  /**
+   * Detail error message
+   * @type {string}
+   * @memberof FileNotFoundErrorDto
+   */
+  message: string
+  /**
+   * status in text
+   * @type {string}
+   * @memberof FileNotFoundErrorDto
+   */
+  status: string
+  /**
+   * Exact error name
+   * @type {string}
+   * @memberof FileNotFoundErrorDto
+   */
+  errorName: FileNotFoundErrorDtoErrorNameEnum
+  /**
+   * Helper for sending additional data in error
+   * @type {object}
+   * @memberof FileNotFoundErrorDto
+   */
+  object?: object
+}
+
+export const FileNotFoundErrorDtoErrorNameEnum = {
+  NotFoundError: 'NOT_FOUND_ERROR',
+  DatabaseError: 'DATABASE_ERROR',
+  InternalServerError: 'INTERNAL_SERVER_ERROR',
+  UnauthorizedError: 'UNAUTHORIZED_ERROR',
+} as const
+
+export type FileNotFoundErrorDtoErrorNameEnum =
+  (typeof FileNotFoundErrorDtoErrorNameEnum)[keyof typeof FileNotFoundErrorDtoErrorNameEnum]
 
 /**
  *
@@ -579,6 +653,7 @@ export const FileOrUserNotFoundErrorDtoErrorNameEnum = {
   NotFoundError: 'NOT_FOUND_ERROR',
   DatabaseError: 'DATABASE_ERROR',
   InternalServerError: 'INTERNAL_SERVER_ERROR',
+  UnauthorizedError: 'UNAUTHORIZED_ERROR',
 } as const
 
 export type FileOrUserNotFoundErrorDtoErrorNameEnum =
@@ -626,6 +701,7 @@ export const FileSizeExceededErrorDtoErrorNameEnum = {
   NotFoundError: 'NOT_FOUND_ERROR',
   DatabaseError: 'DATABASE_ERROR',
   InternalServerError: 'INTERNAL_SERVER_ERROR',
+  UnauthorizedError: 'UNAUTHORIZED_ERROR',
 } as const
 
 export type FileSizeExceededErrorDtoErrorNameEnum =
@@ -673,10 +749,59 @@ export const FileSizeTooLargeErrorDtoErrorNameEnum = {
   NotFoundError: 'NOT_FOUND_ERROR',
   DatabaseError: 'DATABASE_ERROR',
   InternalServerError: 'INTERNAL_SERVER_ERROR',
+  UnauthorizedError: 'UNAUTHORIZED_ERROR',
 } as const
 
 export type FileSizeTooLargeErrorDtoErrorNameEnum =
   (typeof FileSizeTooLargeErrorDtoErrorNameEnum)[keyof typeof FileSizeTooLargeErrorDtoErrorNameEnum]
+
+/**
+ *
+ * @export
+ * @interface FileSizeZeroErrorDto
+ */
+export interface FileSizeZeroErrorDto {
+  /**
+   * Status Code
+   * @type {number}
+   * @memberof FileSizeZeroErrorDto
+   */
+  statusCode: number
+  /**
+   * Detail error message
+   * @type {string}
+   * @memberof FileSizeZeroErrorDto
+   */
+  message: string
+  /**
+   * status in text
+   * @type {string}
+   * @memberof FileSizeZeroErrorDto
+   */
+  status: string
+  /**
+   * Exact error name
+   * @type {string}
+   * @memberof FileSizeZeroErrorDto
+   */
+  errorName: FileSizeZeroErrorDtoErrorNameEnum
+  /**
+   * Helper for sending additional data in error
+   * @type {object}
+   * @memberof FileSizeZeroErrorDto
+   */
+  object?: object
+}
+
+export const FileSizeZeroErrorDtoErrorNameEnum = {
+  NotFoundError: 'NOT_FOUND_ERROR',
+  DatabaseError: 'DATABASE_ERROR',
+  InternalServerError: 'INTERNAL_SERVER_ERROR',
+  UnauthorizedError: 'UNAUTHORIZED_ERROR',
+} as const
+
+export type FileSizeZeroErrorDtoErrorNameEnum =
+  (typeof FileSizeZeroErrorDtoErrorNameEnum)[keyof typeof FileSizeZeroErrorDtoErrorNameEnum]
 
 /**
  *
@@ -720,6 +845,7 @@ export const FileWrongParamsErrorDtoErrorNameEnum = {
   NotFoundError: 'NOT_FOUND_ERROR',
   DatabaseError: 'DATABASE_ERROR',
   InternalServerError: 'INTERNAL_SERVER_ERROR',
+  UnauthorizedError: 'UNAUTHORIZED_ERROR',
 } as const
 
 export type FileWrongParamsErrorDtoErrorNameEnum =
@@ -767,10 +893,155 @@ export const FileWrongStatusNotAcceptedErrorDtoErrorNameEnum = {
   NotFoundError: 'NOT_FOUND_ERROR',
   DatabaseError: 'DATABASE_ERROR',
   InternalServerError: 'INTERNAL_SERVER_ERROR',
+  UnauthorizedError: 'UNAUTHORIZED_ERROR',
 } as const
 
 export type FileWrongStatusNotAcceptedErrorDtoErrorNameEnum =
   (typeof FileWrongStatusNotAcceptedErrorDtoErrorNameEnum)[keyof typeof FileWrongStatusNotAcceptedErrorDtoErrorNameEnum]
+
+/**
+ *
+ * @export
+ * @interface FilesControllerDownloadFile400Response
+ */
+export interface FilesControllerDownloadFile400Response {
+  /**
+   * Status Code
+   * @type {number}
+   * @memberof FilesControllerDownloadFile400Response
+   */
+  statusCode: number
+  /**
+   * Detail error message
+   * @type {string}
+   * @memberof FilesControllerDownloadFile400Response
+   */
+  message: string
+  /**
+   * status in text
+   * @type {string}
+   * @memberof FilesControllerDownloadFile400Response
+   */
+  status: string
+  /**
+   * Exact error name
+   * @type {string}
+   * @memberof FilesControllerDownloadFile400Response
+   */
+  errorName: FilesControllerDownloadFile400ResponseErrorNameEnum
+  /**
+   * Helper for sending additional data in error
+   * @type {object}
+   * @memberof FilesControllerDownloadFile400Response
+   */
+  object?: object
+}
+
+export const FilesControllerDownloadFile400ResponseErrorNameEnum = {
+  NotFoundError: 'NOT_FOUND_ERROR',
+  DatabaseError: 'DATABASE_ERROR',
+  InternalServerError: 'INTERNAL_SERVER_ERROR',
+  UnauthorizedError: 'UNAUTHORIZED_ERROR',
+} as const
+
+export type FilesControllerDownloadFile400ResponseErrorNameEnum =
+  (typeof FilesControllerDownloadFile400ResponseErrorNameEnum)[keyof typeof FilesControllerDownloadFile400ResponseErrorNameEnum]
+
+/**
+ *
+ * @export
+ * @interface FilesControllerDownloadFile404Response
+ */
+export interface FilesControllerDownloadFile404Response {
+  /**
+   * Status Code
+   * @type {number}
+   * @memberof FilesControllerDownloadFile404Response
+   */
+  statusCode: number
+  /**
+   * Detail error message
+   * @type {string}
+   * @memberof FilesControllerDownloadFile404Response
+   */
+  message: string
+  /**
+   * status in text
+   * @type {string}
+   * @memberof FilesControllerDownloadFile404Response
+   */
+  status: string
+  /**
+   * Exact error name
+   * @type {string}
+   * @memberof FilesControllerDownloadFile404Response
+   */
+  errorName: FilesControllerDownloadFile404ResponseErrorNameEnum
+  /**
+   * Helper for sending additional data in error
+   * @type {object}
+   * @memberof FilesControllerDownloadFile404Response
+   */
+  object?: object
+}
+
+export const FilesControllerDownloadFile404ResponseErrorNameEnum = {
+  NotFoundError: 'NOT_FOUND_ERROR',
+  DatabaseError: 'DATABASE_ERROR',
+  InternalServerError: 'INTERNAL_SERVER_ERROR',
+  UnauthorizedError: 'UNAUTHORIZED_ERROR',
+} as const
+
+export type FilesControllerDownloadFile404ResponseErrorNameEnum =
+  (typeof FilesControllerDownloadFile404ResponseErrorNameEnum)[keyof typeof FilesControllerDownloadFile404ResponseErrorNameEnum]
+
+/**
+ *
+ * @export
+ * @interface FilesControllerDownloadToken404Response
+ */
+export interface FilesControllerDownloadToken404Response {
+  /**
+   * Status Code
+   * @type {number}
+   * @memberof FilesControllerDownloadToken404Response
+   */
+  statusCode: number
+  /**
+   * Detail error message
+   * @type {string}
+   * @memberof FilesControllerDownloadToken404Response
+   */
+  message: string
+  /**
+   * status in text
+   * @type {string}
+   * @memberof FilesControllerDownloadToken404Response
+   */
+  status: string
+  /**
+   * Exact error name
+   * @type {string}
+   * @memberof FilesControllerDownloadToken404Response
+   */
+  errorName: FilesControllerDownloadToken404ResponseErrorNameEnum
+  /**
+   * Helper for sending additional data in error
+   * @type {object}
+   * @memberof FilesControllerDownloadToken404Response
+   */
+  object?: object
+}
+
+export const FilesControllerDownloadToken404ResponseErrorNameEnum = {
+  NotFoundError: 'NOT_FOUND_ERROR',
+  DatabaseError: 'DATABASE_ERROR',
+  InternalServerError: 'INTERNAL_SERVER_ERROR',
+  UnauthorizedError: 'UNAUTHORIZED_ERROR',
+} as const
+
+export type FilesControllerDownloadToken404ResponseErrorNameEnum =
+  (typeof FilesControllerDownloadToken404ResponseErrorNameEnum)[keyof typeof FilesControllerDownloadToken404ResponseErrorNameEnum]
 
 /**
  *
@@ -814,6 +1085,7 @@ export const FilesControllerPostFileToScanner400ResponseErrorNameEnum = {
   NotFoundError: 'NOT_FOUND_ERROR',
   DatabaseError: 'DATABASE_ERROR',
   InternalServerError: 'INTERNAL_SERVER_ERROR',
+  UnauthorizedError: 'UNAUTHORIZED_ERROR',
 } as const
 
 export type FilesControllerPostFileToScanner400ResponseErrorNameEnum =
@@ -861,6 +1133,7 @@ export const FilesControllerPostFileToScanner404ResponseErrorNameEnum = {
   NotFoundError: 'NOT_FOUND_ERROR',
   DatabaseError: 'DATABASE_ERROR',
   InternalServerError: 'INTERNAL_SERVER_ERROR',
+  UnauthorizedError: 'UNAUTHORIZED_ERROR',
 } as const
 
 export type FilesControllerPostFileToScanner404ResponseErrorNameEnum =
@@ -908,6 +1181,7 @@ export const FilesControllerPostFileToScanner500ResponseErrorNameEnum = {
   NotFoundError: 'NOT_FOUND_ERROR',
   DatabaseError: 'DATABASE_ERROR',
   InternalServerError: 'INTERNAL_SERVER_ERROR',
+  UnauthorizedError: 'UNAUTHORIZED_ERROR',
 } as const
 
 export type FilesControllerPostFileToScanner500ResponseErrorNameEnum =
@@ -961,10 +1235,59 @@ export const FilesControllerUploadFile400ResponseErrorNameEnum = {
   NotFoundError: 'NOT_FOUND_ERROR',
   DatabaseError: 'DATABASE_ERROR',
   InternalServerError: 'INTERNAL_SERVER_ERROR',
+  UnauthorizedError: 'UNAUTHORIZED_ERROR',
 } as const
 
 export type FilesControllerUploadFile400ResponseErrorNameEnum =
   (typeof FilesControllerUploadFile400ResponseErrorNameEnum)[keyof typeof FilesControllerUploadFile400ResponseErrorNameEnum]
+
+/**
+ *
+ * @export
+ * @interface FormNotFoundErrorDto
+ */
+export interface FormNotFoundErrorDto {
+  /**
+   * Status Code
+   * @type {number}
+   * @memberof FormNotFoundErrorDto
+   */
+  statusCode: number
+  /**
+   * Detail error message
+   * @type {string}
+   * @memberof FormNotFoundErrorDto
+   */
+  message: string
+  /**
+   * status in text
+   * @type {string}
+   * @memberof FormNotFoundErrorDto
+   */
+  status: string
+  /**
+   * Exact error name
+   * @type {string}
+   * @memberof FormNotFoundErrorDto
+   */
+  errorName: FormNotFoundErrorDtoErrorNameEnum
+  /**
+   * Helper for sending additional data in error
+   * @type {object}
+   * @memberof FormNotFoundErrorDto
+   */
+  object?: object
+}
+
+export const FormNotFoundErrorDtoErrorNameEnum = {
+  NotFoundError: 'NOT_FOUND_ERROR',
+  DatabaseError: 'DATABASE_ERROR',
+  InternalServerError: 'INTERNAL_SERVER_ERROR',
+  UnauthorizedError: 'UNAUTHORIZED_ERROR',
+} as const
+
+export type FormNotFoundErrorDtoErrorNameEnum =
+  (typeof FormNotFoundErrorDtoErrorNameEnum)[keyof typeof FormNotFoundErrorDtoErrorNameEnum]
 
 /**
  *
@@ -1008,6 +1331,7 @@ export const FormOrFileOrUserNotFoundErrorDtoErrorNameEnum = {
   NotFoundError: 'NOT_FOUND_ERROR',
   DatabaseError: 'DATABASE_ERROR',
   InternalServerError: 'INTERNAL_SERVER_ERROR',
+  UnauthorizedError: 'UNAUTHORIZED_ERROR',
 } as const
 
 export type FormOrFileOrUserNotFoundErrorDtoErrorNameEnum =
@@ -1055,6 +1379,7 @@ export const FormOrUserNotFoundErrorDtoErrorNameEnum = {
   NotFoundError: 'NOT_FOUND_ERROR',
   DatabaseError: 'DATABASE_ERROR',
   InternalServerError: 'INTERNAL_SERVER_ERROR',
+  UnauthorizedError: 'UNAUTHORIZED_ERROR',
 } as const
 
 export type FormOrUserNotFoundErrorDtoErrorNameEnum =
@@ -1063,21 +1388,45 @@ export type FormOrUserNotFoundErrorDtoErrorNameEnum =
 /**
  *
  * @export
+ * @enum {string}
+ */
+
+export const FormState = {
+  Draft: 'DRAFT',
+  Queued: 'QUEUED',
+  QueuedError: 'QUEUED_ERROR',
+  Checking: 'CHECKING',
+  CheckingError: 'CHECKING_ERROR',
+  Sending: 'SENDING',
+  SendingError: 'SENDING_ERROR',
+  Sent: 'SENT',
+  SentError: 'SENT_ERROR',
+  Processing: 'PROCESSING',
+  ProcessingError: 'PROCESSING_ERROR',
+  Finished: 'FINISHED',
+  Rejected: 'REJECTED',
+} as const
+
+export type FormState = (typeof FormState)[keyof typeof FormState]
+
+/**
+ *
+ * @export
  * @interface GetFileResponseDto
  */
 export interface GetFileResponseDto {
-  /**
-   * Hashed file uid under which is file stored in minio
-   * @type {string}
-   * @memberof GetFileResponseDto
-   */
-  fileUid: string
   /**
    * Real file name of the file, but is used only for display
    * @type {string}
    * @memberof GetFileResponseDto
    */
   fileName: string
+  /**
+   * Hashed file uid under which is file stored in minio
+   * @type {string}
+   * @memberof GetFileResponseDto
+   */
+  fileUid: string
   /**
    * Form type
    * @type {string}
@@ -1095,13 +1444,19 @@ export interface GetFileResponseDto {
    * @type {string}
    * @memberof GetFileResponseDto
    */
-  userExternalId: string
+  userExternalId: string | null
   /**
    * scan result
    * @type {string}
    * @memberof GetFileResponseDto
    */
   status: GetFileResponseDtoStatusEnum
+  /**
+   * File size in bytes
+   * @type {number}
+   * @memberof GetFileResponseDto
+   */
+  fileSize: number
   /**
    * id of the record in db
    * @type {string}
@@ -1113,7 +1468,7 @@ export interface GetFileResponseDto {
    * @type {string}
    * @memberof GetFileResponseDto
    */
-  scannerId: string
+  scannerId?: string | null
   /**
    * Date when file was created
    * @type {string}
@@ -1181,37 +1536,31 @@ export interface GetFormResponseDto {
    * @type {string}
    * @memberof GetFormResponseDto
    */
-  email: string
-  /**
-   * Send XML body of form
-   * @type {string}
-   * @memberof GetFormResponseDto
-   */
-  formDataXml: string
+  email?: string | null
   /**
    * Send XML body of form
    * @type {object}
    * @memberof GetFormResponseDto
    */
-  formDataJson: object
+  formDataJson?: object | null
   /**
    * Name of Form
    * @type {string}
    * @memberof GetFormResponseDto
    */
-  pospID?: string
+  pospID?: string | null
   /**
    * Version of Form
    * @type {string}
    * @memberof GetFormResponseDto
    */
-  pospVersion: string
+  pospVersion?: string
   /**
    * Subject of message for recipient
    * @type {string}
    * @memberof GetFormResponseDto
    */
-  messageSubject: string
+  messageSubject?: string
   /**
    * Is it signed by Eid?
    * @type {boolean}
@@ -1253,50 +1602,86 @@ export interface GetFormResponseDto {
    * @type {string}
    * @memberof GetFormResponseDto
    */
-  externalId: string
+  externalId: string | null
   /**
    * User ID (from cognito) who submit this form, can be empty, if it was submitted by user through eID
    * @type {string}
    * @memberof GetFormResponseDto
    */
-  userExternalId: string
+  userExternalId: string | null
   /**
    * Uri for defining electronic sendbox, if person has it
    * @type {string}
    * @memberof GetFormResponseDto
    */
-  uri?: string
+  uri: string | null
   /**
    * State of form
    * @type {string}
    * @memberof GetFormResponseDto
    */
-  state?: string
+  state: GetFormResponseDtoStateEnum
+  /**
+   * Specific error type
+   * @type {string}
+   * @memberof GetFormResponseDto
+   */
+  error: GetFormResponseDtoErrorEnum
   /**
    * Data from ginis saved in our db
    * @type {string}
    * @memberof GetFormResponseDto
    */
-  formDataGinis?: string
+  formDataGinis: string | null
   /**
    * Technical NASES id of sender
    * @type {string}
    * @memberof GetFormResponseDto
    */
-  senderId: string
+  senderId: string | null
   /**
    * Technical NASES id of recipient
    * @type {string}
    * @memberof GetFormResponseDto
    */
-  recipientId: string
+  recipientId: string | null
   /**
    * end of submition
    * @type {string}
    * @memberof GetFormResponseDto
    */
-  finishSubmission: string
+  finishSubmission: string | null
 }
+
+export const GetFormResponseDtoStateEnum = {
+  Draft: 'DRAFT',
+  Queued: 'QUEUED',
+  QueuedError: 'QUEUED_ERROR',
+  Checking: 'CHECKING',
+  CheckingError: 'CHECKING_ERROR',
+  Sending: 'SENDING',
+  SendingError: 'SENDING_ERROR',
+  Sent: 'SENT',
+  SentError: 'SENT_ERROR',
+  Processing: 'PROCESSING',
+  ProcessingError: 'PROCESSING_ERROR',
+  Finished: 'FINISHED',
+  Rejected: 'REJECTED',
+} as const
+
+export type GetFormResponseDtoStateEnum =
+  (typeof GetFormResponseDtoStateEnum)[keyof typeof GetFormResponseDtoStateEnum]
+export const GetFormResponseDtoErrorEnum = {
+  RabbitmqMaxTries: 'RABBITMQ_MAX_TRIES',
+  FilesNotYetScanned: 'FILES_NOT_YET_SCANNED',
+  UnableToScanFiles: 'UNABLE_TO_SCAN_FILES',
+  InfectedFiles: 'INFECTED_FILES',
+  NasesSendError: 'NASES_SEND_ERROR',
+} as const
+
+export type GetFormResponseDtoErrorEnum =
+  (typeof GetFormResponseDtoErrorEnum)[keyof typeof GetFormResponseDtoErrorEnum]
+
 /**
  *
  * @export
@@ -1322,139 +1707,271 @@ export interface GetFormsResponseDto {
    */
   countPages: number
   /**
-   *
-   * @type {GetFormsResponseDtoItems}
+   * Items
+   * @type {Array<GetFormResponseDto>}
    * @memberof GetFormsResponseDto
    */
-  items: GetFormsResponseDtoItems
+  items: Array<GetFormResponseDto>
 }
 /**
- * Items
+ *
  * @export
- * @interface GetFormsResponseDtoItems
+ * @interface InvalidJwtTokenErrorDto
  */
-export interface GetFormsResponseDtoItems {
+export interface InvalidJwtTokenErrorDto {
   /**
-   * Change email, on which you can be contacted
-   * @type {string}
-   * @memberof GetFormsResponseDtoItems
+   * Status Code
+   * @type {number}
+   * @memberof InvalidJwtTokenErrorDto
    */
-  email: string
+  statusCode: number
   /**
-   * Send XML body of form
+   * Detail error message
    * @type {string}
-   * @memberof GetFormsResponseDtoItems
+   * @memberof InvalidJwtTokenErrorDto
    */
-  formDataXml: string
+  message: string
   /**
-   * Send XML body of form
+   * status in text
+   * @type {string}
+   * @memberof InvalidJwtTokenErrorDto
+   */
+  status: string
+  /**
+   * Exact error name
+   * @type {string}
+   * @memberof InvalidJwtTokenErrorDto
+   */
+  errorName: InvalidJwtTokenErrorDtoErrorNameEnum
+  /**
+   * Helper for sending additional data in error
    * @type {object}
-   * @memberof GetFormsResponseDtoItems
+   * @memberof InvalidJwtTokenErrorDto
    */
-  formDataJson: object
-  /**
-   * Name of Form
-   * @type {string}
-   * @memberof GetFormsResponseDtoItems
-   */
-  pospID?: string
-  /**
-   * Version of Form
-   * @type {string}
-   * @memberof GetFormsResponseDtoItems
-   */
-  pospVersion: string
-  /**
-   * Subject of message for recipient
-   * @type {string}
-   * @memberof GetFormsResponseDtoItems
-   */
-  messageSubject: string
-  /**
-   * Is it signed by Eid?
-   * @type {boolean}
-   * @memberof GetFormsResponseDtoItems
-   */
-  isSigned?: boolean
-  /**
-   * Name of form showned to user in Ginis
-   * @type {string}
-   * @memberof GetFormsResponseDtoItems
-   */
-  formName?: string
-  /**
-   * Description of form showned to user in Ginis
-   * @type {string}
-   * @memberof GetFormsResponseDtoItems
-   */
-  fromDescription?: string
-  /**
-   * Id of record
-   * @type {string}
-   * @memberof GetFormsResponseDtoItems
-   */
-  id: string
-  /**
-   * Create date of record
-   * @type {string}
-   * @memberof GetFormsResponseDtoItems
-   */
-  createdAt: string
-  /**
-   * Update date of record
-   * @type {string}
-   * @memberof GetFormsResponseDtoItems
-   */
-  updatedAt: string
-  /**
-   * Id of send form from other system, (probably ginis)
-   * @type {string}
-   * @memberof GetFormsResponseDtoItems
-   */
-  externalId: string
-  /**
-   * User ID (from cognito) who submit this form, can be empty, if it was submitted by user through eID
-   * @type {string}
-   * @memberof GetFormsResponseDtoItems
-   */
-  userExternalId: string
-  /**
-   * Uri for defining electronic sendbox, if person has it
-   * @type {string}
-   * @memberof GetFormsResponseDtoItems
-   */
-  uri?: string
-  /**
-   * State of form
-   * @type {string}
-   * @memberof GetFormsResponseDtoItems
-   */
-  state?: string
-  /**
-   * Data from ginis saved in our db
-   * @type {string}
-   * @memberof GetFormsResponseDtoItems
-   */
-  formDataGinis?: string
-  /**
-   * Technical NASES id of sender
-   * @type {string}
-   * @memberof GetFormsResponseDtoItems
-   */
-  senderId: string
-  /**
-   * Technical NASES id of recipient
-   * @type {string}
-   * @memberof GetFormsResponseDtoItems
-   */
-  recipientId: string
-  /**
-   * end of submition
-   * @type {string}
-   * @memberof GetFormsResponseDtoItems
-   */
-  finishSubmission: string
+  object?: object
 }
+
+export const InvalidJwtTokenErrorDtoErrorNameEnum = {
+  NotFoundError: 'NOT_FOUND_ERROR',
+  DatabaseError: 'DATABASE_ERROR',
+  InternalServerError: 'INTERNAL_SERVER_ERROR',
+  UnauthorizedError: 'UNAUTHORIZED_ERROR',
+} as const
+
+export type InvalidJwtTokenErrorDtoErrorNameEnum =
+  (typeof InvalidJwtTokenErrorDtoErrorNameEnum)[keyof typeof InvalidJwtTokenErrorDtoErrorNameEnum]
+
+/**
+ *
+ * @export
+ * @interface InvalidOrExpiredJwtTokenErrorDto
+ */
+export interface InvalidOrExpiredJwtTokenErrorDto {
+  /**
+   * Status Code
+   * @type {number}
+   * @memberof InvalidOrExpiredJwtTokenErrorDto
+   */
+  statusCode: number
+  /**
+   * Detail error message
+   * @type {string}
+   * @memberof InvalidOrExpiredJwtTokenErrorDto
+   */
+  message: string
+  /**
+   * status in text
+   * @type {string}
+   * @memberof InvalidOrExpiredJwtTokenErrorDto
+   */
+  status: string
+  /**
+   * Exact error name
+   * @type {string}
+   * @memberof InvalidOrExpiredJwtTokenErrorDto
+   */
+  errorName: InvalidOrExpiredJwtTokenErrorDtoErrorNameEnum
+  /**
+   * Helper for sending additional data in error
+   * @type {object}
+   * @memberof InvalidOrExpiredJwtTokenErrorDto
+   */
+  object?: object
+}
+
+export const InvalidOrExpiredJwtTokenErrorDtoErrorNameEnum = {
+  NotFoundError: 'NOT_FOUND_ERROR',
+  DatabaseError: 'DATABASE_ERROR',
+  InternalServerError: 'INTERNAL_SERVER_ERROR',
+  UnauthorizedError: 'UNAUTHORIZED_ERROR',
+} as const
+
+export type InvalidOrExpiredJwtTokenErrorDtoErrorNameEnum =
+  (typeof InvalidOrExpiredJwtTokenErrorDtoErrorNameEnum)[keyof typeof InvalidOrExpiredJwtTokenErrorDtoErrorNameEnum]
+
+/**
+ *
+ * @export
+ * @interface NasesControllerGetEidJwt401Response
+ */
+export interface NasesControllerGetEidJwt401Response {
+  /**
+   * Status Code
+   * @type {number}
+   * @memberof NasesControllerGetEidJwt401Response
+   */
+  statusCode: number
+  /**
+   * Detail error message
+   * @type {string}
+   * @memberof NasesControllerGetEidJwt401Response
+   */
+  message: string
+}
+/**
+ *
+ * @export
+ * @interface NasesControllerGetForm404Response
+ */
+export interface NasesControllerGetForm404Response {
+  /**
+   * Status Code
+   * @type {number}
+   * @memberof NasesControllerGetForm404Response
+   */
+  statusCode: number
+  /**
+   * Detail error message
+   * @type {string}
+   * @memberof NasesControllerGetForm404Response
+   */
+  message: string
+  /**
+   * status in text
+   * @type {string}
+   * @memberof NasesControllerGetForm404Response
+   */
+  status: string
+  /**
+   * Exact error name
+   * @type {string}
+   * @memberof NasesControllerGetForm404Response
+   */
+  errorName: NasesControllerGetForm404ResponseErrorNameEnum
+  /**
+   * Helper for sending additional data in error
+   * @type {object}
+   * @memberof NasesControllerGetForm404Response
+   */
+  object?: object
+}
+
+export const NasesControllerGetForm404ResponseErrorNameEnum = {
+  NotFoundError: 'NOT_FOUND_ERROR',
+  DatabaseError: 'DATABASE_ERROR',
+  InternalServerError: 'INTERNAL_SERVER_ERROR',
+  UnauthorizedError: 'UNAUTHORIZED_ERROR',
+} as const
+
+export type NasesControllerGetForm404ResponseErrorNameEnum =
+  (typeof NasesControllerGetForm404ResponseErrorNameEnum)[keyof typeof NasesControllerGetForm404ResponseErrorNameEnum]
+
+/**
+ *
+ * @export
+ * @interface NasesControllerGetForms500Response
+ */
+export interface NasesControllerGetForms500Response {
+  /**
+   * Status Code
+   * @type {number}
+   * @memberof NasesControllerGetForms500Response
+   */
+  statusCode: number
+  /**
+   * Detail error message
+   * @type {string}
+   * @memberof NasesControllerGetForms500Response
+   */
+  message: string
+  /**
+   * status in text
+   * @type {string}
+   * @memberof NasesControllerGetForms500Response
+   */
+  status: string
+  /**
+   * Exact error name
+   * @type {string}
+   * @memberof NasesControllerGetForms500Response
+   */
+  errorName: NasesControllerGetForms500ResponseErrorNameEnum
+  /**
+   * Helper for sending additional data in error
+   * @type {object}
+   * @memberof NasesControllerGetForms500Response
+   */
+  object?: object
+}
+
+export const NasesControllerGetForms500ResponseErrorNameEnum = {
+  NotFoundError: 'NOT_FOUND_ERROR',
+  DatabaseError: 'DATABASE_ERROR',
+  InternalServerError: 'INTERNAL_SERVER_ERROR',
+  UnauthorizedError: 'UNAUTHORIZED_ERROR',
+} as const
+
+export type NasesControllerGetForms500ResponseErrorNameEnum =
+  (typeof NasesControllerGetForms500ResponseErrorNameEnum)[keyof typeof NasesControllerGetForms500ResponseErrorNameEnum]
+
+/**
+ *
+ * @export
+ * @interface NasesControllerSendForm422Response
+ */
+export interface NasesControllerSendForm422Response {
+  /**
+   * Status Code
+   * @type {number}
+   * @memberof NasesControllerSendForm422Response
+   */
+  statusCode: number
+  /**
+   * Detail error message
+   * @type {string}
+   * @memberof NasesControllerSendForm422Response
+   */
+  message: string
+  /**
+   * status in text
+   * @type {string}
+   * @memberof NasesControllerSendForm422Response
+   */
+  status: string
+  /**
+   * Exact error name
+   * @type {string}
+   * @memberof NasesControllerSendForm422Response
+   */
+  errorName: NasesControllerSendForm422ResponseErrorNameEnum
+  /**
+   * Helper for sending additional data in error
+   * @type {object}
+   * @memberof NasesControllerSendForm422Response
+   */
+  object?: object
+}
+
+export const NasesControllerSendForm422ResponseErrorNameEnum = {
+  NotFoundError: 'NOT_FOUND_ERROR',
+  DatabaseError: 'DATABASE_ERROR',
+  InternalServerError: 'INTERNAL_SERVER_ERROR',
+  UnauthorizedError: 'UNAUTHORIZED_ERROR',
+} as const
+
+export type NasesControllerSendForm422ResponseErrorNameEnum =
+  (typeof NasesControllerSendForm422ResponseErrorNameEnum)[keyof typeof NasesControllerSendForm422ResponseErrorNameEnum]
+
 /**
  *
  * @export
@@ -1497,6 +2014,7 @@ export const NoFileUploadDataErrorDtoErrorNameEnum = {
   NotFoundError: 'NOT_FOUND_ERROR',
   DatabaseError: 'DATABASE_ERROR',
   InternalServerError: 'INTERNAL_SERVER_ERROR',
+  UnauthorizedError: 'UNAUTHORIZED_ERROR',
 } as const
 
 export type NoFileUploadDataErrorDtoErrorNameEnum =
@@ -1505,21 +2023,69 @@ export type NoFileUploadDataErrorDtoErrorNameEnum =
 /**
  *
  * @export
+ * @interface NoFormXmlDataErrorDto
+ */
+export interface NoFormXmlDataErrorDto {
+  /**
+   * Status Code
+   * @type {number}
+   * @memberof NoFormXmlDataErrorDto
+   */
+  statusCode: number
+  /**
+   * Detail error message
+   * @type {string}
+   * @memberof NoFormXmlDataErrorDto
+   */
+  message: string
+  /**
+   * status in text
+   * @type {string}
+   * @memberof NoFormXmlDataErrorDto
+   */
+  status: string
+  /**
+   * Exact error name
+   * @type {string}
+   * @memberof NoFormXmlDataErrorDto
+   */
+  errorName: NoFormXmlDataErrorDtoErrorNameEnum
+  /**
+   * Helper for sending additional data in error
+   * @type {object}
+   * @memberof NoFormXmlDataErrorDto
+   */
+  object?: object
+}
+
+export const NoFormXmlDataErrorDtoErrorNameEnum = {
+  NotFoundError: 'NOT_FOUND_ERROR',
+  DatabaseError: 'DATABASE_ERROR',
+  InternalServerError: 'INTERNAL_SERVER_ERROR',
+  UnauthorizedError: 'UNAUTHORIZED_ERROR',
+} as const
+
+export type NoFormXmlDataErrorDtoErrorNameEnum =
+  (typeof NoFormXmlDataErrorDtoErrorNameEnum)[keyof typeof NoFormXmlDataErrorDtoErrorNameEnum]
+
+/**
+ *
+ * @export
  * @interface PostFileRequestDto
  */
 export interface PostFileRequestDto {
-  /**
-   * Hashed file uid under which is file stored in minio
-   * @type {string}
-   * @memberof PostFileRequestDto
-   */
-  fileUid: string
   /**
    * Real file name of the file, but is used only for display
    * @type {string}
    * @memberof PostFileRequestDto
    */
   fileName: string
+  /**
+   * Hashed file uid under which is file stored in minio
+   * @type {string}
+   * @memberof PostFileRequestDto
+   */
+  fileUid: string
   /**
    * Form type
    * @type {string}
@@ -1538,6 +2104,12 @@ export interface PostFileRequestDto {
    * @memberof PostFileRequestDto
    */
   fileId: string
+  /**
+   * File size in bytes
+   * @type {number}
+   * @memberof PostFileRequestDto
+   */
+  fileSize: number
 }
 /**
  *
@@ -1546,17 +2118,17 @@ export interface PostFileRequestDto {
  */
 export interface PostFileResponseDto {
   /**
-   * Hashed file uid under which is file stored in minio
-   * @type {string}
-   * @memberof PostFileResponseDto
-   */
-  fileUid: string
-  /**
    * Real file name of the file, but is used only for display
    * @type {string}
    * @memberof PostFileResponseDto
    */
   fileName: string
+  /**
+   * Hashed file uid under which is file stored in minio
+   * @type {string}
+   * @memberof PostFileResponseDto
+   */
+  fileUid: string
   /**
    * Form type
    * @type {string}
@@ -1574,13 +2146,19 @@ export interface PostFileResponseDto {
    * @type {string}
    * @memberof PostFileResponseDto
    */
-  userExternalId: string
+  userExternalId: string | null
   /**
    * scan result
    * @type {string}
    * @memberof PostFileResponseDto
    */
   status: PostFileResponseDtoStatusEnum
+  /**
+   * File size in bytes
+   * @type {number}
+   * @memberof PostFileResponseDto
+   */
+  fileSize: number
   /**
    * id of the record in db
    * @type {string}
@@ -1592,7 +2170,7 @@ export interface PostFileResponseDto {
    * @type {string}
    * @memberof PostFileResponseDto
    */
-  scannerId: string
+  scannerId?: string | null
   /**
    * Date when file was created
    * @type {string}
@@ -1669,11 +2247,37 @@ export const ProblemWithScannerErrorDtoErrorNameEnum = {
   NotFoundError: 'NOT_FOUND_ERROR',
   DatabaseError: 'DATABASE_ERROR',
   InternalServerError: 'INTERNAL_SERVER_ERROR',
+  UnauthorizedError: 'UNAUTHORIZED_ERROR',
 } as const
 
 export type ProblemWithScannerErrorDtoErrorNameEnum =
   (typeof ProblemWithScannerErrorDtoErrorNameEnum)[keyof typeof ProblemWithScannerErrorDtoErrorNameEnum]
 
+/**
+ *
+ * @export
+ * @interface SendFormResponseDto
+ */
+export interface SendFormResponseDto {
+  /**
+   * Id of record
+   * @type {string}
+   * @memberof SendFormResponseDto
+   */
+  id: string
+  /**
+   * Message response regarding the process
+   * @type {string}
+   * @memberof SendFormResponseDto
+   */
+  message: string
+  /**
+   * Form state
+   * @type {object}
+   * @memberof SendFormResponseDto
+   */
+  state: object
+}
 /**
  *
  * @export
@@ -1714,6 +2318,54 @@ export const StatusFileDtoStatusEnum = {
 
 export type StatusFileDtoStatusEnum =
   (typeof StatusFileDtoStatusEnum)[keyof typeof StatusFileDtoStatusEnum]
+
+/**
+ *
+ * @export
+ * @interface UnableAddFormToRabbitErrorDto
+ */
+export interface UnableAddFormToRabbitErrorDto {
+  /**
+   * Status Code
+   * @type {number}
+   * @memberof UnableAddFormToRabbitErrorDto
+   */
+  statusCode: number
+  /**
+   * Detail error message
+   * @type {string}
+   * @memberof UnableAddFormToRabbitErrorDto
+   */
+  message: string
+  /**
+   * status in text
+   * @type {string}
+   * @memberof UnableAddFormToRabbitErrorDto
+   */
+  status: string
+  /**
+   * Exact error name
+   * @type {string}
+   * @memberof UnableAddFormToRabbitErrorDto
+   */
+  errorName: UnableAddFormToRabbitErrorDtoErrorNameEnum
+  /**
+   * Helper for sending additional data in error
+   * @type {object}
+   * @memberof UnableAddFormToRabbitErrorDto
+   */
+  object?: object
+}
+
+export const UnableAddFormToRabbitErrorDtoErrorNameEnum = {
+  NotFoundError: 'NOT_FOUND_ERROR',
+  DatabaseError: 'DATABASE_ERROR',
+  InternalServerError: 'INTERNAL_SERVER_ERROR',
+  UnauthorizedError: 'UNAUTHORIZED_ERROR',
+} as const
+
+export type UnableAddFormToRabbitErrorDtoErrorNameEnum =
+  (typeof UnableAddFormToRabbitErrorDtoErrorNameEnum)[keyof typeof UnableAddFormToRabbitErrorDtoErrorNameEnum]
 
 /**
  *
@@ -1769,17 +2421,17 @@ export type UpdateFileStatusRequestDtoStatusEnum =
  */
 export interface UpdateFileStatusResponseDto {
   /**
-   * Hashed file uid under which is file stored in minio
-   * @type {string}
-   * @memberof UpdateFileStatusResponseDto
-   */
-  fileUid: string
-  /**
    * Real file name of the file, but is used only for display
    * @type {string}
    * @memberof UpdateFileStatusResponseDto
    */
   fileName: string
+  /**
+   * Hashed file uid under which is file stored in minio
+   * @type {string}
+   * @memberof UpdateFileStatusResponseDto
+   */
+  fileUid: string
   /**
    * Form type
    * @type {string}
@@ -1797,13 +2449,19 @@ export interface UpdateFileStatusResponseDto {
    * @type {string}
    * @memberof UpdateFileStatusResponseDto
    */
-  userExternalId: string
+  userExternalId: string | null
   /**
    * scan result
    * @type {string}
    * @memberof UpdateFileStatusResponseDto
    */
   status: UpdateFileStatusResponseDtoStatusEnum
+  /**
+   * File size in bytes
+   * @type {number}
+   * @memberof UpdateFileStatusResponseDto
+   */
+  fileSize: number
   /**
    * id of the record in db
    * @type {string}
@@ -1815,7 +2473,7 @@ export interface UpdateFileStatusResponseDto {
    * @type {string}
    * @memberof UpdateFileStatusResponseDto
    */
-  scannerId: string
+  scannerId?: string | null
   /**
    * Date when file was created
    * @type {string}
@@ -1861,37 +2519,31 @@ export interface UpdateFormRequestDto {
    * @type {string}
    * @memberof UpdateFormRequestDto
    */
-  email: string
-  /**
-   * Send XML body of form
-   * @type {string}
-   * @memberof UpdateFormRequestDto
-   */
-  formDataXml: string
+  email?: string | null
   /**
    * Send XML body of form
    * @type {object}
    * @memberof UpdateFormRequestDto
    */
-  formDataJson: object
+  formDataJson?: object | null
   /**
    * Name of Form
    * @type {string}
    * @memberof UpdateFormRequestDto
    */
-  pospID?: string
+  pospID?: string | null
   /**
    * Version of Form
    * @type {string}
    * @memberof UpdateFormRequestDto
    */
-  pospVersion: string
+  pospVersion?: string
   /**
    * Subject of message for recipient
    * @type {string}
    * @memberof UpdateFormRequestDto
    */
-  messageSubject: string
+  messageSubject?: string
   /**
    * Is it signed by Eid?
    * @type {boolean}
@@ -2050,6 +2702,96 @@ export const FilesApiAxiosParamCreator = function (configuration?: Configuration
       }
 
       const localVarRequestOptions = { method: 'DELETE', ...baseOptions, ...options }
+      const localVarHeaderParameter = {} as any
+      const localVarQueryParameter = {} as any
+
+      // authentication bearer required
+      // http bearer authentication required
+      await setBearerAuthToObject(localVarHeaderParameter, configuration)
+
+      setSearchParams(localVarUrlObj, localVarQueryParameter)
+      let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {}
+      localVarRequestOptions.headers = {
+        ...localVarHeaderParameter,
+        ...headersFromBaseOptions,
+        ...options.headers,
+      }
+
+      return {
+        url: toPathString(localVarUrlObj),
+        options: localVarRequestOptions,
+      }
+    },
+    /**
+     * You can download file byt fileId.
+     * @summary Download file by jwt token
+     * @param {string} jwtToken
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    filesControllerDownloadFile: async (
+      jwtToken: string,
+      options: AxiosRequestConfig = {},
+    ): Promise<RequestArgs> => {
+      // verify required parameter 'jwtToken' is not null or undefined
+      assertParamExists('filesControllerDownloadFile', 'jwtToken', jwtToken)
+      const localVarPath = `/files/download/file/{jwtToken}`.replace(
+        `{${'jwtToken'}}`,
+        encodeURIComponent(String(jwtToken)),
+      )
+      // use dummy base URL string because the URL constructor only accepts absolute URLs.
+      const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL)
+      let baseOptions
+      if (configuration) {
+        baseOptions = configuration.baseOptions
+      }
+
+      const localVarRequestOptions = { method: 'GET', ...baseOptions, ...options }
+      const localVarHeaderParameter = {} as any
+      const localVarQueryParameter = {} as any
+
+      // authentication bearer required
+      // http bearer authentication required
+      await setBearerAuthToObject(localVarHeaderParameter, configuration)
+
+      setSearchParams(localVarUrlObj, localVarQueryParameter)
+      let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {}
+      localVarRequestOptions.headers = {
+        ...localVarHeaderParameter,
+        ...headersFromBaseOptions,
+        ...options.headers,
+      }
+
+      return {
+        url: toPathString(localVarUrlObj),
+        options: localVarRequestOptions,
+      }
+    },
+    /**
+     * To be able to download file you need to obtain jwt token.
+     * @summary Obtain jwt token form file download
+     * @param {string} fileId
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    filesControllerDownloadToken: async (
+      fileId: string,
+      options: AxiosRequestConfig = {},
+    ): Promise<RequestArgs> => {
+      // verify required parameter 'fileId' is not null or undefined
+      assertParamExists('filesControllerDownloadToken', 'fileId', fileId)
+      const localVarPath = `/files/download/jwt/{fileId}`.replace(
+        `{${'fileId'}}`,
+        encodeURIComponent(String(fileId)),
+      )
+      // use dummy base URL string because the URL constructor only accepts absolute URLs.
+      const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL)
+      let baseOptions
+      if (configuration) {
+        baseOptions = configuration.baseOptions
+      }
+
+      const localVarRequestOptions = { method: 'GET', ...baseOptions, ...options }
       const localVarHeaderParameter = {} as any
       const localVarQueryParameter = {} as any
 
@@ -2465,6 +3207,42 @@ export const FilesApiFp = function (configuration?: Configuration) {
       return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)
     },
     /**
+     * You can download file byt fileId.
+     * @summary Download file by jwt token
+     * @param {string} jwtToken
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    async filesControllerDownloadFile(
+      jwtToken: string,
+      options?: AxiosRequestConfig,
+    ): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<void>> {
+      const localVarAxiosArgs = await localVarAxiosParamCreator.filesControllerDownloadFile(
+        jwtToken,
+        options,
+      )
+      return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)
+    },
+    /**
+     * To be able to download file you need to obtain jwt token.
+     * @summary Obtain jwt token form file download
+     * @param {string} fileId
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    async filesControllerDownloadToken(
+      fileId: string,
+      options?: AxiosRequestConfig,
+    ): Promise<
+      (axios?: AxiosInstance, basePath?: string) => AxiosPromise<DownloadTokenResponseDataDto>
+    > {
+      const localVarAxiosArgs = await localVarAxiosParamCreator.filesControllerDownloadToken(
+        fileId,
+        options,
+      )
+      return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)
+    },
+    /**
      * You get all file info based on fileId.
      * @summary Get file by fileId
      * @param {string} fileId
@@ -2635,6 +3413,36 @@ export const FilesApiFactory = function (
         .then((request) => request(axios, basePath))
     },
     /**
+     * You can download file byt fileId.
+     * @summary Download file by jwt token
+     * @param {string} jwtToken
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    filesControllerDownloadFile(
+      jwtToken: string,
+      options?: AxiosRequestConfig,
+    ): AxiosPromise<void> {
+      return localVarFp
+        .filesControllerDownloadFile(jwtToken, options)
+        .then((request) => request(axios, basePath))
+    },
+    /**
+     * To be able to download file you need to obtain jwt token.
+     * @summary Obtain jwt token form file download
+     * @param {string} fileId
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    filesControllerDownloadToken(
+      fileId: string,
+      options?: AxiosRequestConfig,
+    ): AxiosPromise<DownloadTokenResponseDataDto> {
+      return localVarFp
+        .filesControllerDownloadToken(fileId, options)
+        .then((request) => request(axios, basePath))
+    },
+    /**
      * You get all file info based on fileId.
      * @summary Get file by fileId
      * @param {string} fileId
@@ -2774,6 +3582,34 @@ export class FilesApi extends BaseAPI {
   }
 
   /**
+   * You can download file byt fileId.
+   * @summary Download file by jwt token
+   * @param {string} jwtToken
+   * @param {*} [options] Override http request option.
+   * @throws {RequiredError}
+   * @memberof FilesApi
+   */
+  public filesControllerDownloadFile(jwtToken: string, options?: AxiosRequestConfig) {
+    return FilesApiFp(this.configuration)
+      .filesControllerDownloadFile(jwtToken, options)
+      .then((request) => request(this.axios, this.basePath))
+  }
+
+  /**
+   * To be able to download file you need to obtain jwt token.
+   * @summary Obtain jwt token form file download
+   * @param {string} fileId
+   * @param {*} [options] Override http request option.
+   * @throws {RequiredError}
+   * @memberof FilesApi
+   */
+  public filesControllerDownloadToken(fileId: string, options?: AxiosRequestConfig) {
+    return FilesApiFp(this.configuration)
+      .filesControllerDownloadToken(fileId, options)
+      .then((request) => request(this.axios, this.basePath))
+  }
+
+  /**
    * You get all file info based on fileId.
    * @summary Get file by fileId
    * @param {string} fileId
@@ -2901,7 +3737,7 @@ export class FilesApi extends BaseAPI {
 export const NasesApiAxiosParamCreator = function (configuration?: Configuration) {
   return {
     /**
-     * Create id in our backand, which you need to send in form as external id. Save also data necessary for envelope to send message to NASES
+     * Create id in our backend, which you need to send in form as external id. Save also data necessary for envelope to send message to NASES
      * @summary
      * @param {CreateFormRequestDto} createFormRequestDto
      * @param {*} [options] Override http request option.
@@ -2950,10 +3786,11 @@ export const NasesApiAxiosParamCreator = function (configuration?: Configuration
       }
     },
     /**
-     * Create only id in our backand, which you need to send in form as external id. There is only one mandatory paremeter - email, rest of body is not mandatory, you can add form name, category version and some tags
+     * Create only id in our backend, which you need to send in form as external id. There is only one mandatory parameter - email, rest of body is not mandatory, you can add form name, category version and some tags
      * @summary
      * @param {CreateFormEidRequestDto} createFormEidRequestDto
      * @param {*} [options] Override http request option.
+     * @deprecated
      * @throws {RequiredError}
      */
     nasesControllerCreateFormEid: async (
@@ -3003,7 +3840,8 @@ export const NasesApiAxiosParamCreator = function (configuration?: Configuration
       }
     },
     /**
-     *
+     * Return administration account JWT token
+     * @summary
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
@@ -3040,7 +3878,8 @@ export const NasesApiAxiosParamCreator = function (configuration?: Configuration
       }
     },
     /**
-     *
+     * Return eid user JWT token
+     * @summary
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
@@ -3117,12 +3956,24 @@ export const NasesApiAxiosParamCreator = function (configuration?: Configuration
       }
     },
     /**
-     * Return top 10 forms
-     * @summary
+     * Get paginated forms
+     * @summary Get paginated forms
+     * @param {string} [currentPage] Page number
+     * @param {string} [pagination] Number of items per page
+     * @param {string} [pospID] Posp ID of Form
+     * @param {string} [formName] Form Name
+     * @param {Array<FormState>} [states] States of form
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
-    nasesControllerGetForms: async (options: AxiosRequestConfig = {}): Promise<RequestArgs> => {
+    nasesControllerGetForms: async (
+      currentPage?: string,
+      pagination?: string,
+      pospID?: string,
+      formName?: string,
+      states?: Array<FormState>,
+      options: AxiosRequestConfig = {},
+    ): Promise<RequestArgs> => {
       const localVarPath = `/nases/forms`
       // use dummy base URL string because the URL constructor only accepts absolute URLs.
       const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL)
@@ -3139,6 +3990,26 @@ export const NasesApiAxiosParamCreator = function (configuration?: Configuration
       // http bearer authentication required
       await setBearerAuthToObject(localVarHeaderParameter, configuration)
 
+      if (currentPage !== undefined) {
+        localVarQueryParameter['currentPage'] = currentPage
+      }
+
+      if (pagination !== undefined) {
+        localVarQueryParameter['pagination'] = pagination
+      }
+
+      if (pospID !== undefined) {
+        localVarQueryParameter['pospID'] = pospID
+      }
+
+      if (formName !== undefined) {
+        localVarQueryParameter['formName'] = formName
+      }
+
+      if (states) {
+        localVarQueryParameter['states'] = states
+      }
+
       setSearchParams(localVarUrlObj, localVarQueryParameter)
       let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {}
       localVarRequestOptions.headers = {
@@ -3153,7 +4024,8 @@ export const NasesApiAxiosParamCreator = function (configuration?: Configuration
       }
     },
     /**
-     *
+     * Return technical account JWT token
+     * @summary
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
@@ -3190,7 +4062,53 @@ export const NasesApiAxiosParamCreator = function (configuration?: Configuration
       }
     },
     /**
-     *
+     * Assign form with no assigned user to the authenticated user
+     * @summary
+     * @param {string} id
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    nasesControllerMigrateForm: async (
+      id: string,
+      options: AxiosRequestConfig = {},
+    ): Promise<RequestArgs> => {
+      // verify required parameter 'id' is not null or undefined
+      assertParamExists('nasesControllerMigrateForm', 'id', id)
+      const localVarPath = `/nases/migrate-form/{id}`.replace(
+        `{${'id'}}`,
+        encodeURIComponent(String(id)),
+      )
+      // use dummy base URL string because the URL constructor only accepts absolute URLs.
+      const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL)
+      let baseOptions
+      if (configuration) {
+        baseOptions = configuration.baseOptions
+      }
+
+      const localVarRequestOptions = { method: 'POST', ...baseOptions, ...options }
+      const localVarHeaderParameter = {} as any
+      const localVarQueryParameter = {} as any
+
+      // authentication bearer required
+      // http bearer authentication required
+      await setBearerAuthToObject(localVarHeaderParameter, configuration)
+
+      setSearchParams(localVarUrlObj, localVarQueryParameter)
+      let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {}
+      localVarRequestOptions.headers = {
+        ...localVarHeaderParameter,
+        ...headersFromBaseOptions,
+        ...options.headers,
+      }
+
+      return {
+        url: toPathString(localVarUrlObj),
+        options: localVarRequestOptions,
+      }
+    },
+    /**
+     * This endpoint is used for updating from and sending it to NASES. First is form updated then send to rabbitmq, then is controlled if everything is okay and files are scanned and after that is send to NASES
+     * @summary
      * @param {string} id
      * @param {UpdateFormRequestDto} updateFormRequestDto
      * @param {*} [options] Override http request option.
@@ -3249,7 +4167,8 @@ export const NasesApiAxiosParamCreator = function (configuration?: Configuration
       }
     },
     /**
-     *
+     * This endpoint is used for updating from and sending it to NASES. First is form updated then send to rabbitmq, then is controlled if everything is okay and files are scanned and after that is send to NASES
+     * @summary
      * @param {string} id
      * @param {UpdateFormRequestDto} updateFormRequestDto
      * @param {*} [options] Override http request option.
@@ -3308,7 +4227,8 @@ export const NasesApiAxiosParamCreator = function (configuration?: Configuration
       }
     },
     /**
-     *
+     * This endpoint is used for sending form to NASES. First is form send to rabbitmq, then is controlled if everything is okay and files are scanned and after that is send to NASES
+     * @summary
      * @param {string} id
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
@@ -3352,7 +4272,8 @@ export const NasesApiAxiosParamCreator = function (configuration?: Configuration
       }
     },
     /**
-     *
+     * This endpoint is used for sending form to NASES. First is form send to rabbitmq, then is controlled if everything is okay and files are scanned and after that is send to NASES
+     * @summary
      * @param {string} id
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
@@ -3452,11 +4373,12 @@ export const NasesApiAxiosParamCreator = function (configuration?: Configuration
       }
     },
     /**
-     * Create id in our backand, which you need to send in form as external id. Save also data necessary for envelope to send message to NASES
+     * Create id in our backend, which you need to send in form as external id. Save also data necessary for envelope to send message to NASES
      * @summary
      * @param {string} id
      * @param {UpdateFormRequestDto} updateFormRequestDto
      * @param {*} [options] Override http request option.
+     * @deprecated
      * @throws {RequiredError}
      */
     nasesControllerUpdateFormEid: async (
@@ -3522,7 +4444,7 @@ export const NasesApiFp = function (configuration?: Configuration) {
   const localVarAxiosParamCreator = NasesApiAxiosParamCreator(configuration)
   return {
     /**
-     * Create id in our backand, which you need to send in form as external id. Save also data necessary for envelope to send message to NASES
+     * Create id in our backend, which you need to send in form as external id. Save also data necessary for envelope to send message to NASES
      * @summary
      * @param {CreateFormRequestDto} createFormRequestDto
      * @param {*} [options] Override http request option.
@@ -3539,10 +4461,11 @@ export const NasesApiFp = function (configuration?: Configuration) {
       return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)
     },
     /**
-     * Create only id in our backand, which you need to send in form as external id. There is only one mandatory paremeter - email, rest of body is not mandatory, you can add form name, category version and some tags
+     * Create only id in our backend, which you need to send in form as external id. There is only one mandatory parameter - email, rest of body is not mandatory, you can add form name, category version and some tags
      * @summary
      * @param {CreateFormEidRequestDto} createFormEidRequestDto
      * @param {*} [options] Override http request option.
+     * @deprecated
      * @throws {RequiredError}
      */
     async nasesControllerCreateFormEid(
@@ -3556,26 +4479,28 @@ export const NasesApiFp = function (configuration?: Configuration) {
       return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)
     },
     /**
-     *
+     * Return administration account JWT token
+     * @summary
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
     async nasesControllerGetAdministrationJwt(
       options?: AxiosRequestConfig,
-    ): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<string>> {
+    ): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<object>> {
       const localVarAxiosArgs = await localVarAxiosParamCreator.nasesControllerGetAdministrationJwt(
         options,
       )
       return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)
     },
     /**
-     *
+     * Return eid user JWT token
+     * @summary
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
     async nasesControllerGetEidJwt(
       options?: AxiosRequestConfig,
-    ): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<string>> {
+    ): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<object>> {
       const localVarAxiosArgs = await localVarAxiosParamCreator.nasesControllerGetEidJwt(options)
       return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)
     },
@@ -3594,32 +4519,68 @@ export const NasesApiFp = function (configuration?: Configuration) {
       return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)
     },
     /**
-     * Return top 10 forms
-     * @summary
+     * Get paginated forms
+     * @summary Get paginated forms
+     * @param {string} [currentPage] Page number
+     * @param {string} [pagination] Number of items per page
+     * @param {string} [pospID] Posp ID of Form
+     * @param {string} [formName] Form Name
+     * @param {Array<FormState>} [states] States of form
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
     async nasesControllerGetForms(
+      currentPage?: string,
+      pagination?: string,
+      pospID?: string,
+      formName?: string,
+      states?: Array<FormState>,
       options?: AxiosRequestConfig,
     ): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<GetFormsResponseDto>> {
-      const localVarAxiosArgs = await localVarAxiosParamCreator.nasesControllerGetForms(options)
+      const localVarAxiosArgs = await localVarAxiosParamCreator.nasesControllerGetForms(
+        currentPage,
+        pagination,
+        pospID,
+        formName,
+        states,
+        options,
+      )
       return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)
     },
     /**
-     *
+     * Return technical account JWT token
+     * @summary
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
     async nasesControllerGetTechnicalJwt(
       options?: AxiosRequestConfig,
-    ): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<string>> {
+    ): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<object>> {
       const localVarAxiosArgs = await localVarAxiosParamCreator.nasesControllerGetTechnicalJwt(
         options,
       )
       return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)
     },
     /**
-     *
+     * Assign form with no assigned user to the authenticated user
+     * @summary
+     * @param {string} id
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    async nasesControllerMigrateForm(
+      id: string,
+      options?: AxiosRequestConfig,
+    ): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<void>> {
+      const localVarAxiosArgs = await localVarAxiosParamCreator.nasesControllerMigrateForm(
+        id,
+        options,
+      )
+      return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)
+    },
+    /**
+     * This endpoint is used for updating from and sending it to NASES. First is form updated then send to rabbitmq, then is controlled if everything is okay and files are scanned and after that is send to NASES
+     * @summary
      * @param {string} id
      * @param {UpdateFormRequestDto} updateFormRequestDto
      * @param {*} [options] Override http request option.
@@ -3629,7 +4590,7 @@ export const NasesApiFp = function (configuration?: Configuration) {
       id: string,
       updateFormRequestDto: UpdateFormRequestDto,
       options?: AxiosRequestConfig,
-    ): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<void>> {
+    ): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<SendFormResponseDto>> {
       const localVarAxiosArgs = await localVarAxiosParamCreator.nasesControllerSendAndUpdateForm(
         id,
         updateFormRequestDto,
@@ -3638,7 +4599,8 @@ export const NasesApiFp = function (configuration?: Configuration) {
       return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)
     },
     /**
-     *
+     * This endpoint is used for updating from and sending it to NASES. First is form updated then send to rabbitmq, then is controlled if everything is okay and files are scanned and after that is send to NASES
+     * @summary
      * @param {string} id
      * @param {UpdateFormRequestDto} updateFormRequestDto
      * @param {*} [options] Override http request option.
@@ -3648,7 +4610,7 @@ export const NasesApiFp = function (configuration?: Configuration) {
       id: string,
       updateFormRequestDto: UpdateFormRequestDto,
       options?: AxiosRequestConfig,
-    ): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<void>> {
+    ): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<SendFormResponseDto>> {
       const localVarAxiosArgs = await localVarAxiosParamCreator.nasesControllerSendAndUpdateFormEid(
         id,
         updateFormRequestDto,
@@ -3657,7 +4619,8 @@ export const NasesApiFp = function (configuration?: Configuration) {
       return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)
     },
     /**
-     *
+     * This endpoint is used for sending form to NASES. First is form send to rabbitmq, then is controlled if everything is okay and files are scanned and after that is send to NASES
+     * @summary
      * @param {string} id
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
@@ -3665,12 +4628,13 @@ export const NasesApiFp = function (configuration?: Configuration) {
     async nasesControllerSendForm(
       id: string,
       options?: AxiosRequestConfig,
-    ): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<void>> {
+    ): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<SendFormResponseDto>> {
       const localVarAxiosArgs = await localVarAxiosParamCreator.nasesControllerSendForm(id, options)
       return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)
     },
     /**
-     *
+     * This endpoint is used for sending form to NASES. First is form send to rabbitmq, then is controlled if everything is okay and files are scanned and after that is send to NASES
+     * @summary
      * @param {string} id
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
@@ -3678,7 +4642,7 @@ export const NasesApiFp = function (configuration?: Configuration) {
     async nasesControllerSendFormEid(
       id: string,
       options?: AxiosRequestConfig,
-    ): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<void>> {
+    ): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<SendFormResponseDto>> {
       const localVarAxiosArgs = await localVarAxiosParamCreator.nasesControllerSendFormEid(
         id,
         options,
@@ -3706,11 +4670,12 @@ export const NasesApiFp = function (configuration?: Configuration) {
       return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)
     },
     /**
-     * Create id in our backand, which you need to send in form as external id. Save also data necessary for envelope to send message to NASES
+     * Create id in our backend, which you need to send in form as external id. Save also data necessary for envelope to send message to NASES
      * @summary
      * @param {string} id
      * @param {UpdateFormRequestDto} updateFormRequestDto
      * @param {*} [options] Override http request option.
+     * @deprecated
      * @throws {RequiredError}
      */
     async nasesControllerUpdateFormEid(
@@ -3740,7 +4705,7 @@ export const NasesApiFactory = function (
   const localVarFp = NasesApiFp(configuration)
   return {
     /**
-     * Create id in our backand, which you need to send in form as external id. Save also data necessary for envelope to send message to NASES
+     * Create id in our backend, which you need to send in form as external id. Save also data necessary for envelope to send message to NASES
      * @summary
      * @param {CreateFormRequestDto} createFormRequestDto
      * @param {*} [options] Override http request option.
@@ -3755,10 +4720,11 @@ export const NasesApiFactory = function (
         .then((request) => request(axios, basePath))
     },
     /**
-     * Create only id in our backand, which you need to send in form as external id. There is only one mandatory paremeter - email, rest of body is not mandatory, you can add form name, category version and some tags
+     * Create only id in our backend, which you need to send in form as external id. There is only one mandatory parameter - email, rest of body is not mandatory, you can add form name, category version and some tags
      * @summary
      * @param {CreateFormEidRequestDto} createFormEidRequestDto
      * @param {*} [options] Override http request option.
+     * @deprecated
      * @throws {RequiredError}
      */
     nasesControllerCreateFormEid(
@@ -3770,21 +4736,23 @@ export const NasesApiFactory = function (
         .then((request) => request(axios, basePath))
     },
     /**
-     *
+     * Return administration account JWT token
+     * @summary
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
-    nasesControllerGetAdministrationJwt(options?: AxiosRequestConfig): AxiosPromise<string> {
+    nasesControllerGetAdministrationJwt(options?: AxiosRequestConfig): AxiosPromise<object> {
       return localVarFp
         .nasesControllerGetAdministrationJwt(options)
         .then((request) => request(axios, basePath))
     },
     /**
-     *
+     * Return eid user JWT token
+     * @summary
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
-    nasesControllerGetEidJwt(options?: AxiosRequestConfig): AxiosPromise<string> {
+    nasesControllerGetEidJwt(options?: AxiosRequestConfig): AxiosPromise<object> {
       return localVarFp
         .nasesControllerGetEidJwt(options)
         .then((request) => request(axios, basePath))
@@ -3805,26 +4773,54 @@ export const NasesApiFactory = function (
         .then((request) => request(axios, basePath))
     },
     /**
-     * Return top 10 forms
+     * Get paginated forms
+     * @summary Get paginated forms
+     * @param {string} [currentPage] Page number
+     * @param {string} [pagination] Number of items per page
+     * @param {string} [pospID] Posp ID of Form
+     * @param {string} [formName] Form Name
+     * @param {Array<FormState>} [states] States of form
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    nasesControllerGetForms(
+      currentPage?: string,
+      pagination?: string,
+      pospID?: string,
+      formName?: string,
+      states?: Array<FormState>,
+      options?: AxiosRequestConfig,
+    ): AxiosPromise<GetFormsResponseDto> {
+      return localVarFp
+        .nasesControllerGetForms(currentPage, pagination, pospID, formName, states, options)
+        .then((request) => request(axios, basePath))
+    },
+    /**
+     * Return technical account JWT token
      * @summary
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
-    nasesControllerGetForms(options?: AxiosRequestConfig): AxiosPromise<GetFormsResponseDto> {
-      return localVarFp.nasesControllerGetForms(options).then((request) => request(axios, basePath))
-    },
-    /**
-     *
-     * @param {*} [options] Override http request option.
-     * @throws {RequiredError}
-     */
-    nasesControllerGetTechnicalJwt(options?: AxiosRequestConfig): AxiosPromise<string> {
+    nasesControllerGetTechnicalJwt(options?: AxiosRequestConfig): AxiosPromise<object> {
       return localVarFp
         .nasesControllerGetTechnicalJwt(options)
         .then((request) => request(axios, basePath))
     },
     /**
-     *
+     * Assign form with no assigned user to the authenticated user
+     * @summary
+     * @param {string} id
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    nasesControllerMigrateForm(id: string, options?: AxiosRequestConfig): AxiosPromise<void> {
+      return localVarFp
+        .nasesControllerMigrateForm(id, options)
+        .then((request) => request(axios, basePath))
+    },
+    /**
+     * This endpoint is used for updating from and sending it to NASES. First is form updated then send to rabbitmq, then is controlled if everything is okay and files are scanned and after that is send to NASES
+     * @summary
      * @param {string} id
      * @param {UpdateFormRequestDto} updateFormRequestDto
      * @param {*} [options] Override http request option.
@@ -3834,13 +4830,14 @@ export const NasesApiFactory = function (
       id: string,
       updateFormRequestDto: UpdateFormRequestDto,
       options?: AxiosRequestConfig,
-    ): AxiosPromise<void> {
+    ): AxiosPromise<SendFormResponseDto> {
       return localVarFp
         .nasesControllerSendAndUpdateForm(id, updateFormRequestDto, options)
         .then((request) => request(axios, basePath))
     },
     /**
-     *
+     * This endpoint is used for updating from and sending it to NASES. First is form updated then send to rabbitmq, then is controlled if everything is okay and files are scanned and after that is send to NASES
+     * @summary
      * @param {string} id
      * @param {UpdateFormRequestDto} updateFormRequestDto
      * @param {*} [options] Override http request option.
@@ -3850,29 +4847,37 @@ export const NasesApiFactory = function (
       id: string,
       updateFormRequestDto: UpdateFormRequestDto,
       options?: AxiosRequestConfig,
-    ): AxiosPromise<void> {
+    ): AxiosPromise<SendFormResponseDto> {
       return localVarFp
         .nasesControllerSendAndUpdateFormEid(id, updateFormRequestDto, options)
         .then((request) => request(axios, basePath))
     },
     /**
-     *
+     * This endpoint is used for sending form to NASES. First is form send to rabbitmq, then is controlled if everything is okay and files are scanned and after that is send to NASES
+     * @summary
      * @param {string} id
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
-    nasesControllerSendForm(id: string, options?: AxiosRequestConfig): AxiosPromise<void> {
+    nasesControllerSendForm(
+      id: string,
+      options?: AxiosRequestConfig,
+    ): AxiosPromise<SendFormResponseDto> {
       return localVarFp
         .nasesControllerSendForm(id, options)
         .then((request) => request(axios, basePath))
     },
     /**
-     *
+     * This endpoint is used for sending form to NASES. First is form send to rabbitmq, then is controlled if everything is okay and files are scanned and after that is send to NASES
+     * @summary
      * @param {string} id
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
-    nasesControllerSendFormEid(id: string, options?: AxiosRequestConfig): AxiosPromise<void> {
+    nasesControllerSendFormEid(
+      id: string,
+      options?: AxiosRequestConfig,
+    ): AxiosPromise<SendFormResponseDto> {
       return localVarFp
         .nasesControllerSendFormEid(id, options)
         .then((request) => request(axios, basePath))
@@ -3895,11 +4900,12 @@ export const NasesApiFactory = function (
         .then((request) => request(axios, basePath))
     },
     /**
-     * Create id in our backand, which you need to send in form as external id. Save also data necessary for envelope to send message to NASES
+     * Create id in our backend, which you need to send in form as external id. Save also data necessary for envelope to send message to NASES
      * @summary
      * @param {string} id
      * @param {UpdateFormRequestDto} updateFormRequestDto
      * @param {*} [options] Override http request option.
+     * @deprecated
      * @throws {RequiredError}
      */
     nasesControllerUpdateFormEid(
@@ -3922,7 +4928,7 @@ export const NasesApiFactory = function (
  */
 export class NasesApi extends BaseAPI {
   /**
-   * Create id in our backand, which you need to send in form as external id. Save also data necessary for envelope to send message to NASES
+   * Create id in our backend, which you need to send in form as external id. Save also data necessary for envelope to send message to NASES
    * @summary
    * @param {CreateFormRequestDto} createFormRequestDto
    * @param {*} [options] Override http request option.
@@ -3939,10 +4945,11 @@ export class NasesApi extends BaseAPI {
   }
 
   /**
-   * Create only id in our backand, which you need to send in form as external id. There is only one mandatory paremeter - email, rest of body is not mandatory, you can add form name, category version and some tags
+   * Create only id in our backend, which you need to send in form as external id. There is only one mandatory parameter - email, rest of body is not mandatory, you can add form name, category version and some tags
    * @summary
    * @param {CreateFormEidRequestDto} createFormEidRequestDto
    * @param {*} [options] Override http request option.
+   * @deprecated
    * @throws {RequiredError}
    * @memberof NasesApi
    */
@@ -3956,7 +4963,8 @@ export class NasesApi extends BaseAPI {
   }
 
   /**
-   *
+   * Return administration account JWT token
+   * @summary
    * @param {*} [options] Override http request option.
    * @throws {RequiredError}
    * @memberof NasesApi
@@ -3968,7 +4976,8 @@ export class NasesApi extends BaseAPI {
   }
 
   /**
-   *
+   * Return eid user JWT token
+   * @summary
    * @param {*} [options] Override http request option.
    * @throws {RequiredError}
    * @memberof NasesApi
@@ -3994,20 +5003,33 @@ export class NasesApi extends BaseAPI {
   }
 
   /**
-   * Return top 10 forms
-   * @summary
+   * Get paginated forms
+   * @summary Get paginated forms
+   * @param {string} [currentPage] Page number
+   * @param {string} [pagination] Number of items per page
+   * @param {string} [pospID] Posp ID of Form
+   * @param {string} [formName] Form Name
+   * @param {Array<FormState>} [states] States of form
    * @param {*} [options] Override http request option.
    * @throws {RequiredError}
    * @memberof NasesApi
    */
-  public nasesControllerGetForms(options?: AxiosRequestConfig) {
+  public nasesControllerGetForms(
+    currentPage?: string,
+    pagination?: string,
+    pospID?: string,
+    formName?: string,
+    states?: Array<FormState>,
+    options?: AxiosRequestConfig,
+  ) {
     return NasesApiFp(this.configuration)
-      .nasesControllerGetForms(options)
+      .nasesControllerGetForms(currentPage, pagination, pospID, formName, states, options)
       .then((request) => request(this.axios, this.basePath))
   }
 
   /**
-   *
+   * Return technical account JWT token
+   * @summary
    * @param {*} [options] Override http request option.
    * @throws {RequiredError}
    * @memberof NasesApi
@@ -4019,7 +5041,22 @@ export class NasesApi extends BaseAPI {
   }
 
   /**
-   *
+   * Assign form with no assigned user to the authenticated user
+   * @summary
+   * @param {string} id
+   * @param {*} [options] Override http request option.
+   * @throws {RequiredError}
+   * @memberof NasesApi
+   */
+  public nasesControllerMigrateForm(id: string, options?: AxiosRequestConfig) {
+    return NasesApiFp(this.configuration)
+      .nasesControllerMigrateForm(id, options)
+      .then((request) => request(this.axios, this.basePath))
+  }
+
+  /**
+   * This endpoint is used for updating from and sending it to NASES. First is form updated then send to rabbitmq, then is controlled if everything is okay and files are scanned and after that is send to NASES
+   * @summary
    * @param {string} id
    * @param {UpdateFormRequestDto} updateFormRequestDto
    * @param {*} [options] Override http request option.
@@ -4037,7 +5074,8 @@ export class NasesApi extends BaseAPI {
   }
 
   /**
-   *
+   * This endpoint is used for updating from and sending it to NASES. First is form updated then send to rabbitmq, then is controlled if everything is okay and files are scanned and after that is send to NASES
+   * @summary
    * @param {string} id
    * @param {UpdateFormRequestDto} updateFormRequestDto
    * @param {*} [options] Override http request option.
@@ -4055,7 +5093,8 @@ export class NasesApi extends BaseAPI {
   }
 
   /**
-   *
+   * This endpoint is used for sending form to NASES. First is form send to rabbitmq, then is controlled if everything is okay and files are scanned and after that is send to NASES
+   * @summary
    * @param {string} id
    * @param {*} [options] Override http request option.
    * @throws {RequiredError}
@@ -4068,7 +5107,8 @@ export class NasesApi extends BaseAPI {
   }
 
   /**
-   *
+   * This endpoint is used for sending form to NASES. First is form send to rabbitmq, then is controlled if everything is okay and files are scanned and after that is send to NASES
+   * @summary
    * @param {string} id
    * @param {*} [options] Override http request option.
    * @throws {RequiredError}
@@ -4100,11 +5140,12 @@ export class NasesApi extends BaseAPI {
   }
 
   /**
-   * Create id in our backand, which you need to send in form as external id. Save also data necessary for envelope to send message to NASES
+   * Create id in our backend, which you need to send in form as external id. Save also data necessary for envelope to send message to NASES
    * @summary
    * @param {string} id
    * @param {UpdateFormRequestDto} updateFormRequestDto
    * @param {*} [options] Override http request option.
+   * @deprecated
    * @throws {RequiredError}
    * @memberof NasesApi
    */

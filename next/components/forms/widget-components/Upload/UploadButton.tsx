@@ -1,8 +1,14 @@
 import { UploadIcon } from '@assets/ui-icons'
 import cx from 'classnames'
 import { useTranslation } from 'next-i18next'
-import React, { forwardRef } from 'react'
+import React, { forwardRef, useRef } from 'react'
 import { Button as ReactAriaButton, FileTrigger } from 'react-aria-components'
+
+import {
+  getDisplaySupportedFileExtensions,
+  getSupportedFileExtensions,
+} from '../../../../frontend/utils/formFileUpload'
+import PrettyBytes from '../../simple-components/PrettyBytes'
 
 interface UploadButtonProps {
   disabled?: boolean
@@ -26,6 +32,9 @@ const UploadButton = forwardRef<HTMLButtonElement, UploadButtonProps>(
     ref,
   ) => {
     const { t } = useTranslation('account', { keyPrefix: 'Upload' })
+    const fileTriggerRef = useRef<HTMLDivElement>(null)
+
+    const displaySupportedFileExtensions = getDisplaySupportedFileExtensions(supportedFormats)
 
     const buttonClassNames = cx(
       'w-full lg:w-fit lg:py-3 justify-center flex items-center rounded-lg border-2 border-gray-300 py-2 px-6 bg-white',
@@ -54,18 +63,28 @@ const UploadButton = forwardRef<HTMLButtonElement, UploadButtonProps>(
       }
 
       onUpload(Array.from(files))
+
+      // If this is not done, selecting the same file again after the first upload will not trigger the onChange event,
+      // as the browser does not consider this a change in the input field's state.
+      // https://stackoverflow.com/a/60887378
+      try {
+        ;(fileTriggerRef.current?.querySelector('input[type="file"]') as HTMLInputElement).value =
+          ''
+        // eslint-disable-next-line no-empty
+      } catch (error) {}
     }
 
     return (
       <div className="flex gap-x-6 gap-y-3 max-md:flex-col">
         <FileTrigger
           onChange={handleOnChange}
-          acceptedFileTypes={supportedFormats}
+          acceptedFileTypes={getSupportedFileExtensions(supportedFormats)}
           allowsMultiple={allowsMultiple}
           className="flex"
+          ref={fileTriggerRef}
         >
           <ReactAriaButton className={buttonClassNames} ref={ref} isDisabled={disabled}>
-            <div className="flex gap-2 justify-center items-center">
+            <div className="flex items-center justify-center gap-2">
               <span>
                 <UploadIcon />
               </span>
@@ -79,14 +98,15 @@ const UploadButton = forwardRef<HTMLButtonElement, UploadButtonProps>(
             {sizeLimit ? (
               <>
                 <dt className="sr-only">{t('sizeLimit')}</dt>
-                {/* TODO format fileSize */}
-                <dd>{`${sizeLimit} MB`}</dd>
+                <dd>
+                  <PrettyBytes number={sizeLimit * 1000 * 1000} />
+                </dd>
               </>
             ) : null}
-            {supportedFormats?.length ? (
+            {displaySupportedFileExtensions?.length ? (
               <>
                 <dt className="sr-only">{t('supportedFormats')}</dt>
-                <dd>{supportedFormats.join(' ')}</dd>
+                <dd>{displaySupportedFileExtensions.join(', ')}</dd>
               </>
             ) : null}
           </dl>

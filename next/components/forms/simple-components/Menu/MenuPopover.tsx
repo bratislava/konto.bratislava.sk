@@ -29,7 +29,7 @@ const MenuPopover = (props: PopoverProps) => {
       <div
         {...overlayProps}
         ref={triggerRef}
-        className="z-20 shadow-lg bg-white rounded-lg mt-1 absolute"
+        className="absolute z-20 mt-1 rounded-lg bg-white shadow-lg"
       >
         {children}
         <DismissButton onDismiss={() => state.close()} />

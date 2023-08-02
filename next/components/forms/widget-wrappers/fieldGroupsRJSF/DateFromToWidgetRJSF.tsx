@@ -1,4 +1,4 @@
-import { FieldProps, RJSFSchema } from '@rjsf/utils'
+import { FieldProps } from '@rjsf/utils'
 import React from 'react'
 
 import { DateFromTo } from '../../groups'
@@ -6,9 +6,10 @@ import { ExplicitOptionalType } from '../../types/ExplicitOptional'
 import { FormSpacingType } from '../../types/WidgetOptions'
 import WidgetWrapper, { isFormSpacingType } from '../WidgetWrapper'
 
-interface DateFromToWidgetRJSFProps extends FieldProps {
-  formData: RJSFSchema
-}
+type DateFromToWidgetRJSFProps = FieldProps<{
+  startDate?: string | undefined
+  endDate?: string | undefined
+}>
 
 const DateFromToWidgetRJSF = ({
   formData,
@@ -39,7 +40,8 @@ const DateFromToWidgetRJSF = ({
   }
 
   // TODO fix this code block. Re check what kind of error message it returns and fix in a new way according new task
-  const getErrorMessage = (propKey: string): string[] => errorSchema?.[propKey]?.__errors || []
+  const getErrorMessage = (propKey: 'startDate' | 'endDate'): string[] =>
+    errorSchema?.[propKey]?.__errors || []
 
   return (
     <WidgetWrapper
@@ -61,8 +63,8 @@ const DateFromToWidgetRJSF = ({
           DateToExplicitOptional={localUiSchema?.DateToExplicitOptional as ExplicitOptionalType}
           DateFromOnChange={(e) => handleOnChange('startDate', e?.toString())}
           DateToOnChange={(e) => handleOnChange('endDate', e?.toString())}
-          DateFromValue={formData.startDate}
-          DateToValue={formData.endDate}
+          DateFromValue={formData?.startDate}
+          DateToValue={formData?.endDate}
           DateFromLabel={schemaProperties?.startDate?.title}
           DateToLabel={schemaProperties?.endDate?.title}
           DateFromDisabled={localUiSchema?.DateFromDisabled as unknown as boolean}

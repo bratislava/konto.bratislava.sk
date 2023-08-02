@@ -1,4 +1,4 @@
-import { FieldProps, RJSFSchema } from '@rjsf/utils'
+import { FieldProps } from '@rjsf/utils'
 import React from 'react'
 
 import { TimeFromTo } from '../../groups'
@@ -6,9 +6,10 @@ import { ExplicitOptionalType } from '../../types/ExplicitOptional'
 import { FormSpacingType } from '../../types/WidgetOptions'
 import WidgetWrapper, { isFormSpacingType } from '../WidgetWrapper'
 
-interface TimeFromToWidgetRJSFProps extends FieldProps {
-  formData: RJSFSchema
-}
+type TimeFromToWidgetRJSFProps = FieldProps<{
+  startTime?: string | undefined
+  endTime?: string | undefined
+}>
 
 const TimeFromToWidgetRJSF = ({
   formData,
@@ -39,7 +40,8 @@ const TimeFromToWidgetRJSF = ({
   }
 
   // TODO: fix this code block. Re check what kind of error message it returns and fix in a new way according new task
-  const getErrorMessage = (propKey: string): string[] => errorSchema?.[propKey]?.__errors || []
+  const getErrorMessage = (propKey: 'startTime' | 'endTime'): string[] =>
+    errorSchema?.[propKey]?.__errors || []
 
   return (
     <WidgetWrapper
@@ -61,8 +63,8 @@ const TimeFromToWidgetRJSF = ({
           TimeToExplicitOptional={localUiSchema?.TimeToExplicitOptional as ExplicitOptionalType}
           TimeFromOnChange={(e) => handleOnChange('startTime', e?.toString())}
           TimeToOnChange={(e) => handleOnChange('endTime', e?.toString())}
-          TimeFromValue={formData.startTime}
-          TimeToValue={formData.endTime}
+          TimeFromValue={formData?.startTime}
+          TimeToValue={formData?.endTime}
           TimeFromLabel={schemaProperties?.startTime?.title}
           TimeToLabel={schemaProperties?.endTime?.title}
           TimeFromDisabled={localUiSchema?.TimeFromDisabled as unknown as boolean}

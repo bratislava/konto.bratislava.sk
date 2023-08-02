@@ -1,7 +1,10 @@
 export interface FormFileUploadContextType {
   uploadFiles: (files: File[], constraints: FormFileUploadConstraints) => string[]
   removeFiles: (ids: string[]) => void
+  keepFiles: (ids: string[]) => void
   retryFile: (id: string, constraints: FormFileUploadConstraints) => string | null
+  downloadFile: (id: string) => void
+  refetchAfterImportIfNeeded: (ids: string[]) => void
   getFileInfoById: (id: string) => FormFileUploadFileInfo
 }
 
@@ -20,6 +23,7 @@ export enum FormFileUploadStatusEnum {
   ScanDone = 'ScanDone',
   ScanInfected = 'ScanInfected',
   UnknownFile = 'UnknownFile',
+  UnknownStatus = 'UnknownStatus',
 }
 
 export type FormFileUploadClientFileStatus =
@@ -31,6 +35,7 @@ export type FormFileUploadClientFileStatus =
   | { type: FormFileUploadStatusEnum.UploadError; error: string; canRetry: boolean }
   | { type: FormFileUploadStatusEnum.UploadDone }
   | { type: FormFileUploadStatusEnum.UnknownFile }
+  | { type: FormFileUploadStatusEnum.UnknownStatus; offline: boolean }
 
 export type FormFileUploadClientFileInfo = {
   id: string
@@ -47,4 +52,9 @@ export type FormFileUploadFileStatus =
   | FormFileUploadClientFileStatus
   | FormFileUploadServerFileStatus
 
-export type FormFileUploadFileInfo = { status: FormFileUploadFileStatus; fileName: string }
+export type FormFileUploadFileInfo = {
+  status: FormFileUploadFileStatus
+  fileName: string
+  canDownload: boolean
+  fileSize: number | null
+}

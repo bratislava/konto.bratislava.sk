@@ -1,4 +1,4 @@
-import CloseIcon from '@assets/images/new-icons/ui/cross.svg'
+import { CrossIcon } from '@assets/ui-icons'
 import cx from 'classnames'
 import { FC, useState } from 'react'
 
@@ -52,8 +52,8 @@ const Tag: FC<TagProps> = ({ text, removable, size, branded, shorthand, onRemove
       onFocus={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
     >
-      <p className="tag cursor-default select-none inline-block">{tagText}</p>
-      {removable && <CloseIcon className={iconClassStyles} onClick={onRemove} />}
+      <p className="tag inline-block cursor-default select-none">{tagText}</p>
+      {removable && <CrossIcon className={iconClassStyles} onClick={onRemove} />}
     </div>
   )
 }

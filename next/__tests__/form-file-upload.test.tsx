@@ -58,7 +58,7 @@ describe('useFormFileUpload', () => {
 
   it('FormFileUploadStateProvider can upload file', async () => {
     const setup = setupTest({ providerProps: { initialFormData: { formId: '', files: [] } } })
-    const file = new File([''], 'filename.txt')
+    const file = new File([''], 'filename.jpg')
 
     let ids: string[] = []
     act(() => {
@@ -67,8 +67,10 @@ describe('useFormFileUpload', () => {
 
     await waitFor(() =>
       expect(setup.getHook().getFileInfoById(ids[0])).toEqual({
-        fileName: 'filename.txt',
+        fileName: 'filename.jpg',
         status: { type: FormFileUploadStatusEnum.Uploading, progress: 0 },
+        canDownload: false,
+        fileSize: 0,
       }),
     )
   })

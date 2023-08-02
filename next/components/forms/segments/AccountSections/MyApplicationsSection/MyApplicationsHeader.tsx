@@ -11,6 +11,7 @@ type HeaderNavigationItemBase = {
   tag: 'sent' | 'concept'
 }
 
+// TODO accessibility - refactor to use Tabs from react-aria-components
 const MyApplicationsHeader = (props: MyApplicationsHeaderBase) => {
   const { title } = props
   const { t } = useTranslation('account')
@@ -20,13 +21,14 @@ const MyApplicationsHeader = (props: MyApplicationsHeaderBase) => {
     { title: t('account_section_applications.navigation_sent'), tag: 'sent' },
     { title: t('account_section_applications.navigation_concept'), tag: 'concept' },
   ]
+
   return (
     <div className="bg-gray-50">
-      <span className="pt-6 flex flex-col justify-end gap-4 lg:gap-6 w-full h-full max-w-screen-lg m-auto lg:px-0 lg:pt-14">
+      <span className="m-auto flex h-full w-full max-w-screen-lg flex-col justify-end gap-4 pt-6 lg:gap-6 lg:px-0 lg:pt-14">
         <h1 className="text-h1 pl-4 lg:pl-0">{title}</h1>
         <ul className="flex gap-0 lg:gap-12">
           {headerNavigationList.map((item, i) => (
-            <li className="lg:w-max w-full" key={i}>
+            <li className="w-full lg:w-max" key={i}>
               <button
                 type="button"
                 onClick={() => setGlobalState({ applicationsActiveMenuItem: item.tag })}

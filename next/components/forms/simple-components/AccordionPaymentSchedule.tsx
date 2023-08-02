@@ -1,4 +1,4 @@
-import ExpandMore from '@assets/images/new-icons/ui/expand.svg'
+import { ChevronDownIcon } from '@assets/ui-icons'
 import { AddToCalendarButton } from 'add-to-calendar-button-react'
 import cx from 'classnames'
 import { useTranslation } from 'next-i18next'
@@ -28,9 +28,9 @@ interface PaymentScheduleViewProps {
 const PaymentScheduleView = ({ tax }: PaymentScheduleViewProps) => {
   const { t } = useTranslation('account')
   return (
-    <div className="no-scrollbar flex flex-col items-start lg:gap-6 gap-4 w-full overflow-auto">
-      <div className="flex flex-col items-start lg:gap-6 gap-4 w-full">
-        <div className="flex lg:hidden flex-col w-full gap-4">
+    <div className="no-scrollbar flex w-full flex-col items-start gap-4 overflow-auto lg:gap-6">
+      <div className="flex w-full flex-col items-start gap-4 lg:gap-6">
+        <div className="flex w-full flex-col gap-4 lg:hidden">
           <div className={cx('text-h6-normal flex')}>
             <div className={cx('text-h6-normal grow')}>
               {t('payment_schedule.three_pieces')}
@@ -38,10 +38,10 @@ const PaymentScheduleView = ({ tax }: PaymentScheduleViewProps) => {
               {t('payment_schedule.not_later')}
             </div>
           </div>
-          <div id="divider" className="w-full h-0.5 bg-gray-200" />
+          <div id="divider" className="h-0.5 w-full bg-gray-200" />
         </div>
-        <div className=" flex md:flex-row flex-col items-center lg:gap-6 gap-4 w-full">
-          <div className="text-h6 font-semibold md:text-h-md grow">{t('tax_determined')}</div>
+        <div className=" flex w-full flex-col items-center gap-4 md:flex-row lg:gap-6">
+          <div className="text-h6 grow font-semibold md:text-h-md">{t('tax_determined')}</div>
           <AddToCalendarButton
             name="Splátka dane z nehnuteľností 2023"
             dates={`[
@@ -58,11 +58,11 @@ const PaymentScheduleView = ({ tax }: PaymentScheduleViewProps) => {
             options={['Google', 'Microsoft365', 'Apple', 'iCal']}
           />
         </div>
-        <div className="flex flex-col items-start p-6 lg:gap-6 gap-4 w-full bg-gray-50 rounded-lg">
+        <div className="flex w-full flex-col items-start gap-4 rounded-lg bg-gray-50 p-6 lg:gap-6">
           {tax?.taxInstallments?.[0] && (
             <div
               id="content"
-              className="flex lg:flex-row flex-col items-start lg:gap-6 gap-3 w-full"
+              className="flex w-full flex-col items-start gap-3 lg:flex-row lg:gap-6"
             >
               <div className="grow items-start">
                 {t('payment_schedule.first_piece')}{' '}
@@ -73,10 +73,10 @@ const PaymentScheduleView = ({ tax }: PaymentScheduleViewProps) => {
           )}
           {tax?.taxInstallments?.[1] && (
             <>
-              <div id="divider" className="w-full h-0.5 bg-gray-200" />
+              <div id="divider" className="h-0.5 w-full bg-gray-200" />
               <div
                 id="content"
-                className="flex lg:flex-row flex-col items-start lg:gap-6 gap-3 w-full"
+                className="flex w-full flex-col items-start gap-3 lg:flex-row lg:gap-6"
               >
                 <div className="grow items-start">
                   {t('payment_schedule.second_piece')}
@@ -88,10 +88,10 @@ const PaymentScheduleView = ({ tax }: PaymentScheduleViewProps) => {
           )}
           {tax?.taxInstallments?.[2] && (
             <>
-              <div id="divider" className="w-full h-0.5 bg-gray-200" />
+              <div id="divider" className="h-0.5 w-full bg-gray-200" />
               <div
                 id="content"
-                className="flex lg:flex-row flex-col items-start lg:gap-6 gap-3 w-full"
+                className="flex w-full flex-col items-start gap-3 lg:flex-row lg:gap-6"
               >
                 <div className="grow items-start">
                   {t('payment_schedule.third_piece')}
@@ -103,7 +103,7 @@ const PaymentScheduleView = ({ tax }: PaymentScheduleViewProps) => {
           )}
         </div>
       </div>
-      <div className="gap-3 lg:gap-0 flex flex-col">
+      <div className="flex flex-col gap-3 lg:gap-0">
         <div className="text-h5">{t('payment_schedule.pay_with_qr')}</div>
         <div className="text-h5-normal">{t('payment_schedule.change_amount')}</div>
       </div>
@@ -144,7 +144,7 @@ const AccordionPaymentSchedule = ({
   const { t } = useTranslation('account')
   return (
     <div className="h-auto w-full">
-      <div className="lg:hidden block">
+      <div className="block lg:hidden">
         <AccountMarkdownModal
           show={isActive}
           onClose={() => setIsActive(false)}
@@ -162,27 +162,27 @@ const AccordionPaymentSchedule = ({
         >
           {icon && (
             <div
-              className={cx('flex lg:items-start items-center justify-center', {
-                'w-6 h-6': accordionSize === 'sm' || accordionSize === 'xs',
-                'w-8 h-8': accordionSize === 'md',
-                'w-10 h-10': accordionSize === 'lg',
+              className={cx('flex items-center justify-center lg:items-start', {
+                'h-6 w-6': accordionSize === 'sm' || accordionSize === 'xs',
+                'h-8 w-8': accordionSize === 'md',
+                'h-10 w-10': accordionSize === 'lg',
               })}
             >
               <PersonIcon
                 className={cx('', {
-                  'w-4 h-4': accordionSize === 'sm' || accordionSize === 'xs',
-                  'w-5 h-5': accordionSize === 'md',
-                  'w-6 h-6': accordionSize === 'lg',
+                  'h-4 w-4': accordionSize === 'sm' || accordionSize === 'xs',
+                  'h-5 w-5': accordionSize === 'md',
+                  'h-6 w-6': accordionSize === 'lg',
                 })}
               />
             </div>
           )}
           <div className="flex w-full flex-col gap-2 lg:gap-4">
-            <div className="flex lg:items-start items-center gap-4">
-              <div className="flex grow sm:flex-row flex-col items-start">
-                <div className="flex flex-col gap-3 grow items-start">
+            <div className="flex items-center gap-4 lg:items-start">
+              <div className="flex grow flex-col items-start sm:flex-row">
+                <div className="flex grow flex-col items-start gap-3">
                   <div
-                    className={cx('flex grow w-full', {
+                    className={cx('flex w-full grow', {
                       'text-h6': accordionSize === 'xs',
                       'text-h5': accordionSize === 'sm',
                       'text-h4': accordionSize === 'md',
@@ -191,20 +191,20 @@ const AccordionPaymentSchedule = ({
                   >
                     {title}
                   </div>
-                  <div className={cx('text-20 flex grow w-max lg:block hidden')}>
+                  <div className={cx('text-20 flex hidden w-max grow lg:block')}>
                     {t('payment_schedule.three_pieces')}
                     <div className="text-h5 inline">{t('payment_schedule.paid_at_once')}</div>
                     {t('payment_schedule.not_later')}
                   </div>
                 </div>
               </div>
-              <ExpandMore
+              <ChevronDownIcon
                 className={cx('flex items-center justify-center text-main-700', {
-                  'lg:w-10 lg:h-10 w-8 h-8': accordionSize === 'lg',
-                  'lg:w-8 lg:h-8 w-6 h-6': accordionSize === 'md',
-                  'w-6 h-6': accordionSize === 'sm' || accordionSize === 'xs',
-                  'transform rotate-180': isActive,
-                  'transform rotate-270 md:rotate-0': !isActive,
+                  'h-8 w-8 lg:h-10 lg:w-10': accordionSize === 'lg',
+                  'h-6 w-6 lg:h-8 lg:w-8': accordionSize === 'md',
+                  'h-6 w-6': accordionSize === 'sm' || accordionSize === 'xs',
+                  'rotate-180 transform': isActive,
+                  'rotate-270 transform md:rotate-0': !isActive,
                 })}
               />
             </div>
@@ -217,7 +217,7 @@ const AccordionPaymentSchedule = ({
         />
         {isActive && (
           <div
-            className={cx('flex flex-col font-normal lg:block hidden', paddingStyles, {
+            className={cx('flex hidden flex-col font-normal lg:block', paddingStyles, {
               'text-h6': accordionSize === 'sm' || accordionSize === 'xs',
               'text-20': accordionSize === 'lg' || accordionSize === 'md',
             })}

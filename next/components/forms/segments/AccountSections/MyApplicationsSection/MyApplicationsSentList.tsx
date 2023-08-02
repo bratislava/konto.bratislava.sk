@@ -1,43 +1,91 @@
+import { formsApi } from '@clients/forms'
+import { FormState, GetFormResponseDto } from '@clients/openapi-forms'
+import { useQuery } from '@tanstack/react-query'
 import MyApplicationCardsPlaceholder from 'components/forms/segments/AccountSections/MyApplicationsSection/MyApplicationCardsPlaceholder'
-import MyApplicationsSentCard from 'components/forms/segments/AccountSections/MyApplicationsSection/MyApplicationsSentCard'
+import MyApplicationsSentCard, {
+  MyApplicationsSentCardProps,
+} from 'components/forms/segments/AccountSections/MyApplicationsSection/MyApplicationsSentCard'
 import Pagination from 'components/forms/simple-components/Pagination/Pagination'
-import { MyApplicationsSentCardBase } from 'frontend/api/mocks/mocks'
 import React, { useState } from 'react'
 
-const ITEMS_PER_PAGE = 9
+import { ROUTES } from '../../../../../frontend/api/constants'
+import { getAccessTokenOrLogout } from '../../../../../frontend/utils/amplify'
 
-type MyApplicationsListBase = {
-  cards: MyApplicationsSentCardBase[]
+// TODO filter out DRAFT forms
+const getSentApplications = async () => {
+  const accessToken = await getAccessTokenOrLogout()
+
+  //  TODO get from swagger types
+  const statesToFetch = [
+    'QUEUED',
+    'QUEUED_ERROR',
+    'CHECKING',
+    'CHECKING_ERROR',
+    'SENDING',
+    'SENDING_ERROR',
+    'SENT',
+    'SENT_ERROR',
+    'PROCESSING',
+    'PROCESSING_ERROR',
+    'FINISHED',
+    'REJECTED',
+  ] as FormState[]
+
+  const response = await formsApi.nasesControllerGetForms(
+    '1',
+    '10',
+    undefined,
+    undefined,
+    statesToFetch,
+    { accessToken },
+  )
+  return response.data
 }
 
-const MyApplicationsSentList = ({ cards }: MyApplicationsListBase) => {
-  const [currentPage, setCurrentPage] = useState<number>(1)
+const transformFormToCardProps = (form: GetFormResponseDto): MyApplicationsSentCardProps => {
+  return {
+    title: form.formName ?? '',
+    linkHref: `${ROUTES.MY_APPLICATIONS}/${form.id}`,
+    category: 'Kategória TODO',
+    subtext: 'Subtext TODO',
+    filedAt: form.createdAt,
+    status: form.state,
+    statusAt: form.updatedAt,
+  }
+}
+
+const MyApplicationsSentList = () => {
+  const [page, setPage] = useState<number>(1)
+
+  const { data } = useQuery({
+    queryKey: ['myApplicationsSentList', page],
+    queryFn: () => getSentApplications(),
+    keepPreviousData: true,
+  })
+
+  const totalPagesCount = data?.countPages ?? 0
+
+  const cards = data?.items ?? []
+
   return (
-    <div className="max-w-screen-lg w-full m-auto">
-      <ul className="lg:px-0 my-0 lg:my-8 px-4 sm:px-6 flex flex-col gap-0 lg:gap-4">
-        {cards?.length > 0 ? (
-          cards
-            .filter(
-              (_, i) =>
-                i + 1 <= currentPage * ITEMS_PER_PAGE && i + 1 > (currentPage - 1) * ITEMS_PER_PAGE,
-            )
-            .map((card, i) => (
-              <li key={i}>
-                <MyApplicationsSentCard data={card} />
-              </li>
-            ))
-        ) : (
-          <MyApplicationCardsPlaceholder />
-        )}
-      </ul>
-      {cards?.length > 0 && (
-        <div className="my-4 lg:my-8">
-          <Pagination
-            count={Math.ceil(cards.length / ITEMS_PER_PAGE)}
-            selectedPage={currentPage}
-            onChange={setCurrentPage}
-          />
-        </div>
+    <div className="m-auto w-full max-w-screen-lg">
+      {cards.length > 0 ? (
+        <>
+          <ul className="my-0 flex flex-col gap-0 px-4 sm:px-6 lg:my-8 lg:gap-4 lg:px-0">
+            {cards.map((card, index) => {
+              return (
+                <li key={index}>
+                  <MyApplicationsSentCard {...transformFormToCardProps(card)} />
+                </li>
+              )
+            })}
+          </ul>
+          <div className="my-4 lg:my-8">
+            <Pagination count={totalPagesCount} selectedPage={page} onChange={setPage} />
+          </div>
+        </>
+      ) : (
+        <MyApplicationCardsPlaceholder />
       )}
     </div>
   )

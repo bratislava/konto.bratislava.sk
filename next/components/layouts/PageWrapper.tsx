@@ -3,6 +3,7 @@
 import orderBy from 'lodash/orderBy'
 import { useTranslation } from 'next-i18next'
 import { createContext, useContext, useMemo } from 'react'
+import { I18nProvider } from 'react-aria'
 
 import { localePath } from '../../frontend/utils/page'
 
@@ -46,11 +47,13 @@ const PageWrapper = ({ children, locale, localizations, slug }: IProps) => {
   }, [localizations])
 
   return (
-    <PageWrapperContext.Provider
-      value={{ locale: locale ?? language, localizations: pageLocalizations }}
-    >
-      {children}
-    </PageWrapperContext.Provider>
+    <I18nProvider locale={locale ?? language}>
+      <PageWrapperContext.Provider
+        value={{ locale: locale ?? language, localizations: pageLocalizations }}
+      >
+        {children}
+      </PageWrapperContext.Provider>
+    </I18nProvider>
   )
 }
 

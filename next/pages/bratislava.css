@@ -134,6 +134,10 @@
 
   --category-color-200--semi-transparent: rgba(var(--color-category-200), 0.6);
 
+  /* TODO implement change of contrast color depending of background (e.g. used in buttons).
+      Actual state is that it is not changed anywhere and it stays white. */
+  --font-contrast-color: var(--color-gray-0);
+
   --font-color: #333;
   --error-color: #d00000;
   --background-color: rgb(var(--color-gray-50));

@@ -14,21 +14,23 @@ import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
 import AccordionShowCase from '../components/styleguide/showcases/AccordionShowCase'
 import AlertShowCase from '../components/styleguide/showcases/AlertShowCase'
 import BannerShowCase from '../components/styleguide/showcases/BannerShowCase'
+import ButtonNewShowCase from '../components/styleguide/showcases/ButtonNewShowCase'
 import ButtonShowCase from '../components/styleguide/showcases/ButtonShowCase'
 import CheckboxGroupShowCase from '../components/styleguide/showcases/CheckboxGroupedShowCase'
 import DropdownShowCase from '../components/styleguide/showcases/DropdownShowCase'
 import FieldHeaderShowCase from '../components/styleguide/showcases/FieldHeaderShowCase'
+import IconShowCase from '../components/styleguide/showcases/IconShowCase'
 import ModalShowCase from '../components/styleguide/showcases/ModalShowCase'
 import ProgressBarShowCase from '../components/styleguide/showcases/ProgressBarShowCase'
 import RadioButtonShowCase from '../components/styleguide/showcases/RadioButtonShowCase'
 import SearchFieldShowCase from '../components/styleguide/showcases/SearchFieldShowCase'
+import SelectFieldNewShowCase from '../components/styleguide/showcases/SelectFieldNewShowCase'
 import SelectFieldShowCase from '../components/styleguide/showcases/SelectFieldShowCase'
 import ServiceCardShowCase from '../components/styleguide/showcases/ServiceCardShowCase'
 import SingleCheckboxShowCase from '../components/styleguide/showcases/SingleCheckboxShowCase'
 import SnackbarShowCase from '../components/styleguide/showcases/SnackbarShowCase'
 import SpinnerShowCase from '../components/styleguide/showcases/SpinnerShowCase'
 import StatusBarShowCase from '../components/styleguide/showcases/StatusBarShowCase'
-import StepperShowCase from '../components/styleguide/showcases/StepperShowCase'
 import SummaryRowShowCase from '../components/styleguide/showcases/SummaryRowShowCase'
 import TagShowCase from '../components/styleguide/showcases/TagShowCase'
 import TextAreaFieldShowCase from '../components/styleguide/showcases/TextAreaFieldShowCase'
@@ -49,10 +51,12 @@ const Styleguide = ({ page }: AsyncServerProps<typeof getServerSideProps>) => {
       <PageWrapper locale={page.locale}>
         <StyleGuideWrapper>
           {/* HERE ADD SHOWCASES */}
+          <IconShowCase />
           <StatusBarShowCase />
           <TagShowCase />
           <TooltipShowCase />
           <FieldHeaderShowCase />
+          <ButtonNewShowCase />
           <ButtonShowCase />
           <DatePickerShowCase />
           <InputFieldShowCase />
@@ -64,6 +68,7 @@ const Styleguide = ({ page }: AsyncServerProps<typeof getServerSideProps>) => {
           <TimePickerShowCase />
           <UploadShowCase />
           <DropdownShowCase />
+          <SelectFieldNewShowCase />
           <SelectFieldShowCase />
           <ModalShowCase />
           <AccordionShowCase />
@@ -71,7 +76,8 @@ const Styleguide = ({ page }: AsyncServerProps<typeof getServerSideProps>) => {
           <SingleCheckboxShowCase />
           <CheckboxGroupShowCase />
           <RadioButtonShowCase />
-          <StepperShowCase />
+          {/* TODO: Fix stepper showcase */}
+          {/* <StepperShowCase /> */}
           <SummaryRowShowCase />
           <BannerShowCase />
           <ServiceCardShowCase />

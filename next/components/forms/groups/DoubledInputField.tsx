@@ -73,7 +73,7 @@ export const DoubledInputField = ({
 }: FirstInputFieldBase & SecondInputFieldBase) => {
   return (
     <div className="flex flex-col">
-      <div className="flex sm:flex-row flex-col gap-4 sm:items-end">
+      <div className="flex flex-col gap-4 sm:flex-row sm:items-end">
         <div className={cx(FirstInputClassNames)}>
           <InputField
             label={FirstInputLabel}
@@ -124,7 +124,7 @@ export const DoubledInputField = ({
       </div>
 
       {/* Custom render error messages for both fields at large screens */}
-      <div className="flex-row flex gap-4">
+      <div className="flex flex-row gap-4">
         <div className={cx('flex flex-col sm:block hidden', FirstInputClassNames)}>
           <FieldErrorMessage errorMessage={FirstInputErrorMessage} />
         </div>

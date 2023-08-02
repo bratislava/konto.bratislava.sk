@@ -49,7 +49,7 @@ const TaxesFeesSection = () => {
   let content: JSX.Element | null = null
 
   if (isLoading) {
-    content = <Spinner className="mt-10 m-auto" />
+    content = <Spinner className="m-auto mt-10" />
   } else if (!tierStatus.isIdentityVerified) {
     content = <TaxesFeesErrorCard content={taxesFeesErrorCardContent} />
   } else if (!isLoading && !data) {
@@ -61,7 +61,7 @@ const TaxesFeesSection = () => {
     )
   } else if (data) {
     content = (
-      <ul className="lg:px-0 my-2 lg:my-8 px-4 sm:px-6">
+      <ul className="my-2 px-4 sm:px-6 lg:my-8 lg:px-0">
         <li className="mb-2 lg:mb-6">
           <TaxesFeesCard
             title={t('account_section_payment.tax_card_title')}
@@ -87,7 +87,7 @@ const TaxesFeesSection = () => {
   return (
     <div className="flex flex-col">
       <AccountSectionHeader title={t('account_section_payment.title')} />
-      <div className="max-w-screen-lg w-full m-auto">{content}</div>
+      <div className="m-auto w-full max-w-screen-lg">{content}</div>
     </div>
   )
 }

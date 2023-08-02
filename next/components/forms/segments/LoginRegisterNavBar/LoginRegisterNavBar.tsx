@@ -1,4 +1,4 @@
-import ArrowLeft from '@assets/images/new-icons/ui/arrow-left.svg'
+import { ArrowLeftIcon } from '@assets/ui-icons'
 import cx from 'classnames'
 import { StatusBar, useStatusBarContext } from 'components/forms/info-components/StatusBar'
 import Brand from 'components/forms/simple-components/Brand'
@@ -19,8 +19,9 @@ const BackButton = () => {
 
   return (
     <>
-      <ArrowLeft className="cursor-pointer mx-1" onClick={() => router.back()} />
-      <div className="border-b-solid border-r-2 h-6 mx-6 hidden lg:flex" />
+      {/* FIXME we should use Button */}
+      <ArrowLeftIcon className="mx-1 cursor-pointer" onClick={() => router.back()} />
+      <div className="border-b-solid mx-6 hidden h-6 border-r-2 lg:flex" />
     </>
   )
 }
@@ -41,12 +42,12 @@ export const LoginRegisterNavBar = ({ className, currentLanguage, backButtonHidd
         className={cx(
           className,
           'text-p2 items-center',
-          'fixed top-0 left-0 w-full bg-white z-40 shadow',
+          'fixed left-0 top-0 z-40 w-full bg-white shadow',
         )}
         ref={desktopRef}
       >
         <StatusBar className="hidden lg:flex" />
-        <div className="max-w-screen-lg m-auto hidden h-[57px] w-full items-center lg:flex">
+        <div className="m-auto hidden h-[57px] w-full max-w-screen-lg items-center lg:flex">
           {!backButtonHidden && <BackButton />}
           <Brand
             className="group"
@@ -64,11 +65,11 @@ export const LoginRegisterNavBar = ({ className, currentLanguage, backButtonHidd
       {/* Mobile */}
       <div
         id="mobile-navbar"
-        className={cx(className, 'lg:hidden fixed top-0 left-0 w-full bg-white z-40 gap-x-6')}
+        className={cx(className, 'fixed left-0 top-0 z-40 w-full gap-x-6 bg-white lg:hidden')}
         ref={mobileRef}
       >
         <StatusBar className="flex lg:hidden" />
-        <div className="h-16 flex items-center py-5 px-8 border-b-2">
+        <div className="flex h-16 items-center border-b-2 px-8 py-5">
           {!backButtonHidden && <BackButton />}
           <Brand
             url="https://bratislava.sk/"

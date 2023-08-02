@@ -1,9 +1,5 @@
 import BannerImage from '@assets/images/bratislava-dog.png'
 import KupaliskaImg from '@assets/images/kupaliska.png'
-import TaxesIcon from '@assets/images/new-icons/other/city-bratislava/taxes.svg'
-import LibraryIcon from '@assets/images/new-icons/other/culture-communities/library.svg'
-import SwimmingPoolIcon from '@assets/images/new-icons/other/education-sport/swimming-pool.svg'
-import ParkingIcon from '@assets/images/new-icons/other/transport-and-maps/parking.svg'
 import { Auth } from 'aws-amplify'
 import AccountSectionHeader from 'components/forms/segments/AccountSectionHeader/AccountSectionHeader'
 import AnnouncementBlock from 'components/forms/segments/AccountSections/IntroSection/AnnouncementBlock'
@@ -17,6 +13,10 @@ import { useRouter } from 'next/router'
 import { useTranslation } from 'next-i18next'
 import { useEffect, useState } from 'react'
 
+import TaxesIcon from '../../../../../assets/icons/city-bratislava/taxes.svg'
+import LibraryIcon from '../../../../../assets/icons/culture-communities/library.svg'
+import SwimmingPoolIcon from '../../../../../assets/icons/education-sport/swimming-pool.svg'
+import ParkingIcon from '../../../../../assets/icons/transport-and-maps/parking.svg'
 import { ROUTES } from '../../../../../frontend/api/constants'
 import { PhoneNumberData } from '../../PhoneNumberForm/PhoneNumberForm'
 import PhoneNumberModal from '../../PhoneNumberModal/PhoneNumberModal'
@@ -99,7 +99,7 @@ const IntroSection = () => {
           title={`${t('account_section_intro.header_title')} ${name || ''}.`}
           text={t('account_section_intro.header_text')}
         />
-        <div className="w-full max-w-screen-lg m-auto py-6 lg:py-16">
+        <div className="m-auto w-full max-w-screen-lg py-6 lg:py-16">
           <AnnouncementBlock
             announcementContent={announcementContent}
             buttonTitle={t('account_section_intro.announcement_card_action')}
@@ -109,49 +109,49 @@ const IntroSection = () => {
             }}
           />
 
-          <div className="w-full flex items-center justify-between mb-8 px-4 lg:px-0">
+          <div className="mb-8 flex w-full items-center justify-between px-4 lg:px-0">
             <h2 className="text-h2">{t('account_section_services.navigation')}</h2>
             <Button
               size="sm"
-              className="sm:flex hidden pt-4 pl-4"
+              className="hidden pl-4 pt-4 sm:flex"
               label={t('account_section_intro.all_services')}
               variant="link-category"
               href={ROUTES.MUNICIPAL_SERVICES}
             />
           </div>
-          <div className="flex gap-3 lg:gap-8 overflow-x-scroll scrollbar-hide px-4 lg:px-0">
+          <div className="flex gap-3 overflow-x-scroll px-4 scrollbar-hide lg:gap-8 lg:px-0">
             <ServiceCard
               title={t('account_section_services.cards.32.title')}
               description={t('account_section_services.cards.32.description')}
-              icon={<SwimmingPoolIcon className="w-10 h-10 lg:w-12 lg:h-12 text-education-700" />}
+              icon={<SwimmingPoolIcon className="h-10 w-10 text-education-700 lg:h-12 lg:w-12" />}
               buttonText={t('account_section_services.cards.32.buttonText')}
               href="https://kupaliska.bratislava.sk"
             />
             <ServiceCard
               title={t('account_section_services.cards.1.title')}
               description={t('account_section_services.cards.1.description')}
-              icon={<TaxesIcon className="w-10 h-10 lg:w-12 lg:h-12 text-category-600" />}
+              icon={<TaxesIcon className="h-10 w-10 text-category-600 lg:h-12 lg:w-12" />}
               buttonText={t('account_section_services.cards.1.buttonText')}
               href={ROUTES.TAXES_AND_FEES}
             />
             <ServiceCard
               title={t('account_section_services.cards.4.title')}
               description={t('account_section_services.cards.4.description')}
-              icon={<ParkingIcon className="w-10 h-10 lg:w-12 lg:h-12 text-transport-700" />}
+              icon={<ParkingIcon className="h-10 w-10 text-transport-700 lg:h-12 lg:w-12" />}
               buttonText={t('account_section_services.cards.4.buttonText')}
               href="https://paas.sk/"
             />
             <ServiceCard
               title={t('account_section_services.cards.5.title')}
               description={t('account_section_services.cards.5.description')}
-              icon={<LibraryIcon className="w-10 h-10 lg:w-12 lg:h-12 text-culture-700" />}
+              icon={<LibraryIcon className="h-10 w-10 text-culture-700 lg:h-12 lg:w-12" />}
               buttonText={t('account_section_services.cards.5.buttonText')}
               href="https://mestskakniznica.sk/sluzby/citanie/ako-sa-prihlasit-do-kniznice"
             />
           </div>
           <Button
             size="sm"
-            className="flex sm:hidden pt-4 pl-4"
+            className="flex pl-4 pt-4 sm:hidden"
             label={t('account_section_intro.all_services')}
             variant="link-category"
             href={ROUTES.MUNICIPAL_SERVICES}

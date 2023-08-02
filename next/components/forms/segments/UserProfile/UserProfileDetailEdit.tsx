@@ -137,12 +137,12 @@ const UserProfileDetailEdit = (props: UserProfileDetailEditProps) => {
   return (
     <form
       id={formId}
-      className="flex flex-col grow gap-6 pb-20 md:pb-0"
+      className="flex grow flex-col gap-6 pb-20 md:pb-0"
       onSubmit={handleSubmit(handleSubmitCallback)}
     >
-      <div className="gap flex flex-wrap flex-row gap-6">
+      <div className="gap flex flex-row flex-wrap gap-6">
         {isPhysicalEntity ? (
-          <div className="grow w-full md:w-fit">
+          <div className="w-full grow md:w-fit">
             <Controller
               name="business_name"
               control={control}
@@ -158,7 +158,7 @@ const UserProfileDetailEdit = (props: UserProfileDetailEditProps) => {
           </div>
         ) : (
           <>
-            <div className="grow w-full md:w-fit">
+            <div className="w-full grow md:w-fit">
               <Controller
                 name="given_name"
                 control={control}
@@ -173,7 +173,7 @@ const UserProfileDetailEdit = (props: UserProfileDetailEditProps) => {
                 )}
               />
             </div>
-            <div className="grow w-full md:w-fit">
+            <div className="w-full grow md:w-fit">
               <Controller
                 name="family_name"
                 control={control}
@@ -208,7 +208,7 @@ const UserProfileDetailEdit = (props: UserProfileDetailEditProps) => {
             )}
           />
         </div>
-        <div className="justify-end flex flex-col pt-1">
+        <div className="flex flex-col justify-end pt-1">
           <Button
             variant="black"
             size="lg"
@@ -220,13 +220,13 @@ const UserProfileDetailEdit = (props: UserProfileDetailEditProps) => {
             variant="black"
             size="sm"
             text={t('profile_detail.email_button')}
-            className="md:hidden block"
+            className="block md:hidden"
             onPress={onOpenEmailModal}
           />
         </div>
       </div>
-      <div className="gap flex flex-wrap flex-row gap-x-6">
-        <div className="grow w-full md:w-fit">
+      <div className="gap flex flex-row flex-wrap gap-x-6">
+        <div className="w-full grow md:w-fit">
           <Controller
             name="phone_number"
             control={control}
@@ -240,7 +240,7 @@ const UserProfileDetailEdit = (props: UserProfileDetailEditProps) => {
             )}
           />
         </div>
-        <div className="grow invisible h-0 w-full md:w-fit">
+        <div className="invisible h-0 w-full grow md:w-fit">
           <InputField label={t('profile_detail.phone_number')} />
         </div>
       </div>
@@ -258,7 +258,7 @@ const UserProfileDetailEdit = (props: UserProfileDetailEditProps) => {
           />
         )}
       />
-      <div className="gap flex flex-wrap flex-row gap-6">
+      <div className="gap flex flex-row flex-wrap gap-6">
         <div className="grow">
           <Controller
             name="city"

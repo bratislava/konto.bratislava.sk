@@ -7,6 +7,7 @@
     "xml_export": "XML sa nepodarilo stiahnuť.",
     "xml_import": "XML sa nepodarilo nahrať.",
     "pdf_export": "PDF sa nepodarilo stiahnuť",
+    "concept_save": "Koncept sa nepodarilo uložiť.",
     "form_init": "Načítanie formulára zlyhalo.",
     "form_update": "Formulár sa nepodarilo uložiť do rozpracovaných.",
     "upload_size_format": "Prílohy nespĺňajú požadovaný formát a veľkosť.",
@@ -18,6 +19,7 @@
     "file_scan": "Prílohy, ktoré ste nahrali ešte skenujeme. Žiadosť však môžete odoslať aj bez čakania na dokončenie skenovania. V prípade, že nahraté prílohy neprejdú skenovaním a antivírovou kontrolou, budeme vás kontaktovať na e-mailovej adrese, ktorou sa prihlasujete do svojho konta."
   },
   "success_messages": {
+    "concept_save": "Koncept sa uložil.",
     "xml_export": "XML bolo stiahnuté",
     "xml_import": "XML bolo nahraté",
     "pdf_export": "PDF bolo stiahnuté"
@@ -63,12 +65,15 @@
     "button_skip_text": "Preskočiť",
     "button_submit_text": "Upraviť"
   },
+  "steps": {
+    "current_sr": "Aktuálny: ",
+    "submitted_sr": "Dokončený: "
+  },
   "form_header": {
     "services_link": "Viac informácií o službe"
   },
   "menu_list": {
     "save_concept": "Uložiť ako koncept",
-    "eId": "Vyplniť cez eID",
     "download_xml": "Stiahnuť ako XML",
     "pdf": "Stiahnuť ako PDF",
     "upload_xml": "Nahrať z XML",

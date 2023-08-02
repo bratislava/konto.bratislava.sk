@@ -1,144 +1,142 @@
-import ChevronRightIcon from '@assets/images/new-icons/ui/chevron-right.svg'
-import TimeIcon from '@assets/images/new-icons/ui/clock.svg'
-import CrossIcon from '@assets/images/new-icons/ui/cross.svg'
-import SuccessIcon from '@assets/images/new-icons/ui/done.svg'
-import NegativeMobileIcon from '@assets/images/new-icons/ui/negative-icon.svg'
-import SuccessMobileIcon from '@assets/images/new-icons/ui/success-icon.svg'
-import WaitingMobileIcon from '@assets/images/new-icons/ui/waiting-icon.svg'
+import { ClockIcon, ErrorIcon } from '@assets/ui-icons'
+import { GetFormResponseDtoStateEnum } from '@clients/openapi-forms'
 import cx from 'classnames'
-import { MyApplicationsSentCardBase } from 'frontend/api/mocks/mocks'
 import Link from 'next/link'
 import { useTranslation } from 'next-i18next'
 import { ReactNode } from 'react'
 
-import { ROUTES } from '../../../../../frontend/api/constants'
+import FormatDate from '../../../simple-components/FormatDate'
 
-type MyApplicationsSentCardProps = {
-  data: MyApplicationsSentCardBase
+export type MyApplicationsSentCardProps = {
+  title: string
+  linkHref: string
+  category?: string
+  subtext?: string
+  filedAt: string
+  status: GetFormResponseDtoStateEnum
+  statusAt?: string
 }
 
-const MyApplicationsSentCard = (props: MyApplicationsSentCardProps) => {
-  const { data } = props
-  const { t } = useTranslation('account')
+const StatusIndicator = ({
+  status,
+  statusAt,
+}: Pick<MyApplicationsSentCardProps, 'status' | 'statusAt'>) => {
+  const { t } = useTranslation('account', { keyPrefix: 'account_section_applications' })
 
-  const desktopStatusHandler = (): ReactNode => {
-    const statusStyle: string = cx('text-p3-semibold lg:text-16-semibold w-max ml-0 lg:ml-2', {
-      'text-negative-700': data?.status === 'negative',
-      'text-warning-700': data?.status === 'warning',
-      'text-success-700': data?.status === 'success',
-    })
-    const statusNode = (icon: ReactNode, statusTitle: string): ReactNode => {
-      return (
-        <>
-          <span className="h-6 w-6 hidden lg:flex justify-center items-center">{icon}</span>
-          <span className={statusStyle}>{statusTitle}</span>
-        </>
-      )
-    }
-
-    switch (data?.status) {
-      case 'negative':
-        return statusNode(
-          <CrossIcon className="text-negative-700 w-6 h-6" />,
-          t('account_section_applications.status.negative'),
-        )
-      case 'warning':
-        return statusNode(
-          <TimeIcon className="text-warning-700 w-6 h-6" />,
-          t('account_section_applications.status.warning'),
-        )
-      case 'success':
-        return statusNode(
-          <SuccessIcon className="text-success-700 w-6 h-6" />,
-          t('account_section_applications.status.success'),
-        )
-      default:
-        break
-    }
-
-    return null
+  const statusObj: {
+    [key in GetFormResponseDtoStateEnum]: { icon: ReactNode; label: string }
+  } = {
+    [GetFormResponseDtoStateEnum.Draft]: { icon: <ClockIcon />, label: t('status.draft') },
+    [GetFormResponseDtoStateEnum.Queued]: { icon: <ClockIcon />, label: t('status.toSend') },
+    [GetFormResponseDtoStateEnum.Checking]: { icon: <ClockIcon />, label: t('status.toSend') },
+    [GetFormResponseDtoStateEnum.Sending]: {
+      icon: <ClockIcon />,
+      label: t('status.toSend'),
+    },
+    [GetFormResponseDtoStateEnum.Sent]: { icon: <ClockIcon />, label: t('status.sent') },
+    [GetFormResponseDtoStateEnum.Processing]: {
+      icon: <ClockIcon />,
+      label: t('status.processing'),
+    },
+    [GetFormResponseDtoStateEnum.Finished]: { icon: <ClockIcon />, label: t('status.finished') },
+    [GetFormResponseDtoStateEnum.Rejected]: { icon: <ClockIcon />, label: t('status.rejected') },
+    [GetFormResponseDtoStateEnum.QueuedError]: { icon: <ErrorIcon />, label: t('status.error') },
+    [GetFormResponseDtoStateEnum.CheckingError]: { icon: <ErrorIcon />, label: t('status.error') },
+    [GetFormResponseDtoStateEnum.SendingError]: { icon: <ErrorIcon />, label: t('status.error') },
+    [GetFormResponseDtoStateEnum.SentError]: { icon: <ErrorIcon />, label: t('status.error') },
+    [GetFormResponseDtoStateEnum.ProcessingError]: {
+      icon: <ErrorIcon />,
+      label: t('status.error'),
+    },
   }
 
-  const mobileStatusHandler = (): ReactNode => {
-    return (
-      <span
-        className={cx('w-8 h-8 rounded-full flex justify-center items-center', {
-          'bg-negative-50': data?.status === 'negative',
-          'bg-warning-50': data?.status === 'warning',
-          'bg-success-50': data?.status === 'success',
-        })}
-      >
-        {data?.status === 'negative' && (
-          <NegativeMobileIcon className="w-5 h-5 text-negative-700" />
+  const isError =
+    status === GetFormResponseDtoStateEnum.QueuedError ||
+    status === GetFormResponseDtoStateEnum.CheckingError ||
+    status === GetFormResponseDtoStateEnum.SendingError ||
+    status === GetFormResponseDtoStateEnum.SentError ||
+    status === GetFormResponseDtoStateEnum.ProcessingError
+
+  return (
+    <div
+      className={cx('flex items-start gap-2', {
+        'text-gray-500':
+          status === GetFormResponseDtoStateEnum.Queued || GetFormResponseDtoStateEnum.Checking,
+        'text-education-700': status === GetFormResponseDtoStateEnum.Sent,
+        'text-warning-700': status === GetFormResponseDtoStateEnum.Processing,
+        'text-success-700': status === GetFormResponseDtoStateEnum.Finished,
+        'text-negative-700': status === GetFormResponseDtoStateEnum.Rejected || isError,
+      })}
+    >
+      <div>{statusObj[status].icon}</div>
+      <div className="flex flex-col gap-1 max-md:hidden">
+        <div className="text-16-semibold text-b">{statusObj[status].label}</div>
+        {statusAt && (
+          <div className="text-gray-700">
+            <FormatDate>{statusAt}</FormatDate>
+          </div>
         )}
-        {data?.status === 'warning' && <WaitingMobileIcon className="w-5 h-5 text-warning-700" />}
-        {data?.status === 'success' && <SuccessMobileIcon className="w-5 h-5 text-success-700" />}
-      </span>
-    )
-  }
+      </div>
+    </div>
+  )
+}
+
+const MyApplicationsSentCard = ({
+  title,
+  category,
+  subtext,
+  linkHref,
+  status,
+  statusAt,
+  filedAt,
+}: MyApplicationsSentCardProps) => {
+  const { t } = useTranslation('account')
 
   return (
     <>
       {/* Desktop */}
-      <Link
-        href={`${ROUTES.MY_APPLICATIONS}/1`}
-        className="w-full h-full items-center flex justify-center"
-      >
-        <div
-          id="desktop-card"
-          className="rounded-lg bg-white w-full h-[124px] lg:flex hidden items-center justify-between border-2 border-gray-200 cursor-pointer"
-        >
-          <div className="flex items-center justify-between w-full">
-            <div className="w-full flex flex-col gap-1 pl-6">
-              <span className="text-p3-semibold text-main-700">{data?.category}</span>
-              <span className="text-20-semibold">{data?.title}</span>
-              <span className="text-p3">{data?.subtitle}</span>
-            </div>
-            <div className="w-full justify-end flex items-center gap-6">
-              <div className="flex flex-col w-full max-w-[200px]">
-                <span className="text-16-semibold mb-1">
-                  {t('account_section_applications.navigation_sent')}
-                </span>
-                <span className="w-max">{data?.sentDate}</span>
-              </div>
-              <div className="flex flex-col gap-1 mr-6 w-full max-w-[200px]">
-                <div className="flex">{desktopStatusHandler()}</div>
-                {data?.status !== 'warning' && data?.statusDate && (
-                  <span className="pl-8">{data?.statusDate}</span>
-                )}
-              </div>
-            </div>
+      <div className="group relative flex w-full items-stretch rounded-lg border-2 border-gray-200 bg-white p-6 max-lg:hidden">
+        <div className="flex w-full gap-6">
+          <div className="flex w-full grow flex-col gap-1">
+            {category && <div className="text-p3-semibold text-main-700">{category}</div>}
+            <h3 className="text-20-semibold">
+              <Link href={linkHref} className="after:absolute after:inset-0 hover:underline">
+                {title}
+              </Link>
+            </h3>
+            {subtext && <div className="text-p3">{subtext}</div>}
           </div>
-          <div className="w-16 min-w-[64px] h-full border-l-2">
-            <span className="w-full h-full items-center flex justify-center">
-              <ChevronRightIcon />
-            </span>
+
+          <div className="flex items-center gap-10">
+            <div className="flex w-[200px] flex-col gap-1">
+              <div className="text-16-semibold">
+                {t('account_section_applications.navigation_sent')}
+              </div>
+              <div>
+                <FormatDate>{filedAt}</FormatDate>
+              </div>
+            </div>
+
+            <div className="h-full w-0.5 bg-gray-200" aria-hidden />
+
+            <div className="flex w-[200px] flex-col gap-1">
+              <StatusIndicator status={status} statusAt={statusAt} />
+            </div>
           </div>
         </div>
-      </Link>
+      </div>
+
       {/* Mobile */}
-      <div
-        id="mobile-card"
-        className="bg-white w-full h-[88px] max-[389px]:h-[92px] flex lg:hidden items-center justify-between border-b-2 border-gray-200"
-      >
-        <Link
-          href={`${ROUTES.MY_APPLICATIONS}/1`}
-          className="w-full h-full items-center flex justify-center"
-        >
-          <div className="w-full flex items-start justify-between">
-            <div className="flex flex-col w-full max-[389px]:gap-1">
-              <div className="flex items-center justify-between">
-                <span className="text-p3-semibold max-[389px]:max-w-[220px] text-main-700">
-                  {data?.category}
-                </span>
-                <span>{mobileStatusHandler()}</span>
-              </div>
-              <span className="text-p2-semibold leading-5 max-[389px]:max-w-[220px]">
-                {data?.title}
-              </span>
-            </div>
-          </div>
-        </Link>
+      <div className="relative flex w-full items-start justify-between border-b-2 border-gray-200 bg-white py-4 lg:hidden">
+        <div className="flex w-full flex-col gap-1.5">
+          {category && <div className="text-p3-semibold text-main-700">{category}</div>}
+          <h3 className="text-p2-semibold leading-5">
+            <Link href={linkHref} className="after:absolute after:inset-0">
+              {title}
+            </Link>
+          </h3>
+        </div>
+        <StatusIndicator status={status} />
       </div>
     </>
   )

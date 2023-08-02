@@ -23,7 +23,7 @@ const TestUserProfileLayout = ({
         </SectionContainer>
       </div>
 
-      <div className="bg-gray-50 flex flex-col grow">{children}</div>
+      <div className="flex grow flex-col bg-gray-50">{children}</div>
     </div>
   )
 }

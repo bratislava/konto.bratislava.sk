@@ -1,6 +1,6 @@
 import { formsApi } from '@clients/forms'
 import { GetFileResponseDto } from '@clients/openapi-forms'
-import { useQuery, useQueryClient } from '@tanstack/react-query'
+import { useQuery } from '@tanstack/react-query'
 import React, {
   createContext,
   PropsWithChildren,
@@ -13,6 +13,7 @@ import React, {
 } from 'react'
 import { useIsMounted } from 'usehooks-ts'
 
+import { environment } from '../../environment'
 import {
   FormFileUploadClientFileInfo,
   FormFileUploadClientFileStatus,
@@ -21,6 +22,7 @@ import {
   FormFileUploadFileInfo,
   FormFileUploadStatusEnum,
 } from '../../frontend/types/formFileUploadTypes'
+import { InitialFormData } from '../../frontend/types/initialFormData'
 import { getAccessTokenOrLogout } from '../../frontend/utils/amplify'
 import {
   getFileInfoForNewFiles,
@@ -28,7 +30,6 @@ import {
   shouldPollServerFiles,
   uploadFile,
 } from '../../frontend/utils/formFileUpload'
-import { InitialFormData } from './useFormDataLoader'
 
 const FormFileUploadContext = createContext<FormFileUploadContextType | undefined>(undefined)
 
@@ -52,6 +53,12 @@ const REFETCH_INTERVAL = 5000
  *  - The upload widget is rendered on the particular step, but the service also uploads the file on the background.
  *    as the id is immediately persisted in form data (before the upload even starts), there's no need for update of the
  *    form data when the upload is done by the widget that might not be rendered anymore.
+ *
+ *                      the upload component wouldn't be able to update the form data ˅
+ *    Form file upload component   |---------------| detached |----------------| detached
+ *    File upload                        |--------------------------------------------|
+ *                                       ^ file id is generated and persisted in form data
+ *
  *  - The form can be saved as a concept while the file is uploading.
  *
  *  At the end, the client and server files are merged and returned to the consumer.
@@ -61,7 +68,6 @@ export const FormFileUploadStateProvider = ({
   children,
 }: PropsWithChildren<FormFileUploadStateProviderProps>) => {
   const isMounted = useIsMounted()
-  const queryClient = useQueryClient()
 
   // The client files are both stored in the state and in the ref. The state is used to trigger re-rendering of the
   // component, while the ref is used to get the current value of the client files. The ref is used in the functions
@@ -81,9 +87,8 @@ export const FormFileUploadStateProvider = ({
       shouldPollServerFiles(data, clientFiles) ? REFETCH_INTERVAL : false
   }, [clientFiles])
 
-  const serverFilesQueryKey = ['serverFiles', initialFormData.formId]
   const serverFilesQuery = useQuery(
-    serverFilesQueryKey,
+    ['serverFiles', initialFormData.formId],
     async () => {
       const accessToken = await getAccessTokenOrLogout()
       const response = await formsApi.filesControllerGetFilesStatusByForm(initialFormData.formId, {
@@ -92,9 +97,8 @@ export const FormFileUploadStateProvider = ({
       return response.data
     },
     {
-      // TODO: Add retry logic
-      // retry: Infinity, // Retry infinitely
-      // retryDelay: 5000, // Retry every 5 seconds
+      retry: Infinity, // Retry infinitely
+      retryDelay: 5000, // Retry every 5 seconds
       staleTime: Infinity,
       refetchInterval,
       initialData: initialFormData.files,
@@ -121,17 +125,17 @@ export const FormFileUploadStateProvider = ({
       const isAlreadyUploadingFile = newClientFiles.some(
         (item) => item.status.type === FormFileUploadStatusEnum.Uploading,
       )
-      const queuedFile = newClientFiles.find(
+      const firstQueuedFile = newClientFiles.find(
         (file) => file.status.type === FormFileUploadStatusEnum.UploadQueued,
       )
 
-      if (isAlreadyUploadingFile || !queuedFile) {
+      if (isAlreadyUploadingFile || !firstQueuedFile) {
         return
       }
 
       const updateFileStatus = (status: FormFileUploadClientFileStatus) => {
         const clientFilesWithUpdatedStatus = clientFilesRef.current.map((file) => {
-          if (file.id === queuedFile.id) {
+          if (file.id === firstQueuedFile.id) {
             return { ...file, status }
           }
           return file
@@ -141,7 +145,7 @@ export const FormFileUploadStateProvider = ({
       }
 
       const abortController = new AbortController()
-      abortControllersRef.current[queuedFile.id] = abortController
+      abortControllersRef.current[firstQueuedFile.id] = abortController
 
       // File must be set to uploading before calling `getAccessTokenOrLogout`, as it's async and the second call would
       // trigger another upload if `getAccessTokenOrLogout` is not finished yet.
@@ -152,11 +156,15 @@ export const FormFileUploadStateProvider = ({
 
       await uploadFile({
         formId: initialFormData.formId,
-        file: queuedFile.file,
-        id: queuedFile.id,
+        file: firstQueuedFile.file,
+        id: firstQueuedFile.id,
         abortController,
         onSuccess: () => {
           updateFileStatus({ type: FormFileUploadStatusEnum.UploadDone })
+
+          // This forces server files to be refetched and get scanning status for the uploaded file.
+          // eslint-disable-next-line @typescript-eslint/no-floating-promises
+          serverFilesQuery.refetch()
         },
         onError: (error) => {
           updateFileStatus({
@@ -165,10 +173,6 @@ export const FormFileUploadStateProvider = ({
             error: error.toString(),
             canRetry: true,
           })
-
-          // This forces server files to be refetched and get scanning status for the uploaded file.
-          // eslint-disable-next-line @typescript-eslint/no-floating-promises
-          queryClient.refetchQueries({ queryKey: serverFilesQueryKey })
         },
         onProgress: (progress) => {
           updateFileStatus({
@@ -205,6 +209,17 @@ export const FormFileUploadStateProvider = ({
   }
 
   /**
+   * This function is called after every form data change. This assures only files that are still in the form data are
+   * kept. E.g. if a conditional field containing a file is removed, the X button is not clicked, so we need to parse
+   * the form data and remove files that are not there anymore.
+   * @param ids
+   */
+  const keepFiles = (ids: string[]) => {
+    const filesToRemove = getClientFiles().filter((file) => !ids.includes(file.id))
+    removeFiles(filesToRemove.map((file) => file.id))
+  }
+
+  /**
    * Files are retried in a way that the same File object is reused, but a new id is generated for it.
    * It wouldn't be possible to reuse the same id as the server might flag it as used.
    */
@@ -224,6 +239,32 @@ export const FormFileUploadStateProvider = ({
     return newFiles[0].id
   }
 
+  // eslint-disable-next-line unicorn/consistent-function-scoping
+  const downloadFile = async (id: string) => {
+    try {
+      const accessToken = await getAccessTokenOrLogout()
+      const response = await formsApi.filesControllerDownloadToken(id, {
+        accessToken,
+      })
+      const { jwt } = response.data
+      window.open(`${environment.formsUrl}/files/download/file/${jwt}`, '_blank')
+    } catch (error) {
+      // TODO handle error
+    }
+  }
+
+  const refetchAfterImportIfNeeded = async (ids: string[]) => {
+    if (ids.length === 0) {
+      return
+    }
+
+    const fileNotInServerFiles =
+      !serverFilesQuery.data || ids.some((id) => !serverFilesQuery.data?.[id])
+    if (!serverFilesQuery.isFetched || fileNotInServerFiles) {
+      await serverFilesQuery.refetch()
+    }
+  }
+
   const mergedFiles = useMemo(() => {
     // TODO: Handle when server files are not loaded properly.
     const serverFiles = serverFilesQuery.data ?? []
@@ -239,14 +280,21 @@ export const FormFileUploadStateProvider = ({
         // The special case when the file is stored in the form data, but not in client nor server files, it can happen
         // when the form concept was saved, but the file upload hasn't finished yet and the user navigates away.
         return {
-          status: { type: FormFileUploadStatusEnum.UnknownFile as const },
+          status: serverFilesQuery.isFetched
+            ? { type: FormFileUploadStatusEnum.UnknownFile as const }
+            : {
+                type: FormFileUploadStatusEnum.UnknownStatus as const,
+                offline: serverFilesQuery.fetchStatus === 'paused',
+              },
           fileName: fileId,
-        } as FormFileUploadFileInfo
+          canDownload: false,
+          fileSize: null,
+        } satisfies FormFileUploadFileInfo
       }
 
       return file
     },
-    [mergedFiles],
+    [mergedFiles, serverFilesQuery.isFetched, serverFilesQuery.fetchStatus],
   )
 
   // Cleanup
@@ -258,13 +306,19 @@ export const FormFileUploadStateProvider = ({
           abortControllersRef.current[file.id]?.abort()
         }
       })
+      // Don't persist the data between page navigations.
+      serverFilesQuery.remove()
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
   const context = {
     uploadFiles,
     removeFiles,
+    keepFiles,
     retryFile,
+    downloadFile,
+    refetchAfterImportIfNeeded,
     getFileInfoById,
   }
 

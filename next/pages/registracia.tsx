@@ -24,7 +24,6 @@ import PageWrapper from '../components/layouts/PageWrapper'
 import { environment } from '../environment'
 import { ROUTES } from '../frontend/api/constants'
 import logger from '../frontend/utils/logger'
-import { formatUnicorn } from '../frontend/utils/string'
 import { AsyncServerProps } from '../frontend/utils/types'
 
 enum RegistrationStatus {
@@ -150,18 +149,14 @@ const RegisterPage = ({ page }: AsyncServerProps<typeof getServerSideProps>) => 
           ) : preVerificationRedirect ? (
             <AccountSuccessAlert
               title={t('register_success_title')}
-              description={formatUnicorn(t('register_success_description'), {
-                email: lastEmail,
-              })}
+              description={t('register_success_description', { email: lastEmail })}
               confirmLabel={t('identity_verification_link')}
               onConfirm={redirect}
             />
           ) : (
             <AccountSuccessAlert
               title={t('register_success_title')}
-              description={formatUnicorn(t('register_success_description'), {
-                email: lastEmail,
-              })}
+              description={t('register_success_description', { email: lastEmail })}
               confirmLabel={t('identity_verification_link')}
               onConfirm={() => {
                 // TODO move this to backend

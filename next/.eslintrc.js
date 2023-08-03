@@ -14,7 +14,7 @@ module.exports = {
     'react/function-component-definition': [2, { namedComponents: 'arrow-function' }],
     /** It's annoying to refactor from one style to another */
     'arrow-body-style': 'off',
-    /** This are exceptions that we use with "__" */
+    /** These are exceptions that we use with "__" */
     'no-underscore-dangle': [
       2,
       { allow: ['__NEXT_DATA__', '__NEXT_LOADED_PAGES__', '__typename', '__errors'] },
@@ -61,6 +61,7 @@ module.exports = {
         allowExpressions: true,
       },
     ],
+    '@typescript-eslint/ban-ts-comment': 'warn',
   },
   ignorePatterns: [
     '*.config.*',

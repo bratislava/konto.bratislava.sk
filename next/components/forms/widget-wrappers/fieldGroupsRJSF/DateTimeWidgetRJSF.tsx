@@ -60,9 +60,9 @@ const DateTimeWidgetRJSF = ({
           TimeRequired={schema.required?.includes('timeValue')}
           DateErrorMessage={getErrorMessage('dateValue')}
           TimeErrorMessage={getErrorMessage('timeValue')}
-          DateOnChange={(e) => handleOnChange('dateValue', e?.toString())}
+          DateOnChange={(e) => handleOnChange('dateValue', e ?? undefined)}
           TimeOnChange={(e) => handleOnChange('timeValue', e?.toString())}
-          DateValue={formData.dateValue}
+          DateValue={formData.dateValue ?? null}
           TimeValue={formData.timeValue}
           DateLabel={schemaProperties?.dateValue?.title}
           TimeLabel={schemaProperties?.timeValue?.title}

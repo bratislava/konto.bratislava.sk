@@ -2,7 +2,6 @@ import { FieldProps } from '@rjsf/utils'
 import React from 'react'
 
 import { DateFromTo } from '../../groups'
-import { ExplicitOptionalType } from '../../types/ExplicitOptional'
 import { FormSpacingType } from '../../types/WidgetOptions'
 import WidgetWrapper, { isFormSpacingType } from '../WidgetWrapper'
 
@@ -59,12 +58,12 @@ const DateFromToWidgetRJSF = ({
           DateToErrorMessage={getErrorMessage('endDate')}
           DateFromDescription={localUiSchema?.DateFromDescription as string}
           DateToDescription={localUiSchema?.DateToDescription as string}
-          DateFromExplicitOptional={localUiSchema?.DateFromExplicitOptional as ExplicitOptionalType}
-          DateToExplicitOptional={localUiSchema?.DateToExplicitOptional as ExplicitOptionalType}
-          DateFromOnChange={(e) => handleOnChange('startDate', e?.toString())}
-          DateToOnChange={(e) => handleOnChange('endDate', e?.toString())}
-          DateFromValue={formData?.startDate}
-          DateToValue={formData?.endDate}
+          DateFromExplicitOptional={localUiSchema?.DateFromExplicitOptional as boolean}
+          DateToExplicitOptional={localUiSchema?.DateToExplicitOptional as boolean}
+          DateFromOnChange={(e) => handleOnChange('startDate', e ?? undefined)}
+          DateToOnChange={(e) => handleOnChange('endDate', e ?? undefined)}
+          DateFromValue={formData?.startDate ?? null}
+          DateToValue={formData?.endDate ?? null}
           DateFromLabel={schemaProperties?.startDate?.title}
           DateToLabel={schemaProperties?.endDate?.title}
           DateFromDisabled={localUiSchema?.DateFromDisabled as unknown as boolean}

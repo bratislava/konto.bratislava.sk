@@ -1,4 +1,3 @@
-import { DateValue } from '@internationalized/date'
 import { StrictRJSFSchema, WidgetProps } from '@rjsf/utils'
 import { WidgetOptions } from 'components/forms/types/WidgetOptions'
 import DatePicker from 'components/forms/widget-components/DateTimePicker/DatePicker'
@@ -37,9 +36,6 @@ const DatePickerWidgetRJSF = ({
     spaceTop = 'large',
   } = options
 
-  const handleOnChange = (newValue?: DateValue) =>
-    newValue ? onChange(newValue.toString()) : onChange()
-
   return (
     <WidgetWrapper accordion={accordion} spaceBottom={spaceBottom} spaceTop={spaceTop}>
       <DatePicker
@@ -50,8 +46,8 @@ const DatePickerWidgetRJSF = ({
         helptext={helptext}
         tooltip={tooltip}
         explicitOptional={explicitOptional}
-        value={value ?? undefined}
-        onChange={handleOnChange}
+        value={value ?? null}
+        onChange={(value) => onChange(value ?? undefined)}
       />
     </WidgetWrapper>
   )

@@ -1,6 +1,6 @@
 import React, { DOMAttributes, FC } from 'react'
 
-interface FieldErrorMessageProps {
+export interface FieldErrorMessageProps {
   errorMessage?: string[]
   errorMessageProps?: DOMAttributes<never>
 }

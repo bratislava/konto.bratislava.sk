@@ -3,22 +3,14 @@ import InputField from 'components/forms/widget-components/InputField/InputField
 import { forwardRef, useRef, useState } from 'react'
 import { useButton } from 'react-aria'
 
-import { ExplicitOptionalType } from '../../types/ExplicitOptional'
+import { FieldAdditionalProps, FieldBaseProps } from '../FieldBase'
 
-interface Props {
-  label: string
-  placeholder: string
-  errorMessage?: string[]
-  helptext?: string
-  className?: string
-  value?: string
-  required?: boolean
-  explicitOptional?: ExplicitOptionalType
-  disabled?: boolean
-  tooltip?: string
-  autoComplete?: string
-  onChange?: (value?: string) => void
-}
+type Props = FieldBaseProps &
+  Pick<FieldAdditionalProps, 'placeholder' | 'className'> & {
+    value?: string
+    autoComplete?: string
+    onChange?: (value?: string) => void
+  }
 
 const PasswordField = forwardRef<HTMLInputElement, Props>(
   (

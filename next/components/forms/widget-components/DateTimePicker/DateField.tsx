@@ -4,8 +4,8 @@ import React, { ReactNode } from 'react'
 import { useDateField, useDateSegment, useLocale } from 'react-aria'
 import { DateFieldState, DateSegment, useDateFieldState } from 'react-stately'
 
-import FieldHeader from '../../info-components/FieldHeader'
-import { ExplicitOptionalType } from '../../types/ExplicitOptional'
+import { FieldAdditionalProps, FieldBaseProps } from '../FieldBase'
+import FieldWrapper from '../FieldWrapper'
 
 type DateSegmentBase = {
   segment: DateSegment
@@ -35,17 +35,12 @@ const DateSegmentComponent = ({ segment, state }: DateSegmentBase) => {
     </div>
   )
 }
-type DateFieldBase = {
-  label?: string
-  helptext?: string
-  tooltip?: string
-  required?: boolean
-  explicitOptional?: ExplicitOptionalType
-  children?: ReactNode
-  disabled?: boolean
-  errorMessage?: string[]
-  isOpen?: boolean
-}
+
+type DateFieldProps = FieldBaseProps &
+  Pick<FieldAdditionalProps, 'customErrorPlace'> & {
+    children?: ReactNode
+    isOpen?: boolean
+  }
 
 const DateField = ({
   errorMessage = [],
@@ -57,8 +52,9 @@ const DateField = ({
   isOpen,
   required,
   explicitOptional,
+  customErrorPlace,
   ...rest
-}: DateFieldBase) => {
+}: DateFieldProps) => {
   const ref = React.useRef<HTMLDivElement>(null)
   const { locale } = useLocale()
   const state = useDateFieldState({
@@ -72,36 +68,39 @@ const DateField = ({
     ...rest,
   })
 
-  const { fieldProps, labelProps, descriptionProps } = useDateField(
+  const { fieldProps, labelProps, descriptionProps, errorMessageProps } = useDateField(
     { errorMessage, isDisabled: disabled, label, ...rest },
     state,
     ref,
   )
-  const dateFieldStyle = cx('flex rounded-lg bg-white px-3 sm:px-4 py-1.5 sm:py-2.5 border-2', {
+  const dateFieldStyle = cx('flex rounded-lg bg-white px-3 lg:px-4 py-2 lg:py-3 border-2', {
     'hover:border-gray-400 border-gray-200': !disabled && !isOpen,
     'hover:border-negative-700 border-negative-700': errorMessage?.length > 0 && !disabled,
     'bg-gray-100 border-gray-300 pointer-events-none': disabled,
     'border-gray-700': isOpen && !disabled && !(errorMessage?.length > 0),
   })
   return (
-    <>
-      <FieldHeader
-        label={label || ''}
-        htmlFor={fieldProps?.id || ''}
-        labelProps={labelProps}
-        tooltip={tooltip}
-        helptext={helptext}
-        descriptionProps={descriptionProps}
-        required={required}
-        explicitOptional={explicitOptional}
-      />
+    <FieldWrapper
+      label={label}
+      htmlFor={fieldProps?.id}
+      labelProps={labelProps}
+      tooltip={tooltip}
+      helptext={helptext}
+      descriptionProps={descriptionProps}
+      required={required}
+      explicitOptional={explicitOptional}
+      disabled={disabled}
+      customErrorPlace={customErrorPlace}
+      errorMessage={errorMessage}
+      errorMessageProps={errorMessageProps}
+    >
       <div {...fieldProps} ref={ref} className={dateFieldStyle}>
         {state?.segments?.map((segment, i) => (
           <DateSegmentComponent key={i} segment={segment} state={state} />
         ))}
         <div className="ml-auto flex items-center">{children}</div>
       </div>
-    </>
+    </FieldWrapper>
   )
 }
 

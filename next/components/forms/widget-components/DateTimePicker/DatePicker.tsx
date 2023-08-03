@@ -1,55 +1,26 @@
 import { CalendarIcon } from '@assets/ui-icons'
-import { DateValue, parseDate } from '@internationalized/date'
-import cx from 'classnames'
-import FieldErrorMessage from 'components/forms/info-components/FieldErrorMessage'
-import { forwardRef, ReactNode, RefObject, useRef, useState } from 'react'
-import { OverlayProvider, useButton, useDatePicker } from 'react-aria'
+import { parseDate } from '@internationalized/date'
+import { useControlledState } from '@react-stately/utils'
+import { useTranslation } from 'next-i18next'
+import { forwardRef, RefObject, useMemo } from 'react'
+import { OverlayProvider, useDatePicker } from 'react-aria'
 import { useDatePickerState } from 'react-stately'
 
-import { ExplicitOptionalType } from '../../types/ExplicitOptional'
+import ButtonNew from '../../simple-components/ButtonNew'
+import { FieldAdditionalProps, FieldBaseProps } from '../FieldBase'
 import Calendar from './Calendar/Calendar'
 import DateField from './DateField'
 import Popover from './Popover'
 
-type ButtonBase = {
-  children?: ReactNode
-  className?: string
-}
+export type DatePickerProps = FieldBaseProps &
+  Pick<FieldAdditionalProps, 'customErrorPlace'> & {
+    value?: string | null
+    minValue?: string
+    maxValue?: string
+    onChange?: (value: string | null | undefined) => void
+  }
 
-const Button = ({ children, className, ...rest }: ButtonBase) => {
-  const ref = useRef<HTMLButtonElement>(null)
-  const { buttonProps } = useButton({ ...rest }, ref)
-
-  // TODO use Button from react aria
-  return (
-    <button
-      className={cx('focus:outline-none', className)}
-      type="button"
-      {...buttonProps}
-      ref={ref}
-    >
-      {children}
-    </button>
-  )
-}
-
-export type DatePickerBase = {
-  label?: string
-  helptext?: string
-  tooltip?: string
-  required?: boolean
-  explicitOptional?: ExplicitOptionalType
-  disabled?: boolean
-  // providing this 'prop' will disable error messages rendering inside this component
-  customErrorPlace?: boolean
-  errorMessage?: string[]
-  value?: string
-  minValue?: string
-  maxValue?: string
-  onChange?: (value?: DateValue) => void
-}
-
-const DatePicker = forwardRef<HTMLDivElement, DatePickerBase>(
+const DatePicker = forwardRef<HTMLDivElement, DatePickerProps>(
   (
     {
       label,
@@ -59,73 +30,65 @@ const DatePicker = forwardRef<HTMLDivElement, DatePickerBase>(
       explicitOptional,
       tooltip,
       helptext,
-      value = '',
+      value,
       minValue,
       maxValue,
-      onChange,
+      onChange = () => {},
       customErrorPlace = false,
       ...rest
     },
     ref,
   ) => {
-    const [valueState, setValueState] = useState<DateValue | null>(null)
-    const [prevValue, setPrevValue] = useState<string>('')
+    const [valueControlled, setValueControlled] = useControlledState(value, null, onChange)
+    const { t } = useTranslation('account', { keyPrefix: 'DatePicker' })
+
+    const parsedValue = useMemo(() => {
+      if (!valueControlled) {
+        return null
+      }
+      try {
+        return parseDate(valueControlled)
+      } catch (error) {
+        // Error: Invalid ISO 8601 date string
+        return null
+      }
+    }, [valueControlled])
 
     const state = useDatePickerState({
       label,
       errorMessage,
-      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-      // @ts-ignore
-      value: onChange && value ? parseDate(value) : valueState || null,
-      onChange(inputValue) {
-        if (onChange) {
-          onChange(inputValue)
-        } else {
-          setValueState(inputValue)
-        }
-      },
+      value: parsedValue,
+      onChange: (date) => setValueControlled(date ? date.toString() : null),
       isRequired: required,
       isDisabled: disabled,
       ...rest,
       shouldCloseOnSelect: false,
     })
-    const { fieldProps, buttonProps, calendarProps, dialogProps, errorMessageProps } =
-      useDatePicker(
-        {
-          errorMessage,
-          minValue: minValue ? parseDate(minValue) : undefined,
-          maxValue: maxValue ? parseDate(maxValue) : undefined,
-          isDisabled: disabled,
-          label,
-          ...rest,
-        },
-        state,
-        ref as RefObject<HTMLDivElement>,
-      )
+    const { fieldProps, buttonProps, calendarProps, dialogProps } = useDatePicker(
+      {
+        errorMessage,
+        minValue: minValue ? parseDate(minValue) : undefined,
+        maxValue: maxValue ? parseDate(maxValue) : undefined,
+        isDisabled: disabled,
+        label,
+        ...rest,
+      },
+      state,
+      ref as RefObject<HTMLDivElement>,
+    )
+    const buttonPropsFixed = {
+      ...buttonProps,
+      children: undefined,
+      href: undefined,
+      target: undefined,
+    }
 
-    const closeHandler = () => {
-      if (prevValue) {
-        state?.setDateValue(parseDate(prevValue))
-        setValueState(parseDate(prevValue))
-      }
-      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-      // @ts-ignore
-      else state?.setDateValue(null)
+    const handleConfirm = () => {
       state?.close()
     }
 
-    const submitCloseHandler = () => {
-      setPrevValue(onChange ? value : valueState ? valueState.toString() : '')
-      state?.close()
-    }
-
-    const resetCloseHandler = () => {
-      // https://github.com/adobe/react-spectrum/discussions/3318
-      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-      // @ts-ignore
-      state?.setDateValue(null)
-      setValueState(null)
-      setPrevValue('')
+    const handleReset = () => {
+      setValueControlled(null)
       state?.close()
     }
 
@@ -142,25 +105,24 @@ const DatePicker = forwardRef<HTMLDivElement, DatePickerBase>(
             tooltip={tooltip}
             errorMessage={errorMessage}
             isOpen={state?.isOpen}
+            customErrorPlace={customErrorPlace}
           >
-            <Button {...buttonProps} className={disabled ? 'opacity-50' : ''}>
-              <CalendarIcon className="h-5 w-5 lg:h-6 lg:w-6" />
-            </Button>
+            <ButtonNew
+              variant="icon-wrapped-negative-margin"
+              {...buttonPropsFixed}
+              isDisabled={disabled}
+              icon={<CalendarIcon />}
+              // TODO investigate why t can return undefined
+              aria-label={t('aria.openCalendar') ?? 'Open calendar'}
+            />
           </DateField>
         </div>
         {state?.isOpen && (
           <OverlayProvider>
-            <Popover {...dialogProps} isOpen={state?.isOpen} onClose={closeHandler}>
-              <Calendar
-                {...calendarProps}
-                onSubmit={submitCloseHandler}
-                onReset={resetCloseHandler}
-              />
+            <Popover {...dialogProps} isOpen={state?.isOpen} onClose={handleConfirm}>
+              <Calendar {...calendarProps} onConfirm={handleConfirm} onReset={handleReset} />
             </Popover>
           </OverlayProvider>
-        )}
-        {!disabled && !customErrorPlace && (
-          <FieldErrorMessage errorMessage={errorMessage} errorMessageProps={errorMessageProps} />
         )}
       </div>
     )

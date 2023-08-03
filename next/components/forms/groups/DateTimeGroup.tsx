@@ -1,31 +1,32 @@
+import { useControlledState } from '@react-stately/utils'
 import cx from 'classnames'
 
 import FieldErrorMessage from '../info-components/FieldErrorMessage'
-import DatePicker, { DatePickerBase } from '../widget-components/DateTimePicker/DatePicker'
-import TimePicker, { TimePickerBase } from '../widget-components/DateTimePicker/TimePicker'
+import DatePicker, { DatePickerProps } from '../widget-components/DateTimePicker/DatePicker'
+import TimePicker, { TimePickerProps } from '../widget-components/DateTimePicker/TimePicker'
 
 type TDatePicker = {
-  DateLabel?: DatePickerBase['label']
-  DateTooltip?: DatePickerBase['tooltip']
-  DateDescription?: DatePickerBase['helptext']
-  DateRequired?: DatePickerBase['required']
-  DateExplicitOptional?: DatePickerBase['explicitOptional']
-  DateDisabled?: DatePickerBase['disabled']
-  DateValue?: DatePickerBase['value']
-  DateOnChange?: DatePickerBase['onChange']
-  DateErrorMessage?: DatePickerBase['errorMessage']
+  DateLabel: DatePickerProps['label']
+  DateTooltip?: DatePickerProps['tooltip']
+  DateDescription?: DatePickerProps['helptext']
+  DateRequired?: DatePickerProps['required']
+  DateExplicitOptional?: DatePickerProps['explicitOptional']
+  DateDisabled?: DatePickerProps['disabled']
+  DateValue?: DatePickerProps['value']
+  DateOnChange?: DatePickerProps['onChange']
+  DateErrorMessage?: DatePickerProps['errorMessage']
 }
 
 type TTimePicker = {
-  TimeLabel?: TimePickerBase['label']
-  TimeTooltip?: TimePickerBase['tooltip']
-  TimeDescription?: TimePickerBase['helptext']
-  TimeRequired?: TimePickerBase['required']
-  TimeExplicitOptional?: TimePickerBase['explicitOptional']
-  TimeDisabled?: TimePickerBase['disabled']
-  TimeValue?: TimePickerBase['value']
-  TimeOnChange?: TimePickerBase['onChange']
-  TimeErrorMessage?: TimePickerBase['errorMessage']
+  TimeLabel: TimePickerProps['label']
+  TimeTooltip?: TimePickerProps['tooltip']
+  TimeDescription?: TimePickerProps['helptext']
+  TimeRequired?: TimePickerProps['required']
+  TimeExplicitOptional?: TimePickerProps['explicitOptional']
+  TimeDisabled?: TimePickerProps['disabled']
+  TimeValue?: TimePickerProps['value']
+  TimeOnChange?: TimePickerProps['onChange']
+  TimeErrorMessage?: TimePickerProps['errorMessage']
 }
 
 export const DateTimePicker = ({
@@ -36,7 +37,7 @@ export const DateTimePicker = ({
   DateDisabled,
   DateExplicitOptional,
   DateRequired,
-  DateOnChange,
+  DateOnChange = () => {},
   DateValue,
 
   TimeDisabled,
@@ -49,10 +50,12 @@ export const DateTimePicker = ({
   TimeOnChange,
   TimeValue,
 }: TDatePicker & TTimePicker) => {
+  const [dateControlled, setDateControlled] = useControlledState(DateValue, null, DateOnChange)
+
   return (
-    <div className={cx('flex-col flex items-start')}>
+    <div className={cx('flex flex-col items-start')}>
       <div className="flex flex-col items-end gap-4 lg:flex-row">
-        <div className={cx('flex flex-col w-[320px]')}>
+        <div className={cx('flex w-[320px] flex-col')}>
           <DatePicker
             label={DateLabel}
             errorMessage={DateErrorMessage}
@@ -60,17 +63,17 @@ export const DateTimePicker = ({
             helptext={DateDescription}
             disabled={DateDisabled}
             explicitOptional={DateExplicitOptional}
-            value={DateValue}
+            value={dateControlled}
             customErrorPlace
-            onChange={DateOnChange}
+            onChange={setDateControlled}
             required={DateRequired}
           />
           {/* Custom render error messages for both fields at small screens */}
-          <div className={cx('flex flex-col lg:hidden block')}>
+          <div className={cx('block flex flex-col lg:hidden')}>
             <FieldErrorMessage errorMessage={DateErrorMessage} />
           </div>
         </div>
-        <div className={cx('w-[320px] flex flex-col gap-1')}>
+        <div className={cx('flex w-[320px] flex-col gap-1')}>
           <TimePicker
             errorMessage={TimeErrorMessage}
             disabled={TimeDisabled}
@@ -84,7 +87,7 @@ export const DateTimePicker = ({
             explicitOptional={TimeExplicitOptional}
           />
           {/* Custom render error messages for both fields at small screens */}
-          <div className={cx('flex flex-col lg:hidden block')}>
+          <div className={cx('block flex flex-col lg:hidden')}>
             <FieldErrorMessage errorMessage={TimeErrorMessage} />
           </div>
         </div>
@@ -92,10 +95,10 @@ export const DateTimePicker = ({
 
       {/* Custom render error messages for both fields */}
       <div className="flex flex-row gap-4">
-        <div className={cx('flex flex-col lg:block hidden lg:w-[320px]')}>
+        <div className={cx('flex hidden flex-col lg:block lg:w-[320px]')}>
           <FieldErrorMessage errorMessage={DateErrorMessage} />
         </div>
-        <div className={cx('flex flex-col lg:block hidden lg:w-[320px]')}>
+        <div className={cx('flex hidden flex-col lg:block lg:w-[320px]')}>
           <FieldErrorMessage errorMessage={TimeErrorMessage} />
         </div>
       </div>

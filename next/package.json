@@ -30,6 +30,7 @@
     "@legendapp/state": "^1.2.11",
     "@radix-ui/react-dropdown-menu": "^2.0.4",
     "@react-aria/overlays": "3.14.1",
+    "@react-stately/utils": "^3.7.0",
     "@rjsf/core": "^5.10.0",
     "@rjsf/utils": "^5.10.0",
     "@rjsf/validator-ajv8": "^5.10.0",

@@ -69,19 +69,6 @@
       "birth": {
         "ui:widget": "DatePicker",
         "ui:label": false,
-        "ui:accordion": [
-          {
-            "title": "Header name 1",
-            "size": "lg",
-            "shadow": true,
-            "content": "<div class='flex items-center'>\n\n### h3\n&nbsp; &nbsp;\n::tooltip[Tooltip text]\n\n</div>\n\n#### h4\n##### h5\n###### h6"
-          },
-          {
-            "title": "Header name 2",
-            "size": "sm",
-            "content": "<div class='flex items-center'>\n\n### h3\n&nbsp; &nbsp;\n::tooltip[Tooltip text]\n\n</div>\n\n#### h4\n##### h5\n###### h6"
-          }
-        ],
         "ui:options": {
           "tooltip": "Date picker hint"
         }
@@ -92,11 +79,6 @@
       "meeting-time": {
         "ui:widget": "TimePicker",
         "ui:label": false,
-        "ui:accordion": {
-          "title": "Header name",
-          "size": "sm",
-          "content": "<div class='flex items-center'>\n\n### h3\n&nbsp; &nbsp;\n::tooltip[Tooltip text]\n\n</div>\n\n#### h4\n##### h5\n###### h6"
-        },
         "ui:options": {
           "tooltip": "Time picker hint"
         }
@@ -145,7 +127,7 @@
         "resetIcon": true,
         "leftIcon": "call",
         "size": "default",
-        "explicitOptional": "left"
+        "explicitOptional": true
       }
     },
     "password": {
@@ -156,7 +138,7 @@
         "tooltip": "Password hint",
         "leftIcon": "lock",
         "type": "password",
-        "explicitOptional": "right"
+        "explicitOptional": true
       }
     },
     "psc": {

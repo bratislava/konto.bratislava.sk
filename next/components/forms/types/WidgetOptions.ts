@@ -1,5 +1,4 @@
 import { AccordionBase } from '../simple-components/Accordion'
-import { ExplicitOptionalType } from './ExplicitOptional'
 
 export type FormSpacingType = 'large' | 'default' | 'small' | 'medium' | 'none'
 
@@ -9,7 +8,7 @@ export type WidgetOptions = {
   // description prop is system prop that we need to be, we use helptext prop instead of description prop
   description?: string
   className?: string
-  explicitOptional?: ExplicitOptionalType
+  explicitOptional?: boolean
   accordion?: AccordionBase | AccordionBase[]
   spaceBottom?: FormSpacingType
   spaceTop?: FormSpacingType

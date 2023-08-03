@@ -1,4 +1,4 @@
-import { EditIcon, SearchIcon } from '@assets/ui-icons'
+import { CalendarIcon, EditIcon, SearchIcon } from '@assets/ui-icons'
 
 import Button from '../../forms/simple-components/ButtonNew'
 import { Stack } from '../Stack'
@@ -167,8 +167,6 @@ const ButtonStacks = ({ variant }: { variant: 'category' | 'black' | 'negative' 
         size="small"
         isDisabled
       />
-      {/* </Stack> */}
-      {/* <Stack> */}
       <Button variant={`${variant}-plain`} startIcon={<SearchIcon />}>
         Button
       </Button>
@@ -225,6 +223,10 @@ const ButtonShowCase = () => {
         Icon Button should use `icon` and `aria-label` props instead of `children` an cannot be used
         with `startIcon`, `endIcon`.
       </div>
+      <div>
+        &quot;Naked&quot; icon buttons, e.g. close icons, calendar icon button, should have expanded
+        clickable/touchable area. For this case, we have `icon-wrapped` variant.
+      </div>
       <div>TODO: Loading spinner</div>
       <ButtonStacks variant="category" />
       <ButtonStacks variant="black" />
@@ -275,6 +277,10 @@ const ButtonShowCase = () => {
         <Button variant="category-solid" isLoading>
           This is loading button
         </Button>
+      </Stack>
+      <Stack>
+        <Button variant="icon-wrapped" icon={<CalendarIcon />} aria-label="Calendar" />
+        <Button variant="icon-wrapped" icon={<CalendarIcon />} aria-label="Calendar" size="small" />
       </Stack>
     </Wrapper>
   )

@@ -27,6 +27,8 @@ type ButtonOrIconButton =
 type ButtonBase = {
   variant?:
     | 'unstyled'
+    | 'icon-wrapped'
+    | 'icon-wrapped-negative-margin'
     | 'category-solid'
     | 'category-outline'
     | 'category-plain'
@@ -103,6 +105,8 @@ const Button = forwardRef<HTMLAnchorElement | HTMLButtonElement, PolymorphicProp
     const isSolidOrOutlineVariant = isSolidVariant || isOutlineVariant
     const isPlainVariant = variant.endsWith('-plain')
     const isLinkVariant = variant.endsWith('-link')
+    const isIconWrappedVariant =
+      variant === 'icon-wrapped' || variant === 'icon-wrapped-negative-margin'
     const isIconButton = Boolean(icon)
 
     /* TODO
@@ -143,6 +147,10 @@ const Button = forwardRef<HTMLAnchorElement | HTMLButtonElement, PolymorphicProp
 
                 // padding - link variants
                 'p-0': isLinkVariant,
+
+                // padding - icon-wrapped variant
+                'p-2 outline-offset-0': isIconButton && isIconWrappedVariant,
+                '-m-2': isIconButton && variant === 'icon-wrapped-negative-margin',
 
                 // padding - filled and outlined variants
                 'px-4 py-2 lg:py-3':

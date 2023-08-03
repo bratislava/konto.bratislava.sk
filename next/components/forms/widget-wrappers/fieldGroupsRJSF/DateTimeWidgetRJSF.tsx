@@ -2,7 +2,6 @@ import { FieldProps } from '@rjsf/utils'
 import React from 'react'
 
 import { DateTimePicker } from '../../groups'
-import { ExplicitOptionalType } from '../../types/ExplicitOptional'
 import { FormSpacingType } from '../../types/WidgetOptions'
 import WidgetWrapper, { isFormSpacingType } from '../WidgetWrapper'
 
@@ -54,15 +53,15 @@ const DateTimeWidgetRJSF = ({
           TimeTooltip={localUiSchema?.TimeTooltip as string}
           DateDescription={localUiSchema?.DateDescription as string}
           TimeDescription={localUiSchema?.TimeDescription as string}
-          DateExplicitOptional={localUiSchema?.DateExplicitOptional as ExplicitOptionalType}
-          TimeExplicitOptional={localUiSchema?.TimeExplicitOptional as ExplicitOptionalType}
+          DateExplicitOptional={localUiSchema?.DateExplicitOptional as boolean}
+          TimeExplicitOptional={localUiSchema?.TimeExplicitOptional as boolean}
           DateRequired={schema.required?.includes('dateValue')}
           TimeRequired={schema.required?.includes('timeValue')}
           DateErrorMessage={getErrorMessage('dateValue')}
           TimeErrorMessage={getErrorMessage('timeValue')}
-          DateOnChange={(e) => handleOnChange('dateValue', e?.toString())}
+          DateOnChange={(e) => handleOnChange('dateValue', e ?? undefined)}
           TimeOnChange={(e) => handleOnChange('timeValue', e?.toString())}
-          DateValue={formData.dateValue}
+          DateValue={formData.dateValue ?? null}
           TimeValue={formData.timeValue}
           DateLabel={schemaProperties?.dateValue?.title}
           TimeLabel={schemaProperties?.timeValue?.title}

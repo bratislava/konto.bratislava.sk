@@ -56,7 +56,7 @@ const CheckboxWidgetRJSF = (props: CheckboxesWidgetRJSFProps) => {
   return (
     <WidgetWrapper accordion={accordion} spaceBottom={spaceBottom} spaceTop={spaceTop}>
       <CheckboxGroup
-        rawErrors={rawErrors}
+        errorMessage={rawErrors}
         value={value ?? undefined}
         onChange={onChange}
         className={className}

@@ -1,10 +1,9 @@
 import cx from 'classnames'
-import FieldHeader from 'components/forms/info-components/FieldHeader'
 import React from 'react'
 import { useRadioGroup } from 'react-aria'
 import { RadioGroupState, useRadioGroupState } from 'react-stately'
 
-import FieldErrorMessage from '../../info-components/FieldErrorMessage'
+import FieldWrapper from '../FieldWrapper'
 
 const radioGroupState = {}
 export const RadioContext = React.createContext(radioGroupState as RadioGroupState)
@@ -38,25 +37,26 @@ const RadioGroup = (props: RadioGroupBase) => {
 
   return (
     <div {...radioGroupProps}>
-      <FieldHeader
+      <FieldWrapper
         label={label}
         labelProps={labelProps}
         htmlFor={radioGroupProps.id}
         required={required}
-      />
-      <RadioContext.Provider value={state}>
-        <div
-          className={cx(className, {
-            'flex flex-col gap-3': orientations === 'column',
-            'flex flex-row gap-6': orientations === 'row',
-          })}
-        >
-          {children}
-        </div>
-      </RadioContext.Provider>
-      {!isDisabled && (
-        <FieldErrorMessage errorMessage={errorMessage} errorMessageProps={errorMessageProps} />
-      )}
+        disabled={isDisabled}
+        errorMessage={errorMessage}
+        errorMessageProps={errorMessageProps}
+      >
+        <RadioContext.Provider value={state}>
+          <div
+            className={cx(className, {
+              'flex flex-col gap-3': orientations === 'column',
+              'flex flex-row gap-6': orientations === 'row',
+            })}
+          >
+            {children}
+          </div>
+        </RadioContext.Provider>
+      </FieldWrapper>
     </div>
   )
 }

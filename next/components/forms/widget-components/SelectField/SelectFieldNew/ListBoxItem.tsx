@@ -3,14 +3,12 @@ import cx from 'classnames'
 import React from 'react'
 import { Item, Text } from 'react-aria-components'
 
-import { ExplicitOptionalType } from '../../../types/ExplicitOptional'
-
-export type FieldBaseProps = {
+export type FieldBasePropsNew = {
   label: string
   tooltip?: string
   errorMessages?: string[]
   helptext?: string
-  explicitOptional?: ExplicitOptionalType
+  explicitOptional?: boolean
   width?: 'full' | 'fixed'
 }
 

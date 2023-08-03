@@ -3,15 +3,14 @@ import cx from 'classnames'
 import React from 'react'
 import { Button, ListBox, Popover, Select, SelectProps, SelectValue } from 'react-aria-components'
 
-import FieldErrorMessage from '../../../info-components/FieldErrorMessage'
-import FieldHeader from '../../../info-components/FieldHeader'
-import ListBoxItem, { FieldBaseProps, SelectItem } from './ListBoxItem'
+import FieldWrapper from '../../FieldWrapper'
+import ListBoxItem, { FieldBasePropsNew, SelectItem } from './ListBoxItem'
 
 type SelectFieldProps<T extends object> = {
   items: SelectItem[]
   isDivider?: boolean
 } & Omit<SelectProps<T>, 'validationState'> &
-  FieldBaseProps
+  FieldBasePropsNew
 
 const SelectFieldNew = <T extends object>({
   className,
@@ -34,14 +33,14 @@ const SelectFieldNew = <T extends object>({
       {...rest}
     >
       {({ isFocused, isOpen }) => (
-        <>
-          <FieldHeader
-            label={label}
-            helptext={helptext}
-            tooltip={tooltip}
-            required={rest.isRequired}
-            explicitOptional={explicitOptional}
-          />
+        <FieldWrapper
+          label={label}
+          helptext={helptext}
+          tooltip={tooltip}
+          required={rest.isRequired}
+          explicitOptional={explicitOptional}
+          errorMessage={errorMessages}
+        >
           <Button
             className={cx(
               'flex w-full justify-between rounded-lg border-2 bg-white px-4 py-3 outline-none disabled:border-gray-300 disabled:bg-gray-100 disabled:text-gray-400',
@@ -57,8 +56,6 @@ const SelectFieldNew = <T extends object>({
             <span aria-hidden>{isOpen ? <ChevronUpIcon /> : <ChevronDownIcon />}</span>
           </Button>
 
-          <FieldErrorMessage errorMessage={errorMessages ?? []} />
-
           {/* Styling docs https://react-spectrum.adobe.com/react-aria/Select.html#popover-1 */}
           <Popover className="w-[--trigger-width] overflow-y-scroll rounded-md border-2 bg-white py-2">
             <ListBox>
@@ -67,7 +64,7 @@ const SelectFieldNew = <T extends object>({
               ))}
             </ListBox>
           </Popover>
-        </>
+        </FieldWrapper>
       )}
     </Select>
   )

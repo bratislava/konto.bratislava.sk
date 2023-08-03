@@ -1,14 +1,13 @@
 /* eslint-disable lodash-fp/no-extraneous-args */
 import { ClockIcon } from '@assets/ui-icons'
 import cx from 'classnames'
-import FieldErrorMessage from 'components/forms/info-components/FieldErrorMessage'
 import padStart from 'lodash/padStart'
 import { forwardRef, ReactNode, RefObject, useEffect, useRef, useState } from 'react'
 import { OverlayProvider, useButton, useDatePicker } from 'react-aria'
 import { useDatePickerState } from 'react-stately'
 import { useEffectOnce } from 'usehooks-ts'
 
-import { ExplicitOptionalType } from '../../types/ExplicitOptional'
+import { FieldAdditionalProps, FieldBaseProps } from '../FieldBase'
 import Popover from './Popover'
 import TimeField from './TimeField'
 import TimeSelector from './TimeSelector'
@@ -41,24 +40,16 @@ export const convertTimeToValidFormat = (timeValue: string) => {
   }`
 }
 
-export type TimePickerBase = {
-  label?: string
-  helptext?: string
-  tooltip?: string
-  required?: boolean
-  explicitOptional?: ExplicitOptionalType
-  disabled?: boolean
-  // providing this 'prop' will disable error messages rendering inside this component
-  customErrorPlace?: boolean
-  errorMessage?: string[]
-  value?: string
-  minValue?: string
-  maxValue?: string
-  readOnly?: boolean
-  onChange?: (value?: string) => void
-}
+export type TimePickerProps = FieldBaseProps &
+  Pick<FieldAdditionalProps, 'customErrorPlace'> & {
+    value?: string
+    minValue?: string
+    maxValue?: string
+    readOnly?: boolean
+    onChange?: (value?: string) => void
+  }
 
-const TimePicker = forwardRef<HTMLDivElement, TimePickerBase>(
+const TimePicker = forwardRef<HTMLDivElement, TimePickerProps>(
   (
     {
       label,
@@ -93,7 +84,7 @@ const TimePicker = forwardRef<HTMLDivElement, TimePickerBase>(
       shouldCloseOnSelect: false,
       ...rest,
     })
-    const { fieldProps, buttonProps, dialogProps, errorMessageProps } = useDatePicker(
+    const { fieldProps, buttonProps, dialogProps } = useDatePicker(
       { errorMessage, isDisabled: disabled, label, ...rest },
       state,
       ref as RefObject<HTMLDivElement>,
@@ -179,6 +170,7 @@ const TimePicker = forwardRef<HTMLDivElement, TimePickerBase>(
             readOnly={readOnly}
             setIsInputEdited={setIsInputEdited}
             setPrevValue={setPrevValue}
+            customErrorPlace={customErrorPlace}
           >
             <Button {...buttonProps} disabled={disabled}>
               <ClockIcon className="h-5 w-5 lg:h-6 lg:w-6" />
@@ -208,9 +200,6 @@ const TimePicker = forwardRef<HTMLDivElement, TimePickerBase>(
               />
             </Popover>
           </OverlayProvider>
-        )}
-        {!disabled && !customErrorPlace && (
-          <FieldErrorMessage errorMessage={errorMessage} errorMessageProps={errorMessageProps} />
         )}
       </div>
     )

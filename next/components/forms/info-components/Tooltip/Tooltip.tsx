@@ -1,5 +1,6 @@
 import { HelpIcon } from '@assets/ui-icons'
 import TooltipPopup from 'components/forms/info-components/Tooltip/TooltipPopup'
+import { useTranslation } from 'next-i18next'
 import { useRef, useState } from 'react'
 import { TooltipTriggerProps, useHover } from 'react-aria'
 import { useTooltipTriggerState } from 'react-stately'
@@ -24,6 +25,7 @@ type TooltipPopupBase = {
 
 const Tooltip = (props: TooltipPopupBase) => {
   const { text, arrow, className, position } = props
+  const { t } = useTranslation('account', { keyPrefix: 'Tooltip' })
 
   const ref = useRef<HTMLButtonElement>(null)
   const state = useTooltipTriggerState(props)
@@ -40,15 +42,17 @@ const Tooltip = (props: TooltipPopupBase) => {
     },
   })
   return (
-    <span className="relative h-5 w-5 sm:h-6 sm:w-6">
+    <span className="relative">
       <button
         type="button"
         ref={ref}
         onClick={() => setIsClicked((prev) => !prev)}
         {...hoverProps}
-        className="w-full cursor-pointer outline-none"
+        className="-m-1.5 flex cursor-pointer items-center justify-center rounded-lg p-1.5"
+        // TODO translation
+        aria-label={t('aria.tooltip')}
       >
-        <HelpIcon />
+        <HelpIcon className="h-5 w-5 lg:h-6 lg:w-6" />
       </button>
       {(state.isOpen || isClicked) && (
         <TooltipPopup text={text} arrow={arrow} className={className} position={position} />

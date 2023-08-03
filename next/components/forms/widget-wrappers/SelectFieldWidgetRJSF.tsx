@@ -3,7 +3,6 @@ import { WidgetOptions } from 'components/forms/types/WidgetOptions'
 import WidgetWrapper from 'components/forms/widget-wrappers/WidgetWrapper'
 
 import useEnum from '../../../frontend/hooks/useEnum'
-import { ExplicitOptionalType } from '../types/ExplicitOptional'
 import SelectField from '../widget-components/SelectField/SelectField'
 import { SelectOption } from '../widget-components/SelectField/SelectOption.interface'
 
@@ -11,7 +10,7 @@ export type SelectRJSFOptions = {
   enumOptions?: EnumOptionsType[]
   dropdownDivider?: boolean
   selectAllOption?: boolean
-  explicitOptional?: ExplicitOptionalType
+  explicitOptional?: boolean
   hideScrollbar?: boolean
   maxWordSize?: number
   // selectType?: 'one' | 'multiple' | 'arrow' | 'radio'

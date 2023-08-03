@@ -1,42 +1,42 @@
 import cx from 'classnames'
 
 import FieldErrorMessage from '../info-components/FieldErrorMessage'
-import InputField, { InputBase } from '../widget-components/InputField/InputField'
+import InputField, { InputProps } from '../widget-components/InputField/InputField'
 
 type FirstInputFieldBase = {
-  FirstInputLabel: InputBase['label']
-  FirstInputClassNames?: InputBase['className']
-  FirstInputType?: InputBase['type']
-  FirstInputPlaceholder: InputBase['placeholder']
-  FirstInputErrorMessage?: InputBase['errorMessage']
-  FirstInputDescription?: InputBase['helptext']
-  FirstInputValue?: InputBase['value']
-  FirstInputLeftIcon?: InputBase['leftIcon']
-  FirstInputRequired?: InputBase['required']
-  FirstInputExplicitOptional?: InputBase['explicitOptional']
-  FirstInputResetIcon?: InputBase['resetIcon']
-  FirstInputDisabled?: InputBase['disabled']
-  FirstInputSize?: InputBase['size']
-  FirstInputTooltip?: InputBase['tooltip']
-  FirstInputHandler?: InputBase['onChange']
+  FirstInputLabel: InputProps['label']
+  FirstInputClassNames?: InputProps['className']
+  FirstInputType?: InputProps['type']
+  FirstInputPlaceholder: InputProps['placeholder']
+  FirstInputErrorMessage?: InputProps['errorMessage']
+  FirstInputDescription?: InputProps['helptext']
+  FirstInputValue?: InputProps['value']
+  FirstInputLeftIcon?: InputProps['leftIcon']
+  FirstInputRequired?: InputProps['required']
+  FirstInputExplicitOptional?: InputProps['explicitOptional']
+  FirstInputResetIcon?: InputProps['resetIcon']
+  FirstInputDisabled?: InputProps['disabled']
+  FirstInputSize?: InputProps['size']
+  FirstInputTooltip?: InputProps['tooltip']
+  FirstInputHandler?: InputProps['onChange']
 }
 
 type SecondInputFieldBase = {
-  SecondInputLabel: InputBase['label']
-  SecondInputClassNames?: InputBase['className']
-  SecondInputType?: InputBase['type']
-  SecondInputPlaceholder: InputBase['placeholder']
-  SecondInputErrorMessage?: InputBase['errorMessage']
-  SecondInputDescription?: InputBase['helptext']
-  SecondInputValue?: InputBase['value']
-  SecondInputLeftIcon?: InputBase['leftIcon']
-  SecondInputRequired?: InputBase['required']
-  SecondInputExplicitOptional?: InputBase['explicitOptional']
-  SecondInputResetIcon?: InputBase['resetIcon']
-  SecondInputDisabled?: InputBase['disabled']
-  SecondInputSize?: InputBase['size']
-  SecondInputTooltip?: InputBase['tooltip']
-  SecondInputHandler?: InputBase['onChange']
+  SecondInputLabel: InputProps['label']
+  SecondInputClassNames?: InputProps['className']
+  SecondInputType?: InputProps['type']
+  SecondInputPlaceholder: InputProps['placeholder']
+  SecondInputErrorMessage?: InputProps['errorMessage']
+  SecondInputDescription?: InputProps['helptext']
+  SecondInputValue?: InputProps['value']
+  SecondInputLeftIcon?: InputProps['leftIcon']
+  SecondInputRequired?: InputProps['required']
+  SecondInputExplicitOptional?: InputProps['explicitOptional']
+  SecondInputResetIcon?: InputProps['resetIcon']
+  SecondInputDisabled?: InputProps['disabled']
+  SecondInputSize?: InputProps['size']
+  SecondInputTooltip?: InputProps['tooltip']
+  SecondInputHandler?: InputProps['onChange']
 }
 
 export const DoubledInputField = ({
@@ -94,7 +94,7 @@ export const DoubledInputField = ({
             onChange={FirstInputHandler}
           />
           {/* Custom render error messages for both fields at small screens */}
-          <div className={cx('flex sm:hidden block')}>
+          <div className={cx('block flex sm:hidden')}>
             <FieldErrorMessage errorMessage={FirstInputErrorMessage} />
           </div>
         </div>
@@ -117,7 +117,7 @@ export const DoubledInputField = ({
             onChange={SecondInputHandler}
           />
           {/* Custom render error messages for both fields at small screens */}
-          <div className={cx('flex sm:hidden w-full block')}>
+          <div className={cx('block flex w-full sm:hidden')}>
             <FieldErrorMessage errorMessage={SecondInputErrorMessage} />
           </div>
         </div>
@@ -125,10 +125,10 @@ export const DoubledInputField = ({
 
       {/* Custom render error messages for both fields at large screens */}
       <div className="flex flex-row gap-4">
-        <div className={cx('flex flex-col sm:block hidden', FirstInputClassNames)}>
+        <div className={cx('flex hidden flex-col sm:block', FirstInputClassNames)}>
           <FieldErrorMessage errorMessage={FirstInputErrorMessage} />
         </div>
-        <div className={cx('flex flex-col sm:block hidden', SecondInputClassNames)}>
+        <div className={cx('flex hidden flex-col sm:block', SecondInputClassNames)}>
           <FieldErrorMessage errorMessage={SecondInputErrorMessage} />
         </div>
       </div>

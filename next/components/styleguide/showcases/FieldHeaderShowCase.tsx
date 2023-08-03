@@ -13,7 +13,7 @@ const FieldHeaderShowCase = () => {
           <FieldHeader label="Simple" htmlFor="input-name" />
         </Stack>
         <Stack>
-          <FieldHeader label="Explicit optional" htmlFor="input-name" explicitOptional="right" />
+          <FieldHeader label="Explicit optional" htmlFor="input-name" explicitOptional />
         </Stack>
         <Stack>
           <FieldHeader label="Required" htmlFor="input-name" required />
@@ -26,7 +26,7 @@ const FieldHeaderShowCase = () => {
             label="Tooltip with explicit optional"
             htmlFor="input-name"
             tooltip="This is random tooltip"
-            explicitOptional="right"
+            explicitOptional
           />
         </Stack>
         <Stack>
@@ -59,7 +59,7 @@ const FieldHeaderShowCase = () => {
             htmlFor="input-name"
             helptext="This is is simple description"
             tooltip="This is some tooltip"
-            explicitOptional="right"
+            explicitOptional
           />
         </Stack>
       </Wrapper>

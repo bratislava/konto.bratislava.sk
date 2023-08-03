@@ -1,23 +1,30 @@
 {
   "mestoPSCstep": {
     "mestoPSC": {
-      "ui:field": "doubledInput",
-      "ui:accordion": {
-        "title": "Header name",
-        "size": "sm",
-        "content": "<div class='flex items-center'>\n\n### h3\n&nbsp; &nbsp;\n::tooltip[Tooltip text]\n\n</div>\n\n#### h4\n##### h5\n###### h6"
-      },
       "ui:options": {
-        "FirstInputTooltip": "Mesto tooltip",
-        "FirstInputDescription": "Description",
-        "FirstInputPlaceholder": "placeholder text",
-        "FirstInputRequired": true,
-        "FirstInputResetIcon": true,
-        "FirstInputLeftIcon": "person",
-        "FirstInputExplicitOptional": true,
-        "FirstInputClassNames": "w-full",
-        "SecondInputClassNames": "w-1/4",
-        "spaceTop": "large"
+        "objectDisplay": "columns",
+        "objectColumnRatio": "3/1"
+      },
+      "mesto": {
+        "ui:widget": "InputField",
+        "ui:label": false,
+        "ui:placeholder": "placeholder text",
+        "ui:options": {
+          "tooltip": "Mesto tooltip",
+          "required": true,
+          "resetIcon": true,
+          "leftIcon": "person",
+          "explicitOptional": true,
+          "spaceTop": "large",
+          "size": "large"
+        }
+      },
+      "psc": {
+        "ui:widget": "InputField",
+        "ui:label": false,
+        "ui:options": {
+          "size": "large"
+        }
       }
     }
   },

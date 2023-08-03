@@ -172,7 +172,8 @@
                   },
                   "required": ["ziadatelMesto", "ziadatelPsc"]
                 }
-              }
+              },
+              "required": ["ziadatelMestoPsc"]
             },
             {
               "if": {
@@ -409,7 +410,8 @@
                         },
                         "required": ["investorMesto", "investorPsc"]
                       }
-                    }
+                    },
+                    "required": ["investorMestoPsc"]
                   },
                   {
                     "if": {

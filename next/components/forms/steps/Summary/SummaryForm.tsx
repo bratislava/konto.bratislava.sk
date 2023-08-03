@@ -44,7 +44,6 @@ const theme: ThemeProps = {
     TimePicker: wrapWidget('timepicker'),
   },
   fields: {
-    doubledInput: wrapField('doubledInput'),
     dateFromTo: wrapField('dateFromTo'),
     timeFromTo: wrapField('timeFromTo'),
     dateTime: wrapField('dateTime'),

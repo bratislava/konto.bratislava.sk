@@ -3,15 +3,14 @@ import InputField from 'components/forms/widget-components/InputField/InputField
 import { forwardRef, useRef, useState } from 'react'
 import { useButton } from 'react-aria'
 
-import { FieldBaseProps } from '../FieldBase'
+import { FieldAdditionalProps, FieldBaseProps } from '../FieldBase'
 
-type Props = FieldBaseProps & {
-  placeholder: string
-  className?: string
-  value?: string
-  autoComplete?: string
-  onChange?: (value?: string) => void
-}
+type Props = FieldBaseProps &
+  Pick<FieldAdditionalProps, 'placeholder' | 'className'> & {
+    value?: string
+    autoComplete?: string
+    onChange?: (value?: string) => void
+  }
 
 const PasswordField = forwardRef<HTMLInputElement, Props>(
   (

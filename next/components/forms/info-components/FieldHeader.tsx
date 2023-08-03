@@ -1,5 +1,6 @@
 import cx from 'classnames'
 import Tooltip, { TooltipPositionType } from 'components/forms/info-components/Tooltip/Tooltip'
+import { useTranslation } from 'next-i18next'
 import { DOMAttributes } from 'react'
 
 import { FieldBaseProps } from '../widget-components/FieldBase'
@@ -22,7 +23,8 @@ const FieldHeader = ({
   tooltip,
   tooltipPosition,
 }: FieldHeaderProps) => {
-  // STYLES
+  const { t } = useTranslation('account', { keyPrefix: 'FieldHeader' })
+
   const labelStyle = cx('text-p3-semibold sm:text-16-semibold relative text-gray-800', {
     'after:text-16-semibold after:content-["*"] after:ml-0.5 after:absolute after:bottom-0.5 after:text-main-700':
       required,
@@ -44,7 +46,7 @@ const FieldHeader = ({
 
           <div className="flex items-center">
             {!required && explicitOptional && (
-              <div className="text-p3 sm:text-16 ml-2 flex items-center">(optional)</div>
+              <div className="text-p3 sm:text-16 ml-2 flex items-center">{t('optional')}</div>
             )}
             {tooltip && (
               <div

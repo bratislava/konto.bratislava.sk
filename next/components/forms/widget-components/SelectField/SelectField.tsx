@@ -12,25 +12,24 @@ import React, {
 import { useOnClickOutside } from 'usehooks-ts'
 
 import { handleOnKeyPress } from '../../../../frontend/utils/general'
-import { FieldBaseProps } from '../FieldBase'
+import { FieldAdditionalProps, FieldBaseProps } from '../FieldBase'
 import FieldWrapper from '../FieldWrapper'
 import Dropdown from './Dropdown'
 import SelectFieldBox from './SelectFieldBox'
 import { SelectOption } from './SelectOption.interface'
 
-type SelectFieldProps = FieldBaseProps & {
-  type?: 'one' | 'multiple' | 'arrow' | 'radio'
-  value?: SelectOption[]
-  enumOptions?: SelectOption[]
-  dropdownDivider?: boolean
-  selectAllOption?: boolean
-  placeholder?: string
-  hideScrollbar?: boolean
-  alwaysOneSelected?: boolean
-  maxWordSize?: number
-  className?: string
-  onChange: (values: SelectOption[]) => void
-}
+type SelectFieldProps = FieldBaseProps &
+  Pick<FieldAdditionalProps, 'placeholder' | 'className'> & {
+    type?: 'one' | 'multiple' | 'arrow' | 'radio'
+    value?: SelectOption[]
+    enumOptions?: SelectOption[]
+    dropdownDivider?: boolean
+    selectAllOption?: boolean
+    hideScrollbar?: boolean
+    alwaysOneSelected?: boolean
+    maxWordSize?: number
+    onChange: (values: SelectOption[]) => void
+  }
 
 const SelectFieldComponent: ForwardRefRenderFunction<HTMLDivElement, SelectFieldProps> = (
   props: SelectFieldProps,

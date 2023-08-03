@@ -2,16 +2,15 @@ import cx from 'classnames'
 import React, { useState } from 'react'
 import { useTextField } from 'react-aria'
 
-import { FieldBaseProps } from '../FieldBase'
+import { FieldAdditionalProps, FieldBaseProps } from '../FieldBase'
 import FieldWrapper from '../FieldWrapper'
 
-type TextAreaBase = FieldBaseProps & {
-  placeholder?: string
-  className?: string
-  defaultValue?: string
-  value?: string
-  onChange?: (value?: string) => void
-}
+type TextAreaBase = FieldBaseProps &
+  Pick<FieldAdditionalProps, 'placeholder' | 'className'> & {
+    defaultValue?: string
+    value?: string
+    onChange?: (value?: string) => void
+  }
 
 const TextAreaField = ({
   label,

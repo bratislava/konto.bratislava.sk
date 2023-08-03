@@ -5,7 +5,7 @@ import { forwardRef, ReactNode, RefObject, useEffect, useState } from 'react'
 import { useTextField } from 'react-aria'
 
 import MailIcon from '../../../../assets/ui-icons/custom_mail.svg'
-import { FieldBaseProps } from '../FieldBase'
+import { FieldAdditionalProps, FieldBaseProps } from '../FieldBase'
 import FieldWrapper from '../FieldWrapper'
 
 export type LeftIconVariants = 'person' | 'mail' | 'call' | 'lock'
@@ -22,23 +22,19 @@ export const isInputSize = (value: string): value is SizeType => {
   return list.includes(value as SizeType)
 }
 
-export type InputProps = FieldBaseProps & {
-  type?: InputType
-  placeholder?: string
-  // capitalize input value after field un-focus with type === text
-  capitalize?: boolean
-  className?: string
-  value?: string
-  leftIcon?: LeftIconVariants
-  // providing this 'prop' will disable error messages rendering inside this component
-  customErrorPlace?: boolean
-  resetIcon?: boolean
-  tooltipPosition?: TooltipPositionType
-  onChange?: (value?: string) => void
-  size?: SizeType
-  endIcon?: ReactNode
-  autoComplete?: string
-}
+export type InputProps = FieldBaseProps &
+  Pick<FieldAdditionalProps, 'placeholder' | 'className' | 'customErrorPlace'> & {
+    type?: InputType // capitalize input value after field un-focus with type === text
+    capitalize?: boolean
+    value?: string
+    leftIcon?: LeftIconVariants
+    resetIcon?: boolean
+    tooltipPosition?: TooltipPositionType
+    onChange?: (value?: string) => void
+    size?: SizeType
+    endIcon?: ReactNode
+    autoComplete?: string
+  }
 
 const InputField = forwardRef<HTMLInputElement, InputProps>(
   (

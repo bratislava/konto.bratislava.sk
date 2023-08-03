@@ -821,5 +821,13 @@
     "aria": {
       "openCalendar": "Otvoriť kalendár"
     }
+  },
+  "Tooltip": {
+    "aria": {
+      "tooltip": "Tooltip"
+    }
+  },
+  "FieldHeader": {
+    "optional": "Nepovinné"
   }
 }

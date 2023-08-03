@@ -61,10 +61,10 @@ const DateFromToWidgetRJSF = ({
           DateToDescription={localUiSchema?.DateToDescription as string}
           DateFromExplicitOptional={localUiSchema?.DateFromExplicitOptional as ExplicitOptionalType}
           DateToExplicitOptional={localUiSchema?.DateToExplicitOptional as ExplicitOptionalType}
-          DateFromOnChange={(e) => handleOnChange('startDate', e?.toString())}
-          DateToOnChange={(e) => handleOnChange('endDate', e?.toString())}
-          DateFromValue={formData?.startDate}
-          DateToValue={formData?.endDate}
+          DateFromOnChange={(e) => handleOnChange('startDate', e ?? undefined)}
+          DateToOnChange={(e) => handleOnChange('endDate', e ?? undefined)}
+          DateFromValue={formData?.startDate ?? null}
+          DateToValue={formData?.endDate ?? null}
           DateFromLabel={schemaProperties?.startDate?.title}
           DateToLabel={schemaProperties?.endDate?.title}
           DateFromDisabled={localUiSchema?.DateFromDisabled as unknown as boolean}

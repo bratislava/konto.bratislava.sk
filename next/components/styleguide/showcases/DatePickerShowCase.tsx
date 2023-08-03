@@ -1,9 +1,12 @@
+import { useState } from 'react'
+
 import DatePicker from '../../forms/widget-components/DateTimePicker/DatePicker'
 import { Stack } from '../Stack'
 import { Wrapper } from '../Wrapper'
 
 const DatePickerShowCase = () => {
   const ERROR_MESSAGES = ['Error message']
+  const [value, setValue] = useState<string | null | undefined>('202asdas1-09-01')
 
   return (
     <Wrapper direction="row" title="Date Picker">
@@ -29,6 +32,7 @@ const DatePickerShowCase = () => {
           required
           disabled
         />
+        <DatePicker label="Label" value={value} onChange={setValue} />
       </Stack>
     </Wrapper>
   )

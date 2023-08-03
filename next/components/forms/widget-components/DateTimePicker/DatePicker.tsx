@@ -1,8 +1,9 @@
 import { CalendarIcon } from '@assets/ui-icons'
-import { DateValue, parseDate } from '@internationalized/date'
+import { parseDate } from '@internationalized/date'
+import { useControlledState } from '@react-stately/utils'
 import FieldErrorMessage from 'components/forms/info-components/FieldErrorMessage'
 import { useTranslation } from 'next-i18next'
-import { forwardRef, RefObject, useState } from 'react'
+import { forwardRef, RefObject, useMemo } from 'react'
 import { OverlayProvider, useDatePicker } from 'react-aria'
 import { useDatePickerState } from 'react-stately'
 
@@ -22,10 +23,10 @@ export type DatePickerBase = {
   // providing this 'prop' will disable error messages rendering inside this component
   customErrorPlace?: boolean
   errorMessage?: string[]
-  value?: string
+  value?: string | null
   minValue?: string
   maxValue?: string
-  onChange?: (value?: DateValue) => void
+  onChange?: (value: string | null | undefined) => void
 }
 
 const DatePicker = forwardRef<HTMLDivElement, DatePickerBase>(
@@ -38,25 +39,35 @@ const DatePicker = forwardRef<HTMLDivElement, DatePickerBase>(
       explicitOptional,
       tooltip,
       helptext,
-      value = '',
+      value,
       minValue,
       maxValue,
-      onChange,
+      onChange = () => {},
       customErrorPlace = false,
       ...rest
     },
     ref,
   ) => {
+    const [valueControlled, setValueControlled] = useControlledState(value, null, onChange)
     const { t } = useTranslation('account', { keyPrefix: 'DatePicker' })
 
-    const [valueState, setValueState] = useState<DateValue | null>(null)
+    const parsedValue = useMemo(() => {
+      if (!valueControlled) {
+        return null
+      }
+      try {
+        return parseDate(valueControlled)
+      } catch (error) {
+        // Error: Invalid ISO 8601 date string
+        return null
+      }
+    }, [valueControlled])
 
     const state = useDatePickerState({
       label,
       errorMessage,
-      // TODO Why there is '|| null'?
-      value: onChange && value ? parseDate(value) : valueState || null,
-      onChange: onChange || setValueState,
+      value: parsedValue,
+      onChange: (date) => setValueControlled(date ? date.toString() : null),
       isRequired: required,
       isDisabled: disabled,
       ...rest,
@@ -87,10 +98,7 @@ const DatePicker = forwardRef<HTMLDivElement, DatePickerBase>(
     }
 
     const handleReset = () => {
-      // https://github.com/adobe/react-spectrum/discussions/3318
-      // @ts-ignore
-      state?.setDateValue(null)
-      setValueState(null)
+      setValueControlled(null)
       state?.close()
     }
 

@@ -205,7 +205,7 @@ const SelectFieldComponent: ForwardRefRenderFunction<HTMLDivElement, SelectField
 
   // RENDER
   return (
-    <section
+    <div
       className={cx(
         'relative flex w-full max-w-[200px] flex-col transition-all xs:max-w-[320px]',
         className,
@@ -282,7 +282,7 @@ const SelectFieldComponent: ForwardRefRenderFunction<HTMLDivElement, SelectField
           )}
         </div>
       </FieldWrapper>
-    </section>
+    </div>
   )
 }
 

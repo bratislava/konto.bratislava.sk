@@ -1,7 +1,6 @@
 /* eslint-disable lodash-fp/no-extraneous-args */
 import { ClockIcon } from '@assets/ui-icons'
 import cx from 'classnames'
-import FieldErrorMessage from 'components/forms/info-components/FieldErrorMessage'
 import padStart from 'lodash/padStart'
 import { forwardRef, ReactNode, RefObject, useEffect, useRef, useState } from 'react'
 import { OverlayProvider, useButton, useDatePicker } from 'react-aria'
@@ -85,7 +84,7 @@ const TimePicker = forwardRef<HTMLDivElement, TimePickerProps>(
       shouldCloseOnSelect: false,
       ...rest,
     })
-    const { fieldProps, buttonProps, dialogProps, errorMessageProps } = useDatePicker(
+    const { fieldProps, buttonProps, dialogProps } = useDatePicker(
       { errorMessage, isDisabled: disabled, label, ...rest },
       state,
       ref as RefObject<HTMLDivElement>,
@@ -171,6 +170,7 @@ const TimePicker = forwardRef<HTMLDivElement, TimePickerProps>(
             readOnly={readOnly}
             setIsInputEdited={setIsInputEdited}
             setPrevValue={setPrevValue}
+            customErrorPlace={customErrorPlace}
           >
             <Button {...buttonProps} disabled={disabled}>
               <ClockIcon className="h-5 w-5 lg:h-6 lg:w-6" />
@@ -200,9 +200,6 @@ const TimePicker = forwardRef<HTMLDivElement, TimePickerProps>(
               />
             </Popover>
           </OverlayProvider>
-        )}
-        {!disabled && !customErrorPlace && (
-          <FieldErrorMessage errorMessage={errorMessage} errorMessageProps={errorMessageProps} />
         )}
       </div>
     )

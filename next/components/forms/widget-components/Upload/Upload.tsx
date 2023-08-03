@@ -45,7 +45,7 @@ const Upload = forwardRef<HTMLButtonElement, UploadProps>(
     ref,
   ) => {
     return (
-      <section
+      <div
         className={cx('h-fit w-full select-none', className)}
         style={{ transition: '0.2 all linear' }}
       >
@@ -87,7 +87,7 @@ const Upload = forwardRef<HTMLButtonElement, UploadProps>(
             />
           </div>
         </FieldWrapper>
-      </section>
+      </div>
     )
   },
 )

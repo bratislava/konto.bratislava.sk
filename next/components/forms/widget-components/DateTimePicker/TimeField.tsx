@@ -2,20 +2,21 @@ import cx from 'classnames'
 import React, { ReactNode, useEffect, useRef, useState } from 'react'
 import { useTextField } from 'react-aria'
 
-import FieldHeader from '../../info-components/FieldHeader'
-import { FieldBaseProps } from '../FieldBase'
+import { FieldAdditionalProps, FieldBaseProps } from '../FieldBase'
+import FieldWrapper from '../FieldWrapper'
 
-type TimeFieldProps = FieldBaseProps & {
-  children?: ReactNode
-  hour: string
-  minute: string
-  isOpen: boolean
-  onChange?: (value?: string) => void
-  value?: string
-  readOnly?: boolean
-  setIsInputEdited?: React.Dispatch<React.SetStateAction<boolean>>
-  setPrevValue?: React.Dispatch<React.SetStateAction<string>>
-}
+type TimeFieldProps = FieldBaseProps &
+  Pick<FieldAdditionalProps, 'customErrorPlace'> & {
+    children?: ReactNode
+    hour: string
+    minute: string
+    isOpen: boolean
+    onChange?: (value?: string) => void
+    value?: string
+    readOnly?: boolean
+    setIsInputEdited?: React.Dispatch<React.SetStateAction<boolean>>
+    setPrevValue?: React.Dispatch<React.SetStateAction<string>>
+  }
 
 const TimeField = ({
   label,
@@ -33,6 +34,7 @@ const TimeField = ({
   isOpen,
   setIsInputEdited,
   readOnly,
+  customErrorPlace,
   ...rest
 }: TimeFieldProps) => {
   const [inputValue, setInputValue] = useState<string>('')
@@ -42,7 +44,7 @@ const TimeField = ({
     setInputValue(onChange ? value : inputValue)
   }, [inputValue, onChange, value])
 
-  const { labelProps, inputProps, descriptionProps } = useTextField(
+  const { labelProps, inputProps, descriptionProps, errorMessageProps } = useTextField(
     {
       label,
       description: helptext,
@@ -76,17 +78,20 @@ const TimeField = ({
   )
 
   return (
-    <>
-      <FieldHeader
-        label={label || ''}
-        htmlFor={inputProps.id}
-        labelProps={labelProps}
-        tooltip={tooltip}
-        helptext={helptext}
-        descriptionProps={descriptionProps}
-        required={required}
-        explicitOptional={explicitOptional}
-      />
+    <FieldWrapper
+      label={label}
+      htmlFor={inputProps.id}
+      labelProps={labelProps}
+      tooltip={tooltip}
+      helptext={helptext}
+      descriptionProps={descriptionProps}
+      required={required}
+      explicitOptional={explicitOptional}
+      disabled={disabled}
+      customErrorPlace={customErrorPlace}
+      errorMessage={errorMessage}
+      errorMessageProps={errorMessageProps}
+    >
       <div className="relative">
         <input
           {...inputProps}
@@ -99,7 +104,7 @@ const TimeField = ({
           {children}
         </div>
       </div>
-    </>
+    </FieldWrapper>
   )
 }
 

@@ -1,7 +1,6 @@
 import { CalendarIcon } from '@assets/ui-icons'
 import { parseDate } from '@internationalized/date'
 import { useControlledState } from '@react-stately/utils'
-import FieldErrorMessage from 'components/forms/info-components/FieldErrorMessage'
 import { useTranslation } from 'next-i18next'
 import { forwardRef, RefObject, useMemo } from 'react'
 import { OverlayProvider, useDatePicker } from 'react-aria'
@@ -65,19 +64,18 @@ const DatePicker = forwardRef<HTMLDivElement, DatePickerProps>(
       ...rest,
       shouldCloseOnSelect: false,
     })
-    const { fieldProps, buttonProps, calendarProps, dialogProps, errorMessageProps } =
-      useDatePicker(
-        {
-          errorMessage,
-          minValue: minValue ? parseDate(minValue) : undefined,
-          maxValue: maxValue ? parseDate(maxValue) : undefined,
-          isDisabled: disabled,
-          label,
-          ...rest,
-        },
-        state,
-        ref as RefObject<HTMLDivElement>,
-      )
+    const { fieldProps, buttonProps, calendarProps, dialogProps } = useDatePicker(
+      {
+        errorMessage,
+        minValue: minValue ? parseDate(minValue) : undefined,
+        maxValue: maxValue ? parseDate(maxValue) : undefined,
+        isDisabled: disabled,
+        label,
+        ...rest,
+      },
+      state,
+      ref as RefObject<HTMLDivElement>,
+    )
     const buttonPropsFixed = {
       ...buttonProps,
       children: undefined,
@@ -107,6 +105,7 @@ const DatePicker = forwardRef<HTMLDivElement, DatePickerProps>(
             tooltip={tooltip}
             errorMessage={errorMessage}
             isOpen={state?.isOpen}
+            customErrorPlace={customErrorPlace}
           >
             <ButtonNew
               variant="icon-wrapped-negative-margin"
@@ -124,9 +123,6 @@ const DatePicker = forwardRef<HTMLDivElement, DatePickerProps>(
               <Calendar {...calendarProps} onConfirm={handleConfirm} onReset={handleReset} />
             </Popover>
           </OverlayProvider>
-        )}
-        {!disabled && !customErrorPlace && (
-          <FieldErrorMessage errorMessage={errorMessage} errorMessageProps={errorMessageProps} />
         )}
       </div>
     )

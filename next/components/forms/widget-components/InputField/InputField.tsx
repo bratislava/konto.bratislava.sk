@@ -164,16 +164,16 @@ const InputField = forwardRef<HTMLInputElement, InputProps>(
         >
           <div className="relative">
             {leftIcon && (
-              <i
+              <span
                 className={cx(
-                  'absolute inset-y-1/2 left-3 flex h-6 w-6 -translate-y-2/4 items-center justify-center sm:left-4',
+                  'pointer-events-none absolute inset-y-1/2 left-3 flex h-6 w-6 -translate-y-2/4 items-center justify-center sm:left-4',
                   {
                     'opacity-50': disabled,
                   },
                 )}
               >
                 {leftIconSwitcher(leftIcon)}
-              </i>
+              </span>
             )}
             <input {...inputProps} ref={ref} name={inputProps.id} className={style} />
             {resetIcon && valueState && (

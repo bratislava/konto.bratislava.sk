@@ -3,8 +3,7 @@ import cx from 'classnames'
 import React from 'react'
 import { Button, ComboBox, ComboBoxProps, Input, ListBox, Popover } from 'react-aria-components'
 
-import FieldErrorMessage from '../../../info-components/FieldErrorMessage'
-import FieldHeader from '../../../info-components/FieldHeader'
+import FieldWrapper from '../../FieldWrapper'
 import ListBoxItem, { FieldBasePropsNew, SelectItem } from './ListBoxItem'
 
 type ComboBoxFieldProps<T extends object> = {
@@ -30,15 +29,15 @@ const ComboBoxNew = <T extends object>({
   return (
     <ComboBox className="w-full" validationState={isInvalid ? 'invalid' : 'valid'} {...rest}>
       {({ isFocused, isOpen }) => (
-        <>
-          <FieldHeader
-            label={label}
-            helptext={helptext}
-            tooltip={tooltip}
-            required={rest.isRequired}
-            explicitOptional={explicitOptional}
-          />
-
+        <FieldWrapper
+          label={label}
+          helptext={helptext}
+          tooltip={tooltip}
+          required={rest.isRequired}
+          explicitOptional={explicitOptional}
+          errorMessage={errorMessages}
+          disabled={rest.isDisabled}
+        >
           <div className="flex">
             <Input
               className={cx(
@@ -53,8 +52,6 @@ const ComboBoxNew = <T extends object>({
             </Button>
           </div>
 
-          <FieldErrorMessage errorMessage={errorMessages} />
-
           <Popover className="w-[--trigger-width] overflow-y-scroll rounded-md border-2 bg-white py-2">
             <ListBox>
               {items.map((item) => (
@@ -62,7 +59,7 @@ const ComboBoxNew = <T extends object>({
               ))}
             </ListBox>
           </Popover>
-        </>
+        </FieldWrapper>
       )}
     </ComboBox>
   )

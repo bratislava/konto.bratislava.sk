@@ -23,15 +23,10 @@ interface RJSFSelectSchema extends RJSFSchema {
 }
 
 interface SelectFieldWidgetRJSFProps extends WidgetProps {
-  label: string
   options: SelectRJSFOptions
   value: any | any[] | null
-  required?: boolean
-  disabled?: boolean
-  placeholder?: string
   schema: RJSFSelectSchema
   onChange: (value?: any | any[]) => void
-  rawErrors?: string[]
 }
 
 const SelectFieldWidgetRJSF = (props: SelectFieldWidgetRJSFProps) => {

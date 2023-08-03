@@ -7,15 +7,11 @@ import React from 'react'
 type TimePickerRJSFOptions = WidgetOptions
 
 interface TimePickerWidgetRJSFProps extends WidgetProps {
-  label: string
   options: TimePickerRJSFOptions
   value: string | null
   errorMessage?: string
-  required?: boolean
-  disabled?: boolean
   schema: StrictRJSFSchema
   onChange: (value?: string) => void
-  rawErrors?: string[]
 }
 
 const TimePickerWidgetRJSF = ({

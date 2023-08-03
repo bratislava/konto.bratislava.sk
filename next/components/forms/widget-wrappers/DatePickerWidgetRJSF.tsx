@@ -11,11 +11,8 @@ interface DatePickerWidgetRJSFProps extends WidgetProps {
   options: DatePickerRJSFOptions
   value: string | null
   errorMessage?: string
-  required?: boolean
-  disabled?: boolean
   schema: StrictRJSFSchema
   onChange: (value?: string) => void
-  rawErrors?: string[]
 }
 
 const DatePickerWidgetRJSF = ({

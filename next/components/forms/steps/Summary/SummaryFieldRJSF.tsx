@@ -7,7 +7,7 @@ import { useFormState } from '../../FormStateProvider'
 import SummaryRow from './SummaryRow'
 import { useFormSummary } from './useFormSummary'
 
-export type SummaryFieldType = 'doubledInput' | 'dateFromTo' | 'timeFromTo' | 'dateTime'
+export type SummaryFieldType = 'dateFromTo' | 'timeFromTo' | 'dateTime'
 
 export type SummaryFieldRJSFProps = Pick<
   FieldProps<GenericObjectType>,

@@ -12,15 +12,10 @@ type InputFieldRJSFOptions = {
 } & WidgetOptions
 
 interface InputFieldWidgetRJSFProps extends WidgetProps {
-  label: string
   options: InputFieldRJSFOptions
   value: string | null
-  required?: boolean
-  disabled?: boolean
-  placeholder?: string
   schema: StrictRJSFSchema
   onChange: (value?: string) => void
-  rawErrors?: string[]
 }
 
 const InputFieldWidgetRJSF = ({

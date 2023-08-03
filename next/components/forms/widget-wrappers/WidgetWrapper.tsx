@@ -28,6 +28,7 @@ const WidgetWrapper = ({
 }: WidgetWrapperBase) => {
   const generatedId = useId()
   const generatedOrProvidedId = id ?? generatedId
+
   return (
     <div
       className={cx('flex flex-col gap-4', className, {

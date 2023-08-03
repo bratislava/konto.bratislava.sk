@@ -20,11 +20,8 @@ export type CheckboxesRJSFOptions = {
 interface CheckboxesWidgetRJSFProps extends WidgetProps {
   options: CheckboxesRJSFOptions
   value: string[] | null
-  label: string
   schema: StrictRJSFSchema
   onChange: (value: string[]) => void
-  rawErrors?: string[]
-  required?: boolean
 }
 
 const CheckboxWidgetRJSF = (props: CheckboxesWidgetRJSFProps) => {

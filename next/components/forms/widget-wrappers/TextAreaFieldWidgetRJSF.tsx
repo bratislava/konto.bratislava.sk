@@ -10,11 +10,6 @@ type TextAreaRJSFOptions = WidgetOptions
 
 interface TextAreaFieldWidgetRJSFProps extends WidgetProps {
   value: string | null
-  label: string
-  placeholder?: string
-  rawErrors?: string[]
-  required?: boolean
-  disabled?: boolean
   options: TextAreaRJSFOptions
   onChange: (value?: string) => void
 }

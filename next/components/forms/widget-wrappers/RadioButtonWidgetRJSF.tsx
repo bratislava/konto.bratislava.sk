@@ -20,15 +20,11 @@ export type RadioButtonRJSFOptions = {
 } & WidgetOptions
 
 interface RadioButtonFieldWidgetRJSFProps extends WidgetProps {
-  label: string
   options: RadioButtonRJSFOptions
   value: string | null
   errorMessage?: string
-  required?: boolean
-  disabled?: boolean
   schema: StrictRJSFSchema
   onChange: (value?: string | boolean | number | undefined) => void
-  rawErrors?: string[]
 }
 
 const RadioButtonsWidgetRJSF = (props: RadioButtonFieldWidgetRJSFProps) => {

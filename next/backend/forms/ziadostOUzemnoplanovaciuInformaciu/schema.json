@@ -172,7 +172,8 @@
                   },
                   "required": ["ziadatelMesto", "ziadatelPsc"]
                 }
-              }
+              },
+              "required": ["ziadatelMestoPsc"]
             },
             {
               "if": {

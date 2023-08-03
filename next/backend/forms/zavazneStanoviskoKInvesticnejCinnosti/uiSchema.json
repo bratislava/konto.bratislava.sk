@@ -79,11 +79,23 @@
       "ui:label": false
     },
     "ziadatelMestoPsc": {
-      "ui:field": "doubledInput",
-      "ui:hideError": true,
       "ui:options": {
-        "FirstInputClassNames": "w-full",
-        "SecondInputClassNames": "w-1/4"
+        "objectDisplay": "columns",
+        "objectColumnRatio": "3/1"
+      },
+      "ziadatelMesto": {
+        "ui:widget": "InputField",
+        "ui:label": false,
+        "ui:options": {
+          "size": "large"
+        }
+      },
+      "ziadatelPsc": {
+        "ui:widget": "InputField",
+        "ui:label": false,
+        "ui:options": {
+          "size": "large"
+        }
       }
     }
   },
@@ -154,11 +166,23 @@
       }
     },
     "investorMestoPsc": {
-      "ui:field": "doubledInput",
-      "ui:hideError": true,
       "ui:options": {
-        "FirstInputClassNames": "w-full",
-        "SecondInputClassNames": "w-1/4"
+        "objectDisplay": "columns",
+        "objectColumnRatio": "3/1"
+      },
+      "investorMesto": {
+        "ui:widget": "InputField",
+        "ui:label": false,
+        "ui:options": {
+          "size": "large"
+        }
+      },
+      "investorPsc": {
+        "ui:widget": "InputField",
+        "ui:label": false,
+        "ui:options": {
+          "size": "large"
+        }
       }
     },
     "investorKontaktnaOsoba": {

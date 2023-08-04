@@ -1,59 +1,89 @@
 import cx from 'classnames'
-import React from 'react'
-import { useRadioGroup } from 'react-aria'
-import { RadioGroupState, useRadioGroupState } from 'react-stately'
+import { useTranslation } from 'next-i18next'
+import React, { ReactNode } from 'react'
+import { Orientation, useRadioGroup } from 'react-aria'
+import { RadioGroupProps, RadioGroupState, useRadioGroupState } from 'react-stately'
 
+import ButtonNew from '../../simple-components/ButtonNew'
+import { FieldAdditionalProps, FieldBaseProps } from '../FieldBase'
 import FieldWrapper from '../FieldWrapper'
 
-const radioGroupState = {}
-export const RadioContext = React.createContext(radioGroupState as RadioGroupState)
+export const RadioContext = React.createContext<RadioGroupState>({} as RadioGroupState)
 
-type RadioGroupBase = {
-  children: React.ReactNode
-  value?: string
-  label: string
-  defaultValue?: string
-  isDisabled?: boolean
-  isReadOnly?: boolean
-  onChange: (value: string) => void
-  className?: string
-  errorMessage?: string[]
-  orientations?: 'column' | 'row'
-  required?: boolean
-}
+// TODO it should take RadioGroupProps from react-aria
+type RadioGroupBase = Omit<FieldBaseProps, 'explicitOptional'> &
+  Pick<FieldAdditionalProps, 'className'> & {
+    children: ReactNode
+    value?: string
+    defaultValue?: string
+    isReadOnly?: boolean
+    onChange: (value: string) => void
+    orientation?: Orientation
+  }
 
 const RadioGroup = (props: RadioGroupBase) => {
+  const { t } = useTranslation('account', { keyPrefix: 'RadioGroup' })
+
   const {
     children,
     className,
-    orientations = 'column',
+    orientation = 'vertical',
     required,
     label,
-    isDisabled,
+    disabled,
     errorMessage,
+    helptext,
+    tooltip,
   } = props
-  const state = useRadioGroupState(props)
-  const { radioGroupProps, labelProps, errorMessageProps } = useRadioGroup(props, state)
+
+  const propsReactAria = {
+    ...props,
+    isDisabled: disabled,
+    isRequired: required,
+  } as RadioGroupProps
+
+  const state = useRadioGroupState(propsReactAria)
+  const { radioGroupProps, labelProps, errorMessageProps } = useRadioGroup(propsReactAria, state)
+
+  const handleReset = () => {
+    // TODO, this may need to be changed to null or undefined
+    state.setSelectedValue('')
+  }
 
   return (
-    <div {...radioGroupProps}>
+    <div {...radioGroupProps} className={className}>
       <FieldWrapper
         label={label}
         labelProps={labelProps}
         htmlFor={radioGroupProps.id}
+        helptext={helptext}
+        tooltip={tooltip}
         required={required}
-        disabled={isDisabled}
+        disabled={disabled}
         errorMessage={errorMessage}
         errorMessageProps={errorMessageProps}
       >
         <RadioContext.Provider value={state}>
-          <div
-            className={cx(className, {
-              'flex flex-col gap-3': orientations === 'column',
-              'flex flex-row gap-6': orientations === 'row',
-            })}
-          >
-            {children}
+          <div className="flex flex-col gap-2">
+            <div
+              className={cx({
+                'flex flex-col gap-3': orientation === 'vertical',
+                'flex flex-row gap-6': orientation === 'horizontal',
+              })}
+            >
+              {children}
+            </div>
+
+            {!required ? (
+              <ButtonNew
+                variant="black-plain"
+                size="small"
+                className="self-end font-medium"
+                onPress={handleReset}
+              >
+                {t('resetChoice')}
+              </ButtonNew>
+            ) : null}
           </div>
         </RadioContext.Provider>
       </FieldWrapper>

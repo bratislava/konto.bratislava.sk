@@ -14,9 +14,6 @@ import SelectFieldWidgetRJSF from './widget-wrappers/SelectFieldWidgetRJSF'
 import TextAreaFieldWidgetRJSF from './widget-wrappers/TextAreaFieldWidgetRJSF'
 import UploadWidgetRJSF from './widget-wrappers/UploadWidgetRJSF'
 
-// you can add custom widgets as well as override the default ones
-// we'll want to override all the default widgets listed here https://react-jsonschema-form.readthedocs.io/en/latest/advanced-customization/custom-widgets-fields/
-
 const theme: ThemeProps = {
   widgets: {
     SelectField: SelectFieldWidgetRJSF,

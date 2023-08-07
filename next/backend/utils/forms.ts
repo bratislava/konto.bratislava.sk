@@ -11,9 +11,9 @@ import { dropRight, find, last } from 'lodash'
 import { parseStringPromise } from 'xml2js'
 import { firstCharLowerCase } from 'xml2js/lib/processors'
 
-import { ajvFormats, getAjvKeywords } from '../../frontend/dtos/formStepperDto'
 import { forceString } from '../../frontend/utils/general'
 import logger from '../../frontend/utils/logger'
+import { ajvFormats, getAjvFormKeywords } from '../../frontend/utils/form'
 
 export type Json = any
 
@@ -254,7 +254,7 @@ export const xmlToJson = async (data: string, jsonSchema: JsonSchema): Promise<R
 export const validateDataWithJsonSchema = async (data: any, schema: any) => {
   // TODO: This instance of AJV needs to be reused between FE and Forms BE.
   const ajv = new Ajv({
-    keywords: getAjvKeywords(),
+    keywords: getAjvFormKeywords(),
     formats: ajvFormats,
   })
   addFormats(ajv)

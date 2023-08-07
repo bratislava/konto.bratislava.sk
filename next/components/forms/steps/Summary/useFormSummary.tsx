@@ -1,10 +1,10 @@
 import { ErrorSchema } from '@rjsf/utils'
 import React, { createContext, PropsWithChildren, useContext, useMemo } from 'react'
 
-import { validateSummary } from '../../../../frontend/dtos/formStepperDto'
 import { FormFileUploadFileInfo } from '../../../../frontend/types/formFileUploadTypes'
 import { useFormState } from '../../FormStateProvider'
 import { useFormFileUpload } from '../../useFormFileUpload'
+import { validateSummary } from '../../../../frontend/utils/form'
 
 type FormSummaryContextType = {
   errorSchema: ErrorSchema

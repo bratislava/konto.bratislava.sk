@@ -4,10 +4,10 @@ import addFormats from 'ajv-formats'
 import { useEffect } from 'react'
 
 import { getTaxApi } from '../api/api'
-import { ajvFormats } from '../dtos/formStepperDto'
 import { TaxApiError } from '../dtos/generalApiDto'
 import { Tax, TaxJSONSchema } from '../dtos/taxDto'
 import logger from '../utils/logger'
+import { ajvFormats } from '../utils/form'
 
 export const ajvKeywords: FuncKeywordDefinition[] = [
   {

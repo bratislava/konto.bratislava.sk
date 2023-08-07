@@ -1,7 +1,6 @@
 import cx from 'classnames'
 import MenuList from 'components/forms/steps/MenuList'
 
-import { defaultFormStateBehavior, validator } from '../../frontend/dtos/formStepperDto'
 import FormControls from './FormControls'
 import { useFormState } from './FormStateProvider'
 import FormModals from './segments/FormModals/FormModals'
@@ -9,6 +8,7 @@ import FormHeader from './simple-components/FormHeader'
 import StepperView from './steps/StepperView'
 import FormSummary from './steps/Summary/FormSummary'
 import ThemedForm from './ThemedForm'
+import { defaultFormStateBehavior, rjfsValidator } from '../../frontend/utils/form'
 
 const GeneratedFormRJSF = () => {
   const {
@@ -40,7 +40,7 @@ const GeneratedFormRJSF = () => {
                 schema={currentStepSchema!}
                 uiSchema={uiSchema}
                 formData={formData}
-                validator={validator}
+                validator={rjfsValidator}
                 onSubmit={(e) => {
                   handleFormOnSubmit(e.formData)
                 }}

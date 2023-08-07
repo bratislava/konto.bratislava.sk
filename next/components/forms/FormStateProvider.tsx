@@ -5,11 +5,8 @@ import { useTranslation } from 'next-i18next'
 import React, { createContext, PropsWithChildren, useContext, useMemo, useState } from 'react'
 
 import { InitialFormData } from '../../frontend/types/initialFormData'
-import {
-  getEvaluatedStepsSchemas,
-  getFileUuidsNaive,
-  getStepsMetadata,
-} from '../../frontend/utils/formState'
+import { getFileUuidsNaive } from '../../frontend/utils/form'
+import { getEvaluatedStepsSchemas, getStepsMetadata } from '../../frontend/utils/formState'
 import { isDefined } from '../../frontend/utils/general'
 import { FormStepIndex, FormStepMetadata } from './types/Steps'
 import { useFormFileUpload } from './useFormFileUpload'
@@ -37,7 +34,6 @@ interface FormState {
   handleFormOnChange: (newFormData: GenericObjectType | undefined) => void
   handleFormOnSubmit: (newFormData: GenericObjectType | undefined) => void
   goToStepByFieldId: (fieldId: string) => void
-  // TODO: Rework import
   setImportedFormData: (importedFormData: RJSFSchema) => void
 }
 
@@ -84,13 +80,12 @@ export const FormStateProvider = ({
 
   const [submittedStepsIndexes, setSubmittedStepsIndexes] = useState<Set<number>>(new Set())
 
-  const stepsSchemas = useMemo(() => {
-    return getEvaluatedStepsSchemas(schema, formData)
-  }, [schema, formData])
+  const stepsSchemas = useMemo(() => getEvaluatedStepsSchemas(schema, formData), [schema, formData])
 
-  const stepsMetadata = useMemo(() => {
-    return getStepsMetadata(stepsSchemas, submittedStepsIndexes, t('summary'))
-  }, [stepsSchemas, submittedStepsIndexes, t])
+  const stepsMetadata = useMemo(
+    () => getStepsMetadata(stepsSchemas, submittedStepsIndexes, t('summary')),
+    [stepsSchemas, submittedStepsIndexes, t],
+  )
 
   // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
   const currentStepMetadata = stepsMetadata.find((step) => step.index === stepIndex)!
@@ -197,6 +192,7 @@ export const FormStateProvider = ({
 
     const fileUuids = getFileUuidsNaive(pickedPropertiesData)
     refetchAfterImportIfNeeded(fileUuids)
+    setSubmittedStepsIndexes(new Set())
 
     setFormData(pickedPropertiesData)
   }

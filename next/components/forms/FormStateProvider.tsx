@@ -209,10 +209,10 @@ export const FormStateProvider = ({
   }
 
   const goToStepByFieldId = (fieldId: string) => {
-    const stepId = parseStepFromFieldId(fieldId)
-    if (!stepId) return
+    const stepProperty = parseStepFromFieldId(fieldId)
+    if (!stepProperty) return
 
-    const index = stepsSchemas.findIndex((step) => getStepProperty(step) === stepId)
+    const index = stepsSchemas.findIndex((step) => getStepProperty(step) === stepProperty)
 
     goToStep(index)
   }

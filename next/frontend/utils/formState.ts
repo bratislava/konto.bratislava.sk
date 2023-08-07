@@ -46,6 +46,7 @@ export const getStepperData = (
 
       const { title } = Object.values(step.properties)[0] as JSONSchema7
 
+      // displayIndex is only incremented for non-empty steps
       displayIndex += 1
       return {
         index,
@@ -68,6 +69,17 @@ export const getStepperData = (
     } as FormStepperStep,
   ]
 }
+
+/**
+ * When invoking an edit from summary, the only available info is the fieldId which contains the property defined by the
+ * step.
+ *
+ * This function parses the property name from the fieldId.
+ *
+ * E.g.
+ * root_inputStep_input1 -> inputStep
+ * root_fileUploadStep_fileUpload1_0 -> fileUploadStep
+ */
 export const parseStepFromFieldId = (fieldId: string) => {
   const arr = fieldId.split('_')
   if (arr[0] === 'root' && arr[1]) {
@@ -76,6 +88,9 @@ export const parseStepFromFieldId = (fieldId: string) => {
   return null
 }
 
+/**
+ * Each non-empty step defines exactly one property, this function returns the name of that property.
+ */
 export const getStepProperty = (step: JSONSchema7 | null) => {
   if (!step?.properties) {
     return null

@@ -8,7 +8,7 @@ import cx from 'classnames'
 type ObjectFieldUiOptions = {
   objectDisplay?: 'columns'
   /**
-   * Slash separate numeric values, e.g. '1/2' or '1/2/3'
+   * Slash separated numeric values, e.g. '1/2' or '1/2/3'
    */
   objectColumnRatio?: string
 }
@@ -18,7 +18,7 @@ type ObjectFieldUiOptions = {
  * This allows us to provide specific UI options for styling the template (e.g. columns).
  * This implementation removes titles and descriptions from objects. It might be needed to add it back.
  *
- * TODO: Consider using WidgetWrapper
+ * TODO: Consider adding WidgetWrapper.
  */
 const BAObjectFieldTemplate = ({ idSchema, properties, uiSchema }: ObjectFieldTemplateProps) => {
   const options = getUiOptions(uiSchema) as ObjectFieldUiOptions

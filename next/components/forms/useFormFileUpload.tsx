@@ -253,6 +253,10 @@ export const FormFileUploadStateProvider = ({
     }
   }
 
+  /**
+   *
+   * @param ids
+   */
   const refetchAfterImportIfNeeded = async (ids: string[]) => {
     if (ids.length === 0) {
       return
@@ -266,23 +270,24 @@ export const FormFileUploadStateProvider = ({
   }
 
   const mergedFiles = useMemo(() => {
-    // TODO: Handle when server files are not loaded properly.
     const serverFiles = serverFilesQuery.data ?? []
 
     return mergeClientAndServerFiles(clientFiles, serverFiles)
-  }, [clientFiles, serverFilesQuery])
+  }, [clientFiles, serverFilesQuery.data])
 
   const getFileInfoById = useCallback(
     (fileId: string) => {
       const file = mergedFiles[fileId]
 
       if (!file) {
-        // The special case when the file is stored in the form data, but not in client nor server files, it can happen
-        // when the form concept was saved, but the file upload hasn't finished yet and the user navigates away.
         return {
           status: serverFilesQuery.isFetched
-            ? { type: FormFileUploadStatusEnum.UnknownFile as const }
-            : {
+            ? // The special case when the file is stored in the form data, but not in client nor server files, it can happen
+              // when the form concept was saved, but the file upload hasn't finished yet and the user navigates away.
+              { type: FormFileUploadStatusEnum.UnknownFile as const }
+            : // The special case when info about the file is not available yet, e.g. when the user imports the data and
+              // the server files are not fetched yet, or when they are being fetched.
+              {
                 type: FormFileUploadStatusEnum.UnknownStatus as const,
                 offline: serverFilesQuery.fetchStatus === 'paused',
               },

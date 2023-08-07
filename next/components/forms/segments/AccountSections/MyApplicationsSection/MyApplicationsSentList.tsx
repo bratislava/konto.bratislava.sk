@@ -1,5 +1,5 @@
 import { formsApi } from '@clients/forms'
-import { FormState, GetFormResponseDto } from '@clients/openapi-forms'
+import { FormState, GetFormResponseDto, SchemaVersionResponseDto } from '@clients/openapi-forms'
 import { useQuery } from '@tanstack/react-query'
 import MyApplicationCardsPlaceholder from 'components/forms/segments/AccountSections/MyApplicationsSection/MyApplicationCardsPlaceholder'
 import MyApplicationsSentCard, {
@@ -37,15 +37,21 @@ const getSentApplications = async () => {
     undefined,
     undefined,
     statesToFetch,
+    undefined,
     { accessToken },
   )
   return response.data
 }
 
 const transformFormToCardProps = (form: GetFormResponseDto): MyApplicationsSentCardProps => {
+  // TODO: Fix when BE types are fixed
+  const formSlug = (form as unknown as { schemaVersion: SchemaVersionResponseDto }).schemaVersion
+    .schema?.slug
+
   return {
-    title: form.formName ?? '',
-    linkHref: `${ROUTES.MY_APPLICATIONS}/${form.id}`,
+    // TODO: Title
+    title: formSlug ?? '',
+    linkHref: `${ROUTES.MY_APPLICATIONS}/${formSlug}/${form.id}`,
     category: 'Kategória TODO',
     subtext: 'Subtext TODO',
     filedAt: form.createdAt,

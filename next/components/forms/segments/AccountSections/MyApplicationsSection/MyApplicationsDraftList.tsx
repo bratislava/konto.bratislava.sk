@@ -1,5 +1,5 @@
 import { formsApi } from '@clients/forms'
-import { GetFormResponseDto } from '@clients/openapi-forms'
+import { GetFormResponseDto, SchemaVersionResponseDto } from '@clients/openapi-forms'
 import { useQuery } from '@tanstack/react-query'
 import MyApplicationCardsPlaceholder from 'components/forms/segments/AccountSections/MyApplicationsSection/MyApplicationCardsPlaceholder'
 import Pagination from 'components/forms/simple-components/Pagination/Pagination'
@@ -16,17 +16,20 @@ const getDraftApplications = async () => {
     undefined,
     undefined,
     ['DRAFT'],
+    undefined,
     { accessToken },
   )
   return response.data
 }
 
 const transformFormToCardProps = (form: GetFormResponseDto): MyApplicationsDraftCardProps => {
-  // TODO get "slug" from form
-  const formSlug = form.pospID?.split('.')[1] ?? '#'
+  // TODO: Fix when BE types are fixed
+  const formSlug = (form as unknown as { schemaVersion: SchemaVersionResponseDto }).schemaVersion
+    .schema?.slug
 
   return {
-    title: form.formName ?? '',
+    // TODO: Title
+    title: formSlug ?? '',
     linkHref: `/form/${formSlug}`,
     category: 'Kategória TODO',
     subtext: 'Subtext TODO',

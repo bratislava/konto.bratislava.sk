@@ -5,12 +5,12 @@
 import { useState } from 'react'
 
 import StepperView from '../../forms/steps/StepperView'
-import { FormStepMetadata } from '../../forms/types/Steps'
+import { FormStepperStep } from '../../forms/types/Steps'
 import { Stack } from '../Stack'
 import { Wrapper } from '../Wrapper'
 
 const StepperShowCase = () => {
-  const steps1: FormStepMetadata[] = [
+  const steps1: FormStepperStep[] = [
     {
       title: 'Step name 1',
     },
@@ -27,7 +27,7 @@ const StepperShowCase = () => {
       title: 'Step name 5',
     },
   ]
-  const steps2: FormStepMetadata[] = [
+  const steps2: FormStepperStep[] = [
     {
       title: 'Step name 1',
       isSubmitted: true,
@@ -45,7 +45,7 @@ const StepperShowCase = () => {
       title: 'Step name 5',
     },
   ]
-  const steps3: FormStepMetadata[] = [
+  const steps3: FormStepperStep[] = [
     {
       title: 'Step name 1',
       isSubmitted: true,

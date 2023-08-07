@@ -17,7 +17,7 @@ interface StepperViewProps {
 const StepperView = ({ forceMobileSize }: StepperViewProps) => {
   const { t } = useTranslation('forms')
   const [isCollapsed, setIsCollapsed] = useState<boolean>(true)
-  const { currentStepMetadata, skipToStep } = useFormState()
+  const { currentStepperStep, skipToStep } = useFormState()
 
   const handleOnClickDropdownIcon = () => {
     if (isCollapsed) {
@@ -47,7 +47,7 @@ const StepperView = ({ forceMobileSize }: StepperViewProps) => {
         ref={buttonRef}
       >
         <div className="flex h-14 w-full cursor-pointer flex-row items-center gap-5 bg-white p-4 drop-shadow-lg">
-          <StepperViewRow className="grow" step={currentStepMetadata} isCurrent isButton={false} />
+          <StepperViewRow className="grow" step={currentStepperStep} isCurrent isButton={false} />
           <ChevronDownIcon className={cx({ 'rotate-180': !isCollapsed })} />
         </div>
         <div

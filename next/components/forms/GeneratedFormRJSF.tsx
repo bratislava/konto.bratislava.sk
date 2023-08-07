@@ -1,6 +1,7 @@
 import cx from 'classnames'
 import MenuList from 'components/forms/steps/MenuList'
 
+import { defaultFormStateBehavior, rjfsValidator } from '../../frontend/utils/form'
 import FormControls from './FormControls'
 import { useFormState } from './FormStateProvider'
 import FormModals from './segments/FormModals/FormModals'
@@ -8,12 +9,11 @@ import FormHeader from './simple-components/FormHeader'
 import StepperView from './steps/StepperView'
 import FormSummary from './steps/Summary/FormSummary'
 import ThemedForm from './ThemedForm'
-import { defaultFormStateBehavior, rjfsValidator } from '../../frontend/utils/form'
 
 const GeneratedFormRJSF = () => {
   const {
     uiSchema,
-    currentStepMetadata,
+    currentStepperStep,
     currentStepSchema,
     formData,
     handleFormOnSubmit,
@@ -29,13 +29,13 @@ const GeneratedFormRJSF = () => {
           <FormModals />
         </div>
         <div className={cx('grow px-4', 'lg:px-0')}>
-          {currentStepMetadata.isSummary ? (
+          {currentStepperStep.isSummary ? (
             <FormSummary />
           ) : (
             <>
-              <h1 className="text-h1-medium font-semibold">{currentStepMetadata.title}</h1>
+              <h1 className="text-h1-medium font-semibold">{currentStepperStep.title}</h1>
               <ThemedForm
-                key={`form-step-${currentStepMetadata.index}`}
+                key={`form-step-${currentStepperStep.index}`}
                 // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
                 schema={currentStepSchema!}
                 uiSchema={uiSchema}

@@ -1,7 +1,7 @@
 import { GenericObjectType, retrieveSchema, RJSFSchema } from '@rjsf/utils'
 import { JSONSchema7 } from 'json-schema'
 
-import { FormStepIndex, FormStepMetadata } from '../../components/forms/types/Steps'
+import { FormStepIndex, FormStepperStep } from '../../components/forms/types/Steps'
 import { rjfsValidator } from './form'
 import { isDefined } from './general'
 
@@ -26,11 +26,11 @@ export const getEvaluatedStepsSchemas = (
   )
 }
 
-export const getStepsMetadata = (
+export const getStepperData = (
   stepsSchemas: (JSONSchema7 | null)[],
   submittedSteps: Set<FormStepIndex>,
   summaryTitle: string,
-): FormStepMetadata[] => {
+): FormStepperStep[] => {
   if (!stepsSchemas || !Array.isArray(stepsSchemas)) return []
   let displayIndex = 0
 
@@ -53,7 +53,7 @@ export const getStepsMetadata = (
         title,
         isSubmitted: submittedSteps.has(index),
         isSummary: false,
-      } as FormStepMetadata
+      } as FormStepperStep
     })
     .filter(isDefined)
 
@@ -65,7 +65,7 @@ export const getStepsMetadata = (
       title: summaryTitle,
       isSubmitted: submittedSteps.has(steps.length),
       isSummary: true,
-    } as FormStepMetadata,
+    } as FormStepperStep,
   ]
 }
 export const parseStepFromFieldId = (fieldId: string) => {

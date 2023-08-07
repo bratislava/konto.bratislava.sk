@@ -8,12 +8,12 @@ import { InitialFormData } from '../../frontend/types/initialFormData'
 import { getFileUuidsNaive } from '../../frontend/utils/form'
 import {
   getEvaluatedStepsSchemas,
+  getStepperData,
   getStepProperty,
-  getStepsMetadata,
   parseStepFromFieldId,
 } from '../../frontend/utils/formState'
 import { isDefined } from '../../frontend/utils/general'
-import { FormStepIndex, FormStepMetadata } from './types/Steps'
+import { FormStepIndex, FormStepperStep } from './types/Steps'
 import { useFormFileUpload } from './useFormFileUpload'
 
 type SkipModal =
@@ -27,8 +27,8 @@ interface FormState {
   formSlug: string
   formData: GenericObjectType
   skipModal: SkipModal
-  stepsMetadata: FormStepMetadata[]
-  currentStepMetadata: FormStepMetadata
+  stepperData: FormStepperStep[]
+  currentStepperStep: FormStepperStep
   currentStepSchema: JSONSchema7 | null
   skipToStep: (newIndex: FormStepIndex) => void
   canGoToPreviousStep: boolean
@@ -70,13 +70,13 @@ export const FormStateProvider = ({
 
   const stepsSchemas = useMemo(() => getEvaluatedStepsSchemas(schema, formData), [schema, formData])
 
-  const stepsMetadata = useMemo(
-    () => getStepsMetadata(stepsSchemas, submittedStepsIndexes, t('summary')),
+  const stepperData = useMemo(
+    () => getStepperData(stepsSchemas, submittedStepsIndexes, t('summary')),
     [stepsSchemas, submittedStepsIndexes, t],
   )
 
   // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-  const currentStepMetadata = stepsMetadata.find((step) => step.index === stepIndex)!
+  const currentStepperStep = stepperData.find((step) => step.index === stepIndex)!
 
   const currentStepSchema = stepIndex === 'summary' ? null : stepsSchemas[stepIndex]
 
@@ -90,7 +90,7 @@ export const FormStateProvider = ({
     if (stepIndex === newStepIndex) {
       return
     }
-    const isSubmittedStep = stepsMetadata.find((step) => step.index === newStepIndex)?.isSubmitted
+    const isSubmittedStep = stepperData.find((step) => step.index === newStepIndex)?.isSubmitted
 
     if (!isSubmittedStep && !skipModal.skipAllowed) {
       setSkipModal({
@@ -224,8 +224,8 @@ export const FormStateProvider = ({
     formSlug,
     formData,
     skipModal,
-    stepsMetadata,
-    currentStepMetadata,
+    stepperData,
+    currentStepperStep,
     currentStepSchema,
     skipToStep,
     canGoToPreviousStep,

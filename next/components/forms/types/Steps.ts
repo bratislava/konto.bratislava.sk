@@ -1,6 +1,6 @@
 export type FormStepIndex = number | 'summary'
 
-export interface FormStepMetadata {
+export interface FormStepperStep {
   index: FormStepIndex
   displayIndex: number
   title: string

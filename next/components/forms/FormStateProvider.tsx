@@ -1,6 +1,5 @@
 import { GenericObjectType, RJSFSchema, UiSchema } from '@rjsf/utils'
 import { JSONSchema7 } from 'json-schema'
-import pick from 'lodash/pick'
 import { useTranslation } from 'next-i18next'
 import React, { createContext, PropsWithChildren, useContext, useMemo, useState } from 'react'
 
@@ -12,8 +11,8 @@ import {
   getStepperData,
   getStepProperty,
   parseStepFromFieldId,
+  removeUnusedPropertiesFromFormData,
 } from '../../frontend/utils/formState'
-import { isDefined } from '../../frontend/utils/general'
 import { FormStepIndex, FormStepperStep } from './types/Steps'
 import { useFormFileUpload } from './useFormFileUpload'
 
@@ -158,15 +157,12 @@ export const FormStateProvider = ({
     }
   }
 
-  // TODO: Add explanation
   const setStepFormData = (stepFormData: GenericObjectType) => {
+    // Form displays and returns only the data for the current step, so we need to merge it with the
+    // existing data, as each step contains only one root property with the data this object spread
+    // will overwrite the existing step data with the new ones, which is an expected behaviour.
     const newData = { ...formData, ...stepFormData }
-    const evaluatedSchemas = getEvaluatedStepsSchemas(schema, newData)
-    const propertiesToKeep = evaluatedSchemas
-      .filter(isDefined)
-      .map((innerSchema) => innerSchema.properties && Object.keys(innerSchema.properties)[0])
-      .filter(isDefined)
-    const pickedPropertiesData = pick(newData, propertiesToKeep)
+    const pickedPropertiesData = removeUnusedPropertiesFromFormData(newData, schema)
 
     const fileUuids = getFileUuidsNaive(pickedPropertiesData)
     keepFiles(fileUuids)
@@ -175,14 +171,9 @@ export const FormStateProvider = ({
   }
 
   const setImportedFormData = (importedFormData: GenericObjectType) => {
+    const pickedPropertiesData = removeUnusedPropertiesFromFormData(importedFormData, schema)
+
     const evaluatedSchemas = getEvaluatedStepsSchemas(schema, importedFormData)
-
-    const propertiesToKeep = evaluatedSchemas
-      .filter(isDefined)
-      .map((innerSchema) => innerSchema.properties && Object.keys(innerSchema.properties)[0])
-      .filter(isDefined)
-    const pickedPropertiesData = pick(importedFormData, propertiesToKeep)
-
     if (currentStepIndex !== 'summary' && evaluatedSchemas[currentStepIndex] == null) {
       setCurrentStepIndex(getFirstNonEmptyStepIndex(evaluatedSchemas))
     }

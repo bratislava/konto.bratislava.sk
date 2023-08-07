@@ -1,5 +1,6 @@
 import { GenericObjectType, retrieveSchema, RJSFSchema } from '@rjsf/utils'
 import { JSONSchema7 } from 'json-schema'
+import pick from 'lodash/pick'
 
 import { FormStepIndex, FormStepperStep } from '../../components/forms/types/Steps'
 import { rjfsValidator } from './form'
@@ -106,4 +107,23 @@ export const getStepProperty = (step: JSONSchema7 | null) => {
 export const getFirstNonEmptyStepIndex = (stepSchemas: (JSONSchema7 | null)[]) => {
   const firstStep = stepSchemas.findIndex((step) => step !== null)
   return firstStep !== -1 ? firstStep : ('summary' as const)
+}
+
+/**
+ * Removes unused steps from formData. The schema is evaluated with provided data, the only non-empty steps properties
+ * are kept.
+ *
+ * So far this only removes the first-level properties (steps), this function is not able to remove properties deeper
+ * in the schema. (e.g. when a select in the second step is displayed based on the value of a select in the first step).
+ *
+ * TODO: Remove unused properties deeper in the schema.
+ */
+export const removeUnusedPropertiesFromFormData = (
+  schema: RJSFSchema,
+  formData: GenericObjectType,
+) => {
+  const evaluatedSchemas = getEvaluatedStepsSchemas(schema, formData)
+  const propertiesToKeep = evaluatedSchemas.map(getStepProperty).filter(isDefined)
+
+  return pick(formData, propertiesToKeep)
 }

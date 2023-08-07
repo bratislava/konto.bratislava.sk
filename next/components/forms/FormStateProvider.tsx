@@ -8,6 +8,7 @@ import { InitialFormData } from '../../frontend/types/initialFormData'
 import { getFileUuidsNaive } from '../../frontend/utils/form'
 import {
   getEvaluatedStepsSchemas,
+  getFirstNonEmptyStepIndex,
   getStepperData,
   getStepProperty,
   parseStepFromFieldId,
@@ -61,14 +62,20 @@ export const FormStateProvider = ({
   const { t } = useTranslation('forms')
   const { keepFiles, refetchAfterImportIfNeeded } = useFormFileUpload()
 
-  const [stepIndex, setStepIndex] = useState<FormStepIndex>(0)
   const [formData, setFormData] = useState<GenericObjectType>(initialFormData.formDataJson)
+  const stepsSchemas = useMemo(() => getEvaluatedStepsSchemas(schema, formData), [schema, formData])
+
+  const [currentStepIndex, setCurrentStepIndex] = useState<FormStepIndex>(
+    getFirstNonEmptyStepIndex(stepsSchemas),
+  )
 
   const [skipModal, setSkipModal] = useState<SkipModal>({ open: false, skipAllowed: false })
 
+  /**
+   * This set holds indexes of steps that have been submitted (submit button has been pressed, which means they have been validated).
+   * A condition in different step might invalidate the step, but it is not easily detectable.
+   */
   const [submittedStepsIndexes, setSubmittedStepsIndexes] = useState<Set<number>>(new Set())
-
-  const stepsSchemas = useMemo(() => getEvaluatedStepsSchemas(schema, formData), [schema, formData])
 
   const stepperData = useMemo(
     () => getStepperData(stepsSchemas, submittedStepsIndexes, t('summary')),
@@ -76,18 +83,18 @@ export const FormStateProvider = ({
   )
 
   // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-  const currentStepperStep = stepperData.find((step) => step.index === stepIndex)!
+  const currentStepperStep = stepperData.find((step) => step.index === currentStepIndex)!
 
-  const currentStepSchema = stepIndex === 'summary' ? null : stepsSchemas[stepIndex]
+  const currentStepSchema = currentStepIndex === 'summary' ? null : stepsSchemas[currentStepIndex]
 
   const goToStep = (newIndex: FormStepIndex) => {
     if (stepsSchemas[newIndex] !== null || newIndex === 'summary') {
-      setStepIndex(newIndex)
+      setCurrentStepIndex(newIndex)
     }
   }
 
   const skipToStep = (newStepIndex: FormStepIndex) => {
-    if (stepIndex === newStepIndex) {
+    if (currentStepIndex === newStepIndex) {
       return
     }
     const isSubmittedStep = stepperData.find((step) => step.index === newStepIndex)?.isSubmitted
@@ -112,7 +119,9 @@ export const FormStateProvider = ({
   }
 
   const getPreviousStep = () => {
-    const prevSteps = stepsSchemas.slice(0, stepIndex !== 'summary' ? stepIndex : 0).reverse()
+    const prevSteps = stepsSchemas
+      .slice(0, currentStepIndex !== 'summary' ? currentStepIndex : 0)
+      .reverse()
     const prevStepIndex = prevSteps.findIndex((step) => step != null)
     return prevStepIndex !== -1 ? prevSteps.length - prevStepIndex - 1 : null
   }
@@ -127,10 +136,10 @@ export const FormStateProvider = ({
   }
 
   const getNextStep = () => {
-    if (stepIndex === 'summary') return null
-    const nextSteps = stepsSchemas.slice(stepIndex + 1)
+    if (currentStepIndex === 'summary') return null
+    const nextSteps = stepsSchemas.slice(currentStepIndex + 1)
     const nextStepIndex = nextSteps.findIndex((step) => step != null)
-    return nextStepIndex !== -1 ? stepIndex + nextStepIndex + 1 : 'summary'
+    return nextStepIndex !== -1 ? currentStepIndex + nextStepIndex + 1 : 'summary'
   }
 
   const canGoToNextStep = getNextStep() !== null
@@ -174,8 +183,8 @@ export const FormStateProvider = ({
       .filter(isDefined)
     const pickedPropertiesData = pick(importedFormData, propertiesToKeep)
 
-    if (stepIndex !== 'summary' && evaluatedSchemas[stepIndex] == null) {
-      setStepIndex(0)
+    if (currentStepIndex !== 'summary' && evaluatedSchemas[currentStepIndex] == null) {
+      setCurrentStepIndex(getFirstNonEmptyStepIndex(evaluatedSchemas))
     }
 
     const fileUuids = getFileUuidsNaive(pickedPropertiesData)
@@ -186,24 +195,24 @@ export const FormStateProvider = ({
   }
 
   const handleFormOnChange = (newFormData: GenericObjectType | undefined) => {
-    if (stepIndex === 'summary' || !newFormData) {
+    if (currentStepIndex === 'summary' || !newFormData) {
       return
     }
 
     setSubmittedStepsIndexes((prev) => {
       const newSet = new Set(prev)
-      newSet.delete(stepIndex)
+      newSet.delete(currentStepIndex)
       return newSet
     })
 
     setStepFormData(newFormData)
   }
   const handleFormOnSubmit = (newFormData: GenericObjectType | undefined) => {
-    if (stepIndex === 'summary' || !newFormData) {
+    if (currentStepIndex === 'summary' || !newFormData) {
       return
     }
 
-    setSubmittedStepsIndexes((prev) => new Set([...prev, stepIndex]))
+    setSubmittedStepsIndexes((prev) => new Set([...prev, currentStepIndex]))
     setStepFormData(newFormData)
     goToNextStep()
   }

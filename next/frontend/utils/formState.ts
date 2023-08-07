@@ -99,3 +99,11 @@ export const getStepProperty = (step: JSONSchema7 | null) => {
   const keys = Object.keys(step.properties)
   return keys[0] ?? null
 }
+
+/**
+ * Returns a first non-empty step index.
+ */
+export const getFirstNonEmptyStepIndex = (stepSchemas: (JSONSchema7 | null)[]) => {
+  const firstStep = stepSchemas.findIndex((step) => step !== null)
+  return firstStep !== -1 ? firstStep : ('summary' as const)
+}

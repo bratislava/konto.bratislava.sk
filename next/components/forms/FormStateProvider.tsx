@@ -6,7 +6,12 @@ import React, { createContext, PropsWithChildren, useContext, useMemo, useState 
 
 import { InitialFormData } from '../../frontend/types/initialFormData'
 import { getFileUuidsNaive } from '../../frontend/utils/form'
-import { getEvaluatedStepsSchemas, getStepsMetadata } from '../../frontend/utils/formState'
+import {
+  getEvaluatedStepsSchemas,
+  getStepProperty,
+  getStepsMetadata,
+  parseStepFromFieldId,
+} from '../../frontend/utils/formState'
 import { isDefined } from '../../frontend/utils/general'
 import { FormStepIndex, FormStepMetadata } from './types/Steps'
 import { useFormFileUpload } from './useFormFileUpload'
@@ -44,23 +49,6 @@ interface FormStateProviderProps {
   uiSchema: UiSchema
   formSlug: string
   initialFormData: InitialFormData
-}
-
-const parseStepFromFieldId = (fieldId: string) => {
-  const arr = fieldId.split('_')
-  if (arr[0] === 'root' && arr[1]) {
-    return arr[1]
-  }
-  return null
-}
-
-const getStepProperty = (step: JSONSchema7 | null) => {
-  if (!step?.properties) {
-    return null
-  }
-
-  const keys = Object.keys(step.properties)
-  return keys[0] ?? null
 }
 
 export const FormStateProvider = ({

@@ -68,3 +68,19 @@ export const getStepsMetadata = (
     } as FormStepMetadata,
   ]
 }
+export const parseStepFromFieldId = (fieldId: string) => {
+  const arr = fieldId.split('_')
+  if (arr[0] === 'root' && arr[1]) {
+    return arr[1]
+  }
+  return null
+}
+
+export const getStepProperty = (step: JSONSchema7 | null) => {
+  if (!step?.properties) {
+    return null
+  }
+
+  const keys = Object.keys(step.properties)
+  return keys[0] ?? null
+}

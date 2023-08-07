@@ -114,10 +114,10 @@ const TimeSelector = ({
                   }}
                   className={cx('cursor-pointer rounded-lg px-10 py-2 focus:outline-none', {
                     'bg-gray-100': +timeFormatArray[0] === item,
-                    'opacity-50 pointer-events-none':
+                    'pointer-events-none opacity-50':
                       (minValueArray && item < minValueArray[0]) ||
                       (maxValueArray && item > maxValueArray[0]),
-                    'qwe opacity-50 pointer-events-none':
+                    'qwe pointer-events-none opacity-50':
                       (minValueArray &&
                         parseInt(minute, 10) < minValueArray[1] &&
                         item <= minValueArray[0]) ||
@@ -153,10 +153,10 @@ const TimeSelector = ({
                   }}
                   className={cx('cursor-pointer rounded-lg px-10 py-2 focus:outline-none', {
                     'bg-gray-100': +timeFormatArray[1] === item,
-                    'cursor-pointer pointer-events-auto opacity-100':
+                    'pointer-events-auto cursor-pointer opacity-100':
                       (minValueArray && minValueArray[0] < timeFormatArray[0]) ||
                       (maxValueArray && maxValueArray[0] > timeFormatArray[0]),
-                    'opacity-50 pointer-events-none':
+                    'pointer-events-none opacity-50':
                       (minValueArray && item < minValueArray[1]) ||
                       (maxValueArray && item > maxValueArray[1]),
                   })}

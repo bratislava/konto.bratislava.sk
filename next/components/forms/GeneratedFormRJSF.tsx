@@ -35,6 +35,8 @@ const GeneratedFormRJSF = () => {
             <>
               <h1 className="text-h1-medium font-semibold">{currentStepperStep.title}</h1>
               <ThemedForm
+                // This is a hack to force the form to re-render when the step changes, it's hard to say whether it
+                // is needed or not, but ensures 100% safety.
                 key={`form-step-${currentStepperStep.index}`}
                 // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
                 schema={currentStepSchema!}
@@ -48,9 +50,12 @@ const GeneratedFormRJSF = () => {
                   handleFormOnChange(e.formData)
                 }}
                 showErrorList={false}
+                // This removes the extra conditional data for the current step, for removing the steps themselves see
+                // `handleFormOnChange` implementation.
                 omitExtraData
                 liveOmit
                 experimental_defaultFormStateBehavior={defaultFormStateBehavior}
+                // HTML validation doesn't work for our use case, therefore it's turned off.
                 noHtml5Validate
               >
                 <FormControls />

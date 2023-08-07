@@ -174,14 +174,18 @@ export const FormStateProvider = ({
     const pickedPropertiesData = removeUnusedPropertiesFromFormData(importedFormData, schema)
 
     const evaluatedSchemas = getEvaluatedStepsSchemas(schema, importedFormData)
-    if (currentStepIndex !== 'summary' && evaluatedSchemas[currentStepIndex] == null) {
+    if (
+      currentStepIndex !== 'summary' &&
+      /* If the current step is empty after the import */
+      evaluatedSchemas[currentStepIndex] == null
+    ) {
       setCurrentStepIndex(getFirstNonEmptyStepIndex(evaluatedSchemas))
     }
 
     const fileUuids = getFileUuidsNaive(pickedPropertiesData)
     refetchAfterImportIfNeeded(fileUuids)
-    setSubmittedStepsIndexes(new Set())
 
+    setSubmittedStepsIndexes(new Set())
     setFormData(pickedPropertiesData)
   }
 

@@ -5,7 +5,6 @@ import MyApplicationCardsPlaceholder from 'components/forms/segments/AccountSect
 import Pagination from 'components/forms/simple-components/Pagination/Pagination'
 import React, { useState } from 'react'
 
-import { getAccessTokenOrLogout } from '../../../../../frontend/utils/amplify'
 import MyApplicationsDraftCard, { MyApplicationsDraftCardProps } from './MyApplicationsDraftCard'
 
 const getDraftApplications = async () => {

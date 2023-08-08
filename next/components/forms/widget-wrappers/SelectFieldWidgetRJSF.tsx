@@ -22,11 +22,11 @@ interface RJSFSelectSchema extends RJSFSchema {
   }
 }
 
-interface SelectFieldWidgetRJSFProps extends WidgetProps {
+interface SelectFieldWidgetRJSFProps<T = unknown> extends WidgetProps {
   options: SelectRJSFOptions
-  value: any | any[] | null
+  value: T | T[] | null
   schema: RJSFSelectSchema
-  onChange: (value?: any | any[]) => void
+  onChange: (value?: T | T[] | null) => void
 }
 
 const SelectFieldWidgetRJSF = (props: SelectFieldWidgetRJSFProps) => {

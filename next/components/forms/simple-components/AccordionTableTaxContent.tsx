@@ -41,7 +41,9 @@ const TableHeaderRow = ({ dataType }: { dataType: string }) => {
   const headerData = Object.keys(matchHeader).includes(dataType)
     ? (matchHeader[dataType] as
         | typeof matchHeader.GROUND
+        // eslint-disable-next-line @typescript-eslint/no-duplicate-type-constituents
         | typeof matchHeader.CONSTRUCTION
+        // eslint-disable-next-line @typescript-eslint/no-duplicate-type-constituents
         | typeof matchHeader.APARTMENT)
     : matchHeader.APARTMENT
 

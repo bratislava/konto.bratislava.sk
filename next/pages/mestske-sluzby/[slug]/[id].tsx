@@ -43,7 +43,11 @@ export const getServerSideProps: GetServerSideProps<FormPageWrapperProps, Params
       .then((res) => res.data),
   ])
 
-  if (!form || form.schemaVersion.schema?.slug !== slug) {
+  if (
+    !form ||
+    /* If there wouldn't be this check it would be possible to open the page with any slug in the URL. */
+    form.schemaVersion.schema?.slug !== slug
+  ) {
     return { notFound: true }
   }
 

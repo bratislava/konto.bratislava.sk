@@ -2,17 +2,19 @@ import { environment } from '../environment'
 import { axiosInstance } from './axios-instance'
 import {
   Configuration,
-  DefaultApiFactory,
+  ConvertApiFactory,
   FilesApiFactory,
   NasesApiFactory,
+  SchemasApiFactory,
   StatusesApiFactory,
 } from './openapi-forms'
 
 const args = [{} as Configuration, environment.formsUrl, axiosInstance] as const
 
 export const formsApi = {
-  ...DefaultApiFactory(...args),
+  ...ConvertApiFactory(...args),
   ...FilesApiFactory(...args),
+  ...SchemasApiFactory(...args),
   ...StatusesApiFactory(...args),
   ...NasesApiFactory(...args),
 }

@@ -10,7 +10,7 @@ import StepperView from './steps/StepperView'
 import FormSummary from './steps/Summary/FormSummary'
 import ThemedForm from './ThemedForm'
 
-const GeneratedFormRJSF = () => {
+const FormPage = () => {
   const {
     uiSchema,
     currentStepperStep,
@@ -69,4 +69,4 @@ const GeneratedFormRJSF = () => {
   )
 }
 
-export default GeneratedFormRJSF
+export default FormPage

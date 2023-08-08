@@ -1,5 +1,5 @@
 import { formsApi } from '@clients/forms'
-import { FormState, GetFormResponseDto } from '@clients/openapi-forms'
+import { FormState, GetFormResponseDto, SchemaVersionResponseDto } from '@clients/openapi-forms'
 import { useQuery } from '@tanstack/react-query'
 import MyApplicationCardsPlaceholder from 'components/forms/segments/AccountSections/MyApplicationsSection/MyApplicationCardsPlaceholder'
 import MyApplicationsSentCard, {
@@ -15,21 +15,7 @@ import { getAccessTokenOrLogout } from '../../../../../frontend/utils/amplify'
 const getSentApplications = async () => {
   const accessToken = await getAccessTokenOrLogout()
 
-  //  TODO get from swagger types
-  const statesToFetch = [
-    'QUEUED',
-    'QUEUED_ERROR',
-    'CHECKING',
-    'CHECKING_ERROR',
-    'SENDING',
-    'SENDING_ERROR',
-    'SENT',
-    'SENT_ERROR',
-    'PROCESSING',
-    'PROCESSING_ERROR',
-    'FINISHED',
-    'REJECTED',
-  ] as FormState[]
+  const statesToFetch = Object.values(FormState).filter((state) => state !== 'DRAFT')
 
   const response = await formsApi.nasesControllerGetForms(
     '1',
@@ -37,15 +23,22 @@ const getSentApplications = async () => {
     undefined,
     undefined,
     statesToFetch,
+    undefined,
     { accessToken },
   )
   return response.data
 }
 
 const transformFormToCardProps = (form: GetFormResponseDto): MyApplicationsSentCardProps => {
+  // TODO: Fix when BE types are fixed
+  const formSlug =
+    (form as unknown as { schemaVersion: SchemaVersionResponseDto }).schemaVersion.schema?.slug ??
+    ''
+
   return {
-    title: form.formName ?? '',
-    linkHref: `${ROUTES.MY_APPLICATIONS}/${form.id}`,
+    // TODO: Title
+    title: formSlug ?? '',
+    linkHref: `${ROUTES.MY_APPLICATIONS}/${formSlug}/${form.id}`,
     category: 'Kategória TODO',
     subtext: 'Subtext TODO',
     filedAt: form.createdAt,

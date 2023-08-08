@@ -1,9 +1,8 @@
-import { ClockIcon, ErrorIcon } from '@assets/ui-icons'
+import { ClockIcon, ErrorIcon, HelpIcon } from '@assets/ui-icons'
 import { GetFormResponseDtoStateEnum } from '@clients/openapi-forms'
 import cx from 'classnames'
 import Link from 'next/link'
 import { useTranslation } from 'next-i18next'
-import { ReactNode } from 'react'
 
 import FormatDate from '../../../simple-components/FormatDate'
 
@@ -23,54 +22,50 @@ const StatusIndicator = ({
 }: Pick<MyApplicationsSentCardProps, 'status' | 'statusAt'>) => {
   const { t } = useTranslation('account', { keyPrefix: 'account_section_applications' })
 
-  const statusObj: {
-    [key in GetFormResponseDtoStateEnum]: { icon: ReactNode; label: string }
-  } = {
-    [GetFormResponseDtoStateEnum.Draft]: { icon: <ClockIcon />, label: t('status.draft') },
-    [GetFormResponseDtoStateEnum.Queued]: { icon: <ClockIcon />, label: t('status.toSend') },
-    [GetFormResponseDtoStateEnum.Checking]: { icon: <ClockIcon />, label: t('status.toSend') },
-    [GetFormResponseDtoStateEnum.Sending]: {
-      icon: <ClockIcon />,
-      label: t('status.toSend'),
-    },
-    [GetFormResponseDtoStateEnum.Sent]: { icon: <ClockIcon />, label: t('status.sent') },
-    [GetFormResponseDtoStateEnum.Processing]: {
-      icon: <ClockIcon />,
-      label: t('status.processing'),
-    },
-    [GetFormResponseDtoStateEnum.Finished]: { icon: <ClockIcon />, label: t('status.finished') },
-    [GetFormResponseDtoStateEnum.Rejected]: { icon: <ClockIcon />, label: t('status.rejected') },
-    [GetFormResponseDtoStateEnum.QueuedError]: { icon: <ErrorIcon />, label: t('status.error') },
-    [GetFormResponseDtoStateEnum.CheckingError]: { icon: <ErrorIcon />, label: t('status.error') },
-    [GetFormResponseDtoStateEnum.SendingError]: { icon: <ErrorIcon />, label: t('status.error') },
-    [GetFormResponseDtoStateEnum.SentError]: { icon: <ErrorIcon />, label: t('status.error') },
-    [GetFormResponseDtoStateEnum.ProcessingError]: {
-      icon: <ErrorIcon />,
-      label: t('status.error'),
-    },
+  // TODO UI states, wording, icons, colors
+  const getStatus = (statusEnumValue: string) => {
+    return (
+      {
+        [GetFormResponseDtoStateEnum.Draft]: { icon: <ClockIcon />, label: t('status.draft') },
+        [GetFormResponseDtoStateEnum.Queued]: { icon: <ClockIcon />, label: t('status.toSend') },
+        [GetFormResponseDtoStateEnum.Processing]: {
+          icon: <ClockIcon />,
+          label: t('status.processing'),
+        },
+        [GetFormResponseDtoStateEnum.Finished]: {
+          icon: <ClockIcon />,
+          label: t('status.finished'),
+        },
+        [GetFormResponseDtoStateEnum.Rejected]: {
+          icon: <ClockIcon />,
+          label: t('status.rejected'),
+        },
+        [GetFormResponseDtoStateEnum.Error]: { icon: <ErrorIcon />, label: t('status.error') },
+      }[statusEnumValue] ?? { icon: <HelpIcon />, label: statusEnumValue }
+    )
   }
 
-  const isError =
-    status === GetFormResponseDtoStateEnum.QueuedError ||
-    status === GetFormResponseDtoStateEnum.CheckingError ||
-    status === GetFormResponseDtoStateEnum.SendingError ||
-    status === GetFormResponseDtoStateEnum.SentError ||
-    status === GetFormResponseDtoStateEnum.ProcessingError
+  const isError = status === GetFormResponseDtoStateEnum.Error
+
+  const statusObj = getStatus(status)
 
   return (
     <div
       className={cx('flex items-start gap-2', {
         'text-gray-500':
-          status === GetFormResponseDtoStateEnum.Queued || GetFormResponseDtoStateEnum.Checking,
-        'text-education-700': status === GetFormResponseDtoStateEnum.Sent,
+          status === GetFormResponseDtoStateEnum.Draft || GetFormResponseDtoStateEnum.Queued,
+        'text-education-700':
+          status === GetFormResponseDtoStateEnum.DeliveredGinis ||
+          GetFormResponseDtoStateEnum.DeliveredNases ||
+          GetFormResponseDtoStateEnum.ReadyForProcessing,
         'text-warning-700': status === GetFormResponseDtoStateEnum.Processing,
         'text-success-700': status === GetFormResponseDtoStateEnum.Finished,
         'text-negative-700': status === GetFormResponseDtoStateEnum.Rejected || isError,
       })}
     >
-      <div>{statusObj[status].icon}</div>
+      <div>{statusObj.icon}</div>
       <div className="flex flex-col gap-1 max-md:hidden">
-        <div className="text-16-semibold text-b">{statusObj[status].label}</div>
+        <div className="text-16-semibold text-b">{statusObj.label}</div>
         {statusAt && (
           <div className="text-gray-700">
             <FormatDate>{statusAt}</FormatDate>

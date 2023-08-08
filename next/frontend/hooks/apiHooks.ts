@@ -6,8 +6,8 @@ import { useEffect } from 'react'
 import { getTaxApi } from '../api/api'
 import { TaxApiError } from '../dtos/generalApiDto'
 import { Tax, TaxJSONSchema } from '../dtos/taxDto'
-import logger from '../utils/logger'
 import { ajvFormats } from '../utils/form'
+import logger from '../utils/logger'
 
 export const ajvKeywords: FuncKeywordDefinition[] = [
   {

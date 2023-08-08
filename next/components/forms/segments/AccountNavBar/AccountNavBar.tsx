@@ -106,8 +106,8 @@ export const AccountNavBar = ({ className, sectionsList, menuItems, hiddenHeader
               }
             />
             <IdentityVerificationStatus />
-            <nav className="text-font/75 flex gap-x-8 font-semibold">
-              <div className="text-font/75 flex items-center gap-x-6 font-semibold">
+            <nav className="flex gap-x-8 font-semibold text-font/75">
+              <div className="flex items-center gap-x-6 font-semibold text-font/75">
                 {isAuthenticated ? (
                   <MenuDropdown
                     setIsOpen={setIsMenuOpen}

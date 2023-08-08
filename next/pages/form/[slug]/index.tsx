@@ -4,7 +4,6 @@ import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
 
 import FormPageWrapper, { FormPageWrapperProps } from '../../../components/forms/FormPageWrapper'
 import {
-  getSSRAccessToken,
   getSSRCurrentAuth,
   ServerSideAuthProviderHOC,
 } from '../../../components/logic/ServerSideAuthProvider'

@@ -9,7 +9,6 @@ import { getAccessTokenOrLogout } from '../../../../../frontend/utils/amplify'
 import MyApplicationsDraftCard, { MyApplicationsDraftCardProps } from './MyApplicationsDraftCard'
 
 const getDraftApplications = async () => {
-  const accessToken = await getAccessTokenOrLogout()
   const response = await formsApi.nasesControllerGetForms(
     '1',
     '10',
@@ -17,7 +16,7 @@ const getDraftApplications = async () => {
     undefined,
     ['DRAFT'],
     undefined,
-    { accessToken },
+    { accessToken: 'always' },
   )
   return response.data
 }

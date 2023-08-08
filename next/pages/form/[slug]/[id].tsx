@@ -5,7 +5,6 @@ import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
 
 import FormPageWrapper, { FormPageWrapperProps } from '../../../components/forms/FormPageWrapper'
 import {
-  getSSRAccessToken,
   getSSRCurrentAuth,
   ServerSideAuthProviderHOC,
 } from '../../../components/logic/ServerSideAuthProvider'
@@ -33,10 +32,16 @@ export const getServerSideProps: GetServerSideProps<FormPageWrapperProps, Params
     }
   }
 
-  const accessToken = await getSSRAccessToken(ctx.req)
   const [form, files] = await Promise.all([
-    formsApi.nasesControllerGetForm(id, { accessToken }).then((res) => res.data),
-    formsApi.filesControllerGetFilesStatusByForm(id, { accessToken }).then((res) => res.data),
+    formsApi
+      .nasesControllerGetForm(id, { accessToken: 'onlyAuthenticated', accessTokenSsrReq: ctx.req })
+      .then((res) => res.data),
+    formsApi
+      .filesControllerGetFilesStatusByForm(id, {
+        accessToken: 'onlyAuthenticated',
+        accessTokenSsrReq: ctx.req,
+      })
+      .then((res) => res.data),
   ])
 
   if (

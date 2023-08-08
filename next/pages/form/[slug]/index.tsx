@@ -31,9 +31,10 @@ export const getServerSideProps: GetServerSideProps<FormPageWrapperProps, Params
     }
   }
 
-  const accessToken = await getSSRAccessToken(ctx.req)
-
-  const schema = await formsApi.schemasControllerGetSchema(slug, { accessToken })
+  const schema = await formsApi.schemasControllerGetSchema(slug, {
+    accessToken: 'onlyAuthenticated',
+    accessTokenSsrReq: ctx.req,
+  })
   const { latestVersionId } = schema.data
   if (!latestVersionId) {
     return {
@@ -42,7 +43,8 @@ export const getServerSideProps: GetServerSideProps<FormPageWrapperProps, Params
   }
 
   const schemaWithData = await formsApi.schemasControllerGetSchemaVersion(latestVersionId, true, {
-    accessToken,
+    accessToken: 'onlyAuthenticated',
+    accessTokenSsrReq: ctx.req,
   })
 
   const form = await formsApi
@@ -50,7 +52,7 @@ export const getServerSideProps: GetServerSideProps<FormPageWrapperProps, Params
       {
         schemaVersionId: latestVersionId,
       },
-      { accessToken },
+      { accessToken: 'onlyAuthenticated', accessTokenSsrReq: ctx.req },
     )
     .then((res) => res.data)
 

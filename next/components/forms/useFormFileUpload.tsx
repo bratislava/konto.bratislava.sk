@@ -23,7 +23,6 @@ import {
   FormFileUploadStatusEnum,
 } from '../../frontend/types/formFileUploadTypes'
 import { InitialFormData } from '../../frontend/types/initialFormData'
-import { getAccessTokenOrLogout } from '../../frontend/utils/amplify'
 import {
   getFileInfoForNewFiles,
   mergeClientAndServerFiles,
@@ -90,9 +89,8 @@ export const FormFileUploadStateProvider = ({
   const serverFilesQuery = useQuery(
     ['serverFiles', initialFormData.formId],
     async () => {
-      const accessToken = await getAccessTokenOrLogout()
       const response = await formsApi.filesControllerGetFilesStatusByForm(initialFormData.formId, {
-        accessToken,
+        accessToken: 'onlyAuthenticated',
       })
       return response.data
     },
@@ -147,8 +145,6 @@ export const FormFileUploadStateProvider = ({
       const abortController = new AbortController()
       abortControllersRef.current[firstQueuedFile.id] = abortController
 
-      // File must be set to uploading before calling `getAccessTokenOrLogout`, as it's async and the second call would
-      // trigger another upload if `getAccessTokenOrLogout` is not finished yet.
       updateFileStatus({
         type: FormFileUploadStatusEnum.Uploading,
         progress: 0,
@@ -242,9 +238,8 @@ export const FormFileUploadStateProvider = ({
   // eslint-disable-next-line unicorn/consistent-function-scoping
   const downloadFile = async (id: string) => {
     try {
-      const accessToken = await getAccessTokenOrLogout()
       const response = await formsApi.filesControllerDownloadToken(id, {
-        accessToken,
+        accessToken: 'onlyAuthenticated',
       })
       const { jwt } = response.data
       window.open(`${environment.formsUrl}/files/download/file/${jwt}`, '_blank')

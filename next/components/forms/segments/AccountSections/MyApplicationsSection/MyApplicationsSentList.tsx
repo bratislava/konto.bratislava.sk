@@ -9,12 +9,9 @@ import Pagination from 'components/forms/simple-components/Pagination/Pagination
 import React, { useState } from 'react'
 
 import { ROUTES } from '../../../../../frontend/api/constants'
-import { getAccessTokenOrLogout } from '../../../../../frontend/utils/amplify'
 
 // TODO filter out DRAFT forms
 const getSentApplications = async () => {
-  const accessToken = await getAccessTokenOrLogout()
-
   const statesToFetch = Object.values(FormState).filter((state) => state !== 'DRAFT')
 
   const response = await formsApi.nasesControllerGetForms(
@@ -24,7 +21,7 @@ const getSentApplications = async () => {
     undefined,
     statesToFetch,
     undefined,
-    { accessToken },
+    { accessToken: 'always' },
   )
   return response.data
 }

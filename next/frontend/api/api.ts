@@ -1,6 +1,5 @@
 // TODO waiting on #305 to get merged, afterwards might move elsewhere
 // frontend code for calling api endpoints grouped
-import { RJSFSchema } from '@rjsf/utils'
 import { ErrorObject } from 'ajv'
 import { getAccessTokenOrLogout } from 'frontend/utils/amplify'
 
@@ -52,22 +51,6 @@ const fetchJsonApi = async <T = any>(path: string, options?: RequestInit): Promi
   } catch (error) {
     // TODO originally caught & rethrown to ensure logging, might no longer be necessary
     developmentLog('FETCH JSON API RAW ERROR 2', error as Record<string, unknown>, true)
-    logger.error(error)
-    throw error
-  }
-}
-
-const fetchBlob = async (path: string, options?: RequestInit) => {
-  try {
-    const response = await fetch(path, options)
-    if (response.ok) {
-      return await response.blob()
-    }
-
-    const responseText = await response.text()
-    throw new Error(responseText)
-  } catch (error) {
-    // TODO originally caught & rethrown to ensure logging, might no longer be necessary
     logger.error(error)
     throw error
   }

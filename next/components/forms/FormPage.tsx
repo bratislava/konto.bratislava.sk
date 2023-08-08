@@ -57,6 +57,7 @@ const FormPage = () => {
                 experimental_defaultFormStateBehavior={defaultFormStateBehavior}
                 // HTML validation doesn't work for our use case, therefore it's turned off.
                 noHtml5Validate
+                readonly
               >
                 <FormControls />
               </ThemedForm>

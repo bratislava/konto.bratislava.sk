@@ -61,6 +61,7 @@ export const useFormExportImport = () => {
     importInput.click()
   }
 
+  // eslint-disable-next-line unicorn/consistent-function-scoping
   const exportPdf = async () => {
     throw new Error('Not implemented')
     // openSnackbarInfo(t('info_messages.pdf_export'))

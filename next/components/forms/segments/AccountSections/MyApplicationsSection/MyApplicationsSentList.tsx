@@ -1,5 +1,5 @@
 import { formsApi } from '@clients/forms'
-import { FormState, GetFormResponseDto, SchemaVersionResponseDto } from '@clients/openapi-forms'
+import { FormState, GetFormResponseDto } from '@clients/openapi-forms'
 import { useQuery } from '@tanstack/react-query'
 import MyApplicationCardsPlaceholder from 'components/forms/segments/AccountSections/MyApplicationsSection/MyApplicationCardsPlaceholder'
 import MyApplicationsSentCard, {

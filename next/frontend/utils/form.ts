@@ -6,8 +6,9 @@ import {
   ValidatorType,
 } from '@rjsf/utils'
 import { customizeValidator } from '@rjsf/validator-ajv8'
-import Ajv, { Options } from 'ajv'
-import { SchemaValidateFunction } from 'ajv/lib/types'
+import type { Options } from 'ajv'
+import Ajv from 'ajv'
+import type { SchemaValidateFunction } from 'ajv/lib/types'
 import traverse from 'traverse'
 import { validate as validateUuid, version as uuidVersion } from 'uuid'
 

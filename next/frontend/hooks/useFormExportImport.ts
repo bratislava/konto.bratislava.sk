@@ -6,7 +6,6 @@ import { ChangeEvent } from 'react'
 
 import { useFormState } from '../../components/forms/FormStateProvider'
 import { formDataToXml, xmlStringToPdf, xmlToFormData } from '../api/api'
-import { getAccessTokenOrLogout } from '../utils/amplify'
 import { readTextFile } from '../utils/file'
 import { blobToString, downloadBlob } from '../utils/general'
 import useSnackbar from './useSnackbar'
@@ -78,13 +77,12 @@ export const useFormExportImport = () => {
 
   const saveConcept = async () => {
     try {
-      const accessToken = await getAccessTokenOrLogout()
       await formsApi.nasesControllerUpdateForm(
         formId,
         {
           formDataJson: formData,
         } as UpdateFormRequestDto,
-        { accessToken },
+        { accessToken: 'onlyAuthenticated' },
       )
       openSnackbarSuccess(t('success_messages.concept_save'))
     } catch (error) {

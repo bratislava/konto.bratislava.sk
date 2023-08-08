@@ -5,7 +5,7 @@ import { ChangeEvent } from 'react'
 
 import { useFormState } from '../../components/forms/FormStateProvider'
 import { readTextFile } from '../utils/file'
-import { blobToString, downloadBlob } from '../utils/general'
+import { downloadBlob } from '../utils/general'
 import useSnackbar from './useSnackbar'
 
 export const useFormExportImport = () => {

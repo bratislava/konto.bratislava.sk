@@ -1,7 +1,7 @@
 import cx from 'classnames'
 import MenuList from 'components/forms/steps/MenuList'
 
-import { defaultFormStateBehavior, validator } from '../../frontend/dtos/formStepperDto'
+import { defaultFormStateBehavior, rjfsValidator } from '../../frontend/utils/form'
 import FormControls from './FormControls'
 import { useFormState } from './FormStateProvider'
 import FormModals from './segments/FormModals/FormModals'
@@ -13,7 +13,7 @@ import ThemedForm from './ThemedForm'
 const FormPage = () => {
   const {
     uiSchema,
-    currentStepMetadata,
+    currentStepperStep,
     currentStepSchema,
     formData,
     handleFormOnSubmit,
@@ -29,18 +29,20 @@ const FormPage = () => {
           <FormModals />
         </div>
         <div className={cx('grow px-4', 'lg:px-0')}>
-          {currentStepMetadata.isSummary ? (
+          {currentStepperStep.isSummary ? (
             <FormSummary />
           ) : (
             <>
-              <h1 className="text-h1-medium font-semibold">{currentStepMetadata.title}</h1>
+              <h1 className="text-h1-medium font-semibold">{currentStepperStep.title}</h1>
               <ThemedForm
-                key={`form-step-${currentStepMetadata.index}`}
+                // This is a hack to force the form to re-render when the step changes, it's hard to say whether it
+                // is needed or not, but ensures 100% safety.
+                key={`form-step-${currentStepperStep.index}`}
                 // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
                 schema={currentStepSchema!}
                 uiSchema={uiSchema}
                 formData={formData}
-                validator={validator}
+                validator={rjfsValidator}
                 onSubmit={(e) => {
                   handleFormOnSubmit(e.formData)
                 }}
@@ -48,10 +50,14 @@ const FormPage = () => {
                   handleFormOnChange(e.formData)
                 }}
                 showErrorList={false}
+                // This removes the extra conditional data for the current step, for removing the steps themselves see
+                // `handleFormOnChange` implementation.
                 omitExtraData
                 liveOmit
                 experimental_defaultFormStateBehavior={defaultFormStateBehavior}
+                // HTML validation doesn't work for our use case, therefore it's turned off.
                 noHtml5Validate
+                readonly
               >
                 <FormControls />
               </ThemedForm>

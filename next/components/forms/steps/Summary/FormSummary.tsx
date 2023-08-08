@@ -1,6 +1,6 @@
 import cx from 'classnames'
 
-import { defaultFormStateBehavior, validator } from '../../../../frontend/dtos/formStepperDto'
+import { defaultFormStateBehavior, rjfsValidator } from '../../../../frontend/utils/form'
 import { useFormState } from '../../FormStateProvider'
 import SummaryHeader from '../SummaryHeader'
 import SummaryForm from './SummaryForm'
@@ -17,12 +17,14 @@ const FormSummary = () => {
           schema={schema}
           uiSchema={uiSchema}
           formData={formData}
-          validator={validator}
+          // The validator is not used, but it's required by the form. We use our own validation in `useFormSummary`.
+          validator={rjfsValidator}
           experimental_defaultFormStateBehavior={defaultFormStateBehavior}
           readonly
           onSubmit={(e) => {
             console.log('form submit', e.formData)
           }}
+          // We display the errors in our on way.
           showErrorList={false}
         />
       </div>

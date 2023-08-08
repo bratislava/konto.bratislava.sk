@@ -4,10 +4,10 @@ import { useTranslation } from 'next-i18next'
 import React, { useRef } from 'react'
 import { useButton } from 'react-aria'
 
-import { FormStepMetadata } from '../types/Steps'
+import { FormStepperStep } from '../types/Steps'
 
 interface StepperViewRowProps {
-  step: FormStepMetadata
+  step: FormStepperStep
   isCurrent?: boolean
   onClick?: () => void
   className?: string

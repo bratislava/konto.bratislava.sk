@@ -1,11 +1,9 @@
 import { formsApi } from '@clients/forms'
-import { SchemaVersionResponseDto } from '@clients/openapi-forms'
 import { GetServerSideProps } from 'next'
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
 
 import FormPageWrapper, { FormPageWrapperProps } from '../../../components/forms/FormPageWrapper'
 import {
-  getSSRAccessToken,
   getSSRCurrentAuth,
   ServerSideAuthProviderHOC,
 } from '../../../components/logic/ServerSideAuthProvider'
@@ -13,14 +11,13 @@ import { environment } from '../../../environment'
 
 type Params = {
   slug: string
-  id: string
 }
 
 // TODO: Error handling
 export const getServerSideProps: GetServerSideProps<FormPageWrapperProps, Params> = async (ctx) => {
   if (!environment.featureToggles.forms || !ctx.params) return { notFound: true }
 
-  const { slug, id } = ctx.params
+  const { slug } = ctx.params
 
   // TODO: Remove and support non-auth version of the page
   const ssrCurrentAuthProps = await getSSRCurrentAuth(ctx.req)
@@ -33,18 +30,27 @@ export const getServerSideProps: GetServerSideProps<FormPageWrapperProps, Params
     }
   }
 
-  const accessToken = await getSSRAccessToken(ctx.req)
-  const [form, files] = await Promise.all([
-    formsApi.nasesControllerGetForm(id, { accessToken }).then((res) => res.data),
-    formsApi.filesControllerGetFilesStatusByForm(id, { accessToken }).then((res) => res.data),
-  ])
+  const schema = await formsApi.schemasControllerGetSchema(slug, {
+    accessToken: 'onlyAuthenticated',
+    accessTokenSsrReq: ctx.req,
+  })
+  const { latestVersionId, latestVersion } = schema.data
+  if (!latestVersionId || !latestVersion) {
+    return {
+      notFound: true,
+    }
+  }
 
-  if (
-    !form ||
-    // TODO: Fix when BE types are fixed
-    (form as unknown as { schemaVersion: SchemaVersionResponseDto }).schemaVersion.schema?.slug !==
-      slug
-  ) {
+  const form = await formsApi
+    .nasesControllerCreateForm(
+      {
+        schemaVersionId: latestVersionId,
+      },
+      { accessToken: 'onlyAuthenticated', accessTokenSsrReq: ctx.req },
+    )
+    .then((res) => res.data)
+
+  if (!form) {
     return { notFound: true }
   }
 
@@ -53,20 +59,16 @@ export const getServerSideProps: GetServerSideProps<FormPageWrapperProps, Params
 
   return {
     props: {
-      // TODO: Fix when BE types are fixed
-      schema: (form as unknown as { schemaVersion: SchemaVersionResponseDto }).schemaVersion
-        .jsonSchema,
-      uiSchema: (form as unknown as { schemaVersion: SchemaVersionResponseDto }).schemaVersion
-        .uiSchema,
+      schema: latestVersion.jsonSchema,
+      uiSchema: latestVersion.uiSchema,
       ssrCurrentAuthProps,
       page: {
         locale,
       },
       initialFormData: {
-        formId: id,
-        // TODO: Fix when BE types are fixed
-        formDataJson: (form as unknown as { formDataJson: object }).formDataJson,
-        files,
+        formId: form.id,
+        formDataJson: form.formDataJson ?? {},
+        files: [],
       },
       ...(await serverSideTranslations(locale)),
     } satisfies FormPageWrapperProps,

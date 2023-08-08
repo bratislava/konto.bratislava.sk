@@ -1,10 +1,9 @@
 import { GenericObjectType, retrieveSchema, RJSFSchema } from '@rjsf/utils'
 import { JSONSchema7 } from 'json-schema'
-import traverse from 'traverse'
-import { validate as validateUuid, version as uuidVersion } from 'uuid'
+import pick from 'lodash/pick'
 
-import { FormStepIndex, FormStepMetadata } from '../../components/forms/types/Steps'
-import { validator } from '../dtos/formStepperDto'
+import { FormStepIndex, FormStepperStep } from '../../components/forms/types/Steps'
+import { rjfsValidator } from './form'
 import { isDefined } from './general'
 
 /**
@@ -21,18 +20,18 @@ export const getEvaluatedStepsSchemas = (
       if (typeof step === 'boolean') {
         return null
       }
-      const retrievedSchema = retrieveSchema(validator, step, schema, formData)
+      const retrievedSchema = retrieveSchema(rjfsValidator, step, schema, formData)
 
       return Object.keys(retrievedSchema).length > 0 ? retrievedSchema : null
     }) ?? []
   )
 }
 
-export const getStepsMetadata = (
+export const getStepperData = (
   stepsSchemas: (JSONSchema7 | null)[],
   submittedSteps: Set<FormStepIndex>,
   summaryTitle: string,
-): FormStepMetadata[] => {
+): FormStepperStep[] => {
   if (!stepsSchemas || !Array.isArray(stepsSchemas)) return []
   let displayIndex = 0
 
@@ -48,6 +47,7 @@ export const getStepsMetadata = (
 
       const { title } = Object.values(step.properties)[0] as JSONSchema7
 
+      // displayIndex is only incremented for non-empty steps
       displayIndex += 1
       return {
         index,
@@ -55,7 +55,7 @@ export const getStepsMetadata = (
         title,
         isSubmitted: submittedSteps.has(index),
         isSummary: false,
-      } as FormStepMetadata
+      } as FormStepperStep
     })
     .filter(isDefined)
 
@@ -67,23 +67,63 @@ export const getStepsMetadata = (
       title: summaryTitle,
       isSubmitted: submittedSteps.has(steps.length),
       isSummary: true,
-    } as FormStepMetadata,
+    } as FormStepperStep,
   ]
 }
 
 /**
- * A naive implementation of getting file UUIDs from the form data.
+ * When invoking an edit from summary, the only available info is the fieldId which contains the property defined by the
+ * step.
+ *
+ * This function parses the property name from the fieldId.
+ *
+ * E.g.
+ * root_inputStep_input1 -> inputStep
+ * root_fileUploadStep_fileUpload1_0 -> fileUploadStep
  */
-export const getFileUuidsNaive = (formData: GenericObjectType) => {
-  return traverse(formData).reduce(function traverseFn(acc: string[], value) {
-    if (
-      this.isLeaf &&
-      typeof value === 'string' &&
-      validateUuid(value) &&
-      uuidVersion(value) === 4
-    ) {
-      acc.push(value)
-    }
-    return acc
-  }, []) as string[]
+export const parseStepFromFieldId = (fieldId: string) => {
+  const arr = fieldId.split('_')
+  if (arr[0] === 'root' && arr[1]) {
+    return arr[1]
+  }
+  return null
+}
+
+/**
+ * Each non-empty step defines exactly one property, this function returns the name of that property.
+ */
+export const getStepProperty = (step: JSONSchema7 | null) => {
+  if (!step?.properties) {
+    return null
+  }
+
+  const keys = Object.keys(step.properties)
+  return keys[0] ?? null
+}
+
+/**
+ * Returns a first non-empty step index.
+ */
+export const getFirstNonEmptyStepIndex = (stepSchemas: (JSONSchema7 | null)[]) => {
+  const firstStep = stepSchemas.findIndex((step) => step !== null)
+  return firstStep !== -1 ? firstStep : ('summary' as const)
+}
+
+/**
+ * Removes unused steps from formData. The schema is evaluated with provided data, the only non-empty steps properties
+ * are kept.
+ *
+ * So far this only removes the first-level properties (steps), this function is not able to remove properties deeper
+ * in the schema. (e.g. when a select in the second step is displayed based on the value of a select in the first step).
+ *
+ * TODO: Remove unused properties deeper in the schema.
+ */
+export const removeUnusedPropertiesFromFormData = (
+  schema: RJSFSchema,
+  formData: GenericObjectType,
+) => {
+  const evaluatedSchemas = getEvaluatedStepsSchemas(schema, formData)
+  const propertiesToKeep = evaluatedSchemas.map(getStepProperty).filter(isDefined)
+
+  return pick(formData, propertiesToKeep)
 }

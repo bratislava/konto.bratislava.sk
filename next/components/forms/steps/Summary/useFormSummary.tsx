@@ -1,8 +1,8 @@
 import { ErrorSchema } from '@rjsf/utils'
 import React, { createContext, PropsWithChildren, useContext, useMemo } from 'react'
 
-import { validateSummary } from '../../../../frontend/dtos/formStepperDto'
 import { FormFileUploadFileInfo } from '../../../../frontend/types/formFileUploadTypes'
+import { validateSummary } from '../../../../frontend/utils/form'
 import { useFormState } from '../../FormStateProvider'
 import { useFormFileUpload } from '../../useFormFileUpload'
 
@@ -16,6 +16,35 @@ type FormSummaryContextType = {
 
 const FormSummaryContext = createContext<FormSummaryContextType | undefined>(undefined)
 
+/**
+ * Check if a field or any of its children has errors. This is used to determine if a field should be highlighted in the
+ * summary. By default, the library provides an `errorSchema` that contains the errors for each field. However, this
+ * doesn't show the errors for the children of the field.
+ *
+ * E.g. for error schema:
+ * {
+ *   inputStep: {
+ *     input: {
+ *       _errors: ['error message']
+ *     }
+ *   },
+ *   fileUploadStep: {
+ *     multipleFiles: {
+ *       0: {
+ *         _errors: ['error message']
+ *       }
+ *     }
+ *   }
+ * }
+ *
+ * |                                     | Field error schema | Function return value |
+ * |-------------------------------------|--------------------|-----------------------|
+ * | root_inputStep_input                | yes                | true                  |
+ * | root_fileUploadStep_multipleFiles   | no                 | *true*                |
+ * | root_fileUploadStep_multipleFiles_0 | yes                | true                  |
+ * | root_correctStep_input              | no                 | false                 |
+ *
+ */
 function checkPathForErrors(fieldId: string, errorSchema: ErrorSchema) {
   const fieldIdComponents = fieldId.split('_').slice(1)
 

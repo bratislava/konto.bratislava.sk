@@ -1,5 +1,5 @@
 import { formsApi } from '@clients/forms'
-import { FormState, GetFormResponseDto, SchemaVersionResponseDto } from '@clients/openapi-forms'
+import { FormState, GetFormResponseDto } from '@clients/openapi-forms'
 import { useQuery } from '@tanstack/react-query'
 import MyApplicationCardsPlaceholder from 'components/forms/segments/AccountSections/MyApplicationsSection/MyApplicationCardsPlaceholder'
 import MyApplicationsSentCard, {
@@ -9,12 +9,9 @@ import Pagination from 'components/forms/simple-components/Pagination/Pagination
 import React, { useState } from 'react'
 
 import { ROUTES } from '../../../../../frontend/api/constants'
-import { getAccessTokenOrLogout } from '../../../../../frontend/utils/amplify'
 
 // TODO filter out DRAFT forms
 const getSentApplications = async () => {
-  const accessToken = await getAccessTokenOrLogout()
-
   const statesToFetch = Object.values(FormState).filter((state) => state !== 'DRAFT')
 
   const response = await formsApi.nasesControllerGetForms(
@@ -24,16 +21,13 @@ const getSentApplications = async () => {
     undefined,
     statesToFetch,
     undefined,
-    { accessToken },
+    { accessToken: 'always' },
   )
   return response.data
 }
 
 const transformFormToCardProps = (form: GetFormResponseDto): MyApplicationsSentCardProps => {
-  // TODO: Fix when BE types are fixed
-  const formSlug =
-    (form as unknown as { schemaVersion: SchemaVersionResponseDto }).schemaVersion.schema?.slug ??
-    ''
+  const formSlug = form.schemaVersion.schema?.slug
 
   return {
     // TODO: Title

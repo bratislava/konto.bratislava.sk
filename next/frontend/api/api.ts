@@ -1,6 +1,5 @@
 // TODO waiting on #305 to get merged, afterwards might move elsewhere
 // frontend code for calling api endpoints grouped
-import { RJSFSchema } from '@rjsf/utils'
 import { ErrorObject } from 'ajv'
 import { getAccessTokenOrLogout } from 'frontend/utils/amplify'
 
@@ -55,92 +54,6 @@ const fetchJsonApi = async <T = any>(path: string, options?: RequestInit): Promi
     logger.error(error)
     throw error
   }
-}
-
-const fetchBlob = async (path: string, options?: RequestInit) => {
-  try {
-    const response = await fetch(path, options)
-    if (response.ok) {
-      return await response.blob()
-    }
-
-    const responseText = await response.text()
-    throw new Error(responseText)
-  } catch (error) {
-    // TODO originally caught & rethrown to ensure logging, might no longer be necessary
-    logger.error(error)
-    throw error
-  }
-}
-
-// TODO move error handling here
-export const submitEform = async (eformKey: string, formId: string, data: Record<string, any>) => {
-  const token = await getAccessTokenOrLogout()
-  return fetchJsonApi(`/api/eforms/${eformKey}/submit`, {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-      Authorization: token ? `Bearer ${token}` : '',
-    },
-    body: JSON.stringify({ data, id: formId }),
-  })
-}
-
-export const validateKeyword = async (
-  keyword: string,
-  schema: any,
-  value: any,
-  parentSchema: any,
-): Promise<boolean> => {
-  try {
-    const { isValid }: { isValid: boolean } = await fetchJsonApi(`/api/eforms/validation`, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({ keyword, schema, value, parentSchema }),
-    })
-
-    return isValid
-  } catch (error) {
-    return false
-  }
-}
-
-export const formDataToXml = (eform: string, data: any) => {
-  if (!eform || eform === '') throw new Error(API_ERROR_TEXT)
-
-  return fetchBlob(`/api/eforms/${eform}/transform/xml`, {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-    },
-    body: JSON.stringify({ data }),
-  })
-}
-
-export const xmlToFormData = (eform: string, data: string): Promise<RJSFSchema> => {
-  if (!eform || eform === '') throw new Error(API_ERROR_TEXT)
-
-  return fetchJsonApi<RJSFSchema>(`/api/eforms/${eform}/transform/xmlToJson`, {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-    },
-    body: JSON.stringify({ data }),
-  })
-}
-
-export const xmlStringToPdf = (eform: string, data: string) => {
-  if (!eform || eform === '') throw new Error(API_ERROR_TEXT)
-
-  return fetchBlob(`/api/eforms/${eform}/transform/pdf`, {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-    },
-    body: JSON.stringify({ data }),
-  })
 }
 
 export const verifyIdentityApi = async (data: Identity) => {

@@ -1,14 +1,11 @@
 import { formsApi } from '@clients/forms'
 import { UpdateFormRequestDto } from '@clients/openapi-forms'
-import { RJSFSchema } from '@rjsf/utils'
 import { useTranslation } from 'next-i18next'
 import { ChangeEvent } from 'react'
 
 import { useFormState } from '../../components/forms/FormStateProvider'
-import { formDataToXml, xmlStringToPdf, xmlToFormData } from '../api/api'
-import { getAccessTokenOrLogout } from '../utils/amplify'
 import { readTextFile } from '../utils/file'
-import { blobToString, downloadBlob } from '../utils/general'
+import { downloadBlob } from '../utils/general'
 import useSnackbar from './useSnackbar'
 
 export const useFormExportImport = () => {
@@ -22,9 +19,11 @@ export const useFormExportImport = () => {
   const exportXml = async () => {
     openSnackbarInfo(t('info_messages.xml_export'))
     try {
-      const xml: Blob = await formDataToXml(formSlug, formData)
+      const response = await formsApi.convertControllerConvertJsonToXml(formSlug, {
+        jsonForm: formData,
+      })
       const fileName = `${formSlug}_output.xml`
-      downloadBlob(xml, fileName)
+      downloadBlob(new Blob([response.data.xmlForm]), fileName)
       closeSnackbarInfo()
       openSnackbarSuccess(t('success_messages.xml_export'))
     } catch (error) {
@@ -32,13 +31,14 @@ export const useFormExportImport = () => {
     }
   }
 
-  // TODO: Rework import, the page might need reload to work properly.
   const importXml = async (e: ChangeEvent<HTMLInputElement>) => {
     openSnackbarInfo(t('info_messages.xml_import'))
     try {
       const xmlData: string = await readTextFile(e)
-      const transformedFormData: RJSFSchema = await xmlToFormData(formSlug, xmlData)
-      setImportedFormData(transformedFormData)
+      const response = await formsApi.convertControllerConvertXmlToJson(formSlug, {
+        xmlForm: xmlData,
+      })
+      setImportedFormData(response.data.jsonForm)
       closeSnackbarInfo()
       openSnackbarSuccess(t('success_messages.xml_import'))
     } catch (error) {
@@ -61,30 +61,31 @@ export const useFormExportImport = () => {
     importInput.click()
   }
 
+  // eslint-disable-next-line unicorn/consistent-function-scoping
   const exportPdf = async () => {
-    openSnackbarInfo(t('info_messages.pdf_export'))
-    try {
-      const xml: Blob = await formDataToXml(formSlug, formData)
-      const xmlData: string = await blobToString(xml)
-      const pdf = await xmlStringToPdf(formSlug, xmlData)
-      const fileName = `${formSlug}_output.pdf`
-      downloadBlob(pdf, fileName)
-      closeSnackbarInfo()
-      openSnackbarSuccess(t('success_messages.pdf_export'))
-    } catch (error) {
-      openSnackbarError(t('errors.pdf_export'))
-    }
+    throw new Error('Not implemented')
+    // openSnackbarInfo(t('info_messages.pdf_export'))
+    // try {
+    //   const xml: Blob = await formDataToXml(formSlug, formData)
+    //   const xmlData: string = await blobToString(xml)
+    //   const pdf = await xmlStringToPdf(formSlug, xmlData)
+    //   const fileName = `${formSlug}_output.pdf`
+    //   downloadBlob(pdf, fileName)
+    //   closeSnackbarInfo()
+    //   openSnackbarSuccess(t('success_messages.pdf_export'))
+    // } catch (error) {
+    //   openSnackbarError(t('errors.pdf_export'))
+    // }
   }
 
   const saveConcept = async () => {
     try {
-      const accessToken = await getAccessTokenOrLogout()
       await formsApi.nasesControllerUpdateForm(
         formId,
         {
           formDataJson: formData,
         } as UpdateFormRequestDto,
-        { accessToken },
+        { accessToken: 'onlyAuthenticated' },
       )
       openSnackbarSuccess(t('success_messages.concept_save'))
     } catch (error) {

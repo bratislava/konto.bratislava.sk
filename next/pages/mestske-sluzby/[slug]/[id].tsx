@@ -4,7 +4,6 @@ import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
 
 import FormPageWrapper, { FormPageWrapperProps } from '../../../components/forms/FormPageWrapper'
 import {
-  getSSRAccessToken,
   getSSRCurrentAuth,
   ServerSideAuthProviderHOC,
 } from '../../../components/logic/ServerSideAuthProvider'
@@ -12,13 +11,14 @@ import { environment } from '../../../environment'
 
 type Params = {
   slug: string
+  id: string
 }
 
 // TODO: Error handling
 export const getServerSideProps: GetServerSideProps<FormPageWrapperProps, Params> = async (ctx) => {
   if (!environment.featureToggles.forms || !ctx.params) return { notFound: true }
 
-  const { slug } = ctx.params
+  const { slug, id } = ctx.params
 
   // TODO: Remove and support non-auth version of the page
   const ssrCurrentAuthProps = await getSSRCurrentAuth(ctx.req)
@@ -31,30 +31,23 @@ export const getServerSideProps: GetServerSideProps<FormPageWrapperProps, Params
     }
   }
 
-  const accessToken = await getSSRAccessToken(ctx.req)
+  const [form, files] = await Promise.all([
+    formsApi
+      .nasesControllerGetForm(id, { accessToken: 'onlyAuthenticated', accessTokenSsrReq: ctx.req })
+      .then((res) => res.data),
+    formsApi
+      .filesControllerGetFilesStatusByForm(id, {
+        accessToken: 'onlyAuthenticated',
+        accessTokenSsrReq: ctx.req,
+      })
+      .then((res) => res.data),
+  ])
 
-  const schema = await formsApi.schemasControllerGetSchema(slug, { accessToken })
-  const { latestVersionId } = schema.data
-  if (!latestVersionId) {
-    return {
-      notFound: true,
-    }
-  }
-
-  const schemaWithData = await formsApi.schemasControllerGetSchemaVersion(latestVersionId, true, {
-    accessToken,
-  })
-
-  const form = await formsApi
-    .nasesControllerCreateForm(
-      {
-        schemaVersionId: latestVersionId,
-      },
-      { accessToken },
-    )
-    .then((res) => res.data)
-
-  if (!form) {
+  if (
+    !form ||
+    /* If there wouldn't be this check it would be possible to open the page with any slug in the URL. */
+    form.schemaVersion.schema?.slug !== slug
+  ) {
     return { notFound: true }
   }
 
@@ -63,17 +56,16 @@ export const getServerSideProps: GetServerSideProps<FormPageWrapperProps, Params
 
   return {
     props: {
-      schema: schemaWithData.data.jsonSchema,
-      uiSchema: schemaWithData.data.uiSchema,
+      schema: form.schemaVersion.jsonSchema,
+      uiSchema: form.schemaVersion.uiSchema,
       ssrCurrentAuthProps,
       page: {
         locale,
       },
       initialFormData: {
-        formId: form.id,
-        // TODO: Fix when BE types are fixed
-        formDataJson: (form as unknown as { formDataJson: object }).formDataJson,
-        files: [],
+        formId: id,
+        formDataJson: form.formDataJson ?? {},
+        files,
       },
       ...(await serverSideTranslations(locale)),
     } satisfies FormPageWrapperProps,

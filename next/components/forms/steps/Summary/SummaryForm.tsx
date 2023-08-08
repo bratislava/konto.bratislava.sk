@@ -50,6 +50,11 @@ const theme: ThemeProps = {
   },
 }
 
+/**
+ * Parsing the form values and their respective fields is non-trivial. To make this easier and consistent with the rest
+ * of the form behaviour we use the RJSF to render the form, but the provided fields and widgets are replaced with
+ * custom ones that only display the values and are not able to edit the form values.
+ */
 const SummaryForm = withTheme<GenericObjectType>(theme)
 
 export default SummaryForm

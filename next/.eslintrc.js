@@ -7,6 +7,7 @@ module.exports = {
     'unicorn/no-array-callback-reference': 'off',
     // Named export is easier to refactor automatically
     'import/prefer-default-export': 'off',
+    '@typescript-eslint/no-explicit-any': 'warn',
     '@typescript-eslint/no-shadow': ['error', { allow: ['event', 'value', 'key', 'error'] }],
     /** Too tedious to type every function return explicitly */
     '@typescript-eslint/explicit-function-return-type': 'off',

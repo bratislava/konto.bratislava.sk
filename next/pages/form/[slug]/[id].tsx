@@ -1,5 +1,4 @@
 import { formsApi } from '@clients/forms'
-import { SchemaVersionResponseDto } from '@clients/openapi-forms'
 import { GetServerSideProps } from 'next'
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
 
@@ -44,12 +43,7 @@ export const getServerSideProps: GetServerSideProps<FormPageWrapperProps, Params
       .then((res) => res.data),
   ])
 
-  if (
-    !form ||
-    // TODO: Fix when BE types are fixed
-    (form as unknown as { schemaVersion: SchemaVersionResponseDto }).schemaVersion.schema?.slug !==
-      slug
-  ) {
+  if (!form || form.schemaVersion.schema?.slug !== slug) {
     return { notFound: true }
   }
 
@@ -58,19 +52,15 @@ export const getServerSideProps: GetServerSideProps<FormPageWrapperProps, Params
 
   return {
     props: {
-      // TODO: Fix when BE types are fixed
-      schema: (form as unknown as { schemaVersion: SchemaVersionResponseDto }).schemaVersion
-        .jsonSchema,
-      uiSchema: (form as unknown as { schemaVersion: SchemaVersionResponseDto }).schemaVersion
-        .uiSchema,
+      schema: form.schemaVersion.jsonSchema,
+      uiSchema: form.schemaVersion.uiSchema,
       ssrCurrentAuthProps,
       page: {
         locale,
       },
       initialFormData: {
         formId: id,
-        // TODO: Fix when BE types are fixed
-        formDataJson: (form as unknown as { formDataJson: object }).formDataJson,
+        formDataJson: form.formDataJson ?? {},
         files,
       },
       ...(await serverSideTranslations(locale)),

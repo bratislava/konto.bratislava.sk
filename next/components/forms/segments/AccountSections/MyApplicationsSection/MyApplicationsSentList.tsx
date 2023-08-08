@@ -27,10 +27,7 @@ const getSentApplications = async () => {
 }
 
 const transformFormToCardProps = (form: GetFormResponseDto): MyApplicationsSentCardProps => {
-  // TODO: Fix when BE types are fixed
-  const formSlug =
-    (form as unknown as { schemaVersion: SchemaVersionResponseDto }).schemaVersion.schema?.slug ??
-    ''
+  const formSlug = form.schemaVersion.schema?.slug
 
   return {
     // TODO: Title

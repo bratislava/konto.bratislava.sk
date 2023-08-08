@@ -35,16 +35,11 @@ export const getServerSideProps: GetServerSideProps<FormPageWrapperProps, Params
     accessTokenSsrReq: ctx.req,
   })
   const { latestVersionId } = schema.data
-  if (!latestVersionId) {
+  if (!latestVersionId || !schema.data.latestVersion) {
     return {
       notFound: true,
     }
   }
-
-  const schemaWithData = await formsApi.schemasControllerGetSchemaVersion(latestVersionId, true, {
-    accessToken: 'onlyAuthenticated',
-    accessTokenSsrReq: ctx.req,
-  })
 
   const form = await formsApi
     .nasesControllerCreateForm(
@@ -64,16 +59,15 @@ export const getServerSideProps: GetServerSideProps<FormPageWrapperProps, Params
 
   return {
     props: {
-      schema: schemaWithData.data.jsonSchema,
-      uiSchema: schemaWithData.data.uiSchema,
+      schema: schema.data.latestVersion.jsonSchema,
+      uiSchema: schema.data.latestVersion.uiSchema,
       ssrCurrentAuthProps,
       page: {
         locale,
       },
       initialFormData: {
         formId: form.id,
-        // TODO: Fix when BE types are fixed
-        formDataJson: (form as unknown as { formDataJson: object }).formDataJson,
+        formDataJson: form.formDataJson ?? {},
         files: [],
       },
       ...(await serverSideTranslations(locale)),

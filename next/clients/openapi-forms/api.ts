@@ -1624,6 +1624,12 @@ export interface GetFormResponseDto {
    */
   formDataGinis: string | null
   /**
+   * Data in JSON format
+   * @type {object}
+   * @memberof GetFormResponseDto
+   */
+  formDataJson: object | null
+  /**
    * Technical NASES id of sender
    * @type {string}
    * @memberof GetFormResponseDto
@@ -1647,6 +1653,18 @@ export interface GetFormResponseDto {
    * @memberof GetFormResponseDto
    */
   schemaVersionId: string
+  /**
+   *
+   * @type {GetFormResponseDtoSchemaVersion}
+   * @memberof GetFormResponseDto
+   */
+  schemaVersion: GetFormResponseDtoSchemaVersion
+  /**
+   * Flag marking if the schema version for this form is the latest version for the schema.
+   * @type {boolean}
+   * @memberof GetFormResponseDto
+   */
+  isLatestSchemaVersionForSlug: boolean
 }
 
 export const GetFormResponseDtoStateEnum = {
@@ -1675,6 +1693,139 @@ export const GetFormResponseDtoErrorEnum = {
 export type GetFormResponseDtoErrorEnum =
   (typeof GetFormResponseDtoErrorEnum)[keyof typeof GetFormResponseDtoErrorEnum]
 
+/**
+ * Schema version
+ * @export
+ * @interface GetFormResponseDtoSchemaVersion
+ */
+export interface GetFormResponseDtoSchemaVersion {
+  /**
+   * Id of the schema version.
+   * @type {string}
+   * @memberof GetFormResponseDtoSchemaVersion
+   */
+  id: string
+  /**
+   * Text representation of the version.
+   * @type {string}
+   * @memberof GetFormResponseDtoSchemaVersion
+   */
+  version: string | null
+  /**
+   * Version of the Posp form.
+   * @type {string}
+   * @memberof GetFormResponseDtoSchemaVersion
+   */
+  pospVersion: string
+  /**
+   * Description of the schema in current version.
+   * @type {string}
+   * @memberof GetFormResponseDtoSchemaVersion
+   */
+  formDescription: string | null
+  /**
+   * Posp ID of Form
+   * @type {string}
+   * @memberof GetFormResponseDtoSchemaVersion
+   */
+  pospID: string
+  /**
+   * Must be signed
+   * @type {boolean}
+   * @memberof GetFormResponseDtoSchemaVersion
+   */
+  isSigned: boolean
+  /**
+   * data.json
+   * @type {object}
+   * @memberof GetFormResponseDtoSchemaVersion
+   */
+  data: object
+  /**
+   * data.xml
+   * @type {string}
+   * @memberof GetFormResponseDtoSchemaVersion
+   */
+  dataXml: string | null
+  /**
+   * form.fo.xslt
+   * @type {string}
+   * @memberof GetFormResponseDtoSchemaVersion
+   */
+  formFo: string
+  /**
+   * form.html.sef.json
+   * @type {object}
+   * @memberof GetFormResponseDtoSchemaVersion
+   */
+  formHtmlSef: object
+  /**
+   * form.html.xslt
+   * @type {string}
+   * @memberof GetFormResponseDtoSchemaVersion
+   */
+  formHtml: string
+  /**
+   * form.sb.sef.json
+   * @type {object}
+   * @memberof GetFormResponseDtoSchemaVersion
+   */
+  formSbSef: object
+  /**
+   * form.sb.xslt
+   * @type {string}
+   * @memberof GetFormResponseDtoSchemaVersion
+   */
+  formSb: string
+  /**
+   * schema.json
+   * @type {object}
+   * @memberof GetFormResponseDtoSchemaVersion
+   */
+  jsonSchema: object
+  /**
+   * schema.xsd
+   * @type {string}
+   * @memberof GetFormResponseDtoSchemaVersion
+   */
+  schemaXsd: string
+  /**
+   * uiSchema.json
+   * @type {object}
+   * @memberof GetFormResponseDtoSchemaVersion
+   */
+  uiSchema: object
+  /**
+   * xmlTemplate
+   * @type {string}
+   * @memberof GetFormResponseDtoSchemaVersion
+   */
+  xmlTemplate: string
+  /**
+   * Id of the parent schema object.
+   * @type {string}
+   * @memberof GetFormResponseDtoSchemaVersion
+   */
+  schemaId: string
+  /**
+   * Created timestamp
+   * @type {string}
+   * @memberof GetFormResponseDtoSchemaVersion
+   */
+  createdAt: string
+  /**
+   * Updated timestamp
+   * @type {string}
+   * @memberof GetFormResponseDtoSchemaVersion
+   */
+  updatedAt: string
+  /**
+   *
+   * @type {SchemaVersionResponseDtoSchema}
+   * @memberof GetFormResponseDtoSchemaVersion
+   */
+  schema?: SchemaVersionResponseDtoSchema
+}
 /**
  *
  * @export
@@ -2518,6 +2669,194 @@ export interface SchemaResponseDto {
    * @memberof SchemaResponseDto
    */
   latestVersionId: string | null
+  /**
+   *
+   * @type {SchemaResponseDtoLatestVersion}
+   * @memberof SchemaResponseDto
+   */
+  latestVersion: SchemaResponseDtoLatestVersion | null
+}
+/**
+ * Id of the latest schema version.
+ * @export
+ * @interface SchemaResponseDtoLatestVersion
+ */
+export interface SchemaResponseDtoLatestVersion {
+  /**
+   * Id of the schema version.
+   * @type {string}
+   * @memberof SchemaResponseDtoLatestVersion
+   */
+  id: string
+  /**
+   * Text representation of the version.
+   * @type {string}
+   * @memberof SchemaResponseDtoLatestVersion
+   */
+  version: string | null
+  /**
+   * Version of the Posp form.
+   * @type {string}
+   * @memberof SchemaResponseDtoLatestVersion
+   */
+  pospVersion: string
+  /**
+   * Description of the schema in current version.
+   * @type {string}
+   * @memberof SchemaResponseDtoLatestVersion
+   */
+  formDescription: string | null
+  /**
+   * Posp ID of Form
+   * @type {string}
+   * @memberof SchemaResponseDtoLatestVersion
+   */
+  pospID: string
+  /**
+   * Must be signed
+   * @type {boolean}
+   * @memberof SchemaResponseDtoLatestVersion
+   */
+  isSigned: boolean
+  /**
+   * data.json
+   * @type {object}
+   * @memberof SchemaResponseDtoLatestVersion
+   */
+  data: object
+  /**
+   * data.xml
+   * @type {string}
+   * @memberof SchemaResponseDtoLatestVersion
+   */
+  dataXml: string | null
+  /**
+   * form.fo.xslt
+   * @type {string}
+   * @memberof SchemaResponseDtoLatestVersion
+   */
+  formFo: string
+  /**
+   * form.html.sef.json
+   * @type {object}
+   * @memberof SchemaResponseDtoLatestVersion
+   */
+  formHtmlSef: object
+  /**
+   * form.html.xslt
+   * @type {string}
+   * @memberof SchemaResponseDtoLatestVersion
+   */
+  formHtml: string
+  /**
+   * form.sb.sef.json
+   * @type {object}
+   * @memberof SchemaResponseDtoLatestVersion
+   */
+  formSbSef: object
+  /**
+   * form.sb.xslt
+   * @type {string}
+   * @memberof SchemaResponseDtoLatestVersion
+   */
+  formSb: string
+  /**
+   * schema.json
+   * @type {object}
+   * @memberof SchemaResponseDtoLatestVersion
+   */
+  jsonSchema: object
+  /**
+   * schema.xsd
+   * @type {string}
+   * @memberof SchemaResponseDtoLatestVersion
+   */
+  schemaXsd: string
+  /**
+   * uiSchema.json
+   * @type {object}
+   * @memberof SchemaResponseDtoLatestVersion
+   */
+  uiSchema: object
+  /**
+   * xmlTemplate
+   * @type {string}
+   * @memberof SchemaResponseDtoLatestVersion
+   */
+  xmlTemplate: string
+  /**
+   * Id of the parent schema object.
+   * @type {string}
+   * @memberof SchemaResponseDtoLatestVersion
+   */
+  schemaId: string
+  /**
+   * Created timestamp
+   * @type {string}
+   * @memberof SchemaResponseDtoLatestVersion
+   */
+  createdAt: string
+  /**
+   * Updated timestamp
+   * @type {string}
+   * @memberof SchemaResponseDtoLatestVersion
+   */
+  updatedAt: string
+}
+/**
+ *
+ * @export
+ * @interface SchemaResponseWithoutLatestVersionDto
+ */
+export interface SchemaResponseWithoutLatestVersionDto {
+  /**
+   * Id of the schema.
+   * @type {string}
+   * @memberof SchemaResponseWithoutLatestVersionDto
+   */
+  id: string
+  /**
+   * Name of the form
+   * @type {string}
+   * @memberof SchemaResponseWithoutLatestVersionDto
+   */
+  formName: string
+  /**
+   * Form slug
+   * @type {string}
+   * @memberof SchemaResponseWithoutLatestVersionDto
+   */
+  slug: string
+  /**
+   * Category of the form
+   * @type {string}
+   * @memberof SchemaResponseWithoutLatestVersionDto
+   */
+  category: string | null
+  /**
+   * Subject of the message
+   * @type {string}
+   * @memberof SchemaResponseWithoutLatestVersionDto
+   */
+  messageSubject: string
+  /**
+   * Created timestamp
+   * @type {string}
+   * @memberof SchemaResponseWithoutLatestVersionDto
+   */
+  createdAt: string
+  /**
+   * Updated timestamp
+   * @type {string}
+   * @memberof SchemaResponseWithoutLatestVersionDto
+   */
+  updatedAt: string
+  /**
+   * Id of the latest schema version.
+   * @type {string}
+   * @memberof SchemaResponseWithoutLatestVersionDto
+   */
+  latestVersionId: string | null
 }
 /**
  *
@@ -2676,12 +3015,6 @@ export interface SchemaVersionResponseDto {
    */
   xmlTemplate: string
   /**
-   *
-   * @type {SchemaVersionResponseDtoSchema}
-   * @memberof SchemaVersionResponseDto
-   */
-  schema?: SchemaVersionResponseDtoSchema
-  /**
    * Id of the parent schema object.
    * @type {string}
    * @memberof SchemaVersionResponseDto
@@ -2699,6 +3032,12 @@ export interface SchemaVersionResponseDto {
    * @memberof SchemaVersionResponseDto
    */
   updatedAt: string
+  /**
+   *
+   * @type {SchemaVersionResponseDtoSchema}
+   * @memberof SchemaVersionResponseDto
+   */
+  schema?: SchemaVersionResponseDtoSchema
 }
 /**
  * Parent schema object.
@@ -2754,6 +3093,133 @@ export interface SchemaVersionResponseDtoSchema {
    * @memberof SchemaVersionResponseDtoSchema
    */
   latestVersionId: string | null
+}
+/**
+ *
+ * @export
+ * @interface SchemaVersionWithoutSchemaDto
+ */
+export interface SchemaVersionWithoutSchemaDto {
+  /**
+   * Id of the schema version.
+   * @type {string}
+   * @memberof SchemaVersionWithoutSchemaDto
+   */
+  id: string
+  /**
+   * Text representation of the version.
+   * @type {string}
+   * @memberof SchemaVersionWithoutSchemaDto
+   */
+  version: string | null
+  /**
+   * Version of the Posp form.
+   * @type {string}
+   * @memberof SchemaVersionWithoutSchemaDto
+   */
+  pospVersion: string
+  /**
+   * Description of the schema in current version.
+   * @type {string}
+   * @memberof SchemaVersionWithoutSchemaDto
+   */
+  formDescription: string | null
+  /**
+   * Posp ID of Form
+   * @type {string}
+   * @memberof SchemaVersionWithoutSchemaDto
+   */
+  pospID: string
+  /**
+   * Must be signed
+   * @type {boolean}
+   * @memberof SchemaVersionWithoutSchemaDto
+   */
+  isSigned: boolean
+  /**
+   * data.json
+   * @type {object}
+   * @memberof SchemaVersionWithoutSchemaDto
+   */
+  data: object
+  /**
+   * data.xml
+   * @type {string}
+   * @memberof SchemaVersionWithoutSchemaDto
+   */
+  dataXml: string | null
+  /**
+   * form.fo.xslt
+   * @type {string}
+   * @memberof SchemaVersionWithoutSchemaDto
+   */
+  formFo: string
+  /**
+   * form.html.sef.json
+   * @type {object}
+   * @memberof SchemaVersionWithoutSchemaDto
+   */
+  formHtmlSef: object
+  /**
+   * form.html.xslt
+   * @type {string}
+   * @memberof SchemaVersionWithoutSchemaDto
+   */
+  formHtml: string
+  /**
+   * form.sb.sef.json
+   * @type {object}
+   * @memberof SchemaVersionWithoutSchemaDto
+   */
+  formSbSef: object
+  /**
+   * form.sb.xslt
+   * @type {string}
+   * @memberof SchemaVersionWithoutSchemaDto
+   */
+  formSb: string
+  /**
+   * schema.json
+   * @type {object}
+   * @memberof SchemaVersionWithoutSchemaDto
+   */
+  jsonSchema: object
+  /**
+   * schema.xsd
+   * @type {string}
+   * @memberof SchemaVersionWithoutSchemaDto
+   */
+  schemaXsd: string
+  /**
+   * uiSchema.json
+   * @type {object}
+   * @memberof SchemaVersionWithoutSchemaDto
+   */
+  uiSchema: object
+  /**
+   * xmlTemplate
+   * @type {string}
+   * @memberof SchemaVersionWithoutSchemaDto
+   */
+  xmlTemplate: string
+  /**
+   * Id of the parent schema object.
+   * @type {string}
+   * @memberof SchemaVersionWithoutSchemaDto
+   */
+  schemaId: string
+  /**
+   * Created timestamp
+   * @type {string}
+   * @memberof SchemaVersionWithoutSchemaDto
+   */
+  createdAt: string
+  /**
+   * Updated timestamp
+   * @type {string}
+   * @memberof SchemaVersionWithoutSchemaDto
+   */
+  updatedAt: string
 }
 /**
  *
@@ -3290,7 +3756,7 @@ export const ConvertApiFp = function (configuration?: Configuration) {
       formSlug: string,
       xmlToJsonRequestDto: XmlToJsonRequestDto,
       options?: AxiosRequestConfig,
-    ): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<XmlToJsonRequestDto>> {
+    ): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<XmlToJsonResponseDto>> {
       const localVarAxiosArgs = await localVarAxiosParamCreator.convertControllerConvertXmlToJson(
         formSlug,
         xmlToJsonRequestDto,
@@ -3341,7 +3807,7 @@ export const ConvertApiFactory = function (
       formSlug: string,
       xmlToJsonRequestDto: XmlToJsonRequestDto,
       options?: AxiosRequestConfig,
-    ): AxiosPromise<XmlToJsonRequestDto> {
+    ): AxiosPromise<XmlToJsonResponseDto> {
       return localVarFp
         .convertControllerConvertXmlToJson(formSlug, xmlToJsonRequestDto, options)
         .then((request) => request(axios, basePath))

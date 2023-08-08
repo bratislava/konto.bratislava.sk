@@ -24,8 +24,9 @@ const getDraftApplications = async () => {
 
 const transformFormToCardProps = (form: GetFormResponseDto): MyApplicationsDraftCardProps => {
   // TODO: Fix when BE types are fixed
-  const formSlug = (form as unknown as { schemaVersion: SchemaVersionResponseDto }).schemaVersion
-    .schema?.slug
+  const formSlug =
+    (form as unknown as { schemaVersion: SchemaVersionResponseDto }).schemaVersion.schema?.slug ??
+    ''
 
   return {
     // TODO: Title

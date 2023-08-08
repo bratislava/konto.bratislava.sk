@@ -15,21 +15,7 @@ import { getAccessTokenOrLogout } from '../../../../../frontend/utils/amplify'
 const getSentApplications = async () => {
   const accessToken = await getAccessTokenOrLogout()
 
-  //  TODO get from swagger types
-  const statesToFetch = [
-    'QUEUED',
-    'QUEUED_ERROR',
-    'CHECKING',
-    'CHECKING_ERROR',
-    'SENDING',
-    'SENDING_ERROR',
-    'SENT',
-    'SENT_ERROR',
-    'PROCESSING',
-    'PROCESSING_ERROR',
-    'FINISHED',
-    'REJECTED',
-  ] as FormState[]
+  const statesToFetch = Object.values(FormState).filter((state) => state !== 'DRAFT')
 
   const response = await formsApi.nasesControllerGetForms(
     '1',
@@ -45,8 +31,9 @@ const getSentApplications = async () => {
 
 const transformFormToCardProps = (form: GetFormResponseDto): MyApplicationsSentCardProps => {
   // TODO: Fix when BE types are fixed
-  const formSlug = (form as unknown as { schemaVersion: SchemaVersionResponseDto }).schemaVersion
-    .schema?.slug
+  const formSlug =
+    (form as unknown as { schemaVersion: SchemaVersionResponseDto }).schemaVersion.schema?.slug ??
+    ''
 
   return {
     // TODO: Title

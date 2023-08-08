@@ -34,8 +34,8 @@ export const getServerSideProps: GetServerSideProps<FormPageWrapperProps, Params
     accessToken: 'onlyAuthenticated',
     accessTokenSsrReq: ctx.req,
   })
-  const { latestVersionId } = schema.data
-  if (!latestVersionId || !schema.data.latestVersion) {
+  const { latestVersionId, latestVersion } = schema.data
+  if (!latestVersionId || !latestVersion) {
     return {
       notFound: true,
     }
@@ -59,8 +59,8 @@ export const getServerSideProps: GetServerSideProps<FormPageWrapperProps, Params
 
   return {
     props: {
-      schema: schema.data.latestVersion.jsonSchema,
-      uiSchema: schema.data.latestVersion.uiSchema,
+      schema: latestVersion.jsonSchema,
+      uiSchema: latestVersion.uiSchema,
       ssrCurrentAuthProps,
       page: {
         locale,

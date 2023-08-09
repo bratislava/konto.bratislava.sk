@@ -162,7 +162,7 @@ export const FormStateProvider = ({
     // existing data, as each step contains only one root property with the data this object spread
     // will overwrite the existing step data with the new ones, which is an expected behaviour.
     const newData = { ...formData, ...stepFormData }
-    const pickedPropertiesData = removeUnusedPropertiesFromFormData(newData, schema)
+    const pickedPropertiesData = removeUnusedPropertiesFromFormData(schema, newData)
 
     const fileUuids = getFileUuidsNaive(pickedPropertiesData)
     keepFiles(fileUuids)
@@ -171,7 +171,7 @@ export const FormStateProvider = ({
   }
 
   const setImportedFormData = (importedFormData: GenericObjectType) => {
-    const pickedPropertiesData = removeUnusedPropertiesFromFormData(importedFormData, schema)
+    const pickedPropertiesData = removeUnusedPropertiesFromFormData(schema, importedFormData)
 
     const evaluatedSchemas = getEvaluatedStepsSchemas(schema, importedFormData)
     if (

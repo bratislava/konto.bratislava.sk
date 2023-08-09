@@ -9,6 +9,7 @@ import { GetSSRCurrentAuth } from '../logic/ServerSideAuthProvider'
 import FormPage from './FormPage'
 import { FormStateProvider } from './FormStateProvider'
 import { FormFileUploadStateProvider } from './useFormFileUpload'
+import { FormModalsProvider } from './useFormModals'
 
 export type FormPageWrapperProps = {
   schema: RJSFSchema
@@ -33,7 +34,9 @@ const FormPageWrapper = ({ schema, uiSchema, page, initialFormData }: FormPageWr
             formSlug={formSlug}
             initialFormData={initialFormData}
           >
-            <FormPage />
+            <FormModalsProvider initialFormData={initialFormData}>
+              <FormPage />
+            </FormModalsProvider>
           </FormStateProvider>
         </FormFileUploadStateProvider>
       </AccountPageLayout>

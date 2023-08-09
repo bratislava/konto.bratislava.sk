@@ -50,19 +50,36 @@ const ButtonMobile = ({ text, endIcon, href = '', title }: ButtonMobileBase) => 
   )
 }
 
+export enum RegistrationModalType {
+  Initial = 'Initial',
+  NotAuthenticatedConceptSave = 'NotAuthenticatedConceptSave',
+  NotVerifiedSubmitForm = 'NotVerifiedSubmitForm',
+}
+
 type RegistrationModalBase = {
-  title: string
-  subtitle: string
+  type: RegistrationModalType | null
   isBottomButtons?: boolean
 } & ModalV2Props
 
-const RegistrationModal = ({
-  title,
-  subtitle,
-  isBottomButtons = true,
-  ...rest
-}: RegistrationModalBase) => {
+const RegistrationModal = ({ type, isBottomButtons = true, ...rest }: RegistrationModalBase) => {
   const { t } = useTranslation('account')
+
+  const { title, subtitle } = type
+    ? {
+        [RegistrationModalType.Initial]: {
+          title: 'register_modal.header_sent_title',
+          subtitle: 'register_modal.header_sent_subtitle',
+        },
+        [RegistrationModalType.NotAuthenticatedConceptSave]: {
+          title: 'register_modal.header_sent_title',
+          subtitle: 'register_modal.header_sent_subtitle',
+        },
+        [RegistrationModalType.NotVerifiedSubmitForm]: {
+          title: 'register_modal.header_sent_title',
+          subtitle: 'register_modal.header_sent_subtitle',
+        },
+      }[type]
+    : { title: null, subtitle: null }
 
   const modalBodyList: string[] = [
     t('register_modal.body_list.1'),
@@ -75,8 +92,8 @@ const RegistrationModal = ({
   return (
     <ModalV2 {...rest}>
       <div className="mb-6 flex flex-col gap-2">
-        <h3 className="text-h3">{title}</h3>
-        <p className="text-p1">{subtitle}</p>
+        {title && <h3 className="text-h3">{t(title)}</h3>}
+        {subtitle && <p className="text-p1">{t(subtitle)}</p>}
       </div>
       <div className="flex flex-col">
         <div className="rounded-t-lg bg-main-100 p-4 md:px-6 md:pb-6 md:pt-5">

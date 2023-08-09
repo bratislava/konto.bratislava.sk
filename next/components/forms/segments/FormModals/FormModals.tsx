@@ -1,25 +1,33 @@
 import { useServerSideAuth } from 'frontend/hooks/useServerSideAuth'
-import { useTranslation } from 'next-i18next'
-import React, { useState } from 'react'
+import React from 'react'
 
 import { useFormState } from '../../FormStateProvider'
+import { useFormModals } from '../../useFormModals'
 import IdentityVerificationModal from '../IdentityVerificationModal/IdentityVerificationModal'
+import OldSchemaVersionModal from '../OldSchemaVersionModal/OldSchemaVersionModal'
 import RegistrationModal from '../RegistrationModal/RegistrationModal'
 import SkipStepModal from '../SkipStepModal/SkipStepModal'
 
 const FormModals = () => {
+  const {
+    oldSchemaModal,
+    setOldSchemaModal,
+    registrationModal,
+    setRegistrationModal,
+    identityVerificationModal,
+    setIdentityVerificationModal,
+  } = useFormModals()
   const { skipModal } = useFormState()
-  const { t } = useTranslation('account')
 
-  const { isAuthenticated, tierStatus, accountType } = useServerSideAuth()
-
-  const [registrationModal, setRegistrationModal] = useState<boolean>(!isAuthenticated)
-  const [identityVerificationModal, setIdentityVerificationModal] = useState(
-    isAuthenticated && !tierStatus.isIdentityVerified,
-  )
+  const { accountType } = useServerSideAuth()
 
   return (
     <>
+      <OldSchemaVersionModal
+        isOpen={oldSchemaModal}
+        onOpenChange={setOldSchemaModal}
+        isDismissable
+      />
       <SkipStepModal
         isOpen={skipModal.open}
         onOpenChange={skipModal.open ? skipModal.onOpenChange : () => {}}
@@ -27,10 +35,13 @@ const FormModals = () => {
         isDismissable
       />
       <RegistrationModal
-        title={t('register_modal.header_sent_title')}
-        subtitle={t('register_modal.header_sent_subtitle')}
-        isOpen={registrationModal}
-        onOpenChange={setRegistrationModal}
+        type={registrationModal}
+        isOpen={registrationModal != null}
+        onOpenChange={(value) => {
+          if (value) {
+            setRegistrationModal(null)
+          }
+        }}
         isDismissable
       />
       <IdentityVerificationModal

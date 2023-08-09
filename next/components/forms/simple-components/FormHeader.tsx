@@ -22,9 +22,7 @@ import { useFormExportImport } from '../../../frontend/hooks/useFormExportImport
 const FormHeader = () => {
   const { exportXml, exportPdf, importXml, saveConcept } = useFormExportImport()
   const { t } = useTranslation('forms')
-  const { isAuthenticated } = useServerSideAuth()
 
-  const [registrationModal, setRegistrationModal] = useState<boolean>(false)
   const [isMenuOpen, setIsMenuOpen] = useState<boolean>(false)
 
   const formHeaderMenuContent: MenuItemBase[] = [
@@ -40,14 +38,6 @@ const FormHeader = () => {
       onPress: importXml,
     },
   ]
-
-  const handleOnPressSaveConcept = async () => {
-    if (!isAuthenticated) {
-      setRegistrationModal(true)
-    } else {
-      await saveConcept()
-    }
-  }
 
   return (
     <div className="relative flex flex-col">
@@ -66,7 +56,7 @@ const FormHeader = () => {
               startIcon={<DiscIcon className="h-5 w-5" />}
               text={t('menu_list.save_concept')}
               className="text-gray-700 hover:text-gray-600 focus:text-gray-800"
-              onPress={handleOnPressSaveConcept}
+              onPress={saveConcept}
             />
             <MenuDropdown
               setIsOpen={setIsMenuOpen}
@@ -86,15 +76,6 @@ const FormHeader = () => {
         className="hidden lg:block"
         waveColor="rgb(var(--color-main-200))"
         wavePosition="bottom"
-      />
-      {/* TODO: Refactor save and move to FormModals */}
-      <RegistrationModal
-        title={t('account:register_modal.header_save_title')}
-        subtitle={t('account:register_modal.header_save_subtitle')}
-        isBottomButtons={false}
-        isOpen={registrationModal}
-        onOpenChange={setRegistrationModal}
-        isDismissable
       />
     </div>
   )

@@ -1,3 +1,4 @@
+import formDefinitions from '@backend/forms'
 import { formsApi } from '@clients/forms'
 import { GetServerSideProps } from 'next'
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
@@ -59,7 +60,7 @@ export const getServerSideProps: GetServerSideProps<FormPageWrapperProps, Params
 
   return {
     props: {
-      schema: latestVersion.jsonSchema,
+      schema: formDefinitions.test.schema,
       uiSchema: latestVersion.uiSchema,
       ssrCurrentAuthProps,
       page: {
@@ -69,6 +70,7 @@ export const getServerSideProps: GetServerSideProps<FormPageWrapperProps, Params
         formId: form.id,
         formDataJson: form.formDataJson ?? {},
         files: [],
+        oldSchemaVersion: !form.isLatestSchemaVersionForSlug,
       },
       ...(await serverSideTranslations(locale)),
     } satisfies FormPageWrapperProps,

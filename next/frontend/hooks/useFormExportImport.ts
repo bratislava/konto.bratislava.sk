@@ -4,12 +4,17 @@ import { useTranslation } from 'next-i18next'
 import { ChangeEvent } from 'react'
 
 import { useFormState } from '../../components/forms/FormStateProvider'
+import { RegistrationModalType } from '../../components/forms/segments/RegistrationModal/RegistrationModal'
+import { useFormModals } from '../../components/forms/useFormModals'
 import { readTextFile } from '../utils/file'
 import { downloadBlob } from '../utils/general'
+import { useServerSideAuth } from './useServerSideAuth'
 import useSnackbar from './useSnackbar'
 
 export const useFormExportImport = () => {
+  const { isAuthenticated } = useServerSideAuth()
   const { formId, formData, formSlug, setImportedFormData } = useFormState()
+  const { setRegistrationModal } = useFormModals()
   const { t } = useTranslation('forms')
 
   const [openSnackbarError] = useSnackbar({ variant: 'error' })
@@ -79,6 +84,11 @@ export const useFormExportImport = () => {
   }
 
   const saveConcept = async () => {
+    if (!isAuthenticated) {
+      setRegistrationModal(RegistrationModalType.NotAuthenticatedConceptSave)
+      return
+    }
+
     try {
       await formsApi.nasesControllerUpdateForm(
         formId,

@@ -19,23 +19,14 @@ const MenuList = () => {
 
   const { t } = useTranslation('forms')
 
-  const { isAuthenticated } = useServerSideAuth()
   const [registrationModal, setRegistrationModal] = useState<boolean>(false)
-
-  const handleOnPressSaveConcept = async () => {
-    if (!isAuthenticated) {
-      setRegistrationModal(true)
-    } else {
-      await saveConcept()
-    }
-  }
 
   const menuList: MenuItem[] = [
     {
       title: t('menu_list.save_concept'),
       icon: <DiscIcon className="h-6 w-6" />,
       // eslint-disable-next-line @typescript-eslint/no-misused-promises
-      onPress: handleOnPressSaveConcept,
+      onPress: () => saveConcept(),
     },
     {
       title: t('menu_list.download_xml'),
@@ -57,40 +48,29 @@ const MenuList = () => {
   ]
 
   return (
-    <>
-      <ul className="mt-4 flex flex-col gap-3 border-t-2 border-gray-200 pt-4 lg:hidden">
-        {menuList.map((menuItem, i) =>
-          menuItem.url ? (
-            <li className="w-max" key={i}>
-              <Link href={menuItem.url}>
-                <div className="flex items-center gap-3">
-                  {menuItem.icon}
-                  <span className="text-p2">{menuItem.title}</span>
-                </div>
-              </Link>
-            </li>
-          ) : (
-            <li className="w-max" key={i}>
-              <button type="button" onClick={menuItem.onPress}>
-                <div className="flex items-center gap-3">
-                  {menuItem.icon}
-                  <span className="text-p2">{menuItem.title}</span>
-                </div>
-              </button>
-            </li>
-          ),
-        )}
-      </ul>
-      {/* TODO: Refactor save and move to FormModals */}
-      <RegistrationModal
-        title={t('account:register_modal.header_save_title')}
-        subtitle={t('account:register_modal.header_save_subtitle')}
-        isBottomButtons={false}
-        isOpen={registrationModal}
-        onOpenChange={setRegistrationModal}
-        isDismissable
-      />
-    </>
+    <ul className="mt-4 flex flex-col gap-3 border-t-2 border-gray-200 pt-4 lg:hidden">
+      {menuList.map((menuItem, i) =>
+        menuItem.url ? (
+          <li className="w-max" key={i}>
+            <Link href={menuItem.url}>
+              <div className="flex items-center gap-3">
+                {menuItem.icon}
+                <span className="text-p2">{menuItem.title}</span>
+              </div>
+            </Link>
+          </li>
+        ) : (
+          <li className="w-max" key={i}>
+            <button type="button" onClick={menuItem.onPress}>
+              <div className="flex items-center gap-3">
+                {menuItem.icon}
+                <span className="text-p2">{menuItem.title}</span>
+              </div>
+            </button>
+          </li>
+        ),
+      )}
+    </ul>
   )
 }
 

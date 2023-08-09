@@ -65,6 +65,7 @@ export const getServerSideProps: GetServerSideProps<FormPageWrapperProps, Params
       initialFormData: {
         formId: id,
         formDataJson: form.formDataJson ?? {},
+        oldSchemaVersion: !form.isLatestSchemaVersionForSlug,
         files,
       },
       ...(await serverSideTranslations(locale)),

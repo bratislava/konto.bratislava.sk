@@ -82,15 +82,14 @@ const MenuList = () => {
         )}
       </ul>
       {/* TODO: Refactor save and move to FormModals */}
-      {isAuthenticated && (
-        <RegistrationModal
-          title={t('account:register_modal.header_save_title')}
-          subtitle={t('account:register_modal.header_save_subtitle')}
-          isBottomButtons={false}
-          show={registrationModal}
-          onClose={() => setRegistrationModal(false)}
-        />
-      )}
+      <RegistrationModal
+        title={t('account:register_modal.header_save_title')}
+        subtitle={t('account:register_modal.header_save_subtitle')}
+        isBottomButtons={false}
+        isOpen={registrationModal}
+        onOpenChange={setRegistrationModal}
+        isDismissable
+      />
     </>
   )
 }

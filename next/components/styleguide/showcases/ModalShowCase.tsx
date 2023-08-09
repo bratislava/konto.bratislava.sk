@@ -277,13 +277,15 @@ const ModalShowCase = () => {
         <RegistrationModal
           title={t('register_modal.header_sent_title')}
           subtitle={t('register_modal.header_sent_subtitle')}
-          show={registrationModal}
-          onClose={() => setRegistrationModal(false)}
+          isOpen={registrationModal}
+          onOpenChange={setRegistrationModal}
+          isDismissable
         />
-        <SkipStepModal show={skipStepModal} onClose={() => setSkipStepModal(false)} />
+        <SkipStepModal isOpen={skipStepModal} onOpenChange={setSkipStepModal} isDismissable />
         <IdentityVerificationModal
-          show={identityVerificationModal}
-          onClose={() => setIdentityVerificationModal(false)}
+          isOpen={identityVerificationModal}
+          onOpenChange={setIdentityVerificationModal}
+          isDismissable
         />
       </Stack>
     </Wrapper>

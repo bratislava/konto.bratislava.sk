@@ -87,15 +87,15 @@ const FormHeader = () => {
         waveColor="rgb(var(--color-main-200))"
         wavePosition="bottom"
       />
-      {!isAuthenticated && (
-        <RegistrationModal
-          title={t('account:register_modal.header_save_title')}
-          subtitle={t('account:register_modal.header_save_subtitle')}
-          isBottomButtons={false}
-          show={registrationModal}
-          onClose={() => setRegistrationModal(false)}
-        />
-      )}
+      {/* TODO: Refactor save and move to FormModals */}
+      <RegistrationModal
+        title={t('account:register_modal.header_save_title')}
+        subtitle={t('account:register_modal.header_save_subtitle')}
+        isBottomButtons={false}
+        isOpen={registrationModal}
+        onOpenChange={setRegistrationModal}
+        isDismissable
+      />
     </div>
   )
 }

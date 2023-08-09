@@ -9,7 +9,7 @@ export const useServerSideAuth = () => {
   return {
     ...serverSideAuthContext,
     isAuthenticated: !!userData,
-    isLegalEntity: userData?.['custom:account_type'] === 'po',
+    accountType: userData?.['custom:account_type'],
     tierStatus: {
       tier,
       isIdentityVerified: tier === Tier.IDENTITY_CARD || tier === Tier.EID,

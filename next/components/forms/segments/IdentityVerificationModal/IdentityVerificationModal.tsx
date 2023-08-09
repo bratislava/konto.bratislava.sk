@@ -5,16 +5,14 @@ import { useRouter } from 'next/router'
 import { useTranslation } from 'next-i18next'
 import React from 'react'
 
+import { AccountType } from '../../../../frontend/dtos/accountDto'
 import ModalV2, { ModalV2Props } from '../../simple-components/ModalV2'
 
 type IdentityVerificationModalProps = {
-  isLegalEntity?: boolean
+  accountType: AccountType | undefined
 } & ModalV2Props
 
-const IdentityVerificationModal = ({
-  isLegalEntity = false,
-  ...rest
-}: IdentityVerificationModalProps) => {
+const IdentityVerificationModal = ({ accountType, ...rest }: IdentityVerificationModalProps) => {
   const { t } = useTranslation('account')
   const router = useRouter()
 
@@ -35,9 +33,13 @@ const IdentityVerificationModal = ({
                   className="text-center"
                   variant="sm"
                   content={`<span className='text-p2'>${
-                    isLegalEntity ? t('verification_modal.subtitle_individual_person') : ''
+                    accountType === AccountType.PravnickaOsoba
+                      ? t('verification_modal.subtitle_individual_person')
+                      : ''
                   }${
-                    isLegalEntity ? t('verification_modal.subtitle_juridical_person') : ''
+                    accountType === AccountType.PravnickaOsoba
+                      ? t('verification_modal.subtitle_juridical_person')
+                      : ''
                   }</span>`}
                 />
                 <p className="text-p3 text-center">{t('verification_modal.info')}</p>

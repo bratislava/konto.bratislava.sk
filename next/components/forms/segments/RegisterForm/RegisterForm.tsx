@@ -7,7 +7,7 @@ import PasswordField from 'components/forms/widget-components/PasswordField/Pass
 import Radio from 'components/forms/widget-components/RadioButton/Radio'
 import RadioGroup from 'components/forms/widget-components/RadioButton/RadioGroup'
 import { environment } from 'environment'
-import { UserData } from 'frontend/dtos/accountDto'
+import { AccountType, UserData } from 'frontend/dtos/accountDto'
 import useHookForm from 'frontend/hooks/useHookForm'
 import { isBrowser } from 'frontend/utils/general'
 import logger from 'frontend/utils/logger'
@@ -25,7 +25,7 @@ interface Data {
   password: string
   passwordConfirmation: string
   turnstileToken: string
-  account_type: 'fo' | 'po'
+  account_type: AccountType
 }
 
 interface Props {
@@ -124,7 +124,7 @@ const RegisterForm = ({ onSubmit, error, lastEmail, disablePO }: Props) => {
   } = useHookForm<Data>({
     schema,
     defaultValues: {
-      account_type: 'fo',
+      account_type: AccountType.FyzickaOsoba,
       email: '',
       family_name: '',
       given_name: '',
@@ -200,7 +200,7 @@ const RegisterForm = ({ onSubmit, error, lastEmail, disablePO }: Props) => {
           />
         )}
       />
-      {type === 'fo' && (
+      {type === AccountType.FyzickaOsoba && (
         <>
           <Controller
             name="given_name"
@@ -232,7 +232,7 @@ const RegisterForm = ({ onSubmit, error, lastEmail, disablePO }: Props) => {
           />
         </>
       )}
-      {type === 'po' && (
+      {type === AccountType.PravnickaOsoba && (
         <Controller
           name="name"
           control={control}

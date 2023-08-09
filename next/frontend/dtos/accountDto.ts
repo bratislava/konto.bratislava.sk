@@ -16,7 +16,11 @@ export interface Address {
   phone_number?: string
 }
 
-export type AccountType = 'fo' | 'po'
+export enum AccountType {
+  FyzickaOsoba = 'fo',
+  PravnickaOsoba = 'po',
+  FyzickaOsobaPodnikatel = 'fo-p',
+}
 
 // as returned by Amplify.Auth.currentAuthenticatedUser().attributes
 // sent from BE as server side props

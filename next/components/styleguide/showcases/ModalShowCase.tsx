@@ -4,7 +4,7 @@ import { PhoneNumberData } from 'components/forms/segments/PhoneNumberForm/Phone
 import RegistrationModal from 'components/forms/segments/RegistrationModal/RegistrationModal'
 import SkipStepModal from 'components/forms/segments/SkipStepModal/SkipStepModal'
 import Modal from 'components/forms/widget-components/Modals/Modal'
-import { Address } from 'frontend/dtos/accountDto'
+import { AccountType, Address } from 'frontend/dtos/accountDto'
 import { useTranslation } from 'next-i18next'
 import { useState } from 'react'
 
@@ -285,6 +285,7 @@ const ModalShowCase = () => {
         <IdentityVerificationModal
           isOpen={identityVerificationModal}
           onOpenChange={setIdentityVerificationModal}
+          accountType={AccountType.FyzickaOsoba}
           isDismissable
         />
       </Stack>

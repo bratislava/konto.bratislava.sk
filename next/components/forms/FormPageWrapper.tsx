@@ -10,6 +10,7 @@ import FormPage from './FormPage'
 import { FormStateProvider } from './FormStateProvider'
 import { FormFileUploadStateProvider } from './useFormFileUpload'
 import { FormModalsProvider } from './useFormModals'
+import { FormExportImportProvider } from '../../frontend/hooks/useFormExportImport'
 
 export type FormPageWrapperProps = {
   schema: RJSFSchema
@@ -35,7 +36,9 @@ const FormPageWrapper = ({ schema, uiSchema, page, initialFormData }: FormPageWr
             initialFormData={initialFormData}
           >
             <FormModalsProvider initialFormData={initialFormData}>
-              <FormPage />
+              <FormExportImportProvider>
+                <FormPage />
+              </FormExportImportProvider>
             </FormModalsProvider>
           </FormStateProvider>
         </FormFileUploadStateProvider>

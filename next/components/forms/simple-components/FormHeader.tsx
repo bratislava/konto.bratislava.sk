@@ -6,13 +6,11 @@ import {
   PdfIcon,
 } from '@assets/ui-icons'
 import cx from 'classnames'
-import RegistrationModal from 'components/forms/segments/RegistrationModal/RegistrationModal'
 import Button from 'components/forms/simple-components/Button'
 import MenuDropdown, {
   MenuItemBase,
 } from 'components/forms/simple-components/MenuDropdown/MenuDropdown'
 import Waves from 'components/forms/simple-components/Waves/Waves'
-import { useServerSideAuth } from 'frontend/hooks/useServerSideAuth'
 import Link from 'next/link'
 import { useTranslation } from 'next-i18next'
 import { useState } from 'react'
@@ -56,7 +54,7 @@ const FormHeader = () => {
               startIcon={<DiscIcon className="h-5 w-5" />}
               text={t('menu_list.save_concept')}
               className="text-gray-700 hover:text-gray-600 focus:text-gray-800"
-              onPress={saveConcept}
+              onPress={() => saveConcept()}
             />
             <MenuDropdown
               setIsOpen={setIsMenuOpen}

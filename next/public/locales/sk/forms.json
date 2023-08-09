@@ -25,6 +25,7 @@
     "pdf_export": "PDF bolo stiahnuté"
   },
   "info_messages": {
+    "concept_save": "Koncept sa ukladá.",
     "xml_export": "XML sa sťahuje",
     "xml_import": "XML sa sťahuje",
     "pdf_export": "PDF sa sťahuje"
@@ -78,5 +79,35 @@
     "pdf": "Stiahnuť ako PDF",
     "upload_xml": "Nahrať z XML",
     "guide": "Návod"
+  },
+  "concept_save_error_modal": {
+    "title": "Žiadosť sa nepodarilo uložiť",
+    "text": "Vašu žiadosť sa nepodarilo uložiť do konceptov. Opakujte akciu alebo to vyskúšajte neskôr.",
+    "button_back_text": "Späť",
+    "button_repeat_text": "Opakovať"
+  },
+  "registration_modal": {
+    "header_initial_title": "Žiadosť je možné odoslať cez Bratislavské konto alebo pomocou eID",
+    "header_initial_subtitle": "Na to, aby ste mohli žiadosť odoslať, potrebujete mať vytvorené Bratislavské konto s overenou identitou alebo použiť elektronický občiansky preukazu cez slovensko.sk. Bez toho viete žiadosť iba vyplniť a stiahnuť.",
+    "header_not_authenticated_concept_save_title": "Žiadosť je možné uložiť do konceptov len cez Bratislavské konto",
+    "header_not_authenticated_concept_save_subtitle": "Na to, aby ste si mohli túto žiadosť uložiť do konceptov, potrebujete mať vytvorené Bratislavské konto. Bez toho viete žiadosť iba vyplniť a stiahnuť.",
+    "header_not_verified_submit_form_title": "Žiadosť je možné odoslať cez Bratislavské konto alebo pomocou eID",
+    "header_not_verified_submit_form_subtitle": "Na to, aby ste mohli žiadosť odoslať, potrebujete mať vytvorené Bratislavské konto s overenou identitou alebo použiť elektronický občiansky preukazu cez slovensko.sk. Bez toho viete žiadosť iba vyplniť a stiahnuť, ale nie odoslať.",
+    "body_title": "Vytvorte si Bratislavské konto",
+    "body_list": [
+      "Nájdite všetky služby mesta na jednom mieste",
+      "Sledujte aktuálny stav podaných žiadostí a čo sa s nimi deje v čase",
+      "Majte prehľad o daniach a poplatkoch",
+      "Využívajte dôveryhodné digitálne služby pod hlavičkou hlavného mesta",
+      "Uložte si žiadosti a vráťte sa k ním kedykoľvek budete chcieť"
+    ],
+    "body_action": "Vytvoriť Bratislavské konto",
+    "body_login_description": "Máte už konto?",
+    "body_login_link": "Prihlásiť sa",
+    "footer_choice": "alebo",
+    "buttons_initial_continue_eid": "Pokračovať s eID",
+    "buttons_initial_skip": "Preskočiť na žiadosť",
+    "buttons_not_verified_submit_back": "Späť na žiadosť",
+    "buttons_not_verified_submit_send": "Odoslať s eID"
   }
 }

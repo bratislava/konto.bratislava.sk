@@ -2,17 +2,13 @@ import React, { createContext, PropsWithChildren, useContext, useState } from 'r
 
 import { useServerSideAuth } from '../../frontend/hooks/useServerSideAuth'
 import { InitialFormData } from '../../frontend/types/initialFormData'
-import { useFormState } from './FormStateProvider'
 import { RegistrationModalType } from './segments/RegistrationModal/RegistrationModal'
-import { FormFileUploadStateProviderProps } from './useFormFileUpload'
 
 const useGetContext = (initialFormData: InitialFormData) => {
   const { isAuthenticated, tierStatus } = useServerSideAuth()
-  const { skipModal } = useFormState()
 
-  const [oldSchemaModal, setOldSchemaModal] = useState<boolean>(
-    true || initialFormData.oldSchemaVersion,
-  )
+  const [conceptSaveErrorModal, setConceptSaveErrorModal] = useState(false)
+  const [oldSchemaModal, setOldSchemaModal] = useState<boolean>(initialFormData.oldSchemaVersion)
   const [registrationModal, setRegistrationModal] = useState<RegistrationModalType | null>(
     !oldSchemaModal && !isAuthenticated ? RegistrationModalType.Initial : null,
   )
@@ -27,15 +23,21 @@ const useGetContext = (initialFormData: InitialFormData) => {
     setRegistrationModal,
     identityVerificationModal,
     setIdentityVerificationModal,
+    conceptSaveErrorModal,
+    setConceptSaveErrorModal,
   }
 }
 
 const FormModalsContext = createContext<ReturnType<typeof useGetContext> | undefined>(undefined)
 
+type FormModalsProviderProps = {
+  initialFormData: InitialFormData
+}
+
 export const FormModalsProvider = ({
   initialFormData,
   children,
-}: PropsWithChildren<FormFileUploadStateProviderProps>) => {
+}: PropsWithChildren<FormModalsProviderProps>) => {
   const context = useGetContext(initialFormData)
 
   return <FormModalsContext.Provider value={context}>{children}</FormModalsContext.Provider>

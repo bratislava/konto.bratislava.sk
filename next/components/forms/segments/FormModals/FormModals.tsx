@@ -3,6 +3,7 @@ import React from 'react'
 
 import { useFormState } from '../../FormStateProvider'
 import { useFormModals } from '../../useFormModals'
+import ConceptSaveErrorModal from '../ConceptSaveErrorModal/ConceptSaveErrorModal'
 import IdentityVerificationModal from '../IdentityVerificationModal/IdentityVerificationModal'
 import OldSchemaVersionModal from '../OldSchemaVersionModal/OldSchemaVersionModal'
 import RegistrationModal from '../RegistrationModal/RegistrationModal'
@@ -16,6 +17,8 @@ const FormModals = () => {
     setRegistrationModal,
     identityVerificationModal,
     setIdentityVerificationModal,
+    conceptSaveErrorModal,
+    setConceptSaveErrorModal,
   } = useFormModals()
   const { skipModal } = useFormState()
 
@@ -48,6 +51,11 @@ const FormModals = () => {
         isOpen={identityVerificationModal}
         onOpenChange={setIdentityVerificationModal}
         accountType={accountType}
+        isDismissable
+      />
+      <ConceptSaveErrorModal
+        isOpen={conceptSaveErrorModal}
+        onOpenChange={setConceptSaveErrorModal}
         isDismissable
       />
     </>

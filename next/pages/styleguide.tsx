@@ -22,7 +22,7 @@ import FieldHeaderShowCase from '../components/styleguide/showcases/FieldHeaderS
 import IconShowCase from '../components/styleguide/showcases/IconShowCase'
 import ModalShowCase from '../components/styleguide/showcases/ModalShowCase'
 import ProgressBarShowCase from '../components/styleguide/showcases/ProgressBarShowCase'
-import RadioButtonShowCase from '../components/styleguide/showcases/RadioButtonShowCase'
+import RadioGroupShowCase from '../components/styleguide/showcases/RadioGroupShowCase'
 import SearchFieldShowCase from '../components/styleguide/showcases/SearchFieldShowCase'
 import SelectFieldNewShowCase from '../components/styleguide/showcases/SelectFieldNewShowCase'
 import SelectFieldShowCase from '../components/styleguide/showcases/SelectFieldShowCase'
@@ -75,7 +75,7 @@ const Styleguide = ({ page }: AsyncServerProps<typeof getServerSideProps>) => {
           <ProgressBarShowCase />
           <SingleCheckboxShowCase />
           <CheckboxGroupShowCase />
-          <RadioButtonShowCase />
+          <RadioGroupShowCase />
           {/* TODO: Fix stepper showcase */}
           {/* <StepperShowCase /> */}
           <SummaryRowShowCase />

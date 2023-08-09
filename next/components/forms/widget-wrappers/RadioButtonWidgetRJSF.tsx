@@ -53,7 +53,7 @@ const RadioButtonsWidgetRJSF = (props: RadioButtonFieldWidgetRJSFProps) => {
         onChange={onChange}
         className={className}
         label={label}
-        orientations={orientations}
+        orientation={orientations === 'column' ? 'vertical' : 'horizontal'}
         required={required}
       >
         {enumOptions.map((radioElement: EnumOptionsType) => {

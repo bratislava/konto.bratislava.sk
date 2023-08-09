@@ -829,5 +829,8 @@
   },
   "FieldHeader": {
     "optional": "Nepovinné"
+  },
+  "RadioGroup": {
+    "resetChoice": "Vymazať výber"
   }
 }

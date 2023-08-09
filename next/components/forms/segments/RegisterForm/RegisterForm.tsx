@@ -173,7 +173,7 @@ const RegisterForm = ({ onSubmit, error, lastEmail, disablePO }: Props) => {
               onChange={field.onChange}
               value={field.value}
               label={t('account_type_label')}
-              orientations={isMobile ? 'column' : 'row'}
+              orientation={isMobile ? 'vertical' : 'horizontal'}
             >
               <Radio value="fo" variant="boxed">
                 {t('fo_label')}

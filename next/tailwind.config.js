@@ -155,6 +155,8 @@ module.exports = {
           600: 'rgb(var(--color-gray-600))',
           700: 'rgb(var(--color-gray-700))',
           800: 'rgb(var(--color-gray-800))',
+          // TODO: Fix opacity in the whole project
+          '800/40': 'rgba(var(--color-gray-800), 0.4)',
         },
         success: {
           50: 'rgb(var(--color-success-50))',

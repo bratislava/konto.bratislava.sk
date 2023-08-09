@@ -13,30 +13,32 @@ const FormModals = () => {
 
   const { isAuthenticated, tierStatus, isLegalEntity } = useServerSideAuth()
 
-  const [registrationModal, setRegistrationModal] = useState<boolean>(true)
-  const [identityVerificationModal, setIdentityVerificationModal] = useState(true)
+  const [registrationModal, setRegistrationModal] = useState<boolean>(!isAuthenticated)
+  const [identityVerificationModal, setIdentityVerificationModal] = useState(
+    isAuthenticated && !tierStatus.isIdentityVerified,
+  )
 
   return (
     <>
-      {skipModal.open && (
-        <SkipStepModal show onClose={skipModal.onClose} onSkip={skipModal.onSkip} />
-      )}
-
-      {!isAuthenticated && (
-        <RegistrationModal
-          title={t('register_modal.header_sent_title')}
-          subtitle={t('register_modal.header_sent_subtitle')}
-          show={registrationModal}
-          onClose={() => setRegistrationModal(false)}
-        />
-      )}
-      {isAuthenticated && !tierStatus.isIdentityVerified && (
-        <IdentityVerificationModal
-          show={identityVerificationModal}
-          onClose={() => setIdentityVerificationModal(false)}
-          isLegalEntity={isLegalEntity}
-        />
-      )}
+      <SkipStepModal
+        isOpen={skipModal.open}
+        onOpenChange={skipModal.open ? skipModal.onOpenChange : () => {}}
+        onSkip={skipModal.open ? skipModal.onSkip : () => {}}
+        isDismissable
+      />
+      <RegistrationModal
+        title={t('register_modal.header_sent_title')}
+        subtitle={t('register_modal.header_sent_subtitle')}
+        isOpen={registrationModal}
+        onOpenChange={setRegistrationModal}
+        isDismissable
+      />
+      <IdentityVerificationModal
+        isOpen={identityVerificationModal}
+        onOpenChange={setIdentityVerificationModal}
+        isLegalEntity={isLegalEntity}
+        isDismissable
+      />
     </>
   )
 }

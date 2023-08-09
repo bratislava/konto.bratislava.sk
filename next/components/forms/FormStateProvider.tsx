@@ -17,7 +17,7 @@ import { FormStepIndex, FormStepperStep } from './types/Steps'
 import { useFormFileUpload } from './useFormFileUpload'
 
 type SkipModal =
-  | { open: true; skipAllowed: false; onSkip: () => void; onClose: () => void }
+  | { open: true; skipAllowed: false; onSkip: () => void; onOpenChange: (value: boolean) => void }
   | { open: false; skipAllowed: boolean }
 
 interface FormState {
@@ -106,7 +106,10 @@ export const FormStateProvider = ({
           setSkipModal({ open: false, skipAllowed: true })
           goToStep(newStepIndex)
         },
-        onClose: () => {
+        onOpenChange: (value) => {
+          if (value) {
+            return
+          }
           setSkipModal((value) => ({ open: false, skipAllowed: value.skipAllowed }))
         },
       })

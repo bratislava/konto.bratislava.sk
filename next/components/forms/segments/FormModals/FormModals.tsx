@@ -11,7 +11,7 @@ const FormModals = () => {
   const { skipModal } = useFormState()
   const { t } = useTranslation('account')
 
-  const { isAuthenticated, tierStatus, isLegalEntity } = useServerSideAuth()
+  const { isAuthenticated, tierStatus, accountType } = useServerSideAuth()
 
   const [registrationModal, setRegistrationModal] = useState<boolean>(!isAuthenticated)
   const [identityVerificationModal, setIdentityVerificationModal] = useState(
@@ -36,7 +36,7 @@ const FormModals = () => {
       <IdentityVerificationModal
         isOpen={identityVerificationModal}
         onOpenChange={setIdentityVerificationModal}
-        isLegalEntity={isLegalEntity}
+        accountType={accountType}
         isDismissable
       />
     </>

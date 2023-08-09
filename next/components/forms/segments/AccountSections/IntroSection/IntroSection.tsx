@@ -18,12 +18,13 @@ import LibraryIcon from '../../../../../assets/icons/culture-communities/library
 import SwimmingPoolIcon from '../../../../../assets/icons/education-sport/swimming-pool.svg'
 import ParkingIcon from '../../../../../assets/icons/transport-and-maps/parking.svg'
 import { ROUTES } from '../../../../../frontend/api/constants'
+import { AccountType } from '../../../../../frontend/dtos/accountDto'
 import { PhoneNumberData } from '../../PhoneNumberForm/PhoneNumberForm'
 import PhoneNumberModal from '../../PhoneNumberModal/PhoneNumberModal'
 
 const IntroSection = () => {
   const { t } = useTranslation('account')
-  const { userData, isLegalEntity } = useServerSideAuth()
+  const { userData, accountType } = useServerSideAuth()
   const router = useRouter()
   const [phoneNumberModal, setPhoneNumberModal] = useState<'hidden' | 'displayed' | 'dismissed'>(
     'hidden',
@@ -71,7 +72,7 @@ const IntroSection = () => {
     }
   }
 
-  const name = isLegalEntity ? userData?.name : userData?.given_name
+  const name = accountType === AccountType.PravnickaOsoba ? userData?.name : userData?.given_name
 
   const bannerContent = `<span className='text-p2'>${t(
     'account_section_intro.banner_content',

@@ -1,4 +1,5 @@
 import formDefinitions from '@backend/forms'
+import zavazneStanoviskoKInvesticnejCinnosti from '@backend/forms/zavazneStanoviskoKInvesticnejCinnosti'
 import { formsApi } from '@clients/forms'
 import { GetServerSideProps } from 'next'
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
@@ -60,7 +61,9 @@ export const getServerSideProps: GetServerSideProps<FormPageWrapperProps, Params
 
   return {
     props: {
-      schema: formDefinitions.test.schema,
+      // schema: zavazneStanoviskoKInvesticnejCinnosti.schema,
+      // uiSchema: zavazneStanoviskoKInvesticnejCinnosti.uiSchema,
+      schema: latestVersion.jsonSchema,
       uiSchema: latestVersion.uiSchema,
       ssrCurrentAuthProps,
       page: {

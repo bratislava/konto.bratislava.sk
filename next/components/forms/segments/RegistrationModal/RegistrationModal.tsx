@@ -10,7 +10,7 @@ import ModalV2, { ModalV2Props } from '../../simple-components/ModalV2'
 export enum RegistrationModalType {
   Initial = 'Initial',
   NotAuthenticatedConceptSave = 'NotAuthenticatedConceptSave',
-  NotVerifiedSubmitForm = 'NotVerifiedSubmitForm',
+  NotAuthenticatedSubmitForm = 'NotAuthenticatedSubmitForm',
 }
 
 type RegistrationModalBase = {
@@ -30,7 +30,7 @@ const RegistrationModal = ({ type, ...rest }: RegistrationModalBase) => {
           title: t('registration_modal.header_not_authenticated_concept_save_title'),
           subtitle: t('registration_modal.header_not_authenticated_concept_save_subtitle'),
         },
-        [RegistrationModalType.NotVerifiedSubmitForm]: {
+        [RegistrationModalType.NotAuthenticatedSubmitForm]: {
           title: t('registration_modal.header_not_verified_submit_form_title'),
           subtitle: t('registration_modal.header_not_verified_submit_form_subtitle'),
         },
@@ -89,7 +89,7 @@ const RegistrationModal = ({ type, ...rest }: RegistrationModalBase) => {
         </div>
       </div>
       {(type === RegistrationModalType.Initial ||
-        type === RegistrationModalType.NotVerifiedSubmitForm) && (
+        type === RegistrationModalType.NotAuthenticatedSubmitForm) && (
         <div className="mb-4 flex flex-col gap-3 md:mb-0 md:gap-6">
           <div className="mt-3 flex items-center md:mt-6">
             <span className="h-0.5 w-full bg-gray-200" />
@@ -117,7 +117,7 @@ const RegistrationModal = ({ type, ...rest }: RegistrationModalBase) => {
                 </ButtonNew>
               </>
             )}
-            {type === RegistrationModalType.NotVerifiedSubmitForm && (
+            {type === RegistrationModalType.NotAuthenticatedSubmitForm && (
               <>
                 <ButtonNew variant="black-outline" onPress={close} fullWidth>
                   {t('registration_modal.buttons_not_verified_submit_back')}

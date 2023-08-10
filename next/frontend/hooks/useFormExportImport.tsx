@@ -35,7 +35,7 @@ export const useGetContext = () => {
         formId,
         {
           formDataJson: formData,
-        } as UpdateFormRequestDto,
+        },
         { accessToken: 'onlyAuthenticated' },
       ),
     {

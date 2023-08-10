@@ -57,7 +57,6 @@
     "continue": "Pokračovať",
     "send": "Odoslať žiadosť"
   },
-  "summary": "Sumár",
   "changes_submit": "Potvrdiť zmeny",
   "all_steps": "Všetky kroky",
   "skip_step_modal": {
@@ -109,5 +108,27 @@
     "buttons_initial_skip": "Preskočiť na žiadosť",
     "buttons_not_verified_submit_back": "Späť na žiadosť",
     "buttons_not_verified_submit_send": "Odoslať s eID"
+  },
+  "summary": {
+    "title": "Sumár",
+    "form_has_errors": "Pre odoslanie formulára opravte vyznačené chyby.",
+    "files_scanning_warning": "Prílohy, ktoré ste nahrali prechádzajú antivírovou kontrolou. Žiadosť však môžete odoslať cez Bratislavské konto aj bez čakania na jej ukončenie. V prípade, že by nahraté prílohy obsahovali vírus, budeme vás kontaktovať na e-mailovej adrese, ktorou sa prihlasujete do svojho konta.",
+    "vop_agreement_title": "Ochrana osobných údajov",
+    "vop_agreement_content": "Bližšie informácie o poskytnutí, spracovaní a ochrane osobných údajov nájdete na stránke www.bratislava.sk/ochrana-osobnych-udajov.\nTýmto dávam na základe slobodnej vôle súhlas na spracovanie mojich osobných údajov uvedených vo formulári tohto podania a získaných z môjho osobného dokladu za v zmysle Nariadenia európskeho parlamentu a rady EÚ 2016/679 o ochrane fyzických osôb pri spracúvaní osobných údajov a o voľnom pohybe takýchto údajov a zákona č. 18/2018 Z.z. o ochrane osobných údajov a o zmene a doplnení niektorých zákonov. Zároveň potvrdzujem dovŕšenie veku 16 rokov pre potreby spracovania osobných údajov. Osobné údaje poskytujem za účelom spracovania mojej žiadosti.",
+    "vop_agreement_checkbox": "Súhlasím so spracovaním osobných údajov pre účely odoslania žiadosti",
+    "vop_agreement_required": "Pre odoslanie formulára musíte súhlasiť so spracovaním osobných údajov.",
+    "virus_alert": "Súbor “{{file}}“ obsahuje vírus. Vráťte sa k prílohám a nahrajte iné súbory. Bez povinných príloh nebudete vedieť žiadosť odoslať.",
+    "virus_alert_plural": "Súbory {{files}} obsahujú vírus. Vráťte sa k prílohám a nahrajte iné súbory. Bez povinných príloh nebudete vedieť žiadosť odoslať.",
+    "button_back": "Späť",
+    "button_send": "Odoslať žiadosť",
+    "button_send_eid": "Odoslať s eID",
+    "scanning_modal_title": "Nahraté prílohy ešte kontrolujeme",
+    "scanning_modal_back_button": "Späť",
+    "scanning_modal_1_content": "Prílohy, ktoré ste nahrali prechádzajú antivírovou kontrolou. Žiadosť však môžete odoslať aj bez čakania na jej ukončenie. V prípade, že by nahraté prílohy obsahovali vírus, budeme vás kontaktovať na e-mailovej adrese, ktorou sa prihlasujete do svojho konta.",
+    "scanning_modal_2_content": "Prílohy, ktoré ste nahrali prechádzajú antivírovou kontrolou. Žiadosť však môžete odoslať aj bez čakania na jej ukončenie cez Bratislavské konto. V prípade, že by nahraté prílohy obsahovali vírus, budeme vás kontaktovať na e-mailovej adrese, ktorou sa prihlasujete do svojho konta.\n\nAk chcete aj napriek tomu žiadosť odoslať pomocou elektronického občianskeho preukazu, je potrebné počkať na dokončenie kontroly.",
+    "scanning_modal_3_content": "Prílohy, ktoré ste nahrali prechádzajú antivírovou kontrolou. Žiadosť však môžete odoslať už teraz, ak overíte identitu profilu.\nAk plánujete žiadosť odoslať pomocou elektronického občianskeho preukazu, je potrebné počkať na dokončenie kontroly.",
+    "scanning_modal_1_button": "Odoslať žiadosť",
+    "scanning_modal_2_button": "Odoslať cez Bratislavské konto",
+    "scanning_modal_3_button": "Overiť identitu",
   }
 }

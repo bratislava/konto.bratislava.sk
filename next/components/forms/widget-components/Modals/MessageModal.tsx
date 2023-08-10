@@ -16,7 +16,6 @@ type MessageModalProps = {
   cancelHandler?: () => void
   confirmLabel?: string
   cancelLabel?: string
-  className?: string
   excludeButtons?: boolean
 } & ModalV2Props
 

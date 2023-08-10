@@ -13,7 +13,6 @@ type CheckBoxBase = {
   isIndeterminate?: boolean
   isSelected?: boolean
   children: React.ReactNode
-  value: string
   tooltip?: string
   onChange?: (isSelected: boolean) => void
   fullWidth?: boolean
@@ -80,9 +79,9 @@ const SingleCheckBox = ({
 
   return (
     <div>
-      <label htmlFor={rest.value} className={containerStyle}>
+      <label className={containerStyle}>
         <VisuallyHidden>
-          <input id={rest.value} {...inputProps} {...focusProps} ref={ref} />
+          <input {...inputProps} {...focusProps} ref={ref} />
         </VisuallyHidden>
         <div className={checkboxStyle}>
           {isSelected && (

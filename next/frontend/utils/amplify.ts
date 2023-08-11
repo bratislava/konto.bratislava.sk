@@ -38,8 +38,11 @@ export const getAccessToken = async () => {
     const session = await Auth.currentSession()
     return session.getAccessToken().getJwtToken()
   } catch (error) {
-    // when no session is found (user is logged out) it is thrown as an error and caught here
-    return null
+    if (error === 'The user is not authenticated' || error === 'No current user') {
+      // expected case, user is not authenticated
+      return null
+    }
+    throw error
   }
 }
 

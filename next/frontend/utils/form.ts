@@ -76,6 +76,8 @@ export const getAjvFormKeywords = (
 export const ajvFormats = {
   // TODO: Explore if only Slovak zip codes are supported
   zip: /\b\d{5}\b/,
+  localTime: /^\d{2}:\d{2}$/,
+  ciselnik: true,
 }
 
 /**
@@ -156,7 +158,7 @@ export const validateSummary = (
 ) => {
   const infectedFiles: FormFileUploadFileInfo[] = []
   const scanningFiles: FormFileUploadFileInfo[] = []
-  const scanErrorFiles: FormFileUploadFileInfo[] = []
+  const uploadingFiles: FormFileUploadFileInfo[] = []
 
   const fileValidateFn: SchemaValidateFunction = (schemaInner, data) => {
     if (!data) {
@@ -168,8 +170,11 @@ export const validateSummary = (
     }
     const fileInfo = getFileInfoById(data)
 
-    if (fileInfo.status.type === FormFileUploadStatusEnum.ScanError) {
-      scanErrorFiles.push(fileInfo)
+    if (
+      fileInfo.status.type === FormFileUploadStatusEnum.UploadQueued ||
+      fileInfo.status.type === FormFileUploadStatusEnum.Uploading
+    ) {
+      uploadingFiles.push(fileInfo)
     }
     if (fileInfo.status.type === FormFileUploadStatusEnum.ScanInfected) {
       infectedFiles.push(fileInfo)
@@ -202,7 +207,7 @@ export const validateSummary = (
   )
   const { errorSchema } = validator.validateFormData(defaultFormData, schema)
 
-  return { infectedFiles, scanningFiles, scanErrorFiles, errorSchema }
+  return { infectedFiles, scanningFiles, uploadingFiles, errorSchema }
 }
 
 export const rjfsValidator = customizeValidator({

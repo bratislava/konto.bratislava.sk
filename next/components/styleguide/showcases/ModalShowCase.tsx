@@ -1,7 +1,9 @@
 import CorrespondenceAddressModal from 'components/forms/segments/CorrespondenceAddressModal/CorrespondenceAddressModal'
 import IdentityVerificationModal from 'components/forms/segments/IdentityVerificationModal/IdentityVerificationModal'
 import { PhoneNumberData } from 'components/forms/segments/PhoneNumberForm/PhoneNumberForm'
-import RegistrationModal from 'components/forms/segments/RegistrationModal/RegistrationModal'
+import RegistrationModal, {
+  RegistrationModalType,
+} from 'components/forms/segments/RegistrationModal/RegistrationModal'
 import SkipStepModal from 'components/forms/segments/SkipStepModal/SkipStepModal'
 import Modal from 'components/forms/widget-components/Modals/Modal'
 import { AccountType, Address } from 'frontend/dtos/accountDto'
@@ -196,60 +198,53 @@ const ModalShowCase = () => {
         />
 
         <MessageModal
-          show={modalShowSuccess}
+          isOpen={modalShowSuccess}
           confirmLabel="Primary action"
           type="success"
-          cancelHandler={() => {
-            setModalShowSuccess(false)
-          }}
-          submitHandler={() => {
-            setModalShowSuccess(false)
-          }}
+          onOpenChange={setModalShowSuccess}
+          cancelHandler={() => setModalShowSuccess(false)}
+          submitHandler={() => setModalShowSuccess(false)}
           title="Lorem ipsum"
           cancelLabel="Cancel"
+          isDismissable
         >
           Lorem ipsum dolor sit amet, consectetur adipiscing elit.
         </MessageModal>
 
         <MessageModal
-          show={modalShowError}
+          isOpen={modalShowError}
           confirmLabel="Primary action"
           type="error"
-          cancelHandler={() => {
-            setModalShowError(false)
-          }}
-          submitHandler={() => {
-            setModalShowError(false)
-          }}
+          onOpenChange={setModalShowError}
+          cancelHandler={() => setModalShowError(false)}
+          submitHandler={() => setModalShowError(false)}
           title="Lorem ipsum"
           cancelLabel="Cancel"
+          isDismissable
         >
           Lorem ipsum dolor sit amet, consectetur adipiscing elit.
         </MessageModal>
 
         <MessageModal
-          show={modalShowInfo}
-          className="w-[700px]"
+          isOpen={modalShowInfo}
           confirmLabel="Primary action"
           type="info"
-          cancelHandler={() => {
-            setModalShowInfo(false)
-          }}
-          submitHandler={() => {
-            setModalShowInfo(false)
-          }}
+          onOpenChange={setModalShowInfo}
+          cancelHandler={() => setModalShowInfo(false)}
+          submitHandler={() => setModalShowInfo(false)}
           title="Lorem ipsum"
           cancelLabel="Cancel"
+          isDismissable
         >
           Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt
           ut labore et dolore magna aliqua.Lorem ipsum dolor sit amet, consectetur adipiscing elit.
         </MessageModal>
 
         <MessageModal
-          show={modalShowWarning}
-          className="w-[700px]"
+          isOpen={modalShowWarning}
           confirmLabel="Primary action"
           type="warning"
+          onOpenChange={setModalShowWarning}
           cancelHandler={() => {
             setModalShowWarning(false)
           }}
@@ -258,6 +253,7 @@ const ModalShowCase = () => {
           }}
           title="Lorem ipsum"
           cancelLabel="Cancel"
+          isDismissable
         >
           Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt
           ut labore et dolore magna aliqua.
@@ -275,8 +271,7 @@ const ModalShowCase = () => {
           defaultValues={{ phone_number: phoneNumberModalData }}
         />
         <RegistrationModal
-          title={t('register_modal.header_sent_title')}
-          subtitle={t('register_modal.header_sent_subtitle')}
+          type={RegistrationModalType.Initial}
           isOpen={registrationModal}
           onOpenChange={setRegistrationModal}
           isDismissable

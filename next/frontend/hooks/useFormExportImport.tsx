@@ -1,20 +1,60 @@
 import { formsApi } from '@clients/forms'
-import { UpdateFormRequestDto } from '@clients/openapi-forms'
+import { GetFormResponseDto, UpdateFormRequestDto } from '@clients/openapi-forms'
+import { useMutation } from '@tanstack/react-query'
+import { AxiosResponse } from 'axios'
 import { useTranslation } from 'next-i18next'
-import { ChangeEvent } from 'react'
+import React, { ChangeEvent, createContext, PropsWithChildren, useContext } from 'react'
 
 import { useFormState } from '../../components/forms/FormStateProvider'
+import { RegistrationModalType } from '../../components/forms/segments/RegistrationModal/RegistrationModal'
+import { FormFileUploadStateProviderProps } from '../../components/forms/useFormFileUpload'
+import { useFormModals } from '../../components/forms/useFormModals'
 import { readTextFile } from '../utils/file'
 import { downloadBlob } from '../utils/general'
+import { useServerSideAuth } from './useServerSideAuth'
 import useSnackbar from './useSnackbar'
 
-export const useFormExportImport = () => {
+export const useGetContext = () => {
+  const { isAuthenticated } = useServerSideAuth()
   const { formId, formData, formSlug, setImportedFormData } = useFormState()
+  const { setRegistrationModal } = useFormModals()
   const { t } = useTranslation('forms')
+  const { setConceptSaveErrorModal } = useFormModals()
 
   const [openSnackbarError] = useSnackbar({ variant: 'error' })
   const [openSnackbarSuccess] = useSnackbar({ variant: 'success' })
   const [openSnackbarInfo, closeSnackbarInfo] = useSnackbar({ variant: 'info' })
+
+  const { mutate: saveConceptMutate, isLoading: saveConceptIsLoading } = useMutation<
+    AxiosResponse<GetFormResponseDto, any>,
+    unknown,
+    { fromModal?: boolean }
+  >(
+    () =>
+      formsApi.nasesControllerUpdateForm(
+        formId,
+        {
+          formDataJson: formData,
+        },
+        { accessToken: 'onlyAuthenticated' },
+      ),
+    {
+      networkMode: 'always',
+      onMutate: ({ fromModal }) => {
+        if (!fromModal) {
+          openSnackbarInfo(t('info_messages.concept_save'))
+        }
+      },
+      onSuccess: () => {
+        openSnackbarSuccess(t('success_messages.concept_save'))
+        setConceptSaveErrorModal(false)
+      },
+      onError: () => {
+        closeSnackbarInfo()
+        setConceptSaveErrorModal(true)
+      },
+    },
+  )
 
   const exportXml = async () => {
     openSnackbarInfo(t('info_messages.xml_export'))
@@ -78,19 +118,13 @@ export const useFormExportImport = () => {
     // }
   }
 
-  const saveConcept = async () => {
-    try {
-      await formsApi.nasesControllerUpdateForm(
-        formId,
-        {
-          formDataJson: formData,
-        } as UpdateFormRequestDto,
-        { accessToken: 'onlyAuthenticated' },
-      )
-      openSnackbarSuccess(t('success_messages.concept_save'))
-    } catch (error) {
-      openSnackbarError(t('errors.concept_save'))
+  const saveConcept = async (fromModal?: boolean) => {
+    if (!isAuthenticated) {
+      setRegistrationModal(RegistrationModalType.NotAuthenticatedConceptSave)
+      return
     }
+
+    saveConceptMutate({ fromModal })
   }
 
   return {
@@ -98,5 +132,27 @@ export const useFormExportImport = () => {
     importXml: chooseFilesAndImportXml,
     exportPdf,
     saveConcept,
+    saveConceptIsLoading,
   }
+}
+
+const FormExportImportContext = createContext<ReturnType<typeof useGetContext> | undefined>(
+  undefined,
+)
+
+export const FormExportImportProvider = ({ children }: PropsWithChildren) => {
+  const context = useGetContext()
+
+  return (
+    <FormExportImportContext.Provider value={context}>{children}</FormExportImportContext.Provider>
+  )
+}
+
+export const useFormExportImport = () => {
+  const context = useContext(FormExportImportContext)
+  if (!context) {
+    throw new Error('useFormExportImport must be used within a FormExportImportProvider')
+  }
+
+  return context
 }

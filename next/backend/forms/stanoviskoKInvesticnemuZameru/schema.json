@@ -30,19 +30,19 @@
           "type": "object",
           "title": "Žiadateľ",
           "properties": {
-            "ziatetelTyp": {
+            "ziadatelTyp": {
               "title": "Žiadate ako",
               "type": "string",
               "default": "Fyzická osoba",
               "enum": ["Fyzická osoba", "Fyzická osoba - podnikateľ", "Právnicka osoba"]
             }
           },
-          "required": ["ziatetelTyp"],
+          "required": ["ziadatelTyp"],
           "allOf": [
             {
               "if": {
                 "properties": {
-                  "ziatetelTyp": {
+                  "ziadatelTyp": {
                     "const": "Fyzická osoba"
                   }
                 }
@@ -61,7 +61,7 @@
             {
               "if": {
                 "properties": {
-                  "ziatetelTyp": {
+                  "ziadatelTyp": {
                     "oneOf": [
                       {
                         "const": "Fyzická osoba - podnikateľ"
@@ -86,7 +86,7 @@
             {
               "if": {
                 "properties": {
-                  "ziatetelTyp": {
+                  "ziadatelTyp": {
                     "const": "Právnicka osoba"
                   }
                 }
@@ -104,7 +104,7 @@
             {
               "if": {
                 "properties": {
-                  "ziatetelTyp": {
+                  "ziadatelTyp": {
                     "const": "Fyzická osoba"
                   }
                 }
@@ -122,7 +122,7 @@
             {
               "if": {
                 "properties": {
-                  "ziatetelTyp": {
+                  "ziadatelTyp": {
                     "const": "Fyzická osoba - podnikateľ"
                   }
                 }
@@ -140,7 +140,7 @@
             {
               "if": {
                 "properties": {
-                  "ziatetelTyp": {
+                  "ziadatelTyp": {
                     "const": "Právnicka osoba"
                   }
                 }
@@ -178,7 +178,7 @@
             {
               "if": {
                 "properties": {
-                  "ziatetelTyp": {
+                  "ziadatelTyp": {
                     "const": "Právnicka osoba"
                   }
                 }

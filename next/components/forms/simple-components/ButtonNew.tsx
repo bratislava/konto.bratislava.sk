@@ -274,6 +274,6 @@ const Button = forwardRef<HTMLAnchorElement | HTMLButtonElement, PolymorphicProp
       </button>
     )
   },
-) as PolymorphicButton
+)
 
 export default Button

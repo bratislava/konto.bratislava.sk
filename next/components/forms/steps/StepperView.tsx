@@ -37,8 +37,8 @@ const StepperModal = ({
       className="fixed left-0 top-0 z-50 h-[var(--visual-viewport-height)] w-screen bg-white outline-0 data-[entering]:animate-stepperSlide data-[exiting]:animate-stepperSlideReverse"
       isDismissable
     >
-      <Modal isDismissable isOpen={isOpen} onOpenChange={setIsOpen} className="outline-0">
-        <Dialog className="outline-0">
+      <Modal isDismissable isOpen={isOpen} onOpenChange={setIsOpen} className="h-full outline-0">
+        <Dialog className="flex h-full flex-col outline-0">
           <div className="flex h-14 w-full flex-row items-center gap-1 bg-white p-4 drop-shadow-lg">
             <h6 className="text-h6 grow">{t('all_steps')}</h6>
             <AriaButton
@@ -48,7 +48,7 @@ const StepperModal = ({
               <CrossIcon className="h-6 w-6" />
             </AriaButton>
           </div>
-          <nav className="w-full bg-white px-4 pb-20 pt-4">
+          <nav className="w-full overflow-auto bg-white p-4">
             <StepperViewList onSkipToStep={handleOnSkipToStep} />
           </nav>
         </Dialog>

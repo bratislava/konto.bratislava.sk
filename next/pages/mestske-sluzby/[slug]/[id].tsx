@@ -1,4 +1,5 @@
 import { formsApi } from '@clients/forms'
+import { isAxiosError } from 'axios'
 import { GetServerSideProps } from 'next'
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
 
@@ -14,7 +15,6 @@ type Params = {
   id: string
 }
 
-// TODO: Error handling
 export const getServerSideProps: GetServerSideProps<FormPageWrapperProps, Params> = async (ctx) => {
   if (!environment.featureToggles.forms || !ctx.params) return { notFound: true }
 
@@ -22,45 +22,66 @@ export const getServerSideProps: GetServerSideProps<FormPageWrapperProps, Params
 
   const ssrCurrentAuthProps = await getSSRCurrentAuth(ctx.req)
 
-  const [form, files] = await Promise.all([
-    formsApi
-      .nasesControllerGetForm(id, { accessToken: 'onlyAuthenticated', accessTokenSsrReq: ctx.req })
-      .then((res) => res.data),
-    formsApi
-      .filesControllerGetFilesStatusByForm(id, {
-        accessToken: 'onlyAuthenticated',
-        accessTokenSsrReq: ctx.req,
-      })
-      .then((res) => res.data),
-  ])
+  try {
+    const [form, files] = await Promise.all([
+      formsApi
+        .nasesControllerGetForm(id, {
+          accessToken: 'onlyAuthenticated',
+          accessTokenSsrReq: ctx.req,
+        })
+        .then((res) => res.data),
+      formsApi
+        .filesControllerGetFilesStatusByForm(id, {
+          accessToken: 'onlyAuthenticated',
+          accessTokenSsrReq: ctx.req,
+        })
+        .then((res) => res.data),
+    ])
 
-  if (
-    !form ||
-    /* If there wouldn't be this check it would be possible to open the page with any slug in the URL. */
-    form.schemaVersion.schema?.slug !== slug
-  ) {
-    return { notFound: true }
-  }
+    if (
+      !form ||
+      /* If there wouldn't be this check it would be possible to open the page with any slug in the URL. */
+      form.schemaVersion.schema?.slug !== slug
+    ) {
+      return { notFound: true }
+    }
 
-  // necessary for page wrappers common for entire web
-  const locale = ctx.locale ?? 'sk'
+    // necessary for page wrappers common for entire web
+    const locale = ctx.locale ?? 'sk'
 
-  return {
-    props: {
-      schema: form.schemaVersion.jsonSchema,
-      uiSchema: form.schemaVersion.uiSchema,
-      ssrCurrentAuthProps,
-      page: {
-        locale,
-      },
-      initialFormData: {
-        formId: id,
-        formDataJson: form.formDataJson ?? {},
-        oldSchemaVersion: !form.isLatestSchemaVersionForSlug,
-        files,
-      },
-      ...(await serverSideTranslations(locale)),
-    } satisfies FormPageWrapperProps,
+    return {
+      props: {
+        schema: form.schemaVersion.jsonSchema,
+        uiSchema: form.schemaVersion.uiSchema,
+        ssrCurrentAuthProps,
+        page: {
+          locale,
+        },
+        initialFormData: {
+          formId: id,
+          formDataJson: form.formDataJson ?? {},
+          oldSchemaVersion: !form.isLatestSchemaVersionForSlug,
+          files,
+        },
+        ...(await serverSideTranslations(locale)),
+      } satisfies FormPageWrapperProps,
+    }
+  } catch (error) {
+    if (isAxiosError(error)) {
+      if (error.response?.status === 404) {
+        return { notFound: true }
+      }
+      if (error.response?.status === 403) {
+        return {
+          redirect: {
+            destination: '/prihlasenie',
+            permanent: false,
+          },
+        }
+      }
+    }
+
+    throw error
   }
 }
 

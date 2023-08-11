@@ -33,8 +33,10 @@ axiosInstance.interceptors.request.use(async (config) => {
   if (process.browser) {
     const accessToken = config.accessToken === 'always' ? await getAccessTokenOrLogout() : await getAccessToken()
 
-    // eslint-disable-next-line no-param-reassign
-    config.headers.Authorization = accessToken ? `Bearer ${accessToken}` : config.headers.Authorization
+    if (accessToken) {
+      // eslint-disable-next-line no-param-reassign
+    config.headers.Authorization = `Bearer ${accessToken}`
+    }
   } else {
     if (!config.accessTokenSsrReq) {
       throw new Error(
@@ -43,8 +45,12 @@ axiosInstance.interceptors.request.use(async (config) => {
     }
 
     const accessToken = await getSSRAccessToken(config.accessTokenSsrReq)
-    // eslint-disable-next-line no-param-reassign
-    config.headers.Authorization = accessToken ? `Bearer ${accessToken}` : config.headers.Authorization
+    if (accessToken) {
+      // eslint-disable-next-line no-param-reassign
+    config.headers.Authorization = `Bearer ${accessToken}`
+    } else if (config.accessToken === 'always') {
+      throw new Error('No accessToken found with accessToken set to `always` in a server side request')
+    }
   }
 
   return config

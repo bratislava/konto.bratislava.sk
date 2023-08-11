@@ -16,11 +16,9 @@ const SkipStepModal = ({ onSkip, ...rest }: SkipStepModalProps) => {
       title={t('skip_step_modal.title')}
       confirmLabel={t('skip_step_modal.button_submit_text')}
       type="error"
-      cancelHandler={() => {
-        ;() => rest?.onOpenChange?.(false)
-      }}
+      cancelHandler={() => rest?.onOpenChange?.(false)}
       submitHandler={onSkip}
-      cancelLabel="Späť"
+      cancelLabel={t('skip_step_modal.button_skip_text')}
       {...rest}
     >
       {t('skip_step_modal.text')}

@@ -46,6 +46,16 @@ export const getServerSideProps: GetServerSideProps<FormPageWrapperProps, Params
       return { notFound: true }
     }
 
+    // TODO: Consider keeping this
+    if (ssrCurrentAuthProps.userData) {
+      return {
+        redirect: {
+          destination: `/mestske-sluzby/${slug}/${form.id}`,
+          permanent: false,
+        },
+      }
+    }
+
     // necessary for page wrappers common for entire web
     const locale = ctx.locale ?? 'sk'
 

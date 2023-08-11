@@ -1,23 +1,19 @@
 import cx from 'classnames'
-import React from 'react'
+import React, { Fragment, PropsWithChildren, ReactNode } from 'react'
 
 import ErrorIcon from '../../icon-components/ErrorIcon'
 import InfoIcon from '../../icon-components/InfoIcon'
 import SuccessIcon from '../../icon-components/SuccessIcon'
 import WarningIcon from '../../icon-components/WarningIcon'
-import ButtonNew from '../../simple-components/ButtonNew'
 import ModalV2, { ModalV2Props } from '../../simple-components/ModalV2'
 
-type MessageModalProps = {
+type MessageModalProps = PropsWithChildren<{
   type: 'warning' | 'info' | 'error' | 'success'
-  children: React.ReactNode
   title: string
-  submitHandler?: () => void
-  cancelHandler?: () => void
-  confirmLabel?: string
-  cancelLabel?: string
-  excludeButtons?: boolean
-} & ModalV2Props
+  buttons?: ReactNode[]
+  afterContent?: ReactNode
+}> &
+  Pick<ModalV2Props, 'isOpen' | 'onOpenChange'>
 
 const icons = {
   error: <ErrorIcon />,
@@ -30,15 +26,12 @@ const MessageModal = ({
   type,
   children,
   title,
-  submitHandler = () => {},
-  cancelHandler = () => {},
-  confirmLabel,
-  cancelLabel,
-  excludeButtons,
+  buttons,
+  afterContent,
   ...rest
 }: MessageModalProps) => {
   return (
-    <ModalV2 {...rest}>
+    <ModalV2 isDismissable {...rest}>
       <div
         className={cx(
           'flex flex-col items-center gap-5 p-0',
@@ -64,17 +57,14 @@ const MessageModal = ({
           </div>
         </div>
       </div>
-      {!excludeButtons && (
+      {buttons && buttons.length > 0 && (
         <div className="order-1 mt-6 flex flex-row flex-wrap items-center justify-end gap-6 p-0">
-          <ButtonNew onPress={cancelHandler}>{cancelLabel}</ButtonNew>
-          <ButtonNew
-            onPress={submitHandler}
-            variant={type === 'error' ? 'category-solid' : 'black-solid'}
-          >
-            {confirmLabel}
-          </ButtonNew>
+          {buttons.map((button, index) => (
+            <Fragment key={index}>{button}</Fragment>
+          ))}
         </div>
       )}
+      {afterContent}
     </ModalV2>
   )
 }

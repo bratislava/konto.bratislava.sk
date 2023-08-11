@@ -1,9 +1,8 @@
 import { formsApi } from '@clients/forms'
-import { GetFormResponseDto, UpdateFormRequestDto } from '@clients/openapi-forms'
 import { useMutation } from '@tanstack/react-query'
-import { AxiosResponse } from 'axios'
 import React, { createContext, PropsWithChildren, useContext, useMemo } from 'react'
 
+import { AccountType } from '../../../../frontend/dtos/accountDto'
 import { useServerSideAuth } from '../../../../frontend/hooks/useServerSideAuth'
 import { validateSummary } from '../../../../frontend/utils/form'
 import { checkPathForErrors } from '../../../../frontend/utils/formSummary'
@@ -16,9 +15,22 @@ const useGetContext = () => {
   const { formId, formData, schema } = useFormState()
   const {
     isAuthenticated,
+    accountType,
     tierStatus: { isIdentityVerified },
   } = useServerSideAuth()
-  const { setRegistrationModal } = useFormModals()
+  const {
+    setRegistrationModal,
+    setSendFilesScanningModal,
+    setSendFilesScanningEidModal,
+    setSendConfirmationModal,
+    setSendFilesScanningNotVerifiedEidModal,
+    setSendIdentityMissingModal,
+    setSendFilesScanningNonAuthenticatedEidModal,
+    setSendFilesUploadingModal,
+    setSendConfirmationEidModal,
+    setSendConfirmationEidLegalModal,
+    setSendConfirmationNonAuthenticatedEidModal,
+  } = useFormModals()
   const { getFileInfoById } = useFormFileUpload()
 
   const { errorSchema, infectedFiles, uploadingFiles, scanningFiles } = useMemo(
@@ -69,14 +81,23 @@ const useGetContext = () => {
     }
 
     if (!isIdentityVerified) {
-      //   TODO identity
-      // return
+      setSendIdentityMissingModal(true)
+      return
     }
+    if (uploadingFiles.length > 0) {
+      setSendFilesUploadingModal(true)
+      return
+    }
+
     //
     if (scanningFiles.length > 0) {
+      setSendFilesScanningModal(true) // TODO callback
+      return
       //   TODO scanning
       // return
     }
+
+    setSendConfirmationModal(true) // TODO callback
 
     await sendFormMutate()
   }
@@ -86,8 +107,36 @@ const useGetContext = () => {
       return
     }
 
-    if (scanningFiles.length > 0) {
-      // TODO scanning
+    if (isAuthenticated && isIdentityVerified && scanningFiles.length > 0) {
+      setSendFilesScanningEidModal(true)
+      return
+    }
+
+    if (isAuthenticated && !isIdentityVerified && scanningFiles.length > 0) {
+      setSendFilesScanningNotVerifiedEidModal(true)
+      return
+    }
+
+    if (!isAuthenticated && scanningFiles.length > 0) {
+      setSendFilesScanningNonAuthenticatedEidModal(true)
+      return
+    }
+
+    if (!isAuthenticated) {
+      setSendConfirmationNonAuthenticatedEidModal(true) // callback
+      return
+    }
+
+    if (accountType === AccountType.FyzickaOsoba) {
+      setSendConfirmationEidModal(true) // callback
+      return
+    }
+
+    if (
+      accountType === AccountType.PravnickaOsoba ||
+      accountType === AccountType.FyzickaOsobaPodnikatel
+    ) {
+      setSendConfirmationEidLegalModal(true) // callback
     }
   }
 

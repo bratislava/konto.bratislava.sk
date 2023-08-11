@@ -12,9 +12,24 @@ const useGetContext = (initialFormData: InitialFormData) => {
   const [registrationModal, setRegistrationModal] = useState<RegistrationModalType | null>(
     !oldSchemaModal && !isAuthenticated ? RegistrationModalType.Initial : null,
   )
-  const [identityVerificationModal, setIdentityVerificationModal] = useState(
-    !oldSchemaModal && isAuthenticated && !tierStatus.isIdentityVerified,
-  )
+  // const [identityVerificationModal, setIdentityVerificationModal] = useState(
+  //   !oldSchemaModal && isAuthenticated && !tierStatus.isIdentityVerified,
+  // )
+  const [identityVerificationModal, setIdentityVerificationModal] = useState(true)
+
+  const [sendFilesScanningModal, setSendFilesScanningModal] = useState(false)
+  const [sendFilesScanningEidModal, setSendFilesScanningEidModal] = useState(false)
+  const [sendConfirmationModal, setSendConfirmationModal] = useState(false)
+  const [sendFilesScanningNotVerifiedEidModal, setSendFilesScanningNotVerifiedEidModal] =
+    useState(false)
+  const [sendIdentityMissingModal, setSendIdentityMissingModal] = useState(false)
+  const [sendFilesScanningNonAuthenticatedEidModal, setSendFilesScanningNonAuthenticatedEidModal] =
+    useState(false)
+  const [sendFilesUploadingModal, setSendFilesUploadingModal] = useState(false)
+  const [sendConfirmationEidModal, setSendConfirmationEidModal] = useState(false)
+  const [sendConfirmationEidLegalModal, setSendConfirmationEidLegalModal] = useState(false)
+  const [sendConfirmationNonAuthenticatedEidModal, setSendConfirmationNonAuthenticatedEidModal] =
+    useState(false)
 
   return {
     oldSchemaModal,
@@ -25,6 +40,26 @@ const useGetContext = (initialFormData: InitialFormData) => {
     setIdentityVerificationModal,
     conceptSaveErrorModal,
     setConceptSaveErrorModal,
+    sendFilesScanningModal,
+    setSendFilesScanningModal,
+    sendFilesScanningEidModal,
+    setSendFilesScanningEidModal,
+    sendConfirmationModal,
+    setSendConfirmationModal,
+    sendFilesScanningNotVerifiedEidModal,
+    setSendFilesScanningNotVerifiedEidModal,
+    sendIdentityMissingModal,
+    setSendIdentityMissingModal,
+    sendFilesScanningNonAuthenticatedEidModal,
+    setSendFilesScanningNonAuthenticatedEidModal,
+    sendFilesUploadingModal,
+    setSendFilesUploadingModal,
+    sendConfirmationEidModal,
+    setSendConfirmationEidModal,
+    sendConfirmationEidLegalModal,
+    setSendConfirmationEidLegalModal,
+    sendConfirmationNonAuthenticatedEidModal,
+    setSendConfirmationNonAuthenticatedEidModal,
   }
 }
 

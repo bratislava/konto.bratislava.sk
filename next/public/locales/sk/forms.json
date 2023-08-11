@@ -129,6 +129,6 @@
     "scanning_modal_3_content": "Prílohy, ktoré ste nahrali prechádzajú antivírovou kontrolou. Žiadosť však môžete odoslať už teraz, ak overíte identitu profilu.\nAk plánujete žiadosť odoslať pomocou elektronického občianskeho preukazu, je potrebné počkať na dokončenie kontroly.",
     "scanning_modal_1_button": "Odoslať žiadosť",
     "scanning_modal_2_button": "Odoslať cez Bratislavské konto",
-    "scanning_modal_3_button": "Overiť identitu",
+    "scanning_modal_3_button": "Overiť identitu"
   }
 }

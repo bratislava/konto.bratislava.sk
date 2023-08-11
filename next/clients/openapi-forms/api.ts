@@ -133,74 +133,11 @@ export const DatabaseErrorDtoErrorNameEnum = {
   DatabaseError: 'DATABASE_ERROR',
   InternalServerError: 'INTERNAL_SERVER_ERROR',
   UnauthorizedError: 'UNAUTHORIZED_ERROR',
+  UnprocessableEntityError: 'UNPROCESSABLE_ENTITY_ERROR',
 } as const
 
 export type DatabaseErrorDtoErrorNameEnum =
   (typeof DatabaseErrorDtoErrorNameEnum)[keyof typeof DatabaseErrorDtoErrorNameEnum]
-
-/**
- *
- * @export
- * @interface DeleteFileResponseData
- */
-export interface DeleteFileResponseData {
-  /**
-   * scan result
-   * @type {string}
-   * @memberof DeleteFileResponseData
-   */
-  status: DeleteFileResponseDataStatusEnum
-  /**
-   * Real file name of the file, but is used only for display
-   * @type {string}
-   * @memberof DeleteFileResponseData
-   */
-  fileName: string
-  /**
-   * Hashed file uid under which is file stored in minio
-   * @type {string}
-   * @memberof DeleteFileResponseData
-   */
-  fileUid: string
-  /**
-   * Form type
-   * @type {string}
-   * @memberof DeleteFileResponseData
-   */
-  pospId: string
-  /**
-   * Identifier of sent form
-   * @type {string}
-   * @memberof DeleteFileResponseData
-   */
-  formId: string
-  /**
-   * File size in bytes
-   * @type {number}
-   * @memberof DeleteFileResponseData
-   */
-  fileSize: number
-  /**
-   * more info
-   * @type {string}
-   * @memberof DeleteFileResponseData
-   */
-  message: string
-}
-
-export const DeleteFileResponseDataStatusEnum = {
-  Uploaded: 'UPLOADED',
-  Accepted: 'ACCEPTED',
-  Scanning: 'SCANNING',
-  Safe: 'SAFE',
-  Infected: 'INFECTED',
-  NotFound: 'NOT FOUND',
-  MoveErrorSafe: 'MOVE ERROR SAFE',
-  MoveErrorInfected: 'MOVE ERROR INFECTED',
-} as const
-
-export type DeleteFileResponseDataStatusEnum =
-  (typeof DeleteFileResponseDataStatusEnum)[keyof typeof DeleteFileResponseDataStatusEnum]
 
 /**
  *
@@ -258,6 +195,7 @@ export const FileAlreadyProcessedErrorDtoErrorNameEnum = {
   DatabaseError: 'DATABASE_ERROR',
   InternalServerError: 'INTERNAL_SERVER_ERROR',
   UnauthorizedError: 'UNAUTHORIZED_ERROR',
+  UnprocessableEntityError: 'UNPROCESSABLE_ENTITY_ERROR',
 } as const
 
 export type FileAlreadyProcessedErrorDtoErrorNameEnum =
@@ -306,6 +244,7 @@ export const FileByScannerIdNotFoundErrorDtoErrorNameEnum = {
   DatabaseError: 'DATABASE_ERROR',
   InternalServerError: 'INTERNAL_SERVER_ERROR',
   UnauthorizedError: 'UNAUTHORIZED_ERROR',
+  UnprocessableEntityError: 'UNPROCESSABLE_ENTITY_ERROR',
 } as const
 
 export type FileByScannerIdNotFoundErrorDtoErrorNameEnum =
@@ -354,6 +293,7 @@ export const FileHasUnsupportedMimeTypeErrorDtoErrorNameEnum = {
   DatabaseError: 'DATABASE_ERROR',
   InternalServerError: 'INTERNAL_SERVER_ERROR',
   UnauthorizedError: 'UNAUTHORIZED_ERROR',
+  UnprocessableEntityError: 'UNPROCESSABLE_ENTITY_ERROR',
 } as const
 
 export type FileHasUnsupportedMimeTypeErrorDtoErrorNameEnum =
@@ -402,6 +342,7 @@ export const FileIdAlreadyExistsErrorDtoErrorNameEnum = {
   DatabaseError: 'DATABASE_ERROR',
   InternalServerError: 'INTERNAL_SERVER_ERROR',
   UnauthorizedError: 'UNAUTHORIZED_ERROR',
+  UnprocessableEntityError: 'UNPROCESSABLE_ENTITY_ERROR',
 } as const
 
 export type FileIdAlreadyExistsErrorDtoErrorNameEnum =
@@ -450,6 +391,7 @@ export const FileInMinioNotFoundErrorDtoErrorNameEnum = {
   DatabaseError: 'DATABASE_ERROR',
   InternalServerError: 'INTERNAL_SERVER_ERROR',
   UnauthorizedError: 'UNAUTHORIZED_ERROR',
+  UnprocessableEntityError: 'UNPROCESSABLE_ENTITY_ERROR',
 } as const
 
 export type FileInMinioNotFoundErrorDtoErrorNameEnum =
@@ -498,10 +440,60 @@ export const FileInScannerNotFoundErrorDtoErrorNameEnum = {
   DatabaseError: 'DATABASE_ERROR',
   InternalServerError: 'INTERNAL_SERVER_ERROR',
   UnauthorizedError: 'UNAUTHORIZED_ERROR',
+  UnprocessableEntityError: 'UNPROCESSABLE_ENTITY_ERROR',
 } as const
 
 export type FileInScannerNotFoundErrorDtoErrorNameEnum =
   (typeof FileInScannerNotFoundErrorDtoErrorNameEnum)[keyof typeof FileInScannerNotFoundErrorDtoErrorNameEnum]
+
+/**
+ *
+ * @export
+ * @interface FileIsOwnedBySomeoneElseErrorDto
+ */
+export interface FileIsOwnedBySomeoneElseErrorDto {
+  /**
+   * Status Code
+   * @type {number}
+   * @memberof FileIsOwnedBySomeoneElseErrorDto
+   */
+  statusCode: number
+  /**
+   * Detail error message
+   * @type {string}
+   * @memberof FileIsOwnedBySomeoneElseErrorDto
+   */
+  message: string
+  /**
+   * status in text
+   * @type {string}
+   * @memberof FileIsOwnedBySomeoneElseErrorDto
+   */
+  status: string
+  /**
+   * Exact error name
+   * @type {string}
+   * @memberof FileIsOwnedBySomeoneElseErrorDto
+   */
+  errorName: FileIsOwnedBySomeoneElseErrorDtoErrorNameEnum
+  /**
+   * Helper for sending additional data in error
+   * @type {object}
+   * @memberof FileIsOwnedBySomeoneElseErrorDto
+   */
+  object?: object
+}
+
+export const FileIsOwnedBySomeoneElseErrorDtoErrorNameEnum = {
+  NotFoundError: 'NOT_FOUND_ERROR',
+  DatabaseError: 'DATABASE_ERROR',
+  InternalServerError: 'INTERNAL_SERVER_ERROR',
+  UnauthorizedError: 'UNAUTHORIZED_ERROR',
+  UnprocessableEntityError: 'UNPROCESSABLE_ENTITY_ERROR',
+} as const
+
+export type FileIsOwnedBySomeoneElseErrorDtoErrorNameEnum =
+  (typeof FileIsOwnedBySomeoneElseErrorDtoErrorNameEnum)[keyof typeof FileIsOwnedBySomeoneElseErrorDtoErrorNameEnum]
 
 /**
  *
@@ -546,6 +538,7 @@ export const FileNotFoundErrorDtoErrorNameEnum = {
   DatabaseError: 'DATABASE_ERROR',
   InternalServerError: 'INTERNAL_SERVER_ERROR',
   UnauthorizedError: 'UNAUTHORIZED_ERROR',
+  UnprocessableEntityError: 'UNPROCESSABLE_ENTITY_ERROR',
 } as const
 
 export type FileNotFoundErrorDtoErrorNameEnum =
@@ -594,6 +587,7 @@ export const FileOrUserNotFoundErrorDtoErrorNameEnum = {
   DatabaseError: 'DATABASE_ERROR',
   InternalServerError: 'INTERNAL_SERVER_ERROR',
   UnauthorizedError: 'UNAUTHORIZED_ERROR',
+  UnprocessableEntityError: 'UNPROCESSABLE_ENTITY_ERROR',
 } as const
 
 export type FileOrUserNotFoundErrorDtoErrorNameEnum =
@@ -642,6 +636,7 @@ export const FileSizeExceededErrorDtoErrorNameEnum = {
   DatabaseError: 'DATABASE_ERROR',
   InternalServerError: 'INTERNAL_SERVER_ERROR',
   UnauthorizedError: 'UNAUTHORIZED_ERROR',
+  UnprocessableEntityError: 'UNPROCESSABLE_ENTITY_ERROR',
 } as const
 
 export type FileSizeExceededErrorDtoErrorNameEnum =
@@ -690,6 +685,7 @@ export const FileSizeTooLargeErrorDtoErrorNameEnum = {
   DatabaseError: 'DATABASE_ERROR',
   InternalServerError: 'INTERNAL_SERVER_ERROR',
   UnauthorizedError: 'UNAUTHORIZED_ERROR',
+  UnprocessableEntityError: 'UNPROCESSABLE_ENTITY_ERROR',
 } as const
 
 export type FileSizeTooLargeErrorDtoErrorNameEnum =
@@ -738,10 +734,60 @@ export const FileSizeZeroErrorDtoErrorNameEnum = {
   DatabaseError: 'DATABASE_ERROR',
   InternalServerError: 'INTERNAL_SERVER_ERROR',
   UnauthorizedError: 'UNAUTHORIZED_ERROR',
+  UnprocessableEntityError: 'UNPROCESSABLE_ENTITY_ERROR',
 } as const
 
 export type FileSizeZeroErrorDtoErrorNameEnum =
   (typeof FileSizeZeroErrorDtoErrorNameEnum)[keyof typeof FileSizeZeroErrorDtoErrorNameEnum]
+
+/**
+ *
+ * @export
+ * @interface FileUploadToMinioWasNotSucessful
+ */
+export interface FileUploadToMinioWasNotSucessful {
+  /**
+   * Status Code
+   * @type {number}
+   * @memberof FileUploadToMinioWasNotSucessful
+   */
+  statusCode: number
+  /**
+   * Detail error message
+   * @type {string}
+   * @memberof FileUploadToMinioWasNotSucessful
+   */
+  message: string
+  /**
+   * status in text
+   * @type {string}
+   * @memberof FileUploadToMinioWasNotSucessful
+   */
+  status: string
+  /**
+   * Exact error name
+   * @type {string}
+   * @memberof FileUploadToMinioWasNotSucessful
+   */
+  errorName: FileUploadToMinioWasNotSucessfulErrorNameEnum
+  /**
+   * Helper for sending additional data in error
+   * @type {object}
+   * @memberof FileUploadToMinioWasNotSucessful
+   */
+  object?: object
+}
+
+export const FileUploadToMinioWasNotSucessfulErrorNameEnum = {
+  NotFoundError: 'NOT_FOUND_ERROR',
+  DatabaseError: 'DATABASE_ERROR',
+  InternalServerError: 'INTERNAL_SERVER_ERROR',
+  UnauthorizedError: 'UNAUTHORIZED_ERROR',
+  UnprocessableEntityError: 'UNPROCESSABLE_ENTITY_ERROR',
+} as const
+
+export type FileUploadToMinioWasNotSucessfulErrorNameEnum =
+  (typeof FileUploadToMinioWasNotSucessfulErrorNameEnum)[keyof typeof FileUploadToMinioWasNotSucessfulErrorNameEnum]
 
 /**
  *
@@ -786,6 +832,7 @@ export const FileWrongParamsErrorDtoErrorNameEnum = {
   DatabaseError: 'DATABASE_ERROR',
   InternalServerError: 'INTERNAL_SERVER_ERROR',
   UnauthorizedError: 'UNAUTHORIZED_ERROR',
+  UnprocessableEntityError: 'UNPROCESSABLE_ENTITY_ERROR',
 } as const
 
 export type FileWrongParamsErrorDtoErrorNameEnum =
@@ -834,58 +881,11 @@ export const FileWrongStatusNotAcceptedErrorDtoErrorNameEnum = {
   DatabaseError: 'DATABASE_ERROR',
   InternalServerError: 'INTERNAL_SERVER_ERROR',
   UnauthorizedError: 'UNAUTHORIZED_ERROR',
+  UnprocessableEntityError: 'UNPROCESSABLE_ENTITY_ERROR',
 } as const
 
 export type FileWrongStatusNotAcceptedErrorDtoErrorNameEnum =
   (typeof FileWrongStatusNotAcceptedErrorDtoErrorNameEnum)[keyof typeof FileWrongStatusNotAcceptedErrorDtoErrorNameEnum]
-
-/**
- *
- * @export
- * @interface FilesControllerDeleteFile500Response
- */
-export interface FilesControllerDeleteFile500Response {
-  /**
-   * Status Code
-   * @type {number}
-   * @memberof FilesControllerDeleteFile500Response
-   */
-  statusCode: number
-  /**
-   * Detail error message
-   * @type {string}
-   * @memberof FilesControllerDeleteFile500Response
-   */
-  message: string
-  /**
-   * status in text
-   * @type {string}
-   * @memberof FilesControllerDeleteFile500Response
-   */
-  status: string
-  /**
-   * Exact error name
-   * @type {string}
-   * @memberof FilesControllerDeleteFile500Response
-   */
-  errorName: FilesControllerDeleteFile500ResponseErrorNameEnum
-  /**
-   * Helper for sending additional data in error
-   * @type {object}
-   * @memberof FilesControllerDeleteFile500Response
-   */
-  object?: object
-}
-
-export const FilesControllerDeleteFile500ResponseErrorNameEnum = {
-  NotFoundError: 'NOT_FOUND_ERROR',
-  DatabaseError: 'DATABASE_ERROR',
-  InternalServerError: 'INTERNAL_SERVER_ERROR',
-  UnauthorizedError: 'UNAUTHORIZED_ERROR',
-} as const
-
-export type FilesControllerDeleteFile500ResponseErrorNameEnum =
-  (typeof FilesControllerDeleteFile500ResponseErrorNameEnum)[keyof typeof FilesControllerDeleteFile500ResponseErrorNameEnum]
 
 /**
  *
@@ -930,6 +930,7 @@ export const FilesControllerDownloadFile400ResponseErrorNameEnum = {
   DatabaseError: 'DATABASE_ERROR',
   InternalServerError: 'INTERNAL_SERVER_ERROR',
   UnauthorizedError: 'UNAUTHORIZED_ERROR',
+  UnprocessableEntityError: 'UNPROCESSABLE_ENTITY_ERROR',
 } as const
 
 export type FilesControllerDownloadFile400ResponseErrorNameEnum =
@@ -978,6 +979,7 @@ export const FilesControllerDownloadFile404ResponseErrorNameEnum = {
   DatabaseError: 'DATABASE_ERROR',
   InternalServerError: 'INTERNAL_SERVER_ERROR',
   UnauthorizedError: 'UNAUTHORIZED_ERROR',
+  UnprocessableEntityError: 'UNPROCESSABLE_ENTITY_ERROR',
 } as const
 
 export type FilesControllerDownloadFile404ResponseErrorNameEnum =
@@ -1026,154 +1028,11 @@ export const FilesControllerDownloadToken404ResponseErrorNameEnum = {
   DatabaseError: 'DATABASE_ERROR',
   InternalServerError: 'INTERNAL_SERVER_ERROR',
   UnauthorizedError: 'UNAUTHORIZED_ERROR',
+  UnprocessableEntityError: 'UNPROCESSABLE_ENTITY_ERROR',
 } as const
 
 export type FilesControllerDownloadToken404ResponseErrorNameEnum =
   (typeof FilesControllerDownloadToken404ResponseErrorNameEnum)[keyof typeof FilesControllerDownloadToken404ResponseErrorNameEnum]
-
-/**
- *
- * @export
- * @interface FilesControllerPostFileToScanner400Response
- */
-export interface FilesControllerPostFileToScanner400Response {
-  /**
-   * Status Code
-   * @type {number}
-   * @memberof FilesControllerPostFileToScanner400Response
-   */
-  statusCode: number
-  /**
-   * Detail error message
-   * @type {string}
-   * @memberof FilesControllerPostFileToScanner400Response
-   */
-  message: string
-  /**
-   * status in text
-   * @type {string}
-   * @memberof FilesControllerPostFileToScanner400Response
-   */
-  status: string
-  /**
-   * Exact error name
-   * @type {string}
-   * @memberof FilesControllerPostFileToScanner400Response
-   */
-  errorName: FilesControllerPostFileToScanner400ResponseErrorNameEnum
-  /**
-   * Helper for sending additional data in error
-   * @type {object}
-   * @memberof FilesControllerPostFileToScanner400Response
-   */
-  object?: object
-}
-
-export const FilesControllerPostFileToScanner400ResponseErrorNameEnum = {
-  NotFoundError: 'NOT_FOUND_ERROR',
-  DatabaseError: 'DATABASE_ERROR',
-  InternalServerError: 'INTERNAL_SERVER_ERROR',
-  UnauthorizedError: 'UNAUTHORIZED_ERROR',
-} as const
-
-export type FilesControllerPostFileToScanner400ResponseErrorNameEnum =
-  (typeof FilesControllerPostFileToScanner400ResponseErrorNameEnum)[keyof typeof FilesControllerPostFileToScanner400ResponseErrorNameEnum]
-
-/**
- *
- * @export
- * @interface FilesControllerPostFileToScanner404Response
- */
-export interface FilesControllerPostFileToScanner404Response {
-  /**
-   * Status Code
-   * @type {number}
-   * @memberof FilesControllerPostFileToScanner404Response
-   */
-  statusCode: number
-  /**
-   * Detail error message
-   * @type {string}
-   * @memberof FilesControllerPostFileToScanner404Response
-   */
-  message: string
-  /**
-   * status in text
-   * @type {string}
-   * @memberof FilesControllerPostFileToScanner404Response
-   */
-  status: string
-  /**
-   * Exact error name
-   * @type {string}
-   * @memberof FilesControllerPostFileToScanner404Response
-   */
-  errorName: FilesControllerPostFileToScanner404ResponseErrorNameEnum
-  /**
-   * Helper for sending additional data in error
-   * @type {object}
-   * @memberof FilesControllerPostFileToScanner404Response
-   */
-  object?: object
-}
-
-export const FilesControllerPostFileToScanner404ResponseErrorNameEnum = {
-  NotFoundError: 'NOT_FOUND_ERROR',
-  DatabaseError: 'DATABASE_ERROR',
-  InternalServerError: 'INTERNAL_SERVER_ERROR',
-  UnauthorizedError: 'UNAUTHORIZED_ERROR',
-} as const
-
-export type FilesControllerPostFileToScanner404ResponseErrorNameEnum =
-  (typeof FilesControllerPostFileToScanner404ResponseErrorNameEnum)[keyof typeof FilesControllerPostFileToScanner404ResponseErrorNameEnum]
-
-/**
- *
- * @export
- * @interface FilesControllerPostFileToScanner500Response
- */
-export interface FilesControllerPostFileToScanner500Response {
-  /**
-   * Status Code
-   * @type {number}
-   * @memberof FilesControllerPostFileToScanner500Response
-   */
-  statusCode: number
-  /**
-   * Detail error message
-   * @type {string}
-   * @memberof FilesControllerPostFileToScanner500Response
-   */
-  message: string
-  /**
-   * status in text
-   * @type {string}
-   * @memberof FilesControllerPostFileToScanner500Response
-   */
-  status: string
-  /**
-   * Exact error name
-   * @type {string}
-   * @memberof FilesControllerPostFileToScanner500Response
-   */
-  errorName: FilesControllerPostFileToScanner500ResponseErrorNameEnum
-  /**
-   * Helper for sending additional data in error
-   * @type {object}
-   * @memberof FilesControllerPostFileToScanner500Response
-   */
-  object?: object
-}
-
-export const FilesControllerPostFileToScanner500ResponseErrorNameEnum = {
-  NotFoundError: 'NOT_FOUND_ERROR',
-  DatabaseError: 'DATABASE_ERROR',
-  InternalServerError: 'INTERNAL_SERVER_ERROR',
-  UnauthorizedError: 'UNAUTHORIZED_ERROR',
-} as const
-
-export type FilesControllerPostFileToScanner500ResponseErrorNameEnum =
-  (typeof FilesControllerPostFileToScanner500ResponseErrorNameEnum)[keyof typeof FilesControllerPostFileToScanner500ResponseErrorNameEnum]
 
 /**
  *
@@ -1224,10 +1083,158 @@ export const FilesControllerUploadFile400ResponseErrorNameEnum = {
   DatabaseError: 'DATABASE_ERROR',
   InternalServerError: 'INTERNAL_SERVER_ERROR',
   UnauthorizedError: 'UNAUTHORIZED_ERROR',
+  UnprocessableEntityError: 'UNPROCESSABLE_ENTITY_ERROR',
 } as const
 
 export type FilesControllerUploadFile400ResponseErrorNameEnum =
   (typeof FilesControllerUploadFile400ResponseErrorNameEnum)[keyof typeof FilesControllerUploadFile400ResponseErrorNameEnum]
+
+/**
+ *
+ * @export
+ * @interface FilesControllerUploadFile404Response
+ */
+export interface FilesControllerUploadFile404Response {
+  /**
+   * Status Code
+   * @type {number}
+   * @memberof FilesControllerUploadFile404Response
+   */
+  statusCode: number
+  /**
+   * Detail error message
+   * @type {string}
+   * @memberof FilesControllerUploadFile404Response
+   */
+  message: string
+  /**
+   * status in text
+   * @type {string}
+   * @memberof FilesControllerUploadFile404Response
+   */
+  status: string
+  /**
+   * Exact error name
+   * @type {string}
+   * @memberof FilesControllerUploadFile404Response
+   */
+  errorName: FilesControllerUploadFile404ResponseErrorNameEnum
+  /**
+   * Helper for sending additional data in error
+   * @type {object}
+   * @memberof FilesControllerUploadFile404Response
+   */
+  object?: object
+}
+
+export const FilesControllerUploadFile404ResponseErrorNameEnum = {
+  NotFoundError: 'NOT_FOUND_ERROR',
+  DatabaseError: 'DATABASE_ERROR',
+  InternalServerError: 'INTERNAL_SERVER_ERROR',
+  UnauthorizedError: 'UNAUTHORIZED_ERROR',
+  UnprocessableEntityError: 'UNPROCESSABLE_ENTITY_ERROR',
+} as const
+
+export type FilesControllerUploadFile404ResponseErrorNameEnum =
+  (typeof FilesControllerUploadFile404ResponseErrorNameEnum)[keyof typeof FilesControllerUploadFile404ResponseErrorNameEnum]
+
+/**
+ *
+ * @export
+ * @interface FilesControllerUploadFile500Response
+ */
+export interface FilesControllerUploadFile500Response {
+  /**
+   * Status Code
+   * @type {number}
+   * @memberof FilesControllerUploadFile500Response
+   */
+  statusCode: number
+  /**
+   * Detail error message
+   * @type {string}
+   * @memberof FilesControllerUploadFile500Response
+   */
+  message: string
+  /**
+   * status in text
+   * @type {string}
+   * @memberof FilesControllerUploadFile500Response
+   */
+  status: string
+  /**
+   * Exact error name
+   * @type {string}
+   * @memberof FilesControllerUploadFile500Response
+   */
+  errorName: FilesControllerUploadFile500ResponseErrorNameEnum
+  /**
+   * Helper for sending additional data in error
+   * @type {object}
+   * @memberof FilesControllerUploadFile500Response
+   */
+  object?: object
+}
+
+export const FilesControllerUploadFile500ResponseErrorNameEnum = {
+  NotFoundError: 'NOT_FOUND_ERROR',
+  DatabaseError: 'DATABASE_ERROR',
+  InternalServerError: 'INTERNAL_SERVER_ERROR',
+  UnauthorizedError: 'UNAUTHORIZED_ERROR',
+  UnprocessableEntityError: 'UNPROCESSABLE_ENTITY_ERROR',
+} as const
+
+export type FilesControllerUploadFile500ResponseErrorNameEnum =
+  (typeof FilesControllerUploadFile500ResponseErrorNameEnum)[keyof typeof FilesControllerUploadFile500ResponseErrorNameEnum]
+
+/**
+ *
+ * @export
+ * @interface FormIsOwnedBySomeoneElseErrorDto
+ */
+export interface FormIsOwnedBySomeoneElseErrorDto {
+  /**
+   * Status Code
+   * @type {number}
+   * @memberof FormIsOwnedBySomeoneElseErrorDto
+   */
+  statusCode: number
+  /**
+   * Detail error message
+   * @type {string}
+   * @memberof FormIsOwnedBySomeoneElseErrorDto
+   */
+  message: string
+  /**
+   * status in text
+   * @type {string}
+   * @memberof FormIsOwnedBySomeoneElseErrorDto
+   */
+  status: string
+  /**
+   * Exact error name
+   * @type {string}
+   * @memberof FormIsOwnedBySomeoneElseErrorDto
+   */
+  errorName: FormIsOwnedBySomeoneElseErrorDtoErrorNameEnum
+  /**
+   * Helper for sending additional data in error
+   * @type {object}
+   * @memberof FormIsOwnedBySomeoneElseErrorDto
+   */
+  object?: object
+}
+
+export const FormIsOwnedBySomeoneElseErrorDtoErrorNameEnum = {
+  NotFoundError: 'NOT_FOUND_ERROR',
+  DatabaseError: 'DATABASE_ERROR',
+  InternalServerError: 'INTERNAL_SERVER_ERROR',
+  UnauthorizedError: 'UNAUTHORIZED_ERROR',
+  UnprocessableEntityError: 'UNPROCESSABLE_ENTITY_ERROR',
+} as const
+
+export type FormIsOwnedBySomeoneElseErrorDtoErrorNameEnum =
+  (typeof FormIsOwnedBySomeoneElseErrorDtoErrorNameEnum)[keyof typeof FormIsOwnedBySomeoneElseErrorDtoErrorNameEnum]
 
 /**
  *
@@ -1272,6 +1279,7 @@ export const FormNotDraftErrorDtoErrorNameEnum = {
   DatabaseError: 'DATABASE_ERROR',
   InternalServerError: 'INTERNAL_SERVER_ERROR',
   UnauthorizedError: 'UNAUTHORIZED_ERROR',
+  UnprocessableEntityError: 'UNPROCESSABLE_ENTITY_ERROR',
 } as const
 
 export type FormNotDraftErrorDtoErrorNameEnum =
@@ -1320,58 +1328,11 @@ export const FormNotFoundErrorDtoErrorNameEnum = {
   DatabaseError: 'DATABASE_ERROR',
   InternalServerError: 'INTERNAL_SERVER_ERROR',
   UnauthorizedError: 'UNAUTHORIZED_ERROR',
+  UnprocessableEntityError: 'UNPROCESSABLE_ENTITY_ERROR',
 } as const
 
 export type FormNotFoundErrorDtoErrorNameEnum =
   (typeof FormNotFoundErrorDtoErrorNameEnum)[keyof typeof FormNotFoundErrorDtoErrorNameEnum]
-
-/**
- *
- * @export
- * @interface FormOrFileOrUserNotFoundErrorDto
- */
-export interface FormOrFileOrUserNotFoundErrorDto {
-  /**
-   * Status Code
-   * @type {number}
-   * @memberof FormOrFileOrUserNotFoundErrorDto
-   */
-  statusCode: number
-  /**
-   * Detail error message
-   * @type {string}
-   * @memberof FormOrFileOrUserNotFoundErrorDto
-   */
-  message: string
-  /**
-   * status in text
-   * @type {string}
-   * @memberof FormOrFileOrUserNotFoundErrorDto
-   */
-  status: string
-  /**
-   * Exact error name
-   * @type {string}
-   * @memberof FormOrFileOrUserNotFoundErrorDto
-   */
-  errorName: FormOrFileOrUserNotFoundErrorDtoErrorNameEnum
-  /**
-   * Helper for sending additional data in error
-   * @type {object}
-   * @memberof FormOrFileOrUserNotFoundErrorDto
-   */
-  object?: object
-}
-
-export const FormOrFileOrUserNotFoundErrorDtoErrorNameEnum = {
-  NotFoundError: 'NOT_FOUND_ERROR',
-  DatabaseError: 'DATABASE_ERROR',
-  InternalServerError: 'INTERNAL_SERVER_ERROR',
-  UnauthorizedError: 'UNAUTHORIZED_ERROR',
-} as const
-
-export type FormOrFileOrUserNotFoundErrorDtoErrorNameEnum =
-  (typeof FormOrFileOrUserNotFoundErrorDtoErrorNameEnum)[keyof typeof FormOrFileOrUserNotFoundErrorDtoErrorNameEnum]
 
 /**
  *
@@ -1416,6 +1377,7 @@ export const FormOrUserNotFoundErrorDtoErrorNameEnum = {
   DatabaseError: 'DATABASE_ERROR',
   InternalServerError: 'INTERNAL_SERVER_ERROR',
   UnauthorizedError: 'UNAUTHORIZED_ERROR',
+  UnprocessableEntityError: 'UNPROCESSABLE_ENTITY_ERROR',
 } as const
 
 export type FormOrUserNotFoundErrorDtoErrorNameEnum =
@@ -1441,6 +1403,25 @@ export const FormState = {
 
 export type FormState = (typeof FormState)[keyof typeof FormState]
 
+/**
+ *
+ * @export
+ * @interface FormUserInformationDto
+ */
+export interface FormUserInformationDto {
+  /**
+   * User ID (from cognito) who submit this form, can be empty, if it was submitted by user through eID
+   * @type {string}
+   * @memberof FormUserInformationDto
+   */
+  userExternalId: string | null
+  /**
+   * Uri for defining electronic sendbox, if person has it
+   * @type {string}
+   * @memberof FormUserInformationDto
+   */
+  uri: string | null
+}
 /**
  *
  * @export
@@ -1471,12 +1452,6 @@ export interface GetFileResponseDto {
    * @memberof GetFileResponseDto
    */
   formId: string
-  /**
-   * External Id of user
-   * @type {string}
-   * @memberof GetFileResponseDto
-   */
-  userExternalId: string | null
   /**
    * scan result
    * @type {string}
@@ -1513,50 +1488,52 @@ export interface GetFileResponseDto {
    * @memberof GetFileResponseDto
    */
   updatedAt: string
+  /**
+   *
+   * @type {GetFileResponseDtoForms}
+   * @memberof GetFileResponseDto
+   */
+  forms?: GetFileResponseDtoForms
 }
 
 export const GetFileResponseDtoStatusEnum = {
   Uploaded: 'UPLOADED',
   Accepted: 'ACCEPTED',
+  Queued: 'QUEUED',
   Scanning: 'SCANNING',
   Safe: 'SAFE',
   Infected: 'INFECTED',
-  NotFound: 'NOT FOUND',
-  MoveErrorSafe: 'MOVE ERROR SAFE',
-  MoveErrorInfected: 'MOVE ERROR INFECTED',
+  NotFound: 'NOT_FOUND',
+  MoveErrorSafe: 'MOVE_ERROR_SAFE',
+  MoveErrorInfected: 'MOVE_ERROR_INFECTED',
+  ScanError: 'SCAN_ERROR',
+  ScanTimeout: 'SCAN_TIMEOUT',
+  ScanNotSuccessful: 'SCAN_NOT_SUCCESSFUL',
+  FormIdNotFound: 'FORM_ID_NOT_FOUND',
 } as const
 
 export type GetFileResponseDtoStatusEnum =
   (typeof GetFileResponseDtoStatusEnum)[keyof typeof GetFileResponseDtoStatusEnum]
 
 /**
- *
+ * Info about user who sent the form
  * @export
- * @interface GetFileStatusResponseDto
+ * @interface GetFileResponseDtoForms
  */
-export interface GetFileStatusResponseDto {
+export interface GetFileResponseDtoForms {
   /**
-   * scan result
+   * User ID (from cognito) who submit this form, can be empty, if it was submitted by user through eID
    * @type {string}
-   * @memberof GetFileStatusResponseDto
+   * @memberof GetFileResponseDtoForms
    */
-  status: GetFileStatusResponseDtoStatusEnum
+  userExternalId: string | null
+  /**
+   * Uri for defining electronic sendbox, if person has it
+   * @type {string}
+   * @memberof GetFileResponseDtoForms
+   */
+  uri: string | null
 }
-
-export const GetFileStatusResponseDtoStatusEnum = {
-  Uploaded: 'UPLOADED',
-  Accepted: 'ACCEPTED',
-  Scanning: 'SCANNING',
-  Safe: 'SAFE',
-  Infected: 'INFECTED',
-  NotFound: 'NOT FOUND',
-  MoveErrorSafe: 'MOVE ERROR SAFE',
-  MoveErrorInfected: 'MOVE ERROR INFECTED',
-} as const
-
-export type GetFileStatusResponseDtoStatusEnum =
-  (typeof GetFileStatusResponseDtoStatusEnum)[keyof typeof GetFileStatusResponseDtoStatusEnum]
-
 /**
  *
  * @export
@@ -1900,6 +1877,7 @@ export const InvalidJwtTokenErrorDtoErrorNameEnum = {
   DatabaseError: 'DATABASE_ERROR',
   InternalServerError: 'INTERNAL_SERVER_ERROR',
   UnauthorizedError: 'UNAUTHORIZED_ERROR',
+  UnprocessableEntityError: 'UNPROCESSABLE_ENTITY_ERROR',
 } as const
 
 export type InvalidJwtTokenErrorDtoErrorNameEnum =
@@ -1948,6 +1926,7 @@ export const InvalidOrExpiredJwtTokenErrorDtoErrorNameEnum = {
   DatabaseError: 'DATABASE_ERROR',
   InternalServerError: 'INTERNAL_SERVER_ERROR',
   UnauthorizedError: 'UNAUTHORIZED_ERROR',
+  UnprocessableEntityError: 'UNPROCESSABLE_ENTITY_ERROR',
 } as const
 
 export type InvalidOrExpiredJwtTokenErrorDtoErrorNameEnum =
@@ -2041,6 +2020,7 @@ export const NasesControllerGetForm404ResponseErrorNameEnum = {
   DatabaseError: 'DATABASE_ERROR',
   InternalServerError: 'INTERNAL_SERVER_ERROR',
   UnauthorizedError: 'UNAUTHORIZED_ERROR',
+  UnprocessableEntityError: 'UNPROCESSABLE_ENTITY_ERROR',
 } as const
 
 export type NasesControllerGetForm404ResponseErrorNameEnum =
@@ -2089,6 +2069,7 @@ export const NasesControllerGetForms500ResponseErrorNameEnum = {
   DatabaseError: 'DATABASE_ERROR',
   InternalServerError: 'INTERNAL_SERVER_ERROR',
   UnauthorizedError: 'UNAUTHORIZED_ERROR',
+  UnprocessableEntityError: 'UNPROCESSABLE_ENTITY_ERROR',
 } as const
 
 export type NasesControllerGetForms500ResponseErrorNameEnum =
@@ -2137,6 +2118,7 @@ export const NasesControllerSendAndUpdateForm400ResponseErrorNameEnum = {
   DatabaseError: 'DATABASE_ERROR',
   InternalServerError: 'INTERNAL_SERVER_ERROR',
   UnauthorizedError: 'UNAUTHORIZED_ERROR',
+  UnprocessableEntityError: 'UNPROCESSABLE_ENTITY_ERROR',
 } as const
 
 export type NasesControllerSendAndUpdateForm400ResponseErrorNameEnum =
@@ -2185,6 +2167,7 @@ export const NasesControllerSendAndUpdateForm422ResponseErrorNameEnum = {
   DatabaseError: 'DATABASE_ERROR',
   InternalServerError: 'INTERNAL_SERVER_ERROR',
   UnauthorizedError: 'UNAUTHORIZED_ERROR',
+  UnprocessableEntityError: 'UNPROCESSABLE_ENTITY_ERROR',
 } as const
 
 export type NasesControllerSendAndUpdateForm422ResponseErrorNameEnum =
@@ -2233,10 +2216,60 @@ export const NasesControllerSendForm422ResponseErrorNameEnum = {
   DatabaseError: 'DATABASE_ERROR',
   InternalServerError: 'INTERNAL_SERVER_ERROR',
   UnauthorizedError: 'UNAUTHORIZED_ERROR',
+  UnprocessableEntityError: 'UNPROCESSABLE_ENTITY_ERROR',
 } as const
 
 export type NasesControllerSendForm422ResponseErrorNameEnum =
   (typeof NasesControllerSendForm422ResponseErrorNameEnum)[keyof typeof NasesControllerSendForm422ResponseErrorNameEnum]
+
+/**
+ *
+ * @export
+ * @interface NoFileIdInJwtErrorDto
+ */
+export interface NoFileIdInJwtErrorDto {
+  /**
+   * Status Code
+   * @type {number}
+   * @memberof NoFileIdInJwtErrorDto
+   */
+  statusCode: number
+  /**
+   * Detail error message
+   * @type {string}
+   * @memberof NoFileIdInJwtErrorDto
+   */
+  message: string
+  /**
+   * status in text
+   * @type {string}
+   * @memberof NoFileIdInJwtErrorDto
+   */
+  status: string
+  /**
+   * Exact error name
+   * @type {string}
+   * @memberof NoFileIdInJwtErrorDto
+   */
+  errorName: NoFileIdInJwtErrorDtoErrorNameEnum
+  /**
+   * Helper for sending additional data in error
+   * @type {object}
+   * @memberof NoFileIdInJwtErrorDto
+   */
+  object?: object
+}
+
+export const NoFileIdInJwtErrorDtoErrorNameEnum = {
+  NotFoundError: 'NOT_FOUND_ERROR',
+  DatabaseError: 'DATABASE_ERROR',
+  InternalServerError: 'INTERNAL_SERVER_ERROR',
+  UnauthorizedError: 'UNAUTHORIZED_ERROR',
+  UnprocessableEntityError: 'UNPROCESSABLE_ENTITY_ERROR',
+} as const
+
+export type NoFileIdInJwtErrorDtoErrorNameEnum =
+  (typeof NoFileIdInJwtErrorDtoErrorNameEnum)[keyof typeof NoFileIdInJwtErrorDtoErrorNameEnum]
 
 /**
  *
@@ -2281,6 +2314,7 @@ export const NoFileUploadDataErrorDtoErrorNameEnum = {
   DatabaseError: 'DATABASE_ERROR',
   InternalServerError: 'INTERNAL_SERVER_ERROR',
   UnauthorizedError: 'UNAUTHORIZED_ERROR',
+  UnprocessableEntityError: 'UNPROCESSABLE_ENTITY_ERROR',
 } as const
 
 export type NoFileUploadDataErrorDtoErrorNameEnum =
@@ -2329,54 +2363,12 @@ export const NoFormXmlDataErrorDtoErrorNameEnum = {
   DatabaseError: 'DATABASE_ERROR',
   InternalServerError: 'INTERNAL_SERVER_ERROR',
   UnauthorizedError: 'UNAUTHORIZED_ERROR',
+  UnprocessableEntityError: 'UNPROCESSABLE_ENTITY_ERROR',
 } as const
 
 export type NoFormXmlDataErrorDtoErrorNameEnum =
   (typeof NoFormXmlDataErrorDtoErrorNameEnum)[keyof typeof NoFormXmlDataErrorDtoErrorNameEnum]
 
-/**
- *
- * @export
- * @interface PostFileRequestDto
- */
-export interface PostFileRequestDto {
-  /**
-   * Real file name of the file, but is used only for display
-   * @type {string}
-   * @memberof PostFileRequestDto
-   */
-  fileName: string
-  /**
-   * Hashed file uid under which is file stored in minio
-   * @type {string}
-   * @memberof PostFileRequestDto
-   */
-  fileUid: string
-  /**
-   * Form type
-   * @type {string}
-   * @memberof PostFileRequestDto
-   */
-  pospId: string
-  /**
-   * Identifier of sent form
-   * @type {string}
-   * @memberof PostFileRequestDto
-   */
-  formId: string
-  /**
-   * Desired id of file in db
-   * @type {string}
-   * @memberof PostFileRequestDto
-   */
-  fileId: string
-  /**
-   * File size in bytes
-   * @type {number}
-   * @memberof PostFileRequestDto
-   */
-  fileSize: number
-}
 /**
  *
  * @export
@@ -2407,12 +2399,6 @@ export interface PostFileResponseDto {
    * @memberof PostFileResponseDto
    */
   formId: string
-  /**
-   * External Id of user
-   * @type {string}
-   * @memberof PostFileResponseDto
-   */
-  userExternalId: string | null
   /**
    * scan result
    * @type {string}
@@ -2450,22 +2436,27 @@ export interface PostFileResponseDto {
    */
   updatedAt: string
   /**
-   * more info
-   * @type {string}
+   *
+   * @type {GetFileResponseDtoForms}
    * @memberof PostFileResponseDto
    */
-  message: string
+  forms?: GetFileResponseDtoForms
 }
 
 export const PostFileResponseDtoStatusEnum = {
   Uploaded: 'UPLOADED',
   Accepted: 'ACCEPTED',
+  Queued: 'QUEUED',
   Scanning: 'SCANNING',
   Safe: 'SAFE',
   Infected: 'INFECTED',
-  NotFound: 'NOT FOUND',
-  MoveErrorSafe: 'MOVE ERROR SAFE',
-  MoveErrorInfected: 'MOVE ERROR INFECTED',
+  NotFound: 'NOT_FOUND',
+  MoveErrorSafe: 'MOVE_ERROR_SAFE',
+  MoveErrorInfected: 'MOVE_ERROR_INFECTED',
+  ScanError: 'SCAN_ERROR',
+  ScanTimeout: 'SCAN_TIMEOUT',
+  ScanNotSuccessful: 'SCAN_NOT_SUCCESSFUL',
+  FormIdNotFound: 'FORM_ID_NOT_FOUND',
 } as const
 
 export type PostFileResponseDtoStatusEnum =
@@ -2514,6 +2505,7 @@ export const ProblemWithScannerErrorDtoErrorNameEnum = {
   DatabaseError: 'DATABASE_ERROR',
   InternalServerError: 'INTERNAL_SERVER_ERROR',
   UnauthorizedError: 'UNAUTHORIZED_ERROR',
+  UnprocessableEntityError: 'UNPROCESSABLE_ENTITY_ERROR',
 } as const
 
 export type ProblemWithScannerErrorDtoErrorNameEnum =
@@ -2562,6 +2554,7 @@ export const ScannerNoResponseErrorDtoErrorNameEnum = {
   DatabaseError: 'DATABASE_ERROR',
   InternalServerError: 'INTERNAL_SERVER_ERROR',
   UnauthorizedError: 'UNAUTHORIZED_ERROR',
+  UnprocessableEntityError: 'UNPROCESSABLE_ENTITY_ERROR',
 } as const
 
 export type ScannerNoResponseErrorDtoErrorNameEnum =
@@ -2610,6 +2603,7 @@ export const SchemaNotFoundErrorNameEnum = {
   DatabaseError: 'DATABASE_ERROR',
   InternalServerError: 'INTERNAL_SERVER_ERROR',
   UnauthorizedError: 'UNAUTHORIZED_ERROR',
+  UnprocessableEntityError: 'UNPROCESSABLE_ENTITY_ERROR',
 } as const
 
 export type SchemaNotFoundErrorNameEnum =
@@ -2901,6 +2895,7 @@ export const SchemaVersionNotFoundErrorNameEnum = {
   DatabaseError: 'DATABASE_ERROR',
   InternalServerError: 'INTERNAL_SERVER_ERROR',
   UnauthorizedError: 'UNAUTHORIZED_ERROR',
+  UnprocessableEntityError: 'UNPROCESSABLE_ENTITY_ERROR',
 } as const
 
 export type SchemaVersionNotFoundErrorNameEnum =
@@ -3293,31 +3288,22 @@ export interface ServiceRunningDto {
 /**
  *
  * @export
- * @interface StatusFileDto
+ * @interface SimpleBadRequestErrorDto
  */
-export interface StatusFileDto {
+export interface SimpleBadRequestErrorDto {
   /**
-   * scan result
-   * @type {string}
-   * @memberof StatusFileDto
+   * Status Code
+   * @type {number}
+   * @memberof SimpleBadRequestErrorDto
    */
-  status: StatusFileDtoStatusEnum
+  statusCode: number
+  /**
+   * Detail error message
+   * @type {string}
+   * @memberof SimpleBadRequestErrorDto
+   */
+  message: string
 }
-
-export const StatusFileDtoStatusEnum = {
-  Uploaded: 'UPLOADED',
-  Accepted: 'ACCEPTED',
-  Scanning: 'SCANNING',
-  Safe: 'SAFE',
-  Infected: 'INFECTED',
-  NotFound: 'NOT FOUND',
-  MoveErrorSafe: 'MOVE ERROR SAFE',
-  MoveErrorInfected: 'MOVE ERROR INFECTED',
-} as const
-
-export type StatusFileDtoStatusEnum =
-  (typeof StatusFileDtoStatusEnum)[keyof typeof StatusFileDtoStatusEnum]
-
 /**
  *
  * @export
@@ -3386,6 +3372,7 @@ export const UnableAddFormToRabbitErrorDtoErrorNameEnum = {
   DatabaseError: 'DATABASE_ERROR',
   InternalServerError: 'INTERNAL_SERVER_ERROR',
   UnauthorizedError: 'UNAUTHORIZED_ERROR',
+  UnprocessableEntityError: 'UNPROCESSABLE_ENTITY_ERROR',
 } as const
 
 export type UnableAddFormToRabbitErrorDtoErrorNameEnum =
@@ -3427,12 +3414,17 @@ export interface UpdateFileStatusRequestDto {
 export const UpdateFileStatusRequestDtoStatusEnum = {
   Uploaded: 'UPLOADED',
   Accepted: 'ACCEPTED',
+  Queued: 'QUEUED',
   Scanning: 'SCANNING',
   Safe: 'SAFE',
   Infected: 'INFECTED',
-  NotFound: 'NOT FOUND',
-  MoveErrorSafe: 'MOVE ERROR SAFE',
-  MoveErrorInfected: 'MOVE ERROR INFECTED',
+  NotFound: 'NOT_FOUND',
+  MoveErrorSafe: 'MOVE_ERROR_SAFE',
+  MoveErrorInfected: 'MOVE_ERROR_INFECTED',
+  ScanError: 'SCAN_ERROR',
+  ScanTimeout: 'SCAN_TIMEOUT',
+  ScanNotSuccessful: 'SCAN_NOT_SUCCESSFUL',
+  FormIdNotFound: 'FORM_ID_NOT_FOUND',
 } as const
 
 export type UpdateFileStatusRequestDtoStatusEnum =
@@ -3468,12 +3460,6 @@ export interface UpdateFileStatusResponseDto {
    * @memberof UpdateFileStatusResponseDto
    */
   formId: string
-  /**
-   * External Id of user
-   * @type {string}
-   * @memberof UpdateFileStatusResponseDto
-   */
-  userExternalId: string | null
   /**
    * scan result
    * @type {string}
@@ -3511,6 +3497,12 @@ export interface UpdateFileStatusResponseDto {
    */
   updatedAt: string
   /**
+   *
+   * @type {GetFileResponseDtoForms}
+   * @memberof UpdateFileStatusResponseDto
+   */
+  forms?: GetFileResponseDtoForms
+  /**
    * more info
    * @type {string}
    * @memberof UpdateFileStatusResponseDto
@@ -3521,12 +3513,17 @@ export interface UpdateFileStatusResponseDto {
 export const UpdateFileStatusResponseDtoStatusEnum = {
   Uploaded: 'UPLOADED',
   Accepted: 'ACCEPTED',
+  Queued: 'QUEUED',
   Scanning: 'SCANNING',
   Safe: 'SAFE',
   Infected: 'INFECTED',
-  NotFound: 'NOT FOUND',
-  MoveErrorSafe: 'MOVE ERROR SAFE',
-  MoveErrorInfected: 'MOVE ERROR INFECTED',
+  NotFound: 'NOT_FOUND',
+  MoveErrorSafe: 'MOVE_ERROR_SAFE',
+  MoveErrorInfected: 'MOVE_ERROR_INFECTED',
+  ScanError: 'SCAN_ERROR',
+  ScanTimeout: 'SCAN_TIMEOUT',
+  ScanNotSuccessful: 'SCAN_NOT_SUCCESSFUL',
+  FormIdNotFound: 'FORM_ID_NOT_FOUND',
 } as const
 
 export type UpdateFileStatusResponseDtoStatusEnum =
@@ -3605,27 +3602,27 @@ export const ConvertApiAxiosParamCreator = function (configuration?: Configurati
     /**
      * Generates XML form from given JSON data and form slug
      * @summary
-     * @param {string} formSlug
+     * @param {string} id
      * @param {JsonToXmlRequestDto} jsonToXmlRequestDto
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
     convertControllerConvertJsonToXml: async (
-      formSlug: string,
+      id: string,
       jsonToXmlRequestDto: JsonToXmlRequestDto,
       options: AxiosRequestConfig = {},
     ): Promise<RequestArgs> => {
-      // verify required parameter 'formSlug' is not null or undefined
-      assertParamExists('convertControllerConvertJsonToXml', 'formSlug', formSlug)
+      // verify required parameter 'id' is not null or undefined
+      assertParamExists('convertControllerConvertJsonToXml', 'id', id)
       // verify required parameter 'jsonToXmlRequestDto' is not null or undefined
       assertParamExists(
         'convertControllerConvertJsonToXml',
         'jsonToXmlRequestDto',
         jsonToXmlRequestDto,
       )
-      const localVarPath = `/convert/json-to-xml/{formSlug}`.replace(
-        `{${'formSlug'}}`,
-        encodeURIComponent(String(formSlug)),
+      const localVarPath = `/convert/json-to-xml/{id}`.replace(
+        `{${'id'}}`,
+        encodeURIComponent(String(id)),
       )
       // use dummy base URL string because the URL constructor only accepts absolute URLs.
       const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL)
@@ -3661,27 +3658,27 @@ export const ConvertApiAxiosParamCreator = function (configuration?: Configurati
     /**
      * Generates JSON form from given XML data and form slug
      * @summary
-     * @param {string} formSlug
+     * @param {string} id
      * @param {XmlToJsonRequestDto} xmlToJsonRequestDto
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
     convertControllerConvertXmlToJson: async (
-      formSlug: string,
+      id: string,
       xmlToJsonRequestDto: XmlToJsonRequestDto,
       options: AxiosRequestConfig = {},
     ): Promise<RequestArgs> => {
-      // verify required parameter 'formSlug' is not null or undefined
-      assertParamExists('convertControllerConvertXmlToJson', 'formSlug', formSlug)
+      // verify required parameter 'id' is not null or undefined
+      assertParamExists('convertControllerConvertXmlToJson', 'id', id)
       // verify required parameter 'xmlToJsonRequestDto' is not null or undefined
       assertParamExists(
         'convertControllerConvertXmlToJson',
         'xmlToJsonRequestDto',
         xmlToJsonRequestDto,
       )
-      const localVarPath = `/convert/xml-to-json/{formSlug}`.replace(
-        `{${'formSlug'}}`,
-        encodeURIComponent(String(formSlug)),
+      const localVarPath = `/convert/xml-to-json/{id}`.replace(
+        `{${'id'}}`,
+        encodeURIComponent(String(id)),
       )
       // use dummy base URL string because the URL constructor only accepts absolute URLs.
       const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL)
@@ -3727,18 +3724,18 @@ export const ConvertApiFp = function (configuration?: Configuration) {
     /**
      * Generates XML form from given JSON data and form slug
      * @summary
-     * @param {string} formSlug
+     * @param {string} id
      * @param {JsonToXmlRequestDto} jsonToXmlRequestDto
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
     async convertControllerConvertJsonToXml(
-      formSlug: string,
+      id: string,
       jsonToXmlRequestDto: JsonToXmlRequestDto,
       options?: AxiosRequestConfig,
     ): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<JsonToXmlResponseDto>> {
       const localVarAxiosArgs = await localVarAxiosParamCreator.convertControllerConvertJsonToXml(
-        formSlug,
+        id,
         jsonToXmlRequestDto,
         options,
       )
@@ -3747,18 +3744,18 @@ export const ConvertApiFp = function (configuration?: Configuration) {
     /**
      * Generates JSON form from given XML data and form slug
      * @summary
-     * @param {string} formSlug
+     * @param {string} id
      * @param {XmlToJsonRequestDto} xmlToJsonRequestDto
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
     async convertControllerConvertXmlToJson(
-      formSlug: string,
+      id: string,
       xmlToJsonRequestDto: XmlToJsonRequestDto,
       options?: AxiosRequestConfig,
     ): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<XmlToJsonResponseDto>> {
       const localVarAxiosArgs = await localVarAxiosParamCreator.convertControllerConvertXmlToJson(
-        formSlug,
+        id,
         xmlToJsonRequestDto,
         options,
       )
@@ -3781,35 +3778,35 @@ export const ConvertApiFactory = function (
     /**
      * Generates XML form from given JSON data and form slug
      * @summary
-     * @param {string} formSlug
+     * @param {string} id
      * @param {JsonToXmlRequestDto} jsonToXmlRequestDto
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
     convertControllerConvertJsonToXml(
-      formSlug: string,
+      id: string,
       jsonToXmlRequestDto: JsonToXmlRequestDto,
       options?: AxiosRequestConfig,
     ): AxiosPromise<JsonToXmlResponseDto> {
       return localVarFp
-        .convertControllerConvertJsonToXml(formSlug, jsonToXmlRequestDto, options)
+        .convertControllerConvertJsonToXml(id, jsonToXmlRequestDto, options)
         .then((request) => request(axios, basePath))
     },
     /**
      * Generates JSON form from given XML data and form slug
      * @summary
-     * @param {string} formSlug
+     * @param {string} id
      * @param {XmlToJsonRequestDto} xmlToJsonRequestDto
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
     convertControllerConvertXmlToJson(
-      formSlug: string,
+      id: string,
       xmlToJsonRequestDto: XmlToJsonRequestDto,
       options?: AxiosRequestConfig,
     ): AxiosPromise<XmlToJsonResponseDto> {
       return localVarFp
-        .convertControllerConvertXmlToJson(formSlug, xmlToJsonRequestDto, options)
+        .convertControllerConvertXmlToJson(id, xmlToJsonRequestDto, options)
         .then((request) => request(axios, basePath))
     },
   }
@@ -3825,38 +3822,38 @@ export class ConvertApi extends BaseAPI {
   /**
    * Generates XML form from given JSON data and form slug
    * @summary
-   * @param {string} formSlug
+   * @param {string} id
    * @param {JsonToXmlRequestDto} jsonToXmlRequestDto
    * @param {*} [options] Override http request option.
    * @throws {RequiredError}
    * @memberof ConvertApi
    */
   public convertControllerConvertJsonToXml(
-    formSlug: string,
+    id: string,
     jsonToXmlRequestDto: JsonToXmlRequestDto,
     options?: AxiosRequestConfig,
   ) {
     return ConvertApiFp(this.configuration)
-      .convertControllerConvertJsonToXml(formSlug, jsonToXmlRequestDto, options)
+      .convertControllerConvertJsonToXml(id, jsonToXmlRequestDto, options)
       .then((request) => request(this.axios, this.basePath))
   }
 
   /**
    * Generates JSON form from given XML data and form slug
    * @summary
-   * @param {string} formSlug
+   * @param {string} id
    * @param {XmlToJsonRequestDto} xmlToJsonRequestDto
    * @param {*} [options] Override http request option.
    * @throws {RequiredError}
    * @memberof ConvertApi
    */
   public convertControllerConvertXmlToJson(
-    formSlug: string,
+    id: string,
     xmlToJsonRequestDto: XmlToJsonRequestDto,
     options?: AxiosRequestConfig,
   ) {
     return ConvertApiFp(this.configuration)
-      .convertControllerConvertXmlToJson(formSlug, xmlToJsonRequestDto, options)
+      .convertControllerConvertXmlToJson(id, xmlToJsonRequestDto, options)
       .then((request) => request(this.axios, this.basePath))
   }
 }
@@ -3867,51 +3864,6 @@ export class ConvertApi extends BaseAPI {
  */
 export const FilesApiAxiosParamCreator = function (configuration?: Configuration) {
   return {
-    /**
-     * You can delete file based on fileId.
-     * @summary Delete file based on fileId
-     * @param {string} fileId
-     * @param {*} [options] Override http request option.
-     * @throws {RequiredError}
-     */
-    filesControllerDeleteFile: async (
-      fileId: string,
-      options: AxiosRequestConfig = {},
-    ): Promise<RequestArgs> => {
-      // verify required parameter 'fileId' is not null or undefined
-      assertParamExists('filesControllerDeleteFile', 'fileId', fileId)
-      const localVarPath = `/files/{fileId}`.replace(
-        `{${'fileId'}}`,
-        encodeURIComponent(String(fileId)),
-      )
-      // use dummy base URL string because the URL constructor only accepts absolute URLs.
-      const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL)
-      let baseOptions
-      if (configuration) {
-        baseOptions = configuration.baseOptions
-      }
-
-      const localVarRequestOptions = { method: 'DELETE', ...baseOptions, ...options }
-      const localVarHeaderParameter = {} as any
-      const localVarQueryParameter = {} as any
-
-      // authentication bearer required
-      // http bearer authentication required
-      await setBearerAuthToObject(localVarHeaderParameter, configuration)
-
-      setSearchParams(localVarUrlObj, localVarQueryParameter)
-      let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {}
-      localVarRequestOptions.headers = {
-        ...localVarHeaderParameter,
-        ...headersFromBaseOptions,
-        ...options.headers,
-      }
-
-      return {
-        url: toPathString(localVarUrlObj),
-        options: localVarRequestOptions,
-      }
-    },
     /**
      * You can download file byt fileId.
      * @summary Download file by jwt token
@@ -4048,99 +4000,6 @@ export const FilesApiAxiosParamCreator = function (configuration?: Configuration
       }
     },
     /**
-     * You get file status based on fileId which you obtained when you notified for file scanning.
-     * @summary Get file status based on fileId
-     * @param {string} fileId
-     * @param {*} [options] Override http request option.
-     * @throws {RequiredError}
-     */
-    filesControllerGetFileStatus: async (
-      fileId: string,
-      options: AxiosRequestConfig = {},
-    ): Promise<RequestArgs> => {
-      // verify required parameter 'fileId' is not null or undefined
-      assertParamExists('filesControllerGetFileStatus', 'fileId', fileId)
-      const localVarPath = `/files/scan/{fileId}`.replace(
-        `{${'fileId'}}`,
-        encodeURIComponent(String(fileId)),
-      )
-      // use dummy base URL string because the URL constructor only accepts absolute URLs.
-      const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL)
-      let baseOptions
-      if (configuration) {
-        baseOptions = configuration.baseOptions
-      }
-
-      const localVarRequestOptions = { method: 'GET', ...baseOptions, ...options }
-      const localVarHeaderParameter = {} as any
-      const localVarQueryParameter = {} as any
-
-      // authentication bearer required
-      // http bearer authentication required
-      await setBearerAuthToObject(localVarHeaderParameter, configuration)
-
-      setSearchParams(localVarUrlObj, localVarQueryParameter)
-      let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {}
-      localVarRequestOptions.headers = {
-        ...localVarHeaderParameter,
-        ...headersFromBaseOptions,
-        ...options.headers,
-      }
-
-      return {
-        url: toPathString(localVarUrlObj),
-        options: localVarRequestOptions,
-      }
-    },
-    /**
-     * You get file status based on formId and fileUid.
-     * @summary Get file status based on formId and fileUid
-     * @param {string} formId
-     * @param {string} fileUid
-     * @param {*} [options] Override http request option.
-     * @throws {RequiredError}
-     */
-    filesControllerGetFileStatusByForm: async (
-      formId: string,
-      fileUid: string,
-      options: AxiosRequestConfig = {},
-    ): Promise<RequestArgs> => {
-      // verify required parameter 'formId' is not null or undefined
-      assertParamExists('filesControllerGetFileStatusByForm', 'formId', formId)
-      // verify required parameter 'fileUid' is not null or undefined
-      assertParamExists('filesControllerGetFileStatusByForm', 'fileUid', fileUid)
-      const localVarPath = `/files/forms/{formId}/{fileUid}`
-        .replace(`{${'formId'}}`, encodeURIComponent(String(formId)))
-        .replace(`{${'fileUid'}}`, encodeURIComponent(String(fileUid)))
-      // use dummy base URL string because the URL constructor only accepts absolute URLs.
-      const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL)
-      let baseOptions
-      if (configuration) {
-        baseOptions = configuration.baseOptions
-      }
-
-      const localVarRequestOptions = { method: 'GET', ...baseOptions, ...options }
-      const localVarHeaderParameter = {} as any
-      const localVarQueryParameter = {} as any
-
-      // authentication bearer required
-      // http bearer authentication required
-      await setBearerAuthToObject(localVarHeaderParameter, configuration)
-
-      setSearchParams(localVarUrlObj, localVarQueryParameter)
-      let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {}
-      localVarRequestOptions.headers = {
-        ...localVarHeaderParameter,
-        ...headersFromBaseOptions,
-        ...options.headers,
-      }
-
-      return {
-        url: toPathString(localVarUrlObj),
-        options: localVarRequestOptions,
-      }
-    },
-    /**
      * If you need list of files and their file statuses based on formId.
      * @summary List of files and statuses based on formId
      * @param {string} formId
@@ -4179,59 +4038,6 @@ export const FilesApiAxiosParamCreator = function (configuration?: Configuration
         ...headersFromBaseOptions,
         ...options.headers,
       }
-
-      return {
-        url: toPathString(localVarUrlObj),
-        options: localVarRequestOptions,
-      }
-    },
-    /**
-     * When you hit this POST endpoint, you send file for scanning. You get file id and his current status in response.
-     * @summary Send file for scanning.
-     * @param {PostFileRequestDto} postFileRequestDto
-     * @param {*} [options] Override http request option.
-     * @throws {RequiredError}
-     */
-    filesControllerPostFileToScanner: async (
-      postFileRequestDto: PostFileRequestDto,
-      options: AxiosRequestConfig = {},
-    ): Promise<RequestArgs> => {
-      // verify required parameter 'postFileRequestDto' is not null or undefined
-      assertParamExists(
-        'filesControllerPostFileToScanner',
-        'postFileRequestDto',
-        postFileRequestDto,
-      )
-      const localVarPath = `/files/scan`
-      // use dummy base URL string because the URL constructor only accepts absolute URLs.
-      const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL)
-      let baseOptions
-      if (configuration) {
-        baseOptions = configuration.baseOptions
-      }
-
-      const localVarRequestOptions = { method: 'POST', ...baseOptions, ...options }
-      const localVarHeaderParameter = {} as any
-      const localVarQueryParameter = {} as any
-
-      // authentication bearer required
-      // http bearer authentication required
-      await setBearerAuthToObject(localVarHeaderParameter, configuration)
-
-      localVarHeaderParameter['Content-Type'] = 'application/json'
-
-      setSearchParams(localVarUrlObj, localVarQueryParameter)
-      let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {}
-      localVarRequestOptions.headers = {
-        ...localVarHeaderParameter,
-        ...headersFromBaseOptions,
-        ...options.headers,
-      }
-      localVarRequestOptions.data = serializeDataIfNeeded(
-        postFileRequestDto,
-        localVarRequestOptions,
-        configuration,
-      )
 
       return {
         url: toPathString(localVarUrlObj),
@@ -4380,23 +4186,6 @@ export const FilesApiFp = function (configuration?: Configuration) {
   const localVarAxiosParamCreator = FilesApiAxiosParamCreator(configuration)
   return {
     /**
-     * You can delete file based on fileId.
-     * @summary Delete file based on fileId
-     * @param {string} fileId
-     * @param {*} [options] Override http request option.
-     * @throws {RequiredError}
-     */
-    async filesControllerDeleteFile(
-      fileId: string,
-      options?: AxiosRequestConfig,
-    ): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<DeleteFileResponseData>> {
-      const localVarAxiosArgs = await localVarAxiosParamCreator.filesControllerDeleteFile(
-        fileId,
-        options,
-      )
-      return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)
-    },
-    /**
      * You can download file byt fileId.
      * @summary Download file by jwt token
      * @param {string} jwtToken
@@ -4450,45 +4239,6 @@ export const FilesApiFp = function (configuration?: Configuration) {
       return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)
     },
     /**
-     * You get file status based on fileId which you obtained when you notified for file scanning.
-     * @summary Get file status based on fileId
-     * @param {string} fileId
-     * @param {*} [options] Override http request option.
-     * @throws {RequiredError}
-     */
-    async filesControllerGetFileStatus(
-      fileId: string,
-      options?: AxiosRequestConfig,
-    ): Promise<
-      (axios?: AxiosInstance, basePath?: string) => AxiosPromise<GetFileStatusResponseDto>
-    > {
-      const localVarAxiosArgs = await localVarAxiosParamCreator.filesControllerGetFileStatus(
-        fileId,
-        options,
-      )
-      return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)
-    },
-    /**
-     * You get file status based on formId and fileUid.
-     * @summary Get file status based on formId and fileUid
-     * @param {string} formId
-     * @param {string} fileUid
-     * @param {*} [options] Override http request option.
-     * @throws {RequiredError}
-     */
-    async filesControllerGetFileStatusByForm(
-      formId: string,
-      fileUid: string,
-      options?: AxiosRequestConfig,
-    ): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<StatusFileDto>> {
-      const localVarAxiosArgs = await localVarAxiosParamCreator.filesControllerGetFileStatusByForm(
-        formId,
-        fileUid,
-        options,
-      )
-      return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)
-    },
-    /**
      * If you need list of files and their file statuses based on formId.
      * @summary List of files and statuses based on formId
      * @param {string} formId
@@ -4503,23 +4253,6 @@ export const FilesApiFp = function (configuration?: Configuration) {
     > {
       const localVarAxiosArgs = await localVarAxiosParamCreator.filesControllerGetFilesStatusByForm(
         formId,
-        options,
-      )
-      return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)
-    },
-    /**
-     * When you hit this POST endpoint, you send file for scanning. You get file id and his current status in response.
-     * @summary Send file for scanning.
-     * @param {PostFileRequestDto} postFileRequestDto
-     * @param {*} [options] Override http request option.
-     * @throws {RequiredError}
-     */
-    async filesControllerPostFileToScanner(
-      postFileRequestDto: PostFileRequestDto,
-      options?: AxiosRequestConfig,
-    ): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<PostFileResponseDto>> {
-      const localVarAxiosArgs = await localVarAxiosParamCreator.filesControllerPostFileToScanner(
-        postFileRequestDto,
         options,
       )
       return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)
@@ -4588,21 +4321,6 @@ export const FilesApiFactory = function (
   const localVarFp = FilesApiFp(configuration)
   return {
     /**
-     * You can delete file based on fileId.
-     * @summary Delete file based on fileId
-     * @param {string} fileId
-     * @param {*} [options] Override http request option.
-     * @throws {RequiredError}
-     */
-    filesControllerDeleteFile(
-      fileId: string,
-      options?: AxiosRequestConfig,
-    ): AxiosPromise<DeleteFileResponseData> {
-      return localVarFp
-        .filesControllerDeleteFile(fileId, options)
-        .then((request) => request(axios, basePath))
-    },
-    /**
      * You can download file byt fileId.
      * @summary Download file by jwt token
      * @param {string} jwtToken
@@ -4648,38 +4366,6 @@ export const FilesApiFactory = function (
         .then((request) => request(axios, basePath))
     },
     /**
-     * You get file status based on fileId which you obtained when you notified for file scanning.
-     * @summary Get file status based on fileId
-     * @param {string} fileId
-     * @param {*} [options] Override http request option.
-     * @throws {RequiredError}
-     */
-    filesControllerGetFileStatus(
-      fileId: string,
-      options?: AxiosRequestConfig,
-    ): AxiosPromise<GetFileStatusResponseDto> {
-      return localVarFp
-        .filesControllerGetFileStatus(fileId, options)
-        .then((request) => request(axios, basePath))
-    },
-    /**
-     * You get file status based on formId and fileUid.
-     * @summary Get file status based on formId and fileUid
-     * @param {string} formId
-     * @param {string} fileUid
-     * @param {*} [options] Override http request option.
-     * @throws {RequiredError}
-     */
-    filesControllerGetFileStatusByForm(
-      formId: string,
-      fileUid: string,
-      options?: AxiosRequestConfig,
-    ): AxiosPromise<StatusFileDto> {
-      return localVarFp
-        .filesControllerGetFileStatusByForm(formId, fileUid, options)
-        .then((request) => request(axios, basePath))
-    },
-    /**
      * If you need list of files and their file statuses based on formId.
      * @summary List of files and statuses based on formId
      * @param {string} formId
@@ -4692,21 +4378,6 @@ export const FilesApiFactory = function (
     ): AxiosPromise<Array<GetFileResponseDto>> {
       return localVarFp
         .filesControllerGetFilesStatusByForm(formId, options)
-        .then((request) => request(axios, basePath))
-    },
-    /**
-     * When you hit this POST endpoint, you send file for scanning. You get file id and his current status in response.
-     * @summary Send file for scanning.
-     * @param {PostFileRequestDto} postFileRequestDto
-     * @param {*} [options] Override http request option.
-     * @throws {RequiredError}
-     */
-    filesControllerPostFileToScanner(
-      postFileRequestDto: PostFileRequestDto,
-      options?: AxiosRequestConfig,
-    ): AxiosPromise<PostFileResponseDto> {
-      return localVarFp
-        .filesControllerPostFileToScanner(postFileRequestDto, options)
         .then((request) => request(axios, basePath))
     },
     /**
@@ -4758,20 +4429,6 @@ export const FilesApiFactory = function (
  */
 export class FilesApi extends BaseAPI {
   /**
-   * You can delete file based on fileId.
-   * @summary Delete file based on fileId
-   * @param {string} fileId
-   * @param {*} [options] Override http request option.
-   * @throws {RequiredError}
-   * @memberof FilesApi
-   */
-  public filesControllerDeleteFile(fileId: string, options?: AxiosRequestConfig) {
-    return FilesApiFp(this.configuration)
-      .filesControllerDeleteFile(fileId, options)
-      .then((request) => request(this.axios, this.basePath))
-  }
-
-  /**
    * You can download file byt fileId.
    * @summary Download file by jwt token
    * @param {string} jwtToken
@@ -4814,39 +4471,6 @@ export class FilesApi extends BaseAPI {
   }
 
   /**
-   * You get file status based on fileId which you obtained when you notified for file scanning.
-   * @summary Get file status based on fileId
-   * @param {string} fileId
-   * @param {*} [options] Override http request option.
-   * @throws {RequiredError}
-   * @memberof FilesApi
-   */
-  public filesControllerGetFileStatus(fileId: string, options?: AxiosRequestConfig) {
-    return FilesApiFp(this.configuration)
-      .filesControllerGetFileStatus(fileId, options)
-      .then((request) => request(this.axios, this.basePath))
-  }
-
-  /**
-   * You get file status based on formId and fileUid.
-   * @summary Get file status based on formId and fileUid
-   * @param {string} formId
-   * @param {string} fileUid
-   * @param {*} [options] Override http request option.
-   * @throws {RequiredError}
-   * @memberof FilesApi
-   */
-  public filesControllerGetFileStatusByForm(
-    formId: string,
-    fileUid: string,
-    options?: AxiosRequestConfig,
-  ) {
-    return FilesApiFp(this.configuration)
-      .filesControllerGetFileStatusByForm(formId, fileUid, options)
-      .then((request) => request(this.axios, this.basePath))
-  }
-
-  /**
    * If you need list of files and their file statuses based on formId.
    * @summary List of files and statuses based on formId
    * @param {string} formId
@@ -4857,23 +4481,6 @@ export class FilesApi extends BaseAPI {
   public filesControllerGetFilesStatusByForm(formId: string, options?: AxiosRequestConfig) {
     return FilesApiFp(this.configuration)
       .filesControllerGetFilesStatusByForm(formId, options)
-      .then((request) => request(this.axios, this.basePath))
-  }
-
-  /**
-   * When you hit this POST endpoint, you send file for scanning. You get file id and his current status in response.
-   * @summary Send file for scanning.
-   * @param {PostFileRequestDto} postFileRequestDto
-   * @param {*} [options] Override http request option.
-   * @throws {RequiredError}
-   * @memberof FilesApi
-   */
-  public filesControllerPostFileToScanner(
-    postFileRequestDto: PostFileRequestDto,
-    options?: AxiosRequestConfig,
-  ) {
-    return FilesApiFp(this.configuration)
-      .filesControllerPostFileToScanner(postFileRequestDto, options)
       .then((request) => request(this.axios, this.basePath))
   }
 
@@ -6493,7 +6100,8 @@ export class NasesApi extends BaseAPI {
 export const SchemasApiAxiosParamCreator = function (configuration?: Configuration) {
   return {
     /**
-     *
+     * Returns schema versions according to query.
+     * @summary
      * @param {boolean} [onlyLatest] True if only the latest version of each form is desirable
      * @param {string} [slug] Schema slug for which the versions should be retrieved
      * @param {string} [currentPage] Page number
@@ -6550,7 +6158,8 @@ export const SchemasApiAxiosParamCreator = function (configuration?: Configurati
       }
     },
     /**
-     *
+     * Returns schema by a unique slug, along with its last version.
+     * @summary
      * @param {string} schemaSlug
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
@@ -6590,49 +6199,8 @@ export const SchemasApiAxiosParamCreator = function (configuration?: Configurati
       }
     },
     /**
-     * Returns a schema and uiSchema for a given form slug, if it exists
+     * Returns schema version info by id.
      * @summary
-     * @param {string} formSlug
-     * @param {*} [options] Override http request option.
-     * @deprecated
-     * @throws {RequiredError}
-     */
-    schemasControllerGetSchemaForSlug: async (
-      formSlug: string,
-      options: AxiosRequestConfig = {},
-    ): Promise<RequestArgs> => {
-      // verify required parameter 'formSlug' is not null or undefined
-      assertParamExists('schemasControllerGetSchemaForSlug', 'formSlug', formSlug)
-      const localVarPath = `/schemas/{formSlug}`.replace(
-        `{${'formSlug'}}`,
-        encodeURIComponent(String(formSlug)),
-      )
-      // use dummy base URL string because the URL constructor only accepts absolute URLs.
-      const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL)
-      let baseOptions
-      if (configuration) {
-        baseOptions = configuration.baseOptions
-      }
-
-      const localVarRequestOptions = { method: 'GET', ...baseOptions, ...options }
-      const localVarHeaderParameter = {} as any
-      const localVarQueryParameter = {} as any
-
-      setSearchParams(localVarUrlObj, localVarQueryParameter)
-      let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {}
-      localVarRequestOptions.headers = {
-        ...localVarHeaderParameter,
-        ...headersFromBaseOptions,
-        ...options.headers,
-      }
-
-      return {
-        url: toPathString(localVarUrlObj),
-        options: localVarRequestOptions,
-      }
-    },
-    /**
-     *
      * @param {string} id
      * @param {boolean} [includeSchema] True if schema should be included, not only schema id
      * @param {*} [options] Override http request option.
@@ -6688,7 +6256,8 @@ export const SchemasApiFp = function (configuration?: Configuration) {
   const localVarAxiosParamCreator = SchemasApiAxiosParamCreator(configuration)
   return {
     /**
-     *
+     * Returns schema versions according to query.
+     * @summary
      * @param {boolean} [onlyLatest] True if only the latest version of each form is desirable
      * @param {string} [slug] Schema slug for which the versions should be retrieved
      * @param {string} [currentPage] Page number
@@ -6715,7 +6284,8 @@ export const SchemasApiFp = function (configuration?: Configuration) {
       return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)
     },
     /**
-     *
+     * Returns schema by a unique slug, along with its last version.
+     * @summary
      * @param {string} schemaSlug
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
@@ -6731,25 +6301,8 @@ export const SchemasApiFp = function (configuration?: Configuration) {
       return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)
     },
     /**
-     * Returns a schema and uiSchema for a given form slug, if it exists
+     * Returns schema version info by id.
      * @summary
-     * @param {string} formSlug
-     * @param {*} [options] Override http request option.
-     * @deprecated
-     * @throws {RequiredError}
-     */
-    async schemasControllerGetSchemaForSlug(
-      formSlug: string,
-      options?: AxiosRequestConfig,
-    ): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<SchemaResponseDto>> {
-      const localVarAxiosArgs = await localVarAxiosParamCreator.schemasControllerGetSchemaForSlug(
-        formSlug,
-        options,
-      )
-      return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)
-    },
-    /**
-     *
      * @param {string} id
      * @param {boolean} [includeSchema] True if schema should be included, not only schema id
      * @param {*} [options] Override http request option.
@@ -6784,7 +6337,8 @@ export const SchemasApiFactory = function (
   const localVarFp = SchemasApiFp(configuration)
   return {
     /**
-     *
+     * Returns schema versions according to query.
+     * @summary
      * @param {boolean} [onlyLatest] True if only the latest version of each form is desirable
      * @param {string} [slug] Schema slug for which the versions should be retrieved
      * @param {string} [currentPage] Page number
@@ -6804,7 +6358,8 @@ export const SchemasApiFactory = function (
         .then((request) => request(axios, basePath))
     },
     /**
-     *
+     * Returns schema by a unique slug, along with its last version.
+     * @summary
      * @param {string} schemaSlug
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
@@ -6818,23 +6373,8 @@ export const SchemasApiFactory = function (
         .then((request) => request(axios, basePath))
     },
     /**
-     * Returns a schema and uiSchema for a given form slug, if it exists
+     * Returns schema version info by id.
      * @summary
-     * @param {string} formSlug
-     * @param {*} [options] Override http request option.
-     * @deprecated
-     * @throws {RequiredError}
-     */
-    schemasControllerGetSchemaForSlug(
-      formSlug: string,
-      options?: AxiosRequestConfig,
-    ): AxiosPromise<SchemaResponseDto> {
-      return localVarFp
-        .schemasControllerGetSchemaForSlug(formSlug, options)
-        .then((request) => request(axios, basePath))
-    },
-    /**
-     *
      * @param {string} id
      * @param {boolean} [includeSchema] True if schema should be included, not only schema id
      * @param {*} [options] Override http request option.
@@ -6860,7 +6400,8 @@ export const SchemasApiFactory = function (
  */
 export class SchemasApi extends BaseAPI {
   /**
-   *
+   * Returns schema versions according to query.
+   * @summary
    * @param {boolean} [onlyLatest] True if only the latest version of each form is desirable
    * @param {string} [slug] Schema slug for which the versions should be retrieved
    * @param {string} [currentPage] Page number
@@ -6882,7 +6423,8 @@ export class SchemasApi extends BaseAPI {
   }
 
   /**
-   *
+   * Returns schema by a unique slug, along with its last version.
+   * @summary
    * @param {string} schemaSlug
    * @param {*} [options] Override http request option.
    * @throws {RequiredError}
@@ -6895,22 +6437,8 @@ export class SchemasApi extends BaseAPI {
   }
 
   /**
-   * Returns a schema and uiSchema for a given form slug, if it exists
+   * Returns schema version info by id.
    * @summary
-   * @param {string} formSlug
-   * @param {*} [options] Override http request option.
-   * @deprecated
-   * @throws {RequiredError}
-   * @memberof SchemasApi
-   */
-  public schemasControllerGetSchemaForSlug(formSlug: string, options?: AxiosRequestConfig) {
-    return SchemasApiFp(this.configuration)
-      .schemasControllerGetSchemaForSlug(formSlug, options)
-      .then((request) => request(this.axios, this.basePath))
-  }
-
-  /**
-   *
    * @param {string} id
    * @param {boolean} [includeSchema] True if schema should be included, not only schema id
    * @param {*} [options] Override http request option.

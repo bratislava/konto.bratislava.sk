@@ -94,22 +94,6 @@ export const taxStatusHelper = (tax: Tax) => {
   return { paymentStatus, hasMultipleInstallments }
 }
 
-export const blobToString = (blob: Blob): Promise<string> => {
-  return new Promise<string>((resolve, reject) => {
-    const reader = new FileReader()
-
-    reader.addEventListener('loadend', () => {
-      const text = reader.result as string
-      resolve(text)
-    })
-    reader.addEventListener('error', (error) => {
-      reject(error)
-    })
-
-    reader.readAsText(blob)
-  })
-}
-
 export const downloadBlob = (blob: Blob, fileName: string) => {
   const link = document.createElement('a')
   link.href = URL.createObjectURL(blob)

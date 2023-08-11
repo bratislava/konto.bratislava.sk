@@ -2,8 +2,8 @@ import { ChevronDownIcon, CrossIcon } from '@assets/ui-icons'
 import cx from 'classnames'
 import { useTranslation } from 'next-i18next'
 import { useRef, useState } from 'react'
-import { useButton } from 'react-aria'
-import { Button as AriaButton } from 'react-aria-components'
+import { useButton, useIsSSR } from 'react-aria'
+import { Button as AriaButton, Dialog, Modal, ModalOverlay } from 'react-aria-components'
 
 import { useFormState } from '../FormStateProvider'
 import { FormStepIndex } from '../types/Steps'
@@ -14,62 +14,85 @@ interface StepperViewProps {
   forceMobileSize?: boolean
 }
 
-const StepperView = ({ forceMobileSize }: StepperViewProps) => {
+const StepperModal = ({
+  isOpen,
+  setIsOpen,
+  handleOnSkipToStep,
+}: {
+  isOpen: boolean
+  setIsOpen: (isOpen: boolean) => void
+  handleOnSkipToStep: (stepIndex: FormStepIndex) => void
+}) => {
   const { t } = useTranslation('forms')
-  const [isCollapsed, setIsCollapsed] = useState<boolean>(true)
-  const { currentStepperStep, skipToStep } = useFormState()
+  const isSSR = useIsSSR()
 
-  const handleOnClickDropdownIcon = () => {
-    if (isCollapsed) {
-      setIsCollapsed(false)
-    }
+  if (isSSR) {
+    return null
   }
-
-  const handleOnSkipToStep = (stepIndex: FormStepIndex) => {
-    setIsCollapsed(true)
-    skipToStep(stepIndex)
-  }
-
-  const buttonRef = useRef<HTMLDivElement>(null)
-  const { buttonProps } = useButton(
-    { onPress: handleOnClickDropdownIcon, elementType: 'div' },
-    buttonRef,
-  )
 
   return (
-    <>
-      <nav className={cx('hidden', { 'lg:block': !forceMobileSize })}>
-        <StepperViewList onSkipToStep={handleOnSkipToStep} />
-      </nav>
-      <div
-        className={cx('flex flex-col', { 'lg:hidden': !forceMobileSize })}
-        {...buttonProps}
-        ref={buttonRef}
-      >
-        <div className="flex h-14 w-full cursor-pointer flex-row items-center gap-5 bg-white p-4 drop-shadow-lg">
-          <StepperViewRow className="grow" step={currentStepperStep} isCurrent isButton={false} />
-          <ChevronDownIcon className={cx({ 'rotate-180': !isCollapsed })} />
-        </div>
-        <div
-          className={cx('fixed inset-0 z-50 mt-1 flex h-full w-full flex-col gap-0.5 bg-gray-200', {
-            'h-screen w-screen transition-all duration-500': true,
-            'translate-y-full': isCollapsed,
-            'translate-y-0': !isCollapsed,
-          })}
-        >
+    <ModalOverlay
+      isOpen={isOpen}
+      onOpenChange={setIsOpen}
+      className="fixed left-0 top-0 z-50 h-[var(--visual-viewport-height)] w-screen bg-white outline-0 data-[entering]:animate-stepperSlide data-[exiting]:animate-stepperSlideReverse"
+      isDismissable
+    >
+      <Modal isDismissable isOpen={isOpen} onOpenChange={setIsOpen} className="outline-0">
+        <Dialog className="outline-0">
           <div className="flex h-14 w-full flex-row items-center gap-1 bg-white p-4 drop-shadow-lg">
             <h6 className="text-h6 grow">{t('all_steps')}</h6>
             <AriaButton
               className="flex h-full cursor-pointer flex-col justify-center"
-              onPress={() => setIsCollapsed(true)}
+              onPress={() => setIsOpen(false)}
             >
               <CrossIcon className="h-6 w-6" />
             </AriaButton>
           </div>
-          <nav className="grow overflow-y-scroll overscroll-none bg-white px-4 pb-20 pt-4">
+          <nav className="w-full bg-white px-4 pb-20 pt-4">
             <StepperViewList onSkipToStep={handleOnSkipToStep} />
           </nav>
-        </div>
+        </Dialog>
+      </Modal>
+    </ModalOverlay>
+  )
+}
+
+const StepperView = () => {
+  const [isOpen, setIsOpen] = useState<boolean>(false)
+  const { currentStepperStep, skipToStep } = useFormState()
+
+  const handleOnClickDropdownIcon = () => {
+    if (!isOpen) {
+      setIsOpen(true)
+    }
+  }
+
+  const handleOnSkipToStep = (stepIndex: FormStepIndex) => {
+    setIsOpen(false)
+    skipToStep(stepIndex)
+  }
+
+  return (
+    <>
+      <nav className="hidden lg:block">
+        <StepperViewList onSkipToStep={handleOnSkipToStep} />
+      </nav>
+      <div className="lg:hidden">
+        <AriaButton
+          className={cx(
+            'flex h-14 w-full cursor-pointer flex-row items-center gap-5 bg-white p-4 text-left drop-shadow-lg',
+          )}
+          onPress={handleOnClickDropdownIcon}
+        >
+          <StepperViewRow className="grow" step={currentStepperStep} isCurrent isButton={false} />
+          <ChevronDownIcon className={cx({ 'rotate-180': !isOpen })} />
+        </AriaButton>
+
+        <StepperModal
+          isOpen={isOpen}
+          setIsOpen={setIsOpen}
+          handleOnSkipToStep={handleOnSkipToStep}
+        />
       </div>
     </>
   )

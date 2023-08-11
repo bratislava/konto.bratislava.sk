@@ -221,6 +221,16 @@ module.exports = {
         104: '26rem', // 416px
         200: '50rem', // 800px
       },
+      keyframes: {
+        stepperSlide: {
+          '0%': { transform: 'translateY(100%)' },
+          '100%': { transform: 'translateY(0)' },
+        },
+      },
+      animation: {
+        stepperSlide: 'stepperSlide 500ms',
+        stepperSlideReverse: 'stepperSlide 500ms reverse',
+      },
     },
   },
   plugins: [require('tailwind-scrollbar-hide')],

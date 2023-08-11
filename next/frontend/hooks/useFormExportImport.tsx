@@ -1,15 +1,14 @@
 import { formsApi } from '@clients/forms'
-import { GetFormResponseDto, UpdateFormRequestDto } from '@clients/openapi-forms'
+import { GetFormResponseDto } from '@clients/openapi-forms'
 import { useMutation } from '@tanstack/react-query'
 import { AxiosResponse } from 'axios'
 import { useTranslation } from 'next-i18next'
-import React, { ChangeEvent, createContext, PropsWithChildren, useContext } from 'react'
+import React, { createContext, PropsWithChildren, useContext, useRef } from 'react'
 
 import { useFormState } from '../../components/forms/FormStateProvider'
 import { RegistrationModalType } from '../../components/forms/segments/RegistrationModal/RegistrationModal'
-import { FormFileUploadStateProviderProps } from '../../components/forms/useFormFileUpload'
 import { useFormModals } from '../../components/forms/useFormModals'
-import { readTextFile } from '../utils/file'
+import { readFileToString } from '../utils/file'
 import { downloadBlob } from '../utils/general'
 import { useServerSideAuth } from './useServerSideAuth'
 import useSnackbar from './useSnackbar'
@@ -24,6 +23,8 @@ export const useGetContext = () => {
   const [openSnackbarError] = useSnackbar({ variant: 'error' })
   const [openSnackbarSuccess] = useSnackbar({ variant: 'success' })
   const [openSnackbarInfo, closeSnackbarInfo] = useSnackbar({ variant: 'info' })
+
+  const importXmlButtonRef = useRef<HTMLButtonElement>(null)
 
   const { mutate: saveConceptMutate, isLoading: saveConceptIsLoading } = useMutation<
     AxiosResponse<GetFormResponseDto, any>,
@@ -59,9 +60,13 @@ export const useGetContext = () => {
   const exportXml = async () => {
     openSnackbarInfo(t('info_messages.xml_export'))
     try {
-      const response = await formsApi.convertControllerConvertJsonToXml(formSlug, {
-        jsonForm: formData,
-      })
+      const response = await formsApi.convertControllerConvertJsonToXml(
+        formId,
+        {
+          jsonForm: formData,
+        },
+        { accessToken: 'onlyAuthenticated' },
+      )
       const fileName = `${formSlug}_output.xml`
       downloadBlob(new Blob([response.data.xmlForm]), fileName)
       closeSnackbarInfo()
@@ -71,34 +76,31 @@ export const useGetContext = () => {
     }
   }
 
-  const importXml = async (e: ChangeEvent<HTMLInputElement>) => {
-    openSnackbarInfo(t('info_messages.xml_import'))
+  const triggerImportXml = () => {
+    importXmlButtonRef.current?.click()
+  }
+
+  const handleImportXml = async (files: FileList | null) => {
+    if (!files || files.length === 0) {
+      return
+    }
+    const file = files[0]
+
     try {
-      const xmlData: string = await readTextFile(e)
-      const response = await formsApi.convertControllerConvertXmlToJson(formSlug, {
-        xmlForm: xmlData,
-      })
+      const xmlData: string = await readFileToString(file)
+      const response = await formsApi.convertControllerConvertXmlToJson(
+        formId,
+        {
+          xmlForm: xmlData,
+        },
+        { accessToken: 'onlyAuthenticated' },
+      )
       setImportedFormData(response.data.jsonForm)
       closeSnackbarInfo()
       openSnackbarSuccess(t('success_messages.xml_import'))
     } catch (error) {
       openSnackbarError(t('errors.xml_import'))
     }
-  }
-
-  const chooseFilesAndImportXml = () => {
-    const importInput = document.createElement('input')
-    importInput.type = 'file'
-    importInput.multiple = false
-    importInput.accept = '.xml'
-
-    importInput.addEventListener('change', (e) => {
-      if (!importInput.files) return
-      const changeEvent = e as unknown as ChangeEvent<HTMLInputElement>
-      importXml(changeEvent).catch((error) => console.log('error', error))
-    })
-
-    importInput.click()
   }
 
   // eslint-disable-next-line unicorn/consistent-function-scoping
@@ -129,10 +131,12 @@ export const useGetContext = () => {
 
   return {
     exportXml,
-    importXml: chooseFilesAndImportXml,
+    importXml: triggerImportXml,
     exportPdf,
     saveConcept,
     saveConceptIsLoading,
+    importXmlButtonRef,
+    handleImportXml,
   }
 }
 

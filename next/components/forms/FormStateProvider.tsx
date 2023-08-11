@@ -25,6 +25,7 @@ interface FormState {
   uiSchema: UiSchema
   formId: string
   formSlug: string
+  schemaVersionId: string
   formData: GenericObjectType
   skipModal: SkipModal
   stepperData: FormStepperStep[]
@@ -229,6 +230,7 @@ export const FormStateProvider = ({
     uiSchema,
     formId: initialFormData.formId,
     formSlug,
+    schemaVersionId: initialFormData.schemaVersionId,
     formData,
     skipModal,
     stepperData,

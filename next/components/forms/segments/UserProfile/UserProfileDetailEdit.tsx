@@ -1,7 +1,7 @@
 import cx from 'classnames'
 import Button from 'components/forms/simple-components/Button'
 import InputField from 'components/forms/widget-components/InputField/InputField'
-import { Address, UserData } from 'frontend/dtos/accountDto'
+import { AccountType, Address, UserData } from 'frontend/dtos/accountDto'
 import useHookForm from 'frontend/hooks/useHookForm'
 import useJsonParseMemo from 'frontend/hooks/useJsonParseMemo'
 import { isValidPhoneNumber } from 'libphonenumber-js'
@@ -98,7 +98,7 @@ const UserProfileDetailEdit = (props: UserProfileDetailEditProps) => {
   const { formId, userData, onOpenEmailModal, onSubmit } = props
   const { t } = useTranslation('account')
   const { address, name, family_name, given_name, email, phone_number } = userData
-  const isPhysicalEntity = userData?.['custom:account_type'] === 'po'
+  const isPhysicalEntity = userData?.['custom:account_type'] === AccountType.FyzickaOsoba
   const parsedAddress = useJsonParseMemo<Address>(address)
   const { handleSubmit, control, errors, setError } = useHookForm<Data>({
     schema: isPhysicalEntity ? poSchema : foSchema,

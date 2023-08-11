@@ -19,16 +19,7 @@ export const getServerSideProps: GetServerSideProps<FormPageWrapperProps, Params
 
   const { slug } = ctx.params
 
-  // TODO: Remove and support non-auth version of the page
   const ssrCurrentAuthProps = await getSSRCurrentAuth(ctx.req)
-  if (!ssrCurrentAuthProps.userData) {
-    return {
-      redirect: {
-        destination: '/prihlasenie',
-        permanent: false,
-      },
-    }
-  }
 
   const schema = await formsApi.schemasControllerGetSchema(slug, {
     accessToken: 'onlyAuthenticated',

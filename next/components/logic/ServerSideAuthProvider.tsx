@@ -23,7 +23,7 @@ export const getSSRCurrentAuth = async (
     userData = currentUser.attributes || null
   } catch (error) {
     // TODO Auth throws this exact string, not an error object - refactor once amplify solves this
-    if (error !== 'The user is not authenticated') {
+    if (error !== 'The user is not authenticated' && error !== 'No current user') {
       logger.error('getServersideAuth error: ', error)
     }
   }
@@ -37,7 +37,7 @@ export const getSSRAccessToken = async (req: GetServerSidePropsContext['req']): 
     const currentSession = await SSR.Auth.currentSession()
     return (currentSession?.getAccessToken()?.getJwtToken() as string) || ''
   } catch (error) {
-    if (error !== 'The user is not authenticated') {
+    if (error !== 'The user is not authenticated' && error !== 'No current user') {
       logger.error('getServersideAuth error: ', error)
     }
   }
@@ -48,13 +48,14 @@ export const ServerSideAuthContext = createContext<GetSSRCurrentAuth>({
   userData: null,
 })
 
-export const ServerSideAuthProviderHOC = <Props extends { ssrCurrentAuthProps: GetSSRCurrentAuth }>(
+// only provides the data when given, does no further check on whether they are available. Thus, usable also for pages with optional auth
+export const ServerSideAuthProviderHOC = <Props extends { ssrCurrentAuthProps?: GetSSRCurrentAuth }>(
   Wrapped: ComponentType<Props>,
 ) => {
   // eslint-disable-next-line react/function-component-definition
   return (props: Props) => (
     // eslint-disable-next-line react/destructuring-assignment
-    <ServerSideAuthContext.Provider value={props.ssrCurrentAuthProps}>
+    <ServerSideAuthContext.Provider value={props.ssrCurrentAuthProps || {userData: null}}>
       <Wrapped {...props} />
     </ServerSideAuthContext.Provider>
   )

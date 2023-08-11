@@ -15,7 +15,7 @@ export type FormPageWrapperProps = {
   uiSchema: UiSchema
   page: { locale: string }
   initialFormData: InitialFormData
-  ssrCurrentAuthProps: GetSSRCurrentAuth
+  ssrCurrentAuthProps?: GetSSRCurrentAuth
 }
 
 const FormPageWrapper = ({ schema, uiSchema, page, initialFormData }: FormPageWrapperProps) => {

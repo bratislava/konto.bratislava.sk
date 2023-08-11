@@ -20,16 +20,7 @@ export const getServerSideProps: GetServerSideProps<FormPageWrapperProps, Params
 
   const { slug, id } = ctx.params
 
-  // TODO: Remove and support non-auth version of the page
   const ssrCurrentAuthProps = await getSSRCurrentAuth(ctx.req)
-  if (!ssrCurrentAuthProps.userData) {
-    return {
-      redirect: {
-        destination: '/prihlasenie',
-        permanent: false,
-      },
-    }
-  }
 
   const [form, files] = await Promise.all([
     formsApi

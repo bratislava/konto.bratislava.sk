@@ -1,4 +1,4 @@
-import { Address, UserData } from 'frontend/dtos/accountDto'
+import { AccountType, Address, UserData } from 'frontend/dtos/accountDto'
 import useJsonParseMemo from 'frontend/hooks/useJsonParseMemo'
 import { useTranslation } from 'next-i18next'
 
@@ -17,9 +17,9 @@ const UserProfileDetailView = ({ userData }: UserProfileDetailViewProps) => {
   const account_type = userData['custom:account_type']
   const parsedAddress = useJsonParseMemo<Address>(address)
   const fullName =
-    account_type === 'po'
-      ? name
-      : `${given_name ?? ''}${given_name && family_name ? ' ' : ''}${family_name ?? ''}`
+    account_type === AccountType.FyzickaOsoba
+      ? `${given_name ?? ''}${given_name && family_name ? ' ' : ''}${family_name ?? ''}`
+      : name
   const fullAddress = parsedAddress
     ? `${parsedAddress?.street_address || ''}${
         parsedAddress?.street_address && (parsedAddress?.postal_code || parsedAddress?.locality)
@@ -30,7 +30,7 @@ const UserProfileDetailView = ({ userData }: UserProfileDetailViewProps) => {
         ${parsedAddress?.locality || ''}`
     : ''
   const nameLabel =
-    account_type === 'po' ? t('profile_detail.business_name') : t('profile_detail.full_name')
+    account_type === AccountType.FyzickaOsoba ? t('profile_detail.full_name') : t('profile_detail.business_name')
 
   return (
     <div className="flex grow flex-col gap-6">

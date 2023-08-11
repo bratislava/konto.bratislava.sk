@@ -32,6 +32,20 @@ Amplify.configure({
   ssr: true,
 })
 
+// if anything happens when getting the token, does nothing - may swallow errors
+export const getAccessToken = async () => {
+  try {
+    const session = await Auth.currentSession()
+    return session.getAccessToken().getJwtToken()
+  } catch (error) {
+    if (error === 'The user is not authenticated' || error === 'No current user') {
+      // expected case, user is not authenticated
+      return null
+    }
+    throw error
+  }
+}
+
 export const getAccessTokenOrLogout = async () => {
   try {
     const session = await Auth.currentSession()

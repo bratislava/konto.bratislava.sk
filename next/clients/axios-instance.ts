@@ -2,7 +2,7 @@ import axios from 'axios'
 import type { GetServerSidePropsContext } from 'next'
 
 import { getSSRAccessToken } from '../components/logic/ServerSideAuthProvider'
-import { getAccessTokenOrLogout } from '../frontend/utils/amplify'
+import { getAccessToken, getAccessTokenOrLogout } from '../frontend/utils/amplify'
 
 export const axiosInstance = axios.create()
 
@@ -28,13 +28,15 @@ axiosInstance.interceptors.request.use(async (config) => {
     return config
   }
 
-  // TODO: Implement `always` and `onlyAuthenticated` as stated in the table.
+  // for 'always' mode force logout client side, continue without token for onlyAuthenticated
   // process.browser is deprecated but assures that server code is not bundled in the client code
   if (process.browser) {
-    const accessToken = await getAccessTokenOrLogout()
+    const accessToken = config.accessToken === 'always' ? await getAccessTokenOrLogout() : await getAccessToken()
 
-    // eslint-disable-next-line no-param-reassign
+    if (accessToken) {
+      // eslint-disable-next-line no-param-reassign
     config.headers.Authorization = `Bearer ${accessToken}`
+    }
   } else {
     if (!config.accessTokenSsrReq) {
       throw new Error(
@@ -43,8 +45,12 @@ axiosInstance.interceptors.request.use(async (config) => {
     }
 
     const accessToken = await getSSRAccessToken(config.accessTokenSsrReq)
-    // eslint-disable-next-line no-param-reassign
+    if (accessToken) {
+      // eslint-disable-next-line no-param-reassign
     config.headers.Authorization = `Bearer ${accessToken}`
+    } else if (config.accessToken === 'always') {
+      throw new Error('No accessToken found with accessToken set to `always` in a server side request')
+    }
   }
 
   return config

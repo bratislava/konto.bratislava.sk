@@ -27,7 +27,7 @@ const ConceptSaveErrorModal = ({ onSkip, ...rest }: ConceptSaveErrorModalProps) 
             <div className="flex flex-col items-center gap-2">
               <h3 className="text-h3">{t('concept_save_error_modal.title')}</h3>
               <div className="flex flex-col gap-6 md:gap-4">
-                {t('concept_save_error_modal.text')}
+                {t('concept_save_error_modal.content')}
               </div>
             </div>
           </div>

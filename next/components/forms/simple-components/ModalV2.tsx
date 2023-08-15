@@ -1,4 +1,5 @@
 import { CrossIcon } from '@assets/ui-icons'
+import { useTranslation } from 'next-i18next'
 import React, { PropsWithChildren } from 'react'
 import { mergeProps, useIsSSR } from 'react-aria'
 import {
@@ -16,6 +17,7 @@ export type ModalV2Props = Omit<ModalOverlayProps, 'className'> & {
 } & PropsWithChildren
 
 const ModalV2 = ({ children, modalClassname, mobileFullScreen, ...rest }: ModalV2Props) => {
+  const { t } = useTranslation('common')
   const isSSR = useIsSSR()
 
   // `ReferenceError: window is not defined` in server environment
@@ -49,7 +51,8 @@ const ModalV2 = ({ children, modalClassname, mobileFullScreen, ...rest }: ModalV
                 className="absolute right-3 top-3 cursor-pointer md:right-4 md:top-4"
                 onPress={close}
               >
-                <CrossIcon className="h-6 w-6" />
+                <CrossIcon className="h-6 w-6" aria-hidden />
+                <span className="sr-only">{t('modal_close_aria')}</span>
               </AriaButton>
               {children}
             </>

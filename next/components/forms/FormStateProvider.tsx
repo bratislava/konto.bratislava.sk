@@ -16,9 +16,12 @@ import {
 import { FormStepIndex, FormStepperStep } from './types/Steps'
 import { useFormFileUpload } from './useFormFileUpload'
 
-type SkipModal =
-  | { open: true; skipAllowed: false; onSkip: () => void; onOpenChange: (value: boolean) => void }
-  | { open: false; skipAllowed: boolean }
+type SkipModal = {
+  open: boolean
+  skipAllowed: boolean
+  onSkip: () => void
+  onOpenChange: (value: boolean) => void
+}
 
 interface FormState {
   schema: RJSFSchema
@@ -68,7 +71,12 @@ export const FormStateProvider = ({
     getFirstNonEmptyStepIndex(stepsSchemas),
   )
 
-  const [skipModal, setSkipModal] = useState<SkipModal>({ open: false, skipAllowed: false })
+  const [skipModal, setSkipModal] = useState<SkipModal>({
+    open: false,
+    skipAllowed: false,
+    onOpenChange: () => {},
+    onSkip: () => {},
+  })
 
   /**
    * This set holds indexes of steps that have been submitted (submit button has been pressed, which means they have been validated).
@@ -103,14 +111,19 @@ export const FormStateProvider = ({
         open: true,
         skipAllowed: skipModal.skipAllowed,
         onSkip: () => {
-          setSkipModal({ open: false, skipAllowed: true })
+          setSkipModal({ open: false, skipAllowed: true, onSkip: () => {}, onOpenChange: () => {} })
           goToStep(newStepIndex)
         },
         onOpenChange: (value) => {
           if (value) {
             return
           }
-          setSkipModal((value) => ({ open: false, skipAllowed: value.skipAllowed }))
+          setSkipModal((value) => ({
+            open: false,
+            skipAllowed: value.skipAllowed,
+            onSkip: () => {},
+            onOpenChange: () => {},
+          }))
         },
       })
 

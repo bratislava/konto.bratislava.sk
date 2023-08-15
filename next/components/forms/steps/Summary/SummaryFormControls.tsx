@@ -65,7 +65,7 @@ const SummaryFormControls = () => {
       />
 
       <ButtonNew isDisabled={submitDisabled} type="submit" variant="black-solid" ref={eIdButtonRef}>
-        {t('summary.summary_send_eid')}
+        {t('summary.button_send_eid')}
       </ButtonNew>
       <ButtonNew isDisabled={submitDisabled} type="submit" variant="black-solid" ref={buttonRef}>
         {t('summary.button_send')}

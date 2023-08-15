@@ -33,7 +33,7 @@ const ModalV2 = ({
     return null
   }
 
-  // Makes { isDismissable: true } default.
+  // Makes `{ isDismissable: true }` default.
   const modalProps = mergeProps({ isDismissable: true }, rest)
 
   return (

@@ -86,7 +86,7 @@ const FormModals = () => {
       title: t('concept_save_error_modal.title'),
       buttons: [
         <Button onPress={() => setConceptSaveErrorModal(false)}>
-          {t('concept_save_error_modal.button_back_text')}
+          {t('modals_back_button_title')}
         </Button>,
         <Button
           variant="category-solid"
@@ -106,7 +106,7 @@ const FormModals = () => {
       type: 'warning',
       buttons: [
         <Button onPress={() => setSendFilesScanningEidModal(false)}>
-          {t('concept_save_error_modal.button_back_text')}
+          {t('modals_back_button_title')}
         </Button>,
         <Button variant="black-solid" onPress={() => skipModal.onSkip()}>
           {t('send_files_scanning_eid_modal.button_title')}
@@ -122,7 +122,7 @@ const FormModals = () => {
       type: 'warning',
       buttons: [
         <Button onPress={() => setSendFilesScanningNotVerifiedEidModal(false)}>
-          {t('concept_save_error_modal.button_back_text')}
+          {t('modals_back_button_title')}
         </Button>,
         <Button variant="black-solid" onPress={() => skipModal.onSkip()}>
           {t('send_files_scanning_not_verified_eid_modal.button_title')}
@@ -138,7 +138,7 @@ const FormModals = () => {
       type: 'warning',
       buttons: [
         <Button onPress={() => setSendIdentityMissingModal(false)}>
-          {t('concept_save_error_modal.button_back_text')}
+          {t('modals_back_button_title')}
         </Button>,
         <Button variant="black-solid" onPress={() => skipModal.onSkip()}>
           {t('send_identity_missing_modal.button_title')}
@@ -154,7 +154,7 @@ const FormModals = () => {
       type: 'warning',
       buttons: [
         <Button onPress={() => setSendFilesScanningNonAuthenticatedEidModal(false)}>
-          {t('concept_save_error_modal.button_back_text')}
+          {t('modals_back_button_title')}
         </Button>,
         <Button variant="black-solid" onPress={() => skipModal.onSkip()}>
           {t('send_files_scanning_non_authenticated_eid_modal.button_title')}
@@ -170,7 +170,7 @@ const FormModals = () => {
       type: 'warning',
       buttons: [
         <Button onPress={() => setSendFilesUploadingModal(false)}>
-          {t('concept_save_error_modal.button_back_text')}
+          {t('modals_back_button_title')}
         </Button>,
         <Button variant="black-solid" onPress={() => skipModal.onSkip()}>
           {t('send_files_uploading_modal.button_title')}
@@ -190,7 +190,7 @@ const FormModals = () => {
       type: 'warning',
       buttons: [
         <Button onPress={() => setSendFilesScanningModal({ isOpen: false })}>
-          {t('concept_save_error_modal.button_back_text')}
+          {t('modals_back_button_title')}
         </Button>,
         <Button
           variant="black-solid"
@@ -219,7 +219,7 @@ const FormModals = () => {
           onPress={() => setSendConfirmationModal({ isOpen: false })}
           isDisabled={sendConfirmationLoading}
         >
-          {t('concept_save_error_modal.button_back_text')}
+          {t('modals_back_button_title')}
         </Button>,
         <Button
           variant="black-solid"
@@ -248,7 +248,7 @@ const FormModals = () => {
           onPress={() => setSendConfirmationEidModal({ isOpen: false })}
           isDisabled={sendConfirmationEidLoading}
         >
-          {t('concept_save_error_modal.button_back_text')}
+          {t('modals_back_button_title')}
         </Button>,
         <Button
           variant="black-solid"
@@ -277,7 +277,7 @@ const FormModals = () => {
           onPress={() => setSendConfirmationEidLegalModal({ isOpen: false })}
           isDisabled={sendConfirmationEidLoading}
         >
-          {t('concept_save_error_modal.button_back_text')}
+          {t('modals_back_button_title')}
         </Button>,
         <Button
           variant="black-solid"
@@ -308,7 +308,7 @@ const FormModals = () => {
           onPress={() => setSendConfirmationNonAuthenticatedEidModal({ isOpen: false })}
           isDisabled={sendConfirmationEidLoading}
         >
-          {t('concept_save_error_modal.button_back_text')}
+          {t('modals_back_button_title')}
         </Button>,
         <Button
           variant="black-solid"

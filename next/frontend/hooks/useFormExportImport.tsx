@@ -27,7 +27,7 @@ export const useGetContext = () => {
   const importXmlButtonRef = useRef<HTMLButtonElement>(null)
 
   const { mutate: saveConceptMutate, isLoading: saveConceptIsLoading } = useMutation<
-    AxiosResponse<GetFormResponseDto, any>,
+    AxiosResponse<GetFormResponseDto>,
     unknown,
     { fromModal?: boolean }
   >(
@@ -42,6 +42,7 @@ export const useGetContext = () => {
     {
       networkMode: 'always',
       onMutate: ({ fromModal }) => {
+        // The concept saved from modal has its own loading indicator.
         if (!fromModal) {
           openSnackbarInfo(t('info_messages.concept_save'))
         }

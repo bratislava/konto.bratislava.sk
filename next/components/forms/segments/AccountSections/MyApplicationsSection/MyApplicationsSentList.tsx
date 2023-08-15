@@ -1,7 +1,8 @@
 import { formsApi } from '@clients/forms'
 import { FormState, GetFormResponseDto } from '@clients/openapi-forms'
 import { useQuery } from '@tanstack/react-query'
-import MyApplicationCardsPlaceholder from 'components/forms/segments/AccountSections/MyApplicationsSection/MyApplicationCardsPlaceholder'
+import MyApplicationCardsPlaceholder
+  from 'components/forms/segments/AccountSections/MyApplicationsSection/MyApplicationCardsPlaceholder'
 import MyApplicationsSentCard, {
   MyApplicationsSentCardProps,
 } from 'components/forms/segments/AccountSections/MyApplicationsSection/MyApplicationsSentCard'

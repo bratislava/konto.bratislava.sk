@@ -32,7 +32,7 @@ const UploadButton = forwardRef<HTMLButtonElement, UploadButtonProps>(
     ref,
   ) => {
     const { t } = useTranslation('account', { keyPrefix: 'Upload' })
-    const fileTriggerRef = useRef<HTMLDivElement>(null)
+    const fileTriggerRef = useRef<HTMLInputElement>(null)
 
     const displaySupportedFileExtensions = getDisplaySupportedFileExtensions(supportedFormats)
 
@@ -67,11 +67,9 @@ const UploadButton = forwardRef<HTMLButtonElement, UploadButtonProps>(
       // If this is not done, selecting the same file again after the first upload will not trigger the onChange event,
       // as the browser does not consider this a change in the input field's state.
       // https://stackoverflow.com/a/60887378
-      try {
-        ;(fileTriggerRef.current?.querySelector('input[type="file"]') as HTMLInputElement).value =
-          ''
-        // eslint-disable-next-line no-empty
-      } catch (error) {}
+      if (fileTriggerRef.current) {
+        fileTriggerRef.current.value = ''
+      }
     }
 
     return (
@@ -80,7 +78,6 @@ const UploadButton = forwardRef<HTMLButtonElement, UploadButtonProps>(
           onChange={handleOnChange}
           acceptedFileTypes={getSupportedFileExtensions(supportedFormats)}
           allowsMultiple={allowsMultiple}
-          className="flex"
           ref={fileTriggerRef}
         >
           <ReactAriaButton className={buttonClassNames} ref={ref} isDisabled={disabled}>

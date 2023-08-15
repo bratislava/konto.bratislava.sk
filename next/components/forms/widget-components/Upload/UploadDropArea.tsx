@@ -29,7 +29,7 @@ interface UploadDropAreaProps {
 const UploadDropArea = forwardRef<HTMLButtonElement, UploadDropAreaProps>(
   ({ disabled, sizeLimit, supportedFormats, allowsMultiple, onUpload = () => {} }, ref) => {
     const { t } = useTranslation('account', { keyPrefix: 'Upload' })
-    const fileTriggerRef = useRef<HTMLDivElement>(null)
+    const fileTriggerRef = useRef<HTMLInputElement>(null)
 
     const displaySupportedFileExtensions = getDisplaySupportedFileExtensions(supportedFormats)
     const displayMaxFileSize = getDisplayMaxFileSize(sizeLimit)
@@ -59,11 +59,9 @@ const UploadDropArea = forwardRef<HTMLButtonElement, UploadDropAreaProps>(
       // If this is not done, selecting the same file again after the first upload will not trigger the onChange event,
       // as the browser does not consider this a change in the input field's state.
       // https://stackoverflow.com/a/60887378
-      try {
-        ;(fileTriggerRef.current?.querySelector('input[type="file"]') as HTMLInputElement).value =
-          ''
-        // eslint-disable-next-line no-empty
-      } catch (error) {}
+      if (fileTriggerRef.current) {
+        fileTriggerRef.current.value = ''
+      }
     }
 
     const handleOnDrop = async (event: DropEvent) => {
@@ -93,7 +91,6 @@ const UploadDropArea = forwardRef<HTMLButtonElement, UploadDropAreaProps>(
             onChange={handleOnChange}
             acceptedFileTypes={getSupportedFileExtensions(supportedFormats)}
             allowsMultiple={allowsMultiple}
-            className="h-full"
             ref={fileTriggerRef}
           >
             <ReactAriaButton

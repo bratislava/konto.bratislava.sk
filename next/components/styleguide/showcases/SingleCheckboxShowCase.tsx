@@ -8,24 +8,20 @@ const SingleCheckboxShowCase = () => {
   return (
     <Wrapper direction="column" title="Single Checkbox">
       <Stack direction="column">
-        <SingleCheckbox value="value4" isIndeterminate tooltip="This is some tooltip">
+        <SingleCheckbox isIndeterminate tooltip="This is some tooltip">
           Some long long value text
         </SingleCheckbox>
-        <SingleCheckbox value="value5" isDisabled>
-          Value
-        </SingleCheckbox>
-        <SingleCheckbox value="value6" error>
-          Value
-        </SingleCheckbox>
+        <SingleCheckbox isDisabled>Value</SingleCheckbox>
+        <SingleCheckbox error>Value</SingleCheckbox>
       </Stack>
       <Stack direction="column">
-        <SingleCheckbox value="value7" variant="boxed" tooltip="This is some tooltip">
+        <SingleCheckbox variant="boxed" tooltip="This is some tooltip">
           Value
         </SingleCheckbox>
-        <SingleCheckbox value="value8" isIndeterminate variant="boxed" isDisabled>
+        <SingleCheckbox isIndeterminate variant="boxed" isDisabled>
           Value
         </SingleCheckbox>
-        <SingleCheckbox value="value9" variant="boxed" error>
+        <SingleCheckbox variant="boxed" error>
           Value
         </SingleCheckbox>
       </Stack>

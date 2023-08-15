@@ -5,4 +5,5 @@ export type InitialFormData = {
   formDataJson: GenericObjectType
   formId: string
   files: GetFileResponseDto[]
+  oldSchemaVersion: boolean
 }

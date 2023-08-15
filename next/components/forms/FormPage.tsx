@@ -4,6 +4,7 @@ import MenuList from 'components/forms/steps/MenuList'
 import { defaultFormStateBehavior, rjfsValidator } from '../../frontend/utils/form'
 import FormControls from './FormControls'
 import { useFormState } from './FormStateProvider'
+import FormUploadXml from './FormUploadXml'
 import FormModals from './segments/FormModals/FormModals'
 import FormHeader from './simple-components/FormHeader'
 import StepperView from './steps/StepperView'
@@ -65,6 +66,7 @@ const FormPage = () => {
           <MenuList />
         </div>
       </div>
+      <FormUploadXml />
     </>
   )
 }

@@ -4,7 +4,6 @@ import { PhoneNumberData } from 'components/forms/segments/PhoneNumberForm/Phone
 import RegistrationModal, {
   RegistrationModalType,
 } from 'components/forms/segments/RegistrationModal/RegistrationModal'
-import SkipStepModal from 'components/forms/segments/SkipStepModal/SkipStepModal'
 import Modal from 'components/forms/widget-components/Modals/Modal'
 import { AccountType, Address } from 'frontend/dtos/accountDto'
 import { useTranslation } from 'next-i18next'
@@ -197,67 +196,67 @@ const ModalShowCase = () => {
           cancelLabel="Zrušit"
         />
 
-        <MessageModal
-          isOpen={modalShowSuccess}
-          confirmLabel="Primary action"
-          type="success"
-          onOpenChange={setModalShowSuccess}
-          cancelHandler={() => setModalShowSuccess(false)}
-          submitHandler={() => setModalShowSuccess(false)}
-          title="Lorem ipsum"
-          cancelLabel="Cancel"
-          isDismissable
-        >
-          Lorem ipsum dolor sit amet, consectetur adipiscing elit.
-        </MessageModal>
+        {/* <MessageModal */}
+        {/*  isOpen={modalShowSuccess} */}
+        {/*  confirmLabel="Primary action" */}
+        {/*  type="success" */}
+        {/*  onOpenChange={setModalShowSuccess} */}
+        {/*  cancelHandler={() => setModalShowSuccess(false)} */}
+        {/*  submitHandler={() => setModalShowSuccess(false)} */}
+        {/*  title="Lorem ipsum" */}
+        {/*  cancelLabel="Cancel" */}
+        {/*  isDismissable */}
+        {/* > */}
+        {/*  Lorem ipsum dolor sit amet, consectetur adipiscing elit. */}
+        {/* </MessageModal> */}
 
-        <MessageModal
-          isOpen={modalShowError}
-          confirmLabel="Primary action"
-          type="error"
-          onOpenChange={setModalShowError}
-          cancelHandler={() => setModalShowError(false)}
-          submitHandler={() => setModalShowError(false)}
-          title="Lorem ipsum"
-          cancelLabel="Cancel"
-          isDismissable
-        >
-          Lorem ipsum dolor sit amet, consectetur adipiscing elit.
-        </MessageModal>
+        {/* <MessageModal */}
+        {/*  isOpen={modalShowError} */}
+        {/*  confirmLabel="Primary action" */}
+        {/*  type="error" */}
+        {/*  onOpenChange={setModalShowError} */}
+        {/*  cancelHandler={() => setModalShowError(false)} */}
+        {/*  submitHandler={() => setModalShowError(false)} */}
+        {/*  title="Lorem ipsum" */}
+        {/*  cancelLabel="Cancel" */}
+        {/*  isDismissable */}
+        {/* > */}
+        {/*  Lorem ipsum dolor sit amet, consectetur adipiscing elit. */}
+        {/* </MessageModal> */}
 
-        <MessageModal
-          isOpen={modalShowInfo}
-          confirmLabel="Primary action"
-          type="info"
-          onOpenChange={setModalShowInfo}
-          cancelHandler={() => setModalShowInfo(false)}
-          submitHandler={() => setModalShowInfo(false)}
-          title="Lorem ipsum"
-          cancelLabel="Cancel"
-          isDismissable
-        >
-          Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt
-          ut labore et dolore magna aliqua.Lorem ipsum dolor sit amet, consectetur adipiscing elit.
-        </MessageModal>
+        {/* <MessageModal */}
+        {/*  isOpen={modalShowInfo} */}
+        {/*  confirmLabel="Primary action" */}
+        {/*  type="info" */}
+        {/*  onOpenChange={setModalShowInfo} */}
+        {/*  cancelHandler={() => setModalShowInfo(false)} */}
+        {/*  submitHandler={() => setModalShowInfo(false)} */}
+        {/*  title="Lorem ipsum" */}
+        {/*  cancelLabel="Cancel" */}
+        {/*  isDismissable */}
+        {/* > */}
+        {/*  Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt */}
+        {/*  ut labore et dolore magna aliqua.Lorem ipsum dolor sit amet, consectetur adipiscing elit. */}
+        {/* </MessageModal> */}
 
-        <MessageModal
-          isOpen={modalShowWarning}
-          confirmLabel="Primary action"
-          type="warning"
-          onOpenChange={setModalShowWarning}
-          cancelHandler={() => {
-            setModalShowWarning(false)
-          }}
-          submitHandler={() => {
-            setModalShowWarning(false)
-          }}
-          title="Lorem ipsum"
-          cancelLabel="Cancel"
-          isDismissable
-        >
-          Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt
-          ut labore et dolore magna aliqua.
-        </MessageModal>
+        {/* <MessageModal */}
+        {/*  isOpen={modalShowWarning} */}
+        {/*  confirmLabel="Primary action" */}
+        {/*  type="warning" */}
+        {/*  onOpenChange={setModalShowWarning} */}
+        {/*  cancelHandler={() => { */}
+        {/*    setModalShowWarning(false) */}
+        {/*  }} */}
+        {/*  submitHandler={() => { */}
+        {/*    setModalShowWarning(false) */}
+        {/*  }} */}
+        {/*  title="Lorem ipsum" */}
+        {/*  cancelLabel="Cancel" */}
+        {/*  isDismissable */}
+        {/* > */}
+        {/*  Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt */}
+        {/*  ut labore et dolore magna aliqua. */}
+        {/* </MessageModal> */}
         <CorrespondenceAddressModal
           show={correnspondenceAddressModalShow}
           onClose={() => setCorrenspondenceAddressModalShow(false)}
@@ -276,7 +275,6 @@ const ModalShowCase = () => {
           onOpenChange={setRegistrationModal}
           isDismissable
         />
-        <SkipStepModal isOpen={skipStepModal} onOpenChange={setSkipStepModal} isDismissable />
         <IdentityVerificationModal
           isOpen={identityVerificationModal}
           onOpenChange={setIdentityVerificationModal}

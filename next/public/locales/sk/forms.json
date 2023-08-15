@@ -59,12 +59,6 @@
   },
   "changes_submit": "Potvrdiť zmeny",
   "all_steps": "Všetky kroky",
-  "skip_step_modal": {
-    "title": "Vyplňte správne všetky povinné polia",
-    "text": "Bez toho nebude možné formulár úspešne odoslať. K doplneniu polí sa môžete kedykoľvek vrátiť.",
-    "button_skip_text": "Preskočiť",
-    "button_submit_text": "Upraviť"
-  },
   "steps": {
     "current_sr": "Aktuálny: ",
     "submitted_sr": "Dokončený: "
@@ -78,12 +72,6 @@
     "pdf": "Stiahnuť ako PDF",
     "upload_xml": "Nahrať z XML",
     "guide": "Návod"
-  },
-  "concept_save_error_modal": {
-    "title": "Žiadosť sa nepodarilo uložiť",
-    "text": "Vašu žiadosť sa nepodarilo uložiť do konceptov. Opakujte akciu alebo to vyskúšajte neskôr.",
-    "button_back_text": "Späť",
-    "button_repeat_text": "Opakovať"
   },
   "registration_modal": {
     "header_initial_title": "Žiadosť je možné odoslať cez Bratislavské konto alebo pomocou eID",
@@ -131,54 +119,65 @@
     "scanning_modal_2_button": "Odoslať cez Bratislavské konto",
     "scanning_modal_3_button": "Overiť identitu"
   },
+  "skip_step_modal": {
+    "title": "Vyplňte správne všetky povinné polia",
+    "content": "Bez toho nebude možné formulár úspešne odoslať. K doplneniu polí sa môžete kedykoľvek vrátiť.",
+    "button_primary_title": "Upraviť",
+    "button_secondary_title": "Preskočiť"
+  },
+  "concept_save_error_modal": {
+    "title": "Žiadosť sa nepodarilo uložiť",
+    "content": "Vašu žiadosť sa nepodarilo uložiť do konceptov. Opakujte akciu alebo to vyskúšajte neskôr.",
+    "button_title": "Opakovať"
+  },
   "send_files_scanning_modal": {
     "title": "Nahraté prílohy ešte kontrolujeme",
-    "text": "Prílohy, ktoré ste nahrali prechádzajú antivírovou kontrolou. Žiadosť však môžete odoslať aj bez čakania na jej ukončenie. V prípade, že by nahraté prílohy obsahovali vírus, budeme vás kontaktovať na e-mailovej adrese, ktorou sa prihlasujete do svojho konta.",
+    "content": "Prílohy, ktoré ste nahrali prechádzajú antivírovou kontrolou. Žiadosť však môžete odoslať aj bez čakania na jej ukončenie. V prípade, že by nahraté prílohy obsahovali vírus, budeme vás kontaktovať na e-mailovej adrese, ktorou sa prihlasujete do svojho konta.",
     "button_title": "Odoslať žiadosť"
   },
   "send_files_scanning_eid_modal": {
     "title": "Nahraté prílohy ešte kontrolujeme",
-    "text": "Nahraté prílohy ešte kontrolujeme\nPrílohy, ktoré ste nahrali prechádzajú antivírovou kontrolou. Žiadosť však môžete odoslať aj bez čakania na jej ukončenie cez Bratislavské konto. V prípade, že by nahraté prílohy obsahovali vírus, budeme vás kontaktovať na e-mailovej adrese, ktorou sa prihlasujete do svojho konta.\n\nAk chcete aj napriek tomu žiadosť odoslať pomocou elektronického občianskeho preukazu, je potrebné počkať na dokončenie kontroly.",
+    "content": "Nahraté prílohy ešte kontrolujeme\nPrílohy, ktoré ste nahrali prechádzajú antivírovou kontrolou. Žiadosť však môžete odoslať aj bez čakania na jej ukončenie cez Bratislavské konto. V prípade, že by nahraté prílohy obsahovali vírus, budeme vás kontaktovať na e-mailovej adrese, ktorou sa prihlasujete do svojho konta.\n\nAk chcete aj napriek tomu žiadosť odoslať pomocou elektronického občianskeho preukazu, je potrebné počkať na dokončenie kontroly.",
     "button_title": "Odoslať cez Bratislavské konto"
   },
   "send_confirmation_modal": {
     "title": "Odoslať žiadosť",
-    "text": "Naozaj si prajete odoslať túto žiadosť?",
+    "content": "Naozaj si prajete odoslať túto žiadosť?",
     "button_title": "Odoslať žiadosť"
   },
   "send_files_scanning_not_verified_eid_modal": {
     "title": "Nahraté prílohy ešte kontrolujeme",
-    "text": "Prílohy, ktoré ste nahrali prechádzajú antivírovou kontrolou. Žiadosť však môžete odoslať už teraz, ak overíte identitu profilu.\n\nAk plánujete žiadosť odoslať pomocou elektronického občianskeho preukazu, je potrebné počkať na dokončenie kontroly.",
+    "content": "Prílohy, ktoré ste nahrali prechádzajú antivírovou kontrolou. Žiadosť však môžete odoslať už teraz, ak overíte identitu profilu.\n\nAk plánujete žiadosť odoslať pomocou elektronického občianskeho preukazu, je potrebné počkať na dokončenie kontroly.",
     "button_title": "Overiť identitu"
   },
   "send_identity_missing_modal": {
     "title": "Overenie identity",
-    "text": "Na to, aby ste mohli túto žiadosť odoslať, je potrebné overiť identitu profilu.\nBez elektronického občianskeho preukazu môžete žiadosť odoslať až po overení identity v Bratislavskom konte. Bez overenia viete žiadosť vyplniť a odoslať iba pomocou eID cez slovensko.sk.",
+    "content": "Na to, aby ste mohli túto žiadosť odoslať, je potrebné overiť identitu profilu.\nBez elektronického občianskeho preukazu môžete žiadosť odoslať až po overení identity v Bratislavskom konte. Bez overenia viete žiadosť vyplniť a odoslať iba pomocou eID cez slovensko.sk.",
     "button_title": "Overiť identitu"
   },
   "send_files_scanning_non_authenticated_eid_modal": {
     "title": "Nahraté prílohy ešte kontrolujeme",
-    "text": "Prílohy, ktoré ste nahrali prechádzajú antivírovou kontrolou. Žiadosť však môžete odoslať už teraz, ak si vytvoríte Bratislavské konto a následne overíte identitu profilu.\n\nAk plánujete žiadosť odoslať pomocou elektronického občianskeho preukazu, je potrebné počkať na dokončenie kontroly.",
+    "content": "Prílohy, ktoré ste nahrali prechádzajú antivírovou kontrolou. Žiadosť však môžete odoslať už teraz, ak si vytvoríte Bratislavské konto a následne overíte identitu profilu.\n\nAk plánujete žiadosť odoslať pomocou elektronického občianskeho preukazu, je potrebné počkať na dokončenie kontroly.",
     "button_title": "Vytvoriť Bratislavské konto"
   },
   "send_files_uploading_modal": {
     "title": "Nahrávajú sa prílohy",
-    "text": "Prílohy, ktoré ste vložili sa ešte nahrávajú. Žiadosť je možné odoslať až po dokončení nahrávania.",
+    "content": "Prílohy, ktoré ste vložili sa ešte nahrávajú. Žiadosť je možné odoslať až po dokončení nahrávania.",
     "button_title": ""
   },
   "send_confirmation_eid_modal": {
     "title": "Odoslať cez slovensko.sk",
-    "text": "Po kliknutí na Odoslať s eID budete presmerovaní na stránku slovensko.sk. Na odoslanie žiadosti s eID je potrebné, aby ste sa prihlásili do elektronickej schránky s vašim elektronickým občianskym preukazom.\n\nV jednom konte môže byť použitý len jeden občiansky preukaz. Použite eID, ktoré patrí používateľovi/používateľke tohto Bratislavského konta.",
+    "content": "Po kliknutí na Odoslať s eID budete presmerovaní na stránku slovensko.sk. Na odoslanie žiadosti s eID je potrebné, aby ste sa prihlásili do elektronickej schránky s vašim elektronickým občianskym preukazom.\n\nV jednom konte môže byť použitý len jeden občiansky preukaz. Použite eID, ktoré patrí používateľovi/používateľke tohto Bratislavského konta.",
     "button_title": "Odoslať s eID"
   },
   "send_confirmation_eid_legal_modal": {
     "title": "Odoslať cez slovensko.sk",
-    "text": "Po kliknutí na Odoslať s eID budete presmerovaní na stránku slovensko.sk. Na odoslanie žiadosti s eID je potrebné, aby ste sa prihlásili do elektronickej schránky s elektronickým občianskym preukazom.\n\nV jednom konte môže byť použitý len jeden občiansky preukaz. Použite eID, ktoré patrí členovi/členke štatutárneho orgánu firmy, ktorej patrí toto Bratislavské konto.",
+    "content": "Po kliknutí na Odoslať s eID budete presmerovaní na stránku slovensko.sk. Na odoslanie žiadosti s eID je potrebné, aby ste sa prihlásili do elektronickej schránky s elektronickým občianskym preukazom.\n\nV jednom konte môže byť použitý len jeden občiansky preukaz. Použite eID, ktoré patrí členovi/členke štatutárneho orgánu firmy, ktorej patrí toto Bratislavské konto.",
     "button_title": "Odoslať s eID"
   },
   "send_confirmation_non_authenticated_eid_modal": {
     "title": "Odoslať cez slovensko.sk",
-    "text": "Po kliknutí na Odoslať s eID budete presmerovaní na stránku slovensko.sk. Na odoslanie žiadosti s eID je potrebné, aby ste sa prihlásili do elektronickej schránky s elektronickým občianskym preukazom žiadateľa/žiadateľky. V prípade, že žiadosť podávate ako právnická osoba alebo fyzická osoba - podnikateľ použite elektronický občiansky preukaz člena/členky štatutárneho orgánu.",
+    "content": "Po kliknutí na Odoslať s eID budete presmerovaní na stránku slovensko.sk. Na odoslanie žiadosti s eID je potrebné, aby ste sa prihlásili do elektronickej schránky s elektronickým občianskym preukazom žiadateľa/žiadateľky. V prípade, že žiadosť podávate ako právnická osoba alebo fyzická osoba - podnikateľ použite elektronický občiansky preukaz člena/členky štatutárneho orgánu.",
     "button_title": "Odoslať s eID"
   }
 }

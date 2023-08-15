@@ -7,7 +7,7 @@ import SuccessIcon from '../../icon-components/SuccessIcon'
 import WarningIcon from '../../icon-components/WarningIcon'
 import ModalV2, { ModalV2Props } from '../../simple-components/ModalV2'
 
-type MessageModalProps = PropsWithChildren<{
+export type MessageModalProps = PropsWithChildren<{
   type: 'warning' | 'info' | 'error' | 'success'
   title: string
   buttons?: ReactNode[]

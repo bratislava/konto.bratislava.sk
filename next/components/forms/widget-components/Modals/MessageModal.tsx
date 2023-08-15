@@ -13,7 +13,7 @@ export type MessageModalProps = PropsWithChildren<{
   buttons?: ReactNode[]
   afterContent?: ReactNode
 }> &
-  Pick<ModalV2Props, 'isOpen' | 'onOpenChange'>
+  Pick<ModalV2Props, 'isOpen' | 'onOpenChange' | 'isDismissable' | 'noCloseButton'>
 
 const icons = {
   error: <ErrorIcon />,

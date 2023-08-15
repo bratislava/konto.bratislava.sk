@@ -119,6 +119,11 @@
     "scanning_modal_2_button": "Odoslať cez Bratislavské konto",
     "scanning_modal_3_button": "Overiť identitu"
   },
+  "old_schema_version_modal": {
+    "title": "TODO - OLD SCHEMA VERSION title",
+    "content": "TODO - OLD SCHEMA VERSION content",
+    "button_title": "Rozumiem"
+  },
   "skip_step_modal": {
     "title": "Vyplňte správne všetky povinné polia",
     "content": "Bez toho nebude možné formulár úspešne odoslať. K doplneniu polí sa môžete kedykoľvek vrátiť.",

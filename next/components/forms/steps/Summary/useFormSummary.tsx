@@ -1,9 +1,10 @@
 import { formsApi } from '@clients/forms'
 import { useMutation } from '@tanstack/react-query'
-import React, { createContext, PropsWithChildren, useContext, useMemo } from 'react'
+import React, { createContext, PropsWithChildren, useContext, useEffect, useMemo } from 'react'
 
 import { AccountType } from '../../../../frontend/dtos/accountDto'
 import { useServerSideAuth } from '../../../../frontend/hooks/useServerSideAuth'
+import useSnackbar from '../../../../frontend/hooks/useSnackbar'
 import { validateSummary } from '../../../../frontend/utils/form'
 import { checkPathForErrors } from '../../../../frontend/utils/formSummary'
 import { useFormState } from '../../FormStateProvider'
@@ -12,6 +13,7 @@ import { useFormFileUpload } from '../../useFormFileUpload'
 import { useFormModals } from '../../useFormModals'
 
 const useGetContext = () => {
+  const [openSnackbarError] = useSnackbar({ variant: 'error' })
   const { formId, formData, schema } = useFormState()
   const {
     isAuthenticated,
@@ -22,14 +24,15 @@ const useGetContext = () => {
     setRegistrationModal,
     setSendFilesScanningModal,
     setSendFilesScanningEidModal,
-    setSendConfirmationModal,
     setSendFilesScanningNotVerifiedEidModal,
     setSendIdentityMissingModal,
     setSendFilesScanningNonAuthenticatedEidModal,
     setSendFilesUploadingModal,
+    setSendConfirmationModal,
     setSendConfirmationEidModal,
     setSendConfirmationEidLegalModal,
     setSendConfirmationNonAuthenticatedEidModal,
+    setSendConfirmationLoading,
   } = useFormModals()
   const { getFileInfoById } = useFormFileUpload()
 
@@ -40,28 +43,29 @@ const useGetContext = () => {
 
   const { mutate: sendFormMutate, isLoading: sendFormIsLoading } = useMutation(
     () =>
-      formsApi.nasesControllerSendAndUpdateForm(
+      formsApi.nasesControllerSendForm(
         formId,
-        {
-          formDataJson: formData,
-        },
+        // {
+        //   formDataJson: formData,
+        // },
         { accessToken: 'always' },
       ),
     {
       networkMode: 'always',
-      onMutate: () => {
-        // openSnackbarInfo(t('info_messages.concept_save'))
-      },
       onSuccess: () => {
-        // openSnackbarSuccess(t('success_messages.concept_save'))
-        // setConceptSaveErrorModal(false)
+        // TODO: Redirect to success page
       },
       onError: () => {
+        openSnackbarError('Žiadosť sa nepodarilo odoslať.')
         // closeSnackbarInfo()
         // setConceptSaveErrorModal(true)
       },
     },
   )
+
+  useEffect(() => {
+    setSendConfirmationLoading(sendFormIsLoading)
+  }, [sendFormIsLoading, setSendConfirmationLoading])
 
   const fieldHasError = (fieldId: string) => checkPathForErrors(fieldId, errorSchema)
 
@@ -79,27 +83,28 @@ const useGetContext = () => {
       setRegistrationModal(RegistrationModalType.NotAuthenticatedSubmitForm)
       return
     }
+    //
+    // if (!isIdentityVerified) {
+    //   setSendIdentityMissingModal(true)
+    //   return
+    // }
 
-    if (!isIdentityVerified) {
-      setSendIdentityMissingModal(true)
-      return
-    }
     if (uploadingFiles.length > 0) {
       setSendFilesUploadingModal(true)
       return
     }
 
-    //
-    if (scanningFiles.length > 0) {
-      setSendFilesScanningModal(true) // TODO callback
-      return
-      //   TODO scanning
-      // return
+    const modalValue = {
+      isOpen: true,
+      sendCallback: () => sendFormMutate(),
     }
 
-    setSendConfirmationModal(true) // TODO callback
+    if (scanningFiles.length > 0) {
+      setSendFilesScanningModal(modalValue)
+      return
+    }
 
-    await sendFormMutate()
+    setSendConfirmationModal(modalValue)
   }
 
   const sendEid = (agreement: boolean) => {
@@ -122,13 +127,18 @@ const useGetContext = () => {
       return
     }
 
+    const modalValue = {
+      isOpen: true,
+      sendCallback: async () => {},
+    }
+
     if (!isAuthenticated) {
-      setSendConfirmationNonAuthenticatedEidModal(true) // callback
+      setSendConfirmationNonAuthenticatedEidModal(modalValue) // callback
       return
     }
 
     if (accountType === AccountType.FyzickaOsoba) {
-      setSendConfirmationEidModal(true) // callback
+      setSendConfirmationEidModal(modalValue) // callback
       return
     }
 
@@ -136,7 +146,7 @@ const useGetContext = () => {
       accountType === AccountType.PravnickaOsoba ||
       accountType === AccountType.FyzickaOsobaPodnikatel
     ) {
-      setSendConfirmationEidLegalModal(true) // callback
+      setSendConfirmationEidLegalModal(modalValue) // callback
     }
   }
 

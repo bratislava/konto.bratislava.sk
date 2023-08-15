@@ -8,7 +8,6 @@ import Button from '../../simple-components/ButtonNew'
 import { useFormModals } from '../../useFormModals'
 import MessageModal, { MessageModalProps } from '../../widget-components/Modals/MessageModal'
 import IdentityVerificationModal from '../IdentityVerificationModal/IdentityVerificationModal'
-import OldSchemaVersionModal from '../OldSchemaVersionModal/OldSchemaVersionModal'
 import RegistrationModal from '../RegistrationModal/RegistrationModal'
 
 const FormModals = () => {
@@ -16,8 +15,8 @@ const FormModals = () => {
   const { skipModal } = useFormState()
 
   const {
-    oldSchemaModal,
-    setOldSchemaModal,
+    oldVersionSchemaModal,
+    setOldSchemaVersionModal,
     registrationModal,
     setRegistrationModal,
     identityVerificationModal,
@@ -44,10 +43,25 @@ const FormModals = () => {
     setSendConfirmationEidLegalModal,
     sendConfirmationNonAuthenticatedEidModal,
     setSendConfirmationNonAuthenticatedEidModal,
+    sendConfirmationLoading,
+    sendConfirmationEidLoading,
   } = useFormModals()
   const { saveConcept, saveConceptIsLoading } = useFormExportImport()
 
   const messageModals: (MessageModalProps & { key: string })[] = [
+    {
+      key: 'oldVersionSchemaModal',
+      isOpen: oldVersionSchemaModal,
+      onOpenChange: setOldSchemaVersionModal,
+      type: 'info',
+      title: t('old_schema_version_modal.title'),
+      buttons: [
+        <Button variant="category-solid" onPress={() => setOldSchemaVersionModal(false)}>
+          {t('old_schema_version_modal.button_title')}
+        </Button>,
+      ],
+      children: t('old_schema_version_modal.content'),
+    },
     {
       key: 'skipStepModal',
       isOpen: skipModal.open,
@@ -85,22 +99,6 @@ const FormModals = () => {
       children: t('concept_save_error_modal.content'),
     },
     {
-      key: 'sendFilesScanningModal',
-      isOpen: sendFilesScanningModal,
-      onOpenChange: setSendFilesScanningModal,
-      title: t('send_files_scanning_modal.title'),
-      type: 'warning',
-      buttons: [
-        <Button onPress={() => setSendFilesScanningModal(false)}>
-          {t('concept_save_error_modal.button_back_text')}
-        </Button>,
-        <Button variant="black-solid" onPress={() => skipModal.onSkip()}>
-          {t('send_files_scanning_modal.button_title')}
-        </Button>,
-      ],
-      children: t('send_files_scanning_modal.content'),
-    },
-    {
       key: 'sendFilesScanningEidModal',
       isOpen: sendFilesScanningEidModal,
       onOpenChange: setSendFilesScanningEidModal,
@@ -115,22 +113,6 @@ const FormModals = () => {
         </Button>,
       ],
       children: t('send_files_scanning_eid_modal.content'),
-    },
-    {
-      key: 'sendConfirmationModal',
-      isOpen: sendConfirmationModal,
-      onOpenChange: setSendConfirmationModal,
-      title: t('send_confirmation_modal.title'),
-      type: 'info',
-      buttons: [
-        <Button onPress={() => setSendConfirmationModal(false)}>
-          {t('concept_save_error_modal.button_back_text')}
-        </Button>,
-        <Button variant="black-solid" onPress={() => skipModal.onSkip()}>
-          {t('send_confirmation_modal.button_title')}
-        </Button>,
-      ],
-      children: t('send_confirmation_modal.content'),
     },
     {
       key: 'sendFilesScanningNotVerifiedEidModal',
@@ -197,51 +179,150 @@ const FormModals = () => {
       children: t('send_files_uploading_modal.content'),
     },
     {
+      key: 'sendFilesScanningModal',
+      isOpen: sendFilesScanningModal.isOpen,
+      onOpenChange: (value) => {
+        if (!value) {
+          setSendFilesScanningModal({ isOpen: false })
+        }
+      },
+      title: t('send_files_scanning_modal.title'),
+      type: 'warning',
+      buttons: [
+        <Button onPress={() => setSendFilesScanningModal({ isOpen: false })}>
+          {t('concept_save_error_modal.button_back_text')}
+        </Button>,
+        <Button
+          variant="black-solid"
+          onPress={() => sendFilesScanningModal.isOpen && sendFilesScanningModal.sendCallback()}
+          isLoading={sendConfirmationLoading}
+        >
+          {t('send_files_scanning_modal.button_title')}
+        </Button>,
+      ],
+      children: t('send_files_scanning_modal.content'),
+      isDismissable: !sendConfirmationLoading,
+      noCloseButton: sendConfirmationLoading,
+    },
+    {
+      key: 'sendConfirmationModal',
+      isOpen: sendConfirmationModal.isOpen,
+      onOpenChange: (value) => {
+        if (!value) {
+          setSendConfirmationModal({ isOpen: false })
+        }
+      },
+      title: t('send_confirmation_modal.title'),
+      type: 'info',
+      buttons: [
+        <Button
+          onPress={() => setSendConfirmationModal({ isOpen: false })}
+          isDisabled={sendConfirmationLoading}
+        >
+          {t('concept_save_error_modal.button_back_text')}
+        </Button>,
+        <Button
+          variant="black-solid"
+          onPress={() => sendConfirmationModal.isOpen && sendConfirmationModal.sendCallback()}
+          isLoading={sendConfirmationLoading}
+        >
+          {t('send_confirmation_modal.button_title')}
+        </Button>,
+      ],
+      isDismissable: !sendConfirmationLoading,
+      noCloseButton: sendConfirmationLoading,
+      children: t('send_confirmation_modal.content'),
+    },
+    {
       key: 'sendConfirmationEidModal',
-      isOpen: sendConfirmationEidModal,
-      onOpenChange: setSendConfirmationEidModal,
+      isOpen: sendConfirmationEidModal.isOpen,
+      onOpenChange: (value) => {
+        if (!value) {
+          setSendConfirmationEidModal({ isOpen: false })
+        }
+      },
       title: t('send_confirmation_eid_modal.title'),
       type: 'info',
       buttons: [
-        <Button onPress={() => setSendConfirmationEidModal(false)}>
+        <Button
+          onPress={() => setSendConfirmationEidModal({ isOpen: false })}
+          isDisabled={sendConfirmationEidLoading}
+        >
           {t('concept_save_error_modal.button_back_text')}
         </Button>,
-        <Button variant="black-solid" onPress={() => skipModal.onSkip()}>
+        <Button
+          variant="black-solid"
+          onPress={() => sendConfirmationEidModal.isOpen && sendConfirmationEidModal.sendCallback()}
+          isLoading={sendConfirmationEidLoading}
+        >
           {t('send_confirmation_eid_modal.button_title')}
         </Button>,
       ],
+      isDismissable: !sendConfirmationEidLoading,
+      noCloseButton: sendConfirmationEidLoading,
       children: t('send_confirmation_eid_modal.content'),
     },
     {
       key: 'sendConfirmationEidLegalModal',
-      isOpen: sendConfirmationEidLegalModal,
-      onOpenChange: setSendConfirmationEidLegalModal,
+      isOpen: sendConfirmationEidLegalModal.isOpen,
+      onOpenChange: (value) => {
+        if (!value) {
+          setSendConfirmationEidLegalModal({ isOpen: false })
+        }
+      },
       title: t('send_confirmation_eid_legal_modal.title'),
       type: 'info',
       buttons: [
-        <Button onPress={() => setSendConfirmationEidLegalModal(false)}>
+        <Button
+          onPress={() => setSendConfirmationEidLegalModal({ isOpen: false })}
+          isDisabled={sendConfirmationEidLoading}
+        >
           {t('concept_save_error_modal.button_back_text')}
         </Button>,
-        <Button variant="black-solid" onPress={() => skipModal.onSkip()}>
+        <Button
+          variant="black-solid"
+          onPress={() =>
+            sendConfirmationEidLegalModal.isOpen && sendConfirmationEidLegalModal.sendCallback()
+          }
+          isLoading={sendConfirmationEidLoading}
+        >
           {t('send_confirmation_eid_legal_modal.button_title')}
         </Button>,
       ],
+      isDismissable: !sendConfirmationEidLoading,
+      noCloseButton: sendConfirmationEidLoading,
       children: t('send_confirmation_eid_legal_modal.content'),
     },
     {
       key: 'sendConfirmationNonAuthenticatedEidModal',
-      isOpen: sendConfirmationNonAuthenticatedEidModal,
-      onOpenChange: setSendConfirmationNonAuthenticatedEidModal,
+      isOpen: sendConfirmationNonAuthenticatedEidModal.isOpen,
+      onOpenChange: (value) => {
+        if (!value) {
+          setSendConfirmationNonAuthenticatedEidModal({ isOpen: false })
+        }
+      },
       title: t('send_confirmation_non_authenticated_eid_modal.title'),
       type: 'info',
       buttons: [
-        <Button onPress={() => setSendConfirmationNonAuthenticatedEidModal(false)}>
+        <Button
+          onPress={() => setSendConfirmationNonAuthenticatedEidModal({ isOpen: false })}
+          isDisabled={sendConfirmationEidLoading}
+        >
           {t('concept_save_error_modal.button_back_text')}
         </Button>,
-        <Button variant="black-solid" onPress={() => skipModal.onSkip()}>
+        <Button
+          variant="black-solid"
+          onPress={() =>
+            sendConfirmationNonAuthenticatedEidModal.isOpen &&
+            sendConfirmationNonAuthenticatedEidModal.sendCallback()
+          }
+          isLoading={sendConfirmationEidLoading}
+        >
           {t('send_confirmation_non_authenticated_eid_modal.button_title')}
         </Button>,
       ],
+      isDismissable: !sendConfirmationEidLoading,
+      noCloseButton: sendConfirmationEidLoading,
       children: t('send_confirmation_non_authenticated_eid_modal.content'),
     },
   ]
@@ -250,11 +331,6 @@ const FormModals = () => {
 
   return (
     <>
-      <OldSchemaVersionModal
-        isOpen={oldSchemaModal}
-        onOpenChange={setOldSchemaModal}
-        isDismissable
-      />
       <RegistrationModal
         type={registrationModal}
         isOpen={registrationModal != null}

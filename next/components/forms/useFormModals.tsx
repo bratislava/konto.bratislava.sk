@@ -4,36 +4,56 @@ import { useServerSideAuth } from '../../frontend/hooks/useServerSideAuth'
 import { InitialFormData } from '../../frontend/types/initialFormData'
 import { RegistrationModalType } from './segments/RegistrationModal/RegistrationModal'
 
+type ModalWithCallback =
+  | {
+      isOpen: false
+    }
+  | {
+      isOpen: true
+      sendCallback: () => void
+    }
+
 const useGetContext = (initialFormData: InitialFormData) => {
   const { isAuthenticated, tierStatus } = useServerSideAuth()
 
   const [conceptSaveErrorModal, setConceptSaveErrorModal] = useState(false)
-  const [oldSchemaModal, setOldSchemaModal] = useState<boolean>(initialFormData.oldSchemaVersion)
+  const [oldVersionSchemaModal, setOldSchemaVersionModal] = useState<boolean>(
+    initialFormData.oldSchemaVersion,
+  )
   const [registrationModal, setRegistrationModal] = useState<RegistrationModalType | null>(
-    !oldSchemaModal && !isAuthenticated ? RegistrationModalType.Initial : null,
+    !oldVersionSchemaModal && !isAuthenticated ? RegistrationModalType.Initial : null,
   )
   // const [identityVerificationModal, setIdentityVerificationModal] = useState(
-  //   !oldSchemaModal && isAuthenticated && !tierStatus.isIdentityVerified,
+  //   !oldVersionSchemaModal && isAuthenticated && !tierStatus.isIdentityVerified,
   // )
   const [identityVerificationModal, setIdentityVerificationModal] = useState(true)
 
-  const [sendFilesScanningModal, setSendFilesScanningModal] = useState(false)
   const [sendFilesScanningEidModal, setSendFilesScanningEidModal] = useState(false)
-  const [sendConfirmationModal, setSendConfirmationModal] = useState(false)
   const [sendFilesScanningNotVerifiedEidModal, setSendFilesScanningNotVerifiedEidModal] =
     useState(false)
   const [sendIdentityMissingModal, setSendIdentityMissingModal] = useState(false)
   const [sendFilesScanningNonAuthenticatedEidModal, setSendFilesScanningNonAuthenticatedEidModal] =
     useState(false)
   const [sendFilesUploadingModal, setSendFilesUploadingModal] = useState(false)
-  const [sendConfirmationEidModal, setSendConfirmationEidModal] = useState(false)
-  const [sendConfirmationEidLegalModal, setSendConfirmationEidLegalModal] = useState(false)
+  const [sendConfirmationModal, setSendConfirmationModal] = useState<ModalWithCallback>({
+    isOpen: false,
+  })
+  const [sendConfirmationEidModal, setSendConfirmationEidModal] = useState<ModalWithCallback>({
+    isOpen: false,
+  })
+  const [sendFilesScanningModal, setSendFilesScanningModal] = useState<ModalWithCallback>({
+    isOpen: false,
+  })
+  const [sendConfirmationEidLegalModal, setSendConfirmationEidLegalModal] =
+    useState<ModalWithCallback>({ isOpen: false })
   const [sendConfirmationNonAuthenticatedEidModal, setSendConfirmationNonAuthenticatedEidModal] =
-    useState(false)
+    useState<ModalWithCallback>({ isOpen: false })
+  const [sendConfirmationLoading, setSendConfirmationLoading] = useState(false)
+  const [sendConfirmationEidLoading, setSendConfirmationEidLoading] = useState(false)
 
   return {
-    oldSchemaModal,
-    setOldSchemaModal,
+    oldVersionSchemaModal,
+    setOldSchemaVersionModal,
     registrationModal,
     setRegistrationModal,
     identityVerificationModal,
@@ -44,8 +64,6 @@ const useGetContext = (initialFormData: InitialFormData) => {
     setSendFilesScanningModal,
     sendFilesScanningEidModal,
     setSendFilesScanningEidModal,
-    sendConfirmationModal,
-    setSendConfirmationModal,
     sendFilesScanningNotVerifiedEidModal,
     setSendFilesScanningNotVerifiedEidModal,
     sendIdentityMissingModal,
@@ -54,12 +72,18 @@ const useGetContext = (initialFormData: InitialFormData) => {
     setSendFilesScanningNonAuthenticatedEidModal,
     sendFilesUploadingModal,
     setSendFilesUploadingModal,
+    sendConfirmationModal,
+    setSendConfirmationModal,
     sendConfirmationEidModal,
     setSendConfirmationEidModal,
     sendConfirmationEidLegalModal,
     setSendConfirmationEidLegalModal,
     sendConfirmationNonAuthenticatedEidModal,
     setSendConfirmationNonAuthenticatedEidModal,
+    sendConfirmationLoading,
+    setSendConfirmationLoading,
+    sendConfirmationEidLoading,
+    setSendConfirmationEidLoading,
   }
 }
 

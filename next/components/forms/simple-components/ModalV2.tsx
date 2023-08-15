@@ -14,9 +14,16 @@ import { twMerge } from 'tailwind-merge'
 export type ModalV2Props = Omit<ModalOverlayProps, 'className'> & {
   modalClassname?: string
   mobileFullScreen?: boolean
+  noCloseButton?: boolean
 } & PropsWithChildren
 
-const ModalV2 = ({ children, modalClassname, mobileFullScreen, ...rest }: ModalV2Props) => {
+const ModalV2 = ({
+  children,
+  modalClassname,
+  mobileFullScreen,
+  noCloseButton,
+  ...rest
+}: ModalV2Props) => {
   const { t } = useTranslation('common')
   const isSSR = useIsSSR()
 
@@ -26,6 +33,7 @@ const ModalV2 = ({ children, modalClassname, mobileFullScreen, ...rest }: ModalV
     return null
   }
 
+  // Makes { isDismissable: true } default.
   const modalProps = mergeProps({ isDismissable: true }, rest)
 
   return (
@@ -47,13 +55,15 @@ const ModalV2 = ({ children, modalClassname, mobileFullScreen, ...rest }: ModalV
         <Dialog className="outline-0" onClose={() => rest?.onOpenChange?.(false)}>
           {({ close }) => (
             <>
-              <AriaButton
-                className="absolute right-3 top-3 cursor-pointer md:right-4 md:top-4"
-                onPress={close}
-              >
-                <CrossIcon className="h-6 w-6" aria-hidden />
-                <span className="sr-only">{t('modal_close_aria')}</span>
-              </AriaButton>
+              {!noCloseButton ? (
+                <AriaButton
+                  className="absolute right-3 top-3 cursor-pointer md:right-4 md:top-4"
+                  onPress={close}
+                >
+                  <CrossIcon className="h-6 w-6" aria-hidden />
+                  <span className="sr-only">{t('modal_close_aria')}</span>
+                </AriaButton>
+              ) : null}
               {children}
             </>
           )}

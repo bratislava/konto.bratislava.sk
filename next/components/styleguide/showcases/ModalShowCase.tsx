@@ -1,15 +1,16 @@
 import CorrespondenceAddressModal from 'components/forms/segments/CorrespondenceAddressModal/CorrespondenceAddressModal'
 import IdentityVerificationModal from 'components/forms/segments/IdentityVerificationModal/IdentityVerificationModal'
 import { PhoneNumberData } from 'components/forms/segments/PhoneNumberForm/PhoneNumberForm'
-import RegistrationModal from 'components/forms/segments/RegistrationModal/RegistrationModal'
-import SkipStepModal from 'components/forms/segments/SkipStepModal/SkipStepModal'
+import RegistrationModal, {
+  RegistrationModalType,
+} from 'components/forms/segments/RegistrationModal/RegistrationModal'
 import Modal from 'components/forms/widget-components/Modals/Modal'
 import { AccountType, Address } from 'frontend/dtos/accountDto'
-import { useTranslation } from 'next-i18next'
 import { useState } from 'react'
 
 import PhoneNumberModal from '../../forms/segments/PhoneNumberModal/PhoneNumberModal'
 import Button from '../../forms/simple-components/Button'
+import ButtonNew from '../../forms/simple-components/ButtonNew'
 import MessageModal from '../../forms/widget-components/Modals/MessageModal'
 import { Stack } from '../Stack'
 import { Wrapper } from '../Wrapper'
@@ -65,14 +66,9 @@ const singleModalContent = ({ onSubmit }: any) => {
 }
 
 const ModalShowCase = () => {
-  const { t } = useTranslation('account')
-
   const [modalSingleShow, setModalSingleShow] = useState(false)
   const [modalShow, setModalShow] = useState(false)
-  const [modalShowSuccess, setModalShowSuccess] = useState(false)
-  const [modalShowError, setModalShowError] = useState(false)
-  const [modalShowInfo, setModalShowInfo] = useState(false)
-  const [modalShowWarning, setModalShowWarning] = useState(false)
+  const [messageModal, setMessageModal] = useState(false)
   const [correnspondenceAddressModalShow, setCorrenspondenceAddressModalShow] = useState(false)
   const [addressModalData, setAddressModalData] = useState<any>({
     street_address: 'Stef 12',
@@ -84,7 +80,6 @@ const ModalShowCase = () => {
     '+421999999999',
   )
   const [registrationModal, setRegistrationModal] = useState(false)
-  const [skipStepModal, setSkipStepModal] = useState(false)
   const [identityVerificationModal, setIdentityVerificationModal] = useState(false)
 
   const onSubmitCorrespondenceAddress = ({ data }: { data?: Address }) => {
@@ -115,26 +110,8 @@ const ModalShowCase = () => {
         <Button
           size="sm"
           variant="black"
-          text="Open success message modal"
-          onPress={() => setModalShowSuccess(true)}
-        />
-        <Button
-          size="sm"
-          variant="black-outline"
-          text="Open error message modal"
-          onPress={() => setModalShowError(true)}
-        />
-        <Button
-          size="sm"
-          variant="black"
-          text="Open info message modal"
-          onPress={() => setModalShowInfo(true)}
-        />
-        <Button
-          size="sm"
-          variant="black-outline"
-          text="Open warning message modal"
-          onPress={() => setModalShowWarning(true)}
+          text="Open message modal"
+          onPress={() => setMessageModal(true)}
         />
         <Button
           size="sm"
@@ -153,12 +130,6 @@ const ModalShowCase = () => {
           variant="black"
           text="Open registration modal"
           onPress={() => setRegistrationModal(true)}
-        />
-        <Button
-          size="sm"
-          variant="black"
-          text="Open skip step modal"
-          onPress={() => setSkipStepModal(true)}
         />
         <Button
           size="sm"
@@ -196,72 +167,15 @@ const ModalShowCase = () => {
         />
 
         <MessageModal
-          show={modalShowSuccess}
-          confirmLabel="Primary action"
           type="success"
-          cancelHandler={() => {
-            setModalShowSuccess(false)
-          }}
-          submitHandler={() => {
-            setModalShowSuccess(false)
-          }}
+          isOpen={messageModal}
+          onOpenChange={setMessageModal}
           title="Lorem ipsum"
-          cancelLabel="Cancel"
+          buttons={[<ButtonNew variant="black-plain">Test button</ButtonNew>]}
         >
           Lorem ipsum dolor sit amet, consectetur adipiscing elit.
         </MessageModal>
 
-        <MessageModal
-          show={modalShowError}
-          confirmLabel="Primary action"
-          type="error"
-          cancelHandler={() => {
-            setModalShowError(false)
-          }}
-          submitHandler={() => {
-            setModalShowError(false)
-          }}
-          title="Lorem ipsum"
-          cancelLabel="Cancel"
-        >
-          Lorem ipsum dolor sit amet, consectetur adipiscing elit.
-        </MessageModal>
-
-        <MessageModal
-          show={modalShowInfo}
-          className="w-[700px]"
-          confirmLabel="Primary action"
-          type="info"
-          cancelHandler={() => {
-            setModalShowInfo(false)
-          }}
-          submitHandler={() => {
-            setModalShowInfo(false)
-          }}
-          title="Lorem ipsum"
-          cancelLabel="Cancel"
-        >
-          Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt
-          ut labore et dolore magna aliqua.Lorem ipsum dolor sit amet, consectetur adipiscing elit.
-        </MessageModal>
-
-        <MessageModal
-          show={modalShowWarning}
-          className="w-[700px]"
-          confirmLabel="Primary action"
-          type="warning"
-          cancelHandler={() => {
-            setModalShowWarning(false)
-          }}
-          submitHandler={() => {
-            setModalShowWarning(false)
-          }}
-          title="Lorem ipsum"
-          cancelLabel="Cancel"
-        >
-          Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt
-          ut labore et dolore magna aliqua.
-        </MessageModal>
         <CorrespondenceAddressModal
           show={correnspondenceAddressModalShow}
           onClose={() => setCorrenspondenceAddressModalShow(false)}
@@ -275,18 +189,14 @@ const ModalShowCase = () => {
           defaultValues={{ phone_number: phoneNumberModalData }}
         />
         <RegistrationModal
-          title={t('register_modal.header_sent_title')}
-          subtitle={t('register_modal.header_sent_subtitle')}
+          type={RegistrationModalType.Initial}
           isOpen={registrationModal}
           onOpenChange={setRegistrationModal}
-          isDismissable
         />
-        <SkipStepModal isOpen={skipStepModal} onOpenChange={setSkipStepModal} isDismissable />
         <IdentityVerificationModal
           isOpen={identityVerificationModal}
           onOpenChange={setIdentityVerificationModal}
           accountType={AccountType.FyzickaOsoba}
-          isDismissable
         />
       </Stack>
     </Wrapper>

@@ -1,6 +1,6 @@
 import { CrossIcon } from '@assets/ui-icons'
 import React, { PropsWithChildren } from 'react'
-import { useIsSSR } from 'react-aria'
+import { mergeProps, useIsSSR } from 'react-aria'
 import {
   Button as AriaButton,
   Dialog,
@@ -10,10 +10,10 @@ import {
 } from 'react-aria-components'
 import { twMerge } from 'tailwind-merge'
 
-export type ModalV2Props = PropsWithChildren<ModalOverlayProps> & {
+export type ModalV2Props = Omit<ModalOverlayProps, 'className'> & {
   modalClassname?: string
   mobileFullScreen?: boolean
-}
+} & PropsWithChildren
 
 const ModalV2 = ({ children, modalClassname, mobileFullScreen, ...rest }: ModalV2Props) => {
   const isSSR = useIsSSR()
@@ -24,13 +24,15 @@ const ModalV2 = ({ children, modalClassname, mobileFullScreen, ...rest }: ModalV
     return null
   }
 
+  const modalProps = mergeProps({ isDismissable: true }, rest)
+
   return (
     <ModalOverlay
       className="fixed left-0 top-0 z-50 flex h-[var(--visual-viewport-height)] w-screen items-center justify-center bg-gray-800/40"
-      {...rest}
+      {...modalProps}
     >
       <Modal
-        {...rest}
+        {...modalProps}
         className={twMerge(
           'relative overflow-auto bg-gray-0 px-4 outline-0 md:mx-4 md:h-min md:max-h-full md:max-w-[592px] md:rounded-2xl md:p-6',
           mobileFullScreen
@@ -44,7 +46,7 @@ const ModalV2 = ({ children, modalClassname, mobileFullScreen, ...rest }: ModalV
           {({ close }) => (
             <>
               <AriaButton
-                className="absolute right-3 top-3 cursor-pointer  md:right-4 md:top-4"
+                className="absolute right-3 top-3 cursor-pointer md:right-4 md:top-4"
                 onPress={close}
               >
                 <CrossIcon className="h-6 w-6" />

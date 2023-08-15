@@ -85,7 +85,7 @@ export const FormStateProvider = ({
   const [submittedStepsIndexes, setSubmittedStepsIndexes] = useState<Set<number>>(new Set())
 
   const stepperData = useMemo(
-    () => getStepperData(stepsSchemas, submittedStepsIndexes, t('summary')),
+    () => getStepperData(stepsSchemas, submittedStepsIndexes, t('summary.title')),
     [stepsSchemas, submittedStepsIndexes, t],
   )
 

@@ -71,7 +71,7 @@ const useGetContext = () => {
 
   const hasErrors = Object.keys(errorSchema).length > 0
 
-  const submitDisabled = hasErrors || infectedFiles.length > 0 || uploadingFiles.length > 0
+  const submitDisabled = hasErrors || infectedFiles.length > 0
 
   const send = async (agreement: boolean) => {
     if (!agreement || submitDisabled || sendFormIsLoading) {
@@ -111,6 +111,11 @@ const useGetContext = () => {
       return
     }
 
+    if (uploadingFiles.length > 0) {
+      setSendFilesUploadingModal(true)
+      return
+    }
+
     if (isAuthenticated && isIdentityVerified && scanningFiles.length > 0) {
       setSendFilesScanningEidModal(true)
       return
@@ -132,12 +137,12 @@ const useGetContext = () => {
     }
 
     if (!isAuthenticated) {
-      setSendConfirmationNonAuthenticatedEidModal(modalValue) // callback
+      setSendConfirmationNonAuthenticatedEidModal(modalValue)
       return
     }
 
     if (accountType === AccountType.FyzickaOsoba) {
-      setSendConfirmationEidModal(modalValue) // callback
+      setSendConfirmationEidModal(modalValue)
       return
     }
 
@@ -145,7 +150,7 @@ const useGetContext = () => {
       accountType === AccountType.PravnickaOsoba ||
       accountType === AccountType.FyzickaOsobaPodnikatel
     ) {
-      setSendConfirmationEidLegalModal(modalValue) // callback
+      setSendConfirmationEidLegalModal(modalValue)
     }
   }
 

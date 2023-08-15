@@ -14,7 +14,7 @@
   },
   "ziadatel": {
     "ui:hideError": true,
-    "ziatetelTyp": {
+    "ziadatelTyp": {
       "ui:widget": "RadioButton",
       "ui:label": false,
       "ui:options": {

@@ -76,7 +76,7 @@ const FormModals = () => {
           {t('skip_step_modal.button_primary_title')}
         </Button>,
       ],
-      children: t('concept_save_error_modal.text'),
+      children: t('skip_step_modal.content'),
     },
     {
       key: 'conceptSaveErrorModal',

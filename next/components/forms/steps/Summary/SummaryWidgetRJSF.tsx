@@ -58,6 +58,7 @@ const ValueComponent = ({
     case 'select':
       const selectOptions = options as SelectRJSFOptions
       return (
+        // TODO Array select
         <>
           {selectOptions.enumOptions?.find((option) => option.value === value)?.label ??
             (value as string)}

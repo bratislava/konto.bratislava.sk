@@ -1,5 +1,4 @@
 import { ChevronDownIcon, ChevronUpIcon } from '@assets/ui-icons'
-import cx from 'classnames'
 import React from 'react'
 import { Button, ComboBox, ComboBoxProps, Input, ListBox, Popover } from 'react-aria-components'
 
@@ -28,7 +27,7 @@ const ComboBoxNew = <T extends object>({
 
   return (
     <ComboBox className="w-full" validationState={isInvalid ? 'invalid' : 'valid'} {...rest}>
-      {({ isFocused, isOpen }) => (
+      {({ isOpen }) => (
         <FieldWrapper
           label={label}
           helptext={helptext}
@@ -39,14 +38,7 @@ const ComboBoxNew = <T extends object>({
           disabled={rest.isDisabled}
         >
           <div className="flex">
-            <Input
-              className={cx(
-                'flex w-full rounded-lg border-2 bg-white py-3 pl-4 pr-10 outline-none disabled:border-gray-300 disabled:bg-gray-100 aria-[invalid]:border-negative-700',
-                {
-                  'border-gray-900': isFocused,
-                },
-              )}
-            />
+            <Input className="flex w-full rounded-lg border-2 bg-white py-3 pl-4 pr-10 outline-none focus:border-gray-900 disabled:border-gray-300 disabled:bg-gray-100 aria-[invalid]:border-negative-700" />
             <Button className="-ml-14 flex items-center justify-center px-4 py-3">
               {isOpen ? <ChevronUpIcon /> : <ChevronDownIcon />}
             </Button>

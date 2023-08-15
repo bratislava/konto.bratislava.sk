@@ -15,8 +15,6 @@ export type ModalV2Props = PropsWithChildren<ModalOverlayProps> & {
   mobileFullScreen?: boolean
 }
 
-// WIP
-// TODO: Examine why focus trap doesn't work.
 const ModalV2 = ({ children, modalClassname, mobileFullScreen, ...rest }: ModalV2Props) => {
   const isSSR = useIsSSR()
 

@@ -83,16 +83,9 @@ const UserProfileView = () => {
           />
         </div>
         <MessageModal
-          show={isEmailModalOpened}
-          excludeButtons
-          className="m-5 w-[700px]"
+          isOpen={isEmailModalOpened}
+          onOpenChange={setIsEmailModalOpened}
           type="warning"
-          cancelHandler={() => {
-            setIsEmailModalOpened(false)
-          }}
-          submitHandler={() => {
-            setIsEmailModalOpened(false)
-          }}
           title={t('profile_detail.modal_title')}
         >
           <AccountMarkdown

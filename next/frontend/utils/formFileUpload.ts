@@ -15,6 +15,7 @@ import {
   FormFileUploadClientFileInfo,
   FormFileUploadConstraints,
   FormFileUploadFileInfo,
+  FormFileUploadFileStatus,
   FormFileUploadStatusEnum,
 } from '../types/formFileUploadTypes'
 
@@ -87,9 +88,10 @@ export const shouldPollServerFiles = (
   return fileNotYetFinishedScanning || uploadedFileNotInScanner
 }
 
-const serverResponseToStatusMap = {
+const serverResponseToStatusMap: Record<GetFileResponseDtoStatusEnum, FormFileUploadFileStatus> = {
   [GetFileResponseDtoStatusEnum.Uploaded]: { type: FormFileUploadStatusEnum.Scanning as const },
   [GetFileResponseDtoStatusEnum.Accepted]: { type: FormFileUploadStatusEnum.Scanning as const },
+  [GetFileResponseDtoStatusEnum.Queued]: { type: FormFileUploadStatusEnum.Scanning as const },
   [GetFileResponseDtoStatusEnum.Scanning]: { type: FormFileUploadStatusEnum.Scanning as const },
   [GetFileResponseDtoStatusEnum.Safe]: { type: FormFileUploadStatusEnum.ScanDone as const },
   [GetFileResponseDtoStatusEnum.Infected]: {
@@ -103,6 +105,18 @@ const serverResponseToStatusMap = {
   },
   [GetFileResponseDtoStatusEnum.MoveErrorInfected]: {
     type: FormFileUploadStatusEnum.ScanInfected as const,
+  },
+  [GetFileResponseDtoStatusEnum.ScanError]: {
+    type: FormFileUploadStatusEnum.ScanError as const,
+  },
+  [GetFileResponseDtoStatusEnum.ScanTimeout]: {
+    type: FormFileUploadStatusEnum.ScanError as const,
+  },
+  [GetFileResponseDtoStatusEnum.ScanNotSuccessful]: {
+    type: FormFileUploadStatusEnum.ScanError as const,
+  },
+  [GetFileResponseDtoStatusEnum.FormIdNotFound]: {
+    type: FormFileUploadStatusEnum.UnknownFile as const,
   },
 }
 

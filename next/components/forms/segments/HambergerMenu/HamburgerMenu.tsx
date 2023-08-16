@@ -39,9 +39,9 @@ const Item = ({
       onClick={onClick}
       onKeyPress={(event) => handleOnKeyPress(event, onClick)}
       className={cx(
-        ' text-p2-semibold rounded-lg p-4 flex items-center justify-between cursor-pointer border-b-2 border-transparent hover:text-main-700 hover:bg-main-100 transition-all',
+        ' text-p2-semibold flex cursor-pointer items-center justify-between rounded-lg border-b-2 border-transparent p-4 transition-all hover:bg-main-100 hover:text-main-700',
         {
-          'text-main-700 bg-main-100': isSelected,
+          'bg-main-100 text-main-700': isSelected,
         },
       )}
     >
@@ -59,7 +59,7 @@ export const HamburgerMenu = ({ sectionsList, menuItems, className, closeMenu }:
   return (
     <div
       className={cx(
-        'fixed top-16 left-0 bg-white w-screen overflow-y-scroll lg:hidden flex flex-col',
+        'fixed left-0 top-16 flex w-screen flex-col overflow-y-scroll bg-white lg:hidden',
       )}
       style={{ height: 'calc(100vh - 60px)' }}
     >

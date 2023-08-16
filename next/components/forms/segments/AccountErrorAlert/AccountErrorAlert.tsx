@@ -8,7 +8,7 @@ import logger from '../../../../frontend/utils/logger'
 
 interface Props {
   error?: Error | null
-  args?: {[key: string]: string | number}
+  args?: { [key: string]: string | number }
   close?: () => void
   solid?: boolean
 }

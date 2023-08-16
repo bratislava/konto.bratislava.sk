@@ -62,11 +62,6 @@ export type AnchorProps = Omit<AriaButtonProps<'a'>, 'children'> &
 
 export type PolymorphicProps = ButtonProps | AnchorProps
 
-type PolymorphicButton = {
-  (props: AnchorProps): JSX.Element
-  (props: ButtonProps): JSX.Element
-}
-
 // TODO Loading spinner
 const Button = forwardRef<HTMLAnchorElement | HTMLButtonElement, PolymorphicProps>(
   (
@@ -274,6 +269,6 @@ const Button = forwardRef<HTMLAnchorElement | HTMLButtonElement, PolymorphicProp
       </button>
     )
   },
-) as PolymorphicButton
+)
 
 export default Button

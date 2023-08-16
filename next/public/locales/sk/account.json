@@ -58,10 +58,10 @@
   "register_description": "Nemáte ešte vytvorené konto?",
   "register_link": "Registrovať sa",
   "register_modal": {
-    "header_sent_title": "Žiadosť je možné odoslať až po prihlásení",
-    "header_sent_subtitle": "Na to, aby ste žiadosť odoslali elektronicky, je potrebné overiť vašu identitu voči štátnym registrom. Urobiť tak môžete cez Bratislavské konto alebo použitím eID.",
-    "header_save_title": "Žiadosť je možné uložiť až po prihlásení",
-    "header_save_subtitle": "Na to, aby ste žiadosť mohli uložiť do konceptov potrebujete mať vytvorené Bratislavské konto, aby ste sa k žiadosti mali kam vrátiť.",
+    "header_sent_title": "Žiadosť je možné odoslať cez Bratislavské konto alebo pomocou eID",
+    "header_sent_subtitle": "Na to, aby ste mohli žiadosť odoslať, potrebujete mať vytvorené Bratislavské konto s overenou identitou alebo použiť elektronický občiansky preukazu cez slovensko.sk. Bez toho viete žiadosť iba vyplniť a stiahnuť.",
+    "header_save_title": "Žiadosť je možné uložiť do konceptov len cez Bratislavské konto",
+    "header_save_subtitle": "Na to, aby ste si mohli túto žiadosť uložiť do konceptov, potrebujete mať vytvorené Bratislavské konto. Bez toho viete žiadosť iba vyplniť a stiahnuť.",
     "body_title": "Vytvorte si Bratislavské konto",
     "body_list": {
       "1": "Nájdite všetky služby mesta na jednom mieste",

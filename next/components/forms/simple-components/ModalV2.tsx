@@ -1,6 +1,7 @@
 import { CrossIcon } from '@assets/ui-icons'
+import { useTranslation } from 'next-i18next'
 import React, { PropsWithChildren } from 'react'
-import { useIsSSR } from 'react-aria'
+import { mergeProps, useIsSSR } from 'react-aria'
 import {
   Button as AriaButton,
   Dialog,
@@ -10,13 +11,20 @@ import {
 } from 'react-aria-components'
 import { twMerge } from 'tailwind-merge'
 
-export type ModalV2Props = PropsWithChildren<ModalOverlayProps> & {
+export type ModalV2Props = Omit<ModalOverlayProps, 'className'> & {
   modalClassname?: string
-}
+  mobileFullScreen?: boolean
+  noCloseButton?: boolean
+} & PropsWithChildren
 
-// WIP
-// TODO: Examine why focus trap doesn't work.
-const ModalV2 = ({ children, modalClassname, ...rest }: ModalV2Props) => {
+const ModalV2 = ({
+  children,
+  modalClassname,
+  mobileFullScreen,
+  noCloseButton,
+  ...rest
+}: ModalV2Props) => {
+  const { t } = useTranslation('common')
   const isSSR = useIsSSR()
 
   // `ReferenceError: window is not defined` in server environment
@@ -25,15 +33,21 @@ const ModalV2 = ({ children, modalClassname, ...rest }: ModalV2Props) => {
     return null
   }
 
+  // Makes `{ isDismissable: true }` default.
+  const modalProps = mergeProps({ isDismissable: true }, rest)
+
   return (
     <ModalOverlay
       className="fixed left-0 top-0 z-50 flex h-[var(--visual-viewport-height)] w-screen items-center justify-center bg-gray-800/40"
-      {...rest}
+      {...modalProps}
     >
       <Modal
-        {...rest}
+        {...modalProps}
         className={twMerge(
-          'relative mx-0 h-full w-full max-w-none overflow-auto rounded-none bg-gray-0 px-4 pt-12 outline-0 md:mx-4 md:h-min md:max-h-full md:max-w-[592px] md:rounded-2xl md:px-6 md:py-6',
+          'relative overflow-auto bg-gray-0 px-4 outline-0 md:mx-4 md:h-min md:max-h-full md:max-w-[592px] md:rounded-2xl md:p-6',
+          mobileFullScreen
+            ? 'mx-0 h-full w-full max-w-none rounded-none p-4 pt-12'
+            : 'mx-4 h-min max-h-full w-full rounded-xl pb-4 pt-6',
           modalClassname,
         )}
       >
@@ -41,12 +55,15 @@ const ModalV2 = ({ children, modalClassname, ...rest }: ModalV2Props) => {
         <Dialog className="outline-0" onClose={() => rest?.onOpenChange?.(false)}>
           {({ close }) => (
             <>
-              <AriaButton
-                className="absolute right-3 top-3 cursor-pointer  md:right-4 md:top-4"
-                onPress={close}
-              >
-                <CrossIcon className="h-6 w-6" />
-              </AriaButton>
+              {!noCloseButton ? (
+                <AriaButton
+                  className="absolute right-3 top-3 cursor-pointer md:right-4 md:top-4"
+                  onPress={close}
+                >
+                  <CrossIcon className="h-6 w-6" aria-hidden />
+                  <span className="sr-only">{t('modal_close_aria')}</span>
+                </AriaButton>
+              ) : null}
               {children}
             </>
           )}

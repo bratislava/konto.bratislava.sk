@@ -2,6 +2,7 @@ import { RJSFSchema, UiSchema } from '@rjsf/utils'
 import { useRouter } from 'next/router'
 import React from 'react'
 
+import { FormExportImportProvider } from '../../frontend/hooks/useFormExportImport'
 import { InitialFormData } from '../../frontend/types/initialFormData'
 import AccountPageLayout from '../layouts/AccountPageLayout'
 import PageWrapper from '../layouts/PageWrapper'
@@ -9,6 +10,7 @@ import { GetSSRCurrentAuth } from '../logic/ServerSideAuthProvider'
 import FormPage from './FormPage'
 import { FormStateProvider } from './FormStateProvider'
 import { FormFileUploadStateProvider } from './useFormFileUpload'
+import { FormModalsProvider } from './useFormModals'
 
 export type FormPageWrapperProps = {
   schema: RJSFSchema
@@ -33,7 +35,11 @@ const FormPageWrapper = ({ schema, uiSchema, page, initialFormData }: FormPageWr
             formSlug={formSlug}
             initialFormData={initialFormData}
           >
-            <FormPage />
+            <FormModalsProvider initialFormData={initialFormData}>
+              <FormExportImportProvider>
+                <FormPage />
+              </FormExportImportProvider>
+            </FormModalsProvider>
           </FormStateProvider>
         </FormFileUploadStateProvider>
       </AccountPageLayout>

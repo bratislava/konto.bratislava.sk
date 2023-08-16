@@ -58,6 +58,7 @@ const CheckboxGroupItem = ({
       variant === 'boxed' && !isSelected && isIndeterminate && !isDisabled && !error,
     'border-gray-700 group-hover:border-gray-500':
       variant === 'boxed' && isSelected && !isIndeterminate && !isDisabled && !error,
+    'cursor-pointer': !isDisabled,
 
     // error
     'border-negative-700': variant === 'boxed' && error,

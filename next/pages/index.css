@@ -245,3 +245,8 @@
     scrollbar-width: none; /* Firefox */
   }
 }
+
+/* Display snackbar above modal. */
+[class*="Snackbar_snackbar-wrapper"] {
+  z-index: 60 !important;
+}

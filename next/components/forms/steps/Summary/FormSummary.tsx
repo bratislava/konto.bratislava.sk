@@ -4,6 +4,7 @@ import { defaultFormStateBehavior, rjfsValidator } from '../../../../frontend/ut
 import { useFormState } from '../../FormStateProvider'
 import SummaryHeader from '../SummaryHeader'
 import SummaryForm from './SummaryForm'
+import SummaryFormControls from './SummaryFormControls'
 import { FormSummaryProvider } from './useFormSummary'
 
 const FormSummary = () => {
@@ -26,7 +27,10 @@ const FormSummary = () => {
           }}
           // We display the errors in our on way.
           showErrorList={false}
-        />
+        >
+          <div />
+        </SummaryForm>
+        <SummaryFormControls />
       </div>
     </FormSummaryProvider>
   )

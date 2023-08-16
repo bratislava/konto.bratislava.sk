@@ -5,6 +5,7 @@ import MyApplicationCardsPlaceholder from 'components/forms/segments/AccountSect
 import Pagination from 'components/forms/simple-components/Pagination/Pagination'
 import React, { useState } from 'react'
 
+import { ROUTES } from '../../../../../frontend/api/constants'
 import MyApplicationsDraftCard, { MyApplicationsDraftCardProps } from './MyApplicationsDraftCard'
 
 const getDraftApplications = async () => {
@@ -29,7 +30,7 @@ const transformFormToCardProps = (form: GetFormResponseDto): MyApplicationsDraft
   return {
     // TODO: Title
     title: formSlug ?? '',
-    linkHref: `/form/${formSlug}`,
+    linkHref: `${ROUTES.MUNICIPAL_SERVICES}/${formSlug}/${form.id}`,
     category: 'Kategória TODO',
     subtext: 'Subtext TODO',
     createdAt: form.createdAt,

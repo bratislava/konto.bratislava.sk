@@ -60,7 +60,7 @@ const SelectFieldNew = <T extends object>({
           <Popover className="w-[--trigger-width] overflow-y-scroll rounded-md border-2 bg-white py-2">
             <ListBox>
               {items.map((item) => (
-                <ListBoxItem {...item} isDivider={isDivider} />
+                <ListBoxItem key={item.id} {...item} isDivider={isDivider} />
               ))}
             </ListBox>
           </Popover>

@@ -1,7 +1,7 @@
 import React, { createContext, ReactNode, useContext, useState } from 'react'
 
-const useGetContext = () => {
-  const [formSent, setFormSent] = useState(false)
+const useGetContext = (initialFormSent: boolean) => {
+  const [formSent, setFormSent] = useState(initialFormSent)
 
   return {
     formSent,
@@ -12,11 +12,16 @@ const useGetContext = () => {
 const FormSentContext = createContext<ReturnType<typeof useGetContext> | undefined>(undefined)
 
 type FormSentProviderProps = {
+  initialFormSent: boolean
   notSentChildren: ReactNode
   sentChildren: ReactNode
 }
-export const FormSentRenderer = ({ notSentChildren, sentChildren }: FormSentProviderProps) => {
-  const context = useGetContext()
+export const FormSentRenderer = ({
+  initialFormSent,
+  notSentChildren,
+  sentChildren,
+}: FormSentProviderProps) => {
+  const context = useGetContext(initialFormSent)
 
   return (
     <FormSentContext.Provider value={context}>

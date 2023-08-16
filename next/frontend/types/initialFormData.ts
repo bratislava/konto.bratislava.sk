@@ -6,4 +6,5 @@ export type InitialFormData = {
   formId: string
   files: GetFileResponseDto[]
   oldSchemaVersion: boolean
+  formSent: boolean
 }

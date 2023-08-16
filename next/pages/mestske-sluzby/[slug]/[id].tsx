@@ -1,4 +1,5 @@
 import { formsApi } from '@clients/forms'
+import { GetFormResponseDtoStateEnum } from '@clients/openapi-forms'
 import { isAxiosError } from 'axios'
 import { GetServerSideProps } from 'next'
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
@@ -46,6 +47,7 @@ export const getServerSideProps: GetServerSideProps<FormPageWrapperProps, Params
       return { notFound: true }
     }
 
+    const formSent = form.state !== GetFormResponseDtoStateEnum.Draft
     // necessary for page wrappers common for entire web
     const locale = ctx.locale ?? 'sk'
 
@@ -62,6 +64,7 @@ export const getServerSideProps: GetServerSideProps<FormPageWrapperProps, Params
           formDataJson: form.formDataJson ?? {},
           files,
           oldSchemaVersion: !form.isLatestSchemaVersionForSlug,
+          formSent,
         },
         ...(await serverSideTranslations(locale)),
       } satisfies FormPageWrapperProps,

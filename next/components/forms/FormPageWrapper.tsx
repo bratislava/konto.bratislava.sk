@@ -30,6 +30,7 @@ const FormPageWrapper = ({ schema, uiSchema, page, initialFormData }: FormPageWr
   return (
     <PageWrapper locale={page.locale}>
       <FormSentRenderer
+        initialFormSent={initialFormData.formSent}
         notSentChildren={
           <AccountPageLayout isPublicPage hiddenHeaderNav>
             <FormFileUploadStateProvider initialFormData={initialFormData}>

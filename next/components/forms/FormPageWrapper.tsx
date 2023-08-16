@@ -9,8 +9,10 @@ import PageWrapper from '../layouts/PageWrapper'
 import { GetSSRCurrentAuth } from '../logic/ServerSideAuthProvider'
 import FormPage from './FormPage'
 import { FormStateProvider } from './FormStateProvider'
+import ThankYouFormSection from './segments/AccountSections/ThankYouSection/ThankYouFormSection'
 import { FormFileUploadStateProvider } from './useFormFileUpload'
 import { FormModalsProvider } from './useFormModals'
+import { FormSentRenderer } from './useFormSent'
 
 export type FormPageWrapperProps = {
   schema: RJSFSchema
@@ -27,22 +29,31 @@ const FormPageWrapper = ({ schema, uiSchema, page, initialFormData }: FormPageWr
 
   return (
     <PageWrapper locale={page.locale}>
-      <AccountPageLayout isPublicPage hiddenHeaderNav>
-        <FormFileUploadStateProvider initialFormData={initialFormData}>
-          <FormStateProvider
-            schema={schema}
-            uiSchema={uiSchema}
-            formSlug={formSlug}
-            initialFormData={initialFormData}
-          >
-            <FormModalsProvider initialFormData={initialFormData}>
-              <FormExportImportProvider>
-                <FormPage />
-              </FormExportImportProvider>
-            </FormModalsProvider>
-          </FormStateProvider>
-        </FormFileUploadStateProvider>
-      </AccountPageLayout>
+      <FormSentRenderer
+        notSentChildren={
+          <AccountPageLayout isPublicPage hiddenHeaderNav>
+            <FormFileUploadStateProvider initialFormData={initialFormData}>
+              <FormStateProvider
+                schema={schema}
+                uiSchema={uiSchema}
+                formSlug={formSlug}
+                initialFormData={initialFormData}
+              >
+                <FormModalsProvider initialFormData={initialFormData}>
+                  <FormExportImportProvider>
+                    <FormPage />
+                  </FormExportImportProvider>
+                </FormModalsProvider>
+              </FormStateProvider>
+            </FormFileUploadStateProvider>
+          </AccountPageLayout>
+        }
+        sentChildren={
+          <AccountPageLayout hiddenHeaderNav className="bg-gray-50">
+            <ThankYouFormSection />
+          </AccountPageLayout>
+        }
+      />
     </PageWrapper>
   )
 }

@@ -15,8 +15,8 @@ const ThankYouFormSection = () => {
         <ThankYouCard
           success
           title={t('thank_you.form_submit.title')}
-          firstButtonTitle={t('thank_you.success.button_to_formular_text_2')}
-          secondButtonTitle={t('thank_you.success.button_to_profil_text')}
+          firstButtonTitle={t('thank_you.button_to_formular_text_2')}
+          secondButtonTitle={t('thank_you.button_to_profil_text')}
           content={t('thank_you.form_submit.content')}
         />
         <div className="mx-auto mt-0 w-full max-w-[734px] px-4 md:mt-10 md:px-0 lg:max-w-[800px]">

@@ -111,6 +111,7 @@
     "button_send": "Odoslať žiadosť",
     "button_send_eid": "Odoslať s eID"
   },
+  "form_send_error": "Žiadosť sa nepodarilo odoslať.",
   "modals_back_button_title": "Späť",
   "old_schema_version_modal": {
     "title": "TODO - OLD SCHEMA VERSION title",

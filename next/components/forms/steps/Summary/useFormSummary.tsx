@@ -1,5 +1,6 @@
 import { formsApi } from '@clients/forms'
 import { useMutation } from '@tanstack/react-query'
+import { useTranslation } from 'next-i18next'
 import React, { createContext, PropsWithChildren, useContext, useEffect, useMemo } from 'react'
 
 import { AccountType } from '../../../../frontend/dtos/accountDto'
@@ -11,9 +12,12 @@ import { useFormState } from '../../FormStateProvider'
 import { RegistrationModalType } from '../../segments/RegistrationModal/RegistrationModal'
 import { useFormFileUpload } from '../../useFormFileUpload'
 import { useFormModals } from '../../useFormModals'
+import { useFormSent } from '../../useFormSent'
 
 const useGetContext = () => {
+  const { t } = useTranslation('forms')
   const [openSnackbarError] = useSnackbar({ variant: 'error' })
+
   const { formId, formData, schema } = useFormState()
   const {
     isAuthenticated,
@@ -36,6 +40,7 @@ const useGetContext = () => {
     setSendConfirmationLoading,
   } = useFormModals()
   const { getFileInfoById } = useFormFileUpload()
+  const { setFormIsSent } = useFormSent()
 
   const { errorSchema, infectedFiles, uploadingFiles, scanningFiles } = useMemo(
     () => validateSummary(schema, formData, getFileInfoById),
@@ -44,21 +49,20 @@ const useGetContext = () => {
 
   const { mutate: sendFormMutate, isLoading: sendFormIsLoading } = useMutation(
     () =>
-      formsApi.nasesControllerSendForm(
+      formsApi.nasesControllerSendAndUpdateForm(
         formId,
-        // {
-        //   formDataJson: formData,
-        // },
+        {
+          formDataJson: formData,
+        },
         { accessToken: 'always' },
       ),
     {
       networkMode: 'always',
       onSuccess: () => {
-        // TODO: Redirect to success page
+        setFormIsSent()
       },
       onError: () => {
-        // TOOD: Translation
-        openSnackbarError('Žiadosť sa nepodarilo odoslať.')
+        openSnackbarError(t('form_send_error'))
       },
     },
   )

@@ -3,8 +3,8 @@ import { act, renderHook, waitFor } from '@testing-library/react'
 import React from 'react'
 
 import {
-  FormFileUploadStateProvider,
-  FormFileUploadStateProviderProps,
+  FormFileUploadProvider,
+  FormFileUploadProviderProps,
   useFormFileUpload,
 } from '../components/forms/useFormFileUpload'
 import { FormFileUploadStatusEnum } from '../frontend/types/formFileUploadTypes'
@@ -21,7 +21,7 @@ jest.mock('../frontend/utils/formFileUpload', () => ({
  * TODO: Add 20+ tests.
  */
 describe('useFormFileUpload', () => {
-  const setupTest = ({ providerProps }: { providerProps: FormFileUploadStateProviderProps }) => {
+  const setupTest = ({ providerProps }: { providerProps: FormFileUploadProviderProps }) => {
     ;(uploadFile as jest.Mock).mockImplementation(
       ({
         onProgress,
@@ -38,7 +38,7 @@ describe('useFormFileUpload', () => {
 
     const wrapper = ({ children }) => (
       <QueryClientProvider client={queryClient}>
-        <FormFileUploadStateProvider {...providerProps}>{children}</FormFileUploadStateProvider>
+        <FormFileUploadProvider {...providerProps}>{children}</FormFileUploadProvider>
       </QueryClientProvider>
     )
 

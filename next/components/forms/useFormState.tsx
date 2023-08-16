@@ -173,6 +173,7 @@ const useGetContext = ({ schema, uiSchema, formSlug, initialFormData }: FormStat
     }
 
     const fileUuids = getFileUuidsNaive(pickedPropertiesData)
+    // eslint-disable-next-line @typescript-eslint/no-floating-promises
     refetchAfterImportIfNeeded(fileUuids)
 
     setSubmittedStepsIndexes(new Set())

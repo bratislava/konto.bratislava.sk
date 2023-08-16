@@ -29,7 +29,7 @@ import {
   uploadFile,
 } from '../../frontend/utils/formFileUpload'
 
-type FormFileUploadProviderProps = {
+export type FormFileUploadProviderProps = {
   initialFormData: Pick<InitialFormData, 'files' | 'formId'>
 }
 

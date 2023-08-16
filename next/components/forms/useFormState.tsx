@@ -1,5 +1,4 @@
 import { GenericObjectType, RJSFSchema, UiSchema } from '@rjsf/utils'
-import { JSONSchema7 } from 'json-schema'
 import { useTranslation } from 'next-i18next'
 import React, { createContext, PropsWithChildren, useContext, useMemo, useState } from 'react'
 
@@ -13,7 +12,7 @@ import {
   parseStepFromFieldId,
   removeUnusedPropertiesFromFormData,
 } from '../../frontend/utils/formState'
-import { FormStepIndex, FormStepperStep } from './types/Steps'
+import { FormStepIndex } from './types/Steps'
 import { useFormFileUpload } from './useFormFileUpload'
 
 type SkipModal = {
@@ -23,30 +22,6 @@ type SkipModal = {
   onOpenChange: (value: boolean) => void
 }
 
-interface FormState {
-  schema: RJSFSchema
-  uiSchema: UiSchema
-  formId: string
-  formSlug: string
-  formData: GenericObjectType
-  skipModal: SkipModal
-  stepperData: FormStepperStep[]
-  currentStepperStep: FormStepperStep
-  currentStepSchema: JSONSchema7 | null
-  skipToStep: (newIndex: FormStepIndex) => void
-  canGoToPreviousStep: boolean
-  goToPreviousStep: () => void
-  canGoToNextStep: boolean
-  goToNextStep: () => void
-  skipToNextStep: () => void
-  handleFormOnChange: (newFormData: GenericObjectType | undefined) => void
-  handleFormOnSubmit: (newFormData: GenericObjectType | undefined) => void
-  goToStepByFieldId: (fieldId: string) => void
-  setImportedFormData: (importedFormData: RJSFSchema) => void
-}
-
-const FormStateContext = createContext<FormState | undefined>(undefined)
-
 interface FormStateProviderProps {
   schema: RJSFSchema
   uiSchema: UiSchema
@@ -54,13 +29,7 @@ interface FormStateProviderProps {
   initialFormData: InitialFormData
 }
 
-export const FormStateProvider = ({
-  schema,
-  uiSchema,
-  formSlug,
-  initialFormData,
-  children,
-}: PropsWithChildren<FormStateProviderProps>) => {
+const useGetContext = ({ schema, uiSchema, formSlug, initialFormData }: FormStateProviderProps) => {
   const { t } = useTranslation('forms')
   const { keepFiles, refetchAfterImportIfNeeded } = useFormFileUpload()
 
@@ -111,7 +80,12 @@ export const FormStateProvider = ({
         open: true,
         skipAllowed: skipModal.skipAllowed,
         onSkip: () => {
-          setSkipModal({ open: false, skipAllowed: true, onSkip: () => {}, onOpenChange: () => {} })
+          setSkipModal({
+            open: false,
+            skipAllowed: true,
+            onSkip: () => {},
+            onOpenChange: () => {},
+          })
           goToStep(newStepIndex)
         },
         onOpenChange: (value) => {
@@ -237,7 +211,7 @@ export const FormStateProvider = ({
     goToStep(index)
   }
 
-  const context = {
+  return {
     schema,
     uiSchema,
     formId: initialFormData.formId,
@@ -258,12 +232,21 @@ export const FormStateProvider = ({
     goToStepByFieldId,
     setImportedFormData,
   }
+}
+
+const FormStateContext = createContext<ReturnType<typeof useGetContext> | undefined>(undefined)
+
+export const FormStateProvider = ({
+  children,
+  ...rest
+}: PropsWithChildren<FormStateProviderProps>) => {
+  const context = useGetContext(rest)
 
   return <FormStateContext.Provider value={context}>{children}</FormStateContext.Provider>
 }
 
-export const useFormState = (): FormState => {
-  const context = useContext<FormState | undefined>(FormStateContext)
+export const useFormState = () => {
+  const context = useContext(FormStateContext)
   if (!context) {
     throw new Error('useFormState must be used within a FormStateProvider')
   }

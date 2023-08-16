@@ -1,7 +1,7 @@
 import cx from 'classnames'
 
 import { defaultFormStateBehavior, rjfsValidator } from '../../../../frontend/utils/form'
-import { useFormState } from '../../FormStateProvider'
+import { useFormState } from '../../useFormState'
 import SummaryHeader from '../SummaryHeader'
 import SummaryForm from './SummaryForm'
 import SummaryFormControls from './SummaryFormControls'

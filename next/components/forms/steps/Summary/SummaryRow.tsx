@@ -40,7 +40,7 @@ const SummaryRow = (props: SummaryRowProps) => {
     <div className={containerClassName}>
       <p className={labelClassName}>{data.label}</p>
       <div className="flex w-full flex-1 flex-row items-center">
-        <p className={valueClassName}>{data.value || '-'}</p>
+        <span className={valueClassName}>{data.value || '-'}</span>
         {isEditable && (
           <div className="w-5 lg:hidden hover:lg:block">
             <EditIcon className="flex h-5 w-5 cursor-pointer" onClick={onGoToStep} />

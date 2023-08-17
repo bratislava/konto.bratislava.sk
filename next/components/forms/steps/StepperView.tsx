@@ -5,8 +5,8 @@ import { useState } from 'react'
 import { useIsSSR } from 'react-aria'
 import { Button as AriaButton, Dialog, Modal, ModalOverlay } from 'react-aria-components'
 
-import { useFormState } from '../FormStateProvider'
 import { FormStepIndex } from '../types/Steps'
+import { useFormState } from '../useFormState'
 import StepperViewList from './StepperViewList'
 import StepperViewRow from './StepperViewRow'
 

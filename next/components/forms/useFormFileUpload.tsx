@@ -18,7 +18,6 @@ import {
   FormFileUploadClientFileInfo,
   FormFileUploadClientFileStatus,
   FormFileUploadConstraints,
-  FormFileUploadContextType,
   FormFileUploadFileInfo,
   FormFileUploadStatusEnum,
 } from '../../frontend/types/formFileUploadTypes'
@@ -30,9 +29,7 @@ import {
   uploadFile,
 } from '../../frontend/utils/formFileUpload'
 
-const FormFileUploadContext = createContext<FormFileUploadContextType | undefined>(undefined)
-
-export type FormFileUploadStateProviderProps = {
+export type FormFileUploadProviderProps = {
   initialFormData: Pick<InitialFormData, 'files' | 'formId'>
 }
 
@@ -62,10 +59,7 @@ const REFETCH_INTERVAL = 5000
  *
  *  At the end, the client and server files are merged and returned to the consumer.
  */
-export const FormFileUploadStateProvider = ({
-  initialFormData,
-  children,
-}: PropsWithChildren<FormFileUploadStateProviderProps>) => {
+export const useGetContext = ({ initialFormData }: FormFileUploadProviderProps) => {
   const isMounted = useIsMounted()
 
   // The client files are both stored in the state and in the ref. The state is used to trigger re-rendering of the
@@ -312,7 +306,7 @@ export const FormFileUploadStateProvider = ({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
-  const context = {
+  return {
     uploadFiles,
     removeFiles,
     keepFiles,
@@ -321,14 +315,23 @@ export const FormFileUploadStateProvider = ({
     refetchAfterImportIfNeeded,
     getFileInfoById,
   }
+}
+
+const FormFileUploadContext = createContext<ReturnType<typeof useGetContext> | undefined>(undefined)
+
+export const FormFileUploadProvider = ({
+  children,
+  ...rest
+}: PropsWithChildren<FormFileUploadProviderProps>) => {
+  const context = useGetContext(rest)
 
   return <FormFileUploadContext.Provider value={context}>{children}</FormFileUploadContext.Provider>
 }
 
-export const useFormFileUpload = (): FormFileUploadContextType => {
-  const context = useContext<FormFileUploadContextType | undefined>(FormFileUploadContext)
+export const useFormFileUpload = () => {
+  const context = useContext(FormFileUploadContext)
   if (!context) {
-    throw new Error('useFormFileUpload must be used within a FormFileUploadStateProvider')
+    throw new Error('useFormFileUpload must be used within a FormFileUploadProvider')
   }
 
   return context

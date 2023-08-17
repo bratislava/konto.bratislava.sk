@@ -3,7 +3,7 @@ import { FieldProps, GenericObjectType } from '@rjsf/utils'
 import React from 'react'
 import { useDateFormatter } from 'react-aria'
 
-import { useFormState } from '../../FormStateProvider'
+import { useFormState } from '../../useFormState'
 import SummaryRow from './SummaryRow'
 import { useFormSummary } from './useFormSummary'
 

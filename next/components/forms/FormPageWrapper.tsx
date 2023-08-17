@@ -8,11 +8,11 @@ import AccountPageLayout from '../layouts/AccountPageLayout'
 import PageWrapper from '../layouts/PageWrapper'
 import { GetSSRCurrentAuth } from '../logic/ServerSideAuthProvider'
 import FormPage from './FormPage'
-import { FormStateProvider } from './FormStateProvider'
 import ThankYouFormSection from './segments/AccountSections/ThankYouSection/ThankYouFormSection'
-import { FormFileUploadStateProvider } from './useFormFileUpload'
+import { FormFileUploadProvider } from './useFormFileUpload'
 import { FormModalsProvider } from './useFormModals'
 import { FormSentRenderer } from './useFormSent'
+import { FormStateProvider } from './useFormState'
 
 export type FormPageWrapperProps = {
   schema: RJSFSchema
@@ -33,7 +33,7 @@ const FormPageWrapper = ({ schema, uiSchema, page, initialFormData }: FormPageWr
         initialFormSent={initialFormData.formSent}
         notSentChildren={
           <AccountPageLayout isPublicPage hiddenHeaderNav>
-            <FormFileUploadStateProvider initialFormData={initialFormData}>
+            <FormFileUploadProvider initialFormData={initialFormData}>
               <FormStateProvider
                 schema={schema}
                 uiSchema={uiSchema}
@@ -46,7 +46,7 @@ const FormPageWrapper = ({ schema, uiSchema, page, initialFormData }: FormPageWr
                   </FormExportImportProvider>
                 </FormModalsProvider>
               </FormStateProvider>
-            </FormFileUploadStateProvider>
+            </FormFileUploadProvider>
           </AccountPageLayout>
         }
         sentChildren={

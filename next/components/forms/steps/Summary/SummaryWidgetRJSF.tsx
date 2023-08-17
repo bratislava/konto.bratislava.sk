@@ -3,7 +3,7 @@ import { WidgetProps } from '@rjsf/utils'
 import React from 'react'
 import { useDateFormatter } from 'react-aria'
 
-import { useFormState } from '../../FormStateProvider'
+import { useFormState } from '../../useFormState'
 import { CheckboxesRJSFOptions } from '../../widget-wrappers/CheckboxWidgetRJSF'
 import { RadioButtonRJSFOptions } from '../../widget-wrappers/RadioButtonWidgetRJSF'
 import { SelectRJSFOptions } from '../../widget-wrappers/SelectFieldWidgetRJSF'

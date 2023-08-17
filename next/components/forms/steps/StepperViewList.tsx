@@ -1,5 +1,5 @@
-import { useFormState } from '../FormStateProvider'
 import { FormStepperStep } from '../types/Steps'
+import { useFormState } from '../useFormState'
 import StepperViewRow from './StepperViewRow'
 
 type StepperViewListProps = {

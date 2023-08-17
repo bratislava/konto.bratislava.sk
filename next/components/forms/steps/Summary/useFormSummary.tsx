@@ -8,11 +8,11 @@ import { useServerSideAuth } from '../../../../frontend/hooks/useServerSideAuth'
 import useSnackbar from '../../../../frontend/hooks/useSnackbar'
 import { validateSummary } from '../../../../frontend/utils/form'
 import { checkPathForErrors } from '../../../../frontend/utils/formSummary'
-import { useFormState } from '../../FormStateProvider'
 import { RegistrationModalType } from '../../segments/RegistrationModal/RegistrationModal'
 import { useFormFileUpload } from '../../useFormFileUpload'
 import { useFormModals } from '../../useFormModals'
 import { useFormSent } from '../../useFormSent'
+import { useFormState } from '../../useFormState'
 
 const useGetContext = () => {
   const { t } = useTranslation('forms')

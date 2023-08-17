@@ -3,7 +3,7 @@ import { ArrowRightIcon, ExportIcon } from '@assets/ui-icons'
 import { LinkButtonProps } from '@react-types/button'
 import cx from 'classnames'
 import NextLink from 'next/link'
-import { ComponentProps, forwardRef, ReactNode, RefObject } from 'react'
+import { ComponentProps, forwardRef, PropsWithChildren, ReactNode, RefObject } from 'react'
 import { AriaButtonProps, mergeProps, useButton, useFocusRing, useHover } from 'react-aria'
 import { twMerge } from 'tailwind-merge'
 
@@ -17,12 +17,11 @@ type ButtonOrIconButton =
       endIcon?: never
       children?: never
     }
-  | {
+  | ({
       icon?: never
       startIcon?: ReactNode
       endIcon?: ReactNode
-      children: ReactNode
-    }
+    } & PropsWithChildren)
 
 type ButtonBase = {
   variant?:

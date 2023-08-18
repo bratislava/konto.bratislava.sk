@@ -21,11 +21,6 @@ import { FormFileUploadFileInfo, FormFileUploadStatusEnum } from '../types/formF
  * `null` value. This make sense for string fields (if there are e.g. 2 required string fields, the
  * library will create 2 empty ones), however we don't want this behaviour as e.g. for files it doesn't
  * make sense (there is nothing such an empty file value).
- *
- * The library provides only `{ populate: 'requiredOnly' }`. `never` options is added by us by patching
- * the RJSF package (next/patches/@rjsf+utils+5.10.0.patch).
- *
- * The issue is also explained here: https://github.com/rjsf-team/react-jsonschema-form/issues/3796
  */
 export const defaultFormStateBehavior: Experimental_DefaultFormStateBehavior = {
   arrayMinItems: { populate: 'never' },

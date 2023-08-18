@@ -45,7 +45,7 @@
     "axios": "^1.4.0",
     "classnames": "2.3.1",
     "currency.js": "^2.0.4",
-    "jest-each": "^29.3.1",
+    "jest-each": "^29.6.2",
     "js-cookie": "^3.0.1",
     "libphonenumber-js": "^1.10.21",
     "libxmljs2": "^0.31.0",

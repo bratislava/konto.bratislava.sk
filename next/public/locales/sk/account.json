@@ -820,6 +820,11 @@
       "openCalendar": "Otvoriť kalendár"
     }
   },
+  "TimePicker": {
+    "aria": {
+      "openClock": "Otvoriť hodiny"
+    }
+  },
   "Tooltip": {
     "aria": {
       "tooltip": "Tooltip"

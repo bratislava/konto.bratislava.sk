@@ -1,46 +1,19 @@
 import { createCalendar } from '@internationalized/date'
+import { DateValue } from '@react-types/datepicker'
 import cx from 'classnames'
 import React, { ReactNode } from 'react'
-import { useDateField, useDateSegment, useLocale } from 'react-aria'
-import { DateFieldState, DateSegment, useDateFieldState } from 'react-stately'
+import { AriaDatePickerProps, useDateField, useLocale } from 'react-aria'
+import { useDateFieldState } from 'react-stately'
 
 import { FieldAdditionalProps, FieldBaseProps } from '../FieldBase'
 import FieldWrapper from '../FieldWrapper'
-
-type DateSegmentBase = {
-  segment: DateSegment
-  state: DateFieldState
-}
-
-const DateSegmentComponent = ({ segment, state }: DateSegmentBase) => {
-  const ref = React.useRef<HTMLDivElement>(null)
-  const { segmentProps } = useDateSegment(segment, state, ref)
-  return (
-    <div
-      {...segmentProps}
-      ref={ref}
-      className={cx('text-16', { 'focus:bg-gray-100 focus:outline-none': segment.isEditable })}
-    >
-      <span
-        className={cx('w-full text-center uppercase group-focus:text-white', {
-          'text-gray-500': segment?.isPlaceholder,
-        })}
-        style={{
-          opacity: segment?.isPlaceholder ? '1' : '0',
-        }}
-      >
-        {segment?.isPlaceholder ? segment?.placeholder : ''}
-      </span>
-      {segment?.isPlaceholder ? '' : segment?.text}
-    </div>
-  )
-}
+import DateTimeSegment from './DateTimeSegment'
 
 type DateFieldProps = FieldBaseProps &
   Pick<FieldAdditionalProps, 'customErrorPlace'> & {
     children?: ReactNode
     isOpen?: boolean
-  }
+  } & AriaDatePickerProps<DateValue>
 
 const DateField = ({
   errorMessage = [],
@@ -95,8 +68,8 @@ const DateField = ({
       errorMessageProps={errorMessageProps}
     >
       <div {...fieldProps} ref={ref} className={dateFieldStyle}>
-        {state?.segments?.map((segment, i) => (
-          <DateSegmentComponent key={i} segment={segment} state={state} />
+        {state?.segments?.map((segment, index) => (
+          <DateTimeSegment key={index} segment={segment} state={state} />
         ))}
         <div className="ml-auto flex items-center">{children}</div>
       </div>

@@ -1,11 +1,10 @@
 import { ArrowRightIcon, CheckIcon } from '@assets/ui-icons'
-import Link from 'next/link'
 import { useTranslation } from 'next-i18next'
 import React from 'react'
-
-import { ROUTES } from '../../../../frontend/api/constants'
+import { Button as AriaButton } from 'react-aria-components'
 import ButtonNew from '../../simple-components/ButtonNew'
 import ModalV2, { ModalV2Props } from '../../simple-components/ModalV2'
+import { useFormRedirects } from '../../useFormRedirects'
 
 export enum RegistrationModalType {
   Initial = 'Initial',
@@ -19,6 +18,7 @@ type RegistrationModalBase = {
 
 const RegistrationModal = ({ type, ...rest }: RegistrationModalBase) => {
   const { t } = useTranslation('forms')
+  const { register, login } = useFormRedirects()
 
   const { title, subtitle } = type
     ? {
@@ -65,27 +65,25 @@ const RegistrationModal = ({ type, ...rest }: RegistrationModalBase) => {
             ))}
           </ul>
         </div>
-        <div className="rounded-b-lg bg-main-100">
-          <Link
-            href={ROUTES.REGISTER}
-            className="text-p1-semibold mx-4 mb-4 flex justify-center rounded-lg bg-main-700 px-5 py-2 text-center leading-6 text-gray-0 hover:bg-main-600 md:mx-0 md:mb-0 md:rounded-b-lg md:rounded-t-none md:px-0 md:py-6"
+        <div className="rounded-b-lg bg-main-100 px-4 pb-4 md:px-0 md:pb-0">
+          {/* Use ButtonNew */}
+          <AriaButton
+            onPress={() => register()}
+            className="text-p1-semibold flex w-full justify-center rounded-lg bg-main-700 px-5 py-2 text-center leading-6 text-gray-0 hover:bg-main-600  md:rounded-b-lg md:rounded-t-none md:px-0 md:py-6"
           >
-            {/* eslint-disable-next-line jsx-a11y/anchor-is-valid */}
-
             {t('registration_modal.body_action')}
-          </Link>
+          </AriaButton>
         </div>
 
         <div className="mt-3 flex flex-col gap-1 sm:flex-row sm:items-center sm:justify-between sm:gap-0 md:mt-6">
           <span className="text-p1-semibold">{t('registration_modal.body_login_description')}</span>
-          <Link
-            href={ROUTES.LOGIN}
+          {/* Use ButtonNew */}
+          <AriaButton
+            onPress={() => login()}
             className="text-p1-semibold text-main-700 underline hover:text-main-600"
           >
-            {/* eslint-disable-next-line jsx-a11y/anchor-is-valid */}
-
             {t('registration_modal.body_login_link')}
-          </Link>
+          </AriaButton>
         </div>
       </div>
       {(type === RegistrationModalType.Initial ||

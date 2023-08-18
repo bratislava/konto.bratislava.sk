@@ -163,7 +163,7 @@
   "account_section_intro": {
     "navigation": "Úvod",
     "header_title": "Dobrý deň,",
-    "header_text": "Ďakujeme, že ste medzi prvými používateľmi a používateľkami Bratislavského konta.",
+    "header_text": "Ďakujeme, že využívate digitálne služby Bratislavského konta.",
     "all_services": "Všetky služby",
     "announcement_title": "Aktuálne",
     "announcement_card_title": "Vstup na kúpaliská bez čakania",
@@ -176,7 +176,7 @@
   },
   "account_section_services": {
     "navigation": "Mestské služby",
-    "alert_text": "Priamo v Bratislavskom konte viete momentálne zaplatiť daň z nehnuteľností. Pri ostatných službách vás presmerujeme na externé webové stránky, ktoré môžu vyžadovať dodatočnú registráciu. Ďakujeme za pochopenie.",
+    "alert_text": "Priamo v Bratislavskom konte viete momentálne zaplatiť daň z nehunuteľností a požiadať o záväzné stanovisko k investičnej činnosti. Pri ostatných službách vás presmerujeme na externé webové stránky, ktoré môžu vyžadovať dodatočnú registráciu. Ďakujeme za pochopenie.",
     "cards": {
       "1": {
         "title": "Digitálna platba dane z nehnuteľností",

@@ -7,28 +7,20 @@
     "xml_export": "XML sa nepodarilo stiahnuť.",
     "xml_import": "XML sa nepodarilo nahrať.",
     "pdf_export": "PDF sa nepodarilo stiahnuť",
-    "concept_save": "Koncept sa nepodarilo uložiť.",
-    "form_init": "Načítanie formulára zlyhalo.",
-    "form_update": "Formulár sa nepodarilo uložiť do rozpracovaných.",
-    "upload_size_format": "Prílohy nespĺňajú požadovaný formát a veľkosť.",
-    "upload_minio": "Nastala chyba pri nahrávaní súborov. Skúste to znova neskôr.",
-    "file_scan": "Súbor {{name}} sa nepodarilo oskenovať a vykonať antivírovú kontrolu. Bez potrebných príloh nebudete vedieť žiadosť odoslať. Vráťte sa a nahrajte správne súbory. Ak ste si istý, že súbory, ktoré ste nahrali sú v poriadku, prosíme, kontaktujte nás na info@bratislava.sk",
-    "file_scan_multiple": "Súbory {{name}} sa nepodarilo oskenovať a vykonať antivírovú kontrolu. Bez potrebných príloh nebudete vedieť žiadosť odoslať. Vráťte sa a nahrajte správne súbory. Ak ste si istý, že súbory, ktoré ste nahrali sú v poriadku, prosíme, kontaktujte nás na info@bratislava.sk"
-  },
-  "warnings": {
-    "file_scan": "Prílohy, ktoré ste nahrali ešte skenujeme. Žiadosť však môžete odoslať aj bez čakania na dokončenie skenovania. V prípade, že nahraté prílohy neprejdú skenovaním a antivírovou kontrolou, budeme vás kontaktovať na e-mailovej adrese, ktorou sa prihlasujete do svojho konta."
+    "concept_save": "Koncept sa nepodarilo uložiť."
   },
   "success_messages": {
     "concept_save": "Koncept sa uložil.",
-    "xml_export": "XML bolo stiahnuté",
-    "xml_import": "XML bolo nahraté",
-    "pdf_export": "PDF bolo stiahnuté"
+    "xml_export": "XML bolo stiahnuté.",
+    "xml_import": "XML bolo nahraté.",
+    "pdf_export": "PDF bolo stiahnuté."
   },
   "info_messages": {
     "concept_save": "Koncept sa ukladá.",
-    "xml_export": "XML sa sťahuje",
-    "xml_import": "XML sa sťahuje",
-    "pdf_export": "PDF sa sťahuje"
+    "xml_export": "XML sa sťahuje.",
+    "xml_import": "XML sa nahráva.",
+    "pdf_export": "PDF sa sťahuje.",
+    "form_leave_protection": "Naozaj chcete odísť? Údaje, ktoré ste vyplnili sa nemusia uložiť."
   },
   "selectAll": "Vybrať všetko",
   "deselectAll": "Odobrať všetko",
@@ -114,9 +106,8 @@
   "form_send_error": "Žiadosť sa nepodarilo odoslať.",
   "modals_back_button_title": "Späť",
   "old_schema_version_modal": {
-    "title": "TODO - OLD SCHEMA VERSION title",
-    "content": "TODO - OLD SCHEMA VERSION content",
-    "button_title": "Rozumiem"
+    "title": "Koncept nie je možné upravovať",
+    "content": "Ľutujeme, v dôsledku aktualizácie Bratislavského konta, už nie je možné pokračovať v úpravách tejto žiadosti. Koncept si viete pozrieť, ale nie upraviť."
   },
   "skip_step_modal": {
     "title": "Vyplňte správne všetky povinné polia",
@@ -161,8 +152,7 @@
   },
   "send_files_uploading_modal": {
     "title": "Nahrávajú sa prílohy",
-    "content": "Prílohy, ktoré ste vložili sa ešte nahrávajú. Žiadosť je možné odoslať až po dokončení nahrávania.",
-    "button_title": ""
+    "content": "Prílohy, ktoré ste vložili sa ešte nahrávajú. Žiadosť je možné odoslať až po dokončení nahrávania."
   },
   "send_confirmation_eid_modal": {
     "title": "Odoslať cez slovensko.sk",
@@ -178,5 +168,14 @@
     "title": "Odoslať cez slovensko.sk",
     "content": "Po kliknutí na Odoslať s eID budete presmerovaní na stránku slovensko.sk. Na odoslanie žiadosti s eID je potrebné, aby ste sa prihlásili do elektronickej schránky s elektronickým občianskym preukazom žiadateľa/žiadateľky. V prípade, že žiadosť podávate ako právnická osoba alebo fyzická osoba - podnikateľ použite elektronický občiansky preukaz člena/členky štatutárneho orgánu.",
     "button_title": "Odoslať s eID"
+  },
+  "eid_sending_modal": {
+    "title": "Žiadosť sa odosiela",
+    "content": "Počkajte na dokončenie odosielania žiadosti cez slovensko.sk."
+  },
+  "eid_send_error_modal": {
+    "title": "Žiadosť sa nepodarilo odoslať",
+    "content": "Zopakujte odoslanie žiadosti.",
+    "button_title": "Opakovať"
   }
 }

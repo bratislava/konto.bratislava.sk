@@ -1,6 +1,10 @@
 import { GenericObjectType, retrieveSchema, RJSFSchema } from '@rjsf/utils'
 import { JSONSchema7 } from 'json-schema'
 import pick from 'lodash/pick'
+import { NextParsedUrlQuery } from 'next/dist/server/request-meta'
+import { useRouter } from 'next/router'
+import { useRef, useState } from 'react'
+import { useEffectOnce } from 'usehooks-ts'
 
 import { FormStepIndex, FormStepperStep } from '../../components/forms/types/Steps'
 import { rjfsValidator } from './form'
@@ -107,6 +111,48 @@ export const getStepProperty = (step: JSONSchema7 | null) => {
 export const getFirstNonEmptyStepIndex = (stepSchemas: (JSONSchema7 | null)[]) => {
   const firstStep = stepSchemas.findIndex((step) => step !== null)
   return firstStep !== -1 ? firstStep : ('summary' as const)
+}
+
+/*
+ TODO: Comment
+ */
+export const useStepIndex = (
+  formId: string,
+  formSlug: string,
+  query: NextParsedUrlQuery,
+  stepSchemas: (JSONSchema7 | null)[],
+) => {
+  const router = useRouter()
+
+  let initialValue = getFirstNonEmptyStepIndex(stepSchemas)
+  if (query.sendEidToken || query.fromSendEid) {
+    initialValue = 'summary' as const
+  }
+
+  const effectOnceRan = useRef(false)
+  useEffectOnce(() => {
+    if (effectOnceRan.current) {
+      return
+    }
+    effectOnceRan.current = true
+
+    if (query.sendEidToken || query.fromSendEid) {
+      const newQuery = { ...query }
+      delete newQuery.sendEidToken
+      delete newQuery.fromSendEid
+
+      router.replace(
+        {
+          pathname: router.pathname,
+          query: newQuery,
+        },
+        undefined,
+        { shallow: true },
+      )
+    }
+  })
+
+  return useState<FormStepIndex>(initialValue)
 }
 
 /**

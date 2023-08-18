@@ -2,6 +2,7 @@ import { ArrowRightIcon, CheckIcon } from '@assets/ui-icons'
 import { useTranslation } from 'next-i18next'
 import React from 'react'
 import { Button as AriaButton } from 'react-aria-components'
+
 import ButtonNew from '../../simple-components/ButtonNew'
 import ModalV2, { ModalV2Props } from '../../simple-components/ModalV2'
 import { useFormRedirects } from '../../useFormRedirects'

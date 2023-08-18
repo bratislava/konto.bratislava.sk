@@ -78,7 +78,8 @@ const useGetContext = ({ initialFormData }: FormSendProviderProps) => {
       },
       onError: (error) => {
         // A special case when user submits the form, but doesn't receive the response and then tries to send the form again.
-        // TODO: Use error code instead of error name from API when fixed
+        // TODO: Use error code instead of error name from API when fixed & type
+        // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
         if (isAxiosError(error) && error.response?.data?.errorName === 'FORM_NOT_DRAFT_ERROR') {
           setFormIsSent()
           return
@@ -145,7 +146,8 @@ const useGetContext = ({ initialFormData }: FormSendProviderProps) => {
       },
       onError: (error, { fromRepeatModal }) => {
         // A special case when user submits the form, but doesn't receive the response and then tries to send the form again.
-        // TODO: Use error code instead of error name from API when fixed
+        // TODO: Use error code instead of error name from API when fixed & type
+        // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
         if (isAxiosError(error) && error.response?.data?.errorName === 'FORM_NOT_DRAFT_ERROR') {
           setFormIsSent()
           return
@@ -278,7 +280,7 @@ const useGetContext = ({ initialFormData }: FormSendProviderProps) => {
       return
     }
 
-    if (accountType === AccountType.FyzickaOsoba || true) {
+    if (accountType === AccountType.FyzickaOsoba) {
       setSendConfirmationEidModal(modalValue)
       return
     }

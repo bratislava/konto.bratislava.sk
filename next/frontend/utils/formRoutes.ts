@@ -148,6 +148,7 @@ export const createFormServerSideProps = async (
           formDataJson: form.formDataJson ?? {},
           files: [],
           // Uncomment when BE fixes https://github.com/bratislava/konto.bratislava.sk/issues/428
+          // eslint-disable-next-line no-secrets/no-secrets
           // oldSchemaVersion: !form.isLatestSchemaVersionForSlug,
           oldSchemaVersion: false,
           formSent,

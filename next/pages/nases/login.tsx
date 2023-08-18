@@ -34,6 +34,7 @@ const NasesLoginPage = () => {
     const query = typeof token === 'string' ? { sendEidToken: token } : {}
 
     const url = `${ROUTES.MUNICIPAL_SERVICES}/${metadata.formSlug}/${metadata.formId}`
+    // eslint-disable-next-line @typescript-eslint/no-floating-promises
     router.push(
       {
         pathname: url,

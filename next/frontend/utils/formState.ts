@@ -141,6 +141,7 @@ export const useStepIndex = (
       delete newQuery.sendEidToken
       delete newQuery.fromSendEid
 
+      // eslint-disable-next-line @typescript-eslint/no-floating-promises
       router.replace(
         {
           pathname: router.pathname,

@@ -42,8 +42,8 @@ const TimePickerWidgetRJSF = ({
         helptext={helptext}
         tooltip={tooltip}
         explicitOptional={explicitOptional}
-        value={value ?? undefined}
-        onChange={(value) => onChange(value)}
+        value={value ?? null}
+        onChange={(value) => onChange(value ?? undefined)}
       />
     </WidgetWrapper>
   )

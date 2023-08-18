@@ -1,3 +1,4 @@
+import { useControlledState } from '@react-stately/utils'
 import cx from 'classnames'
 
 import FieldErrorMessage from '../info-components/FieldErrorMessage'
@@ -39,13 +40,24 @@ export const TimeFromTo = ({
   TimeToExplicitOptional,
   TimeFromDisabled,
   TimeToDisabled,
-  TimeFromOnChange,
-  TimeToOnChange,
+  TimeFromOnChange = () => {},
+  TimeToOnChange = () => {},
   TimeFromValue,
   TimeToValue,
   TimeFromErrorMessage,
   TimeToErrorMessage,
 }: TimeFromBase & TimeToBase) => {
+  const [timeFromControlled, setTimeFromControlled] = useControlledState(
+    TimeFromValue,
+    null,
+    TimeFromOnChange,
+  )
+  const [timeToControlled, setTimeToControlled] = useControlledState(
+    TimeToValue,
+    null,
+    TimeToOnChange,
+  )
+
   return (
     <div className={cx('flex flex-col')}>
       <div className="flex flex-col gap-4 lg:flex-row">
@@ -57,9 +69,9 @@ export const TimeFromTo = ({
             tooltip={TimeFromTooltip}
             required={TimeFromRequired}
             explicitOptional={TimeFromExplicitOptional}
-            value={TimeFromValue}
+            value={timeFromControlled}
             customErrorPlace
-            onChange={TimeFromOnChange}
+            onChange={setTimeFromControlled}
             disabled={TimeFromDisabled}
           />
           {/* Custom render error messages for both fields at small screens */}
@@ -76,9 +88,9 @@ export const TimeFromTo = ({
             tooltip={TimeToTooltip}
             required={TimeToRequired}
             explicitOptional={TimeToExplicitOptional}
-            value={TimeToValue}
+            value={timeToControlled}
             customErrorPlace
-            onChange={TimeToOnChange}
+            onChange={setTimeToControlled}
             disabled={TimeToDisabled}
           />
           {/* Custom render error messages for both fields at small screens */}

@@ -47,9 +47,10 @@ export const DateTimePicker = ({
   TimeTooltip,
   TimeErrorMessage,
   TimeExplicitOptional,
-  TimeOnChange,
+  TimeOnChange = () => {},
   TimeValue,
 }: TDatePicker & TTimePicker) => {
+  const [timeControlled, setTimeControlled] = useControlledState(TimeValue, null, TimeOnChange)
   const [dateControlled, setDateControlled] = useControlledState(DateValue, null, DateOnChange)
 
   return (
@@ -81,9 +82,9 @@ export const DateTimePicker = ({
             label={TimeLabel}
             required={TimeRequired}
             tooltip={TimeTooltip}
-            value={TimeValue}
+            value={timeControlled}
             customErrorPlace
-            onChange={TimeOnChange}
+            onChange={setTimeControlled}
             explicitOptional={TimeExplicitOptional}
           />
           {/* Custom render error messages for both fields at small screens */}

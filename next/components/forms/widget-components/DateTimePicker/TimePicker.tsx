@@ -1,22 +1,23 @@
 /* eslint-disable lodash-fp/no-extraneous-args */
 import { parseTime } from '@internationalized/date'
-import padStart from 'lodash/padStart'
+import { useControlledState } from '@react-stately/utils'
 import { forwardRef, useMemo } from 'react'
 
 import { FieldAdditionalProps, FieldBaseProps } from '../FieldBase'
 import TimeField from './TimeField'
 
-export const convertTimeToValidFormat = (timeValue: string) => {
-  const [hours, minutes] = timeValue ? timeValue.split(':') : ['00', '00']
-  return `${hours ? padStart(hours, 2, '0') : ''}${hours || minutes ? ':' : ''}${
-    minutes ? padStart(minutes, 2, '0') : ''
-  }`
+function removeSecondsFromTime(time: string): string {
+  const parts = time.split(':')
+  if (parts.length === 3) {
+    return `${parts[0]}:${parts[1]}`
+  }
+  throw new Error('Invalid time format')
 }
 
 export type TimePickerProps = FieldBaseProps &
   Pick<FieldAdditionalProps, 'customErrorPlace'> & {
-    value?: string
-    onChange?: (value?: string) => void
+    value?: string | null
+    onChange?: (value?: string | null) => void
     minValue?: string
     maxValue?: string
     readOnly?: boolean
@@ -33,7 +34,7 @@ const TimePicker = forwardRef<HTMLDivElement, TimePickerProps>(
       explicitOptional,
       tooltip,
       helptext,
-      onChange,
+      onChange = () => {},
       value,
       minValue,
       maxValue,
@@ -44,91 +45,20 @@ const TimePicker = forwardRef<HTMLDivElement, TimePickerProps>(
     },
     ref,
   ) => {
-    // const [hour, setHour] = useState<string>('')
-    // const [minute, setMinute] = useState<string>('')
+    const [valueControlled, setValueControlled] = useControlledState(value, null, onChange)
 
-    // const [isInputEdited, setIsInputEdited] = useState<boolean>(false)
-
-    // const [prevValue, setPrevValue] = useState<string>('')
-
-    // const state = useDatePickerState({
-    //   label,
-    //   errorMessage,
-    //   isRequired: required,
-    //   isDisabled: disabled,
-    //   shouldCloseOnSelect: false,
-    //   ...rest,
-    // })
-
-    const parsedTimeValue = useMemo(() => {
-      if (!value) return null
+    const parsedValue = useMemo(() => {
+      if (!valueControlled) return null
 
       try {
-        return parseTime(value)
+        const time = parseTime(valueControlled)
+        return time.set({ second: 0 })
       } catch (error) {
         // Error: Invalid ISO 8601 date string
         console.log('Error: Invalid ISO 8601 date string')
         return null
       }
-    }, [value])
-
-    // const { fieldProps, buttonProps, dialogProps } = useDatePicker(
-    //   { errorMessage, isDisabled: disabled, label, value: null, ...rest },
-    //   state,
-    // eslint-disable-next-line no-secrets/no-secrets
-    //   ref as RefObject<HTMLDivElement>,
-    // )
-
-    // const buttonPropsFixed = {
-    //   ...buttonProps,
-    //   href: undefined,
-    //   target: undefined,
-    //   children: undefined,
-    // }
-
-    // const resetValues = () => {
-    //   if (onChange) onChange('')
-    //   setMinute('')
-    //   setHour('')
-    //   setPrevValue('')
-    // }
-
-    // const closeFailedHandler = () => {
-    //   if (onChange && prevValue) onChange(prevValue)
-    //   else if (onChange) onChange()
-    //
-    //   if (prevValue) setHour(prevValue.split(':')[0])
-    //   else setHour('')
-    //
-    //   if (prevValue) setMinute(prevValue.split(':')[1])
-    //   else setMinute('')
-    //
-    //   state?.close()
-    // }
-
-    // const closeSuccessHandler = () => {
-    //   if (onChange && value) setPrevValue((prev) => (prev !== value ? value : prev))
-    //   state?.close()
-    // }
-
-    // const resetCloseHandler = () => {
-    //   resetValues()
-    //   state?.close()
-    // }
-
-    // useEffect(() => {
-    //   if (isInputEdited) {
-    //     setMinute('')
-    //     setHour('')
-    //     setPrevValue('')
-    //   }
-    // }, [isInputEdited])
-
-    // useEffectOnce(() => {
-    //   const convertedTimeToValidFormat = convertTimeToValidFormat(value ?? '')
-    //   if (value) setPrevValue(convertedTimeToValidFormat)
-    //   if (onChange) onChange(convertedTimeToValidFormat)
-    // })
+    }, [valueControlled])
 
     return (
       <div className="relative w-full max-w-xs">
@@ -142,8 +72,10 @@ const TimePicker = forwardRef<HTMLDivElement, TimePickerProps>(
             disabled={disabled}
             tooltip={tooltip}
             errorMessage={errorMessage}
-            onChange={() => (onChange ? onChange(value?.toString()) : undefined)}
-            value={parsedTimeValue ?? undefined}
+            onChange={(time) =>
+              setValueControlled(time ? removeSecondsFromTime(time.toString()) : null)
+            }
+            value={parsedValue}
             readOnly={readOnly}
             customErrorPlace={customErrorPlace}
           />

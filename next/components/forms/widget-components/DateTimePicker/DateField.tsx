@@ -1,7 +1,8 @@
 import { createCalendar } from '@internationalized/date'
+import { DateValue } from '@react-types/datepicker'
 import cx from 'classnames'
 import React, { ReactNode } from 'react'
-import { useDateField, useLocale } from 'react-aria'
+import { AriaDatePickerProps, useDateField, useLocale } from 'react-aria'
 import { useDateFieldState } from 'react-stately'
 
 import { FieldAdditionalProps, FieldBaseProps } from '../FieldBase'
@@ -12,7 +13,7 @@ type DateFieldProps = FieldBaseProps &
   Pick<FieldAdditionalProps, 'customErrorPlace'> & {
     children?: ReactNode
     isOpen?: boolean
-  }
+  } & AriaDatePickerProps<DateValue>
 
 const DateField = ({
   errorMessage = [],

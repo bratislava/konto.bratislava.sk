@@ -11,7 +11,7 @@ import DateTimeSegment from './DateTimeSegment'
 type TimeFieldProps = FieldBaseProps &
   Pick<FieldAdditionalProps, 'customErrorPlace'> & {
     children?: ReactNode
-    onChange?: () => void
+    onChange?: (value: TimeValue | null) => void
     value?: TimeValue | null
     readOnly?: boolean
     minValue?: TimeValue

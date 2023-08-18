@@ -1,4 +1,5 @@
 import { GenericObjectType, RJSFSchema, UiSchema } from '@rjsf/utils'
+import { useRouter } from 'next/router'
 import { useTranslation } from 'next-i18next'
 import React, { createContext, PropsWithChildren, useContext, useMemo, useState } from 'react'
 
@@ -11,9 +12,11 @@ import {
   getStepProperty,
   parseStepFromFieldId,
   removeUnusedPropertiesFromFormData,
+  useStepIndex,
 } from '../../frontend/utils/formState'
 import { FormStepIndex } from './types/Steps'
 import { useFormFileUpload } from './useFormFileUpload'
+import { useFormLeaveProtection } from './useFormLeaveProtection'
 
 type SkipModal = {
   open: boolean
@@ -30,14 +33,19 @@ interface FormStateProviderProps {
 }
 
 const useGetContext = ({ schema, uiSchema, formSlug, initialFormData }: FormStateProviderProps) => {
+  const { query } = useRouter()
   const { t } = useTranslation('forms')
   const { keepFiles, refetchAfterImportIfNeeded } = useFormFileUpload()
+  const { turnOnLeaveProtection } = useFormLeaveProtection()
 
   const [formData, setFormData] = useState<GenericObjectType>(initialFormData.formDataJson)
   const stepsSchemas = useMemo(() => getEvaluatedStepsSchemas(schema, formData), [schema, formData])
 
-  const [currentStepIndex, setCurrentStepIndex] = useState<FormStepIndex>(
-    getFirstNonEmptyStepIndex(stepsSchemas),
+  const [currentStepIndex, setCurrentStepIndex] = useStepIndex(
+    initialFormData.formId,
+    formSlug,
+    query,
+    stepsSchemas,
   )
 
   const [skipModal, setSkipModal] = useState<SkipModal>({
@@ -158,6 +166,7 @@ const useGetContext = ({ schema, uiSchema, formSlug, initialFormData }: FormStat
     keepFiles(fileUuids)
 
     setFormData(pickedPropertiesData)
+    turnOnLeaveProtection()
   }
 
   const setImportedFormData = (importedFormData: GenericObjectType) => {
@@ -178,6 +187,7 @@ const useGetContext = ({ schema, uiSchema, formSlug, initialFormData }: FormStat
 
     setSubmittedStepsIndexes(new Set())
     setFormData(pickedPropertiesData)
+    turnOnLeaveProtection()
   }
 
   const handleFormOnChange = (newFormData: GenericObjectType | undefined) => {
@@ -218,6 +228,7 @@ const useGetContext = ({ schema, uiSchema, formSlug, initialFormData }: FormStat
     formId: initialFormData.formId,
     formSlug,
     formData,
+    currentStepIndex,
     skipModal,
     stepperData,
     currentStepperStep,

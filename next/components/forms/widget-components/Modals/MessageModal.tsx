@@ -53,7 +53,7 @@ const MessageModal = ({
         <div className="flex w-full flex-col items-center gap-6 p-0">
           <div className={cx('flex flex-col items-center p-0', 'md:items-start')}>
             <div className="flex h-14 items-center text-h-base font-semibold">{title}</div>
-            <div className="text-p2">{children}</div>
+            <div className="text-p2 whitespace-pre-wrap">{children}</div>
           </div>
         </div>
       </div>

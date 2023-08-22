@@ -15,7 +15,7 @@ import { useTranslation } from 'next-i18next'
 import { useState } from 'react'
 import { Controller } from 'react-hook-form'
 import Turnstile from 'react-turnstile'
-import { useCounter, useTimeout, useWindowSize } from 'usehooks-ts'
+import { useCounter, useTimeout } from 'usehooks-ts'
 
 interface Data {
   email: string
@@ -47,7 +47,7 @@ const schema = {
   properties: {
     account_type: {
       type: 'string',
-      enum: ['fo', 'po'],
+      enum: [...Object.values(AccountType)],
     },
     email: {
       type: 'string',
@@ -140,10 +140,8 @@ const RegisterForm = ({ onSubmit, error, lastEmail, disablePO }: Props) => {
     setCaptchaWarning('show')
   }, 3000)
 
-  const { width } = useWindowSize()
-  const isMobile = width < 768
-
   const type = watch('account_type')
+
   return (
     <form
       className="flex flex-col space-y-4"
@@ -173,10 +171,13 @@ const RegisterForm = ({ onSubmit, error, lastEmail, disablePO }: Props) => {
               onChange={field.onChange}
               value={field.value}
               label={t('account_type_label')}
-              orientation={isMobile ? 'vertical' : 'horizontal'}
+              orientation="vertical"
             >
               <Radio value="fo" variant="boxed">
                 {t('fo_label')}
+              </Radio>
+              <Radio value="fo-p" variant="boxed">
+                {t('fop_label')}
               </Radio>
               <Radio value="po" variant="boxed">
                 {t('po_label')}
@@ -232,7 +233,7 @@ const RegisterForm = ({ onSubmit, error, lastEmail, disablePO }: Props) => {
           />
         </>
       )}
-      {type === AccountType.PravnickaOsoba && (
+      {(type === AccountType.PravnickaOsoba || type === AccountType.FyzickaOsobaPodnikatel) && (
         <Controller
           name="name"
           control={control}

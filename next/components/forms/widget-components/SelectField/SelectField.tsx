@@ -18,6 +18,40 @@ import Dropdown from './Dropdown'
 import SelectFieldBox from './SelectFieldBox'
 import { SelectOption } from './SelectOption.interface'
 
+// eslint-disable-next-line no-secrets/no-secrets
+/*
+ * TODO: Replace with new accessible components
+ *
+ * For actual SelectField, developers didn't choose any library and implemented it manually for some reason. It causes some problem, mainly it is not accessible in many ways.
+ * We want to replace it with new accessible components.
+ *
+ * Some prototypes are already implemented, but they need some more work.
+ *
+ * What was done:
+ * Firstly, we implemented new single select an combo box (searchable select) using react-aria-component. ==> SelectFieldNew.tsx, ComboBoxNew.tsx
+ * Although it is nice and accessible, react-aria doesn't support multi select.
+ * So we tried to implement it using react-select. ==> SelectMultiNew.tsx
+ * SelectMultiNew supports only multiselect, it is completely styled and accessible.
+ * So now we have 3 components:
+ *   - SelectFieldNew for single select without search
+ *   - ComboBoxNew for single select with search
+ *   - SelectMultiNew for multi select without search
+ *
+ * What needs to be done on multiselect (SelectMultiNew):
+ * Crucial: it needs to support optional controlled state (see useControlledState in TimeField)
+ * Crucial: usage in SelectFieldWidgetRJSF.tsx - controlled state and transformation of data between react-select and RJSF components
+ * It may need better types, see https://react-select.com/typescript
+ *
+ * What needs to be done on single select (SelectFieldNew):
+ * Crucial: it needs to support optional controlled state (see useControlledState in TimeField)
+ * Crucial: usage in SelectFieldWidgetRJSF.tsx - controlled state and transformation of data between react-select and RJSF components
+ *
+ * Note: SingleFieldNew, ComboBoxNew and SelectMultiNew could be potentially replaced by one react-select component.
+ *
+ * For more info, see github issue: https://github.com/orgs/bratislava/projects/6/views/5?pane=issue&itemId=36527330
+ *
+ */
+
 type SelectFieldProps = FieldBaseProps &
   Pick<FieldAdditionalProps, 'placeholder' | 'className'> & {
     type?: 'one' | 'multiple' | 'arrow' | 'radio'

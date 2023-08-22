@@ -837,5 +837,9 @@
   },
   "RadioGroup": {
     "resetChoice": "Vymazať výber"
+  },
+  "SelectField": {
+    "noOptions": "Žiadne možnosti",
+    "placeholder": "Vyberte…"
   }
 }

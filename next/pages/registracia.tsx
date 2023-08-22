@@ -168,7 +168,7 @@ const RegisterPage = ({ page }: AsyncServerProps<typeof getServerSideProps>) => 
                   ),
                 )
                 router
-                  .push(ROUTES.IDENTITY_VERIFICATION)
+                  .push({ pathname: ROUTES.HOME, query: { from: ROUTES.REGISTER } })
                   .catch((error_) => logger.error('Failed redirect', error_))
               }}
               cancelLabel={t('identity_verification_skip')}

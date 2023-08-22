@@ -43,7 +43,7 @@ const AccountErrorAlert = ({ error, close, solid, args = {} }: Props) => {
     }
     // this is the expected case - known error for which we have a translation string
     const formattedMessage = t(`account:errors.${error.code}`, args)
-    logger.info('Known error', error.code, error.message, formattedMessage, error)
+    logger.info('Known error', error.code, error.message, formattedMessage)
     return formattedMessage
     // exhaustive-deps disabled because args tend to be passed in as an object re-created on every render
     // instead of fixing this, we may want to get rid of args/present version of formatUnicorn altogether

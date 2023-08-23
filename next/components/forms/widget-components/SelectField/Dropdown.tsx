@@ -54,9 +54,9 @@ const Dropdown: FC<DropdownProps> = (props: DropdownProps) => {
 
   // STYLES
   const dropdownClassName = cx(
-    'dropdown border-form-input-pressed max-h-96 overflow-hidden rounded-lg border-2 bg-white z-30',
+    'dropdown border-form-input-pressed z-30 max-h-96 overflow-hidden rounded-lg border-2 bg-white',
     {
-      'absolute top-2 left-0 right-0': absolute,
+      'absolute left-0 right-0 top-2': absolute,
     },
     className,
   )

@@ -37,9 +37,9 @@ const UploadDropArea = forwardRef<HTMLButtonElement, UploadDropAreaProps>(
     const getDropZoneClassName = ({ isDropTarget }: DropZoneRenderProps) =>
       cx('h-full w-full rounded-lg border-2 border-dashed border-gray-300', {
         'bg-white': !disabled && !isDropTarget,
-        'opacity-50 bg-gray-200 cursor-not-allowed': disabled,
+        'cursor-not-allowed bg-gray-200 opacity-50': disabled,
         'cursor-pointer': !disabled,
-        'hover:border-gray-400 focus:border-gray-700 active:border-gray-700 hover:bg-gray-50':
+        'hover:border-gray-400 hover:bg-gray-50 focus:border-gray-700 active:border-gray-700':
           !disabled && !isDropTarget,
         'border-gray-400 bg-gray-50': !disabled && isDropTarget,
       })

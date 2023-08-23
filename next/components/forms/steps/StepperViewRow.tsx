@@ -19,10 +19,10 @@ const StepperViewRow = ({ step, isCurrent, onClick, className, isButton }: Stepp
 
   const { title, isSummary, isSubmitted, displayIndex } = step
   const iconClassName = cx(
-    'min-w-8 w-8 flex-row h-8 rounded-full flex justify-center items-center border-2 shrink-0',
+    'min-w-8 flex h-8 w-8 shrink-0 flex-row items-center justify-center rounded-full border-2',
     {
-      'bg-gray-700 border-gray-700 text-white': isSubmitted || isCurrent,
-      'border-gray-300 text-gray-300 bg-transparent': !isSubmitted && !isCurrent,
+      'border-gray-700 bg-gray-700 text-white': isSubmitted || isCurrent,
+      'border-gray-300 bg-transparent text-gray-300': !isSubmitted && !isCurrent,
     },
   )
 

@@ -125,17 +125,17 @@ const AccordionPaymentSchedule = ({
   const paddingStyles = cx({
     'px-4 py-3 lg:p-4': accordionSize === 'xs',
     'p-4 lg:p-5': accordionSize === 'sm',
-    'p-4 lg:py-6 lg:px-8': accordionSize === 'md',
-    'py-5 px-6 lg:py-8 lg:px-10': accordionSize === 'lg',
+    'p-4 lg:px-8 lg:py-6': accordionSize === 'md',
+    'px-6 py-5 lg:px-10 lg:py-8': accordionSize === 'lg',
   })
 
   const accordionHeaderStyle = cx(
-    'flex flex-col gap-4 w-full rounded-xl bg-gray-0',
+    'flex w-full flex-col gap-4 rounded-xl bg-gray-0',
     className,
     paddingStyles,
   )
   const accordionContainerStyle = cx(
-    'border-gray-200 flex flex-col w-full rounded-xl bg-gray-0 border-2 border-solid hover:border-gray-500',
+    'flex w-full flex-col rounded-xl border-2 border-solid border-gray-200 bg-gray-0 hover:border-gray-500',
     className,
     {
       'border-2 border-gray-700 hover:border-gray-700': isActive,

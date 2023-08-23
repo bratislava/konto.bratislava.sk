@@ -58,7 +58,7 @@ const Alert = ({
     'text-form-alert-info-default': type === 'info' && !solid && variant !== 'message',
     'text-form-alert-warning-default': type === 'warning' && !solid && variant !== 'message',
 
-    'py-4 gap-3 items-center': variant === 'basic',
+    'items-center gap-3 py-4': variant === 'basic',
     'text-gray-universal-0': solid,
     'bg-form-alert-error-default': type === 'error' && solid,
     'bg-form-alert-success-default': type === 'success' && solid,
@@ -68,11 +68,11 @@ const Alert = ({
 
   const contentStyle = cx('w-404', {
     'text-sm font-normal leading-6': variant === 'basic',
-    'text-default leading-7 ml-1 font-semibold': variant === 'message',
+    'text-default ml-1 font-semibold leading-7': variant === 'message',
     'w-368': close,
   })
 
-  const extraButtonStyle = cx('text-base underline font-medium leading-6 not-italic', {
+  const extraButtonStyle = cx('text-base font-medium not-italic leading-6 underline', {
     'text-form-alert-error-default': type === 'error' && !solid,
     'text-form-alert-success-default': type === 'success' && !solid,
     'text-form-alert-info-default': type === 'info' && !solid,

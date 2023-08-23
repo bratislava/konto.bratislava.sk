@@ -60,9 +60,9 @@ const FormHeader = () => {
               setIsOpen={setIsMenuOpen}
               buttonTrigger={<EllipsisVerticalIcon />}
               buttonClassName={cx(
-                'flex justify-center items-center focus:outline-none w-10 h-10 rounded-lg border-2 border-main-700 bg-transparent text-gray-700 hover:text-gray-600 hover:border-main-600 focus:border-main-800 focus:text-gray-800',
+                'flex h-10 w-10 items-center justify-center rounded-lg border-2 border-main-700 bg-transparent text-gray-700 hover:border-main-600 hover:text-gray-600 focus:border-main-800 focus:text-gray-800 focus:outline-none',
                 {
-                  'text-gray-800 border-main-800': isMenuOpen,
+                  'border-main-800 text-gray-800': isMenuOpen,
                 },
               )}
               items={formHeaderMenuContent}

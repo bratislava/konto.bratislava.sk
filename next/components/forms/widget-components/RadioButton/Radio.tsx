@@ -21,16 +21,16 @@ const Radio = ({ variant = 'basic', className, tooltip, ...rest }: RadioProps) =
   const isError = state?.validationState === 'invalid'
 
   const inputStyle = cx(
-    'appearance-none outline-offset-4 bg-white m-0 w-6 h-6 min-w-[24px] min-h-[24px] grid place-content-center left-0 right-0 top-0 bottom-0 rounded-full border-2',
+    'bottom-0 left-0 right-0 top-0 m-0 grid h-6 min-h-[24px] w-6 min-w-[24px] appearance-none place-content-center rounded-full border-2 bg-white outline-offset-4',
     {
       // "before" pseudo-element is used to display the selected radio button
-      'before:w-4 before:h-4 before:min-w-[16px] before:min-h-[16px] before:bg-gray-700 before:rounded-full':
+      'before:h-4 before:min-h-[16px] before:w-4 before:min-w-[16px] before:rounded-full before:bg-gray-700':
         isSelected,
       'border-gray-700': !isError,
       'border-negative-700 before:bg-negative-700': isError,
 
       // hover
-      'group-hover:before:bg-gray-600 group-hover:border-gray-600': !isDisabled && !isError,
+      'group-hover:border-gray-600 group-hover:before:bg-gray-600': !isDisabled && !isError,
 
       // disabled
       'opacity-50': isDisabled,
@@ -38,11 +38,11 @@ const Radio = ({ variant = 'basic', className, tooltip, ...rest }: RadioProps) =
     },
   )
 
-  const containerStyle = cx('group w-full flex relative rounded-lg gap-3 text-16', className, {
+  const containerStyle = cx('text-16 group relative flex w-full gap-3 rounded-lg', className, {
     'flex-row items-center': variant === 'basic' || variant === 'boxed',
-    'p-3 lg:py-3 lg:px-4': variant === 'boxed',
-    'p-5 flex-col break-words items-start': variant === 'card',
-    'border-2 border-solid bg-white rounded-8': variant === 'boxed' || variant === 'card',
+    'p-3 lg:px-4 lg:py-3': variant === 'boxed',
+    'flex-col items-start break-words p-5': variant === 'card',
+    'rounded-8 border-2 border-solid bg-white': variant === 'boxed' || variant === 'card',
     'border-gray-200': !isError && !isSelected,
     'border-negative-700': isError,
 

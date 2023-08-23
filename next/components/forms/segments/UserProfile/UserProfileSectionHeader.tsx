@@ -30,7 +30,7 @@ const UserProfileSectionHeader = ({
   return (
     <div
       className={cx(
-        'border-gray-200 p-4 flex flex-col gap-6',
+        'flex flex-col gap-6 border-gray-200 p-4',
         'md:flex-row md:flex-wrap md:px-8 md:py-6',
         {
           'border-b-2': underline,
@@ -40,8 +40,8 @@ const UserProfileSectionHeader = ({
       )}
     >
       <div
-        className={cx('w-full flex justify-between', {
-          'flex-col md:flex-row items-start md:items-center  gap-4 md:gap-0': childrenToColumn,
+        className={cx('flex w-full justify-between', {
+          'flex-col items-start gap-4 md:flex-row  md:items-center md:gap-0': childrenToColumn,
           'items-center': !childrenToColumn,
         })}
       >
@@ -56,7 +56,7 @@ const UserProfileSectionHeader = ({
           </div>
           <p className={cx('text-p2-normal', 'md:block', { hidden: isEditing })}>{text}</p>
         </div>
-        {children && <div className={cx({ 'md:w-fit w-full': childrenToColumn })}>{children}</div>}
+        {children && <div className={cx({ 'w-full md:w-fit': childrenToColumn })}>{children}</div>}
       </div>
       {mainHeader && !tierStatus.isIdentityVerified && (
         <Alert

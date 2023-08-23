@@ -30,7 +30,9 @@ const UserProfileDetailView = ({ userData }: UserProfileDetailViewProps) => {
         ${parsedAddress?.locality || ''}`
     : ''
   const nameLabel =
-    account_type === AccountType.FyzickaOsoba ? t('profile_detail.full_name') : t('profile_detail.business_name')
+    account_type === AccountType.FyzickaOsoba
+      ? t('profile_detail.full_name')
+      : t('profile_detail.business_name')
 
   return (
     <div className="flex grow flex-col gap-6">

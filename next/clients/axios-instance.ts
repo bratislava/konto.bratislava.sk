@@ -31,11 +31,12 @@ axiosInstance.interceptors.request.use(async (config) => {
   // for 'always' mode force logout client side, continue without token for onlyAuthenticated
   // process.browser is deprecated but assures that server code is not bundled in the client code
   if (process.browser) {
-    const accessToken = config.accessToken === 'always' ? await getAccessTokenOrLogout() : await getAccessToken()
+    const accessToken =
+      config.accessToken === 'always' ? await getAccessTokenOrLogout() : await getAccessToken()
 
     if (accessToken) {
       // eslint-disable-next-line no-param-reassign
-    config.headers.Authorization = `Bearer ${accessToken}`
+      config.headers.Authorization = `Bearer ${accessToken}`
     }
   } else {
     if (!config.accessTokenSsrReq) {
@@ -47,9 +48,11 @@ axiosInstance.interceptors.request.use(async (config) => {
     const accessToken = await getSSRAccessToken(config.accessTokenSsrReq)
     if (accessToken) {
       // eslint-disable-next-line no-param-reassign
-    config.headers.Authorization = `Bearer ${accessToken}`
+      config.headers.Authorization = `Bearer ${accessToken}`
     } else if (config.accessToken === 'always') {
-      throw new Error('No accessToken found with accessToken set to `always` in a server side request')
+      throw new Error(
+        'No accessToken found with accessToken set to `always` in a server side request',
+      )
     }
   }
 

@@ -192,7 +192,7 @@ const UserProfileDetailEdit = (props: UserProfileDetailEditProps) => {
         )}
       </div>
       <div className="flex flex-row flex-wrap gap-4">
-        <div className={cx('grow w-full', 'md:w-fit')}>
+        <div className={cx('w-full grow', 'md:w-fit')}>
           <Controller
             name="email"
             control={control}

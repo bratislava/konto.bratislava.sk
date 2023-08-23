@@ -40,13 +40,13 @@ const ModalHeader = ({
   hasHeader,
 }: ModalHeaderBase) => {
   const headerStyle = cx(
-    'flex py-[18px] sm:py-4 px-4 sm:px-6 gap-6 bg-white sm:rounded-t-lg justify-between items-center',
+    'flex items-center justify-between gap-6 bg-white px-4 py-[18px] sm:rounded-t-lg sm:px-6 sm:py-4',
     {
       'border-b-solid border-b-form-input-default border-b-2': divider,
     },
   )
   const headlineStyle = cx('text-16-semibold sm:text-20-semibold leading-5 sm:leading-7', {
-    'text-center ml-1': currentScreenIndex > 0,
+    'ml-1 text-center': currentScreenIndex > 0,
   })
 
   if (!hasHeader) return null
@@ -95,7 +95,7 @@ const ModalFooter = ({
   onSubmit,
 }: ModalFooterBase) => {
   const footerStyle = cx(
-    'w-592 flex h-18 bg-white items-center justify-between py-3 px-6 gap-6 rounded-b-lg',
+    'w-592 flex h-18 items-center justify-between gap-6 rounded-b-lg bg-white px-6 py-3',
     {
       'border-t-solid border-t-form-input-default border-t-2': divider,
     },

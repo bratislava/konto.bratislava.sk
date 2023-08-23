@@ -14,8 +14,8 @@ interface SummaryRowProps {
 const SummaryRowSimple = (props: SummaryRowProps) => {
   const { size = 'large', children, isError, label, isEditable = true, onGoToStep } = props
 
-  const containerClassName = cx('border-b-2 sm:flex-nowrap flex flex-wrap flex-row py-2.5 gap-2', {
-    '[&>div>*]:block border-red-500': isError,
+  const containerClassName = cx('flex flex-row flex-wrap gap-2 border-b-2 py-2.5 sm:flex-nowrap', {
+    'border-red-500 [&>div>*]:block': isError,
     'border-gray-200 [&>div>*]:hover:block': !isError,
     'hover:border-gray-700': isEditable,
   })

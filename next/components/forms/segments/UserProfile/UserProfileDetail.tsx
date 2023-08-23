@@ -77,7 +77,7 @@ const UserProfileDetail = (props: UserProfileDetailProps) => {
             </div>
           )}
           <div
-            className={cx('flex p-4 flex-col gap-8', 'md:p-8 md:flex-row md:gap-16 md:flex-wrap')}
+            className={cx('flex flex-col gap-8 p-4', 'md:flex-row md:flex-wrap md:gap-16 md:p-8')}
           >
             <div className={cx({ 'hidden md:block': isEditing })}>
               <UserProfilePhoto userData={userData ?? {}} />

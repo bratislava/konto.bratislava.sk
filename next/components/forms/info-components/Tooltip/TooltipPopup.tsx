@@ -13,28 +13,28 @@ type TooltipBase = {
 }
 
 const TooltipPopup = ({ arrow = true, className, text, position = 'top-left' }: TooltipBase) => {
-  const tooltipPopupStyle = cx('w-fit absolute z-20', {
-    'bottom-8 -left-3.5 sm:bottom-9 sm:-left-3': position === 'top-right',
-    'bottom-8 -right-3.5 sm:bottom-9 sm:-right-3': position === 'top-left',
-    'top-8 -left-3.5 sm:top-9 sm:-left-3': position === 'bottom-right',
-    'top-8 -right-3.5 sm:top-9 sm:-right-3': position === 'bottom-left',
+  const tooltipPopupStyle = cx('absolute z-20 w-fit', {
+    '-left-3.5 bottom-8 sm:-left-3 sm:bottom-9': position === 'top-right',
+    '-right-3.5 bottom-8 sm:-right-3 sm:bottom-9': position === 'top-left',
+    '-left-3.5 top-8 sm:-left-3 sm:top-9': position === 'bottom-right',
+    '-right-3.5 top-8 sm:-right-3 sm:top-9': position === 'bottom-left',
 
-    'left-8 -top-3.5 sm:left-9 sm:-top-3': position === 'right-top',
-    'left-8 -bottom-3.5 sm:left-9 sm:-bottom-3': position === 'right-bottom',
-    'right-8 -top-3.5 sm:right-9 sm:-top-3': position === 'left-top',
-    'right-8 -bottom-3.5 sm:right-9 sm:-bottom-3': position === 'left-bottom',
+    '-top-3.5 left-8 sm:-top-3 sm:left-9': position === 'right-top',
+    '-bottom-3.5 left-8 sm:-bottom-3 sm:left-9': position === 'right-bottom',
+    '-top-3.5 right-8 sm:-top-3 sm:right-9': position === 'left-top',
+    '-bottom-3.5 right-8 sm:-bottom-3 sm:right-9': position === 'left-bottom',
   })
 
   const tooltipArrowStyle = cx('absolute', {
-    'left-4 w-4 h-2': position === 'top-right',
-    'right-4 w-4 h-2': position === 'top-left',
-    'left-4 top-[-7px] w-4 h-2': position === 'bottom-right',
-    'right-4 top-[-7px] w-4 h-2': position === 'bottom-left',
+    'left-4 h-2 w-4': position === 'top-right',
+    'right-4 h-2 w-4': position === 'top-left',
+    'left-4 top-[-7px] h-2 w-4': position === 'bottom-right',
+    'right-4 top-[-7px] h-2 w-4': position === 'bottom-left',
 
-    '-left-[7px] top-4 w-2 h-4': position === 'right-top',
-    '-left-[7px] bottom-4 w-2 h-4': position === 'right-bottom',
-    '-right-[7px] top-4 w-2 h-4': position === 'left-top',
-    '-right-[7px] bottom-4 w-2 h-4': position === 'left-bottom',
+    '-left-[7px] top-4 h-4 w-2': position === 'right-top',
+    '-left-[7px] bottom-4 h-4 w-2': position === 'right-bottom',
+    '-right-[7px] top-4 h-4 w-2': position === 'left-top',
+    '-right-[7px] bottom-4 h-4 w-2': position === 'left-bottom',
   })
 
   return (

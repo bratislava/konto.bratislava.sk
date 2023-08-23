@@ -8,9 +8,9 @@ interface UserProfileSectionProps {
 const UserProfileSection = ({ children }: UserProfileSectionProps) => {
   return (
     <div
-      className={cx('overflow-y-auto bg-white flex flex-col items-center grow', 'md:py-3 md:px-8')}
+      className={cx('flex grow flex-col items-center overflow-y-auto bg-white', 'md:px-8 md:py-3')}
     >
-      <div className={cx('w-full rounded-lg border-gray-200', 'md:border-2 md:max-w-screen-lg')}>
+      <div className={cx('w-full rounded-lg border-gray-200', 'md:max-w-screen-lg md:border-2')}>
         {children}
       </div>
     </div>

@@ -67,7 +67,7 @@ const Alert = ({
   }
 
   const alertContainer = cx(
-    'flex flex-col items-start gap-2 rounded-lg lg:px-5 px-3 lg:py-4 py-3',
+    'flex flex-col items-start gap-2 rounded-lg px-3 py-3 lg:px-5 lg:py-4',
     className,
     {
       'bg-negative-100 text-negative-700': type === 'error' && !solid,

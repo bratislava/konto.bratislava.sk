@@ -60,11 +60,11 @@ const TimeField = (props: TimeFieldProps) => {
     ref,
   )
 
-  const timeFieldStyle = cx('flex rounded-lg bg-white px-3 lg:px-4 py-2 lg:py-3 border-2', {
-    'hover:border-gray-400 border-gray-200': !disabled,
-    'hover:border-negative-700 border-negative-700': errorMessage?.length > 0 && !disabled,
-    'bg-gray-100 border-gray-300 text-gray-400 pointer-events-none': disabled,
-    'border-gray-700': !disabled && !(errorMessage?.length > 0),
+  const timeFieldStyle = cx('flex rounded-lg border-2 bg-white px-3 py-2 lg:px-4 lg:py-3', {
+    'border-gray-200 focus-within:border-gray-700 hover:border-gray-400': !disabled,
+    'border-negative-700 hover:border-negative-700': errorMessage?.length > 0 && !disabled,
+    'pointer-events-none border-gray-300 bg-gray-100 text-gray-400': disabled,
+    // 'focus-visible:border-gray-700': !disabled && !(errorMessage?.length > 0),
   })
 
   return (

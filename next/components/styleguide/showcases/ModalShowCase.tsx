@@ -1,11 +1,11 @@
 import CorrespondenceAddressModal from 'components/forms/segments/CorrespondenceAddressModal/CorrespondenceAddressModal'
-import IdentityVerificationModal from 'components/forms/segments/IdentityVerificationModal/IdentityVerificationModal'
+// import IdentityVerificationModal from 'components/forms/segments/IdentityVerificationModal/IdentityVerificationModal'
 import { PhoneNumberData } from 'components/forms/segments/PhoneNumberForm/PhoneNumberForm'
-import RegistrationModal, {
-  RegistrationModalType,
-} from 'components/forms/segments/RegistrationModal/RegistrationModal'
+// import RegistrationModal, {
+//   RegistrationModalType,
+// } from 'components/forms/segments/RegistrationModal/RegistrationModal'
 import Modal from 'components/forms/widget-components/Modals/Modal'
-import { AccountType, Address } from 'frontend/dtos/accountDto'
+import { Address } from 'frontend/dtos/accountDto'
 import { useState } from 'react'
 
 import PhoneNumberModal from '../../forms/segments/PhoneNumberModal/PhoneNumberModal'
@@ -79,8 +79,9 @@ const ModalShowCase = () => {
   const [phoneNumberModalData, setPhoneNumberModalData] = useState<string | undefined>(
     '+421999999999',
   )
-  const [registrationModal, setRegistrationModal] = useState(false)
-  const [identityVerificationModal, setIdentityVerificationModal] = useState(false)
+  // TODO either remove these modals from showcase completely, or fix their dependency on useFormRedirects
+  // const [registrationModal, setRegistrationModal] = useState(false)
+  // const [identityVerificationModal, setIdentityVerificationModal] = useState(false)
 
   const onSubmitCorrespondenceAddress = ({ data }: { data?: Address }) => {
     setAddressModalData(data)
@@ -125,7 +126,7 @@ const ModalShowCase = () => {
           text="Open phone number modal"
           onPress={() => setPhoneNumberModalShow(true)}
         />
-        <Button
+        {/* <Button
           size="sm"
           variant="black"
           text="Open registration modal"
@@ -136,7 +137,7 @@ const ModalShowCase = () => {
           variant="black"
           text="Open Identity Verification Modal"
           onPress={() => setIdentityVerificationModal(true)}
-        />
+        /> */}
         <Modal
           divider
           header="Some header"
@@ -188,16 +189,16 @@ const ModalShowCase = () => {
           onSubmit={onSubmitPhoneNumber}
           defaultValues={{ phone_number: phoneNumberModalData }}
         />
-        <RegistrationModal
+        {/* <RegistrationModal
           type={RegistrationModalType.Initial}
           isOpen={registrationModal}
           onOpenChange={setRegistrationModal}
-        />
-        <IdentityVerificationModal
+        /> */}
+        {/* <IdentityVerificationModal
           isOpen={identityVerificationModal}
           onOpenChange={setIdentityVerificationModal}
           accountType={AccountType.FyzickaOsoba}
-        />
+        /> */}
       </Stack>
     </Wrapper>
   )

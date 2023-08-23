@@ -37,6 +37,10 @@ export const environment = {
     process.env.NEXT_PUBLIC_CITY_ACCOUNT_URL,
   ),
   taxesUrl: assertEnv('NEXT_PUBLIC_TAXES_URL', process.env.NEXT_PUBLIC_TAXES_URL),
+  slovenskoSkLoginUrl: assertEnv(
+    'NEXT_PUBLIC_SLOVENSKO_SK_LOGIN_URL',
+    process.env.NEXT_PUBLIC_SLOVENSKO_SK_LOGIN_URL,
+  ),
   cloudflareTurnstileSiteKey: assertEnv(
     'NEXT_PUBLIC_CLOUDFLARE_TURNSTILE_SITE_KEY',
     process.env.NEXT_PUBLIC_CLOUDFLARE_TURNSTILE_SITE_KEY,

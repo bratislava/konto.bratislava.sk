@@ -3,7 +3,8 @@
  */
 import cx from 'classnames'
 import { useTranslation } from 'next-i18next'
-import React, { createContext, useContext, useEffect, useState } from 'react'
+import React, { createContext, useContext, useState } from 'react'
+import { useEffectOnce } from 'usehooks-ts'
 
 import ErrorIcon from '../icon-components/ErrorIcon'
 import { SectionContainer } from '../segments/SectionContainer/SectionContainer'
@@ -36,7 +37,7 @@ export const StatusBarProvider: React.FC<StatusBarProviderProps> = ({ children }
     variant: 'warning',
   })
   const { t } = useTranslation(['common'])
-  useEffect(() => {
+  useEffectOnce(() => {
     // this overrides the 'global' status notification (i.e. crashed servers), but since we don't have design for multiple, showing failed notification probably takes precedence
     // TODO rethink the status bar approach on product side
     // TODO here set to whatever is the 'global' error
@@ -45,7 +46,7 @@ export const StatusBarProvider: React.FC<StatusBarProviderProps> = ({ children }
       content: t('common:statusBarContent'),
       variant: 'warning',
     })
-  }, [setStatusBarConfiguration, t])
+  })
 
   return (
     <StatusBarContext.Provider

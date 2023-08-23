@@ -6,6 +6,7 @@ import { useTranslation } from 'next-i18next'
 import React, { createContext, PropsWithChildren, useContext, useRef } from 'react'
 
 import { RegistrationModalType } from '../../components/forms/segments/RegistrationModal/RegistrationModal'
+import { useFormLeaveProtection } from '../../components/forms/useFormLeaveProtection'
 import { useFormModals } from '../../components/forms/useFormModals'
 import { useFormState } from '../../components/forms/useFormState'
 import { readFileToString } from '../utils/file'
@@ -19,6 +20,7 @@ export const useGetContext = () => {
   const { setRegistrationModal } = useFormModals()
   const { t } = useTranslation('forms')
   const { setConceptSaveErrorModal } = useFormModals()
+  const { turnOffLeaveProtection } = useFormLeaveProtection()
 
   const [openSnackbarError] = useSnackbar({ variant: 'error' })
   const [openSnackbarSuccess] = useSnackbar({ variant: 'success' })
@@ -50,6 +52,7 @@ export const useGetContext = () => {
       onSuccess: () => {
         openSnackbarSuccess(t('success_messages.concept_save'))
         setConceptSaveErrorModal(false)
+        turnOffLeaveProtection()
       },
       onError: () => {
         closeSnackbarInfo()
@@ -88,6 +91,7 @@ export const useGetContext = () => {
     const file = files[0]
 
     try {
+      openSnackbarInfo(t('info_messages.xml_import'))
       const xmlData: string = await readFileToString(file)
       const response = await formsApi.convertControllerConvertXmlToJson(
         formId,

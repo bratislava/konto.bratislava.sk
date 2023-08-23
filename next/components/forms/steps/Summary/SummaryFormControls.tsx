@@ -5,6 +5,7 @@ import { Controller } from 'react-hook-form'
 import useHookForm from '../../../../frontend/hooks/useHookForm'
 import FieldErrorMessage from '../../info-components/FieldErrorMessage'
 import ButtonNew from '../../simple-components/ButtonNew'
+import { useFormSend } from '../../useFormSend'
 import SingleCheckbox from '../../widget-components/Checkbox/SingleCheckbox'
 import { useFormSummary } from './useFormSummary'
 
@@ -30,7 +31,9 @@ const SummaryFormControls = () => {
   const eIdButtonRef = useRef<HTMLButtonElement>(null)
   const buttonRef = useRef<HTMLButtonElement>(null)
 
-  const { submitDisabled, send, sendEid } = useFormSummary()
+  const { submitDisabled } = useFormSummary()
+  const { handleSendButtonPress, handleSendEidButtonPress } = useFormSend()
+
   const { handleSubmit, control, errors } = useHookForm<AgreementForm>({
     schema,
     defaultValues: { agreement: false },
@@ -40,11 +43,11 @@ const SummaryFormControls = () => {
       // eslint-disable-next-line consistent-return
       onSubmit={handleSubmit((data, event) => {
         const { submitter } = event?.nativeEvent as SubmitEvent
-        if (submitter === eIdButtonRef.current) {
-          return sendEid(data.agreement)
-        }
         if (submitter === buttonRef.current) {
-          return send(data.agreement)
+          return handleSendButtonPress(data.agreement)
+        }
+        if (submitter === eIdButtonRef.current) {
+          return handleSendEidButtonPress(data.agreement)
         }
       })}
     >

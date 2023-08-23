@@ -1,12 +1,12 @@
 import { ArrowRightIcon } from '@assets/ui-icons'
 import AccountMarkdown from 'components/forms/segments/AccountMarkdown/AccountMarkdown'
-import { useRouter } from 'next/router'
 import { useTranslation } from 'next-i18next'
 import React from 'react'
 
 import { AccountType } from '../../../../frontend/dtos/accountDto'
 import ButtonNew from '../../simple-components/ButtonNew'
 import { ModalV2Props } from '../../simple-components/ModalV2'
+import { useFormRedirects } from '../../useFormRedirects'
 import MessageModal from '../../widget-components/Modals/MessageModal'
 
 type IdentityVerificationModalProps = {
@@ -15,7 +15,7 @@ type IdentityVerificationModalProps = {
 
 const IdentityVerificationModal = ({ accountType, ...rest }: IdentityVerificationModalProps) => {
   const { t } = useTranslation('account')
-  const router = useRouter()
+  const { verifyIdentity } = useFormRedirects()
 
   // TODO translations
   return (
@@ -23,7 +23,7 @@ const IdentityVerificationModal = ({ accountType, ...rest }: IdentityVerificatio
       type="warning"
       title={t('verification_modal.title')}
       buttons={[
-        <ButtonNew variant="black-solid" onPress={() => router.push('/overenie-identity')}>
+        <ButtonNew variant="black-solid" onPress={() => verifyIdentity()}>
           {t('verification_url_text')}
         </ButtonNew>,
         <ButtonNew variant="black-outline" onPress={() => rest?.onOpenChange?.(false)}>
@@ -53,7 +53,8 @@ const IdentityVerificationModal = ({ accountType, ...rest }: IdentityVerificatio
               ? t('verification_modal.subtitle_individual_person')
               : ''
           }${
-            accountType === AccountType.PravnickaOsoba || accountType === AccountType.FyzickaOsobaPodnikatel
+            accountType === AccountType.PravnickaOsoba ||
+            accountType === AccountType.FyzickaOsobaPodnikatel
               ? t('verification_modal.subtitle_juridical_person')
               : ''
           }</span>`}

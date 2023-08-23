@@ -1,5 +1,7 @@
 import { ErrorSchema } from '@rjsf/utils'
 
+import { FormFileUploadFileInfo } from '../types/formFileUploadTypes'
+
 /**
  * Check if a field or any of its children has errors. This is used to determine if a field should be highlighted in the
  * summary. By default, the library provides an `errorSchema` that contains the errors for each field. However, this
@@ -47,3 +49,14 @@ export function checkPathForErrors(fieldId: string, errorSchema: ErrorSchema) {
   // Check if the final component in the path or any of its children has errors
   return true
 }
+
+export const formHasErrors = (errorSchema: ErrorSchema) => Object.keys(errorSchema).length > 0
+
+/**
+ * We want to disable submit button only in those cases, technically it is possible to send form with other errors,
+ * but they are displayed in modal instead.
+ */
+export const isFormSubmitDisabled = (
+  errorSchema: ErrorSchema,
+  infectedFiles: FormFileUploadFileInfo[],
+) => formHasErrors(errorSchema) || infectedFiles.length > 0

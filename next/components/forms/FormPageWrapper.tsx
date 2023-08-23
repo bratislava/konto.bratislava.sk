@@ -9,8 +9,12 @@ import PageWrapper from '../layouts/PageWrapper'
 import { GetSSRCurrentAuth } from '../logic/ServerSideAuthProvider'
 import FormPage from './FormPage'
 import ThankYouFormSection from './segments/AccountSections/ThankYouSection/ThankYouFormSection'
+import { FormSummaryProvider } from './steps/Summary/useFormSummary'
 import { FormFileUploadProvider } from './useFormFileUpload'
+import { FormLeaveProtectionProvider } from './useFormLeaveProtection'
 import { FormModalsProvider } from './useFormModals'
+import { FormRedirectsProvider } from './useFormRedirects'
+import { FormSendProvider } from './useFormSend'
 import { FormSentRenderer } from './useFormSent'
 import { FormStateProvider } from './useFormState'
 
@@ -34,18 +38,26 @@ const FormPageWrapper = ({ schema, uiSchema, page, initialFormData }: FormPageWr
         notSentChildren={
           <AccountPageLayout isPublicPage hiddenHeaderNav>
             <FormFileUploadProvider initialFormData={initialFormData}>
-              <FormStateProvider
-                schema={schema}
-                uiSchema={uiSchema}
-                formSlug={formSlug}
-                initialFormData={initialFormData}
-              >
-                <FormModalsProvider initialFormData={initialFormData}>
-                  <FormExportImportProvider>
-                    <FormPage />
-                  </FormExportImportProvider>
-                </FormModalsProvider>
-              </FormStateProvider>
+              <FormLeaveProtectionProvider>
+                <FormStateProvider
+                  schema={schema}
+                  uiSchema={uiSchema}
+                  formSlug={formSlug}
+                  initialFormData={initialFormData}
+                >
+                  <FormRedirectsProvider initialFormData={initialFormData}>
+                    <FormModalsProvider initialFormData={initialFormData}>
+                      <FormSendProvider initialFormData={initialFormData}>
+                        <FormExportImportProvider>
+                          <FormSummaryProvider>
+                            <FormPage />
+                          </FormSummaryProvider>
+                        </FormExportImportProvider>
+                      </FormSendProvider>
+                    </FormModalsProvider>
+                  </FormRedirectsProvider>
+                </FormStateProvider>
+              </FormLeaveProtectionProvider>
             </FormFileUploadProvider>
           </AccountPageLayout>
         }

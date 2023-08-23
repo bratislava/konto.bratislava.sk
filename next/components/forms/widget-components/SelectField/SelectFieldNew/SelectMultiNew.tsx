@@ -124,13 +124,13 @@ const SelectMultiNew =
               // input: () => selectInputStyles,
               // singleValue: () => singleValueStyles,
               control: ({ isFocused }) =>
-                cx('border-2 rounded-lg bg-white hover:cursor-pointer', {
+                cx('rounded-lg border-2 bg-white hover:cursor-pointer', {
                   'border-gray-900': isFocused,
                   'border-gray-200 hover:border-gray-400': !isFocused && !isError,
                   'border-negative-700': isError,
                 }),
               placeholder: () => 'text-gray-500',
-              valueContainer: () => cx('gap-x-2 gap-y-1 py-2 px-3 lg:py-3 lg:px-4'),
+              valueContainer: () => cx('gap-x-2 gap-y-1 px-3 py-2 lg:px-4 lg:py-3'),
               multiValue: () => 'bg-gray-100 rounded items-center gap-1 pl-2 pr-1.5',
               multiValueLabel: () => 'text-p3',
               multiValueRemove: () =>
@@ -142,7 +142,7 @@ const SelectMultiNew =
               menu: () => 'py-2 mt-2 border-2 border-gray-900 bg-white rounded-lg',
               groupHeading: () => 'ml-3 mt-2 mb-1 text-gray-500 text-sm',
               option: ({ isFocused }) =>
-                cx('hover:cursor-pointer px-5 py-3 !flex justify-between items-center', {
+                cx('!flex items-center justify-between px-5 py-3 hover:cursor-pointer', {
                   'bg-gray-100 active:bg-gray-200': isFocused,
                 }),
               noOptionsMessage: () => 'px-4 py-3',

@@ -26,7 +26,7 @@ const FieldHeader = ({
   const { t } = useTranslation('account', { keyPrefix: 'FieldHeader' })
 
   const labelStyle = cx('text-p3-semibold sm:text-16-semibold relative text-gray-800', {
-    'after:text-16-semibold after:content-["*"] after:ml-0.5 after:absolute after:bottom-0.5 after:text-main-700':
+    'after:text-16-semibold after:absolute after:bottom-0.5 after:ml-0.5 after:text-main-700 after:content-["*"]':
       required,
   })
 

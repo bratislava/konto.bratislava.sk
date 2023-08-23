@@ -29,18 +29,18 @@ const Toggle = ({ children, isDisabled = false, isSelected = true, ...rest }: To
   )
   const { focusProps } = useFocusRing()
 
-  const toggleContainer = cx('group select-none flex flex-row items-center p-0 gap-4', {
-    'opacity-50 cursor-not-allowed': isDisabled,
+  const toggleContainer = cx('group flex select-none flex-row items-center gap-4 p-0', {
+    'cursor-not-allowed opacity-50': isDisabled,
     'cursor-pointer': !isDisabled,
   })
   const labelStyle = cx('text-16 select-none text-gray-700')
 
-  const togglerContainer = cx('w-12 h-6 rounded-full flex items-center', {
+  const togglerContainer = cx('flex h-6 w-12 items-center rounded-full', {
     'bg-success-700': state.isSelected,
     'bg-gray-400': !state.isSelected,
   })
 
-  const toggleBall = cx('w-5 h-5 relative rounded-full bg-white', {
+  const toggleBall = cx('relative h-5 w-5 rounded-full bg-white', {
     'left-[26px]': state.isSelected,
     'left-0.5': !state.isSelected,
   })

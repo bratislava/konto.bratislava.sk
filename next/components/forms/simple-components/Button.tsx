@@ -91,7 +91,7 @@ const Button = forwardRef<HTMLAnchorElement | HTMLButtonElement, PolymorphicProp
       'inline-flex items-center',
       rest.href
         ? 'underline underline-offset-4 focus-visible:outline-none'
-        : 'h-fit justify-center text-center align-middle focus:outline-none rounded-lg',
+        : 'h-fit justify-center rounded-lg text-center align-middle focus:outline-none',
       className,
       {
         'w-full': fullWidth,
@@ -187,12 +187,12 @@ const Button = forwardRef<HTMLAnchorElement | HTMLButtonElement, PolymorphicProp
           variant === 'category-outline',
 
         // bg and border color
-        'border-gray-700 bg-gray-700 focus:bg-gray-800 focus:border-gray-800': variant === 'black',
+        'border-gray-700 bg-gray-700 focus:border-gray-800 focus:bg-gray-800': variant === 'black',
         'border-gray-200 bg-transparent text-gray-700 focus:border-gray-300 focus:text-gray-800':
           variant === 'black-outline',
-        'border-negative-700 bg-negative-700 focus:bg-negative-800 focus:border-negative-800':
+        'border-negative-700 bg-negative-700 focus:border-negative-800 focus:bg-negative-800':
           variant === 'negative',
-        'border-category-700 bg-category-700 focus:bg-category-800 focus:border-category-800':
+        'border-category-700 bg-category-700 focus:border-category-800 focus:bg-category-800':
           variant === 'category',
         'border-category-700 bg-transparent text-category-700 focus:border-category-800 focus:text-category-800':
           variant === 'category-outline',
@@ -207,13 +207,13 @@ const Button = forwardRef<HTMLAnchorElement | HTMLButtonElement, PolymorphicProp
         'text-gray-700 focus:text-gray-800': variant === 'link-black',
 
         // hover
-        'hover:bg-gray-600 hover:border-gray-600': variant === 'black' && !disabledStyling,
+        'hover:border-gray-600 hover:bg-gray-600': variant === 'black' && !disabledStyling,
         'hover:border-gray-200 hover:text-gray-600':
           variant === 'black-outline' && !disabledStyling,
-        'hover:bg-negative-600 hover:border-negative-600':
+        'hover:border-negative-600 hover:bg-negative-600':
           variant === 'negative' && !disabledStyling,
 
-        'hover:bg-category-600 hover:border-category-600':
+        'hover:border-category-600 hover:bg-category-600':
           variant === 'category' && !disabledStyling,
         'hover:border-category-600 hover:text-category-600':
           variant === 'category-outline' && !disabledStyling,

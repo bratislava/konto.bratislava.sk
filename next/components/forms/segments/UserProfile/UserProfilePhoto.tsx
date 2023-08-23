@@ -19,8 +19,8 @@ const UserProfilePhoto = ({ userData }: UserProfilePhotoProps) => {
   return (
     <div
       className={cx(
-        'min-w-24 w-24 h-24 rounded-full flex flex-col justify-center items-center bg-main-100 text-main-700',
-        'md:min-w-[168px] md:w-[168px] md:h-[168px]',
+        'min-w-24 flex h-24 w-24 flex-col items-center justify-center rounded-full bg-main-100 text-main-700',
+        'md:h-[168px] md:w-[168px] md:min-w-[168px]',
       )}
     >
       <span className="text-p1-semibold md:text-h2">{initialLetters.toUpperCase()}</span>

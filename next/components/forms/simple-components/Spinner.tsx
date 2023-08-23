@@ -8,7 +8,7 @@ type SpinnerBase = {
 
 const Spinner = ({ size = 'md', variant = 'black', className }: SpinnerBase) => {
   const style = cx(
-    'rounded-[50%] animate-spin border-solid',
+    'animate-spin rounded-[50%] border-solid',
     {
       'border-category-400 border-t-gray-50': variant === 'category',
       'border-gray-400 border-t-gray-50': variant === 'gray',
@@ -17,9 +17,9 @@ const Spinner = ({ size = 'md', variant = 'black', className }: SpinnerBase) => 
     },
     className,
     {
-      'w-5 h-5 border-2 border-t-2': size === 'sm',
-      'w-8 h-8 border-3 border-t-3': size === 'md',
-      'w-12 h-12 border-4 border-t-4': size === 'lg',
+      'h-5 w-5 border-2 border-t-2': size === 'sm',
+      'h-8 w-8 border-3 border-t-3': size === 'md',
+      'h-12 w-12 border-4 border-t-4': size === 'lg',
     },
   )
   return <div className={style} />

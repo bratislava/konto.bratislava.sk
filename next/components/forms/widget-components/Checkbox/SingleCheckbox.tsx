@@ -37,7 +37,7 @@ const SingleCheckBox = ({
   const isSelected = state.isSelected && !rest.isIndeterminate
 
   const checkboxStyle = cx(
-    'flex items-center justify-center min-w-[24px] w-6 h-6 rounded border-2 border-solid border-gray-700',
+    'flex h-6 w-6 min-w-[24px] items-center justify-center rounded border-2 border-solid border-gray-700',
     {
       'bg-gray-700': (isSelected || rest.isIndeterminate) && !error,
       'group-hover:border-gray-600':
@@ -48,19 +48,19 @@ const SingleCheckBox = ({
         !error,
       'group-hover:border-gray-600 group-hover:bg-gray-600':
         (variant === 'basic' || variant === 'boxed') && isSelected && !isDisabled && !error,
-      'opacity-50 cursor-not-allowed': isDisabled,
+      'cursor-not-allowed opacity-50': isDisabled,
 
       // error
       'border-negative-700': error && !isSelected && !isDisabled,
-      'bg-negative-700 border-negative-700': error && isSelected && !isDisabled,
+      'border-negative-700 bg-negative-700': error && isSelected && !isDisabled,
     },
   )
 
   const containerStyle = cx(
-    'group flex flex-row items-start justify-center p-0 gap-3',
+    'group flex flex-row items-start justify-center gap-3 p-0',
     rest.className,
     {
-      'py-3 px-4 bg-white border-2 border-solid rounded-lg': variant === 'boxed',
+      'rounded-lg border-2 border-solid bg-white px-4 py-3': variant === 'boxed',
       'border-gray-300 group-hover:border-gray-500':
         variant === 'boxed' && !isSelected && rest.isIndeterminate && !isDisabled && !error,
       'border-gray-700 group-hover:border-gray-500':
@@ -69,11 +69,11 @@ const SingleCheckBox = ({
       // error
       'border-negative-700': variant === 'boxed' && error,
       // disabled
-      'opacity-50 cursor-not-allowed': isDisabled,
+      'cursor-not-allowed opacity-50': isDisabled,
     },
   )
 
-  const labelStyle = cx('text-16 flex select-none text-gray-700 gap-3', {
+  const labelStyle = cx('text-16 flex select-none gap-3 text-gray-700', {
     'w-full': fullWidth,
   })
 

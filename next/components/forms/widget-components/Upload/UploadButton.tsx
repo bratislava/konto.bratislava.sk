@@ -37,14 +37,14 @@ const UploadButton = forwardRef<HTMLButtonElement, UploadButtonProps>(
     const displaySupportedFileExtensions = getDisplaySupportedFileExtensions(supportedFormats)
 
     const buttonClassNames = cx(
-      'w-full lg:w-fit lg:py-3 justify-center flex items-center rounded-lg border-2 border-gray-300 py-2 px-6 bg-white',
+      'flex w-full items-center justify-center rounded-lg border-2 border-gray-300 bg-white px-6 py-2 lg:w-fit lg:py-3',
       {
         'cursor-pointer': !disabled,
         'hover:border-gray-400 focus:border-gray-700 active:border-gray-700':
           !disabled && (!fileBrokenMessage || fileBrokenMessage.length === 0),
         'border-red-500 hover:border-red-300':
           !disabled && fileBrokenMessage && fileBrokenMessage.length > 0,
-        'opacity-50 cursor-not-allowed bg-gray-200': disabled,
+        'cursor-not-allowed bg-gray-200 opacity-50': disabled,
       },
     )
 

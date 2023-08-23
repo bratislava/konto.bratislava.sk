@@ -31,7 +31,7 @@ const ProgressBar = ({
   const barWidth = `${Math.round(percentage * 100)}%`
 
   const progressBarStyleContainer = cx(
-    'flex flex-row items-center p-0 gap-4 w-full h-6',
+    'flex h-6 w-full flex-row items-center gap-4 p-0',
     className,
     {},
   )
@@ -39,10 +39,10 @@ const ProgressBar = ({
     <div className="flex w-full flex-col">
       {label && <span {...labelProps}>{label}</span>}
       <div {...progressBarProps} className={progressBarStyleContainer}>
-        <div className={cx('flex-column flex items-center w-full h-2 bg-gray-200 rounded-full')}>
+        <div className={cx('flex-column flex h-2 w-full items-center rounded-full bg-gray-200')}>
           <div
             style={{ width: barWidth }}
-            className={cx('rounded-full h-2', {
+            className={cx('h-2 rounded-full', {
               'bg-gray-700': type === 'default',
               'bg-success-700': type === 'success',
             })}

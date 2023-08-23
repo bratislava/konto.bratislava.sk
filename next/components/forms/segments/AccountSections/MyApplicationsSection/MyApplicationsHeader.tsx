@@ -33,7 +33,7 @@ const MyApplicationsHeader = (props: MyApplicationsHeaderBase) => {
                 type="button"
                 onClick={() => setGlobalState({ applicationsActiveMenuItem: item.tag })}
                 className={cx(
-                  'text-20 w-full lg:w-[92px] transition-all py-4 border-b-2 cursor-pointer',
+                  'text-20 w-full cursor-pointer border-b-2 py-4 transition-all lg:w-[92px]',
                   'hover:text-20-semibold hover:border-gray-700 ',
                   {
                     'text-20-semibold border-b-2 border-gray-700':

@@ -11,7 +11,7 @@ const TaxesFeesCard = (props: TaxesCardBase) => {
   const { title, yearPay, createDate, currentPaid, finishPrice, paidDate = '', status } = props
 
   const statusHandler = (): ReactNode => {
-    const statusStyle: string = cx('text-p3-semibold lg:text-16-semibold w-max ml-0 lg:ml-2', {
+    const statusStyle: string = cx('text-p3-semibold lg:text-16-semibold ml-0 w-max lg:ml-2', {
       'text-negative-700': status === 'unpaid',
       'text-warning-700': status === 'partially_paid',
       'text-success-700': status === 'paid',

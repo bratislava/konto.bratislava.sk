@@ -49,13 +49,15 @@ export const ServerSideAuthContext = createContext<GetSSRCurrentAuth>({
 })
 
 // only provides the data when given, does no further check on whether they are available. Thus, usable also for pages with optional auth
-export const ServerSideAuthProviderHOC = <Props extends { ssrCurrentAuthProps?: GetSSRCurrentAuth }>(
+export const ServerSideAuthProviderHOC = <
+  Props extends { ssrCurrentAuthProps?: GetSSRCurrentAuth },
+>(
   Wrapped: ComponentType<Props>,
 ) => {
   // eslint-disable-next-line react/function-component-definition
   return (props: Props) => (
     // eslint-disable-next-line react/destructuring-assignment
-    <ServerSideAuthContext.Provider value={props.ssrCurrentAuthProps || {userData: null}}>
+    <ServerSideAuthContext.Provider value={props.ssrCurrentAuthProps || { userData: null }}>
       <Wrapped {...props} />
     </ServerSideAuthContext.Provider>
   )

@@ -33,7 +33,7 @@ const CheckboxGroupItem = ({
   const isSelected = state.isSelected(rest.value)
 
   const checkboxStyle = cx(
-    'flex items-center justify-center w-6 h-6 rounded border-2 border-solid border-gray-700',
+    'flex h-6 w-6 items-center justify-center rounded border-2 border-solid border-gray-700',
     {
       'bg-gray-700': (isSelected || isIndeterminate) && !error,
       'group-hover:border-gray-600':
@@ -44,16 +44,16 @@ const CheckboxGroupItem = ({
         !error,
       'group-hover:border-gray-600 group-hover:bg-gray-600':
         (variant === 'basic' || variant === 'boxed') && isSelected && !isDisabled && !error,
-      'opacity-50 cursor-not-allowed': isDisabled,
+      'cursor-not-allowed opacity-50': isDisabled,
 
       // error
       'border-negative-700': error && !isSelected && !isDisabled,
-      'bg-negative-700 border-negative-700': error && isSelected && !isDisabled,
+      'border-negative-700 bg-negative-700': error && isSelected && !isDisabled,
     },
   )
 
   const containerStyle = cx('group flex flex-row', rest.className, {
-    'py-3 px-4 bg-white border-2 border-solid rounded-lg': variant === 'boxed',
+    'rounded-lg border-2 border-solid bg-white px-4 py-3': variant === 'boxed',
     'border-gray-300 group-hover:border-gray-500':
       variant === 'boxed' && !isSelected && isIndeterminate && !isDisabled && !error,
     'border-gray-700 group-hover:border-gray-500':
@@ -63,7 +63,7 @@ const CheckboxGroupItem = ({
     // error
     'border-negative-700': variant === 'boxed' && error,
     // disabled
-    'opacity-50 cursor-not-allowed': isDisabled,
+    'cursor-not-allowed opacity-50': isDisabled,
   })
 
   const labelStyle = cx('text-16 flex text-gray-700', {})

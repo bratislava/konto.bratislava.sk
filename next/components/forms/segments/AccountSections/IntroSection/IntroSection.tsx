@@ -72,7 +72,10 @@ const IntroSection = () => {
     }
   }
 
-  const name = accountType === AccountType.PravnickaOsoba ? userData?.name : userData?.given_name
+  const name =
+    accountType === AccountType.PravnickaOsoba || accountType === AccountType.FyzickaOsobaPodnikatel
+      ? userData?.name
+      : userData?.given_name
 
   const bannerContent = `<span className='text-p2'>${t(
     'account_section_intro.banner_content',

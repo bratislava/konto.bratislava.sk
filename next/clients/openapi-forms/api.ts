@@ -134,6 +134,7 @@ export const DatabaseErrorDtoErrorNameEnum = {
   InternalServerError: 'INTERNAL_SERVER_ERROR',
   UnauthorizedError: 'UNAUTHORIZED_ERROR',
   UnprocessableEntityError: 'UNPROCESSABLE_ENTITY_ERROR',
+  BadRequestError: 'BAD_REQUEST_ERROR',
 } as const
 
 export type DatabaseErrorDtoErrorNameEnum =
@@ -196,6 +197,7 @@ export const FileAlreadyProcessedErrorDtoErrorNameEnum = {
   InternalServerError: 'INTERNAL_SERVER_ERROR',
   UnauthorizedError: 'UNAUTHORIZED_ERROR',
   UnprocessableEntityError: 'UNPROCESSABLE_ENTITY_ERROR',
+  BadRequestError: 'BAD_REQUEST_ERROR',
 } as const
 
 export type FileAlreadyProcessedErrorDtoErrorNameEnum =
@@ -245,6 +247,7 @@ export const FileByScannerIdNotFoundErrorDtoErrorNameEnum = {
   InternalServerError: 'INTERNAL_SERVER_ERROR',
   UnauthorizedError: 'UNAUTHORIZED_ERROR',
   UnprocessableEntityError: 'UNPROCESSABLE_ENTITY_ERROR',
+  BadRequestError: 'BAD_REQUEST_ERROR',
 } as const
 
 export type FileByScannerIdNotFoundErrorDtoErrorNameEnum =
@@ -294,6 +297,7 @@ export const FileHasUnsupportedMimeTypeErrorDtoErrorNameEnum = {
   InternalServerError: 'INTERNAL_SERVER_ERROR',
   UnauthorizedError: 'UNAUTHORIZED_ERROR',
   UnprocessableEntityError: 'UNPROCESSABLE_ENTITY_ERROR',
+  BadRequestError: 'BAD_REQUEST_ERROR',
 } as const
 
 export type FileHasUnsupportedMimeTypeErrorDtoErrorNameEnum =
@@ -343,6 +347,7 @@ export const FileIdAlreadyExistsErrorDtoErrorNameEnum = {
   InternalServerError: 'INTERNAL_SERVER_ERROR',
   UnauthorizedError: 'UNAUTHORIZED_ERROR',
   UnprocessableEntityError: 'UNPROCESSABLE_ENTITY_ERROR',
+  BadRequestError: 'BAD_REQUEST_ERROR',
 } as const
 
 export type FileIdAlreadyExistsErrorDtoErrorNameEnum =
@@ -392,6 +397,7 @@ export const FileInMinioNotFoundErrorDtoErrorNameEnum = {
   InternalServerError: 'INTERNAL_SERVER_ERROR',
   UnauthorizedError: 'UNAUTHORIZED_ERROR',
   UnprocessableEntityError: 'UNPROCESSABLE_ENTITY_ERROR',
+  BadRequestError: 'BAD_REQUEST_ERROR',
 } as const
 
 export type FileInMinioNotFoundErrorDtoErrorNameEnum =
@@ -441,6 +447,7 @@ export const FileInScannerNotFoundErrorDtoErrorNameEnum = {
   InternalServerError: 'INTERNAL_SERVER_ERROR',
   UnauthorizedError: 'UNAUTHORIZED_ERROR',
   UnprocessableEntityError: 'UNPROCESSABLE_ENTITY_ERROR',
+  BadRequestError: 'BAD_REQUEST_ERROR',
 } as const
 
 export type FileInScannerNotFoundErrorDtoErrorNameEnum =
@@ -490,6 +497,7 @@ export const FileIsOwnedBySomeoneElseErrorDtoErrorNameEnum = {
   InternalServerError: 'INTERNAL_SERVER_ERROR',
   UnauthorizedError: 'UNAUTHORIZED_ERROR',
   UnprocessableEntityError: 'UNPROCESSABLE_ENTITY_ERROR',
+  BadRequestError: 'BAD_REQUEST_ERROR',
 } as const
 
 export type FileIsOwnedBySomeoneElseErrorDtoErrorNameEnum =
@@ -539,6 +547,7 @@ export const FileNotFoundErrorDtoErrorNameEnum = {
   InternalServerError: 'INTERNAL_SERVER_ERROR',
   UnauthorizedError: 'UNAUTHORIZED_ERROR',
   UnprocessableEntityError: 'UNPROCESSABLE_ENTITY_ERROR',
+  BadRequestError: 'BAD_REQUEST_ERROR',
 } as const
 
 export type FileNotFoundErrorDtoErrorNameEnum =
@@ -588,6 +597,7 @@ export const FileOrUserNotFoundErrorDtoErrorNameEnum = {
   InternalServerError: 'INTERNAL_SERVER_ERROR',
   UnauthorizedError: 'UNAUTHORIZED_ERROR',
   UnprocessableEntityError: 'UNPROCESSABLE_ENTITY_ERROR',
+  BadRequestError: 'BAD_REQUEST_ERROR',
 } as const
 
 export type FileOrUserNotFoundErrorDtoErrorNameEnum =
@@ -637,6 +647,7 @@ export const FileSizeExceededErrorDtoErrorNameEnum = {
   InternalServerError: 'INTERNAL_SERVER_ERROR',
   UnauthorizedError: 'UNAUTHORIZED_ERROR',
   UnprocessableEntityError: 'UNPROCESSABLE_ENTITY_ERROR',
+  BadRequestError: 'BAD_REQUEST_ERROR',
 } as const
 
 export type FileSizeExceededErrorDtoErrorNameEnum =
@@ -686,6 +697,7 @@ export const FileSizeTooLargeErrorDtoErrorNameEnum = {
   InternalServerError: 'INTERNAL_SERVER_ERROR',
   UnauthorizedError: 'UNAUTHORIZED_ERROR',
   UnprocessableEntityError: 'UNPROCESSABLE_ENTITY_ERROR',
+  BadRequestError: 'BAD_REQUEST_ERROR',
 } as const
 
 export type FileSizeTooLargeErrorDtoErrorNameEnum =
@@ -735,6 +747,7 @@ export const FileSizeZeroErrorDtoErrorNameEnum = {
   InternalServerError: 'INTERNAL_SERVER_ERROR',
   UnauthorizedError: 'UNAUTHORIZED_ERROR',
   UnprocessableEntityError: 'UNPROCESSABLE_ENTITY_ERROR',
+  BadRequestError: 'BAD_REQUEST_ERROR',
 } as const
 
 export type FileSizeZeroErrorDtoErrorNameEnum =
@@ -784,6 +797,7 @@ export const FileUploadToMinioWasNotSucessfulErrorNameEnum = {
   InternalServerError: 'INTERNAL_SERVER_ERROR',
   UnauthorizedError: 'UNAUTHORIZED_ERROR',
   UnprocessableEntityError: 'UNPROCESSABLE_ENTITY_ERROR',
+  BadRequestError: 'BAD_REQUEST_ERROR',
 } as const
 
 export type FileUploadToMinioWasNotSucessfulErrorNameEnum =
@@ -833,6 +847,7 @@ export const FileWrongParamsErrorDtoErrorNameEnum = {
   InternalServerError: 'INTERNAL_SERVER_ERROR',
   UnauthorizedError: 'UNAUTHORIZED_ERROR',
   UnprocessableEntityError: 'UNPROCESSABLE_ENTITY_ERROR',
+  BadRequestError: 'BAD_REQUEST_ERROR',
 } as const
 
 export type FileWrongParamsErrorDtoErrorNameEnum =
@@ -882,6 +897,7 @@ export const FileWrongStatusNotAcceptedErrorDtoErrorNameEnum = {
   InternalServerError: 'INTERNAL_SERVER_ERROR',
   UnauthorizedError: 'UNAUTHORIZED_ERROR',
   UnprocessableEntityError: 'UNPROCESSABLE_ENTITY_ERROR',
+  BadRequestError: 'BAD_REQUEST_ERROR',
 } as const
 
 export type FileWrongStatusNotAcceptedErrorDtoErrorNameEnum =
@@ -931,6 +947,7 @@ export const FilesControllerDownloadFile400ResponseErrorNameEnum = {
   InternalServerError: 'INTERNAL_SERVER_ERROR',
   UnauthorizedError: 'UNAUTHORIZED_ERROR',
   UnprocessableEntityError: 'UNPROCESSABLE_ENTITY_ERROR',
+  BadRequestError: 'BAD_REQUEST_ERROR',
 } as const
 
 export type FilesControllerDownloadFile400ResponseErrorNameEnum =
@@ -980,6 +997,7 @@ export const FilesControllerDownloadFile404ResponseErrorNameEnum = {
   InternalServerError: 'INTERNAL_SERVER_ERROR',
   UnauthorizedError: 'UNAUTHORIZED_ERROR',
   UnprocessableEntityError: 'UNPROCESSABLE_ENTITY_ERROR',
+  BadRequestError: 'BAD_REQUEST_ERROR',
 } as const
 
 export type FilesControllerDownloadFile404ResponseErrorNameEnum =
@@ -1029,6 +1047,7 @@ export const FilesControllerDownloadToken404ResponseErrorNameEnum = {
   InternalServerError: 'INTERNAL_SERVER_ERROR',
   UnauthorizedError: 'UNAUTHORIZED_ERROR',
   UnprocessableEntityError: 'UNPROCESSABLE_ENTITY_ERROR',
+  BadRequestError: 'BAD_REQUEST_ERROR',
 } as const
 
 export type FilesControllerDownloadToken404ResponseErrorNameEnum =
@@ -1084,6 +1103,7 @@ export const FilesControllerUploadFile400ResponseErrorNameEnum = {
   InternalServerError: 'INTERNAL_SERVER_ERROR',
   UnauthorizedError: 'UNAUTHORIZED_ERROR',
   UnprocessableEntityError: 'UNPROCESSABLE_ENTITY_ERROR',
+  BadRequestError: 'BAD_REQUEST_ERROR',
 } as const
 
 export type FilesControllerUploadFile400ResponseErrorNameEnum =
@@ -1133,6 +1153,7 @@ export const FilesControllerUploadFile404ResponseErrorNameEnum = {
   InternalServerError: 'INTERNAL_SERVER_ERROR',
   UnauthorizedError: 'UNAUTHORIZED_ERROR',
   UnprocessableEntityError: 'UNPROCESSABLE_ENTITY_ERROR',
+  BadRequestError: 'BAD_REQUEST_ERROR',
 } as const
 
 export type FilesControllerUploadFile404ResponseErrorNameEnum =
@@ -1182,6 +1203,7 @@ export const FilesControllerUploadFile500ResponseErrorNameEnum = {
   InternalServerError: 'INTERNAL_SERVER_ERROR',
   UnauthorizedError: 'UNAUTHORIZED_ERROR',
   UnprocessableEntityError: 'UNPROCESSABLE_ENTITY_ERROR',
+  BadRequestError: 'BAD_REQUEST_ERROR',
 } as const
 
 export type FilesControllerUploadFile500ResponseErrorNameEnum =
@@ -1231,6 +1253,7 @@ export const FormIsOwnedBySomeoneElseErrorDtoErrorNameEnum = {
   InternalServerError: 'INTERNAL_SERVER_ERROR',
   UnauthorizedError: 'UNAUTHORIZED_ERROR',
   UnprocessableEntityError: 'UNPROCESSABLE_ENTITY_ERROR',
+  BadRequestError: 'BAD_REQUEST_ERROR',
 } as const
 
 export type FormIsOwnedBySomeoneElseErrorDtoErrorNameEnum =
@@ -1280,6 +1303,7 @@ export const FormNotDraftErrorDtoErrorNameEnum = {
   InternalServerError: 'INTERNAL_SERVER_ERROR',
   UnauthorizedError: 'UNAUTHORIZED_ERROR',
   UnprocessableEntityError: 'UNPROCESSABLE_ENTITY_ERROR',
+  BadRequestError: 'BAD_REQUEST_ERROR',
 } as const
 
 export type FormNotDraftErrorDtoErrorNameEnum =
@@ -1329,6 +1353,7 @@ export const FormNotFoundErrorDtoErrorNameEnum = {
   InternalServerError: 'INTERNAL_SERVER_ERROR',
   UnauthorizedError: 'UNAUTHORIZED_ERROR',
   UnprocessableEntityError: 'UNPROCESSABLE_ENTITY_ERROR',
+  BadRequestError: 'BAD_REQUEST_ERROR',
 } as const
 
 export type FormNotFoundErrorDtoErrorNameEnum =
@@ -1378,6 +1403,7 @@ export const FormOrUserNotFoundErrorDtoErrorNameEnum = {
   InternalServerError: 'INTERNAL_SERVER_ERROR',
   UnauthorizedError: 'UNAUTHORIZED_ERROR',
   UnprocessableEntityError: 'UNPROCESSABLE_ENTITY_ERROR',
+  BadRequestError: 'BAD_REQUEST_ERROR',
 } as const
 
 export type FormOrUserNotFoundErrorDtoErrorNameEnum =
@@ -1878,6 +1904,7 @@ export const InvalidJwtTokenErrorDtoErrorNameEnum = {
   InternalServerError: 'INTERNAL_SERVER_ERROR',
   UnauthorizedError: 'UNAUTHORIZED_ERROR',
   UnprocessableEntityError: 'UNPROCESSABLE_ENTITY_ERROR',
+  BadRequestError: 'BAD_REQUEST_ERROR',
 } as const
 
 export type InvalidJwtTokenErrorDtoErrorNameEnum =
@@ -1927,6 +1954,7 @@ export const InvalidOrExpiredJwtTokenErrorDtoErrorNameEnum = {
   InternalServerError: 'INTERNAL_SERVER_ERROR',
   UnauthorizedError: 'UNAUTHORIZED_ERROR',
   UnprocessableEntityError: 'UNPROCESSABLE_ENTITY_ERROR',
+  BadRequestError: 'BAD_REQUEST_ERROR',
 } as const
 
 export type InvalidOrExpiredJwtTokenErrorDtoErrorNameEnum =
@@ -2021,6 +2049,7 @@ export const NasesControllerGetForm404ResponseErrorNameEnum = {
   InternalServerError: 'INTERNAL_SERVER_ERROR',
   UnauthorizedError: 'UNAUTHORIZED_ERROR',
   UnprocessableEntityError: 'UNPROCESSABLE_ENTITY_ERROR',
+  BadRequestError: 'BAD_REQUEST_ERROR',
 } as const
 
 export type NasesControllerGetForm404ResponseErrorNameEnum =
@@ -2070,6 +2099,7 @@ export const NasesControllerGetForms500ResponseErrorNameEnum = {
   InternalServerError: 'INTERNAL_SERVER_ERROR',
   UnauthorizedError: 'UNAUTHORIZED_ERROR',
   UnprocessableEntityError: 'UNPROCESSABLE_ENTITY_ERROR',
+  BadRequestError: 'BAD_REQUEST_ERROR',
 } as const
 
 export type NasesControllerGetForms500ResponseErrorNameEnum =
@@ -2119,6 +2149,7 @@ export const NasesControllerSendAndUpdateForm400ResponseErrorNameEnum = {
   InternalServerError: 'INTERNAL_SERVER_ERROR',
   UnauthorizedError: 'UNAUTHORIZED_ERROR',
   UnprocessableEntityError: 'UNPROCESSABLE_ENTITY_ERROR',
+  BadRequestError: 'BAD_REQUEST_ERROR',
 } as const
 
 export type NasesControllerSendAndUpdateForm400ResponseErrorNameEnum =
@@ -2168,6 +2199,7 @@ export const NasesControllerSendAndUpdateForm422ResponseErrorNameEnum = {
   InternalServerError: 'INTERNAL_SERVER_ERROR',
   UnauthorizedError: 'UNAUTHORIZED_ERROR',
   UnprocessableEntityError: 'UNPROCESSABLE_ENTITY_ERROR',
+  BadRequestError: 'BAD_REQUEST_ERROR',
 } as const
 
 export type NasesControllerSendAndUpdateForm422ResponseErrorNameEnum =
@@ -2217,6 +2249,7 @@ export const NasesControllerSendForm422ResponseErrorNameEnum = {
   InternalServerError: 'INTERNAL_SERVER_ERROR',
   UnauthorizedError: 'UNAUTHORIZED_ERROR',
   UnprocessableEntityError: 'UNPROCESSABLE_ENTITY_ERROR',
+  BadRequestError: 'BAD_REQUEST_ERROR',
 } as const
 
 export type NasesControllerSendForm422ResponseErrorNameEnum =
@@ -2266,6 +2299,7 @@ export const NoFileIdInJwtErrorDtoErrorNameEnum = {
   InternalServerError: 'INTERNAL_SERVER_ERROR',
   UnauthorizedError: 'UNAUTHORIZED_ERROR',
   UnprocessableEntityError: 'UNPROCESSABLE_ENTITY_ERROR',
+  BadRequestError: 'BAD_REQUEST_ERROR',
 } as const
 
 export type NoFileIdInJwtErrorDtoErrorNameEnum =
@@ -2315,6 +2349,7 @@ export const NoFileUploadDataErrorDtoErrorNameEnum = {
   InternalServerError: 'INTERNAL_SERVER_ERROR',
   UnauthorizedError: 'UNAUTHORIZED_ERROR',
   UnprocessableEntityError: 'UNPROCESSABLE_ENTITY_ERROR',
+  BadRequestError: 'BAD_REQUEST_ERROR',
 } as const
 
 export type NoFileUploadDataErrorDtoErrorNameEnum =
@@ -2364,6 +2399,7 @@ export const NoFormXmlDataErrorDtoErrorNameEnum = {
   InternalServerError: 'INTERNAL_SERVER_ERROR',
   UnauthorizedError: 'UNAUTHORIZED_ERROR',
   UnprocessableEntityError: 'UNPROCESSABLE_ENTITY_ERROR',
+  BadRequestError: 'BAD_REQUEST_ERROR',
 } as const
 
 export type NoFormXmlDataErrorDtoErrorNameEnum =
@@ -2506,6 +2542,7 @@ export const ProblemWithScannerErrorDtoErrorNameEnum = {
   InternalServerError: 'INTERNAL_SERVER_ERROR',
   UnauthorizedError: 'UNAUTHORIZED_ERROR',
   UnprocessableEntityError: 'UNPROCESSABLE_ENTITY_ERROR',
+  BadRequestError: 'BAD_REQUEST_ERROR',
 } as const
 
 export type ProblemWithScannerErrorDtoErrorNameEnum =
@@ -2555,6 +2592,7 @@ export const ScannerNoResponseErrorDtoErrorNameEnum = {
   InternalServerError: 'INTERNAL_SERVER_ERROR',
   UnauthorizedError: 'UNAUTHORIZED_ERROR',
   UnprocessableEntityError: 'UNPROCESSABLE_ENTITY_ERROR',
+  BadRequestError: 'BAD_REQUEST_ERROR',
 } as const
 
 export type ScannerNoResponseErrorDtoErrorNameEnum =
@@ -2604,6 +2642,7 @@ export const SchemaNotFoundErrorNameEnum = {
   InternalServerError: 'INTERNAL_SERVER_ERROR',
   UnauthorizedError: 'UNAUTHORIZED_ERROR',
   UnprocessableEntityError: 'UNPROCESSABLE_ENTITY_ERROR',
+  BadRequestError: 'BAD_REQUEST_ERROR',
 } as const
 
 export type SchemaNotFoundErrorNameEnum =
@@ -2896,6 +2935,7 @@ export const SchemaVersionNotFoundErrorNameEnum = {
   InternalServerError: 'INTERNAL_SERVER_ERROR',
   UnauthorizedError: 'UNAUTHORIZED_ERROR',
   UnprocessableEntityError: 'UNPROCESSABLE_ENTITY_ERROR',
+  BadRequestError: 'BAD_REQUEST_ERROR',
 } as const
 
 export type SchemaVersionNotFoundErrorNameEnum =
@@ -3373,6 +3413,7 @@ export const UnableAddFormToRabbitErrorDtoErrorNameEnum = {
   InternalServerError: 'INTERNAL_SERVER_ERROR',
   UnauthorizedError: 'UNAUTHORIZED_ERROR',
   UnprocessableEntityError: 'UNPROCESSABLE_ENTITY_ERROR',
+  BadRequestError: 'BAD_REQUEST_ERROR',
 } as const
 
 export type UnableAddFormToRabbitErrorDtoErrorNameEnum =
@@ -3600,7 +3641,7 @@ export interface XmlToJsonResponseDto {
 export const ConvertApiAxiosParamCreator = function (configuration?: Configuration) {
   return {
     /**
-     * Generates XML form from given JSON data and form slug
+     * Generates XML form from given JSON data and form id
      * @summary
      * @param {string} id
      * @param {JsonToXmlRequestDto} jsonToXmlRequestDto
@@ -3656,7 +3697,45 @@ export const ConvertApiAxiosParamCreator = function (configuration?: Configurati
       }
     },
     /**
-     * Generates JSON form from given XML data and form slug
+     * Generates PDF for a given form id
+     * @summary
+     * @param {string} id
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    convertControllerConvertToPdf: async (
+      id: string,
+      options: AxiosRequestConfig = {},
+    ): Promise<RequestArgs> => {
+      // verify required parameter 'id' is not null or undefined
+      assertParamExists('convertControllerConvertToPdf', 'id', id)
+      const localVarPath = `/convert/pdf/{id}`.replace(`{${'id'}}`, encodeURIComponent(String(id)))
+      // use dummy base URL string because the URL constructor only accepts absolute URLs.
+      const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL)
+      let baseOptions
+      if (configuration) {
+        baseOptions = configuration.baseOptions
+      }
+
+      const localVarRequestOptions = { method: 'GET', ...baseOptions, ...options }
+      const localVarHeaderParameter = {} as any
+      const localVarQueryParameter = {} as any
+
+      setSearchParams(localVarUrlObj, localVarQueryParameter)
+      let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {}
+      localVarRequestOptions.headers = {
+        ...localVarHeaderParameter,
+        ...headersFromBaseOptions,
+        ...options.headers,
+      }
+
+      return {
+        url: toPathString(localVarUrlObj),
+        options: localVarRequestOptions,
+      }
+    },
+    /**
+     * Generates JSON form from given XML data and form id
      * @summary
      * @param {string} id
      * @param {XmlToJsonRequestDto} xmlToJsonRequestDto
@@ -3722,7 +3801,7 @@ export const ConvertApiFp = function (configuration?: Configuration) {
   const localVarAxiosParamCreator = ConvertApiAxiosParamCreator(configuration)
   return {
     /**
-     * Generates XML form from given JSON data and form slug
+     * Generates XML form from given JSON data and form id
      * @summary
      * @param {string} id
      * @param {JsonToXmlRequestDto} jsonToXmlRequestDto
@@ -3742,7 +3821,24 @@ export const ConvertApiFp = function (configuration?: Configuration) {
       return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)
     },
     /**
-     * Generates JSON form from given XML data and form slug
+     * Generates PDF for a given form id
+     * @summary
+     * @param {string} id
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    async convertControllerConvertToPdf(
+      id: string,
+      options?: AxiosRequestConfig,
+    ): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<object>> {
+      const localVarAxiosArgs = await localVarAxiosParamCreator.convertControllerConvertToPdf(
+        id,
+        options,
+      )
+      return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)
+    },
+    /**
+     * Generates JSON form from given XML data and form id
      * @summary
      * @param {string} id
      * @param {XmlToJsonRequestDto} xmlToJsonRequestDto
@@ -3776,7 +3872,7 @@ export const ConvertApiFactory = function (
   const localVarFp = ConvertApiFp(configuration)
   return {
     /**
-     * Generates XML form from given JSON data and form slug
+     * Generates XML form from given JSON data and form id
      * @summary
      * @param {string} id
      * @param {JsonToXmlRequestDto} jsonToXmlRequestDto
@@ -3793,7 +3889,19 @@ export const ConvertApiFactory = function (
         .then((request) => request(axios, basePath))
     },
     /**
-     * Generates JSON form from given XML data and form slug
+     * Generates PDF for a given form id
+     * @summary
+     * @param {string} id
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    convertControllerConvertToPdf(id: string, options?: AxiosRequestConfig): AxiosPromise<object> {
+      return localVarFp
+        .convertControllerConvertToPdf(id, options)
+        .then((request) => request(axios, basePath))
+    },
+    /**
+     * Generates JSON form from given XML data and form id
      * @summary
      * @param {string} id
      * @param {XmlToJsonRequestDto} xmlToJsonRequestDto
@@ -3820,7 +3928,7 @@ export const ConvertApiFactory = function (
  */
 export class ConvertApi extends BaseAPI {
   /**
-   * Generates XML form from given JSON data and form slug
+   * Generates XML form from given JSON data and form id
    * @summary
    * @param {string} id
    * @param {JsonToXmlRequestDto} jsonToXmlRequestDto
@@ -3839,7 +3947,21 @@ export class ConvertApi extends BaseAPI {
   }
 
   /**
-   * Generates JSON form from given XML data and form slug
+   * Generates PDF for a given form id
+   * @summary
+   * @param {string} id
+   * @param {*} [options] Override http request option.
+   * @throws {RequiredError}
+   * @memberof ConvertApi
+   */
+  public convertControllerConvertToPdf(id: string, options?: AxiosRequestConfig) {
+    return ConvertApiFp(this.configuration)
+      .convertControllerConvertToPdf(id, options)
+      .then((request) => request(this.axios, this.basePath))
+  }
+
+  /**
+   * Generates JSON form from given XML data and form id
    * @summary
    * @param {string} id
    * @param {XmlToJsonRequestDto} xmlToJsonRequestDto

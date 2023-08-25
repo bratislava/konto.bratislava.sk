@@ -1,9 +1,11 @@
 import React, { PropsWithChildren } from 'react'
 
-import FieldErrorMessage, { FieldErrorMessageProps } from '../info-components/FieldErrorMessage'
+import { FieldErrorMessageProps } from '../info-components/FieldErrorMessage'
+import FieldFooter, { FieldFooterProps } from '../info-components/FieldFooter'
 import FieldHeader, { FieldHeaderProps } from '../info-components/FieldHeader'
 
 type FieldWrapperProps = FieldHeaderProps &
+  FieldFooterProps &
   FieldErrorMessageProps & {
     disabled?: boolean
     customErrorPlace?: boolean
@@ -15,15 +17,15 @@ const FieldWrapper = ({
   errorMessageProps,
   disabled,
   customErrorPlace,
+  helptext,
+  descriptionProps,
   ...fieldHeaderProps
 }: PropsWithChildren<FieldWrapperProps>) => {
   return (
     <>
       <FieldHeader {...fieldHeaderProps} />
       {children}
-      {!disabled && !customErrorPlace && (
-        <FieldErrorMessage errorMessage={errorMessage} errorMessageProps={errorMessageProps} />
-      )}
+      <FieldFooter {...{ helptext, descriptionProps, disabled, errorMessage, customErrorPlace }} />
     </>
   )
 }

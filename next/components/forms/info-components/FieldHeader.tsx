@@ -8,7 +8,6 @@ import { FieldBaseProps } from '../widget-components/FieldBase'
 export type FieldHeaderProps = FieldBaseProps & {
   htmlFor?: string
   labelProps?: DOMAttributes<never>
-  descriptionProps?: DOMAttributes<never>
   tooltipPosition?: TooltipPositionType
 }
 
@@ -17,9 +16,7 @@ const FieldHeader = ({
   htmlFor,
   required,
   explicitOptional = false,
-  helptext = '',
   labelProps,
-  descriptionProps,
   tooltip,
   tooltipPosition,
 }: FieldHeaderProps) => {
@@ -29,12 +26,6 @@ const FieldHeader = ({
     'after:text-16-semibold after:absolute after:bottom-0.5 after:ml-0.5 after:text-main-700 after:content-["*"]':
       required,
   })
-
-  const helptextHandler = () =>
-    helptext
-      .trim()
-      .split('\n')
-      .map((sentence, i) => <span key={i}>{sentence}</span>)
 
   return (
     <div className="w-full">
@@ -61,11 +52,6 @@ const FieldHeader = ({
           </div>
         </div>
       </div>
-      {helptext && (
-        <div {...descriptionProps} className="text-p3 sm:text-16 mb-1 text-gray-700">
-          {helptextHandler()}
-        </div>
-      )}
     </div>
   )
 }

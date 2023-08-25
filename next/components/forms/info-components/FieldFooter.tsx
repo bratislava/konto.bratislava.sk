@@ -18,12 +18,6 @@ const FieldFooter = ({
   errorMessage,
   errorMessageProps,
 }: FieldFooterProps) => {
-  const helptextHandler = () =>
-    helptext
-      .trim()
-      .split('\n')
-      .map((sentence, i) => <span key={i}>{sentence}</span>)
-
   return (
     <>
       {!disabled && !customErrorPlace && (
@@ -31,8 +25,11 @@ const FieldFooter = ({
       )}
       {helptext && (
         <div className="w-full">
-          <div {...descriptionProps} className="text-p3 sm:text-16 mb-1 text-gray-700">
-            {helptextHandler()}
+          <div
+            {...descriptionProps}
+            className="text-p3 sm:text-16 mb-1 whitespace-pre-wrap text-gray-700"
+          >
+            {helptext}
           </div>
         </div>
       )}

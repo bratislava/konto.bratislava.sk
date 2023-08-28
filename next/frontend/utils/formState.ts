@@ -129,6 +129,7 @@ export const useStepIndex = (
     initialValue = 'summary' as const
   }
 
+  // https://stackoverflow.com/a/74609594
   const effectOnceRan = useRef(false)
   useEffectOnce(() => {
     if (effectOnceRan.current) {

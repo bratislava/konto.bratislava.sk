@@ -36,7 +36,7 @@ const useGetContext = (initialFormData: InitialFormData) => {
       !tierStatus.isIdentityVerified,
   )
 
-  const [sendFilesScanningEidModal, setSendFilesScanningEidModal] = useState(false)
+  const [sendFilesScanningEidModal, setSendFilesScanningEidModal] = useState<ModalWithSendCallback>({ isOpen: false })
   const [sendFilesScanningNotVerifiedEidModal, setSendFilesScanningNotVerifiedEidModal] =
     useState(false)
   const [sendIdentityMissingModal, setSendIdentityMissingModal] = useState(false)

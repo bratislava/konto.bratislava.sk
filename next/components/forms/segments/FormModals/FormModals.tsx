@@ -102,15 +102,19 @@ const FormModals = () => {
     },
     {
       key: 'sendFilesScanningEidModal',
-      isOpen: sendFilesScanningEidModal,
-      onOpenChange: setSendFilesScanningEidModal,
+      isOpen: sendFilesScanningEidModal.isOpen,
+      onOpenChange: (value) => {
+        if (!value) {
+          setSendFilesScanningEidModal({ isOpen: false })
+        }
+      },
       title: t('send_files_scanning_eid_modal.title'),
       type: 'warning',
       buttons: [
-        <Button onPress={() => setSendFilesScanningEidModal(false)}>
+        <Button onPress={() => setSendFilesScanningEidModal({ isOpen: false })}>
           {t('modals_back_button_title')}
         </Button>,
-        <Button variant="black-solid" onPress={() => skipModal.onSkip()}>
+        <Button variant='black-solid' onPress={() => sendFilesScanningEidModal.isOpen && sendFilesScanningEidModal.sendCallback()}>
           {t('send_files_scanning_eid_modal.button_title')}
         </Button>,
       ],
@@ -170,11 +174,6 @@ const FormModals = () => {
       onOpenChange: setSendFilesUploadingModal,
       title: t('send_files_uploading_modal.title'),
       type: 'warning',
-      buttons: [
-        <Button onPress={() => setSendFilesUploadingModal(false)}>
-          {t('modals_back_button_title')}
-        </Button>,
-      ],
       children: t('send_files_uploading_modal.content'),
     },
     {

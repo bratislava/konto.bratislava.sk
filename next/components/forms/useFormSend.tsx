@@ -181,6 +181,7 @@ const useGetContext = ({ initialFormData }: FormSendProviderProps) => {
     setSendEidLoading(sendFormEidIsLoading)
   }, [sendFormEidIsLoading, setSendEidLoading])
 
+  // https://stackoverflow.com/a/74609594
   const effectOnceRan = useRef(false)
   useEffectOnce(() => {
     if (effectOnceRan.current) {
@@ -254,7 +255,8 @@ const useGetContext = ({ initialFormData }: FormSendProviderProps) => {
     }
 
     if (isAuthenticated && isIdentityVerified && scanningFiles.length > 0) {
-      setSendFilesScanningEidModal(true)
+      // eslint-disable-next-line @typescript-eslint/no-misused-promises
+      setSendFilesScanningEidModal({ isOpen: true, sendCallback: () => handleSendButtonPress(agreement) })
       return
     }
 

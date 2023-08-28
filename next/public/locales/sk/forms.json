@@ -109,12 +109,6 @@
     "title": "Koncept nie je možné upravovať",
     "content": "Ľutujeme, v dôsledku aktualizácie Bratislavského konta, už nie je možné pokračovať v úpravách tejto žiadosti. Koncept si viete pozrieť, ale nie upraviť."
   },
-  "skip_step_modal": {
-    "title": "Vyplňte správne všetky povinné polia",
-    "content": "Bez toho nebude možné formulár úspešne odoslať. K doplneniu polí sa môžete kedykoľvek vrátiť.",
-    "button_primary_title": "Upraviť",
-    "button_secondary_title": "Preskočiť"
-  },
   "concept_save_error_modal": {
     "title": "Žiadosť sa nepodarilo uložiť",
     "content": "Vašu žiadosť sa nepodarilo uložiť do konceptov. Opakujte akciu alebo to vyskúšajte neskôr.",

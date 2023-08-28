@@ -6,14 +6,12 @@ import { useFormExportImport } from '../../../../frontend/hooks/useFormExportImp
 import Button from '../../simple-components/ButtonNew'
 import { useFormModals } from '../../useFormModals'
 import { useFormRedirects } from '../../useFormRedirects'
-import { useFormState } from '../../useFormState'
 import MessageModal, { MessageModalProps } from '../../widget-components/Modals/MessageModal'
 import IdentityVerificationModal from '../IdentityVerificationModal/IdentityVerificationModal'
 import RegistrationModal from '../RegistrationModal/RegistrationModal'
 
 const FormModals = () => {
   const { t } = useTranslation('forms')
-  const { skipModal } = useFormState()
 
   const {
     oldVersionSchemaModal,
@@ -63,22 +61,6 @@ const FormModals = () => {
       type: 'warning',
       title: t('old_schema_version_modal.title'),
       children: t('old_schema_version_modal.content'),
-    },
-    {
-      key: 'skipStepModal',
-      isOpen: skipModal.open,
-      onOpenChange: skipModal.onOpenChange,
-      title: t('skip_step_modal.title'),
-      type: 'error',
-      buttons: [
-        <Button onPress={() => skipModal.onSkip()}>
-          {t('skip_step_modal.button_secondary_title')}
-        </Button>,
-        <Button variant="category-solid" onPress={() => skipModal.onOpenChange(false)}>
-          {t('skip_step_modal.button_primary_title')}
-        </Button>,
-      ],
-      children: t('skip_step_modal.content'),
     },
     {
       key: 'conceptSaveErrorModal',

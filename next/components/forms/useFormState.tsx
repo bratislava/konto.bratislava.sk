@@ -18,13 +18,6 @@ import { FormStepIndex } from './types/Steps'
 import { useFormFileUpload } from './useFormFileUpload'
 import { useFormLeaveProtection } from './useFormLeaveProtection'
 
-type SkipModal = {
-  open: boolean
-  skipAllowed: boolean
-  onSkip: () => void
-  onOpenChange: (value: boolean) => void
-}
-
 interface FormStateProviderProps {
   schema: RJSFSchema
   uiSchema: UiSchema
@@ -47,13 +40,6 @@ const useGetContext = ({ schema, uiSchema, formSlug, initialFormData }: FormStat
     query,
     stepsSchemas,
   )
-
-  const [skipModal, setSkipModal] = useState<SkipModal>({
-    open: false,
-    skipAllowed: false,
-    onOpenChange: () => {},
-    onSkip: () => {},
-  })
 
   /**
    * This set holds indexes of steps that have been submitted (submit button has been pressed, which means they have been validated).
@@ -79,36 +65,6 @@ const useGetContext = ({ schema, uiSchema, formSlug, initialFormData }: FormStat
 
   const skipToStep = (newStepIndex: FormStepIndex) => {
     if (currentStepIndex === newStepIndex) {
-      return
-    }
-    const isSubmittedStep = stepperData.find((step) => step.index === newStepIndex)?.isSubmitted
-
-    if (!isSubmittedStep && !skipModal.skipAllowed) {
-      setSkipModal({
-        open: true,
-        skipAllowed: skipModal.skipAllowed,
-        onSkip: () => {
-          setSkipModal({
-            open: false,
-            skipAllowed: true,
-            onSkip: () => {},
-            onOpenChange: () => {},
-          })
-          goToStep(newStepIndex)
-        },
-        onOpenChange: (value) => {
-          if (value) {
-            return
-          }
-          setSkipModal((value) => ({
-            open: false,
-            skipAllowed: value.skipAllowed,
-            onSkip: () => {},
-            onOpenChange: () => {},
-          }))
-        },
-      })
-
       return
     }
 
@@ -229,7 +185,6 @@ const useGetContext = ({ schema, uiSchema, formSlug, initialFormData }: FormStat
     formSlug,
     formData,
     currentStepIndex,
-    skipModal,
     stepperData,
     currentStepperStep,
     currentStepSchema,

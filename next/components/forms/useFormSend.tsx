@@ -197,7 +197,7 @@ const useGetContext = ({ initialFormData }: FormSendProviderProps) => {
     }
   })
 
-  const handleSendButtonPress = async (agreement: boolean) => {
+  const handleSendButtonPress = async () => {
     const { errorSchema, infectedFiles, uploadingFiles, scanningFiles } = validateSummary(
       schema,
       formData,
@@ -205,7 +205,7 @@ const useGetContext = ({ initialFormData }: FormSendProviderProps) => {
     )
     const submitDisabled = isFormSubmitDisabled(errorSchema, infectedFiles)
 
-    if (!agreement || submitDisabled || sendFormIsLoading) {
+    if (submitDisabled || sendFormIsLoading) {
       return
     }
 
@@ -237,7 +237,7 @@ const useGetContext = ({ initialFormData }: FormSendProviderProps) => {
     setSendConfirmationModal(modalValue)
   }
 
-  const handleSendEidButtonPress = (agreement: boolean) => {
+  const handleSendEidButtonPress = () => {
     const { errorSchema, infectedFiles, uploadingFiles, scanningFiles } = validateSummary(
       schema,
       formData,
@@ -245,7 +245,7 @@ const useGetContext = ({ initialFormData }: FormSendProviderProps) => {
     )
     const submitDisabled = isFormSubmitDisabled(errorSchema, infectedFiles)
 
-    if (!agreement || submitDisabled || sendFormEidIsLoading) {
+    if (submitDisabled || sendFormEidIsLoading) {
       return
     }
 
@@ -256,7 +256,7 @@ const useGetContext = ({ initialFormData }: FormSendProviderProps) => {
 
     if (isAuthenticated && isIdentityVerified && scanningFiles.length > 0) {
       // eslint-disable-next-line @typescript-eslint/no-misused-promises
-      setSendFilesScanningEidModal({ isOpen: true, sendCallback: () => handleSendButtonPress(agreement) })
+      setSendFilesScanningEidModal({ isOpen: true, sendCallback: () => handleSendButtonPress() })
       return
     }
 

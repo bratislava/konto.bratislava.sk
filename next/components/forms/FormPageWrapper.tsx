@@ -9,7 +9,6 @@ import PageWrapper from '../layouts/PageWrapper'
 import { GetSSRCurrentAuth } from '../logic/ServerSideAuthProvider'
 import FormPage from './FormPage'
 import ThankYouFormSection from './segments/AccountSections/ThankYouSection/ThankYouFormSection'
-import { FormSummaryProvider } from './steps/Summary/useFormSummary'
 import { FormFileUploadProvider } from './useFormFileUpload'
 import { FormLeaveProtectionProvider } from './useFormLeaveProtection'
 import { FormModalsProvider } from './useFormModals'
@@ -49,9 +48,7 @@ const FormPageWrapper = ({ schema, uiSchema, page, initialFormData }: FormPageWr
                     <FormModalsProvider initialFormData={initialFormData}>
                       <FormSendProvider initialFormData={initialFormData}>
                         <FormExportImportProvider>
-                          <FormSummaryProvider>
                             <FormPage />
-                          </FormSummaryProvider>
                         </FormExportImportProvider>
                       </FormSendProvider>
                     </FormModalsProvider>

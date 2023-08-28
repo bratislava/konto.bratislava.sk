@@ -6,14 +6,12 @@ import { useFormExportImport } from '../../../../frontend/hooks/useFormExportImp
 import Button from '../../simple-components/ButtonNew'
 import { useFormModals } from '../../useFormModals'
 import { useFormRedirects } from '../../useFormRedirects'
-import { useFormState } from '../../useFormState'
 import MessageModal, { MessageModalProps } from '../../widget-components/Modals/MessageModal'
 import IdentityVerificationModal from '../IdentityVerificationModal/IdentityVerificationModal'
 import RegistrationModal from '../RegistrationModal/RegistrationModal'
 
 const FormModals = () => {
   const { t } = useTranslation('forms')
-  const { skipModal } = useFormState()
 
   const {
     oldVersionSchemaModal,
@@ -65,22 +63,6 @@ const FormModals = () => {
       children: t('old_schema_version_modal.content'),
     },
     {
-      key: 'skipStepModal',
-      isOpen: skipModal.open,
-      onOpenChange: skipModal.onOpenChange,
-      title: t('skip_step_modal.title'),
-      type: 'error',
-      buttons: [
-        <Button onPress={() => skipModal.onSkip()}>
-          {t('skip_step_modal.button_secondary_title')}
-        </Button>,
-        <Button variant="category-solid" onPress={() => skipModal.onOpenChange(false)}>
-          {t('skip_step_modal.button_primary_title')}
-        </Button>,
-      ],
-      children: t('skip_step_modal.content'),
-    },
-    {
       key: 'conceptSaveErrorModal',
       isOpen: conceptSaveErrorModal,
       onOpenChange: setConceptSaveErrorModal,
@@ -102,15 +84,19 @@ const FormModals = () => {
     },
     {
       key: 'sendFilesScanningEidModal',
-      isOpen: sendFilesScanningEidModal,
-      onOpenChange: setSendFilesScanningEidModal,
+      isOpen: sendFilesScanningEidModal.isOpen,
+      onOpenChange: (value) => {
+        if (!value) {
+          setSendFilesScanningEidModal({ isOpen: false })
+        }
+      },
       title: t('send_files_scanning_eid_modal.title'),
       type: 'warning',
       buttons: [
-        <Button onPress={() => setSendFilesScanningEidModal(false)}>
+        <Button onPress={() => setSendFilesScanningEidModal({ isOpen: false })}>
           {t('modals_back_button_title')}
         </Button>,
-        <Button variant="black-solid" onPress={() => skipModal.onSkip()}>
+        <Button variant='black-solid' onPress={() => sendFilesScanningEidModal.isOpen && sendFilesScanningEidModal.sendCallback()}>
           {t('send_files_scanning_eid_modal.button_title')}
         </Button>,
       ],
@@ -170,11 +156,6 @@ const FormModals = () => {
       onOpenChange: setSendFilesUploadingModal,
       title: t('send_files_uploading_modal.title'),
       type: 'warning',
-      buttons: [
-        <Button onPress={() => setSendFilesUploadingModal(false)}>
-          {t('modals_back_button_title')}
-        </Button>,
-      ],
       children: t('send_files_uploading_modal.content'),
     },
     {

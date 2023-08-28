@@ -15,6 +15,7 @@ export const getServerSideProps = async () => {
 const NasesLoginPage = () => {
   const router = useRouter()
 
+  // https://stackoverflow.com/a/74609594
   const effectOnceRan = useRef(false)
   useEffectOnce(() => {
     if (effectOnceRan.current) {

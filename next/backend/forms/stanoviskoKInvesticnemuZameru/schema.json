@@ -3,32 +3,34 @@
   "pospVersion": "0.1",
   "title": "Stanovisko k investičnému zámeru",
   "type": "object",
-  "required": ["ziadatel", "investor", "projektant", "stavba", "prilohy"],
   "allOf": [
     {
       "properties": {
         "prilohy": {
           "type": "object",
           "title": "Prílohy",
+          "hash": "prilohy",
           "properties": {
             "architektonickaStudia": {
               "type": "array",
               "title": "Architektonická štúdia",
               "items": {
                 "type": "string",
-                "format": "file"
+                "file": true
               }
             }
           },
           "required": ["architektonickaStudia"]
         }
-      }
+      },
+      "required": ["prilohy"]
     },
     {
       "properties": {
         "ziadatel": {
           "type": "object",
           "title": "Žiadateľ",
+          "hash": "ziadatel",
           "properties": {
             "ziadatelTyp": {
               "title": "Žiadate ako",
@@ -210,13 +212,15 @@
             }
           ]
         }
-      }
+      },
+      "required": ["ziadatel"]
     },
     {
       "properties": {
         "investor": {
           "type": "object",
           "title": "Investor",
+          "hash": "investor",
           "properties": {
             "investorZiadatelom": {
               "title": "Je investor rovnaká osoba ako žiadateľ?",
@@ -241,7 +245,7 @@
                     "title": "Splnomocnenie na zastupovanie",
                     "items": {
                       "type": "string",
-                      "format": "file"
+                      "file": true
                     }
                   }
                 },
@@ -265,7 +269,7 @@
                         "title": "Splnomocnenie na zastupovanie",
                         "items": {
                           "type": "string",
-                          "format": "file"
+                          "file": true
                         }
                       },
                       "investorTyp": {
@@ -451,13 +455,15 @@
             }
           ]
         }
-      }
+      },
+      "required": ["investor"]
     },
     {
       "properties": {
         "projektant": {
           "type": "object",
           "title": "Zodpovedný projektant",
+          "hash": "zodpovedny-projektant",
           "properties": {
             "projektantMenoPriezvisko": {
               "type": "string",
@@ -493,13 +499,15 @@
             "datumSpracovania"
           ]
         }
-      }
+      },
+      "required": ["projektant"]
     },
     {
       "properties": {
         "stavba": {
           "type": "object",
           "title": "Informácie o stavbe",
+          "hash": "informacie-o-stavbe",
           "properties": {
             "stavbaNazov": {
               "type": "string",
@@ -535,6 +543,7 @@
               "title": "Katastrálne územie",
               "type": "array",
               "uniqueItems": true,
+              "minItems": 1,
               "items": {
                 "type": "string",
                 "oneOf": [
@@ -630,7 +639,8 @@
             "stavbaKataster"
           ]
         }
-      }
+      },
+      "required": ["stavba"]
     }
   ]
 }

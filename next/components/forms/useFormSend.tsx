@@ -11,9 +11,8 @@ import { environment } from '../../environment'
 import { AccountType } from '../../frontend/dtos/accountDto'
 import { useServerSideAuth } from '../../frontend/hooks/useServerSideAuth'
 import useSnackbar from '../../frontend/hooks/useSnackbar'
-import { InitialFormData } from '../../frontend/types/initialFormData'
 import { validateSummary } from '../../frontend/utils/form'
-import { removeSendEidMetadata, setSendEidMetadata } from '../../frontend/utils/formSend'
+import { FORM_SEND_EID_TOKEN_QUERY_KEY, popSendEidMetadata, setSendEidMetadata } from '../../frontend/utils/formSend'
 import { isFormSubmitDisabled } from '../../frontend/utils/formSummary'
 import { RegistrationModalType } from './segments/RegistrationModal/RegistrationModal'
 import { useFormFileUpload } from './useFormFileUpload'
@@ -22,15 +21,13 @@ import { useFormModals } from './useFormModals'
 import { useFormSent } from './useFormSent'
 import { useFormState } from './useFormState'
 
-type FormSendProviderProps = {
-  initialFormData: InitialFormData
-}
-
-const useGetContext = ({ initialFormData }: FormSendProviderProps) => {
+const useGetContext = () => {
   const router = useRouter()
 
   const { t } = useTranslation('forms')
   const [openSnackbarError] = useSnackbar({ variant: 'error' })
+  // As the token is immediately removed from the URL, we need to store it in a ref.
+  const sendEidTokenRef = useRef<string | null>(null)
 
   const { formId, formSlug, formData, schema } = useFormState()
   const { getFileInfoById } = useFormFileUpload()
@@ -105,18 +102,6 @@ const useGetContext = ({ initialFormData }: FormSendProviderProps) => {
         onSuccess: async () => {
           setSendEidMetadata({ formSlug, formId })
           turnOffLeaveProtection()
-          await router.replace(
-            {
-              pathname: router.pathname,
-              query: {
-                ...router.query,
-                fromSendEid: true,
-                ...(!initialFormData.routeWithId && { formId: initialFormData.formId }),
-              },
-            },
-            undefined,
-            { shallow: true },
-          )
           window.location.href = environment.slovenskoSkLoginUrl
           setRedirectingToSlovenskoSkLogin(true)
         },
@@ -137,7 +122,7 @@ const useGetContext = ({ initialFormData }: FormSendProviderProps) => {
         {
           formDataJson: formData,
         },
-        { headers: { Authorization: `Bearer ${router.query.sendEidToken as string}` } },
+        { headers: { Authorization: `Bearer ${sendEidTokenRef.current as string}` } },
       ),
     {
       networkMode: 'always',
@@ -169,6 +154,8 @@ const useGetContext = ({ initialFormData }: FormSendProviderProps) => {
     },
   )
 
+  // Loading states must be backpropagated to useFormModals as they are parent context to this one
+  // TODO: Come up with better solution
   useEffect(() => {
     setSendLoading(sendFormIsLoading)
   }, [sendFormIsLoading, setSendLoading])
@@ -181,6 +168,19 @@ const useGetContext = ({ initialFormData }: FormSendProviderProps) => {
     setSendEidLoading(sendFormEidIsLoading)
   }, [sendFormEidIsLoading, setSendEidLoading])
 
+  /**
+   * As we don't want users to trigger the send again by reload we immediately remove the token from the URL.
+   */
+  const removeSendIdTokenFromUrl = () => {
+    const url = new URL(window.location.href)
+    const params = new URLSearchParams(url.search)
+    params.delete(FORM_SEND_EID_TOKEN_QUERY_KEY)
+    // eslint-disable-next-line scanjs-rules/assign_to_search
+    url.search = params.toString()
+    // eslint-disable-next-line @typescript-eslint/no-floating-promises
+    router.replace(url.toString(), undefined, { shallow: true })
+  }
+
   // https://stackoverflow.com/a/74609594
   const effectOnceRan = useRef(false)
   useEffectOnce(() => {
@@ -188,10 +188,14 @@ const useGetContext = ({ initialFormData }: FormSendProviderProps) => {
       return
     }
     effectOnceRan.current = true
+    popSendEidMetadata()
 
-    removeSendEidMetadata()
+    // If there is a send token in the URL, send the form via eID.
+    if (router.query[FORM_SEND_EID_TOKEN_QUERY_KEY] && !sendFormEidIsLoading) {
+      sendEidTokenRef.current = router.query[FORM_SEND_EID_TOKEN_QUERY_KEY] as string
 
-    if (router.query.sendEidToken && !sendFormEidIsLoading) {
+      removeSendIdTokenFromUrl()
+
       setEidSendingModal(true)
       sendFormEidMutate({})
     }
@@ -303,11 +307,8 @@ const useGetContext = ({ initialFormData }: FormSendProviderProps) => {
 
 const FormSendContext = createContext<ReturnType<typeof useGetContext> | undefined>(undefined)
 
-export const FormSendProvider = ({
-  children,
-  ...rest
-}: PropsWithChildren<FormSendProviderProps>) => {
-  const context = useGetContext(rest)
+export const FormSendProvider = ({ children }: PropsWithChildren) => {
+  const context = useGetContext()
 
   return <FormSendContext.Provider value={context}>{children}</FormSendContext.Provider>
 }

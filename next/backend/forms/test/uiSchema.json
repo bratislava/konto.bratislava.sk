@@ -5,6 +5,7 @@
         "objectDisplay": "columns",
         "objectColumnRatio": "3/1"
       },
+      "ui:order": ["mesto", "psc"],
       "mesto": {
         "ui:widget": "InputField",
         "ui:label": false,

@@ -14,7 +14,7 @@
   },
   "ziadatel": {
     "ui:hideError": true,
-    "ziatetelTyp": {
+    "ziadatelTyp": {
       "ui:widget": "RadioButton",
       "ui:label": false,
       "ui:options": {
@@ -79,6 +79,7 @@
       "ui:label": false
     },
     "ziadatelMestoPsc": {
+      "ui:order": ["ziadatelMesto", "ziadatelPsc"],
       "ui:options": {
         "objectDisplay": "columns",
         "objectColumnRatio": "3/1"
@@ -166,6 +167,7 @@
       }
     },
     "investorMestoPsc": {
+      "ui:order": ["investorMesto", "investorPsc"],
       "ui:options": {
         "objectDisplay": "columns",
         "objectColumnRatio": "3/1"

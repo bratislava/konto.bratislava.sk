@@ -1,12 +1,10 @@
+import { formsApi } from '@clients/forms'
+import { isAxiosError } from 'axios'
 import { GetServerSideProps } from 'next'
 
-import FormPageWrapper, { FormPageWrapperProps } from '../../../components/forms/FormPageWrapper'
-import { ServerSideAuthProviderHOC } from '../../../components/logic/ServerSideAuthProvider'
+import { FormPageWrapperProps } from '../../../components/forms/FormPageWrapper'
 import { environment } from '../../../environment'
-import {
-  createFormServerSideProps,
-  existingFormServerSideProps,
-} from '../../../frontend/utils/formRoutes'
+import { ROUTES } from '../../../frontend/api/constants'
 
 type Params = {
   slug: string
@@ -17,12 +15,55 @@ export const getServerSideProps: GetServerSideProps<FormPageWrapperProps, Params
 
   const { slug } = ctx.params
 
-  const { formId } = ctx.query
-  if (typeof formId === 'string') {
-    return existingFormServerSideProps(ctx, slug, formId)
-  }
+  try {
+    const schema = await formsApi.schemasControllerGetSchema(slug, {
+      accessToken: 'onlyAuthenticated',
+      accessTokenSsrReq: ctx.req,
+    })
+    const { latestVersionId, latestVersion } = schema.data
+    if (!latestVersionId || !latestVersion) {
+      return {
+        notFound: true,
+      }
+    }
 
-  return createFormServerSideProps(ctx, slug)
+    const { data: form } = await formsApi
+      .nasesControllerCreateForm(
+        {
+          schemaVersionId: latestVersionId,
+        },
+        { accessToken: 'onlyAuthenticated', accessTokenSsrReq: ctx.req },
+      )
+
+    if (!form) {
+      return { notFound: true }
+    }
+
+      return {
+        redirect: {
+          destination: `${ROUTES.MUNICIPAL_SERVICES}/${slug}/${form.id}`,
+          permanent: false,
+        },
+      }
+  } catch (error) {
+    if (isAxiosError(error)) {
+      if (error.response?.status === 404) {
+        return { notFound: true }
+      }
+      if (error.response?.status === 401 || error.response?.status === 403) {
+        return {
+          // TODO: Redirect back after login
+          redirect: {
+            destination: ROUTES.LOGIN,
+            permanent: false,
+          },
+        }
+      }
+    }
+
+    throw error
+  }
 }
 
-export default ServerSideAuthProviderHOC(FormPageWrapper)
+const EmptyComponent = () => {}
+export default EmptyComponent

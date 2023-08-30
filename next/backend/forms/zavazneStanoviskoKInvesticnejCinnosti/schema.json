@@ -10,6 +10,7 @@
         "prilohy": {
           "type": "object",
           "title": "Prílohy",
+          "hash": "prilohy",
           "properties": {
             "projektovaDokumentacia": {
               "type": "array",
@@ -31,6 +32,7 @@
         "ziadatel": {
           "type": "object",
           "title": "Žiadateľ",
+          "hash": "ziadatel",
           "properties": {
             "ziadatelTyp": {
               "title": "Žiadate ako",
@@ -222,6 +224,7 @@
         "investor": {
           "type": "object",
           "title": "Investor",
+          "hash": "investor",
           "properties": {
             "investorZiadatelom": {
               "title": "Je investor rovnaká osoba ako žiadateľ?",
@@ -465,6 +468,7 @@
         "projektant": {
           "type": "object",
           "title": "Zodpovedný projektant",
+          "hash": "zodpovedny-projektant",
           "properties": {
             "projektantMenoPriezvisko": {
               "type": "string",
@@ -509,6 +513,7 @@
         "stavba": {
           "type": "object",
           "title": "Informácie o stavbe",
+          "hash": "informacie-o-stavbe",
           "properties": {
             "stavbaNazov": {
               "type": "string",
@@ -544,6 +549,7 @@
               "title": "Katastrálne územie",
               "type": "array",
               "uniqueItems": true,
+              "minItems": 1,
               "items": {
                 "type": "string",
                 "oneOf": [
@@ -648,6 +654,7 @@
         "konanie": {
           "type": "object",
           "title": "Typ konania na stavebnom úrade",
+            "hash": "typ-konania-na-stavebnom-urade",
           "properties": {
             "konanieTyp": {
               "title": "Typ konania",

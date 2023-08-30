@@ -11,6 +11,7 @@
         "mestoPSCstep": {
           "type": "object",
           "title": "Mesto PSC step",
+          "hash": "mesto-psc-step",
           "properties": {
             "mestoPSC": {
               "required": ["psc", "mesto"],
@@ -64,6 +65,7 @@
               "conditionalStep": {
                 "type": "object",
                 "title": "Conditional step",
+                "hash": "conditional-step",
                 "properties": {
                   "randomInput": {
                     "type": "string",
@@ -99,7 +101,8 @@
               }
             }
           },
-          "title": "Showcase of DateTime Picker"
+          "title": "Showcase of DateTime Picker",
+          "hash": "showcase-of-datetime-picker"
         }
       },
       "required": ["dateTimePickerShowcase"]
@@ -109,6 +112,7 @@
       "properties": {
         "timeFromToShowcase": {
           "title": "Showcase of TimeFromTo Picker",
+          "hash": "showcase-of-timefromto-picker",
           "type": "object",
           "properties": {
             "timeFromTo": {
@@ -137,6 +141,7 @@
       "properties": {
         "dateFromToShowcase": {
           "title": "Showcase of DateFromTo Picker",
+          "hash": "showcase-of-datefromto-picker",
           "type": "object",
           "properties": {
             "dateFromTo": {
@@ -166,6 +171,7 @@
       "properties": {
         "datePickerWithTimePicker": {
           "title": "Showcase of DatePicker and TimePicker",
+          "hash": "showcase-of-datepicker-and-timepicker",
           "type": "object",
           "properties": {
             "datePicker": {
@@ -202,6 +208,7 @@
       "properties": {
         "inputFields": {
           "title": "Showcase of InputField",
+          "hash": "showcase-of-inputfield",
           "type": "object",
           "required": ["firstName", "lastName"],
           "properties": {
@@ -250,6 +257,7 @@
       "properties": {
         "selectFields": {
           "title": "Ukazka Selectov",
+          "hash": "ukazka-selectov",
           "type": "object",
           "required": ["school"],
           "properties": {
@@ -400,6 +408,7 @@
       "properties": {
         "fileUploads": {
           "title": "Nahratie suborov",
+          "hash": "nahratie-suborov",
           "type": "object",
           "required": ["importButtonMultipleFiles"],
           "properties": {
@@ -483,6 +492,7 @@
       "properties": {
         "chooseOneOf": {
           "title": "Radio button step",
+          "hash": "radio-button-step",
           "type": "object",
           "required": ["chooseOneOfMore"],
           "properties": {
@@ -561,6 +571,7 @@
       "properties": {
         "checkBoxes": {
           "title": "Checkboxes",
+          "hash": "checkboxes",
           "type": "object",
           "required": ["favouriteFruits"],
           "properties": {

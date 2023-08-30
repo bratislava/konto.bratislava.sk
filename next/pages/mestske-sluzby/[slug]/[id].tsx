@@ -23,20 +23,17 @@ export const getServerSideProps: GetServerSideProps<FormPageWrapperProps, Params
   const ssrCurrentAuthProps = await getSSRCurrentAuth(ctx.req)
 
   try {
-    const [form, files] = await Promise.all([
-      formsApi
+    // These promises cannot be run in parallel because the redirects in catch blocks depends on the error response of the first promise.
+    const { data: form } = await formsApi
         .nasesControllerGetForm(id, {
           accessToken: 'onlyAuthenticated',
           accessTokenSsrReq: ctx.req,
         })
-        .then((res) => res.data),
-      formsApi
+    const { data: files } = await formsApi
         .filesControllerGetFilesStatusByForm(id, {
           accessToken: 'onlyAuthenticated',
           accessTokenSsrReq: ctx.req,
         })
-        .then((res) => res.data),
-    ])
 
     if (
       !form ||
@@ -53,8 +50,8 @@ export const getServerSideProps: GetServerSideProps<FormPageWrapperProps, Params
 
     return {
       props: {
-        schema: formDefinitions.test.schema,
-        uiSchema: form.schemaVersion.uiSchema,
+        schema: formDefinitions.stanoviskoKInvesticnemuZameru.schema,
+        uiSchema: formDefinitions.stanoviskoKInvesticnemuZameru.uiSchema,
         ssrCurrentAuthProps,
         page: {
           locale,
@@ -72,11 +69,19 @@ export const getServerSideProps: GetServerSideProps<FormPageWrapperProps, Params
     }
   } catch (error) {
     if (isAxiosError(error)) {
-      if (error.response?.status === 404) {
+      const is401 = error.response?.status === 401
+      const is403 = error.response?.status === 403
+      const is404 = error.response?.status === 404
+      const isLoggedIn = Boolean(ssrCurrentAuthProps.userData)
+
+      // If logged in user receives 403 for his/her form it's not theirs.
+      if (is404 || (is403 && isLoggedIn)) {
         return { notFound: true }
       }
-      if (error.response?.status === 401) {
+      // If logged out user receives 403 for his/her form it might be theirs.
+      if (is401 || (is403 && !isLoggedIn)) {
         return {
+          // TODO: Redirect back after login
           redirect: {
             destination: ROUTES.LOGIN,
             permanent: false,

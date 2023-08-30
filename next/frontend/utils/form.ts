@@ -63,6 +63,9 @@ export const getAjvFormKeywords = (
       keyword: 'slug',
     },
     {
+      keyword: 'hash',
+    },
+    {
       keyword: 'file',
       validate: fileValidateFn,
     },

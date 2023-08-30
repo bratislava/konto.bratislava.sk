@@ -1,5 +1,6 @@
 import cx from 'classnames'
 import MenuList from 'components/forms/steps/MenuList'
+import { useEffect } from 'react'
 
 import { defaultFormStateBehavior, rjfsValidator } from '../../frontend/utils/form'
 import FormControls from './FormControls'
@@ -14,12 +15,17 @@ import { useFormState } from './useFormState'
 const FormPage = () => {
   const {
     uiSchema,
+    currentStepIndex,
     currentStepperStep,
     currentStepSchema,
     formData,
     handleFormOnSubmit,
     handleFormOnChange,
   } = useFormState()
+
+  useEffect(() => {
+    window.scrollTo({ top: 0, behavior: 'smooth' })
+  }, [currentStepIndex])
 
   return (
     <>

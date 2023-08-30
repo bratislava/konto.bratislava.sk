@@ -154,6 +154,8 @@ const useGetContext = () => {
     },
   )
 
+  // Loading states must be backpropagated to useFormModals as they are parent context to this one
+  // TODO: Come up with better solution
   useEffect(() => {
     setSendLoading(sendFormIsLoading)
   }, [sendFormIsLoading, setSendLoading])

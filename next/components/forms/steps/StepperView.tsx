@@ -5,7 +5,6 @@ import { useState } from 'react'
 import { useIsSSR } from 'react-aria'
 import { Button as AriaButton, Dialog, Modal, ModalOverlay } from 'react-aria-components'
 
-import { FormStepIndex } from '../types/Steps'
 import { useFormState } from '../useFormState'
 import StepperViewList from './StepperViewList'
 import StepperViewRow from './StepperViewRow'
@@ -13,7 +12,7 @@ import StepperViewRow from './StepperViewRow'
 type StepperModalProps = {
   isOpen: boolean
   setIsOpen: (isOpen: boolean) => void
-  handleOnSkipToStep: (stepIndex: FormStepIndex) => void
+  handleOnSkipToStep: () => void
 }
 
 const StepperModal = ({ isOpen, setIsOpen, handleOnSkipToStep }: StepperModalProps) => {
@@ -53,7 +52,7 @@ const StepperModal = ({ isOpen, setIsOpen, handleOnSkipToStep }: StepperModalPro
 
 const StepperView = () => {
   const [isOpen, setIsOpen] = useState<boolean>(false)
-  const { currentStepperStep, skipToStep } = useFormState()
+  const { currentStepperStep } = useFormState()
 
   const handleOnClickDropdownIcon = () => {
     if (!isOpen) {
@@ -61,9 +60,8 @@ const StepperView = () => {
     }
   }
 
-  const handleOnSkipToStep = (stepIndex: FormStepIndex) => {
+  const handleOnSkipToStep = () => {
     setIsOpen(false)
-    skipToStep(stepIndex)
   }
 
   return (
@@ -78,7 +76,7 @@ const StepperView = () => {
           )}
           onPress={handleOnClickDropdownIcon}
         >
-          <StepperViewRow className="grow" step={currentStepperStep} isCurrent isButton={false} />
+          <StepperViewRow className="grow" step={currentStepperStep} isCurrent />
           <ChevronDownIcon className={cx({ 'rotate-180': !isOpen })} />
         </AriaButton>
 

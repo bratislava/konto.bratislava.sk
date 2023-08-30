@@ -1,7 +1,7 @@
 import { GenericObjectType, RJSFSchema, UiSchema } from '@rjsf/utils'
-import { useRouter } from 'next/router'
 import { useTranslation } from 'next-i18next'
 import React, { createContext, PropsWithChildren, useContext, useMemo, useState } from 'react'
+import { useIsFirstRender } from 'usehooks-ts'
 
 import { InitialFormData } from '../../frontend/types/initialFormData'
 import { getFileUuidsNaive } from '../../frontend/utils/form'
@@ -12,7 +12,7 @@ import {
   getStepProperty,
   parseStepFromFieldId,
   removeUnusedPropertiesFromFormData,
-  useStepIndex,
+  useCurrentStepIndex,
 } from '../../frontend/utils/formState'
 import { FormStepIndex } from './types/Steps'
 import { useFormFileUpload } from './useFormFileUpload'
@@ -26,18 +26,16 @@ interface FormStateProviderProps {
 }
 
 const useGetContext = ({ schema, uiSchema, formSlug, initialFormData }: FormStateProviderProps) => {
-  const { query } = useRouter()
   const { t } = useTranslation('forms')
   const { keepFiles, refetchAfterImportIfNeeded } = useFormFileUpload()
   const { turnOnLeaveProtection } = useFormLeaveProtection()
+  // eslint-disable-next-line testing-library/render-result-naming-convention
+  const isFirst = useIsFirstRender()
 
   const [formData, setFormData] = useState<GenericObjectType>(initialFormData.formDataJson)
   const stepsSchemas = useMemo(() => getEvaluatedStepsSchemas(schema, formData), [schema, formData])
 
-  const [currentStepIndex, setCurrentStepIndex] = useStepIndex(
-    initialFormData.formId,
-    formSlug,
-    query,
+  const {currentStepIndex, setCurrentStepIndex} = useCurrentStepIndex(
     stepsSchemas,
   )
 
@@ -61,14 +59,6 @@ const useGetContext = ({ schema, uiSchema, formSlug, initialFormData }: FormStat
     if (stepsSchemas[newIndex] !== null || newIndex === 'summary') {
       setCurrentStepIndex(newIndex)
     }
-  }
-
-  const skipToStep = (newStepIndex: FormStepIndex) => {
-    if (currentStepIndex === newStepIndex) {
-      return
-    }
-
-    goToStep(newStepIndex)
   }
 
   const getPreviousStep = () => {
@@ -104,13 +94,6 @@ const useGetContext = ({ schema, uiSchema, formSlug, initialFormData }: FormStat
     }
   }
 
-  const skipToNextStep = () => {
-    const nextStepIndex = getNextStep()
-    if (nextStepIndex !== null) {
-      skipToStep(nextStepIndex)
-    }
-  }
-
   const setStepFormData = (stepFormData: GenericObjectType) => {
     // Form displays and returns only the data for the current step, so we need to merge it with the
     // existing data, as each step contains only one root property with the data this object spread
@@ -122,7 +105,10 @@ const useGetContext = ({ schema, uiSchema, formSlug, initialFormData }: FormStat
     keepFiles(fileUuids)
 
     setFormData(pickedPropertiesData)
-    turnOnLeaveProtection()
+    // Initial default data initialization (which triggers form onChange) shouldn't activate leave protection.
+    if (!isFirst) {
+      turnOnLeaveProtection()
+    }
   }
 
   const setImportedFormData = (importedFormData: GenericObjectType) => {
@@ -188,12 +174,10 @@ const useGetContext = ({ schema, uiSchema, formSlug, initialFormData }: FormStat
     stepperData,
     currentStepperStep,
     currentStepSchema,
-    skipToStep,
     canGoToPreviousStep,
     goToPreviousStep,
     canGoToNextStep,
     goToNextStep,
-    skipToNextStep,
     handleFormOnChange,
     handleFormOnSubmit,
     goToStepByFieldId,

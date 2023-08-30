@@ -1,19 +1,31 @@
+import { GetServerSideProps } from 'next'
 import { useRouter } from 'next/router'
 import { useRef } from 'react'
 import { useEffectOnce } from 'usehooks-ts'
 
+import { getSSRCurrentAuth, ServerSideAuthProviderHOC } from '../../components/logic/ServerSideAuthProvider'
 import { ROUTES } from '../../frontend/api/constants'
-import { getSendEidMetadata, removeSendEidMetadata } from '../../frontend/utils/formSend'
+import { useServerSideAuth } from '../../frontend/hooks/useServerSideAuth'
+import {
+  FORM_SEND_EID_TOKEN_QUERY_KEY,
+  FORM_SEND_FORM_ID_QUERY_KEY,
+  getSendEidMetadata,
+  removeSendEidMetadata,
+} from '../../frontend/utils/formSend'
 
-export const getServerSideProps = async () => {
+export const getServerSideProps: GetServerSideProps = async (ctx) => {
+  const ssrCurrentAuthProps = await getSSRCurrentAuth(ctx.req)
+
+
   return {
-    props: {},
+    props: {ssrCurrentAuthProps},
   }
 }
 
 // TODO: Change URL and rename
 const NasesLoginPage = () => {
   const router = useRouter()
+const  { isAuthenticated } = useServerSideAuth()
 
   // https://stackoverflow.com/a/74609594
   const effectOnceRan = useRef(false)
@@ -32,9 +44,9 @@ const NasesLoginPage = () => {
     removeSendEidMetadata()
 
     const { token } = router.query
-    const query = typeof token === 'string' ? { sendEidToken: token } : {}
+    const query = typeof token === 'string' ? { [FORM_SEND_EID_TOKEN_QUERY_KEY]: token } : {}
 
-    const url = `${ROUTES.MUNICIPAL_SERVICES}/${metadata.formSlug}/${metadata.formId}`
+    const url = isAuthenticated ? `${ROUTES.MUNICIPAL_SERVICES}/${metadata.formSlug}/${metadata.formId}` : `${ROUTES.MUNICIPAL_SERVICES}/${metadata.formSlug}?${FORM_SEND_FORM_ID_QUERY_KEY}=${metadata.formId}`
     // eslint-disable-next-line @typescript-eslint/no-floating-promises
     router.push(
       {
@@ -48,4 +60,4 @@ const NasesLoginPage = () => {
   return null
 }
 
-export default NasesLoginPage
+export default ServerSideAuthProviderHOC(NasesLoginPage)

@@ -27,14 +27,13 @@ export const getServerSideProps: GetServerSideProps<FormPageWrapperProps, Params
       }
     }
 
-    const form = await formsApi
+    const { data: form } = await formsApi
       .nasesControllerCreateForm(
         {
           schemaVersionId: latestVersionId,
         },
         { accessToken: 'onlyAuthenticated', accessTokenSsrReq: ctx.req },
       )
-      .then((res) => res.data)
 
     if (!form) {
       return { notFound: true }
@@ -51,8 +50,9 @@ export const getServerSideProps: GetServerSideProps<FormPageWrapperProps, Params
       if (error.response?.status === 404) {
         return { notFound: true }
       }
-      if (error.response?.status === 401) {
+      if (error.response?.status === 401 || error.response?.status === 403) {
         return {
+          // TODO: Redirect back after login
           redirect: {
             destination: ROUTES.LOGIN,
             permanent: false,

@@ -11,9 +11,12 @@ import { environment } from '../../environment'
 import { AccountType } from '../../frontend/dtos/accountDto'
 import { useServerSideAuth } from '../../frontend/hooks/useServerSideAuth'
 import useSnackbar from '../../frontend/hooks/useSnackbar'
-import { InitialFormData } from '../../frontend/types/initialFormData'
 import { validateSummary } from '../../frontend/utils/form'
-import { removeSendEidMetadata, setSendEidMetadata } from '../../frontend/utils/formSend'
+import {
+  FORM_SEND_EID_TOKEN_QUERY_KEY,
+  removeSendEidMetadata,
+  setSendEidMetadata,
+} from '../../frontend/utils/formSend'
 import { isFormSubmitDisabled } from '../../frontend/utils/formSummary'
 import { RegistrationModalType } from './segments/RegistrationModal/RegistrationModal'
 import { useFormFileUpload } from './useFormFileUpload'
@@ -22,11 +25,7 @@ import { useFormModals } from './useFormModals'
 import { useFormSent } from './useFormSent'
 import { useFormState } from './useFormState'
 
-type FormSendProviderProps = {
-  initialFormData: InitialFormData
-}
-
-const useGetContext = ({ initialFormData }: FormSendProviderProps) => {
+const useGetContext = () => {
   const router = useRouter()
 
   const { t } = useTranslation('forms')
@@ -105,18 +104,6 @@ const useGetContext = ({ initialFormData }: FormSendProviderProps) => {
         onSuccess: async () => {
           setSendEidMetadata({ formSlug, formId })
           turnOffLeaveProtection()
-          await router.replace(
-            {
-              pathname: router.pathname,
-              query: {
-                ...router.query,
-                fromSendEid: true,
-                ...(!initialFormData.routeWithId && { formId: initialFormData.formId }),
-              },
-            },
-            undefined,
-            { shallow: true },
-          )
           window.location.href = environment.slovenskoSkLoginUrl
           setRedirectingToSlovenskoSkLogin(true)
         },
@@ -191,7 +178,7 @@ const useGetContext = ({ initialFormData }: FormSendProviderProps) => {
 
     removeSendEidMetadata()
 
-    if (router.query.sendEidToken && !sendFormEidIsLoading) {
+    if (router.query[FORM_SEND_EID_TOKEN_QUERY_KEY] && !sendFormEidIsLoading) {
       setEidSendingModal(true)
       sendFormEidMutate({})
     }
@@ -305,9 +292,8 @@ const FormSendContext = createContext<ReturnType<typeof useGetContext> | undefin
 
 export const FormSendProvider = ({
   children,
-  ...rest
-}: PropsWithChildren<FormSendProviderProps>) => {
-  const context = useGetContext(rest)
+}: PropsWithChildren) => {
+  const context = useGetContext()
 
   return <FormSendContext.Provider value={context}>{children}</FormSendContext.Provider>
 }

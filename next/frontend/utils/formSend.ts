@@ -47,3 +47,9 @@ export const getSendEidMetadata = () => {
     return null
   }
 }
+
+export const FORM_SEND_EID_TOKEN_QUERY_KEY = 'sendEidToken'
+export const FORM_SEND_FROM_EID_QUERY_KEY = 'fromSendEid'
+export const FORM_SEND_FORM_ID_QUERY_KEY = 'formId'
+
+

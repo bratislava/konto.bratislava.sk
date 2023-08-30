@@ -7,5 +7,6 @@ export type InitialFormData = {
   files: GetFileResponseDto[]
   oldSchemaVersion: boolean
   formSent: boolean
-  routeWithId: boolean
+  routeWithId?: boolean
+  askForFormMigration: boolean
 }

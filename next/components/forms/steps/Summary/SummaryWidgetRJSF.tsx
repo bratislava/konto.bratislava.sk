@@ -50,18 +50,20 @@ const ValueComponent = ({
 }: Pick<SummaryWidgetRJSFProps, 'widgetType' | 'value' | 'options' | 'uiSchema'>) => {
   const formatter = useDateFormatter()
 
-  if (!value) {
+  if (!value || Array.isArray(value) && value.length === 0) {
     return <>-</>
   }
 
   switch (widgetType) {
     case 'select':
       const selectOptions = options as SelectRJSFOptions
+      const selectArray = Array.isArray(value) ? value : [value]
+      const selectLabels = selectArray.map(innerValue => selectOptions.enumOptions?.find((option) => option.value === innerValue)?.label ??
+        (innerValue as string))
+      
       return (
-        // TODO Array select
         <>
-          {selectOptions.enumOptions?.find((option) => option.value === value)?.label ??
-            (value as string)}
+          {selectLabels.join(', ')}
         </>
       )
     case 'radio':

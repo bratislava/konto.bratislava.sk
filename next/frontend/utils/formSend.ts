@@ -26,14 +26,11 @@ export const setSendEidMetadata = (value: SendEidMetadata) => {
   sessionStorage.setItem(SEND_EID_SESSION_STORAGE_KEY, JSON.stringify(value))
 }
 
-export const removeSendEidMetadata = () => {
-  // eslint-disable-next-line scanjs-rules/identifier_sessionStorage
-  sessionStorage.removeItem(SEND_EID_SESSION_STORAGE_KEY)
-}
-
-export const getSendEidMetadata = () => {
+export const popSendEidMetadata = () => {
   // eslint-disable-next-line scanjs-rules/identifier_sessionStorage
   const value = sessionStorage.getItem(SEND_EID_SESSION_STORAGE_KEY)
+  // eslint-disable-next-line scanjs-rules/identifier_sessionStorage
+  sessionStorage.removeItem(SEND_EID_SESSION_STORAGE_KEY)
   try {
     const parsed = JSON.parse(value || '')
 
@@ -47,3 +44,5 @@ export const getSendEidMetadata = () => {
     return null
   }
 }
+
+export const FORM_SEND_EID_TOKEN_QUERY_KEY = 'sendEidToken'

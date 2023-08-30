@@ -1,14 +1,15 @@
 import { GenericObjectType, retrieveSchema, RJSFSchema } from '@rjsf/utils'
 import { JSONSchema7 } from 'json-schema'
 import pick from 'lodash/pick'
-import { NextParsedUrlQuery } from 'next/dist/server/request-meta'
 import { useRouter } from 'next/router'
-import { useRef, useState } from 'react'
+import { useCallback, useEffect, useState } from 'react'
 import { useEffectOnce } from 'usehooks-ts'
 
 import { FormStepIndex, FormStepperStep } from '../../components/forms/types/Steps'
 import { rjfsValidator } from './form'
 import { isDefined } from './general'
+
+export const SUMMARY_HASH = 'sumar'
 
 /**
  * Evaluates each step with current form data and returns an array of schemas.
@@ -31,6 +32,18 @@ export const getEvaluatedStepsSchemas = (
   )
 }
 
+/**
+ * Each non-empty step defines exactly one property, this function returns the name of that property.
+ */
+export const getStepProperty = (step: JSONSchema7 | null) => {
+  if (!step?.properties) {
+    return null
+  }
+
+  const keys = Object.keys(step.properties)
+  return keys[0] ?? null
+}
+
 export const getStepperData = (
   stepsSchemas: (JSONSchema7 | null)[],
   submittedSteps: Set<FormStepIndex>,
@@ -49,7 +62,8 @@ export const getStepperData = (
         throw new Error('Step must have exactly one property.')
       }
 
-      const { title } = Object.values(step.properties)[0] as JSONSchema7
+      const stepProperty = getStepProperty(step)!
+      const { title, hash } = step.properties[stepProperty] as JSONSchema7 & { hash: string }
 
       // displayIndex is only incremented for non-empty steps
       displayIndex += 1
@@ -59,6 +73,7 @@ export const getStepperData = (
         title,
         isSubmitted: submittedSteps.has(index),
         isSummary: false,
+        hash,
       } as FormStepperStep
     })
     .filter(isDefined)
@@ -71,6 +86,7 @@ export const getStepperData = (
       title: summaryTitle,
       isSubmitted: submittedSteps.has(steps.length),
       isSummary: true,
+      hash: SUMMARY_HASH,
     } as FormStepperStep,
   ]
 }
@@ -94,67 +110,11 @@ export const parseStepFromFieldId = (fieldId: string) => {
 }
 
 /**
- * Each non-empty step defines exactly one property, this function returns the name of that property.
- */
-export const getStepProperty = (step: JSONSchema7 | null) => {
-  if (!step?.properties) {
-    return null
-  }
-
-  const keys = Object.keys(step.properties)
-  return keys[0] ?? null
-}
-
-/**
  * Returns a first non-empty step index.
  */
 export const getFirstNonEmptyStepIndex = (stepSchemas: (JSONSchema7 | null)[]) => {
   const firstStep = stepSchemas.findIndex((step) => step !== null)
   return firstStep !== -1 ? firstStep : ('summary' as const)
-}
-
-/*
- TODO: Comment
- */
-export const useStepIndex = (
-  formId: string,
-  formSlug: string,
-  query: NextParsedUrlQuery,
-  stepSchemas: (JSONSchema7 | null)[],
-) => {
-  const router = useRouter()
-
-  let initialValue = getFirstNonEmptyStepIndex(stepSchemas)
-  if (query.sendEidToken || query.fromSendEid) {
-    initialValue = 'summary' as const
-  }
-
-  // https://stackoverflow.com/a/74609594
-  const effectOnceRan = useRef(false)
-  useEffectOnce(() => {
-    if (effectOnceRan.current) {
-      return
-    }
-    effectOnceRan.current = true
-
-    if (query.sendEidToken || query.fromSendEid) {
-      const newQuery = { ...query }
-      delete newQuery.sendEidToken
-      delete newQuery.fromSendEid
-
-      // eslint-disable-next-line @typescript-eslint/no-floating-promises
-      router.replace(
-        {
-          pathname: router.pathname,
-          query: newQuery,
-        },
-        undefined,
-        { shallow: true },
-      )
-    }
-  })
-
-  return useState<FormStepIndex>(initialValue)
 }
 
 /**
@@ -174,4 +134,123 @@ export const removeUnusedPropertiesFromFormData = (
   const propertiesToKeep = evaluatedSchemas.map(getStepProperty).filter(isDefined)
 
   return pick(formData, propertiesToKeep)
+}
+
+/**
+ * Retrieves the hash of a step from provided schema.
+ */
+const getStepHash = (stepSchema: JSONSchema7 | null) => {
+  if (!stepSchema) {
+    return null
+  }
+
+  const stepProperty = getStepProperty(stepSchema)
+  if (!stepProperty) {
+    return null
+  }
+
+  const step = stepSchema?.properties?.[stepProperty] as JSONSchema7 & { hash?: string }
+  return step.hash
+}
+
+/**
+ * A custom hook that holds the state of the current step index and synchronizes its value with the hash in the URL.
+ * @param stepSchemas
+ */
+export const useCurrentStepIndex = (stepSchemas: (JSONSchema7 | null)[]) => {
+  const router = useRouter()
+
+  const initialValue = getFirstNonEmptyStepIndex(stepSchemas)
+  const [currentStepIndex, setCurrentStepIndex] = useState<FormStepIndex>(initialValue)
+
+  // Gets the current step and updates the hash if needed
+  const syncStepToHash = useCallback(
+    (index: FormStepIndex, replace: boolean = false) => {
+      const routerFn = replace ? router.replace : router.push
+
+      if (index === 'summary') {
+        // eslint-disable-next-line @typescript-eslint/no-floating-promises
+        routerFn(`#${SUMMARY_HASH}`)
+        return
+      }
+      const schema = stepSchemas?.[index]
+      const stepHash = getStepHash(schema)
+
+      if (!stepHash) {
+        return
+      }
+      // eslint-disable-next-line @typescript-eslint/no-floating-promises
+      routerFn(`#${stepHash}`)
+    },
+    [router, stepSchemas],
+  )
+
+  // Receives the current hash and updates the step index if needed
+  const onHashChange = useCallback(
+    (hash: string) => {
+      // eslint-disable-next-line security/detect-possible-timing-attacks
+      if (hash === `#${SUMMARY_HASH}`) {
+        setCurrentStepIndex('summary')
+        return
+      }
+
+      const hashStepIndex = stepSchemas.findIndex((schema) => {
+        const stepHash = getStepHash(schema)
+
+        if (!stepHash) {
+          return false
+        }
+
+        return hash === `#${stepHash}`
+      })
+
+      if (hashStepIndex !== -1 && hashStepIndex !== currentStepIndex) {
+        setCurrentStepIndex(hashStepIndex)
+      }
+
+      // If the hash in the URL is not a valid step, update the hash to the current step by replacing the router state
+      if (hashStepIndex === -1) {
+        // Calling hash change as hash change handler triggers "Error: Cancel rendering route" which is an expected behavior
+        syncStepToHash(currentStepIndex, true)
+      }
+    },
+    [currentStepIndex, stepSchemas, syncStepToHash],
+  )
+
+  // Initially sync the hash and the step index
+  useEffectOnce(() => {
+    // If the URL contains a hash, use it to set the current step
+    if (window.location.hash) {
+      onHashChange(window.location.hash)
+      return
+    }
+
+    // Otherwise, sync the hash with the current step
+    syncStepToHash(currentStepIndex, true)
+  })
+
+  useEffect(() => {
+    const onWindowHashChange = () => onHashChange(window.location.hash)
+    const onNextHashChange = (url: string) => {
+      const urlInstance = new URL(url, window.location.origin)
+      onHashChange(urlInstance.hash)
+    }
+
+    router.events.on('hashChangeStart', onNextHashChange)
+    window.addEventListener('hashchange', onWindowHashChange)
+    window.addEventListener('load', onWindowHashChange)
+    return () => {
+      router.events.off('hashChangeStart', onNextHashChange)
+      window.removeEventListener('load', onWindowHashChange)
+      window.removeEventListener('hashchange', onWindowHashChange)
+    }
+  }, [currentStepIndex, onHashChange, router.asPath, router.events, stepSchemas])
+
+  // Patched version of setCurrentStepIndex that also updates the hash
+  const setCurrentStepIndexPatched = (index: FormStepIndex) => {
+    syncStepToHash(index)
+    setCurrentStepIndex(index)
+  }
+
+  return { currentStepIndex, setCurrentStepIndex: setCurrentStepIndexPatched }
 }

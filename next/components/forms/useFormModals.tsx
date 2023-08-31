@@ -69,6 +69,10 @@ const useGetContext = (initialFormData: InitialFormData) => {
   const [sendLoading, setSendLoading] = useState(false)
   const [sendEidSaveConceptLoading, setSendEidSaveConceptLoading] = useState(false)
   const [sendEidLoading, setSendEidLoading] = useState(false)
+  /*
+   * This is set to true when user confirms eID form send. It is irreversible and forbids the user to close the modal / edit the data / send the form
+   * again while redirecting.
+   */
   const [redirectingToSlovenskoSkLogin, setRedirectingToSlovenskoSkLogin] = useState(false)
 
   const eidSendConfirmationModalIsLoading =

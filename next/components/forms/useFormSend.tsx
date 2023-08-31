@@ -21,6 +21,30 @@ import { useFormModals } from './useFormModals'
 import { useFormSent } from './useFormSent'
 import { useFormState } from './useFormState'
 
+/**
+ * This hook controls the sending of the form. The logic is scattered across the app.
+ *
+ * Form send:
+ * 1. The user clicks on the "Odoslať" button.
+ * 2. All the conditions in `handleSendButtonPress` are checked. If any of it fails an appropriate modal is shown.
+ * 3. Confirmation modal is shown.
+ * 4. `sendFormMutate` is called. On success, we redirect to the success page. On error, we show an error.
+ *
+ *
+ * Form eID send:
+ * 1. The user clicks on the "Odoslať s eID" button.
+ * 2. All the conditions in `handleSendEidButtonPress` are checked. If any of it fails an appropriate modal is shown.
+ * 3. Confirmation modal is shown.
+ * 4. `saveConceptAndSendEidMutate` is called. This doesn't save the modal! This triggers the concept save and redirects to the eID login page.
+ *    The concept must be saved so if user comes back or successfully logs in, the form has the correct data. Before redirecting, we store the
+ *    metadata (form id and form slug) in the sessionStorage to be able to restore it after the user comes back.
+ *
+ *    If the user comes back without login, we immediately pop the metadata from the sessionStorage not to be used inappropriately in the future.
+ *  5. If user successfully logs in, he/she is redirected to /nases/login with the token in the URL. As it is not possible to parametrize the
+ *   redirect URL, the login page retrieves the metadata from the sessionStorage and redirects back to the form URL. The URL contains the token,
+ *   which, if it's detected is immediately removed from the URL and the form is sent using `sendFormEidMutate`.
+ */
+
 const useGetContext = () => {
   const router = useRouter()
 

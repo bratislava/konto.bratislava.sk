@@ -47,7 +47,7 @@ const FormPageWrapper = ({ schema, uiSchema, page, initialFormData }: FormPageWr
                   <FormRedirectsProvider>
                     <FormModalsProvider initialFormData={initialFormData}>
                       <FormSendProvider>
-                        <FormExportImportProvider>
+                        <FormExportImportProvider initialFormData={initialFormData}>
                             <FormPage />
                         </FormExportImportProvider>
                       </FormSendProvider>

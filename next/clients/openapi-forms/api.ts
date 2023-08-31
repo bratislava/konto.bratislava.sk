@@ -93,6 +93,142 @@ export interface CreateFormRequestDto {
 /**
  *
  * @export
+ * @interface CreateFormResponseDto
+ */
+export interface CreateFormResponseDto {
+  /**
+   * Change email, on which you can be contacted
+   * @type {string}
+   * @memberof CreateFormResponseDto
+   */
+  email: string | null
+  /**
+   * Id of record
+   * @type {string}
+   * @memberof CreateFormResponseDto
+   */
+  id: string
+  /**
+   * Create date of record
+   * @type {string}
+   * @memberof CreateFormResponseDto
+   */
+  createdAt: string
+  /**
+   * Update date of record
+   * @type {string}
+   * @memberof CreateFormResponseDto
+   */
+  updatedAt: string
+  /**
+   * Id of send form from other system, (probably ginis)
+   * @type {string}
+   * @memberof CreateFormResponseDto
+   */
+  externalId: string | null
+  /**
+   * User ID (from cognito) who submit this form, can be empty, if it was submitted by user through eID
+   * @type {string}
+   * @memberof CreateFormResponseDto
+   */
+  userExternalId: string | null
+  /**
+   * Uri for defining electronic sendbox, if person has it
+   * @type {string}
+   * @memberof CreateFormResponseDto
+   */
+  uri: string | null
+  /**
+   * State of form
+   * @type {string}
+   * @memberof CreateFormResponseDto
+   */
+  state: CreateFormResponseDtoStateEnum
+  /**
+   * Specific error type
+   * @type {string}
+   * @memberof CreateFormResponseDto
+   */
+  error: CreateFormResponseDtoErrorEnum
+  /**
+   * Data from ginis saved in our db
+   * @type {string}
+   * @memberof CreateFormResponseDto
+   */
+  formDataGinis: string | null
+  /**
+   * Data in JSON format
+   * @type {object}
+   * @memberof CreateFormResponseDto
+   */
+  formDataJson: object | null
+  /**
+   * Technical NASES id of sender
+   * @type {string}
+   * @memberof CreateFormResponseDto
+   */
+  senderId: string | null
+  /**
+   * Technical NASES id of recipient
+   * @type {string}
+   * @memberof CreateFormResponseDto
+   */
+  recipientId: string | null
+  /**
+   * end of submition
+   * @type {string}
+   * @memberof CreateFormResponseDto
+   */
+  finishSubmission: string | null
+  /**
+   * Schema version Id.
+   * @type {string}
+   * @memberof CreateFormResponseDto
+   */
+  schemaVersionId: string
+  /**
+   *
+   * @type {GetFormResponseDtoSchemaVersion}
+   * @memberof CreateFormResponseDto
+   */
+  schemaVersion: GetFormResponseDtoSchemaVersion
+  /**
+   * Flag marking if the schema version for this form is the latest version for the schema.
+   * @type {boolean}
+   * @memberof CreateFormResponseDto
+   */
+  isLatestSchemaVersionForSlug: boolean
+}
+
+export const CreateFormResponseDtoStateEnum = {
+  Draft: 'DRAFT',
+  Queued: 'QUEUED',
+  DeliveredNases: 'DELIVERED_NASES',
+  DeliveredGinis: 'DELIVERED_GINIS',
+  ReadyForProcessing: 'READY_FOR_PROCESSING',
+  Processing: 'PROCESSING',
+  Finished: 'FINISHED',
+  Rejected: 'REJECTED',
+  Error: 'ERROR',
+} as const
+
+export type CreateFormResponseDtoStateEnum =
+  (typeof CreateFormResponseDtoStateEnum)[keyof typeof CreateFormResponseDtoStateEnum]
+export const CreateFormResponseDtoErrorEnum = {
+  None: 'NONE',
+  RabbitmqMaxTries: 'RABBITMQ_MAX_TRIES',
+  FilesNotYetScanned: 'FILES_NOT_YET_SCANNED',
+  UnableToScanFiles: 'UNABLE_TO_SCAN_FILES',
+  InfectedFiles: 'INFECTED_FILES',
+  NasesSendError: 'NASES_SEND_ERROR',
+} as const
+
+export type CreateFormResponseDtoErrorEnum =
+  (typeof CreateFormResponseDtoErrorEnum)[keyof typeof CreateFormResponseDtoErrorEnum]
+
+/**
+ *
+ * @export
  * @interface DatabaseErrorDto
  */
 export interface DatabaseErrorDto {
@@ -1963,13 +2099,13 @@ export type InvalidOrExpiredJwtTokenErrorDtoErrorNameEnum =
 /**
  *
  * @export
- * @interface JsonToXmlRequestDto
+ * @interface JsonConvertRequestDto
  */
-export interface JsonToXmlRequestDto {
+export interface JsonConvertRequestDto {
   /**
    * Form values in JSON
    * @type {object}
-   * @memberof JsonToXmlRequestDto
+   * @memberof JsonConvertRequestDto
    */
   jsonForm: object
 }
@@ -2601,42 +2737,42 @@ export type ScannerNoResponseErrorDtoErrorNameEnum =
 /**
  *
  * @export
- * @interface SchemaNotFound
+ * @interface SchemaNotFoundDto
  */
-export interface SchemaNotFound {
+export interface SchemaNotFoundDto {
   /**
    * Status Code
    * @type {number}
-   * @memberof SchemaNotFound
+   * @memberof SchemaNotFoundDto
    */
   statusCode: number
   /**
    * Detail error message
    * @type {string}
-   * @memberof SchemaNotFound
+   * @memberof SchemaNotFoundDto
    */
   message: string
   /**
    * status in text
    * @type {string}
-   * @memberof SchemaNotFound
+   * @memberof SchemaNotFoundDto
    */
   status: string
   /**
    * Exact error name
    * @type {string}
-   * @memberof SchemaNotFound
+   * @memberof SchemaNotFoundDto
    */
-  errorName: SchemaNotFoundErrorNameEnum
+  errorName: SchemaNotFoundDtoErrorNameEnum
   /**
    * Helper for sending additional data in error
    * @type {object}
-   * @memberof SchemaNotFound
+   * @memberof SchemaNotFoundDto
    */
   object?: object
 }
 
-export const SchemaNotFoundErrorNameEnum = {
+export const SchemaNotFoundDtoErrorNameEnum = {
   NotFoundError: 'NOT_FOUND_ERROR',
   DatabaseError: 'DATABASE_ERROR',
   InternalServerError: 'INTERNAL_SERVER_ERROR',
@@ -2645,8 +2781,8 @@ export const SchemaNotFoundErrorNameEnum = {
   BadRequestError: 'BAD_REQUEST_ERROR',
 } as const
 
-export type SchemaNotFoundErrorNameEnum =
-  (typeof SchemaNotFoundErrorNameEnum)[keyof typeof SchemaNotFoundErrorNameEnum]
+export type SchemaNotFoundDtoErrorNameEnum =
+  (typeof SchemaNotFoundDtoErrorNameEnum)[keyof typeof SchemaNotFoundDtoErrorNameEnum]
 
 /**
  *
@@ -2894,42 +3030,42 @@ export interface SchemaResponseWithoutLatestVersionDto {
 /**
  *
  * @export
- * @interface SchemaVersionNotFound
+ * @interface SchemaVersionNotFoundDto
  */
-export interface SchemaVersionNotFound {
+export interface SchemaVersionNotFoundDto {
   /**
    * Status Code
    * @type {number}
-   * @memberof SchemaVersionNotFound
+   * @memberof SchemaVersionNotFoundDto
    */
   statusCode: number
   /**
    * Detail error message
    * @type {string}
-   * @memberof SchemaVersionNotFound
+   * @memberof SchemaVersionNotFoundDto
    */
   message: string
   /**
    * status in text
    * @type {string}
-   * @memberof SchemaVersionNotFound
+   * @memberof SchemaVersionNotFoundDto
    */
   status: string
   /**
    * Exact error name
    * @type {string}
-   * @memberof SchemaVersionNotFound
+   * @memberof SchemaVersionNotFoundDto
    */
-  errorName: SchemaVersionNotFoundErrorNameEnum
+  errorName: SchemaVersionNotFoundDtoErrorNameEnum
   /**
    * Helper for sending additional data in error
    * @type {object}
-   * @memberof SchemaVersionNotFound
+   * @memberof SchemaVersionNotFoundDto
    */
   object?: object
 }
 
-export const SchemaVersionNotFoundErrorNameEnum = {
+export const SchemaVersionNotFoundDtoErrorNameEnum = {
   NotFoundError: 'NOT_FOUND_ERROR',
   DatabaseError: 'DATABASE_ERROR',
   InternalServerError: 'INTERNAL_SERVER_ERROR',
@@ -2938,8 +3074,8 @@ export const SchemaVersionNotFoundErrorNameEnum = {
   BadRequestError: 'BAD_REQUEST_ERROR',
 } as const
 
-export type SchemaVersionNotFoundErrorNameEnum =
-  (typeof SchemaVersionNotFoundErrorNameEnum)[keyof typeof SchemaVersionNotFoundErrorNameEnum]
+export type SchemaVersionNotFoundDtoErrorNameEnum =
+  (typeof SchemaVersionNotFoundDtoErrorNameEnum)[keyof typeof SchemaVersionNotFoundDtoErrorNameEnum]
 
 /**
  *
@@ -3641,25 +3777,25 @@ export interface XmlToJsonResponseDto {
 export const ConvertApiAxiosParamCreator = function (configuration?: Configuration) {
   return {
     /**
-     * Generates XML form from given JSON data and form id
+     * Generates XML form from given JSON data and schema version id
      * @summary
      * @param {string} id
-     * @param {JsonToXmlRequestDto} jsonToXmlRequestDto
+     * @param {JsonConvertRequestDto} jsonConvertRequestDto
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
     convertControllerConvertJsonToXml: async (
       id: string,
-      jsonToXmlRequestDto: JsonToXmlRequestDto,
+      jsonConvertRequestDto: JsonConvertRequestDto,
       options: AxiosRequestConfig = {},
     ): Promise<RequestArgs> => {
       // verify required parameter 'id' is not null or undefined
       assertParamExists('convertControllerConvertJsonToXml', 'id', id)
-      // verify required parameter 'jsonToXmlRequestDto' is not null or undefined
+      // verify required parameter 'jsonConvertRequestDto' is not null or undefined
       assertParamExists(
         'convertControllerConvertJsonToXml',
-        'jsonToXmlRequestDto',
-        jsonToXmlRequestDto,
+        'jsonConvertRequestDto',
+        jsonConvertRequestDto,
       )
       const localVarPath = `/convert/json-to-xml/{id}`.replace(
         `{${'id'}}`,
@@ -3686,7 +3822,7 @@ export const ConvertApiAxiosParamCreator = function (configuration?: Configurati
         ...options.headers,
       }
       localVarRequestOptions.data = serializeDataIfNeeded(
-        jsonToXmlRequestDto,
+        jsonConvertRequestDto,
         localVarRequestOptions,
         configuration,
       )
@@ -3697,18 +3833,26 @@ export const ConvertApiAxiosParamCreator = function (configuration?: Configurati
       }
     },
     /**
-     * Generates PDF for a given form id
+     * Generates PDF for a given schema version id and form json data.
      * @summary
      * @param {string} id
+     * @param {JsonConvertRequestDto} jsonConvertRequestDto
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
     convertControllerConvertToPdf: async (
       id: string,
+      jsonConvertRequestDto: JsonConvertRequestDto,
       options: AxiosRequestConfig = {},
     ): Promise<RequestArgs> => {
       // verify required parameter 'id' is not null or undefined
       assertParamExists('convertControllerConvertToPdf', 'id', id)
+      // verify required parameter 'jsonConvertRequestDto' is not null or undefined
+      assertParamExists(
+        'convertControllerConvertToPdf',
+        'jsonConvertRequestDto',
+        jsonConvertRequestDto,
+      )
       const localVarPath = `/convert/pdf/{id}`.replace(`{${'id'}}`, encodeURIComponent(String(id)))
       // use dummy base URL string because the URL constructor only accepts absolute URLs.
       const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL)
@@ -3717,9 +3861,11 @@ export const ConvertApiAxiosParamCreator = function (configuration?: Configurati
         baseOptions = configuration.baseOptions
       }
 
-      const localVarRequestOptions = { method: 'GET', ...baseOptions, ...options }
+      const localVarRequestOptions = { method: 'POST', ...baseOptions, ...options }
       const localVarHeaderParameter = {} as any
       const localVarQueryParameter = {} as any
+
+      localVarHeaderParameter['Content-Type'] = 'application/json'
 
       setSearchParams(localVarUrlObj, localVarQueryParameter)
       let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {}
@@ -3728,6 +3874,11 @@ export const ConvertApiAxiosParamCreator = function (configuration?: Configurati
         ...headersFromBaseOptions,
         ...options.headers,
       }
+      localVarRequestOptions.data = serializeDataIfNeeded(
+        jsonConvertRequestDto,
+        localVarRequestOptions,
+        configuration,
+      )
 
       return {
         url: toPathString(localVarUrlObj),
@@ -3735,7 +3886,7 @@ export const ConvertApiAxiosParamCreator = function (configuration?: Configurati
       }
     },
     /**
-     * Generates JSON form from given XML data and form id
+     * Generates JSON form from given XML data and schema version id
      * @summary
      * @param {string} id
      * @param {XmlToJsonRequestDto} xmlToJsonRequestDto
@@ -3801,44 +3952,47 @@ export const ConvertApiFp = function (configuration?: Configuration) {
   const localVarAxiosParamCreator = ConvertApiAxiosParamCreator(configuration)
   return {
     /**
-     * Generates XML form from given JSON data and form id
+     * Generates XML form from given JSON data and schema version id
      * @summary
      * @param {string} id
-     * @param {JsonToXmlRequestDto} jsonToXmlRequestDto
+     * @param {JsonConvertRequestDto} jsonConvertRequestDto
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
     async convertControllerConvertJsonToXml(
       id: string,
-      jsonToXmlRequestDto: JsonToXmlRequestDto,
+      jsonConvertRequestDto: JsonConvertRequestDto,
       options?: AxiosRequestConfig,
     ): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<JsonToXmlResponseDto>> {
       const localVarAxiosArgs = await localVarAxiosParamCreator.convertControllerConvertJsonToXml(
         id,
-        jsonToXmlRequestDto,
+        jsonConvertRequestDto,
         options,
       )
       return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)
     },
     /**
-     * Generates PDF for a given form id
+     * Generates PDF for a given schema version id and form json data.
      * @summary
      * @param {string} id
+     * @param {JsonConvertRequestDto} jsonConvertRequestDto
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
     async convertControllerConvertToPdf(
       id: string,
+      jsonConvertRequestDto: JsonConvertRequestDto,
       options?: AxiosRequestConfig,
     ): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<object>> {
       const localVarAxiosArgs = await localVarAxiosParamCreator.convertControllerConvertToPdf(
         id,
+        jsonConvertRequestDto,
         options,
       )
       return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)
     },
     /**
-     * Generates JSON form from given XML data and form id
+     * Generates JSON form from given XML data and schema version id
      * @summary
      * @param {string} id
      * @param {XmlToJsonRequestDto} xmlToJsonRequestDto
@@ -3872,36 +4026,41 @@ export const ConvertApiFactory = function (
   const localVarFp = ConvertApiFp(configuration)
   return {
     /**
-     * Generates XML form from given JSON data and form id
+     * Generates XML form from given JSON data and schema version id
      * @summary
      * @param {string} id
-     * @param {JsonToXmlRequestDto} jsonToXmlRequestDto
+     * @param {JsonConvertRequestDto} jsonConvertRequestDto
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
     convertControllerConvertJsonToXml(
       id: string,
-      jsonToXmlRequestDto: JsonToXmlRequestDto,
+      jsonConvertRequestDto: JsonConvertRequestDto,
       options?: AxiosRequestConfig,
     ): AxiosPromise<JsonToXmlResponseDto> {
       return localVarFp
-        .convertControllerConvertJsonToXml(id, jsonToXmlRequestDto, options)
+        .convertControllerConvertJsonToXml(id, jsonConvertRequestDto, options)
         .then((request) => request(axios, basePath))
     },
     /**
-     * Generates PDF for a given form id
+     * Generates PDF for a given schema version id and form json data.
      * @summary
      * @param {string} id
+     * @param {JsonConvertRequestDto} jsonConvertRequestDto
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
-    convertControllerConvertToPdf(id: string, options?: AxiosRequestConfig): AxiosPromise<object> {
+    convertControllerConvertToPdf(
+      id: string,
+      jsonConvertRequestDto: JsonConvertRequestDto,
+      options?: AxiosRequestConfig,
+    ): AxiosPromise<object> {
       return localVarFp
-        .convertControllerConvertToPdf(id, options)
+        .convertControllerConvertToPdf(id, jsonConvertRequestDto, options)
         .then((request) => request(axios, basePath))
     },
     /**
-     * Generates JSON form from given XML data and form id
+     * Generates JSON form from given XML data and schema version id
      * @summary
      * @param {string} id
      * @param {XmlToJsonRequestDto} xmlToJsonRequestDto
@@ -3928,40 +4087,45 @@ export const ConvertApiFactory = function (
  */
 export class ConvertApi extends BaseAPI {
   /**
-   * Generates XML form from given JSON data and form id
+   * Generates XML form from given JSON data and schema version id
    * @summary
    * @param {string} id
-   * @param {JsonToXmlRequestDto} jsonToXmlRequestDto
+   * @param {JsonConvertRequestDto} jsonConvertRequestDto
    * @param {*} [options] Override http request option.
    * @throws {RequiredError}
    * @memberof ConvertApi
    */
   public convertControllerConvertJsonToXml(
     id: string,
-    jsonToXmlRequestDto: JsonToXmlRequestDto,
+    jsonConvertRequestDto: JsonConvertRequestDto,
     options?: AxiosRequestConfig,
   ) {
     return ConvertApiFp(this.configuration)
-      .convertControllerConvertJsonToXml(id, jsonToXmlRequestDto, options)
+      .convertControllerConvertJsonToXml(id, jsonConvertRequestDto, options)
       .then((request) => request(this.axios, this.basePath))
   }
 
   /**
-   * Generates PDF for a given form id
+   * Generates PDF for a given schema version id and form json data.
    * @summary
    * @param {string} id
+   * @param {JsonConvertRequestDto} jsonConvertRequestDto
    * @param {*} [options] Override http request option.
    * @throws {RequiredError}
    * @memberof ConvertApi
    */
-  public convertControllerConvertToPdf(id: string, options?: AxiosRequestConfig) {
+  public convertControllerConvertToPdf(
+    id: string,
+    jsonConvertRequestDto: JsonConvertRequestDto,
+    options?: AxiosRequestConfig,
+  ) {
     return ConvertApiFp(this.configuration)
-      .convertControllerConvertToPdf(id, options)
+      .convertControllerConvertToPdf(id, jsonConvertRequestDto, options)
       .then((request) => request(this.axios, this.basePath))
   }
 
   /**
-   * Generates JSON form from given XML data and form id
+   * Generates JSON form from given XML data and schema version id
    * @summary
    * @param {string} id
    * @param {XmlToJsonRequestDto} xmlToJsonRequestDto

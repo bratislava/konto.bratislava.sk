@@ -8,4 +8,5 @@ export type InitialFormData = {
   oldSchemaVersion: boolean
   formSent: boolean
   formMigrationRequired: boolean
+  schemaVersionId: string
 }

@@ -35,7 +35,7 @@ import { useFormState } from './useFormState'
  * 1. The user clicks on the "Odoslať s eID" button.
  * 2. All the conditions in `handleSendEidButtonPress` are checked. If any of it fails an appropriate modal is shown.
  * 3. Confirmation modal is shown.
- * 4. `saveConceptAndSendEidMutate` is called. This doesn't save the modal! This triggers the concept save and redirects to the eID login page.
+ * 4. `saveConceptAndSendEidMutate` is called. This doesn't send the form! This triggers the concept save and redirects to the eID login page.
  *    The concept must be saved so if user comes back or successfully logs in, the form has the correct data. Before redirecting, we store the
  *    metadata (form id and form slug) in the sessionStorage to be able to restore it after the user comes back.
  *

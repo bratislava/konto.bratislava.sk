@@ -7,7 +7,8 @@
     "xml_export": "XML sa nepodarilo stiahnuť.",
     "xml_import": "XML sa nepodarilo nahrať.",
     "pdf_export": "PDF sa nepodarilo stiahnuť",
-    "concept_save": "Koncept sa nepodarilo uložiť."
+    "concept_save": "Koncept sa nepodarilo uložiť.",
+    "migration": "Formulár sa nepodarilo premigrovať."
   },
   "success_messages": {
     "concept_save": "Koncept sa uložil.",
@@ -105,6 +106,11 @@
   },
   "form_send_error": "Žiadosť sa nepodarilo odoslať.",
   "modals_back_button_title": "Späť",
+  "migration_required_modal": {
+    "title": "Formulár bol vytvorený neprihláseným používateľom",
+    "content": "Na to aby ste mohli formulár upravovať musíte zmigrovať formulár do svojho konta.",
+    "button_title": "Migrovať formulár"
+  },
   "old_schema_version_modal": {
     "title": "Koncept nie je možné upravovať",
     "content": "Ľutujeme, v dôsledku aktualizácie Bratislavského konta, už nie je možné pokračovať v úpravách tejto žiadosti. Koncept si viete pozrieť, ale nie upraviť."

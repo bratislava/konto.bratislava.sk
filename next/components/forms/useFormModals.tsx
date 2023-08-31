@@ -23,8 +23,11 @@ const useGetContext = (initialFormData: InitialFormData) => {
   const displayInitialWarningModals = !router.query[FORM_SEND_EID_TOKEN_QUERY_KEY]
 
   const [conceptSaveErrorModal, setConceptSaveErrorModal] = useState(false)
+  const [migrationRequiredModal, setMigrationRequiredModal] = useState<boolean>(
+    displayInitialWarningModals && initialFormData.formMigrationRequired,
+  )
   const [oldVersionSchemaModal, setOldSchemaVersionModal] = useState<boolean>(
-    displayInitialWarningModals && initialFormData.oldSchemaVersion,
+    displayInitialWarningModals && !migrationRequiredModal && initialFormData.oldSchemaVersion,
   )
   const [registrationModal, setRegistrationModal] = useState<RegistrationModalType | null>(
     displayInitialWarningModals && !oldVersionSchemaModal && !isAuthenticated
@@ -34,6 +37,7 @@ const useGetContext = (initialFormData: InitialFormData) => {
   const [identityVerificationModal, setIdentityVerificationModal] = useState(
     displayInitialWarningModals &&
       !oldVersionSchemaModal &&
+      !migrationRequiredModal &&
       isAuthenticated &&
       !tierStatus.isIdentityVerified,
   )
@@ -71,6 +75,8 @@ const useGetContext = (initialFormData: InitialFormData) => {
     sendEidSaveConceptLoading || redirectingToSlovenskoSkLogin
 
   return {
+    migrationRequiredModal,
+    setMigrationRequiredModal,
     oldVersionSchemaModal,
     setOldSchemaVersionModal,
     registrationModal,

@@ -14,6 +14,8 @@ const FormModals = () => {
   const { t } = useTranslation('forms')
 
   const {
+    migrationRequiredModal,
+    setMigrationRequiredModal,
     oldVersionSchemaModal,
     setOldSchemaVersionModal,
     registrationModal,
@@ -50,10 +52,30 @@ const FormModals = () => {
     sendEidLoading,
     eidSendConfirmationModalIsLoading,
   } = useFormModals()
-  const { saveConcept, saveConceptIsLoading } = useFormExportImport()
+  const { saveConcept, saveConceptIsLoading, migrateForm, migrateFormIsLoading } = useFormExportImport()
   const { register, verifyIdentity } = useFormRedirects()
 
   const messageModals: (MessageModalProps & { key: string })[] = [
+    {
+      key: 'migrationRequiredModal',
+      isOpen: migrationRequiredModal,
+      onOpenChange: setMigrationRequiredModal,
+      type: 'warning',
+      title: t('migration_required_modal.title'),
+      buttons: [
+        <Button onPress={() => setMigrationRequiredModal(false)}>
+          {t('modals_back_button_title')}
+        </Button>,
+        <Button
+          variant="category-solid"
+          onPress={() => migrateForm()}
+          isLoading={migrateFormIsLoading}
+        >
+          {t('migration_required_modal.button_title')}
+        </Button>,
+      ],
+      children: t('migration_required_modal.content'),
+    },
     {
       key: 'oldVersionSchemaModal',
       isOpen: oldVersionSchemaModal,

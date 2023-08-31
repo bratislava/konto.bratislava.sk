@@ -2,6 +2,7 @@ import { formsApi } from '@clients/forms'
 import { GetFormResponseDto } from '@clients/openapi-forms'
 import { useMutation } from '@tanstack/react-query'
 import { AxiosResponse } from 'axios'
+import { useRouter } from 'next/router'
 import { useTranslation } from 'next-i18next'
 import React, { createContext, PropsWithChildren, useContext, useRef } from 'react'
 
@@ -26,6 +27,7 @@ export const useGetContext = ({initialFormData}: FormExportImportProviderProps) 
   const { t } = useTranslation('forms')
   const { setConceptSaveErrorModal } = useFormModals()
   const { turnOffLeaveProtection } = useFormLeaveProtection()
+  const router = useRouter()
 
   const [openSnackbarError] = useSnackbar({ variant: 'error' })
   const [openSnackbarSuccess] = useSnackbar({ variant: 'success' })
@@ -65,6 +67,32 @@ export const useGetContext = ({initialFormData}: FormExportImportProviderProps) 
       },
     },
   )
+
+  const { mutate: migrateFormMutate, isLoading: migrateFormIsLoading } = useMutation(
+    () =>
+      formsApi.nasesControllerMigrateForm(
+        formId,
+        { accessToken: 'onlyAuthenticated' },
+      ),
+    {
+      networkMode: 'always',
+      onSuccess: () => {
+        turnOffLeaveProtection()
+        router.reload()
+      },
+      onError: () => {
+        openSnackbarError(t('errors.migration'))
+      },
+    },
+  )
+
+  const migrateForm = () => {
+    if (migrateFormIsLoading) {
+      return;
+    }
+
+    migrateFormMutate()
+  }
 
   const exportXml = async () => {
     openSnackbarInfo(t('info_messages.xml_export'))
@@ -139,6 +167,10 @@ export const useGetContext = ({initialFormData}: FormExportImportProviderProps) 
       return
     }
 
+    if (saveConceptIsLoading) {
+      return
+    }
+
     saveConceptMutate({ fromModal })
   }
 
@@ -148,6 +180,8 @@ export const useGetContext = ({initialFormData}: FormExportImportProviderProps) 
     exportPdf,
     saveConcept,
     saveConceptIsLoading,
+    migrateForm,
+    migrateFormIsLoading,
     importXmlButtonRef,
     handleImportXml,
   }

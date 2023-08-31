@@ -21,6 +21,7 @@ const FormPage = () => {
     formData,
     handleFormOnSubmit,
     handleFormOnChange,
+    isReadonly
   } = useFormState()
 
   useEffect(() => {
@@ -50,6 +51,7 @@ const FormPage = () => {
                 uiSchema={uiSchema}
                 formData={formData}
                 validator={rjfsValidator}
+                readonly={isReadonly}
                 onSubmit={(e) => {
                   handleFormOnSubmit(e.formData)
                 }}

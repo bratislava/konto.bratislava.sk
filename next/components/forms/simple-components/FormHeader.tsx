@@ -1,41 +1,35 @@
-import {
-  ConnectionIcon,
-  DiscIcon,
-  DownloadIcon,
-  EllipsisVerticalIcon,
-  PdfIcon,
-} from '@assets/ui-icons'
+import { ConnectionIcon, DiscIcon, DownloadIcon, EllipsisVerticalIcon, PdfIcon } from '@assets/ui-icons'
 import cx from 'classnames'
 import Button from 'components/forms/simple-components/Button'
-import MenuDropdown, {
-  MenuItemBase,
-} from 'components/forms/simple-components/MenuDropdown/MenuDropdown'
+import MenuDropdown, { MenuItemBase } from 'components/forms/simple-components/MenuDropdown/MenuDropdown'
 import Waves from 'components/forms/simple-components/Waves/Waves'
 import Link from 'next/link'
 import { useTranslation } from 'next-i18next'
 import { useState } from 'react'
 
 import { useFormExportImport } from '../../../frontend/hooks/useFormExportImport'
+import { useFormState } from '../useFormState'
 
 const FormHeader = () => {
+  const { isReadonly } = useFormState()
   const { exportXml, exportPdf, importXml, saveConcept } = useFormExportImport()
   const { t } = useTranslation('forms')
 
   const [isMenuOpen, setIsMenuOpen] = useState<boolean>(false)
 
-  const formHeaderMenuContent: MenuItemBase[] = [
+  const formHeaderMenuContent = [
     {
       title: t('menu_list.download_xml'),
       icon: <DownloadIcon className="h-6 w-6" />,
       onPress: exportXml,
     },
     { title: t('menu_list.pdf'), icon: <PdfIcon className="h-6 w-6" />, onPress: exportPdf },
-    {
+    !isReadonly ? {
       title: t('menu_list.upload_xml'),
       icon: <ConnectionIcon className="h-6 w-6" />,
       onPress: importXml,
-    },
-  ]
+    } : null,
+  ].filter(Boolean) as MenuItemBase[]
 
   return (
     <div className="relative flex flex-col">
@@ -48,14 +42,14 @@ const FormHeader = () => {
             </Link>
           </div>
           <div className="hidden h-full gap-3 lg:flex">
-            <Button
+            {!isReadonly && <Button
               size="sm"
               variant="category-outline"
               startIcon={<DiscIcon className="h-5 w-5" />}
               text={t('menu_list.save_concept')}
               className="text-gray-700 hover:text-gray-600 focus:text-gray-800"
               onPress={() => saveConcept()}
-            />
+            />}
             <MenuDropdown
               setIsOpen={setIsMenuOpen}
               buttonTrigger={<EllipsisVerticalIcon />}

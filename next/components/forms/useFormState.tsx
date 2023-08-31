@@ -32,6 +32,7 @@ const useGetContext = ({ schema, uiSchema, formSlug, initialFormData }: FormStat
   // eslint-disable-next-line testing-library/render-result-naming-convention
   const isFirst = useIsFirstRender()
 
+  const isReadonly = initialFormData.formMigrationRequired || initialFormData.oldSchemaVersion
   const [formData, setFormData] = useState<GenericObjectType>(initialFormData.formDataJson)
   const stepsSchemas = useMemo(() => getEvaluatedStepsSchemas(schema, formData), [schema, formData])
 
@@ -131,7 +132,7 @@ const useGetContext = ({ schema, uiSchema, formSlug, initialFormData }: FormStat
   }
 
   const handleFormOnChange = (newFormData: GenericObjectType | undefined) => {
-    if (currentStepIndex === 'summary' || !newFormData) {
+    if (currentStepIndex === 'summary' || !newFormData || isReadonly) {
       return
     }
 
@@ -144,7 +145,7 @@ const useGetContext = ({ schema, uiSchema, formSlug, initialFormData }: FormStat
     setStepFormData(newFormData)
   }
   const handleFormOnSubmit = (newFormData: GenericObjectType | undefined) => {
-    if (currentStepIndex === 'summary' || !newFormData) {
+    if (currentStepIndex === 'summary' || !newFormData || isReadonly) {
       return
     }
 
@@ -168,6 +169,7 @@ const useGetContext = ({ schema, uiSchema, formSlug, initialFormData }: FormStat
     formId: initialFormData.formId,
     formSlug,
     formData,
+    isReadonly,
     currentStepIndex,
     stepperData,
     currentStepperStep,

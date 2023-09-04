@@ -1,4 +1,5 @@
-import { ChevronDownIcon, CrossIcon } from '@assets/ui-icons'
+import { CheckInCircleIcon, ChevronDownIcon, CrossIcon } from '@assets/ui-icons'
+import { useControlledState } from '@react-stately/utils'
 import cx from 'classnames'
 import { useTranslation } from 'next-i18next'
 import React from 'react'
@@ -46,12 +47,31 @@ const MultiValueRemove = (props: MultiValueRemoveProps) => {
 }
 
 const CustomOption = ({ children, ...props }: OptionProps) => {
+  // need help here - having to unwrap 'unknown' on 5 lines is ridiculous
+  const description =
+    (typeof props.data === 'object' &&
+      props.data !== null &&
+      'description' in props.data &&
+      typeof props?.data?.description === 'string' &&
+      props.data.description) ||
+    ''
   return (
     <>
       <components.Option {...props}>
-        <div>{children}</div>
+        {description ? (
+          <div>
+            <div className="text-p1-semibold">{children}</div>
+            <div className="text-p2">{description}</div>
+          </div>
+        ) : (
+          <div>{children}</div>
+        )}
         <div aria-hidden>
-          <CheckboxIcon checked={props.isSelected} />
+          {props.isMulti ? (
+            <CheckboxIcon checked={props.isSelected} />
+          ) : props.isSelected ? (
+            <CheckInCircleIcon />
+          ) : null}
         </div>
       </components.Option>
       <div className="mx-5 h-0.5 bg-gray-200 last:hidden" aria-hidden />
@@ -59,11 +79,13 @@ const CustomOption = ({ children, ...props }: OptionProps) => {
   )
 }
 
+// using onChange from ReactSelectProps would lead to issue as described here https://github.com/JedWatson/react-select/issues/4800#issuecomment-926993221
 type SelectMultiNewProps = Pick<
   ReactSelectProps,
-  'isDisabled' | 'value' | 'onChange' | 'options' | 'placeholder'
-> &
-  FieldBaseProps &
+  'isDisabled' | 'value' | 'options' | 'placeholder' | 'isMulti' | 'isSearchable'
+> & {
+  onChange?: (value: unknown) => void
+} & FieldBaseProps &
   Pick<FieldAdditionalProps, 'className' | 'width'>
 
 const SelectMultiNew =
@@ -85,6 +107,7 @@ const SelectMultiNew =
   }: SelectMultiNewProps) => {
     const { t } = useTranslation('account', { keyPrefix: 'SelectField' })
 
+    const [state, setState] = useControlledState(value, undefined, onChange ?? (() => null))
     const isError = !!errorMessage?.length
 
     return (
@@ -108,12 +131,11 @@ const SelectMultiNew =
           <Select
             {...rest}
             unstyled
-            value={value}
+            value={state}
+            onChange={setState}
             options={options}
             // TODO readonly
             // menuIsOpen={isReadOnly ? false : undefined}
-            isMulti
-            isSearchable={false}
             closeMenuOnSelect={false}
             hideSelectedOptions={false}
             noOptionsMessage={() => t('noOptions')}

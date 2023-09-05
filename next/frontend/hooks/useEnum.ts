@@ -1,5 +1,5 @@
 import { useQuery } from '@tanstack/react-query'
-import { SelectOption } from 'components/forms/widget-components/SelectField/SelectOption.interface'
+import { SelectOption } from 'components/forms/widget-components/SelectField/SelectFieldNew'
 
 import { getEnum } from '../api/api'
 

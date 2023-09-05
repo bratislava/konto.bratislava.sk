@@ -1,11 +1,12 @@
 import { EnumOptionsType, RJSFSchema, WidgetProps } from '@rjsf/utils'
 import { WidgetOptions } from 'components/forms/types/WidgetOptions'
 import WidgetWrapper from 'components/forms/widget-wrappers/WidgetWrapper'
+import useEnum from 'frontend/hooks/useEnum'
+import React from 'react'
 
-import useEnum from '../../../frontend/hooks/useEnum'
-import SelectField from '../widget-components/SelectField/SelectField'
-import { SelectOption } from '../widget-components/SelectField/SelectOption.interface'
+import SelectField from '../widget-components/SelectField/SelectFieldNew'
 
+// TODO most of these ignored currently as we simplified the designs, use them when needed
 export type SelectRJSFOptions = {
   enumOptions?: EnumOptionsType[]
   dropdownDivider?: boolean
@@ -22,120 +23,60 @@ interface RJSFSelectSchema extends RJSFSchema {
   }
 }
 
-interface SelectFieldWidgetRJSFProps<T = unknown> extends WidgetProps {
+interface SelectFieldWidgetRJSFProps extends WidgetProps {
+  value: string | null
   options: SelectRJSFOptions
-  value: T | T[] | null
   schema: RJSFSelectSchema
-  onChange: (value?: T | T[] | null) => void
+  onChange: (value: unknown) => void
 }
 
 const SelectFieldWidgetRJSF = (props: SelectFieldWidgetRJSFProps) => {
-  const { label, options, value, required, disabled, placeholder, schema, onChange, rawErrors } =
-    props
+  const {
+    schema,
+    value,
+    label,
+    placeholder,
+    rawErrors,
+    required,
+    disabled,
+    options,
+    onChange,
+  }: SelectFieldWidgetRJSFProps = props
+
   const {
     enumOptions,
-    selectAllOption,
     helptext,
     tooltip,
     accordion,
-    dropdownDivider,
-    className,
     explicitOptional,
+    className,
     spaceBottom = 'none',
     spaceTop = 'large',
-    hideScrollbar = false,
-    maxWordSize,
-  } = options
-
-  const type = schema.type === 'array' ? 'multiple' : 'one'
-
-  const handleOnChangeMultiple = (newValue?: SelectOption[]) => {
-    if (newValue) {
-      // eslint-disable-next-line @typescript-eslint/no-unsafe-return
-      const optionValues = newValue.map((option: SelectOption) => option.const)
-      onChange(optionValues)
-    } else {
-      onChange()
-    }
-  }
-
-  const handleOnChangeOne = (newValue?: SelectOption[]) => {
-    if (newValue && newValue[0]) {
-      onChange(newValue[0].const)
-    } else {
-      onChange()
-    }
-  }
+  }: SelectRJSFOptions = options
 
   const { data } = useEnum(schema.ciselnik?.id)
-  const transformedEnumOptions = enumOptions
-    ? enumOptions.map((option) => option.schema as SelectOption)
-    : data
-
-  const handleOnChange = (newValue?: SelectOption[]) => {
-    const originalNewValue = transformedEnumOptions?.filter((option: SelectOption) => {
-      return newValue?.some((value) => {
-        return (
-          option.title === value.title &&
-          option.description === value.description &&
-          option.const === value.const
-        )
-      })
-    })
-
-    if (type === 'multiple') {
-      handleOnChangeMultiple(originalNewValue)
-    } else {
-      handleOnChangeOne(originalNewValue)
-    }
-  }
-
-  const handleTransformOne = (): SelectOption[] => {
-    const transformedValue: SelectOption[] = []
-    if (!value || Array.isArray(value)) return transformedValue
-
-    const chosenOption = transformedEnumOptions?.find((option) => value === option.const)
-    return chosenOption ? [chosenOption] : []
-  }
-
-  const handleTransformMultiple = (): SelectOption[] => {
-    const transformedValue: SelectOption[] = []
-    if (!value || !Array.isArray(value)) return transformedValue
-
-    value.forEach((optionValue) => {
-      transformedEnumOptions?.forEach((option) => {
-        if (option.const === optionValue) {
-          transformedValue.push(option)
-        }
-      })
-    })
-
-    return transformedValue
-  }
-
-  const transformedValue = type === 'multiple' ? handleTransformMultiple() : handleTransformOne()
+  // pull description from subschema into top level enumOption where it exists
+  const mappedSchemaEnumOptions = enumOptions?.map((option) => ({
+    ...option,
+    description: option.schema?.description,
+  }))
+  const resolvedOptions = mappedSchemaEnumOptions ?? data
 
   return (
     <WidgetWrapper accordion={accordion} spaceBottom={spaceBottom} spaceTop={spaceTop}>
       <SelectField
-        type={type}
+        value={value}
+        options={resolvedOptions}
         label={label}
-        enumOptions={transformedEnumOptions}
-        value={transformedValue}
-        selectAllOption={selectAllOption}
         placeholder={placeholder}
-        helptext={helptext}
-        tooltip={tooltip}
-        dropdownDivider={dropdownDivider}
-        errorMessage={rawErrors}
         required={required}
         disabled={disabled}
+        helptext={helptext}
+        tooltip={tooltip}
         className={className}
-        onChange={handleOnChange}
         explicitOptional={explicitOptional}
-        hideScrollbar={hideScrollbar}
-        alwaysOneSelected={false}
-        maxWordSize={maxWordSize}
+        onChange={onChange}
+        errorMessage={rawErrors}
       />
     </WidgetWrapper>
   )

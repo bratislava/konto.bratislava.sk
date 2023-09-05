@@ -1,42 +1,42 @@
-import SelectField from 'components/forms/widget-components/SelectField/SelectField'
-import { SelectOption } from 'components/forms/widget-components/SelectField/SelectOption.interface'
+import SelectField, {
+  SelectOption,
+} from 'components/forms/widget-components/SelectField/SelectFieldNew'
+import { useTranslation } from 'next-i18next'
 import { Dispatch, SetStateAction } from 'react'
-import { useWindowSize } from 'usehooks-ts'
+import { Options } from 'react-select'
 
+// TODO typing is awkward (Options<SelectOption> vs SelectOption[] - requires extra work to clean up, together with municipal services header refactor)
 type MunicipalServicesSectionHeaderBase = {
   title: string
   selectorValue: SelectOption[]
-  setSelectorValue: (val: SelectOption[]) => void
+  setSelectorValue: Dispatch<SetStateAction<SelectOption[]>>
   setCurrentPage: Dispatch<SetStateAction<number>>
-  enumOptions: SelectOption[]
+  selectOptions: Options<SelectOption>
 }
 
 const MunicipalServicesSectionHeader = ({
   title,
-  enumOptions,
+  selectOptions,
   selectorValue,
   setCurrentPage,
   setSelectorValue,
 }: MunicipalServicesSectionHeaderBase) => {
-  const { width } = useWindowSize()
+  const { t } = useTranslation('account')
   return (
     <div className="bg-gray-50">
       <span className="m-auto flex h-full w-full max-w-screen-lg flex-col justify-end pb-4 pl-4 pt-6 lg:px-0 lg:pb-8 lg:pt-16">
         <h1 className="text-h1 mb-4 md:mb-6">{title}</h1>
         <SelectField
           label=""
+          isMulti
           className="max-w-none pr-4 xs:max-w-[400px]"
-          type="one"
           value={selectorValue}
           onChange={(val) => {
-            setSelectorValue(val)
+            setSelectorValue(val as SelectOption[])
             setCurrentPage(1)
           }}
-          dropdownDivider
-          hideScrollbar
-          alwaysOneSelected
-          enumOptions={enumOptions}
-          maxWordSize={width > 480 ? 45 : 25}
+          options={selectOptions}
+          placeholder={t('account_section_services.select_field_placeholder')}
         />
       </span>
     </div>

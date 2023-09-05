@@ -13,12 +13,15 @@ import Select, {
 } from 'react-select'
 import { twMerge } from 'tailwind-merge'
 
-import CheckboxIcon from '../../../icon-components/CheckboxIcon'
-import { FieldAdditionalProps, FieldBaseProps } from '../../FieldBase'
-import FieldWrapper from '../../FieldWrapper'
+import CheckboxIcon from '../../icon-components/CheckboxIcon'
+import { FieldAdditionalProps, FieldBaseProps } from '../FieldBase'
+import FieldWrapper from '../FieldWrapper'
 
 // Inspiration: https://www.jussivirtanen.fi/writing/styling-react-select-with-tailwind
 // Docs: https://react-select.com/home
+
+// might not be exhaustive, feel free to expand as needed
+export type SelectOption = { value: string; label: string; description?: string }
 
 const DropdownIndicator = ({ ...props }: DropdownIndicatorProps) => {
   const { menuIsOpen } = props.selectProps

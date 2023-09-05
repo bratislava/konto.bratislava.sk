@@ -1,6 +1,6 @@
 import React from 'react'
 
-import SelectMultiNew from '../../forms/widget-components/SelectField/SelectFieldNew/SelectMultiNew'
+import SelectMultiNew from '../../forms/widget-components/SelectField/SelectFieldNew'
 import { Stack } from '../Stack'
 import { Wrapper } from '../Wrapper'
 

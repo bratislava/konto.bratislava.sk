@@ -168,8 +168,8 @@ export const getEnum = async (id?: string) => {
       // remove rounded brackets and parse
       const data: { aaData: string[][] } = JSON.parse(responseText.slice(1, -2))
       return data.aaData?.map((x: string[]) => ({
-        const: x[0],
-        title: x[1],
+        value: x[0],
+        label: x[1],
       }))
     }
 

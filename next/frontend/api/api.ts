@@ -4,7 +4,15 @@ import { ErrorObject } from 'ajv'
 import { getAccessTokenOrLogout } from 'frontend/utils/amplify'
 
 import { environment } from '../../environment'
-import { ApiError, Gdpr, Identity, TaxApiError, UrlResult, User } from '../dtos/generalApiDto'
+import {
+  ApiError,
+  Gdpr,
+  Identity,
+  LegalIdentity,
+  TaxApiError,
+  UrlResult,
+  User,
+} from '../dtos/generalApiDto'
 import logger, { developmentLog } from '../utils/logger'
 
 export const API_ERROR_TEXT = 'API_ERROR'
@@ -60,6 +68,19 @@ export const verifyIdentityApi = async (data: Identity) => {
   const token = await getAccessTokenOrLogout()
 
   return fetchJsonApi(`${environment.cityAccountUrl}/user-verification/identity-card`, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      Authorization: `Bearer ${token}`,
+    },
+    body: JSON.stringify(data),
+  })
+}
+
+export const verifyLegalEntityIdentityApi = async (data: LegalIdentity) => {
+  const token = await getAccessTokenOrLogout()
+
+  return fetchJsonApi(`${environment.cityAccountUrl}/user-verification/ico-rpo`, {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',

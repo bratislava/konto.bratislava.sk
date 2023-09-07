@@ -1,13 +1,15 @@
 import AccountContainer from 'components/forms/segments/AccountContainer/AccountContainer'
 import AccountSuccessAlert from 'components/forms/segments/AccountSuccessAlert/AccountSuccessAlert'
 import AccountVerificationPendingAlert from 'components/forms/segments/AccountVerificationPendingAlert/AccountVerificationPendingAlert'
-import IdentityVerificationForm from 'components/forms/segments/IdentityVerificationForm/IdentityVerificationForm'
+import IdentityVerificationForm, {
+  VerificationFormData,
+} from 'components/forms/segments/IdentityVerificationForm/IdentityVerificationForm'
 import LoginRegisterLayout from 'components/layouts/LoginRegisterLayout'
 import {
   getSSRCurrentAuth,
   ServerSideAuthProviderHOC,
 } from 'components/logic/ServerSideAuthProvider'
-import { verifyIdentityApi } from 'frontend/api/api'
+import { verifyIdentityApi, verifyLegalEntityIdentityApi } from 'frontend/api/api'
 import { Tier } from 'frontend/dtos/accountDto'
 import { useRefreshServerSideProps } from 'frontend/hooks/useRefreshServerSideProps'
 import { useServerSideAuth } from 'frontend/hooks/useServerSideAuth'
@@ -45,11 +47,13 @@ export const getServerSideProps = async (ctx: GetServerSidePropsContext) => {
 
 const IdentityVerificationPage = ({ page }: AsyncServerProps<typeof getServerSideProps>) => {
   const { t } = useTranslation('account')
+  const [lastIco, setLastIco] = useState<string | undefined>()
   const [lastRc, setLastRc] = useState('')
   const [lastIdCard, setLastIdCard] = useState('')
 
   const [identityVerificationError, setIdentityVerificationError] = useState<Error | null>(null)
-  const { isAuthenticated, tierStatus } = useServerSideAuth()
+  // TODO fix is legal entity
+  const { isAuthenticated, tierStatus, isLegalEntity } = useServerSideAuth()
 
   const router = useRouter()
   const { refreshData } = useRefreshServerSideProps(tierStatus)
@@ -61,19 +65,27 @@ const IdentityVerificationPage = ({ page }: AsyncServerProps<typeof getServerSid
     }
   }, [isAuthenticated, router])
 
-  const verifyIdentityAndRefreshUserData = async (
-    rc: string,
-    idCard: string,
-    turnstileToken: string,
-  ) => {
-    setLastRc(rc)
-    setLastIdCard(idCard)
+  const verifyIdentityAndRefreshUserData = async (data: VerificationFormData) => {
+    setLastIco(data.ico)
+    setLastRc(data.rc)
+    setLastIdCard(data.idCard)
+
+    // sanity check
+    if (isLegalEntity && !data.ico) {
+      logger.error(`${GENERIC_ERROR_MESSAGE} - submitted legal entity verification without ICO`)
+    }
     try {
-      await verifyIdentityApi({
-        birthNumber: rc.replace('/', ''),
-        identityCard: idCard.toUpperCase(),
-        turnstileToken,
-      })
+      await (isLegalEntity && data.ico
+        ? verifyLegalEntityIdentityApi({
+            ico: data.ico || '',
+            birthNumber: data.rc.replace('/', ''),
+            identityCard: data.idCard.toUpperCase(),
+          })
+        : verifyIdentityApi({
+            birthNumber: data.rc.replace('/', ''),
+            identityCard: data.idCard.toUpperCase(),
+            turnstileToken: data.turnstileToken,
+          }))
       // give the queue a few seconds to process the verification
       await new Promise((resolve) => {
         setTimeout(resolve, 8000)
@@ -99,12 +111,14 @@ const IdentityVerificationPage = ({ page }: AsyncServerProps<typeof getServerSid
         <AccountContainer className="mb-0 pt-0 md:mb-8 md:pt-6">
           {tierStatus.isIdentityVerificationNotYetAttempted && (
             <IdentityVerificationForm
+              isLegalEntity={isLegalEntity}
               onSubmit={verifyIdentityAndRefreshUserData}
               error={identityVerificationError}
             />
           )}
           {tierStatus.tier === Tier.NOT_VERIFIED_IDENTITY_CARD && (
             <IdentityVerificationForm
+              isLegalEntity={isLegalEntity}
               onSubmit={verifyIdentityAndRefreshUserData}
               error={identityVerificationError}
             />
@@ -113,7 +127,15 @@ const IdentityVerificationPage = ({ page }: AsyncServerProps<typeof getServerSid
             <AccountVerificationPendingAlert
               title={t('identity_verification_pending_title')}
               description={
-                lastRc && lastIdCard
+                isLegalEntity
+                  ? lastIco && lastRc && lastIdCard
+                    ? t('identity_verification_pending_description_legal_entity', {
+                        ico: lastIco,
+                        rc: lastRc,
+                        idCard: lastIdCard,
+                      })
+                    : t('identity_verification_pending_description_without_data_legal_entity')
+                  : lastRc && lastIdCard
                   ? t('identity_verification_pending_description', {
                       rc: lastRc,
                       idCard: lastIdCard,

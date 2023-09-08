@@ -9,7 +9,7 @@ import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import { StatusBarProvider } from 'components/forms/info-components/StatusBar'
 import CookieConsent from 'components/forms/segments/CookieConsent/CookieConsent'
 import { GlobalStateProvider } from 'components/forms/states/GlobalState'
-import { SSORedirectProvider } from 'frontend/hooks/useSSORedirect'
+import { LoginRegisterRedirectProvider } from 'frontend/hooks/useLoginRegisterRedirect'
 import { AppProps } from 'next/app'
 import { Inter } from 'next/font/google'
 import Head from 'next/head'
@@ -53,10 +53,10 @@ const MyApp = ({ Component, pageProps }: AppProps) => {
           <QueryClientProvider client={queryClient}>
             <SnackbarProvider>
               <GlobalStateProvider>
-                <SSORedirectProvider>
+                <LoginRegisterRedirectProvider>
                   <Component {...pageProps} />
                   <CookieConsent />
-                </SSORedirectProvider>
+                </LoginRegisterRedirectProvider>
               </GlobalStateProvider>
             </SnackbarProvider>
           </QueryClientProvider>

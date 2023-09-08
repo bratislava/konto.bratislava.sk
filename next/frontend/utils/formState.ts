@@ -8,6 +8,7 @@ import { useEffectOnce } from 'usehooks-ts'
 import { FormStepIndex, FormStepperStep } from '../../components/forms/types/Steps'
 import { rjfsValidator } from './form'
 import { isDefined } from './general'
+import { useEffectOnceWhen } from 'rooks'
 
 export const SUMMARY_HASH = 'sumar'
 
@@ -166,6 +167,7 @@ export const useCurrentStepIndex = (stepSchemas: (JSONSchema7 | null)[]) => {
   // Gets the current step and updates the hash if needed
   const syncStepToHash = useCallback(
     (index: FormStepIndex, replace: boolean = false) => {
+      router.isReady
       const routerFn = replace ? router.replace : router.push
 
       if (index === 'summary') {
@@ -218,7 +220,7 @@ export const useCurrentStepIndex = (stepSchemas: (JSONSchema7 | null)[]) => {
   )
 
   // Initially sync the hash and the step index
-  useEffectOnce(() => {
+  useEffectOnceWhen(() => {
     // If the URL contains a hash, use it to set the current step
     if (window.location.hash) {
       onHashChange(window.location.hash)
@@ -227,7 +229,7 @@ export const useCurrentStepIndex = (stepSchemas: (JSONSchema7 | null)[]) => {
 
     // Otherwise, sync the hash with the current step
     syncStepToHash(currentStepIndex, true)
-  })
+  }, router.isReady)
 
   useEffect(() => {
     const onWindowHashChange = () => onHashChange(window.location.hash)

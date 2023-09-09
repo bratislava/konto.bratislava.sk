@@ -41,7 +41,7 @@ const MyApplicationsDraftList = () => {
   const [page, setPage] = useState<number>(1)
 
   const { data } = useQuery({
-    queryKey: ['myApplicationsSentList', page],
+    queryKey: ['myApplicationsDraftList', page],
     queryFn: () => getDraftApplications(),
     keepPreviousData: true,
   })

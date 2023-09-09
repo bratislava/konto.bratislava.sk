@@ -651,12 +651,12 @@
     },
     "button_to_formular_text": "Vyplniť dotazník",
     "button_to_profil_text": "Pokračovať do konta",
-    "button_to_formular_text_2": "Nechať spätnú väzbu",
+    "button_to_formular_text_2": "Vyplniť dotazník",
     "button_restart_text": "Opakovať platbu",
     "button_cancel_text": "Zrušiť platbu",
     "form_submit": {
       "title": "Ďakujeme za odoslanie žiadosti",
-      "content": "<span className='text-p2'>Žiadosť musíme najprv spracovať a skontrolovať správnosť všetkých údajov.<br />Ak by nám od Vás chýbali nejaké informácie budeme Vás kontaktovať emailom.</span>"
+      "content": "Žiadosť musíme teraz spracovať a doručiť kolegom a kolegyniam, ktorí sa jej budú venovať.  Detail vašej žiadosti nájdete v časti [Moje žiadosti](/moje-ziadosti). Ak by nám nejaké informácie chýbali, budeme vás kontaktovať emailom.\n\nProsíme, ohodnoťte vašu skúsenosť s touto žiadosťou a pomôžte mestu Bratislava zlepšovať svoje služby."
     }
   },
   "bank_info": {

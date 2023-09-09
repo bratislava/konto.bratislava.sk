@@ -1,6 +1,9 @@
 import CorrespondenceAddressModal from 'components/forms/segments/CorrespondenceAddressModal/CorrespondenceAddressModal'
 // import IdentityVerificationModal from 'components/forms/segments/IdentityVerificationModal/IdentityVerificationModal'
 import { PhoneNumberData } from 'components/forms/segments/PhoneNumberForm/PhoneNumberForm'
+import RegistrationModal, {
+  RegistrationModalType,
+} from 'components/forms/segments/RegistrationModal/RegistrationModal'
 // import RegistrationModal, {
 //   RegistrationModalType,
 // } from 'components/forms/segments/RegistrationModal/RegistrationModal'
@@ -79,8 +82,8 @@ const ModalShowCase = () => {
   const [phoneNumberModalData, setPhoneNumberModalData] = useState<string | undefined>(
     '+421999999999',
   )
+  const [registrationModal, setRegistrationModal] = useState(false)
   // TODO either remove these modals from showcase completely, or fix their dependency on useFormRedirects
-  // const [registrationModal, setRegistrationModal] = useState(false)
   // const [identityVerificationModal, setIdentityVerificationModal] = useState(false)
 
   const onSubmitCorrespondenceAddress = ({ data }: { data?: Address }) => {
@@ -189,11 +192,13 @@ const ModalShowCase = () => {
           onSubmit={onSubmitPhoneNumber}
           defaultValues={{ phone_number: phoneNumberModalData }}
         />
-        {/* <RegistrationModal
+        <RegistrationModal
           type={RegistrationModalType.Initial}
           isOpen={registrationModal}
           onOpenChange={setRegistrationModal}
-        /> */}
+          login={() => {}}
+          register={() => {}}
+        />
         {/* <IdentityVerificationModal
           isOpen={identityVerificationModal}
           onOpenChange={setIdentityVerificationModal}

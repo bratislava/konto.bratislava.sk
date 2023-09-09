@@ -94,3 +94,8 @@ export const useFormRedirects = () => {
 
   return context
 }
+
+// used for when we want different behaviour when we're on forms section
+export const useConditionalFormRedirects = () => {
+  return useContext(FormRedirectsContext)
+}

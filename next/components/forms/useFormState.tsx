@@ -17,6 +17,7 @@ import {
 import { FormStepIndex } from './types/Steps'
 import { useFormFileUpload } from './useFormFileUpload'
 import { useFormLeaveProtection } from './useFormLeaveProtection'
+import { useFormModals } from './useFormModals'
 
 interface FormStateProviderProps {
   schema: RJSFSchema
@@ -37,6 +38,7 @@ const useGetContext = ({ schema, uiSchema, formSlug, initialFormData }: FormStat
   const stepsSchemas = useMemo(() => getEvaluatedStepsSchemas(schema, formData), [schema, formData])
 
   const { currentStepIndex, setCurrentStepIndex } = useCurrentStepIndex(stepsSchemas)
+  const { setMigrationRequiredModal } = useFormModals()
 
   /**
    * This set holds indexes of steps that have been submitted (submit button has been pressed, which means they have been validated).
@@ -87,6 +89,7 @@ const useGetContext = ({ schema, uiSchema, formSlug, initialFormData }: FormStat
   const canGoToNextStep = getNextStep() !== null
 
   const goToNextStep = () => {
+    console.log('going next step')
     const nextStepIndex = getNextStep()
     if (nextStepIndex !== null) {
       goToStep(nextStepIndex)
@@ -145,6 +148,9 @@ const useGetContext = ({ schema, uiSchema, formSlug, initialFormData }: FormStat
     setStepFormData(newFormData)
   }
   const handleFormOnSubmit = (newFormData: GenericObjectType | undefined) => {
+    if (initialFormData.formMigrationRequired) {
+      setMigrationRequiredModal(true)
+    }
     if (currentStepIndex === 'summary' || !newFormData || isReadonly) {
       return
     }

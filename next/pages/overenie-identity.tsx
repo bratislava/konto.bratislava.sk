@@ -11,6 +11,7 @@ import {
 } from 'components/logic/ServerSideAuthProvider'
 import { verifyIdentityApi, verifyLegalEntityIdentityApi } from 'frontend/api/api'
 import { Tier } from 'frontend/dtos/accountDto'
+import useLoginRegisterRedirect from 'frontend/hooks/useLoginRegisterRedirect'
 import { useRefreshServerSideProps } from 'frontend/hooks/useRefreshServerSideProps'
 import { useServerSideAuth } from 'frontend/hooks/useServerSideAuth'
 import { GENERIC_ERROR_MESSAGE, isError } from 'frontend/utils/errors'
@@ -56,6 +57,8 @@ const IdentityVerificationPage = ({ page }: AsyncServerProps<typeof getServerSid
   const { isAuthenticated, tierStatus, isLegalEntity } = useServerSideAuth()
 
   const router = useRouter()
+  const { redirect } = useLoginRegisterRedirect()
+
   const { refreshData } = useRefreshServerSideProps(tierStatus)
   useEffect(() => {
     if (!isAuthenticated) {
@@ -143,9 +146,7 @@ const IdentityVerificationPage = ({ page }: AsyncServerProps<typeof getServerSid
                   : t('identity_verification_pending_description_without_data')
               }
               confirmLabel={t('account_continue_link')}
-              onConfirm={() =>
-                router.push({ pathname: ROUTES.HOME, query: { from: ROUTES.REGISTER } })
-              }
+              onConfirm={() => redirect({ from: ROUTES.REGISTER })}
             />
           )}
           {tierStatus.isIdentityVerified && (
@@ -160,9 +161,7 @@ const IdentityVerificationPage = ({ page }: AsyncServerProps<typeof getServerSid
                 })
               }
               confirmLabel={t('account_continue_link')}
-              onConfirm={() =>
-                router.push({ pathname: ROUTES.HOME, query: { from: ROUTES.REGISTER } })
-              }
+              onConfirm={() => redirect({ from: ROUTES.REGISTER })}
             />
           )}
         </AccountContainer>

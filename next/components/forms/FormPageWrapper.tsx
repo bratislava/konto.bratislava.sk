@@ -35,9 +35,9 @@ const FormPageWrapper = ({ schema, uiSchema, page, initialFormData }: FormPageWr
       <FormSentRenderer
         initialFormSent={initialFormData.formSent}
         notSentChildren={
-          <AccountPageLayout isPublicPage hiddenHeaderNav>
-            <FormFileUploadProvider initialFormData={initialFormData}>
-              <FormLeaveProtectionProvider>
+          <FormFileUploadProvider initialFormData={initialFormData}>
+            <FormLeaveProtectionProvider>
+              <FormModalsProvider initialFormData={initialFormData}>
                 <FormStateProvider
                   schema={schema}
                   uiSchema={uiSchema}
@@ -45,18 +45,18 @@ const FormPageWrapper = ({ schema, uiSchema, page, initialFormData }: FormPageWr
                   initialFormData={initialFormData}
                 >
                   <FormRedirectsProvider>
-                    <FormModalsProvider initialFormData={initialFormData}>
-                      <FormSendProvider>
-                        <FormExportImportProvider initialFormData={initialFormData}>
-                            <FormPage />
-                        </FormExportImportProvider>
-                      </FormSendProvider>
-                    </FormModalsProvider>
+                    <FormSendProvider>
+                      <FormExportImportProvider initialFormData={initialFormData}>
+                        <AccountPageLayout isPublicPage hiddenHeaderNav>
+                          <FormPage />
+                        </AccountPageLayout>
+                      </FormExportImportProvider>
+                    </FormSendProvider>
                   </FormRedirectsProvider>
                 </FormStateProvider>
-              </FormLeaveProtectionProvider>
-            </FormFileUploadProvider>
-          </AccountPageLayout>
+              </FormModalsProvider>
+            </FormLeaveProtectionProvider>
+          </FormFileUploadProvider>
         }
         sentChildren={
           <AccountPageLayout hiddenHeaderNav className="bg-gray-50">

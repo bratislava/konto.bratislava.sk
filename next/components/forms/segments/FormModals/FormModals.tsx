@@ -52,8 +52,9 @@ const FormModals = () => {
     sendEidLoading,
     eidSendConfirmationModalIsLoading,
   } = useFormModals()
-  const { saveConcept, saveConceptIsLoading, migrateForm, migrateFormIsLoading } = useFormExportImport()
-  const { register, verifyIdentity } = useFormRedirects()
+  const { saveConcept, saveConceptIsLoading, migrateForm, migrateFormIsLoading } =
+    useFormExportImport()
+  const { login, register, verifyIdentity } = useFormRedirects()
 
   const messageModals: (MessageModalProps & { key: string })[] = [
     {
@@ -118,7 +119,12 @@ const FormModals = () => {
         <Button onPress={() => setSendFilesScanningEidModal({ isOpen: false })}>
           {t('modals_back_button_title')}
         </Button>,
-        <Button variant='black-solid' onPress={() => sendFilesScanningEidModal.isOpen && sendFilesScanningEidModal.sendCallback()}>
+        <Button
+          variant="black-solid"
+          onPress={() =>
+            sendFilesScanningEidModal.isOpen && sendFilesScanningEidModal.sendCallback()
+          }
+        >
           {t('send_files_scanning_eid_modal.button_title')}
         </Button>,
       ],
@@ -381,6 +387,8 @@ const FormModals = () => {
             setRegistrationModal(null)
           }
         }}
+        login={login}
+        register={register}
       />
       <IdentityVerificationModal
         isOpen={identityVerificationModal}

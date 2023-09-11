@@ -89,7 +89,6 @@ const useGetContext = ({ schema, uiSchema, formSlug, initialFormData }: FormStat
   const canGoToNextStep = getNextStep() !== null
 
   const goToNextStep = () => {
-    console.log('going next step')
     const nextStepIndex = getNextStep()
     if (nextStepIndex !== null) {
       goToStep(nextStepIndex)

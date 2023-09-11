@@ -4,7 +4,7 @@ import { useMutation } from '@tanstack/react-query'
 import { AxiosResponse } from 'axios'
 import { useRouter } from 'next/router'
 import { useTranslation } from 'next-i18next'
-import React, { createContext, PropsWithChildren, useContext, useRef, useState } from 'react'
+import React, { createContext, PropsWithChildren, useContext, useRef } from 'react'
 
 import { RegistrationModalType } from '../../components/forms/segments/RegistrationModal/RegistrationModal'
 import { useFormLeaveProtection } from '../../components/forms/useFormLeaveProtection'

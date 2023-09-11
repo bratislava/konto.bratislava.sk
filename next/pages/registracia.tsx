@@ -1,7 +1,6 @@
 import { Auth } from 'aws-amplify'
 import AccountActivator from 'components/forms/segments/AccountActivator/AccountActivator'
 import AccountContainer from 'components/forms/segments/AccountContainer/AccountContainer'
-import AccountMarkdown from 'components/forms/segments/AccountMarkdown/AccountMarkdown'
 import AccountSuccessAlert from 'components/forms/segments/AccountSuccessAlert/AccountSuccessAlert'
 import EmailVerificationForm from 'components/forms/segments/EmailVerificationForm/EmailVerificationForm'
 import RegisterForm from 'components/forms/segments/RegisterForm/RegisterForm'
@@ -154,6 +153,8 @@ const RegisterPage = ({ page }: AsyncServerProps<typeof getServerSideProps>) => 
               error={registrationError}
             />
           ) : (
+            // When verification is not required, the modal has only single button (without cancelLaberl/onCancel the second button is not rendered)
+            // This single button does the same action (redirects back) as the cancel button does in 2 button version
             <AccountSuccessAlert
               title={t('register_success_title')}
               description={t('register_success_description', { email: lastEmail })}
@@ -162,7 +163,6 @@ const RegisterPage = ({ page }: AsyncServerProps<typeof getServerSideProps>) => 
                   ? t('identity_verification_link')
                   : t('identity_verification_not_required')
               }
-              cancelLabel={verificationRequired ? t('identity_verification_skip') : undefined}
               onConfirm={() =>
                 verificationRequired
                   ? router
@@ -170,6 +170,7 @@ const RegisterPage = ({ page }: AsyncServerProps<typeof getServerSideProps>) => 
                       .catch(() => logger.error(`${GENERIC_ERROR_MESSAGE} redirect failed`))
                   : redirect({ from: ROUTES.REGISTER })
               }
+              cancelLabel={verificationRequired ? t('identity_verification_skip') : undefined}
               onCancel={
                 verificationRequired ? () => redirect({ from: ROUTES.REGISTER }) : undefined
               }

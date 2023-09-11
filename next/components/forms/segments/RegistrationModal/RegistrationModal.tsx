@@ -5,7 +5,6 @@ import { Button as AriaButton } from 'react-aria-components'
 
 import ButtonNew from '../../simple-components/ButtonNew'
 import ModalV2, { ModalV2Props } from '../../simple-components/ModalV2'
-import { useFormRedirects } from '../../useFormRedirects'
 
 export enum RegistrationModalType {
   Initial = 'Initial',
@@ -15,11 +14,13 @@ export enum RegistrationModalType {
 
 type RegistrationModalBase = {
   type: RegistrationModalType | null
+  // register and log in action may depend upon context - when called from inside the form it involves saving work in progress
+  register: () => void
+  login: () => void
 } & ModalV2Props
 
-const RegistrationModal = ({ type, ...rest }: RegistrationModalBase) => {
+const RegistrationModal = ({ type, login, register, ...rest }: RegistrationModalBase) => {
   const { t } = useTranslation('forms')
-  const { register, login } = useFormRedirects()
 
   const { title, subtitle } = type
     ? {

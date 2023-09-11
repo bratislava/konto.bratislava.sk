@@ -1,7 +1,6 @@
 import { Auth } from 'aws-amplify'
 import AccountActivator from 'components/forms/segments/AccountActivator/AccountActivator'
 import AccountContainer from 'components/forms/segments/AccountContainer/AccountContainer'
-import AccountMarkdown from 'components/forms/segments/AccountMarkdown/AccountMarkdown'
 import AccountSuccessAlert from 'components/forms/segments/AccountSuccessAlert/AccountSuccessAlert'
 import EmailVerificationForm from 'components/forms/segments/EmailVerificationForm/EmailVerificationForm'
 import RegisterForm from 'components/forms/segments/RegisterForm/RegisterForm'
@@ -12,7 +11,7 @@ import {
 } from 'components/logic/ServerSideAuthProvider'
 import { subscribeApi } from 'frontend/api/api'
 import { UserData } from 'frontend/dtos/accountDto'
-import useSSORedirect from 'frontend/hooks/useSSORedirect'
+import useLoginRegisterRedirect from 'frontend/hooks/useLoginRegisterRedirect'
 import { GENERIC_ERROR_MESSAGE, isError } from 'frontend/utils/errors'
 import { GetServerSidePropsContext } from 'next'
 import { useRouter } from 'next/router'
@@ -60,9 +59,8 @@ const RegisterPage = ({ page }: AsyncServerProps<typeof getServerSideProps>) => 
   const [registrationError, setRegistrationError] = useState<Error | null>(null)
   const [lastEmail, setLastEmail] = useState<string>('')
   const router = useRouter()
-  const { redirect, redirectTargetIsAnotherPage } = useSSORedirect()
+  const { redirect, verificationRequired } = useLoginRegisterRedirect()
   // only divert user from verification if he's coming from another site
-  const preVerificationRedirect = redirectTargetIsAnotherPage
 
   const signUp = async (
     email: string,
@@ -117,6 +115,14 @@ const RegisterPage = ({ page }: AsyncServerProps<typeof getServerSideProps>) => 
       setRegistrationError(null)
       await Auth.confirmSignUp(lastEmail, code)
       setRegistrationStatus(RegistrationStatus.EMAIL_VERIFICATION_SUCCESS)
+      // TODO move this to backend
+      subscribeApi({}).catch((error) =>
+        logger.error(
+          `${GENERIC_ERROR_MESSAGE} - Failed to subscribe - ignoring and continuing`,
+          lastEmail,
+          error,
+        ),
+      )
     } catch (error) {
       if (isError(error)) {
         setRegistrationError(error)
@@ -146,50 +152,29 @@ const RegisterPage = ({ page }: AsyncServerProps<typeof getServerSideProps>) => 
               onSubmit={verifyEmail}
               error={registrationError}
             />
-          ) : preVerificationRedirect ? (
-            <AccountSuccessAlert
-              title={t('register_success_title')}
-              description={t('register_success_description', { email: lastEmail })}
-              confirmLabel={t('identity_verification_link')}
-              onConfirm={redirect}
-            />
           ) : (
+            // When verification is not required, the modal has only single button (without cancelLaberl/onCancel the second button is not rendered)
+            // This single button does the same action (redirects back) as the cancel button does in 2 button version
             <AccountSuccessAlert
               title={t('register_success_title')}
               description={t('register_success_description', { email: lastEmail })}
-              confirmLabel={t('identity_verification_link')}
-              onConfirm={() => {
-                // TODO move this to backend
-                subscribeApi({}).catch((error) =>
-                  logger.error(
-                    `${GENERIC_ERROR_MESSAGE} - Failed to subscribe - ignoring and continuing`,
-                    lastEmail,
-                    error,
-                  ),
-                )
-                router
-                  .push(ROUTES.IDENTITY_VERIFICATION)
-                  .catch((error_) => logger.error('Failed redirect', error_))
-              }}
-              cancelLabel={t('identity_verification_skip')}
-              onCancel={() => {
-                // TODO move this to backend
-                subscribeApi({}).catch((error) =>
-                  logger.error(
-                    `${GENERIC_ERROR_MESSAGE} Failed to subscribe - ignoring and continuing`,
-                    lastEmail,
-                    error,
-                  ),
-                )
-                return router.push({ pathname: ROUTES.HOME, query: { from: ROUTES.REGISTER } })
-              }}
-            >
-              <AccountMarkdown
-                className="text-center"
-                content={t('register_success_content')}
-                variant="sm"
-              />
-            </AccountSuccessAlert>
+              confirmLabel={
+                verificationRequired
+                  ? t('identity_verification_link')
+                  : t('identity_verification_not_required')
+              }
+              onConfirm={() =>
+                verificationRequired
+                  ? router
+                      .push(ROUTES.IDENTITY_VERIFICATION)
+                      .catch(() => logger.error(`${GENERIC_ERROR_MESSAGE} redirect failed`))
+                  : redirect({ from: ROUTES.REGISTER })
+              }
+              cancelLabel={verificationRequired ? t('identity_verification_skip') : undefined}
+              onCancel={
+                verificationRequired ? () => redirect({ from: ROUTES.REGISTER }) : undefined
+              }
+            />
           )}
         </AccountContainer>
       </LoginRegisterLayout>

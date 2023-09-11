@@ -1,3 +1,4 @@
+import logger from 'frontend/utils/logger'
 import { useRouter } from 'next/router'
 import { useTranslation } from 'next-i18next'
 import React, { createContext, PropsWithChildren, useContext, useEffect, useRef } from 'react'
@@ -23,7 +24,8 @@ const useGetContext = () => {
       // eslint-disable-next-line no-alert
       if (enabledRef.current && !window.confirm(t('info_messages.form_leave_protection'))) {
         router.events.emit('routeChangeError')
-        throw new Error('routeChange aborted.')
+        // this happens when user changes their mind when prompted about leaving
+        logger.info('routeChange aborted.')
       }
     }
 

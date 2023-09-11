@@ -8,8 +8,8 @@ import {
   getSSRCurrentAuth,
   ServerSideAuthProviderHOC,
 } from 'components/logic/ServerSideAuthProvider'
+import useLoginRegisterRedirect from 'frontend/hooks/useLoginRegisterRedirect'
 import { useServerSideAuth } from 'frontend/hooks/useServerSideAuth'
-import useSSORedirect from 'frontend/hooks/useSSORedirect'
 import { GENERIC_ERROR_MESSAGE, isError, isErrorWithCode } from 'frontend/utils/errors'
 import logger from 'frontend/utils/logger'
 import { GetServerSidePropsContext } from 'next'
@@ -40,7 +40,7 @@ export const getServerSideProps = async (ctx: GetServerSidePropsContext) => {
 }
 
 const LoginPage = ({ page }: AsyncServerProps<typeof getServerSideProps>) => {
-  const { redirect } = useSSORedirect()
+  const { redirect } = useLoginRegisterRedirect()
   const { isAuthenticated } = useServerSideAuth()
   const [loginError, setLoginError] = useState<Error | null>(null)
   // if email is not yet verify login will fail - we stay on this page & render verification form for the last used email

@@ -27,6 +27,7 @@ export default function useHookForm<T extends FieldValues>({ schema, defaultValu
         postalCode: '^\\s*(\\d\\s*\\d\\s*\\d\\s*\\d\\s*\\d)?\\s*$',
         // postalCode: '^([0-9]{5}|)$',
         idCard: '^([a-zA-Z]{2})([0-9]{6})([0-9]?)$',
+        ico: '^[0-9]{8}$',
         rc: (value: string) => {
           const formattedValue = value.replace('/', '')
 

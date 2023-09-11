@@ -3,12 +3,11 @@ import { JSONSchema7 } from 'json-schema'
 import pick from 'lodash/pick'
 import { useRouter } from 'next/router'
 import { useCallback, useEffect, useState } from 'react'
-import { useEffectOnce } from 'usehooks-ts'
+import { useEffectOnceWhen } from 'rooks'
 
 import { FormStepIndex, FormStepperStep } from '../../components/forms/types/Steps'
 import { rjfsValidator } from './form'
 import { isDefined } from './general'
-import { useEffectOnceWhen } from 'rooks'
 
 export const SUMMARY_HASH = 'sumar'
 
@@ -167,7 +166,6 @@ export const useCurrentStepIndex = (stepSchemas: (JSONSchema7 | null)[]) => {
   // Gets the current step and updates the hash if needed
   const syncStepToHash = useCallback(
     (index: FormStepIndex, replace: boolean = false) => {
-      router.isReady
       const routerFn = replace ? router.replace : router.push
 
       if (index === 'summary') {

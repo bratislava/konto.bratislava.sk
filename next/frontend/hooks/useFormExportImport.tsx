@@ -20,7 +20,7 @@ type FormExportImportProviderProps = {
   initialFormData: InitialFormData
 }
 
-export const useGetContext = ({initialFormData}: FormExportImportProviderProps) => {
+export const useGetContext = ({ initialFormData }: FormExportImportProviderProps) => {
   const { isAuthenticated } = useServerSideAuth()
   const { formId, formData, formSlug, setImportedFormData } = useFormState()
   const { setRegistrationModal } = useFormModals()
@@ -69,16 +69,15 @@ export const useGetContext = ({initialFormData}: FormExportImportProviderProps) 
   )
 
   const { mutate: migrateFormMutate, isLoading: migrateFormIsLoading } = useMutation(
-    () =>
-      formsApi.nasesControllerMigrateForm(
-        formId,
-        { accessToken: 'onlyAuthenticated' },
-      ),
+    () => formsApi.nasesControllerMigrateForm(formId, { accessToken: 'onlyAuthenticated' }),
     {
       networkMode: 'always',
       onSuccess: () => {
         turnOffLeaveProtection()
         router.reload()
+        // a promise returned is awaited before toggling the isLoading
+        // we use this to prevent re-enabling the button - the promise never resolves, the state is cleared by the reload
+        return new Promise(() => {})
       },
       onError: () => {
         openSnackbarError(t('errors.migration'))
@@ -88,7 +87,7 @@ export const useGetContext = ({initialFormData}: FormExportImportProviderProps) 
 
   const migrateForm = () => {
     if (migrateFormIsLoading) {
-      return;
+      return
     }
 
     migrateFormMutate()
@@ -191,7 +190,10 @@ const FormExportImportContext = createContext<ReturnType<typeof useGetContext> |
   undefined,
 )
 
-export const FormExportImportProvider = ({ children, ...rest }: PropsWithChildren<FormExportImportProviderProps>) => {
+export const FormExportImportProvider = ({
+  children,
+  ...rest
+}: PropsWithChildren<FormExportImportProviderProps>) => {
   const context = useGetContext(rest)
 
   return (

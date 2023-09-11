@@ -20,8 +20,8 @@ const ObjectFieldTemplate = ({ title, properties, idSchema }: ObjectFieldTemplat
   const isStepObject = splitId.length === 2 && splitId[0] === 'root'
 
   return (
-    <div>
-      {isStepObject && <h2 className="text-h2-medium mb-6 mt-8">{title}</h2>}
+    <div className="mb-4">
+      {isStepObject && <h2 className="text-h3-bold mb-2">{title}</h2>}
       {properties.map((element, index) => (
         <Fragment key={index}>{element.content}</Fragment>
       ))}

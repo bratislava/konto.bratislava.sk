@@ -5,6 +5,7 @@ import { useFormState } from '../../useFormState'
 import SummaryHeader from '../SummaryHeader'
 import SummaryForm from './SummaryForm'
 import SummaryFormControls from './SummaryFormControls'
+import SummaryFormLegalText from './SummaryFormLegalText'
 import { FormSummaryProvider } from './useFormSummary'
 
 const FormSummary = () => {
@@ -12,8 +13,8 @@ const FormSummary = () => {
 
   return (
     <FormSummaryProvider>
-      <SummaryHeader />
-      <div className={cx('my-10')}>
+      <div className="flex flex-col gap-4">
+        <SummaryHeader />
         <SummaryForm
           schema={schema}
           uiSchema={uiSchema}
@@ -30,6 +31,7 @@ const FormSummary = () => {
         >
           <div />
         </SummaryForm>
+        <SummaryFormLegalText />
         <SummaryFormControls />
       </div>
     </FormSummaryProvider>

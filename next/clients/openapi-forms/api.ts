@@ -61,6 +61,25 @@ export interface BadRequestDecoratorErrorDto {
 /**
  *
  * @export
+ * @interface CanSendResponseDto
+ */
+export interface CanSendResponseDto {
+  /**
+   * True if given form can be sent to Nases.
+   * @type {boolean}
+   * @memberof CanSendResponseDto
+   */
+  canSend: boolean
+  /**
+   * ID of form
+   * @type {string}
+   * @memberof CanSendResponseDto
+   */
+  formId: string
+}
+/**
+ *
+ * @export
  * @interface CreateFormEidRequestDto
  */
 export interface CreateFormEidRequestDto {
@@ -392,6 +411,56 @@ export type FileByScannerIdNotFoundErrorDtoErrorNameEnum =
 /**
  *
  * @export
+ * @interface FileDeleteFromMinioWasNotSuccessfulErrorDto
+ */
+export interface FileDeleteFromMinioWasNotSuccessfulErrorDto {
+  /**
+   * Status Code
+   * @type {number}
+   * @memberof FileDeleteFromMinioWasNotSuccessfulErrorDto
+   */
+  statusCode: number
+  /**
+   * Detail error message
+   * @type {string}
+   * @memberof FileDeleteFromMinioWasNotSuccessfulErrorDto
+   */
+  message: string
+  /**
+   * status in text
+   * @type {string}
+   * @memberof FileDeleteFromMinioWasNotSuccessfulErrorDto
+   */
+  status: string
+  /**
+   * Exact error name
+   * @type {string}
+   * @memberof FileDeleteFromMinioWasNotSuccessfulErrorDto
+   */
+  errorName: FileDeleteFromMinioWasNotSuccessfulErrorDtoErrorNameEnum
+  /**
+   * Helper for sending additional data in error
+   * @type {object}
+   * @memberof FileDeleteFromMinioWasNotSuccessfulErrorDto
+   */
+  object?: object
+}
+
+export const FileDeleteFromMinioWasNotSuccessfulErrorDtoErrorNameEnum = {
+  NotFoundError: 'NOT_FOUND_ERROR',
+  DatabaseError: 'DATABASE_ERROR',
+  InternalServerError: 'INTERNAL_SERVER_ERROR',
+  UnauthorizedError: 'UNAUTHORIZED_ERROR',
+  UnprocessableEntityError: 'UNPROCESSABLE_ENTITY_ERROR',
+  BadRequestError: 'BAD_REQUEST_ERROR',
+} as const
+
+export type FileDeleteFromMinioWasNotSuccessfulErrorDtoErrorNameEnum =
+  (typeof FileDeleteFromMinioWasNotSuccessfulErrorDtoErrorNameEnum)[keyof typeof FileDeleteFromMinioWasNotSuccessfulErrorDtoErrorNameEnum]
+
+/**
+ *
+ * @export
  * @interface FileHasUnsupportedMimeTypeErrorDto
  */
 export interface FileHasUnsupportedMimeTypeErrorDto {
@@ -488,6 +557,56 @@ export const FileIdAlreadyExistsErrorDtoErrorNameEnum = {
 
 export type FileIdAlreadyExistsErrorDtoErrorNameEnum =
   (typeof FileIdAlreadyExistsErrorDtoErrorNameEnum)[keyof typeof FileIdAlreadyExistsErrorDtoErrorNameEnum]
+
+/**
+ *
+ * @export
+ * @interface FileIdsNotFoundInDbErrorDto
+ */
+export interface FileIdsNotFoundInDbErrorDto {
+  /**
+   * Status Code
+   * @type {number}
+   * @memberof FileIdsNotFoundInDbErrorDto
+   */
+  statusCode: number
+  /**
+   * Detail error message
+   * @type {string}
+   * @memberof FileIdsNotFoundInDbErrorDto
+   */
+  message: string
+  /**
+   * status in text
+   * @type {string}
+   * @memberof FileIdsNotFoundInDbErrorDto
+   */
+  status: string
+  /**
+   * Exact error name
+   * @type {string}
+   * @memberof FileIdsNotFoundInDbErrorDto
+   */
+  errorName: FileIdsNotFoundInDbErrorDtoErrorNameEnum
+  /**
+   * Helper for sending additional data in error
+   * @type {object}
+   * @memberof FileIdsNotFoundInDbErrorDto
+   */
+  object?: object
+}
+
+export const FileIdsNotFoundInDbErrorDtoErrorNameEnum = {
+  NotFoundError: 'NOT_FOUND_ERROR',
+  DatabaseError: 'DATABASE_ERROR',
+  InternalServerError: 'INTERNAL_SERVER_ERROR',
+  UnauthorizedError: 'UNAUTHORIZED_ERROR',
+  UnprocessableEntityError: 'UNPROCESSABLE_ENTITY_ERROR',
+  BadRequestError: 'BAD_REQUEST_ERROR',
+} as const
+
+export type FileIdsNotFoundInDbErrorDtoErrorNameEnum =
+  (typeof FileIdsNotFoundInDbErrorDtoErrorNameEnum)[keyof typeof FileIdsNotFoundInDbErrorDtoErrorNameEnum]
 
 /**
  *
@@ -892,42 +1011,42 @@ export type FileSizeZeroErrorDtoErrorNameEnum =
 /**
  *
  * @export
- * @interface FileUploadToMinioWasNotSucessful
+ * @interface FileUploadToMinioWasNotSuccessfulErrorDto
  */
-export interface FileUploadToMinioWasNotSucessful {
+export interface FileUploadToMinioWasNotSuccessfulErrorDto {
   /**
    * Status Code
    * @type {number}
-   * @memberof FileUploadToMinioWasNotSucessful
+   * @memberof FileUploadToMinioWasNotSuccessfulErrorDto
    */
   statusCode: number
   /**
    * Detail error message
    * @type {string}
-   * @memberof FileUploadToMinioWasNotSucessful
+   * @memberof FileUploadToMinioWasNotSuccessfulErrorDto
    */
   message: string
   /**
    * status in text
    * @type {string}
-   * @memberof FileUploadToMinioWasNotSucessful
+   * @memberof FileUploadToMinioWasNotSuccessfulErrorDto
    */
   status: string
   /**
    * Exact error name
    * @type {string}
-   * @memberof FileUploadToMinioWasNotSucessful
+   * @memberof FileUploadToMinioWasNotSuccessfulErrorDto
    */
-  errorName: FileUploadToMinioWasNotSucessfulErrorNameEnum
+  errorName: FileUploadToMinioWasNotSuccessfulErrorDtoErrorNameEnum
   /**
    * Helper for sending additional data in error
    * @type {object}
-   * @memberof FileUploadToMinioWasNotSucessful
+   * @memberof FileUploadToMinioWasNotSuccessfulErrorDto
    */
   object?: object
 }
 
-export const FileUploadToMinioWasNotSucessfulErrorNameEnum = {
+export const FileUploadToMinioWasNotSuccessfulErrorDtoErrorNameEnum = {
   NotFoundError: 'NOT_FOUND_ERROR',
   DatabaseError: 'DATABASE_ERROR',
   InternalServerError: 'INTERNAL_SERVER_ERROR',
@@ -936,8 +1055,8 @@ export const FileUploadToMinioWasNotSucessfulErrorNameEnum = {
   BadRequestError: 'BAD_REQUEST_ERROR',
 } as const
 
-export type FileUploadToMinioWasNotSucessfulErrorNameEnum =
-  (typeof FileUploadToMinioWasNotSucessfulErrorNameEnum)[keyof typeof FileUploadToMinioWasNotSucessfulErrorNameEnum]
+export type FileUploadToMinioWasNotSuccessfulErrorDtoErrorNameEnum =
+  (typeof FileUploadToMinioWasNotSuccessfulErrorDtoErrorNameEnum)[keyof typeof FileUploadToMinioWasNotSuccessfulErrorDtoErrorNameEnum]
 
 /**
  *
@@ -1344,6 +1463,106 @@ export const FilesControllerUploadFile500ResponseErrorNameEnum = {
 
 export type FilesControllerUploadFile500ResponseErrorNameEnum =
   (typeof FilesControllerUploadFile500ResponseErrorNameEnum)[keyof typeof FilesControllerUploadFile500ResponseErrorNameEnum]
+
+/**
+ *
+ * @export
+ * @interface ForbiddenFormSendDto
+ */
+export interface ForbiddenFormSendDto {
+  /**
+   * Status Code
+   * @type {number}
+   * @memberof ForbiddenFormSendDto
+   */
+  statusCode: number
+  /**
+   * Detail error message
+   * @type {string}
+   * @memberof ForbiddenFormSendDto
+   */
+  message: string
+  /**
+   * status in text
+   * @type {string}
+   * @memberof ForbiddenFormSendDto
+   */
+  status: string
+  /**
+   * Exact error name
+   * @type {string}
+   * @memberof ForbiddenFormSendDto
+   */
+  errorName: ForbiddenFormSendDtoErrorNameEnum
+  /**
+   * Helper for sending additional data in error
+   * @type {object}
+   * @memberof ForbiddenFormSendDto
+   */
+  object?: object
+}
+
+export const ForbiddenFormSendDtoErrorNameEnum = {
+  NotFoundError: 'NOT_FOUND_ERROR',
+  DatabaseError: 'DATABASE_ERROR',
+  InternalServerError: 'INTERNAL_SERVER_ERROR',
+  UnauthorizedError: 'UNAUTHORIZED_ERROR',
+  UnprocessableEntityError: 'UNPROCESSABLE_ENTITY_ERROR',
+  BadRequestError: 'BAD_REQUEST_ERROR',
+} as const
+
+export type ForbiddenFormSendDtoErrorNameEnum =
+  (typeof ForbiddenFormSendDtoErrorNameEnum)[keyof typeof ForbiddenFormSendDtoErrorNameEnum]
+
+/**
+ *
+ * @export
+ * @interface FormDataInvalidErrorDto
+ */
+export interface FormDataInvalidErrorDto {
+  /**
+   * Status Code
+   * @type {number}
+   * @memberof FormDataInvalidErrorDto
+   */
+  statusCode: number
+  /**
+   * Detail error message
+   * @type {string}
+   * @memberof FormDataInvalidErrorDto
+   */
+  message: string
+  /**
+   * status in text
+   * @type {string}
+   * @memberof FormDataInvalidErrorDto
+   */
+  status: string
+  /**
+   * Exact error name
+   * @type {string}
+   * @memberof FormDataInvalidErrorDto
+   */
+  errorName: FormDataInvalidErrorDtoErrorNameEnum
+  /**
+   * Helper for sending additional data in error
+   * @type {object}
+   * @memberof FormDataInvalidErrorDto
+   */
+  object?: object
+}
+
+export const FormDataInvalidErrorDtoErrorNameEnum = {
+  NotFoundError: 'NOT_FOUND_ERROR',
+  DatabaseError: 'DATABASE_ERROR',
+  InternalServerError: 'INTERNAL_SERVER_ERROR',
+  UnauthorizedError: 'UNAUTHORIZED_ERROR',
+  UnprocessableEntityError: 'UNPROCESSABLE_ENTITY_ERROR',
+  BadRequestError: 'BAD_REQUEST_ERROR',
+} as const
+
+export type FormDataInvalidErrorDtoErrorNameEnum =
+  (typeof FormDataInvalidErrorDtoErrorNameEnum)[keyof typeof FormDataInvalidErrorDtoErrorNameEnum]
 
 /**
  *
@@ -2125,6 +2344,56 @@ export interface JsonToXmlResponseDto {
 /**
  *
  * @export
+ * @interface NasesControllerDeleteForm400Response
+ */
+export interface NasesControllerDeleteForm400Response {
+  /**
+   * Status Code
+   * @type {number}
+   * @memberof NasesControllerDeleteForm400Response
+   */
+  statusCode: number
+  /**
+   * Detail error message
+   * @type {string}
+   * @memberof NasesControllerDeleteForm400Response
+   */
+  message: string
+  /**
+   * status in text
+   * @type {string}
+   * @memberof NasesControllerDeleteForm400Response
+   */
+  status: string
+  /**
+   * Exact error name
+   * @type {string}
+   * @memberof NasesControllerDeleteForm400Response
+   */
+  errorName: NasesControllerDeleteForm400ResponseErrorNameEnum
+  /**
+   * Helper for sending additional data in error
+   * @type {object}
+   * @memberof NasesControllerDeleteForm400Response
+   */
+  object?: object
+}
+
+export const NasesControllerDeleteForm400ResponseErrorNameEnum = {
+  NotFoundError: 'NOT_FOUND_ERROR',
+  DatabaseError: 'DATABASE_ERROR',
+  InternalServerError: 'INTERNAL_SERVER_ERROR',
+  UnauthorizedError: 'UNAUTHORIZED_ERROR',
+  UnprocessableEntityError: 'UNPROCESSABLE_ENTITY_ERROR',
+  BadRequestError: 'BAD_REQUEST_ERROR',
+} as const
+
+export type NasesControllerDeleteForm400ResponseErrorNameEnum =
+  (typeof NasesControllerDeleteForm400ResponseErrorNameEnum)[keyof typeof NasesControllerDeleteForm400ResponseErrorNameEnum]
+
+/**
+ *
+ * @export
  * @interface NasesControllerGetEidJwt401Response
  */
 export interface NasesControllerGetEidJwt401Response {
@@ -2244,56 +2513,6 @@ export type NasesControllerGetForms500ResponseErrorNameEnum =
 /**
  *
  * @export
- * @interface NasesControllerSendAndUpdateForm400Response
- */
-export interface NasesControllerSendAndUpdateForm400Response {
-  /**
-   * Status Code
-   * @type {number}
-   * @memberof NasesControllerSendAndUpdateForm400Response
-   */
-  statusCode: number
-  /**
-   * Detail error message
-   * @type {string}
-   * @memberof NasesControllerSendAndUpdateForm400Response
-   */
-  message: string
-  /**
-   * status in text
-   * @type {string}
-   * @memberof NasesControllerSendAndUpdateForm400Response
-   */
-  status: string
-  /**
-   * Exact error name
-   * @type {string}
-   * @memberof NasesControllerSendAndUpdateForm400Response
-   */
-  errorName: NasesControllerSendAndUpdateForm400ResponseErrorNameEnum
-  /**
-   * Helper for sending additional data in error
-   * @type {object}
-   * @memberof NasesControllerSendAndUpdateForm400Response
-   */
-  object?: object
-}
-
-export const NasesControllerSendAndUpdateForm400ResponseErrorNameEnum = {
-  NotFoundError: 'NOT_FOUND_ERROR',
-  DatabaseError: 'DATABASE_ERROR',
-  InternalServerError: 'INTERNAL_SERVER_ERROR',
-  UnauthorizedError: 'UNAUTHORIZED_ERROR',
-  UnprocessableEntityError: 'UNPROCESSABLE_ENTITY_ERROR',
-  BadRequestError: 'BAD_REQUEST_ERROR',
-} as const
-
-export type NasesControllerSendAndUpdateForm400ResponseErrorNameEnum =
-  (typeof NasesControllerSendAndUpdateForm400ResponseErrorNameEnum)[keyof typeof NasesControllerSendAndUpdateForm400ResponseErrorNameEnum]
-
-/**
- *
- * @export
  * @interface NasesControllerSendAndUpdateForm422Response
  */
 export interface NasesControllerSendAndUpdateForm422Response {
@@ -2390,6 +2609,106 @@ export const NasesControllerSendForm422ResponseErrorNameEnum = {
 
 export type NasesControllerSendForm422ResponseErrorNameEnum =
   (typeof NasesControllerSendForm422ResponseErrorNameEnum)[keyof typeof NasesControllerSendForm422ResponseErrorNameEnum]
+
+/**
+ *
+ * @export
+ * @interface NasesControllerUpdateForm400Response
+ */
+export interface NasesControllerUpdateForm400Response {
+  /**
+   * Status Code
+   * @type {number}
+   * @memberof NasesControllerUpdateForm400Response
+   */
+  statusCode: number
+  /**
+   * Detail error message
+   * @type {string}
+   * @memberof NasesControllerUpdateForm400Response
+   */
+  message: string
+  /**
+   * status in text
+   * @type {string}
+   * @memberof NasesControllerUpdateForm400Response
+   */
+  status: string
+  /**
+   * Exact error name
+   * @type {string}
+   * @memberof NasesControllerUpdateForm400Response
+   */
+  errorName: NasesControllerUpdateForm400ResponseErrorNameEnum
+  /**
+   * Helper for sending additional data in error
+   * @type {object}
+   * @memberof NasesControllerUpdateForm400Response
+   */
+  object?: object
+}
+
+export const NasesControllerUpdateForm400ResponseErrorNameEnum = {
+  NotFoundError: 'NOT_FOUND_ERROR',
+  DatabaseError: 'DATABASE_ERROR',
+  InternalServerError: 'INTERNAL_SERVER_ERROR',
+  UnauthorizedError: 'UNAUTHORIZED_ERROR',
+  UnprocessableEntityError: 'UNPROCESSABLE_ENTITY_ERROR',
+  BadRequestError: 'BAD_REQUEST_ERROR',
+} as const
+
+export type NasesControllerUpdateForm400ResponseErrorNameEnum =
+  (typeof NasesControllerUpdateForm400ResponseErrorNameEnum)[keyof typeof NasesControllerUpdateForm400ResponseErrorNameEnum]
+
+/**
+ *
+ * @export
+ * @interface NasesControllerUpdateForm500Response
+ */
+export interface NasesControllerUpdateForm500Response {
+  /**
+   * Status Code
+   * @type {number}
+   * @memberof NasesControllerUpdateForm500Response
+   */
+  statusCode: number
+  /**
+   * Detail error message
+   * @type {string}
+   * @memberof NasesControllerUpdateForm500Response
+   */
+  message: string
+  /**
+   * status in text
+   * @type {string}
+   * @memberof NasesControllerUpdateForm500Response
+   */
+  status: string
+  /**
+   * Exact error name
+   * @type {string}
+   * @memberof NasesControllerUpdateForm500Response
+   */
+  errorName: NasesControllerUpdateForm500ResponseErrorNameEnum
+  /**
+   * Helper for sending additional data in error
+   * @type {object}
+   * @memberof NasesControllerUpdateForm500Response
+   */
+  object?: object
+}
+
+export const NasesControllerUpdateForm500ResponseErrorNameEnum = {
+  NotFoundError: 'NOT_FOUND_ERROR',
+  DatabaseError: 'DATABASE_ERROR',
+  InternalServerError: 'INTERNAL_SERVER_ERROR',
+  UnauthorizedError: 'UNAUTHORIZED_ERROR',
+  UnprocessableEntityError: 'UNPROCESSABLE_ENTITY_ERROR',
+  BadRequestError: 'BAD_REQUEST_ERROR',
+} as const
+
+export type NasesControllerUpdateForm500ResponseErrorNameEnum =
+  (typeof NasesControllerUpdateForm500ResponseErrorNameEnum)[keyof typeof NasesControllerUpdateForm500ResponseErrorNameEnum]
 
 /**
  *
@@ -4927,6 +5246,51 @@ export class HealthcheckApi extends BaseAPI {
 export const NasesApiAxiosParamCreator = function (configuration?: Configuration) {
   return {
     /**
+     * Check if given form can be sent to Nases (all files are scanned etc.)
+     * @summary
+     * @param {string} id
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    nasesControllerCheckSendConditions: async (
+      id: string,
+      options: AxiosRequestConfig = {},
+    ): Promise<RequestArgs> => {
+      // verify required parameter 'id' is not null or undefined
+      assertParamExists('nasesControllerCheckSendConditions', 'id', id)
+      const localVarPath = `/nases/can-send/{id}`.replace(
+        `{${'id'}}`,
+        encodeURIComponent(String(id)),
+      )
+      // use dummy base URL string because the URL constructor only accepts absolute URLs.
+      const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL)
+      let baseOptions
+      if (configuration) {
+        baseOptions = configuration.baseOptions
+      }
+
+      const localVarRequestOptions = { method: 'GET', ...baseOptions, ...options }
+      const localVarHeaderParameter = {} as any
+      const localVarQueryParameter = {} as any
+
+      // authentication bearer required
+      // http bearer authentication required
+      await setBearerAuthToObject(localVarHeaderParameter, configuration)
+
+      setSearchParams(localVarUrlObj, localVarQueryParameter)
+      let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {}
+      localVarRequestOptions.headers = {
+        ...localVarHeaderParameter,
+        ...headersFromBaseOptions,
+        ...options.headers,
+      }
+
+      return {
+        url: toPathString(localVarUrlObj),
+        options: localVarRequestOptions,
+      }
+    },
+    /**
      * Create id in our backend, which you need to send in form as external id. Save also data necessary for envelope to send message to NASES
      * @summary
      * @param {CreateFormRequestDto} createFormRequestDto
@@ -5023,6 +5387,48 @@ export const NasesApiAxiosParamCreator = function (configuration?: Configuration
         localVarRequestOptions,
         configuration,
       )
+
+      return {
+        url: toPathString(localVarUrlObj),
+        options: localVarRequestOptions,
+      }
+    },
+    /**
+     * Archive form (hide from user but keep in database)
+     * @summary
+     * @param {string} id
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    nasesControllerDeleteForm: async (
+      id: string,
+      options: AxiosRequestConfig = {},
+    ): Promise<RequestArgs> => {
+      // verify required parameter 'id' is not null or undefined
+      assertParamExists('nasesControllerDeleteForm', 'id', id)
+      const localVarPath = `/nases/{id}`.replace(`{${'id'}}`, encodeURIComponent(String(id)))
+      // use dummy base URL string because the URL constructor only accepts absolute URLs.
+      const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL)
+      let baseOptions
+      if (configuration) {
+        baseOptions = configuration.baseOptions
+      }
+
+      const localVarRequestOptions = { method: 'DELETE', ...baseOptions, ...options }
+      const localVarHeaderParameter = {} as any
+      const localVarQueryParameter = {} as any
+
+      // authentication bearer required
+      // http bearer authentication required
+      await setBearerAuthToObject(localVarHeaderParameter, configuration)
+
+      setSearchParams(localVarUrlObj, localVarQueryParameter)
+      let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {}
+      localVarRequestOptions.headers = {
+        ...localVarHeaderParameter,
+        ...headersFromBaseOptions,
+        ...options.headers,
+      }
 
       return {
         url: toPathString(localVarUrlObj),
@@ -5640,6 +6046,23 @@ export const NasesApiFp = function (configuration?: Configuration) {
   const localVarAxiosParamCreator = NasesApiAxiosParamCreator(configuration)
   return {
     /**
+     * Check if given form can be sent to Nases (all files are scanned etc.)
+     * @summary
+     * @param {string} id
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    async nasesControllerCheckSendConditions(
+      id: string,
+      options?: AxiosRequestConfig,
+    ): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<CanSendResponseDto>> {
+      const localVarAxiosArgs = await localVarAxiosParamCreator.nasesControllerCheckSendConditions(
+        id,
+        options,
+      )
+      return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)
+    },
+    /**
      * Create id in our backend, which you need to send in form as external id. Save also data necessary for envelope to send message to NASES
      * @summary
      * @param {CreateFormRequestDto} createFormRequestDto
@@ -5670,6 +6093,23 @@ export const NasesApiFp = function (configuration?: Configuration) {
     ): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<GetFormResponseDto>> {
       const localVarAxiosArgs = await localVarAxiosParamCreator.nasesControllerCreateFormEid(
         createFormEidRequestDto,
+        options,
+      )
+      return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)
+    },
+    /**
+     * Archive form (hide from user but keep in database)
+     * @summary
+     * @param {string} id
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    async nasesControllerDeleteForm(
+      id: string,
+      options?: AxiosRequestConfig,
+    ): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<void>> {
+      const localVarAxiosArgs = await localVarAxiosParamCreator.nasesControllerDeleteForm(
+        id,
         options,
       )
       return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)
@@ -5904,6 +6344,21 @@ export const NasesApiFactory = function (
   const localVarFp = NasesApiFp(configuration)
   return {
     /**
+     * Check if given form can be sent to Nases (all files are scanned etc.)
+     * @summary
+     * @param {string} id
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    nasesControllerCheckSendConditions(
+      id: string,
+      options?: AxiosRequestConfig,
+    ): AxiosPromise<CanSendResponseDto> {
+      return localVarFp
+        .nasesControllerCheckSendConditions(id, options)
+        .then((request) => request(axios, basePath))
+    },
+    /**
      * Create id in our backend, which you need to send in form as external id. Save also data necessary for envelope to send message to NASES
      * @summary
      * @param {CreateFormRequestDto} createFormRequestDto
@@ -5932,6 +6387,18 @@ export const NasesApiFactory = function (
     ): AxiosPromise<GetFormResponseDto> {
       return localVarFp
         .nasesControllerCreateFormEid(createFormEidRequestDto, options)
+        .then((request) => request(axios, basePath))
+    },
+    /**
+     * Archive form (hide from user but keep in database)
+     * @summary
+     * @param {string} id
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    nasesControllerDeleteForm(id: string, options?: AxiosRequestConfig): AxiosPromise<void> {
+      return localVarFp
+        .nasesControllerDeleteForm(id, options)
         .then((request) => request(axios, basePath))
     },
     /**
@@ -6137,6 +6604,20 @@ export const NasesApiFactory = function (
  */
 export class NasesApi extends BaseAPI {
   /**
+   * Check if given form can be sent to Nases (all files are scanned etc.)
+   * @summary
+   * @param {string} id
+   * @param {*} [options] Override http request option.
+   * @throws {RequiredError}
+   * @memberof NasesApi
+   */
+  public nasesControllerCheckSendConditions(id: string, options?: AxiosRequestConfig) {
+    return NasesApiFp(this.configuration)
+      .nasesControllerCheckSendConditions(id, options)
+      .then((request) => request(this.axios, this.basePath))
+  }
+
+  /**
    * Create id in our backend, which you need to send in form as external id. Save also data necessary for envelope to send message to NASES
    * @summary
    * @param {CreateFormRequestDto} createFormRequestDto
@@ -6168,6 +6649,20 @@ export class NasesApi extends BaseAPI {
   ) {
     return NasesApiFp(this.configuration)
       .nasesControllerCreateFormEid(createFormEidRequestDto, options)
+      .then((request) => request(this.axios, this.basePath))
+  }
+
+  /**
+   * Archive form (hide from user but keep in database)
+   * @summary
+   * @param {string} id
+   * @param {*} [options] Override http request option.
+   * @throws {RequiredError}
+   * @memberof NasesApi
+   */
+  public nasesControllerDeleteForm(id: string, options?: AxiosRequestConfig) {
+    return NasesApiFp(this.configuration)
+      .nasesControllerDeleteForm(id, options)
       .then((request) => request(this.axios, this.basePath))
   }
 

@@ -47,7 +47,7 @@ const FormPageWrapper = ({ schema, uiSchema, page, initialFormData }: FormPageWr
                   <FormRedirectsProvider>
                     <FormSendProvider>
                       <FormExportImportProvider initialFormData={initialFormData}>
-                        <AccountPageLayout isPublicPage hiddenHeaderNav>
+                        <AccountPageLayout isPublicPage>
                           <FormPage />
                         </AccountPageLayout>
                       </FormExportImportProvider>

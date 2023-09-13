@@ -80,8 +80,8 @@ const Alert = ({
       'bg-gray-700 text-white': type === 'info' && solid,
       'bg-warning-700 text-white': type === 'warning' && solid,
     },
-    { 'w-full max-w-none': fullWidth },
-    { 'w-full max-w-[480px]': !fullWidth },
+    { 'max-w-none': fullWidth },
+    { 'max-w-[480px]': !fullWidth },
   )
 
   const contentStyle = cx('', {

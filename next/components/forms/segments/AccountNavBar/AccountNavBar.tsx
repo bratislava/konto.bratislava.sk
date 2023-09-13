@@ -106,7 +106,7 @@ export const AccountNavBar = ({ className, sectionsList, menuItems, hiddenHeader
           >
             <Brand
               className="group grow"
-              url="https://bratislava.sk/"
+              url={ROUTES.HOME}
               title={
                 <p className="text-p2 text-font group-hover:text-gray-600">
                   {t('common:capitalCity')}
@@ -192,7 +192,7 @@ export const AccountNavBar = ({ className, sectionsList, menuItems, hiddenHeader
         <div className={RemoveScroll.classNames.fullWidth}>
           {!burgerOpen && <StatusBar className="flex lg:hidden" />}
           <div className="flex h-16 items-center border-b-2 px-8 py-5">
-            <Brand url="https://bratislava.sk/" className="grow" />
+            <Brand url={ROUTES.HOME} className="grow" />
             <button
               type="button"
               onClick={() => (isAuthenticated ? setBurgerOpen(!burgerOpen) : login())}

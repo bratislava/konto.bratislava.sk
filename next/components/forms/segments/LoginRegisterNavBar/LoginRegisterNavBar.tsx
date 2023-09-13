@@ -2,6 +2,7 @@ import { ArrowLeftIcon } from '@assets/ui-icons'
 import cx from 'classnames'
 import { StatusBar, useStatusBarContext } from 'components/forms/info-components/StatusBar'
 import Brand from 'components/forms/simple-components/Brand'
+import { ROUTES } from 'frontend/api/constants'
 import { useRouter } from 'next/router'
 import { useTranslation } from 'next-i18next'
 
@@ -51,7 +52,7 @@ export const LoginRegisterNavBar = ({ className, currentLanguage, backButtonHidd
           {!backButtonHidden && <BackButton />}
           <Brand
             className="group"
-            url="https://bratislava.sk/"
+            url={ROUTES.HOME}
             title={
               <p className="text-p2 text-font group-hover:text-gray-600">
                 {languageKey === 'en' && <span className="font-semibold">Bratislava </span>}
@@ -72,7 +73,7 @@ export const LoginRegisterNavBar = ({ className, currentLanguage, backButtonHidd
         <div className="flex h-16 items-center border-b-2 px-8 py-5">
           {!backButtonHidden && <BackButton />}
           <Brand
-            url="https://bratislava.sk/"
+            url={ROUTES.HOME}
             className="mx-auto"
             title={
               <p className="text-p2 text-font group-hover:text-gray-600">

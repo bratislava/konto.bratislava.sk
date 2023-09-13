@@ -47,7 +47,7 @@ const RegistrationModal = ({ type, login, register, ...rest }: RegistrationModal
   }
 
   return (
-    <ModalV2 mobileFullScreen {...rest}>
+    <ModalV2 mobileFullScreen size="large" {...rest}>
       <div className="mb-6 flex flex-col gap-2">
         {title && <h3 className="text-h3">{title}</h3>}
         {subtitle && <p className="text-p1">{subtitle}</p>}

@@ -104,14 +104,7 @@ const IntroSection = () => {
           text={t('account_section_intro.header_text')}
         />
         <div className="m-auto w-full max-w-screen-lg py-6 lg:py-16">
-          <AnnouncementBlock
-            announcementContent={announcementContent}
-            buttonTitle={t('account_section_intro.announcement_card_action')}
-            imagePath={KupaliskaImg}
-            onPress={() => {
-              window.location.href = 'https://kupaliska.bratislava.sk'
-            }}
-          />
+          <AnnouncementBlock announcementContent={announcementContent} imagePath={KupaliskaImg} />
 
           <div className="mb-8 flex w-full items-center justify-between px-4 lg:px-0">
             <h2 className="text-h2">{t('account_section_services.navigation')}</h2>

@@ -4,6 +4,7 @@ import './index.css'
 import '../frontend/utils/logger'
 // configure Amplify
 import '../frontend/utils/amplify'
+import 'react-loading-skeleton/dist/skeleton.css'
 
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import { StatusBarProvider } from 'components/forms/info-components/StatusBar'

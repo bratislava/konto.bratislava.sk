@@ -1,7 +1,8 @@
 import React, { createContext, useContext, useState } from 'react'
 
 type GlobalStateBase = {
-  applicationsActiveMenuItem?: 'sent' | 'concept'
+  // TODO will move this out of state into route hash - the type will move into one place together with it
+  applicationsActiveMenuItem?: 'SENT' | 'SENDING' | 'DRAFT'
 }
 
 const GlobalStateContext = createContext<{
@@ -18,7 +19,7 @@ interface GlobalStateProviderProps {
 
 export const GlobalStateProvider: React.FC<GlobalStateProviderProps> = ({ children }) => {
   const [globalState, setGlobalState] = useState<GlobalStateBase>({
-    applicationsActiveMenuItem: 'sent',
+    applicationsActiveMenuItem: 'SENT',
   })
   return (
     <GlobalStateContext.Provider value={{ globalState, setGlobalState }}>

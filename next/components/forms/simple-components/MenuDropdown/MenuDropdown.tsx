@@ -18,9 +18,10 @@ type MenuDropdownBase = {
   itemVariant?: 'form' | 'header'
   buttonTrigger?: ReactNode
   buttonClassName?: string
-  setIsOpen: Dispatch<SetStateAction<boolean>>
+  setIsOpen?: Dispatch<SetStateAction<boolean>>
 }
 
+// TODO use controlled state for setIsOpen
 const MenuDropdown = ({
   items,
   itemVariant = 'form',
@@ -29,7 +30,7 @@ const MenuDropdown = ({
   setIsOpen,
 }: MenuDropdownBase) => {
   return (
-    <DropdownMenu.Root onOpenChange={() => setIsOpen((prev) => !prev)}>
+    <DropdownMenu.Root onOpenChange={() => setIsOpen && setIsOpen((prev) => !prev)}>
       <DropdownMenu.Trigger asChild>
         <MenuTrigger className={buttonClassName} buttonTrigger={buttonTrigger} />
       </DropdownMenu.Trigger>

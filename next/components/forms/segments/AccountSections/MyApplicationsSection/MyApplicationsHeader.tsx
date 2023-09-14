@@ -8,7 +8,7 @@ type MyApplicationsHeaderBase = {
 
 type HeaderNavigationItemBase = {
   title: string
-  tag: 'sent' | 'concept'
+  tag: 'SENT' | 'SENDING' | 'DRAFT'
 }
 
 // TODO accessibility - refactor to use Tabs from react-aria-components
@@ -18,8 +18,9 @@ const MyApplicationsHeader = (props: MyApplicationsHeaderBase) => {
   const { globalState, setGlobalState } = useGlobalStateContext()
 
   const headerNavigationList: HeaderNavigationItemBase[] = [
-    { title: t('account_section_applications.navigation_sent'), tag: 'sent' },
-    { title: t('account_section_applications.navigation_concept'), tag: 'concept' },
+    { title: t('account_section_applications.navigation_sent'), tag: 'SENT' },
+    { title: t('account_section_applications.navigation_sending'), tag: 'SENDING' },
+    { title: t('account_section_applications.navigation_draft'), tag: 'DRAFT' },
   ]
 
   return (
@@ -33,7 +34,7 @@ const MyApplicationsHeader = (props: MyApplicationsHeaderBase) => {
                 type="button"
                 onClick={() => setGlobalState({ applicationsActiveMenuItem: item.tag })}
                 className={cx(
-                  'text-20 w-full cursor-pointer border-b-2 py-4 transition-all lg:w-[92px]',
+                  'text-20 w-full cursor-pointer border-b-2 py-4 transition-all',
                   'hover:text-20-semibold hover:border-gray-700 ',
                   {
                     'text-20-semibold border-b-2 border-gray-700':

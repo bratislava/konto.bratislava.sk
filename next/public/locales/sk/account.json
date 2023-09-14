@@ -359,7 +359,9 @@
   "account_section_applications": {
     "navigation": "Moje žiadosti",
     "navigation_sent": "Odoslané",
-    "navigation_concept": "Koncepty",
+    "navigation_sending": "Odosiela sa",
+    "navigation_draft": "Koncepty",
+    "error_snackbar": "Pri načítaní žiadostí nastala chyba. Skúste to prosím neskôr.",
     "concept_delete_modal": {
       "title": "Vymazať koncept",
       "text": "Naozaj si želáte vymazať koncept {{concept_name}}? Táto akcia je nevratná.",
@@ -368,7 +370,18 @@
     },
     "navigation_concept_card": {
       "createDate": "Vytvorené",
-      "button_text": "Pokračovať"
+      "edit_button_text": "Upraviť",
+      "view_button_text": "Zobraziť",
+      "status_draft": "",
+      "status_scanning": "Prebieha antivírová kontrola",
+      "status_sending": "Odosiela sa",
+      "status_ready_for_processing": "Doručené",
+      "status_processing": "Vybavuje sa",
+      "status_finished": "Vybavené",
+      "status_rejected": "Zamietnuté",
+      "status_error": "Nastala neznáma chyba",
+      "status_error_antivirus": "Antivírová kontrola neúspešná",
+      "status_error_other": "Odoslanie neúspešné"
     },
     "placeholder": {
       "title": "Zatiaľ ste neodoslali žiadne podanie",

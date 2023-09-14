@@ -64,7 +64,7 @@ const useGetContext = ({ schema, uiSchema, formSlug, initialFormData }: FormStat
 
   const getPreviousStep = () => {
     const prevSteps = stepsSchemas
-      .slice(0, currentStepIndex !== 'summary' ? currentStepIndex : 0)
+      .slice(0, currentStepIndex !== 'summary' ? currentStepIndex : stepsSchemas.length)
       .reverse()
     const prevStepIndex = prevSteps.findIndex((step) => step != null)
     return prevStepIndex !== -1 ? prevSteps.length - prevStepIndex - 1 : null

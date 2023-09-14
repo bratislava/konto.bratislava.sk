@@ -28,7 +28,8 @@ module.exports = {
       normal: '400',
       medium: '500',
       semibold: '600',
-      bold: '700',
+      // TODO our typography system shouldn't have different bold and semibold - this needs clearing up, keeping just one variant of weight 600
+      bold: '600',
     },
     screens: {
       xs: '360px',

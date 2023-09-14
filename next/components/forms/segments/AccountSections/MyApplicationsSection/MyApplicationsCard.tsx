@@ -27,23 +27,19 @@ import Skeleton from 'react-loading-skeleton'
 
 import FormatDate from '../../../simple-components/FormatDate'
 
-export type MyApplicationsDraftCardVariant = 'DRAFT' | 'SENDING' | 'SENT'
+export type MyApplicationsCardVariant = 'DRAFT' | 'SENDING' | 'SENT'
 
-export type MyApplicationsDraftCardProps = {
+export type MyApplicationsCardProps = {
   form?: GetFormResponseDto | null
   refreshListData: () => Promise<unknown>
-  variant: MyApplicationsDraftCardVariant
+  variant: MyApplicationsCardVariant
 }
 
 // eslint-disable-next-line no-secrets/no-secrets
 // designs here https://www.figma.com/file/SFbuULqG1ysocghIga9BZT/Bratislavske-konto%2C-ESBS---ready-for-dev-(Ma%C5%A5a)?node-id=7120%3A20498&mode=dev
 // TODO write docs
 
-const MyApplicationsDraftCard = ({
-  form,
-  refreshListData,
-  variant,
-}: MyApplicationsDraftCardProps) => {
+const MyApplicationsCard = ({ form, refreshListData, variant }: MyApplicationsCardProps) => {
   const { t } = useTranslation('account')
   const { t: ft } = useTranslation('forms')
   const [deleteConceptModalShow, setDeleteConceptModalShow] = useState<boolean>(false)
@@ -300,4 +296,4 @@ const MyApplicationsDraftCard = ({
   )
 }
 
-export default MyApplicationsDraftCard
+export default MyApplicationsCard

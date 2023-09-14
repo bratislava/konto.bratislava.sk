@@ -7,12 +7,7 @@ import {
   getSSRCurrentAuth,
   ServerSideAuthProviderHOC,
 } from 'components/logic/ServerSideAuthProvider'
-import {
-  getApplicationDetailsData,
-  getApplicationHistoryData,
-  MyApplicationHistoryDataBase,
-  MyApplicationsSentCardBase,
-} from 'frontend/api/mocks/mocks'
+import { MyApplicationHistoryDataBase } from 'frontend/api/mocks/mocks'
 import logger from 'frontend/utils/logger'
 import { AsyncServerProps } from 'frontend/utils/types'
 import { GetServerSidePropsContext } from 'next'
@@ -37,7 +32,6 @@ export const getServerSideProps = async (ctx: GetServerSidePropsContext) => {
       accessTokenSsrReq: ctx.req,
     })
     myApplicationDetailsData = response?.data // getApplicationDetailsData(ctx.query.ziadost) || null
-    console.log('myApplicationDetailsData', myApplicationDetailsData)
     // TODO
     myApplicationHistoryData = null
   } catch (error) {

@@ -8,7 +8,7 @@ import { useTranslation } from 'next-i18next'
 
 type MyApplicationsDetailsBase = {
   detailsData: GetFormResponseDto
-  historyData: MyApplicationHistoryDataBase[]
+  historyData: MyApplicationHistoryDataBase[] | null
 }
 
 const MyApplicationDetails = ({ detailsData, historyData }: MyApplicationsDetailsBase) => {

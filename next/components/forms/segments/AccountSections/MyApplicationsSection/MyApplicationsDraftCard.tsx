@@ -50,6 +50,7 @@ const MyApplicationsDraftCard = ({
   variant,
 }: MyApplicationsDraftCardProps) => {
   const { t } = useTranslation('account')
+  const { t: ft } = useTranslation('forms')
   const [deleteConceptModalShow, setDeleteConceptModalShow] = useState<boolean>(false)
 
   const [openSnackbarError] = useSnackbar({ variant: 'error' })
@@ -79,7 +80,7 @@ const MyApplicationsDraftCard = ({
 
   // xml and pdf exports copied from useFormExportImport
   const exportXml = async () => {
-    openSnackbarInfo(t('info_messages.xml_export'))
+    openSnackbarInfo(ft('info_messages.xml_export'))
     try {
       if (!formData || !schemaVersionId)
         throw new Error(`No form data or schemaVersionId for form id: ${formId}`)
@@ -93,15 +94,15 @@ const MyApplicationsDraftCard = ({
       const fileName = `${formSlug}_output.xml`
       downloadBlob(new Blob([response.data.xmlForm]), fileName)
       closeSnackbarInfo()
-      openSnackbarSuccess(t('success_messages.xml_export'))
+      openSnackbarSuccess(ft('success_messages.xml_export'))
     } catch (error) {
       logger.error(error)
-      openSnackbarError(t('errors.xml_export'))
+      openSnackbarError(ft('errors.xml_export'))
     }
   }
 
   const exportPdf = async () => {
-    openSnackbarInfo(t('info_messages.pdf_export'))
+    openSnackbarInfo(ft('info_messages.pdf_export'))
     try {
       if (!formData || !schemaVersionId)
         throw new Error(`No form data or schemaVersionId for form id: ${formId}`)
@@ -115,26 +116,26 @@ const MyApplicationsDraftCard = ({
       const fileName = `${formSlug}_output.pdf`
       downloadBlob(new Blob([response.data as BlobPart]), fileName)
       closeSnackbarInfo()
-      openSnackbarSuccess(t('success_messages.pdf_export'))
+      openSnackbarSuccess(ft('success_messages.pdf_export'))
     } catch (error) {
       logger.error(error)
-      openSnackbarError(t('errors.pdf_export'))
+      openSnackbarError(ft('errors.pdf_export'))
     }
   }
 
   const deleteConcept = async () => {
-    openSnackbarInfo(t('info_messages.pdf_export'))
+    openSnackbarInfo(ft('info_messages.pdf_export'))
     try {
       if (!formId) throw new Error(`No formId provided on deleteConcept`)
       await formsApi.nasesControllerDeleteForm(formId, {
         accessToken: 'onlyAuthenticated',
       })
       closeSnackbarInfo()
-      openSnackbarSuccess(t('success_messages.pdf_export'))
+      openSnackbarSuccess(ft('success_messages.pdf_export'))
       await refreshListData()
     } catch (error) {
       logger.error(error)
-      openSnackbarError(t('errors.pdf_export'))
+      openSnackbarError(ft('errors.pdf_export'))
     }
   }
 

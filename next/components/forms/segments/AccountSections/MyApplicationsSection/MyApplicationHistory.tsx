@@ -2,7 +2,7 @@ import { MyApplicationHistoryDataBase } from 'frontend/api/mocks/mocks'
 import { useTranslation } from 'next-i18next'
 
 interface MyApplicationHistoryProps {
-  historyData: MyApplicationHistoryDataBase[]
+  historyData: MyApplicationHistoryDataBase[] | null
 }
 
 const MyApplicationHistory = ({ historyData }: MyApplicationHistoryProps) => {
@@ -11,7 +11,7 @@ const MyApplicationHistory = ({ historyData }: MyApplicationHistoryProps) => {
     <>
       {/* Desktop */}
       <div className="hidden w-full flex-col gap-4 md:flex">
-        {historyData.map((data, i) => (
+        {historyData?.map((data, i) => (
           <div key={i} className="flex flex-row flex-wrap gap-2 border-b-2 py-4 md:flex-nowrap">
             <div className="flex items-center gap-8">
               <div className="flex min-w-[276px] flex-col">
@@ -42,7 +42,7 @@ const MyApplicationHistory = ({ historyData }: MyApplicationHistoryProps) => {
             </span>
           </div>
           <div className="flex flex-col items-center">
-            {historyData.map((data, i) => (
+            {historyData?.map((data, i) => (
               <div className="flex w-full border-t-2 p-4" key={i}>
                 <span className="text-p2 min-w-[240px]">{data?.editDate}</span>
                 <span className="text-p2 w-full">{data?.description}</span>

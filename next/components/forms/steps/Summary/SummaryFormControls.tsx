@@ -38,7 +38,7 @@ const SummaryFormControls = () => {
           <ButtonNew
             isDisabled={submitDisabled}
             type="submit"
-            variant="black-solid"
+            variant="black-outline"
             onPress={handleSendEidButtonPress}
           >
             {t('summary.button_send_eid')}
@@ -61,7 +61,7 @@ const SummaryFormControls = () => {
           size="small"
           fullWidth
           type="submit"
-          variant="black-solid"
+          variant="black-outline"
           onPress={handleSendEidButtonPress}
         >
           {t('summary.button_send_eid')}

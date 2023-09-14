@@ -404,20 +404,8 @@ const MyApplicationsDraftCard = ({
                       </Button>
                       <MenuDropdown
                         setIsOpen={setIsMenuOpen}
-                        buttonTrigger={
-                          // FIXME refactor to Button
-                          <button
-                            type="button"
-                            className={cx(
-                              'flex h-12 w-12 items-center justify-center rounded-lg border-2 border-gray-200 bg-transparent text-gray-700 hover:text-gray-600 focus:border-gray-300 focus:text-gray-800 focus:outline-none',
-                              {
-                                'border-gray-300 text-gray-800': isMenuOpen,
-                              },
-                            )}
-                          >
-                            <EllipsisVerticalIcon />
-                          </button>
-                        }
+                        // TOOD - fix styling
+                        buttonTrigger={<EllipsisVerticalIcon />}
                         items={conceptMenuContent}
                       />
                     </>
@@ -436,9 +424,12 @@ const MyApplicationsDraftCard = ({
                 </div>
               )}
               <h3 className="text-p2-semibold leading-5">
-                <Link href={formPageHref} className="after:absolute after:inset-0">
-                  {title}
-                </Link>
+                {/* TODO - mobile section not implemented yet, this is just to prevent hydration errors */}
+                {variant !== 'SENT' && (
+                  <Link href={formPageHref} className="after:absolute after:inset-0">
+                    {title}
+                  </Link>
+                )}
               </h3>
             </div>
           </div>

@@ -15,7 +15,6 @@ import {
 } from '@assets/ui-icons'
 import { formsApi } from '@clients/forms'
 import { GetFormResponseDto, GetFormResponseDtoErrorEnum } from '@clients/openapi-forms'
-import cx from 'classnames'
 import Button from 'components/forms/simple-components/ButtonNew'
 import MenuDropdown, {
   MenuItemBase,
@@ -51,7 +50,6 @@ const MyApplicationsDraftCard = ({
   variant,
 }: MyApplicationsDraftCardProps) => {
   const { t } = useTranslation('account')
-  const [isMenuOpen, setIsMenuOpen] = useState<boolean>(false)
   const [deleteConceptModalShow, setDeleteConceptModalShow] = useState<boolean>(false)
 
   const [openSnackbarError] = useSnackbar({ variant: 'error' })
@@ -403,7 +401,6 @@ const MyApplicationsDraftCard = ({
                         )}
                       </Button>
                       <MenuDropdown
-                        setIsOpen={setIsMenuOpen}
                         // TOOD - fix styling
                         buttonTrigger={<EllipsisVerticalIcon />}
                         items={conceptMenuContent}

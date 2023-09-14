@@ -71,7 +71,7 @@ const MyApplicationsDraftList = ({ variant }: MyApplicationsDraftListProps) => {
   const isLoading = isQueryFirstLoad || isRefetching || (isError && !data?.items?.length)
 
   const forms: Array<GetFormResponseDto | null> = isLoading
-    ? Array.from({ length: 10 }).fill(null)
+    ? (Array.from({ length: 10 }).fill(null) as Array<null>)
     : data?.items ?? ([] as Array<GetFormResponseDto>)
 
   useEffect(() => {
@@ -86,7 +86,6 @@ const MyApplicationsDraftList = ({ variant }: MyApplicationsDraftListProps) => {
         <>
           <ul className="my-0 flex flex-col gap-0 px-4 sm:px-6 lg:my-8 lg:gap-4 lg:px-0">
             {forms.map((form, index) => {
-              console.log(JSON.stringify(form))
               return (
                 <li key={index}>
                   <MyApplicationsDraftCard

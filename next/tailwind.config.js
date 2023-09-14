@@ -20,6 +20,7 @@ module.exports = {
   content: [
     join(__dirname, 'pages/**/*.{js,jsx,ts,tsx}'),
     join(__dirname, 'components/**/*.{js,jsx,ts,tsx}'),
+    join(__dirname, 'frontend/**/*.{js,jsx,ts,tsx}'),
   ],
   darkMode: 'media', // or 'class'
   theme: {

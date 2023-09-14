@@ -28,6 +28,7 @@ const useFormStateComponents = ({
       // we ignore all other states for unsent forms which are of old schemas - these become readonly drafts
       return {
         icon: null,
+        iconRound: null,
         text: <p>{t('account_section_applications.navigation_concept_card.status_draft')}</p>,
       }
     }
@@ -36,6 +37,7 @@ const useFormStateComponents = ({
         // the first should never happen, kept to make ts easier
         [GetFormResponseDtoErrorEnum.None]: {
           icon: null,
+          iconRound: null,
           text: (
             <p className="text-error">
               {t('account_section_applications.navigation_concept_card.status_error')}
@@ -44,6 +46,11 @@ const useFormStateComponents = ({
         },
         [GetFormResponseDtoErrorEnum.RabbitmqMaxTries]: {
           icon: <ErrorIcon className="h-6 w-6 text-error" />,
+          iconRound: (
+            <div className="rounded-full bg-negative-100 p-1.5">
+              <CrossIcon className="h-5 w-5 text-error" />
+            </div>
+          ),
           text: (
             <p className="text-error">
               {t('account_section_applications.navigation_concept_card.status_error_other')}
@@ -53,10 +60,16 @@ const useFormStateComponents = ({
         // should behave like a regular draft
         [GetFormResponseDtoErrorEnum.FilesNotYetScanned]: {
           icon: null,
+          iconRound: null,
           text: <p>{t('account_section_applications.navigation_concept_card.status_draft')}</p>,
         },
         [GetFormResponseDtoErrorEnum.UnableToScanFiles]: {
           icon: <ErrorIcon className="h-6 w-6 text-error" />,
+          iconRound: (
+            <div className="rounded-full bg-negative-100 p-1.5">
+              <CrossIcon className="h-5 w-5 text-error" />
+            </div>
+          ),
           text: (
             <p className="text-error">
               {t('account_section_applications.navigation_concept_card.status_error_antivirus')}
@@ -65,6 +78,11 @@ const useFormStateComponents = ({
         },
         [GetFormResponseDtoErrorEnum.InfectedFiles]: {
           icon: <ErrorIcon className="h-6 w-6 text-error" />,
+          iconRound: (
+            <div className="rounded-full bg-negative-100 p-1.5">
+              <CrossIcon className="h-5 w-5 text-error" />
+            </div>
+          ),
           text: (
             <p className="text-error">
               {t('account_section_applications.navigation_concept_card.status_error_antivirus')}
@@ -73,6 +91,11 @@ const useFormStateComponents = ({
         },
         [GetFormResponseDtoErrorEnum.NasesSendError]: {
           icon: <ErrorIcon className="h-6 w-6 text-error" />,
+          iconRound: (
+            <div className="rounded-full bg-negative-100 p-1.5">
+              <CrossIcon className="h-5 w-5 text-error" />
+            </div>
+          ),
           text: (
             <p className="text-error">
               {t('account_section_applications.navigation_concept_card.status_error_other')}
@@ -84,6 +107,11 @@ const useFormStateComponents = ({
         logger.error(`Unknown error ${error} for state ${state}`)
         return {
           icon: <ErrorIcon className="h-6 w-6 text-error" />,
+          iconRound: (
+            <div className="rounded-full bg-negative-100 p-1.5">
+              <CrossIcon className="h-5 w-5 text-error" />
+            </div>
+          ),
           text: (
             <p className="text-error">
               {t('account_section_applications.navigation_concept_card.status_error')}
@@ -97,14 +125,25 @@ const useFormStateComponents = ({
       {
         DRAFT: {
           icon: null,
+          iconRound: null,
           text: <p>{t('account_section_applications.navigation_concept_card.status_draft')}</p>,
         },
         QUEUED: {
           icon: <ScanningIcon className="h-6 w-6" />,
+          iconRound: (
+            <div className="rounded-full bg-gray-100 p-1.5">
+              <ScanningIcon className="h-5 w-5" />,
+            </div>
+          ),
           text: <p>{t('account_section_applications.navigation_concept_card.status_scanning')}</p>,
         },
         DELIVERED_NASES: {
           icon: <SendIcon className="h-6 w-6 text-warning-700" />,
+          iconRound: (
+            <div className="rounded-full bg-warning-100 p-1.5">
+              <SendIcon className="h-5 w-5 text-warning-700" />
+            </div>
+          ),
           text: (
             <p className="text-warning-700">
               {t('account_section_applications.navigation_concept_card.status_sending')}
@@ -113,6 +152,11 @@ const useFormStateComponents = ({
         },
         DELIVERED_GINIS: {
           icon: <SendIcon className="h-6 w-6 text-warning-700" />,
+          iconRound: (
+            <div className="rounded-full bg-warning-100 p-1.5">
+              <SendIcon className="h-5 w-5 text-warning-700" />
+            </div>
+          ),
           text: (
             <p className="text-warning-700">
               {t('account_section_applications.navigation_concept_card.status_sending')}
@@ -121,6 +165,11 @@ const useFormStateComponents = ({
         },
         READY_FOR_PROCESSING: {
           icon: <SendIcon className="h-6 w-6 text-warning-700" />,
+          iconRound: (
+            <div className="rounded-full bg-warning-100 p-1.5">
+              <SendIcon className="h-5 w-5 text-warning-700" />
+            </div>
+          ),
           text: (
             <p className="text-warning-700">
               {t(
@@ -131,6 +180,11 @@ const useFormStateComponents = ({
         },
         PROCESSING: {
           icon: <TwoPeopleIcon className="h-6 w-6 text-warning-700" />,
+          iconRound: (
+            <div className="rounded-full bg-warning-100 p-1.5">
+              <TwoPeopleIcon className="h-5 w-5 text-warning-700" />
+            </div>
+          ),
           text: (
             <p className="text-warning-700">
               {t('account_section_applications.navigation_concept_card.status_processing')}
@@ -139,6 +193,11 @@ const useFormStateComponents = ({
         },
         FINISHED: {
           icon: <CheckIcon className="h-6 w-6 text-success-700" />,
+          iconRound: (
+            <div className="rounded-full bg-success-100 p-1.5">
+              <CheckIcon className="h-5 w-5 text-success-700" />
+            </div>
+          ),
           text: (
             <p className="text-success-700">
               {t('account_section_applications.navigation_concept_card.status_finished')}
@@ -147,6 +206,11 @@ const useFormStateComponents = ({
         },
         REJECTED: {
           icon: <CrossIcon className="h-6 w-6 text-error" />,
+          iconRound: (
+            <div className="rounded-full bg-negative-100 p-1.5">
+              <CrossIcon className="h-5 w-5 text-error" />
+            </div>
+          ),
           text: (
             <p className="text-error">
               {t('account_section_applications.navigation_concept_card.status_rejected')}
@@ -155,6 +219,11 @@ const useFormStateComponents = ({
         },
         ERROR: {
           icon: <ErrorIcon className="h-6 w-6 text-error" />,
+          iconRound: (
+            <div className="rounded-full bg-negative-100 p-1.5">
+              <CrossIcon className="h-5 w-5 text-error" />
+            </div>
+          ),
           text: (
             <p className="text-error">
               {t('account_section_applications.navigation_concept_card.status_error')}
@@ -163,6 +232,7 @@ const useFormStateComponents = ({
         },
         NONE: {
           icon: null,
+          iconRound: null,
           text: <p>{t('account_section_applications.navigation_concept_card.status_none')}</p>,
         },
       } as const

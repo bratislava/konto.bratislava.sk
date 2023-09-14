@@ -171,106 +171,109 @@ const MyApplicationsCard = ({ form, refreshListData, variant }: MyApplicationsCa
         condition={variant === 'SENT'}
         wrap={(children) => <Link href={detailPageHref}>{children}</Link>}
       >
-        <>
-          {/* Desktop */}
-          <div className="relative flex w-full items-stretch rounded-lg border-2 border-gray-200 bg-white p-6 max-lg:hidden">
-            <div className="flex w-full gap-6">
-              <div className="flex w-full grow flex-col gap-1">
-                {(category || isLoading) && (
-                  <div className="text-p3-semibold text-main-700">
-                    {isLoading ? <Skeleton width="25%" /> : category}
-                  </div>
-                )}
-                <h3 className="text-20-semibold">{isLoading ? <Skeleton width="75%" /> : title}</h3>
-                {(createdAt || isLoading) && (
-                  <div className="text-p3">
-                    {isLoading ? (
-                      <Skeleton width="50%" />
-                    ) : (
-                      <FormatDate>{createdAt || ''}</FormatDate>
-                    )}
-                  </div>
-                )}
-              </div>
-
-              <div className="flex items-center gap-10">
-                {variant !== 'DRAFT' && (
-                  <div className="flex gap-2">
-                    {!isLoading && stateIconAndText.icon}
-                    <div className="flex w-[200px] flex-col gap-1">
-                      <div className="text-16-semibold">
-                        {isLoading ? <Skeleton width="50%" /> : stateIconAndText.text}
-                      </div>
-                      {variant === 'SENT' &&
-                        (isLoading ? (
-                          <Skeleton width="75%" />
-                        ) : (
-                          <FormatDate>{updatedAt || ''}</FormatDate>
-                        ))}
-                    </div>
-                  </div>
-                )}
-
-                {/* Width of this div is computed to match layout of SentCard */}
-                <div className="flex w-[242px] items-center justify-end gap-4">
-                  {isLoading ? (
-                    <Skeleton width="100px" height="20px" />
-                  ) : variant === 'SENT' ? (
-                    <ChevronRightIcon />
-                  ) : (
-                    <>
-                      <Button
-                        variant="black-outline"
-                        startIcon={
-                          isEditable ? (
-                            <EditIcon className="h-5 w-5" />
-                          ) : (
-                            <EyeIcon className="h-5 w-5" />
-                          )
-                        }
-                        href={formPageHref}
-                        target="_blank"
-                        className="w-[148px]"
-                      >
-                        {t(
-                          `account_section_applications.navigation_concept_card.${
-                            isEditable ? 'edit' : 'view'
-                          }_button_text`,
-                        )}
-                      </Button>
-                      <MenuDropdown
-                        // TOOD - fix styling
-                        buttonTrigger={<EllipsisVerticalIcon />}
-                        items={conceptMenuContent}
-                      />
-                    </>
-                  )}
-                </div>
-              </div>
-            </div>
-          </div>
-
-          {/* Mobile */}
-          <div className="relative flex w-full items-start justify-between border-b-2 border-gray-200 bg-white py-4 lg:hidden">
-            <div className="flex w-full flex-col gap-1.5">
+        {/* Desktop */}
+        <div className="relative flex w-full items-stretch rounded-lg border-2 border-gray-200 bg-white p-6 max-lg:hidden">
+          <div className="flex w-full gap-6">
+            <div className="flex w-full grow flex-col gap-1">
               {(category || isLoading) && (
                 <div className="text-p3-semibold text-main-700">
-                  {isLoading ? <Skeleton /> : category}
+                  {isLoading ? <Skeleton width="25%" /> : category}
                 </div>
               )}
-              <h3 className="text-p2-semibold leading-5">
-                {/* TODO - mobile section not implemented yet, this is just to prevent hydration errors */}
-                {variant !== 'SENT' && (
-                  <Link href={formPageHref} className="after:absolute after:inset-0">
-                    {title}
-                  </Link>
+              <h3 className="text-20-semibold">{isLoading ? <Skeleton width="75%" /> : title}</h3>
+              {(createdAt || isLoading) && (
+                <div className="text-p3">
+                  {isLoading ? (
+                    <Skeleton width="50%" />
+                  ) : (
+                    <FormatDate>{createdAt || ''}</FormatDate>
+                  )}
+                </div>
+              )}
+            </div>
+
+            <div className="flex items-center gap-10">
+              {variant !== 'DRAFT' && (
+                <div className="flex gap-2">
+                  {!isLoading && stateIconAndText.icon}
+                  <div className="flex w-[200px] flex-col gap-1">
+                    <div className="text-16-semibold">
+                      {isLoading ? <Skeleton width="50%" /> : stateIconAndText.text}
+                    </div>
+                    {variant === 'SENT' &&
+                      (isLoading ? (
+                        <Skeleton width="75%" />
+                      ) : (
+                        <FormatDate>{updatedAt || ''}</FormatDate>
+                      ))}
+                  </div>
+                </div>
+              )}
+
+              {/* Width of this div is computed to match layout of SentCard */}
+              <div className="flex w-[242px] items-center justify-end gap-4">
+                {isLoading ? (
+                  <Skeleton width="100px" height="20px" />
+                ) : variant === 'SENT' ? (
+                  <ChevronRightIcon />
+                ) : (
+                  <>
+                    <Button
+                      variant="black-outline"
+                      startIcon={
+                        isEditable ? (
+                          <EditIcon className="h-5 w-5" />
+                        ) : (
+                          <EyeIcon className="h-5 w-5" />
+                        )
+                      }
+                      href={formPageHref}
+                      target="_blank"
+                      className="w-[148px]"
+                    >
+                      {t(
+                        `account_section_applications.navigation_concept_card.${
+                          isEditable ? 'edit' : 'view'
+                        }_button_text`,
+                      )}
+                    </Button>
+                    <MenuDropdown
+                      // TOOD - fix styling
+                      buttonTrigger={<EllipsisVerticalIcon />}
+                      items={conceptMenuContent}
+                    />
+                  </>
                 )}
-              </h3>
+              </div>
             </div>
           </div>
-        </>
+        </div>
       </ConditionalWrap>
-
+      {/* Mobile */}
+      <Link href={variant === 'SENT' ? detailPageHref : formPageHref}>
+        <div className="relative flex w-full items-start justify-between border-b-2 border-gray-200 bg-white py-4 lg:hidden">
+          <div className="flex w-full justify-between gap-1.5">
+            <div className="flex w-full grow flex-col gap-1">
+              {(category || isLoading) && (
+                <div className="text-p3-semibold text-main-700">
+                  {isLoading ? <Skeleton width="25%" /> : category}
+                </div>
+              )}
+              <h3 className="text-20-semibold">{isLoading ? <Skeleton width="75%" /> : title}</h3>
+              {(createdAt || isLoading) && (
+                <div className="text-p3">
+                  {isLoading ? (
+                    <Skeleton width="50%" />
+                  ) : (
+                    <FormatDate>{createdAt || ''}</FormatDate>
+                  )}
+                </div>
+              )}
+            </div>
+            <div className="flex self-end">{stateIconAndText.iconRound}</div>
+          </div>
+        </div>
+      </Link>
       <MessageModal
         title={t('send_files_scanning_eid_modal.title')}
         type="error"

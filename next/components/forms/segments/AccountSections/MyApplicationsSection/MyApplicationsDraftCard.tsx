@@ -1,20 +1,14 @@
 import {
   BinIcon,
-  CheckIcon,
   ChevronRightIcon,
-  CrossIcon,
   DownloadIcon,
   EditIcon,
   EllipsisVerticalIcon,
-  ErrorIcon,
   EyeIcon,
   PdfIcon,
-  ScanningIcon,
-  SendIcon,
-  TwoPeopleIcon,
 } from '@assets/ui-icons'
 import { formsApi } from '@clients/forms'
-import { GetFormResponseDto, GetFormResponseDtoErrorEnum } from '@clients/openapi-forms'
+import { GetFormResponseDto } from '@clients/openapi-forms'
 import Button from 'components/forms/simple-components/ButtonNew'
 import MenuDropdown, {
   MenuItemBase,
@@ -22,12 +16,13 @@ import MenuDropdown, {
 import MessageModal from 'components/forms/widget-components/Modals/MessageModal'
 import ConditionalWrap from 'conditional-wrap'
 import { ROUTES } from 'frontend/api/constants'
+import useFormStateComponents from 'frontend/hooks/useFormStateComponents'
 import useSnackbar from 'frontend/hooks/useSnackbar'
 import { downloadBlob } from 'frontend/utils/general'
 import logger from 'frontend/utils/logger'
 import Link from 'next/link'
 import { useTranslation } from 'next-i18next'
-import { useMemo, useState } from 'react'
+import { useState } from 'react'
 import Skeleton from 'react-loading-skeleton'
 
 import FormatDate from '../../../simple-components/FormatDate'
@@ -172,161 +167,7 @@ const MyApplicationsDraftCard = ({
         },
       ]
 
-  const stateIconAndText = useMemo(() => {
-    if ((state === 'ERROR' || state === 'DRAFT') && !isLatestSchemaVersionForSlug) {
-      // we ignore all other states for unsent forms which are of old schemas - these become readonly drafts
-      return {
-        icon: null,
-        translationKey: (
-          <p>{t('account_section_applications.navigation_concept_card.status_draft')}</p>
-        ),
-      }
-    }
-    if (state === 'ERROR') {
-      const ret = {
-        // the first should never happen, kept to make ts easier
-        [GetFormResponseDtoErrorEnum.None]: {
-          icon: null,
-          translationKey: (
-            <p className="text-error">
-              {t('account_section_applications.navigation_concept_card.status_error')}
-            </p>
-          ),
-        },
-        [GetFormResponseDtoErrorEnum.RabbitmqMaxTries]: {
-          icon: <ErrorIcon className="h-6 w-6 text-error" />,
-          translationKey: (
-            <p className="text-error">
-              {t('account_section_applications.navigation_concept_card.status_error_other')}
-            </p>
-          ),
-        },
-        // should behave like a regular draft
-        [GetFormResponseDtoErrorEnum.FilesNotYetScanned]: {
-          icon: null,
-          translationKey: (
-            <p>{t('account_section_applications.navigation_concept_card.status_draft')}</p>
-          ),
-        },
-        [GetFormResponseDtoErrorEnum.UnableToScanFiles]: {
-          icon: <ErrorIcon className="h-6 w-6 text-error" />,
-          translationKey: (
-            <p className="text-error">
-              {t('account_section_applications.navigation_concept_card.status_error_antivirus')}
-            </p>
-          ),
-        },
-        [GetFormResponseDtoErrorEnum.InfectedFiles]: {
-          icon: <ErrorIcon className="h-6 w-6 text-error" />,
-          translationKey: (
-            <p className="text-error">
-              {t('account_section_applications.navigation_concept_card.status_error_antivirus')}
-            </p>
-          ),
-        },
-        [GetFormResponseDtoErrorEnum.NasesSendError]: {
-          icon: <ErrorIcon className="h-6 w-6 text-error" />,
-          translationKey: (
-            <p className="text-error">
-              {t('account_section_applications.navigation_concept_card.status_error_other')}
-            </p>
-          ),
-        },
-      }[error || GetFormResponseDtoErrorEnum.None]
-      if (!ret || !error || error === GetFormResponseDtoErrorEnum.None) {
-        logger.error(`Unknown error ${error} for state ${state}`)
-        return {
-          icon: <ErrorIcon className="h-6 w-6 text-error" />,
-          translationKey: (
-            <p className="text-error">
-              {t('account_section_applications.navigation_concept_card.status_error')}
-            </p>
-          ),
-        }
-      }
-      return ret
-    }
-    return (
-      {
-        DRAFT: {
-          icon: null,
-          translationKey: (
-            <p>{t('account_section_applications.navigation_concept_card.status_draft')}</p>
-          ),
-        },
-        QUEUED: {
-          icon: <ScanningIcon className="h-6 w-6" />,
-          translationKey: (
-            <p>{t('account_section_applications.navigation_concept_card.status_scanning')}</p>
-          ),
-        },
-        DELIVERED_NASES: {
-          icon: <SendIcon className="h-6 w-6 text-warning-700" />,
-          translationKey: (
-            <p className="text-warning-700">
-              {t('account_section_applications.navigation_concept_card.status_sending')}
-            </p>
-          ),
-        },
-        DELIVERED_GINIS: {
-          icon: <SendIcon className="h-6 w-6 text-warning-700" />,
-          translationKey: (
-            <p className="text-warning-700">
-              {t('account_section_applications.navigation_concept_card.status_sending')}
-            </p>
-          ),
-        },
-        READY_FOR_PROCESSING: {
-          icon: <SendIcon className="h-6 w-6 text-warning-700" />,
-          translationKey: (
-            <p className="text-warning-700">
-              {t(
-                'account_section_applications.navigation_concept_card.status_ready_for_processing',
-              )}
-            </p>
-          ),
-        },
-        PROCESSING: {
-          icon: <TwoPeopleIcon className="h-6 w-6 text-warning-700" />,
-          translationKey: (
-            <p className="text-warning-700">
-              {t('account_section_applications.navigation_concept_card.status_processing')}
-            </p>
-          ),
-        },
-        FINISHED: {
-          icon: <CheckIcon className="h-6 w-6 text-success-700" />,
-          translationKey: (
-            <p className="text-success-700">
-              {t('account_section_applications.navigation_concept_card.status_finished')}
-            </p>
-          ),
-        },
-        REJECTED: {
-          icon: <CrossIcon className="h-6 w-6 text-error" />,
-          translationKey: (
-            <p className="text-error">
-              {t('account_section_applications.navigation_concept_card.status_rejected')}
-            </p>
-          ),
-        },
-        ERROR: {
-          icon: <ErrorIcon className="h-6 w-6 text-error" />,
-          translationKey: (
-            <p className="text-error">
-              {t('account_section_applications.navigation_concept_card.status_error')}
-            </p>
-          ),
-        },
-        NONE: {
-          icon: null,
-          translationKey: (
-            <p>{t('account_section_applications.navigation_concept_card.status_none')}</p>
-          ),
-        },
-      } as const
-    )[state || 'NONE']
-  }, [error, isLatestSchemaVersionForSlug, state, t])
+  const stateIconAndText = useFormStateComponents({ error, isLatestSchemaVersionForSlug, state })
 
   return (
     <>
@@ -362,7 +203,7 @@ const MyApplicationsDraftCard = ({
                     {!isLoading && stateIconAndText.icon}
                     <div className="flex w-[200px] flex-col gap-1">
                       <div className="text-16-semibold">
-                        {isLoading ? <Skeleton width="50%" /> : stateIconAndText.translationKey}
+                        {isLoading ? <Skeleton width="50%" /> : stateIconAndText.text}
                       </div>
                       {variant === 'SENT' &&
                         (isLoading ? (

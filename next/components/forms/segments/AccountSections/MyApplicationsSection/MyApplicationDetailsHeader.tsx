@@ -1,15 +1,14 @@
-import { CheckIcon, ChevronLeftIcon, ClockIcon, CrossIcon, DownloadIcon } from '@assets/ui-icons'
+import { ChevronLeftIcon, DownloadIcon } from '@assets/ui-icons'
 import { formsApi } from '@clients/forms'
 import { GetFormResponseDto } from '@clients/openapi-forms'
-import cx from 'classnames'
 import Button from 'components/forms/simple-components/Button'
+import FormatDate from 'components/forms/simple-components/FormatDate'
+import useFormStateComponents from 'frontend/hooks/useFormStateComponents'
 import useSnackbar from 'frontend/hooks/useSnackbar'
 import { downloadBlob } from 'frontend/utils/general'
 import logger from 'frontend/utils/logger'
 import Link from 'next/link'
 import { useTranslation } from 'next-i18next'
-import { ReactNode } from 'react'
-import FormatDate from 'components/forms/simple-components/FormatDate'
 
 type MyApplicationDetailsHeaderBase = {
   data?: GetFormResponseDto
@@ -32,44 +31,11 @@ const MyApplicationDetailsHeader = (props: MyApplicationDetailsHeaderBase) => {
   const createdAt = data?.createdAt
   // TODO replace - this won't be valid for forms processed on the GINIS side
   const updatedAt = data?.updatedAt
+  const state = data?.state
+  const error = data?.error
+  const isLatestSchemaVersionForSlug = data?.isLatestSchemaVersionForSlug
 
-  const statusHandler = (status?: 'negative' | 'warning' | 'success'): ReactNode => {
-    const statusStyle: string = cx('text-p3-semibold lg:text-16-semibold w-max', {
-      'text-negative-700': status === 'negative',
-      'text-warning-700': status === 'warning' || !status,
-      'text-success-700': status === 'success',
-    })
-    const statusNode = (icon: ReactNode, statusTitle: string): ReactNode => {
-      return (
-        <>
-          <span className="flex items-center justify-center">{icon}</span>
-          <span className={statusStyle}>{statusTitle}</span>
-        </>
-      )
-    }
-
-    switch (status) {
-      case 'negative':
-        return statusNode(
-          <CrossIcon className="h-5 w-5 text-negative-700 lg:h-6 lg:w-6" />,
-          t('account_section_applications.status.negative'),
-        )
-      case 'warning':
-        return statusNode(
-          <ClockIcon className="h-5 w-5 text-warning-700 lg:h-6 lg:w-6" />,
-          t('account_section_applications.status.warning'),
-        )
-      case 'success':
-        return statusNode(
-          <CheckIcon className="h-5 w-5 text-success-700 lg:h-6 lg:w-6" />,
-          t('account_section_applications.status.success'),
-        )
-      default:
-        break
-    }
-
-    return null
-  }
+  const { icon, text } = useFormStateComponents({ error, isLatestSchemaVersionForSlug, state })
 
   const exportPdf = async () => {
     openSnackbarInfo(ft('info_messages.pdf_export'))
@@ -124,7 +90,10 @@ const MyApplicationDetailsHeader = (props: MyApplicationDetailsHeaderBase) => {
                 </p>
               </div>
               <span className="hidden h-1.5 w-1.5 rounded-full bg-gray-700 lg:block" />
-              <div className="flex items-center gap-1">{statusHandler('warning')}</div>
+              <div className="flex items-center gap-1">
+                {icon}
+                {text}
+              </div>
               <span className="hidden h-1.5 w-1.5 rounded-full bg-gray-700 lg:block" />
               <div className="flex items-center gap-1">
                 <p className="text-p3 lg:text-p2">

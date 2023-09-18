@@ -13,13 +13,7 @@ const SummaryHeader = () => {
     <>
       <h1 className="text-h1-medium font-semibold">{t('summary.title')}</h1>
       {hasErrors && (
-        <Alert
-          type="error"
-          message={t('summary.form_has_errors')}
-          fullWidth
-          className="mt-4"
-          solid
-        />
+        <Alert type="error" message={t('summary.form_has_errors')} fullWidth className="mt-4" />
       )}
       {infectedFiles.length === 1 && (
         <Alert
@@ -29,7 +23,6 @@ const SummaryHeader = () => {
           })}
           fullWidth
           className="mt-4"
-          solid
         />
       )}
       {infectedFiles.length > 1 && (
@@ -40,7 +33,6 @@ const SummaryHeader = () => {
           })}
           fullWidth
           className="mt-4"
-          solid
         />
       )}
       {uploadingFiles.length > 0 && (
@@ -51,7 +43,6 @@ const SummaryHeader = () => {
           })}
           fullWidth
           className="mt-4"
-          solid
         />
       )}
     </>

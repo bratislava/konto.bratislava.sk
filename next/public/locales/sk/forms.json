@@ -11,7 +11,7 @@
     "migration": "Formulár sa nepodarilo premigrovať."
   },
   "success_messages": {
-    "concept_save": "Koncept sa uložil.",
+    "concept_save": "Koncept bol uložený.",
     "xml_export": "XML bolo stiahnuté.",
     "xml_import": "XML bolo nahraté.",
     "pdf_export": "PDF bolo stiahnuté."

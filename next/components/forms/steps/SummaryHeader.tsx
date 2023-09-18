@@ -23,7 +23,6 @@ const SummaryHeader = () => {
           })}
           fullWidth
           className="mt-4"
-          solid
         />
       )}
       {infectedFiles.length > 1 && (
@@ -34,7 +33,6 @@ const SummaryHeader = () => {
           })}
           fullWidth
           className="mt-4"
-          solid
         />
       )}
       {uploadingFiles.length > 0 && (
@@ -45,7 +43,6 @@ const SummaryHeader = () => {
           })}
           fullWidth
           className="mt-4"
-          solid
         />
       )}
     </>

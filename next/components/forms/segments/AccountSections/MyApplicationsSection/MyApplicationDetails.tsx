@@ -1,13 +1,14 @@
+import { GetFormResponseDto } from '@clients/openapi-forms'
 import MyApplicationDetailsHeader from 'components/forms/segments/AccountSections/MyApplicationsSection/MyApplicationDetailsHeader'
 import MyApplicationHistory from 'components/forms/segments/AccountSections/MyApplicationsSection/MyApplicationHistory'
 import SummaryRowSimple from 'components/forms/simple-components/SummaryRowSimple'
 import SummaryRow from 'components/forms/steps/Summary/SummaryRow'
-import { MyApplicationHistoryDataBase, MyApplicationsSentCardBase } from 'frontend/api/mocks/mocks'
+import { MyApplicationHistoryDataBase } from 'frontend/api/mocks/mocks'
 import { useTranslation } from 'next-i18next'
 
 type MyApplicationsDetailsBase = {
-  detailsData: MyApplicationsSentCardBase
-  historyData: MyApplicationHistoryDataBase[]
+  detailsData: GetFormResponseDto
+  historyData: MyApplicationHistoryDataBase[] | null
 }
 
 const MyApplicationDetails = ({ detailsData, historyData }: MyApplicationsDetailsBase) => {
@@ -26,7 +27,7 @@ const MyApplicationDetails = ({ detailsData, historyData }: MyApplicationsDetail
               isEditable={false}
               data={{
                 label: t('account_section_applications.details.application_details.record_number'),
-                value: detailsData?.recordNumber,
+                value: 'TODO cislo zaznamu GINIS',
                 schemaPath: '',
                 isError: false,
               }}
@@ -36,7 +37,7 @@ const MyApplicationDetails = ({ detailsData, historyData }: MyApplicationsDetail
               isEditable={false}
               data={{
                 label: t('account_section_applications.details.application_details.file_number'),
-                value: detailsData?.fileNumber,
+                value: 'TODO cislo spisu GINIS',
                 schemaPath: '',
                 isError: false,
               }}
@@ -46,7 +47,7 @@ const MyApplicationDetails = ({ detailsData, historyData }: MyApplicationsDetail
               isEditable={false}
               data={{
                 label: t('account_section_applications.details.application_details.handle_person'),
-                value: detailsData?.handlePerson,
+                value: 'TODO riesitel GINIS',
                 schemaPath: '',
                 isError: false,
               }}
@@ -54,19 +55,13 @@ const MyApplicationDetails = ({ detailsData, historyData }: MyApplicationsDetail
             <SummaryRowSimple size="small" isEditable={false} label={t('contact')} isError={false}>
               <div className="flex gap-2">
                 <div>
-                  <a
-                    className="underline underline-offset-4"
-                    href={`tel:${detailsData?.phoneContact}`}
-                  >
-                    {detailsData?.phoneContact}
+                  <a className="underline underline-offset-4" href="tel:+421933123123">
+                    TODO tel GINIS
                   </a>
                   ,
                 </div>
-                <a
-                  className="underline underline-offset-4"
-                  href={`mailto:${detailsData?.mailContact}`}
-                >
-                  {detailsData?.mailContact}
+                <a className="underline underline-offset-4" href="mailto:TODO@GIN.IS">
+                  TODO MAIL GINIS
                 </a>
               </div>
             </SummaryRowSimple>

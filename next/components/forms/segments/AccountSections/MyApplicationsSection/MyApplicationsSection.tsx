@@ -2,7 +2,7 @@ import MyApplicationsHeader from 'components/forms/segments/AccountSections/MyAp
 import { useGlobalStateContext } from 'components/forms/states/GlobalState'
 import { useTranslation } from 'next-i18next'
 
-import MyApplicationsDraftList from './MyApplicationsDraftList'
+import MyApplicationsList from './MyApplicationsList'
 
 const MyApplicationsSection = () => {
   const { t } = useTranslation('account')
@@ -12,7 +12,7 @@ const MyApplicationsSection = () => {
   return (
     <div className="flex flex-col">
       <MyApplicationsHeader title={t('account_section_applications.navigation')} />
-      <MyApplicationsDraftList variant={globalState.applicationsActiveMenuItem || 'SENT'} />
+      <MyApplicationsList variant={globalState.applicationsActiveMenuItem || 'SENT'} />
     </div>
   )
 }

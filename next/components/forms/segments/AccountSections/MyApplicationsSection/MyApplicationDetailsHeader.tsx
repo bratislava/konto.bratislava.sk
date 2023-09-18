@@ -1,55 +1,62 @@
-import { CheckIcon, ChevronLeftIcon, ClockIcon, CrossIcon, DownloadIcon } from '@assets/ui-icons'
-import cx from 'classnames'
+import { ChevronLeftIcon, DownloadIcon } from '@assets/ui-icons'
+import { formsApi } from '@clients/forms'
+import { GetFormResponseDto } from '@clients/openapi-forms'
 import Button from 'components/forms/simple-components/Button'
-import { MyApplicationsSentCardBase } from 'frontend/api/mocks/mocks'
+import FormatDate from 'components/forms/simple-components/FormatDate'
+import useFormStateComponents from 'frontend/hooks/useFormStateComponents'
+import useSnackbar from 'frontend/hooks/useSnackbar'
+import { downloadBlob } from 'frontend/utils/general'
+import logger from 'frontend/utils/logger'
 import Link from 'next/link'
 import { useTranslation } from 'next-i18next'
-import { ReactNode } from 'react'
 
 type MyApplicationDetailsHeaderBase = {
-  data?: MyApplicationsSentCardBase
+  data?: GetFormResponseDto
 }
 
 const MyApplicationDetailsHeader = (props: MyApplicationDetailsHeaderBase) => {
   const { data } = props
   const { t } = useTranslation('account')
+  const { t: ft } = useTranslation('forms')
 
-  const statusHandler = (status?: 'negative' | 'warning' | 'success'): ReactNode => {
-    const statusStyle: string = cx('text-p3-semibold lg:text-16-semibold w-max', {
-      'text-negative-700': status === 'negative',
-      'text-warning-700': status === 'warning' || !status,
-      'text-success-700': status === 'success',
-    })
-    const statusNode = (icon: ReactNode, statusTitle: string): ReactNode => {
-      return (
-        <>
-          <span className="flex items-center justify-center">{icon}</span>
-          <span className={statusStyle}>{statusTitle}</span>
-        </>
+  const [openSnackbarError] = useSnackbar({ variant: 'error' })
+  const [openSnackbarSuccess] = useSnackbar({ variant: 'success' })
+  const [openSnackbarInfo, closeSnackbarInfo] = useSnackbar({ variant: 'info' })
+
+  const formData = data?.formDataJson
+  const formSlug = data?.schemaVersion.schema?.slug || ''
+  const schemaVersionId = data?.schemaVersionId
+  const formId = data?.id
+  const category = data?.schemaVersion.schema?.formName
+  const createdAt = data?.createdAt
+  // TODO replace - this won't be valid for forms processed on the GINIS side
+  const updatedAt = data?.updatedAt
+  const state = data?.state
+  const error = data?.error
+  const isLatestSchemaVersionForSlug = data?.isLatestSchemaVersionForSlug
+
+  const { icon, text } = useFormStateComponents({ error, isLatestSchemaVersionForSlug, state })
+
+  const exportPdf = async () => {
+    openSnackbarInfo(ft('info_messages.pdf_export'))
+    try {
+      if (!formData || !schemaVersionId)
+        throw new Error(`No form data or schemaVersionId for form id: ${formId}`)
+      const response = await formsApi.convertControllerConvertToPdf(
+        schemaVersionId,
+        {
+          jsonForm: formData,
+        },
+        { accessToken: 'onlyAuthenticated', responseType: 'arraybuffer' },
       )
+      const fileName = `${formSlug}_output.pdf`
+      downloadBlob(new Blob([response.data as BlobPart]), fileName)
+      closeSnackbarInfo()
+      openSnackbarSuccess(ft('success_messages.pdf_export'))
+    } catch (error) {
+      logger.error(error)
+      openSnackbarError(ft('errors.pdf_export'))
     }
-
-    switch (status) {
-      case 'negative':
-        return statusNode(
-          <CrossIcon className="h-5 w-5 text-negative-700 lg:h-6 lg:w-6" />,
-          t('account_section_applications.status.negative'),
-        )
-      case 'warning':
-        return statusNode(
-          <ClockIcon className="h-5 w-5 text-warning-700 lg:h-6 lg:w-6" />,
-          t('account_section_applications.status.warning'),
-        )
-      case 'success':
-        return statusNode(
-          <CheckIcon className="h-5 w-5 text-success-700 lg:h-6 lg:w-6" />,
-          t('account_section_applications.status.success'),
-        )
-      default:
-        break
-    }
-
-    return null
   }
 
   return (
@@ -62,13 +69,14 @@ const MyApplicationDetailsHeader = (props: MyApplicationDetailsHeaderBase) => {
           </Link>
           <div className="flex flex-col gap-4 lg:gap-6">
             <div className="flex flex-col gap-2">
-              <p className="text-p2-semibold text-main-700">{data?.category}</p>
+              <p className="text-p2-semibold text-main-700">{category}</p>
               <div className="flex w-full items-center justify-between">
-                <h1 className="text-h1">{data?.title}</h1>
+                <h1 className="text-h1">TODO Podanie</h1>
                 <Button
                   className="hidden md:flex"
                   startIcon={<DownloadIcon className="h-6 w-6" />}
                   text={t('download_pdf')}
+                  onPress={exportPdf}
                 />
               </div>
             </div>
@@ -77,16 +85,23 @@ const MyApplicationDetailsHeader = (props: MyApplicationDetailsHeaderBase) => {
                 <p className="text-p3-semibold lg:text-p2-semibold">
                   {t('account_section_applications.navigation_sent')}
                 </p>
-                <p className="text-p3 lg:text-p2">{data?.sentDate}</p>
+                <p className="text-p3 lg:text-p2">
+                  <FormatDate>{createdAt || ''}</FormatDate>
+                </p>
               </div>
               <span className="hidden h-1.5 w-1.5 rounded-full bg-gray-700 lg:block" />
-              <div className="flex items-center gap-1">{statusHandler(data?.status)}</div>
+              <div className="flex items-center gap-1">
+                {icon}
+                {text}
+              </div>
               <span className="hidden h-1.5 w-1.5 rounded-full bg-gray-700 lg:block" />
               <div className="flex items-center gap-1">
                 <p className="text-p3 lg:text-p2">
                   {t('account_section_applications.last_change')}
                 </p>
-                <p className="text-p3 lg:text-p2">{data?.statusDate}</p>
+                <p className="text-p3 lg:text-p2">
+                  <FormatDate>{updatedAt || ''}</FormatDate>
+                </p>
               </div>
             </div>
             <Button
@@ -94,6 +109,7 @@ const MyApplicationDetailsHeader = (props: MyApplicationDetailsHeaderBase) => {
               className="flex md:hidden"
               startIcon={<DownloadIcon className="h-6 w-6" />}
               text={t('download_pdf')}
+              onPress={exportPdf}
             />
           </div>
         </div>

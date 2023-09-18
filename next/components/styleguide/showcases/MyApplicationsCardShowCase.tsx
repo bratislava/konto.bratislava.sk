@@ -1,5 +1,5 @@
 import { FormState, GetFormResponseDtoErrorEnum } from '@clients/openapi-forms/api'
-import MyApplicationsDraftCard from 'components/forms/segments/AccountSections/MyApplicationsSection/MyApplicationsDraftCard'
+import MyApplicationsCard from 'components/forms/segments/AccountSections/MyApplicationsSection/MyApplicationsCard'
 import React from 'react'
 
 import { Stack } from '../Stack'
@@ -81,79 +81,79 @@ const MyApplicationsCardShowCase = () => {
       <Stack>
         <div className="flex flex-1 flex-col">
           Unfinished draft
-          <MyApplicationsDraftCard
+          <MyApplicationsCard
             variant="DRAFT"
             form={getDummyData('DRAFT', 'NONE')}
             refreshListData={async () => {}}
           />
           Expired draft
-          <MyApplicationsDraftCard
+          <MyApplicationsCard
             variant="DRAFT"
             form={getDummyData('DRAFT', 'NONE', { isLatestSchemaVersionForSlug: false })}
             refreshListData={async () => {}}
           />
           Sending in progress
-          <MyApplicationsDraftCard
+          <MyApplicationsCard
             variant="SENDING"
             form={getDummyData('QUEUED', 'NONE')}
             refreshListData={async () => {}}
           />
           Virus scan in progress
-          <MyApplicationsDraftCard
+          <MyApplicationsCard
             variant="SENDING"
             form={getDummyData('QUEUED', 'NONE')}
             refreshListData={async () => {}}
           />
           Virus scan failed (unable to scan)
-          <MyApplicationsDraftCard
+          <MyApplicationsCard
             variant="SENDING"
             form={getDummyData('ERROR', 'UNABLE_TO_SCAN_FILES')}
             refreshListData={async () => {}}
           />
           Virus scan failed (infected)
-          <MyApplicationsDraftCard
+          <MyApplicationsCard
             variant="SENDING"
             form={getDummyData('ERROR', 'INFECTED_FILES')}
             refreshListData={async () => {}}
           />
           Virus scan failed (nases_send_error)
-          <MyApplicationsDraftCard
+          <MyApplicationsCard
             variant="SENDING"
             form={getDummyData('ERROR', 'NASES_SEND_ERROR')}
             refreshListData={async () => {}}
           />
           Sent (progress - NASES)
-          <MyApplicationsDraftCard
+          <MyApplicationsCard
             variant="SENT"
             form={getDummyData('DELIVERED_NASES', 'NONE')}
             refreshListData={async () => {}}
           />
           Sent (progress - GINIS)
-          <MyApplicationsDraftCard
+          <MyApplicationsCard
             variant="SENT"
             form={getDummyData('DELIVERED_GINIS', 'NONE')}
             refreshListData={async () => {}}
           />
           READY_FOR_PROCESSING
-          <MyApplicationsDraftCard
+          <MyApplicationsCard
             variant="SENT"
             form={getDummyData('READY_FOR_PROCESSING', 'NONE')}
             refreshListData={async () => {}}
           />
           PROCESSING
-          <MyApplicationsDraftCard
+          <MyApplicationsCard
             variant="SENT"
             form={getDummyData('PROCESSING', 'NONE')}
             refreshListData={async () => {}}
           />
           Rejected
-          <MyApplicationsDraftCard
+          <MyApplicationsCard
             variant="SENT"
             form={getDummyData('REJECTED', 'NONE')}
             refreshListData={async () => {}}
           />
           Finished
-          <MyApplicationsDraftCard
+          <MyApplicationsCard
             variant="SENT"
             form={getDummyData('FINISHED', 'NONE')}
             refreshListData={async () => {}}

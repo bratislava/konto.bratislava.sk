@@ -7,7 +7,7 @@ import useSnackbar from 'frontend/hooks/useSnackbar'
 import { useTranslation } from 'next-i18next'
 import React, { useEffect, useState } from 'react'
 
-import MyApplicationsDraftCard from './MyApplicationsDraftCard'
+import MyApplicationsCard from './MyApplicationsCard'
 
 // must be string due to typing
 const PAGE_SIZE = '10'
@@ -40,11 +40,11 @@ const getDraftApplications = async (variant: ApplicationsListVariant, page: numb
   return response.data
 }
 
-type MyApplicationsDraftListProps = {
+type MyApplicationsListProps = {
   variant: ApplicationsListVariant
 }
 
-const MyApplicationsDraftList = ({ variant }: MyApplicationsDraftListProps) => {
+const MyApplicationsList = ({ variant }: MyApplicationsListProps) => {
   const { t } = useTranslation('account')
   const [pagination, setPagination] = useState<Record<ApplicationsListVariant, number>>({
     SENT: 1,
@@ -88,11 +88,7 @@ const MyApplicationsDraftList = ({ variant }: MyApplicationsDraftListProps) => {
             {forms.map((form, index) => {
               return (
                 <li key={index}>
-                  <MyApplicationsDraftCard
-                    form={form}
-                    refreshListData={refetch}
-                    variant={variant}
-                  />
+                  <MyApplicationsCard form={form} refreshListData={refetch} variant={variant} />
                 </li>
               )
             })}
@@ -112,4 +108,4 @@ const MyApplicationsDraftList = ({ variant }: MyApplicationsDraftListProps) => {
   )
 }
 
-export default MyApplicationsDraftList
+export default MyApplicationsList

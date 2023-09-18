@@ -105,9 +105,11 @@
   "verification_status_required_alert": "Vaša identita zatiaľ nebola overená voči štátnym registrom. Bratislavské konto môžete preto používať len v obmedzenom režime, bez možnosti odoslať elektronicky všetky žiadosti či využiť službu online platby dane z nehnuteľností.",
   "verification_modal": {
     "title": "Overenie identity",
-    "subtitle_individual_person": "Na to, aby ste mohli plne využívať služby Bratislavského konta, potrebujeme poznať vaše <strong>rodné číslo</strong> a <strong>číslo občianskeho preukazu/dokladu o prechodnom pobyte</strong>.",
-    "subtitle_juridical_person": "Na to, aby ste mohli plne využívať služby Bratislavského konta potrebujeme poznať firemné <strong>IČO</strong> a <strong>číslo občianskeho preukazu konateľa/konateľky</strong>.",
-    "info": "Bez týchto údajov môžete žiadosť vyplniť, uložiť si ju do konceptov, ale nemôžete ju odoslať elektronicky. Odoslanie bude možné až po overení."
+    "subtitle": "Na to, aby ste mohli túto žiadosť odoslať, je potrebné <strong>jednorazovo</strong> overiť identitu profilu.",
+    "info": "Bez elektronického občianskeho preukazu môžete žiadosť odoslať až po overení identity v Bratislavskom konte. Bez overenia viete žiadosť vyplniť, ale odoslať iba pomocou eID cez <a target='_blank' href='https://slovensko.sk'>slovensko.sk</a>.",
+    "footer_desktop_continue": "Pokračovať na žiadosť",
+    "footer_desktop_eID_text": "Pokračovať s eID",
+    "footer_choice": "alebo"
   },
   "account_continue_link": "Pokračovať do konta",
   "register_title": "Vytvorte si Bratislavské konto",

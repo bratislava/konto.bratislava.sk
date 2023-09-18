@@ -67,7 +67,7 @@ const UserProfileDetail = (props: UserProfileDetailProps) => {
         <div className="flex flex-col">
           {/* Alert only for alertType === error */}
           {isAlertOpened && (
-            <div className="flex flex-row p-2">
+            <div className="p-2">
               <Alert
                 fullWidth
                 type={alertType}

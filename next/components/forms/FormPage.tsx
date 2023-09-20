@@ -21,7 +21,7 @@ const FormPage = () => {
     formData,
     handleFormOnSubmit,
     handleFormOnChange,
-    isReadonly
+    isReadonly,
   } = useFormState()
 
   useEffect(() => {
@@ -67,7 +67,11 @@ const FormPage = () => {
                 // HTML validation doesn't work for our use case, therefore it's turned off.
                 noHtml5Validate
               >
-                <FormControls />
+                {
+                  // returning null would make RJSF render the default submit button
+                  // eslint-disable-next-line react/jsx-no-useless-fragment
+                  isReadonly ? <></> : <FormControls />
+                }
               </ThemedForm>
             </>
           )}

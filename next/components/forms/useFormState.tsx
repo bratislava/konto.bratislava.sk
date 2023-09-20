@@ -33,7 +33,10 @@ const useGetContext = ({ schema, uiSchema, formSlug, initialFormData }: FormStat
   // eslint-disable-next-line testing-library/render-result-naming-convention
   const isFirst = useIsFirstRender()
 
-  const isReadonly = initialFormData.formMigrationRequired || initialFormData.oldSchemaVersion
+  const isReadonly =
+    initialFormData.formMigrationRequired ||
+    initialFormData.oldSchemaVersion ||
+    initialFormData.formSent
   const [formData, setFormData] = useState<GenericObjectType>(initialFormData.formDataJson)
   const stepsSchemas = useMemo(() => getEvaluatedStepsSchemas(schema, formData), [schema, formData])
 

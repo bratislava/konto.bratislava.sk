@@ -2,6 +2,7 @@ import {
   AttachmentIcon,
   CheckInCircleIcon,
   CrossInCircleIcon,
+  DownloadIcon,
   ErrorIcon,
   ScanningIcon,
 } from '@assets/ui-icons'
@@ -75,18 +76,26 @@ const UploadFileCard = ({
               <div className="flex gap-2">
                 {/* TODO: Improve */}
                 {fileInfo.canDownload && (
-                  <ReactAriaButton onPress={onFileDownload}>DL</ReactAriaButton>
+                  <ReactAriaButton
+                    className="after:absolute after:inset-0"
+                    onPress={onFileDownload}
+                  >
+                    <DownloadIcon />
+                  </ReactAriaButton>
                 )}
                 {fileInfo.fileSize != null && (
-                  <>
-                    <span>
-                      <PrettyBytes number={fileInfo.fileSize} />
-                    </span>
-                    <span>&bull;</span>
-                  </>
+                  <span>
+                    <PrettyBytes number={fileInfo.fileSize} />
+                  </span>
                 )}
 
-                <span>{fileInfo.status.type}</span>
+                {(fileInfo.status.type === FormFileUploadStatusEnum.Scanning ||
+                  fileInfo.status.type === FormFileUploadStatusEnum.Uploading) && (
+                  <>
+                    <span>&bull;</span>
+                    <span>{fileInfo.status.type}</span>
+                  </>
+                )}
               </div>
             </div>
 
@@ -96,7 +105,7 @@ const UploadFileCard = ({
                 variant="plain-black"
                 icon={<CrossInCircleIcon />}
                 aria-label={t('aria.removeFile')}
-                className={cx('-mr-2', {
+                className={cx('relative -mr-2', {
                   'hover:bg-negative-200 focus:bg-negative-300': isErrorStyle,
                   'hover:bg-success-200 focus:bg-success-300': isDoneStyle,
                 })}

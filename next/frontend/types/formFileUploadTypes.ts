@@ -22,7 +22,14 @@ export type FormFileUploadClientFileStatus =
       type: FormFileUploadStatusEnum.Uploading
       progress: number
     }
-  | { type: FormFileUploadStatusEnum.UploadError; error: string; canRetry: boolean }
+  | {
+      type: FormFileUploadStatusEnum.UploadError
+      error: {
+        translationKey: UploadErrors
+        additionalParam: string
+      }
+      canRetry: boolean
+    }
   | { type: FormFileUploadStatusEnum.UploadDone }
   | { type: FormFileUploadStatusEnum.UnknownFile }
   | { type: FormFileUploadStatusEnum.UnknownStatus; offline: boolean }
@@ -47,4 +54,9 @@ export type FormFileUploadFileInfo = {
   fileName: string
   canDownload: boolean
   fileSize: number | null
+}
+
+export enum UploadErrors {
+  LargeFile = 'largeFile',
+  InvalidFileType = 'invalidFileType',
 }

@@ -17,6 +17,7 @@ import {
   FormFileUploadFileInfo,
   FormFileUploadFileStatus,
   FormFileUploadStatusEnum,
+  UploadErrors,
 } from '../types/formFileUploadTypes'
 
 export const uploadFile = async ({
@@ -257,7 +258,7 @@ const getStatusForNewFile = (file: File, constraints: FormFileUploadConstraints)
     return {
       type: FormFileUploadStatusEnum.UploadError as const,
       // TODO: Improve error message.
-      error: `File too big, max size: ${prettyBytes(maxFileSize)}`,
+      error: { translationKey: UploadErrors.LargeFile, additionalParam: prettyBytes(maxFileSize) },
       canRetry: false,
     }
   }
@@ -269,7 +270,10 @@ const getStatusForNewFile = (file: File, constraints: FormFileUploadConstraints)
     return {
       type: FormFileUploadStatusEnum.UploadError as const,
       // TODO: Improve error message.
-      error: `Invalid file type, supported: ${supported.join(', ')}`,
+      error: {
+        translationKey: UploadErrors.InvalidFileType,
+        additionalParam: supported.join(', '),
+      },
       canRetry: false,
     }
   }

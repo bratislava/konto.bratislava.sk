@@ -33,7 +33,9 @@ const FormPageWrapper = ({ schema, uiSchema, page, initialFormData }: FormPageWr
   return (
     <PageWrapper locale={page.locale}>
       <FormSentRenderer
-        initialFormSent={initialFormData.formSent}
+        // TODO today it does not make sense to have anything else than false in initialFormSent - otherwise we just display "thank you" page on each revisit
+        // if it stays this way remove the prop completely
+        initialFormSent={false}
         notSentChildren={
           <FormFileUploadProvider initialFormData={initialFormData}>
             <FormLeaveProtectionProvider>

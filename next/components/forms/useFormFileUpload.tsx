@@ -162,7 +162,6 @@ export const useGetContext = ({ initialFormData }: FormFileUploadProviderProps) 
         onError: (error) => {
           updateFileStatus({
             type: FormFileUploadStatusEnum.UploadServerError,
-            // TODO: Error message logic
             error: { rawError: error.toString() },
             canRetry: true,
           })

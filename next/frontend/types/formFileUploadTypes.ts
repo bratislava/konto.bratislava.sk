@@ -67,6 +67,8 @@ export type FormFileUploadFileInfo = {
   fileSize: number | null
 }
 
+// values must match translation keys in account.json -> Upload.errors
+
 export enum UploadErrors {
   LargeFile = 'largeFile',
   InvalidFileType = 'invalidFileType',

@@ -14,6 +14,7 @@ import { useFormState } from './useFormState'
 
 const FormPage = () => {
   const {
+    schema,
     uiSchema,
     currentStepIndex,
     currentStepperStep,
@@ -30,7 +31,7 @@ const FormPage = () => {
 
   return (
     <>
-      <FormHeader />
+      <FormHeader title={schema.title} />
       <div className="mx-auto flex w-full max-w-screen-lg flex-col gap-10 pb-6 pt-0 lg:flex-row lg:gap-20 lg:py-10">
         <div>
           <StepperView />

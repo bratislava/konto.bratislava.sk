@@ -19,6 +19,7 @@ import {
   FormFileUploadClientFileStatus,
   FormFileUploadConstraints,
   FormFileUploadFileInfo,
+  FormFileUploadResponseFileStatus,
   FormFileUploadStatusEnum,
 } from '../../frontend/types/formFileUploadTypes'
 import { InitialFormData } from '../../frontend/types/initialFormData'
@@ -125,7 +126,9 @@ export const useGetContext = ({ initialFormData }: FormFileUploadProviderProps) 
         return
       }
 
-      const updateFileStatus = (status: FormFileUploadClientFileStatus) => {
+      const updateFileStatus = (
+        status: FormFileUploadClientFileStatus | FormFileUploadResponseFileStatus,
+      ) => {
         const clientFilesWithUpdatedStatus = clientFilesRef.current.map((file) => {
           if (file.id === firstQueuedFile.id) {
             return { ...file, status }
@@ -158,9 +161,8 @@ export const useGetContext = ({ initialFormData }: FormFileUploadProviderProps) 
         },
         onError: (error) => {
           updateFileStatus({
-            type: FormFileUploadStatusEnum.UploadError,
-            // TODO: Error message logic
-            error: error.toString(),
+            type: FormFileUploadStatusEnum.UploadServerError,
+            error: { rawError: error.toString() },
             canRetry: true,
           })
         },

@@ -14,6 +14,7 @@ export enum FormFileUploadStatusEnum {
   ScanInfected = 'ScanInfected',
   UnknownFile = 'UnknownFile',
   UnknownStatus = 'UnknownStatus',
+  UploadServerError = 'UploadServerError',
 }
 
 export type FormFileUploadClientFileStatus =
@@ -22,16 +23,32 @@ export type FormFileUploadClientFileStatus =
       type: FormFileUploadStatusEnum.Uploading
       progress: number
     }
-  | { type: FormFileUploadStatusEnum.UploadError; error: string; canRetry: boolean }
+  | {
+      type: FormFileUploadStatusEnum.UploadError
+      error: {
+        translationKey: UploadErrors
+        additionalParam: string
+      }
+      canRetry: boolean
+    }
   | { type: FormFileUploadStatusEnum.UploadDone }
   | { type: FormFileUploadStatusEnum.UnknownFile }
   | { type: FormFileUploadStatusEnum.UnknownStatus; offline: boolean }
 
+export type FormFileUploadResponseFileStatus = {
+  type: FormFileUploadStatusEnum.UploadServerError
+  error: {
+    rawError: string
+  }
+  canRetry: boolean
+}
+
 export type FormFileUploadClientFileInfo = {
   id: string
   file: File
-  status: FormFileUploadClientFileStatus
+  status: FormFileUploadClientFileStatus | FormFileUploadResponseFileStatus
 }
+
 export type FormFileUploadServerFileStatus =
   | { type: FormFileUploadStatusEnum.Scanning }
   | { type: FormFileUploadStatusEnum.ScanError }
@@ -41,10 +58,18 @@ export type FormFileUploadServerFileStatus =
 export type FormFileUploadFileStatus =
   | FormFileUploadClientFileStatus
   | FormFileUploadServerFileStatus
+  | FormFileUploadResponseFileStatus
 
 export type FormFileUploadFileInfo = {
   status: FormFileUploadFileStatus
   fileName: string
   canDownload: boolean
   fileSize: number | null
+}
+
+// values must match translation keys in account.json -> Upload.errors
+
+export enum UploadErrors {
+  LargeFile = 'largeFile',
+  InvalidFileType = 'invalidFileType',
 }

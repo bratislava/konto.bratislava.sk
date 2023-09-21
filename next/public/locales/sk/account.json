@@ -836,9 +836,21 @@
     "dragAndDrop": "Drag & drop",
     "uploadingList": "Nahrávané súbory",
     "errors": {
-      "scanError": "TODO wording: Nepodarilo sa preskenovať súbor vooči výrusom",
-      "scanInfected": "TODO wording: V súbore sa našiel vírus.",
-      "unknownFile": "TODO wording: Nerozpoznaný súbor"
+      "largeFile": "Súbor je príliš veľký, maximálna veľkosť {{additionalParam}}",
+      "invalidFileType": "Nepodporovaný formát súboru, podporované formáty:  {{additionalParam}}"
+    },
+    "fileUploadStatus": {
+      "UploadQueued": "Nahráva sa",
+      "Uploading": "Nahráva sa",
+      "UploadError": "Súbor sa nepodarilo nahrať. Skúste to znova.",
+      "UploadDone": "",
+      "Scanning": "Prebieha antivírová kontrola",
+      "ScanError": "Nastala chyba pri antivírovej kontrole. Skúste to znova",
+      "ScanDone": "",
+      "ScanInfected": "Súbor obsahuje vírus. Nahrajte iný súbor.",
+      "UnknownFile": "Nahrajte v podporovanom formáte: .csv, .dwg, .dxf, .jpeg, .jpg, .png, .tif, .tiff, .bmp, .gif, .pdf, .doc, .docx, .xls, .xlsx, .ppt, .pptx",
+      "UnknownStatus": "Nastala nečakaná chyba. Skúste to znova.",
+      "UploadServerError": ""
     }
   },
   "DatePicker": {

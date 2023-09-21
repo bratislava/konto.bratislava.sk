@@ -38,7 +38,9 @@ const UploadFileCard = ({
     fileInfo.status.type === FormFileUploadStatusEnum.UploadError ||
     fileInfo.status.type === FormFileUploadStatusEnum.ScanError ||
     fileInfo.status.type === FormFileUploadStatusEnum.ScanInfected ||
-    fileInfo.status.type === FormFileUploadStatusEnum.UnknownFile
+    fileInfo.status.type === FormFileUploadStatusEnum.UnknownFile ||
+    fileInfo.status.type === FormFileUploadStatusEnum.UnknownStatus ||
+    fileInfo.status.type === FormFileUploadStatusEnum.UploadServerError
   const isScanningStyle = fileInfo.status.type === FormFileUploadStatusEnum.Scanning
   const isDoneStyle = fileInfo.status.type === FormFileUploadStatusEnum.ScanDone
   const isDefaultStyle = !isErrorStyle && !isDoneStyle && !isScanningStyle
@@ -93,7 +95,7 @@ const UploadFileCard = ({
                   fileInfo.status.type === FormFileUploadStatusEnum.Uploading) && (
                   <>
                     <span>&bull;</span>
-                    <span>{fileInfo.status.type}</span>
+                    <span>{t(`fileUploadStatus.${fileInfo.status.type}`)}</span>
                   </>
                 )}
               </div>
@@ -123,15 +125,19 @@ const UploadFileCard = ({
       {isErrorStyle && (
         <div className="flex justify-between gap-6 pb-2">
           <div className="text-error">
-            {fileInfo.status.type === FormFileUploadStatusEnum.UploadError && fileInfo.status.error}
-            {fileInfo.status.type === FormFileUploadStatusEnum.ScanError && t('errors.scanError')}
-            {fileInfo.status.type === FormFileUploadStatusEnum.ScanInfected &&
-              t('errors.scanInfected')}
-            {fileInfo.status.type === FormFileUploadStatusEnum.UnknownFile &&
-              t('errors.unknownFile')}
+            {fileInfo.status.type === FormFileUploadStatusEnum.UploadError &&
+              t(`errors.${fileInfo.status.error.translationKey}`, {
+                additionalParam: fileInfo.status.error.additionalParam,
+              })}
+            {fileInfo.status.type === FormFileUploadStatusEnum.UploadServerError &&
+              fileInfo.status.error.rawError}
+            {fileInfo.status.type !== FormFileUploadStatusEnum.UploadError &&
+              fileInfo.status.type !== FormFileUploadStatusEnum.UploadServerError &&
+              t(`fileUploadStatus.${fileInfo.status.type}`)}
           </div>
 
-          {fileInfo.status.type === FormFileUploadStatusEnum.UploadError &&
+          {(fileInfo.status.type === FormFileUploadStatusEnum.UploadError ||
+            fileInfo.status.type === FormFileUploadStatusEnum.UploadServerError) &&
             fileInfo.status.canRetry && (
               <Button
                 variant="link-black"

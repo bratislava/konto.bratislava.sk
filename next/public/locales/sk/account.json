@@ -849,7 +849,8 @@
       "ScanDone": "",
       "ScanInfected": "Súbor obsahuje vírus. Nahrajte iný súbor.",
       "UnknownFile": "Nahrajte v podporovanom formáte: .csv, .dwg, .dxf, .jpeg, .jpg, .png, .tif, .tiff, .bmp, .gif, .pdf, .doc, .docx, .xls, .xlsx, .ppt, .pptx",
-      "UnknownStatus": "Nastala nečakaná chyba. Skúste to znova."
+      "UnknownStatus": "Nastala nečakaná chyba. Skúste to znova.",
+      "UploadServerError": ""
     }
   },
   "DatePicker": {

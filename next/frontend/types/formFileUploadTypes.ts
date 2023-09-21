@@ -14,6 +14,7 @@ export enum FormFileUploadStatusEnum {
   ScanInfected = 'ScanInfected',
   UnknownFile = 'UnknownFile',
   UnknownStatus = 'UnknownStatus',
+  UploadServerError = 'UploadServerError',
 }
 
 export type FormFileUploadClientFileStatus =
@@ -34,11 +35,20 @@ export type FormFileUploadClientFileStatus =
   | { type: FormFileUploadStatusEnum.UnknownFile }
   | { type: FormFileUploadStatusEnum.UnknownStatus; offline: boolean }
 
+export type FormFileUploadResponseFileStatus = {
+  type: FormFileUploadStatusEnum.UploadServerError
+  error: {
+    rawError: string
+  }
+  canRetry: boolean
+}
+
 export type FormFileUploadClientFileInfo = {
   id: string
   file: File
-  status: FormFileUploadClientFileStatus
+  status: FormFileUploadClientFileStatus | FormFileUploadResponseFileStatus
 }
+
 export type FormFileUploadServerFileStatus =
   | { type: FormFileUploadStatusEnum.Scanning }
   | { type: FormFileUploadStatusEnum.ScanError }
@@ -48,6 +58,7 @@ export type FormFileUploadServerFileStatus =
 export type FormFileUploadFileStatus =
   | FormFileUploadClientFileStatus
   | FormFileUploadServerFileStatus
+  | FormFileUploadResponseFileStatus
 
 export type FormFileUploadFileInfo = {
   status: FormFileUploadFileStatus

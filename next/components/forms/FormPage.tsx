@@ -10,6 +10,7 @@ import FormHeader from './simple-components/FormHeader'
 import StepperView from './steps/StepperView'
 import FormSummary from './steps/Summary/FormSummary'
 import ThemedForm from './ThemedForm'
+import { useFormErrorTranslations } from './useFormErrorTranslations'
 import { useFormState } from './useFormState'
 
 const FormPage = () => {
@@ -23,6 +24,8 @@ const FormPage = () => {
     handleFormOnChange,
     isReadonly,
   } = useFormState()
+
+  const { transformErrors } = useFormErrorTranslations()
 
   useEffect(() => {
     window.scrollTo({ top: 0, behavior: 'smooth' })
@@ -58,6 +61,7 @@ const FormPage = () => {
                 onChange={(e) => {
                   handleFormOnChange(e.formData)
                 }}
+                transformErrors={transformErrors}
                 showErrorList={false}
                 // This removes the extra conditional data for the current step, for removing the steps themselves see
                 // `handleFormOnChange` implementation.

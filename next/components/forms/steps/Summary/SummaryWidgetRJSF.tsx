@@ -39,7 +39,10 @@ type TypeAndOptions =
       options: WidgetProps['options']
     }
 
-export type SummaryWidgetRJSFProps = Pick<WidgetProps, 'id' | 'label' | 'value' | 'uiSchema'> &
+export type SummaryWidgetRJSFProps = Pick<
+  WidgetProps,
+  'id' | 'label' | 'value' | 'uiSchema' | 'readonly'
+> &
   TypeAndOptions
 
 const ValueComponent = ({
@@ -50,7 +53,7 @@ const ValueComponent = ({
 }: Pick<SummaryWidgetRJSFProps, 'widgetType' | 'value' | 'options' | 'uiSchema'>) => {
   const formatter = useDateFormatter()
 
-  if (!value || Array.isArray(value) && value.length === 0) {
+  if (!value || (Array.isArray(value) && value.length === 0)) {
     return <>-</>
   }
 
@@ -58,14 +61,13 @@ const ValueComponent = ({
     case 'select':
       const selectOptions = options as SelectRJSFOptions
       const selectArray = Array.isArray(value) ? value : [value]
-      const selectLabels = selectArray.map(innerValue => selectOptions.enumOptions?.find((option) => option.value === innerValue)?.label ??
-        (innerValue as string))
-      
-      return (
-        <>
-          {selectLabels.join(', ')}
-        </>
+      const selectLabels = selectArray.map(
+        (innerValue) =>
+          selectOptions.enumOptions?.find((option) => option.value === innerValue)?.label ??
+          (innerValue as string),
       )
+
+      return <>{selectLabels.join(', ')}</>
     case 'radio':
       const radioOptions = options as RadioButtonRJSFOptions
       return (
@@ -118,6 +120,7 @@ const SummaryWidgetRJSF = ({
   value,
   options,
   uiSchema,
+  readonly,
 }: SummaryWidgetRJSFProps) => {
   const { fieldHasError } = useFormSummary()
   const { goToStepByFieldId } = useFormState()
@@ -140,6 +143,7 @@ const SummaryWidgetRJSF = ({
         onGoToStep={() => {
           goToStepByFieldId(id)
         }}
+        isEditable={!readonly}
       />
     </div>
   )

@@ -7,7 +7,7 @@ import SummaryFormLegalText from './SummaryFormLegalText'
 import { FormSummaryProvider } from './useFormSummary'
 
 const FormSummary = () => {
-  const { formData, schema, uiSchema } = useFormState()
+  const { formData, schema, uiSchema, isReadonly } = useFormState()
 
   return (
     <FormSummaryProvider>
@@ -20,7 +20,7 @@ const FormSummary = () => {
           // The validator is not used, but it's required by the form. We use our own validation in `useFormSummary`.
           validator={rjfsValidator}
           experimental_defaultFormStateBehavior={defaultFormStateBehavior}
-          readonly
+          readonly={isReadonly}
           onSubmit={(e) => {
             console.log('form submit', e.formData)
           }}

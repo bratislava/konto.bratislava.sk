@@ -28,7 +28,7 @@ interface RadioButtonFieldWidgetRJSFProps extends WidgetProps {
 }
 
 const RadioButtonsWidgetRJSF = (props: RadioButtonFieldWidgetRJSFProps) => {
-  const { options, value, onChange, label, rawErrors, required } = props
+  const { options, value, onChange, label, rawErrors, required, readonly } = props
   const {
     enumOptions,
     className,
@@ -55,6 +55,7 @@ const RadioButtonsWidgetRJSF = (props: RadioButtonFieldWidgetRJSFProps) => {
         label={label}
         orientation={orientations === 'row' ? 'horizontal' : 'vertical'}
         required={required}
+        disabled={readonly}
       >
         {enumOptions.map((radioElement: EnumOptionsType) => {
           return (

@@ -156,7 +156,8 @@
   },
   "send_confirmation_eid_modal": {
     "title": "Odoslať cez slovensko.sk",
-    "content": "Po kliknutí na Odoslať s eID budete presmerovaní na stránku slovensko.sk. Na odoslanie žiadosti s eID je potrebné, aby ste sa prihlásili do elektronickej schránky s vašim elektronickým občianskym preukazom.\n\nV jednom konte môže byť použitý len jeden občiansky preukaz. Použite eID, ktoré patrí používateľovi/používateľke tohto Bratislavského konta.",
+    "content": "Po kliknutí na Odoslať s eID budete presmerovaní na stránku slovensko.sk. Na odoslanie žiadosti s eID je potrebné, aby ste sa prihlásili do elektronickej schránky s vašim elektronickým občianskym preukazom.\n\n",
+    "content_small": "V jednom konte môže byť použitý len jeden občiansky preukaz. Použite eID, ktoré patrí používateľovi/používateľke tohto Bratislavského konta.",
     "button_title": "Odoslať s eID"
   },
   "send_confirmation_eid_legal_modal": {

@@ -262,12 +262,14 @@ const FormModals = () => {
         <Button
           onPress={() => setSendConfirmationEidModal({ isOpen: false })}
           isDisabled={eidSendConfirmationModalIsLoading}
+          fullWidthMobile
         >
           {t('modals_back_button_title')}
         </Button>,
         <Button
           variant="black-solid"
           onPress={() => sendConfirmationEidModal.isOpen && sendConfirmationEidModal.sendCallback()}
+          fullWidthMobile
           isLoading={eidSendConfirmationModalIsLoading}
         >
           {t('send_confirmation_eid_modal.button_title')}
@@ -275,7 +277,12 @@ const FormModals = () => {
       ],
       isDismissable: !eidSendConfirmationModalIsLoading,
       noCloseButton: eidSendConfirmationModalIsLoading,
-      children: t('send_confirmation_eid_modal.content'),
+      children: (
+        <>
+          {t('send_confirmation_eid_modal.content')}
+          <div className="text-p3">{t('send_confirmation_eid_modal.content_small')}</div>
+        </>
+      ),
     },
     {
       key: 'sendConfirmationEidLegalModal',

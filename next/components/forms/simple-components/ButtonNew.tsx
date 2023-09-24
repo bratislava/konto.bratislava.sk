@@ -2,6 +2,7 @@
 import { ArrowRightIcon, ExportIcon } from '@assets/ui-icons'
 import { LinkButtonProps } from '@react-types/button'
 import cx from 'classnames'
+import Spinner from 'components/forms/simple-components/Spinner'
 import NextLink from 'next/link'
 import { ComponentProps, forwardRef, PropsWithChildren, ReactNode, RefObject } from 'react'
 import { AriaButtonProps, mergeProps, useButton, useFocusRing, useHover } from 'react-aria'
@@ -263,7 +264,7 @@ const Button = forwardRef<HTMLAnchorElement | HTMLButtonElement, PolymorphicProp
       >
         {!isLoading && startIcon}
         {/* TODO Loading spinner */}
-        {isLoading ? 'Loading...' : icon ?? children}
+        {isLoading ? <Spinner size="sm" /> : icon ?? children}
         {!isLoading && endIcon}
       </button>
     )

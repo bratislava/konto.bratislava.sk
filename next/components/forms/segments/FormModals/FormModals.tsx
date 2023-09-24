@@ -125,10 +125,13 @@ const FormModals = () => {
             sendFilesScanningEidModal.isOpen && sendFilesScanningEidModal.sendCallback()
           }
           fullWidthMobile
+          isLoading={sendLoading}
         >
           {t('send_files_scanning_eid_modal.button_title')}
         </Button>,
       ],
+      isDismissable: !sendLoading,
+      noCloseButton: sendLoading,
       children: t('send_files_scanning_eid_modal.content'),
     },
     {
@@ -227,6 +230,7 @@ const FormModals = () => {
       buttons: [
         <Button
           onPress={() => setSendConfirmationModal({ isOpen: false })}
+          fullWidthMobile
           isDisabled={sendLoading}
         >
           {t('modals_back_button_title')}
@@ -234,6 +238,7 @@ const FormModals = () => {
         <Button
           variant="black-solid"
           onPress={() => sendConfirmationModal.isOpen && sendConfirmationModal.sendCallback()}
+          fullWidthMobile
           isLoading={sendLoading}
         >
           {t('send_confirmation_modal.button_title')}

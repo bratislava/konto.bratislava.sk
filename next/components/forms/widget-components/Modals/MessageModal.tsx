@@ -54,7 +54,7 @@ const MessageModal = ({
             <span className="">{icons[type]}</span>
           </div>
         </div>
-        <div className="flex w-full flex-col items-center gap-6 p-0">
+        <div className="flex w-full flex-col gap-6 p-0">
           <div
             className={cx('flex flex-col items-center p-0', {
               'md:items-start': variant === 'horizontal',

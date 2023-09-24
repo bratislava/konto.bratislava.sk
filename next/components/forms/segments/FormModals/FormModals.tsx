@@ -116,7 +116,7 @@ const FormModals = () => {
       title: t('send_files_scanning_eid_modal.title'),
       type: 'warning',
       buttons: [
-        <Button onPress={() => setSendFilesScanningEidModal({ isOpen: false })}>
+        <Button onPress={() => setSendFilesScanningEidModal({ isOpen: false })} fullWidthMobile>
           {t('modals_back_button_title')}
         </Button>,
         <Button
@@ -124,6 +124,7 @@ const FormModals = () => {
           onPress={() =>
             sendFilesScanningEidModal.isOpen && sendFilesScanningEidModal.sendCallback()
           }
+          fullWidthMobile
         >
           {t('send_files_scanning_eid_modal.button_title')}
         </Button>,
@@ -197,12 +198,13 @@ const FormModals = () => {
       title: t('send_files_scanning_modal.title'),
       type: 'warning',
       buttons: [
-        <Button onPress={() => setSendFilesScanningModal({ isOpen: false })}>
+        <Button onPress={() => setSendFilesScanningModal({ isOpen: false })} fullWidthMobile>
           {t('modals_back_button_title')}
         </Button>,
         <Button
           variant="black-solid"
           onPress={() => sendFilesScanningModal.isOpen && sendFilesScanningModal.sendCallback()}
+          fullWidthMobile
           isLoading={sendLoading}
         >
           {t('send_files_scanning_modal.button_title')}

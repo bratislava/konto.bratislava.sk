@@ -122,12 +122,12 @@
   },
   "send_files_scanning_modal": {
     "title": "Nahraté prílohy ešte kontrolujeme",
-    "content": "Prílohy, ktoré ste nahrali prechádzajú antivírovou kontrolou. Žiadosť však môžete odoslať aj bez čakania na jej ukončenie. V prípade, že by nahraté prílohy obsahovali vírus, budeme vás kontaktovať na e-mailovej adrese, ktorou sa prihlasujete do svojho konta.",
+    "content": "Prílohy, ktoré ste nahrali prechádzajú antivírovou kontrolou. Žiadosť však môžete odoslať aj bez čakania na jej ukončenie. Nájdete ju Mojich žiadostiach, v časti Odosiela sa.\n\nV prípade, že by nahraté prílohy obsahovali vírus, budeme vás kontaktovať na e-mailovej adrese, ktorou sa prihlasujete do svojho konta.",
     "button_title": "Odoslať žiadosť"
   },
   "send_files_scanning_eid_modal": {
     "title": "Nahraté prílohy ešte kontrolujeme",
-    "content": "Nahraté prílohy ešte kontrolujeme\nPrílohy, ktoré ste nahrali prechádzajú antivírovou kontrolou. Žiadosť však môžete odoslať aj bez čakania na jej ukončenie cez Bratislavské konto. V prípade, že by nahraté prílohy obsahovali vírus, budeme vás kontaktovať na e-mailovej adrese, ktorou sa prihlasujete do svojho konta.\n\nAk chcete aj napriek tomu žiadosť odoslať pomocou elektronického občianskeho preukazu, je potrebné počkať na dokončenie kontroly.",
+    "content": "Prílohy, ktoré ste nahrali prechádzajú antivírovou kontrolou. Žiadosť však môžete odoslať aj bez čakania na jej ukončenie cez Bratislavské konto. V prípade, že by nahraté prílohy obsahovali vírus, budeme vás kontaktovať na e-mailovej adrese, ktorou sa prihlasujete do svojho konta.\n\nAk chcete aj napriek tomu žiadosť odoslať pomocou elektronického občianskeho preukazu, je potrebné počkať na dokončenie kontroly.",
     "button_title": "Odoslať cez Bratislavské konto"
   },
   "send_confirmation_modal": {

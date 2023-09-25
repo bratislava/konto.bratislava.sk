@@ -295,13 +295,11 @@ const useGetContext = () => {
       return
     }
 
-    // TODO is this conditions all right? Should this check for other conditions than isIdentityVerified?
     if (isAuthenticated && !isIdentityVerified && scanningFiles.length > 0) {
       setSendFilesScanningNotVerifiedEidModal(true)
       return
     }
 
-    // TODO is this conditions all right? Should this check for other conditions than isAuthenticated?
     if (!isAuthenticated && scanningFiles.length > 0) {
       setSendFilesScanningNonAuthenticatedEidModal(true)
       return

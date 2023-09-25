@@ -157,10 +157,10 @@ const FormModals = () => {
       title: t('send_identity_missing_modal.title'),
       type: 'warning',
       buttons: [
-        <Button onPress={() => setSendIdentityMissingModal(false)}>
+        <Button onPress={() => setSendIdentityMissingModal(false)} fullWidthMobile>
           {t('modals_back_button_title')}
         </Button>,
-        <Button variant="black-solid" onPress={() => verifyIdentity()}>
+        <Button variant="black-solid" onPress={() => verifyIdentity()} fullWidthMobile>
           {t('send_identity_missing_modal.button_title')}
         </Button>,
       ],
@@ -173,10 +173,10 @@ const FormModals = () => {
       title: t('send_files_scanning_non_authenticated_eid_modal.title'),
       type: 'warning',
       buttons: [
-        <Button onPress={() => setSendFilesScanningNonAuthenticatedEidModal(false)}>
+        <Button onPress={() => setSendFilesScanningNonAuthenticatedEidModal(false)} fullWidthMobile>
           {t('modals_back_button_title')}
         </Button>,
-        <Button variant="black-solid" onPress={() => register()}>
+        <Button variant="black-solid" onPress={() => register()} fullWidthMobile>
           {t('send_files_scanning_non_authenticated_eid_modal.button_title')}
         </Button>,
       ],
@@ -328,6 +328,7 @@ const FormModals = () => {
       buttons: [
         <Button
           onPress={() => setSendConfirmationNonAuthenticatedEidModal({ isOpen: false })}
+          fullWidthMobile
           isDisabled={eidSendConfirmationModalIsLoading}
         >
           {t('modals_back_button_title')}
@@ -338,6 +339,7 @@ const FormModals = () => {
             sendConfirmationNonAuthenticatedEidModal.isOpen &&
             sendConfirmationNonAuthenticatedEidModal.sendCallback()
           }
+          fullWidthMobile
           isLoading={eidSendConfirmationModalIsLoading}
         >
           {t('send_confirmation_non_authenticated_eid_modal.button_title')}

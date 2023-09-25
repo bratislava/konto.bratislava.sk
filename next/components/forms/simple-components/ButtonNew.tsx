@@ -44,6 +44,7 @@ type ButtonBase = {
   fullWidth?: boolean
   fullWidthMobile?: boolean
   isLoading?: boolean
+  isLoadingText?: string
 } & ButtonOrIconButton
 
 export type ButtonProps = Omit<AriaButtonProps<'button'>, keyof LinkButtonProps | 'children'> &
@@ -77,6 +78,7 @@ const Button = forwardRef<HTMLAnchorElement | HTMLButtonElement, PolymorphicProp
       fullWidth,
       fullWidthMobile,
       isLoading,
+      isLoadingText,
       ...rest
     },
     ref,
@@ -262,7 +264,14 @@ const Button = forwardRef<HTMLAnchorElement | HTMLButtonElement, PolymorphicProp
         {...rest}
       >
         {!isLoading && startIcon}
-        {isLoading ? <Spinner size="sm" /> : icon ?? children}
+        {isLoading ? (
+          <>
+            {isLoadingText}
+            <Spinner size="sm" />
+          </>
+        ) : (
+          icon ?? children
+        )}
         {!isLoading && endIcon}
       </button>
     )

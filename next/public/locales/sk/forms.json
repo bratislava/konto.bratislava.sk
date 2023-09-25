@@ -109,7 +109,8 @@
   "migration_required_modal": {
     "title": "Formulár bol vytvorený neprihláseným používateľom",
     "content": "Na to aby ste mohli formulár upravovať musíte zmigrovať formulár do svojho konta.",
-    "button_title": "Migrovať formulár"
+    "button_title": "Migrovať formulár",
+    "button_title_loading": "Prebieha migrácia"
   },
   "old_schema_version_modal": {
     "title": "Koncept nie je možné upravovať",
@@ -118,22 +119,26 @@
   "concept_save_error_modal": {
     "title": "Žiadosť sa nepodarilo uložiť",
     "content": "Vašu žiadosť sa nepodarilo uložiť do konceptov. Opakujte akciu alebo to vyskúšajte neskôr.",
-    "button_title": "Opakovať"
+    "button_title": "Opakovať",
+    "button_title_loading": "Prebieha opakovanie"
   },
   "send_files_scanning_modal": {
     "title": "Nahraté prílohy ešte kontrolujeme",
     "content": "Prílohy, ktoré ste nahrali prechádzajú antivírovou kontrolou. Žiadosť však môžete odoslať aj bez čakania na jej ukončenie. Nájdete ju Mojich žiadostiach, v časti Odosiela sa.\n\nV prípade, že by nahraté prílohy obsahovali vírus, budeme vás kontaktovať na e-mailovej adrese, ktorou sa prihlasujete do svojho konta.",
-    "button_title": "Odoslať žiadosť"
+    "button_title": "Odoslať žiadosť",
+    "button_title_loading": "Odosielanie žiadosti"
   },
   "send_files_scanning_eid_modal": {
     "title": "Nahraté prílohy ešte kontrolujeme",
     "content": "Prílohy, ktoré ste nahrali prechádzajú antivírovou kontrolou. Žiadosť však môžete odoslať aj bez čakania na jej ukončenie cez Bratislavské konto. V prípade, že by nahraté prílohy obsahovali vírus, budeme vás kontaktovať na e-mailovej adrese, ktorou sa prihlasujete do svojho konta.\n\nAk chcete aj napriek tomu žiadosť odoslať pomocou elektronického občianskeho preukazu, je potrebné počkať na dokončenie kontroly.",
-    "button_title": "Odoslať cez Bratislavské konto"
+    "button_title": "Odoslať cez Bratislavské konto",
+    "button_title_loading": "Odosiela sa"
   },
   "send_confirmation_modal": {
     "title": "Odoslať žiadosť",
     "content": "Naozaj si prajete odoslať túto žiadosť?",
-    "button_title": "Odoslať žiadosť"
+    "button_title": "Odoslať žiadosť",
+    "button_title_loading": "Odosielanie žiadosti"
   },
   "send_files_scanning_not_verified_eid_modal": {
     "title": "Nahraté prílohy ešte kontrolujeme",
@@ -158,17 +163,20 @@
     "title": "Odoslať cez slovensko.sk",
     "content": "Po kliknutí na Odoslať s eID budete presmerovaní na stránku slovensko.sk. Na odoslanie žiadosti s eID je potrebné, aby ste sa prihlásili do elektronickej schránky s vašim elektronickým občianskym preukazom.\n\n",
     "content_small": "V jednom konte môže byť použitý len jeden občiansky preukaz. Použite eID, ktoré patrí používateľovi/používateľke tohto Bratislavského konta.",
-    "button_title": "Odoslať s eID"
+    "button_title": "Odoslať s eID",
+    "button_title_loading": "Prebieha presmerovanie"
   },
   "send_confirmation_eid_legal_modal": {
     "title": "Odoslať cez slovensko.sk",
     "content": "Po kliknutí na Odoslať s eID budete presmerovaní na stránku slovensko.sk. Na odoslanie žiadosti s eID je potrebné, aby ste sa prihlásili do elektronickej schránky s elektronickým občianskym preukazom.\n\nV jednom konte môže byť použitý len jeden občiansky preukaz. Použite eID, ktoré patrí členovi/členke štatutárneho orgánu firmy, ktorej patrí toto Bratislavské konto.",
-    "button_title": "Odoslať s eID"
+    "button_title": "Odoslať s eID",
+    "button_title_loading": "Prebieha presmerovanie"
   },
   "send_confirmation_non_authenticated_eid_modal": {
     "title": "Odoslať cez slovensko.sk",
     "content": "Po kliknutí na Odoslať s eID budete presmerovaní na stránku slovensko.sk. Na odoslanie žiadosti s eID je potrebné, aby ste sa prihlásili do elektronickej schránky s elektronickým občianskym preukazom žiadateľa/žiadateľky. V prípade, že žiadosť podávate ako právnická osoba alebo fyzická osoba - podnikateľ použite elektronický občiansky preukaz člena/členky štatutárneho orgánu.",
-    "button_title": "Odoslať s eID"
+    "button_title": "Odoslať s eID",
+    "button_title_loading": "Prebieha presmerovanie"
   },
   "eid_sending_modal": {
     "title": "Žiadosť sa odosiela",
@@ -177,6 +185,7 @@
   "eid_send_error_modal": {
     "title": "Žiadosť sa nepodarilo odoslať",
     "content": "Zopakujte odoslanie žiadosti.",
-    "button_title": "Opakovať"
+    "button_title": "Opakovať",
+    "button_title_loading": "Odosiela sa"
   }
 }

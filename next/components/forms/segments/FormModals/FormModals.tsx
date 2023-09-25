@@ -71,6 +71,7 @@ const FormModals = () => {
           variant="category-solid"
           onPress={() => migrateForm()}
           isLoading={migrateFormIsLoading}
+          isLoadingText={t('migration_required_modal.button_title_loading')}
         >
           {t('migration_required_modal.button_title')}
         </Button>,
@@ -99,6 +100,7 @@ const FormModals = () => {
           variant="category-solid"
           onPress={() => saveConcept(true)}
           isLoading={saveConceptIsLoading}
+          isLoadingText={t('concept_save_error_modal.button_title_loading')}
         >
           {t('concept_save_error_modal.button_repeat_text')}
         </Button>,
@@ -126,6 +128,7 @@ const FormModals = () => {
           }
           fullWidthMobile
           isLoading={sendLoading}
+          isLoadingText={t('send_files_scanning_eid_modal.button_title_loading')}
         >
           {t('send_files_scanning_eid_modal.button_title')}
         </Button>,
@@ -209,6 +212,7 @@ const FormModals = () => {
           onPress={() => sendFilesScanningModal.isOpen && sendFilesScanningModal.sendCallback()}
           fullWidthMobile
           isLoading={sendLoading}
+          isLoadingText={t('send_files_scanning_modal.button_title_loading')}
         >
           {t('send_files_scanning_modal.button_title')}
         </Button>,
@@ -240,6 +244,7 @@ const FormModals = () => {
           onPress={() => sendConfirmationModal.isOpen && sendConfirmationModal.sendCallback()}
           fullWidthMobile
           isLoading={sendLoading}
+          isLoadingText={t('send_confirmation_modal.button_title_loading')}
         >
           {t('send_confirmation_modal.button_title')}
         </Button>,
@@ -271,6 +276,7 @@ const FormModals = () => {
           onPress={() => sendConfirmationEidModal.isOpen && sendConfirmationEidModal.sendCallback()}
           fullWidthMobile
           isLoading={eidSendConfirmationModalIsLoading}
+          isLoadingText={t('send_confirmation_eid_modal.button_title_loading')}
         >
           {t('send_confirmation_eid_modal.button_title')}
         </Button>,
@@ -307,6 +313,7 @@ const FormModals = () => {
             sendConfirmationEidLegalModal.isOpen && sendConfirmationEidLegalModal.sendCallback()
           }
           isLoading={eidSendConfirmationModalIsLoading}
+          isLoadingText={t('send_confirmation_eid_legal_modal.button_title_loading')}
         >
           {t('send_confirmation_eid_legal_modal.button_title')}
         </Button>,
@@ -341,6 +348,7 @@ const FormModals = () => {
           }
           fullWidthMobile
           isLoading={eidSendConfirmationModalIsLoading}
+          isLoadingText={t('send_confirmation_non_authenticated_eid_modal.button_title_loading')}
         >
           {t('send_confirmation_non_authenticated_eid_modal.button_title')}
         </Button>,
@@ -381,6 +389,7 @@ const FormModals = () => {
           variant="black-solid"
           onPress={() => eidSendErrorModal.isOpen && eidSendErrorModal.sendCallback()}
           isLoading={sendEidLoading}
+          isLoadingText={t('eid_send_error_modal.button_title_loading')}
         >
           {t('eid_send_error_modal.button_title')}
         </Button>,

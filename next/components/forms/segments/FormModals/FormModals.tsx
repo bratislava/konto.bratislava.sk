@@ -7,9 +7,9 @@ import Button from '../../simple-components/ButtonNew'
 import { useFormModals } from '../../useFormModals'
 import { useFormRedirects } from '../../useFormRedirects'
 import MessageModal, { MessageModalProps } from '../../widget-components/Modals/MessageModal'
+import AccountMarkdown from '../AccountMarkdown/AccountMarkdown'
 import IdentityVerificationModal from '../IdentityVerificationModal/IdentityVerificationModal'
 import RegistrationModal from '../RegistrationModal/RegistrationModal'
-import AccountMarkdown from '../AccountMarkdown/AccountMarkdown'
 
 const FormModals = () => {
   const { t } = useTranslation('forms')

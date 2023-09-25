@@ -62,7 +62,6 @@ export type AnchorProps = Omit<AriaButtonProps<'a'>, 'children'> &
 
 export type PolymorphicProps = ButtonProps | AnchorProps
 
-// TODO Loading spinner
 const Button = forwardRef<HTMLAnchorElement | HTMLButtonElement, PolymorphicProps>(
   (
     {
@@ -263,7 +262,6 @@ const Button = forwardRef<HTMLAnchorElement | HTMLButtonElement, PolymorphicProp
         {...rest}
       >
         {!isLoading && startIcon}
-        {/* TODO Loading spinner */}
         {isLoading ? <Spinner size="sm" /> : icon ?? children}
         {!isLoading && endIcon}
       </button>

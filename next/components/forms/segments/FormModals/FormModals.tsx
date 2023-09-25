@@ -7,6 +7,7 @@ import Button from '../../simple-components/ButtonNew'
 import { useFormModals } from '../../useFormModals'
 import { useFormRedirects } from '../../useFormRedirects'
 import MessageModal, { MessageModalProps } from '../../widget-components/Modals/MessageModal'
+import AccountMarkdown from '../AccountMarkdown/AccountMarkdown'
 import IdentityVerificationModal from '../IdentityVerificationModal/IdentityVerificationModal'
 import RegistrationModal from '../RegistrationModal/RegistrationModal'
 
@@ -30,6 +31,8 @@ const FormModals = () => {
     setSendFilesScanningEidModal,
     sendFilesScanningNotVerifiedEidModal,
     setSendFilesScanningNotVerifiedEidModal,
+    sendFilesScanningNotVerified,
+    setSendFilesScanningNotVerified,
     sendIdentityMissingModal,
     setSendIdentityMissingModal,
     sendFilesScanningNonAuthenticatedEidModal,
@@ -64,13 +67,15 @@ const FormModals = () => {
       type: 'warning',
       title: t('migration_required_modal.title'),
       buttons: [
-        <Button onPress={() => setMigrationRequiredModal(false)}>
-          {t('modals_back_button_title')}
+        <Button onPress={() => setMigrationRequiredModal(false)} fullWidthMobile>
+          {t('migration_required_modal.button_discard')}
         </Button>,
         <Button
-          variant="category-solid"
+          variant="black-solid"
           onPress={() => migrateForm()}
+          fullWidthMobile
           isLoading={migrateFormIsLoading}
+          isLoadingText={t('migration_required_modal.button_title_loading')}
         >
           {t('migration_required_modal.button_title')}
         </Button>,
@@ -99,6 +104,7 @@ const FormModals = () => {
           variant="category-solid"
           onPress={() => saveConcept(true)}
           isLoading={saveConceptIsLoading}
+          isLoadingText={t('concept_save_error_modal.button_title_loading')}
         >
           {t('concept_save_error_modal.button_repeat_text')}
         </Button>,
@@ -116,7 +122,7 @@ const FormModals = () => {
       title: t('send_files_scanning_eid_modal.title'),
       type: 'warning',
       buttons: [
-        <Button onPress={() => setSendFilesScanningEidModal({ isOpen: false })}>
+        <Button onPress={() => setSendFilesScanningEidModal({ isOpen: false })} fullWidthMobile>
           {t('modals_back_button_title')}
         </Button>,
         <Button
@@ -124,10 +130,15 @@ const FormModals = () => {
           onPress={() =>
             sendFilesScanningEidModal.isOpen && sendFilesScanningEidModal.sendCallback()
           }
+          fullWidthMobile
+          isLoading={sendLoading}
+          isLoadingText={t('send_files_scanning_eid_modal.button_title_loading')}
         >
           {t('send_files_scanning_eid_modal.button_title')}
         </Button>,
       ],
+      isDismissable: !sendLoading,
+      noCloseButton: sendLoading,
       children: t('send_files_scanning_eid_modal.content'),
     },
     {
@@ -147,16 +158,50 @@ const FormModals = () => {
       children: t('send_files_scanning_not_verified_eid_modal.content'),
     },
     {
+      key: 'sendFilesScanningNotVerified',
+      isOpen: sendFilesScanningNotVerified.isOpen,
+      onOpenChange: (value) => {
+        if (!value) {
+          setSendFilesScanningNotVerified({ isOpen: false })
+        }
+      },
+      title: t('send_files_scanning_not_verified.title'),
+      type: 'warning',
+      buttons: [
+        <Button variant="black-solid" onPress={() => verifyIdentity()}>
+          {t('send_files_scanning_not_verified.button_title')}
+        </Button>,
+        <Button
+          variant="black-outline"
+          onPress={() =>
+            sendFilesScanningNotVerified.isOpen && sendFilesScanningNotVerified.sendCallback()
+          }
+        >
+          {t('send_files_scanning_not_verified.button_title_eid')}
+        </Button>,
+      ],
+      children: (
+        <>
+          {t('send_files_scanning_not_verified.content')}
+          <AccountMarkdown
+            className="text-p3"
+            variant="sm"
+            content={t('send_files_scanning_not_verified.content_small')}
+          />
+        </>
+      ),
+    },
+    {
       key: 'sendIdentityMissingModal',
       isOpen: sendIdentityMissingModal,
       onOpenChange: setSendIdentityMissingModal,
       title: t('send_identity_missing_modal.title'),
       type: 'warning',
       buttons: [
-        <Button onPress={() => setSendIdentityMissingModal(false)}>
+        <Button onPress={() => setSendIdentityMissingModal(false)} fullWidthMobile>
           {t('modals_back_button_title')}
         </Button>,
-        <Button variant="black-solid" onPress={() => verifyIdentity()}>
+        <Button variant="black-solid" onPress={() => verifyIdentity()} fullWidthMobile>
           {t('send_identity_missing_modal.button_title')}
         </Button>,
       ],
@@ -169,10 +214,10 @@ const FormModals = () => {
       title: t('send_files_scanning_non_authenticated_eid_modal.title'),
       type: 'warning',
       buttons: [
-        <Button onPress={() => setSendFilesScanningNonAuthenticatedEidModal(false)}>
+        <Button onPress={() => setSendFilesScanningNonAuthenticatedEidModal(false)} fullWidthMobile>
           {t('modals_back_button_title')}
         </Button>,
-        <Button variant="black-solid" onPress={() => register()}>
+        <Button variant="black-solid" onPress={() => register()} fullWidthMobile>
           {t('send_files_scanning_non_authenticated_eid_modal.button_title')}
         </Button>,
       ],
@@ -197,13 +242,15 @@ const FormModals = () => {
       title: t('send_files_scanning_modal.title'),
       type: 'warning',
       buttons: [
-        <Button onPress={() => setSendFilesScanningModal({ isOpen: false })}>
+        <Button onPress={() => setSendFilesScanningModal({ isOpen: false })} fullWidthMobile>
           {t('modals_back_button_title')}
         </Button>,
         <Button
           variant="black-solid"
           onPress={() => sendFilesScanningModal.isOpen && sendFilesScanningModal.sendCallback()}
+          fullWidthMobile
           isLoading={sendLoading}
+          isLoadingText={t('send_files_scanning_modal.button_title_loading')}
         >
           {t('send_files_scanning_modal.button_title')}
         </Button>,
@@ -225,6 +272,7 @@ const FormModals = () => {
       buttons: [
         <Button
           onPress={() => setSendConfirmationModal({ isOpen: false })}
+          fullWidthMobile
           isDisabled={sendLoading}
         >
           {t('modals_back_button_title')}
@@ -232,7 +280,9 @@ const FormModals = () => {
         <Button
           variant="black-solid"
           onPress={() => sendConfirmationModal.isOpen && sendConfirmationModal.sendCallback()}
+          fullWidthMobile
           isLoading={sendLoading}
+          isLoadingText={t('send_confirmation_modal.button_title_loading')}
         >
           {t('send_confirmation_modal.button_title')}
         </Button>,
@@ -255,20 +305,28 @@ const FormModals = () => {
         <Button
           onPress={() => setSendConfirmationEidModal({ isOpen: false })}
           isDisabled={eidSendConfirmationModalIsLoading}
+          fullWidthMobile
         >
           {t('modals_back_button_title')}
         </Button>,
         <Button
           variant="black-solid"
           onPress={() => sendConfirmationEidModal.isOpen && sendConfirmationEidModal.sendCallback()}
+          fullWidthMobile
           isLoading={eidSendConfirmationModalIsLoading}
+          isLoadingText={t('send_confirmation_eid_modal.button_title_loading')}
         >
           {t('send_confirmation_eid_modal.button_title')}
         </Button>,
       ],
       isDismissable: !eidSendConfirmationModalIsLoading,
       noCloseButton: eidSendConfirmationModalIsLoading,
-      children: t('send_confirmation_eid_modal.content'),
+      children: (
+        <>
+          {t('send_confirmation_eid_modal.content')}
+          <div className="text-p3">{t('send_confirmation_eid_modal.content_small')}</div>
+        </>
+      ),
     },
     {
       key: 'sendConfirmationEidLegalModal',
@@ -293,6 +351,7 @@ const FormModals = () => {
             sendConfirmationEidLegalModal.isOpen && sendConfirmationEidLegalModal.sendCallback()
           }
           isLoading={eidSendConfirmationModalIsLoading}
+          isLoadingText={t('send_confirmation_eid_legal_modal.button_title_loading')}
         >
           {t('send_confirmation_eid_legal_modal.button_title')}
         </Button>,
@@ -314,6 +373,7 @@ const FormModals = () => {
       buttons: [
         <Button
           onPress={() => setSendConfirmationNonAuthenticatedEidModal({ isOpen: false })}
+          fullWidthMobile
           isDisabled={eidSendConfirmationModalIsLoading}
         >
           {t('modals_back_button_title')}
@@ -324,7 +384,9 @@ const FormModals = () => {
             sendConfirmationNonAuthenticatedEidModal.isOpen &&
             sendConfirmationNonAuthenticatedEidModal.sendCallback()
           }
+          fullWidthMobile
           isLoading={eidSendConfirmationModalIsLoading}
+          isLoadingText={t('send_confirmation_non_authenticated_eid_modal.button_title_loading')}
         >
           {t('send_confirmation_non_authenticated_eid_modal.button_title')}
         </Button>,
@@ -365,6 +427,7 @@ const FormModals = () => {
           variant="black-solid"
           onPress={() => eidSendErrorModal.isOpen && eidSendErrorModal.sendCallback()}
           isLoading={sendEidLoading}
+          isLoadingText={t('eid_send_error_modal.button_title_loading')}
         >
           {t('eid_send_error_modal.button_title')}
         </Button>,

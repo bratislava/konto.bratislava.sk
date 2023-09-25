@@ -42,7 +42,9 @@ const useGetContext = (initialFormData: InitialFormData) => {
       !tierStatus.isIdentityVerified,
   )
 
-  const [sendFilesScanningEidModal, setSendFilesScanningEidModal] = useState<ModalWithSendCallback>({ isOpen: false })
+  const [sendFilesScanningEidModal, setSendFilesScanningEidModal] = useState<ModalWithSendCallback>(
+    { isOpen: false },
+  )
   const [sendFilesScanningNotVerifiedEidModal, setSendFilesScanningNotVerifiedEidModal] =
     useState(false)
   const [sendIdentityMissingModal, setSendIdentityMissingModal] = useState(false)
@@ -61,6 +63,8 @@ const useGetContext = (initialFormData: InitialFormData) => {
   const [sendConfirmationEidLegalModal, setSendConfirmationEidLegalModal] =
     useState<ModalWithSendCallback>({ isOpen: false })
   const [sendConfirmationNonAuthenticatedEidModal, setSendConfirmationNonAuthenticatedEidModal] =
+    useState<ModalWithSendCallback>({ isOpen: false })
+  const [sendFilesScanningNotVerified, setSendFilesScanningNotVerified] =
     useState<ModalWithSendCallback>({ isOpen: false })
   const [eidSendingModal, setEidSendingModal] = useState(false)
   const [eidSendErrorModal, setEidSendErrorModal] = useState<ModalWithSendCallback>({
@@ -95,6 +99,8 @@ const useGetContext = (initialFormData: InitialFormData) => {
     setSendFilesScanningEidModal,
     sendFilesScanningNotVerifiedEidModal,
     setSendFilesScanningNotVerifiedEidModal,
+    sendFilesScanningNotVerified,
+    setSendFilesScanningNotVerified,
     sendIdentityMissingModal,
     setSendIdentityMissingModal,
     sendFilesScanningNonAuthenticatedEidModal,

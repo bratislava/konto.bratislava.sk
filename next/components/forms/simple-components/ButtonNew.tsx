@@ -2,6 +2,7 @@
 import { ArrowRightIcon, ExportIcon } from '@assets/ui-icons'
 import { LinkButtonProps } from '@react-types/button'
 import cx from 'classnames'
+import Spinner from 'components/forms/simple-components/Spinner'
 import NextLink from 'next/link'
 import { ComponentProps, forwardRef, PropsWithChildren, ReactNode, RefObject } from 'react'
 import { AriaButtonProps, mergeProps, useButton, useFocusRing, useHover } from 'react-aria'
@@ -43,6 +44,7 @@ type ButtonBase = {
   fullWidth?: boolean
   fullWidthMobile?: boolean
   isLoading?: boolean
+  isLoadingText?: string
 } & ButtonOrIconButton
 
 export type ButtonProps = Omit<AriaButtonProps<'button'>, keyof LinkButtonProps | 'children'> &
@@ -61,7 +63,6 @@ export type AnchorProps = Omit<AriaButtonProps<'a'>, 'children'> &
 
 export type PolymorphicProps = ButtonProps | AnchorProps
 
-// TODO Loading spinner
 const Button = forwardRef<HTMLAnchorElement | HTMLButtonElement, PolymorphicProps>(
   (
     {
@@ -77,6 +78,7 @@ const Button = forwardRef<HTMLAnchorElement | HTMLButtonElement, PolymorphicProp
       fullWidth,
       fullWidthMobile,
       isLoading,
+      isLoadingText,
       ...rest
     },
     ref,
@@ -262,8 +264,14 @@ const Button = forwardRef<HTMLAnchorElement | HTMLButtonElement, PolymorphicProp
         {...rest}
       >
         {!isLoading && startIcon}
-        {/* TODO Loading spinner */}
-        {isLoading ? 'Loading...' : icon ?? children}
+        {isLoading ? (
+          <>
+            {isLoadingText}
+            <Spinner size="sm" />
+          </>
+        ) : (
+          icon ?? children
+        )}
         {!isLoading && endIcon}
       </button>
     )

@@ -12,7 +12,11 @@ import { AccountType } from '../../frontend/dtos/accountDto'
 import { useServerSideAuth } from '../../frontend/hooks/useServerSideAuth'
 import useSnackbar from '../../frontend/hooks/useSnackbar'
 import { validateSummary } from '../../frontend/utils/form'
-import { FORM_SEND_EID_TOKEN_QUERY_KEY, popSendEidMetadata, setSendEidMetadata } from '../../frontend/utils/formSend'
+import {
+  FORM_SEND_EID_TOKEN_QUERY_KEY,
+  popSendEidMetadata,
+  setSendEidMetadata,
+} from '../../frontend/utils/formSend'
 import { isFormSubmitDisabled } from '../../frontend/utils/formSummary'
 import { RegistrationModalType } from './segments/RegistrationModal/RegistrationModal'
 import { useFormFileUpload } from './useFormFileUpload'
@@ -68,6 +72,7 @@ const useGetContext = () => {
     setSendFilesScanningModal,
     setSendFilesScanningEidModal,
     setSendFilesScanningNotVerifiedEidModal,
+    setSendFilesScanningNotVerified,
     setSendFilesScanningNonAuthenticatedEidModal,
     setSendFilesUploadingModal,
     setSendConfirmationModal,
@@ -242,6 +247,18 @@ const useGetContext = () => {
       return
     }
 
+    const modalValueEid = {
+      isOpen: true,
+      sendCallback: async () => {
+        saveConceptAndSendEidMutate()
+      },
+    }
+
+    if (isAuthenticated && !isIdentityVerified && scanningFiles.length === 0) {
+      setSendFilesScanningNotVerified(modalValueEid)
+      return
+    }
+
     if (!isIdentityVerified) {
       setSendIdentityMissingModal(true)
       return
@@ -284,7 +301,10 @@ const useGetContext = () => {
 
     if (isAuthenticated && isIdentityVerified && scanningFiles.length > 0) {
       // eslint-disable-next-line @typescript-eslint/no-misused-promises
-      setSendFilesScanningEidModal({ isOpen: true, sendCallback: () => handleSendButtonPress() })
+      setSendFilesScanningEidModal({
+        isOpen: true,
+        sendCallback: () => sendFormMutate(),
+      })
       return
     }
 

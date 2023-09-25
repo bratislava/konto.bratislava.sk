@@ -120,10 +120,9 @@ const SummaryWidgetRJSF = ({
   value,
   options,
   uiSchema,
-  readonly,
 }: SummaryWidgetRJSFProps) => {
   const { fieldHasError } = useFormSummary()
-  const { goToStepByFieldId } = useFormState()
+  const { goToStepByFieldId, isReadonly } = useFormState()
 
   return (
     <div>
@@ -143,7 +142,7 @@ const SummaryWidgetRJSF = ({
         onGoToStep={() => {
           goToStepByFieldId(id)
         }}
-        isEditable={!readonly}
+        isEditable={!isReadonly}
       />
     </div>
   )

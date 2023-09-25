@@ -18,7 +18,7 @@ export type SummaryFieldRJSFProps = Pick<
 
 const SummaryFieldRJSF = ({ formData, schema, idSchema, fieldType }: SummaryFieldRJSFProps) => {
   const { fieldHasError } = useFormSummary()
-  const { goToStepByFieldId } = useFormState()
+  const { goToStepByFieldId, isReadonly } = useFormState()
   const formatter = useDateFormatter()
 
   const formatDate = (value: string) => {
@@ -80,6 +80,7 @@ const SummaryFieldRJSF = ({ formData, schema, idSchema, fieldType }: SummaryFiel
           onGoToStep={() => {
             goToStepByFieldId(idSchema.$id)
           }}
+          isEditable={!isReadonly}
         />
       ))}
     </div>

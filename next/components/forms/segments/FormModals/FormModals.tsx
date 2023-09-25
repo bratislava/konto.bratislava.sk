@@ -64,12 +64,13 @@ const FormModals = () => {
       type: 'warning',
       title: t('migration_required_modal.title'),
       buttons: [
-        <Button onPress={() => setMigrationRequiredModal(false)}>
-          {t('modals_back_button_title')}
+        <Button onPress={() => setMigrationRequiredModal(false)} fullWidthMobile>
+          {t('migration_required_modal.button_discard')}
         </Button>,
         <Button
-          variant="category-solid"
+          variant="black-solid"
           onPress={() => migrateForm()}
+          fullWidthMobile
           isLoading={migrateFormIsLoading}
           isLoadingText={t('migration_required_modal.button_title_loading')}
         >

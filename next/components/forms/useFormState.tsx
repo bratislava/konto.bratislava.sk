@@ -4,7 +4,7 @@ import React, { createContext, PropsWithChildren, useContext, useMemo, useState 
 import { useIsFirstRender } from 'usehooks-ts'
 
 import { InitialFormData } from '../../frontend/types/initialFormData'
-import { getFileUuidsNaive } from '../../frontend/utils/form'
+import { getFileUuidsNaive, validateSummary } from '../../frontend/utils/form'
 import {
   getEvaluatedStepsSchemas,
   getFirstNonEmptyStepIndex,
@@ -28,7 +28,7 @@ interface FormStateProviderProps {
 
 const useGetContext = ({ schema, uiSchema, formSlug, initialFormData }: FormStateProviderProps) => {
   const { t } = useTranslation('forms')
-  const { keepFiles, refetchAfterImportIfNeeded } = useFormFileUpload()
+  const { keepFiles, refetchAfterImportIfNeeded, getFileInfoById } = useFormFileUpload()
   const { turnOnLeaveProtection } = useFormLeaveProtection()
   // eslint-disable-next-line testing-library/render-result-naming-convention
   const isFirst = useIsFirstRender()
@@ -134,6 +134,27 @@ const useGetContext = ({ schema, uiSchema, formSlug, initialFormData }: FormStat
     setSubmittedStepsIndexes(new Set())
     setFormData(pickedPropertiesData)
     turnOnLeaveProtection()
+
+    // the next section sets the correct state of the form stepper after import
+    // validateSummary validates the entire form and returns errors by sections
+    // missing step in errorSummary === no error on the step
+    // we treat errorless steps as "complete"
+    const { errorSchema } = validateSummary(schema, pickedPropertiesData, getFileInfoById)
+    const keysWithErrors = Object.keys(errorSchema)
+    const stepIndexesWithoutErrors = evaluatedSchemas
+      .map((value, index) => {
+        // schema.properties should always contain a single key, these are same as errorSchema keys
+        if (
+          keysWithErrors.some((keyWithError) =>
+            Object.keys(value?.properties || {}).includes(keyWithError),
+          )
+        ) {
+          return null
+        }
+        return index
+      })
+      .filter((value) => value != null) as Array<number>
+    setSubmittedStepsIndexes(new Set(stepIndexesWithoutErrors))
   }
 
   const handleFormOnChange = (newFormData: GenericObjectType | undefined) => {

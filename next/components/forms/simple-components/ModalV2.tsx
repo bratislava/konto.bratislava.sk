@@ -1,5 +1,4 @@
 import { CrossIcon } from '@assets/ui-icons'
-import cx from 'classnames'
 import { useTranslation } from 'next-i18next'
 import React, { PropsWithChildren } from 'react'
 import { mergeProps, useIsSSR } from 'react-aria'
@@ -13,7 +12,6 @@ import {
 import { twMerge } from 'tailwind-merge'
 
 export type ModalV2Props = Omit<ModalOverlayProps, 'className'> & {
-  size?: 'default' | 'large'
   modalClassname?: string
   mobileFullScreen?: boolean
   noCloseButton?: boolean
@@ -24,7 +22,6 @@ const ModalV2 = ({
   modalClassname,
   mobileFullScreen,
   noCloseButton,
-  size: variant = 'default',
   ...rest
 }: ModalV2Props) => {
   const { t } = useTranslation('common')
@@ -47,17 +44,11 @@ const ModalV2 = ({
       <Modal
         {...modalProps}
         className={twMerge(
-          cx(
-            'relative overflow-auto bg-gray-0 px-4 outline-0 md:mx-4 md:h-min md:max-h-full md:rounded-2xl md:p-6',
-            modalClassname,
-
-            {
-              'md:max-w-[592px]': variant === 'default',
-              'md:max-w-[796px]': variant === 'large',
-              'mx-0 h-full w-full max-w-none rounded-none p-4 pt-12': mobileFullScreen,
-              'mx-4 h-min max-h-full w-full rounded-xl pb-4 pt-6': !mobileFullScreen,
-            },
-          ),
+          'relative overflow-auto bg-gray-0 px-4 outline-0 md:mx-4 md:h-min md:max-h-full md:max-w-[592px] md:rounded-2xl md:p-6',
+          mobileFullScreen
+            ? 'mx-0 h-full w-full max-w-none rounded-none p-4 pt-12'
+            : 'mx-4 h-min max-h-full w-full rounded-xl pb-4 pt-6',
+          modalClassname,
         )}
       >
         {/* TODO: Examine why onClose is needed. */}

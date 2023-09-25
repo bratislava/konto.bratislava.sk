@@ -60,7 +60,7 @@ const MessageModal = ({
               'md:items-start': variant === 'horizontal',
             })}
           >
-            <div className="h-14 text-center text-h-base font-semibold">{title}</div>
+            <div className="h-14 text-center text-h-base font-semibold md:text-left">{title}</div>
             <div className="text-p2 whitespace-pre-wrap text-center md:text-left">{children}</div>
           </div>
         </div>

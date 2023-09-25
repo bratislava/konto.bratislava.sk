@@ -9,6 +9,7 @@ import { useFormRedirects } from '../../useFormRedirects'
 import MessageModal, { MessageModalProps } from '../../widget-components/Modals/MessageModal'
 import IdentityVerificationModal from '../IdentityVerificationModal/IdentityVerificationModal'
 import RegistrationModal from '../RegistrationModal/RegistrationModal'
+import AccountMarkdown from '../AccountMarkdown/AccountMarkdown'
 
 const FormModals = () => {
   const { t } = useTranslation('forms')
@@ -30,6 +31,8 @@ const FormModals = () => {
     setSendFilesScanningEidModal,
     sendFilesScanningNotVerifiedEidModal,
     setSendFilesScanningNotVerifiedEidModal,
+    sendFilesScanningNotVerified,
+    setSendFilesScanningNotVerified,
     sendIdentityMissingModal,
     setSendIdentityMissingModal,
     sendFilesScanningNonAuthenticatedEidModal,
@@ -153,6 +156,40 @@ const FormModals = () => {
         </Button>,
       ],
       children: t('send_files_scanning_not_verified_eid_modal.content'),
+    },
+    {
+      key: 'sendFilesScanningNotVerified',
+      isOpen: sendFilesScanningNotVerified.isOpen,
+      onOpenChange: (value) => {
+        if (!value) {
+          setSendFilesScanningNotVerified({ isOpen: false })
+        }
+      },
+      title: t('send_files_scanning_not_verified.title'),
+      type: 'warning',
+      buttons: [
+        <Button variant="black-solid" onPress={() => verifyIdentity()}>
+          {t('send_files_scanning_not_verified.button_title')}
+        </Button>,
+        <Button
+          variant="black-outline"
+          onPress={() =>
+            sendFilesScanningNotVerified.isOpen && sendFilesScanningNotVerified.sendCallback()
+          }
+        >
+          {t('send_files_scanning_not_verified.button_title_eid')}
+        </Button>,
+      ],
+      children: (
+        <>
+          {t('send_files_scanning_not_verified.content')}
+          <AccountMarkdown
+            className="text-p3"
+            variant="sm"
+            content={t('send_files_scanning_not_verified.content_small')}
+          />
+        </>
+      ),
     },
     {
       key: 'sendIdentityMissingModal',

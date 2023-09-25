@@ -72,6 +72,7 @@ const useGetContext = () => {
     setSendFilesScanningModal,
     setSendFilesScanningEidModal,
     setSendFilesScanningNotVerifiedEidModal,
+    setSendFilesScanningNotVerified,
     setSendFilesScanningNonAuthenticatedEidModal,
     setSendFilesUploadingModal,
     setSendConfirmationModal,
@@ -243,6 +244,18 @@ const useGetContext = () => {
 
     if (!isAuthenticated) {
       setRegistrationModal(RegistrationModalType.NotAuthenticatedSubmitForm)
+      return
+    }
+
+    const modalValueEid = {
+      isOpen: true,
+      sendCallback: async () => {
+        saveConceptAndSendEidMutate()
+      },
+    }
+
+    if (isAuthenticated && !isIdentityVerified && scanningFiles.length === 0) {
+      setSendFilesScanningNotVerified(modalValueEid)
       return
     }
 

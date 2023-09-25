@@ -56,7 +56,7 @@ const MyApplicationsCard = ({ form, refreshListData, variant }: MyApplicationsCa
   // TODO replace - this won't be valid for forms processed on the GINIS side
   const updatedAt = form?.updatedAt
   const schemaVersionId = form?.schemaVersionId
-  const formData = form?.formDataJson
+  const formData = form?.schemaVersion?.data
   const formSlug = form?.schemaVersion.schema?.slug || ''
   const formId = form?.id
   const state = form?.state
@@ -87,8 +87,8 @@ const MyApplicationsCard = ({ form, refreshListData, variant }: MyApplicationsCa
       closeSnackbarInfo()
       openSnackbarSuccess(ft('success_messages.xml_export'))
     } catch (error) {
-      logger.error(error)
       openSnackbarError(ft('errors.xml_export'))
+      logger.error(JSON.stringify(error))
     }
   }
 

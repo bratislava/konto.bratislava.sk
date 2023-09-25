@@ -33,6 +33,7 @@ const CheckboxWidgetRJSF = (props: CheckboxesWidgetRJSFProps) => {
     schema: { maxItems },
     rawErrors,
     required,
+    readonly,
   } = props
   const {
     enumOptions,
@@ -59,6 +60,7 @@ const CheckboxWidgetRJSF = (props: CheckboxesWidgetRJSFProps) => {
         className={className}
         label={label}
         required={required}
+        disabled={readonly}
       >
         {enumOptions.map((option: EnumOptionsType) => {
           return (
@@ -66,7 +68,7 @@ const CheckboxWidgetRJSF = (props: CheckboxesWidgetRJSFProps) => {
               key={option.value}
               value={option.value}
               variant={variant}
-              isDisabled={isDisabled(option.value as string)}
+              isDisabled={isDisabled(option.value as string) || readonly}
               tooltip={getTooltip(option.value as string)}
             >
               {option.label}

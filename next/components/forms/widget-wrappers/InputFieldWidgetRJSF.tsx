@@ -27,6 +27,7 @@ const InputFieldWidgetRJSF = ({
   disabled,
   onChange,
   rawErrors,
+  readonly,
 }: InputFieldWidgetRJSFProps) => {
   const {
     helptext,
@@ -59,7 +60,7 @@ const InputFieldWidgetRJSF = ({
         value={value ?? undefined}
         errorMessage={rawErrors}
         required={required}
-        disabled={disabled}
+        disabled={disabled || readonly}
         helptext={helptext}
         tooltip={tooltip}
         className={className}

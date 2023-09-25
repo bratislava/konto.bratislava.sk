@@ -22,6 +22,7 @@ const TimePickerWidgetRJSF = ({
   disabled,
   value,
   onChange,
+  readonly,
 }: TimePickerWidgetRJSFProps) => {
   const {
     helptext,
@@ -38,7 +39,7 @@ const TimePickerWidgetRJSF = ({
         label={label}
         errorMessage={rawErrors}
         required={required}
-        disabled={disabled}
+        disabled={disabled || readonly}
         helptext={helptext}
         tooltip={tooltip}
         explicitOptional={explicitOptional}

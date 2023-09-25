@@ -15,6 +15,7 @@ const DateTimeWidgetRJSF = ({
   schema,
   uiSchema,
   errorSchema,
+  readonly,
 }: DateTimeWidgetRJSFProps) => {
   const schemaProperties = {
     ...(schema.properties as Record<string, { type: string; title: string }>),
@@ -65,8 +66,8 @@ const DateTimeWidgetRJSF = ({
           TimeValue={formData.timeValue}
           DateLabel={schemaProperties?.dateValue?.title}
           TimeLabel={schemaProperties?.timeValue?.title}
-          DateDisabled={localUiSchema?.DateDisabled as unknown as boolean}
-          TimeDisabled={localUiSchema?.TimeDisabled as unknown as boolean}
+          DateDisabled={(localUiSchema?.DateDisabled as unknown as boolean) || readonly}
+          TimeDisabled={(localUiSchema?.TimeDisabled as unknown as boolean) || readonly}
         />
       </div>
     </WidgetWrapper>

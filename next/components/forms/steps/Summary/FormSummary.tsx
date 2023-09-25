@@ -7,7 +7,7 @@ import SummaryFormLegalText from './SummaryFormLegalText'
 import { FormSummaryProvider } from './useFormSummary'
 
 const FormSummary = () => {
-  const { formData, schema, uiSchema } = useFormState()
+  const { formData, schema, uiSchema} = useFormState()
 
   return (
     <FormSummaryProvider>

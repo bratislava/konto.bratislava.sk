@@ -16,6 +16,7 @@ const TimeFromToWidgetRJSF = ({
   schema,
   uiSchema,
   errorSchema,
+  readonly,
 }: TimeFromToWidgetRJSFProps) => {
   const schemaProperties = {
     ...(schema.properties as Record<string, { type: string; title: string }>),
@@ -66,8 +67,8 @@ const TimeFromToWidgetRJSF = ({
           TimeToValue={formData?.endTime}
           TimeFromLabel={schemaProperties?.startTime?.title}
           TimeToLabel={schemaProperties?.endTime?.title}
-          TimeFromDisabled={localUiSchema?.TimeFromDisabled as unknown as boolean}
-          TimeToDisabled={localUiSchema?.TimeToDisabled as unknown as boolean}
+          TimeFromDisabled={(localUiSchema?.TimeFromDisabled as unknown as boolean) || readonly}
+          TimeToDisabled={(localUiSchema?.TimeToDisabled as unknown as boolean) || readonly}
         />
       </div>
     </WidgetWrapper>

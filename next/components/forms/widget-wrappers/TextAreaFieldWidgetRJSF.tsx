@@ -24,6 +24,7 @@ const TextAreaFieldWidgetRJSF = (props: TextAreaFieldWidgetRJSFProps) => {
     disabled,
     options,
     onChange,
+    readonly,
   }: TextAreaFieldWidgetRJSFProps = props
 
   const {
@@ -56,7 +57,7 @@ const TextAreaFieldWidgetRJSF = (props: TextAreaFieldWidgetRJSFProps) => {
         label={label}
         placeholder={placeholder}
         required={required}
-        disabled={disabled}
+        disabled={disabled || readonly}
         helptext={helptext}
         tooltip={tooltip}
         className={cx('h-[196px]', className)}

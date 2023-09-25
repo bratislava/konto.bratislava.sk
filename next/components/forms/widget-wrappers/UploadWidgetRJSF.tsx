@@ -15,7 +15,7 @@ interface UploadWidgetRJSFProps extends WidgetProps {
 }
 
 const UploadWidgetRJSF = (props: UploadWidgetRJSFProps) => {
-  const { options, schema, label, required, value, disabled, onChange, rawErrors } = props
+  const { options, schema, label, required, value, disabled, onChange, rawErrors, readonly } = props
 
   const {
     size,
@@ -92,7 +92,7 @@ const UploadWidgetRJSF = (props: UploadWidgetRJSFProps) => {
         helptext={helptext}
         sizeLimit={size}
         supportedFormats={supportedFormats}
-        disabled={disabled}
+        disabled={disabled || readonly}
         onUpload={handleUpload}
         onFileRemove={handleFileRemove}
         onFileRetry={handleFileRetry}

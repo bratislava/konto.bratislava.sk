@@ -6,6 +6,7 @@ export type FieldBaseProps = {
   required?: boolean
   disabled?: boolean
   explicitOptional?: boolean
+  readonly?: boolean
 }
 
 export type FieldAdditionalProps = {

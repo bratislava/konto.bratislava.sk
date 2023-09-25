@@ -16,6 +16,7 @@ const DateFromToWidgetRJSF = ({
   schema,
   uiSchema,
   errorSchema,
+  readonly,
 }: DateFromToWidgetRJSFProps) => {
   const schemaProperties = {
     ...(schema.properties as Record<string, { type: string; title: string }>),
@@ -66,8 +67,8 @@ const DateFromToWidgetRJSF = ({
           DateToValue={formData?.endDate ?? null}
           DateFromLabel={schemaProperties?.startDate?.title}
           DateToLabel={schemaProperties?.endDate?.title}
-          DateFromDisabled={localUiSchema?.DateFromDisabled as unknown as boolean}
-          DateToDisabled={localUiSchema?.DateToDisabled as unknown as boolean}
+          DateFromDisabled={(localUiSchema?.DateFromDisabled as unknown as boolean) || readonly}
+          DateToDisabled={(localUiSchema?.DateToDisabled as unknown as boolean) || readonly}
         />
       </div>
     </WidgetWrapper>

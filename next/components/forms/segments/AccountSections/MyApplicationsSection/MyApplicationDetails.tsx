@@ -36,7 +36,7 @@ const MyApplicationDetails = ({ detailsData, ginisData }: MyApplicationsDetailsB
               isEditable={false}
               data={{
                 label: t('account_section_applications.details.application_details.file_number'),
-                value: 'TODO cislo spisu GINIS',
+                value: ginisData?.dossierId,
                 schemaPath: '',
                 isError: false,
               }}

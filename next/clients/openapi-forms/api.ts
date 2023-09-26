@@ -2326,6 +2326,12 @@ export interface GinisDocumentDetailResponseDto {
    * @type {string}
    * @memberof GinisDocumentDetailResponseDto
    */
+  dossierId: string
+  /**
+   *
+   * @type {string}
+   * @memberof GinisDocumentDetailResponseDto
+   */
   ownerName: string
   /**
    *
@@ -2341,11 +2347,80 @@ export interface GinisDocumentDetailResponseDto {
   ownerPhone: string
   /**
    *
-   * @type {Array<object>}
+   * @type {Array<GinisSdkHistorieDokumentuWithAssignedCategory>}
    * @memberof GinisDocumentDetailResponseDto
    */
-  documentHistory: Array<object>
+  documentHistory: Array<GinisSdkHistorieDokumentuWithAssignedCategory>
 }
+/**
+ *
+ * @export
+ * @interface GinisSdkHistorieDokumentuWithAssignedCategory
+ */
+export interface GinisSdkHistorieDokumentuWithAssignedCategory {
+  /**
+   *
+   * @type {string}
+   * @memberof GinisSdkHistorieDokumentuWithAssignedCategory
+   */
+  IdDokumentu: string
+  /**
+   *
+   * @type {string}
+   * @memberof GinisSdkHistorieDokumentuWithAssignedCategory
+   */
+  Atribut_IdDokumentu_Externi: string
+  /**
+   *
+   * @type {string}
+   * @memberof GinisSdkHistorieDokumentuWithAssignedCategory
+   */
+  TextZmeny: string
+  /**
+   *
+   * @type {string}
+   * @memberof GinisSdkHistorieDokumentuWithAssignedCategory
+   */
+  Poznamka: string
+  /**
+   *
+   * @type {string}
+   * @memberof GinisSdkHistorieDokumentuWithAssignedCategory
+   */
+  DatumZmeny: string
+  /**
+   *
+   * @type {string}
+   * @memberof GinisSdkHistorieDokumentuWithAssignedCategory
+   */
+  IdZmenuProvedl: string
+  /**
+   *
+   * @type {string}
+   * @memberof GinisSdkHistorieDokumentuWithAssignedCategory
+   */
+  Atribut_IdZmenuProvedl_Externi: string
+  /**
+   *
+   * @type {string}
+   * @memberof GinisSdkHistorieDokumentuWithAssignedCategory
+   */
+  IdKtgZmeny: string
+  /**
+   *
+   * @type {string}
+   * @memberof GinisSdkHistorieDokumentuWithAssignedCategory
+   */
+  assignedCategory: GinisSdkHistorieDokumentuWithAssignedCategoryAssignedCategoryEnum
+}
+
+export const GinisSdkHistorieDokumentuWithAssignedCategoryAssignedCategoryEnum = {
+  DocumentCreated: 'DOCUMENT_CREATED',
+} as const
+
+export type GinisSdkHistorieDokumentuWithAssignedCategoryAssignedCategoryEnum =
+  (typeof GinisSdkHistorieDokumentuWithAssignedCategoryAssignedCategoryEnum)[keyof typeof GinisSdkHistorieDokumentuWithAssignedCategoryAssignedCategoryEnum]
+
 /**
  *
  * @export
@@ -5409,19 +5484,19 @@ export const GinisApiAxiosParamCreator = function (configuration?: Configuration
     /**
      * Return GINIS document by ID
      * @summary
-     * @param {string} ginisDocumentId
+     * @param {string} formId
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
-    ginisControllerGetGinisDocumentById: async (
-      ginisDocumentId: string,
+    ginisControllerGetGinisDocumentByFormId: async (
+      formId: string,
       options: AxiosRequestConfig = {},
     ): Promise<RequestArgs> => {
-      // verify required parameter 'ginisDocumentId' is not null or undefined
-      assertParamExists('ginisControllerGetGinisDocumentById', 'ginisDocumentId', ginisDocumentId)
-      const localVarPath = `/ginis/{ginisDocumentId}`.replace(
-        `{${'ginisDocumentId'}}`,
-        encodeURIComponent(String(ginisDocumentId)),
+      // verify required parameter 'formId' is not null or undefined
+      assertParamExists('ginisControllerGetGinisDocumentByFormId', 'formId', formId)
+      const localVarPath = `/ginis/{formId}`.replace(
+        `{${'formId'}}`,
+        encodeURIComponent(String(formId)),
       )
       // use dummy base URL string because the URL constructor only accepts absolute URLs.
       const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL)
@@ -5509,20 +5584,18 @@ export const GinisApiFp = function (configuration?: Configuration) {
     /**
      * Return GINIS document by ID
      * @summary
-     * @param {string} ginisDocumentId
+     * @param {string} formId
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
-    async ginisControllerGetGinisDocumentById(
-      ginisDocumentId: string,
+    async ginisControllerGetGinisDocumentByFormId(
+      formId: string,
       options?: AxiosRequestConfig,
     ): Promise<
       (axios?: AxiosInstance, basePath?: string) => AxiosPromise<GinisDocumentDetailResponseDto>
     > {
-      const localVarAxiosArgs = await localVarAxiosParamCreator.ginisControllerGetGinisDocumentById(
-        ginisDocumentId,
-        options,
-      )
+      const localVarAxiosArgs =
+        await localVarAxiosParamCreator.ginisControllerGetGinisDocumentByFormId(formId, options)
       return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)
     },
     /**
@@ -5559,16 +5632,16 @@ export const GinisApiFactory = function (
     /**
      * Return GINIS document by ID
      * @summary
-     * @param {string} ginisDocumentId
+     * @param {string} formId
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
-    ginisControllerGetGinisDocumentById(
-      ginisDocumentId: string,
+    ginisControllerGetGinisDocumentByFormId(
+      formId: string,
       options?: AxiosRequestConfig,
     ): AxiosPromise<GinisDocumentDetailResponseDto> {
       return localVarFp
-        .ginisControllerGetGinisDocumentById(ginisDocumentId, options)
+        .ginisControllerGetGinisDocumentByFormId(formId, options)
         .then((request) => request(axios, basePath))
     },
     /**
@@ -5596,17 +5669,14 @@ export class GinisApi extends BaseAPI {
   /**
    * Return GINIS document by ID
    * @summary
-   * @param {string} ginisDocumentId
+   * @param {string} formId
    * @param {*} [options] Override http request option.
    * @throws {RequiredError}
    * @memberof GinisApi
    */
-  public ginisControllerGetGinisDocumentById(
-    ginisDocumentId: string,
-    options?: AxiosRequestConfig,
-  ) {
+  public ginisControllerGetGinisDocumentByFormId(formId: string, options?: AxiosRequestConfig) {
     return GinisApiFp(this.configuration)
-      .ginisControllerGetGinisDocumentById(ginisDocumentId, options)
+      .ginisControllerGetGinisDocumentByFormId(formId, options)
       .then((request) => request(this.axios, this.basePath))
   }
 

@@ -32,13 +32,10 @@ export const getServerSideProps = async (ctx: GetServerSidePropsContext) => {
     })
     myApplicationDetailsData = response?.data // getApplicationDetailsData(ctx.query.ziadost) || null
     if (myApplicationDetailsData.ginisDocumentId) {
-      const ginisRequest = await formsApi.ginisControllerGetGinisDocumentById(
-        myApplicationDetailsData.ginisDocumentId,
-        {
-          accessToken: 'always',
-          accessTokenSsrReq: ctx.req,
-        },
-      )
+      const ginisRequest = await formsApi.ginisControllerGetGinisDocumentByFormId(id, {
+        accessToken: 'always',
+        accessTokenSsrReq: ctx.req,
+      })
       myApplicationGinisData = ginisRequest?.data
     }
   } catch (error) {

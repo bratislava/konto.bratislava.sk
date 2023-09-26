@@ -21,7 +21,10 @@ const MyApplicationHistory = ({ historyData }: MyApplicationHistoryProps) => {
                   {t('account_section_applications.details.application_history.edit_date')}
                 </span>
                 <span className="text-p2">
-                  <FormatDate>{data?.DatumZmeny}</FormatDate>
+                  <FormatDate>
+                    {/* eslint-disable-next-line @typescript-eslint/no-unsafe-member-access */}
+                    {data?.DatumZmeny}
+                  </FormatDate>
                 </span>
               </div>
               <div className="flex w-full flex-col">
@@ -30,6 +33,7 @@ const MyApplicationHistory = ({ historyData }: MyApplicationHistoryProps) => {
                 </span>
                 <span className="text-p2">
                   {t(
+                    // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
                     `account_section_applications.details.application_history.state.${data?.assignedCategory}`,
                     'account_section_applications.details.application_history.state.UNKNOWN',
                   )}
@@ -51,13 +55,17 @@ const MyApplicationHistory = ({ historyData }: MyApplicationHistoryProps) => {
             </span>
           </div>
           <div className="flex flex-col items-center">
-            {historyData?.map((data, i) => (
+            {historyData?.map((data: any, i) => (
               <div className="flex w-full border-t-2 p-4" key={i}>
                 <span className="text-p2 min-w-[240px]">
-                  <FormatDate>{data?.DatumZmeny}</FormatDate>
+                  <FormatDate>
+                    {/* eslint-disable-next-line @typescript-eslint/no-unsafe-member-access */}
+                    {data?.DatumZmeny}
+                  </FormatDate>
                 </span>
                 <span className="text-p2 w-full">
                   {t(
+                    // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
                     `account_section_applications.details.application_history.state.${data?.assignedCategory}`,
                     'account_section_applications.details.application_history.state.UNKNOWN',
                   )}

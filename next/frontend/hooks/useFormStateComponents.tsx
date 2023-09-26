@@ -23,6 +23,7 @@ const useFormStateComponents = ({
   isLatestSchemaVersionForSlug,
 }: UseFormStateComponentsParams) => {
   const { t } = useTranslation('account')
+  // note: in case of 'unsafe return of any type' the BE enum likely changed/expanded - see const ret assignment below
   return useMemo(() => {
     if ((state === 'ERROR' || state === 'DRAFT') && !isLatestSchemaVersionForSlug) {
       // we ignore all other states for unsent forms which are of old schemas - these become readonly drafts
@@ -33,6 +34,7 @@ const useFormStateComponents = ({
       }
     }
     if (state === 'ERROR') {
+      // note: if ret suddenly becomes 'any', it's because GetFormResponseDtoErrorEnum changed on BE - update accordingly
       const ret = {
         // the first should never happen, kept to make ts easier
         [GetFormResponseDtoErrorEnum.None]: {
@@ -102,7 +104,21 @@ const useFormStateComponents = ({
             </p>
           ),
         },
+        [GetFormResponseDtoErrorEnum.GinisSendError]: {
+          icon: <ErrorIcon className="h-6 w-6 text-error" />,
+          iconRound: (
+            <div className="rounded-full bg-negative-100 p-1.5">
+              <CrossIcon className="h-5 w-5 text-error" />
+            </div>
+          ),
+          text: (
+            <p className="text-error">
+              {t('account_section_applications.navigation_concept_card.status_error_other')}
+            </p>
+          ),
+        },
       }[error || GetFormResponseDtoErrorEnum.None]
+
       if (!ret || !error || error === GetFormResponseDtoErrorEnum.None) {
         logger.error(`Unknown error ${error} for state ${state}`)
         return {

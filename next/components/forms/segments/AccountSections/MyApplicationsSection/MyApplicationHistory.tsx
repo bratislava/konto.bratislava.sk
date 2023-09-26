@@ -13,7 +13,8 @@ const MyApplicationHistory = ({ historyData }: MyApplicationHistoryProps) => {
     <>
       {/* Desktop */}
       <div className="hidden w-full flex-col gap-4 md:flex">
-        {historyData?.map((data: any, i) => (
+        {/* TODO - history data needs changes in process and on BE - until then, we just take 1 instance and present it as 'document created' (all the instances are interpreted as document created) */}
+        {historyData?.slice(-1).map((data: any, i) => (
           <div key={i} className="flex flex-row flex-wrap gap-2 border-b-2 py-4 md:flex-nowrap">
             <div className="flex items-center gap-8">
               <div className="flex min-w-[276px] flex-col">

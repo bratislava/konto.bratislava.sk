@@ -1,8 +1,10 @@
-import { MyApplicationHistoryDataBase } from 'frontend/api/mocks/mocks'
+import { GinisDocumentDetailResponseDto } from '@clients/openapi-forms'
+import FormatDate from 'components/forms/simple-components/FormatDate'
 import { useTranslation } from 'next-i18next'
 
 interface MyApplicationHistoryProps {
-  historyData: MyApplicationHistoryDataBase[] | null
+  // TODO fix the types in OpenAPI (BE)
+  historyData: GinisDocumentDetailResponseDto['documentHistory'] | undefined
 }
 
 const MyApplicationHistory = ({ historyData }: MyApplicationHistoryProps) => {
@@ -11,20 +13,27 @@ const MyApplicationHistory = ({ historyData }: MyApplicationHistoryProps) => {
     <>
       {/* Desktop */}
       <div className="hidden w-full flex-col gap-4 md:flex">
-        {historyData?.map((data, i) => (
+        {historyData?.map((data: any, i) => (
           <div key={i} className="flex flex-row flex-wrap gap-2 border-b-2 py-4 md:flex-nowrap">
             <div className="flex items-center gap-8">
               <div className="flex min-w-[276px] flex-col">
                 <span className="text-p3-semibold">
                   {t('account_section_applications.details.application_history.edit_date')}
                 </span>
-                <span className="text-p2">{data?.editDate}</span>
+                <span className="text-p2">
+                  <FormatDate>{data?.DatumZmeny}</FormatDate>
+                </span>
               </div>
               <div className="flex w-full flex-col">
                 <span className="text-p3-semibold">
                   {t('account_section_applications.details.application_history.description')}
                 </span>
-                <span className="text-p2">{data?.description}</span>
+                <span className="text-p2">
+                  {t(
+                    `account_section_applications.details.application_history.state.${data?.assignedCategory}`,
+                    'account_section_applications.details.application_history.state.UNKNOWN',
+                  )}
+                </span>
               </div>
             </div>
           </div>
@@ -44,8 +53,15 @@ const MyApplicationHistory = ({ historyData }: MyApplicationHistoryProps) => {
           <div className="flex flex-col items-center">
             {historyData?.map((data, i) => (
               <div className="flex w-full border-t-2 p-4" key={i}>
-                <span className="text-p2 min-w-[240px]">{data?.editDate}</span>
-                <span className="text-p2 w-full">{data?.description}</span>
+                <span className="text-p2 min-w-[240px]">
+                  <FormatDate>{data?.DatumZmeny}</FormatDate>
+                </span>
+                <span className="text-p2 w-full">
+                  {t(
+                    `account_section_applications.details.application_history.state.${data?.assignedCategory}`,
+                    'account_section_applications.details.application_history.state.UNKNOWN',
+                  )}
+                </span>
               </div>
             ))}
           </div>

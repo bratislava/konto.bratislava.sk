@@ -1,17 +1,16 @@
-import { GetFormResponseDto } from '@clients/openapi-forms'
+import { GetFormResponseDto, GinisDocumentDetailResponseDto } from '@clients/openapi-forms'
 import MyApplicationDetailsHeader from 'components/forms/segments/AccountSections/MyApplicationsSection/MyApplicationDetailsHeader'
 import MyApplicationHistory from 'components/forms/segments/AccountSections/MyApplicationsSection/MyApplicationHistory'
 import SummaryRowSimple from 'components/forms/simple-components/SummaryRowSimple'
 import SummaryRow from 'components/forms/steps/Summary/SummaryRow'
-import { MyApplicationHistoryDataBase } from 'frontend/api/mocks/mocks'
 import { useTranslation } from 'next-i18next'
 
 type MyApplicationsDetailsBase = {
   detailsData: GetFormResponseDto
-  historyData: MyApplicationHistoryDataBase[] | null
+  ginisData: GinisDocumentDetailResponseDto | null
 }
 
-const MyApplicationDetails = ({ detailsData, historyData }: MyApplicationsDetailsBase) => {
+const MyApplicationDetails = ({ detailsData, ginisData }: MyApplicationsDetailsBase) => {
   const { t } = useTranslation('account')
   return (
     <div className="flex flex-col">
@@ -27,7 +26,7 @@ const MyApplicationDetails = ({ detailsData, historyData }: MyApplicationsDetail
               isEditable={false}
               data={{
                 label: t('account_section_applications.details.application_details.record_number'),
-                value: 'TODO cislo zaznamu GINIS',
+                value: ginisData?.id,
                 schemaPath: '',
                 isError: false,
               }}
@@ -47,23 +46,32 @@ const MyApplicationDetails = ({ detailsData, historyData }: MyApplicationsDetail
               isEditable={false}
               data={{
                 label: t('account_section_applications.details.application_details.handle_person'),
-                value: 'TODO riesitel GINIS',
+                value: ginisData?.ownerName,
                 schemaPath: '',
                 isError: false,
               }}
             />
             <SummaryRowSimple size="small" isEditable={false} label={t('contact')} isError={false}>
-              <div className="flex gap-2">
-                <div>
-                  <a className="underline underline-offset-4" href="tel:+421933123123">
-                    TODO tel GINIS
+              <p>
+                {ginisData?.ownerPhone ? (
+                  <a className="underline underline-offset-4" href={`tel:${ginisData.ownerPhone}`}>
+                    {ginisData.ownerPhone}
                   </a>
-                  ,
-                </div>
-                <a className="underline underline-offset-4" href="mailto:TODO@GIN.IS">
-                  TODO MAIL GINIS
-                </a>
-              </div>
+                ) : (
+                  t('account_section_applications.details.application_details.phone_unavailable')
+                )}
+                {', '}
+                {ginisData?.ownerEmail ? (
+                  <a
+                    className="underline underline-offset-4"
+                    href={`mailto:${ginisData.ownerEmail}`}
+                  >
+                    {ginisData.ownerEmail}
+                  </a>
+                ) : (
+                  t('account_section_applications.details.application_details.email_unavailable')
+                )}
+              </p>
             </SummaryRowSimple>
           </div>
         </div>
@@ -71,7 +79,7 @@ const MyApplicationDetails = ({ detailsData, historyData }: MyApplicationsDetail
           <h3 className="text-h3">
             {t('account_section_applications.details.application_history.title')}
           </h3>
-          <MyApplicationHistory historyData={historyData} />
+          <MyApplicationHistory historyData={ginisData?.documentHistory} />
         </div>
       </div>
     </div>

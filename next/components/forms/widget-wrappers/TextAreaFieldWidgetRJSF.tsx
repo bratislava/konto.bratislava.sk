@@ -31,6 +31,7 @@ const TextAreaFieldWidgetRJSF = (props: TextAreaFieldWidgetRJSFProps) => {
     helptext,
     tooltip,
     accordion,
+    additionalLinks,
     explicitOptional,
     className,
     spaceBottom = 'none',
@@ -48,6 +49,7 @@ const TextAreaFieldWidgetRJSF = (props: TextAreaFieldWidgetRJSFProps) => {
   return (
     <WidgetWrapper
       accordion={accordion}
+      additionalLinks={additionalLinks}
       className="max-w-[320px]"
       spaceBottom={spaceBottom}
       spaceTop={spaceTop}

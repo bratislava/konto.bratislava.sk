@@ -28,13 +28,14 @@ const TimePickerWidgetRJSF = ({
     helptext,
     tooltip,
     accordion,
+    additionalLinks,
     explicitOptional,
     spaceBottom = 'none',
     spaceTop = 'large',
   } = options
 
   return (
-    <WidgetWrapper accordion={accordion} spaceBottom={spaceBottom} spaceTop={spaceTop}>
+    <WidgetWrapper accordion={accordion} additionalLinks={additionalLinks} spaceBottom={spaceBottom} spaceTop={spaceTop}>
       <TimePicker
         label={label}
         errorMessage={rawErrors}

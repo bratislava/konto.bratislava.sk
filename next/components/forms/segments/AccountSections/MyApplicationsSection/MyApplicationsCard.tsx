@@ -20,6 +20,7 @@ import useFormStateComponents from 'frontend/hooks/useFormStateComponents'
 import useSnackbar from 'frontend/hooks/useSnackbar'
 import { downloadBlob } from 'frontend/utils/general'
 import logger from 'frontend/utils/logger'
+import _ from 'lodash'
 import Link from 'next/link'
 import { useTranslation } from 'next-i18next'
 import { useState } from 'react'
@@ -50,7 +51,17 @@ const MyApplicationsCard = ({ form, refreshListData, variant }: MyApplicationsCa
 
   // everything used in jsx should get mapped here
   const isLoading = !form
-  const title = 'TODO'
+  // TODO can be fixed by fixing OpenAPI types
+  // until then, safe enough with all the fallbacks
+  /* eslint-disable @typescript-eslint/no-unsafe-member-access */
+  const title =
+    _.get(
+      form?.formDataJson,
+      form?.schemaVersion?.uiSchema['ui:options']?.titlePath || '__INVALID_PATH__',
+    ) ||
+    form?.schemaVersion?.uiSchema['ui:options']?.titleFallback ||
+    ft('form_title_fallback')
+  /* eslint-enable @typescript-eslint/no-unsafe-member-access */
   const category = form?.schemaVersion.schema?.formName
   const createdAt = form?.createdAt
   // TODO replace - this won't be valid for forms processed on the GINIS side

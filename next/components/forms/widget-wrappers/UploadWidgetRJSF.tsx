@@ -24,6 +24,7 @@ const UploadWidgetRJSF = (props: UploadWidgetRJSFProps) => {
     type = 'button',
     className,
     accordion,
+    additionalLinks,
     spaceBottom = 'none',
     spaceTop = 'large',
   } = options
@@ -77,6 +78,7 @@ const UploadWidgetRJSF = (props: UploadWidgetRJSFProps) => {
   return (
     <WidgetWrapper
       accordion={accordion}
+      additionalLinks={additionalLinks}
       spaceBottom={spaceBottom}
       spaceTop={spaceTop}
       className="w-full"

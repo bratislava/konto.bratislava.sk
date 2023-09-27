@@ -18,12 +18,8 @@ import { useState } from 'react'
 import { useFormExportImport } from '../../../frontend/hooks/useFormExportImport'
 import { useFormState } from '../useFormState'
 
-type FormHeaderProps = {
-  title?: string
-}
-
-const FormHeader = ({ title = '' }: FormHeaderProps) => {
-  const { isReadonly } = useFormState()
+const FormHeader = () => {
+  const { isReadonly, uiSchema, schema} = useFormState()
   const { exportXml, exportPdf, importXml, saveConcept } = useFormExportImport()
   const { t } = useTranslation('forms')
 
@@ -45,15 +41,19 @@ const FormHeader = ({ title = '' }: FormHeaderProps) => {
       : null,
   ].filter(Boolean) as MenuItemBase[]
 
+  const headerUrl = typeof uiSchema['ui:options']?.url === 'string' ? uiSchema['ui:options']?.url : undefined
+
   return (
     <div className="relative flex flex-col">
       <div className="min-h-none h-full w-full bg-main-200 p-4 md:py-6 lg:min-h-[120px] lg:px-0 lg:py-12">
         <div className="mx-auto flex max-w-screen-lg justify-between">
           <div className="flex flex-col gap-2 lg:gap-4">
-            <h1 className="text-h1-form">{title}</h1>
-            <Link className="text-p1-underline w-max" href="/">
-              {t('form_header.services_link')}
-            </Link>
+            <h1 className="text-h1-form">{schema.title}</h1>
+            {headerUrl && (
+              <Link className="text-p1-underline w-max" href={headerUrl}>
+                {t('form_header.services_link')}
+              </Link>
+            )}
           </div>
           <div className="hidden h-full gap-3 lg:flex">
             {!isReadonly && (

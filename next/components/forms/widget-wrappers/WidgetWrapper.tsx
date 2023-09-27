@@ -1,4 +1,5 @@
 import cx from 'classnames'
+import Button from 'components/forms/simple-components/ButtonNew'
 import { FormSpacingType } from 'components/forms/types/WidgetOptions'
 import React, { ReactNode, useId } from 'react'
 
@@ -11,6 +12,7 @@ type WidgetWrapperBase = {
   spaceBottom?: FormSpacingType
   spaceTop?: FormSpacingType
   accordion?: AccordionBase | AccordionBase[]
+  additionalLinks?: Array<{ title: string; href: string }>
   id?: string
 }
 
@@ -25,6 +27,7 @@ const WidgetWrapper = ({
   spaceBottom = 'default',
   spaceTop = 'default',
   id,
+  additionalLinks,
 }: WidgetWrapperBase) => {
   const generatedId = useId()
   const generatedOrProvidedId = id ?? generatedId
@@ -67,6 +70,15 @@ const WidgetWrapper = ({
           content={(accordion as AccordionBase)?.content}
         />
       )}
+      {additionalLinks && (
+          <div className="flex flex-col gap-2">
+            {additionalLinks?.map(({ title, href }) => (
+              <Button key={title} variant="category-link" href={href} hasLinkIcon>
+                {title}
+              </Button>
+            ))}
+          </div>
+        )}
     </div>
   )
 }

@@ -46,6 +46,7 @@ const DateFromToWidgetRJSF = ({
   return (
     <WidgetWrapper
       accordion={uiSchema?.['ui:accordion']}
+      additionalLinks={uiSchema?.['ui:additionalLinks']}
       spaceTop={getFormSpacingType('spaceTop')}
       spaceBottom={getFormSpacingType('spaceBottom')}
     >

@@ -39,6 +39,7 @@ const CheckboxWidgetRJSF = (props: CheckboxesWidgetRJSFProps) => {
     enumOptions,
     className,
     accordion,
+    additionalLinks,
     spaceBottom = 'none',
     spaceTop = 'large',
     checkboxOptions = [],
@@ -52,7 +53,7 @@ const CheckboxWidgetRJSF = (props: CheckboxesWidgetRJSFProps) => {
     return value?.length === maxItems && !value?.includes(valueName)
   }
   return (
-    <WidgetWrapper accordion={accordion} spaceBottom={spaceBottom} spaceTop={spaceTop}>
+    <WidgetWrapper accordion={accordion} additionalLinks={additionalLinks} spaceBottom={spaceBottom} spaceTop={spaceTop} >
       <CheckboxGroup
         errorMessage={rawErrors}
         value={value ?? undefined}

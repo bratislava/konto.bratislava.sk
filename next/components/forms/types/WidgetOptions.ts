@@ -10,6 +10,10 @@ export type WidgetOptions = {
   className?: string
   explicitOptional?: boolean
   accordion?: AccordionBase | AccordionBase[]
+  additionalLinks?: Array<{
+    title: string
+    href: string
+  }>
   spaceBottom?: FormSpacingType
   spaceTop?: FormSpacingType
 }

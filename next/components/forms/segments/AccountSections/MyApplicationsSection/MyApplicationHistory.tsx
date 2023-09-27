@@ -1,4 +1,5 @@
 import { GinisDocumentDetailResponseDto } from '@clients/openapi-forms'
+import { GenericObjectType } from '@rjsf/utils'
 import FormatDate from 'components/forms/simple-components/FormatDate'
 import { useTranslation } from 'next-i18next'
 
@@ -14,7 +15,8 @@ const MyApplicationHistory = ({ historyData }: MyApplicationHistoryProps) => {
       {/* Desktop */}
       <div className="hidden w-full flex-col gap-4 md:flex">
         {/* TODO - history data needs changes in process and on BE - until then, we just take 1 instance and present it as 'document created' (all the instances are interpreted as document created) */}
-        {historyData?.slice(-1).map((data: any, i) => (
+        {/* TODO - fix the types in OpenAPI (BE) */}
+        {historyData?.slice(-1).map((data: GenericObjectType, i) => (
           <div key={i} className="flex flex-row flex-wrap gap-2 border-b-2 py-4 md:flex-nowrap">
             <div className="flex items-center gap-8">
               <div className="flex min-w-[276px] flex-col">
@@ -56,7 +58,7 @@ const MyApplicationHistory = ({ historyData }: MyApplicationHistoryProps) => {
             </span>
           </div>
           <div className="flex flex-col items-center">
-            {historyData?.map((data: any, i) => (
+            {historyData?.map((data: GenericObjectType, i) => (
               <div className="flex w-full border-t-2 p-4" key={i}>
                 <span className="text-p2 min-w-[240px]">
                   <FormatDate>

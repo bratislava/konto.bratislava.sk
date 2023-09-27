@@ -26,6 +26,7 @@ const UploadWidgetRJSF = (props: UploadWidgetRJSFProps) => {
     accordion,
     spaceBottom = 'none',
     spaceTop = 'large',
+    additionalLinks,
   } = options
 
   const supportedFormats = accept?.split(',')
@@ -93,6 +94,7 @@ const UploadWidgetRJSF = (props: UploadWidgetRJSFProps) => {
         sizeLimit={size}
         supportedFormats={supportedFormats}
         disabled={disabled || readonly}
+        additionalLinks={additionalLinks}
         onUpload={handleUpload}
         onFileRemove={handleFileRemove}
         onFileRetry={handleFileRetry}

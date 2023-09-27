@@ -1,4 +1,5 @@
 import cx from 'classnames'
+import Button from 'components/forms/simple-components/ButtonNew'
 import React, { forwardRef } from 'react'
 
 import { FormFileUploadFileInfo } from '../../../../frontend/types/formFileUploadTypes'
@@ -15,6 +16,7 @@ type UploadProps = FieldBaseProps &
     value?: string | string[] | null
     sizeLimit?: number
     supportedFormats?: string[]
+    additionalLinks?: Array<{ title: string; href: string }>
     getFileInfoById: (id: string) => FormFileUploadFileInfo
     onUpload?: (files: File[]) => void
     onFileRemove?: (id: string) => void
@@ -37,6 +39,7 @@ const Upload = forwardRef<HTMLButtonElement, UploadProps>(
       className,
       getFileInfoById,
       errorMessage,
+      additionalLinks,
       onUpload = () => {},
       onFileRemove = () => {},
       onFileRetry = () => {},
@@ -87,6 +90,15 @@ const Upload = forwardRef<HTMLButtonElement, UploadProps>(
             />
           </div>
         </FieldWrapper>
+        {additionalLinks && (
+          <div className="flex flex-col gap-2">
+            {additionalLinks?.map(({ title, href }) => (
+              <Button key={title} variant="category-link" href={href} hasLinkIcon>
+                {title}
+              </Button>
+            ))}
+          </div>
+        )}
       </div>
     )
   },

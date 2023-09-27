@@ -34,7 +34,8 @@ const FormPage = () => {
 
   return (
     <>
-      <FormHeader title={schema.title} />
+      {/* Root level ui:options can be used for custom props */}
+      <FormHeader uiSchemaOptions={uiSchema['ui:options']} title={schema.title} />
       <div className="mx-auto flex w-full max-w-screen-lg flex-col gap-10 pb-6 pt-0 lg:flex-row lg:gap-20 lg:py-10">
         <div>
           <StepperView />

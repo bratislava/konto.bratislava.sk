@@ -6,6 +6,10 @@ type UploadRJSFOptions = {
   size?: number
   accept?: string
   type?: 'button' | 'dragAndDrop'
+  additionalLinks?: Array<{
+    title: string
+    href: string
+  }>
 } & WidgetOptions
 
 export default UploadRJSFOptions

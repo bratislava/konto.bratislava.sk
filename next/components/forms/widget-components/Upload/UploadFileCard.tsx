@@ -2,15 +2,15 @@ import {
   AttachmentIcon,
   CheckInCircleIcon,
   CrossInCircleIcon,
-  DownloadIcon,
+  // DownloadIcon,
   ErrorIcon,
   ScanningIcon,
 } from '@assets/ui-icons'
 import cx from 'classnames'
 import { useTranslation } from 'next-i18next'
 import React from 'react'
-import { Button as ReactAriaButton } from 'react-aria-components'
 
+// import { Button as ReactAriaButton } from 'react-aria-components'
 import {
   FormFileUploadFileInfo,
   FormFileUploadStatusEnum,
@@ -30,7 +30,7 @@ const UploadFileCard = ({
   fileInfo,
   onFileRetry,
   onFileRemove,
-  onFileDownload,
+  // onFileDownload,
 }: UploadedFileProps) => {
   const { t } = useTranslation('account', { keyPrefix: 'Upload' })
 
@@ -76,15 +76,15 @@ const UploadFileCard = ({
             <div className="flex grow flex-col">
               <h3 className="break-words font-bold text-gray-800">{fileInfo.fileName}</h3>
               <div className="flex gap-2">
-                {/* TODO: Improve */}
-                {fileInfo.canDownload && (
+                {/* TODO: Temp fix - without this nothing can be clicked on after uploading a file - tracked in #499 */}
+                {/* {fileInfo.canDownload && (
                   <ReactAriaButton
                     className="after:absolute after:inset-0"
                     onPress={onFileDownload}
                   >
                     <DownloadIcon />
                   </ReactAriaButton>
-                )}
+                )} */}
                 {fileInfo.fileSize != null && (
                   <span>
                     <PrettyBytes number={fileInfo.fileSize} />

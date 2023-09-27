@@ -156,7 +156,13 @@ export interface CreateFormResponseDto {
    * @type {string}
    * @memberof CreateFormResponseDto
    */
-  uri: string | null
+  mainUri: string | null
+  /**
+   * Uri for defining electronic sendbox, if person has it
+   * @type {string}
+   * @memberof CreateFormResponseDto
+   */
+  actorUri: string | null
   /**
    * State of form
    * @type {string}
@@ -175,6 +181,12 @@ export interface CreateFormResponseDto {
    * @memberof CreateFormResponseDto
    */
   formDataGinis: string | null
+  /**
+   * Ginis document id generated after registering the submission
+   * @type {string}
+   * @memberof CreateFormResponseDto
+   */
+  ginisDocumentId: string | null
   /**
    * Data in JSON format
    * @type {object}
@@ -240,6 +252,7 @@ export const CreateFormResponseDtoErrorEnum = {
   UnableToScanFiles: 'UNABLE_TO_SCAN_FILES',
   InfectedFiles: 'INFECTED_FILES',
   NasesSendError: 'NASES_SEND_ERROR',
+  GinisSendError: 'GINIS_SEND_ERROR',
 } as const
 
 export type CreateFormResponseDtoErrorEnum =
@@ -1517,6 +1530,56 @@ export type ForbiddenFormSendDtoErrorNameEnum =
 /**
  *
  * @export
+ * @interface FormAssignedToOtherUserErrorDto
+ */
+export interface FormAssignedToOtherUserErrorDto {
+  /**
+   * Status Code
+   * @type {number}
+   * @memberof FormAssignedToOtherUserErrorDto
+   */
+  statusCode: number
+  /**
+   * Detail error message
+   * @type {string}
+   * @memberof FormAssignedToOtherUserErrorDto
+   */
+  message: string
+  /**
+   * status in text
+   * @type {string}
+   * @memberof FormAssignedToOtherUserErrorDto
+   */
+  status: string
+  /**
+   * Exact error name
+   * @type {string}
+   * @memberof FormAssignedToOtherUserErrorDto
+   */
+  errorName: FormAssignedToOtherUserErrorDtoErrorNameEnum
+  /**
+   * Helper for sending additional data in error
+   * @type {object}
+   * @memberof FormAssignedToOtherUserErrorDto
+   */
+  object?: object
+}
+
+export const FormAssignedToOtherUserErrorDtoErrorNameEnum = {
+  NotFoundError: 'NOT_FOUND_ERROR',
+  DatabaseError: 'DATABASE_ERROR',
+  InternalServerError: 'INTERNAL_SERVER_ERROR',
+  UnauthorizedError: 'UNAUTHORIZED_ERROR',
+  UnprocessableEntityError: 'UNPROCESSABLE_ENTITY_ERROR',
+  BadRequestError: 'BAD_REQUEST_ERROR',
+} as const
+
+export type FormAssignedToOtherUserErrorDtoErrorNameEnum =
+  (typeof FormAssignedToOtherUserErrorDtoErrorNameEnum)[keyof typeof FormAssignedToOtherUserErrorDtoErrorNameEnum]
+
+/**
+ *
+ * @export
  * @interface FormDataInvalidErrorDto
  */
 export interface FormDataInvalidErrorDto {
@@ -1801,7 +1864,13 @@ export interface FormUserInformationDto {
    * @type {string}
    * @memberof FormUserInformationDto
    */
-  uri: string | null
+  mainUri: string | null
+  /**
+   * Uri for defining electronic sendbox, if person has it
+   * @type {string}
+   * @memberof FormUserInformationDto
+   */
+  actorUri: string | null
 }
 /**
  *
@@ -1845,6 +1914,12 @@ export interface GetFileResponseDto {
    * @memberof GetFileResponseDto
    */
   fileSize: number
+  /**
+   * order of this file in respective ginis submission
+   * @type {number}
+   * @memberof GetFileResponseDto
+   */
+  ginisOrder: number | null
   /**
    * id of the record in db
    * @type {string}
@@ -1913,7 +1988,13 @@ export interface GetFileResponseDtoForms {
    * @type {string}
    * @memberof GetFileResponseDtoForms
    */
-  uri: string | null
+  mainUri: string | null
+  /**
+   * Uri for defining electronic sendbox, if person has it
+   * @type {string}
+   * @memberof GetFileResponseDtoForms
+   */
+  actorUri: string | null
 }
 /**
  *
@@ -1962,7 +2043,13 @@ export interface GetFormResponseDto {
    * @type {string}
    * @memberof GetFormResponseDto
    */
-  uri: string | null
+  mainUri: string | null
+  /**
+   * Uri for defining electronic sendbox, if person has it
+   * @type {string}
+   * @memberof GetFormResponseDto
+   */
+  actorUri: string | null
   /**
    * State of form
    * @type {string}
@@ -1981,6 +2068,12 @@ export interface GetFormResponseDto {
    * @memberof GetFormResponseDto
    */
   formDataGinis: string | null
+  /**
+   * Ginis document id generated after registering the submission
+   * @type {string}
+   * @memberof GetFormResponseDto
+   */
+  ginisDocumentId: string | null
   /**
    * Data in JSON format
    * @type {object}
@@ -2046,6 +2139,7 @@ export const GetFormResponseDtoErrorEnum = {
   UnableToScanFiles: 'UNABLE_TO_SCAN_FILES',
   InfectedFiles: 'INFECTED_FILES',
   NasesSendError: 'NASES_SEND_ERROR',
+  GinisSendError: 'GINIS_SEND_ERROR',
 } as const
 
 export type GetFormResponseDtoErrorEnum =
@@ -2218,6 +2312,118 @@ export interface GetFormsResponseDto {
 /**
  *
  * @export
+ * @interface GinisDocumentDetailResponseDto
+ */
+export interface GinisDocumentDetailResponseDto {
+  /**
+   *
+   * @type {string}
+   * @memberof GinisDocumentDetailResponseDto
+   */
+  id: string
+  /**
+   *
+   * @type {string}
+   * @memberof GinisDocumentDetailResponseDto
+   */
+  dossierId: string
+  /**
+   *
+   * @type {string}
+   * @memberof GinisDocumentDetailResponseDto
+   */
+  ownerName: string
+  /**
+   *
+   * @type {string}
+   * @memberof GinisDocumentDetailResponseDto
+   */
+  ownerEmail: string
+  /**
+   *
+   * @type {string}
+   * @memberof GinisDocumentDetailResponseDto
+   */
+  ownerPhone: string
+  /**
+   *
+   * @type {Array<GinisSdkHistorieDokumentuWithAssignedCategory>}
+   * @memberof GinisDocumentDetailResponseDto
+   */
+  documentHistory: Array<GinisSdkHistorieDokumentuWithAssignedCategory>
+}
+/**
+ *
+ * @export
+ * @interface GinisSdkHistorieDokumentuWithAssignedCategory
+ */
+export interface GinisSdkHistorieDokumentuWithAssignedCategory {
+  /**
+   *
+   * @type {string}
+   * @memberof GinisSdkHistorieDokumentuWithAssignedCategory
+   */
+  IdDokumentu: string
+  /**
+   *
+   * @type {string}
+   * @memberof GinisSdkHistorieDokumentuWithAssignedCategory
+   */
+  Atribut_IdDokumentu_Externi: string
+  /**
+   *
+   * @type {string}
+   * @memberof GinisSdkHistorieDokumentuWithAssignedCategory
+   */
+  TextZmeny: string
+  /**
+   *
+   * @type {string}
+   * @memberof GinisSdkHistorieDokumentuWithAssignedCategory
+   */
+  Poznamka: string
+  /**
+   *
+   * @type {string}
+   * @memberof GinisSdkHistorieDokumentuWithAssignedCategory
+   */
+  DatumZmeny: string
+  /**
+   *
+   * @type {string}
+   * @memberof GinisSdkHistorieDokumentuWithAssignedCategory
+   */
+  IdZmenuProvedl: string
+  /**
+   *
+   * @type {string}
+   * @memberof GinisSdkHistorieDokumentuWithAssignedCategory
+   */
+  Atribut_IdZmenuProvedl_Externi: string
+  /**
+   *
+   * @type {string}
+   * @memberof GinisSdkHistorieDokumentuWithAssignedCategory
+   */
+  IdKtgZmeny: string
+  /**
+   *
+   * @type {string}
+   * @memberof GinisSdkHistorieDokumentuWithAssignedCategory
+   */
+  assignedCategory: GinisSdkHistorieDokumentuWithAssignedCategoryAssignedCategoryEnum
+}
+
+export const GinisSdkHistorieDokumentuWithAssignedCategoryAssignedCategoryEnum = {
+  DocumentCreated: 'DOCUMENT_CREATED',
+} as const
+
+export type GinisSdkHistorieDokumentuWithAssignedCategoryAssignedCategoryEnum =
+  (typeof GinisSdkHistorieDokumentuWithAssignedCategoryAssignedCategoryEnum)[keyof typeof GinisSdkHistorieDokumentuWithAssignedCategoryAssignedCategoryEnum]
+
+/**
+ *
+ * @export
  * @interface InvalidJwtTokenErrorDto
  */
 export interface InvalidJwtTokenErrorDto {
@@ -2340,6 +2546,25 @@ export interface JsonToXmlResponseDto {
    * @memberof JsonToXmlResponseDto
    */
   xmlForm: string
+}
+/**
+ *
+ * @export
+ * @interface MigrateFormResponseDto
+ */
+export interface MigrateFormResponseDto {
+  /**
+   * ID of form
+   * @type {string}
+   * @memberof MigrateFormResponseDto
+   */
+  formId: string
+  /**
+   * True if the form was successfully migrated.
+   * @type {boolean}
+   * @memberof MigrateFormResponseDto
+   */
+  success: boolean
 }
 /**
  *
@@ -2863,6 +3088,106 @@ export type NoFormXmlDataErrorDtoErrorNameEnum =
 /**
  *
  * @export
+ * @interface NotFoundErrorDto
+ */
+export interface NotFoundErrorDto {
+  /**
+   * Status Code
+   * @type {number}
+   * @memberof NotFoundErrorDto
+   */
+  statusCode: number
+  /**
+   * Detail error message
+   * @type {string}
+   * @memberof NotFoundErrorDto
+   */
+  message: string
+  /**
+   * status in text
+   * @type {string}
+   * @memberof NotFoundErrorDto
+   */
+  status: string
+  /**
+   * Exact error name
+   * @type {string}
+   * @memberof NotFoundErrorDto
+   */
+  errorName: NotFoundErrorDtoErrorNameEnum
+  /**
+   * Helper for sending additional data in error
+   * @type {object}
+   * @memberof NotFoundErrorDto
+   */
+  object?: object
+}
+
+export const NotFoundErrorDtoErrorNameEnum = {
+  NotFoundError: 'NOT_FOUND_ERROR',
+  DatabaseError: 'DATABASE_ERROR',
+  InternalServerError: 'INTERNAL_SERVER_ERROR',
+  UnauthorizedError: 'UNAUTHORIZED_ERROR',
+  UnprocessableEntityError: 'UNPROCESSABLE_ENTITY_ERROR',
+  BadRequestError: 'BAD_REQUEST_ERROR',
+} as const
+
+export type NotFoundErrorDtoErrorNameEnum =
+  (typeof NotFoundErrorDtoErrorNameEnum)[keyof typeof NotFoundErrorDtoErrorNameEnum]
+
+/**
+ *
+ * @export
+ * @interface NotGinisErrorStateErrorDto
+ */
+export interface NotGinisErrorStateErrorDto {
+  /**
+   * Status Code
+   * @type {number}
+   * @memberof NotGinisErrorStateErrorDto
+   */
+  statusCode: number
+  /**
+   * Detail error message
+   * @type {string}
+   * @memberof NotGinisErrorStateErrorDto
+   */
+  message: string
+  /**
+   * status in text
+   * @type {string}
+   * @memberof NotGinisErrorStateErrorDto
+   */
+  status: string
+  /**
+   * Exact error name
+   * @type {string}
+   * @memberof NotGinisErrorStateErrorDto
+   */
+  errorName: NotGinisErrorStateErrorDtoErrorNameEnum
+  /**
+   * Helper for sending additional data in error
+   * @type {object}
+   * @memberof NotGinisErrorStateErrorDto
+   */
+  object?: object
+}
+
+export const NotGinisErrorStateErrorDtoErrorNameEnum = {
+  NotFoundError: 'NOT_FOUND_ERROR',
+  DatabaseError: 'DATABASE_ERROR',
+  InternalServerError: 'INTERNAL_SERVER_ERROR',
+  UnauthorizedError: 'UNAUTHORIZED_ERROR',
+  UnprocessableEntityError: 'UNPROCESSABLE_ENTITY_ERROR',
+  BadRequestError: 'BAD_REQUEST_ERROR',
+} as const
+
+export type NotGinisErrorStateErrorDtoErrorNameEnum =
+  (typeof NotGinisErrorStateErrorDtoErrorNameEnum)[keyof typeof NotGinisErrorStateErrorDtoErrorNameEnum]
+
+/**
+ *
+ * @export
  * @interface PostFileResponseDto
  */
 export interface PostFileResponseDto {
@@ -2902,6 +3227,12 @@ export interface PostFileResponseDto {
    * @memberof PostFileResponseDto
    */
   fileSize: number
+  /**
+   * order of this file in respective ginis submission
+   * @type {number}
+   * @memberof PostFileResponseDto
+   */
+  ginisOrder: number | null
   /**
    * id of the record in db
    * @type {string}
@@ -3969,6 +4300,12 @@ export interface UpdateFileStatusResponseDto {
    */
   fileSize: number
   /**
+   * order of this file in respective ginis submission
+   * @type {number}
+   * @memberof UpdateFileStatusResponseDto
+   */
+  ginisOrder: number | null
+  /**
    * id of the record in db
    * @type {string}
    * @memberof UpdateFileStatusResponseDto
@@ -4061,6 +4398,12 @@ export interface UpdateFormRequestDto {
    * @memberof UpdateFormRequestDto
    */
   recipientId?: string
+  /**
+   * Ginis document id generated after registering the submission
+   * @type {string}
+   * @memberof UpdateFormRequestDto
+   */
+  ginisDocumentId?: string
 }
 /**
  *
@@ -5133,6 +5476,226 @@ export class FilesApi extends BaseAPI {
 }
 
 /**
+ * GinisApi - axios parameter creator
+ * @export
+ */
+export const GinisApiAxiosParamCreator = function (configuration?: Configuration) {
+  return {
+    /**
+     * Return GINIS document by ID
+     * @summary
+     * @param {string} formId
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    ginisControllerGetGinisDocumentByFormId: async (
+      formId: string,
+      options: AxiosRequestConfig = {},
+    ): Promise<RequestArgs> => {
+      // verify required parameter 'formId' is not null or undefined
+      assertParamExists('ginisControllerGetGinisDocumentByFormId', 'formId', formId)
+      const localVarPath = `/ginis/{formId}`.replace(
+        `{${'formId'}}`,
+        encodeURIComponent(String(formId)),
+      )
+      // use dummy base URL string because the URL constructor only accepts absolute URLs.
+      const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL)
+      let baseOptions
+      if (configuration) {
+        baseOptions = configuration.baseOptions
+      }
+
+      const localVarRequestOptions = { method: 'GET', ...baseOptions, ...options }
+      const localVarHeaderParameter = {} as any
+      const localVarQueryParameter = {} as any
+
+      // authentication bearer required
+      // http bearer authentication required
+      await setBearerAuthToObject(localVarHeaderParameter, configuration)
+
+      setSearchParams(localVarUrlObj, localVarQueryParameter)
+      let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {}
+      localVarRequestOptions.headers = {
+        ...localVarHeaderParameter,
+        ...headersFromBaseOptions,
+        ...options.headers,
+      }
+
+      return {
+        url: toPathString(localVarUrlObj),
+        options: localVarRequestOptions,
+      }
+    },
+    /**
+     * Archive form (hide from user but keep in database)
+     * @summary
+     * @param {string} id
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    ginisControllerTryAgainSend: async (
+      id: string,
+      options: AxiosRequestConfig = {},
+    ): Promise<RequestArgs> => {
+      // verify required parameter 'id' is not null or undefined
+      assertParamExists('ginisControllerTryAgainSend', 'id', id)
+      const localVarPath = `/ginis/try-again/{id}`.replace(
+        `{${'id'}}`,
+        encodeURIComponent(String(id)),
+      )
+      // use dummy base URL string because the URL constructor only accepts absolute URLs.
+      const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL)
+      let baseOptions
+      if (configuration) {
+        baseOptions = configuration.baseOptions
+      }
+
+      const localVarRequestOptions = { method: 'GET', ...baseOptions, ...options }
+      const localVarHeaderParameter = {} as any
+      const localVarQueryParameter = {} as any
+
+      // authentication bearer required
+      // http bearer authentication required
+      await setBearerAuthToObject(localVarHeaderParameter, configuration)
+
+      setSearchParams(localVarUrlObj, localVarQueryParameter)
+      let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {}
+      localVarRequestOptions.headers = {
+        ...localVarHeaderParameter,
+        ...headersFromBaseOptions,
+        ...options.headers,
+      }
+
+      return {
+        url: toPathString(localVarUrlObj),
+        options: localVarRequestOptions,
+      }
+    },
+  }
+}
+
+/**
+ * GinisApi - functional programming interface
+ * @export
+ */
+export const GinisApiFp = function (configuration?: Configuration) {
+  const localVarAxiosParamCreator = GinisApiAxiosParamCreator(configuration)
+  return {
+    /**
+     * Return GINIS document by ID
+     * @summary
+     * @param {string} formId
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    async ginisControllerGetGinisDocumentByFormId(
+      formId: string,
+      options?: AxiosRequestConfig,
+    ): Promise<
+      (axios?: AxiosInstance, basePath?: string) => AxiosPromise<GinisDocumentDetailResponseDto>
+    > {
+      const localVarAxiosArgs =
+        await localVarAxiosParamCreator.ginisControllerGetGinisDocumentByFormId(formId, options)
+      return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)
+    },
+    /**
+     * Archive form (hide from user but keep in database)
+     * @summary
+     * @param {string} id
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    async ginisControllerTryAgainSend(
+      id: string,
+      options?: AxiosRequestConfig,
+    ): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<void>> {
+      const localVarAxiosArgs = await localVarAxiosParamCreator.ginisControllerTryAgainSend(
+        id,
+        options,
+      )
+      return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)
+    },
+  }
+}
+
+/**
+ * GinisApi - factory interface
+ * @export
+ */
+export const GinisApiFactory = function (
+  configuration?: Configuration,
+  basePath?: string,
+  axios?: AxiosInstance,
+) {
+  const localVarFp = GinisApiFp(configuration)
+  return {
+    /**
+     * Return GINIS document by ID
+     * @summary
+     * @param {string} formId
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    ginisControllerGetGinisDocumentByFormId(
+      formId: string,
+      options?: AxiosRequestConfig,
+    ): AxiosPromise<GinisDocumentDetailResponseDto> {
+      return localVarFp
+        .ginisControllerGetGinisDocumentByFormId(formId, options)
+        .then((request) => request(axios, basePath))
+    },
+    /**
+     * Archive form (hide from user but keep in database)
+     * @summary
+     * @param {string} id
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    ginisControllerTryAgainSend(id: string, options?: AxiosRequestConfig): AxiosPromise<void> {
+      return localVarFp
+        .ginisControllerTryAgainSend(id, options)
+        .then((request) => request(axios, basePath))
+    },
+  }
+}
+
+/**
+ * GinisApi - object-oriented interface
+ * @export
+ * @class GinisApi
+ * @extends {BaseAPI}
+ */
+export class GinisApi extends BaseAPI {
+  /**
+   * Return GINIS document by ID
+   * @summary
+   * @param {string} formId
+   * @param {*} [options] Override http request option.
+   * @throws {RequiredError}
+   * @memberof GinisApi
+   */
+  public ginisControllerGetGinisDocumentByFormId(formId: string, options?: AxiosRequestConfig) {
+    return GinisApiFp(this.configuration)
+      .ginisControllerGetGinisDocumentByFormId(formId, options)
+      .then((request) => request(this.axios, this.basePath))
+  }
+
+  /**
+   * Archive form (hide from user but keep in database)
+   * @summary
+   * @param {string} id
+   * @param {*} [options] Override http request option.
+   * @throws {RequiredError}
+   * @memberof GinisApi
+   */
+  public ginisControllerTryAgainSend(id: string, options?: AxiosRequestConfig) {
+    return GinisApiFp(this.configuration)
+      .ginisControllerTryAgainSend(id, options)
+      .then((request) => request(this.axios, this.basePath))
+  }
+}
+
+/**
  * HealthcheckApi - axios parameter creator
  * @export
  */
@@ -5258,7 +5821,7 @@ export const NasesApiAxiosParamCreator = function (configuration?: Configuration
     ): Promise<RequestArgs> => {
       // verify required parameter 'id' is not null or undefined
       assertParamExists('nasesControllerCheckSendConditions', 'id', id)
-      const localVarPath = `/nases/can-send/{id}`.replace(
+      const localVarPath = `/nases/eid/can-send/{id}`.replace(
         `{${'id'}}`,
         encodeURIComponent(String(id)),
       )
@@ -6210,7 +6773,7 @@ export const NasesApiFp = function (configuration?: Configuration) {
     async nasesControllerMigrateForm(
       id: string,
       options?: AxiosRequestConfig,
-    ): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<void>> {
+    ): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<MigrateFormResponseDto>> {
       const localVarAxiosArgs = await localVarAxiosParamCreator.nasesControllerMigrateForm(
         id,
         options,
@@ -6489,7 +7052,10 @@ export const NasesApiFactory = function (
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
-    nasesControllerMigrateForm(id: string, options?: AxiosRequestConfig): AxiosPromise<void> {
+    nasesControllerMigrateForm(
+      id: string,
+      options?: AxiosRequestConfig,
+    ): AxiosPromise<MigrateFormResponseDto> {
       return localVarFp
         .nasesControllerMigrateForm(id, options)
         .then((request) => request(axios, basePath))

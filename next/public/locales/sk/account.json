@@ -404,12 +404,18 @@
         "record_number": "Číslo záznamu",
         "file_number": "Číslo spisu",
         "handle_person": "Vybavuje",
-        "contact": "Kontakt"
+        "contact": "Kontakt",
+        "phone_unavailable": "Telefónne číslo nie je k dispozícii",
+        "email_unavailable": "E-mailová adresa nie je k dispozícii"
       },
       "application_history": {
         "title": "História zmien",
         "edit_date": "Dátum zmeny",
-        "description": "Popis"
+        "description": "Popis",
+        "state": {
+          "DOCUMENT_CREATED": "Žiadosť bola doručená na magistrát.",
+          "UNKNOWN": "Zmena stavu dokumentu."
+        }
       }
     },
     "concept_menu_list": {

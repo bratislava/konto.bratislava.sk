@@ -24,10 +24,14 @@ const IdentityVerificationModal = ({ accountType, ...rest }: IdentityVerificatio
       variant="vertical"
       buttonsAlign="center"
       buttons={[
-        <ButtonNew variant="black-solid" onPress={() => verifyIdentity()}>
+        <ButtonNew className="grow" variant="black-solid" onPress={() => verifyIdentity()}>
           {t('verification_url_text')}
         </ButtonNew>,
-        <ButtonNew variant="black-outline" onPress={() => rest?.onOpenChange?.(false)}>
+        <ButtonNew
+          className="grow"
+          variant="black-outline"
+          onPress={() => rest?.onOpenChange?.(false)}
+        >
           {t('verification_modal.footer_desktop_eID_text')}
         </ButtonNew>,
       ]}

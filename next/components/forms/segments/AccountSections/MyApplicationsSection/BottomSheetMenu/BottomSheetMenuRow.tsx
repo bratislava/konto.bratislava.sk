@@ -23,7 +23,7 @@ const BottomSheetMenuRow = ({
           itemClassName,
         )}
       >
-        <span className="rounded-xl bg-gray-50 p-[10px]">{icon}</span>
+        <span className="p-[10px]">{icon}</span>
         <span className="min-w-[138px]">{title}</span>
       </div>
     </Link>

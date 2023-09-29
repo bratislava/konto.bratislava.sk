@@ -92,7 +92,7 @@ export const useGetContext = ({ initialFormData }: FormExportImportProviderProps
 
     migrateFormMutate()
   }
-
+  // TODO refactor, same as next/components/forms/segments/AccountSections/MyApplicationsSection/MyApplicationsCard.tsx
   const exportXml = async () => {
     openSnackbarInfo(t('info_messages.xml_export'))
     try {

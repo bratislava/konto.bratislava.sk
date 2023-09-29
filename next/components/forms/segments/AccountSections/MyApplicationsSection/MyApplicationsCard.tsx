@@ -345,7 +345,7 @@ const MyApplicationsCard = ({ form, refreshListData, variant }: MyApplicationsCa
                 isEditable ? 'edit' : 'view'
               }_button_text`,
             ),
-            icon: isEditable ? <EditIcon className="h-5 w-5" /> : <EyeIcon className="h-5 w-5" />,
+            icon: isEditable ? <EditIcon className="h-6 w-6" /> : <EyeIcon className="h-6 w-6" />,
             url: formPageHref,
           },
           ...conceptMenuContent,

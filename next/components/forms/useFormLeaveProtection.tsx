@@ -15,7 +15,7 @@ const useGetContext = () => {
   }
 
   const turnOnLeaveProtection = () => {
-    enabledRef.current = true
+    enabledRef.current = false
   }
 
   // https://stackoverflow.com/a/73977517

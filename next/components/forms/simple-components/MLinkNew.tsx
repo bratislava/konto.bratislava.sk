@@ -38,6 +38,7 @@ const MLink = forwardRef<HTMLAnchorElement, MLinkNewProps>(
       className,
     )
 
+    console.log(rest, rest.target)
     return (
       <NextLink href={href} passHref ref={ref} {...rest} className={styles}>
         {children}

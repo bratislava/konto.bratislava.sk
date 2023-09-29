@@ -1,3 +1,4 @@
+import formDefintiions from '@backend/forms'
 import { formsApi } from '@clients/forms'
 import { GetFormResponseDtoStateEnum } from '@clients/openapi-forms'
 import { isAxiosError } from 'axios'
@@ -5,10 +6,7 @@ import { GetServerSideProps } from 'next'
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
 
 import FormPageWrapper, { FormPageWrapperProps } from '../../../components/forms/FormPageWrapper'
-import {
-  getSSRCurrentAuth,
-  ServerSideAuthProviderHOC,
-} from '../../../components/logic/ServerSideAuthProvider'
+import { getSSRCurrentAuth, ServerSideAuthProviderHOC } from '../../../components/logic/ServerSideAuthProvider'
 import { environment } from '../../../environment'
 import { ROUTES } from '../../../frontend/api/constants'
 
@@ -50,8 +48,8 @@ export const getServerSideProps: GetServerSideProps<FormPageWrapperProps, Params
 
     return {
       props: {
-        schema: form.schemaVersion.jsonSchema,
-        uiSchema: form.schemaVersion.uiSchema,
+        schema: formDefintiions.test.schema,
+        uiSchema: formDefintiions.test.uiSchema,
         ssrCurrentAuthProps,
         page: {
           locale,

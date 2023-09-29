@@ -1,0 +1,19 @@
+{
+  "name": "schema-generator",
+  "version": "1.0.0",
+  "main": "index.js",
+  "license": "MIT",
+  "dependencies": {
+    "dashify": "^2.0.0",
+    "remove-accents": "^0.5.0",
+    "ts-command-line-args": "^2.5.1",
+    "ts-node": "^10.9.1"
+  },
+  "scripts": {
+    "generate:1": "ts-node cli.ts --source=stanoviskoKInvesticnemuZameru",
+    "generate:2": "ts-node cli.ts --source=zavazneStanoviskoKInvesticnejCinnosti"
+  },
+  "devDependencies": {
+    "@types/dashify": "^1.0.1"
+  }
+}

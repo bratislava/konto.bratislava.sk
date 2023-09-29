@@ -71,14 +71,14 @@ const WidgetWrapper = ({
         />
       )}
       {additionalLinks && (
-          <div className="flex flex-col gap-2">
-            {additionalLinks?.map(({ title, href }) => (
-              <Button key={title} variant="category-link" href={href} hasLinkIcon>
-                {title}
-              </Button>
-            ))}
-          </div>
-        )}
+        <div className="flex flex-col gap-2">
+          {additionalLinks?.map(({ title, href }) => (
+            <Button key={title} variant="category-link" href={href} hasLinkIcon>
+              {title}
+            </Button>
+          ))}
+        </div>
+      )}
     </div>
   )
 }

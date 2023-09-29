@@ -1,663 +1,783 @@
 {
-  "pospID": "test",
+  "title": "Záväzné stanovisko k investičnej činnosti",
+  "pospID": "00603481.zavazneStanoviskoKInvesticnejCinnosti.sk",
   "pospVersion": "0.1",
-  "title": "Example",
-  "description": "Example schema",
-  "type": "object",
   "allOf": [
     {
       "type": "object",
       "properties": {
-        "mestoPSCstep": {
+        "prilohy": {
+          "title": "Prílohy",
+          "hash": "prilohy",
           "type": "object",
-          "title": "Mesto PSC step",
-          "hash": "mesto-psc-step",
           "properties": {
-            "mestoPSC": {
-              "required": ["psc", "mesto"],
+            "projektovaDokumentacia": {
+              "title": "Projektová dokumentácia",
+              "type": "array",
+              "items": {
+                "type": "string",
+                "file": true
+              },
+              "minItems": 1
+            }
+          },
+          "required": [
+            "projektovaDokumentacia"
+          ]
+        }
+      },
+      "required": [
+        "prilohy"
+      ]
+    },
+    {
+      "type": "object",
+      "properties": {
+        "ziadatel": {
+          "title": "Žiadateľ",
+          "hash": "ziadatel",
+          "type": "object",
+          "properties": {
+            "typ": {
+              "type": "string",
+              "title": "Žiadate ako",
+              "default": "fyzickaOsoba",
+              "oneOf": [
+                {
+                  "const": "fyzickaOsoba",
+                  "title": "Fyzická osoba"
+                },
+                {
+                  "const": "fyzickaOsobaPodnikatel",
+                  "title": "Fyzická osoba - podnikateľ"
+                },
+                {
+                  "const": "pravnickaOsoba",
+                  "title": "Právnicka osoba"
+                }
+              ]
+            },
+            "mestoPsc": {
               "type": "object",
               "properties": {
                 "mesto": {
                   "type": "string",
-                  "title": "Mesto",
-                  "default": "Košice"
+                  "title": "Mesto"
                 },
                 "psc": {
                   "type": "string",
-                  "title": "PSČ",
-                  "format": "zip"
+                  "title": "PSČ"
                 }
-              }
+              },
+              "required": [
+                "mesto",
+                "psc"
+              ]
+            },
+            "email": {
+              "type": "string",
+              "title": "E-mail"
+            },
+            "telefon": {
+              "type": "string",
+              "title": "Telefónne číslo (v tvare +421...)"
             }
           },
-          "required": ["mestoPSC"]
-        }
-      },
-      "required": ["mestoPSCstep"]
-    },
-    {
-      "allOf": [
-        {
-          "if": {
-            "type": "object",
-            "properties": {
-              "mestoPSCstep": {
+          "required": [
+            "typ",
+            "mestoPsc",
+            "email",
+            "telefon"
+          ],
+          "allOf": [
+            {
+              "if": {
                 "type": "object",
                 "properties": {
-                  "mestoPSC": {
-                    "required": ["psc"],
-                    "type": "object",
-                    "properties": {
-                      "psc": {
-                        "const": "82103"
-                      }
-                    }
+                  "typ": {
+                    "const": "fyzickaOsoba"
                   }
                 },
-                "required": ["mestoPSC"]
-              }
-            },
-            "required": ["mestoPSCstep"]
-          },
-          "then": {
-            "type": "object",
-            "properties": {
-              "conditionalStep": {
+                "required": [
+                  "typ"
+                ]
+              },
+              "then": {
                 "type": "object",
-                "title": "Conditional step",
-                "hash": "conditional-step",
                 "properties": {
-                  "randomInput": {
+                  "menoPriezvisko": {
                     "type": "string",
-                    "title": "Input in conditional step"
+                    "title": "Meno a priezvisko"
+                  },
+                  "adresa": {
+                    "type": "string",
+                    "title": "Adresa trvalého pobytu"
                   }
-                }
+                },
+                "required": [
+                  "menoPriezvisko",
+                  "adresa"
+                ]
+              },
+              "else": {
+                "type": "object",
+                "properties": {
+                  "obchodneMeno": {
+                    "type": "string",
+                    "title": "Obchodné meno"
+                  }
+                },
+                "required": [
+                  "obchodneMeno"
+                ]
               }
             },
-            "required": ["conditionalStep"]
-          }
+            {
+              "if": {
+                "type": "object",
+                "properties": {
+                  "typ": {
+                    "const": "fyzickaOsobaPodnikatel"
+                  }
+                },
+                "required": [
+                  "typ"
+                ]
+              },
+              "then": {
+                "type": "object",
+                "properties": {
+                  "miestoPodnikania": {
+                    "type": "string",
+                    "title": "Miesto podnikania"
+                  }
+                },
+                "required": [
+                  "miestoPodnikania"
+                ]
+              }
+            },
+            {
+              "if": {
+                "type": "object",
+                "properties": {
+                  "typ": {
+                    "const": "pravnickaOsoba"
+                  }
+                },
+                "required": [
+                  "typ"
+                ]
+              },
+              "then": {
+                "type": "object",
+                "properties": {
+                  "ico": {
+                    "type": "string",
+                    "title": "IČO"
+                  },
+                  "adresaSidla": {
+                    "type": "string",
+                    "title": "Adresa sídla"
+                  }
+                },
+                "required": [
+                  "ico",
+                  "adresaSidla"
+                ]
+              }
+            },
+            {
+              "if": {
+                "type": "object",
+                "properties": {
+                  "typ": {
+                    "const": "pravnickaOsoba"
+                  }
+                },
+                "required": [
+                  "typ"
+                ]
+              },
+              "then": {
+                "type": "object",
+                "properties": {
+                  "kontaktnaOsoba": {
+                    "type": "string",
+                    "title": "Kontaktná osoba"
+                  }
+                },
+                "required": [
+                  "kontaktnaOsoba"
+                ]
+              }
+            }
+          ]
         }
+      },
+      "required": [
+        "ziadatel"
       ]
     },
     {
-      "properties": {
-        "dateTimePickerShowcase": {
-          "type": "object",
-          "properties": {
-            "dateTimePicker": {
-              "required": ["dateValue", "timeValue"],
-              "type": "object",
-              "properties": {
-                "dateValue": {
-                  "type": "string",
-                  "format": "date",
-                  "title": "Date"
-                },
-                "timeValue": {
-                  "type": "string",
-                  "format": "localTime",
-                  "title": "Time"
-                }
-              }
-            }
-          },
-          "title": "Showcase of DateTime Picker",
-          "hash": "showcase-of-datetime-picker"
-        }
-      },
-      "required": ["dateTimePickerShowcase"]
-    },
-    {
       "type": "object",
       "properties": {
-        "timeFromToShowcase": {
-          "title": "Showcase of TimeFromTo Picker",
-          "hash": "showcase-of-timefromto-picker",
+        "investor": {
+          "title": "Investor",
+          "hash": "investor",
           "type": "object",
           "properties": {
-            "timeFromTo": {
-              "timeFromTo": true,
-              "type": "object",
-              "properties": {
-                "startTime": {
-                  "type": "string",
-                  "format": "localTime",
-                  "title": "Time From"
-                },
-                "endTime": {
-                  "type": "string",
-                  "format": "localTime",
-                  "title": "Time To"
-                }
-              }
-            }
-          }
-        }
-      },
-      "required": ["timeFromToShowcase"]
-    },
-    {
-      "type": "object",
-      "properties": {
-        "dateFromToShowcase": {
-          "title": "Showcase of DateFromTo Picker",
-          "hash": "showcase-of-datefromto-picker",
-          "type": "object",
-          "properties": {
-            "dateFromTo": {
-              "required": ["startDate", "endDate"],
-              "dateFromTo": true,
-              "type": "object",
-              "properties": {
-                "startDate": {
-                  "type": "string",
-                  "format": "date",
-                  "title": "Date From"
-                },
-                "endDate": {
-                  "type": "string",
-                  "format": "date",
-                  "title": "Date To"
-                }
-              }
-            }
-          }
-        }
-      },
-      "required": ["dateFromToShowcase"]
-    },
-    {
-      "type": "object",
-      "properties": {
-        "datePickerWithTimePicker": {
-          "title": "Showcase of DatePicker and TimePicker",
-          "hash": "showcase-of-datepicker-and-timepicker",
-          "type": "object",
-          "properties": {
-            "datePicker": {
-              "title": "Showcase of DatePicker",
-              "required": [],
-              "type": "object",
-              "properties": {
-                "birth": {
-                  "type": "string",
-                  "format": "date",
-                  "title": "Birth date"
-                }
-              }
-            },
-            "timePicker": {
-              "title": "Showcase of TimePicker",
-              "required": ["meeting-time"],
-              "type": "object",
-              "properties": {
-                "meeting-time": {
-                  "type": "string",
-                  "title": "Meeting time",
-                  "format": "localTime"
-                }
-              }
-            }
-          }
-        }
-      },
-      "required": ["datePickerWithTimePicker"]
-    },
-    {
-      "type": "object",
-      "properties": {
-        "inputFields": {
-          "title": "Showcase of InputField",
-          "hash": "showcase-of-inputfield",
-          "type": "object",
-          "required": ["firstName", "lastName"],
-          "properties": {
-            "firstName": {
+            "investorZiadatelom": {
               "type": "string",
-              "title": "First Name",
-              "default": "Anton"
-            },
-            "lastName": {
-              "type": "string",
-              "title": "Last Name",
-              "default": "Peluha"
-            },
-            "password": {
-              "type": "string",
-              "title": "Password"
-            },
-            "psc": {
-              "type": "string",
-              "title": "PSC",
-              "format": "zip"
-            },
-            "textAreas": {
-              "title": "Textove polia",
-              "type": "object",
-              "required": ["pros"],
-              "properties": {
-                "pros": {
-                  "title": "Pros",
-                  "type": "string"
-                },
-                "cons": {
-                  "title": "Cons",
-                  "type": "string",
-                  "default": "Defaultna hodnota"
-                }
-              }
-            }
-          }
-        }
-      },
-      "required": ["inputFields"]
-    },
-    {
-      "type": "object",
-      "properties": {
-        "selectFields": {
-          "title": "Ukazka Selectov",
-          "hash": "ukazka-selectov",
-          "type": "object",
-          "required": ["school"],
-          "properties": {
-            "school": {
-              "type": "string",
-              "title": "University",
-              "comment": "Single choice select need to have default value",
-              "default": "stu_fei",
+              "title": "Je investor rovnaká osoba ako žiadateľ?",
+              "default": "true",
               "oneOf": [
                 {
-                  "const": "stu_fei",
-                  "title": "STU FEI",
-                  "description": "fakulta elektrotechniky a informatiky"
+                  "const": "true",
+                  "title": "Áno"
                 },
                 {
-                  "const": "stu_fchpt",
-                  "title": "STU FCHPT"
-                },
-                {
-                  "const": "stu_fiit",
-                  "title": "STU FIIT",
-                  "description": "fakulta informatiky a informacnych technologii"
-                }
-              ]
-            },
-            "diplomas": {
-              "type": "array",
-              "title": "Reached diplomas",
-              "uniqueItems": true,
-              "items": {
-                "type": "string",
-                "oneOf": [
-                  {
-                    "const": "stu_fei",
-                    "title": "STU FEI",
-                    "description": "fakulta elektrotechniky a informatiky"
-                  },
-                  {
-                    "const": "stu_fchpt",
-                    "title": "STU FCHPT"
-                  },
-                  {
-                    "const": "stu_fiit",
-                    "title": "STU FIIT",
-                    "description": "fakulta informatiky a informacnych technologii"
-                  }
-                ]
-              }
-            },
-            "years": {
-              "type": "number",
-              "title": "Years in school",
-              "oneOf": [
-                {
-                  "const": 1
-                },
-                {
-                  "const": 2
-                },
-                {
-                  "const": 3
-                }
-              ]
-            },
-            "street": {
-              "type": "string",
-              "title": "Street (ciselnik)",
-              "format": "ciselnik",
-              "ciselnik": {
-                "id": "POST_STREET"
-              }
-            },
-            "city": {
-              "type": "string",
-              "title": "City (ciselnik)",
-              "format": "ciselnik",
-              "ciselnik": {
-                "id": "SUSR_0025"
-              }
-            }
-          },
-          "allOf": [
-            {
-              "if": {
-                "type": "object",
-                "properties": {
-                  "school": {
-                    "const": "stu_fchpt"
-                  }
-                }
-              },
-              "then": {
-                "type": "object",
-                "properties": {
-                  "conditionalSchool": {
-                    "type": "string",
-                    "title": "Was fchpt good? (conditional field)"
-                  }
-                }
-              }
-            },
-            {
-              "if": {
-                "oneOf": [
-                  {
-                    "type": "object",
-                    "properties": {
-                      "diplomas": {
-                        "const": ["stu_fei", "stu_fiit"]
-                      }
-                    }
-                  },
-                  {
-                    "type": "object",
-                    "properties": {
-                      "diplomas": {
-                        "const": ["stu_fiit"]
-                      }
-                    }
-                  },
-                  {
-                    "type": "object",
-                    "properties": {
-                      "diplomas": {
-                        "const": ["stu_fei"]
-                      }
-                    }
-                  }
-                ]
-              },
-              "then": {
-                "type": "object",
-                "properties": {
-                  "conditionalDiplomas": {
-                    "type": "string",
-                    "title": "How was your IT experience? (conditional field)"
-                  }
-                }
-              }
-            }
-          ]
-        }
-      },
-      "required": ["selectFields"]
-    },
-    {
-      "type": "object",
-      "properties": {
-        "fileUploads": {
-          "title": "Nahratie suborov",
-          "hash": "nahratie-suborov",
-          "type": "object",
-          "required": ["importButtonMultipleFiles"],
-          "properties": {
-            "importButtonOneFile": {
-              "title": "Importuj jeden subor",
-              "type": "string",
-              "file": true
-            },
-            "importButtonMultipleFiles": {
-              "title": "Importuj viac suborov",
-              "type": "array",
-              "items": {
-                "type": "string",
-                "file": true
-              },
-              "default": [],
-              "minItems": 1
-            },
-            "importDragAndDropOneFile": {
-              "title": "Presun sem jeden subor",
-              "type": "string",
-              "file": true
-            },
-            "importDragAndDropMultipleFiles": {
-              "title": "Presun sem viac suborov",
-              "type": "array",
-              "items": {
-                "type": "string",
-                "file": true
-              }
-            },
-            "showConditionalFile": {
-              "type": "array",
-              "title": "Show conditional file",
-              "minItems": 0,
-              "maxItems": 1,
-              "uniqueItems": true,
-              "items": {
-                "anyOf": [
-                  {
-                    "title": "Show",
-                    "const": "show"
-                  }
-                ]
-              }
-            }
-          },
-          "allOf": [
-            {
-              "if": {
-                "type": "object",
-                "properties": {
-                  "showConditionalFile": {
-                    "type": "array",
-                    "contains": {
-                      "type": "string",
-                      "const": "show"
-                    }
-                  }
-                },
-                "required": ["showConditionalFile"]
-              },
-              "then": {
-                "type": "object",
-                "properties": {
-                  "conditionalFile": {
-                    "title": "Presun sem jeden subor",
-                    "type": "string",
-                    "file": true
-                  }
-                }
-              }
-            }
-          ]
-        }
-      },
-      "required": ["fileUploads"]
-    },
-    {
-      "type": "object",
-      "properties": {
-        "chooseOneOf": {
-          "title": "Radio button step",
-          "hash": "radio-button-step",
-          "type": "object",
-          "required": ["chooseOneOfMore"],
-          "properties": {
-            "chooseOneOfMore": {
-              "type": "string",
-              "title": "Some random choose",
-              "comment": "Radio buttons need to have default value",
-              "oneOf": [
-                {
-                  "const": "screen",
-                  "title": "Screen"
-                },
-                {
-                  "const": "multiply",
-                  "title": "Multiply"
-                },
-                {
-                  "const": "overlay",
-                  "title": "Overlay"
-                }
-              ]
-            },
-            "chooseOneOfTwo": {
-              "type": "string",
-              "title": "Some random choose",
-              "oneOf": [
-                {
-                  "const": "Ano",
-                  "title": "Ano"
-                },
-                {
-                  "const": "Nie",
+                  "const": "false",
                   "title": "Nie"
                 }
               ]
             }
           },
+          "required": [
+            "investorZiadatelom"
+          ],
           "allOf": [
             {
               "if": {
                 "type": "object",
                 "properties": {
-                  "chooseOneOfMore": {
-                    "const": "overlay"
+                  "investorZiadatelom": {
+                    "const": "false"
                   }
                 },
-                "required": ["chooseOneOfMore"]
+                "required": [
+                  "investorZiadatelom"
+                ]
               },
               "then": {
-                "required": ["overlayInput"],
                 "type": "object",
                 "properties": {
-                  "overlayInput": {
+                  "splnomocnenie": {
+                    "title": "Splnomocnenie na zastupovanie",
                     "type": "string",
-                    "title": "WRITE OVERLAY INPUT (conditional field)"
-                  }
-                }
-              },
-              "else": {
-                "type": "object",
-                "properties": {
-                  "notOverlayInput": {
+                    "file": true
+                  },
+                  "typ": {
                     "type": "string",
-                    "title": "some other input"
+                    "title": "Žiadate ako",
+                    "default": "fyzickaOsoba",
+                    "oneOf": [
+                      {
+                        "const": "fyzickaOsoba",
+                        "title": "Fyzická osoba"
+                      },
+                      {
+                        "const": "fyzickaOsobaPodnikatel",
+                        "title": "Fyzická osoba - podnikateľ"
+                      },
+                      {
+                        "const": "pravnickaOsoba",
+                        "title": "Právnicka osoba"
+                      }
+                    ]
+                  },
+                  "mestoPsc": {
+                    "type": "object",
+                    "properties": {
+                      "mesto": {
+                        "type": "string",
+                        "title": "Mesto"
+                      },
+                      "psc": {
+                        "type": "string",
+                        "title": "PSČ"
+                      }
+                    },
+                    "required": [
+                      "mesto",
+                      "psc"
+                    ]
+                  },
+                  "email": {
+                    "type": "string",
+                    "title": "E-mail"
+                  },
+                  "telefon": {
+                    "type": "string",
+                    "title": "Telefónne číslo (v tvare +421...)"
                   }
-                }
+                },
+                "required": [
+                  "splnomocnenie",
+                  "typ",
+                  "mestoPsc",
+                  "email",
+                  "telefon"
+                ],
+                "allOf": [
+                  {
+                    "if": {
+                      "type": "object",
+                      "properties": {
+                        "typ": {
+                          "const": "fyzickaOsoba"
+                        }
+                      },
+                      "required": [
+                        "typ"
+                      ]
+                    },
+                    "then": {
+                      "type": "object",
+                      "properties": {
+                        "menoPriezvisko": {
+                          "type": "string",
+                          "title": "Meno a priezvisko"
+                        },
+                        "adresa": {
+                          "type": "string",
+                          "title": "Adresa trvalého pobytu"
+                        }
+                      },
+                      "required": [
+                        "menoPriezvisko",
+                        "adresa"
+                      ]
+                    },
+                    "else": {
+                      "type": "object",
+                      "properties": {
+                        "obchodneMeno": {
+                          "type": "string",
+                          "title": "Obchodné meno"
+                        }
+                      },
+                      "required": [
+                        "obchodneMeno"
+                      ]
+                    }
+                  },
+                  {
+                    "if": {
+                      "type": "object",
+                      "properties": {
+                        "typ": {
+                          "const": "fyzickaOsobaPodnikatel"
+                        }
+                      },
+                      "required": [
+                        "typ"
+                      ]
+                    },
+                    "then": {
+                      "type": "object",
+                      "properties": {
+                        "miestoPodnikania": {
+                          "type": "string",
+                          "title": "Miesto podnikania"
+                        }
+                      },
+                      "required": [
+                        "miestoPodnikania"
+                      ]
+                    }
+                  },
+                  {
+                    "if": {
+                      "type": "object",
+                      "properties": {
+                        "typ": {
+                          "const": "pravnickaOsoba"
+                        }
+                      },
+                      "required": [
+                        "typ"
+                      ]
+                    },
+                    "then": {
+                      "type": "object",
+                      "properties": {
+                        "ico": {
+                          "type": "string",
+                          "title": "IČO"
+                        },
+                        "adresaSidla": {
+                          "type": "string",
+                          "title": "Adresa sídla"
+                        }
+                      },
+                      "required": [
+                        "ico",
+                        "adresaSidla"
+                      ]
+                    }
+                  },
+                  {
+                    "if": {
+                      "type": "object",
+                      "properties": {
+                        "typ": {
+                          "const": "pravnickaOsoba"
+                        }
+                      },
+                      "required": [
+                        "typ"
+                      ]
+                    },
+                    "then": {
+                      "type": "object",
+                      "properties": {
+                        "kontaktnaOsoba": {
+                          "type": "string",
+                          "title": "Kontaktná osoba"
+                        }
+                      },
+                      "required": [
+                        "kontaktnaOsoba"
+                      ]
+                    }
+                  }
+                ]
               }
             }
           ]
         }
       },
-      "required": ["chooseOneOf"]
+      "required": [
+        "investor"
+      ]
     },
     {
       "type": "object",
       "properties": {
-        "checkBoxes": {
-          "title": "Checkboxes",
-          "hash": "checkboxes",
+        "zodpovednyProjektant": {
+          "title": "Zodpovedný projektant",
+          "hash": "zodpovedny-projektant",
           "type": "object",
-          "required": ["favouriteFruits"],
           "properties": {
-            "favouriteFruits": {
-              "type": "array",
-              "title": "Fruits max 3 items",
-              "minItems": 1,
-              "maxItems": 3,
-              "uniqueItems": true,
-              "items": {
-                "anyOf": [
-                  {
-                    "title": "Orange",
-                    "const": "orange"
-                  },
-                  {
-                    "title": "Banana",
-                    "const": "banana"
-                  },
-                  {
-                    "title": "Grape",
-                    "const": "grape"
-                  },
-                  {
-                    "title": "Kiwi",
-                    "const": "kiwi"
-                  },
-                  {
-                    "title": "Apple",
-                    "const": "apple"
-                  },
-                  {
-                    "title": "Plum",
-                    "const": "plum"
-                  }
-                ]
-              }
+            "menoPriezvisko": {
+              "type": "string",
+              "title": "Meno a priezvisko"
+            },
+            "email": {
+              "type": "string",
+              "title": "E-mail"
+            },
+            "projektantTelefon": {
+              "type": "string",
+              "title": "Telefónne číslo (v tvare +421...)"
+            },
+            "autorizacneOsvedcenie": {
+              "type": "string",
+              "title": "Číslo autorizačného osvedčenia"
+            },
+            "datumSpracovania": {
+              "type": "string",
+              "format": "date",
+              "title": "Dátum spracovania projektovej dokumentácie"
             }
           },
+          "required": [
+            "menoPriezvisko",
+            "email",
+            "projektantTelefon",
+            "autorizacneOsvedcenie",
+            "datumSpracovania"
+          ]
+        }
+      },
+      "required": [
+        "zodpovednyProjektant"
+      ]
+    },
+    {
+      "type": "object",
+      "properties": {
+        "stavba": {
+          "title": "Informácie o stavbe",
+          "hash": "informacie-o-stavbe",
+          "type": "object",
+          "properties": {
+            "nazov": {
+              "type": "string",
+              "title": "Názov stavby/projektu"
+            },
+            "druhStavby": {
+              "type": "string",
+              "title": "Druh stavby",
+              "default": "bytovyDom",
+              "oneOf": [
+                {
+                  "const": "bytovyDom",
+                  "title": "Bytový dom"
+                },
+                {
+                  "const": "rodinnyDom",
+                  "title": "Rodinný dom"
+                },
+                {
+                  "const": "inaBudovaNaByvanie",
+                  "title": "Iná budova na bývanie"
+                },
+                {
+                  "const": "nebytovaBudova",
+                  "title": "Nebytová budova"
+                },
+                {
+                  "const": "inzinierskaStavba",
+                  "title": "Inžinierska stavba"
+                },
+                {
+                  "const": "ine",
+                  "title": "Iné"
+                }
+              ]
+            },
+            "ulica": {
+              "type": "string",
+              "title": "Ulica"
+            },
+            "supisneCislo": {
+              "type": "string",
+              "title": "Súpisné číslo"
+            },
+            "parcelneCislo": {
+              "type": "string",
+              "title": "Parcelné číslo"
+            },
+            "kataster": {
+              "type": "array",
+              "title": "Katastrálne územie",
+              "items": {
+                "type": "string",
+                "oneOf": [
+                  {
+                    "const": "Čuňovo",
+                    "title": "Čuňovo"
+                  },
+                  {
+                    "const": "Devín",
+                    "title": "Devín"
+                  },
+                  {
+                    "const": "Devínska Nová Ves",
+                    "title": "Devínska Nová Ves"
+                  },
+                  {
+                    "const": "Dúbravka",
+                    "title": "Dúbravka"
+                  },
+                  {
+                    "const": "Jarovce",
+                    "title": "Jarovce"
+                  },
+                  {
+                    "const": "Karlova Ves",
+                    "title": "Karlova Ves"
+                  },
+                  {
+                    "const": "Lamač",
+                    "title": "Lamač"
+                  },
+                  {
+                    "const": "Nivy",
+                    "title": "Nivy"
+                  },
+                  {
+                    "const": "Nové Mesto",
+                    "title": "Nové Mesto"
+                  },
+                  {
+                    "const": "Petržalka",
+                    "title": "Petržalka"
+                  },
+                  {
+                    "const": "Podunajské Biskupice",
+                    "title": "Podunajské Biskupice"
+                  },
+                  {
+                    "const": "Rača",
+                    "title": "Rača"
+                  },
+                  {
+                    "const": "Rusovce",
+                    "title": "Rusovce"
+                  },
+                  {
+                    "const": "Ružinov",
+                    "title": "Ružinov"
+                  },
+                  {
+                    "const": "Staré mesto",
+                    "title": "Staré mesto"
+                  },
+                  {
+                    "const": "Trnávka",
+                    "title": "Trnávka"
+                  },
+                  {
+                    "const": "Vajnory",
+                    "title": "Vajnory"
+                  },
+                  {
+                    "const": "Vinohrady",
+                    "title": "Vinohrady"
+                  },
+                  {
+                    "const": "Vrakuňa",
+                    "title": "Vrakuňa"
+                  },
+                  {
+                    "const": "Záhorská Bystrica",
+                    "title": "Záhorská Bystrica"
+                  }
+                ]
+              },
+              "minItems": 1,
+              "uniqueItems": true,
+              "default": []
+            }
+          },
+          "required": [
+            "nazov",
+            "druhStavby",
+            "ulica",
+            "parcelneCislo",
+            "kataster"
+          ]
+        }
+      },
+      "required": [
+        "stavba"
+      ]
+    },
+    {
+      "type": "object",
+      "properties": {
+        "konanieTyp": {
+          "title": "Typ konania na stavebnom úrade",
+          "hash": "typ-konania-na-stavebnom-urade",
+          "type": "object",
+          "properties": {
+            "typ": {
+              "type": "string",
+              "title": "Typ konania",
+              "default": "uzemneKonanie",
+              "oneOf": [
+                {
+                  "const": "uzemneKonanie",
+                  "title": "Územné konanie"
+                },
+                {
+                  "const": "uzemneKonanieSpojeneSoStavebnymKonanim",
+                  "title": "Územné konanie spojené so stavebným konaním"
+                },
+                {
+                  "const": "zmenaStavbyPredDokoncenim",
+                  "title": "Zmena stavby pred dokončením"
+                },
+                {
+                  "const": "zmenaVUzivaniStavby",
+                  "title": "Zmena v užívaní stavby"
+                },
+                {
+                  "const": "konanieODodatocnomPovoleniStavby",
+                  "title": "Konanie o dodatočnom povolení stavby"
+                }
+              ]
+            }
+          },
+          "required": [
+            "typ"
+          ],
           "allOf": [
             {
               "if": {
-                "oneOf": [
-                  {
-                    "type": "object",
-                    "properties": {
-                      "favouriteFruits": {
-                        "const": ["plum"]
-                      }
-                    }
-                  },
-                  {
-                    "type": "object",
-                    "properties": {
-                      "favouriteFruits": {
-                        "const": ["apple"]
-                      }
-                    }
+                "type": "object",
+                "properties": {
+                  "typ": {
+                    "const": "konanieODodatocnomPovoleniStavby"
                   }
+                },
+                "required": [
+                  "typ"
                 ]
               },
               "then": {
                 "type": "object",
                 "properties": {
-                  "checkboxBonus": {
-                    "title": "This will show when we will click plum",
-                    "type": "object",
-                    "required": ["firstBonus"],
-                    "properties": {
-                      "firstBonus": {
-                        "type": "string",
-                        "title": "First bonus (conditional field)"
+                  "ziadostOdovodnenie": {
+                    "type": "string",
+                    "title": "Typ konania",
+                    "default": "realizaciaStavby",
+                    "oneOf": [
+                      {
+                        "const": "realizaciaStavby",
+                        "title": "Realizácia stavby, resp. jej úprav bez akéhokoľvek povolenia"
                       },
-                      "secondBonus": {
-                        "type": "string",
-                        "title": "Second bonus (conditional field)"
+                      {
+                        "const": "dodatocnePovolenieZmeny",
+                        "title": "Dodatočné povolenie zmeny stavby pred dokončením"
                       }
-                    }
+                    ]
                   }
-                }
+                },
+                "required": [
+                  "ziadostOdovodnenie"
+                ]
+              }
+            },
+            {
+              "if": {
+                "type": "object",
+                "properties": {
+                  "ziadostOdovodnenie": {
+                    "const": "dodatocnePovolenieZmeny"
+                  }
+                },
+                "required": [
+                  "ziadostOdovodnenie"
+                ]
+              },
+              "then": {
+                "type": "object",
+                "properties": {
+                  "stavbaPisomnosti": {
+                    "title": "Relevantné písomnosti súvisiace so stavbou",
+                    "type": "array",
+                    "items": {
+                      "type": "string",
+                      "file": true
+                    },
+                    "minItems": 1
+                  },
+                  "stavbaFotodokumentacia": {
+                    "title": "Fotodokumentácia stavby",
+                    "type": "array",
+                    "items": {
+                      "type": "string",
+                      "file": true
+                    },
+                    "minItems": 1
+                  }
+                },
+                "required": [
+                  "stavbaPisomnosti",
+                  "stavbaFotodokumentacia"
+                ]
               }
             }
           ]
         }
       },
-      "required": ["checkBoxes"]
+      "required": [
+        "konanieTyp"
+      ]
     }
   ]
 }

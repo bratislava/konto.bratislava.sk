@@ -77,6 +77,7 @@ export const ajvFormats = {
   // TODO: Remove, but this is needed for form to compile
   ciselnik: () => true,
   localTime: () => true,
+  phoneNumber: /^\+?[1-9]\d{1,14}$/,
 }
 
 /**

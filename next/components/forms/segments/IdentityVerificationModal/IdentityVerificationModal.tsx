@@ -31,6 +31,7 @@ const IdentityVerificationModal = ({ accountType, ...rest }: IdentityVerificatio
           {t('verification_modal.footer_desktop_eID_text')}
         </ButtonNew>,
       ]}
+      titleClassName="text-h3"
       afterContent={
         <>
           <div className="mt-3 flex items-center md:mt-6">

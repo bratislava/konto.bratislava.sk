@@ -294,11 +294,15 @@ const MyApplicationsCard = ({ form, refreshListData, variant }: MyApplicationsCa
         <div className="relative flex w-full items-start justify-between border-b-2 border-gray-200 bg-white py-4 lg:hidden">
           <div className="flex w-full justify-between gap-1.5">
             <div className="flex w-full grow flex-col gap-1">
-              {(category || isLoading) && (
-                <div className="text-p3-semibold text-main-700">
-                  {isLoading ? <Skeleton width="25%" /> : category}
-                </div>
-              )}
+              <div className="flex flex-row justify-between gap-6">
+                {(category || isLoading) && (
+                  <div className="text-p3-semibold text-main-700">
+                    {isLoading ? <Skeleton width="25%" /> : category}
+                  </div>
+                )}
+                {category && <EllipsisVerticalIcon />}
+              </div>
+
               <h3 className="text-20-semibold">{isLoading ? <Skeleton width="75%" /> : title}</h3>
               {(createdAt || isLoading) && (
                 <div className="text-p3">

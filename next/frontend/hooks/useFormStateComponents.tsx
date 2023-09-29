@@ -148,7 +148,7 @@ const useFormStateComponents = ({
           icon: <ScanningIcon className="h-6 w-6" />,
           iconRound: (
             <div className="rounded-full bg-gray-100 p-1.5">
-              <ScanningIcon className="h-5 w-5" />,
+              <ScanningIcon className="h-5 w-5" />
             </div>
           ),
           text: <p>{t('account_section_applications.navigation_concept_card.status_scanning')}</p>,

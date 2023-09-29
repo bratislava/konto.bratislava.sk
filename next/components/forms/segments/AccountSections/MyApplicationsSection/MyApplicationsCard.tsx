@@ -48,7 +48,7 @@ const Wrapper = ({ children, variant, href, onClick }: WrapperProps) => {
   return variant === 'SENT' && href ? (
     <Link href={href}>{children}</Link>
   ) : (
-    <Button className="relative w-full bg-white py-4 text-left lg:hidden" onPress={onClick}>
+    <Button className="relative w-full bg-white text-left lg:hidden" onPress={onClick}>
       {children}
     </Button>
   )
@@ -300,7 +300,6 @@ const MyApplicationsCard = ({ form, refreshListData, variant }: MyApplicationsCa
                     {isLoading ? <Skeleton width="25%" /> : category}
                   </div>
                 )}
-                {category && <EllipsisVerticalIcon />}
               </div>
 
               <h3 className="text-20-semibold">{isLoading ? <Skeleton width="75%" /> : title}</h3>
@@ -314,7 +313,10 @@ const MyApplicationsCard = ({ form, refreshListData, variant }: MyApplicationsCa
                 </div>
               )}
             </div>
-            <div className="flex self-end">{stateIconAndText.iconRound}</div>
+            <div className="flex flex-col items-center justify-between">
+              {category && <EllipsisVerticalIcon />}
+              {stateIconAndText.iconRound}
+            </div>
           </div>
         </div>
       </Wrapper>

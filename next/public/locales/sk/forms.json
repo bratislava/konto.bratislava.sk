@@ -128,7 +128,7 @@
     "title": "Nahraté prílohy ešte kontrolujeme",
     "content": "Prílohy, ktoré ste nahrali prechádzajú antivírovou kontrolou. Žiadosť však môžete odoslať aj bez čakania na jej ukončenie. Nájdete ju Mojich žiadostiach, v časti Odosiela sa.\n\nV prípade, že by nahraté prílohy obsahovali vírus, budeme vás kontaktovať na e-mailovej adrese, ktorou sa prihlasujete do svojho konta.",
     "button_title": "Odoslať žiadosť",
-    "button_title_loading": "Odosielanie žiadosti"
+    "button_title_loading": "Odosiela sa"
   },
   "send_files_scanning_eid_modal": {
     "title": "Nahraté prílohy ešte kontrolujeme",
@@ -140,7 +140,7 @@
     "title": "Odoslať žiadosť",
     "content": "Naozaj si prajete odoslať túto žiadosť?",
     "button_title": "Odoslať žiadosť",
-    "button_title_loading": "Odosielanie žiadosti"
+    "button_title_loading": "Odosiela sa"
   },
   "send_files_scanning_not_verified_eid_modal": {
     "title": "Nahraté prílohy ešte kontrolujeme",

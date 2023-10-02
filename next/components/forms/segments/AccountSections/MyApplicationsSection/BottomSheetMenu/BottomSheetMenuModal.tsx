@@ -58,21 +58,18 @@ const BottomSheetMenuModal = ({
             </div>
             <nav className="w-full overflow-auto bg-white p-4">
               <ul>
-                {conceptMenuContent.map((item, index) => {
-                  const isLastItem = index === conceptMenuContent.length - 1
-                  return (
-                    <li key={item.id} className={cx({ 'border-b-2': !isLastItem })}>
-                      <BottomSheetMenuRow
-                        title={item.title}
-                        icon={item.icon}
-                        url={item.url}
-                        onPress={item.onPress}
-                        onLinkClick={onLinkClick}
-                        itemClassName={item.itemClassName}
-                      />
-                    </li>
-                  )
-                })}
+                {conceptMenuContent.map((item) => (
+                  <li key={item.id} className="border-b-2 last:border-b-0">
+                    <BottomSheetMenuRow
+                      title={item.title}
+                      icon={item.icon}
+                      url={item.url}
+                      onPress={item.onPress}
+                      onLinkClick={onLinkClick}
+                      itemClassName={item.itemClassName}
+                    />
+                  </li>
+                ))}
               </ul>
             </nav>
           </Dialog>

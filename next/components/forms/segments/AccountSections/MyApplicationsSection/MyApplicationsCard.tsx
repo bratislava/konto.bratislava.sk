@@ -66,7 +66,7 @@ const MyApplicationsCard = ({ form, refreshListData, variant }: MyApplicationsCa
   const [openSnackbarError] = useSnackbar({ variant: 'error' })
   const [openSnackbarSuccess] = useSnackbar({ variant: 'success' })
   const [openSnackbarInfo, closeSnackbarInfo] = useSnackbar({ variant: 'info' })
-  const [isOpen, setIsOpen] = useState(false)
+  const [bottomSheetIsOpen, setBottomSheetIsOpen] = useState(false)
 
   // everything used in jsx should get mapped here
   const isLoading = !form
@@ -198,7 +198,7 @@ const MyApplicationsCard = ({ form, refreshListData, variant }: MyApplicationsCa
 
   const openBottomSheetModal = () => {
     if (variant === 'SENT') return
-    setIsOpen(true)
+    setBottomSheetIsOpen(true)
   }
 
   return (
@@ -342,8 +342,8 @@ const MyApplicationsCard = ({ form, refreshListData, variant }: MyApplicationsCa
         {t('send_files_scanning_eid_modal.content')}
       </MessageModal>
       <BottomSheetMenuModal
-        isOpen={isOpen}
-        setIsOpen={setIsOpen}
+        isOpen={bottomSheetIsOpen}
+        setIsOpen={setBottomSheetIsOpen}
         conceptMenuContent={[
           {
             title: t(

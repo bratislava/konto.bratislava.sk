@@ -2,7 +2,6 @@ import { CrossIcon } from '@assets/ui-icons'
 import cx from 'classnames'
 import { MenuItemBase } from 'components/forms/simple-components/MenuDropdown/MenuDropdown'
 import { useTranslation } from 'next-i18next'
-import { useIsSSR } from 'react-aria'
 import { Button as AriaButton, Dialog, Modal, ModalOverlay } from 'react-aria-components'
 
 import BottomSheetMenuRow from './BottomSheetMenuRow'
@@ -19,11 +18,6 @@ const BottomSheetMenuModal = ({
   conceptMenuContent,
 }: BottomSheetMenuModalProps) => {
   const { t } = useTranslation('account')
-  const isSSR = useIsSSR()
-
-  if (isSSR) {
-    return null
-  }
 
   const onLinkClick = () => {
     setIsOpen(false)

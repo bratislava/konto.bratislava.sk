@@ -2,7 +2,6 @@ import { ChevronDownIcon, CrossIcon } from '@assets/ui-icons'
 import cx from 'classnames'
 import { useTranslation } from 'next-i18next'
 import { useState } from 'react'
-import { useIsSSR } from 'react-aria'
 import { Button as AriaButton, Dialog, Modal, ModalOverlay } from 'react-aria-components'
 
 import { useFormState } from '../useFormState'
@@ -17,11 +16,6 @@ type StepperModalProps = {
 
 const StepperModal = ({ isOpen, setIsOpen, handleOnSkipToStep }: StepperModalProps) => {
   const { t } = useTranslation('forms')
-  const isSSR = useIsSSR()
-
-  if (isSSR) {
-    return null
-  }
 
   return (
     <ModalOverlay

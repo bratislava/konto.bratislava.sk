@@ -1,16 +1,14 @@
 import { WidgetProps } from '@rjsf/utils'
 import cx from 'classnames'
-import { WidgetOptions } from 'components/forms/types/WidgetOptions'
 import WidgetWrapper from 'components/forms/widget-wrappers/WidgetWrapper'
 import React from 'react'
+import { TextAreaUiOptions } from 'schema-generator/generator/uiOptionsTypes'
 
 import TextAreaField from '../widget-components/TextAreaField/TextAreaField'
 
-type TextAreaRJSFOptions = WidgetOptions
-
 interface TextAreaFieldWidgetRJSFProps extends WidgetProps {
   value: string | null
-  options: TextAreaRJSFOptions
+  options: TextAreaUiOptions
   onChange: (value?: string) => void
 }
 
@@ -36,7 +34,7 @@ const TextAreaFieldWidgetRJSF = (props: TextAreaFieldWidgetRJSFProps) => {
     className,
     spaceBottom = 'none',
     spaceTop = 'large',
-  }: TextAreaRJSFOptions = options
+  } = options
 
   const handleOnChange = (newValue?: string) => {
     if (!newValue || newValue === '') {

@@ -1,13 +1,11 @@
 import { StrictRJSFSchema, WidgetProps } from '@rjsf/utils'
-import { WidgetOptions } from 'components/forms/types/WidgetOptions'
 import TimePicker from 'components/forms/widget-components/DateTimePicker/TimePicker'
 import WidgetWrapper from 'components/forms/widget-wrappers/WidgetWrapper'
 import React from 'react'
-
-type TimePickerRJSFOptions = WidgetOptions
+import { TimePickerUiOptions } from 'schema-generator/generator/uiOptionsTypes'
 
 interface TimePickerWidgetRJSFProps extends WidgetProps {
-  options: TimePickerRJSFOptions
+  options: TimePickerUiOptions
   value: string | null
   errorMessage?: string
   schema: StrictRJSFSchema
@@ -35,7 +33,12 @@ const TimePickerWidgetRJSF = ({
   } = options
 
   return (
-    <WidgetWrapper accordion={accordion} additionalLinks={additionalLinks} spaceBottom={spaceBottom} spaceTop={spaceTop}>
+    <WidgetWrapper
+      accordion={accordion}
+      additionalLinks={additionalLinks}
+      spaceBottom={spaceBottom}
+      spaceTop={spaceTop}
+    >
       <TimePicker
         label={label}
         errorMessage={rawErrors}

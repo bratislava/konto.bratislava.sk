@@ -1,26 +1,13 @@
 import { EnumOptionsType, StrictRJSFSchema, WidgetProps } from '@rjsf/utils'
-import { WidgetOptions } from 'components/forms/types/WidgetOptions'
 import WidgetWrapper from 'components/forms/widget-wrappers/WidgetWrapper'
 import React from 'react'
+import { RadioButtonUiOptions } from 'schema-generator/generator/uiOptionsTypes'
 
 import Radio from '../widget-components/RadioButton/Radio'
 import RadioGroup from '../widget-components/RadioButton/RadioGroup'
 
-type RadioUiOptions = {
-  value: string
-  tooltip: string
-}
-
-export type RadioButtonRJSFOptions = {
-  enumOptions?: EnumOptionsType[]
-  className?: string
-  radioOptions?: RadioUiOptions[]
-  variant?: 'basic' | 'boxed' | 'card'
-  orientations?: 'column' | 'row'
-} & WidgetOptions
-
 interface RadioButtonFieldWidgetRJSFProps extends WidgetProps {
-  options: RadioButtonRJSFOptions
+  options: RadioButtonUiOptions
   value: string | null
   errorMessage?: string
   schema: StrictRJSFSchema
@@ -47,7 +34,12 @@ const RadioButtonsWidgetRJSF = (props: RadioButtonFieldWidgetRJSFProps) => {
   }
 
   return (
-    <WidgetWrapper accordion={accordion} additionalLinks={additionalLinks} spaceBottom={spaceBottom} spaceTop={spaceTop}>
+    <WidgetWrapper
+      accordion={accordion}
+      additionalLinks={additionalLinks}
+      spaceBottom={spaceBottom}
+      spaceTop={spaceTop}
+    >
       <RadioGroup
         errorMessage={rawErrors}
         value={value ?? undefined}

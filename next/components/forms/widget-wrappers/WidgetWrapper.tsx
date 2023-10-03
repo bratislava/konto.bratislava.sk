@@ -1,7 +1,7 @@
 import cx from 'classnames'
 import Button from 'components/forms/simple-components/ButtonNew'
-import { FormSpacingType } from 'components/forms/types/WidgetOptions'
 import React, { ReactNode, useId } from 'react'
+import { FormSpacingType } from 'schema-generator/generator/uiOptionsTypes'
 
 import { isObject } from '../../../frontend/utils/general'
 import Accordion, { AccordionBase } from '../simple-components/Accordion'
@@ -71,14 +71,14 @@ const WidgetWrapper = ({
         />
       )}
       {additionalLinks && (
-          <div className="flex flex-col gap-2">
-            {additionalLinks?.map(({ title, href }) => (
-              <Button key={title} variant="category-link" href={href} hasLinkIcon>
-                {title}
-              </Button>
-            ))}
-          </div>
-        )}
+        <div className="flex flex-col gap-2">
+          {additionalLinks?.map(({ title, href }) => (
+            <Button key={title} variant="category-link" href={href} hasLinkIcon>
+              {title}
+            </Button>
+          ))}
+        </div>
+      )}
     </div>
   )
 }

@@ -1,13 +1,13 @@
 import { StrictRJSFSchema, WidgetProps } from '@rjsf/utils'
 import WidgetWrapper from 'components/forms/widget-wrappers/WidgetWrapper'
 import React from 'react'
+import { UploadUiOptions } from 'schema-generator/generator/uiOptionsTypes'
 
 import { useFormFileUpload } from '../useFormFileUpload'
 import Upload from '../widget-components/Upload/Upload'
-import UploadRJSFOptions from '../widget-components/Upload/UploadRJSFOptions'
 
 interface UploadWidgetRJSFProps extends WidgetProps {
-  options: UploadRJSFOptions
+  options: UploadUiOptions
   schema: StrictRJSFSchema
   value: string | string[] | null
   multiple?: boolean

@@ -1,18 +1,11 @@
 import { StrictRJSFSchema, WidgetProps } from '@rjsf/utils'
-import { WidgetOptions } from 'components/forms/types/WidgetOptions'
 import InputField from 'components/forms/widget-components/InputField/InputField'
 import WidgetWrapper from 'components/forms/widget-wrappers/WidgetWrapper'
 import React from 'react'
-
-type InputFieldRJSFOptions = {
-  type?: 'text' | 'password'
-  resetIcon?: boolean
-  leftIcon?: 'person' | 'mail' | 'call' | 'lock'
-  size?: 'large' | 'default' | 'small'
-} & WidgetOptions
+import { InputFieldUiOptions } from 'schema-generator/generator/uiOptionsTypes'
 
 interface InputFieldWidgetRJSFProps extends WidgetProps {
-  options: InputFieldRJSFOptions
+  options: InputFieldUiOptions
   value: string | null
   schema: StrictRJSFSchema
   onChange: (value?: string) => void
@@ -53,7 +46,12 @@ const InputFieldWidgetRJSF = ({
   }
 
   return (
-    <WidgetWrapper accordion={accordion} additionalLinks={additionalLinks} spaceBottom={spaceBottom} spaceTop={spaceTop}>
+    <WidgetWrapper
+      accordion={accordion}
+      additionalLinks={additionalLinks}
+      spaceBottom={spaceBottom}
+      spaceTop={spaceTop}
+    >
       <InputField
         label={label}
         type={type}

@@ -1,8 +1,8 @@
 import { FieldProps } from '@rjsf/utils'
 import React from 'react'
+import { FormSpacingType } from 'schema-generator/generator/uiOptionsTypes'
 
 import { DateFromTo } from '../../groups'
-import { FormSpacingType } from '../../types/WidgetOptions'
 import WidgetWrapper, { isFormSpacingType } from '../WidgetWrapper'
 
 type DateFromToWidgetRJSFProps = FieldProps<{

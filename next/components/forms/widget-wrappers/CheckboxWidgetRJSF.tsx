@@ -1,24 +1,13 @@
 import { EnumOptionsType, StrictRJSFSchema, WidgetProps } from '@rjsf/utils'
-import { WidgetOptions } from 'components/forms/types/WidgetOptions'
 import WidgetWrapper from 'components/forms/widget-wrappers/WidgetWrapper'
 import React from 'react'
+import { CheckboxesUiOptions } from 'schema-generator/generator/uiOptionsTypes'
 
 import Checkbox from '../widget-components/Checkbox/Checkbox'
 import CheckboxGroup from '../widget-components/Checkbox/CheckboxGroup'
 
-type CheckboxUiOptions = {
-  value: string
-  tooltip: string
-}
-
-export type CheckboxesRJSFOptions = {
-  enumOptions?: EnumOptionsType[]
-  variant?: 'basic' | 'boxed'
-  checkboxOptions?: CheckboxUiOptions[]
-} & WidgetOptions
-
 interface CheckboxesWidgetRJSFProps extends WidgetProps {
-  options: CheckboxesRJSFOptions
+  options: CheckboxesUiOptions
   value: string[] | null
   schema: StrictRJSFSchema
   onChange: (value: string[]) => void
@@ -53,7 +42,12 @@ const CheckboxWidgetRJSF = (props: CheckboxesWidgetRJSFProps) => {
     return value?.length === maxItems && !value?.includes(valueName)
   }
   return (
-    <WidgetWrapper accordion={accordion} additionalLinks={additionalLinks} spaceBottom={spaceBottom} spaceTop={spaceTop} >
+    <WidgetWrapper
+      accordion={accordion}
+      additionalLinks={additionalLinks}
+      spaceBottom={spaceBottom}
+      spaceTop={spaceTop}
+    >
       <CheckboxGroup
         errorMessage={rawErrors}
         value={value ?? undefined}

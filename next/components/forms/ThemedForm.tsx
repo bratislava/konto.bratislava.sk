@@ -7,7 +7,6 @@ import TimePickerWidgetRJSF from 'components/forms/widget-wrappers/TimePickerWid
 import BAObjectFieldTemplate from './widget-wrappers/BAObjectFieldTemplate'
 import CheckboxWidgetRJSF from './widget-wrappers/CheckboxWidgetRJSF'
 import DateFromToWidgetRJSF from './widget-wrappers/fieldGroupsRJSF/DateFromToWidgetRJSF'
-import DateTimeWidgetRJSF from './widget-wrappers/fieldGroupsRJSF/DateTimeWidgetRJSF'
 import TimeFromToWidgetRJSF from './widget-wrappers/fieldGroupsRJSF/TimeFromToWidgetRJSF'
 import RadioButtonsWidgetRJSF from './widget-wrappers/RadioButtonWidgetRJSF'
 import SelectFieldWidgetRJSF from './widget-wrappers/SelectFieldWidgetRJSF'
@@ -28,7 +27,6 @@ const theme: ThemeProps = {
   fields: {
     dateFromTo: DateFromToWidgetRJSF,
     timeFromTo: TimeFromToWidgetRJSF,
-    dateTime: DateTimeWidgetRJSF,
   },
   templates: {
     ObjectFieldTemplate: BAObjectFieldTemplate,

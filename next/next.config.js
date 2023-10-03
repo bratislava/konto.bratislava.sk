@@ -1,3 +1,4 @@
+const { withPlausibleProxy } = require('next-plausible')
 const { i18n } = require('./next-i18next.config')
 
 /**
@@ -111,4 +112,7 @@ const nextConfig = {
   },
 }
 
-module.exports = nextConfig
+// https://github.com/4lejandrito/next-plausible#proxy-the-analytics-script
+module.exports = withPlausibleProxy()({
+  ...nextConfig,
+})

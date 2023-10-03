@@ -123,6 +123,7 @@ const IntroSection = () => {
               icon={<SwimmingPoolIcon className="h-10 w-10 text-education-700 lg:h-12 lg:w-12" />}
               buttonText={t('account_section_services.cards.32.buttonText')}
               href="https://kupaliska.bratislava.sk"
+              plausibleProps={{ id: `Domov: ${t('account_section_services.cards.32.title')}` }}
             />
             <ServiceCard
               title={t('account_section_services.cards.1.title')}
@@ -130,6 +131,7 @@ const IntroSection = () => {
               icon={<TaxesIcon className="h-10 w-10 text-category-600 lg:h-12 lg:w-12" />}
               buttonText={t('account_section_services.cards.1.buttonText')}
               href={ROUTES.TAXES_AND_FEES}
+              plausibleProps={{ id: `Domov: ${t('account_section_services.cards.1.title')}` }}
             />
             <ServiceCard
               title={t('account_section_services.cards.4.title')}
@@ -137,6 +139,7 @@ const IntroSection = () => {
               icon={<ParkingIcon className="h-10 w-10 text-transport-700 lg:h-12 lg:w-12" />}
               buttonText={t('account_section_services.cards.4.buttonText')}
               href="https://paas.sk/"
+              plausibleProps={{ id: `Domov: ${t('account_section_services.cards.4.title')}` }}
             />
             <ServiceCard
               title={t('account_section_services.cards.5.title')}
@@ -144,6 +147,7 @@ const IntroSection = () => {
               icon={<LibraryIcon className="h-10 w-10 text-culture-700 lg:h-12 lg:w-12" />}
               buttonText={t('account_section_services.cards.5.buttonText')}
               href="https://mestskakniznica.sk/sluzby/citanie/ako-sa-prihlasit-do-kniznice"
+              plausibleProps={{ id: `Domov: ${t('account_section_services.cards.5.title')}` }}
             />
           </div>
           <Button

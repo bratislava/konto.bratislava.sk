@@ -1,7 +1,8 @@
 import { ArrowRightIcon, ExportIcon } from '@assets/ui-icons'
 import cx from 'classnames'
-import Link from 'next/link'
 import { ReactNode } from 'react'
+
+import MLinkNew, { LinkPlausibleProps } from './MLinkNew'
 
 type ServiceCardBase = {
   title: string
@@ -14,6 +15,7 @@ type ServiceCardBase = {
   tag?: string
   tagStyle?: string
   onPress?: () => void
+  plausibleProps?: LinkPlausibleProps
 }
 
 const ServiceCard = ({
@@ -26,6 +28,7 @@ const ServiceCard = ({
   icon,
   href,
   onPress,
+  plausibleProps,
 }: ServiceCardBase) => {
   const style = cx(
     'group flex w-full min-w-[280px] flex-col items-start gap-5 rounded-lg border-2 border-solid border-gray-200 bg-gray-0 p-4',
@@ -68,9 +71,14 @@ const ServiceCard = ({
   )
 
   return href ? (
-    <Link target={href?.includes('http') ? '_blank' : '_self'} href={href} className={style}>
+    <MLinkNew
+      target={href?.includes('http') ? '_blank' : '_self'}
+      href={href}
+      className={style}
+      plausibleProps={plausibleProps}
+    >
       <Card />
-    </Link>
+    </MLinkNew>
   ) : (
     <button type="button" onClick={onPress} className={style}>
       <Card />

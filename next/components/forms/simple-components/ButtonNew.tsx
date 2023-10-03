@@ -8,7 +8,7 @@ import { ComponentProps, forwardRef, PropsWithChildren, ReactNode, RefObject } f
 import { AriaButtonProps, mergeProps, useButton, useFocusRing, useHover } from 'react-aria'
 import { twMerge } from 'tailwind-merge'
 
-import MLinkNew from './MLinkNew'
+import MLinkNew, { LinkPlausibleProps } from './MLinkNew'
 
 type ButtonOrIconButton =
   | {
@@ -52,6 +52,7 @@ export type ButtonProps = Omit<AriaButtonProps<'button'>, keyof LinkButtonProps 
     href?: never
     target?: never
     hasLinkIcon?: never
+    plausibleProps?: never
   }
 
 export type AnchorProps = Omit<AriaButtonProps<'a'>, 'children'> &
@@ -59,6 +60,7 @@ export type AnchorProps = Omit<AriaButtonProps<'a'>, 'children'> &
   Pick<ComponentProps<typeof NextLink>, 'target' | 'replace' | 'prefetch'> & {
     stretched?: boolean
     hasLinkIcon?: boolean
+    plausibleProps?: LinkPlausibleProps
   }
 
 export type PolymorphicProps = ButtonProps | AnchorProps
@@ -238,7 +240,7 @@ const Button = forwardRef<HTMLAnchorElement | HTMLButtonElement, PolymorphicProp
           data-focused={isFocused || undefined}
           data-focus-visible={isFocusVisible || undefined}
           className={styles}
-          // plausibleProps={rest.plausibleProps}
+          plausibleProps={rest.plausibleProps}
           target={isExternal ? '_blank' : undefined}
           {...mergeProps({ ...buttonProps, role: undefined }, focusProps, hoverProps)}
           {...rest}

@@ -17,17 +17,7 @@ interface UploadWidgetRJSFProps extends WidgetProps {
 const UploadWidgetRJSF = (props: UploadWidgetRJSFProps) => {
   const { options, schema, label, required, value, disabled, onChange, rawErrors, readonly } = props
 
-  const {
-    size,
-    accept,
-    helptext,
-    type = 'button',
-    className,
-    accordion,
-    additionalLinks,
-    spaceBottom = 'none',
-    spaceTop = 'large',
-  } = options
+  const { size, accept, helptext, type = 'button', className } = options
 
   const supportedFormats = accept?.split(',')
   const multiple = schema.type === 'array'
@@ -76,13 +66,7 @@ const UploadWidgetRJSF = (props: UploadWidgetRJSFProps) => {
   }
 
   return (
-    <WidgetWrapper
-      accordion={accordion}
-      additionalLinks={additionalLinks}
-      spaceBottom={spaceBottom}
-      spaceTop={spaceTop}
-      className="w-full"
-    >
+    <WidgetWrapper options={options} className="w-full">
       <Upload
         value={value}
         errorMessage={rawErrors}

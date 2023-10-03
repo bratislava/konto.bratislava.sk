@@ -23,23 +23,10 @@ const DatePickerWidgetRJSF = ({
   onChange,
   readonly,
 }: DatePickerWidgetRJSFProps) => {
-  const {
-    helptext,
-    tooltip,
-    explicitOptional,
-    accordion,
-    additionalLinks,
-    spaceBottom = 'none',
-    spaceTop = 'large',
-  } = options
+  const { helptext, tooltip, explicitOptional } = options
 
   return (
-    <WidgetWrapper
-      accordion={accordion}
-      additionalLinks={additionalLinks}
-      spaceBottom={spaceBottom}
-      spaceTop={spaceTop}
-    >
+    <WidgetWrapper options={options}>
       <DatePicker
         label={label}
         errorMessage={rawErrors}

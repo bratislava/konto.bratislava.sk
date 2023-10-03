@@ -4,6 +4,26 @@ import { EnumOptionsType, UIOptionsType } from '@rjsf/utils'
 // eslint-disable-next-line import/no-relative-packages
 import { AccordionBase } from '../../components/forms/simple-components/Accordion'
 
+// TODO: Reconsider stability of dependency on AccordionBase type
+export type CustomComponentAccordionProps = AccordionBase
+
+export type CustomComponentAdditionalLinksProps = {
+  links: {
+    title: string
+    href: string
+  }[]
+}
+
+export type CustomComponentType =
+  | {
+      type: 'accordion'
+      props: CustomComponentAccordionProps
+    }
+  | {
+      type: 'additionalLinks'
+      props: CustomComponentAdditionalLinksProps
+    }
+
 export type FormSpacingType = 'large' | 'default' | 'small' | 'medium' | 'none'
 
 export type WidgetUiOptions = {
@@ -11,13 +31,10 @@ export type WidgetUiOptions = {
   helptext?: string
   className?: string
   explicitOptional?: boolean
-  accordion?: AccordionBase | AccordionBase[]
-  additionalLinks?: Array<{
-    title: string
-    href: string
-  }>
   spaceBottom?: FormSpacingType
   spaceTop?: FormSpacingType
+  belowComponents?: CustomComponentType[]
+  rightComponents?: CustomComponentType[]
 }
 
 type CheckboxOption = {

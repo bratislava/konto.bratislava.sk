@@ -25,16 +25,7 @@ const TextAreaFieldWidgetRJSF = (props: TextAreaFieldWidgetRJSFProps) => {
     readonly,
   }: TextAreaFieldWidgetRJSFProps = props
 
-  const {
-    helptext,
-    tooltip,
-    accordion,
-    additionalLinks,
-    explicitOptional,
-    className,
-    spaceBottom = 'none',
-    spaceTop = 'large',
-  } = options
+  const { helptext, tooltip, explicitOptional, className } = options
 
   const handleOnChange = (newValue?: string) => {
     if (!newValue || newValue === '') {
@@ -45,13 +36,7 @@ const TextAreaFieldWidgetRJSF = (props: TextAreaFieldWidgetRJSFProps) => {
   }
 
   return (
-    <WidgetWrapper
-      accordion={accordion}
-      additionalLinks={additionalLinks}
-      className="max-w-[320px]"
-      spaceBottom={spaceBottom}
-      spaceTop={spaceTop}
-    >
+    <WidgetWrapper options={options} className="max-w-[320px]">
       <TextAreaField
         value={value ?? undefined}
         label={label}

@@ -16,17 +16,7 @@ interface RadioButtonFieldWidgetRJSFProps extends WidgetProps {
 
 const RadioButtonsWidgetRJSF = (props: RadioButtonFieldWidgetRJSFProps) => {
   const { options, value, onChange, label, rawErrors, required, readonly } = props
-  const {
-    enumOptions,
-    className,
-    variant,
-    accordion,
-    additionalLinks,
-    radioOptions = [],
-    orientations,
-    spaceBottom = 'none',
-    spaceTop = 'large',
-  } = options
+  const { enumOptions, className, variant, radioOptions = [], orientations } = options
 
   if (!enumOptions || Array.isArray(value)) return null
   const getTooltip = (radioValue: string) => {
@@ -34,12 +24,7 @@ const RadioButtonsWidgetRJSF = (props: RadioButtonFieldWidgetRJSFProps) => {
   }
 
   return (
-    <WidgetWrapper
-      accordion={accordion}
-      additionalLinks={additionalLinks}
-      spaceBottom={spaceBottom}
-      spaceTop={spaceTop}
-    >
+    <WidgetWrapper options={options}>
       <RadioGroup
         errorMessage={rawErrors}
         value={value ?? undefined}

@@ -37,13 +37,9 @@ const SelectFieldWidgetRJSF = (props: SelectFieldWidgetRJSFProps) => {
     selectAllOption,
     helptext,
     tooltip,
-    accordion,
-    additionalLinks,
     dropdownDivider,
     className,
     explicitOptional,
-    spaceBottom = 'none',
-    spaceTop = 'large',
     hideScrollbar = false,
     maxWordSize,
   } = options
@@ -117,12 +113,7 @@ const SelectFieldWidgetRJSF = (props: SelectFieldWidgetRJSFProps) => {
   const transformedValue = type === 'multiple' ? handleTransformMultiple() : handleTransformOne()
 
   return (
-    <WidgetWrapper
-      accordion={accordion}
-      additionalLinks={additionalLinks}
-      spaceBottom={spaceBottom}
-      spaceTop={spaceTop}
-    >
+    <WidgetWrapper options={options}>
       <SelectField
         type={type}
         label={label}

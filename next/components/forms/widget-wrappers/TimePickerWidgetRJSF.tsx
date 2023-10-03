@@ -22,23 +22,10 @@ const TimePickerWidgetRJSF = ({
   onChange,
   readonly,
 }: TimePickerWidgetRJSFProps) => {
-  const {
-    helptext,
-    tooltip,
-    accordion,
-    additionalLinks,
-    explicitOptional,
-    spaceBottom = 'none',
-    spaceTop = 'large',
-  } = options
+  const { helptext, tooltip, explicitOptional } = options
 
   return (
-    <WidgetWrapper
-      accordion={accordion}
-      additionalLinks={additionalLinks}
-      spaceBottom={spaceBottom}
-      spaceTop={spaceTop}
-    >
+    <WidgetWrapper options={options}>
       <TimePicker
         label={label}
         errorMessage={rawErrors}

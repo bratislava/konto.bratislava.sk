@@ -24,16 +24,7 @@ const CheckboxWidgetRJSF = (props: CheckboxesWidgetRJSFProps) => {
     required,
     readonly,
   } = props
-  const {
-    enumOptions,
-    className,
-    accordion,
-    additionalLinks,
-    spaceBottom = 'none',
-    spaceTop = 'large',
-    checkboxOptions = [],
-    variant = 'basic',
-  } = options
+  const { enumOptions, className, checkboxOptions = [], variant = 'basic' } = options
   if (!enumOptions) return <div />
   const getTooltip = (radioValue: string) => {
     return checkboxOptions.find((option) => option.value === radioValue)?.tooltip
@@ -42,12 +33,7 @@ const CheckboxWidgetRJSF = (props: CheckboxesWidgetRJSFProps) => {
     return value?.length === maxItems && !value?.includes(valueName)
   }
   return (
-    <WidgetWrapper
-      accordion={accordion}
-      additionalLinks={additionalLinks}
-      spaceBottom={spaceBottom}
-      spaceTop={spaceTop}
-    >
+    <WidgetWrapper options={options}>
       <CheckboxGroup
         errorMessage={rawErrors}
         value={value ?? undefined}

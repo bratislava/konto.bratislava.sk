@@ -77,6 +77,8 @@ export const ajvFormats = {
   // TODO: Remove, but this is needed for form to compile
   ciselnik: () => true,
   localTime: () => true,
+  // https://blog.kevinchisholm.com/javascript/javascript-e164-phone-number-validation/
+  'phone-number': /^\+?[1-9]\d{1,14}$/,
 }
 
 /**

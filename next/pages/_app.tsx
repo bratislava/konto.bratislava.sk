@@ -15,9 +15,12 @@ import { AppProps } from 'next/app'
 import { Inter } from 'next/font/google'
 import Head from 'next/head'
 import { appWithTranslation } from 'next-i18next'
+import PlausibleProvider from 'next-plausible'
 import { NextAdapter } from 'next-query-params'
 import SnackbarProvider from 'react-simple-snackbar'
 import { QueryParamProvider } from 'use-query-params'
+
+import { isProductionDeployment } from '../frontend/utils/general'
 
 const queryClient = new QueryClient()
 
@@ -53,12 +56,19 @@ const MyApp = ({ Component, pageProps }: AppProps) => {
         <StatusBarProvider>
           <QueryClientProvider client={queryClient}>
             <SnackbarProvider>
-              <GlobalStateProvider>
-                <LoginRegisterRedirectProvider>
-                  <Component {...pageProps} />
-                  <CookieConsent />
-                </LoginRegisterRedirectProvider>
-              </GlobalStateProvider>
+              <PlausibleProvider
+                domain={isProductionDeployment() ? 'konto.bratislava.sk' : 'testing.bratislava.sk'}
+                taggedEvents
+                // uncomment for local testing, needs to be run with `yarn build && yarn start`
+                // trackLocalhost
+              >
+                <GlobalStateProvider>
+                  <LoginRegisterRedirectProvider>
+                    <Component {...pageProps} />
+                    <CookieConsent />
+                  </LoginRegisterRedirectProvider>
+                </GlobalStateProvider>
+              </PlausibleProvider>
             </SnackbarProvider>
           </QueryClientProvider>
         </StatusBarProvider>

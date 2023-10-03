@@ -1,5 +1,6 @@
 import cx from 'classnames'
 import NextLink from 'next/link'
+import { usePlausible } from 'next-plausible'
 import { ComponentProps, forwardRef } from 'react'
 import { twMerge } from 'tailwind-merge'
 
@@ -24,7 +25,7 @@ const MLink = forwardRef<HTMLAnchorElement, MLinkNewProps>(
     { href, children, className, variant = 'unstyled', stretched = false, plausibleProps, ...rest },
     ref,
   ) => {
-    // const plausible = usePlausible()
+    const plausible = usePlausible()
 
     const styles = twMerge(
       cx('underline-offset-2 transition', {
@@ -39,7 +40,15 @@ const MLink = forwardRef<HTMLAnchorElement, MLinkNewProps>(
     )
 
     return (
-      <NextLink href={href} passHref ref={ref} {...rest} className={styles}>
+      <NextLink
+        href={href}
+        passHref
+        ref={ref}
+        {...rest}
+        className={styles}
+        // eslint-disable-next-line @typescript-eslint/no-unsafe-return
+        onClick={() => plausible('Link click', { props: plausibleProps })}
+      >
         {children}
       </NextLink>
     )

@@ -380,6 +380,7 @@ const MunicipalServicesSection = () => {
                 tag={card.tag}
                 tagStyle={card.tagStyle}
                 onPress={card.onPress}
+                plausibleProps={{ id: `Mestské služby: ${card.title}` }}
               />
             ))}
         </div>

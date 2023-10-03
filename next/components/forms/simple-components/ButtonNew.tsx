@@ -239,8 +239,11 @@ const Button = forwardRef<HTMLAnchorElement | HTMLButtonElement, PolymorphicProp
           data-focus-visible={isFocusVisible || undefined}
           className={styles}
           // plausibleProps={rest.plausibleProps}
-          target={isExternal ? '_blank' : undefined}
-          {...mergeProps({ ...buttonProps, role: undefined }, focusProps, hoverProps)}
+          {...mergeProps(
+            { ...buttonProps, role: undefined, target: isExternal ? '_blank' : undefined },
+            focusProps,
+            hoverProps,
+          )}
           {...rest}
         >
           {startIcon}

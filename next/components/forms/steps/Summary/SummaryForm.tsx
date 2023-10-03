@@ -2,17 +2,11 @@ import { ThemeProps, withTheme } from '@rjsf/core'
 import { GenericObjectType, ObjectFieldTemplateProps } from '@rjsf/utils'
 import { Fragment } from 'react'
 
-import SummaryFieldRJSF, { SummaryFieldRJSFProps, SummaryFieldType } from './SummaryFieldRJSF'
 import SummaryWidgetRJSF, { SummaryWidgetRJSFProps, SummaryWidgetType } from './SummaryWidgetRJSF'
 
 const wrapWidget = (widgetType: SummaryWidgetType) =>
   function wrap(props: Omit<SummaryWidgetRJSFProps, 'widgetType'>) {
     return <SummaryWidgetRJSF {...props} widgetType={widgetType} />
-  }
-
-const wrapField = (fieldType: SummaryFieldType) =>
-  function wrap(props: Omit<SummaryFieldRJSFProps, 'fieldType'>) {
-    return <SummaryFieldRJSF {...props} fieldType={fieldType} />
   }
 
 const ObjectFieldTemplate = ({ title, properties, idSchema }: ObjectFieldTemplateProps) => {
@@ -42,11 +36,6 @@ const theme: ThemeProps = {
     Upload: wrapWidget('upload'),
     DatePicker: wrapWidget('datepicker'),
     TimePicker: wrapWidget('timepicker'),
-  },
-  fields: {
-    dateFromTo: wrapField('dateFromTo'),
-    timeFromTo: wrapField('timeFromTo'),
-    dateTime: wrapField('dateTime'),
   },
 }
 

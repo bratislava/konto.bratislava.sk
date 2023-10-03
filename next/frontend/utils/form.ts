@@ -33,22 +33,6 @@ export const getAjvFormKeywords = (
   fileValidateFn?: SchemaValidateFunction,
 ): Options['keywords'] => {
   return [
-    // TOOD: Remove
-    {
-      keyword: 'comment',
-    },
-    // TOOD: Remove
-    {
-      keyword: 'example',
-    },
-    // TOOD: Remove
-    {
-      keyword: 'timeFromTo',
-    },
-    // TOOD: Remove
-    {
-      keyword: 'dateFromTo',
-    },
     {
       keyword: 'pospID',
     },
@@ -214,6 +198,7 @@ export const validateSummary = (
 export const rjfsValidator = customizeValidator({
   customFormats: ajvFormats,
   ajvOptionsOverrides: {
+    $data: true,
     keywords: getAjvFormKeywords(),
   },
 })

@@ -168,10 +168,16 @@ const FormModals = () => {
       title: t('send_files_scanning_not_verified.title'),
       type: 'warning',
       buttons: [
-        <Button variant="black-solid" onPress={() => verifyIdentity()} fullWidthMobile>
+        <Button
+          className="grow"
+          variant="black-solid"
+          onPress={() => verifyIdentity()}
+          fullWidthMobile
+        >
           {t('send_files_scanning_not_verified.button_title')}
         </Button>,
         <Button
+          className="grow"
           variant="black-outline"
           onPress={() =>
             sendFilesScanningNotVerified.isOpen && sendFilesScanningNotVerified.sendCallback()
@@ -181,6 +187,7 @@ const FormModals = () => {
           {t('send_files_scanning_not_verified.button_title_eid')}
         </Button>,
       ],
+      variant: 'vertical',
       children: (
         <>
           {t('send_files_scanning_not_verified.content')}
@@ -191,6 +198,7 @@ const FormModals = () => {
           />
         </>
       ),
+      childrenClassName: 'md:text-center',
     },
     {
       key: 'sendIdentityMissingModal',

@@ -16,6 +16,7 @@ export type MessageModalProps = PropsWithChildren<{
   buttons?: ReactNode[]
   afterContent?: ReactNode
   titleClassName?: string
+  childrenClassName?: string
 }> &
   Pick<ModalV2Props, 'isOpen' | 'onOpenChange' | 'isDismissable' | 'noCloseButton'>
 
@@ -35,6 +36,7 @@ const MessageModal = ({
   buttons,
   afterContent,
   titleClassName,
+  childrenClassName,
   ...rest
 }: MessageModalProps) => {
   return (
@@ -71,7 +73,14 @@ const MessageModal = ({
             >
               {title}
             </div>
-            <div className="text-p2 whitespace-pre-wrap text-center md:text-left">{children}</div>
+            <div
+              className={twMerge(
+                'text-p2 whitespace-pre-wrap text-center md:text-left',
+                childrenClassName,
+              )}
+            >
+              {children}
+            </div>
           </div>
         </div>
       </div>

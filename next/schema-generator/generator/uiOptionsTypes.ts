@@ -1,5 +1,5 @@
 // eslint-disable-next-line import/no-extraneous-dependencies
-import { EnumOptionsType, UIOptionsType } from '@rjsf/utils'
+import { UIOptionsType } from '@rjsf/utils'
 
 // eslint-disable-next-line import/no-relative-packages
 import { AccordionBase } from '../../components/forms/simple-components/Accordion'
@@ -43,7 +43,6 @@ type CheckboxOption = {
 }
 
 export type CheckboxesUiOptions = {
-  enumOptions?: EnumOptionsType[]
   variant?: 'basic' | 'boxed'
   checkboxOptions?: CheckboxOption[]
 } & WidgetUiOptions
@@ -64,7 +63,6 @@ type RadioOption = {
 }
 
 export type RadioButtonUiOptions = {
-  enumOptions?: EnumOptionsType[]
   className?: string
   radioOptions?: RadioOption[]
   variant?: 'basic' | 'boxed' | 'card'
@@ -72,7 +70,6 @@ export type RadioButtonUiOptions = {
 } & WidgetUiOptions
 
 export type SelectFieldUiOptions = {
-  enumOptions?: EnumOptionsType[]
   dropdownDivider?: boolean
   selectAllOption?: boolean
   explicitOptional?: boolean
@@ -86,7 +83,6 @@ export type TextAreaUiOptions = WidgetUiOptions
 export type TimePickerUiOptions = WidgetUiOptions
 
 export type UploadUiOptions = {
-  enumOptions?: EnumOptionsType[]
   size?: number
   accept?: string
   type?: 'button' | 'dragAndDrop'

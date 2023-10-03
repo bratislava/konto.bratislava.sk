@@ -5,7 +5,7 @@ import React from 'react'
 import { InputFieldUiOptions } from 'schema-generator/generator/uiOptionsTypes'
 
 interface InputFieldWidgetRJSFProps extends WidgetProps {
-  options: InputFieldUiOptions
+  options: InputFieldUiOptions & WidgetProps['options']
   value: string | null
   schema: StrictRJSFSchema
   onChange: (value?: string) => void

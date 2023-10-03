@@ -7,7 +7,7 @@ import Radio from '../widget-components/RadioButton/Radio'
 import RadioGroup from '../widget-components/RadioButton/RadioGroup'
 
 interface RadioButtonFieldWidgetRJSFProps extends WidgetProps {
-  options: RadioButtonUiOptions
+  options: RadioButtonUiOptions & WidgetProps['options']
   value: string | null
   errorMessage?: string
   schema: StrictRJSFSchema

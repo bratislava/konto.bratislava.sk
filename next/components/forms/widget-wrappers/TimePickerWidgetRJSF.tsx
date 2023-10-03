@@ -5,7 +5,7 @@ import React from 'react'
 import { TimePickerUiOptions } from 'schema-generator/generator/uiOptionsTypes'
 
 interface TimePickerWidgetRJSFProps extends WidgetProps {
-  options: TimePickerUiOptions
+  options: TimePickerUiOptions & WidgetProps['options']
   value: string | null
   errorMessage?: string
   schema: StrictRJSFSchema

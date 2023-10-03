@@ -8,7 +8,7 @@ import TextAreaField from '../widget-components/TextAreaField/TextAreaField'
 
 interface TextAreaFieldWidgetRJSFProps extends WidgetProps {
   value: string | null
-  options: TextAreaUiOptions
+  options: TextAreaUiOptions & WidgetProps['options']
   onChange: (value?: string) => void
 }
 

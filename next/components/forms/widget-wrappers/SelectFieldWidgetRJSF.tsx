@@ -13,7 +13,7 @@ interface RJSFSelectSchema extends RJSFSchema {
 }
 
 interface SelectFieldWidgetRJSFProps<T = unknown> extends WidgetProps {
-  options: SelectFieldUiOptions
+  options: SelectFieldUiOptions & WidgetProps['options']
   value: T | T[] | null
   schema: RJSFSelectSchema
   onChange: (value?: T | T[] | null) => void

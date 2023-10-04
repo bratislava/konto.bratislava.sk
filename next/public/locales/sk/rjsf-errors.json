@@ -2,11 +2,12 @@
   "required": "Vyplňte pole",
   "minItems": "Nedostatočný počet položiek",
   "minLength": "Zadaná hodnota obsahuje primálo znakov",
-  "pattern": "Zadaná hodnota nezodpovedá požadovanému formátu",
+  "pattern": "Zadajte hodnotu v požadovanom formáte",
   "unknown": "Neznáma chyba",
-  "specialCaseByNameAndParamValue": {
-    "pattern": {
-      "((([+][1-9])|([+][1-9][0-9]{1,12}))|((00[1-9])|(00[1-9][0-9]{1,11})))": "Zadajte telefónne číslo v medzinárodnom formáte +123.."
-    }
+  "format": {
+    "unknown": "Zadajte hodnotu v požadovanom formáte",
+    "zip": "Zadajte PSČ v tvare \"81101\"",
+    "phone-number": "Zadajte telefónne číslo v medzinárodnom formáte +421..",
+    "email": "Zadajte e-mail v správnom formáte"
   }
 }

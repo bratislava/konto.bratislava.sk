@@ -50,7 +50,7 @@ export type CheckboxesUiOptions = {
 export type DatePickerUiOptions = WidgetUiOptions
 
 export type InputFieldUiOptions = {
-  type?: 'text' | 'password'
+  type?: 'text' | 'password' | 'email' | 'tel' | 'number'
   resetIcon?: boolean
   leftIcon?: 'person' | 'mail' | 'call' | 'lock'
   size?: 'large' | 'default' | 'small'

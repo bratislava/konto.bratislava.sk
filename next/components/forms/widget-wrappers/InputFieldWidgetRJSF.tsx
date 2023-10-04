@@ -1,4 +1,4 @@
-import { StrictRJSFSchema, WidgetProps } from '@rjsf/utils'
+import { WidgetProps } from '@rjsf/utils'
 import InputField from 'components/forms/widget-components/InputField/InputField'
 import WidgetWrapper from 'components/forms/widget-wrappers/WidgetWrapper'
 import React from 'react'
@@ -7,7 +7,6 @@ import { InputFieldUiOptions } from 'schema-generator/generator/uiOptionsTypes'
 interface InputFieldWidgetRJSFProps extends WidgetProps {
   options: InputFieldUiOptions & WidgetProps['options']
   value: string | null
-  schema: StrictRJSFSchema
   onChange: (value?: string) => void
 }
 

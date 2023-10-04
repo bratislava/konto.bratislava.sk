@@ -14,8 +14,15 @@ interface RadioButtonFieldWidgetRJSFProps extends WidgetProps {
   onChange: (value?: string | boolean | number | undefined) => void
 }
 
-const RadioButtonsWidgetRJSF = (props: RadioButtonFieldWidgetRJSFProps) => {
-  const { options, value, onChange, label, rawErrors, required, readonly } = props
+const RadioButtonsWidgetRJSF = ({
+  options,
+  value,
+  onChange,
+  label,
+  rawErrors,
+  required,
+  readonly,
+}: RadioButtonFieldWidgetRJSFProps) => {
   const { enumOptions, className, variant, radioOptions = [], orientations } = options
 
   if (!enumOptions || Array.isArray(value)) return null

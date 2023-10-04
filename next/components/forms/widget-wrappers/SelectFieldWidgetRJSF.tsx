@@ -19,19 +19,18 @@ interface SelectFieldWidgetRJSFProps<T = unknown> extends WidgetProps {
   onChange: (value?: T | T[] | null) => void
 }
 
-const SelectFieldWidgetRJSF = (props: SelectFieldWidgetRJSFProps) => {
-  const {
-    label,
-    options,
-    value,
-    required,
-    disabled,
-    placeholder,
-    schema,
-    onChange,
-    rawErrors,
-    readonly,
-  } = props
+const SelectFieldWidgetRJSF = ({
+  label,
+  options,
+  value,
+  required,
+  disabled,
+  placeholder,
+  schema,
+  onChange,
+  rawErrors,
+  readonly,
+}: SelectFieldWidgetRJSFProps) => {
   const {
     enumOptions,
     selectAllOption,

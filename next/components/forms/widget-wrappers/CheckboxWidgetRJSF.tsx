@@ -13,17 +13,16 @@ interface CheckboxesWidgetRJSFProps extends WidgetProps {
   onChange: (value: string[]) => void
 }
 
-const CheckboxWidgetRJSF = (props: CheckboxesWidgetRJSFProps) => {
-  const {
-    options,
-    value,
-    onChange,
-    label,
-    schema: { maxItems },
-    rawErrors,
-    required,
-    readonly,
-  } = props
+const CheckboxWidgetRJSF = ({
+  options,
+  value,
+  onChange,
+  label,
+  schema: { maxItems },
+  rawErrors,
+  required,
+  readonly,
+}: CheckboxesWidgetRJSFProps) => {
   const { enumOptions, className, checkboxOptions = [], variant = 'basic' } = options
   if (!enumOptions) return <div />
   const getTooltip = (radioValue: string) => {

@@ -12,19 +12,17 @@ interface TextAreaFieldWidgetRJSFProps extends WidgetProps {
   onChange: (value?: string) => void
 }
 
-const TextAreaFieldWidgetRJSF = (props: TextAreaFieldWidgetRJSFProps) => {
-  const {
-    value,
-    label,
-    placeholder,
-    rawErrors,
-    required,
-    disabled,
-    options,
-    onChange,
-    readonly,
-  }: TextAreaFieldWidgetRJSFProps = props
-
+const TextAreaFieldWidgetRJSF = ({
+  value,
+  label,
+  placeholder,
+  rawErrors,
+  required,
+  disabled,
+  options,
+  onChange,
+  readonly,
+}: TextAreaFieldWidgetRJSFProps) => {
   const { helptext, tooltip, explicitOptional, className } = options
 
   const handleOnChange = (newValue?: string) => {

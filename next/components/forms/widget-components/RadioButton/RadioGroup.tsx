@@ -14,10 +14,10 @@ export const RadioContext = React.createContext<RadioGroupState>({} as RadioGrou
 type RadioGroupBase = Omit<FieldBaseProps, 'explicitOptional'> &
   Pick<FieldAdditionalProps, 'className'> & {
     children: ReactNode
-    value?: string
+    value?: string | null
     defaultValue?: string
     isReadOnly?: boolean
-    onChange: (value: string) => void
+    onChange: (value: string | null) => void
     orientation?: Orientation
   }
 
@@ -34,20 +34,23 @@ const RadioGroup = (props: RadioGroupBase) => {
     errorMessage,
     helptext,
     tooltip,
+    value,
   } = props
 
   const propsReactAria = {
     ...props,
     isDisabled: disabled,
     isRequired: required,
+    // it may receive "undefined" as value, which would make it uncontrolled
+    value: value == null ? null : value,
   } as RadioGroupProps
 
   const state = useRadioGroupState(propsReactAria)
   const { radioGroupProps, labelProps, errorMessageProps } = useRadioGroup(propsReactAria, state)
 
   const handleReset = () => {
-    // TODO, this may need to be changed to null or undefined
-    state.setSelectedValue('')
+    // setSelectedValue type supports only string, so we need to cast it as null works too
+    ;(state.setSelectedValue as (value: string | null) => void)(null)
   }
 
   return (

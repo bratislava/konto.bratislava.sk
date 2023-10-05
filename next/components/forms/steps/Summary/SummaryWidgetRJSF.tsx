@@ -34,7 +34,7 @@ const ValueComponent = ({
 }: Pick<SummaryWidgetRJSFProps, 'widgetType' | 'value' | 'options' | 'uiSchema'>) => {
   const formatter = useDateFormatter()
 
-  if (!value || (Array.isArray(value) && value.length === 0)) {
+  if (value == null || (Array.isArray(value) && value.length === 0)) {
     return <>-</>
   }
 

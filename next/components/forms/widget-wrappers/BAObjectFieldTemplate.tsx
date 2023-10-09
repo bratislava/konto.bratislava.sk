@@ -18,6 +18,7 @@ const BAObjectFieldTemplate = ({ idSchema, properties, uiSchema }: ObjectFieldTe
 
   const fieldsetClassname = cx({
     'block sm:grid sm:gap-4': options.objectDisplay === 'columns',
+    'border-grey-200 rounded-xl border p-4': options.objectDisplay === 'boxed',
   })
 
   const gridTemplateColumns =

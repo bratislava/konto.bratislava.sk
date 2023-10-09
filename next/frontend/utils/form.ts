@@ -194,7 +194,7 @@ export const validateSummary = (
     // The type in @rjsf/validator-ajv8 is wrong.
     customFormats: ajvFormats as unknown as CustomValidatorOptionsType['customFormats'],
     ajvOptionsOverrides: {
-      strict: true,
+      // RJSF doesn't support strict
       $data: true,
       keywords: getAjvFormKeywords(fileValidateFn),
     },
@@ -213,11 +213,11 @@ export const validateSummary = (
   return { infectedFiles, scanningFiles, uploadingFiles, errorSchema }
 }
 
-export const rjfsValidator = customizeValidator({
+export const rjsfValidator = customizeValidator({
   // The type in @rjsf/validator-ajv8 is wrong.
   customFormats: ajvFormats as unknown as CustomValidatorOptionsType['customFormats'],
   ajvOptionsOverrides: {
-    strict: true,
+    // RJSF doesn't support strict
     $data: true,
     keywords: getAjvFormKeywords(),
   },

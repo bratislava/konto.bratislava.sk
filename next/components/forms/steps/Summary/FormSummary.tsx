@@ -1,4 +1,4 @@
-import { defaultFormStateBehavior, rjfsValidator } from '../../../../frontend/utils/form'
+import { defaultFormStateBehavior, rjsfValidator } from '../../../../frontend/utils/form'
 import { useFormState } from '../../useFormState'
 import SummaryHeader from '../SummaryHeader'
 import SummaryForm from './SummaryForm'
@@ -7,7 +7,7 @@ import SummaryFormLegalText from './SummaryFormLegalText'
 import { FormSummaryProvider } from './useFormSummary'
 
 const FormSummary = () => {
-  const { formData, schema, uiSchema} = useFormState()
+  const { formData, schema, uiSchema } = useFormState()
 
   return (
     <FormSummaryProvider>
@@ -18,7 +18,7 @@ const FormSummary = () => {
           uiSchema={uiSchema}
           formData={formData}
           // The validator is not used, but it's required by the form. We use our own validation in `useFormSummary`.
-          validator={rjfsValidator}
+          validator={rjsfValidator}
           experimental_defaultFormStateBehavior={defaultFormStateBehavior}
           readonly
           onSubmit={(e) => {

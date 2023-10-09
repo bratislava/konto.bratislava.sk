@@ -88,13 +88,17 @@ export type UploadUiOptions = {
   type?: 'button' | 'dragAndDrop'
 } & WidgetUiOptions
 
-export type ObjectFieldUiOptions = {
-  objectDisplay?: 'columns'
-  /**
-   * Slash separated numeric values, e.g. '1/2' or '1/2/3'
-   */
-  objectColumnRatio?: string
-}
+export type ObjectFieldUiOptions =
+  | {
+      objectDisplay?: 'columns'
+      /**
+       * Slash separated numeric values, e.g. '1/2' or '1/2/3'
+       */
+      objectColumnRatio?: string
+    }
+  | {
+      objectDisplay?: 'boxed'
+    }
 
 export type SchemaUiOptions = {
   moreInformationUrl?: string

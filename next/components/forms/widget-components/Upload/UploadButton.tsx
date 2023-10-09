@@ -85,7 +85,7 @@ const UploadButton = forwardRef<HTMLButtonElement, UploadButtonProps>(
               <span>
                 <UploadIcon />
               </span>
-              <span>{t('uploadFiles')}</span>
+              <span>{allowsMultiple ? t('uploadFiles') : t('uploadFile')}</span>
             </div>
           </ReactAriaButton>
         </FileTrigger>

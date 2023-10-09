@@ -840,8 +840,8 @@
     "retry": "Skúsiť znova",
     "supportedFormats": "Podporované formáty",
     "sizeLimit": "Maximálna veľkosť súboru",
+    "uploadFile": "Nahrať súbor",
     "uploadFiles": "Nahrať súbory",
-    "dragAndDrop": "Drag & drop",
     "uploadingList": "Nahrávané súbory",
     "errors": {
       "largeFile": "Súbor je príliš veľký, maximálna veľkosť {{additionalParam}}",

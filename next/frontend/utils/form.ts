@@ -7,9 +7,8 @@ import {
 } from '@rjsf/utils'
 import { customizeValidator } from '@rjsf/validator-ajv8'
 import { CustomValidatorOptionsType } from '@rjsf/validator-ajv8/src/types'
-import type { Options, SchemaValidateFunction } from 'ajv'
+import type { Format, Options, SchemaValidateFunction } from 'ajv'
 import Ajv from 'ajv'
-import { CurrentOptions } from 'ajv/lib/core'
 import traverse from 'traverse'
 import { validate as validateUuid, version as uuidVersion } from 'uuid'
 
@@ -67,7 +66,7 @@ function compareTime(s1: string, s2: string): number | undefined {
   return t1 - t2
 }
 
-export const ajvFormats: CurrentOptions['formats'] = {
+export const ajvFormats = {
   zip: /\b\d{5}\b/,
   // TODO: Remove, but this is needed for form to compile
   ciselnik: () => true,
@@ -78,7 +77,7 @@ export const ajvFormats: CurrentOptions['formats'] = {
     validate: /^(\d|0\d|1\d|2[0-3]):[0-5]\d$/,
     compare: compareTime,
   },
-}
+} satisfies Record<string, Format>
 
 /**
  * Extracts used file UUIDs from form data.

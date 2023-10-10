@@ -1,5 +1,4 @@
 import { CrossIcon } from '@assets/ui-icons'
-import cx from 'classnames'
 import { MenuItemBase } from 'components/forms/simple-components/MenuDropdown/MenuDropdown'
 import { useTranslation } from 'next-i18next'
 import { Button as AriaButton, Dialog, Modal, ModalOverlay } from 'react-aria-components'

@@ -67,6 +67,10 @@ export const createCondition = <T>(value: [string[], T][]) => {
   return result
 }
 
+/**
+ * Create options from a list of strings. For example:
+ * ['Option 1', 'Option 2'] => [{ value: 'Option 1', title: 'Option 1', isDefault: true }, ...]
+ */
 export const createStringOptions = (options: string[]) =>
   options.map((option, index) => ({
     value: option,
@@ -74,6 +78,10 @@ export const createStringOptions = (options: string[]) =>
     isDefault: index === 0 ? true : undefined,
   }))
 
+/**
+ * Create options with camelCase value from a list of strings. For example:
+ * ['Option 1', 'Option 2'] => [{ value: 'option1', title: 'Option 1', isDefault: true }, ...]
+ */
 export const createCamelCaseOptions = (options: string[]) =>
   options.map((option, index) => ({
     value: camelCase(option),
@@ -81,6 +89,10 @@ export const createCamelCaseOptions = (options: string[]) =>
     isDefault: index === 0 ? true : undefined,
   }))
 
+/**
+ * Create options with camelCase value from a list of objects. For example:
+ * [{ title: 'Option 1' }, { title: 'Option 2' }] => [{ value: 'option1', title: 'Option 1', isDefault: true }, ...]
+ */
 export const createCamelCaseOptionsV2 = <Option extends { title: string }>(options: Option[]) =>
   options.map((option, index) => ({
     value: camelCase(option.title),

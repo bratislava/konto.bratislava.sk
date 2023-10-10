@@ -19,7 +19,8 @@
     "generate-client-forms": "openapi-generator-cli generate -i https://nest-forms-backend.staging.bratislava.sk/api-json -g typescript-axios -o ./clients/openapi-forms --skip-validate-spec && node ./fix-client.js && prettier --write ./clients/openapi-forms",
     "generate-clients": "yarn generate-client-forms",
     "postinstall": "patch-package",
-    "update-react-aria": "yarn add @internationalized/date@latest @react-stately/utils@latest react-aria@latest react-aria-components@latest react-stately@latest -E"
+    "update-react-aria": "yarn add @internationalized/date@latest @react-stately/utils@latest react-aria@latest react-aria-components@latest react-stately@latest -E",
+    "update-rjsf": "yarn add @rjsf/core@latest @rjsf/utils@latest @rjsf/validator-ajv8@latest ajv@latest ajv-formats@latest -E"
   },
   "dependencies": {
     "@bratislava/json-schema-xsd-tools": "^0.2.1",
@@ -32,9 +33,9 @@
     "@legendapp/state": "^1.2.11",
     "@radix-ui/react-dropdown-menu": "^2.0.4",
     "@react-stately/utils": "3.7.0",
-    "@rjsf/core": "5.12.0",
-    "@rjsf/utils": "5.12.0",
-    "@rjsf/validator-ajv8": "5.12.0",
+    "@rjsf/core": "5.13.0",
+    "@rjsf/utils": "5.13.0",
+    "@rjsf/validator-ajv8": "5.13.0",
     "@tanstack/react-query": "^4.29.14",
     "@types/formidable": "^2.0.5",
     "@types/minio": "^7.0.14",

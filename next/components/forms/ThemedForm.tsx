@@ -4,6 +4,8 @@ import DatePickerWidgetRJSF from 'components/forms/widget-wrappers/DatePickerWid
 import InputFieldWidgetRJSF from 'components/forms/widget-wrappers/InputFieldWidgetRJSF'
 import TimePickerWidgetRJSF from 'components/forms/widget-wrappers/TimePickerWidgetRJSF'
 
+import BAArrayFieldItemTemplate from './widget-wrappers/BAArrayFieldItemTemplate'
+import BAArrayFieldTemplate from './widget-wrappers/BAArrayFieldTemplate'
 import BAObjectFieldTemplate from './widget-wrappers/BAObjectFieldTemplate'
 import CheckboxWidgetRJSF from './widget-wrappers/CheckboxWidgetRJSF'
 import RadioButtonsWidgetRJSF from './widget-wrappers/RadioButtonWidgetRJSF'
@@ -24,6 +26,8 @@ const theme: ThemeProps = {
   },
   templates: {
     ObjectFieldTemplate: BAObjectFieldTemplate,
+    ArrayFieldTemplate: BAArrayFieldTemplate,
+    ArrayFieldItemTemplate: BAArrayFieldItemTemplate,
   },
 }
 

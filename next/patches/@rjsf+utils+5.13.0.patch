@@ -1,0 +1,180 @@
+diff --git a/node_modules/@rjsf/utils/dist/index.js b/node_modules/@rjsf/utils/dist/index.js
+index a8d133d..492ff05 100644
+--- a/node_modules/@rjsf/utils/dist/index.js
++++ b/node_modules/@rjsf/utils/dist/index.js
+@@ -1062,15 +1062,16 @@ function computeDefaults(validator, rawSchema, {
+   }
+   switch (getSchemaType(schema)) {
+     case "object": {
+-      const objectDefaults = Object.keys(schema.properties || {}).reduce((acc, key) => {
+-        const computedDefault = computeDefaults(validator, (0, import_get6.default)(schema, [PROPERTIES_KEY, key]), {
++      const retrievedSchema = retrieveSchema(validator, schema, rootSchema, formData);
++      const objectDefaults = Object.keys(retrievedSchema.properties || {}).reduce((acc, key) => {
++        const computedDefault = computeDefaults(validator, (0, import_get6.default)(retrievedSchema, [PROPERTIES_KEY, key]), {
+           rootSchema,
+           _recurseList,
+           experimental_defaultFormStateBehavior,
+           includeUndefinedValues: includeUndefinedValues === true,
+           parentDefaults: (0, import_get6.default)(defaults, [key]),
+           rawFormData: (0, import_get6.default)(formData, [key]),
+-          required: schema.required?.includes(key)
++          required: retrievedSchema.required?.includes(key)
+         });
+         maybeAddDefaultToObject(
+           acc,
+@@ -1078,21 +1079,21 @@ function computeDefaults(validator, rawSchema, {
+           computedDefault,
+           includeUndefinedValues,
+           required,
+-          schema.required,
++          retrievedSchema.required,
+           experimental_defaultFormStateBehavior
+         );
+         return acc;
+       }, {});
+-      if (schema.additionalProperties) {
+-        const additionalPropertiesSchema = isObject(schema.additionalProperties) ? schema.additionalProperties : {};
++      if (retrievedSchema.additionalProperties) {
++        const additionalPropertiesSchema = isObject(retrievedSchema.additionalProperties) ? retrievedSchema.additionalProperties : {};
+         const keys = /* @__PURE__ */ new Set();
+         if (isObject(defaults)) {
+-          Object.keys(defaults).filter((key) => !schema.properties || !schema.properties[key]).forEach((key) => keys.add(key));
++          Object.keys(defaults).filter((key) => !retrievedSchema.properties || !retrievedSchema.properties[key]).forEach((key) => keys.add(key));
+         }
+         let formDataRequired;
+         if (isObject(formData)) {
+           formDataRequired = [];
+-          Object.keys(formData).filter((key) => !schema.properties || !schema.properties[key]).forEach((key) => {
++          Object.keys(formData).filter((key) => !retrievedSchema.properties || !retrievedSchema.properties[key]).forEach((key) => {
+             keys.add(key);
+             formDataRequired.push(key);
+           });
+@@ -1105,7 +1106,7 @@ function computeDefaults(validator, rawSchema, {
+             includeUndefinedValues: includeUndefinedValues === true,
+             parentDefaults: (0, import_get6.default)(defaults, [key]),
+             rawFormData: (0, import_get6.default)(formData, [key]),
+-            required: schema.required?.includes(key)
++            required: retrievedSchema.required?.includes(key)
+           });
+           maybeAddDefaultToObject(
+             objectDefaults,
+diff --git a/node_modules/@rjsf/utils/dist/utils.esm.js b/node_modules/@rjsf/utils/dist/utils.esm.js
+index 667e5e5..70eddaa 100644
+--- a/node_modules/@rjsf/utils/dist/utils.esm.js
++++ b/node_modules/@rjsf/utils/dist/utils.esm.js
+@@ -929,15 +929,16 @@ function computeDefaults(validator, rawSchema, {
+   }
+   switch (getSchemaType(schema)) {
+     case "object": {
+-      const objectDefaults = Object.keys(schema.properties || {}).reduce((acc, key) => {
+-        const computedDefault = computeDefaults(validator, get6(schema, [PROPERTIES_KEY, key]), {
++      const retrievedSchema = retrieveSchema(validator, schema, rootSchema, formData);
++      const objectDefaults = Object.keys(retrievedSchema.properties || {}).reduce((acc, key) => {
++        const computedDefault = computeDefaults(validator, get6(retrievedSchema, [PROPERTIES_KEY, key]), {
+           rootSchema,
+           _recurseList,
+           experimental_defaultFormStateBehavior,
+           includeUndefinedValues: includeUndefinedValues === true,
+           parentDefaults: get6(defaults, [key]),
+           rawFormData: get6(formData, [key]),
+-          required: schema.required?.includes(key)
++          required: retrievedSchema.required?.includes(key)
+         });
+         maybeAddDefaultToObject(
+           acc,
+@@ -945,21 +946,21 @@ function computeDefaults(validator, rawSchema, {
+           computedDefault,
+           includeUndefinedValues,
+           required,
+-          schema.required,
++          retrievedSchema.required,
+           experimental_defaultFormStateBehavior
+         );
+         return acc;
+       }, {});
+-      if (schema.additionalProperties) {
+-        const additionalPropertiesSchema = isObject(schema.additionalProperties) ? schema.additionalProperties : {};
++      if (retrievedSchema.additionalProperties) {
++        const additionalPropertiesSchema = isObject(retrievedSchema.additionalProperties) ? retrievedSchema.additionalProperties : {};
+         const keys = /* @__PURE__ */ new Set();
+         if (isObject(defaults)) {
+-          Object.keys(defaults).filter((key) => !schema.properties || !schema.properties[key]).forEach((key) => keys.add(key));
++          Object.keys(defaults).filter((key) => !retrievedSchema.properties || !retrievedSchema.properties[key]).forEach((key) => keys.add(key));
+         }
+         let formDataRequired;
+         if (isObject(formData)) {
+           formDataRequired = [];
+-          Object.keys(formData).filter((key) => !schema.properties || !schema.properties[key]).forEach((key) => {
++          Object.keys(formData).filter((key) => !retrievedSchema.properties || !retrievedSchema.properties[key]).forEach((key) => {
+             keys.add(key);
+             formDataRequired.push(key);
+           });
+@@ -972,7 +973,7 @@ function computeDefaults(validator, rawSchema, {
+             includeUndefinedValues: includeUndefinedValues === true,
+             parentDefaults: get6(defaults, [key]),
+             rawFormData: get6(formData, [key]),
+-            required: schema.required?.includes(key)
++            required: retrievedSchema.required?.includes(key)
+           });
+           maybeAddDefaultToObject(
+             objectDefaults,
+diff --git a/node_modules/@rjsf/utils/dist/utils.umd.js b/node_modules/@rjsf/utils/dist/utils.umd.js
+index 0f56b3e..a7b118f 100644
+--- a/node_modules/@rjsf/utils/dist/utils.umd.js
++++ b/node_modules/@rjsf/utils/dist/utils.umd.js
+@@ -892,15 +892,16 @@
+     }
+     switch (getSchemaType(schema)) {
+       case "object": {
+-        const objectDefaults = Object.keys(schema.properties || {}).reduce((acc, key) => {
+-          const computedDefault = computeDefaults(validator, get7(schema, [PROPERTIES_KEY, key]), {
++        const retrievedSchema = retrieveSchema(validator, schema, rootSchema, formData);
++        const objectDefaults = Object.keys(retrievedSchema.properties || {}).reduce((acc, key) => {
++          const computedDefault = computeDefaults(validator, get7(retrievedSchema, [PROPERTIES_KEY, key]), {
+             rootSchema,
+             _recurseList,
+             experimental_defaultFormStateBehavior,
+             includeUndefinedValues: includeUndefinedValues === true,
+             parentDefaults: get7(defaults, [key]),
+             rawFormData: get7(formData, [key]),
+-            required: schema.required?.includes(key)
++            required: retrievedSchema.required?.includes(key)
+           });
+           maybeAddDefaultToObject(
+             acc,
+@@ -908,21 +909,21 @@
+             computedDefault,
+             includeUndefinedValues,
+             required,
+-            schema.required,
++            retrievedSchema.required,
+             experimental_defaultFormStateBehavior
+           );
+           return acc;
+         }, {});
+-        if (schema.additionalProperties) {
+-          const additionalPropertiesSchema = isObject(schema.additionalProperties) ? schema.additionalProperties : {};
++        if (retrievedSchema.additionalProperties) {
++          const additionalPropertiesSchema = isObject(retrievedSchema.additionalProperties) ? retrievedSchema.additionalProperties : {};
+           const keys = /* @__PURE__ */ new Set();
+           if (isObject(defaults)) {
+-            Object.keys(defaults).filter((key) => !schema.properties || !schema.properties[key]).forEach((key) => keys.add(key));
++            Object.keys(defaults).filter((key) => !retrievedSchema.properties || !retrievedSchema.properties[key]).forEach((key) => keys.add(key));
+           }
+           let formDataRequired;
+           if (isObject(formData)) {
+             formDataRequired = [];
+-            Object.keys(formData).filter((key) => !schema.properties || !schema.properties[key]).forEach((key) => {
++            Object.keys(formData).filter((key) => !retrievedSchema.properties || !retrievedSchema.properties[key]).forEach((key) => {
+               keys.add(key);
+               formDataRequired.push(key);
+             });
+@@ -935,7 +936,7 @@
+               includeUndefinedValues: includeUndefinedValues === true,
+               parentDefaults: get7(defaults, [key]),
+               rawFormData: get7(formData, [key]),
+-              required: schema.required?.includes(key)
++              required: retrievedSchema.required?.includes(key)
+             });
+             maybeAddDefaultToObject(
+               objectDefaults,

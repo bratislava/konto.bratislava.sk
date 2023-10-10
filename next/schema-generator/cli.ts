@@ -29,15 +29,6 @@ if (definition) {
     `./dist/${args.source}/uiSchema.json`,
     JSON.stringify(definition.uiSchema, null, 2),
   )
-
-  fs.writeFileSync(
-    'C:\\Projects\\konto.bratislava.sk\\next\\backend\\forms\\test\\schema.json',
-    JSON.stringify(definition.schema, null, 2),
-  )
-  fs.writeFileSync(
-    'C:\\Projects\\konto.bratislava.sk\\next\\backend\\forms\\test\\uiSchema.json',
-    JSON.stringify(definition.uiSchema, null, 2),
-  )
 } else {
   console.error(`Definition for ${args.source} not found.`)
 }

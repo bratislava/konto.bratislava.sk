@@ -10908,6 +10908,11 @@ next-i18next@12.1.0:
     i18next-fs-backend "^1.1.5"
     react-i18next "^11.18.4"
 
+next-plausible@^3.11.1:
+  version "3.11.1"
+  resolved "https://registry.yarnpkg.com/next-plausible/-/next-plausible-3.11.1.tgz#89c519cf71d80a573ee16eebe1f355b062362aaf"
+  integrity sha512-Gd+QU+XflVTx65yJ2cNZyrOQLrpz3uKjGLEG4ls+CIVqK3yjsVGCMsEWJcvv1LAeVfHUQtCyp1xyAltLn5Odcg==
+
 next-query-params@^4.1.0:
   version "4.1.0"
   resolved "https://registry.yarnpkg.com/next-query-params/-/next-query-params-4.1.0.tgz#d69e0cb3f0ec1e746a7bb255cd5a07d9e03ba95d"

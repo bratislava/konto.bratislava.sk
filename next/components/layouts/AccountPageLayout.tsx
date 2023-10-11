@@ -79,7 +79,7 @@ const AccountPageLayout = ({
       icon: <ServicesIcon className="h-6 w-6" />,
       url: ROUTES.MUNICIPAL_SERVICES,
     },
-    environment.featureToggles.forms
+    environment.featureToggles.formsInMenu
       ? {
           id: 2,
           title: 'account:account_section_applications.navigation',

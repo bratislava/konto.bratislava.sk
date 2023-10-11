@@ -9,7 +9,6 @@ import {
   getSSRCurrentAuth,
   ServerSideAuthProviderHOC,
 } from 'components/logic/ServerSideAuthProvider'
-import { subscribeApi } from 'frontend/api/api'
 import { UserData } from 'frontend/dtos/accountDto'
 import useLoginRegisterRedirect from 'frontend/hooks/useLoginRegisterRedirect'
 import { GENERIC_ERROR_MESSAGE, isError } from 'frontend/utils/errors'
@@ -115,14 +114,6 @@ const RegisterPage = ({ page }: AsyncServerProps<typeof getServerSideProps>) => 
       setRegistrationError(null)
       await Auth.confirmSignUp(lastEmail, code)
       setRegistrationStatus(RegistrationStatus.EMAIL_VERIFICATION_SUCCESS)
-      // TODO move this to backend
-      subscribeApi({}).catch((error) =>
-        logger.error(
-          `${GENERIC_ERROR_MESSAGE} - Failed to subscribe - ignoring and continuing`,
-          lastEmail,
-          error,
-        ),
-      )
     } catch (error) {
       if (isError(error)) {
         setRegistrationError(error)
@@ -153,7 +144,7 @@ const RegisterPage = ({ page }: AsyncServerProps<typeof getServerSideProps>) => 
               error={registrationError}
             />
           ) : (
-            // When verification is not required, the modal has only single button (without cancelLaberl/onCancel the second button is not rendered)
+            // When verification is not required, the modal has only single button (without cancelLabel/onCancel the second button is not rendered)
             // This single button does the same action (redirects back) as the cancel button does in 2 button version
             <AccountSuccessAlert
               title={t('register_success_title')}

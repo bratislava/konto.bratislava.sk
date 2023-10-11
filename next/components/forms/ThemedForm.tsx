@@ -8,6 +8,7 @@ import BAArrayFieldItemTemplate from './widget-wrappers/BAArrayFieldItemTemplate
 import BAArrayFieldTemplate from './widget-wrappers/BAArrayFieldTemplate'
 import BAObjectFieldTemplate from './widget-wrappers/BAObjectFieldTemplate'
 import CheckboxWidgetRJSF from './widget-wrappers/CheckboxWidgetRJSF'
+import CustomComponentsWidgetRJSF from './widget-wrappers/CustomComponentsFieldWidgetRJSF'
 import RadioButtonsWidgetRJSF from './widget-wrappers/RadioButtonWidgetRJSF'
 import SelectFieldWidgetRJSF from './widget-wrappers/SelectFieldWidgetRJSF'
 import TextAreaFieldWidgetRJSF from './widget-wrappers/TextAreaFieldWidgetRJSF'
@@ -23,6 +24,7 @@ const theme: ThemeProps = {
     Upload: UploadWidgetRJSF,
     DatePicker: DatePickerWidgetRJSF,
     TimePicker: TimePickerWidgetRJSF,
+    CustomComponents: CustomComponentsWidgetRJSF,
   },
   templates: {
     ObjectFieldTemplate: BAObjectFieldTemplate,

@@ -88,6 +88,10 @@ export type UploadUiOptions = {
   type?: 'button' | 'dragAndDrop'
 } & WidgetUiOptions
 
+export type CustomComponentFieldUiOptions = Pick<WidgetUiOptions, 'spaceTop' | 'spaceBottom'> & {
+  customComponents?: CustomComponentType[]
+}
+
 export type ObjectFieldUiOptions =
   | {
       objectDisplay?: 'columns'

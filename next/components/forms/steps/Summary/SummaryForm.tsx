@@ -36,6 +36,9 @@ const theme: ThemeProps = {
     Upload: wrapWidget('upload'),
     DatePicker: wrapWidget('datepicker'),
     TimePicker: wrapWidget('timepicker'),
+    CustomComponents: () => {
+      return null
+    },
   },
 }
 

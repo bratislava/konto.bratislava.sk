@@ -5,6 +5,8 @@ import uniq from 'lodash/uniq'
 
 import {
   CheckboxesUiOptions,
+  CustomComponentFieldUiOptions,
+  CustomComponentType,
   DatePickerUiOptions,
   InputFieldUiOptions,
   ObjectFieldUiOptions,
@@ -362,6 +364,29 @@ export const timePicker = (
       'ui:options': uiOptions,
     }),
     required: Boolean(options.required),
+  }
+}
+
+let customComponentCounter = 0
+
+export const customComponentsField = (
+  customComponents: CustomComponentType | CustomComponentType[],
+  uiOptions: Omit<CustomComponentFieldUiOptions, 'customComponents'>,
+): Field => {
+  customComponentCounter += 1
+  return {
+    property: `customComponent${customComponentCounter}_gRbYIKNcAF`,
+    schema: () => ({
+      anyOf: [{}],
+    }),
+    uiSchema: () => {
+      const array = Array.isArray(customComponents) ? customComponents : [customComponents]
+      return {
+        'ui:widget': 'CustomComponents',
+        'ui:options': { ...uiOptions, customComponents: array },
+      }
+    },
+    required: false,
   }
 }
 

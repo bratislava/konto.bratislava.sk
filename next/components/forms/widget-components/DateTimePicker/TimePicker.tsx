@@ -18,6 +18,7 @@ export type TimePickerProps = FieldBaseProps &
   Pick<FieldAdditionalProps, 'customErrorPlace'> & {
     value?: string | null
     onChange?: (value?: string | null) => void
+    onBlur?: () => void
     minValue?: string
     maxValue?: string
     readOnly?: boolean
@@ -35,6 +36,7 @@ const TimePicker = forwardRef<HTMLDivElement, TimePickerProps>(
       tooltip,
       helptext,
       onChange = () => {},
+      onBlur = () => {},
       value,
       minValue,
       maxValue,
@@ -75,6 +77,7 @@ const TimePicker = forwardRef<HTMLDivElement, TimePickerProps>(
             onChange={(time) =>
               setValueControlled(time ? removeSecondsFromTime(time.toString()) : null)
             }
+            onBlur={onBlur}
             value={parsedValue}
             readOnly={readOnly}
             customErrorPlace={customErrorPlace}

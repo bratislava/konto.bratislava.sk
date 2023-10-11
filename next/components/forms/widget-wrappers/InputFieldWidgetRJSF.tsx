@@ -4,9 +4,11 @@ import WidgetWrapper from 'components/forms/widget-wrappers/WidgetWrapper'
 import React from 'react'
 import { InputFieldUiOptions } from 'schema-generator/generator/uiOptionsTypes'
 
+import FieldBlurWrapper from '../widget-components/FieldBlurWrapper/FieldBlurWrapper'
+
 interface InputFieldWidgetRJSFProps extends WidgetProps {
   options: InputFieldUiOptions & WidgetProps['options']
-  value: string | null
+  value: string | undefined
   onChange: (value?: string) => void
 }
 
@@ -32,7 +34,7 @@ const InputFieldWidgetRJSF = ({
     size = 'default',
   } = options
 
-  const handleOnChange = (newValue?: string) => {
+  const handleOnChange = (newValue: string | undefined) => {
     if (newValue && newValue !== '') {
       onChange(newValue)
     } else {
@@ -42,23 +44,28 @@ const InputFieldWidgetRJSF = ({
 
   return (
     <WidgetWrapper options={options}>
-      <InputField
-        label={label}
-        type={type}
-        placeholder={placeholder}
-        value={value ?? undefined}
-        errorMessage={rawErrors}
-        required={required}
-        disabled={disabled || readonly}
-        helptext={helptext}
-        tooltip={tooltip}
-        className={className}
-        resetIcon={resetIcon}
-        leftIcon={leftIcon}
-        onChange={handleOnChange}
-        explicitOptional={explicitOptional}
-        size={size}
-      />
+      <FieldBlurWrapper value={value} onChange={handleOnChange}>
+        {({ value: wrapperValue, onChange: wrapperOnChange, onBlur }) => (
+          <InputField
+            label={label}
+            type={type}
+            placeholder={placeholder}
+            value={wrapperValue ?? undefined}
+            errorMessage={rawErrors}
+            required={required}
+            disabled={disabled || readonly}
+            helptext={helptext}
+            tooltip={tooltip}
+            className={className}
+            resetIcon={resetIcon}
+            leftIcon={leftIcon}
+            onChange={wrapperOnChange}
+            onBlur={onBlur}
+            explicitOptional={explicitOptional}
+            size={size}
+          />
+        )}
+      </FieldBlurWrapper>
     </WidgetWrapper>
   )
 }

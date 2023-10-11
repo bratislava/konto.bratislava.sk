@@ -31,6 +31,7 @@ export type InputProps = FieldBaseProps &
     resetIcon?: boolean
     tooltipPosition?: TooltipPositionType
     onChange?: (value?: string) => void
+    onBlur?: () => void
     size?: SizeType
     endIcon?: ReactNode
     autoComplete?: string

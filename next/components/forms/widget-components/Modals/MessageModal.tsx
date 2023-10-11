@@ -1,5 +1,6 @@
 import cx from 'classnames'
 import React, { Fragment, PropsWithChildren, ReactNode } from 'react'
+import { twMerge } from 'tailwind-merge'
 
 import ErrorIcon from '../../icon-components/ErrorIcon'
 import InfoIcon from '../../icon-components/InfoIcon'
@@ -14,6 +15,8 @@ export type MessageModalProps = PropsWithChildren<{
   title: string
   buttons?: ReactNode[]
   afterContent?: ReactNode
+  titleClassName?: string
+  childrenClassName?: string
 }> &
   Pick<ModalV2Props, 'isOpen' | 'onOpenChange' | 'isDismissable' | 'noCloseButton'>
 
@@ -32,6 +35,8 @@ const MessageModal = ({
   title,
   buttons,
   afterContent,
+  titleClassName,
+  childrenClassName,
   ...rest
 }: MessageModalProps) => {
   return (
@@ -60,8 +65,22 @@ const MessageModal = ({
               'md:items-start': variant === 'horizontal',
             })}
           >
-            <div className="h-14 text-center text-h-base font-semibold md:text-left">{title}</div>
-            <div className="text-p2 whitespace-pre-wrap text-center md:text-left">{children}</div>
+            <div
+              className={twMerge(
+                'h-14 text-center text-h-base font-semibold md:text-left',
+                titleClassName,
+              )}
+            >
+              {title}
+            </div>
+            <div
+              className={twMerge(
+                'text-p2 whitespace-pre-wrap text-center md:text-left',
+                childrenClassName,
+              )}
+            >
+              {children}
+            </div>
           </div>
         </div>
       </div>

@@ -52,6 +52,11 @@ export const environment = {
         'NEXT_PUBLIC_FEATURE_TOGGLE_FORMS',
         process.env.NEXT_PUBLIC_FEATURE_TOGGLE_FORMS,
       ) === 'true',
+    formsInMenu:
+      assertEnv(
+        'NEXT_PUBLIC_FEATURE_TOGGLE_FORMS_IN_MENU',
+        process.env.NEXT_PUBLIC_FEATURE_TOGGLE_FORMS_IN_MENU,
+      ) === 'true',
     pravnickaOsobaRegistration:
       assertEnv(
         // eslint-disable-next-line no-secrets/no-secrets

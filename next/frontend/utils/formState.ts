@@ -6,7 +6,7 @@ import { useCallback, useEffect, useState } from 'react'
 import { useEffectOnceWhen } from 'rooks'
 
 import { FormStepIndex, FormStepperStep } from '../../components/forms/types/Steps'
-import { rjfsValidator } from './form'
+import { rjsfValidator } from './form'
 import { isDefined } from './general'
 
 export const SUMMARY_HASH = 'sumar'
@@ -25,7 +25,7 @@ export const getEvaluatedStepsSchemas = (
       if (typeof step === 'boolean') {
         return null
       }
-      const retrievedSchema = retrieveSchema(rjfsValidator, step, schema, formData)
+      const retrievedSchema = retrieveSchema(rjsfValidator, step, schema, formData)
 
       return Object.keys(retrievedSchema).length > 0 ? retrievedSchema : null
     }) ?? []

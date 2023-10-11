@@ -70,9 +70,11 @@ const CheckboxGroupItem = ({
 
   return (
     <div>
-      <label className={containerStyle} htmlFor={rest.value}>
+      {/* The input is inside of label, therefore it doesn't need an id. */}
+      {/* eslint-disable-next-line jsx-a11y/label-has-associated-control */}
+      <label className={containerStyle}>
         <VisuallyHidden>
-          <input id={rest.value} {...inputProps} {...focusProps} ref={ref} />
+          <input {...inputProps} {...focusProps} ref={ref} />
         </VisuallyHidden>
         <div className="flex w-full items-center gap-3">
           <div>

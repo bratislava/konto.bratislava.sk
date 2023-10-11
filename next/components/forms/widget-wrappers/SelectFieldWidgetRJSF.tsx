@@ -1,20 +1,10 @@
-import { EnumOptionsType, RJSFSchema, WidgetProps } from '@rjsf/utils'
-import { WidgetOptions } from 'components/forms/types/WidgetOptions'
+import { RJSFSchema, WidgetProps } from '@rjsf/utils'
 import WidgetWrapper from 'components/forms/widget-wrappers/WidgetWrapper'
+import { SelectFieldUiOptions } from 'schema-generator/generator/uiOptionsTypes'
 
 import useEnum from '../../../frontend/hooks/useEnum'
 import SelectField from '../widget-components/SelectField/SelectField'
 import { SelectOption } from '../widget-components/SelectField/SelectOption.interface'
-
-export type SelectRJSFOptions = {
-  enumOptions?: EnumOptionsType[]
-  dropdownDivider?: boolean
-  selectAllOption?: boolean
-  explicitOptional?: boolean
-  hideScrollbar?: boolean
-  maxWordSize?: number
-  // selectType?: 'one' | 'multiple' | 'arrow' | 'radio'
-} & WidgetOptions
 
 interface RJSFSelectSchema extends RJSFSchema {
   ciselnik?: {
@@ -23,37 +13,32 @@ interface RJSFSelectSchema extends RJSFSchema {
 }
 
 interface SelectFieldWidgetRJSFProps<T = unknown> extends WidgetProps {
-  options: SelectRJSFOptions
+  options: SelectFieldUiOptions & WidgetProps['options']
   value: T | T[] | null
   schema: RJSFSelectSchema
   onChange: (value?: T | T[] | null) => void
 }
 
-const SelectFieldWidgetRJSF = (props: SelectFieldWidgetRJSFProps) => {
-  const {
-    label,
-    options,
-    value,
-    required,
-    disabled,
-    placeholder,
-    schema,
-    onChange,
-    rawErrors,
-    readonly,
-  } = props
+const SelectFieldWidgetRJSF = ({
+  label,
+  options,
+  value,
+  required,
+  disabled,
+  placeholder,
+  schema,
+  onChange,
+  rawErrors,
+  readonly,
+}: SelectFieldWidgetRJSFProps) => {
   const {
     enumOptions,
     selectAllOption,
     helptext,
     tooltip,
-    accordion,
-    additionalLinks,
     dropdownDivider,
     className,
     explicitOptional,
-    spaceBottom = 'none',
-    spaceTop = 'large',
     hideScrollbar = false,
     maxWordSize,
   } = options
@@ -127,7 +112,7 @@ const SelectFieldWidgetRJSF = (props: SelectFieldWidgetRJSFProps) => {
   const transformedValue = type === 'multiple' ? handleTransformMultiple() : handleTransformOne()
 
   return (
-    <WidgetWrapper accordion={accordion} additionalLinks={additionalLinks} spaceBottom={spaceBottom} spaceTop={spaceTop}>
+    <WidgetWrapper options={options}>
       <SelectField
         type={type}
         label={label}

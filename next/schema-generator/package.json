@@ -1,0 +1,16 @@
+{
+  "name": "schema-generator",
+  "version": "1.0.0",
+  "license": "EUPL-1.2",
+  "scripts": {
+    "generate:showcase": "ts-node cli.ts --source=showcase",
+    "generate:stanoviskoKInvesticnemuZameru": "ts-node cli.ts --source=stanoviskoKInvesticnemuZameru",
+    "generate:zavazneStanoviskoKInvesticnejCinnosti": "ts-node cli.ts --source=zavazneStanoviskoKInvesticnejCinnosti",
+    "generate:priznanieKDaniZNehnutelnosti": "ts-node cli.ts --source=priznanieKDaniZNehnutelnosti"
+  },
+  "dependencies": {
+    "ts-command-line-args": "^2.5.1",
+    "ts-node": "^10.9.1"
+  },
+  "devDependencies": {}
+}

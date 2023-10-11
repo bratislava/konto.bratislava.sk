@@ -1,14 +1,12 @@
 import { StrictRJSFSchema, WidgetProps } from '@rjsf/utils'
-import { WidgetOptions } from 'components/forms/types/WidgetOptions'
 import DatePicker from 'components/forms/widget-components/DateTimePicker/DatePicker'
 import WidgetWrapper from 'components/forms/widget-wrappers/WidgetWrapper'
 import React from 'react'
-
-type DatePickerRJSFOptions = WidgetOptions
+import { DatePickerUiOptions } from 'schema-generator/generator/uiOptionsTypes'
 
 interface DatePickerWidgetRJSFProps extends WidgetProps {
   label: string
-  options: DatePickerRJSFOptions
+  options: DatePickerUiOptions & WidgetProps['options']
   value: string | null
   errorMessage?: string
   schema: StrictRJSFSchema
@@ -25,18 +23,10 @@ const DatePickerWidgetRJSF = ({
   onChange,
   readonly,
 }: DatePickerWidgetRJSFProps) => {
-  const {
-    helptext,
-    tooltip,
-    explicitOptional,
-    accordion,
-    additionalLinks,
-    spaceBottom = 'none',
-    spaceTop = 'large',
-  } = options
+  const { helptext, tooltip, explicitOptional } = options
 
   return (
-    <WidgetWrapper accordion={accordion} additionalLinks={additionalLinks} spaceBottom={spaceBottom} spaceTop={spaceTop}>
+    <WidgetWrapper options={options}>
       <DatePicker
         label={label}
         errorMessage={rawErrors}

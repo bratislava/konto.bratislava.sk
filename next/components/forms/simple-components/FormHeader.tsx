@@ -5,6 +5,7 @@ import {
   EllipsisVerticalIcon,
   PdfIcon,
 } from '@assets/ui-icons'
+import { getUiOptions } from '@rjsf/utils'
 import cx from 'classnames'
 import Button from 'components/forms/simple-components/Button'
 import MenuDropdown, {
@@ -14,12 +15,13 @@ import Waves from 'components/forms/simple-components/Waves/Waves'
 import Link from 'next/link'
 import { useTranslation } from 'next-i18next'
 import { useState } from 'react'
+import { SchemaUiOptions } from 'schema-generator/generator/uiOptionsTypes'
 
 import { useFormExportImport } from '../../../frontend/hooks/useFormExportImport'
 import { useFormState } from '../useFormState'
 
 const FormHeader = () => {
-  const { isReadonly, uiSchema, schema} = useFormState()
+  const { isReadonly, uiSchema, schema } = useFormState()
   const { exportXml, exportPdf, importXml, saveConcept } = useFormExportImport()
   const { t } = useTranslation('forms')
 
@@ -41,7 +43,10 @@ const FormHeader = () => {
       : null,
   ].filter(Boolean) as MenuItemBase[]
 
-  const headerUrl = typeof uiSchema['ui:options']?.url === 'string' ? uiSchema['ui:options']?.url : undefined
+  const uiOptions = getUiOptions(uiSchema) as SchemaUiOptions
+
+  const headerUrl =
+    typeof uiOptions?.moreInformationUrl === 'string' ? uiOptions.moreInformationUrl : undefined
 
   return (
     <div className="relative flex flex-col">
@@ -50,7 +55,7 @@ const FormHeader = () => {
           <div className="flex flex-col gap-2 lg:gap-4">
             <h1 className="text-h1-form">{schema.title}</h1>
             {headerUrl && (
-              <Link className="text-p1-underline w-max" href={headerUrl}>
+              <Link className="text-p1-underline w-max" href={headerUrl} target="_blank">
                 {t('form_header.services_link')}
               </Link>
             )}

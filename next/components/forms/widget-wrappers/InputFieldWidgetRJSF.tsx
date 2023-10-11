@@ -1,20 +1,14 @@
-import { StrictRJSFSchema, WidgetProps } from '@rjsf/utils'
-import { WidgetOptions } from 'components/forms/types/WidgetOptions'
+import { WidgetProps } from '@rjsf/utils'
 import InputField from 'components/forms/widget-components/InputField/InputField'
 import WidgetWrapper from 'components/forms/widget-wrappers/WidgetWrapper'
 import React from 'react'
+import { InputFieldUiOptions } from 'schema-generator/generator/uiOptionsTypes'
 
-type InputFieldRJSFOptions = {
-  type?: 'text' | 'password'
-  resetIcon?: boolean
-  leftIcon?: 'person' | 'mail' | 'call' | 'lock'
-  size?: 'large' | 'default' | 'small'
-} & WidgetOptions
+import FieldBlurWrapper from '../widget-components/FieldBlurWrapper/FieldBlurWrapper'
 
 interface InputFieldWidgetRJSFProps extends WidgetProps {
-  options: InputFieldRJSFOptions
-  value: string | null
-  schema: StrictRJSFSchema
+  options: InputFieldUiOptions & WidgetProps['options']
+  value: string | undefined
   onChange: (value?: string) => void
 }
 
@@ -35,16 +29,12 @@ const InputFieldWidgetRJSF = ({
     className,
     resetIcon,
     leftIcon,
-    accordion,
-    additionalLinks,
     explicitOptional,
     type,
     size = 'default',
-    spaceBottom = 'none',
-    spaceTop = 'large',
   } = options
 
-  const handleOnChange = (newValue?: string) => {
+  const handleOnChange = (newValue: string | undefined) => {
     if (newValue && newValue !== '') {
       onChange(newValue)
     } else {
@@ -53,24 +43,29 @@ const InputFieldWidgetRJSF = ({
   }
 
   return (
-    <WidgetWrapper accordion={accordion} additionalLinks={additionalLinks} spaceBottom={spaceBottom} spaceTop={spaceTop}>
-      <InputField
-        label={label}
-        type={type}
-        placeholder={placeholder}
-        value={value ?? undefined}
-        errorMessage={rawErrors}
-        required={required}
-        disabled={disabled || readonly}
-        helptext={helptext}
-        tooltip={tooltip}
-        className={className}
-        resetIcon={resetIcon}
-        leftIcon={leftIcon}
-        onChange={handleOnChange}
-        explicitOptional={explicitOptional}
-        size={size}
-      />
+    <WidgetWrapper options={options}>
+      <FieldBlurWrapper value={value} onChange={handleOnChange}>
+        {({ value: wrapperValue, onChange: wrapperOnChange, onBlur }) => (
+          <InputField
+            label={label}
+            type={type}
+            placeholder={placeholder}
+            value={wrapperValue ?? undefined}
+            errorMessage={rawErrors}
+            required={required}
+            disabled={disabled || readonly}
+            helptext={helptext}
+            tooltip={tooltip}
+            className={className}
+            resetIcon={resetIcon}
+            leftIcon={leftIcon}
+            onChange={wrapperOnChange}
+            onBlur={onBlur}
+            explicitOptional={explicitOptional}
+            size={size}
+          />
+        )}
+      </FieldBlurWrapper>
     </WidgetWrapper>
   )
 }

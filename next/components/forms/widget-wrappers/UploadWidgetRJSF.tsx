@@ -1,33 +1,31 @@
 import { StrictRJSFSchema, WidgetProps } from '@rjsf/utils'
 import WidgetWrapper from 'components/forms/widget-wrappers/WidgetWrapper'
 import React from 'react'
+import { UploadUiOptions } from 'schema-generator/generator/uiOptionsTypes'
 
 import { useFormFileUpload } from '../useFormFileUpload'
 import Upload from '../widget-components/Upload/Upload'
-import UploadRJSFOptions from '../widget-components/Upload/UploadRJSFOptions'
 
 interface UploadWidgetRJSFProps extends WidgetProps {
-  options: UploadRJSFOptions
+  options: UploadUiOptions & WidgetProps['options']
   schema: StrictRJSFSchema
   value: string | string[] | null
   multiple?: boolean
   onChange: (value?: string | string[] | null) => void
 }
 
-const UploadWidgetRJSF = (props: UploadWidgetRJSFProps) => {
-  const { options, schema, label, required, value, disabled, onChange, rawErrors, readonly } = props
-
-  const {
-    size,
-    accept,
-    helptext,
-    type = 'button',
-    className,
-    accordion,
-    additionalLinks,
-    spaceBottom = 'none',
-    spaceTop = 'large',
-  } = options
+const UploadWidgetRJSF = ({
+  options,
+  schema,
+  label,
+  required,
+  value,
+  disabled,
+  onChange,
+  rawErrors,
+  readonly,
+}: UploadWidgetRJSFProps) => {
+  const { size, accept, helptext, type = 'button', className } = options
 
   const supportedFormats = accept?.split(',')
   const multiple = schema.type === 'array'
@@ -76,13 +74,7 @@ const UploadWidgetRJSF = (props: UploadWidgetRJSFProps) => {
   }
 
   return (
-    <WidgetWrapper
-      accordion={accordion}
-      additionalLinks={additionalLinks}
-      spaceBottom={spaceBottom}
-      spaceTop={spaceTop}
-      className="w-full"
-    >
+    <WidgetWrapper options={options} className="w-full">
       <Upload
         value={value}
         errorMessage={rawErrors}

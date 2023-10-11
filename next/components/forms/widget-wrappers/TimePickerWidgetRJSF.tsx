@@ -1,14 +1,14 @@
 import { StrictRJSFSchema, WidgetProps } from '@rjsf/utils'
-import { WidgetOptions } from 'components/forms/types/WidgetOptions'
 import TimePicker from 'components/forms/widget-components/DateTimePicker/TimePicker'
 import WidgetWrapper from 'components/forms/widget-wrappers/WidgetWrapper'
 import React from 'react'
+import { TimePickerUiOptions } from 'schema-generator/generator/uiOptionsTypes'
 
-type TimePickerRJSFOptions = WidgetOptions
+import FieldBlurWrapper from '../widget-components/FieldBlurWrapper/FieldBlurWrapper'
 
 interface TimePickerWidgetRJSFProps extends WidgetProps {
-  options: TimePickerRJSFOptions
-  value: string | null
+  options: TimePickerUiOptions & WidgetProps['options']
+  value: string | undefined
   errorMessage?: string
   schema: StrictRJSFSchema
   onChange: (value?: string) => void
@@ -24,29 +24,26 @@ const TimePickerWidgetRJSF = ({
   onChange,
   readonly,
 }: TimePickerWidgetRJSFProps) => {
-  const {
-    helptext,
-    tooltip,
-    accordion,
-    additionalLinks,
-    explicitOptional,
-    spaceBottom = 'none',
-    spaceTop = 'large',
-  } = options
+  const { helptext, tooltip, explicitOptional } = options
 
   return (
-    <WidgetWrapper accordion={accordion} additionalLinks={additionalLinks} spaceBottom={spaceBottom} spaceTop={spaceTop}>
-      <TimePicker
-        label={label}
-        errorMessage={rawErrors}
-        required={required}
-        disabled={disabled || readonly}
-        helptext={helptext}
-        tooltip={tooltip}
-        explicitOptional={explicitOptional}
-        value={value ?? null}
-        onChange={(value) => onChange(value ?? undefined)}
-      />
+    <WidgetWrapper options={options}>
+      <FieldBlurWrapper value={value} onChange={onChange}>
+        {({ value: wrapperValue, onChange: wrapperOnChange, onBlur }) => (
+          <TimePicker
+            label={label}
+            errorMessage={rawErrors}
+            required={required}
+            disabled={disabled || readonly}
+            helptext={helptext}
+            tooltip={tooltip}
+            explicitOptional={explicitOptional}
+            value={wrapperValue ?? null}
+            onChange={(value) => wrapperOnChange(value ?? undefined)}
+            onBlur={onBlur}
+          />
+        )}
+      </FieldBlurWrapper>
     </WidgetWrapper>
   )
 }

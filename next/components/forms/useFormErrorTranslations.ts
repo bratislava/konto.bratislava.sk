@@ -1,20 +1,27 @@
 import { RJSFValidationError } from '@rjsf/utils'
 import { useTranslation } from 'next-i18next'
 
-// today this is more of an example then necessity
-// providing specific errors for different regex patterns will likely be needed, this provides pattern to follow
-const getSpecialCaseErrorTranslationKey = (error: RJSFValidationError) => {
-  let parameterValue = ''
-  // eslint-disable-next-line sonarjs/no-small-switch
-  switch (error.name) {
-    case 'pattern':
-      // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
-      parameterValue = error?.params?.pattern || ''
-      break
-    default:
-      parameterValue = ''
+const useGetTranslationKey = () => {
+  const { t } = useTranslation('rjsf-errors')
+
+  // TODO: workaround, i18n.exists doesn't work, examine
+  const exists = (key: string) => t(key) !== key
+
+  return (error: RJSFValidationError) => {
+    // eslint-disable-next-line sonarjs/no-small-switch
+    switch (error.name) {
+      case 'format':
+        // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
+        const key = `format.${error?.params?.format}`
+        if (exists(key)) {
+          return key
+        }
+
+        return `format.unknown`
+      default:
+        return error.name ?? 'unknown'
+    }
   }
-  return `specialCaseByNameAndParamValue.${error.name}.${parameterValue}`
 }
 
 /**
@@ -29,11 +36,13 @@ const getSpecialCaseErrorTranslationKey = (error: RJSFValidationError) => {
  */
 export const useFormErrorTranslations = () => {
   const { t } = useTranslation('rjsf-errors')
+  const getTranslationKey = useGetTranslationKey()
+
   const transformErrors = (errors: Array<RJSFValidationError>) =>
     errors.map((error) => {
       return {
         ...error,
-        message: t([getSpecialCaseErrorTranslationKey(error), error.name || 'unknown']),
+        message: t(getTranslationKey(error)),
       }
     })
   return { transformErrors }

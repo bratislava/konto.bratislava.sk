@@ -10,6 +10,7 @@ type TextAreaBase = FieldBaseProps &
     defaultValue?: string
     value?: string
     onChange?: (value?: string) => void
+    onBlur?: () => void
   }
 
 const TextAreaField = ({
@@ -52,6 +53,9 @@ const TextAreaField = ({
         }
         setUseDefaultValue(false)
       },
+      onFocusChange: (value) => {
+        setIsFocused(value)
+      },
       isRequired: required,
       isDisabled: disabled,
     },
@@ -88,14 +92,7 @@ const TextAreaField = ({
         errorMessageProps={errorMessageProps}
       >
         <div className={containerStyle}>
-          <textarea
-            {...inputProps}
-            ref={ref}
-            name={inputProps.id}
-            className={textareaStyle}
-            onFocus={() => setIsFocused(true)}
-            onBlur={() => setIsFocused(false)}
-          />
+          <textarea {...inputProps} ref={ref} name={inputProps.id} className={textareaStyle} />
         </div>
       </FieldWrapper>
     </div>

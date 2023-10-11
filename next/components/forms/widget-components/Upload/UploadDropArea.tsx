@@ -104,7 +104,9 @@ const UploadDropArea = forwardRef<HTMLButtonElement, UploadDropAreaProps>(
                 </div>
               </div>
 
-              <div className="text-16-semibold">{t('dragAndDrop')}</div>
+              <div className="text-16-semibold">
+                {allowsMultiple ? t('uploadFiles') : t('uploadFile')}
+              </div>
 
               {sizeLimit || supportedFormats?.length ? (
                 <dl className="text-p3 flex gap-2">

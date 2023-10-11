@@ -12,6 +12,7 @@ type TimeFieldProps = FieldBaseProps &
   Pick<FieldAdditionalProps, 'customErrorPlace'> & {
     children?: ReactNode
     onChange?: (value: TimeValue | null) => void
+    onBlur?: () => void
     value?: TimeValue | null
     readOnly?: boolean
     minValue?: TimeValue

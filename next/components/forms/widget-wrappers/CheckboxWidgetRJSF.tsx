@@ -1,50 +1,29 @@
 import { EnumOptionsType, StrictRJSFSchema, WidgetProps } from '@rjsf/utils'
-import { WidgetOptions } from 'components/forms/types/WidgetOptions'
 import WidgetWrapper from 'components/forms/widget-wrappers/WidgetWrapper'
 import React from 'react'
+import { CheckboxesUiOptions } from 'schema-generator/generator/uiOptionsTypes'
 
 import Checkbox from '../widget-components/Checkbox/Checkbox'
 import CheckboxGroup from '../widget-components/Checkbox/CheckboxGroup'
 
-type CheckboxUiOptions = {
-  value: string
-  tooltip: string
-}
-
-export type CheckboxesRJSFOptions = {
-  enumOptions?: EnumOptionsType[]
-  variant?: 'basic' | 'boxed'
-  checkboxOptions?: CheckboxUiOptions[]
-} & WidgetOptions
-
 interface CheckboxesWidgetRJSFProps extends WidgetProps {
-  options: CheckboxesRJSFOptions
+  options: CheckboxesUiOptions & WidgetProps['options']
   value: string[] | null
   schema: StrictRJSFSchema
   onChange: (value: string[]) => void
 }
 
-const CheckboxWidgetRJSF = (props: CheckboxesWidgetRJSFProps) => {
-  const {
-    options,
-    value,
-    onChange,
-    label,
-    schema: { maxItems },
-    rawErrors,
-    required,
-    readonly,
-  } = props
-  const {
-    enumOptions,
-    className,
-    accordion,
-    additionalLinks,
-    spaceBottom = 'none',
-    spaceTop = 'large',
-    checkboxOptions = [],
-    variant = 'basic',
-  } = options
+const CheckboxWidgetRJSF = ({
+  options,
+  value,
+  onChange,
+  label,
+  schema: { maxItems },
+  rawErrors,
+  required,
+  readonly,
+}: CheckboxesWidgetRJSFProps) => {
+  const { enumOptions, className, checkboxOptions = [], variant = 'basic' } = options
   if (!enumOptions) return <div />
   const getTooltip = (radioValue: string) => {
     return checkboxOptions.find((option) => option.value === radioValue)?.tooltip
@@ -53,7 +32,7 @@ const CheckboxWidgetRJSF = (props: CheckboxesWidgetRJSFProps) => {
     return value?.length === maxItems && !value?.includes(valueName)
   }
   return (
-    <WidgetWrapper accordion={accordion} additionalLinks={additionalLinks} spaceBottom={spaceBottom} spaceTop={spaceTop} >
+    <WidgetWrapper options={options}>
       <CheckboxGroup
         errorMessage={rawErrors}
         value={value ?? undefined}

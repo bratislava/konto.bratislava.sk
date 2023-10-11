@@ -9,7 +9,7 @@ import { FieldAdditionalProps, FieldBaseProps } from '../FieldBase'
 import FieldWrapper from '../FieldWrapper'
 
 export type LeftIconVariants = 'person' | 'mail' | 'call' | 'lock'
-export type InputType = 'text' | 'password'
+export type InputType = 'text' | 'password' | 'email' | 'tel' | 'number'
 export type SizeType = 'large' | 'default' | 'small'
 
 export const isLeftIconVariant = (value: string): value is LeftIconVariants => {
@@ -31,6 +31,7 @@ export type InputProps = FieldBaseProps &
     resetIcon?: boolean
     tooltipPosition?: TooltipPositionType
     onChange?: (value?: string) => void
+    onBlur?: () => void
     size?: SizeType
     endIcon?: ReactNode
     autoComplete?: string

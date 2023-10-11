@@ -6,7 +6,8 @@ import {
   ValidatorType,
 } from '@rjsf/utils'
 import { customizeValidator } from '@rjsf/validator-ajv8'
-import type { Options, SchemaValidateFunction } from 'ajv'
+import { CustomValidatorOptionsType } from '@rjsf/validator-ajv8/src/types'
+import type { Format, Options, SchemaValidateFunction } from 'ajv'
 import Ajv from 'ajv'
 import traverse from 'traverse'
 import { validate as validateUuid, version as uuidVersion } from 'uuid'
@@ -33,22 +34,6 @@ export const getAjvFormKeywords = (
   fileValidateFn?: SchemaValidateFunction,
 ): Options['keywords'] => {
   return [
-    // TOOD: Remove
-    {
-      keyword: 'comment',
-    },
-    // TOOD: Remove
-    {
-      keyword: 'example',
-    },
-    // TOOD: Remove
-    {
-      keyword: 'timeFromTo',
-    },
-    // TOOD: Remove
-    {
-      keyword: 'dateFromTo',
-    },
     {
       keyword: 'pospID',
     },
@@ -71,13 +56,28 @@ export const getAjvFormKeywords = (
     },
   ]
 }
+
+// Copy of https://github.com/ajv-validator/ajv-formats/blob/4dd65447575b35d0187c6b125383366969e6267e/src/formats.ts#L180C1-L186C2
+function compareTime(s1: string, s2: string): number | undefined {
+  if (!(s1 && s2)) return undefined
+  const t1 = new Date(`2020-01-01T${s1}`).valueOf()
+  const t2 = new Date(`2020-01-01T${s2}`).valueOf()
+  if (!(t1 && t2)) return undefined
+  return t1 - t2
+}
+
 export const ajvFormats = {
-  // TODO: Explore if only Slovak zip codes are supported
   zip: /\b\d{5}\b/,
   // TODO: Remove, but this is needed for form to compile
   ciselnik: () => true,
-  localTime: () => true,
-}
+  // https://blog.kevinchisholm.com/javascript/javascript-e164-phone-number-validation/
+  'phone-number': /^\+?[1-9]\d{1,14}$/,
+  localTime: {
+    // https://stackoverflow.com/a/51177696
+    validate: /^(\d|0\d|1\d|2[0-3]):[0-5]\d$/,
+    compare: compareTime,
+  },
+} satisfies Record<string, Format>
 
 /**
  * Extracts used file UUIDs from form data.
@@ -117,6 +117,7 @@ export const getFileUuids = (schema: RJSFSchema, formData: GenericObjectType) =>
 
   const instance = new Ajv({
     strict: true,
+    $data: true,
     allErrors: true,
     keywords: getAjvFormKeywords(fileValidateFn),
     formats: ajvFormats,
@@ -189,9 +190,11 @@ export const validateSummary = (
   }
 
   const validator: ValidatorType = customizeValidator({
-    customFormats: ajvFormats,
+    // The type in @rjsf/validator-ajv8 is wrong.
+    customFormats: ajvFormats as unknown as CustomValidatorOptionsType['customFormats'],
     ajvOptionsOverrides: {
-      strict: true,
+      // RJSF doesn't support strict
+      $data: true,
       keywords: getAjvFormKeywords(fileValidateFn),
     },
   })
@@ -209,9 +212,12 @@ export const validateSummary = (
   return { infectedFiles, scanningFiles, uploadingFiles, errorSchema }
 }
 
-export const rjfsValidator = customizeValidator({
-  customFormats: ajvFormats,
+export const rjsfValidator = customizeValidator({
+  // The type in @rjsf/validator-ajv8 is wrong.
+  customFormats: ajvFormats as unknown as CustomValidatorOptionsType['customFormats'],
   ajvOptionsOverrides: {
+    // RJSF doesn't support strict
+    $data: true,
     keywords: getAjvFormKeywords(),
   },
 })

@@ -4,14 +4,7 @@ import {
   ObjectFieldTemplateProps,
 } from '@rjsf/utils'
 import cx from 'classnames'
-
-type ObjectFieldUiOptions = {
-  objectDisplay?: 'columns'
-  /**
-   * Slash separated numeric values, e.g. '1/2' or '1/2/3'
-   */
-  objectColumnRatio?: string
-}
+import { ObjectFieldUiOptions } from 'schema-generator/generator/uiOptionsTypes'
 
 /**
  * Our custom implementation of https://github.com/rjsf-team/react-jsonschema-form/blob/main/packages/core/src/components/templates/ObjectFieldTemplate.tsx
@@ -25,6 +18,7 @@ const BAObjectFieldTemplate = ({ idSchema, properties, uiSchema }: ObjectFieldTe
 
   const fieldsetClassname = cx({
     'block sm:grid sm:gap-4': options.objectDisplay === 'columns',
+    'border-grey-200 rounded-xl border p-4': options.objectDisplay === 'boxed',
   })
 
   const gridTemplateColumns =

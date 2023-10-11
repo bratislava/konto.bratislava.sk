@@ -2,7 +2,7 @@ import cx from 'classnames'
 import MenuList from 'components/forms/steps/MenuList'
 import { useEffect } from 'react'
 
-import { defaultFormStateBehavior, rjfsValidator } from '../../frontend/utils/form'
+import { defaultFormStateBehavior, rjsfValidator } from '../../frontend/utils/form'
 import FormControls from './FormControls'
 import FormUploadXml from './FormUploadXml'
 import FormModals from './segments/FormModals/FormModals'
@@ -53,7 +53,7 @@ const FormPage = () => {
                 schema={currentStepSchema!}
                 uiSchema={uiSchema}
                 formData={formData}
-                validator={rjfsValidator}
+                validator={rjsfValidator}
                 readonly={isReadonly}
                 onSubmit={(e) => {
                   handleFormOnSubmit(e.formData)

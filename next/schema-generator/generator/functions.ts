@@ -369,12 +369,17 @@ export const timePicker = (
 
 let customComponentCounter = 0
 
+/**
+ * This is a special field that represents no data in the schema. It is a "hacky way", but the easiest how to display
+ * custom components in the UI anywhere we need.
+ */
 export const customComponentsField = (
   customComponents: CustomComponentType | CustomComponentType[],
   uiOptions: Omit<CustomComponentFieldUiOptions, 'customComponents'>,
 ): Field => {
   customComponentCounter += 1
   return {
+    // Random property name to avoid collisions
     property: `customComponent${customComponentCounter}_gRbYIKNcAF`,
     schema: () => ({
       anyOf: [{}],

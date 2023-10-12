@@ -6,15 +6,20 @@ import {
 import cx from 'classnames'
 import { ObjectFieldUiOptions } from 'schema-generator/generator/uiOptionsTypes'
 
+import WidgetWrapper from './WidgetWrapper'
+
 /**
  * Our custom implementation of https://github.com/rjsf-team/react-jsonschema-form/blob/main/packages/core/src/components/templates/ObjectFieldTemplate.tsx
  * This allows us to provide specific UI options for styling the template (e.g. columns).
  * This implementation removes titles and descriptions from objects. It might be needed to add it back.
- *
- * TODO: Consider adding WidgetWrapper.
  */
 const BAObjectFieldTemplate = ({ idSchema, properties, uiSchema }: ObjectFieldTemplateProps) => {
-  const options = getUiOptions(uiSchema) as ObjectFieldUiOptions
+  const options = {
+    // Spacing must be `none` for objects, but default is different in WidgetWrapper
+    spaceTop: 'none' as const,
+    spaceBottom: 'none' as const,
+    ...(getUiOptions(uiSchema) as ObjectFieldUiOptions),
+  }
 
   const fieldsetClassname = cx({
     'block sm:grid sm:gap-4': options.objectDisplay === 'columns',
@@ -30,9 +35,11 @@ const BAObjectFieldTemplate = ({ idSchema, properties, uiSchema }: ObjectFieldTe
       : undefined
 
   return (
-    <fieldset id={idSchema.$id} className={fieldsetClassname} style={{ gridTemplateColumns }}>
-      {properties.map((prop: ObjectFieldTemplatePropertyType) => prop.content)}
-    </fieldset>
+    <WidgetWrapper options={options}>
+      <fieldset id={idSchema.$id} className={fieldsetClassname} style={{ gridTemplateColumns }}>
+        {properties.map((prop: ObjectFieldTemplatePropertyType) => prop.content)}
+      </fieldset>
+    </WidgetWrapper>
   )
 }
 

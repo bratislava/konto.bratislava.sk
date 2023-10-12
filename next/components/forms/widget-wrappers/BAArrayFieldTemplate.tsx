@@ -7,30 +7,12 @@ import {
   getUiOptions,
   RJSFSchema,
   StrictRJSFSchema,
-  UIOptionsType,
 } from '@rjsf/utils'
 import cx from 'classnames'
+import { ComponentType } from 'react'
+import { ArrayFieldUiOptions } from 'schema-generator/generator/uiOptionsTypes'
 
 import ButtonNew from '../simple-components/ButtonNew'
-
-type BAArrayFieldUiOptions<
-  T = any,
-  S extends StrictRJSFSchema = RJSFSchema,
-  F extends FormContextType = any,
-> = UIOptionsType<T, S, F> & {
-  title?: string
-  description?: string
-  addButtonLabel: string
-} & (
-    | {
-        variant: 'topLevel'
-        addTitle?: string
-        addDescription?: string
-      }
-    | {
-        variant: 'nested'
-      }
-  )
 
 /**
  * Our custom implementation of https://github.com/rjsf-team/react-jsonschema-form/blob/main/packages/material-ui/src/ArrayFieldTemplate/ArrayFieldTemplate.tsx
@@ -55,8 +37,7 @@ const BAArrayFieldTemplate = <
     schema,
     title,
   } = props
-  const uiOptions = getUiOptions(uiSchema) as BAArrayFieldUiOptions<T, S, F>
-  console.log('array', props)
+  const uiOptions = getUiOptions(uiSchema) as ArrayFieldUiOptions
   const ArrayFieldDescriptionTemplate = getTemplate<'ArrayFieldDescriptionTemplate', T, S, F>(
     'ArrayFieldDescriptionTemplate',
     registry,
@@ -66,7 +47,7 @@ const BAArrayFieldTemplate = <
     'ArrayFieldItemTemplate',
     registry,
     uiOptions,
-  )
+  ) as ComponentType<ArrayFieldTemplateItemType<T, S, F> & { parentUiOptions: ArrayFieldUiOptions }>
   const ArrayFieldTitleTemplate = getTemplate<'ArrayFieldTitleTemplate', T, S, F>(
     'ArrayFieldTitleTemplate',
     registry,
@@ -105,7 +86,7 @@ const BAArrayFieldTemplate = <
         <div key={`array-item-list-${idSchema.$id}`} className="flex flex-col gap-6">
           {items &&
             items.map(({ key, ...itemProps }: ArrayFieldTemplateItemType<T, S, F>) => (
-              <ArrayFieldItemTemplate key={key} {...itemProps} />
+              <ArrayFieldItemTemplate key={key} {...itemProps} parentUiOptions={uiOptions} />
             ))}
         </div>
         {canAdd && (

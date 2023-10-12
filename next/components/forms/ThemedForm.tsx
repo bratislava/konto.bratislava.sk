@@ -1,8 +1,10 @@
 import { ThemeProps, withTheme } from '@rjsf/core'
 import { GenericObjectType } from '@rjsf/utils'
+import { ArrayFieldTemplateItemType } from '@rjsf/utils/src/types'
 import DatePickerWidgetRJSF from 'components/forms/widget-wrappers/DatePickerWidgetRJSF'
 import InputFieldWidgetRJSF from 'components/forms/widget-wrappers/InputFieldWidgetRJSF'
 import TimePickerWidgetRJSF from 'components/forms/widget-wrappers/TimePickerWidgetRJSF'
+import { ComponentType } from 'react'
 
 import BAArrayFieldItemTemplate from './widget-wrappers/BAArrayFieldItemTemplate'
 import BAArrayFieldTemplate from './widget-wrappers/BAArrayFieldTemplate'
@@ -29,7 +31,9 @@ const theme: ThemeProps = {
   templates: {
     ObjectFieldTemplate: BAObjectFieldTemplate,
     ArrayFieldTemplate: BAArrayFieldTemplate,
-    ArrayFieldItemTemplate: BAArrayFieldItemTemplate,
+    // It contains extra parentUiOptions prop that is not present in the original ArrayFieldItemTemplate, so we need to
+    // cast it to the original type
+    ArrayFieldItemTemplate: BAArrayFieldItemTemplate as ComponentType<ArrayFieldTemplateItemType>,
   },
 }
 

@@ -4,6 +4,7 @@ import kebabCase from 'lodash/kebabCase'
 import uniq from 'lodash/uniq'
 
 import {
+  ArrayFieldUiOptions,
   CheckboxesUiOptions,
   CustomComponentFieldUiOptions,
   CustomComponentType,
@@ -241,7 +242,7 @@ export const textArea = (
 ): Field => {
   return {
     property,
-    schema: () => ({ type: 'string' }),
+    schema: () => ({ type: 'string', title: options.title }),
     uiSchema: () => ({
       'ui:widget': 'TextArea',
       'ui:label': false,
@@ -453,6 +454,29 @@ export const object = (
     },
     required: Boolean(options.required),
     fieldProperties,
+  }
+}
+
+export const arrayField = (
+  property: string,
+  options: BaseOptions & { default?: string },
+  uiOptions: ArrayFieldUiOptions,
+  fields: FieldType[],
+): Field => {
+  const { schema: objectSchema, uiSchema: objectUiSchema } = object(null, {}, {}, fields)
+  return {
+    property,
+    schema: () => ({
+      title: options.title,
+      type: 'array',
+      items: objectSchema(),
+      minItems: options.required ? 1 : undefined,
+    }),
+    uiSchema: () => ({
+      'ui:options': uiOptions,
+      items: objectUiSchema(),
+    }),
+    required: Boolean(options.required),
   }
 }
 

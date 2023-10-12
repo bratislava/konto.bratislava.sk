@@ -78,7 +78,7 @@ export type SelectFieldUiOptions = {
   // selectType?: 'one' | 'multiple' | 'arrow' | 'radio'
 } & WidgetUiOptions
 
-export type TextAreaUiOptions = WidgetUiOptions
+export type TextAreaUiOptions = WidgetUiOptions & Pick<UIOptionsType, 'placeholder'>
 
 export type TimePickerUiOptions = WidgetUiOptions
 
@@ -91,6 +91,22 @@ export type UploadUiOptions = {
 export type CustomComponentFieldUiOptions = Pick<WidgetUiOptions, 'spaceTop' | 'spaceBottom'> & {
   customComponents?: CustomComponentType[]
 }
+
+export type ArrayFieldUiOptions = {
+  title?: string
+  description?: string
+  addButtonLabel: string
+  itemTitle?: string
+} & (
+  | {
+      variant: 'topLevel'
+      addTitle?: string
+      addDescription?: string
+    }
+  | {
+      variant: 'nested'
+    }
+)
 
 export type ObjectFieldUiOptions = Pick<WidgetUiOptions, 'spaceTop' | 'spaceBottom'> &
   (

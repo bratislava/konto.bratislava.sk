@@ -103,13 +103,14 @@ const SelectFieldComponent: ForwardRefRenderFunction<HTMLDivElement, SelectField
   const clickOutsideRef = useRef<HTMLDivElement>(null)
 
   const selectClassName = cx(
-    'border-form-input-default flex flex-row items-center rounded-lg border-2 bg-white',
+    'border-form-input-default flex flex-row items-center rounded-lg border-2',
     {
+      'bg-white': !disabled,
       'hover:border-form-input-hover focus:border-form-input-pressed active:border-form-input-pressed':
         !disabled,
       'border-negative-700 hover:border-negative-700 focus:border-negative-700':
         errorMessage?.length > 0 && !disabled,
-      'border-form-input-disabled opacity-50': disabled,
+      'border-form-input-disabled border-gray-300 bg-gray-100 opacity-50': disabled,
     },
   )
 
@@ -266,6 +267,7 @@ const SelectFieldComponent: ForwardRefRenderFunction<HTMLDivElement, SelectField
             filterRef={filterRef}
             maxWordSize={maxWordSize}
             placeholder={placeholder}
+            disabled={disabled}
             onRemove={handleOnRemove}
             onRemoveAll={handleOnDeselectAll}
             onFilterChange={setFilter}

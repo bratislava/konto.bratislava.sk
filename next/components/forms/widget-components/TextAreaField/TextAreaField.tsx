@@ -68,13 +68,15 @@ const TextAreaField = ({
       'hover:border-gray-400': !disabled && !isFocused,
       'border-negative-700 hover:border-negative-700 focus:border-negative-700':
         errorMessage?.length > 0 && !disabled,
-      'border-gray-300 bg-gray-100': disabled,
       'border-gray-700 hover:border-gray-700': !disabled && isFocused,
     },
   )
 
   const textareaStyle = cx(
     'h-full w-full resize-none overflow-y-scroll rounded-lg bg-gray-0 px-3 py-2 caret-gray-700 focus:outline-none focus:placeholder:text-transparent sm:px-4 sm:py-3',
+    {
+      'border-gray-300 bg-gray-100': disabled,
+    },
   )
   return (
     <div className="flex w-full flex-col">

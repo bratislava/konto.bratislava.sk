@@ -46,7 +46,8 @@ const DateField = ({
     state,
     ref,
   )
-  const dateFieldStyle = cx('flex rounded-lg border-2 bg-white px-3 py-2 lg:px-4 lg:py-3', {
+  const dateFieldStyle = cx('flex rounded-lg border-2 px-3 py-2 lg:px-4 lg:py-3', {
+    'bg-white': !disabled,
     'border-gray-200 hover:border-gray-400': !disabled && !isOpen,
     'border-negative-700 hover:border-negative-700': errorMessage?.length > 0 && !disabled,
     'pointer-events-none border-gray-300 bg-gray-100': disabled,

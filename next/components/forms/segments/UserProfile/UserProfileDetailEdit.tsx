@@ -4,7 +4,7 @@ import InputField from 'components/forms/widget-components/InputField/InputField
 import { AccountType, Address, UserData } from 'frontend/dtos/accountDto'
 import useHookForm from 'frontend/hooks/useHookForm'
 import useJsonParseMemo from 'frontend/hooks/useJsonParseMemo'
-import { isValidPhoneNumber } from 'libphonenumber-js'
+import { ajvFormats } from 'frontend/utils/form'
 import { useTranslation } from 'next-i18next'
 import { Controller } from 'react-hook-form'
 
@@ -87,6 +87,10 @@ const poSchema = {
   required: ['email'],
 }
 
+const isValidPhoneNumber = (phoneNumber: string) => {
+  const regex = ajvFormats['phone-number']
+  return regex.test(phoneNumber)
+}
 interface UserProfileDetailEditProps {
   formId: string
   userData: UserData

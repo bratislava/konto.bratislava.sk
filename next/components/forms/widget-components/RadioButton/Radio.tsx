@@ -39,10 +39,11 @@ const Radio = ({ variant = 'basic', className, tooltip, ...rest }: RadioProps) =
   )
 
   const containerStyle = cx('text-16 group relative flex w-full gap-3 rounded-lg', className, {
+    'bg-white': !isDisabled && (variant === 'card' || variant === 'boxed'),
     'flex-row items-center': variant === 'basic' || variant === 'boxed',
     'p-3 lg:px-4 lg:py-3': variant === 'boxed',
     'flex-col items-start break-words p-5': variant === 'card',
-    'rounded-8 border-2 border-solid bg-white': variant === 'boxed' || variant === 'card',
+    'rounded-8 border-2 border-solid': variant === 'boxed' || variant === 'card',
     'border-gray-200': !isError && !isSelected,
     'border-negative-700': isError,
 
@@ -51,6 +52,7 @@ const Radio = ({ variant = 'basic', className, tooltip, ...rest }: RadioProps) =
 
     'opacity-50': isDisabled,
     'cursor-pointer': !isDisabled,
+    'border-gray-300 bg-gray-100': isDisabled && (variant === 'boxed' || variant === 'card'),
   })
 
   return (

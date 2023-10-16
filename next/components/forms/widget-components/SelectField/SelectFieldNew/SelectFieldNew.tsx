@@ -29,7 +29,7 @@ const SelectFieldNew = <T extends object>({
   return (
     <Select
       className={cx({ 'w-full': width === 'full', 'w-full md:w-[400px]': width === 'fixed' })}
-      validationState={isInvalid ? 'invalid' : 'valid'}
+      isInvalid={isInvalid}
       {...rest}
     >
       {({ isFocused, isOpen }) => (

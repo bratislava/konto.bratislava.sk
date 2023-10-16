@@ -370,6 +370,9 @@
       "cancel": "Zrušiť",
       "delete": "Vymazať"
     },
+    "mobile_modal_menu": {
+      "title": "Akcie"
+    },
     "navigation_concept_card": {
       "createDate": "Vytvorené",
       "edit_button_text": "Upraviť",

@@ -27,6 +27,7 @@ import { useState } from 'react'
 import Skeleton from 'react-loading-skeleton'
 
 import FormatDate from '../../../simple-components/FormatDate'
+import BottomSheetMenuModal from './BottomSheetMenu/BottomSheetMenuModal'
 
 export type MyApplicationsCardVariant = 'DRAFT' | 'SENDING' | 'SENT'
 
@@ -34,6 +35,23 @@ export type MyApplicationsCardProps = {
   form?: GetFormResponseDto | null
   refreshListData: () => Promise<unknown>
   variant: MyApplicationsCardVariant
+}
+
+export type WrapperProps = {
+  children?: React.ReactNode
+  variant: MyApplicationsCardVariant
+  href?: string
+  onClick?: () => void
+}
+
+const Wrapper = ({ children, variant, href, onClick }: WrapperProps) => {
+  return variant === 'SENT' && href ? (
+    <Link href={href}>{children}</Link>
+  ) : (
+    <Button className="relative w-full bg-white text-left lg:hidden" onPress={onClick}>
+      {children}
+    </Button>
+  )
 }
 
 // eslint-disable-next-line no-secrets/no-secrets
@@ -48,6 +66,7 @@ const MyApplicationsCard = ({ form, refreshListData, variant }: MyApplicationsCa
   const [openSnackbarError] = useSnackbar({ variant: 'error' })
   const [openSnackbarSuccess] = useSnackbar({ variant: 'success' })
   const [openSnackbarInfo, closeSnackbarInfo] = useSnackbar({ variant: 'info' })
+  const [bottomSheetIsOpen, setBottomSheetIsOpen] = useState(false)
 
   // everything used in jsx should get mapped here
   const isLoading = !form
@@ -81,6 +100,7 @@ const MyApplicationsCard = ({ form, refreshListData, variant }: MyApplicationsCa
   const isEditable = state && ['DRAFT', 'ERROR'].includes(state) && isLatestSchemaVersionForSlug
 
   // xml and pdf exports copied from useFormExportImport
+  // TODO refactor, same as next/frontend/hooks/useFormExportImport.tsx
   const exportXml = async () => {
     openSnackbarInfo(ft('info_messages.xml_export'))
     try {
@@ -176,6 +196,11 @@ const MyApplicationsCard = ({ form, refreshListData, variant }: MyApplicationsCa
 
   const stateIconAndText = useFormStateComponents({ error, isLatestSchemaVersionForSlug, state })
 
+  const openBottomSheetModal = () => {
+    if (variant === 'SENT') return
+    setBottomSheetIsOpen(true)
+  }
+
   return (
     <>
       <ConditionalWrap
@@ -261,15 +286,22 @@ const MyApplicationsCard = ({ form, refreshListData, variant }: MyApplicationsCa
         </div>
       </ConditionalWrap>
       {/* Mobile */}
-      <Link href={variant === 'SENT' ? detailPageHref : formPageHref}>
+      <Wrapper
+        variant={variant}
+        href={variant === 'SENT' ? detailPageHref : formPageHref}
+        onClick={openBottomSheetModal}
+      >
         <div className="relative flex w-full items-start justify-between border-b-2 border-gray-200 bg-white py-4 lg:hidden">
           <div className="flex w-full justify-between gap-1.5">
             <div className="flex w-full grow flex-col gap-1">
-              {(category || isLoading) && (
-                <div className="text-p3-semibold text-main-700">
-                  {isLoading ? <Skeleton width="25%" /> : category}
-                </div>
-              )}
+              <div className="flex flex-row justify-between gap-6">
+                {(category || isLoading) && (
+                  <div className="text-p3-semibold text-main-700">
+                    {isLoading ? <Skeleton width="25%" /> : category}
+                  </div>
+                )}
+              </div>
+
               <h3 className="text-20-semibold">{isLoading ? <Skeleton width="75%" /> : title}</h3>
               {(createdAt || isLoading) && (
                 <div className="text-p3">
@@ -281,10 +313,13 @@ const MyApplicationsCard = ({ form, refreshListData, variant }: MyApplicationsCa
                 </div>
               )}
             </div>
-            <div className="flex self-end">{stateIconAndText.iconRound}</div>
+            <div className="flex flex-col items-center justify-between">
+              {category && <EllipsisVerticalIcon />}
+              {stateIconAndText.iconRound}
+            </div>
           </div>
         </div>
-      </Link>
+      </Wrapper>
       <MessageModal
         title={t('send_files_scanning_eid_modal.title')}
         type="error"
@@ -306,6 +341,22 @@ const MyApplicationsCard = ({ form, refreshListData, variant }: MyApplicationsCa
       >
         {t('send_files_scanning_eid_modal.content')}
       </MessageModal>
+      <BottomSheetMenuModal
+        isOpen={bottomSheetIsOpen}
+        setIsOpen={setBottomSheetIsOpen}
+        conceptMenuContent={[
+          {
+            title: t(
+              `account_section_applications.navigation_concept_card.${
+                isEditable ? 'edit' : 'view'
+              }_button_text`,
+            ),
+            icon: isEditable ? <EditIcon className="h-6 w-6" /> : <EyeIcon className="h-6 w-6" />,
+            url: formPageHref,
+          },
+          ...conceptMenuContent,
+        ]}
+      />
     </>
   )
 }

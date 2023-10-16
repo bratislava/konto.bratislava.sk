@@ -1,7 +1,7 @@
 import { CrossIcon } from '@assets/ui-icons'
 import { useTranslation } from 'next-i18next'
 import React, { PropsWithChildren } from 'react'
-import { mergeProps, useIsSSR } from 'react-aria'
+import { mergeProps } from 'react-aria'
 import {
   Button as AriaButton,
   Dialog,
@@ -25,13 +25,6 @@ const ModalV2 = ({
   ...rest
 }: ModalV2Props) => {
   const { t } = useTranslation('common')
-  const isSSR = useIsSSR()
-
-  // `ReferenceError: window is not defined` in server environment
-  // TODO: Examine
-  if (isSSR) {
-    return null
-  }
 
   // Makes `{ isDismissable: true }` default.
   const modalProps = mergeProps({ isDismissable: true }, rest)

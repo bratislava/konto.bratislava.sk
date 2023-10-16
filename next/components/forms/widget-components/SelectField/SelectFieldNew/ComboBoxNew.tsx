@@ -26,7 +26,7 @@ const ComboBoxNew = <T extends object>({
   const isInvalid = !!errorMessages?.length
 
   return (
-    <ComboBox className="w-full" validationState={isInvalid ? 'invalid' : 'valid'} {...rest}>
+    <ComboBox className="w-full" isInvalid={isInvalid} {...rest}>
       {({ isOpen }) => (
         <FieldWrapper
           label={label}

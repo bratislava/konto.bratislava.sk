@@ -1,7 +1,7 @@
 import { UploadIcon } from '@assets/ui-icons'
 import cx from 'classnames'
 import { useTranslation } from 'next-i18next'
-import React, { forwardRef, useRef } from 'react'
+import React, { forwardRef } from 'react'
 import { Button as ReactAriaButton, FileTrigger } from 'react-aria-components'
 
 import {
@@ -32,7 +32,6 @@ const UploadButton = forwardRef<HTMLButtonElement, UploadButtonProps>(
     ref,
   ) => {
     const { t } = useTranslation('account', { keyPrefix: 'Upload' })
-    const fileTriggerRef = useRef<HTMLInputElement>(null)
 
     const displaySupportedFileExtensions = getDisplaySupportedFileExtensions(supportedFormats)
 
@@ -52,7 +51,7 @@ const UploadButton = forwardRef<HTMLButtonElement, UploadButtonProps>(
       'min-w-40': supportedFormats || sizeLimit,
     })
 
-    const handleOnChange = async (files: FileList | null) => {
+    const handleOnSelect = async (files: FileList | null) => {
       if (disabled) {
         return
       }
@@ -63,22 +62,14 @@ const UploadButton = forwardRef<HTMLButtonElement, UploadButtonProps>(
       }
 
       onUpload(Array.from(files))
-
-      // If this is not done, selecting the same file again after the first upload will not trigger the onChange event,
-      // as the browser does not consider this a change in the input field's state.
-      // https://stackoverflow.com/a/60887378
-      if (fileTriggerRef.current) {
-        fileTriggerRef.current.value = ''
-      }
     }
 
     return (
       <div className="flex gap-x-6 gap-y-3 max-md:flex-col">
         <FileTrigger
-          onChange={handleOnChange}
+          onSelect={handleOnSelect}
           acceptedFileTypes={getSupportedFileExtensions(supportedFormats)}
           allowsMultiple={allowsMultiple}
-          ref={fileTriggerRef}
         >
           <ReactAriaButton className={buttonClassNames} ref={ref} isDisabled={disabled}>
             <div className="flex items-center justify-center gap-2">

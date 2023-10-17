@@ -1,6 +1,7 @@
 import React from 'react'
 import { CustomComponentType } from 'schema-generator/generator/uiOptionsTypes'
 
+import PropertyTaxCalculator from '../../segments/PropertyTaxCalculator/PropertyTaxCalculator'
 import Accordion from '../../simple-components/Accordion'
 import Button from '../../simple-components/ButtonNew'
 
@@ -26,6 +27,10 @@ const CustomComponent = ({ component }: { component: CustomComponentType }) => {
         ))}
       </div>
     )
+  }
+
+  if (component.type === 'propertyTaxCalculator') {
+    return <PropertyTaxCalculator {...component.props} />
   }
 
   return null

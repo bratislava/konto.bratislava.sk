@@ -9,7 +9,7 @@ import FormModals from './segments/FormModals/FormModals'
 import FormHeader from './simple-components/FormHeader'
 import StepperView from './steps/StepperView'
 import FormSummary from './steps/Summary/FormSummary'
-import ThemedForm from './ThemedForm'
+import { useFormComponent } from './useFormComponent'
 import { useFormErrorTranslations } from './useFormErrorTranslations'
 import { useFormState } from './useFormState'
 
@@ -26,6 +26,7 @@ const FormPage = () => {
   } = useFormState()
 
   const { transformErrors } = useFormErrorTranslations()
+  const FormComponent = useFormComponent()
 
   useEffect(() => {
     window.scrollTo({ top: 0, behavior: 'smooth' })
@@ -45,7 +46,7 @@ const FormPage = () => {
           ) : (
             <>
               <h1 className="text-h1-medium font-semibold">{currentStepperStep.title}</h1>
-              <ThemedForm
+              <FormComponent
                 // This is a hack to force the form to re-render when the step changes, it's hard to say whether it
                 // is needed or not, but ensures 100% safety.
                 key={`form-step-${currentStepperStep.index}`}
@@ -76,7 +77,7 @@ const FormPage = () => {
                   // eslint-disable-next-line react/jsx-no-useless-fragment
                   isReadonly ? <></> : <FormControls />
                 }
-              </ThemedForm>
+              </FormComponent>
             </>
           )}
           <MenuList />

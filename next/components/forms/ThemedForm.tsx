@@ -6,6 +6,7 @@ import InputFieldWidgetRJSF from 'components/forms/widget-wrappers/InputFieldWid
 import TimePickerWidgetRJSF from 'components/forms/widget-wrappers/TimePickerWidgetRJSF'
 import { ComponentType } from 'react'
 
+import { wrapWidgetsInContext } from './useFormWidget'
 import BAArrayFieldItemTemplate from './widget-wrappers/BAArrayFieldItemTemplate'
 import BAArrayFieldTemplate from './widget-wrappers/BAArrayFieldTemplate'
 import BAObjectFieldTemplate from './widget-wrappers/BAObjectFieldTemplate'
@@ -17,7 +18,7 @@ import TextAreaFieldWidgetRJSF from './widget-wrappers/TextAreaFieldWidgetRJSF'
 import UploadWidgetRJSF from './widget-wrappers/UploadWidgetRJSF'
 
 const theme: ThemeProps = {
-  widgets: {
+  widgets: wrapWidgetsInContext({
     SelectField: SelectFieldWidgetRJSF,
     InputField: InputFieldWidgetRJSF,
     RadioButton: RadioButtonsWidgetRJSF,
@@ -27,7 +28,7 @@ const theme: ThemeProps = {
     DatePicker: DatePickerWidgetRJSF,
     TimePicker: TimePickerWidgetRJSF,
     CustomComponents: CustomComponentsWidgetRJSF,
-  },
+  }),
   templates: {
     ObjectFieldTemplate: BAObjectFieldTemplate,
     ArrayFieldTemplate: BAArrayFieldTemplate,

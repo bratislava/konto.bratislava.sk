@@ -44,8 +44,7 @@ const ModalV2 = ({
           modalClassname,
         )}
       >
-        {/* TODO: Examine why onClose is needed. */}
-        <Dialog className="outline-0" onClose={() => rest?.onOpenChange?.(false)}>
+        <Dialog className="outline-0">
           {({ close }) => (
             <>
               {!noCloseButton ? (

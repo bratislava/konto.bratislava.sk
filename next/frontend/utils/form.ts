@@ -34,25 +34,32 @@ export const getAjvFormKeywords = (
   fileValidateFn?: SchemaValidateFunction,
 ): Options['keywords'] => {
   return [
+    // Top-level schema
     {
       keyword: 'pospID',
     },
     {
       keyword: 'pospVersion',
     },
-    // TODO: Improve validation
-    {
-      keyword: 'ciselnik',
-    },
     {
       keyword: 'slug',
     },
+    // Step schema
     {
       keyword: 'hash',
     },
     {
+      keyword: 'stepperTitle',
+    },
+    // File field schema
+    {
       keyword: 'file',
       validate: fileValidateFn,
+    },
+    // Select field schema
+    // TODO: Improve
+    {
+      keyword: 'ciselnik',
     },
   ]
 }

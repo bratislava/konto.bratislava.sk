@@ -1,5 +1,5 @@
 // eslint-disable-next-line import/no-extraneous-dependencies
-import { UIOptionsType } from '@rjsf/utils'
+import { RJSFSchema, UIOptionsType, UiSchema } from '@rjsf/utils'
 
 // eslint-disable-next-line import/no-relative-packages
 import { AccordionBase } from '../../components/forms/simple-components/Accordion'
@@ -14,6 +14,22 @@ export type CustomComponentAdditionalLinksProps = {
   }[]
 }
 
+export type CustomComponentPropertyCalculatorProps = {
+  title: string
+  openButtonLabel: string
+  buttonLabel: string
+  valueLabel: string
+  form: {
+    schema: RJSFSchema
+    uiSchema: UiSchema
+  }
+  /**
+   * `expr-eval` formula, with custom function `evalRatio` that evaluates ratio in format `A/B` to
+   *  decimal number.
+   */
+  formula: string
+}
+
 export type CustomComponentType =
   | {
       type: 'accordion'
@@ -22,6 +38,10 @@ export type CustomComponentType =
   | {
       type: 'additionalLinks'
       props: CustomComponentAdditionalLinksProps
+    }
+  | {
+      type: 'propertyTaxCalculator'
+      props: CustomComponentPropertyCalculatorProps
     }
 
 export type FormSpacingType = 'large' | 'default' | 'small' | 'medium' | 'none'

@@ -9,6 +9,8 @@ import PageWrapper from '../layouts/PageWrapper'
 import { GetSSRCurrentAuth } from '../logic/ServerSideAuthProvider'
 import FormPage from './FormPage'
 import ThankYouFormSection from './segments/AccountSections/ThankYouSection/ThankYouFormSection'
+import ThemedForm from './ThemedForm'
+import { FormComponentProvider } from './useFormComponent'
 import { FormFileUploadProvider } from './useFormFileUpload'
 import { FormLeaveProtectionProvider } from './useFormLeaveProtection'
 import { FormModalsProvider } from './useFormModals'
@@ -37,28 +39,30 @@ const FormPageWrapper = ({ schema, uiSchema, page, initialFormData }: FormPageWr
         // if it stays this way remove the prop completely
         initialFormSent={false}
         notSentChildren={
-          <FormFileUploadProvider initialFormData={initialFormData}>
-            <FormLeaveProtectionProvider>
-              <FormModalsProvider initialFormData={initialFormData}>
-                <FormStateProvider
-                  schema={schema}
-                  uiSchema={uiSchema}
-                  formSlug={formSlug}
-                  initialFormData={initialFormData}
-                >
-                  <FormRedirectsProvider>
-                    <FormSendProvider>
-                      <FormExportImportProvider initialFormData={initialFormData}>
-                        <AccountPageLayout isPublicPage>
-                          <FormPage />
-                        </AccountPageLayout>
-                      </FormExportImportProvider>
-                    </FormSendProvider>
-                  </FormRedirectsProvider>
-                </FormStateProvider>
-              </FormModalsProvider>
-            </FormLeaveProtectionProvider>
-          </FormFileUploadProvider>
+          <FormComponentProvider formComponent={ThemedForm}>
+            <FormFileUploadProvider initialFormData={initialFormData}>
+              <FormLeaveProtectionProvider>
+                <FormModalsProvider initialFormData={initialFormData}>
+                  <FormStateProvider
+                    schema={schema}
+                    uiSchema={uiSchema}
+                    formSlug={formSlug}
+                    initialFormData={initialFormData}
+                  >
+                    <FormRedirectsProvider>
+                      <FormSendProvider>
+                        <FormExportImportProvider initialFormData={initialFormData}>
+                          <AccountPageLayout isPublicPage>
+                            <FormPage />
+                          </AccountPageLayout>
+                        </FormExportImportProvider>
+                      </FormSendProvider>
+                    </FormRedirectsProvider>
+                  </FormStateProvider>
+                </FormModalsProvider>
+              </FormLeaveProtectionProvider>
+            </FormFileUploadProvider>
+          </FormComponentProvider>
         }
         sentChildren={
           <AccountPageLayout hiddenHeaderNav className="bg-gray-50">

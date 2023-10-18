@@ -120,6 +120,7 @@ export const inputField = (
               type?: 'text'
               // TODO: Add more formats
               format?: 'zip'
+              pattern?: RegExp
             }
           | {
               type: 'password' | 'email' | 'tel'
@@ -130,6 +131,13 @@ export const inputField = (
   return {
     property,
     schema: () => {
+      if ('pattern' in options && 'format' in options) {
+        // eslint-disable-next-line no-console
+        console.error(
+          `InputField: ${property} has both pattern and format, only one of them can be provided`,
+        )
+      }
+
       const getFormat = () => {
         if (options.type == null || options.type === 'text') {
           return options.format
@@ -145,10 +153,20 @@ export const inputField = (
         return undefined
       }
 
+      const getPattern = () => {
+        if (options.type == null || options.type === 'text') {
+          return options.pattern?.source
+        }
+
+        // eslint-disable-next-line unicorn/no-useless-undefined
+        return undefined
+      }
+
       return {
         type: 'string',
         title: options.title,
         format: getFormat(),
+        pattern: getPattern(),
         default: options.default,
       }
     },

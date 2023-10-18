@@ -12,6 +12,7 @@ import {
   upload,
 } from '../../generator/functions'
 import { createCondition, createStringOptions } from '../../generator/helpers'
+import { kalkulackaTest } from './kalkulacky'
 import { pravnyVztahSpoluvlastnictvo } from './pravnyVztahSpoluvlastnictvo'
 
 export default step('danZPozemkov', { title: 'Priznanie k dani z pozemkov' }, [
@@ -152,6 +153,7 @@ export default step('danZPozemkov', { title: 'Priznanie k dani z pozemkov' }, [
             {
               helptext:
                 'Zadajte výsledok výpočtu vašej časti/podielu na výmere pozemku ako číslo na dve desatinné čísla - bez zaokrúhlenia (napr. 0,65)',
+              rightComponents: [{ type: 'propertyTaxCalculator', props: kalkulackaTest }],
             },
           ),
           object(

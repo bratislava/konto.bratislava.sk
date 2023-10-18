@@ -1,5 +1,5 @@
 // eslint-disable-next-line import/no-extraneous-dependencies
-import { GenericObjectType } from '@rjsf/utils'
+import type { GenericObjectType } from '@rjsf/utils'
 
 import { inputField, numberField, object } from '../../generator/functions'
 import { CustomComponentPropertyCalculatorProps } from '../../generator/uiOptionsTypes'

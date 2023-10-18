@@ -291,7 +291,12 @@ export const useGetContext = ({ initialFormData }: FormFileUploadProviderProps) 
 
       return file
     },
-    [mergedFiles, serverFilesQuery.isFetched, serverFilesQuery.fetchStatus],
+    [
+      mergedFiles,
+      serverFilesQuery.isFetched,
+      serverFilesQuery.isFetching,
+      serverFilesQuery.fetchStatus,
+    ],
   )
 
   // Cleanup

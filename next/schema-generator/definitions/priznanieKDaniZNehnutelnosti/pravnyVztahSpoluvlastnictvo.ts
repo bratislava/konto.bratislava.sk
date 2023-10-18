@@ -10,15 +10,20 @@ import {
   createCamelCaseOptionsV2,
   createCondition,
 } from '../../generator/helpers'
+import { StepEnum } from './stepEnum'
 
-export const pravnyVztahSpoluvlastnictvo = [
+export const pravnyVztahSpoluvlastnictvo = (step?: StepEnum) => [
   radioButton(
     'pravnyVztah',
     {
       type: 'string',
       title: 'Právny vzťah',
       required: true,
-      options: createCamelCaseOptions(['Vlastník', 'Správca', 'Nájomca', 'Užívateľ']),
+      options: createCamelCaseOptions(
+        step === StepEnum.DanZBytovANebytovychPriestorov
+          ? ['Vlastník', 'Správca']
+          : ['Vlastník', 'Správca', 'Nájomca', 'Užívateľ'],
+      ),
     },
     { variant: 'boxed' },
   ),

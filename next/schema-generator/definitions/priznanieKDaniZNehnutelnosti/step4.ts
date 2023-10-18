@@ -11,11 +11,13 @@ import {
 } from '../../generator/functions'
 import { createCondition, createStringOptions } from '../../generator/helpers'
 import { stavbyBase } from './stavbyBase'
+import { StepEnum } from './stepEnum'
+import { vyplnitKrokRadio } from './vyplnitKrokRadio'
 
 export default step(
   'danZoStaviebJedenUcel',
   { title: 'Priznanie k dani zo stavieb - stavba slúžiaca na jeden účel' },
-  [
+  vyplnitKrokRadio([
     arrayField(
       'stavby',
       { title: 'asdad', required: true },
@@ -25,7 +27,7 @@ export default step(
         itemTitle: 'Priznanie k dani zo stavby slúžiacej na jeden účel č. {index}',
       },
       [
-        ...stavbyBase,
+        ...stavbyBase(StepEnum.DanZoStaviebJedencel),
         selectMultipleField(
           'predmetDane',
           {
@@ -143,5 +145,5 @@ export default step(
       { title: 'Poznámka' },
       { placeholder: 'Tu môžete napísať doplnkové informácie' },
     ),
-  ],
+  ]),
 )

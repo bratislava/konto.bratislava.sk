@@ -11,11 +11,13 @@ import {
 } from '../../generator/functions'
 import { createStringOptions } from '../../generator/helpers'
 import { stavbyBase } from './stavbyBase'
+import { StepEnum } from './stepEnum'
+import { vyplnitKrokRadio } from './vyplnitKrokRadio'
 
 export default step(
   'danZoStaviebViacereUcely',
   { title: 'Daň zo stavieb - stavba slúžiaca na viaceré účely' },
-  [
+  vyplnitKrokRadio([
     arrayField(
       'stavby',
       { title: 'asdad', required: true },
@@ -25,7 +27,7 @@ export default step(
         itemTitle: 'Priznanie k dani zo stavby slúžiacej na viaceré účely č. {index}',
       },
       [
-        ...stavbyBase,
+        ...stavbyBase(StepEnum.DanZoStaviebViacereUcely),
         inputField(
           'popisStavby',
           { title: 'Popis stavby', required: true },
@@ -67,7 +69,7 @@ export default step(
           { title: 'Celková výmera zastavanej plochy viacúčelovej stavby' },
           {
             helptext:
-              'Výmera zastavanej plochy, na ktorej je postavená nebytová budova (pozrite LV s “Parcely registra “C”” a parcelu s spôsobom využívania “16” alebo “15”). Ak je stavba na viacerých parceliach, sčítajte plochu. Zobraziť ukážku',
+              'Výmera zastavanej plochy, na ktorej je postavená nebytová budova (pozrite LV s “Parcely registra “C” a parcelu s spôsobom využívania “16” alebo “15”). Ak je stavba na viacerých parceliach, sčítajte plochu. Zobraziť ukážku',
           },
         ),
         object(
@@ -176,5 +178,5 @@ export default step(
       { title: 'Poznámka' },
       { placeholder: 'Tu môžete napísať doplnkové informácie' },
     ),
-  ],
+  ]),
 )

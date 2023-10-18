@@ -5,6 +5,8 @@ https://github.com/bratislava/react-jsonschema-form/tree/get-default-form-state-
 It fixes this issue:
 https://github.com/rjsf-team/react-jsonschema-form/issues/3832
 
+The patch also adds a `overrideArrayMinItemsBehaviour` keyword for array schemas. For more details read the comments for `defaultFormStateBehavior` in `next/frontend/utils/form.ts`.
+
 If you want to update RJSF this probably needs to be recompiled.
 
 In RJSF repository:

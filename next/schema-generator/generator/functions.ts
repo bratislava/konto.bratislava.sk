@@ -1,4 +1,5 @@
 /* eslint-disable import/no-extraneous-dependencies */
+import type { Experimental_ArrayMinItems, RJSFSchema, UiSchema } from '@rjsf/utils'
 import intersection from 'lodash/intersection'
 import kebabCase from 'lodash/kebabCase'
 import uniq from 'lodash/uniq'
@@ -19,24 +20,20 @@ import {
   UploadUiOptions,
 } from './uiOptionsTypes'
 
-type GenericObjectType = {
-  [name: string]: any
-}
-
 type Field = {
   property: string
-  schema: () => GenericObjectType
-  uiSchema: () => GenericObjectType
+  schema: () => RJSFSchema
+  uiSchema: () => UiSchema
   required: boolean
 }
 
 type ObjectField = Omit<Field, 'property'> & { property: string | null; fieldProperties: string[] }
 
 type ConditionalFields = {
-  condition: GenericObjectType
-  thenSchema: () => GenericObjectType
-  elseSchema?: () => GenericObjectType
-  uiSchema: () => GenericObjectType
+  condition: RJSFSchema
+  thenSchema: () => RJSFSchema
+  elseSchema?: () => RJSFSchema
+  uiSchema: () => UiSchema
   fieldProperties: string[]
 }
 
@@ -330,6 +327,7 @@ export const upload = (
             file: true,
           },
           minItems: options.required ? 1 : undefined,
+          default: [],
         }
       }
 
@@ -489,6 +487,9 @@ export const arrayField = (
       type: 'array',
       items: objectSchema(),
       minItems: options.required ? 1 : undefined,
+      overrideArrayMinItemsBehaviour: {
+        populate: 'requiredOnly',
+      } satisfies Experimental_ArrayMinItems,
     }),
     uiSchema: () => ({
       'ui:options': uiOptions,
@@ -528,7 +529,7 @@ export const step = (
 
 export const conditionalStep = (
   property: string,
-  condition: GenericObjectType,
+  condition: RJSFSchema,
   options: {
     title: string
     customHash?: string
@@ -545,7 +546,7 @@ export const conditionalStep = (
 }
 
 export const conditionalFields = (
-  condition: GenericObjectType,
+  condition: RJSFSchema,
   thenFields: FieldType[],
   elseFields: FieldType[] = [],
 ): ConditionalFields => {

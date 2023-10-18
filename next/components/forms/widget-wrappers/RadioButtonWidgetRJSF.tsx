@@ -1,4 +1,4 @@
-import { EnumOptionsType, StrictRJSFSchema, WidgetProps } from '@rjsf/utils'
+import { StrictRJSFSchema, WidgetProps } from '@rjsf/utils'
 import WidgetWrapper from 'components/forms/widget-wrappers/WidgetWrapper'
 import React from 'react'
 import { RadioButtonUiOptions } from 'schema-generator/generator/uiOptionsTypes'
@@ -64,17 +64,15 @@ const RadioButtonsWidgetRJSF = ({
         required={required}
         disabled={readonly}
       >
-        {enumOptions.map((radioElement: EnumOptionsType, radioIndex: number) => {
+        {enumOptions.map((option, radioIndex: number) => {
           const radioValue = `value-${radioIndex}`
+          const tooltip = radioOptions.find(
+            (innerOption) => innerOption.value === option.value,
+          )?.tooltip
 
           return (
-            <Radio
-              key={radioValue}
-              variant={variant}
-              value={radioValue}
-              tooltip={radioOptions[radioIndex]?.tooltip}
-            >
-              {radioElement.label}
+            <Radio key={radioValue} variant={variant} value={radioValue} tooltip={tooltip}>
+              {option.label}
             </Radio>
           )
         })}

@@ -12,7 +12,9 @@ import cx from 'classnames'
 import { ComponentType } from 'react'
 import { ArrayFieldUiOptions } from 'schema-generator/generator/uiOptionsTypes'
 
+import FieldErrorMessage from '../info-components/FieldErrorMessage'
 import ButtonNew from '../simple-components/ButtonNew'
+import WidgetWrapper from './WidgetWrapper'
 
 /**
  * Our custom implementation of https://github.com/rjsf-team/react-jsonschema-form/blob/main/packages/material-ui/src/ArrayFieldTemplate/ArrayFieldTemplate.tsx
@@ -36,6 +38,7 @@ const BAArrayFieldTemplate = <
     required,
     schema,
     title,
+    rawErrors,
   } = props
   const uiOptions = getUiOptions(uiSchema) as ArrayFieldUiOptions
   const ArrayFieldDescriptionTemplate = getTemplate<'ArrayFieldDescriptionTemplate', T, S, F>(
@@ -65,8 +68,10 @@ const BAArrayFieldTemplate = <
     onAddClick({ preventDefault: () => {} })
   }
 
+  const hasErrors = rawErrors && rawErrors?.length > 0
+
   return (
-    <div>
+    <WidgetWrapper options={uiOptions}>
       <ArrayFieldTitleTemplate
         idSchema={idSchema}
         title={uiOptions.title || title}
@@ -89,31 +94,36 @@ const BAArrayFieldTemplate = <
               <ArrayFieldItemTemplate key={key} {...itemProps} parentUiOptions={uiOptions} />
             ))}
         </div>
-        {canAdd && (
+        {(canAdd || hasErrors) && (
           <div>
-            {uiOptions.variant === 'topLevel' && (
-              <>
-                {uiOptions.addTitle && <span>{uiOptions.addTitle}</span>}
-                {uiOptions.addDescription && <span>{uiOptions.addDescription}</span>}
-              </>
+            {canAdd && (
+              <div>
+                {uiOptions.variant === 'topLevel' && (
+                  <>
+                    {uiOptions.addTitle && <span>{uiOptions.addTitle}</span>}
+                    {uiOptions.addDescription && <span>{uiOptions.addDescription}</span>}
+                  </>
+                )}
+                <ButtonNew
+                  variant={
+                    { topLevel: 'black-outline' as const, nested: 'black-plain' as const }[
+                      uiOptions.variant
+                    ]
+                  }
+                  startIcon={<AddIcon />}
+                  onPress={onAddClickPatched}
+                  isDisabled={disabled || readonly}
+                  fullWidth
+                >
+                  {uiOptions.addButtonLabel}
+                </ButtonNew>
+              </div>
             )}
-            <ButtonNew
-              variant={
-                { topLevel: 'black-outline' as const, nested: 'black-plain' as const }[
-                  uiOptions.variant
-                ]
-              }
-              startIcon={<AddIcon />}
-              onPress={onAddClickPatched}
-              isDisabled={disabled || readonly}
-              fullWidth
-            >
-              {uiOptions.addButtonLabel}
-            </ButtonNew>
+            {hasErrors && <FieldErrorMessage errorMessage={rawErrors} />}
           </div>
         )}
       </div>
-    </div>
+    </WidgetWrapper>
   )
 }
 

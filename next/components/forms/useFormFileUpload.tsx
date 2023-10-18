@@ -272,16 +272,17 @@ export const useGetContext = ({ initialFormData }: FormFileUploadProviderProps) 
 
       if (!file) {
         return {
-          status: serverFilesQuery.isFetched
-            ? // The special case when the file is stored in the form data, but not in client nor server files, it can happen
-              // when the form concept was saved, but the file upload hasn't finished yet and the user navigates away.
-              { type: FormFileUploadStatusEnum.UnknownFile as const }
-            : // The special case when info about the file is not available yet, e.g. when the user imports the data and
-              // the server files are not fetched yet, or when they are being fetched.
-              {
-                type: FormFileUploadStatusEnum.UnknownStatus as const,
-                offline: serverFilesQuery.fetchStatus === 'paused',
-              },
+          status:
+            !serverFilesQuery.isFetched && serverFilesQuery.isFetching
+              ? // The special case when info about the file is not available yet, e.g. when the user imports the data and
+                // the server files are not fetched yet, or when they are being fetched.
+                {
+                  type: FormFileUploadStatusEnum.UnknownStatus as const,
+                  offline: serverFilesQuery.fetchStatus === 'paused',
+                }
+              : // The special case when the file is stored in the form data, but not in client nor server files, it can happen
+                // when the form concept was saved, but the file upload hasn't finished yet and the user navigates away.
+                { type: FormFileUploadStatusEnum.UnknownFile as const },
           fileName: fileId,
           canDownload: false,
           fileSize: null,

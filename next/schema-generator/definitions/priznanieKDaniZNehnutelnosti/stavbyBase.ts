@@ -1,8 +1,9 @@
 import { inputField, object, selectMultipleField } from '../../generator/functions'
 import { createStringOptions } from '../../generator/helpers'
 import { pravnyVztahSpoluvlastnictvo } from './pravnyVztahSpoluvlastnictvo'
+import { StepEnum } from './stepEnum'
 
-export const stavbyBase = [
+export const stavbyBase = (step: StepEnum) => [
   inputField(
     'cisloListuVlastnictva',
     { title: 'Číslo listu vlastníctva', required: true },
@@ -81,5 +82,23 @@ export const stavbyBase = [
       ),
     ],
   ),
-  ...pravnyVztahSpoluvlastnictvo,
+  ...(step === StepEnum.DanZBytovANebytovychPriestorov
+    ? [
+        inputField(
+          'cisloBytu',
+          { title: 'Číslo bytu', required: true },
+          {
+            size: 'large',
+          },
+        ),
+        inputField(
+          'popisBytu',
+          { title: 'Popis bytu' },
+          {
+            size: 'large',
+          },
+        ),
+      ]
+    : []),
+  ...pravnyVztahSpoluvlastnictvo(step),
 ]

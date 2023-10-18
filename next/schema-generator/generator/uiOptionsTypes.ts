@@ -112,21 +112,21 @@ export type CustomComponentFieldUiOptions = Pick<WidgetUiOptions, 'spaceTop' | '
   customComponents?: CustomComponentType[]
 }
 
-export type ArrayFieldUiOptions = {
+export type ArrayFieldUiOptions = Pick<WidgetUiOptions, 'spaceTop' | 'spaceBottom'> & {
   title?: string
   description?: string
   addButtonLabel: string
   itemTitle?: string
 } & (
-  | {
-      variant: 'topLevel'
-      addTitle?: string
-      addDescription?: string
-    }
-  | {
-      variant: 'nested'
-    }
-)
+    | {
+        variant: 'topLevel'
+        addTitle?: string
+        addDescription?: string
+      }
+    | {
+        variant: 'nested'
+      }
+  )
 
 export type ObjectFieldUiOptions = Pick<WidgetUiOptions, 'spaceTop' | 'spaceBottom'> &
   (

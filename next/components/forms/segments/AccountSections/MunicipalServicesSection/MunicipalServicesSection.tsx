@@ -145,7 +145,7 @@ const MunicipalServicesSection = () => {
       buttonText: t('account_section_services.cards.7.buttonText'),
       icon: <KidIcon className="h-10 w-10 text-category-600 lg:h-12 lg:w-12" />,
       category: [JOIN_CATEGORY],
-      href: 'https://mib.sk/mesto-pre-deti',
+      href: 'https://mestopredeti.sk/',
     },
     {
       title: t('account_section_services.cards.8.title'),

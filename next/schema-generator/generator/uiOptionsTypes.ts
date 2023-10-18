@@ -1,5 +1,5 @@
 // eslint-disable-next-line import/no-extraneous-dependencies
-import { RJSFSchema, UIOptionsType, UiSchema } from '@rjsf/utils'
+import type { RJSFSchema, UIOptionsType, UiSchema } from '@rjsf/utils'
 
 // eslint-disable-next-line import/no-relative-packages
 import { AccordionBase } from '../../components/forms/simple-components/Accordion'

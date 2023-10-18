@@ -1,4 +1,5 @@
 /* eslint-disable import/no-extraneous-dependencies */
+import type { RJSFSchema } from '@rjsf/utils'
 import camelCase from 'lodash/camelCase'
 
 type ConditionObject<T> = { type: 'object'; properties: Record<string, T>; required: string[] }
@@ -64,7 +65,7 @@ export const createCondition = <T>(value: [string[], T][]) => {
     }
   })
 
-  return result
+  return result as RJSFSchema
 }
 
 /**

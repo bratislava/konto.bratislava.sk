@@ -489,6 +489,9 @@ export const arrayField = (
       type: 'array',
       items: objectSchema(),
       minItems: options.required ? 1 : undefined,
+      overrideArrayMinItemsBehaviour: {
+        populate: 'requiredOnly',
+      } satisfies Experimental_ArrayMinItems,
     }),
     uiSchema: () => ({
       'ui:options': uiOptions,

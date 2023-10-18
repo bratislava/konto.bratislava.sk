@@ -19,9 +19,14 @@ import { FormFileUploadFileInfo, FormFileUploadStatusEnum } from '../types/formF
  * of them to ensure consistent behaviour.
  *
  * The default behaviour of RJSF is to prefill all the arrays with minKeys value, with default or
- * `null` value. This make sense for string fields (if there are e.g. 2 required string fields, the
- * library will create 2 empty ones), however we don't want this behaviour as e.g. for files it doesn't
- * make sense (there is nothing such an empty file value).
+ * `null` value. For most of our use-cases this doesn't make sense. As multiple file upload, select
+ * with multiple options or checkbox groups are arrays, e.g. them having minKeys of 1 would make
+ * RJSF to prefill them which would result to `[null]` value which is not correct.
+ *
+ * Unfortunately, there are cases where this behaviour is needed. For example, array fields contain
+ * a list of objects, not prefilling them would require user to manually click "Add" button to add
+ * the first item. This is not a good UX. Therefore, we implemented a patch that allows us to
+ * override this behaviour for specific fields using `overrideArrayMinItemsBehaviour` keyword.
  */
 export const defaultFormStateBehavior: Experimental_DefaultFormStateBehavior = {
   arrayMinItems: { populate: 'never' },
@@ -61,6 +66,10 @@ export const getAjvFormKeywords = (
     {
       keyword: 'ciselnik',
     },
+    // Array field schema
+    {
+      keyword: 'overrideArrayMinItemsBehaviour',
+    },
   ]
 }
 
@@ -78,7 +87,7 @@ export const ajvFormats = {
   // TODO: Remove, but this is needed for form to compile
   ciselnik: () => true,
   // https://blog.kevinchisholm.com/javascript/javascript-e164-phone-number-validation/
-  'phone-number': /^\+?[1-9]\d{1,14}$/,
+  'phone-number': /^\+[1-9]\d{10,14}$/,
   localTime: {
     // https://stackoverflow.com/a/51177696
     validate: /^(\d|0\d|1\d|2[0-3]):[0-5]\d$/,

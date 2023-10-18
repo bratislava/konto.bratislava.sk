@@ -3,7 +3,7 @@ import { createContext, PropsWithChildren, useContext } from 'react'
 import type ThemedForm from './ThemedForm'
 
 /**
- * It's not possible to use the ThemedForm directly as it causes a circular dependency.
+ * Use useFormComponent this instead of importing ThemedForm, to avoid the following circular dependency.
  *
  * ThemedForm <- CustomComponentsWidgetRJSF <- CustomComponents <- PropertyTaxCalculator <- ThemedForm
  */

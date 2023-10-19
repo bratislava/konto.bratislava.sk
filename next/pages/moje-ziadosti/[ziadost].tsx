@@ -7,6 +7,7 @@ import {
   getSSRCurrentAuth,
   ServerSideAuthProviderHOC,
 } from 'components/logic/ServerSideAuthProvider'
+import { modifyGinisDataForSchemaSlug } from 'frontend/utils/ginis'
 import logger from 'frontend/utils/logger'
 import { AsyncServerProps } from 'frontend/utils/types'
 import { GetServerSidePropsContext } from 'next'
@@ -48,7 +49,10 @@ export const getServerSideProps = async (ctx: GetServerSidePropsContext) => {
   return {
     props: {
       myApplicationDetailsData,
-      myApplicationGinisData,
+      myApplicationGinisData: modifyGinisDataForSchemaSlug(
+        myApplicationGinisData,
+        myApplicationDetailsData.schemaVersion.schema?.slug,
+      ),
       ssrCurrentAuthProps: await getSSRCurrentAuth(ctx.req),
       page: {
         locale: ctx.locale,

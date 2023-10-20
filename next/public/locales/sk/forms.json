@@ -69,7 +69,7 @@
   },
   "registration_modal": {
     "header_initial_title": "Žiadosť je možné odoslať cez Bratislavské konto alebo pomocou eID",
-    "header_initial_subtitle": "Na to, aby ste mohli žiadosť odoslať, potrebujete mať vytvorené Bratislavské konto s overenou identitou alebo použiť elektronický občiansky preukazu cez slovensko.sk. Bez toho viete žiadosť iba vyplniť a stiahnuť.",
+    "header_initial_subtitle": "Na to, aby ste mohli žiadosť odoslať, potrebujete mať vytvorené Bratislavské konto s overenou identitou alebo použiť elektronický občiansky preukazu cez <a target='_blank' href='https://slovensko.sk'>slovensko.sk</a>. Bez toho viete žiadosť iba vyplniť a stiahnuť.",
     "header_not_authenticated_concept_save_title": "Žiadosť je možné uložiť do konceptov len cez Bratislavské konto",
     "header_not_authenticated_concept_save_subtitle": "Na to, aby ste si mohli túto žiadosť uložiť do konceptov, potrebujete mať vytvorené Bratislavské konto. Bez toho viete žiadosť iba vyplniť a stiahnuť.",
     "header_not_verified_submit_form_title": "Žiadosť je možné odoslať cez Bratislavské konto alebo pomocou eID",
@@ -86,7 +86,9 @@
     "body_login_description": "Máte už konto?",
     "body_login_link": "Prihlásiť sa",
     "footer_choice": "alebo",
+    "buttons_initial_continue_eid_title": "Odoslať cez slovensko.sk",
     "buttons_initial_continue_eid": "Pokračovať s eID",
+    "buttons_initial_skip_title": "Vyplniť žiadosť bez odoslania",
     "buttons_initial_skip": "Preskočiť na žiadosť",
     "buttons_not_verified_submit_back": "Späť na žiadosť",
     "buttons_not_verified_submit_send": "Odoslať s eID"

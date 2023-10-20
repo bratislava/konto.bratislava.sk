@@ -1,6 +1,6 @@
 import { formsApi } from '@clients/forms'
 import { GetFileResponseDto } from '@clients/openapi-forms'
-import { useQuery } from '@tanstack/react-query'
+import { Query, useQuery, useQueryClient } from '@tanstack/react-query'
 import React, {
   createContext,
   PropsWithChildren,
@@ -61,6 +61,7 @@ const REFETCH_INTERVAL = 5000
  *  At the end, the client and server files are merged and returned to the consumer.
  */
 export const useGetContext = ({ initialFormData }: FormFileUploadProviderProps) => {
+  const queryClient = useQueryClient()
   const isMounted = useIsMounted()
 
   // The client files are both stored in the state and in the ref. The state is used to trigger re-rendering of the
@@ -77,26 +78,26 @@ export const useGetContext = ({ initialFormData }: FormFileUploadProviderProps) 
   const abortControllersRef = useRef<Record<string, AbortController>>({})
 
   const refetchInterval = useMemo(() => {
-    return (data: GetFileResponseDto[] | undefined) =>
-      shouldPollServerFiles(data, clientFiles) ? REFETCH_INTERVAL : false
+    return (query: Query<GetFileResponseDto[]>) =>
+      shouldPollServerFiles(query.state.data, clientFiles) ? REFETCH_INTERVAL : false
   }, [clientFiles])
 
-  const serverFilesQuery = useQuery(
-    ['serverFiles', initialFormData.formId],
-    async () => {
+  const serverFilesQueryKey = ['serverFiles', initialFormData.formId]
+  const serverFilesQuery = useQuery({
+    queryKey: serverFilesQueryKey,
+    queryFn: async () => {
       const response = await formsApi.filesControllerGetFilesStatusByForm(initialFormData.formId, {
         accessToken: 'onlyAuthenticated',
       })
       return response.data
     },
-    {
-      retry: Infinity, // Retry infinitely
-      retryDelay: 5000, // Retry every 5 seconds
-      staleTime: Infinity,
-      refetchInterval,
-      initialData: initialFormData.files,
-    },
-  )
+    retry: Infinity, // Retry infinitely
+    retryDelay: 5000, // Retry every 5 seconds
+    staleTime: Infinity,
+    refetchInterval,
+    initialData: initialFormData.files,
+    initialDataUpdatedAt: Date.now(),
+  })
 
   /**
    * Updates client files and handles side effects of the change if needed. This is the only place that should trigger
@@ -309,7 +310,7 @@ export const useGetContext = ({ initialFormData }: FormFileUploadProviderProps) 
         }
       })
       // Don't persist the data between page navigations.
-      serverFilesQuery.remove()
+      queryClient.removeQueries({ queryKey: serverFilesQueryKey })
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])

@@ -35,12 +35,12 @@ export const useGetContext = ({ initialFormData }: FormExportImportProviderProps
 
   const importXmlButtonRef = useRef<HTMLButtonElement>(null)
 
-  const { mutate: saveConceptMutate, isLoading: saveConceptIsLoading } = useMutation<
+  const { mutate: saveConceptMutate, isPending: saveConceptIsPending } = useMutation<
     AxiosResponse<GetFormResponseDto>,
     unknown,
     { fromModal?: boolean }
-  >(
-    () =>
+  >({
+    mutationFn: () =>
       formsApi.nasesControllerUpdateForm(
         formId,
         {
@@ -48,45 +48,42 @@ export const useGetContext = ({ initialFormData }: FormExportImportProviderProps
         },
         { accessToken: 'onlyAuthenticated' },
       ),
-    {
-      networkMode: 'always',
-      onMutate: ({ fromModal }) => {
-        // The concept saved from modal has its own loading indicator.
-        if (!fromModal) {
-          openSnackbarInfo(t('info_messages.concept_save'))
-        }
-      },
-      onSuccess: () => {
-        openSnackbarSuccess(t('success_messages.concept_save'))
-        setConceptSaveErrorModal(false)
-        turnOffLeaveProtection()
-      },
-      onError: () => {
-        closeSnackbarInfo()
-        setConceptSaveErrorModal(true)
-      },
+    networkMode: 'always',
+    onMutate: ({ fromModal }) => {
+      // The concept saved from modal has its own loading indicator.
+      if (!fromModal) {
+        openSnackbarInfo(t('info_messages.concept_save'))
+      }
     },
-  )
+    onSuccess: () => {
+      openSnackbarSuccess(t('success_messages.concept_save'))
+      setConceptSaveErrorModal(false)
+      turnOffLeaveProtection()
+    },
+    onError: () => {
+      closeSnackbarInfo()
+      setConceptSaveErrorModal(true)
+    },
+  })
 
-  const { mutate: migrateFormMutate, isLoading: migrateFormIsLoading } = useMutation(
-    () => formsApi.nasesControllerMigrateForm(formId, { accessToken: 'onlyAuthenticated' }),
-    {
-      networkMode: 'always',
-      onSuccess: () => {
-        turnOffLeaveProtection()
-        router.reload()
-        // a promise returned is awaited before toggling the isLoading
-        // we use this to prevent re-enabling the button - the promise never resolves, the state is cleared by the reload
-        return new Promise(() => {})
-      },
-      onError: () => {
-        openSnackbarError(t('errors.migration'))
-      },
+  const { mutate: migrateFormMutate, isPending: migrateFormIsPending } = useMutation({
+    mutationFn: () =>
+      formsApi.nasesControllerMigrateForm(formId, { accessToken: 'onlyAuthenticated' }),
+    networkMode: 'always',
+    onSuccess: () => {
+      turnOffLeaveProtection()
+      router.reload()
+      // a promise returned is awaited before toggling the isLoading
+      // we use this to prevent re-enabling the button - the promise never resolves, the state is cleared by the reload
+      return new Promise(() => {})
     },
-  )
+    onError: () => {
+      openSnackbarError(t('errors.migration'))
+    },
+  })
 
   const migrateForm = () => {
-    if (migrateFormIsLoading) {
+    if (migrateFormIsPending) {
       return
     }
 
@@ -166,7 +163,7 @@ export const useGetContext = ({ initialFormData }: FormExportImportProviderProps
       return
     }
 
-    if (saveConceptIsLoading) {
+    if (saveConceptIsPending) {
       return
     }
 
@@ -178,9 +175,9 @@ export const useGetContext = ({ initialFormData }: FormExportImportProviderProps
     importXml: triggerImportXml,
     exportPdf,
     saveConcept,
-    saveConceptIsLoading,
+    saveConceptIsPending,
     migrateForm,
-    migrateFormIsLoading,
+    migrateFormIsPending,
     importXmlButtonRef,
     handleImportXml,
   }

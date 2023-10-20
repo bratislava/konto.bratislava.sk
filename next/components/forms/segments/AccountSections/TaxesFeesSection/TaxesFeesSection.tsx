@@ -25,7 +25,7 @@ export type TaxesCardBase = {
 const TaxesFeesSection = () => {
   const { t } = useTranslation('account')
   const { tierStatus } = useServerSideAuth()
-  const { data, isLoading } = useTaxes()
+  const { data, isPending } = useTaxes()
 
   //   const taxesFeesWaitingCardContent = `
   // <h4>${t('account_section_payment.waiting_card_title')}</h4>
@@ -48,11 +48,11 @@ const TaxesFeesSection = () => {
 
   let content: JSX.Element | null = null
 
-  if (isLoading) {
+  if (isPending) {
     content = <Spinner className="m-auto mt-10" />
   } else if (!tierStatus.isIdentityVerified) {
     content = <TaxesFeesErrorCard content={taxesFeesErrorCardContent} />
-  } else if (!isLoading && !data) {
+  } else if (!isPending && !data) {
     content = (
       // error instanceof TaxApiError && error.status === 422 ? (
       //   <TaxesFeesWaitingCard content={taxesFeesWaitingCardContent} />

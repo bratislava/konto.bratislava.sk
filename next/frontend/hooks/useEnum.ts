@@ -4,5 +4,5 @@ import { SelectOption } from 'components/forms/widget-components/SelectField/Sel
 import { getEnum } from '../api/api'
 
 export default function useEnum(id?: string) {
-  return useQuery<SelectOption[]>(['enums', id], () => getEnum(id))
+  return useQuery<SelectOption[]>({ queryKey: ['enums', id], queryFn: () => getEnum(id) })
 }

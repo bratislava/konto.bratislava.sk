@@ -79,17 +79,17 @@ const useGetContext = () => {
     setSendConfirmationEidModal,
     setSendConfirmationEidLegalModal,
     setSendConfirmationNonAuthenticatedEidModal,
-    setSendLoading,
+    setSendPending,
     setEidSendingModal,
     setEidSendErrorModal,
-    setSendEidSaveConceptLoading,
-    setSendEidLoading,
+    setSendEidSaveConceptPending,
+    setSendEidPending,
     setRedirectingToSlovenskoSkLogin,
   } = useFormModals()
   const { setFormIsSent } = useFormSent()
 
-  const { mutate: sendFormMutate, isLoading: sendFormIsLoading } = useMutation(
-    () =>
+  const { mutate: sendFormMutate, isPending: sendFormIsPending } = useMutation({
+    mutationFn: () =>
       formsApi.nasesControllerSendAndUpdateForm(
         formId,
         {
@@ -97,28 +97,26 @@ const useGetContext = () => {
         },
         { accessToken: 'always' },
       ),
-    {
-      networkMode: 'always',
-      onSuccess: () => {
-        setFormIsSent()
-      },
-      onError: (error) => {
-        // A special case when user submits the form, but doesn't receive the response and then tries to send the form again.
-        // TODO: Use error code instead of error name from API when fixed & type
-        // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
-        if (isAxiosError(error) && error.response?.data?.errorName === 'FORM_NOT_DRAFT_ERROR') {
-          setFormIsSent()
-          return
-        }
-
-        openSnackbarError(t('form_send_error'))
-      },
+    networkMode: 'always',
+    onSuccess: () => {
+      setFormIsSent()
     },
-  )
+    onError: (error) => {
+      // A special case when user submits the form, but doesn't receive the response and then tries to send the form again.
+      // TODO: Use error code instead of error name from API when fixed & type
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
+      if (isAxiosError(error) && error.response?.data?.errorName === 'FORM_NOT_DRAFT_ERROR') {
+        setFormIsSent()
+        return
+      }
 
-  const { mutate: saveConceptAndSendEidMutate, isLoading: saveConceptAndSendEidIsLoading } =
-    useMutation(
-      () =>
+      openSnackbarError(t('form_send_error'))
+    },
+  })
+
+  const { mutate: saveConceptAndSendEidMutate, isPending: saveConceptAndSendEidIsPending } =
+    useMutation({
+      mutationFn: () =>
         formsApi.nasesControllerUpdateForm(
           formId,
           {
@@ -126,26 +124,24 @@ const useGetContext = () => {
           },
           { accessToken: 'onlyAuthenticated' },
         ),
-      {
-        networkMode: 'always',
-        onSuccess: async () => {
-          setSendEidMetadata({ formSlug, formId })
-          turnOffLeaveProtection()
-          window.location.href = environment.slovenskoSkLoginUrl
-          setRedirectingToSlovenskoSkLogin(true)
-        },
-        onError: () => {
-          openSnackbarError(t('form_send_error'))
-        },
+      networkMode: 'always',
+      onSuccess: async () => {
+        setSendEidMetadata({ formSlug, formId })
+        turnOffLeaveProtection()
+        window.location.href = environment.slovenskoSkLoginUrl
+        setRedirectingToSlovenskoSkLogin(true)
       },
-    )
+      onError: () => {
+        openSnackbarError(t('form_send_error'))
+      },
+    })
 
-  const { mutate: sendFormEidMutate, isLoading: sendFormEidIsLoading } = useMutation<
+  const { mutate: sendFormEidMutate, isPending: sendFormEidIsPending } = useMutation<
     AxiosResponse<SendFormResponseDto>,
     unknown,
     { fromRepeatModal?: boolean }
-  >(
-    () =>
+  >({
+    mutationFn: () =>
       formsApi.nasesControllerSendAndUpdateFormEid(
         formId,
         {
@@ -153,49 +149,47 @@ const useGetContext = () => {
         },
         { headers: { Authorization: `Bearer ${sendEidTokenRef.current as string}` } },
       ),
-    {
-      networkMode: 'always',
-      onSuccess: () => {
-        setFormIsSent()
-      },
-      onError: (error, { fromRepeatModal }) => {
-        // A special case when user submits the form, but doesn't receive the response and then tries to send the form again.
-        // TODO: Use error code instead of error name from API when fixed & type
-        // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
-        if (isAxiosError(error) && error.response?.data?.errorName === 'FORM_NOT_DRAFT_ERROR') {
-          setFormIsSent()
-          return
-        }
-
-        setEidSendingModal(false)
-        setEidSendErrorModal({
-          isOpen: true,
-          sendCallback: () => {
-            if (!sendFormEidIsLoading) {
-              sendFormEidMutate({ fromRepeatModal: true })
-            }
-          },
-        })
-        if (fromRepeatModal) {
-          openSnackbarError(t('form_send_error'))
-        }
-      },
+    networkMode: 'always',
+    onSuccess: () => {
+      setFormIsSent()
     },
-  )
+    onError: (error, { fromRepeatModal }) => {
+      // A special case when user submits the form, but doesn't receive the response and then tries to send the form again.
+      // TODO: Use error code instead of error name from API when fixed & type
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
+      if (isAxiosError(error) && error.response?.data?.errorName === 'FORM_NOT_DRAFT_ERROR') {
+        setFormIsSent()
+        return
+      }
+
+      setEidSendingModal(false)
+      setEidSendErrorModal({
+        isOpen: true,
+        sendCallback: () => {
+          if (!sendFormEidIsPending) {
+            sendFormEidMutate({ fromRepeatModal: true })
+          }
+        },
+      })
+      if (fromRepeatModal) {
+        openSnackbarError(t('form_send_error'))
+      }
+    },
+  })
 
   // Loading states must be backpropagated to useFormModals as they are parent context to this one
   // TODO: Come up with better solution
   useEffect(() => {
-    setSendLoading(sendFormIsLoading)
-  }, [sendFormIsLoading, setSendLoading])
+    setSendPending(sendFormIsPending)
+  }, [sendFormIsPending, setSendPending])
 
   useEffect(() => {
-    setSendEidSaveConceptLoading(saveConceptAndSendEidIsLoading)
-  }, [saveConceptAndSendEidIsLoading, setSendEidSaveConceptLoading])
+    setSendEidSaveConceptPending(saveConceptAndSendEidIsPending)
+  }, [saveConceptAndSendEidIsPending, setSendEidSaveConceptPending])
 
   useEffect(() => {
-    setSendEidLoading(sendFormEidIsLoading)
-  }, [sendFormEidIsLoading, setSendEidLoading])
+    setSendEidPending(sendFormEidIsPending)
+  }, [sendFormEidIsPending, setSendEidPending])
 
   /**
    * As we don't want users to trigger the send again by reload we immediately remove the token from the URL.
@@ -220,7 +214,7 @@ const useGetContext = () => {
     popSendEidMetadata()
 
     // If there is a send token in the URL, send the form via eID.
-    if (router.query[FORM_SEND_EID_TOKEN_QUERY_KEY] && !sendFormEidIsLoading) {
+    if (router.query[FORM_SEND_EID_TOKEN_QUERY_KEY] && !sendFormEidIsPending) {
       sendEidTokenRef.current = router.query[FORM_SEND_EID_TOKEN_QUERY_KEY] as string
 
       removeSendIdTokenFromUrl()
@@ -238,7 +232,7 @@ const useGetContext = () => {
     )
     const submitDisabled = isFormSubmitDisabled(errorSchema, infectedFiles)
 
-    if (submitDisabled || sendFormIsLoading) {
+    if (submitDisabled || sendFormIsPending) {
       return
     }
 
@@ -292,7 +286,7 @@ const useGetContext = () => {
     )
     const submitDisabled = isFormSubmitDisabled(errorSchema, infectedFiles)
 
-    if (submitDisabled || sendFormEidIsLoading) {
+    if (submitDisabled || sendFormEidIsPending) {
       return
     }
 

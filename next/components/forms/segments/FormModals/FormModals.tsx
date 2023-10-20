@@ -47,15 +47,15 @@ const FormModals = () => {
     setSendConfirmationEidLegalModal,
     sendConfirmationNonAuthenticatedEidModal,
     setSendConfirmationNonAuthenticatedEidModal,
-    sendLoading,
+    sendPending,
     eidSendingModal,
     setEidSendingModal,
     eidSendErrorModal,
     setEidSendErrorModal,
-    sendEidLoading,
-    eidSendConfirmationModalIsLoading,
+    sendEidPending,
+    eidSendConfirmationModalIsPending,
   } = useFormModals()
-  const { saveConcept, saveConceptIsLoading, migrateForm, migrateFormIsLoading } =
+  const { saveConcept, saveConceptIsPending, migrateForm, migrateFormIsPending } =
     useFormExportImport()
   const { login, register, verifyIdentity } = useFormRedirects()
 
@@ -74,7 +74,7 @@ const FormModals = () => {
           variant="black-solid"
           onPress={() => migrateForm()}
           fullWidthMobile
-          isLoading={migrateFormIsLoading}
+          isLoading={migrateFormIsPending}
           isLoadingText={t('migration_required_modal.button_title_loading')}
         >
           {t('migration_required_modal.button_title')}
@@ -103,7 +103,7 @@ const FormModals = () => {
         <Button
           variant="category-solid"
           onPress={() => saveConcept(true)}
-          isLoading={saveConceptIsLoading}
+          isLoading={saveConceptIsPending}
           isLoadingText={t('concept_save_error_modal.button_title_loading')}
         >
           {t('concept_save_error_modal.button_repeat_text')}
@@ -131,14 +131,14 @@ const FormModals = () => {
             sendFilesScanningEidModal.isOpen && sendFilesScanningEidModal.sendCallback()
           }
           fullWidthMobile
-          isLoading={sendLoading}
+          isLoading={sendPending}
           isLoadingText={t('send_files_scanning_eid_modal.button_title_loading')}
         >
           {t('send_files_scanning_eid_modal.button_title')}
         </Button>,
       ],
-      isDismissable: !sendLoading,
-      noCloseButton: sendLoading,
+      isDismissable: !sendPending,
+      noCloseButton: sendPending,
       children: t('send_files_scanning_eid_modal.content'),
     },
     {
@@ -258,15 +258,15 @@ const FormModals = () => {
           variant="black-solid"
           onPress={() => sendFilesScanningModal.isOpen && sendFilesScanningModal.sendCallback()}
           fullWidthMobile
-          isLoading={sendLoading}
+          isLoading={sendPending}
           isLoadingText={t('send_files_scanning_modal.button_title_loading')}
         >
           {t('send_files_scanning_modal.button_title')}
         </Button>,
       ],
       children: t('send_files_scanning_modal.content'),
-      isDismissable: !sendLoading,
-      noCloseButton: sendLoading,
+      isDismissable: !sendPending,
+      noCloseButton: sendPending,
     },
     {
       key: 'sendConfirmationModal',
@@ -282,7 +282,7 @@ const FormModals = () => {
         <Button
           onPress={() => setSendConfirmationModal({ isOpen: false })}
           fullWidthMobile
-          isDisabled={sendLoading}
+          isDisabled={sendPending}
         >
           {t('modals_back_button_title')}
         </Button>,
@@ -290,14 +290,14 @@ const FormModals = () => {
           variant="black-solid"
           onPress={() => sendConfirmationModal.isOpen && sendConfirmationModal.sendCallback()}
           fullWidthMobile
-          isLoading={sendLoading}
+          isLoading={sendPending}
           isLoadingText={t('send_confirmation_modal.button_title_loading')}
         >
           {t('send_confirmation_modal.button_title')}
         </Button>,
       ],
-      isDismissable: !sendLoading,
-      noCloseButton: sendLoading,
+      isDismissable: !sendPending,
+      noCloseButton: sendPending,
       children: t('send_confirmation_modal.content'),
     },
     {
@@ -313,7 +313,7 @@ const FormModals = () => {
       buttons: [
         <Button
           onPress={() => setSendConfirmationEidModal({ isOpen: false })}
-          isDisabled={eidSendConfirmationModalIsLoading}
+          isDisabled={eidSendConfirmationModalIsPending}
           fullWidthMobile
         >
           {t('modals_back_button_title')}
@@ -322,14 +322,14 @@ const FormModals = () => {
           variant="black-solid"
           onPress={() => sendConfirmationEidModal.isOpen && sendConfirmationEidModal.sendCallback()}
           fullWidthMobile
-          isLoading={eidSendConfirmationModalIsLoading}
+          isLoading={eidSendConfirmationModalIsPending}
           isLoadingText={t('send_confirmation_eid_modal.button_title_loading')}
         >
           {t('send_confirmation_eid_modal.button_title')}
         </Button>,
       ],
-      isDismissable: !eidSendConfirmationModalIsLoading,
-      noCloseButton: eidSendConfirmationModalIsLoading,
+      isDismissable: !eidSendConfirmationModalIsPending,
+      noCloseButton: eidSendConfirmationModalIsPending,
       children: (
         <>
           {t('send_confirmation_eid_modal.content')}
@@ -350,7 +350,7 @@ const FormModals = () => {
       buttons: [
         <Button
           onPress={() => setSendConfirmationEidLegalModal({ isOpen: false })}
-          isDisabled={eidSendConfirmationModalIsLoading}
+          isDisabled={eidSendConfirmationModalIsPending}
           fullWidthMobile
         >
           {t('modals_back_button_title')}
@@ -360,15 +360,15 @@ const FormModals = () => {
           onPress={() =>
             sendConfirmationEidLegalModal.isOpen && sendConfirmationEidLegalModal.sendCallback()
           }
-          isLoading={eidSendConfirmationModalIsLoading}
+          isLoading={eidSendConfirmationModalIsPending}
           isLoadingText={t('send_confirmation_eid_legal_modal.button_title_loading')}
           fullWidthMobile
         >
           {t('send_confirmation_eid_legal_modal.button_title')}
         </Button>,
       ],
-      isDismissable: !eidSendConfirmationModalIsLoading,
-      noCloseButton: eidSendConfirmationModalIsLoading,
+      isDismissable: !eidSendConfirmationModalIsPending,
+      noCloseButton: eidSendConfirmationModalIsPending,
       children: t('send_confirmation_eid_legal_modal.content'),
     },
     {
@@ -385,7 +385,7 @@ const FormModals = () => {
         <Button
           onPress={() => setSendConfirmationNonAuthenticatedEidModal({ isOpen: false })}
           fullWidthMobile
-          isDisabled={eidSendConfirmationModalIsLoading}
+          isDisabled={eidSendConfirmationModalIsPending}
         >
           {t('modals_back_button_title')}
         </Button>,
@@ -396,14 +396,14 @@ const FormModals = () => {
             sendConfirmationNonAuthenticatedEidModal.sendCallback()
           }
           fullWidthMobile
-          isLoading={eidSendConfirmationModalIsLoading}
+          isLoading={eidSendConfirmationModalIsPending}
           isLoadingText={t('send_confirmation_non_authenticated_eid_modal.button_title_loading')}
         >
           {t('send_confirmation_non_authenticated_eid_modal.button_title')}
         </Button>,
       ],
-      isDismissable: !eidSendConfirmationModalIsLoading,
-      noCloseButton: eidSendConfirmationModalIsLoading,
+      isDismissable: !eidSendConfirmationModalIsPending,
+      noCloseButton: eidSendConfirmationModalIsPending,
       children: t('send_confirmation_non_authenticated_eid_modal.content'),
     },
     {
@@ -414,7 +414,7 @@ const FormModals = () => {
       type: 'info',
       buttons: [
         // Faux button that show only is loading
-        <Button isLoading={sendEidLoading} onPress={() => {}} />,
+        <Button isLoading={sendEidPending} onPress={() => {}} />,
       ],
       isDismissable: false,
       noCloseButton: true,
@@ -433,7 +433,7 @@ const FormModals = () => {
       buttons: [
         <Button
           onPress={() => setEidSendErrorModal({ isOpen: false })}
-          isDisabled={sendEidLoading}
+          isDisabled={sendEidPending}
           fullWidthMobile
         >
           {t('modals_back_button_title')}
@@ -442,14 +442,14 @@ const FormModals = () => {
           variant="black-solid"
           onPress={() => eidSendErrorModal.isOpen && eidSendErrorModal.sendCallback()}
           fullWidthMobile
-          isLoading={sendEidLoading}
+          isLoading={sendEidPending}
           isLoadingText={t('eid_send_error_modal.button_title_loading')}
         >
           {t('eid_send_error_modal.button_title')}
         </Button>,
       ],
-      isDismissable: !sendEidLoading,
-      noCloseButton: sendEidLoading,
+      isDismissable: !sendEidPending,
+      noCloseButton: sendEidPending,
       children: t('eid_send_error_modal.content'),
     },
   ]

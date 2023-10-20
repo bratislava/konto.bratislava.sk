@@ -19,8 +19,8 @@ const useGetContext = () => {
   const { turnOffLeaveProtection } = useFormLeaveProtection()
   const { setRedirectReturnRoute } = useLoginRegisterRedirect()
 
-  const { mutate: saveConceptMutate } = useMutation(
-    () =>
+  const { mutate: saveConceptMutate } = useMutation({
+    mutationFn: () =>
       formsApi.nasesControllerUpdateForm(
         formId,
         {
@@ -28,22 +28,20 @@ const useGetContext = () => {
         },
         { accessToken: 'onlyAuthenticated' },
       ),
-    {
-      networkMode: 'always',
-      onSuccess: () => {
-        closeSnackbarInfo()
-      },
-      onMutate: () => {
-        // TODO: Wording.
-        openSnackbarInfo('Ukladám koncept a presmerovávam.')
-        turnOffLeaveProtection()
-      },
-      onError: () => {
-        // Maybe different wording for this case.
-        openSnackbarError(t('Nepodarilo sa uložiť koncept a presmerovať.'))
-      },
+    networkMode: 'always',
+    onSuccess: () => {
+      closeSnackbarInfo()
     },
-  )
+    onMutate: () => {
+      // TODO: Wording.
+      openSnackbarInfo('Ukladám koncept a presmerovávam.')
+      turnOffLeaveProtection()
+    },
+    onError: () => {
+      // Maybe different wording for this case.
+      openSnackbarError(t('Nepodarilo sa uložiť koncept a presmerovať.'))
+    },
+  })
 
   const register = () => {
     saveConceptMutate(undefined, {

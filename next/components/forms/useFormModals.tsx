@@ -70,17 +70,17 @@ const useGetContext = (initialFormData: InitialFormData) => {
   const [eidSendErrorModal, setEidSendErrorModal] = useState<ModalWithSendCallback>({
     isOpen: false,
   })
-  const [sendLoading, setSendLoading] = useState(false)
-  const [sendEidSaveConceptLoading, setSendEidSaveConceptLoading] = useState(false)
-  const [sendEidLoading, setSendEidLoading] = useState(false)
+  const [sendPending, setSendPending] = useState(false)
+  const [sendEidSaveConceptPending, setSendEidSaveConceptPending] = useState(false)
+  const [sendEidPending, setSendEidPending] = useState(false)
   /*
    * This is set to true when user confirms eID form send. It is irreversible and forbids the user to close the modal / edit the data / send the form
    * again while redirecting.
    */
   const [redirectingToSlovenskoSkLogin, setRedirectingToSlovenskoSkLogin] = useState(false)
 
-  const eidSendConfirmationModalIsLoading =
-    sendEidSaveConceptLoading || redirectingToSlovenskoSkLogin
+  const eidSendConfirmationModalIsPending =
+    sendEidSaveConceptPending || redirectingToSlovenskoSkLogin
 
   return {
     migrationRequiredModal,
@@ -115,17 +115,17 @@ const useGetContext = (initialFormData: InitialFormData) => {
     setSendConfirmationEidLegalModal,
     sendConfirmationNonAuthenticatedEidModal,
     setSendConfirmationNonAuthenticatedEidModal,
-    sendLoading,
-    setSendLoading,
+    sendPending,
+    setSendPending,
     eidSendingModal,
     setEidSendingModal,
     eidSendErrorModal,
     setEidSendErrorModal,
-    setSendEidSaveConceptLoading,
-    sendEidLoading,
-    setSendEidLoading,
+    setSendEidSaveConceptPending,
+    sendEidPending,
+    setSendEidPending,
     setRedirectingToSlovenskoSkLogin,
-    eidSendConfirmationModalIsLoading,
+    eidSendConfirmationModalIsPending,
   }
 }
 

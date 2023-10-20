@@ -168,6 +168,7 @@ const RegisterForm = ({ onSubmit, error, lastEmail, disablePO }: Props) => {
           control={control}
           render={({ field }) => (
             <RadioGroup
+              required
               onChange={field.onChange}
               value={field.value}
               label={t('account_type_label')}

@@ -1,9 +1,11 @@
 import cx from 'classnames'
-import { useGlobalStateContext } from 'components/forms/states/GlobalState'
+import { ApplicationsListVariant } from 'components/forms/segments/AccountSections/MyApplicationsSection/MyApplicationsSection'
+import Link from 'next/link'
 import { useTranslation } from 'next-i18next'
 
 type MyApplicationsHeaderBase = {
   title: string
+  section: ApplicationsListVariant
 }
 
 type HeaderNavigationItemBase = {
@@ -13,9 +15,8 @@ type HeaderNavigationItemBase = {
 
 // TODO accessibility - refactor to use Tabs from react-aria-components
 const MyApplicationsHeader = (props: MyApplicationsHeaderBase) => {
-  const { title } = props
+  const { title, section } = props
   const { t } = useTranslation('account')
-  const { globalState, setGlobalState } = useGlobalStateContext()
 
   const headerNavigationList: HeaderNavigationItemBase[] = [
     { title: t('account_section_applications.navigation_sent'), tag: 'SENT' },
@@ -30,23 +31,22 @@ const MyApplicationsHeader = (props: MyApplicationsHeaderBase) => {
         <ul className="flex gap-0 lg:gap-12">
           {headerNavigationList.map((item, i) => (
             <li className="w-full lg:w-max" key={i}>
-              <button
+              <Link
+                href={`#${item.tag}`}
                 type="button"
-                onClick={() => setGlobalState({ applicationsActiveMenuItem: item.tag })}
                 className={cx(
                   'text-20 w-full cursor-pointer border-b-2 py-4 transition-all',
                   'hover:text-20-semibold hover:border-gray-700 ',
                   {
-                    'text-20-semibold border-b-2 border-gray-700':
-                      globalState.applicationsActiveMenuItem === item.tag,
+                    'text-20-semibold border-b-2 border-gray-700': section === `${item.tag}`,
                   },
                   {
-                    'border-transparent': globalState.applicationsActiveMenuItem !== item.tag,
+                    'border-transparent': section !== `${item.tag}`,
                   },
                 )}
               >
                 {item.title}
-              </button>
+              </Link>
             </li>
           ))}
         </ul>

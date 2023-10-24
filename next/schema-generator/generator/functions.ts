@@ -604,5 +604,8 @@ export const schema = (
     },
   }
 }
-
+/**
+ * If text contains markdown, it is still string, to distinguish it from normal text, we need to prefix it in order to
+ * detect that it is markdown when used in component.
+ */
 export const markdownText = (text: string) => `${markdownTextPrefix}${text}`

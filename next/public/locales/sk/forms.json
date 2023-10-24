@@ -196,5 +196,10 @@
     "content": "Zopakujte odoslanie žiadosti.",
     "button_title": "Opakovať",
     "button_title_loading": "Odosiela sa"
+  },
+  "concept_delete_modal": {
+    "title": "Vymazať koncept",
+    "content": "Naozaj si želáte vymazať koncept {{conceptName}}? Táto akcia je nevratná.",
+    "button_title": "Vymazať"
   }
 }

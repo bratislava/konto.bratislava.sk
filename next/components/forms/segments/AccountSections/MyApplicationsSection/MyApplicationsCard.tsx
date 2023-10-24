@@ -321,12 +321,13 @@ const MyApplicationsCard = ({ form, refreshListData, variant }: MyApplicationsCa
         </div>
       </Wrapper>
       <MessageModal
-        title={t('send_files_scanning_eid_modal.title')}
+        title={ft('concept_delete_modal.title')}
         type="error"
         isOpen={deleteConceptModalShow}
+        onOpenChange={() => setDeleteConceptModalShow(false)}
         buttons={[
           <Button onPress={() => setDeleteConceptModalShow(false)}>
-            {t('modals_back_button_title')}
+            {ft('modals_back_button_title')}
           </Button>,
           <Button
             variant="black-solid"
@@ -335,11 +336,11 @@ const MyApplicationsCard = ({ form, refreshListData, variant }: MyApplicationsCa
               return deleteConcept()
             }}
           >
-            {t('send_files_scanning_eid_modal.button_title')}
+            {ft('concept_delete_modal.button_title')}
           </Button>,
         ]}
       >
-        {t('send_files_scanning_eid_modal.content')}
+        {ft('concept_delete_modal.content', { conceptName: title })}
       </MessageModal>
       <BottomSheetMenuModal
         isOpen={bottomSheetIsOpen}

@@ -13,7 +13,7 @@ type FormMarkdownProps = { children: string }
 
 /**
  * Renders custom text in form (helptexts, etc.). Allows to use only specific set of Markdown tags. Also implements a
- * special directives such as `tax-image-preview`.
+ * special directives such as `form-image-preview`.
  */
 const FormMarkdown = ({ children }: FormMarkdownProps) => {
   if (children.startsWith(markdownTextPrefix)) {
@@ -26,12 +26,12 @@ const FormMarkdown = ({ children }: FormMarkdownProps) => {
         rehypePlugins={[
           [
             rehypeSanitize,
-            { tagNames: ['strong', 'em', 'sub', 'sup', 'p', 'a', 'tax-image-preview'] },
+            { tagNames: ['strong', 'em', 'sub', 'sup', 'p', 'a', 'form-image-preview'] },
           ],
         ]}
         components={{
           // @ts-expect-error https://github.com/remarkjs/react-markdown/issues/622
-          'tax-image-preview': ({ children: childrenInner }) => (
+          'form-image-preview': ({ children: childrenInner }) => (
             // TODO Implement lightboxes
             <ButtonNew onPress={() => {}} variant="black-link">
               {childrenInner}

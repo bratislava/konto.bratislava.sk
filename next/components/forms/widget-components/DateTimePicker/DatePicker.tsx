@@ -106,6 +106,21 @@ const DatePicker = forwardRef<HTMLDivElement, DatePickerProps>(
             errorMessage={errorMessage}
             isOpen={state?.isOpen}
             customErrorPlace={customErrorPlace}
+            popover={
+              <>
+                {state?.isOpen && (
+                  <OverlayProvider>
+                    <Popover {...dialogProps} isOpen={state?.isOpen} onClose={handleConfirm}>
+                      <Calendar
+                        {...calendarProps}
+                        onConfirm={handleConfirm}
+                        onReset={handleReset}
+                      />
+                    </Popover>
+                  </OverlayProvider>
+                )}
+              </>
+            }
           >
             <ButtonNew
               variant="icon-wrapped-negative-margin"
@@ -117,13 +132,6 @@ const DatePicker = forwardRef<HTMLDivElement, DatePickerProps>(
             />
           </DateField>
         </div>
-        {state?.isOpen && (
-          <OverlayProvider>
-            <Popover {...dialogProps} isOpen={state?.isOpen} onClose={handleConfirm}>
-              <Calendar {...calendarProps} onConfirm={handleConfirm} onReset={handleReset} />
-            </Popover>
-          </OverlayProvider>
-        )}
       </div>
     )
   },

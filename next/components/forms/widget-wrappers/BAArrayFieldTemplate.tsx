@@ -12,7 +12,9 @@ import cx from 'classnames'
 import { ComponentType } from 'react'
 import { ArrayFieldUiOptions } from 'schema-generator/generator/uiOptionsTypes'
 
+import Alert from '../info-components/Alert'
 import FieldErrorMessage from '../info-components/FieldErrorMessage'
+import FormMarkdown from '../info-components/FormMarkdown'
 import ButtonNew from '../simple-components/ButtonNew'
 import WidgetWrapper from './WidgetWrapper'
 
@@ -35,27 +37,15 @@ const BAArrayFieldTemplate = <
     onAddClick,
     readonly,
     registry,
-    required,
-    schema,
     title,
     rawErrors,
   } = props
   const uiOptions = getUiOptions(uiSchema) as ArrayFieldUiOptions
-  const ArrayFieldDescriptionTemplate = getTemplate<'ArrayFieldDescriptionTemplate', T, S, F>(
-    'ArrayFieldDescriptionTemplate',
-    registry,
-    uiOptions,
-  )
   const ArrayFieldItemTemplate = getTemplate<'ArrayFieldItemTemplate', T, S, F>(
     'ArrayFieldItemTemplate',
     registry,
     uiOptions,
   ) as ComponentType<ArrayFieldTemplateItemType<T, S, F> & { parentUiOptions: ArrayFieldUiOptions }>
-  const ArrayFieldTitleTemplate = getTemplate<'ArrayFieldTitleTemplate', T, S, F>(
-    'ArrayFieldTitleTemplate',
-    registry,
-    uiOptions,
-  )
 
   const containerStyle = cx('flex flex-col', {
     'gap-6': uiOptions.variant === 'topLevel',
@@ -72,21 +62,17 @@ const BAArrayFieldTemplate = <
 
   return (
     <WidgetWrapper options={uiOptions}>
-      <ArrayFieldTitleTemplate
-        idSchema={idSchema}
-        title={uiOptions.title || title}
-        schema={schema}
-        uiSchema={uiSchema}
-        required={required}
-        registry={registry}
-      />
-      <ArrayFieldDescriptionTemplate
-        idSchema={idSchema}
-        description={uiOptions.description || schema.description}
-        schema={schema}
-        uiSchema={uiSchema}
-        registry={registry}
-      />
+      {/* ArrayFieldTitleTemplate is not used */}
+      {title && uiOptions.variant === 'topLevel' && <h3 className="text-h3 mb-6">{title}</h3>}
+      {title && uiOptions.variant === 'nested' && <h4 className="text-h4 mb-4">{title}</h4>}
+      {/* ArrayFieldDescriptionTemplate is not used */}
+      {uiOptions.description && uiOptions.variant === 'nested' && (
+        <Alert
+          type="info"
+          message={<FormMarkdown>{uiOptions.description}</FormMarkdown>}
+          className="mb-6"
+        />
+      )}
       <div className={containerStyle}>
         <div key={`array-item-list-${idSchema.$id}`} className="flex flex-col gap-6">
           {items &&

@@ -2,12 +2,12 @@ import {
   arrayField,
   datePicker,
   inputField,
+  markdownText,
   numberField,
   object,
   radioButton,
-  selectMultipleField,
+  selectField,
   step,
-  textArea,
 } from '../../generator/functions'
 import { createStringOptions } from '../../generator/helpers'
 import { stavbyBase } from './stavbyBase'
@@ -72,6 +72,23 @@ export default step(
               'Výmera zastavanej plochy, na ktorej je postavená nebytová budova (pozrite LV s “Parcely registra “C” a parcelu s spôsobom využívania “16” alebo “15”). Ak je stavba na viacerých parceliach, sčítajte plochu. Zobraziť ukážku',
           },
         ),
+        radioButton(
+          'castStavbyOslobodenaOdDane',
+          {
+            type: 'boolean',
+            title:
+              'Máte časť stavby, ktorá podlieha oslobodeniu od dane zo stavieb podľa § 17 zákona č. 582/2004 Z.z. a VZN?',
+            required: true,
+            options: [
+              { value: true, title: 'Áno' },
+              { value: false, title: 'Nie', isDefault: true },
+            ],
+          },
+          {
+            variant: 'boxed',
+            orientations: 'row',
+          },
+        ),
         object(
           'nehnutelnosti',
           { required: true },
@@ -86,7 +103,7 @@ export default step(
                 itemTitle: 'Časť stavby č. {index}',
               },
               [
-                selectMultipleField(
+                selectField(
                   'ucelVyuzitiaStavby',
                   {
                     title: 'Účel využitia stavby',
@@ -101,68 +118,57 @@ export default step(
                   'vymeraPodlahovejPlochy',
                   { type: 'integer', title: 'Výmera podlahovej plochy', required: true },
                   {
-                    helptext:
-                      // TODO m2
-                      'Zadávajte číslo zaokrúhlené nahor (napr. ak 12.3 m2, tak zadajte 13).',
+                    helptext: markdownText(
+                      'Zadávajte číslo zaokrúhlené nahor (napr. ak 12.3 m^2^, tak zadajte 13).',
+                    ),
                   },
                 ),
               ],
             ),
-            object('sumar', { required: true }, { objectDisplay: 'boxed', spaceTop: 'default' }, [
-              numberField(
-                'vymeraPodlahovejPlochy',
-                {
-                  type: 'integer',
-                  title: 'Celková výmera podlahových plôch všetkých podlaží stavby',
-                  required: true,
-                },
-                {
-                  helptext:
-                    // TODO m2
-                    'Celková výmera je zaokrúhlená na celé m2 nahor (vrátane tých, na ktoré si uplatňujete nárok na oslobodenie), u spoluvlastníkov vo výške ich spoluvlastníckeho podielu.',
-                },
-              ),
-              numberField(
-                'zakladDane',
-                {
-                  type: 'integer',
-                  title:
-                    'Základ dane - výmera zastavanej plochy stavby vo výške spoluvlastníckych podielov',
-                  required: true,
-                },
-                {
-                  helptext:
-                    // TODO m2
-                    'Celková výmera pozostáva zo súčtu podielov výmer častí stavby využívaných na jednotlivé účely na zastavanej ploche. Číslo sa zaokrúhľuje na celé m2 nahor.',
-                },
-              ),
-            ]),
+            object(
+              'sumar',
+              { required: true },
+              { objectDisplay: 'boxed', spaceTop: 'default', title: 'Sumár' },
+              [
+                numberField(
+                  'vymeraPodlahovejPlochy',
+                  {
+                    type: 'integer',
+                    title: 'Celková výmera podlahových plôch všetkých podlaží stavby',
+                    required: true,
+                  },
+                  {
+                    helptext: markdownText(
+                      'Celková výmera je zaokrúhlená na celé m^2^ nahor (vrátane tých, na ktoré si uplatňujete nárok na oslobodenie), u spoluvlastníkov vo výške ich spoluvlastníckeho podielu.',
+                    ),
+                    size: 'large',
+                  },
+                ),
+                numberField(
+                  'zakladDane',
+                  {
+                    type: 'integer',
+                    title:
+                      'Základ dane - výmera zastavanej plochy stavby vo výške spoluvlastníckych podielov',
+                    required: true,
+                  },
+                  {
+                    helptext: markdownText(
+                      'Celková výmera pozostáva zo súčtu podielov výmer častí stavby využívaných na jednotlivé účely na zastavanej ploche. Číslo sa zaokrúhľuje na celé m^2^ nahor.',
+                    ),
+                    size: 'large',
+                  },
+                ),
+              ],
+            ),
           ],
-        ),
-        radioButton(
-          'castStavbyOslobodenaOdDane',
-          {
-            type: 'boolean',
-            title:
-              'Máte časť stavby, ktorá podlieha oslobodeniu od dane zo stavieb podľa § 17 a VZN?',
-            required: true,
-            options: [
-              { value: true, title: 'Áno' },
-              { value: false, title: 'Nie', isDefault: true },
-            ],
-          },
-          {
-            variant: 'boxed',
-            orientations: 'row',
-          },
         ),
         numberField(
           'pocetNadzemnychAPodzemnychPodlaziStavbyOkremPrvehoNadzemnehoPodlazia',
           {
             type: 'integer',
             minimum: 0,
-            title:
-              'Počet nadzemných a podzemných podlaží stavby okrem prvého nadzemného podlažia\n',
+            title: 'Počet nadzemných a podzemných podlaží stavby okrem prvého nadzemného podlažia',
             required: true,
           },
           {
@@ -172,11 +178,6 @@ export default step(
           },
         ),
       ],
-    ),
-    textArea(
-      'poznamka',
-      { title: 'Poznámka' },
-      { placeholder: 'Tu môžete napísať doplnkové informácie' },
     ),
   ]),
 )

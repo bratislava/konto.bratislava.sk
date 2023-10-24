@@ -59,7 +59,7 @@ export type WidgetUiOptions = {
 
 type CheckboxOption = {
   value: string
-  tooltip: string
+  tooltip?: string
 }
 
 export type CheckboxesUiOptions = {
@@ -79,7 +79,8 @@ export type InputFieldUiOptions = {
 
 type RadioOption = {
   value: string
-  tooltip: string
+  tooltip?: string
+  description?: string
 }
 
 export type RadioButtonUiOptions = {
@@ -139,6 +140,8 @@ export type ObjectFieldUiOptions = Pick<WidgetUiOptions, 'spaceTop' | 'spaceBott
       }
     | {
         objectDisplay?: 'boxed'
+        title?: string
+        description?: string
       }
   )
 
@@ -147,3 +150,8 @@ export type SchemaUiOptions = {
   titlePath?: string
   titleFallback?: string
 }
+
+/**
+ * Unique prefix for Markdown text.
+ */
+export const markdownTextPrefix = `markdown_gKgflRNwdS:`

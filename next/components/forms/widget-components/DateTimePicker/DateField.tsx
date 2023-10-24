@@ -13,6 +13,7 @@ type DateFieldProps = FieldBaseProps &
   Pick<FieldAdditionalProps, 'customErrorPlace'> & {
     children?: ReactNode
     isOpen?: boolean
+    popover?: ReactNode
   } & AriaDatePickerProps<DateValue>
 
 const DateField = ({
@@ -26,6 +27,7 @@ const DateField = ({
   required,
   explicitOptional,
   customErrorPlace,
+  popover,
   ...rest
 }: DateFieldProps) => {
   const ref = React.useRef<HTMLDivElement>(null)
@@ -74,6 +76,7 @@ const DateField = ({
         ))}
         <div className="ml-auto flex items-center">{children}</div>
       </div>
+      {popover}
     </FieldWrapper>
   )
 }

@@ -6,6 +6,7 @@ import {
 import cx from 'classnames'
 import { ObjectFieldUiOptions } from 'schema-generator/generator/uiOptionsTypes'
 
+import FormMarkdown from '../info-components/FormMarkdown'
 import WidgetWrapper from './WidgetWrapper'
 
 /**
@@ -37,6 +38,14 @@ const BAObjectFieldTemplate = ({ idSchema, properties, uiSchema }: ObjectFieldTe
   return (
     <WidgetWrapper options={options}>
       <fieldset id={idSchema.$id} className={fieldsetClassname} style={{ gridTemplateColumns }}>
+        {options.objectDisplay === 'boxed' && options.title && (
+          <h3 className="text-h3 mb-3">{options.title}</h3>
+        )}
+        {options.objectDisplay === 'boxed' && options.description && (
+          <div className="text-p2">
+            <FormMarkdown>{options.description}</FormMarkdown>
+          </div>
+        )}
         {properties.map((prop: ObjectFieldTemplatePropertyType) => prop.content)}
       </fieldset>
     </WidgetWrapper>

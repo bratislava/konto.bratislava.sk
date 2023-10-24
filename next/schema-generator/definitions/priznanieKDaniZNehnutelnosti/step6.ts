@@ -3,6 +3,7 @@ import {
   conditionalFields,
   datePicker,
   inputField,
+  markdownText,
   numberField,
   object,
   radioButton,
@@ -60,9 +61,9 @@ export default step(
                   required: true,
                 },
                 {
-                  helptext:
-                    // TODO m2
-                    'Zadávajte číslo zaokrúhlené nahor (napr. ak 12.3 m2, tak zadajte 13).',
+                  helptext: markdownText(
+                    'Zadávajte číslo zaokrúhlené nahor (napr. ak 12.3 m^2^, tak zadajte 13).',
+                  ),
                 },
               ),
               numberField(
@@ -70,11 +71,9 @@ export default step(
                 {
                   type: 'integer',
                   title: 'Výmera podlahovej plochy bytu používaného na iné účely',
-                  required: true,
                 },
                 {
                   helptext:
-                    // TODO m2
                     'Vyplňte v prípade, ak používate časť bytu napríklad na podnikateľské účely. Zadajte výmeru.',
                 },
               ),
@@ -157,19 +156,6 @@ export default step(
                           'Zadávajte číslo zaokrúhlené nahor na celé číslo (príklad: 48,27 = 49)',
                       },
                     ),
-                    numberField(
-                      'vymeraPodlahovejPlochyNaIneUcely',
-                      {
-                        type: 'integer',
-                        title: 'Výmera podlahovej plochy bytu používaného na iné účely',
-                        required: true,
-                      },
-                      {
-                        helptext:
-                          // TODO m2
-                          'Vyplňte v prípade, ak používate časť bytu napríklad na podnikateľské účely. Zadajte výmeru.',
-                      },
-                    ),
                     object(
                       'datumy',
                       {},
@@ -191,7 +177,7 @@ export default step(
                           { title: 'Dátum zániku daňovej povinnosti' },
                           {
                             helptext:
-                              'Vypĺňate len v prípade, ak ste byt/nebytový priestor predali alebo darovali (uvediete dátum 31/12/rok predaja/darovania)',
+                              'Vypĺňate len v prípade, ak ste nebytový priestor predali alebo darovali (uvediete dátum 31/12/rok predaja/darovania)',
                           },
                         ),
                       ],

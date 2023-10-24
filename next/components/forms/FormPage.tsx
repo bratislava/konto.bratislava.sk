@@ -45,7 +45,7 @@ const FormPage = () => {
             <FormSummary />
           ) : (
             <>
-              <h1 className="text-h1-medium font-semibold">{currentStepperStep.title}</h1>
+              <h2 className="text-h2 mb-8 font-semibold">{currentStepperStep.title}</h2>
               <FormComponent
                 // This is a hack to force the form to re-render when the step changes, it's hard to say whether it
                 // is needed or not, but ensures 100% safety.

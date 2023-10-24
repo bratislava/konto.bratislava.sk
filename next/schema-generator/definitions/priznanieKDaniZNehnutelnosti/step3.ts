@@ -3,10 +3,11 @@ import {
   conditionalFields,
   datePicker,
   inputField,
+  markdownText,
   numberField,
   object,
   radioButton,
-  selectMultipleField,
+  selectField,
   step,
   textArea,
   upload,
@@ -33,15 +34,22 @@ export default step(
         ...pravnyVztahSpoluvlastnictvo(StepEnum.DanZPozemkov),
         arrayField(
           'pozemky',
-          { title: 'asdad', required: true },
-          { variant: 'nested', addButtonLabel: 'asdads', itemTitle: 'Pozemok č. {index}' },
+          { title: 'Pozemky', required: true },
+          {
+            variant: 'nested',
+            addButtonLabel: 'Pridať ďalší pozemok (na tom istom LV)',
+            itemTitle: 'Pozemok č. {index}',
+            description: markdownText(
+              'Pozemky pod stavbami, v ktorej máte nehnuteľnosť, sa nezdaňujú. Sčítate len tie, ktoré majú iný kód využitia ako”15”. Ak máte len parcely s kódom “15”, zadajte do pola číslo 0.\n\n::form-image-preview[Zobraziť ukážku]{#https://cdn-api.bratislava.sk/strapi-homepage/upload/oprava_cyklocesty_kacin_7b008b44d8.jpg}',
+            ),
+          },
           [
             inputField(
               'cisloListuVlastnictva',
               { title: 'Číslo listu vlastníctva' },
-              { size: 'small' },
+              { size: 'small', placeholder: 'Napr. 4567' },
             ),
-            selectMultipleField(
+            selectField(
               'kataster',
               {
                 title: 'Názov katastrálneho územia',
@@ -73,8 +81,6 @@ export default step(
                 ),
               },
               {
-                helptext:
-                  'Vyberte jedno alebo viacero katastrálnych území, v ktorých sa pozemok nachádza',
                 dropdownDivider: true,
               },
             ),
@@ -103,13 +109,12 @@ export default step(
                 ),
               ],
             ),
-            selectMultipleField(
+            selectField(
               'druhPozemku',
               {
                 title: 'Druh pozemku',
                 required: true,
-                // TODO no default
-                options: createStringOptions(['TODO 1', 'TODO 2']),
+                options: createStringOptions(['TODO 1', 'TODO 2'], false),
               },
               {
                 helptext:
@@ -145,8 +150,9 @@ export default step(
                   },
                   {
                     type: 'dragAndDrop',
-                    helptext:
-                      'V prvom kroku je potrebné nahratie skenu znaleckého posudku. Po odoslaní elektronického formulára doručte, prosím, znalecký posudok v listinnej podobe na oddelenie miestnych daní, poplatkov a licencií. Z posudku sa následne použije hodnota pri výpočte dane z pozemku/ov.',
+                    helptext: markdownText(
+                      'V prvom kroku je potrebné nahratie skenu znaleckého posudku. Po odoslaní elektronického formulára doručte, prosím, znalecký posudok v listinnej podobe na [oddelenie miestnych daní, poplatkov a licencií](https://bratislava.sk/mesto-bratislava/dane-a-poplatky). Z posudku sa následne použije hodnota pri výpočte dane z pozemku/ov.',
+                    ),
                   },
                 ),
               ],

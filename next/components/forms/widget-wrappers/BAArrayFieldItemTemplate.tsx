@@ -25,23 +25,23 @@ const BAArrayFieldItemTemplate = <
   },
 ) => {
   const { children, hasRemove, index, onDropIndexClick, parentUiOptions } = props
+  const { variant, itemTitle } = parentUiOptions
 
   const boxStyle = cx({
-    'rounded-lg border border-zinc-300 bg-white px-6 pb-6 pt-8':
-      parentUiOptions.variant === 'topLevel',
-    'rounded-lg bg-gray-50': parentUiOptions.variant === 'nested',
+    'rounded-lg border border-zinc-300 bg-white px-6 pb-6 pt-8': variant === 'topLevel',
+    'rounded-lg bg-gray-50': variant === 'nested',
   })
 
   const headingStyle = cx('flex items-center gap-8', {
     // 'rounded-lg border border-zinc-300 bg-white px-6 pb-6 pt-8': uiOptions.variant === 'topLevel',
-    'border-b border-gray-200 px-6 py-5': parentUiOptions.variant === 'nested',
+    'border-b border-gray-200 px-6 py-5': variant === 'nested',
   })
 
   const contentStyle = cx({
-    'p-6': parentUiOptions.variant === 'nested',
+    'p-6': variant === 'nested',
   })
 
-  const title = (parentUiOptions.itemTitle ?? '').replace('{index}', String(index + 1))
+  const title = (itemTitle ?? '').replace('{index}', String(index + 1))
 
   const onDropIndexClickPatched = (innerIndex: number) => () => {
     // The RJSF expects the event to have a `preventDefault` method, but the `onPress` handler
@@ -52,7 +52,8 @@ const BAArrayFieldItemTemplate = <
   return (
     <div className={boxStyle}>
       <div className={headingStyle}>
-        <span className="text-h5 grow">{title}</span>
+        {variant === 'topLevel' && <h3 className="text-h3 grow">{title}</h3>}
+        {variant === 'nested' && <h4 className="text-h4 grow">{title}</h4>}
         {hasRemove && (
           <Button
             variant="icon-wrapped"
@@ -60,6 +61,7 @@ const BAArrayFieldItemTemplate = <
             // TODO: Translation + improve message
             aria-label="Vymazať"
             onPress={onDropIndexClickPatched(index)}
+            className="self-start"
           />
         )}
       </div>

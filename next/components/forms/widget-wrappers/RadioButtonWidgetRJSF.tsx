@@ -52,6 +52,8 @@ const RadioButtonsWidgetRJSF = ({
     onChange(enumOptions[index].value)
   }
 
+  const radioGroupHasDescription = radioOptions.some((option) => option.description)
+
   return (
     <WidgetWrapper options={options}>
       <RadioGroup
@@ -66,12 +68,20 @@ const RadioButtonsWidgetRJSF = ({
       >
         {enumOptions.map((option, radioIndex: number) => {
           const radioValue = `value-${radioIndex}`
-          const tooltip = radioOptions.find(
+          const radioInOptions = radioOptions.find(
             (innerOption) => innerOption.value === option.value,
-          )?.tooltip
+          )
+          const { tooltip, description } = radioInOptions ?? {}
 
           return (
-            <Radio key={radioValue} variant={variant} value={radioValue} tooltip={tooltip}>
+            <Radio
+              key={radioValue}
+              variant={variant}
+              value={radioValue}
+              tooltip={tooltip}
+              description={description}
+              radioGroupHasDescription={radioGroupHasDescription}
+            >
               {option.label}
             </Radio>
           )

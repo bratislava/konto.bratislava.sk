@@ -37,12 +37,12 @@ export const pravnyVztahSpoluvlastnictvo = (step?: StepEnum) => [
         { title: 'Som jediný vlastník' },
         {
           title: 'Podielové spoluvlastníctvo',
-          tooltip:
+          description:
             'Nehnuteľnosť vlastníte s ďalšou/ďalšími osobou/osobami (váš podiel na LV je napr. 1/2).',
         },
         {
           title: 'Bezpodielové spoluvlastníctvo manželov',
-          tooltip:
+          description:
             'Nehnuteľnosť vlastníte bezpodielovo s manželom/kou (váš podiel na LV je 1/1). Priznanie podáva len jeden z manželov.',
         },
       ]),
@@ -54,7 +54,7 @@ export const pravnyVztahSpoluvlastnictvo = (step?: StepEnum) => [
     [
       numberField(
         'pocetSpoluvlastnikov',
-        { title: 'Zadajte počet spoluvlastníkov', type: 'integer', minimum: 0, required: true },
+        { title: 'Zadajte počet spoluvlastníkov', type: 'integer', minimum: 1, required: true },
         {
           helptext: 'Uveďte počet všetkých spoluvlastníkov, vrátane vás (napr. ja + súrodenec = 2)',
         },
@@ -94,7 +94,7 @@ export const pravnyVztahSpoluvlastnictvo = (step?: StepEnum) => [
         {
           type: 'dragAndDrop',
           helptext:
-            'Keďže ste v predošlom kroku zvolili, že priznanie nepodávate vo svojom mene, je nutné nahratie skanu plnej moci. Následne, po odoslaní formulára je potrebné doručiť originál plnej moci v listinnej podobe na oddelenie miestnych daní, poplatkov a licencií. Splnomocnenie sa neprikladá v prípade zákonného zástupcu neplnoletej osoby.',
+            'Keďže ste v predošlom kroku zvolili, že priznanie nepodávate vo svojom mene, je nutné nahratie skenu plnej moci. Následne, po odoslaní formulára je potrebné doručiť originál plnej moci v listinnej podobe na oddelenie miestnych daní, poplatkov a licencií. Splnomocnenie sa neprikladá v prípade zákonného zástupcu neplnoletej osoby.',
           belowComponents: [
             {
               type: 'additionalLinks',

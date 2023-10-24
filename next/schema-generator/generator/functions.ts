@@ -11,6 +11,7 @@ import {
   CustomComponentType,
   DatePickerUiOptions,
   InputFieldUiOptions,
+  markdownTextPrefix,
   ObjectFieldUiOptions,
   RadioButtonUiOptions,
   SchemaUiOptions,
@@ -224,6 +225,7 @@ export const radioButton = <T extends 'string' | 'number' | 'boolean'>(
       value: StringToType<T>
       title: string
       tooltip?: string
+      description?: string
       isDefault?: boolean
     }[]
   },
@@ -242,8 +244,8 @@ export const radioButton = <T extends 'string' | 'number' | 'boolean'>(
       'ui:options': {
         ...uiOptions,
         radioOptions: options.options
-          .filter(({ tooltip }) => tooltip)
-          .map(({ value, tooltip }) => ({ value, tooltip })),
+          .filter(({ tooltip, description }) => tooltip || description)
+          .map(({ value, tooltip, description }) => ({ value, tooltip, description })),
       },
     }),
     required: Boolean(options.required),
@@ -276,6 +278,7 @@ export const checkboxes = (
       value: string
       title: string
       tooltip?: string
+      description?: string
       isDefault?: boolean
     }[]
   },
@@ -601,3 +604,8 @@ export const schema = (
     },
   }
 }
+/**
+ * If text contains markdown, it is still string, to distinguish it from normal text, we need to prefix it in order to
+ * detect that it is markdown when used in component.
+ */
+export const markdownText = (text: string) => `${markdownTextPrefix}${text}`

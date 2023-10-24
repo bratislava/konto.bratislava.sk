@@ -11,6 +11,7 @@ import {
   CustomComponentType,
   DatePickerUiOptions,
   InputFieldUiOptions,
+  markdownTextPrefix,
   ObjectFieldUiOptions,
   RadioButtonUiOptions,
   SchemaUiOptions,
@@ -601,3 +602,5 @@ export const schema = (
     },
   }
 }
+
+export const markdownText = (text: string) => `${markdownTextPrefix}${text}`

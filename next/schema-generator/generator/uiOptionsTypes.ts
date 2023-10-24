@@ -139,6 +139,8 @@ export type ObjectFieldUiOptions = Pick<WidgetUiOptions, 'spaceTop' | 'spaceBott
       }
     | {
         objectDisplay?: 'boxed'
+        title?: string
+        description?: string
       }
   )
 
@@ -147,3 +149,8 @@ export type SchemaUiOptions = {
   titlePath?: string
   titleFallback?: string
 }
+
+/**
+ * Unique prefix for Markdown text.
+ */
+export const markdownTextPrefix = `markdown_gKgflRNwdS:`

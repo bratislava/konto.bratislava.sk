@@ -2,6 +2,7 @@ import { DOMAttributes } from 'react'
 
 import { FieldBaseProps } from '../widget-components/FieldBase'
 import FieldErrorMessage, { FieldErrorMessageProps } from './FieldErrorMessage'
+import FormMarkdown from './FormMarkdown'
 
 export type FieldFooterProps = Omit<FieldBaseProps, 'label'> &
   FieldErrorMessageProps & {
@@ -27,9 +28,9 @@ const FieldFooter = ({
         <div className="w-full">
           <div
             {...descriptionProps}
-            className="text-p3 sm:text-16 mb-1 whitespace-pre-wrap text-gray-700"
+            className="text-p3 sm:text-16 mt-1 whitespace-pre-wrap text-gray-700"
           >
-            {helptext}
+            <FormMarkdown>{helptext}</FormMarkdown>
           </div>
         </div>
       )}

@@ -15,7 +15,7 @@ const WidgetWrapper = ({ options, className, children }: WidgetWrapperProps) => 
   const {
     className: optionsClassName,
     spaceBottom = 'none',
-    spaceTop = 'large',
+    spaceTop = 'small',
     rightComponents,
     belowComponents,
   } = options

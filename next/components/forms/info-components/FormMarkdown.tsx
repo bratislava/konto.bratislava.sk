@@ -7,6 +7,7 @@ import remarkSupersub from 'remark-supersub'
 import { markdownTextPrefix } from 'schema-generator/generator/uiOptionsTypes'
 
 import ButtonNew from '../simple-components/ButtonNew'
+import MLinkNew from '../simple-components/MLinkNew'
 
 type FormMarkdownProps = { children: string }
 
@@ -23,7 +24,10 @@ const FormMarkdown = ({ children }: FormMarkdownProps) => {
       <ReactMarkdown
         remarkPlugins={[remarkSupersub, remarkDirective, remarkDirectiveRehype]}
         rehypePlugins={[
-          [rehypeSanitize, { tagNames: ['strong', 'em', 'sub', 'sup', 'p', 'tax-image-preview'] }],
+          [
+            rehypeSanitize,
+            { tagNames: ['strong', 'em', 'sub', 'sup', 'p', 'a', 'tax-image-preview'] },
+          ],
         ]}
         components={{
           // @ts-expect-error https://github.com/remarkjs/react-markdown/issues/622
@@ -32,6 +36,16 @@ const FormMarkdown = ({ children }: FormMarkdownProps) => {
             <ButtonNew onPress={() => {}} variant="black-link">
               {childrenInner}
             </ButtonNew>
+          ),
+          a: ({ href, children: childrenInner }) => (
+            <MLinkNew
+              href={href ?? '#'}
+              // eslint-disable-next-line @typescript-eslint/no-unsafe-call,@typescript-eslint/no-unsafe-member-access
+              target={href?.startsWith('http') ? '_blank' : ''}
+              variant="underlined"
+            >
+              {childrenInner}
+            </MLinkNew>
           ),
         }}
       >

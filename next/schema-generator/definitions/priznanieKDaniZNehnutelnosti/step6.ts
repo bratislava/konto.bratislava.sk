@@ -71,7 +71,6 @@ export default step(
                 {
                   type: 'integer',
                   title: 'Výmera podlahovej plochy bytu používaného na iné účely',
-                  required: true,
                 },
                 {
                   helptext:
@@ -157,18 +156,6 @@ export default step(
                           'Zadávajte číslo zaokrúhlené nahor na celé číslo (príklad: 48,27 = 49)',
                       },
                     ),
-                    numberField(
-                      'vymeraPodlahovejPlochyNaIneUcely',
-                      {
-                        type: 'integer',
-                        title: 'Výmera podlahovej plochy bytu používaného na iné účely',
-                        required: true,
-                      },
-                      {
-                        helptext:
-                          'Vyplňte v prípade, ak používate časť bytu napríklad na podnikateľské účely. Zadajte výmeru.',
-                      },
-                    ),
                     object(
                       'datumy',
                       {},
@@ -190,7 +177,7 @@ export default step(
                           { title: 'Dátum zániku daňovej povinnosti' },
                           {
                             helptext:
-                              'Vypĺňate len v prípade, ak ste byt/nebytový priestor predali alebo darovali (uvediete dátum 31/12/rok predaja/darovania)',
+                              'Vypĺňate len v prípade, ak ste nebytový priestor predali alebo darovali (uvediete dátum 31/12/rok predaja/darovania)',
                           },
                         ),
                       ],

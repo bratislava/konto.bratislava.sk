@@ -5,7 +5,7 @@ import {
   object,
   radioButton,
   schema,
-  selectMultipleField,
+  selectField,
   step,
   upload,
 } from '../../generator/functions'
@@ -206,7 +206,7 @@ export const getSchema = (zavazne: boolean) =>
         inputField('ulica', { title: 'Ulica', required: true }, {}),
         inputField('supisneCislo', { title: 'Súpisné číslo' }, {}),
         inputField('parcelneCislo', { title: 'Parcelné číslo', required: true }, { size: 'large' }),
-        selectMultipleField(
+        selectField(
           'kataster',
           {
             title: 'Katastrálne územie',

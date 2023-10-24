@@ -1,4 +1,4 @@
-import { inputField, object, selectMultipleField } from '../../generator/functions'
+import { inputField, object, selectField } from '../../generator/functions'
 import { createStringOptions } from '../../generator/helpers'
 import { pravnyVztahSpoluvlastnictvo } from './pravnyVztahSpoluvlastnictvo'
 import { StepEnum } from './stepEnum'
@@ -6,8 +6,8 @@ import { StepEnum } from './stepEnum'
 export const stavbyBase = (step: StepEnum) => [
   inputField(
     'cisloListuVlastnictva',
-    { title: 'Číslo listu vlastníctva', required: true },
-    { size: 'small', helptext: 'Napr. 4567' },
+    { title: 'Číslo listu vlastníctva' },
+    { size: 'small', placeholder: 'Napr. 4567' },
   ),
   object(
     'todoRename2',
@@ -33,7 +33,7 @@ export const stavbyBase = (step: StepEnum) => [
       objectColumnRatio: '3/1',
     },
     [
-      selectMultipleField(
+      selectField(
         'kataster',
         {
           title: 'Názov katastrálneho územia',
@@ -65,8 +65,6 @@ export const stavbyBase = (step: StepEnum) => [
           ),
         },
         {
-          helptext:
-            'Vyberte jedno alebo viacero katastrálnych území, v ktorých sa pozemok nachádza',
           dropdownDivider: true,
           // todo size full
           className: 'w-full',

@@ -9,7 +9,13 @@ import {
 } from '../../generator/functions'
 import { createCamelCaseOptionsV2, createCondition } from '../../generator/helpers'
 
-const danovnikBase = [
+enum Type {
+  FyzickaOsoba,
+  FyzickaOsobaPodnikatel,
+  PravnickaOsoba,
+}
+
+const danovnikBase = (type: Type, splnomocnenie: boolean) => [
   object(
     'ulicaCislo',
     { required: true },
@@ -18,7 +24,19 @@ const danovnikBase = [
       objectColumnRatio: '3/1',
     },
     [
-      inputField('ulica', { title: 'Ulica', required: true }, { size: 'large' }),
+      inputField(
+        'ulica',
+        { title: 'Ulica', required: true },
+        {
+          size: 'large',
+          helptext:
+            type === Type.FyzickaOsobaPodnikatel
+              ? 'Zadajte ulicu miesta podnikania podľa živnostenského registra'
+              : type === Type.PravnickaOsoba
+              ? 'Zadajte ulicu sídla'
+              : undefined,
+        },
+      ),
       inputField('cislo', { title: 'Čislo', required: true }, { size: 'large' }),
     ],
   ),
@@ -36,14 +54,32 @@ const danovnikBase = [
   ),
   // TODO Select ciselnik
   inputField('stat', { title: 'Štát', required: true }, { size: 'large' }),
+  ...(splnomocnenie
+    ? [
+        selectField(
+          'pravnyVztahKPO',
+          {
+            title: 'Právny vzťah k PO',
+            options: [
+              { value: 'male', title: 'Male', tooltip: 'Male' },
+              { value: 'female', title: 'Female', tooltip: 'Female' },
+            ],
+          },
+          {
+            dropdownDivider: true,
+            helptext: 'Vyberte len v prípade, že podávate priznanie za právnickú osobu',
+          },
+        ),
+      ]
+    : []),
   inputField(
     'email',
-    { title: 'E-mail', type: 'email' },
+    { title: 'E-mail', type: 'email', required: true },
     { size: 'large', helptext: 'E-mailová adresa nám pomôže komunikovať s vami rýchlejšie.' },
   ),
   inputField(
     'telefon',
-    { title: 'Telefónne číslo (v tvare +421...)', type: 'tel' },
+    { title: 'Telefónne číslo (v tvare +421...)', required: true, type: 'tel' },
     { helptext: 'Telefónne číslo nám pomôže komunikovať s vami rýchlejšie.', size: 'default' },
   ),
 ]
@@ -78,10 +114,10 @@ const fyzickaOsoba = (splnomocnenie: boolean) => [
     },
     [
       inputField('meno', { title: 'Meno', required: true }, { size: 'large' }),
-      inputField('titul', { title: 'Titul', required: true }, { size: 'large' }),
+      inputField('titul', { title: 'Titul' }, { size: 'large' }),
     ],
   ),
-  ...danovnikBase,
+  ...danovnikBase(Type.FyzickaOsoba, splnomocnenie),
 ]
 
 const fyzickaOsobaPodnikatel = [
@@ -99,7 +135,7 @@ const fyzickaOsobaPodnikatel = [
       size: 'large',
     },
   ),
-  ...danovnikBase,
+  ...danovnikBase(Type.FyzickaOsobaPodnikatel, false),
 ]
 
 const pravnickaOsoba = (splnomocnenie: boolean) => [
@@ -133,7 +169,7 @@ const pravnickaOsoba = (splnomocnenie: boolean) => [
       size: 'large',
     },
   ),
-  ...danovnikBase,
+  ...danovnikBase(Type.PravnickaOsoba, splnomocnenie),
 ]
 
 export default step('udajeODanovnikovi', { title: 'Údaje o daňovníkovi' }, [
@@ -151,39 +187,49 @@ export default step('udajeODanovnikovi', { title: 'Údaje o daňovníkovi' }, [
     { variant: 'boxed', orientations: 'row' },
   ),
   conditionalFields(createCondition([[['voSvojomMene'], { const: false }]]), [
-    object('opravnenaOsoba', { required: true }, { objectDisplay: 'boxed', spaceTop: 'default' }, [
-      upload(
-        'splnomocnenie',
-        { title: 'Nahrajte splnomocnenie', required: true, multiple: true },
-        {
-          type: 'dragAndDrop',
-          helptext:
-            'Keďže ste v predošlom kroku zvolili, že priznanie nepodávate vo svojom mene, je nutné nahratie skenu plnej moci. Následne, po odoslaní formulára je potrebné doručiť originál plnej moci v listinnej podobe na oddelenie miestnych daní, poplatkov a licencií. Splnomocnenie sa neprikladá v prípade zákonného zástupcu neplnoletej osoby. ',
-        },
-      ),
-      radioButton(
-        'splnomocnenecTyp',
-        {
-          type: 'string',
-          title: 'Podávate ako oprávnená osoba (splnomocnenec)',
-          required: true,
-          options: createCamelCaseOptionsV2([
-            { title: 'Fyzická osoba', tooltip: 'Občan SR alebo cudzinec' },
-            {
-              title: 'Právnicka osoba',
-              tooltip: 'Organizácia osôb alebo majetku vytvorená na nejaký účel (napr. podnikanie)',
-            },
-          ]),
-        },
-        { variant: 'boxed' },
-      ),
-      conditionalFields(createCondition([[['splnomocnenecTyp'], { const: 'fyzickaOsoba' }]]), [
-        object('fyzickaOsoba', { required: true }, {}, fyzickaOsoba(true)),
-      ]),
-      conditionalFields(createCondition([[['splnomocnenecTyp'], { const: 'pravnickaOsoba' }]]), [
-        object('pravnickaOsoba', { required: true }, {}, pravnickaOsoba(true)),
-      ]),
-    ]),
+    object(
+      'opravnenaOsoba',
+      { required: true },
+      {
+        objectDisplay: 'boxed',
+        spaceTop: 'default',
+        title: 'Údaje o oprávnenej osobe na podanie priznania',
+      },
+      [
+        upload(
+          'splnomocnenie',
+          { title: 'Nahrajte splnomocnenie', required: true, multiple: true },
+          {
+            type: 'dragAndDrop',
+            helptext:
+              'Keďže ste v predošlom kroku zvolili, že priznanie nepodávate vo svojom mene, je nutné nahratie skenu plnej moci. Následne, po odoslaní formulára je potrebné doručiť originál plnej moci v listinnej podobe na oddelenie miestnych daní, poplatkov a licencií. Splnomocnenie sa neprikladá v prípade zákonného zástupcu neplnoletej osoby. ',
+          },
+        ),
+        radioButton(
+          'splnomocnenecTyp',
+          {
+            type: 'string',
+            title: 'Podávate ako oprávnená osoba (splnomocnenec)',
+            required: true,
+            options: createCamelCaseOptionsV2([
+              { title: 'Fyzická osoba', description: 'Občan SR alebo cudzinec' },
+              {
+                title: 'Právnicka osoba',
+                description:
+                  'Organizácia osôb alebo majetku vytvorená na nejaký účel (napr. podnikanie)',
+              },
+            ]),
+          },
+          { variant: 'boxed' },
+        ),
+        conditionalFields(createCondition([[['splnomocnenecTyp'], { const: 'fyzickaOsoba' }]]), [
+          object('fyzickaOsoba', { required: true }, {}, fyzickaOsoba(true)),
+        ]),
+        conditionalFields(createCondition([[['splnomocnenecTyp'], { const: 'pravnickaOsoba' }]]), [
+          object('pravnickaOsoba', { required: true }, {}, pravnickaOsoba(true)),
+        ]),
+      ],
+    ),
   ]),
   radioButton(
     'priznanieAko',
@@ -192,11 +238,11 @@ export default step('udajeODanovnikovi', { title: 'Údaje o daňovníkovi' }, [
       title: 'Podávate priznanie ako',
       required: true,
       options: createCamelCaseOptionsV2([
-        { title: 'Fyzická osoba', tooltip: 'Občan SR alebo cudzinec' },
-        { title: 'Fyzická osoba podnikateľ', tooltip: 'SZČO alebo “živnostník”' },
+        { title: 'Fyzická osoba', description: 'Občan SR alebo cudzinec' },
+        { title: 'Fyzická osoba podnikateľ', description: 'SZČO alebo “živnostník”' },
         {
           title: 'Právnicka osoba',
-          tooltip: 'Organizácia osôb alebo majetku vytvorená na nejaký účel (napr. podnikanie)',
+          description: 'Organizácia osôb alebo majetku vytvorená na nejaký účel (napr. podnikanie)',
         },
       ]),
     },

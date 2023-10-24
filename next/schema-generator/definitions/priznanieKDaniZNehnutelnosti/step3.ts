@@ -7,7 +7,7 @@ import {
   numberField,
   object,
   radioButton,
-  selectMultipleField,
+  selectField,
   step,
   textArea,
   upload,
@@ -47,9 +47,9 @@ export default step(
             inputField(
               'cisloListuVlastnictva',
               { title: 'Číslo listu vlastníctva' },
-              { size: 'small' },
+              { size: 'small', placeholder: 'Napr. 4567' },
             ),
-            selectMultipleField(
+            selectField(
               'kataster',
               {
                 title: 'Názov katastrálneho územia',
@@ -81,8 +81,6 @@ export default step(
                 ),
               },
               {
-                helptext:
-                  'Vyberte jedno alebo viacero katastrálnych území, v ktorých sa pozemok nachádza',
                 dropdownDivider: true,
               },
             ),
@@ -111,13 +109,12 @@ export default step(
                 ),
               ],
             ),
-            selectMultipleField(
+            selectField(
               'druhPozemku',
               {
                 title: 'Druh pozemku',
                 required: true,
-                // TODO no default
-                options: createStringOptions(['TODO 1', 'TODO 2']),
+                options: createStringOptions(['TODO 1', 'TODO 2'], false),
               },
               {
                 helptext:
@@ -153,8 +150,9 @@ export default step(
                   },
                   {
                     type: 'dragAndDrop',
-                    helptext:
-                      'V prvom kroku je potrebné nahratie skenu znaleckého posudku. Po odoslaní elektronického formulára doručte, prosím, znalecký posudok v listinnej podobe na oddelenie miestnych daní, poplatkov a licencií. Z posudku sa následne použije hodnota pri výpočte dane z pozemku/ov.',
+                    helptext: markdownText(
+                      'V prvom kroku je potrebné nahratie skenu znaleckého posudku. Po odoslaní elektronického formulára doručte, prosím, znalecký posudok v listinnej podobe na [oddelenie miestnych daní, poplatkov a licencií](https://bratislava.sk/mesto-bratislava/dane-a-poplatky). Z posudku sa následne použije hodnota pri výpočte dane z pozemku/ov.',
+                    ),
                   },
                 ),
               ],

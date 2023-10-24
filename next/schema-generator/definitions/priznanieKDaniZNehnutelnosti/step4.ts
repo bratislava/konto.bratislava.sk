@@ -37,8 +37,7 @@ export default step(
             options: createStringOptions(['Čuňovo', 'Devín'], false),
           },
           {
-            helptext:
-              'Vyberte jedno alebo viacero katastrálnych území, v ktorých sa pozemok nachádza',
+            helptext: 'Vyberte stavbu, ktorú zdaňujete, podľa účelu využitia.',
             dropdownDivider: true,
           },
         ),
@@ -56,8 +55,7 @@ export default step(
           {
             type: 'integer',
             minimum: 0,
-            title:
-              'Počet nadzemných a podzemných podlaží stavby okrem prvého nadzemného podlažia\n',
+            title: 'Počet nadzemných a podzemných podlaží stavby okrem prvého nadzemného podlažia',
             required: true,
           },
           {
@@ -94,7 +92,10 @@ export default step(
             [
               numberField(
                 'celkovaVymera',
-                { title: 'Celková výmera podlahových plôch všetkých podlaží stavby' },
+                {
+                  title: 'Celková výmera podlahových plôch všetkých podlaží stavby',
+                  required: true,
+                },
                 {
                   helptext:
                     'Spočítajte výmeru na všetkých podlažiach. U spoluvlastníkov vo výške ich spoluvlastníckeho podielu',
@@ -105,6 +106,7 @@ export default step(
                 {
                   title:
                     'Výmera podlahových plôch časti stavby, ktorá je oslobodená od dane zo stavieb',
+                  required: true,
                 },
                 {
                   helptext: 'U spoluvlastníkov vo výške ich spoluvlastníckeho podielu',

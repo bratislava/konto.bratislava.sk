@@ -3,6 +3,7 @@ import {
   conditionalFields,
   datePicker,
   inputField,
+  markdownText,
   numberField,
   object,
   radioButton,
@@ -60,9 +61,9 @@ export default step(
                   required: true,
                 },
                 {
-                  helptext:
-                    // TODO m2
-                    'Zadávajte číslo zaokrúhlené nahor (napr. ak 12.3 m2, tak zadajte 13).',
+                  helptext: markdownText(
+                    'Zadávajte číslo zaokrúhlené nahor (napr. ak 12.3 m^2^, tak zadajte 13).',
+                  ),
                 },
               ),
               numberField(
@@ -74,7 +75,6 @@ export default step(
                 },
                 {
                   helptext:
-                    // TODO m2
                     'Vyplňte v prípade, ak používate časť bytu napríklad na podnikateľské účely. Zadajte výmeru.',
                 },
               ),
@@ -166,7 +166,6 @@ export default step(
                       },
                       {
                         helptext:
-                          // TODO m2
                           'Vyplňte v prípade, ak používate časť bytu napríklad na podnikateľské účely. Zadajte výmeru.',
                       },
                     ),

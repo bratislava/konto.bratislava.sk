@@ -1,4 +1,4 @@
-import { conditionalFields, object, radioButton } from '../../generator/functions'
+import { conditionalFields, markdownText, object, radioButton } from '../../generator/functions'
 import { createCondition } from '../../generator/helpers'
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -10,6 +10,10 @@ export const vyplnitKrokRadio = (fields: SecondArg<typeof conditionalFields>) =>
     {},
     {
       objectDisplay: 'boxed',
+      title: 'Chcete podať daňové priznanie k dani z pozemkom?',
+      description: markdownText(
+        'Vysvetlene k comu sa podava DP k pozemkom. Lorem ipsum dolor sit amet consectetur. Urna mauris feugiat velit at sapien. Nulla vitae sollicitudin sagittis dignissim dolor neque. Neque et elementum commodo at tincidunt. Non ultricies eu id suspendisse volutpat viverra libero tincidunt.\n\n::tax-image-preview[Zobraziť ukážku]{#https://cdn-api.bratislava.sk/strapi-homepage/upload/oprava_cyklocesty_kacin_7b008b44d8.jpg}',
+      ),
     },
     [
       radioButton(

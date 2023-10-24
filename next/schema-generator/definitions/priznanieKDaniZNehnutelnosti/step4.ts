@@ -2,6 +2,7 @@ import {
   arrayField,
   conditionalFields,
   datePicker,
+  markdownText,
   numberField,
   object,
   radioButton,
@@ -45,9 +46,9 @@ export default step(
           'zakladDane',
           { type: 'integer', title: 'Základ dane', required: true },
           {
-            helptext:
-              // TODO m2
-              'Výmera zastavanej plochy stavby, pri spoluvlastníctve do výšky spoluvlastníckych podielov. Zadajte ako číslo zaokrúhlené na celé m2 nahor.',
+            helptext: markdownText(
+              'Výmera zastavanej plochy stavby, pri spoluvlastníctve do výšky spoluvlastníckych podielov. Zadajte ako číslo zaokrúhlené na celé m^2^ nahor.',
+            ),
           },
         ),
         numberField(

@@ -3,6 +3,7 @@ import {
   conditionalFields,
   datePicker,
   inputField,
+  markdownText,
   numberField,
   object,
   radioButton,
@@ -33,8 +34,15 @@ export default step(
         ...pravnyVztahSpoluvlastnictvo(StepEnum.DanZPozemkov),
         arrayField(
           'pozemky',
-          { title: 'asdad', required: true },
-          { variant: 'nested', addButtonLabel: 'asdads', itemTitle: 'Pozemok č. {index}' },
+          { title: 'Pozemky', required: true },
+          {
+            variant: 'nested',
+            addButtonLabel: 'Pridať ďalší pozemok (na tom istom LV)',
+            itemTitle: 'Pozemok č. {index}',
+            description: markdownText(
+              'Pozemky pod stavbami, v ktorej máte nehnuteľnosť, sa nezdaňujú. Sčítate len tie, ktoré majú iný kód využitia ako”15”. Ak máte len parcely s kódom “15”, zadajte do pola číslo 0.\n\n::tax-image-preview[Zobraziť ukážku]{#https://cdn-api.bratislava.sk/strapi-homepage/upload/oprava_cyklocesty_kacin_7b008b44d8.jpg}',
+            ),
+          },
           [
             inputField(
               'cisloListuVlastnictva',

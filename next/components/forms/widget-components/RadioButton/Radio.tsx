@@ -11,9 +11,21 @@ type RadioProps = {
   variant?: 'basic' | 'boxed' | 'card'
   className?: string
   tooltip?: string
+  description?: string
+  /**
+   * Whether any of other radios in the group has a description. If they do, we want to display the label in semi-bold.
+   */
+  radioGroupHasDescription?: boolean
 } & AriaRadioProps
 
-const Radio = ({ variant = 'basic', className, tooltip, ...rest }: RadioProps) => {
+const Radio = ({
+  variant = 'basic',
+  className,
+  tooltip,
+  description,
+  radioGroupHasDescription,
+  ...rest
+}: RadioProps) => {
   const state = useContext(RadioContext)
   const ref = useRef(null)
   const { inputProps, isDisabled, isSelected } = useRadio({ ...rest }, state, ref)
@@ -21,7 +33,7 @@ const Radio = ({ variant = 'basic', className, tooltip, ...rest }: RadioProps) =
   const isError = state?.validationState === 'invalid'
 
   const inputStyle = cx(
-    'bottom-0 left-0 right-0 top-0 m-0 grid h-6 min-h-[24px] w-6 min-w-[24px] appearance-none place-content-center rounded-full border-2 bg-white outline-offset-4',
+    'bottom-0 left-0 right-0 top-0 m-0 grid h-6 min-h-[24px] w-6 min-w-[24px] appearance-none place-content-center self-start rounded-full border-2 bg-white outline-offset-4',
     {
       // "before" pseudo-element is used to display the selected radio button
       'before:h-4 before:min-h-[16px] before:w-4 before:min-w-[16px] before:rounded-full before:bg-gray-700':
@@ -61,7 +73,12 @@ const Radio = ({ variant = 'basic', className, tooltip, ...rest }: RadioProps) =
       {/* eslint-disable-next-line jsx-a11y/label-has-associated-control */}
       <label className={containerStyle}>
         <input {...inputProps} ref={ref} className={inputStyle} />
-        <span className="grow">{rest.children}</span>
+        <span className="flex grow flex-col gap-1">
+          <span className={cx({ 'font-semibold': description || radioGroupHasDescription })}>
+            {rest.children}
+          </span>
+          {description && <span>{description}</span>}
+        </span>
         {/* TODO Tooltip should have bigger top padding in 'card' variant */}
         {tooltip && <Tooltip position="top-right" text={tooltip} className="shrink-0" />}
       </label>

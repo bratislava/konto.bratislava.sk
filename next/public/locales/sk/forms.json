@@ -9,20 +9,23 @@
     "xml_import": "XML sa nepodarilo nahrať.",
     "pdf_export": "PDF sa nepodarilo stiahnuť",
     "concept_save": "Koncept sa nepodarilo uložiť.",
-    "migration": "Formulár sa nepodarilo premigrovať."
+    "migration": "Formulár sa nepodarilo premigrovať.",
+    "concept_delete": "Koncept sa nepodarilo zmazať."
   },
   "success_messages": {
     "concept_save": "Koncept bol uložený.",
     "xml_export": "XML bolo stiahnuté.",
     "xml_import": "XML bolo nahraté.",
-    "pdf_export": "PDF bolo stiahnuté."
+    "pdf_export": "PDF bolo stiahnuté.",
+    "concept_delete": "Koncept zmazaný."
   },
   "info_messages": {
     "concept_save": "Koncept sa ukladá.",
     "xml_export": "XML sa sťahuje.",
     "xml_import": "XML sa nahráva.",
     "pdf_export": "PDF sa sťahuje.",
-    "form_leave_protection": "Naozaj chcete odísť? Údaje, ktoré ste vyplnili sa nemusia uložiť."
+    "form_leave_protection": "Naozaj chcete odísť? Údaje, ktoré ste vyplnili sa nemusia uložiť.",
+    "concept_delete": "Koncept sa zmazáva."
   },
   "selectAll": "Vybrať všetko",
   "deselectAll": "Odobrať všetko",
@@ -65,7 +68,8 @@
     "download_xml": "Stiahnuť ako XML",
     "pdf": "Stiahnuť ako PDF",
     "upload_xml": "Nahrať z XML",
-    "guide": "Návod"
+    "guide": "Návod",
+    "delete": "Vymazať koncept"
   },
   "registration_modal": {
     "header_initial_title": "Žiadosť je možné odoslať cez Bratislavské konto alebo pomocou eID",

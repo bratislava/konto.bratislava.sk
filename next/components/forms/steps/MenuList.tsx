@@ -1,30 +1,36 @@
-import { ConnectionIcon, DiscIcon, DownloadIcon, PdfIcon } from '@assets/ui-icons'
+import { BinIcon, ConnectionIcon, DiscIcon, DownloadIcon, PdfIcon } from '@assets/ui-icons'
 import Link from 'next/link'
 import { useTranslation } from 'next-i18next'
 import { ReactNode } from 'react'
+import cx from 'classnames'
 
 import { useFormExportImport } from '../../../frontend/hooks/useFormExportImport'
 import { useFormState } from '../useFormState'
+import { useFormModals } from '../useFormModals'
 
 type MenuItem = {
   title: string
   icon: ReactNode
   url?: string
   onPress?: () => void
+  className?: string
 }
 
 const MenuList = () => {
-  const { isReadonly } = useFormState()
-  const { exportXml, exportPdf, importXml, saveConcept } = useFormExportImport()
+  const { isReadonly, isDeletable } = useFormState()
+  const { exportXml, exportPdf, importXml, saveConcept, deleteConcept } = useFormExportImport()
   const { t } = useTranslation('forms')
+  const { setDeleteConceptModal } = useFormModals()
 
   const menuList = [
-    !isReadonly ? {
-      title: t('menu_list.save_concept'),
-      icon: <DiscIcon className="h-6 w-6" />,
-      // eslint-disable-next-line @typescript-eslint/no-misused-promises
-      onPress: () => saveConcept(),
-    } : null,
+    !isReadonly
+      ? {
+          title: t('menu_list.save_concept'),
+          icon: <DiscIcon className="h-6 w-6" />,
+          // eslint-disable-next-line @typescript-eslint/no-misused-promises
+          onPress: () => saveConcept(),
+        }
+      : null,
     {
       title: t('menu_list.download_xml'),
       icon: <DownloadIcon className="h-6 w-6" />,
@@ -37,11 +43,21 @@ const MenuList = () => {
       // eslint-disable-next-line @typescript-eslint/no-misused-promises
       onPress: () => exportPdf(),
     },
-    !isReadonly ? {
-      title: t('menu_list.upload_xml'),
-      icon: <ConnectionIcon className="h-6 w-6" />,
-      onPress: importXml,
-    } : null,
+    !isReadonly
+      ? {
+          title: t('menu_list.upload_xml'),
+          icon: <ConnectionIcon className="h-6 w-6" />,
+          onPress: importXml,
+        }
+      : null,
+    !isDeletable
+      ? {
+          title: t('menu_list.delete'),
+          icon: <BinIcon className="h-6 w-6" />,
+          onPress: () => setDeleteConceptModal({ isOpen: true, sendCallback: deleteConcept }),
+          className: 'text-negative-700',
+        }
+      : null,
   ].filter(Boolean) as MenuItem[]
 
   return (
@@ -50,7 +66,7 @@ const MenuList = () => {
         menuItem.url ? (
           <li className="w-max" key={i}>
             <Link href={menuItem.url}>
-              <div className="flex items-center gap-3">
+              <div className={cx('flex items-center gap-3', menuItem.className)}>
                 {menuItem.icon}
                 <span className="text-p2">{menuItem.title}</span>
               </div>
@@ -59,7 +75,7 @@ const MenuList = () => {
         ) : (
           <li className="w-max" key={i}>
             <button type="button" onClick={menuItem.onPress}>
-              <div className="flex items-center gap-3">
+              <div className={cx('flex items-center gap-3', menuItem.className)}>
                 {menuItem.icon}
                 <span className="text-p2">{menuItem.title}</span>
               </div>

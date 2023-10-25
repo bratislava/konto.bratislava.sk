@@ -18,7 +18,7 @@ import ConditionalWrap from 'conditional-wrap'
 import { ROUTES } from 'frontend/api/constants'
 import useFormStateComponents from 'frontend/hooks/useFormStateComponents'
 import useSnackbar from 'frontend/hooks/useSnackbar'
-import { downloadBlob } from 'frontend/utils/general'
+import { downloadBlob, getTitle } from 'frontend/utils/general'
 import logger from 'frontend/utils/logger'
 import _ from 'lodash'
 import Link from 'next/link'
@@ -73,13 +73,7 @@ const MyApplicationsCard = ({ form, refreshListData, variant }: MyApplicationsCa
   // TODO can be fixed by fixing OpenAPI types
   // until then, safe enough with all the fallbacks
   /* eslint-disable @typescript-eslint/no-unsafe-member-access */
-  const title =
-    _.get(
-      form?.formDataJson,
-      form?.schemaVersion?.uiSchema['ui:options']?.titlePath || '__INVALID_PATH__',
-    ) ||
-    form?.schemaVersion?.uiSchema['ui:options']?.titleFallback ||
-    ft('form_title_fallback')
+  const title = getTitle(form?.schemaVersion?.uiSchema, form?.formDataJson)
   /* eslint-enable @typescript-eslint/no-unsafe-member-access */
   const category = form?.schemaVersion.schema?.formName
   const createdAt = form?.createdAt

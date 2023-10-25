@@ -5,6 +5,7 @@ import { AxiosResponse } from 'axios'
 import { useRouter } from 'next/router'
 import { useTranslation } from 'next-i18next'
 import React, { createContext, PropsWithChildren, useContext, useRef } from 'react'
+import logger from 'frontend/utils/logger'
 
 import { RegistrationModalType } from '../../components/forms/segments/RegistrationModal/RegistrationModal'
 import { useFormLeaveProtection } from '../../components/forms/useFormLeaveProtection'
@@ -15,6 +16,7 @@ import { readFileToString } from '../utils/file'
 import { downloadBlob } from '../utils/general'
 import { useServerSideAuth } from './useServerSideAuth'
 import useSnackbar from './useSnackbar'
+import { ROUTES } from 'frontend/api/constants'
 
 type FormExportImportProviderProps = {
   initialFormData: InitialFormData
@@ -170,6 +172,22 @@ export const useGetContext = ({ initialFormData }: FormExportImportProviderProps
     saveConceptMutate({ fromModal })
   }
 
+  const deleteConcept = async () => {
+    openSnackbarInfo(t('info_messages.concept_delete'))
+    try {
+      if (!formId) throw new Error(`No formId provided on deleteConcept`)
+      await formsApi.nasesControllerDeleteForm(formId, {
+        accessToken: 'onlyAuthenticated',
+      })
+      closeSnackbarInfo()
+      openSnackbarSuccess(t('success_messages.concept_delete'))
+      router.push(ROUTES.MY_APPLICATIONS)
+    } catch (error) {
+      logger.error(error)
+      openSnackbarError(t('errors.concept_delete'))
+    }
+  }
+
   return {
     exportXml,
     importXml: triggerImportXml,
@@ -180,6 +198,7 @@ export const useGetContext = ({ initialFormData }: FormExportImportProviderProps
     migrateFormIsPending,
     importXmlButtonRef,
     handleImportXml,
+    deleteConcept,
   }
 }
 

@@ -1,5 +1,8 @@
 import currency from 'currency.js'
 import React from 'react'
+import _ from 'lodash'
+import { useTranslation } from 'next-i18next'
+import { GenericObjectType, UiSchema } from '@rjsf/utils'
 
 import { environment } from '../../environment'
 import { Tax } from '../dtos/taxDto'
@@ -104,4 +107,17 @@ export const downloadBlob = (blob: Blob, fileName: string) => {
 
 export function isDefined<T>(value: T | undefined | null): value is T {
   return value !== undefined && value !== null
+}
+export const getTitle = (uiSchema?: UiSchema | object, formData?: GenericObjectType | null) => {
+  const { t } = useTranslation('forms')
+
+  const title =
+    _.get(
+      formData,
+      uiSchema ? uiSchema['ui:options']?.['titlePath'] : undefined || '__INVALID_PATH__',
+    ) ||
+    (uiSchema ? uiSchema['ui:options']?.['titleFallback'] : undefined) ||
+    t('form_title_fallback')
+
+  return title
 }

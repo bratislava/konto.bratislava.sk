@@ -1,4 +1,5 @@
 import {
+  BinIcon,
   ConnectionIcon,
   DiscIcon,
   DownloadIcon,
@@ -19,13 +20,15 @@ import { SchemaUiOptions } from 'schema-generator/generator/uiOptionsTypes'
 
 import { useFormExportImport } from '../../../frontend/hooks/useFormExportImport'
 import { useFormState } from '../useFormState'
+import { useFormModals } from '../useFormModals'
 
 const FormHeader = () => {
-  const { isReadonly, uiSchema, schema } = useFormState()
-  const { exportXml, exportPdf, importXml, saveConcept } = useFormExportImport()
+  const { isReadonly, isDeletable, uiSchema, schema } = useFormState()
+  const { exportXml, exportPdf, importXml, saveConcept, deleteConcept } = useFormExportImport()
   const { t } = useTranslation('forms')
 
   const [isMenuOpen, setIsMenuOpen] = useState<boolean>(false)
+  const { setDeleteConceptModal } = useFormModals()
 
   const formHeaderMenuContent = [
     {
@@ -39,6 +42,14 @@ const FormHeader = () => {
           title: t('menu_list.upload_xml'),
           icon: <ConnectionIcon className="h-6 w-6" />,
           onPress: importXml,
+        }
+      : null,
+    !isDeletable
+      ? {
+          title: t('menu_list.delete'),
+          icon: <BinIcon className="h-6 w-6" />,
+          onPress: () => setDeleteConceptModal({ isOpen: true, sendCallback: deleteConcept }),
+          itemClassName: 'text-negative-700',
         }
       : null,
   ].filter(Boolean) as MenuItemBase[]

@@ -39,7 +39,9 @@ declare module 'json-schema' {
     hash?: string
     stepperTitle?: string
     file?: string
-    ciselnik?: string
+    ciselnik?: {
+      id: string
+    }
     // overrideArrayMinItemsBehaviour is declared in RJSF patch
   }
 }

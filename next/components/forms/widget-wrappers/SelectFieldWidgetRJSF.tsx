@@ -6,16 +6,10 @@ import useEnum from '../../../frontend/hooks/useEnum'
 import SelectField from '../widget-components/SelectField/SelectField'
 import { SelectOption } from '../widget-components/SelectField/SelectOption.interface'
 
-interface RJSFSelectSchema extends RJSFSchema {
-  ciselnik?: {
-    id: string
-  }
-}
-
 interface SelectFieldWidgetRJSFProps<T = unknown> extends WidgetProps {
   options: SelectFieldUiOptions & WidgetProps['options']
   value: T | T[] | null
-  schema: RJSFSelectSchema
+  schema: RJSFSchema
   onChange: (value?: T | T[] | null) => void
 }
 

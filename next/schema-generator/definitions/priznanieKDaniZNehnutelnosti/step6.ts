@@ -24,8 +24,9 @@ export default step(
   vyplnitKrokRadio([
     arrayField(
       'stavby',
-      { title: 'asdad', required: true },
+      { title: 'Priznania k dani zo stavieb služiacich viaceré účely', required: true },
       {
+        hideTitle: true,
         variant: 'topLevel',
         addButtonLabel: 'Pridať ďalšie priznanie',
         itemTitle: 'Priznanie k dani zo stavby slúžiacej na viaceré účely č. {index}',
@@ -112,8 +113,9 @@ export default step(
               [
                 arrayField(
                   'nebytovePriestory',
-                  { title: 'asdad', required: true },
+                  { title: 'Nebytové priestory', required: true },
                   {
+                    hideTitle: true,
                     variant: 'nested',
                     addButtonLabel: 'Pridať ďalší nebytový priestor v tom istom bytovom dome',
                     itemTitle: 'Nebytový priestor č. {index}',

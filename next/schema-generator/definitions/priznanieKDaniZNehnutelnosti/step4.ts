@@ -24,8 +24,9 @@ export default step(
   vyplnitKrokRadio([
     arrayField(
       'stavby',
-      { title: 'asdad', required: true },
+      { title: 'Priznania k dani zo stavieb slúžiacich na jeden účel', required: true },
       {
+        hideTitle: true,
         variant: 'topLevel',
         addButtonLabel: 'Pridať ďalšie priznanie',
         itemTitle: 'Priznanie k dani zo stavby slúžiacej na jeden účel č. {index}',

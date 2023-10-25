@@ -47,6 +47,10 @@ type AlertBase = {
   buttons?: AlertButtonBase[]
   fullWidth?: boolean
   solid?: boolean
+  /**
+   * @default true
+   */
+  hasIcon?: boolean
 }
 
 const Alert = ({
@@ -58,6 +62,7 @@ const Alert = ({
   buttons,
   fullWidth = false,
   solid = false,
+  hasIcon = true,
 }: AlertBase) => {
   const icons = {
     error: <ErrorIcon className="h-6 w-6" />,
@@ -95,7 +100,7 @@ const Alert = ({
     <div className={alertContainer}>
       <div className="flex w-full justify-between">
         <div className="flex gap-[14px]">
-          <span className="flex min-w-[22px] justify-center">{icons[type]}</span>
+          {hasIcon && <span className="flex min-w-[22px] justify-center">{icons[type]}</span>}
           <div className={contentStyle}>{title || message}</div>
         </div>
         {close && (

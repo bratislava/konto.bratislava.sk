@@ -20,7 +20,7 @@ export const vyplnitKrokRadio = (fields: SecondArg<typeof conditionalFields>) =>
         'vyplnit',
         {
           type: 'boolean',
-          title: 'Zobraziť?',
+          title: 'Vyplniť priznanie?',
           required: true,
           options: [
             { value: true, title: 'Áno' },

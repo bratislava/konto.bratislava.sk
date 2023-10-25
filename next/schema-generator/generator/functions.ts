@@ -478,7 +478,7 @@ export const object = (
 
 export const arrayField = (
   property: string,
-  options: BaseOptions & { default?: string },
+  options: BaseOptions,
   uiOptions: ArrayFieldUiOptions,
   fields: FieldType[],
 ): Field => {

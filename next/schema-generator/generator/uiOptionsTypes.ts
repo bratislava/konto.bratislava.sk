@@ -114,7 +114,7 @@ export type CustomComponentFieldUiOptions = Pick<WidgetUiOptions, 'spaceTop' | '
 }
 
 export type ArrayFieldUiOptions = Pick<WidgetUiOptions, 'spaceTop' | 'spaceBottom'> & {
-  title?: string
+  hideTitle?: boolean
   description?: string
   addButtonLabel: string
   itemTitle?: string

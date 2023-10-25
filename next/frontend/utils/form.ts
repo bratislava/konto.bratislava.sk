@@ -38,7 +38,7 @@ declare module 'json-schema' {
     pospVersion?: string
     hash?: string
     stepperTitle?: string
-    file?: string
+    file?: boolean
     ciselnik?: {
       id: string
     }

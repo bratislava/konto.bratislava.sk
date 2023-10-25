@@ -16,7 +16,10 @@ import { vyplnitKrokRadio } from './vyplnitKrokRadio'
 
 export default step(
   'danZoStaviebViacereUcely',
-  { title: 'Daň zo stavieb - stavba slúžiaca na viaceré účely' },
+  {
+    title: 'Daň zo stavieb - stavba slúžiaca na viaceré účely',
+    stepperTitle: 'Daň zo stavieb (stavba slúžiaca na viaceré účely)',
+  },
   vyplnitKrokRadio([
     arrayField(
       'stavby',

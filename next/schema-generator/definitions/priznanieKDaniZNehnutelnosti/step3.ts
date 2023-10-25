@@ -20,7 +20,7 @@ import { vyplnitKrokRadio } from './vyplnitKrokRadio'
 
 export default step(
   'danZPozemkov',
-  { title: 'Priznanie k dani z pozemkov' },
+  { title: 'Priznanie k dani z pozemkov', stepperTitle: 'Daň z pozemkov' },
   vyplnitKrokRadio([
     arrayField(
       'danZPozemkov',

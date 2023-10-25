@@ -17,7 +17,10 @@ import { vyplnitKrokRadio } from './vyplnitKrokRadio'
 
 export default step(
   'danZBytovANebytovychPriestorov',
-  { title: 'Daň z bytov a z nebytových priestorov v bytovom dome' },
+  {
+    title: 'Daň z bytov a z nebytových priestorov v bytovom dome',
+    stepperTitle: 'Daň z bytov a z nebytových priestorov (v bytovom dome)',
+  },
   vyplnitKrokRadio([
     arrayField(
       'stavby',

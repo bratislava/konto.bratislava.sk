@@ -1,22 +1,30 @@
 import cx from 'classnames'
-import { ApplicationsListVariant } from 'components/forms/segments/AccountSections/MyApplicationsSection/MyApplicationsSection'
-import Link from 'next/link'
+import logger from 'frontend/utils/logger'
+import { useRouter } from 'next/router'
 import { useTranslation } from 'next-i18next'
 
 type MyApplicationsHeaderBase = {
   title: string
-  section: ApplicationsListVariant
 }
 
 type HeaderNavigationItemBase = {
   title: string
-  tag: 'SENT' | 'SENDING' | 'DRAFT'
+  tag: ApplicationsListVariant
+}
+
+const sections = ['SENT', 'SENDING', 'DRAFT'] as const
+export type ApplicationsListVariant = (typeof sections)[number]
+
+export const isValidSection = (param: string): param is ApplicationsListVariant => {
+  return (sections as readonly string[]).includes(param)
 }
 
 // TODO accessibility - refactor to use Tabs from react-aria-components
 const MyApplicationsHeader = (props: MyApplicationsHeaderBase) => {
-  const { title, section } = props
+  const { title } = props
   const { t } = useTranslation('account')
+  const router = useRouter()
+  const section = router.query.section as ApplicationsListVariant
 
   const headerNavigationList: HeaderNavigationItemBase[] = [
     { title: t('account_section_applications.navigation_sent'), tag: 'SENT' },
@@ -31,22 +39,33 @@ const MyApplicationsHeader = (props: MyApplicationsHeaderBase) => {
         <ul className="flex gap-0 lg:gap-12">
           {headerNavigationList.map((item, i) => (
             <li className="w-full lg:w-max" key={i}>
-              <Link
-                href={`#${item.tag}`}
+              <button
+                onClick={() => {
+                  router
+                    .push(
+                      {
+                        pathname: router.pathname,
+                        query: { ...router.query, section: item.tag },
+                      },
+                      undefined,
+                      { shallow: true },
+                    )
+                    .catch((error) => logger.error(error))
+                }}
                 type="button"
                 className={cx(
                   'text-20 w-full cursor-pointer border-b-2 py-4 transition-all',
                   'hover:text-20-semibold hover:border-gray-700 ',
                   {
-                    'text-20-semibold border-b-2 border-gray-700': section === `${item.tag}`,
+                    'text-20-semibold border-b-2 border-gray-700': section === item.tag,
                   },
                   {
-                    'border-transparent': section !== `${item.tag}`,
+                    'border-transparent': section !== item.tag,
                   },
                 )}
               >
                 {item.title}
-              </Link>
+              </button>
             </li>
           ))}
         </ul>

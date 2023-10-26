@@ -1,9 +1,9 @@
 import { CheckIcon } from '@assets/ui-icons'
 import cx from 'classnames'
-import Tooltip from 'components/forms/info-components/Tooltip/Tooltip'
 import * as React from 'react'
 import { useCheckboxGroupItem, useFocusRing, VisuallyHidden } from 'react-aria'
 
+import BATooltip from '../../info-components/Tooltip/BATooltip'
 import { CheckboxGroupContext } from './CheckboxGroup'
 
 type CheckBoxBase = {
@@ -103,7 +103,7 @@ const CheckboxGroupItem = ({
           </div>
           <div className="flex w-full items-center justify-between gap-3">
             <div className={labelStyle}>{children}</div>
-            {tooltip && <Tooltip text={tooltip} />}
+            {tooltip && <BATooltip>{tooltip}</BATooltip>}
           </div>
         </div>
       </label>

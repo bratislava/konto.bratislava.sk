@@ -1,10 +1,10 @@
 import { AriaRadioProps } from '@react-types/radio'
 import cx from 'classnames'
-import Tooltip from 'components/forms/info-components/Tooltip/Tooltip'
 import * as React from 'react'
 import { useContext, useRef } from 'react'
 import { useRadio } from 'react-aria'
 
+import BATooltip from '../../info-components/Tooltip/BATooltip'
 import { RadioContext } from './RadioGroup'
 
 type RadioProps = {
@@ -80,7 +80,7 @@ const Radio = ({
           {description && <span>{description}</span>}
         </span>
         {/* TODO Tooltip should have bigger top padding in 'card' variant */}
-        {tooltip && <Tooltip position="top-right" text={tooltip} className="shrink-0" />}
+        {tooltip && <BATooltip>{tooltip}</BATooltip>}
       </label>
     </div>
   )

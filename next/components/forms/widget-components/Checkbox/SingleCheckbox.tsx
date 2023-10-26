@@ -1,9 +1,10 @@
 import { CheckIcon } from '@assets/ui-icons'
 import cx from 'classnames'
-import Tooltip from 'components/forms/info-components/Tooltip/Tooltip'
 import React from 'react'
 import { useCheckbox, useFocusRing, VisuallyHidden } from 'react-aria'
 import { useToggleState } from 'react-stately'
+
+import BATooltip from '../../info-components/Tooltip/BATooltip'
 
 type CheckBoxBase = {
   variant?: 'basic' | 'boxed'
@@ -116,7 +117,7 @@ const SingleCheckBox = ({
           >
             {children}
           </div>
-          {tooltip && <Tooltip text={tooltip} />}
+          {tooltip && <BATooltip>{tooltip}</BATooltip>}
         </div>
       </label>
     </div>

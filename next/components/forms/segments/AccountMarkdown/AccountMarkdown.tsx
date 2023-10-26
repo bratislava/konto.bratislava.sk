@@ -1,5 +1,4 @@
 import cx from 'classnames'
-import Tooltip from 'components/forms/info-components/Tooltip/Tooltip'
 import Link from 'next/link'
 import React from 'react'
 import ReactMarkdown from 'react-markdown'
@@ -8,6 +7,9 @@ import rehypeRaw from 'rehype-raw'
 import remarkDirective from 'remark-directive'
 import remarkDirectiveRehype from 'remark-directive-rehype'
 import remarkGfm from 'remark-gfm'
+
+// eslint-disable-next-line import/no-cycle
+import BATooltip from '../../info-components/Tooltip/BATooltip'
 
 type AccountMarkdownBase = {
   className?: string
@@ -84,7 +86,7 @@ const AccountMarkdown = ({
     ),
     tooltip: ({ children }: ChildrenParent) =>
       children && typeof children === 'string' ? (
-        <Tooltip text={children} position="top-right" />
+        <BATooltip placement="top right">{children}</BATooltip>
       ) : null,
   }
 

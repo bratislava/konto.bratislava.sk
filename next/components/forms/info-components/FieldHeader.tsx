@@ -1,14 +1,14 @@
 import cx from 'classnames'
-import Tooltip, { TooltipPositionType } from 'components/forms/info-components/Tooltip/Tooltip'
 import { useTranslation } from 'next-i18next'
+import * as React from 'react'
 import { DOMAttributes } from 'react'
 
 import { FieldBaseProps } from '../widget-components/FieldBase'
+import BATooltip from './Tooltip/BATooltip'
 
 export type FieldHeaderProps = FieldBaseProps & {
   htmlFor?: string
   labelProps?: DOMAttributes<never>
-  tooltipPosition?: TooltipPositionType
 }
 
 const FieldHeader = ({
@@ -18,7 +18,6 @@ const FieldHeader = ({
   explicitOptional = false,
   labelProps,
   tooltip,
-  tooltipPosition,
 }: FieldHeaderProps) => {
   const { t } = useTranslation('account', { keyPrefix: 'FieldHeader' })
 
@@ -46,7 +45,7 @@ const FieldHeader = ({
                   'ml-2': !required,
                 })}
               >
-                <Tooltip text={tooltip} position={tooltipPosition} />
+                <BATooltip>{tooltip}</BATooltip>
               </div>
             )}
           </div>

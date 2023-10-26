@@ -162,7 +162,7 @@ const useFormStateComponents = ({
           ),
           text: (
             <p className="text-warning-700">
-              {t('account_section_applications.navigation_concept_card.status_sending')}
+              {t('account_section_applications.navigation_concept_card.delivered_nases')}
             </p>
           ),
         },

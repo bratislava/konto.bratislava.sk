@@ -1,6 +1,5 @@
 import { LockIcon, PhoneIcon, ProfileIcon, RemoveIcon } from '@assets/ui-icons'
 import cx from 'classnames'
-import { TooltipPositionType } from 'components/forms/info-components/Tooltip/Tooltip'
 import { forwardRef, ReactNode, RefObject, useEffect, useState } from 'react'
 import { useTextField } from 'react-aria'
 
@@ -29,7 +28,6 @@ export type InputProps = FieldBaseProps &
     value?: string
     leftIcon?: LeftIconVariants
     resetIcon?: boolean
-    tooltipPosition?: TooltipPositionType
     onChange?: (value?: string) => void
     onBlur?: () => void
     size?: SizeType
@@ -46,7 +44,6 @@ const InputField = forwardRef<HTMLInputElement, InputProps>(
       errorMessage = [],
       helptext,
       tooltip,
-      tooltipPosition,
       required,
       explicitOptional,
       value = '',
@@ -157,7 +154,6 @@ const InputField = forwardRef<HTMLInputElement, InputProps>(
           required={required}
           explicitOptional={explicitOptional}
           tooltip={tooltip}
-          tooltipPosition={tooltipPosition}
           disabled={disabled}
           customErrorPlace={customErrorPlace}
           errorMessage={errorMessage}

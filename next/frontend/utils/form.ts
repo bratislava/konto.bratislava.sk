@@ -32,6 +32,20 @@ export const defaultFormStateBehavior: Experimental_DefaultFormStateBehavior = {
   arrayMinItems: { populate: 'never' },
 }
 
+declare module 'json-schema' {
+  export interface JSONSchema7 {
+    pospID?: string
+    pospVersion?: string
+    hash?: string
+    stepperTitle?: string
+    file?: boolean
+    ciselnik?: {
+      id: string
+    }
+    // overrideArrayMinItemsBehaviour is declared in RJSF patch
+  }
+}
+
 /**
  * @param fileValidateFn - for special validators we want to implement file validation differently
  */

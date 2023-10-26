@@ -20,12 +20,13 @@ import { vyplnitKrokRadio } from './vyplnitKrokRadio'
 
 export default step(
   'danZPozemkov',
-  { title: 'Priznanie k dani z pozemkov' },
+  { title: 'Priznanie k dani z pozemkov', stepperTitle: 'Daň z pozemkov' },
   vyplnitKrokRadio([
     arrayField(
       'danZPozemkov',
-      { title: 'asdad', required: true },
+      { title: 'Priznania k dani z pozemkov', required: true },
       {
+        hideTitle: true,
         variant: 'topLevel',
         addButtonLabel: 'Pridať ďalšie priznanie',
         itemTitle: 'Priznanie k dani z pozemkov č. {index}',

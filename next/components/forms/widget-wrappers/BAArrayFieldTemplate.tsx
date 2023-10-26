@@ -41,6 +41,7 @@ const BAArrayFieldTemplate = <
     rawErrors,
   } = props
   const uiOptions = getUiOptions(uiSchema) as ArrayFieldUiOptions
+  const { variant, description, addButtonLabel, hideTitle } = uiOptions
   const ArrayFieldItemTemplate = getTemplate<'ArrayFieldItemTemplate', T, S, F>(
     'ArrayFieldItemTemplate',
     registry,
@@ -48,8 +49,8 @@ const BAArrayFieldTemplate = <
   ) as ComponentType<ArrayFieldTemplateItemType<T, S, F> & { parentUiOptions: ArrayFieldUiOptions }>
 
   const containerStyle = cx('flex flex-col', {
-    'gap-6': uiOptions.variant === 'topLevel',
-    'gap-4': uiOptions.variant === 'nested',
+    'gap-6': variant === 'topLevel',
+    'gap-4': variant === 'nested',
   })
 
   const onAddClickPatched = () => {
@@ -62,14 +63,20 @@ const BAArrayFieldTemplate = <
 
   return (
     <WidgetWrapper options={uiOptions}>
-      {/* ArrayFieldTitleTemplate is not used */}
-      {title && uiOptions.variant === 'topLevel' && <h3 className="text-h3 mb-6">{title}</h3>}
-      {title && uiOptions.variant === 'nested' && <h4 className="text-h4 mb-4">{title}</h4>}
+      {!hideTitle && (
+        <>
+          {/* ArrayFieldTitleTemplate is not used */}
+          {title && variant === 'topLevel' && <h3 className="text-h3 mb-6">{title}</h3>}
+          {title && variant === 'nested' && <h4 className="text-h4 mb-4">{title}</h4>}
+        </>
+      )}
       {/* ArrayFieldDescriptionTemplate is not used */}
-      {uiOptions.description && uiOptions.variant === 'nested' && (
+      {description && variant === 'nested' && (
         <Alert
           type="info"
-          message={<FormMarkdown>{uiOptions.description}</FormMarkdown>}
+          hasIcon={false}
+          message={<FormMarkdown>{description}</FormMarkdown>}
+          fullWidth
           className="mb-6"
         />
       )}
@@ -84,24 +91,24 @@ const BAArrayFieldTemplate = <
           <div>
             {canAdd && (
               <div>
-                {uiOptions.variant === 'topLevel' && (
+                {variant === 'topLevel' && (
                   <>
+                    {/* eslint-disable-next-line unicorn/consistent-destructuring */}
                     {uiOptions.addTitle && <span>{uiOptions.addTitle}</span>}
+                    {/* eslint-disable-next-line unicorn/consistent-destructuring */}
                     {uiOptions.addDescription && <span>{uiOptions.addDescription}</span>}
                   </>
                 )}
                 <ButtonNew
                   variant={
-                    { topLevel: 'black-outline' as const, nested: 'black-plain' as const }[
-                      uiOptions.variant
-                    ]
+                    { topLevel: 'black-outline' as const, nested: 'black-plain' as const }[variant]
                   }
                   startIcon={<AddIcon />}
                   onPress={onAddClickPatched}
                   isDisabled={disabled || readonly}
                   fullWidth
                 >
-                  {uiOptions.addButtonLabel}
+                  {addButtonLabel}
                 </ButtonNew>
               </div>
             )}

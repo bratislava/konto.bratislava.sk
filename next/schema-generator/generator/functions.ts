@@ -478,7 +478,7 @@ export const object = (
 
 export const arrayField = (
   property: string,
-  options: BaseOptions & { default?: string },
+  options: BaseOptions,
   uiOptions: ArrayFieldUiOptions,
   fields: FieldType[],
 ): Field => {
@@ -506,12 +506,21 @@ export const step = (
   property: string,
   options: {
     title: string
+    stepperTitle?: string
     customHash?: string
   },
   fields: FieldType[],
 ) => {
   const { schema, uiSchema } = object(property, { required: true }, {}, fields)
-  const hash = options.customHash ?? kebabCase(options.title)
+  const getHash = () => {
+    if (options.customHash) {
+      return options.customHash
+    }
+    if (options.stepperTitle) {
+      return kebabCase(options.stepperTitle)
+    }
+    return kebabCase(options.title)
+  }
 
   return {
     property,
@@ -520,7 +529,8 @@ export const step = (
       properties: {
         [property]: {
           title: options.title,
-          hash,
+          stepperTitle: options.stepperTitle,
+          hash: getHash(),
           ...schema(),
         },
       },

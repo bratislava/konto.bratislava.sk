@@ -63,7 +63,7 @@ export const getStepperData = (
       }
 
       const stepProperty = getStepProperty(step)!
-      const { title, hash } = step.properties[stepProperty] as JSONSchema7 & { hash: string }
+      const { title, hash, stepperTitle } = step.properties[stepProperty] as JSONSchema7
 
       // displayIndex is only incremented for non-empty steps
       displayIndex += 1
@@ -71,6 +71,7 @@ export const getStepperData = (
         index,
         displayIndex,
         title,
+        stepperTitle,
         isSubmitted: submittedSteps.has(index),
         isSummary: false,
         hash,

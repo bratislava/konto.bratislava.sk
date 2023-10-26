@@ -16,12 +16,16 @@ import { vyplnitKrokRadio } from './vyplnitKrokRadio'
 
 export default step(
   'danZoStaviebViacereUcely',
-  { title: 'Daň zo stavieb - stavba slúžiaca na viaceré účely' },
+  {
+    title: 'Daň zo stavieb - stavba slúžiaca na viaceré účely',
+    stepperTitle: 'Daň zo stavieb (stavba slúžiaca na viaceré účely)',
+  },
   vyplnitKrokRadio([
     arrayField(
       'stavby',
-      { title: 'asdad', required: true },
+      { title: 'Priznania k dani zo stavieb slúžiacich na viaceré účely', required: true },
       {
+        hideTitle: true,
         variant: 'topLevel',
         addButtonLabel: 'Pridať ďalšie priznanie',
         itemTitle: 'Priznanie k dani zo stavby slúžiacej na viaceré účely č. {index}',
@@ -96,8 +100,9 @@ export default step(
           [
             arrayField(
               'nehnutelnosti',
-              { title: 'asdad', required: true },
+              { title: 'Časti stavby', required: true },
               {
+                hideTitle: true,
                 variant: 'nested',
                 addButtonLabel: 'Pridať ďalšiu časť stavby podľa účelu',
                 itemTitle: 'Časť stavby č. {index}',

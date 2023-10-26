@@ -20,7 +20,6 @@ import useFormStateComponents from 'frontend/hooks/useFormStateComponents'
 import useSnackbar from 'frontend/hooks/useSnackbar'
 import { downloadBlob, getTitle } from 'frontend/utils/general'
 import logger from 'frontend/utils/logger'
-import _ from 'lodash'
 import Link from 'next/link'
 import { useTranslation } from 'next-i18next'
 import { useState } from 'react'
@@ -73,7 +72,11 @@ const MyApplicationsCard = ({ form, refreshListData, variant }: MyApplicationsCa
   // TODO can be fixed by fixing OpenAPI types
   // until then, safe enough with all the fallbacks
   /* eslint-disable @typescript-eslint/no-unsafe-member-access */
-  const title = getTitle(form?.schemaVersion?.uiSchema, form?.formDataJson)
+  const title = getTitle(
+    form?.schemaVersion?.uiSchema,
+    form?.formDataJson,
+    ft('form_title_fallback'),
+  )
   /* eslint-enable @typescript-eslint/no-unsafe-member-access */
   const category = form?.schemaVersion.schema?.formName
   const createdAt = form?.createdAt

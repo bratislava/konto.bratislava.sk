@@ -12,7 +12,7 @@ type ModalWithSendCallback =
     }
   | {
       isOpen: true
-      sendCallback: () => void
+      sendCallback: (() => void) | (() => Promise<void>)
     }
 
 const useGetContext = (initialFormData: InitialFormData) => {

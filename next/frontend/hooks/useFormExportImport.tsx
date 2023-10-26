@@ -2,10 +2,11 @@ import { formsApi } from '@clients/forms'
 import { GetFormResponseDto } from '@clients/openapi-forms'
 import { useMutation } from '@tanstack/react-query'
 import { AxiosResponse } from 'axios'
+import { ROUTES } from 'frontend/api/constants'
+import logger from 'frontend/utils/logger'
 import { useRouter } from 'next/router'
 import { useTranslation } from 'next-i18next'
 import React, { createContext, PropsWithChildren, useContext, useRef } from 'react'
-import logger from 'frontend/utils/logger'
 
 import { RegistrationModalType } from '../../components/forms/segments/RegistrationModal/RegistrationModal'
 import { useFormLeaveProtection } from '../../components/forms/useFormLeaveProtection'
@@ -16,7 +17,6 @@ import { readFileToString } from '../utils/file'
 import { downloadBlob } from '../utils/general'
 import { useServerSideAuth } from './useServerSideAuth'
 import useSnackbar from './useSnackbar'
-import { ROUTES } from 'frontend/api/constants'
 
 type FormExportImportProviderProps = {
   initialFormData: InitialFormData
@@ -181,7 +181,7 @@ export const useGetContext = ({ initialFormData }: FormExportImportProviderProps
       })
       closeSnackbarInfo()
       openSnackbarSuccess(t('success_messages.concept_delete'))
-      router.push(ROUTES.MY_APPLICATIONS)
+      await router.push(ROUTES.MY_APPLICATIONS)
     } catch (error) {
       logger.error(error)
       openSnackbarError(t('errors.concept_delete'))

@@ -19,8 +19,8 @@ import { useState } from 'react'
 import { SchemaUiOptions } from 'schema-generator/generator/uiOptionsTypes'
 
 import { useFormExportImport } from '../../../frontend/hooks/useFormExportImport'
-import { useFormState } from '../useFormState'
 import { useFormModals } from '../useFormModals'
+import { useFormState } from '../useFormState'
 
 const FormHeader = () => {
   const { isReadonly, isDeletable, uiSchema, schema } = useFormState()

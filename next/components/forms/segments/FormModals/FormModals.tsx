@@ -1,14 +1,13 @@
 import { useServerSideAuth } from 'frontend/hooks/useServerSideAuth'
+import { getTitle } from 'frontend/utils/general'
 import { useTranslation } from 'next-i18next'
 import React from 'react'
-import _ from 'lodash'
-import { getTitle } from 'frontend/utils/general'
 
 import { useFormExportImport } from '../../../../frontend/hooks/useFormExportImport'
-import { useFormState } from '../../useFormState'
 import Button from '../../simple-components/ButtonNew'
 import { useFormModals } from '../../useFormModals'
 import { useFormRedirects } from '../../useFormRedirects'
+import { useFormState } from '../../useFormState'
 import MessageModal, { MessageModalProps } from '../../widget-components/Modals/MessageModal'
 import AccountMarkdown from '../AccountMarkdown/AccountMarkdown'
 import IdentityVerificationModal from '../IdentityVerificationModal/IdentityVerificationModal'
@@ -65,7 +64,7 @@ const FormModals = () => {
   const { login, register, verifyIdentity } = useFormRedirects()
 
   const { formData, uiSchema } = useFormState()
-  const title = getTitle(formData, uiSchema)
+  const title = getTitle(formData, uiSchema, t('form_title_fallback'))
 
   const messageModals: (MessageModalProps & { key: string })[] = [
     {

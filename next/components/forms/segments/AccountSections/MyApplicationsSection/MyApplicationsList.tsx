@@ -2,6 +2,7 @@ import { formsApi } from '@clients/forms'
 import { GetFormResponseDto, GetFormResponseDtoStateEnum } from '@clients/openapi-forms'
 import { useQuery } from '@tanstack/react-query'
 import MyApplicationCardsPlaceholder from 'components/forms/segments/AccountSections/MyApplicationsSection/MyApplicationCardsPlaceholder'
+import { ApplicationsListVariant } from 'components/forms/segments/AccountSections/MyApplicationsSection/MyApplicationsHeader'
 import Pagination from 'components/forms/simple-components/Pagination/Pagination'
 import useSnackbar from 'frontend/hooks/useSnackbar'
 import { useTranslation } from 'next-i18next'
@@ -11,9 +12,6 @@ import MyApplicationsCard from './MyApplicationsCard'
 
 // must be string due to typing
 const PAGE_SIZE = '10'
-
-// TODO move someplace else
-export type ApplicationsListVariant = 'SENT' | 'SENDING' | 'DRAFT'
 
 const getDraftApplications = async (variant: ApplicationsListVariant, page: number) => {
   const variantToStates: Array<GetFormResponseDtoStateEnum> = {

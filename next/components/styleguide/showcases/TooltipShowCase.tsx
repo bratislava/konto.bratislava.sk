@@ -29,22 +29,20 @@ const placements: Placement[] = [
   'end bottom',
 ]
 
-const TooltipShowCase = () => {
-  const getSampleText = (placement: string) => {
-    return `Tooltip placement: ${placement}\n\nHeslo musí obsahovať minimálne 8 znakov, veľké a malé písmeno, číslo a špeciálny znak. Heslo musí obsahovať minimálne 8 znakov, veľké a malé písmeno, číslo a špeciálny znak.`
-  }
-
-  return (
-    <Wrapper title="Tooltip" direction="column">
-      <Stack direction="row">
-        {placements.map((placement) => (
-          <BATooltip key={placement} placement={placement}>
-            {getSampleText(placement)}
-          </BATooltip>
-        ))}
-      </Stack>
-    </Wrapper>
-  )
+const getSampleText = (placement: string) => {
+  return `Tooltip placement: ${placement}\n\nHeslo musí obsahovať minimálne 8 znakov, veľké a malé písmeno, číslo a špeciálny znak. Heslo musí obsahovať minimálne 8 znakov, veľké a malé písmeno, číslo a špeciálny znak.`
 }
+
+const TooltipShowCase = () => (
+  <Wrapper title="Tooltip" direction="column">
+    <Stack direction="row">
+      {placements.map((placement) => (
+        <BATooltip key={placement} placement={placement}>
+          {getSampleText(placement)}
+        </BATooltip>
+      ))}
+    </Stack>
+  </Wrapper>
+)
 
 export default TooltipShowCase

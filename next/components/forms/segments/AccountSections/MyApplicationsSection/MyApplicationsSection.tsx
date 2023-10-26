@@ -6,13 +6,14 @@ import { useEffect } from 'react'
 import MyApplicationsHeader, {
   ApplicationsListVariant,
   isValidSection,
+  slovakToEnglishSectionNames,
 } from './MyApplicationsHeader'
 import MyApplicationsList from './MyApplicationsList'
 
 const MyApplicationsSection = () => {
   const { t } = useTranslation('account')
   const router = useRouter()
-  const section = router.query.section as ApplicationsListVariant
+  const section = slovakToEnglishSectionNames[router.query.sekcia as ApplicationsListVariant]
 
   useEffect(() => {
     // If section is not valid, redirect to default section
@@ -20,7 +21,7 @@ const MyApplicationsSection = () => {
       router
         .push({
           pathname: router.pathname,
-          query: { ...router.query, section: 'SENT' },
+          query: { ...router.query, sekcia: 'odoslane' },
         })
         .catch((error) => logger.error(error))
     }

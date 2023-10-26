@@ -12,6 +12,17 @@ type HeaderNavigationItemBase = {
   tag: ApplicationsListVariant
 }
 
+export const slovakToEnglishSectionNames: Record<string, ApplicationsListVariant> = {
+  odoslane: 'SENT',
+  'odosiela-sa': 'SENDING',
+  koncepty: 'DRAFT',
+}
+
+const englishToSlovakSectionNames: Record<ApplicationsListVariant, string> = {
+  SENT: 'odoslane',
+  SENDING: 'odosiela-sa',
+  DRAFT: 'koncepty',
+}
 const sections = ['SENT', 'SENDING', 'DRAFT'] as const
 export type ApplicationsListVariant = (typeof sections)[number]
 
@@ -24,7 +35,7 @@ const MyApplicationsHeader = (props: MyApplicationsHeaderBase) => {
   const { title } = props
   const { t } = useTranslation('account')
   const router = useRouter()
-  const section = router.query.section as ApplicationsListVariant
+  const section = slovakToEnglishSectionNames[router.query.sekcia as ApplicationsListVariant]
 
   const headerNavigationList: HeaderNavigationItemBase[] = [
     { title: t('account_section_applications.navigation_sent'), tag: 'SENT' },
@@ -45,7 +56,7 @@ const MyApplicationsHeader = (props: MyApplicationsHeaderBase) => {
                     .push(
                       {
                         pathname: router.pathname,
-                        query: { ...router.query, section: item.tag },
+                        query: { ...router.query, sekcia: englishToSlovakSectionNames[item.tag] },
                       },
                       undefined,
                       { shallow: true },

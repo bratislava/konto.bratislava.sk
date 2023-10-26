@@ -1,7 +1,7 @@
 import { HelpIcon } from '@assets/ui-icons'
 import cx from 'classnames'
 import { useTranslation } from 'next-i18next'
-import React from 'react'
+import React, { useState } from 'react'
 import { Button, OverlayArrow, Tooltip, TooltipProps, TooltipTrigger } from 'react-aria-components'
 
 // eslint-disable-next-line import/no-cycle
@@ -54,11 +54,29 @@ type BATooltipProps = Pick<TooltipProps, 'placement'> & { children: string }
 const BATooltip = ({ placement, children }: BATooltipProps) => {
   const { t } = useTranslation('account', { keyPrefix: 'Tooltip' })
 
+  // According to documentation
+  // >> Note: tooltips are not shown on touch screen interactions. Ensure that your UI is usable without tooltips, or use
+  // >> an alternative component such as a Popover to show information in an adjacent element.
+  // - https://react-spectrum.adobe.com/react-aria/Tooltip.html
+  //
+  // we shouldn't use tooltips on touch screens, but this is not possible for us, using the controlled state and
+  // implementing onPressStart allows us to display the tooltip on click on touch screens. Using Popover is not a good
+  // option because it doesn't act like tooltip (displayed on click, has focus trap, disables the rest of the page, etc.)
+
+  const [isOpen, setOpen] = useState(false)
+
   return (
-    <TooltipTrigger delay={0} closeDelay={0}>
+    <TooltipTrigger isOpen={isOpen} onOpenChange={setOpen} delay={0} closeDelay={0}>
       <Button
         className="-m-1.5 flex cursor-pointer items-center justify-center rounded-lg p-1.5"
         aria-label={t('aria.tooltip')}
+        // If the tooltip is open, and we click on it, it's first closed and then onPress is triggered, onPressStart
+        // is triggered before the tooltip is closed, so it won't reopen again.
+        onPressStart={() => {
+          if (!isOpen) {
+            setOpen(true)
+          }
+        }}
       >
         <HelpIcon className="h-5 w-5 lg:h-6 lg:w-6" />
       </Button>

@@ -84,7 +84,7 @@ const RegistrationModal = ({ type, login, register, ...rest }: RegistrationModal
           <ul className="mt-6 flex flex-col gap-2 sm:gap-4">
             {/* eslint-disable-next-line @typescript-eslint/no-unsafe-call */}
             {bodyList.map((item, i) => (
-              <li key={i} className="flex items-center gap-[16px]">
+              <li key={i} className="flex items-center gap-4">
                 <span className="flex h-5 w-5 min-w-[20px] items-center justify-center md:h-6 md:w-6 md:min-w-[24px]">
                   <CheckIcon className="h-7 w-7" />
                 </span>

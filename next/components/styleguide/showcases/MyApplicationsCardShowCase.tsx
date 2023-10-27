@@ -137,6 +137,12 @@ const MyApplicationsCardShowCase = () => {
             form={getDummyData('DELIVERED_GINIS', 'NONE')}
             refreshListData={async () => {}}
           />
+          Sent (progress - SENDING_TO_NASES)
+          <MyApplicationsCard
+            variant="SENT"
+            form={getDummyData('SENDING_TO_NASES', 'NONE')}
+            refreshListData={async () => {}}
+          />
           READY_FOR_PROCESSING
           <MyApplicationsCard
             variant="SENT"

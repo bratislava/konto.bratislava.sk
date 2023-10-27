@@ -5,11 +5,37 @@ import { Button as AriaButton } from 'react-aria-components'
 
 import ButtonNew from '../../simple-components/ButtonNew'
 import ModalV2, { ModalV2Props } from '../../simple-components/ModalV2'
+import AccountMarkdown from '../AccountMarkdown/AccountMarkdown'
 
 export enum RegistrationModalType {
   Initial = 'Initial',
   NotAuthenticatedConceptSave = 'NotAuthenticatedConceptSave',
   NotAuthenticatedSubmitForm = 'NotAuthenticatedSubmitForm',
+}
+type ButtonWithSubtextProps = {
+  text: string
+  subtext: string
+  onPress: () => void
+}
+
+const ButtonWithSubtext = ({ text, subtext, onPress }: ButtonWithSubtextProps) => {
+  return (
+    <ButtonNew
+      variant="black-outline"
+      className="justify-start p-4 sm:justify-center sm:px-4 sm:py-3"
+      endIcon={<ArrowRightIcon className="hidden h-6 w-6 sm:block" />}
+      onPress={onPress}
+      fullWidth
+    >
+      <div className="flex flex-col gap-2 text-left md:text-center">
+        <div className="sm:hidden">{text}</div>
+        <div className="inline-flex gap-2 text-main-700 sm:text-gray-700">
+          {subtext}
+          <ArrowRightIcon className="block h-6 w-6 sm:hidden" />
+        </div>
+      </div>
+    </ButtonNew>
+  )
 }
 
 type RegistrationModalBase = {
@@ -47,18 +73,18 @@ const RegistrationModal = ({ type, login, register, ...rest }: RegistrationModal
   }
 
   return (
-    <ModalV2 modalClassname="md:max-w-[796px]" mobileFullScreen {...rest}>
+    <ModalV2 modalClassname="md:max-w-[796px] md:pt-8" mobileFullScreen {...rest}>
       <div className="mb-6 flex flex-col gap-2">
-        {title && <h3 className="text-h3">{title}</h3>}
-        {subtitle && <p className="text-p1">{subtitle}</p>}
+        {title && <h3 className="text-h2 lg:text-h3">{title}</h3>}
+        {subtitle && <AccountMarkdown className="text-p1" content={subtitle} />}
       </div>
       <div className="flex flex-col">
-        <div className="rounded-t-lg bg-main-100 p-4 md:px-6 md:pb-6 md:pt-5">
+        <div className="rounded-t-lg bg-main-100 p-4 md:px-6 md:py-5">
           <h4 className="text-h4">{t('registration_modal.body_title')}</h4>
           <ul className="mt-6 flex flex-col gap-2 sm:gap-4">
             {/* eslint-disable-next-line @typescript-eslint/no-unsafe-call */}
             {bodyList.map((item, i) => (
-              <li key={i} className="flex items-center gap-[18px]">
+              <li key={i} className="flex items-center gap-4">
                 <span className="flex h-5 w-5 min-w-[20px] items-center justify-center md:h-6 md:w-6 md:min-w-[24px]">
                   <CheckIcon className="h-7 w-7" />
                 </span>
@@ -82,7 +108,7 @@ const RegistrationModal = ({ type, login, register, ...rest }: RegistrationModal
           {/* Use ButtonNew */}
           <AriaButton
             onPress={() => login()}
-            className="text-p1-semibold text-main-700 underline hover:text-main-600"
+            className="text-p1-underline text-left text-main-700 hover:text-main-600 sm:text-center"
           >
             {t('registration_modal.body_login_link')}
           </AriaButton>
@@ -99,22 +125,16 @@ const RegistrationModal = ({ type, login, register, ...rest }: RegistrationModal
           <div className="flex flex-col gap-3 md:flex-row md:items-center md:justify-between md:gap-4">
             {type === RegistrationModalType.Initial && (
               <>
-                <ButtonNew
-                  variant="black-outline"
-                  endIcon={<ArrowRightIcon className="h-6 w-6" />}
+                <ButtonWithSubtext
+                  text={t('registration_modal.buttons_initial_continue_eid_title')}
+                  subtext={t('registration_modal.buttons_initial_continue_eid')}
                   onPress={close}
-                  fullWidth
-                >
-                  {t('registration_modal.buttons_initial_continue_eid')}
-                </ButtonNew>
-                <ButtonNew
-                  variant="black-outline"
-                  endIcon={<ArrowRightIcon className="h-6 w-6" />}
+                />
+                <ButtonWithSubtext
+                  text={t('registration_modal.buttons_initial_skip_title')}
+                  subtext={t('registration_modal.buttons_initial_skip')}
                   onPress={close}
-                  fullWidth
-                >
-                  {t('registration_modal.buttons_initial_skip')}
-                </ButtonNew>
+                />
               </>
             )}
             {type === RegistrationModalType.NotAuthenticatedSubmitForm && (

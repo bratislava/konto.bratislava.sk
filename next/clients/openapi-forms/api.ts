@@ -234,6 +234,7 @@ export interface CreateFormResponseDto {
 export const CreateFormResponseDtoStateEnum = {
   Draft: 'DRAFT',
   Queued: 'QUEUED',
+  SendingNases: 'SENDING_TO_NASES',
   DeliveredNases: 'DELIVERED_NASES',
   DeliveredGinis: 'DELIVERED_GINIS',
   ReadyForProcessing: 'READY_FOR_PROCESSING',
@@ -1836,6 +1837,7 @@ export type FormOrUserNotFoundErrorDtoErrorNameEnum =
 export const FormState = {
   Draft: 'DRAFT',
   Queued: 'QUEUED',
+  SendingNases: 'SENDING_TO_NASES',
   DeliveredNases: 'DELIVERED_NASES',
   DeliveredGinis: 'DELIVERED_GINIS',
   ReadyForProcessing: 'READY_FOR_PROCESSING',
@@ -2121,6 +2123,7 @@ export interface GetFormResponseDto {
 export const GetFormResponseDtoStateEnum = {
   Draft: 'DRAFT',
   Queued: 'QUEUED',
+  SendingNases: 'SENDING_TO_NASES',
   DeliveredNases: 'DELIVERED_NASES',
   DeliveredGinis: 'DELIVERED_GINIS',
   ReadyForProcessing: 'READY_FOR_PROCESSING',

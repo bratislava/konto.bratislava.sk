@@ -23,7 +23,7 @@ const getDraftApplications = async (variant: ApplicationsListVariant, page: numb
       'DELIVERED_NASES',
       'DELIVERED_GINIS',
     ] satisfies Array<GetFormResponseDtoStateEnum>,
-    SENDING: ['QUEUED', 'ERROR'] satisfies Array<GetFormResponseDtoStateEnum>,
+    SENDING: ['QUEUED', 'ERROR', 'SENDING_TO_NASES'] satisfies Array<GetFormResponseDtoStateEnum>,
     DRAFT: ['DRAFT'] satisfies Array<GetFormResponseDtoStateEnum>,
   }[variant]
   const response = await formsApi.nasesControllerGetForms(

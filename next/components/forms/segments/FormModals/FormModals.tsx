@@ -1,5 +1,6 @@
+import { getUiOptions } from '@rjsf/utils'
 import { useServerSideAuth } from 'frontend/hooks/useServerSideAuth'
-import { getTitle } from 'frontend/utils/general'
+import { getFormTitle } from 'frontend/utils/general'
 import { useTranslation } from 'next-i18next'
 import React from 'react'
 
@@ -64,7 +65,8 @@ const FormModals = () => {
   const { login, register, verifyIdentity } = useFormRedirects()
 
   const { formData, uiSchema } = useFormState()
-  const title = getTitle(formData, uiSchema, t('form_title_fallback'))
+  const uiOptions = getUiOptions(uiSchema)
+  const title = getFormTitle(formData, uiOptions, t('form_title_fallback'))
 
   const messageModals: (MessageModalProps & { key: string })[] = [
     {

@@ -9,6 +9,7 @@ import {
 } from '@assets/ui-icons'
 import { formsApi } from '@clients/forms'
 import { GetFormResponseDto } from '@clients/openapi-forms'
+import { getUiOptions } from '@rjsf/utils'
 import Button from 'components/forms/simple-components/ButtonNew'
 import MenuDropdown, {
   MenuItemBase,
@@ -18,7 +19,7 @@ import ConditionalWrap from 'conditional-wrap'
 import { ROUTES } from 'frontend/api/constants'
 import useFormStateComponents from 'frontend/hooks/useFormStateComponents'
 import useSnackbar from 'frontend/hooks/useSnackbar'
-import { downloadBlob, getTitle } from 'frontend/utils/general'
+import { downloadBlob, getFormTitle } from 'frontend/utils/general'
 import logger from 'frontend/utils/logger'
 import Link from 'next/link'
 import { useTranslation } from 'next-i18next'
@@ -69,15 +70,8 @@ const MyApplicationsCard = ({ form, refreshListData, variant }: MyApplicationsCa
 
   // everything used in jsx should get mapped here
   const isLoading = !form
-  // TODO can be fixed by fixing OpenAPI types
-  // until then, safe enough with all the fallbacks
-  /* eslint-disable @typescript-eslint/no-unsafe-member-access */
-  const title = getTitle(
-    form?.schemaVersion?.uiSchema,
-    form?.formDataJson,
-    ft('form_title_fallback'),
-  )
-  /* eslint-enable @typescript-eslint/no-unsafe-member-access */
+  const uiOptions = getUiOptions(form?.schemaVersion?.uiSchema)
+  const title = getFormTitle(uiOptions, form?.formDataJson, ft('form_title_fallback'))
   const category = form?.schemaVersion.schema?.formName
   const createdAt = form?.createdAt
   // TODO replace - this won't be valid for forms processed on the GINIS side

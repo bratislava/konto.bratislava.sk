@@ -9,6 +9,7 @@ import {
 } from '@assets/ui-icons'
 import { formsApi } from '@clients/forms'
 import { GetFormResponseDto } from '@clients/openapi-forms'
+import { getUiOptions } from '@rjsf/utils'
 import Button from 'components/forms/simple-components/ButtonNew'
 import MenuDropdown, {
   MenuItemBase,
@@ -18,9 +19,8 @@ import ConditionalWrap from 'conditional-wrap'
 import { ROUTES } from 'frontend/api/constants'
 import useFormStateComponents from 'frontend/hooks/useFormStateComponents'
 import useSnackbar from 'frontend/hooks/useSnackbar'
-import { downloadBlob } from 'frontend/utils/general'
+import { downloadBlob, getFormTitle } from 'frontend/utils/general'
 import logger from 'frontend/utils/logger'
-import _ from 'lodash'
 import Link from 'next/link'
 import { useTranslation } from 'next-i18next'
 import { useState } from 'react'
@@ -70,17 +70,8 @@ const MyApplicationsCard = ({ form, refreshListData, variant }: MyApplicationsCa
 
   // everything used in jsx should get mapped here
   const isLoading = !form
-  // TODO can be fixed by fixing OpenAPI types
-  // until then, safe enough with all the fallbacks
-  /* eslint-disable @typescript-eslint/no-unsafe-member-access */
-  const title =
-    _.get(
-      form?.formDataJson,
-      form?.schemaVersion?.uiSchema['ui:options']?.titlePath || '__INVALID_PATH__',
-    ) ||
-    form?.schemaVersion?.uiSchema['ui:options']?.titleFallback ||
-    ft('form_title_fallback')
-  /* eslint-enable @typescript-eslint/no-unsafe-member-access */
+  const uiOptions = getUiOptions(form?.schemaVersion?.uiSchema)
+  const title = getFormTitle(uiOptions, form?.formDataJson, ft('form_title_fallback'))
   const category = form?.schemaVersion.schema?.formName
   const createdAt = form?.createdAt
   // TODO replace - this won't be valid for forms processed on the GINIS side
@@ -321,12 +312,13 @@ const MyApplicationsCard = ({ form, refreshListData, variant }: MyApplicationsCa
         </div>
       </Wrapper>
       <MessageModal
-        title={t('send_files_scanning_eid_modal.title')}
+        title={ft('concept_delete_modal.title')}
         type="error"
         isOpen={deleteConceptModalShow}
+        onOpenChange={() => setDeleteConceptModalShow(false)}
         buttons={[
           <Button onPress={() => setDeleteConceptModalShow(false)}>
-            {t('modals_back_button_title')}
+            {ft('modals_back_button_title')}
           </Button>,
           <Button
             variant="black-solid"
@@ -335,11 +327,11 @@ const MyApplicationsCard = ({ form, refreshListData, variant }: MyApplicationsCa
               return deleteConcept()
             }}
           >
-            {t('send_files_scanning_eid_modal.button_title')}
+            {ft('concept_delete_modal.button_title')}
           </Button>,
         ]}
       >
-        {t('send_files_scanning_eid_modal.content')}
+        {ft('concept_delete_modal.content', { conceptName: title })}
       </MessageModal>
       <BottomSheetMenuModal
         isOpen={bottomSheetIsOpen}

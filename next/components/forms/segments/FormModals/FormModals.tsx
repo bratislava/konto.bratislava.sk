@@ -1,4 +1,6 @@
+import { getUiOptions } from '@rjsf/utils'
 import { useServerSideAuth } from 'frontend/hooks/useServerSideAuth'
+import { getFormTitle } from 'frontend/utils/general'
 import { useTranslation } from 'next-i18next'
 import React from 'react'
 
@@ -6,6 +8,7 @@ import { useFormExportImport } from '../../../../frontend/hooks/useFormExportImp
 import Button from '../../simple-components/ButtonNew'
 import { useFormModals } from '../../useFormModals'
 import { useFormRedirects } from '../../useFormRedirects'
+import { useFormState } from '../../useFormState'
 import MessageModal, { MessageModalProps } from '../../widget-components/Modals/MessageModal'
 import AccountMarkdown from '../AccountMarkdown/AccountMarkdown'
 import IdentityVerificationModal from '../IdentityVerificationModal/IdentityVerificationModal'
@@ -54,10 +57,16 @@ const FormModals = () => {
     setEidSendErrorModal,
     sendEidPending,
     eidSendConfirmationModalIsPending,
+    deleteConceptModal,
+    setDeleteConceptModal,
   } = useFormModals()
   const { saveConcept, saveConceptIsPending, migrateForm, migrateFormIsPending } =
     useFormExportImport()
   const { login, register, verifyIdentity } = useFormRedirects()
+
+  const { formData, uiSchema } = useFormState()
+  const uiOptions = getUiOptions(uiSchema)
+  const title = getFormTitle(formData, uiOptions, t('form_title_fallback'))
 
   const messageModals: (MessageModalProps & { key: string })[] = [
     {
@@ -451,6 +460,31 @@ const FormModals = () => {
       isDismissable: !sendEidPending,
       noCloseButton: sendEidPending,
       children: t('eid_send_error_modal.content'),
+    },
+    {
+      key: 'deleteConceptModal',
+      isOpen: deleteConceptModal.isOpen,
+      onOpenChange: (value) => {
+        if (!value) {
+          setDeleteConceptModal({ isOpen: false })
+        }
+      },
+      title: t('concept_delete_modal.title'),
+      type: 'error',
+      buttons: [
+        <Button onPress={() => setDeleteConceptModal({ isOpen: false })}>
+          {t('modals_back_button_title')}
+        </Button>,
+        <Button
+          variant="black-solid"
+          onPress={() => deleteConceptModal.isOpen && deleteConceptModal.sendCallback()}
+        >
+          {t('concept_delete_modal.button_title')}
+        </Button>,
+      ],
+      isDismissable: false,
+      noCloseButton: true,
+      children: t('concept_delete_modal.content', { conceptName: title }),
     },
   ]
 

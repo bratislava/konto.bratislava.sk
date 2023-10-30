@@ -37,6 +37,7 @@ const useGetContext = ({ schema, uiSchema, formSlug, initialFormData }: FormStat
     initialFormData.formMigrationRequired ||
     initialFormData.oldSchemaVersion ||
     initialFormData.formSent
+  const isDeletable = initialFormData.formMigrationRequired || initialFormData.oldSchemaVersion
   const [formData, setFormData] = useState<GenericObjectType>(initialFormData.formDataJson)
   const stepsSchemas = useMemo(() => getEvaluatedStepsSchemas(schema, formData), [schema, formData])
 
@@ -199,6 +200,7 @@ const useGetContext = ({ schema, uiSchema, formSlug, initialFormData }: FormStat
     formSlug,
     formData,
     isReadonly,
+    isDeletable,
     currentStepIndex,
     stepperData,
     currentStepperStep,

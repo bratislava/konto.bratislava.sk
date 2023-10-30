@@ -2,6 +2,8 @@ import { formsApi } from '@clients/forms'
 import { GetFormResponseDto } from '@clients/openapi-forms'
 import { useMutation } from '@tanstack/react-query'
 import { AxiosResponse } from 'axios'
+import { ROUTES } from 'frontend/api/constants'
+import logger from 'frontend/utils/logger'
 import { useRouter } from 'next/router'
 import { useTranslation } from 'next-i18next'
 import React, { createContext, PropsWithChildren, useContext, useRef } from 'react'
@@ -170,6 +172,22 @@ export const useGetContext = ({ initialFormData }: FormExportImportProviderProps
     saveConceptMutate({ fromModal })
   }
 
+  const deleteConcept = async () => {
+    openSnackbarInfo(t('info_messages.concept_delete'))
+    try {
+      if (!formId) throw new Error(`No formId provided on deleteConcept`)
+      await formsApi.nasesControllerDeleteForm(formId, {
+        accessToken: 'onlyAuthenticated',
+      })
+      closeSnackbarInfo()
+      openSnackbarSuccess(t('success_messages.concept_delete'))
+      await router.push(ROUTES.MY_APPLICATIONS)
+    } catch (error) {
+      logger.error(error)
+      openSnackbarError(t('errors.concept_delete'))
+    }
+  }
+
   return {
     exportXml,
     importXml: triggerImportXml,
@@ -180,6 +198,7 @@ export const useGetContext = ({ initialFormData }: FormExportImportProviderProps
     migrateFormIsPending,
     importXmlButtonRef,
     handleImportXml,
+    deleteConcept,
   }
 }
 

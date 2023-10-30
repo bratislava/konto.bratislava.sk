@@ -1,4 +1,6 @@
+import { GenericObjectType, RJSFSchema, UIOptionsType } from '@rjsf/utils'
 import currency from 'currency.js'
+import _ from 'lodash'
 import React from 'react'
 
 import { environment } from '../../environment'
@@ -104,4 +106,25 @@ export const downloadBlob = (blob: Blob, fileName: string) => {
 
 export function isDefined<T>(value: T | undefined | null): value is T {
   return value !== undefined && value !== null
+}
+export const getFormTitle = (
+  uiOptions: UIOptionsType<any, RJSFSchema, any>,
+  formData?: GenericObjectType | null,
+  translationFallback?: string,
+): string => {
+  // TODO can be fixed by fixing OpenAPI types
+  // until then, safe enough with all the fallbacks
+  // eslint-disable-next-line @typescript-eslint/no-unsafe-return
+  return (
+    _.get(
+      formData,
+      uiOptions.titlePath &&
+        typeof uiOptions.titlePath !== 'boolean' &&
+        typeof uiOptions.titlePath !== 'object'
+        ? uiOptions.titlePath
+        : '__INVALID_PATH__',
+    ) ||
+    uiOptions?.titleFallback ||
+    translationFallback
+  )
 }

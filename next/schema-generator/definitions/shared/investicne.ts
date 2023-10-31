@@ -267,7 +267,7 @@ export const getSchema = (zavazne: boolean) =>
                     'ziadostOdovodnenie',
                     {
                       type: 'string',
-                      title: 'Typ konania',
+                      title: 'Upresnenie konania',
                       options: createStringOptions([
                         'Realizácia stavby, resp. jej úprav bez akéhokoľvek povolenia',
                         'Dodatočné povolenie zmeny stavby pred dokončením',

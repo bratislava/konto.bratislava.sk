@@ -1,10 +1,4 @@
-import {
-  conditionalFields,
-  inputField,
-  numberField,
-  radioButton,
-  upload,
-} from '../../generator/functions'
+import { conditionalFields, fileUpload, input, number, radioGroup } from '../../generator/functions'
 import {
   createCamelCaseOptions,
   createCamelCaseOptionsV2,
@@ -13,7 +7,7 @@ import {
 import { StepEnum } from './stepEnum'
 
 export const pravnyVztahSpoluvlastnictvo = (step?: StepEnum) => [
-  radioButton(
+  radioGroup(
     'pravnyVztah',
     {
       type: 'string',
@@ -27,7 +21,7 @@ export const pravnyVztahSpoluvlastnictvo = (step?: StepEnum) => [
     },
     { variant: 'boxed' },
   ),
-  radioButton(
+  radioGroup(
     'spoluvlastnictvo',
     {
       type: 'string',
@@ -52,14 +46,14 @@ export const pravnyVztahSpoluvlastnictvo = (step?: StepEnum) => [
   conditionalFields(
     createCondition([[['spoluvlastnictvo'], { const: 'podieloveSpoluvlastnictvo' }]]),
     [
-      numberField(
+      number(
         'pocetSpoluvlastnikov',
         { title: 'Zadajte počet spoluvlastníkov', type: 'integer', minimum: 1, required: true },
         {
           helptext: 'Uveďte počet všetkých spoluvlastníkov, vrátane vás (napr. ja + súrodenec = 2)',
         },
       ),
-      radioButton(
+      radioGroup(
         'naZakladeDohody',
         {
           type: 'boolean',
@@ -83,7 +77,7 @@ export const pravnyVztahSpoluvlastnictvo = (step?: StepEnum) => [
       [['naZakladeDohody'], { const: true }],
     ]),
     [
-      upload(
+      fileUpload(
         'splnomocnenie',
         {
           title:
@@ -110,7 +104,7 @@ export const pravnyVztahSpoluvlastnictvo = (step?: StepEnum) => [
   conditionalFields(
     createCondition([[['spoluvlastnictvo'], { const: 'bezpodieloveSpoluvlastnictvoManzelov' }]]),
     [
-      inputField(
+      input(
         'rodneCisloManzelaManzelky',
         { title: 'Rodné číslo manžela/manželky', required: true },
         {

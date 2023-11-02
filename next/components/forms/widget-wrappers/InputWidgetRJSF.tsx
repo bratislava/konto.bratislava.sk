@@ -2,17 +2,17 @@ import { WidgetProps } from '@rjsf/utils'
 import InputField from 'components/forms/widget-components/InputField/InputField'
 import WidgetWrapper from 'components/forms/widget-wrappers/WidgetWrapper'
 import React from 'react'
-import { InputFieldUiOptions } from 'schema-generator/generator/uiOptionsTypes'
+import { InputUiOptions } from 'schema-generator/generator/uiOptionsTypes'
 
 import FieldBlurWrapper from '../widget-components/FieldBlurWrapper/FieldBlurWrapper'
 
-interface InputFieldWidgetRJSFProps extends WidgetProps {
-  options: InputFieldUiOptions & WidgetProps['options']
+interface InputWidgetRJSFProps extends WidgetProps {
+  options: InputUiOptions & WidgetProps['options']
   value: string | undefined
   onChange: (value?: string) => void
 }
 
-const InputFieldWidgetRJSF = ({
+const InputWidgetRJSF = ({
   label,
   options,
   placeholder = '',
@@ -22,7 +22,7 @@ const InputFieldWidgetRJSF = ({
   onChange,
   rawErrors,
   readonly,
-}: InputFieldWidgetRJSFProps) => {
+}: InputWidgetRJSFProps) => {
   const {
     helptext,
     tooltip,
@@ -69,4 +69,4 @@ const InputFieldWidgetRJSF = ({
     </WidgetWrapper>
   )
 }
-export default InputFieldWidgetRJSF
+export default InputWidgetRJSF

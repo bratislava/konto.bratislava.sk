@@ -6,19 +6,19 @@ import uniq from 'lodash/uniq'
 
 import {
   ArrayFieldUiOptions,
-  CheckboxesUiOptions,
+  CheckboxGroupUiOptions,
   CustomComponentFieldUiOptions,
   CustomComponentType,
   DatePickerUiOptions,
-  InputFieldUiOptions,
+  FileUploadUiOptions,
+  InputUiOptions,
   markdownTextPrefix,
   ObjectFieldUiOptions,
-  RadioButtonUiOptions,
+  RadioGroupUiOptions,
   SchemaUiOptions,
-  SelectFieldUiOptions,
+  SelectUiOptions,
   TextAreaUiOptions,
   TimePickerUiOptions,
-  UploadUiOptions,
 } from './uiOptionsTypes'
 
 type Field = {
@@ -45,7 +45,7 @@ type BaseOptions = {
   required?: boolean
 }
 
-export const selectField = (
+export const select = (
   property: string,
   options: BaseOptions & {
     options: {
@@ -55,7 +55,7 @@ export const selectField = (
       isDefault?: boolean
     }[]
   },
-  uiOptions: SelectFieldUiOptions,
+  uiOptions: SelectUiOptions,
 ): Field => {
   return {
     property,
@@ -66,14 +66,14 @@ export const selectField = (
       default: options.options.find(({ isDefault }) => isDefault)?.value,
     }),
     uiSchema: () => ({
-      'ui:widget': 'SelectField',
+      'ui:widget': 'Select',
       'ui:options': uiOptions,
     }),
     required: Boolean(options.required),
   }
 }
 
-export const selectMultipleField = (
+export const selectMultiple = (
   property: string,
   options: BaseOptions & {
     minItems?: number
@@ -85,7 +85,7 @@ export const selectMultipleField = (
       isDefault?: boolean
     }[]
   },
-  uiOptions: SelectFieldUiOptions,
+  uiOptions: SelectUiOptions,
 ): Field => {
   return {
     property,
@@ -102,14 +102,14 @@ export const selectMultipleField = (
       default: options.options.filter(({ isDefault }) => isDefault).map(({ value }) => value),
     }),
     uiSchema: () => ({
-      'ui:widget': 'SelectField',
+      'ui:widget': 'Select',
       'ui:options': uiOptions,
     }),
     required: Boolean(options.required),
   }
 }
 
-export const inputField = (
+export const input = (
   property: string,
   options:
     | BaseOptions &
@@ -124,7 +124,7 @@ export const inputField = (
               type: 'password' | 'email' | 'tel'
             }
         ) & { default?: string },
-  uiOptions: Omit<InputFieldUiOptions, 'type'>,
+  uiOptions: Omit<InputUiOptions, 'type'>,
 ): Field => {
   return {
     property,
@@ -132,7 +132,7 @@ export const inputField = (
       if ('pattern' in options && 'format' in options) {
         // eslint-disable-next-line no-console
         console.error(
-          `InputField: ${property} has both pattern and format, only one of them can be provided`,
+          `Input: ${property} has both pattern and format, only one of them can be provided`,
         )
       }
 
@@ -169,7 +169,7 @@ export const inputField = (
       }
     },
     uiSchema: () => ({
-      'ui:widget': 'InputField',
+      'ui:widget': 'Input',
       'ui:label': false,
       'ui:options': { ...uiOptions, type: options.type ?? 'text' },
     }),
@@ -177,7 +177,7 @@ export const inputField = (
   }
 }
 
-export const numberField = (
+export const number = (
   property: string,
   options: BaseOptions & {
     type?: 'number' | 'integer'
@@ -187,7 +187,7 @@ export const numberField = (
     maximum?: number
     exclusiveMaximum?: number
   },
-  uiOptions: Omit<InputFieldUiOptions, 'type'>,
+  uiOptions: Omit<InputUiOptions, 'type'>,
 ): Field => {
   return {
     property,
@@ -201,7 +201,7 @@ export const numberField = (
       exclusiveMaximum: options.exclusiveMaximum,
     }),
     uiSchema: () => ({
-      'ui:widget': 'InputField',
+      'ui:widget': 'Input',
       'ui:label': false,
       'ui:options': { ...uiOptions, type: 'number' },
     }),
@@ -217,7 +217,7 @@ type StringToType<T> = T extends 'string'
   ? boolean
   : never
 
-export const radioButton = <T extends 'string' | 'number' | 'boolean'>(
+export const radioGroup = <T extends 'string' | 'number' | 'boolean'>(
   property: string,
   options: BaseOptions & {
     type: T
@@ -229,7 +229,7 @@ export const radioButton = <T extends 'string' | 'number' | 'boolean'>(
       isDefault?: boolean
     }[]
   },
-  uiOptions: Omit<RadioButtonUiOptions, 'radioOptions'>,
+  uiOptions: Omit<RadioGroupUiOptions, 'radioOptions'>,
 ): Field => {
   return {
     property,
@@ -240,7 +240,7 @@ export const radioButton = <T extends 'string' | 'number' | 'boolean'>(
       oneOf: options.options.map(({ value, title }) => ({ const: value, title })),
     }),
     uiSchema: () => ({
-      'ui:widget': 'RadioButton',
+      'ui:widget': 'RadioGroup',
       'ui:options': {
         ...uiOptions,
         radioOptions: options.options
@@ -269,7 +269,7 @@ export const textArea = (
   }
 }
 
-export const checkboxes = (
+export const checkboxGroup = (
   property: string,
   options: BaseOptions & {
     minItems?: number
@@ -282,7 +282,7 @@ export const checkboxes = (
       isDefault?: boolean
     }[]
   },
-  uiOptions: Omit<CheckboxesUiOptions, 'checkboxOptions'>,
+  uiOptions: Omit<CheckboxGroupUiOptions, 'checkboxOptions'>,
 ): Field => {
   return {
     property,
@@ -298,7 +298,7 @@ export const checkboxes = (
       default: options.options.filter(({ isDefault }) => isDefault).map(({ value }) => value),
     }),
     uiSchema: () => ({
-      'ui:widget': 'Checkboxes',
+      'ui:widget': 'CheckboxGroup',
       'ui:options': {
         ...uiOptions,
         checkboxOptions: options.options
@@ -310,10 +310,10 @@ export const checkboxes = (
   }
 }
 
-export const upload = (
+export const fileUpload = (
   property: string,
   options: BaseOptions & { multiple?: boolean },
-  uiOptions: UploadUiOptions,
+  uiOptions: FileUploadUiOptions,
 ): Field => {
   return {
     property,
@@ -340,7 +340,7 @@ export const upload = (
         file: true,
       }
     },
-    uiSchema: () => ({ 'ui:widget': 'Upload', 'ui:options': uiOptions }),
+    uiSchema: () => ({ 'ui:widget': 'FileUpload', 'ui:options': uiOptions }),
     required: Boolean(options.required),
   }
 }

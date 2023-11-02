@@ -1,12 +1,12 @@
 import {
   arrayField,
   datePicker,
-  inputField,
+  input,
   markdownText,
-  numberField,
+  number,
   object,
-  radioButton,
-  selectField,
+  radioGroup,
+  select,
   step,
 } from '../../generator/functions'
 import { createStringOptions } from '../../generator/helpers'
@@ -32,7 +32,7 @@ export default step(
       },
       [
         ...stavbyBase(StepEnum.DanZoStaviebViacereUcely),
-        inputField(
+        input(
           'popisStavby',
           { title: 'Popis stavby', required: true },
           {
@@ -68,7 +68,7 @@ export default step(
             ),
           ],
         ),
-        numberField(
+        number(
           'celkovaVymera',
           { title: 'Celková výmera zastavanej plochy viacúčelovej stavby' },
           {
@@ -76,7 +76,7 @@ export default step(
               'Výmera zastavanej plochy, na ktorej je postavená nebytová budova (pozrite LV s “Parcely registra “C” a parcelu s spôsobom využívania “16” alebo “15”). Ak je stavba na viacerých parceliach, sčítajte plochu. Zobraziť ukážku',
           },
         ),
-        radioButton(
+        radioGroup(
           'castStavbyOslobodenaOdDane',
           {
             type: 'boolean',
@@ -108,7 +108,7 @@ export default step(
                 itemTitle: 'Časť stavby č. {index}',
               },
               [
-                selectField(
+                select(
                   'ucelVyuzitiaStavby',
                   {
                     title: 'Účel využitia stavby',
@@ -119,7 +119,7 @@ export default step(
                     dropdownDivider: true,
                   },
                 ),
-                numberField(
+                number(
                   'vymeraPodlahovejPlochy',
                   { type: 'integer', title: 'Výmera podlahovej plochy', required: true },
                   {
@@ -135,7 +135,7 @@ export default step(
               { required: true },
               { objectDisplay: 'boxed', spaceTop: 'default', title: 'Sumár' },
               [
-                numberField(
+                number(
                   'vymeraPodlahovejPlochy',
                   {
                     type: 'integer',
@@ -149,7 +149,7 @@ export default step(
                     size: 'large',
                   },
                 ),
-                numberField(
+                number(
                   'zakladDane',
                   {
                     type: 'integer',
@@ -168,7 +168,7 @@ export default step(
             ),
           ],
         ),
-        numberField(
+        number(
           'pocetNadzemnychAPodzemnychPodlaziStavbyOkremPrvehoNadzemnehoPodlazia',
           {
             type: 'integer',

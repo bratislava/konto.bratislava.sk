@@ -1,19 +1,19 @@
 import { RJSFSchema, WidgetProps } from '@rjsf/utils'
 import WidgetWrapper from 'components/forms/widget-wrappers/WidgetWrapper'
-import { SelectFieldUiOptions } from 'schema-generator/generator/uiOptionsTypes'
+import { SelectUiOptions } from 'schema-generator/generator/uiOptionsTypes'
 
 import useEnum from '../../../frontend/hooks/useEnum'
 import SelectField from '../widget-components/SelectField/SelectField'
 import { SelectOption } from '../widget-components/SelectField/SelectOption.interface'
 
-interface SelectFieldWidgetRJSFProps<T = unknown> extends WidgetProps {
-  options: SelectFieldUiOptions & WidgetProps['options']
+interface SelectWidgetRJSFProps<T = unknown> extends WidgetProps {
+  options: SelectUiOptions & WidgetProps['options']
   value: T | T[] | null
   schema: RJSFSchema
   onChange: (value?: T | T[] | null) => void
 }
 
-const SelectFieldWidgetRJSF = ({
+const SelectWidgetRJSF = ({
   label,
   options,
   value,
@@ -24,7 +24,7 @@ const SelectFieldWidgetRJSF = ({
   onChange,
   rawErrors,
   readonly,
-}: SelectFieldWidgetRJSFProps) => {
+}: SelectWidgetRJSFProps) => {
   const {
     enumOptions,
     selectAllOption,
@@ -131,4 +131,4 @@ const SelectFieldWidgetRJSF = ({
   )
 }
 
-export default SelectFieldWidgetRJSF
+export default SelectWidgetRJSF

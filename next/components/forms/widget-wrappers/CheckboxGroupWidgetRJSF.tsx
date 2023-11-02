@@ -1,19 +1,19 @@
 import { EnumOptionsType, StrictRJSFSchema, WidgetProps } from '@rjsf/utils'
 import WidgetWrapper from 'components/forms/widget-wrappers/WidgetWrapper'
 import React from 'react'
-import { CheckboxesUiOptions } from 'schema-generator/generator/uiOptionsTypes'
+import { CheckboxGroupUiOptions } from 'schema-generator/generator/uiOptionsTypes'
 
 import Checkbox from '../widget-components/Checkbox/Checkbox'
 import CheckboxGroup from '../widget-components/Checkbox/CheckboxGroup'
 
-interface CheckboxesWidgetRJSFProps extends WidgetProps {
-  options: CheckboxesUiOptions & WidgetProps['options']
+interface CheckboxGroupRJSFProps extends WidgetProps {
+  options: CheckboxGroupUiOptions & WidgetProps['options']
   value: string[] | null
   schema: StrictRJSFSchema
   onChange: (value: string[]) => void
 }
 
-const CheckboxWidgetRJSF = ({
+const CheckboxGroupWidgetRJSF = ({
   options,
   value,
   onChange,
@@ -22,7 +22,7 @@ const CheckboxWidgetRJSF = ({
   rawErrors,
   required,
   readonly,
-}: CheckboxesWidgetRJSFProps) => {
+}: CheckboxGroupRJSFProps) => {
   const { enumOptions, className, checkboxOptions = [], variant = 'basic' } = options
   if (!enumOptions) return <div />
   const getTooltip = (radioValue: string) => {
@@ -60,4 +60,4 @@ const CheckboxWidgetRJSF = ({
   )
 }
 
-export default CheckboxWidgetRJSF
+export default CheckboxGroupWidgetRJSF

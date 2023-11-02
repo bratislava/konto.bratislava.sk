@@ -1,7 +1,7 @@
 // eslint-disable-next-line import/no-extraneous-dependencies
 import type { GenericObjectType } from '@rjsf/utils'
 
-import { inputField, numberField, object } from '../../generator/functions'
+import { input, number, object } from '../../generator/functions'
 import { CustomComponentPropertyCalculatorProps } from '../../generator/uiOptionsTypes'
 
 // A/B regex
@@ -25,8 +25,8 @@ export const kalkulackaTest: CustomComponentPropertyCalculatorProps = {
   formula: 'ceil(metreStvorcove * evalRatio(pomer))',
   form: getSchemas(
     object(null, {}, {}, [
-      numberField('metreStvorcove', { title: 'Metre štvorcové', required: true }, {}),
-      inputField(
+      number('metreStvorcove', { title: 'Metre štvorcové', required: true }, {}),
+      input(
         'pomer',
         {
           title: 'Pomer',

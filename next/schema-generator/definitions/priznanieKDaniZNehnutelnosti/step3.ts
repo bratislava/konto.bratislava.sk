@@ -2,15 +2,15 @@ import {
   arrayField,
   conditionalFields,
   datePicker,
-  inputField,
+  fileUpload,
+  input,
   markdownText,
-  numberField,
+  number,
   object,
-  radioButton,
-  selectField,
+  radioGroup,
+  select,
   step,
   textArea,
-  upload,
 } from '../../generator/functions'
 import { createCondition, createStringOptions } from '../../generator/helpers'
 import { kalkulackaTest } from './kalkulacky'
@@ -45,12 +45,12 @@ export default step(
             ),
           },
           [
-            inputField(
+            input(
               'cisloListuVlastnictva',
               { title: 'Číslo listu vlastníctva' },
               { size: 'small', placeholder: 'Napr. 4567' },
             ),
-            selectField(
+            select(
               'kataster',
               {
                 title: 'Názov katastrálneho územia',
@@ -93,7 +93,7 @@ export default step(
                 objectColumnRatio: '1/1',
               },
               [
-                inputField(
+                input(
                   'parcelneCislo',
                   { title: 'Parcelné číslo', required: true },
                   {
@@ -103,14 +103,14 @@ export default step(
                       'Zadávajte číslo s lomítkom. Nachádza sa 1. v poradí v tabuľke na LV. Zobraziť ukážku',
                   },
                 ),
-                inputField(
+                input(
                   'sposobVyuzitiaPozemku',
                   { title: 'Spôsob využitia pozemku', required: true },
                   { size: 'large' },
                 ),
               ],
             ),
-            selectField(
+            select(
               'druhPozemku',
               {
                 title: 'Druh pozemku',
@@ -123,7 +123,7 @@ export default step(
                 dropdownDivider: true,
               },
             ),
-            radioButton(
+            radioGroup(
               'hodnotaUrcenaZnaleckymPosudkom',
               {
                 type: 'boolean',
@@ -142,7 +142,7 @@ export default step(
             conditionalFields(
               createCondition([[['hodnotaUrcenaZnaleckymPosudkom'], { const: true }]]),
               [
-                upload(
+                fileUpload(
                   'znaleckyPosudok',
                   {
                     title: 'Nahrajte znalecký posudok',
@@ -158,7 +158,7 @@ export default step(
                 ),
               ],
             ),
-            numberField(
+            number(
               'vymeraPozemku',
               { title: 'Vaša výmera pozemku' },
               {

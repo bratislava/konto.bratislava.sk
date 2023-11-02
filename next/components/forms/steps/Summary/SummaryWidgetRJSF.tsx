@@ -11,12 +11,12 @@ import { useFormSummary } from './useFormSummary'
 export type SummaryWidgetType =
   | 'select'
   | 'input'
-  | 'radio'
-  | 'textarea'
-  | 'checkboxes'
-  | 'upload'
-  | 'datepicker'
-  | 'timepicker'
+  | 'radioGroup'
+  | 'textArea'
+  | 'checkboxGroup'
+  | 'fileUpload'
+  | 'datePicker'
+  | 'timePicker'
 
 export type SummaryWidgetRJSFProps = Pick<
   WidgetProps,
@@ -48,16 +48,16 @@ const ValueComponent = ({
       )
 
       return <>{selectLabels.join(', ')}</>
-    case 'radio':
+    case 'radioGroup':
       return (
         <>
           {options.enumOptions?.find((option) => option.value === value)?.label ??
             (value as string)}
         </>
       )
-    case 'textarea':
+    case 'textArea':
       return <span className="line-clamp-3 whitespace-pre-wrap">{value}</span>
-    case 'checkboxes':
+    case 'checkboxGroup':
       return (
         <>
           {(value as string[])
@@ -69,9 +69,9 @@ const ValueComponent = ({
             .join(', ')}
         </>
       )
-    case 'upload':
+    case 'fileUpload':
       return <SummaryFiles files={value} />
-    case 'datepicker':
+    case 'datePicker':
       try {
         const parsed = parseDate(value as string)
         return <>{formatter.format(parsed.toDate(getLocalTimeZone()))}</>
@@ -79,7 +79,7 @@ const ValueComponent = ({
         // TODO improve
         return <>{value as string}</>
       }
-    case 'timepicker':
+    case 'timePicker':
       return <>{value as string}</>
     case 'input':
       if (uiSchema?.['ui:options']?.type === 'password') {

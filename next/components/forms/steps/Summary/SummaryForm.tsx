@@ -28,14 +28,14 @@ const theme: ThemeProps = {
     ObjectFieldTemplate,
   },
   widgets: {
-    SelectField: wrapWidget('select'),
-    InputField: wrapWidget('input'),
-    RadioButton: wrapWidget('radio'),
-    TextArea: wrapWidget('textarea'),
-    Checkboxes: wrapWidget('checkboxes'),
-    Upload: wrapWidget('upload'),
-    DatePicker: wrapWidget('datepicker'),
-    TimePicker: wrapWidget('timepicker'),
+    Select: wrapWidget('select'),
+    Input: wrapWidget('input'),
+    RadioGroup: wrapWidget('radioGroup'),
+    TextArea: wrapWidget('textArea'),
+    CheckboxGroup: wrapWidget('checkboxGroup'),
+    FileUpload: wrapWidget('fileUpload'),
+    DatePicker: wrapWidget('datePicker'),
+    TimePicker: wrapWidget('timePicker'),
     CustomComponents: () => {
       return null
     },

@@ -2,11 +2,11 @@ import {
   arrayField,
   conditionalFields,
   datePicker,
-  inputField,
+  input,
   markdownText,
-  numberField,
+  number,
   object,
-  radioButton,
+  radioGroup,
   step,
   textArea,
 } from '../../generator/functions'
@@ -40,7 +40,7 @@ export default step(
             objectDisplay: 'boxed',
           },
           [
-            radioButton(
+            radioGroup(
               'priznanieZaByt',
               {
                 type: 'boolean',
@@ -57,7 +57,7 @@ export default step(
               },
             ),
             conditionalFields(createCondition([[['priznanieZaByt'], { const: true }]]), [
-              numberField(
+              number(
                 'vymeraPodlahovejPlochy',
                 {
                   type: 'integer',
@@ -70,7 +70,7 @@ export default step(
                   ),
                 },
               ),
-              numberField(
+              number(
                 'vymeraPodlahovejPlochyNaIneUcely',
                 {
                   type: 'integer',
@@ -91,7 +91,7 @@ export default step(
             objectDisplay: 'boxed',
           },
           [
-            radioButton(
+            radioGroup(
               'priznanieZaNebytovyPriestor',
               {
                 type: 'boolean',
@@ -129,7 +129,7 @@ export default step(
                         objectColumnRatio: '1/1',
                       },
                       [
-                        inputField(
+                        input(
                           'ucelVyuzitiaNebytovehoPriestoruVBytovomDome',
                           {
                             title: 'Účel využitia nebytového priestoru v bytovom dome',
@@ -139,7 +139,7 @@ export default step(
                             helptext: 'Napr. garážovanie, skladovanie, podnikanie alebo iné.',
                           },
                         ),
-                        inputField(
+                        input(
                           'cisloNebytovehoPriestoruVBytovomDome',
                           { title: 'Číslo nebytového priestoru v bytovom dome', required: true },
                           {
@@ -149,7 +149,7 @@ export default step(
                         ),
                       ],
                     ),
-                    numberField(
+                    number(
                       'vymeraPodlahovychPlochNebytovehoPriestoruVBytovomDome',
                       {
                         type: 'integer',

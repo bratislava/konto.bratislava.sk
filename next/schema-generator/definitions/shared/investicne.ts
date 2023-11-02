@@ -1,18 +1,18 @@
 import {
   conditionalFields,
   datePicker,
-  inputField,
+  fileUpload,
+  input,
   object,
-  radioButton,
+  radioGroup,
   schema,
-  selectField,
+  select,
   step,
-  upload,
 } from '../../generator/functions'
 import { createCondition, createStringOptions } from '../../generator/helpers'
 
 const ziadatelInvestorFields = [
-  radioButton(
+  radioGroup(
     'typ',
     {
       type: 'string',
@@ -29,25 +29,17 @@ const ziadatelInvestorFields = [
   conditionalFields(
     createCondition([[['typ'], { const: 'Fyzická osoba' }]]),
     [
-      inputField(
-        'menoPriezvisko',
-        { title: 'Meno a priezvisko', required: true },
-        { size: 'large' },
-      ),
-      inputField('adresa', { title: 'Adresa trvalého pobytu', required: true }, { size: 'large' }),
+      input('menoPriezvisko', { title: 'Meno a priezvisko', required: true }, { size: 'large' }),
+      input('adresa', { title: 'Adresa trvalého pobytu', required: true }, { size: 'large' }),
     ],
-    [inputField('obchodneMeno', { title: 'Obchodné meno', required: true }, { size: 'large' })],
+    [input('obchodneMeno', { title: 'Obchodné meno', required: true }, { size: 'large' })],
   ),
   conditionalFields(createCondition([[['typ'], { const: 'Fyzická osoba - podnikateľ' }]]), [
-    inputField(
-      'miestoPodnikania',
-      { title: 'Miesto podnikania', required: true },
-      { size: 'large' },
-    ),
+    input('miestoPodnikania', { title: 'Miesto podnikania', required: true }, { size: 'large' }),
   ]),
   conditionalFields(createCondition([[['typ'], { const: 'Právnická osoba' }]]), [
-    inputField('ico', { title: 'IČO', required: true }, {}),
-    inputField('adresaSidla', { title: 'Adresa sídla', required: true }, { size: 'large' }),
+    input('ico', { title: 'IČO', required: true }, {}),
+    input('adresaSidla', { title: 'Adresa sídla', required: true }, { size: 'large' }),
   ]),
   object(
     'mestoPsc',
@@ -57,19 +49,15 @@ const ziadatelInvestorFields = [
       objectColumnRatio: '3/1',
     },
     [
-      inputField('mesto', { title: 'Mesto', required: true }, { size: 'large' }),
-      inputField('psc', { title: 'PSČ', required: true, format: 'zip' }, { size: 'large' }),
+      input('mesto', { title: 'Mesto', required: true }, { size: 'large' }),
+      input('psc', { title: 'PSČ', required: true, format: 'zip' }, { size: 'large' }),
     ],
   ),
   conditionalFields(createCondition([[['typ'], { const: 'Právnická osoba' }]]), [
-    inputField('kontaktnaOsoba', { title: 'Kontaktná osoba', required: true }, { size: 'large' }),
+    input('kontaktnaOsoba', { title: 'Kontaktná osoba', required: true }, { size: 'large' }),
   ]),
-  inputField('email', { title: 'E-mail', required: true, type: 'email' }, { size: 'large' }),
-  inputField(
-    'telefon',
-    { title: 'Telefónne číslo (v tvare +421...)', required: true, type: 'tel' },
-    {},
-  ),
+  input('email', { title: 'E-mail', required: true, type: 'email' }, { size: 'large' }),
+  input('telefon', { title: 'Telefónne číslo (v tvare +421...)', required: true, type: 'tel' }, {}),
 ]
 
 export const getSchema = (zavazne: boolean) =>
@@ -95,7 +83,7 @@ export const getSchema = (zavazne: boolean) =>
     },
     [
       step('prilohy', { title: 'Prílohy' }, [
-        upload(
+        fileUpload(
           zavazne ? 'projektovaDokumentacia' : 'architektonickaStudia',
           {
             title: zavazne ? 'Projektová dokumentácia' : 'Architektonická štúdia',
@@ -130,7 +118,7 @@ export const getSchema = (zavazne: boolean) =>
       ]),
       step('ziadatel', { title: 'Žiadateľ' }, ziadatelInvestorFields),
       step('investor', { title: 'Investor' }, [
-        radioButton(
+        radioGroup(
           'investorZiadatelom',
           {
             type: 'boolean',
@@ -147,7 +135,7 @@ export const getSchema = (zavazne: boolean) =>
           },
         ),
         conditionalFields(createCondition([[['investorZiadatelom'], { const: false }]]), [
-          upload(
+          fileUpload(
             'splnomocnenie',
             { title: 'Splnomocnenie na zastupovanie', required: true },
             {
@@ -159,18 +147,14 @@ export const getSchema = (zavazne: boolean) =>
         ]),
       ]),
       step('zodpovednyProjektant', { title: 'Zodpovedný projektant' }, [
-        inputField(
-          'menoPriezvisko',
-          { title: 'Meno a priezvisko', required: true },
-          { size: 'large' },
-        ),
-        inputField('email', { title: 'E-mail', required: true, type: 'email' }, { size: 'large' }),
-        inputField(
+        input('menoPriezvisko', { title: 'Meno a priezvisko', required: true }, { size: 'large' }),
+        input('email', { title: 'E-mail', required: true, type: 'email' }, { size: 'large' }),
+        input(
           'projektantTelefon',
           { title: 'Telefónne číslo (v tvare +421...)', required: true, type: 'tel' },
           {},
         ),
-        inputField(
+        input(
           'autorizacneOsvedcenie',
           { title: 'Číslo autorizačného osvedčenia', required: true },
           {
@@ -185,8 +169,8 @@ export const getSchema = (zavazne: boolean) =>
         ),
       ]),
       step('stavba', { title: 'Informácie o stavbe' }, [
-        inputField('nazov', { title: 'Názov stavby/projektu', required: true }, { size: 'large' }),
-        radioButton(
+        input('nazov', { title: 'Názov stavby/projektu', required: true }, { size: 'large' }),
+        radioGroup(
           'druhStavby',
           {
             type: 'string',
@@ -203,10 +187,10 @@ export const getSchema = (zavazne: boolean) =>
           },
           { variant: 'boxed' },
         ),
-        inputField('ulica', { title: 'Ulica', required: true }, {}),
-        inputField('supisneCislo', { title: 'Súpisné číslo' }, {}),
-        inputField('parcelneCislo', { title: 'Parcelné číslo', required: true }, { size: 'large' }),
-        selectField(
+        input('ulica', { title: 'Ulica', required: true }, {}),
+        input('supisneCislo', { title: 'Súpisné číslo' }, {}),
+        input('parcelneCislo', { title: 'Parcelné číslo', required: true }, { size: 'large' }),
+        select(
           'kataster',
           {
             title: 'Katastrálne územie',
@@ -244,7 +228,7 @@ export const getSchema = (zavazne: boolean) =>
       ...(zavazne
         ? [
             step('konanieTyp', { title: 'Typ konania na stavebnom úrade' }, [
-              radioButton(
+              radioGroup(
                 'typ',
                 {
                   type: 'string',
@@ -263,7 +247,7 @@ export const getSchema = (zavazne: boolean) =>
               conditionalFields(
                 createCondition([[['typ'], { const: 'Konanie o dodatočnom povolení stavby' }]]),
                 [
-                  radioButton(
+                  radioGroup(
                     'ziadostOdovodnenie',
                     {
                       type: 'string',
@@ -286,7 +270,7 @@ export const getSchema = (zavazne: boolean) =>
                   ],
                 ]),
                 [
-                  upload(
+                  fileUpload(
                     'stavbaPisomnosti',
                     {
                       title: 'Relevantné písomnosti súvisiace so stavbou',
@@ -298,7 +282,7 @@ export const getSchema = (zavazne: boolean) =>
                       helptext: 'napr. vydané stavebné povolenie, stanoviská hlavného mesta',
                     },
                   ),
-                  upload(
+                  fileUpload(
                     'stavbaFotodokumentacia',
                     { title: 'Fotodokumentácia stavby', required: true, multiple: true },
                     {

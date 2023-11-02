@@ -1,4 +1,4 @@
-import { conditionalFields, markdownText, object, radioButton } from '../../generator/functions'
+import { conditionalFields, markdownText, object, radioGroup } from '../../generator/functions'
 import { createCondition } from '../../generator/helpers'
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -16,7 +16,7 @@ export const vyplnitKrokRadio = (fields: SecondArg<typeof conditionalFields>) =>
       ),
     },
     [
-      radioButton(
+      radioGroup(
         'vyplnit',
         {
           type: 'boolean',

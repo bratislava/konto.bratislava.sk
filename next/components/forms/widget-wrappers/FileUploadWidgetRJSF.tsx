@@ -1,20 +1,20 @@
 import { StrictRJSFSchema, WidgetProps } from '@rjsf/utils'
 import WidgetWrapper from 'components/forms/widget-wrappers/WidgetWrapper'
 import React from 'react'
-import { UploadUiOptions } from 'schema-generator/generator/uiOptionsTypes'
+import { FileUploadUiOptions } from 'schema-generator/generator/uiOptionsTypes'
 
 import { useFormFileUpload } from '../useFormFileUpload'
 import Upload from '../widget-components/Upload/Upload'
 
-interface UploadWidgetRJSFProps extends WidgetProps {
-  options: UploadUiOptions & WidgetProps['options']
+interface FileUploadWidgetRJSFProps extends WidgetProps {
+  options: FileUploadUiOptions & WidgetProps['options']
   schema: StrictRJSFSchema
   value: string | string[] | null
   multiple?: boolean
   onChange: (value?: string | string[] | null) => void
 }
 
-const UploadWidgetRJSF = ({
+const FileUploadWidgetRJSF = ({
   options,
   schema,
   label,
@@ -24,7 +24,7 @@ const UploadWidgetRJSF = ({
   onChange,
   rawErrors,
   readonly,
-}: UploadWidgetRJSFProps) => {
+}: FileUploadWidgetRJSFProps) => {
   const { size, accept, helptext, type = 'button', className } = options
 
   const supportedFormats = accept?.split(',')
@@ -97,4 +97,4 @@ const UploadWidgetRJSF = ({
   )
 }
 
-export default UploadWidgetRJSF
+export default FileUploadWidgetRJSF

@@ -1,11 +1,11 @@
 import {
   conditionalFields,
-  inputField,
+  fileUpload,
+  input,
   object,
-  radioButton,
-  selectField,
+  radioGroup,
+  select,
   step,
-  upload,
 } from '../../generator/functions'
 import { createCamelCaseOptionsV2, createCondition } from '../../generator/helpers'
 
@@ -24,7 +24,7 @@ const danovnikBase = (type: Type, splnomocnenie: boolean) => [
       objectColumnRatio: '3/1',
     },
     [
-      inputField(
+      input(
         'ulica',
         { title: 'Ulica', required: true },
         {
@@ -37,7 +37,7 @@ const danovnikBase = (type: Type, splnomocnenie: boolean) => [
               : undefined,
         },
       ),
-      inputField('cislo', { title: 'Čislo', required: true }, { size: 'large' }),
+      input('cislo', { title: 'Čislo', required: true }, { size: 'large' }),
     ],
   ),
   object(
@@ -48,15 +48,15 @@ const danovnikBase = (type: Type, splnomocnenie: boolean) => [
       objectColumnRatio: '3/1',
     },
     [
-      inputField('obec', { title: 'Obec', required: true }, { size: 'large' }),
-      inputField('psc', { title: 'PSČ', required: true, format: 'zip' }, { size: 'large' }),
+      input('obec', { title: 'Obec', required: true }, { size: 'large' }),
+      input('psc', { title: 'PSČ', required: true, format: 'zip' }, { size: 'large' }),
     ],
   ),
   // TODO Select ciselnik
-  inputField('stat', { title: 'Štát', required: true }, { size: 'large' }),
+  input('stat', { title: 'Štát', required: true }, { size: 'large' }),
   ...(splnomocnenie
     ? [
-        selectField(
+        select(
           'pravnyVztahKPO',
           {
             title: 'Právny vzťah k PO',
@@ -72,12 +72,12 @@ const danovnikBase = (type: Type, splnomocnenie: boolean) => [
         ),
       ]
     : []),
-  inputField(
+  input(
     'email',
     { title: 'E-mail', type: 'email', required: true },
     { size: 'large', helptext: 'E-mailová adresa nám pomôže komunikovať s vami rýchlejšie.' },
   ),
-  inputField(
+  input(
     'telefon',
     { title: 'Telefónne číslo (v tvare +421...)', required: true, type: 'tel' },
     { helptext: 'Telefónne číslo nám pomôže komunikovať s vami rýchlejšie.', size: 'default' },
@@ -88,7 +88,7 @@ const fyzickaOsoba = (splnomocnenie: boolean) => [
   ...(splnomocnenie
     ? []
     : [
-        inputField(
+        input(
           'rodneCislo',
           { title: 'Rodné číslo', required: true },
           {
@@ -98,7 +98,7 @@ const fyzickaOsoba = (splnomocnenie: boolean) => [
           },
         ),
       ]),
-  inputField(
+  input(
     'priezvisko',
     { title: 'Priezvisko', required: true },
     {
@@ -113,22 +113,22 @@ const fyzickaOsoba = (splnomocnenie: boolean) => [
       objectColumnRatio: '3/1',
     },
     [
-      inputField('meno', { title: 'Meno', required: true }, { size: 'large' }),
-      inputField('titul', { title: 'Titul' }, { size: 'large' }),
+      input('meno', { title: 'Meno', required: true }, { size: 'large' }),
+      input('titul', { title: 'Titul' }, { size: 'large' }),
     ],
   ),
   ...danovnikBase(Type.FyzickaOsoba, splnomocnenie),
 ]
 
 const fyzickaOsobaPodnikatel = [
-  inputField(
+  input(
     'ico',
     { title: 'IČO', required: true },
     {
       size: 'large',
     },
   ),
-  inputField(
+  input(
     'obchodneMenoAleboNazov',
     { title: 'Obchodné meno alebo názov', required: true },
     {
@@ -142,14 +142,14 @@ const pravnickaOsoba = (splnomocnenie: boolean) => [
   ...(splnomocnenie
     ? []
     : [
-        inputField(
+        input(
           'ico',
           { title: 'IČO', required: true },
           {
             size: 'large',
           },
         ),
-        selectField(
+        select(
           'pravnaForma',
           {
             title: 'Právna forma',
@@ -162,7 +162,7 @@ const pravnickaOsoba = (splnomocnenie: boolean) => [
           { dropdownDivider: true },
         ),
       ]),
-  inputField(
+  input(
     'obchodneMenoAleboNazov',
     { title: 'Obchodné meno alebo názov', required: true },
     {
@@ -173,7 +173,7 @@ const pravnickaOsoba = (splnomocnenie: boolean) => [
 ]
 
 export default step('udajeODanovnikovi', { title: 'Údaje o daňovníkovi' }, [
-  radioButton(
+  radioGroup(
     'voSvojomMene',
     {
       type: 'boolean',
@@ -196,7 +196,7 @@ export default step('udajeODanovnikovi', { title: 'Údaje o daňovníkovi' }, [
         title: 'Údaje o oprávnenej osobe na podanie priznania',
       },
       [
-        upload(
+        fileUpload(
           'splnomocnenie',
           { title: 'Nahrajte splnomocnenie', required: true, multiple: true },
           {
@@ -205,7 +205,7 @@ export default step('udajeODanovnikovi', { title: 'Údaje o daňovníkovi' }, [
               'Keďže ste v predošlom kroku zvolili, že priznanie nepodávate vo svojom mene, je nutné nahratie skenu plnej moci. Následne, po odoslaní formulára je potrebné doručiť originál plnej moci v listinnej podobe na oddelenie miestnych daní, poplatkov a licencií. Splnomocnenie sa neprikladá v prípade zákonného zástupcu neplnoletej osoby. ',
           },
         ),
-        radioButton(
+        radioGroup(
           'splnomocnenecTyp',
           {
             type: 'string',
@@ -231,7 +231,7 @@ export default step('udajeODanovnikovi', { title: 'Údaje o daňovníkovi' }, [
       ],
     ),
   ]),
-  radioButton(
+  radioGroup(
     'priznanieAko',
     {
       type: 'string',

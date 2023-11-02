@@ -1,16 +1,16 @@
 import {
-  checkboxes,
+  checkboxGroup,
   conditionalStep,
   datePicker,
-  inputField,
-  radioButton,
+  fileUpload,
+  input,
+  radioGroup,
   schema,
-  selectField,
-  selectMultipleField,
+  select,
+  selectMultiple,
   step,
   textArea,
   timePicker,
-  upload,
 } from '../generator/functions'
 import { createCondition } from '../generator/helpers'
 
@@ -27,38 +27,34 @@ export default schema(
   },
   [
     step('inputFieldsStep', { title: 'Input Fields Step' }, [
-      inputField(
+      input(
         'firstName',
         { title: 'First Name', required: true, type: 'text' },
         { resetIcon: true, leftIcon: 'person', placeholder: 'First Name' },
       ),
-      inputField(
+      input(
         'lastName',
         { title: 'Last Name', required: true, type: 'text' },
         { placeholder: 'Last Name' },
       ),
-      inputField(
-        'email',
-        { title: 'Email', required: true, type: 'email' },
-        { placeholder: 'Email' },
-      ),
-      inputField(
+      input('email', { title: 'Email', required: true, type: 'email' }, { placeholder: 'Email' }),
+      input(
         'password',
         { title: 'Password', required: true, type: 'password' },
         { placeholder: 'Password' },
       ),
-      inputField('phone', { title: 'Phone Number', type: 'tel' }, { placeholder: 'Phone Number' }),
-      inputField(
+      input('phone', { title: 'Phone Number', type: 'tel' }, { placeholder: 'Phone Number' }),
+      input(
         'smallInput',
         { title: 'Small Input', type: 'text' },
         { size: 'small', placeholder: 'Small Input' },
       ),
-      inputField(
+      input(
         'defaultInput',
         { title: 'Default Input', type: 'text' },
         { size: 'default', placeholder: 'Default Input' },
       ),
-      inputField(
+      input(
         'largeInput',
         { title: 'Large Input', type: 'text' },
         { size: 'large', placeholder: 'Large Input' },
@@ -66,7 +62,7 @@ export default schema(
       textArea('about', { title: 'About', required: true }, { tooltip: 'Write about yourself' }),
     ]),
     step('selectionFieldsStep', { title: 'Selection Fields Step' }, [
-      selectField(
+      select(
         'gender',
         {
           title: 'Gender',
@@ -78,7 +74,7 @@ export default schema(
         },
         { dropdownDivider: true },
       ),
-      selectMultipleField(
+      selectMultiple(
         'favoriteColors',
         {
           title: 'Favorite Colors',
@@ -106,20 +102,24 @@ export default schema(
       timePicker('meetingTime', { title: 'Meeting Time' }, {}),
     ]),
     step('uploadStep', { title: 'Upload Step' }, [
-      upload('profilePicture', { title: 'Profile Picture', required: true }, { type: 'button' }),
-      upload(
+      fileUpload(
+        'profilePicture',
+        { title: 'Profile Picture', required: true },
+        { type: 'button' },
+      ),
+      fileUpload(
         'documents',
         { title: 'Documents', required: true, multiple: true },
         { type: 'dragAndDrop' },
       ),
-      upload(
+      fileUpload(
         'multipleDocuments',
         { title: 'Multiple Documents', required: true, multiple: true },
         { type: 'button' },
       ),
     ]),
     step('checkboxesStep', { title: 'Checkboxes Step' }, [
-      checkboxes(
+      checkboxGroup(
         'preferences',
         {
           title: 'Preferences',
@@ -137,7 +137,7 @@ export default schema(
         },
         { variant: 'boxed' },
       ),
-      checkboxes(
+      checkboxGroup(
         'preferencesBasic',
         {
           title: 'Preferences Basic',
@@ -156,7 +156,7 @@ export default schema(
       ),
     ]),
     step('radioButtonStep', { title: 'Radio Button Step' }, [
-      radioButton(
+      radioGroup(
         'subscription',
         {
           type: 'string',
@@ -169,7 +169,7 @@ export default schema(
         },
         { variant: 'boxed', orientations: 'column' },
       ),
-      radioButton(
+      radioGroup(
         'subscriptionType',
         {
           type: 'string',
@@ -181,7 +181,7 @@ export default schema(
         },
         { variant: 'basic', orientations: 'row' },
       ),
-      radioButton(
+      radioGroup(
         'xxx',
         {
           type: 'boolean',
@@ -198,7 +198,7 @@ export default schema(
       'conditionalStep',
       createCondition([[['firstName'], { const: 'John' }]]),
       { title: 'Conditional Step' },
-      [inputField('secretQuestion', { title: 'Secret Question' }, { size: 'large' })],
+      [input('secretQuestion', { title: 'Secret Question' }, { size: 'large' })],
     ),
   ],
 )

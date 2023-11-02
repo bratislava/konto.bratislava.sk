@@ -3,10 +3,10 @@ import {
   conditionalFields,
   datePicker,
   markdownText,
-  numberField,
+  number,
   object,
-  radioButton,
-  selectMultipleField,
+  radioGroup,
+  selectMultiple,
   step,
   textArea,
 } from '../../generator/functions'
@@ -33,7 +33,7 @@ export default step(
       },
       [
         ...stavbyBase(StepEnum.DanZoStaviebJedencel),
-        selectMultipleField(
+        selectMultiple(
           'predmetDane',
           {
             title: 'Predmet dane (druh stavby)',
@@ -45,7 +45,7 @@ export default step(
             dropdownDivider: true,
           },
         ),
-        numberField(
+        number(
           'zakladDane',
           { type: 'integer', title: 'Základ dane', required: true },
           {
@@ -54,7 +54,7 @@ export default step(
             ),
           },
         ),
-        numberField(
+        number(
           'pocetNadzemnychAPodzemnychPodlaziStavbyOkremPrvehoNadzemnehoPodlazia',
           {
             type: 'integer',
@@ -68,7 +68,7 @@ export default step(
             size: 'large',
           },
         ),
-        radioButton(
+        radioGroup(
           'castStavbyOslobodenaOdDane',
           {
             type: 'boolean',
@@ -94,7 +94,7 @@ export default step(
               objectColumnRatio: '1/1',
             },
             [
-              numberField(
+              number(
                 'celkovaVymera',
                 {
                   title: 'Celková výmera podlahových plôch všetkých podlaží stavby',
@@ -105,7 +105,7 @@ export default step(
                     'Spočítajte výmeru na všetkých podlažiach. U spoluvlastníkov vo výške ich spoluvlastníckeho podielu',
                 },
               ),
-              numberField(
+              number(
                 'oslobodenaVymera',
                 {
                   title:

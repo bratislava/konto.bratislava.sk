@@ -1,10 +1,10 @@
-import { checkboxes, step } from '../../generator/functions'
+import { checkboxGroup, step } from '../../generator/functions'
 
 export default step(
   'znizenieAleboOslobodenieOdDane',
   { title: 'Zníženie alebo oslobodenie od dane' },
   [
-    checkboxes(
+    checkboxGroup(
       'pozemky',
       {
         title: 'Pozemky',
@@ -31,7 +31,7 @@ export default step(
       },
       { variant: 'boxed' },
     ),
-    checkboxes(
+    checkboxGroup(
       'stavby',
       {
         title: 'Stavby',
@@ -55,7 +55,7 @@ export default step(
       },
       { variant: 'boxed' },
     ),
-    checkboxes(
+    checkboxGroup(
       'byty',
       {
         title: 'Byty',

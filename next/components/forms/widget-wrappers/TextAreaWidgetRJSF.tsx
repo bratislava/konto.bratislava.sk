@@ -7,13 +7,13 @@ import { TextAreaUiOptions } from 'schema-generator/generator/uiOptionsTypes'
 import FieldBlurWrapper from '../widget-components/FieldBlurWrapper/FieldBlurWrapper'
 import TextAreaField from '../widget-components/TextAreaField/TextAreaField'
 
-interface TextAreaFieldWidgetRJSFProps extends WidgetProps {
+interface TextAreaWidgetRJSFProps extends WidgetProps {
   value: string | undefined
   options: TextAreaUiOptions & WidgetProps['options']
   onChange: (value?: string) => void
 }
 
-const TextAreaFieldWidgetRJSF = ({
+const TextAreaWidgetRJSF = ({
   value,
   label,
   placeholder,
@@ -23,7 +23,7 @@ const TextAreaFieldWidgetRJSF = ({
   options,
   onChange,
   readonly,
-}: TextAreaFieldWidgetRJSFProps) => {
+}: TextAreaWidgetRJSFProps) => {
   const { helptext, tooltip, explicitOptional, className } = options
 
   const handleOnChange = (newValue?: string) => {
@@ -58,4 +58,4 @@ const TextAreaFieldWidgetRJSF = ({
   )
 }
 
-export default TextAreaFieldWidgetRJSF
+export default TextAreaWidgetRJSF

@@ -1,10 +1,10 @@
-import { inputField, object, selectField } from '../../generator/functions'
+import { input, object, select } from '../../generator/functions'
 import { createStringOptions } from '../../generator/helpers'
 import { pravnyVztahSpoluvlastnictvo } from './pravnyVztahSpoluvlastnictvo'
 import { StepEnum } from './stepEnum'
 
 export const stavbyBase = (step: StepEnum) => [
-  inputField(
+  input(
     'cisloListuVlastnictva',
     { title: 'Číslo listu vlastníctva' },
     { size: 'small', placeholder: 'Napr. 4567' },
@@ -17,12 +17,8 @@ export const stavbyBase = (step: StepEnum) => [
       objectColumnRatio: '3/1',
     },
     [
-      inputField(
-        'ulicaACisloDomu',
-        { title: 'Ulica a číslo domu', required: true },
-        { size: 'large' },
-      ),
-      inputField('supisneCislo', { title: 'Súpisné číslo', required: true }, { size: 'large' }),
+      input('ulicaACisloDomu', { title: 'Ulica a číslo domu', required: true }, { size: 'large' }),
+      input('supisneCislo', { title: 'Súpisné číslo', required: true }, { size: 'large' }),
     ],
   ),
   object(
@@ -33,7 +29,7 @@ export const stavbyBase = (step: StepEnum) => [
       objectColumnRatio: '3/1',
     },
     [
-      selectField(
+      select(
         'kataster',
         {
           title: 'Názov katastrálneho územia',
@@ -70,7 +66,7 @@ export const stavbyBase = (step: StepEnum) => [
           className: 'w-full',
         },
       ),
-      inputField(
+      input(
         'cisloParcely',
         { title: 'Číslo parcely', required: true },
         {
@@ -82,14 +78,14 @@ export const stavbyBase = (step: StepEnum) => [
   ),
   ...(step === StepEnum.DanZBytovANebytovychPriestorov
     ? [
-        inputField(
+        input(
           'cisloBytu',
           { title: 'Číslo bytu', required: true },
           {
             size: 'large',
           },
         ),
-        inputField(
+        input(
           'popisBytu',
           { title: 'Popis bytu' },
           {

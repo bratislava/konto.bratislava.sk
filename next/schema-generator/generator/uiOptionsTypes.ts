@@ -62,14 +62,14 @@ type CheckboxOption = {
   tooltip?: string
 }
 
-export type CheckboxesUiOptions = {
+export type CheckboxGroupUiOptions = {
   variant?: 'basic' | 'boxed'
   checkboxOptions?: CheckboxOption[]
 } & WidgetUiOptions
 
 export type DatePickerUiOptions = WidgetUiOptions
 
-export type InputFieldUiOptions = {
+export type InputUiOptions = {
   type?: 'text' | 'password' | 'email' | 'tel' | 'number'
   resetIcon?: boolean
   leftIcon?: 'person' | 'mail' | 'call' | 'lock'
@@ -83,14 +83,14 @@ type RadioOption = {
   description?: string
 }
 
-export type RadioButtonUiOptions = {
+export type RadioGroupUiOptions = {
   className?: string
   radioOptions?: RadioOption[]
   variant?: 'basic' | 'boxed' | 'card'
   orientations?: 'column' | 'row'
 } & WidgetUiOptions
 
-export type SelectFieldUiOptions = {
+export type SelectUiOptions = {
   dropdownDivider?: boolean
   selectAllOption?: boolean
   explicitOptional?: boolean
@@ -103,7 +103,7 @@ export type TextAreaUiOptions = WidgetUiOptions & Pick<UIOptionsType, 'placehold
 
 export type TimePickerUiOptions = WidgetUiOptions
 
-export type UploadUiOptions = {
+export type FileUploadUiOptions = {
   size?: number
   accept?: string
   type?: 'button' | 'dragAndDrop'

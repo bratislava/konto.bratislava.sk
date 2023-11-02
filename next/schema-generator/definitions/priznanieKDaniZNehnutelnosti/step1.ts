@@ -1,8 +1,8 @@
-import { numberField, radioButton, step } from '../../generator/functions'
+import { number, radioGroup, step } from '../../generator/functions'
 import { createCamelCaseOptionsV2 } from '../../generator/helpers'
 
 export default step('druhPriznania', { title: 'Druh priznania' }, [
-  radioButton(
+  radioGroup(
     'druh',
     {
       type: 'string',
@@ -36,7 +36,7 @@ export default step('druhPriznania', { title: 'Druh priznania' }, [
     },
     { variant: 'boxed', orientations: 'column' },
   ),
-  numberField(
+  number(
     'rok',
     {
       type: 'integer',

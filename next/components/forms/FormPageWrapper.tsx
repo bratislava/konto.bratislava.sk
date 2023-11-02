@@ -9,6 +9,8 @@ import PageWrapper from '../layouts/PageWrapper'
 import { GetSSRCurrentAuth } from '../logic/ServerSideAuthProvider'
 import FormPage from './FormPage'
 import ThankYouFormSection from './segments/AccountSections/ThankYouSection/ThankYouFormSection'
+import { FormSignatureProvider } from './signer/useFormSignature'
+import { FormSignerLoaderProvider } from './signer/useFormSignerLoader'
 import ThemedForm from './ThemedForm'
 import { FormComponentProvider } from './useFormComponent'
 import { FormFileUploadProvider } from './useFormFileUpload'
@@ -43,22 +45,26 @@ const FormPageWrapper = ({ schema, uiSchema, page, initialFormData }: FormPageWr
             <FormFileUploadProvider initialFormData={initialFormData}>
               <FormLeaveProtectionProvider>
                 <FormModalsProvider initialFormData={initialFormData}>
-                  <FormStateProvider
-                    schema={schema}
-                    uiSchema={uiSchema}
-                    formSlug={formSlug}
-                    initialFormData={initialFormData}
-                  >
-                    <FormRedirectsProvider>
-                      <FormSendProvider>
-                        <FormExportImportProvider initialFormData={initialFormData}>
-                          <AccountPageLayout isPublicPage>
-                            <FormPage />
-                          </AccountPageLayout>
-                        </FormExportImportProvider>
-                      </FormSendProvider>
-                    </FormRedirectsProvider>
-                  </FormStateProvider>
+                  <FormSignerLoaderProvider initialFormData={initialFormData}>
+                    <FormStateProvider
+                      schema={schema}
+                      uiSchema={uiSchema}
+                      formSlug={formSlug}
+                      initialFormData={initialFormData}
+                    >
+                      <FormRedirectsProvider>
+                        <FormSignatureProvider>
+                          <FormSendProvider>
+                            <FormExportImportProvider initialFormData={initialFormData}>
+                              <AccountPageLayout isPublicPage>
+                                <FormPage />
+                              </AccountPageLayout>
+                            </FormExportImportProvider>
+                          </FormSendProvider>
+                        </FormSignatureProvider>
+                      </FormRedirectsProvider>
+                    </FormStateProvider>
+                  </FormSignerLoaderProvider>
                 </FormModalsProvider>
               </FormLeaveProtectionProvider>
             </FormFileUploadProvider>

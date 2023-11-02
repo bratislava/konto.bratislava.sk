@@ -1,7 +1,9 @@
 import { ChevronLeftIcon } from '@assets/ui-icons'
 import { useTranslation } from 'next-i18next'
-import React from 'react'
+import React, { useMemo } from 'react'
 
+import { isFormSubmitDisabled } from '../../../../frontend/utils/formSummary'
+import { useFormSignature } from '../../signer/useFormSignature'
 import ButtonNew from '../../simple-components/ButtonNew'
 import { useFormSend } from '../../useFormSend'
 import { useFormState } from '../../useFormState'
@@ -11,7 +13,12 @@ const SummaryFormControls = () => {
   const { t } = useTranslation('forms')
 
   const { isReadonly, goToPreviousStep } = useFormState()
-  const { submitDisabled } = useFormSummary()
+  const { errorSchema, infectedFiles } = useFormSummary()
+  const { isValidSignature } = useFormSignature()
+  const submitDisabled = useMemo(
+    () => isFormSubmitDisabled(errorSchema, infectedFiles, isValidSignature()),
+    [errorSchema, infectedFiles, isValidSignature],
+  )
   const { handleSendButtonPress, handleSendEidButtonPress } = useFormSend()
 
   if (isReadonly) {

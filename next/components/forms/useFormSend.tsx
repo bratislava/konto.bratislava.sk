@@ -19,6 +19,7 @@ import {
 } from '../../frontend/utils/formSend'
 import { isFormSubmitDisabled } from '../../frontend/utils/formSummary'
 import { RegistrationModalType } from './segments/RegistrationModal/RegistrationModal'
+import { useFormSignature } from './signer/useFormSignature'
 import { useFormFileUpload } from './useFormFileUpload'
 import { useFormLeaveProtection } from './useFormLeaveProtection'
 import { useFormModals } from './useFormModals'
@@ -65,6 +66,7 @@ const useGetContext = () => {
     tierStatus: { isIdentityVerified },
   } = useServerSideAuth()
   const { turnOffLeaveProtection } = useFormLeaveProtection()
+  const { isValidSignature } = useFormSignature()
 
   const {
     setRegistrationModal,
@@ -230,7 +232,7 @@ const useGetContext = () => {
       formData,
       getFileInfoById,
     )
-    const submitDisabled = isFormSubmitDisabled(errorSchema, infectedFiles)
+    const submitDisabled = isFormSubmitDisabled(errorSchema, infectedFiles, isValidSignature())
 
     if (submitDisabled || sendFormIsPending) {
       return
@@ -284,7 +286,7 @@ const useGetContext = () => {
       formData,
       getFileInfoById,
     )
-    const submitDisabled = isFormSubmitDisabled(errorSchema, infectedFiles)
+    const submitDisabled = isFormSubmitDisabled(errorSchema, infectedFiles, isValidSignature())
 
     if (submitDisabled || sendFormEidIsPending) {
       return

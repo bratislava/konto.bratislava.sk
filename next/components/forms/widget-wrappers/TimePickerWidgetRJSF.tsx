@@ -24,7 +24,7 @@ const TimePickerWidgetRJSF = ({
   onChange,
   readonly,
 }: TimePickerWidgetRJSFProps) => {
-  const { helptext, tooltip, explicitOptional } = options
+  const { helptext, tooltip, explicitOptional, size } = options
 
   return (
     <WidgetWrapper options={options}>
@@ -41,6 +41,7 @@ const TimePickerWidgetRJSF = ({
             value={wrapperValue ?? null}
             onChange={(value) => wrapperOnChange(value ?? undefined)}
             onBlur={onBlur}
+            size={size}
           />
         )}
       </FieldBlurWrapper>

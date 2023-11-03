@@ -89,6 +89,7 @@ const SelectFieldComponent: ForwardRefRenderFunction<HTMLDivElement, SelectField
     maxWordSize = 17,
     className,
     onChange,
+    size,
   } = props
 
   const [isDropdownOpened, setIsDropdownOpened] = useState<boolean>(false)
@@ -240,12 +241,7 @@ const SelectFieldComponent: ForwardRefRenderFunction<HTMLDivElement, SelectField
 
   // RENDER
   return (
-    <div
-      className={cx(
-        'relative flex w-full max-w-[200px] flex-col transition-all xs:max-w-[320px]',
-        className,
-      )}
-    >
+    <div className={cx('relative flex w-full flex-col transition-all', className)}>
       {/* FIELD HEADER WITH DESCRIPTION AND LABEL */}
       <FieldWrapper
         label={label}
@@ -255,6 +251,7 @@ const SelectFieldComponent: ForwardRefRenderFunction<HTMLDivElement, SelectField
         explicitOptional={explicitOptional}
         errorMessage={errorMessage}
         disabled={disabled}
+        size={size}
       >
         {/* SELECT PART */}
         <div className={selectClassName} ref={clickOutsideRef}>

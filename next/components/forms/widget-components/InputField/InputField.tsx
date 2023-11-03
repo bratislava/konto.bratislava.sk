@@ -9,16 +9,10 @@ import FieldWrapper from '../FieldWrapper'
 
 export type LeftIconVariants = 'person' | 'mail' | 'call' | 'lock'
 export type InputType = 'text' | 'password' | 'email' | 'tel' | 'number'
-export type SizeType = 'large' | 'default' | 'small'
 
 export const isLeftIconVariant = (value: string): value is LeftIconVariants => {
   const list: LeftIconVariants[] = ['person', 'mail', 'call', 'lock']
   return list.includes(value as LeftIconVariants)
-}
-
-export const isInputSize = (value: string): value is SizeType => {
-  const list: SizeType[] = ['large', 'default', 'small']
-  return list.includes(value as SizeType)
 }
 
 export type InputProps = FieldBaseProps &
@@ -30,7 +24,6 @@ export type InputProps = FieldBaseProps &
     resetIcon?: boolean
     onChange?: (value?: string) => void
     onBlur?: () => void
-    size?: SizeType
     endIcon?: ReactNode
     autoComplete?: string
   }
@@ -51,12 +44,12 @@ const InputField = forwardRef<HTMLInputElement, InputProps>(
       leftIcon,
       resetIcon,
       className,
-      size = 'large',
       onChange,
       endIcon,
       customErrorPlace = false,
       capitalize = false,
       autoComplete,
+      size,
       ...rest
     },
     ref,
@@ -138,55 +131,48 @@ const InputField = forwardRef<HTMLInputElement, InputProps>(
     )
 
     return (
-      <div
-        className={cx('flex flex-col', {
-          'w-full': size === 'large',
-          'w-fit max-w-[388px]': size === 'default',
-          'w-fit max-w-[200px]': size === 'small',
-        })}
+      <FieldWrapper
+        label={label}
+        labelProps={labelProps}
+        htmlFor={inputProps.id}
+        helptext={helptext}
+        descriptionProps={descriptionProps}
+        required={required}
+        explicitOptional={explicitOptional}
+        tooltip={tooltip}
+        disabled={disabled}
+        customErrorPlace={customErrorPlace}
+        errorMessage={errorMessage}
+        errorMessageProps={errorMessageProps}
+        size={size}
       >
-        <FieldWrapper
-          label={label}
-          labelProps={labelProps}
-          htmlFor={inputProps.id}
-          helptext={helptext}
-          descriptionProps={descriptionProps}
-          required={required}
-          explicitOptional={explicitOptional}
-          tooltip={tooltip}
-          disabled={disabled}
-          customErrorPlace={customErrorPlace}
-          errorMessage={errorMessage}
-          errorMessageProps={errorMessageProps}
-        >
-          <div className="relative">
-            {leftIcon && (
-              <span
-                className={cx(
-                  'pointer-events-none absolute inset-y-1/2 left-3 flex h-6 w-6 -translate-y-2/4 items-center justify-center sm:left-4',
-                  {
-                    'opacity-50': disabled,
-                  },
-                )}
-              >
-                {leftIconSwitcher(leftIcon)}
-              </span>
-            )}
-            <input {...inputProps} ref={ref} name={inputProps.id} className={style} />
-            {resetIcon && valueState && (
-              <button
-                type="button"
-                tabIndex={0}
-                onClick={resetIconHandler}
-                className="absolute inset-y-1/2 right-3 flex h-6 w-6 -translate-y-2/4 cursor-pointer items-center justify-center sm:right-4"
-              >
-                <RemoveIcon />
-              </button>
-            )}
-            {endIcon}
-          </div>
-        </FieldWrapper>
-      </div>
+        <div className="relative">
+          {leftIcon && (
+            <span
+              className={cx(
+                'pointer-events-none absolute inset-y-1/2 left-3 flex h-6 w-6 -translate-y-2/4 items-center justify-center sm:left-4',
+                {
+                  'opacity-50': disabled,
+                },
+              )}
+            >
+              {leftIconSwitcher(leftIcon)}
+            </span>
+          )}
+          <input {...inputProps} ref={ref} name={inputProps.id} className={style} />
+          {resetIcon && valueState && (
+            <button
+              type="button"
+              tabIndex={0}
+              onClick={resetIconHandler}
+              className="absolute inset-y-1/2 right-3 flex h-6 w-6 -translate-y-2/4 cursor-pointer items-center justify-center sm:right-4"
+            >
+              <RemoveIcon />
+            </button>
+          )}
+          {endIcon}
+        </div>
+      </FieldWrapper>
     )
   },
 )

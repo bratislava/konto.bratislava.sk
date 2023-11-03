@@ -65,7 +65,6 @@ export default step(
           {
             helptext:
               'Napríklad, ak máte dom s dvomi podlažiami a s pivničným priestorom, zadáte 2.',
-            size: 'large',
           },
         ),
         radioGroup(

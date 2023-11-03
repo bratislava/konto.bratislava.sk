@@ -3,6 +3,8 @@ import type { RJSFSchema, UIOptionsType, UiSchema } from '@rjsf/utils'
 
 // eslint-disable-next-line import/no-relative-packages
 import { AccordionBase } from '../../components/forms/simple-components/Accordion'
+// eslint-disable-next-line import/no-relative-packages
+import { FieldSize } from '../../components/forms/widget-components/FieldBase'
 
 // TODO: Reconsider stability of dependency on AccordionBase type
 export type CustomComponentAccordionProps = AccordionBase
@@ -55,6 +57,7 @@ export type WidgetUiOptions = {
   spaceTop?: FormSpacingType
   belowComponents?: CustomComponentType[]
   rightComponents?: CustomComponentType[]
+  size?: FieldSize
 }
 
 type CheckboxOption = {
@@ -73,7 +76,6 @@ export type InputUiOptions = {
   type?: 'text' | 'password' | 'email' | 'tel' | 'number'
   resetIcon?: boolean
   leftIcon?: 'person' | 'mail' | 'call' | 'lock'
-  size?: 'large' | 'default' | 'small'
 } & WidgetUiOptions &
   Pick<UIOptionsType, 'placeholder'>
 
@@ -104,7 +106,7 @@ export type TextAreaUiOptions = WidgetUiOptions & Pick<UIOptionsType, 'placehold
 export type TimePickerUiOptions = WidgetUiOptions
 
 export type FileUploadUiOptions = {
-  size?: number
+  sizeLimit?: number
   accept?: string
   type?: 'button' | 'dragAndDrop'
 } & WidgetUiOptions

@@ -35,6 +35,7 @@ const RadioGroup = (props: RadioGroupBase) => {
     helptext,
     tooltip,
     value,
+    size,
   } = props
 
   const propsReactAria = {
@@ -65,9 +66,10 @@ const RadioGroup = (props: RadioGroupBase) => {
         disabled={disabled}
         errorMessage={errorMessage}
         errorMessageProps={errorMessageProps}
+        size={size}
       >
         <RadioContext.Provider value={state}>
-          <div className="mt-4 flex flex-col gap-2">
+          <div className="mt-3 flex flex-col gap-2">
             <div
               className={cx({
                 'flex flex-col gap-3': orientation === 'vertical',

@@ -35,6 +35,7 @@ const SelectWidgetRJSF = ({
     explicitOptional,
     hideScrollbar = false,
     maxWordSize,
+    size,
   } = options
 
   const type = schema.type === 'array' ? 'multiple' : 'one'
@@ -126,6 +127,7 @@ const SelectWidgetRJSF = ({
         hideScrollbar={hideScrollbar}
         alwaysOneSelected={false}
         maxWordSize={maxWordSize}
+        size={size}
       />
     </WidgetWrapper>
   )

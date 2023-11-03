@@ -34,6 +34,7 @@ const TimeField = (props: TimeFieldProps) => {
     // setIsInputEdited,
     readOnly,
     customErrorPlace,
+    size,
     ...rest
   } = props
 
@@ -81,6 +82,7 @@ const TimeField = (props: TimeFieldProps) => {
       customErrorPlace={customErrorPlace}
       errorMessage={errorMessage}
       errorMessageProps={errorMessageProps}
+      size={size}
     >
       <div {...fieldProps} ref={ref} className={timeFieldStyle}>
         {state.segments.map((segment, index) => (

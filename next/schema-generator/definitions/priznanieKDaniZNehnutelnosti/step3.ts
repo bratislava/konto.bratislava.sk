@@ -97,7 +97,6 @@ export default step(
                   'parcelneCislo',
                   { title: 'Parcelné číslo', required: true },
                   {
-                    size: 'large',
                     placeholder: 'Napr. 7986/1',
                     helptext:
                       'Zadávajte číslo s lomítkom. Nachádza sa 1. v poradí v tabuľke na LV. Zobraziť ukážku',
@@ -106,7 +105,7 @@ export default step(
                 input(
                   'sposobVyuzitiaPozemku',
                   { title: 'Spôsob využitia pozemku', required: true },
-                  { size: 'large' },
+                  {},
                 ),
               ],
             ),

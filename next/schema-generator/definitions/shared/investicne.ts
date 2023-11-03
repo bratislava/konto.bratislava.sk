@@ -29,17 +29,17 @@ const ziadatelInvestorFields = [
   conditionalFields(
     createCondition([[['typ'], { const: 'Fyzická osoba' }]]),
     [
-      input('menoPriezvisko', { title: 'Meno a priezvisko', required: true }, { size: 'large' }),
-      input('adresa', { title: 'Adresa trvalého pobytu', required: true }, { size: 'large' }),
+      input('menoPriezvisko', { title: 'Meno a priezvisko', required: true }, {}),
+      input('adresa', { title: 'Adresa trvalého pobytu', required: true }, {}),
     ],
-    [input('obchodneMeno', { title: 'Obchodné meno', required: true }, { size: 'large' })],
+    [input('obchodneMeno', { title: 'Obchodné meno', required: true }, {})],
   ),
   conditionalFields(createCondition([[['typ'], { const: 'Fyzická osoba - podnikateľ' }]]), [
-    input('miestoPodnikania', { title: 'Miesto podnikania', required: true }, { size: 'large' }),
+    input('miestoPodnikania', { title: 'Miesto podnikania', required: true }, {}),
   ]),
   conditionalFields(createCondition([[['typ'], { const: 'Právnická osoba' }]]), [
     input('ico', { title: 'IČO', required: true }, {}),
-    input('adresaSidla', { title: 'Adresa sídla', required: true }, { size: 'large' }),
+    input('adresaSidla', { title: 'Adresa sídla', required: true }, {}),
   ]),
   object(
     'mestoPsc',
@@ -49,15 +49,19 @@ const ziadatelInvestorFields = [
       objectColumnRatio: '3/1',
     },
     [
-      input('mesto', { title: 'Mesto', required: true }, { size: 'large' }),
-      input('psc', { title: 'PSČ', required: true, format: 'zip' }, { size: 'large' }),
+      input('mesto', { title: 'Mesto', required: true }, {}),
+      input('psc', { title: 'PSČ', required: true, format: 'zip' }, {}),
     ],
   ),
   conditionalFields(createCondition([[['typ'], { const: 'Právnická osoba' }]]), [
-    input('kontaktnaOsoba', { title: 'Kontaktná osoba', required: true }, { size: 'large' }),
+    input('kontaktnaOsoba', { title: 'Kontaktná osoba', required: true }, {}),
   ]),
-  input('email', { title: 'E-mail', required: true, type: 'email' }, { size: 'large' }),
-  input('telefon', { title: 'Telefónne číslo (v tvare +421...)', required: true, type: 'tel' }, {}),
+  input('email', { title: 'E-mail', required: true, type: 'email' }, {}),
+  input(
+    'telefon',
+    { title: 'Telefónne číslo (v tvare +421...)', required: true, type: 'tel' },
+    { size: 'medium' },
+  ),
 ]
 
 export const getSchema = (zavazne: boolean) =>
@@ -147,12 +151,12 @@ export const getSchema = (zavazne: boolean) =>
         ]),
       ]),
       step('zodpovednyProjektant', { title: 'Zodpovedný projektant' }, [
-        input('menoPriezvisko', { title: 'Meno a priezvisko', required: true }, { size: 'large' }),
-        input('email', { title: 'E-mail', required: true, type: 'email' }, { size: 'large' }),
+        input('menoPriezvisko', { title: 'Meno a priezvisko', required: true }, {}),
+        input('email', { title: 'E-mail', required: true, type: 'email' }, {}),
         input(
           'projektantTelefon',
           { title: 'Telefónne číslo (v tvare +421...)', required: true, type: 'tel' },
-          {},
+          { size: 'medium' },
         ),
         input(
           'autorizacneOsvedcenie',
@@ -160,16 +164,17 @@ export const getSchema = (zavazne: boolean) =>
           {
             helptext:
               'Autorizačné osvedčenie dokazuje, že projektant je oprávnený na výkon svojej činnosti. Nie je potrebné pri vypracovaní dokumentácie k jednoduchým / drobným stavbám, kde postačuje osoba s odborným vzdelaním.',
+            size: 'medium',
           },
         ),
         datePicker(
           'datumSpracovania',
           { title: 'Dátum spracovania projektovej dokumentácie', required: true },
-          {},
+          { size: 'medium' },
         ),
       ]),
       step('stavba', { title: 'Informácie o stavbe' }, [
-        input('nazov', { title: 'Názov stavby/projektu', required: true }, { size: 'large' }),
+        input('nazov', { title: 'Názov stavby/projektu', required: true }, {}),
         radioGroup(
           'druhStavby',
           {
@@ -187,9 +192,9 @@ export const getSchema = (zavazne: boolean) =>
           },
           { variant: 'boxed' },
         ),
-        input('ulica', { title: 'Ulica', required: true }, {}),
-        input('supisneCislo', { title: 'Súpisné číslo' }, {}),
-        input('parcelneCislo', { title: 'Parcelné číslo', required: true }, { size: 'large' }),
+        input('ulica', { title: 'Ulica', required: true }, { size: 'medium' }),
+        input('supisneCislo', { title: 'Súpisné číslo' }, { size: 'medium' }),
+        input('parcelneCislo', { title: 'Parcelné číslo', required: true }, { size: 'medium' }),
         select(
           'kataster',
           {
@@ -222,6 +227,7 @@ export const getSchema = (zavazne: boolean) =>
             helptext:
               'Vyberte jedno alebo viacero katastrálnych území, v ktorých sa pozemok nachádza',
             dropdownDivider: true,
+            size: 'medium',
           },
         ),
       ]),

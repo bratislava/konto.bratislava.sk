@@ -51,7 +51,6 @@ export default step('druhPriznania', { title: 'Druh priznania' }, [
       helptext: `Kúpili ste alebo predali nehnuteľnosť v roku ${new Date().getFullYear()}? Zadajte rok ${
         new Date().getFullYear() + 1
       }`,
-      size: 'large',
     },
   ),
 ])

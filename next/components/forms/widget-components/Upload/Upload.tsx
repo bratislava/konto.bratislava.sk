@@ -41,6 +41,7 @@ const Upload = forwardRef<HTMLButtonElement, UploadProps>(
       onFileRemove = () => {},
       onFileRetry = () => {},
       onFileDownload = () => {},
+      size,
     },
     ref,
   ) => {
@@ -55,6 +56,7 @@ const Upload = forwardRef<HTMLButtonElement, UploadProps>(
           helptext={helptext}
           disabled={disabled}
           errorMessage={errorMessage}
+          size={size}
         >
           <div className="flex flex-col gap-6">
             {type === 'button' && (

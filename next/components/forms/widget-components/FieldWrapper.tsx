@@ -1,3 +1,4 @@
+import cx from 'classnames'
 import React, { PropsWithChildren } from 'react'
 
 import { FieldErrorMessageProps } from '../info-components/FieldErrorMessage'
@@ -19,14 +20,20 @@ const FieldWrapper = ({
   customErrorPlace,
   helptext,
   descriptionProps,
+  size = 'full',
   ...fieldHeaderProps
 }: PropsWithChildren<FieldWrapperProps>) => {
   return (
-    <>
+    <div
+      className={cx('flex w-full flex-col', {
+        'max-w-[388px]': size === 'medium',
+        'max-w-[200px]': size === 'small',
+      })}
+    >
       <FieldHeader {...fieldHeaderProps} />
       {children}
       <FieldFooter {...{ helptext, descriptionProps, disabled, errorMessage, customErrorPlace }} />
-    </>
+    </div>
   )
 }
 

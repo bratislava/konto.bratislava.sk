@@ -17,15 +17,15 @@ type FormSignerLoaderProviderProps = PropsWithChildren<{
 }>
 
 enum LoadedStatus {
-  False = 'false',
-  True = 'true',
-  Error = 'error',
+  False,
+  True,
+  Error,
 }
 
 enum SupportedStatus {
-  Unknown = 'unknown',
-  Supported = 'supported',
-  NotSupported = 'notSupported',
+  Unknown,
+  Supported,
+  NotSupported,
 }
 
 /**
@@ -73,8 +73,9 @@ export const FormSignerLoaderProvider = ({
 
   const isError = Object.values(loadingStatuses).includes(LoadedStatus.Error)
   const isLoading = isSigned
-    ? Object.values(loadingStatuses).includes(LoadedStatus.False) ||
-      isSupportedStatus === SupportedStatus.Unknown
+    ? (Object.values(loadingStatuses).includes(LoadedStatus.False) ||
+        isSupportedStatus === SupportedStatus.Unknown) &&
+      !isError
     : false
   const isReady =
     Object.values(loadingStatuses).every((status) => status === LoadedStatus.True) &&

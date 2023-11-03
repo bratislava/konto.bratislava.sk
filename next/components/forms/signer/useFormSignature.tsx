@@ -30,8 +30,9 @@ const useGetContext = () => {
         return
       }
       const currentHash = hash(formDataRef.current)
-      // The easiest way how to ensure stability (people can leave the signer open / open it multiple times, etc. and
-      // then sign the form) is to compare the hash of the current form data with the hash of the data that was signed.
+      // The easiest way how to ensure stability (1. people can leave the signer open / open it multiple times, etc. and
+      // then sign the form, 2. the signer works in mysterious ways - it can spawn multiple instances) is to compare the
+      // hash of the current form data with the hash of the data that was signed.
       if (currentHash !== jsonObjectHash) {
         // TODO handle error
         return

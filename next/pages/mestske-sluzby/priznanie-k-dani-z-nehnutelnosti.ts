@@ -50,6 +50,7 @@ export const getServerSideProps: GetServerSideProps<FormPageWrapperProps, Params
         formSent: false,
         formMigrationRequired: false,
         schemaVersionId: '',
+        isSigned: true,
       },
       ...(await serverSideTranslations(locale)),
     } satisfies FormPageWrapperProps,

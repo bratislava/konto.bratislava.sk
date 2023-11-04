@@ -4,6 +4,7 @@ import SummaryHeader from '../SummaryHeader'
 import SummaryForm from './SummaryForm'
 import SummaryFormControls from './SummaryFormControls'
 import SummaryFormLegalText from './SummaryFormLegalText'
+import SummaryFormSignature from './SummaryFormSignature'
 import { FormSummaryProvider } from './useFormSummary'
 
 const FormSummary = () => {
@@ -29,6 +30,7 @@ const FormSummary = () => {
         >
           <div />
         </SummaryForm>
+        <SummaryFormSignature />
         <SummaryFormLegalText />
         <SummaryFormControls />
       </div>

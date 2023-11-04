@@ -1,6 +1,7 @@
 import { GenericObjectType, RJSFSchema, UiSchema } from '@rjsf/utils'
 import { useTranslation } from 'next-i18next'
 import React, { createContext, PropsWithChildren, useContext, useMemo, useState } from 'react'
+import useStateRef from 'react-usestateref'
 import { useIsFirstRender } from 'usehooks-ts'
 
 import { InitialFormData } from '../../frontend/types/initialFormData'
@@ -38,7 +39,9 @@ const useGetContext = ({ schema, uiSchema, formSlug, initialFormData }: FormStat
     initialFormData.oldSchemaVersion ||
     initialFormData.formSent
   const isDeletable = initialFormData.formMigrationRequired || initialFormData.oldSchemaVersion
-  const [formData, setFormData] = useState<GenericObjectType>(initialFormData.formDataJson)
+  const [formData, setFormData, formDataRef] = useStateRef<GenericObjectType>(
+    initialFormData.formDataJson,
+  )
   const stepsSchemas = useMemo(() => getEvaluatedStepsSchemas(schema, formData), [schema, formData])
 
   const { currentStepIndex, setCurrentStepIndex } = useCurrentStepIndex(stepsSchemas)
@@ -199,6 +202,7 @@ const useGetContext = ({ schema, uiSchema, formSlug, initialFormData }: FormStat
     formId: initialFormData.formId,
     formSlug,
     formData,
+    formDataRef,
     isReadonly,
     isDeletable,
     currentStepIndex,
@@ -213,6 +217,7 @@ const useGetContext = ({ schema, uiSchema, formSlug, initialFormData }: FormStat
     handleFormOnSubmit,
     goToStepByFieldId,
     setImportedFormData,
+    isSigned: initialFormData.isSigned,
   }
 }
 

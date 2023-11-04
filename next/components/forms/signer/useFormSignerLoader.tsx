@@ -59,16 +59,14 @@ export const FormSignerLoaderProvider = ({
   }
 
   const updateLoadingStatus = (key: keyof typeof loadingStatuses, value: LoadedStatus) => {
-    setLoadingStatuses((prevStatuses) => {
-      const newLoadingStatuses = { ...prevStatuses, [key]: value }
-      const allLoaded = Object.values(newLoadingStatuses).every(
-        (status) => status === LoadedStatus.True,
-      )
-      if (allLoaded) {
-        handleScriptsLoaded()
-      }
-      return newLoadingStatuses
-    })
+    const newLoadingStatuses = { ...loadingStatuses, [key]: value }
+    const allLoaded = Object.values(newLoadingStatuses).every(
+      (status) => status === LoadedStatus.True,
+    )
+    if (allLoaded) {
+      handleScriptsLoaded()
+    }
+    setLoadingStatuses(newLoadingStatuses)
   }
 
   const isError = Object.values(loadingStatuses).includes(LoadedStatus.Error)

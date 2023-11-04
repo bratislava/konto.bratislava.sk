@@ -35,6 +35,7 @@ const DatePicker = forwardRef<HTMLDivElement, DatePickerProps>(
       maxValue,
       onChange = () => {},
       customErrorPlace = false,
+      size,
       ...rest
     },
     ref,
@@ -93,45 +94,40 @@ const DatePicker = forwardRef<HTMLDivElement, DatePickerProps>(
     }
 
     return (
-      <div className="relative w-full max-w-xs">
-        <div ref={ref}>
-          <DateField
-            {...fieldProps}
-            label={label}
-            helptext={helptext}
-            required={required}
-            explicitOptional={explicitOptional}
-            disabled={disabled}
-            tooltip={tooltip}
-            errorMessage={errorMessage}
-            isOpen={state?.isOpen}
-            customErrorPlace={customErrorPlace}
-            popover={
-              <>
-                {state?.isOpen && (
-                  <OverlayProvider>
-                    <Popover {...dialogProps} isOpen={state?.isOpen} onClose={handleConfirm}>
-                      <Calendar
-                        {...calendarProps}
-                        onConfirm={handleConfirm}
-                        onReset={handleReset}
-                      />
-                    </Popover>
-                  </OverlayProvider>
-                )}
-              </>
-            }
-          >
-            <ButtonNew
-              variant="icon-wrapped-negative-margin"
-              {...buttonPropsFixed}
-              isDisabled={disabled}
-              icon={<CalendarIcon />}
-              // TODO investigate why t can return undefined
-              aria-label={t('aria.openCalendar') ?? 'Open calendar'}
-            />
-          </DateField>
-        </div>
+      <div className="relative" ref={ref}>
+        <DateField
+          {...fieldProps}
+          label={label}
+          helptext={helptext}
+          required={required}
+          explicitOptional={explicitOptional}
+          disabled={disabled}
+          tooltip={tooltip}
+          errorMessage={errorMessage}
+          isOpen={state?.isOpen}
+          customErrorPlace={customErrorPlace}
+          popover={
+            <>
+              {state?.isOpen && (
+                <OverlayProvider>
+                  <Popover {...dialogProps} isOpen={state?.isOpen} onClose={handleConfirm}>
+                    <Calendar {...calendarProps} onConfirm={handleConfirm} onReset={handleReset} />
+                  </Popover>
+                </OverlayProvider>
+              )}
+            </>
+          }
+          size={size}
+        >
+          <ButtonNew
+            variant="icon-wrapped-negative-margin"
+            {...buttonPropsFixed}
+            isDisabled={disabled}
+            icon={<CalendarIcon />}
+            // TODO investigate why t can return undefined
+            aria-label={t('aria.openCalendar') ?? 'Open calendar'}
+          />
+        </DateField>
       </div>
     )
   },

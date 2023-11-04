@@ -36,7 +36,6 @@ export default step(
           'popisStavby',
           { title: 'Popis stavby', required: true },
           {
-            size: 'large',
             placeholder: 'Napr. polyfunkčná budova',
             helptext:
               'Uveďte stručný popis stavby, napr. administratívna budova, polyfunkčná stavba a pod. (vychádzajte z LV)',
@@ -146,7 +145,6 @@ export default step(
                     helptext: markdownText(
                       'Celková výmera je zaokrúhlená na celé m^2^ nahor (vrátane tých, na ktoré si uplatňujete nárok na oslobodenie), u spoluvlastníkov vo výške ich spoluvlastníckeho podielu.',
                     ),
-                    size: 'large',
                   },
                 ),
                 number(
@@ -161,7 +159,6 @@ export default step(
                     helptext: markdownText(
                       'Celková výmera pozostáva zo súčtu podielov výmer častí stavby využívaných na jednotlivé účely na zastavanej ploche. Číslo sa zaokrúhľuje na celé m^2^ nahor.',
                     ),
-                    size: 'large',
                   },
                 ),
               ],
@@ -179,7 +176,6 @@ export default step(
           {
             helptext:
               'Napríklad, ak máte dom s dvomi podlažiami a s pivničným priestorom, zadáte 2.',
-            size: 'large',
           },
         ),
       ],

@@ -17,8 +17,8 @@ export const stavbyBase = (step: StepEnum) => [
       objectColumnRatio: '3/1',
     },
     [
-      input('ulicaACisloDomu', { title: 'Ulica a číslo domu', required: true }, { size: 'large' }),
-      input('supisneCislo', { title: 'Súpisné číslo', required: true }, { size: 'large' }),
+      input('ulicaACisloDomu', { title: 'Ulica a číslo domu', required: true }, {}),
+      input('supisneCislo', { title: 'Súpisné číslo', required: true }, {}),
     ],
   ),
   object(
@@ -62,15 +62,12 @@ export const stavbyBase = (step: StepEnum) => [
         },
         {
           dropdownDivider: true,
-          // todo size full
-          className: 'w-full',
         },
       ),
       input(
         'cisloParcely',
         { title: 'Číslo parcely', required: true },
         {
-          size: 'large',
           helptext: 'Uveďte len prvé parcelné číslo',
         },
       ),
@@ -78,20 +75,8 @@ export const stavbyBase = (step: StepEnum) => [
   ),
   ...(step === StepEnum.DanZBytovANebytovychPriestorov
     ? [
-        input(
-          'cisloBytu',
-          { title: 'Číslo bytu', required: true },
-          {
-            size: 'large',
-          },
-        ),
-        input(
-          'popisBytu',
-          { title: 'Popis bytu' },
-          {
-            size: 'large',
-          },
-        ),
+        input('cisloBytu', { title: 'Číslo bytu', required: true }, {}),
+        input('popisBytu', { title: 'Popis bytu' }, {}),
       ]
     : []),
   ...pravnyVztahSpoluvlastnictvo(step),

@@ -50,15 +50,11 @@ export default schema(
         { size: 'small', placeholder: 'Small Input' },
       ),
       input(
-        'defaultInput',
-        { title: 'Default Input', type: 'text' },
-        { size: 'default', placeholder: 'Default Input' },
+        'mediumInput',
+        { title: 'Medium Input', type: 'text' },
+        { size: 'medium', placeholder: 'Medium Input' },
       ),
-      input(
-        'largeInput',
-        { title: 'Large Input', type: 'text' },
-        { size: 'large', placeholder: 'Large Input' },
-      ),
+      input('largeInput', { title: 'Large Input', type: 'text' }, { placeholder: 'Large Input' }),
       textArea('about', { title: 'About', required: true }, { tooltip: 'Write about yourself' }),
     ]),
     step('selectionFieldsStep', { title: 'Selection Fields Step' }, [
@@ -198,7 +194,7 @@ export default schema(
       'conditionalStep',
       createCondition([[['firstName'], { const: 'John' }]]),
       { title: 'Conditional Step' },
-      [input('secretQuestion', { title: 'Secret Question' }, { size: 'large' })],
+      [input('secretQuestion', { title: 'Secret Question' }, {})],
     ),
   ],
 )

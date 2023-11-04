@@ -28,7 +28,6 @@ const danovnikBase = (type: Type, splnomocnenie: boolean) => [
         'ulica',
         { title: 'Ulica', required: true },
         {
-          size: 'large',
           helptext:
             type === Type.FyzickaOsobaPodnikatel
               ? 'Zadajte ulicu miesta podnikania podľa živnostenského registra'
@@ -37,7 +36,7 @@ const danovnikBase = (type: Type, splnomocnenie: boolean) => [
               : undefined,
         },
       ),
-      input('cislo', { title: 'Čislo', required: true }, { size: 'large' }),
+      input('cislo', { title: 'Čislo', required: true }, {}),
     ],
   ),
   object(
@@ -48,12 +47,12 @@ const danovnikBase = (type: Type, splnomocnenie: boolean) => [
       objectColumnRatio: '3/1',
     },
     [
-      input('obec', { title: 'Obec', required: true }, { size: 'large' }),
-      input('psc', { title: 'PSČ', required: true, format: 'zip' }, { size: 'large' }),
+      input('obec', { title: 'Obec', required: true }, {}),
+      input('psc', { title: 'PSČ', required: true, format: 'zip' }, {}),
     ],
   ),
   // TODO Select ciselnik
-  input('stat', { title: 'Štát', required: true }, { size: 'large' }),
+  input('stat', { title: 'Štát', required: true }, {}),
   ...(splnomocnenie
     ? [
         select(
@@ -75,12 +74,12 @@ const danovnikBase = (type: Type, splnomocnenie: boolean) => [
   input(
     'email',
     { title: 'E-mail', type: 'email', required: true },
-    { size: 'large', helptext: 'E-mailová adresa nám pomôže komunikovať s vami rýchlejšie.' },
+    { helptext: 'E-mailová adresa nám pomôže komunikovať s vami rýchlejšie.' },
   ),
   input(
     'telefon',
     { title: 'Telefónne číslo (v tvare +421...)', required: true, type: 'tel' },
-    { helptext: 'Telefónne číslo nám pomôže komunikovať s vami rýchlejšie.', size: 'default' },
+    { helptext: 'Telefónne číslo nám pomôže komunikovať s vami rýchlejšie.', size: 'medium' },
   ),
 ]
 
@@ -92,19 +91,12 @@ const fyzickaOsoba = (splnomocnenie: boolean) => [
           'rodneCislo',
           { title: 'Rodné číslo', required: true },
           {
-            size: 'large',
             helptext:
               'Rodné číslo zadávajte s lomítkom. V prípade, že nemáte rodné číslo, uveďte dátum narodenia.',
           },
         ),
       ]),
-  input(
-    'priezvisko',
-    { title: 'Priezvisko', required: true },
-    {
-      size: 'large',
-    },
-  ),
+  input('priezvisko', { title: 'Priezvisko', required: true }, {}),
   object(
     'menoTitul',
     { required: true },
@@ -112,29 +104,14 @@ const fyzickaOsoba = (splnomocnenie: boolean) => [
       objectDisplay: 'columns',
       objectColumnRatio: '3/1',
     },
-    [
-      input('meno', { title: 'Meno', required: true }, { size: 'large' }),
-      input('titul', { title: 'Titul' }, { size: 'large' }),
-    ],
+    [input('meno', { title: 'Meno', required: true }, {}), input('titul', { title: 'Titul' }, {})],
   ),
   ...danovnikBase(Type.FyzickaOsoba, splnomocnenie),
 ]
 
 const fyzickaOsobaPodnikatel = [
-  input(
-    'ico',
-    { title: 'IČO', required: true },
-    {
-      size: 'large',
-    },
-  ),
-  input(
-    'obchodneMenoAleboNazov',
-    { title: 'Obchodné meno alebo názov', required: true },
-    {
-      size: 'large',
-    },
-  ),
+  input('ico', { title: 'IČO', required: true }, {}),
+  input('obchodneMenoAleboNazov', { title: 'Obchodné meno alebo názov', required: true }, {}),
   ...danovnikBase(Type.FyzickaOsobaPodnikatel, false),
 ]
 
@@ -142,13 +119,7 @@ const pravnickaOsoba = (splnomocnenie: boolean) => [
   ...(splnomocnenie
     ? []
     : [
-        input(
-          'ico',
-          { title: 'IČO', required: true },
-          {
-            size: 'large',
-          },
-        ),
+        input('ico', { title: 'IČO', required: true }, {}),
         select(
           'pravnaForma',
           {
@@ -162,13 +133,7 @@ const pravnickaOsoba = (splnomocnenie: boolean) => [
           { dropdownDivider: true },
         ),
       ]),
-  input(
-    'obchodneMenoAleboNazov',
-    { title: 'Obchodné meno alebo názov', required: true },
-    {
-      size: 'large',
-    },
-  ),
+  input('obchodneMenoAleboNazov', { title: 'Obchodné meno alebo názov', required: true }, {}),
   ...danovnikBase(Type.PravnickaOsoba, splnomocnenie),
 ]
 

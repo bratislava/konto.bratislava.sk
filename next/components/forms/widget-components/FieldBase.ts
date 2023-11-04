@@ -1,3 +1,5 @@
+export type FieldSize = 'full' | 'medium' | 'small'
+
 export type FieldBaseProps = {
   label: string
   helptext?: string
@@ -7,6 +9,7 @@ export type FieldBaseProps = {
   disabled?: boolean
   explicitOptional?: boolean
   readonly?: boolean
+  size?: FieldSize
 }
 
 export type FieldAdditionalProps = {

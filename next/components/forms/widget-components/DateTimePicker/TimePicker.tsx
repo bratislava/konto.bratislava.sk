@@ -42,6 +42,7 @@ const TimePicker = forwardRef<HTMLDivElement, TimePickerProps>(
       maxValue,
       readOnly,
       customErrorPlace,
+      size,
       // eslint-disable-next-line @typescript-eslint/no-unused-vars
       ...rest
     },
@@ -63,7 +64,7 @@ const TimePicker = forwardRef<HTMLDivElement, TimePickerProps>(
     }, [valueControlled])
 
     return (
-      <div className="relative w-full max-w-xs">
+      <div className="relative">
         <div ref={ref}>
           <TimeField
             // {...fieldProps}
@@ -81,6 +82,7 @@ const TimePicker = forwardRef<HTMLDivElement, TimePickerProps>(
             value={parsedValue}
             readOnly={readOnly}
             customErrorPlace={customErrorPlace}
+            size={size}
           />
         </div>
         {/* {state?.isOpen && ( */}

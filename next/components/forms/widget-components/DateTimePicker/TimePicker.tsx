@@ -43,6 +43,7 @@ const TimePicker = forwardRef<HTMLDivElement, TimePickerProps>(
       readOnly,
       customErrorPlace,
       size,
+      labelSize,
       // eslint-disable-next-line @typescript-eslint/no-unused-vars
       ...rest
     },
@@ -83,6 +84,7 @@ const TimePicker = forwardRef<HTMLDivElement, TimePickerProps>(
             readOnly={readOnly}
             customErrorPlace={customErrorPlace}
             size={size}
+            labelSize={labelSize}
           />
         </div>
         {/* {state?.isOpen && ( */}

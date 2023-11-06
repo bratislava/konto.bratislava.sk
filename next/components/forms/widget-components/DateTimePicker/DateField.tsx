@@ -29,6 +29,7 @@ const DateField = ({
   customErrorPlace,
   popover,
   size,
+  labelSize,
   ...rest
 }: DateFieldProps) => {
   const ref = React.useRef<HTMLDivElement>(null)
@@ -71,6 +72,7 @@ const DateField = ({
       errorMessage={errorMessage}
       errorMessageProps={errorMessageProps}
       size={size}
+      labelSize={labelSize}
     >
       <div {...fieldProps} ref={ref} className={dateFieldStyle}>
         {state?.segments?.map((segment, index) => (

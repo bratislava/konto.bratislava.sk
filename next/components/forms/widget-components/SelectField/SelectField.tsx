@@ -90,6 +90,7 @@ const SelectFieldComponent: ForwardRefRenderFunction<HTMLDivElement, SelectField
     className,
     onChange,
     size,
+    labelSize,
   } = props
 
   const [isDropdownOpened, setIsDropdownOpened] = useState<boolean>(false)
@@ -252,6 +253,7 @@ const SelectFieldComponent: ForwardRefRenderFunction<HTMLDivElement, SelectField
         errorMessage={errorMessage}
         disabled={disabled}
         size={size}
+        labelSize={labelSize}
       >
         {/* SELECT PART */}
         <div className={selectClassName} ref={clickOutsideRef}>

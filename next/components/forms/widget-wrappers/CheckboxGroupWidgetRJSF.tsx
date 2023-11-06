@@ -23,7 +23,14 @@ const CheckboxGroupWidgetRJSF = ({
   required,
   readonly,
 }: CheckboxGroupRJSFProps) => {
-  const { enumOptions, className, checkboxOptions = [], variant = 'basic', size } = options
+  const {
+    enumOptions,
+    className,
+    checkboxOptions = [],
+    variant = 'basic',
+    size,
+    labelSize,
+  } = options
   if (!enumOptions) return <div />
   const getTooltip = (radioValue: string) => {
     return checkboxOptions.find((option) => option.value === radioValue)?.tooltip
@@ -42,6 +49,7 @@ const CheckboxGroupWidgetRJSF = ({
         required={required}
         disabled={readonly}
         size={size}
+        labelSize={labelSize}
       >
         {enumOptions.map((option: EnumOptionsType) => {
           return (

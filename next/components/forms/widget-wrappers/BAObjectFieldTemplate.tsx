@@ -31,7 +31,7 @@ const BAObjectFieldTemplate = ({ idSchema, properties, uiSchema }: ObjectFieldTe
     options.objectDisplay === 'columns' && typeof options.objectColumnRatio === 'string'
       ? options.objectColumnRatio
           .split('/')
-          .map((value) => `${value}fr`)
+          .map((value) => `minmax(0, ${value}fr)`)
           .join(' ')
       : undefined
 

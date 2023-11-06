@@ -50,6 +50,7 @@ const InputField = forwardRef<HTMLInputElement, InputProps>(
       capitalize = false,
       autoComplete,
       size,
+      labelSize,
       ...rest
     },
     ref,
@@ -145,6 +146,7 @@ const InputField = forwardRef<HTMLInputElement, InputProps>(
         errorMessage={errorMessage}
         errorMessageProps={errorMessageProps}
         size={size}
+        labelSize={labelSize}
       >
         <div className="relative">
           {leftIcon && (

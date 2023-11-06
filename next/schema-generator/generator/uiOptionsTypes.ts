@@ -46,6 +46,9 @@ export type CustomComponentType =
       props: CustomComponentPropertyCalculatorProps
     }
 
+export type LabelSize = 'default' | 'h4' | 'h3'
+export type LabelSpacing = 'default' | 'h4' | 'h3'
+
 export type FormSpacingType = 'large' | 'default' | 'small' | 'medium' | 'none'
 
 export type WidgetUiOptions = {
@@ -58,6 +61,8 @@ export type WidgetUiOptions = {
   belowComponents?: CustomComponentType[]
   rightComponents?: CustomComponentType[]
   size?: FieldSize
+  labelSize?: LabelSize
+  labelSpacing?: LabelSpacing
 }
 
 type CheckboxOption = {

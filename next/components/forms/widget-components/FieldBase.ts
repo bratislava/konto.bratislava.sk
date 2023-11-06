@@ -1,3 +1,5 @@
+import { LabelSize } from 'schema-generator/generator/uiOptionsTypes'
+
 export type FieldSize = 'full' | 'medium' | 'small'
 
 export type FieldBaseProps = {
@@ -10,6 +12,7 @@ export type FieldBaseProps = {
   explicitOptional?: boolean
   readonly?: boolean
   size?: FieldSize
+  labelSize?: LabelSize
 }
 
 export type FieldAdditionalProps = {

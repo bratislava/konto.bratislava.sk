@@ -24,7 +24,7 @@ const TextAreaWidgetRJSF = ({
   onChange,
   readonly,
 }: TextAreaWidgetRJSFProps) => {
-  const { helptext, tooltip, explicitOptional, className, size } = options
+  const { helptext, tooltip, explicitOptional, className, size, labelSize } = options
 
   const handleOnChange = (newValue?: string) => {
     if (!newValue || newValue === '') {
@@ -52,6 +52,7 @@ const TextAreaWidgetRJSF = ({
             onBlur={onBlur}
             errorMessage={rawErrors}
             size={size}
+            labelSize={labelSize}
           />
         )}
       </FieldBlurWrapper>

@@ -36,6 +36,7 @@ const RadioGroup = (props: RadioGroupBase) => {
     tooltip,
     value,
     size,
+    labelSize,
   } = props
 
   const propsReactAria = {
@@ -67,6 +68,7 @@ const RadioGroup = (props: RadioGroupBase) => {
         errorMessage={errorMessage}
         errorMessageProps={errorMessageProps}
         size={size}
+        labelSize={labelSize}
       >
         <RadioContext.Provider value={state}>
           <div className="mt-3 flex flex-col gap-2">

@@ -25,7 +25,7 @@ const FileUploadWidgetRJSF = ({
   rawErrors,
   readonly,
 }: FileUploadWidgetRJSFProps) => {
-  const { sizeLimit, accept, helptext, type = 'button', className, size } = options
+  const { sizeLimit, accept, helptext, type = 'button', className, size, labelSize } = options
 
   const supportedFormats = accept?.split(',')
   const multiple = schema.type === 'array'
@@ -93,6 +93,7 @@ const FileUploadWidgetRJSF = ({
         onFileDownload={formFileUpload.downloadFile}
         getFileInfoById={formFileUpload.getFileInfoById}
         size={size}
+        labelSize={labelSize}
       />
     </WidgetWrapper>
   )

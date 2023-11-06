@@ -18,17 +18,27 @@ const FieldHeader = ({
   explicitOptional = false,
   labelProps,
   tooltip,
+  labelSize = 'default',
 }: FieldHeaderProps) => {
   const { t } = useTranslation('account', { keyPrefix: 'FieldHeader' })
 
-  const labelStyle = cx('text-p3-semibold sm:text-16-semibold relative text-gray-800', {
+  const labelStyle = cx('relative text-gray-800', {
     'after:text-16-semibold after:absolute after:bottom-0.5 after:ml-0.5 after:text-main-700 after:content-["*"]':
       required,
+    'text-p3-semibold sm:text-16-semibold': labelSize === 'default',
+    'text-h3': labelSize === 'h3',
+    'text-h4': labelSize === 'h4',
+  })
+
+  const wrapperStyle = cx('flex justify-between', {
+    'mb-1': labelSize === 'default',
+    'mb-8': labelSize === 'h3',
+    'mb-5': labelSize === 'h4',
   })
 
   return (
     <div className="w-full">
-      <div className="mb-1 flex justify-between">
+      <div className={wrapperStyle}>
         <div className="flex w-full justify-between">
           <label htmlFor={htmlFor} className={labelStyle} {...labelProps}>
             {label}

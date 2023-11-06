@@ -16,7 +16,7 @@ type CheckBoxGroupBase = FieldBaseProps &
   }
 
 const CheckboxGroup = (props: CheckBoxGroupBase) => {
-  const { children, className, errorMessage, disabled, label, required, size } = props
+  const { children, className, errorMessage, disabled, label, required, size, labelSize } = props
   const state: CheckboxGroupState = useCheckboxGroupState(props)
   const { groupProps, labelProps, errorMessageProps } = useCheckboxGroup(props, state)
   return (
@@ -30,6 +30,7 @@ const CheckboxGroup = (props: CheckBoxGroupBase) => {
         errorMessage={errorMessage}
         errorMessageProps={errorMessageProps}
         size={size}
+        labelSize={labelSize}
       >
         <div className={cx('flex flex-col gap-3', className)}>
           <CheckboxGroupContext.Provider value={state}>{children}</CheckboxGroupContext.Provider>

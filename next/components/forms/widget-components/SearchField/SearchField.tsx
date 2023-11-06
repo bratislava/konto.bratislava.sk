@@ -26,6 +26,7 @@ const SearchField = ({
   resetIcon,
   className,
   size,
+  labelSize,
   ...rest
 }: SearchFieldProps) => {
   const [valueState, setValueState] = useState<string>(value)
@@ -78,6 +79,7 @@ const SearchField = ({
         errorMessageProps={errorMessageProps}
         disabled={disabled}
         size={size}
+        labelSize={labelSize}
       >
         <div className="relative">
           <i

@@ -17,6 +17,7 @@ import GardensIcon from '../../../../../assets/icons/environment-construction/co
 import SewerageIcon from '../../../../../assets/icons/environment-construction/connector.svg'
 import FrontGardensIcon from '../../../../../assets/icons/environment-construction/front-gardens.svg'
 import TreeIcon from '../../../../../assets/icons/environment-construction/greenery.svg'
+import SpatialPlanningIcon from '../../../../../assets/icons/environment-construction/spatial-planning.svg'
 import BasketIcon from '../../../../../assets/icons/environment-construction/waste.svg'
 import SecurityIcon from '../../../../../assets/icons/most-wanted-services/reporting-of-incentives.svg'
 import MariniumIcon from '../../../../../assets/icons/other/marianum.svg'
@@ -81,6 +82,17 @@ const MunicipalServicesSection = () => {
     onPress?: () => void
   }
   const serviceCards: ServiceCardBase[] = [
+    {
+      title: t('account_section_services.cards.34.title'),
+      description: t('account_section_services.cards.34.description'),
+      buttonText: t('account_section_services.cards.34.buttonText'),
+      icon: <SpatialPlanningIcon className="h-10 w-10 text-environment-700 lg:h-12 lg:w-12" />,
+      tag: t('account_section_services.cards.34.tag'),
+      tagStyle: 'text-environment-700 bg-environment-100',
+      category: [CONSTRUCTION_CATEGORY],
+      linkType: 'internal',
+      href: ROUTES.MUNICIPAL_SERVICES_INVESTING,
+    },
     {
       title: t('account_section_services.cards.1.title'),
       description: t('account_section_services.cards.1.description'),

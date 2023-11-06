@@ -9,6 +9,7 @@ export const ROUTES = {
   TAXES_AND_FEES: '/dane-a-poplatky',
   MIGRATION: '/aktivacia-konta',
   MUNICIPAL_SERVICES: '/mestske-sluzby',
+  MUNICIPAL_SERVICES_INVESTING: '/mestske-sluzby/zavazne-stanovisko-k-investicnej-cinnosti',
   THANK_YOU: '/vysledok-platby',
   USER_PROFILE: '/moj-profil',
   MY_APPLICATIONS: '/moje-ziadosti',

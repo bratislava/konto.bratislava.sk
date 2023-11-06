@@ -10,6 +10,12 @@ import logger from './logger'
 // TODO once env handling is merged update not to use process.env directly
 Amplify.configure({
   Auth: {
+    cookieStorage: {
+      domain: environment.cognitoCookieStorageDomain,
+      expires: 365,
+      path: '/',
+      secure: environment.cognitoCookieStorageDomain !== 'localhost',
+    },
     // REQUIRED only for Federated Authentication - Amazon Cognito Identity Pool ID
     identityPoolId: environment.cognitoIdentityPoolId,
 

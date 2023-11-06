@@ -19,7 +19,10 @@ export const getSSRCurrentAuth = async (
   const SSR = withSSRContext({ req })
   let userData = null
   try {
-    const currentUser = await SSR.Auth.currentAuthenticatedUser()
+    const currentUser = await SSR.Auth.currentAuthenticatedUser({
+      bypassCache: true,
+    })
+
     userData = currentUser.attributes || null
   } catch (error) {
     // TODO Auth throws this exact string, not an error object - refactor once amplify solves this

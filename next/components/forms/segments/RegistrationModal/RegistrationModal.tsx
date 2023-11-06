@@ -22,16 +22,16 @@ const ButtonWithSubtext = ({ text, subtext, onPress }: ButtonWithSubtextProps) =
   return (
     <ButtonNew
       variant="black-outline"
-      className="justify-start p-4 sm:justify-center sm:px-4 sm:py-3"
-      endIcon={<ArrowRightIcon className="hidden h-6 w-6 sm:block" />}
+      className="justify-start p-4 md:justify-center md:px-4 md:py-3"
+      endIcon={<ArrowRightIcon className="hidden h-6 w-6 md:block" />}
       onPress={onPress}
       fullWidth
     >
       <div className="flex flex-col gap-2 text-left md:text-center">
-        <div className="sm:hidden">{text}</div>
-        <div className="inline-flex gap-2 text-main-700 sm:text-gray-700">
+        <div className="md:hidden">{text}</div>
+        <div className="inline-flex gap-2 text-main-700 md:text-gray-700">
           {subtext}
-          <ArrowRightIcon className="block h-6 w-6 sm:hidden" />
+          <ArrowRightIcon className="block h-6 w-6 md:hidden" />
         </div>
       </div>
     </ButtonNew>
@@ -103,12 +103,12 @@ const RegistrationModal = ({ type, login, register, ...rest }: RegistrationModal
           </AriaButton>
         </div>
 
-        <div className="mt-3 flex flex-col gap-1 sm:flex-row sm:items-center sm:justify-between sm:gap-0 md:mt-6">
+        <div className="mt-3 flex flex-col gap-1 md:mt-6 md:flex-row md:items-center md:justify-between md:gap-0">
           <span className="text-p1-semibold">{t('registration_modal.body_login_description')}</span>
           {/* Use ButtonNew */}
           <AriaButton
             onPress={() => login()}
-            className="text-p1-underline text-left text-main-700 hover:text-main-600 sm:text-center"
+            className="text-p1-underline text-left text-main-700 hover:text-main-600 md:text-center"
           >
             {t('registration_modal.body_login_link')}
           </AriaButton>

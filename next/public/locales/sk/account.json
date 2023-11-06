@@ -860,7 +860,7 @@
     }
   },
   "FieldHeader": {
-    "optional": "Nepovinné"
+    "optional": "Voliteľné"
   },
   "RadioGroup": {
     "resetChoice": "Vymazať výber"

@@ -28,6 +28,9 @@ export default step(
       {
         hideTitle: true,
         variant: 'topLevel',
+        addTitle: 'Podávate priznanie aj za ďalší pozemok?',
+        addDescription:
+          'V prípade, že podávate priznanie aj za ďalší pozemok, ktorý je na inom liste vlastníctva, pridajte ďalšie priznanie.',
         addButtonLabel: 'Pridať ďalšie priznanie',
         itemTitle: 'Priznanie k dani z pozemkov č. {index}',
       },

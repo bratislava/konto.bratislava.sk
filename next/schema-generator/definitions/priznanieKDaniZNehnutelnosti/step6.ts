@@ -18,7 +18,7 @@ import { vyplnitKrokRadio } from './vyplnitKrokRadio'
 export default step(
   'danZBytovANebytovychPriestorov',
   {
-    title: 'Daň z bytov a z nebytových priestorov v bytovom dome',
+    title: 'Priznanie k dani z bytov a z nebytových priestorov v bytovom dome',
     stepperTitle: 'Daň z bytov a z nebytových priestorov (v bytovom dome)',
   },
   vyplnitKrokRadio([
@@ -28,6 +28,9 @@ export default step(
       {
         hideTitle: true,
         variant: 'topLevel',
+        addTitle: 'Podávate priznanie aj za ďalší byt alebo nebytový priestor v inom bytovom dome?',
+        addDescription:
+          'V prípade, že podávate priznanie aj za ďalší byt, alebo iný nebytový priestor, je potrebné pridať ďalšie priznanie.',
         addButtonLabel: 'Pridať ďalšie priznanie',
         itemTitle: 'Priznanie k dani zo stavby slúžiacej na viaceré účely č. {index}',
       },
@@ -38,6 +41,8 @@ export default step(
           {},
           {
             objectDisplay: 'boxed',
+            // TODO Fix spacing in general
+            spaceTop: 'default',
           },
           [
             radioGroup(
@@ -54,6 +59,9 @@ export default step(
               {
                 variant: 'boxed',
                 orientations: 'row',
+                labelSize: 'h4',
+                // TODO Fix spacing in general
+                spaceTop: 'none',
               },
             ),
             conditionalFields(createCondition([[['priznanieZaByt'], { const: true }]]), [
@@ -89,6 +97,8 @@ export default step(
           {},
           {
             objectDisplay: 'boxed',
+            // TODO Fix spacing in general
+            spaceTop: 'default',
           },
           [
             radioGroup(
@@ -106,6 +116,9 @@ export default step(
               {
                 variant: 'boxed',
                 orientations: 'row',
+                labelSize: 'h4',
+                // TODO Fix spacing in general
+                spaceTop: 'none',
               },
             ),
             conditionalFields(

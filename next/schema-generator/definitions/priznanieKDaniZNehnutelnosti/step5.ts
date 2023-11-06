@@ -17,7 +17,7 @@ import { vyplnitKrokRadio } from './vyplnitKrokRadio'
 export default step(
   'danZoStaviebViacereUcely',
   {
-    title: 'Daň zo stavieb - stavba slúžiaca na viaceré účely',
+    title: 'Priznanie k dani zo stavieb – stavba slúžiaca na viaceré účely',
     stepperTitle: 'Daň zo stavieb (stavba slúžiaca na viaceré účely)',
   },
   vyplnitKrokRadio([
@@ -27,8 +27,11 @@ export default step(
       {
         hideTitle: true,
         variant: 'topLevel',
+        addTitle: 'Podávate priznanie aj za ďalšiu stavbu slúžiacu na viaceré účely?',
+        addDescription:
+          'V prípade, že podávate priznanie aj za ďalšiu stavbu slúžiacu na viaceré účely, pridajte ďalšie priznanie.',
         addButtonLabel: 'Pridať ďalšie priznanie',
-        itemTitle: 'Priznanie k dani zo stavby slúžiacej na viaceré účely č. {index}',
+        itemTitle: 'Priznanie k dani zo stavieb – stavba slúžiaca na viaceré účely č. {index}',
       },
       [
         ...stavbyBase(StepEnum.DanZoStaviebViacereUcely),

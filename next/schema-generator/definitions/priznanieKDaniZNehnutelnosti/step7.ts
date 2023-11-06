@@ -1,4 +1,4 @@
-import { checkboxGroup, step } from '../../generator/functions'
+import { checkboxGroup, step, textArea } from '../../generator/functions'
 
 export default step(
   'znizenieAleboOslobodenieOdDane',
@@ -29,7 +29,7 @@ export default step(
           },
         ],
       },
-      { variant: 'boxed' },
+      { variant: 'boxed', labelSize: 'h3' },
     ),
     checkboxGroup(
       'stavby',
@@ -53,7 +53,7 @@ export default step(
           },
         ],
       },
-      { variant: 'boxed' },
+      { variant: 'boxed', labelSize: 'h3' },
     ),
     checkboxGroup(
       'byty',
@@ -72,7 +72,15 @@ export default step(
           },
         ],
       },
-      { variant: 'boxed' },
+      { variant: 'boxed', labelSize: 'h3' },
+    ),
+    textArea(
+      'poznamka',
+      { title: 'Poznámka' },
+      {
+        helptext:
+          'V prípade, ak priznanie podáva jeden z manželov, je potrebné uviesť všetky identifikačné údaje druhého z manželov, t.j. priezvisko, meno, titul, adresu trvalého pobytu (ulica a číslo, PSČ, obec, štát), číslo telefónu a e-mailovú adresu.',
+      },
     ),
   ],
 )

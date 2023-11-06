@@ -20,6 +20,7 @@ export const getSSRCurrentAuth = async (
   let userData = null
   try {
     const currentUser = await SSR.Auth.currentAuthenticatedUser({
+      // needs to be bypassed because without it the SSR returns undefined
       bypassCache: true,
     })
 

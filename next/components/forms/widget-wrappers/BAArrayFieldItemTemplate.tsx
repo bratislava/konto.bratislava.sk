@@ -8,6 +8,7 @@ import {
 import cx from 'classnames'
 import { ArrayFieldUiOptions } from 'schema-generator/generator/uiOptionsTypes'
 
+import { getArrayFieldItemTemplateTitle } from '../../../frontend/utils/formArray'
 import Button from '../simple-components/ButtonNew'
 
 /**
@@ -41,7 +42,7 @@ const BAArrayFieldItemTemplate = <
     'p-6': variant === 'nested',
   })
 
-  const title = (itemTitle ?? '').replace('{index}', String(index + 1))
+  const title = getArrayFieldItemTemplateTitle(itemTitle, index)
 
   const onDropIndexClickPatched = (innerIndex: number) => () => {
     // The RJSF expects the event to have a `preventDefault` method, but the `onPress` handler

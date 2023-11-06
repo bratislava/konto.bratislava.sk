@@ -82,7 +82,6 @@ const SelectFieldComponent: ForwardRefRenderFunction<HTMLDivElement, SelectField
     dropdownDivider,
     errorMessage = [],
     required,
-    explicitOptional,
     disabled,
     hideScrollbar,
     alwaysOneSelected,
@@ -249,7 +248,6 @@ const SelectFieldComponent: ForwardRefRenderFunction<HTMLDivElement, SelectField
         helptext={helptext}
         tooltip={tooltip}
         required={required}
-        explicitOptional={explicitOptional}
         errorMessage={errorMessage}
         disabled={disabled}
         size={size}

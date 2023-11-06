@@ -20,7 +20,6 @@ const SearchField = ({
   helptext,
   tooltip,
   required,
-  explicitOptional,
   value = '',
   disabled,
   resetIcon,
@@ -73,7 +72,6 @@ const SearchField = ({
         helptext={helptext}
         descriptionProps={descriptionProps}
         required={required}
-        explicitOptional={explicitOptional}
         tooltip={tooltip}
         errorMessage={errorMessage}
         errorMessageProps={errorMessageProps}

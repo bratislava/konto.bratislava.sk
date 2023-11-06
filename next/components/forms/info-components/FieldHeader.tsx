@@ -15,7 +15,6 @@ const FieldHeader = ({
   label,
   htmlFor,
   required,
-  explicitOptional = false,
   labelProps,
   tooltip,
   labelSize = 'default',
@@ -45,7 +44,7 @@ const FieldHeader = ({
           </label>
 
           <div className="flex items-center">
-            {!required && explicitOptional && (
+            {!required && (
               <div className="text-p3 sm:text-16 ml-2 flex items-center">{t('optional')}</div>
             )}
             {tooltip && (

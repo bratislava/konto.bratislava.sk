@@ -8,7 +8,6 @@ export type FieldBasePropsNew = {
   tooltip?: string
   errorMessages?: string[]
   helptext?: string
-  explicitOptional?: boolean
   width?: 'full' | 'fixed'
 }
 

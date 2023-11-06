@@ -21,7 +21,6 @@ const PasswordField = forwardRef<HTMLInputElement, Props>(
       helptext,
       tooltip,
       required,
-      explicitOptional,
       value = '',
       disabled,
       className,
@@ -61,7 +60,6 @@ const PasswordField = forwardRef<HTMLInputElement, Props>(
         disabled={disabled}
         tooltip={tooltip}
         onChange={onChange}
-        explicitOptional={explicitOptional}
         ref={ref}
         autoComplete={autoComplete}
         endIcon={

@@ -55,7 +55,6 @@ export type WidgetUiOptions = {
   tooltip?: string
   helptext?: string
   className?: string
-  explicitOptional?: boolean
   spaceBottom?: FormSpacingType
   spaceTop?: FormSpacingType
   belowComponents?: CustomComponentType[]
@@ -100,7 +99,6 @@ export type RadioGroupUiOptions = {
 export type SelectUiOptions = {
   dropdownDivider?: boolean
   selectAllOption?: boolean
-  explicitOptional?: boolean
   hideScrollbar?: boolean
   maxWordSize?: number
   // selectType?: 'one' | 'multiple' | 'arrow' | 'radio'

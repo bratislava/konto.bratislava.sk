@@ -32,7 +32,6 @@ const SelectWidgetRJSF = ({
     tooltip,
     dropdownDivider,
     className,
-    explicitOptional,
     hideScrollbar = false,
     maxWordSize,
     size,
@@ -124,7 +123,6 @@ const SelectWidgetRJSF = ({
         disabled={disabled || readonly}
         className={className}
         onChange={handleOnChange}
-        explicitOptional={explicitOptional}
         hideScrollbar={hideScrollbar}
         alwaysOneSelected={false}
         maxWordSize={maxWordSize}

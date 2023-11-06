@@ -25,7 +25,6 @@ const DateField = ({
   helptext,
   isOpen,
   required,
-  explicitOptional,
   customErrorPlace,
   popover,
   size,
@@ -66,7 +65,6 @@ const DateField = ({
       helptext={helptext}
       descriptionProps={descriptionProps}
       required={required}
-      explicitOptional={explicitOptional}
       disabled={disabled}
       customErrorPlace={customErrorPlace}
       errorMessage={errorMessage}

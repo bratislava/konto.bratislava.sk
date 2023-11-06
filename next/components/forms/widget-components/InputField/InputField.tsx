@@ -38,7 +38,6 @@ const InputField = forwardRef<HTMLInputElement, InputProps>(
       helptext,
       tooltip,
       required,
-      explicitOptional,
       value = '',
       disabled,
       leftIcon,
@@ -139,7 +138,6 @@ const InputField = forwardRef<HTMLInputElement, InputProps>(
         helptext={helptext}
         descriptionProps={descriptionProps}
         required={required}
-        explicitOptional={explicitOptional}
         tooltip={tooltip}
         disabled={disabled}
         customErrorPlace={customErrorPlace}

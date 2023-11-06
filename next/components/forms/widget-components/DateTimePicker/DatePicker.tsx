@@ -27,7 +27,6 @@ const DatePicker = forwardRef<HTMLDivElement, DatePickerProps>(
       disabled,
       errorMessage,
       required,
-      explicitOptional,
       tooltip,
       helptext,
       value,
@@ -101,7 +100,6 @@ const DatePicker = forwardRef<HTMLDivElement, DatePickerProps>(
           label={label}
           helptext={helptext}
           required={required}
-          explicitOptional={explicitOptional}
           disabled={disabled}
           tooltip={tooltip}
           errorMessage={errorMessage}

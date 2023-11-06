@@ -9,7 +9,6 @@ export type FieldBaseProps = {
   tooltip?: string
   required?: boolean
   disabled?: boolean
-  explicitOptional?: boolean
   readonly?: boolean
   size?: FieldSize
   labelSize?: LabelSize

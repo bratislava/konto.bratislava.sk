@@ -20,7 +20,6 @@ const TextAreaField = ({
   helptext,
   tooltip,
   required,
-  explicitOptional,
   value,
   disabled,
   className,
@@ -89,7 +88,6 @@ const TextAreaField = ({
         helptext={helptext}
         descriptionProps={descriptionProps}
         required={required}
-        explicitOptional={explicitOptional}
         tooltip={tooltip}
         disabled={disabled}
         errorMessage={errorMessage}

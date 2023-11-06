@@ -23,17 +23,7 @@ const InputWidgetRJSF = ({
   rawErrors,
   readonly,
 }: InputWidgetRJSFProps) => {
-  const {
-    helptext,
-    tooltip,
-    className,
-    resetIcon,
-    leftIcon,
-    explicitOptional,
-    type,
-    size,
-    labelSize,
-  } = options
+  const { helptext, tooltip, className, resetIcon, leftIcon, type, size, labelSize } = options
 
   const handleOnChange = (newValue: string | undefined) => {
     if (newValue && newValue !== '') {
@@ -62,7 +52,6 @@ const InputWidgetRJSF = ({
             leftIcon={leftIcon}
             onChange={wrapperOnChange}
             onBlur={onBlur}
-            explicitOptional={explicitOptional}
             size={size}
             labelSize={labelSize}
           />

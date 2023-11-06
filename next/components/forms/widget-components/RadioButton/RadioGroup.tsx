@@ -11,7 +11,7 @@ import FieldWrapper from '../FieldWrapper'
 export const RadioContext = React.createContext<RadioGroupState>({} as RadioGroupState)
 
 // TODO it should take RadioGroupProps from react-aria
-type RadioGroupBase = Omit<FieldBaseProps, 'explicitOptional'> &
+type RadioGroupBase = FieldBaseProps &
   Pick<FieldAdditionalProps, 'className'> & {
     children: ReactNode
     value?: string | null

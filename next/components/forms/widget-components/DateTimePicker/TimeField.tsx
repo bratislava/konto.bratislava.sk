@@ -25,7 +25,6 @@ const TimeField = (props: TimeFieldProps) => {
     helptext,
     tooltip,
     required,
-    explicitOptional,
     children,
     disabled,
     errorMessage = [],
@@ -78,7 +77,6 @@ const TimeField = (props: TimeFieldProps) => {
       helptext={helptext}
       descriptionProps={descriptionProps}
       required={required}
-      explicitOptional={explicitOptional}
       disabled={disabled}
       customErrorPlace={customErrorPlace}
       errorMessage={errorMessage}

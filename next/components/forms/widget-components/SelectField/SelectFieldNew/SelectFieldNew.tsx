@@ -19,7 +19,6 @@ const SelectFieldNew = <T extends object>({
   label,
   tooltip,
   helptext,
-  explicitOptional,
   errorMessages,
   width = 'full',
   ...rest
@@ -38,7 +37,6 @@ const SelectFieldNew = <T extends object>({
           helptext={helptext}
           tooltip={tooltip}
           required={rest.isRequired}
-          explicitOptional={explicitOptional}
           errorMessage={errorMessages}
         >
           <Button

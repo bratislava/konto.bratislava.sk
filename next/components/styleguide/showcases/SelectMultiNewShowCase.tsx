@@ -62,11 +62,9 @@ const SelectFieldShowCase = () => {
           errorMessage={['Error message']}
         />
         <SelectMultiNew options={sampleOptions} label="With tooltip" tooltip={"I'm a tooltip"} />
-        <SelectMultiNew options={sampleOptions} label="With explicitOptional" explicitOptional />
         <SelectMultiNew
           options={sampleOptions}
-          label="With tooltip, explicitOptional and helptext"
-          explicitOptional
+          label="With tooltip and helptext"
           tooltip={"I'm a tooltip"}
           helptext={"I'm a helptext"}
         />

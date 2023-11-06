@@ -74,7 +74,6 @@ const SelectMultiNew =
     label,
     helptext,
     tooltip,
-    explicitOptional,
     errorMessage,
     options,
     onChange,
@@ -102,7 +101,6 @@ const SelectMultiNew =
           helptext={helptext}
           tooltip={tooltip}
           required={rest.required}
-          explicitOptional={explicitOptional}
           errorMessage={errorMessage}
         >
           <Select

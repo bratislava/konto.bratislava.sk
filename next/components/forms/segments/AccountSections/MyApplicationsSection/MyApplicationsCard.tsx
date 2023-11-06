@@ -317,11 +317,11 @@ const MyApplicationsCard = ({ form, refreshListData, variant }: MyApplicationsCa
         isOpen={deleteConceptModalShow}
         onOpenChange={() => setDeleteConceptModalShow(false)}
         buttons={[
-          <Button onPress={() => setDeleteConceptModalShow(false)}>
+          <Button variant="black-plain" onPress={() => setDeleteConceptModalShow(false)}>
             {ft('modals_back_button_title')}
           </Button>,
           <Button
-            variant="black-solid"
+            variant="negative-solid"
             onPress={() => {
               setDeleteConceptModalShow(false)
               return deleteConcept()

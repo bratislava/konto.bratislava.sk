@@ -2,25 +2,24 @@ import cx from 'classnames'
 import React, { forwardRef } from 'react'
 
 import { FormFileUploadFileInfo } from '../../../../frontend/types/formFileUploadTypes'
-import { FieldAdditionalProps, FieldBaseProps } from '../FieldBase'
-import FieldWrapper from '../FieldWrapper'
+import FieldWrapper, { FieldWrapperProps } from '../FieldWrapper'
 import UploadButton from './UploadButton'
 import UploadDropArea from './UploadDropArea'
 import UploadFilesList from './UploadFilesList'
 
-type UploadProps = FieldBaseProps &
-  Pick<FieldAdditionalProps, 'className'> & {
-    type: 'button' | 'dragAndDrop'
-    multiple?: boolean
-    value?: string | string[] | null
-    sizeLimit?: number
-    supportedFormats?: string[]
-    getFileInfoById: (id: string) => FormFileUploadFileInfo
-    onUpload?: (files: File[]) => void
-    onFileRemove?: (id: string) => void
-    onFileRetry?: (id: string) => void
-    onFileDownload?: (id: string) => void
-  }
+type UploadProps = FieldWrapperProps & {
+  type: 'button' | 'dragAndDrop'
+  multiple?: boolean
+  value?: string | string[] | null
+  sizeLimit?: number
+  supportedFormats?: string[]
+  getFileInfoById: (id: string) => FormFileUploadFileInfo
+  onUpload?: (files: File[]) => void
+  onFileRemove?: (id: string) => void
+  onFileRetry?: (id: string) => void
+  onFileDownload?: (id: string) => void
+  className?: string
+}
 
 const Upload = forwardRef<HTMLButtonElement, UploadProps>(
   (

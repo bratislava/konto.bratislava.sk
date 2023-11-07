@@ -2,13 +2,21 @@ import cx from 'classnames'
 import { useTranslation } from 'next-i18next'
 import * as React from 'react'
 import { DOMAttributes } from 'react'
+import { HelptextPosition, LabelSize } from 'schema-generator/generator/uiOptionsTypes'
 
-import { FieldBaseProps } from '../widget-components/FieldBase'
+import FieldHelptext from './FieldHelptext'
 import BATooltip from './Tooltip/BATooltip'
 
-export type FieldHeaderProps = FieldBaseProps & {
+export type FieldHeaderProps = {
+  label: string
+  required?: boolean
+  tooltip?: string
+  labelSize?: LabelSize
   htmlFor?: string
   labelProps?: DOMAttributes<never>
+  helptext?: string
+  helptextPosition?: HelptextPosition
+  descriptionProps?: DOMAttributes<never>
 }
 
 const FieldHeader = ({
@@ -18,6 +26,9 @@ const FieldHeader = ({
   labelProps,
   tooltip,
   labelSize = 'default',
+  helptext,
+  helptextPosition,
+  descriptionProps,
 }: FieldHeaderProps) => {
   const { t } = useTranslation('account', { keyPrefix: 'FieldHeader' })
 
@@ -25,39 +36,37 @@ const FieldHeader = ({
     'text-p3-semibold sm:text-16-semibold': labelSize === 'default',
     'text-h3': labelSize === 'h3',
     'text-h4': labelSize === 'h4',
+    'mr-2': !required,
   })
 
-  const wrapperStyle = cx('flex justify-between', {
+  const wrapperStyle = cx({
     'mb-1': labelSize === 'default',
-    'mb-8': labelSize === 'h3',
+    'mb-4': labelSize === 'h3',
     'mb-5': labelSize === 'h4',
   })
 
   return (
     <div className="w-full">
       <div className={wrapperStyle}>
-        <div className="flex w-full justify-between">
-          <label htmlFor={htmlFor} className={labelStyle} {...labelProps}>
-            {label}
-          </label>
+        <label htmlFor={htmlFor} {...labelProps} className={labelStyle}>
+          {label}
+        </label>
 
-          <div className="flex items-center">
-            {!required && (
-              <div className="text-p3 sm:text-16 ml-2 flex items-center">{t('optional')}</div>
-            )}
-            {tooltip && (
-              <div
-                className={cx('flex-column flex items-center', {
-                  'ml-5': required,
-                  'ml-2': !required,
-                })}
-              >
-                <BATooltip>{tooltip}</BATooltip>
-              </div>
-            )}
+        {!required && <span className="text-p3 sm:text-16">{t('optional')}</span>}
+        {tooltip && (
+          <div
+            className={cx('flex-column flex items-center', {
+              'ml-5': required,
+              'ml-2': !required,
+            })}
+          >
+            <BATooltip>{tooltip}</BATooltip>
           </div>
-        </div>
+        )}
       </div>
+      {helptextPosition === 'header' && (
+        <FieldHelptext helptext={helptext} descriptionProps={descriptionProps} />
+      )}
     </div>
   )
 }

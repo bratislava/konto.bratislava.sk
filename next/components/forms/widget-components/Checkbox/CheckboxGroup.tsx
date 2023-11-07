@@ -3,19 +3,18 @@ import React, { ReactNode } from 'react'
 import { useCheckboxGroup } from 'react-aria'
 import { CheckboxGroupState, useCheckboxGroupState } from 'react-stately'
 
-import { FieldAdditionalProps, FieldBaseProps } from '../FieldBase'
-import FieldWrapper from '../FieldWrapper'
+import FieldWrapper, { FieldWrapperProps } from '../FieldWrapper'
 
 export const CheckboxGroupContext = React.createContext({} as CheckboxGroupState)
 
-type CheckBoxGroupBase = FieldBaseProps &
-  Pick<FieldAdditionalProps, 'className'> & {
-    children: ReactNode
-    value?: string[]
-    onChange: (value: any[]) => void
-  }
+type CheckboxGroupProps = FieldWrapperProps & {
+  className?: string
+  children: ReactNode
+  value?: string[]
+  onChange: (value: string[]) => void
+}
 
-const CheckboxGroup = (props: CheckBoxGroupBase) => {
+const CheckboxGroup = (props: CheckboxGroupProps) => {
   const { children, className, errorMessage, disabled, label, required, size, labelSize } = props
   const state: CheckboxGroupState = useCheckboxGroupState(props)
   const { groupProps, labelProps, errorMessageProps } = useCheckboxGroup(props, state)

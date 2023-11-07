@@ -3,15 +3,15 @@ import cx from 'classnames'
 import { useRef, useState } from 'react'
 import { useTextField } from 'react-aria'
 
-import { FieldAdditionalProps, FieldBaseProps } from '../FieldBase'
-import FieldWrapper from '../FieldWrapper'
+import FieldWrapper, { FieldWrapperProps } from '../FieldWrapper'
 
-type SearchFieldProps = FieldBaseProps &
-  Pick<FieldAdditionalProps, 'placeholder' | 'className'> & {
-    value?: string
-    resetIcon?: boolean
-    onChange?: (e: string) => void
-  }
+type SearchFieldProps = FieldWrapperProps & {
+  value?: string
+  resetIcon?: boolean
+  onChange?: (e: string) => void
+  placeholder?: string
+  className?: string
+}
 
 const SearchField = ({
   label,

@@ -4,20 +4,18 @@ import React, { ReactNode, useRef } from 'react'
 import { TimeValue, useTimeField } from 'react-aria'
 import { useTimeFieldState } from 'react-stately'
 
-import { FieldAdditionalProps, FieldBaseProps } from '../FieldBase'
-import FieldWrapper from '../FieldWrapper'
+import FieldWrapper, { FieldWrapperProps } from '../FieldWrapper'
 import DateTimeSegment from './DateTimeSegment'
 
-type TimeFieldProps = FieldBaseProps &
-  Pick<FieldAdditionalProps, 'customErrorPlace'> & {
-    children?: ReactNode
-    onChange?: (value: TimeValue | null) => void
-    onBlur?: () => void
-    value?: TimeValue | null
-    readOnly?: boolean
-    minValue?: TimeValue
-    maxValue?: TimeValue
-  }
+type TimeFieldProps = FieldWrapperProps & {
+  children?: ReactNode
+  onChange?: (value: TimeValue | null) => void
+  onBlur?: () => void
+  value?: TimeValue | null
+  readOnly?: boolean
+  minValue?: TimeValue
+  maxValue?: TimeValue
+}
 
 const TimeField = (props: TimeFieldProps) => {
   const {

@@ -3,7 +3,7 @@ import { parseTime } from '@internationalized/date'
 import { useControlledState } from '@react-stately/utils'
 import { forwardRef, useMemo } from 'react'
 
-import { FieldAdditionalProps, FieldBaseProps } from '../FieldBase'
+import { FieldWrapperProps } from '../FieldWrapper'
 import TimeField from './TimeField'
 
 function removeSecondsFromTime(time: string): string {
@@ -14,15 +14,14 @@ function removeSecondsFromTime(time: string): string {
   throw new Error('Invalid time format')
 }
 
-export type TimePickerProps = FieldBaseProps &
-  Pick<FieldAdditionalProps, 'customErrorPlace'> & {
-    value?: string | null
-    onChange?: (value?: string | null) => void
-    onBlur?: () => void
-    minValue?: string
-    maxValue?: string
-    readOnly?: boolean
-  }
+export type TimePickerProps = FieldWrapperProps & {
+  value?: string | null
+  onChange?: (value?: string | null) => void
+  onBlur?: () => void
+  minValue?: string
+  maxValue?: string
+  readOnly?: boolean
+}
 
 // TODO: Picker popup is not working properly, so it is commented out. It's up to discussion if we really need it.
 const TimePicker = forwardRef<HTMLDivElement, TimePickerProps>(

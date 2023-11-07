@@ -7,18 +7,17 @@ import { OverlayProvider, useDatePicker } from 'react-aria'
 import { useDatePickerState } from 'react-stately'
 
 import ButtonNew from '../../simple-components/ButtonNew'
-import { FieldAdditionalProps, FieldBaseProps } from '../FieldBase'
+import { FieldWrapperProps } from '../FieldWrapper'
 import Calendar from './Calendar/Calendar'
 import DateField from './DateField'
 import Popover from './Popover'
 
-export type DatePickerProps = FieldBaseProps &
-  Pick<FieldAdditionalProps, 'customErrorPlace'> & {
-    value?: string | null
-    minValue?: string
-    maxValue?: string
-    onChange?: (value: string | null | undefined) => void
-  }
+export type DatePickerProps = FieldWrapperProps & {
+  value?: string | null
+  minValue?: string
+  maxValue?: string
+  onChange?: (value: string | null | undefined) => void
+}
 
 const DatePicker = forwardRef<HTMLDivElement, DatePickerProps>(
   (

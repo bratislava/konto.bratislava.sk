@@ -2,26 +2,29 @@ import cx from 'classnames'
 import { useTranslation } from 'next-i18next'
 import React, { ReactNode } from 'react'
 import { Orientation, useRadioGroup } from 'react-aria'
-import { RadioGroupProps, RadioGroupState, useRadioGroupState } from 'react-stately'
+import {
+  RadioGroupProps as ReactStatelyRadioGroupProps,
+  RadioGroupState,
+  useRadioGroupState,
+} from 'react-stately'
 
 import ButtonNew from '../../simple-components/ButtonNew'
-import { FieldAdditionalProps, FieldBaseProps } from '../FieldBase'
-import FieldWrapper from '../FieldWrapper'
+import FieldWrapper, { FieldWrapperProps } from '../FieldWrapper'
 
 export const RadioContext = React.createContext<RadioGroupState>({} as RadioGroupState)
 
 // TODO it should take RadioGroupProps from react-aria
-type RadioGroupBase = FieldBaseProps &
-  Pick<FieldAdditionalProps, 'className'> & {
-    children: ReactNode
-    value?: string | null
-    defaultValue?: string
-    isReadOnly?: boolean
-    onChange: (value: string | null) => void
-    orientation?: Orientation
-  }
+type RadioGroupProps = FieldWrapperProps & {
+  children: ReactNode
+  value?: string | null
+  defaultValue?: string
+  isReadOnly?: boolean
+  onChange: (value: string | null) => void
+  orientation?: Orientation
+  className?: string
+}
 
-const RadioGroup = (props: RadioGroupBase) => {
+const RadioGroup = (props: RadioGroupProps) => {
   const { t } = useTranslation('account', { keyPrefix: 'RadioGroup' })
 
   const {
@@ -45,7 +48,7 @@ const RadioGroup = (props: RadioGroupBase) => {
     isRequired: required,
     // it may receive "undefined" as value, which would make it uncontrolled
     value: value == null ? null : value,
-  } as RadioGroupProps
+  } as ReactStatelyRadioGroupProps
 
   const state = useRadioGroupState(propsReactAria)
   const { radioGroupProps, labelProps, errorMessageProps } = useRadioGroup(propsReactAria, state)

@@ -78,6 +78,7 @@ const SelectFieldComponent: ForwardRefRenderFunction<HTMLDivElement, SelectField
     selectAllOption,
     placeholder,
     helptext,
+    helptextPosition,
     tooltip,
     dropdownDivider,
     errorMessage = [],
@@ -246,6 +247,7 @@ const SelectFieldComponent: ForwardRefRenderFunction<HTMLDivElement, SelectField
       <FieldWrapper
         label={label}
         helptext={helptext}
+        helptextPosition={helptextPosition}
         tooltip={tooltip}
         required={required}
         errorMessage={errorMessage}

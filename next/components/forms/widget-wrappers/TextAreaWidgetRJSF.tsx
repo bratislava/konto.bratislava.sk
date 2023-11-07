@@ -24,7 +24,7 @@ const TextAreaWidgetRJSF = ({
   onChange,
   readonly,
 }: TextAreaWidgetRJSFProps) => {
-  const { helptext, tooltip, className, size, labelSize } = options
+  const { helptext, helptextPosition, tooltip, className, size, labelSize } = options
 
   const handleOnChange = (newValue?: string) => {
     if (!newValue || newValue === '') {
@@ -45,6 +45,7 @@ const TextAreaWidgetRJSF = ({
             required={required}
             disabled={disabled || readonly}
             helptext={helptext}
+            helptextPosition={helptextPosition}
             tooltip={tooltip}
             className={cx('h-[196px]', className)}
             onChange={wrapperOnChange}

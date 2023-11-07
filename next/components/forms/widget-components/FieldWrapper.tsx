@@ -12,7 +12,10 @@ const FieldWrapper = ({
   size = 'full',
   ...rest
 }: PropsWithChildren<FieldWrapperProps>) => {
-  const propsWithDefaults = { helptextPosition: 'footer' as const, ...rest }
+  const propsWithDefaults = {
+    ...rest,
+    helptextPosition: rest.helptextPosition ?? ('footer' as const),
+  }
 
   return (
     <div

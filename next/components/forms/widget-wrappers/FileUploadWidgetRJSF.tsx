@@ -25,7 +25,16 @@ const FileUploadWidgetRJSF = ({
   rawErrors,
   readonly,
 }: FileUploadWidgetRJSFProps) => {
-  const { sizeLimit, accept, helptext, type = 'button', className, size, labelSize } = options
+  const {
+    sizeLimit,
+    accept,
+    helptext,
+    helptextPosition,
+    type = 'button',
+    className,
+    size,
+    labelSize,
+  } = options
 
   const supportedFormats = accept?.split(',')
   const multiple = schema.type === 'array'
@@ -84,6 +93,7 @@ const FileUploadWidgetRJSF = ({
         multiple={multiple}
         className={className}
         helptext={helptext}
+        helptextPosition={helptextPosition}
         sizeLimit={sizeLimit}
         supportedFormats={supportedFormats}
         disabled={disabled || readonly}

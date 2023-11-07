@@ -74,6 +74,7 @@ const SelectMultiNew =
     value,
     label,
     helptext,
+    helptextPosition,
     tooltip,
     errorMessage,
     options,
@@ -101,6 +102,7 @@ const SelectMultiNew =
         <FieldWrapper
           label={label}
           helptext={helptext}
+          helptextPosition={helptextPosition}
           tooltip={tooltip}
           required={rest.required}
           errorMessage={errorMessage}

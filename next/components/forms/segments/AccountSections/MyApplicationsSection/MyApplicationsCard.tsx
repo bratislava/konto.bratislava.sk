@@ -348,7 +348,7 @@ const MyApplicationsCard = ({ form, refreshListData, variant }: MyApplicationsCa
           {
             title: t(
               `account_section_applications.navigation_concept_card.${
-                isEditable ? 'edit' : 'view'
+                isEditable ? (variant === 'DRAFT' ? 'continue' : 'edit') : 'view'
               }_button_text`,
             ),
             icon: isEditable ? <EditIcon className="h-6 w-6" /> : <EyeIcon className="h-6 w-6" />,

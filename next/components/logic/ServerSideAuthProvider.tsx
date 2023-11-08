@@ -1,8 +1,8 @@
 // TODO remove eslint-disable when types are fixed in amplify-js v6 release
 /* eslint-disable @typescript-eslint/no-unsafe-call */
 /* eslint-disable @typescript-eslint/no-unsafe-member-access */
-import { withSSRContext } from 'aws-amplify'
 import { UserData } from 'frontend/dtos/accountDto'
+import { withSSRContext } from 'frontend/utils/amplify'
 import logger from 'frontend/utils/logger'
 import { GetServerSidePropsContext } from 'next'
 import { ComponentType, createContext } from 'react'
@@ -19,10 +19,7 @@ export const getSSRCurrentAuth = async (
   const SSR = withSSRContext({ req })
   let userData = null
   try {
-    const currentUser = await SSR.Auth.currentAuthenticatedUser({
-      // needs to be bypassed because without it the SSR returns undefined
-      bypassCache: true,
-    })
+    const currentUser = await SSR.Auth.currentAuthenticatedUser()
 
     userData = currentUser.attributes || null
   } catch (error) {

@@ -7,15 +7,13 @@ import {
   PdfIcon,
 } from '@assets/ui-icons'
 import { getUiOptions } from '@rjsf/utils'
-import cx from 'classnames'
-import Button from 'components/forms/simple-components/Button'
+import ButtonNew from 'components/forms/simple-components/ButtonNew'
 import MenuDropdown, {
   MenuItemBase,
 } from 'components/forms/simple-components/MenuDropdown/MenuDropdown'
 import Waves from 'components/forms/simple-components/Waves/Waves'
 import Link from 'next/link'
 import { useTranslation } from 'next-i18next'
-import { useState } from 'react'
 import { SchemaUiOptions } from 'schema-generator/generator/uiOptionsTypes'
 
 import { useFormExportImport } from '../../../frontend/hooks/useFormExportImport'
@@ -27,7 +25,6 @@ const FormHeader = () => {
   const { exportXml, exportPdf, importXml, saveConcept, deleteConcept } = useFormExportImport()
   const { t } = useTranslation('forms')
 
-  const [isMenuOpen, setIsMenuOpen] = useState<boolean>(false)
   const { setDeleteConceptModal } = useFormModals()
 
   const formHeaderMenuContent = [
@@ -73,24 +70,24 @@ const FormHeader = () => {
           </div>
           <div className="hidden h-full gap-3 lg:flex">
             {!isReadonly && (
-              <Button
-                size="sm"
+              <ButtonNew
+                size="small"
                 variant="category-outline"
                 startIcon={<DiscIcon className="h-5 w-5" />}
-                text={t('menu_list.save_concept')}
-                className="text-gray-700 hover:text-gray-600 focus:text-gray-800"
                 onPress={() => saveConcept()}
-              />
+              >
+                {t('menu_list.save_concept')}
+              </ButtonNew>
             )}
             <MenuDropdown
-              setIsOpen={setIsMenuOpen}
-              buttonTrigger={<EllipsisVerticalIcon />}
-              buttonClassName={cx(
-                'flex h-10 w-10 items-center justify-center rounded-lg border-2 border-main-700 bg-transparent text-gray-700 hover:border-main-600 hover:text-gray-600 focus:border-main-800 focus:text-gray-800 focus:outline-none',
-                {
-                  'border-main-800 text-gray-800': isMenuOpen,
-                },
-              )}
+              buttonTrigger={
+                <ButtonNew
+                  variant="category-outline"
+                  size="small"
+                  icon={<EllipsisVerticalIcon />}
+                  aria-label="Menu"
+                />
+              }
               items={formHeaderMenuContent}
             />
           </div>

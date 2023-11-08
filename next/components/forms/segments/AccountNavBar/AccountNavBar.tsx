@@ -3,6 +3,7 @@ import cx from 'classnames'
 import { StatusBar, useStatusBarContext } from 'components/forms/info-components/StatusBar'
 import HamburgerMenu from 'components/forms/segments/HambergerMenu/HamburgerMenu'
 import Button from 'components/forms/simple-components/Button'
+import ButtonNew from 'components/forms/simple-components/ButtonNew'
 import IdentityVerificationStatus from 'components/forms/simple-components/IdentityVerificationStatus'
 import MenuDropdown, {
   MenuItemBase,
@@ -116,44 +117,43 @@ export const AccountNavBar = ({ className, sectionsList, menuItems, hiddenHeader
             />
             <IdentityVerificationStatus />
             <nav className="flex gap-x-8 font-semibold text-font/75">
-              <div className="flex items-center gap-x-6 font-semibold text-font/75">
-                {isAuthenticated ? (
-                  <MenuDropdown
-                    setIsOpen={setIsMenuOpen}
-                    buttonTrigger={
-                      <>
-                        <Avatar userData={userData} />
-                        <div className="ml-3 font-light lg:font-semibold">
-                          {userData?.given_name}
-                        </div>
-                        <ChevronDownSmallIcon
-                          className={`ml-1 hidden h-5 w-5 mix-blend-normal lg:flex ${
-                            isMenuOpen ? '-rotate-180' : ''
-                          }`}
-                        />
-                      </>
-                    }
-                    itemVariant="header"
-                    items={menuItems}
+              {isAuthenticated ? (
+                <MenuDropdown
+                  setIsOpen={setIsMenuOpen}
+                  buttonTrigger={
+                    <ButtonNew
+                      variant="unstyled"
+                      className="flex items-center gap-x-6 font-semibold text-font/75"
+                    >
+                      <Avatar userData={userData} />
+                      <div className="ml-3 font-light lg:font-semibold">{userData?.given_name}</div>
+                      <ChevronDownSmallIcon
+                        className={`ml-1 hidden h-5 w-5 mix-blend-normal lg:flex ${
+                          isMenuOpen ? '-rotate-180' : ''
+                        }`}
+                      />
+                    </ButtonNew>
+                  }
+                  itemVariant="header"
+                  items={menuItems}
+                />
+              ) : (
+                <div className="flex items-center gap-x-6 font-semibold text-font/75">
+                  <Button
+                    className="whitespace-nowrap lg:flex"
+                    size="sm"
+                    onPress={login}
+                    variant="plain-black"
+                    text={t('account:menu_login_link')}
                   />
-                ) : (
-                  <>
-                    <Button
-                      className="whitespace-nowrap lg:flex"
-                      size="sm"
-                      onPress={login}
-                      variant="plain-black"
-                      text={t('account:menu_login_link')}
-                    />
-                    <Button
-                      onPress={register}
-                      variant="negative"
-                      text={t('account:menu_register_link')}
-                      size="sm"
-                    />
-                  </>
-                )}
-              </div>
+                  <Button
+                    onPress={register}
+                    variant="negative"
+                    text={t('account:menu_register_link')}
+                    size="sm"
+                  />
+                </div>
+              )}
             </nav>
           </div>
           {/* Header bottom navigation */}

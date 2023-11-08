@@ -260,13 +260,18 @@ const MyApplicationsCard = ({ form, refreshListData, variant }: MyApplicationsCa
                     >
                       {t(
                         `account_section_applications.navigation_concept_card.${
-                          isEditable ? 'edit' : 'view'
+                          isEditable ? (variant === 'DRAFT' ? 'continue' : 'edit') : 'view'
                         }_button_text`,
                       )}
                     </Button>
                     <MenuDropdown
-                      // TOOD - fix styling
-                      buttonTrigger={<EllipsisVerticalIcon />}
+                      buttonTrigger={
+                        <Button
+                          variant="black-outline"
+                          icon={<EllipsisVerticalIcon />}
+                          aria-label="Menu"
+                        />
+                      }
                       items={conceptMenuContent}
                     />
                   </>

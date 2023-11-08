@@ -29,7 +29,7 @@ const SelectWidgetRJSF = ({
     enumOptions,
     selectAllOption,
     helptext,
-    helptextPosition,
+    helptextHeader,
     tooltip,
     dropdownDivider,
     className,
@@ -117,7 +117,7 @@ const SelectWidgetRJSF = ({
         selectAllOption={selectAllOption}
         placeholder={placeholder}
         helptext={helptext}
-        helptextPosition={helptextPosition}
+        helptextHeader={helptextHeader}
         tooltip={tooltip}
         dropdownDivider={dropdownDivider}
         errorMessage={rawErrors}

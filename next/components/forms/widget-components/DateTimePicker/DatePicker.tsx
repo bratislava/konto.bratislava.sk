@@ -28,7 +28,7 @@ const DatePicker = forwardRef<HTMLDivElement, DatePickerProps>(
       required,
       tooltip,
       helptext,
-      helptextPosition,
+      helptextHeader,
       value,
       minValue,
       maxValue,
@@ -99,7 +99,7 @@ const DatePicker = forwardRef<HTMLDivElement, DatePickerProps>(
           {...fieldProps}
           label={label}
           helptext={helptext}
-          helptextPosition={helptextPosition}
+          helptextHeader={helptextHeader}
           required={required}
           disabled={disabled}
           tooltip={tooltip}

@@ -19,7 +19,7 @@ const SelectFieldNew = <T extends object>({
   label,
   tooltip,
   helptext,
-  helptextPosition,
+  helptextHeader,
   errorMessages,
   width = 'full',
   ...rest
@@ -36,7 +36,7 @@ const SelectFieldNew = <T extends object>({
         <FieldWrapper
           label={label}
           helptext={helptext}
-          helptextPosition={helptextPosition}
+          helptextHeader={helptextHeader}
           tooltip={tooltip}
           required={rest.isRequired}
           errorMessage={errorMessages}

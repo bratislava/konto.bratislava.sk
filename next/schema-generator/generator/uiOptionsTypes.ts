@@ -48,7 +48,6 @@ export type CustomComponentType =
 
 export type LabelSize = 'default' | 'h4' | 'h3'
 export type LabelSpacing = 'default' | 'h4' | 'h3'
-export type HelptextPosition = 'header' | 'footer'
 
 export type FormSpacingType = 'large' | 'default' | 'small' | 'medium' | 'none'
 
@@ -60,7 +59,7 @@ export type WidgetSpacing = {
 export type WidgetUiOptions = WidgetSpacing & {
   tooltip?: string
   helptext?: string
-  helptextPosition?: HelptextPosition
+  helptextHeader?: string
   className?: string
   belowComponents?: CustomComponentType[]
   rightComponents?: CustomComponentType[]

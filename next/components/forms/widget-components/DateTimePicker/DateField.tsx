@@ -21,7 +21,7 @@ const DateField = ({
   label,
   tooltip,
   helptext,
-  helptextPosition,
+  helptextHeader,
   isOpen,
   required,
   customErrorPlace,
@@ -62,7 +62,7 @@ const DateField = ({
       labelProps={labelProps}
       tooltip={tooltip}
       helptext={helptext}
-      helptextPosition={helptextPosition}
+      helptextHeader={helptextHeader}
       descriptionProps={descriptionProps}
       required={required}
       disabled={disabled}

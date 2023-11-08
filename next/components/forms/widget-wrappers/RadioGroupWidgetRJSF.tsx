@@ -34,7 +34,7 @@ const RadioGroupWidgetRJSF = ({
     size,
     labelSize,
     helptext,
-    helptextPosition,
+    helptextHeader,
   } = options
 
   if (!enumOptions) return null
@@ -78,7 +78,7 @@ const RadioGroupWidgetRJSF = ({
         size={size}
         labelSize={labelSize}
         helptext={helptext}
-        helptextPosition={helptextPosition}
+        helptextHeader={helptextHeader}
       >
         {enumOptions.map((option, radioIndex: number) => {
           const radioValue = `value-${radioIndex}`

@@ -29,7 +29,7 @@ const FileUploadWidgetRJSF = ({
     sizeLimit,
     accept,
     helptext,
-    helptextPosition,
+    helptextHeader,
     type = 'button',
     className,
     size,
@@ -93,7 +93,7 @@ const FileUploadWidgetRJSF = ({
         multiple={multiple}
         className={className}
         helptext={helptext}
-        helptextPosition={helptextPosition}
+        helptextHeader={helptextHeader}
         sizeLimit={sizeLimit}
         supportedFormats={supportedFormats}
         disabled={disabled || readonly}

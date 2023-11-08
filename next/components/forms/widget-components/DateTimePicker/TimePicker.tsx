@@ -33,7 +33,7 @@ const TimePicker = forwardRef<HTMLDivElement, TimePickerProps>(
       required,
       tooltip,
       helptext,
-      helptextPosition,
+      helptextHeader,
       onChange = () => {},
       onBlur = () => {},
       value,
@@ -70,7 +70,7 @@ const TimePicker = forwardRef<HTMLDivElement, TimePickerProps>(
             // {...fieldProps}
             label={label}
             helptext={helptext}
-            helptextPosition={helptextPosition}
+            helptextHeader={helptextHeader}
             required={required}
             disabled={disabled}
             tooltip={tooltip}

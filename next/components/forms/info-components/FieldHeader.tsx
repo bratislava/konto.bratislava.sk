@@ -2,7 +2,7 @@ import cx from 'classnames'
 import { useTranslation } from 'next-i18next'
 import * as React from 'react'
 import { DOMAttributes } from 'react'
-import { HelptextPosition, LabelSize } from 'schema-generator/generator/uiOptionsTypes'
+import { LabelSize } from 'schema-generator/generator/uiOptionsTypes'
 
 import FieldHelptext from './FieldHelptext'
 import BATooltip from './Tooltip/BATooltip'
@@ -14,8 +14,7 @@ export type FieldHeaderProps = {
   labelSize?: LabelSize
   htmlFor?: string
   labelProps?: DOMAttributes<never>
-  helptext?: string
-  helptextPosition?: HelptextPosition
+  helptextHeader?: string
   descriptionProps?: DOMAttributes<never>
 }
 
@@ -26,8 +25,7 @@ const FieldHeader = ({
   labelProps,
   tooltip,
   labelSize = 'default',
-  helptext,
-  helptextPosition,
+  helptextHeader,
   descriptionProps,
 }: FieldHeaderProps) => {
   const { t } = useTranslation('account', { keyPrefix: 'FieldHeader' })
@@ -64,8 +62,8 @@ const FieldHeader = ({
           </div>
         )}
       </div>
-      {helptextPosition === 'header' && (
-        <FieldHelptext helptext={helptext} descriptionProps={descriptionProps} />
+      {helptextHeader && (
+        <FieldHelptext helptext={helptextHeader} descriptionProps={descriptionProps} />
       )}
     </div>
   )

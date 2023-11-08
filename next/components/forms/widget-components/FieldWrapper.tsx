@@ -12,11 +12,6 @@ const FieldWrapper = ({
   size = 'full',
   ...rest
 }: PropsWithChildren<FieldWrapperProps>) => {
-  const propsWithDefaults = {
-    ...rest,
-    helptextPosition: rest.helptextPosition ?? ('footer' as const),
-  }
-
   return (
     <div
       className={cx('flex w-full flex-col', {
@@ -24,9 +19,9 @@ const FieldWrapper = ({
         'max-w-[200px]': size === 'small',
       })}
     >
-      <FieldHeader {...propsWithDefaults} />
+      <FieldHeader {...rest} />
       {children}
-      <FieldFooter {...propsWithDefaults} />
+      <FieldFooter {...rest} />
     </div>
   )
 }

@@ -23,9 +23,9 @@ export default step(
     stepperTitle: 'Daň z bytov a z nebytových priestorov (v bytovom dome)',
   },
   vyplnitKrokRadio({
-    title: 'Chcete podať daňové priznanie k dani zo stavieb slúžiacich na viaceré účely?',
+    title: 'Chcete podať daňové priznanie k dani z bytov a z nebytových priestorov v bytovom dome?',
     helptext: markdownText(
-      `Tento oddiel vypĺňate, ak máte nehnuteľnosť v stavbe, ktorá slúži na viaceré účely, na ktoré sú určené rôzne sadzby dane. Napríklad ak vlastníte bytový alebo nebytový priestor v budove, ktorá je vedená ako administratívna alebo polyfunkčná.\n\nK úspešnému vyplneniu oddielu potrebujete listy vlastníctva (LV) k pozemkom – LV, na ktorom máte uvedený nadpis “Parcely registra „C" resp. „E” evidované na katastrálnej mape” nad tabuľkou a LV k jednotlivým stavbám (napr. byt, garážové státie).\n\nV prípade, že sa vás daň zo stavieb slúžiace na viaceré účely netýka, túto časť preskočte.`,
+      `K úspešnému vyplneniu oddielu potrebujete list vlastníctva (LV) k jednotlivým priestorom. Ide o LV, na ktorom máte uvedený bytový alebo nebytový priestor.\n\nV prípade, že sa vás daň z bytov a z nebytových priestorov netýka, túto časť preskočte.`,
     ),
     fields: [
       arrayField(

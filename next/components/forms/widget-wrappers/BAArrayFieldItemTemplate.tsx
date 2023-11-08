@@ -33,7 +33,7 @@ const BAArrayFieldItemTemplate = <
     'rounded-lg bg-gray-50': variant === 'nested',
   })
 
-  const headingStyle = cx('flex items-center gap-8', {
+  const headingStyle = cx('mb-8 flex items-center gap-8', {
     // 'rounded-lg border border-zinc-300 bg-white px-6 pb-6 pt-8': uiOptions.variant === 'topLevel',
     'border-b border-gray-200 px-6 py-5': variant === 'nested',
   })

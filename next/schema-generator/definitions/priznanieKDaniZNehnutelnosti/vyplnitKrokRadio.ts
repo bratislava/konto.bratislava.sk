@@ -37,8 +37,6 @@ export const vyplnitKrokRadio = ({
           labelSize: 'h3',
           helptext,
           helptextPosition: 'header',
-          // TODO Fix spacing in general
-          spaceTop: 'none',
         },
       ),
     ],

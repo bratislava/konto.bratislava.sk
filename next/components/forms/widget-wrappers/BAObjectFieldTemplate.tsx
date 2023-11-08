@@ -1,13 +1,24 @@
-import {
-  getUiOptions,
-  ObjectFieldTemplatePropertyType,
-  ObjectFieldTemplateProps,
-} from '@rjsf/utils'
+import { getUiOptions, ObjectFieldTemplateProps } from '@rjsf/utils'
 import cx from 'classnames'
 import { ObjectFieldUiOptions } from 'schema-generator/generator/uiOptionsTypes'
 
 import FormMarkdown from '../info-components/FormMarkdown'
+import { WidgetSpacingContextProvider } from './useWidgetSpacingContext'
 import WidgetWrapper from './WidgetWrapper'
+
+const getPropertySpacing = (isInColumnObject: boolean, isFirst: boolean, isLast: boolean) => {
+  // The column object itself has spacing, therefore its children should not have one
+  if (isInColumnObject) {
+    return {
+      spaceTop: 'none' as const,
+      spaceBottom: 'none' as const,
+    }
+  }
+  return {
+    ...(isFirst && { spaceTop: 'none' as const }),
+    ...(isLast && { spaceBottom: 'none' as const }),
+  }
+}
 
 /**
  * Our custom implementation of https://github.com/rjsf-team/react-jsonschema-form/blob/main/packages/core/src/components/templates/ObjectFieldTemplate.tsx
@@ -15,11 +26,14 @@ import WidgetWrapper from './WidgetWrapper'
  * This implementation removes titles and descriptions from objects. It might be needed to add it back.
  */
 const BAObjectFieldTemplate = ({ idSchema, properties, uiSchema }: ObjectFieldTemplateProps) => {
+  const parsedUiOptions = getUiOptions(uiSchema) as ObjectFieldUiOptions
+
   const options = {
-    // Spacing must be `none` for objects, but default is different in WidgetWrapper
-    spaceTop: 'none' as const,
-    spaceBottom: 'none' as const,
-    ...(getUiOptions(uiSchema) as ObjectFieldUiOptions),
+    ...(parsedUiOptions.objectDisplay
+      ? {}
+      : // If there's no objectDisplay, the object is not a visual wrapper, therefore it should not have spacing
+        { spaceTop: 'none' as const, spaceBottom: 'none' as const }),
+    ...parsedUiOptions,
   }
 
   const fieldsetClassname = cx({
@@ -46,7 +60,19 @@ const BAObjectFieldTemplate = ({ idSchema, properties, uiSchema }: ObjectFieldTe
             <FormMarkdown>{options.description}</FormMarkdown>
           </div>
         )}
-        {properties.map((prop: ObjectFieldTemplatePropertyType) => prop.content)}
+        {properties.map(({ content }, index) => {
+          const isInColumnObject = options.objectDisplay === 'columns'
+          const isFirst = index === 0
+          const isLast = index === properties.length - 1
+
+          return (
+            <WidgetSpacingContextProvider
+              spacing={getPropertySpacing(isInColumnObject, isFirst, isLast)}
+            >
+              {content}
+            </WidgetSpacingContextProvider>
+          )
+        })}
       </fieldset>
     </WidgetWrapper>
   )

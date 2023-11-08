@@ -100,79 +100,69 @@ export default step(
               orientations: 'row',
             },
           ),
-          object(
-            'nehnutelnosti',
-            { required: true },
-            { objectDisplay: 'boxed', spaceTop: 'default' },
-            [
-              arrayField(
-                'nehnutelnosti',
-                { title: 'Časti stavby', required: true },
+          object('nehnutelnosti', { required: true }, { objectDisplay: 'boxed' }, [
+            arrayField(
+              'nehnutelnosti',
+              { title: 'Časti stavby', required: true },
+              {
+                hideTitle: true,
+                variant: 'nested',
+                addButtonLabel: 'Pridať ďalšiu časť stavby podľa účelu',
+                itemTitle: 'Časť stavby č. {index}',
+              },
+              [
+                select(
+                  'ucelVyuzitiaStavby',
+                  {
+                    title: 'Účel využitia stavby',
+                    required: true,
+                    options: createStringOptions(['Stavby hromadných garáži'], false),
+                  },
+                  {
+                    dropdownDivider: true,
+                  },
+                ),
+                number(
+                  'vymeraPodlahovejPlochy',
+                  { type: 'integer', title: 'Výmera podlahovej plochy', required: true },
+                  {
+                    helptext: markdownText(
+                      'Zadávajte číslo zaokrúhlené nahor (napr. ak 12.3 m^2^, tak zadajte 13).',
+                    ),
+                  },
+                ),
+              ],
+            ),
+            object('sumar', { required: true }, { objectDisplay: 'boxed', title: 'Sumár' }, [
+              number(
+                'vymeraPodlahovejPlochy',
                 {
-                  hideTitle: true,
-                  variant: 'nested',
-                  addButtonLabel: 'Pridať ďalšiu časť stavby podľa účelu',
-                  itemTitle: 'Časť stavby č. {index}',
+                  type: 'integer',
+                  title: 'Celková výmera podlahových plôch všetkých podlaží stavby',
+                  required: true,
                 },
-                [
-                  select(
-                    'ucelVyuzitiaStavby',
-                    {
-                      title: 'Účel využitia stavby',
-                      required: true,
-                      options: createStringOptions(['Stavby hromadných garáži'], false),
-                    },
-                    {
-                      dropdownDivider: true,
-                    },
+                {
+                  helptext: markdownText(
+                    'Celková výmera je zaokrúhlená na celé m^2^ nahor (vrátane tých, na ktoré si uplatňujete nárok na oslobodenie), u spoluvlastníkov vo výške ich spoluvlastníckeho podielu.',
                   ),
-                  number(
-                    'vymeraPodlahovejPlochy',
-                    { type: 'integer', title: 'Výmera podlahovej plochy', required: true },
-                    {
-                      helptext: markdownText(
-                        'Zadávajte číslo zaokrúhlené nahor (napr. ak 12.3 m^2^, tak zadajte 13).',
-                      ),
-                    },
-                  ),
-                ],
+                },
               ),
-              object(
-                'sumar',
-                { required: true },
-                { objectDisplay: 'boxed', spaceTop: 'default', title: 'Sumár' },
-                [
-                  number(
-                    'vymeraPodlahovejPlochy',
-                    {
-                      type: 'integer',
-                      title: 'Celková výmera podlahových plôch všetkých podlaží stavby',
-                      required: true,
-                    },
-                    {
-                      helptext: markdownText(
-                        'Celková výmera je zaokrúhlená na celé m^2^ nahor (vrátane tých, na ktoré si uplatňujete nárok na oslobodenie), u spoluvlastníkov vo výške ich spoluvlastníckeho podielu.',
-                      ),
-                    },
+              number(
+                'zakladDane',
+                {
+                  type: 'integer',
+                  title:
+                    'Základ dane - výmera zastavanej plochy stavby vo výške spoluvlastníckych podielov',
+                  required: true,
+                },
+                {
+                  helptext: markdownText(
+                    'Celková výmera pozostáva zo súčtu podielov výmer častí stavby využívaných na jednotlivé účely na zastavanej ploche. Číslo sa zaokrúhľuje na celé m^2^ nahor.',
                   ),
-                  number(
-                    'zakladDane',
-                    {
-                      type: 'integer',
-                      title:
-                        'Základ dane - výmera zastavanej plochy stavby vo výške spoluvlastníckych podielov',
-                      required: true,
-                    },
-                    {
-                      helptext: markdownText(
-                        'Celková výmera pozostáva zo súčtu podielov výmer častí stavby využívaných na jednotlivé účely na zastavanej ploche. Číslo sa zaokrúhľuje na celé m^2^ nahor.',
-                      ),
-                    },
-                  ),
-                ],
+                },
               ),
-            ],
-          ),
+            ]),
+          ]),
           number(
             'pocetNadzemnychAPodzemnychPodlaziStavbyOkremPrvehoNadzemnehoPodlazia',
             {

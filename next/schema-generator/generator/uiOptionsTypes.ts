@@ -52,13 +52,16 @@ export type HelptextPosition = 'header' | 'footer'
 
 export type FormSpacingType = 'large' | 'default' | 'small' | 'medium' | 'none'
 
-export type WidgetUiOptions = {
+export type WidgetSpacing = {
+  spaceTop?: FormSpacingType
+  spaceBottom?: FormSpacingType
+}
+
+export type WidgetUiOptions = WidgetSpacing & {
   tooltip?: string
   helptext?: string
   helptextPosition?: HelptextPosition
   className?: string
-  spaceBottom?: FormSpacingType
-  spaceTop?: FormSpacingType
   belowComponents?: CustomComponentType[]
   rightComponents?: CustomComponentType[]
   size?: FieldSize

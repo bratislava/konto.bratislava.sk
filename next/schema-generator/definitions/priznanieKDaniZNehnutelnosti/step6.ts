@@ -48,8 +48,6 @@ export default step(
             {},
             {
               objectDisplay: 'boxed',
-              // TODO Fix spacing in general
-              spaceTop: 'default',
             },
             [
               radioGroup(
@@ -67,8 +65,6 @@ export default step(
                   variant: 'boxed',
                   orientations: 'row',
                   labelSize: 'h4',
-                  // TODO Fix spacing in general
-                  spaceTop: 'none',
                 },
               ),
               conditionalFields(createCondition([[['priznanieZaByt'], { const: true }]]), [
@@ -104,8 +100,6 @@ export default step(
             {},
             {
               objectDisplay: 'boxed',
-              // TODO Fix spacing in general
-              spaceTop: 'default',
             },
             [
               radioGroup(
@@ -124,8 +118,6 @@ export default step(
                   variant: 'boxed',
                   orientations: 'row',
                   labelSize: 'h4',
-                  // TODO Fix spacing in general
-                  spaceTop: 'none',
                 },
               ),
               conditionalFields(

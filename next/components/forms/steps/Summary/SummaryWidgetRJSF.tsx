@@ -108,12 +108,15 @@ const SummaryWidgetRJSF = ({
         data={{
           label,
           value: (
-            <ValueComponent
-              widgetType={widgetType}
-              value={value}
-              options={options}
-              uiSchema={uiSchema}
-            />
+            // className="break-words" doesn't work
+            <div style={{ wordBreak: 'break-word' }}>
+              <ValueComponent
+                widgetType={widgetType}
+                value={value}
+                options={options}
+                uiSchema={uiSchema}
+              />
+            </div>
           ),
           isError: fieldHasError(id),
         }}

@@ -29,14 +29,14 @@ const FieldHeaderShowCase = () => {
           <FieldHeader
             label="Description"
             htmlFor="input-name"
-            helptext="This is simple description"
+            helptextHeader="This is simple description"
           />
         </Stack>
         <Stack>
           <FieldHeader
             label="Everything"
             htmlFor="input-name"
-            helptext="This is is simple description"
+            helptextHeader="This is is simple description"
             tooltip="This is some tooltip"
             required
           />
@@ -45,7 +45,7 @@ const FieldHeaderShowCase = () => {
           <FieldHeader
             label="Everything - optional"
             htmlFor="input-name"
-            helptext="This is is simple description"
+            helptextHeader="This is is simple description"
             tooltip="This is some tooltip"
           />
         </Stack>
@@ -53,7 +53,7 @@ const FieldHeaderShowCase = () => {
           <FieldHeader
             label="Everything with forced optional"
             htmlFor="input-name"
-            helptext="This is is simple description"
+            helptextHeader="This is is simple description"
             tooltip="This is some tooltip"
           />
         </Stack>

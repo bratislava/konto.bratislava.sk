@@ -284,29 +284,32 @@ const MyApplicationsCard = ({ form, refreshListData, variant }: MyApplicationsCa
       >
         <div className="relative flex w-full items-start justify-between border-b-2 border-gray-200 bg-white py-4 lg:hidden">
           <div className="flex w-full justify-between gap-1.5">
-            <div className="flex w-full grow flex-col gap-1">
+            <div className="flex w-full grow flex-col">
               <div className="flex flex-row justify-between gap-6">
                 {(category || isLoading) && (
                   <div className="text-p3-semibold text-main-700">
                     {isLoading ? <Skeleton width="25%" /> : category}
                   </div>
                 )}
+                {variant !== 'SENT' && category && <EllipsisVerticalIcon />}
               </div>
+              <h3 className="text-20-semibold pb-3">
+                {isLoading ? <Skeleton width="75%" /> : title}
+              </h3>
 
-              <h3 className="text-20-semibold">{isLoading ? <Skeleton width="75%" /> : title}</h3>
-              {(createdAt || isLoading) && (
-                <div className="text-p3">
-                  {isLoading ? (
-                    <Skeleton width="50%" />
-                  ) : (
-                    <FormatDate>{createdAt || ''}</FormatDate>
-                  )}
-                </div>
-              )}
-            </div>
-            <div className="flex flex-col items-center justify-between">
-              {category && <EllipsisVerticalIcon />}
-              {stateIconAndText.iconRound}
+              <span className="flex flex-row justify-between">
+                {(createdAt || isLoading) && (
+                  <span className="text-p3 flex items-center ">
+                    {isLoading ? (
+                      <Skeleton width="50%" />
+                    ) : (
+                      <FormatDate>{createdAt || ''}</FormatDate>
+                    )}
+                  </span>
+                )}
+
+                {stateIconAndText.iconRound}
+              </span>
             </div>
           </div>
         </div>

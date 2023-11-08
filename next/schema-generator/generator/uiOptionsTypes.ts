@@ -46,18 +46,26 @@ export type CustomComponentType =
       props: CustomComponentPropertyCalculatorProps
     }
 
+export type LabelSize = 'default' | 'h4' | 'h3'
+export type LabelSpacing = 'default' | 'h4' | 'h3'
+
 export type FormSpacingType = 'large' | 'default' | 'small' | 'medium' | 'none'
 
-export type WidgetUiOptions = {
+export type WidgetSpacing = {
+  spaceTop?: FormSpacingType
+  spaceBottom?: FormSpacingType
+}
+
+export type WidgetUiOptions = WidgetSpacing & {
   tooltip?: string
   helptext?: string
+  helptextHeader?: string
   className?: string
-  explicitOptional?: boolean
-  spaceBottom?: FormSpacingType
-  spaceTop?: FormSpacingType
   belowComponents?: CustomComponentType[]
   rightComponents?: CustomComponentType[]
   size?: FieldSize
+  labelSize?: LabelSize
+  labelSpacing?: LabelSpacing
 }
 
 type CheckboxOption = {
@@ -95,7 +103,6 @@ export type RadioGroupUiOptions = {
 export type SelectUiOptions = {
   dropdownDivider?: boolean
   selectAllOption?: boolean
-  explicitOptional?: boolean
   hideScrollbar?: boolean
   maxWordSize?: number
   // selectType?: 'one' | 'multiple' | 'arrow' | 'radio'

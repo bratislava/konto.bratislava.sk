@@ -1,27 +1,16 @@
 import cx from 'classnames'
 import React, { PropsWithChildren } from 'react'
 
-import { FieldErrorMessageProps } from '../info-components/FieldErrorMessage'
 import FieldFooter, { FieldFooterProps } from '../info-components/FieldFooter'
 import FieldHeader, { FieldHeaderProps } from '../info-components/FieldHeader'
+import { FieldSize } from './FieldBase'
 
-type FieldWrapperProps = FieldHeaderProps &
-  FieldFooterProps &
-  FieldErrorMessageProps & {
-    disabled?: boolean
-    customErrorPlace?: boolean
-  }
+export type FieldWrapperProps = FieldHeaderProps & FieldFooterProps & { size?: FieldSize }
 
 const FieldWrapper = ({
   children,
-  errorMessage,
-  errorMessageProps,
-  disabled,
-  customErrorPlace,
-  helptext,
-  descriptionProps,
   size = 'full',
-  ...fieldHeaderProps
+  ...rest
 }: PropsWithChildren<FieldWrapperProps>) => {
   return (
     <div
@@ -30,9 +19,9 @@ const FieldWrapper = ({
         'max-w-[200px]': size === 'small',
       })}
     >
-      <FieldHeader {...fieldHeaderProps} />
+      <FieldHeader {...rest} />
       {children}
-      <FieldFooter {...{ helptext, descriptionProps, disabled, errorMessage, customErrorPlace }} />
+      <FieldFooter {...rest} />
     </div>
   )
 }

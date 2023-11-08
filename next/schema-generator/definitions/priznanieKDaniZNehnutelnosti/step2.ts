@@ -157,7 +157,6 @@ export default step('udajeODanovnikovi', { title: 'Údaje o daňovníkovi' }, [
       { required: true },
       {
         objectDisplay: 'boxed',
-        spaceTop: 'default',
         title: 'Údaje o oprávnenej osobe na podanie priznania',
       },
       [

@@ -58,13 +58,8 @@ const SelectFieldShowCase = () => {
         <Stack>
           <SelectFieldNew label="Simple select field" items={itemsWithTitle} isRequired />
           <SelectFieldNew label="Simple select field" items={itemsWithTitle} tooltip="Tooltip" />
-          <SelectFieldNew
-            label="Simple select field"
-            items={itemsWithTitle}
-            tooltip="Tooltip"
-            explicitOptional
-          />
-          <SelectFieldNew label="Simple select field" items={itemsWithTitle} explicitOptional />
+          <SelectFieldNew label="Simple select field" items={itemsWithTitle} tooltip="Tooltip" />
+          <SelectFieldNew label="Simple select field" items={itemsWithTitle} />
         </Stack>
       </Wrapper>
       <Wrapper direction="row" title="ComboBox">

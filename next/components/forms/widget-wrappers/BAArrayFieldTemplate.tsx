@@ -61,8 +61,13 @@ const BAArrayFieldTemplate = <
 
   const hasErrors = rawErrors && rawErrors?.length > 0
 
+  const defaultSpacing = {
+    topLevel: { spaceBottom: 'medium' as const, spaceTop: 'medium' as const },
+    nested: undefined,
+  }[variant]
+
   return (
-    <WidgetWrapper options={uiOptions}>
+    <WidgetWrapper options={uiOptions} defaultSpacing={defaultSpacing}>
       {!hideTitle && (
         <>
           {/* ArrayFieldTitleTemplate is not used */}
@@ -90,14 +95,15 @@ const BAArrayFieldTemplate = <
         {(canAdd || hasErrors) && (
           <div>
             {canAdd && (
-              <div>
-                {variant === 'topLevel' && (
-                  <>
+              <div className="flex flex-col gap-6">
+                {/* eslint-disable-next-line unicorn/consistent-destructuring */}
+                {variant === 'topLevel' && (uiOptions.addTitle || uiOptions.addDescription) && (
+                  <div className="flex flex-col gap-3">
                     {/* eslint-disable-next-line unicorn/consistent-destructuring */}
-                    {uiOptions.addTitle && <span>{uiOptions.addTitle}</span>}
+                    {uiOptions.addTitle && <span className="text-h3">{uiOptions.addTitle}</span>}
                     {/* eslint-disable-next-line unicorn/consistent-destructuring */}
                     {uiOptions.addDescription && <span>{uiOptions.addDescription}</span>}
-                  </>
+                  </div>
                 )}
                 <ButtonNew
                   variant={

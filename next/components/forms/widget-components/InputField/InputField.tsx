@@ -4,31 +4,26 @@ import { forwardRef, ReactNode, RefObject, useEffect, useState } from 'react'
 import { useTextField } from 'react-aria'
 
 import MailIcon from '../../../../assets/ui-icons/custom_mail.svg'
-import { FieldAdditionalProps, FieldBaseProps } from '../FieldBase'
-import FieldWrapper from '../FieldWrapper'
+import FieldWrapper, { FieldWrapperProps } from '../FieldWrapper'
 
 export type LeftIconVariants = 'person' | 'mail' | 'call' | 'lock'
 export type InputType = 'text' | 'password' | 'email' | 'tel' | 'number'
 
-export const isLeftIconVariant = (value: string): value is LeftIconVariants => {
-  const list: LeftIconVariants[] = ['person', 'mail', 'call', 'lock']
-  return list.includes(value as LeftIconVariants)
+export type InputFieldProps = FieldWrapperProps & {
+  type?: InputType // capitalize input value after field un-focus with type === text
+  capitalize?: boolean
+  value?: string
+  leftIcon?: LeftIconVariants
+  resetIcon?: boolean
+  onChange?: (value?: string) => void
+  onBlur?: () => void
+  endIcon?: ReactNode
+  autoComplete?: string
+  placeholder?: string
+  className?: string
 }
 
-export type InputProps = FieldBaseProps &
-  Pick<FieldAdditionalProps, 'placeholder' | 'className' | 'customErrorPlace'> & {
-    type?: InputType // capitalize input value after field un-focus with type === text
-    capitalize?: boolean
-    value?: string
-    leftIcon?: LeftIconVariants
-    resetIcon?: boolean
-    onChange?: (value?: string) => void
-    onBlur?: () => void
-    endIcon?: ReactNode
-    autoComplete?: string
-  }
-
-const InputField = forwardRef<HTMLInputElement, InputProps>(
+const InputField = forwardRef<HTMLInputElement, InputFieldProps>(
   (
     {
       label,
@@ -36,9 +31,9 @@ const InputField = forwardRef<HTMLInputElement, InputProps>(
       placeholder,
       errorMessage = [],
       helptext,
+      helptextHeader,
       tooltip,
       required,
-      explicitOptional,
       value = '',
       disabled,
       leftIcon,
@@ -50,6 +45,7 @@ const InputField = forwardRef<HTMLInputElement, InputProps>(
       capitalize = false,
       autoComplete,
       size,
+      labelSize,
       ...rest
     },
     ref,
@@ -136,15 +132,16 @@ const InputField = forwardRef<HTMLInputElement, InputProps>(
         labelProps={labelProps}
         htmlFor={inputProps.id}
         helptext={helptext}
+        helptextHeader={helptextHeader}
         descriptionProps={descriptionProps}
         required={required}
-        explicitOptional={explicitOptional}
         tooltip={tooltip}
         disabled={disabled}
         customErrorPlace={customErrorPlace}
         errorMessage={errorMessage}
         errorMessageProps={errorMessageProps}
         size={size}
+        labelSize={labelSize}
       >
         <div className="relative">
           {leftIcon && (

@@ -7,18 +7,17 @@ import { OverlayProvider, useDatePicker } from 'react-aria'
 import { useDatePickerState } from 'react-stately'
 
 import ButtonNew from '../../simple-components/ButtonNew'
-import { FieldAdditionalProps, FieldBaseProps } from '../FieldBase'
+import { FieldWrapperProps } from '../FieldWrapper'
 import Calendar from './Calendar/Calendar'
 import DateField from './DateField'
 import Popover from './Popover'
 
-export type DatePickerProps = FieldBaseProps &
-  Pick<FieldAdditionalProps, 'customErrorPlace'> & {
-    value?: string | null
-    minValue?: string
-    maxValue?: string
-    onChange?: (value: string | null | undefined) => void
-  }
+export type DatePickerProps = FieldWrapperProps & {
+  value?: string | null
+  minValue?: string
+  maxValue?: string
+  onChange?: (value: string | null | undefined) => void
+}
 
 const DatePicker = forwardRef<HTMLDivElement, DatePickerProps>(
   (
@@ -27,15 +26,16 @@ const DatePicker = forwardRef<HTMLDivElement, DatePickerProps>(
       disabled,
       errorMessage,
       required,
-      explicitOptional,
       tooltip,
       helptext,
+      helptextHeader,
       value,
       minValue,
       maxValue,
       onChange = () => {},
       customErrorPlace = false,
       size,
+      labelSize,
       ...rest
     },
     ref,
@@ -99,8 +99,8 @@ const DatePicker = forwardRef<HTMLDivElement, DatePickerProps>(
           {...fieldProps}
           label={label}
           helptext={helptext}
+          helptextHeader={helptextHeader}
           required={required}
-          explicitOptional={explicitOptional}
           disabled={disabled}
           tooltip={tooltip}
           errorMessage={errorMessage}
@@ -118,6 +118,7 @@ const DatePicker = forwardRef<HTMLDivElement, DatePickerProps>(
             </>
           }
           size={size}
+          labelSize={labelSize}
         >
           <ButtonNew
             variant="icon-wrapped-negative-margin"

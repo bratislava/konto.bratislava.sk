@@ -29,13 +29,14 @@ const SelectWidgetRJSF = ({
     enumOptions,
     selectAllOption,
     helptext,
+    helptextHeader,
     tooltip,
     dropdownDivider,
     className,
-    explicitOptional,
     hideScrollbar = false,
     maxWordSize,
     size,
+    labelSize,
   } = options
 
   const type = schema.type === 'array' ? 'multiple' : 'one'
@@ -116,6 +117,7 @@ const SelectWidgetRJSF = ({
         selectAllOption={selectAllOption}
         placeholder={placeholder}
         helptext={helptext}
+        helptextHeader={helptextHeader}
         tooltip={tooltip}
         dropdownDivider={dropdownDivider}
         errorMessage={rawErrors}
@@ -123,11 +125,11 @@ const SelectWidgetRJSF = ({
         disabled={disabled || readonly}
         className={className}
         onChange={handleOnChange}
-        explicitOptional={explicitOptional}
         hideScrollbar={hideScrollbar}
         alwaysOneSelected={false}
         maxWordSize={maxWordSize}
         size={size}
+        labelSize={labelSize}
       />
     </WidgetWrapper>
   )

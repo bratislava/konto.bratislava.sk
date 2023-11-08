@@ -61,8 +61,13 @@ const BAArrayFieldTemplate = <
 
   const hasErrors = rawErrors && rawErrors?.length > 0
 
+  const defaultSpacing = {
+    topLevel: { spaceBottom: 'medium' as const, spaceTop: 'medium' as const },
+    nested: undefined,
+  }[variant]
+
   return (
-    <WidgetWrapper options={uiOptions}>
+    <WidgetWrapper options={uiOptions} defaultSpacing={defaultSpacing}>
       {!hideTitle && (
         <>
           {/* ArrayFieldTitleTemplate is not used */}

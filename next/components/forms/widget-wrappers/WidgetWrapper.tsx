@@ -1,6 +1,6 @@
 import cx from 'classnames'
 import React, { PropsWithChildren } from 'react'
-import { FormSpacingType, WidgetUiOptions } from 'schema-generator/generator/uiOptionsTypes'
+import { WidgetSpacing, WidgetUiOptions } from 'schema-generator/generator/uiOptionsTypes'
 import { twMerge } from 'tailwind-merge'
 
 import CustomComponents from '../widget-components/CustomComponents/CustomComponents'
@@ -9,16 +9,20 @@ import { useWidgetSpacingContext } from './useWidgetSpacingContext'
 type WidgetWrapperProps = PropsWithChildren<{
   options: WidgetUiOptions
   className?: string
-  spaceTopDefault?: FormSpacingType
-  spaceBottomDefault?: FormSpacingType
+  defaultSpacing?: Partial<WidgetSpacing>
 }>
 
 const WidgetWrapper = ({
   options,
   className,
   children,
-  spaceTopDefault = 'small',
-  spaceBottomDefault = 'small',
+  defaultSpacing: {
+    spaceTop: spaceTopDefault = 'small',
+    spaceBottom: spaceBottomDefault = 'small',
+  } = {
+    spaceTop: 'small',
+    spaceBottom: 'small',
+  },
 }: WidgetWrapperProps) => {
   const {
     className: optionsClassName,

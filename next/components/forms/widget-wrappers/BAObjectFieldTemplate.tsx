@@ -26,15 +26,13 @@ const getPropertySpacing = (isInColumnObject: boolean, isFirst: boolean, isLast:
  * This implementation removes titles and descriptions from objects. It might be needed to add it back.
  */
 const BAObjectFieldTemplate = ({ idSchema, properties, uiSchema }: ObjectFieldTemplateProps) => {
-  const parsedUiOptions = getUiOptions(uiSchema) as ObjectFieldUiOptions
+  const options = getUiOptions(uiSchema) as ObjectFieldUiOptions
 
-  const options = {
-    ...(parsedUiOptions.objectDisplay
-      ? {}
-      : // If there's no objectDisplay, the object is not a visual wrapper, therefore it should not have spacing
-        { spaceTop: 'none' as const, spaceBottom: 'none' as const }),
-    ...parsedUiOptions,
-  }
+  const defaultSpacing = {
+    boxed: { spaceBottom: 'medium' as const, spaceTop: 'medium' as const },
+    columns: undefined,
+    noObjectDisplay: { spaceTop: 'none' as const, spaceBottom: 'none' as const },
+  }[options.objectDisplay ?? 'noObjectDisplay']
 
   const fieldsetClassname = cx({
     'block sm:grid sm:gap-4': options.objectDisplay === 'columns',
@@ -50,7 +48,7 @@ const BAObjectFieldTemplate = ({ idSchema, properties, uiSchema }: ObjectFieldTe
       : undefined
 
   return (
-    <WidgetWrapper options={options}>
+    <WidgetWrapper options={options} defaultSpacing={defaultSpacing}>
       <fieldset id={idSchema.$id} className={fieldsetClassname} style={{ gridTemplateColumns }}>
         {options.objectDisplay === 'boxed' && options.title && (
           <h3 className="text-h3 mb-3">{options.title}</h3>

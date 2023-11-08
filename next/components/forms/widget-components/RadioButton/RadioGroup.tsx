@@ -80,7 +80,7 @@ const RadioGroup = (props: RadioGroupProps) => {
             <div
               className={cx({
                 'flex flex-col gap-3': orientation === 'vertical',
-                'flex flex-row gap-6': orientation === 'horizontal',
+                'flex flex-row gap-4 md:gap-6': orientation === 'horizontal',
               })}
             >
               {children}

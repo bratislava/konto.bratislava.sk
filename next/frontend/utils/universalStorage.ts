@@ -10,6 +10,14 @@ type Context = Pick<NextPageContext, 'req'>
 
 const ONE_YEAR_IN_MS = 365 * 24 * 60 * 60 * 1000
 
+const CUSTOM_COOKIE_TOKEN_TYPES = new Set(['accessToken', 'refreshToken'])
+
+const getCookieKey = (key: string) => {
+  const tokenType = key.split('.').pop() ?? ''
+
+  return CUSTOM_COOKIE_TOKEN_TYPES.has(tokenType) ? tokenType : key
+}
+
 export class UniversalStorage implements Storage {
   cookies = new Cookies()
 
@@ -32,7 +40,9 @@ export class UniversalStorage implements Storage {
   }
 
   getItem(key: keyof Store) {
-    return this.getLocalItem(key) || this.getUniversalItem(key) || null
+    const keyName = getCookieKey(key)
+
+    return this.getLocalItem(keyName) || this.getUniversalItem(keyName) || null
   }
 
   protected getLocalItem(key: keyof Store) {
@@ -40,11 +50,7 @@ export class UniversalStorage implements Storage {
   }
 
   protected getUniversalItem(key: keyof Store) {
-    const cookieTokenTypes = new Set(['accessToken', 'refreshToken'])
-
-    const tokenType = key.split('.').pop() ?? ''
-
-    return this.cookies.get(cookieTokenTypes.has(tokenType) ? tokenType : key) as string | undefined
+    return this.cookies.get(key) as string | undefined
   }
 
   key(index: number) {
@@ -52,8 +58,10 @@ export class UniversalStorage implements Storage {
   }
 
   removeItem(key: string) {
-    this.removeLocalItem(key)
-    this.removeUniversalItem(key)
+    const keyName = getCookieKey(key)
+
+    this.removeLocalItem(keyName)
+    this.removeUniversalItem(keyName)
   }
 
   protected removeLocalItem(key: keyof Store) {
@@ -67,7 +75,9 @@ export class UniversalStorage implements Storage {
   }
 
   setItem(key: keyof Store, value: string) {
-    this.setLocalItem(key, value)
+    const keyName = getCookieKey(key)
+
+    this.setLocalItem(keyName, value)
 
     // keys take the shape:
     //  1. `${ProviderPrefix}.${userPoolClientId}.${username}.${tokenType}
@@ -81,7 +91,7 @@ export class UniversalStorage implements Storage {
     const localDomainTokenTypes = new Set(['LastAuthUser', 'idToken'])
 
     if (sessionTokenTypes.includes(tokenType)) {
-      this.setUniversalItem(localDomainTokenTypes.has(tokenType) ? key : tokenType, value, {
+      this.setUniversalItem(keyName, value, {
         expires: new Date(Date.now() + ONE_YEAR_IN_MS),
         domain: localDomainTokenTypes.has(tokenType)
           ? undefined

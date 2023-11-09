@@ -30,6 +30,7 @@ const CheckboxGroup = (props: CheckboxGroupProps) => {
         errorMessageProps={errorMessageProps}
         size={size}
         labelSize={labelSize}
+        customHeaderBottomMargin="mb-4"
       >
         <div className={cx('flex flex-col gap-3', className)}>
           <CheckboxGroupContext.Provider value={state}>{children}</CheckboxGroupContext.Provider>

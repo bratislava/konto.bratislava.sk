@@ -16,6 +16,10 @@ export type FieldHeaderProps = {
   labelProps?: DOMAttributes<never>
   helptextHeader?: string
   descriptionProps?: DOMAttributes<never>
+  /**
+   * Some field types (radio, checkbox, upload...) need more spacing between the title and the field itself.
+   */
+  customHeaderBottomMargin?: string
 }
 
 const FieldHeader = ({
@@ -27,8 +31,19 @@ const FieldHeader = ({
   labelSize = 'default',
   helptextHeader,
   descriptionProps,
+  customHeaderBottomMargin = 'mb-1',
 }: FieldHeaderProps) => {
   const { t } = useTranslation('account', { keyPrefix: 'FieldHeader' })
+
+  const useCustomBottomMargin = labelSize === 'default' || !helptextHeader
+
+  const wrapperStyle = cx('flex w-full flex-col', {
+    'gap-1': labelSize === 'default',
+    'gap-3': labelSize === 'h3' || labelSize === 'h4',
+    [customHeaderBottomMargin]: useCustomBottomMargin,
+    // If there's helptext and large label, we need to have large margin at the bottom
+    'mb-8': !useCustomBottomMargin,
+  })
 
   const labelStyle = cx('text-gray-800', {
     'text-p3-semibold sm:text-16-semibold': labelSize === 'default',
@@ -37,15 +52,9 @@ const FieldHeader = ({
     'mr-2': !required,
   })
 
-  const wrapperStyle = cx({
-    'mb-1': labelSize === 'default',
-    'mb-4': labelSize === 'h3',
-    'mb-5': labelSize === 'h4',
-  })
-
   return (
-    <div className="w-full">
-      <div className={wrapperStyle}>
+    <div className={wrapperStyle}>
+      <div>
         <label htmlFor={htmlFor} {...labelProps} className={labelStyle}>
           {label}
         </label>

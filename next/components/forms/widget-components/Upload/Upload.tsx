@@ -60,6 +60,7 @@ const Upload = forwardRef<HTMLButtonElement, UploadProps>(
           errorMessage={errorMessage}
           size={size}
           labelSize={labelSize}
+          customHeaderBottomMargin="mb-2"
         >
           <div className="flex flex-col gap-6">
             {type === 'button' && (

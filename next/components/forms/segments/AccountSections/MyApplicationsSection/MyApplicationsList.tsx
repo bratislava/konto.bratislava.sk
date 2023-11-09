@@ -13,7 +13,7 @@ import MyApplicationsCard from './MyApplicationsCard'
 // must be string due to typing
 const PAGE_SIZE = '10'
 
-const getDraftApplications = async (variant: ApplicationsListVariant, page: number) => {
+export const getDraftApplications = async (variant: ApplicationsListVariant, page: number) => {
   const variantToStates: Array<GetFormResponseDtoStateEnum> = {
     SENT: [
       'REJECTED',

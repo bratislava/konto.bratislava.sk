@@ -1,4 +1,7 @@
-import MyApplicationsList from 'components/forms/segments/AccountSections/MyApplicationsSection/MyApplicationsList'
+import { useQuery } from '@tanstack/react-query'
+import MyApplicationsList, {
+  getDraftApplications,
+} from 'components/forms/segments/AccountSections/MyApplicationsSection/MyApplicationsList'
 import logger from 'frontend/utils/logger'
 import { useRouter } from 'next/router'
 import { useTranslation } from 'next-i18next'
@@ -28,6 +31,23 @@ export const isValidSection = (param: string): param is ApplicationsListVariant 
   return (sections as readonly string[]).includes(param)
 }
 
+const getTotalNumberOfApplications = async (variant: ApplicationsListVariant) => {
+  const firstPage = await getDraftApplications(variant, 1)
+  if (firstPage.countPages === 0) return 0
+
+  const lastPage = await getDraftApplications(variant, firstPage.countPages)
+  return (firstPage.countPages - 1) * firstPage.pagination + lastPage.items.length
+}
+
+const useTotalCount = (variant: ApplicationsListVariant) => {
+  const { data } = useQuery({
+    queryKey: [`ApplicationsCount_${variant}`, variant],
+    queryFn: () => getTotalNumberOfApplications(variant),
+  })
+
+  return data
+}
+
 const MyApplicationsSection = () => {
   const { t } = useTranslation('account')
   const title = t('account_section_applications.navigation')
@@ -39,6 +59,12 @@ const MyApplicationsSection = () => {
     { title: t('account_section_applications.navigation_sending'), tag: 'SENDING' },
     { title: t('account_section_applications.navigation_draft'), tag: 'DRAFT' },
   ]
+
+  const totalCounts = {
+    SENT: useTotalCount('SENT'),
+    SENDING: useTotalCount('SENDING'),
+    DRAFT: useTotalCount('DRAFT'),
+  }
 
   useEffect(() => {
     // If section is not valid, redirect to default section
@@ -80,6 +106,7 @@ const MyApplicationsSection = () => {
                 className="text-20 hover:text-20-semibold data-[selected]:text-20-semibold cursor-pointer py-4 transition-all hover:border-gray-700 data-[selected]:border-b-2 data-[selected]:border-gray-700"
               >
                 {item.title}
+                {totalCounts[item.tag] !== undefined ? ` (${totalCounts[item.tag]})` : ''}
               </Tab>
             ))}
           </TabList>

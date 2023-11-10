@@ -20,7 +20,9 @@
     "postinstall": "patch-package",
     "update-react-aria": "yarn add @internationalized/date@latest @react-stately/utils@latest react-aria@latest react-aria-components@latest react-stately@latest -E",
     "update-rjsf": "yarn add @rjsf/core@latest @rjsf/utils@latest @rjsf/validator-ajv8@latest ajv@latest ajv-formats@latest -E",
-    "update-markdown": "yarn add remark-directive@latest remark-directive-rehype@latest remark-gfm@latest remark-supersub@latest rehype-raw@latest rehype-sanitize@latest"
+    "update-markdown": "yarn add remark-directive@latest remark-directive-rehype@latest remark-gfm@latest remark-supersub@latest rehype-raw@latest rehype-sanitize@latest",
+    "cypress:open": "yarn run cypress open --e2e --browser chrome --env BASEURL=https://konto.bratislava.sk/",
+    "cypress:run": "yarn run cypress run --e2e --browser chrome --env BASEURL=https://konto.bratislava.sk/"
   },
   "dependencies": {
     "@bratislava/json-schema-xsd-tools": "^0.2.1",

@@ -118,11 +118,7 @@ export const ajvFormats = {
       const numerator = parseInt(parts[0], 10)
       const denominator = parseInt(parts[1], 10)
 
-      if (numerator > denominator) {
-        return false
-      }
-
-      return true
+      return numerator <= denominator
     },
   },
 } satisfies Record<string, Format>

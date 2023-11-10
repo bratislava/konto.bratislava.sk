@@ -107,6 +107,24 @@ export const ajvFormats = {
     validate: /^(\d|0\d|1\d|2[0-3]):[0-5]\d$/,
     compare: compareTime,
   },
+  ratio: {
+    validate: (value: string) => {
+      const ratioRegex = /^(0|[1-9]\d*)\/([1-9]\d*)$/
+      if (!ratioRegex.test(value)) {
+        return false
+      }
+
+      const parts = value.split('/')
+      const numerator = parseInt(parts[0], 10)
+      const denominator = parseInt(parts[1], 10)
+
+      if (numerator > denominator) {
+        return false
+      }
+
+      return true
+    },
+  },
 } satisfies Record<string, Format>
 
 /**

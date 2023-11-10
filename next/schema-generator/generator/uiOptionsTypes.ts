@@ -78,6 +78,11 @@ export type CheckboxGroupUiOptions = {
   checkboxOptions?: CheckboxOption[]
 } & WidgetUiOptions
 
+export type CheckboxUiOptions = {
+  variant?: 'basic' | 'boxed'
+  checkboxLabel?: string
+} & WidgetUiOptions
+
 export type DatePickerUiOptions = WidgetUiOptions
 
 export type InputUiOptions = {

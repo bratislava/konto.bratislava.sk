@@ -30,6 +30,8 @@ const CheckboxGroupWidgetRJSF = ({
     variant = 'basic',
     size,
     labelSize,
+    helptext,
+    helptextHeader,
   } = options
   if (!enumOptions) return <div />
   const getTooltip = (radioValue: string) => {
@@ -50,6 +52,8 @@ const CheckboxGroupWidgetRJSF = ({
         disabled={readonly}
         size={size}
         labelSize={labelSize}
+        helptext={helptext}
+        helptextHeader={helptextHeader}
       >
         {enumOptions.map((option: EnumOptionsType) => {
           return (

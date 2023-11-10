@@ -15,7 +15,18 @@ type CheckboxGroupProps = FieldWrapperProps & {
 }
 
 const CheckboxGroup = (props: CheckboxGroupProps) => {
-  const { children, className, errorMessage, disabled, label, required, size, labelSize } = props
+  const {
+    children,
+    className,
+    errorMessage,
+    disabled,
+    label,
+    required,
+    size,
+    labelSize,
+    helptext,
+    helptextHeader,
+  } = props
   const state: CheckboxGroupState = useCheckboxGroupState(props)
   const { groupProps, labelProps, errorMessageProps } = useCheckboxGroup(props, state)
   return (
@@ -30,6 +41,8 @@ const CheckboxGroup = (props: CheckboxGroupProps) => {
         errorMessageProps={errorMessageProps}
         size={size}
         labelSize={labelSize}
+        helptext={helptext}
+        helptextHeader={helptextHeader}
         customHeaderBottomMargin="mb-4"
       >
         <div className={cx('flex flex-col gap-3', className)}>

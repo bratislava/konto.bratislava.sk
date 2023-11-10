@@ -10,6 +10,7 @@ export const ROUTES = {
   MIGRATION: '/aktivacia-konta',
   MUNICIPAL_SERVICES: '/mestske-sluzby',
   MUNICIPAL_SERVICES_INVESTING: '/mestske-sluzby/zavazne-stanovisko-k-investicnej-cinnosti',
+  MUNICIPAL_SERVICES_INVESTING_INTENT: '/mestske-sluzby/stanovisko-k-investicnemu-zameru',
   THANK_YOU: '/vysledok-platby',
   USER_PROFILE: '/moj-profil',
   MY_APPLICATIONS: '/moje-ziadosti',

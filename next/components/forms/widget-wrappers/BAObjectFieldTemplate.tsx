@@ -66,6 +66,7 @@ const BAObjectFieldTemplate = ({ idSchema, properties, uiSchema }: ObjectFieldTe
           return (
             <WidgetSpacingContextProvider
               spacing={getPropertySpacing(isInColumnObject, isFirst, isLast)}
+              key={index}
             >
               {content}
             </WidgetSpacingContextProvider>

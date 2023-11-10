@@ -7,7 +7,11 @@ import {
   select,
   step,
 } from '../../generator/functions'
-import { createCamelCaseOptionsV2, createCondition } from '../../generator/helpers'
+import {
+  createCamelCaseOptions,
+  createCamelCaseOptionsV2,
+  createCondition,
+} from '../../generator/helpers'
 
 enum Type {
   FyzickaOsoba,
@@ -15,7 +19,7 @@ enum Type {
   PravnickaOsoba,
 }
 
-const danovnikBase = (type: Type, splnomocnenie: boolean) => [
+const danovnikBase = (type: Type) => [
   object(
     'ulicaCislo',
     { required: true },
@@ -53,24 +57,6 @@ const danovnikBase = (type: Type, splnomocnenie: boolean) => [
   ),
   // TODO Select ciselnik
   input('stat', { title: 'Štát', required: true }, {}),
-  ...(splnomocnenie
-    ? [
-        select(
-          'pravnyVztahKPO',
-          {
-            title: 'Právny vzťah k PO',
-            options: [
-              { value: 'male', title: 'Male', tooltip: 'Male' },
-              { value: 'female', title: 'Female', tooltip: 'Female' },
-            ],
-          },
-          {
-            dropdownDivider: true,
-            helptext: 'Vyberte len v prípade, že podávate priznanie za právnickú osobu',
-          },
-        ),
-      ]
-    : []),
   input(
     'email',
     { title: 'E-mail', type: 'email', required: true },
@@ -106,13 +92,13 @@ const fyzickaOsoba = (splnomocnenie: boolean) => [
     },
     [input('meno', { title: 'Meno', required: true }, {}), input('titul', { title: 'Titul' }, {})],
   ),
-  ...danovnikBase(Type.FyzickaOsoba, splnomocnenie),
+  ...danovnikBase(Type.FyzickaOsoba),
 ]
 
 const fyzickaOsobaPodnikatel = [
   input('ico', { title: 'IČO', required: true }, {}),
   input('obchodneMenoAleboNazov', { title: 'Obchodné meno alebo názov', required: true }, {}),
-  ...danovnikBase(Type.FyzickaOsobaPodnikatel, false),
+  ...danovnikBase(Type.FyzickaOsobaPodnikatel),
 ]
 
 const pravnickaOsoba = (splnomocnenie: boolean) => [
@@ -134,7 +120,7 @@ const pravnickaOsoba = (splnomocnenie: boolean) => [
         ),
       ]),
   input('obchodneMenoAleboNazov', { title: 'Obchodné meno alebo názov', required: true }, {}),
-  ...danovnikBase(Type.PravnickaOsoba, splnomocnenie),
+  ...danovnikBase(Type.PravnickaOsoba),
 ]
 
 export default step('udajeODanovnikovi', { title: 'Údaje o daňovníkovi' }, [
@@ -218,6 +204,24 @@ export default step('udajeODanovnikovi', { title: 'Údaje o daňovníkovi' }, [
   conditionalFields(createCondition([[['priznanieAko'], { const: 'fyzickaOsobaPodnikatel' }]]), [
     object('fyzickaOsobaPodnikatel', { required: true }, {}, fyzickaOsobaPodnikatel),
   ]),
+  conditionalFields(
+    createCondition([
+      [['priznanieAko'], { const: 'pravnickaOsoba' }],
+      [['voSvojomMene'], { const: false }],
+    ]),
+    [
+      select(
+        'pravnyVztahKPO',
+        {
+          title: 'Vyberte právny vzťah k právnickej osobe, za ktorú podávate priznanie',
+          options: createCamelCaseOptions(['štatutárny zástupca', 'zástupca', 'správca'], false),
+        },
+        {
+          dropdownDivider: true,
+        },
+      ),
+    ],
+  ),
   conditionalFields(createCondition([[['priznanieAko'], { const: 'pravnickaOsoba' }]]), [
     object('pravnickaOsoba', { required: true }, {}, pravnickaOsoba(false)),
   ]),

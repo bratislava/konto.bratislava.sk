@@ -7,6 +7,7 @@ import uniq from 'lodash/uniq'
 import {
   ArrayFieldUiOptions,
   CheckboxGroupUiOptions,
+  CheckboxUiOptions,
   CustomComponentFieldUiOptions,
   CustomComponentType,
   DatePickerUiOptions,
@@ -21,14 +22,19 @@ import {
   TimePickerUiOptions,
 } from './uiOptionsTypes'
 
-type Field = {
+export type Field = {
   property: string
   schema: () => RJSFSchema
   uiSchema: () => UiSchema
   required: boolean
+  skipUiSchema?: boolean
+  skipSchema?: boolean
 }
 
-type ObjectField = Omit<Field, 'property'> & { property: string | null; fieldProperties: string[] }
+type ObjectField = Omit<Field, 'property'> & {
+  property: string | null
+  fieldProperties: string[]
+}
 
 type ConditionalFields = {
   condition: RJSFSchema
@@ -38,7 +44,7 @@ type ConditionalFields = {
   fieldProperties: string[]
 }
 
-type FieldType = Field | ConditionalFields | ObjectField
+export type FieldType = Field | ConditionalFields | ObjectField
 
 type BaseOptions = {
   title: string
@@ -117,7 +123,7 @@ export const input = (
           | {
               type?: 'text'
               // TODO: Add more formats
-              format?: 'zip'
+              format?: 'zip' | 'ratio'
               pattern?: RegExp
             }
           | {
@@ -263,6 +269,26 @@ export const textArea = (
     uiSchema: () => ({
       'ui:widget': 'TextArea',
       'ui:label': false,
+      'ui:options': uiOptions,
+    }),
+    required: Boolean(options.required),
+  }
+}
+
+export const checkbox = (
+  property: string,
+  options: BaseOptions & { default?: boolean },
+  uiOptions: CheckboxUiOptions,
+): Field => {
+  return {
+    property,
+    schema: () => ({
+      type: 'boolean',
+      title: options.title,
+      default: options.default,
+    }),
+    uiSchema: () => ({
+      'ui:widget': 'Checkbox',
       'ui:options': uiOptions,
     }),
     required: Boolean(options.required),
@@ -428,9 +454,12 @@ export const object = (
   fields: FieldType[],
 ): ObjectField => {
   const ordinaryFields = fields.filter((field) => !('condition' in field)) as Field[]
+  const ordinaryFieldsWithSchema = ordinaryFields.filter((field) => !field.skipSchema)
+  const ordinaryFieldsWithUiSchema = ordinaryFields.filter((field) => !field.skipUiSchema)
   const conditionalFields = fields.filter((field) => 'condition' in field) as ConditionalFields[]
   const fieldProperties = uniq(
     fields
+      .filter((field) => ('skipUiSchema' in field ? !field.skipUiSchema : true))
       .flatMap((field) => ('condition' in field ? field.fieldProperties : [field.property]))
       .filter((field) => field !== null) as string[],
   )
@@ -447,15 +476,17 @@ export const object = (
       return {
         type: 'object',
         properties: Object.fromEntries(
-          ordinaryFields.map((field) => [field.property, field.schema()]),
+          ordinaryFieldsWithSchema.map((field) => [field.property, field.schema()]),
         ),
-        required: ordinaryFields.filter((field) => field.required).map((field) => field.property),
+        required: ordinaryFieldsWithSchema
+          .filter((field) => field.required)
+          .map((field) => field.property),
         allOf: allOf.length > 0 ? allOf : undefined,
       }
     },
     uiSchema: () => {
       const ordinaryFieldsUiSchema = Object.fromEntries(
-        ordinaryFields.map((field) => [field.property, field.uiSchema()]),
+        ordinaryFieldsWithUiSchema.map((field) => [field.property, field.uiSchema()]),
       )
       const conditionalFieldsUiSchema = conditionalFields.reduce(
         (acc, field) => ({ ...acc, ...field.uiSchema() }),
@@ -614,6 +645,17 @@ export const schema = (
     },
   }
 }
+
+// TODO: Document
+export const skipUiSchema = <F extends Field | ObjectField>(field: F): F => {
+  return { ...field, skipUiSchema: true }
+}
+
+// TODO: Document
+export const skipSchema = <F extends Field | ObjectField>(field: F): F => {
+  return { ...field, skipSchema: true }
+}
+
 /**
  * If text contains markdown, it is still string, to distinguish it from normal text, we need to prefix it in order to
  * detect that it is markdown when used in component.

@@ -43,3 +43,16 @@ City account:
 
 - [Swagger](https://nest-city-account.staging.bratislava.sk/api)
 - [API JSON](https://nest-city-account.staging.bratislava.sk/api-json)
+
+## Run Cypress locally
+
+To run cypress tests locally you need to run one of the following commands.
+Currently tests are running against https://konto.bratislava.sk/
+
+```
+npm run cypress:open //for open mode (Running tests in chrome browser)
+```
+
+```
+npm run cypress:run // for terminal mode
+```

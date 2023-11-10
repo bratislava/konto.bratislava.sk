@@ -5,11 +5,9 @@ module.exports = {
     'plugin:@next/next/recommended',
     'prettier',
     'plugin:@tanstack/eslint-plugin-query/recommended',
-    "plugin:cypress/recommended"
+    'plugin:cypress/recommended',
   ],
-  plugins: [
-    "cypress"
-  ],
+  plugins: ['cypress'],
   rules: {
     'react/react-in-jsx-scope': 'off',
     /** We use this a lot with isDefined and hasAttributes */
@@ -80,12 +78,12 @@ module.exports = {
       },
     ],
     '@typescript-eslint/ban-ts-comment': 'warn',
-    "cypress/no-assigning-return-values": "error",
-    "cypress/no-unnecessary-waiting": "error",
-    "cypress/assertion-before-screenshot": "warn",
-    "cypress/no-force": "warn",
-    "cypress/no-async-tests": "error",
-    "cypress/no-pause": "error"
+    'cypress/no-assigning-return-values': 'error',
+    'cypress/no-unnecessary-waiting': 'error',
+    'cypress/assertion-before-screenshot': 'warn',
+    'cypress/no-force': 'warn',
+    'cypress/no-async-tests': 'error',
+    'cypress/no-pause': 'error',
   },
   ignorePatterns: [
     '*.config.*',

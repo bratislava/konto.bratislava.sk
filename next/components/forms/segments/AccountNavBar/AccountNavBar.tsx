@@ -14,6 +14,7 @@ import NextLink from 'next/link'
 import { useRouter } from 'next/router'
 import { useTranslation } from 'next-i18next'
 import { ReactNode, useState } from 'react'
+import { Button as ReactAriaButton } from 'react-aria-components'
 import { RemoveScroll } from 'react-remove-scroll'
 
 import { ROUTES } from '../../../../frontend/api/constants'
@@ -193,9 +194,8 @@ export const AccountNavBar = ({ className, sectionsList, menuItems, hiddenHeader
           {!burgerOpen && <StatusBar className="flex lg:hidden" />}
           <div className="flex h-16 items-center border-b-2 px-8 py-5">
             <Brand url={ROUTES.HOME} className="grow" />
-            <button
-              type="button"
-              onClick={() => (isAuthenticated ? setBurgerOpen(!burgerOpen) : login())}
+            <ReactAriaButton
+              onPress={() => (isAuthenticated ? setBurgerOpen(!burgerOpen) : login())}
               className="-mr-4 px-4 py-5"
             >
               <div className="flex w-6 items-center justify-center">
@@ -207,7 +207,7 @@ export const AccountNavBar = ({ className, sectionsList, menuItems, hiddenHeader
                   <Avatar userData={userData} />
                 )}
               </div>
-            </button>
+            </ReactAriaButton>
 
             {burgerOpen && (
               <HamburgerMenu

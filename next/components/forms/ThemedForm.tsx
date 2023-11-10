@@ -10,6 +10,7 @@ import BAArrayFieldItemTemplate from './widget-wrappers/BAArrayFieldItemTemplate
 import BAArrayFieldTemplate from './widget-wrappers/BAArrayFieldTemplate'
 import BAObjectFieldTemplate from './widget-wrappers/BAObjectFieldTemplate'
 import CheckboxGroupWidgetRJSF from './widget-wrappers/CheckboxGroupWidgetRJSF'
+import CheckboxWidgetRJSF from './widget-wrappers/CheckboxWidgetRJSF'
 import CustomComponentsWidgetRJSF from './widget-wrappers/CustomComponentsFieldWidgetRJSF'
 import FileUploadWidgetRJSF from './widget-wrappers/FileUploadWidgetRJSF'
 import InputWidgetRJSF from './widget-wrappers/InputWidgetRJSF'
@@ -24,6 +25,7 @@ const theme: ThemeProps = {
     RadioGroup: RadioGroupWidgetRJSF,
     TextArea: TextAreaWidgetRJSF,
     CheckboxGroup: CheckboxGroupWidgetRJSF,
+    Checkbox: CheckboxWidgetRJSF,
     FileUpload: FileUploadWidgetRJSF,
     DatePicker: DatePickerWidgetRJSF,
     TimePicker: TimePickerWidgetRJSF,

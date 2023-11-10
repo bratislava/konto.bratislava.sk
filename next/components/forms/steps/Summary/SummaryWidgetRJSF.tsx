@@ -2,6 +2,7 @@ import { getLocalTimeZone, parseDate } from '@internationalized/date'
 import { WidgetProps } from '@rjsf/utils'
 import React from 'react'
 import { useDateFormatter } from 'react-aria'
+import { CheckboxUiOptions } from 'schema-generator/generator/uiOptionsTypes'
 
 import { useFormState } from '../../useFormState'
 import SummaryFiles from './SummaryFiles'
@@ -13,6 +14,7 @@ export type SummaryWidgetType =
   | 'input'
   | 'radioGroup'
   | 'textArea'
+  | 'checkbox'
   | 'checkboxGroup'
   | 'fileUpload'
   | 'datePicker'
@@ -57,6 +59,11 @@ const ValueComponent = ({
       )
     case 'textArea':
       return <span className="line-clamp-3 whitespace-pre-wrap">{value}</span>
+    case 'checkbox':
+      if (value) {
+        return <>{(options as CheckboxUiOptions).checkboxLabel}</>
+      }
+      return <>-</>
     case 'checkboxGroup':
       return (
         <>

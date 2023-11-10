@@ -1,7 +1,16 @@
 // eslint-disable-next-line import/no-extraneous-dependencies
 import type { GenericObjectType } from '@rjsf/utils'
 
-import { input, number, object } from '../../generator/functions'
+import {
+  checkbox,
+  conditionalFields,
+  Field,
+  input,
+  number,
+  object,
+  skipUiSchema,
+} from '../../generator/functions'
+import { createCondition } from '../../generator/helpers'
 import { CustomComponentPropertyCalculatorProps } from '../../generator/uiOptionsTypes'
 
 // A/B regex
@@ -38,3 +47,51 @@ export const kalkulackaTest: CustomComponentPropertyCalculatorProps = {
     ]),
   ),
 }
+
+export const pouzitKalkulacku = ({
+  title,
+  checkboxLabel,
+  helptextHeader,
+  inner,
+}: {
+  title: string
+  checkboxLabel: string
+  helptextHeader: string
+  inner: (kalkulacka: boolean) => Field
+}) => [
+  object(
+    'pouzitKalkulacku',
+    {},
+    {
+      objectDisplay: 'boxed',
+    },
+    [
+      checkbox(
+        'kalulackaVypoctu',
+        {
+          title,
+          required: true,
+          default: true,
+        },
+        {
+          variant: 'basic',
+          labelSize: 'h3',
+          checkboxLabel,
+          helptextHeader,
+        },
+      ),
+    ],
+  ),
+  conditionalFields(
+    createCondition([
+      [
+        ['pouzitKalkulacku', 'kalulackaVypoctu'],
+        {
+          const: true,
+        },
+      ],
+    ]),
+    [inner(true)],
+    [skipUiSchema(inner(false))],
+  ),
+]

@@ -6,8 +6,8 @@ import remarkDirectiveRehype from 'remark-directive-rehype'
 import remarkSupersub from 'remark-supersub'
 import { markdownTextPrefix } from 'schema-generator/generator/uiOptionsTypes'
 
-import ButtonNew from '../simple-components/ButtonNew'
 import MLinkNew from '../simple-components/MLinkNew'
+import FormLightboxModal from './FormLightboxModal'
 
 type FormMarkdownProps = { children: string }
 
@@ -31,12 +31,14 @@ const FormMarkdown = ({ children }: FormMarkdownProps) => {
         ]}
         components={{
           // @ts-expect-error https://github.com/remarkjs/react-markdown/issues/622
-          'form-image-preview': ({ children: childrenInner }) => (
-            // TODO Implement lightboxes
-            <ButtonNew onPress={() => {}} variant="black-link">
-              {childrenInner}
-            </ButtonNew>
-          ),
+          'form-image-preview': ({ children: childrenInner }) => {
+            // TODO propagate URL
+            return (
+              <FormLightboxModal imageUrl="https://cdn-api.bratislava.sk/strapi-homepage/upload/oprava_cyklocesty_kacin_7b008b44d8.jpg">
+                {childrenInner}
+              </FormLightboxModal>
+            )
+          },
           a: ({ href, children: childrenInner }) => (
             <MLinkNew
               href={href ?? '#'}

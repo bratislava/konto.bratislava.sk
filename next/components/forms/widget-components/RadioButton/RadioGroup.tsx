@@ -74,9 +74,10 @@ const RadioGroup = (props: RadioGroupProps) => {
         errorMessageProps={errorMessageProps}
         size={size}
         labelSize={labelSize}
+        customHeaderBottomMargin="mb-4"
       >
         <RadioContext.Provider value={state}>
-          <div className="mt-3 flex flex-col gap-2">
+          <div className="flex flex-col gap-2">
             <div
               className={cx({
                 'flex flex-col gap-3': orientation === 'vertical',

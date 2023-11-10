@@ -30,12 +30,12 @@ const BAObjectFieldTemplate = ({ idSchema, properties, uiSchema }: ObjectFieldTe
 
   const defaultSpacing = {
     boxed: { spaceBottom: 'medium' as const, spaceTop: 'medium' as const },
-    columns: undefined,
+    columns: {},
     noObjectDisplay: { spaceTop: 'none' as const, spaceBottom: 'none' as const },
   }[options.objectDisplay ?? 'noObjectDisplay']
 
   const fieldsetClassname = cx({
-    'block gap-4 sm:grid md:gap-6': options.objectDisplay === 'columns',
+    'flex flex-col gap-6 sm:grid': options.objectDisplay === 'columns',
     'border-grey-200 rounded-xl border p-4': options.objectDisplay === 'boxed',
   })
 
@@ -66,6 +66,7 @@ const BAObjectFieldTemplate = ({ idSchema, properties, uiSchema }: ObjectFieldTe
           return (
             <WidgetSpacingContextProvider
               spacing={getPropertySpacing(isInColumnObject, isFirst, isLast)}
+              key={index}
             >
               {content}
             </WidgetSpacingContextProvider>

@@ -82,6 +82,7 @@ const theme: ThemeProps = {
     Input: wrapWidget('input'),
     RadioGroup: wrapWidget('radioGroup'),
     TextArea: wrapWidget('textArea'),
+    Checkbox: wrapWidget('checkbox'),
     CheckboxGroup: wrapWidget('checkboxGroup'),
     FileUpload: wrapWidget('fileUpload'),
     DatePicker: wrapWidget('datePicker'),

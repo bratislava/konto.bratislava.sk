@@ -137,18 +137,18 @@ const MyApplicationsCard = ({ form, refreshListData, variant }: MyApplicationsCa
   }
 
   const deleteConcept = async () => {
-    openSnackbarInfo(ft('info_messages.pdf_export'))
+    openSnackbarInfo(ft('info_messages.concept_delete'))
     try {
       if (!formId) throw new Error(`No formId provided on deleteConcept`)
       await formsApi.nasesControllerDeleteForm(formId, {
         accessToken: 'onlyAuthenticated',
       })
       closeSnackbarInfo()
-      openSnackbarSuccess(ft('success_messages.pdf_export'))
+      openSnackbarSuccess(ft('success_messages.concept_delete'))
       await refreshListData()
     } catch (error) {
       logger.error(error)
-      openSnackbarError(ft('errors.pdf_export'))
+      openSnackbarError(ft('errors.concept_delete'))
     }
   }
 

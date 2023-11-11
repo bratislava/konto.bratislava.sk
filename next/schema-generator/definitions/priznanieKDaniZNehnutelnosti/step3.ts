@@ -19,6 +19,16 @@ import { pravnyVztahSpoluvlastnictvo } from './pravnyVztahSpoluvlastnictvo'
 import { StepEnum } from './stepEnum'
 import { vyplnitKrokRadio } from './vyplnitKrokRadio'
 
+const celkovaVymeraPozemku = number(
+  'celkovaVymeraPozemku',
+  { title: 'Celková výmera pozemku', required: true },
+  {
+    helptext: markdownText(
+      'Zadávajte číslo, nachádza sa ako 2. v poradí v tabuľke na LV. Pozemky pod stavbami sa nezdaňujú. Sčítate len tie, ktoré majú iný kód využitia ako “15”. :form-image-preview[Zobraziť ukážku]{src="https://cdn-api.bratislava.sk/strapi-homepage/upload/oprava_cyklocesty_kacin_7b008b44d8.jpg"}',
+    ),
+  },
+)
+
 const podielPriestoruNaSpolocnychCastiachAZariadeniachDomu = input(
   'podielPriestoruNaSpolocnychCastiachAZariadeniachDomu',
   {
@@ -77,14 +87,14 @@ const innerArray = (kalkulacka: boolean) =>
           addButtonLabel: 'Pridať ďalší pozemok (na tom istom LV)',
           itemTitle: 'Pozemok č. {index}',
           description: markdownText(
-            'Pozemky pod stavbami, v ktorej máte nehnuteľnosť, sa nezdaňujú. Sčítate len tie, ktoré majú iný kód využitia ako”15”. Ak máte len parcely s kódom “15”, zadajte do pola číslo 0.\n\n:form-image-preview[Zobraziť ukážku]{src="https://cdn-api.bratislava.sk/strapi-homepage/upload/oprava_cyklocesty_kacin_7b008b44d8.jpg"}',
+            'Pozemky pod stavbami, v ktorej máte nehnuteľnosť, sa nezdaňujú.\n\n:form-image-preview[Zobraziť ukážku]{src="https://cdn-api.bratislava.sk/strapi-homepage/upload/oprava_cyklocesty_kacin_7b008b44d8.jpg"}',
           ),
         },
         [
           input(
             'cisloListuVlastnictva',
             { title: 'Číslo listu vlastníctva' },
-            { size: 'small', placeholder: 'Napr. 4567' },
+            { size: 'medium', placeholder: 'Napr. 4567' },
           ),
           select(
             'kataster',
@@ -130,19 +140,22 @@ const innerArray = (kalkulacka: boolean) =>
             },
             [
               input(
-                'parcelneCislo',
-                { title: 'Parcelné číslo', required: true },
+                'cisloParcely',
+                { title: 'Číslo parcely', required: true },
                 {
                   placeholder: 'Napr. 7986/1',
                   helptext: markdownText(
-                    'Zadávajte číslo s lomítkom. Nachádza sa 1. v poradí v tabuľke na LV. :form-image-preview[Zobraziť ukážku]{src="https://cdn-api.bratislava.sk/strapi-homepage/upload/oprava_cyklocesty_kacin_7b008b44d8.jpg"}',
+                    'Zadávajte číslo s lomítkom. Nachádza sa na LV ako parcelné číslo. :form-image-preview[Zobraziť ukážku]{src="https://cdn-api.bratislava.sk/strapi-homepage/upload/oprava_cyklocesty_kacin_7b008b44d8.jpg"}',
                   ),
                 },
               ),
               input(
                 'sposobVyuzitiaPozemku',
-                { title: 'Spôsob využitia pozemku', required: true },
-                {},
+                { title: 'Spôsob využitia pozemku' },
+                {
+                  helptext:
+                    'Vyplňte, ak na pozemok bolo vydané povolenie na dobývanie ložiska nevyhradeného nerastu alebo sa na pozemku nachádza zariadenie na výrobu elektriny zo slnečnej energie, transformačná stanica alebo predajný stánok slúžiaci k predaju tovaru a poskytovaniu služieb.',
+                },
               ),
             ],
           ),
@@ -151,7 +164,40 @@ const innerArray = (kalkulacka: boolean) =>
             {
               title: 'Druh pozemku',
               required: true,
-              options: createStringOptions(['TODO 1', 'TODO 2'], false),
+              options: [
+                {
+                  value: 'A',
+                  title: 'A - orná pôda, vinice, chmeľnice, ovocné sady',
+                },
+                {
+                  value: 'B',
+                  title: 'B - trvalé trávnaté porasty',
+                },
+                {
+                  value: 'C',
+                  title: 'C - záhrady',
+                },
+                {
+                  value: 'D',
+                  title: 'D - lesné pozemky, na ktorých sú hospodárske lesy',
+                },
+                {
+                  value: 'E',
+                  title: 'E - rybníky s chovom rýb a ostatné hospodársky využívané vodné plochy',
+                },
+                {
+                  value: 'F',
+                  title: 'F - zastavané plochy a nádvoria',
+                },
+                {
+                  value: 'G',
+                  title: 'G - stavebné pozemky',
+                },
+                {
+                  value: 'H',
+                  title: 'H - ostatné plochy',
+                },
+              ],
             },
             {
               helptext: markdownText(
@@ -160,24 +206,29 @@ const innerArray = (kalkulacka: boolean) =>
               dropdownDivider: true,
             },
           ),
-          radioGroup(
-            'hodnotaUrcenaZnaleckymPosudkom',
-            {
-              type: 'boolean',
-              title: 'Je hodnota pozemku určená znaleckým posudkom?',
-              required: true,
-              options: [
-                { value: true, title: 'Áno' },
-                { value: false, title: 'Nie', isDefault: true },
-              ],
-            },
-            {
-              variant: 'boxed',
-              orientations: 'row',
-            },
-          ),
+          conditionalFields(createCondition([[['druhPozemku'], { enum: ['D', 'G'] }]]), [
+            radioGroup(
+              'hodnotaUrcenaZnaleckymPosudkom',
+              {
+                type: 'boolean',
+                title: 'Je hodnota pozemku určená znaleckým posudkom?',
+                required: true,
+                options: [
+                  { value: true, title: 'Áno' },
+                  { value: false, title: 'Nie', isDefault: true },
+                ],
+              },
+              {
+                variant: 'boxed',
+                orientations: 'row',
+              },
+            ),
+          ]),
           conditionalFields(
-            createCondition([[['hodnotaUrcenaZnaleckymPosudkom'], { const: true }]]),
+            createCondition([
+              [['druhPozemku'], { enum: ['D', 'G'] }],
+              [['hodnotaUrcenaZnaleckymPosudkom'], { const: true }],
+            ]),
             [
               fileUpload(
                 'znaleckyPosudok',
@@ -195,6 +246,7 @@ const innerArray = (kalkulacka: boolean) =>
               ),
             ],
           ),
+          kalkulacka ? celkovaVymeraPozemku : skipSchema(celkovaVymeraPozemku),
           kalkulacka
             ? podielPriestoruNaSpolocnychCastiachAZariadeniachDomu
             : skipSchema(podielPriestoruNaSpolocnychCastiachAZariadeniachDomu),
@@ -213,7 +265,7 @@ const innerArray = (kalkulacka: boolean) =>
                 { title: 'Dátum vzniku daňovej povinnosti' },
                 {
                   helptext:
-                    'Vypĺňate len v prípade, ak ste pozemok zdedili alebo vydražili (v tom prípade uvediete prvý deň mesiaca nasledujúceho po tom, v ktorom ste nehnuteľnosť nadobudli)',
+                    'Vypĺňate len v prípade, ak ste pozemok zdedili alebo vydražili (v tom prípade uvediete prvý deň mesiaca nasledujúceho po tom, v ktorom ste nehnuteľnosť nadobudli).',
                 },
               ),
               datePicker(
@@ -221,7 +273,7 @@ const innerArray = (kalkulacka: boolean) =>
                 { title: 'Dátum zániku daňovej povinnosti' },
                 {
                   helptext:
-                    'Vypĺňate len v prípade, ak ste pozemok predali alebo darovali (uvediete dátum 31.12.rok predaja/darovania)',
+                    'Vypĺňate len v prípade, ak ste pozemok predali alebo darovali (uvediete dátum 31.12.rok predaja/darovania).',
                 },
               ),
             ],
@@ -242,7 +294,7 @@ export default step(
   vyplnitKrokRadio({
     title: 'Chcete podať daňové priznanie k dani z pozemkom?',
     helptext: markdownText(
-      `K úspešnému vyplneniu oddielov k pozemkom potrebujete list vlastníctva (LV) k pozemkom. Ide o tú časť LV, kde máte v časti A: MAJETKOVÁ PODSTATA uvedené parcely registra "C", resp. "E" registrované na katastrálnej mape.\n\nV prípade, že sa vás daň z pozemkov netýka, túto časť preskočte.`,
+      `K úspešnému vyplneniu oddielov k pozemkom potrebujete list vlastníctva (LV) k pozemkom. Ide o tú časť LV, kde máte v časti A: MAJETKOVÁ PODSTATA uvedené parcely registra "C", resp. "E" registrované na katastrálnej mape.\n\nV prípade, že sa vás daň z pozemkov netýka, túto časť preskočte.\n\n:form-image-preview[Zobraziť ukážku LV k pozemkom]{src="https://cdn-api.bratislava.sk/strapi-homepage/upload/oprava_cyklocesty_kacin_7b008b44d8.jpg"}`,
     ),
     fields: pouzitKalkulacku({
       title: 'Kalkulačka výpočtu {name}',

@@ -1,4 +1,4 @@
-import { input, object, select } from '../../generator/functions'
+import { input, markdownText, object, select } from '../../generator/functions'
 import { createStringOptions } from '../../generator/helpers'
 import { pravnyVztahSpoluvlastnictvo } from './pravnyVztahSpoluvlastnictvo'
 import { StepEnum } from './stepEnum'
@@ -7,10 +7,10 @@ export const stavbyBase = (step: StepEnum) => [
   input(
     'cisloListuVlastnictva',
     { title: 'Číslo listu vlastníctva' },
-    { size: 'small', placeholder: 'Napr. 4567' },
+    { size: 'medium', placeholder: 'Napr. 4567' },
   ),
   object(
-    'todoRename2',
+    'riadok1',
     { required: true },
     {
       objectDisplay: 'columns',
@@ -22,11 +22,11 @@ export const stavbyBase = (step: StepEnum) => [
     ],
   ),
   object(
-    'todoRename1',
+    'riadok2',
     { required: true },
     {
       objectDisplay: 'columns',
-      objectColumnRatio: '3/1',
+      objectColumnRatio: '1/1',
     },
     [
       select(
@@ -68,7 +68,12 @@ export const stavbyBase = (step: StepEnum) => [
         'cisloParcely',
         { title: 'Číslo parcely', required: true },
         {
-          helptext: 'Uveďte len prvé parcelné číslo',
+          placeholder: 'Napr. 7986/1',
+          helptext: markdownText(
+            step === StepEnum.DanZBytovANebytovychPriestorov
+              ? 'Zadávajte číslo s lomítkom. Nachádza sa na LV ako parcelné číslo. Ak dom stojí na viacerých parcelách, uveďte prvú z nich. :form-image-preview[Zobraziť ukážku]{src="https://cdn-api.bratislava.sk/strapi-homepage/upload/oprava_cyklocesty_kacin_7b008b44d8.jpg"}'
+              : 'Zadávajte číslo s lomítkom. Nachádza sa na LV ako parcelné číslo. :form-image-preview[Zobraziť ukážku]{src="https://cdn-api.bratislava.sk/strapi-homepage/upload/oprava_cyklocesty_kacin_7b008b44d8.jpg"}',
+          ),
         },
       ),
     ],
@@ -76,7 +81,11 @@ export const stavbyBase = (step: StepEnum) => [
   ...(step === StepEnum.DanZBytovANebytovychPriestorov
     ? [
         input('cisloBytu', { title: 'Číslo bytu', required: true }, {}),
-        input('popisBytu', { title: 'Popis bytu' }, {}),
+        input(
+          'popisBytu',
+          { title: 'Popis bytu' },
+          { helptext: 'Stručný popis bytu.', placeholder: 'Napr. dvojizbový byt' },
+        ),
       ]
     : []),
   ...pravnyVztahSpoluvlastnictvo(step),

@@ -9,8 +9,8 @@ import {
   select,
   skipSchema,
   step,
+  textArea,
 } from '../../generator/functions'
-import { createStringOptions } from '../../generator/helpers'
 import { pouzitKalkulacku } from './kalkulacky'
 import { stavbyBase } from './stavbyBase'
 import { StepEnum } from './stepEnum'
@@ -102,7 +102,7 @@ const innerArray = (kalkulacka: boolean) =>
         {
           placeholder: 'Napr. polyfunkčná budova',
           helptext:
-            'Uveďte stručný popis stavby, napr. administratívna budova, polyfunkčná stavba a pod. (vychádzajte z LV)',
+            'Uveďte stručný popis stavby, napr. administratívna budova, polyfunkčná stavba a pod. (vychádzajte z LV).',
         },
       ),
       object(
@@ -118,7 +118,7 @@ const innerArray = (kalkulacka: boolean) =>
             { title: 'Dátum vzniku daňovej povinnosti' },
             {
               helptext:
-                'Vypĺňate len v prípade, ak ste stavbu zdedili alebo vydražili (v tom prípade uvediete prvý deň mesiaca nasledujúceho po tom, v ktorom ste nehnuteľnosť nadobudli)',
+                'Vypĺňate len v prípade, ak ste stavbu zdedili alebo vydražili (v tom prípade uvediete prvý deň mesiaca nasledujúceho po tom, v ktorom ste nehnuteľnosť nadobudli).',
             },
           ),
           datePicker(
@@ -126,7 +126,7 @@ const innerArray = (kalkulacka: boolean) =>
             { title: 'Dátum zániku daňovej povinnosti' },
             {
               helptext:
-                'Vypĺňate len v prípade, ak ste stavbu predali alebo darovali (uvediete dátum 31.12.rok predaja/darovania)',
+                'Vypĺňate len v prípade, ak ste stavbu predali alebo darovali (uvediete dátum 31.12.rok predaja/darovania).',
             },
           ),
         ],
@@ -135,8 +135,9 @@ const innerArray = (kalkulacka: boolean) =>
         'celkovaVymera',
         { title: 'Celková výmera zastavanej plochy viacúčelovej stavby' },
         {
-          helptext:
+          helptext: markdownText(
             'Výmera zastavanej plochy, na ktorej je postavená nebytová budova (pozrite LV s “Parcely registra “C” a parcelu s spôsobom využívania “16” alebo “15”). Ak je stavba na viacerých parceliach, sčítajte plochu. :form-image-preview[Zobraziť ukážku]{src="https://cdn-api.bratislava.sk/strapi-homepage/upload/oprava_cyklocesty_kacin_7b008b44d8.jpg"}',
+          ),
         },
       ),
       radioGroup(
@@ -159,9 +160,8 @@ const innerArray = (kalkulacka: boolean) =>
       object('nehnutelnosti', { required: true }, { objectDisplay: 'boxed' }, [
         arrayField(
           'nehnutelnosti',
-          { title: 'Časti stavby', required: true },
+          { title: 'Aké nehnuteľnosti máte v tejto budove z hľadiska účelu?', required: true },
           {
-            hideTitle: true,
             variant: 'nested',
             addButtonLabel: 'Pridať ďalšiu časť stavby podľa účelu',
             itemTitle: 'Časť stavby č. {index}',
@@ -172,7 +172,48 @@ const innerArray = (kalkulacka: boolean) =>
               {
                 title: 'Účel využitia stavby',
                 required: true,
-                options: createStringOptions(['Stavby hromadných garáži'], false),
+                options: [
+                  {
+                    value: 'a',
+                    title:
+                      'a) stavby na bývanie a drobné stavby, ktoré majú doplnkovú funkciu pre hlavnú stavbu',
+                  },
+                  {
+                    value: 'b',
+                    title:
+                      'b) stavby na pôdohospodársku produkciu, skleníky, stavby pre vodné hospodárstvo, stavby využívané na skladovanie vlastnej pôdohospodárskej produkcie vrátane stavieb na vlastnú administratívu',
+                  },
+                  {
+                    value: 'c',
+                    title: 'c) chaty a stavby na individuálnu rekreáciu',
+                  },
+                  {
+                    value: 'd',
+                    title: 'd) samostatne stojace garáže',
+                  },
+                  {
+                    value: 'e',
+                    title: 'e) stavby hromadných garáží',
+                  },
+                  {
+                    value: 'f',
+                    title: 'f) stavby hromadných garáží umiestnené pod zemou',
+                  },
+                  {
+                    value: 'g',
+                    title:
+                      'g) priemyselné stavby, stavby slúžiace energetike, stavby slúžiace stavebníctvu, stavby využívané na skladovanie vlastnej produkcie vrátane stavieb na vlastnú administratívu',
+                  },
+                  {
+                    value: 'h',
+                    title:
+                      'h) stavby na ostatné podnikanie a na zárobkovú činnosť, skladovanie a administratívu súvisiacu s ostatným podnikaním a so zárobkovou činnosťou',
+                  },
+                  {
+                    value: 'i',
+                    title: 'i) ostatné stavby neuvedené v písmenách a) až h)',
+                  },
+                ],
               },
               {
                 dropdownDivider: true,
@@ -196,8 +237,14 @@ const innerArray = (kalkulacka: boolean) =>
           required: true,
         },
         {
-          helptext: 'Napríklad, ak máte dom s dvomi podlažiami a s pivničným priestorom, zadáte 2.',
+          helptext:
+            'Napríklad ak máte stavbu s piatimi nadzemnými podlažiami a dvomi podzemnými podlažiami, uvádzate počet 6.',
         },
+      ),
+      textArea(
+        'poznamka',
+        { title: 'Poznámka' },
+        { placeholder: 'Tu môžete napísať doplnkové informácie' },
       ),
     ],
   )
@@ -207,11 +254,12 @@ export default step(
   {
     title: 'Priznanie k dani zo stavieb – stavba slúžiaca na viaceré účely',
     stepperTitle: 'Daň zo stavieb (stavba slúžiaca na viaceré účely)',
+    description: 'napr. byt, apartmán, nebytový priestor, garáž, v polyfunkčnej stavbe',
   },
   vyplnitKrokRadio({
     title: 'Chcete podať daňové priznanie k dani zo stavieb slúžiacich na viaceré účely?',
     helptext: markdownText(
-      `Tento oddiel vypĺňate, ak máte nehnuteľnosť v stavbe, ktorá slúži na viaceré účely, na ktoré sú určené rôzne sadzby dane. Napríklad ak vlastníte bytový alebo nebytový priestor v budove, ktorá je vedená ako administratívna alebo polyfunkčná.\n\nK úspešnému vyplneniu oddielu potrebujete listy vlastníctva (LV) k pozemkom – LV, na ktorom máte uvedený nadpis “Parcely registra „C" resp. „E” evidované na katastrálnej mape” nad tabuľkou a LV k jednotlivým stavbám (napr. byt, garážové státie).\n\nV prípade, že sa vás daň zo stavieb slúžiace na viaceré účely netýka, túto časť preskočte.`,
+      `Tento oddiel vypĺňate, ak máte nehnuteľnosť v stavbe, ktorá slúži na viaceré účely, na ktoré sú určené rôzne sadzby dane. Napríklad ak vlastníte bytový alebo nebytový priestor v budove, ktorá je vedená ako administratívna alebo polyfunkčná.\n\nK úspešnému vyplneniu oddielu potrebujete listy vlastníctva (LV) k pozemkom – LV, na ktorom máte uvedený nadpis “Parcely registra „C" resp. „E” evidované na katastrálnej mape” nad tabuľkou a LV k jednotlivým stavbám (napr. byt, garážové státie).\n\nV prípade, že sa vás daň zo stavieb slúžiace na viaceré účely netýka, túto časť preskočte.\n\n:form-image-preview[Zobraziť ukážku LV k pozemkom]{src="https://cdn-api.bratislava.sk/strapi-homepage/upload/oprava_cyklocesty_kacin_7b008b44d8.jpg"}`,
     ),
     fields: pouzitKalkulacku({
       title: 'Kalkulačka výpočtu {name}',

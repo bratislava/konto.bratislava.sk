@@ -32,6 +32,7 @@ const FormMarkdown = ({ children }: FormMarkdownProps) => {
               tagNames: ['strong', 'em', 'sub', 'sup', 'p', 'a', 'form-image-preview'],
               attributes: {
                 'form-image-preview': ['src'],
+                a: ['href'],
               },
             } as Schema,
           ],

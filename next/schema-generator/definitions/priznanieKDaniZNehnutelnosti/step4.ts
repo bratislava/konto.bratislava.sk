@@ -23,7 +23,7 @@ const celkovaZastavanaPlocha = number(
   { type: 'integer', title: 'Celková zastavaná plocha', required: true },
   {
     helptext: markdownText(
-      'Uveďte výmeru zastavanej plochy pozemku/ov, na ktorom je umiestnená stavba. Nájdete ju na LV, v časti A. (druh pozemku - zastavaná plocha a nádvorie). Zobraziť ukážku',
+      'Uveďte výmeru zastavanej plochy pozemku/ov, na ktorom je umiestnená stavba. Nájdete ju na LV, v časti A. (druh pozemku - zastavaná plocha a nádvorie). :form-image-preview[Zobraziť ukážku]{src="https://cdn-api.bratislava.sk/strapi-homepage/upload/oprava_cyklocesty_kacin_7b008b44d8.jpg"}',
     ),
   },
 )
@@ -37,8 +37,9 @@ const spoluvlastnickyPodiel = input(
   },
   {
     placeholder: 'Napr. 1/1',
-    helptext:
-      'Nájdete ho na LV, časti B, vedľa údajov o vlastníkovi. Zadávajte celý zlomok. Zobraziť ukážku',
+    helptext: markdownText(
+      'Nájdete ho na LV, časti B, vedľa údajov o vlastníkovi. Zadávajte celý zlomok. :form-image-preview[Zobraziť ukážku]{src="https://cdn-api.bratislava.sk/strapi-homepage/upload/oprava_cyklocesty_kacin_7b008b44d8.jpg"}',
+    ),
   },
 )
 

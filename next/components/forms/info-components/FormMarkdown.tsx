@@ -1,6 +1,7 @@
 import React from 'react'
 import ReactMarkdown from 'react-markdown'
 import rehypeSanitize from 'rehype-sanitize'
+import { Schema } from 'rehype-sanitize/lib'
 import remarkDirective from 'remark-directive'
 import remarkDirectiveRehype from 'remark-directive-rehype'
 import remarkSupersub from 'remark-supersub'
@@ -16,6 +17,7 @@ type FormMarkdownProps = { children: string }
  * special directives such as `form-image-preview`.
  */
 const FormMarkdown = ({ children }: FormMarkdownProps) => {
+  console.log('FormMarkdown', children)
   if (children.startsWith(markdownTextPrefix)) {
     // eslint-disable-next-line security/detect-non-literal-regexp
     const withoutPrefix = children.replace(new RegExp(`^${markdownTextPrefix}`), '')
@@ -26,15 +28,19 @@ const FormMarkdown = ({ children }: FormMarkdownProps) => {
         rehypePlugins={[
           [
             rehypeSanitize,
-            { tagNames: ['strong', 'em', 'sub', 'sup', 'p', 'a', 'form-image-preview'] },
+            {
+              tagNames: ['strong', 'em', 'sub', 'sup', 'p', 'a', 'form-image-preview'],
+              attributes: {
+                'form-image-preview': ['src'],
+              },
+            } as Schema,
           ],
         ]}
         components={{
           // @ts-expect-error https://github.com/remarkjs/react-markdown/issues/622
-          'form-image-preview': ({ children: childrenInner }) => {
-            // TODO propagate URL
+          'form-image-preview': ({ children: childrenInner, node }) => {
             return (
-              <FormLightboxModal imageUrl="https://cdn-api.bratislava.sk/strapi-homepage/upload/oprava_cyklocesty_kacin_7b008b44d8.jpg">
+              <FormLightboxModal imageUrl={node?.properties?.src ?? ''}>
                 {childrenInner}
               </FormLightboxModal>
             )

@@ -35,8 +35,9 @@ const podielPriestoruNaSpolocnychCastiachAZariadeniachDomu = input(
   },
   {
     placeholder: 'Napr. 4827/624441',
-    helptext:
-      'Zadávajte celý zlomok. Nájdete ho vedľa údajov o vchode, poschodí a čísle bytu. Zobraziť ukážku',
+    helptext: markdownText(
+      'Zadávajte celý zlomok. Nájdete ho vedľa údajov o vchode, poschodí a čísle bytu. :form-image-preview[Zobraziť ukážku]{src="https://cdn-api.bratislava.sk/strapi-homepage/upload/oprava_cyklocesty_kacin_7b008b44d8.jpg"}',
+    ),
   },
 )
 
@@ -45,7 +46,9 @@ const spoluvlastnickyPodiel = input(
   { title: 'Spoluvlastnícky podiel', required: true, format: 'ratio' },
   {
     placeholder: 'Napr. 1/1 alebo 1/105',
-    helptext: 'Zadávajte celý zlomok. Nájdete ho vedľa údajov o mene vlastníkov. Zobraziť ukážku',
+    helptext: markdownText(
+      'Zadávajte celý zlomok. Nájdete ho vedľa údajov o mene vlastníkov. :form-image-preview[Zobraziť ukážku]{src="https://cdn-api.bratislava.sk/strapi-homepage/upload/oprava_cyklocesty_kacin_7b008b44d8.jpg"}',
+    ),
   },
 )
 
@@ -133,7 +136,7 @@ const innerArray = (kalkulacka: boolean) =>
         { title: 'Celková výmera zastavanej plochy viacúčelovej stavby' },
         {
           helptext:
-            'Výmera zastavanej plochy, na ktorej je postavená nebytová budova (pozrite LV s “Parcely registra “C” a parcelu s spôsobom využívania “16” alebo “15”). Ak je stavba na viacerých parceliach, sčítajte plochu. Zobraziť ukážku',
+            'Výmera zastavanej plochy, na ktorej je postavená nebytová budova (pozrite LV s “Parcely registra “C” a parcelu s spôsobom využívania “16” alebo “15”). Ak je stavba na viacerých parceliach, sčítajte plochu. :form-image-preview[Zobraziť ukážku]{src="https://cdn-api.bratislava.sk/strapi-homepage/upload/oprava_cyklocesty_kacin_7b008b44d8.jpg"}',
         },
       ),
       radioGroup(

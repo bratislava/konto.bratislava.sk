@@ -8,7 +8,7 @@ import {
   PdfIcon,
 } from '@assets/ui-icons'
 import { formsApi } from '@clients/forms'
-import { GetFormResponseDto } from '@clients/openapi-forms'
+import { GetFormResponseDto, GetFormResponseDtoStateEnum } from '@clients/openapi-forms'
 import { getUiOptions } from '@rjsf/utils'
 import Button from 'components/forms/simple-components/ButtonNew'
 import MenuDropdown, {
@@ -230,9 +230,10 @@ const MyApplicationsCard = ({ form, refreshListData, variant }: MyApplicationsCa
                     {variant === 'SENT' &&
                       (isLoading ? (
                         <Skeleton width="75%" />
-                      ) : (
+                      ) : state !== GetFormResponseDtoStateEnum.ReadyForProcessing &&
+                        state !== GetFormResponseDtoStateEnum.Processing ? (
                         <FormatDate>{updatedAt || ''}</FormatDate>
-                      ))}
+                      ) : null)}
                   </div>
                 </div>
               )}

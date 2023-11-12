@@ -94,6 +94,17 @@ const MunicipalServicesSection = () => {
       href: ROUTES.MUNICIPAL_SERVICES_INVESTING,
     },
     {
+      title: t('account_section_services.cards.35.title'),
+      description: t('account_section_services.cards.35.description'),
+      buttonText: t('account_section_services.cards.35.buttonText'),
+      icon: <SpatialPlanningIcon className="h-10 w-10 text-environment-700 lg:h-12 lg:w-12" />,
+      tag: t('account_section_services.cards.35.tag'),
+      tagStyle: 'text-environment-700 bg-environment-100',
+      category: [CONSTRUCTION_CATEGORY],
+      linkType: 'internal',
+      href: ROUTES.MUNICIPAL_SERVICES_INVESTING_INTENT,
+    },
+    {
       title: t('account_section_services.cards.1.title'),
       description: t('account_section_services.cards.1.description'),
       buttonText: t('account_section_services.cards.1.buttonText'),

@@ -30,5 +30,5 @@
     }
   },
   "include": ["**/*.ts", "**/*.tsx", "**/*.js", "**/*.jsx", "next-env.d.ts"],
-  "exclude": ["node_modules", "schema-generator"]
+  "exclude": ["node_modules", "schema-generator", "./cypress.config.ts", "cypress"]
 }

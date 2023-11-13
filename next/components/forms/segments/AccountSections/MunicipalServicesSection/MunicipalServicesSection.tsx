@@ -27,6 +27,7 @@ import TransportIcon from '../../../../../assets/icons/transport-and-maps/city-â
 import ExcavationsIcon from '../../../../../assets/icons/transport-and-maps/excavations.svg'
 import ParkingIcon from '../../../../../assets/icons/transport-and-maps/parking.svg'
 import TowIcon from '../../../../../assets/icons/transport-and-maps/towing.svg'
+import { environment } from '../../../../../environment'
 import { ROUTES } from '../../../../../frontend/api/constants'
 import { SelectOption } from '../../../widget-components/SelectField/SelectOption.interface'
 
@@ -364,9 +365,14 @@ const MunicipalServicesSection = () => {
     // },
   ]
 
-  const filteredServiceCards = serviceCards.filter((card) =>
-    selectorValueTitle === ALL_CATEGORY ? true : card.category.includes(selectorValueTitle),
-  )
+  const filteredServiceCards = serviceCards
+    .filter(
+      // when forms are reachable from top menu, keep all the cards, otherwise discard the first two
+      (card, index) => (environment.featureToggles.formsInMenu ? true : index !== 0 && index !== 1),
+    )
+    .filter((card) =>
+      selectorValueTitle === ALL_CATEGORY ? true : card.category.includes(selectorValueTitle),
+    )
 
   return (
     <div className="flex flex-col">

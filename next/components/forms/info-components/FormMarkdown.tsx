@@ -17,7 +17,6 @@ type FormMarkdownProps = { children: string }
  * special directives such as `form-image-preview`.
  */
 const FormMarkdown = ({ children }: FormMarkdownProps) => {
-  console.log('FormMarkdown', children)
   if (children.startsWith(markdownTextPrefix)) {
     // eslint-disable-next-line security/detect-non-literal-regexp
     const withoutPrefix = children.replace(new RegExp(`^${markdownTextPrefix}`), '')
@@ -41,6 +40,7 @@ const FormMarkdown = ({ children }: FormMarkdownProps) => {
           // @ts-expect-error https://github.com/remarkjs/react-markdown/issues/622
           'form-image-preview': ({ children: childrenInner, node }) => {
             return (
+              // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
               <FormLightboxModal imageUrl={node?.properties?.src ?? ''}>
                 {childrenInner}
               </FormLightboxModal>

@@ -7,12 +7,12 @@ import {
   number,
   object,
   radioGroup,
-  selectMultiple,
+  select,
   skipSchema,
   step,
   textArea,
 } from '../../generator/functions'
-import { createCondition, createStringOptions } from '../../generator/helpers'
+import { createCondition } from '../../generator/helpers'
 import { pouzitKalkulacku } from './kalkulacky'
 import { stavbyBase } from './stavbyBase'
 import { StepEnum } from './stepEnum'
@@ -23,7 +23,7 @@ const celkovaZastavanaPlocha = number(
   { type: 'integer', title: 'Celková zastavaná plocha', required: true },
   {
     helptext: markdownText(
-      'Uveďte výmeru zastavanej plochy pozemku/ov, na ktorom je umiestnená stavba. Nájdete ju na LV, v časti A. (druh pozemku - zastavaná plocha a nádvorie). Zobraziť ukážku',
+      'Uveďte výmeru zastavanej plochy pozemku/ov, na ktorom je umiestnená stavba. Nájdete ju na LV, v časti A. (druh pozemku - zastavaná plocha a nádvorie). :form-image-preview[Zobraziť ukážku]{src="https://cdn-api.bratislava.sk/strapi-homepage/upload/oprava_cyklocesty_kacin_7b008b44d8.jpg"}',
     ),
   },
 )
@@ -37,8 +37,9 @@ const spoluvlastnickyPodiel = input(
   },
   {
     placeholder: 'Napr. 1/1',
-    helptext:
-      'Nájdete ho na LV, časti B, vedľa údajov o vlastníkovi. Zadávajte celý zlomok. Zobraziť ukážku',
+    helptext: markdownText(
+      'Nájdete ho na LV, časti B, vedľa údajov o vlastníkovi. Zadávajte celý zlomok. :form-image-preview[Zobraziť ukážku]{src="https://cdn-api.bratislava.sk/strapi-homepage/upload/oprava_cyklocesty_kacin_7b008b44d8.jpg"}',
+    ),
   },
 )
 
@@ -67,12 +68,53 @@ const innerArray = (kalkulacka: boolean) =>
     },
     [
       ...stavbyBase(StepEnum.DanZoStaviebJedencel),
-      selectMultiple(
+      select(
         'predmetDane',
         {
-          title: 'Predmet dane (druh stavby)',
+          title: 'Predmet dane',
           required: true,
-          options: createStringOptions(['Čuňovo', 'Devín'], false),
+          options: [
+            {
+              value: 'a',
+              title:
+                'a) stavby na bývanie a drobné stavby, ktoré majú doplnkovú funkciu pre hlavnú stavbu',
+            },
+            {
+              value: 'b',
+              title:
+                'b) stavby na pôdohospodársku produkciu, skleníky, stavby pre vodné hospodárstvo, stavby využívané na skladovanie vlastnej pôdohospodárskej produkcie vrátane stavieb na vlastnú administratívu',
+            },
+            {
+              value: 'c',
+              title: 'c) chaty a stavby na individuálnu rekreáciu',
+            },
+            {
+              value: 'd',
+              title: 'd) samostatne stojace garáže',
+            },
+            {
+              value: 'e',
+              title: 'e) stavby hromadných garáží',
+            },
+            {
+              value: 'f',
+              title: 'f) stavby hromadných garáží umiestnené pod zemou',
+            },
+            {
+              value: 'g',
+              title:
+                'g) priemyselné stavby, stavby slúžiace energetike, stavby slúžiace stavebníctvu, stavby využívané na skladovanie vlastnej produkcie vrátane stavieb na vlastnú administratívu',
+            },
+            {
+              value: 'h',
+              title:
+                'h) stavby na ostatné podnikanie a na zárobkovú činnosť, skladovanie a administratívu súvisiacu s ostatným podnikaním a so zárobkovou činnosťou',
+            },
+            {
+              value: 'i',
+              title: 'i) ostatné stavby neuvedené v písmenách a) až h)',
+            },
+          ],
         },
         {
           helptext: 'Vyberte stavbu, ktorú zdaňujete, podľa účelu využitia.',
@@ -121,7 +163,7 @@ const innerArray = (kalkulacka: boolean) =>
           },
           [
             number(
-              'celkovaVymera',
+              'celkovaVymeraPodlahovychPlochVsetkychPodlaziStavby',
               {
                 title: 'Celková výmera podlahových plôch všetkých podlaží stavby',
                 required: true,
@@ -132,7 +174,7 @@ const innerArray = (kalkulacka: boolean) =>
               },
             ),
             number(
-              'oslobodenaVymera',
+              'vymePodlahovychPlochCastiStavbyOslobodenejOdDaneZoStavieb',
               {
                 title:
                   'Výmera podlahových plôch časti stavby, ktorá je oslobodená od dane zo stavieb',
@@ -158,7 +200,7 @@ const innerArray = (kalkulacka: boolean) =>
             { title: 'Dátum vzniku daňovej povinnosti' },
             {
               helptext:
-                'Vypĺňate len v prípade, ak ste stavbu zdedili alebo vydražili (v tom prípade uvediete prvý deň mesiaca nasledujúceho po tom, v ktorom ste nehnuteľnosť nadobudli)',
+                'Vypĺňate len v prípade, ak ste stavbu zdedili alebo vydražili (v tom prípade uvediete prvý deň mesiaca nasledujúceho po tom, v ktorom ste nehnuteľnosť nadobudli).',
             },
           ),
           datePicker(
@@ -166,10 +208,15 @@ const innerArray = (kalkulacka: boolean) =>
             { title: 'Dátum zániku daňovej povinnosti' },
             {
               helptext:
-                'Vypĺňate len v prípade, ak ste stavbu predali alebo darovali (uvediete dátum 31.12.rok predaja/darovania)',
+                'Vypĺňate len v prípade, ak ste stavbu predali alebo darovali (uvediete dátum 31.12.rok predaja/darovania).',
             },
           ),
         ],
+      ),
+      textArea(
+        'poznamka',
+        { title: 'Poznámka' },
+        { placeholder: 'Tu môžete napísať doplnkové informácie' },
       ),
     ],
   )
@@ -178,26 +225,19 @@ export default step(
   'danZoStaviebJedenUcel',
   {
     title: 'Priznanie k dani zo stavieb – stavba slúžiaca na jeden účel',
+    description: 'napr. rodinný dom, samostatne stojaca garáž, skleníky, stavby na podnikanie atď.',
     stepperTitle: 'Daň zo stavieb (stavba slúžiaca na jeden účel)',
   },
   vyplnitKrokRadio({
     title: 'Chcete podať daňové priznanie k dani zo stavieb slúžiacich na jeden účel?',
     helptext: markdownText(
-      `K úspešnému vyplneniu oddielu potrebujete list vlastníctva (LV) k jednoúčelovej stavbe. Ide o LV, na ktorom máte uvedený nadpis “Stavby”.\n\nV prípade, že sa vás daň zo stavieb slúžiacich na jeden účel netýka, túto časť preskočte (napr. podávate priznanie dani k nehnuteľností za byt/nebyt v bytovom dome).`,
+      `K úspešnému vyplneniu oddielu potrebujete list vlastníctva (LV) k jednoúčelovej stavbe. Ide o LV, na ktorom máte uvedený nadpis “Stavby”.\n\nV prípade, že sa vás daň zo stavieb slúžiacich na jeden účel netýka, túto časť preskočte (napr. podávate priznanie dani k nehnuteľností za byt/nebyt v bytovom dome).\n\n:form-image-preview[Zobraziť ukážku LV k pozemkom]{src="https://cdn-api.bratislava.sk/strapi-homepage/upload/oprava_cyklocesty_kacin_7b008b44d8.jpg"}`,
     ),
-    fields: [
-      ...pouzitKalkulacku({
-        title: 'Kalkulačka výpočtu {name}',
-        checkboxLabel: 'Chcem pomôcť s výpočtom a použiť kalkulačku výpočtu podlahovej plochy',
-        helptextHeader:
-          'Vysvetlene k comu sluzi kalkulacka. Lorem ipsum dolor sit amet consectetur.',
-        inner: innerArray,
-      }),
-      textArea(
-        'poznamka',
-        { title: 'Poznámka' },
-        { placeholder: 'Tu môžete napísať doplnkové informácie' },
-      ),
-    ],
+    fields: pouzitKalkulacku({
+      title: 'Kalkulačka výpočtu {name}',
+      checkboxLabel: 'Chcem pomôcť s výpočtom a použiť kalkulačku výpočtu podlahovej plochy',
+      helptextHeader: 'Vysvetlene k comu sluzi kalkulacka. Lorem ipsum dolor sit amet consectetur.',
+      inner: innerArray,
+    }),
   }),
 )

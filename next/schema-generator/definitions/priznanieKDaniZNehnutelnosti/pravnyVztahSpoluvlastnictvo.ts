@@ -50,7 +50,9 @@ export const pravnyVztahSpoluvlastnictvo = (step?: StepEnum) => [
         'pocetSpoluvlastnikov',
         { title: 'Zadajte počet spoluvlastníkov', type: 'integer', minimum: 1, required: true },
         {
-          helptext: 'Uveďte počet všetkých spoluvlastníkov, vrátane vás (napr. ja + súrodenec = 2)',
+          size: 'medium',
+          helptext:
+            'Uveďte počet všetkých spoluvlastníkov, vrátane vás (napr. ja + súrodenec = 2).',
         },
       ),
       radioGroup(
@@ -87,8 +89,6 @@ export const pravnyVztahSpoluvlastnictvo = (step?: StepEnum) => [
         },
         {
           type: 'dragAndDrop',
-          helptext:
-            'Keďže ste v predošlom kroku zvolili, že priznanie nepodávate vo svojom mene, je nutné nahratie skenu plnej moci. Následne, po odoslaní formulára je potrebné doručiť originál plnej moci v listinnej podobe na oddelenie miestnych daní, poplatkov a licencií. Splnomocnenie sa neprikladá v prípade zákonného zástupcu neplnoletej osoby.',
           belowComponents: [
             {
               type: 'additionalLinks',

@@ -54,7 +54,7 @@ const BAObjectFieldTemplate = ({ idSchema, properties, uiSchema }: ObjectFieldTe
           <h3 className="text-h3 mb-3">{options.title}</h3>
         )}
         {options.objectDisplay === 'boxed' && options.description && (
-          <div className="text-p2">
+          <div className="text-p2 whitespace-pre-wrap">
             <FormMarkdown>{options.description}</FormMarkdown>
           </div>
         )}

@@ -1,6 +1,7 @@
 import React from 'react'
 import ReactMarkdown from 'react-markdown'
 import rehypeSanitize from 'rehype-sanitize'
+import { Schema } from 'rehype-sanitize/lib'
 import remarkDirective from 'remark-directive'
 import remarkDirectiveRehype from 'remark-directive-rehype'
 import remarkSupersub from 'remark-supersub'
@@ -26,15 +27,21 @@ const FormMarkdown = ({ children }: FormMarkdownProps) => {
         rehypePlugins={[
           [
             rehypeSanitize,
-            { tagNames: ['strong', 'em', 'sub', 'sup', 'p', 'a', 'form-image-preview'] },
+            {
+              tagNames: ['strong', 'em', 'sub', 'sup', 'p', 'a', 'form-image-preview'],
+              attributes: {
+                'form-image-preview': ['src'],
+                a: ['href'],
+              },
+            } as Schema,
           ],
         ]}
         components={{
           // @ts-expect-error https://github.com/remarkjs/react-markdown/issues/622
-          'form-image-preview': ({ children: childrenInner }) => {
-            // TODO propagate URL
+          'form-image-preview': ({ children: childrenInner, node }) => {
             return (
-              <FormLightboxModal imageUrl="https://cdn-api.bratislava.sk/strapi-homepage/upload/oprava_cyklocesty_kacin_7b008b44d8.jpg">
+              // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
+              <FormLightboxModal imageUrl={node?.properties?.src ?? ''}>
                 {childrenInner}
               </FormLightboxModal>
             )
@@ -42,7 +49,6 @@ const FormMarkdown = ({ children }: FormMarkdownProps) => {
           a: ({ href, children: childrenInner }) => (
             <MLinkNew
               href={href ?? '#'}
-              // eslint-disable-next-line @typescript-eslint/no-unsafe-call,@typescript-eslint/no-unsafe-member-access
               target={href?.startsWith('http') ? '_blank' : ''}
               variant="underlined"
             >

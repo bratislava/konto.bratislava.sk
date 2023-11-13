@@ -537,6 +537,7 @@ export const step = (
   property: string,
   options: {
     title: string
+    description?: string
     stepperTitle?: string
     customHash?: string
   },
@@ -560,6 +561,7 @@ export const step = (
       properties: {
         [property]: {
           title: options.title,
+          description: options.description,
           stepperTitle: options.stepperTitle,
           hash: getHash(),
           ...schema(),

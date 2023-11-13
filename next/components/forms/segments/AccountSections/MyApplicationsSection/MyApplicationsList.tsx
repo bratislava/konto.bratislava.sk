@@ -5,6 +5,7 @@ import MyApplicationCardsPlaceholder from 'components/forms/segments/AccountSect
 import { ApplicationsListVariant } from 'components/forms/segments/AccountSections/MyApplicationsSection/MyApplicationsSection'
 import Pagination from 'components/forms/simple-components/Pagination/Pagination'
 import useSnackbar from 'frontend/hooks/useSnackbar'
+import { GetServerSidePropsContext } from 'next/types'
 import { useTranslation } from 'next-i18next'
 import React, { useEffect, useState } from 'react'
 
@@ -13,7 +14,11 @@ import MyApplicationsCard from './MyApplicationsCard'
 // must be string due to typing
 const PAGE_SIZE = '10'
 
-export const getDraftApplications = async (variant: ApplicationsListVariant, page: number) => {
+export const getDraftApplications = async (
+  variant: ApplicationsListVariant,
+  page: number,
+  accessTokenSsrReq?: GetServerSidePropsContext['req'],
+) => {
   const variantToStates: Array<GetFormResponseDtoStateEnum> = {
     SENT: [
       'REJECTED',
@@ -33,7 +38,7 @@ export const getDraftApplications = async (variant: ApplicationsListVariant, pag
     undefined,
     variantToStates,
     undefined,
-    { accessToken: 'always' },
+    { accessToken: 'always', accessTokenSsrReq },
   )
   return response.data
 }

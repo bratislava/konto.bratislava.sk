@@ -1,9 +1,9 @@
-import { useQuery } from '@tanstack/react-query'
 import MyApplicationsList, {
   getDraftApplications,
 } from 'components/forms/segments/AccountSections/MyApplicationsSection/MyApplicationsList'
 import logger from 'frontend/utils/logger'
 import { useRouter } from 'next/router'
+import { GetServerSidePropsContext } from 'next/types'
 import { useTranslation } from 'next-i18next'
 import { useEffect } from 'react'
 import { Tab, TabList, TabPanel, Tabs } from 'react-aria-components'
@@ -31,24 +31,22 @@ export const isValidSection = (param: string): param is ApplicationsListVariant 
   return (sections as readonly string[]).includes(param)
 }
 
-const getTotalNumberOfApplications = async (variant: ApplicationsListVariant) => {
-  const firstPage = await getDraftApplications(variant, 1)
+export const getTotalNumberOfApplications = async (
+  variant: ApplicationsListVariant,
+  accessTokenSsrReq: GetServerSidePropsContext['req'],
+) => {
+  const firstPage = await getDraftApplications(variant, 1, accessTokenSsrReq)
   if (firstPage.countPages === 0) return 0
 
-  const lastPage = await getDraftApplications(variant, firstPage.countPages)
+  const lastPage = await getDraftApplications(variant, firstPage.countPages, accessTokenSsrReq)
   return (firstPage.countPages - 1) * firstPage.pagination + lastPage.items.length
 }
 
-const useTotalCount = (variant: ApplicationsListVariant) => {
-  const { data } = useQuery({
-    queryKey: [`ApplicationsCount_${variant}`, variant],
-    queryFn: () => getTotalNumberOfApplications(variant),
-  })
-
-  return data
+type MyApplicationsSectionProps = {
+  totalCounts: Record<ApplicationsListVariant, number>
 }
 
-const MyApplicationsSection = () => {
+const MyApplicationsSection = ({ totalCounts }: MyApplicationsSectionProps) => {
   const { t } = useTranslation('account')
   const title = t('account_section_applications.navigation')
   const router = useRouter()
@@ -59,12 +57,6 @@ const MyApplicationsSection = () => {
     { title: t('account_section_applications.navigation_sending'), tag: 'SENDING' },
     { title: t('account_section_applications.navigation_draft'), tag: 'DRAFT' },
   ]
-
-  const totalCounts = {
-    SENT: useTotalCount('SENT'),
-    SENDING: useTotalCount('SENDING'),
-    DRAFT: useTotalCount('DRAFT'),
-  }
 
   useEffect(() => {
     // If section is not valid, redirect to default section

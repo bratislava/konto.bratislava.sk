@@ -49,7 +49,6 @@ const FormMarkdown = ({ children }: FormMarkdownProps) => {
           a: ({ href, children: childrenInner }) => (
             <MLinkNew
               href={href ?? '#'}
-              // eslint-disable-next-line @typescript-eslint/no-unsafe-call,@typescript-eslint/no-unsafe-member-access
               target={href?.startsWith('http') ? '_blank' : ''}
               variant="underlined"
             >

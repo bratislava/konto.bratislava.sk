@@ -1,4 +1,6 @@
-import MyApplicationsSection from 'components/forms/segments/AccountSections/MyApplicationsSection/MyApplicationsSection'
+import MyApplicationsSection, {
+  getTotalNumberOfApplications,
+} from 'components/forms/segments/AccountSections/MyApplicationsSection/MyApplicationsSection'
 import AccountPageLayout from 'components/layouts/AccountPageLayout'
 import PageWrapper from 'components/layouts/PageWrapper'
 import {
@@ -27,16 +29,24 @@ export const getServerSideProps = async (ctx: GetServerSidePropsContext) => {
             locale: l,
           })),
       },
+      totalCounts: {
+        SENT: await getTotalNumberOfApplications('SENT', ctx.req),
+        SENDING: await getTotalNumberOfApplications('SENDING', ctx.req),
+        DRAFT: await getTotalNumberOfApplications('DRAFT', ctx.req),
+      },
       ...(await serverSideTranslations(locale)),
     },
   }
 }
 
-const AccountMyApplicationsPage = ({ page }: AsyncServerProps<typeof getServerSideProps>) => {
+const AccountMyApplicationsPage = ({
+  page,
+  totalCounts,
+}: AsyncServerProps<typeof getServerSideProps>) => {
   return (
     <PageWrapper locale={page.locale} localizations={page.localizations}>
       <AccountPageLayout>
-        <MyApplicationsSection />
+        <MyApplicationsSection totalCounts={totalCounts} />
       </AccountPageLayout>
     </PageWrapper>
   )

@@ -8,7 +8,7 @@ import {
   PdfIcon,
 } from '@assets/ui-icons'
 import { formsApi } from '@clients/forms'
-import { GetFormResponseDto } from '@clients/openapi-forms'
+import { GetFormResponseDto, GetFormResponseDtoStateEnum } from '@clients/openapi-forms'
 import { getUiOptions } from '@rjsf/utils'
 import Button from 'components/forms/simple-components/ButtonNew'
 import MenuDropdown, {
@@ -54,7 +54,6 @@ const Wrapper = ({ children, variant, href, onClick }: WrapperProps) => {
   )
 }
 
-// eslint-disable-next-line no-secrets/no-secrets
 // designs here https://www.figma.com/file/SFbuULqG1ysocghIga9BZT/Bratislavske-konto%2C-ESBS---ready-for-dev-(Ma%C5%A5a)?node-id=7120%3A20498&mode=dev
 // TODO write docs
 
@@ -230,9 +229,10 @@ const MyApplicationsCard = ({ form, refreshListData, variant }: MyApplicationsCa
                     {variant === 'SENT' &&
                       (isLoading ? (
                         <Skeleton width="75%" />
-                      ) : (
+                      ) : state !== GetFormResponseDtoStateEnum.ReadyForProcessing &&
+                        state !== GetFormResponseDtoStateEnum.Processing ? (
                         <FormatDate>{updatedAt || ''}</FormatDate>
-                      ))}
+                      ) : null)}
                   </div>
                 </div>
               )}
@@ -260,13 +260,18 @@ const MyApplicationsCard = ({ form, refreshListData, variant }: MyApplicationsCa
                     >
                       {t(
                         `account_section_applications.navigation_concept_card.${
-                          isEditable ? 'edit' : 'view'
+                          isEditable ? (variant === 'DRAFT' ? 'continue' : 'edit') : 'view'
                         }_button_text`,
                       )}
                     </Button>
                     <MenuDropdown
-                      // TOOD - fix styling
-                      buttonTrigger={<EllipsisVerticalIcon />}
+                      buttonTrigger={
+                        <Button
+                          variant="black-outline"
+                          icon={<EllipsisVerticalIcon />}
+                          aria-label="Menu"
+                        />
+                      }
                       items={conceptMenuContent}
                     />
                   </>
@@ -284,29 +289,32 @@ const MyApplicationsCard = ({ form, refreshListData, variant }: MyApplicationsCa
       >
         <div className="relative flex w-full items-start justify-between border-b-2 border-gray-200 bg-white py-4 lg:hidden">
           <div className="flex w-full justify-between gap-1.5">
-            <div className="flex w-full grow flex-col gap-1">
+            <div className="flex w-full grow flex-col">
               <div className="flex flex-row justify-between gap-6">
                 {(category || isLoading) && (
                   <div className="text-p3-semibold text-main-700">
                     {isLoading ? <Skeleton width="25%" /> : category}
                   </div>
                 )}
+                {variant !== 'SENT' && category && <EllipsisVerticalIcon />}
               </div>
+              <h3 className="text-20-semibold pb-3">
+                {isLoading ? <Skeleton width="75%" /> : title}
+              </h3>
 
-              <h3 className="text-20-semibold">{isLoading ? <Skeleton width="75%" /> : title}</h3>
-              {(createdAt || isLoading) && (
-                <div className="text-p3">
-                  {isLoading ? (
-                    <Skeleton width="50%" />
-                  ) : (
-                    <FormatDate>{createdAt || ''}</FormatDate>
-                  )}
-                </div>
-              )}
-            </div>
-            <div className="flex flex-col items-center justify-between">
-              {category && <EllipsisVerticalIcon />}
-              {stateIconAndText.iconRound}
+              <span className="flex flex-row justify-between">
+                {(createdAt || isLoading) && (
+                  <span className="text-p3 flex items-center ">
+                    {isLoading ? (
+                      <Skeleton width="50%" />
+                    ) : (
+                      <FormatDate>{createdAt || ''}</FormatDate>
+                    )}
+                  </span>
+                )}
+
+                {stateIconAndText.iconRound}
+              </span>
             </div>
           </div>
         </div>
@@ -340,7 +348,7 @@ const MyApplicationsCard = ({ form, refreshListData, variant }: MyApplicationsCa
           {
             title: t(
               `account_section_applications.navigation_concept_card.${
-                isEditable ? 'edit' : 'view'
+                isEditable ? (variant === 'DRAFT' ? 'continue' : 'edit') : 'view'
               }_button_text`,
             ),
             icon: isEditable ? <EditIcon className="h-6 w-6" /> : <EyeIcon className="h-6 w-6" />,

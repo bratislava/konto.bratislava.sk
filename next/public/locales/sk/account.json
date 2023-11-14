@@ -338,6 +338,12 @@
         "description": "Žiadosť o záväzné stanovisko k investičnej činnosti, ktoré slúži ako podklad pre konanie vedené na príslušnom stavebnom úrade.",
         "buttonText": "Požiadať",
         "tag": "Nová služba"
+      },
+      "35": {
+        "title": "Stanovisko k investičnému zámeru",
+        "description": "Žiadosť o stanovisko k investičnému zámeru, ktoré slúži na overenie si zámeru ešte pred územným konaním a vydaním záväzného stanoviska.",
+        "buttonText": "Požiadať",
+        "tag": "Nová služba"
       }
     }
   },
@@ -353,6 +359,7 @@
     "navigation_concept_card": {
       "createDate": "Vytvorené",
       "edit_button_text": "Upraviť",
+      "continue_button_text": "Pokračovať",
       "view_button_text": "Zobraziť",
       "status_draft": "",
       "status_scanning": "Prebieha antivírová kontrola",
@@ -369,7 +376,7 @@
     },
     "placeholder": {
       "title": "Zatiaľ ste neodoslali žiadne podanie",
-      "subtitle": "Pozrite si ponuku <a href='/mestske-sluzby'>dostupných mestských služieb</a>."
+      "subtitle": "Pozrite si ponuku dostupných <a href='/mestske-sluzby'>mestských služieb</a>."
     },
     "last_change": "Posledná zmena:",
     "status": {
@@ -404,7 +411,7 @@
     "concept_menu_list": {
       "download_xml": "Stiahnuť ako XML",
       "download_pdf": "Stiahnuť ako PDF",
-      "delete": "Vymazať koncept"
+      "delete": "Vymazať"
     }
   },
   "account_section_payment": {

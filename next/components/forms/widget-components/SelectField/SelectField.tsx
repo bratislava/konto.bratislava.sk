@@ -17,7 +17,6 @@ import Dropdown from './Dropdown'
 import SelectFieldBox from './SelectFieldBox'
 import { SelectOption } from './SelectOption.interface'
 
-// eslint-disable-next-line no-secrets/no-secrets
 /*
  * TODO: Replace with new accessible components
  *

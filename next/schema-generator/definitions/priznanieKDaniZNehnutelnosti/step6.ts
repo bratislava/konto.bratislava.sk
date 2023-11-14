@@ -1,6 +1,7 @@
 import {
   arrayField,
   conditionalFields,
+  customComponentsField,
   datePicker,
   input,
   markdownText,
@@ -12,7 +13,7 @@ import {
   textArea,
 } from '../../generator/functions'
 import { createCondition } from '../../generator/helpers'
-import { pouzitKalkulacku } from './kalkulacky'
+import { kalkulackaFields } from './kalkulacky'
 import { stavbyBase } from './stavbyBase'
 import { StepEnum } from './stepEnum'
 import { vyplnitKrokRadio } from './vyplnitKrokRadio'
@@ -31,6 +32,25 @@ const vymeraPodlahovejPlochyBytu = number(
   },
 )
 
+const vymeraPodlahovejPlochyBytuKalkulacka = customComponentsField(
+  {
+    type: 'propertyTaxCalculator',
+    props: {
+      variant: 'black',
+      calculators: [
+        {
+          label: 'Základ dane',
+          formula:
+            'ceil (ratioNumerator(podielPriestoruNaSpolocnychCastiachAZariadeniachDomu) * evalRatio(spoluvlastnickyPodiel))',
+          missingFieldsMessage: 'Pre výpočet základu dane vyplňte všetky polia.',
+          unit: markdownText('m^2^'),
+        },
+      ],
+    },
+  },
+  {},
+)
+
 const podielPriestoruNaSpolocnychCastiachAZariadeniachDomu = input(
   'podielPriestoruNaSpolocnychCastiachAZariadeniachDomu',
   {
@@ -40,8 +60,9 @@ const podielPriestoruNaSpolocnychCastiachAZariadeniachDomu = input(
   },
   {
     placeholder: 'Napr. 4827/624441',
-    helptext:
-      'Zadávajte celý zlomok. Nájdete ho vedľa údajov o vchode, poschodí a čísle bytu. Zobraziť ukážku',
+    helptext: markdownText(
+      'Zadávajte celý zlomok. Nájdete ho vedľa údajov o vchode, poschodí a čísle bytu. :form-image-preview[Zobraziť ukážku]{src="https://cdn-api.bratislava.sk/strapi-homepage/upload/oprava_cyklocesty_kacin_7b008b44d8.jpg"}',
+    ),
   },
 )
 
@@ -50,7 +71,9 @@ const spoluvlastnickyPodiel = input(
   { title: 'Spoluvlastnícky podiel', required: true, format: 'ratio' },
   {
     placeholder: 'Napr. 1/1 alebo 1/105',
-    helptext: 'Zadávajte celý zlomok. Nájdete ho vedľa údajov o mene vlastníkov. Zobraziť ukážku',
+    helptext: markdownText(
+      'Zadávajte celý zlomok. Nájdete ho vedľa údajov o mene vlastníkov. :form-image-preview[Zobraziť ukážku]{src="https://cdn-api.bratislava.sk/strapi-homepage/upload/oprava_cyklocesty_kacin_7b008b44d8.jpg"}',
+    ),
   },
 )
 
@@ -62,8 +85,27 @@ const vymeraPodlahovychPlochNebytovehoPriestoruVBytovomDome = number(
     required: true,
   },
   {
-    helptext: 'Zadávajte číslo zaokrúhlené nahor na celé číslo (príklad: 48,27 = 49)',
+    helptext: 'Zadávajte číslo zaokrúhlené nahor na celé číslo (príklad: 48,27 = 49).',
   },
+)
+
+const vymeraPodlahovychPlochNebytovehoPriestoruVBytovomDomeKalkulacka = customComponentsField(
+  {
+    type: 'propertyTaxCalculator',
+    props: {
+      variant: 'black',
+      calculators: [
+        {
+          label: 'Základ dane',
+          formula:
+            'ceil (ratioNumerator(podielPriestoruNaSpolocnychCastiachAZariadeniachDomu) * evalRatio(spoluvlastnickyPodiel))',
+          missingFieldsMessage: 'Pre výpočet základu dane vyplňte všetky polia.',
+          unit: markdownText('m^2^'),
+        },
+      ],
+    },
+  },
+  {},
 )
 
 const innerArray = (kalkulacka: boolean) =>
@@ -110,13 +152,15 @@ const innerArray = (kalkulacka: boolean) =>
               ? podielPriestoruNaSpolocnychCastiachAZariadeniachDomu
               : skipSchema(podielPriestoruNaSpolocnychCastiachAZariadeniachDomu),
             kalkulacka ? spoluvlastnickyPodiel : skipSchema(spoluvlastnickyPodiel),
+            kalkulacka
+              ? vymeraPodlahovejPlochyBytuKalkulacka
+              : skipSchema(vymeraPodlahovejPlochyBytuKalkulacka),
             kalkulacka ? skipSchema(vymeraPodlahovejPlochyBytu) : vymeraPodlahovejPlochyBytu,
             number(
               'vymeraPodlahovejPlochyNaIneUcely',
               {
                 type: 'integer',
                 title: 'Výmera podlahovej plochy bytu používaného na iné účely',
-                required: true,
               },
               {
                 helptext:
@@ -163,7 +207,7 @@ const innerArray = (kalkulacka: boolean) =>
               },
               [
                 object(
-                  'todoRename',
+                  'riadok',
                   {},
                   {
                     objectDisplay: 'columns',
@@ -195,6 +239,9 @@ const innerArray = (kalkulacka: boolean) =>
                   : skipSchema(podielPriestoruNaSpolocnychCastiachAZariadeniachDomu),
                 kalkulacka ? spoluvlastnickyPodiel : skipSchema(spoluvlastnickyPodiel),
                 kalkulacka
+                  ? vymeraPodlahovychPlochNebytovehoPriestoruVBytovomDomeKalkulacka
+                  : skipSchema(vymeraPodlahovychPlochNebytovehoPriestoruVBytovomDomeKalkulacka),
+                kalkulacka
                   ? skipSchema(vymeraPodlahovychPlochNebytovehoPriestoruVBytovomDome)
                   : vymeraPodlahovychPlochNebytovehoPriestoruVBytovomDome,
                 object(
@@ -210,7 +257,7 @@ const innerArray = (kalkulacka: boolean) =>
                       { title: 'Dátum vzniku daňovej povinnosti' },
                       {
                         helptext:
-                          'Vypĺňate len v prípade, ak ste nebytový priestor zdedili alebo vydražili (v tom prípade uvediete prvý deň mesiaca nasledujúceho po tom, v ktorom ste nehnuteľnosť nadobudli)',
+                          'Vypĺňate len v prípade, ak ste nebytový priestor zdedili alebo vydražili (v tom prípade uvediete prvý deň mesiaca nasledujúceho po tom, v ktorom ste nehnuteľnosť nadobudli).',
                       },
                     ),
                     datePicker(
@@ -218,7 +265,7 @@ const innerArray = (kalkulacka: boolean) =>
                       { title: 'Dátum zániku daňovej povinnosti' },
                       {
                         helptext:
-                          'Vypĺňate len v prípade, ak ste nebytový priestor predali alebo darovali (uvediete dátum 31/12/rok predaja/darovania)',
+                          'Vypĺňate len v prípade, ak ste nebytový priestor predali alebo darovali (uvediete dátum 31.12.rok predaja/darovania).',
                       },
                     ),
                   ],
@@ -228,11 +275,15 @@ const innerArray = (kalkulacka: boolean) =>
           ]),
         ],
       ),
+      textArea(
+        'poznamka',
+        { title: 'Poznámka' },
+        { placeholder: 'Tu môžete napísať doplnkové informácie' },
+      ),
     ],
   )
 
 export default step(
-  // eslint-disable-next-line no-secrets/no-secrets
   'danZBytovANebytovychPriestorov',
   {
     title: 'Priznanie k dani z bytov a z nebytových priestorov v bytovom dome',
@@ -241,21 +292,13 @@ export default step(
   vyplnitKrokRadio({
     title: 'Chcete podať daňové priznanie k dani z bytov a z nebytových priestorov v bytovom dome?',
     helptext: markdownText(
-      `K úspešnému vyplneniu oddielu potrebujete list vlastníctva (LV) k jednotlivým priestorom. Ide o LV, na ktorom máte uvedený bytový alebo nebytový priestor.\n\nV prípade, že sa vás daň z bytov a z nebytových priestorov netýka, túto časť preskočte.`,
+      `K úspešnému vyplneniu oddielu potrebujete list vlastníctva (LV) k jednotlivým priestorom. Ide o LV, na ktorom máte uvedený bytový alebo nebytový priestor.\n\nV prípade, že sa vás daň z bytov a z nebytových priestorov netýka, túto časť preskočte.\n\n:form-image-preview[Zobraziť ukážku LV k bytovému domu]{src="https://cdn-api.bratislava.sk/strapi-homepage/upload/oprava_cyklocesty_kacin_7b008b44d8.jpg"}`,
     ),
-    fields: [
-      ...pouzitKalkulacku({
-        title: 'Kalkulačka výpočtu {name}',
-        checkboxLabel: 'Chcem pomôcť s výpočtom a použiť kalkulačku výpočtu podlahovej plochy',
-        helptextHeader:
-          'Vysvetlene k comu sluzi kalkulacka. Lorem ipsum dolor sit amet consectetur.',
-        inner: innerArray,
-      }),
-      textArea(
-        'poznamka',
-        { title: 'Poznámka' },
-        { placeholder: 'Tu môžete napísať doplnkové informácie' },
-      ),
-    ],
+    fields: kalkulackaFields({
+      title: 'Kalkulačka výpočtu {name}',
+      checkboxLabel: 'Chcem pomôcť s výpočtom a použiť kalkulačku výpočtu podlahovej plochy',
+      helptextHeader: 'Vysvetlene k comu sluzi kalkulacka. Lorem ipsum dolor sit amet consectetur.',
+      inner: innerArray,
+    }),
   }),
 )

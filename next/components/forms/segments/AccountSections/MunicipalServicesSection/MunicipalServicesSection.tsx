@@ -27,6 +27,7 @@ import TransportIcon from '../../../../../assets/icons/transport-and-maps/city-â
 import ExcavationsIcon from '../../../../../assets/icons/transport-and-maps/excavations.svg'
 import ParkingIcon from '../../../../../assets/icons/transport-and-maps/parking.svg'
 import TowIcon from '../../../../../assets/icons/transport-and-maps/towing.svg'
+import { environment } from '../../../../../environment'
 import { ROUTES } from '../../../../../frontend/api/constants'
 import { SelectOption } from '../../../widget-components/SelectField/SelectOption.interface'
 
@@ -92,6 +93,17 @@ const MunicipalServicesSection = () => {
       category: [CONSTRUCTION_CATEGORY],
       linkType: 'internal',
       href: ROUTES.MUNICIPAL_SERVICES_INVESTING,
+    },
+    {
+      title: t('account_section_services.cards.35.title'),
+      description: t('account_section_services.cards.35.description'),
+      buttonText: t('account_section_services.cards.35.buttonText'),
+      icon: <SpatialPlanningIcon className="h-10 w-10 text-environment-700 lg:h-12 lg:w-12" />,
+      tag: t('account_section_services.cards.35.tag'),
+      tagStyle: 'text-environment-700 bg-environment-100',
+      category: [CONSTRUCTION_CATEGORY],
+      linkType: 'internal',
+      href: ROUTES.MUNICIPAL_SERVICES_INVESTING_INTENT,
     },
     {
       title: t('account_section_services.cards.1.title'),
@@ -353,9 +365,14 @@ const MunicipalServicesSection = () => {
     // },
   ]
 
-  const filteredServiceCards = serviceCards.filter((card) =>
-    selectorValueTitle === ALL_CATEGORY ? true : card.category.includes(selectorValueTitle),
-  )
+  const filteredServiceCards = serviceCards
+    .filter(
+      // when forms are reachable from top menu, keep all the cards, otherwise discard the first two
+      (card, index) => (environment.featureToggles.formsInMenu ? true : index !== 0 && index !== 1),
+    )
+    .filter((card) =>
+      selectorValueTitle === ALL_CATEGORY ? true : card.category.includes(selectorValueTitle),
+    )
 
   return (
     <div className="flex flex-col">

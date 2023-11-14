@@ -82,7 +82,7 @@ const BAArrayFieldTemplate = <
           hasIcon={false}
           message={<FormMarkdown>{description}</FormMarkdown>}
           fullWidth
-          className="mb-6"
+          className="mb-6 whitespace-pre-wrap"
         />
       )}
       <div className={containerStyle}>

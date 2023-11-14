@@ -250,7 +250,6 @@ const useGetContext = () => {
       },
     }
 
-    // eslint-disable-next-line no-secrets/no-secrets
     // https://www.figma.com/file/SFbuULqG1ysocghIga9BZT/Bratislavske-konto%2C-ESBS---ready-for-dev-(Ma%C5%A5a)?type=design&node-id=7208-17403&mode=design&t=6CblQJSMOCtO5LBu-0
     if (isAuthenticated && !isIdentityVerified && scanningFiles.length === 0) {
       setSendFilesScanningNotVerified(modalValueEid)

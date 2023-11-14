@@ -1,6 +1,9 @@
-import MyApplicationsList from 'components/forms/segments/AccountSections/MyApplicationsSection/MyApplicationsList'
+import MyApplicationsList, {
+  getDraftApplications,
+} from 'components/forms/segments/AccountSections/MyApplicationsSection/MyApplicationsList'
 import logger from 'frontend/utils/logger'
 import { useRouter } from 'next/router'
+import { GetServerSidePropsContext } from 'next/types'
 import { useTranslation } from 'next-i18next'
 import { useEffect } from 'react'
 import { Tab, TabList, TabPanel, Tabs } from 'react-aria-components'
@@ -28,7 +31,22 @@ export const isValidSection = (param: string): param is ApplicationsListVariant 
   return (sections as readonly string[]).includes(param)
 }
 
-const MyApplicationsSection = () => {
+export const getTotalNumberOfApplications = async (
+  variant: ApplicationsListVariant,
+  accessTokenSsrReq: GetServerSidePropsContext['req'],
+) => {
+  const firstPage = await getDraftApplications(variant, 1, accessTokenSsrReq)
+  if (firstPage.countPages === 0) return 0
+
+  const lastPage = await getDraftApplications(variant, firstPage.countPages, accessTokenSsrReq)
+  return (firstPage.countPages - 1) * firstPage.pagination + lastPage.items.length
+}
+
+type MyApplicationsSectionProps = {
+  totalCounts: Record<ApplicationsListVariant, number>
+}
+
+const MyApplicationsSection = ({ totalCounts }: MyApplicationsSectionProps) => {
   const { t } = useTranslation('account')
   const title = t('account_section_applications.navigation')
   const router = useRouter()
@@ -80,6 +98,7 @@ const MyApplicationsSection = () => {
                 className="text-20 hover:text-20-semibold data-[selected]:text-20-semibold cursor-pointer py-4 transition-all hover:border-gray-700 data-[selected]:border-b-2 data-[selected]:border-gray-700"
               >
                 {item.title}
+                {totalCounts[item.tag] !== undefined ? ` (${totalCounts[item.tag]})` : ''}
               </Tab>
             ))}
           </TabList>

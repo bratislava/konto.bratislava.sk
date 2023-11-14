@@ -190,6 +190,19 @@ const innerArray = (kalkulacka: boolean) =>
           ),
         },
       ),
+      number(
+        'pocetNadzemnychAPodzemnychPodlaziStavbyOkremPrvehoNadzemnehoPodlazia',
+        {
+          type: 'integer',
+          minimum: 0,
+          title: 'Počet nadzemných a podzemných podlaží stavby okrem prvého nadzemného podlažia',
+          required: true,
+        },
+        {
+          helptext:
+            'Napríklad ak máte stavbu s piatimi nadzemnými podlažiami a dvomi podzemnými podlažiami, uvádzate počet 6.',
+        },
+      ),
       radioGroup(
         'castStavbyOslobodenaOdDane',
         {
@@ -282,19 +295,6 @@ const innerArray = (kalkulacka: boolean) =>
         kalkulacka ? skipSchema(sumar) : sumar,
         kalkulacka ? sumarKalkulacka : skipSchema(sumarKalkulacka),
       ]),
-      number(
-        'pocetNadzemnychAPodzemnychPodlaziStavbyOkremPrvehoNadzemnehoPodlazia',
-        {
-          type: 'integer',
-          minimum: 0,
-          title: 'Počet nadzemných a podzemných podlaží stavby okrem prvého nadzemného podlažia',
-          required: true,
-        },
-        {
-          helptext:
-            'Napríklad ak máte stavbu s piatimi nadzemnými podlažiami a dvomi podzemnými podlažiami, uvádzate počet 6.',
-        },
-      ),
       textArea(
         'poznamka',
         { title: 'Poznámka' },
@@ -316,9 +316,11 @@ export default step(
       `Tento oddiel vypĺňate, ak máte nehnuteľnosť v stavbe, ktorá slúži na viaceré účely, na ktoré sú určené rôzne sadzby dane. Napríklad ak vlastníte bytový alebo nebytový priestor v budove, ktorá je vedená ako administratívna alebo polyfunkčná.\n\nK úspešnému vyplneniu oddielu potrebujete listy vlastníctva (LV) k pozemkom – LV, na ktorom máte uvedený nadpis “Parcely registra „C" resp. „E” evidované na katastrálnej mape” nad tabuľkou a LV k jednotlivým stavbám (napr. byt, garážové státie).\n\nV prípade, že sa vás daň zo stavieb slúžiace na viaceré účely netýka, túto časť preskočte.\n\n:form-image-preview[Zobraziť ukážku LV k pozemkom]{src="https://cdn-api.bratislava.sk/strapi-homepage/upload/oprava_cyklocesty_kacin_7b008b44d8.jpg"}`,
     ),
     fields: kalkulackaFields({
-      title: 'Kalkulačka výpočtu {name}',
-      checkboxLabel: 'Chcem pomôcť s výpočtom a použiť kalkulačku výpočtu podlahovej plochy',
-      helptextHeader: 'Vysvetlene k comu sluzi kalkulacka. Lorem ipsum dolor sit amet consectetur.',
+      title: 'Kalkulačka výpočtu výmery podlahových plôch a základu dane',
+      helptextHeader:
+        'Zjednodušili sme pre vás výpočet. Stačí ak zadáte tri údaje z LV a výmery podlahových plôch a základ dane vypočítame za vás.',
+      checkboxLabel:
+        'Chcem pomôcť s výpočtom a použiť kalkulačku výmery podlahových plôch a základu dane',
       inner: innerArray,
     }),
   }),

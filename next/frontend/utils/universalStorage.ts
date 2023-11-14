@@ -12,7 +12,11 @@ type Context = Pick<NextPageContext, 'req'>
 
 const ONE_YEAR_IN_MS = 365 * 24 * 60 * 60 * 1000
 
+// all cookies
+const SESSION_TOKEN_TYPES = new Set(['LastAuthUser', 'accessToken', 'refreshToken', 'idToken'])
 const CUSTOM_COOKIE_TOKEN_TYPES = new Set(['accessToken', 'refreshToken'])
+// cookies related to konto
+const LOCAL_DOMAIN_TOKEN_TYPES = new Set(['LastAuthUser', 'idToken'])
 
 const getCookieKey = (key: string) => {
   const tokenType = key.split('.').pop() ?? ''
@@ -60,19 +64,24 @@ export class UniversalStorage implements Storage {
   }
 
   removeItem(key: string) {
-    const keyName = getCookieKey(key)
-
-    this.removeLocalItem(keyName)
-    this.removeUniversalItem(keyName)
+    this.removeLocalItem(key)
+    this.removeUniversalItem(key)
   }
 
   protected removeLocalItem(key: keyof Store) {
-    delete this.store[key]
+    const keyName = getCookieKey(key)
+    delete this.store[keyName]
   }
 
   protected removeUniversalItem(key: keyof Store) {
-    this.cookies.remove(key, {
+    const tokenType = key.split('.').pop() ?? ''
+    const keyName = getCookieKey(key)
+
+    this.cookies.remove(keyName, {
       path: '/',
+      domain: LOCAL_DOMAIN_TOKEN_TYPES.has(tokenType)
+        ? undefined
+        : environment.cognitoCookieStorageDomain,
     })
   }
 
@@ -86,16 +95,10 @@ export class UniversalStorage implements Storage {
     //  2. `${ProviderPrefix}.${userPoolClientId}.LastAuthUser
     const tokenType = key.split('.').pop() ?? ''
 
-    // all cookies
-    const sessionTokenTypes = ['LastAuthUser', 'accessToken', 'refreshToken', 'idToken']
-
-    // cookies related to konto
-    const localDomainTokenTypes = new Set(['LastAuthUser', 'idToken'])
-
-    if (sessionTokenTypes.includes(tokenType)) {
+    if (SESSION_TOKEN_TYPES.has(tokenType)) {
       this.setUniversalItem(keyName, value, {
         expires: new Date(Date.now() + ONE_YEAR_IN_MS),
-        domain: localDomainTokenTypes.has(tokenType)
+        domain: LOCAL_DOMAIN_TOKEN_TYPES.has(tokenType)
           ? undefined
           : environment.cognitoCookieStorageDomain,
       })

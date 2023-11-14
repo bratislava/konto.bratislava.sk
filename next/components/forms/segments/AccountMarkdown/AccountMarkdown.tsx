@@ -14,7 +14,7 @@ import BATooltip from '../../info-components/Tooltip/BATooltip'
 type AccountMarkdownBase = {
   className?: string
   content?: string
-  variant?: 'sm' | 'normal'
+  variant?: 'sm' | 'normal' | 'statusBar'
   uLinkVariant?: 'primary' | 'default' | 'error'
   disableRemarkGfm?: boolean
   disableRemarkDirective?: boolean
@@ -53,7 +53,13 @@ const AccountMarkdown = ({
     h5: ({ children }: ChildrenParent) => <h5 className="text-h5">{children}</h5>,
     h6: ({ children }: ChildrenParent) => <h6 className="text-h6">{children}</h6>,
     p: ({ children }: ChildrenParent) => (
-      <p className={variant === 'sm' ? 'text-p3 lg:text-p2' : 'text-p1'}>{children}</p>
+      <p
+        className={
+          variant === 'sm' ? 'text-p3 lg:text-p2' : variant === 'statusBar' ? 'text-p2' : 'text-p1'
+        }
+      >
+        {children}
+      </p>
     ),
     strong: ({ children }: ChildrenParent) => <strong className="font-semibold">{children}</strong>,
     ol: ({ children, ordered, ...props }: ChildrenParent) => (

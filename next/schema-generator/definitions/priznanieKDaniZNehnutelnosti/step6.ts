@@ -263,7 +263,6 @@ const innerArray = (kalkulacka: boolean) =>
   )
 
 export default step(
-  // eslint-disable-next-line no-secrets/no-secrets
   'danZBytovANebytovychPriestorov',
   {
     title: 'Priznanie k dani z bytov a z nebytových priestorov v bytovom dome',

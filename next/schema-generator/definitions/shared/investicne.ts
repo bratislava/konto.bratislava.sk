@@ -69,7 +69,6 @@ export const getSchema = (zavazne: boolean) =>
     zavazne
       ? {
           title: 'Záväzné stanovisko k investičnej činnosti',
-          // eslint-disable-next-line no-secrets/no-secrets
           pospID: '00603481.zavazneStanoviskoKInvesticnejCinnosti.sk',
           pospVersion: '0.1',
         }

@@ -32,6 +32,25 @@ const vymeraPodlahovejPlochyBytu = number(
   },
 )
 
+const vymeraPodlahovejPlochyBytuKalkulacka = customComponentsField(
+  {
+    type: 'propertyTaxCalculator',
+    props: {
+      variant: 'black',
+      calculators: [
+        {
+          label: 'Základ dane',
+          formula:
+            'ceil (ratioNumerator(podielPriestoruNaSpolocnychCastiachAZariadeniachDomu) * evalRatio(spoluvlastnickyPodiel))',
+          missingFieldsMessage: 'Pre výpočet základu dane vyplňte všetky polia.',
+          unit: markdownText('m^2^'),
+        },
+      ],
+    },
+  },
+  {},
+)
+
 const podielPriestoruNaSpolocnychCastiachAZariadeniachDomu = input(
   'podielPriestoruNaSpolocnychCastiachAZariadeniachDomu',
   {
@@ -79,7 +98,7 @@ const vymeraPodlahovychPlochNebytovehoPriestoruVBytovomDomeKalkulacka = customCo
         {
           label: 'Základ dane',
           formula:
-            'ceil (vymeraPodlahovejPlochyBytu * evalRatio(spoluvlastnickyPodiel) * evalRatio(podielPriestoruNaSpolocnychCastiachAZariadeniachDomu))',
+            'ceil (ratioNumerator(podielPriestoruNaSpolocnychCastiachAZariadeniachDomu) * evalRatio(spoluvlastnickyPodiel))',
           missingFieldsMessage: 'Pre výpočet základu dane vyplňte všetky polia.',
           unit: markdownText('m^2^'),
         },
@@ -133,13 +152,15 @@ const innerArray = (kalkulacka: boolean) =>
               ? podielPriestoruNaSpolocnychCastiachAZariadeniachDomu
               : skipSchema(podielPriestoruNaSpolocnychCastiachAZariadeniachDomu),
             kalkulacka ? spoluvlastnickyPodiel : skipSchema(spoluvlastnickyPodiel),
+            kalkulacka
+              ? vymeraPodlahovejPlochyBytuKalkulacka
+              : skipSchema(vymeraPodlahovejPlochyBytuKalkulacka),
             kalkulacka ? skipSchema(vymeraPodlahovejPlochyBytu) : vymeraPodlahovejPlochyBytu,
             number(
               'vymeraPodlahovejPlochyNaIneUcely',
               {
                 type: 'integer',
                 title: 'Výmera podlahovej plochy bytu používaného na iné účely',
-                required: true,
               },
               {
                 helptext:

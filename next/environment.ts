@@ -59,7 +59,6 @@ export const environment = {
       ) === 'true',
     pravnickaOsobaRegistration:
       assertEnv(
-        // eslint-disable-next-line no-secrets/no-secrets
         'NEXT_PUBLIC_FEATURE_TOGGLE_PRAVNICKA_OSOBA_REGISTRATION',
         process.env.NEXT_PUBLIC_FEATURE_TOGGLE_PRAVNICKA_OSOBA_REGISTRATION,
       ) === 'true',

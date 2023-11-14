@@ -54,7 +54,6 @@ const Wrapper = ({ children, variant, href, onClick }: WrapperProps) => {
   )
 }
 
-// eslint-disable-next-line no-secrets/no-secrets
 // designs here https://www.figma.com/file/SFbuULqG1ysocghIga9BZT/Bratislavske-konto%2C-ESBS---ready-for-dev-(Ma%C5%A5a)?node-id=7120%3A20498&mode=dev
 // TODO write docs
 

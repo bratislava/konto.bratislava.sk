@@ -1,9 +1,7 @@
-// eslint-disable-next-line import/no-extraneous-dependencies
-import type { RJSFSchema, UIOptionsType, UiSchema } from '@rjsf/utils'
+/* eslint-disable import/no-extraneous-dependencies,import/no-relative-packages */
+import type { UIOptionsType } from '@rjsf/utils'
 
-// eslint-disable-next-line import/no-relative-packages
 import { AccordionBase } from '../../components/forms/simple-components/Accordion'
-// eslint-disable-next-line import/no-relative-packages
 import { FieldSize } from '../../components/forms/widget-components/FieldBase'
 
 // TODO: Reconsider stability of dependency on AccordionBase type
@@ -16,20 +14,23 @@ export type CustomComponentAdditionalLinksProps = {
   }[]
 }
 
-export type CustomComponentPropertyCalculatorProps = {
-  title: string
-  openButtonLabel: string
-  buttonLabel: string
-  valueLabel: string
-  form: {
-    schema: RJSFSchema
-    uiSchema: UiSchema
-  }
-  /**
-   * `expr-eval` formula, with custom function `evalRatio` that evaluates ratio in format `A/B` to
-   *  decimal number.
-   */
+export type CustomComponentPropertyCalculator = {
+  label: string
   formula: string
+  missingFieldsMessage: string
+  unit: string
+  /**
+   * The dataContextLevelsUp is an optional parameter that specifies the number of levels to go up in the JSON data
+   * context for formula in hierarchy from the current position. This is useful when you want to retrieve or access data
+   * from an upper level in the JSON object.
+   */
+  dataContextLevelsUp?: number
+}
+
+export type CustomComponentPropertyCalculatorProps = {
+  label?: string
+  variant: 'white' | 'black'
+  calculators: CustomComponentPropertyCalculator[]
 }
 
 export type CustomComponentType =

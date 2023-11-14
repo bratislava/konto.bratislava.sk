@@ -10,13 +10,19 @@ import { markdownTextPrefix } from 'schema-generator/generator/uiOptionsTypes'
 import MLinkNew from '../simple-components/MLinkNew'
 import FormLightboxModal from './FormLightboxModal'
 
-type FormMarkdownProps = { children: string }
+type FormMarkdownProps = {
+  children: string
+  /**
+   * By default, the text in markdown is wrapped in a paragraph. In some cases we don't want to create a new paragraph.
+   */
+  pAsSpan?: boolean
+}
 
 /**
  * Renders custom text in form (helptexts, etc.). Allows to use only specific set of Markdown tags. Also implements a
  * special directives such as `form-image-preview`.
  */
-const FormMarkdown = ({ children }: FormMarkdownProps) => {
+const FormMarkdown = ({ children, pAsSpan }: FormMarkdownProps) => {
   if (children.startsWith(markdownTextPrefix)) {
     // eslint-disable-next-line security/detect-non-literal-regexp
     const withoutPrefix = children.replace(new RegExp(`^${markdownTextPrefix}`), '')
@@ -55,6 +61,11 @@ const FormMarkdown = ({ children }: FormMarkdownProps) => {
               {childrenInner}
             </MLinkNew>
           ),
+          ...(pAsSpan
+            ? {
+                p: ({ children: childrenInner }) => <span>{childrenInner}</span>,
+              }
+            : {}),
         }}
       >
         {withoutPrefix}

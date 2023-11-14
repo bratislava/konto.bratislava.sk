@@ -117,7 +117,7 @@ const FormModals = () => {
           isLoading={saveConceptIsPending}
           isLoadingText={t('concept_save_error_modal.button_title_loading')}
         >
-          {t('concept_save_error_modal.button_repeat_text')}
+          {t('concept_save_error_modal.button_title')}
         </Button>,
       ],
       children: t('concept_save_error_modal.content'),

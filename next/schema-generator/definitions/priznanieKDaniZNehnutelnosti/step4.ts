@@ -1,6 +1,7 @@
 import {
   arrayField,
   conditionalFields,
+  customComponentsField,
   datePicker,
   input,
   markdownText,
@@ -13,7 +14,7 @@ import {
   textArea,
 } from '../../generator/functions'
 import { createCondition } from '../../generator/helpers'
-import { pouzitKalkulacku } from './kalkulacky'
+import { kalkulackaFields } from './kalkulacky'
 import { stavbyBase } from './stavbyBase'
 import { StepEnum } from './stepEnum'
 import { vyplnitKrokRadio } from './vyplnitKrokRadio'
@@ -51,6 +52,24 @@ const zakladDane = number(
       'Výmera zastavanej plochy stavby, pri spoluvlastníctve do výšky spoluvlastníckych podielov. Zadajte ako číslo zaokrúhlené na celé m^2^ nahor.',
     ),
   },
+)
+
+const zakladDaneKalkulacka = customComponentsField(
+  {
+    type: 'propertyTaxCalculator',
+    props: {
+      variant: 'black',
+      calculators: [
+        {
+          label: 'Základ dane',
+          formula: 'ceil (celkovaZastavanaPlocha * evalRatio(spoluvlastnickyPodiel))',
+          missingFieldsMessage: 'Pre výpočet základu dane vyplňte všetky polia.',
+          unit: markdownText('m^2^'),
+        },
+      ],
+    },
+  },
+  {},
 )
 
 const innerArray = (kalkulacka: boolean) =>
@@ -124,6 +143,7 @@ const innerArray = (kalkulacka: boolean) =>
       kalkulacka ? celkovaZastavanaPlocha : skipSchema(celkovaZastavanaPlocha),
       kalkulacka ? spoluvlastnickyPodiel : skipSchema(spoluvlastnickyPodiel),
       kalkulacka ? skipSchema(zakladDane) : zakladDane,
+      kalkulacka ? zakladDaneKalkulacka : skipSchema(zakladDane),
       number(
         'pocetNadzemnychAPodzemnychPodlaziStavbyOkremPrvehoNadzemnehoPodlazia',
         {
@@ -233,7 +253,7 @@ export default step(
     helptext: markdownText(
       `K úspešnému vyplneniu oddielu potrebujete list vlastníctva (LV) k jednoúčelovej stavbe. Ide o LV, na ktorom máte uvedený nadpis “Stavby”.\n\nV prípade, že sa vás daň zo stavieb slúžiacich na jeden účel netýka, túto časť preskočte (napr. podávate priznanie dani k nehnuteľností za byt/nebyt v bytovom dome).\n\n:form-image-preview[Zobraziť ukážku LV k pozemkom]{src="https://cdn-api.bratislava.sk/strapi-homepage/upload/oprava_cyklocesty_kacin_7b008b44d8.jpg"}`,
     ),
-    fields: pouzitKalkulacku({
+    fields: kalkulackaFields({
       title: 'Kalkulačka výpočtu {name}',
       checkboxLabel: 'Chcem pomôcť s výpočtom a použiť kalkulačku výpočtu podlahovej plochy',
       helptextHeader: 'Vysvetlene k comu sluzi kalkulacka. Lorem ipsum dolor sit amet consectetur.',

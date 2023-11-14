@@ -1,5 +1,6 @@
 import {
   arrayField,
+  customComponentsField,
   datePicker,
   input,
   markdownText,
@@ -11,7 +12,7 @@ import {
   step,
   textArea,
 } from '../../generator/functions'
-import { pouzitKalkulacku } from './kalkulacky'
+import { kalkulackaFields } from './kalkulacky'
 import { stavbyBase } from './stavbyBase'
 import { StepEnum } from './stepEnum'
 import { vyplnitKrokRadio } from './vyplnitKrokRadio'
@@ -24,6 +25,25 @@ const vymeraPodlahovejPlochy = number(
       'Zadávajte číslo zaokrúhlené nahor (napr. ak 12.3 m^2^, tak zadajte 13).',
     ),
   },
+)
+
+const vymeraPodlahovejPlochyKalkulacka = customComponentsField(
+  {
+    type: 'propertyTaxCalculator',
+    props: {
+      variant: 'black',
+      calculators: [
+        {
+          label: 'Výmera podlahovej plochy',
+          formula:
+            'roundTo(ratioNumerator(podielPriestoruNaSpolocnychCastiachAZariadeniachDomu) * evalRatio(spoluvlastnickyPodiel) / 100, 2)',
+          missingFieldsMessage: 'Pre výpočet výmery podlahovej plochy vyplňte všetky polia.',
+          unit: markdownText('m^2^'),
+        },
+      ],
+    },
+  },
+  {},
 )
 
 const podielPriestoruNaSpolocnychCastiachAZariadeniachDomu = input(
@@ -54,7 +74,7 @@ const spoluvlastnickyPodiel = input(
 
 const sumar = object('sumar', { required: true }, { objectDisplay: 'boxed', title: 'Sumár' }, [
   number(
-    'vymeraPodlahovejPlochy',
+    'vymeraPodlahovychPloch',
     {
       type: 'integer',
       title: 'Celková výmera podlahových plôch všetkých podlaží stavby',
@@ -80,6 +100,36 @@ const sumar = object('sumar', { required: true }, { objectDisplay: 'boxed', titl
     },
   ),
 ])
+
+const sumarKalkulacka = customComponentsField(
+  {
+    type: 'propertyTaxCalculator',
+    props: {
+      label: 'Sumár',
+      variant: 'white',
+      calculators: [
+        {
+          label: 'Celková výmera podlahových plôch všetkých podlaží stavby',
+          formula:
+            'f(n) = ratioNumerator(n.podielPriestoruNaSpolocnychCastiachAZariadeniachDomu) * evalRatio(n.spoluvlastnickyPodiel) / 100; mapped = map(f, nehnutelnosti.nehnutelnosti); sum(a, b) = a+b; ceil fold(sum, 0, mapped)',
+          dataContextLevelsUp: 1,
+          missingFieldsMessage:
+            'Pre výpočet celkovej výmery podlahových plôch všetkých podlaží stavby vyplňte všetky polia.',
+          unit: markdownText('m^2^'),
+        },
+        {
+          label: 'Základ dane – celková výmera zastavanej plochy stavby',
+          formula:
+            'f(n) = evalRatio(n.podielPriestoruNaSpolocnychCastiachAZariadeniachDomu) * evalRatio(n.spoluvlastnickyPodiel) * celkovaVymera; mapped = map(f, nehnutelnosti.nehnutelnosti); sum(a, b) = a+b; ceil fold(sum, 0, mapped)',
+          dataContextLevelsUp: 1,
+          missingFieldsMessage: 'Pre výpočet základu dane vyplňte všetky polia.',
+          unit: markdownText('m^2^'),
+        },
+      ],
+    },
+  },
+  {},
+)
 
 const innerArray = (kalkulacka: boolean) =>
   arrayField(
@@ -133,7 +183,7 @@ const innerArray = (kalkulacka: boolean) =>
       ),
       number(
         'celkovaVymera',
-        { title: 'Celková výmera zastavanej plochy viacúčelovej stavby' },
+        { title: 'Celková výmera zastavanej plochy viacúčelovej stavby', required: true },
         {
           helptext: markdownText(
             'Výmera zastavanej plochy, na ktorej je postavená nebytová budova (pozrite LV s “Parcely registra “C” a parcelu s spôsobom využívania “16” alebo “15”). Ak je stavba na viacerých parceliach, sčítajte plochu. :form-image-preview[Zobraziť ukážku]{src="https://cdn-api.bratislava.sk/strapi-homepage/upload/oprava_cyklocesty_kacin_7b008b44d8.jpg"}',
@@ -224,9 +274,13 @@ const innerArray = (kalkulacka: boolean) =>
               ? podielPriestoruNaSpolocnychCastiachAZariadeniachDomu
               : skipSchema(podielPriestoruNaSpolocnychCastiachAZariadeniachDomu),
             kalkulacka ? spoluvlastnickyPodiel : skipSchema(spoluvlastnickyPodiel),
+            kalkulacka
+              ? vymeraPodlahovejPlochyKalkulacka
+              : skipSchema(vymeraPodlahovejPlochyKalkulacka),
           ],
         ),
         kalkulacka ? skipSchema(sumar) : sumar,
+        kalkulacka ? sumarKalkulacka : skipSchema(sumarKalkulacka),
       ]),
       number(
         'pocetNadzemnychAPodzemnychPodlaziStavbyOkremPrvehoNadzemnehoPodlazia',
@@ -261,7 +315,7 @@ export default step(
     helptext: markdownText(
       `Tento oddiel vypĺňate, ak máte nehnuteľnosť v stavbe, ktorá slúži na viaceré účely, na ktoré sú určené rôzne sadzby dane. Napríklad ak vlastníte bytový alebo nebytový priestor v budove, ktorá je vedená ako administratívna alebo polyfunkčná.\n\nK úspešnému vyplneniu oddielu potrebujete listy vlastníctva (LV) k pozemkom – LV, na ktorom máte uvedený nadpis “Parcely registra „C" resp. „E” evidované na katastrálnej mape” nad tabuľkou a LV k jednotlivým stavbám (napr. byt, garážové státie).\n\nV prípade, že sa vás daň zo stavieb slúžiace na viaceré účely netýka, túto časť preskočte.\n\n:form-image-preview[Zobraziť ukážku LV k pozemkom]{src="https://cdn-api.bratislava.sk/strapi-homepage/upload/oprava_cyklocesty_kacin_7b008b44d8.jpg"}`,
     ),
-    fields: pouzitKalkulacku({
+    fields: kalkulackaFields({
       title: 'Kalkulačka výpočtu {name}',
       checkboxLabel: 'Chcem pomôcť s výpočtom a použiť kalkulačku výpočtu podlahovej plochy',
       helptextHeader: 'Vysvetlene k comu sluzi kalkulacka. Lorem ipsum dolor sit amet consectetur.',

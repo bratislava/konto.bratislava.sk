@@ -1,6 +1,7 @@
 import {
   arrayField,
   conditionalFields,
+  customComponentsField,
   datePicker,
   fileUpload,
   input,
@@ -14,7 +15,7 @@ import {
   textArea,
 } from '../../generator/functions'
 import { createCondition, createStringOptions } from '../../generator/helpers'
-import { pouzitKalkulacku } from './kalkulacky'
+import { kalkulackaFields } from './kalkulacky'
 import { pravnyVztahSpoluvlastnictvo } from './pravnyVztahSpoluvlastnictvo'
 import { StepEnum } from './stepEnum'
 import { vyplnitKrokRadio } from './vyplnitKrokRadio'
@@ -53,6 +54,25 @@ const spoluvlastnickyPodiel = input(
       'Zadávajte celý zlomok. Nájdete ho vedľa údajov o mene vlastníkov. :form-image-preview[Zobraziť ukážku]{src="https://cdn-api.bratislava.sk/strapi-homepage/upload/oprava_cyklocesty_kacin_7b008b44d8.jpg"}',
     ),
   },
+)
+
+const vymeraPozemkuKalkulacka = customComponentsField(
+  {
+    type: 'propertyTaxCalculator',
+    props: {
+      variant: 'black',
+      calculators: [
+        {
+          label: 'Vaša výmera pozemku',
+          formula:
+            'roundTo(evalRatio(podielPriestoruNaSpolocnychCastiachAZariadeniachDomu) * evalRatio(spoluvlastnickyPodiel) * celkovaVymeraPozemku, 2)',
+          missingFieldsMessage: 'Pre výpočet výmery pozemku vyplňte všetky polia.',
+          unit: markdownText('m^2^'),
+        },
+      ],
+    },
+  },
+  {},
 )
 
 const vymeraPozemku = number(
@@ -251,6 +271,7 @@ const innerArray = (kalkulacka: boolean) =>
             ? podielPriestoruNaSpolocnychCastiachAZariadeniachDomu
             : skipSchema(podielPriestoruNaSpolocnychCastiachAZariadeniachDomu),
           kalkulacka ? spoluvlastnickyPodiel : skipSchema(spoluvlastnickyPodiel),
+          kalkulacka ? vymeraPozemkuKalkulacka : skipSchema(vymeraPozemkuKalkulacka),
           kalkulacka ? skipSchema(vymeraPozemku) : vymeraPozemku,
           object(
             'datumy',
@@ -296,7 +317,7 @@ export default step(
     helptext: markdownText(
       `K úspešnému vyplneniu oddielov k pozemkom potrebujete list vlastníctva (LV) k pozemkom. Ide o tú časť LV, kde máte v časti A: MAJETKOVÁ PODSTATA uvedené parcely registra "C", resp. "E" registrované na katastrálnej mape.\n\nV prípade, že sa vás daň z pozemkov netýka, túto časť preskočte.\n\n:form-image-preview[Zobraziť ukážku LV k pozemkom]{src="https://cdn-api.bratislava.sk/strapi-homepage/upload/oprava_cyklocesty_kacin_7b008b44d8.jpg"}`,
     ),
-    fields: pouzitKalkulacku({
+    fields: kalkulackaFields({
       title: 'Kalkulačka výpočtu {name}',
       checkboxLabel: 'Chcem pomôcť s výpočtom a použiť kalkulačku výpočtu podlahovej plochy',
       helptextHeader: 'Vysvetlene k comu sluzi kalkulacka. Lorem ipsum dolor sit amet consectetur.',

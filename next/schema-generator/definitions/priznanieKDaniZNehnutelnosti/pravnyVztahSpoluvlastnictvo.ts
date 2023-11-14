@@ -97,6 +97,8 @@ export const pravnyVztahSpoluvlastnictvo = (step?: StepEnum) => [
               },
             },
           ],
+          helptext:
+            'Pri dohode o určení zástupcu sa nevyžadujú úradne osvedčené podpisy spoluvlastníkov.',
         },
       ),
     ],

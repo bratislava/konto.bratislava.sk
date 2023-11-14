@@ -90,6 +90,8 @@ interface Context extends Pick<NextPageContext, 'req'> {
   modules?: any[]
 }
 
+// adjusted withSSRContext function from aws-amplify library to be able to work with custom storage
+// https://github.com/aws-amplify/amplify-js/blob/fdd81d8c2/packages/aws-amplify/src/withSSRContext.ts#L27
 export function withSSRContext(context: Context = {}) {
   const { modules = defaultModules, req } = context
   const previousConfig = Amplify.configure()

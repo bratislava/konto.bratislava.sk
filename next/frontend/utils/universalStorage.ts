@@ -1,3 +1,5 @@
+// Universal storage is adjusted combination of cookie and default storage from aws-amplify library
+// https://github.com/aws-amplify/amplify-js/blob/fdd81d8c2eb4287ac28d8f31c0d17001898cf184/packages/core/src/UniversalStorage/index.ts
 import { environment } from 'environment'
 import { NextPageContext } from 'next'
 import Cookies, { CookieSetOptions } from 'universal-cookie'

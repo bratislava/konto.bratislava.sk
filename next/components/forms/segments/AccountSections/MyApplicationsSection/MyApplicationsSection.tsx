@@ -5,7 +5,6 @@ import logger from 'frontend/utils/logger'
 import { useRouter } from 'next/router'
 import { GetServerSidePropsContext } from 'next/types'
 import { useTranslation } from 'next-i18next'
-import { useEffect } from 'react'
 import { Tab, TabList, TabPanel, Tabs } from 'react-aria-components'
 
 type HeaderNavigationItemBase = {
@@ -58,18 +57,6 @@ const MyApplicationsSection = ({ totalCounts }: MyApplicationsSectionProps) => {
     { title: t('account_section_applications.navigation_draft'), tag: 'DRAFT' },
   ]
 
-  useEffect(() => {
-    // If section is not valid, redirect to default section
-    if (!section || !isValidSection(section)) {
-      router
-        .push({
-          pathname: router.pathname,
-          query: { ...router.query, sekcia: 'odoslane' },
-        })
-        .catch((error) => logger.error(error))
-    }
-  }, [section, router])
-
   return (
     <Tabs
       selectedKey={section}
@@ -78,7 +65,7 @@ const MyApplicationsSection = ({ totalCounts }: MyApplicationsSectionProps) => {
           .push(
             {
               pathname: router.pathname,
-              query: { ...router.query, sekcia: englishToSlovakSectionNames[key] },
+              query: { ...router.query, sekcia: englishToSlovakSectionNames[key], strana: 1 },
             },
             undefined,
             { shallow: true },

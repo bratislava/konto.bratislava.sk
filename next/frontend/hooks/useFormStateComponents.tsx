@@ -193,7 +193,7 @@ const useFormStateComponents = ({
           ),
         },
         READY_FOR_PROCESSING: {
-          icon: <SendIcon className="h-6 w-6 text-warning-700" />,
+          icon: <TwoPeopleIcon className="h-6 w-6 text-warning-700" />,
           iconRound: (
             <div className="rounded-full bg-warning-100 p-1.5">
               <TwoPeopleIcon className="h-5 w-5 text-warning-700" />

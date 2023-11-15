@@ -318,9 +318,10 @@ export default step(
       `K úspešnému vyplneniu oddielov k pozemkom potrebujete list vlastníctva (LV) k pozemkom. Ide o tú časť LV, kde máte v časti A: MAJETKOVÁ PODSTATA uvedené parcely registra "C", resp. "E" registrované na katastrálnej mape.\n\nV prípade, že sa vás daň z pozemkov netýka, túto časť preskočte.\n\n:form-image-preview[Zobraziť ukážku LV k pozemkom]{src="https://cdn-api.bratislava.sk/strapi-homepage/upload/oprava_cyklocesty_kacin_7b008b44d8.jpg"}`,
     ),
     fields: kalkulackaFields({
-      title: 'Kalkulačka výpočtu {name}',
-      checkboxLabel: 'Chcem pomôcť s výpočtom a použiť kalkulačku výpočtu podlahovej plochy',
-      helptextHeader: 'Vysvetlene k comu sluzi kalkulacka. Lorem ipsum dolor sit amet consectetur.',
+      title: 'Kalkulačka výpočtu výmery pozemkov',
+      helptextHeader:
+        'Zjednodušili sme pre vás výpočet. Stačí ak zadáte tri údaje z LV a celkovú výmeru zastavanej plochy vypočítame pri každom pozemku za vás.',
+      checkboxLabel: 'Chcem pomôcť s výpočtom a použiť kalkulačku výpočtu výmery pozemkov',
       inner: innerArray,
     }),
   }),

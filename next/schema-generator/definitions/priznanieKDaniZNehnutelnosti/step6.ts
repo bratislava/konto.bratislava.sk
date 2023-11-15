@@ -111,7 +111,7 @@ const vymeraPodlahovychPlochNebytovehoPriestoruVBytovomDomeKalkulacka = customCo
 const innerArray = (kalkulacka: boolean) =>
   arrayField(
     'stavby',
-    { title: 'Priznania k dani zo stavieb služiacich viaceré účely', required: true },
+    { title: 'Priznania k dani z bytov a z nebytových priestorov v bytovom dome', required: true },
     {
       hideTitle: true,
       variant: 'topLevel',
@@ -119,7 +119,7 @@ const innerArray = (kalkulacka: boolean) =>
       addDescription:
         'V prípade, že podávate priznanie aj za ďalší byt, alebo iný nebytový priestor, je potrebné pridať ďalšie priznanie.',
       addButtonLabel: 'Pridať ďalšie priznanie',
-      itemTitle: 'Priznanie k dani zo stavby slúžiacej na viaceré účely č. {index}',
+      itemTitle: 'Priznanie k dani z bytov a z nebytových priestorov v bytovom dome č. {index}',
     },
     [
       ...stavbyBase(StepEnum.DanZBytovANebytovychPriestorov),
@@ -295,9 +295,10 @@ export default step(
       `K úspešnému vyplneniu oddielu potrebujete list vlastníctva (LV) k jednotlivým priestorom. Ide o LV, na ktorom máte uvedený bytový alebo nebytový priestor.\n\nV prípade, že sa vás daň z bytov a z nebytových priestorov netýka, túto časť preskočte.\n\n:form-image-preview[Zobraziť ukážku LV k bytovému domu]{src="https://cdn-api.bratislava.sk/strapi-homepage/upload/oprava_cyklocesty_kacin_7b008b44d8.jpg"}`,
     ),
     fields: kalkulackaFields({
-      title: 'Kalkulačka výpočtu {name}',
-      checkboxLabel: 'Chcem pomôcť s výpočtom a použiť kalkulačku výpočtu podlahovej plochy',
-      helptextHeader: 'Vysvetlene k comu sluzi kalkulacka. Lorem ipsum dolor sit amet consectetur.',
+      title: 'Kalkulačka výpočtu výmery podlahových plôch bytov a nebytových priestorov',
+      helptextHeader:
+        'Zjednodušili sme pre vás výpočet. Stačí ak zadáte dva údaje z LV a výmery podlahových plôch vypočítame za vás.',
+      checkboxLabel: 'Chcem pomôcť s výpočtom a použiť kalkulačku výmery podlahových plôch',
       inner: innerArray,
     }),
   }),

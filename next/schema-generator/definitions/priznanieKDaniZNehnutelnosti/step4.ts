@@ -254,9 +254,10 @@ export default step(
       `K úspešnému vyplneniu oddielu potrebujete list vlastníctva (LV) k jednoúčelovej stavbe. Ide o LV, na ktorom máte uvedený nadpis “Stavby”.\n\nV prípade, že sa vás daň zo stavieb slúžiacich na jeden účel netýka, túto časť preskočte (napr. podávate priznanie dani k nehnuteľností za byt/nebyt v bytovom dome).\n\n:form-image-preview[Zobraziť ukážku LV k pozemkom]{src="https://cdn-api.bratislava.sk/strapi-homepage/upload/oprava_cyklocesty_kacin_7b008b44d8.jpg"}`,
     ),
     fields: kalkulackaFields({
-      title: 'Kalkulačka výpočtu {name}',
-      checkboxLabel: 'Chcem pomôcť s výpočtom a použiť kalkulačku výpočtu podlahovej plochy',
-      helptextHeader: 'Vysvetlene k comu sluzi kalkulacka. Lorem ipsum dolor sit amet consectetur.',
+      title: 'Kalkulačka výpočtu výmery zastavanej plochy stavby',
+      helptextHeader:
+        'Zjednodušili sme pre vás výpočet. Stačí ak zadáte dva údaje z LV a celkovú výmeru zastavanej plochy vypočítame za vás.',
+      checkboxLabel: 'Chcem pomôcť s výpočtom a použiť kalkulačku výpočtu zastavanej plochy',
       inner: innerArray,
     }),
   }),

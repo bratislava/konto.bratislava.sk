@@ -5,9 +5,11 @@ import MyApplicationCardsPlaceholder from 'components/forms/segments/AccountSect
 import { ApplicationsListVariant } from 'components/forms/segments/AccountSections/MyApplicationsSection/MyApplicationsSection'
 import Pagination from 'components/forms/simple-components/Pagination/Pagination'
 import useSnackbar from 'frontend/hooks/useSnackbar'
+import logger from 'frontend/utils/logger'
+import { useRouter } from 'next/router'
 import { GetServerSidePropsContext } from 'next/types'
 import { useTranslation } from 'next-i18next'
-import React, { useEffect, useState } from 'react'
+import React, { useEffect } from 'react'
 
 import MyApplicationsCard from './MyApplicationsCard'
 
@@ -49,12 +51,10 @@ type MyApplicationsListProps = {
 
 const MyApplicationsList = ({ variant }: MyApplicationsListProps) => {
   const { t } = useTranslation('account')
-  const [pagination, setPagination] = useState<Record<ApplicationsListVariant, number>>({
-    SENT: 1,
-    SENDING: 1,
-    DRAFT: 1,
-  })
   const [openSnackbarError] = useSnackbar({ variant: 'error' })
+
+  const router = useRouter()
+  const currentPage = parseInt(router.query.strana as string, 10) || 1
 
   const {
     data,
@@ -63,8 +63,8 @@ const MyApplicationsList = ({ variant }: MyApplicationsListProps) => {
     refetch,
     isRefetching,
   } = useQuery({
-    queryKey: [`myApplications_${variant}`, pagination[variant]],
-    queryFn: () => getDraftApplications(variant, pagination[variant]),
+    queryKey: [`myApplications_${variant}`, currentPage],
+    queryFn: () => getDraftApplications(variant, currentPage),
   })
 
   const totalPagesCount = data?.countPages ?? 0
@@ -99,8 +99,19 @@ const MyApplicationsList = ({ variant }: MyApplicationsListProps) => {
           <div className="my-4 lg:my-8">
             <Pagination
               count={totalPagesCount}
-              selectedPage={pagination[variant]}
-              onChange={(page) => setPagination({ ...pagination, [variant]: page })}
+              selectedPage={currentPage}
+              onChange={(page) =>
+                router
+                  .push(
+                    {
+                      pathname: router.pathname,
+                      query: { ...router.query, strana: page },
+                    },
+                    undefined,
+                    { shallow: true },
+                  )
+                  .catch((error) => logger.error(error))
+              }
             />
           </div>
         </>

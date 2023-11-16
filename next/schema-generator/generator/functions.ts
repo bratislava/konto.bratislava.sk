@@ -6,29 +6,35 @@ import uniq from 'lodash/uniq'
 
 import {
   ArrayFieldUiOptions,
-  CheckboxesUiOptions,
+  CheckboxGroupUiOptions,
+  CheckboxUiOptions,
   CustomComponentFieldUiOptions,
   CustomComponentType,
   DatePickerUiOptions,
-  InputFieldUiOptions,
+  FileUploadUiOptions,
+  InputUiOptions,
   markdownTextPrefix,
   ObjectFieldUiOptions,
-  RadioButtonUiOptions,
+  RadioGroupUiOptions,
   SchemaUiOptions,
-  SelectFieldUiOptions,
+  SelectUiOptions,
   TextAreaUiOptions,
   TimePickerUiOptions,
-  UploadUiOptions,
 } from './uiOptionsTypes'
 
-type Field = {
+export type Field = {
   property: string
   schema: () => RJSFSchema
   uiSchema: () => UiSchema
   required: boolean
+  skipUiSchema?: boolean
+  skipSchema?: boolean
 }
 
-type ObjectField = Omit<Field, 'property'> & { property: string | null; fieldProperties: string[] }
+type ObjectField = Omit<Field, 'property'> & {
+  property: string | null
+  fieldProperties: string[]
+}
 
 type ConditionalFields = {
   condition: RJSFSchema
@@ -38,14 +44,14 @@ type ConditionalFields = {
   fieldProperties: string[]
 }
 
-type FieldType = Field | ConditionalFields | ObjectField
+export type FieldType = Field | ConditionalFields | ObjectField
 
 type BaseOptions = {
   title: string
   required?: boolean
 }
 
-export const selectField = (
+export const select = (
   property: string,
   options: BaseOptions & {
     options: {
@@ -55,7 +61,7 @@ export const selectField = (
       isDefault?: boolean
     }[]
   },
-  uiOptions: SelectFieldUiOptions,
+  uiOptions: SelectUiOptions,
 ): Field => {
   return {
     property,
@@ -66,14 +72,14 @@ export const selectField = (
       default: options.options.find(({ isDefault }) => isDefault)?.value,
     }),
     uiSchema: () => ({
-      'ui:widget': 'SelectField',
+      'ui:widget': 'Select',
       'ui:options': uiOptions,
     }),
     required: Boolean(options.required),
   }
 }
 
-export const selectMultipleField = (
+export const selectMultiple = (
   property: string,
   options: BaseOptions & {
     minItems?: number
@@ -85,7 +91,7 @@ export const selectMultipleField = (
       isDefault?: boolean
     }[]
   },
-  uiOptions: SelectFieldUiOptions,
+  uiOptions: SelectUiOptions,
 ): Field => {
   return {
     property,
@@ -102,14 +108,14 @@ export const selectMultipleField = (
       default: options.options.filter(({ isDefault }) => isDefault).map(({ value }) => value),
     }),
     uiSchema: () => ({
-      'ui:widget': 'SelectField',
+      'ui:widget': 'Select',
       'ui:options': uiOptions,
     }),
     required: Boolean(options.required),
   }
 }
 
-export const inputField = (
+export const input = (
   property: string,
   options:
     | BaseOptions &
@@ -117,14 +123,14 @@ export const inputField = (
           | {
               type?: 'text'
               // TODO: Add more formats
-              format?: 'zip'
+              format?: 'zip' | 'ratio'
               pattern?: RegExp
             }
           | {
               type: 'password' | 'email' | 'tel'
             }
         ) & { default?: string },
-  uiOptions: Omit<InputFieldUiOptions, 'type'>,
+  uiOptions: Omit<InputUiOptions, 'type'>,
 ): Field => {
   return {
     property,
@@ -132,7 +138,7 @@ export const inputField = (
       if ('pattern' in options && 'format' in options) {
         // eslint-disable-next-line no-console
         console.error(
-          `InputField: ${property} has both pattern and format, only one of them can be provided`,
+          `Input: ${property} has both pattern and format, only one of them can be provided`,
         )
       }
 
@@ -169,7 +175,7 @@ export const inputField = (
       }
     },
     uiSchema: () => ({
-      'ui:widget': 'InputField',
+      'ui:widget': 'Input',
       'ui:label': false,
       'ui:options': { ...uiOptions, type: options.type ?? 'text' },
     }),
@@ -177,7 +183,7 @@ export const inputField = (
   }
 }
 
-export const numberField = (
+export const number = (
   property: string,
   options: BaseOptions & {
     type?: 'number' | 'integer'
@@ -187,7 +193,7 @@ export const numberField = (
     maximum?: number
     exclusiveMaximum?: number
   },
-  uiOptions: Omit<InputFieldUiOptions, 'type'>,
+  uiOptions: Omit<InputUiOptions, 'type'>,
 ): Field => {
   return {
     property,
@@ -201,7 +207,7 @@ export const numberField = (
       exclusiveMaximum: options.exclusiveMaximum,
     }),
     uiSchema: () => ({
-      'ui:widget': 'InputField',
+      'ui:widget': 'Input',
       'ui:label': false,
       'ui:options': { ...uiOptions, type: 'number' },
     }),
@@ -217,7 +223,7 @@ type StringToType<T> = T extends 'string'
   ? boolean
   : never
 
-export const radioButton = <T extends 'string' | 'number' | 'boolean'>(
+export const radioGroup = <T extends 'string' | 'number' | 'boolean'>(
   property: string,
   options: BaseOptions & {
     type: T
@@ -229,7 +235,7 @@ export const radioButton = <T extends 'string' | 'number' | 'boolean'>(
       isDefault?: boolean
     }[]
   },
-  uiOptions: Omit<RadioButtonUiOptions, 'radioOptions'>,
+  uiOptions: Omit<RadioGroupUiOptions, 'radioOptions'>,
 ): Field => {
   return {
     property,
@@ -240,7 +246,7 @@ export const radioButton = <T extends 'string' | 'number' | 'boolean'>(
       oneOf: options.options.map(({ value, title }) => ({ const: value, title })),
     }),
     uiSchema: () => ({
-      'ui:widget': 'RadioButton',
+      'ui:widget': 'RadioGroup',
       'ui:options': {
         ...uiOptions,
         radioOptions: options.options
@@ -269,7 +275,27 @@ export const textArea = (
   }
 }
 
-export const checkboxes = (
+export const checkbox = (
+  property: string,
+  options: BaseOptions & { default?: boolean },
+  uiOptions: CheckboxUiOptions,
+): Field => {
+  return {
+    property,
+    schema: () => ({
+      type: 'boolean',
+      title: options.title,
+      default: options.default,
+    }),
+    uiSchema: () => ({
+      'ui:widget': 'Checkbox',
+      'ui:options': uiOptions,
+    }),
+    required: Boolean(options.required),
+  }
+}
+
+export const checkboxGroup = (
   property: string,
   options: BaseOptions & {
     minItems?: number
@@ -282,7 +308,7 @@ export const checkboxes = (
       isDefault?: boolean
     }[]
   },
-  uiOptions: Omit<CheckboxesUiOptions, 'checkboxOptions'>,
+  uiOptions: Omit<CheckboxGroupUiOptions, 'checkboxOptions'>,
 ): Field => {
   return {
     property,
@@ -298,7 +324,7 @@ export const checkboxes = (
       default: options.options.filter(({ isDefault }) => isDefault).map(({ value }) => value),
     }),
     uiSchema: () => ({
-      'ui:widget': 'Checkboxes',
+      'ui:widget': 'CheckboxGroup',
       'ui:options': {
         ...uiOptions,
         checkboxOptions: options.options
@@ -310,10 +336,10 @@ export const checkboxes = (
   }
 }
 
-export const upload = (
+export const fileUpload = (
   property: string,
   options: BaseOptions & { multiple?: boolean },
-  uiOptions: UploadUiOptions,
+  uiOptions: FileUploadUiOptions,
 ): Field => {
   return {
     property,
@@ -340,7 +366,7 @@ export const upload = (
         file: true,
       }
     },
-    uiSchema: () => ({ 'ui:widget': 'Upload', 'ui:options': uiOptions }),
+    uiSchema: () => ({ 'ui:widget': 'FileUpload', 'ui:options': uiOptions }),
     required: Boolean(options.required),
   }
 }
@@ -428,9 +454,12 @@ export const object = (
   fields: FieldType[],
 ): ObjectField => {
   const ordinaryFields = fields.filter((field) => !('condition' in field)) as Field[]
+  const ordinaryFieldsWithSchema = ordinaryFields.filter((field) => !field.skipSchema)
+  const ordinaryFieldsWithUiSchema = ordinaryFields.filter((field) => !field.skipUiSchema)
   const conditionalFields = fields.filter((field) => 'condition' in field) as ConditionalFields[]
   const fieldProperties = uniq(
     fields
+      .filter((field) => ('skipUiSchema' in field ? !field.skipUiSchema : true))
       .flatMap((field) => ('condition' in field ? field.fieldProperties : [field.property]))
       .filter((field) => field !== null) as string[],
   )
@@ -447,15 +476,17 @@ export const object = (
       return {
         type: 'object',
         properties: Object.fromEntries(
-          ordinaryFields.map((field) => [field.property, field.schema()]),
+          ordinaryFieldsWithSchema.map((field) => [field.property, field.schema()]),
         ),
-        required: ordinaryFields.filter((field) => field.required).map((field) => field.property),
+        required: ordinaryFieldsWithSchema
+          .filter((field) => field.required)
+          .map((field) => field.property),
         allOf: allOf.length > 0 ? allOf : undefined,
       }
     },
     uiSchema: () => {
       const ordinaryFieldsUiSchema = Object.fromEntries(
-        ordinaryFields.map((field) => [field.property, field.uiSchema()]),
+        ordinaryFieldsWithUiSchema.map((field) => [field.property, field.uiSchema()]),
       )
       const conditionalFieldsUiSchema = conditionalFields.reduce(
         (acc, field) => ({ ...acc, ...field.uiSchema() }),
@@ -506,6 +537,7 @@ export const step = (
   property: string,
   options: {
     title: string
+    description?: string
     stepperTitle?: string
     customHash?: string
   },
@@ -529,6 +561,7 @@ export const step = (
       properties: {
         [property]: {
           title: options.title,
+          description: options.description,
           stepperTitle: options.stepperTitle,
           hash: getHash(),
           ...schema(),
@@ -614,6 +647,17 @@ export const schema = (
     },
   }
 }
+
+// TODO: Document
+export const skipUiSchema = <F extends Field | ObjectField>(field: F): F => {
+  return { ...field, skipUiSchema: true }
+}
+
+// TODO: Document
+export const skipSchema = <F extends Field | ObjectField>(field: F): F => {
+  return { ...field, skipSchema: true }
+}
+
 /**
  * If text contains markdown, it is still string, to distinguish it from normal text, we need to prefix it in order to
  * detect that it is markdown when used in component.

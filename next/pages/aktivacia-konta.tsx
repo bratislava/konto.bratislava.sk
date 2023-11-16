@@ -73,7 +73,6 @@ const MigrationPage = ({ page }: AsyncServerProps<typeof getServerSideProps>) =>
       if (isErrorWithCode(error)) {
         if (error?.code === 'UserNotFoundException') {
           setActivateAccountError(
-            // eslint-disable-next-line no-secrets/no-secrets
             new ErrorWithCode(error.message, 'MigrationUserNotFoundException'),
           )
         } else {

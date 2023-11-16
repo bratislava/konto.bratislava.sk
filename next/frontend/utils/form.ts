@@ -96,6 +96,23 @@ function compareTime(s1: string, s2: string): number | undefined {
   return t1 - t2
 }
 
+export const parseRatio = (value: string) => {
+  const ratioRegex = /^(0|[1-9]\d*)\/([1-9]\d*)$/
+  if (!ratioRegex.test(value)) {
+    return { isValid: false }
+  }
+
+  const parts = value.split('/')
+  const numerator = parseInt(parts[0], 10)
+  const denominator = parseInt(parts[1], 10)
+
+  if (numerator > denominator) {
+    return { isValid: false }
+  }
+
+  return { isValid: true, numerator, denominator }
+}
+
 export const ajvFormats = {
   zip: /\b\d{5}\b/,
   // TODO: Remove, but this is needed for form to compile
@@ -106,6 +123,9 @@ export const ajvFormats = {
     // https://stackoverflow.com/a/51177696
     validate: /^(\d|0\d|1\d|2[0-3]):[0-5]\d$/,
     compare: compareTime,
+  },
+  ratio: {
+    validate: (value: string) => parseRatio(value).isValid,
   },
 } satisfies Record<string, Format>
 

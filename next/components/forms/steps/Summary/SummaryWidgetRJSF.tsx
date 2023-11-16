@@ -2,6 +2,7 @@ import { getLocalTimeZone, parseDate } from '@internationalized/date'
 import { WidgetProps } from '@rjsf/utils'
 import React from 'react'
 import { useDateFormatter } from 'react-aria'
+import { CheckboxUiOptions } from 'schema-generator/generator/uiOptionsTypes'
 
 import { useFormState } from '../../useFormState'
 import SummaryFiles from './SummaryFiles'
@@ -11,12 +12,13 @@ import { useFormSummary } from './useFormSummary'
 export type SummaryWidgetType =
   | 'select'
   | 'input'
-  | 'radio'
-  | 'textarea'
-  | 'checkboxes'
-  | 'upload'
-  | 'datepicker'
-  | 'timepicker'
+  | 'radioGroup'
+  | 'textArea'
+  | 'checkbox'
+  | 'checkboxGroup'
+  | 'fileUpload'
+  | 'datePicker'
+  | 'timePicker'
 
 export type SummaryWidgetRJSFProps = Pick<
   WidgetProps,
@@ -48,16 +50,21 @@ const ValueComponent = ({
       )
 
       return <>{selectLabels.join(', ')}</>
-    case 'radio':
+    case 'radioGroup':
       return (
         <>
           {options.enumOptions?.find((option) => option.value === value)?.label ??
             (value as string)}
         </>
       )
-    case 'textarea':
+    case 'textArea':
       return <span className="line-clamp-3 whitespace-pre-wrap">{value}</span>
-    case 'checkboxes':
+    case 'checkbox':
+      if (value) {
+        return <>{(options as CheckboxUiOptions).checkboxLabel}</>
+      }
+      return <>-</>
+    case 'checkboxGroup':
       return (
         <>
           {(value as string[])
@@ -69,9 +76,9 @@ const ValueComponent = ({
             .join(', ')}
         </>
       )
-    case 'upload':
+    case 'fileUpload':
       return <SummaryFiles files={value} />
-    case 'datepicker':
+    case 'datePicker':
       try {
         const parsed = parseDate(value as string)
         return <>{formatter.format(parsed.toDate(getLocalTimeZone()))}</>
@@ -79,7 +86,7 @@ const ValueComponent = ({
         // TODO improve
         return <>{value as string}</>
       }
-    case 'timepicker':
+    case 'timePicker':
       return <>{value as string}</>
     case 'input':
       if (uiSchema?.['ui:options']?.type === 'password') {
@@ -108,12 +115,15 @@ const SummaryWidgetRJSF = ({
         data={{
           label,
           value: (
-            <ValueComponent
-              widgetType={widgetType}
-              value={value}
-              options={options}
-              uiSchema={uiSchema}
-            />
+            // className="break-words" doesn't work
+            <div style={{ wordBreak: 'break-word' }}>
+              <ValueComponent
+                widgetType={widgetType}
+                value={value}
+                options={options}
+                uiSchema={uiSchema}
+              />
+            </div>
           ),
           isError: fieldHasError(id),
         }}

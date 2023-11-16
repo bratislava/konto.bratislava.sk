@@ -1,16 +1,16 @@
-import { EnumOptionsType, StrictRJSFSchema, WidgetProps } from '@rjsf/utils'
+import { StrictRJSFSchema, WidgetProps } from '@rjsf/utils'
 import WidgetWrapper from 'components/forms/widget-wrappers/WidgetWrapper'
 import React from 'react'
-import { CheckboxesUiOptions } from 'schema-generator/generator/uiOptionsTypes'
+import { CheckboxUiOptions } from 'schema-generator/generator/uiOptionsTypes'
 
 import Checkbox from '../widget-components/Checkbox/Checkbox'
 import CheckboxGroup from '../widget-components/Checkbox/CheckboxGroup'
 
-interface CheckboxesWidgetRJSFProps extends WidgetProps {
-  options: CheckboxesUiOptions & WidgetProps['options']
-  value: string[] | null
+interface CheckboxRJSFProps extends WidgetProps {
+  options: CheckboxUiOptions & WidgetProps['options']
+  value: boolean | null
   schema: StrictRJSFSchema
-  onChange: (value: string[]) => void
+  onChange: (value: boolean) => void
 }
 
 const CheckboxWidgetRJSF = ({
@@ -18,43 +18,44 @@ const CheckboxWidgetRJSF = ({
   value,
   onChange,
   label,
-  schema: { maxItems },
   rawErrors,
   required,
   readonly,
-}: CheckboxesWidgetRJSFProps) => {
-  const { enumOptions, className, checkboxOptions = [], variant = 'basic' } = options
-  if (!enumOptions) return <div />
-  const getTooltip = (radioValue: string) => {
-    return checkboxOptions.find((option) => option.value === radioValue)?.tooltip
+}: CheckboxRJSFProps) => {
+  const {
+    className,
+    variant = 'basic',
+    size,
+    labelSize,
+    helptext,
+    helptextHeader,
+    checkboxLabel,
+  } = options
+
+  const checkboxGroupValue = value ? ['true'] : []
+  const checkboxGroupOnChange = (value: string[]) => {
+    onChange(value.includes('true'))
   }
-  const isDisabled = (valueName: string) => {
-    return value?.length === maxItems && !value?.includes(valueName)
-  }
+
   return (
     <WidgetWrapper options={options}>
+      {/* TODO: Refactor SingleCheckBox to have field properties and use it.  */}
       <CheckboxGroup
         errorMessage={rawErrors}
-        value={value ?? undefined}
-        onChange={onChange}
+        value={checkboxGroupValue ?? undefined}
+        onChange={checkboxGroupOnChange}
         className={className}
         label={label}
         required={required}
         disabled={readonly}
+        size={size}
+        labelSize={labelSize}
+        helptext={helptext}
+        helptextHeader={helptextHeader}
       >
-        {enumOptions.map((option: EnumOptionsType) => {
-          return (
-            <Checkbox
-              key={option.value}
-              value={option.value}
-              variant={variant}
-              isDisabled={isDisabled(option.value as string) || readonly}
-              tooltip={getTooltip(option.value as string)}
-            >
-              {option.label}
-            </Checkbox>
-          )
-        })}
+        <Checkbox value="true" variant={variant} isDisabled={readonly}>
+          {checkboxLabel}
+        </Checkbox>
       </CheckboxGroup>
     </WidgetWrapper>
   )

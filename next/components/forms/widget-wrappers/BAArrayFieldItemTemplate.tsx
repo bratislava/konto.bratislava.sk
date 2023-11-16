@@ -8,6 +8,7 @@ import {
 import cx from 'classnames'
 import { ArrayFieldUiOptions } from 'schema-generator/generator/uiOptionsTypes'
 
+import { getArrayFieldItemTemplateTitle } from '../../../frontend/utils/formArray'
 import Button from '../simple-components/ButtonNew'
 
 /**
@@ -33,7 +34,7 @@ const BAArrayFieldItemTemplate = <
   })
 
   const headingStyle = cx('flex items-center gap-8', {
-    // 'rounded-lg border border-zinc-300 bg-white px-6 pb-6 pt-8': uiOptions.variant === 'topLevel',
+    'mb-8': variant === 'topLevel',
     'border-b border-gray-200 px-6 py-5': variant === 'nested',
   })
 
@@ -41,7 +42,7 @@ const BAArrayFieldItemTemplate = <
     'p-6': variant === 'nested',
   })
 
-  const title = (itemTitle ?? '').replace('{index}', String(index + 1))
+  const title = getArrayFieldItemTemplateTitle(itemTitle, index)
 
   const onDropIndexClickPatched = (innerIndex: number) => () => {
     // The RJSF expects the event to have a `preventDefault` method, but the `onPress` handler

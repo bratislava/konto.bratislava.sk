@@ -57,7 +57,7 @@ const BottomSheetMenuModal = ({
                     <CrossIcon className="h-6 w-6" />
                   </AriaButton>
                 </div>
-                <nav className="w-full overflow-auto bg-white p-4">
+                <nav className="w-full overflow-auto bg-white px-4">
                   <ul>
                     {conceptMenuContent.map((item) => (
                       <li key={item.id} className="border-b-2 last:border-b-0">

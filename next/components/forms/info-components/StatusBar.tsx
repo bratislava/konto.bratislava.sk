@@ -6,7 +6,7 @@ import { useTranslation } from 'next-i18next'
 import React, { createContext, useContext, useState } from 'react'
 import { useEffectOnce } from 'usehooks-ts'
 
-import ErrorIcon from '../icon-components/ErrorIcon'
+import WarningIcon from '../icon-components/WarningIcon'
 import { SectionContainer } from '../segments/SectionContainer/SectionContainer'
 
 type StatusBarVariantBase = 'warning' | 'error'
@@ -77,9 +77,9 @@ export const StatusBar = ({ className }: StatusBarProps) => {
     >
       <div className="container mx-auto flex h-full items-center justify-center">
         <SectionContainer>
-          <div className="row flex items-center py-4">
-            <span className="mr-3 hidden md:flex">
-              <ErrorIcon solid className="h-5 w-5" />
+          <div className="flex items-center py-4">
+            <span className="mr-3">
+              <WarningIcon solid className="h-5 w-5" />
             </span>
             <div className="text-p2">{statusBarConfiguration.content}</div>
           </div>

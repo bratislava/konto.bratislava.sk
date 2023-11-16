@@ -7,13 +7,13 @@ import { TextAreaUiOptions } from 'schema-generator/generator/uiOptionsTypes'
 import FieldBlurWrapper from '../widget-components/FieldBlurWrapper/FieldBlurWrapper'
 import TextAreaField from '../widget-components/TextAreaField/TextAreaField'
 
-interface TextAreaFieldWidgetRJSFProps extends WidgetProps {
+interface TextAreaWidgetRJSFProps extends WidgetProps {
   value: string | undefined
   options: TextAreaUiOptions & WidgetProps['options']
   onChange: (value?: string) => void
 }
 
-const TextAreaFieldWidgetRJSF = ({
+const TextAreaWidgetRJSF = ({
   value,
   label,
   placeholder,
@@ -23,8 +23,8 @@ const TextAreaFieldWidgetRJSF = ({
   options,
   onChange,
   readonly,
-}: TextAreaFieldWidgetRJSFProps) => {
-  const { helptext, tooltip, explicitOptional, className } = options
+}: TextAreaWidgetRJSFProps) => {
+  const { helptext, helptextHeader, tooltip, className, size, labelSize } = options
 
   const handleOnChange = (newValue?: string) => {
     if (!newValue || newValue === '') {
@@ -35,7 +35,7 @@ const TextAreaFieldWidgetRJSF = ({
   }
 
   return (
-    <WidgetWrapper options={options} className="max-w-[320px]">
+    <WidgetWrapper options={options}>
       <FieldBlurWrapper value={value} onChange={handleOnChange}>
         {({ value: wrapperValue, onChange: wrapperOnChange, onBlur }) => (
           <TextAreaField
@@ -45,12 +45,14 @@ const TextAreaFieldWidgetRJSF = ({
             required={required}
             disabled={disabled || readonly}
             helptext={helptext}
+            helptextHeader={helptextHeader}
             tooltip={tooltip}
             className={cx('h-[196px]', className)}
-            explicitOptional={explicitOptional}
             onChange={wrapperOnChange}
             onBlur={onBlur}
             errorMessage={rawErrors}
+            size={size}
+            labelSize={labelSize}
           />
         )}
       </FieldBlurWrapper>
@@ -58,4 +60,4 @@ const TextAreaFieldWidgetRJSF = ({
   )
 }
 
-export default TextAreaFieldWidgetRJSF
+export default TextAreaWidgetRJSF

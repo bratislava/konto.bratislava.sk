@@ -1,4 +1,6 @@
+import { getUiOptions } from '@rjsf/utils'
 import { useServerSideAuth } from 'frontend/hooks/useServerSideAuth'
+import { getFormTitle } from 'frontend/utils/general'
 import { useTranslation } from 'next-i18next'
 import React from 'react'
 
@@ -6,6 +8,7 @@ import { useFormExportImport } from '../../../../frontend/hooks/useFormExportImp
 import Button from '../../simple-components/ButtonNew'
 import { useFormModals } from '../../useFormModals'
 import { useFormRedirects } from '../../useFormRedirects'
+import { useFormState } from '../../useFormState'
 import MessageModal, { MessageModalProps } from '../../widget-components/Modals/MessageModal'
 import AccountMarkdown from '../AccountMarkdown/AccountMarkdown'
 import IdentityVerificationModal from '../IdentityVerificationModal/IdentityVerificationModal'
@@ -54,10 +57,16 @@ const FormModals = () => {
     setEidSendErrorModal,
     sendEidPending,
     eidSendConfirmationModalIsPending,
+    deleteConceptModal,
+    setDeleteConceptModal,
   } = useFormModals()
   const { saveConcept, saveConceptIsPending, migrateForm, migrateFormIsPending } =
     useFormExportImport()
   const { login, register, verifyIdentity } = useFormRedirects()
+
+  const { formData, uiSchema } = useFormState()
+  const uiOptions = getUiOptions(uiSchema)
+  const title = getFormTitle(formData, uiOptions, t('form_title_fallback'))
 
   const messageModals: (MessageModalProps & { key: string })[] = [
     {
@@ -72,6 +81,7 @@ const FormModals = () => {
         </Button>,
         <Button
           variant="black-solid"
+          size="small"
           onPress={() => migrateForm()}
           fullWidthMobile
           isLoading={migrateFormIsPending}
@@ -97,16 +107,17 @@ const FormModals = () => {
       type: 'error',
       title: t('concept_save_error_modal.title'),
       buttons: [
-        <Button onPress={() => setConceptSaveErrorModal(false)}>
+        <Button variant="black-plain" onPress={() => setConceptSaveErrorModal(false)}>
           {t('modals_back_button_title')}
         </Button>,
         <Button
           variant="category-solid"
+          size="small"
           onPress={() => saveConcept(true)}
           isLoading={saveConceptIsPending}
           isLoadingText={t('concept_save_error_modal.button_title_loading')}
         >
-          {t('concept_save_error_modal.button_repeat_text')}
+          {t('concept_save_error_modal.button_title')}
         </Button>,
       ],
       children: t('concept_save_error_modal.content'),
@@ -122,11 +133,16 @@ const FormModals = () => {
       title: t('send_files_scanning_eid_modal.title'),
       type: 'warning',
       buttons: [
-        <Button onPress={() => setSendFilesScanningEidModal({ isOpen: false })} fullWidthMobile>
+        <Button
+          variant="black-plain"
+          onPress={() => setSendFilesScanningEidModal({ isOpen: false })}
+          fullWidthMobile
+        >
           {t('modals_back_button_title')}
         </Button>,
         <Button
           variant="black-solid"
+          size="small"
           onPress={() =>
             sendFilesScanningEidModal.isOpen && sendFilesScanningEidModal.sendCallback()
           }
@@ -148,10 +164,14 @@ const FormModals = () => {
       title: t('send_files_scanning_not_verified_eid_modal.title'),
       type: 'warning',
       buttons: [
-        <Button onPress={() => setSendFilesScanningNotVerifiedEidModal(false)} fullWidthMobile>
+        <Button
+          variant="black-plain"
+          onPress={() => setSendFilesScanningNotVerifiedEidModal(false)}
+          fullWidthMobile
+        >
           {t('modals_back_button_title')}
         </Button>,
-        <Button variant="black-solid" onPress={() => verifyIdentity()} fullWidthMobile>
+        <Button variant="black-solid" size="small" onPress={() => verifyIdentity()} fullWidthMobile>
           {t('send_files_scanning_not_verified_eid_modal.button_title')}
         </Button>,
       ],
@@ -171,6 +191,7 @@ const FormModals = () => {
         <Button
           className="grow"
           variant="black-solid"
+          size="small"
           onPress={() => verifyIdentity()}
           fullWidthMobile
         >
@@ -179,6 +200,7 @@ const FormModals = () => {
         <Button
           className="grow"
           variant="black-outline"
+          size="small"
           onPress={() =>
             sendFilesScanningNotVerified.isOpen && sendFilesScanningNotVerified.sendCallback()
           }
@@ -207,10 +229,14 @@ const FormModals = () => {
       title: t('send_identity_missing_modal.title'),
       type: 'warning',
       buttons: [
-        <Button onPress={() => setSendIdentityMissingModal(false)} fullWidthMobile>
+        <Button
+          variant="black-plain"
+          onPress={() => setSendIdentityMissingModal(false)}
+          fullWidthMobile
+        >
           {t('modals_back_button_title')}
         </Button>,
-        <Button variant="black-solid" onPress={() => verifyIdentity()} fullWidthMobile>
+        <Button variant="black-solid" size="small" onPress={() => verifyIdentity()} fullWidthMobile>
           {t('send_identity_missing_modal.button_title')}
         </Button>,
       ],
@@ -223,10 +249,14 @@ const FormModals = () => {
       title: t('send_files_scanning_non_authenticated_eid_modal.title'),
       type: 'warning',
       buttons: [
-        <Button onPress={() => setSendFilesScanningNonAuthenticatedEidModal(false)} fullWidthMobile>
+        <Button
+          variant="black-plain"
+          onPress={() => setSendFilesScanningNonAuthenticatedEidModal(false)}
+          fullWidthMobile
+        >
           {t('modals_back_button_title')}
         </Button>,
-        <Button variant="black-solid" onPress={() => register()} fullWidthMobile>
+        <Button variant="black-solid" size="small" onPress={() => register()} fullWidthMobile>
           {t('send_files_scanning_non_authenticated_eid_modal.button_title')}
         </Button>,
       ],
@@ -251,11 +281,16 @@ const FormModals = () => {
       title: t('send_files_scanning_modal.title'),
       type: 'warning',
       buttons: [
-        <Button onPress={() => setSendFilesScanningModal({ isOpen: false })} fullWidthMobile>
+        <Button
+          variant="black-plain"
+          onPress={() => setSendFilesScanningModal({ isOpen: false })}
+          fullWidthMobile
+        >
           {t('modals_back_button_title')}
         </Button>,
         <Button
           variant="black-solid"
+          size="small"
           onPress={() => sendFilesScanningModal.isOpen && sendFilesScanningModal.sendCallback()}
           fullWidthMobile
           isLoading={sendPending}
@@ -280,6 +315,7 @@ const FormModals = () => {
       type: 'info',
       buttons: [
         <Button
+          variant="black-plain"
           onPress={() => setSendConfirmationModal({ isOpen: false })}
           fullWidthMobile
           isDisabled={sendPending}
@@ -288,6 +324,7 @@ const FormModals = () => {
         </Button>,
         <Button
           variant="black-solid"
+          size="small"
           onPress={() => sendConfirmationModal.isOpen && sendConfirmationModal.sendCallback()}
           fullWidthMobile
           isLoading={sendPending}
@@ -312,6 +349,7 @@ const FormModals = () => {
       type: 'info',
       buttons: [
         <Button
+          variant="black-plain"
           onPress={() => setSendConfirmationEidModal({ isOpen: false })}
           isDisabled={eidSendConfirmationModalIsPending}
           fullWidthMobile
@@ -320,6 +358,7 @@ const FormModals = () => {
         </Button>,
         <Button
           variant="black-solid"
+          size="small"
           onPress={() => sendConfirmationEidModal.isOpen && sendConfirmationEidModal.sendCallback()}
           fullWidthMobile
           isLoading={eidSendConfirmationModalIsPending}
@@ -349,6 +388,7 @@ const FormModals = () => {
       type: 'info',
       buttons: [
         <Button
+          variant="black-plain"
           onPress={() => setSendConfirmationEidLegalModal({ isOpen: false })}
           isDisabled={eidSendConfirmationModalIsPending}
           fullWidthMobile
@@ -357,6 +397,7 @@ const FormModals = () => {
         </Button>,
         <Button
           variant="black-solid"
+          size="small"
           onPress={() =>
             sendConfirmationEidLegalModal.isOpen && sendConfirmationEidLegalModal.sendCallback()
           }
@@ -383,6 +424,7 @@ const FormModals = () => {
       type: 'info',
       buttons: [
         <Button
+          variant="black-plain"
           onPress={() => setSendConfirmationNonAuthenticatedEidModal({ isOpen: false })}
           fullWidthMobile
           isDisabled={eidSendConfirmationModalIsPending}
@@ -391,6 +433,7 @@ const FormModals = () => {
         </Button>,
         <Button
           variant="black-solid"
+          size="small"
           onPress={() =>
             sendConfirmationNonAuthenticatedEidModal.isOpen &&
             sendConfirmationNonAuthenticatedEidModal.sendCallback()
@@ -432,6 +475,7 @@ const FormModals = () => {
       type: 'info',
       buttons: [
         <Button
+          variant="black-plain"
           onPress={() => setEidSendErrorModal({ isOpen: false })}
           isDisabled={sendEidPending}
           fullWidthMobile
@@ -440,6 +484,7 @@ const FormModals = () => {
         </Button>,
         <Button
           variant="black-solid"
+          size="small"
           onPress={() => eidSendErrorModal.isOpen && eidSendErrorModal.sendCallback()}
           fullWidthMobile
           isLoading={sendEidPending}
@@ -451,6 +496,32 @@ const FormModals = () => {
       isDismissable: !sendEidPending,
       noCloseButton: sendEidPending,
       children: t('eid_send_error_modal.content'),
+    },
+    {
+      key: 'deleteConceptModal',
+      isOpen: deleteConceptModal.isOpen,
+      onOpenChange: (value) => {
+        if (!value) {
+          setDeleteConceptModal({ isOpen: false })
+        }
+      },
+      title: t('concept_delete_modal.title'),
+      type: 'error',
+      buttons: [
+        <Button variant="black-plain" onPress={() => setDeleteConceptModal({ isOpen: false })}>
+          {t('modals_back_button_title')}
+        </Button>,
+        <Button
+          variant="negative-solid"
+          size="small"
+          onPress={() => deleteConceptModal.isOpen && deleteConceptModal.sendCallback()}
+        >
+          {t('concept_delete_modal.button_title')}
+        </Button>,
+      ],
+      isDismissable: false,
+      noCloseButton: true,
+      children: t('concept_delete_modal.content', { conceptName: title }),
     },
   ]
 

@@ -2,17 +2,17 @@ import { WidgetProps } from '@rjsf/utils'
 import InputField from 'components/forms/widget-components/InputField/InputField'
 import WidgetWrapper from 'components/forms/widget-wrappers/WidgetWrapper'
 import React from 'react'
-import { InputFieldUiOptions } from 'schema-generator/generator/uiOptionsTypes'
+import { InputUiOptions } from 'schema-generator/generator/uiOptionsTypes'
 
 import FieldBlurWrapper from '../widget-components/FieldBlurWrapper/FieldBlurWrapper'
 
-interface InputFieldWidgetRJSFProps extends WidgetProps {
-  options: InputFieldUiOptions & WidgetProps['options']
+interface InputWidgetRJSFProps extends WidgetProps {
+  options: InputUiOptions & WidgetProps['options']
   value: string | undefined
   onChange: (value?: string) => void
 }
 
-const InputFieldWidgetRJSF = ({
+const InputWidgetRJSF = ({
   label,
   options,
   placeholder = '',
@@ -22,16 +22,17 @@ const InputFieldWidgetRJSF = ({
   onChange,
   rawErrors,
   readonly,
-}: InputFieldWidgetRJSFProps) => {
+}: InputWidgetRJSFProps) => {
   const {
     helptext,
+    helptextHeader,
     tooltip,
     className,
     resetIcon,
     leftIcon,
-    explicitOptional,
     type,
-    size = 'default',
+    size,
+    labelSize,
   } = options
 
   const handleOnChange = (newValue: string | undefined) => {
@@ -55,18 +56,19 @@ const InputFieldWidgetRJSF = ({
             required={required}
             disabled={disabled || readonly}
             helptext={helptext}
+            helptextHeader={helptextHeader}
             tooltip={tooltip}
             className={className}
             resetIcon={resetIcon}
             leftIcon={leftIcon}
             onChange={wrapperOnChange}
             onBlur={onBlur}
-            explicitOptional={explicitOptional}
             size={size}
+            labelSize={labelSize}
           />
         )}
       </FieldBlurWrapper>
     </WidgetWrapper>
   )
 }
-export default InputFieldWidgetRJSF
+export default InputWidgetRJSF

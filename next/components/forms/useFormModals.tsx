@@ -12,7 +12,7 @@ type ModalWithSendCallback =
     }
   | {
       isOpen: true
-      sendCallback: () => void
+      sendCallback: (() => void) | (() => Promise<void>)
     }
 
 const useGetContext = (initialFormData: InitialFormData) => {
@@ -66,6 +66,9 @@ const useGetContext = (initialFormData: InitialFormData) => {
     useState<ModalWithSendCallback>({ isOpen: false })
   const [sendFilesScanningNotVerified, setSendFilesScanningNotVerified] =
     useState<ModalWithSendCallback>({ isOpen: false })
+  const [deleteConceptModal, setDeleteConceptModal] = useState<ModalWithSendCallback>({
+    isOpen: false,
+  })
   const [eidSendingModal, setEidSendingModal] = useState(false)
   const [eidSendErrorModal, setEidSendErrorModal] = useState<ModalWithSendCallback>({
     isOpen: false,
@@ -126,6 +129,8 @@ const useGetContext = (initialFormData: InitialFormData) => {
     setSendEidPending,
     setRedirectingToSlovenskoSkLogin,
     eidSendConfirmationModalIsPending,
+    deleteConceptModal,
+    setDeleteConceptModal,
   }
 }
 

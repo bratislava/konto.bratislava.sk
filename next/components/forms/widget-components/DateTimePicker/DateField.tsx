@@ -5,16 +5,14 @@ import React, { ReactNode } from 'react'
 import { AriaDatePickerProps, useDateField, useLocale } from 'react-aria'
 import { useDateFieldState } from 'react-stately'
 
-import { FieldAdditionalProps, FieldBaseProps } from '../FieldBase'
-import FieldWrapper from '../FieldWrapper'
+import FieldWrapper, { FieldWrapperProps } from '../FieldWrapper'
 import DateTimeSegment from './DateTimeSegment'
 
-type DateFieldProps = FieldBaseProps &
-  Pick<FieldAdditionalProps, 'customErrorPlace'> & {
-    children?: ReactNode
-    isOpen?: boolean
-    popover?: ReactNode
-  } & AriaDatePickerProps<DateValue>
+type DateFieldProps = FieldWrapperProps & {
+  children?: ReactNode
+  isOpen?: boolean
+  popover?: ReactNode
+} & AriaDatePickerProps<DateValue>
 
 const DateField = ({
   errorMessage = [],
@@ -23,11 +21,13 @@ const DateField = ({
   label,
   tooltip,
   helptext,
+  helptextHeader,
   isOpen,
   required,
-  explicitOptional,
   customErrorPlace,
   popover,
+  size,
+  labelSize,
   ...rest
 }: DateFieldProps) => {
   const ref = React.useRef<HTMLDivElement>(null)
@@ -62,13 +62,15 @@ const DateField = ({
       labelProps={labelProps}
       tooltip={tooltip}
       helptext={helptext}
+      helptextHeader={helptextHeader}
       descriptionProps={descriptionProps}
       required={required}
-      explicitOptional={explicitOptional}
       disabled={disabled}
       customErrorPlace={customErrorPlace}
       errorMessage={errorMessage}
       errorMessageProps={errorMessageProps}
+      size={size}
+      labelSize={labelSize}
     >
       <div {...fieldProps} ref={ref} className={dateFieldStyle}>
         {state?.segments?.map((segment, index) => (

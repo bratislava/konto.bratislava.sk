@@ -2,9 +2,10 @@ import { formsApi } from '@clients/forms'
 import { GetFormResponseDto, GetFormResponseDtoStateEnum } from '@clients/openapi-forms'
 import { useQuery } from '@tanstack/react-query'
 import MyApplicationCardsPlaceholder from 'components/forms/segments/AccountSections/MyApplicationsSection/MyApplicationCardsPlaceholder'
-import { ApplicationsListVariant } from 'components/forms/segments/AccountSections/MyApplicationsSection/MyApplicationsHeader'
+import { ApplicationsListVariant } from 'components/forms/segments/AccountSections/MyApplicationsSection/MyApplicationsSection'
 import Pagination from 'components/forms/simple-components/Pagination/Pagination'
 import useSnackbar from 'frontend/hooks/useSnackbar'
+import { GetServerSidePropsContext } from 'next/types'
 import { useTranslation } from 'next-i18next'
 import React, { useEffect, useState } from 'react'
 
@@ -13,7 +14,11 @@ import MyApplicationsCard from './MyApplicationsCard'
 // must be string due to typing
 const PAGE_SIZE = '10'
 
-const getDraftApplications = async (variant: ApplicationsListVariant, page: number) => {
+export const getDraftApplications = async (
+  variant: ApplicationsListVariant,
+  page: number,
+  accessTokenSsrReq?: GetServerSidePropsContext['req'],
+) => {
   const variantToStates: Array<GetFormResponseDtoStateEnum> = {
     SENT: [
       'REJECTED',
@@ -23,7 +28,7 @@ const getDraftApplications = async (variant: ApplicationsListVariant, page: numb
       'DELIVERED_NASES',
       'DELIVERED_GINIS',
     ] satisfies Array<GetFormResponseDtoStateEnum>,
-    SENDING: ['QUEUED', 'ERROR'] satisfies Array<GetFormResponseDtoStateEnum>,
+    SENDING: ['QUEUED', 'ERROR', 'SENDING_TO_NASES'] satisfies Array<GetFormResponseDtoStateEnum>,
     DRAFT: ['DRAFT'] satisfies Array<GetFormResponseDtoStateEnum>,
   }[variant]
   const response = await formsApi.nasesControllerGetForms(
@@ -33,7 +38,7 @@ const getDraftApplications = async (variant: ApplicationsListVariant, page: numb
     undefined,
     variantToStates,
     undefined,
-    { accessToken: 'always' },
+    { accessToken: 'always', accessTokenSsrReq },
   )
   return response.data
 }

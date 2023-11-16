@@ -165,7 +165,8 @@
   },
   "account_section_services": {
     "navigation": "Mestské služby",
-    "alert_text": "Priamo v Bratislavskom konte viete momentálne zaplatiť daň z nehunuteľností. Pri ostatných službách vás presmerujeme na externé webové stránky, ktoré môžu vyžadovať dodatočnú registráciu. Ďakujeme za pochopenie.",
+    "alert_text": "Priamo v Bratislavskom konte viete momentálne zaplatiť daň z nehnuteľností a požiadať o záväzné stanovisko k investičnej činnosti alebo stanovisko k investičnému zámeru. Pri ostatných službách vás presmerujeme na externé webové stránky, ktoré môžu vyžadovať dodatočnú registráciu. Ďakujeme za pochopenie.",
+    "new_service": "Nová služba",
     "cards": {
       "1": {
         "title": "Digitálna platba dane z nehnuteľností",
@@ -331,6 +332,18 @@
         "title": "Vstupenky do Galérie mesta Bratislava",
         "description": "Nákup online vstupeniek alebo ročnej permanentky na všetky výstavy a programy v oboch palácoch GMB za zvýhodnenú cenu.",
         "buttonText": "Kúpiť lístok do GMB"
+      },
+      "34": {
+        "title": "Záväzné stanovisko k investičnej činnosti",
+        "description": "Žiadosť o záväzné stanovisko k investičnej činnosti, ktoré slúži ako podklad pre konanie vedené na príslušnom stavebnom úrade.",
+        "buttonText": "Požiadať",
+        "tag": "Nová služba"
+      },
+      "35": {
+        "title": "Stanovisko k investičnému zámeru",
+        "description": "Žiadosť o stanovisko k investičnému zámeru, ktoré slúži na overenie si zámeru ešte pred územným konaním a vydaním záväzného stanoviska.",
+        "buttonText": "Požiadať",
+        "tag": "Nová služba"
       }
     }
   },
@@ -340,23 +353,20 @@
     "navigation_sending": "Odosiela sa",
     "navigation_draft": "Koncepty",
     "error_snackbar": "Pri načítaní žiadostí nastala chyba. Skúste to prosím neskôr.",
-    "concept_delete_modal": {
-      "title": "Vymazať koncept",
-      "text": "Naozaj si želáte vymazať koncept {{concept_name}}? Táto akcia je nevratná.",
-      "cancel": "Zrušiť",
-      "delete": "Vymazať"
-    },
     "mobile_modal_menu": {
       "title": "Akcie"
     },
     "navigation_concept_card": {
       "createDate": "Vytvorené",
       "edit_button_text": "Upraviť",
+      "continue_button_text": "Pokračovať",
       "view_button_text": "Zobraziť",
       "status_draft": "",
       "status_scanning": "Prebieha antivírová kontrola",
-      "status_sending": "Odosiela sa",
-      "status_ready_for_processing": "Doručené",
+      "status_sending": "Doručené",
+      "delivered_nases": "Odoslané",
+      "sending_to_nases": "Odosiela sa",
+      "status_ready_for_processing": "Vybavuje sa",
       "status_processing": "Vybavuje sa",
       "status_finished": "Vybavené",
       "status_rejected": "Zamietnuté",
@@ -366,7 +376,7 @@
     },
     "placeholder": {
       "title": "Zatiaľ ste neodoslali žiadne podanie",
-      "subtitle": "Pozrite si ponuku <a href='/mestske-sluzby'>dostupných mestských služieb</a>."
+      "subtitle": "Pozrite si ponuku dostupných <a href='/mestske-sluzby'>mestských služieb</a>."
     },
     "last_change": "Posledná zmena:",
     "status": {
@@ -379,6 +389,7 @@
     },
     "details": {
       "application_details": {
+        "sent": "Odoslané",
         "title": "Detail žiadosti",
         "record_number": "Číslo záznamu",
         "file_number": "Číslo spisu",
@@ -400,7 +411,7 @@
     "concept_menu_list": {
       "download_xml": "Stiahnuť ako XML",
       "download_pdf": "Stiahnuť ako PDF",
-      "delete": "Vymazať koncept"
+      "delete": "Vymazať"
     }
   },
   "account_section_payment": {
@@ -856,7 +867,7 @@
     }
   },
   "FieldHeader": {
-    "optional": "Nepovinné"
+    "optional": "Voliteľné"
   },
   "RadioGroup": {
     "resetChoice": "Vymazať výber"

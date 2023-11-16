@@ -19,7 +19,7 @@ const ComboBoxNew = <T extends object>({
   tooltip,
   errorMessages,
   helptext,
-  explicitOptional,
+  helptextHeader,
   ...rest
 }: ComboBoxFieldProps<T>) => {
   // We compute validationState based on error messages
@@ -31,9 +31,9 @@ const ComboBoxNew = <T extends object>({
         <FieldWrapper
           label={label}
           helptext={helptext}
+          helptextHeader={helptextHeader}
           tooltip={tooltip}
           required={rest.isRequired}
-          explicitOptional={explicitOptional}
           errorMessage={errorMessages}
           disabled={rest.isDisabled}
         >

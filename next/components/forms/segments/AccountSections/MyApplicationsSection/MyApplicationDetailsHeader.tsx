@@ -83,7 +83,7 @@ const MyApplicationDetailsHeader = (props: MyApplicationDetailsHeaderBase) => {
             <div className="flex flex-col gap-1 lg:flex-row lg:items-center lg:gap-4">
               <div className="flex items-center gap-3">
                 <p className="text-p3-semibold lg:text-p2-semibold">
-                  {t('account_section_applications.navigation_sent')}
+                  {t('account_section_applications.details.application_details.sent')}
                 </p>
                 <p className="text-p3 lg:text-p2">
                   <FormatDate>{createdAt || ''}</FormatDate>

@@ -9,4 +9,6 @@ export type InitialFormData = {
   formSent: boolean
   formMigrationRequired: boolean
   schemaVersionId: string
+  // TODO consider renaming
+  isSigned?: boolean
 }

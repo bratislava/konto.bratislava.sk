@@ -1,24 +1,58 @@
-import { CopyIcon } from '@assets/ui-icons'
 import { GenericObjectType } from '@rjsf/utils'
+import cx from 'classnames'
 import { Parser } from 'expr-eval'
-import React, { useMemo, useState } from 'react'
-import { CustomComponentPropertyCalculatorProps } from 'schema-generator/generator/uiOptionsTypes'
+import { get } from 'lodash'
+import React, { useMemo } from 'react'
+import { useNumberFormatter } from 'react-aria'
+import {
+  CustomComponentPropertyCalculator,
+  CustomComponentPropertyCalculatorProps,
+} from 'schema-generator/generator/uiOptionsTypes'
 
-import { rjsfValidator } from '../../../../frontend/utils/form'
-import ButtonNew from '../../simple-components/ButtonNew'
-import ModalV2 from '../../simple-components/ModalV2'
-import { useFormComponent } from '../../useFormComponent'
+import { parseRatio } from '../../../../frontend/utils/form'
+import FormMarkdown from '../../info-components/FormMarkdown'
+import { useFormState } from '../../useFormState'
 import { useFormWidget } from '../../useFormWidget'
 
-const PropertyTaxCalculator = ({
-  title,
-  openButtonLabel,
-  buttonLabel,
-  valueLabel,
-  form,
+/**
+ * Extracts the path of the RJSF component position, e.g.
+ * "root_danZPozemkov_danZPozemkov_0_pozemky_0_customComponent1_gRbYIKNcAF__anyof_select"
+ * to
+ * ["danZPozemkov", "danZPozemkov", 0, "pozemky", 0, 0]
+ *
+ * If `levelsUp` is provided, the last `levelsUp` elements are removed.
+ */
+function getPath(inputString: string, levelsUp = 0) {
+  const customComponentIndex = inputString.indexOf('_customComponent')
+  if (customComponentIndex === -1 || !inputString.startsWith('root_')) {
+    return null
+  }
+
+  // Extract the substring up to 'customComponent'
+  const relevantPart = inputString.slice(0, Math.max(0, customComponentIndex))
+
+  const withoutRoot = relevantPart.split('_').slice(1)
+  if (levelsUp > 0) {
+    return withoutRoot.slice(0, -levelsUp)
+  }
+
+  return withoutRoot
+}
+
+const Calculator = ({
+  label,
   formula,
-}: CustomComponentPropertyCalculatorProps) => {
-  const FormComponent = useFormComponent()
+  dataContextLevelsUp,
+  isLast,
+  variant,
+  missingFieldsMessage,
+  unit,
+}: CustomComponentPropertyCalculator & {
+  isLast: boolean
+  variant: CustomComponentPropertyCalculatorProps['variant']
+}) => {
+  const formatter = useNumberFormatter()
+  const { formData } = useFormState()
   const { widget } = useFormWidget()
 
   const expression = useMemo(() => {
@@ -26,23 +60,37 @@ const PropertyTaxCalculator = ({
 
     // Ratio (e.g. "5/13") is a string that needs to be evaluated.
     // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
-    parser.functions.evalRatio = (arg: string) => parser.evaluate(arg)
-
-    return parser.parse(formula)
-  }, [formula])
-
-  const [formData, setFormData] = useState<GenericObjectType | undefined>({})
-
-  const [isModalOpen, setIsModalOpen] = useState(false)
-
-  const value = useMemo(() => {
-    const isValid = rjsfValidator.isValid(form.schema, formData, form.schema)
-    if (!isValid || !formData) {
-      return null
+    parser.functions.evalRatio = (arg: string) => {
+      if (parseRatio(arg).isValid) {
+        return parser.evaluate(arg)
+      }
+      return NaN
+    }
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
+    parser.functions.ratioNumerator = (arg: string) => {
+      const parsed = parseRatio(arg)
+      if (parsed.isValid) {
+        return parsed.numerator
+      }
+      return NaN
     }
 
     try {
-      const evaluated = expression.evaluate(formData)
+      return parser.parse(formula)
+    } catch (error) {
+      return null
+    }
+  }, [formula])
+
+  const value = useMemo(() => {
+    try {
+      const path = getPath(widget?.id ?? '', dataContextLevelsUp)
+      const dataAtPath = path ? (get(formData, path) as GenericObjectType) : null
+      if (dataAtPath == null) {
+        return null
+      }
+
+      const evaluated = expression?.evaluate(dataAtPath)
 
       if (!Number.isFinite(evaluated)) {
         return null
@@ -52,46 +100,74 @@ const PropertyTaxCalculator = ({
     } catch (error) {
       return null
     }
-  }, [form.schema, formData, expression])
+  }, [expression, formData, dataContextLevelsUp, widget?.id])
 
-  const handleOnConfirm = () => {
-    if (value != null) {
-      widget?.onChange(value)
-    }
+  const wrapperClassName = cx('inline-flex items-center justify-start gap-8 self-stretch py-5', {
+    'border-b-2': !isLast,
+    'border-gray-200': !isLast && variant === 'white',
+    'border-white': !isLast && variant === 'black',
+  })
 
-    setIsModalOpen(false)
-  }
+  const labelClassName = cx('text-p2-semibold max-w-[400px] shrink font-semibold', {
+    'text-gray-800': variant === 'white',
+    'text-white': variant === 'black',
+  })
+
+  const valueClassName = cx('text-p2-semibold grow basis-0 text-right', {
+    'text-gray-700': variant === 'white',
+    'text-white': variant === 'black',
+  })
 
   return (
-    <>
-      <ButtonNew variant="black-link" onPress={() => setIsModalOpen(true)} hasLinkIcon>
-        {openButtonLabel}
-      </ButtonNew>
-      <ModalV2 isOpen={isModalOpen} onOpenChange={setIsModalOpen}>
-        {title}
-        <FormComponent
-          schema={form.schema}
-          uiSchema={form.uiSchema}
-          formData={formData}
-          validator={rjsfValidator}
-          onChange={(e) => {
-            setFormData(e.formData)
-          }}
-          showErrorList={false}
-          // HTML validation doesn't work for our use case, therefore it's turned off.
-          noHtml5Validate
-        >
-          {/* This hides the default submit button. */}
-          {/* eslint-disable-next-line react/jsx-no-useless-fragment */}
-          <></>
-        </FormComponent>
-        {valueLabel}
-        {value}
-        <ButtonNew variant="black-solid" startIcon={<CopyIcon />} onPress={handleOnConfirm}>
-          {buttonLabel}
-        </ButtonNew>
-      </ModalV2>
-    </>
+    <div className={wrapperClassName}>
+      {value == null ? (
+        <div className="text-p2">{missingFieldsMessage}</div>
+      ) : (
+        <>
+          <div className={labelClassName}>{label}</div>
+          <div className={valueClassName}>
+            {formatter.format(value)} <FormMarkdown pAsSpan>{unit}</FormMarkdown>
+          </div>
+        </>
+      )}
+    </div>
+  )
+}
+
+const PropertyTaxCalculator = ({
+  variant,
+  label,
+  calculators = [],
+}: CustomComponentPropertyCalculatorProps) => {
+  const labelClassName = cx('text-h5', {
+    'text-white': variant === 'black',
+    'text-gray-700': variant === 'white',
+  })
+
+  const wrapperClassName = cx(
+    'flex flex-col items-start justify-center gap-2 rounded-lg p-6 pb-1',
+    {
+      'pt-1': !label,
+      'bg-gray-800 text-white': variant === 'black',
+      'border border-zinc-300': variant === 'white',
+    },
+  )
+
+  return (
+    <div>
+      <div className={wrapperClassName}>
+        {label && <span className={labelClassName}>{label}</span>}
+        <div className="flex flex-col items-start justify-center self-stretch">
+          {calculators.map((calculator, index) => (
+            <Calculator
+              {...calculator}
+              isLast={index === calculators.length - 1}
+              variant={variant}
+            />
+          ))}
+        </div>
+      </div>
+    </div>
   )
 }
 

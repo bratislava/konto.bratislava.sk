@@ -5642,6 +5642,11 @@
   resolved "https://registry.yarnpkg.com/@types/normalize-package-data/-/normalize-package-data-2.4.1.tgz#d3357479a0fdfdd5907fe67e17e0a85c906e1301"
   integrity sha512-Gj7cI7z+98M282Tqmp2K5EIsoouUEzbBJhQQzDE3jSIRk6r9gsz0oUokqIUR4u1R3dMHo0pDHM7sNOHyhulypw==
 
+"@types/object-hash@^3.0.5":
+  version "3.0.5"
+  resolved "https://registry.yarnpkg.com/@types/object-hash/-/object-hash-3.0.5.tgz#f028398f9d918a4dcb57c50d16fc15023db6b244"
+  integrity sha512-WFGeSazfL5BWbEh5ACaAIs5RT6sbVIwBs1rgHUp+kZzX/gub41LEEYWTWbYnE/sKb7hDdPEsGa1Vmcaay2fS5g==
+
 "@types/parse-json@^4.0.0":
   version "4.0.0"
   resolved "https://registry.yarnpkg.com/@types/parse-json/-/parse-json-4.0.0.tgz#2f8bb441434d163b35fb8ffdccd7138927ffb8c0"
@@ -12278,6 +12283,11 @@ react-turnstile@^1.1.0:
   version "1.1.0"
   resolved "https://registry.yarnpkg.com/react-turnstile/-/react-turnstile-1.1.0.tgz#4b69950f6cff287ecbaf58f1beae35808d54ad16"
   integrity sha512-zHuMcBL8QAeU7JUjRigL+FF/Zat0dbE53Rr1MOtOGhNDYOFXIRNBCktfL5cJszcQJALk+qjOctTJY/I+6lVYvQ==
+
+react-usestateref@^1.0.8:
+  version "1.0.8"
+  resolved "https://registry.yarnpkg.com/react-usestateref/-/react-usestateref-1.0.8.tgz#b40519af0d6f3b3822c70eb5db80f7d47f1b1ff5"
+  integrity sha512-whaE6H0XGarFKwZ3EYbpHBsRRCLZqdochzg/C7e+b6VFMTA3LS3K4ZfpI4NT40iy83jG89rGXrw70P9iDfOdsA==
 
 react@18.2.0:
   version "18.2.0"

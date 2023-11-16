@@ -1,20 +1,20 @@
 import { StrictRJSFSchema, WidgetProps } from '@rjsf/utils'
 import WidgetWrapper from 'components/forms/widget-wrappers/WidgetWrapper'
 import React from 'react'
-import { UploadUiOptions } from 'schema-generator/generator/uiOptionsTypes'
+import { FileUploadUiOptions } from 'schema-generator/generator/uiOptionsTypes'
 
 import { useFormFileUpload } from '../useFormFileUpload'
 import Upload from '../widget-components/Upload/Upload'
 
-interface UploadWidgetRJSFProps extends WidgetProps {
-  options: UploadUiOptions & WidgetProps['options']
+interface FileUploadWidgetRJSFProps extends WidgetProps {
+  options: FileUploadUiOptions & WidgetProps['options']
   schema: StrictRJSFSchema
   value: string | string[] | null
   multiple?: boolean
   onChange: (value?: string | string[] | null) => void
 }
 
-const UploadWidgetRJSF = ({
+const FileUploadWidgetRJSF = ({
   options,
   schema,
   label,
@@ -24,12 +24,21 @@ const UploadWidgetRJSF = ({
   onChange,
   rawErrors,
   readonly,
-}: UploadWidgetRJSFProps) => {
-  const { size, accept, helptext, type = 'button', className } = options
+}: FileUploadWidgetRJSFProps) => {
+  const {
+    sizeLimit,
+    accept,
+    helptext,
+    helptextHeader,
+    type = 'button',
+    className,
+    size,
+    labelSize,
+  } = options
 
   const supportedFormats = accept?.split(',')
   const multiple = schema.type === 'array'
-  const constraints = { supportedFormats, maxFileSize: size }
+  const constraints = { supportedFormats, maxFileSize: sizeLimit }
 
   const formFileUpload = useFormFileUpload()
 
@@ -84,7 +93,8 @@ const UploadWidgetRJSF = ({
         multiple={multiple}
         className={className}
         helptext={helptext}
-        sizeLimit={size}
+        helptextHeader={helptextHeader}
+        sizeLimit={sizeLimit}
         supportedFormats={supportedFormats}
         disabled={disabled || readonly}
         onUpload={handleUpload}
@@ -92,9 +102,11 @@ const UploadWidgetRJSF = ({
         onFileRetry={handleFileRetry}
         onFileDownload={formFileUpload.downloadFile}
         getFileInfoById={formFileUpload.getFileInfoById}
+        size={size}
+        labelSize={labelSize}
       />
     </WidgetWrapper>
   )
 }
 
-export default UploadWidgetRJSF
+export default FileUploadWidgetRJSF

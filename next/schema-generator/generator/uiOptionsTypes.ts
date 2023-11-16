@@ -1,8 +1,8 @@
-// eslint-disable-next-line import/no-extraneous-dependencies
-import type { RJSFSchema, UIOptionsType, UiSchema } from '@rjsf/utils'
+/* eslint-disable import/no-extraneous-dependencies,import/no-relative-packages */
+import type { UIOptionsType } from '@rjsf/utils'
 
-// eslint-disable-next-line import/no-relative-packages
 import { AccordionBase } from '../../components/forms/simple-components/Accordion'
+import { FieldSize } from '../../components/forms/widget-components/FieldBase'
 
 // TODO: Reconsider stability of dependency on AccordionBase type
 export type CustomComponentAccordionProps = AccordionBase
@@ -14,20 +14,23 @@ export type CustomComponentAdditionalLinksProps = {
   }[]
 }
 
-export type CustomComponentPropertyCalculatorProps = {
-  title: string
-  openButtonLabel: string
-  buttonLabel: string
-  valueLabel: string
-  form: {
-    schema: RJSFSchema
-    uiSchema: UiSchema
-  }
-  /**
-   * `expr-eval` formula, with custom function `evalRatio` that evaluates ratio in format `A/B` to
-   *  decimal number.
-   */
+export type CustomComponentPropertyCalculator = {
+  label: string
   formula: string
+  missingFieldsMessage: string
+  unit: string
+  /**
+   * The dataContextLevelsUp is an optional parameter that specifies the number of levels to go up in the JSON data
+   * context for formula in hierarchy from the current position. This is useful when you want to retrieve or access data
+   * from an upper level in the JSON object.
+   */
+  dataContextLevelsUp?: number
+}
+
+export type CustomComponentPropertyCalculatorProps = {
+  label?: string
+  variant: 'white' | 'black'
+  calculators: CustomComponentPropertyCalculator[]
 }
 
 export type CustomComponentType =
@@ -44,17 +47,26 @@ export type CustomComponentType =
       props: CustomComponentPropertyCalculatorProps
     }
 
+export type LabelSize = 'default' | 'h4' | 'h3'
+export type LabelSpacing = 'default' | 'h4' | 'h3'
+
 export type FormSpacingType = 'large' | 'default' | 'small' | 'medium' | 'none'
 
-export type WidgetUiOptions = {
+export type WidgetSpacing = {
+  spaceTop?: FormSpacingType
+  spaceBottom?: FormSpacingType
+}
+
+export type WidgetUiOptions = WidgetSpacing & {
   tooltip?: string
   helptext?: string
+  helptextHeader?: string
   className?: string
-  explicitOptional?: boolean
-  spaceBottom?: FormSpacingType
-  spaceTop?: FormSpacingType
   belowComponents?: CustomComponentType[]
   rightComponents?: CustomComponentType[]
+  size?: FieldSize
+  labelSize?: LabelSize
+  labelSpacing?: LabelSpacing
 }
 
 type CheckboxOption = {
@@ -62,18 +74,22 @@ type CheckboxOption = {
   tooltip?: string
 }
 
-export type CheckboxesUiOptions = {
+export type CheckboxGroupUiOptions = {
   variant?: 'basic' | 'boxed'
   checkboxOptions?: CheckboxOption[]
 } & WidgetUiOptions
 
+export type CheckboxUiOptions = {
+  variant?: 'basic' | 'boxed'
+  checkboxLabel?: string
+} & WidgetUiOptions
+
 export type DatePickerUiOptions = WidgetUiOptions
 
-export type InputFieldUiOptions = {
+export type InputUiOptions = {
   type?: 'text' | 'password' | 'email' | 'tel' | 'number'
   resetIcon?: boolean
   leftIcon?: 'person' | 'mail' | 'call' | 'lock'
-  size?: 'large' | 'default' | 'small'
 } & WidgetUiOptions &
   Pick<UIOptionsType, 'placeholder'>
 
@@ -83,17 +99,16 @@ type RadioOption = {
   description?: string
 }
 
-export type RadioButtonUiOptions = {
+export type RadioGroupUiOptions = {
   className?: string
   radioOptions?: RadioOption[]
   variant?: 'basic' | 'boxed' | 'card'
   orientations?: 'column' | 'row'
 } & WidgetUiOptions
 
-export type SelectFieldUiOptions = {
+export type SelectUiOptions = {
   dropdownDivider?: boolean
   selectAllOption?: boolean
-  explicitOptional?: boolean
   hideScrollbar?: boolean
   maxWordSize?: number
   // selectType?: 'one' | 'multiple' | 'arrow' | 'radio'
@@ -103,8 +118,8 @@ export type TextAreaUiOptions = WidgetUiOptions & Pick<UIOptionsType, 'placehold
 
 export type TimePickerUiOptions = WidgetUiOptions
 
-export type UploadUiOptions = {
-  size?: number
+export type FileUploadUiOptions = {
+  sizeLimit?: number
   accept?: string
   type?: 'button' | 'dragAndDrop'
 } & WidgetUiOptions

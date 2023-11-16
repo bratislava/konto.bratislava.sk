@@ -2,7 +2,6 @@ import { ThemeProps, withTheme } from '@rjsf/core'
 import { GenericObjectType } from '@rjsf/utils'
 import { ArrayFieldTemplateItemType } from '@rjsf/utils/src/types'
 import DatePickerWidgetRJSF from 'components/forms/widget-wrappers/DatePickerWidgetRJSF'
-import InputFieldWidgetRJSF from 'components/forms/widget-wrappers/InputFieldWidgetRJSF'
 import TimePickerWidgetRJSF from 'components/forms/widget-wrappers/TimePickerWidgetRJSF'
 import { ComponentType } from 'react'
 
@@ -10,21 +9,24 @@ import { wrapWidgetsInContext } from './useFormWidget'
 import BAArrayFieldItemTemplate from './widget-wrappers/BAArrayFieldItemTemplate'
 import BAArrayFieldTemplate from './widget-wrappers/BAArrayFieldTemplate'
 import BAObjectFieldTemplate from './widget-wrappers/BAObjectFieldTemplate'
+import CheckboxGroupWidgetRJSF from './widget-wrappers/CheckboxGroupWidgetRJSF'
 import CheckboxWidgetRJSF from './widget-wrappers/CheckboxWidgetRJSF'
 import CustomComponentsWidgetRJSF from './widget-wrappers/CustomComponentsFieldWidgetRJSF'
-import RadioButtonsWidgetRJSF from './widget-wrappers/RadioButtonWidgetRJSF'
-import SelectFieldWidgetRJSF from './widget-wrappers/SelectFieldWidgetRJSF'
-import TextAreaFieldWidgetRJSF from './widget-wrappers/TextAreaFieldWidgetRJSF'
-import UploadWidgetRJSF from './widget-wrappers/UploadWidgetRJSF'
+import FileUploadWidgetRJSF from './widget-wrappers/FileUploadWidgetRJSF'
+import InputWidgetRJSF from './widget-wrappers/InputWidgetRJSF'
+import RadioGroupWidgetRJSF from './widget-wrappers/RadioGroupWidgetRJSF'
+import SelectWidgetRJSF from './widget-wrappers/SelectWidgetRJSF'
+import TextAreaWidgetRJSF from './widget-wrappers/TextAreaWidgetRJSF'
 
 const theme: ThemeProps = {
   widgets: wrapWidgetsInContext({
-    SelectField: SelectFieldWidgetRJSF,
-    InputField: InputFieldWidgetRJSF,
-    RadioButton: RadioButtonsWidgetRJSF,
-    TextArea: TextAreaFieldWidgetRJSF,
-    Checkboxes: CheckboxWidgetRJSF,
-    Upload: UploadWidgetRJSF,
+    Select: SelectWidgetRJSF,
+    Input: InputWidgetRJSF,
+    RadioGroup: RadioGroupWidgetRJSF,
+    TextArea: TextAreaWidgetRJSF,
+    CheckboxGroup: CheckboxGroupWidgetRJSF,
+    Checkbox: CheckboxWidgetRJSF,
+    FileUpload: FileUploadWidgetRJSF,
     DatePicker: DatePickerWidgetRJSF,
     TimePicker: TimePickerWidgetRJSF,
     CustomComponents: CustomComponentsWidgetRJSF,

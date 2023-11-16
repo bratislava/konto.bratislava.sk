@@ -2,30 +2,32 @@ import cx from 'classnames'
 import React, { useState } from 'react'
 import { useTextField } from 'react-aria'
 
-import { FieldAdditionalProps, FieldBaseProps } from '../FieldBase'
-import FieldWrapper from '../FieldWrapper'
+import FieldWrapper, { FieldWrapperProps } from '../FieldWrapper'
 
-type TextAreaBase = FieldBaseProps &
-  Pick<FieldAdditionalProps, 'placeholder' | 'className'> & {
-    defaultValue?: string
-    value?: string
-    onChange?: (value?: string) => void
-    onBlur?: () => void
-  }
+type TextAreaBase = FieldWrapperProps & {
+  defaultValue?: string
+  value?: string
+  onChange?: (value?: string) => void
+  onBlur?: () => void
+  placeholder?: string
+  className?: string
+}
 
 const TextAreaField = ({
   label,
   placeholder,
   errorMessage = [],
   helptext,
+  helptextHeader,
   tooltip,
   required,
-  explicitOptional,
   value,
   disabled,
   className,
   defaultValue,
   onChange,
+  size,
+  labelSize,
   ...rest
 }: TextAreaBase) => {
   const [valueState, setValueState] = useState<string>('')
@@ -85,13 +87,15 @@ const TextAreaField = ({
         labelProps={labelProps}
         htmlFor={inputProps.id}
         helptext={helptext}
+        helptextHeader={helptextHeader}
         descriptionProps={descriptionProps}
         required={required}
-        explicitOptional={explicitOptional}
         tooltip={tooltip}
         disabled={disabled}
         errorMessage={errorMessage}
         errorMessageProps={errorMessageProps}
+        size={size}
+        labelSize={labelSize}
       >
         <div className={containerStyle}>
           <textarea {...inputProps} ref={ref} name={inputProps.id} className={textareaStyle} />

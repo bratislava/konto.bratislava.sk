@@ -1,24 +1,41 @@
 import cx from 'classnames'
 import React, { PropsWithChildren } from 'react'
-import { FormSpacingType, WidgetUiOptions } from 'schema-generator/generator/uiOptionsTypes'
+import { WidgetSpacing, WidgetUiOptions } from 'schema-generator/generator/uiOptionsTypes'
 import { twMerge } from 'tailwind-merge'
 
 import CustomComponents from '../widget-components/CustomComponents/CustomComponents'
+import { useWidgetSpacingContext } from './useWidgetSpacingContext'
 
-export const isFormSpacingType = (formSpacingType: string): formSpacingType is FormSpacingType => {
-  return ['large', 'default', 'small', 'medium', 'none'].includes(formSpacingType)
-}
+type WidgetWrapperProps = PropsWithChildren<{
+  options: WidgetUiOptions
+  className?: string
+  defaultSpacing?: Partial<WidgetSpacing>
+}>
 
-type WidgetWrapperProps = PropsWithChildren<{ options: WidgetUiOptions; className?: string }>
-
-const WidgetWrapper = ({ options, className, children }: WidgetWrapperProps) => {
+const WidgetWrapper = ({
+  options,
+  className,
+  children,
+  defaultSpacing: {
+    spaceTop: spaceTopDefault = 'small',
+    spaceBottom: spaceBottomDefault = 'small',
+  } = {
+    spaceTop: 'small',
+    spaceBottom: 'small',
+  },
+}: WidgetWrapperProps) => {
   const {
     className: optionsClassName,
-    spaceBottom = 'none',
-    spaceTop = 'small',
+    spaceBottom: spaceBottomExplicit,
+    spaceTop: spaceTopUiExplicit,
     rightComponents,
     belowComponents,
   } = options
+
+  const { spaceTop: spaceTopContext, spaceBottom: spaceBottomContext } = useWidgetSpacingContext()
+
+  const spaceTop = spaceTopUiExplicit ?? spaceTopContext ?? spaceTopDefault
+  const spaceBottom = spaceBottomExplicit ?? spaceBottomContext ?? spaceBottomDefault
 
   const hasRightComponents = rightComponents && rightComponents?.length > 0
   const hasBelowComponents = belowComponents && belowComponents?.length > 0

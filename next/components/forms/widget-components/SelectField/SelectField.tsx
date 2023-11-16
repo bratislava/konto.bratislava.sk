@@ -12,13 +12,11 @@ import React, {
 import { useOnClickOutside } from 'usehooks-ts'
 
 import { handleOnKeyPress } from '../../../../frontend/utils/general'
-import { FieldAdditionalProps, FieldBaseProps } from '../FieldBase'
-import FieldWrapper from '../FieldWrapper'
+import FieldWrapper, { FieldWrapperProps } from '../FieldWrapper'
 import Dropdown from './Dropdown'
 import SelectFieldBox from './SelectFieldBox'
 import { SelectOption } from './SelectOption.interface'
 
-// eslint-disable-next-line no-secrets/no-secrets
 /*
  * TODO: Replace with new accessible components
  *
@@ -52,18 +50,19 @@ import { SelectOption } from './SelectOption.interface'
  *
  */
 
-type SelectFieldProps = FieldBaseProps &
-  Pick<FieldAdditionalProps, 'placeholder' | 'className'> & {
-    type?: 'one' | 'multiple' | 'arrow' | 'radio'
-    value?: SelectOption[]
-    enumOptions?: SelectOption[]
-    dropdownDivider?: boolean
-    selectAllOption?: boolean
-    hideScrollbar?: boolean
-    alwaysOneSelected?: boolean
-    maxWordSize?: number
-    onChange: (values: SelectOption[]) => void
-  }
+type SelectFieldProps = FieldWrapperProps & {
+  type?: 'one' | 'multiple' | 'arrow' | 'radio'
+  value?: SelectOption[]
+  enumOptions?: SelectOption[]
+  dropdownDivider?: boolean
+  selectAllOption?: boolean
+  hideScrollbar?: boolean
+  alwaysOneSelected?: boolean
+  maxWordSize?: number
+  onChange: (values: SelectOption[]) => void
+  placeholder?: string
+  className?: string
+}
 
 const SelectFieldComponent: ForwardRefRenderFunction<HTMLDivElement, SelectFieldProps> = (
   props: SelectFieldProps,
@@ -78,17 +77,19 @@ const SelectFieldComponent: ForwardRefRenderFunction<HTMLDivElement, SelectField
     selectAllOption,
     placeholder,
     helptext,
+    helptextHeader,
     tooltip,
     dropdownDivider,
     errorMessage = [],
     required,
-    explicitOptional,
     disabled,
     hideScrollbar,
     alwaysOneSelected,
     maxWordSize = 17,
     className,
     onChange,
+    size,
+    labelSize,
   } = props
 
   const [isDropdownOpened, setIsDropdownOpened] = useState<boolean>(false)
@@ -240,21 +241,18 @@ const SelectFieldComponent: ForwardRefRenderFunction<HTMLDivElement, SelectField
 
   // RENDER
   return (
-    <div
-      className={cx(
-        'relative flex w-full max-w-[200px] flex-col transition-all xs:max-w-[320px]',
-        className,
-      )}
-    >
+    <div className={cx('relative flex w-full flex-col transition-all', className)}>
       {/* FIELD HEADER WITH DESCRIPTION AND LABEL */}
       <FieldWrapper
         label={label}
         helptext={helptext}
+        helptextHeader={helptextHeader}
         tooltip={tooltip}
         required={required}
-        explicitOptional={explicitOptional}
         errorMessage={errorMessage}
         disabled={disabled}
+        size={size}
+        labelSize={labelSize}
       >
         {/* SELECT PART */}
         <div className={selectClassName} ref={clickOutsideRef}>

@@ -42,61 +42,62 @@ const MessageModal = ({
   return (
     <ModalV2 isDismissable {...rest}>
       <div
-        className={cx('flex items-center gap-5 p-0  md:gap-6', {
+        className={cx('flex items-center gap-3 p-0 md:gap-5', {
           'flex-col': variant === 'vertical',
-          'flex-col md:flex-row md:items-start': variant === 'horizontal',
+          'md:grid-row-2 flex-col md:grid md:grid-cols-[3.5rem] md:flex-row md:items-start':
+            variant === 'horizontal',
         })}
       >
         <div
-          className={cx('relative flex flex-row items-start gap-2 rounded-full p-4', {
-            'bg-gray-100': type === 'info',
-            'bg-warning-100': type === 'warning',
-            'bg-negative-100': type === 'error',
-            'bg-success-100': type === 'success',
-          })}
+          className={cx(
+            'relative flex flex-row items-start gap-2 rounded-full p-4 md:col-start-1 md:col-end-1 md:row-start-1 md:row-end-2',
+            {
+              'bg-gray-100': type === 'info',
+              'bg-warning-100': type === 'warning',
+              'bg-negative-100': type === 'error',
+              'bg-success-100': type === 'success',
+            },
+          )}
         >
           <div className="flex h-6 w-6 items-center justify-center">
             <span className="">{icons[type]}</span>
           </div>
         </div>
-        <div className="flex w-full flex-col gap-6 p-0">
+        <div
+          className={twMerge(
+            'flex h-14 items-center text-center text-h-base font-semibold md:col-start-2 md:col-end-3 md:row-start-1 md:row-end-1 md:text-left',
+            titleClassName,
+          )}
+        >
+          {title}
+        </div>
+        <div className="md:col-start-2 md:col-end-3 md:row-start-2 md:row-end-3">
           <div
-            className={cx('flex flex-col items-center p-0', {
-              'md:items-start': variant === 'horizontal',
-            })}
+            className={twMerge(
+              'text-p2 whitespace-pre-wrap text-center md:text-left',
+              childrenClassName,
+            )}
           >
-            <div
-              className={twMerge(
-                'h-14 text-center text-h-base font-semibold md:text-left',
-                titleClassName,
-              )}
-            >
-              {title}
-            </div>
-            <div
-              className={twMerge(
-                'text-p2 whitespace-pre-wrap text-center md:text-left',
-                childrenClassName,
-              )}
-            >
-              {children}
-            </div>
+            {children}
           </div>
+          {buttons && buttons.length > 0 && (
+            <div
+              className={cx('order-1 mt-6 flex flex-wrap items-center gap-6 p-0', {
+                'flex-col-reverse justify-center md:flex-row md:justify-end':
+                  buttonsAlign === 'right',
+                'flex-col-reverse justify-center md:flex-row md:justify-start':
+                  buttonsAlign === 'left',
+                'flex-row justify-center': buttonsAlign === 'center',
+              })}
+            >
+              {buttons.map((button, index) => (
+                <Fragment key={index}>{button}</Fragment>
+              ))}
+            </div>
+          )}
         </div>
       </div>
-      {buttons && buttons.length > 0 && (
-        <div
-          className={cx('order-1 mt-6 flex flex-wrap items-center gap-6 p-0', {
-            'flex-col-reverse justify-center md:flex-row md:justify-end': buttonsAlign === 'right',
-            'flex-col-reverse justify-center md:flex-row md:justify-start': buttonsAlign === 'left',
-            'flex-row justify-center': buttonsAlign === 'center',
-          })}
-        >
-          {buttons.map((button, index) => (
-            <Fragment key={index}>{button}</Fragment>
-          ))}
-        </div>
-      )}
+
       {afterContent}
     </ModalV2>
   )

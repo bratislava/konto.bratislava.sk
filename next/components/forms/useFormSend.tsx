@@ -19,6 +19,7 @@ import {
 } from '../../frontend/utils/formSend'
 import { isFormSubmitDisabled } from '../../frontend/utils/formSummary'
 import { RegistrationModalType } from './segments/RegistrationModal/RegistrationModal'
+import { useFormSignature } from './signer/useFormSignature'
 import { useFormFileUpload } from './useFormFileUpload'
 import { useFormLeaveProtection } from './useFormLeaveProtection'
 import { useFormModals } from './useFormModals'
@@ -65,6 +66,7 @@ const useGetContext = () => {
     tierStatus: { isIdentityVerified },
   } = useServerSideAuth()
   const { turnOffLeaveProtection } = useFormLeaveProtection()
+  const { isValidSignature } = useFormSignature()
 
   const {
     setRegistrationModal,
@@ -230,7 +232,7 @@ const useGetContext = () => {
       formData,
       getFileInfoById,
     )
-    const submitDisabled = isFormSubmitDisabled(errorSchema, infectedFiles)
+    const submitDisabled = isFormSubmitDisabled(errorSchema, infectedFiles, isValidSignature())
 
     if (submitDisabled || sendFormIsPending) {
       return
@@ -248,7 +250,6 @@ const useGetContext = () => {
       },
     }
 
-    // eslint-disable-next-line no-secrets/no-secrets
     // https://www.figma.com/file/SFbuULqG1ysocghIga9BZT/Bratislavske-konto%2C-ESBS---ready-for-dev-(Ma%C5%A5a)?type=design&node-id=7208-17403&mode=design&t=6CblQJSMOCtO5LBu-0
     if (isAuthenticated && !isIdentityVerified && scanningFiles.length === 0) {
       setSendFilesScanningNotVerified(modalValueEid)
@@ -284,7 +285,7 @@ const useGetContext = () => {
       formData,
       getFileInfoById,
     )
-    const submitDisabled = isFormSubmitDisabled(errorSchema, infectedFiles)
+    const submitDisabled = isFormSubmitDisabled(errorSchema, infectedFiles, isValidSignature())
 
     if (submitDisabled || sendFormEidIsPending) {
       return

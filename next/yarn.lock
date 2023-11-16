@@ -3658,10 +3658,10 @@
   resolved "https://registry.yarnpkg.com/@lukeed/csprng/-/csprng-1.1.0.tgz#1e3e4bd05c1cc7a0b2ddbd8a03f39f6e4b5e6cfe"
   integrity sha512-Z7C/xXCiGWsg0KuKsHTKJxbWhpI3Vs5GwLfOean7MGyVFGqdRgBbAjOCh6u4bbjPc/8MJ2pZmK/0DLdCbivLDA==
 
-"@mapbox/node-pre-gyp@^1.0.10":
-  version "1.0.10"
-  resolved "https://registry.yarnpkg.com/@mapbox/node-pre-gyp/-/node-pre-gyp-1.0.10.tgz#8e6735ccebbb1581e5a7e652244cadc8a844d03c"
-  integrity sha512-4ySo4CjzStuprMwk35H5pPbkymjv1SF3jGLj6rAHp/xT/RF7TL7bd9CTm1xDY49K2qF7jmR/g7k+SkLETP6opA==
+"@mapbox/node-pre-gyp@^1.0.11":
+  version "1.0.11"
+  resolved "https://registry.yarnpkg.com/@mapbox/node-pre-gyp/-/node-pre-gyp-1.0.11.tgz#417db42b7f5323d79e93b34a6d7a2a12c0df43fa"
+  integrity sha512-Yhlar6v9WQgUp/He7BdgzOz8lqMQ8sU+jkCq7Wx8Myc5YFJLbEe7lgui/V7G1qB1DJykHSGwreceSaD60Y0PUQ==
   dependencies:
     detect-libc "^2.0.0"
     https-proxy-agent "^5.0.0"
@@ -10390,14 +10390,14 @@ levn@~0.3.0:
     prelude-ls "~1.1.2"
     type-check "~0.3.2"
 
-libxmljs2@^0.31.0:
-  version "0.31.0"
-  resolved "https://registry.yarnpkg.com/libxmljs2/-/libxmljs2-0.31.0.tgz#0f7cf42453500843628d338f1e1b88d0bc20fa90"
-  integrity sha512-+o8y4lhmmf7zUA67watbLcAcxE0lkBkuatoIwgFkWTmuFTPEOZKunNpSjW6V7ONzAj8Ey1qVeR12q1JMU/sTlQ==
+libxmljs2@^0.33.0:
+  version "0.33.0"
+  resolved "https://registry.yarnpkg.com/libxmljs2/-/libxmljs2-0.33.0.tgz#62f50e5d98af7e6f20d2b845c3d618f059d2a0c9"
+  integrity sha512-Hw74f2/3rbpxc6tkTqe3yrs4v2Tx0rEukrYxaNkXSVKK540i2eqlQxzf1jjG+RlwMuv66WxkkuZHM/OQq6km4w==
   dependencies:
-    "@mapbox/node-pre-gyp" "^1.0.10"
+    "@mapbox/node-pre-gyp" "^1.0.11"
     bindings "~1.5.0"
-    nan "~2.17.0"
+    nan "~2.18.0"
 
 lilconfig@2.0.6, lilconfig@^2.0.5:
   version "2.0.6"
@@ -11197,10 +11197,10 @@ mz@^2.7.0:
     object-assign "^4.0.1"
     thenify-all "^1.0.0"
 
-nan@~2.17.0:
-  version "2.17.0"
-  resolved "https://registry.yarnpkg.com/nan/-/nan-2.17.0.tgz#c0150a2368a182f033e9aa5195ec76ea41a199cb"
-  integrity sha512-2ZTgtl0nJsO0KQCjEpxcIr5D+Yv90plTitZt9JBfQvVJDS5seMl3FOvsh3+9CoYWXf/1l5OaZzzF6nDm4cagaQ==
+nan@~2.18.0:
+  version "2.18.0"
+  resolved "https://registry.yarnpkg.com/nan/-/nan-2.18.0.tgz#26a6faae7ffbeb293a39660e88a76b82e30b7554"
+  integrity sha512-W7tfG7vMOGtD30sHoZSSc/JVYiyDPEyQVso/Zz+/uQd0B0L46gtC+pHha5FFMRpil6fm/AoEcRWyOVi4+E/f8w==
 
 nanoid@^3.3.6:
   version "3.3.6"

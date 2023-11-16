@@ -34,7 +34,6 @@ const SelectWidgetRJSF = ({
     dropdownDivider,
     className,
     hideScrollbar = false,
-    maxWordSize,
     size,
     labelSize,
   } = options
@@ -127,7 +126,6 @@ const SelectWidgetRJSF = ({
         onChange={handleOnChange}
         hideScrollbar={hideScrollbar}
         alwaysOneSelected={false}
-        maxWordSize={maxWordSize}
         size={size}
         labelSize={labelSize}
       />

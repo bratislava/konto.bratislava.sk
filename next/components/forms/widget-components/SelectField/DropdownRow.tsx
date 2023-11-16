@@ -13,7 +13,6 @@ interface DropdownRowProps {
   selected?: boolean
   type: 'one' | 'multiple' | 'arrow' | 'radio'
   divider?: boolean
-  maxWordSize?: number
   onChooseOne: (option: SelectOption, close?: boolean) => void
   onUnChooseOne: (option: SelectOption, close?: boolean) => void
   onChooseMulti: (option: SelectOption) => void
@@ -26,7 +25,6 @@ const DropdownRow = ({
   selected,
   type,
   divider,
-  maxWordSize,
   onChooseOne,
   onUnChooseOne,
   onChooseMulti,
@@ -41,9 +39,12 @@ const DropdownRow = ({
     },
   )
 
-  const optionClassName = cx('dropdown text-16 w-full', {
-    'text-16-semibold': isBold,
-  })
+  const optionClassName = cx(
+    'dropdown text-16 w-full overflow-x-hidden overflow-ellipsis whitespace-nowrap scrollbar-hide',
+    {
+      'text-16-semibold': isBold,
+    },
+  )
 
   // EVENT HANDLERS
   const handleOnClick = () => {
@@ -66,9 +67,6 @@ const DropdownRow = ({
     ) : null
 
   const optionText = option.title ?? String(option.const)
-  const transformedOptionText = `${optionText.slice(0, maxWordSize)}${
-    maxWordSize && optionText.length > maxWordSize ? '...' : ''
-  }`
 
   // RENDER
   return (
@@ -81,7 +79,7 @@ const DropdownRow = ({
     >
       <div className="dropdown flex h-full flex-col justify-center">
         <div className="dropdown flex flex-row justify-center">
-          <p className={optionClassName}>{transformedOptionText}</p>
+          <p className={optionClassName}>{optionText}</p>
           <div className="dropdown relative flex flex-col justify-center">
             {rowIcon}
             <div className="dropdown absolute inset-0 z-10" />

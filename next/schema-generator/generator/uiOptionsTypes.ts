@@ -110,7 +110,6 @@ export type SelectUiOptions = {
   dropdownDivider?: boolean
   selectAllOption?: boolean
   hideScrollbar?: boolean
-  maxWordSize?: number
   // selectType?: 'one' | 'multiple' | 'arrow' | 'radio'
 } & WidgetUiOptions
 

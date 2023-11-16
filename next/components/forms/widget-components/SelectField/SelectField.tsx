@@ -58,7 +58,6 @@ type SelectFieldProps = FieldWrapperProps & {
   selectAllOption?: boolean
   hideScrollbar?: boolean
   alwaysOneSelected?: boolean
-  maxWordSize?: number
   onChange: (values: SelectOption[]) => void
   placeholder?: string
   className?: string
@@ -85,7 +84,6 @@ const SelectFieldComponent: ForwardRefRenderFunction<HTMLDivElement, SelectField
     disabled,
     hideScrollbar,
     alwaysOneSelected,
-    maxWordSize = 17,
     className,
     onChange,
     size,
@@ -263,7 +261,6 @@ const SelectFieldComponent: ForwardRefRenderFunction<HTMLDivElement, SelectField
             multiple={type === 'multiple'}
             filter={filter}
             filterRef={filterRef}
-            maxWordSize={maxWordSize}
             placeholder={placeholder}
             disabled={disabled}
             onRemove={handleOnRemove}
@@ -303,7 +300,6 @@ const SelectFieldComponent: ForwardRefRenderFunction<HTMLDivElement, SelectField
               divider={dropdownDivider}
               hideScrollbar={hideScrollbar}
               selectAllOption={selectAllOption}
-              maxWordSize={maxWordSize + 5}
               absolute
               onChooseOne={handleOnChooseOne}
               onUnChooseOne={handleOnUnChooseOne}

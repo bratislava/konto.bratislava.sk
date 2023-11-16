@@ -11240,10 +11240,10 @@ next-plausible@^3.11.1:
   resolved "https://registry.yarnpkg.com/next-plausible/-/next-plausible-3.11.1.tgz#89c519cf71d80a573ee16eebe1f355b062362aaf"
   integrity sha512-Gd+QU+XflVTx65yJ2cNZyrOQLrpz3uKjGLEG4ls+CIVqK3yjsVGCMsEWJcvv1LAeVfHUQtCyp1xyAltLn5Odcg==
 
-next-query-params@^4.1.0:
-  version "4.1.0"
-  resolved "https://registry.yarnpkg.com/next-query-params/-/next-query-params-4.1.0.tgz#d69e0cb3f0ec1e746a7bb255cd5a07d9e03ba95d"
-  integrity sha512-jjoQByM9s2d4wCUBUazhgHNVztm18meCtVoDj6v45+LZIQfxAF5QYVFKCbDYarI3iXD4xcZprztqLtALiiV8nQ==
+next-query-params@^4.3.0:
+  version "4.3.0"
+  resolved "https://registry.yarnpkg.com/next-query-params/-/next-query-params-4.3.0.tgz#62cf9297005a66ebc5b0823c3c66d77971ec87b5"
+  integrity sha512-8w8AXfPJ8vnYvSFBCByT5ZR8ItNSJ6lAbVer8aRZZRUpADZAR6hQ4dh7fLDs/6383DU0Ve7WvNHqswMR8S98zg==
   dependencies:
     tslib "^2.0.3"
 
@@ -13880,10 +13880,10 @@ use-isomorphic-layout-effect@^1.1.1, use-isomorphic-layout-effect@^1.1.2:
   resolved "https://registry.yarnpkg.com/use-isomorphic-layout-effect/-/use-isomorphic-layout-effect-1.1.2.tgz#497cefb13d863d687b08477d9e5a164ad8c1a6fb"
   integrity sha512-49L8yCO3iGT/ZF9QttjwLF/ZD9Iwto5LnH5LmEdk/6cFmXddqi2ulF0edxTwjj+7mqvpVVGQWvbXZdn32wRSHA==
 
-use-query-params@^2.2.0:
-  version "2.2.0"
-  resolved "https://registry.yarnpkg.com/use-query-params/-/use-query-params-2.2.0.tgz#921aa5bf5be653260a763e06ad004e7a960807e5"
-  integrity sha512-MPBwXVZYzFeJEdjv0YgPNFsafUOM8WTpwBEZfNEMlyzbTsf2c+ZpOBkdM95/w4rxzk4eVO3E4DW7v33+VDbiQw==
+use-query-params@^2.2.1:
+  version "2.2.1"
+  resolved "https://registry.yarnpkg.com/use-query-params/-/use-query-params-2.2.1.tgz#c558ab70706f319112fbccabf6867b9f904e947d"
+  integrity sha512-i6alcyLB8w9i3ZK3caNftdb+UnbfBRNPDnc89CNQWkGRmDrm/gfydHvMBfVsQJRq3NoHOM2dt/ceBWG2397v1Q==
   dependencies:
     serialize-query-params "^2.0.2"
 

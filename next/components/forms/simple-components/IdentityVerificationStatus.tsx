@@ -30,7 +30,7 @@ const IdentityVerificationStatus = () => {
         size="sm"
         onPress={() =>
           optionalFormRedirectsContext
-            ? optionalFormRedirectsContext.verifyIdentity
+            ? optionalFormRedirectsContext.verifyIdentity()
             : router.push(ROUTES.IDENTITY_VERIFICATION)
         }
         variant="plain-black"

@@ -22,7 +22,7 @@ const AnnouncementBlock = ({
   return announcementContent ? (
     <div
       className={cx(
-        'flex w-full flex-col-reverse rounded-lg border-2 border-gray-200 lg:rounded-3xl',
+        'flex w-full flex-col-reverse rounded-lg border-2 border-gray-200 lg:rounded-lg',
         {
           'lg:flex-row-reverse': reversed,
           'lg:flex-row': !reversed,

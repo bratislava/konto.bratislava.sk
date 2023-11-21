@@ -4,6 +4,7 @@ import AccountSectionHeader from 'components/forms/segments/AccountSectionHeader
 import Banner from 'components/forms/simple-components/Banner'
 import Button from 'components/forms/simple-components/Button'
 import ServiceCard from 'components/forms/simple-components/ServiceCard'
+import { environment } from 'environment'
 import { useServerSideAuth } from 'frontend/hooks/useServerSideAuth'
 import { GENERIC_ERROR_MESSAGE, isError } from 'frontend/utils/errors'
 import logger from 'frontend/utils/logger'
@@ -12,6 +13,8 @@ import { useTranslation } from 'next-i18next'
 import { useEffect, useState } from 'react'
 
 import TaxesIcon from '../../../../../assets/icons/city-bratislava/taxes.svg'
+import LibraryIcon from '../../../../../assets/icons/culture-communities/library.svg'
+import SwimmingPoolIcon from '../../../../../assets/icons/education-sport/swimming-pool.svg'
 import SpatialPlanningIcon from '../../../../../assets/icons/environment-construction/spatial-planning.svg'
 import ParkingIcon from '../../../../../assets/icons/transport-and-maps/parking.svg'
 import { ROUTES } from '../../../../../frontend/api/constants'
@@ -111,46 +114,93 @@ const IntroSection = () => {
               />
             </div>
             <div className="flex gap-3 overflow-x-scroll px-4 scrollbar-hide lg:gap-8 lg:px-0">
-              <ServiceCard
-                title={t('account_section_services.cards.34.title')}
-                description={t('account_section_services.cards.34.description')}
-                icon={
-                  <SpatialPlanningIcon className="h-10 w-10 text-environment-700 lg:h-12 lg:w-12" />
-                }
-                buttonText={t('account_section_services.cards.34.buttonText')}
-                href={ROUTES.MUNICIPAL_SERVICES_INVESTING}
-                plausibleProps={{ id: `Domov: ${t('account_section_services.cards.34.title')}` }}
-                tag={t('account_section_services.cards.34.tag')}
-                tagStyle="text-environment-700 bg-environment-100"
-              />
-              <ServiceCard
-                title={t('account_section_services.cards.35.title')}
-                description={t('account_section_services.cards.35.description')}
-                icon={
-                  <SpatialPlanningIcon className="h-10 w-10 text-environment-700 lg:h-12 lg:w-12" />
-                }
-                buttonText={t('account_section_services.cards.35.buttonText')}
-                href={ROUTES.MUNICIPAL_SERVICES_INVESTING_INTENT}
-                plausibleProps={{ id: `Domov: ${t('account_section_services.cards.35.title')}` }}
-                tag={t('account_section_services.cards.35.tag')}
-                tagStyle="text-environment-700 bg-environment-100"
-              />
-              <ServiceCard
-                title={t('account_section_services.cards.1.title')}
-                description={t('account_section_services.cards.1.description')}
-                icon={<TaxesIcon className="h-10 w-10 text-category-600 lg:h-12 lg:w-12" />}
-                buttonText={t('account_section_services.cards.1.buttonText')}
-                href={ROUTES.TAXES_AND_FEES}
-                plausibleProps={{ id: `Domov: ${t('account_section_services.cards.1.title')}` }}
-              />
-              <ServiceCard
-                title={t('account_section_services.cards.4.title')}
-                description={t('account_section_services.cards.4.description')}
-                icon={<ParkingIcon className="h-10 w-10 text-transport-700 lg:h-12 lg:w-12" />}
-                buttonText={t('account_section_services.cards.4.buttonText')}
-                href="https://paas.sk/"
-                plausibleProps={{ id: `Domov: ${t('account_section_services.cards.4.title')}` }}
-              />
+              {environment.featureToggles.formsInMenu ? (
+                <>
+                  <ServiceCard
+                    title={t('account_section_services.cards.34.title')}
+                    description={t('account_section_services.cards.34.description')}
+                    icon={
+                      <SpatialPlanningIcon className="h-10 w-10 text-environment-700 lg:h-12 lg:w-12" />
+                    }
+                    buttonText={t('account_section_services.cards.34.buttonText')}
+                    href={ROUTES.MUNICIPAL_SERVICES_INVESTING}
+                    plausibleProps={{
+                      id: `Domov: ${t('account_section_services.cards.34.title')}`,
+                    }}
+                    tag={t('account_section_services.cards.34.tag')}
+                    tagStyle="text-environment-700 bg-environment-100"
+                  />
+                  <ServiceCard
+                    title={t('account_section_services.cards.35.title')}
+                    description={t('account_section_services.cards.35.description')}
+                    icon={
+                      <SpatialPlanningIcon className="h-10 w-10 text-environment-700 lg:h-12 lg:w-12" />
+                    }
+                    buttonText={t('account_section_services.cards.35.buttonText')}
+                    href={ROUTES.MUNICIPAL_SERVICES_INVESTING_INTENT}
+                    plausibleProps={{
+                      id: `Domov: ${t('account_section_services.cards.35.title')}`,
+                    }}
+                    tag={t('account_section_services.cards.35.tag')}
+                    tagStyle="text-environment-700 bg-environment-100"
+                  />
+                  <ServiceCard
+                    title={t('account_section_services.cards.1.title')}
+                    description={t('account_section_services.cards.1.description')}
+                    icon={<TaxesIcon className="h-10 w-10 text-category-600 lg:h-12 lg:w-12" />}
+                    buttonText={t('account_section_services.cards.1.buttonText')}
+                    href={ROUTES.TAXES_AND_FEES}
+                    plausibleProps={{ id: `Domov: ${t('account_section_services.cards.1.title')}` }}
+                  />
+                  <ServiceCard
+                    title={t('account_section_services.cards.4.title')}
+                    description={t('account_section_services.cards.4.description')}
+                    icon={<ParkingIcon className="h-10 w-10 text-transport-700 lg:h-12 lg:w-12" />}
+                    buttonText={t('account_section_services.cards.4.buttonText')}
+                    href="https://paas.sk/"
+                    plausibleProps={{ id: `Domov: ${t('account_section_services.cards.4.title')}` }}
+                  />
+                </>
+              ) : (
+                <>
+                  <ServiceCard
+                    title={t('account_section_services.cards.32.title')}
+                    description={t('account_section_services.cards.32.description')}
+                    icon={
+                      <SwimmingPoolIcon className="h-10 w-10 text-education-700 lg:h-12 lg:w-12" />
+                    }
+                    buttonText={t('account_section_services.cards.32.buttonText')}
+                    href="https://kupaliska.bratislava.sk"
+                    plausibleProps={{
+                      id: `Domov: ${t('account_section_services.cards.32.title')}`,
+                    }}
+                  />
+                  <ServiceCard
+                    title={t('account_section_services.cards.1.title')}
+                    description={t('account_section_services.cards.1.description')}
+                    icon={<TaxesIcon className="h-10 w-10 text-category-600 lg:h-12 lg:w-12" />}
+                    buttonText={t('account_section_services.cards.1.buttonText')}
+                    href={ROUTES.TAXES_AND_FEES}
+                    plausibleProps={{ id: `Domov: ${t('account_section_services.cards.1.title')}` }}
+                  />
+                  <ServiceCard
+                    title={t('account_section_services.cards.4.title')}
+                    description={t('account_section_services.cards.4.description')}
+                    icon={<ParkingIcon className="h-10 w-10 text-transport-700 lg:h-12 lg:w-12" />}
+                    buttonText={t('account_section_services.cards.4.buttonText')}
+                    href="https://paas.sk/"
+                    plausibleProps={{ id: `Domov: ${t('account_section_services.cards.4.title')}` }}
+                  />
+                  <ServiceCard
+                    title={t('account_section_services.cards.5.title')}
+                    description={t('account_section_services.cards.5.description')}
+                    icon={<LibraryIcon className="h-10 w-10 text-culture-700 lg:h-12 lg:w-12" />}
+                    buttonText={t('account_section_services.cards.5.buttonText')}
+                    href="https://mestskakniznica.sk/sluzby/citanie/ako-sa-prihlasit-do-kniznice"
+                    plausibleProps={{ id: `Domov: ${t('account_section_services.cards.5.title')}` }}
+                  />
+                </>
+              )}
             </div>
             <Button
               size="sm"

@@ -1,5 +1,4 @@
 import { GenericObjectType, retrieveSchema, RJSFSchema } from '@rjsf/utils'
-// eslint-disable-next-line import/no-extraneous-dependencies
 import { JSONSchema7 } from 'json-schema'
 import pick from 'lodash/pick'
 import { useRouter } from 'next/router'

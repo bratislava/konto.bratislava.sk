@@ -12,7 +12,6 @@ interface SelectFieldBoxProps {
   placeholder?: string
   filter: string
   filterRef?: React.RefObject<HTMLInputElement>
-  maxWordSize?: number
   disabled?: boolean
   onRemove: (optionId: number) => void
   onRemoveAll: () => void
@@ -36,7 +35,6 @@ const SelectFieldBoxComponent: ForwardRefRenderFunction<HTMLDivElement, SelectFi
     placeholder,
     filter,
     filterRef,
-    maxWordSize = 17,
     disabled,
     onRemove,
     onRemoveAll,
@@ -98,11 +96,7 @@ const SelectFieldBoxComponent: ForwardRefRenderFunction<HTMLDivElement, SelectFi
                 />
               ))
             ) : (
-              <p>
-                {`${getOptionTitle(value[0]).slice(0, maxWordSize)}${
-                  getOptionTitle(value[0]).length > maxWordSize ? '...' : ''
-                }`}
-              </p>
+              <p>{getOptionTitle(value[0])}</p>
             )
           ) : (
             <Tag text={multipleOptionsTagText} size="small" onRemove={onRemoveAll} removable />

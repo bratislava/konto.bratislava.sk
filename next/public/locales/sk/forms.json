@@ -10,14 +10,14 @@
     "pdf_export": "PDF sa nepodarilo stiahnuť",
     "concept_save": "Koncept sa nepodarilo uložiť.",
     "migration": "Formulár sa nepodarilo premigrovať.",
-    "concept_delete": "Koncept sa nepodarilo zmazať."
+    "concept_delete": "Koncept sa nepodarilo vymazať."
   },
   "success_messages": {
     "concept_save": "Koncept bol uložený.",
     "xml_export": "XML bolo stiahnuté.",
     "xml_import": "XML bolo nahraté.",
     "pdf_export": "PDF bolo stiahnuté.",
-    "concept_delete": "Koncept zmazaný."
+    "concept_delete": "Koncept bol vymazaný."
   },
   "info_messages": {
     "concept_save": "Koncept sa ukladá.",
@@ -25,7 +25,7 @@
     "xml_import": "XML sa nahráva.",
     "pdf_export": "PDF sa sťahuje.",
     "form_leave_protection": "Naozaj chcete odísť? Údaje, ktoré ste vyplnili sa nemusia uložiť.",
-    "concept_delete": "Koncept sa zmazáva."
+    "concept_delete": "Koncept sa maže."
   },
   "selectAll": "Vybrať všetko",
   "deselectAll": "Odobrať všetko",

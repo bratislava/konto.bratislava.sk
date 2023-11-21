@@ -7,6 +7,8 @@ export default defineConfig({
       config.chromeWebSecurity = false
       config.video = false
       config.baseUrl = config.env.BASEURL
+      config.viewportWidth = 1920;
+      config.viewportHeight = 1080;
 
       config.retries = {
         runMode: 1,

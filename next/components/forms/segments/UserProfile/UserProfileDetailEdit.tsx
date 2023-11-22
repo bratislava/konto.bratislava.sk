@@ -94,12 +94,12 @@ const isValidPhoneNumber = (phoneNumber: string) => {
 interface UserProfileDetailEditProps {
   formId: string
   userData: UserData
-  onOpenEmailModal: () => void
+  onEmailChange: () => void
   onSubmit: (newUserData: UserData) => void
 }
 
 const UserProfileDetailEdit = (props: UserProfileDetailEditProps) => {
-  const { formId, userData, onOpenEmailModal, onSubmit } = props
+  const { formId, userData, onEmailChange, onSubmit } = props
   const { t } = useTranslation('account')
   const { address, name, family_name, given_name, email, phone_number } = userData
   const isLegalEntity = userData?.['custom:account_type'] !== AccountType.FyzickaOsoba
@@ -204,7 +204,6 @@ const UserProfileDetailEdit = (props: UserProfileDetailEditProps) => {
               <InputField
                 disabled
                 label={t('profile_detail.email')}
-                tooltip={t('profile_detail.email_tooltip')}
                 autoComplete="username"
                 {...field}
                 errorMessage={errors.email}
@@ -218,14 +217,14 @@ const UserProfileDetailEdit = (props: UserProfileDetailEditProps) => {
             size="lg"
             text={t('profile_detail.email_button')}
             className="hidden md:block"
-            onPress={onOpenEmailModal}
+            onPress={onEmailChange}
           />
           <Button
             variant="black"
             size="sm"
             text={t('profile_detail.email_button')}
             className="block md:hidden"
-            onPress={onOpenEmailModal}
+            onPress={onEmailChange}
           />
         </div>
       </div>

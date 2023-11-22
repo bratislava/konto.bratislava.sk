@@ -23,6 +23,7 @@ const useGetContext = () => {
 
   const sign = async () => {
     try {
+      // TODO continue here - first, fetch the data to sign
       const jsonObjectHash = hash(formData)
       // Just an example payload for the signer until we have a proper implementation.
       const result = await signerSign(signerExamplePayload)

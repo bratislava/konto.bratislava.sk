@@ -155,7 +155,7 @@
   "email_change_success_description": "E-mailová adresa {{email}} bola overená a e-mail úspešne zmenený. Odteraz sa do vášho Bratislavského konta prihlasujte s novým emailom.",
   "new_email_label": "Nový e-mail",
   "new_email_password_label": "Vaše Heslo",
-  "new_email_text": "Vyplnením týchto údajov si môžete zmeniť e-mail, ktorým sa do konta prihlasujete. Po zmene e-mailu je potrebné overiť nový e-mail cez overovací kód, ktorý nájdete v novom e-maily.",
+  "new_email_text": "Vyplnením týchto údajov si môžete zmeniť e-mail, ktorým sa do konta prihlasujete. Po zmene e-mailu je potrebné overiť nový e-mail cez overovací kód, ktorý nájdete v novom e-maili.",
   "new_email_submit": "Pokračovať",
   "account_section_intro": {
     "navigation": "Úvod",

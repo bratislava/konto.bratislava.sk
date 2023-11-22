@@ -1,0 +1,20 @@
+{
+  "compilerOptions": {
+    "target": "es5",
+    "allowJs": true,
+    "inlineSourceMap": true,
+    "esModuleInterop": true,
+    "skipLibCheck": true,
+    "strict": true,
+    "noEmit": true,
+    "moduleResolution": "node",
+    "resolveJsonModule": true,
+    "isolatedModules": false,
+    "incremental": true,
+    "downlevelIteration": true,
+    "baseUrl": "./",
+    "noImplicitAny": false,
+  },
+  "include": ["cypress"],
+  "exclude": ["node_modules"]
+}

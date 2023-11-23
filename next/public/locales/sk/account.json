@@ -3,7 +3,7 @@
     "unknown": "Nastala neočakávaná chyba. Skontrolujte svoje pripojenie alebo nás kontaktujte na <a href='mailto:info@bratislava.sk'>info@bratislava.sk</a>. Ďakujeme.",
     "Bad Request": "Overenie bolo neúspešné. Skontrolujte správnosť údajov.",
     "NotAuthorizedException": "Nesprávne prihlasovacie údaje",
-    "CodeMismatchException": "Platnosť zadaného kódu vypršala. Požiadajte o nový kód kliknutím na Odoslať nový kód. Platnosť overovacieho kódu je 60 minút.",
+    "CodeMismatchException": "Zadaný kód je nesprávny alebo jeho platnosť vypršala. Skontrolujte správnosť overovacieho kódu alebo požiadajte o nový kód kliknutím na Odoslať nový kód. Platnosť overovacieho kódu je 60 minút.",
     "LimitExceededException": "Priveľa opakovaní. Skúste to znova neskôr.",
     "UserNotFoundException": "Konto so zadanou e-mailovou adresou zatiaľ neexistuje.",
     "MigrationUserNotFoundException": "E-mail {{email}} sa nenachádza v našej databáze minuloročných používateľov a používateliek digitálnej platby dane. Skontrolujte správnosť e-mailu alebo sa [registrujte](/register).",

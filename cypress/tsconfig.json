@@ -6,6 +6,6 @@
     "baseUrl": "./",
     "noEmit": true
   },
-  "include": ["cypress"],
+  "include": ["**/*.ts", "**/*.js"],
   "exclude": ["node_modules"]
 }

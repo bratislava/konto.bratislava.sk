@@ -211,7 +211,7 @@
       "8": {
         "title": "10 000 stromov",
         "description": "Iniciatíva 10 000 stromov- možnosti zapojenia sa pre partnerov, informácie o zásadnom víkende alebo mapa výsadby zelene.",
-        "buttonText": "Viac o iniciatíve"
+        "buttonText": "Podporiť iniciatívu"
       },
       "9": {
         "title": "Komunitné záhrady",
@@ -349,6 +349,41 @@
         "description": "Žiadosť o stanovisko k investičnému zámeru, ktoré slúži na overenie si zámeru ešte pred územným konaním a vydaním záväzného stanoviska.",
         "buttonText": "Požiadať",
         "tag": "Nová služba"
+      },
+      "36": {
+        "title": "Mimoriadny odvoz a likvidácia komunálneho odpadu",
+        "description": "Elektronický objednávkový formulár pre záväzné objednanie služieb OLO pre právnické osoby.",
+        "buttonText": "Objednať"
+      },
+      "37": {
+        "title": "Dočistenie stojiska od komunálneho odpadu",
+        "description": "Elektronický objednávkový formulár pre záväzné objednanie služieb OLO pre právnické osoby.",
+        "buttonText": "Objednať"
+      },
+      "38": {
+        "title": "Pravidelný odvoz odpadových obalov",
+        "description": "Elektronický objednávkový formulár pre záväzné objednanie služieb OLO pre právnické osoby.",
+        "buttonText": "Objednať"
+      },
+      "39": {
+        "title": "Pravidelný odvoz triedeného komunálneho odpadu",
+        "description": "Elektronický objednávkový formulár pre záväzné objednanie služieb OLO pre právnické osoby.",
+        "buttonText": "Objednať"
+      },
+      "40": {
+        "title": "Zaujatie verejného priestranstva",
+        "description": "Povolenie potrebné na organizáciu podujatia, predaj tovaru, terasu k svojmu podniku, rekonštrukciu bytového domu alebo rozkopávku na verejnom priestranstve.",
+        "buttonText": "Požiadať"
+      },
+      "41": {
+        "title": "Určenie podmienok uvedenia komunikácie do pôvodného stavu",
+        "description": "Žiadosť je potrebné podať do 3 pracovných dní od nahlásenia poruchy.",
+        "buttonText": "Požiadať"
+      },
+      "42": {
+        "title": "Adopcia zelene",
+        "description": "Dobrovoľnícky program pre zapojenie sa do starostlivosti o plochy zelene v meste a zabezpečenie ich údržby bez nároku na finančnú odmenu.",
+        "buttonText": "Adoptovať si zeleň"
       }
     }
   },

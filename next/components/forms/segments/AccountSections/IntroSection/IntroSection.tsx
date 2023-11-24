@@ -15,14 +15,13 @@ import { useTranslation } from 'next-i18next'
 import { useEffect, useState } from 'react'
 
 import { ROUTES } from '../../../../../frontend/api/constants'
-import { AccountType } from '../../../../../frontend/dtos/accountDto'
 import { PhoneNumberData } from '../../PhoneNumberForm/PhoneNumberForm'
 import PhoneNumberModal from '../../PhoneNumberModal/PhoneNumberModal'
 import Announcements from './Announcements/Announcements'
 
 const IntroSection = () => {
   const { t } = useTranslation('account')
-  const { userData, accountType, isLegalEntity } = useServerSideAuth()
+  const { userData, isLegalEntity } = useServerSideAuth()
   const router = useRouter()
   const [phoneNumberModal, setPhoneNumberModal] = useState<'hidden' | 'displayed' | 'dismissed'>(
     'hidden',
@@ -70,10 +69,7 @@ const IntroSection = () => {
     }
   }
 
-  const name =
-    accountType === AccountType.PravnickaOsoba || accountType === AccountType.FyzickaOsobaPodnikatel
-      ? userData?.name
-      : userData?.given_name
+  const name = isLegalEntity ? userData?.name : userData?.given_name
 
   const bannerContent = `<span className='text-p2'>${t(
     'account_section_intro.banner_content',

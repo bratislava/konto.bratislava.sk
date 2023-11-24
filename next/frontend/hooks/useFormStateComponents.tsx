@@ -259,6 +259,20 @@ const useFormStateComponents = ({
             </p>
           ),
         },
+        // TODO verify this / update messaging as needed - added as is to fix ts error
+        ERROR_USER_CAN_REPAIR: {
+          icon: <ErrorIcon className="h-6 w-6 text-error" />,
+          iconRound: (
+            <div className="rounded-full bg-negative-100 p-1.5">
+              <CrossIcon className="h-5 w-5 text-error" />
+            </div>
+          ),
+          text: (
+            <p className="text-error">
+              {t('account_section_applications.navigation_concept_card.status_error')}
+            </p>
+          ),
+        },
         NONE: {
           icon: null,
           iconRound: null,

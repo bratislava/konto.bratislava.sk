@@ -81,7 +81,7 @@ export const getSchema = (zavazne: boolean) =>
       moreInformationUrl: zavazne
         ? 'https://bratislava.sk/zivotne-prostredie-a-vystavba/rozvoj-mesta/usmernovanie-vystavby/zavazne-stanovisko-k-investicnej-cinnosti'
         : 'https://bratislava.sk/zivotne-prostredie-a-vystavba/rozvoj-mesta/usmernovanie-vystavby/stanovisko-k-investicnemu-zameru',
-      titlePath: 'stavba.stavbaNazov',
+      titlePath: 'stavba.nazov',
       titleFallback: 'Názov stavby/projektu',
     },
     [

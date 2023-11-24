@@ -1,6 +1,6 @@
 import { ChevronLeftIcon, DownloadIcon } from '@assets/ui-icons'
 import { formsApi } from '@clients/forms'
-import { GetFormResponseDto } from '@clients/openapi-forms'
+import { GetFormResponseDto, GinisDocumentDetailResponseDto } from '@clients/openapi-forms'
 import Button from 'components/forms/simple-components/Button'
 import FormatDate from 'components/forms/simple-components/FormatDate'
 import useFormStateComponents from 'frontend/hooks/useFormStateComponents'
@@ -12,10 +12,10 @@ import { useTranslation } from 'next-i18next'
 
 type MyApplicationDetailsHeaderBase = {
   data?: GetFormResponseDto
+  ginisData?: GinisDocumentDetailResponseDto | null
 }
 
-const MyApplicationDetailsHeader = (props: MyApplicationDetailsHeaderBase) => {
-  const { data } = props
+const MyApplicationDetailsHeader = ({ data, ginisData }: MyApplicationDetailsHeaderBase) => {
   const { t } = useTranslation('account')
   const { t: ft } = useTranslation('forms')
 
@@ -23,14 +23,18 @@ const MyApplicationDetailsHeader = (props: MyApplicationDetailsHeaderBase) => {
   const [openSnackbarSuccess] = useSnackbar({ variant: 'success' })
   const [openSnackbarInfo, closeSnackbarInfo] = useSnackbar({ variant: 'info' })
 
+  const latestGinisChangeDate = ginisData?.documentHistory?.[0]?.DatumZmeny
+  const firstGinisChangeDate =
+    ginisData?.documentHistory?.[(ginisData?.documentHistory?.length || 0) - 1]?.DatumZmeny
+
+  const title = data?.frontendTitle
   const formData = data?.formDataJson
   const formSlug = data?.schemaVersion.schema?.slug || ''
   const schemaVersionId = data?.schemaVersionId
   const formId = data?.id
   const category = data?.schemaVersion.schema?.formName
-  const createdAt = data?.createdAt
-  // TODO replace - this won't be valid for forms processed on the GINIS side
-  const updatedAt = data?.updatedAt
+  const createdAt = firstGinisChangeDate || data?.createdAt
+  const updatedAt = latestGinisChangeDate || data?.updatedAt
   const state = data?.state
   const error = data?.error
   const isLatestSchemaVersionForSlug = data?.isLatestSchemaVersionForSlug
@@ -71,7 +75,7 @@ const MyApplicationDetailsHeader = (props: MyApplicationDetailsHeaderBase) => {
             <div className="flex flex-col gap-2">
               <p className="text-p2-semibold text-main-700">{category}</p>
               <div className="flex w-full items-center justify-between">
-                <h1 className="text-h1">TODO Podanie</h1>
+                <h1 className="text-h1">{title}</h1>
                 <Button
                   className="hidden md:flex"
                   startIcon={<DownloadIcon className="h-6 w-6" />}

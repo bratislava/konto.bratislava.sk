@@ -14,7 +14,7 @@ const MyApplicationDetails = ({ detailsData, ginisData }: MyApplicationsDetailsB
   const { t } = useTranslation('account')
   return (
     <div className="flex flex-col">
-      <MyApplicationDetailsHeader data={detailsData} />
+      <MyApplicationDetailsHeader data={detailsData} ginisData={ginisData} />
       <div className="mx-auto flex w-full max-w-screen-lg flex-col gap-16 py-12">
         <div className="flex flex-col gap-2 px-4 lg:px-0">
           <h3 className="text-h3">

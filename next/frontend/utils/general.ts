@@ -107,6 +107,9 @@ export const downloadBlob = (blob: Blob, fileName: string) => {
 export function isDefined<T>(value: T | undefined | null): value is T {
   return value !== undefined && value !== null
 }
+
+// to be used in context where we do not have backend data
+// otherwise, you can use frontendTitle field
 export const getFormTitle = (
   uiOptions: UIOptionsType<any, RJSFSchema, any>,
   formData?: GenericObjectType | null,

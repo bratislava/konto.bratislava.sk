@@ -47,8 +47,7 @@ export interface LegalIdentity {
   ico: string
   birthNumber: string
   identityCard: string
-  // TODO missing in API
-  // turnstileToken: string
+  turnstileToken: string
 }
 
 export interface Gdpr {

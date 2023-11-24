@@ -83,6 +83,7 @@ const IdentityVerificationPage = ({ page }: AsyncServerProps<typeof getServerSid
             ico: data.ico || '',
             birthNumber: data.rc.replace('/', ''),
             identityCard: data.idCard.toUpperCase(),
+            turnstileToken: data.turnstileToken,
           })
         : verifyIdentityApi({
             birthNumber: data.rc.replace('/', ''),

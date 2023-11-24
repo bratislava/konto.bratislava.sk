@@ -12,5 +12,5 @@ Each sub-project contains README which should get you up and running. More docum
 
 🏡 `/next` Next.js web app
 
-👀 `/cypress` Automated cypress tests
+👀 `tests/cypress` Automated cypress tests
 

@@ -2,13 +2,6 @@ import { defineConfig } from 'cypress'
 
 export default defineConfig({
   e2e: {
-    fixturesFolder: "./fixtures",
-    screenshotsFolder: "./screenshots",
-    downloadsFolder: "./downloads",
-    supportFile: "./support/e2e.ts",
-    fileServerFolder: "./",
-    specPattern: "./e2e/**/*.cy.ts",
-  
     // Allows to run all tests in open mode
     experimentalRunAllSpecs: true,
     setupNodeEvents(on, config) {

@@ -1,5 +1,5 @@
 {
-  "name": "konto.bratislava.sk",
+  "name": "cypress",
   "scripts": {
     "lint": "eslint '**/*.ts'",
     "typecheck": "tsc",

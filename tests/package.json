@@ -1,0 +1,22 @@
+{
+  "name": "cypress",
+  "scripts": {
+    "lint": "eslint '**/*.ts'",
+    "typecheck": "tsc",
+    "cypress:open": "yarn run cypress open --e2e --browser chrome --env BASEURL=http://localhost:3000",
+    "cypress:run": "yarn run cypress run --e2e --browser chrome --env BASEURL=http://localhost:3000"
+  },
+  "devDependencies": {
+    "cypress": "^13.6.0",
+    "eslint": "^8.54.0",
+    "eslint-config-adjunct": "^4.12.2",
+    "eslint-plugin-cypress": "^2.15.1",
+    "eslint-plugin-prettier": "^5.0.1",
+    "typescript": "^5.3.2"
+  },
+  "engines": {
+    "node": "16.x.x",
+    "npm": ">=6.0.0",
+    "yarn": "1.22"
+  }
+}

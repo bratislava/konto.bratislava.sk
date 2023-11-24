@@ -11,3 +11,6 @@ Our goal is to be transparent about services we’re developing and providing, a
 Each sub-project contains README which should get you up and running. More documentation can be (eventually) found [here](https://bratislava.github.io).
 
 🏡 `/next` Next.js web app
+
+👀 `tests/cypress` Automated cypress tests
+

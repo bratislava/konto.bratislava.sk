@@ -34,12 +34,12 @@ const useGetContext = () => {
     },
     onMutate: () => {
       // TODO: Wording.
-      openSnackbarInfo('Ukladám koncept a presmerovávam.')
+      openSnackbarInfo(t('concept_save_and_redirect'))
       turnOffLeaveProtection()
     },
     onError: () => {
       // Maybe different wording for this case.
-      openSnackbarError(t('Nepodarilo sa uložiť koncept a presmerovať.'))
+      openSnackbarError(t('unable_to_save_concept_and_redirect'))
     },
   })
 

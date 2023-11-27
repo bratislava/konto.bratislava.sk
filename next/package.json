@@ -58,7 +58,7 @@
     "next": "13.4.5",
     "next-i18next": "12.1.0",
     "next-plausible": "^3.11.1",
-    "next-query-params": "^4.1.0",
+    "next-query-params": "^5.0.0",
     "object-hash": "^3.0.0",
     "patch-package": "^7.0.2",
     "postinstall-postinstall": "^2.1.0",

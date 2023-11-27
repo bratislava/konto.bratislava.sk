@@ -39,11 +39,7 @@ const UserProfileDetailView = ({ userData }: UserProfileDetailViewProps) => {
       {/* <UserProfileDetailViewRow label={t('profile_detail.titles_before_name')} /> */}
       <UserProfileDetailViewRow label={nameLabel} value={fullName} />
       {/* <UserProfileDetailViewRow label={t('profile_detail.titles_after_name')} /> */}
-      <UserProfileDetailViewRow
-        label={t('profile_detail.email')}
-        value={email}
-        tooltip={t('profile_detail.email_tooltip')}
-      />
+      <UserProfileDetailViewRow label={t('profile_detail.email')} value={email} />
       <UserProfileDetailViewRow label={t('profile_detail.phone_number')} value={phone_number} />
       <UserProfileDetailViewRow label={t('profile_detail.address')} value={fullAddress} />
     </div>

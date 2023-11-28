@@ -11,6 +11,7 @@
     "UsernameExistsException": " E-mail {{email}} sa už používa. Na každý e-mail je v Bratislavskom konte možné vytvoriť len jeden účet. V prípade nejasností nás kontaktujte na <a href='mailto:info@bratislava.sk'>info@bratislava.sk</a>.",
     "ExpiredCodeException": "Platnosť zadaného kódu vypršala. Požiadajte o nový kód kliknutím na Odoslať nový kód. Platnosť overovacieho kódu je 60 minút.",
     "IncorectPasswordException": "Zadané heslo nie je správne.",
+    "AliasExistsException": "E-mail {{email}} už používa iné Bratislavské konto. Ak si stále želáte zmeniť e-mail svojho konta, vráťte sa do svojho profilu kliknutím na šípku späť vedľa bratislavského loga a zopakujte proces zmeny e-mailu s inou e-mailovou adresou.",
     "API_ERROR": "Pri odosielaní nastala chyba. Skúste to, prosíme, znova.",
     "RFO_ACCESS_ERROR": "Pri odosielaní nastala chyba. Skúste to, prosíme, znova.",
     "RFO_NOT_RESPONDING": "Pri odosielaní nastala chyba. Skúste to, prosíme, znova.",

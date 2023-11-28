@@ -140,11 +140,11 @@ const IdentityVerificationPage = ({ page }: AsyncServerProps<typeof getServerSid
                       })
                     : t('identity_verification_pending_description_without_data_legal_entity')
                   : lastRc && lastIdCard
-                  ? t('identity_verification_pending_description', {
-                      rc: lastRc,
-                      idCard: lastIdCard,
-                    })
-                  : t('identity_verification_pending_description_without_data')
+                    ? t('identity_verification_pending_description', {
+                        rc: lastRc,
+                        idCard: lastIdCard,
+                      })
+                    : t('identity_verification_pending_description_without_data')
               }
               confirmLabel={t('account_continue_link')}
               onConfirm={() => redirect({ from: ROUTES.REGISTER })}

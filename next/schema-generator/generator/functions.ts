@@ -117,19 +117,18 @@ export const selectMultiple = (
 
 export const input = (
   property: string,
-  options:
-    | BaseOptions &
-        (
-          | {
-              type?: 'text'
-              // TODO: Add more formats
-              format?: 'zip' | 'ratio'
-              pattern?: RegExp
-            }
-          | {
-              type: 'password' | 'email' | 'tel'
-            }
-        ) & { default?: string },
+  options: BaseOptions &
+    (
+      | {
+          type?: 'text'
+          // TODO: Add more formats
+          format?: 'zip' | 'ratio'
+          pattern?: RegExp
+        }
+      | {
+          type: 'password' | 'email' | 'tel'
+        }
+    ) & { default?: string },
   uiOptions: Omit<InputUiOptions, 'type'>,
 ): Field => {
   return {
@@ -218,10 +217,10 @@ export const number = (
 type StringToType<T> = T extends 'string'
   ? string
   : T extends 'number'
-  ? number
-  : T extends 'boolean'
-  ? boolean
-  : never
+    ? number
+    : T extends 'boolean'
+      ? boolean
+      : never
 
 export const radioGroup = <T extends 'string' | 'number' | 'boolean'>(
   property: string,

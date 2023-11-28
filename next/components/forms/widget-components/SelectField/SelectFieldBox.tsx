@@ -52,10 +52,10 @@ const SelectFieldBoxComponent: ForwardRefRenderFunction<HTMLDivElement, SelectFi
     return !value || value.length === 0
       ? 13
       : filter.length <= 1
-      ? 1
-      : filter.length >= 9
-      ? 13
-      : filter.length
+        ? 1
+        : filter.length >= 9
+          ? 13
+          : filter.length
   }
 
   const getPlaceholder = () => {

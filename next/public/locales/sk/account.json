@@ -3,7 +3,7 @@
     "unknown": "Nastala neočakávaná chyba. Skontrolujte svoje pripojenie alebo nás kontaktujte na <a href='mailto:info@bratislava.sk'>info@bratislava.sk</a>. Ďakujeme.",
     "Bad Request": "Overenie bolo neúspešné. Skontrolujte správnosť údajov.",
     "NotAuthorizedException": "Nesprávne prihlasovacie údaje",
-    "CodeMismatchException": "Platnosť zadaného kódu vypršala. Požiadajte o nový kód kliknutím na Odoslať nový kód. Platnosť overovacieho kódu je 60 minút.",
+    "CodeMismatchException": "Zadaný kód je nesprávny alebo jeho platnosť vypršala. Skontrolujte správnosť overovacieho kódu alebo požiadajte o nový kód kliknutím na Odoslať nový kód. Platnosť overovacieho kódu je 60 minút.",
     "LimitExceededException": "Priveľa opakovaní. Skúste to znova neskôr.",
     "UserNotFoundException": "Konto so zadanou e-mailovou adresou zatiaľ neexistuje.",
     "MigrationUserNotFoundException": "E-mail {{email}} sa nenachádza v našej databáze minuloročných používateľov a používateliek digitálnej platby dane. Skontrolujte správnosť e-mailu alebo sa [registrujte](/register).",
@@ -149,6 +149,14 @@
   "migration_new_password_title": "Zadajte overovací kód a vytvorte si heslo",
   "migration_new_password_submit": "Overiť e-mail",
   "captcha_warning": "Nepodarilo sa overiť, či nie ste robot. Ak sa formulár nedá odoslať, vyskúšajte prosím iný prehliadač (Chrome, Edge alebo Safari).",
+  "email_change_title": "Zmena e-mailu",
+  "email_change_description": "Zadajte nový e-mail, ktorý chcete používať pre Bratislavské konto.",
+  "email_change_success_title": "E-mail bol úspešne zmenený",
+  "email_change_success_description": "E-mailová adresa {{email}} bola overená a e-mail úspešne zmenený. Odteraz sa do vášho Bratislavského konta prihlasujte s novým emailom.",
+  "new_email_label": "Nový e-mail",
+  "new_email_password_label": "Vaše Heslo",
+  "new_email_text": "Vyplnením týchto údajov si môžete zmeniť e-mail, ktorým sa do konta prihlasujete. Po zmene e-mailu je potrebné overiť nový e-mail cez overovací kód, ktorý nájdete v novom e-maili.",
+  "new_email_submit": "Pokračovať",
   "account_section_intro": {
     "navigation": "Úvod",
     "header_title": "Dobrý deň,",
@@ -211,7 +219,7 @@
       "8": {
         "title": "10 000 stromov",
         "description": "Iniciatíva 10 000 stromov- možnosti zapojenia sa pre partnerov, informácie o zásadnom víkende alebo mapa výsadby zelene.",
-        "buttonText": "Viac o iniciatíve"
+        "buttonText": "Podporiť iniciatívu"
       },
       "9": {
         "title": "Komunitné záhrady",
@@ -349,6 +357,41 @@
         "description": "Žiadosť o stanovisko k investičnému zámeru, ktoré slúži na overenie si zámeru ešte pred územným konaním a vydaním záväzného stanoviska.",
         "buttonText": "Požiadať",
         "tag": "Nová služba"
+      },
+      "36": {
+        "title": "Mimoriadny odvoz a likvidácia komunálneho odpadu",
+        "description": "Elektronický objednávkový formulár pre záväzné objednanie služieb OLO pre právnické osoby.",
+        "buttonText": "Objednať"
+      },
+      "37": {
+        "title": "Dočistenie stojiska od komunálneho odpadu",
+        "description": "Elektronický objednávkový formulár pre záväzné objednanie služieb OLO pre právnické osoby.",
+        "buttonText": "Objednať"
+      },
+      "38": {
+        "title": "Pravidelný odvoz odpadových obalov",
+        "description": "Elektronický objednávkový formulár pre záväzné objednanie služieb OLO pre právnické osoby.",
+        "buttonText": "Objednať"
+      },
+      "39": {
+        "title": "Pravidelný odvoz triedeného komunálneho odpadu",
+        "description": "Elektronický objednávkový formulár pre záväzné objednanie služieb OLO pre právnické osoby.",
+        "buttonText": "Objednať"
+      },
+      "40": {
+        "title": "Zaujatie verejného priestranstva",
+        "description": "Povolenie potrebné na organizáciu podujatia, predaj tovaru, terasu k svojmu podniku, rekonštrukciu bytového domu alebo rozkopávku na verejnom priestranstve.",
+        "buttonText": "Požiadať"
+      },
+      "41": {
+        "title": "Určenie podmienok uvedenia komunikácie do pôvodného stavu",
+        "description": "Žiadosť je potrebné podať do 3 pracovných dní od nahlásenia poruchy.",
+        "buttonText": "Požiadať"
+      },
+      "42": {
+        "title": "Adopcia zelene",
+        "description": "Dobrovoľnícky program pre zapojenie sa do starostlivosti o plochy zelene v meste a zabezpečenie ich údržby bez nároku na finančnú odmenu.",
+        "buttonText": "Adoptovať si zeleň"
       }
     }
   },
@@ -592,8 +635,7 @@
     "given_name": "Meno",
     "family_name": "Priezvisko",
     "email": "E-mail",
-    "email_button": "Upraviť",
-    "email_tooltip": "Ak by ste si priali zmeniť e-mail, ktorým sa do konta prihlasujete a na ktorý vám zasielame všetky informácie týkajúce sa vášho konta, kontaktuje nás na <a href='mailto:info@bratislava.sk'>info@bratislava.sk</a>.",
+    "email_button": "Zmeniť e-mail",
     "phone_number": "Telefónne číslo",
     "phone_number_pattern": "V tvare +421...",
     "address": "Korešpondenčná adresa",

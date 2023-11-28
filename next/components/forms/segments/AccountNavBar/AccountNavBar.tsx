@@ -67,7 +67,7 @@ const Avatar = ({ userData }: { userData?: UserData | null }) => {
 
 export const AccountNavBar = ({ className, sectionsList, menuItems, hiddenHeaderNav }: IProps) => {
   const [burgerOpen, setBurgerOpen] = useState(false)
-  const { userData, isAuthenticated } = useServerSideAuth()
+  const { userData, isAuthenticated, isLegalEntity } = useServerSideAuth()
 
   const { statusBarConfiguration } = useStatusBarContext()
   const [isMenuOpen, setIsMenuOpen] = useState<boolean>(false)
@@ -127,7 +127,9 @@ export const AccountNavBar = ({ className, sectionsList, menuItems, hiddenHeader
                       className="flex items-center gap-x-6 font-semibold text-font/75"
                     >
                       <Avatar userData={userData} />
-                      <div className="ml-3 font-light lg:font-semibold">{userData?.given_name}</div>
+                      <div className="ml-3 font-light lg:font-semibold">
+                        {isLegalEntity ? userData?.name : userData?.given_name}
+                      </div>
                       <ChevronDownSmallIcon
                         className={`ml-1 hidden h-5 w-5 mix-blend-normal lg:flex ${
                           isMenuOpen ? '-rotate-180' : ''

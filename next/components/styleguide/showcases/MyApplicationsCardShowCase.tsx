@@ -36,6 +36,10 @@ const getDummyData = (state: FormState, error: GetFormResponseDtoErrorEnum, over
       pospID: 'test',
       pospVersion: '0.1',
       formDescription: 'Example schema',
+      messageSubjectFormat: 'Podanie',
+      ginisOrganizationName: 'OUIC',
+      ginisPersonName: 'Janko Hraško',
+      previousSchemaVersionId: '24e435cd-75b7-4e88-9371-1db65b86606b',
       data: {
         email: 'velit anim Duis esse',
         phone: 'ipsum',
@@ -75,6 +79,8 @@ const getDummyData = (state: FormState, error: GetFormResponseDtoErrorEnum, over
       },
     },
     isLatestSchemaVersionForSlug: true,
+    frontendTitle: 'Nazov stavby',
+    messageSubject: 'Podanie',
     ...overrides,
   } as GetFormResponseDto)
 

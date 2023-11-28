@@ -9,7 +9,6 @@ import {
 } from '@assets/ui-icons'
 import { formsApi } from '@clients/forms'
 import { GetFormResponseDto, GetFormResponseDtoStateEnum } from '@clients/openapi-forms'
-import { getUiOptions } from '@rjsf/utils'
 import Button from 'components/forms/simple-components/ButtonNew'
 import MenuDropdown, {
   MenuItemBase,
@@ -19,7 +18,7 @@ import ConditionalWrap from 'conditional-wrap'
 import { ROUTES } from 'frontend/api/constants'
 import useFormStateComponents from 'frontend/hooks/useFormStateComponents'
 import useSnackbar from 'frontend/hooks/useSnackbar'
-import { downloadBlob, getFormTitle } from 'frontend/utils/general'
+import { downloadBlob } from 'frontend/utils/general'
 import logger from 'frontend/utils/logger'
 import Link from 'next/link'
 import { useTranslation } from 'next-i18next'
@@ -69,8 +68,7 @@ const MyApplicationsCard = ({ form, refreshListData, variant }: MyApplicationsCa
 
   // everything used in jsx should get mapped here
   const isLoading = !form
-  const uiOptions = getUiOptions(form?.schemaVersion?.uiSchema)
-  const title = getFormTitle(uiOptions, form?.formDataJson, ft('form_title_fallback'))
+  const title = form?.frontendTitle || ft('form_title_fallback')
   const category = form?.schemaVersion.schema?.formName
   const createdAt = form?.createdAt
   // TODO replace - this won't be valid for forms processed on the GINIS side

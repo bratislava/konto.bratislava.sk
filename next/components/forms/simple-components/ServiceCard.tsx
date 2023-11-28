@@ -9,7 +9,6 @@ type ServiceCardBase = {
   description: string
   buttonText?: string
   className?: string
-  linkType?: 'internal' | 'external'
   icon: ReactNode
   href?: string
   tag?: string

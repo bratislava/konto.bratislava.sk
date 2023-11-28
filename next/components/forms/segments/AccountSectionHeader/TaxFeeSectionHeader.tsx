@@ -163,8 +163,8 @@ const TaxFeeSectionHeader = ({ tax }: AccountSectionHeaderBase) => {
                     {status.paymentStatus === 'unpaid'
                       ? statusHandler('negative', t('tax_detail_section.tax_status.negative'))
                       : status.paymentStatus === 'partially_paid'
-                      ? statusHandler('warning', t('tax_detail_section.tax_status.warning'))
-                      : statusHandler('success', t('tax_detail_section.tax_status.success'))}
+                        ? statusHandler('warning', t('tax_detail_section.tax_status.warning'))
+                        : statusHandler('success', t('tax_detail_section.tax_status.success'))}
                   </div>
                   {/* <div className="lg:text-p2 text-p3">{formatDate(tax?.updatedAt)}</div> */}
                 </div>

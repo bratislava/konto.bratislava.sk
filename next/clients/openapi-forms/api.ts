@@ -4804,9 +4804,8 @@ export const ADMINApiFp = function (configuration?: Configuration) {
     async adminControllerGetAdministrationJwt(
       options?: AxiosRequestConfig,
     ): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<object>> {
-      const localVarAxiosArgs = await localVarAxiosParamCreator.adminControllerGetAdministrationJwt(
-        options,
-      )
+      const localVarAxiosArgs =
+        await localVarAxiosParamCreator.adminControllerGetAdministrationJwt(options)
       return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)
     },
     /**
@@ -4830,9 +4829,8 @@ export const ADMINApiFp = function (configuration?: Configuration) {
     async adminControllerGetTechnicalJwt(
       options?: AxiosRequestConfig,
     ): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<object>> {
-      const localVarAxiosArgs = await localVarAxiosParamCreator.adminControllerGetTechnicalJwt(
-        options,
-      )
+      const localVarAxiosArgs =
+        await localVarAxiosParamCreator.adminControllerGetTechnicalJwt(options)
       return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)
     },
     /**
@@ -8471,9 +8469,8 @@ export const StatusesApiFp = function (configuration?: Configuration) {
     async statusControllerIsFormsRunning(
       options?: AxiosRequestConfig,
     ): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<ServiceRunningDto>> {
-      const localVarAxiosArgs = await localVarAxiosParamCreator.statusControllerIsFormsRunning(
-        options,
-      )
+      const localVarAxiosArgs =
+        await localVarAxiosParamCreator.statusControllerIsFormsRunning(options)
       return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)
     },
     /**
@@ -8485,9 +8482,8 @@ export const StatusesApiFp = function (configuration?: Configuration) {
     async statusControllerIsMinioRunning(
       options?: AxiosRequestConfig,
     ): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<ServiceRunningDto>> {
-      const localVarAxiosArgs = await localVarAxiosParamCreator.statusControllerIsMinioRunning(
-        options,
-      )
+      const localVarAxiosArgs =
+        await localVarAxiosParamCreator.statusControllerIsMinioRunning(options)
       return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)
     },
     /**
@@ -8499,9 +8495,8 @@ export const StatusesApiFp = function (configuration?: Configuration) {
     async statusControllerIsPrismaRunning(
       options?: AxiosRequestConfig,
     ): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<ServiceRunningDto>> {
-      const localVarAxiosArgs = await localVarAxiosParamCreator.statusControllerIsPrismaRunning(
-        options,
-      )
+      const localVarAxiosArgs =
+        await localVarAxiosParamCreator.statusControllerIsPrismaRunning(options)
       return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)
     },
     /**

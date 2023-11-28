@@ -65,7 +65,10 @@ const MyApplicationsSection = ({ totalCounts }: MyApplicationsSectionProps) => {
           .push(
             {
               pathname: router.pathname,
-              query: { ...router.query, sekcia: englishToSlovakSectionNames[key], strana: 1 },
+              query: {
+                ...router.query,
+                sekcia: englishToSlovakSectionNames[key as ApplicationsListVariant],
+              },
             },
             undefined,
             { shallow: true },

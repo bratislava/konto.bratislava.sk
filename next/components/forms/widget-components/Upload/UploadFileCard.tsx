@@ -77,9 +77,7 @@ const UploadFileCard = ({
               <h3 className="break-words font-bold text-gray-800">{fileInfo.fileName}</h3>
               <div className="flex gap-2">
                 {fileInfo.canDownload && (
-                  <ReactAriaButton
-                    onPress={onFileDownload}
-                  >
+                  <ReactAriaButton onPress={onFileDownload}>
                     <DownloadIcon />
                   </ReactAriaButton>
                 )}

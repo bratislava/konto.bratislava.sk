@@ -27,24 +27,23 @@ export const getServerSideProps: GetServerSideProps<FormPageWrapperProps, Params
       }
     }
 
-    const { data: form } = await formsApi
-      .nasesControllerCreateForm(
-        {
-          schemaVersionId: latestVersionId,
-        },
-        { accessToken: 'onlyAuthenticated', accessTokenSsrReq: ctx.req },
-      )
+    const { data: form } = await formsApi.nasesControllerCreateForm(
+      {
+        schemaVersionId: latestVersionId,
+      },
+      { accessToken: 'onlyAuthenticated', accessTokenSsrReq: ctx.req },
+    )
 
     if (!form) {
       return { notFound: true }
     }
 
-      return {
-        redirect: {
-          destination: `${ROUTES.MUNICIPAL_SERVICES}/${slug}/${form.id}`,
-          permanent: false,
-        },
-      }
+    return {
+      redirect: {
+        destination: `${ROUTES.MUNICIPAL_SERVICES}/${slug}/${form.id}`,
+        permanent: false,
+      },
+    }
   } catch (error) {
     if (isAxiosError(error)) {
       if (error.response?.status === 404) {

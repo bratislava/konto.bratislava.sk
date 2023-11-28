@@ -82,7 +82,7 @@ const getDummyData = (state: FormState, error: GetFormResponseDtoErrorEnum, over
     frontendTitle: 'Nazov stavby',
     messageSubject: 'Podanie',
     ...overrides,
-  } as GetFormResponseDto)
+  }) as GetFormResponseDto
 
 const MyApplicationsCardShowCase = () => {
   return (

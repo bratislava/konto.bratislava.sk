@@ -8,15 +8,20 @@ const nextConfig = {
   i18n,
   reactStrictMode: true,
   images: {
-    domains: ['localhost', 'cdn-api.bratislava.sk'],
+    remotePatterns: [
+      {
+        protocol: 'http',
+        hostname: 'localhost',
+      },
+      {
+        protocol: 'https',
+        hostname: 'cdn-api.bratislava.sk',
+      },
+    ],
   },
   output: 'standalone',
   eslint: {
     dirs: ['components/', 'pages/', 'utils/', 'backend/', 'frontend/'],
-  },
-  // https://github.com/vercel/next.js/discussions/49251#discussioncomment-5812479
-  experimental: {
-    appDir: false,
   },
   async redirects() {
     return [

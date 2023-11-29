@@ -126,7 +126,9 @@ const EmailChangePage = ({ page }: AsyncServerProps<typeof getServerSideProps>) 
 
   return (
     <PageWrapper locale={page.locale} localizations={page.localizations}>
-      <LoginRegisterLayout backButtonHidden={emailChangeStatus !== EmailChangeStatus.INIT}>
+      <LoginRegisterLayout
+        backButtonHidden={emailChangeStatus === EmailChangeStatus.EMAIL_VERIFICATION_SUCCESS}
+      >
         <AccountContainer>
           {emailChangeStatus === EmailChangeStatus.INIT ? (
             <EmailChangeForm onSubmit={changeEmail} error={emailChangeError} />

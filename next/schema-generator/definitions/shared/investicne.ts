@@ -68,14 +68,14 @@ export const getSchema = (zavazne: boolean) =>
   schema(
     zavazne
       ? {
-          title: 'Záväzné stanovisko k investičnej činnosti',
-          pospID: '00603481.zavazneStanoviskoKInvesticnejCinnosti.sk',
-          pospVersion: '0.1',
+          title: 'Žiadosť o záväzné stanovisko k investičnej činnosti',
+          pospID: '00603481.zavazneStanoviskoKInvesticnejCinnosti',
+          pospVersion: '0.6',
         }
       : {
-          title: 'Stanovisko k investičnému zámeru',
-          pospID: 'stanoviskoKInvesticnemuZameru',
-          pospVersion: '0.1',
+          title: 'Žiadosť o stanovisko k investičnému zámeru',
+          pospID: '00603481.stanoviskoKInvesticnemuZameru',
+          pospVersion: '0.7',
         },
     {
       moreInformationUrl: zavazne

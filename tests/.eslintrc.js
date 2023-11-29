@@ -1,10 +1,14 @@
+/* eslint-env node */
 module.exports = {
+  parser: '@typescript-eslint/parser',
   plugins: [
-    'prettier',
-    "cypress"
+    "cypress",
+    '@typescript-eslint'
   ],
   extends: [
-    "plugin:cypress/recommended"
+    "plugin:cypress/recommended",
+    'eslint:recommended',
+    'plugin:@typescript-eslint/recommended'
   ],
   rules: {
     "cypress/no-assigning-return-values": "error",
@@ -13,5 +17,5 @@ module.exports = {
     "cypress/no-force": "warn",
     "cypress/no-async-tests": "error",
     "cypress/no-pause": "error"
-  }
+  },
 }

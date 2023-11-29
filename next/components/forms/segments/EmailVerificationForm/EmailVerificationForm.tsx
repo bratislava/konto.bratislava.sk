@@ -67,13 +67,14 @@ const EmailVerificationForm = ({ onSubmit, error, onResend, lastEmail }: Props) 
   return (
     <form
       className="flex flex-col space-y-4"
+      data-cy="verification-form"
       onSubmit={handleSubmit((data: Data) => {
         setLastVerificationCode(data.verificationCode)
         onSubmit(data.verificationCode).catch((error_) => logger.error('Submit failed', error_))
       })}
     >
       <h1 className="text-h3">{t('email_verification_title')}</h1>
-      <p className="text-p3 lg:text-p2">
+      <p className="text-p3 lg:text-p2" data-cy="verification-description">
         {t('email_verification_description', { email: lastEmail || '' })}
       </p>
       <AccountErrorAlert

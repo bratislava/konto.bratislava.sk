@@ -131,6 +131,7 @@ const RegisterPage = ({ page }: AsyncServerProps<typeof getServerSideProps>) => 
         <AccountContainer className="mb-0 pt-0 md:mb-8 md:pt-6">
           {registrationStatus === RegistrationStatus.INIT ? (
             <RegisterForm
+              data-cy="register-form"
               lastEmail={lastEmail}
               onSubmit={signUp}
               error={registrationError}

@@ -1,11 +1,14 @@
 {
   "compilerOptions": {
     "target": "es5",
+    "lib": ["es5", "dom"],
+    "types": ["cypress", "node"],
     "allowJs": true,
     "isolatedModules": false,
     "baseUrl": "./",
-    "noEmit": true
+    "noEmit": true,
+    "skipLibCheck": true,
   },
-  "include": ["**/*.ts", "**/*.js"],
+  "include": ["**/*.ts",],
   "exclude": ["node_modules"]
 }

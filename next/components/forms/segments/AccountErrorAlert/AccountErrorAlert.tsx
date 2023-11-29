@@ -38,7 +38,7 @@ const AccountErrorAlert = ({ error, close, solid, args = {} }: Props) => {
       return t(`account:errors.unknown`)
     }
     if (!i18n.exists(`account:errors.${error.code}`)) {
-      logger.error(`${GENERIC_ERROR_MESSAGE} - unknown error with code`, error.code, errorMessage)
+      logger.error(`${GENERIC_ERROR_MESSAGE} - unknown error with code`, error)
       return t(`account:errors.unknown`)
     }
     // this is the expected case - known error for which we have a translation string

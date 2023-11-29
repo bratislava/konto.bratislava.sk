@@ -1,0 +1,6 @@
+# Add files here to ignore them from prettier formatting
+
+yarn.lock
+.next
+
+backend/forms/*/form.*.sef.json

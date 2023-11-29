@@ -4,7 +4,7 @@ describe('Registration flow', { testIsolation: false }, () => {
   const devices = ['desktop', 'mobile']
   const errorBorderFields =
     '[data-cy=input-email], [data-cy=input-given_name], [data-cy=input-family_name], [data-cy=input-password]'
-	const password = `P@${Date.now().toString(36)}`
+  const password = `P@${Date.now().toString(36)}`
 
   before(() => {
     cy.fixture('registration.json').then((fileData) => {
@@ -16,10 +16,13 @@ describe('Registration flow', { testIsolation: false }, () => {
     .filter((device) => Cypress.env('devices')[`${device}`])
     .forEach((device) => {
       context(device, Cypress.env('resolution')[`${device}`], () => {
-				const emailHash = `${Date.now()+device}@cypress.test`
+        const emailHash = `${Date.now() + device}@cypress.test`
 
         it('Submitting a empty registration form and check validation.', () => {
-					cy.visit('/registracia')
+          cy.visit('/registracia')
+          cy.get(`#${device}-navbar`).invoke('attr', 'style', 'display: none')
+
+          cy.dataCy('registration-container').should('be.visible').matchImage()
           cy.dataCy('register-form').then((form) => {
             cy.wrap(Cypress.$('button[type=submit]', form)).click()
 
@@ -27,6 +30,7 @@ describe('Registration flow', { testIsolation: false }, () => {
 
             cy.wrap(Cypress.$(errorBorderFields, form)).should('have.class', 'border-negative-700')
           })
+          cy.dataCy('registration-container').should('be.visible').matchImage()
         })
 
         it('Filling out the registration form.', () => {
@@ -49,9 +53,10 @@ describe('Registration flow', { testIsolation: false }, () => {
           cy.dataCy('register-form').then((form) => {
             cy.wrap(Cypress.$(errorBorderFields, form)).should(
               'not.have.class',
-              'border-negative-700'
+              'border-negative-700',
             )
           })
+          cy.dataCy('registration-container').should('be.visible').matchImage()
         })
 
         it('Submitting the form and checking the redirection to 2FA.', () => {
@@ -61,15 +66,20 @@ describe('Registration flow', { testIsolation: false }, () => {
         })
 
         it('Check the 2FA page.', () => {
+          const visualTestingIgnore = ['[data-cy=verification-description]']
+
           cy.dataCy('verification-description').contains(emailHash)
           cy.dataCy('verification-form').then((form) => {
             cy.wrap(Cypress.$('button[type=submit]', form)).click()
 
             cy.wrap(Cypress.$('[data-cy=input-verificationCode]', form)).should(
               'have.class',
-              'border-negative-700'
+              'border-negative-700',
             )
           })
+          cy.dataCy('registration-container')
+            .should('be.visible')
+            .matchImage({ screenshotConfig: { blackout: visualTestingIgnore } })
         })
       })
     })

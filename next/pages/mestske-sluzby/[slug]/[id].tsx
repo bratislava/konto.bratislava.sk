@@ -64,6 +64,7 @@ export const getServerSideProps: GetServerSideProps<FormPageWrapperProps, Params
           formSent,
           formMigrationRequired,
           schemaVersionId: form.schemaVersionId,
+          isSigned: form.schemaVersion.isSigned,
         },
         ...(await serverSideTranslations(locale)),
       } satisfies FormPageWrapperProps,

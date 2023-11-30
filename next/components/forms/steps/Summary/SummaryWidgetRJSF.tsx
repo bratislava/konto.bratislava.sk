@@ -131,6 +131,7 @@ const SummaryWidgetRJSF = ({
           goToStepByFieldId(id)
         }}
         isEditable={!isReadonly}
+        size="small"
       />
     </div>
   )

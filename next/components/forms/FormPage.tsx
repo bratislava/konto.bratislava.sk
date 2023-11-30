@@ -47,7 +47,9 @@ const FormPage = () => {
             <>
               <div className="mb-8 flex flex-col gap-4">
                 <h2 className="text-h2 font-semibold">{currentStepperStep.title}</h2>
-                <p className="text-p1">{currentStepperStep.description}</p>
+                {currentStepperStep.description && (
+                  <p className="text-p1">{currentStepperStep.description}</p>
+                )}
               </div>
               <FormComponent
                 // This is a hack to force the form to re-render when the step changes, it's hard to say whether it

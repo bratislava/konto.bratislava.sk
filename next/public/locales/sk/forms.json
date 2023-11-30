@@ -111,7 +111,8 @@
     "virus_alert_plural": "Súbory {{files}} obsahujú vírus. Vráťte sa k prílohám a nahrajte iné súbory. Bez povinných príloh nebudete vedieť žiadosť odoslať.",
     "button_back": "Späť",
     "button_send": "Odoslať žiadosť",
-    "button_send_eid": "Odoslať s eID"
+    "button_send_eid": "Odoslať s eID",
+    "contains_errors": "Obsahuje chyby"
   },
   "form_send_error": "Žiadosť sa nepodarilo odoslať.",
   "modals_back_button_title": "Späť",

@@ -1,17 +1,13 @@
 import { ThemeProps, withTheme } from '@rjsf/core'
 import {
   ArrayFieldTemplateItemType,
-  ArrayFieldTemplateProps,
   GenericObjectType,
-  getTemplate,
-  getUiOptions,
   ObjectFieldTemplateProps,
 } from '@rjsf/utils'
 import cx from 'classnames'
 import { ComponentType, Fragment } from 'react'
-import { ArrayFieldUiOptions } from 'schema-generator/generator/uiOptionsTypes'
 
-import { getArrayFieldItemTemplateTitle } from '../../../../frontend/utils/formArray'
+import { ArrayFieldItemTemplate, ArrayFieldTemplate } from './SummaryArrayTemplateRJSF'
 import SummaryWidgetRJSF, { SummaryWidgetRJSFProps, SummaryWidgetType } from './SummaryWidgetRJSF'
 
 const wrapWidget = (widgetType: SummaryWidgetType) =>
@@ -24,47 +20,11 @@ const ObjectFieldTemplate = ({ title, properties, idSchema }: ObjectFieldTemplat
   const isStepObject = splitId.length === 2 && splitId[0] === 'root'
 
   return (
-    <div className={cx({ 'mb-4': isStepObject })}>
-      {isStepObject && <h2 className="text-h3-bold mb-2">{title}</h2>}
+    <div className={cx({ 'mb-8': isStepObject })}>
+      {isStepObject && <h2 className="text-h3-bold mb-4">{title}</h2>}
       {properties.map((element, index) => (
         <Fragment key={index}>{element.content}</Fragment>
       ))}
-    </div>
-  )
-}
-
-const ArrayFieldItemTemplate = ({
-  index,
-  children,
-  parentUiOptions,
-}: ArrayFieldTemplateItemType & {
-  parentUiOptions: ArrayFieldUiOptions
-}) => {
-  const { itemTitle } = parentUiOptions
-  const title = getArrayFieldItemTemplateTitle(itemTitle, index)
-
-  return (
-    <div className="mb-4">
-      {title && <h4 className="text-h5-bold mb-2">{title}</h4>}
-      {children}
-    </div>
-  )
-}
-
-const ArrayFieldTemplate = ({ title, items, registry, uiSchema }: ArrayFieldTemplateProps) => {
-  const uiOptions = getUiOptions(uiSchema) as ArrayFieldUiOptions
-  const InnerArrayFieldItemTemplate = getTemplate<'ArrayFieldItemTemplate'>(
-    'ArrayFieldItemTemplate',
-    registry,
-  ) as ComponentType<ArrayFieldTemplateItemType & { parentUiOptions: ArrayFieldUiOptions }>
-
-  return (
-    <div className="mt-4">
-      {title && <h3 className="text-h4-bold mb-2">{title}</h3>}
-      {items &&
-        items.map(({ key, ...itemProps }) => (
-          <InnerArrayFieldItemTemplate key={key} {...itemProps} parentUiOptions={uiOptions} />
-        ))}
     </div>
   )
 }

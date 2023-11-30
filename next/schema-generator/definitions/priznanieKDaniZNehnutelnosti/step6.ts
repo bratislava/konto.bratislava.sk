@@ -32,7 +32,7 @@ const vymeraPodlahovejPlochyBytu = number(
   },
 )
 
-const vymeraPodlahovejPlochyBytuKalkulacka = customComponentsField(
+const vymeraKalkulacka = customComponentsField(
   {
     type: 'propertyTaxCalculator',
     props: {
@@ -41,7 +41,7 @@ const vymeraPodlahovejPlochyBytuKalkulacka = customComponentsField(
         {
           label: 'Základ dane',
           formula:
-            'ceil (ratioNumerator(podielPriestoruNaSpolocnychCastiachAZariadeniachDomu) * evalRatio(spoluvlastnickyPodiel))',
+            'ceil (ratioNumerator(podielPriestoruNaSpolocnychCastiachAZariadeniachDomu) * evalRatio(spoluvlastnickyPodiel) / 100)',
           missingFieldsMessage: 'Pre výpočet základu dane vyplňte všetky polia.',
           unit: markdownText('m^2^'),
         },
@@ -89,25 +89,6 @@ const vymeraPodlahovychPlochNebytovehoPriestoruVBytovomDome = number(
   },
 )
 
-const vymeraPodlahovychPlochNebytovehoPriestoruVBytovomDomeKalkulacka = customComponentsField(
-  {
-    type: 'propertyTaxCalculator',
-    props: {
-      variant: 'black',
-      calculators: [
-        {
-          label: 'Základ dane',
-          formula:
-            'ceil (ratioNumerator(podielPriestoruNaSpolocnychCastiachAZariadeniachDomu) * evalRatio(spoluvlastnickyPodiel))',
-          missingFieldsMessage: 'Pre výpočet základu dane vyplňte všetky polia.',
-          unit: markdownText('m^2^'),
-        },
-      ],
-    },
-  },
-  {},
-)
-
 const innerArray = (kalkulacka: boolean) =>
   arrayField(
     'stavby',
@@ -152,9 +133,7 @@ const innerArray = (kalkulacka: boolean) =>
               ? podielPriestoruNaSpolocnychCastiachAZariadeniachDomu
               : skipSchema(podielPriestoruNaSpolocnychCastiachAZariadeniachDomu),
             kalkulacka ? spoluvlastnickyPodiel : skipSchema(spoluvlastnickyPodiel),
-            kalkulacka
-              ? vymeraPodlahovejPlochyBytuKalkulacka
-              : skipSchema(vymeraPodlahovejPlochyBytuKalkulacka),
+            kalkulacka ? vymeraKalkulacka : skipSchema(vymeraKalkulacka),
             kalkulacka ? skipSchema(vymeraPodlahovejPlochyBytu) : vymeraPodlahovejPlochyBytu,
             number(
               'vymeraPodlahovejPlochyNaIneUcely',
@@ -238,9 +217,7 @@ const innerArray = (kalkulacka: boolean) =>
                   ? podielPriestoruNaSpolocnychCastiachAZariadeniachDomu
                   : skipSchema(podielPriestoruNaSpolocnychCastiachAZariadeniachDomu),
                 kalkulacka ? spoluvlastnickyPodiel : skipSchema(spoluvlastnickyPodiel),
-                kalkulacka
-                  ? vymeraPodlahovychPlochNebytovehoPriestoruVBytovomDomeKalkulacka
-                  : skipSchema(vymeraPodlahovychPlochNebytovehoPriestoruVBytovomDomeKalkulacka),
+                kalkulacka ? vymeraKalkulacka : skipSchema(vymeraKalkulacka),
                 kalkulacka
                   ? skipSchema(vymeraPodlahovychPlochNebytovehoPriestoruVBytovomDome)
                   : vymeraPodlahovychPlochNebytovehoPriestoruVBytovomDome,

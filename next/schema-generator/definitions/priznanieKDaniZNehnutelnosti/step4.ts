@@ -24,7 +24,7 @@ const celkovaZastavanaPlocha = number(
   { type: 'integer', title: 'Celková zastavaná plocha', required: true },
   {
     helptext: markdownText(
-      'Uveďte výmeru zastavanej plochy pozemku/ov, na ktorom je umiestnená stavba. Nájdete ju na LV, v časti A. (druh pozemku - zastavaná plocha a nádvorie). :form-image-preview[Zobraziť ukážku]{src="https://cdn-api.bratislava.sk/strapi-homepage/upload/oprava_cyklocesty_kacin_7b008b44d8.jpg"}',
+      'Uveďte výmeru zastavanej plochy pozemku/ov, na ktorom je umiestnená stavba. Nájdete ju na LV, v časti A. (druh pozemku - zastavaná plocha a nádvorie). :form-image-preview[Zobraziť ukážku]{src="https://cdn-api.bratislava.sk/general-strapi/upload/test_d7881242ec.svg"}',
     ),
   },
 )
@@ -39,7 +39,7 @@ const spoluvlastnickyPodiel = input(
   {
     placeholder: 'Napr. 1/1',
     helptext: markdownText(
-      'Nájdete ho na LV, časti B, vedľa údajov o vlastníkovi. Zadávajte celý zlomok. :form-image-preview[Zobraziť ukážku]{src="https://cdn-api.bratislava.sk/strapi-homepage/upload/oprava_cyklocesty_kacin_7b008b44d8.jpg"}',
+      'Nájdete ho na LV, časti B, vedľa údajov o vlastníkovi. Zadávajte celý zlomok. :form-image-preview[Zobraziť ukážku]{src="https://cdn-api.bratislava.sk/general-strapi/upload/test_d7881242ec.svg"}',
     ),
   },
 )
@@ -251,7 +251,7 @@ export default step(
   vyplnitKrokRadio({
     title: 'Chcete podať daňové priznanie k dani zo stavieb slúžiacich na jeden účel?',
     helptext: markdownText(
-      `K úspešnému vyplneniu oddielu potrebujete list vlastníctva (LV) k jednoúčelovej stavbe. Ide o LV, na ktorom máte uvedený nadpis “Stavby”.\n\nV prípade, že sa vás daň zo stavieb slúžiacich na jeden účel netýka, túto časť preskočte (napr. podávate priznanie dani k nehnuteľností za byt/nebyt v bytovom dome).\n\n:form-image-preview[Zobraziť ukážku LV k pozemkom]{src="https://cdn-api.bratislava.sk/strapi-homepage/upload/oprava_cyklocesty_kacin_7b008b44d8.jpg"}`,
+      `K úspešnému vyplneniu oddielu potrebujete list vlastníctva (LV) k jednoúčelovej stavbe. Ide o LV, na ktorom máte uvedený nadpis “Stavby”.\n\nV prípade, že sa vás daň zo stavieb slúžiacich na jeden účel netýka, túto časť preskočte (napr. podávate priznanie dani k nehnuteľností za byt/nebyt v bytovom dome).\n\n:form-image-preview[Zobraziť ukážku LV k pozemkom]{src="https://cdn-api.bratislava.sk/general-strapi/upload/test_d7881242ec.svg"}`,
     ),
     fields: kalkulackaFields({
       title: 'Kalkulačka výpočtu výmery zastavanej plochy stavby',

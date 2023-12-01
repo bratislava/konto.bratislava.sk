@@ -50,7 +50,6 @@ const MenuList = () => {
           onPress: importXml,
         }
       : null,
-<<<<<<< Updated upstream
     !isDeletable
       ? {
           title: t('menu_list.delete'),
@@ -59,8 +58,6 @@ const MenuList = () => {
           className: 'text-negative-700',
         }
       : null,
-=======
->>>>>>> Stashed changes
   ].filter(Boolean) as MenuItem[]
 
   return (

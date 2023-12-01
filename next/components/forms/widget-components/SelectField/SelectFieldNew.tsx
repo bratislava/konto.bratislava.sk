@@ -13,9 +13,8 @@ import Select, {
 } from 'react-select'
 import { twMerge } from 'tailwind-merge'
 
+import FieldWrapper, { FieldWrapperProps } from '../FieldWrapper'
 import CheckboxIcon from '../../icon-components/CheckboxIcon'
-import { FieldAdditionalProps, FieldBaseProps } from '../FieldBase'
-import FieldWrapper from '../FieldWrapper'
 
 // Inspiration: https://www.jussivirtanen.fi/writing/styling-react-select-with-tailwind
 // Docs: https://react-select.com/home
@@ -88,9 +87,11 @@ type SelectMultiNewProps = Pick<
   'isDisabled' | 'value' | 'options' | 'placeholder' | 'isMulti' | 'isSearchable'
 > & {
   onChange?: (value: unknown) => void
-} & FieldBaseProps &
-  Pick<FieldAdditionalProps, 'className' | 'width'>
-
+} &
+  FieldWrapperProps & {
+  className?: string
+  width?: 'full' | 'fixed'
+}
 const SelectMultiNew =
   // TODO https://react-select.com/typescript#select-generics
   // <Option, IsMulti extends boolean = false, Group extends GroupBase<Option> = GroupBase<Option>>
@@ -98,14 +99,16 @@ const SelectMultiNew =
     value,
     label,
     helptext,
+    helptextHeader,
     tooltip,
-    explicitOptional,
     errorMessage,
     options,
     onChange,
     placeholder,
     className,
+    size,
     width = 'full',
+    displayOptionalLabel,
     ...rest
   }: SelectMultiNewProps) => {
     const { t } = useTranslation('account', { keyPrefix: 'SelectField' })
@@ -126,10 +129,11 @@ const SelectMultiNew =
         <FieldWrapper
           label={label}
           helptext={helptext}
+          helptextHeader={helptextHeader}
           tooltip={tooltip}
           required={rest.required}
-          explicitOptional={explicitOptional}
           errorMessage={errorMessage}
+          displayOptionalLabel={displayOptionalLabel}
         >
           <Select
             {...rest}

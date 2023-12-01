@@ -268,10 +268,10 @@ const Button = forwardRef<HTMLAnchorElement | HTMLButtonElement, PolymorphicProp
     ].includes(variant)
       ? 'category'
       : ['black-outline', 'plain-black', 'link-black'].includes(variant)
-      ? 'black'
-      : ['negative', 'plain-negative'].includes(variant)
-      ? 'negative'
-      : 'gray'
+        ? 'black'
+        : ['negative', 'plain-negative'].includes(variant)
+          ? 'negative'
+          : 'gray'
 
     return (
       <button

@@ -4,19 +4,22 @@ import './index.css'
 import '../frontend/utils/logger'
 // configure Amplify
 import '../frontend/utils/amplify'
+import 'react-loading-skeleton/dist/skeleton.css'
 
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import { StatusBarProvider } from 'components/forms/info-components/StatusBar'
 import CookieConsent from 'components/forms/segments/CookieConsent/CookieConsent'
-import { GlobalStateProvider } from 'components/forms/states/GlobalState'
-import { SSORedirectProvider } from 'frontend/hooks/useSSORedirect'
+import { LoginRegisterRedirectProvider } from 'frontend/hooks/useLoginRegisterRedirect'
 import { AppProps } from 'next/app'
 import { Inter } from 'next/font/google'
 import Head from 'next/head'
 import { appWithTranslation } from 'next-i18next'
+import PlausibleProvider from 'next-plausible'
 import { NextAdapter } from 'next-query-params'
 import SnackbarProvider from 'react-simple-snackbar'
 import { QueryParamProvider } from 'use-query-params'
+
+import { isProductionDeployment } from '../frontend/utils/general'
 
 const queryClient = new QueryClient()
 
@@ -52,12 +55,17 @@ const MyApp = ({ Component, pageProps }: AppProps) => {
         <StatusBarProvider>
           <QueryClientProvider client={queryClient}>
             <SnackbarProvider>
-              <GlobalStateProvider>
-                <SSORedirectProvider>
+              <PlausibleProvider
+                domain={isProductionDeployment() ? 'konto.bratislava.sk' : 'testing.bratislava.sk'}
+                taggedEvents
+                // uncomment for local testing, needs to be run with `yarn build && yarn start`
+                // trackLocalhost
+              >
+                <LoginRegisterRedirectProvider>
                   <Component {...pageProps} />
                   <CookieConsent />
-                </SSORedirectProvider>
-              </GlobalStateProvider>
+                </LoginRegisterRedirectProvider>
+              </PlausibleProvider>
             </SnackbarProvider>
           </QueryClientProvider>
         </StatusBarProvider>

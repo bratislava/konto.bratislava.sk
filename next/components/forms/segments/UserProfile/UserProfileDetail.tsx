@@ -19,7 +19,7 @@ interface UserProfileDetailProps {
   onChangeIsEditing: (isEditing: boolean) => void
   onCancelEditing: () => void
   onSubmit: (newUseData: UserData) => void
-  onOpenEmailModal: () => void
+  onEmailChange: () => void
 }
 
 const UserProfileDetail = (props: UserProfileDetailProps) => {
@@ -31,7 +31,7 @@ const UserProfileDetail = (props: UserProfileDetailProps) => {
     onChangeIsEditing,
     onCancelEditing,
     onSubmit,
-    onOpenEmailModal,
+    onEmailChange,
   } = props
   const { t } = useTranslation('account')
   const formId = `form-${useId()}`
@@ -67,7 +67,7 @@ const UserProfileDetail = (props: UserProfileDetailProps) => {
         <div className="flex flex-col">
           {/* Alert only for alertType === error */}
           {isAlertOpened && (
-            <div className="flex flex-row p-2">
+            <div className="p-2">
               <Alert
                 fullWidth
                 type={alertType}
@@ -86,7 +86,7 @@ const UserProfileDetail = (props: UserProfileDetailProps) => {
               <UserProfileDetailEdit
                 formId={formId}
                 userData={userData ?? {}}
-                onOpenEmailModal={onOpenEmailModal}
+                onEmailChange={onEmailChange}
                 onSubmit={handleOnSubmit}
               />
             ) : (

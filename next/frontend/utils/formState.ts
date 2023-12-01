@@ -3,10 +3,10 @@ import { JSONSchema7 } from 'json-schema'
 import pick from 'lodash/pick'
 import { useRouter } from 'next/router'
 import { useCallback, useEffect, useState } from 'react'
-import { useEffectOnce } from 'usehooks-ts'
+import { useEffectOnceWhen } from 'rooks'
 
 import { FormStepIndex, FormStepperStep } from '../../components/forms/types/Steps'
-import { rjfsValidator } from './form'
+import { rjsfValidator } from './form'
 import { isDefined } from './general'
 
 export const SUMMARY_HASH = 'sumar'
@@ -25,7 +25,7 @@ export const getEvaluatedStepsSchemas = (
       if (typeof step === 'boolean') {
         return null
       }
-      const retrievedSchema = retrieveSchema(rjfsValidator, step, schema, formData)
+      const retrievedSchema = retrieveSchema(rjsfValidator, step, schema, formData)
 
       return Object.keys(retrievedSchema).length > 0 ? retrievedSchema : null
     }) ?? []
@@ -63,7 +63,9 @@ export const getStepperData = (
       }
 
       const stepProperty = getStepProperty(step)!
-      const { title, hash } = step.properties[stepProperty] as JSONSchema7 & { hash: string }
+      const { title, hash, stepperTitle, description } = step.properties[
+        stepProperty
+      ] as JSONSchema7
 
       // displayIndex is only incremented for non-empty steps
       displayIndex += 1
@@ -71,6 +73,8 @@ export const getStepperData = (
         index,
         displayIndex,
         title,
+        stepperTitle,
+        description,
         isSubmitted: submittedSteps.has(index),
         isSummary: false,
         hash,
@@ -218,7 +222,7 @@ export const useCurrentStepIndex = (stepSchemas: (JSONSchema7 | null)[]) => {
   )
 
   // Initially sync the hash and the step index
-  useEffectOnce(() => {
+  useEffectOnceWhen(() => {
     // If the URL contains a hash, use it to set the current step
     if (window.location.hash) {
       onHashChange(window.location.hash)
@@ -227,7 +231,7 @@ export const useCurrentStepIndex = (stepSchemas: (JSONSchema7 | null)[]) => {
 
     // Otherwise, sync the hash with the current step
     syncStepToHash(currentStepIndex, true)
-  })
+  }, router.isReady)
 
   useEffect(() => {
     const onWindowHashChange = () => onHashChange(window.location.hash)

@@ -1,9 +1,11 @@
+import prettyBytes from 'pretty-bytes'
 import React, { ComponentProps, useState } from 'react'
 import { v4 as createUuid } from 'uuid'
 
 import {
   FormFileUploadFileInfo,
   FormFileUploadStatusEnum,
+  UploadErrors,
 } from '../../../frontend/types/formFileUploadTypes'
 import Checkbox from '../../forms/widget-components/Checkbox/Checkbox'
 import CheckboxGroup from '../../forms/widget-components/Checkbox/CheckboxGroup'
@@ -117,8 +119,8 @@ const UploadShowCase = () => {
           fileInfo={{
             fileName: 'test.jpg',
             status: {
-              type: FormFileUploadStatusEnum.UploadError,
-              error: 'Retryable error',
+              type: FormFileUploadStatusEnum.UploadServerError,
+              error: { rawError: 'Retryable error' },
               canRetry: true,
             },
             canDownload: false,
@@ -129,8 +131,8 @@ const UploadShowCase = () => {
           fileInfo={{
             fileName: 'test.jpg',
             status: {
-              type: FormFileUploadStatusEnum.UploadError,
-              error: 'Nonretryable error',
+              type: FormFileUploadStatusEnum.UploadServerError,
+              error: { rawError: 'Nonretryable error' },
               canRetry: false,
             },
             canDownload: false,
@@ -181,6 +183,33 @@ const UploadShowCase = () => {
           fileInfo={{
             fileName: 'test.jpg',
             status: { type: FormFileUploadStatusEnum.ScanInfected },
+            canDownload: false,
+            fileSize: 5_000_000,
+          }}
+        />
+        <UploadFileCard
+          fileInfo={{
+            fileName: 'test.jpg',
+            status: {
+              type: FormFileUploadStatusEnum.UploadError,
+              error: { translationKey: UploadErrors.LargeFile, additionalParam: prettyBytes(1000) },
+              canRetry: false,
+            },
+            canDownload: false,
+            fileSize: 5_000_000,
+          }}
+        />
+        <UploadFileCard
+          fileInfo={{
+            fileName: 'test.jpg',
+            status: {
+              type: FormFileUploadStatusEnum.UploadError,
+              error: {
+                translationKey: UploadErrors.InvalidFileType,
+                additionalParam: ['.jpg', '.png', '.wtf'].join(', '),
+              },
+              canRetry: false,
+            },
             canDownload: false,
             fileSize: 5_000_000,
           }}

@@ -24,7 +24,7 @@ const TaxAndFeeMainContent = ({ children }: TaxAndFeeMainContentBase) => {
 }
 
 const TaxFeeSection = () => {
-  const { data, error, isLoading } = useTaxes()
+  const { data, error, isPending } = useTaxes()
   const router = useRouter()
 
   // TODO change this once we have multiple taxes
@@ -41,7 +41,7 @@ const TaxFeeSection = () => {
   }, [error, router])
 
   let content = <Spinner className="m-auto mt-10" />
-  if (!isLoading && !data) {
+  if (!isPending && !data) {
     content = (
       <div>
         Neočakávaná chyba pri načítaní dát - kontaktujte prosím podporu na info@bratislava.sk

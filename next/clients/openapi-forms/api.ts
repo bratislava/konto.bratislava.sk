@@ -36,6 +36,25 @@ import { BASE_PATH, COLLECTION_FORMATS, BaseAPI, RequiredError } from './base'
 /**
  *
  * @export
+ * @interface AdminControllerGetEidJwt401Response
+ */
+export interface AdminControllerGetEidJwt401Response {
+  /**
+   * Status Code
+   * @type {number}
+   * @memberof AdminControllerGetEidJwt401Response
+   */
+  statusCode: number
+  /**
+   * Detail error message
+   * @type {string}
+   * @memberof AdminControllerGetEidJwt401Response
+   */
+  message: string
+}
+/**
+ *
+ * @export
  * @interface BadRequestDecoratorErrorDto
  */
 export interface BadRequestDecoratorErrorDto {
@@ -57,6 +76,25 @@ export interface BadRequestDecoratorErrorDto {
    * @memberof BadRequestDecoratorErrorDto
    */
   error: string
+}
+/**
+ *
+ * @export
+ * @interface CanSendResponseDto
+ */
+export interface CanSendResponseDto {
+  /**
+   * True if given form can be sent to Nases.
+   * @type {boolean}
+   * @memberof CanSendResponseDto
+   */
+  canSend: boolean
+  /**
+   * ID of form
+   * @type {string}
+   * @memberof CanSendResponseDto
+   */
+  formId: string
 }
 /**
  *
@@ -137,7 +175,13 @@ export interface CreateFormResponseDto {
    * @type {string}
    * @memberof CreateFormResponseDto
    */
-  uri: string | null
+  mainUri: string | null
+  /**
+   * Uri for defining electronic sendbox, if person has it
+   * @type {string}
+   * @memberof CreateFormResponseDto
+   */
+  actorUri: string | null
   /**
    * State of form
    * @type {string}
@@ -156,6 +200,12 @@ export interface CreateFormResponseDto {
    * @memberof CreateFormResponseDto
    */
   formDataGinis: string | null
+  /**
+   * Ginis document id generated after registering the submission
+   * @type {string}
+   * @memberof CreateFormResponseDto
+   */
+  ginisDocumentId: string | null
   /**
    * Data in JSON format
    * @type {object}
@@ -198,11 +248,24 @@ export interface CreateFormResponseDto {
    * @memberof CreateFormResponseDto
    */
   isLatestSchemaVersionForSlug: boolean
+  /**
+   * Message subject created from uiSchema
+   * @type {string}
+   * @memberof CreateFormResponseDto
+   */
+  messageSubject: string
+  /**
+   * Title used in frontend when listing forms
+   * @type {string}
+   * @memberof CreateFormResponseDto
+   */
+  frontendTitle: string
 }
 
 export const CreateFormResponseDtoStateEnum = {
   Draft: 'DRAFT',
   Queued: 'QUEUED',
+  SendingToNases: 'SENDING_TO_NASES',
   DeliveredNases: 'DELIVERED_NASES',
   DeliveredGinis: 'DELIVERED_GINIS',
   ReadyForProcessing: 'READY_FOR_PROCESSING',
@@ -210,6 +273,7 @@ export const CreateFormResponseDtoStateEnum = {
   Finished: 'FINISHED',
   Rejected: 'REJECTED',
   Error: 'ERROR',
+  ErrorUserCanRepair: 'ERROR_USER_CAN_REPAIR',
 } as const
 
 export type CreateFormResponseDtoStateEnum =
@@ -221,6 +285,7 @@ export const CreateFormResponseDtoErrorEnum = {
   UnableToScanFiles: 'UNABLE_TO_SCAN_FILES',
   InfectedFiles: 'INFECTED_FILES',
   NasesSendError: 'NASES_SEND_ERROR',
+  GinisSendError: 'GINIS_SEND_ERROR',
 } as const
 
 export type CreateFormResponseDtoErrorEnum =
@@ -392,6 +457,56 @@ export type FileByScannerIdNotFoundErrorDtoErrorNameEnum =
 /**
  *
  * @export
+ * @interface FileDeleteFromMinioWasNotSuccessfulErrorDto
+ */
+export interface FileDeleteFromMinioWasNotSuccessfulErrorDto {
+  /**
+   * Status Code
+   * @type {number}
+   * @memberof FileDeleteFromMinioWasNotSuccessfulErrorDto
+   */
+  statusCode: number
+  /**
+   * Detail error message
+   * @type {string}
+   * @memberof FileDeleteFromMinioWasNotSuccessfulErrorDto
+   */
+  message: string
+  /**
+   * status in text
+   * @type {string}
+   * @memberof FileDeleteFromMinioWasNotSuccessfulErrorDto
+   */
+  status: string
+  /**
+   * Exact error name
+   * @type {string}
+   * @memberof FileDeleteFromMinioWasNotSuccessfulErrorDto
+   */
+  errorName: FileDeleteFromMinioWasNotSuccessfulErrorDtoErrorNameEnum
+  /**
+   * Helper for sending additional data in error
+   * @type {object}
+   * @memberof FileDeleteFromMinioWasNotSuccessfulErrorDto
+   */
+  object?: object
+}
+
+export const FileDeleteFromMinioWasNotSuccessfulErrorDtoErrorNameEnum = {
+  NotFoundError: 'NOT_FOUND_ERROR',
+  DatabaseError: 'DATABASE_ERROR',
+  InternalServerError: 'INTERNAL_SERVER_ERROR',
+  UnauthorizedError: 'UNAUTHORIZED_ERROR',
+  UnprocessableEntityError: 'UNPROCESSABLE_ENTITY_ERROR',
+  BadRequestError: 'BAD_REQUEST_ERROR',
+} as const
+
+export type FileDeleteFromMinioWasNotSuccessfulErrorDtoErrorNameEnum =
+  (typeof FileDeleteFromMinioWasNotSuccessfulErrorDtoErrorNameEnum)[keyof typeof FileDeleteFromMinioWasNotSuccessfulErrorDtoErrorNameEnum]
+
+/**
+ *
+ * @export
  * @interface FileHasUnsupportedMimeTypeErrorDto
  */
 export interface FileHasUnsupportedMimeTypeErrorDto {
@@ -488,6 +603,56 @@ export const FileIdAlreadyExistsErrorDtoErrorNameEnum = {
 
 export type FileIdAlreadyExistsErrorDtoErrorNameEnum =
   (typeof FileIdAlreadyExistsErrorDtoErrorNameEnum)[keyof typeof FileIdAlreadyExistsErrorDtoErrorNameEnum]
+
+/**
+ *
+ * @export
+ * @interface FileIdsNotFoundInDbErrorDto
+ */
+export interface FileIdsNotFoundInDbErrorDto {
+  /**
+   * Status Code
+   * @type {number}
+   * @memberof FileIdsNotFoundInDbErrorDto
+   */
+  statusCode: number
+  /**
+   * Detail error message
+   * @type {string}
+   * @memberof FileIdsNotFoundInDbErrorDto
+   */
+  message: string
+  /**
+   * status in text
+   * @type {string}
+   * @memberof FileIdsNotFoundInDbErrorDto
+   */
+  status: string
+  /**
+   * Exact error name
+   * @type {string}
+   * @memberof FileIdsNotFoundInDbErrorDto
+   */
+  errorName: FileIdsNotFoundInDbErrorDtoErrorNameEnum
+  /**
+   * Helper for sending additional data in error
+   * @type {object}
+   * @memberof FileIdsNotFoundInDbErrorDto
+   */
+  object?: object
+}
+
+export const FileIdsNotFoundInDbErrorDtoErrorNameEnum = {
+  NotFoundError: 'NOT_FOUND_ERROR',
+  DatabaseError: 'DATABASE_ERROR',
+  InternalServerError: 'INTERNAL_SERVER_ERROR',
+  UnauthorizedError: 'UNAUTHORIZED_ERROR',
+  UnprocessableEntityError: 'UNPROCESSABLE_ENTITY_ERROR',
+  BadRequestError: 'BAD_REQUEST_ERROR',
+} as const
+
+export type FileIdsNotFoundInDbErrorDtoErrorNameEnum =
+  (typeof FileIdsNotFoundInDbErrorDtoErrorNameEnum)[keyof typeof FileIdsNotFoundInDbErrorDtoErrorNameEnum]
 
 /**
  *
@@ -892,42 +1057,42 @@ export type FileSizeZeroErrorDtoErrorNameEnum =
 /**
  *
  * @export
- * @interface FileUploadToMinioWasNotSucessful
+ * @interface FileUploadToMinioWasNotSuccessfulErrorDto
  */
-export interface FileUploadToMinioWasNotSucessful {
+export interface FileUploadToMinioWasNotSuccessfulErrorDto {
   /**
    * Status Code
    * @type {number}
-   * @memberof FileUploadToMinioWasNotSucessful
+   * @memberof FileUploadToMinioWasNotSuccessfulErrorDto
    */
   statusCode: number
   /**
    * Detail error message
    * @type {string}
-   * @memberof FileUploadToMinioWasNotSucessful
+   * @memberof FileUploadToMinioWasNotSuccessfulErrorDto
    */
   message: string
   /**
    * status in text
    * @type {string}
-   * @memberof FileUploadToMinioWasNotSucessful
+   * @memberof FileUploadToMinioWasNotSuccessfulErrorDto
    */
   status: string
   /**
    * Exact error name
    * @type {string}
-   * @memberof FileUploadToMinioWasNotSucessful
+   * @memberof FileUploadToMinioWasNotSuccessfulErrorDto
    */
-  errorName: FileUploadToMinioWasNotSucessfulErrorNameEnum
+  errorName: FileUploadToMinioWasNotSuccessfulErrorDtoErrorNameEnum
   /**
    * Helper for sending additional data in error
    * @type {object}
-   * @memberof FileUploadToMinioWasNotSucessful
+   * @memberof FileUploadToMinioWasNotSuccessfulErrorDto
    */
   object?: object
 }
 
-export const FileUploadToMinioWasNotSucessfulErrorNameEnum = {
+export const FileUploadToMinioWasNotSuccessfulErrorDtoErrorNameEnum = {
   NotFoundError: 'NOT_FOUND_ERROR',
   DatabaseError: 'DATABASE_ERROR',
   InternalServerError: 'INTERNAL_SERVER_ERROR',
@@ -936,8 +1101,8 @@ export const FileUploadToMinioWasNotSucessfulErrorNameEnum = {
   BadRequestError: 'BAD_REQUEST_ERROR',
 } as const
 
-export type FileUploadToMinioWasNotSucessfulErrorNameEnum =
-  (typeof FileUploadToMinioWasNotSucessfulErrorNameEnum)[keyof typeof FileUploadToMinioWasNotSucessfulErrorNameEnum]
+export type FileUploadToMinioWasNotSuccessfulErrorDtoErrorNameEnum =
+  (typeof FileUploadToMinioWasNotSuccessfulErrorDtoErrorNameEnum)[keyof typeof FileUploadToMinioWasNotSuccessfulErrorDtoErrorNameEnum]
 
 /**
  *
@@ -1348,6 +1513,156 @@ export type FilesControllerUploadFile500ResponseErrorNameEnum =
 /**
  *
  * @export
+ * @interface ForbiddenFormSendDto
+ */
+export interface ForbiddenFormSendDto {
+  /**
+   * Status Code
+   * @type {number}
+   * @memberof ForbiddenFormSendDto
+   */
+  statusCode: number
+  /**
+   * Detail error message
+   * @type {string}
+   * @memberof ForbiddenFormSendDto
+   */
+  message: string
+  /**
+   * status in text
+   * @type {string}
+   * @memberof ForbiddenFormSendDto
+   */
+  status: string
+  /**
+   * Exact error name
+   * @type {string}
+   * @memberof ForbiddenFormSendDto
+   */
+  errorName: ForbiddenFormSendDtoErrorNameEnum
+  /**
+   * Helper for sending additional data in error
+   * @type {object}
+   * @memberof ForbiddenFormSendDto
+   */
+  object?: object
+}
+
+export const ForbiddenFormSendDtoErrorNameEnum = {
+  NotFoundError: 'NOT_FOUND_ERROR',
+  DatabaseError: 'DATABASE_ERROR',
+  InternalServerError: 'INTERNAL_SERVER_ERROR',
+  UnauthorizedError: 'UNAUTHORIZED_ERROR',
+  UnprocessableEntityError: 'UNPROCESSABLE_ENTITY_ERROR',
+  BadRequestError: 'BAD_REQUEST_ERROR',
+} as const
+
+export type ForbiddenFormSendDtoErrorNameEnum =
+  (typeof ForbiddenFormSendDtoErrorNameEnum)[keyof typeof ForbiddenFormSendDtoErrorNameEnum]
+
+/**
+ *
+ * @export
+ * @interface FormAssignedToOtherUserErrorDto
+ */
+export interface FormAssignedToOtherUserErrorDto {
+  /**
+   * Status Code
+   * @type {number}
+   * @memberof FormAssignedToOtherUserErrorDto
+   */
+  statusCode: number
+  /**
+   * Detail error message
+   * @type {string}
+   * @memberof FormAssignedToOtherUserErrorDto
+   */
+  message: string
+  /**
+   * status in text
+   * @type {string}
+   * @memberof FormAssignedToOtherUserErrorDto
+   */
+  status: string
+  /**
+   * Exact error name
+   * @type {string}
+   * @memberof FormAssignedToOtherUserErrorDto
+   */
+  errorName: FormAssignedToOtherUserErrorDtoErrorNameEnum
+  /**
+   * Helper for sending additional data in error
+   * @type {object}
+   * @memberof FormAssignedToOtherUserErrorDto
+   */
+  object?: object
+}
+
+export const FormAssignedToOtherUserErrorDtoErrorNameEnum = {
+  NotFoundError: 'NOT_FOUND_ERROR',
+  DatabaseError: 'DATABASE_ERROR',
+  InternalServerError: 'INTERNAL_SERVER_ERROR',
+  UnauthorizedError: 'UNAUTHORIZED_ERROR',
+  UnprocessableEntityError: 'UNPROCESSABLE_ENTITY_ERROR',
+  BadRequestError: 'BAD_REQUEST_ERROR',
+} as const
+
+export type FormAssignedToOtherUserErrorDtoErrorNameEnum =
+  (typeof FormAssignedToOtherUserErrorDtoErrorNameEnum)[keyof typeof FormAssignedToOtherUserErrorDtoErrorNameEnum]
+
+/**
+ *
+ * @export
+ * @interface FormDataInvalidErrorDto
+ */
+export interface FormDataInvalidErrorDto {
+  /**
+   * Status Code
+   * @type {number}
+   * @memberof FormDataInvalidErrorDto
+   */
+  statusCode: number
+  /**
+   * Detail error message
+   * @type {string}
+   * @memberof FormDataInvalidErrorDto
+   */
+  message: string
+  /**
+   * status in text
+   * @type {string}
+   * @memberof FormDataInvalidErrorDto
+   */
+  status: string
+  /**
+   * Exact error name
+   * @type {string}
+   * @memberof FormDataInvalidErrorDto
+   */
+  errorName: FormDataInvalidErrorDtoErrorNameEnum
+  /**
+   * Helper for sending additional data in error
+   * @type {object}
+   * @memberof FormDataInvalidErrorDto
+   */
+  object?: object
+}
+
+export const FormDataInvalidErrorDtoErrorNameEnum = {
+  NotFoundError: 'NOT_FOUND_ERROR',
+  DatabaseError: 'DATABASE_ERROR',
+  InternalServerError: 'INTERNAL_SERVER_ERROR',
+  UnauthorizedError: 'UNAUTHORIZED_ERROR',
+  UnprocessableEntityError: 'UNPROCESSABLE_ENTITY_ERROR',
+  BadRequestError: 'BAD_REQUEST_ERROR',
+} as const
+
+export type FormDataInvalidErrorDtoErrorNameEnum =
+  (typeof FormDataInvalidErrorDtoErrorNameEnum)[keyof typeof FormDataInvalidErrorDtoErrorNameEnum]
+
+/**
+ *
+ * @export
  * @interface FormIsOwnedBySomeoneElseErrorDto
  */
 export interface FormIsOwnedBySomeoneElseErrorDto {
@@ -1554,6 +1869,7 @@ export type FormOrUserNotFoundErrorDtoErrorNameEnum =
 export const FormState = {
   Draft: 'DRAFT',
   Queued: 'QUEUED',
+  SendingToNases: 'SENDING_TO_NASES',
   DeliveredNases: 'DELIVERED_NASES',
   DeliveredGinis: 'DELIVERED_GINIS',
   ReadyForProcessing: 'READY_FOR_PROCESSING',
@@ -1561,6 +1877,7 @@ export const FormState = {
   Finished: 'FINISHED',
   Rejected: 'REJECTED',
   Error: 'ERROR',
+  ErrorUserCanRepair: 'ERROR_USER_CAN_REPAIR',
 } as const
 
 export type FormState = (typeof FormState)[keyof typeof FormState]
@@ -1582,7 +1899,13 @@ export interface FormUserInformationDto {
    * @type {string}
    * @memberof FormUserInformationDto
    */
-  uri: string | null
+  mainUri: string | null
+  /**
+   * Uri for defining electronic sendbox, if person has it
+   * @type {string}
+   * @memberof FormUserInformationDto
+   */
+  actorUri: string | null
 }
 /**
  *
@@ -1626,6 +1949,18 @@ export interface GetFileResponseDto {
    * @memberof GetFileResponseDto
    */
   fileSize: number
+  /**
+   * order of this file in respective ginis submission
+   * @type {number}
+   * @memberof GetFileResponseDto
+   */
+  ginisOrder: number | null
+  /**
+   * If the file was uploaded to GINIS
+   * @type {boolean}
+   * @memberof GetFileResponseDto
+   */
+  ginisUploaded: boolean
   /**
    * id of the record in db
    * @type {string}
@@ -1694,7 +2029,13 @@ export interface GetFileResponseDtoForms {
    * @type {string}
    * @memberof GetFileResponseDtoForms
    */
-  uri: string | null
+  mainUri: string | null
+  /**
+   * Uri for defining electronic sendbox, if person has it
+   * @type {string}
+   * @memberof GetFileResponseDtoForms
+   */
+  actorUri: string | null
 }
 /**
  *
@@ -1743,7 +2084,13 @@ export interface GetFormResponseDto {
    * @type {string}
    * @memberof GetFormResponseDto
    */
-  uri: string | null
+  mainUri: string | null
+  /**
+   * Uri for defining electronic sendbox, if person has it
+   * @type {string}
+   * @memberof GetFormResponseDto
+   */
+  actorUri: string | null
   /**
    * State of form
    * @type {string}
@@ -1762,6 +2109,12 @@ export interface GetFormResponseDto {
    * @memberof GetFormResponseDto
    */
   formDataGinis: string | null
+  /**
+   * Ginis document id generated after registering the submission
+   * @type {string}
+   * @memberof GetFormResponseDto
+   */
+  ginisDocumentId: string | null
   /**
    * Data in JSON format
    * @type {object}
@@ -1804,11 +2157,24 @@ export interface GetFormResponseDto {
    * @memberof GetFormResponseDto
    */
   isLatestSchemaVersionForSlug: boolean
+  /**
+   * Message subject created from uiSchema
+   * @type {string}
+   * @memberof GetFormResponseDto
+   */
+  messageSubject: string
+  /**
+   * Title used in frontend when listing forms
+   * @type {string}
+   * @memberof GetFormResponseDto
+   */
+  frontendTitle: string
 }
 
 export const GetFormResponseDtoStateEnum = {
   Draft: 'DRAFT',
   Queued: 'QUEUED',
+  SendingToNases: 'SENDING_TO_NASES',
   DeliveredNases: 'DELIVERED_NASES',
   DeliveredGinis: 'DELIVERED_GINIS',
   ReadyForProcessing: 'READY_FOR_PROCESSING',
@@ -1816,6 +2182,7 @@ export const GetFormResponseDtoStateEnum = {
   Finished: 'FINISHED',
   Rejected: 'REJECTED',
   Error: 'ERROR',
+  ErrorUserCanRepair: 'ERROR_USER_CAN_REPAIR',
 } as const
 
 export type GetFormResponseDtoStateEnum =
@@ -1827,6 +2194,7 @@ export const GetFormResponseDtoErrorEnum = {
   UnableToScanFiles: 'UNABLE_TO_SCAN_FILES',
   InfectedFiles: 'INFECTED_FILES',
   NasesSendError: 'NASES_SEND_ERROR',
+  GinisSendError: 'GINIS_SEND_ERROR',
 } as const
 
 export type GetFormResponseDtoErrorEnum =
@@ -1875,6 +2243,12 @@ export interface GetFormResponseDtoSchemaVersion {
    */
   isSigned: boolean
   /**
+   * Previous version (for downgrade)
+   * @type {string}
+   * @memberof GetFormResponseDtoSchemaVersion
+   */
+  previousSchemaVersionId: string | null
+  /**
    * data.json
    * @type {object}
    * @memberof GetFormResponseDtoSchemaVersion
@@ -1893,41 +2267,11 @@ export interface GetFormResponseDtoSchemaVersion {
    */
   formFo: string
   /**
-   * form.html.sef.json
-   * @type {object}
-   * @memberof GetFormResponseDtoSchemaVersion
-   */
-  formHtmlSef: object
-  /**
-   * form.html.xslt
-   * @type {string}
-   * @memberof GetFormResponseDtoSchemaVersion
-   */
-  formHtml: string
-  /**
-   * form.sb.sef.json
-   * @type {object}
-   * @memberof GetFormResponseDtoSchemaVersion
-   */
-  formSbSef: object
-  /**
-   * form.sb.xslt
-   * @type {string}
-   * @memberof GetFormResponseDtoSchemaVersion
-   */
-  formSb: string
-  /**
    * schema.json
    * @type {object}
    * @memberof GetFormResponseDtoSchemaVersion
    */
   jsonSchema: object
-  /**
-   * schema.xsd
-   * @type {string}
-   * @memberof GetFormResponseDtoSchemaVersion
-   */
-  schemaXsd: string
   /**
    * uiSchema.json
    * @type {object}
@@ -1958,6 +2302,24 @@ export interface GetFormResponseDtoSchemaVersion {
    * @memberof GetFormResponseDtoSchemaVersion
    */
   updatedAt: string
+  /**
+   * Subject format of the message
+   * @type {string}
+   * @memberof GetFormResponseDtoSchemaVersion
+   */
+  messageSubjectFormat: string | null
+  /**
+   * Organization to assign data to Ginis
+   * @type {string}
+   * @memberof GetFormResponseDtoSchemaVersion
+   */
+  ginisOrganizationName: string | null
+  /**
+   * Person to assign data to Ginis
+   * @type {string}
+   * @memberof GetFormResponseDtoSchemaVersion
+   */
+  ginisPersonName: string | null
   /**
    *
    * @type {SchemaVersionResponseDtoSchema}
@@ -1996,6 +2358,118 @@ export interface GetFormsResponseDto {
    */
   items: Array<GetFormResponseDto>
 }
+/**
+ *
+ * @export
+ * @interface GinisDocumentDetailResponseDto
+ */
+export interface GinisDocumentDetailResponseDto {
+  /**
+   *
+   * @type {string}
+   * @memberof GinisDocumentDetailResponseDto
+   */
+  id: string
+  /**
+   *
+   * @type {string}
+   * @memberof GinisDocumentDetailResponseDto
+   */
+  dossierId: string
+  /**
+   *
+   * @type {string}
+   * @memberof GinisDocumentDetailResponseDto
+   */
+  ownerName: string
+  /**
+   *
+   * @type {string}
+   * @memberof GinisDocumentDetailResponseDto
+   */
+  ownerEmail: string
+  /**
+   *
+   * @type {string}
+   * @memberof GinisDocumentDetailResponseDto
+   */
+  ownerPhone: string
+  /**
+   *
+   * @type {Array<GinisSdkHistorieDokumentuWithAssignedCategory>}
+   * @memberof GinisDocumentDetailResponseDto
+   */
+  documentHistory: Array<GinisSdkHistorieDokumentuWithAssignedCategory>
+}
+/**
+ *
+ * @export
+ * @interface GinisSdkHistorieDokumentuWithAssignedCategory
+ */
+export interface GinisSdkHistorieDokumentuWithAssignedCategory {
+  /**
+   *
+   * @type {string}
+   * @memberof GinisSdkHistorieDokumentuWithAssignedCategory
+   */
+  IdDokumentu: string
+  /**
+   *
+   * @type {string}
+   * @memberof GinisSdkHistorieDokumentuWithAssignedCategory
+   */
+  Atribut_IdDokumentu_Externi: string
+  /**
+   *
+   * @type {string}
+   * @memberof GinisSdkHistorieDokumentuWithAssignedCategory
+   */
+  TextZmeny: string
+  /**
+   *
+   * @type {string}
+   * @memberof GinisSdkHistorieDokumentuWithAssignedCategory
+   */
+  Poznamka: string
+  /**
+   *
+   * @type {string}
+   * @memberof GinisSdkHistorieDokumentuWithAssignedCategory
+   */
+  DatumZmeny: string
+  /**
+   *
+   * @type {string}
+   * @memberof GinisSdkHistorieDokumentuWithAssignedCategory
+   */
+  IdZmenuProvedl: string
+  /**
+   *
+   * @type {string}
+   * @memberof GinisSdkHistorieDokumentuWithAssignedCategory
+   */
+  Atribut_IdZmenuProvedl_Externi: string
+  /**
+   *
+   * @type {string}
+   * @memberof GinisSdkHistorieDokumentuWithAssignedCategory
+   */
+  IdKtgZmeny: string
+  /**
+   *
+   * @type {string}
+   * @memberof GinisSdkHistorieDokumentuWithAssignedCategory
+   */
+  assignedCategory: GinisSdkHistorieDokumentuWithAssignedCategoryAssignedCategoryEnum
+}
+
+export const GinisSdkHistorieDokumentuWithAssignedCategoryAssignedCategoryEnum = {
+  DocumentCreated: 'DOCUMENT_CREATED',
+} as const
+
+export type GinisSdkHistorieDokumentuWithAssignedCategoryAssignedCategoryEnum =
+  (typeof GinisSdkHistorieDokumentuWithAssignedCategoryAssignedCategoryEnum)[keyof typeof GinisSdkHistorieDokumentuWithAssignedCategoryAssignedCategoryEnum]
+
 /**
  *
  * @export
@@ -2125,22 +2599,72 @@ export interface JsonToXmlResponseDto {
 /**
  *
  * @export
- * @interface NasesControllerGetEidJwt401Response
+ * @interface MigrateFormResponseDto
  */
-export interface NasesControllerGetEidJwt401Response {
+export interface MigrateFormResponseDto {
+  /**
+   * ID of form
+   * @type {string}
+   * @memberof MigrateFormResponseDto
+   */
+  formId: string
+  /**
+   * True if the form was successfully migrated.
+   * @type {boolean}
+   * @memberof MigrateFormResponseDto
+   */
+  success: boolean
+}
+/**
+ *
+ * @export
+ * @interface NasesControllerDeleteForm400Response
+ */
+export interface NasesControllerDeleteForm400Response {
   /**
    * Status Code
    * @type {number}
-   * @memberof NasesControllerGetEidJwt401Response
+   * @memberof NasesControllerDeleteForm400Response
    */
   statusCode: number
   /**
    * Detail error message
    * @type {string}
-   * @memberof NasesControllerGetEidJwt401Response
+   * @memberof NasesControllerDeleteForm400Response
    */
   message: string
+  /**
+   * status in text
+   * @type {string}
+   * @memberof NasesControllerDeleteForm400Response
+   */
+  status: string
+  /**
+   * Exact error name
+   * @type {string}
+   * @memberof NasesControllerDeleteForm400Response
+   */
+  errorName: NasesControllerDeleteForm400ResponseErrorNameEnum
+  /**
+   * Helper for sending additional data in error
+   * @type {object}
+   * @memberof NasesControllerDeleteForm400Response
+   */
+  object?: object
 }
+
+export const NasesControllerDeleteForm400ResponseErrorNameEnum = {
+  NotFoundError: 'NOT_FOUND_ERROR',
+  DatabaseError: 'DATABASE_ERROR',
+  InternalServerError: 'INTERNAL_SERVER_ERROR',
+  UnauthorizedError: 'UNAUTHORIZED_ERROR',
+  UnprocessableEntityError: 'UNPROCESSABLE_ENTITY_ERROR',
+  BadRequestError: 'BAD_REQUEST_ERROR',
+} as const
+
+export type NasesControllerDeleteForm400ResponseErrorNameEnum =
+  (typeof NasesControllerDeleteForm400ResponseErrorNameEnum)[keyof typeof NasesControllerDeleteForm400ResponseErrorNameEnum]
+
 /**
  *
  * @export
@@ -2244,56 +2768,6 @@ export type NasesControllerGetForms500ResponseErrorNameEnum =
 /**
  *
  * @export
- * @interface NasesControllerSendAndUpdateForm400Response
- */
-export interface NasesControllerSendAndUpdateForm400Response {
-  /**
-   * Status Code
-   * @type {number}
-   * @memberof NasesControllerSendAndUpdateForm400Response
-   */
-  statusCode: number
-  /**
-   * Detail error message
-   * @type {string}
-   * @memberof NasesControllerSendAndUpdateForm400Response
-   */
-  message: string
-  /**
-   * status in text
-   * @type {string}
-   * @memberof NasesControllerSendAndUpdateForm400Response
-   */
-  status: string
-  /**
-   * Exact error name
-   * @type {string}
-   * @memberof NasesControllerSendAndUpdateForm400Response
-   */
-  errorName: NasesControllerSendAndUpdateForm400ResponseErrorNameEnum
-  /**
-   * Helper for sending additional data in error
-   * @type {object}
-   * @memberof NasesControllerSendAndUpdateForm400Response
-   */
-  object?: object
-}
-
-export const NasesControllerSendAndUpdateForm400ResponseErrorNameEnum = {
-  NotFoundError: 'NOT_FOUND_ERROR',
-  DatabaseError: 'DATABASE_ERROR',
-  InternalServerError: 'INTERNAL_SERVER_ERROR',
-  UnauthorizedError: 'UNAUTHORIZED_ERROR',
-  UnprocessableEntityError: 'UNPROCESSABLE_ENTITY_ERROR',
-  BadRequestError: 'BAD_REQUEST_ERROR',
-} as const
-
-export type NasesControllerSendAndUpdateForm400ResponseErrorNameEnum =
-  (typeof NasesControllerSendAndUpdateForm400ResponseErrorNameEnum)[keyof typeof NasesControllerSendAndUpdateForm400ResponseErrorNameEnum]
-
-/**
- *
- * @export
  * @interface NasesControllerSendAndUpdateForm422Response
  */
 export interface NasesControllerSendAndUpdateForm422Response {
@@ -2390,6 +2864,106 @@ export const NasesControllerSendForm422ResponseErrorNameEnum = {
 
 export type NasesControllerSendForm422ResponseErrorNameEnum =
   (typeof NasesControllerSendForm422ResponseErrorNameEnum)[keyof typeof NasesControllerSendForm422ResponseErrorNameEnum]
+
+/**
+ *
+ * @export
+ * @interface NasesControllerUpdateForm400Response
+ */
+export interface NasesControllerUpdateForm400Response {
+  /**
+   * Status Code
+   * @type {number}
+   * @memberof NasesControllerUpdateForm400Response
+   */
+  statusCode: number
+  /**
+   * Detail error message
+   * @type {string}
+   * @memberof NasesControllerUpdateForm400Response
+   */
+  message: string
+  /**
+   * status in text
+   * @type {string}
+   * @memberof NasesControllerUpdateForm400Response
+   */
+  status: string
+  /**
+   * Exact error name
+   * @type {string}
+   * @memberof NasesControllerUpdateForm400Response
+   */
+  errorName: NasesControllerUpdateForm400ResponseErrorNameEnum
+  /**
+   * Helper for sending additional data in error
+   * @type {object}
+   * @memberof NasesControllerUpdateForm400Response
+   */
+  object?: object
+}
+
+export const NasesControllerUpdateForm400ResponseErrorNameEnum = {
+  NotFoundError: 'NOT_FOUND_ERROR',
+  DatabaseError: 'DATABASE_ERROR',
+  InternalServerError: 'INTERNAL_SERVER_ERROR',
+  UnauthorizedError: 'UNAUTHORIZED_ERROR',
+  UnprocessableEntityError: 'UNPROCESSABLE_ENTITY_ERROR',
+  BadRequestError: 'BAD_REQUEST_ERROR',
+} as const
+
+export type NasesControllerUpdateForm400ResponseErrorNameEnum =
+  (typeof NasesControllerUpdateForm400ResponseErrorNameEnum)[keyof typeof NasesControllerUpdateForm400ResponseErrorNameEnum]
+
+/**
+ *
+ * @export
+ * @interface NasesControllerUpdateForm500Response
+ */
+export interface NasesControllerUpdateForm500Response {
+  /**
+   * Status Code
+   * @type {number}
+   * @memberof NasesControllerUpdateForm500Response
+   */
+  statusCode: number
+  /**
+   * Detail error message
+   * @type {string}
+   * @memberof NasesControllerUpdateForm500Response
+   */
+  message: string
+  /**
+   * status in text
+   * @type {string}
+   * @memberof NasesControllerUpdateForm500Response
+   */
+  status: string
+  /**
+   * Exact error name
+   * @type {string}
+   * @memberof NasesControllerUpdateForm500Response
+   */
+  errorName: NasesControllerUpdateForm500ResponseErrorNameEnum
+  /**
+   * Helper for sending additional data in error
+   * @type {object}
+   * @memberof NasesControllerUpdateForm500Response
+   */
+  object?: object
+}
+
+export const NasesControllerUpdateForm500ResponseErrorNameEnum = {
+  NotFoundError: 'NOT_FOUND_ERROR',
+  DatabaseError: 'DATABASE_ERROR',
+  InternalServerError: 'INTERNAL_SERVER_ERROR',
+  UnauthorizedError: 'UNAUTHORIZED_ERROR',
+  UnprocessableEntityError: 'UNPROCESSABLE_ENTITY_ERROR',
+  BadRequestError: 'BAD_REQUEST_ERROR',
+} as const
+
+export type NasesControllerUpdateForm500ResponseErrorNameEnum =
+  (typeof NasesControllerUpdateForm500ResponseErrorNameEnum)[keyof typeof NasesControllerUpdateForm500ResponseErrorNameEnum]
 
 /**
  *
@@ -2544,6 +3118,56 @@ export type NoFormXmlDataErrorDtoErrorNameEnum =
 /**
  *
  * @export
+ * @interface NotFoundErrorDto
+ */
+export interface NotFoundErrorDto {
+  /**
+   * Status Code
+   * @type {number}
+   * @memberof NotFoundErrorDto
+   */
+  statusCode: number
+  /**
+   * Detail error message
+   * @type {string}
+   * @memberof NotFoundErrorDto
+   */
+  message: string
+  /**
+   * status in text
+   * @type {string}
+   * @memberof NotFoundErrorDto
+   */
+  status: string
+  /**
+   * Exact error name
+   * @type {string}
+   * @memberof NotFoundErrorDto
+   */
+  errorName: NotFoundErrorDtoErrorNameEnum
+  /**
+   * Helper for sending additional data in error
+   * @type {object}
+   * @memberof NotFoundErrorDto
+   */
+  object?: object
+}
+
+export const NotFoundErrorDtoErrorNameEnum = {
+  NotFoundError: 'NOT_FOUND_ERROR',
+  DatabaseError: 'DATABASE_ERROR',
+  InternalServerError: 'INTERNAL_SERVER_ERROR',
+  UnauthorizedError: 'UNAUTHORIZED_ERROR',
+  UnprocessableEntityError: 'UNPROCESSABLE_ENTITY_ERROR',
+  BadRequestError: 'BAD_REQUEST_ERROR',
+} as const
+
+export type NotFoundErrorDtoErrorNameEnum =
+  (typeof NotFoundErrorDtoErrorNameEnum)[keyof typeof NotFoundErrorDtoErrorNameEnum]
+
+/**
+ *
+ * @export
  * @interface PostFileResponseDto
  */
 export interface PostFileResponseDto {
@@ -2583,6 +3207,18 @@ export interface PostFileResponseDto {
    * @memberof PostFileResponseDto
    */
   fileSize: number
+  /**
+   * order of this file in respective ginis submission
+   * @type {number}
+   * @memberof PostFileResponseDto
+   */
+  ginisOrder: number | null
+  /**
+   * If the file was uploaded to GINIS
+   * @type {boolean}
+   * @memberof PostFileResponseDto
+   */
+  ginisUploaded: boolean
   /**
    * id of the record in db
    * @type {string}
@@ -2888,6 +3524,12 @@ export interface SchemaResponseDtoLatestVersion {
    */
   isSigned: boolean
   /**
+   * Previous version (for downgrade)
+   * @type {string}
+   * @memberof SchemaResponseDtoLatestVersion
+   */
+  previousSchemaVersionId: string | null
+  /**
    * data.json
    * @type {object}
    * @memberof SchemaResponseDtoLatestVersion
@@ -2906,41 +3548,11 @@ export interface SchemaResponseDtoLatestVersion {
    */
   formFo: string
   /**
-   * form.html.sef.json
-   * @type {object}
-   * @memberof SchemaResponseDtoLatestVersion
-   */
-  formHtmlSef: object
-  /**
-   * form.html.xslt
-   * @type {string}
-   * @memberof SchemaResponseDtoLatestVersion
-   */
-  formHtml: string
-  /**
-   * form.sb.sef.json
-   * @type {object}
-   * @memberof SchemaResponseDtoLatestVersion
-   */
-  formSbSef: object
-  /**
-   * form.sb.xslt
-   * @type {string}
-   * @memberof SchemaResponseDtoLatestVersion
-   */
-  formSb: string
-  /**
    * schema.json
    * @type {object}
    * @memberof SchemaResponseDtoLatestVersion
    */
   jsonSchema: object
-  /**
-   * schema.xsd
-   * @type {string}
-   * @memberof SchemaResponseDtoLatestVersion
-   */
-  schemaXsd: string
   /**
    * uiSchema.json
    * @type {object}
@@ -2971,6 +3583,24 @@ export interface SchemaResponseDtoLatestVersion {
    * @memberof SchemaResponseDtoLatestVersion
    */
   updatedAt: string
+  /**
+   * Subject format of the message
+   * @type {string}
+   * @memberof SchemaResponseDtoLatestVersion
+   */
+  messageSubjectFormat: string | null
+  /**
+   * Organization to assign data to Ginis
+   * @type {string}
+   * @memberof SchemaResponseDtoLatestVersion
+   */
+  ginisOrganizationName: string | null
+  /**
+   * Person to assign data to Ginis
+   * @type {string}
+   * @memberof SchemaResponseDtoLatestVersion
+   */
+  ginisPersonName: string | null
 }
 /**
  *
@@ -3120,6 +3750,12 @@ export interface SchemaVersionResponseDto {
    */
   isSigned: boolean
   /**
+   * Previous version (for downgrade)
+   * @type {string}
+   * @memberof SchemaVersionResponseDto
+   */
+  previousSchemaVersionId: string | null
+  /**
    * data.json
    * @type {object}
    * @memberof SchemaVersionResponseDto
@@ -3138,41 +3774,11 @@ export interface SchemaVersionResponseDto {
    */
   formFo: string
   /**
-   * form.html.sef.json
-   * @type {object}
-   * @memberof SchemaVersionResponseDto
-   */
-  formHtmlSef: object
-  /**
-   * form.html.xslt
-   * @type {string}
-   * @memberof SchemaVersionResponseDto
-   */
-  formHtml: string
-  /**
-   * form.sb.sef.json
-   * @type {object}
-   * @memberof SchemaVersionResponseDto
-   */
-  formSbSef: object
-  /**
-   * form.sb.xslt
-   * @type {string}
-   * @memberof SchemaVersionResponseDto
-   */
-  formSb: string
-  /**
    * schema.json
    * @type {object}
    * @memberof SchemaVersionResponseDto
    */
   jsonSchema: object
-  /**
-   * schema.xsd
-   * @type {string}
-   * @memberof SchemaVersionResponseDto
-   */
-  schemaXsd: string
   /**
    * uiSchema.json
    * @type {object}
@@ -3203,6 +3809,24 @@ export interface SchemaVersionResponseDto {
    * @memberof SchemaVersionResponseDto
    */
   updatedAt: string
+  /**
+   * Subject format of the message
+   * @type {string}
+   * @memberof SchemaVersionResponseDto
+   */
+  messageSubjectFormat: string | null
+  /**
+   * Organization to assign data to Ginis
+   * @type {string}
+   * @memberof SchemaVersionResponseDto
+   */
+  ginisOrganizationName: string | null
+  /**
+   * Person to assign data to Ginis
+   * @type {string}
+   * @memberof SchemaVersionResponseDto
+   */
+  ginisPersonName: string | null
   /**
    *
    * @type {SchemaVersionResponseDtoSchema}
@@ -3308,6 +3932,12 @@ export interface SchemaVersionWithoutSchemaDto {
    */
   isSigned: boolean
   /**
+   * Previous version (for downgrade)
+   * @type {string}
+   * @memberof SchemaVersionWithoutSchemaDto
+   */
+  previousSchemaVersionId: string | null
+  /**
    * data.json
    * @type {object}
    * @memberof SchemaVersionWithoutSchemaDto
@@ -3326,41 +3956,11 @@ export interface SchemaVersionWithoutSchemaDto {
    */
   formFo: string
   /**
-   * form.html.sef.json
-   * @type {object}
-   * @memberof SchemaVersionWithoutSchemaDto
-   */
-  formHtmlSef: object
-  /**
-   * form.html.xslt
-   * @type {string}
-   * @memberof SchemaVersionWithoutSchemaDto
-   */
-  formHtml: string
-  /**
-   * form.sb.sef.json
-   * @type {object}
-   * @memberof SchemaVersionWithoutSchemaDto
-   */
-  formSbSef: object
-  /**
-   * form.sb.xslt
-   * @type {string}
-   * @memberof SchemaVersionWithoutSchemaDto
-   */
-  formSb: string
-  /**
    * schema.json
    * @type {object}
    * @memberof SchemaVersionWithoutSchemaDto
    */
   jsonSchema: object
-  /**
-   * schema.xsd
-   * @type {string}
-   * @memberof SchemaVersionWithoutSchemaDto
-   */
-  schemaXsd: string
   /**
    * uiSchema.json
    * @type {object}
@@ -3391,6 +3991,24 @@ export interface SchemaVersionWithoutSchemaDto {
    * @memberof SchemaVersionWithoutSchemaDto
    */
   updatedAt: string
+  /**
+   * Subject format of the message
+   * @type {string}
+   * @memberof SchemaVersionWithoutSchemaDto
+   */
+  messageSubjectFormat: string | null
+  /**
+   * Organization to assign data to Ginis
+   * @type {string}
+   * @memberof SchemaVersionWithoutSchemaDto
+   */
+  ginisOrganizationName: string | null
+  /**
+   * Person to assign data to Ginis
+   * @type {string}
+   * @memberof SchemaVersionWithoutSchemaDto
+   */
+  ginisPersonName: string | null
 }
 /**
  *
@@ -3650,6 +4268,18 @@ export interface UpdateFileStatusResponseDto {
    */
   fileSize: number
   /**
+   * order of this file in respective ginis submission
+   * @type {number}
+   * @memberof UpdateFileStatusResponseDto
+   */
+  ginisOrder: number | null
+  /**
+   * If the file was uploaded to GINIS
+   * @type {boolean}
+   * @memberof UpdateFileStatusResponseDto
+   */
+  ginisUploaded: boolean
+  /**
    * id of the record in db
    * @type {string}
    * @memberof UpdateFileStatusResponseDto
@@ -3742,6 +4372,12 @@ export interface UpdateFormRequestDto {
    * @memberof UpdateFormRequestDto
    */
   recipientId?: string
+  /**
+   * Ginis document id generated after registering the submission
+   * @type {string}
+   * @memberof UpdateFormRequestDto
+   */
+  ginisDocumentId?: string
 }
 /**
  *
@@ -3768,6 +4404,721 @@ export interface XmlToJsonResponseDto {
    * @memberof XmlToJsonResponseDto
    */
   jsonForm: object
+}
+
+/**
+ * ADMINApi - axios parameter creator
+ * @export
+ */
+export const ADMINApiAxiosParamCreator = function (configuration?: Configuration) {
+  return {
+    /**
+     * Create schema with all files
+     * @summary Create new schema
+     * @param {object} [data]
+     * @param {Array<any>} [files] Required files: data.json, form.fo.xslt, schema.json, uiSchema.json, xmlTemplate.xml   Optional files: data.xml
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    adminControllerCreateSchema: async (
+      data?: object,
+      files?: Array<any>,
+      options: AxiosRequestConfig = {},
+    ): Promise<RequestArgs> => {
+      const localVarPath = `/admin/schema/create`
+      // use dummy base URL string because the URL constructor only accepts absolute URLs.
+      const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL)
+      let baseOptions
+      if (configuration) {
+        baseOptions = configuration.baseOptions
+      }
+
+      const localVarRequestOptions = { method: 'POST', ...baseOptions, ...options }
+      const localVarHeaderParameter = {} as any
+      const localVarQueryParameter = {} as any
+      const localVarFormParams = new ((configuration && configuration.formDataCtor) || FormData)()
+
+      // authentication apiKey required
+      await setApiKeyToObject(localVarHeaderParameter, 'apiKey', configuration)
+
+      if (data !== undefined) {
+        localVarFormParams.append(
+          'data',
+          new Blob([JSON.stringify(data)], { type: 'application/json' }),
+        )
+      }
+      if (files) {
+        files.forEach((element) => {
+          localVarFormParams.append('files', element as any)
+        })
+      }
+
+      localVarHeaderParameter['Content-Type'] = 'multipart/form-data'
+
+      setSearchParams(localVarUrlObj, localVarQueryParameter)
+      let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {}
+      localVarRequestOptions.headers = {
+        ...localVarHeaderParameter,
+        ...headersFromBaseOptions,
+        ...options.headers,
+      }
+      localVarRequestOptions.data = localVarFormParams
+
+      return {
+        url: toPathString(localVarUrlObj),
+        options: localVarRequestOptions,
+      }
+    },
+    /**
+     * Downgrade schema to previous
+     * @summary Downgrade version of schema
+     * @param {string} slug
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    adminControllerDowngradeSchemaVersion: async (
+      slug: string,
+      options: AxiosRequestConfig = {},
+    ): Promise<RequestArgs> => {
+      // verify required parameter 'slug' is not null or undefined
+      assertParamExists('adminControllerDowngradeSchemaVersion', 'slug', slug)
+      const localVarPath = `/admin/schema/downgrade/{slug}`.replace(
+        `{${'slug'}}`,
+        encodeURIComponent(String(slug)),
+      )
+      // use dummy base URL string because the URL constructor only accepts absolute URLs.
+      const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL)
+      let baseOptions
+      if (configuration) {
+        baseOptions = configuration.baseOptions
+      }
+
+      const localVarRequestOptions = { method: 'POST', ...baseOptions, ...options }
+      const localVarHeaderParameter = {} as any
+      const localVarQueryParameter = {} as any
+
+      // authentication apiKey required
+      await setApiKeyToObject(localVarHeaderParameter, 'apiKey', configuration)
+
+      setSearchParams(localVarUrlObj, localVarQueryParameter)
+      let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {}
+      localVarRequestOptions.headers = {
+        ...localVarHeaderParameter,
+        ...headersFromBaseOptions,
+        ...options.headers,
+      }
+
+      return {
+        url: toPathString(localVarUrlObj),
+        options: localVarRequestOptions,
+      }
+    },
+    /**
+     * Return administration account JWT token
+     * @summary
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    adminControllerGetAdministrationJwt: async (
+      options: AxiosRequestConfig = {},
+    ): Promise<RequestArgs> => {
+      const localVarPath = `/admin/administration-jwt`
+      // use dummy base URL string because the URL constructor only accepts absolute URLs.
+      const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL)
+      let baseOptions
+      if (configuration) {
+        baseOptions = configuration.baseOptions
+      }
+
+      const localVarRequestOptions = { method: 'GET', ...baseOptions, ...options }
+      const localVarHeaderParameter = {} as any
+      const localVarQueryParameter = {} as any
+
+      // authentication apiKey required
+      await setApiKeyToObject(localVarHeaderParameter, 'apiKey', configuration)
+
+      setSearchParams(localVarUrlObj, localVarQueryParameter)
+      let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {}
+      localVarRequestOptions.headers = {
+        ...localVarHeaderParameter,
+        ...headersFromBaseOptions,
+        ...options.headers,
+      }
+
+      return {
+        url: toPathString(localVarUrlObj),
+        options: localVarRequestOptions,
+      }
+    },
+    /**
+     * Return eid user JWT token
+     * @summary
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    adminControllerGetEidJwt: async (options: AxiosRequestConfig = {}): Promise<RequestArgs> => {
+      const localVarPath = `/admin/eid-jwt`
+      // use dummy base URL string because the URL constructor only accepts absolute URLs.
+      const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL)
+      let baseOptions
+      if (configuration) {
+        baseOptions = configuration.baseOptions
+      }
+
+      const localVarRequestOptions = { method: 'GET', ...baseOptions, ...options }
+      const localVarHeaderParameter = {} as any
+      const localVarQueryParameter = {} as any
+
+      // authentication apiKey required
+      await setApiKeyToObject(localVarHeaderParameter, 'apiKey', configuration)
+
+      setSearchParams(localVarUrlObj, localVarQueryParameter)
+      let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {}
+      localVarRequestOptions.headers = {
+        ...localVarHeaderParameter,
+        ...headersFromBaseOptions,
+        ...options.headers,
+      }
+
+      return {
+        url: toPathString(localVarUrlObj),
+        options: localVarRequestOptions,
+      }
+    },
+    /**
+     * Return technical account JWT token
+     * @summary
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    adminControllerGetTechnicalJwt: async (
+      options: AxiosRequestConfig = {},
+    ): Promise<RequestArgs> => {
+      const localVarPath = `/admin/technical-jwt`
+      // use dummy base URL string because the URL constructor only accepts absolute URLs.
+      const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL)
+      let baseOptions
+      if (configuration) {
+        baseOptions = configuration.baseOptions
+      }
+
+      const localVarRequestOptions = { method: 'GET', ...baseOptions, ...options }
+      const localVarHeaderParameter = {} as any
+      const localVarQueryParameter = {} as any
+
+      // authentication apiKey required
+      await setApiKeyToObject(localVarHeaderParameter, 'apiKey', configuration)
+
+      setSearchParams(localVarUrlObj, localVarQueryParameter)
+      let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {}
+      localVarRequestOptions.headers = {
+        ...localVarHeaderParameter,
+        ...headersFromBaseOptions,
+        ...options.headers,
+      }
+
+      return {
+        url: toPathString(localVarUrlObj),
+        options: localVarRequestOptions,
+      }
+    },
+    /**
+     * Update version of schema, without creating nie version, it is not downgradable
+     * @summary Update version of schema
+     * @param {string} id
+     * @param {object} [data]
+     * @param {Array<any>} [files] Updateable files: data.json, uiSchema.json, data.xml
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    adminControllerUpdateSchemaVersion: async (
+      id: string,
+      data?: object,
+      files?: Array<any>,
+      options: AxiosRequestConfig = {},
+    ): Promise<RequestArgs> => {
+      // verify required parameter 'id' is not null or undefined
+      assertParamExists('adminControllerUpdateSchemaVersion', 'id', id)
+      const localVarPath = `/admin/schema-version/{id}`.replace(
+        `{${'id'}}`,
+        encodeURIComponent(String(id)),
+      )
+      // use dummy base URL string because the URL constructor only accepts absolute URLs.
+      const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL)
+      let baseOptions
+      if (configuration) {
+        baseOptions = configuration.baseOptions
+      }
+
+      const localVarRequestOptions = { method: 'PATCH', ...baseOptions, ...options }
+      const localVarHeaderParameter = {} as any
+      const localVarQueryParameter = {} as any
+      const localVarFormParams = new ((configuration && configuration.formDataCtor) || FormData)()
+
+      // authentication apiKey required
+      await setApiKeyToObject(localVarHeaderParameter, 'apiKey', configuration)
+
+      if (data !== undefined) {
+        localVarFormParams.append(
+          'data',
+          new Blob([JSON.stringify(data)], { type: 'application/json' }),
+        )
+      }
+      if (files) {
+        files.forEach((element) => {
+          localVarFormParams.append('files', element as any)
+        })
+      }
+
+      localVarHeaderParameter['Content-Type'] = 'multipart/form-data'
+
+      setSearchParams(localVarUrlObj, localVarQueryParameter)
+      let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {}
+      localVarRequestOptions.headers = {
+        ...localVarHeaderParameter,
+        ...headersFromBaseOptions,
+        ...options.headers,
+      }
+      localVarRequestOptions.data = localVarFormParams
+
+      return {
+        url: toPathString(localVarUrlObj),
+        options: localVarRequestOptions,
+      }
+    },
+    /**
+     * Upgrade version of schema, which create new schema version and can be rollbacked with downgrade schema
+     * @summary Upgrade version of schema
+     * @param {string} slug
+     * @param {object} [data]
+     * @param {Array<any>} [files] Optional files: data.json, data.xml, form.fo.xslt, schema.json, uiSchema.json, xmlTemplate.xml
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    adminControllerUpgradeSchemaVersion: async (
+      slug: string,
+      data?: object,
+      files?: Array<any>,
+      options: AxiosRequestConfig = {},
+    ): Promise<RequestArgs> => {
+      // verify required parameter 'slug' is not null or undefined
+      assertParamExists('adminControllerUpgradeSchemaVersion', 'slug', slug)
+      const localVarPath = `/admin/schema/upgrade/{slug}`.replace(
+        `{${'slug'}}`,
+        encodeURIComponent(String(slug)),
+      )
+      // use dummy base URL string because the URL constructor only accepts absolute URLs.
+      const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL)
+      let baseOptions
+      if (configuration) {
+        baseOptions = configuration.baseOptions
+      }
+
+      const localVarRequestOptions = { method: 'POST', ...baseOptions, ...options }
+      const localVarHeaderParameter = {} as any
+      const localVarQueryParameter = {} as any
+      const localVarFormParams = new ((configuration && configuration.formDataCtor) || FormData)()
+
+      // authentication apiKey required
+      await setApiKeyToObject(localVarHeaderParameter, 'apiKey', configuration)
+
+      if (data !== undefined) {
+        localVarFormParams.append(
+          'data',
+          new Blob([JSON.stringify(data)], { type: 'application/json' }),
+        )
+      }
+      if (files) {
+        files.forEach((element) => {
+          localVarFormParams.append('files', element as any)
+        })
+      }
+
+      localVarHeaderParameter['Content-Type'] = 'multipart/form-data'
+
+      setSearchParams(localVarUrlObj, localVarQueryParameter)
+      let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {}
+      localVarRequestOptions.headers = {
+        ...localVarHeaderParameter,
+        ...headersFromBaseOptions,
+        ...options.headers,
+      }
+      localVarRequestOptions.data = localVarFormParams
+
+      return {
+        url: toPathString(localVarUrlObj),
+        options: localVarRequestOptions,
+      }
+    },
+  }
+}
+
+/**
+ * ADMINApi - functional programming interface
+ * @export
+ */
+export const ADMINApiFp = function (configuration?: Configuration) {
+  const localVarAxiosParamCreator = ADMINApiAxiosParamCreator(configuration)
+  return {
+    /**
+     * Create schema with all files
+     * @summary Create new schema
+     * @param {object} [data]
+     * @param {Array<any>} [files] Required files: data.json, form.fo.xslt, schema.json, uiSchema.json, xmlTemplate.xml   Optional files: data.xml
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    async adminControllerCreateSchema(
+      data?: object,
+      files?: Array<any>,
+      options?: AxiosRequestConfig,
+    ): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<void>> {
+      const localVarAxiosArgs = await localVarAxiosParamCreator.adminControllerCreateSchema(
+        data,
+        files,
+        options,
+      )
+      return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)
+    },
+    /**
+     * Downgrade schema to previous
+     * @summary Downgrade version of schema
+     * @param {string} slug
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    async adminControllerDowngradeSchemaVersion(
+      slug: string,
+      options?: AxiosRequestConfig,
+    ): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<void>> {
+      const localVarAxiosArgs =
+        await localVarAxiosParamCreator.adminControllerDowngradeSchemaVersion(slug, options)
+      return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)
+    },
+    /**
+     * Return administration account JWT token
+     * @summary
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    async adminControllerGetAdministrationJwt(
+      options?: AxiosRequestConfig,
+    ): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<object>> {
+      const localVarAxiosArgs =
+        await localVarAxiosParamCreator.adminControllerGetAdministrationJwt(options)
+      return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)
+    },
+    /**
+     * Return eid user JWT token
+     * @summary
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    async adminControllerGetEidJwt(
+      options?: AxiosRequestConfig,
+    ): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<object>> {
+      const localVarAxiosArgs = await localVarAxiosParamCreator.adminControllerGetEidJwt(options)
+      return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)
+    },
+    /**
+     * Return technical account JWT token
+     * @summary
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    async adminControllerGetTechnicalJwt(
+      options?: AxiosRequestConfig,
+    ): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<object>> {
+      const localVarAxiosArgs =
+        await localVarAxiosParamCreator.adminControllerGetTechnicalJwt(options)
+      return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)
+    },
+    /**
+     * Update version of schema, without creating nie version, it is not downgradable
+     * @summary Update version of schema
+     * @param {string} id
+     * @param {object} [data]
+     * @param {Array<any>} [files] Updateable files: data.json, uiSchema.json, data.xml
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    async adminControllerUpdateSchemaVersion(
+      id: string,
+      data?: object,
+      files?: Array<any>,
+      options?: AxiosRequestConfig,
+    ): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<void>> {
+      const localVarAxiosArgs = await localVarAxiosParamCreator.adminControllerUpdateSchemaVersion(
+        id,
+        data,
+        files,
+        options,
+      )
+      return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)
+    },
+    /**
+     * Upgrade version of schema, which create new schema version and can be rollbacked with downgrade schema
+     * @summary Upgrade version of schema
+     * @param {string} slug
+     * @param {object} [data]
+     * @param {Array<any>} [files] Optional files: data.json, data.xml, form.fo.xslt, schema.json, uiSchema.json, xmlTemplate.xml
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    async adminControllerUpgradeSchemaVersion(
+      slug: string,
+      data?: object,
+      files?: Array<any>,
+      options?: AxiosRequestConfig,
+    ): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<void>> {
+      const localVarAxiosArgs = await localVarAxiosParamCreator.adminControllerUpgradeSchemaVersion(
+        slug,
+        data,
+        files,
+        options,
+      )
+      return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)
+    },
+  }
+}
+
+/**
+ * ADMINApi - factory interface
+ * @export
+ */
+export const ADMINApiFactory = function (
+  configuration?: Configuration,
+  basePath?: string,
+  axios?: AxiosInstance,
+) {
+  const localVarFp = ADMINApiFp(configuration)
+  return {
+    /**
+     * Create schema with all files
+     * @summary Create new schema
+     * @param {object} [data]
+     * @param {Array<any>} [files] Required files: data.json, form.fo.xslt, schema.json, uiSchema.json, xmlTemplate.xml   Optional files: data.xml
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    adminControllerCreateSchema(
+      data?: object,
+      files?: Array<any>,
+      options?: AxiosRequestConfig,
+    ): AxiosPromise<void> {
+      return localVarFp
+        .adminControllerCreateSchema(data, files, options)
+        .then((request) => request(axios, basePath))
+    },
+    /**
+     * Downgrade schema to previous
+     * @summary Downgrade version of schema
+     * @param {string} slug
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    adminControllerDowngradeSchemaVersion(
+      slug: string,
+      options?: AxiosRequestConfig,
+    ): AxiosPromise<void> {
+      return localVarFp
+        .adminControllerDowngradeSchemaVersion(slug, options)
+        .then((request) => request(axios, basePath))
+    },
+    /**
+     * Return administration account JWT token
+     * @summary
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    adminControllerGetAdministrationJwt(options?: AxiosRequestConfig): AxiosPromise<object> {
+      return localVarFp
+        .adminControllerGetAdministrationJwt(options)
+        .then((request) => request(axios, basePath))
+    },
+    /**
+     * Return eid user JWT token
+     * @summary
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    adminControllerGetEidJwt(options?: AxiosRequestConfig): AxiosPromise<object> {
+      return localVarFp
+        .adminControllerGetEidJwt(options)
+        .then((request) => request(axios, basePath))
+    },
+    /**
+     * Return technical account JWT token
+     * @summary
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    adminControllerGetTechnicalJwt(options?: AxiosRequestConfig): AxiosPromise<object> {
+      return localVarFp
+        .adminControllerGetTechnicalJwt(options)
+        .then((request) => request(axios, basePath))
+    },
+    /**
+     * Update version of schema, without creating nie version, it is not downgradable
+     * @summary Update version of schema
+     * @param {string} id
+     * @param {object} [data]
+     * @param {Array<any>} [files] Updateable files: data.json, uiSchema.json, data.xml
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    adminControllerUpdateSchemaVersion(
+      id: string,
+      data?: object,
+      files?: Array<any>,
+      options?: AxiosRequestConfig,
+    ): AxiosPromise<void> {
+      return localVarFp
+        .adminControllerUpdateSchemaVersion(id, data, files, options)
+        .then((request) => request(axios, basePath))
+    },
+    /**
+     * Upgrade version of schema, which create new schema version and can be rollbacked with downgrade schema
+     * @summary Upgrade version of schema
+     * @param {string} slug
+     * @param {object} [data]
+     * @param {Array<any>} [files] Optional files: data.json, data.xml, form.fo.xslt, schema.json, uiSchema.json, xmlTemplate.xml
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    adminControllerUpgradeSchemaVersion(
+      slug: string,
+      data?: object,
+      files?: Array<any>,
+      options?: AxiosRequestConfig,
+    ): AxiosPromise<void> {
+      return localVarFp
+        .adminControllerUpgradeSchemaVersion(slug, data, files, options)
+        .then((request) => request(axios, basePath))
+    },
+  }
+}
+
+/**
+ * ADMINApi - object-oriented interface
+ * @export
+ * @class ADMINApi
+ * @extends {BaseAPI}
+ */
+export class ADMINApi extends BaseAPI {
+  /**
+   * Create schema with all files
+   * @summary Create new schema
+   * @param {object} [data]
+   * @param {Array<any>} [files] Required files: data.json, form.fo.xslt, schema.json, uiSchema.json, xmlTemplate.xml   Optional files: data.xml
+   * @param {*} [options] Override http request option.
+   * @throws {RequiredError}
+   * @memberof ADMINApi
+   */
+  public adminControllerCreateSchema(
+    data?: object,
+    files?: Array<any>,
+    options?: AxiosRequestConfig,
+  ) {
+    return ADMINApiFp(this.configuration)
+      .adminControllerCreateSchema(data, files, options)
+      .then((request) => request(this.axios, this.basePath))
+  }
+
+  /**
+   * Downgrade schema to previous
+   * @summary Downgrade version of schema
+   * @param {string} slug
+   * @param {*} [options] Override http request option.
+   * @throws {RequiredError}
+   * @memberof ADMINApi
+   */
+  public adminControllerDowngradeSchemaVersion(slug: string, options?: AxiosRequestConfig) {
+    return ADMINApiFp(this.configuration)
+      .adminControllerDowngradeSchemaVersion(slug, options)
+      .then((request) => request(this.axios, this.basePath))
+  }
+
+  /**
+   * Return administration account JWT token
+   * @summary
+   * @param {*} [options] Override http request option.
+   * @throws {RequiredError}
+   * @memberof ADMINApi
+   */
+  public adminControllerGetAdministrationJwt(options?: AxiosRequestConfig) {
+    return ADMINApiFp(this.configuration)
+      .adminControllerGetAdministrationJwt(options)
+      .then((request) => request(this.axios, this.basePath))
+  }
+
+  /**
+   * Return eid user JWT token
+   * @summary
+   * @param {*} [options] Override http request option.
+   * @throws {RequiredError}
+   * @memberof ADMINApi
+   */
+  public adminControllerGetEidJwt(options?: AxiosRequestConfig) {
+    return ADMINApiFp(this.configuration)
+      .adminControllerGetEidJwt(options)
+      .then((request) => request(this.axios, this.basePath))
+  }
+
+  /**
+   * Return technical account JWT token
+   * @summary
+   * @param {*} [options] Override http request option.
+   * @throws {RequiredError}
+   * @memberof ADMINApi
+   */
+  public adminControllerGetTechnicalJwt(options?: AxiosRequestConfig) {
+    return ADMINApiFp(this.configuration)
+      .adminControllerGetTechnicalJwt(options)
+      .then((request) => request(this.axios, this.basePath))
+  }
+
+  /**
+   * Update version of schema, without creating nie version, it is not downgradable
+   * @summary Update version of schema
+   * @param {string} id
+   * @param {object} [data]
+   * @param {Array<any>} [files] Updateable files: data.json, uiSchema.json, data.xml
+   * @param {*} [options] Override http request option.
+   * @throws {RequiredError}
+   * @memberof ADMINApi
+   */
+  public adminControllerUpdateSchemaVersion(
+    id: string,
+    data?: object,
+    files?: Array<any>,
+    options?: AxiosRequestConfig,
+  ) {
+    return ADMINApiFp(this.configuration)
+      .adminControllerUpdateSchemaVersion(id, data, files, options)
+      .then((request) => request(this.axios, this.basePath))
+  }
+
+  /**
+   * Upgrade version of schema, which create new schema version and can be rollbacked with downgrade schema
+   * @summary Upgrade version of schema
+   * @param {string} slug
+   * @param {object} [data]
+   * @param {Array<any>} [files] Optional files: data.json, data.xml, form.fo.xslt, schema.json, uiSchema.json, xmlTemplate.xml
+   * @param {*} [options] Override http request option.
+   * @throws {RequiredError}
+   * @memberof ADMINApi
+   */
+  public adminControllerUpgradeSchemaVersion(
+    slug: string,
+    data?: object,
+    files?: Array<any>,
+    options?: AxiosRequestConfig,
+  ) {
+    return ADMINApiFp(this.configuration)
+      .adminControllerUpgradeSchemaVersion(slug, data, files, options)
+      .then((request) => request(this.axios, this.basePath))
+  }
 }
 
 /**
@@ -4814,6 +6165,138 @@ export class FilesApi extends BaseAPI {
 }
 
 /**
+ * GinisApi - axios parameter creator
+ * @export
+ */
+export const GinisApiAxiosParamCreator = function (configuration?: Configuration) {
+  return {
+    /**
+     * Return GINIS document by ID
+     * @summary
+     * @param {string} formId
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    ginisControllerGetGinisDocumentByFormId: async (
+      formId: string,
+      options: AxiosRequestConfig = {},
+    ): Promise<RequestArgs> => {
+      // verify required parameter 'formId' is not null or undefined
+      assertParamExists('ginisControllerGetGinisDocumentByFormId', 'formId', formId)
+      const localVarPath = `/ginis/{formId}`.replace(
+        `{${'formId'}}`,
+        encodeURIComponent(String(formId)),
+      )
+      // use dummy base URL string because the URL constructor only accepts absolute URLs.
+      const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL)
+      let baseOptions
+      if (configuration) {
+        baseOptions = configuration.baseOptions
+      }
+
+      const localVarRequestOptions = { method: 'GET', ...baseOptions, ...options }
+      const localVarHeaderParameter = {} as any
+      const localVarQueryParameter = {} as any
+
+      // authentication bearer required
+      // http bearer authentication required
+      await setBearerAuthToObject(localVarHeaderParameter, configuration)
+
+      setSearchParams(localVarUrlObj, localVarQueryParameter)
+      let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {}
+      localVarRequestOptions.headers = {
+        ...localVarHeaderParameter,
+        ...headersFromBaseOptions,
+        ...options.headers,
+      }
+
+      return {
+        url: toPathString(localVarUrlObj),
+        options: localVarRequestOptions,
+      }
+    },
+  }
+}
+
+/**
+ * GinisApi - functional programming interface
+ * @export
+ */
+export const GinisApiFp = function (configuration?: Configuration) {
+  const localVarAxiosParamCreator = GinisApiAxiosParamCreator(configuration)
+  return {
+    /**
+     * Return GINIS document by ID
+     * @summary
+     * @param {string} formId
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    async ginisControllerGetGinisDocumentByFormId(
+      formId: string,
+      options?: AxiosRequestConfig,
+    ): Promise<
+      (axios?: AxiosInstance, basePath?: string) => AxiosPromise<GinisDocumentDetailResponseDto>
+    > {
+      const localVarAxiosArgs =
+        await localVarAxiosParamCreator.ginisControllerGetGinisDocumentByFormId(formId, options)
+      return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)
+    },
+  }
+}
+
+/**
+ * GinisApi - factory interface
+ * @export
+ */
+export const GinisApiFactory = function (
+  configuration?: Configuration,
+  basePath?: string,
+  axios?: AxiosInstance,
+) {
+  const localVarFp = GinisApiFp(configuration)
+  return {
+    /**
+     * Return GINIS document by ID
+     * @summary
+     * @param {string} formId
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    ginisControllerGetGinisDocumentByFormId(
+      formId: string,
+      options?: AxiosRequestConfig,
+    ): AxiosPromise<GinisDocumentDetailResponseDto> {
+      return localVarFp
+        .ginisControllerGetGinisDocumentByFormId(formId, options)
+        .then((request) => request(axios, basePath))
+    },
+  }
+}
+
+/**
+ * GinisApi - object-oriented interface
+ * @export
+ * @class GinisApi
+ * @extends {BaseAPI}
+ */
+export class GinisApi extends BaseAPI {
+  /**
+   * Return GINIS document by ID
+   * @summary
+   * @param {string} formId
+   * @param {*} [options] Override http request option.
+   * @throws {RequiredError}
+   * @memberof GinisApi
+   */
+  public ginisControllerGetGinisDocumentByFormId(formId: string, options?: AxiosRequestConfig) {
+    return GinisApiFp(this.configuration)
+      .ginisControllerGetGinisDocumentByFormId(formId, options)
+      .then((request) => request(this.axios, this.basePath))
+  }
+}
+
+/**
  * HealthcheckApi - axios parameter creator
  * @export
  */
@@ -4927,6 +6410,51 @@ export class HealthcheckApi extends BaseAPI {
 export const NasesApiAxiosParamCreator = function (configuration?: Configuration) {
   return {
     /**
+     * Check if given form can be sent to Nases (all files are scanned etc.)
+     * @summary
+     * @param {string} id
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    nasesControllerCheckSendConditions: async (
+      id: string,
+      options: AxiosRequestConfig = {},
+    ): Promise<RequestArgs> => {
+      // verify required parameter 'id' is not null or undefined
+      assertParamExists('nasesControllerCheckSendConditions', 'id', id)
+      const localVarPath = `/nases/eid/can-send/{id}`.replace(
+        `{${'id'}}`,
+        encodeURIComponent(String(id)),
+      )
+      // use dummy base URL string because the URL constructor only accepts absolute URLs.
+      const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL)
+      let baseOptions
+      if (configuration) {
+        baseOptions = configuration.baseOptions
+      }
+
+      const localVarRequestOptions = { method: 'GET', ...baseOptions, ...options }
+      const localVarHeaderParameter = {} as any
+      const localVarQueryParameter = {} as any
+
+      // authentication bearer required
+      // http bearer authentication required
+      await setBearerAuthToObject(localVarHeaderParameter, configuration)
+
+      setSearchParams(localVarUrlObj, localVarQueryParameter)
+      let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {}
+      localVarRequestOptions.headers = {
+        ...localVarHeaderParameter,
+        ...headersFromBaseOptions,
+        ...options.headers,
+      }
+
+      return {
+        url: toPathString(localVarUrlObj),
+        options: localVarRequestOptions,
+      }
+    },
+    /**
      * Create id in our backend, which you need to send in form as external id. Save also data necessary for envelope to send message to NASES
      * @summary
      * @param {CreateFormRequestDto} createFormRequestDto
@@ -5030,15 +6558,19 @@ export const NasesApiAxiosParamCreator = function (configuration?: Configuration
       }
     },
     /**
-     * Return administration account JWT token
+     * Archive form (hide from user but keep in database)
      * @summary
+     * @param {string} id
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
-    nasesControllerGetAdministrationJwt: async (
+    nasesControllerDeleteForm: async (
+      id: string,
       options: AxiosRequestConfig = {},
     ): Promise<RequestArgs> => {
-      const localVarPath = `/nases/administration-jwt`
+      // verify required parameter 'id' is not null or undefined
+      assertParamExists('nasesControllerDeleteForm', 'id', id)
+      const localVarPath = `/nases/{id}`.replace(`{${'id'}}`, encodeURIComponent(String(id)))
       // use dummy base URL string because the URL constructor only accepts absolute URLs.
       const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL)
       let baseOptions
@@ -5046,43 +6578,7 @@ export const NasesApiAxiosParamCreator = function (configuration?: Configuration
         baseOptions = configuration.baseOptions
       }
 
-      const localVarRequestOptions = { method: 'GET', ...baseOptions, ...options }
-      const localVarHeaderParameter = {} as any
-      const localVarQueryParameter = {} as any
-
-      // authentication bearer required
-      // http bearer authentication required
-      await setBearerAuthToObject(localVarHeaderParameter, configuration)
-
-      setSearchParams(localVarUrlObj, localVarQueryParameter)
-      let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {}
-      localVarRequestOptions.headers = {
-        ...localVarHeaderParameter,
-        ...headersFromBaseOptions,
-        ...options.headers,
-      }
-
-      return {
-        url: toPathString(localVarUrlObj),
-        options: localVarRequestOptions,
-      }
-    },
-    /**
-     * Return eid user JWT token
-     * @summary
-     * @param {*} [options] Override http request option.
-     * @throws {RequiredError}
-     */
-    nasesControllerGetEidJwt: async (options: AxiosRequestConfig = {}): Promise<RequestArgs> => {
-      const localVarPath = `/nases/eid-jwt`
-      // use dummy base URL string because the URL constructor only accepts absolute URLs.
-      const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL)
-      let baseOptions
-      if (configuration) {
-        baseOptions = configuration.baseOptions
-      }
-
-      const localVarRequestOptions = { method: 'GET', ...baseOptions, ...options }
+      const localVarRequestOptions = { method: 'DELETE', ...baseOptions, ...options }
       const localVarHeaderParameter = {} as any
       const localVarQueryParameter = {} as any
 
@@ -5205,44 +6701,6 @@ export const NasesApiAxiosParamCreator = function (configuration?: Configuration
       if (schemaVersionId !== undefined) {
         localVarQueryParameter['schemaVersionId'] = schemaVersionId
       }
-
-      setSearchParams(localVarUrlObj, localVarQueryParameter)
-      let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {}
-      localVarRequestOptions.headers = {
-        ...localVarHeaderParameter,
-        ...headersFromBaseOptions,
-        ...options.headers,
-      }
-
-      return {
-        url: toPathString(localVarUrlObj),
-        options: localVarRequestOptions,
-      }
-    },
-    /**
-     * Return technical account JWT token
-     * @summary
-     * @param {*} [options] Override http request option.
-     * @throws {RequiredError}
-     */
-    nasesControllerGetTechnicalJwt: async (
-      options: AxiosRequestConfig = {},
-    ): Promise<RequestArgs> => {
-      const localVarPath = `/nases/technical-jwt`
-      // use dummy base URL string because the URL constructor only accepts absolute URLs.
-      const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL)
-      let baseOptions
-      if (configuration) {
-        baseOptions = configuration.baseOptions
-      }
-
-      const localVarRequestOptions = { method: 'GET', ...baseOptions, ...options }
-      const localVarHeaderParameter = {} as any
-      const localVarQueryParameter = {} as any
-
-      // authentication bearer required
-      // http bearer authentication required
-      await setBearerAuthToObject(localVarHeaderParameter, configuration)
 
       setSearchParams(localVarUrlObj, localVarQueryParameter)
       let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {}
@@ -5640,6 +7098,23 @@ export const NasesApiFp = function (configuration?: Configuration) {
   const localVarAxiosParamCreator = NasesApiAxiosParamCreator(configuration)
   return {
     /**
+     * Check if given form can be sent to Nases (all files are scanned etc.)
+     * @summary
+     * @param {string} id
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    async nasesControllerCheckSendConditions(
+      id: string,
+      options?: AxiosRequestConfig,
+    ): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<CanSendResponseDto>> {
+      const localVarAxiosArgs = await localVarAxiosParamCreator.nasesControllerCheckSendConditions(
+        id,
+        options,
+      )
+      return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)
+    },
+    /**
      * Create id in our backend, which you need to send in form as external id. Save also data necessary for envelope to send message to NASES
      * @summary
      * @param {CreateFormRequestDto} createFormRequestDto
@@ -5675,29 +7150,20 @@ export const NasesApiFp = function (configuration?: Configuration) {
       return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)
     },
     /**
-     * Return administration account JWT token
+     * Archive form (hide from user but keep in database)
      * @summary
+     * @param {string} id
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
-    async nasesControllerGetAdministrationJwt(
+    async nasesControllerDeleteForm(
+      id: string,
       options?: AxiosRequestConfig,
-    ): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<object>> {
-      const localVarAxiosArgs = await localVarAxiosParamCreator.nasesControllerGetAdministrationJwt(
+    ): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<void>> {
+      const localVarAxiosArgs = await localVarAxiosParamCreator.nasesControllerDeleteForm(
+        id,
         options,
       )
-      return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)
-    },
-    /**
-     * Return eid user JWT token
-     * @summary
-     * @param {*} [options] Override http request option.
-     * @throws {RequiredError}
-     */
-    async nasesControllerGetEidJwt(
-      options?: AxiosRequestConfig,
-    ): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<object>> {
-      const localVarAxiosArgs = await localVarAxiosParamCreator.nasesControllerGetEidJwt(options)
       return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)
     },
     /**
@@ -5747,20 +7213,6 @@ export const NasesApiFp = function (configuration?: Configuration) {
       return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)
     },
     /**
-     * Return technical account JWT token
-     * @summary
-     * @param {*} [options] Override http request option.
-     * @throws {RequiredError}
-     */
-    async nasesControllerGetTechnicalJwt(
-      options?: AxiosRequestConfig,
-    ): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<object>> {
-      const localVarAxiosArgs = await localVarAxiosParamCreator.nasesControllerGetTechnicalJwt(
-        options,
-      )
-      return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)
-    },
-    /**
      * Assign form with no assigned user to the authenticated user
      * @summary
      * @param {string} id
@@ -5770,7 +7222,7 @@ export const NasesApiFp = function (configuration?: Configuration) {
     async nasesControllerMigrateForm(
       id: string,
       options?: AxiosRequestConfig,
-    ): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<void>> {
+    ): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<MigrateFormResponseDto>> {
       const localVarAxiosArgs = await localVarAxiosParamCreator.nasesControllerMigrateForm(
         id,
         options,
@@ -5904,6 +7356,21 @@ export const NasesApiFactory = function (
   const localVarFp = NasesApiFp(configuration)
   return {
     /**
+     * Check if given form can be sent to Nases (all files are scanned etc.)
+     * @summary
+     * @param {string} id
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    nasesControllerCheckSendConditions(
+      id: string,
+      options?: AxiosRequestConfig,
+    ): AxiosPromise<CanSendResponseDto> {
+      return localVarFp
+        .nasesControllerCheckSendConditions(id, options)
+        .then((request) => request(axios, basePath))
+    },
+    /**
      * Create id in our backend, which you need to send in form as external id. Save also data necessary for envelope to send message to NASES
      * @summary
      * @param {CreateFormRequestDto} createFormRequestDto
@@ -5935,25 +7402,15 @@ export const NasesApiFactory = function (
         .then((request) => request(axios, basePath))
     },
     /**
-     * Return administration account JWT token
+     * Archive form (hide from user but keep in database)
      * @summary
+     * @param {string} id
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
-    nasesControllerGetAdministrationJwt(options?: AxiosRequestConfig): AxiosPromise<object> {
+    nasesControllerDeleteForm(id: string, options?: AxiosRequestConfig): AxiosPromise<void> {
       return localVarFp
-        .nasesControllerGetAdministrationJwt(options)
-        .then((request) => request(axios, basePath))
-    },
-    /**
-     * Return eid user JWT token
-     * @summary
-     * @param {*} [options] Override http request option.
-     * @throws {RequiredError}
-     */
-    nasesControllerGetEidJwt(options?: AxiosRequestConfig): AxiosPromise<object> {
-      return localVarFp
-        .nasesControllerGetEidJwt(options)
+        .nasesControllerDeleteForm(id, options)
         .then((request) => request(axios, basePath))
     },
     /**
@@ -6005,24 +7462,16 @@ export const NasesApiFactory = function (
         .then((request) => request(axios, basePath))
     },
     /**
-     * Return technical account JWT token
-     * @summary
-     * @param {*} [options] Override http request option.
-     * @throws {RequiredError}
-     */
-    nasesControllerGetTechnicalJwt(options?: AxiosRequestConfig): AxiosPromise<object> {
-      return localVarFp
-        .nasesControllerGetTechnicalJwt(options)
-        .then((request) => request(axios, basePath))
-    },
-    /**
      * Assign form with no assigned user to the authenticated user
      * @summary
      * @param {string} id
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
-    nasesControllerMigrateForm(id: string, options?: AxiosRequestConfig): AxiosPromise<void> {
+    nasesControllerMigrateForm(
+      id: string,
+      options?: AxiosRequestConfig,
+    ): AxiosPromise<MigrateFormResponseDto> {
       return localVarFp
         .nasesControllerMigrateForm(id, options)
         .then((request) => request(axios, basePath))
@@ -6137,6 +7586,20 @@ export const NasesApiFactory = function (
  */
 export class NasesApi extends BaseAPI {
   /**
+   * Check if given form can be sent to Nases (all files are scanned etc.)
+   * @summary
+   * @param {string} id
+   * @param {*} [options] Override http request option.
+   * @throws {RequiredError}
+   * @memberof NasesApi
+   */
+  public nasesControllerCheckSendConditions(id: string, options?: AxiosRequestConfig) {
+    return NasesApiFp(this.configuration)
+      .nasesControllerCheckSendConditions(id, options)
+      .then((request) => request(this.axios, this.basePath))
+  }
+
+  /**
    * Create id in our backend, which you need to send in form as external id. Save also data necessary for envelope to send message to NASES
    * @summary
    * @param {CreateFormRequestDto} createFormRequestDto
@@ -6172,28 +7635,16 @@ export class NasesApi extends BaseAPI {
   }
 
   /**
-   * Return administration account JWT token
+   * Archive form (hide from user but keep in database)
    * @summary
+   * @param {string} id
    * @param {*} [options] Override http request option.
    * @throws {RequiredError}
    * @memberof NasesApi
    */
-  public nasesControllerGetAdministrationJwt(options?: AxiosRequestConfig) {
+  public nasesControllerDeleteForm(id: string, options?: AxiosRequestConfig) {
     return NasesApiFp(this.configuration)
-      .nasesControllerGetAdministrationJwt(options)
-      .then((request) => request(this.axios, this.basePath))
-  }
-
-  /**
-   * Return eid user JWT token
-   * @summary
-   * @param {*} [options] Override http request option.
-   * @throws {RequiredError}
-   * @memberof NasesApi
-   */
-  public nasesControllerGetEidJwt(options?: AxiosRequestConfig) {
-    return NasesApiFp(this.configuration)
-      .nasesControllerGetEidJwt(options)
+      .nasesControllerDeleteForm(id, options)
       .then((request) => request(this.axios, this.basePath))
   }
 
@@ -6243,19 +7694,6 @@ export class NasesApi extends BaseAPI {
         schemaVersionId,
         options,
       )
-      .then((request) => request(this.axios, this.basePath))
-  }
-
-  /**
-   * Return technical account JWT token
-   * @summary
-   * @param {*} [options] Override http request option.
-   * @throws {RequiredError}
-   * @memberof NasesApi
-   */
-  public nasesControllerGetTechnicalJwt(options?: AxiosRequestConfig) {
-    return NasesApiFp(this.configuration)
-      .nasesControllerGetTechnicalJwt(options)
       .then((request) => request(this.axios, this.basePath))
   }
 
@@ -6385,6 +7823,64 @@ export class NasesApi extends BaseAPI {
  */
 export const SchemasApiAxiosParamCreator = function (configuration?: Configuration) {
   return {
+    /**
+     * Returns schema versions according to query.
+     * @summary
+     * @param {boolean} [onlyLatest] True if only the latest version of each form is desirable
+     * @param {string} [slug] Schema slug for which the versions should be retrieved
+     * @param {string} [currentPage] Page number
+     * @param {string} [pagination] Number of items per page
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    schemasControllerGetAllSchemas: async (
+      onlyLatest?: boolean,
+      slug?: string,
+      currentPage?: string,
+      pagination?: string,
+      options: AxiosRequestConfig = {},
+    ): Promise<RequestArgs> => {
+      const localVarPath = `/schemas`
+      // use dummy base URL string because the URL constructor only accepts absolute URLs.
+      const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL)
+      let baseOptions
+      if (configuration) {
+        baseOptions = configuration.baseOptions
+      }
+
+      const localVarRequestOptions = { method: 'GET', ...baseOptions, ...options }
+      const localVarHeaderParameter = {} as any
+      const localVarQueryParameter = {} as any
+
+      if (onlyLatest !== undefined) {
+        localVarQueryParameter['onlyLatest'] = onlyLatest
+      }
+
+      if (slug !== undefined) {
+        localVarQueryParameter['slug'] = slug
+      }
+
+      if (currentPage !== undefined) {
+        localVarQueryParameter['currentPage'] = currentPage
+      }
+
+      if (pagination !== undefined) {
+        localVarQueryParameter['pagination'] = pagination
+      }
+
+      setSearchParams(localVarUrlObj, localVarQueryParameter)
+      let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {}
+      localVarRequestOptions.headers = {
+        ...localVarHeaderParameter,
+        ...headersFromBaseOptions,
+        ...options.headers,
+      }
+
+      return {
+        url: toPathString(localVarUrlObj),
+        options: localVarRequestOptions,
+      }
+    },
     /**
      * Returns schema versions according to query.
      * @summary
@@ -6551,6 +8047,34 @@ export const SchemasApiFp = function (configuration?: Configuration) {
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
+    async schemasControllerGetAllSchemas(
+      onlyLatest?: boolean,
+      slug?: string,
+      currentPage?: string,
+      pagination?: string,
+      options?: AxiosRequestConfig,
+    ): Promise<
+      (axios?: AxiosInstance, basePath?: string) => AxiosPromise<SchemaVersionsResponseDto>
+    > {
+      const localVarAxiosArgs = await localVarAxiosParamCreator.schemasControllerGetAllSchemas(
+        onlyLatest,
+        slug,
+        currentPage,
+        pagination,
+        options,
+      )
+      return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)
+    },
+    /**
+     * Returns schema versions according to query.
+     * @summary
+     * @param {boolean} [onlyLatest] True if only the latest version of each form is desirable
+     * @param {string} [slug] Schema slug for which the versions should be retrieved
+     * @param {string} [currentPage] Page number
+     * @param {string} [pagination] Number of items per page
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
     async schemasControllerGetAllVersions(
       onlyLatest?: boolean,
       slug?: string,
@@ -6632,6 +8156,27 @@ export const SchemasApiFactory = function (
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
+    schemasControllerGetAllSchemas(
+      onlyLatest?: boolean,
+      slug?: string,
+      currentPage?: string,
+      pagination?: string,
+      options?: AxiosRequestConfig,
+    ): AxiosPromise<SchemaVersionsResponseDto> {
+      return localVarFp
+        .schemasControllerGetAllSchemas(onlyLatest, slug, currentPage, pagination, options)
+        .then((request) => request(axios, basePath))
+    },
+    /**
+     * Returns schema versions according to query.
+     * @summary
+     * @param {boolean} [onlyLatest] True if only the latest version of each form is desirable
+     * @param {string} [slug] Schema slug for which the versions should be retrieved
+     * @param {string} [currentPage] Page number
+     * @param {string} [pagination] Number of items per page
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
     schemasControllerGetAllVersions(
       onlyLatest?: boolean,
       slug?: string,
@@ -6685,6 +8230,29 @@ export const SchemasApiFactory = function (
  * @extends {BaseAPI}
  */
 export class SchemasApi extends BaseAPI {
+  /**
+   * Returns schema versions according to query.
+   * @summary
+   * @param {boolean} [onlyLatest] True if only the latest version of each form is desirable
+   * @param {string} [slug] Schema slug for which the versions should be retrieved
+   * @param {string} [currentPage] Page number
+   * @param {string} [pagination] Number of items per page
+   * @param {*} [options] Override http request option.
+   * @throws {RequiredError}
+   * @memberof SchemasApi
+   */
+  public schemasControllerGetAllSchemas(
+    onlyLatest?: boolean,
+    slug?: string,
+    currentPage?: string,
+    pagination?: string,
+    options?: AxiosRequestConfig,
+  ) {
+    return SchemasApiFp(this.configuration)
+      .schemasControllerGetAllSchemas(onlyLatest, slug, currentPage, pagination, options)
+      .then((request) => request(this.axios, this.basePath))
+  }
+
   /**
    * Returns schema versions according to query.
    * @summary
@@ -6901,9 +8469,8 @@ export const StatusesApiFp = function (configuration?: Configuration) {
     async statusControllerIsFormsRunning(
       options?: AxiosRequestConfig,
     ): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<ServiceRunningDto>> {
-      const localVarAxiosArgs = await localVarAxiosParamCreator.statusControllerIsFormsRunning(
-        options,
-      )
+      const localVarAxiosArgs =
+        await localVarAxiosParamCreator.statusControllerIsFormsRunning(options)
       return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)
     },
     /**
@@ -6915,9 +8482,8 @@ export const StatusesApiFp = function (configuration?: Configuration) {
     async statusControllerIsMinioRunning(
       options?: AxiosRequestConfig,
     ): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<ServiceRunningDto>> {
-      const localVarAxiosArgs = await localVarAxiosParamCreator.statusControllerIsMinioRunning(
-        options,
-      )
+      const localVarAxiosArgs =
+        await localVarAxiosParamCreator.statusControllerIsMinioRunning(options)
       return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)
     },
     /**
@@ -6929,9 +8495,8 @@ export const StatusesApiFp = function (configuration?: Configuration) {
     async statusControllerIsPrismaRunning(
       options?: AxiosRequestConfig,
     ): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<ServiceRunningDto>> {
-      const localVarAxiosArgs = await localVarAxiosParamCreator.statusControllerIsPrismaRunning(
-        options,
-      )
+      const localVarAxiosArgs =
+        await localVarAxiosParamCreator.statusControllerIsPrismaRunning(options)
       return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)
     },
     /**

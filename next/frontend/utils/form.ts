@@ -6,7 +6,8 @@ import {
   ValidatorType,
 } from '@rjsf/utils'
 import { customizeValidator } from '@rjsf/validator-ajv8'
-import type { Options, SchemaValidateFunction } from 'ajv'
+import { CustomValidatorOptionsType } from '@rjsf/validator-ajv8/src/types'
+import type { Format, Options, SchemaValidateFunction } from 'ajv'
 import Ajv from 'ajv'
 import traverse from 'traverse'
 import { validate as validateUuid, version as uuidVersion } from 'uuid'
@@ -18,12 +19,31 @@ import { FormFileUploadFileInfo, FormFileUploadStatusEnum } from '../types/formF
  * of them to ensure consistent behaviour.
  *
  * The default behaviour of RJSF is to prefill all the arrays with minKeys value, with default or
- * `null` value. This make sense for string fields (if there are e.g. 2 required string fields, the
- * library will create 2 empty ones), however we don't want this behaviour as e.g. for files it doesn't
- * make sense (there is nothing such an empty file value).
+ * `null` value. For most of our use-cases this doesn't make sense. As multiple file upload, select
+ * with multiple options or checkbox groups are arrays, e.g. them having minKeys of 1 would make
+ * RJSF to prefill them which would result to `[null]` value which is not correct.
+ *
+ * Unfortunately, there are cases where this behaviour is needed. For example, array fields contain
+ * a list of objects, not prefilling them would require user to manually click "Add" button to add
+ * the first item. This is not a good UX. Therefore, we implemented a patch that allows us to
+ * override this behaviour for specific fields using `overrideArrayMinItemsBehaviour` keyword.
  */
 export const defaultFormStateBehavior: Experimental_DefaultFormStateBehavior = {
   arrayMinItems: { populate: 'never' },
+}
+
+declare module 'json-schema' {
+  export interface JSONSchema7 {
+    pospID?: string
+    pospVersion?: string
+    hash?: string
+    stepperTitle?: string
+    file?: boolean
+    ciselnik?: {
+      id: string
+    }
+    // overrideArrayMinItemsBehaviour is declared in RJSF patch
+  }
 }
 
 /**
@@ -33,51 +53,81 @@ export const getAjvFormKeywords = (
   fileValidateFn?: SchemaValidateFunction,
 ): Options['keywords'] => {
   return [
-    // TOOD: Remove
-    {
-      keyword: 'comment',
-    },
-    // TOOD: Remove
-    {
-      keyword: 'example',
-    },
-    // TOOD: Remove
-    {
-      keyword: 'timeFromTo',
-    },
-    // TOOD: Remove
-    {
-      keyword: 'dateFromTo',
-    },
+    // Top-level schema
     {
       keyword: 'pospID',
     },
     {
       keyword: 'pospVersion',
     },
-    // TODO: Improve validation
-    {
-      keyword: 'ciselnik',
-    },
     {
       keyword: 'slug',
     },
+    // Step schema
     {
       keyword: 'hash',
     },
     {
+      keyword: 'stepperTitle',
+    },
+    // File field schema
+    {
       keyword: 'file',
       validate: fileValidateFn,
     },
+    // Select field schema
+    // TODO: Improve
+    {
+      keyword: 'ciselnik',
+    },
+    // Array field schema
+    {
+      keyword: 'overrideArrayMinItemsBehaviour',
+    },
   ]
 }
+
+// Copy of https://github.com/ajv-validator/ajv-formats/blob/4dd65447575b35d0187c6b125383366969e6267e/src/formats.ts#L180C1-L186C2
+function compareTime(s1: string, s2: string): number | undefined {
+  if (!(s1 && s2)) return undefined
+  const t1 = new Date(`2020-01-01T${s1}`).valueOf()
+  const t2 = new Date(`2020-01-01T${s2}`).valueOf()
+  if (!(t1 && t2)) return undefined
+  return t1 - t2
+}
+
+export const parseRatio = (value: string) => {
+  const ratioRegex = /^(0|[1-9]\d*)\/([1-9]\d*)$/
+  if (!ratioRegex.test(value)) {
+    return { isValid: false }
+  }
+
+  const parts = value.split('/')
+  const numerator = parseInt(parts[0], 10)
+  const denominator = parseInt(parts[1], 10)
+
+  if (numerator > denominator) {
+    return { isValid: false }
+  }
+
+  return { isValid: true, numerator, denominator }
+}
+
 export const ajvFormats = {
-  // TODO: Explore if only Slovak zip codes are supported
   zip: /\b\d{5}\b/,
   // TODO: Remove, but this is needed for form to compile
   ciselnik: () => true,
-  localTime: () => true,
-}
+  // https://blog.kevinchisholm.com/javascript/javascript-e164-phone-number-validation/
+  'phone-number': /^\+[1-9]\d{10,14}$/,
+  localTime: {
+    // https://stackoverflow.com/a/51177696
+    validate: /^(\d|0\d|1\d|2[0-3]):[0-5]\d$/,
+    compare: compareTime,
+  },
+  ratio: {
+    validate: (value: string) => parseRatio(value).isValid,
+  },
+} satisfies Record<string, Format>
 
 /**
  * Extracts used file UUIDs from form data.
@@ -117,6 +167,7 @@ export const getFileUuids = (schema: RJSFSchema, formData: GenericObjectType) =>
 
   const instance = new Ajv({
     strict: true,
+    $data: true,
     allErrors: true,
     keywords: getAjvFormKeywords(fileValidateFn),
     formats: ajvFormats,
@@ -189,9 +240,11 @@ export const validateSummary = (
   }
 
   const validator: ValidatorType = customizeValidator({
-    customFormats: ajvFormats,
+    // The type in @rjsf/validator-ajv8 is wrong.
+    customFormats: ajvFormats as unknown as CustomValidatorOptionsType['customFormats'],
     ajvOptionsOverrides: {
-      strict: true,
+      // RJSF doesn't support strict
+      $data: true,
       keywords: getAjvFormKeywords(fileValidateFn),
     },
   })
@@ -209,9 +262,12 @@ export const validateSummary = (
   return { infectedFiles, scanningFiles, uploadingFiles, errorSchema }
 }
 
-export const rjfsValidator = customizeValidator({
-  customFormats: ajvFormats,
+export const rjsfValidator = customizeValidator({
+  // The type in @rjsf/validator-ajv8 is wrong.
+  customFormats: ajvFormats as unknown as CustomValidatorOptionsType['customFormats'],
   ajvOptionsOverrides: {
+    // RJSF doesn't support strict
+    $data: true,
     keywords: getAjvFormKeywords(),
   },
 })

@@ -1,11 +1,7 @@
 import React, { createContext, PropsWithChildren, useContext, useMemo } from 'react'
 
 import { validateSummary } from '../../../../frontend/utils/form'
-import {
-  checkPathForErrors,
-  formHasErrors,
-  isFormSubmitDisabled,
-} from '../../../../frontend/utils/formSummary'
+import { checkPathForErrors, formHasErrors } from '../../../../frontend/utils/formSummary'
 import { useFormFileUpload } from '../../useFormFileUpload'
 import { useFormState } from '../../useFormState'
 
@@ -19,7 +15,6 @@ const useGetContext = () => {
     [formData, schema, getFileInfoById],
   )
   const hasErrors = formHasErrors(errorSchema)
-  const submitDisabled = isFormSubmitDisabled(errorSchema, infectedFiles)
 
   const fieldHasError = (fieldId: string) => checkPathForErrors(fieldId, errorSchema)
 
@@ -30,7 +25,6 @@ const useGetContext = () => {
     scanningFiles,
     fieldHasError,
     hasErrors,
-    submitDisabled,
   }
 }
 

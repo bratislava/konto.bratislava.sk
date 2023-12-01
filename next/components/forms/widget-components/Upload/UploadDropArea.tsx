@@ -1,7 +1,7 @@
 import { UploadIcon } from '@assets/ui-icons'
 import cx from 'classnames'
 import { useTranslation } from 'next-i18next'
-import React, { forwardRef, useRef } from 'react'
+import React, { forwardRef } from 'react'
 import { DropEvent } from 'react-aria'
 import {
   Button as ReactAriaButton,
@@ -29,7 +29,6 @@ interface UploadDropAreaProps {
 const UploadDropArea = forwardRef<HTMLButtonElement, UploadDropAreaProps>(
   ({ disabled, sizeLimit, supportedFormats, allowsMultiple, onUpload = () => {} }, ref) => {
     const { t } = useTranslation('account', { keyPrefix: 'Upload' })
-    const fileTriggerRef = useRef<HTMLInputElement>(null)
 
     const displaySupportedFileExtensions = getDisplaySupportedFileExtensions(supportedFormats)
     const displayMaxFileSize = getDisplayMaxFileSize(sizeLimit)
@@ -44,7 +43,7 @@ const UploadDropArea = forwardRef<HTMLButtonElement, UploadDropAreaProps>(
         'border-gray-400 bg-gray-50': !disabled && isDropTarget,
       })
 
-    const handleOnChange = async (files: FileList | null) => {
+    const handleOnSelect = async (files: FileList | null) => {
       if (disabled) {
         return
       }
@@ -55,13 +54,6 @@ const UploadDropArea = forwardRef<HTMLButtonElement, UploadDropAreaProps>(
       }
 
       onUpload(Array.from(files))
-
-      // If this is not done, selecting the same file again after the first upload will not trigger the onChange event,
-      // as the browser does not consider this a change in the input field's state.
-      // https://stackoverflow.com/a/60887378
-      if (fileTriggerRef.current) {
-        fileTriggerRef.current.value = ''
-      }
     }
 
     const handleOnDrop = async (event: DropEvent) => {
@@ -88,10 +80,9 @@ const UploadDropArea = forwardRef<HTMLButtonElement, UploadDropAreaProps>(
       <div className="relative h-40 w-full">
         <DropZone className={getDropZoneClassName} onDrop={handleOnDrop}>
           <FileTrigger
-            onChange={handleOnChange}
+            onSelect={handleOnSelect}
             acceptedFileTypes={getSupportedFileExtensions(supportedFormats)}
             allowsMultiple={allowsMultiple}
-            ref={fileTriggerRef}
           >
             <ReactAriaButton
               ref={ref}
@@ -104,7 +95,9 @@ const UploadDropArea = forwardRef<HTMLButtonElement, UploadDropAreaProps>(
                 </div>
               </div>
 
-              <div className="text-16-semibold">{t('dragAndDrop')}</div>
+              <div className="text-16-semibold">
+                {allowsMultiple ? t('uploadFiles') : t('uploadFile')}
+              </div>
 
               {sizeLimit || supportedFormats?.length ? (
                 <dl className="text-p3 flex gap-2">

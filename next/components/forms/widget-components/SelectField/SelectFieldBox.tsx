@@ -1,3 +1,4 @@
+import cx from 'classnames'
 import { useTranslation } from 'next-i18next'
 import React, { ForwardedRef, forwardRef, ForwardRefRenderFunction } from 'react'
 
@@ -11,7 +12,7 @@ interface SelectFieldBoxProps {
   placeholder?: string
   filter: string
   filterRef?: React.RefObject<HTMLInputElement>
-  maxWordSize?: number
+  disabled?: boolean
   onRemove: (optionId: number) => void
   onRemoveAll: () => void
   onFilterChange: (value: string) => void
@@ -34,7 +35,7 @@ const SelectFieldBoxComponent: ForwardRefRenderFunction<HTMLDivElement, SelectFi
     placeholder,
     filter,
     filterRef,
-    maxWordSize = 17,
+    disabled,
     onRemove,
     onRemoveAll,
     onFilterChange,
@@ -51,10 +52,10 @@ const SelectFieldBoxComponent: ForwardRefRenderFunction<HTMLDivElement, SelectFi
     return !value || value.length === 0
       ? 13
       : filter.length <= 1
-      ? 1
-      : filter.length >= 9
-      ? 13
-      : filter.length
+        ? 1
+        : filter.length >= 9
+          ? 13
+          : filter.length
   }
 
   const getPlaceholder = () => {
@@ -95,11 +96,7 @@ const SelectFieldBoxComponent: ForwardRefRenderFunction<HTMLDivElement, SelectFi
                 />
               ))
             ) : (
-              <p>
-                {`${getOptionTitle(value[0]).slice(0, maxWordSize)}${
-                  getOptionTitle(value[0]).length > maxWordSize ? '...' : ''
-                }`}
-              </p>
+              <p>{getOptionTitle(value[0])}</p>
             )
           ) : (
             <Tag text={multipleOptionsTagText} size="small" onRemove={onRemoveAll} removable />
@@ -109,7 +106,9 @@ const SelectFieldBoxComponent: ForwardRefRenderFunction<HTMLDivElement, SelectFi
       {(multiple || (!multiple && (!value || value.length === 0))) && (
         <input
           ref={filterRef}
-          className="text-16 max-w-[80px] border-0 outline-none xs:max-w-none"
+          className={cx('text-16 max-w-[80px] border-0 outline-none xs:max-w-none', {
+            'bg-gray-100': disabled,
+          })}
           type="text"
           size={getInputSize()}
           value={filter}

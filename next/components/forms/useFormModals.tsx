@@ -12,7 +12,7 @@ type ModalWithSendCallback =
     }
   | {
       isOpen: true
-      sendCallback: () => void
+      sendCallback: (() => void) | (() => Promise<void>)
     }
 
 const useGetContext = (initialFormData: InitialFormData) => {
@@ -42,7 +42,9 @@ const useGetContext = (initialFormData: InitialFormData) => {
       !tierStatus.isIdentityVerified,
   )
 
-  const [sendFilesScanningEidModal, setSendFilesScanningEidModal] = useState<ModalWithSendCallback>({ isOpen: false })
+  const [sendFilesScanningEidModal, setSendFilesScanningEidModal] = useState<ModalWithSendCallback>(
+    { isOpen: false },
+  )
   const [sendFilesScanningNotVerifiedEidModal, setSendFilesScanningNotVerifiedEidModal] =
     useState(false)
   const [sendIdentityMissingModal, setSendIdentityMissingModal] = useState(false)
@@ -62,21 +64,26 @@ const useGetContext = (initialFormData: InitialFormData) => {
     useState<ModalWithSendCallback>({ isOpen: false })
   const [sendConfirmationNonAuthenticatedEidModal, setSendConfirmationNonAuthenticatedEidModal] =
     useState<ModalWithSendCallback>({ isOpen: false })
+  const [sendFilesScanningNotVerified, setSendFilesScanningNotVerified] =
+    useState<ModalWithSendCallback>({ isOpen: false })
+  const [deleteConceptModal, setDeleteConceptModal] = useState<ModalWithSendCallback>({
+    isOpen: false,
+  })
   const [eidSendingModal, setEidSendingModal] = useState(false)
   const [eidSendErrorModal, setEidSendErrorModal] = useState<ModalWithSendCallback>({
     isOpen: false,
   })
-  const [sendLoading, setSendLoading] = useState(false)
-  const [sendEidSaveConceptLoading, setSendEidSaveConceptLoading] = useState(false)
-  const [sendEidLoading, setSendEidLoading] = useState(false)
+  const [sendPending, setSendPending] = useState(false)
+  const [sendEidSaveConceptPending, setSendEidSaveConceptPending] = useState(false)
+  const [sendEidPending, setSendEidPending] = useState(false)
   /*
    * This is set to true when user confirms eID form send. It is irreversible and forbids the user to close the modal / edit the data / send the form
    * again while redirecting.
    */
   const [redirectingToSlovenskoSkLogin, setRedirectingToSlovenskoSkLogin] = useState(false)
 
-  const eidSendConfirmationModalIsLoading =
-    sendEidSaveConceptLoading || redirectingToSlovenskoSkLogin
+  const eidSendConfirmationModalIsPending =
+    sendEidSaveConceptPending || redirectingToSlovenskoSkLogin
 
   return {
     migrationRequiredModal,
@@ -95,6 +102,8 @@ const useGetContext = (initialFormData: InitialFormData) => {
     setSendFilesScanningEidModal,
     sendFilesScanningNotVerifiedEidModal,
     setSendFilesScanningNotVerifiedEidModal,
+    sendFilesScanningNotVerified,
+    setSendFilesScanningNotVerified,
     sendIdentityMissingModal,
     setSendIdentityMissingModal,
     sendFilesScanningNonAuthenticatedEidModal,
@@ -109,17 +118,19 @@ const useGetContext = (initialFormData: InitialFormData) => {
     setSendConfirmationEidLegalModal,
     sendConfirmationNonAuthenticatedEidModal,
     setSendConfirmationNonAuthenticatedEidModal,
-    sendLoading,
-    setSendLoading,
+    sendPending,
+    setSendPending,
     eidSendingModal,
     setEidSendingModal,
     eidSendErrorModal,
     setEidSendErrorModal,
-    setSendEidSaveConceptLoading,
-    sendEidLoading,
-    setSendEidLoading,
+    setSendEidSaveConceptPending,
+    sendEidPending,
+    setSendEidPending,
     setRedirectingToSlovenskoSkLogin,
-    eidSendConfirmationModalIsLoading,
+    eidSendConfirmationModalIsPending,
+    deleteConceptModal,
+    setDeleteConceptModal,
   }
 }
 

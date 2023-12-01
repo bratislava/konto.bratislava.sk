@@ -1,0 +1,18 @@
+[
+  {
+    "path": "/prihlasenie",
+    "status": 200
+  },
+  {
+    "path": "/zabudnute-heslo",
+    "status": 200
+  },
+  {
+    "path": "/registracia",
+    "status": 200
+  },
+  {
+    "path": "/test404page",
+    "status": 404
+  }
+]

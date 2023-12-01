@@ -1,10 +1,10 @@
-import cx from 'classnames'
-
-import { defaultFormStateBehavior, rjfsValidator } from '../../../../frontend/utils/form'
+import { defaultFormStateBehavior, rjsfValidator } from '../../../../frontend/utils/form'
 import { useFormState } from '../../useFormState'
 import SummaryHeader from '../SummaryHeader'
 import SummaryForm from './SummaryForm'
 import SummaryFormControls from './SummaryFormControls'
+import SummaryFormLegalText from './SummaryFormLegalText'
+import SummaryFormSignature from './SummaryFormSignature'
 import { FormSummaryProvider } from './useFormSummary'
 
 const FormSummary = () => {
@@ -12,14 +12,14 @@ const FormSummary = () => {
 
   return (
     <FormSummaryProvider>
-      <SummaryHeader />
-      <div className={cx('my-10')}>
+      <div className="flex flex-col gap-4">
+        <SummaryHeader />
         <SummaryForm
           schema={schema}
           uiSchema={uiSchema}
           formData={formData}
           // The validator is not used, but it's required by the form. We use our own validation in `useFormSummary`.
-          validator={rjfsValidator}
+          validator={rjsfValidator}
           experimental_defaultFormStateBehavior={defaultFormStateBehavior}
           readonly
           onSubmit={(e) => {
@@ -30,6 +30,8 @@ const FormSummary = () => {
         >
           <div />
         </SummaryForm>
+        <SummaryFormSignature />
+        <SummaryFormLegalText />
         <SummaryFormControls />
       </div>
     </FormSummaryProvider>

@@ -1,0 +1,3 @@
+.lightbox :global(.yarl__container) {
+    @apply bg-gray-800/40;
+}

@@ -1,6 +1,9 @@
+import { ChevronLeftIcon } from '@assets/ui-icons'
 import { useTranslation } from 'next-i18next'
-import React from 'react'
+import React, { useMemo } from 'react'
 
+import { isFormSubmitDisabled } from '../../../../frontend/utils/formSummary'
+import { useFormSignature } from '../../signer/useFormSignature'
 import ButtonNew from '../../simple-components/ButtonNew'
 import { useFormSend } from '../../useFormSend'
 import { useFormState } from '../../useFormState'
@@ -9,8 +12,13 @@ import { useFormSummary } from './useFormSummary'
 const SummaryFormControls = () => {
   const { t } = useTranslation('forms')
 
-  const { isReadonly } = useFormState()
-  const { submitDisabled } = useFormSummary()
+  const { isReadonly, goToPreviousStep } = useFormState()
+  const { errorSchema, infectedFiles } = useFormSummary()
+  const { isValidSignature } = useFormSignature()
+  const submitDisabled = useMemo(
+    () => isFormSubmitDisabled(errorSchema, infectedFiles, isValidSignature()),
+    [errorSchema, infectedFiles, isValidSignature],
+  )
   const { handleSendButtonPress, handleSendEidButtonPress } = useFormSend()
 
   if (isReadonly) {
@@ -21,17 +29,65 @@ const SummaryFormControls = () => {
 
   return (
     <>
-      <h3 className="text-h3">{t('summary.vop_agreement_title')}</h3>
-      <p>{t('summary.vop_agreement_content')}</p>
+      {/* Desktop */}
+      <div className="mt-10 hidden flex-row flex-wrap gap-5 md:flex">
+        <div className="grow">
+          <ButtonNew
+            variant="black-plain"
+            onPress={goToPreviousStep}
+            startIcon={<ChevronLeftIcon className="h-6 w-6" />}
+          >
+            {t('buttons.previous')}
+          </ButtonNew>
+        </div>
 
+        <div className="flex flex-row flex-wrap gap-5">
+          <ButtonNew
+            isDisabled={submitDisabled}
+            type="submit"
+            variant="black-outline"
+            onPress={handleSendEidButtonPress}
+          >
+            {t('summary.button_send_eid')}
+          </ButtonNew>
+          <ButtonNew
+            isDisabled={submitDisabled}
+            type="submit"
+            variant="black-solid"
+            onPress={handleSendButtonPress}
+          >
+            {t('summary.button_send')}
+          </ButtonNew>
+        </div>
+      </div>
 
-      <ButtonNew isDisabled={submitDisabled} type="submit" variant="black-solid" onPress={handleSendEidButtonPress}>
-        {t('summary.button_send_eid')}
-      </ButtonNew>
-      <ButtonNew isDisabled={submitDisabled} type="submit" variant="black-solid" onPress={handleSendButtonPress}>
-        {t('summary.button_send')}
-      </ButtonNew>
-      </>
+      {/* Mobile */}
+      <div className="mt-4 flex flex-col gap-2 md:hidden">
+        <ButtonNew
+          isDisabled={submitDisabled}
+          size="small"
+          fullWidth
+          type="submit"
+          variant="black-outline"
+          onPress={handleSendEidButtonPress}
+        >
+          {t('summary.button_send_eid')}
+        </ButtonNew>
+        <ButtonNew
+          isDisabled={submitDisabled}
+          size="small"
+          fullWidth
+          type="submit"
+          variant="black-solid"
+          onPress={handleSendButtonPress}
+        >
+          {t('summary.button_send')}
+        </ButtonNew>
+        <ButtonNew size="small" fullWidth variant="black-outline" onPress={goToPreviousStep}>
+          {t('buttons.previous')}
+        </ButtonNew>
+      </div>
+    </>
   )
 }
 

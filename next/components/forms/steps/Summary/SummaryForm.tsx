@@ -1,8 +1,13 @@
 import { ThemeProps, withTheme } from '@rjsf/core'
-import { GenericObjectType, ObjectFieldTemplateProps } from '@rjsf/utils'
-import { Fragment } from 'react'
+import {
+  ArrayFieldTemplateItemType,
+  GenericObjectType,
+  ObjectFieldTemplateProps,
+} from '@rjsf/utils'
+import cx from 'classnames'
+import { ComponentType, Fragment } from 'react'
 
-import SummaryFieldRJSF, { SummaryFieldRJSFProps, SummaryFieldType } from './SummaryFieldRJSF'
+import { ArrayFieldItemTemplate, ArrayFieldTemplate } from './SummaryArrayTemplateRJSF'
 import SummaryWidgetRJSF, { SummaryWidgetRJSFProps, SummaryWidgetType } from './SummaryWidgetRJSF'
 
 const wrapWidget = (widgetType: SummaryWidgetType) =>
@@ -10,18 +15,13 @@ const wrapWidget = (widgetType: SummaryWidgetType) =>
     return <SummaryWidgetRJSF {...props} widgetType={widgetType} />
   }
 
-const wrapField = (fieldType: SummaryFieldType) =>
-  function wrap(props: Omit<SummaryFieldRJSFProps, 'fieldType'>) {
-    return <SummaryFieldRJSF {...props} fieldType={fieldType} />
-  }
-
 const ObjectFieldTemplate = ({ title, properties, idSchema }: ObjectFieldTemplateProps) => {
   const splitId = idSchema.$id.split('_')
   const isStepObject = splitId.length === 2 && splitId[0] === 'root'
 
   return (
-    <div>
-      {isStepObject && <h2 className="text-h2-medium mb-6 mt-8">{title}</h2>}
+    <div className={cx({ 'mb-8': isStepObject })}>
+      {isStepObject && <h2 className="text-h3-bold mb-4">{title}</h2>}
       {properties.map((element, index) => (
         <Fragment key={index}>{element.content}</Fragment>
       ))}
@@ -32,21 +32,24 @@ const ObjectFieldTemplate = ({ title, properties, idSchema }: ObjectFieldTemplat
 const theme: ThemeProps = {
   templates: {
     ObjectFieldTemplate,
+    // It contains extra parentUiOptions prop that is not present in the original ArrayFieldItemTemplate, so we need to
+    // cast it to the original type
+    ArrayFieldItemTemplate: ArrayFieldItemTemplate as ComponentType<ArrayFieldTemplateItemType>,
+    ArrayFieldTemplate,
   },
   widgets: {
-    SelectField: wrapWidget('select'),
-    InputField: wrapWidget('input'),
-    RadioButton: wrapWidget('radio'),
-    TextArea: wrapWidget('textarea'),
-    Checkboxes: wrapWidget('checkboxes'),
-    Upload: wrapWidget('upload'),
-    DatePicker: wrapWidget('datepicker'),
-    TimePicker: wrapWidget('timepicker'),
-  },
-  fields: {
-    dateFromTo: wrapField('dateFromTo'),
-    timeFromTo: wrapField('timeFromTo'),
-    dateTime: wrapField('dateTime'),
+    Select: wrapWidget('select'),
+    Input: wrapWidget('input'),
+    RadioGroup: wrapWidget('radioGroup'),
+    TextArea: wrapWidget('textArea'),
+    Checkbox: wrapWidget('checkbox'),
+    CheckboxGroup: wrapWidget('checkboxGroup'),
+    FileUpload: wrapWidget('fileUpload'),
+    DatePicker: wrapWidget('datePicker'),
+    TimePicker: wrapWidget('timePicker'),
+    CustomComponents: () => {
+      return null
+    },
   },
 }
 

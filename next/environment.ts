@@ -52,11 +52,20 @@ export const environment = {
         'NEXT_PUBLIC_FEATURE_TOGGLE_FORMS',
         process.env.NEXT_PUBLIC_FEATURE_TOGGLE_FORMS,
       ) === 'true',
+    formsInMenu:
+      assertEnv(
+        'NEXT_PUBLIC_FEATURE_TOGGLE_FORMS_IN_MENU',
+        process.env.NEXT_PUBLIC_FEATURE_TOGGLE_FORMS_IN_MENU,
+      ) === 'true',
     pravnickaOsobaRegistration:
       assertEnv(
-        // eslint-disable-next-line no-secrets/no-secrets
         'NEXT_PUBLIC_FEATURE_TOGGLE_PRAVNICKA_OSOBA_REGISTRATION',
         process.env.NEXT_PUBLIC_FEATURE_TOGGLE_PRAVNICKA_OSOBA_REGISTRATION,
+      ) === 'true',
+    priznanieKDaniZNehnutelnostiPreview:
+      assertEnv(
+        'NEXT_PUBLIC_FEATURE_TOGGLE_PRIZNANIE_K_DANI_Z_NEHNUTELNOSTI_PREVIEW',
+        process.env.NEXT_PUBLIC_FEATURE_TOGGLE_PRIZNANIE_K_DANI_Z_NEHNUTELNOSTI_PREVIEW,
       ) === 'true',
   },
   formsMimetypes: assertEnv(

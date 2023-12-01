@@ -2,29 +2,33 @@ import cx from 'classnames'
 import React, { useState } from 'react'
 import { useTextField } from 'react-aria'
 
-import { FieldAdditionalProps, FieldBaseProps } from '../FieldBase'
-import FieldWrapper from '../FieldWrapper'
+import FieldWrapper, { FieldWrapperProps } from '../FieldWrapper'
 
-type TextAreaBase = FieldBaseProps &
-  Pick<FieldAdditionalProps, 'placeholder' | 'className'> & {
-    defaultValue?: string
-    value?: string
-    onChange?: (value?: string) => void
-  }
+type TextAreaBase = FieldWrapperProps & {
+  defaultValue?: string
+  value?: string
+  onChange?: (value?: string) => void
+  onBlur?: () => void
+  placeholder?: string
+  className?: string
+}
 
 const TextAreaField = ({
   label,
   placeholder,
   errorMessage = [],
   helptext,
+  helptextHeader,
   tooltip,
   required,
-  explicitOptional,
   value,
   disabled,
   className,
   defaultValue,
   onChange,
+  size,
+  labelSize,
+  displayOptionalLabel,
   ...rest
 }: TextAreaBase) => {
   const [valueState, setValueState] = useState<string>('')
@@ -52,6 +56,9 @@ const TextAreaField = ({
         }
         setUseDefaultValue(false)
       },
+      onFocusChange: (value) => {
+        setIsFocused(value)
+      },
       isRequired: required,
       isDisabled: disabled,
     },
@@ -64,13 +71,15 @@ const TextAreaField = ({
       'hover:border-gray-400': !disabled && !isFocused,
       'border-negative-700 hover:border-negative-700 focus:border-negative-700':
         errorMessage?.length > 0 && !disabled,
-      'border-gray-300 bg-gray-100': disabled,
       'border-gray-700 hover:border-gray-700': !disabled && isFocused,
     },
   )
 
   const textareaStyle = cx(
     'h-full w-full resize-none overflow-y-scroll rounded-lg bg-gray-0 px-3 py-2 caret-gray-700 focus:outline-none focus:placeholder:text-transparent sm:px-4 sm:py-3',
+    {
+      'border-gray-300 bg-gray-100': disabled,
+    },
   )
   return (
     <div className="flex w-full flex-col">
@@ -79,23 +88,19 @@ const TextAreaField = ({
         labelProps={labelProps}
         htmlFor={inputProps.id}
         helptext={helptext}
+        helptextHeader={helptextHeader}
         descriptionProps={descriptionProps}
         required={required}
-        explicitOptional={explicitOptional}
         tooltip={tooltip}
         disabled={disabled}
         errorMessage={errorMessage}
         errorMessageProps={errorMessageProps}
+        size={size}
+        labelSize={labelSize}
+        displayOptionalLabel={displayOptionalLabel}
       >
         <div className={containerStyle}>
-          <textarea
-            {...inputProps}
-            ref={ref}
-            name={inputProps.id}
-            className={textareaStyle}
-            onFocus={() => setIsFocused(true)}
-            onBlur={() => setIsFocused(false)}
-          />
+          <textarea {...inputProps} ref={ref} name={inputProps.id} className={textareaStyle} />
         </div>
       </FieldWrapper>
     </div>

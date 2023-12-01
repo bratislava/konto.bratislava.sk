@@ -1,5 +1,6 @@
 import { formsApi } from '@clients/forms'
 import { useMutation } from '@tanstack/react-query'
+import useLoginRegisterRedirect from 'frontend/hooks/useLoginRegisterRedirect'
 import { useRouter } from 'next/router'
 import { useTranslation } from 'next-i18next'
 import { createContext, PropsWithChildren, useContext } from 'react'
@@ -9,7 +10,6 @@ import useSnackbar from '../../frontend/hooks/useSnackbar'
 import { useFormLeaveProtection } from './useFormLeaveProtection'
 import { useFormState } from './useFormState'
 
-
 const useGetContext = () => {
   const router = useRouter()
   const { formId, formData } = useFormState()
@@ -17,9 +17,10 @@ const useGetContext = () => {
   const [openSnackbarInfo, closeSnackbarInfo] = useSnackbar({ variant: 'info' })
   const [openSnackbarError] = useSnackbar({ variant: 'error' })
   const { turnOffLeaveProtection } = useFormLeaveProtection()
+  const { setRedirectReturnRoute } = useLoginRegisterRedirect()
 
-  const { mutate: saveConceptMutate } = useMutation(
-    () =>
+  const { mutate: saveConceptMutate } = useMutation({
+    mutationFn: () =>
       formsApi.nasesControllerUpdateForm(
         formId,
         {
@@ -27,28 +28,26 @@ const useGetContext = () => {
         },
         { accessToken: 'onlyAuthenticated' },
       ),
-    {
-      networkMode: 'always',
-      onSuccess: () => {
-        closeSnackbarInfo()
-      },
-      onMutate: () => {
-        // TODO: Wording.
-        openSnackbarInfo('Ukladám koncept a presmerovávam.')
-        turnOffLeaveProtection()
-      },
-      onError: () => {
-        // Maybe different wording for this case.
-        openSnackbarError(t('Nepodarilo sa uložiť koncept a presmerovať.'))
-      },
+    networkMode: 'always',
+    onSuccess: () => {
+      closeSnackbarInfo()
     },
-  )
+    onMutate: () => {
+      // TODO: Wording.
+      openSnackbarInfo(t('concept_save_and_redirect'))
+      turnOffLeaveProtection()
+    },
+    onError: () => {
+      // Maybe different wording for this case.
+      openSnackbarError(t('unable_to_save_concept_and_redirect'))
+    },
+  })
 
   const register = () => {
     saveConceptMutate(undefined, {
       // eslint-disable-next-line @typescript-eslint/no-misused-promises
       onSuccess: async () => {
-        // TODO Get back to the same URL after registration.
+        setRedirectReturnRoute(true)
         await router.push(ROUTES.REGISTER)
       },
     })
@@ -58,7 +57,7 @@ const useGetContext = () => {
     saveConceptMutate(undefined, {
       // eslint-disable-next-line @typescript-eslint/no-misused-promises
       onSuccess: async () => {
-      // TODO Get back to the same URL after login.
+        setRedirectReturnRoute(true)
         await router.push(ROUTES.LOGIN)
       },
     })
@@ -68,7 +67,7 @@ const useGetContext = () => {
     saveConceptMutate(undefined, {
       // eslint-disable-next-line @typescript-eslint/no-misused-promises
       onSuccess: async () => {
-      // TODO Get back to the same URL after verify.
+        setRedirectReturnRoute(true)
         await router.push(ROUTES.IDENTITY_VERIFICATION)
       },
     })
@@ -79,9 +78,7 @@ const useGetContext = () => {
 
 const FormRedirectsContext = createContext<ReturnType<typeof useGetContext> | undefined>(undefined)
 
-export const FormRedirectsProvider = ({
-  children
-}: PropsWithChildren) => {
+export const FormRedirectsProvider = ({ children }: PropsWithChildren) => {
   const context = useGetContext()
 
   return <FormRedirectsContext.Provider value={context}>{children}</FormRedirectsContext.Provider>
@@ -94,4 +91,9 @@ export const useFormRedirects = () => {
   }
 
   return context
+}
+
+// used for when we want different behaviour when we're on forms section
+export const useConditionalFormRedirects = () => {
+  return useContext(FormRedirectsContext)
 }

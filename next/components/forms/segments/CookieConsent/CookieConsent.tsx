@@ -78,12 +78,6 @@ export const CookiesAndTracking = () => {
       {/* don't use any of the analytics/tracking in staging/dev - change this if you need testing */}
       {isProductionDeployment() ? (
         <>
-          {/* no consent needed for plausible - always load it after page is interactive */}
-          <Script
-            strategy="afterInteractive"
-            data-domain="konto.bratislava.sk"
-            src="https://plausible.io/js/plausible.js"
-          />
           {consents?.statistics ? (
             <Script
               id="hotjar"

@@ -3,7 +3,7 @@
     "unknown": "Nastala neočakávaná chyba. Skontrolujte svoje pripojenie alebo nás kontaktujte na <a href='mailto:info@bratislava.sk'>info@bratislava.sk</a>. Ďakujeme.",
     "Bad Request": "Overenie bolo neúspešné. Skontrolujte správnosť údajov.",
     "NotAuthorizedException": "Nesprávne prihlasovacie údaje",
-    "CodeMismatchException": "Platnosť zadaného kódu vypršala. Požiadajte o nový kód kliknutím na Odoslať nový kód. Platnosť overovacieho kódu je 60 minút.",
+    "CodeMismatchException": "Zadaný kód je nesprávny alebo jeho platnosť vypršala. Skontrolujte správnosť overovacieho kódu alebo požiadajte o nový kód kliknutím na Odoslať nový kód. Platnosť overovacieho kódu je 60 minút.",
     "LimitExceededException": "Priveľa opakovaní. Skúste to znova neskôr.",
     "UserNotFoundException": "Konto so zadanou e-mailovou adresou zatiaľ neexistuje.",
     "MigrationUserNotFoundException": "E-mail {{email}} sa nenachádza v našej databáze minuloročných používateľov a používateliek digitálnej platby dane. Skontrolujte správnosť e-mailu alebo sa [registrujte](/register).",
@@ -11,6 +11,7 @@
     "UsernameExistsException": " E-mail {{email}} sa už používa. Na každý e-mail je v Bratislavskom konte možné vytvoriť len jeden účet. V prípade nejasností nás kontaktujte na <a href='mailto:info@bratislava.sk'>info@bratislava.sk</a>.",
     "ExpiredCodeException": "Platnosť zadaného kódu vypršala. Požiadajte o nový kód kliknutím na Odoslať nový kód. Platnosť overovacieho kódu je 60 minút.",
     "IncorectPasswordException": "Zadané heslo nie je správne.",
+    "AliasExistsException": "E-mail {{email}} už používa iné Bratislavské konto. Ak si stále želáte zmeniť e-mail svojho konta, vráťte sa do svojho profilu kliknutím na šípku späť vedľa bratislavského loga a zopakujte proces zmeny e-mailu s inou e-mailovou adresou.",
     "API_ERROR": "Pri odosielaní nastala chyba. Skúste to, prosíme, znova.",
     "RFO_ACCESS_ERROR": "Pri odosielaní nastala chyba. Skúste to, prosíme, znova.",
     "RFO_NOT_RESPONDING": "Pri odosielaní nastala chyba. Skúste to, prosíme, znova.",
@@ -21,9 +22,9 @@
   "sso_placeholder": "Táto stránka slúži pre komunikáciu s ostatnými mestskými službami. <a href='/'>Späť domov</a>.",
   "login_title": "Prihláste sa do svojho konta",
   "email_label": "E-mail",
-  "email_fo_description": "Zadajte e-mail pre overenie registrácie.",
-  "email_fo-p_description": "Zadajte e-mail pre overenie registrácie.",
-  "email_po_description": "Zadajte e-mail pre overenie registrácie.",
+  "email_fo_description": "Zadajte e-mail, cez ktorý chcete s mestom komunikovať.",
+  "email_fo-p_description": "Zadajte firemný e-mail, cez ktorý chcete s mestom komunikovať.",
+  "email_po_description": "Zadajte firemný e-mail, cez ktorý chcete s mestom komunikovať.",
   "email_placeholder": "E-mail",
   "email_required": "E-mail je povinný",
   "email_format": "E-mail nie je platný",
@@ -59,30 +60,6 @@
   "login_link": "Prihlásiť sa",
   "register_description": "Nemáte ešte vytvorené konto?",
   "register_link": "Registrovať sa",
-  "register_modal": {
-    "header_sent_title": "Žiadosť je možné odoslať cez Bratislavské konto alebo pomocou eID",
-    "header_sent_subtitle": "Na to, aby ste mohli žiadosť odoslať, potrebujete mať vytvorené Bratislavské konto s overenou identitou alebo použiť elektronický občiansky preukazu cez slovensko.sk. Bez toho viete žiadosť iba vyplniť a stiahnuť.",
-    "header_save_title": "Žiadosť je možné uložiť do konceptov len cez Bratislavské konto",
-    "header_save_subtitle": "Na to, aby ste si mohli túto žiadosť uložiť do konceptov, potrebujete mať vytvorené Bratislavské konto. Bez toho viete žiadosť iba vyplniť a stiahnuť.",
-    "body_title": "Vytvorte si Bratislavské konto",
-    "body_list": {
-      "1": "Nájdite všetky služby mesta na jednom mieste",
-      "2": "Sledujte aktuálny stav podaných žiadostí a čo sa s nimi deje v čase",
-      "3": "Majte prehľad o daniach a poplatkoch",
-      "4": "Využívajte dôveryhodné digitálne služby pod hlavičkou hlavného mesta",
-      "5": "Uložte si žiadosti a vráťte sa k ním kedykoľvek budete chcieť"
-    },
-    "body_action": "Vytvoriť Bratislavské konto a vyplniť žiadosť",
-    "body_login_link": "Prihlásiť sa",
-    "body_login_description": "Máte už konto?",
-    "footer_choice": "alebo",
-    "footer_desktop_button_eID_text": "Pokračovať s eID",
-    "footer_desktop_button_app_text": "Vrátiť sa na žiadosť",
-    "footer_mobile_button_eID_text": "Použiť eID",
-    "footer_mobile_button_app_text": "Vrátiť sa na žiadosť",
-    "footer_mobile_button_eID_title": "Vyplniť osobné údaje cez eID",
-    "footer_mobile_button_app_title": "Vyplňte osobné údaje neskôr"
-  },
   "forgotten_password_description": "Zabudli ste heslo?",
   "forgotten_password_link": "Získať nové heslo",
   "forgotten_password_title": "Zabudli ste heslo?",
@@ -105,9 +82,11 @@
   "verification_status_required_alert": "Vaša identita zatiaľ nebola overená voči štátnym registrom. Bratislavské konto môžete preto používať len v obmedzenom režime, bez možnosti odoslať elektronicky všetky žiadosti či využiť službu online platby dane z nehnuteľností.",
   "verification_modal": {
     "title": "Overenie identity",
-    "subtitle_individual_person": "Na to, aby ste mohli plne využívať služby Bratislavského konta, potrebujeme poznať vaše <strong>rodné číslo</strong> a <strong>číslo občianskeho preukazu/dokladu o prechodnom pobyte</strong>.",
-    "subtitle_juridical_person": "Na to, aby ste mohli plne využívať služby Bratislavského konta potrebujeme poznať firemné <strong>IČO</strong> a <strong>číslo občianskeho preukazu konateľa/konateľky</strong>.",
-    "info": "Bez týchto údajov môžete žiadosť vyplniť, uložiť si ju do konceptov, ale nemôžete ju odoslať elektronicky. Odoslanie bude možné až po overení."
+    "subtitle": "Na to, aby ste mohli túto žiadosť odoslať, je potrebné <strong>jednorazovo</strong> overiť identitu profilu.",
+    "info": "Bez elektronického občianskeho preukazu môžete žiadosť odoslať až po overení identity v Bratislavskom konte. Bez overenia viete žiadosť vyplniť, ale odoslať iba pomocou eID cez <a target='_blank' href='https://slovensko.sk'>slovensko.sk</a>.",
+    "footer_desktop_continue": "Pokračovať na žiadosť",
+    "footer_desktop_eID_text": "Pokračovať s eID",
+    "footer_choice": "alebo"
   },
   "account_continue_link": "Pokračovať do konta",
   "register_title": "Vytvorte si Bratislavské konto",
@@ -121,16 +100,25 @@
   "email_verification_submit": "Overiť e-mail",
   "register_success_title": "Bratislavské konto bolo vytvorené",
   "register_success_description": "E-mailová adresa {{email}} bola overená.",
+  "identity_verification_skip": "Preskočiť a overiť neskôr",
+  "identity_verification_not_required": "Pokračovať do konta",
   "identity_verification_link": "Pokračovať do konta",
   "identity_verification_title": "Overte svoju identitu",
   "identity_verification_subtitle": "Údaje potrebujeme poznať na to, aby sme overili vašu identitu voči štátnym registrom. Bez overenia nebudete schopný/á zaplatiť daň z nehnuteľností online či odoslať vybrané elektronické žiadosti v Bratislavskom konte. Overenie je jednorazové.",
+  "identity_verification_subtitle_legal_entity": "Údaje potrebujeme poznať na to, aby sme overili identitu subjektu voči štátnym registrom. Bez overenia nebudete schopný/á využívať služby Bratislavského konta v plnej miere (napr. odoslať vybrané elektronické žiadosti online). Overenie je jednorazové.",
   "rc_label": "Rodné číslo",
+  "rc_label_legal_entity": "Rodné číslo člena/členky štatutárneho orgánu",
   "rc_placeholder": "Rodné číslo",
   "rc_description": "Zadávajte rodné číslo vo formáte s lomítkom, napr. XXXXXX/XXXX",
   "rc_tooltip": "**Rodné číslo** potrebujeme poznať na to, aby sme overili vašu identitu voči štátnym registrom. Bez toho nebudete schopný/á odoslať elektronicky všetky žiadosti.",
   "rc_required": "Rodné číslo je povinné",
   "rc_format": "Rodné číslo nie je valídne",
+  "ico_label": "IČO",
+  "ico_placeholder": "IČO",
+  "ico_required": "IČO je povinné",
+  "ico_format": "IČO nie je valídne",
   "id_card_label": "Číslo občianskeho preukazu/Číslo dokladu o prechodnom pobyte",
+  "id_card_label_legal_entity": "Číslo občianskeho preukazu/Číslo dokladu o prechodnom pobyte člena/členky štatutárneho orgánu",
   "id_card_placeholder": "Číslo dokladu",
   "id_card_description": "Zadávajte bez medzier",
   "id_card_tooltip": "**Číslo tohto dokladu** potrebujeme poznať na to, aby sme overili vašu identitu voči štátnym registrom. Bez toho nebudete schopný/á odoslať elektronicky všetky žiadosti.",
@@ -142,6 +130,8 @@
   "identity_verification_pending_title": "Prebieha overovanie",
   "identity_verification_pending_description": "Ospravedlňujeme sa, ale rodné číslo {{rc}} a číslo dokladu {{idCard}} ešte stále overujeme. Medzitým môžete pokračovať do konta a my vám dáme vedieť, až dokončíme overenie vašej totožnosti.",
   "identity_verification_pending_description_without_data": "Ospravedlňujeme sa, ale rodné číslo a číslo dokladu ešte stále overujeme. Medzitým môžete pokračovať do konta a my vám dáme vedieť, až dokončíme overenie vašej totožnosti.",
+  "identity_verification_pending_description_legal_entity": "Ospravedlňujeme sa, ale IČO {{ico}}, rodné číslo {{rc}} a číslo dokladu {{idCard}} ešte stále overujeme. Medzitým môžete pokračovať do konta a my vám dáme vedieť, až overenie dokončíme.",
+  "identity_verification_pending_description_without_data_legal_entity": "Ospravedlňujeme sa, ale IČO, rodné číslo a číslo dokladu ešte stále overujeme. Medzitým môžete pokračovať do konta a my vám dáme vedieť, až overenie dokončíme.",
   "identity_verification_failed": "Overenie rodného čísla a čísla dokladu sa nepodarilo. Mohli ste zadať nesprávne údaje, v takom prípade [zopakujte overenie]({{url}}). Tieto údaje tiež mohli byť použité na overenie iného konta. Ak o jeho existencii neviete, čím skôr sa obráťte na <a href='mailto:info@bratislava.sk'>info@bratislava.sk</a>.",
   "identity_verification_success": "Overenie bolo úspešné",
   "password_change_title": "Zmena hesla",
@@ -160,16 +150,29 @@
   "migration_new_password_title": "Zadajte overovací kód a vytvorte si heslo",
   "migration_new_password_submit": "Overiť e-mail",
   "captcha_warning": "Nepodarilo sa overiť, či nie ste robot. Ak sa formulár nedá odoslať, vyskúšajte prosím iný prehliadač (Chrome, Edge alebo Safari).",
+  "email_change_title": "Zmena e-mailu",
+  "email_change_description": "Zadajte nový e-mail, ktorý chcete používať pre Bratislavské konto.",
+  "email_change_success_title": "E-mail bol úspešne zmenený",
+  "email_change_success_description": "E-mailová adresa {{email}} bola overená a e-mail úspešne zmenený. Odteraz sa do vášho Bratislavského konta prihlasujte s novým emailom.",
+  "new_email_label": "Nový e-mail",
+  "new_email_password_label": "Vaše Heslo",
+  "new_email_text": "Vyplnením týchto údajov si môžete zmeniť e-mail, ktorým sa do konta prihlasujete. Po zmene e-mailu je potrebné overiť nový e-mail cez overovací kód, ktorý nájdete v novom e-maili.",
+  "new_email_submit": "Pokračovať",
   "account_section_intro": {
     "navigation": "Úvod",
     "header_title": "Dobrý deň,",
     "header_text": "Ďakujeme, že využívate digitálne služby Bratislavského konta.",
     "all_services": "Všetky služby",
     "announcement_title": "Aktuálne",
-    "announcement_card_title": "Vstup na kúpaliská bez čakania",
-    "announcement_card_text": "Ušetrite čas aj peniaze vďaka výhodnejším online vstupom. Kúpte si jednorazový lístok, 10-vstupovú alebo sezónnu permanentku online, rýchlo a jednoducho a nečakajte v rade.",
+    "announcement_card_title_zero": "Dočľapkania opäť o rok!",
+    "announcement_card_title_first": "Firemné Bratislavské konto",
+    "announcement_card_title_second": "2 nové žiadosti!",
+    "announcement_card_text_zero": "Upozorňujeme, že letné kúpaliská STaRZ Bratislava ukončili sezónu. Všetko dobré sa niekedy končí, ale o rok sa na profi čľapkanie, seriózne krauly a všetky ležérne znaky tešíme opäť.<br /><br />Areál zdravia Zlaté piesky ostáva otvorený bez výberu vstupného od 9:00 do 22:00, vstup cez predný hlavný vchod.<br /><br />Ďakujeme za skvelú sezónu!",
+    "announcement_card_text_first": "Otvorili sme Bratislavské konto aj pre právnické osoby a fyzické osoby - podnikateľov (živnostníkov a živnostníčky). Vytvorte si firemné konto a komunikujte s mestom digitálne.",
+    "announcement_card_text_second": "Odteraz môžete požiadať o <strong>záväzné stanovisko k investičnej činnosti</strong> aj o <strong>stanovisko k investičnému zámeru</strong> kompletne cez vaše Bratislavské konto - online, rýchlo a jednoducho.",
     "announcement_card_text_tax_ready": "Vygenerovali sme vašu daň z nehnuteľností za rok 2023. Zaplaťte ju jednoducho, digitálne, priamo v konte.",
-    "announcement_card_action": "Chcem lístok alebo permanentku",
+    "announcement_card_action_first": "Vytvoriť firemné konto",
+    "announcement_card_action_second": "Pozrieť si žiadosti",
     "banner_title": "Potrebujete pomôcť?",
     "banner_content": "Aké služby nájdem v Bratislavskom konte? Prečo vzniklo Bratislavské konto? Ako si viem zmeniť heslo? Nevidím svoju daň, čo mám robiť?<br /><br />Aj toto sú niektoré z otázok, na ktoré nájdete odpovede v časti Pomoc.",
     "banner_button_text": "Prejsť na otázky"
@@ -177,7 +180,8 @@
   "account_section_services": {
     "navigation": "Mestské služby",
     "select_field_placeholder": "Vyberte kategórie",
-    "alert_text": "Priamo v Bratislavskom konte viete momentálne zaplatiť daň z nehunuteľností a požiadať o záväzné stanovisko k investičnej činnosti. Pri ostatných službách vás presmerujeme na externé webové stránky, ktoré môžu vyžadovať dodatočnú registráciu. Ďakujeme za pochopenie.",
+    "alert_text": "Priamo v Bratislavskom konte viete momentálne zaplatiť daň z nehnuteľností a požiadať o záväzné stanovisko k investičnej činnosti alebo stanovisko k investičnému zámeru. Pri ostatných službách vás presmerujeme na externé webové stránky, ktoré môžu vyžadovať dodatočnú registráciu. Ďakujeme za pochopenie.",
+    "new_service": "Nová služba",
     "cards": {
       "1": {
         "title": "Digitálna platba dane z nehnuteľností",
@@ -217,7 +221,7 @@
       "8": {
         "title": "10 000 stromov",
         "description": "Iniciatíva 10 000 stromov- možnosti zapojenia sa pre partnerov, informácie o zásadnom víkende alebo mapa výsadby zelene.",
-        "buttonText": "Viac o iniciatíve"
+        "buttonText": "Podporiť iniciatívu"
       },
       "9": {
         "title": "Komunitné záhrady",
@@ -343,26 +347,86 @@
         "title": "Vstupenky do Galérie mesta Bratislava",
         "description": "Nákup online vstupeniek alebo ročnej permanentky na všetky výstavy a programy v oboch palácoch GMB za zvýhodnenú cenu.",
         "buttonText": "Kúpiť lístok do GMB"
+      },
+      "34": {
+        "title": "Záväzné stanovisko k investičnej činnosti",
+        "description": "Žiadosť o záväzné stanovisko k investičnej činnosti, ktoré slúži ako podklad pre konanie vedené na príslušnom stavebnom úrade.",
+        "buttonText": "Požiadať",
+        "tag": "Nová služba"
+      },
+      "35": {
+        "title": "Stanovisko k investičnému zámeru",
+        "description": "Žiadosť o stanovisko k investičnému zámeru, ktoré slúži na overenie si zámeru ešte pred územným konaním a vydaním záväzného stanoviska.",
+        "buttonText": "Požiadať",
+        "tag": "Nová služba"
+      },
+      "36": {
+        "title": "Mimoriadny odvoz a likvidácia komunálneho odpadu",
+        "description": "Elektronický objednávkový formulár pre záväzné objednanie služieb OLO pre právnické osoby.",
+        "buttonText": "Objednať"
+      },
+      "37": {
+        "title": "Dočistenie stojiska od komunálneho odpadu",
+        "description": "Elektronický objednávkový formulár pre záväzné objednanie služieb OLO pre právnické osoby.",
+        "buttonText": "Objednať"
+      },
+      "38": {
+        "title": "Pravidelný odvoz odpadových obalov",
+        "description": "Elektronický objednávkový formulár pre záväzné objednanie služieb OLO pre právnické osoby.",
+        "buttonText": "Objednať"
+      },
+      "39": {
+        "title": "Pravidelný odvoz triedeného komunálneho odpadu",
+        "description": "Elektronický objednávkový formulár pre záväzné objednanie služieb OLO pre právnické osoby.",
+        "buttonText": "Objednať"
+      },
+      "40": {
+        "title": "Zaujatie verejného priestranstva",
+        "description": "Povolenie potrebné na organizáciu podujatia, predaj tovaru, terasu k svojmu podniku, rekonštrukciu bytového domu alebo rozkopávku na verejnom priestranstve.",
+        "buttonText": "Požiadať"
+      },
+      "41": {
+        "title": "Určenie podmienok uvedenia komunikácie do pôvodného stavu",
+        "description": "Žiadosť je potrebné podať do 3 pracovných dní od nahlásenia poruchy.",
+        "buttonText": "Požiadať"
+      },
+      "42": {
+        "title": "Adopcia zelene",
+        "description": "Dobrovoľnícky program pre zapojenie sa do starostlivosti o plochy zelene v meste a zabezpečenie ich údržby bez nároku na finančnú odmenu.",
+        "buttonText": "Adoptovať si zeleň"
       }
     }
   },
   "account_section_applications": {
     "navigation": "Moje žiadosti",
     "navigation_sent": "Odoslané",
-    "navigation_concept": "Koncepty",
-    "concept_delete_modal": {
-      "title": "Vymazať koncept",
-      "text": "Naozaj si želáte vymazať koncept {{concept_name}}? Táto akcia je nevratná.",
-      "cancel": "Zrušiť",
-      "delete": "Vymazať"
+    "navigation_sending": "Odosiela sa",
+    "navigation_draft": "Koncepty",
+    "error_snackbar": "Pri načítaní žiadostí nastala chyba. Skúste to prosím neskôr.",
+    "mobile_modal_menu": {
+      "title": "Akcie"
     },
     "navigation_concept_card": {
       "createDate": "Vytvorené",
-      "button_text": "Pokračovať"
+      "edit_button_text": "Upraviť",
+      "continue_button_text": "Pokračovať",
+      "view_button_text": "Zobraziť",
+      "status_draft": "",
+      "status_scanning": "Prebieha antivírová kontrola",
+      "status_sending": "Doručené",
+      "delivered_nases": "Odoslané",
+      "sending_to_nases": "Odosiela sa",
+      "status_ready_for_processing": "Vybavuje sa",
+      "status_processing": "Vybavuje sa",
+      "status_finished": "Vybavené",
+      "status_rejected": "Zamietnuté",
+      "status_error": "Nastala neznáma chyba",
+      "status_error_antivirus": "Antivírová kontrola neúspešná",
+      "status_error_other": "Odoslanie neúspešné"
     },
     "placeholder": {
       "title": "Zatiaľ ste neodoslali žiadne podanie",
-      "subtitle": "Pozrite si ponuku <a href='/mestske-sluzby'>dostupných mestských služieb</a>."
+      "subtitle": "Pozrite si ponuku dostupných <a href='/mestske-sluzby'>mestských služieb</a>."
     },
     "last_change": "Posledná zmena:",
     "status": {
@@ -375,22 +439,29 @@
     },
     "details": {
       "application_details": {
+        "sent": "Odoslané",
         "title": "Detail žiadosti",
         "record_number": "Číslo záznamu",
         "file_number": "Číslo spisu",
         "handle_person": "Vybavuje",
-        "contact": "Kontakt"
+        "contact": "Kontakt",
+        "phone_unavailable": "Telefónne číslo nie je k dispozícii",
+        "email_unavailable": "E-mailová adresa nie je k dispozícii"
       },
       "application_history": {
         "title": "História zmien",
         "edit_date": "Dátum zmeny",
-        "description": "Popis"
+        "description": "Popis",
+        "state": {
+          "DOCUMENT_CREATED": "Žiadosť bola doručená na magistrát.",
+          "UNKNOWN": "Zmena stavu dokumentu."
+        }
       }
     },
     "concept_menu_list": {
       "download_xml": "Stiahnuť ako XML",
       "download_pdf": "Stiahnuť ako PDF",
-      "delete": "Vymazať koncept"
+      "delete": "Vymazať"
     }
   },
   "account_section_payment": {
@@ -566,10 +637,9 @@
     "given_name": "Meno",
     "family_name": "Priezvisko",
     "email": "E-mail",
-    "email_button": "Upraviť",
-    "email_tooltip": "Ak by ste si priali zmeniť e-mail, ktorým sa do konta prihlasujete a na ktorý vám zasielame všetky informácie týkajúce sa vášho konta, kontaktuje nás na <a href='mailto:info@bratislava.sk'>info@bratislava.sk</a>.",
+    "email_button": "Zmeniť e-mail",
     "phone_number": "Telefónne číslo",
-    "phone_number_pattern": "V tvare +421XXXXXXXXX",
+    "phone_number_pattern": "V tvare +421...",
     "address": "Korešpondenčná adresa",
     "street": "Ulica a číslo",
     "city": "Mesto",
@@ -641,12 +711,12 @@
     },
     "button_to_formular_text": "Vyplniť dotazník",
     "button_to_profil_text": "Pokračovať do konta",
-    "button_to_formular_text_2": "Nechať spätnú väzbu",
+    "button_to_formular_text_2": "Vyplniť dotazník",
     "button_restart_text": "Opakovať platbu",
     "button_cancel_text": "Zrušiť platbu",
     "form_submit": {
       "title": "Ďakujeme za odoslanie žiadosti",
-      "content": "<span className='text-p2'>Žiadosť musíme najprv spracovať a skontrolovať správnosť všetkých údajov.<br />Ak by nám od Vás chýbali nejaké informácie budeme Vás kontaktovať emailom.</span>"
+      "content": "Žiadosť musíme teraz spracovať a doručiť kolegom a kolegyniam, ktorí sa jej budú venovať.  Detail vašej žiadosti nájdete v časti [Moje žiadosti](/moje-ziadosti). Ak by nám nejaké informácie chýbali, budeme vás kontaktovať emailom.\n\nProsíme, ohodnoťte vašu skúsenosť s touto žiadosťou a pomôžte mestu Bratislava zlepšovať svoje služby."
     }
   },
   "bank_info": {
@@ -809,13 +879,25 @@
     "retry": "Skúsiť znova",
     "supportedFormats": "Podporované formáty",
     "sizeLimit": "Maximálna veľkosť súboru",
+    "uploadFile": "Nahrať súbor",
     "uploadFiles": "Nahrať súbory",
-    "dragAndDrop": "Drag & drop",
     "uploadingList": "Nahrávané súbory",
     "errors": {
-      "scanError": "TODO wording: Nepodarilo sa preskenovať súbor vooči výrusom",
-      "scanInfected": "TODO wording: V súbore sa našiel vírus.",
-      "unknownFile": "TODO wording: Nerozpoznaný súbor"
+      "largeFile": "Súbor je príliš veľký, maximálna veľkosť {{additionalParam}}",
+      "invalidFileType": "Nepodporovaný formát súboru, podporované formáty: {{additionalParam}}"
+    },
+    "fileUploadStatus": {
+      "UploadQueued": "Nahráva sa",
+      "Uploading": "Nahráva sa",
+      "UploadError": "Súbor sa nepodarilo nahrať. Skúste to znova.",
+      "UploadDone": "Čaká na antivírovú kontrolu",
+      "Scanning": "Prebieha antivírová kontrola",
+      "ScanError": "Nastala chyba pri antivírovej kontrole. Skúste to znova.",
+      "ScanDone": "",
+      "ScanInfected": "Súbor obsahuje vírus. Nahrajte iný súbor.",
+      "UnknownFile": "Nastala nečakaná chyba. Skúste to znova.",
+      "UnknownStatus": "Zisťuje sa stav náhrávania súboru.",
+      "UploadServerError": ""
     }
   },
   "DatePicker": {

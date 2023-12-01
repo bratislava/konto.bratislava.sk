@@ -12,13 +12,11 @@ import React, {
 import { useOnClickOutside } from 'usehooks-ts'
 
 import { handleOnKeyPress } from '../../../../frontend/utils/general'
-import { FieldAdditionalProps, FieldBaseProps } from '../FieldBase'
-import FieldWrapper from '../FieldWrapper'
+import FieldWrapper, { FieldWrapperProps } from '../FieldWrapper'
 import Dropdown from './Dropdown'
 import SelectFieldBox from './SelectFieldBox'
 import { SelectOption } from './SelectOption.interface'
 
-// eslint-disable-next-line no-secrets/no-secrets
 /*
  * TODO: Replace with new accessible components
  *
@@ -52,18 +50,18 @@ import { SelectOption } from './SelectOption.interface'
  *
  */
 
-type SelectFieldProps = FieldBaseProps &
-  Pick<FieldAdditionalProps, 'placeholder' | 'className'> & {
-    type?: 'one' | 'multiple' | 'arrow' | 'radio'
-    value?: SelectOption[]
-    enumOptions?: SelectOption[]
-    dropdownDivider?: boolean
-    selectAllOption?: boolean
-    hideScrollbar?: boolean
-    alwaysOneSelected?: boolean
-    maxWordSize?: number
-    onChange: (values: SelectOption[]) => void
-  }
+type SelectFieldProps = FieldWrapperProps & {
+  type?: 'one' | 'multiple' | 'arrow' | 'radio'
+  value?: SelectOption[]
+  enumOptions?: SelectOption[]
+  dropdownDivider?: boolean
+  selectAllOption?: boolean
+  hideScrollbar?: boolean
+  alwaysOneSelected?: boolean
+  onChange: (values: SelectOption[]) => void
+  placeholder?: string
+  className?: string
+}
 
 const SelectFieldComponent: ForwardRefRenderFunction<HTMLDivElement, SelectFieldProps> = (
   props: SelectFieldProps,
@@ -78,17 +76,19 @@ const SelectFieldComponent: ForwardRefRenderFunction<HTMLDivElement, SelectField
     selectAllOption,
     placeholder,
     helptext,
+    helptextHeader,
     tooltip,
     dropdownDivider,
     errorMessage = [],
     required,
-    explicitOptional,
     disabled,
     hideScrollbar,
     alwaysOneSelected,
-    maxWordSize = 17,
     className,
     onChange,
+    size,
+    labelSize,
+    displayOptionalLabel,
   } = props
 
   const [isDropdownOpened, setIsDropdownOpened] = useState<boolean>(false)
@@ -103,13 +103,14 @@ const SelectFieldComponent: ForwardRefRenderFunction<HTMLDivElement, SelectField
   const clickOutsideRef = useRef<HTMLDivElement>(null)
 
   const selectClassName = cx(
-    'border-form-input-default flex flex-row items-center rounded-lg border-2 bg-white',
+    'border-form-input-default flex flex-row items-center rounded-lg border-2',
     {
+      'bg-white': !disabled,
       'hover:border-form-input-hover focus:border-form-input-pressed active:border-form-input-pressed':
         !disabled,
       'border-negative-700 hover:border-negative-700 focus:border-negative-700':
         errorMessage?.length > 0 && !disabled,
-      'border-form-input-disabled opacity-50': disabled,
+      'border-form-input-disabled border-gray-300 bg-gray-100 opacity-50': disabled,
     },
   )
 
@@ -239,21 +240,19 @@ const SelectFieldComponent: ForwardRefRenderFunction<HTMLDivElement, SelectField
 
   // RENDER
   return (
-    <div
-      className={cx(
-        'relative flex w-full max-w-[200px] flex-col transition-all xs:max-w-[320px]',
-        className,
-      )}
-    >
+    <div className={cx('relative flex w-full flex-col transition-all', className)}>
       {/* FIELD HEADER WITH DESCRIPTION AND LABEL */}
       <FieldWrapper
         label={label}
         helptext={helptext}
+        helptextHeader={helptextHeader}
         tooltip={tooltip}
         required={required}
-        explicitOptional={explicitOptional}
         errorMessage={errorMessage}
         disabled={disabled}
+        size={size}
+        labelSize={labelSize}
+        displayOptionalLabel={displayOptionalLabel}
       >
         {/* SELECT PART */}
         <div className={selectClassName} ref={clickOutsideRef}>
@@ -264,8 +263,8 @@ const SelectFieldComponent: ForwardRefRenderFunction<HTMLDivElement, SelectField
             multiple={type === 'multiple'}
             filter={filter}
             filterRef={filterRef}
-            maxWordSize={maxWordSize}
             placeholder={placeholder}
+            disabled={disabled}
             onRemove={handleOnRemove}
             onRemoveAll={handleOnDeselectAll}
             onFilterChange={setFilter}
@@ -303,7 +302,6 @@ const SelectFieldComponent: ForwardRefRenderFunction<HTMLDivElement, SelectField
               divider={dropdownDivider}
               hideScrollbar={hideScrollbar}
               selectAllOption={selectAllOption}
-              maxWordSize={maxWordSize + 5}
               absolute
               onChooseOne={handleOnChooseOne}
               onUnChooseOne={handleOnUnChooseOne}

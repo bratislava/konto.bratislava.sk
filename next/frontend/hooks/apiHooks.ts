@@ -38,7 +38,11 @@ export const useTaxes = () => {
   // TODO handle 401 & token refreshing - for now, this should work reasonably as along as the page isn't opened for too long
   // TODO make sure log out -> log in as different user -> loading data does not load the data of previous user - without futher change it will now
   // TODO move towards react query
-  const queryResult = useQuery<Tax>(['/api/taxes'], () => getTaxApi(), { retry: false })
+  const queryResult = useQuery<Tax>({
+    queryKey: ['/api/taxes'],
+    queryFn: () => getTaxApi(),
+    retry: false,
+  })
 
   useEffect(() => {
     if (

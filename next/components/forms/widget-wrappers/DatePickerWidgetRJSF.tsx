@@ -1,14 +1,12 @@
 import { StrictRJSFSchema, WidgetProps } from '@rjsf/utils'
-import { WidgetOptions } from 'components/forms/types/WidgetOptions'
 import DatePicker from 'components/forms/widget-components/DateTimePicker/DatePicker'
 import WidgetWrapper from 'components/forms/widget-wrappers/WidgetWrapper'
 import React from 'react'
-
-type DatePickerRJSFOptions = WidgetOptions
+import { DatePickerUiOptions } from 'schema-generator/generator/uiOptionsTypes'
 
 interface DatePickerWidgetRJSFProps extends WidgetProps {
   label: string
-  options: DatePickerRJSFOptions
+  options: DatePickerUiOptions & WidgetProps['options']
   value: string | null
   errorMessage?: string
   schema: StrictRJSFSchema
@@ -23,28 +21,25 @@ const DatePickerWidgetRJSF = ({
   disabled,
   value,
   onChange,
+  readonly,
 }: DatePickerWidgetRJSFProps) => {
-  const {
-    helptext,
-    tooltip,
-    explicitOptional,
-    accordion,
-    spaceBottom = 'none',
-    spaceTop = 'large',
-  } = options
+  const { helptext, helptextHeader, tooltip, size, labelSize } = options
 
   return (
-    <WidgetWrapper accordion={accordion} spaceBottom={spaceBottom} spaceTop={spaceTop}>
+    <WidgetWrapper options={options}>
       <DatePicker
         label={label}
         errorMessage={rawErrors}
         required={required}
-        disabled={disabled}
+        disabled={disabled || readonly}
         helptext={helptext}
+        helptextHeader={helptextHeader}
         tooltip={tooltip}
-        explicitOptional={explicitOptional}
         value={value ?? null}
         onChange={(value) => onChange(value ?? undefined)}
+        size={size}
+        labelSize={labelSize}
+        displayOptionalLabel
       />
     </WidgetWrapper>
   )

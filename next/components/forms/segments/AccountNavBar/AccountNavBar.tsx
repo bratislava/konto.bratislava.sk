@@ -3,22 +3,24 @@ import cx from 'classnames'
 import { StatusBar, useStatusBarContext } from 'components/forms/info-components/StatusBar'
 import HamburgerMenu from 'components/forms/segments/HambergerMenu/HamburgerMenu'
 import Button from 'components/forms/simple-components/Button'
+import ButtonNew from 'components/forms/simple-components/ButtonNew'
 import IdentityVerificationStatus from 'components/forms/simple-components/IdentityVerificationStatus'
 import MenuDropdown, {
   MenuItemBase,
 } from 'components/forms/simple-components/MenuDropdown/MenuDropdown'
+import { useConditionalFormRedirects } from 'components/forms/useFormRedirects'
 import { UserData } from 'frontend/dtos/accountDto'
 import { useServerSideAuth } from 'frontend/hooks/useServerSideAuth'
 import NextLink from 'next/link'
 import { useRouter } from 'next/router'
 import { useTranslation } from 'next-i18next'
 import { ReactNode, useState } from 'react'
+import { Button as ReactAriaButton } from 'react-aria-components'
 import { RemoveScroll } from 'react-remove-scroll'
 
 import { ROUTES } from '../../../../frontend/api/constants'
 import useElementSize from '../../../../frontend/hooks/useElementSize'
 import Brand from '../../simple-components/Brand'
-import Link from './NavBarLink'
 
 interface IProps extends LanguageSelectProps {
   className?: string
@@ -65,7 +67,7 @@ const Avatar = ({ userData }: { userData?: UserData | null }) => {
 
 export const AccountNavBar = ({ className, sectionsList, menuItems, hiddenHeaderNav }: IProps) => {
   const [burgerOpen, setBurgerOpen] = useState(false)
-  const { userData, isAuthenticated } = useServerSideAuth()
+  const { userData, isAuthenticated, isLegalEntity } = useServerSideAuth()
 
   const { statusBarConfiguration } = useStatusBarContext()
   const [isMenuOpen, setIsMenuOpen] = useState<boolean>(false)
@@ -74,6 +76,15 @@ export const AccountNavBar = ({ className, sectionsList, menuItems, hiddenHeader
 
   const { t } = useTranslation(['common', 'account'])
   const router = useRouter()
+
+  // we need to keep the work in progress of the open form if navigating away form it
+  const optionalFormRedirectsContext = useConditionalFormRedirects()
+  const login = () =>
+    optionalFormRedirectsContext ? optionalFormRedirectsContext.login() : router.push(ROUTES.LOGIN)
+  const register = () =>
+    optionalFormRedirectsContext
+      ? optionalFormRedirectsContext.register()
+      : router.push(ROUTES.REGISTER)
 
   const isActive = (sectionItem: MenuSectionItemBase) =>
     sectionItem.url === '/' ? router.pathname === '/' : router.pathname.startsWith(sectionItem.url)
@@ -97,7 +108,7 @@ export const AccountNavBar = ({ className, sectionsList, menuItems, hiddenHeader
           >
             <Brand
               className="group grow"
-              url="https://bratislava.sk/"
+              url={ROUTES.HOME}
               title={
                 <p className="text-p2 text-font group-hover:text-gray-600">
                   {t('common:capitalCity')}
@@ -107,44 +118,45 @@ export const AccountNavBar = ({ className, sectionsList, menuItems, hiddenHeader
             />
             <IdentityVerificationStatus />
             <nav className="flex gap-x-8 font-semibold text-font/75">
-              <div className="flex items-center gap-x-6 font-semibold text-font/75">
-                {isAuthenticated ? (
-                  <MenuDropdown
-                    setIsOpen={setIsMenuOpen}
-                    buttonTrigger={
-                      <>
-                        <Avatar userData={userData} />
-                        <div className="ml-3 font-light lg:font-semibold">
-                          {userData?.given_name}
-                        </div>
-                        <ChevronDownSmallIcon
-                          className={`ml-1 hidden h-5 w-5 mix-blend-normal lg:flex ${
-                            isMenuOpen ? '-rotate-180' : ''
-                          }`}
-                        />
-                      </>
-                    }
-                    itemVariant="header"
-                    items={menuItems}
-                  />
-                ) : (
-                  <>
-                    <Link
-                      href={ROUTES.LOGIN}
-                      variant="plain"
-                      className="ml-2 whitespace-nowrap py-4"
+              {isAuthenticated ? (
+                <MenuDropdown
+                  setIsOpen={setIsMenuOpen}
+                  buttonTrigger={
+                    <ButtonNew
+                      variant="unstyled"
+                      className="flex items-center gap-x-6 font-semibold text-font/75"
                     >
-                      {t('account:menu_login_link')}
-                    </Link>
-                    <Button
-                      onPress={() => router.push(ROUTES.REGISTER)}
-                      variant="negative"
-                      text={t('account:menu_register_link')}
-                      size="sm"
-                    />
-                  </>
-                )}
-              </div>
+                      <Avatar userData={userData} />
+                      <div className="ml-3 font-light lg:font-semibold">
+                        {isLegalEntity ? userData?.name : userData?.given_name}
+                      </div>
+                      <ChevronDownSmallIcon
+                        className={`ml-1 hidden h-5 w-5 mix-blend-normal lg:flex ${
+                          isMenuOpen ? '-rotate-180' : ''
+                        }`}
+                      />
+                    </ButtonNew>
+                  }
+                  itemVariant="header"
+                  items={menuItems}
+                />
+              ) : (
+                <div className="flex items-center gap-x-6 font-semibold text-font/75">
+                  <Button
+                    className="whitespace-nowrap lg:flex"
+                    size="sm"
+                    onPress={login}
+                    variant="plain-black"
+                    text={t('account:menu_login_link')}
+                  />
+                  <Button
+                    onPress={register}
+                    variant="negative"
+                    text={t('account:menu_register_link')}
+                    size="sm"
+                  />
+                </div>
+              )}
             </nav>
           </div>
           {/* Header bottom navigation */}
@@ -183,12 +195,9 @@ export const AccountNavBar = ({ className, sectionsList, menuItems, hiddenHeader
         <div className={RemoveScroll.classNames.fullWidth}>
           {!burgerOpen && <StatusBar className="flex lg:hidden" />}
           <div className="flex h-16 items-center border-b-2 px-8 py-5">
-            <Brand url="https://bratislava.sk/" className="grow" />
-            <button
-              type="button"
-              onClick={() =>
-                isAuthenticated ? setBurgerOpen(!burgerOpen) : router.push(ROUTES.LOGIN)
-              }
+            <Brand url={ROUTES.HOME} className="grow" />
+            <ReactAriaButton
+              onPress={() => (isAuthenticated ? setBurgerOpen(!burgerOpen) : login())}
               className="-mr-4 px-4 py-5"
             >
               <div className="flex w-6 items-center justify-center">
@@ -200,7 +209,7 @@ export const AccountNavBar = ({ className, sectionsList, menuItems, hiddenHeader
                   <Avatar userData={userData} />
                 )}
               </div>
-            </button>
+            </ReactAriaButton>
 
             {burgerOpen && (
               <HamburgerMenu

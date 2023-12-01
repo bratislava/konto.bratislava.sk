@@ -2,26 +2,29 @@ import cx from 'classnames'
 import { useTranslation } from 'next-i18next'
 import React, { ReactNode } from 'react'
 import { Orientation, useRadioGroup } from 'react-aria'
-import { RadioGroupProps, RadioGroupState, useRadioGroupState } from 'react-stately'
+import {
+  RadioGroupProps as ReactStatelyRadioGroupProps,
+  RadioGroupState,
+  useRadioGroupState,
+} from 'react-stately'
 
 import ButtonNew from '../../simple-components/ButtonNew'
-import { FieldAdditionalProps, FieldBaseProps } from '../FieldBase'
-import FieldWrapper from '../FieldWrapper'
+import FieldWrapper, { FieldWrapperProps } from '../FieldWrapper'
 
 export const RadioContext = React.createContext<RadioGroupState>({} as RadioGroupState)
 
 // TODO it should take RadioGroupProps from react-aria
-type RadioGroupBase = Omit<FieldBaseProps, 'explicitOptional'> &
-  Pick<FieldAdditionalProps, 'className'> & {
-    children: ReactNode
-    value?: string
-    defaultValue?: string
-    isReadOnly?: boolean
-    onChange: (value: string) => void
-    orientation?: Orientation
-  }
+type RadioGroupProps = FieldWrapperProps & {
+  children: ReactNode
+  value?: string | null
+  defaultValue?: string
+  isReadOnly?: boolean
+  onChange: (value: string | null) => void
+  orientation?: Orientation
+  className?: string
+}
 
-const RadioGroup = (props: RadioGroupBase) => {
+const RadioGroup = (props: RadioGroupProps) => {
   const { t } = useTranslation('account', { keyPrefix: 'RadioGroup' })
 
   const {
@@ -33,21 +36,28 @@ const RadioGroup = (props: RadioGroupBase) => {
     disabled,
     errorMessage,
     helptext,
+    helptextHeader,
     tooltip,
+    value,
+    size,
+    labelSize,
+    displayOptionalLabel,
   } = props
 
   const propsReactAria = {
     ...props,
     isDisabled: disabled,
     isRequired: required,
-  } as RadioGroupProps
+    // it may receive "undefined" as value, which would make it uncontrolled
+    value: value == null ? null : value,
+  } as ReactStatelyRadioGroupProps
 
   const state = useRadioGroupState(propsReactAria)
   const { radioGroupProps, labelProps, errorMessageProps } = useRadioGroup(propsReactAria, state)
 
   const handleReset = () => {
-    // TODO, this may need to be changed to null or undefined
-    state.setSelectedValue('')
+    // setSelectedValue type supports only string, so we need to cast it as null works too
+    ;(state.setSelectedValue as (value: string | null) => void)(null)
   }
 
   return (
@@ -57,18 +67,23 @@ const RadioGroup = (props: RadioGroupBase) => {
         labelProps={labelProps}
         htmlFor={radioGroupProps.id}
         helptext={helptext}
+        helptextHeader={helptextHeader}
         tooltip={tooltip}
         required={required}
         disabled={disabled}
         errorMessage={errorMessage}
         errorMessageProps={errorMessageProps}
+        size={size}
+        labelSize={labelSize}
+        customHeaderBottomMargin="mb-4"
+        displayOptionalLabel={displayOptionalLabel}
       >
         <RadioContext.Provider value={state}>
           <div className="flex flex-col gap-2">
             <div
               className={cx({
                 'flex flex-col gap-3': orientation === 'vertical',
-                'flex flex-row gap-6': orientation === 'horizontal',
+                'flex flex-row gap-4 md:gap-6': orientation === 'horizontal',
               })}
             >
               {children}

@@ -4,7 +4,7 @@ import InputField from 'components/forms/widget-components/InputField/InputField
 import { AccountType, Address, UserData } from 'frontend/dtos/accountDto'
 import useHookForm from 'frontend/hooks/useHookForm'
 import useJsonParseMemo from 'frontend/hooks/useJsonParseMemo'
-import { isValidPhoneNumber } from 'libphonenumber-js'
+import { ajvFormats } from 'frontend/utils/form'
 import { useTranslation } from 'next-i18next'
 import { Controller } from 'react-hook-form'
 
@@ -87,21 +87,25 @@ const poSchema = {
   required: ['email'],
 }
 
+const isValidPhoneNumber = (phoneNumber: string) => {
+  const regex = ajvFormats['phone-number']
+  return regex.test(phoneNumber)
+}
 interface UserProfileDetailEditProps {
   formId: string
   userData: UserData
-  onOpenEmailModal: () => void
+  onEmailChange: () => void
   onSubmit: (newUserData: UserData) => void
 }
 
 const UserProfileDetailEdit = (props: UserProfileDetailEditProps) => {
-  const { formId, userData, onOpenEmailModal, onSubmit } = props
+  const { formId, userData, onEmailChange, onSubmit } = props
   const { t } = useTranslation('account')
   const { address, name, family_name, given_name, email, phone_number } = userData
-  const isPhysicalEntity = userData?.['custom:account_type'] === AccountType.FyzickaOsoba
+  const isLegalEntity = userData?.['custom:account_type'] !== AccountType.FyzickaOsoba
   const parsedAddress = useJsonParseMemo<Address>(address)
   const { handleSubmit, control, errors, setError } = useHookForm<Data>({
-    schema: isPhysicalEntity ? poSchema : foSchema,
+    schema: isLegalEntity ? poSchema : foSchema,
     defaultValues: {
       business_name: name,
       family_name,
@@ -141,7 +145,7 @@ const UserProfileDetailEdit = (props: UserProfileDetailEditProps) => {
       onSubmit={handleSubmit(handleSubmitCallback)}
     >
       <div className="gap flex flex-row flex-wrap gap-6">
-        {isPhysicalEntity ? (
+        {isLegalEntity ? (
           <div className="w-full grow md:w-fit">
             <Controller
               name="business_name"
@@ -200,7 +204,6 @@ const UserProfileDetailEdit = (props: UserProfileDetailEditProps) => {
               <InputField
                 disabled
                 label={t('profile_detail.email')}
-                tooltip={t('profile_detail.email_tooltip')}
                 autoComplete="username"
                 {...field}
                 errorMessage={errors.email}
@@ -214,14 +217,14 @@ const UserProfileDetailEdit = (props: UserProfileDetailEditProps) => {
             size="lg"
             text={t('profile_detail.email_button')}
             className="hidden md:block"
-            onPress={onOpenEmailModal}
+            onPress={onEmailChange}
           />
           <Button
             variant="black"
             size="sm"
             text={t('profile_detail.email_button')}
             className="block md:hidden"
-            onPress={onOpenEmailModal}
+            onPress={onEmailChange}
           />
         </div>
       </div>

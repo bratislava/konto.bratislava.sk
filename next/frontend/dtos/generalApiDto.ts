@@ -43,6 +43,13 @@ export interface Identity {
   turnstileToken: string
 }
 
+export interface LegalIdentity {
+  ico: string
+  birthNumber: string
+  identityCard: string
+  turnstileToken: string
+}
+
 export interface Gdpr {
   subType?: 'subscribe' | 'unsubscribe'
   type: 'ANALYTICS' | 'DATAPROCESSING' | 'MARKETING' | 'LICENSE'

@@ -1,3 +1,4 @@
+const { withPlausibleProxy } = require('next-plausible')
 const { i18n } = require('./next-i18next.config')
 
 /**
@@ -7,15 +8,20 @@ const nextConfig = {
   i18n,
   reactStrictMode: true,
   images: {
-    domains: ['localhost', 'cdn-api.bratislava.sk'],
+    remotePatterns: [
+      {
+        protocol: 'http',
+        hostname: 'localhost',
+      },
+      {
+        protocol: 'https',
+        hostname: 'cdn-api.bratislava.sk',
+      },
+    ],
   },
   output: 'standalone',
   eslint: {
     dirs: ['components/', 'pages/', 'utils/', 'backend/', 'frontend/'],
-  },
-  // https://github.com/vercel/next.js/discussions/49251#discussioncomment-5812479
-  experimental: {
-    appDir: false,
   },
   async redirects() {
     return [
@@ -111,4 +117,7 @@ const nextConfig = {
   },
 }
 
-module.exports = nextConfig
+// https://github.com/4lejandrito/next-plausible#proxy-the-analytics-script
+module.exports = withPlausibleProxy()({
+  ...nextConfig,
+})

@@ -1,20 +1,20 @@
+import { GetFormResponseDto, GinisDocumentDetailResponseDto } from '@clients/openapi-forms'
 import MyApplicationDetailsHeader from 'components/forms/segments/AccountSections/MyApplicationsSection/MyApplicationDetailsHeader'
 import MyApplicationHistory from 'components/forms/segments/AccountSections/MyApplicationsSection/MyApplicationHistory'
 import SummaryRowSimple from 'components/forms/simple-components/SummaryRowSimple'
 import SummaryRow from 'components/forms/steps/Summary/SummaryRow'
-import { MyApplicationHistoryDataBase, MyApplicationsSentCardBase } from 'frontend/api/mocks/mocks'
 import { useTranslation } from 'next-i18next'
 
 type MyApplicationsDetailsBase = {
-  detailsData: MyApplicationsSentCardBase
-  historyData: MyApplicationHistoryDataBase[]
+  detailsData: GetFormResponseDto
+  ginisData: GinisDocumentDetailResponseDto | null
 }
 
-const MyApplicationDetails = ({ detailsData, historyData }: MyApplicationsDetailsBase) => {
+const MyApplicationDetails = ({ detailsData, ginisData }: MyApplicationsDetailsBase) => {
   const { t } = useTranslation('account')
   return (
     <div className="flex flex-col">
-      <MyApplicationDetailsHeader data={detailsData} />
+      <MyApplicationDetailsHeader data={detailsData} ginisData={ginisData} />
       <div className="mx-auto flex w-full max-w-screen-lg flex-col gap-16 py-12">
         <div className="flex flex-col gap-2 px-4 lg:px-0">
           <h3 className="text-h3">
@@ -26,7 +26,7 @@ const MyApplicationDetails = ({ detailsData, historyData }: MyApplicationsDetail
               isEditable={false}
               data={{
                 label: t('account_section_applications.details.application_details.record_number'),
-                value: detailsData?.recordNumber,
+                value: ginisData?.id,
                 schemaPath: '',
                 isError: false,
               }}
@@ -36,7 +36,7 @@ const MyApplicationDetails = ({ detailsData, historyData }: MyApplicationsDetail
               isEditable={false}
               data={{
                 label: t('account_section_applications.details.application_details.file_number'),
-                value: detailsData?.fileNumber,
+                value: ginisData?.dossierId,
                 schemaPath: '',
                 isError: false,
               }}
@@ -46,29 +46,32 @@ const MyApplicationDetails = ({ detailsData, historyData }: MyApplicationsDetail
               isEditable={false}
               data={{
                 label: t('account_section_applications.details.application_details.handle_person'),
-                value: detailsData?.handlePerson,
+                value: ginisData?.ownerName,
                 schemaPath: '',
                 isError: false,
               }}
             />
             <SummaryRowSimple size="small" isEditable={false} label={t('contact')} isError={false}>
-              <div className="flex gap-2">
-                <div>
+              <p>
+                {ginisData?.ownerPhone ? (
+                  <a className="underline underline-offset-4" href={`tel:${ginisData.ownerPhone}`}>
+                    {ginisData.ownerPhone}
+                  </a>
+                ) : (
+                  t('account_section_applications.details.application_details.phone_unavailable')
+                )}
+                {', '}
+                {ginisData?.ownerEmail ? (
                   <a
                     className="underline underline-offset-4"
-                    href={`tel:${detailsData?.phoneContact}`}
+                    href={`mailto:${ginisData.ownerEmail}`}
                   >
-                    {detailsData?.phoneContact}
+                    {ginisData.ownerEmail}
                   </a>
-                  ,
-                </div>
-                <a
-                  className="underline underline-offset-4"
-                  href={`mailto:${detailsData?.mailContact}`}
-                >
-                  {detailsData?.mailContact}
-                </a>
-              </div>
+                ) : (
+                  t('account_section_applications.details.application_details.email_unavailable')
+                )}
+              </p>
             </SummaryRowSimple>
           </div>
         </div>
@@ -76,7 +79,7 @@ const MyApplicationDetails = ({ detailsData, historyData }: MyApplicationsDetail
           <h3 className="text-h3">
             {t('account_section_applications.details.application_history.title')}
           </h3>
-          <MyApplicationHistory historyData={historyData} />
+          <MyApplicationHistory historyData={ginisData?.documentHistory} />
         </div>
       </div>
     </div>

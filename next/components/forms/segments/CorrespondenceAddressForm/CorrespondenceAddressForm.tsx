@@ -102,7 +102,7 @@ const CorrespondenceAddressForm = ({ error, onHideError, onSubmit, defaultValues
             tooltip={t('postal_code_tooltip')}
             label={t('postal_code_label')}
             placeholder={t('postal_code_placeholder')}
-            size="default"
+            size="medium"
             required
             {...field}
             errorMessage={errors.postal_code}

@@ -2,7 +2,6 @@ import { ChevronDownIcon, CrossIcon } from '@assets/ui-icons'
 import cx from 'classnames'
 import { useTranslation } from 'next-i18next'
 import { useState } from 'react'
-import { useIsSSR } from 'react-aria'
 import { Button as AriaButton, Dialog, Modal, ModalOverlay } from 'react-aria-components'
 
 import { useFormState } from '../useFormState'
@@ -17,11 +16,6 @@ type StepperModalProps = {
 
 const StepperModal = ({ isOpen, setIsOpen, handleOnSkipToStep }: StepperModalProps) => {
   const { t } = useTranslation('forms')
-  const isSSR = useIsSSR()
-
-  if (isSSR) {
-    return null
-  }
 
   return (
     <ModalOverlay
@@ -32,18 +26,22 @@ const StepperModal = ({ isOpen, setIsOpen, handleOnSkipToStep }: StepperModalPro
     >
       <Modal isDismissable isOpen={isOpen} onOpenChange={setIsOpen} className="h-full outline-0">
         <Dialog className="flex h-full flex-col outline-0">
-          <div className="flex h-14 w-full flex-row items-center gap-1 bg-white p-4 drop-shadow-lg">
-            <h6 className="text-h6 grow">{t('all_steps')}</h6>
-            <AriaButton
-              className="flex h-full cursor-pointer flex-col justify-center"
-              onPress={() => setIsOpen(false)}
-            >
-              <CrossIcon className="h-6 w-6" />
-            </AriaButton>
-          </div>
-          <nav className="w-full overflow-auto bg-white p-4">
-            <StepperViewList onSkipToStep={handleOnSkipToStep} />
-          </nav>
+          {({ close }) => (
+            <>
+              <div className="flex h-14 w-full flex-row items-center gap-1 bg-white p-4 drop-shadow-lg">
+                <h6 className="text-h6 grow">{t('all_steps')}</h6>
+                <AriaButton
+                  className="flex h-full cursor-pointer flex-col justify-center"
+                  onPress={close}
+                >
+                  <CrossIcon className="h-6 w-6" />
+                </AriaButton>
+              </div>
+              <nav className="w-full overflow-auto bg-white p-4">
+                <StepperViewList onSkipToStep={handleOnSkipToStep} />
+              </nav>
+            </>
+          )}
         </Dialog>
       </Modal>
     </ModalOverlay>

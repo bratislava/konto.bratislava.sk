@@ -51,8 +51,8 @@ const TimeSelector = ({
   const timeFormatArray = value
     ? value.split(':').map((value) => parseInt(value, 10) || 0)
     : minValue
-    ? minValue.split(':').map((value) => parseInt(value, 10) || 0)
-    : [0, 0]
+      ? minValue.split(':').map((value) => parseInt(value, 10) || 0)
+      : [0, 0]
 
   const clickHandler = (
     e: MouseEvent<HTMLButtonElement>,

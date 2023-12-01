@@ -6,6 +6,7 @@ import {
 } from 'components/logic/ServerSideAuthProvider'
 import DatePickerShowCase from 'components/styleguide/showcases/DatePickerShowCase'
 import InputFieldShowCase from 'components/styleguide/showcases/InputFieldShowCase'
+import MyApplicationsCardShowCase from 'components/styleguide/showcases/MyApplicationsCardShowCase'
 import TimePickerShowCase from 'components/styleguide/showcases/TimePickerShowCase'
 import TooltipShowCase from 'components/styleguide/showcases/TooltipShowCase'
 import { GetServerSidePropsContext } from 'next'
@@ -79,6 +80,7 @@ const Styleguide = ({ page }: AsyncServerProps<typeof getServerSideProps>) => {
           <SummaryRowShowCase />
           <BannerShowCase />
           <ServiceCardShowCase />
+          <MyApplicationsCardShowCase />
           <SnackbarShowCase />
         </StyleGuideWrapper>
       </PageWrapper>

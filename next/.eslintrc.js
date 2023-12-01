@@ -1,5 +1,11 @@
 module.exports = {
-  extends: ['auto', 'plugin:tailwindcss/recommended', 'plugin:@next/next/recommended', 'prettier'],
+  extends: [
+    'auto',
+    'plugin:tailwindcss/recommended',
+    'plugin:@next/next/recommended',
+    'prettier',
+    'plugin:@tanstack/eslint-plugin-query/recommended',
+  ],
   plugins: [],
   rules: {
     'react/react-in-jsx-scope': 'off',
@@ -20,8 +26,7 @@ module.exports = {
       2,
       { allow: ['__NEXT_DATA__', '__NEXT_LOADED_PAGES__', '__typename', '__errors'] },
     ],
-    /** Links get confused for secrets */
-    'no-secrets/no-secrets': ['error', { ignoreContent: '^http' }],
+    'no-secrets/no-secrets': 'off',
     /** Presently at too many places & becomes just an ignored clutter, consider turning on later */
     '@typescript-eslint/no-unsafe-assignment': 'off',
     /** Doesn't work without changing our ts config */

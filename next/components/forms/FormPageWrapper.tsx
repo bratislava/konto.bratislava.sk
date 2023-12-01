@@ -9,6 +9,10 @@ import PageWrapper from '../layouts/PageWrapper'
 import { GetSSRCurrentAuth } from '../logic/ServerSideAuthProvider'
 import FormPage from './FormPage'
 import ThankYouFormSection from './segments/AccountSections/ThankYouSection/ThankYouFormSection'
+import { FormSignatureProvider } from './signer/useFormSignature'
+import { FormSignerLoaderProvider } from './signer/useFormSignerLoader'
+import ThemedForm from './ThemedForm'
+import { FormComponentProvider } from './useFormComponent'
 import { FormFileUploadProvider } from './useFormFileUpload'
 import { FormLeaveProtectionProvider } from './useFormLeaveProtection'
 import { FormModalsProvider } from './useFormModals'
@@ -33,30 +37,38 @@ const FormPageWrapper = ({ schema, uiSchema, page, initialFormData }: FormPageWr
   return (
     <PageWrapper locale={page.locale}>
       <FormSentRenderer
-        initialFormSent={initialFormData.formSent}
+        // TODO today it does not make sense to have anything else than false in initialFormSent - otherwise we just display "thank you" page on each revisit
+        // if it stays this way remove the prop completely
+        initialFormSent={false}
         notSentChildren={
-          <AccountPageLayout isPublicPage hiddenHeaderNav>
+          <FormComponentProvider formComponent={ThemedForm}>
             <FormFileUploadProvider initialFormData={initialFormData}>
               <FormLeaveProtectionProvider>
-                <FormStateProvider
-                  schema={schema}
-                  uiSchema={uiSchema}
-                  formSlug={formSlug}
-                  initialFormData={initialFormData}
-                >
-                  <FormRedirectsProvider>
-                    <FormModalsProvider initialFormData={initialFormData}>
-                      <FormSendProvider>
-                        <FormExportImportProvider initialFormData={initialFormData}>
-                            <FormPage />
-                        </FormExportImportProvider>
-                      </FormSendProvider>
-                    </FormModalsProvider>
-                  </FormRedirectsProvider>
-                </FormStateProvider>
+                <FormModalsProvider initialFormData={initialFormData}>
+                  <FormSignerLoaderProvider initialFormData={initialFormData}>
+                    <FormStateProvider
+                      schema={schema}
+                      uiSchema={uiSchema}
+                      formSlug={formSlug}
+                      initialFormData={initialFormData}
+                    >
+                      <FormRedirectsProvider>
+                        <FormSignatureProvider>
+                          <FormSendProvider>
+                            <FormExportImportProvider initialFormData={initialFormData}>
+                              <AccountPageLayout isPublicPage>
+                                <FormPage />
+                              </AccountPageLayout>
+                            </FormExportImportProvider>
+                          </FormSendProvider>
+                        </FormSignatureProvider>
+                      </FormRedirectsProvider>
+                    </FormStateProvider>
+                  </FormSignerLoaderProvider>
+                </FormModalsProvider>
               </FormLeaveProtectionProvider>
             </FormFileUploadProvider>
-          </AccountPageLayout>
+          </FormComponentProvider>
         }
         sentChildren={
           <AccountPageLayout hiddenHeaderNav className="bg-gray-50">

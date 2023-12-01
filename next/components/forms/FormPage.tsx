@@ -2,14 +2,15 @@ import cx from 'classnames'
 import MenuList from 'components/forms/steps/MenuList'
 import { useEffect } from 'react'
 
-import { defaultFormStateBehavior, rjfsValidator } from '../../frontend/utils/form'
+import { defaultFormStateBehavior, rjsfValidator } from '../../frontend/utils/form'
 import FormControls from './FormControls'
 import FormUploadXml from './FormUploadXml'
 import FormModals from './segments/FormModals/FormModals'
 import FormHeader from './simple-components/FormHeader'
 import StepperView from './steps/StepperView'
 import FormSummary from './steps/Summary/FormSummary'
-import ThemedForm from './ThemedForm'
+import { useFormComponent } from './useFormComponent'
+import { useFormErrorTranslations } from './useFormErrorTranslations'
 import { useFormState } from './useFormState'
 
 const FormPage = () => {
@@ -21,8 +22,11 @@ const FormPage = () => {
     formData,
     handleFormOnSubmit,
     handleFormOnChange,
-    isReadonly
+    isReadonly,
   } = useFormState()
+
+  const { transformErrors } = useFormErrorTranslations()
+  const FormComponent = useFormComponent()
 
   useEffect(() => {
     window.scrollTo({ top: 0, behavior: 'smooth' })
@@ -41,8 +45,13 @@ const FormPage = () => {
             <FormSummary />
           ) : (
             <>
-              <h1 className="text-h1-medium font-semibold">{currentStepperStep.title}</h1>
-              <ThemedForm
+              <div className="mb-8 flex flex-col gap-4">
+                <h2 className="text-h2 font-semibold">{currentStepperStep.title}</h2>
+                {currentStepperStep.description && (
+                  <p className="text-p1">{currentStepperStep.description}</p>
+                )}
+              </div>
+              <FormComponent
                 // This is a hack to force the form to re-render when the step changes, it's hard to say whether it
                 // is needed or not, but ensures 100% safety.
                 key={`form-step-${currentStepperStep.index}`}
@@ -50,7 +59,7 @@ const FormPage = () => {
                 schema={currentStepSchema!}
                 uiSchema={uiSchema}
                 formData={formData}
-                validator={rjfsValidator}
+                validator={rjsfValidator}
                 readonly={isReadonly}
                 onSubmit={(e) => {
                   handleFormOnSubmit(e.formData)
@@ -58,6 +67,7 @@ const FormPage = () => {
                 onChange={(e) => {
                   handleFormOnChange(e.formData)
                 }}
+                transformErrors={transformErrors}
                 showErrorList={false}
                 // This removes the extra conditional data for the current step, for removing the steps themselves see
                 // `handleFormOnChange` implementation.
@@ -67,8 +77,12 @@ const FormPage = () => {
                 // HTML validation doesn't work for our use case, therefore it's turned off.
                 noHtml5Validate
               >
-                <FormControls />
-              </ThemedForm>
+                {
+                  // returning null would make RJSF render the default submit button
+                  // eslint-disable-next-line react/jsx-no-useless-fragment
+                  isReadonly ? <></> : <FormControls />
+                }
+              </FormComponent>
             </>
           )}
           <MenuList />

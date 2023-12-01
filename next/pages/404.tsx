@@ -22,7 +22,7 @@ const NotFoundPage = () => {
     <div className="flex h-screen w-screen px-7 py-10 md:pl-36 md:pr-32 xl:pl-80 xl:pr-66">
       <div className="flex w-full flex-col items-center md:flex-row-reverse md:justify-between">
         <div className="relative h-[450px] w-[350px]">
-          <Image alt="" src="/Img/404.png" fill className="object-contain" />
+          <Image alt="" src="/images/404.png" fill className="object-contain" />
         </div>
         <div className="flex shrink-0 flex-col items-center lg:items-start">
           {/* text-5xl font-extrabold does not work */}

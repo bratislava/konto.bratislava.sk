@@ -20,6 +20,7 @@ module.exports = {
   content: [
     join(__dirname, 'pages/**/*.{js,jsx,ts,tsx}'),
     join(__dirname, 'components/**/*.{js,jsx,ts,tsx}'),
+    join(__dirname, 'frontend/**/*.{js,jsx,ts,tsx}'),
   ],
   darkMode: 'media', // or 'class'
   theme: {
@@ -28,7 +29,8 @@ module.exports = {
       normal: '400',
       medium: '500',
       semibold: '600',
-      bold: '700',
+      // TODO our typography system shouldn't have different bold and semibold - this needs clearing up, keeping just one variant of weight 600
+      bold: '600',
     },
     screens: {
       xs: '360px',

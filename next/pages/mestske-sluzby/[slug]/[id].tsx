@@ -5,7 +5,10 @@ import { GetServerSideProps } from 'next'
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
 
 import FormPageWrapper, { FormPageWrapperProps } from '../../../components/forms/FormPageWrapper'
-import { getSSRCurrentAuth, ServerSideAuthProviderHOC } from '../../../components/logic/ServerSideAuthProvider'
+import {
+  getSSRCurrentAuth,
+  ServerSideAuthProviderHOC,
+} from '../../../components/logic/ServerSideAuthProvider'
 import { environment } from '../../../environment'
 import { ROUTES } from '../../../frontend/api/constants'
 
@@ -60,7 +63,8 @@ export const getServerSideProps: GetServerSideProps<FormPageWrapperProps, Params
           oldSchemaVersion: !form.isLatestSchemaVersionForSlug,
           formSent,
           formMigrationRequired,
-          schemaVersionId: form.schemaVersionId
+          schemaVersionId: form.schemaVersionId,
+          isSigned: form.schemaVersion.isSigned,
         },
         ...(await serverSideTranslations(locale)),
       } satisfies FormPageWrapperProps,

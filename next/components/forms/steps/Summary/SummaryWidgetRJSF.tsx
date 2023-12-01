@@ -2,11 +2,9 @@ import { getLocalTimeZone, parseDate } from '@internationalized/date'
 import { WidgetProps } from '@rjsf/utils'
 import React from 'react'
 import { useDateFormatter } from 'react-aria'
+import { CheckboxUiOptions } from 'schema-generator/generator/uiOptionsTypes'
 
 import { useFormState } from '../../useFormState'
-import { CheckboxesRJSFOptions } from '../../widget-wrappers/CheckboxWidgetRJSF'
-import { RadioButtonRJSFOptions } from '../../widget-wrappers/RadioButtonWidgetRJSF'
-import { SelectRJSFOptions } from '../../widget-wrappers/SelectFieldWidgetRJSF'
 import SummaryFiles from './SummaryFiles'
 import SummaryRow from './SummaryRow'
 import { useFormSummary } from './useFormSummary'
@@ -14,33 +12,21 @@ import { useFormSummary } from './useFormSummary'
 export type SummaryWidgetType =
   | 'select'
   | 'input'
-  | 'radio'
-  | 'textarea'
-  | 'checkboxes'
-  | 'upload'
-  | 'datepicker'
-  | 'timepicker'
+  | 'radioGroup'
+  | 'textArea'
+  | 'checkbox'
+  | 'checkboxGroup'
+  | 'fileUpload'
+  | 'datePicker'
+  | 'timePicker'
 
-type TypeAndOptions =
-  | {
-      widgetType: 'select'
-      options: SelectRJSFOptions
-    }
-  | {
-      widgetType: 'radio'
-      options: RadioButtonRJSFOptions
-    }
-  | {
-      widgetType: 'checkboxes'
-      options: CheckboxesRJSFOptions
-    }
-  | {
-      widgetType: Omit<SummaryWidgetType, 'select' | 'radio' | 'checkboxes'>
-      options: WidgetProps['options']
-    }
-
-export type SummaryWidgetRJSFProps = Pick<WidgetProps, 'id' | 'label' | 'value' | 'uiSchema'> &
-  TypeAndOptions
+export type SummaryWidgetRJSFProps = Pick<
+  WidgetProps,
+  'id' | 'label' | 'value' | 'uiSchema' | 'readonly'
+> & {
+  widgetType: SummaryWidgetType
+  options: WidgetProps['options']
+}
 
 const ValueComponent = ({
   widgetType,
@@ -50,48 +36,49 @@ const ValueComponent = ({
 }: Pick<SummaryWidgetRJSFProps, 'widgetType' | 'value' | 'options' | 'uiSchema'>) => {
   const formatter = useDateFormatter()
 
-  if (!value || Array.isArray(value) && value.length === 0) {
+  if (value == null || (Array.isArray(value) && value.length === 0)) {
     return <>-</>
   }
 
   switch (widgetType) {
     case 'select':
-      const selectOptions = options as SelectRJSFOptions
       const selectArray = Array.isArray(value) ? value : [value]
-      const selectLabels = selectArray.map(innerValue => selectOptions.enumOptions?.find((option) => option.value === innerValue)?.label ??
-        (innerValue as string))
-      
-      return (
-        <>
-          {selectLabels.join(', ')}
-        </>
+      const selectLabels = selectArray.map(
+        (innerValue) =>
+          options.enumOptions?.find((option) => option.value === innerValue)?.label ??
+          (innerValue as string),
       )
-    case 'radio':
-      const radioOptions = options as RadioButtonRJSFOptions
+
+      return <>{selectLabels.join(', ')}</>
+    case 'radioGroup':
       return (
         <>
-          {radioOptions.enumOptions?.find((option) => option.value === value)?.label ??
+          {options.enumOptions?.find((option) => option.value === value)?.label ??
             (value as string)}
         </>
       )
-    case 'textarea':
+    case 'textArea':
       return <span className="line-clamp-3 whitespace-pre-wrap">{value}</span>
-    case 'checkboxes':
-      const checkboxesOptions = options as CheckboxesRJSFOptions
+    case 'checkbox':
+      if (value) {
+        return <>{(options as CheckboxUiOptions).checkboxLabel}</>
+      }
+      return <>-</>
+    case 'checkboxGroup':
       return (
         <>
           {(value as string[])
             .map(
               (checkboxValue) =>
-                checkboxesOptions.enumOptions?.find((option) => option.value === checkboxValue)
-                  ?.label ?? checkboxValue,
+                options.enumOptions?.find((option) => option.value === checkboxValue)?.label ??
+                checkboxValue,
             )
             .join(', ')}
         </>
       )
-    case 'upload':
+    case 'fileUpload':
       return <SummaryFiles files={value} />
-    case 'datepicker':
+    case 'datePicker':
       try {
         const parsed = parseDate(value as string)
         return <>{formatter.format(parsed.toDate(getLocalTimeZone()))}</>
@@ -99,7 +86,7 @@ const ValueComponent = ({
         // TODO improve
         return <>{value as string}</>
       }
-    case 'timepicker':
+    case 'timePicker':
       return <>{value as string}</>
     case 'input':
       if (uiSchema?.['ui:options']?.type === 'password') {
@@ -120,7 +107,7 @@ const SummaryWidgetRJSF = ({
   uiSchema,
 }: SummaryWidgetRJSFProps) => {
   const { fieldHasError } = useFormSummary()
-  const { goToStepByFieldId } = useFormState()
+  const { goToStepByFieldId, isReadonly } = useFormState()
 
   return (
     <div>
@@ -128,18 +115,23 @@ const SummaryWidgetRJSF = ({
         data={{
           label,
           value: (
-            <ValueComponent
-              widgetType={widgetType}
-              value={value}
-              options={options}
-              uiSchema={uiSchema}
-            />
+            // className="break-words" doesn't work
+            <div style={{ wordBreak: 'break-word' }}>
+              <ValueComponent
+                widgetType={widgetType}
+                value={value}
+                options={options}
+                uiSchema={uiSchema}
+              />
+            </div>
           ),
           isError: fieldHasError(id),
         }}
         onGoToStep={() => {
           goToStepByFieldId(id)
         }}
+        isEditable={!isReadonly}
+        size="small"
       />
     </div>
   )

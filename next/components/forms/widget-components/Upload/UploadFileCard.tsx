@@ -2,6 +2,7 @@ import {
   AttachmentIcon,
   CheckInCircleIcon,
   CrossInCircleIcon,
+  DownloadIcon,
   ErrorIcon,
   ScanningIcon,
 } from '@assets/ui-icons'
@@ -37,7 +38,9 @@ const UploadFileCard = ({
     fileInfo.status.type === FormFileUploadStatusEnum.UploadError ||
     fileInfo.status.type === FormFileUploadStatusEnum.ScanError ||
     fileInfo.status.type === FormFileUploadStatusEnum.ScanInfected ||
-    fileInfo.status.type === FormFileUploadStatusEnum.UnknownFile
+    fileInfo.status.type === FormFileUploadStatusEnum.UnknownFile ||
+    fileInfo.status.type === FormFileUploadStatusEnum.UnknownStatus ||
+    fileInfo.status.type === FormFileUploadStatusEnum.UploadServerError
   const isScanningStyle = fileInfo.status.type === FormFileUploadStatusEnum.Scanning
   const isDoneStyle = fileInfo.status.type === FormFileUploadStatusEnum.ScanDone
   const isDefaultStyle = !isErrorStyle && !isDoneStyle && !isScanningStyle
@@ -73,20 +76,24 @@ const UploadFileCard = ({
             <div className="flex grow flex-col">
               <h3 className="break-words font-bold text-gray-800">{fileInfo.fileName}</h3>
               <div className="flex gap-2">
-                {/* TODO: Improve */}
                 {fileInfo.canDownload && (
-                  <ReactAriaButton onPress={onFileDownload}>DL</ReactAriaButton>
+                  <ReactAriaButton onPress={onFileDownload}>
+                    <DownloadIcon />
+                  </ReactAriaButton>
                 )}
                 {fileInfo.fileSize != null && (
-                  <>
-                    <span>
-                      <PrettyBytes number={fileInfo.fileSize} />
-                    </span>
-                    <span>&bull;</span>
-                  </>
+                  <span>
+                    <PrettyBytes number={fileInfo.fileSize} />
+                  </span>
                 )}
 
-                <span>{fileInfo.status.type}</span>
+                {(fileInfo.status.type === FormFileUploadStatusEnum.Scanning ||
+                  fileInfo.status.type === FormFileUploadStatusEnum.Uploading) && (
+                  <>
+                    <span>&bull;</span>
+                    <span>{t(`fileUploadStatus.${fileInfo.status.type}`)}</span>
+                  </>
+                )}
               </div>
             </div>
 
@@ -96,7 +103,7 @@ const UploadFileCard = ({
                 variant="plain-black"
                 icon={<CrossInCircleIcon />}
                 aria-label={t('aria.removeFile')}
-                className={cx('-mr-2', {
+                className={cx('relative -mr-2', {
                   'hover:bg-negative-200 focus:bg-negative-300': isErrorStyle,
                   'hover:bg-success-200 focus:bg-success-300': isDoneStyle,
                 })}
@@ -114,15 +121,19 @@ const UploadFileCard = ({
       {isErrorStyle && (
         <div className="flex justify-between gap-6 pb-2">
           <div className="text-error">
-            {fileInfo.status.type === FormFileUploadStatusEnum.UploadError && fileInfo.status.error}
-            {fileInfo.status.type === FormFileUploadStatusEnum.ScanError && t('errors.scanError')}
-            {fileInfo.status.type === FormFileUploadStatusEnum.ScanInfected &&
-              t('errors.scanInfected')}
-            {fileInfo.status.type === FormFileUploadStatusEnum.UnknownFile &&
-              t('errors.unknownFile')}
+            {fileInfo.status.type === FormFileUploadStatusEnum.UploadError &&
+              t(`errors.${fileInfo.status.error.translationKey}`, {
+                additionalParam: fileInfo.status.error.additionalParam,
+              })}
+            {fileInfo.status.type === FormFileUploadStatusEnum.UploadServerError &&
+              fileInfo.status.error.rawError}
+            {fileInfo.status.type !== FormFileUploadStatusEnum.UploadError &&
+              fileInfo.status.type !== FormFileUploadStatusEnum.UploadServerError &&
+              t(`fileUploadStatus.${fileInfo.status.type}`)}
           </div>
 
-          {fileInfo.status.type === FormFileUploadStatusEnum.UploadError &&
+          {(fileInfo.status.type === FormFileUploadStatusEnum.UploadError ||
+            fileInfo.status.type === FormFileUploadStatusEnum.UploadServerError) &&
             fileInfo.status.canRetry && (
               <Button
                 variant="link-black"

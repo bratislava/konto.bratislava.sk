@@ -1,6 +1,5 @@
 import Ajv from 'ajv'
 
-// eslint-disable-next-line no-secrets/no-secrets
 const SEND_EID_SESSION_STORAGE_KEY = 'sendEid_W0t1uvfXMU'
 
 const sendEidMetadataSchema = {

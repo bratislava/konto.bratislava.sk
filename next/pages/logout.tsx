@@ -6,8 +6,8 @@ import {
   getSSRCurrentAuth,
   ServerSideAuthProviderHOC,
 } from 'components/logic/ServerSideAuthProvider'
+import useLoginRegisterRedirect from 'frontend/hooks/useLoginRegisterRedirect'
 import { useServerSideAuth } from 'frontend/hooks/useServerSideAuth'
-import useSSORedirect from 'frontend/hooks/useSSORedirect'
 import { GENERIC_ERROR_MESSAGE } from 'frontend/utils/errors'
 import logger from 'frontend/utils/logger'
 import { GetServerSidePropsContext } from 'next'
@@ -41,7 +41,7 @@ export const getServerSideProps = async (ctx: GetServerSidePropsContext) => {
 const LogoutPage = ({ page }: AsyncServerProps<typeof getServerSideProps>) => {
   const { t } = useTranslation('account')
   const { isAuthenticated } = useServerSideAuth()
-  const { redirect } = useSSORedirect()
+  const { redirect } = useLoginRegisterRedirect()
   const [isLoading, setIsLoading] = useState(false)
   useEffect(() => {
     if (!isAuthenticated) {

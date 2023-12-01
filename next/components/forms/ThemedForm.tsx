@@ -1,37 +1,42 @@
 import { ThemeProps, withTheme } from '@rjsf/core'
 import { GenericObjectType } from '@rjsf/utils'
+import { ArrayFieldTemplateItemType } from '@rjsf/utils/src/types'
 import DatePickerWidgetRJSF from 'components/forms/widget-wrappers/DatePickerWidgetRJSF'
-import InputFieldWidgetRJSF from 'components/forms/widget-wrappers/InputFieldWidgetRJSF'
 import TimePickerWidgetRJSF from 'components/forms/widget-wrappers/TimePickerWidgetRJSF'
+import { ComponentType } from 'react'
 
+import { wrapWidgetsInContext } from './useFormWidget'
+import BAArrayFieldItemTemplate from './widget-wrappers/BAArrayFieldItemTemplate'
+import BAArrayFieldTemplate from './widget-wrappers/BAArrayFieldTemplate'
 import BAObjectFieldTemplate from './widget-wrappers/BAObjectFieldTemplate'
+import CheckboxGroupWidgetRJSF from './widget-wrappers/CheckboxGroupWidgetRJSF'
 import CheckboxWidgetRJSF from './widget-wrappers/CheckboxWidgetRJSF'
-import DateFromToWidgetRJSF from './widget-wrappers/fieldGroupsRJSF/DateFromToWidgetRJSF'
-import DateTimeWidgetRJSF from './widget-wrappers/fieldGroupsRJSF/DateTimeWidgetRJSF'
-import TimeFromToWidgetRJSF from './widget-wrappers/fieldGroupsRJSF/TimeFromToWidgetRJSF'
-import RadioButtonsWidgetRJSF from './widget-wrappers/RadioButtonWidgetRJSF'
-import SelectFieldWidgetRJSF from './widget-wrappers/SelectFieldWidgetRJSF'
-import TextAreaFieldWidgetRJSF from './widget-wrappers/TextAreaFieldWidgetRJSF'
-import UploadWidgetRJSF from './widget-wrappers/UploadWidgetRJSF'
+import CustomComponentsWidgetRJSF from './widget-wrappers/CustomComponentsFieldWidgetRJSF'
+import FileUploadWidgetRJSF from './widget-wrappers/FileUploadWidgetRJSF'
+import InputWidgetRJSF from './widget-wrappers/InputWidgetRJSF'
+import RadioGroupWidgetRJSF from './widget-wrappers/RadioGroupWidgetRJSF'
+import SelectWidgetRJSF from './widget-wrappers/SelectWidgetRJSF'
+import TextAreaWidgetRJSF from './widget-wrappers/TextAreaWidgetRJSF'
 
 const theme: ThemeProps = {
-  widgets: {
-    SelectField: SelectFieldWidgetRJSF,
-    InputField: InputFieldWidgetRJSF,
-    RadioButton: RadioButtonsWidgetRJSF,
-    TextArea: TextAreaFieldWidgetRJSF,
-    Checkboxes: CheckboxWidgetRJSF,
-    Upload: UploadWidgetRJSF,
+  widgets: wrapWidgetsInContext({
+    Select: SelectWidgetRJSF,
+    Input: InputWidgetRJSF,
+    RadioGroup: RadioGroupWidgetRJSF,
+    TextArea: TextAreaWidgetRJSF,
+    CheckboxGroup: CheckboxGroupWidgetRJSF,
+    Checkbox: CheckboxWidgetRJSF,
+    FileUpload: FileUploadWidgetRJSF,
     DatePicker: DatePickerWidgetRJSF,
     TimePicker: TimePickerWidgetRJSF,
-  },
-  fields: {
-    dateFromTo: DateFromToWidgetRJSF,
-    timeFromTo: TimeFromToWidgetRJSF,
-    dateTime: DateTimeWidgetRJSF,
-  },
+    CustomComponents: CustomComponentsWidgetRJSF,
+  }),
   templates: {
     ObjectFieldTemplate: BAObjectFieldTemplate,
+    ArrayFieldTemplate: BAArrayFieldTemplate,
+    // It contains extra parentUiOptions prop that is not present in the original ArrayFieldItemTemplate, so we need to
+    // cast it to the original type
+    ArrayFieldItemTemplate: BAArrayFieldItemTemplate as ComponentType<ArrayFieldTemplateItemType>,
   },
 }
 

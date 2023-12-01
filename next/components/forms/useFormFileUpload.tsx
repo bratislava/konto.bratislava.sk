@@ -1,6 +1,6 @@
 import { formsApi } from '@clients/forms'
 import { GetFileResponseDto } from '@clients/openapi-forms'
-import { useQuery } from '@tanstack/react-query'
+import { Query, useQuery, useQueryClient } from '@tanstack/react-query'
 import React, {
   createContext,
   PropsWithChildren,
@@ -19,6 +19,7 @@ import {
   FormFileUploadClientFileStatus,
   FormFileUploadConstraints,
   FormFileUploadFileInfo,
+  FormFileUploadResponseFileStatus,
   FormFileUploadStatusEnum,
 } from '../../frontend/types/formFileUploadTypes'
 import { InitialFormData } from '../../frontend/types/initialFormData'
@@ -60,6 +61,7 @@ const REFETCH_INTERVAL = 5000
  *  At the end, the client and server files are merged and returned to the consumer.
  */
 export const useGetContext = ({ initialFormData }: FormFileUploadProviderProps) => {
+  const queryClient = useQueryClient()
   const isMounted = useIsMounted()
 
   // The client files are both stored in the state and in the ref. The state is used to trigger re-rendering of the
@@ -76,26 +78,26 @@ export const useGetContext = ({ initialFormData }: FormFileUploadProviderProps) 
   const abortControllersRef = useRef<Record<string, AbortController>>({})
 
   const refetchInterval = useMemo(() => {
-    return (data: GetFileResponseDto[] | undefined) =>
-      shouldPollServerFiles(data, clientFiles) ? REFETCH_INTERVAL : false
+    return (query: Query<GetFileResponseDto[]>) =>
+      shouldPollServerFiles(query.state.data, clientFiles) ? REFETCH_INTERVAL : false
   }, [clientFiles])
 
-  const serverFilesQuery = useQuery(
-    ['serverFiles', initialFormData.formId],
-    async () => {
+  const serverFilesQueryKey = ['serverFiles', initialFormData.formId]
+  const serverFilesQuery = useQuery({
+    queryKey: serverFilesQueryKey,
+    queryFn: async () => {
       const response = await formsApi.filesControllerGetFilesStatusByForm(initialFormData.formId, {
         accessToken: 'onlyAuthenticated',
       })
       return response.data
     },
-    {
-      retry: Infinity, // Retry infinitely
-      retryDelay: 5000, // Retry every 5 seconds
-      staleTime: Infinity,
-      refetchInterval,
-      initialData: initialFormData.files,
-    },
-  )
+    retry: Infinity, // Retry infinitely
+    retryDelay: 5000, // Retry every 5 seconds
+    staleTime: Infinity,
+    refetchInterval,
+    initialData: initialFormData.files,
+    initialDataUpdatedAt: Date.now(),
+  })
 
   /**
    * Updates client files and handles side effects of the change if needed. This is the only place that should trigger
@@ -125,7 +127,9 @@ export const useGetContext = ({ initialFormData }: FormFileUploadProviderProps) 
         return
       }
 
-      const updateFileStatus = (status: FormFileUploadClientFileStatus) => {
+      const updateFileStatus = (
+        status: FormFileUploadClientFileStatus | FormFileUploadResponseFileStatus,
+      ) => {
         const clientFilesWithUpdatedStatus = clientFilesRef.current.map((file) => {
           if (file.id === firstQueuedFile.id) {
             return { ...file, status }
@@ -158,9 +162,8 @@ export const useGetContext = ({ initialFormData }: FormFileUploadProviderProps) 
         },
         onError: (error) => {
           updateFileStatus({
-            type: FormFileUploadStatusEnum.UploadError,
-            // TODO: Error message logic
-            error: error.toString(),
+            type: FormFileUploadStatusEnum.UploadServerError,
+            error: { rawError: error.toString() },
             canRetry: true,
           })
         },
@@ -270,16 +273,17 @@ export const useGetContext = ({ initialFormData }: FormFileUploadProviderProps) 
 
       if (!file) {
         return {
-          status: serverFilesQuery.isFetched
-            ? // The special case when the file is stored in the form data, but not in client nor server files, it can happen
-              // when the form concept was saved, but the file upload hasn't finished yet and the user navigates away.
-              { type: FormFileUploadStatusEnum.UnknownFile as const }
-            : // The special case when info about the file is not available yet, e.g. when the user imports the data and
-              // the server files are not fetched yet, or when they are being fetched.
-              {
-                type: FormFileUploadStatusEnum.UnknownStatus as const,
-                offline: serverFilesQuery.fetchStatus === 'paused',
-              },
+          status:
+            !serverFilesQuery.isFetched && serverFilesQuery.isFetching
+              ? // The special case when info about the file is not available yet, e.g. when the user imports the data and
+                // the server files are not fetched yet, or when they are being fetched.
+                {
+                  type: FormFileUploadStatusEnum.UnknownStatus as const,
+                  offline: serverFilesQuery.fetchStatus === 'paused',
+                }
+              : // The special case when the file is stored in the form data, but not in client nor server files, it can happen
+                // when the form concept was saved, but the file upload hasn't finished yet and the user navigates away.
+                { type: FormFileUploadStatusEnum.UnknownFile as const },
           fileName: fileId,
           canDownload: false,
           fileSize: null,
@@ -288,7 +292,12 @@ export const useGetContext = ({ initialFormData }: FormFileUploadProviderProps) 
 
       return file
     },
-    [mergedFiles, serverFilesQuery.isFetched, serverFilesQuery.fetchStatus],
+    [
+      mergedFiles,
+      serverFilesQuery.isFetched,
+      serverFilesQuery.isFetching,
+      serverFilesQuery.fetchStatus,
+    ],
   )
 
   // Cleanup
@@ -301,7 +310,7 @@ export const useGetContext = ({ initialFormData }: FormFileUploadProviderProps) 
         }
       })
       // Don't persist the data between page navigations.
-      serverFilesQuery.remove()
+      queryClient.removeQueries({ queryKey: serverFilesQueryKey })
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])

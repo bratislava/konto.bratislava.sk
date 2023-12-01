@@ -15,7 +15,7 @@ interface StepperViewRowProps {
 const StepperViewRow = ({ step, isCurrent, className }: StepperViewRowProps) => {
   const { t } = useTranslation('forms')
 
-  const { title, isSubmitted, displayIndex } = step
+  const { title, stepperTitle, isSubmitted, displayIndex } = step
   const iconClassName = cx(
     'min-w-8 flex h-8 w-8 shrink-0 flex-row items-center justify-center rounded-full border-2',
     {
@@ -34,7 +34,7 @@ const StepperViewRow = ({ step, isCurrent, className }: StepperViewRowProps) => 
         {isSubmitted && !isCurrent ? (
           <span className="sr-only">{t('steps.submitted_sr')}</span>
         ) : null}
-        {title}
+        {stepperTitle ?? title}
       </p>
     </div>
   )

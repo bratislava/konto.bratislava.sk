@@ -1,7 +1,6 @@
 import * as DropdownMenu from '@radix-ui/react-dropdown-menu'
 import FormMenuItem from 'components/forms/simple-components/MenuDropdown/FormMenuItem'
 import HeaderMenuItem from 'components/forms/simple-components/MenuDropdown/HeaderMenuItem'
-import MenuTrigger from 'components/forms/simple-components/MenuDropdown/MenuTrigger'
 import React, { Dispatch, ReactNode, SetStateAction } from 'react'
 
 export type MenuItemBase = {
@@ -18,22 +17,19 @@ type MenuDropdownBase = {
   itemVariant?: 'form' | 'header'
   buttonTrigger?: ReactNode
   buttonClassName?: string
-  setIsOpen: Dispatch<SetStateAction<boolean>>
+  setIsOpen?: Dispatch<SetStateAction<boolean>>
 }
 
+// TODO use controlled state for setIsOpen
 const MenuDropdown = ({
   items,
   itemVariant = 'form',
   buttonTrigger,
-  buttonClassName,
   setIsOpen,
 }: MenuDropdownBase) => {
   return (
-    <DropdownMenu.Root onOpenChange={() => setIsOpen((prev) => !prev)}>
-      <DropdownMenu.Trigger asChild>
-        <MenuTrigger className={buttonClassName} buttonTrigger={buttonTrigger} />
-      </DropdownMenu.Trigger>
-
+    <DropdownMenu.Root onOpenChange={() => setIsOpen && setIsOpen((prev) => !prev)}>
+      <DropdownMenu.Trigger asChild>{buttonTrigger}</DropdownMenu.Trigger>
       <DropdownMenu.Portal>
         <DropdownMenu.Content
           loop

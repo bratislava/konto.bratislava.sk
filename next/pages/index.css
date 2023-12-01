@@ -2,6 +2,7 @@
 @tailwind components;
 @tailwind utilities;
 
+@import '@bratislava/component-library/dist/assets/style.css';
 @import './bratislava.css';
 @import './typography.css';
 

@@ -7,8 +7,10 @@ import {
 import DatePickerShowCase from 'components/styleguide/showcases/DatePickerShowCase'
 import InputFieldShowCase from 'components/styleguide/showcases/InputFieldShowCase'
 import MyApplicationsCardShowCase from 'components/styleguide/showcases/MyApplicationsCardShowCase'
+import TagGroupShowCase from 'components/styleguide/showcases/TagGroupShowcase'
 import TimePickerShowCase from 'components/styleguide/showcases/TimePickerShowCase'
 import TooltipShowCase from 'components/styleguide/showcases/TooltipShowCase'
+import TypographyShowcase from 'components/styleguide/showcases/TypographyShowcase'
 import { GetServerSidePropsContext } from 'next'
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
 
@@ -52,6 +54,8 @@ const Styleguide = ({ page }: AsyncServerProps<typeof getServerSideProps>) => {
       <StatusBar />
       <PageWrapper locale={page.locale}>
         <StyleGuideWrapper>
+          <TypographyShowcase />
+          <TagGroupShowCase />
           {/* HERE ADD SHOWCASES */}
           <IconShowCase />
           <StatusBarShowCase />

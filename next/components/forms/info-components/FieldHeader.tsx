@@ -20,6 +20,12 @@ export type FieldHeaderProps = {
    * Some field types (radio, checkbox, upload...) need more spacing between the title and the field itself.
    */
   customHeaderBottomMargin?: string
+  /**
+   * This prop controls the display of the "Optional" label text for optional fields in the form.
+   * When set to false (default), an asterisk is displayed next to required fields and nothing is displayed next to optional ones.
+   * When set to true, the label text "Optional" is displayed next to optional fields and nothing is displayed next to required ones.
+   */
+  displayOptionalLabel?: boolean
 }
 
 const FieldHeader = ({
@@ -32,6 +38,7 @@ const FieldHeader = ({
   helptextHeader,
   descriptionProps,
   customHeaderBottomMargin = 'mb-1',
+  displayOptionalLabel,
 }: FieldHeaderProps) => {
   const { t } = useTranslation('account', { keyPrefix: 'FieldHeader' })
 
@@ -45,26 +52,32 @@ const FieldHeader = ({
     'mb-8': !useCustomBottomMargin,
   })
 
-  const labelStyle = cx('text-gray-800', {
-    'text-p3-semibold sm:text-16-semibold': labelSize === 'default',
-    'text-h3': labelSize === 'h3',
-    'text-h4': labelSize === 'h4',
-    'mr-2': !required,
+  const showOptionalLabel = displayOptionalLabel && !required
+  const displayAsterisk = !displayOptionalLabel && required
+
+  const labelStyle = cx('relative text-gray-800', {
+    'text-p3-semibold sm:text-16-semibold after:text-p3-semibold after:sm:text-16-semibold':
+      labelSize === 'default',
+    'text-h3 after:text-h3': labelSize === 'h3',
+    'text-h4 after:text-h4': labelSize === 'h4',
+    'mr-2': showOptionalLabel,
+    'after:absolute after:ml-0.5 after:text-main-700 after:content-["*"]': displayAsterisk,
   })
 
   return (
     <div className={wrapperStyle}>
-      <div>
-        <label htmlFor={htmlFor} {...labelProps} className={labelStyle}>
-          {label}
-        </label>
-
-        {!required && <span className="text-p3 sm:text-16">{t('optional')}</span>}
+      <div className="flex">
+        <div className="grow">
+          <label htmlFor={htmlFor} {...labelProps} className={labelStyle}>
+            {label}
+          </label>
+          {showOptionalLabel && <span className="text-p3 sm:text-16">{t('optional')}</span>}
+        </div>
         {tooltip && (
           <div
-            className={cx('flex-column flex items-center', {
-              'ml-5': required,
-              'ml-2': !required,
+            className={cx('flex-column flex shrink-0 items-center', {
+              'ml-5': showOptionalLabel,
+              'ml-2': !showOptionalLabel,
             })}
           >
             <BATooltip>{tooltip}</BATooltip>

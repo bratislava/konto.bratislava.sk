@@ -128,6 +128,7 @@ const SelectWidgetRJSF = ({
         alwaysOneSelected={false}
         size={size}
         labelSize={labelSize}
+        displayOptionalLabel
       />
     </WidgetWrapper>
   )

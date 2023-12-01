@@ -41,6 +41,7 @@ const RadioGroup = (props: RadioGroupProps) => {
     value,
     size,
     labelSize,
+    displayOptionalLabel,
   } = props
 
   const propsReactAria = {
@@ -75,6 +76,7 @@ const RadioGroup = (props: RadioGroupProps) => {
         size={size}
         labelSize={labelSize}
         customHeaderBottomMargin="mb-4"
+        displayOptionalLabel={displayOptionalLabel}
       >
         <RadioContext.Provider value={state}>
           <div className="flex flex-col gap-2">

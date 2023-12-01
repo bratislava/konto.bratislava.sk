@@ -27,6 +27,7 @@ const SearchField = ({
   className,
   size,
   labelSize,
+  displayOptionalLabel,
   ...rest
 }: SearchFieldProps) => {
   const [valueState, setValueState] = useState<string>(value)
@@ -80,6 +81,7 @@ const SearchField = ({
         disabled={disabled}
         size={size}
         labelSize={labelSize}
+        displayOptionalLabel={displayOptionalLabel}
       >
         <div className="relative">
           <i

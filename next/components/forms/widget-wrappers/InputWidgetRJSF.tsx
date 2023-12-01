@@ -65,6 +65,7 @@ const InputWidgetRJSF = ({
             onBlur={onBlur}
             size={size}
             labelSize={labelSize}
+            displayOptionalLabel
           />
         )}
       </FieldBlurWrapper>

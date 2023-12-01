@@ -83,6 +83,7 @@ const SelectMultiNew =
     className,
     size,
     width = 'full',
+    displayOptionalLabel,
     ...rest
   }: SelectMultiNewProps) => {
     const { t } = useTranslation('account', { keyPrefix: 'SelectField' })
@@ -106,6 +107,7 @@ const SelectMultiNew =
           tooltip={tooltip}
           required={rest.required}
           errorMessage={errorMessage}
+          displayOptionalLabel={displayOptionalLabel}
         >
           <Select
             {...rest}

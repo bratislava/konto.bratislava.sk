@@ -28,6 +28,7 @@ const TextAreaField = ({
   onChange,
   size,
   labelSize,
+  displayOptionalLabel,
   ...rest
 }: TextAreaBase) => {
   const [valueState, setValueState] = useState<string>('')
@@ -96,6 +97,7 @@ const TextAreaField = ({
         errorMessageProps={errorMessageProps}
         size={size}
         labelSize={labelSize}
+        displayOptionalLabel={displayOptionalLabel}
       >
         <div className={containerStyle}>
           <textarea {...inputProps} ref={ref} name={inputProps.id} className={textareaStyle} />

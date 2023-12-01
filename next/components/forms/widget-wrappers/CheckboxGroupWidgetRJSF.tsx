@@ -54,6 +54,7 @@ const CheckboxGroupWidgetRJSF = ({
         labelSize={labelSize}
         helptext={helptext}
         helptextHeader={helptextHeader}
+        displayOptionalLabel
       >
         {enumOptions.map((option: EnumOptionsType) => {
           return (

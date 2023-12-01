@@ -104,6 +104,7 @@ const FileUploadWidgetRJSF = ({
         getFileInfoById={formFileUpload.getFileInfoById}
         size={size}
         labelSize={labelSize}
+        displayOptionalLabel
       />
     </WidgetWrapper>
   )

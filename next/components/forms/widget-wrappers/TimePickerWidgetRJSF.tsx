@@ -43,6 +43,7 @@ const TimePickerWidgetRJSF = ({
             onBlur={onBlur}
             size={size}
             labelSize={labelSize}
+            displayOptionalLabel
           />
         )}
       </FieldBlurWrapper>

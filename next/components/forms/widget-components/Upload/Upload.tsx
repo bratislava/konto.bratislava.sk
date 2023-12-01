@@ -43,6 +43,7 @@ const Upload = forwardRef<HTMLButtonElement, UploadProps>(
       onFileDownload = () => {},
       size,
       labelSize,
+      displayOptionalLabel,
     },
     ref,
   ) => {
@@ -61,6 +62,7 @@ const Upload = forwardRef<HTMLButtonElement, UploadProps>(
           size={size}
           labelSize={labelSize}
           customHeaderBottomMargin="mb-2"
+          displayOptionalLabel={displayOptionalLabel}
         >
           <div className="flex flex-col gap-6">
             {type === 'button' && (

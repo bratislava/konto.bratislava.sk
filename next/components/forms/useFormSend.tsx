@@ -66,7 +66,7 @@ const useGetContext = () => {
     tierStatus: { isIdentityVerified },
   } = useServerSideAuth()
   const { turnOffLeaveProtection } = useFormLeaveProtection()
-  const { isValidSignature } = useFormSignature()
+  const { isValidSignature, signature } = useFormSignature()
 
   const {
     setRegistrationModal,
@@ -123,6 +123,10 @@ const useGetContext = () => {
           formId,
           {
             formDataJson: formData,
+            // TODO consider adding this only on isValid
+            // TODO consider adding in other nasesControllerUpdateForm calls
+            // TODO formDataGinis will likely be renamed
+            ...(signature ? { formDataGinis: signature.signature } : {}),
           },
           { accessToken: 'onlyAuthenticated' },
         ),
@@ -148,6 +152,7 @@ const useGetContext = () => {
         formId,
         {
           formDataJson: formData,
+          eidToken: sendEidTokenRef.current as string,
         },
         { headers: { Authorization: `Bearer ${sendEidTokenRef.current as string}` } },
       ),

@@ -1,9 +1,11 @@
+import { formsApi } from '@clients/forms'
 import hash from 'object-hash'
 import React, { createContext, PropsWithChildren, useCallback, useContext, useState } from 'react'
 import { useIsMounted } from 'usehooks-ts'
 
 import { useFormState } from '../useFormState'
-import { signerExamplePayload } from './signerExamplePayload'
+// kept while it might be usefull for local testing
+// import { signerExamplePayload } from './signerExamplePayload'
 import { useFormSigner } from './useFormSigner'
 
 type Signature = {
@@ -23,10 +25,12 @@ const useGetContext = () => {
 
   const sign = async () => {
     try {
-      // TODO continue here - first, fetch the data to sign
+      const { data: signerPayload } = await formsApi.taxControllerSignerData({ jsonForm: formData })
+      // console.logs on purpose
+      console.log('-------------')
+      console.log(signerPayload)
       const jsonObjectHash = hash(formData)
-      // Just an example payload for the signer until we have a proper implementation.
-      const result = await signerSign(signerExamplePayload)
+      const result = await signerSign(signerPayload)
       if (!isMounted()) {
         return
       }
@@ -39,6 +43,9 @@ const useGetContext = () => {
         return
       }
       setSignature({ objectHash: currentHash, signature: result })
+      // console.logs on purpose
+      console.log('###############')
+      console.log(result)
     } catch (error) {
       // TODO handle error
     }

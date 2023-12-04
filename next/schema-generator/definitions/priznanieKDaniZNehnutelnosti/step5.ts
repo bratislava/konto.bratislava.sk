@@ -278,9 +278,7 @@ const innerArray = (kalkulacka: boolean) =>
                   },
                 ],
               },
-              {
-                dropdownDivider: true,
-              },
+              {},
             ),
             kalkulacka ? skipSchema(vymeraPodlahovejPlochy) : vymeraPodlahovejPlochy,
             kalkulacka

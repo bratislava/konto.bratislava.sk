@@ -137,7 +137,6 @@ const innerArray = (kalkulacka: boolean) =>
         },
         {
           helptext: 'Vyberte stavbu, ktorú zdaňujete, podľa účelu využitia.',
-          dropdownDivider: true,
         },
       ),
       kalkulacka ? celkovaZastavanaPlocha : skipSchema(celkovaZastavanaPlocha),

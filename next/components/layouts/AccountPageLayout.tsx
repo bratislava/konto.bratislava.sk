@@ -13,6 +13,7 @@ import AccountNavBar, {
   MenuSectionItemBase,
 } from 'components/forms/segments/AccountNavBar/AccountNavBar'
 import { MenuItemBase } from 'components/forms/simple-components/MenuDropdown/MenuDropdown'
+import useLoginRegisterRedirect from 'frontend/hooks/useLoginRegisterRedirect'
 import { useServerSideAuth } from 'frontend/hooks/useServerSideAuth'
 import { useRouter } from 'next/router'
 import { useTranslation } from 'next-i18next'
@@ -35,6 +36,7 @@ const AccountPageLayout = ({
   hiddenHeaderNav,
   isPublicPage,
 }: AccountPageLayoutBase) => {
+  const { redirect } = useLoginRegisterRedirect()
   const { isAuthenticated } = useServerSideAuth()
   const router = useRouter()
 
@@ -71,6 +73,9 @@ const AccountPageLayout = ({
       title: 'account:account_section_applications.navigation',
       icon: <MySubmissionsIcon className="h-6 w-6" />,
       url: ROUTES.MY_APPLICATIONS,
+      // TODO this is a temporary solution until we have a proper way to handle this through authenticated page protection https://github.com/bratislava/konto.bratislava.sk/issues/664
+      // without this, error is thrown before redirect to login page happens
+      onPress: !isAuthenticated ? () => redirect({ from: ROUTES.MY_APPLICATIONS }) : null,
     },
     {
       id: 3,

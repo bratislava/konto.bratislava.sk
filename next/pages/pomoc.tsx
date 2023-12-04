@@ -20,7 +20,7 @@ export const getServerSideProps = async (ctx: GetServerSidePropsContext) => {
 
 const AccountHelpPage = () => {
   return (
-    <AccountPageLayout>
+    <AccountPageLayout isPublicPage>
       <HelpSection />
     </AccountPageLayout>
   )

@@ -162,6 +162,7 @@
   "account_section_intro": {
     "navigation": "Úvod",
     "header_title": "Dobrý deň,",
+    "header_title_without_name": "Dobrý deň",
     "header_text": "Ďakujeme, že využívate digitálne služby Bratislavského konta.",
     "all_services": "Všetky služby",
     "announcement_title": "Aktuálne",

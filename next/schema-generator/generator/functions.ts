@@ -57,11 +57,11 @@ export const select = (
     options: {
       value: string
       title: string
-      tooltip?: string
+      description?: string
       isDefault?: boolean
     }[]
   },
-  uiOptions: SelectUiOptions,
+  uiOptions: Omit<SelectUiOptions, 'selectOptions'>,
 ): Field => {
   return {
     property,
@@ -73,7 +73,12 @@ export const select = (
     }),
     uiSchema: () => ({
       'ui:widget': 'Select',
-      'ui:options': uiOptions,
+      'ui:options': {
+        ...uiOptions,
+        selectOptions: options.options
+          .filter(({ description }) => description)
+          .map(({ value, description }) => ({ value, description })),
+      },
     }),
     required: Boolean(options.required),
   }
@@ -87,11 +92,11 @@ export const selectMultiple = (
     options: {
       value: string
       title: string
-      tooltip?: string
+      description?: string
       isDefault?: boolean
     }[]
   },
-  uiOptions: SelectUiOptions,
+  uiOptions: Omit<SelectUiOptions, 'selectOptions'>,
 ): Field => {
   return {
     property,
@@ -107,9 +112,15 @@ export const selectMultiple = (
       uniqueItems: true,
       default: options.options.filter(({ isDefault }) => isDefault).map(({ value }) => value),
     }),
+
     uiSchema: () => ({
       'ui:widget': 'Select',
-      'ui:options': uiOptions,
+      'ui:options': {
+        ...uiOptions,
+        selectOptions: options.options
+          .filter(({ description }) => description)
+          .map(({ value, description }) => ({ value, description })),
+      },
     }),
     required: Boolean(options.required),
   }

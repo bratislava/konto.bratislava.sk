@@ -106,12 +106,13 @@ export type RadioGroupUiOptions = {
   orientations?: 'column' | 'row'
 } & WidgetUiOptions
 
-export type SelectUiOptions = {
-  dropdownDivider?: boolean
-  selectAllOption?: boolean
-  hideScrollbar?: boolean
-  // selectType?: 'one' | 'multiple' | 'arrow' | 'radio'
-} & WidgetUiOptions
+type SelectOption = {
+  value: string
+  description?: string
+}
+
+export type SelectUiOptions = { selectOptions?: SelectOption[] } & WidgetUiOptions &
+  Pick<UIOptionsType, 'placeholder'>
 
 export type TextAreaUiOptions = WidgetUiOptions & Pick<UIOptionsType, 'placeholder'>
 

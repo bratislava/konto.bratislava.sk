@@ -1,16 +1,53 @@
-import { RJSFSchema, WidgetProps } from '@rjsf/utils'
+import { WidgetProps } from '@rjsf/utils'
 import WidgetWrapper from 'components/forms/widget-wrappers/WidgetWrapper'
+import { ComponentProps } from 'react'
 import { SelectUiOptions } from 'schema-generator/generator/uiOptionsTypes'
 
-import useEnum from '../../../frontend/hooks/useEnum'
-import SelectField from '../widget-components/SelectField/SelectField'
-import { SelectOption } from '../widget-components/SelectField/SelectOption.interface'
+import { isDefined } from '../../../frontend/utils/general'
+import SelectMultiNew, { SelectOption } from '../widget-components/SelectField/SelectFieldNew'
 
-interface SelectWidgetRJSFProps<T = unknown> extends WidgetProps {
+type SingleMultiSelectBaseProps = Omit<
+  ComponentProps<typeof SelectMultiNew>,
+  'options' | 'value' | 'onChange' | 'isMulti'
+> & { options: SelectOption[] }
+
+const SingleSelect = ({
+  value,
+  onChange,
+  ...rest
+}: SingleMultiSelectBaseProps & {
+  value: string | undefined
+  onChange: (value: string | undefined) => void
+}) => {
+  const selectValue = rest.options.find((option) => option.value === value)
+  const selectOnChange = (newValue: SelectOption | null) =>
+    onChange(newValue ? newValue.value : undefined)
+
+  return <SelectMultiNew isMulti={false} value={selectValue} onChange={selectOnChange} {...rest} />
+}
+
+const MultiSelect = ({
+  value,
+  onChange,
+  ...rest
+}: SingleMultiSelectBaseProps & {
+  value: string[] | undefined
+  onChange: (value: string[] | undefined) => void
+}) => {
+  const selectValue =
+    value
+      ?.map((value) => rest.options.find((option) => option.value === value))
+      .filter(isDefined) ?? []
+  const selectOnChange = (newValue: readonly SelectOption[]) =>
+    onChange(newValue.map((option) => option.value).filter(isDefined))
+
+  return <SelectMultiNew isMulti value={selectValue} onChange={selectOnChange} {...rest} />
+}
+
+interface SelectWidgetRJSFProps extends WidgetProps {
   options: SelectUiOptions & WidgetProps['options']
-  value: T | T[] | null
-  schema: RJSFSchema
-  onChange: (value?: T | T[] | null) => void
+  value: string | string[] | undefined
+  onChange: (value?: string | string[] | undefined) => void
 }
 
 const SelectWidgetRJSF = ({
@@ -27,109 +64,57 @@ const SelectWidgetRJSF = ({
 }: SelectWidgetRJSFProps) => {
   const {
     enumOptions,
-    selectAllOption,
     helptext,
     helptextHeader,
     tooltip,
-    dropdownDivider,
     className,
-    hideScrollbar = false,
     size,
     labelSize,
+    selectOptions,
   } = options
 
-  const type = schema.type === 'array' ? 'multiple' : 'one'
+  const isMulti = schema.type === 'array'
 
-  const handleOnChangeMultiple = (newValue?: SelectOption[]) => {
-    if (newValue) {
-      // eslint-disable-next-line @typescript-eslint/no-unsafe-return
-      const optionValues = newValue.map((option: SelectOption) => option.const)
-      onChange(optionValues)
-    } else {
-      onChange()
-    }
+  const componentOptions: SelectOption[] = enumOptions
+    ? enumOptions.map((option) => ({
+        label: option.label,
+        value: option.value,
+        description: selectOptions?.find((selectOption) => selectOption.value === option.value)
+          ?.description,
+      }))
+    : []
+
+  const componentProps: SingleMultiSelectBaseProps = {
+    label,
+    helptext,
+    helptextHeader,
+    tooltip,
+    errorMessage: rawErrors,
+    required,
+    isDisabled: disabled || readonly,
+    className,
+    size,
+    labelSize,
+    options: componentOptions,
+    placeholder,
+    displayOptionalLabel: true,
   }
 
-  const handleOnChangeOne = (newValue?: SelectOption[]) => {
-    if (newValue && newValue[0]) {
-      onChange(newValue[0].const)
-    } else {
-      onChange()
-    }
+  if (isMulti) {
+    return (
+      <WidgetWrapper options={options}>
+        <MultiSelect
+          value={value as string[] | undefined}
+          onChange={onChange}
+          {...componentProps}
+        />
+      </WidgetWrapper>
+    )
   }
-
-  const { data } = useEnum(schema.ciselnik?.id)
-  const transformedEnumOptions = enumOptions
-    ? enumOptions.map((option) => option.schema as SelectOption)
-    : data
-
-  const handleOnChange = (newValue?: SelectOption[]) => {
-    const originalNewValue = transformedEnumOptions?.filter((option: SelectOption) => {
-      return newValue?.some((value) => {
-        return (
-          option.title === value.title &&
-          option.description === value.description &&
-          option.const === value.const
-        )
-      })
-    })
-
-    if (type === 'multiple') {
-      handleOnChangeMultiple(originalNewValue)
-    } else {
-      handleOnChangeOne(originalNewValue)
-    }
-  }
-
-  const handleTransformOne = (): SelectOption[] => {
-    const transformedValue: SelectOption[] = []
-    if (!value || Array.isArray(value)) return transformedValue
-
-    const chosenOption = transformedEnumOptions?.find((option) => value === option.const)
-    return chosenOption ? [chosenOption] : []
-  }
-
-  const handleTransformMultiple = (): SelectOption[] => {
-    const transformedValue: SelectOption[] = []
-    if (!value || !Array.isArray(value)) return transformedValue
-
-    value.forEach((optionValue) => {
-      transformedEnumOptions?.forEach((option) => {
-        if (option.const === optionValue) {
-          transformedValue.push(option)
-        }
-      })
-    })
-
-    return transformedValue
-  }
-
-  const transformedValue = type === 'multiple' ? handleTransformMultiple() : handleTransformOne()
 
   return (
     <WidgetWrapper options={options}>
-      <SelectField
-        type={type}
-        label={label}
-        enumOptions={transformedEnumOptions}
-        value={transformedValue}
-        selectAllOption={selectAllOption}
-        placeholder={placeholder}
-        helptext={helptext}
-        helptextHeader={helptextHeader}
-        tooltip={tooltip}
-        dropdownDivider={dropdownDivider}
-        errorMessage={rawErrors}
-        required={required}
-        disabled={disabled || readonly}
-        className={className}
-        onChange={handleOnChange}
-        hideScrollbar={hideScrollbar}
-        alwaysOneSelected={false}
-        size={size}
-        labelSize={labelSize}
-        displayOptionalLabel
-      />
+      <SingleSelect value={value as string | undefined} onChange={onChange} {...componentProps} />
     </WidgetWrapper>
   )
 }

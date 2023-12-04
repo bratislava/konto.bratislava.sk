@@ -10,9 +10,7 @@ export default defineConfig({
       config.chromeWebSecurity = false
       config.video = false
       config.baseUrl = config.env.BASEURL
-      config.viewportWidth = 1920
-      config.viewportHeight = 1080
-
+      
       config.env = {
         devices: {
           desktop: ['all', 'desktop'].includes(config.env.DEVICE),

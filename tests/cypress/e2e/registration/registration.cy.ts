@@ -4,7 +4,7 @@ describe('Registration flow', { testIsolation: false }, () => {
   const devices = ['desktop', 'mobile']
   const errorBorderFields =
     '[data-cy=input-email], [data-cy=input-given_name], [data-cy=input-family_name], [data-cy=input-password]'
-  const password = `P@${Date.now().toString(36)}`
+  const password = `P@9${Date.now().toString(36)}`
 
   before(() => {
     cy.fixture('registration.json').then((fileData) => {

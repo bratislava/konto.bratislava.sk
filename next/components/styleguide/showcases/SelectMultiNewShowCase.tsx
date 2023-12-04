@@ -1,10 +1,13 @@
-import React from 'react'
+import React, { useState } from 'react'
+import { GroupBase } from 'react-select'
 
-import SelectMultiNew from '../../forms/widget-components/SelectField/SelectFieldNew'
+import SelectMultiNew, {
+  SelectOption,
+} from '../../forms/widget-components/SelectField/SelectFieldNew'
 import { Stack } from '../Stack'
 import { Wrapper } from '../Wrapper'
 
-const sampleOptions = [
+const sampleOptions: SelectOption[] = [
   {
     label: 'Green Apple',
     value: 'Green Apple',
@@ -19,18 +22,15 @@ const sampleOptions = [
   {
     label: 'Red Orange',
     value: 'Red Orange',
-    description: 'A longer description text.',
   },
-  // More options
 ]
 
-const samplePunctuation = [
-  { value: 'apples', label: 'Jablká' },
-  { value: 'pears', label: 'Hrušky' },
-  { value: 'oranges', label: 'Pomaranče' },
-]
+const sampleOptionsWithoutDescriptions: SelectOption[] = sampleOptions.map((option) => ({
+  ...option,
+  description: undefined,
+}))
 
-const sampleOptionsGroups = [
+const sampleOptionsGroups: GroupBase<SelectOption>[] = [
   {
     label: 'Fruits',
     options: [
@@ -56,58 +56,63 @@ const sampleOptionsGroups = [
 ]
 
 const SelectFieldShowCase = () => {
-  return (
-    <>
-      <Wrapper direction="column" title="Select Multiple New">
-        <Stack>
-          <SelectMultiNew
-            required
-            isMulti={false}
-            options={sampleOptions}
-            label="Simple multiselect list with fixed width"
-            width="fixed"
-          />
-          <SelectMultiNew
-            required
-            options={sampleOptions}
-            label="Simple multiselect list with fixed width"
-            width="fixed"
-          />
-          <SelectMultiNew required options={sampleOptions} label="Simple multiselect list" />
-          <SelectMultiNew
-            options={sampleOptions}
-            label="With error"
-            errorMessage={['Error message']}
-          />
-          <SelectMultiNew options={sampleOptions} label="With tooltip" tooltip={"I'm a tooltip"} />
-          <SelectMultiNew
-            options={sampleOptions}
-            label="With tooltip and helptext"
+  const [singleValue, setSingleValue] = useState<SelectOption | undefined | null>()
+  const [multiValue, setMultiValue] = useState<readonly SelectOption[] | undefined | null>()
+  const [groupValue, setGroupValue] = useState<readonly SelectOption[] | undefined | null>()
 
-            tooltip={"I'm a tooltip"}
-            helptext={"I'm a helptext"}
-          />
-          <SelectMultiNew options={sampleOptionsGroups} label="List with groups - TODO styling" />
-        </Stack>
-      </Wrapper>
-      <Wrapper direction="row" title="ComboBox">
-        <Stack>
-          <SelectMultiNew
-            isSearchable
-            label="Items with title and description"
-            options={sampleOptions}
-          />
-          <SelectMultiNew isSearchable label="Items with punctuation" options={samplePunctuation} />
-          <SelectMultiNew isSearchable label="Disabled" options={sampleOptions} isDisabled />
-          <SelectMultiNew
-            isSearchable
-            label="Error"
-            options={sampleOptions}
-            errorMessage={['Error message']}
-          />
-        </Stack>
-      </Wrapper>
-    </>
+  return (
+    <Wrapper direction="column" title="Select Multiple New">
+      <Stack>
+        <SelectMultiNew
+          label="Single Select"
+          options={sampleOptions}
+          value={singleValue}
+          onChange={setSingleValue}
+        />
+        <SelectMultiNew
+          label="Multi Select"
+          isMulti
+          options={sampleOptions}
+          value={multiValue}
+          onChange={setMultiValue}
+        />
+        <SelectMultiNew
+          label="Single select without descriptions"
+          options={sampleOptionsWithoutDescriptions}
+          value={singleValue}
+          onChange={setSingleValue}
+        />
+        <SelectMultiNew
+          label="Multi select without descriptions"
+          isMulti
+          options={sampleOptionsWithoutDescriptions}
+          value={multiValue}
+          onChange={setMultiValue}
+        />
+        <SelectMultiNew
+          label="Single select disabled"
+          options={sampleOptionsWithoutDescriptions}
+          value={singleValue}
+          onChange={setSingleValue}
+          isDisabled
+        />
+        <SelectMultiNew
+          label="Multi select disabled"
+          isMulti
+          options={sampleOptionsWithoutDescriptions}
+          value={multiValue}
+          onChange={setMultiValue}
+          isDisabled
+        />
+        <SelectMultiNew
+          label="Select with groups"
+          isMulti
+          options={sampleOptionsGroups}
+          value={groupValue}
+          onChange={setGroupValue}
+        />
+      </Stack>
+    </Wrapper>
   )
 }
 

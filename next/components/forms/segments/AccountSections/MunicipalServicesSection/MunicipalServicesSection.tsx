@@ -10,50 +10,50 @@ import { useState } from 'react'
 import { useWindowSize } from 'usehooks-ts'
 
 import { environment } from '../../../../../environment'
-import { SelectOption } from '../../../widget-components/SelectField/SelectOption.interface'
+import { SelectOption } from '../../../widget-components/SelectField/SelectFieldNew'
 
 const enumOptions: SelectOption[] = [
-  { const: 'ALL_CATEGORY', title: MunicipalServicesCategories.ALL_CATEGORY, description: '' },
-  { const: 'TAXES_CATEGORY', title: MunicipalServicesCategories.TAXES_CATEGORY, description: '' },
+  { value: 'ALL_CATEGORY', label: MunicipalServicesCategories.ALL_CATEGORY, description: '' },
+  { value: 'TAXES_CATEGORY', label: MunicipalServicesCategories.TAXES_CATEGORY, description: '' },
   {
-    const: 'CULTURE_CATEGORY',
-    title: MunicipalServicesCategories.CULTURE_CATEGORY,
+    value: 'CULTURE_CATEGORY',
+    label: MunicipalServicesCategories.CULTURE_CATEGORY,
     description: '',
   },
   {
-    const: 'TRANSPORT_CATEGORY',
-    title: MunicipalServicesCategories.TRANSPORT_CATEGORY,
+    value: 'TRANSPORT_CATEGORY',
+    label: MunicipalServicesCategories.TRANSPORT_CATEGORY,
     description: '',
   },
   {
-    const: 'SECURITY_CATEGORY',
-    title: MunicipalServicesCategories.SECURITY_CATEGORY,
+    value: 'SECURITY_CATEGORY',
+    label: MunicipalServicesCategories.SECURITY_CATEGORY,
     description: '',
   },
-  // { const: 'ENVIROMENTS_CATEGORY', title: MunicipalServicesCategories.ENVIROMENTS_CATEGORY, description: '' },
-  { const: 'BASKET_CATEGORY', title: MunicipalServicesCategories.BASKET_CATEGORY, description: '' },
+  // { value: 'ENVIROMENTS_CATEGORY', label: MunicipalServicesCategories.ENVIROMENTS_CATEGORY, description: '' },
+  { value: 'BASKET_CATEGORY', label: MunicipalServicesCategories.BASKET_CATEGORY, description: '' },
   {
-    const: 'PARKING_CATEGORY',
-    title: MunicipalServicesCategories.PARKING_CATEGORY,
-    description: '',
-  },
-  {
-    const: 'MARINIUM_CATEGORY',
-    title: MunicipalServicesCategories.MARIANUM_CATEGORY,
+    value: 'PARKING_CATEGORY',
+    label: MunicipalServicesCategories.PARKING_CATEGORY,
     description: '',
   },
   {
-    const: 'ENTERTAINMENT_CATEGORY',
-    title: MunicipalServicesCategories.ENTERTAINMENT_CATEGORY,
+    value: 'MARINIUM_CATEGORY',
+    label: MunicipalServicesCategories.MARIANUM_CATEGORY,
     description: '',
   },
   {
-    const: 'CONSTRUCTION_CATEGORY',
-    title: MunicipalServicesCategories.CONSTRUCTION_CATEGORY,
+    value: 'ENTERTAINMENT_CATEGORY',
+    label: MunicipalServicesCategories.ENTERTAINMENT_CATEGORY,
     description: '',
   },
-  { const: 'JOIN_CATEGORY', title: MunicipalServicesCategories.JOIN_CATEGORY, description: '' },
-  { const: 'GREEN_CATEGORY', title: MunicipalServicesCategories.GREEN_CATEGORY, description: '' },
+  {
+    value: 'CONSTRUCTION_CATEGORY',
+    label: MunicipalServicesCategories.CONSTRUCTION_CATEGORY,
+    description: '',
+  },
+  { value: 'JOIN_CATEGORY', label: MunicipalServicesCategories.JOIN_CATEGORY, description: '' },
+  { value: 'GREEN_CATEGORY', label: MunicipalServicesCategories.GREEN_CATEGORY, description: '' },
 ]
 
 const foMunicipalServicesSection = [
@@ -67,8 +67,8 @@ const MunicipalServicesSection = () => {
   const { t } = useTranslation('account')
   const { width } = useWindowSize()
   const [currentPage, setCurrentPage] = useState<number>(1)
-  const [selectorValue, setSelectorValue] = useState<SelectOption[]>(enumOptions.slice(0, 1))
-  const selectorValueTitle: string = selectorValue[0]?.title || ''
+  const [selectorValue, setSelectorValue] = useState<SelectOption>(enumOptions[0])
+  const selectorValueTitle: string = selectorValue?.label ?? ''
   const ITEMS_PER_PAGE = width > 480 ? 20 : 5
 
   const { isLegalEntity } = useServerSideAuth()

@@ -129,6 +129,9 @@ const someOptionHasDescription = <
  * Docs: https://react-select.com/home
  * Figma: https://www.figma.com/file/17wbd0MDQcMW9NbXl6UPs8/DS-ESBS%2BBK%3A-Component-library?type=design&node-id=11794-3647&mode=design&t=QDLivrb2ukM9SiD9-0
  * Figma Dropdowns: https://www.figma.com/file/17wbd0MDQcMW9NbXl6UPs8/DS-ESBS%2BBK%3A-Component-library?type=design&node-id=810-1889&mode=design&t=QDLivrb2ukM9SiD9-0
+ *
+ * TODO: The library accepts `isDisabled`, but FieldWrapper provides `disabled`. Synchronize these.
+ * TODO: Add possibility to remove value if it's not required.
  */
 const SelectField = <
   Option extends SelectOption,

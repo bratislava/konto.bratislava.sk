@@ -52,6 +52,7 @@ const CheckboxWidgetRJSF = ({
         labelSize={labelSize}
         helptext={helptext}
         helptextHeader={helptextHeader}
+        displayOptionalLabel
       >
         <Checkbox value="true" variant={variant} isDisabled={readonly}>
           {checkboxLabel}

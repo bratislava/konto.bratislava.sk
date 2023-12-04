@@ -46,6 +46,7 @@ const InputField = forwardRef<HTMLInputElement, InputFieldProps>(
       autoComplete,
       size,
       labelSize,
+      displayOptionalLabel,
       ...rest
     },
     ref,
@@ -142,6 +143,7 @@ const InputField = forwardRef<HTMLInputElement, InputFieldProps>(
         errorMessageProps={errorMessageProps}
         size={size}
         labelSize={labelSize}
+        displayOptionalLabel={displayOptionalLabel}
       >
         <div className="relative" data-cy={`required-${inputProps.name}`}>
           {leftIcon && (

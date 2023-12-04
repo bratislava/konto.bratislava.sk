@@ -39,6 +39,7 @@ const DatePickerWidgetRJSF = ({
         onChange={(value) => onChange(value ?? undefined)}
         size={size}
         labelSize={labelSize}
+        displayOptionalLabel
       />
     </WidgetWrapper>
   )

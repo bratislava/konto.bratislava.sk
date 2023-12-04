@@ -357,6 +357,68 @@ export interface DownloadTokenResponseDataDto {
 /**
  *
  * @export
+ * @interface EidSendFormRequestDto
+ */
+export interface EidSendFormRequestDto {
+  /**
+   * EID token to send form
+   * @type {string}
+   * @memberof EidSendFormRequestDto
+   */
+  eidToken: string
+}
+/**
+ *
+ * @export
+ * @interface EidUpdateSendFormRequestDto
+ */
+export interface EidUpdateSendFormRequestDto {
+  /**
+   * Send JSON body of form
+   * @type {object}
+   * @memberof EidUpdateSendFormRequestDto
+   */
+  formDataJson?: object
+  /**
+   * State of form
+   * @type {object}
+   * @memberof EidUpdateSendFormRequestDto
+   */
+  state?: object
+  /**
+   * Data from ginis saved in our db
+   * @type {string}
+   * @memberof EidUpdateSendFormRequestDto
+   */
+  formDataGinis?: string
+  /**
+   * Date time, when submission was finished in ginis
+   * @type {string}
+   * @memberof EidUpdateSendFormRequestDto
+   */
+  finishSubmission?: string
+  /**
+   * ID of person, who is sending this (URI)
+   * @type {string}
+   * @memberof EidUpdateSendFormRequestDto
+   */
+  recipientId?: string
+  /**
+   * Ginis document id generated after registering the submission
+   * @type {string}
+   * @memberof EidUpdateSendFormRequestDto
+   */
+  ginisDocumentId?: string
+  /**
+   * EID token to send form
+   * @type {string}
+   * @memberof EidUpdateSendFormRequestDto
+   */
+  eidToken: string
+}
+/**
+ *
+ * @export
  * @interface FileAlreadyProcessedErrorDto
  */
 export interface FileAlreadyProcessedErrorDto {
@@ -4126,6 +4188,135 @@ export interface StatusResponseDto {
 /**
  *
  * @export
+ * @interface TaxJsonToXmlRequestDto
+ */
+export interface TaxJsonToXmlRequestDto {
+  /**
+   * Form values in JSON
+   * @type {object}
+   * @memberof TaxJsonToXmlRequestDto
+   */
+  jsonForm: object
+}
+/**
+ *
+ * @export
+ * @interface TaxJsonToXmlResponseDto
+ */
+export interface TaxJsonToXmlResponseDto {
+  /**
+   * Form values in XML
+   * @type {string}
+   * @memberof TaxJsonToXmlResponseDto
+   */
+  xmlForm: string
+}
+/**
+ *
+ * @export
+ * @interface TaxSignerDataResponseDto
+ */
+export interface TaxSignerDataResponseDto {
+  /**
+   * Name of the xml \"file\" to be signed
+   * @type {string}
+   * @memberof TaxSignerDataResponseDto
+   */
+  objectId: string
+  /**
+   * Free text description - we are using name of the form
+   * @type {string}
+   * @memberof TaxSignerDataResponseDto
+   */
+  objectDescription: string
+  /**
+   * We do not really know the available values - might allow something other than XML to be signed ? If left empty it works with xml.
+   * @type {string}
+   * @memberof TaxSignerDataResponseDto
+   */
+  objectFormatIdentifier: string
+  /**
+   * Form values in XML
+   * @type {string}
+   * @memberof TaxSignerDataResponseDto
+   */
+  xdcXMLData: string
+  /**
+   * Same as NASES schema id (pospId)
+   * @type {string}
+   * @memberof TaxSignerDataResponseDto
+   */
+  xdcIdentifier: string
+  /**
+   * Same as NASES schema version (pospVersion)
+   * @type {string}
+   * @memberof TaxSignerDataResponseDto
+   */
+  xdcVersion: string
+  /**
+   * XSD validation
+   * @type {string}
+   * @memberof TaxSignerDataResponseDto
+   */
+  xdcUsedXSD: string
+  /**
+   * XSD Reference URI, put together on request from pospId and pospVersion
+   * @type {string}
+   * @memberof TaxSignerDataResponseDto
+   */
+  xsdReferenceURI: string
+  /**
+   * XSLT text transformation, used to convert xml into what is displayed in signer
+   * @type {string}
+   * @memberof TaxSignerDataResponseDto
+   */
+  xdcUsedXSLT: string
+  /**
+   * XSLT Reference URI, put together on request from pospId and pospVersion
+   * @type {string}
+   * @memberof TaxSignerDataResponseDto
+   */
+  xslReferenceURI: string
+  /**
+   * Type of XSLT transformation - likely always TXT
+   * @type {string}
+   * @memberof TaxSignerDataResponseDto
+   */
+  xslMediaDestinationTypeDescription: string
+  /**
+   * XSLT language
+   * @type {string}
+   * @memberof TaxSignerDataResponseDto
+   */
+  xslXSLTLanguage: string
+  /**
+   * TODO find out what is this, empty even on ESBS
+   * @type {string}
+   * @memberof TaxSignerDataResponseDto
+   */
+  xslTargetEnvironment: string
+  /**
+   * (always true) - TODO find out what is this
+   * @type {boolean}
+   * @memberof TaxSignerDataResponseDto
+   */
+  xdcIncludeRefs: boolean
+  /**
+   * Should always be the value from example
+   * @type {string}
+   * @memberof TaxSignerDataResponseDto
+   */
+  xdcNamespaceURI: string
+  /**
+   * Unique id generated for each signature
+   * @type {string}
+   * @memberof TaxSignerDataResponseDto
+   */
+  signatureId: string
+}
+/**
+ *
+ * @export
  * @interface UnableAddFormToRabbitErrorDto
  */
 export interface UnableAddFormToRabbitErrorDto {
@@ -6413,15 +6604,23 @@ export const NasesApiAxiosParamCreator = function (configuration?: Configuration
      * Check if given form can be sent to Nases (all files are scanned etc.)
      * @summary
      * @param {string} id
+     * @param {EidSendFormRequestDto} eidSendFormRequestDto
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
     nasesControllerCheckSendConditions: async (
       id: string,
+      eidSendFormRequestDto: EidSendFormRequestDto,
       options: AxiosRequestConfig = {},
     ): Promise<RequestArgs> => {
       // verify required parameter 'id' is not null or undefined
       assertParamExists('nasesControllerCheckSendConditions', 'id', id)
+      // verify required parameter 'eidSendFormRequestDto' is not null or undefined
+      assertParamExists(
+        'nasesControllerCheckSendConditions',
+        'eidSendFormRequestDto',
+        eidSendFormRequestDto,
+      )
       const localVarPath = `/nases/eid/can-send/{id}`.replace(
         `{${'id'}}`,
         encodeURIComponent(String(id)),
@@ -6441,6 +6640,8 @@ export const NasesApiAxiosParamCreator = function (configuration?: Configuration
       // http bearer authentication required
       await setBearerAuthToObject(localVarHeaderParameter, configuration)
 
+      localVarHeaderParameter['Content-Type'] = 'application/json'
+
       setSearchParams(localVarUrlObj, localVarQueryParameter)
       let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {}
       localVarRequestOptions.headers = {
@@ -6448,6 +6649,11 @@ export const NasesApiAxiosParamCreator = function (configuration?: Configuration
         ...headersFromBaseOptions,
         ...options.headers,
       }
+      localVarRequestOptions.data = serializeDataIfNeeded(
+        eidSendFormRequestDto,
+        localVarRequestOptions,
+        configuration,
+      )
 
       return {
         url: toPathString(localVarUrlObj),
@@ -6824,22 +7030,22 @@ export const NasesApiAxiosParamCreator = function (configuration?: Configuration
      * This endpoint is used for updating from and sending it to NASES. First is form updated then send to rabbitmq, then is controlled if everything is okay and files are scanned and after that is send to NASES
      * @summary
      * @param {string} id
-     * @param {UpdateFormRequestDto} updateFormRequestDto
+     * @param {EidUpdateSendFormRequestDto} eidUpdateSendFormRequestDto
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
     nasesControllerSendAndUpdateFormEid: async (
       id: string,
-      updateFormRequestDto: UpdateFormRequestDto,
+      eidUpdateSendFormRequestDto: EidUpdateSendFormRequestDto,
       options: AxiosRequestConfig = {},
     ): Promise<RequestArgs> => {
       // verify required parameter 'id' is not null or undefined
       assertParamExists('nasesControllerSendAndUpdateFormEid', 'id', id)
-      // verify required parameter 'updateFormRequestDto' is not null or undefined
+      // verify required parameter 'eidUpdateSendFormRequestDto' is not null or undefined
       assertParamExists(
         'nasesControllerSendAndUpdateFormEid',
-        'updateFormRequestDto',
-        updateFormRequestDto,
+        'eidUpdateSendFormRequestDto',
+        eidUpdateSendFormRequestDto,
       )
       const localVarPath = `/nases/eid/send-and-update-form/{id}`.replace(
         `{${'id'}}`,
@@ -6870,7 +7076,7 @@ export const NasesApiAxiosParamCreator = function (configuration?: Configuration
         ...options.headers,
       }
       localVarRequestOptions.data = serializeDataIfNeeded(
-        updateFormRequestDto,
+        eidUpdateSendFormRequestDto,
         localVarRequestOptions,
         configuration,
       )
@@ -6929,15 +7135,23 @@ export const NasesApiAxiosParamCreator = function (configuration?: Configuration
      * This endpoint is used for sending form to NASES. First is form send to rabbitmq, then is controlled if everything is okay and files are scanned and after that is send to NASES
      * @summary
      * @param {string} id
+     * @param {EidSendFormRequestDto} eidSendFormRequestDto
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
     nasesControllerSendFormEid: async (
       id: string,
+      eidSendFormRequestDto: EidSendFormRequestDto,
       options: AxiosRequestConfig = {},
     ): Promise<RequestArgs> => {
       // verify required parameter 'id' is not null or undefined
       assertParamExists('nasesControllerSendFormEid', 'id', id)
+      // verify required parameter 'eidSendFormRequestDto' is not null or undefined
+      assertParamExists(
+        'nasesControllerSendFormEid',
+        'eidSendFormRequestDto',
+        eidSendFormRequestDto,
+      )
       const localVarPath = `/nases/eid/send-form/{id}`.replace(
         `{${'id'}}`,
         encodeURIComponent(String(id)),
@@ -6957,6 +7171,8 @@ export const NasesApiAxiosParamCreator = function (configuration?: Configuration
       // http bearer authentication required
       await setBearerAuthToObject(localVarHeaderParameter, configuration)
 
+      localVarHeaderParameter['Content-Type'] = 'application/json'
+
       setSearchParams(localVarUrlObj, localVarQueryParameter)
       let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {}
       localVarRequestOptions.headers = {
@@ -6964,6 +7180,11 @@ export const NasesApiAxiosParamCreator = function (configuration?: Configuration
         ...headersFromBaseOptions,
         ...options.headers,
       }
+      localVarRequestOptions.data = serializeDataIfNeeded(
+        eidSendFormRequestDto,
+        localVarRequestOptions,
+        configuration,
+      )
 
       return {
         url: toPathString(localVarUrlObj),
@@ -7101,15 +7322,18 @@ export const NasesApiFp = function (configuration?: Configuration) {
      * Check if given form can be sent to Nases (all files are scanned etc.)
      * @summary
      * @param {string} id
+     * @param {EidSendFormRequestDto} eidSendFormRequestDto
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
     async nasesControllerCheckSendConditions(
       id: string,
+      eidSendFormRequestDto: EidSendFormRequestDto,
       options?: AxiosRequestConfig,
     ): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<CanSendResponseDto>> {
       const localVarAxiosArgs = await localVarAxiosParamCreator.nasesControllerCheckSendConditions(
         id,
+        eidSendFormRequestDto,
         options,
       )
       return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)
@@ -7253,18 +7477,18 @@ export const NasesApiFp = function (configuration?: Configuration) {
      * This endpoint is used for updating from and sending it to NASES. First is form updated then send to rabbitmq, then is controlled if everything is okay and files are scanned and after that is send to NASES
      * @summary
      * @param {string} id
-     * @param {UpdateFormRequestDto} updateFormRequestDto
+     * @param {EidUpdateSendFormRequestDto} eidUpdateSendFormRequestDto
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
     async nasesControllerSendAndUpdateFormEid(
       id: string,
-      updateFormRequestDto: UpdateFormRequestDto,
+      eidUpdateSendFormRequestDto: EidUpdateSendFormRequestDto,
       options?: AxiosRequestConfig,
     ): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<SendFormResponseDto>> {
       const localVarAxiosArgs = await localVarAxiosParamCreator.nasesControllerSendAndUpdateFormEid(
         id,
-        updateFormRequestDto,
+        eidUpdateSendFormRequestDto,
         options,
       )
       return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)
@@ -7287,15 +7511,18 @@ export const NasesApiFp = function (configuration?: Configuration) {
      * This endpoint is used for sending form to NASES. First is form send to rabbitmq, then is controlled if everything is okay and files are scanned and after that is send to NASES
      * @summary
      * @param {string} id
+     * @param {EidSendFormRequestDto} eidSendFormRequestDto
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
     async nasesControllerSendFormEid(
       id: string,
+      eidSendFormRequestDto: EidSendFormRequestDto,
       options?: AxiosRequestConfig,
     ): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<SendFormResponseDto>> {
       const localVarAxiosArgs = await localVarAxiosParamCreator.nasesControllerSendFormEid(
         id,
+        eidSendFormRequestDto,
         options,
       )
       return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)
@@ -7359,15 +7586,17 @@ export const NasesApiFactory = function (
      * Check if given form can be sent to Nases (all files are scanned etc.)
      * @summary
      * @param {string} id
+     * @param {EidSendFormRequestDto} eidSendFormRequestDto
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
     nasesControllerCheckSendConditions(
       id: string,
+      eidSendFormRequestDto: EidSendFormRequestDto,
       options?: AxiosRequestConfig,
     ): AxiosPromise<CanSendResponseDto> {
       return localVarFp
-        .nasesControllerCheckSendConditions(id, options)
+        .nasesControllerCheckSendConditions(id, eidSendFormRequestDto, options)
         .then((request) => request(axios, basePath))
     },
     /**
@@ -7497,17 +7726,17 @@ export const NasesApiFactory = function (
      * This endpoint is used for updating from and sending it to NASES. First is form updated then send to rabbitmq, then is controlled if everything is okay and files are scanned and after that is send to NASES
      * @summary
      * @param {string} id
-     * @param {UpdateFormRequestDto} updateFormRequestDto
+     * @param {EidUpdateSendFormRequestDto} eidUpdateSendFormRequestDto
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
     nasesControllerSendAndUpdateFormEid(
       id: string,
-      updateFormRequestDto: UpdateFormRequestDto,
+      eidUpdateSendFormRequestDto: EidUpdateSendFormRequestDto,
       options?: AxiosRequestConfig,
     ): AxiosPromise<SendFormResponseDto> {
       return localVarFp
-        .nasesControllerSendAndUpdateFormEid(id, updateFormRequestDto, options)
+        .nasesControllerSendAndUpdateFormEid(id, eidUpdateSendFormRequestDto, options)
         .then((request) => request(axios, basePath))
     },
     /**
@@ -7529,15 +7758,17 @@ export const NasesApiFactory = function (
      * This endpoint is used for sending form to NASES. First is form send to rabbitmq, then is controlled if everything is okay and files are scanned and after that is send to NASES
      * @summary
      * @param {string} id
+     * @param {EidSendFormRequestDto} eidSendFormRequestDto
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
     nasesControllerSendFormEid(
       id: string,
+      eidSendFormRequestDto: EidSendFormRequestDto,
       options?: AxiosRequestConfig,
     ): AxiosPromise<SendFormResponseDto> {
       return localVarFp
-        .nasesControllerSendFormEid(id, options)
+        .nasesControllerSendFormEid(id, eidSendFormRequestDto, options)
         .then((request) => request(axios, basePath))
     },
     /**
@@ -7589,13 +7820,18 @@ export class NasesApi extends BaseAPI {
    * Check if given form can be sent to Nases (all files are scanned etc.)
    * @summary
    * @param {string} id
+   * @param {EidSendFormRequestDto} eidSendFormRequestDto
    * @param {*} [options] Override http request option.
    * @throws {RequiredError}
    * @memberof NasesApi
    */
-  public nasesControllerCheckSendConditions(id: string, options?: AxiosRequestConfig) {
+  public nasesControllerCheckSendConditions(
+    id: string,
+    eidSendFormRequestDto: EidSendFormRequestDto,
+    options?: AxiosRequestConfig,
+  ) {
     return NasesApiFp(this.configuration)
-      .nasesControllerCheckSendConditions(id, options)
+      .nasesControllerCheckSendConditions(id, eidSendFormRequestDto, options)
       .then((request) => request(this.axios, this.basePath))
   }
 
@@ -7734,18 +7970,18 @@ export class NasesApi extends BaseAPI {
    * This endpoint is used for updating from and sending it to NASES. First is form updated then send to rabbitmq, then is controlled if everything is okay and files are scanned and after that is send to NASES
    * @summary
    * @param {string} id
-   * @param {UpdateFormRequestDto} updateFormRequestDto
+   * @param {EidUpdateSendFormRequestDto} eidUpdateSendFormRequestDto
    * @param {*} [options] Override http request option.
    * @throws {RequiredError}
    * @memberof NasesApi
    */
   public nasesControllerSendAndUpdateFormEid(
     id: string,
-    updateFormRequestDto: UpdateFormRequestDto,
+    eidUpdateSendFormRequestDto: EidUpdateSendFormRequestDto,
     options?: AxiosRequestConfig,
   ) {
     return NasesApiFp(this.configuration)
-      .nasesControllerSendAndUpdateFormEid(id, updateFormRequestDto, options)
+      .nasesControllerSendAndUpdateFormEid(id, eidUpdateSendFormRequestDto, options)
       .then((request) => request(this.axios, this.basePath))
   }
 
@@ -7767,13 +8003,18 @@ export class NasesApi extends BaseAPI {
    * This endpoint is used for sending form to NASES. First is form send to rabbitmq, then is controlled if everything is okay and files are scanned and after that is send to NASES
    * @summary
    * @param {string} id
+   * @param {EidSendFormRequestDto} eidSendFormRequestDto
    * @param {*} [options] Override http request option.
    * @throws {RequiredError}
    * @memberof NasesApi
    */
-  public nasesControllerSendFormEid(id: string, options?: AxiosRequestConfig) {
+  public nasesControllerSendFormEid(
+    id: string,
+    eidSendFormRequestDto: EidSendFormRequestDto,
+    options?: AxiosRequestConfig,
+  ) {
     return NasesApiFp(this.configuration)
-      .nasesControllerSendFormEid(id, options)
+      .nasesControllerSendFormEid(id, eidSendFormRequestDto, options)
       .then((request) => request(this.axios, this.basePath))
   }
 
@@ -8626,6 +8867,241 @@ export class StatusesApi extends BaseAPI {
   public statusControllerStatus(options?: AxiosRequestConfig) {
     return StatusesApiFp(this.configuration)
       .statusControllerStatus(options)
+      .then((request) => request(this.axios, this.basePath))
+  }
+}
+
+/**
+ * TaxApi - axios parameter creator
+ * @export
+ */
+export const TaxApiAxiosParamCreator = function (configuration?: Configuration) {
+  return {
+    /**
+     * Generates XML for tax form from given JSON data
+     * @summary
+     * @param {TaxJsonToXmlRequestDto} taxJsonToXmlRequestDto
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    taxControllerConvertJsonToXml: async (
+      taxJsonToXmlRequestDto: TaxJsonToXmlRequestDto,
+      options: AxiosRequestConfig = {},
+    ): Promise<RequestArgs> => {
+      // verify required parameter 'taxJsonToXmlRequestDto' is not null or undefined
+      assertParamExists(
+        'taxControllerConvertJsonToXml',
+        'taxJsonToXmlRequestDto',
+        taxJsonToXmlRequestDto,
+      )
+      const localVarPath = `/tax/json-to-xml`
+      // use dummy base URL string because the URL constructor only accepts absolute URLs.
+      const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL)
+      let baseOptions
+      if (configuration) {
+        baseOptions = configuration.baseOptions
+      }
+
+      const localVarRequestOptions = { method: 'POST', ...baseOptions, ...options }
+      const localVarHeaderParameter = {} as any
+      const localVarQueryParameter = {} as any
+
+      localVarHeaderParameter['Content-Type'] = 'application/json'
+
+      setSearchParams(localVarUrlObj, localVarQueryParameter)
+      let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {}
+      localVarRequestOptions.headers = {
+        ...localVarHeaderParameter,
+        ...headersFromBaseOptions,
+        ...options.headers,
+      }
+      localVarRequestOptions.data = serializeDataIfNeeded(
+        taxJsonToXmlRequestDto,
+        localVarRequestOptions,
+        configuration,
+      )
+
+      return {
+        url: toPathString(localVarUrlObj),
+        options: localVarRequestOptions,
+      }
+    },
+    /**
+     * Returns input data for ditec signer from JSON data and shcema version id
+     * @summary
+     * @param {JsonConvertRequestDto} jsonConvertRequestDto
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    taxControllerSignerData: async (
+      jsonConvertRequestDto: JsonConvertRequestDto,
+      options: AxiosRequestConfig = {},
+    ): Promise<RequestArgs> => {
+      // verify required parameter 'jsonConvertRequestDto' is not null or undefined
+      assertParamExists('taxControllerSignerData', 'jsonConvertRequestDto', jsonConvertRequestDto)
+      const localVarPath = `/tax/signer-data`
+      // use dummy base URL string because the URL constructor only accepts absolute URLs.
+      const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL)
+      let baseOptions
+      if (configuration) {
+        baseOptions = configuration.baseOptions
+      }
+
+      const localVarRequestOptions = { method: 'POST', ...baseOptions, ...options }
+      const localVarHeaderParameter = {} as any
+      const localVarQueryParameter = {} as any
+
+      localVarHeaderParameter['Content-Type'] = 'application/json'
+
+      setSearchParams(localVarUrlObj, localVarQueryParameter)
+      let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {}
+      localVarRequestOptions.headers = {
+        ...localVarHeaderParameter,
+        ...headersFromBaseOptions,
+        ...options.headers,
+      }
+      localVarRequestOptions.data = serializeDataIfNeeded(
+        jsonConvertRequestDto,
+        localVarRequestOptions,
+        configuration,
+      )
+
+      return {
+        url: toPathString(localVarUrlObj),
+        options: localVarRequestOptions,
+      }
+    },
+  }
+}
+
+/**
+ * TaxApi - functional programming interface
+ * @export
+ */
+export const TaxApiFp = function (configuration?: Configuration) {
+  const localVarAxiosParamCreator = TaxApiAxiosParamCreator(configuration)
+  return {
+    /**
+     * Generates XML for tax form from given JSON data
+     * @summary
+     * @param {TaxJsonToXmlRequestDto} taxJsonToXmlRequestDto
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    async taxControllerConvertJsonToXml(
+      taxJsonToXmlRequestDto: TaxJsonToXmlRequestDto,
+      options?: AxiosRequestConfig,
+    ): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<JsonToXmlResponseDto>> {
+      const localVarAxiosArgs = await localVarAxiosParamCreator.taxControllerConvertJsonToXml(
+        taxJsonToXmlRequestDto,
+        options,
+      )
+      return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)
+    },
+    /**
+     * Returns input data for ditec signer from JSON data and shcema version id
+     * @summary
+     * @param {JsonConvertRequestDto} jsonConvertRequestDto
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    async taxControllerSignerData(
+      jsonConvertRequestDto: JsonConvertRequestDto,
+      options?: AxiosRequestConfig,
+    ): Promise<
+      (axios?: AxiosInstance, basePath?: string) => AxiosPromise<TaxSignerDataResponseDto>
+    > {
+      const localVarAxiosArgs = await localVarAxiosParamCreator.taxControllerSignerData(
+        jsonConvertRequestDto,
+        options,
+      )
+      return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)
+    },
+  }
+}
+
+/**
+ * TaxApi - factory interface
+ * @export
+ */
+export const TaxApiFactory = function (
+  configuration?: Configuration,
+  basePath?: string,
+  axios?: AxiosInstance,
+) {
+  const localVarFp = TaxApiFp(configuration)
+  return {
+    /**
+     * Generates XML for tax form from given JSON data
+     * @summary
+     * @param {TaxJsonToXmlRequestDto} taxJsonToXmlRequestDto
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    taxControllerConvertJsonToXml(
+      taxJsonToXmlRequestDto: TaxJsonToXmlRequestDto,
+      options?: AxiosRequestConfig,
+    ): AxiosPromise<JsonToXmlResponseDto> {
+      return localVarFp
+        .taxControllerConvertJsonToXml(taxJsonToXmlRequestDto, options)
+        .then((request) => request(axios, basePath))
+    },
+    /**
+     * Returns input data for ditec signer from JSON data and shcema version id
+     * @summary
+     * @param {JsonConvertRequestDto} jsonConvertRequestDto
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    taxControllerSignerData(
+      jsonConvertRequestDto: JsonConvertRequestDto,
+      options?: AxiosRequestConfig,
+    ): AxiosPromise<TaxSignerDataResponseDto> {
+      return localVarFp
+        .taxControllerSignerData(jsonConvertRequestDto, options)
+        .then((request) => request(axios, basePath))
+    },
+  }
+}
+
+/**
+ * TaxApi - object-oriented interface
+ * @export
+ * @class TaxApi
+ * @extends {BaseAPI}
+ */
+export class TaxApi extends BaseAPI {
+  /**
+   * Generates XML for tax form from given JSON data
+   * @summary
+   * @param {TaxJsonToXmlRequestDto} taxJsonToXmlRequestDto
+   * @param {*} [options] Override http request option.
+   * @throws {RequiredError}
+   * @memberof TaxApi
+   */
+  public taxControllerConvertJsonToXml(
+    taxJsonToXmlRequestDto: TaxJsonToXmlRequestDto,
+    options?: AxiosRequestConfig,
+  ) {
+    return TaxApiFp(this.configuration)
+      .taxControllerConvertJsonToXml(taxJsonToXmlRequestDto, options)
+      .then((request) => request(this.axios, this.basePath))
+  }
+
+  /**
+   * Returns input data for ditec signer from JSON data and shcema version id
+   * @summary
+   * @param {JsonConvertRequestDto} jsonConvertRequestDto
+   * @param {*} [options] Override http request option.
+   * @throws {RequiredError}
+   * @memberof TaxApi
+   */
+  public taxControllerSignerData(
+    jsonConvertRequestDto: JsonConvertRequestDto,
+    options?: AxiosRequestConfig,
+  ) {
+    return TaxApiFp(this.configuration)
+      .taxControllerSignerData(jsonConvertRequestDto, options)
       .then((request) => request(this.axios, this.basePath))
   }
 }

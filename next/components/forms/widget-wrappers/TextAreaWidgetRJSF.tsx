@@ -53,6 +53,7 @@ const TextAreaWidgetRJSF = ({
             errorMessage={rawErrors}
             size={size}
             labelSize={labelSize}
+            displayOptionalLabel
           />
         )}
       </FieldBlurWrapper>

@@ -26,6 +26,7 @@ const CheckboxGroup = (props: CheckboxGroupProps) => {
     labelSize,
     helptext,
     helptextHeader,
+    displayOptionalLabel,
   } = props
   const state: CheckboxGroupState = useCheckboxGroupState(props)
   const { groupProps, labelProps, errorMessageProps } = useCheckboxGroup(props, state)
@@ -44,6 +45,7 @@ const CheckboxGroup = (props: CheckboxGroupProps) => {
         helptext={helptext}
         helptextHeader={helptextHeader}
         customHeaderBottomMargin="mb-4"
+        displayOptionalLabel={displayOptionalLabel}
       >
         <div className={cx('flex flex-col gap-3', className)}>
           <CheckboxGroupContext.Provider value={state}>{children}</CheckboxGroupContext.Provider>

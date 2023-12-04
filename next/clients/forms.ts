@@ -8,6 +8,7 @@ import {
   NasesApiFactory,
   SchemasApiFactory,
   StatusesApiFactory,
+  TaxApiFactory,
 } from './openapi-forms'
 
 const args = [{} as Configuration, environment.formsUrl, axiosInstance] as const
@@ -19,4 +20,5 @@ export const formsApi = {
   ...StatusesApiFactory(...args),
   ...NasesApiFactory(...args),
   ...GinisApiFactory(...args),
+  ...TaxApiFactory(...args),
 }

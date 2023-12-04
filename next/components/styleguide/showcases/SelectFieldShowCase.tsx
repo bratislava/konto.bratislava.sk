@@ -1,9 +1,7 @@
 import React, { useState } from 'react'
 import { GroupBase } from 'react-select'
 
-import SelectMultiNew, {
-  SelectOption,
-} from '../../forms/widget-components/SelectField/SelectFieldNew'
+import SelectField, { SelectOption } from '../../forms/widget-components/SelectField/SelectField'
 import { Stack } from '../Stack'
 import { Wrapper } from '../Wrapper'
 
@@ -63,40 +61,40 @@ const SelectFieldShowCase = () => {
   return (
     <Wrapper direction="column" title="Select Multiple New">
       <Stack>
-        <SelectMultiNew
+        <SelectField
           label="Single Select"
           options={sampleOptions}
           value={singleValue}
           onChange={setSingleValue}
         />
-        <SelectMultiNew
+        <SelectField
           label="Multi Select"
           isMulti
           options={sampleOptions}
           value={multiValue}
           onChange={setMultiValue}
         />
-        <SelectMultiNew
+        <SelectField
           label="Single select without descriptions"
           options={sampleOptionsWithoutDescriptions}
           value={singleValue}
           onChange={setSingleValue}
         />
-        <SelectMultiNew
+        <SelectField
           label="Multi select without descriptions"
           isMulti
           options={sampleOptionsWithoutDescriptions}
           value={multiValue}
           onChange={setMultiValue}
         />
-        <SelectMultiNew
+        <SelectField
           label="Single select disabled"
           options={sampleOptionsWithoutDescriptions}
           value={singleValue}
           onChange={setSingleValue}
           isDisabled
         />
-        <SelectMultiNew
+        <SelectField
           label="Multi select disabled"
           isMulti
           options={sampleOptionsWithoutDescriptions}
@@ -104,7 +102,7 @@ const SelectFieldShowCase = () => {
           onChange={setMultiValue}
           isDisabled
         />
-        <SelectMultiNew
+        <SelectField
           label="Select with groups"
           isMulti
           options={sampleOptionsGroups}

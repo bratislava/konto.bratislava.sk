@@ -4,10 +4,10 @@ import { ComponentProps } from 'react'
 import { SelectUiOptions } from 'schema-generator/generator/uiOptionsTypes'
 
 import { isDefined } from '../../../frontend/utils/general'
-import SelectMultiNew, { SelectOption } from '../widget-components/SelectField/SelectFieldNew'
+import SelectField, { SelectOption } from '../widget-components/SelectField/SelectField'
 
 type SingleMultiSelectBaseProps = Omit<
-  ComponentProps<typeof SelectMultiNew>,
+  ComponentProps<typeof SelectField>,
   'options' | 'value' | 'onChange' | 'isMulti'
 > & { options: SelectOption[] }
 
@@ -23,7 +23,7 @@ const SingleSelect = ({
   const selectOnChange = (newValue: SelectOption | null) =>
     onChange(newValue ? newValue.value : undefined)
 
-  return <SelectMultiNew isMulti={false} value={selectValue} onChange={selectOnChange} {...rest} />
+  return <SelectField isMulti={false} value={selectValue} onChange={selectOnChange} {...rest} />
 }
 
 const MultiSelect = ({
@@ -41,7 +41,7 @@ const MultiSelect = ({
   const selectOnChange = (newValue: readonly SelectOption[]) =>
     onChange(newValue.map((option) => option.value).filter(isDefined))
 
-  return <SelectMultiNew isMulti value={selectValue} onChange={selectOnChange} {...rest} />
+  return <SelectField isMulti value={selectValue} onChange={selectOnChange} {...rest} />
 }
 
 interface SelectWidgetRJSFProps extends WidgetProps {

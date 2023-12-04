@@ -130,7 +130,7 @@ const someOptionHasDescription = <
  * Figma: https://www.figma.com/file/17wbd0MDQcMW9NbXl6UPs8/DS-ESBS%2BBK%3A-Component-library?type=design&node-id=11794-3647&mode=design&t=QDLivrb2ukM9SiD9-0
  * Figma Dropdowns: https://www.figma.com/file/17wbd0MDQcMW9NbXl6UPs8/DS-ESBS%2BBK%3A-Component-library?type=design&node-id=810-1889&mode=design&t=QDLivrb2ukM9SiD9-0
  */
-const SelectMultiNew = <
+const SelectField = <
   Option extends SelectOption,
   IsMulti extends boolean = false,
   Group extends GroupBase<Option> = GroupBase<Option>,
@@ -229,4 +229,4 @@ const SelectMultiNew = <
   )
 }
 
-export default SelectMultiNew
+export default SelectField

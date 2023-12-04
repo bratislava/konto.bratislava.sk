@@ -10,7 +10,7 @@ import { useState } from 'react'
 import { useWindowSize } from 'usehooks-ts'
 
 import { environment } from '../../../../../environment'
-import { SelectOption } from '../../../widget-components/SelectField/SelectFieldNew'
+import { SelectOption } from '../../../widget-components/SelectField/SelectField'
 
 const enumOptions: SelectOption[] = [
   { value: 'ALL_CATEGORY', label: MunicipalServicesCategories.ALL_CATEGORY, description: '' },

@@ -1,5 +1,5 @@
 import Script from 'next/script'
-import React, { createContext, PropsWithChildren, useContext, useState } from 'react'
+import React, { createContext, Fragment, PropsWithChildren, useContext, useState } from 'react'
 
 import { InitialFormData } from '../../../frontend/types/initialFormData'
 
@@ -8,6 +8,7 @@ type FormSignerLoaderContextType = {
   isLoading: boolean
   isReady: boolean
   isNotSupported: boolean
+  retry: () => void
 }
 
 const FormSignerLoaderContext = createContext<FormSignerLoaderContextType | undefined>(undefined)
@@ -43,6 +44,7 @@ export const FormSignerLoaderProvider = ({
     signer: LoadedStatus.False,
   })
   const [isSupportedStatus, setIsSupportedStatus] = useState(SupportedStatus.Unknown)
+  const [retryTimestamp, setRetryTimestamp] = useState<number | null>(null)
 
   const handleScriptsLoaded = () => {
     ditec.dSigXadesBpJs.detectSupportedPlatforms(null, {
@@ -80,12 +82,26 @@ export const FormSignerLoaderProvider = ({
     isSupportedStatus === SupportedStatus.Supported
   const isNotSupported = isSupportedStatus === SupportedStatus.NotSupported
 
+  const retry = () => {
+    setRetryTimestamp(Date.now())
+    setIsSupportedStatus(SupportedStatus.Unknown)
+    setLoadingStatuses({
+      config: LoadedStatus.False,
+      common: LoadedStatus.False,
+      signer: LoadedStatus.False,
+    })
+  }
+
+  // Postfixing the URL is a reliable way to force the browser to reload the script.
+  const getUrl = (path: string) => (retryTimestamp ? `${path}?${retryTimestamp}` : path)
+
   return (
     <>
       {isSigned && (
-        <>
+        /* Also a custom fragment key is needed to retry the library load. */
+        <Fragment key={retryTimestamp}>
           <Script
-            src="https://slovensko.sk/static/zep/dbridge_js/v1.0/config.js"
+            src={getUrl('https://slovensko.sk/static/zep/dbridge_js/v1.0/config.js')}
             strategy="lazyOnload"
             onLoad={() => updateLoadingStatus('config', LoadedStatus.True)}
             onError={() => updateLoadingStatus('config', LoadedStatus.Error)}
@@ -93,7 +109,7 @@ export const FormSignerLoaderProvider = ({
           {/* Scripts must be loaded one after another. Using `defer` is not enough. */}
           {loadingStatuses.config === LoadedStatus.True && (
             <Script
-              src="https://slovensko.sk/static/zep/dbridge_js/v1.0/dCommon.min.js"
+              src={getUrl('https://slovensko.sk/static/zep/dbridge_js/v1.0/dCommon.min.js')}
               strategy="lazyOnload"
               onLoad={() => updateLoadingStatus('common', LoadedStatus.True)}
               onError={() => updateLoadingStatus('common', LoadedStatus.Error)}
@@ -102,15 +118,17 @@ export const FormSignerLoaderProvider = ({
           {loadingStatuses.config === LoadedStatus.True &&
             loadingStatuses.common === LoadedStatus.True && (
               <Script
-                src="https://slovensko.sk/static/zep/dbridge_js/v1.0/dSigXadesBp.min.js"
+                src={getUrl('https://slovensko.sk/static/zep/dbridge_js/v1.0/dSigXadesBp.min.js')}
                 strategy="lazyOnload"
                 onLoad={() => updateLoadingStatus('signer', LoadedStatus.True)}
                 onError={() => updateLoadingStatus('signer', LoadedStatus.Error)}
               />
             )}
-        </>
+        </Fragment>
       )}
-      <FormSignerLoaderContext.Provider value={{ isError, isLoading, isReady, isNotSupported }}>
+      <FormSignerLoaderContext.Provider
+        value={{ isError, isLoading, isReady, isNotSupported, retry }}
+      >
         {children}
       </FormSignerLoaderContext.Provider>
     </>

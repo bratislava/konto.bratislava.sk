@@ -57,11 +57,11 @@ export const select = (
     options: {
       value: string
       title: string
-      tooltip?: string
+      description?: string
       isDefault?: boolean
     }[]
   },
-  uiOptions: SelectUiOptions,
+  uiOptions: Omit<SelectUiOptions, 'selectOptions'>,
 ): Field => {
   return {
     property,
@@ -73,7 +73,13 @@ export const select = (
     }),
     uiSchema: () => ({
       'ui:widget': 'Select',
-      'ui:options': uiOptions,
+      'ui:options': {
+        ...uiOptions,
+        selectOptions: options.options
+          // These are only used as a lookup for the description, so we need only those that have it
+          .filter(({ description }) => description)
+          .map(({ value, description }) => ({ value, description })),
+      },
     }),
     required: Boolean(options.required),
   }
@@ -87,11 +93,11 @@ export const selectMultiple = (
     options: {
       value: string
       title: string
-      tooltip?: string
+      description?: string
       isDefault?: boolean
     }[]
   },
-  uiOptions: SelectUiOptions,
+  uiOptions: Omit<SelectUiOptions, 'selectOptions'>,
 ): Field => {
   return {
     property,
@@ -107,9 +113,16 @@ export const selectMultiple = (
       uniqueItems: true,
       default: options.options.filter(({ isDefault }) => isDefault).map(({ value }) => value),
     }),
+
     uiSchema: () => ({
       'ui:widget': 'Select',
-      'ui:options': uiOptions,
+      'ui:options': {
+        ...uiOptions,
+        selectOptions: options.options
+          // These are only used as a lookup for the description, so we need only those that have it.
+          .filter(({ description }) => description)
+          .map(({ value, description }) => ({ value, description })),
+      },
     }),
     required: Boolean(options.required),
   }
@@ -217,10 +230,10 @@ export const number = (
 type StringToType<T> = T extends 'string'
   ? string
   : T extends 'number'
-    ? number
-    : T extends 'boolean'
-      ? boolean
-      : never
+  ? number
+  : T extends 'boolean'
+  ? boolean
+  : never
 
 export const radioGroup = <T extends 'string' | 'number' | 'boolean'>(
   property: string,
@@ -229,7 +242,6 @@ export const radioGroup = <T extends 'string' | 'number' | 'boolean'>(
     options: {
       value: StringToType<T>
       title: string
-      tooltip?: string
       description?: string
       isDefault?: boolean
     }[]
@@ -249,8 +261,9 @@ export const radioGroup = <T extends 'string' | 'number' | 'boolean'>(
       'ui:options': {
         ...uiOptions,
         radioOptions: options.options
-          .filter(({ tooltip, description }) => tooltip || description)
-          .map(({ value, tooltip, description }) => ({ value, tooltip, description })),
+          // These are only used as a lookup for the description, so we need only those that have it
+          .filter(({ description }) => description)
+          .map(({ value, description }) => ({ value, description })),
       },
     }),
     required: Boolean(options.required),
@@ -302,12 +315,11 @@ export const checkboxGroup = (
     options: {
       value: string
       title: string
-      tooltip?: string
       description?: string
       isDefault?: boolean
     }[]
   },
-  uiOptions: Omit<CheckboxGroupUiOptions, 'checkboxOptions'>,
+  uiOptions: CheckboxGroupUiOptions,
 ): Field => {
   return {
     property,
@@ -324,12 +336,7 @@ export const checkboxGroup = (
     }),
     uiSchema: () => ({
       'ui:widget': 'CheckboxGroup',
-      'ui:options': {
-        ...uiOptions,
-        checkboxOptions: options.options
-          .filter(({ tooltip }) => tooltip)
-          .map(({ value, tooltip }) => ({ value, tooltip })),
-      },
+      'ui:options': uiOptions,
     }),
     required: Boolean(options.required),
   }

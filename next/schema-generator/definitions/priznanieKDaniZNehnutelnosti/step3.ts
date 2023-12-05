@@ -147,9 +147,7 @@ const innerArray = (kalkulacka: boolean) =>
                 false,
               ),
             },
-            {
-              dropdownDivider: true,
-            },
+            {},
           ),
           object(
             'parcelneCisloSposobVyuzitiaPozemku',
@@ -223,7 +221,6 @@ const innerArray = (kalkulacka: boolean) =>
               helptext: markdownText(
                 'V prípade, že máte vydané právoplatné stavebné povolenie na stavbu vyberte možnosť G - Stavebné pozemky. :form-image-preview[Zobraziť ukážku]{src="https://cdn-api.bratislava.sk/general-strapi/upload/test_d7881242ec.svg"}',
               ),
-              dropdownDivider: true,
             },
           ),
           conditionalFields(createCondition([[['druhPozemku'], { enum: ['D', 'G'] }]]), [

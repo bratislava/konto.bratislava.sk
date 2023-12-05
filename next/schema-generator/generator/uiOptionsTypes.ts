@@ -1,6 +1,4 @@
 /* eslint-disable import/no-extraneous-dependencies,import/no-relative-packages */
-import type { UIOptionsType } from '@rjsf/utils'
-
 import { AccordionBase } from '../../components/forms/simple-components/Accordion'
 import { FieldSize } from '../../components/forms/widget-components/FieldBase'
 
@@ -69,14 +67,8 @@ export type WidgetUiOptions = WidgetSpacing & {
   labelSpacing?: LabelSpacing
 }
 
-type CheckboxOption = {
-  value: string
-  tooltip?: string
-}
-
 export type CheckboxGroupUiOptions = {
   variant?: 'basic' | 'boxed'
-  checkboxOptions?: CheckboxOption[]
 } & WidgetUiOptions
 
 export type CheckboxUiOptions = {
@@ -90,12 +82,11 @@ export type InputUiOptions = {
   type?: 'text' | 'password' | 'email' | 'tel' | 'number'
   resetIcon?: boolean
   leftIcon?: 'person' | 'mail' | 'call' | 'lock'
-} & WidgetUiOptions &
-  Pick<UIOptionsType, 'placeholder'>
+  placeholder?: string
+} & WidgetUiOptions
 
 type RadioOption = {
   value: string
-  tooltip?: string
   description?: string
 }
 
@@ -106,14 +97,17 @@ export type RadioGroupUiOptions = {
   orientations?: 'column' | 'row'
 } & WidgetUiOptions
 
+type SelectOption = {
+  value: string
+  description?: string
+}
+
 export type SelectUiOptions = {
-  dropdownDivider?: boolean
-  selectAllOption?: boolean
-  hideScrollbar?: boolean
-  // selectType?: 'one' | 'multiple' | 'arrow' | 'radio'
+  selectOptions?: SelectOption[]
+  placeholder?: string
 } & WidgetUiOptions
 
-export type TextAreaUiOptions = WidgetUiOptions & Pick<UIOptionsType, 'placeholder'>
+export type TextAreaUiOptions = { placeholder?: string } & WidgetUiOptions
 
 export type TimePickerUiOptions = WidgetUiOptions
 

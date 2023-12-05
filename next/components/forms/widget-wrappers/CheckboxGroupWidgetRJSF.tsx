@@ -7,7 +7,7 @@ import Checkbox from '../widget-components/Checkbox/Checkbox'
 import CheckboxGroup from '../widget-components/Checkbox/CheckboxGroup'
 
 interface CheckboxGroupRJSFProps extends WidgetProps {
-  options: CheckboxGroupUiOptions & WidgetProps['options']
+  options: CheckboxGroupUiOptions & Pick<WidgetProps['options'], 'enumOptions'>
   value: string[] | null
   schema: StrictRJSFSchema
   onChange: (value: string[]) => void
@@ -26,7 +26,6 @@ const CheckboxGroupWidgetRJSF = ({
   const {
     enumOptions,
     className,
-    checkboxOptions = [],
     variant = 'basic',
     size,
     labelSize,
@@ -34,12 +33,11 @@ const CheckboxGroupWidgetRJSF = ({
     helptextHeader,
   } = options
   if (!enumOptions) return <div />
-  const getTooltip = (radioValue: string) => {
-    return checkboxOptions.find((option) => option.value === radioValue)?.tooltip
-  }
+
   const isDisabled = (valueName: string) => {
     return value?.length === maxItems && !value?.includes(valueName)
   }
+
   return (
     <WidgetWrapper options={options}>
       <CheckboxGroup
@@ -63,7 +61,6 @@ const CheckboxGroupWidgetRJSF = ({
               value={option.value}
               variant={variant}
               isDisabled={isDisabled(option.value as string) || readonly}
-              tooltip={getTooltip(option.value as string)}
             >
               {option.label}
             </Checkbox>

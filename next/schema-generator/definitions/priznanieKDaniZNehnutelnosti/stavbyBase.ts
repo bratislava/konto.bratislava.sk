@@ -60,9 +60,7 @@ export const stavbyBase = (step: StepEnum) => [
             false,
           ),
         },
-        {
-          dropdownDivider: true,
-        },
+        {},
       ),
       input(
         'cisloParcely',

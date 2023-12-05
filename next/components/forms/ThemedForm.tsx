@@ -1,5 +1,5 @@
 import { ThemeProps, withTheme } from '@rjsf/core'
-import { GenericObjectType } from '@rjsf/utils'
+import { GenericObjectType, WidgetProps } from '@rjsf/utils'
 import { ArrayFieldTemplateItemType } from '@rjsf/utils/src/types'
 import DatePickerWidgetRJSF from 'components/forms/widget-wrappers/DatePickerWidgetRJSF'
 import TimePickerWidgetRJSF from 'components/forms/widget-wrappers/TimePickerWidgetRJSF'
@@ -18,18 +18,20 @@ import RadioGroupWidgetRJSF from './widget-wrappers/RadioGroupWidgetRJSF'
 import SelectWidgetRJSF from './widget-wrappers/SelectWidgetRJSF'
 import TextAreaWidgetRJSF from './widget-wrappers/TextAreaWidgetRJSF'
 
+// ComponentType<WidgetProps> must be used for each widget, because the library won't accept our custom overridden
+// `options` property.
 const theme: ThemeProps = {
   widgets: wrapWidgetsInContext({
-    Select: SelectWidgetRJSF,
-    Input: InputWidgetRJSF,
-    RadioGroup: RadioGroupWidgetRJSF,
-    TextArea: TextAreaWidgetRJSF,
-    CheckboxGroup: CheckboxGroupWidgetRJSF,
-    Checkbox: CheckboxWidgetRJSF,
-    FileUpload: FileUploadWidgetRJSF,
-    DatePicker: DatePickerWidgetRJSF,
-    TimePicker: TimePickerWidgetRJSF,
-    CustomComponents: CustomComponentsWidgetRJSF,
+    Select: SelectWidgetRJSF as ComponentType<WidgetProps>,
+    Input: InputWidgetRJSF as ComponentType<WidgetProps>,
+    RadioGroup: RadioGroupWidgetRJSF as ComponentType<WidgetProps>,
+    TextArea: TextAreaWidgetRJSF as ComponentType<WidgetProps>,
+    CheckboxGroup: CheckboxGroupWidgetRJSF as ComponentType<WidgetProps>,
+    Checkbox: CheckboxWidgetRJSF as ComponentType<WidgetProps>,
+    FileUpload: FileUploadWidgetRJSF as ComponentType<WidgetProps>,
+    DatePicker: DatePickerWidgetRJSF as ComponentType<WidgetProps>,
+    TimePicker: TimePickerWidgetRJSF as ComponentType<WidgetProps>,
+    CustomComponents: CustomComponentsWidgetRJSF as ComponentType<WidgetProps>,
   }),
   templates: {
     ObjectFieldTemplate: BAObjectFieldTemplate,

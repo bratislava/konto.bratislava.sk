@@ -7,7 +7,7 @@ import Checkbox from '../widget-components/Checkbox/Checkbox'
 import CheckboxGroup from '../widget-components/Checkbox/CheckboxGroup'
 
 interface CheckboxRJSFProps extends WidgetProps {
-  options: CheckboxUiOptions & WidgetProps['options']
+  options: CheckboxUiOptions
   value: boolean | null
   schema: StrictRJSFSchema
   onChange: (value: boolean) => void

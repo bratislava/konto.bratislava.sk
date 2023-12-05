@@ -7,7 +7,7 @@ import { InputUiOptions } from 'schema-generator/generator/uiOptionsTypes'
 import FieldBlurWrapper from '../widget-components/FieldBlurWrapper/FieldBlurWrapper'
 
 interface InputWidgetRJSFProps extends WidgetProps {
-  options: InputUiOptions & WidgetProps['options']
+  options: InputUiOptions
   value: string | undefined
   onChange: (value?: string) => void
 }

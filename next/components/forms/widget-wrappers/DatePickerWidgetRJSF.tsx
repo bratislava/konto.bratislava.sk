@@ -6,7 +6,7 @@ import { DatePickerUiOptions } from 'schema-generator/generator/uiOptionsTypes'
 
 interface DatePickerWidgetRJSFProps extends WidgetProps {
   label: string
-  options: DatePickerUiOptions & WidgetProps['options']
+  options: DatePickerUiOptions
   value: string | null
   errorMessage?: string
   schema: StrictRJSFSchema

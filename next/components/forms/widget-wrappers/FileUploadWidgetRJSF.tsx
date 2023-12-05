@@ -7,7 +7,7 @@ import { useFormFileUpload } from '../useFormFileUpload'
 import Upload from '../widget-components/Upload/Upload'
 
 interface FileUploadWidgetRJSFProps extends WidgetProps {
-  options: FileUploadUiOptions & WidgetProps['options']
+  options: FileUploadUiOptions
   schema: StrictRJSFSchema
   value: string | string[] | null
   multiple?: boolean

@@ -45,7 +45,7 @@ const MultiSelect = ({
 }
 
 interface SelectWidgetRJSFProps extends WidgetProps {
-  options: SelectUiOptions & WidgetProps['options']
+  options: SelectUiOptions & Pick<WidgetProps['options'], 'enumOptions'>
   value: string | string[] | undefined
   onChange: (value?: string | string[] | undefined) => void
 }

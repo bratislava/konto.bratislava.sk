@@ -9,7 +9,7 @@ import RadioGroup from '../widget-components/RadioButton/RadioGroup'
 type ValueType = string | number | boolean | undefined
 
 interface RadioGroupWidgetRJSFProps extends WidgetProps {
-  options: RadioGroupUiOptions & WidgetProps['options']
+  options: RadioGroupUiOptions & Pick<WidgetProps['options'], 'enumOptions'>
   value: ValueType
   errorMessage?: string
   schema: StrictRJSFSchema

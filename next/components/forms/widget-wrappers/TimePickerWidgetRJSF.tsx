@@ -7,7 +7,7 @@ import { TimePickerUiOptions } from 'schema-generator/generator/uiOptionsTypes'
 import FieldBlurWrapper from '../widget-components/FieldBlurWrapper/FieldBlurWrapper'
 
 interface TimePickerWidgetRJSFProps extends WidgetProps {
-  options: TimePickerUiOptions & WidgetProps['options']
+  options: TimePickerUiOptions
   value: string | undefined
   errorMessage?: string
   schema: StrictRJSFSchema

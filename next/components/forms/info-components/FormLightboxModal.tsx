@@ -8,7 +8,7 @@ import Lightbox from 'yet-another-react-lightbox'
 import { Zoom } from 'yet-another-react-lightbox/plugins'
 
 import ButtonNew from '../simple-components/ButtonNew'
-import styles from './FormLightboxModal.module.css'
+import Spinner from '../simple-components/Spinner'
 
 type FormLightboxModalProps = { imageUrl: string }
 
@@ -23,7 +23,7 @@ const FormLightboxModal = ({ children, imageUrl }: PropsWithChildren<FormLightbo
       </ButtonNew>
 
       <Lightbox
-        className={styles.lightbox}
+        className="[&_.yarl\_\_container]:bg-gray-800/40"
         open={isOpen}
         close={() => setIsOpen(false)}
         plugins={[Zoom]}
@@ -45,6 +45,7 @@ const FormLightboxModal = ({ children, imageUrl }: PropsWithChildren<FormLightbo
               <span className="sr-only">{t('modal_close_aria')}</span>
             </AriaButton>
           ),
+          iconLoading: () => <Spinner />,
         }}
         zoom={{
           scrollToZoom: true,

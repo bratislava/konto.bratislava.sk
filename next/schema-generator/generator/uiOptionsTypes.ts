@@ -1,6 +1,4 @@
 /* eslint-disable import/no-extraneous-dependencies,import/no-relative-packages */
-import type { UIOptionsType } from '@rjsf/utils'
-
 import { AccordionBase } from '../../components/forms/simple-components/Accordion'
 import { FieldSize } from '../../components/forms/widget-components/FieldBase'
 
@@ -84,8 +82,8 @@ export type InputUiOptions = {
   type?: 'text' | 'password' | 'email' | 'tel' | 'number'
   resetIcon?: boolean
   leftIcon?: 'person' | 'mail' | 'call' | 'lock'
-} & WidgetUiOptions &
-  Pick<UIOptionsType, 'placeholder'>
+  placeholder?: string
+} & WidgetUiOptions
 
 type RadioOption = {
   value: string
@@ -104,10 +102,12 @@ type SelectOption = {
   description?: string
 }
 
-export type SelectUiOptions = { selectOptions?: SelectOption[] } & WidgetUiOptions &
-  Pick<UIOptionsType, 'placeholder'>
+export type SelectUiOptions = {
+  selectOptions?: SelectOption[]
+  placeholder?: string
+} & WidgetUiOptions
 
-export type TextAreaUiOptions = WidgetUiOptions & Pick<UIOptionsType, 'placeholder'>
+export type TextAreaUiOptions = { placeholder?: string } & WidgetUiOptions
 
 export type TimePickerUiOptions = WidgetUiOptions
 

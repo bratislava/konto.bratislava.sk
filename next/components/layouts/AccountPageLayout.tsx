@@ -9,9 +9,7 @@ import {
 } from '@assets/ui-icons'
 import { Auth } from 'aws-amplify'
 import cx from 'classnames'
-import AccountNavBar, {
-  MenuSectionItemBase,
-} from 'components/forms/segments/AccountNavBar/AccountNavBar'
+import NavBar, { MenuSectionItemBase } from 'components/forms/segments/NavBar/NavBar'
 import { MenuItemBase } from 'components/forms/simple-components/MenuDropdown/MenuDropdown'
 import useLoginRegisterRedirect from 'frontend/hooks/useLoginRegisterRedirect'
 import { useServerSideAuth } from 'frontend/hooks/useServerSideAuth'
@@ -75,7 +73,7 @@ const AccountPageLayout = ({
       url: ROUTES.MY_APPLICATIONS,
       // TODO this is a temporary solution until we have a proper way to handle this through authenticated page protection https://github.com/bratislava/konto.bratislava.sk/issues/664
       // without this, error is thrown before redirect to login page happens
-      onPress: !isAuthenticated ? () => redirect({ from: ROUTES.MY_APPLICATIONS }) : null,
+      onPress: !isAuthenticated ? () => redirect({ from: ROUTES.MY_APPLICATIONS }) : undefined,
     },
     {
       id: 3,
@@ -116,7 +114,7 @@ const AccountPageLayout = ({
 
   return (
     <div className={cx('flex min-h-screen flex-col', className)}>
-      <AccountNavBar
+      <NavBar
         sectionsList={sectionsList}
         menuItems={menuItems}
         navHidden

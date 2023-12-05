@@ -47,7 +47,7 @@ export interface MenuSectionItemBase {
   title: string
   icon: ReactNode
   url: string
-  onPress?: (() => Promise<void>) | null
+  onPress?: () => Promise<void>
 }
 
 const Avatar = ({ userData }: { userData?: UserData | null }) => {
@@ -67,7 +67,7 @@ const Avatar = ({ userData }: { userData?: UserData | null }) => {
 }
 
 // TODO - needs complete refactor using some accessibility library
-export const AccountNavBar = ({ className, sectionsList, menuItems, hiddenHeaderNav }: IProps) => {
+export const NavBar = ({ className, sectionsList, menuItems, hiddenHeaderNav }: IProps) => {
   const [burgerOpen, setBurgerOpen] = useState(false)
   const { userData, isAuthenticated, isLegalEntity } = useServerSideAuth()
 
@@ -288,4 +288,4 @@ export const AccountNavBar = ({ className, sectionsList, menuItems, hiddenHeader
   )
 }
 
-export default AccountNavBar
+export default NavBar

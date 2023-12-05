@@ -1,6 +1,6 @@
 import { CityAccountIcon, HelpIcon, LogoutIcon, ProfileIcon } from '@assets/ui-icons'
 import cx from 'classnames'
-import AccountNavBar from 'components/forms/segments/AccountNavBar/AccountNavBar'
+import NavBar from 'components/forms/segments/NavBar/NavBar'
 import SectionContainer from 'components/forms/segments/SectionContainer/SectionContainer'
 import { useTranslation } from 'next-i18next'
 import { ReactNode } from 'react'
@@ -46,7 +46,7 @@ const FormPageLayout = ({ className, navHidden, children }: FormPageLayoutBase) 
   return (
     <div className={cx('flex min-h-screen flex-col', className)}>
       <SectionContainer>
-        <AccountNavBar
+        <NavBar
           menuItems={menuItems}
           navHidden={navHidden}
           languages={[

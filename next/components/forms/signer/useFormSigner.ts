@@ -70,7 +70,7 @@ export const useFormSigner = () => {
       }
 
       const handleSignSuccess = () =>
-        signer.getSignatureAndTimeStampWithASiCEnvelopeBase64({
+        signer.getSignatureWithASiCEnvelopeBase64({
           onSuccess: handleGetSignature,
           onError: handleError,
         })

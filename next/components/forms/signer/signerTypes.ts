@@ -37,7 +37,6 @@ declare global {
         callback: Callback,
       ) => void
       getSignatureWithASiCEnvelopeBase64: (callback: Callback<string>) => void
-      getSignatureAndTimeStampWithASiCEnvelopeBase64: (callback: Callback<string>) => void
       detectSupportedPlatforms: (platforms: string[] | null, callback: Callback<string[]>) => void
     }
 

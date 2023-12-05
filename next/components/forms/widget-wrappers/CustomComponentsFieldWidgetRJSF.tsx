@@ -6,7 +6,7 @@ import { CustomComponentFieldUiOptions } from 'schema-generator/generator/uiOpti
 import CustomComponents from '../widget-components/CustomComponents/CustomComponents'
 
 interface CustomComponentsWidgetRJSFProps extends WidgetProps {
-  options: CustomComponentFieldUiOptions & WidgetProps['options']
+  options: CustomComponentFieldUiOptions
 }
 
 const CustomComponentsWidgetRJSF = ({ options }: CustomComponentsWidgetRJSFProps) => {

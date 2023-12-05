@@ -86,14 +86,13 @@ const RadioGroupWidgetRJSF = ({
           const radioInOptions = radioOptions.find(
             (innerOption) => innerOption.value === option.value,
           )
-          const { tooltip, description } = radioInOptions ?? {}
+          const { description } = radioInOptions ?? {}
 
           return (
             <Radio
               key={radioValue}
               variant={variant}
               value={radioValue}
-              tooltip={tooltip}
               description={description}
               radioGroupHasDescription={radioGroupHasDescription}
             >

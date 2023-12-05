@@ -69,14 +69,8 @@ export type WidgetUiOptions = WidgetSpacing & {
   labelSpacing?: LabelSpacing
 }
 
-type CheckboxOption = {
-  value: string
-  tooltip?: string
-}
-
 export type CheckboxGroupUiOptions = {
   variant?: 'basic' | 'boxed'
-  checkboxOptions?: CheckboxOption[]
 } & WidgetUiOptions
 
 export type CheckboxUiOptions = {
@@ -95,7 +89,6 @@ export type InputUiOptions = {
 
 type RadioOption = {
   value: string
-  tooltip?: string
   description?: string
 }
 

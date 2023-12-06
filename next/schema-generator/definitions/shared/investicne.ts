@@ -20,7 +20,7 @@ const ziadatelInvestorFields = [
       required: true,
       options: createStringOptions([
         'Fyzická osoba',
-        'Fyzická osoba - podnikateľ',
+        'Fyzická osoba – podnikateľ',
         'Právnická osoba',
       ]),
     },
@@ -34,7 +34,7 @@ const ziadatelInvestorFields = [
     ],
     [input('obchodneMeno', { title: 'Obchodné meno', required: true }, {})],
   ),
-  conditionalFields(createCondition([[['typ'], { const: 'Fyzická osoba - podnikateľ' }]]), [
+  conditionalFields(createCondition([[['typ'], { const: 'Fyzická osoba – podnikateľ' }]]), [
     input('miestoPodnikania', { title: 'Miesto podnikania', required: true }, {}),
   ]),
   conditionalFields(createCondition([[['typ'], { const: 'Právnická osoba' }]]), [
@@ -201,24 +201,21 @@ export const getSchema = (zavazne: boolean) =>
             required: true,
             options: createStringOptions(
               [
-                'Čuňovo',
+                'Čunovo',
                 'Devín',
                 'Devínska Nová Ves',
                 'Dúbravka',
                 'Jarovce',
                 'Karlova Ves',
                 'Lamač',
-                'Nivy',
                 'Nové Mesto',
                 'Petržalka',
                 'Podunajské Biskupice',
                 'Rača',
                 'Rusovce',
                 'Ružinov',
-                'Staré mesto',
-                'Trnávka',
+                'Staré Mesto',
                 'Vajnory',
-                'Vinohrady',
                 'Vrakuňa',
                 'Záhorská Bystrica',
               ],

@@ -46,11 +46,15 @@ export const FormSignerLoaderProvider = ({
   const [isSupportedStatus, setIsSupportedStatus] = useState(SupportedStatus.Unknown)
   const [retryTimestamp, setRetryTimestamp] = useState<number | null>(null)
 
+  if (!isSigned) {
+    return <>{children}</>
+  }
+
   const handleScriptsLoaded = () => {
     ditec.dSigXadesBpJs.detectSupportedPlatforms(null, {
       onSuccess: (result) => {
         setIsSupportedStatus(
-          // If the library returns an empty array, it means that the user has to install the signer locally.
+          // If the library returns an empty array, it means that the platform is not supported (e.g. phone).
           result.length > 0 ? SupportedStatus.Supported : SupportedStatus.NotSupported,
         )
       },
@@ -72,11 +76,10 @@ export const FormSignerLoaderProvider = ({
   }
 
   const isError = Object.values(loadingStatuses).includes(LoadedStatus.Error)
-  const isLoading = isSigned
-    ? (Object.values(loadingStatuses).includes(LoadedStatus.False) ||
-        isSupportedStatus === SupportedStatus.Unknown) &&
-      !isError
-    : false
+  const isLoading =
+    (Object.values(loadingStatuses).includes(LoadedStatus.False) ||
+      isSupportedStatus === SupportedStatus.Unknown) &&
+    !isError
   const isReady =
     Object.values(loadingStatuses).every((status) => status === LoadedStatus.True) &&
     isSupportedStatus === SupportedStatus.Supported
@@ -96,42 +99,38 @@ export const FormSignerLoaderProvider = ({
   const getUrl = (path: string) => (retryTimestamp ? `${path}?${retryTimestamp}` : path)
 
   return (
-    <>
-      {isSigned && (
-        /* Also a custom fragment key is needed to retry the library load. */
-        <Fragment key={retryTimestamp}>
+    <FormSignerLoaderContext.Provider
+      value={{ isError, isLoading, isReady, isNotSupported, retry }}
+    >
+      {/* Also a custom fragment key is needed to retry the library load. */}
+      <Fragment key={retryTimestamp}>
+        <Script
+          src={getUrl('https://slovensko.sk/static/zep/dbridge_js/v1.0/config.js')}
+          strategy="lazyOnload"
+          onLoad={() => updateLoadingStatus('config', LoadedStatus.True)}
+          onError={() => updateLoadingStatus('config', LoadedStatus.Error)}
+        />
+        {/* Scripts must be loaded one after another. Using `defer` is not enough. */}
+        {loadingStatuses.config === LoadedStatus.True && (
           <Script
-            src={getUrl('https://slovensko.sk/static/zep/dbridge_js/v1.0/config.js')}
+            src={getUrl('https://slovensko.sk/static/zep/dbridge_js/v1.0/dCommon.min.js')}
             strategy="lazyOnload"
-            onLoad={() => updateLoadingStatus('config', LoadedStatus.True)}
-            onError={() => updateLoadingStatus('config', LoadedStatus.Error)}
+            onLoad={() => updateLoadingStatus('common', LoadedStatus.True)}
+            onError={() => updateLoadingStatus('common', LoadedStatus.Error)}
           />
-          {/* Scripts must be loaded one after another. Using `defer` is not enough. */}
-          {loadingStatuses.config === LoadedStatus.True && (
+        )}
+        {loadingStatuses.config === LoadedStatus.True &&
+          loadingStatuses.common === LoadedStatus.True && (
             <Script
-              src={getUrl('https://slovensko.sk/static/zep/dbridge_js/v1.0/dCommon.min.js')}
+              src={getUrl('https://slovensko.sk/static/zep/dbridge_js/v1.0/dSigXadesBp.min.js')}
               strategy="lazyOnload"
-              onLoad={() => updateLoadingStatus('common', LoadedStatus.True)}
-              onError={() => updateLoadingStatus('common', LoadedStatus.Error)}
+              onLoad={() => updateLoadingStatus('signer', LoadedStatus.True)}
+              onError={() => updateLoadingStatus('signer', LoadedStatus.Error)}
             />
           )}
-          {loadingStatuses.config === LoadedStatus.True &&
-            loadingStatuses.common === LoadedStatus.True && (
-              <Script
-                src={getUrl('https://slovensko.sk/static/zep/dbridge_js/v1.0/dSigXadesBp.min.js')}
-                strategy="lazyOnload"
-                onLoad={() => updateLoadingStatus('signer', LoadedStatus.True)}
-                onError={() => updateLoadingStatus('signer', LoadedStatus.Error)}
-              />
-            )}
-        </Fragment>
-      )}
-      <FormSignerLoaderContext.Provider
-        value={{ isError, isLoading, isReady, isNotSupported, retry }}
-      >
-        {children}
-      </FormSignerLoaderContext.Provider>
-    </>
+      </Fragment>
+      {children}
+    </FormSignerLoaderContext.Provider>
   )
 }
 

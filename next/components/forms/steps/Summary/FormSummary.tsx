@@ -9,6 +9,7 @@ import { FormSummaryProvider } from './useFormSummary'
 
 const FormSummary = () => {
   const { formData, schema, uiSchema } = useFormState()
+  const { isSigned } = useFormState()
 
   return (
     <FormSummaryProvider>
@@ -30,7 +31,7 @@ const FormSummary = () => {
         >
           <div />
         </SummaryForm>
-        <SummaryFormSignature />
+        {isSigned && <SummaryFormSignature />}
         <SummaryFormLegalText />
         <SummaryFormControls />
       </div>

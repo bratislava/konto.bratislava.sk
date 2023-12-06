@@ -36,6 +36,7 @@ const DatePicker = forwardRef<HTMLDivElement, DatePickerProps>(
       customErrorPlace = false,
       size,
       labelSize,
+      displayOptionalLabel,
       ...rest
     },
     ref,
@@ -119,6 +120,7 @@ const DatePicker = forwardRef<HTMLDivElement, DatePickerProps>(
           }
           size={size}
           labelSize={labelSize}
+          displayOptionalLabel={displayOptionalLabel}
         >
           <ButtonNew
             variant="icon-wrapped-negative-margin"

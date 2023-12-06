@@ -182,35 +182,35 @@ const innerArray = (kalkulacka: boolean) =>
               options: [
                 {
                   value: 'A',
-                  title: 'A - orná pôda, vinice, chmeľnice, ovocné sady',
+                  title: 'A – orná pôda, vinice, chmeľnice, ovocné sady',
                 },
                 {
                   value: 'B',
-                  title: 'B - trvalé trávnaté porasty',
+                  title: 'B – trvalé trávnaté porasty',
                 },
                 {
                   value: 'C',
-                  title: 'C - záhrady',
+                  title: 'C – záhrady',
                 },
                 {
                   value: 'D',
-                  title: 'D - lesné pozemky, na ktorých sú hospodárske lesy',
+                  title: 'D – lesné pozemky, na ktorých sú hospodárske lesy',
                 },
                 {
                   value: 'E',
-                  title: 'E - rybníky s chovom rýb a ostatné hospodársky využívané vodné plochy',
+                  title: 'E – rybníky s chovom rýb a ostatné hospodársky využívané vodné plochy',
                 },
                 {
                   value: 'F',
-                  title: 'F - zastavané plochy a nádvoria',
+                  title: 'F – zastavané plochy a nádvoria',
                 },
                 {
                   value: 'G',
-                  title: 'G - stavebné pozemky',
+                  title: 'G – stavebné pozemky',
                 },
                 {
                   value: 'H',
-                  title: 'H - ostatné plochy',
+                  title: 'H – ostatné plochy',
                 },
               ],
             },

@@ -90,7 +90,7 @@ const sumar = object('sumar', { required: true }, { objectDisplay: 'boxed', titl
     'zakladDane',
     {
       type: 'integer',
-      title: 'Základ dane - výmera zastavanej plochy stavby vo výške spoluvlastníckych podielov',
+      title: 'Základ dane – výmera zastavanej plochy stavby vo výške spoluvlastníckych podielov',
       required: true,
     },
     {

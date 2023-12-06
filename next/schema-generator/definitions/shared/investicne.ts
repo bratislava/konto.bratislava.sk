@@ -201,7 +201,7 @@ export const getSchema = (zavazne: boolean) =>
             required: true,
             options: createStringOptions(
               [
-                'Čuňovo',
+                'Čunovo',
                 'Devín',
                 'Devínska Nová Ves',
                 'Dúbravka',

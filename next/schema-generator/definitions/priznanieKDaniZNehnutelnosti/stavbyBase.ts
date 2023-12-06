@@ -36,7 +36,7 @@ export const stavbyBase = (step: StepEnum) => [
           required: true,
           options: createStringOptions(
             [
-              'Čuňovo',
+              'Čunovo',
               'Devín',
               'Devínska Nová Ves',
               'Dúbravka',

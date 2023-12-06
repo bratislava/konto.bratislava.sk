@@ -15,6 +15,7 @@ interface UploadButtonProps {
   sizeLimit?: number
   supportedFormats?: string[]
   fileBrokenMessage?: string[]
+  errorMessage?: string[]
   allowsMultiple?: boolean
   onUpload?: (files: File[]) => void
 }
@@ -26,6 +27,7 @@ const UploadButton = forwardRef<HTMLButtonElement, UploadButtonProps>(
       sizeLimit,
       supportedFormats,
       fileBrokenMessage,
+      errorMessage = [],
       onUpload = () => {},
       allowsMultiple,
     },
@@ -44,6 +46,10 @@ const UploadButton = forwardRef<HTMLButtonElement, UploadButtonProps>(
         'border-red-500 hover:border-red-300':
           !disabled && fileBrokenMessage && fileBrokenMessage.length > 0,
         'cursor-not-allowed bg-gray-200 opacity-50': disabled,
+
+        // error
+        'border-negative-700 hover:border-negative-700 focus:border-negative-700':
+          errorMessage?.length > 0 && !disabled,
       },
     )
 

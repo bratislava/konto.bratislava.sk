@@ -68,7 +68,7 @@ const FormHeader = () => {
               </Link>
             )}
           </div>
-          <div className="hidden h-full gap-3 lg:flex">
+          <div className="hidden h-full shrink-0 gap-3 lg:flex">
             {!isReadonly && (
               <ButtonNew
                 size="small"

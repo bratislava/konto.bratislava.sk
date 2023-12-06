@@ -73,6 +73,7 @@ const Upload = forwardRef<HTMLButtonElement, UploadProps>(
                 disabled={disabled}
                 onUpload={onUpload}
                 allowsMultiple={multiple}
+                errorMessage={errorMessage}
               />
             )}
             {type === 'dragAndDrop' && (
@@ -83,6 +84,7 @@ const Upload = forwardRef<HTMLButtonElement, UploadProps>(
                 disabled={disabled}
                 onUpload={onUpload}
                 allowsMultiple={multiple}
+                errorMessage={errorMessage}
               />
             )}
 

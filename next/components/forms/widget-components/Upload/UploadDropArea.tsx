@@ -22,12 +22,23 @@ interface UploadDropAreaProps {
   disabled?: boolean
   sizeLimit?: number
   supportedFormats?: string[]
+  errorMessage?: string[]
   allowsMultiple?: boolean
   onUpload?: (files: File[]) => void
 }
 
 const UploadDropArea = forwardRef<HTMLButtonElement, UploadDropAreaProps>(
-  ({ disabled, sizeLimit, supportedFormats, allowsMultiple, onUpload = () => {} }, ref) => {
+  (
+    {
+      disabled,
+      sizeLimit,
+      supportedFormats,
+      errorMessage = [],
+      allowsMultiple,
+      onUpload = () => {},
+    },
+    ref,
+  ) => {
     const { t } = useTranslation('account', { keyPrefix: 'Upload' })
 
     const displaySupportedFileExtensions = getDisplaySupportedFileExtensions(supportedFormats)
@@ -41,6 +52,10 @@ const UploadDropArea = forwardRef<HTMLButtonElement, UploadDropAreaProps>(
         'hover:border-gray-400 hover:bg-gray-50 focus:border-gray-700 active:border-gray-700':
           !disabled && !isDropTarget,
         'border-gray-400 bg-gray-50': !disabled && isDropTarget,
+
+        // error
+        'border-negative-700 hover:border-negative-700 focus:border-negative-700':
+          errorMessage?.length > 0 && !disabled,
       })
 
     const handleOnSelect = async (files: FileList | null) => {

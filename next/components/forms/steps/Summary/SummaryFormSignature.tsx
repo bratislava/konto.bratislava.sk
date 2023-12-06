@@ -6,21 +6,17 @@ import { useFormSignature } from '../../signer/useFormSignature'
 import { useFormSignerLoader } from '../../signer/useFormSignerLoader'
 import ButtonNew from '../../simple-components/ButtonNew'
 import MenuDropdown from '../../simple-components/MenuDropdown/MenuDropdown'
-import { useFormState } from '../../useFormState'
 
 /**
+ * The component be rendered only if `isSigned` is true, otherwise `useFormSignerLoader` will return null.
  * TODO: Texts and translations + MenuDropdown position fix
  */
 const SummaryFormSignature = () => {
-  const { isSigned } = useFormState()
   const { isLoading, isReady, isError, isNotSupported, retry } = useFormSignerLoader()
-  const { signature, sign, isValidSignature, remove } = useFormSignature()
+  const { signature, sign, isValidSignature, remove, getSingerDataIsPending } = useFormSignature()
 
   const validSignature = useMemo(() => isValidSignature(), [isValidSignature])
-
-  if (!isSigned) {
-    return null
-  }
+  const signerButtonDisabled = !isReady || getSingerDataIsPending
 
   const AlertContent = ({ children }: PropsWithChildren) => (
     <div className="flex">
@@ -91,7 +87,7 @@ const SummaryFormSignature = () => {
                 <ButtonNew
                   variant="black-link"
                   isLoading={isLoading}
-                  isDisabled={!isReady}
+                  isDisabled={signerButtonDisabled}
                   onPress={() => sign()}
                 >
                   Podpísať znova
@@ -106,7 +102,7 @@ const SummaryFormSignature = () => {
         <ButtonNew
           variant="black-outline"
           isLoading={isLoading}
-          isDisabled={!isReady}
+          isDisabled={signerButtonDisabled}
           onPress={() => sign()}
         >
           Podpísať dokument

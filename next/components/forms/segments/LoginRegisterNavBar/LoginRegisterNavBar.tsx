@@ -36,7 +36,7 @@ export const LoginRegisterNavBar = ({ className, currentLanguage, backButtonHidd
 
   const { t } = useTranslation('account')
   return (
-    <div style={{ marginBottom: Math.max(desktopHeight, mobileHeight) }}>
+    <div data-cy="navbar" style={{ marginBottom: Math.max(desktopHeight, mobileHeight) }}>
       {/* Desktop */}
       <div
         id="desktop-navbar"

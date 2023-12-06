@@ -145,7 +145,7 @@ const InputField = forwardRef<HTMLInputElement, InputFieldProps>(
         labelSize={labelSize}
         displayOptionalLabel={displayOptionalLabel}
       >
-        <div className="relative">
+        <div className="relative" data-cy={`required-${inputProps.name}`}>
           {leftIcon && (
             <span
               className={cx(
@@ -158,7 +158,7 @@ const InputField = forwardRef<HTMLInputElement, InputFieldProps>(
               {leftIconSwitcher(leftIcon)}
             </span>
           )}
-          <input {...inputProps} ref={ref} name={inputProps.id} className={style} />
+          <input {...inputProps} ref={ref} name={inputProps.id} className={style} data-cy={`input-${inputProps.name}`}/>
           {resetIcon && valueState && (
             <button
               type="button"

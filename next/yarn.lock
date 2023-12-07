@@ -5198,10 +5198,10 @@
     "@react-types/overlays" "^3.8.3"
     "@react-types/shared" "^3.21.0"
 
-"@rjsf/core@5.13.2":
-  version "5.13.2"
-  resolved "https://registry.yarnpkg.com/@rjsf/core/-/core-5.13.2.tgz#31289b16eaf7108fc5af07a388bc10373a9ce25b"
-  integrity sha512-Zn6BCTk0v8iVV2rKOYa2F34Q2CMYFgindAnLFmZEGalwC35hP93L68q3cfhbHoHmtUdkjAyUaa2vua6LpgzfQw==
+"@rjsf/core@5.15.0":
+  version "5.15.0"
+  resolved "https://registry.yarnpkg.com/@rjsf/core/-/core-5.15.0.tgz#8faa26cc016b99fd4b69cea81e14ea55fbb80514"
+  integrity sha512-tD+S0Sx6TtiW1Wp2E8fLArlKcPDXaOS0MBnM6FNWZuum1bbQFoavjm/wf0PpKQ2AohsKGvWXjIAajC+HX4Anww==
   dependencies:
     lodash "^4.17.21"
     lodash-es "^4.17.21"
@@ -5209,10 +5209,10 @@
     nanoid "^3.3.6"
     prop-types "^15.8.1"
 
-"@rjsf/utils@5.13.2":
-  version "5.13.2"
-  resolved "https://registry.yarnpkg.com/@rjsf/utils/-/utils-5.13.2.tgz#22b9b123d9d6ebebba8c31bd577e8ea258b73bd5"
-  integrity sha512-iluvCOQDwZkp66RRZdIV3TgJnI+I2xv7Ks+UVqjO9lG8U9ygoWuH85zGPAojqapJUuC+frVRZsEBsTwGegDWIw==
+"@rjsf/utils@5.15.0":
+  version "5.15.0"
+  resolved "https://registry.yarnpkg.com/@rjsf/utils/-/utils-5.15.0.tgz#6c69f5d42b5abaec5e398415ce7417f2d598e50b"
+  integrity sha512-+K+WA/tGD8jSDRB6QzCvyCY0/rVZ+q/u0f07AGfx/h/ICVcJjOy5fWtUANQ0bBltLNPqjXqpFb3e3SxDXzSVaA==
   dependencies:
     json-schema-merge-allof "^0.8.1"
     jsonpointer "^5.0.1"
@@ -5220,10 +5220,10 @@
     lodash-es "^4.17.21"
     react-is "^18.2.0"
 
-"@rjsf/validator-ajv8@5.13.2":
-  version "5.13.2"
-  resolved "https://registry.yarnpkg.com/@rjsf/validator-ajv8/-/validator-ajv8-5.13.2.tgz#cc231c5dcce2bf1ba1f79dd86074b0fad80a9654"
-  integrity sha512-QWLSBUoADss4u9WyFy9DLJMHJ5qhOA5vmuWjauQ0tzsV2bgdaMMfj+VKMUHJ3aQOX7jM8X7PoL1qghM7odf+FA==
+"@rjsf/validator-ajv8@5.15.0":
+  version "5.15.0"
+  resolved "https://registry.yarnpkg.com/@rjsf/validator-ajv8/-/validator-ajv8-5.15.0.tgz#82cd67a9eb238c65e6f7f4e953bce460c9ef5530"
+  integrity sha512-+kSemuPRZzayt+CQHu2f4oN6CeCn7gSxQYC8CU3gDZXL48HKlvnq8VlgFWetbtawojQ7x8NjAyuBTJDIP/TqZg==
   dependencies:
     ajv "^8.12.0"
     ajv-formats "^2.1.1"

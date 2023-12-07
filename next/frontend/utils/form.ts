@@ -30,6 +30,9 @@ import { FormFileUploadFileInfo, FormFileUploadStatusEnum } from '../types/formF
  */
 export const defaultFormStateBehavior: Experimental_DefaultFormStateBehavior = {
   arrayMinItems: { populate: 'never' },
+  // https://github.com/rjsf-team/react-jsonschema-form/issues/3832
+  // https://github.com/rjsf-team/react-jsonschema-form/issues/3892
+  allOf: 'populateDefaults',
 }
 
 declare module 'json-schema' {

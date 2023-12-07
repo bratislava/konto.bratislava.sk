@@ -1,21 +1,22 @@
 # @rjsf/utils patch
 
 This is a compiled version of this branch:
-https://github.com/bratislava/react-jsonschema-form/tree/get-default-form-state-fix
+https://github.com/bratislava/react-jsonschema-form/tree/bratislava-patch
 
-It fixes this issue:
-https://github.com/rjsf-team/react-jsonschema-form/issues/3832
+The patch adds a `overrideArrayMinItemsBehaviour` keyword for array schemas. Here is how:
+https://github.com/bratislava/react-jsonschema-form/commit/df33db5638ce3626a72f8b8411df498a8a8ae5fc
 
-The patch also adds a `overrideArrayMinItemsBehaviour` keyword for array schemas. For more details read the comments for `defaultFormStateBehavior` in `next/frontend/utils/form.ts`.
+For more details read the comments for `defaultFormStateBehavior` in `next/frontend/utils/form.ts`.
 
-If you want to update RJSF this probably needs to be recompiled.
+If you want to update RJSF this needs to be recompiled.
 
 In RJSF repository:
 
-1. Checkout https://github.com/bratislava/react-jsonschema-form/tree/get-default-form-state-fix
+1. Checkout https://github.com/bratislava/react-jsonschema-form/tree/bratislava-patch
 2. Rebase current version tag on top of it.
 3. Install current packages via npm in `packages/utils/`.
 4. Run `npm build` in `packages/utils/`.
+5. Push the changes to the remote.
 
 In Next app:
 

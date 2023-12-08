@@ -146,6 +146,32 @@ const innerArray = (kalkulacka: boolean) =>
                   'Vyplňte v prípade, ak používate časť bytu napríklad na podnikateľské účely. Zadajte výmeru.',
               },
             ),
+            object(
+              'datumy',
+              {},
+              {
+                objectDisplay: 'columns',
+                objectColumnRatio: '1/1',
+              },
+              [
+                datePicker(
+                  'datumVznikuDanovejPovinnosti',
+                  { title: 'Dátum vzniku daňovej povinnosti' },
+                  {
+                    helptext:
+                      'Vypĺňate len v prípade, ak ste byt zdedili alebo vydražili (v tom prípade uvediete prvý deň mesiaca nasledujúceho po tom, v ktorom ste nehnuteľnosť nadobudli).',
+                  },
+                ),
+                datePicker(
+                  'datumZanikuDanovejPovinnosti',
+                  { title: 'Dátum zániku daňovej povinnosti' },
+                  {
+                    helptext:
+                      'Vypĺňate len v prípade, ak ste byt predali alebo darovali (uvediete dátum 31.12.rok predaja/darovania).',
+                  },
+                ),
+              ],
+            ),
           ]),
         ],
       ),

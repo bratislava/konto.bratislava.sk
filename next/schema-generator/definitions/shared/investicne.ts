@@ -70,12 +70,12 @@ export const getSchema = (zavazne: boolean) =>
       ? {
           title: 'Žiadosť o záväzné stanovisko k investičnej činnosti',
           pospID: '00603481.zavazneStanoviskoKInvesticnejCinnosti',
-          pospVersion: '0.6',
+          pospVersion: '0.7',
         }
       : {
           title: 'Žiadosť o stanovisko k investičnému zámeru',
           pospID: '00603481.stanoviskoKInvesticnemuZameru',
-          pospVersion: '0.7',
+          pospVersion: '0.8',
         },
     {
       moreInformationUrl: zavazne

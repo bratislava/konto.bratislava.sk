@@ -1,3 +1,5 @@
+import { GetFormsResponseDto } from '@clients/openapi-forms/api'
+import { useQuery } from '@tanstack/react-query'
 import MyApplicationsList, {
   getDraftApplications,
 } from 'components/forms/segments/AccountSections/MyApplicationsSection/MyApplicationsList'
@@ -5,6 +7,7 @@ import logger from 'frontend/utils/logger'
 import { useRouter } from 'next/router'
 import { GetServerSidePropsContext } from 'next/types'
 import { useTranslation } from 'next-i18next'
+import { ApplicationsListVariant, sections } from 'pages/moje-ziadosti'
 import { Tab, TabList, TabPanel, Tabs } from 'react-aria-components'
 
 type HeaderNavigationItemBase = {
@@ -12,44 +15,44 @@ type HeaderNavigationItemBase = {
   tag: ApplicationsListVariant
 }
 
-const slovakToEnglishSectionNames: Record<string, ApplicationsListVariant> = {
-  odoslane: 'SENT',
-  'odosiela-sa': 'SENDING',
-  koncepty: 'DRAFT',
-}
-
 const englishToSlovakSectionNames: Record<ApplicationsListVariant, string> = {
   SENT: 'odoslane',
   SENDING: 'odosiela-sa',
   DRAFT: 'koncepty',
 }
-const sections = ['SENT', 'SENDING', 'DRAFT'] as const
-export type ApplicationsListVariant = (typeof sections)[number]
 
-export const isValidSection = (param: string): param is ApplicationsListVariant => {
-  return (sections as readonly string[]).includes(param)
-}
-
+// this was moved from server side props to client side react-query beacause requests took too long (3-5 second)
+// and user had no visual feedback and it looked like page wasn't doing anything after click on 'moje-ziadosti' nav link
+// when this task https://github.com/bratislava/konto.bratislava.sk/issues/670 is done it could be moved back to server side props
 export const getTotalNumberOfApplications = async (
   variant: ApplicationsListVariant,
-  accessTokenSsrReq: GetServerSidePropsContext['req'],
+  accessTokenSsrReq?: GetServerSidePropsContext['req'],
 ) => {
   const firstPage = await getDraftApplications(variant, 1, accessTokenSsrReq)
   if (firstPage.countPages === 0) return 0
 
-  const lastPage = await getDraftApplications(variant, firstPage.countPages, accessTokenSsrReq)
+  const lastPage = await getDraftApplications(variant, firstPage.countPages)
   return (firstPage.countPages - 1) * firstPage.pagination + lastPage.items.length
 }
 
-type MyApplicationsSectionProps = {
-  totalCounts: Record<ApplicationsListVariant, number>
+const useTotalCount = (variant: ApplicationsListVariant) => {
+  const { data, refetch } = useQuery({
+    queryKey: [`ApplicationsCount_${variant}`, variant],
+    queryFn: () => getTotalNumberOfApplications(variant),
+  })
+
+  return { data, refetch }
 }
 
-const MyApplicationsSection = ({ totalCounts }: MyApplicationsSectionProps) => {
+type MyApplicationsSectionProps = {
+  selectedSection: ApplicationsListVariant
+  applications?: GetFormsResponseDto
+}
+
+const MyApplicationsSection = ({ selectedSection, applications }: MyApplicationsSectionProps) => {
   const { t } = useTranslation('account')
   const title = t('account_section_applications.navigation')
   const router = useRouter()
-  const section = slovakToEnglishSectionNames[router.query.sekcia as ApplicationsListVariant]
 
   const headerNavigationList: HeaderNavigationItemBase[] = [
     { title: t('account_section_applications.navigation_sent'), tag: 'SENT' },
@@ -57,9 +60,21 @@ const MyApplicationsSection = ({ totalCounts }: MyApplicationsSectionProps) => {
     { title: t('account_section_applications.navigation_draft'), tag: 'DRAFT' },
   ]
 
+  const totalCounts = {
+    SENT: useTotalCount('SENT'),
+    SENDING: useTotalCount('SENDING'),
+    DRAFT: useTotalCount('DRAFT'),
+  }
+
+  const refetchApplicationsCount = async () => {
+    totalCounts.SENT.refetch().catch((error) => logger.error(error))
+    totalCounts.SENDING.refetch().catch((error) => logger.error(error))
+    totalCounts.DRAFT.refetch().catch((error) => logger.error(error))
+  }
+
   return (
     <Tabs
-      selectedKey={section}
+      selectedKey={selectedSection}
       onSelectionChange={(key) => {
         router
           .push(
@@ -71,7 +86,6 @@ const MyApplicationsSection = ({ totalCounts }: MyApplicationsSectionProps) => {
               },
             },
             undefined,
-            { shallow: true },
           )
           .catch((error) => logger.error(error))
       }}
@@ -88,7 +102,7 @@ const MyApplicationsSection = ({ totalCounts }: MyApplicationsSectionProps) => {
                 className="text-20 hover:text-20-semibold data-[selected]:text-20-semibold cursor-pointer py-4 transition-all hover:border-gray-700 data-[selected]:border-b-2 data-[selected]:border-gray-700"
               >
                 {item.title}
-                {totalCounts[item.tag] !== undefined ? ` (${totalCounts[item.tag]})` : ''}
+                {totalCounts[item.tag].data !== undefined ? ` (${totalCounts[item.tag].data})` : ''}
               </Tab>
             ))}
           </TabList>
@@ -96,7 +110,11 @@ const MyApplicationsSection = ({ totalCounts }: MyApplicationsSectionProps) => {
       </div>
       {sections.map((variant) => (
         <TabPanel id={variant}>
-          <MyApplicationsList variant={variant} />
+          <MyApplicationsList
+            variant={variant}
+            applications={applications}
+            refetchApplicationsCount={refetchApplicationsCount}
+          />
         </TabPanel>
       ))}
     </Tabs>

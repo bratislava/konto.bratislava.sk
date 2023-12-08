@@ -1,15 +1,13 @@
 import { formsApi } from '@clients/forms'
-import { GetFormResponseDto, GetFormResponseDtoStateEnum } from '@clients/openapi-forms'
-import { useQuery } from '@tanstack/react-query'
+import { GetFormResponseDtoStateEnum, GetFormsResponseDto } from '@clients/openapi-forms'
 import MyApplicationCardsPlaceholder from 'components/forms/segments/AccountSections/MyApplicationsSection/MyApplicationCardsPlaceholder'
-import { ApplicationsListVariant } from 'components/forms/segments/AccountSections/MyApplicationsSection/MyApplicationsSection'
 import Pagination from 'components/forms/simple-components/Pagination/Pagination'
-import useSnackbar from 'frontend/hooks/useSnackbar'
+import { useRefreshServerSideProps } from 'frontend/hooks/useRefreshServerSideProps'
 import logger from 'frontend/utils/logger'
 import { useRouter } from 'next/router'
 import { GetServerSidePropsContext } from 'next/types'
-import { useTranslation } from 'next-i18next'
-import React, { useEffect } from 'react'
+import { ApplicationsListVariant } from 'pages/moje-ziadosti'
+import React from 'react'
 
 import MyApplicationsCard from './MyApplicationsCard'
 
@@ -40,58 +38,47 @@ export const getDraftApplications = async (
     undefined,
     variantToStates,
     undefined,
-    { accessToken: 'always', accessTokenSsrReq },
+    accessTokenSsrReq ? { accessToken: 'always', accessTokenSsrReq } : { accessToken: 'always' },
   )
   return response.data
 }
 
 type MyApplicationsListProps = {
   variant: ApplicationsListVariant
+  applications?: GetFormsResponseDto
+  refetchApplicationsCount: () => Promise<void>
 }
 
-const MyApplicationsList = ({ variant }: MyApplicationsListProps) => {
-  const { t } = useTranslation('account')
-  const [openSnackbarError] = useSnackbar({ variant: 'error' })
-
+const MyApplicationsList = ({
+  variant,
+  applications,
+  refetchApplicationsCount,
+}: MyApplicationsListProps) => {
   const router = useRouter()
   const currentPage = parseInt(router.query.strana as string, 10) || 1
 
-  const {
-    data,
-    isError,
-    isLoading: isQueryFirstLoad,
-    refetch,
-    isRefetching,
-  } = useQuery({
-    queryKey: [`myApplications_${variant}`, currentPage],
-    queryFn: () => getDraftApplications(variant, currentPage),
-  })
+  const { refreshData } = useRefreshServerSideProps(applications)
 
-  const totalPagesCount = data?.countPages ?? 0
-  // error is shown through snackbar - since we don't have error state we keep the list stuck on loading
-  // we trigger refetch on concept delete - this way it trigger loading state for the user
-  // better to have instant feedback than to be confused whether the request went through
-  const isLoading = isQueryFirstLoad || isRefetching || (isError && !data?.items?.length)
+  const refreshListData = async () => {
+    await refetchApplicationsCount()
+    await refreshData()
+  }
 
-  const forms: Array<GetFormResponseDto | null> = isLoading
-    ? (Array.from({ length: 10 }).fill(null) as Array<null>)
-    : data?.items ?? ([] as Array<GetFormResponseDto>)
-
-  useEffect(() => {
-    if (isError) openSnackbarError(t('account_section_applications.error'))
-    // TODO openSnackbarError is a new reference on every render - fix dependencies once this hooks is fixed
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [isError])
+  const totalPagesCount = applications?.countPages ?? 0
 
   return (
     <div className="m-auto w-full max-w-screen-lg">
-      {forms.length > 0 ? (
+      {applications?.items.length && applications.items.length > 0 ? (
         <>
           <ul className="my-0 flex flex-col gap-0 px-4 sm:px-6 lg:my-8 lg:gap-4 lg:px-0">
-            {forms.map((form, index) => {
+            {applications?.items.map((form, index) => {
               return (
                 <li key={index}>
-                  <MyApplicationsCard form={form} refreshListData={refetch} variant={variant} />
+                  <MyApplicationsCard
+                    form={form}
+                    refreshListData={refreshListData}
+                    variant={variant}
+                  />
                 </li>
               )
             })}

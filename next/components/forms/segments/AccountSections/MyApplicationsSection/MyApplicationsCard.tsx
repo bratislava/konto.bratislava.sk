@@ -32,7 +32,7 @@ export type MyApplicationsCardVariant = 'DRAFT' | 'SENDING' | 'SENT'
 
 export type MyApplicationsCardProps = {
   form?: GetFormResponseDto | null
-  refreshListData: () => Promise<unknown>
+  refreshListData: () => Promise<void>
   variant: MyApplicationsCardVariant
 }
 

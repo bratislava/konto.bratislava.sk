@@ -10,8 +10,8 @@ import step7 from './priznanieKDaniZNehnutelnosti/step7'
 export default schema(
   {
     title: 'Priznanie k dani z nehnuteľností',
-    pospID: '',
-    pospVersion: '0.1',
+    pospID: 'esmao.eforms.bratislava.obec_024',
+    pospVersion: '201501.2',
   },
   {},
   [step1, step2, step3, step4, step5, step6, step7],

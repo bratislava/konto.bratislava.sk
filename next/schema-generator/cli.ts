@@ -3,7 +3,7 @@ import * as fs from 'node:fs'
 import { parse } from 'ts-command-line-args'
 
 import priznanieKDaniZNehnutelnosti from './definitions/priznanieKDaniZNehnutelnosti'
-import showcase from './definitions/showcase'
+// import showcase from './definitions/showcase'
 import stanoviskoKInvesticnemuZameru from './definitions/stanoviskoKInvesticnemuZameru'
 import zavazneStanoviskoKInvesticnejCinnosti from './definitions/zavazneStanoviskoKInvesticnejCinnosti'
 
@@ -16,7 +16,7 @@ export const args = parse<Args>({
 })
 
 const definition = {
-  showcase,
+  // showcase,
   stanoviskoKInvesticnemuZameru,
   zavazneStanoviskoKInvesticnejCinnosti,
   priznanieKDaniZNehnutelnosti,

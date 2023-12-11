@@ -20,7 +20,7 @@ describe('Registration flow', { testIsolation: false }, () => {
 
         it('Submitting a empty registration form and check validation.', () => {
           cy.visit('/registracia')
-          cy.get(`#${device}-navbar`).invoke('attr', 'style', 'display: none')
+          cy.hideNavbarCy(device)
 
           cy.dataCy('registration-container').should('be.visible').matchImage()
           cy.dataCy('register-form').then((form) => {
@@ -50,36 +50,16 @@ describe('Registration flow', { testIsolation: false }, () => {
         })
 
         it('Check that required inputs are not in error state.', () => {
-          cy.dataCy('register-form').then((form) => {
-            cy.wrap(Cypress.$(errorBorderFields, form)).should(
-              'not.have.class',
-              'border-negative-700',
-            )
-          })
+          cy.checkFormFieldsNotInErrorStateCy('register-form', errorBorderFields)
           cy.dataCy('registration-container').should('be.visible').matchImage()
         })
 
         it('Submitting the form and checking the redirection to 2FA.', () => {
-          cy.dataCy('register-form').then((form) => {
-            cy.wrap(Cypress.$('button[type=submit]', form)).click()
-          })
+          cy.submitFormCy('register-form')
         })
 
         it('Check the 2FA page.', () => {
-          const visualTestingIgnore = ['[data-cy=verification-description]']
-
-          cy.dataCy('verification-description').contains(emailHash)
-          cy.dataCy('verification-form').then((form) => {
-            cy.wrap(Cypress.$('button[type=submit]', form)).click()
-
-            cy.wrap(Cypress.$('[data-cy=input-verificationCode]', form)).should(
-              'have.class',
-              'border-negative-700',
-            )
-          })
-          cy.dataCy('registration-container')
-            .should('be.visible')
-            .matchImage({ screenshotConfig: { blackout: visualTestingIgnore } })
+          cy.check2FAPage(emailHash, 'registration-container')
         })
       })
     })

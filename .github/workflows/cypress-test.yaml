@@ -23,8 +23,8 @@ jobs:
         working-directory: next
         run: |
           yarn install
-          echo "NEXT_PUBLIC_CLOUDFLARE_TURNSTILE_SITE_KEY=1x00000000000000000000BB" >> .env.development
-          yarn dev &
+          yarn build:e2e
+          yarn start &
 
       - name: Run Cypress tests
         uses: cypress-io/github-action@v5

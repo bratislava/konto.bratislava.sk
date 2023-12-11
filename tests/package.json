@@ -3,6 +3,7 @@
   "scripts": {
     "lint": "eslint '**/*.ts'",
     "typecheck": "tsc",
+    "start:e2e": "cd ../next && yarn build:e2e && yarn start",
     "cypress:open": "./cypress.sh open chrome all",
     "cypress:run": "./cypress.sh run chrome all",
     "prettier": "prettier --write .",

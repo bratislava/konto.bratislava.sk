@@ -7,6 +7,7 @@
     "dev": "next dev | pino-pretty -c",
     "develop": "next dev | pino-pretty -c",
     "build": "next build",
+    "build:e2e": "cp .env.e2e .env.production.local && next build",
     "start": "next start",
     "typecheck": "tsc",
     "lint": "eslint assets backend clients components frontend pages",

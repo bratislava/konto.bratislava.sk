@@ -19,7 +19,6 @@ import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
 import { useState } from 'react'
 
 import PageWrapper from '../components/layouts/PageWrapper'
-import { environment } from '../environment'
 import { ROUTES } from '../frontend/api/constants'
 import logger from '../frontend/utils/logger'
 import { AsyncServerProps } from '../frontend/utils/types'

@@ -5,14 +5,6 @@
 declare namespace Cypress {
   interface Chainable {
     /**
-     * Custom command to select DOM element by data-cy attribute.
-     * @param attribute data-cy name.
-     * @param specify It is used to specify the search, for example pointing to a child.
-     * @example cy.dataCy('greeting')
-     */
-    dataCy(attribute: string, specify?: string): Chainable<any>
-
-    /**
      * Custom command to check if all form inputs are not in error state.
      * @param form Form name.
      * @param errorBorderFields All fields to check.
@@ -43,11 +35,6 @@ declare namespace Cypress {
     check2FAPage(emailHash: string, formContainer: string): Chainable<any>
   }
 }
-
-Cypress.Commands.add('dataCy', (attribute, specify) => {
-  const selector = `[data-cy=${attribute}]${specify ? specify : ''}`
-  cy.get(selector)
-})
 
 Cypress.Commands.add('checkFormFieldsNotInErrorStateCy', (form, errorBorderFields) => {
   cy.dataCy(form).then((form) => {

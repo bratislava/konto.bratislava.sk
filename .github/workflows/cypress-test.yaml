@@ -32,16 +32,22 @@ jobs:
           wait-on: "http://localhost:3000"
           wait-on-timeout: 120
           working-directory: tests
-          command: npm run cypress:run 
+          command: npm run cypress:ci
       
-      - name: Uploading artifacts
+      - name: Screenshots of errors during E2E tests
         uses: actions/upload-artifact@v3
         if: always()
         with:
-          working-directory: tests
-          artifacts: |
-            cypress/screenshots/**/*
-            cypress/**/__image_snapshots__/**/*
+          name: cypress-screenshots
+          path: tests/cypress/screenshots
+          retention-days: 1
+
+      - name: Visual testing screenshots
+        uses: actions/upload-artifact@v3
+        if: always()
+        with:
+          name: visual-testing
+          path: tests/cypress/visualTesting
           retention-days: 1
 
 

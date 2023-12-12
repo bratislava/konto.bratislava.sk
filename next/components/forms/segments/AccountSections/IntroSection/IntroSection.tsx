@@ -4,7 +4,6 @@ import AccountSectionHeader from 'components/forms/segments/AccountSectionHeader
 import Banner from 'components/forms/simple-components/Banner'
 import Button from 'components/forms/simple-components/Button'
 import ServiceCard from 'components/forms/simple-components/ServiceCard'
-import { environment } from 'environment'
 import { serviceCards } from 'frontend/constants/constants'
 import { useServerSideAuth } from 'frontend/hooks/useServerSideAuth'
 import { GENERIC_ERROR_MESSAGE, isError } from 'frontend/utils/errors'

@@ -9,7 +9,6 @@ import { useTranslation } from 'next-i18next'
 import { useState } from 'react'
 import { useWindowSize } from 'usehooks-ts'
 
-import { environment } from '../../../../../environment'
 import { SelectOption } from '../../../widget-components/SelectField/SelectField'
 
 const enumOptions: SelectOption[] = [
@@ -78,10 +77,6 @@ const MunicipalServicesSection = () => {
   const filteredServiceCards = serviceCardIndexes
     .map((id) => serviceCards.find((card) => card.id === id))
     .filter(isDefined)
-    .filter(
-      // when forms are reachable from top menu, keep all the cards, otherwise discard the first two
-      (card) => (environment.featureToggles.formsInMenu ? true : card.id !== 34 && card.id !== 35),
-    )
     .filter((card) =>
       selectorValueTitle === MunicipalServicesCategories.ALL_CATEGORY
         ? true

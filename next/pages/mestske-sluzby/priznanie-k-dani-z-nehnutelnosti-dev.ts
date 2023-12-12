@@ -19,11 +19,7 @@ type Params = {
  * Temporary route for previewing the tax form.
  */
 export const getServerSideProps: GetServerSideProps<FormPageWrapperProps, Params> = async (ctx) => {
-  if (
-    !environment.featureToggles.forms ||
-    !environment.featureToggles.priznanieKDaniZNehnutelnostiPreview
-  )
-    return { notFound: true }
+  if (!environment.featureToggles.priznanieKDaniZNehnutelnostiPreview) return { notFound: true }
 
   const ssrCurrentAuthProps = await getSSRCurrentAuth(ctx.req)
 

@@ -19,7 +19,6 @@ import { useRouter } from 'next/router'
 import { useTranslation } from 'next-i18next'
 import { ReactNode, useEffect } from 'react'
 
-import { environment } from '../../environment'
 import { ROUTES } from '../../frontend/api/constants'
 import { isDefined } from '../../frontend/utils/general'
 import logger from '../../frontend/utils/logger'
@@ -79,14 +78,12 @@ const AccountPageLayout = ({
       icon: <ServicesIcon className="h-6 w-6" />,
       url: ROUTES.MUNICIPAL_SERVICES,
     },
-    environment.featureToggles.formsInMenu
-      ? {
-          id: 2,
-          title: 'account:account_section_applications.navigation',
-          icon: <MySubmissionsIcon className="h-6 w-6" />,
-          url: ROUTES.MY_APPLICATIONS,
-        }
-      : null,
+    {
+      id: 2,
+      title: 'account:account_section_applications.navigation',
+      icon: <MySubmissionsIcon className="h-6 w-6" />,
+      url: ROUTES.MY_APPLICATIONS,
+    },
     {
       id: 3,
       title: 'account:account_section_payment.title',

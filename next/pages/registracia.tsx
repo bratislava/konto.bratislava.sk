@@ -128,14 +128,9 @@ const RegisterPage = ({ page }: AsyncServerProps<typeof getServerSideProps>) => 
     <PageWrapper locale={page.locale} localizations={page.localizations}>
       <LoginRegisterLayout backButtonHidden>
         {registrationStatus === RegistrationStatus.INIT && <AccountActivator />}
-        <AccountContainer dataCyPrefix='registration' className="mb-0 pt-0 md:mb-8 md:pt-6">
+        <AccountContainer dataCyPrefix="registration" className="mb-0 pt-0 md:mb-8 md:pt-6">
           {registrationStatus === RegistrationStatus.INIT ? (
-            <RegisterForm
-              lastEmail={lastEmail}
-              onSubmit={signUp}
-              error={registrationError}
-              disablePO={!environment.featureToggles.pravnickaOsobaRegistration}
-            />
+            <RegisterForm lastEmail={lastEmail} onSubmit={signUp} error={registrationError} />
           ) : registrationStatus === RegistrationStatus.EMAIL_VERIFICATION_REQUIRED ? (
             <EmailVerificationForm
               lastEmail={lastEmail}

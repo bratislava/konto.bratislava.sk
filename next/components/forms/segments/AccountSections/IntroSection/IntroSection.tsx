@@ -77,13 +77,8 @@ const IntroSection = () => {
 
   const foMunicipalServicesSection = [34, 35, 1, 4]
   const poMunicipalServicesSection = [34, 35, 4, 42]
-  const preFormMunicipalServicesSection = [32, 1, 4, 5]
 
-  const serviceCardIndexes = environment.featureToggles.formsInMenu
-    ? isLegalEntity
-      ? poMunicipalServicesSection
-      : foMunicipalServicesSection
-    : preFormMunicipalServicesSection
+  const serviceCardIndexes = isLegalEntity ? poMunicipalServicesSection : foMunicipalServicesSection
 
   const filteredServiceCards = serviceCardIndexes
     .map((id) => serviceCards.find((card) => card.id === id))

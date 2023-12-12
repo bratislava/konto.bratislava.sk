@@ -11,10 +11,7 @@ import { AsyncServerProps } from 'frontend/utils/types'
 import { GetServerSidePropsContext } from 'next'
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
 
-import { environment } from '../../environment'
-
 export const getServerSideProps = async (ctx: GetServerSidePropsContext) => {
-  if (!environment.featureToggles.forms) return { notFound: true }
   const locale = ctx.locale ?? 'sk'
 
   return {

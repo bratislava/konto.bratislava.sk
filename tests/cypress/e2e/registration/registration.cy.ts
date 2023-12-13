@@ -20,7 +20,7 @@ describe('Registration flow', { testIsolation: false }, () => {
 
         it('Submitting a empty registration form and check validation.', () => {
           cy.visit('/registracia')
-          cy.get(`#${device}-navbar`).invoke('attr', 'style', 'display: none')
+          cy.hideNavbar(device)
 
           cy.dataCy('registration-container').should('be.visible').matchImage()
           cy.dataCy('register-form').then((form) => {

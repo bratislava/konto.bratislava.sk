@@ -8,11 +8,9 @@ describe('Registration modal reopen flow', { testIsolation: false }, () => {
     .forEach((device) => {
       context(device, Cypress.env('resolution')[`${device}`], () => {
 
-        it('Checking if registration modal window is open.', () => {
+        beforeEach(() => {
           cy.visit('/mestske-sluzby/stanovisko-k-investicnemu-zameru')
-          cy.get(`#${device}-navbar`).invoke('attr', 'style', 'display: none')
-
-          cy.dataCy('registration-modal').should('be.visible').matchImage()
+          cy.hideNavbar(device)
         })
 
         it('Closing and reopening modal with save as a concept button.', () => {
@@ -21,7 +19,7 @@ describe('Registration modal reopen flow', { testIsolation: false }, () => {
           cy.dataCy(`save-concept-${device}`).should('be.visible').click()
           cy.dataCy('registration-modal').should('be.visible').matchImage()
 
-          cy.dataCy('registration-modal-redirect').click()
+          cy.dataCy('registration-modal-button').click()
           cy.url().should("include", "/registracia");
         })
       })

@@ -11,10 +11,21 @@ declare namespace Cypress {
      * @example cy.dataCy('greeting')
      */
     dataCy(attribute: string, specify?: string): Chainable<any>
+
+    /**
+     * Custom command to hide navbar on device.
+     * @param device Device type.
+     * @example cy.hideNavbar('desktop')
+     */
+    hideNavbar(device: string): Chainable<any>
   }
 }
 
 Cypress.Commands.add('dataCy', (attribute, specify) => {
   const selector = `[data-cy=${attribute}]${specify ? specify : ''}`
   cy.get(selector)
+})
+
+Cypress.Commands.add('hideNavbar', (device) => {
+  cy.get(`#${device}-navbar`).invoke('attr', 'style', 'display: none')
 })

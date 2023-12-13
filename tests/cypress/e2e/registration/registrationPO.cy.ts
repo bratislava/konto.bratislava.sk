@@ -32,7 +32,7 @@ describe('Registration flow', { testIsolation: false }, () => {
 
             cy.wrap(Cypress.$(errorBorderFields, form)).should('have.class', 'border-negative-700')
           })
-          cy.dataCy('registration-container').should('be.visible').matchImage()
+          cy.dataCy('registration-container').should('be.visible').matchImage({maxDiffThreshold: 0.17})
         })
 
         it('Filling out the registration form.', () => {

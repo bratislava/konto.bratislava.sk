@@ -8,23 +8,23 @@ declare namespace Cypress {
      * Custom command to check if all form inputs are not in error state.
      * @param form Form name.
      * @param errorBorderFields All fields to check.
-     * @example cy.checkFormFieldsNotInErrorStateCy('register-form')
+     * @example cy.checkFormFieldsNotInErrorState('register-form')
      */
-    checkFormFieldsNotInErrorStateCy(form: string, errorBorderFields: string): Chainable<any>
+    checkFormFieldsNotInErrorState(form: string, errorBorderFields: string): Chainable<any>
 
     /**
      * Custom command to submit form.
      * @param form Form name.
-     * @example cy.submitFormCy('register-form')
+     * @example cy.submitForm('register-form')
      */
-    submitFormCy(form: string): Chainable<any>
+    submitForm(form: string): Chainable<any>
 
     /**
      * Custom command to hide navbar.
      * @param device Device type.
-     * @example cy.hideNavbarCy()
+     * @example cy.hideNavbar()
      */
-    hideNavbarCy(device: string): Chainable<any>
+    hideNavbar(device: string): Chainable<any>
 
     /**
      * Custom command to check if 2FA page is working as expected.
@@ -36,7 +36,7 @@ declare namespace Cypress {
   }
 }
 
-Cypress.Commands.add('checkFormFieldsNotInErrorStateCy', (form, errorBorderFields) => {
+Cypress.Commands.add('checkFormFieldsNotInErrorState', (form, errorBorderFields) => {
   cy.dataCy(form).then((form) => {
     cy.wrap(Cypress.$(errorBorderFields, form)).should(
       'not.have.class',
@@ -45,13 +45,13 @@ Cypress.Commands.add('checkFormFieldsNotInErrorStateCy', (form, errorBorderField
   })
 })
 
-Cypress.Commands.add('submitFormCy', (form) => {
+Cypress.Commands.add('submitForm', (form) => {
   cy.dataCy(form).then((form) => {
     cy.wrap(Cypress.$('button[type=submit]', form)).click()
   })
 })
 
-Cypress.Commands.add('hideNavbarCy', (device) => {
+Cypress.Commands.add('hideNavbar', (device) => {
   cy.get(`#${device}-navbar`).invoke('attr', 'style', 'display: none')
 })
 

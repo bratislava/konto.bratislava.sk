@@ -20,7 +20,7 @@ describe('Registration flow', { testIsolation: false }, () => {
 
         it('Submitting a empty registration PO form and check validation.', () => {
           cy.visit('/registracia')
-          cy.hideNavbarCy(device)
+          cy.hideNavbar(device)
 
           cy.dataCy('register-form').then((form) => {
             cy.wrap(Cypress.$('[data-cy=radio-po]', form)).check()
@@ -48,11 +48,11 @@ describe('Registration flow', { testIsolation: false }, () => {
         })
 
         it('Check that required inputs are not in error state.', () => {
-          cy.checkFormFieldsNotInErrorStateCy('register-form', errorBorderFields)
+          cy.checkFormFieldsNotInErrorState('register-form', errorBorderFields)
         })
 
         it('Submitting the form and checking the redirection to 2FA.', () => {
-          cy.submitFormCy('register-form')
+          cy.submitForm('register-form')
         })
 
         it('Check the 2FA page.', () => {

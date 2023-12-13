@@ -20,7 +20,7 @@ describe('Registration flow', { testIsolation: false }, () => {
 
         it('Submitting a empty registration form and check validation.', () => {
           cy.visit('/registracia')
-          cy.hideNavbarCy(device)
+          cy.hideNavbar(device)
 
           cy.dataCy('registration-container').should('be.visible').matchImage()
           cy.dataCy('register-form').then((form) => {
@@ -50,12 +50,12 @@ describe('Registration flow', { testIsolation: false }, () => {
         })
 
         it('Check that required inputs are not in error state.', () => {
-          cy.checkFormFieldsNotInErrorStateCy('register-form', errorBorderFields)
+          cy.checkFormFieldsNotInErrorState('register-form', errorBorderFields)
           cy.dataCy('registration-container').should('be.visible').matchImage()
         })
 
         it('Submitting the form and checking the redirection to 2FA.', () => {
-          cy.submitFormCy('register-form')
+          cy.submitForm('register-form')
         })
 
         it('Check the 2FA page.', () => {

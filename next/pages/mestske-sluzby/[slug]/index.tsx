@@ -3,7 +3,6 @@ import { isAxiosError } from 'axios'
 import { GetServerSideProps } from 'next'
 
 import { FormPageWrapperProps } from '../../../components/forms/FormPageWrapper'
-import { environment } from '../../../environment'
 import { ROUTES } from '../../../frontend/api/constants'
 
 type Params = {
@@ -11,7 +10,7 @@ type Params = {
 }
 
 export const getServerSideProps: GetServerSideProps<FormPageWrapperProps, Params> = async (ctx) => {
-  if (!environment.featureToggles.forms || !ctx.params) return { notFound: true }
+  if (!ctx.params) return { notFound: true }
 
   const { slug } = ctx.params
 

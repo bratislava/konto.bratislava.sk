@@ -74,7 +74,7 @@ const UploadFileCard = ({
         <div className="flex w-full flex-col gap-2">
           <div className="flex w-full items-center justify-between gap-4">
             <div className="flex grow flex-col">
-              <h3 className="break-words font-bold text-gray-800">{fileInfo.fileName}</h3>
+              <h3 className="break-all font-bold text-gray-800">{fileInfo.fileName}</h3>
               <div className="flex gap-2">
                 {fileInfo.canDownload && (
                   <ReactAriaButton onPress={onFileDownload}>

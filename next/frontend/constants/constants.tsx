@@ -2,6 +2,7 @@ import { ROUTES } from 'frontend/api/constants'
 import { ReactNode } from 'react'
 
 import AdministrationIcon from '../../assets/icons/city-bratislava/city-administration.svg'
+import PublicSpaceOccupationIcon from '../../assets/icons/city-bratislava/public-space-occupation.svg'
 import TaxesIcon from '../../assets/icons/city-bratislava/taxes.svg'
 import CulturalOrganizationIcon from '../../assets/icons/culture-communities/cultural-organizations.svg'
 import TheatreIcon from '../../assets/icons/culture-communities/events-support.svg'
@@ -21,6 +22,7 @@ import MosquitoIcon from '../../assets/icons/other/mosquito-hunters.svg'
 import ChristmasTreeIcon from '../../assets/icons/other/tree.svg'
 import TransportIcon from '../../assets/icons/transport-and-maps/city-​​transport.svg'
 import ExcavationsIcon from '../../assets/icons/transport-and-maps/excavations.svg'
+import ManagmentCommunicationsIcon from '../../assets/icons/transport-and-maps/management-communications.svg'
 import ParkingIcon from '../../assets/icons/transport-and-maps/parking.svg'
 import TowIcon from '../../assets/icons/transport-and-maps/towing.svg'
 
@@ -59,7 +61,7 @@ export const serviceCards: ServiceCardBase[] = [
     title: 'account_section_services.cards.1.title',
     description: 'account_section_services.cards.1.description',
     buttonText: 'account_section_services.cards.1.buttonText',
-    icon: <TaxesIcon className="h-10 w-10 text-category-600 lg:h-12 lg:w-12" />,
+    icon: <TaxesIcon className="h-10 w-10 text-main-600 lg:h-12 lg:w-12" />,
     category: [MunicipalServicesCategories.TAXES_CATEGORY],
     href: ROUTES.TAXES_AND_FEES,
   },
@@ -114,7 +116,7 @@ export const serviceCards: ServiceCardBase[] = [
     title: 'account_section_services.cards.7.title',
     description: 'account_section_services.cards.7.description',
     buttonText: 'account_section_services.cards.7.buttonText',
-    icon: <KidIcon className="h-10 w-10 text-category-600 lg:h-12 lg:w-12" />,
+    icon: <KidIcon className="h-10 w-10 text-main-600 lg:h-12 lg:w-12" />,
     category: [MunicipalServicesCategories.JOIN_CATEGORY],
     href: 'https://mestopredeti.sk/',
   },
@@ -163,7 +165,7 @@ export const serviceCards: ServiceCardBase[] = [
     title: 'account_section_services.cards.12.title',
     description: 'account_section_services.cards.12.description',
     buttonText: 'account_section_services.cards.12.buttonText',
-    icon: <SecurityIcon className="h-10 w-10 text-category-600 lg:h-12 lg:w-12" />,
+    icon: <SecurityIcon className="h-10 w-10 text-main-600 lg:h-12 lg:w-12" />,
     category: [MunicipalServicesCategories.ENTERTAINMENT_CATEGORY],
     href: 'https://bratislava.sk/rychle-zasahy',
   },
@@ -208,7 +210,7 @@ export const serviceCards: ServiceCardBase[] = [
     title: 'account_section_services.cards.17.title',
     description: 'account_section_services.cards.17.description',
     buttonText: 'account_section_services.cards.17.buttonText',
-    icon: <KidIcon className="h-10 w-10 text-category-600 lg:h-12 lg:w-12" />,
+    icon: <KidIcon className="h-10 w-10 text-main-600 lg:h-12 lg:w-12" />,
     category: [MunicipalServicesCategories.JOIN_CATEGORY],
     href: 'https://www.detiprebratislavu.sk/prihlasit-projekt/',
   },
@@ -289,7 +291,7 @@ export const serviceCards: ServiceCardBase[] = [
     title: 'account_section_services.cards.26.title',
     description: 'account_section_services.cards.26.description',
     buttonText: 'account_section_services.cards.26.buttonText',
-    icon: <AdministrationIcon className="h-10 w-10 text-category-600 lg:h-12 lg:w-12" />,
+    icon: <AdministrationIcon className="h-10 w-10 text-main-600 lg:h-12 lg:w-12" />,
     category: [MunicipalServicesCategories.ENVIROMENTS_CATEGORY],
     href: 'https://cdn-api.bratislava.sk/static-pages/non-residential-premises-map/index.html?lang=sk',
   },
@@ -420,8 +422,8 @@ export const serviceCards: ServiceCardBase[] = [
     title: 'account_section_services.cards.40.title',
     description: 'account_section_services.cards.40.description',
     buttonText: 'account_section_services.cards.40.buttonText',
-    icon: <BasketIcon className="h-10 w-10 text-environment-700 lg:h-12 lg:w-12" />,
-    category: [MunicipalServicesCategories.BASKET_CATEGORY],
+    icon: <PublicSpaceOccupationIcon className="h-10 w-10 text-main-600 lg:h-12 lg:w-12" />,
+    category: [MunicipalServicesCategories.ENTERTAINMENT_CATEGORY],
     href: 'https://www.olo.sk/ponuka-sluzieb/objednavka-sluzieb-pre-pravnicke-osoby/',
   },
   {
@@ -429,8 +431,8 @@ export const serviceCards: ServiceCardBase[] = [
     title: 'account_section_services.cards.41.title',
     description: 'account_section_services.cards.41.description',
     buttonText: 'account_section_services.cards.41.buttonText',
-    icon: <BasketIcon className="h-10 w-10 text-environment-700 lg:h-12 lg:w-12" />,
-    category: [MunicipalServicesCategories.BASKET_CATEGORY],
+    icon: <ManagmentCommunicationsIcon className="h-10 w-10 text-transport-700 lg:h-12 lg:w-12" />,
+    category: [MunicipalServicesCategories.CONSTRUCTION_CATEGORY],
     href: 'https://www.olo.sk/ponuka-sluzieb/objednavka-sluzieb-pre-pravnicke-osoby/',
   },
   {

@@ -37,7 +37,7 @@ const enumOptions: SelectOption[] = [
     description: '',
   },
   {
-    value: 'MARINIUM_CATEGORY',
+    value: 'MARIANUM_CATEGORY',
     label: MunicipalServicesCategories.MARIANUM_CATEGORY,
     description: '',
   },
@@ -56,7 +56,8 @@ const enumOptions: SelectOption[] = [
 ]
 
 const foMunicipalServicesSection = [
-  34, 35, 1, 32, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 33, 16, 17,
+  34, 35, 1, 18, 32, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 33, 17, 19, 20, 21, 22, 23, 24, 25,
+  29, 26, 27, 28,
 ]
 const poMunicipalServicesSection = [
   34, 35, 32, 3, 4, 6, 42, 8, 10, 11, 12, 13, 33, 17, 18, 7, 36, 37, 38, 39, 28, 14, 40, 41,

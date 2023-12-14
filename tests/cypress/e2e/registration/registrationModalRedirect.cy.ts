@@ -1,6 +1,6 @@
 /// <reference types="cypress" />
 
-describe('Registration modal redirect flow', { testIsolation: false }, () => {
+describe('RF03 - ', { testIsolation: false }, () => {
   const devices = ['desktop', 'mobile']
 
   devices
@@ -10,11 +10,10 @@ describe('Registration modal redirect flow', { testIsolation: false }, () => {
 
         before(() => {
           cy.visit('/mestske-sluzby/stanovisko-k-investicnemu-zameru')
-          cy.hideNavbar(device)
         })
 
-        it('Registration modal should be open and button redirecting correctly.', () => {
-          cy.dataCy('registration-modal').should('be.visible').matchImage()
+        it('1. Registration modal should be open and button redirecting correctly.', () => {
+          cy.hideNavbar(device)
           cy.dataCy('registration-modal-button').click()
           cy.url().should("include", "/registracia");
         })

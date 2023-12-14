@@ -17,6 +17,7 @@ npm.debug.log
 .env.bratiska-cli-build.dev
 .env.bratiska-cli-build.staging
 .env.bratiska-cli-build.prod
+.env.test
 node_modules
 misc
 .idea

@@ -24,6 +24,17 @@ VSCode supports this plugin out of the box. However, sometimes it can use its ow
 yarn dev
 ```
 
+## Run project for e2e testing
+
+Tests need captcha disabled, are run against staging backend & staging cognito, and may have other env changes - see `.env.e2e`. Otherwise they behave as a production build - to build & run the app in this setup:
+
+```bash
+# only if you need to rebuild - this rewrites local .env.production.local
+yarn build:e2e
+# start the same way as you would start the app in production
+yarn start
+```
+
 ## FOP
 
 Apache™ FOP (Formatting Objects Processor) is a print formatter driven by XSL formatting objects (XSL-FO) and an output independent formatter. It is a Java application that reads a formatting object (FO) tree and renders the resulting pages to a specified output.

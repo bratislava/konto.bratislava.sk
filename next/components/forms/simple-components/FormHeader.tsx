@@ -75,6 +75,7 @@ const FormHeader = () => {
                 variant="category-outline"
                 startIcon={<DiscIcon className="h-5 w-5" />}
                 onPress={() => saveConcept()}
+                data-cy="save-concept-desktop"
               >
                 {t('menu_list.save_concept')}
               </ButtonNew>

@@ -14,6 +14,7 @@ type MenuItem = {
   url?: string
   onPress?: () => void
   className?: string
+  dataCy?: string
 }
 
 const MenuList = () => {
@@ -29,6 +30,7 @@ const MenuList = () => {
           icon: <DiscIcon className="h-6 w-6" />,
           // eslint-disable-next-line @typescript-eslint/no-misused-promises
           onPress: () => saveConcept(),
+          dataCy: 'save-concept-mobile',
         }
       : null,
     {
@@ -74,7 +76,7 @@ const MenuList = () => {
           </li>
         ) : (
           <li className="w-max" key={i}>
-            <button type="button" onClick={menuItem.onPress}>
+            <button type="button" onClick={menuItem.onPress} data-cy={menuItem.dataCy ?? ""}>
               <div className={cx('flex items-center gap-3', menuItem.className)}>
                 {menuItem.icon}
                 <span className="text-p2">{menuItem.title}</span>

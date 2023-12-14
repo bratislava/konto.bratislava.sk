@@ -73,7 +73,7 @@ const RegistrationModal = ({ type, login, register, ...rest }: RegistrationModal
   }
 
   return (
-    <ModalV2 modalClassname="md:max-w-[796px] md:pt-8" mobileFullScreen {...rest}>
+    <ModalV2 modalClassname="md:max-w-[796px] md:pt-8" mobileFullScreen {...rest} data-cy="registration-modal">
       <div className="mb-6 flex flex-col gap-2">
         {title && <h3 className="text-h2 lg:text-h3">{title}</h3>}
         {subtitle && <AccountMarkdown className="text-p1" content={subtitle} />}
@@ -98,6 +98,7 @@ const RegistrationModal = ({ type, login, register, ...rest }: RegistrationModal
           <AriaButton
             onPress={() => register()}
             className="text-p1-semibold flex w-full justify-center rounded-lg bg-main-700 px-5 py-2 text-center leading-6 text-gray-0 hover:bg-main-600  md:rounded-b-lg md:rounded-t-none md:px-0 md:py-6"
+            data-cy="registration-modal-button"
           >
             {t('registration_modal.body_action')}
           </AriaButton>

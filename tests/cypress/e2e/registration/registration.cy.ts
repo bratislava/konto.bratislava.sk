@@ -1,6 +1,6 @@
 /// <reference types="cypress" />
 
-describe('Registration flow', { testIsolation: false }, () => {
+describe('RF01 - ', { testIsolation: false }, () => {
   const devices = ['desktop', 'mobile']
   const errorBorderFields =
     '[data-cy=input-email], [data-cy=input-given_name], [data-cy=input-family_name], [data-cy=input-password]'
@@ -18,11 +18,14 @@ describe('Registration flow', { testIsolation: false }, () => {
       context(device, Cypress.env('resolution')[`${device}`], () => {
         const emailHash = `${Date.now() + device}@cypress.test`
 
-        it('Submitting a empty registration form and check validation.', () => {
+        it('1. Submitting a empty registration form.', () => {
           cy.visit('/registracia')
           cy.hideNavbar(device)
 
           cy.dataCy('registration-container').should('be.visible').matchImage()
+        })
+
+        it('2. Check error validation.', () => {
           cy.dataCy('register-form').then((form) => {
             cy.wrap(Cypress.$('button[type=submit]', form)).click()
 
@@ -33,7 +36,7 @@ describe('Registration flow', { testIsolation: false }, () => {
           cy.dataCy('registration-container').should('be.visible').matchImage()
         })
 
-        it('Filling out the registration form.', () => {
+        it('3. Filling out the registration form.', () => {
           cy.dataCy('register-form').then((form) => {
             cy.wrap(Cypress.$('[data-cy=radio-fo]', form)).should('be.visible')
 
@@ -49,16 +52,16 @@ describe('Registration flow', { testIsolation: false }, () => {
           })
         })
 
-        it('Check that required inputs are not in error state.', () => {
+        it('4. Check that required inputs are not in error state.', () => {
           cy.checkFormFieldsNotInErrorState('register-form', errorBorderFields)
           cy.dataCy('registration-container').should('be.visible').matchImage()
         })
 
-        it('Submitting the form and checking the redirection to 2FA.', () => {
+        it('5. Submitting the form and checking the redirection to 2FA.', () => {
           cy.submitForm('register-form')
         })
 
-        it('Check the 2FA page.', () => {
+        it('6. Check the 2FA page.', () => {
           cy.check2FAPage(emailHash, 'registration-container')
         })
       })

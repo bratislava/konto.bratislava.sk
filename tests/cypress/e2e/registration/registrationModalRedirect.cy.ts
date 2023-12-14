@@ -8,16 +8,13 @@ describe('Registration modal redirect flow', { testIsolation: false }, () => {
     .forEach((device) => {
       context(device, Cypress.env('resolution')[`${device}`], () => {
 
-        beforeEach(() => {
+        before(() => {
           cy.visit('/mestske-sluzby/stanovisko-k-investicnemu-zameru')
           cy.hideNavbar(device)
         })
 
-        it('Checking if registration modal window is open.', () => {
+        it('Registration modal should be open and button redirecting correctly.', () => {
           cy.dataCy('registration-modal').should('be.visible').matchImage()
-        })
-
-        it('Checking if modal button is redirecting correctly.', () => {
           cy.dataCy('registration-modal-button').click()
           cy.url().should("include", "/registracia");
         })

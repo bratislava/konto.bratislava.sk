@@ -8,12 +8,12 @@ describe('Registration modal reopen flow', { testIsolation: false }, () => {
     .forEach((device) => {
       context(device, Cypress.env('resolution')[`${device}`], () => {
 
-        beforeEach(() => {
+        before(() => {
           cy.visit('/mestske-sluzby/stanovisko-k-investicnemu-zameru')
           cy.hideNavbar(device)
         })
 
-        it('Closing and reopening modal with save as a concept button.', () => {
+        it('Reopening registration modal with save as a concept button.', () => {
           cy.dataCy('close-modal').click()
 
           cy.dataCy(`save-concept-${device}`).should('be.visible').click()

@@ -127,7 +127,7 @@ export const AccountNavBar = ({ className, sectionsList, menuItems, hiddenHeader
                       className="flex items-center gap-x-6 font-semibold text-font/75"
                     >
                       <Avatar userData={userData} />
-                      <div className="ml-3 font-light lg:font-semibold">
+                      <div className="font-light lg:font-semibold">
                         {isLegalEntity ? userData?.name : userData?.given_name}
                       </div>
                       <ChevronDownSmallIcon

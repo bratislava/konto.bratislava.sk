@@ -1,84 +1,48 @@
-import { checkboxGroup, step, textArea } from '../../generator/functions'
+import { conditionalStep } from '../../generator/functions'
+import { createCondition } from '../../generator/helpers'
+import { fyzickaOsoba } from './osoby'
 
-export default step(
-  'znizenieAleboOslobodenieOdDane',
-  { title: 'Zníženie alebo oslobodenie od dane' },
-  [
-    checkboxGroup(
-      'pozemky',
-      {
-        title: 'Pozemky',
-        options: [
+export default conditionalStep(
+  'bezpodieloveManzelovskeSpoluvlastnictvo',
+  {
+    anyOf: [
+      { stepKey: 'danZPozemkov', arrayKey: 'danZPozemkov' },
+      { stepKey: 'danZoStaviebJedenUcel', arrayKey: 'stavby' },
+      { stepKey: 'danZoStaviebViacereUcely', arrayKey: 'stavby' },
+      { stepKey: 'danZBytovANebytovychPriestorov', arrayKey: 'stavby' },
+    ].map(({ stepKey, arrayKey }) =>
+      createCondition([
+        [
+          [stepKey, 'vyplnitObject', 'vyplnit'],
           {
-            value: 'option1',
-            title: 'pozemky, na ktorých sú cintoríny, kolumbáriá, urnové háje a rozptylové lúky',
-          },
-          {
-            value: 'option2',
-            title: 'pásma hygienickej ochrany vodných zdrojov I. stupňa a II. stupňa',
-          },
-          {
-            value: 'option3',
-            title: 'pozemky verejne prístupných parkov a verejne prístupných športovísk',
-          },
-          {
-            value: 'option4',
-            title:
-              'pozemky, ktorých vlastníkmi sú fyzické osoby staršie ako 65 rokov, ak tieto pozemky slúžia výhradne na ich osobnú potrebu',
+            const: true,
           },
         ],
-      },
-      { variant: 'boxed', labelSize: 'h3' },
-    ),
-    checkboxGroup(
-      'stavby',
-      {
-        title: 'Stavby',
-        options: [
+        [
+          [stepKey],
           {
-            value: 'option1',
-            title: 'stavby slúžiace detským domovom',
-          },
-          {
-            value: 'option2',
-            title:
-              'stavby na bývanie vo vlastníctve fyzických osôb starších ako 65 rokov, držiteľov preukazu fyzickej osoby s ťažkým zdravotným postihnutím alebo držiteľov preukazu fyzickej osoby s ťažkým zdravotným postihnutím so sprievodcom, ako aj prevažne alebo úplne bezvládnych fyzických osôb, ktoré slúžia na ich trvalé bývanie',
-          },
-          {
-            value: 'option3',
-            title:
-              'garáže v bytových domoch slúžiace ako garáž vo vlastníctve držiteľov preukazu fyzickej osoby s ťažkým zdravotným postihnutím alebo držiteľov preukazu fyzickej osoby s ťažkým zdravotným postihnutím so sprievodcom, ktoré slúžia pre motorové vozidlo používané na ich dopravu',
-          },
-        ],
-      },
-      { variant: 'boxed', labelSize: 'h3' },
-    ),
-    checkboxGroup(
-      'byty',
-      {
-        title: 'Byty',
-        options: [
-          {
-            value: 'option1',
-            title:
-              'byty vo vlastníctve fyzických osôb starších ako 65 rokov, držiteľov preukazu fyzickej osoby s ťažkým zdravotným postihnutím alebo držiteľov preukazu fyzickej osoby s ťažkým zdravotným postihnutím so sprievodcom, ako aj prevažne alebo úplne bezvládnych fyzických osôb, ktoré slúžia na ich trvalé bývanie',
-          },
-          {
-            value: 'option2',
-            title:
-              'nebytové priestory v bytových domoch slúžiace ako garáž vo vlastníctve držiteľov preukazu fyzickej osoby s ťažkým zdravotným postihnutím alebo držiteľov preukazu fyzickej osoby s ťažkým zdravotným postihnutím so sprievodcom, ktoré slúžia pre motorové vozidlo používané na ich dopravu',
+            type: 'object',
+            properties: {
+              [arrayKey]: {
+                type: 'array',
+                items: {
+                  type: 'object',
+                  properties: {
+                    spoluvlastnictvo: {
+                      type: 'string',
+                      enum: ['bezpodieloveSpoluvlastnictvoManzelov'],
+                    },
+                  },
+                  required: ['spoluvlastnictvo'],
+                },
+              },
+            },
+            required: [arrayKey],
           },
         ],
-      },
-      { variant: 'boxed', labelSize: 'h3' },
+      ]),
     ),
-    textArea(
-      'poznamka',
-      { title: 'Poznámka' },
-      {
-        helptext:
-          'V prípade, ak priznanie podáva jeden z manželov, je potrebné uviesť všetky identifikačné údaje druhého z manželov, t.j. priezvisko, meno, titul, adresu trvalého pobytu (ulica a číslo, PSČ, obec, štát), číslo telefónu a e-mailovú adresu.',
-      },
-    ),
-  ],
+  },
+  { title: 'Údaje o manželovi/manželke' },
+  fyzickaOsoba(false, true),
 )

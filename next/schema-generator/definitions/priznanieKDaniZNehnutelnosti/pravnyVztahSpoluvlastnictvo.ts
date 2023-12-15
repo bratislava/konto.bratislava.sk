@@ -1,4 +1,4 @@
-import { conditionalFields, fileUpload, input, number, radioGroup } from '../../generator/functions'
+import { conditionalFields, fileUpload, number, radioGroup } from '../../generator/functions'
 import {
   createCamelCaseOptions,
   createCamelCaseOptionsV2,
@@ -99,19 +99,6 @@ export const pravnyVztahSpoluvlastnictvo = (step?: StepEnum) => [
           ],
           helptext:
             'Pri dohode o určení zástupcu sa nevyžadujú úradne osvedčené podpisy spoluvlastníkov.',
-        },
-      ),
-    ],
-  ),
-  conditionalFields(
-    createCondition([[['spoluvlastnictvo'], { const: 'bezpodieloveSpoluvlastnictvoManzelov' }]]),
-    [
-      input(
-        'rodneCisloManzelaManzelky',
-        { title: 'Rodné číslo manžela/manželky', required: true },
-        {
-          helptext:
-            'Rodné číslo zadávajte s lomítkom. V prípade, že nemá rodné číslo, uveďte dátum narodenia.',
         },
       ),
     ],

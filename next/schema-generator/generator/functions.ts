@@ -230,10 +230,10 @@ export const number = (
 type StringToType<T> = T extends 'string'
   ? string
   : T extends 'number'
-  ? number
-  : T extends 'boolean'
-  ? boolean
-  : never
+    ? number
+    : T extends 'boolean'
+      ? boolean
+      : never
 
 export const radioGroup = <T extends 'string' | 'number' | 'boolean'>(
   property: string,
@@ -586,7 +586,7 @@ export const conditionalStep = (
     title: string
     customHash?: string
   },
-  fields: Field[],
+  fields: FieldType[],
 ) => {
   const { schema, uiSchema } = step(property, options, fields)
   return {

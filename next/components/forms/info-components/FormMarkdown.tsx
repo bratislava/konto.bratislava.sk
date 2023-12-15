@@ -34,7 +34,18 @@ const FormMarkdown = ({ children, pAsSpan }: FormMarkdownProps) => {
           [
             rehypeSanitize,
             {
-              tagNames: ['strong', 'em', 'sub', 'sup', 'p', 'a', 'form-image-preview'],
+              tagNames: [
+                'strong',
+                'em',
+                'sub',
+                'sup',
+                'p',
+                'a',
+                'ul',
+                'ol',
+                'li',
+                'form-image-preview',
+              ],
               attributes: {
                 'form-image-preview': ['src'],
                 a: ['href'],
@@ -60,6 +71,12 @@ const FormMarkdown = ({ children, pAsSpan }: FormMarkdownProps) => {
             >
               {childrenInner}
             </MLinkNew>
+          ),
+          ul: ({ children: childrenInner }) => (
+            <ul className="list-disc whitespace-normal pl-8">{childrenInner}</ul>
+          ),
+          ol: ({ children: childrenInner }) => (
+            <ol className="list-decimal  whitespace-normal pl-8">{childrenInner}</ol>
           ),
           ...(pAsSpan
             ? {

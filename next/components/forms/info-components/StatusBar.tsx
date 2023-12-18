@@ -7,6 +7,7 @@ import React, { createContext, useContext, useState } from 'react'
 import { useEffectOnce } from 'usehooks-ts'
 
 import WarningIcon from '../icon-components/WarningIcon'
+import AccountMarkdown from '../segments/AccountMarkdown/AccountMarkdown'
 import { SectionContainer } from '../segments/SectionContainer/SectionContainer'
 
 type StatusBarVariantBase = 'warning' | 'error'
@@ -81,7 +82,10 @@ export const StatusBar = ({ className }: StatusBarProps) => {
             <span className="mr-3">
               <WarningIcon solid className="h-5 w-5" />
             </span>
-            <div className="text-p2">{statusBarConfiguration.content}</div>
+            <AccountMarkdown
+              variant="statusBar"
+              content={statusBarConfiguration.content as string}
+            />
           </div>
         </SectionContainer>
       </div>

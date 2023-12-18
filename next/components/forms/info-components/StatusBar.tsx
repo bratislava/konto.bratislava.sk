@@ -10,7 +10,7 @@ import WarningIcon from '../icon-components/WarningIcon'
 import AccountMarkdown from '../segments/AccountMarkdown/AccountMarkdown'
 import { SectionContainer } from '../segments/SectionContainer/SectionContainer'
 
-type StatusBarVariantBase = 'warning' | 'error'
+type StatusBarVariantBase = 'warning' | 'error' | 'info'
 
 type StatusBarConfigurationBase = {
   content: React.ReactNode
@@ -45,7 +45,7 @@ export const StatusBarProvider: React.FC<StatusBarProviderProps> = ({ children }
     setStatusBarConfiguration({
       // If translation is empty, status bar will be hidden
       content: t('common:statusBarContent'),
-      variant: 'warning',
+      variant: 'info',
     })
   })
 
@@ -74,6 +74,7 @@ export const StatusBar = ({ className }: StatusBarProps) => {
       className={cx('w-full text-white', className, {
         'bg-negative-700': statusBarConfiguration.variant === 'error',
         'bg-warning-700': statusBarConfiguration.variant === 'warning',
+        'bg-gray-700': statusBarConfiguration.variant === 'info',
       })}
     >
       <div className="container mx-auto flex h-full items-center justify-center">

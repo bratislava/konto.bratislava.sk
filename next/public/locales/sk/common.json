@@ -124,6 +124,6 @@
   "menu.show_less": "Zobraziť menej",
   "menu.show_more": "Zobraziť viac",
   "skipNavigation": "Preskočiť navigáciu",
-  "statusBarContent": "Novinky v Bratislavskom konte: Odteraz môžete požiadať o záväzné stanovisko k investičnej činnosti a stanovisko k investičnému zámeru a vytvoriť si konto aj na firemné účely. Novinky stále testujeme, a preto, ak narazíte na chyby, dajte nám, prosíme, vedieť na info@bratislava.sk. Ďakujeme!",
+  "statusBarContent": "<strong>Nové žiadosti a registráciu firemných účtov</strong> práve testujeme. Ak narazíte na chyby, prosíme, dajte nám o nich vedieť na info@bratislava.sk. Ďakujeme!",
   "modal_close_aria": "Zavrieť"
 }

@@ -25,25 +25,19 @@ const enumOptions: SelectOption[] = [
     description: '',
   },
   {
-    value: 'SECURITY_CATEGORY',
-    label: MunicipalServicesCategories.SECURITY_CATEGORY,
+    value: 'ENVIROMENTS_CATEGORY',
+    label: MunicipalServicesCategories.ENVIROMENTS_CATEGORY,
     description: '',
   },
-  // { value: 'ENVIROMENTS_CATEGORY', label: MunicipalServicesCategories.ENVIROMENTS_CATEGORY, description: '' },
   { value: 'BASKET_CATEGORY', label: MunicipalServicesCategories.BASKET_CATEGORY, description: '' },
   {
-    value: 'PARKING_CATEGORY',
-    label: MunicipalServicesCategories.PARKING_CATEGORY,
-    description: '',
-  },
-  {
-    value: 'MARINIUM_CATEGORY',
+    value: 'MARIANUM_CATEGORY',
     label: MunicipalServicesCategories.MARIANUM_CATEGORY,
     description: '',
   },
   {
     value: 'ENTERTAINMENT_CATEGORY',
-    label: MunicipalServicesCategories.ENTERTAINMENT_CATEGORY,
+    label: MunicipalServicesCategories.QUICK_INTERVENTION_CATEGORY,
     description: '',
   },
   {
@@ -53,10 +47,16 @@ const enumOptions: SelectOption[] = [
   },
   { value: 'JOIN_CATEGORY', label: MunicipalServicesCategories.JOIN_CATEGORY, description: '' },
   { value: 'GREEN_CATEGORY', label: MunicipalServicesCategories.GREEN_CATEGORY, description: '' },
+  {
+    value: 'PUBLIC_SPACE_CATEGORY',
+    label: MunicipalServicesCategories.PUBLIC_SPACE_CATEGORY,
+    description: '',
+  },
 ]
 
 const foMunicipalServicesSection = [
-  34, 35, 1, 32, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 33, 16, 17,
+  34, 35, 1, 18, 32, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 33, 17, 19, 20, 21, 22, 23, 24, 25,
+  29, 26, 27, 28,
 ]
 const poMunicipalServicesSection = [
   34, 35, 32, 3, 4, 6, 42, 8, 10, 11, 12, 13, 33, 17, 18, 7, 36, 37, 38, 39, 28, 14, 40, 41,

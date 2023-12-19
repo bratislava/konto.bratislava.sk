@@ -25,17 +25,11 @@ const enumOptions: SelectOption[] = [
     description: '',
   },
   {
-    value: 'SECURITY_CATEGORY',
-    label: MunicipalServicesCategories.SECURITY_CATEGORY,
+    value: 'ENVIROMENTS_CATEGORY',
+    label: MunicipalServicesCategories.ENVIROMENTS_CATEGORY,
     description: '',
   },
-  // { value: 'ENVIROMENTS_CATEGORY', label: MunicipalServicesCategories.ENVIROMENTS_CATEGORY, description: '' },
   { value: 'BASKET_CATEGORY', label: MunicipalServicesCategories.BASKET_CATEGORY, description: '' },
-  {
-    value: 'PARKING_CATEGORY',
-    label: MunicipalServicesCategories.PARKING_CATEGORY,
-    description: '',
-  },
   {
     value: 'MARIANUM_CATEGORY',
     label: MunicipalServicesCategories.MARIANUM_CATEGORY,
@@ -43,7 +37,7 @@ const enumOptions: SelectOption[] = [
   },
   {
     value: 'ENTERTAINMENT_CATEGORY',
-    label: MunicipalServicesCategories.ENTERTAINMENT_CATEGORY,
+    label: MunicipalServicesCategories.QUICK_INTERVENTION_CATEGORY,
     description: '',
   },
   {
@@ -53,6 +47,11 @@ const enumOptions: SelectOption[] = [
   },
   { value: 'JOIN_CATEGORY', label: MunicipalServicesCategories.JOIN_CATEGORY, description: '' },
   { value: 'GREEN_CATEGORY', label: MunicipalServicesCategories.GREEN_CATEGORY, description: '' },
+  {
+    value: 'PUBLIC_SPACE_CATEGORY',
+    label: MunicipalServicesCategories.PUBLIC_SPACE_CATEGORY,
+    description: '',
+  },
 ]
 
 const foMunicipalServicesSection = [

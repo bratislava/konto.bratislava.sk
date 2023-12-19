@@ -30,16 +30,15 @@ export const MunicipalServicesCategories = {
   ALL_CATEGORY: 'Všetky kategórie',
   TAXES_CATEGORY: 'Dane',
   CULTURE_CATEGORY: 'Kultúra a voľný čas',
-  TRANSPORT_CATEGORY: 'MHD',
-  SECURITY_CATEGORY: 'Nahlásiť problém',
+  TRANSPORT_CATEGORY: 'Doprava',
   ENVIROMENTS_CATEGORY: 'Nebytové priestory',
   BASKET_CATEGORY: 'Odpady',
-  PARKING_CATEGORY: 'Parkovanie',
   MARIANUM_CATEGORY: 'Pohrebníctvo Marianum',
-  ENTERTAINMENT_CATEGORY: 'Rýchle zásahy',
+  QUICK_INTERVENTION_CATEGORY: 'Rýchle zásahy',
   CONSTRUCTION_CATEGORY: 'Výstavba',
   JOIN_CATEGORY: 'Zapojiť sa',
   GREEN_CATEGORY: 'Zeleň',
+  PUBLIC_SPACE_CATEGORY: 'Verejné priestranstvo',
 }
 
 type ServiceCardBase = {
@@ -81,7 +80,7 @@ export const serviceCards: ServiceCardBase[] = [
     description: 'account_section_services.cards.3.description',
     buttonText: 'account_section_services.cards.3.buttonText',
     icon: <ParkingIcon className="h-10 w-10 text-transport-700 lg:h-12 lg:w-12" />,
-    category: [MunicipalServicesCategories.PARKING_CATEGORY],
+    category: [MunicipalServicesCategories.TRANSPORT_CATEGORY],
     href: 'https://paas.sk/formular/',
   },
   {
@@ -90,7 +89,7 @@ export const serviceCards: ServiceCardBase[] = [
     description: 'account_section_services.cards.4.description',
     buttonText: 'account_section_services.cards.4.buttonText',
     icon: <ParkingIcon className="h-10 w-10 text-transport-700 lg:h-12 lg:w-12" />,
-    category: [MunicipalServicesCategories.PARKING_CATEGORY],
+    category: [MunicipalServicesCategories.TRANSPORT_CATEGORY],
     href: 'https://paas.sk/',
   },
   {
@@ -108,7 +107,7 @@ export const serviceCards: ServiceCardBase[] = [
     description: 'account_section_services.cards.6.description',
     buttonText: 'account_section_services.cards.6.buttonText',
     icon: <TowIcon className="h-10 w-10 text-transport-700 lg:h-12 lg:w-12" />,
-    category: [MunicipalServicesCategories.PARKING_CATEGORY],
+    category: [MunicipalServicesCategories.TRANSPORT_CATEGORY],
     href: 'https://mepasys.sk/odtiahli-ma/',
   },
   {
@@ -157,7 +156,7 @@ export const serviceCards: ServiceCardBase[] = [
     description: 'account_section_services.cards.11.description',
     buttonText: 'account_section_services.cards.11.buttonText',
     icon: <ExcavationsIcon className="h-10 w-10 text-transport-700 lg:h-12 lg:w-12" />,
-    category: [MunicipalServicesCategories.SECURITY_CATEGORY],
+    category: [MunicipalServicesCategories.PUBLIC_SPACE_CATEGORY],
     href: 'https://inovacie.bratislava.sk/nahlasit-problem/',
   },
   {
@@ -166,7 +165,7 @@ export const serviceCards: ServiceCardBase[] = [
     description: 'account_section_services.cards.12.description',
     buttonText: 'account_section_services.cards.12.buttonText',
     icon: <SecurityIcon className="h-10 w-10 text-main-600 lg:h-12 lg:w-12" />,
-    category: [MunicipalServicesCategories.ENTERTAINMENT_CATEGORY],
+    category: [MunicipalServicesCategories.QUICK_INTERVENTION_CATEGORY],
     href: 'https://bratislava.sk/rychle-zasahy',
   },
   {
@@ -423,8 +422,8 @@ export const serviceCards: ServiceCardBase[] = [
     description: 'account_section_services.cards.40.description',
     buttonText: 'account_section_services.cards.40.buttonText',
     icon: <PublicSpaceOccupationIcon className="h-10 w-10 text-main-600 lg:h-12 lg:w-12" />,
-    category: [MunicipalServicesCategories.ENTERTAINMENT_CATEGORY],
-    href: 'https://www.olo.sk/ponuka-sluzieb/objednavka-sluzieb-pre-pravnicke-osoby/',
+    category: [MunicipalServicesCategories.PUBLIC_SPACE_CATEGORY],
+    href: 'https://bratislava.sk/mesto-bratislava/transparentne-mesto/majetok-mesta/zaujatie-verejneho-priestranstvas',
   },
   {
     id: 41,
@@ -432,8 +431,8 @@ export const serviceCards: ServiceCardBase[] = [
     description: 'account_section_services.cards.41.description',
     buttonText: 'account_section_services.cards.41.buttonText',
     icon: <ManagmentCommunicationsIcon className="h-10 w-10 text-transport-700 lg:h-12 lg:w-12" />,
-    category: [MunicipalServicesCategories.CONSTRUCTION_CATEGORY],
-    href: 'https://www.olo.sk/ponuka-sluzieb/objednavka-sluzieb-pre-pravnicke-osoby/',
+    category: [MunicipalServicesCategories.TRANSPORT_CATEGORY],
+    href: 'https://bratislava.sk/doprava-a-mapy/doprava/dopravne-povolenia',
   },
   {
     id: 42,
@@ -442,6 +441,6 @@ export const serviceCards: ServiceCardBase[] = [
     buttonText: 'account_section_services.cards.42.buttonText',
     icon: <FrontGardensIcon className="h-10 w-10 text-environment-700 lg:h-12 lg:w-12" />,
     category: [MunicipalServicesCategories.GREEN_CATEGORY],
-    href: '',
+    href: 'https://bratislava.sk/zivotne-prostredie-a-vystavba/zelen/udrzba-a-tvorba-zelene/adopcia-zelene',
   },
 ]

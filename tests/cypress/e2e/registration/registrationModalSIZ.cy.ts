@@ -1,6 +1,6 @@
 /// <reference types="cypress" />
 
-describe('RF04 - ', { testIsolation: false }, () => {
+describe('RF03 -', { testIsolation: false }, () => {
   const devices = ['desktop', 'mobile']
 
   devices
@@ -8,19 +8,21 @@ describe('RF04 - ', { testIsolation: false }, () => {
     .forEach((device) => {
       context(device, Cypress.env('resolution')[`${device}`], () => {
 
-        before(() => {
+        beforeEach(() => {
           cy.visit('/mestske-sluzby/stanovisko-k-investicnemu-zameru')
+          cy.hideNavbar(device)
         })
 
-        it('1. Reopening registration modal with save as a concept button.', () => {
-          cy.hideNavbar(device)
+        it('1. Registration modal is redirecting to registration page.', () => {
+          cy.dataCy('registration-modal-button').click()
+          cy.url().should("include", "/registracia");
+        })
 
+        it(`1. Reopening registration modal with save as a concept button.`, () => {
           cy.dataCy('close-modal').click()
 
           cy.dataCy(`save-concept-${device}`).should('be.visible').click()
-
-          cy.dataCy('registration-modal-button').click()
-          cy.url().should("include", "/registracia");
+          cy.dataCy('registration-modal').should('be.visible').matchImage()
         })
       })
     })

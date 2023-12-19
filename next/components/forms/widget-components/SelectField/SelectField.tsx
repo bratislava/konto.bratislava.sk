@@ -31,7 +31,7 @@ const DropdownIndicator = <
 
   return (
     <components.DropdownIndicator {...props}>
-      <ChevronDownIcon className={cx({ 'rotate-180': menuIsOpen, 'text-gray-400': isDisabled })} />
+      <ChevronDownIcon data-cy="dropdown-close" className={cx({ 'rotate-180': menuIsOpen, 'text-gray-400': isDisabled })} />
     </components.DropdownIndicator>
   )
 }

@@ -93,7 +93,12 @@ export const pravnyVztahSpoluvlastnictvo = (step?: StepEnum) => [
             {
               type: 'additionalLinks',
               props: {
-                links: [{ title: 'Stiahnite si tlačivo dohody o určení zástupcu', href: 'TODO' }],
+                links: [
+                  {
+                    title: 'Stiahnite si tlačivo dohody o určení zástupcu',
+                    href: 'https://cdn-api.bratislava.sk/strapi-homepage/upload/Dohoda_o_urceni_zastupcu_DZN_56a8433ec7.pdf',
+                  },
+                ],
               },
             },
           ],

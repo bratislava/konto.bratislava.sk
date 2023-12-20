@@ -4,15 +4,10 @@ import {
   markdownText,
   object,
   radioGroup,
-  select,
   step,
 } from '../../generator/functions'
-import {
-  createCamelCaseOptions,
-  createCamelCaseOptionsV2,
-  createCondition,
-} from '../../generator/helpers'
-import { fyzickaOsoba, fyzickaOsobaPodnikatel, pravnickaOsoba } from './osoby'
+import { createCamelCaseOptionsV2, createCondition } from '../../generator/helpers'
+import { danovnik, splnomocnenec } from './osoby'
 
 export default step('udajeODanovnikovi', { title: 'Údaje o daňovníkovi' }, [
   radioGroup(
@@ -69,12 +64,7 @@ export default step('udajeODanovnikovi', { title: 'Údaje o daňovníkovi' }, [
           },
           { variant: 'boxed' },
         ),
-        conditionalFields(createCondition([[['splnomocnenecTyp'], { const: 'fyzickaOsoba' }]]), [
-          object('fyzickaOsoba', { required: true }, {}, fyzickaOsoba(true)),
-        ]),
-        conditionalFields(createCondition([[['splnomocnenecTyp'], { const: 'pravnickaOsoba' }]]), [
-          object('pravnickaOsoba', { required: true }, {}, pravnickaOsoba(true)),
-        ]),
+        ...splnomocnenec,
       ],
     ),
   ]),
@@ -96,30 +86,5 @@ export default step('udajeODanovnikovi', { title: 'Údaje o daňovníkovi' }, [
     },
     { variant: 'boxed' },
   ),
-  conditionalFields(createCondition([[['priznanieAko'], { const: 'fyzickaOsoba' }]]), [
-    object('fyzickaOsoba', { required: true }, {}, fyzickaOsoba(false)),
-  ]),
-  conditionalFields(createCondition([[['priznanieAko'], { const: 'fyzickaOsobaPodnikatel' }]]), [
-    object('fyzickaOsobaPodnikatel', { required: true }, {}, fyzickaOsobaPodnikatel),
-  ]),
-  conditionalFields(
-    createCondition([
-      [['priznanieAko'], { const: 'pravnickaOsoba' }],
-      [['opravnenaOsoba', 'splnomocnenecTyp'], { const: 'fyzickaOsoba' }],
-      [['voSvojomMene'], { const: false }],
-    ]),
-    [
-      select(
-        'pravnyVztahKPO',
-        {
-          title: 'Vyberte právny vzťah k právnickej osobe, za ktorú podávate priznanie',
-          options: createCamelCaseOptions(['štatutárny zástupca', 'zástupca', 'správca'], false),
-        },
-        {},
-      ),
-    ],
-  ),
-  conditionalFields(createCondition([[['priznanieAko'], { const: 'pravnickaOsoba' }]]), [
-    object('pravnickaOsoba', { required: true }, {}, pravnickaOsoba(false)),
-  ]),
+  ...danovnik,
 ])

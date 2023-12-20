@@ -1,9 +1,10 @@
 import { conditionalStep } from '../../generator/functions'
 import { createCondition } from '../../generator/helpers'
-import { fyzickaOsoba } from './osoby'
+import { bezpodieloveSpoluvlastnictvoManzelov } from './osoby'
 
 export default conditionalStep(
-  'bezpodieloveManzelovskeSpoluvlastnictvo',
+  'bezpodieloveSpoluvlastnictvoManzelov',
+  // This hard to read condition verifies if any of the declarations is "bezpodielové spoluvlastníctvo manželov".
   {
     anyOf: [
       { stepKey: 'danZPozemkov', arrayKey: 'danZPozemkov' },
@@ -44,5 +45,5 @@ export default conditionalStep(
     ),
   },
   { title: 'Údaje o manželovi/manželke' },
-  fyzickaOsoba(false, true),
+  bezpodieloveSpoluvlastnictvoManzelov,
 )

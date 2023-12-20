@@ -66,11 +66,13 @@ const podielPriestoruNaSpolocnychCastiachAZariadeniachDomu = (typ: Typ) =>
     },
     {
       placeholder: typ === Typ.Byt ? 'Napr. 4827/624441' : 'Napr. 124827/624441',
-      helptext: markdownText(
+      helptext:
         typ === Typ.Byt
-          ? 'Zadávajte celý zlomok. Nájdete ho vedľa údajov o vchode, poschodí a čísle bytu. :form-image-preview[Zobraziť ukážku]{src="TODO"}'
-          : 'Zadávajte celý zlomok. Nájdete ho vedľa údajov o vchode, poschodí a čísle priestoru. Zobraziť ukážku :form-image-preview[Zobraziť ukážku]{src="https://cdn-api.bratislava.sk/general-strapi/upload/6_nebytovypriestor_podiel_priestoru_86f78e3c99.png"}',
-      ),
+          ? // TODO ukážka
+            'Zadávajte celý zlomok. Nájdete ho vedľa údajov o vchode, poschodí a čísle bytu.'
+          : markdownText(
+              'Zadávajte celý zlomok. Nájdete ho vedľa údajov o vchode, poschodí a čísle priestoru. :form-image-preview[Zobraziť ukážku]{src="https://cdn-api.bratislava.sk/general-strapi/upload/6_nebytovypriestor_podiel_priestoru_86f78e3c99.png"}',
+            ),
     },
   )
 
@@ -80,11 +82,13 @@ const spoluvlastnickyPodiel = (typ: Typ) =>
     { title: 'Spoluvlastnícky podiel', required: true, format: 'ratio' },
     {
       placeholder: typ === Typ.Byt ? 'Napr. 1/1 alebo 1/105' : '1/150 alebo 1/300',
-      helptext: markdownText(
+      helptext:
         typ === Typ.Byt
-          ? 'Zadávajte celý zlomok. Nájdete ho vedľa údajov o mene vlastníkov. :form-image-preview[Zobraziť ukážku]{src="TODO"}'
-          : 'Zadávajte celý zlomok. Nájdete ho vedľa údajov o mene vlastníkov. :form-image-preview[Zobraziť ukážku]{src="https://cdn-api.bratislava.sk/general-strapi/upload/6_nebytovypriestor_spoluvlastnicky_podiel_79034be7a6.png"}',
-      ),
+          ? // TODO ukážka
+            'Zadávajte celý zlomok. Nájdete ho vedľa údajov o mene vlastníkov.'
+          : markdownText(
+              'Zadávajte celý zlomok. Nájdete ho vedľa údajov o mene vlastníkov. :form-image-preview[Zobraziť ukážku]{src="https://cdn-api.bratislava.sk/general-strapi/upload/6_nebytovypriestor_spoluvlastnicky_podiel_79034be7a6.png"}',
+            ),
     },
   )
 
@@ -246,8 +250,9 @@ const innerArray = (kalkulacka: boolean) =>
                       'cisloNebytovehoPriestoruVBytovomDome',
                       { title: 'Číslo nebytového priestoru v bytovom dome', required: true },
                       {
-                        helptext:
+                        helptext: markdownText(
                           'Napr. číslo parkovacieho státia alebo pivničnej kobky (malo by byť uvedené aj na LV). :form-image-preview[Zobraziť ukážku]{src="https://cdn-api.bratislava.sk/general-strapi/upload/6_nebytovypriestor_cislo_3d64bba380.png"}',
+                        ),
                       },
                     ),
                   ],

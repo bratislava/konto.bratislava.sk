@@ -1,6 +1,7 @@
 import Button from 'components/forms/simple-components/Button'
 import Cookies from 'js-cookie'
-import { mapValues, pick } from 'lodash'
+import mapValues from 'lodash/mapValues'
+import pick from 'lodash/pick'
 import Script from 'next/script'
 import { useTranslation } from 'next-i18next'
 import React, { useCallback, useEffect, useState } from 'react'

@@ -4,14 +4,14 @@ import { bezpodieloveSpoluvlastnictvoManzelov } from './osoby'
 
 export default conditionalStep(
   'bezpodieloveSpoluvlastnictvoManzelov',
-  // This hard to read condition verifies if any of the declarations is "bezpodielové spoluvlastníctvo manželov".
+  // This hard to read condition verifies if any of the "priznania" is "bezpodielové spoluvlastníctvo manželov".
   {
     anyOf: [
-      { stepKey: 'danZPozemkov', arrayKey: 'danZPozemkov' },
-      { stepKey: 'danZoStaviebJedenUcel', arrayKey: 'stavby' },
-      { stepKey: 'danZoStaviebViacereUcely', arrayKey: 'stavby' },
-      { stepKey: 'danZBytovANebytovychPriestorov', arrayKey: 'stavby' },
-    ].map(({ stepKey, arrayKey }) =>
+      'danZPozemkov',
+      'danZoStaviebJedenUcel',
+      'danZoStaviebViacereUcely',
+      'danZBytovANebytovychPriestorov',
+    ].map((stepKey) =>
       createCondition([
         [
           [stepKey, 'vyplnitObject', 'vyplnit'],
@@ -24,7 +24,7 @@ export default conditionalStep(
           {
             type: 'object',
             properties: {
-              [arrayKey]: {
+              priznania: {
                 type: 'array',
                 items: {
                   type: 'object',
@@ -38,7 +38,7 @@ export default conditionalStep(
                 },
               },
             },
-            required: [arrayKey],
+            required: ['priznania'],
           },
         ],
       ]),

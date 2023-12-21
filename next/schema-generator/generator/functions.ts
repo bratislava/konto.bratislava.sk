@@ -515,7 +515,7 @@ export const object = (
 
 export const arrayField = (
   property: string,
-  options: BaseOptions,
+  options: BaseOptions & { minItems?: number; maxItems?: number },
   uiOptions: ArrayFieldUiOptions,
   fields: FieldType[],
 ): Field => {
@@ -526,7 +526,8 @@ export const arrayField = (
       title: options.title,
       type: 'array',
       items: objectSchema(),
-      minItems: options.required ? 1 : undefined,
+      minItems: options.minItems ?? options.required ? 1 : undefined,
+      maxItems: options.maxItems,
       overrideArrayMinItemsBehaviour: {
         populate: 'requiredOnly',
       } satisfies Experimental_ArrayMinItems,

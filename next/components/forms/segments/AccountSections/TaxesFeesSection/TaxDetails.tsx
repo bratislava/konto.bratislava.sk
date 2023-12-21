@@ -1,4 +1,6 @@
-import _ from 'lodash'
+import groupBy from 'lodash/groupBy'
+import mapValues from 'lodash/mapValues'
+import reduce from 'lodash/reduce'
 import { useTranslation } from 'next-i18next'
 import React from 'react'
 
@@ -13,10 +15,10 @@ interface TaxDetailsProps {
 const TaxDetails = ({ tax }: TaxDetailsProps) => {
   const { t } = useTranslation('account')
 
-  const groupedTaxDetails = _.groupBy(tax.taxDetails, 'type')
+  const groupedTaxDetails = groupBy(tax.taxDetails, 'type')
   // TODO use data from root obj
-  const sums = _.mapValues(groupedTaxDetails, (taxDetails) => {
-    return _.reduce(
+  const sums = mapValues(groupedTaxDetails, (taxDetails) => {
+    return reduce(
       taxDetails,
       (sum, taxDetail) => {
         return sum + taxDetail.amount

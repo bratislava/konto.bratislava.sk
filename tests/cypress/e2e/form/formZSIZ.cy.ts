@@ -16,7 +16,7 @@ describe('F02 -', { testIsolation: false }, () => {
         const emailHash = `${Date.now() + device}@cypress.test`
 
         before(() => {
-          cy.visit('/mestske-sluzby/zavazne-stanovisko-k-investicnemu-zameru')
+          cy.visit('/mestske-sluzby/zavazne-stanovisko-k-investicnej-cinnosti')
           cy.hideNavbar(device)
         })
 

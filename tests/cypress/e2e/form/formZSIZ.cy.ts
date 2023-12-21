@@ -4,7 +4,7 @@ describe('F02 -', { testIsolation: false }, () => {
   const devices = ['desktop', 'mobile']
 
   before(() => {
-    cy.fixture('formSIZ.json').then((fileData) => {
+    cy.fixture('form.json').then((fileData) => {
       this.fileData = fileData
     })
   })
@@ -24,11 +24,11 @@ describe('F02 -', { testIsolation: false }, () => {
         
         it('1. Checking "File" step validation.', () => {
           cy.dataCy('close-modal').click()
-          cy.dataCy('form-container').should('be.visible').matchImage()
           cy.dataCy('form-container').then((form) => {
             cy.wrap(Cypress.$(`[data-cy=continue-button-${device}]`, form)).click()
             cy.dataCy('error-message').should('be.visible').should('have.class', 'text-error')
           })
+          cy.dataCy('form-container').should('be.visible').matchImage()
         })
 
         it('2. Uploading file in "File" step.', () => {
@@ -39,7 +39,6 @@ describe('F02 -', { testIsolation: false }, () => {
         })
 
         it('3. Checking "Applicant" step validation.', () => {
-          cy.dataCy('form-container').should('be.visible').matchImage()
           cy.dataCy('form-container').then((form) => {
             cy.wrap(Cypress.$(`[data-cy=continue-button-${device}]`, form)).click()
 
@@ -47,6 +46,15 @@ describe('F02 -', { testIsolation: false }, () => {
 
             // TODO cy.wrap(Cypress.$(errorBorderFields, form)).should('have.class', 'border-negative-700')
           })
+
+          cy.dataCy('form-container').then((form) => {
+            cy.wrap(Cypress.$('input[type=tel]', form)).type(this.fileData.phone_number_wrong)
+            
+            cy.wrap(Cypress.$(`[data-cy=continue-button-${device}]`, form)).click()
+
+            cy.wrap(Cypress.$('[aria-required=true]', form)).should('have.length', 7)
+          })
+          cy.dataCy('form-container').should('be.visible').matchImage()
         })
 
         it('4. Filling out the "Applicant" step.', () => {
@@ -63,7 +71,9 @@ describe('F02 -', { testIsolation: false }, () => {
 
             cy.wrap(Cypress.$('input[type=email]', form)).type(emailHash)
 
+            cy.wrap(Cypress.$('input[type=tel]', form)).focus().clear();
             cy.wrap(Cypress.$('input[type=tel]', form)).type(this.fileData.phone_number)
+            cy.wrap(Cypress.$('input[type=tel]', form)).invoke('val').should('match', /\+421[0-9]{9}/g)
 
             //cy.wrap(Cypress.$('[data-cy=input-given_name]', form)).type(this.fileData.given_name)
 
@@ -84,7 +94,6 @@ describe('F02 -', { testIsolation: false }, () => {
         })
 
         it('6. Checking "Responsible designer" step validation.', () => {
-          cy.dataCy('form-container').should('be.visible').matchImage()
           cy.dataCy('form-container').then((form) => {
             cy.wrap(Cypress.$(`[data-cy=continue-button-${device}]`, form)).click()
           })
@@ -95,6 +104,16 @@ describe('F02 -', { testIsolation: false }, () => {
 
             // TODO cy.wrap(Cypress.$(errorBorderFields, form)).should('have.class', 'border-negative-700')
           })
+
+          cy.dataCy('form-container').then((form) => {
+            cy.wrap(Cypress.$('input[type=tel]', form)).type(this.fileData.phone_number_wrong)
+            
+            cy.wrap(Cypress.$(`[data-cy=continue-button-${device}]`, form)).click()
+
+            cy.wrap(Cypress.$('[aria-required=true]', form)).should('have.length', 4)
+            cy.wrap(Cypress.$('[data-cy=error-message]', form)).should('have.length', 5)
+          })
+          cy.dataCy('form-container').should('be.visible').matchImage()
         })
 
         it('7. Filling out the "Responsible designer" step.', () => {
@@ -103,7 +122,9 @@ describe('F02 -', { testIsolation: false }, () => {
 
             cy.wrap(Cypress.$('input[type=email]', form)).type(emailHash)
 
+            cy.wrap(Cypress.$('input[type=tel]', form)).focus().clear();
             cy.wrap(Cypress.$('input[type=tel]', form)).type(this.fileData.phone_number)
+            cy.wrap(Cypress.$('input[type=tel]', form)).invoke('val').should('match', /\+421[0-9]{9}/g)
 
             cy.wrap(Cypress.$('input[type=text]', form).eq(1)).type(this.fileData.authorization_certificate_number)
 
@@ -116,7 +137,6 @@ describe('F02 -', { testIsolation: false }, () => {
         })
 
         it('6. Checking "Construction information" step validation.', () => {
-          cy.dataCy('form-container').should('be.visible').matchImage()
           cy.dataCy('form-container').then((form) => {
             cy.wrap(Cypress.$(`[data-cy=continue-button-${device}]`, form)).click()
           })
@@ -127,6 +147,7 @@ describe('F02 -', { testIsolation: false }, () => {
 
             // TODO cy.wrap(Cypress.$(errorBorderFields, form)).should('have.class', 'border-negative-700')
           })
+          cy.dataCy('form-container').should('be.visible').matchImage()
         })
 
         it('8. Filling out the "Construction information" step.', () => {
@@ -154,9 +175,7 @@ describe('F02 -', { testIsolation: false }, () => {
         it('9. Checking form summary page.', () => {
           cy.dataCy('form-container').should('be.visible').matchImage()
 
-          cy.dataCy('form-container').then((form) => {
-            cy.wrap(Cypress.$("[data-cy=alert-container]", form)).should('not.exist')
-          })
+          cy.dataCy('alert-container').should('not.exist')
         })
       })
     })

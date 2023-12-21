@@ -9,7 +9,7 @@ describe('RF04 -', { testIsolation: false }, () => {
       context(device, Cypress.env('resolution')[`${device}`], () => {
 
         beforeEach(() => {
-          cy.visit('/mestske-sluzby/zavazne-stanovisko-k-investicnemu-zameru')
+          cy.visit('/mestske-sluzby/zavazne-stanovisko-k-investicnej-cinnosti')
           cy.hideNavbar(device)
         })
 

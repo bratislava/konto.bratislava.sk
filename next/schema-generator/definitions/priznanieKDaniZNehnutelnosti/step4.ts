@@ -21,7 +21,7 @@ import { vyplnitKrokRadio } from './vyplnitKrokRadio'
 
 const celkovaZastavanaPlocha = number(
   'celkovaZastavanaPlocha',
-  { type: 'integer', title: 'Celková zastavaná plocha', required: true },
+  { type: 'integer', title: 'Celková zastavaná plocha', required: true, minimum: 0 },
   {
     helptext: markdownText(
       'Uveďte výmeru zastavanej plochy pozemku/ov, na ktorom je umiestnená stavba. Nájdete ju na LV, v časti A. (druh pozemku - zastavaná plocha a nádvorie). :form-image-preview[Zobraziť ukážku]{src="https://cdn-api.bratislava.sk/general-strapi/upload/4_stavba_celkova_zastavana_plocha_5dac588a12.png"}',
@@ -46,7 +46,7 @@ const spoluvlastnickyPodiel = input(
 
 const zakladDane = number(
   'zakladDane',
-  { type: 'integer', title: 'Základ dane', required: true },
+  { type: 'integer', title: 'Základ dane', required: true, minimum: 0 },
   {
     helptext: markdownText(
       'Výmera zastavanej plochy stavby, pri spoluvlastníctve do výšky spoluvlastníckych podielov. Zadajte ako číslo zaokrúhlené na celé m^2^ nahor.',

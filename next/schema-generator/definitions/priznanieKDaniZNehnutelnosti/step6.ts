@@ -24,6 +24,7 @@ const vymeraPodlahovejPlochyBytu = number(
     type: 'integer',
     title: 'Výmera podlahovej plochy bytu (základ dane bytu)',
     required: true,
+    minimum: 0,
   },
   {
     helptext: markdownText(
@@ -66,13 +67,11 @@ const podielPriestoruNaSpolocnychCastiachAZariadeniachDomu = (typ: Typ) =>
     },
     {
       placeholder: typ === Typ.Byt ? 'Napr. 4827/624441' : 'Napr. 124827/624441',
-      helptext:
+      helptext: markdownText(
         typ === Typ.Byt
-          ? // TODO ukážka
-            'Zadávajte celý zlomok. Nájdete ho vedľa údajov o vchode, poschodí a čísle bytu.'
-          : markdownText(
-              'Zadávajte celý zlomok. Nájdete ho vedľa údajov o vchode, poschodí a čísle priestoru. :form-image-preview[Zobraziť ukážku]{src="https://cdn-api.bratislava.sk/general-strapi/upload/6_nebytovypriestor_podiel_priestoru_86f78e3c99.png"}',
-            ),
+          ? 'Zadávajte celý zlomok. Nájdete ho vedľa údajov o vchode, poschodí a čísle bytu. :form-image-preview[Zobraziť ukážku]{src="https://cdn-api.bratislava.sk/general-strapi/upload/6_byt_podiel_priestoru_265f9a3965.png"}'
+          : 'Zadávajte celý zlomok. Nájdete ho vedľa údajov o vchode, poschodí a čísle priestoru. :form-image-preview[Zobraziť ukážku]{src="https://cdn-api.bratislava.sk/general-strapi/upload/6_nebytovypriestor_podiel_priestoru_86f78e3c99.png"}',
+      ),
     },
   )
 
@@ -82,13 +81,11 @@ const spoluvlastnickyPodiel = (typ: Typ) =>
     { title: 'Spoluvlastnícky podiel', required: true, format: 'ratio' },
     {
       placeholder: typ === Typ.Byt ? 'Napr. 1/1 alebo 1/105' : '1/150 alebo 1/300',
-      helptext:
+      helptext: markdownText(
         typ === Typ.Byt
-          ? // TODO ukážka
-            'Zadávajte celý zlomok. Nájdete ho vedľa údajov o mene vlastníkov.'
-          : markdownText(
-              'Zadávajte celý zlomok. Nájdete ho vedľa údajov o mene vlastníkov. :form-image-preview[Zobraziť ukážku]{src="https://cdn-api.bratislava.sk/general-strapi/upload/6_nebytovypriestor_spoluvlastnicky_podiel_79034be7a6.png"}',
-            ),
+          ? 'Zadávajte celý zlomok. Nájdete ho vedľa údajov o mene vlastníkov. :form-image-preview[Zobraziť ukážku]{src="https://cdn-api.bratislava.sk/general-strapi/upload/6_byt_spoluvlastnicky_podiel_cf4b72f71b.png"}'
+          : 'Zadávajte celý zlomok. Nájdete ho vedľa údajov o mene vlastníkov. :form-image-preview[Zobraziť ukážku]{src="https://cdn-api.bratislava.sk/general-strapi/upload/6_nebytovypriestor_spoluvlastnicky_podiel_79034be7a6.png"}',
+      ),
     },
   )
 
@@ -98,6 +95,7 @@ const vymeraPodlahovychPlochNebytovehoPriestoruVBytovomDome = number(
     type: 'integer',
     title: 'Výmera podlahových plôch nebytového priestoru v bytovom dome',
     required: true,
+    minimum: 0,
   },
   {
     helptext: 'Zadávajte číslo zaokrúhlené nahor na celé číslo (príklad: 48,27 = 49).',
@@ -157,6 +155,7 @@ const innerArray = (kalkulacka: boolean) =>
               {
                 type: 'integer',
                 title: 'Výmera podlahovej plochy bytu používaného na iné účely',
+                minimum: 0,
               },
               {
                 helptext:
@@ -220,7 +219,7 @@ const innerArray = (kalkulacka: boolean) =>
           conditionalFields(createCondition([[['priznanieZaNebytovyPriestor'], { const: true }]]), [
             arrayField(
               'nebytovePriestory',
-              { title: 'Nebytové priestory', required: true },
+              { title: 'Nebytové priestory', required: true, maxItems: 15 },
               {
                 hideTitle: true,
                 variant: 'nested',

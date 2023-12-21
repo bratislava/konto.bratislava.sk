@@ -19,7 +19,7 @@ import { vyplnitKrokRadio } from './vyplnitKrokRadio'
 
 const vymeraPodlahovejPlochy = number(
   'vymeraPodlahovejPlochy',
-  { type: 'integer', title: 'Výmera podlahovej plochy', required: true },
+  { type: 'integer', title: 'Výmera podlahovej plochy', required: true, minimum: 0 },
   {
     helptext: markdownText(
       'Zadávajte číslo zaokrúhlené nahor (napr. ak 12.3 m^2^, tak zadajte 13).',
@@ -79,6 +79,7 @@ const sumar = object('sumar', { required: true }, { objectDisplay: 'boxed', titl
       type: 'integer',
       title: 'Celková výmera podlahových plôch všetkých podlaží stavby',
       required: true,
+      minimum: 0,
     },
     {
       helptext: markdownText(
@@ -92,6 +93,7 @@ const sumar = object('sumar', { required: true }, { objectDisplay: 'boxed', titl
       type: 'integer',
       title: 'Základ dane – výmera zastavanej plochy stavby vo výške spoluvlastníckych podielov',
       required: true,
+      minimum: 0,
     },
     {
       helptext: markdownText(

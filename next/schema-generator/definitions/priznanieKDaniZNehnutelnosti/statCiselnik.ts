@@ -1,4 +1,6 @@
 // Hardcoded until issues with code lists are resolved
+// Downloaded from:
+// https://zber.statistics.sk/sk/metaudaje/ciselniky?p_p_id=sk_susr_isis_pub_codelist_portlet_CodelistPortlet_INSTANCE_mvcy&p_p_lifecycle=1&p_p_state=normal&p_p_mode=view&_sk_susr_isis_pub_codelist_portlet_CodelistPortlet_INSTANCE_mvcy_javax.portlet.action=showCodelistDetail&_sk_susr_isis_pub_codelist_portlet_CodelistPortlet_INSTANCE_mvcy_navigationType=CODELIST_DETAIL_VIEW&p_auth=IZQkJLXQ&clCode=CL010580&clVersion=1
 export const statCiselnik = [
   {
     value: '4',

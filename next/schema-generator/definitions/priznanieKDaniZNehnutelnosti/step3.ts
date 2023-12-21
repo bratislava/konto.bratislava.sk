@@ -87,7 +87,7 @@ const vymeraPozemku = number(
 const innerArray = (kalkulacka: boolean) =>
   arrayField(
     'priznania',
-    { title: 'Priznania k dani z pozemkov', required: true },
+    { title: 'Priznania k dani z pozemkov', required: true, maxItems: 17 },
     {
       hideTitle: true,
       variant: 'topLevel',

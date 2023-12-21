@@ -1,6 +1,6 @@
 import { GenericObjectType, RJSFSchema, UIOptionsType } from '@rjsf/utils'
 import currency from 'currency.js'
-import _ from 'lodash'
+import get from 'lodash/get'
 import React from 'react'
 
 import { environment } from '../../environment'
@@ -119,7 +119,7 @@ export const getFormTitle = (
   // until then, safe enough with all the fallbacks
   // eslint-disable-next-line @typescript-eslint/no-unsafe-return
   return (
-    _.get(
+    get(
       formData,
       uiOptions.titlePath &&
         typeof uiOptions.titlePath !== 'boolean' &&

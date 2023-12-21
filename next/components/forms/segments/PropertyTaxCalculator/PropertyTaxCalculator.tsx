@@ -1,7 +1,8 @@
 import { GenericObjectType } from '@rjsf/utils'
 import cx from 'classnames'
 import { Parser } from 'expr-eval'
-import { get } from 'lodash'
+import clone from 'lodash/clone'
+import get from 'lodash/get'
 import React, { useMemo } from 'react'
 import { useNumberFormatter } from 'react-aria'
 import {
@@ -90,7 +91,9 @@ const Calculator = ({
         return null
       }
 
-      const evaluated = expression?.evaluate(dataAtPath)
+      // It is not in the documentation, but `expr-eval` mutates the original data!
+      const clonedData = clone(dataAtPath)
+      const evaluated = expression?.evaluate(clonedData)
 
       if (!Number.isFinite(evaluated)) {
         return null

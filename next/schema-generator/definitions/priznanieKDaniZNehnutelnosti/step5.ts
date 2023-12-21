@@ -133,7 +133,7 @@ const sumarKalkulacka = customComponentsField(
 
 const innerArray = (kalkulacka: boolean) =>
   arrayField(
-    'stavby',
+    'priznania',
     { title: 'Priznania k dani zo stavieb slúžiacich na viaceré účely', required: true },
     {
       hideTitle: true,

@@ -106,7 +106,7 @@ const vymeraPodlahovychPlochNebytovehoPriestoruVBytovomDome = number(
 
 const innerArray = (kalkulacka: boolean) =>
   arrayField(
-    'stavby',
+    'priznania',
     { title: 'Priznania k dani z bytov a z nebytových priestorov v bytovom dome', required: true },
     {
       hideTitle: true,

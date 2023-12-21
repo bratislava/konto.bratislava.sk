@@ -74,7 +74,7 @@ const zakladDaneKalkulacka = customComponentsField(
 
 const innerArray = (kalkulacka: boolean) =>
   arrayField(
-    'stavby',
+    'priznania',
     { title: 'Priznania k dani zo stavieb slúžiacich na jeden účel', required: true },
     {
       hideTitle: true,

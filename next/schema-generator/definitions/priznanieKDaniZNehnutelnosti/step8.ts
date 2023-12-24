@@ -72,6 +72,10 @@ export default step(
       },
       { variant: 'boxed', labelSize: 'h3' },
     ),
-    textArea('poznamka', { title: 'Poznámka' }, {}),
+    textArea(
+      'poznamka',
+      { title: 'Poznámka' },
+      { placeholder: 'Tu môžete napísať doplnkové informácie' },
+    ),
   ],
 )

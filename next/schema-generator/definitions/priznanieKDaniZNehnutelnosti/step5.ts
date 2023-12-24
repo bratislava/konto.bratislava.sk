@@ -10,7 +10,6 @@ import {
   select,
   skipSchema,
   step,
-  textArea,
 } from '../../generator/functions'
 import { kalkulackaFields } from './kalkulacky'
 import { stavbyBase } from './stavbyBase'
@@ -295,7 +294,7 @@ const innerArray = (kalkulacka: boolean) =>
         kalkulacka ? skipSchema(sumar) : sumar,
         kalkulacka ? sumarKalkulacka : skipSchema(sumarKalkulacka),
       ]),
-      textArea(
+      input(
         'poznamka',
         { title: 'Poznámka' },
         { placeholder: 'Tu môžete napísať doplnkové informácie' },

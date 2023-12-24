@@ -12,7 +12,6 @@ import {
   select,
   skipSchema,
   step,
-  textArea,
 } from '../../generator/functions'
 import { createCondition, createStringOptions } from '../../generator/helpers'
 import { kalkulackaFields } from './kalkulacky'
@@ -295,7 +294,7 @@ const innerArray = (kalkulacka: boolean) =>
           ),
         ],
       ),
-      textArea(
+      input(
         'poznamka',
         { title: 'Poznámka' },
         { placeholder: 'Tu môžete napísať doplnkové informácie' },

@@ -242,12 +242,30 @@ const pravnyVztahKPOField = select(
   {},
 )
 
+export const udajeOOpravnenejOsobeNaPodaniePriznania = object(
+  'udajeOOpravnenejOsobeNaPodaniePriznania',
+  { required: true },
+  {
+    objectDisplay: 'boxed',
+    title: 'Údaje o oprávnenej osobe na podanie priznania',
+  },
+  [
+    pravnyVztahKPOField,
+    priezviskoField,
+    menoTitulField,
+    ulicaCislo(DanovnikTyp.FyzickaOsoba),
+    obecPscField,
+    statField,
+    emailField,
+    telefonField,
+  ],
+)
+
 export const danovnik = [
   conditionalFields(
     createCondition([
       [['voSvojomMene'], { const: false }],
       [['priznanieAko'], { const: 'pravnickaOsoba' }],
-      [['opravnenaOsoba', 'splnomocnenecTyp'], { const: 'fyzickaOsoba' }],
     ]),
     [pravnyVztahKPOField],
   ),
@@ -278,6 +296,16 @@ export const danovnik = [
   statField,
   emailField,
   telefonField,
+  conditionalFields(createCondition([[['priznanieAko'], { const: 'pravnickaOsoba' }]]), [
+    ulicaCislo(DanovnikTyp.PravnickaOsoba),
+  ]),
+  conditionalFields(
+    createCondition([
+      [['voSvojomMene'], { const: true }],
+      [['priznanieAko'], { const: 'pravnickaOsoba' }],
+    ]),
+    [udajeOOpravnenejOsobeNaPodaniePriznania],
+  ),
 ]
 
 export const splnomocnenec = [

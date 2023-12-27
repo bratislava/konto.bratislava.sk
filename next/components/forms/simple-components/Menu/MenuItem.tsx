@@ -1,4 +1,4 @@
-import type { Node } from '@react-types/shared'
+import type { Key, Node } from '@react-types/shared'
 import React from 'react'
 import { useMenuItem } from 'react-aria'
 import { TreeState } from 'react-stately'
@@ -6,7 +6,7 @@ import { TreeState } from 'react-stately'
 interface MenuItemProps<T> {
   item: Node<T>
   state: TreeState<T>
-  onAction?: (key: React.Key) => void
+  onAction?: (key: Key) => void
   onClose: () => void
 }
 

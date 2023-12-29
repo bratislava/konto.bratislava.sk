@@ -75,6 +75,14 @@ const Calculator = ({
       }
       return NaN
     }
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
+    parser.functions.ratioDenominator = (arg: string) => {
+      const parsed = parseRatio(arg)
+      if (parsed.isValid) {
+        return parsed.denominator
+      }
+      return NaN
+    }
 
     try {
       return parser.parse(formula)

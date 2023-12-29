@@ -2,7 +2,7 @@ import { getLocalTimeZone, parseDate } from '@internationalized/date'
 import { WidgetProps } from '@rjsf/utils'
 import React from 'react'
 import { useDateFormatter } from 'react-aria'
-import { CheckboxUiOptions } from 'schema-generator/generator/uiOptionsTypes'
+import { CheckboxUiOptions, SelectUiOptions } from 'schema-generator/generator/uiOptionsTypes'
 
 import { useFormState } from '../../useFormState'
 import SummaryFiles from './SummaryFiles'
@@ -42,11 +42,11 @@ const ValueComponent = ({
 
   switch (widgetType) {
     case 'select':
-      const selectArray = Array.isArray(value) ? value : [value]
+      const selectArray = (Array.isArray(value) ? value : [value]) as string[]
+
       const selectLabels = selectArray.map(
         (innerValue) =>
-          options.enumOptions?.find((option) => option.value === innerValue)?.label ??
-          (innerValue as string),
+          (options as SelectUiOptions)?.selectOptions?.[innerValue]?.title ?? innerValue,
       )
 
       return <>{selectLabels.join(', ')}</>

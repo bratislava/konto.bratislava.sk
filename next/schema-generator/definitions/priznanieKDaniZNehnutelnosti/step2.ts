@@ -39,7 +39,8 @@ export default step('udajeODanovnikovi', { title: 'Údaje o daňovníkovi' }, [
       [
         fileUpload(
           'splnomocnenie',
-          { title: 'Nahrajte splnomocnenie', required: true, multiple: true },
+          // TODO: Reconsider required
+          { title: 'Nahrajte splnomocnenie', multiple: true },
           {
             type: 'dragAndDrop',
             helptext: markdownText(

@@ -32,7 +32,40 @@ const vymeraPodlahovejPlochyBytu = number(
   },
 )
 
-const vymeraKalkulacka = customComponentsField(
+const celkovaVymeraSpecialCase = number(
+  'celkovaVymeraSpecialCase',
+  {
+    type: 'number',
+    title: 'Celková výmera podlahovej plochy vášho bytu',
+    required: true,
+    minimum: 0,
+  },
+  {
+    helptext:
+      'Ak má číslo za lomkou vo vašom podiele hodnotu 1000, 10000, alebo 100000, LV vám vypočítať výmeru nepomôže. Správny údaj nájdete v kúpnej zmluve alebo v znaleckom posudku k predmetnej nehnuteľnosti.',
+  },
+)
+
+const vymeraKalkulackaByty = customComponentsField(
+  {
+    type: 'propertyTaxCalculator',
+    props: {
+      variant: 'black',
+      calculators: [
+        {
+          label: 'Základ dane',
+          formula: `denominator = ratioDenominator(podielPriestoruNaSpolocnychCastiachAZariadeniachDomu);
+            ceil ((denominator in [1000, 10000, 100000] ? celkovaVymeraSpecialCase : ratioNumerator(podielPriestoruNaSpolocnychCastiachAZariadeniachDomu) / 100) * evalRatio(spoluvlastnickyPodiel))`,
+          missingFieldsMessage: 'Pre výpočet základu dane vyplňte všetky polia.',
+          unit: markdownText('m^2^'),
+        },
+      ],
+    },
+  },
+  {},
+)
+
+const vymeraKalkulackaNebytovePriestory = customComponentsField(
   {
     type: 'propertyTaxCalculator',
     props: {
@@ -141,13 +174,34 @@ const innerArray = (kalkulacka: boolean) =>
             },
           ),
           conditionalFields(createCondition([[['priznanieZaByt'], { const: true }]]), [
+            input('cisloBytu', { title: 'Číslo bytu', required: true }, {}),
+            input(
+              'popisBytu',
+              { title: 'Popis bytu' },
+              { helptext: 'Stručný popis bytu.', placeholder: 'Napr. dvojizbový byt' },
+            ),
             kalkulacka
               ? podielPriestoruNaSpolocnychCastiachAZariadeniachDomu(Typ.Byt)
               : skipSchema(podielPriestoruNaSpolocnychCastiachAZariadeniachDomu(Typ.Byt)),
+            conditionalFields(
+              createCondition([
+                [
+                  ['podielPriestoruNaSpolocnychCastiachAZariadeniachDomu'],
+                  {
+                    type: 'string',
+                    format: 'ratio',
+                    // The regex itself doesn't validate all the requirements for ratio, but works as an addition to the
+                    // format: 'ratio' validation to ensure that the denominator is one of the required values.
+                    pattern: '^\\d+\\/(1000|10000|100000)$',
+                  },
+                ],
+              ]),
+              [kalkulacka ? celkovaVymeraSpecialCase : skipSchema(celkovaVymeraSpecialCase)],
+            ),
             kalkulacka
               ? spoluvlastnickyPodiel(Typ.Byt)
               : skipSchema(spoluvlastnickyPodiel(Typ.Byt)),
-            kalkulacka ? vymeraKalkulacka : skipSchema(vymeraKalkulacka),
+            kalkulacka ? vymeraKalkulackaByty : skipSchema(vymeraKalkulackaByty),
             kalkulacka ? skipSchema(vymeraPodlahovejPlochyBytu) : vymeraPodlahovejPlochyBytu,
             number(
               'vymeraPodlahovejPlochyNaIneUcely',
@@ -263,7 +317,9 @@ const innerArray = (kalkulacka: boolean) =>
                 kalkulacka
                   ? spoluvlastnickyPodiel(Typ.NebytovyPriestor)
                   : skipSchema(spoluvlastnickyPodiel(Typ.NebytovyPriestor)),
-                kalkulacka ? vymeraKalkulacka : skipSchema(vymeraKalkulacka),
+                kalkulacka
+                  ? vymeraKalkulackaNebytovePriestory
+                  : skipSchema(vymeraKalkulackaNebytovePriestory),
                 kalkulacka
                   ? skipSchema(vymeraPodlahovychPlochNebytovehoPriestoruVBytovomDome)
                   : vymeraPodlahovychPlochNebytovehoPriestoruVBytovomDome,

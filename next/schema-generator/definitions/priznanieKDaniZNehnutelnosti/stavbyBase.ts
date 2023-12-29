@@ -43,6 +43,7 @@ export const stavbyBase = (step: StepEnum) => [
               'Jarovce',
               'Karlova Ves',
               'Lamač',
+              'Nivy',
               'Nové Mesto',
               'Petržalka',
               'Podunajské Biskupice',
@@ -50,7 +51,9 @@ export const stavbyBase = (step: StepEnum) => [
               'Rusovce',
               'Ružinov',
               'Staré Mesto',
+              'Trnávka',
               'Vajnory',
+              'Vinohrady',
               'Vrakuňa',
               'Záhorská Bystrica',
             ],
@@ -80,15 +83,5 @@ export const stavbyBase = (step: StepEnum) => [
       ),
     ],
   ),
-  ...(step === StepEnum.DanZBytovANebytovychPriestorov
-    ? [
-        input('cisloBytu', { title: 'Číslo bytu', required: true }, {}),
-        input(
-          'popisBytu',
-          { title: 'Popis bytu' },
-          { helptext: 'Stručný popis bytu.', placeholder: 'Napr. dvojizbový byt' },
-        ),
-      ]
-    : []),
   ...pravnyVztahSpoluvlastnictvo(step),
 ]

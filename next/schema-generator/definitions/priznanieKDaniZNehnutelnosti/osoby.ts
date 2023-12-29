@@ -346,9 +346,9 @@ export const bezpodieloveSpoluvlastnictvoManzelov = [
   ),
   conditionalFields(createCondition([[['rovnakaAdresa'], { const: false }]]), [
     ulicaCislo(DanovnikTyp.BezpodieloveSpoluvlastnictvoManzelov),
+    obecPscField,
+    statField,
   ]),
-  obecPscField,
-  statField,
   emailField,
   telefonField,
 ]

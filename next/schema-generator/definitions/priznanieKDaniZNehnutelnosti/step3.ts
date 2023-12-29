@@ -21,7 +21,7 @@ import { vyplnitKrokRadio } from './vyplnitKrokRadio'
 
 const celkovaVymeraPozemku = number(
   'celkovaVymeraPozemku',
-  { title: 'Celková výmera pozemku', required: true },
+  { title: 'Celková výmera pozemku', required: true, minimum: 0 },
   {
     helptext: markdownText(
       'Zadávajte číslo, nachádza sa ako 2. v poradí v tabuľke na LV. Pozemky pod stavbami sa nezdaňujú. Sčítate len tie, ktoré majú iný kód využitia ako “15”. :form-image-preview[Zobraziť ukážku]{src="https://cdn-api.bratislava.sk/general-strapi/upload/3_pozemok_celkova_vymera_67d9f26e23.png"}',
@@ -76,7 +76,7 @@ const vymeraPozemkuKalkulacka = customComponentsField(
 
 const vymeraPozemku = number(
   'vymeraPozemku',
-  { title: 'Vaša výmera pozemku', required: true },
+  { title: 'Vaša výmera pozemku', required: true, minimum: 0 },
   {
     helptext:
       'Zadajte výsledok výpočtu vašej časti/podielu na výmere pozemku ako číslo na dve desatinné čísla - bez zaokrúhlenia (napr. 0,65)',
@@ -129,6 +129,7 @@ const innerArray = (kalkulacka: boolean) =>
                   'Jarovce',
                   'Karlova Ves',
                   'Lamač',
+                  'Nivy',
                   'Nové Mesto',
                   'Petržalka',
                   'Podunajské Biskupice',
@@ -136,7 +137,9 @@ const innerArray = (kalkulacka: boolean) =>
                   'Rusovce',
                   'Ružinov',
                   'Staré Mesto',
+                  'Trnávka',
                   'Vajnory',
+                  'Vinohrady',
                   'Vrakuňa',
                   'Záhorská Bystrica',
                 ],

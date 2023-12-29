@@ -37,7 +37,7 @@ export const pravnyVztahSpoluvlastnictvo = (step?: StepEnum) => [
         {
           title: 'Bezpodielové spoluvlastníctvo manželov',
           description:
-            'Nehnuteľnosť vlastníte bezpodielovo s manželom/kou (váš podiel na LV je 1/1). Priznanie podáva len jeden z manželov.',
+            'Nehnuteľnosť vlastníte bezpodielovo s manželom/kou (váš podiel na LV je 1/1). Priznanie podáva len jeden z manželov. Údaje o manželovi/manželke zadáte na konci tohto formulára.',
         },
       ]),
     },

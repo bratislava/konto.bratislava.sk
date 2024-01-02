@@ -25,7 +25,7 @@ type FormExportImportProviderProps = {
 export const useGetContext = ({ initialFormData }: FormExportImportProviderProps) => {
   const { isAuthenticated } = useServerSideAuth()
   const { formId, formData, formSlug, setImportedFormData } = useFormState()
-  const { setRegistrationModal } = useFormModals()
+  const { setRegistrationModal, setTaxFormPdfExportModal } = useFormModals()
   const { t } = useTranslation('forms')
   const { setConceptSaveErrorModal } = useFormModals()
   const { turnOffLeaveProtection } = useFormLeaveProtection()
@@ -153,7 +153,11 @@ export const useGetContext = ({ initialFormData }: FormExportImportProviderProps
       // TODO: Revisit when BE is fixed
       downloadBlob(new Blob([response.data as BlobPart]), fileName)
       closeSnackbarInfo()
-      openSnackbarSuccess(t('success_messages.pdf_export'))
+      if (initialFormData.isTaxForm) {
+        setTaxFormPdfExportModal(true)
+      } else {
+        openSnackbarSuccess(t('success_messages.pdf_export'))
+      }
     } catch (error) {
       openSnackbarError(t('errors.pdf_export'))
     }

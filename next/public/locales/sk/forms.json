@@ -210,5 +210,11 @@
     "title": "Vymazať koncept",
     "content": "Naozaj si želáte vymazať koncept {{conceptName}}? Táto akcia je nevratná.",
     "button_title": "Vymazať"
+  },
+  "tax_form_landing_page": {
+    "title": "Priznanie k dani z nehnutelnosti",
+    "instructions": "\n## Čo si musíte pripraviť pred začiatkom.\n\n- **Listy vlastníctva k predmetnej nehnuteľnosti** (ak vlastníte viac nehnuteľností, napr. byt a aj garážové státie, máte často aj viac listov vlastníctva)\n- **Občiansky preukaz s elektronickým čipom - eID** (ak máte e-ID, budete vedieť formulár aj podpísať, bez e-ID si ho viete vytlačiť a následne doručiť na oddelenie miestnych daní, poplatkov a licencií.)\n- Kúpna zmluva od nehnuteľnosti\n- V prípade, že vlastníte nehnuteľnosť v bezpodielovom vlastníctve s manželom/kou a podávate priznanie za oboch, tak aj **rodné číslo manžela/ky**\n- V prípade, že vlastníte nehnuteľnosť v podielovom vlastníctve a podávate priznanie aj za spoluvlastníkov, je potrebné mať pripravenú **dohodu o určení zástupcu**\n- V prípade, že priznanie nepodávate vo vlastnom mene, je nutné pripraviť **splnomocnenie pre podávanie priznania**\n",
+    "redirect_button": "Pokračovať",
+    "redirect_error": "Nepodarilo sa načítať formulár. Skúste to prosím znova."
   }
 }

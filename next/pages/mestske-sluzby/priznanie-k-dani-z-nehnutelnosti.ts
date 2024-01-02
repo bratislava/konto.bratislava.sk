@@ -9,15 +9,12 @@ import {
   getSSRCurrentAuth,
   ServerSideAuthProviderHOC,
 } from '../../components/logic/ServerSideAuthProvider'
-import { environment } from '../../environment'
 
 /**
  * Temporary landing page only for tax form, which overrides the [slug] route, until we create unified landing page for
  * all forms.
  */
 export const getServerSideProps: GetServerSideProps<TaxFormLandingPageProps> = async (ctx) => {
-  if (!environment.featureToggles.priznanieKDaniZNehnutelnostiLandingPage) return { notFound: true }
-
   const ssrCurrentAuthProps = await getSSRCurrentAuth(ctx.req)
   const locale = 'sk'
 

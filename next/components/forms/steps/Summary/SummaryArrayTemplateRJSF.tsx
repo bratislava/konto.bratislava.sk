@@ -40,7 +40,7 @@ const TopLevelArrayFieldItemTemplate = ({
           {title && <span className="text-p2-semibold">{title}</span>}
           {hasError && (
             <div className="text-p2 text-category-700 group-open:hidden">
-              {t('contains_errors')}
+              {t('summary.contains_errors')}
             </div>
           )}
         </div>

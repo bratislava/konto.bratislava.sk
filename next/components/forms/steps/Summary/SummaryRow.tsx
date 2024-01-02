@@ -37,7 +37,7 @@ const SummaryRow = (props: SummaryRowProps) => {
   })
 
   return (
-    <div className={containerClassName}>
+    <div className={containerClassName} data-cy="summary-row">
       <p className={labelClassName}>{data.label}</p>
       <div className="flex w-full flex-1 flex-row items-center">
         <span className={valueClassName}>{data.value || '-'}</span>

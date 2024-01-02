@@ -125,6 +125,7 @@ export const AccountNavBar = ({ className, sectionsList, menuItems, hiddenHeader
                     <ButtonNew
                       variant="unstyled"
                       className="flex items-center gap-x-6 font-semibold text-font/75"
+                      data-cy="account-button"
                     >
                       <Avatar userData={userData} />
                       <div className="font-light lg:font-semibold">
@@ -153,7 +154,8 @@ export const AccountNavBar = ({ className, sectionsList, menuItems, hiddenHeader
                     onPress={register}
                     variant="negative"
                     text={t('account:menu_register_link')}
-                    size="sm"
+                      size="sm"
+                      data-cy="register-button"
                   />
                 </div>
               )}
@@ -199,6 +201,7 @@ export const AccountNavBar = ({ className, sectionsList, menuItems, hiddenHeader
             <ReactAriaButton
               onPress={() => (isAuthenticated ? setBurgerOpen(!burgerOpen) : login())}
               className="-mr-4 px-4 py-5"
+              data-cy="mobile-account-button"
             >
               <div className="flex w-6 items-center justify-center">
                 {burgerOpen ? (

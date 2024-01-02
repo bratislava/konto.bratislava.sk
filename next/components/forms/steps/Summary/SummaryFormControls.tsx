@@ -2,6 +2,7 @@ import { ChevronLeftIcon } from '@assets/ui-icons'
 import { useTranslation } from 'next-i18next'
 import React, { useMemo } from 'react'
 
+import { useFormExportImport } from '../../../../frontend/hooks/useFormExportImport'
 import { isFormSubmitDisabled } from '../../../../frontend/utils/formSummary'
 import { useFormSignature } from '../../signer/useFormSignature'
 import ButtonNew from '../../simple-components/ButtonNew'
@@ -12,7 +13,8 @@ import { useFormSummary } from './useFormSummary'
 const SummaryFormControls = () => {
   const { t } = useTranslation('forms')
 
-  const { isReadonly, goToPreviousStep } = useFormState()
+  const { isReadonly, goToPreviousStep, isTaxForm } = useFormState()
+  const { exportPdf } = useFormExportImport()
   const { errorSchema, infectedFiles } = useFormSummary()
   const { isValidSignature } = useFormSignature()
   const submitDisabled = useMemo(
@@ -42,47 +44,64 @@ const SummaryFormControls = () => {
         </div>
 
         <div className="flex flex-row flex-wrap gap-5">
-          <ButtonNew
-            isDisabled={submitDisabled}
-            type="submit"
-            variant="black-outline"
-            onPress={handleSendEidButtonPress}
-          >
-            {t('summary.button_send_eid')}
-          </ButtonNew>
-          <ButtonNew
-            isDisabled={submitDisabled}
-            type="submit"
-            variant="black-solid"
-            onPress={handleSendButtonPress}
-          >
-            {t('summary.button_send')}
-          </ButtonNew>
+          {isTaxForm ? (
+            <ButtonNew variant="black-solid" onPress={exportPdf}>
+              {t('summary.export_pdf')}
+            </ButtonNew>
+          ) : (
+            <>
+              <ButtonNew
+                isDisabled={submitDisabled}
+                type="submit"
+                variant="black-outline"
+                onPress={handleSendEidButtonPress}
+              >
+                {t('summary.button_send_eid')}
+              </ButtonNew>
+              <ButtonNew
+                isDisabled={submitDisabled}
+                type="submit"
+                variant="black-solid"
+                onPress={handleSendButtonPress}
+              >
+                {t('summary.button_send')}
+              </ButtonNew>
+            </>
+          )}
         </div>
       </div>
 
       {/* Mobile */}
       <div className="mt-4 flex flex-col gap-2 md:hidden">
-        <ButtonNew
-          isDisabled={submitDisabled}
-          size="small"
-          fullWidth
-          type="submit"
-          variant="black-outline"
-          onPress={handleSendEidButtonPress}
-        >
-          {t('summary.button_send_eid')}
-        </ButtonNew>
-        <ButtonNew
-          isDisabled={submitDisabled}
-          size="small"
-          fullWidth
-          type="submit"
-          variant="black-solid"
-          onPress={handleSendButtonPress}
-        >
-          {t('summary.button_send')}
-        </ButtonNew>
+        {isTaxForm ? (
+          <ButtonNew variant="black-solid" onPress={exportPdf} fullWidth>
+            {t('summary.export_pdf')}
+          </ButtonNew>
+        ) : (
+          <>
+            {' '}
+            <ButtonNew
+              isDisabled={submitDisabled}
+              size="small"
+              fullWidth
+              type="submit"
+              variant="black-outline"
+              onPress={handleSendEidButtonPress}
+            >
+              {t('summary.button_send_eid')}
+            </ButtonNew>
+            <ButtonNew
+              isDisabled={submitDisabled}
+              size="small"
+              fullWidth
+              type="submit"
+              variant="black-solid"
+              onPress={handleSendButtonPress}
+            >
+              {t('summary.button_send')}
+            </ButtonNew>
+          </>
+        )}
         <ButtonNew size="small" fullWidth variant="black-outline" onPress={goToPreviousStep}>
           {t('buttons.previous')}
         </ButtonNew>

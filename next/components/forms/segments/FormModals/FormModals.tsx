@@ -13,6 +13,7 @@ import MessageModal, { MessageModalProps } from '../../widget-components/Modals/
 import AccountMarkdown from '../AccountMarkdown/AccountMarkdown'
 import IdentityVerificationModal from '../IdentityVerificationModal/IdentityVerificationModal'
 import RegistrationModal from '../RegistrationModal/RegistrationModal'
+import TaxFormPdfExportModal from '../TaxFormPdfExportModal/TaxFormPdfExportModal'
 
 const FormModals = () => {
   const { t } = useTranslation('forms')
@@ -59,6 +60,8 @@ const FormModals = () => {
     eidSendConfirmationModalIsPending,
     deleteConceptModal,
     setDeleteConceptModal,
+    taxFormPdfExportModal,
+    setTaxFormPdfExportModal,
   } = useFormModals()
   const { saveConcept, saveConceptIsPending, migrateForm, migrateFormIsPending } =
     useFormExportImport()
@@ -539,6 +542,14 @@ const FormModals = () => {
         }}
         login={login}
         register={register}
+      />
+      <TaxFormPdfExportModal
+        isOpen={taxFormPdfExportModal}
+        onOpenChange={(value) => {
+          if (!value) {
+            setTaxFormPdfExportModal(false)
+          }
+        }}
       />
       <IdentityVerificationModal
         isOpen={identityVerificationModal}

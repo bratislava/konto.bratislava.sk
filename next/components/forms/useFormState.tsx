@@ -218,6 +218,7 @@ const useGetContext = ({ schema, uiSchema, formSlug, initialFormData }: FormStat
     goToStepByFieldId,
     setImportedFormData,
     isSigned: initialFormData.isSigned,
+    isTaxForm: initialFormData.isTaxForm,
   }
 }
 

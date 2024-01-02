@@ -79,7 +79,6 @@ const SummaryFormControls = () => {
           </ButtonNew>
         ) : (
           <>
-            {' '}
             <ButtonNew
               isDisabled={submitDisabled}
               size="small"

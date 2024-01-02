@@ -111,7 +111,7 @@ const Alert = ({
       </div>
       {message && title && (
         <div
-          className={cx('text-p2 w-full pl-9 font-normal', {
+          className={cx('text-p2 w-full font-normal md:pl-9', {
             'text-gray-0': solid,
             'text-gray-700': !solid,
           })}
@@ -119,7 +119,7 @@ const Alert = ({
           {title && message}
         </div>
       )}
-      <AlertButtons className="pl-9" buttons={buttons} />
+      <AlertButtons className="md:pl-9" buttons={buttons} />
     </div>
   )
 }

@@ -1,6 +1,7 @@
 import cx from 'classnames'
 import Alert from 'components/forms/info-components/Alert'
 import { UserData } from 'frontend/dtos/accountDto'
+import { useServerSideAuth } from 'frontend/hooks/useServerSideAuth'
 import { useTranslation } from 'next-i18next'
 import { useId } from 'react'
 
@@ -35,6 +36,7 @@ const UserProfileDetail = (props: UserProfileDetailProps) => {
   } = props
   const { t } = useTranslation('account')
   const formId = `form-${useId()}`
+  const { tierStatus } = useServerSideAuth()
 
   const handleOnSubmit = (newUserData: UserData) => {
     onSubmit({
@@ -45,10 +47,28 @@ const UserProfileDetail = (props: UserProfileDetailProps) => {
 
   return (
     <div
-      className={cx(' flex flex-col', 'md:static md:z-0', {
+      className={cx('mt-3 flex flex-col bg-white', 'md:static md:z-0', {
         'fixed inset-0 z-50': isEditing,
       })}
     >
+      {!tierStatus.isIdentityVerified && (
+        <div className="flex w-full items-center justify-center bg-white p-3 md:px-8 md:py-3">
+          <div className="md:max-w-screen-lg">
+            <Alert
+              title={t('verification_status_required')}
+              message={t('verification_status_required_alert')}
+              type="warning"
+              buttons={[
+                {
+                  title: t('verification_url_text'),
+                  link: '/overenie-identity',
+                },
+              ]}
+              fullWidth
+            />
+          </div>
+        </div>
+      )}
       <UserProfileSection>
         <UserProfileSectionHeader
           title={t('profile_detail.title')}

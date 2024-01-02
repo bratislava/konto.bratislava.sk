@@ -171,6 +171,7 @@ const PropertyTaxCalculator = ({
         <div className="flex flex-col items-start justify-center self-stretch">
           {calculators.map((calculator, index) => (
             <Calculator
+              key={index}
               {...calculator}
               isLast={index === calculators.length - 1}
               variant={variant}

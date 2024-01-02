@@ -42,7 +42,7 @@ const celkovaVymeraSpecialCase = number(
   },
   {
     helptext:
-      'Ak má číslo za lomkou vo vašom podiele hodnotu 1000, 10000, alebo 100000, LV vám vypočítať výmeru nepomôže. Správny údaj nájdete v kúpnej zmluve alebo v znaleckom posudku k predmetnej nehnuteľnosti.',
+      'Ak číslo za lomkou vo vašom podiele začína číslom od 1 do 9, za ktorým nasledujú 3 alebo viac núl, LV vám vypočítať výmeru nepomôže. Správny údaj nájdete v kúpnej zmluve alebo v znaleckom posudku k predmetnej nehnuteľnosti.',
   },
 )
 
@@ -54,8 +54,11 @@ const vymeraKalkulackaByty = customComponentsField(
       calculators: [
         {
           label: 'Základ dane',
+          // The special case checks whether the denominator is number starting with 1-9 followed by 3 or more zeroes.
           formula: `denominator = ratioDenominator(podielPriestoruNaSpolocnychCastiachAZariadeniachDomu);
-            ceil ((denominator in [1000, 10000, 100000] ? celkovaVymeraSpecialCase : ratioNumerator(podielPriestoruNaSpolocnychCastiachAZariadeniachDomu) / 100) * evalRatio(spoluvlastnickyPodiel))`,
+          highestPowerOf10 = pow(10, floor(log10 denominator));
+          isSpecialCase = denominator >= 1000 and denominator % highestPowerOf10 == 0;
+            ceil ((isSpecialCase ? celkovaVymeraSpecialCase : ratioNumerator(podielPriestoruNaSpolocnychCastiachAZariadeniachDomu) / 100) * evalRatio(spoluvlastnickyPodiel))`,
           missingFieldsMessage: 'Pre výpočet základu dane vyplňte všetky polia.',
           unit: markdownText('m^2^'),
         },
@@ -191,8 +194,9 @@ const innerArray = (kalkulacka: boolean) =>
                     type: 'string',
                     format: 'ratio',
                     // The regex itself doesn't validate all the requirements for ratio, but works as an addition to the
-                    // format: 'ratio' validation to ensure that the denominator is one of the required values.
-                    pattern: '^\\d+\\/(1000|10000|100000)$',
+                    // format: 'ratio' validation to ensure that the denominator is a number starting with 1-9 followed
+                    // by 3 or more zeroes.
+                    pattern: '^\\d+\\/([1-9]0{3,})$',
                   },
                 ],
               ]),

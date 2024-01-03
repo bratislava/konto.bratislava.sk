@@ -7,7 +7,7 @@
     "unknown": "Nastala neznáma chyba. Skúste to prosím znova.",
     "xml_export": "XML sa nepodarilo stiahnuť.",
     "xml_import": "XML sa nepodarilo nahrať.",
-    "pdf_export": "PDF sa nepodarilo stiahnuť",
+    "pdf_export": "PDF sa nepodarilo stiahnuť.",
     "concept_save": "Koncept sa nepodarilo uložiť.",
     "migration": "Formulár sa nepodarilo premigrovať.",
     "concept_delete": "Koncept sa nepodarilo vymazať."
@@ -69,7 +69,7 @@
     "save_concept": "Uložiť ako koncept",
     "download_xml": "Stiahnuť ako XML",
     "pdf": "Stiahnuť ako PDF",
-    "upload_xml": "Nahrať z XML",
+    "upload_xml": "Nahrať XML",
     "guide": "Návod",
     "delete": "Vymazať"
   },

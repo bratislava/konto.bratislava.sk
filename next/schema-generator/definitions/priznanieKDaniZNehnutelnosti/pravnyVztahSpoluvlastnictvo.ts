@@ -81,10 +81,10 @@ export const pravnyVztahSpoluvlastnictvo = (step?: StepEnum) => [
     [
       fileUpload(
         'splnomocnenie',
+        // TODO: Reconsider required when tax form will be sent online.
         {
           title:
             'Nahrajte sken dohody o určení zástupcu na podanie priznania k dani z nehnuteľností',
-          required: true,
           multiple: true,
         },
         {

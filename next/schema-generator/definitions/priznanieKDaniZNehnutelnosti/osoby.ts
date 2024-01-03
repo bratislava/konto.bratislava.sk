@@ -2,11 +2,12 @@ import { conditionalFields, input, object, radioGroup, select } from '../../gene
 import { createCamelCaseOptions, createCondition } from '../../generator/helpers'
 import { statCiselnik } from './statCiselnik'
 
-enum DanovnikTyp {
+enum UlicaCisloTyp {
   FyzickaOsoba = 'FyzickaOsoba',
   FyzickaOsobaPodnikatel = 'FyzickaOsobaPodnikatel',
   PravnickaOsoba = 'PravnickaOsoba',
   BezpodieloveSpoluvlastnictvoManzelov = 'BezpodieloveSpoluvlastnictvoManzelov',
+  KorespondencnaAdresa = 'KorespondencnaAdresa',
 }
 
 const rodneCisloField = input(
@@ -30,7 +31,7 @@ const menoTitulField = object(
   [input('meno', { title: 'Meno', required: true }, {}), input('titul', { title: 'Titul' }, {})],
 )
 
-const ulicaCislo = (type: DanovnikTyp) =>
+const ulicaCisloFields = (type: UlicaCisloTyp) =>
   object(
     `ulicaCislo${type}`,
     { required: true },
@@ -44,12 +45,13 @@ const ulicaCislo = (type: DanovnikTyp) =>
         { title: 'Ulica', required: true },
         {
           helptext: {
-            [DanovnikTyp.FyzickaOsoba]: 'Zadajte ulicu svojho trvalého pobytu.',
-            [DanovnikTyp.FyzickaOsobaPodnikatel]:
+            [UlicaCisloTyp.FyzickaOsoba]: 'Zadajte ulicu svojho trvalého pobytu.',
+            [UlicaCisloTyp.FyzickaOsobaPodnikatel]:
               'Zadajte ulicu miesta podnikania podľa živnostenského registra.',
-            [DanovnikTyp.PravnickaOsoba]: 'Zadajte ulicu sídla.',
-            [DanovnikTyp.BezpodieloveSpoluvlastnictvoManzelov]:
+            [UlicaCisloTyp.PravnickaOsoba]: 'Zadajte ulicu sídla.',
+            [UlicaCisloTyp.BezpodieloveSpoluvlastnictvoManzelov]:
               'Zadajte ulicu trvalého pobytu manžela/manželky.',
+            [UlicaCisloTyp.KorespondencnaAdresa]: undefined,
           }[type],
         },
       ),
@@ -253,12 +255,30 @@ export const udajeOOpravnenejOsobeNaPodaniePriznania = object(
     pravnyVztahKPOField,
     priezviskoField,
     menoTitulField,
-    ulicaCislo(DanovnikTyp.FyzickaOsoba),
+    ulicaCisloFields(UlicaCisloTyp.FyzickaOsoba),
     obecPscField,
     statField,
     emailField,
     telefonField,
   ],
+)
+
+const korespondencnaAdresaField = radioGroup(
+  'korespondencnaAdresaRovnaka',
+  {
+    type: 'boolean',
+    title: 'Je korešpondenčná adresa rovnáká ako adresa trvalého pobytu?',
+    required: true,
+    options: [
+      { value: true, title: 'Áno', isDefault: true },
+      { value: false, title: 'Nie' },
+    ],
+  },
+  {
+    variant: 'boxed',
+    orientations: 'row',
+    labelSize: 'h5',
+  },
 )
 
 export const danovnik = [
@@ -273,7 +293,7 @@ export const danovnik = [
     rodneCisloField,
     priezviskoField,
     menoTitulField,
-    ulicaCislo(DanovnikTyp.FyzickaOsoba),
+    ulicaCisloFields(UlicaCisloTyp.FyzickaOsoba),
   ]),
   conditionalFields(
     createCondition([[['priznanieAko'], { enum: ['fyzickaOsobaPodnikatel', 'pravnickaOsoba'] }]]),
@@ -287,17 +307,15 @@ export const danovnik = [
     [obchodneMenoAleboNazovField],
   ),
   conditionalFields(createCondition([[['priznanieAko'], { const: 'fyzickaOsobaPodnikatel' }]]), [
-    ulicaCislo(DanovnikTyp.FyzickaOsobaPodnikatel),
+    ulicaCisloFields(UlicaCisloTyp.FyzickaOsobaPodnikatel),
   ]),
   conditionalFields(createCondition([[['priznanieAko'], { const: 'pravnickaOsoba' }]]), [
-    ulicaCislo(DanovnikTyp.PravnickaOsoba),
+    ulicaCisloFields(UlicaCisloTyp.PravnickaOsoba),
   ]),
   obecPscField,
   statField,
-  emailField,
-  telefonField,
   conditionalFields(createCondition([[['priznanieAko'], { const: 'pravnickaOsoba' }]]), [
-    ulicaCislo(DanovnikTyp.PravnickaOsoba),
+    ulicaCisloFields(UlicaCisloTyp.PravnickaOsoba),
   ]),
   conditionalFields(
     createCondition([
@@ -306,17 +324,29 @@ export const danovnik = [
     ]),
     [udajeOOpravnenejOsobeNaPodaniePriznania],
   ),
+  conditionalFields(createCondition([[['priznanieAko'], { const: 'fyzickaOsoba' }]]), [
+    object('korespondencnaAdresa', { required: true }, { objectDisplay: 'boxed' }, [
+      korespondencnaAdresaField,
+      conditionalFields(createCondition([[['korespondencnaAdresaRovnaka'], { const: false }]]), [
+        ulicaCisloFields(UlicaCisloTyp.KorespondencnaAdresa),
+        obecPscField,
+        statField,
+      ]),
+    ]),
+  ]),
+  emailField,
+  telefonField,
 ]
 
 export const splnomocnenec = [
   conditionalFields(createCondition([[['splnomocnenecTyp'], { const: 'fyzickaOsoba' }]]), [
     priezviskoField,
     menoTitulField,
-    ulicaCislo(DanovnikTyp.FyzickaOsoba),
+    ulicaCisloFields(UlicaCisloTyp.FyzickaOsoba),
   ]),
   conditionalFields(createCondition([[['splnomocnenecTyp'], { const: 'pravnickaOsoba' }]]), [
     obchodneMenoAleboNazovField,
-    ulicaCislo(DanovnikTyp.PravnickaOsoba),
+    ulicaCisloFields(UlicaCisloTyp.PravnickaOsoba),
   ]),
   obecPscField,
   statField,
@@ -324,28 +354,30 @@ export const splnomocnenec = [
   telefonField,
 ]
 
+const rovnakaAdresaField = radioGroup(
+  'rovnakaAdresa',
+  {
+    type: 'boolean',
+    title: 'Má trvalý pobyt na rovnakej adrese ako vy?',
+    required: true,
+    options: [
+      { value: true, title: 'Áno', isDefault: true },
+      { value: false, title: 'Nie' },
+    ],
+  },
+  {
+    variant: 'boxed',
+    orientations: 'row',
+  },
+)
+
 export const bezpodieloveSpoluvlastnictvoManzelov = [
   rodneCisloField,
   priezviskoField,
   menoTitulField,
-  radioGroup(
-    'rovnakaAdresa',
-    {
-      type: 'boolean',
-      title: 'Má trvalý pobyt na rovnakej adrese ako vy?',
-      required: true,
-      options: [
-        { value: true, title: 'Áno', isDefault: true },
-        { value: false, title: 'Nie' },
-      ],
-    },
-    {
-      variant: 'boxed',
-      orientations: 'row',
-    },
-  ),
+  rovnakaAdresaField,
   conditionalFields(createCondition([[['rovnakaAdresa'], { const: false }]]), [
-    ulicaCislo(DanovnikTyp.BezpodieloveSpoluvlastnictvoManzelov),
+    ulicaCisloFields(UlicaCisloTyp.BezpodieloveSpoluvlastnictvoManzelov),
     obecPscField,
     statField,
   ]),

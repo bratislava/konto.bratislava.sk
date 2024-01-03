@@ -48,6 +48,7 @@ const AccountMarkdown = ({
   }
 
   const componentsGroup: Record<string, React.FC<ChildrenParent>> = {
+    h2: ({ children }: ChildrenParent) => <h2 className="text-h2">{children}</h2>,
     h3: ({ children }: ChildrenParent) => <h3 className="text-h3">{children}</h3>,
     h4: ({ children }: ChildrenParent) => <h4 className="text-h4">{children}</h4>,
     h5: ({ children }: ChildrenParent) => <h5 className="text-h5">{children}</h5>,

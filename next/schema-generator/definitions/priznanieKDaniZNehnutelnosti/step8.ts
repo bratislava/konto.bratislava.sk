@@ -75,10 +75,7 @@ export default step(
     textArea(
       'poznamka',
       { title: 'Poznámka' },
-      {
-        helptext:
-          'V prípade, ak priznanie podáva jeden z manželov, je potrebné uviesť všetky identifikačné údaje druhého z manželov, t.j. priezvisko, meno, titul, adresu trvalého pobytu (ulica a číslo, PSČ, obec, štát), číslo telefónu a e-mailovú adresu.',
-      },
+      { placeholder: 'Tu môžete napísať doplnkové informácie' },
     ),
   ],
 )

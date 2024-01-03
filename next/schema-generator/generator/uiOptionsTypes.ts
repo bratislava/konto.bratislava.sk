@@ -98,12 +98,12 @@ export type RadioGroupUiOptions = {
 } & WidgetUiOptions
 
 type SelectOption = {
-  value: string
+  title: string
   description?: string
 }
 
 export type SelectUiOptions = {
-  selectOptions?: SelectOption[]
+  selectOptions?: Record<string, SelectOption>
   placeholder?: string
 } & WidgetUiOptions
 

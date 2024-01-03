@@ -11,7 +11,6 @@ import {
   select,
   skipSchema,
   step,
-  textArea,
 } from '../../generator/functions'
 import { createCondition } from '../../generator/helpers'
 import { kalkulackaFields } from './kalkulacky'
@@ -21,7 +20,7 @@ import { vyplnitKrokRadio } from './vyplnitKrokRadio'
 
 const celkovaZastavanaPlocha = number(
   'celkovaZastavanaPlocha',
-  { type: 'integer', title: 'Celková zastavaná plocha', required: true },
+  { type: 'integer', title: 'Celková zastavaná plocha', required: true, minimum: 0 },
   {
     helptext: markdownText(
       'Uveďte výmeru zastavanej plochy pozemku/ov, na ktorom je umiestnená stavba. Nájdete ju na LV, v časti A. (druh pozemku - zastavaná plocha a nádvorie). :form-image-preview[Zobraziť ukážku]{src="https://cdn-api.bratislava.sk/general-strapi/upload/4_stavba_celkova_zastavana_plocha_5dac588a12.png"}',
@@ -46,7 +45,7 @@ const spoluvlastnickyPodiel = input(
 
 const zakladDane = number(
   'zakladDane',
-  { type: 'integer', title: 'Základ dane', required: true },
+  { type: 'integer', title: 'Základ dane', required: true, minimum: 0 },
   {
     helptext: markdownText(
       'Výmera zastavanej plochy stavby, pri spoluvlastníctve do výšky spoluvlastníckych podielov. Zadajte ako číslo zaokrúhlené na celé m^2^ nahor.',
@@ -74,7 +73,7 @@ const zakladDaneKalkulacka = customComponentsField(
 
 const innerArray = (kalkulacka: boolean) =>
   arrayField(
-    'stavby',
+    'priznania',
     { title: 'Priznania k dani zo stavieb slúžiacich na jeden účel', required: true },
     {
       hideTitle: true,
@@ -186,10 +185,11 @@ const innerArray = (kalkulacka: boolean) =>
               {
                 title: 'Celková výmera podlahových plôch všetkých podlaží stavby',
                 required: true,
+                minimum: 0,
               },
               {
                 helptext:
-                  'Spočítajte výmeru na všetkých podlažiach. U spoluvlastníkov vo výške ich spoluvlastníckeho podielu',
+                  'Spočítajte výmeru na všetkých podlažiach. U spoluvlastníkov vo výške ich spoluvlastníckeho podielu.',
               },
             ),
             number(
@@ -198,9 +198,10 @@ const innerArray = (kalkulacka: boolean) =>
                 title:
                   'Výmera podlahových plôch časti stavby, ktorá je oslobodená od dane zo stavieb',
                 required: true,
+                minimum: 0,
               },
               {
-                helptext: 'U spoluvlastníkov vo výške ich spoluvlastníckeho podielu',
+                helptext: 'U spoluvlastníkov vo výške ich spoluvlastníckeho podielu.',
               },
             ),
           ],
@@ -232,7 +233,7 @@ const innerArray = (kalkulacka: boolean) =>
           ),
         ],
       ),
-      textArea(
+      input(
         'poznamka',
         { title: 'Poznámka' },
         { placeholder: 'Tu môžete napísať doplnkové informácie' },
@@ -250,7 +251,7 @@ export default step(
   vyplnitKrokRadio({
     title: 'Chcete podať daňové priznanie k dani zo stavieb slúžiacich na jeden účel?',
     helptext: markdownText(
-      `K úspešnému vyplneniu oddielu potrebujete list vlastníctva (LV) k jednoúčelovej stavbe. Ide o tú časť LV, kde máte nadpis “Stavby” v časti “A: MAJETKOVÁ PODSTATA”.\n\nV prípade, že sa vás daň zo stavieb slúžiacich na jeden účel netýka, túto časť preskočte (napr. podávate priznanie dani k nehnuteľností za byt/nebytový priestor v bytovom dome).\n\n:form-image-preview[Zobraziť ukážku LV k pozemkom]{src="https://cdn-api.bratislava.sk/general-strapi/upload/4_priznanie_bfb15a1f4a.png"}`,
+      `K úspešnému vyplneniu oddielu potrebujete list vlastníctva (LV) k jednoúčelovej stavbe. Ide o tú časť LV, kde máte nadpis “Stavby” v časti “A: MAJETKOVÁ PODSTATA”.\n\nV prípade, že sa vás daň zo stavieb slúžiacich na jeden účel netýka, túto časť preskočte (napr. podávate priznanie dani k nehnuteľností za byt/nebytový priestor v bytovom dome).\n\n:form-image-preview[Zobraziť ukážku LV k jednoúčelovým stavbám]{src="https://cdn-api.bratislava.sk/general-strapi/upload/4_priznanie_bfb15a1f4a.png"}`,
     ),
     fields: kalkulackaFields({
       title: 'Kalkulačka výpočtu výmery zastavanej plochy stavby',

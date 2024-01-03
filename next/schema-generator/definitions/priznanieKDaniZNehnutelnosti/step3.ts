@@ -12,7 +12,6 @@ import {
   select,
   skipSchema,
   step,
-  textArea,
 } from '../../generator/functions'
 import { createCondition, createStringOptions } from '../../generator/helpers'
 import { kalkulackaFields } from './kalkulacky'
@@ -22,7 +21,7 @@ import { vyplnitKrokRadio } from './vyplnitKrokRadio'
 
 const celkovaVymeraPozemku = number(
   'celkovaVymeraPozemku',
-  { title: 'Celková výmera pozemku', required: true },
+  { title: 'Celková výmera pozemku', required: true, minimum: 0 },
   {
     helptext: markdownText(
       'Zadávajte číslo, nachádza sa ako 2. v poradí v tabuľke na LV. Pozemky pod stavbami sa nezdaňujú. Sčítate len tie, ktoré majú iný kód využitia ako “15”. :form-image-preview[Zobraziť ukážku]{src="https://cdn-api.bratislava.sk/general-strapi/upload/3_pozemok_celkova_vymera_67d9f26e23.png"}',
@@ -40,7 +39,7 @@ const podielPriestoruNaSpolocnychCastiachAZariadeniachDomu = input(
   {
     placeholder: 'Napr. 4827/624441',
     helptext: markdownText(
-      'Zadávajte celý zlomok. Nájdete ho vedľa údajov o vchode, poschodí a čísle bytu. :form-image-preview[Zobraziť ukážku]{src="https://cdn-api.bratislava.sk/general-strapi/upload/3_pozemok_podiel_priestoru_2446155a08.png"}',
+      'Zadávajte celý zlomok. Nájdete ho vedľa údajov o vchode, poschodí a čísle bytu. Ak ho nemáte, zadajte 1/1. :form-image-preview[Zobraziť ukážku]{src="https://cdn-api.bratislava.sk/general-strapi/upload/3_pozemok_podiel_priestoru_2446155a08.png"}',
     ),
   },
 )
@@ -77,7 +76,7 @@ const vymeraPozemkuKalkulacka = customComponentsField(
 
 const vymeraPozemku = number(
   'vymeraPozemku',
-  { title: 'Vaša výmera pozemku', required: true },
+  { title: 'Vaša výmera pozemku', required: true, minimum: 0 },
   {
     helptext:
       'Zadajte výsledok výpočtu vašej časti/podielu na výmere pozemku ako číslo na dve desatinné čísla - bez zaokrúhlenia (napr. 0,65)',
@@ -86,8 +85,8 @@ const vymeraPozemku = number(
 
 const innerArray = (kalkulacka: boolean) =>
   arrayField(
-    'danZPozemkov',
-    { title: 'Priznania k dani z pozemkov', required: true },
+    'priznania',
+    { title: 'Priznania k dani z pozemkov', required: true, maxItems: 17 },
     {
       hideTitle: true,
       variant: 'topLevel',
@@ -130,6 +129,7 @@ const innerArray = (kalkulacka: boolean) =>
                   'Jarovce',
                   'Karlova Ves',
                   'Lamač',
+                  'Nivy',
                   'Nové Mesto',
                   'Petržalka',
                   'Podunajské Biskupice',
@@ -137,7 +137,9 @@ const innerArray = (kalkulacka: boolean) =>
                   'Rusovce',
                   'Ružinov',
                   'Staré Mesto',
+                  'Trnávka',
                   'Vajnory',
+                  'Vinohrady',
                   'Vrakuňa',
                   'Záhorská Bystrica',
                 ],
@@ -295,7 +297,7 @@ const innerArray = (kalkulacka: boolean) =>
           ),
         ],
       ),
-      textArea(
+      input(
         'poznamka',
         { title: 'Poznámka' },
         { placeholder: 'Tu môžete napísať doplnkové informácie' },

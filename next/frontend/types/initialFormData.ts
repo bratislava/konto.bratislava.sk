@@ -11,4 +11,5 @@ export type InitialFormData = {
   schemaVersionId: string
   // TODO consider renaming
   isSigned?: boolean
+  isTaxForm?: boolean
 }

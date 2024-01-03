@@ -10,7 +10,6 @@ import {
   radioGroup,
   skipSchema,
   step,
-  textArea,
 } from '../../generator/functions'
 import { createCondition } from '../../generator/helpers'
 import { kalkulackaFields } from './kalkulacky'
@@ -24,6 +23,7 @@ const vymeraPodlahovejPlochyBytu = number(
     type: 'integer',
     title: 'Výmera podlahovej plochy bytu (základ dane bytu)',
     required: true,
+    minimum: 0,
   },
   {
     helptext: markdownText(
@@ -32,7 +32,43 @@ const vymeraPodlahovejPlochyBytu = number(
   },
 )
 
-const vymeraKalkulacka = customComponentsField(
+const celkovaVymeraSpecialCase = number(
+  'celkovaVymeraSpecialCase',
+  {
+    type: 'number',
+    title: 'Celková výmera podlahovej plochy vášho bytu',
+    required: true,
+    minimum: 0,
+  },
+  {
+    helptext:
+      'Ak číslo za lomkou vo vašom podiele začína číslom od 1 do 9, za ktorým nasledujú 3 alebo viac núl, LV vám vypočítať výmeru nepomôže. Správny údaj nájdete v kúpnej zmluve alebo v znaleckom posudku k predmetnej nehnuteľnosti.',
+  },
+)
+
+const vymeraKalkulackaByty = customComponentsField(
+  {
+    type: 'propertyTaxCalculator',
+    props: {
+      variant: 'black',
+      calculators: [
+        {
+          label: 'Základ dane',
+          // The special case checks whether the denominator is number starting with 1-9 followed by 3 or more zeroes.
+          formula: `denominator = ratioDenominator(podielPriestoruNaSpolocnychCastiachAZariadeniachDomu);
+          highestPowerOf10 = pow(10, floor(log10 denominator));
+          isSpecialCase = denominator >= 1000 and denominator % highestPowerOf10 == 0;
+            ceil ((isSpecialCase ? celkovaVymeraSpecialCase : ratioNumerator(podielPriestoruNaSpolocnychCastiachAZariadeniachDomu) / 100) * evalRatio(spoluvlastnickyPodiel))`,
+          missingFieldsMessage: 'Pre výpočet základu dane vyplňte všetky polia.',
+          unit: markdownText('m^2^'),
+        },
+      ],
+    },
+  },
+  {},
+)
+
+const vymeraKalkulackaNebytovePriestory = customComponentsField(
   {
     type: 'propertyTaxCalculator',
     props: {
@@ -68,8 +104,8 @@ const podielPriestoruNaSpolocnychCastiachAZariadeniachDomu = (typ: Typ) =>
       placeholder: typ === Typ.Byt ? 'Napr. 4827/624441' : 'Napr. 124827/624441',
       helptext: markdownText(
         typ === Typ.Byt
-          ? 'Zadávajte celý zlomok. Nájdete ho vedľa údajov o vchode, poschodí a čísle bytu. :form-image-preview[Zobraziť ukážku]{src="TODO"}'
-          : 'Zadávajte celý zlomok. Nájdete ho vedľa údajov o vchode, poschodí a čísle priestoru. Zobraziť ukážku :form-image-preview[Zobraziť ukážku]{src="https://cdn-api.bratislava.sk/general-strapi/upload/6_nebytovypriestor_podiel_priestoru_86f78e3c99.png"}',
+          ? 'Zadávajte celý zlomok. Nájdete ho vedľa údajov o vchode, poschodí a čísle bytu. :form-image-preview[Zobraziť ukážku]{src="https://cdn-api.bratislava.sk/general-strapi/upload/6_byt_podiel_priestoru_265f9a3965.png"}'
+          : 'Zadávajte celý zlomok. Nájdete ho vedľa údajov o vchode, poschodí a čísle priestoru. :form-image-preview[Zobraziť ukážku]{src="https://cdn-api.bratislava.sk/general-strapi/upload/6_nebytovypriestor_podiel_priestoru_86f78e3c99.png"}',
       ),
     },
   )
@@ -82,7 +118,7 @@ const spoluvlastnickyPodiel = (typ: Typ) =>
       placeholder: typ === Typ.Byt ? 'Napr. 1/1 alebo 1/105' : '1/150 alebo 1/300',
       helptext: markdownText(
         typ === Typ.Byt
-          ? 'Zadávajte celý zlomok. Nájdete ho vedľa údajov o mene vlastníkov. :form-image-preview[Zobraziť ukážku]{src="TODO"}'
+          ? 'Zadávajte celý zlomok. Nájdete ho vedľa údajov o mene vlastníkov. :form-image-preview[Zobraziť ukážku]{src="https://cdn-api.bratislava.sk/general-strapi/upload/6_byt_spoluvlastnicky_podiel_cf4b72f71b.png"}'
           : 'Zadávajte celý zlomok. Nájdete ho vedľa údajov o mene vlastníkov. :form-image-preview[Zobraziť ukážku]{src="https://cdn-api.bratislava.sk/general-strapi/upload/6_nebytovypriestor_spoluvlastnicky_podiel_79034be7a6.png"}',
       ),
     },
@@ -94,6 +130,7 @@ const vymeraPodlahovychPlochNebytovehoPriestoruVBytovomDome = number(
     type: 'integer',
     title: 'Výmera podlahových plôch nebytového priestoru v bytovom dome',
     required: true,
+    minimum: 0,
   },
   {
     helptext: 'Zadávajte číslo zaokrúhlené nahor na celé číslo (príklad: 48,27 = 49).',
@@ -102,7 +139,7 @@ const vymeraPodlahovychPlochNebytovehoPriestoruVBytovomDome = number(
 
 const innerArray = (kalkulacka: boolean) =>
   arrayField(
-    'stavby',
+    'priznania',
     { title: 'Priznania k dani z bytov a z nebytových priestorov v bytovom dome', required: true },
     {
       hideTitle: true,
@@ -140,19 +177,42 @@ const innerArray = (kalkulacka: boolean) =>
             },
           ),
           conditionalFields(createCondition([[['priznanieZaByt'], { const: true }]]), [
+            input('cisloBytu', { title: 'Číslo bytu', required: true }, {}),
+            input(
+              'popisBytu',
+              { title: 'Popis bytu' },
+              { helptext: 'Stručný popis bytu.', placeholder: 'Napr. dvojizbový byt' },
+            ),
             kalkulacka
               ? podielPriestoruNaSpolocnychCastiachAZariadeniachDomu(Typ.Byt)
               : skipSchema(podielPriestoruNaSpolocnychCastiachAZariadeniachDomu(Typ.Byt)),
+            conditionalFields(
+              createCondition([
+                [
+                  ['podielPriestoruNaSpolocnychCastiachAZariadeniachDomu'],
+                  {
+                    type: 'string',
+                    format: 'ratio',
+                    // The regex itself doesn't validate all the requirements for ratio, but works as an addition to the
+                    // format: 'ratio' validation to ensure that the denominator is a number starting with 1-9 followed
+                    // by 3 or more zeroes.
+                    pattern: '^\\d+\\/([1-9]0{3,})$',
+                  },
+                ],
+              ]),
+              [kalkulacka ? celkovaVymeraSpecialCase : skipSchema(celkovaVymeraSpecialCase)],
+            ),
             kalkulacka
               ? spoluvlastnickyPodiel(Typ.Byt)
               : skipSchema(spoluvlastnickyPodiel(Typ.Byt)),
-            kalkulacka ? vymeraKalkulacka : skipSchema(vymeraKalkulacka),
+            kalkulacka ? vymeraKalkulackaByty : skipSchema(vymeraKalkulackaByty),
             kalkulacka ? skipSchema(vymeraPodlahovejPlochyBytu) : vymeraPodlahovejPlochyBytu,
             number(
               'vymeraPodlahovejPlochyNaIneUcely',
               {
                 type: 'integer',
                 title: 'Výmera podlahovej plochy bytu používaného na iné účely',
+                minimum: 0,
               },
               {
                 helptext:
@@ -216,7 +276,7 @@ const innerArray = (kalkulacka: boolean) =>
           conditionalFields(createCondition([[['priznanieZaNebytovyPriestor'], { const: true }]]), [
             arrayField(
               'nebytovePriestory',
-              { title: 'Nebytové priestory', required: true },
+              { title: 'Nebytové priestory', required: true, maxItems: 15 },
               {
                 hideTitle: true,
                 variant: 'nested',
@@ -246,8 +306,9 @@ const innerArray = (kalkulacka: boolean) =>
                       'cisloNebytovehoPriestoruVBytovomDome',
                       { title: 'Číslo nebytového priestoru v bytovom dome', required: true },
                       {
-                        helptext:
+                        helptext: markdownText(
                           'Napr. číslo parkovacieho státia alebo pivničnej kobky (malo by byť uvedené aj na LV). :form-image-preview[Zobraziť ukážku]{src="https://cdn-api.bratislava.sk/general-strapi/upload/6_nebytovypriestor_cislo_3d64bba380.png"}',
+                        ),
                       },
                     ),
                   ],
@@ -260,7 +321,9 @@ const innerArray = (kalkulacka: boolean) =>
                 kalkulacka
                   ? spoluvlastnickyPodiel(Typ.NebytovyPriestor)
                   : skipSchema(spoluvlastnickyPodiel(Typ.NebytovyPriestor)),
-                kalkulacka ? vymeraKalkulacka : skipSchema(vymeraKalkulacka),
+                kalkulacka
+                  ? vymeraKalkulackaNebytovePriestory
+                  : skipSchema(vymeraKalkulackaNebytovePriestory),
                 kalkulacka
                   ? skipSchema(vymeraPodlahovychPlochNebytovehoPriestoruVBytovomDome)
                   : vymeraPodlahovychPlochNebytovehoPriestoruVBytovomDome,
@@ -295,7 +358,7 @@ const innerArray = (kalkulacka: boolean) =>
           ]),
         ],
       ),
-      textArea(
+      input(
         'poznamka',
         { title: 'Poznámka' },
         { placeholder: 'Tu môžete napísať doplnkové informácie' },

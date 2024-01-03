@@ -76,12 +76,15 @@ const SelectWidgetRJSF = ({
   const isMulti = schema.type === 'array'
 
   const componentOptions: SelectOption[] = enumOptions
-    ? enumOptions.map((option) => ({
-        label: option.label,
-        value: option.value,
-        description: selectOptions?.find((selectOption) => selectOption.value === option.value)
-          ?.description,
-      }))
+    ? enumOptions.map((option) => {
+        const selectOption = selectOptions?.[option.value as string]
+
+        return {
+          label: selectOption?.title ?? '',
+          value: option.value,
+          description: selectOption?.description,
+        }
+      })
     : []
 
   const componentProps: SingleMultiSelectBaseProps = {

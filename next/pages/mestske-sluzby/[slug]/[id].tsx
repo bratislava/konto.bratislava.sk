@@ -64,6 +64,8 @@ export const getServerSideProps: GetServerSideProps<FormPageWrapperProps, Params
           formMigrationRequired,
           schemaVersionId: form.schemaVersionId,
           isSigned: form.schemaVersion.isSigned,
+          // TODO Improve
+          isTaxForm: slug === 'priznanie-k-dani-z-nehnutelnosti',
         },
         ...(await serverSideTranslations(locale)),
       } satisfies FormPageWrapperProps,

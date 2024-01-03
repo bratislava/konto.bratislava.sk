@@ -1,5 +1,6 @@
 import {
   arrayField,
+  conditionalFields,
   customComponentsField,
   datePicker,
   input,
@@ -10,8 +11,8 @@ import {
   select,
   skipSchema,
   step,
-  textArea,
 } from '../../generator/functions'
+import { createCondition } from '../../generator/helpers'
 import { kalkulackaFields } from './kalkulacky'
 import { stavbyBase } from './stavbyBase'
 import { StepEnum } from './stepEnum'
@@ -19,7 +20,7 @@ import { vyplnitKrokRadio } from './vyplnitKrokRadio'
 
 const vymeraPodlahovejPlochy = number(
   'vymeraPodlahovejPlochy',
-  { type: 'integer', title: 'Výmera podlahovej plochy', required: true },
+  { type: 'integer', title: 'Výmera podlahovej plochy', required: true, minimum: 0 },
   {
     helptext: markdownText(
       'Zadávajte číslo zaokrúhlené nahor (napr. ak 12.3 m^2^, tak zadajte 13).',
@@ -79,6 +80,7 @@ const sumar = object('sumar', { required: true }, { objectDisplay: 'boxed', titl
       type: 'integer',
       title: 'Celková výmera podlahových plôch všetkých podlaží stavby',
       required: true,
+      minimum: 0,
     },
     {
       helptext: markdownText(
@@ -92,6 +94,7 @@ const sumar = object('sumar', { required: true }, { objectDisplay: 'boxed', titl
       type: 'integer',
       title: 'Základ dane – výmera zastavanej plochy stavby vo výške spoluvlastníckych podielov',
       required: true,
+      minimum: 0,
     },
     {
       helptext: markdownText(
@@ -133,7 +136,7 @@ const sumarKalkulacka = customComponentsField(
 
 const innerArray = (kalkulacka: boolean) =>
   arrayField(
-    'stavby',
+    'priznania',
     { title: 'Priznania k dani zo stavieb slúžiacich na viaceré účely', required: true },
     {
       hideTitle: true,
@@ -183,7 +186,11 @@ const innerArray = (kalkulacka: boolean) =>
       ),
       number(
         'celkovaVymera',
-        { title: 'Celková výmera zastavanej plochy viacúčelovej stavby', required: true },
+        {
+          title: 'Celková výmera zastavanej plochy viacúčelovej stavby',
+          required: true,
+          minimum: 0,
+        },
         {
           helptext: markdownText(
             'Výmera zastavanej plochy, na ktorej je postavená nebytová budova (pozrite LV s “Parcely registra “C” a parcelu s spôsobom využívania “16” alebo “15”). Ak je stavba na viacerých parceliach, sčítajte plochu. :form-image-preview[Zobraziť ukážku]{src="https://cdn-api.bratislava.sk/general-strapi/upload/5_stavba_celkova_vymera_1c6b47124a.png"}',
@@ -220,6 +227,20 @@ const innerArray = (kalkulacka: boolean) =>
           orientations: 'row',
         },
       ),
+      conditionalFields(createCondition([[['castStavbyOslobodenaOdDane'], { const: true }]]), [
+        number(
+          'vymeraPodlahovychPlochCastiStavbyOslobodenejOdDaneZoStavieb',
+          {
+            type: 'integer',
+            title: 'Výmera podlahových plôch časti stavby, ktorá je oslobodená od dane zo stavieb',
+            required: true,
+            minimum: 0,
+          },
+          {
+            helptext: 'U spoluvlastníkov vo výške ich spoluvlastníckeho podielu.',
+          },
+        ),
+      ]),
       object('nehnutelnosti', { required: true }, { objectDisplay: 'boxed' }, [
         arrayField(
           'nehnutelnosti',
@@ -293,7 +314,7 @@ const innerArray = (kalkulacka: boolean) =>
         kalkulacka ? skipSchema(sumar) : sumar,
         kalkulacka ? sumarKalkulacka : skipSchema(sumarKalkulacka),
       ]),
-      textArea(
+      input(
         'poznamka',
         { title: 'Poznámka' },
         { placeholder: 'Tu môžete napísať doplnkové informácie' },
@@ -311,7 +332,7 @@ export default step(
   vyplnitKrokRadio({
     title: 'Chcete podať daňové priznanie k dani zo stavieb slúžiacich na viaceré účely?',
     helptext: markdownText(
-      `Tento oddiel vypĺňate, ak máte nehnuteľnosť v stavbe, ktorá slúži na viaceré účely, na ktoré sú určené rôzne sadzby dane.\n\nK úspešnému vyplneniu potrebujete list(y) vlastníctva (LV):\n* k pozemkom, na ktorých stojí stavba (nadpis “Parcely registra „C" evidované na katastrálnej mape”)\n* k jednotlivým stavbám (napr. byt, garážové státie).\n\nV prípade, že sa vás daň zo stavieb slúžiacich na viaceré účely netýka, túto časť preskočte.\n\n:form-image-preview[Zobraziť ukážku LV k pozemkom]{src="https://cdn-api.bratislava.sk/general-strapi/upload/5_priznanie_6721b4a533.png"}`,
+      `Tento oddiel vypĺňate, ak máte nehnuteľnosť v stavbe, ktorá slúži na viaceré účely, na ktoré sú určené rôzne sadzby dane.\n\nK úspešnému vyplneniu potrebujete list(y) vlastníctva (LV):\n* k pozemkom, na ktorých stojí stavba (nadpis “Parcely registra „C" evidované na katastrálnej mape”)\n* k jednotlivým stavbám (napr. byt, garážové státie).\n\nV prípade, že sa vás daň zo stavieb slúžiacich na viaceré účely netýka, túto časť preskočte.\n\n:form-image-preview[Zobraziť ukážku LV k viacúčelovým stavbám]{src="https://cdn-api.bratislava.sk/general-strapi/upload/5_priznanie_6286b348e2.png"}`,
     ),
     fields: kalkulackaFields({
       title: 'Kalkulačka výpočtu výmery podlahových plôch a základu dane',

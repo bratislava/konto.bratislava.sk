@@ -37,7 +37,7 @@ export const pravnyVztahSpoluvlastnictvo = (step?: StepEnum) => [
         {
           title: 'Bezpodielové spoluvlastníctvo manželov',
           description:
-            'Nehnuteľnosť vlastníte bezpodielovo s manželom/kou (váš podiel na LV je 1/1). Priznanie podáva len jeden z manželov.',
+            'Nehnuteľnosť vlastníte bezpodielovo s manželom/kou (váš podiel na LV je 1/1). Priznanie podáva len jeden z manželov. Údaje o manželovi/manželke zadáte na konci tohto formulára.',
         },
       ]),
     },
@@ -93,7 +93,12 @@ export const pravnyVztahSpoluvlastnictvo = (step?: StepEnum) => [
             {
               type: 'additionalLinks',
               props: {
-                links: [{ title: 'Stiahnite si tlačivo dohody o určení zástupcu', href: 'TODO' }],
+                links: [
+                  {
+                    title: 'Stiahnite si tlačivo dohody o určení zástupcu',
+                    href: 'https://cdn-api.bratislava.sk/strapi-homepage/upload/Dohoda_o_urceni_zastupcu_DZN_56a8433ec7.pdf',
+                  },
+                ],
               },
             },
           ],

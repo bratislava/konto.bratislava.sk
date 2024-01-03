@@ -1,7 +1,8 @@
 import { GenericObjectType } from '@rjsf/utils'
 import cx from 'classnames'
 import { Parser } from 'expr-eval'
-import { get } from 'lodash'
+import clone from 'lodash/clone'
+import get from 'lodash/get'
 import React, { useMemo } from 'react'
 import { useNumberFormatter } from 'react-aria'
 import {
@@ -74,6 +75,14 @@ const Calculator = ({
       }
       return NaN
     }
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
+    parser.functions.ratioDenominator = (arg: string) => {
+      const parsed = parseRatio(arg)
+      if (parsed.isValid) {
+        return parsed.denominator
+      }
+      return NaN
+    }
 
     try {
       return parser.parse(formula)
@@ -90,7 +99,9 @@ const Calculator = ({
         return null
       }
 
-      const evaluated = expression?.evaluate(dataAtPath)
+      // It is not in the documentation, but `expr-eval` mutates the original data!
+      const clonedData = clone(dataAtPath)
+      const evaluated = expression?.evaluate(clonedData)
 
       if (!Number.isFinite(evaluated)) {
         return null
@@ -160,6 +171,7 @@ const PropertyTaxCalculator = ({
         <div className="flex flex-col items-start justify-center self-stretch">
           {calculators.map((calculator, index) => (
             <Calculator
+              key={index}
               {...calculator}
               isLast={index === calculators.length - 1}
               variant={variant}

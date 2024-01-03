@@ -1,4 +1,4 @@
-import { number, radioGroup, step } from '../../generator/functions'
+import { markdownText, number, radioGroup, step } from '../../generator/functions'
 import { createCamelCaseOptionsV2 } from '../../generator/helpers'
 
 export default step('druhPriznania', { title: 'Druh priznania' }, [
@@ -11,16 +11,16 @@ export default step('druhPriznania', { title: 'Druh priznania' }, [
       options: createCamelCaseOptionsV2([
         {
           title: 'Priznanie',
-          description: 'Označte, ak ste sa stali v Bratislave vlastníkom prvej nehnuteľnosti',
+          description: 'Označte, ak ste sa stali v Bratislave vlastníkom prvej nehnuteľnosti.',
         },
         {
           title: 'Čiastkové priznanie',
-          description: 'Označte, ak ste v Bratislave už daňovníkom za inú nehnuteľnosť',
+          description: 'Označte, ak ste v Bratislave už daňovníkom za inú nehnuteľnosť.',
         },
         {
-          title: 'Čiastkové priznanie na zánik daňovej povinnosti',
+          title: 'Čiastkové priznanie na zánik daňovej povinnosti.',
           description:
-            'Označte, ak ste predali/darovali nehnuteľnosť v Bratislave (zaniklo vlastníctvo)',
+            'Označte, ak ste predali/darovali nehnuteľnosť v Bratislave (zaniklo vlastníctvo).',
         },
         {
           title: 'Opravné priznanie',
@@ -45,12 +45,10 @@ export default step('druhPriznania', { title: 'Druh priznania' }, [
       minimum: 2000,
       maximum: 2099,
     },
-    // TODO make dynamic
     {
-      placeholder: String(new Date().getFullYear() + 1),
-      helptext: `Kúpili ste alebo predali nehnuteľnosť v roku ${new Date().getFullYear()}? Zadajte rok ${
-        new Date().getFullYear() + 1
-      }`,
+      helptext: markdownText(
+        `Kúpili ste alebo predali nehnuteľnosť v roku :tax-year? Zadajte rok :tax-year-next.`,
+      ),
     },
   ),
 ])

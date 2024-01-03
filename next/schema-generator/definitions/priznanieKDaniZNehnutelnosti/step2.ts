@@ -39,7 +39,7 @@ export default step('udajeODanovnikovi', { title: 'Údaje o daňovníkovi' }, [
       [
         fileUpload(
           'splnomocnenie',
-          // TODO: Reconsider required
+          // TODO: Reconsider required when tax form will be sent online.
           { title: 'Nahrajte splnomocnenie', multiple: true },
           {
             type: 'dragAndDrop',

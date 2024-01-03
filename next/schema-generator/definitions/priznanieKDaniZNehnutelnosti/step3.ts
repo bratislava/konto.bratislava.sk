@@ -248,9 +248,9 @@ const innerArray = (kalkulacka: boolean) =>
             [
               fileUpload(
                 'znaleckyPosudok',
+                // TODO: Reconsider required when tax form will be sent online.
                 {
                   title: 'Nahrajte znalecký posudok',
-                  required: true,
                   multiple: true,
                 },
                 {

@@ -23,7 +23,7 @@ const UserConsent = ({ consent, isLast, onChange }: UserConsentProps) => {
       })}
     >
       <div className="w-full grow">
-        <h5 className="text-h6">{consent.title}</h5>
+        <h3 className="text-h6">{consent.title}</h3>
         <p className="text-p2-normal">{consent.text}</p>
       </div>
       <div>

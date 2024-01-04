@@ -96,6 +96,7 @@ const IntroSection = () => {
         />
       )}
       <div className="flex flex-col">
+        <h1 className="sr-only">Bratislavské konto</h1>
         <AccountSectionHeader
           title={`${t('account_section_intro.header_title')} ${name || ''}.`}
           text={t('account_section_intro.header_text')}
@@ -115,6 +116,7 @@ const IntroSection = () => {
               />
             </div>
             <div className="flex gap-3 overflow-x-scroll px-4 scrollbar-hide lg:gap-8 lg:px-0">
+              <h2 className="sr-only">Zoznam mestských služieb</h2>
               {filteredServiceCards.map((card) => (
                 <ServiceCard
                   key={card.id}

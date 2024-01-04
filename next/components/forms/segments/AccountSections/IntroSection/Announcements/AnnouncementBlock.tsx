@@ -64,6 +64,7 @@ const AnnouncementBlock = ({
           priority
           objectFit="cover"
           objectPosition="center"
+          alt=""
         />
       </div>
     </div>

@@ -92,7 +92,7 @@
   "register_title": "Vytvorte si Bratislavské konto",
   "gdpr_confirmation_label": "Súhlas so spracovaním osobných údajov",
   "gdpr_confirmation_required": "Pre vytvorenie účtu je potrebné súhlasiť so spracovaním osobných údajov.",
-  "gdpr_details_link": "<a target='_blank' href='https://bratislava.sk/konto/vyhlasenie-o-spracovani-osobnych-udajov'>Bližšie informácie o spracúvaní vašich osobných údajov nájdete na tomto odkaze</a>.",
+  "gdpr_details_link": "Prečítajte si <a target='_blank' href='https://bratislava.sk/konto/vyhlasenie-o-spracovani-osobnych-udajov'>bližšie informácie o spracúvaní vašich osobných údajov</a>.",
   "marketing_confirmation_text": "Odoslaním požiadavky na vytvorenie konta potvrdzujem, že som sa oboznámil/a s <a target='_blank' href='https://bratislava.sk/konto/vyhlasenie-o-spracovani-osobnych-udajov'>podmienkami spracúvania osobných údajov.</a>",
   "register_submit": "Vytvoriť konto",
   "email_verification_title": "Overte svoj e-mail",

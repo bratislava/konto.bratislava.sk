@@ -47,7 +47,7 @@ const UserProfileDetail = (props: UserProfileDetailProps) => {
 
   return (
     <div
-      className={cx('mt-3 flex flex-col bg-white', 'md:static md:z-0', {
+      className={cx('flex flex-col bg-white pt-3', 'md:static md:z-0', {
         'fixed inset-0 z-50': isEditing,
       })}
     >

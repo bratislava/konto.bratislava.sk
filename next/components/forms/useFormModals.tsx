@@ -30,7 +30,10 @@ const useGetContext = (initialFormData: InitialFormData) => {
     displayInitialWarningModals && !migrationRequiredModal && initialFormData.oldSchemaVersion,
   )
   const [registrationModal, setRegistrationModal] = useState<RegistrationModalType | null>(
-    displayInitialWarningModals && !oldVersionSchemaModal && !isAuthenticated
+    displayInitialWarningModals &&
+      !oldVersionSchemaModal &&
+      !isAuthenticated &&
+      !initialFormData.isTaxForm
       ? RegistrationModalType.Initial
       : null,
   )
@@ -39,6 +42,7 @@ const useGetContext = (initialFormData: InitialFormData) => {
       !oldVersionSchemaModal &&
       !migrationRequiredModal &&
       isAuthenticated &&
+      !initialFormData.isTaxForm &&
       !tierStatus.isIdentityVerified,
   )
 
@@ -84,6 +88,8 @@ const useGetContext = (initialFormData: InitialFormData) => {
 
   const eidSendConfirmationModalIsPending =
     sendEidSaveConceptPending || redirectingToSlovenskoSkLogin
+
+  const [taxFormPdfExportModal, setTaxFormPdfExportModal] = useState(false)
 
   return {
     migrationRequiredModal,
@@ -131,6 +137,8 @@ const useGetContext = (initialFormData: InitialFormData) => {
     eidSendConfirmationModalIsPending,
     deleteConceptModal,
     setDeleteConceptModal,
+    taxFormPdfExportModal,
+    setTaxFormPdfExportModal,
   }
 }
 

@@ -37,7 +37,7 @@ export const pravnyVztahSpoluvlastnictvo = (step?: StepEnum) => [
         {
           title: 'Bezpodielové spoluvlastníctvo manželov',
           description:
-            'Nehnuteľnosť vlastníte bezpodielovo s manželom/kou (váš podiel na LV je 1/1). Priznanie podáva len jeden z manželov.',
+            'Nehnuteľnosť vlastníte bezpodielovo s manželom/kou (váš podiel na LV je 1/1). Priznanie podáva len jeden z manželov. Údaje o manželovi/manželke zadáte na konci tohto formulára.',
         },
       ]),
     },
@@ -81,10 +81,10 @@ export const pravnyVztahSpoluvlastnictvo = (step?: StepEnum) => [
     [
       fileUpload(
         'splnomocnenie',
+        // TODO: Reconsider required when tax form will be sent online.
         {
           title:
             'Nahrajte sken dohody o určení zástupcu na podanie priznania k dani z nehnuteľností',
-          required: true,
           multiple: true,
         },
         {

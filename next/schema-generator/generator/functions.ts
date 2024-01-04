@@ -68,19 +68,27 @@ export const select = (
     schema: () => ({
       type: 'string',
       title: options.title,
-      oneOf: options.options.map(({ value, title }) => ({ const: value, title })),
+      // This had to be changed from oneOf to enum because of this bug:
+      // https://jsonforms.discourse.group/t/function-nested-too-deeply-error-when-enum-has-many-options/1451
+      // For many options (250) it worked OK in Chrome, but in Firefox it was throwing an error:
+      // Form validation failed
+      // Array [ 0: Object { stack: "function nested too deeply", message: "Neznáma chyba" } ]
+      enum: options.options.map(({ value }) => value),
       default: options.options.find(({ isDefault }) => isDefault)?.value,
     }),
-    uiSchema: () => ({
-      'ui:widget': 'Select',
-      'ui:options': {
-        ...uiOptions,
-        selectOptions: options.options
-          // These are only used as a lookup for the description, so we need only those that have it
-          .filter(({ description }) => description)
-          .map(({ value, description }) => ({ value, description })),
-      },
-    }),
+    uiSchema: () => {
+      const selectOptionsArray = options.options.map(
+        ({ value, title, description }) => [value, { title, description }] as const,
+      )
+
+      return {
+        'ui:widget': 'Select',
+        'ui:options': {
+          ...uiOptions,
+          selectOptions: Object.fromEntries(selectOptionsArray),
+        },
+      }
+    },
     required: Boolean(options.required),
   }
 }
@@ -106,7 +114,12 @@ export const selectMultiple = (
       title: options.title,
       items: {
         type: 'string',
-        oneOf: options.options.map(({ value, title }) => ({ const: value, title })),
+        // This had to be changed from oneOf to enum because of this bug:
+        // https://jsonforms.discourse.group/t/function-nested-too-deeply-error-when-enum-has-many-options/1451
+        // For many options (250) it worked OK in Chrome, but in Firefox it was throwing an error:
+        // Form validation failed
+        // Array [ 0: Object { stack: "function nested too deeply", message: "Neznáma chyba" } ]
+        enum: options.options.map(({ value }) => value),
       },
       minItems: options.minItems ?? options.required ? 1 : undefined,
       maxItems: options.maxItems,
@@ -114,16 +127,19 @@ export const selectMultiple = (
       default: options.options.filter(({ isDefault }) => isDefault).map(({ value }) => value),
     }),
 
-    uiSchema: () => ({
-      'ui:widget': 'Select',
-      'ui:options': {
-        ...uiOptions,
-        selectOptions: options.options
-          // These are only used as a lookup for the description, so we need only those that have it.
-          .filter(({ description }) => description)
-          .map(({ value, description }) => ({ value, description })),
-      },
-    }),
+    uiSchema: () => {
+      const selectOptionsArray = options.options.map(
+        ({ value, title, description }) => [value, { title, description }] as const,
+      )
+
+      return {
+        'ui:widget': 'Select',
+        'ui:options': {
+          ...uiOptions,
+          selectOptions: Object.fromEntries(selectOptionsArray),
+        },
+      }
+    },
     required: Boolean(options.required),
   }
 }

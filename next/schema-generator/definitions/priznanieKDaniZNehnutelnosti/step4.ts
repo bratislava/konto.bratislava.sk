@@ -185,10 +185,11 @@ const innerArray = (kalkulacka: boolean) =>
               {
                 title: 'Celková výmera podlahových plôch všetkých podlaží stavby',
                 required: true,
+                minimum: 0,
               },
               {
                 helptext:
-                  'Spočítajte výmeru na všetkých podlažiach. U spoluvlastníkov vo výške ich spoluvlastníckeho podielu',
+                  'Spočítajte výmeru na všetkých podlažiach. U spoluvlastníkov vo výške ich spoluvlastníckeho podielu.',
               },
             ),
             number(
@@ -197,9 +198,10 @@ const innerArray = (kalkulacka: boolean) =>
                 title:
                   'Výmera podlahových plôch časti stavby, ktorá je oslobodená od dane zo stavieb',
                 required: true,
+                minimum: 0,
               },
               {
-                helptext: 'U spoluvlastníkov vo výške ich spoluvlastníckeho podielu',
+                helptext: 'U spoluvlastníkov vo výške ich spoluvlastníckeho podielu.',
               },
             ),
           ],

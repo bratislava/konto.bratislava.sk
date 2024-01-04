@@ -32,7 +32,43 @@ const vymeraPodlahovejPlochyBytu = number(
   },
 )
 
-const vymeraKalkulacka = customComponentsField(
+const celkovaVymeraSpecialCase = number(
+  'celkovaVymeraSpecialCase',
+  {
+    type: 'number',
+    title: 'Celková výmera podlahovej plochy vášho bytu',
+    required: true,
+    minimum: 0,
+  },
+  {
+    helptext:
+      'Ak číslo za lomkou vo vašom podiele začína číslom od 1 do 9, za ktorým nasledujú 3 alebo viac núl, LV vám vypočítať výmeru nepomôže. Správny údaj nájdete v kúpnej zmluve alebo v znaleckom posudku k predmetnej nehnuteľnosti.',
+  },
+)
+
+const vymeraKalkulackaByty = customComponentsField(
+  {
+    type: 'propertyTaxCalculator',
+    props: {
+      variant: 'black',
+      calculators: [
+        {
+          label: 'Základ dane',
+          // The special case checks whether the denominator is number starting with 1-9 followed by 3 or more zeroes.
+          formula: `denominator = ratioDenominator(podielPriestoruNaSpolocnychCastiachAZariadeniachDomu);
+          highestPowerOf10 = pow(10, floor(log10 denominator));
+          isSpecialCase = denominator >= 1000 and denominator % highestPowerOf10 == 0;
+            ceil ((isSpecialCase ? celkovaVymeraSpecialCase : ratioNumerator(podielPriestoruNaSpolocnychCastiachAZariadeniachDomu) / 100) * evalRatio(spoluvlastnickyPodiel))`,
+          missingFieldsMessage: 'Pre výpočet základu dane vyplňte všetky polia.',
+          unit: markdownText('m^2^'),
+        },
+      ],
+    },
+  },
+  {},
+)
+
+const vymeraKalkulackaNebytovePriestory = customComponentsField(
   {
     type: 'propertyTaxCalculator',
     props: {
@@ -141,13 +177,35 @@ const innerArray = (kalkulacka: boolean) =>
             },
           ),
           conditionalFields(createCondition([[['priznanieZaByt'], { const: true }]]), [
+            input('cisloBytu', { title: 'Číslo bytu', required: true }, {}),
+            input(
+              'popisBytu',
+              { title: 'Popis bytu' },
+              { helptext: 'Stručný popis bytu.', placeholder: 'Napr. dvojizbový byt' },
+            ),
             kalkulacka
               ? podielPriestoruNaSpolocnychCastiachAZariadeniachDomu(Typ.Byt)
               : skipSchema(podielPriestoruNaSpolocnychCastiachAZariadeniachDomu(Typ.Byt)),
+            conditionalFields(
+              createCondition([
+                [
+                  ['podielPriestoruNaSpolocnychCastiachAZariadeniachDomu'],
+                  {
+                    type: 'string',
+                    format: 'ratio',
+                    // The regex itself doesn't validate all the requirements for ratio, but works as an addition to the
+                    // format: 'ratio' validation to ensure that the denominator is a number starting with 1-9 followed
+                    // by 3 or more zeroes.
+                    pattern: '^\\d+\\/([1-9]0{3,})$',
+                  },
+                ],
+              ]),
+              [kalkulacka ? celkovaVymeraSpecialCase : skipSchema(celkovaVymeraSpecialCase)],
+            ),
             kalkulacka
               ? spoluvlastnickyPodiel(Typ.Byt)
               : skipSchema(spoluvlastnickyPodiel(Typ.Byt)),
-            kalkulacka ? vymeraKalkulacka : skipSchema(vymeraKalkulacka),
+            kalkulacka ? vymeraKalkulackaByty : skipSchema(vymeraKalkulackaByty),
             kalkulacka ? skipSchema(vymeraPodlahovejPlochyBytu) : vymeraPodlahovejPlochyBytu,
             number(
               'vymeraPodlahovejPlochyNaIneUcely',
@@ -263,7 +321,9 @@ const innerArray = (kalkulacka: boolean) =>
                 kalkulacka
                   ? spoluvlastnickyPodiel(Typ.NebytovyPriestor)
                   : skipSchema(spoluvlastnickyPodiel(Typ.NebytovyPriestor)),
-                kalkulacka ? vymeraKalkulacka : skipSchema(vymeraKalkulacka),
+                kalkulacka
+                  ? vymeraKalkulackaNebytovePriestory
+                  : skipSchema(vymeraKalkulackaNebytovePriestory),
                 kalkulacka
                   ? skipSchema(vymeraPodlahovychPlochNebytovehoPriestoruVBytovomDome)
                   : vymeraPodlahovychPlochNebytovehoPriestoruVBytovomDome,

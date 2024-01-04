@@ -10,6 +10,14 @@ import { markdownTextPrefix } from 'schema-generator/generator/uiOptionsTypes'
 import MLinkNew from '../simple-components/MLinkNew'
 import FormLightboxModal from './FormLightboxModal'
 
+function getTaxYear() {
+  const today = new Date()
+  const currentYear = today.getFullYear()
+  const februaryFirst = new Date(currentYear, 1, 1)
+
+  return today < februaryFirst ? currentYear - 1 : currentYear
+}
+
 type FormMarkdownProps = {
   children: string
   /**
@@ -45,6 +53,8 @@ const FormMarkdown = ({ children, pAsSpan }: FormMarkdownProps) => {
                 'ol',
                 'li',
                 'form-image-preview',
+                'tax-year',
+                'tax-year-next',
               ],
               attributes: {
                 'form-image-preview': ['src'],
@@ -78,6 +88,8 @@ const FormMarkdown = ({ children, pAsSpan }: FormMarkdownProps) => {
           ol: ({ children: childrenInner }) => (
             <ol className="list-decimal  whitespace-normal pl-8">{childrenInner}</ol>
           ),
+          'tax-year': () => <>{getTaxYear()}</>,
+          'tax-year-next': () => <>{getTaxYear() + 1}</>,
           ...(pAsSpan
             ? {
                 p: ({ children: childrenInner }) => <span>{childrenInner}</span>,

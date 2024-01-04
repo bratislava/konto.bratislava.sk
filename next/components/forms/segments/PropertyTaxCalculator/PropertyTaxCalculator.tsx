@@ -75,6 +75,14 @@ const Calculator = ({
       }
       return NaN
     }
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
+    parser.functions.ratioDenominator = (arg: string) => {
+      const parsed = parseRatio(arg)
+      if (parsed.isValid) {
+        return parsed.denominator
+      }
+      return NaN
+    }
 
     try {
       return parser.parse(formula)
@@ -163,6 +171,7 @@ const PropertyTaxCalculator = ({
         <div className="flex flex-col items-start justify-center self-stretch">
           {calculators.map((calculator, index) => (
             <Calculator
+              key={index}
               {...calculator}
               isLast={index === calculators.length - 1}
               variant={variant}

@@ -115,7 +115,7 @@ const spoluvlastnickyPodiel = (typ: Typ) =>
     'spoluvlastnickyPodiel',
     { title: 'Spoluvlastnícky podiel', required: true, format: 'ratio' },
     {
-      placeholder: typ === Typ.Byt ? 'Napr. 1/1 alebo 1/105' : '1/150 alebo 1/300',
+      placeholder: 'Napr. 1/150',
       helptext: markdownText(
         typ === Typ.Byt
           ? 'Zadávajte celý zlomok. Nájdete ho vedľa údajov o mene vlastníkov. :form-image-preview[Zobraziť ukážku]{src="https://cdn-api.bratislava.sk/general-strapi/upload/6_byt_spoluvlastnicky_podiel_cf4b72f71b.png"}'

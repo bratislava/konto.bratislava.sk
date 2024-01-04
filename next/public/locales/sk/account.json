@@ -645,8 +645,8 @@
     "city": "Mesto",
     "postal_code": "PSČ",
     "postal_code_tooltip": "V prípade, že je vaša korešpondenčná adresa v zahraničí a PSČ má iný formát ako 5 čísiel, kontaktujte nás na info@bratislava.sk.",
-    "success_alert": "Zmeny boli uložené",
-    "error_alert": "Zmeny sa nepodarilo uložiť",
+    "success_alert": "Zmeny boli uložené.",
+    "error_alert": "Zmeny sa nepodarilo uložiť.",
     "modal_title": "Zmeniť e-mail",
     "modal_message": "Ak by ste si priali zmeniť e-mail, ktorým sa do konta prihlasujete a na ktorý vám zasielame všetky informácie týkajúce sa vášho konta, kontaktujte nás na <a href='mailto:info@bratislava.sk'>info@bratislava.sk</a>.",
     "modal_thanks": "Ďakujeme!"
@@ -883,8 +883,8 @@
     "uploadFiles": "Nahrať súbory",
     "uploadingList": "Nahrávané súbory",
     "errors": {
-      "largeFile": "Súbor je príliš veľký, maximálna veľkosť {{additionalParam}}",
-      "invalidFileType": "Nepodporovaný formát súboru, podporované formáty: {{additionalParam}}"
+      "largeFile": "Súbor je príliš veľký, maximálna veľkosť {{additionalParam}}.",
+      "invalidFileType": "Nepodporovaný formát súboru, podporované formáty: {{additionalParam}}."
     },
     "fileUploadStatus": {
       "UploadQueued": "Nahráva sa",

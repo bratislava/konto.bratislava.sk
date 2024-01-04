@@ -48,10 +48,7 @@ const Upload = forwardRef<HTMLButtonElement, UploadProps>(
     ref,
   ) => {
     return (
-      <div
-        className={cx('h-fit w-full select-none', className)}
-        style={{ transition: '0.2 all linear' }}
-      >
+      <div className={cx('h-fit w-full', className)} style={{ transition: '0.2 all linear' }}>
         <FieldWrapper
           label={label}
           required={required}

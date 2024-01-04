@@ -63,7 +63,9 @@ export const getServerSideProps: GetServerSideProps<FormPageWrapperProps, Params
           formSent,
           formMigrationRequired,
           schemaVersionId: form.schemaVersionId,
-          isSigned: form.schemaVersion.isSigned,
+          // Temporarily disable signing until online form is ready.
+          // isSigned: form.schemaVersion.isSigned,
+          isSigned: false,
           // TODO Improve
           isTaxForm: slug === 'priznanie-k-dani-z-nehnutelnosti',
         },

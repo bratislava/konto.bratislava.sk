@@ -13,6 +13,7 @@ import { twMerge } from 'tailwind-merge'
 
 export type ModalV2Props = Omit<ModalOverlayProps, 'className'> & {
   modalClassname?: string
+  modalOverlayClassname?: string
   mobileFullScreen?: boolean
   noCloseButton?: boolean
 } & PropsWithChildren
@@ -20,6 +21,7 @@ export type ModalV2Props = Omit<ModalOverlayProps, 'className'> & {
 const ModalV2 = ({
   children,
   modalClassname,
+  modalOverlayClassname,
   mobileFullScreen,
   noCloseButton,
   ...rest
@@ -29,12 +31,15 @@ const ModalV2 = ({
   // Makes `{ isDismissable: true }` default.
   const modalProps = mergeProps({ isDismissable: true }, rest)
 
-  const newProps = { ...modalProps };
-  delete newProps['data-cy'];
+  const newProps = { ...modalProps }
+  delete newProps['data-cy']
 
   return (
     <ModalOverlay
-      className="fixed left-0 top-0 z-50 flex h-[var(--visual-viewport-height)] w-screen items-center justify-center bg-gray-800/40"
+      className={twMerge(
+        'fixed left-0 top-0 z-50 flex h-[var(--visual-viewport-height)] w-screen items-center justify-center bg-gray-800/40',
+        modalOverlayClassname,
+      )}
       {...newProps}
     >
       <Modal

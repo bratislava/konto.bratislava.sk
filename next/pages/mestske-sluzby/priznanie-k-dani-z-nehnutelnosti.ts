@@ -1,4 +1,5 @@
 import { formsApi } from '@clients/forms'
+import { isAxiosError } from 'axios'
 import { GetServerSideProps } from 'next'
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
 
@@ -18,27 +19,38 @@ export const getServerSideProps: GetServerSideProps<TaxFormLandingPageProps> = a
   const ssrCurrentAuthProps = await getSSRCurrentAuth(ctx.req)
   const locale = 'sk'
 
-  const schema = await formsApi.schemasControllerGetSchema('priznanie-k-dani-z-nehnutelnosti', {
-    accessToken: 'onlyAuthenticated',
-    accessTokenSsrReq: ctx.req,
-  })
+  try {
+    const schema = await formsApi.schemasControllerGetSchema('priznanie-k-dani-z-nehnutelnosti', {
+      accessToken: 'onlyAuthenticated',
+      accessTokenSsrReq: ctx.req,
+    })
 
-  const { latestVersionId, latestVersion } = schema.data
-  if (!latestVersionId || !latestVersion) {
-    return {
-      notFound: true,
+    const { latestVersionId, latestVersion } = schema.data
+    if (!latestVersionId || !latestVersion) {
+      return {
+        notFound: true,
+      }
     }
-  }
 
-  return {
-    props: {
-      ssrCurrentAuthProps,
-      page: {
-        locale,
-      },
-      latestVersionId,
-      ...(await serverSideTranslations(locale)),
-    } satisfies TaxFormLandingPageProps,
+    return {
+      props: {
+        ssrCurrentAuthProps,
+        page: {
+          locale,
+        },
+        latestVersionId,
+        ...(await serverSideTranslations(locale)),
+      } satisfies TaxFormLandingPageProps,
+    }
+  } catch (error) {
+    if (isAxiosError(error)) {
+      const is404 = error.response?.status === 404
+      if (is404) {
+        return { notFound: true }
+      }
+    }
+
+    throw error
   }
 }
 

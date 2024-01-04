@@ -73,7 +73,7 @@ const TaxFormLandingPage = ({ page, latestVersionId }: TaxFormLandingPageProps) 
               onPress={() => mutate()}
               isLoading={isPending}
             >
-              {t('redirect_button')}
+              {t('tax_form_landing_page.redirect_button')}
             </ButtonNew>
           </div>
         </div>

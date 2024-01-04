@@ -217,5 +217,24 @@
     "instructions": "\n## Čo si musíte pripraviť pred začiatkom.\n\n- **Listy vlastníctva k predmetnej nehnuteľnosti** (ak vlastníte viac nehnuteľností, napr. byt a aj garážové státie, máte často aj viac listov vlastníctva)\n- **Občiansky preukaz s elektronickým čipom - eID** (ak máte e-ID, budete vedieť formulár aj podpísať, bez e-ID si ho viete vytlačiť a následne doručiť na oddelenie miestnych daní, poplatkov a licencií.)\n- Kúpna zmluva od nehnuteľnosti\n- V prípade, že vlastníte nehnuteľnosť v bezpodielovom vlastníctve s manželom/kou a podávate priznanie za oboch, tak aj **rodné číslo manžela/ky**\n- V prípade, že vlastníte nehnuteľnosť v podielovom vlastníctve a podávate priznanie aj za spoluvlastníkov, je potrebné mať pripravenú **dohodu o určení zástupcu**\n- V prípade, že priznanie nepodávate vo vlastnom mene, je nutné pripraviť **splnomocnenie pre podávanie priznania**\n",
     "redirect_button": "Pokračovať",
     "redirect_error": "Nepodarilo sa načítať formulár. Skúste to prosím znova."
+  },
+  "tax_form_pdf_export_modal": {
+    "heading": "Vaše priznanie je pripravené",
+    "subheading": "Čo je potrebné spraviť ďalej?",
+    "action_1": "<strong>Skontrolujte si, vytlačte a podpíšte priznanie.</strong> Ak podávate priznanie aj za ostatných spoluvlastníkov/čky, priložte k nemu splnomocnenie alebo dohodu o určení zástupcu.",
+    "action_2": "<strong>Podajte priznanie poštou</strong> alebo <strong>osobne</strong>.",
+    "action_3": "<strong>Správca dane skontroluje vaše priznanie.</strong> Ak budú chýbať nejaké informácie, kontaktujeme vás emailom alebo telefonicky.",
+    "action_4": "<strong>Najneskôr do apríla vaše priznanie spracujeme</strong> a pripravíme daň na zaplatenie.",
+    "how_to_pay_tax": "Ako zaplatím svoju daň?",
+    "tax_assessed_statement": "Vaša daň bude vyrubená a rozhodnutie <strong>doručené poštou do vlastných rúk v mesiaci máj.</strong>",
+    "tax_assessed_statement_authenticated": "Vaša daň bude vyrubená a <strong>odoslaná do Bratislavského konta na konci apríla.</strong>",
+    "footer_choice": "alebo",
+    "account_create": "Vytvorte si Bratislavské konto a ušetrite cestu na poštu",
+    "advantage_1": "Zaplatíte v priebehu niekoľkých sekúnd cez QR kód, kartou alebo Apple či Google Pay",
+    "advantage_2": "Prehľadné informácie o dani",
+    "advantage_3": "Pripomenieme vám termíny splátok",
+    "advantage_4": "Objavte ďaľšie služby mesta na jednom mieste",
+    "account_create_button": "Vytvoriť Bratislavské konto",
+    "feedback_form": "Odoslať dotazník"
   }
 }

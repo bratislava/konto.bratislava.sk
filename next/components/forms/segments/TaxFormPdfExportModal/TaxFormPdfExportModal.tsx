@@ -100,7 +100,10 @@ const TaxFormPdfExportModal = (props: ModalV2Props) => {
                   </ul>
                 </div>
                 <div className="rounded-b-lg bg-main-100 px-4 pb-4 md:px-0 md:pb-0">
-                  <AriaButton className="text-p1-semibold flex w-full justify-center rounded-lg bg-main-700 px-5 py-2 text-center leading-6 text-gray-0 hover:bg-main-600 md:rounded-b-lg md:rounded-t-none md:px-0 md:py-6">
+                  <AriaButton
+                    className="text-p1-semibold flex w-full justify-center rounded-lg bg-main-700 px-5 py-2 text-center leading-6 text-gray-0 hover:bg-main-600 md:rounded-b-lg md:rounded-t-none md:px-0 md:py-6"
+                    onPress={() => register()}
+                  >
                     {t('tax_form_pdf_export_modal.account_create_button')}
                   </AriaButton>
                 </div>
@@ -110,7 +113,7 @@ const TaxFormPdfExportModal = (props: ModalV2Props) => {
           <ButtonNew
             variant="black-outline"
             className="min-w-[240px] self-center"
-            onPress={() => register()}
+            href="https://bravo.staffino.com/bratislava/id=WW14qo6q"
           >
             {t('tax_form_pdf_export_modal.feedback_form')}
           </ButtonNew>

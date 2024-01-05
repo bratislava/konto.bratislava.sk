@@ -288,6 +288,8 @@ const innerArray = (kalkulacka: boolean) =>
                 variant: 'nested',
                 addButtonLabel: 'Pridať ďalší nebytový priestor v tom istom bytovom dome',
                 itemTitle: 'Nebytový priestor č. {index}',
+                cannotAddItemMessage:
+                  'Dosiahli ste maximálny počet nebytových pozemkov (15) na jedno priznanie. Pridajte ďalšie priznanie.',
               },
               [
                 object(

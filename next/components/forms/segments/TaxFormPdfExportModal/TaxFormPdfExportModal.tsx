@@ -114,6 +114,7 @@ const TaxFormPdfExportModal = (props: ModalV2Props) => {
             variant="black-outline"
             className="min-w-[240px] self-center"
             href="https://bravo.staffino.com/bratislava/id=WW14qo6q"
+            target="_blank"
           >
             {t('tax_form_pdf_export_modal.feedback_form')}
           </ButtonNew>

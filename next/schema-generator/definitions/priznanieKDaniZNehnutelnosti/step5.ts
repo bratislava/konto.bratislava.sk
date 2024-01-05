@@ -38,7 +38,10 @@ const vymeraPodlahovejPlochyKalkulacka = customComponentsField(
           label: 'Výmera podlahovej plochy',
           formula:
             'roundTo(ratioNumerator(podielPriestoruNaSpolocnychCastiachAZariadeniachDomu) * evalRatio(spoluvlastnickyPodiel) / 100, 2)',
-          missingFieldsMessage: 'Pre výpočet výmery podlahovej plochy vyplňte všetky polia.',
+          missingFieldsMessage:
+            '**Pre výpočet výmery podlahovej plochy vyplňte správne všetky polia:**\n' +
+            '- Podiel priestoru na spoločných častiach a zariadeniach domu\n' +
+            '- Spoluvlastnícky podiel',
           unit: markdownText('m^2^'),
         },
       ],
@@ -117,7 +120,8 @@ const sumarKalkulacka = customComponentsField(
             'f(n) = ratioNumerator(n.podielPriestoruNaSpolocnychCastiachAZariadeniachDomu) * evalRatio(n.spoluvlastnickyPodiel) / 100; mapped = map(f, nehnutelnosti.nehnutelnosti); sum(a, b) = a+b; ceil fold(sum, 0, mapped)',
           dataContextLevelsUp: 1,
           missingFieldsMessage:
-            'Pre výpočet celkovej výmery podlahových plôch všetkých podlaží stavby vyplňte všetky polia.',
+            '**Pre výpočet celkovej výmery podlahových plôch všetkých podlaží stavby vyplňte správne všetky polia:**\n' +
+            '- Podiel priestoru na spoločných častiach a zariadeniach domu a spoluvlastnícky podiel pre každú časť stavby',
           unit: markdownText('m^2^'),
         },
         {
@@ -125,7 +129,10 @@ const sumarKalkulacka = customComponentsField(
           formula:
             'f(n) = evalRatio(n.podielPriestoruNaSpolocnychCastiachAZariadeniachDomu) * evalRatio(n.spoluvlastnickyPodiel) * celkovaVymera; mapped = map(f, nehnutelnosti.nehnutelnosti); sum(a, b) = a+b; ceil fold(sum, 0, mapped)',
           dataContextLevelsUp: 1,
-          missingFieldsMessage: 'Pre výpočet základu dane vyplňte všetky polia.',
+          missingFieldsMessage:
+            '**Pre výpočet základu dane vyplňte správne všetky polia:**\n' +
+            '- Celková výmera zastavanej plochy viacúčelovej stavby\n' +
+            '- Podiel priestoru na spoločných častiach a zariadeniach domu a spoluvlastnícky podiel pre každú časť stavby',
           unit: markdownText('m^2^'),
         },
       ],

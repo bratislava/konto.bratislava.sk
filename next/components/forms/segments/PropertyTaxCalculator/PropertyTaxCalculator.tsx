@@ -14,6 +14,7 @@ import { parseRatio } from '../../../../frontend/utils/form'
 import FormMarkdown from '../../info-components/FormMarkdown'
 import { useFormState } from '../../useFormState'
 import { useFormWidget } from '../../useFormWidget'
+import AccountMarkdown from '../AccountMarkdown/AccountMarkdown'
 
 /**
  * Extracts the path of the RJSF component position, e.g.
@@ -132,7 +133,7 @@ const Calculator = ({
   return (
     <div className={wrapperClassName}>
       {value == null ? (
-        <div className="text-p2">{missingFieldsMessage}</div>
+        <AccountMarkdown content={missingFieldsMessage} variant="sm" />
       ) : (
         <>
           <div className={labelClassName}>{label}</div>

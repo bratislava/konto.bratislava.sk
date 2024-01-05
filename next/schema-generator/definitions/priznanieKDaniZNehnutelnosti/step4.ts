@@ -62,7 +62,10 @@ const zakladDaneKalkulacka = customComponentsField(
         {
           label: 'Základ dane',
           formula: 'ceil (celkovaZastavanaPlocha * evalRatio(spoluvlastnickyPodiel))',
-          missingFieldsMessage: 'Pre výpočet základu dane vyplňte všetky polia.',
+          missingFieldsMessage:
+            '**Pre výpočet základu dane vyplňte správne všetky polia:**\n' +
+            '- Celková zastavaná plocha\n' +
+            '- Spoluvlastnícky podiel',
           unit: markdownText('m^2^'),
         },
       ],

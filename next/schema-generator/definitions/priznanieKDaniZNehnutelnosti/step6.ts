@@ -59,7 +59,10 @@ const vymeraKalkulackaByty = customComponentsField(
           highestPowerOf10 = pow(10, floor(log10 denominator));
           isSpecialCase = denominator >= 1000 and denominator % highestPowerOf10 == 0;
             ceil ((isSpecialCase ? celkovaVymeraSpecialCase : ratioNumerator(podielPriestoruNaSpolocnychCastiachAZariadeniachDomu) / 100) * evalRatio(spoluvlastnickyPodiel))`,
-          missingFieldsMessage: 'Pre výpočet základu dane vyplňte všetky polia.',
+          missingFieldsMessage:
+            '**Pre výpočet základu dane vyplňte správne všetky polia:**\n' +
+            '- Podiel priestoru na spoločných častiach a zariadeniach domu\n' +
+            '- Spoluvlastnícky podiel',
           unit: markdownText('m^2^'),
         },
       ],
@@ -78,7 +81,10 @@ const vymeraKalkulackaNebytovePriestory = customComponentsField(
           label: 'Základ dane',
           formula:
             'ceil (ratioNumerator(podielPriestoruNaSpolocnychCastiachAZariadeniachDomu) * evalRatio(spoluvlastnickyPodiel) / 100)',
-          missingFieldsMessage: 'Pre výpočet základu dane vyplňte všetky polia.',
+          missingFieldsMessage:
+            '**Pre výpočet základu dane vyplňte správne všetky polia:**\n' +
+            '- Podiel priestoru na spoločných častiach a zariadeniach domu\n' +
+            '- Spoluvlastnícky podiel',
           unit: markdownText('m^2^'),
         },
       ],

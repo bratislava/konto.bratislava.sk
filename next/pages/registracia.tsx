@@ -18,10 +18,8 @@ import { useTranslation } from 'next-i18next'
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
 import { useState } from 'react'
 
-import PageWrapper from '../components/layouts/PageWrapper'
 import { ROUTES } from '../frontend/api/constants'
 import logger from '../frontend/utils/logger'
-import { AsyncServerProps } from '../frontend/utils/types'
 
 enum RegistrationStatus {
   INIT = 'INIT',
@@ -35,21 +33,12 @@ export const getServerSideProps = async (ctx: GetServerSidePropsContext) => {
   return {
     props: {
       ssrCurrentAuthProps: await getSSRCurrentAuth(ctx.req),
-      page: {
-        locale: ctx.locale,
-        localizations: ['sk', 'en']
-          .filter((l) => l !== ctx.locale)
-          .map((l) => ({
-            slug: '',
-            locale: l,
-          })),
-      },
       ...(await serverSideTranslations(locale)),
     },
   }
 }
 
-const RegisterPage = ({ page }: AsyncServerProps<typeof getServerSideProps>) => {
+const RegisterPage = () => {
   const { t } = useTranslation('account')
   const [registrationStatus, setRegistrationStatus] = useState<RegistrationStatus>(
     RegistrationStatus.INIT,
@@ -124,46 +113,42 @@ const RegisterPage = ({ page }: AsyncServerProps<typeof getServerSideProps>) => 
   }
 
   return (
-    <PageWrapper locale={page.locale} localizations={page.localizations}>
-      <LoginRegisterLayout backButtonHidden>
-        {registrationStatus === RegistrationStatus.INIT && <AccountActivator />}
-        <AccountContainer dataCyPrefix="registration" className="mb-0 pt-0 md:mb-8 md:pt-6">
-          {registrationStatus === RegistrationStatus.INIT ? (
-            <RegisterForm lastEmail={lastEmail} onSubmit={signUp} error={registrationError} />
-          ) : registrationStatus === RegistrationStatus.EMAIL_VERIFICATION_REQUIRED ? (
-            <EmailVerificationForm
-              lastEmail={lastEmail}
-              onResend={resendVerificationCode}
-              onSubmit={verifyEmail}
-              error={registrationError}
-            />
-          ) : (
-            // When verification is not required, the modal has only single button (without cancelLabel/onCancel the second button is not rendered)
-            // This single button does the same action (redirects back) as the cancel button does in 2 button version
-            <AccountSuccessAlert
-              title={t('register_success_title')}
-              description={t('register_success_description', { email: lastEmail })}
-              confirmLabel={
-                verificationRequired
-                  ? t('identity_verification_link')
-                  : t('identity_verification_not_required')
-              }
-              onConfirm={() =>
-                verificationRequired
-                  ? router
-                      .push(ROUTES.IDENTITY_VERIFICATION)
-                      .catch(() => logger.error(`${GENERIC_ERROR_MESSAGE} redirect failed`))
-                  : redirect({ from: ROUTES.REGISTER })
-              }
-              cancelLabel={verificationRequired ? t('identity_verification_skip') : undefined}
-              onCancel={
-                verificationRequired ? () => redirect({ from: ROUTES.REGISTER }) : undefined
-              }
-            />
-          )}
-        </AccountContainer>
-      </LoginRegisterLayout>
-    </PageWrapper>
+    <LoginRegisterLayout backButtonHidden>
+      {registrationStatus === RegistrationStatus.INIT && <AccountActivator />}
+      <AccountContainer dataCyPrefix="registration" className="mb-0 pt-0 md:mb-8 md:pt-6">
+        {registrationStatus === RegistrationStatus.INIT ? (
+          <RegisterForm lastEmail={lastEmail} onSubmit={signUp} error={registrationError} />
+        ) : registrationStatus === RegistrationStatus.EMAIL_VERIFICATION_REQUIRED ? (
+          <EmailVerificationForm
+            lastEmail={lastEmail}
+            onResend={resendVerificationCode}
+            onSubmit={verifyEmail}
+            error={registrationError}
+          />
+        ) : (
+          // When verification is not required, the modal has only single button (without cancelLabel/onCancel the second button is not rendered)
+          // This single button does the same action (redirects back) as the cancel button does in 2 button version
+          <AccountSuccessAlert
+            title={t('register_success_title')}
+            description={t('register_success_description', { email: lastEmail })}
+            confirmLabel={
+              verificationRequired
+                ? t('identity_verification_link')
+                : t('identity_verification_not_required')
+            }
+            onConfirm={() =>
+              verificationRequired
+                ? router
+                    .push(ROUTES.IDENTITY_VERIFICATION)
+                    .catch(() => logger.error(`${GENERIC_ERROR_MESSAGE} redirect failed`))
+                : redirect({ from: ROUTES.REGISTER })
+            }
+            cancelLabel={verificationRequired ? t('identity_verification_skip') : undefined}
+            onCancel={verificationRequired ? () => redirect({ from: ROUTES.REGISTER }) : undefined}
+          />
+        )}
+      </AccountContainer>
+    </LoginRegisterLayout>
   )
 }
 

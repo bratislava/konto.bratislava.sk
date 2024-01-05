@@ -16,30 +16,18 @@ import { GetServerSidePropsContext } from 'next'
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
 import { useCallback, useEffect, useState } from 'react'
 
-import PageWrapper from '../components/layouts/PageWrapper'
-import { AsyncServerProps } from '../frontend/utils/types'
-
 export const getServerSideProps = async (ctx: GetServerSidePropsContext) => {
   const locale = ctx.locale ?? 'sk'
 
   return {
     props: {
       ssrCurrentAuthProps: await getSSRCurrentAuth(ctx.req),
-      page: {
-        locale: ctx.locale,
-        localizations: ['sk', 'en']
-          .filter((l) => l !== ctx.locale)
-          .map((l) => ({
-            slug: '',
-            locale: l,
-          })),
-      },
       ...(await serverSideTranslations(locale)),
     },
   }
 }
 
-const LoginPage = ({ page }: AsyncServerProps<typeof getServerSideProps>) => {
+const LoginPage = () => {
   const { redirect } = useLoginRegisterRedirect()
   const { isAuthenticated } = useServerSideAuth()
   const [loginError, setLoginError] = useState<Error | null>(null)
@@ -93,23 +81,21 @@ const LoginPage = ({ page }: AsyncServerProps<typeof getServerSideProps>) => {
   )
 
   return (
-    <PageWrapper locale={page.locale} localizations={page.localizations}>
-      <LoginRegisterLayout backButtonHidden>
-        {!isAuthenticated && <AccountActivator />}
-        <AccountContainer className="mb-0 pt-0 md:mb-8 md:pt-6">
-          {emailToVerify ? (
-            <EmailVerificationForm
-              onResend={() => Auth.resendSignUp(emailToVerify)}
-              onSubmit={onVerifyEmail}
-              error={loginError}
-              lastEmail={emailToVerify}
-            />
-          ) : (
-            <LoginForm onSubmit={onLogin} error={loginError} />
-          )}
-        </AccountContainer>
-      </LoginRegisterLayout>
-    </PageWrapper>
+    <LoginRegisterLayout backButtonHidden>
+      {!isAuthenticated && <AccountActivator />}
+      <AccountContainer className="mb-0 pt-0 md:mb-8 md:pt-6">
+        {emailToVerify ? (
+          <EmailVerificationForm
+            onResend={() => Auth.resendSignUp(emailToVerify)}
+            onSubmit={onVerifyEmail}
+            error={loginError}
+            lastEmail={emailToVerify}
+          />
+        ) : (
+          <LoginForm onSubmit={onLogin} error={loginError} />
+        )}
+      </AccountContainer>
+    </LoginRegisterLayout>
   )
 }
 

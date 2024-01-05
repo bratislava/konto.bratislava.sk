@@ -1,5 +1,4 @@
 import { StatusBar } from 'components/forms/info-components/StatusBar'
-import PageWrapper from 'components/layouts/PageWrapper'
 import {
   getSSRCurrentAuth,
   ServerSideAuthProviderHOC,
@@ -38,9 +37,8 @@ import ToggleShowCase from '../components/styleguide/showcases/ToggleShowCase'
 import UploadShowCase from '../components/styleguide/showcases/UploadShowCase'
 import StyleGuideWrapper from '../components/styleguide/StyleGuideWrapper'
 import { isProductionDeployment } from '../frontend/utils/general'
-import { AsyncServerProps } from '../frontend/utils/types'
 
-const Styleguide = ({ page }: AsyncServerProps<typeof getServerSideProps>) => {
+const Styleguide = () => {
   /**
    * Always create new component for adding showcase in StyleGuide
    * Path to StyleGuide showcase components should be ./next/components/styleguide/showcases
@@ -48,42 +46,41 @@ const Styleguide = ({ page }: AsyncServerProps<typeof getServerSideProps>) => {
   return (
     <>
       <StatusBar />
-      <PageWrapper locale={page.locale}>
-        <StyleGuideWrapper>
-          {/* HERE ADD SHOWCASES */}
-          <IconShowCase />
-          <StatusBarShowCase />
-          <TagShowCase />
-          <TooltipShowCase />
-          <FieldHeaderShowCase />
-          <ButtonNewShowCase />
-          <ButtonShowCase />
-          <SpinnerShowCase />
-          <InputFieldShowCase />
-          <DatePickerShowCase />
-          <TimePickerShowCase />
-          <TextAreaFieldShowCase />
-          <SearchFieldShowCase />
-          <SelectMultiNewShowCase />
-          <DropdownShowCase />
-          <ToggleShowCase />
-          <AlertShowCase />
-          <UploadShowCase />
-          <ModalShowCase />
-          <AccordionShowCase />
-          <ProgressBarShowCase />
-          <SingleCheckboxShowCase />
-          <CheckboxGroupShowCase />
-          <RadioGroupShowCase />
-          {/* TODO: Fix stepper showcase */}
-          {/* <StepperShowCase /> */}
-          <SummaryRowShowCase />
-          <BannerShowCase />
-          <ServiceCardShowCase />
-          <MyApplicationsCardShowCase />
-          <SnackbarShowCase />
-        </StyleGuideWrapper>
-      </PageWrapper>
+
+      <StyleGuideWrapper>
+        {/* HERE ADD SHOWCASES */}
+        <IconShowCase />
+        <StatusBarShowCase />
+        <TagShowCase />
+        <TooltipShowCase />
+        <FieldHeaderShowCase />
+        <ButtonNewShowCase />
+        <ButtonShowCase />
+        <SpinnerShowCase />
+        <InputFieldShowCase />
+        <DatePickerShowCase />
+        <TimePickerShowCase />
+        <TextAreaFieldShowCase />
+        <SearchFieldShowCase />
+        <SelectMultiNewShowCase />
+        <DropdownShowCase />
+        <ToggleShowCase />
+        <AlertShowCase />
+        <UploadShowCase />
+        <ModalShowCase />
+        <AccordionShowCase />
+        <ProgressBarShowCase />
+        <SingleCheckboxShowCase />
+        <CheckboxGroupShowCase />
+        <RadioGroupShowCase />
+        {/* TODO: Fix stepper showcase */}
+        {/* <StepperShowCase /> */}
+        <SummaryRowShowCase />
+        <BannerShowCase />
+        <ServiceCardShowCase />
+        <MyApplicationsCardShowCase />
+        <SnackbarShowCase />
+      </StyleGuideWrapper>
     </>
   )
 }
@@ -96,9 +93,6 @@ export const getServerSideProps = async (ctx: GetServerSidePropsContext) => {
   return {
     props: {
       ssrCurrentAuthProps: await getSSRCurrentAuth(ctx.req),
-      page: {
-        locale: ctx.locale,
-      },
       ...(await serverSideTranslations(locale)),
     },
   }

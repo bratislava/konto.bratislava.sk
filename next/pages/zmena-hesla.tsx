@@ -15,10 +15,8 @@ import { useTranslation } from 'next-i18next'
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
 import { useEffect, useState } from 'react'
 
-import PageWrapper from '../components/layouts/PageWrapper'
 import { ROUTES } from '../frontend/api/constants'
 import logger from '../frontend/utils/logger'
-import { AsyncServerProps } from '../frontend/utils/types'
 
 enum PasswordChangeStatus {
   INIT = 'INIT',
@@ -31,21 +29,12 @@ export const getServerSideProps = async (ctx: GetServerSidePropsContext) => {
   return {
     props: {
       ssrCurrentAuthProps: await getSSRCurrentAuth(ctx.req),
-      page: {
-        locale: ctx.locale,
-        localizations: ['sk', 'en']
-          .filter((l) => l !== ctx.locale)
-          .map((l) => ({
-            slug: '',
-            locale: l,
-          })),
-      },
       ...(await serverSideTranslations(locale)),
     },
   }
 }
 
-const PasswordChangePage = ({ page }: AsyncServerProps<typeof getServerSideProps>) => {
+const PasswordChangePage = () => {
   const { t } = useTranslation('account')
   const router = useRouter()
   const { isAuthenticated } = useServerSideAuth()
@@ -84,23 +73,21 @@ const PasswordChangePage = ({ page }: AsyncServerProps<typeof getServerSideProps
   }
 
   return (
-    <PageWrapper locale={page.locale} localizations={page.localizations}>
-      <LoginRegisterLayout
-        backButtonHidden={passwordChangeStatus === PasswordChangeStatus.NEW_PASSWORD_SUCCESS}
-      >
-        <AccountContainer>
-          {passwordChangeStatus === PasswordChangeStatus.NEW_PASSWORD_SUCCESS ? (
-            <AccountSuccessAlert
-              title={t('password_change_success_title')}
-              confirmLabel={t('account_continue_link')}
-              onConfirm={onConfirm}
-            />
-          ) : (
-            <PasswordChangeForm onSubmit={changePassword} error={passwordChangeError} />
-          )}
-        </AccountContainer>
-      </LoginRegisterLayout>
-    </PageWrapper>
+    <LoginRegisterLayout
+      backButtonHidden={passwordChangeStatus === PasswordChangeStatus.NEW_PASSWORD_SUCCESS}
+    >
+      <AccountContainer>
+        {passwordChangeStatus === PasswordChangeStatus.NEW_PASSWORD_SUCCESS ? (
+          <AccountSuccessAlert
+            title={t('password_change_success_title')}
+            confirmLabel={t('account_continue_link')}
+            onConfirm={onConfirm}
+          />
+        ) : (
+          <PasswordChangeForm onSubmit={changePassword} error={passwordChangeError} />
+        )}
+      </AccountContainer>
+    </LoginRegisterLayout>
   )
 }
 

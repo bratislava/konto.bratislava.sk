@@ -41,7 +41,7 @@ const BAArrayFieldTemplate = <
     rawErrors,
   } = props
   const uiOptions = getUiOptions(uiSchema) as ArrayFieldUiOptions
-  const { variant, description, addButtonLabel, hideTitle } = uiOptions
+  const { variant, description, addButtonLabel, hideTitle, cannotAddItemMessage } = uiOptions
   const ArrayFieldItemTemplate = getTemplate<'ArrayFieldItemTemplate', T, S, F>(
     'ArrayFieldItemTemplate',
     registry,
@@ -92,35 +92,32 @@ const BAArrayFieldTemplate = <
               <ArrayFieldItemTemplate key={key} {...itemProps} parentUiOptions={uiOptions} />
             ))}
         </div>
-        {(canAdd || hasErrors) && (
-          <div>
-            {canAdd && (
-              <div className="flex flex-col gap-6">
+        <div>
+          <div className="flex flex-col gap-6">
+            {/* eslint-disable-next-line unicorn/consistent-destructuring */}
+            {variant === 'topLevel' && (uiOptions.addTitle || uiOptions.addDescription) && (
+              <div className="flex flex-col gap-3">
                 {/* eslint-disable-next-line unicorn/consistent-destructuring */}
-                {variant === 'topLevel' && (uiOptions.addTitle || uiOptions.addDescription) && (
-                  <div className="flex flex-col gap-3">
-                    {/* eslint-disable-next-line unicorn/consistent-destructuring */}
-                    {uiOptions.addTitle && <span className="text-h3">{uiOptions.addTitle}</span>}
-                    {/* eslint-disable-next-line unicorn/consistent-destructuring */}
-                    {uiOptions.addDescription && <span>{uiOptions.addDescription}</span>}
-                  </div>
-                )}
-                <ButtonNew
-                  variant={
-                    { topLevel: 'black-outline' as const, nested: 'black-plain' as const }[variant]
-                  }
-                  startIcon={<AddIcon />}
-                  onPress={onAddClickPatched}
-                  isDisabled={disabled || readonly}
-                  fullWidth
-                >
-                  {addButtonLabel}
-                </ButtonNew>
+                {uiOptions.addTitle && <span className="text-h3">{uiOptions.addTitle}</span>}
+                {/* eslint-disable-next-line unicorn/consistent-destructuring */}
+                {uiOptions.addDescription && <span>{uiOptions.addDescription}</span>}
               </div>
             )}
-            {hasErrors && <FieldErrorMessage errorMessage={rawErrors} />}
+            <ButtonNew
+              variant={
+                { topLevel: 'black-outline' as const, nested: 'black-plain' as const }[variant]
+              }
+              startIcon={<AddIcon />}
+              onPress={onAddClickPatched}
+              isDisabled={!canAdd || disabled || readonly}
+              fullWidth
+            >
+              {addButtonLabel}
+            </ButtonNew>
+            {!canAdd && cannotAddItemMessage && <span>{cannotAddItemMessage}</span>}
           </div>
-        )}
+          {hasErrors && <FieldErrorMessage errorMessage={rawErrors} />}
+        </div>
       </div>
     </WidgetWrapper>
   )

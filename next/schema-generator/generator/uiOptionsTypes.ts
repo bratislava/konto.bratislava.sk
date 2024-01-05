@@ -124,6 +124,7 @@ export type ArrayFieldUiOptions = Pick<WidgetUiOptions, 'spaceTop' | 'spaceBotto
   description?: string
   addButtonLabel: string
   itemTitle?: string
+  cannotAddItemMessage?: string
 } & (
     | {
         variant: 'topLevel'

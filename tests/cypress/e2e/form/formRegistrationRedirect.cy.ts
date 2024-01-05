@@ -57,7 +57,7 @@ describe('F04 -', { testIsolation: false }, () => {
           cy.dataCy('form-container').then((form) => {
             cy.wrap(Cypress.$('[data-cy=radio-value-0]', form)).should('be.visible')
 
-            cy.wrap(Cypress.$('input[type=text]', form).first()).type(this.fileData.name)
+            cy.wrap(Cypress.$('input[type=text]', form).eq(0)).type(this.fileData.name)
 
             cy.wrap(Cypress.$('input[type=text]', form).eq(1)).type(this.fileData.address)
 

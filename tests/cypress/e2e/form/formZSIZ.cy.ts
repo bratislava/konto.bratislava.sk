@@ -61,7 +61,7 @@ describe('F02 -', { testIsolation: false }, () => {
           cy.dataCy('form-container').then((form) => {
             cy.wrap(Cypress.$('[data-cy=radio-value-0]', form)).should('be.visible')
 
-            cy.wrap(Cypress.$('input[type=text]', form).first()).type(this.fileData.name)
+            cy.wrap(Cypress.$('input[type=text]', form).eq(0)).type(this.fileData.name)
 
             cy.wrap(Cypress.$('input[type=text]', form).eq(1)).type(this.fileData.address)
 
@@ -118,7 +118,7 @@ describe('F02 -', { testIsolation: false }, () => {
 
         it('7. Filling out the "Responsible designer" step.', () => {
           cy.dataCy('form-container').then((form) => {
-            cy.wrap(Cypress.$('input[type=text]', form).first()).type(this.fileData.name)
+            cy.wrap(Cypress.$('input[type=text]', form).eq(0)).type(this.fileData.name)
 
             cy.wrap(Cypress.$('input[type=email]', form)).type(emailHash)
 
@@ -152,7 +152,7 @@ describe('F02 -', { testIsolation: false }, () => {
 
         it('8. Filling out the "Construction information" step.', () => {
           cy.dataCy('form-container').then((form) => {
-            cy.wrap(Cypress.$('input[type=text]', form).first()).type(this.fileData.construction_name)
+            cy.wrap(Cypress.$('input[type=text]', form).eq(0)).type(this.fileData.construction_name)
 
             cy.wrap(Cypress.$('[data-cy=radio-value-0]', form)).should('be.visible')
 
@@ -162,10 +162,10 @@ describe('F02 -', { testIsolation: false }, () => {
 
             cy.wrap(Cypress.$('input[type=text]', form).eq(3)).type(this.fileData.zip_code)
 
-            cy.wrap(Cypress.$('input[type=text][role=combobox]', form).first()).type("Devín")
+            cy.wrap(Cypress.$('input[type=text][role=combobox]', form).eq(0)).type("Devín")
           })
           cy.dataCy('form-container').then((form) => {
-            cy.wrap(Cypress.$('[role=option]', form).first()).click()
+            cy.wrap(Cypress.$('[role=option]', form).eq(0)).click()
             cy.wrap(Cypress.$('[data-cy=dropdown-close]', form)).click()
 
             cy.wrap(Cypress.$(`[data-cy=continue-button-${device}]`, form)).click()

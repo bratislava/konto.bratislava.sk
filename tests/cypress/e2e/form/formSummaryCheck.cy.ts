@@ -48,7 +48,7 @@ describe('F03 -', { testIsolation: false }, () => {
           cy.dataCy('form-container').then((form) => {
             cy.wrap(Cypress.$('[data-cy=radio-value-0]', form)).should('be.visible')
 
-            cy.wrap(Cypress.$('input[type=text]', form).first()).type(this.fileData.name)
+            cy.wrap(Cypress.$('input[type=text]', form).eq(0)).type(this.fileData.name)
 
             cy.wrap(Cypress.$('input[type=text]', form).eq(1)).type(this.fileData.address)
 
@@ -80,7 +80,7 @@ describe('F03 -', { testIsolation: false }, () => {
 
         it('7. Checking filled in information are saved', () => {
           cy.dataCy('form-container').then((form) => {
-            cy.wrap(Cypress.$('[data-cy=summary-row]', form).first()).find('[data-cy=summary-row-icon]').should('have.not.class', 'text-error')
+            cy.wrap(Cypress.$('[data-cy=summary-row]', form).eq(0)).find('[data-cy=summary-row-icon]').should('have.not.class', 'text-error')
 
             cy.wrap(Cypress.$('[data-cy=summary-row]', form).eq(2)).should('contain', this.fileData.name)
 
@@ -96,33 +96,12 @@ describe('F03 -', { testIsolation: false }, () => {
           })
         })
 
-        it('8. Checking email & phone validation.', () => {
+        it('8. Checking form validation.', () => {
           cy.dataCy('form-container').then((form) => {
-            cy.wrap(Cypress.$('[data-cy=summary-row]', form).eq(6)).should('have.class', 'border-red-500')
-
-            cy.wrap(Cypress.$('[data-cy=summary-row]', form).eq(7)).should('have.class', 'border-red-500')
-          })
-        })
-
-        it('9. Checking empty inputs validation', () => {
-          cy.dataCy('form-container').then((form) => {
-            cy.wrap(Cypress.$('[data-cy=summary-row]', form).eq(9)).should('have.class', 'border-red-500')
-
-            cy.wrap(Cypress.$('[data-cy=summary-row]', form).eq(10)).should('have.class', 'border-red-500')
-
-            cy.wrap(Cypress.$('[data-cy=summary-row]', form).eq(11)).should('have.class', 'border-red-500')
-
-            cy.wrap(Cypress.$('[data-cy=summary-row]', form).eq(12)).should('have.class', 'border-red-500')
-
-            cy.wrap(Cypress.$('[data-cy=summary-row]', form).eq(13)).should('have.class', 'border-red-500')
-
-            cy.wrap(Cypress.$('[data-cy=summary-row]', form).eq(14)).should('have.class', 'border-red-500')
-
-            cy.wrap(Cypress.$('[data-cy=summary-row]', form).eq(16)).should('have.class', 'border-red-500')
-
-            cy.wrap(Cypress.$('[data-cy=summary-row]', form).eq(18)).should('have.class', 'border-red-500')
-
-            cy.wrap(Cypress.$('[data-cy=summary-row]', form).eq(19)).should('have.class', 'border-red-500')
+            const rowsToCheck = [6, 7, 9, 10, 11, 12, 13, 14, 16, 18, 19];
+            rowsToCheck.forEach((rowIndex) => {
+              cy.wrap(Cypress.$('[data-cy=summary-row]', form).eq(rowIndex)).should('have.class', 'border-red-500');
+            });
           })
         })
       })

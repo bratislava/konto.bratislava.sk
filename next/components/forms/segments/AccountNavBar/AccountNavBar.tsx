@@ -124,18 +124,18 @@ export const AccountNavBar = ({ className, sectionsList, menuItems, hiddenHeader
                   buttonTrigger={
                     <ButtonNew
                       variant="unstyled"
-                      className="flex items-center gap-x-6 font-semibold text-font/75"
                       data-cy="account-button"
+                      className="flex items-center gap-4 font-semibold text-font/75"
                     >
                       <Avatar userData={userData} />
-                      <div className="font-light lg:font-semibold">
+                      <div className="flex items-center gap-1 font-light lg:font-semibold">
                         {isLegalEntity ? userData?.name : userData?.given_name}
+                        <ChevronDownSmallIcon
+                          className={`hidden h-5 w-5 mix-blend-normal lg:flex ${
+                            isMenuOpen ? '-rotate-180' : ''
+                          }`}
+                        />
                       </div>
-                      <ChevronDownSmallIcon
-                        className={`ml-1 hidden h-5 w-5 mix-blend-normal lg:flex ${
-                          isMenuOpen ? '-rotate-180' : ''
-                        }`}
-                      />
                     </ButtonNew>
                   }
                   itemVariant="header"

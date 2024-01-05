@@ -42,6 +42,7 @@ const useGetContext = (initialFormData: InitialFormData) => {
       !oldVersionSchemaModal &&
       !migrationRequiredModal &&
       isAuthenticated &&
+      !initialFormData.isTaxForm &&
       !tierStatus.isIdentityVerified,
   )
 

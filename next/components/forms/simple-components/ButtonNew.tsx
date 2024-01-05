@@ -81,6 +81,7 @@ const Button = forwardRef<HTMLAnchorElement | HTMLButtonElement, PolymorphicProp
       fullWidthMobile,
       isLoading,
       isLoadingText,
+      onPress,
       ...rest
     },
     ref,
@@ -90,6 +91,7 @@ const Button = forwardRef<HTMLAnchorElement | HTMLButtonElement, PolymorphicProp
     const { buttonProps, isPressed } = useButton(
       {
         ...rest,
+        onPress,
         elementType: rest.href ? 'a' : 'button',
         isDisabled: isLoadingOrDisabled,
       },

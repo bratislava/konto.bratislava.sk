@@ -46,7 +46,7 @@ const FieldHeader = ({
 
   const wrapperStyle = cx('flex w-full flex-col', {
     'gap-1': labelSize === 'default',
-    'gap-3': labelSize === 'h3' || labelSize === 'h4',
+    'gap-3': labelSize === 'h3' || labelSize === 'h4' || labelSize === 'h5',
     [customHeaderBottomMargin]: useCustomBottomMargin,
     // If there's helptext and large label, we need to have large margin at the bottom
     'mb-8': !useCustomBottomMargin,
@@ -60,6 +60,7 @@ const FieldHeader = ({
       labelSize === 'default',
     'text-h3 after:text-h3': labelSize === 'h3',
     'text-h4 after:text-h4': labelSize === 'h4',
+    'text-h5 after:text-h5': labelSize === 'h5',
     'mr-2': showOptionalLabel,
     'after:absolute after:ml-0.5 after:text-main-700 after:content-["*"]': displayAsterisk,
   })

@@ -29,7 +29,8 @@ const BAArrayFieldItemTemplate = <
   const { variant, itemTitle } = parentUiOptions
 
   const boxStyle = cx({
-    'rounded-lg border border-zinc-300 bg-white px-6 pb-6 pt-8': variant === 'topLevel',
+    'rounded-lg border border-zinc-300 bg-white p-4 md:px-6 md:pb-6 md:pt-8':
+      variant === 'topLevel',
     'rounded-lg bg-gray-50': variant === 'nested',
   })
 
@@ -39,7 +40,7 @@ const BAArrayFieldItemTemplate = <
   })
 
   const contentStyle = cx({
-    'p-6': variant === 'nested',
+    'p-4 md:p-6': variant === 'nested',
   })
 
   const title = getArrayFieldItemTemplateTitle(itemTitle, index)

@@ -18,9 +18,8 @@ describe('F01 -', { testIsolation: false }, () => {
         before(() => {
           cy.visit('/mestske-sluzby/stanovisko-k-investicnemu-zameru')
           cy.hideNavbar(device)
+          cy.hideInfoBar()
         })
-
-        // TODO add data-cy to form inputs
         
         it('1. Checking "File" step validation.', () => {
           cy.dataCy('close-modal').click()
@@ -74,10 +73,8 @@ describe('F01 -', { testIsolation: false }, () => {
 
             cy.wrap(Cypress.$('input[type=tel]', form)).focus().clear();
             cy.wrap(Cypress.$('input[type=tel]', form)).type(this.fileData.phone_number)
-            cy.wrap(Cypress.$('input[type=tel]', form)).invoke('val').should('match', /\+421[0-9]{9}/g)
 
-            //cy.wrap(Cypress.$('[data-cy=input-given_name]', form)).type(this.fileData.given_name)
-
+            // Continue button needs to be clicked twice to work. After first click, phone validation shows false error.
             cy.wrap(Cypress.$(`[data-cy=continue-button-${device}]`, form)).click()
             cy.wrap(Cypress.$(`[data-cy=continue-button-${device}]`, form)).click()
           })

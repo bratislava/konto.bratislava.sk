@@ -16,6 +16,7 @@ describe('F03 -', { testIsolation: false }, () => {
         before(() => {
           cy.visit('/mestske-sluzby/stanovisko-k-investicnemu-zameru')
           cy.hideNavbar(device)
+          cy.hideInfoBar()
         })
         
         it('1. Checking "File" step validation.', () => {

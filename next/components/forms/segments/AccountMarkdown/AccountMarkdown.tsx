@@ -74,7 +74,7 @@ const AccountMarkdown = ({
       </ul>
     ),
     li: ({ children, ordered, ...props }: ChildrenParent) => (
-      <li className="text-p1" {...props}>
+      <li className={cx(variant === 'sm' ? 'text-p3 lg:text-p2' : 'text-p1')} {...props}>
         {children}
       </li>
     ),

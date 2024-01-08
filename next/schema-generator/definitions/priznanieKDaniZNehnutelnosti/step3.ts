@@ -65,7 +65,11 @@ const vymeraPozemkuKalkulacka = customComponentsField(
           label: 'Vaša výmera pozemku',
           formula:
             'roundTo(evalRatio(podielPriestoruNaSpolocnychCastiachAZariadeniachDomu) * evalRatio(spoluvlastnickyPodiel) * celkovaVymeraPozemku, 2)',
-          missingFieldsMessage: 'Pre výpočet výmery pozemku vyplňte všetky polia.',
+          missingFieldsMessage:
+            '**Pre výpočet výmery pozemku vyplňte správne všetky polia:**\n' +
+            '- Celková výmera pozemku\n' +
+            '- Podiel priestoru na spoločných častiach a zariadeniach domu\n' +
+            '- Spoluvlastnícky podiel',
           unit: markdownText('m^2^'),
         },
       ],
@@ -86,7 +90,7 @@ const vymeraPozemku = number(
 const innerArray = (kalkulacka: boolean) =>
   arrayField(
     'priznania',
-    { title: 'Priznania k dani z pozemkov', required: true, maxItems: 17 },
+    { title: 'Priznania k dani z pozemkov', required: true },
     {
       hideTitle: true,
       variant: 'topLevel',
@@ -100,7 +104,7 @@ const innerArray = (kalkulacka: boolean) =>
       ...pravnyVztahSpoluvlastnictvo(StepEnum.DanZPozemkov),
       arrayField(
         'pozemky',
-        { title: 'Pozemky', required: true },
+        { title: 'Pozemky', required: true, maxItems: 17 },
         {
           variant: 'nested',
           addButtonLabel: 'Pridať ďalší pozemok (na tom istom LV)',
@@ -108,6 +112,8 @@ const innerArray = (kalkulacka: boolean) =>
           description: markdownText(
             'Pozemky pod stavbami, v ktorej máte nehnuteľnosť, sa nezdaňujú.\n\n:form-image-preview[Zobraziť ukážku]{src="https://cdn-api.bratislava.sk/general-strapi/upload/3_pozemky_c16049c4bd.png"}',
           ),
+          cannotAddItemMessage:
+            'Dosiahli ste maximálny počet pozemkov (17) na jedno priznanie. Pridajte ďalšie priznanie.',
         },
         [
           input(

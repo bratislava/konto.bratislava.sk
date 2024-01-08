@@ -74,7 +74,7 @@ const Accordion = ({
         )}
         <div className="flex w-full flex-col gap-2 lg:gap-4">
           <div className="flex w-full justify-between gap-4">
-            <div
+            <h4
               className={cx('flex grow text-left', {
                 'text-h6': accordionSize === 'xs',
                 'text-h5': accordionSize === 'sm',
@@ -83,9 +83,9 @@ const Accordion = ({
               })}
             >
               {title}
-            </div>
-            <div
-              className={cx('lg:font-semibold', {
+            </h4>
+            <p
+              className={cx('flex lg:font-semibold', {
                 'text-p-base': size === 'xs',
                 'text-h-base': size === 'sm',
                 'text-p-base lg:text-h-md': size === 'md',
@@ -93,7 +93,7 @@ const Accordion = ({
               })}
             >
               {secondTitle}
-            </div>
+            </p>
             <ChevronDownIcon
               className={cx('flex items-center justify-center text-negative-700', {
                 'h-8 w-8 min-w-[32px] lg:h-10 lg:w-10 lg:min-w-[40px]': accordionSize === 'lg',

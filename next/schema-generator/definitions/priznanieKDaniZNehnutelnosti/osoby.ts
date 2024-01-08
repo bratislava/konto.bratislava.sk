@@ -83,17 +83,19 @@ const statField = select(
   {},
 )
 
-const emailField = input(
-  'email',
-  { title: 'E-mail', type: 'email', required: true },
-  { helptext: 'E-mailová adresa nám pomôže komunikovať s vami rýchlejšie.' },
-)
+const emailField = (required = true) =>
+  input(
+    'email',
+    { title: 'E-mail', type: 'email', required },
+    { helptext: 'E-mailová adresa nám pomôže komunikovať s vami rýchlejšie.' },
+  )
 
-const telefonField = input(
-  'telefon',
-  { title: 'Telefónne číslo (v tvare +421...)', required: true, type: 'tel' },
-  { helptext: 'Telefónne číslo nám pomôže komunikovať s vami rýchlejšie.', size: 'medium' },
-)
+const telefonField = (required = true) =>
+  input(
+    'telefon',
+    { title: 'Telefónne číslo (v tvare +421...)', required, type: 'tel' },
+    { helptext: 'Telefónne číslo nám pomôže komunikovať s vami rýchlejšie.', size: 'medium' },
+  )
 
 const icoField = input('ico', { title: 'IČO', required: true }, {})
 
@@ -258,8 +260,8 @@ export const udajeOOpravnenejOsobeNaPodaniePriznania = object(
     ulicaCisloFields(UlicaCisloTyp.FyzickaOsoba),
     obecPscField,
     statField,
-    emailField,
-    telefonField,
+    emailField(),
+    telefonField(),
   ],
 )
 
@@ -334,8 +336,8 @@ export const danovnik = [
       ]),
     ]),
   ]),
-  emailField,
-  telefonField,
+  emailField(),
+  telefonField(),
 ]
 
 export const splnomocnenec = [
@@ -350,8 +352,8 @@ export const splnomocnenec = [
   ]),
   obecPscField,
   statField,
-  emailField,
-  telefonField,
+  emailField(),
+  telefonField(),
 ]
 
 const rovnakaAdresaField = radioGroup(
@@ -381,6 +383,6 @@ export const bezpodieloveSpoluvlastnictvoManzelov = [
     obecPscField,
     statField,
   ]),
-  emailField,
-  telefonField,
+  emailField(false),
+  telefonField(false),
 ]

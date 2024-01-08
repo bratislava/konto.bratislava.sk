@@ -65,7 +65,7 @@ const celkovaVymeraSpecialCase = (typ: Typ) =>
     },
     {
       helptext:
-        'Ak číslo za lomkou vo vašom podiele začína číslom od 1 do 9, za ktorým nasledujú 3 alebo viac núl, LV vám vypočítať výmeru nepomôže. Správny údaj nájdete v kúpnej zmluve alebo v znaleckom posudku k predmetnej nehnuteľnosti.',
+        'Ak má číslo za lomkou vo vašom podiele priestoru na spoločných častiach hodnotu, napríklad, 1 000, 10 000, alebo 100 000, údaj z listu vlastníctva vám nepomôže. Správne údaje o podlahovej ploche nájdete v kúpnej zmluve alebo znaleckom posudku (celková podlahová plocha okrem balkónov, lodžií a terás).',
     },
   )
 

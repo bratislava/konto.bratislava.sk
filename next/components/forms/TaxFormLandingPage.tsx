@@ -105,10 +105,13 @@ const TaxFormLandingPage = ({ page, latestVersionId }: TaxFormLandingPageProps) 
         <div className="mx-auto flex w-full max-w-screen-lg flex-col gap-10 p-4 pb-6 lg:flex-row lg:gap-20 lg:p-0 lg:py-10">
           <div className="flex max-w-[800px] flex-col gap-10">
             <AccountMarkdown content={t('tax_form_landing_page.instructions')} variant="sm" />
-            <div className="flex flex-col rounded-xl border-2 border-gray-200">
-              {cards.map((card, index) => (
-                <TaxFormLandingPageCard key={index} {...card} />
-              ))}
+            <div className="flex flex-col gap-3">
+              <h2 className="text-h2">Vyberte si ako vyplníte priznanie:</h2>
+              <div className="flex flex-col rounded-xl border-2 border-gray-200">
+                {cards.map((card, index) => (
+                  <TaxFormLandingPageCard key={index} {...card} />
+                ))}
+              </div>
             </div>
           </div>
         </div>

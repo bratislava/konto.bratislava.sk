@@ -1,5 +1,4 @@
 import cx from 'classnames'
-import Alert from 'components/forms/info-components/Alert'
 import { useServerSideAuth } from 'frontend/hooks/useServerSideAuth'
 import { useTranslation } from 'next-i18next'
 import React from 'react'
@@ -27,6 +26,7 @@ const UserProfileSectionHeader = ({
 }: UserProfileSectionHeaderProps) => {
   const { tierStatus } = useServerSideAuth()
   const { t } = useTranslation('account')
+
   return (
     <div
       className={cx(
@@ -58,20 +58,6 @@ const UserProfileSectionHeader = ({
         </div>
         {children && <div className={cx({ 'w-full md:w-fit': childrenToColumn })}>{children}</div>}
       </div>
-      {mainHeader && !tierStatus.isIdentityVerified && (
-        <Alert
-          title={t('verification_status_required')}
-          message={t('verification_status_required_alert')}
-          type="warning"
-          buttons={[
-            {
-              title: t('verification_url_text'),
-              link: '/overenie-identity',
-            },
-          ]}
-          fullWidth
-        />
-      )}
     </div>
   )
 }

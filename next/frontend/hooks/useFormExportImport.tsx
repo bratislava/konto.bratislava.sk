@@ -139,28 +139,52 @@ export const useGetContext = ({ initialFormData }: FormExportImportProviderProps
     }
   }
 
-  const exportPdf = async () => {
+  const runPdfExport = async (abortController?: AbortController) => {
+    const response = await formsApi.convertControllerConvertToPdf(
+      initialFormData.schemaVersionId,
+      {
+        jsonForm: formData,
+      },
+      {
+        accessToken: 'onlyAuthenticated',
+        responseType: 'arraybuffer',
+        signal: abortController?.signal,
+      },
+    )
+    const fileName = `${formSlug}_output.pdf`
+    downloadBlob(new Blob([response.data as BlobPart]), fileName)
+  }
+
+  const exportOrdinaryPdf = async () => {
     openSnackbarInfo(t('info_messages.pdf_export'))
     try {
-      const response = await formsApi.convertControllerConvertToPdf(
-        initialFormData.schemaVersionId,
-        {
-          jsonForm: formData,
-        },
-        { accessToken: 'onlyAuthenticated', responseType: 'arraybuffer' },
-      )
-      const fileName = `${formSlug}_output.pdf`
-      // TODO: Revisit when BE is fixed
-      downloadBlob(new Blob([response.data as BlobPart]), fileName)
-      closeSnackbarInfo()
-      if (initialFormData.isTaxForm) {
-        setTaxFormPdfExportModal(true)
-      } else {
-        openSnackbarSuccess(t('success_messages.pdf_export'))
-      }
+      await runPdfExport()
     } catch (error) {
+      closeSnackbarInfo()
       openSnackbarError(t('errors.pdf_export'))
+      return
     }
+    closeSnackbarInfo()
+    openSnackbarSuccess(t('success_messages.pdf_export'))
+  }
+
+  const exportTaxPdf = async () => {
+    const abortController = new AbortController()
+    setTaxFormPdfExportModal({ type: 'loading', onClose: () => abortController.abort() })
+    try {
+      await runPdfExport(abortController)
+    } catch (error) {
+      setTaxFormPdfExportModal(null)
+      if (!abortController.signal.aborted) {
+        openSnackbarError(t('errors.pdf_export'))
+      }
+      return
+    }
+    setTaxFormPdfExportModal({ type: 'success' })
+  }
+
+  const exportPdf = async () => {
+    await (initialFormData.isTaxForm ? exportTaxPdf() : exportOrdinaryPdf())
   }
 
   const saveConcept = async (fromModal?: boolean) => {

@@ -2,7 +2,6 @@ import { formsApi } from '@clients/forms'
 import { GetFormResponseDto, GinisDocumentDetailResponseDto } from '@clients/openapi-forms'
 import MyApplicationDetails from 'components/forms/segments/AccountSections/MyApplicationsSection/MyApplicationDetails'
 import AccountPageLayout from 'components/layouts/AccountPageLayout'
-import PageWrapper from 'components/layouts/PageWrapper'
 import {
   getSSRCurrentAuth,
   ServerSideAuthProviderHOC,
@@ -51,15 +50,6 @@ export const getServerSideProps = async (ctx: GetServerSidePropsContext) => {
         myApplicationDetailsData.schemaVersion.schema?.slug,
       ),
       ssrCurrentAuthProps: await getSSRCurrentAuth(ctx.req),
-      page: {
-        locale: ctx.locale,
-        localizations: ['sk', 'en']
-          .filter((l) => l !== ctx.locale)
-          .map((l) => ({
-            slug: '',
-            locale: l,
-          })),
-      },
 
       ...(await serverSideTranslations(locale)),
     },
@@ -67,19 +57,16 @@ export const getServerSideProps = async (ctx: GetServerSidePropsContext) => {
 }
 
 const AccountMyApplicationsPage = ({
-  page,
   myApplicationDetailsData,
   myApplicationGinisData,
 }: AsyncServerProps<typeof getServerSideProps>) => {
   return (
-    <PageWrapper locale={page.locale} localizations={page.localizations}>
-      <AccountPageLayout>
-        <MyApplicationDetails
-          ginisData={myApplicationGinisData}
-          detailsData={myApplicationDetailsData}
-        />
-      </AccountPageLayout>
-    </PageWrapper>
+    <AccountPageLayout>
+      <MyApplicationDetails
+        ginisData={myApplicationGinisData}
+        detailsData={myApplicationDetailsData}
+      />
+    </AccountPageLayout>
   )
 }
 

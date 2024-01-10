@@ -13,7 +13,6 @@ import AccountNavBar, {
   MenuSectionItemBase,
 } from 'components/forms/segments/AccountNavBar/AccountNavBar'
 import { MenuItemBase } from 'components/forms/simple-components/MenuDropdown/MenuDropdown'
-import { usePageWrapperContext } from 'components/layouts/PageWrapper'
 import { useServerSideAuth } from 'frontend/hooks/useServerSideAuth'
 import { useRouter } from 'next/router'
 import { useTranslation } from 'next-i18next'
@@ -36,7 +35,6 @@ const AccountPageLayout = ({
   hiddenHeaderNav,
   isPublicPage,
 }: AccountPageLayoutBase) => {
-  const { locale, localizations = [] } = usePageWrapperContext()
   const { isAuthenticated } = useServerSideAuth()
   const router = useRouter()
 
@@ -49,16 +47,6 @@ const AccountPageLayout = ({
   }, [isAuthenticated, isPublicPage, router])
 
   const [t] = useTranslation('common')
-
-  const handleLanguageChange = async ({ key }: { key: string }) => {
-    const path = localizations.find((l) => l.locale === key)?.slug || ''
-    // eslint-disable-next-line @typescript-eslint/no-floating-promises
-    try {
-      await router.push(`/${path}`, undefined, { locale: key })
-    } catch (error) {
-      logger.error(error)
-    }
-  }
 
   const logoutHandler = async () => {
     await Auth.signOut()
@@ -124,8 +112,6 @@ const AccountPageLayout = ({
   return (
     <div className={cx('flex min-h-screen flex-col', className)}>
       <AccountNavBar
-        currentLanguage={locale}
-        onLanguageChange={handleLanguageChange}
         sectionsList={sectionsList}
         menuItems={menuItems}
         navHidden

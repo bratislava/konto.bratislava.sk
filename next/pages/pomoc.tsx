@@ -1,6 +1,5 @@
 import HelpSection from 'components/forms/segments/AccountSections/HelpSection/HelpSection'
 import AccountPageLayout from 'components/layouts/AccountPageLayout'
-import PageWrapper from 'components/layouts/PageWrapper'
 import {
   getSSRCurrentAuth,
   ServerSideAuthProviderHOC,
@@ -8,35 +7,22 @@ import {
 import { GetServerSidePropsContext } from 'next'
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
 
-import { AsyncServerProps } from '../frontend/utils/types'
-
 export const getServerSideProps = async (ctx: GetServerSidePropsContext) => {
   const locale = ctx.locale ?? 'sk'
 
   return {
     props: {
       ssrCurrentAuthProps: await getSSRCurrentAuth(ctx.req),
-      page: {
-        locale: ctx.locale,
-        localizations: ['sk', 'en']
-          .filter((l) => l !== ctx.locale)
-          .map((l) => ({
-            slug: '',
-            locale: l,
-          })),
-      },
       ...(await serverSideTranslations(locale)),
     },
   }
 }
 
-const AccountHelpPage = ({ page }: AsyncServerProps<typeof getServerSideProps>) => {
+const AccountHelpPage = () => {
   return (
-    <PageWrapper locale={page.locale} localizations={page.localizations}>
-      <AccountPageLayout>
-        <HelpSection />
-      </AccountPageLayout>
-    </PageWrapper>
+    <AccountPageLayout>
+      <HelpSection />
+    </AccountPageLayout>
   )
 }
 

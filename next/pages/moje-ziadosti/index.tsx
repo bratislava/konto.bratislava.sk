@@ -2,7 +2,6 @@ import MyApplicationsSection, {
   getTotalNumberOfApplications,
 } from 'components/forms/segments/AccountSections/MyApplicationsSection/MyApplicationsSection'
 import AccountPageLayout from 'components/layouts/AccountPageLayout'
-import PageWrapper from 'components/layouts/PageWrapper'
 import {
   getSSRCurrentAuth,
   ServerSideAuthProviderHOC,
@@ -17,15 +16,6 @@ export const getServerSideProps = async (ctx: GetServerSidePropsContext) => {
   return {
     props: {
       ssrCurrentAuthProps: await getSSRCurrentAuth(ctx.req),
-      page: {
-        locale: ctx.locale,
-        localizations: ['sk', 'en']
-          .filter((l) => l !== ctx.locale)
-          .map((l) => ({
-            slug: '',
-            locale: l,
-          })),
-      },
       totalCounts: {
         SENT: await getTotalNumberOfApplications('SENT', ctx.req),
         SENDING: await getTotalNumberOfApplications('SENDING', ctx.req),
@@ -37,15 +27,12 @@ export const getServerSideProps = async (ctx: GetServerSidePropsContext) => {
 }
 
 const AccountMyApplicationsPage = ({
-  page,
   totalCounts,
 }: AsyncServerProps<typeof getServerSideProps>) => {
   return (
-    <PageWrapper locale={page.locale} localizations={page.localizations}>
-      <AccountPageLayout>
-        <MyApplicationsSection totalCounts={totalCounts} />
-      </AccountPageLayout>
-    </PageWrapper>
+    <AccountPageLayout>
+      <MyApplicationsSection totalCounts={totalCounts} />
+    </AccountPageLayout>
   )
 }
 

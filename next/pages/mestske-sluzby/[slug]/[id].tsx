@@ -52,9 +52,6 @@ export const getServerSideProps: GetServerSideProps<FormPageWrapperProps, Params
         schema: form.schemaVersion.jsonSchema,
         uiSchema: form.schemaVersion.uiSchema,
         ssrCurrentAuthProps,
-        page: {
-          locale,
-        },
         initialFormData: {
           formId: id,
           formDataJson: form.formDataJson ?? {},

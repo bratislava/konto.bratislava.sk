@@ -35,9 +35,6 @@ export const getServerSideProps: GetServerSideProps<TaxFormLandingPageProps> = a
     return {
       props: {
         ssrCurrentAuthProps,
-        page: {
-          locale,
-        },
         latestVersionId,
         ...(await serverSideTranslations(locale)),
       } satisfies TaxFormLandingPageProps,

@@ -15,30 +15,18 @@ import { useTranslation } from 'next-i18next'
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
 import { useEffect, useState } from 'react'
 
-import PageWrapper from '../components/layouts/PageWrapper'
-import { AsyncServerProps } from '../frontend/utils/types'
-
 export const getServerSideProps = async (ctx: GetServerSidePropsContext) => {
   const locale = ctx.locale ?? 'sk'
 
   return {
     props: {
       ssrCurrentAuthProps: await getSSRCurrentAuth(ctx.req),
-      page: {
-        locale: ctx.locale,
-        localizations: ['sk', 'en']
-          .filter((l) => l !== ctx.locale)
-          .map((l) => ({
-            slug: '',
-            locale: l,
-          })),
-      },
       ...(await serverSideTranslations(locale)),
     },
   }
 }
 
-const LogoutPage = ({ page }: AsyncServerProps<typeof getServerSideProps>) => {
+const LogoutPage = () => {
   const { t } = useTranslation('account')
   const { isAuthenticated } = useServerSideAuth()
   const { redirect } = useLoginRegisterRedirect()
@@ -62,21 +50,19 @@ const LogoutPage = ({ page }: AsyncServerProps<typeof getServerSideProps>) => {
   }
 
   return (
-    <PageWrapper locale={page.locale} localizations={page.localizations}>
-      <LoginRegisterLayout backButtonHidden>
-        <AccountContainer className="mb-0 pt-0 md:mb-8 md:pt-6">
-          <AccountSuccessAlert
-            title={t('logout_page.title')}
-            description={t('logout_page.description')}
-            confirmLabel={t('logout_page.confirm_label')}
-            onConfirm={logoutHandler}
-            confirmIsLoading={isLoading}
-            cancelLabel={t('logout_page.cancel_label')}
-            onCancel={() => redirect()}
-          />
-        </AccountContainer>
-      </LoginRegisterLayout>
-    </PageWrapper>
+    <LoginRegisterLayout backButtonHidden>
+      <AccountContainer className="mb-0 pt-0 md:mb-8 md:pt-6">
+        <AccountSuccessAlert
+          title={t('logout_page.title')}
+          description={t('logout_page.description')}
+          confirmLabel={t('logout_page.confirm_label')}
+          onConfirm={logoutHandler}
+          confirmIsLoading={isLoading}
+          cancelLabel={t('logout_page.cancel_label')}
+          onCancel={() => redirect()}
+        />
+      </AccountContainer>
+    </LoginRegisterLayout>
   )
 }
 

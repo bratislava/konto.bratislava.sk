@@ -20,10 +20,8 @@ import { useTranslation } from 'next-i18next'
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
 import { useState } from 'react'
 
-import PageWrapper from '../components/layouts/PageWrapper'
 import { ROUTES } from '../frontend/api/constants'
 import logger from '../frontend/utils/logger'
-import { AsyncServerProps } from '../frontend/utils/types'
 
 enum ActivateAccountStatus {
   INIT = 'INIT',
@@ -37,21 +35,12 @@ export const getServerSideProps = async (ctx: GetServerSidePropsContext) => {
   return {
     props: {
       ssrCurrentAuthProps: await getSSRCurrentAuth(ctx.req),
-      page: {
-        locale: ctx.locale,
-        localizations: ['sk', 'en']
-          .filter((l) => l !== ctx.locale)
-          .map((l) => ({
-            slug: '',
-            locale: l,
-          })),
-      },
       ...(await serverSideTranslations(locale)),
     },
   }
 }
 
-const MigrationPage = ({ page }: AsyncServerProps<typeof getServerSideProps>) => {
+const MigrationPage = () => {
   const [lastEmail, setLastEmail] = useState('')
   const [activateAccountError, setActivateAccountError] = useState<Error | null>(null)
   const [activateAccountStatus, setActivateAccountStatus] = useState<ActivateAccountStatus>(
@@ -108,36 +97,34 @@ const MigrationPage = ({ page }: AsyncServerProps<typeof getServerSideProps>) =>
   }
 
   return (
-    <PageWrapper locale={page.locale} localizations={page.localizations}>
-      <LoginRegisterLayout backButtonHidden>
-        <AccountContainer>
-          {activateAccountStatus === ActivateAccountStatus.NEW_PASSWORD_REQUIRED ? (
-            <NewPasswordForm
-              onSubmit={(verificationCode, newPassword) =>
-                forgotPasswordSubmit(verificationCode, newPassword)
-              }
-              onResend={forgotPassword}
-              error={activateAccountError}
-              lastEmail={lastEmail}
-              fromMigration
-            />
-          ) : activateAccountStatus === ActivateAccountStatus.INIT ? (
-            <MigrationForm
-              onSubmit={forgotPassword}
-              lastEmail={lastEmail}
-              setLastEmail={setLastEmail}
-              error={activateAccountError}
-            />
-          ) : (
-            <AccountSuccessAlert
-              title={t('migration_success_title')}
-              confirmLabel={t('account_continue_link')}
-              onConfirm={onConfirm}
-            />
-          )}
-        </AccountContainer>
-      </LoginRegisterLayout>
-    </PageWrapper>
+    <LoginRegisterLayout backButtonHidden>
+      <AccountContainer>
+        {activateAccountStatus === ActivateAccountStatus.NEW_PASSWORD_REQUIRED ? (
+          <NewPasswordForm
+            onSubmit={(verificationCode, newPassword) =>
+              forgotPasswordSubmit(verificationCode, newPassword)
+            }
+            onResend={forgotPassword}
+            error={activateAccountError}
+            lastEmail={lastEmail}
+            fromMigration
+          />
+        ) : activateAccountStatus === ActivateAccountStatus.INIT ? (
+          <MigrationForm
+            onSubmit={forgotPassword}
+            lastEmail={lastEmail}
+            setLastEmail={setLastEmail}
+            error={activateAccountError}
+          />
+        ) : (
+          <AccountSuccessAlert
+            title={t('migration_success_title')}
+            confirmLabel={t('account_continue_link')}
+            onConfirm={onConfirm}
+          />
+        )}
+      </AccountContainer>
+    </LoginRegisterLayout>
   )
 }
 

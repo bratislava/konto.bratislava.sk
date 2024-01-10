@@ -163,7 +163,12 @@ export const useGetContext = ({ initialFormData }: FormFileUploadProviderProps) 
         onError: (error) => {
           updateFileStatus({
             type: FormFileUploadStatusEnum.UploadServerError,
-            error: { rawError: error.toString() },
+            error: {
+              // eslint-disable-next-line @typescript-eslint/no-base-to-string
+              rawError: error.toString(),
+              errorCode: error?.response?.data?.statusCode,
+              errorName: error?.response?.data?.errorName,
+            },
             canRetry: true,
           })
         },

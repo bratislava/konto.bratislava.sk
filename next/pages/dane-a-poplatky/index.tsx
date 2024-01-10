@@ -15,9 +15,8 @@ export const getServerSideProps = async (ctx: GetServerSidePropsContext) => {
   const ssrCurrentAuthProps = await getSSRCurrentAuth(ctx.req)
   if (!ssrCurrentAuthProps.userData) {
     return {
-      // TODO: Redirect back after login
       redirect: {
-        destination: ROUTES.LOGIN,
+        destination: `${ROUTES.LOGIN}?from=${ctx.resolvedUrl}`,
         permanent: false,
       },
     }

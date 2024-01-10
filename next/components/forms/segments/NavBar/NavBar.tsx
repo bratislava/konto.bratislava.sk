@@ -47,7 +47,6 @@ export interface MenuSectionItemBase {
   title: string
   icon: ReactNode
   url: string
-  onPress?: () => Promise<void>
 }
 
 const Avatar = ({ userData }: { userData?: UserData | null }) => {
@@ -211,9 +210,8 @@ export const NavBar = ({ className, sectionsList, menuItems, hiddenHeaderNav }: 
                     onFocus={() => setIsNavigationFocused(true)}
                     onBlur={() => setIsNavigationFocused(false)}
                   >
-                    {sectionItem.onPress ? (
-                      <ButtonNew
-                        variant="unstyled"
+                    <NextLink href={sectionItem.url}>
+                      <div
                         className={cx(
                           'text-p2-semibold flex h-full w-full cursor-pointer items-center justify-center border-b-2 transition-all hover:border-main-700 hover:text-main-700',
                           {
@@ -221,27 +219,11 @@ export const NavBar = ({ className, sectionsList, menuItems, hiddenHeaderNav }: 
                             'border-transparent': !isActive(sectionItem),
                           },
                         )}
-                        startIcon={sectionItem.icon}
-                        onPress={sectionItem.onPress}
                       >
+                        {sectionItem.icon}
                         <span className="ml-3">{t(sectionItem?.title)}</span>
-                      </ButtonNew>
-                    ) : (
-                      <NextLink href={sectionItem.url}>
-                        <div
-                          className={cx(
-                            'text-p2-semibold flex h-full w-full cursor-pointer items-center justify-center border-b-2 transition-all hover:border-main-700 hover:text-main-700',
-                            {
-                              'border-main-700 text-main-700': isActive(sectionItem),
-                              'border-transparent': !isActive(sectionItem),
-                            },
-                          )}
-                        >
-                          {sectionItem.icon}
-                          <span className="ml-3">{t(sectionItem?.title)}</span>
-                        </div>
-                      </NextLink>
-                    )}
+                      </div>
+                    </NextLink>
                   </li>
                 ))}
               </ul>

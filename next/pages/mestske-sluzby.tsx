@@ -20,7 +20,7 @@ export const getServerSideProps = async (ctx: GetServerSidePropsContext) => {
 
 const AccountMunicipalServicesPage = () => {
   return (
-    <AccountPageLayout isPublicPage>
+    <AccountPageLayout>
       <MunicipalServicesSection />
     </AccountPageLayout>
   )

@@ -84,7 +84,7 @@ const TaxFormLandingPage = ({ latestVersionId }: TaxFormLandingPageProps) => {
   ]
 
   return (
-    <AccountPageLayout hiddenHeaderNav isPublicPage>
+    <AccountPageLayout hiddenHeaderNav>
       <div className="relative flex flex-col">
         <div className="h-full w-full bg-main-200 p-4 md:py-6 lg:min-h-[120px] lg:px-0 lg:py-12">
           <div className="mx-auto flex max-w-screen-lg justify-between">

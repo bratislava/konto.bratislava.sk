@@ -11,40 +11,21 @@ import { Auth } from 'aws-amplify'
 import cx from 'classnames'
 import NavBar, { MenuSectionItemBase } from 'components/forms/segments/NavBar/NavBar'
 import { MenuItemBase } from 'components/forms/simple-components/MenuDropdown/MenuDropdown'
-import useLoginRegisterRedirect from 'frontend/hooks/useLoginRegisterRedirect'
-import { useServerSideAuth } from 'frontend/hooks/useServerSideAuth'
 import { useRouter } from 'next/router'
 import { useTranslation } from 'next-i18next'
-import { ReactNode, useEffect } from 'react'
+import { ReactNode } from 'react'
 
 import { ROUTES } from '../../frontend/api/constants'
 import { isDefined } from '../../frontend/utils/general'
-import logger from '../../frontend/utils/logger'
 
 type AccountPageLayoutBase = {
   className?: string
   children: ReactNode
   hiddenHeaderNav?: boolean
-  isPublicPage?: boolean
 }
 
-const AccountPageLayout = ({
-  className,
-  children,
-  hiddenHeaderNav,
-  isPublicPage,
-}: AccountPageLayoutBase) => {
-  const { redirect } = useLoginRegisterRedirect()
-  const { isAuthenticated } = useServerSideAuth()
+const AccountPageLayout = ({ className, children, hiddenHeaderNav }: AccountPageLayoutBase) => {
   const router = useRouter()
-
-  useEffect(() => {
-    if (!isPublicPage && !isAuthenticated && router.route !== ROUTES.PAYMENT_RESULT) {
-      router
-        .push({ pathname: ROUTES.LOGIN, query: { from: router.route } })
-        .catch((error_) => logger.error('Redirect failed', error_))
-    }
-  }, [isAuthenticated, isPublicPage, router])
 
   const [t] = useTranslation('common')
 
@@ -71,9 +52,6 @@ const AccountPageLayout = ({
       title: 'account:account_section_applications.navigation',
       icon: <MySubmissionsIcon className="h-6 w-6" />,
       url: ROUTES.MY_APPLICATIONS,
-      // TODO this is a temporary solution until we have a proper way to handle this through authenticated page protection https://github.com/bratislava/konto.bratislava.sk/issues/664
-      // without this, error is thrown before redirect to login page happens
-      onPress: !isAuthenticated ? () => redirect({ from: ROUTES.MY_APPLICATIONS }) : undefined,
     },
     {
       id: 3,

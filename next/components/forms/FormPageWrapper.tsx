@@ -53,7 +53,7 @@ const FormPageWrapper = ({ schema, uiSchema, initialFormData }: FormPageWrapperP
                       <FormSignatureProvider>
                         <FormSendProvider>
                           <FormExportImportProvider initialFormData={initialFormData}>
-                            <AccountPageLayout isPublicPage>
+                            <AccountPageLayout>
                               <FormPage />
                             </AccountPageLayout>
                           </FormExportImportProvider>

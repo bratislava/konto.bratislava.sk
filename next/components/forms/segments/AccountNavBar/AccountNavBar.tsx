@@ -77,7 +77,7 @@ export const AccountNavBar = ({ className, sectionsList, menuItems, hiddenHeader
   const { t } = useTranslation(['common', 'account'])
   const router = useRouter()
 
-  /**  Reference to the navigation container element and state to to track if navitgation is focused  */
+  /**  Reference to the navigation container element and state to track if navigation is focused  */
   const navigationRef = useRef<HTMLDivElement>(null)
   const [isNavigationFocused, setIsNavigationFocused] = useState(false)
 

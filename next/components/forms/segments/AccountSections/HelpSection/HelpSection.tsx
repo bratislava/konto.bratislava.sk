@@ -174,6 +174,7 @@ const HelpSection = () => {
           buttonText={t('account_section_help.banner_button_text')}
           href="mailto:info@bratislava.sk"
           image={BannerPhone}
+          imageAlt=""
         />
       </div>
     </div>

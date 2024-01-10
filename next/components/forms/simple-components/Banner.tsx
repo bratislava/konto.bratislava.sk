@@ -14,6 +14,7 @@ type BannerBase = {
   onPress?: () => void
   className?: string
   image: string
+  imageAlt: string
 }
 
 const Banner = ({
@@ -23,6 +24,7 @@ const Banner = ({
   mobileNumber = '',
   href,
   image,
+  imageAlt,
   onPress,
   className,
 }: BannerBase) => {
@@ -76,7 +78,7 @@ const Banner = ({
         </div>
       </div>
       <div className="my-auto flex w-full sm:w-1/2">
-        <Image src={image} alt="" />
+        <Image src={image} alt={imageAlt} />
       </div>
     </div>
   )

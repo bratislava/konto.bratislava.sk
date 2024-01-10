@@ -16,20 +16,28 @@ import { useRefreshServerSideProps } from 'frontend/hooks/useRefreshServerSidePr
 import { useServerSideAuth } from 'frontend/hooks/useServerSideAuth'
 import { GENERIC_ERROR_MESSAGE, isError } from 'frontend/utils/errors'
 import { GetServerSidePropsContext } from 'next'
-import { useRouter } from 'next/router'
 import { useTranslation } from 'next-i18next'
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
-import { useEffect, useState } from 'react'
+import { useState } from 'react'
 
 import { ROUTES } from '../frontend/api/constants'
 import logger from '../frontend/utils/logger'
 
 export const getServerSideProps = async (ctx: GetServerSidePropsContext) => {
   const locale = ctx.locale ?? 'sk'
+  const ssrCurrentAuthProps = await getSSRCurrentAuth(ctx.req)
+  if (!ssrCurrentAuthProps.userData) {
+    return {
+      redirect: {
+        destination: `${ROUTES.LOGIN}?from=${ctx.resolvedUrl}`,
+        permanent: false,
+      },
+    }
+  }
 
   return {
     props: {
-      ssrCurrentAuthProps: await getSSRCurrentAuth(ctx.req),
+      ssrCurrentAuthProps,
       ...(await serverSideTranslations(locale)),
     },
   }
@@ -43,19 +51,11 @@ const IdentityVerificationPage = () => {
 
   const [identityVerificationError, setIdentityVerificationError] = useState<Error | null>(null)
   // TODO fix is legal entity
-  const { isAuthenticated, tierStatus, isLegalEntity } = useServerSideAuth()
+  const { tierStatus, isLegalEntity } = useServerSideAuth()
 
-  const router = useRouter()
   const { redirect } = useLoginRegisterRedirect()
 
   const { refreshData } = useRefreshServerSideProps(tierStatus)
-  useEffect(() => {
-    if (!isAuthenticated) {
-      router
-        .push({ pathname: ROUTES.LOGIN, query: { from: router.route } })
-        .catch((error_) => logger.error('Failed redirect', error_))
-    }
-  }, [isAuthenticated, router])
 
   const verifyIdentityAndRefreshUserData = async (data: VerificationFormData) => {
     setLastIco(data.ico)

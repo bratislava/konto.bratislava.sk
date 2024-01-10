@@ -3,6 +3,7 @@ import {
   getSSRCurrentAuth,
   ServerSideAuthProviderHOC,
 } from 'components/logic/ServerSideAuthProvider'
+import { ROUTES } from 'frontend/api/constants'
 import { GetServerSidePropsContext } from 'next'
 import { useTranslation } from 'next-i18next'
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
@@ -12,9 +13,19 @@ import AccountPageLayout from '../components/layouts/AccountPageLayout'
 
 export const getServerSideProps = async (ctx: GetServerSidePropsContext) => {
   const locale = ctx.locale ?? 'sk'
+  const ssrCurrentAuthProps = await getSSRCurrentAuth(ctx.req)
+  if (!ssrCurrentAuthProps.userData) {
+    return {
+      redirect: {
+        destination: `${ROUTES.LOGIN}?from=${ctx.resolvedUrl}`,
+        permanent: false,
+      },
+    }
+  }
+
   return {
     props: {
-      ssrCurrentAuthProps: await getSSRCurrentAuth(ctx.req),
+      ssrCurrentAuthProps,
       ...(await serverSideTranslations(locale)),
     },
   }

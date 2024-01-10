@@ -544,10 +544,11 @@ const FormModals = () => {
         register={register}
       />
       <TaxFormPdfExportModal
-        isOpen={taxFormPdfExportModal}
+        state={taxFormPdfExportModal}
+        isOpen={taxFormPdfExportModal != null}
         onOpenChange={(value) => {
           if (!value) {
-            setTaxFormPdfExportModal(false)
+            setTaxFormPdfExportModal(null)
           }
         }}
       />

@@ -4,9 +4,9 @@ import { GetFormResponseDto, GinisDocumentDetailResponseDto } from '@clients/ope
 import Button from 'components/forms/simple-components/Button'
 import FormatDate from 'components/forms/simple-components/FormatDate'
 import useFormStateComponents from 'frontend/hooks/useFormStateComponents'
-import useSnackbar from 'frontend/hooks/useSnackbar'
 import { downloadBlob } from 'frontend/utils/general'
 import logger from 'frontend/utils/logger'
+import { dismissSnackbar, showSnackbar } from 'frontend/utils/notifications'
 import Link from 'next/link'
 import { useTranslation } from 'next-i18next'
 
@@ -18,10 +18,6 @@ type MyApplicationDetailsHeaderBase = {
 const MyApplicationDetailsHeader = ({ data, ginisData }: MyApplicationDetailsHeaderBase) => {
   const { t } = useTranslation('account')
   const { t: ft } = useTranslation('forms')
-
-  const [openSnackbarError] = useSnackbar({ variant: 'error' })
-  const [openSnackbarSuccess] = useSnackbar({ variant: 'success' })
-  const [openSnackbarInfo, closeSnackbarInfo] = useSnackbar({ variant: 'info' })
 
   const latestGinisChangeDate = ginisData?.documentHistory?.[0]?.DatumZmeny
   const firstGinisChangeDate =
@@ -42,7 +38,7 @@ const MyApplicationDetailsHeader = ({ data, ginisData }: MyApplicationDetailsHea
   const { icon, text } = useFormStateComponents({ error, isLatestSchemaVersionForSlug, state })
 
   const exportPdf = async () => {
-    openSnackbarInfo(ft('info_messages.pdf_export'))
+    showSnackbar(ft('info_messages.pdf_export'), 'info')
     try {
       if (!formData || !schemaVersionId)
         throw new Error(`No form data or schemaVersionId for form id: ${formId}`)
@@ -55,11 +51,12 @@ const MyApplicationDetailsHeader = ({ data, ginisData }: MyApplicationDetailsHea
       )
       const fileName = `${formSlug}_output.pdf`
       downloadBlob(new Blob([response.data as BlobPart]), fileName)
-      closeSnackbarInfo()
-      openSnackbarSuccess(ft('success_messages.pdf_export'))
+
+      dismissSnackbar()
+      showSnackbar(ft('success_messages.pdf_export'), 'success')
     } catch (error) {
       logger.error(error)
-      openSnackbarError(ft('errors.pdf_export'))
+      showSnackbar(ft('errors.pdf_export'), 'error')
     }
   }
 

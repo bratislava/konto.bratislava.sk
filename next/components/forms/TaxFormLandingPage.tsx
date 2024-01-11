@@ -1,11 +1,11 @@
 import { formsApi } from '@clients/forms'
 import { useMutation } from '@tanstack/react-query'
+import { dismissSnackbar, showSnackbar } from 'frontend/utils/notifications'
 import { useRouter } from 'next/router'
 import { useTranslation } from 'next-i18next'
 import React from 'react'
 
 import { ROUTES } from '../../frontend/api/constants'
-import useSnackbar from '../../frontend/hooks/useSnackbar'
 import AccountPageLayout from '../layouts/AccountPageLayout'
 import { GetSSRCurrentAuth } from '../logic/ServerSideAuthProvider'
 import TaxFormLandingPageCard, {
@@ -26,8 +26,6 @@ export type TaxFormLandingPageProps = {
 const TaxFormLandingPage = ({ latestVersionId }: TaxFormLandingPageProps) => {
   const router = useRouter()
   const { t } = useTranslation('forms')
-  const [openSnackbarError] = useSnackbar({ variant: 'error' })
-  const [openSnackbarInfo, closeSnackbarInfo] = useSnackbar({ variant: 'info' })
 
   const { mutate, isPending } = useMutation({
     mutationFn: () =>
@@ -39,17 +37,17 @@ const TaxFormLandingPage = ({ latestVersionId }: TaxFormLandingPageProps) => {
       ),
     networkMode: 'always',
     onMutate: () => {
-      openSnackbarInfo(t('tax_form_landing_page.redirect_info'))
+      showSnackbar(t('tax_form_landing_page.redirect_info'), 'info')
     },
     onSuccess: async (response) => {
-      closeSnackbarInfo()
+      dismissSnackbar()
       await router.push(
         `${ROUTES.MUNICIPAL_SERVICES}/priznanie-k-dani-z-nehnutelnosti/${response.data.id}`,
       )
     },
     onError: () => {
-      closeSnackbarInfo()
-      openSnackbarError(t('tax_form_landing_page.redirect_error'))
+      dismissSnackbar()
+      showSnackbar(t('tax_form_landing_page.redirect_error'), 'error')
     },
   })
 

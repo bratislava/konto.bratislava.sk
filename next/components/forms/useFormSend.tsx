@@ -2,6 +2,7 @@ import { formsApi } from '@clients/forms'
 import { SendFormResponseDto } from '@clients/openapi-forms'
 import { useMutation } from '@tanstack/react-query'
 import { AxiosResponse, isAxiosError } from 'axios'
+import { showSnackbar } from 'frontend/utils/notifications'
 import { useRouter } from 'next/router'
 import { useTranslation } from 'next-i18next'
 import React, { createContext, PropsWithChildren, useContext, useEffect, useRef } from 'react'
@@ -10,7 +11,6 @@ import { useEffectOnce } from 'usehooks-ts'
 import { environment } from '../../environment'
 import { AccountType } from '../../frontend/dtos/accountDto'
 import { useServerSideAuth } from '../../frontend/hooks/useServerSideAuth'
-import useSnackbar from '../../frontend/hooks/useSnackbar'
 import { validateSummary } from '../../frontend/utils/form'
 import {
   FORM_SEND_EID_TOKEN_QUERY_KEY,
@@ -54,7 +54,6 @@ const useGetContext = () => {
   const router = useRouter()
 
   const { t } = useTranslation('forms')
-  const [openSnackbarError] = useSnackbar({ variant: 'error' })
   // As the token is immediately removed from the URL, we need to store it in a ref.
   const sendEidTokenRef = useRef<string | null>(null)
 
@@ -112,7 +111,7 @@ const useGetContext = () => {
         return
       }
 
-      openSnackbarError(t('form_send_error'))
+      showSnackbar(t('form_send_error'), 'error')
     },
   })
 
@@ -138,7 +137,7 @@ const useGetContext = () => {
         setRedirectingToSlovenskoSkLogin(true)
       },
       onError: () => {
-        openSnackbarError(t('form_send_error'))
+        showSnackbar(t('form_send_error'), 'error')
       },
     })
 
@@ -179,7 +178,7 @@ const useGetContext = () => {
         },
       })
       if (fromRepeatModal) {
-        openSnackbarError(t('form_send_error'))
+        showSnackbar(t('form_send_error'), 'error')
       }
     },
   })

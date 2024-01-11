@@ -1,12 +1,12 @@
 import { formsApi } from '@clients/forms'
 import { useMutation } from '@tanstack/react-query'
 import useLoginRegisterRedirect from 'frontend/hooks/useLoginRegisterRedirect'
+import { dismissSnackbar, showSnackbar } from 'frontend/utils/notifications'
 import { useRouter } from 'next/router'
 import { useTranslation } from 'next-i18next'
 import { createContext, PropsWithChildren, useContext } from 'react'
 
 import { ROUTES } from '../../frontend/api/constants'
-import useSnackbar from '../../frontend/hooks/useSnackbar'
 import { useFormLeaveProtection } from './useFormLeaveProtection'
 import { useFormState } from './useFormState'
 
@@ -14,8 +14,6 @@ const useGetContext = () => {
   const router = useRouter()
   const { formId, formData } = useFormState()
   const { t } = useTranslation('forms')
-  const [openSnackbarInfo, closeSnackbarInfo] = useSnackbar({ variant: 'info' })
-  const [openSnackbarError] = useSnackbar({ variant: 'error' })
   const { turnOffLeaveProtection } = useFormLeaveProtection()
   const { setRedirectReturnRoute } = useLoginRegisterRedirect()
 
@@ -30,16 +28,16 @@ const useGetContext = () => {
       ),
     networkMode: 'always',
     onSuccess: () => {
-      closeSnackbarInfo()
+      dismissSnackbar()
     },
     onMutate: () => {
       // TODO: Wording.
-      openSnackbarInfo(t('concept_save_and_redirect'))
+      showSnackbar(t('concept_save_and_redirect'), 'info')
       turnOffLeaveProtection()
     },
     onError: () => {
       // Maybe different wording for this case.
-      openSnackbarError(t('unable_to_save_concept_and_redirect'))
+      showSnackbar(t('unable_to_save_concept_and_redirect'), 'error')
     },
   })
 

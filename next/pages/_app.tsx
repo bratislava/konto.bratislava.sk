@@ -5,6 +5,7 @@ import '../frontend/utils/logger'
 // configure Amplify
 import '../frontend/utils/amplify'
 import 'react-loading-skeleton/dist/skeleton.css'
+import 'react-toastify/dist/ReactToastify.min.css'
 
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import { StatusBarProvider } from 'components/forms/info-components/StatusBar'
@@ -16,7 +17,7 @@ import Head from 'next/head'
 import { appWithTranslation } from 'next-i18next'
 import PlausibleProvider from 'next-plausible'
 import { NextAdapter } from 'next-query-params'
-import SnackbarProvider from 'react-simple-snackbar'
+import { ToastContainer } from 'react-toastify'
 import { QueryParamProvider } from 'use-query-params'
 
 import { isProductionDeployment } from '../frontend/utils/general'
@@ -54,19 +55,18 @@ const MyApp = ({ Component, pageProps }: AppProps) => {
       <QueryParamProvider adapter={NextAdapter}>
         <StatusBarProvider>
           <QueryClientProvider client={queryClient}>
-            <SnackbarProvider>
-              <PlausibleProvider
-                domain={isProductionDeployment() ? 'konto.bratislava.sk' : 'testing.bratislava.sk'}
-                taggedEvents
-                // uncomment for local testing, needs to be run with `yarn build && yarn start`
-                // trackLocalhost
-              >
-                <LoginRegisterRedirectProvider>
-                  <Component {...pageProps} />
-                  <CookieConsent />
-                </LoginRegisterRedirectProvider>
-              </PlausibleProvider>
-            </SnackbarProvider>
+            <PlausibleProvider
+              domain={isProductionDeployment() ? 'konto.bratislava.sk' : 'testing.bratislava.sk'}
+              taggedEvents
+              // uncomment for local testing, needs to be run with `yarn build && yarn start`
+              // trackLocalhost
+            >
+              <LoginRegisterRedirectProvider>
+                <Component {...pageProps} />
+                <ToastContainer />
+                <CookieConsent />
+              </LoginRegisterRedirectProvider>
+            </PlausibleProvider>
           </QueryClientProvider>
         </StatusBarProvider>
       </QueryParamProvider>

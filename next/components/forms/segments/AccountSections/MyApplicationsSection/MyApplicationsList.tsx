@@ -4,8 +4,8 @@ import { useQuery } from '@tanstack/react-query'
 import MyApplicationCardsPlaceholder from 'components/forms/segments/AccountSections/MyApplicationsSection/MyApplicationCardsPlaceholder'
 import { ApplicationsListVariant } from 'components/forms/segments/AccountSections/MyApplicationsSection/MyApplicationsSection'
 import Pagination from 'components/forms/simple-components/Pagination/Pagination'
-import useSnackbar from 'frontend/hooks/useSnackbar'
 import logger from 'frontend/utils/logger'
+import { showSnackbar } from 'frontend/utils/notifications'
 import { useRouter } from 'next/router'
 import { GetServerSidePropsContext } from 'next/types'
 import { useTranslation } from 'next-i18next'
@@ -51,7 +51,6 @@ type MyApplicationsListProps = {
 
 const MyApplicationsList = ({ variant }: MyApplicationsListProps) => {
   const { t } = useTranslation('account')
-  const [openSnackbarError] = useSnackbar({ variant: 'error' })
 
   const router = useRouter()
   const currentPage = parseInt(router.query.strana as string, 10) || 1
@@ -78,7 +77,7 @@ const MyApplicationsList = ({ variant }: MyApplicationsListProps) => {
     : data?.items ?? ([] as Array<GetFormResponseDto>)
 
   useEffect(() => {
-    if (isError) openSnackbarError(t('account_section_applications.error'))
+    if (isError) showSnackbar(t('account_section_applications.error'), 'error')
     // TODO openSnackbarError is a new reference on every render - fix dependencies once this hooks is fixed
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isError])

@@ -141,6 +141,12 @@
   --font-color: #333;
   --error-color: #d00000;
   --background-color: rgb(var(--color-gray-50));
+
+  /** Overriding default react-toastify styles */
+  --toastify-color-info: rgb(var(--color-gray-700)) !important;
+  --toastify-color-success: rgb(var(--color-success-700)) !important;
+  --toastify-color-warning: rgb(var(--color-warning-700)) !important;
+  --toastify-color-error: rgb(var(--color-negative-700)) !important;
 }
 
 body {

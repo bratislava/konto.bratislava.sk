@@ -17,9 +17,9 @@ import MessageModal from 'components/forms/widget-components/Modals/MessageModal
 import ConditionalWrap from 'conditional-wrap'
 import { ROUTES } from 'frontend/api/constants'
 import useFormStateComponents from 'frontend/hooks/useFormStateComponents'
-import useSnackbar from 'frontend/hooks/useSnackbar'
 import { downloadBlob } from 'frontend/utils/general'
 import logger from 'frontend/utils/logger'
+import { dismissSnackbar, showSnackbar } from 'frontend/utils/notifications'
 import Link from 'next/link'
 import { useTranslation } from 'next-i18next'
 import { useState } from 'react'
@@ -61,9 +61,6 @@ const MyApplicationsCard = ({ form, refreshListData, variant }: MyApplicationsCa
   const { t: ft } = useTranslation('forms')
   const [deleteConceptModalShow, setDeleteConceptModalShow] = useState<boolean>(false)
 
-  const [openSnackbarError] = useSnackbar({ variant: 'error' })
-  const [openSnackbarSuccess] = useSnackbar({ variant: 'success' })
-  const [openSnackbarInfo, closeSnackbarInfo] = useSnackbar({ variant: 'info' })
   const [bottomSheetIsOpen, setBottomSheetIsOpen] = useState(false)
 
   // everything used in jsx should get mapped here
@@ -90,7 +87,7 @@ const MyApplicationsCard = ({ form, refreshListData, variant }: MyApplicationsCa
   // xml and pdf exports copied from useFormExportImport
   // TODO refactor, same as next/frontend/hooks/useFormExportImport.tsx
   const exportXml = async () => {
-    openSnackbarInfo(ft('info_messages.xml_export'))
+    showSnackbar(ft('info_messages.xml_export'), 'info')
     try {
       if (!formData || !schemaVersionId)
         throw new Error(`No form data or schemaVersionId for form id: ${formId}`)
@@ -103,16 +100,16 @@ const MyApplicationsCard = ({ form, refreshListData, variant }: MyApplicationsCa
       )
       const fileName = `${formSlug}_output.xml`
       downloadBlob(new Blob([response.data.xmlForm]), fileName)
-      closeSnackbarInfo()
-      openSnackbarSuccess(ft('success_messages.xml_export'))
+      dismissSnackbar()
+      showSnackbar(ft('success_messages.xml_export'), 'success')
     } catch (error) {
-      openSnackbarError(ft('errors.xml_export'))
+      showSnackbar(ft('errors.xml_export'), 'error')
       logger.error(JSON.stringify(error))
     }
   }
 
   const exportPdf = async () => {
-    openSnackbarInfo(ft('info_messages.pdf_export'))
+    showSnackbar(ft('info_messages.pdf_export'), 'info')
     try {
       if (!formData || !schemaVersionId)
         throw new Error(`No form data or schemaVersionId for form id: ${formId}`)
@@ -125,27 +122,28 @@ const MyApplicationsCard = ({ form, refreshListData, variant }: MyApplicationsCa
       )
       const fileName = `${formSlug}_output.pdf`
       downloadBlob(new Blob([response.data as BlobPart]), fileName)
-      closeSnackbarInfo()
-      openSnackbarSuccess(ft('success_messages.pdf_export'))
+
+      dismissSnackbar()
+      showSnackbar(ft('success_messages.pdf_export'), 'success')
     } catch (error) {
       logger.error(error)
-      openSnackbarError(ft('errors.pdf_export'))
+      showSnackbar(ft('errors.pdf_export'), 'error')
     }
   }
 
   const deleteConcept = async () => {
-    openSnackbarInfo(ft('info_messages.concept_delete'))
+    showSnackbar(ft('info_messages.concept_delete'), 'info')
     try {
       if (!formId) throw new Error(`No formId provided on deleteConcept`)
       await formsApi.nasesControllerDeleteForm(formId, {
         accessToken: 'onlyAuthenticated',
       })
-      closeSnackbarInfo()
-      openSnackbarSuccess(ft('success_messages.concept_delete'))
+      dismissSnackbar()
+      showSnackbar(ft('success_messages.concept_delete'), 'success')
       await refreshListData()
     } catch (error) {
       logger.error(error)
-      openSnackbarError(ft('errors.concept_delete'))
+      showSnackbar(ft('errors.concept_delete'), 'error')
     }
   }
 

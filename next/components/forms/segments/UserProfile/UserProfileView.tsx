@@ -2,15 +2,15 @@ import { Auth } from 'aws-amplify'
 import { UserData } from 'frontend/dtos/accountDto'
 import { useRefreshServerSideProps } from 'frontend/hooks/useRefreshServerSideProps'
 import { useServerSideAuth } from 'frontend/hooks/useServerSideAuth'
-import useSnackbar from 'frontend/hooks/useSnackbar'
 import { GENERIC_ERROR_MESSAGE, isError } from 'frontend/utils/errors'
 import logger from 'frontend/utils/logger'
+import { showSnackbar } from 'frontend/utils/notifications'
 import identity from 'lodash/identity'
 import mapValues from 'lodash/mapValues'
 import pickBy from 'lodash/pickBy'
 import { useRouter } from 'next/router'
 import { useTranslation } from 'next-i18next'
-import { useEffect, useState } from 'react'
+import { useState } from 'react'
 
 import AccountMarkdown from '../AccountMarkdown/AccountMarkdown'
 import UserProfileConsents from './UserProfileConsents'
@@ -20,18 +20,10 @@ import UserProfilePassword from './UserProfilePassword'
 const UserProfileView = () => {
   const { t } = useTranslation('account')
   const [isEditing, setIsEditing] = useState<boolean>(false)
-  const [isAlertOpened, setIsAlertOpened] = useState(false)
-  const [alertType, setAlertType] = useState<'success' | 'error'>('success')
   const { userData } = useServerSideAuth()
-  const [openSnackbarSuccess] = useSnackbar({ variant: 'success' })
 
-  const [updateUserDataError, setUpdateUserDataError] = useState<Error | null>(null)
   const { refreshData } = useRefreshServerSideProps(userData)
   const { push } = useRouter()
-
-  useEffect(() => {
-    setAlertType(updateUserDataError ? 'error' : 'success')
-  }, [updateUserDataError])
 
   const handleOnCancelEditing = () => {
     setIsEditing(false)
@@ -41,23 +33,22 @@ const UserProfileView = () => {
     try {
       const user = await Auth.currentAuthenticatedUser()
       await Auth.updateUserAttributes(user, mapValues(pickBy(newUserData, identity)))
-      // TODO why it's openSnackbarSuccess on success and setIsAlertOpened on error ?
-      openSnackbarSuccess(t('profile_detail.success_alert'), 3000)
+
+      showSnackbar(t('profile_detail.success_alert'), 'success')
       await refreshData()
       setIsEditing(false)
     } catch (error) {
       logger.error('Update User Data failed', error)
+
       if (isError(error)) {
-        setUpdateUserDataError(error)
+        showSnackbar(error.toString(), 'error')
       } else {
         logger.error(
           `${GENERIC_ERROR_MESSAGE} - unexpected object thrown in handleOnSubmitEditing:`,
           error,
         )
-        setUpdateUserDataError(new Error('Unknown error'))
+        showSnackbar(new Error('Unknown error').toString(), 'error')
       }
-      setIsAlertOpened(true)
-      setTimeout(() => setIsAlertOpened(false), 3000)
     }
   }
 
@@ -67,8 +58,6 @@ const UserProfileView = () => {
         <UserProfileDetail
           userData={userData}
           isEditing={isEditing}
-          isAlertOpened={isAlertOpened}
-          alertType={alertType}
           onChangeIsEditing={setIsEditing}
           onCancelEditing={handleOnCancelEditing}
           onSubmit={handleOnSubmitEditing}

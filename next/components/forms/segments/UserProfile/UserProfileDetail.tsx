@@ -15,8 +15,6 @@ import UserProfileSectionHeader from './UserProfileSectionHeader'
 interface UserProfileDetailProps {
   userData?: UserData | null
   isEditing?: boolean
-  alertType: 'success' | 'error'
-  isAlertOpened: boolean
   onChangeIsEditing: (isEditing: boolean) => void
   onCancelEditing: () => void
   onSubmit: (newUseData: UserData) => void
@@ -24,16 +22,7 @@ interface UserProfileDetailProps {
 }
 
 const UserProfileDetail = (props: UserProfileDetailProps) => {
-  const {
-    userData,
-    isEditing,
-    isAlertOpened,
-    alertType,
-    onChangeIsEditing,
-    onCancelEditing,
-    onSubmit,
-    onEmailChange,
-  } = props
+  const { userData, isEditing, onChangeIsEditing, onCancelEditing, onSubmit, onEmailChange } = props
   const { t } = useTranslation('account')
   const formId = `form-${useId()}`
   const { tierStatus } = useServerSideAuth()
@@ -85,17 +74,6 @@ const UserProfileDetail = (props: UserProfileDetailProps) => {
           />
         </UserProfileSectionHeader>
         <div className="flex flex-col">
-          {/* Alert only for alertType === error */}
-          {isAlertOpened && (
-            <div className="p-2">
-              <Alert
-                fullWidth
-                type={alertType}
-                solid
-                message={t(`profile_detail.${alertType}_alert`)}
-              />
-            </div>
-          )}
           <div
             className={cx('flex flex-col gap-8 p-4', 'md:flex-row md:flex-wrap md:gap-16 md:p-8')}
           >

@@ -4,6 +4,7 @@ import { useMutation } from '@tanstack/react-query'
 import { AxiosResponse } from 'axios'
 import { ROUTES } from 'frontend/api/constants'
 import logger from 'frontend/utils/logger'
+import { dismissSnackbar, showSnackbar } from 'frontend/utils/notifications'
 import { useRouter } from 'next/router'
 import { useTranslation } from 'next-i18next'
 import React, { createContext, PropsWithChildren, useContext, useRef } from 'react'
@@ -16,7 +17,6 @@ import { InitialFormData } from '../types/initialFormData'
 import { readFileToString } from '../utils/file'
 import { downloadBlob } from '../utils/general'
 import { useServerSideAuth } from './useServerSideAuth'
-import useSnackbar from './useSnackbar'
 
 type FormExportImportProviderProps = {
   initialFormData: InitialFormData
@@ -30,10 +30,6 @@ export const useGetContext = ({ initialFormData }: FormExportImportProviderProps
   const { setConceptSaveErrorModal } = useFormModals()
   const { turnOffLeaveProtection } = useFormLeaveProtection()
   const router = useRouter()
-
-  const [openSnackbarError] = useSnackbar({ variant: 'error' })
-  const [openSnackbarSuccess] = useSnackbar({ variant: 'success' })
-  const [openSnackbarInfo, closeSnackbarInfo] = useSnackbar({ variant: 'info' })
 
   const importXmlButtonRef = useRef<HTMLButtonElement>(null)
 
@@ -54,16 +50,18 @@ export const useGetContext = ({ initialFormData }: FormExportImportProviderProps
     onMutate: ({ fromModal }) => {
       // The concept saved from modal has its own loading indicator.
       if (!fromModal) {
-        openSnackbarInfo(t('info_messages.concept_save'))
+        showSnackbar(t('info_messages.concept_save'), 'info')
       }
     },
     onSuccess: () => {
-      openSnackbarSuccess(t('success_messages.concept_save'))
+      dismissSnackbar()
+      showSnackbar(t('success_messages.concept_save'), 'success')
+
       setConceptSaveErrorModal(false)
       turnOffLeaveProtection()
     },
     onError: () => {
-      closeSnackbarInfo()
+      dismissSnackbar()
       setConceptSaveErrorModal(true)
     },
   })
@@ -80,7 +78,7 @@ export const useGetContext = ({ initialFormData }: FormExportImportProviderProps
       return new Promise(() => {})
     },
     onError: () => {
-      openSnackbarError(t('errors.migration'))
+      showSnackbar(t('errors.migration'), 'error')
     },
   })
 
@@ -93,7 +91,7 @@ export const useGetContext = ({ initialFormData }: FormExportImportProviderProps
   }
   // TODO refactor, same as next/components/forms/segments/AccountSections/MyApplicationsSection/MyApplicationsCard.tsx
   const exportXml = async () => {
-    openSnackbarInfo(t('info_messages.xml_export'))
+    showSnackbar(t('info_messages.xml_export'), 'info')
     try {
       const response = await formsApi.convertControllerConvertJsonToXml(
         initialFormData.schemaVersionId,
@@ -104,10 +102,10 @@ export const useGetContext = ({ initialFormData }: FormExportImportProviderProps
       )
       const fileName = `${formSlug}_output.xml`
       downloadBlob(new Blob([response.data.xmlForm]), fileName)
-      closeSnackbarInfo()
-      openSnackbarSuccess(t('success_messages.xml_export'))
+      dismissSnackbar()
+      showSnackbar(t('success_messages.xml_export'), 'success')
     } catch (error) {
-      openSnackbarError(t('errors.xml_export'))
+      showSnackbar(t('errors.xml_export'), 'error')
     }
   }
 
@@ -122,7 +120,7 @@ export const useGetContext = ({ initialFormData }: FormExportImportProviderProps
     const file = files[0]
 
     try {
-      openSnackbarInfo(t('info_messages.xml_import'))
+      showSnackbar(t('info_messages.xml_import'), 'info')
       const xmlData: string = await readFileToString(file)
       const response = await formsApi.convertControllerConvertXmlToJson(
         initialFormData.schemaVersionId,
@@ -132,10 +130,10 @@ export const useGetContext = ({ initialFormData }: FormExportImportProviderProps
         { accessToken: 'onlyAuthenticated' },
       )
       setImportedFormData(response.data.jsonForm)
-      closeSnackbarInfo()
-      openSnackbarSuccess(t('success_messages.xml_import'))
+      dismissSnackbar()
+      showSnackbar(t('success_messages.xml_import'), 'success')
     } catch (error) {
-      openSnackbarError(t('errors.xml_import'))
+      showSnackbar(t('errors.xml_import'), 'error')
     }
   }
 
@@ -156,16 +154,16 @@ export const useGetContext = ({ initialFormData }: FormExportImportProviderProps
   }
 
   const exportOrdinaryPdf = async () => {
-    openSnackbarInfo(t('info_messages.pdf_export'))
+    showSnackbar(t('info_messages.pdf_export'), 'info')
     try {
       await runPdfExport()
     } catch (error) {
-      closeSnackbarInfo()
-      openSnackbarError(t('errors.pdf_export'))
+      dismissSnackbar()
+      showSnackbar(t('errors.pdf_export'), 'error')
       return
     }
-    closeSnackbarInfo()
-    openSnackbarSuccess(t('success_messages.pdf_export'))
+    dismissSnackbar()
+    showSnackbar(t('success_messages.pdf_export'), 'success')
   }
 
   const exportTaxPdf = async () => {
@@ -176,7 +174,7 @@ export const useGetContext = ({ initialFormData }: FormExportImportProviderProps
     } catch (error) {
       setTaxFormPdfExportModal(null)
       if (!abortController.signal.aborted) {
-        openSnackbarError(t('errors.pdf_export'))
+        showSnackbar(t('errors.pdf_export'), 'error')
       }
       return
     }
@@ -201,18 +199,18 @@ export const useGetContext = ({ initialFormData }: FormExportImportProviderProps
   }
 
   const deleteConcept = async () => {
-    openSnackbarInfo(t('info_messages.concept_delete'))
+    showSnackbar(t('info_messages.concept_delete'), 'info')
     try {
       if (!formId) throw new Error(`No formId provided on deleteConcept`)
       await formsApi.nasesControllerDeleteForm(formId, {
         accessToken: 'onlyAuthenticated',
       })
-      closeSnackbarInfo()
-      openSnackbarSuccess(t('success_messages.concept_delete'))
+      dismissSnackbar()
+      showSnackbar(t('success_messages.concept_delete'), 'success')
       await router.push(ROUTES.MY_APPLICATIONS)
     } catch (error) {
       logger.error(error)
-      openSnackbarError(t('errors.concept_delete'))
+      showSnackbar(t('errors.concept_delete'), 'error')
     }
   }
 

@@ -18,7 +18,6 @@ const BannerShowCase = () => {
           onPress={() => {
             alert('Button was pressed')
           }}
-          imageAlt=""
         />
       </Stack>
     </Wrapper>

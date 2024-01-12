@@ -148,7 +148,6 @@ const IntroSection = () => {
             buttonText={t('account_section_intro.banner_button_text')}
             href={ROUTES.HELP}
             image={BannerImage}
-            imageAlt=""
           />
         </div>
       </div>

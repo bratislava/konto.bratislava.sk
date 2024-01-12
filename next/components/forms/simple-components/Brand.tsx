@@ -13,7 +13,7 @@ const Brand = ({ className, title, url = '#' }: BrandProps) => {
   return (
     <div className={cx('flex', className)} aria-label="brand">
       <Button className="flex items-center space-x-3" href={url}>
-        <BALogo className="lg:w-6.5 h-8 w-8 lg:h-6" />
+        <BALogo className="h-8 w-8 lg:h-6" />
         {title && <div>{title}</div>}
       </Button>
     </div>

@@ -47,7 +47,7 @@ const TaxesFeesCard = (props: TaxesCardBase) => {
       >
         <div className="flex w-full items-center justify-between">
           <div className="flex w-full flex-col pl-6">
-            <span className="text-20-semibold mb-1">{title}</span>
+            <h3 className="text-20-semibold mb-1">{title}</h3>
             <span className="text-p3">{`za rok ${yearPay}`}</span>
           </div>
           <div className="flex w-full items-center justify-end">

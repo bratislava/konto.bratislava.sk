@@ -43,13 +43,13 @@ const ServiceCard = ({
         <span className={cx('text-p3-medium h-min rounded-[4px] px-2', tagStyle)}>{tag}</span>
       </div>
       <div className="flex w-full flex-col items-start gap-3 text-left">
-        <h5
+        <h3
           className={cx('text-h5 font-semibold leading-5 lg:leading-7', {
             'group-hover:underline': buttonText,
           })}
         >
           {title}
-        </h5>
+        </h3>
         <div className="flex items-center text-p-sm font-normal">{description}</div>
       </div>
       <div className="flex h-full w-full items-end">

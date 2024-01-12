@@ -15,7 +15,7 @@ const UserProfileDetailsButtons = (props: UserProfileDetailsButtonsProps) => {
   const { t } = useTranslation('account')
 
   return (
-    <div className="width-fit">
+    <div className="w-fit">
       {
         // first button is to fix bug with autofocus of button 'cancel edit'
         isEditing ? (
@@ -42,7 +42,7 @@ const UserProfileDetailsButtons = (props: UserProfileDetailsButtonsProps) => {
             />
           </div>
         ) : (
-          <div className="width-fit">
+          <div className="w-fit">
             <Button
               variant="black"
               startIcon={<EditIcon fill="white" className="h-6 w-6" />}
@@ -51,6 +51,7 @@ const UserProfileDetailsButtons = (props: UserProfileDetailsButtonsProps) => {
               className="hidden md:block"
               onPress={() => onChangeIsEditing(true)}
             />
+
             <EditIcon
               className="block h-6 w-6 cursor-pointer md:hidden"
               onClick={() => onChangeIsEditing(true)}

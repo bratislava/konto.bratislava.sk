@@ -31,6 +31,14 @@ if (!prodToken) {
   )
 }
 
+const handleOnStateAborter = (state: any) => {
+  if (state.aborted) {
+    process.nextTick(() => {
+      process.exit(0)
+    })
+  }
+}
+
 // rest of the logic in async block as prompts works with promises
 ;(async () => {
   console.log(chalk.blueBright('Generate and update backend form schemas wizard 🧙‍♂️'))
@@ -42,13 +50,7 @@ if (!prodToken) {
   }
 
   const environmentResponse = await prompts({
-    onState: (state) => {
-      if (state.aborted) {
-        process.nextTick(() => {
-          process.exit(0)
-        })
-      }
-    },
+    onState: handleOnStateAborter,
     type: 'select',
     name: 'environment',
     message: 'Select the environment to which you want to publish',
@@ -62,13 +64,7 @@ if (!prodToken) {
   if (!token) throw new Error('Token not found for environment')
 
   const response = await prompts({
-    onState: (state) => {
-      if (state.aborted) {
-        process.nextTick(() => {
-          process.exit(0)
-        })
-      }
-    },
+    onState: handleOnStateAborter,
     type: 'confirm',
     name: 'value',
     message: `Re-generate all schema files first ? The 'gestor' will be set according to environment selected in previous step.
@@ -95,13 +91,7 @@ ${chalk.reset.italic(
   const files = fs.readdirSync('./dist')
   const choices = files.map((file) => ({ title: file, value: file }))
   const chosenSlugsResponse = await prompts({
-    onState: (state) => {
-      if (state.aborted) {
-        process.nextTick(() => {
-          process.exit(0)
-        })
-      }
-    },
+    onState: handleOnStateAborter,
     type: 'multiselect',
     name: 'selectedSlugs',
     message: 'Select the schemas you want to use',
@@ -110,13 +100,7 @@ ${chalk.reset.italic(
 
   // each of the prompts needs an onState handler to exit on ctrl+c, otherwise it would be understood as empty answer
   const actionResponse = await prompts({
-    onState: (state) => {
-      if (state.aborted) {
-        process.nextTick(() => {
-          process.exit(0)
-        })
-      }
-    },
+    onState: handleOnStateAborter,
     type: 'select',
     name: 'action',
     message: 'Do you want to patch the existing schema version or upgrade to a new one?',
@@ -142,9 +126,15 @@ ${chalk.reset.italic(
 
     const data: any = await schemaVersionsResponse.json()
 
-    const id = data?.items?.[0]?.id
-    const version = data?.items?.[0]?.version
-    const pospVersion = data?.items?.[0]?.pospVersion
+    const firstItem = data?.items?.[0]
+
+    if (!firstItem) {
+      throw new Error(`No schema version found for slug ${slug}`)
+     }
+
+    const id =firstItem.id
+    const version =firstItem.version
+    const pospVersion =firstItem.pospVersion
 
     console.log(
       `Environment: ${
@@ -158,13 +148,7 @@ ${chalk.reset.italic(
       const defaultNewVersion = semver.inc(version, 'patch') || version
 
       const versionResponse = await prompts({
-        onState: (state) => {
-          if (state.aborted) {
-            process.nextTick(() => {
-              process.exit(0)
-            })
-          }
-        },
+        onState: handleOnStateAborter,
         type: 'text',
         name: 'version',
         message: 'Enter the new version:',
@@ -174,13 +158,7 @@ ${chalk.reset.italic(
       const newVersion = `v${versionResponse.version}`
 
       const pospVersionResponse = await prompts({
-        onState: (state) => {
-          if (state.aborted) {
-            process.nextTick(() => {
-              process.exit(0)
-            })
-          }
-        },
+        onState: handleOnStateAborter,
         type: 'text',
         name: 'pospVersion',
         message: 'Enter the new pospVersion:',
@@ -241,13 +219,7 @@ ${chalk.reset.italic(
       }
     } else {
       const confirm = await prompts({
-        onState: (state) => {
-          if (state.aborted) {
-            process.nextTick(() => {
-              process.exit(0)
-            })
-          }
-        },
+        onState: handleOnStateAborter,
         type: 'confirm',
         name: 'value',
         message: `Does the above look right ?`,

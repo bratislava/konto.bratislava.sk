@@ -65,6 +65,7 @@ const Avatar = ({ userData }: { userData?: UserData | null }) => {
   )
 }
 
+// TODO - needs complete refactor using some accessibility library
 export const AccountNavBar = ({ className, sectionsList, menuItems, hiddenHeaderNav }: IProps) => {
   const [burgerOpen, setBurgerOpen] = useState(false)
   const { userData, isAuthenticated, isLegalEntity } = useServerSideAuth()
@@ -93,6 +94,7 @@ export const AccountNavBar = ({ className, sectionsList, menuItems, hiddenHeader
   const isActive = (sectionItem: MenuSectionItemBase) =>
     sectionItem.url === '/' ? router.pathname === '/' : router.pathname.startsWith(sectionItem.url)
 
+  // TODO - this behaviour should be handled by accessibility library. Keeping for now, because it's better than nothing.
   useEffect(() => {
     /** Allow navigating nav menu with keyboard arrows when it gets focused */
     const handleKeyDown = (event: KeyboardEvent) => {

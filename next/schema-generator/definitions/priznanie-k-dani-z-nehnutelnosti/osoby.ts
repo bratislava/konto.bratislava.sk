@@ -12,10 +12,10 @@ enum UlicaCisloTyp {
 
 const rodneCisloField = input(
   'rodneCislo',
-  { title: 'Rodné číslo', required: true },
+  { title: 'Rodné číslo', required: true, format: 'rodneCisloOrBirthDate' },
   {
     helptext:
-      'Rodné číslo zadávajte s lomítkom. V prípade, že nemáte rodné číslo, uveďte dátum narodenia.',
+      'Rodné číslo zadávajte s lomkou. V prípade, že nemáte rodné číslo, uveďte dátum narodenia vo formáte DD.MM.YYYY.',
   },
 )
 
@@ -97,7 +97,7 @@ const telefonField = (required = true) =>
     { helptext: 'Telefónne číslo nám pomôže komunikovať s vami rýchlejšie.', size: 'medium' },
   )
 
-const icoField = input('ico', { title: 'IČO', required: true }, {})
+const icoField = input('ico', { title: 'IČO', required: true, format: 'ico' }, {})
 
 const pravnaFormaField = select(
   'pravnaForma',

@@ -1,26 +1,42 @@
 import { RJSFValidationError } from '@rjsf/utils'
 import { useTranslation } from 'next-i18next'
 
+const errorNameParamMap = {
+  format: 'format',
+  rodneCisloOrBirthDate: 'reason',
+}
+
 const useGetTranslationKey = () => {
   const { t } = useTranslation('rjsf-errors')
 
   // TODO: workaround, i18n.exists doesn't work, examine
-  const exists = (key: string) => t(key) !== key
+  const exists = (key: string) => t(key) !== key && typeof t(key) === 'string'
+
+  const getErrorParamKey = ({ name, params }: RJSFValidationError) => {
+    if (!name) {
+      return 'unknown'
+    }
+    const paramName = errorNameParamMap[name]
+    if (!paramName) {
+      return `${name}.unknown`
+    }
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
+    const paramValue = params?.[paramName]
+    if (!paramValue) {
+      return `${name}.unknown`
+    }
+    return `${name}.${paramValue}`
+  }
 
   return (error: RJSFValidationError) => {
-    // eslint-disable-next-line sonarjs/no-small-switch
-    switch (error.name) {
-      case 'format':
-        // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
-        const key = `format.${error?.params?.format}`
-        if (exists(key)) {
-          return key
-        }
-
-        return `format.unknown`
-      default:
-        return error.name ?? 'unknown'
+    const errorParamKey = getErrorParamKey(error)
+    if (exists(errorParamKey)) {
+      return errorParamKey
     }
+    if (error.name && exists(error.name)) {
+      return error.name
+    }
+    return 'unknown'
   }
 }
 

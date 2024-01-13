@@ -13,6 +13,12 @@ import traverse from 'traverse'
 import { validate as validateUuid, version as uuidVersion } from 'uuid'
 
 import { FormFileUploadFileInfo, FormFileUploadStatusEnum } from '../types/formFileUploadTypes'
+import {
+  DateErrorValidationReason,
+  RodneCisloValidationErrorReason,
+  validateDDMMYYDate,
+  validateRodneCislo,
+} from './rodneCisloBirthDateField'
 
 /**
  * This is a custom prop that is passed to RJSF components / functions. Make sure to pass it to all
@@ -46,6 +52,14 @@ declare module 'json-schema' {
       id: string
     }
     // overrideArrayMinItemsBehaviour is declared in RJSF patch
+  }
+}
+
+const createKeywordValidationError = (keyword: string, reason: string) => {
+  return {
+    keyword,
+    message: '',
+    params: { keyword, reason },
   }
 }
 
@@ -86,6 +100,37 @@ export const getAjvFormKeywords = (
     // Array field schema
     {
       keyword: 'overrideArrayMinItemsBehaviour',
+    },
+    // String schema
+    {
+      keyword: 'rodneCisloOrBirthDate',
+      validate: function validationFunction(schema, data) {
+        const dateResult = validateDDMMYYDate(data)
+        if (dateResult === true) {
+          return true
+        }
+        if (dateResult === DateErrorValidationReason.NonExistent) {
+          // @ts-expect-error This is a way how to add custom errors to AJV keyword validation
+          validationFunction.errors = [
+            createKeywordValidationError('rodneCisloOrBirthDate', dateResult),
+          ]
+          return false
+        }
+
+        const rodneCisloResult = validateRodneCislo(data)
+        if (
+          rodneCisloResult === RodneCisloValidationErrorReason.WithoutDelimiter ||
+          rodneCisloResult === RodneCisloValidationErrorReason.CorrectFormatInvalid
+        ) {
+          // @ts-expect-error This is a way how to add custom errors to AJV keyword validation
+          validationFunction.errors = [
+            createKeywordValidationError('rodneCisloOrBirthDate', rodneCisloResult),
+          ]
+          return false
+        }
+
+        return rodneCisloResult
+      },
     },
   ]
 }
@@ -130,6 +175,7 @@ export const ajvFormats = {
   ratio: {
     validate: (value: string) => parseRatio(value).isValid,
   },
+  ico: /^\d{6,8}$/,
 } satisfies Record<string, Format>
 
 /**

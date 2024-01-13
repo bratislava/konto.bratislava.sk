@@ -151,7 +151,7 @@ export const input = (
       | {
           type?: 'text'
           // TODO: Add more formats
-          format?: 'zip' | 'ratio'
+          format?: 'zip' | 'ratio' | 'ico' | 'rodneCisloOrBirthDate'
           pattern?: RegExp
         }
       | {
@@ -170,7 +170,17 @@ export const input = (
         )
       }
 
+      const isRodneCisloOrBirthDate =
+        (options.type == null || options.type === 'text') &&
+        options.format === 'rodneCisloOrBirthDate'
+
       const getFormat = () => {
+        // rodneCisloOrBirthDate is not a real format
+        if (isRodneCisloOrBirthDate) {
+          // eslint-disable-next-line unicorn/no-useless-undefined
+          return undefined
+        }
+
         if (options.type == null || options.type === 'text') {
           return options.format
         }
@@ -200,6 +210,7 @@ export const input = (
         format: getFormat(),
         pattern: getPattern(),
         default: options.default,
+        rodneCisloOrBirthDate: isRodneCisloOrBirthDate ? true : undefined,
       }
     },
     uiSchema: () => ({

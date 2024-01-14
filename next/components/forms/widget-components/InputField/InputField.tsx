@@ -11,6 +11,7 @@ export type InputType = 'text' | 'password' | 'email' | 'tel' | 'number'
 
 export type InputFieldProps = FieldWrapperProps & {
   type?: InputType // capitalize input value after field un-focus with type === text
+  name?: string // unique name within the form - in RJSF form this is the name of the field
   capitalize?: boolean
   value?: string
   leftIcon?: LeftIconVariants

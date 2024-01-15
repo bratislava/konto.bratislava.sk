@@ -16,6 +16,7 @@ import Head from 'next/head'
 import { appWithTranslation } from 'next-i18next'
 import PlausibleProvider from 'next-plausible'
 import { NextAdapter } from 'next-query-params'
+import { I18nProvider } from 'react-aria'
 import SnackbarProvider from 'react-simple-snackbar'
 import { QueryParamProvider } from 'use-query-params'
 
@@ -52,25 +53,29 @@ const MyApp = ({ Component, pageProps }: AppProps) => {
         {/* look for CookieConsent component for 3rd party scripts you'd expect to find here */}
       </Head>
 
-      <QueryParamProvider adapter={NextAdapter}>
-        <StatusBarProvider>
-          <QueryClientProvider client={queryClient}>
-            <SnackbarProvider>
-              <PlausibleProvider
-                domain={isProductionDeployment() ? 'konto.bratislava.sk' : 'testing.bratislava.sk'}
-                taggedEvents
-                // uncomment for local testing, needs to be run with `yarn build && yarn start`
-                // trackLocalhost
-              >
-                <LoginRegisterRedirectProvider>
-                  <Component {...pageProps} />
-                  <CookieConsent />
-                </LoginRegisterRedirectProvider>
-              </PlausibleProvider>
-            </SnackbarProvider>
-          </QueryClientProvider>
-        </StatusBarProvider>
-      </QueryParamProvider>
+      <I18nProvider locale="sk-SK">
+        <QueryParamProvider adapter={NextAdapter}>
+          <StatusBarProvider>
+            <QueryClientProvider client={queryClient}>
+              <SnackbarProvider>
+                <PlausibleProvider
+                  domain={
+                    isProductionDeployment() ? 'konto.bratislava.sk' : 'testing.bratislava.sk'
+                  }
+                  taggedEvents
+                  // uncomment for local testing, needs to be run with `yarn build && yarn start`
+                  // trackLocalhost
+                >
+                  <LoginRegisterRedirectProvider>
+                    <Component {...pageProps} />
+                    <CookieConsent />
+                  </LoginRegisterRedirectProvider>
+                </PlausibleProvider>
+              </SnackbarProvider>
+            </QueryClientProvider>
+          </StatusBarProvider>
+        </QueryParamProvider>
+      </I18nProvider>
     </>
   )
 }

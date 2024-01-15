@@ -1,3 +1,4 @@
+import { Castle48PxIcon, Pdf48PxIcon, Tax48PxIcon } from '@assets/ui-icons'
 import { formsApi } from '@clients/forms'
 import { useMutation } from '@tanstack/react-query'
 import { useRouter } from 'next/router'
@@ -59,7 +60,7 @@ const TaxFormLandingPage = ({ latestVersionId }: TaxFormLandingPageProps) => {
       isEid: false,
       description:
         'Vyplňte daňové priznanie jednoducho, s návodom a pomocnými kalkulačkami, v Bratislavskom konte. PDF si následne stiahnete a odošlete poštou.',
-      // icon: BinIcon,
+      icon: Castle48PxIcon,
       onPress: () => {
         mutate()
       },
@@ -70,7 +71,7 @@ const TaxFormLandingPage = ({ latestVersionId }: TaxFormLandingPageProps) => {
       isEid: true,
       description:
         'Vyplňte daňové priznanie cez esluzby.bratislava.sk. Na jeho odoslanie potrebujete mať aktívny elektronický občiansky preukaz (eID).',
-      // icon: BinIcon,
+      icon: Tax48PxIcon,
       href: 'https://esluzby.bratislava.sk/info/203?slug=podavanie-danoveho-priznania-k-dani-z-nehnutelnosti',
     },
     {
@@ -78,7 +79,7 @@ const TaxFormLandingPage = ({ latestVersionId }: TaxFormLandingPageProps) => {
       isEid: false,
       description:
         'Ak si prajete vyplniť papierové priznanie ručne, stiahnite si PDF. Vyplnené papierové tlačivo je potrebné odoslať poštou.',
-      // icon: BinIcon,
+      icon: Pdf48PxIcon,
       href: 'https://cdn-api.bratislava.sk/strapi-homepage/upload/Priznanie_k_dani_z_nehnutelnosti_1bda8bd949.pdf',
     },
   ]

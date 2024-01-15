@@ -1,6 +1,6 @@
 import { ChevronRightIcon } from '@assets/ui-icons'
 import cx from 'classnames'
-import React from 'react'
+import React, { FC } from 'react'
 
 import ButtonNew from '../simple-components/ButtonNew'
 
@@ -11,7 +11,7 @@ export type TaxFormLandingPageCardProps = {
   href?: string
   onPress?: () => void
   disabled?: boolean
-  // icon: FC<{ className?: string }>
+  icon: FC<{ className?: string }>
 }
 
 const TaxFormLandingPageCard = ({
@@ -20,7 +20,8 @@ const TaxFormLandingPageCard = ({
   isEid,
   href,
   onPress,
-  disabled, // icon: IconComponent,
+  disabled,
+  icon: IconComponent,
 }: TaxFormLandingPageCardProps) => {
   return (
     // TODO stretched doesn't work for buttons, very temporary solution
@@ -31,11 +32,11 @@ const TaxFormLandingPageCard = ({
       })}
       onClick={disabled ? () => {} : onPress}
     >
-      {/* <div className="flex items-center justify-center"> */}
-      {/*  <div className="flex h-18 w-18 shrink-0 flex-col items-center justify-center rounded-lg border-2 border-gray-300"> */}
-      {/*    <IconComponent className="h-12 w-12" /> */}
-      {/*  </div> */}
-      {/* </div> */}
+      <div className="hidden items-center justify-center md:flex">
+        <div className="flex h-18 w-18 shrink-0 flex-col items-center justify-center rounded-lg border-2 border-gray-300">
+          <IconComponent className="h-12 w-12" />
+        </div>
+      </div>
       <div className="flex flex-col gap-2">
         <div className="flex flex-col items-start gap-1 md:flex-row md:items-center md:gap-3">
           <ButtonNew

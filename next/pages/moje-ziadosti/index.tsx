@@ -2,30 +2,30 @@ import MyApplicationsSection, {
   getTotalNumberOfApplications,
 } from 'components/forms/segments/AccountSections/MyApplicationsSection/MyApplicationsSection'
 import AccountPageLayout from 'components/layouts/AccountPageLayout'
-import PageWrapper from 'components/layouts/PageWrapper'
 import {
   getSSRCurrentAuth,
   ServerSideAuthProviderHOC,
 } from 'components/logic/ServerSideAuthProvider'
+import { ROUTES } from 'frontend/api/constants'
 import { AsyncServerProps } from 'frontend/utils/types'
 import { GetServerSidePropsContext } from 'next'
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
 
 export const getServerSideProps = async (ctx: GetServerSidePropsContext) => {
   const locale = ctx.locale ?? 'sk'
+  const ssrCurrentAuthProps = await getSSRCurrentAuth(ctx.req)
+  if (!ssrCurrentAuthProps.userData) {
+    return {
+      redirect: {
+        destination: `${ROUTES.LOGIN}?from=${ctx.resolvedUrl}`,
+        permanent: false,
+      },
+    }
+  }
 
   return {
     props: {
-      ssrCurrentAuthProps: await getSSRCurrentAuth(ctx.req),
-      page: {
-        locale: ctx.locale,
-        localizations: ['sk', 'en']
-          .filter((l) => l !== ctx.locale)
-          .map((l) => ({
-            slug: '',
-            locale: l,
-          })),
-      },
+      ssrCurrentAuthProps,
       totalCounts: {
         SENT: await getTotalNumberOfApplications('SENT', ctx.req),
         SENDING: await getTotalNumberOfApplications('SENDING', ctx.req),
@@ -37,15 +37,12 @@ export const getServerSideProps = async (ctx: GetServerSidePropsContext) => {
 }
 
 const AccountMyApplicationsPage = ({
-  page,
   totalCounts,
 }: AsyncServerProps<typeof getServerSideProps>) => {
   return (
-    <PageWrapper locale={page.locale} localizations={page.localizations}>
-      <AccountPageLayout>
-        <MyApplicationsSection totalCounts={totalCounts} />
-      </AccountPageLayout>
-    </PageWrapper>
+    <AccountPageLayout>
+      <MyApplicationsSection totalCounts={totalCounts} />
+    </AccountPageLayout>
   )
 }
 

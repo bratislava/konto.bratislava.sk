@@ -13,11 +13,11 @@ const Announcements = () => {
   const { isLegalEntity } = useServerSideAuth()
 
   const announcementContentFirst = `
-<h4>${t('account_section_intro.announcement_card_title_first')}</h4><span>${t(
+<h3>${t('account_section_intro.announcement_card_title_first')}</h3><span>${t(
     'account_section_intro.announcement_card_text_first',
   )}</span>`
   const announcementContentSecond = `
-<h4>${t('account_section_intro.announcement_card_title_second')}</h4><span>${t(
+<h3>${t('account_section_intro.announcement_card_title_second')}</h3><span>${t(
     'account_section_intro.announcement_card_text_second',
   )}</span>`
 

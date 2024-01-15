@@ -26,6 +26,11 @@ type UploadedFileProps = {
   onFileDownload?: () => void
 }
 
+const FILE_ERROR_NAME_ENUM = {
+  FILE_SIZE_ZERO_ERROR: 'fileSizeZero',
+  FORM_NOT_FOUND_ERROR: 'formNotFound',
+}
+
 const UploadFileCard = ({
   fileInfo,
   onFileRetry,
@@ -120,13 +125,19 @@ const UploadFileCard = ({
 
       {isErrorStyle && (
         <div className="flex justify-between gap-6 pb-2">
-          <div className="text-error">
+          <div className="max-w-[80%] text-error">
             {fileInfo.status.type === FormFileUploadStatusEnum.UploadError &&
               t(`errors.${fileInfo.status.error.translationKey}`, {
                 additionalParam: fileInfo.status.error.additionalParam,
               })}
-            {fileInfo.status.type === FormFileUploadStatusEnum.UploadServerError &&
-              fileInfo.status.error.rawError}
+            {fileInfo.status.type === FormFileUploadStatusEnum.UploadServerError && (
+              <>
+                {fileInfo.status.error.errorName &&
+                FILE_ERROR_NAME_ENUM[fileInfo.status.error.errorName]
+                  ? t(`errors.${FILE_ERROR_NAME_ENUM[fileInfo.status.error.errorName]}`)
+                  : fileInfo.status.error.rawError}
+              </>
+            )}
             {fileInfo.status.type !== FormFileUploadStatusEnum.UploadError &&
               fileInfo.status.type !== FormFileUploadStatusEnum.UploadServerError &&
               t(`fileUploadStatus.${fileInfo.status.type}`)}

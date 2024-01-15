@@ -4,7 +4,7 @@ import {
   GetFileResponseDtoStatusEnum,
   PostFileResponseDto,
 } from '@clients/openapi-forms'
-import { AxiosProgressEvent, AxiosResponse } from 'axios'
+import { AxiosError, AxiosProgressEvent, AxiosResponse } from 'axios'
 import flatten from 'lodash/flatten'
 import { extensions } from 'mime-types'
 import prettyBytes from 'pretty-bytes'
@@ -35,7 +35,9 @@ export const uploadFile = async ({
   abortController: AbortController
   onProgress: (progressPercentage: number) => void
   onSuccess: (response: AxiosResponse<PostFileResponseDto>) => void
-  onError: (error: Error) => void
+  onError: (
+    error: AxiosError<{ rawError: string; statusCode?: number; errorName?: string }>,
+  ) => void
 }) => {
   try {
     const response = await formsApi.filesControllerUploadFile(formId, file, file.name, id, {

@@ -27,7 +27,11 @@ const BackButton = () => {
   )
 }
 
-export const LoginRegisterNavBar = ({ className, currentLanguage, backButtonHidden }: IProps) => {
+export const LoginRegisterNavBar = ({
+  className,
+  currentLanguage = 'sk',
+  backButtonHidden,
+}: IProps) => {
   const languageKey = getLanguageKey(currentLanguage)
 
   const { statusBarConfiguration } = useStatusBarContext()

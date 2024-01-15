@@ -18,7 +18,7 @@ type MenuItem = {
 }
 
 const MenuList = () => {
-  const { isReadonly, isDeletable } = useFormState()
+  const { isReadonly, isDeletable, isTaxForm } = useFormState()
   const { exportXml, exportPdf, importXml, saveConcept, deleteConcept } = useFormExportImport()
   const { t } = useTranslation('forms')
   const { setDeleteConceptModal } = useFormModals()
@@ -39,12 +39,14 @@ const MenuList = () => {
       // eslint-disable-next-line @typescript-eslint/no-misused-promises
       onPress: () => exportXml(),
     },
-    {
-      title: t('menu_list.pdf'),
-      icon: <PdfIcon className="h-6 w-6" />,
-      // eslint-disable-next-line @typescript-eslint/no-misused-promises
-      onPress: () => exportPdf(),
-    },
+    !isTaxForm
+      ? {
+          title: t('menu_list.pdf'),
+          icon: <PdfIcon className="h-6 w-6" />,
+          // eslint-disable-next-line @typescript-eslint/no-misused-promises
+          onPress: () => exportPdf(),
+        }
+      : null,
     !isReadonly
       ? {
           title: t('menu_list.upload_xml'),
@@ -76,7 +78,7 @@ const MenuList = () => {
           </li>
         ) : (
           <li className="w-max" key={i}>
-            <button type="button" onClick={menuItem.onPress} data-cy={menuItem.dataCy ?? ""}>
+            <button type="button" onClick={menuItem.onPress} data-cy={menuItem.dataCy ?? ''}>
               <div className={cx('flex items-center gap-3', menuItem.className)}>
                 {menuItem.icon}
                 <span className="text-p2">{menuItem.title}</span>

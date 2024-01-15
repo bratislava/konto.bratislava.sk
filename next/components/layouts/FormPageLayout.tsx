@@ -1,14 +1,11 @@
 import { CityAccountIcon, HelpIcon, LogoutIcon, ProfileIcon } from '@assets/ui-icons'
 import cx from 'classnames'
-import AccountNavBar from 'components/forms/segments/AccountNavBar/AccountNavBar'
+import NavBar from 'components/forms/segments/NavBar/NavBar'
 import SectionContainer from 'components/forms/segments/SectionContainer/SectionContainer'
-import { usePageWrapperContext } from 'components/layouts/PageWrapper'
-import { useRouter } from 'next/router'
 import { useTranslation } from 'next-i18next'
 import { ReactNode } from 'react'
 
 import { ROUTES } from '../../frontend/api/constants'
-import logger from '../../frontend/utils/logger'
 
 type FormPageLayoutBase = {
   className?: string
@@ -44,27 +41,12 @@ const menuItems = [
 ]
 
 const FormPageLayout = ({ className, navHidden, children }: FormPageLayoutBase) => {
-  const { locale, localizations = [] } = usePageWrapperContext()
-  const router = useRouter()
-
   const [t] = useTranslation()
-
-  const handleLanguageChange = async ({ key }: { key: string }) => {
-    const path = localizations.find((l) => l.locale === key)?.slug || ''
-    // eslint-disable-next-line @typescript-eslint/no-floating-promises
-    try {
-      await router.push(`/${path}`, undefined, { locale: key })
-    } catch (error) {
-      logger.error(error)
-    }
-  }
 
   return (
     <div className={cx('flex min-h-screen flex-col', className)}>
       <SectionContainer>
-        <AccountNavBar
-          currentLanguage={locale}
-          onLanguageChange={handleLanguageChange}
+        <NavBar
           menuItems={menuItems}
           navHidden={navHidden}
           languages={[

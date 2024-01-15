@@ -11,4 +11,28 @@ The generator is part of the `/next` folder out of necessity. It's not possible 
 
 ## Usage
 
-The generator is a simple TypeScript application. To create a new form, add a definition to `/definition` and implement it the `/cli.ts` file. Add the script to `package.json` and then run it to generate the schemas. The schemas are located in `/dist`.
+### Generating just schema and uiSchema
+
+The generator is a simple TypeScript application. To create a new form, add a definition to `/definition` and implement it the `/cli.ts` file. **Keep the definition names (subdirectories) in sync with the slugs used on backend**. Add the script to `package.json` and then run it to generate the schemas. The schemas are located in `/dist`.
+
+To generate all schemas:
+
+```bash
+  yarn generate:all
+```
+
+for single schema, for example:
+
+```bash
+  yarn generate:stanovisko-k-investicnemu-zameru
+```
+
+### Generate all schemas and files for BE and NASES, update them on BE
+
+> To generate required xml files, you need @bratislava/jsxt installed locally
+
+Run the following and let the script guide you. If you need modifications or you need to perform just some of the steps, modify `update.ts` to your needs.
+
+```bash
+  yarn update
+```

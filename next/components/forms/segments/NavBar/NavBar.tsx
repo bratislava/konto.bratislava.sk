@@ -14,7 +14,7 @@ import { useServerSideAuth } from 'frontend/hooks/useServerSideAuth'
 import NextLink from 'next/link'
 import { useRouter } from 'next/router'
 import { useTranslation } from 'next-i18next'
-import { ReactNode, useState } from 'react'
+import { ReactNode, useEffect, useRef, useState } from 'react'
 import { Button as ReactAriaButton } from 'react-aria-components'
 import { RemoveScroll } from 'react-remove-scroll'
 
@@ -65,7 +65,8 @@ const Avatar = ({ userData }: { userData?: UserData | null }) => {
   )
 }
 
-export const AccountNavBar = ({ className, sectionsList, menuItems, hiddenHeaderNav }: IProps) => {
+// TODO - needs complete refactor using some accessibility library
+export const NavBar = ({ className, sectionsList, menuItems, hiddenHeaderNav }: IProps) => {
   const [burgerOpen, setBurgerOpen] = useState(false)
   const { userData, isAuthenticated, isLegalEntity } = useServerSideAuth()
 
@@ -76,6 +77,10 @@ export const AccountNavBar = ({ className, sectionsList, menuItems, hiddenHeader
 
   const { t } = useTranslation(['common', 'account'])
   const router = useRouter()
+
+  /**  Reference to the navigation container element and state to track if navigation is focused  */
+  const navigationRef = useRef<HTMLDivElement>(null)
+  const [isNavigationFocused, setIsNavigationFocused] = useState(false)
 
   // we need to keep the work in progress of the open form if navigating away form it
   const optionalFormRedirectsContext = useConditionalFormRedirects()
@@ -88,6 +93,38 @@ export const AccountNavBar = ({ className, sectionsList, menuItems, hiddenHeader
 
   const isActive = (sectionItem: MenuSectionItemBase) =>
     sectionItem.url === '/' ? router.pathname === '/' : router.pathname.startsWith(sectionItem.url)
+
+  // TODO - this behaviour should be handled by accessibility library. Keeping for now, because it's better than nothing.
+  useEffect(() => {
+    /** Allow navigating nav menu with keyboard arrows when it gets focused */
+    const handleKeyDown = (event: KeyboardEvent) => {
+      /** Check if the navigation is currently focused */
+      if (isNavigationFocused) {
+        /** Get all li elements within the navigationRef or an empty array if it's not available */
+        const allLiElements = Array.from(navigationRef.current?.querySelectorAll('li') ?? [])
+        /** Get the currently active element as an HTMLLIElement */
+        const currentActiveElement = document.activeElement as HTMLLIElement
+        /** Find the index of the currently active element within the list of all li elements */
+        const currentIndex = allLiElements.findIndex((li) => li.contains(currentActiveElement))
+
+        if (event.key === 'ArrowDown' || event.key === 'ArrowLeft') {
+          event.preventDefault()
+          const prevIndex = currentIndex > 0 ? currentIndex - 1 : allLiElements.length - 1
+          allLiElements[prevIndex]?.querySelector('a')?.focus()
+        } else if (event.key === 'ArrowUp' || event.key === 'ArrowRight') {
+          event.preventDefault()
+          const nextIndex = currentIndex < allLiElements.length - 1 ? currentIndex + 1 : 0
+          allLiElements[nextIndex]?.querySelector('a')?.focus()
+        }
+      }
+    }
+
+    document.addEventListener('keydown', handleKeyDown)
+
+    return () => {
+      document.removeEventListener('keydown', handleKeyDown)
+    }
+  }, [isNavigationFocused])
 
   return (
     <div style={{ marginBottom: Math.max(desktopHeight, mobileHeight) }}>
@@ -162,11 +199,19 @@ export const AccountNavBar = ({ className, sectionsList, menuItems, hiddenHeader
             </nav>
           </div>
           {/* Header bottom navigation */}
-          {isAuthenticated && sectionsList && !hiddenHeaderNav && (
-            <div className="m-auto hidden h-[57px] w-full max-w-screen-lg items-center justify-between border-t border-gray-200 lg:flex">
+          {sectionsList && !hiddenHeaderNav && (
+            <div
+              className="m-auto hidden h-[57px] w-full max-w-screen-lg items-center justify-between border-t border-gray-200 lg:flex"
+              ref={navigationRef}
+            >
               <ul className="flex h-full w-full items-center">
                 {sectionsList.map((sectionItem) => (
-                  <li className="h-full w-full" key={sectionItem.id}>
+                  <li
+                    className="h-full w-full"
+                    key={sectionItem.id}
+                    onFocus={() => setIsNavigationFocused(true)}
+                    onBlur={() => setIsNavigationFocused(false)}
+                  >
                     <NextLink href={sectionItem.url}>
                       <div
                         className={cx(
@@ -228,4 +273,4 @@ export const AccountNavBar = ({ className, sectionsList, menuItems, hiddenHeader
   )
 }
 
-export default AccountNavBar
+export default NavBar

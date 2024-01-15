@@ -5,6 +5,7 @@ import { useServerSideAuth } from '../../frontend/hooks/useServerSideAuth'
 import { InitialFormData } from '../../frontend/types/initialFormData'
 import { FORM_SEND_EID_TOKEN_QUERY_KEY } from '../../frontend/utils/formSend'
 import { RegistrationModalType } from './segments/RegistrationModal/RegistrationModal'
+import { TaxFormPdfExportModalState } from './segments/TaxFormPdfExportModal/TaxFormPdfExportModalState'
 
 type ModalWithSendCallback =
   | {
@@ -89,7 +90,8 @@ const useGetContext = (initialFormData: InitialFormData) => {
   const eidSendConfirmationModalIsPending =
     sendEidSaveConceptPending || redirectingToSlovenskoSkLogin
 
-  const [taxFormPdfExportModal, setTaxFormPdfExportModal] = useState(false)
+  const [taxFormPdfExportModal, setTaxFormPdfExportModal] =
+    useState<TaxFormPdfExportModalState | null>(null)
 
   return {
     migrationRequiredModal,

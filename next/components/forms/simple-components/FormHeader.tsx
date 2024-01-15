@@ -21,7 +21,7 @@ import { useFormModals } from '../useFormModals'
 import { useFormState } from '../useFormState'
 
 const FormHeader = () => {
-  const { isReadonly, isDeletable, uiSchema, schema } = useFormState()
+  const { isReadonly, isDeletable, uiSchema, schema, isTaxForm } = useFormState()
   const { exportXml, exportPdf, importXml, saveConcept, deleteConcept } = useFormExportImport()
   const { t } = useTranslation('forms')
 
@@ -33,7 +33,9 @@ const FormHeader = () => {
       icon: <DownloadIcon className="h-6 w-6" />,
       onPress: exportXml,
     },
-    { title: t('menu_list.pdf'), icon: <PdfIcon className="h-6 w-6" />, onPress: exportPdf },
+    !isTaxForm
+      ? { title: t('menu_list.pdf'), icon: <PdfIcon className="h-6 w-6" />, onPress: exportPdf }
+      : null,
     !isReadonly
       ? {
           title: t('menu_list.upload_xml'),

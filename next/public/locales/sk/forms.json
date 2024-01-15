@@ -104,7 +104,7 @@
     "form_has_errors": "Pre odoslanie formulára opravte vyznačené chyby.",
     "files_scanning_warning": "Prílohy, ktoré ste nahrali prechádzajú antivírovou kontrolou. Žiadosť však môžete odoslať cez Bratislavské konto aj bez čakania na jej ukončenie. V prípade, že by nahraté prílohy obsahovali vírus, budeme vás kontaktovať na e-mailovej adrese, ktorou sa prihlasujete do svojho konta.",
     "vop_agreement_title": "Ochrana osobných údajov",
-    "vop_agreement_content": "Uložením a/alebo odoslaním Žiadosti výslovne vyhlasujem, že som sa oboznámil s [podmienkami spracúvania osobných údajov Hlavného mesta](https://bratislava.sk/konto/vyhlasenie-o-spracovani-osobnych-udajov) ako prevádzkovateľa osobných údajov a beriem na vedomie, že ich spracúvanie je nevyhnutné na splnenie zákonných povinností Hlavného mesta v súvislosti s vybavením tejto žiadosti.",
+    "vop_agreement_content": "Stiahnutím, uložením a/alebo odoslaním Žiadosti výslovne vyhlasujem, že som sa oboznámil s [podmienkami spracúvania osobných údajov Hlavného mesta](https://bratislava.sk/konto/vyhlasenie-o-spracovani-osobnych-udajov) ako prevádzkovateľa osobných údajov a beriem na vedomie, že ich spracúvanie je nevyhnutné na splnenie zákonných povinností Hlavného mesta v súvislosti s vybavením tejto žiadosti.",
     "vop_agreement_checkbox": "Súhlasím so spracovaním osobných údajov pre účely odoslania žiadosti",
     "vop_agreement_required": "Pre odoslanie formulára musíte súhlasiť so spracovaním osobných údajov.",
     "virus_alert": "Súbor “{{file}}“ obsahuje vírus. Vráťte sa k prílohám a nahrajte iné súbory. Bez povinných príloh nebudete vedieť žiadosť odoslať.",
@@ -219,6 +219,8 @@
     "redirect_error": "Nepodarilo sa načítať formulár. Skúste to prosím znova."
   },
   "tax_form_pdf_export_modal": {
+    "preparing": "Pripravujeme vaše priznanie",
+    "preparing_description": "Sťahovanie PDF začne automaticky po pripravení priznania.",
     "heading": "Vaše priznanie je pripravené",
     "subheading": "Čo je potrebné spraviť ďalej?",
     "action_1": "<strong>Skontrolujte si, vytlačte a podpíšte priznanie.</strong> Ak podávate priznanie aj za ostatných spoluvlastníkov/čky, priložte k nemu splnomocnenie alebo dohodu o určení zástupcu.",
@@ -230,11 +232,12 @@
     "tax_assessed_statement_authenticated": "Vaša daň bude vyrubená a <strong>odoslaná do Bratislavského konta na konci apríla.</strong>",
     "footer_choice": "alebo",
     "account_create": "Vytvorte si Bratislavské konto a ušetrite cestu na poštu",
-    "advantage_1": "Zaplatíte v priebehu niekoľkých sekúnd cez QR kód, kartou alebo Apple či Google Pay",
-    "advantage_2": "Prehľadné informácie o dani",
-    "advantage_3": "Pripomenieme vám termíny splátok",
-    "advantage_4": "Objavte ďaľšie služby mesta na jednom mieste",
+    "advantage_1": "Zaplatíte v priebehu niekoľkých sekúnd cez QR kód, Apple Pay či Google Pay alebo kartou.",
+    "advantage_2": "Získate prehľadné informácie o dani.",
+    "advantage_3": "Pripomenieme vám termíny splátok.",
+    "advantage_4": "Objavte ďaľšie služby mesta na jednom mieste.",
     "account_create_button": "Vytvoriť Bratislavské konto",
-    "feedback_form": "Vyplniť dotazník"
+    "feedback_heading": "Pomôžte nám zlepšiť službu priznania k dani z nehnuteľností vyplnením dotazníka.",
+    "feedback_button": "Vyplniť dotazník"
   }
 }

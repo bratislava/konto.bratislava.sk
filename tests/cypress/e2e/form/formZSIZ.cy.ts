@@ -2,6 +2,12 @@
 
 describe('F02 -', { testIsolation: false }, () => {
   const devices = ['desktop', 'mobile']
+  const applicantErrorBorderFields =
+    '[data-cy=input-menoPriezvisko], [data-cy=input-adresa], [data-cy=input-mesto], [data-cy=input-psc], [data-cy=input-email], [data-cy=input-telefon]'
+  const designerErrorBorderFields =
+    '[data-cy=input-menoPriezvisko], [data-cy=input-email], [data-cy=input-projektantTelefon], [data-cy=input-autorizacneOsvedcenie]'
+  const constructionErrorBorderFields =
+    '[data-cy=input-nazov], [data-cy=input-ulica], [data-cy=input-parcelneCislo]'
 
   before(() => {
     cy.fixture('form.json').then((fileData) => {
@@ -43,15 +49,16 @@ describe('F02 -', { testIsolation: false }, () => {
 
             cy.wrap(Cypress.$('[aria-required=true]', form)).should('have.length', 7)
 
-            // TODO cy.wrap(Cypress.$(errorBorderFields, form)).should('have.class', 'border-negative-700')
+            cy.wrap(Cypress.$(applicantErrorBorderFields, form)).should('have.class', 'border-negative-700')
           })
 
           cy.dataCy('form-container').then((form) => {
-            cy.wrap(Cypress.$('input[type=tel]', form)).type(this.fileData.phone_number_wrong)
+            cy.wrap(Cypress.$('[data-cy=input-telefon]', form)).type(this.fileData.phone_number_wrong)
             
             cy.wrap(Cypress.$(`[data-cy=continue-button-${device}]`, form)).click()
 
             cy.wrap(Cypress.$('[aria-required=true]', form)).should('have.length', 7)
+            cy.wrap(Cypress.$(applicantErrorBorderFields, form)).should('have.class', 'border-negative-700')
           })
           cy.dataCy('form-container').should('be.visible').matchImage()
         })
@@ -60,20 +67,20 @@ describe('F02 -', { testIsolation: false }, () => {
           cy.dataCy('form-container').then((form) => {
             cy.wrap(Cypress.$('[data-cy=radio-value-0]', form)).should('be.visible')
 
-            cy.wrap(Cypress.$('input[type=text]', form).eq(0)).type(this.fileData.name)
+            cy.wrap(Cypress.$('[data-cy=input-menoPriezvisko]', form)).type(this.fileData.name)
 
-            cy.wrap(Cypress.$('input[type=text]', form).eq(1)).type(this.fileData.address)
+            cy.wrap(Cypress.$('[data-cy=input-adresa]', form)).type(this.fileData.address)
 
-            cy.wrap(Cypress.$('input[type=text]', form).eq(2)).type(this.fileData.city)
+            cy.wrap(Cypress.$('[data-cy=input-mesto]', form)).type(this.fileData.city)
 
-            cy.wrap(Cypress.$('input[type=text]', form).eq(3)).type(this.fileData.zip_code)
+            cy.wrap(Cypress.$('[data-cy=input-psc]', form)).type(this.fileData.zip_code)
 
-            cy.wrap(Cypress.$('input[type=email]', form)).type(emailHash)
+            cy.wrap(Cypress.$('[data-cy=input-email]', form)).type(emailHash)
 
-            cy.wrap(Cypress.$('input[type=tel]', form)).focus().clear();
-            cy.wrap(Cypress.$('input[type=tel]', form)).type(this.fileData.phone_number)
+            cy.wrap(Cypress.$('[data-cy=input-telefon]', form)).focus().clear();
+            cy.wrap(Cypress.$('[data-cy=input-telefon]', form)).type(this.fileData.phone_number);
 
-            // Continue button needs to be clicked twice to work. After first click, phone validation shows false error.
+            // TODO - Continue button needs to be clicked twice to work. After first click, phone validation shows false error.
             cy.wrap(Cypress.$(`[data-cy=continue-button-${device}]`, form)).click()
             cy.wrap(Cypress.$(`[data-cy=continue-button-${device}]`, form)).click()
           })
@@ -99,41 +106,42 @@ describe('F02 -', { testIsolation: false }, () => {
             cy.wrap(Cypress.$('[aria-required=true]', form)).should('have.length', 4)
             cy.wrap(Cypress.$('[data-cy=error-message]', form)).should('have.length', 5)
 
-            // TODO cy.wrap(Cypress.$(errorBorderFields, form)).should('have.class', 'border-negative-700')
+            cy.wrap(Cypress.$(designerErrorBorderFields, form)).should('have.class', 'border-negative-700')
           })
 
           cy.dataCy('form-container').then((form) => {
-            cy.wrap(Cypress.$('input[type=tel]', form)).type(this.fileData.phone_number_wrong)
+            cy.wrap(Cypress.$('[data-cy=input-projektantTelefon]', form)).type(this.fileData.phone_number_wrong)
             
             cy.wrap(Cypress.$(`[data-cy=continue-button-${device}]`, form)).click()
 
             cy.wrap(Cypress.$('[aria-required=true]', form)).should('have.length', 4)
             cy.wrap(Cypress.$('[data-cy=error-message]', form)).should('have.length', 5)
+            cy.wrap(Cypress.$(designerErrorBorderFields, form)).should('have.class', 'border-negative-700')
           })
           cy.dataCy('form-container').should('be.visible').matchImage()
         })
 
         it('7. Filling out the "Responsible designer" step.', () => {
           cy.dataCy('form-container').then((form) => {
-            cy.wrap(Cypress.$('input[type=text]', form).eq(0)).type(this.fileData.name)
+            cy.wrap(Cypress.$('[data-cy=input-menoPriezvisko]', form)).type(this.fileData.name)
 
-            cy.wrap(Cypress.$('input[type=email]', form)).type(emailHash)
+            cy.wrap(Cypress.$('[data-cy=input-email]', form)).type(emailHash)
 
-            cy.wrap(Cypress.$('input[type=tel]', form)).focus().clear();
-            cy.wrap(Cypress.$('input[type=tel]', form)).type(this.fileData.phone_number)
-            cy.wrap(Cypress.$('input[type=tel]', form)).invoke('val').should('match', /\+421[0-9]{9}/g)
+            cy.wrap(Cypress.$('[data-cy=input-projektantTelefon]', form)).focus().clear();
+            cy.wrap(Cypress.$('[data-cy=input-projektantTelefon]', form)).type(this.fileData.phone_number)
+            cy.wrap(Cypress.$('[data-cy=input-projektantTelefon]', form)).invoke('val').should('match', /\+421[0-9]{9}/g)
 
-            cy.wrap(Cypress.$('input[type=text]', form).eq(1)).type(this.fileData.authorization_certificate_number)
+            cy.wrap(Cypress.$('[data-cy=input-autorizacneOsvedcenie]', form)).type(this.fileData.authorization_certificate_number)
 
-            cy.wrap(Cypress.$('div[role=spinbutton] span', form).eq(0)).type(this.fileData.day)
-            cy.wrap(Cypress.$('div[role=spinbutton] span', form).eq(1)).type(this.fileData.month)
-            cy.wrap(Cypress.$('div[role=spinbutton] span', form).eq(2)).type(this.fileData.year)
+            cy.wrap(Cypress.$('[data-cy=date-time-day]', form)).type(this.fileData.day)
+            cy.wrap(Cypress.$('[data-cy=date-time-month]', form)).type(this.fileData.month)
+            cy.wrap(Cypress.$('[data-cy=date-time-year]', form)).type(this.fileData.year)
 
             cy.wrap(Cypress.$(`[data-cy=continue-button-${device}]`, form)).click()
           })
         })
 
-        it('6. Checking "Construction information" step validation.', () => {
+        it('8. Checking "Construction information" step validation.', () => {
           cy.dataCy('form-container').then((form) => {
             cy.wrap(Cypress.$(`[data-cy=continue-button-${device}]`, form)).click()
           })
@@ -142,22 +150,22 @@ describe('F02 -', { testIsolation: false }, () => {
             cy.wrap(Cypress.$('[aria-required=true]', form)).should('have.length', 5)
             cy.wrap(Cypress.$('[data-cy=error-message]', form)).should('have.length', 4)
 
-            // TODO cy.wrap(Cypress.$(errorBorderFields, form)).should('have.class', 'border-negative-700')
+            cy.wrap(Cypress.$(constructionErrorBorderFields, form)).should('have.class', 'border-negative-700')
           })
           cy.dataCy('form-container').should('be.visible').matchImage()
         })
 
-        it('8. Filling out the "Construction information" step.', () => {
+        it('9. Filling out the "Construction information" step.', () => {
           cy.dataCy('form-container').then((form) => {
-            cy.wrap(Cypress.$('input[type=text]', form).eq(0)).type(this.fileData.construction_name)
+            cy.wrap(Cypress.$('[data-cy=input-nazov]', form)).type(this.fileData.construction_name)
 
             cy.wrap(Cypress.$('[data-cy=radio-value-0]', form)).should('be.visible')
 
-            cy.wrap(Cypress.$('input[type=text]', form).eq(1)).type(this.fileData.address)
+            cy.wrap(Cypress.$('[data-cy=input-ulica]', form)).type(this.fileData.address)
 
-            cy.wrap(Cypress.$('input[type=text]', form).eq(2)).type(this.fileData.zip_code)
+            cy.wrap(Cypress.$('[data-cy=input-supisneCislo]', form)).type(this.fileData.zip_code)
 
-            cy.wrap(Cypress.$('input[type=text]', form).eq(3)).type(this.fileData.zip_code)
+            cy.wrap(Cypress.$('[data-cy=input-parcelneCislo]', form)).type(this.fileData.zip_code)
 
             cy.wrap(Cypress.$('input[type=text][role=combobox]', form).eq(0)).type("Devín")
           })
@@ -169,7 +177,13 @@ describe('F02 -', { testIsolation: false }, () => {
           })
         })
 
-        it('9. Checking form summary page.', () => {
+        it('10. Filling out the "Type of action" step.', () => {
+          cy.dataCy('form-container').then((form) => {
+            cy.wrap(Cypress.$(`[data-cy=continue-button-${device}]`, form)).click()
+          })
+        })
+
+        it('11. Checking form summary page.', () => {
           cy.dataCy('form-container').should('be.visible').matchImage()
 
           cy.dataCy('alert-container').should('not.exist')

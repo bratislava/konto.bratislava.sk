@@ -2,7 +2,9 @@
 
 describe('F03 -', { testIsolation: false }, () => {
   const devices = ['desktop', 'mobile']
-
+  const errorBorderFields =
+    '[data-cy=summary-row-email], [data-cy=summary-row-telefon], [data-cy=summary-row-projektantTelefon], [data-cy=summary-row-menoPriezvisko], [data-cy=summary-row-autorizacneOsvedcenie], [data-cy=summary-row-datumSpracovania], [data-cy=summary-row-autorizacneOsvedcenie], [data-cy=summary-row-nazov], [data-cy=summary-row-ulica], [data-cy=summary-row-parcelneCislo], [data-cy=summary-row-kataster]'  
+    
   before(() => {
     cy.fixture('formSummaryCheck.json').then((fileData) => {
       this.fileData = fileData
@@ -49,17 +51,17 @@ describe('F03 -', { testIsolation: false }, () => {
           cy.dataCy('form-container').then((form) => {
             cy.wrap(Cypress.$('[data-cy=radio-value-0]', form)).should('be.visible')
 
-            cy.wrap(Cypress.$('input[type=text]', form).eq(0)).type(this.fileData.name)
+            cy.wrap(Cypress.$('[data-cy=input-menoPriezvisko]', form)).type(this.fileData.name)
 
-            cy.wrap(Cypress.$('input[type=text]', form).eq(1)).type(this.fileData.address)
+            cy.wrap(Cypress.$('[data-cy=input-adresa]', form)).type(this.fileData.address)
 
-            cy.wrap(Cypress.$('input[type=text]', form).eq(2)).type(this.fileData.city)
+            cy.wrap(Cypress.$('[data-cy=input-mesto]', form)).type(this.fileData.city)
 
-            cy.wrap(Cypress.$('input[type=text]', form).eq(3)).type(this.fileData.zip_code)
+            cy.wrap(Cypress.$('[data-cy=input-psc]', form)).type(this.fileData.zip_code)
 
-            cy.wrap(Cypress.$('input[type=email]', form)).type(this.fileData.email_wrong)
+            cy.wrap(Cypress.$('[data-cy=input-email]', form)).type(this.fileData.email_wrong)
 
-            cy.wrap(Cypress.$('input[type=tel]', form)).type(this.fileData.phone_number_wrong)
+            cy.wrap(Cypress.$('[data-cy=input-telefon]', form)).type(this.fileData.phone_number_wrong)
 
             cy.wrap(Cypress.$(`[data-cy=continue-button-${device}]`, form)).click()
           })
@@ -81,28 +83,25 @@ describe('F03 -', { testIsolation: false }, () => {
 
         it('7. Checking filled in information are saved', () => {
           cy.dataCy('form-container').then((form) => {
-            cy.wrap(Cypress.$('[data-cy=summary-row]', form).eq(0)).find('[data-cy=summary-row-icon]').should('have.not.class', 'text-error')
+            cy.wrap(Cypress.$('[data-cy=summary-row-architektonickaStudia]', form)).find('[data-cy=summary-row-icon]').should('have.not.class', 'text-error')
 
-            cy.wrap(Cypress.$('[data-cy=summary-row]', form).eq(2)).should('contain', this.fileData.name)
+            cy.wrap(Cypress.$('[data-cy=summary-row-menoPriezvisko]', form)).should('contain', this.fileData.name)
 
-            cy.wrap(Cypress.$('[data-cy=summary-row]', form).eq(3)).should('contain', this.fileData.address)
+            cy.wrap(Cypress.$('[data-cy=summary-row-adresa]', form)).should('contain', this.fileData.address)
 
-            cy.wrap(Cypress.$('[data-cy=summary-row]', form).eq(4)).should('contain', this.fileData.city)
+            cy.wrap(Cypress.$('[data-cy=summary-row-mesto]', form)).should('contain', this.fileData.city)
 
-            cy.wrap(Cypress.$('[data-cy=summary-row]', form).eq(5)).should('contain', this.fileData.zip_code)
+            cy.wrap(Cypress.$('[data-cy=summary-row-psc]', form)).should('contain', this.fileData.zip_code)
 
-            cy.wrap(Cypress.$('[data-cy=summary-row]', form).eq(6)).should('contain', this.fileData.email_wrong)
+            cy.wrap(Cypress.$('[data-cy=summary-row-email]', form)).should('contain', this.fileData.email_wrong)
 
-            cy.wrap(Cypress.$('[data-cy=summary-row]', form).eq(7)).should('contain', this.fileData.phone_number_wrong)
+            cy.wrap(Cypress.$('[data-cy=summary-row-telefon]', form)).should('contain', this.fileData.phone_number_wrong)
           })
         })
 
         it('8. Checking form validation.', () => {
           cy.dataCy('form-container').then((form) => {
-            const rowsToCheck = [6, 7, 9, 10, 11, 12, 13, 14, 16, 18, 19];
-            rowsToCheck.forEach((rowIndex) => {
-              cy.wrap(Cypress.$('[data-cy=summary-row]', form).eq(rowIndex)).should('have.class', 'border-red-500');
-            });
+            cy.wrap(Cypress.$(errorBorderFields, form)).should('have.class', 'border-red-500');
           })
         })
       })

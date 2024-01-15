@@ -58,17 +58,17 @@ describe('F04 -', { testIsolation: false }, () => {
           cy.dataCy('form-container').then((form) => {
             cy.wrap(Cypress.$('[data-cy=radio-value-0]', form)).should('be.visible')
 
-            cy.wrap(Cypress.$('input[type=text]', form).eq(0)).type(this.fileData.name)
+            cy.wrap(Cypress.$('[data-cy=input-menoPriezvisko]', form)).type(this.fileData.name)
 
-            cy.wrap(Cypress.$('input[type=text]', form).eq(1)).type(this.fileData.address)
+            cy.wrap(Cypress.$('[data-cy=input-adresa]', form)).type(this.fileData.address)
 
-            cy.wrap(Cypress.$('input[type=text]', form).eq(2)).type(this.fileData.city)
+            cy.wrap(Cypress.$('[data-cy=input-mesto]', form)).type(this.fileData.city)
 
-            cy.wrap(Cypress.$('input[type=text]', form).eq(3)).type(this.fileData.zip_code)
+            cy.wrap(Cypress.$('[data-cy=input-psc]', form)).type(this.fileData.zip_code)
 
-            cy.wrap(Cypress.$('input[type=email]', form)).type(this.fileData.email_wrong)
+            cy.wrap(Cypress.$('[data-cy=input-email]', form)).type(this.fileData.email_wrong)
 
-            cy.wrap(Cypress.$('input[type=tel]', form)).type(this.fileData.phone_number_wrong)
+            cy.wrap(Cypress.$('[data-cy=input-telefon]', form)).type(this.fileData.phone_number_wrong)
 
             cy.wrap(Cypress.$(`[data-cy=continue-button-${device}]`, form)).click()
           })

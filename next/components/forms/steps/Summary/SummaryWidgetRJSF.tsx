@@ -32,9 +32,8 @@ const ValueComponent = ({
   widgetType,
   value,
   options,
-  uiSchema,
-  name
-}: Pick<SummaryWidgetRJSFProps, 'widgetType' | 'value' | 'options' | 'uiSchema' | 'name'>) => {
+  uiSchema
+}: Pick<SummaryWidgetRJSFProps, 'widgetType' | 'value' | 'options' | 'uiSchema'>) => {
   const formatter = useDateFormatter()
 
   if (value == null || (Array.isArray(value) && value.length === 0)) {
@@ -124,11 +123,10 @@ const SummaryWidgetRJSF = ({
                 value={value}
                 options={options}
                 uiSchema={uiSchema}
-                name={name}
               />
             </div>
           ),
-          name: name,
+          name,
           isError: fieldHasError(id),
         }}
         onGoToStep={() => {

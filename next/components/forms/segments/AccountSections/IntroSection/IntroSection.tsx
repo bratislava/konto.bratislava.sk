@@ -98,7 +98,11 @@ const IntroSection = () => {
       <div className="flex flex-col">
         <h1 className="sr-only">{t('bratislava_account')}</h1>
         <AccountSectionHeader
-          title={`${t('account_section_intro.header_title')} ${name || ''}.`}
+          title={
+            name
+              ? `${t('account_section_intro.header_title')} ${name}.`
+              : `${t('account_section_intro.header_title_without_name')}`
+          }
           text={t('account_section_intro.header_text')}
           titleAsParagraph
         />

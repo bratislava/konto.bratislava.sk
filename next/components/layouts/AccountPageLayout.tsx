@@ -9,42 +9,23 @@ import {
 } from '@assets/ui-icons'
 import { Auth } from 'aws-amplify'
 import cx from 'classnames'
-import AccountNavBar, {
-  MenuSectionItemBase,
-} from 'components/forms/segments/AccountNavBar/AccountNavBar'
+import NavBar, { MenuSectionItemBase } from 'components/forms/segments/NavBar/NavBar'
 import { MenuItemBase } from 'components/forms/simple-components/MenuDropdown/MenuDropdown'
-import { useServerSideAuth } from 'frontend/hooks/useServerSideAuth'
 import { useRouter } from 'next/router'
 import { useTranslation } from 'next-i18next'
-import { ReactNode, useEffect } from 'react'
+import { ReactNode } from 'react'
 
 import { ROUTES } from '../../frontend/api/constants'
 import { isDefined } from '../../frontend/utils/general'
-import logger from '../../frontend/utils/logger'
 
 type AccountPageLayoutBase = {
   className?: string
   children: ReactNode
   hiddenHeaderNav?: boolean
-  isPublicPage?: boolean
 }
 
-const AccountPageLayout = ({
-  className,
-  children,
-  hiddenHeaderNav,
-  isPublicPage,
-}: AccountPageLayoutBase) => {
-  const { isAuthenticated } = useServerSideAuth()
+const AccountPageLayout = ({ className, children, hiddenHeaderNav }: AccountPageLayoutBase) => {
   const router = useRouter()
-
-  useEffect(() => {
-    if (!isPublicPage && !isAuthenticated && router.route !== ROUTES.PAYMENT_RESULT) {
-      router
-        .push({ pathname: ROUTES.LOGIN, query: { from: router.route } })
-        .catch((error_) => logger.error('Redirect failed', error_))
-    }
-  }, [isAuthenticated, isPublicPage, router])
 
   const [t] = useTranslation('common')
 
@@ -111,7 +92,7 @@ const AccountPageLayout = ({
 
   return (
     <div className={cx('flex min-h-screen flex-col', className)}>
-      <AccountNavBar
+      <NavBar
         sectionsList={sectionsList}
         menuItems={menuItems}
         navHidden

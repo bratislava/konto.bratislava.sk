@@ -83,9 +83,8 @@ export const getServerSideProps: GetServerSideProps<FormPageWrapperProps, Params
       // If logged out user receives 403 for his/her form it might be theirs.
       if (is401 || (is403 && !isLoggedIn)) {
         return {
-          // TODO: Redirect back after login
           redirect: {
-            destination: ROUTES.LOGIN,
+            destination: `${ROUTES.LOGIN}?from=${ctx.resolvedUrl}`,
             permanent: false,
           },
         }

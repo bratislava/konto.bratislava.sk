@@ -66,7 +66,7 @@ const Avatar = ({ userData }: { userData?: UserData | null }) => {
 }
 
 // TODO - needs complete refactor using some accessibility library
-export const AccountNavBar = ({ className, sectionsList, menuItems, hiddenHeaderNav }: IProps) => {
+export const NavBar = ({ className, sectionsList, menuItems, hiddenHeaderNav }: IProps) => {
   const [burgerOpen, setBurgerOpen] = useState(false)
   const { userData, isAuthenticated, isLegalEntity } = useServerSideAuth()
 
@@ -197,7 +197,7 @@ export const AccountNavBar = ({ className, sectionsList, menuItems, hiddenHeader
             </nav>
           </div>
           {/* Header bottom navigation */}
-          {isAuthenticated && sectionsList && !hiddenHeaderNav && (
+          {sectionsList && !hiddenHeaderNav && (
             <div
               className="m-auto hidden h-[57px] w-full max-w-screen-lg items-center justify-between border-t border-gray-200 lg:flex"
               ref={navigationRef}
@@ -270,4 +270,4 @@ export const AccountNavBar = ({ className, sectionsList, menuItems, hiddenHeader
   )
 }
 
-export default AccountNavBar
+export default NavBar

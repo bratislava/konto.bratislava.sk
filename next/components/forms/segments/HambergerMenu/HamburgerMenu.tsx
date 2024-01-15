@@ -1,5 +1,5 @@
 import cx from 'classnames'
-import { MenuSectionItemBase } from 'components/forms/segments/AccountNavBar/AccountNavBar'
+import { MenuSectionItemBase } from 'components/forms/segments/NavBar/NavBar'
 import IdentityVerificationStatus from 'components/forms/simple-components/IdentityVerificationStatus'
 import { MenuItemBase } from 'components/forms/simple-components/MenuDropdown/MenuDropdown'
 import logger from 'frontend/utils/logger'

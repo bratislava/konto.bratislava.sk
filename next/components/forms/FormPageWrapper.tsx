@@ -1,7 +1,7 @@
 import { RJSFSchema, UiSchema } from '@rjsf/utils'
 import { useRouter } from 'next/router'
 import { usePlausible } from 'next-plausible'
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useRef } from 'react'
 
 import { FormExportImportProvider } from '../../frontend/hooks/useFormExportImport'
 import { InitialFormData } from '../../frontend/types/initialFormData'
@@ -32,10 +32,11 @@ const matchIdInFormsUrlRegex = /(\/mestske-sluzby\/[^/]+\/)[^#/]+/
 
 // custom plausible tracking - we exclude '/mestske-sluzby/*/*' in top level plausible provider
 // instead, we track the url without the UUID
+// reference https://plausible.io/docs/custom-locations
 const useCustomPlausibleFormPagesTracking = () => {
   const router = useRouter()
   const plausible = usePlausible()
-  const [initialPageviewTracked, setInitialPageviewTracked] = useState(false)
+  const firstRender = useRef(true)
 
   useEffect(() => {
     const onHashChangeStart = (url: string) => {
@@ -52,13 +53,13 @@ const useCustomPlausibleFormPagesTracking = () => {
 
   // track initial pageview
   useEffect(() => {
-    if (!initialPageviewTracked) {
+    if (firstRender.current) {
+      firstRender.current = false
       const initialUrlWithoutId = router.asPath?.replace(matchIdInFormsUrlRegex, '$1ID')
       // initialUrlWithoutId being undefined should not happen, but better to catch it if it does
       plausible('pageview', { u: initialUrlWithoutId || '/error-in-custom-tracking' })
-      setInitialPageviewTracked(true)
     }
-  }, [initialPageviewTracked, router.asPath, plausible])
+  }, [router.asPath, plausible])
 }
 
 const FormPageWrapper = ({ schema, uiSchema, initialFormData }: FormPageWrapperProps) => {

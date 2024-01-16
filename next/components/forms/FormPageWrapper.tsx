@@ -28,10 +28,12 @@ export type FormPageWrapperProps = {
   ssrCurrentAuthProps?: GetSSRCurrentAuth
 }
 
-const matchIdInFormsUrlRegex = /(\/mestske-sluzby\/[^/]+\/)[^#/]+/
+// keeps hash, removes trailing id along with last slash: /mestske-sluzby/slug/id#hash -> /mestske-sluzby/slug#hash
+const matchUrlWithoutId = /(\/mestske-sluzby\/[^/]+)\/[^#/]+/
 
 // custom plausible tracking - we exclude '/mestske-sluzby/*/*' in top level plausible provider
 // instead, we track the url without the UUID
+// this is done on '/mestske-sluzby/slug#hash' url, note that '/mestske-sluzby/slug/whatever#hash' would still be ignored even with manual tracking
 // reference https://plausible.io/docs/custom-locations
 const useCustomPlausibleFormPagesTracking = () => {
   const router = useRouter()
@@ -40,7 +42,7 @@ const useCustomPlausibleFormPagesTracking = () => {
 
   useEffect(() => {
     const onHashChangeStart = (url: string) => {
-      const urlWithoutId = url?.replace(matchIdInFormsUrlRegex, '$1ID')
+      const urlWithoutId = url?.replace(matchUrlWithoutId, '$1')
       plausible('pageview', { u: urlWithoutId })
     }
 
@@ -55,7 +57,7 @@ const useCustomPlausibleFormPagesTracking = () => {
   useEffect(() => {
     if (firstRender.current) {
       firstRender.current = false
-      const initialUrlWithoutId = router.asPath?.replace(matchIdInFormsUrlRegex, '$1ID')
+      const initialUrlWithoutId = router.asPath?.replace(matchUrlWithoutId, '$1')
       // initialUrlWithoutId being undefined should not happen, but better to catch it if it does
       plausible('pageview', { u: initialUrlWithoutId || '/error-in-custom-tracking' })
     }

@@ -64,7 +64,7 @@ const MyApp = ({ Component, pageProps }: AppProps) => {
                   }
                   // exclude instances of forms (i.e./mestske-sluzby/priznanie-k-dani-z-nehnutelnosti is still tracked)
                   // we track those manually along with step hashes so that we can track "funnels" across steps
-                  exclude="/mestske-sluzby/*/*"
+                  // exclude="/mestske-sluzby/*/*"
                   taggedEvents
                   hash
                   // uncomment for local testing, needs to be run with `yarn build && yarn start`

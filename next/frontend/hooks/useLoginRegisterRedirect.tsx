@@ -80,6 +80,12 @@ export const LoginRegisterRedirectProvider = ({ children }: { children: React.Re
     }
   })
 
+  useEffect(() => {
+    if (typeof router.query.from === 'string') {
+      setRedirectTarget(router.query.from)
+    }
+  }, [router.query.from])
+
   // every time user moves outside of login/register/verify section of the app, reset the redirects
   useEffect(() => {
     const handleRouteChange = (url) => {

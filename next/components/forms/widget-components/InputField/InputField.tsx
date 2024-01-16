@@ -1,6 +1,6 @@
 import { LockIcon, PhoneIcon, ProfileIcon, RemoveIcon } from '@assets/ui-icons'
 import cx from 'classnames'
-import { forwardRef, ReactNode, RefObject, useEffect, useState } from 'react'
+import { forwardRef, ReactNode, RefObject, useEffect, useState, WheelEvent } from 'react'
 import { useTextField } from 'react-aria'
 
 import MailIcon from '../../../../assets/ui-icons/custom_mail.svg'
@@ -88,6 +88,14 @@ const InputField = forwardRef<HTMLInputElement, InputFieldProps>(
       },
       ref as RefObject<HTMLInputElement>,
     )
+
+    const handleOnWheel = (e: WheelEvent<HTMLInputElement>) => {
+      // https://stackoverflow.com/a/63872227
+      if (type === 'number') {
+        e.currentTarget.blur()
+      }
+    }
+
     const leftIconSwitcher = (icon: string): ReactNode | null => {
       switch (icon) {
         case 'person':
@@ -158,7 +166,14 @@ const InputField = forwardRef<HTMLInputElement, InputFieldProps>(
               {leftIconSwitcher(leftIcon)}
             </span>
           )}
-          <input {...inputProps} ref={ref} name={inputProps.id} className={style} data-cy={`input-${inputProps.name}`}/>
+          <input
+            {...inputProps}
+            ref={ref}
+            name={inputProps.id}
+            className={style}
+            data-cy={`input-${inputProps.name}`}
+            onWheel={handleOnWheel}
+          />
           {resetIcon && valueState && (
             <button
               type="button"

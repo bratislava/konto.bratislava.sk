@@ -28,7 +28,7 @@ export enum DateErrorValidationReason {
 }
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any,@typescript-eslint/no-redundant-type-constituents
-export function validateDDMMYYDate(value: string | any) {
+export function validateDDMMYYYYDate(value: string | any) {
   // Regular expression to match the date format DD.MM.YYYY
   const regex = /^(0?[1-9]|[12]\d|3[01])\.(0?[1-9]|1[0-2])\.(\d{4})$/
 

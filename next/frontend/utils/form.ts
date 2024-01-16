@@ -16,7 +16,7 @@ import { FormFileUploadFileInfo, FormFileUploadStatusEnum } from '../types/formF
 import {
   DateErrorValidationReason,
   RodneCisloValidationErrorReason,
-  validateDDMMYYDate,
+  validateDDMMYYYYDate,
   validateRodneCislo,
 } from './rodneCisloBirthDateField'
 
@@ -105,7 +105,7 @@ export const getAjvFormKeywords = (
     {
       keyword: 'rodneCisloOrBirthDate',
       validate: function validationFunction(schema, data) {
-        const dateResult = validateDDMMYYDate(data)
+        const dateResult = validateDDMMYYYYDate(data)
         if (dateResult === true) {
           return true
         }

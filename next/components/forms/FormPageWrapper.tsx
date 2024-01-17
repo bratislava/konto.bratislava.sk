@@ -28,22 +28,17 @@ export type FormPageWrapperProps = {
   ssrCurrentAuthProps?: GetSSRCurrentAuth
 }
 
-// keeps hash, removes trailing id along with last slash: /mestske-sluzby/slug/id#hash -> /mestske-sluzby/slug#hash
-const matchUrlWithoutId = /(\/mestske-sluzby\/[^/]+)\/[^#/]+/
-
 // custom plausible tracking - we exclude '/mestske-sluzby/*/*' in top level plausible provider
-// instead, we track the url without the UUID
-// this is done on '/mestske-sluzby/slug#hash' url, note that '/mestske-sluzby/slug/whatever#hash' would still be ignored even with manual tracking
-// reference https://plausible.io/docs/custom-locations
-const useCustomPlausibleFormPagesTracking = () => {
+// instead, we track these as custom events: formSlug#hash
+const useCustomPlausibleFormPagesTracking = (formSlug: string) => {
   const router = useRouter()
   const plausible = usePlausible()
   const firstRender = useRef(true)
 
   useEffect(() => {
     const onHashChangeStart = (url: string) => {
-      const urlWithoutId = url?.replace(matchUrlWithoutId, '$1')
-      plausible('pageview', { u: urlWithoutId })
+      const hash = url.split('#')[1]
+      plausible(`${formSlug}#${hash}`)
     }
 
     router.events.on('hashChangeStart', onHashChangeStart)
@@ -51,24 +46,23 @@ const useCustomPlausibleFormPagesTracking = () => {
     return () => {
       router.events.off('hashChangeStart', onHashChangeStart)
     }
-  }, [plausible, router.events])
+  }, [formSlug, plausible, router.events])
 
   // track initial pageview
   useEffect(() => {
     if (firstRender.current) {
       firstRender.current = false
-      const initialUrlWithoutId = router.asPath?.replace(matchUrlWithoutId, '$1')
-      // initialUrlWithoutId being undefined should not happen, but better to catch it if it does
-      plausible('pageview', { u: initialUrlWithoutId || '/error-in-custom-tracking' })
+      const hash = router.asPath.split('#')[1]
+      plausible(`${formSlug}#${hash}`)
     }
-  }, [router.asPath, plausible])
+  }, [router.asPath, plausible, formSlug])
 }
 
 const FormPageWrapper = ({ schema, uiSchema, initialFormData }: FormPageWrapperProps) => {
-  useCustomPlausibleFormPagesTracking()
-
   const router = useRouter()
   const formSlug = router.query.slug as string
+
+  useCustomPlausibleFormPagesTracking(formSlug)
 
   return (
     <FormSentRenderer

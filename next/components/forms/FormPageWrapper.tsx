@@ -1,7 +1,8 @@
 import { RJSFSchema, UiSchema } from '@rjsf/utils'
 import { useRouter } from 'next/router'
 import { usePlausible } from 'next-plausible'
-import React, { useEffect, useRef } from 'react'
+import React, { useEffect } from 'react'
+import { useEffectOnce } from 'usehooks-ts'
 
 import { FormExportImportProvider } from '../../frontend/hooks/useFormExportImport'
 import { InitialFormData } from '../../frontend/types/initialFormData'
@@ -33,7 +34,6 @@ export type FormPageWrapperProps = {
 const useCustomPlausibleFormPagesTracking = (formSlug: string) => {
   const router = useRouter()
   const plausible = usePlausible()
-  const firstRender = useRef(true)
 
   useEffect(() => {
     const onHashChangeStart = (url: string) => {
@@ -49,13 +49,10 @@ const useCustomPlausibleFormPagesTracking = (formSlug: string) => {
   }, [formSlug, plausible, router.events])
 
   // track initial pageview
-  useEffect(() => {
-    if (firstRender.current) {
-      firstRender.current = false
-      const hash = router.asPath.split('#')[1]
-      plausible(`${formSlug}#${hash}`)
-    }
-  }, [router.asPath, plausible, formSlug])
+  useEffectOnce(() => {
+    const hash = router.asPath.split('#')[1]
+    plausible(`${formSlug}#${hash}`)
+  })
 }
 
 const FormPageWrapper = ({ schema, uiSchema, initialFormData }: FormPageWrapperProps) => {

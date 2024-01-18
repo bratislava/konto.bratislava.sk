@@ -423,7 +423,7 @@ export const serviceCards: ServiceCardBase[] = [
     buttonText: 'account_section_services.cards.40.buttonText',
     icon: <PublicSpaceOccupationIcon className="h-10 w-10 text-main-600 lg:h-12 lg:w-12" />,
     category: [MunicipalServicesCategories.PUBLIC_SPACE_CATEGORY],
-    href: 'https://bratislava.sk/mesto-bratislava/transparentne-mesto/majetok-mesta/zaujatie-verejneho-priestranstvas',
+    href: 'https://bratislava.sk/mesto-bratislava/transparentne-mesto/majetok-mesta/zaujatie-verejneho-priestranstva',
   },
   {
     id: 41,

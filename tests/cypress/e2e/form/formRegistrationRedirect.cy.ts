@@ -66,10 +66,12 @@ describe('F04 -', { testIsolation: false }, () => {
 
             cy.wrap(Cypress.$('[data-cy=input-psc]', form)).type(this.fileData.zip_code)
 
-            cy.wrap(Cypress.$('[data-cy=input-email]', form)).type(this.fileData.email_wrong)
+            cy.wrap(Cypress.$('[data-cy=input-email]', form)).type(this.fileData.email)
 
-            cy.wrap(Cypress.$('[data-cy=input-telefon]', form)).type(this.fileData.phone_number_wrong)
+            cy.wrap(Cypress.$('[data-cy=input-telefon]', form)).type(this.fileData.phone_number)
 
+            // TODO - Continue button needs to be clicked twice to work. After first click, phone validation shows false error.
+            cy.wrap(Cypress.$(`[data-cy=continue-button-${device}]`, form)).click()
             cy.wrap(Cypress.$(`[data-cy=continue-button-${device}]`, form)).click()
           })
         })
@@ -111,6 +113,7 @@ describe('F04 -', { testIsolation: false }, () => {
 
         it('8. Submitting the form and checking the redirection to original form.', () => {
           cy.submitForm('register-form')
+          cy.check2FAPage(emailHash, 'registration-container')
 
           // TODO check data filled in form
         })

@@ -4,7 +4,7 @@ import { useEffect } from 'react'
 
 import { defaultFormStateBehavior, rjsfValidator } from '../../frontend/utils/form'
 import FormControls from './FormControls'
-import FormUploadXml from './FormUploadXml'
+import FormUploadXmlJson from './FormUploadXmlJson'
 import FormModals from './segments/FormModals/FormModals'
 import FormHeader from './simple-components/FormHeader'
 import StepperView from './steps/StepperView'
@@ -88,7 +88,7 @@ const FormPage = () => {
           <MenuList />
         </div>
       </div>
-      <FormUploadXml />
+      <FormUploadXmlJson />
     </>
   )
 }

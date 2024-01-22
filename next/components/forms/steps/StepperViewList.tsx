@@ -27,7 +27,7 @@ const StepperViewList = ({ onSkipToStep = () => {} }: StepperViewListProps) => {
             key={index}
             aria-current={isCurrent ? 'step' : undefined}
           >
-            <Link href={`#${step.hash}`} onClick={() => onSkipToStep()}>
+            <Link href={`#${step.hash}`} onClick={() => onSkipToStep()} data-cy={`stepper-step-${index + 1}`}>
               <StepperViewRow step={step} isCurrent={isCurrent} />
             </Link>
           </li>

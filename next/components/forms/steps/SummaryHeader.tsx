@@ -1,9 +1,11 @@
 import { useTranslation } from 'next-i18next'
 
 import Alert from '../info-components/Alert'
+import { useFormState } from '../useFormState'
 import { useFormSummary } from './Summary/useFormSummary'
 
 const SummaryHeader = () => {
+  const { isSigned } = useFormState()
   const { infectedFiles, uploadingFiles, hasErrors } = useFormSummary()
   const { t } = useTranslation('forms')
 
@@ -13,7 +15,12 @@ const SummaryHeader = () => {
     <>
       <h1 className="text-h1-medium font-semibold">{t('summary.title')}</h1>
       {hasErrors && (
-        <Alert type="error" message={t('summary.form_has_errors')} fullWidth className="mt-4" />
+        <Alert
+          type="error"
+          message={isSigned ? t('summary.form_has_errors_signed') : t('summary.form_has_errors')}
+          fullWidth
+          className="mt-4"
+        />
       )}
       {infectedFiles.length === 1 && (
         <Alert

@@ -36,6 +36,7 @@ export const getServerSideProps: GetServerSideProps<TaxFormLandingPageProps> = a
       props: {
         ssrCurrentAuthProps,
         latestVersionId,
+        isBetaUser: ssrCurrentAuthProps.userData?.['custom:2024_tax_form_beta'] === 'true',
         ...(await serverSideTranslations(locale)),
       } satisfies TaxFormLandingPageProps,
     }

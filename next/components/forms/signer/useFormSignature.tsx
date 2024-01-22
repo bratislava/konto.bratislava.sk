@@ -6,10 +6,11 @@ import hash from 'object-hash'
 import React, { createContext, PropsWithChildren, useCallback, useContext, useState } from 'react'
 import { useIsMounted } from 'usehooks-ts'
 
+import { useFormModals } from '../useFormModals'
 import { useFormState } from '../useFormState'
 // kept while it might be usefull for local testing
 // import { signerExamplePayload } from './signerExamplePayload'
-import { useFormSigner } from './useFormSigner'
+import { SignerDeploymentStatus, useFormSigner } from './useFormSigner'
 
 type Signature = {
   /**
@@ -21,8 +22,16 @@ type Signature = {
 }
 
 const useGetContext = () => {
+  const { setSignerIsDeploying } = useFormModals()
   const { formData, formDataRef, isSigned } = useFormState()
-  const { sign: signerSign } = useFormSigner()
+  const { sign: signerSign } = useFormSigner({
+    onDeploymentStatusChange: (status) => {
+      setSignerIsDeploying(status === SignerDeploymentStatus.Deploying)
+    },
+    onError: () => {
+      // TODO handle error
+    },
+  })
   const [signature, setSignature] = useState<Signature | null>(null)
   const isMounted = useIsMounted()
 

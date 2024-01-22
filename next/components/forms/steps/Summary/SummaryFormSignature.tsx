@@ -1,11 +1,13 @@
 import { BinIcon, EditIcon, EllipsisVerticalIcon } from '@assets/ui-icons'
 import React, { PropsWithChildren, useMemo } from 'react'
 
+import { isFormSigningDisabled } from '../../../../frontend/utils/formSummary'
 import Alert from '../../info-components/Alert'
 import { useFormSignature } from '../../signer/useFormSignature'
 import { useFormSignerLoader } from '../../signer/useFormSignerLoader'
 import ButtonNew from '../../simple-components/ButtonNew'
 import MenuDropdown from '../../simple-components/MenuDropdown/MenuDropdown'
+import { useFormSummary } from './useFormSummary'
 
 /**
  * The component be rendered only if `isSigned` is true, otherwise `useFormSignerLoader` will return null.
@@ -14,9 +16,11 @@ import MenuDropdown from '../../simple-components/MenuDropdown/MenuDropdown'
 const SummaryFormSignature = () => {
   const { isLoading, isReady, isError, isNotSupported, retry } = useFormSignerLoader()
   const { signature, sign, isValidSignature, remove, getSingerDataIsPending } = useFormSignature()
+  const { errorSchema, infectedFiles } = useFormSummary()
 
   const validSignature = useMemo(() => isValidSignature(), [isValidSignature])
-  const signerButtonDisabled = !isReady || getSingerDataIsPending
+  const signerButtonDisabled =
+    !isReady || getSingerDataIsPending || isFormSigningDisabled(errorSchema, infectedFiles)
 
   const AlertContent = ({ children }: PropsWithChildren) => (
     <div className="flex">

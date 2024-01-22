@@ -98,6 +98,7 @@ const UploadDropArea = forwardRef<HTMLButtonElement, UploadDropAreaProps>(
             onSelect={handleOnSelect}
             acceptedFileTypes={getSupportedFileExtensions(supportedFormats)}
             allowsMultiple={allowsMultiple}
+            data-cy="file-input"
           >
             <ReactAriaButton
               ref={ref}

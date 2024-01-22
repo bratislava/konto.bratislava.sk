@@ -86,6 +86,7 @@ const useGetContext = (initialFormData: InitialFormData) => {
    * again while redirecting.
    */
   const [redirectingToSlovenskoSkLogin, setRedirectingToSlovenskoSkLogin] = useState(false)
+  const [signerIsDeploying, setSignerIsDeploying] = useState(false)
 
   const eidSendConfirmationModalIsPending =
     sendEidSaveConceptPending || redirectingToSlovenskoSkLogin
@@ -141,6 +142,8 @@ const useGetContext = (initialFormData: InitialFormData) => {
     setDeleteConceptModal,
     taxFormPdfExportModal,
     setTaxFormPdfExportModal,
+    signerIsDeploying,
+    setSignerIsDeploying,
   }
 }
 

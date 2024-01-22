@@ -7,7 +7,15 @@ import logger from 'frontend/utils/logger'
 import { useRouter } from 'next/router'
 import { useTranslation } from 'next-i18next'
 import { usePlausible } from 'next-plausible'
-import React, { createContext, PropsWithChildren, useContext, useRef } from 'react'
+import React, {
+  createContext,
+  PropsWithChildren,
+  useContext,
+  useEffect,
+  useRef,
+  useState,
+} from 'react'
+import { useIsClient } from 'usehooks-ts'
 
 import { RegistrationModalType } from '../../components/forms/segments/RegistrationModal/RegistrationModal'
 import { useFormLeaveProtection } from '../../components/forms/useFormLeaveProtection'
@@ -21,6 +29,12 @@ import useSnackbar from './useSnackbar'
 
 type FormExportImportProviderProps = {
   initialFormData: InitialFormData
+}
+
+declare global {
+  interface Window {
+    __DEV_SHOW_IMPORT_EXPORT_JSON?: () => void
+  }
 }
 
 export const useGetContext = ({ initialFormData }: FormExportImportProviderProps) => {
@@ -39,6 +53,18 @@ export const useGetContext = ({ initialFormData }: FormExportImportProviderProps
   const [openSnackbarInfo, closeSnackbarInfo] = useSnackbar({ variant: 'info' })
 
   const importXmlButtonRef = useRef<HTMLButtonElement>(null)
+  const importJsonButtonRef = useRef<HTMLButtonElement>(null)
+
+  const [showImportExportJson, setShowImportExportJson] = useState(false)
+  const isClient = useIsClient()
+
+  useEffect(() => {
+    // Dev only debugging feature
+    if (isClient) {
+      // eslint-disable-next-line no-underscore-dangle
+      window.__DEV_SHOW_IMPORT_EXPORT_JSON = () => setShowImportExportJson(true)
+    }
+  }, [isClient, setShowImportExportJson])
 
   const { mutate: saveConceptMutate, isPending: saveConceptIsPending } = useMutation<
     AxiosResponse<GetFormResponseDto>,
@@ -115,8 +141,18 @@ export const useGetContext = ({ initialFormData }: FormExportImportProviderProps
     }
   }
 
+  const exportJson = async () => {
+    const fileName = `${formSlug}_output.json`
+    downloadBlob(new Blob([JSON.stringify(formData)]), fileName)
+    openSnackbarSuccess(t('success_messages.json_export'))
+  }
+
   const triggerImportXml = () => {
     importXmlButtonRef.current?.click()
+  }
+
+  const triggerImportJson = () => {
+    importJsonButtonRef.current?.click()
   }
 
   const handleImportXml = async (files: FileList | null) => {
@@ -127,7 +163,7 @@ export const useGetContext = ({ initialFormData }: FormExportImportProviderProps
 
     try {
       openSnackbarInfo(t('info_messages.xml_import'))
-      const xmlData: string = await readFileToString(file)
+      const xmlData = await readFileToString(file)
       const response = await formsApi.convertControllerConvertXmlToJson(
         initialFormData.schemaVersionId,
         {
@@ -142,6 +178,23 @@ export const useGetContext = ({ initialFormData }: FormExportImportProviderProps
     } catch (error) {
       openSnackbarError(t('errors.xml_import'))
     }
+  }
+
+  const handleImportJson = async (files: FileList | null) => {
+    if (!files || files.length === 0) {
+      return
+    }
+    const file = files[0]
+    const jsonForm = await readFileToString(file)
+    openSnackbarInfo(t('info_messages.json_import'))
+    try {
+      const parsed = JSON.parse(jsonForm)
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
+      setImportedFormData(parsed)
+    } catch (error) {
+      openSnackbarError(t('errors.json_import'))
+    }
+    openSnackbarSuccess(t('success_messages.json_import'))
   }
 
   const runPdfExport = async (abortController?: AbortController) => {
@@ -225,14 +278,19 @@ export const useGetContext = ({ initialFormData }: FormExportImportProviderProps
   return {
     exportXml,
     importXml: triggerImportXml,
+    exportJson,
+    importJson: triggerImportJson,
     exportPdf,
     saveConcept,
     saveConceptIsPending,
     migrateForm,
     migrateFormIsPending,
     importXmlButtonRef,
+    importJsonButtonRef,
     handleImportXml,
+    handleImportJson,
     deleteConcept,
+    showImportExportJson,
   }
 }
 

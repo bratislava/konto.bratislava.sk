@@ -62,6 +62,8 @@ const FormModals = () => {
     setDeleteConceptModal,
     taxFormPdfExportModal,
     setTaxFormPdfExportModal,
+    signerIsDeploying,
+    setSignerIsDeploying,
   } = useFormModals()
   const { saveConcept, saveConceptIsPending, migrateForm, migrateFormIsPending } =
     useFormExportImport()
@@ -525,6 +527,17 @@ const FormModals = () => {
       isDismissable: false,
       noCloseButton: true,
       children: t('concept_delete_modal.content', { conceptName: title }),
+    },
+    {
+      key: 'signerIsDeploying',
+      isOpen: signerIsDeploying,
+      onOpenChange: setSignerIsDeploying,
+      type: 'info',
+      title: t('signer_deploying_modal.title'),
+      children: (
+        // TODO Replace statusBar variant
+        <AccountMarkdown variant="statusBar" content={t('signer_deploying_modal.content')} />
+      ),
     },
   ]
 

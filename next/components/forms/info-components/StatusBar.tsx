@@ -76,6 +76,7 @@ export const StatusBar = ({ className }: StatusBarProps) => {
         'bg-warning-700': statusBarConfiguration.variant === 'warning',
         'bg-gray-700': statusBarConfiguration.variant === 'info',
       })}
+      data-cy="info-bar"
     >
       <div className="container mx-auto flex h-full items-center justify-center">
         <SectionContainer>

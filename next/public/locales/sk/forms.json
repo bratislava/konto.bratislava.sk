@@ -108,6 +108,7 @@
   "summary": {
     "title": "Sumár",
     "form_has_errors": "Pre odoslanie formulára opravte vyznačené chyby.",
+    "form_has_errors_signed": "Pre podpísanie a odoslanie formulára opravte vyznačené chyby.",
     "files_scanning_warning": "Prílohy, ktoré ste nahrali prechádzajú antivírovou kontrolou. Žiadosť však môžete odoslať cez Bratislavské konto aj bez čakania na jej ukončenie. V prípade, že by nahraté prílohy obsahovali vírus, budeme vás kontaktovať na e-mailovej adrese, ktorou sa prihlasujete do svojho konta.",
     "vop_agreement_title": "Ochrana osobných údajov",
     "vop_agreement_content": "Stiahnutím, uložením a/alebo odoslaním Žiadosti výslovne vyhlasujem, že som sa oboznámil s [podmienkami spracúvania osobných údajov Hlavného mesta](https://bratislava.sk/konto/vyhlasenie-o-spracovani-osobnych-udajov) ako prevádzkovateľa osobných údajov a beriem na vedomie, že ich spracúvanie je nevyhnutné na splnenie zákonných povinností Hlavného mesta v súvislosti s vybavením tejto žiadosti.",
@@ -221,7 +222,7 @@
   },
   "tax_form_landing_page": {
     "title": "Priznanie k dani z nehnuteľností",
-    "instructions": "## Budete potrebovať:\n- **listy vlastníctva k predmetnej nehnuteľnosti** (ak vlastníte viac nehnuteľností, napríklad, byt a aj garážové státie, máte pravdepodobne viaceré listy vlastníctva),\n- **kúpnu zmluva na nehnuteľnosť**,\n- v prípade, že vlastníte nehnuteľnosť v bezpodielovom vlastníctve s manželom či manželkou a podávate priznanie za vás oboch, **rodné číslo manžela alebo manželky**,\n- v prípade, že vlastníte nehnuteľnosť v podielovom vlastníctve a podávate priznanie aj za spoluvlastníkov a spoluvlastníčky, [dohodu o určení zástupcu](https://cdn-api.bratislava.sk/strapi-homepage/upload/Dohoda_o_urceni_zastupcu_DZN_56a8433ec7.pdf),\n- v prípade, že priznanie nepodávate vo vlastnom mene, **splnomocnenie na podanie daňového priznania**.",
+    "instructions": "## Budete potrebovať:\n- **listy vlastníctva k predmetnej nehnuteľnosti** (ak vlastníte viac nehnuteľností, napríklad, byt a aj garážové státie, máte pravdepodobne viaceré listy vlastníctva),\n- **kúpnu zmluvu na nehnuteľnosť**,\n- v prípade, že vlastníte nehnuteľnosť v bezpodielovom vlastníctve s manželom či manželkou a podávate priznanie za vás oboch, **rodné číslo manžela alebo manželky**,\n- v prípade, že vlastníte nehnuteľnosť v podielovom vlastníctve a podávate priznanie aj za spoluvlastníkov a spoluvlastníčky, [dohodu o určení zástupcu](https://cdn-api.bratislava.sk/strapi-homepage/upload/Dohoda_o_urceni_zastupcu_DZN_56a8433ec7.pdf),\n- v prípade, že priznanie nepodávate vo vlastnom mene, **splnomocnenie na podanie daňového priznania**.",
     "redirect_info": "Presmerovávam na formulár.",
     "redirect_error": "Nepodarilo sa načítať formulár. Skúste to prosím znova."
   },
@@ -246,5 +247,9 @@
     "account_create_button": "Vytvoriť Bratislavské konto",
     "feedback_heading": "Pomôžte nám zlepšiť službu priznania k dani z nehnuteľností vyplnením dotazníka.",
     "feedback_button": "Vyplniť dotazník"
+  },
+  "signer_deploying_modal": {
+    "title": "Spúšťa sa podpisovacia aplikácia",
+    "content": "Čakajte, prosíme, práve prebieha spúšťanie podpisovej aplikácie. Ak by spúšťanie trvalo dlhšie ako obvykle, skontrolujte, či máte aplikáciu nainštalovanú alebo aktualizovanú (<a target='_blank' href='https://www.slovensko.sk/sk/na-stiahnutie'>aktuálne verzie aplikácií na prihlásenie a podpisovanie</a>). V prípade, že sa aplikácia vôbec nespustí, prosíme, <a target='_blank' href='https://www.slovensko.sk/sk/pomoc/technicka-podpora-pre-pouzivat'>postupujte podľa krokov v návode, ako vyriešiť problém s podpisovou aplikáciou</a>."
   }
 }

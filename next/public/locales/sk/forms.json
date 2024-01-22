@@ -108,6 +108,7 @@
   "summary": {
     "title": "Sumár",
     "form_has_errors": "Pre odoslanie formulára opravte vyznačené chyby.",
+    "form_has_errors_signed": "Pre podpísanie a odoslanie formulára opravte vyznačené chyby.",
     "files_scanning_warning": "Prílohy, ktoré ste nahrali prechádzajú antivírovou kontrolou. Žiadosť však môžete odoslať cez Bratislavské konto aj bez čakania na jej ukončenie. V prípade, že by nahraté prílohy obsahovali vírus, budeme vás kontaktovať na e-mailovej adrese, ktorou sa prihlasujete do svojho konta.",
     "vop_agreement_title": "Ochrana osobných údajov",
     "vop_agreement_content": "Stiahnutím, uložením a/alebo odoslaním Žiadosti výslovne vyhlasujem, že som sa oboznámil s [podmienkami spracúvania osobných údajov Hlavného mesta](https://bratislava.sk/konto/vyhlasenie-o-spracovani-osobnych-udajov) ako prevádzkovateľa osobných údajov a beriem na vedomie, že ich spracúvanie je nevyhnutné na splnenie zákonných povinností Hlavného mesta v súvislosti s vybavením tejto žiadosti.",
@@ -246,5 +247,9 @@
     "account_create_button": "Vytvoriť Bratislavské konto",
     "feedback_heading": "Pomôžte nám zlepšiť službu priznania k dani z nehnuteľností vyplnením dotazníka.",
     "feedback_button": "Vyplniť dotazník"
+  },
+  "signer_deploying_modal": {
+    "title": "Spúšťa sa podpisovacia aplikácia",
+    "content": "Čakajte, prosíme, práve prebieha spúšťanie podpisovej aplikácie. Ak by spúšťanie trvalo dlhšie ako obvykle, skontrolujte, či máte aplikáciu nainštalovanú alebo aktualizovanú (<a target='_blank' href='https://www.slovensko.sk/sk/na-stiahnutie'>aktuálne verzie aplikácií na prihlásenie a podpisovanie</a>). V prípade, že sa aplikácia vôbec nespustí, prosíme, <a target='_blank' href='https://www.slovensko.sk/sk/pomoc/technicka-podpora-pre-pouzivat'>postupujte podľa krokov v návode, ako vyriešiť problém s podpisovou aplikáciou</a>."
   }
 }

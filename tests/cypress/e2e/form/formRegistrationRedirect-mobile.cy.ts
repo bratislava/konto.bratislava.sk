@@ -1,7 +1,7 @@
 /// <reference types="cypress" />
 
 describe('F04 -', { testIsolation: false }, () => {
-  const devices = ['desktop']
+  const devices = ['mobile']
   const errorBorderFields =
     '[data-cy=input-email], [data-cy=input-given_name], [data-cy=input-family_name], [data-cy=input-password]'
   const password = `P@9${Date.now().toString(36)}`

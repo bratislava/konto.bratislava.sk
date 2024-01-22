@@ -23,8 +23,10 @@ describe('F02 -', { testIsolation: false }, () => {
 
         before(() => {
           cy.visit('/mestske-sluzby/zavazne-stanovisko-k-investicnej-cinnosti')
+        })
+
+        beforeEach(() => {
           cy.hideNavbar(device)
-          cy.hideInfoBar()
         })
         
         it('1. Checking "File" step validation.', () => {

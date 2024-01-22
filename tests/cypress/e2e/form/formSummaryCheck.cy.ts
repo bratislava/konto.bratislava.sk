@@ -17,8 +17,10 @@ describe('F03 -', { testIsolation: false }, () => {
       context(device, Cypress.env('resolution')[`${device}`], () => {
         before(() => {
           cy.visit('/mestske-sluzby/stanovisko-k-investicnemu-zameru')
+        })
+        
+        beforeEach(() => {
           cy.hideNavbar(device)
-          cy.hideInfoBar()
         })
         
         it('1. Checking "File" step validation.', () => {

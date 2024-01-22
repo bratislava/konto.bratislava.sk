@@ -1,12 +1,20 @@
+import { GenericObjectType } from '@rjsf/utils'
 import useStateRef from 'react-usestateref'
 import { useIsMounted } from 'usehooks-ts'
 
+import { isDefined } from '../../../frontend/utils/general'
+import { mapDitecError, SignerErrorType } from './mapDitecError'
 import { SignOptions } from './signerTypes'
 
-enum DeploymentStatus {
+export enum SignerDeploymentStatus {
   NotDeployed,
   Deploying,
   Deployed,
+}
+
+type UseFormSignerProps = {
+  onDeploymentStatusChange?: (status: SignerDeploymentStatus) => void
+  onError?: (error: SignerErrorType) => void
 }
 
 /**
@@ -23,16 +31,33 @@ enum DeploymentStatus {
  * 3. Log in.
  * 4. Debug.
  */
-export const useFormSigner = () => {
+export const useFormSigner = ({
+  onDeploymentStatusChange = () => {},
+  onError = () => {},
+}: UseFormSignerProps) => {
   const isMounted = useIsMounted()
   // We need also the ref variant, to be accessed in the callbacks.
   const [deploymentStatus, setDeploymentStatus, deploymentStatusRef] = useStateRef(
-    DeploymentStatus.NotDeployed,
+    SignerDeploymentStatus.NotDeployed,
   )
 
-  const updateDeploymentStatus = (status: DeploymentStatus) => {
+  const updateDeploymentStatus = (status: SignerDeploymentStatus) => {
     if (isMounted()) {
       setDeploymentStatus(status)
+      onDeploymentStatusChange(status)
+    }
+  }
+
+  /**
+   * Errors in the signer library are not definite and work like a stream. For example, when deploying the signer the
+   * library has a list of platforms and tries to spawn them in consecutive order. If one of them fails to deploy, it will
+   * throw an error, but it will continue to load the rest of the platforms. Therefore, the signer can throw an error
+   * and then successfully return a signature.
+   */
+  const handleError = (error: GenericObjectType) => {
+    const mappedError = mapDitecError(error)
+    if (isDefined(mappedError)) {
+      onError(mappedError)
     }
   }
 
@@ -56,16 +81,10 @@ export const useFormSigner = () => {
     digestAlgUrl = '',
     signaturePolicyIdentifier = '',
   }: SignOptions) => {
-    return new Promise<string>((resolve, reject) => {
+    return new Promise<string>((resolve) => {
       const signer = ditec.dSigXadesBpJs
 
-      const handleError = (error) => {
-        // TODO explore ditec error types
-        reject(error)
-      }
-
       const handleGetSignature = (instance: string) => {
-        // TODO this returns nothing right now, examine
         resolve(instance)
       }
 
@@ -104,27 +123,27 @@ export const useFormSigner = () => {
       }
 
       const handleDeploySuccess = () => {
-        if (deploymentStatusRef.current === DeploymentStatus.Deploying) {
-          updateDeploymentStatus(DeploymentStatus.Deployed)
+        if (deploymentStatusRef.current === SignerDeploymentStatus.Deploying) {
+          updateDeploymentStatus(SignerDeploymentStatus.Deployed)
         }
         signer.initialize({ onSuccess: handleInitializeSuccess, onError: handleError })
       }
 
-      if (deploymentStatusRef.current === DeploymentStatus.NotDeployed) {
+      if (
+        deploymentStatusRef.current === SignerDeploymentStatus.NotDeployed ||
+        deploymentStatusRef.current === SignerDeploymentStatus.Deploying
+      ) {
         signer.deploy(
           {},
           {
             onSuccess: handleDeploySuccess,
             onError: (error) => {
-              updateDeploymentStatus(DeploymentStatus.NotDeployed)
+              updateDeploymentStatus(SignerDeploymentStatus.NotDeployed)
               handleError(error)
             },
           },
         )
-        updateDeploymentStatus(DeploymentStatus.Deploying)
-      } else if (deploymentStatusRef.current === DeploymentStatus.Deploying) {
-        // TODO improve error
-        throw new Error('Already initializing')
+        updateDeploymentStatus(SignerDeploymentStatus.Deploying)
       } else {
         handleDeploySuccess()
       }

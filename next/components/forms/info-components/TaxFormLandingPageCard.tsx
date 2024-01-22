@@ -12,6 +12,7 @@ export type TaxFormLandingPageCardProps = {
   onPress?: () => void
   disabled?: boolean
   icon: FC<{ className?: string }>
+  isBetaUser: boolean
 }
 
 const TaxFormLandingPageCard = ({
@@ -22,6 +23,7 @@ const TaxFormLandingPageCard = ({
   onPress,
   disabled,
   icon: IconComponent,
+  isBetaUser,
 }: TaxFormLandingPageCardProps) => {
   return (
     // TODO stretched doesn't work for buttons, very temporary solution
@@ -52,8 +54,8 @@ const TaxFormLandingPageCard = ({
           </ButtonNew>
           <div
             className={cx('text-p3 rounded px-2 text-center font-semibold', {
-              'bg-success-100 text-success-700': !isEid,
-              'bg-gray-100 text-gray-700': isEid,
+              'bg-success-100 text-success-700': isBetaUser ? false : !isEid,
+              'bg-gray-100 text-gray-700': isBetaUser ? true : isEid,
             })}
           >
             {isEid ? 'Musíte mať eID' : 'Nemusíte mať eID'}

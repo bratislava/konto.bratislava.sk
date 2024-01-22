@@ -130,6 +130,7 @@ export const ajvFormats = {
   ratio: {
     validate: (value: string) => parseRatio(value).isValid,
   },
+  ico: /^\d{6,8}$/,
 } satisfies Record<string, Format>
 
 /**

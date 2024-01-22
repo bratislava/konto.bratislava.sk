@@ -6,7 +6,6 @@ import { GENERIC_ERROR_MESSAGE } from 'frontend/utils/errors'
 import logger from 'frontend/utils/logger'
 import { useRouter } from 'next/router'
 import React, { useCallback, useEffect, useState } from 'react'
-import { useEffectOnce } from 'usehooks-ts'
 
 interface LoginRegisterRedirectState {
   redirectTarget: string
@@ -22,7 +21,7 @@ const LoginRegisterRedirectContext = React.createContext<LoginRegisterRedirectSt
 
 /**
  * Stores & provides access to state used to navigate user back to where they came from after appropriate login/registration/verification step
- * Useful both when using city-account as a SSO provider for other pages (see useEffectOnce for the API to be used for these) as well as local redirects
+ * Useful both when using city-account as a SSO provider for other pages (see useEffect below for the API to be used for these) as well as local redirects
  * Also used to control provision of access_token to other sites in environments where iframes can't be relied upon
  *
  * We can provide optional query parameters when redirecting within this app - feel free to add more options as needed.
@@ -72,13 +71,13 @@ export const LoginRegisterRedirectProvider = ({ children }: { children: React.Re
     [redirectTarget, router, resetRedirect],
   )
 
-  // if we're redirected from another site for login, it should provide redirection target in 'from' query param, verificationRequired is optional
-  useEffectOnce(() => {
+  // we can provide redirection target in from query param (this can be another page from the approved list), verificationRequired is optional
+  useEffect(() => {
     if (typeof router.query.from === 'string') {
       setRedirectTarget(router.query.from)
       setVerificationRequired(!!router.query.verificationRequired)
     }
-  })
+  }, [router.query.from, router.query.verificationRequired])
 
   // every time user moves outside of login/register/verify section of the app, reset the redirects
   useEffect(() => {

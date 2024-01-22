@@ -1,6 +1,8 @@
 import { RJSFSchema, UiSchema } from '@rjsf/utils'
 import { useRouter } from 'next/router'
-import React from 'react'
+import { usePlausible } from 'next-plausible'
+import React, { useEffect } from 'react'
+import { useEffectOnce } from 'usehooks-ts'
 
 import { FormExportImportProvider } from '../../frontend/hooks/useFormExportImport'
 import { InitialFormData } from '../../frontend/types/initialFormData'
@@ -27,10 +29,37 @@ export type FormPageWrapperProps = {
   ssrCurrentAuthProps?: GetSSRCurrentAuth
 }
 
+// custom plausible tracking - we exclude '/mestske-sluzby/*/*' in top level plausible provider
+// instead, we track these as custom events: formSlug#hash
+const useCustomPlausibleFormPagesTracking = (formSlug: string) => {
+  const router = useRouter()
+  const plausible = usePlausible()
+
+  useEffect(() => {
+    const onHashChangeStart = (url: string) => {
+      const hash = url.split('#')[1]
+      plausible(`${formSlug}#${hash}`)
+    }
+
+    router.events.on('hashChangeStart', onHashChangeStart)
+
+    return () => {
+      router.events.off('hashChangeStart', onHashChangeStart)
+    }
+  }, [formSlug, plausible, router.events])
+
+  // track initial pageview
+  useEffectOnce(() => {
+    const hash = router.asPath.split('#')[1]
+    plausible(`${formSlug}#${hash}`)
+  })
+}
+
 const FormPageWrapper = ({ schema, uiSchema, initialFormData }: FormPageWrapperProps) => {
   const router = useRouter()
-
   const formSlug = router.query.slug as string
+
+  useCustomPlausibleFormPagesTracking(formSlug)
 
   return (
     <FormSentRenderer

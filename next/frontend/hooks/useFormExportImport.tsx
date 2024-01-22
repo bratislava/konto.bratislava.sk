@@ -6,6 +6,7 @@ import { ROUTES } from 'frontend/api/constants'
 import logger from 'frontend/utils/logger'
 import { useRouter } from 'next/router'
 import { useTranslation } from 'next-i18next'
+import { usePlausible } from 'next-plausible'
 import React, { createContext, PropsWithChildren, useContext, useRef } from 'react'
 
 import { RegistrationModalType } from '../../components/forms/segments/RegistrationModal/RegistrationModal'
@@ -30,6 +31,8 @@ export const useGetContext = ({ initialFormData }: FormExportImportProviderProps
   const { setConceptSaveErrorModal } = useFormModals()
   const { turnOffLeaveProtection } = useFormLeaveProtection()
   const router = useRouter()
+  // track each imported/exported xml/pdf in analytics - event format should match the one in FormPagesWrapper
+  const plausible = usePlausible()
 
   const [openSnackbarError] = useSnackbar({ variant: 'error' })
   const [openSnackbarSuccess] = useSnackbar({ variant: 'success' })
@@ -106,6 +109,7 @@ export const useGetContext = ({ initialFormData }: FormExportImportProviderProps
       downloadBlob(new Blob([response.data.xmlForm]), fileName)
       closeSnackbarInfo()
       openSnackbarSuccess(t('success_messages.xml_export'))
+      plausible(`${formSlug}#export-xml`)
     } catch (error) {
       openSnackbarError(t('errors.xml_export'))
     }
@@ -134,6 +138,7 @@ export const useGetContext = ({ initialFormData }: FormExportImportProviderProps
       setImportedFormData(response.data.jsonForm)
       closeSnackbarInfo()
       openSnackbarSuccess(t('success_messages.xml_import'))
+      plausible(`${formSlug}#import-xml`)
     } catch (error) {
       openSnackbarError(t('errors.xml_import'))
     }
@@ -185,6 +190,7 @@ export const useGetContext = ({ initialFormData }: FormExportImportProviderProps
 
   const exportPdf = async () => {
     await (initialFormData.isTaxForm ? exportTaxPdf() : exportOrdinaryPdf())
+    plausible(`${formSlug}#export-pdf`)
   }
 
   const saveConcept = async (fromModal?: boolean) => {

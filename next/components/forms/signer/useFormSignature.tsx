@@ -3,8 +3,15 @@ import { TaxSignerDataResponseDto } from '@clients/openapi-forms'
 import { GenericObjectType } from '@rjsf/utils'
 import { useMutation } from '@tanstack/react-query'
 import hash from 'object-hash'
-import React, { createContext, PropsWithChildren, useCallback, useContext, useState } from 'react'
-import { useIsMounted } from 'usehooks-ts'
+import React, {
+  createContext,
+  PropsWithChildren,
+  useCallback,
+  useContext,
+  useEffect,
+  useState,
+} from 'react'
+import { useIsClient, useIsMounted } from 'usehooks-ts'
 
 import { useFormModals } from '../useFormModals'
 import { useFormState } from '../useFormState'
@@ -21,6 +28,12 @@ type Signature = {
   signature: string
 }
 
+declare global {
+  interface Window {
+    __DEV_SHOW_SIGNATURE?: () => void
+  }
+}
+
 const useGetContext = () => {
   const { setSignerIsDeploying } = useFormModals()
   const { formData, formDataRef, isSigned } = useFormState()
@@ -34,6 +47,17 @@ const useGetContext = () => {
   })
   const [signature, setSignature] = useState<Signature | null>(null)
   const isMounted = useIsMounted()
+
+  const [showSignatureInConsole, setShowSignatureInConsole] = useState(false)
+  const isClient = useIsClient()
+
+  useEffect(() => {
+    // Dev only debugging feature
+    if (isClient) {
+      // eslint-disable-next-line no-underscore-dangle
+      window.__DEV_SHOW_SIGNATURE = () => setShowSignatureInConsole(true)
+    }
+  }, [isClient, setShowSignatureInConsole])
 
   const signData = async (
     formDataRequest: GenericObjectType,
@@ -54,6 +78,9 @@ const useGetContext = () => {
       return
     }
     setSignature({ objectHash: currentHash, signature: result })
+    if (showSignatureInConsole) {
+      console.log('Signature:', result)
+    }
   }
 
   const { mutate: getSingerDataMutate, isPending: getSingerDataIsPending } = useMutation({

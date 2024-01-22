@@ -2,6 +2,7 @@ import './commands/global'
 import './commands/registration'
 import './triggers/before'
 import '@frsource/cypress-plugin-visual-regression-diff'
+import 'cypress-file-upload';
 
 const app = window.top;
 if (!app.document.head.querySelector('[data-testid="snapshot-controls]')) {

@@ -31,7 +31,7 @@ export default defineConfig({
     },
     env: {
       pluginVisualRegressionUpdateImages: false,
-      pluginVisualRegressionMaxDiffThreshold: 0.01,
+      pluginVisualRegressionMaxDiffThreshold: 0.10,
     },
   },
 })

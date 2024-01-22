@@ -37,7 +37,7 @@ const StepperModal = ({ isOpen, setIsOpen, handleOnSkipToStep }: StepperModalPro
                   <CrossIcon className="h-6 w-6" />
                 </AriaButton>
               </div>
-              <nav className="w-full overflow-auto bg-white p-4">
+              <nav className="w-full overflow-auto bg-white p-4" data-cy="stepper-mobile">
                 <StepperViewList onSkipToStep={handleOnSkipToStep} />
               </nav>
             </>
@@ -64,7 +64,7 @@ const StepperView = () => {
 
   return (
     <>
-      <nav className="hidden lg:block">
+      <nav className="hidden lg:block" data-cy="stepper-desktop">
         <StepperViewList onSkipToStep={handleOnSkipToStep} />
       </nav>
       <div className="lg:hidden">
@@ -72,6 +72,7 @@ const StepperView = () => {
           className={cx(
             'flex h-14 w-full cursor-pointer flex-row items-center gap-5 bg-white p-4 text-left drop-shadow-lg',
           )}
+          data-cy="stepper-dropdown"
           onPress={handleOnClickDropdownIcon}
         >
           <StepperViewRow className="grow" step={currentStepperStep} isCurrent />

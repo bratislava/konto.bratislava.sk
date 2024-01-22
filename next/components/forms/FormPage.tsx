@@ -35,7 +35,7 @@ const FormPage = () => {
   return (
     <>
       <FormHeader />
-      <div className="mx-auto flex w-full max-w-screen-lg flex-col gap-10 pb-6 pt-0 lg:flex-row lg:gap-20 lg:py-10">
+      <div className="mx-auto flex w-full max-w-screen-lg flex-col gap-10 pb-6 pt-0 lg:flex-row lg:gap-20 lg:py-10" data-cy="form-container">
         <div>
           <StepperView />
           <FormModals />

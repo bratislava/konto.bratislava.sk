@@ -97,7 +97,7 @@ const Alert = ({
   })
 
   return (
-    <div className={alertContainer}>
+    <div className={alertContainer} data-cy="alert-container">
       <div className="flex w-full justify-between">
         <div className="flex gap-[14px]">
           {hasIcon && <span className="flex min-w-[22px] justify-center">{icons[type]}</span>}

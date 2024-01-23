@@ -98,7 +98,7 @@ const FormPageWrapper = ({ schema, uiSchema, initialFormData }: FormPageWrapperP
       }
       sentChildren={
         <AccountPageLayout hiddenHeaderNav className="bg-gray-50">
-          <ThankYouFormSection />
+          <ThankYouFormSection initialFormData={initialFormData} />
         </AccountPageLayout>
       }
     />

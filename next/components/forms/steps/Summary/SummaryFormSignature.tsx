@@ -23,7 +23,7 @@ const SummaryFormSignature = () => {
     !isReady || getSingerDataIsPending || isFormSigningDisabled(errorSchema, infectedFiles)
 
   const AlertContent = ({ children }: PropsWithChildren) => (
-    <div className="flex">
+    <div className="flex w-full">
       <span className="grow">{children}</span>
       <div className="ml-2 shrink-0">
         <MenuDropdown
@@ -62,7 +62,24 @@ const SummaryFormSignature = () => {
           zaručeným elektronickým podpisom (KEP).
         </p>
       </div>
-      {isNotSupported && <Alert type="error" message={<>Vaša platforma nie je podporovaná.</>} />}
+      {isNotSupported && (
+        <Alert
+          type="error"
+          message={
+            <>
+              Platforma, na ktorej sa nachádzate nie je podporovaná. Pozrite si{' '}
+              <ButtonNew
+                href="https://www.slovensko.sk/sk/na-stiahnutie"
+                target="_blank"
+                variant="black-link"
+              >
+                zoznam podporovaných aplikácií.
+              </ButtonNew>
+            </>
+          }
+          className="min-w-full"
+        />
+      )}
       {isError && (
         <Alert
           type="error"
@@ -74,6 +91,7 @@ const SummaryFormSignature = () => {
               </ButtonNew>
             </>
           }
+          className="min-w-full"
         />
       )}
       {signature &&

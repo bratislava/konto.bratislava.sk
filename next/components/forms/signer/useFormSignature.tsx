@@ -2,6 +2,7 @@ import { formsApi } from '@clients/forms'
 import { TaxSignerDataResponseDto } from '@clients/openapi-forms'
 import { GenericObjectType } from '@rjsf/utils'
 import { useMutation } from '@tanstack/react-query'
+import { isAxiosError } from 'axios'
 import hash from 'object-hash'
 import React, {
   createContext,
@@ -13,8 +14,10 @@ import React, {
 } from 'react'
 import { useIsClient, useIsMounted } from 'usehooks-ts'
 
+import useSnackbar from '../../../frontend/hooks/useSnackbar'
 import { useFormModals } from '../useFormModals'
 import { useFormState } from '../useFormState'
+import { SignerErrorType } from './mapDitecError'
 // kept while it might be usefull for local testing
 // import { signerExamplePayload } from './signerExamplePayload'
 import { SignerDeploymentStatus, useFormSigner } from './useFormSigner'
@@ -35,14 +38,23 @@ declare global {
 }
 
 const useGetContext = () => {
+  const [openSnackbarError] = useSnackbar({ variant: 'error' })
   const { setSignerIsDeploying } = useFormModals()
   const { formData, formDataRef, isSigned } = useFormState()
   const { sign: signerSign } = useFormSigner({
     onDeploymentStatusChange: (status) => {
       setSignerIsDeploying(status === SignerDeploymentStatus.Deploying)
     },
-    onError: () => {
-      // TODO handle error
+    onError: (error) => {
+      if (error === SignerErrorType.NotInstalled) {
+        openSnackbarError(
+          'Na podpísanie je potrebné nainštalovať podpisovaciu aplikáciu pre kvalifikovaný elektronický podpis.',
+        )
+      } else if (error === SignerErrorType.LaunchFailed) {
+        openSnackbarError('Podpisovacia aplikácia sa nepodarila načítať, skúste to znova.')
+      } else {
+        openSnackbarError('Podpisovanie zlyhalo. Skúste to znova.')
+      }
     },
   })
   const [signature, setSignature] = useState<Signature | null>(null)
@@ -73,7 +85,7 @@ const useGetContext = () => {
     const requestHash = hash(formDataRequest)
     const currentHash = hash(formDataRef.current)
     if (currentHash !== requestHash) {
-      // TODO handle error
+      openSnackbarError('Údaje, ktoré ste upravili, je potrebné znova podpísať.')
       setSignature(null)
       return
     }
@@ -92,8 +104,14 @@ const useGetContext = () => {
       // eslint-disable-next-line @typescript-eslint/no-floating-promises
       signData(formDataRequest, response.data)
     },
-    onError: () => {
-      // TODO error
+    onError: (error) => {
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
+      if (isAxiosError(error) && error.response?.data?.errorName === 'BAD_REQUEST_ERROR') {
+        // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
+        openSnackbarError(`Nastala chyba pri validácii: \n\n${error.response?.data?.message}`)
+        return
+      }
+      openSnackbarError('Podpisovanie zlyhalo. Skúste to znova.')
     },
   })
 

@@ -28,6 +28,12 @@ Amplify.configure({
     // OPTIONAL - This is used when autoSignIn is enabled for Auth.signUp
     // 'code' is used for Auth.confirmSignUp, 'link' is used for email link verification
     signUpVerificationMethod: 'code',
+    cookieStorage: {
+      // User is signed in correctly when navigating from another site, but not when loading the site in iframe,
+      // the default behaviour was 'strict'.
+      // https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Set-Cookie#lax
+      sameSite: 'lax',
+    },
   },
   ssr: true,
 })

@@ -153,7 +153,7 @@ const useGetContext = () => {
           formDataJson: formData,
           eidToken: sendEidTokenRef.current as string,
         },
-        { headers: { Authorization: `Bearer ${sendEidTokenRef.current as string}` } },
+        { accessToken: 'onlyAuthenticated' },
       ),
     networkMode: 'always',
     onSuccess: () => {

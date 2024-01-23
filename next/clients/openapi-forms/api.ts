@@ -380,6 +380,12 @@ export interface EidUpdateSendFormRequestDto {
    */
   formDataJson?: object
   /**
+   * Send Base64 data if you want to sent this. It is mainly used in Signed forms
+   * @type {string}
+   * @memberof EidUpdateSendFormRequestDto
+   */
+  formDataBase64?: string
+  /**
    * State of form
    * @type {object}
    * @memberof EidUpdateSendFormRequestDto
@@ -4540,6 +4546,12 @@ export interface UpdateFormRequestDto {
    */
   formDataJson?: object
   /**
+   * Send Base64 data if you want to sent this. It is mainly used in Signed forms
+   * @type {string}
+   * @memberof UpdateFormRequestDto
+   */
+  formDataBase64?: string
+  /**
    * State of form
    * @type {object}
    * @memberof UpdateFormRequestDto
@@ -4818,7 +4830,7 @@ export const ADMINApiAxiosParamCreator = function (configuration?: Configuration
      * @summary Update version of schema
      * @param {string} id
      * @param {object} [data]
-     * @param {Array<any>} [files] Updateable files: data.json, uiSchema.json, data.xml
+     * @param {Array<any>} [files] Updateable files: data.json, uiSchema.json, data.xml, schema.json
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
@@ -5029,7 +5041,7 @@ export const ADMINApiFp = function (configuration?: Configuration) {
      * @summary Update version of schema
      * @param {string} id
      * @param {object} [data]
-     * @param {Array<any>} [files] Updateable files: data.json, uiSchema.json, data.xml
+     * @param {Array<any>} [files] Updateable files: data.json, uiSchema.json, data.xml, schema.json
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
@@ -5154,7 +5166,7 @@ export const ADMINApiFactory = function (
      * @summary Update version of schema
      * @param {string} id
      * @param {object} [data]
-     * @param {Array<any>} [files] Updateable files: data.json, uiSchema.json, data.xml
+     * @param {Array<any>} [files] Updateable files: data.json, uiSchema.json, data.xml, schema.json
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
@@ -5274,7 +5286,7 @@ export class ADMINApi extends BaseAPI {
    * @summary Update version of schema
    * @param {string} id
    * @param {object} [data]
-   * @param {Array<any>} [files] Updateable files: data.json, uiSchema.json, data.xml
+   * @param {Array<any>} [files] Updateable files: data.json, uiSchema.json, data.xml, schema.json
    * @param {*} [options] Override http request option.
    * @throws {RequiredError}
    * @memberof ADMINApi

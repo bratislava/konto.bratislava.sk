@@ -89,7 +89,7 @@ const Alert = ({
     { 'max-w-[480px]': !fullWidth },
   )
 
-  const contentStyle = cx('', {
+  const contentStyle = cx('w-full', {
     'text-16-semibold': title,
     'text-16': !title,
     'text-white': solid,
@@ -99,7 +99,7 @@ const Alert = ({
   return (
     <div className={alertContainer} data-cy="alert-container">
       <div className="flex w-full justify-between">
-        <div className="flex gap-[14px]">
+        <div className="flex w-full gap-[14px]">
           {hasIcon && <span className="flex min-w-[22px] justify-center">{icons[type]}</span>}
           <div className={contentStyle}>{title || message}</div>
         </div>

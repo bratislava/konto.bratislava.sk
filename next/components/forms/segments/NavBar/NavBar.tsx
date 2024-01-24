@@ -85,9 +85,7 @@ export const NavBar = ({ className, sectionsList, menuItems, hiddenHeaderNav }: 
   // we need to keep the work in progress of the open form if navigating away form it
   const optionalFormRedirectsContext = useConditionalFormRedirects()
   const login = () =>
-    optionalFormRedirectsContext
-      ? optionalFormRedirectsContext.login()
-      : router.push(ROUTES.LOGIN, { query: { from: router.asPath } })
+    optionalFormRedirectsContext ? optionalFormRedirectsContext.login() : router.push(ROUTES.LOGIN)
   const register = () =>
     optionalFormRedirectsContext
       ? optionalFormRedirectsContext.register()
@@ -193,8 +191,8 @@ export const NavBar = ({ className, sectionsList, menuItems, hiddenHeaderNav }: 
                     onPress={register}
                     variant="negative"
                     text={t('account:menu_register_link')}
-                    size="sm"
-                    data-cy="register-button"
+                      size="sm"
+                      data-cy="register-button"
                   />
                 </div>
               )}

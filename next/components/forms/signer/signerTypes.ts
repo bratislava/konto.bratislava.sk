@@ -1,10 +1,12 @@
+import { GenericObjectType } from '@rjsf/utils'
+
 /**
  * Type definitions for D.Bridge JS.
  */
 declare global {
   // eslint-disable-next-line @typescript-eslint/no-namespace
   namespace ditec {
-    interface Callback<Instance = undefined, Error = undefined> {
+    interface Callback<Instance = undefined, Error = GenericObjectType> {
       onSuccess: (instance: Instance) => void
       onError: (error: Error) => void
     }

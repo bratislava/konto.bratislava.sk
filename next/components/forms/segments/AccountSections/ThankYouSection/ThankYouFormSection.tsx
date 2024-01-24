@@ -5,19 +5,31 @@ import Button from 'components/forms/simple-components/Button'
 import { useTranslation } from 'next-i18next'
 
 import { ROUTES } from '../../../../../frontend/api/constants'
+import { InitialFormData } from '../../../../../frontend/types/initialFormData'
+import { taxFeedbackUrl } from '../../TaxFormPdfExportModal/TaxFormPdfExportModal'
 
-const ThankYouFormSection = () => {
+type ThankYouFormSectionProps = {
+  initialFormData: InitialFormData
+}
+
+const ThankYouFormSection = ({ initialFormData }: ThankYouFormSectionProps) => {
   const { t } = useTranslation('account')
+  const { isTaxForm } = initialFormData
 
   return (
     <div className="flex h-screen flex-col justify-between bg-gray-0 pt-16 md:bg-gray-50 md:pt-28">
       <div className="flex flex-col">
         <ThankYouCard
           success
-          title={t('thank_you.form_submit.title')}
+          title={
+            isTaxForm ? t('thank_you.form_submit_tax.title') : t('thank_you.form_submit.title')
+          }
           firstButtonTitle={t('thank_you.button_to_formular_text_2')}
           secondButtonTitle={t('thank_you.button_to_profil_text')}
-          content={t('thank_you.form_submit.content')}
+          content={
+            isTaxForm ? t('thank_you.form_submit_tax.content') : t('thank_you.form_submit.content')
+          }
+          overrideFeedbackUrl={isTaxForm ? taxFeedbackUrl : undefined}
         />
         <div className="mx-auto mt-0 w-full max-w-[734px] px-4 md:mt-10 md:px-0 lg:max-w-[800px]">
           <span className="text-p2 flex">

@@ -1,6 +1,6 @@
 /// <reference types="cypress" />
 
-describe('RF02 - ', { testIsolation: false }, () => {
+describe('RF02 -', { testIsolation: false }, () => {
   const devices = ['desktop', 'mobile']
   const errorBorderFields =
     '[data-cy=input-email], [data-cy=input-name], [data-cy=input-password]'

@@ -1,6 +1,6 @@
 import { conditionalFields, input, object, radioGroup, select } from '../../generator/functions'
 import { createCamelCaseOptions, createCondition } from '../../generator/helpers'
-import { statCiselnik } from './statCiselnik'
+import { esbsNationalityCiselnik } from './esbsCiselniky'
 
 enum UlicaCisloTyp {
   FyzickaOsoba = 'FyzickaOsoba',
@@ -15,7 +15,7 @@ const rodneCisloField = input(
   { title: 'Rodné číslo', required: true },
   {
     helptext:
-      'Rodné číslo zadávajte s lomítkom. V prípade, že nemáte rodné číslo, uveďte dátum narodenia.',
+      'Rodné číslo zadávajte s lomítkom. V prípade, že nemáte rodné číslo, uveďte dátum narodenia v tvare DD.MM.YYYY.',
   },
 )
 
@@ -68,17 +68,20 @@ const obecPscField = object(
   },
   [
     input('obec', { title: 'Obec', required: true }, {}),
-    input('psc', { title: 'PSČ', required: true, format: 'zip' }, {}),
+    input('psc', { title: 'PSČ', required: true }, {}),
   ],
 )
 
-// TODO ciselnik
 const statField = select(
   'stat',
   {
     title: 'Štát',
     required: true,
-    options: statCiselnik,
+    options: esbsNationalityCiselnik.map(({ Name, Code }) => ({
+      value: Code,
+      title: Name,
+      isDefault: Code === '703' ? true : undefined,
+    })),
   },
   {},
 )
@@ -97,7 +100,7 @@ const telefonField = (required = true) =>
     { helptext: 'Telefónne číslo nám pomôže komunikovať s vami rýchlejšie.', size: 'medium' },
   )
 
-const icoField = input('ico', { title: 'IČO', required: true }, {})
+const icoField = input('ico', { title: 'IČO', required: true, format: 'ico' }, {})
 
 const pravnaFormaField = select(
   'pravnaForma',
@@ -174,10 +177,6 @@ const pravnaFormaField = select(
         title: '421 Zahraničná osoba',
       },
       {
-        value: '433',
-        title: '433 Sociálna a zdravotné poisťovne',
-      },
-      {
         value: '434',
         title: '434 Doplnková dôchodková poisťovňa',
       },
@@ -212,10 +211,6 @@ const pravnaFormaField = select(
       {
         value: '801',
         title: '801 Obec (obecný úrad)',
-      },
-      {
-        value: '802',
-        title: '802 Krajský a obvodný úrad',
       },
       {
         value: '921',

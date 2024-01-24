@@ -20,13 +20,6 @@ declare namespace Cypress {
     submitForm(form: string): Chainable<any>
 
     /**
-     * Custom command to hide navbar.
-     * @param device Device type.
-     * @example cy.hideNavbar()
-     */
-    hideNavbar(device: string): Chainable<any>
-
-    /**
      * Custom command to check if 2FA page is working as expected.
      * @param emailHash Email hash.
      * @param formContainer Form container.
@@ -49,10 +42,6 @@ Cypress.Commands.add('submitForm', (form) => {
   cy.dataCy(form).then((form) => {
     cy.wrap(Cypress.$('button[type=submit]', form)).click()
   })
-})
-
-Cypress.Commands.add('hideNavbar', (device) => {
-  cy.get(`#${device}-navbar`).invoke('attr', 'style', 'display: none')
 })
 
 Cypress.Commands.add('check2FAPage', (emailHash, formContainer) => {

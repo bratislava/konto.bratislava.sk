@@ -1,4 +1,4 @@
-import { input, markdownText, object, select } from '../../generator/functions'
+import { input, markdownText, number, object, select } from '../../generator/functions'
 import { createStringOptions } from '../../generator/helpers'
 import { pravnyVztahSpoluvlastnictvo } from './pravnyVztahSpoluvlastnictvo'
 import { StepEnum } from './stepEnum'
@@ -18,7 +18,11 @@ export const stavbyBase = (step: StepEnum) => [
     },
     [
       input('ulicaACisloDomu', { title: 'Ulica a číslo domu', required: true }, {}),
-      input('supisneCislo', { title: 'Súpisné číslo', required: true }, {}),
+      number(
+        'supisneCislo',
+        { title: 'Súpisné číslo', required: true, type: 'integer', minimum: 1 },
+        {},
+      ),
     ],
   ),
   object(

@@ -24,6 +24,7 @@ const getDummyData = (state: FormState, error: GetFormResponseDtoErrorEnum, over
     error,
     formDataJson: { mestoPSCstep: { mestoPSC: { mesto: 'Košice' } } },
     formDataGinis: null,
+    formDataBase64: null,
     ginisDocumentId: null,
     senderId: null,
     recipientId: null,

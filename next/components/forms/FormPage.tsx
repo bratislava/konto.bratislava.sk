@@ -4,7 +4,7 @@ import { useEffect } from 'react'
 
 import { defaultFormStateBehavior, rjsfValidator } from '../../frontend/utils/form'
 import FormControls from './FormControls'
-import FormUploadXml from './FormUploadXml'
+import FormUploadXmlJson from './FormUploadXmlJson'
 import FormModals from './segments/FormModals/FormModals'
 import FormHeader from './simple-components/FormHeader'
 import StepperView from './steps/StepperView'
@@ -35,7 +35,7 @@ const FormPage = () => {
   return (
     <>
       <FormHeader />
-      <div className="mx-auto flex w-full max-w-screen-lg flex-col gap-10 pb-6 pt-0 lg:flex-row lg:gap-20 lg:py-10">
+      <div className="mx-auto flex w-full max-w-screen-lg flex-col gap-10 pb-6 pt-0 lg:flex-row lg:gap-20 lg:py-10" data-cy="form-container">
         <div>
           <StepperView />
           <FormModals />
@@ -88,7 +88,7 @@ const FormPage = () => {
           <MenuList />
         </div>
       </div>
-      <FormUploadXml />
+      <FormUploadXmlJson />
     </>
   )
 }

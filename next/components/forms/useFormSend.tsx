@@ -125,8 +125,7 @@ const useGetContext = () => {
             formDataJson: formData,
             // TODO consider adding this only on isValid
             // TODO consider adding in other nasesControllerUpdateForm calls
-            // TODO formDataGinis will likely be renamed
-            ...(signature ? { formDataGinis: signature.signature } : {}),
+            ...(signature ? { formDataBase64: signature.signature } : {}),
           },
           { accessToken: 'onlyAuthenticated' },
         ),
@@ -154,7 +153,7 @@ const useGetContext = () => {
           formDataJson: formData,
           eidToken: sendEidTokenRef.current as string,
         },
-        { headers: { Authorization: `Bearer ${sendEidTokenRef.current as string}` } },
+        { accessToken: 'onlyAuthenticated' },
       ),
     networkMode: 'always',
     onSuccess: () => {

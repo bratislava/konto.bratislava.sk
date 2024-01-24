@@ -22,7 +22,7 @@ export type SummaryWidgetType =
 
 export type SummaryWidgetRJSFProps = Pick<
   WidgetProps,
-  'id' | 'label' | 'value' | 'uiSchema' | 'readonly'
+  'id' | 'label' | 'value' | 'uiSchema' | 'readonly' | 'name'
 > & {
   widgetType: SummaryWidgetType
   options: WidgetProps['options']
@@ -32,7 +32,7 @@ const ValueComponent = ({
   widgetType,
   value,
   options,
-  uiSchema,
+  uiSchema
 }: Pick<SummaryWidgetRJSFProps, 'widgetType' | 'value' | 'options' | 'uiSchema'>) => {
   const formatter = useDateFormatter()
 
@@ -105,6 +105,7 @@ const SummaryWidgetRJSF = ({
   value,
   options,
   uiSchema,
+  name
 }: SummaryWidgetRJSFProps) => {
   const { fieldHasError } = useFormSummary()
   const { goToStepByFieldId, isReadonly } = useFormState()
@@ -125,6 +126,7 @@ const SummaryWidgetRJSF = ({
               />
             </div>
           ),
+          name,
           isError: fieldHasError(id),
         }}
         onGoToStep={() => {

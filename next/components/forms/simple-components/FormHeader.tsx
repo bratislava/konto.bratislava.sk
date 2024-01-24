@@ -22,7 +22,16 @@ import { useFormState } from '../useFormState'
 
 const FormHeader = () => {
   const { isReadonly, isDeletable, uiSchema, schema, isTaxForm } = useFormState()
-  const { exportXml, exportPdf, importXml, saveConcept, deleteConcept } = useFormExportImport()
+  const {
+    exportXml,
+    exportPdf,
+    importXml,
+    saveConcept,
+    deleteConcept,
+    showImportExportJson,
+    importJson,
+    exportJson,
+  } = useFormExportImport()
   const { t } = useTranslation('forms')
 
   const { setDeleteConceptModal } = useFormModals()
@@ -41,6 +50,20 @@ const FormHeader = () => {
           title: t('menu_list.upload_xml'),
           icon: <ConnectionIcon className="h-6 w-6" />,
           onPress: importXml,
+        }
+      : null,
+    showImportExportJson
+      ? {
+          title: t('menu_list.download_json'),
+          icon: <DownloadIcon className="h-6 w-6" />,
+          onPress: exportJson,
+        }
+      : null,
+    showImportExportJson
+      ? {
+          title: t('menu_list.upload_json'),
+          icon: <ConnectionIcon className="h-6 w-6" />,
+          onPress: importJson,
         }
       : null,
     !isDeletable

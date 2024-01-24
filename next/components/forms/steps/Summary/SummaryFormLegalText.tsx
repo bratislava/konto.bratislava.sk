@@ -15,6 +15,8 @@ const SummaryFormLegalText = () => {
         content={
           isTaxForm ? t('summary.vop_agreement_content_tax') : t('summary.vop_agreement_content')
         }
+        // TODO: Replace variant statusBar
+        variant="statusBar"
         className="rounded-10 bg-gray-50 p-8"
       />
     </div>

@@ -58,10 +58,16 @@ const TaxFormLandingPage = ({ latestVersionId, isBetaUser }: TaxFormLandingPageP
   const cards = [
     {
       title: 'Vyplniť cez Bratislavské konto',
-      isEid: isBetaUser,
-      description: isBetaUser
-        ? 'Vyplňte daňové priznanie jednoducho, s návodom a pomocnými kalkulačkami, v Bratislavskom konte.'
-        : 'Vyplňte daňové priznanie jednoducho, s návodom a pomocnými kalkulačkami, v Bratislavskom konte. PDF si následne stiahnete a odošlete poštou.',
+      isEid: false,
+      description: isBetaUser ? (
+        <>
+          Vyplňte priznanie jednoducho, <strong>s návodom a pomocnými kalkulačkami</strong>, v
+          Bratislavskom konte. Priznanie na konci buď <strong>podpíšete a odošlete s eID</strong>{' '}
+          alebo <strong>stiahnete ako PDF</strong>, ktoré odošlete poštou.
+        </>
+      ) : (
+        'Vyplňte daňové priznanie jednoducho, s návodom a pomocnými kalkulačkami, v Bratislavskom konte. PDF si následne stiahnete a odošlete poštou.'
+      ),
       icon: Castle48PxIcon,
       onPress: () => {
         mutate()

@@ -1,12 +1,12 @@
 import { ChevronRightIcon } from '@assets/ui-icons'
 import cx from 'classnames'
-import React, { FC } from 'react'
+import React, { FC, ReactNode } from 'react'
 
 import ButtonNew from '../simple-components/ButtonNew'
 
 export type TaxFormLandingPageCardProps = {
   title: string
-  description: string
+  description: string | ReactNode
   isEid: boolean
   href?: string
   onPress?: () => void
@@ -52,14 +52,16 @@ const TaxFormLandingPageCard = ({
           >
             {title}
           </ButtonNew>
-          <div
-            className={cx('text-p3 rounded px-2 text-center font-semibold', {
-              'bg-success-100 text-success-700': isBetaUser ? false : !isEid,
-              'bg-gray-100 text-gray-700': isBetaUser ? true : isEid,
-            })}
-          >
-            {isEid ? 'Musíte mať eID' : 'Nemusíte mať eID'}
-          </div>
+          {!isBetaUser && (
+            <div
+              className={cx('text-p3 rounded px-2 text-center font-semibold', {
+                'bg-success-100 text-success-700': !isEid,
+                'bg-gray-100 text-gray-700': isEid,
+              })}
+            >
+              {isEid ? 'Musíte mať eID' : 'Nemusíte mať eID'}
+            </div>
+          )}
         </div>
         <span className="text-p3">{description}</span>
       </div>

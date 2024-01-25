@@ -13,6 +13,8 @@ describe('RF05 -', { testIsolation: false }, () => {
     .filter((device) => Cypress.env('devices')[`${device}`])
     .forEach((device) => {
       context(device, Cypress.env('resolution')[`${device}`], () => {
+        const wrongEmailHash = `${Date.now() + device}wrongemail@cypress.test`
+
         it('1. Submitting wrong value.', () => {
           cy.visit('/zabudnute-heslo')
           cy.hideNavbar(device)
@@ -29,7 +31,7 @@ describe('RF05 -', { testIsolation: false }, () => {
 
         it('2. Submitting wrong email.', () => {
           cy.dataCy('forgotten-password-form').then((form) => {
-            cy.wrap(Cypress.$('[data-cy=input-email]', form)).focus().clear().type(this.fileData.wrong_email)
+            cy.wrap(Cypress.$('[data-cy=input-email]', form)).focus().clear().type(wrongEmailHash)
 
             cy.submitForm('forgotten-password-form')
           })

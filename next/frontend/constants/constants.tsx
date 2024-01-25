@@ -443,4 +443,15 @@ export const serviceCards: ServiceCardBase[] = [
     category: [MunicipalServicesCategories.GREEN_CATEGORY],
     href: 'https://bratislava.sk/zivotne-prostredie-a-vystavba/zelen/udrzba-a-tvorba-zelene/adopcia-zelene',
   },
+  {
+    id: 43,
+    title: 'account_section_services.cards.43.title',
+    description: 'account_section_services.cards.43.description',
+    buttonText: 'account_section_services.cards.43.buttonText',
+    icon: <TaxesIcon className="h-10 w-10 text-main-600 lg:h-12 lg:w-12" />,
+    tag: 'account_section_services.cards.43.tag',
+    tagStyle: 'text-main-700 bg-main-100',
+    category: [MunicipalServicesCategories.TAXES_CATEGORY],
+    href: ROUTES.MUNICIPAL_SERVICES_TAX,
+  },
 ]

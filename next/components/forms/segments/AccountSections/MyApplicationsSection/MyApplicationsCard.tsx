@@ -80,6 +80,8 @@ const MyApplicationsCard = ({ form, refreshListData, variant }: MyApplicationsCa
   const state = form?.state
   const error = form?.error
   const isLatestSchemaVersionForSlug = form?.isLatestSchemaVersionForSlug
+  const isTaxForm = formSlug === 'priznanie-k-dani-z-nehnutelnosti'
+  const canDownloadPdf = isLatestSchemaVersionForSlug && !isTaxForm
 
   // derived state
   const formPageHref = `${ROUTES.MUNICIPAL_SERVICES}/${form?.schemaVersion.schema?.slug}/${form?.id}`
@@ -149,7 +151,7 @@ const MyApplicationsCard = ({ form, refreshListData, variant }: MyApplicationsCa
     }
   }
 
-  const conceptMenuContent: MenuItemBase[] = isLatestSchemaVersionForSlug
+  const conceptMenuContent: MenuItemBase[] = canDownloadPdf
     ? [
         {
           title: t('account_section_applications.concept_menu_list.download_xml'),

@@ -69,7 +69,7 @@ const TaxFormLandingPage = ({ latestVersionId, isBetaUser }: TaxFormLandingPageP
           alebo <strong>stiahnete ako PDF</strong>, ktoré odošlete poštou.
         </>
       ) : (
-        'Vyplňte daňové priznanie jednoducho, s návodom a pomocnými kalkulačkami, v Bratislavskom konte. PDF si následne stiahnete a odošlete poštou.'
+        'Vyplňte daňové priznanie jednoducho, s návodom a pomocnými kalkulačkami. V Bratislavskom konte, aj bez registrácie. PDF si následne stiahnete a odošlete poštou.'
       ),
       icon: Castle48PxIcon,
       onPress: () => {

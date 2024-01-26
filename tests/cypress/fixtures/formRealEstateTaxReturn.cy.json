@@ -1,0 +1,77 @@
+{
+  "danZPozemkov": {
+    "priznania": [
+      {
+        "pozemky": [
+          {
+            "kataster": "Nové Mesto",
+            "druhPozemku": "E – rybníky s chovom rýb a ostatné hospodársky využívané vodné plochy",
+            "celkovaVymeraPozemku": 215,
+            "cisloListuVlastnictva": "0000",
+            "spoluvlastnickyPodiel": "1/1",
+            "parcelneCisloSposobVyuzitiaPozemku": {
+              "cisloParcely": "2567/0"
+            },
+            "podielPriestoruNaSpolocnychCastiachAZariadeniachDomu": "2569/15897"
+          }
+        ],
+        "pravnyVztah": "vlastník",
+        "spoluvlastnictvo": "som-jediný-vlastník"
+      }
+    ],
+    "vyplnitObject": {
+      "vyplnit": true
+    },
+    "kalkulackaWrapper": {
+      "pouzitKalkulacku": true
+    }
+  },
+  "druhPriznania": {
+    "rok": 2024,
+    "druh": "priznanie"
+  },
+  "udajeODanovnikovi": {
+    "stat": "Slovenská republika",
+    "email": "meno@gmail.com",
+    "obecPsc": {
+      "psc": "83103",
+      "obec": "Bratislava"
+    },
+    "telefon": "+421948111111",
+    "menoTitul": {
+      "meno": "Peter",
+      "priezvisko": "Novak",
+      "titul": "Bc."
+    },
+    "rodneCislo": "920314/6326",
+    "priznanieAko": "fyzická-osoba",
+    "voSvojomMene": true,
+    "korespondencnaAdresa": {
+      "korespondencnaAdresaRovnaka": true
+    },
+    "ulicaCisloFyzickaOsoba": {
+      "cislo": "6",
+      "ulica": "Robotnícka"
+    }
+  },
+  "danZoStaviebJedenUcel": {
+    "vyplnitObject": {
+      "vyplnit": false
+    }
+  },
+  "danZoStaviebViacereUcely": {
+    "vyplnitObject": {
+      "vyplnit": false
+    }
+  },
+  "danZBytovANebytovychPriestorov": {
+    "vyplnitObject": {
+      "vyplnit": false
+    }
+  },
+  "znizenieAleboOslobodenieOdDane": {
+    "byty": [],
+    "stavby": [],
+    "pozemky": ["option2", "option4"]
+  }
+} 

@@ -52,7 +52,7 @@ const BAArrayFieldItemTemplate = <
   }
 
   return (
-    <div className={boxStyle}>
+    <div className={boxStyle} data-cy={`section-${children.props.name}`}>
       <div className={headingStyle}>
         {variant === 'topLevel' && <h3 className="text-h3 grow">{title}</h3>}
         {variant === 'nested' && <h4 className="text-h4 grow">{title}</h4>}

@@ -169,64 +169,66 @@ const SelectField = <
         errorMessage={errorMessage}
         displayOptionalLabel={displayOptionalLabel}
       >
-        <Select
-          placeholder={null}
-          {...rest}
-          unstyled
-          value={state}
-          onChange={setState}
-          options={options}
-          closeMenuOnSelect={!rest.isMulti}
-          hideSelectedOptions={false}
-          noOptionsMessage={() => t('noOptions')}
-          className="w-full"
-          classNames={{
-            control: ({ isFocused, isDisabled }) =>
-              cx('rounded-lg border-2 bg-white hover:cursor-pointer', {
-                'border-negative-700': isError,
-                'border-gray-300': isDisabled && !isError,
-                'border-gray-900': isFocused && !isDisabled,
-                'border-gray-200 hover:border-gray-400': !isFocused && !isError && !isDisabled,
-              }),
-            placeholder: ({ isDisabled }) => (isDisabled ? 'text-gray-500' : 'text-gray-600'),
-            valueContainer: ({ isDisabled }) =>
-              cx('gap-x-2 gap-y-1 px-3 py-2 lg:px-4 lg:py-3', {
+        <div data-cy={`select-${label.toLowerCase().replace(/ /g,"-")}`}>
+          <Select
+            placeholder={null}
+            {...rest}
+            unstyled
+            value={state}
+            onChange={setState}
+            options={options}
+            closeMenuOnSelect={!rest.isMulti}
+            hideSelectedOptions={false}
+            noOptionsMessage={() => t('noOptions')}
+            className="w-full"
+            classNames={{
+              control: ({ isFocused, isDisabled }) =>
+                cx('rounded-lg border-2 bg-white hover:cursor-pointer', {
+                  'border-negative-700': isError,
+                  'border-gray-300': isDisabled && !isError,
+                  'border-gray-900': isFocused && !isDisabled,
+                  'border-gray-200 hover:border-gray-400': !isFocused && !isError && !isDisabled,
+                }),
+              placeholder: ({ isDisabled }) => (isDisabled ? 'text-gray-500' : 'text-gray-600'),
+              valueContainer: ({ isDisabled }) =>
+                cx('gap-x-2 gap-y-1 px-3 py-2 lg:px-4 lg:py-3', {
+                  // if rounded is not applied, the background overflows to the "control"
+                  'rounded-l-lg bg-gray-100 text-gray-500': isDisabled,
+                }),
+              multiValue: ({ isDisabled }) =>
+                cx(
+                  'items-center gap-1 rounded pl-2 pr-1.5',
+                  isDisabled ? 'bg-gray-200' : 'bg-gray-100',
+                ),
+              multiValueLabel: () => 'text-p3',
+              multiValueRemove: () =>
+                'hover:bg-negative-100 hover:text-red-800 rounded h-5 [&>svg]:w-4 [&>svg]:h-4',
+              indicatorsContainer: ({ isDisabled }) =>
                 // if rounded is not applied, the background overflows to the "control"
-                'rounded-l-lg bg-gray-100 text-gray-500': isDisabled,
-              }),
-            multiValue: ({ isDisabled }) =>
-              cx(
-                'items-center gap-1 rounded pl-2 pr-1.5',
-                isDisabled ? 'bg-gray-200' : 'bg-gray-100',
+                cx('gap-3 py-2 pr-3 lg:py-3 lg:pr-4', { 'rounded-r-lg bg-gray-100': isDisabled }),
+              clearIndicator: () => 'p-1.5 -m-1.5 rounded-md hover:bg-gray-100',
+              indicatorSeparator: () => 'hidden',
+              dropdownIndicator: () => 'p-1.5 -m-1.5 rounded-md',
+              menu: () => 'py-2 mt-2 border-2 border-gray-900 bg-white rounded-lg',
+              groupHeading: () => 'ml-3 mt-2 mb-1 text-gray-500 text-sm',
+              option: ({ isFocused }) =>
+                cx('!flex items-center justify-between px-5 py-3 hover:cursor-pointer', {
+                  'bg-gray-100 active:bg-gray-200': isFocused,
+                }),
+              noOptionsMessage: () => 'px-4 py-3',
+            }}
+            components={{
+              Option: ({ children, ...props }) => (
+                <CustomOption {...props} selectHasDescriptions={hasDescriptions}>
+                  {children}
+                </CustomOption>
               ),
-            multiValueLabel: () => 'text-p3',
-            multiValueRemove: () =>
-              'hover:bg-negative-100 hover:text-red-800 rounded h-5 [&>svg]:w-4 [&>svg]:h-4',
-            indicatorsContainer: ({ isDisabled }) =>
-              // if rounded is not applied, the background overflows to the "control"
-              cx('gap-3 py-2 pr-3 lg:py-3 lg:pr-4', { 'rounded-r-lg bg-gray-100': isDisabled }),
-            clearIndicator: () => 'p-1.5 -m-1.5 rounded-md hover:bg-gray-100',
-            indicatorSeparator: () => 'hidden',
-            dropdownIndicator: () => 'p-1.5 -m-1.5 rounded-md',
-            menu: () => 'py-2 mt-2 border-2 border-gray-900 bg-white rounded-lg',
-            groupHeading: () => 'ml-3 mt-2 mb-1 text-gray-500 text-sm',
-            option: ({ isFocused }) =>
-              cx('!flex items-center justify-between px-5 py-3 hover:cursor-pointer', {
-                'bg-gray-100 active:bg-gray-200': isFocused,
-              }),
-            noOptionsMessage: () => 'px-4 py-3',
-          }}
-          components={{
-            Option: ({ children, ...props }) => (
-              <CustomOption {...props} selectHasDescriptions={hasDescriptions}>
-                {children}
-              </CustomOption>
-            ),
-            DropdownIndicator,
-            ClearIndicator,
-            MultiValueRemove,
-          }}
-        />
+              DropdownIndicator,
+              ClearIndicator,
+              MultiValueRemove,
+            }}
+          />
+        </div>
       </FieldWrapper>
     </div>
   )

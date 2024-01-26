@@ -72,7 +72,7 @@ const Radio = ({
       {/* The input is inside of label, therefore it doesn't need an id. */}
       {/* eslint-disable-next-line jsx-a11y/label-has-associated-control */}
       <label className={containerStyle}>
-        <input {...inputProps} ref={ref} className={inputStyle} data-cy={`radio-${inputProps.value?.toString()}`} />
+        <input {...inputProps} ref={ref} className={inputStyle} data-cy={`radio-${rest.children?.toString().toLowerCase().replace(/ /g, '-')}`} />
         <span className="flex grow flex-col gap-1">
           <span className={cx({ 'font-semibold': description || radioGroupHasDescription })}>
             {rest.children}

@@ -61,7 +61,7 @@ const RadioGroup = (props: RadioGroupProps) => {
   }
 
   return (
-    <div {...radioGroupProps} className={className}>
+    <div {...radioGroupProps} className={className} data-cy={`radio-group-${label.toLowerCase().replace(/ /g, '-').replace(/\?/g, "")}`}>
       <FieldWrapper
         label={label}
         labelProps={labelProps}

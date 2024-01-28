@@ -8,6 +8,7 @@ export type TaxFormLandingPageCardProps = {
   title: string
   description: string | ReactNode
   isEid: boolean
+  id: string
   href?: string
   onPress?: () => void
   disabled?: boolean

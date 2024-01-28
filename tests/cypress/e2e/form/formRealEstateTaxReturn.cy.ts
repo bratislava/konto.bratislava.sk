@@ -1,6 +1,8 @@
 /// <reference types="cypress" />
+//@ts-ignore
+const path = require("path");
 
-describe('F01 -', { testIsolation: false }, () => {
+describe('F05 -', { testIsolation: false }, () => {
   const devices = ['desktop', 'mobile']
 
   const taxpayerBorderFields =
@@ -13,6 +15,8 @@ describe('F01 -', { testIsolation: false }, () => {
   const multiPurposeTaxBorderFields = '[data-cy=input-ulicaACisloDomu], [data-cy=input-supisneCislo], [data-cy=input-cisloParcely], [data-cy=input-popisStavby], [data-cy=input-celkovaVymera], [data-cy=input-spoluvlastnickyPodiel], [data-cy=input-podielPriestoruNaSpolocnychCastiachAZariadeniachDomu],[data-cy=input-pocetNadzemnychAPodzemnychPodlaziStavbyOkremPrvehoNadzemnehoPodlazia]'
 
   const nonResidentialTaxBorderFields = '[data-cy=input-ulicaACisloDomu], [data-cy=input-supisneCislo], [data-cy=input-cisloParcely]'
+
+  const summaryBorderFields = '[data-cy=summary-row-rok], [data-cy=summary-row-rodneCislo], [data-cy=summary-row-priezvisko], [data-cy=summary-row-obec], [data-cy=summary-row-psc], [data-cy=summary-row-email], [data-cy=summary-row-telefon]'
 
   before(() => {
     cy.fixture('formRealEstateTaxReturn.cy.json').then((fileData) => {
@@ -303,15 +307,17 @@ describe('F01 -', { testIsolation: false }, () => {
           })
         })
 
-        it('15. Summary.', () => {
-          // TODO 
-          // Po dokončení skontrolovať sumár a či nenastala nikde žiadna chyba.
-          // Overiť či máme PDF k stiahnutiu. Neodesilat
-
+        it('15. Check summary and download pdf.', () => {
           cy.dataCy('alert-container').should('not.exist')
           cy.dataCy('form-container').then((form) => {
-            //cy.wrap(Cypress.$(`[data-cy=download-pdf-button-${device}]`, form)).click()
+            cy.wrap(Cypress.$(summaryBorderFields, form)).should('not.have.class', 'border-red-500');
+            cy.wrap(Cypress.$(`[data-cy=download-pdf-button-${device}]`, form)).click()
           })
+        })
+
+        it('16. Check downloaded pdf.', () => {
+          const downloadsFolder = Cypress.config("downloadsFolder");
+          cy.readFile(path.join(downloadsFolder, "priznanie-k-dani-z-nehnutelnosti_output.pdf")).should("exist");
         })
       })
     })

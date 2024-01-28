@@ -69,7 +69,7 @@ const CheckboxGroupItem = ({
   const labelStyle = cx('text-16 flex text-gray-700', {})
 
   return (
-    <div data-cy={`checkbox-${inputProps.value}`}>
+    <div data-cy={`checkbox-${inputProps.value as string}`}>
       {/* The input is inside of label, therefore it doesn't need an id. */}
       {/* eslint-disable-next-line jsx-a11y/label-has-associated-control */}
       <label className={containerStyle}>

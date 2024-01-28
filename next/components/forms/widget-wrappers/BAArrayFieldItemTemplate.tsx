@@ -11,6 +11,10 @@ import { ArrayFieldUiOptions } from 'schema-generator/generator/uiOptionsTypes'
 import { getArrayFieldItemTemplateTitle } from '../../../frontend/utils/formArray'
 import Button from '../simple-components/ButtonNew'
 
+interface ChildrenProps {
+  name: string
+}
+
 /**
  * Our custom implementation of https://github.com/rjsf-team/react-jsonschema-form/blob/main/packages/material-ui/src/ArrayFieldItemTemplate/ArrayFieldItemTemplate.tsx
  */
@@ -51,8 +55,10 @@ const BAArrayFieldItemTemplate = <
     onDropIndexClick(innerIndex)({ preventDefault: () => {} })
   }
 
+  const dataCyProps: ChildrenProps = children.props;
+
   return (
-    <div className={boxStyle} data-cy={`section-${children.props.name}`}>
+    <div className={boxStyle} data-cy={`section-${dataCyProps.name}`}>
       <div className={headingStyle}>
         {variant === 'topLevel' && <h3 className="text-h3 grow">{title}</h3>}
         {variant === 'nested' && <h4 className="text-h4 grow">{title}</h4>}

@@ -30,7 +30,7 @@ enum SupportedStatus {
  * necessary parts for the signer to work.
  */
 export const FormSignerLoaderProvider = ({ children }: PropsWithChildren) => {
-  const { isSigned } = useFormContext()
+  const { isSigned, isReadonly } = useFormContext()
   const [loadingStatuses, setLoadingStatuses] = useState({
     config: LoadedStatus.False,
     common: LoadedStatus.False,
@@ -39,7 +39,7 @@ export const FormSignerLoaderProvider = ({ children }: PropsWithChildren) => {
   const [isSupportedStatus, setIsSupportedStatus] = useState(SupportedStatus.Unknown)
   const [retryTimestamp, setRetryTimestamp] = useState<number | null>(null)
 
-  if (!isSigned) {
+  if (!isSigned || isReadonly) {
     return <>{children}</>
   }
 

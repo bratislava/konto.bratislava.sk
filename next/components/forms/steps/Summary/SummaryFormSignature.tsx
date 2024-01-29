@@ -7,6 +7,7 @@ import { useFormSignature } from '../../signer/useFormSignature'
 import { useFormSignerLoader } from '../../signer/useFormSignerLoader'
 import ButtonNew from '../../simple-components/ButtonNew'
 import MenuDropdown from '../../simple-components/MenuDropdown/MenuDropdown'
+import { useFormContext } from '../../useFormContext'
 import { useFormSummary } from './useFormSummary'
 
 /**
@@ -14,13 +15,18 @@ import { useFormSummary } from './useFormSummary'
  * TODO: Texts and translations + MenuDropdown position fix
  */
 const SummaryFormSignature = () => {
+  // eslint-disable-next-line @typescript-eslint/no-unsafe-call
+  const { isReadonly } = useFormContext()
   const { isLoading, isReady, isError, isNotSupported, retry } = useFormSignerLoader()
   const { signature, sign, isValidSignature, remove, getSingerDataIsPending } = useFormSignature()
   const { errorSchema, infectedFiles } = useFormSummary()
 
   const validSignature = useMemo(() => isValidSignature(), [isValidSignature])
   const signerButtonDisabled =
-    !isReady || getSingerDataIsPending || isFormSigningDisabled(errorSchema, infectedFiles)
+    isReadonly ||
+    !isReady ||
+    getSingerDataIsPending ||
+    isFormSigningDisabled(errorSchema, infectedFiles)
 
   const AlertContent = ({ children }: PropsWithChildren) => (
     <div className="flex w-full">

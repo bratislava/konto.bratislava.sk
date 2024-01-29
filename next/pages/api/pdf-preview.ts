@@ -78,6 +78,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     res.setHeader('Content-Disposition', 'attachment; filename=preview.pdf')
     return res.send(pdfBuffer)
   } catch (error) {
+    console.error(error)
     await browser.close()
     return res.status(500).json({ error: 'Error generating PDF' })
   }

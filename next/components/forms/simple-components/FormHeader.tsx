@@ -19,11 +19,9 @@ import { SchemaUiOptions } from 'schema-generator/generator/uiOptionsTypes'
 import { useFormExportImport } from '../../../frontend/hooks/useFormExportImport'
 import { useFormContext } from '../useFormContext'
 import { useFormModals } from '../useFormModals'
-import { useFormState } from '../useFormState'
 
 const FormHeader = () => {
-  const { uiSchema, schema, isTaxForm } = useFormContext()
-  const { isReadonly, isDeletable } = useFormState()
+  const { uiSchema, schema, isTaxForm, isReadonly, isDeletable } = useFormContext()
   const {
     exportXml,
     exportPdf,

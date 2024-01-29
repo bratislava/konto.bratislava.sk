@@ -21,16 +21,13 @@ import { useFormLeaveProtection } from './useFormLeaveProtection'
 import { useFormModals } from './useFormModals'
 
 const useGetContext = () => {
-  const { schema, formMigrationRequired, oldSchemaVersion, formSent, initialFormDataJson } =
-    useFormContext()
+  const { schema, formMigrationRequired, initialFormDataJson, isReadonly } = useFormContext()
   const { t } = useTranslation('forms')
   const { keepFiles, refetchAfterImportIfNeeded, getFileInfoById } = useFormFileUpload()
   const { turnOnLeaveProtection } = useFormLeaveProtection()
   // eslint-disable-next-line testing-library/render-result-naming-convention
   const isFirst = useIsFirstRender()
 
-  const isReadonly = formMigrationRequired || oldSchemaVersion || formSent
-  const isDeletable = formMigrationRequired || oldSchemaVersion
   const [formData, setFormData, formDataRef] = useStateRef<GenericObjectType>(initialFormDataJson)
   const stepsSchemas = useMemo(() => getEvaluatedStepsSchemas(schema, formData), [schema, formData])
 
@@ -189,8 +186,6 @@ const useGetContext = () => {
   return {
     formData,
     formDataRef,
-    isReadonly,
-    isDeletable,
     currentStepIndex,
     stepperData,
     currentStepperStep,

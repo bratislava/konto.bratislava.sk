@@ -34,6 +34,9 @@ export const useFormContext = () => {
   if (!context) {
     throw new Error('useFormContext must be used within a FormContextProvider')
   }
+  const { formMigrationRequired, oldSchemaVersion, formSent } = context
+  const isReadonly = formMigrationRequired || oldSchemaVersion || formSent
+  const isDeletable = formMigrationRequired || oldSchemaVersion
 
-  return context
+  return { ...context, isReadonly, isDeletable }
 }

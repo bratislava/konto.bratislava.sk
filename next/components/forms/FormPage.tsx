@@ -15,7 +15,7 @@ import { useFormErrorTranslations } from './useFormErrorTranslations'
 import { useFormState } from './useFormState'
 
 const FormPage = () => {
-  const { uiSchema } = useFormContext()
+  const { uiSchema, isReadonly } = useFormContext()
   const {
     currentStepIndex,
     currentStepperStep,
@@ -23,7 +23,6 @@ const FormPage = () => {
     formData,
     handleFormOnSubmit,
     handleFormOnChange,
-    isReadonly,
   } = useFormState()
 
   const { transformErrors } = useFormErrorTranslations()

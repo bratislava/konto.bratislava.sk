@@ -14,8 +14,8 @@ import { useFormSummary } from './useFormSummary'
 const SummaryFormControls = () => {
   const { t } = useTranslation('forms')
 
-  const { isTaxForm, isSigned } = useFormContext()
-  const { isReadonly, goToPreviousStep } = useFormState()
+  const { isTaxForm, isSigned, isReadonly } = useFormContext()
+  const { goToPreviousStep } = useFormState()
   const { exportPdf } = useFormExportImport()
   const { errorSchema, infectedFiles } = useFormSummary()
   const { isValidSignature } = useFormSignature()

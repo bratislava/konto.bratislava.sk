@@ -1,15 +1,17 @@
 import { GetFileResponseDto } from '@clients/openapi-forms'
-import { GenericObjectType } from '@rjsf/utils'
+import { GenericObjectType, RJSFSchema, UiSchema } from '@rjsf/utils'
 
 export type InitialFormData = {
-  formDataJson: GenericObjectType
+  slug: string
   formId: string
+  schema: RJSFSchema
+  uiSchema: UiSchema
+  formDataJson: GenericObjectType
   files: GetFileResponseDto[]
   oldSchemaVersion: boolean
   formSent: boolean
   formMigrationRequired: boolean
   schemaVersionId: string
-  // TODO consider renaming
   isSigned?: boolean
   isTaxForm?: boolean
 }

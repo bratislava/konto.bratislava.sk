@@ -1,4 +1,4 @@
-import { GenericObjectType, RJSFSchema, UiSchema } from '@rjsf/utils'
+import { GenericObjectType } from '@rjsf/utils'
 import { useTranslation } from 'next-i18next'
 import React, { createContext, PropsWithChildren, useContext, useMemo, useState } from 'react'
 import useStateRef from 'react-usestateref'
@@ -21,27 +21,30 @@ import { useFormLeaveProtection } from './useFormLeaveProtection'
 import { useFormModals } from './useFormModals'
 
 interface FormStateProviderProps {
-  schema: RJSFSchema
-  uiSchema: UiSchema
-  formSlug: string
   initialFormData: InitialFormData
 }
 
-const useGetContext = ({ schema, uiSchema, formSlug, initialFormData }: FormStateProviderProps) => {
+const useGetContext = ({ initialFormData }: FormStateProviderProps) => {
+  const {
+    formId,
+    schema,
+    uiSchema,
+    formMigrationRequired,
+    oldSchemaVersion,
+    formSent,
+    formDataJson: initialFormDataJson,
+    isSigned,
+    isTaxForm,
+  } = initialFormData
   const { t } = useTranslation('forms')
   const { keepFiles, refetchAfterImportIfNeeded, getFileInfoById } = useFormFileUpload()
   const { turnOnLeaveProtection } = useFormLeaveProtection()
   // eslint-disable-next-line testing-library/render-result-naming-convention
   const isFirst = useIsFirstRender()
 
-  const isReadonly =
-    initialFormData.formMigrationRequired ||
-    initialFormData.oldSchemaVersion ||
-    initialFormData.formSent
-  const isDeletable = initialFormData.formMigrationRequired || initialFormData.oldSchemaVersion
-  const [formData, setFormData, formDataRef] = useStateRef<GenericObjectType>(
-    initialFormData.formDataJson,
-  )
+  const isReadonly = formMigrationRequired || oldSchemaVersion || formSent
+  const isDeletable = formMigrationRequired || oldSchemaVersion
+  const [formData, setFormData, formDataRef] = useStateRef<GenericObjectType>(initialFormDataJson)
   const stepsSchemas = useMemo(() => getEvaluatedStepsSchemas(schema, formData), [schema, formData])
 
   const { currentStepIndex, setCurrentStepIndex } = useCurrentStepIndex(stepsSchemas)
@@ -175,7 +178,7 @@ const useGetContext = ({ schema, uiSchema, formSlug, initialFormData }: FormStat
     setStepFormData(newFormData)
   }
   const handleFormOnSubmit = (newFormData: GenericObjectType | undefined) => {
-    if (initialFormData.formMigrationRequired) {
+    if (formMigrationRequired) {
       setMigrationRequiredModal(true)
     }
     if (currentStepIndex === 'summary' || !newFormData || isReadonly) {
@@ -199,8 +202,7 @@ const useGetContext = ({ schema, uiSchema, formSlug, initialFormData }: FormStat
   return {
     schema,
     uiSchema,
-    formId: initialFormData.formId,
-    formSlug,
+    formId,
     formData,
     formDataRef,
     isReadonly,
@@ -217,8 +219,8 @@ const useGetContext = ({ schema, uiSchema, formSlug, initialFormData }: FormStat
     handleFormOnSubmit,
     goToStepByFieldId,
     setImportedFormData,
-    isSigned: initialFormData.isSigned,
-    isTaxForm: initialFormData.isTaxForm,
+    isSigned,
+    isTaxForm,
   }
 }
 

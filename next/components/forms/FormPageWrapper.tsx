@@ -1,4 +1,3 @@
-import { RJSFSchema, UiSchema } from '@rjsf/utils'
 import { useRouter } from 'next/router'
 import { usePlausible } from 'next-plausible'
 import React, { useEffect } from 'react'
@@ -21,8 +20,6 @@ import { FormSentRenderer } from './useFormSent'
 import { FormStateProvider } from './useFormState'
 
 export type FormPageWrapperProps = {
-  schema: RJSFSchema
-  uiSchema: UiSchema
   initialFormData: InitialFormData
   ssrCurrentAuthProps?: GetSSRCurrentAuth
 }
@@ -53,11 +50,8 @@ const useCustomPlausibleFormPagesTracking = (formSlug: string) => {
   })
 }
 
-const FormPageWrapper = ({ schema, uiSchema, initialFormData }: FormPageWrapperProps) => {
-  const router = useRouter()
-  const formSlug = router.query.slug as string
-
-  useCustomPlausibleFormPagesTracking(formSlug)
+const FormPageWrapper = ({ initialFormData }: FormPageWrapperProps) => {
+  useCustomPlausibleFormPagesTracking(initialFormData.slug)
 
   return (
     <FormSentRenderer
@@ -69,12 +63,7 @@ const FormPageWrapper = ({ schema, uiSchema, initialFormData }: FormPageWrapperP
           <FormLeaveProtectionProvider>
             <FormModalsProvider initialFormData={initialFormData}>
               <FormSignerLoaderProvider initialFormData={initialFormData}>
-                <FormStateProvider
-                  schema={schema}
-                  uiSchema={uiSchema}
-                  formSlug={formSlug}
-                  initialFormData={initialFormData}
-                >
+                <FormStateProvider initialFormData={initialFormData}>
                   <FormRedirectsProvider>
                     <FormSignatureProvider>
                       <FormSendProvider>

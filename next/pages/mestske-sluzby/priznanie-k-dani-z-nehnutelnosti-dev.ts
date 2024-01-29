@@ -32,10 +32,11 @@ export const getServerSideProps: GetServerSideProps<FormPageWrapperProps, Params
 
   return {
     props: {
-      schema: schema.schema,
-      uiSchema: schema.uiSchema,
       ssrCurrentAuthProps,
       initialFormData: {
+        slug: 'priznanie-k-dani-z-nehnutelnosti',
+        schema: schema.schema,
+        uiSchema: schema.uiSchema,
         formId: '',
         formDataJson: {},
         files: [],

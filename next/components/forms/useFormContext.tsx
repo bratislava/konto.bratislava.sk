@@ -13,8 +13,8 @@ export type FormContext = {
   formSent: boolean
   formMigrationRequired: boolean
   schemaVersionId: string
-  isSigned?: boolean
-  isTaxForm?: boolean
+  isSigned: boolean
+  isTaxForm: boolean
 }
 
 const FormContextContext = createContext<FormContext | undefined>(undefined)

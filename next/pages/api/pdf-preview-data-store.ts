@@ -10,8 +10,8 @@ const dataStore: Record<string, PdfPreviewPayload> = {}
 
 // eslint-disable-next-line consistent-return
 export default function handler(req: NextApiRequest, res: NextApiResponse) {
-  const isLocalRequest =
-    req.socket.remoteAddress === '127.0.0.1' || req.socket.remoteAddress === '::1'
+  // const isLocalRequest =
+  //   req.socket.remoteAddress === '127.0.0.1' || req.socket.remoteAddress === '::1'
   console.log('1', req.socket.remoteAddress)
 
   // if (!isLocalRequest) {

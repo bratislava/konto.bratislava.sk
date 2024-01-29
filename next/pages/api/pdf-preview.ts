@@ -20,22 +20,16 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     return res.status(405).json({ error: 'Method not allowed, use POST' })
   }
 
+  const { schema, uiSchema, formDataJson, initialServerFiles, initialClientFiles } =
+    req.body as PdfPreviewPayload
+
   // Ensure the body contains the required schema, uiSchema, and formDataJson properties
-  if (
-    !req.body ||
-    !req.body.schema ||
-    !req.body.uiSchema ||
-    !req.body.formDataJson ||
-    !req.body.initialClientFiles ||
-    !req.body.initialServerFiles
-  ) {
+  if (!schema || !uiSchema || !formDataJson || !initialClientFiles || !initialServerFiles) {
     return res.status(400).json({ error: 'Missing required parameters' })
   }
 
-  let x = performance.now()
   // Extract the relevant data from the request body
-  const { schema, uiSchema, formDataJson, initialServerFiles, initialClientFiles } = req.body
-  const response = await fetch(`${environment.selfUrl}/api/pdf-preview-data-store`, {
+  const dataStoreResponse = await fetch(`${environment.selfUrl}/api/pdf-preview-data-store`, {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
@@ -48,9 +42,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       initialClientFiles,
     }),
   })
-  console.log('fetch', performance.now() - x)
-  x = performance.now()
-  const { uuid } = await response.json()
+  const { uuid } = await dataStoreResponse.json()
 
   const browser = await puppeteer.launch({
     headless: 'new',
@@ -83,9 +75,9 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 
     res.setHeader('Content-Type', 'application/pdf')
     res.setHeader('Content-Disposition', 'attachment; filename=preview.pdf')
-    res.send(pdfBuffer)
+    return res.send(pdfBuffer)
   } catch (error) {
     await browser.close()
-    res.status(500).json({ error: 'Error generating PDF' })
+    return res.status(500).json({ error: 'Error generating PDF' })
   }
 }

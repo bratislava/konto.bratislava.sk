@@ -44,4 +44,5 @@ export const getServerSideProps = async (ctx: GetServerSidePropsContext) => {
   }
 }
 
+// eslint-disable-next-line no-restricted-exports
 export { default } from '../../components/forms/PdfSummaryPage'

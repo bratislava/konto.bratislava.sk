@@ -12,8 +12,6 @@ import FormPage from './FormPage'
 import ThankYouFormSection from './segments/AccountSections/ThankYouSection/ThankYouFormSection'
 import { FormSignatureProvider } from './signer/useFormSignature'
 import { FormSignerLoaderProvider } from './signer/useFormSignerLoader'
-import ThemedForm from './ThemedForm'
-import { FormComponentProvider } from './useFormComponent'
 import { FormFileUploadProvider } from './useFormFileUpload'
 import { FormLeaveProtectionProvider } from './useFormLeaveProtection'
 import { FormModalsProvider } from './useFormModals'
@@ -67,34 +65,32 @@ const FormPageWrapper = ({ schema, uiSchema, initialFormData }: FormPageWrapperP
       // if it stays this way remove the prop completely
       initialFormSent={false}
       notSentChildren={
-        <FormComponentProvider formComponent={ThemedForm}>
-          <FormFileUploadProvider initialFormData={initialFormData}>
-            <FormLeaveProtectionProvider>
-              <FormModalsProvider initialFormData={initialFormData}>
-                <FormSignerLoaderProvider initialFormData={initialFormData}>
-                  <FormStateProvider
-                    schema={schema}
-                    uiSchema={uiSchema}
-                    formSlug={formSlug}
-                    initialFormData={initialFormData}
-                  >
-                    <FormRedirectsProvider>
-                      <FormSignatureProvider>
-                        <FormSendProvider>
-                          <FormExportImportProvider initialFormData={initialFormData}>
-                            <AccountPageLayout>
-                              <FormPage />
-                            </AccountPageLayout>
-                          </FormExportImportProvider>
-                        </FormSendProvider>
-                      </FormSignatureProvider>
-                    </FormRedirectsProvider>
-                  </FormStateProvider>
-                </FormSignerLoaderProvider>
-              </FormModalsProvider>
-            </FormLeaveProtectionProvider>
-          </FormFileUploadProvider>
-        </FormComponentProvider>
+        <FormFileUploadProvider initialFormData={initialFormData}>
+          <FormLeaveProtectionProvider>
+            <FormModalsProvider initialFormData={initialFormData}>
+              <FormSignerLoaderProvider initialFormData={initialFormData}>
+                <FormStateProvider
+                  schema={schema}
+                  uiSchema={uiSchema}
+                  formSlug={formSlug}
+                  initialFormData={initialFormData}
+                >
+                  <FormRedirectsProvider>
+                    <FormSignatureProvider>
+                      <FormSendProvider>
+                        <FormExportImportProvider initialFormData={initialFormData}>
+                          <AccountPageLayout>
+                            <FormPage />
+                          </AccountPageLayout>
+                        </FormExportImportProvider>
+                      </FormSendProvider>
+                    </FormSignatureProvider>
+                  </FormRedirectsProvider>
+                </FormStateProvider>
+              </FormSignerLoaderProvider>
+            </FormModalsProvider>
+          </FormLeaveProtectionProvider>
+        </FormFileUploadProvider>
       }
       sentChildren={
         <AccountPageLayout hiddenHeaderNav className="bg-gray-50">

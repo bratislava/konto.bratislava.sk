@@ -15,7 +15,6 @@ import NextLink from 'next/link'
 import { useRouter } from 'next/router'
 import { useTranslation } from 'next-i18next'
 import { ReactNode, useEffect, useRef, useState } from 'react'
-import { Button as ReactAriaButton } from 'react-aria-components'
 import { RemoveScroll } from 'react-remove-scroll'
 
 import { ROUTES } from '../../../../frontend/api/constants'
@@ -243,8 +242,11 @@ export const NavBar = ({ className, sectionsList, menuItems, hiddenHeaderNav }: 
           {!burgerOpen && <StatusBar className="flex lg:hidden" />}
           <div className="flex h-16 items-center border-b-2 px-8 py-5">
             <Brand url={ROUTES.HOME} className="grow" />
-            <ReactAriaButton
-              onPress={() => (isAuthenticated ? setBurgerOpen(!burgerOpen) : login())}
+            {/* event onPress is propagating to menu itself casuing glitches when opening mobile menu, 
+            becasue of that we are using onClick event and thats why simple button is used */}
+            <button
+              type="button"
+              onClick={() => (isAuthenticated ? setBurgerOpen(!burgerOpen) : login())}
               className="-mr-4 px-4 py-5"
               data-cy="mobile-account-button"
             >
@@ -257,7 +259,7 @@ export const NavBar = ({ className, sectionsList, menuItems, hiddenHeaderNav }: 
                   <Avatar userData={userData} />
                 )}
               </div>
-            </ReactAriaButton>
+            </button>
 
             {burgerOpen && (
               <HamburgerMenu

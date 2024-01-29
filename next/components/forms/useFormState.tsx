@@ -4,7 +4,6 @@ import React, { createContext, PropsWithChildren, useContext, useMemo, useState 
 import useStateRef from 'react-usestateref'
 import { useIsFirstRender } from 'usehooks-ts'
 
-import { InitialFormData } from '../../frontend/types/initialFormData'
 import { getFileUuidsNaive, validateSummary } from '../../frontend/utils/form'
 import {
   getEvaluatedStepsSchemas,
@@ -16,26 +15,14 @@ import {
   useCurrentStepIndex,
 } from '../../frontend/utils/formState'
 import { FormStepIndex } from './types/Steps'
+import { useFormContext } from './useFormContext'
 import { useFormFileUpload } from './useFormFileUpload'
 import { useFormLeaveProtection } from './useFormLeaveProtection'
 import { useFormModals } from './useFormModals'
 
-interface FormStateProviderProps {
-  initialFormData: InitialFormData
-}
-
-const useGetContext = ({ initialFormData }: FormStateProviderProps) => {
-  const {
-    formId,
-    schema,
-    uiSchema,
-    formMigrationRequired,
-    oldSchemaVersion,
-    formSent,
-    formDataJson: initialFormDataJson,
-    isSigned,
-    isTaxForm,
-  } = initialFormData
+const useGetContext = () => {
+  const { schema, formMigrationRequired, oldSchemaVersion, formSent, initialFormDataJson } =
+    useFormContext()
   const { t } = useTranslation('forms')
   const { keepFiles, refetchAfterImportIfNeeded, getFileInfoById } = useFormFileUpload()
   const { turnOnLeaveProtection } = useFormLeaveProtection()
@@ -200,9 +187,6 @@ const useGetContext = ({ initialFormData }: FormStateProviderProps) => {
   }
 
   return {
-    schema,
-    uiSchema,
-    formId,
     formData,
     formDataRef,
     isReadonly,
@@ -219,18 +203,13 @@ const useGetContext = ({ initialFormData }: FormStateProviderProps) => {
     handleFormOnSubmit,
     goToStepByFieldId,
     setImportedFormData,
-    isSigned,
-    isTaxForm,
   }
 }
 
 const FormStateContext = createContext<ReturnType<typeof useGetContext> | undefined>(undefined)
 
-export const FormStateProvider = ({
-  children,
-  ...rest
-}: PropsWithChildren<FormStateProviderProps>) => {
-  const context = useGetContext(rest)
+export const FormStateProvider = ({ children }: PropsWithChildren) => {
+  const context = useGetContext()
 
   return <FormStateContext.Provider value={context}>{children}</FormStateContext.Provider>
 }

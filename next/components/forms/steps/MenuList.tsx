@@ -5,6 +5,7 @@ import { useTranslation } from 'next-i18next'
 import { ReactNode } from 'react'
 
 import { useFormExportImport } from '../../../frontend/hooks/useFormExportImport'
+import { useFormContext } from '../useFormContext'
 import { useFormModals } from '../useFormModals'
 import { useFormState } from '../useFormState'
 
@@ -18,7 +19,8 @@ type MenuItem = {
 }
 
 const MenuList = () => {
-  const { isReadonly, isDeletable, isTaxForm } = useFormState()
+  const { isTaxForm } = useFormContext()
+  const { isReadonly, isDeletable } = useFormState()
   const {
     exportXml,
     exportPdf,

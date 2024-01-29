@@ -50,12 +50,12 @@ export const getServerSideProps: GetServerSideProps<FormPageWrapperProps, Params
     return {
       props: {
         ssrCurrentAuthProps,
-        initialFormData: {
+        formContext: {
           slug,
           schema: form.schemaVersion.jsonSchema,
           uiSchema: form.schemaVersion.uiSchema,
           formId: id,
-          formDataJson: form.formDataJson ?? {},
+          initialFormDataJson: form.formDataJson ?? {},
           files,
           oldSchemaVersion: !form.isLatestSchemaVersionForSlug,
           formSent,

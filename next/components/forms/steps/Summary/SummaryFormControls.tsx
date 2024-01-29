@@ -6,6 +6,7 @@ import { useFormExportImport } from '../../../../frontend/hooks/useFormExportImp
 import { isFormSubmitDisabled } from '../../../../frontend/utils/formSummary'
 import { useFormSignature } from '../../signer/useFormSignature'
 import ButtonNew from '../../simple-components/ButtonNew'
+import { useFormContext } from '../../useFormContext'
 import { useFormSend } from '../../useFormSend'
 import { useFormState } from '../../useFormState'
 import { useFormSummary } from './useFormSummary'
@@ -13,7 +14,8 @@ import { useFormSummary } from './useFormSummary'
 const SummaryFormControls = () => {
   const { t } = useTranslation('forms')
 
-  const { isReadonly, goToPreviousStep, isTaxForm, isSigned } = useFormState()
+  const { isTaxForm, isSigned } = useFormContext()
+  const { isReadonly, goToPreviousStep } = useFormState()
   const { exportPdf } = useFormExportImport()
   const { errorSchema, infectedFiles } = useFormSummary()
   const { isValidSignature } = useFormSignature()

@@ -4,13 +4,13 @@ import React, { useEffect } from 'react'
 import { useEffectOnce } from 'usehooks-ts'
 
 import { FormExportImportProvider } from '../../frontend/hooks/useFormExportImport'
-import { InitialFormData } from '../../frontend/types/initialFormData'
 import AccountPageLayout from '../layouts/AccountPageLayout'
 import { GetSSRCurrentAuth } from '../logic/ServerSideAuthProvider'
 import FormPage from './FormPage'
 import ThankYouFormSection from './segments/AccountSections/ThankYouSection/ThankYouFormSection'
 import { FormSignatureProvider } from './signer/useFormSignature'
 import { FormSignerLoaderProvider } from './signer/useFormSignerLoader'
+import { FormContext, FormContextProvider } from './useFormContext'
 import { FormFileUploadProvider } from './useFormFileUpload'
 import { FormLeaveProtectionProvider } from './useFormLeaveProtection'
 import { FormModalsProvider } from './useFormModals'
@@ -20,7 +20,7 @@ import { FormSentRenderer } from './useFormSent'
 import { FormStateProvider } from './useFormState'
 
 export type FormPageWrapperProps = {
-  initialFormData: InitialFormData
+  formContext: FormContext
   ssrCurrentAuthProps?: GetSSRCurrentAuth
 }
 
@@ -50,43 +50,45 @@ const useCustomPlausibleFormPagesTracking = (formSlug: string) => {
   })
 }
 
-const FormPageWrapper = ({ initialFormData }: FormPageWrapperProps) => {
-  useCustomPlausibleFormPagesTracking(initialFormData.slug)
+const FormPageWrapper = ({ formContext }: FormPageWrapperProps) => {
+  useCustomPlausibleFormPagesTracking(formContext.slug)
 
   return (
-    <FormSentRenderer
-      // TODO today it does not make sense to have anything else than false in initialFormSent - otherwise we just display "thank you" page on each revisit
-      // if it stays this way remove the prop completely
-      initialFormSent={false}
-      notSentChildren={
-        <FormFileUploadProvider initialFormData={initialFormData}>
-          <FormLeaveProtectionProvider>
-            <FormModalsProvider initialFormData={initialFormData}>
-              <FormSignerLoaderProvider initialFormData={initialFormData}>
-                <FormStateProvider initialFormData={initialFormData}>
-                  <FormRedirectsProvider>
-                    <FormSignatureProvider>
-                      <FormSendProvider>
-                        <FormExportImportProvider initialFormData={initialFormData}>
-                          <AccountPageLayout>
-                            <FormPage />
-                          </AccountPageLayout>
-                        </FormExportImportProvider>
-                      </FormSendProvider>
-                    </FormSignatureProvider>
-                  </FormRedirectsProvider>
-                </FormStateProvider>
-              </FormSignerLoaderProvider>
-            </FormModalsProvider>
-          </FormLeaveProtectionProvider>
-        </FormFileUploadProvider>
-      }
-      sentChildren={
-        <AccountPageLayout hiddenHeaderNav className="bg-gray-50">
-          <ThankYouFormSection initialFormData={initialFormData} />
-        </AccountPageLayout>
-      }
-    />
+    <FormContextProvider formContext={formContext}>
+      <FormSentRenderer
+        // TODO today it does not make sense to have anything else than false in initialFormSent - otherwise we just display "thank you" page on each revisit
+        // if it stays this way remove the prop completely
+        initialFormSent={false}
+        notSentChildren={
+          <FormFileUploadProvider>
+            <FormLeaveProtectionProvider>
+              <FormModalsProvider>
+                <FormSignerLoaderProvider>
+                  <FormStateProvider>
+                    <FormRedirectsProvider>
+                      <FormSignatureProvider>
+                        <FormSendProvider>
+                          <FormExportImportProvider>
+                            <AccountPageLayout>
+                              <FormPage />
+                            </AccountPageLayout>
+                          </FormExportImportProvider>
+                        </FormSendProvider>
+                      </FormSignatureProvider>
+                    </FormRedirectsProvider>
+                  </FormStateProvider>
+                </FormSignerLoaderProvider>
+              </FormModalsProvider>
+            </FormLeaveProtectionProvider>
+          </FormFileUploadProvider>
+        }
+        sentChildren={
+          <AccountPageLayout hiddenHeaderNav className="bg-gray-50">
+            <ThankYouFormSection />
+          </AccountPageLayout>
+        }
+      />
+    </FormContextProvider>
   )
 }
 

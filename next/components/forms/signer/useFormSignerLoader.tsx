@@ -1,7 +1,7 @@
 import Script from 'next/script'
 import React, { createContext, Fragment, PropsWithChildren, useContext, useState } from 'react'
 
-import { InitialFormData } from '../../../frontend/types/initialFormData'
+import { useFormContext } from '../useFormContext'
 
 type FormSignerLoaderContextType = {
   isError: boolean
@@ -12,10 +12,6 @@ type FormSignerLoaderContextType = {
 }
 
 const FormSignerLoaderContext = createContext<FormSignerLoaderContextType | undefined>(undefined)
-
-type FormSignerLoaderProviderProps = PropsWithChildren<{
-  initialFormData: InitialFormData
-}>
 
 enum LoadedStatus {
   False,
@@ -33,11 +29,8 @@ enum SupportedStatus {
  * This provider is responsible for loading the signer scripts and detecting whether the user's has installed all the
  * necessary parts for the signer to work.
  */
-export const FormSignerLoaderProvider = ({
-  initialFormData,
-  children,
-}: FormSignerLoaderProviderProps) => {
-  const { isSigned } = initialFormData
+export const FormSignerLoaderProvider = ({ children }: PropsWithChildren) => {
+  const { isSigned } = useFormContext()
   const [loadingStatuses, setLoadingStatuses] = useState({
     config: LoadedStatus.False,
     common: LoadedStatus.False,

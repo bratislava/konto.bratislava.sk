@@ -10,12 +10,13 @@ import FormHeader from './simple-components/FormHeader'
 import StepperView from './steps/StepperView'
 import FormSummary from './steps/Summary/FormSummary'
 import ThemedForm from './ThemedForm'
+import { useFormContext } from './useFormContext'
 import { useFormErrorTranslations } from './useFormErrorTranslations'
 import { useFormState } from './useFormState'
 
 const FormPage = () => {
+  const { uiSchema } = useFormContext()
   const {
-    uiSchema,
     currentStepIndex,
     currentStepperStep,
     currentStepSchema,

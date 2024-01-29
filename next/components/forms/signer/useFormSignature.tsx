@@ -15,6 +15,7 @@ import React, {
 import { useIsClient, useIsMounted } from 'usehooks-ts'
 
 import useSnackbar from '../../../frontend/hooks/useSnackbar'
+import { useFormContext } from '../useFormContext'
 import { useFormModals } from '../useFormModals'
 import { useFormState } from '../useFormState'
 import { SignerErrorType } from './mapDitecError'
@@ -40,7 +41,8 @@ declare global {
 const useGetContext = () => {
   const [openSnackbarError] = useSnackbar({ variant: 'error' })
   const { setSignerIsDeploying } = useFormModals()
-  const { formData, formDataRef, isSigned } = useFormState()
+  const { isSigned } = useFormContext()
+  const { formData, formDataRef } = useFormState()
   const { sign: signerSign } = useFormSigner({
     onDeploymentStatusChange: (status) => {
       setSignerIsDeploying(status === SignerDeploymentStatus.Deploying)

@@ -22,17 +22,13 @@ import {
   FormFileUploadResponseFileStatus,
   FormFileUploadStatusEnum,
 } from '../../frontend/types/formFileUploadTypes'
-import { InitialFormData } from '../../frontend/types/initialFormData'
 import {
   getFileInfoForNewFiles,
   mergeClientAndServerFiles,
   shouldPollServerFiles,
   uploadFile,
 } from '../../frontend/utils/formFileUpload'
-
-export type FormFileUploadProviderProps = {
-  initialFormData: Pick<InitialFormData, 'files' | 'formId'>
-}
+import { useFormContext } from './useFormContext'
 
 const REFETCH_INTERVAL = 5000
 
@@ -60,7 +56,8 @@ const REFETCH_INTERVAL = 5000
  *
  *  At the end, the client and server files are merged and returned to the consumer.
  */
-export const useGetContext = ({ initialFormData }: FormFileUploadProviderProps) => {
+export const useGetContext = () => {
+  const { formId, files } = useFormContext()
   const queryClient = useQueryClient()
   const isMounted = useIsMounted()
 
@@ -82,11 +79,11 @@ export const useGetContext = ({ initialFormData }: FormFileUploadProviderProps) 
       shouldPollServerFiles(query.state.data, clientFiles) ? REFETCH_INTERVAL : false
   }, [clientFiles])
 
-  const serverFilesQueryKey = ['serverFiles', initialFormData.formId]
+  const serverFilesQueryKey = ['serverFiles', formId]
   const serverFilesQuery = useQuery({
     queryKey: serverFilesQueryKey,
     queryFn: async () => {
-      const response = await formsApi.filesControllerGetFilesStatusByForm(initialFormData.formId, {
+      const response = await formsApi.filesControllerGetFilesStatusByForm(formId, {
         accessToken: 'onlyAuthenticated',
       })
       return response.data
@@ -95,7 +92,7 @@ export const useGetContext = ({ initialFormData }: FormFileUploadProviderProps) 
     retryDelay: 5000, // Retry every 5 seconds
     staleTime: Infinity,
     refetchInterval,
-    initialData: initialFormData.files,
+    initialData: files,
     initialDataUpdatedAt: Date.now(),
   })
 
@@ -149,7 +146,7 @@ export const useGetContext = ({ initialFormData }: FormFileUploadProviderProps) 
       })
 
       await uploadFile({
-        formId: initialFormData.formId,
+        formId,
         file: firstQueuedFile.file,
         id: firstQueuedFile.id,
         abortController,
@@ -333,11 +330,8 @@ export const useGetContext = ({ initialFormData }: FormFileUploadProviderProps) 
 
 const FormFileUploadContext = createContext<ReturnType<typeof useGetContext> | undefined>(undefined)
 
-export const FormFileUploadProvider = ({
-  children,
-  ...rest
-}: PropsWithChildren<FormFileUploadProviderProps>) => {
-  const context = useGetContext(rest)
+export const FormFileUploadProvider = ({ children }: PropsWithChildren) => {
+  const context = useGetContext()
 
   return <FormFileUploadContext.Provider value={context}>{children}</FormFileUploadContext.Provider>
 }

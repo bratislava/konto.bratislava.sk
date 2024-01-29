@@ -36,7 +36,7 @@ export const useFormContext = () => {
   }
   const { formMigrationRequired, oldSchemaVersion, formSent } = context
   const isReadonly = formMigrationRequired || oldSchemaVersion || formSent
-  const isDeletable = formMigrationRequired || oldSchemaVersion
+  const isDeletable = (formMigrationRequired || oldSchemaVersion) && !formSent
 
   return { ...context, isReadonly, isDeletable }
 }

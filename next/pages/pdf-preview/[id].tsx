@@ -8,6 +8,7 @@ import { PdfPreviewPayload } from '../api/pdf-preview'
 export const getServerSideProps = async (ctx: GetServerSidePropsContext) => {
   const isLocalRequest =
     ctx.req.socket.remoteAddress === '127.0.0.1' || ctx.req.socket.remoteAddress === '::1'
+  console.log('2', ctx.req.socket.remoteAddress)
 
   if (!isLocalRequest) {
     throw new Error('Forbidden')

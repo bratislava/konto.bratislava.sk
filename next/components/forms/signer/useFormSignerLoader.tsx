@@ -40,7 +40,19 @@ export const FormSignerLoaderProvider = ({ children }: PropsWithChildren) => {
   const [retryTimestamp, setRetryTimestamp] = useState<number | null>(null)
 
   if (!isSigned || isReadonly) {
-    return <>{children}</>
+    return (
+      <FormSignerLoaderContext.Provider
+        value={{
+          isError: false,
+          isLoading: false,
+          isReady: false,
+          isNotSupported: false,
+          retry: () => {},
+        }}
+      >
+        {children}
+      </FormSignerLoaderContext.Provider>
+    )
   }
 
   const handleScriptsLoaded = () => {

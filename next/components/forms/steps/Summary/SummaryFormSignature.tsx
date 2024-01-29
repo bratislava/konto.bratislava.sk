@@ -11,7 +11,6 @@ import { useFormContext } from '../../useFormContext'
 import { useFormSummary } from './useFormSummary'
 
 /**
- * The component be rendered only if `isSigned` is true, otherwise `useFormSignerLoader` will return null.
  * TODO: Texts and translations + MenuDropdown position fix
  */
 const SummaryFormSignature = () => {

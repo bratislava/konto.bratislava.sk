@@ -1,5 +1,19 @@
 FROM node:20.9-alpine AS base
 
+# Puppeteer START
+RUN apk add --no-cache \
+    chromium \
+    nss \
+    freetype \
+    freetype-dev \
+    harfbuzz \
+    ca-certificates \
+    ttf-freefont
+
+ENV PUPPETEER_SKIP_CHROMIUM_DOWNLOAD=true
+ENV PUPPETEER_EXECUTABLE_PATH=/usr/bin/chromium-browser
+# Puppeteer END
+
 FROM base AS build-base
 WORKDIR /build
 COPY ./package.json ./yarn.lock ./

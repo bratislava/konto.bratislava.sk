@@ -14,9 +14,9 @@ export default function handler(req: NextApiRequest, res: NextApiResponse) {
     req.socket.remoteAddress === '127.0.0.1' || req.socket.remoteAddress === '::1'
   console.log('1', req.socket.remoteAddress)
 
-  if (!isLocalRequest) {
-    return res.status(403).json({ error: 'Access denied' })
-  }
+  // if (!isLocalRequest) {
+  //   return res.status(403).json({ error: 'Access denied' })
+  // }
 
   if (req.method === 'POST') {
     // Handle POST request: Save the data and return a UUID

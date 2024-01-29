@@ -10,9 +10,9 @@ export const getServerSideProps = async (ctx: GetServerSidePropsContext) => {
     ctx.req.socket.remoteAddress === '127.0.0.1' || ctx.req.socket.remoteAddress === '::1'
   console.log('2', ctx.req.socket.remoteAddress)
 
-  if (!isLocalRequest) {
-    throw new Error('Forbidden')
-  }
+  // if (!isLocalRequest) {
+  //   throw new Error('Forbidden')
+  // }
 
   const dataResponse = await axios.get<PdfPreviewPayload>(
     `${environment.selfUrl}/api/pdf-preview-data-store`,

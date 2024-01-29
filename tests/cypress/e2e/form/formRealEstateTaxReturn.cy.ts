@@ -19,7 +19,7 @@ describe('F05 -', { testIsolation: false }, () => {
   const summaryBorderFields = '[data-cy=summary-row-rok], [data-cy=summary-row-rodneCislo], [data-cy=summary-row-priezvisko], [data-cy=summary-row-obec], [data-cy=summary-row-psc], [data-cy=summary-row-email], [data-cy=summary-row-telefon]'
 
   before(() => {
-    cy.fixture('formRealEstateTaxReturn.cy.json').then((fileData) => {
+    cy.fixture('formRealEstateTaxReturn.json').then((fileData) => {
       this.fileData = fileData
     })
   })
@@ -79,20 +79,28 @@ describe('F05 -', { testIsolation: false }, () => {
               cy.wrap(Cypress.$('[data-cy=radio-group-podávate-priznanie-k-dani-z-nehnuteľností-vo-svojom-mene]', form)).find(`[data-cy=radio-nie]`).click()
             }
 
-            cy.wrap(Cypress.$('[data-cy=radio-group-podávate-priznanie-ako]', form)).find(`[data-cy=radio-${this.fileData.udajeODanovnikovi.priznanieAko}]`).click()
-
+            if (this.fileData.udajeODanovnikovi.priznanieAko === 'fyzickaOsoba') {
+              cy.wrap(Cypress.$('[data-cy=radio-group-podávate-priznanie-ako]', form)).find(`[data-cy=radio-fyzická-osoba]`).click()
+            } else if (this.fileData.udajeODanovnikovi.priznanieAko === 'fyzickaOsobaPodnikatel') {
+              cy.wrap(Cypress.$('[data-cy=radio-group-podávate-priznanie-ako]', form)).find(`[data-cy=radio-fyzická-osoba-podnikateľ]`).click()
+            } else if (this.fileData.udajeODanovnikovi.priznanieAko === 'pravnickaOsoba') {
+              cy.wrap(Cypress.$('[data-cy=radio-group-podávate-priznanie-ako]', form)).find(`[data-cy=radio-právnicka-osoba]`).click()
+            }
+            
             cy.wrap(Cypress.$('[data-cy=input-rodneCislo]', form)).type(this.fileData.udajeODanovnikovi.rodneCislo)
-            cy.wrap(Cypress.$('[data-cy=input-priezvisko]', form)).type(this.fileData.udajeODanovnikovi.menoTitul.priezvisko)
+            cy.wrap(Cypress.$('[data-cy=input-priezvisko]', form)).type(this.fileData.udajeODanovnikovi.priezvisko)
             cy.wrap(Cypress.$('[data-cy=input-meno]', form)).type(this.fileData.udajeODanovnikovi.menoTitul.meno)
             cy.wrap(Cypress.$('[data-cy=input-ulica]', form)).type(this.fileData.udajeODanovnikovi.ulicaCisloFyzickaOsoba.ulica)
             cy.wrap(Cypress.$('[data-cy=input-cislo]', form)).type(this.fileData.udajeODanovnikovi.ulicaCisloFyzickaOsoba.cislo)
             cy.wrap(Cypress.$('[data-cy=input-obec]', form)).type(this.fileData.udajeODanovnikovi.obecPsc.obec)
             cy.wrap(Cypress.$('[data-cy=input-psc]', form)).type(this.fileData.udajeODanovnikovi.obecPsc.psc)
 
+            /* TODO
             if (this.fileData.udajeODanovnikovi.stat !== 'Slovenská republika') {
               cy.wrap(Cypress.$('[data-cy=select-štát]', form)).click()
               cy.wrap(Cypress.$('[data-cy=select-štát]', form)).contains(this.fileData.udajeODanovnikovi.stat).click()
             }
+            */
 
             if (this.fileData.udajeODanovnikovi.korespondencnaAdresa.korespondencnaAdresaRovnaka) {
               cy.wrap(Cypress.$('[data-cy=radio-group-je-korešpondenčná-adresa-rovnáká-ako-adresa-trvalého-pobytu]', form)).find(`[data-cy=radio-áno]`).click()
@@ -141,9 +149,23 @@ describe('F05 -', { testIsolation: false }, () => {
                   cy.wrap(Cypress.$('[data-cy=add-button]', form).eq(1)).click()
                 }
                 cy.dataCy(`section-priznania-${indexPriznania}`).then((priznania) => {
-                  cy.wrap(Cypress.$('[data-cy=radio-group-právny-vzťah]', priznania)).find(`[data-cy=radio-${this.fileData.danZPozemkov.priznania[indexPriznania].pravnyVztah}]`).click()
+                  if (this.fileData.danZPozemkov.priznania[indexPriznania].pravnyVztah === 'vlastnik') {
+                    cy.wrap(Cypress.$('[data-cy=radio-group-právny-vzťah]', priznania)).find(`[data-cy=radio-vlastník]`).click()
+                  } else if (this.fileData.danZPozemkov.priznania[indexPriznania].pravnyVztah === 'spravca') {
+                    cy.wrap(Cypress.$('[data-cy=radio-group-právny-vzťah]', priznania)).find(`[data-cy=radio-správca]`).click()
+                  } else if (this.fileData.danZPozemkov.priznania[indexPriznania].pravnyVztah === 'najomca') {
+                    cy.wrap(Cypress.$('[data-cy=radio-group-právny-vzťah]', priznania)).find(`[data-cy=radio-nájomca]`).click()
+                  } else if (this.fileData.danZPozemkov.priznania[indexPriznania].pravnyVztah === 'uzivatel') {
+                    cy.wrap(Cypress.$('[data-cy=radio-group-právny-vzťah]', priznania)).find(`[data-cy=radio-užívateľ]`).click()
+                  }
 
-                  cy.wrap(Cypress.$('[data-cy=radio-group-spoluvlastníctvo]', priznania)).find(`[data-cy=radio-${this.fileData.danZPozemkov.priznania[indexPriznania].spoluvlastnictvo}]`).click()
+                  if (this.fileData.danZPozemkov.priznania[indexPriznania].spoluvlastnictvo === 'somJedinyVlastnik') {
+                    cy.wrap(Cypress.$('[data-cy=radio-group-spoluvlastníctvo]', priznania)).find(`[data-cy=radio-som-jediný-vlastník]`).click()
+                  } else if (this.fileData.danZPozemkov.priznania[indexPriznania].spoluvlastnictvo === 'podieloveSpoluvlastnictvo') {
+                    cy.wrap(Cypress.$('[data-cy=radio-group-spoluvlastníctvo]', priznania)).find(`[data-cy=radio-podielové-spoluvlastníctvo]`).click()
+                  } else if (this.fileData.danZPozemkov.priznania[indexPriznania].spoluvlastnictvo === 'bezpodieloveSpoluvlastnictvoManzelov') {
+                    cy.wrap(Cypress.$('[data-cy=radio-group-spoluvlastníctvo]', priznania)).find(`[data-cy=radio-bezpodielové-spoluvlastníctvo-manželov]`).click()
+                  }
 
                   // Pozemky
                   cy.get(this.fileData.danZPozemkov.priznania[indexPriznania].pozemky).each((dataPozemky, indexPozemky) => {
@@ -160,7 +182,7 @@ describe('F05 -', { testIsolation: false }, () => {
                       cy.wrap(Cypress.$('[data-cy=input-cisloParcely]', pozemky)).type(this.fileData.danZPozemkov.priznania[indexPriznania].pozemky[indexPozemky].parcelneCisloSposobVyuzitiaPozemku.cisloParcely)
 
                       cy.wrap(Cypress.$('[data-cy=select-druh-pozemku]', pozemky)).click()
-                      cy.wrap(Cypress.$('[data-cy=select-druh-pozemku]', pozemky)).contains(this.fileData.danZPozemkov.priznania[indexPriznania].pozemky[indexPozemky].druhPozemku).click()
+                      cy.wrap(Cypress.$('[data-cy=select-druh-pozemku]', pozemky)).contains(this.fileData.danZPozemkov.priznania[indexPriznania].pozemky[indexPozemky].druhPozemku + " – ").click()
 
                       cy.wrap(Cypress.$('[data-cy=input-celkovaVymeraPozemku]', pozemky)).type(this.fileData.danZPozemkov.priznania[indexPriznania].pozemky[indexPozemky].celkovaVymeraPozemku)
                       cy.wrap(Cypress.$('[data-cy=input-podielPriestoruNaSpolocnychCastiachAZariadeniachDomu]', priznania)).type(this.fileData.danZPozemkov.priznania[indexPriznania].pozemky[0].podielPriestoruNaSpolocnychCastiachAZariadeniachDomu)
@@ -198,45 +220,6 @@ describe('F05 -', { testIsolation: false }, () => {
 
         it('9. Filling out "Construction tax return - one purpose" step.', () => { 
           // TODO
-          /*
-          if (this.fileData.danZoStaviebJedenUcel.vyplnitObject.vyplnit) {
-            cy.dataCy('form-container').then((form) => {
-              if (!this.fileData.danZPozemkov.kalkulackaWrapper.pouzitKalkulacku) {
-                cy.wrap(Cypress.$('[data-cy=checkbox-group-kalkulačka-výpočtu-výmery-zastavanej-plochy-stavby]', form)).find(`[data-cy=checkbox-true]`).click()
-              }
-
-              // Priznanie
-              cy.get(this.fileData.danZPozemkov.priznania).each((dataPriznania, indexPriznania) => {
-                if (indexPriznania > 0) {
-                  cy.wrap(Cypress.$('[data-cy=add-button]', form).eq(0)).click()
-                }
-                cy.dataCy(`section-priznania-${indexPriznania}`).then((priznania) => {
-                  cy.wrap(Cypress.$('[data-cy=radio-group-právny-vzťah]', priznania)).find(`[data-cy=radio-${this.fileData.danZPozemkov.priznania[indexPriznania].pravnyVztah}]`).click()
-
-                  cy.wrap(Cypress.$('[data-cy=radio-group-spoluvlastníctvo]', priznania)).find(`[data-cy=radio-${this.fileData.danZPozemkov.priznania[indexPriznania].spoluvlastnictvo}]`).click()
-
-                  // Pozemky
-                  cy.get(this.fileData.danZPozemkov.priznania[indexPriznania].pozemky).each((dataPozemky, indexPozemky) => {
-                    cy.dataCy(`section-pozemky-${indexPozemky}`).then((pozemky) => {
-    
-                      cy.wrap(Cypress.$('[data-cy=input-ulicaACisloDomu]', pozemky)).type(this.fileData.danZPozemkov.priznania[indexPriznania].pozemky[indexPozemky].parcelneCisloSposobVyuzitiaPozemku.cisloParcely)
-
-                      cy.wrap(Cypress.$('[data-cy=select-druh-pozemku]', pozemky)).click()
-                      cy.wrap(Cypress.$('[data-cy=select-druh-pozemku]', pozemky)).contains(this.fileData.danZPozemkov.priznania[indexPriznania].pozemky[indexPozemky].druhPozemku).click()
-
-                      cy.wrap(Cypress.$('[data-cy=input-celkovaVymeraPozemku]', pozemky)).type(this.fileData.danZPozemkov.priznania[indexPriznania].pozemky[indexPozemky].celkovaVymeraPozemku)
-                      cy.wrap(Cypress.$('[data-cy=input-podielPriestoruNaSpolocnychCastiachAZariadeniachDomu]', priznania)).type(this.fileData.danZPozemkov.priznania[indexPriznania].pozemky[0].podielPriestoruNaSpolocnychCastiachAZariadeniachDomu)
-                      cy.wrap(Cypress.$('[data-cy=input-spoluvlastnickyPodiel]', pozemky)).type(this.fileData.danZPozemkov.priznania[indexPriznania].pozemky[indexPozemky].spoluvlastnickyPodiel)
-                    })
-                  })
-                })
-              })
-              
-              cy.wrap(Cypress.$(`[data-cy=continue-button-${device}]`, form)).click()
-              cy.wrap(Cypress.$(`[data-cy=continue-button-${device}]`, form)).click()
-            })
-          }
-          */
         })
 
         it('10. Checking "Construction tax return - multi purpose" step validation.', () => {

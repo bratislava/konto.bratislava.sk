@@ -5,7 +5,7 @@
         "pozemky": [
           {
             "kataster": "Nové Mesto",
-            "druhPozemku": "E – rybníky s chovom rýb a ostatné hospodársky využívané vodné plochy",
+            "druhPozemku": "E",
             "celkovaVymeraPozemku": 215,
             "cisloListuVlastnictva": "0000",
             "spoluvlastnickyPodiel": "1/1",
@@ -15,8 +15,8 @@
             "podielPriestoruNaSpolocnychCastiachAZariadeniachDomu": "2569/15897"
           }
         ],
-        "pravnyVztah": "vlastník",
-        "spoluvlastnictvo": "som-jediný-vlastník"
+        "pravnyVztah": "vlastnik",
+        "spoluvlastnictvo": "somJedinyVlastnik"
       }
     ],
     "vyplnitObject": {
@@ -31,7 +31,7 @@
     "druh": "priznanie"
   },
   "udajeODanovnikovi": {
-    "stat": "Slovenská republika",
+    "stat": "703",
     "email": "meno@gmail.com",
     "obecPsc": {
       "psc": "83103",
@@ -39,12 +39,11 @@
     },
     "telefon": "+421948111111",
     "menoTitul": {
-      "meno": "Peter",
-      "priezvisko": "Novak",
-      "titul": "Bc."
+      "meno": "Peter"
     },
+    "priezvisko": "AAA Skúšobné s r .o",
     "rodneCislo": "920314/6326",
-    "priznanieAko": "fyzická-osoba",
+    "priznanieAko": "fyzickaOsoba",
     "voSvojomMene": true,
     "korespondencnaAdresa": {
       "korespondencnaAdresaRovnaka": true

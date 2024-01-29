@@ -56,7 +56,7 @@ export const getServerSideProps: GetServerSideProps<FormPageWrapperProps, Params
           uiSchema: form.schemaVersion.uiSchema,
           formId: id,
           initialFormDataJson: form.formDataJson ?? {},
-          files,
+          initialServerFiles: files,
           oldSchemaVersion: !form.isLatestSchemaVersionForSlug,
           formSent,
           formMigrationRequired,

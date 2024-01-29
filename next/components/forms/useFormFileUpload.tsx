@@ -57,7 +57,7 @@ const REFETCH_INTERVAL = 5000
  *  At the end, the client and server files are merged and returned to the consumer.
  */
 export const useGetContext = () => {
-  const { formId, files } = useFormContext()
+  const { formId, initialServerFiles } = useFormContext()
   const queryClient = useQueryClient()
   const isMounted = useIsMounted()
 
@@ -92,7 +92,7 @@ export const useGetContext = () => {
     retryDelay: 5000, // Retry every 5 seconds
     staleTime: Infinity,
     refetchInterval,
-    initialData: files,
+    initialData: initialServerFiles,
     initialDataUpdatedAt: Date.now(),
   })
 

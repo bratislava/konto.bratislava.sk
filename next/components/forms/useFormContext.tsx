@@ -8,7 +8,7 @@ export type FormContext = {
   schema: RJSFSchema
   uiSchema: UiSchema
   initialFormDataJson: GenericObjectType
-  files: GetFileResponseDto[]
+  initialServerFiles: GetFileResponseDto[]
   oldSchemaVersion: boolean
   formSent: boolean
   formMigrationRequired: boolean

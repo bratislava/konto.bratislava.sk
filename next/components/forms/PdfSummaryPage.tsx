@@ -22,7 +22,7 @@ const PdfSummaryPage = ({ formContext }: PdfSummaryPageProps) => {
           </FormSummaryProvider>
         </FormProviders>
       }
-      sentChildren={<></>}
+      sentChildren={<div />}
     />
   )
 }

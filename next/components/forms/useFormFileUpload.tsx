@@ -57,7 +57,7 @@ const REFETCH_INTERVAL = 5000
  *  At the end, the client and server files are merged and returned to the consumer.
  */
 export const useGetContext = () => {
-  const { formId, initialServerFiles } = useFormContext()
+  const { formId, initialServerFiles, initialClientFiles } = useFormContext()
   const queryClient = useQueryClient()
   const isMounted = useIsMounted()
 
@@ -68,7 +68,9 @@ export const useGetContext = () => {
   // the current value of the client files is needed immediately. Also, the `uploadFile` callback would not have access
   // to the current value of the client files if it was stored only in the state.
   // The state should be only modified by the `updateClientFiles` function.
-  const [clientFiles, setClientFiles] = useState<FormFileUploadClientFileInfo[]>([])
+  const [clientFiles, setClientFiles] = useState<FormFileUploadClientFileInfo[]>(
+    initialClientFiles ?? [],
+  )
   const clientFilesRef = useRef(clientFiles)
   const getClientFiles = useCallback(() => clientFilesRef.current, [])
 
@@ -318,6 +320,8 @@ export const useGetContext = () => {
   }, [])
 
   return {
+    clientFiles,
+    serverFiles: serverFilesQuery.data,
     uploadFiles,
     removeFiles,
     keepFiles,

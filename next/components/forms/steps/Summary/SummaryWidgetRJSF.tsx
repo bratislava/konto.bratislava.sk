@@ -1,5 +1,6 @@
 import { getLocalTimeZone, parseDate } from '@internationalized/date'
 import { WidgetProps } from '@rjsf/utils'
+import cx from 'classnames'
 import React from 'react'
 import { useDateFormatter } from 'react-aria'
 import { CheckboxUiOptions, SelectUiOptions } from 'schema-generator/generator/uiOptionsTypes'
@@ -36,6 +37,7 @@ const ValueComponent = ({
   uiSchema,
 }: Pick<SummaryWidgetRJSFProps, 'widgetType' | 'value' | 'options' | 'uiSchema'>) => {
   const formatter = useDateFormatter()
+  const { isPdf } = useFormSummary()
 
   if (value == null || (Array.isArray(value) && value.length === 0)) {
     return <>-</>
@@ -59,7 +61,7 @@ const ValueComponent = ({
         </>
       )
     case 'textArea':
-      return <span className="line-clamp-3 whitespace-pre-wrap">{value}</span>
+      return <span className={cx('whitespace-pre-wrap', { 'line-clamp-3': !isPdf })}>{value}</span>
     case 'checkbox':
       if (value) {
         return <>{(options as CheckboxUiOptions).checkboxLabel}</>
@@ -109,7 +111,7 @@ const SummaryWidgetRJSF = ({
   name,
 }: SummaryWidgetRJSFProps) => {
   const { isReadonly } = useFormContext()
-  const { fieldHasError } = useFormSummary()
+  const { fieldHasError, isPdf } = useFormSummary()
   const { goToStepByFieldId } = useFormState()
 
   return (
@@ -134,8 +136,9 @@ const SummaryWidgetRJSF = ({
         onGoToStep={() => {
           goToStepByFieldId(id)
         }}
-        isEditable={!isReadonly}
+        isEditable={isPdf ? false : !isReadonly}
         size="small"
+        // variant={isPdf ? 'vertical' : 'horizontal'}
       />
     </div>
   )

@@ -14,14 +14,21 @@ export interface SummaryRowData {
 interface SummaryRowProps {
   data: SummaryRowData
   size?: 'small' | 'large'
+  variant?: 'horizontal' | 'vertical'
   isEditable?: boolean
   onGoToStep?: () => void
 }
 
-const SummaryRow = (props: SummaryRowProps) => {
-  const { data, size = 'large', isEditable = true, onGoToStep } = props
-
-  const containerClassName = cx('flex flex-row flex-wrap gap-2 border-b-2 py-2.5 md:flex-nowrap', {
+const SummaryRow = ({
+  data,
+  size = 'large',
+  variant = 'horizontal',
+  isEditable = true,
+  onGoToStep,
+}: SummaryRowProps) => {
+  const containerClassName = cx('flex flex-wrap gap-2 border-b-2 py-2.5 md:flex-nowrap', {
+    'flex-row': variant === 'horizontal',
+    'flex-col': variant === 'vertical',
     'border-red-500 [&>div>*]:block': data.isError,
     'border-gray-200 [&>div>*]:hover:block': !data.isError,
     'hover:border-gray-700': isEditable,

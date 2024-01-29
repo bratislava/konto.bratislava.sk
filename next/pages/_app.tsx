@@ -8,7 +8,6 @@ import 'react-loading-skeleton/dist/skeleton.css'
 
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import { StatusBarProvider } from 'components/forms/info-components/StatusBar'
-import CookieConsent from 'components/forms/segments/CookieConsent/CookieConsent'
 import { LoginRegisterRedirectProvider } from 'frontend/hooks/useLoginRegisterRedirect'
 import { AppProps } from 'next/app'
 import { Inter } from 'next/font/google'
@@ -71,7 +70,7 @@ const MyApp = ({ Component, pageProps }: AppProps) => {
                 >
                   <LoginRegisterRedirectProvider>
                     <Component {...pageProps} />
-                    <CookieConsent />
+                    {/* <CookieConsent /> */}
                   </LoginRegisterRedirectProvider>
                 </PlausibleProvider>
               </SnackbarProvider>

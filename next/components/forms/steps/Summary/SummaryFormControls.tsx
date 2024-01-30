@@ -103,9 +103,9 @@ const SummaryFormControls = () => {
                 fullWidth
                 type="submit"
                 variant="black-solid"
-                onPress={handleSendButtonPress}
+                onPress={handleSendEidButtonPress}
               >
-                {t('summary.button_send')}
+                {t('summary.button_send_eid')}
               </ButtonNew>
             )}
           </>

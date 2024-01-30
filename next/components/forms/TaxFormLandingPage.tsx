@@ -6,6 +6,7 @@ import { useTranslation } from 'next-i18next'
 import React from 'react'
 
 import { ROUTES } from '../../frontend/api/constants'
+import { useServerSideAuth } from '../../frontend/hooks/useServerSideAuth'
 import useSnackbar from '../../frontend/hooks/useSnackbar'
 import AccountPageLayout from '../layouts/AccountPageLayout'
 import { GetSSRCurrentAuth } from '../logic/ServerSideAuthProvider'
@@ -13,6 +14,7 @@ import TaxFormLandingPageCard, {
   TaxFormLandingPageCardProps,
 } from './info-components/TaxFormLandingPageCard'
 import AccountMarkdown from './segments/AccountMarkdown/AccountMarkdown'
+import ButtonNew from './simple-components/ButtonNew'
 import Waves from './simple-components/Waves/Waves'
 
 export type TaxFormLandingPageProps = {
@@ -26,6 +28,7 @@ export type TaxFormLandingPageProps = {
  * The layout is copied from `FormPage` and `FormHeader`.
  */
 const TaxFormLandingPage = ({ latestVersionId, isBetaUser }: TaxFormLandingPageProps) => {
+  const { isAuthenticated } = useServerSideAuth()
   const router = useRouter()
   const { t } = useTranslation('forms')
   const [openSnackbarError] = useSnackbar({ variant: 'error' })
@@ -67,7 +70,7 @@ const TaxFormLandingPage = ({ latestVersionId, isBetaUser }: TaxFormLandingPageP
           alebo <strong>stiahnete ako PDF</strong>, ktoré odošlete poštou.
         </>
       ) : (
-        'Vyplňte daňové priznanie jednoducho, s návodom a pomocnými kalkulačkami, v Bratislavskom konte. PDF si následne stiahnete a odošlete poštou.'
+        'Vyplňte daňové priznanie jednoducho, s návodom a pomocnými kalkulačkami. V Bratislavskom konte, aj bez registrácie. PDF si následne stiahnete a odošlete poštou.'
       ),
       icon: Castle48PxIcon,
       onPress: () => {
@@ -121,6 +124,18 @@ const TaxFormLandingPage = ({ latestVersionId, isBetaUser }: TaxFormLandingPageP
           <AccountMarkdown content={t('tax_form_landing_page.instructions')} variant="sm" />
           <div className="flex flex-col gap-3">
             <h2 className="text-h2">Vyberte si ako vyplníte priznanie:</h2>
+            {!isAuthenticated && (
+              <p className="text-p2">
+                Ak ste súčasťou <strong>beta testovania</strong> nového odosielania s eID, prosím{' '}
+                <ButtonNew
+                  href={`/prihlasenie?from=${encodeURIComponent(ROUTES.MUNICIPAL_SERVICES_TAX)}`}
+                  variant="black-link"
+                >
+                  prihláste sa
+                </ButtonNew>{' '}
+                do svojho Bratislavského konta.
+              </p>
+            )}
             <div className="flex flex-col rounded-xl border-2 border-gray-200">
               {cards.map((card, index) => (
                 <TaxFormLandingPageCard key={index} {...card} />

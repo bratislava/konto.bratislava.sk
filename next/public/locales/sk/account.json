@@ -397,6 +397,12 @@
         "title": "Adopcia zelene",
         "description": "Dobrovoľnícky program pre zapojenie sa do starostlivosti o plochy zelene v meste a zabezpečenie ich údržby bez nároku na finančnú odmenu.",
         "buttonText": "Adoptovať si zeleň"
+      },
+      "43": {
+        "title": "Priznanie k dani z nehnuteľností",
+        "description": "Vyplňte jednoducho priznanie s návodom a pomocnými kalkulačkami.",
+        "buttonText": "Prejsť na priznanie",
+        "tag": "Nová služba"
       }
     }
   },

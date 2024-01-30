@@ -1,5 +1,6 @@
 import { GetFileResponseDto } from '@clients/openapi-forms'
 import { GenericObjectType, RJSFSchema, UiSchema } from '@rjsf/utils'
+import axios from 'axios'
 import type { NextApiRequest, NextApiResponse } from 'next'
 import puppeteer from 'puppeteer'
 import { v4 as uuidv4 } from 'uuid'
@@ -30,24 +31,22 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     return res.status(400).json({ error: 'Missing required parameters' })
   }
 
-  console.log(generatedUuid, 'before fetch')
-  // Extract the relevant data from the request body
-  const dataStoreResponse = await fetch(`${environment.selfUrl}/api/pdf-preview-data-store`, {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-    },
-    body: JSON.stringify({
-      schema,
-      uiSchema,
-      formDataJson,
-      initialServerFiles,
-      initialClientFiles,
-    }),
-  })
-
-  const [{ uuid }, browser] = await Promise.all([
-    dataStoreResponse.json(),
+  const [dataStoreResponse, browser] = await Promise.all([
+    await axios.post<{ uuid: string }>(
+      `${environment.selfUrl}/api/pdf-preview-data-store`,
+      {
+        schema,
+        uiSchema,
+        formDataJson,
+        initialServerFiles,
+        initialClientFiles,
+      },
+      {
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      },
+    ),
     puppeteer.launch({
       headless: 'new',
       args: ['--no-sandbox', '--disable-setuid-sandbox'],
@@ -60,9 +59,12 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     await page.setJavaScriptEnabled(false)
     console.log(generatedUuid, 'after newPage')
 
-    const response = await page.goto(`${environment.selfUrl}/pdf-preview/${uuid}`, {
-      waitUntil: 'domcontentloaded', // wait for page to load completely
-    })
+    const response = await page.goto(
+      `${environment.selfUrl}/pdf-preview/${dataStoreResponse.data.uuid}`,
+      {
+        waitUntil: 'domcontentloaded', // wait for page to load completely
+      },
+    )
     console.log(generatedUuid, 'after goto')
 
     if (!response || response.status() !== 200) {

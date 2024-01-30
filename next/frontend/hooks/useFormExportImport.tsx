@@ -1,7 +1,7 @@
 import { formsApi } from '@clients/forms'
 import { GetFormResponseDto } from '@clients/openapi-forms'
 import { useMutation } from '@tanstack/react-query'
-import { AxiosResponse } from 'axios'
+import axios, { AxiosResponse } from 'axios'
 import { ROUTES } from 'frontend/api/constants'
 import logger from 'frontend/utils/logger'
 import { useRouter } from 'next/router'
@@ -19,9 +19,12 @@ import { useIsClient } from 'usehooks-ts'
 
 import { RegistrationModalType } from '../../components/forms/segments/RegistrationModal/RegistrationModal'
 import { useFormContext } from '../../components/forms/useFormContext'
+import { useFormFileUpload } from '../../components/forms/useFormFileUpload'
 import { useFormLeaveProtection } from '../../components/forms/useFormLeaveProtection'
 import { useFormModals } from '../../components/forms/useFormModals'
 import { useFormState } from '../../components/forms/useFormState'
+import { environment } from '../../environment'
+import type { PdfPreviewPayload } from '../../pages/api/pdf-preview'
 import { readFileToString } from '../utils/file'
 import { downloadBlob } from '../utils/general'
 import { useServerSideAuth } from './useServerSideAuth'
@@ -35,7 +38,8 @@ declare global {
 
 export const useGetContext = () => {
   const { isAuthenticated } = useServerSideAuth()
-  const { schemaVersionId, formId, slug, isTaxForm } = useFormContext()
+  const { schema, uiSchema, schemaVersionId, formId, slug, isTaxForm } = useFormContext()
+  const { clientFiles, serverFiles } = useFormFileUpload()
   const { formData, setImportedFormData } = useFormState()
   const { setRegistrationModal, setTaxFormPdfExportModal } = useFormModals()
   const { t } = useTranslation('forms')
@@ -195,19 +199,36 @@ export const useGetContext = () => {
   }
 
   const runPdfExport = async (abortController?: AbortController) => {
-    const response = await formsApi.convertControllerConvertToPdf(
-      schemaVersionId,
+    // Set the endpoint URL for the POST request
+    const response = await axios.post<BlobPart, AxiosResponse<BlobPart>, PdfPreviewPayload>(
+      `${environment.selfUrl}/api/pdf-preview`,
       {
-        jsonForm: formData,
+        schema,
+        uiSchema,
+        formDataJson: formData,
+        initialServerFiles: serverFiles,
+        initialClientFiles: clientFiles.map((fileInfo) => ({
+          ...fileInfo,
+          // File object is not serializable, so we only pass the name to display it properly in the PDF
+          file: { name: fileInfo.file.name } as File,
+        })),
       },
-      {
-        accessToken: 'onlyAuthenticated',
-        responseType: 'arraybuffer',
-        signal: abortController?.signal,
-      },
+      { responseType: 'arraybuffer', signal: abortController?.signal },
     )
+
+    // const response = await formsApi.convertControllerConvertToPdf(
+    //   initialFormData.schemaVersionId,
+    //   {
+    //     jsonForm: formData,
+    //   },
+    //   {
+    //     accessToken: 'onlyAuthenticated',
+    //     responseType: 'arraybuffer',
+    //     signal: abortController?.signal,
+    //   },
+    // )
     const fileName = `${slug}_output.pdf`
-    downloadBlob(new Blob([response.data as BlobPart]), fileName)
+    downloadBlob(new Blob([response.data]), fileName)
   }
 
   const exportOrdinaryPdf = async () => {

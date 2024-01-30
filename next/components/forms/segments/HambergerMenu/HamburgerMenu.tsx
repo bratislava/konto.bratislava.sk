@@ -8,6 +8,7 @@ import Link from 'next/link'
 import { useRouter } from 'next/router'
 import { useTranslation } from 'next-i18next'
 import { ComponentProps, forwardRef } from 'react'
+import { useEventListener } from 'usehooks-ts'
 
 import { ROUTES } from '../../../../frontend/api/constants'
 import { useNavMenuContext } from '../NavBar/navMenuContext'
@@ -57,8 +58,14 @@ const ItemLink = forwardRef<HTMLAnchorElement, ItemLinkProps>(
 
 export const HamburgerMenu = ({ sectionsList, menuItems, closeMenu }: IProps) => {
   const router = useRouter()
-  const { menuValue, setMenuValue } = useNavMenuContext()
+  const { menuValue, setMenuValue, setMobileMenuOpen } = useNavMenuContext()
   const { t } = useTranslation('common')
+
+  useEventListener('keydown', (event) => {
+    if (event.key === 'Escape') {
+      setMobileMenuOpen(false)
+    }
+  })
 
   return (
     <div

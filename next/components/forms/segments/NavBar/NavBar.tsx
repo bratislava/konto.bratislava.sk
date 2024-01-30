@@ -68,14 +68,13 @@ const Avatar = ({ userData }: { userData?: UserData | null }) => {
 
 // TODO - needs complete refactor using some accessibility library
 export const NavBar = ({ className, sectionsList, menuItems, hiddenHeaderNav }: IProps) => {
-  const [burgerOpen, setBurgerOpen] = useState(false)
   const { userData, isAuthenticated, isLegalEntity } = useServerSideAuth()
 
   const { statusBarConfiguration } = useStatusBarContext()
   const [isMenuOpen, setIsMenuOpen] = useState<boolean>(false)
   const [desktopRef, { height: desktopHeight }] = useElementSize([statusBarConfiguration.content])
   const [mobileRef, { height: mobileHeight }] = useElementSize([statusBarConfiguration.content])
-  const { menuValue, setMenuValue } = useNavMenuContext()
+  const { menuValue, setMenuValue, isMobileMenuOpen, setMobileMenuOpen } = useNavMenuContext()
 
   const { t } = useTranslation(['common', 'account'])
   const router = useRouter()
@@ -209,19 +208,19 @@ export const NavBar = ({ className, sectionsList, menuItems, hiddenHeaderNav }: 
         ref={mobileRef}
       >
         <div className={RemoveScroll.classNames.fullWidth}>
-          {!burgerOpen && <StatusBar className="flex lg:hidden" />}
+          {!isMobileMenuOpen && <StatusBar className="flex lg:hidden" />}
           <div className="flex h-16 items-center border-b-2 px-8 py-5">
             <Brand url={ROUTES.HOME} className="grow" />
             {/* event onPress is propagating to menu itself casuing glitches when opening mobile menu, 
             becasue of that we are using onClick event and thats why simple button is used */}
             <button
               type="button"
-              onClick={() => (isAuthenticated ? setBurgerOpen(!burgerOpen) : login())}
+              onClick={() => (isAuthenticated ? setMobileMenuOpen((prev) => !prev) : login())}
               className="-mr-4 px-4 py-5"
               data-cy="mobile-account-button"
             >
               <div className="flex w-6 items-center justify-center">
-                {burgerOpen ? (
+                {isMobileMenuOpen ? (
                   <CrossIcon className="h-6 w-6" />
                 ) : isAuthenticated && sectionsList ? (
                   <HamburgerIcon />
@@ -231,11 +230,11 @@ export const NavBar = ({ className, sectionsList, menuItems, hiddenHeaderNav }: 
               </div>
             </button>
 
-            {burgerOpen && (
+            {isMobileMenuOpen && (
               <HamburgerMenu
                 sectionsList={sectionsList}
                 menuItems={menuItems}
-                closeMenu={() => setBurgerOpen(false)}
+                closeMenu={() => setMobileMenuOpen(false)}
               />
             )}
           </div>

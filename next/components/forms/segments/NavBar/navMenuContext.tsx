@@ -1,10 +1,17 @@
-import React, { createContext, PropsWithChildren, useContext, useState } from 'react'
+import React, {
+  createContext,
+  Dispatch,
+  PropsWithChildren,
+  SetStateAction,
+  useContext,
+  useState,
+} from 'react'
 
 type NavMenuContextType = {
   menuValue: string
   setMenuValue: (value: string) => void
   isMobileMenuOpen: boolean
-  setMobileMenuOpen: (value: boolean) => void
+  setMobileMenuOpen: Dispatch<SetStateAction<boolean>>
 }
 
 const NavMenuContext = createContext<NavMenuContextType>({

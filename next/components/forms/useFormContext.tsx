@@ -2,12 +2,15 @@ import { GetFileResponseDto } from '@clients/openapi-forms'
 import { GenericObjectType, RJSFSchema, UiSchema } from '@rjsf/utils'
 import { createContext, PropsWithChildren, useContext } from 'react'
 
+import { FormFileUploadClientFileInfo } from '../../frontend/types/formFileUploadTypes'
+
 export type FormContext = {
   slug: string
   formId: string
   schema: RJSFSchema
   uiSchema: UiSchema
   initialFormDataJson: GenericObjectType
+  initialClientFiles?: FormFileUploadClientFileInfo[]
   initialServerFiles: GetFileResponseDto[]
   oldSchemaVersion: boolean
   formSent: boolean
@@ -15,6 +18,7 @@ export type FormContext = {
   schemaVersionId: string
   isSigned: boolean
   isTaxForm: boolean
+  isPdf?: boolean
 }
 
 const FormContextContext = createContext<FormContext | undefined>(undefined)

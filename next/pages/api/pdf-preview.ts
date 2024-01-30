@@ -45,21 +45,22 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       initialClientFiles,
     }),
   })
-  const { uuid } = await dataStoreResponse.json()
+
+  const [{ uuid }, browser] = await Promise.all([
+    dataStoreResponse.json(),
+    puppeteer.launch({
+      headless: 'new',
+    }),
+  ])
   console.log(generatedUuid, 'after fetch')
-
-  const browser = await puppeteer.launch({
-    headless: 'new',
-  })
-
-  console.log(generatedUuid, 'after launch')
 
   try {
     const page = await browser.newPage()
+    await page.setJavaScriptEnabled(false)
     console.log(generatedUuid, 'after newPage')
 
     const response = await page.goto(`${environment.selfUrl}/pdf-preview/${uuid}`, {
-      waitUntil: 'networkidle0', // wait for page to load completely
+      waitUntil: 'domcontentloaded', // wait for page to load completely
     })
     console.log(generatedUuid, 'after goto')
 

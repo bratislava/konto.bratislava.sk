@@ -13,8 +13,8 @@ const FormSentContext = createContext<ReturnType<typeof useGetContext> | undefin
 
 type FormSentProviderProps = {
   initialFormSent: boolean
-  notSentChildren: ReactNode
-  sentChildren: ReactNode
+  notSentChildren?: ReactNode
+  sentChildren?: ReactNode
 }
 export const FormSentRenderer = ({
   initialFormSent,
@@ -33,7 +33,10 @@ export const FormSentRenderer = ({
 export const useFormSent = () => {
   const context = useContext(FormSentContext)
   if (!context) {
-    throw new Error('useFormSent must be used within a FormSentProvider')
+    return {
+      formSent: false,
+      setFormIsSent: () => {},
+    } satisfies ReturnType<typeof useGetContext>
   }
 
   return context

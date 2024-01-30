@@ -46,6 +46,7 @@ export const getServerSideProps: GetServerSideProps<FormPageWrapperProps, Params
         schemaVersionId: '',
         isSigned: true,
         isTaxForm: true,
+        isPdf: false,
       },
       ...(await serverSideTranslations(locale)),
     } satisfies FormPageWrapperProps,

@@ -13,6 +13,7 @@ function assertEnv<T>(variable: string, value: T) {
 
 export const environment = {
   nodeEnv: assertEnv('NODE_ENV', process.env.NODE_ENV),
+  selfUrl: assertEnv('NEXT_PUBLIC_SELF_URL', process.env.NEXT_PUBLIC_SELF_URL),
   isStaging: assertEnv('NEXT_PUBLIC_IS_STAGING', process.env.NEXT_PUBLIC_IS_STAGING) === 'true',
   cognitoUserPoolId: assertEnv(
     'NEXT_PUBLIC_COGNITO_USER_POOL_ID',

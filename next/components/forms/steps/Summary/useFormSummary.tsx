@@ -6,7 +6,11 @@ import { useFormContext } from '../../useFormContext'
 import { useFormFileUpload } from '../../useFormFileUpload'
 import { useFormState } from '../../useFormState'
 
-const useGetContext = () => {
+export type FormSummaryProviderProps = {
+  isPdf?: boolean
+}
+
+const useGetContext = ({ isPdf }: FormSummaryProviderProps) => {
   const { schema } = useFormContext()
   const { formData } = useFormState()
 
@@ -21,6 +25,7 @@ const useGetContext = () => {
   const fieldHasError = (fieldId: string) => checkPathForErrors(fieldId, errorSchema)
 
   return {
+    isPdf,
     errorSchema,
     infectedFiles,
     uploadingFiles,
@@ -32,8 +37,11 @@ const useGetContext = () => {
 
 const FormSummaryContext = createContext<ReturnType<typeof useGetContext> | undefined>(undefined)
 
-export const FormSummaryProvider = ({ children }: PropsWithChildren) => {
-  const context = useGetContext()
+export const FormSummaryProvider = ({
+  children,
+  ...props
+}: PropsWithChildren<FormSummaryProviderProps>) => {
+  const context = useGetContext(props)
 
   return <FormSummaryContext.Provider value={context}>{children}</FormSummaryContext.Provider>
 }

@@ -66,6 +66,7 @@ export const getServerSideProps: GetServerSideProps<FormPageWrapperProps, Params
             // Temporarily allow signing only for beta users.
             ssrCurrentAuthProps.userData?.['custom:2024_tax_form_beta'] === 'true',
           isTaxForm: slug === 'priznanie-k-dani-z-nehnutelnosti',
+          isPdf: false,
         },
         ...(await serverSideTranslations(locale)),
       } satisfies FormPageWrapperProps,

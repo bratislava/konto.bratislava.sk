@@ -7,6 +7,9 @@ import {
 import cx from 'classnames'
 import { ComponentType, Fragment } from 'react'
 
+import { defaultFormStateBehavior, rjsfValidator } from '../../../../frontend/utils/form'
+import { useFormContext } from '../../useFormContext'
+import { useFormState } from '../../useFormState'
 import { ArrayFieldItemTemplate, ArrayFieldTemplate } from './SummaryArrayTemplateRJSF'
 import SummaryWidgetRJSF, { SummaryWidgetRJSFProps, SummaryWidgetType } from './SummaryWidgetRJSF'
 
@@ -58,6 +61,30 @@ const theme: ThemeProps = {
  * of the form behaviour we use the RJSF to render the form, but the provided fields and widgets are replaced with
  * custom ones that only display the values and are not able to edit the form values.
  */
-const SummaryForm = withTheme<GenericObjectType>(theme)
+const ThemedForm = withTheme<GenericObjectType>(theme)
+
+const SummaryForm = () => {
+  const { schema, uiSchema } = useFormContext()
+  const { formData } = useFormState()
+
+  return (
+    <ThemedForm
+      schema={schema}
+      uiSchema={uiSchema}
+      formData={formData}
+      // The validator is not used, but it's required by the form. We use our own validation in `useFormSummary`.
+      validator={rjsfValidator}
+      experimental_defaultFormStateBehavior={defaultFormStateBehavior}
+      readonly
+      onSubmit={(e) => {
+        console.log('form submit', e.formData)
+      }}
+      // We display the errors in our on way.
+      showErrorList={false}
+    >
+      <div />
+    </ThemedForm>
+  )
+}
 
 export default SummaryForm

@@ -5,16 +5,12 @@ import Button from 'components/forms/simple-components/Button'
 import { useTranslation } from 'next-i18next'
 
 import { ROUTES } from '../../../../../frontend/api/constants'
-import { InitialFormData } from '../../../../../frontend/types/initialFormData'
+import { useFormContext } from '../../../useFormContext'
 import { taxFeedbackUrl } from '../../TaxFormPdfExportModal/TaxFormPdfExportModal'
 
-type ThankYouFormSectionProps = {
-  initialFormData: InitialFormData
-}
-
-const ThankYouFormSection = ({ initialFormData }: ThankYouFormSectionProps) => {
+const ThankYouFormSection = () => {
+  const { isTaxForm } = useFormContext()
   const { t } = useTranslation('account')
-  const { isTaxForm } = initialFormData
 
   return (
     <div className="flex h-screen flex-col justify-between bg-gray-0 pt-16 md:bg-gray-50 md:pt-28">

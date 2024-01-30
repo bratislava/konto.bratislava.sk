@@ -11,6 +11,7 @@ interface UploadedFilesListProps {
   onFileRemove?: (id: string) => void
   onFileRetry?: (id: string) => void
   onFileDownload?: (id: string) => void
+  disabled?: boolean
 }
 
 const UploadFilesList = ({
@@ -19,6 +20,7 @@ const UploadFilesList = ({
   onFileRetry = () => {},
   onFileRemove = () => {},
   onFileDownload = () => {},
+  disabled = false,
 }: UploadedFilesListProps) => {
   const { t } = useTranslation('account', { keyPrefix: 'Upload' })
 
@@ -46,6 +48,7 @@ const UploadFilesList = ({
               onFileRetry={() => onFileRetry(fileId)}
               onFileRemove={() => onFileRemove(fileId)}
               onFileDownload={() => onFileDownload(fileId)}
+              disabled={disabled}
             />
           </li>
         ))}

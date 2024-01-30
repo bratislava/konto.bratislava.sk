@@ -1,19 +1,16 @@
-import { RJSFSchema, UiSchema } from '@rjsf/utils'
 import { useRouter } from 'next/router'
 import { usePlausible } from 'next-plausible'
 import React, { useEffect } from 'react'
 import { useEffectOnce } from 'usehooks-ts'
 
 import { FormExportImportProvider } from '../../frontend/hooks/useFormExportImport'
-import { InitialFormData } from '../../frontend/types/initialFormData'
 import AccountPageLayout from '../layouts/AccountPageLayout'
 import { GetSSRCurrentAuth } from '../logic/ServerSideAuthProvider'
 import FormPage from './FormPage'
 import ThankYouFormSection from './segments/AccountSections/ThankYouSection/ThankYouFormSection'
 import { FormSignatureProvider } from './signer/useFormSignature'
 import { FormSignerLoaderProvider } from './signer/useFormSignerLoader'
-import ThemedForm from './ThemedForm'
-import { FormComponentProvider } from './useFormComponent'
+import { FormContext, FormContextProvider } from './useFormContext'
 import { FormFileUploadProvider } from './useFormFileUpload'
 import { FormLeaveProtectionProvider } from './useFormLeaveProtection'
 import { FormModalsProvider } from './useFormModals'
@@ -23,9 +20,7 @@ import { FormSentRenderer } from './useFormSent'
 import { FormStateProvider } from './useFormState'
 
 export type FormPageWrapperProps = {
-  schema: RJSFSchema
-  uiSchema: UiSchema
-  initialFormData: InitialFormData
+  formContext: FormContext
   ssrCurrentAuthProps?: GetSSRCurrentAuth
 }
 
@@ -55,33 +50,25 @@ const useCustomPlausibleFormPagesTracking = (formSlug: string) => {
   })
 }
 
-const FormPageWrapper = ({ schema, uiSchema, initialFormData }: FormPageWrapperProps) => {
-  const router = useRouter()
-  const formSlug = router.query.slug as string
-
-  useCustomPlausibleFormPagesTracking(formSlug)
+const FormPageWrapper = ({ formContext }: FormPageWrapperProps) => {
+  useCustomPlausibleFormPagesTracking(formContext.slug)
 
   return (
-    <FormSentRenderer
-      // TODO today it does not make sense to have anything else than false in initialFormSent - otherwise we just display "thank you" page on each revisit
-      // if it stays this way remove the prop completely
-      initialFormSent={false}
-      notSentChildren={
-        <FormComponentProvider formComponent={ThemedForm}>
-          <FormFileUploadProvider initialFormData={initialFormData}>
+    <FormContextProvider formContext={formContext}>
+      <FormSentRenderer
+        // TODO today it does not make sense to have anything else than false in initialFormSent - otherwise we just display "thank you" page on each revisit
+        // if it stays this way remove the prop completely
+        initialFormSent={false}
+        notSentChildren={
+          <FormFileUploadProvider>
             <FormLeaveProtectionProvider>
-              <FormModalsProvider initialFormData={initialFormData}>
-                <FormSignerLoaderProvider initialFormData={initialFormData}>
-                  <FormStateProvider
-                    schema={schema}
-                    uiSchema={uiSchema}
-                    formSlug={formSlug}
-                    initialFormData={initialFormData}
-                  >
+              <FormModalsProvider>
+                <FormSignerLoaderProvider>
+                  <FormStateProvider>
                     <FormRedirectsProvider>
                       <FormSignatureProvider>
                         <FormSendProvider>
-                          <FormExportImportProvider initialFormData={initialFormData}>
+                          <FormExportImportProvider>
                             <AccountPageLayout>
                               <FormPage />
                             </AccountPageLayout>
@@ -94,14 +81,14 @@ const FormPageWrapper = ({ schema, uiSchema, initialFormData }: FormPageWrapperP
               </FormModalsProvider>
             </FormLeaveProtectionProvider>
           </FormFileUploadProvider>
-        </FormComponentProvider>
-      }
-      sentChildren={
-        <AccountPageLayout hiddenHeaderNav className="bg-gray-50">
-          <ThankYouFormSection initialFormData={initialFormData} />
-        </AccountPageLayout>
-      }
-    />
+        }
+        sentChildren={
+          <AccountPageLayout hiddenHeaderNav className="bg-gray-50">
+            <ThankYouFormSection />
+          </AccountPageLayout>
+        }
+      />
+    </FormContextProvider>
   )
 }
 

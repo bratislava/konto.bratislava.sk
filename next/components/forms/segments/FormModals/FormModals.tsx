@@ -6,6 +6,7 @@ import React from 'react'
 
 import { useFormExportImport } from '../../../../frontend/hooks/useFormExportImport'
 import Button from '../../simple-components/ButtonNew'
+import { useFormContext } from '../../useFormContext'
 import { useFormModals } from '../../useFormModals'
 import { useFormRedirects } from '../../useFormRedirects'
 import { useFormState } from '../../useFormState'
@@ -69,7 +70,8 @@ const FormModals = () => {
     useFormExportImport()
   const { login, register, verifyIdentity } = useFormRedirects()
 
-  const { formData, uiSchema } = useFormState()
+  const { uiSchema } = useFormContext()
+  const { formData } = useFormState()
   const uiOptions = getUiOptions(uiSchema)
   const title = getFormTitle(formData, uiOptions, t('form_title_fallback'))
 

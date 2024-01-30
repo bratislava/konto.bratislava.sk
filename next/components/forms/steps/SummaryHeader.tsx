@@ -1,11 +1,11 @@
 import { useTranslation } from 'next-i18next'
 
 import Alert from '../info-components/Alert'
-import { useFormState } from '../useFormState'
+import { useFormContext } from '../useFormContext'
 import { useFormSummary } from './Summary/useFormSummary'
 
 const SummaryHeader = () => {
-  const { isSigned } = useFormState()
+  const { isSigned } = useFormContext()
   const { infectedFiles, uploadingFiles, hasErrors } = useFormSummary()
   const { t } = useTranslation('forms')
 

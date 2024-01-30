@@ -24,6 +24,7 @@ type UploadedFileProps = {
   onFileRemove?: () => void
   onFileRetry?: () => void
   onFileDownload?: () => void
+  disabled?: boolean
 }
 
 const FILE_ERROR_NAME_ENUM = {
@@ -36,6 +37,7 @@ const UploadFileCard = ({
   onFileRetry,
   onFileRemove,
   onFileDownload,
+  disabled = false,
 }: UploadedFileProps) => {
   const { t } = useTranslation('account', { keyPrefix: 'Upload' })
 
@@ -113,6 +115,7 @@ const UploadFileCard = ({
                   'hover:bg-success-200 focus:bg-success-300': isDoneStyle,
                 })}
                 onPress={onFileRemove}
+                disabled={disabled}
               />
             </div>
           </div>
@@ -152,6 +155,7 @@ const UploadFileCard = ({
                 text={t('retry')}
                 size="sm"
                 className="font-bold"
+                disabled={disabled}
               />
             )}
         </div>

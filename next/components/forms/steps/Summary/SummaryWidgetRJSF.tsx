@@ -4,6 +4,7 @@ import React from 'react'
 import { useDateFormatter } from 'react-aria'
 import { CheckboxUiOptions, SelectUiOptions } from 'schema-generator/generator/uiOptionsTypes'
 
+import { useFormContext } from '../../useFormContext'
 import { useFormState } from '../../useFormState'
 import SummaryFiles from './SummaryFiles'
 import SummaryRow from './SummaryRow'
@@ -32,7 +33,7 @@ const ValueComponent = ({
   widgetType,
   value,
   options,
-  uiSchema
+  uiSchema,
 }: Pick<SummaryWidgetRJSFProps, 'widgetType' | 'value' | 'options' | 'uiSchema'>) => {
   const formatter = useDateFormatter()
 
@@ -105,10 +106,11 @@ const SummaryWidgetRJSF = ({
   value,
   options,
   uiSchema,
-  name
+  name,
 }: SummaryWidgetRJSFProps) => {
+  const { isReadonly } = useFormContext()
   const { fieldHasError } = useFormSummary()
-  const { goToStepByFieldId, isReadonly } = useFormState()
+  const { goToStepByFieldId } = useFormState()
 
   return (
     <div>

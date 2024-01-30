@@ -1,20 +1,7 @@
 FROM node:20.9-alpine AS base
 
-# Puppeteer START
-RUN apk add --no-cache \
-    chromium \
-    nss \
-    freetype \
-    freetype-dev \
-    harfbuzz \
-    ca-certificates \
-    ttf-freefont
-
-ENV PUPPETEER_SKIP_CHROMIUM_DOWNLOAD=true
-ENV PUPPETEER_EXECUTABLE_PATH=/usr/bin/chromium-browser
-# Puppeteer END
-
 FROM base AS build-base
+
 WORKDIR /build
 COPY ./package.json ./yarn.lock ./
 
@@ -32,6 +19,18 @@ RUN --mount=type=cache,target=/build/.cache/yarn \
  && yarn build
 
 FROM base AS app-base
+# https://github.com/puppeteer/puppeteer/blob/main/docs/troubleshooting.md#running-on-alpine
+RUN apk add --no-cache \
+      chromium \
+      nss \
+      freetype \
+      harfbuzz \
+      ca-certificates \
+      ttf-freefont
+
+ENV PUPPETEER_SKIP_CHROMIUM_DOWNLOAD=true
+ENV PUPPETEER_EXECUTABLE_PATH=/usr/bin/chromium-browser
+
 RUN apk add --no-cache tini
 RUN mkdir -p /home/node/app \
  && chown node:node /home/node/app

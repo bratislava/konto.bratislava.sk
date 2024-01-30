@@ -12,6 +12,7 @@ export type FormContext = {
   initialFormDataJson: GenericObjectType
   initialClientFiles?: FormFileUploadClientFileInfo[]
   initialServerFiles: GetFileResponseDto[]
+  initialIsSent: boolean
   oldSchemaVersion: boolean
   formSent: boolean
   formMigrationRequired: boolean

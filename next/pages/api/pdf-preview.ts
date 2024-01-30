@@ -2,6 +2,7 @@ import { GetFileResponseDto } from '@clients/openapi-forms'
 import { GenericObjectType, RJSFSchema, UiSchema } from '@rjsf/utils'
 import type { NextApiRequest, NextApiResponse } from 'next'
 import puppeteer from 'puppeteer'
+import { v4 as uuidv4 } from 'uuid'
 
 import { environment } from '../../environment'
 import { FormFileUploadClientFileInfo } from '../../frontend/types/formFileUploadTypes'
@@ -15,6 +16,7 @@ export type PdfPreviewPayload = {
 }
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
+  const generatedUuid = uuidv4()
   // Ensure that we're dealing with a POST request
   if (req.method !== 'POST') {
     return res.status(405).json({ error: 'Method not allowed, use POST' })
@@ -28,6 +30,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     return res.status(400).json({ error: 'Missing required parameters' })
   }
 
+  console.log(generatedUuid, 'before fetch')
   // Extract the relevant data from the request body
   const dataStoreResponse = await fetch(`${environment.selfUrl}/api/pdf-preview-data-store`, {
     method: 'POST',
@@ -43,23 +46,28 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     }),
   })
   const { uuid } = await dataStoreResponse.json()
+  console.log(generatedUuid, 'after fetch')
 
   const browser = await puppeteer.launch({
     headless: 'new',
-    args: ['--no-sandbox', '--disable-setuid-sandbox'],
   })
+
+  console.log(generatedUuid, 'after launch')
 
   try {
     const page = await browser.newPage()
+    console.log(generatedUuid, 'after newPage')
 
     const response = await page.goto(`${environment.selfUrl}/pdf-preview/${uuid}`, {
       waitUntil: 'networkidle0', // wait for page to load completely
     })
+    console.log(generatedUuid, 'after goto')
 
     if (!response || response.status() !== 200) {
       throw new Error('Page failed to load.')
     }
 
+    console.log(generatedUuid, 'after if')
     const pdfBuffer = await page.pdf({
       format: 'A4',
       printBackground: true,
@@ -71,11 +79,13 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
         right: '2.54cm',
       },
     })
+    console.log(generatedUuid, 'after pdfBuffer')
 
     await browser.close()
 
     res.setHeader('Content-Type', 'application/pdf')
     res.setHeader('Content-Disposition', 'attachment; filename=preview.pdf')
+    console.log(generatedUuid, 'before send')
     return res.send(pdfBuffer)
   } catch (error) {
     console.error(error)

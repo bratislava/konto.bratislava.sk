@@ -8,7 +8,7 @@ import { GetSSRCurrentAuth } from '../logic/ServerSideAuthProvider'
 import FormPage from './FormPage'
 import FormProviders from './FormProviders'
 import ThankYouFormSection from './segments/AccountSections/ThankYouSection/ThankYouFormSection'
-import { FormContext } from './useFormContext'
+import { FormContext, FormContextProvider } from './useFormContext'
 import { FormSentRenderer } from './useFormSent'
 
 export type FormPageWrapperProps = {
@@ -58,11 +58,11 @@ const FormPageWrapper = ({ formContext }: FormPageWrapperProps) => {
         </FormProviders>
       }
       sentChildren={
-        <FormProviders formContext={formContext}>
+        <FormContextProvider formContext={formContext}>
           <AccountPageLayout hiddenHeaderNav className="bg-gray-50">
             <ThankYouFormSection />
           </AccountPageLayout>
-        </FormProviders>
+        </FormContextProvider>
       }
     />
   )

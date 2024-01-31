@@ -17,11 +17,11 @@ import { useTranslation } from 'next-i18next'
 import { SchemaUiOptions } from 'schema-generator/generator/uiOptionsTypes'
 
 import { useFormExportImport } from '../../../frontend/hooks/useFormExportImport'
+import { useFormContext } from '../useFormContext'
 import { useFormModals } from '../useFormModals'
-import { useFormState } from '../useFormState'
 
 const FormHeader = () => {
-  const { isReadonly, isDeletable, uiSchema, schema, isTaxForm } = useFormState()
+  const { uiSchema, schema, isTaxForm, isReadonly, isDeletable } = useFormContext()
   const {
     exportXml,
     exportPdf,

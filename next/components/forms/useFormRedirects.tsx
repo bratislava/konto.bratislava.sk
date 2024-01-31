@@ -7,12 +7,14 @@ import { createContext, PropsWithChildren, useContext } from 'react'
 
 import { ROUTES } from '../../frontend/api/constants'
 import useSnackbar from '../../frontend/hooks/useSnackbar'
+import { useFormContext } from './useFormContext'
 import { useFormLeaveProtection } from './useFormLeaveProtection'
 import { useFormState } from './useFormState'
 
 const useGetContext = () => {
   const router = useRouter()
-  const { formId, formData } = useFormState()
+  const { formId } = useFormContext()
+  const { formData } = useFormState()
   const { t } = useTranslation('forms')
   const [openSnackbarInfo, closeSnackbarInfo] = useSnackbar({ variant: 'info' })
   const [openSnackbarError] = useSnackbar({ variant: 'error' })

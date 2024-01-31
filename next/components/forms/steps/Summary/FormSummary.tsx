@@ -1,4 +1,5 @@
 import { defaultFormStateBehavior, rjsfValidator } from '../../../../frontend/utils/form'
+import { useFormContext } from '../../useFormContext'
 import { useFormState } from '../../useFormState'
 import SummaryHeader from '../SummaryHeader'
 import SummaryForm from './SummaryForm'
@@ -8,8 +9,8 @@ import SummaryFormSignature from './SummaryFormSignature'
 import { FormSummaryProvider } from './useFormSummary'
 
 const FormSummary = () => {
-  const { formData, schema, uiSchema } = useFormState()
-  const { isSigned } = useFormState()
+  const { schema, uiSchema, isSigned } = useFormContext()
+  const { formData } = useFormState()
 
   return (
     <FormSummaryProvider>

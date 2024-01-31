@@ -1,10 +1,9 @@
-import { GenericObjectType, RJSFSchema, UiSchema } from '@rjsf/utils'
+import { GenericObjectType } from '@rjsf/utils'
 import { useTranslation } from 'next-i18next'
 import React, { createContext, PropsWithChildren, useContext, useMemo, useState } from 'react'
 import useStateRef from 'react-usestateref'
 import { useIsFirstRender } from 'usehooks-ts'
 
-import { InitialFormData } from '../../frontend/types/initialFormData'
 import { getFileUuidsNaive, validateSummary } from '../../frontend/utils/form'
 import {
   getEvaluatedStepsSchemas,
@@ -16,32 +15,20 @@ import {
   useCurrentStepIndex,
 } from '../../frontend/utils/formState'
 import { FormStepIndex } from './types/Steps'
+import { useFormContext } from './useFormContext'
 import { useFormFileUpload } from './useFormFileUpload'
 import { useFormLeaveProtection } from './useFormLeaveProtection'
 import { useFormModals } from './useFormModals'
 
-interface FormStateProviderProps {
-  schema: RJSFSchema
-  uiSchema: UiSchema
-  formSlug: string
-  initialFormData: InitialFormData
-}
-
-const useGetContext = ({ schema, uiSchema, formSlug, initialFormData }: FormStateProviderProps) => {
+const useGetContext = () => {
+  const { schema, formMigrationRequired, initialFormDataJson, isReadonly } = useFormContext()
   const { t } = useTranslation('forms')
   const { keepFiles, refetchAfterImportIfNeeded, getFileInfoById } = useFormFileUpload()
   const { turnOnLeaveProtection } = useFormLeaveProtection()
   // eslint-disable-next-line testing-library/render-result-naming-convention
   const isFirst = useIsFirstRender()
 
-  const isReadonly =
-    initialFormData.formMigrationRequired ||
-    initialFormData.oldSchemaVersion ||
-    initialFormData.formSent
-  const isDeletable = initialFormData.formMigrationRequired || initialFormData.oldSchemaVersion
-  const [formData, setFormData, formDataRef] = useStateRef<GenericObjectType>(
-    initialFormData.formDataJson,
-  )
+  const [formData, setFormData, formDataRef] = useStateRef<GenericObjectType>(initialFormDataJson)
   const stepsSchemas = useMemo(() => getEvaluatedStepsSchemas(schema, formData), [schema, formData])
 
   const { currentStepIndex, setCurrentStepIndex } = useCurrentStepIndex(stepsSchemas)
@@ -175,7 +162,7 @@ const useGetContext = ({ schema, uiSchema, formSlug, initialFormData }: FormStat
     setStepFormData(newFormData)
   }
   const handleFormOnSubmit = (newFormData: GenericObjectType | undefined) => {
-    if (initialFormData.formMigrationRequired) {
+    if (formMigrationRequired) {
       setMigrationRequiredModal(true)
     }
     if (currentStepIndex === 'summary' || !newFormData || isReadonly) {
@@ -197,14 +184,8 @@ const useGetContext = ({ schema, uiSchema, formSlug, initialFormData }: FormStat
   }
 
   return {
-    schema,
-    uiSchema,
-    formId: initialFormData.formId,
-    formSlug,
     formData,
     formDataRef,
-    isReadonly,
-    isDeletable,
     currentStepIndex,
     stepperData,
     currentStepperStep,
@@ -217,18 +198,13 @@ const useGetContext = ({ schema, uiSchema, formSlug, initialFormData }: FormStat
     handleFormOnSubmit,
     goToStepByFieldId,
     setImportedFormData,
-    isSigned: initialFormData.isSigned,
-    isTaxForm: initialFormData.isTaxForm,
   }
 }
 
 const FormStateContext = createContext<ReturnType<typeof useGetContext> | undefined>(undefined)
 
-export const FormStateProvider = ({
-  children,
-  ...rest
-}: PropsWithChildren<FormStateProviderProps>) => {
-  const context = useGetContext(rest)
+export const FormStateProvider = ({ children }: PropsWithChildren) => {
+  const context = useGetContext()
 
   return <FormStateContext.Provider value={context}>{children}</FormStateContext.Provider>
 }

@@ -9,24 +9,23 @@ import FormModals from './segments/FormModals/FormModals'
 import FormHeader from './simple-components/FormHeader'
 import StepperView from './steps/StepperView'
 import FormSummary from './steps/Summary/FormSummary'
-import { useFormComponent } from './useFormComponent'
+import ThemedForm from './ThemedForm'
+import { useFormContext } from './useFormContext'
 import { useFormErrorTranslations } from './useFormErrorTranslations'
 import { useFormState } from './useFormState'
 
 const FormPage = () => {
+  const { uiSchema, isReadonly } = useFormContext()
   const {
-    uiSchema,
     currentStepIndex,
     currentStepperStep,
     currentStepSchema,
     formData,
     handleFormOnSubmit,
     handleFormOnChange,
-    isReadonly,
   } = useFormState()
 
   const { transformErrors } = useFormErrorTranslations()
-  const FormComponent = useFormComponent()
 
   useEffect(() => {
     window.scrollTo({ top: 0, behavior: 'smooth' })
@@ -35,7 +34,10 @@ const FormPage = () => {
   return (
     <>
       <FormHeader />
-      <div className="mx-auto flex w-full max-w-screen-lg flex-col gap-10 pb-6 pt-0 lg:flex-row lg:gap-20 lg:py-10" data-cy="form-container">
+      <div
+        className="mx-auto flex w-full max-w-screen-lg flex-col gap-10 pb-6 pt-0 lg:flex-row lg:gap-20 lg:py-10"
+        data-cy="form-container"
+      >
         <div>
           <StepperView />
           <FormModals />
@@ -51,7 +53,7 @@ const FormPage = () => {
                   <p className="text-p1">{currentStepperStep.description}</p>
                 )}
               </div>
-              <FormComponent
+              <ThemedForm
                 // This is a hack to force the form to re-render when the step changes, it's hard to say whether it
                 // is needed or not, but ensures 100% safety.
                 key={`form-step-${currentStepperStep.index}`}
@@ -82,7 +84,7 @@ const FormPage = () => {
                   // eslint-disable-next-line react/jsx-no-useless-fragment
                   isReadonly ? <></> : <FormControls />
                 }
-              </FormComponent>
+              </ThemedForm>
             </>
           )}
           <MenuList />

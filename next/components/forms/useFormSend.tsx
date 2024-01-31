@@ -20,6 +20,7 @@ import {
 import { isFormSubmitDisabled } from '../../frontend/utils/formSummary'
 import { RegistrationModalType } from './segments/RegistrationModal/RegistrationModal'
 import { useFormSignature } from './signer/useFormSignature'
+import { useFormContext } from './useFormContext'
 import { useFormFileUpload } from './useFormFileUpload'
 import { useFormLeaveProtection } from './useFormLeaveProtection'
 import { useFormModals } from './useFormModals'
@@ -57,8 +58,8 @@ const useGetContext = () => {
   const [openSnackbarError] = useSnackbar({ variant: 'error' })
   // As the token is immediately removed from the URL, we need to store it in a ref.
   const sendEidTokenRef = useRef<string | null>(null)
-
-  const { formId, formSlug, formData, schema } = useFormState()
+  const { formId, slug, schema } = useFormContext()
+  const { formData } = useFormState()
   const { getFileInfoById } = useFormFileUpload()
   const {
     isAuthenticated,
@@ -131,7 +132,7 @@ const useGetContext = () => {
         ),
       networkMode: 'always',
       onSuccess: async () => {
-        setSendEidMetadata({ formSlug, formId })
+        setSendEidMetadata({ formSlug: slug, formId })
         turnOffLeaveProtection()
         window.location.href = environment.slovenskoSkLoginUrl
         setRedirectingToSlovenskoSkLogin(true)

@@ -2,11 +2,8 @@ import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import { act, renderHook, waitFor } from '@testing-library/react'
 import React from 'react'
 
-import {
-  FormFileUploadProvider,
-  FormFileUploadProviderProps,
-  useFormFileUpload,
-} from '../components/forms/useFormFileUpload'
+import { FormContext, FormContextProvider } from '../components/forms/useFormContext'
+import { FormFileUploadProvider, useFormFileUpload } from '../components/forms/useFormFileUpload'
 import { FormFileUploadStatusEnum } from '../frontend/types/formFileUploadTypes'
 import { uploadFile } from '../frontend/utils/formFileUpload'
 
@@ -21,7 +18,7 @@ jest.mock('../frontend/utils/formFileUpload', () => ({
  * TODO: Add 20+ tests.
  */
 describe('useFormFileUpload', () => {
-  const setupTest = ({ providerProps }: { providerProps: FormFileUploadProviderProps }) => {
+  const setupTest = ({ formContext }: { formContext: Partial<FormContext> }) => {
     ;(uploadFile as jest.Mock).mockImplementation(
       ({
         onProgress,
@@ -37,9 +34,11 @@ describe('useFormFileUpload', () => {
     )
 
     const wrapper = ({ children }) => (
-      <QueryClientProvider client={queryClient}>
-        <FormFileUploadProvider {...providerProps}>{children}</FormFileUploadProvider>
-      </QueryClientProvider>
+      <FormContextProvider formContext={formContext as FormContext}>
+        <QueryClientProvider client={queryClient}>
+          <FormFileUploadProvider>{children}</FormFileUploadProvider>
+        </QueryClientProvider>
+      </FormContextProvider>
     )
 
     const { result } = renderHook(() => useFormFileUpload(), { wrapper })
@@ -52,12 +51,12 @@ describe('useFormFileUpload', () => {
   })
 
   it('FormFileUploadStateProvider provides context to children', async () => {
-    const setup = setupTest({ providerProps: { initialFormData: { formId: '', files: [] } } })
+    const setup = setupTest({ formContext: { initialFormDataJson: { formId: '', files: [] } } })
     expect(setup.getHook()).toBeDefined()
   })
 
   it('FormFileUploadStateProvider can upload file', async () => {
-    const setup = setupTest({ providerProps: { initialFormData: { formId: '', files: [] } } })
+    const setup = setupTest({ formContext: { initialFormDataJson: { formId: '', files: [] } } })
     const file = new File([''], 'filename.jpg')
 
     let ids: string[] = []

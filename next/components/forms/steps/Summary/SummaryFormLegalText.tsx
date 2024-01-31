@@ -2,10 +2,10 @@ import AccountMarkdown from 'components/forms/segments/AccountMarkdown/AccountMa
 import { useTranslation } from 'next-i18next'
 import React from 'react'
 
-import { useFormState } from '../../useFormState'
+import { useFormContext } from '../../useFormContext'
 
 const SummaryFormLegalText = () => {
-  const { isTaxForm } = useFormState()
+  const { isTaxForm } = useFormContext()
   const { t } = useTranslation('forms')
 
   return (

@@ -26,7 +26,7 @@ const StepperViewRow = ({ step, isCurrent, className }: StepperViewRowProps) => 
 
   return (
     <div className={twMerge('flex flex-row items-center gap-3', className)}>
-      <div className={iconClassName}>
+      <div className={iconClassName} data-cy={isCurrent ? 'stepper-step-active' : null}>
         {isCurrent || !isSubmitted ? displayIndex : <CheckIcon fill="white" className="h-6 w-6" />}
       </div>
       <p className="text-p3-medium w-72 ">

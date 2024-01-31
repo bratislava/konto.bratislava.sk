@@ -227,7 +227,7 @@ export const getSchema = (zavazne: boolean) =>
           },
           {
             helptext:
-              'Vyberte jedno alebo viacero katastrálnych území, v ktorých sa pozemok nachádza',
+              'Vyberte jedno alebo viacero katastrálnych území, v ktorých sa pozemok nachádza.',
             size: 'medium',
           },
         ),

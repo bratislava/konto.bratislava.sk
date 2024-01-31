@@ -8799,6 +8799,21 @@ flatted@^3.1.0:
   resolved "https://registry.yarnpkg.com/flatted/-/flatted-3.2.7.tgz#609f39207cb614b89d0765b477cb2d437fbf9787"
   integrity sha512-5nqDSxl8nn5BSNxyR3n4I6eDmbolI6WT+QqR547RwxQapgjQBmtktdP+HTBb/a/zLsbzERTONyUB5pefh5TtjQ==
 
+focus-trap-react@^10.2.3:
+  version "10.2.3"
+  resolved "https://registry.yarnpkg.com/focus-trap-react/-/focus-trap-react-10.2.3.tgz#a5a2ea7fbb042ffa4337fde72758325ed0fb793a"
+  integrity sha512-YXBpFu/hIeSu6NnmV2xlXzOYxuWkoOtar9jzgp3lOmjWLWY59C/b8DtDHEAV4SPU07Nd/t+nS/SBNGkhUBFmEw==
+  dependencies:
+    focus-trap "^7.5.4"
+    tabbable "^6.2.0"
+
+focus-trap@^7.5.4:
+  version "7.5.4"
+  resolved "https://registry.yarnpkg.com/focus-trap/-/focus-trap-7.5.4.tgz#6c4e342fe1dae6add9c2aa332a6e7a0bbd495ba2"
+  integrity sha512-N7kHdlgsO/v+iD/dMoJKtsSqs5Dz/dXZVebRgJw23LDk+jMi/974zyiOYDziY2JPp8xivq9BmUGwIJMiuSBi7w==
+  dependencies:
+    tabbable "^6.2.0"
+
 follow-redirects@^1.14.4, follow-redirects@^1.14.8, follow-redirects@^1.14.9, follow-redirects@^1.15.0:
   version "1.15.2"
   resolved "https://registry.yarnpkg.com/follow-redirects/-/follow-redirects-1.15.2.tgz#b460864144ba63f2681096f274c4e57026da2c13"
@@ -13671,6 +13686,11 @@ synckit@^0.8.4:
   dependencies:
     "@pkgr/utils" "^2.3.1"
     tslib "^2.5.0"
+
+tabbable@^6.2.0:
+  version "6.2.0"
+  resolved "https://registry.yarnpkg.com/tabbable/-/tabbable-6.2.0.tgz#732fb62bc0175cfcec257330be187dcfba1f3b97"
+  integrity sha512-Cat63mxsVJlzYvN51JmVXIgNoUokrIaT2zLclCXjRd8boZ0004U4KCs/sToJ75C6sdlByWxpYnb5Boif1VSFew==
 
 tailwind-merge@^1.14.0:
   version "1.14.0"

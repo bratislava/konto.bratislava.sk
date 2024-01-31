@@ -72,7 +72,10 @@ const MyApp = ({ Component, pageProps }: AppProps) => {
                 >
                   <NavMenuContextProvider>
                     <LoginRegisterRedirectProvider>
-                      <Component {...pageProps} />
+                      {/* used to lock body with overflow: hidden when mobile menu is open, look for useLockedBody */}
+                      <div id="root">
+                        <Component {...pageProps} />
+                      </div>
                       <CookieConsent />
                     </LoginRegisterRedirectProvider>
                   </NavMenuContextProvider>

@@ -21,7 +21,7 @@ describe('F05 -', { testIsolation: false }, () => {
   const husbandWifeBorderFields = '[data-cy=input-rodneCislo], [input-meno], [data-cy=input-priezvisko]'
 
   before(() => {
-    cy.fixture('formRealEstateTaxReturn-1.json').then((fileData) => {
+    cy.fixture('formRealEstateTaxReturn-5.json').then((fileData) => {
       this.fileData = fileData
     })
   })
@@ -48,10 +48,7 @@ describe('F05 -', { testIsolation: false }, () => {
         it('2. Checking "Type of tax return" step validation.', () => {
           cy.dataCy('form-container').then((form) => {
             cy.checkActiveStep(1)
-            cy.wrap(Cypress.$(`[data-cy=continue-button-${device}]`, form)).click()
-
-            cy.wrap(Cypress.$('[aria-required=true]', form)).should('have.length', 2)     
-            cy.wrap(Cypress.$('[data-cy=input-rok]', form)).should('have.class', 'border-negative-700')
+            cy.checkFormValidation(device, form, 2, '[data-cy=input-rok]')
           })
         })
 
@@ -78,10 +75,7 @@ describe('F05 -', { testIsolation: false }, () => {
         it('4. Checking "Taxpayer data" step validation.', () => {
           cy.dataCy('form-container').then((form) => {
             cy.checkActiveStep(2)
-            cy.wrap(Cypress.$(`[data-cy=continue-button-${device}]`, form)).click()
-
-            cy.wrap(Cypress.$('[aria-required=true]', form)).should('have.length', 13)     
-            cy.wrap(Cypress.$(taxpayerBorderFields, form)).should('have.class', 'border-negative-700')
+            cy.checkFormValidation(device, form, 13, taxpayerBorderFields)
           })
         })
 
@@ -101,22 +95,17 @@ describe('F05 -', { testIsolation: false }, () => {
               cy.wrap(Cypress.$('[data-cy=radio-group-podávate-priznanie-ako]', form)).find(`[data-cy=radio-právnicka-osoba]`).click()
             }
             
-            cy.wrap(Cypress.$('[data-cy=input-rodneCislo]', form)).type(this.fileData.udajeODanovnikovi.rodneCislo)
-            cy.wrap(Cypress.$('[data-cy=input-priezvisko]', form)).type(this.fileData.udajeODanovnikovi.priezvisko)
-            cy.wrap(Cypress.$('[data-cy=input-meno]', form)).type(this.fileData.udajeODanovnikovi.menoTitul.meno)
-            cy.wrap(Cypress.$('[data-cy=input-ulica]', form)).type(this.fileData.udajeODanovnikovi.ulicaCisloFyzickaOsoba.ulica)
-            cy.wrap(Cypress.$('[data-cy=input-cislo]', form)).type(this.fileData.udajeODanovnikovi.ulicaCisloFyzickaOsoba.cislo)
-            cy.wrap(Cypress.$('[data-cy=input-obec]', form)).type(this.fileData.udajeODanovnikovi.obecPsc.obec)
-            cy.wrap(Cypress.$('[data-cy=input-psc]', form)).type(this.fileData.udajeODanovnikovi.obecPsc.psc)
+            cy.fillInLegalInformation(form, this.fileData.udajeODanovnikovi.rodneCislo, this.fileData.udajeODanovnikovi.priezvisko, this.fileData.udajeODanovnikovi.menoTitul.meno)
 
-            if (this.fileData.udajeODanovnikovi.stat !== '703') {
-              let state = esbsNationalityCiselnik.find((test) => {
-                return test.Code === this.fileData.udajeODanovnikovi.stat
-              })
+            cy.fillInAddress(
+              form,
+              this.fileData.udajeODanovnikovi.ulicaCisloFyzickaOsoba.ulica,
+              this.fileData.udajeODanovnikovi.ulicaCisloFyzickaOsoba.cislo,
+              this.fileData.udajeODanovnikovi.obecPsc.obec,
+              this.fileData.udajeODanovnikovi.obecPsc.psc
+            )
 
-              cy.wrap(Cypress.$('[data-cy=select-štát]', form)).click()
-              cy.wrap(Cypress.$('[data-cy=select-štát]', form)).type(state.Name + "{enter}{enter}")
-            }
+            cy.selectState(form, esbsNationalityCiselnik, this.fileData.udajeODanovnikovi.stat)
 
             if (this.fileData.udajeODanovnikovi.korespondencnaAdresa.korespondencnaAdresaRovnaka) {
               cy.wrap(Cypress.$('[data-cy=radio-group-je-korešpondenčná-adresa-rovnáká-ako-adresa-trvalého-pobytu]', form)).find(`[data-cy=radio-áno]`).click()
@@ -130,10 +119,13 @@ describe('F05 -', { testIsolation: false }, () => {
 
           if (!this.fileData.udajeODanovnikovi.korespondencnaAdresa.korespondencnaAdresaRovnaka) {
             cy.dataCy(`fieldset-root_udajeODanovnikovi_korespondencnaAdresa`).within((fieldset) => {
-              cy.wrap(Cypress.$(`[data-cy=input-ulica]`, fieldset)).type(this.fileData.udajeODanovnikovi.korespondencnaAdresa.ulicaCisloKorespondencnaAdresa.ulica)
-              cy.wrap(Cypress.$(`[data-cy=input-cislo]`, fieldset)).type(this.fileData.udajeODanovnikovi.korespondencnaAdresa.ulicaCisloKorespondencnaAdresa.cislo)
-              cy.wrap(Cypress.$(`[data-cy=input-obec]`, fieldset)).type(this.fileData.udajeODanovnikovi.korespondencnaAdresa.obecPsc.obec)
-              cy.wrap(Cypress.$(`[data-cy=input-psc]`, fieldset)).type(this.fileData.udajeODanovnikovi.korespondencnaAdresa.obecPsc.psc)
+              cy.fillInAddress(
+                fieldset,
+                this.fileData.udajeODanovnikovi.korespondencnaAdresa.ulicaCisloKorespondencnaAdresa.ulica,
+                this.fileData.udajeODanovnikovi.korespondencnaAdresa.ulicaCisloKorespondencnaAdresa.cislo,
+                this.fileData.udajeODanovnikovi.korespondencnaAdresa.obecPsc.obec,
+                this.fileData.udajeODanovnikovi.korespondencnaAdresa.obecPsc.psc
+              )
             })
           }
 
@@ -152,11 +144,8 @@ describe('F05 -', { testIsolation: false }, () => {
               cy.wrap(Cypress.$('[data-cy=radio-áno]', form)).click()
             })
 
-            cy.dataCy('form-container').then((form) => {
-              cy.wrap(Cypress.$(`[data-cy=continue-button-${device}]`, form)).click()
-
-              cy.wrap(Cypress.$('[aria-required=true]', form)).should('have.length', 9)     
-              cy.wrap(Cypress.$(landTaxBorderFields, form)).should('have.class', 'border-negative-700')
+            cy.dataCy('form-container').then((form) => {   
+              cy.checkFormValidation(device, form, 9, landTaxBorderFields)
             })
           } else {
             cy.dataCy('form-container').then((form) => {
@@ -178,23 +167,9 @@ describe('F05 -', { testIsolation: false }, () => {
                   cy.wrap(Cypress.$('[data-cy=add-button]', form).eq(1)).click()
                 }
                 cy.dataCy(`section-priznania-${indexPriznania}`).within((priznania) => {
-                  if (this.fileData.danZPozemkov.priznania[indexPriznania].pravnyVztah === 'vlastnik') {
-                    cy.wrap(Cypress.$('[data-cy=radio-group-právny-vzťah]', priznania)).find(`[data-cy=radio-vlastník]`).click()
-                  } else if (this.fileData.danZPozemkov.priznania[indexPriznania].pravnyVztah === 'spravca') {
-                    cy.wrap(Cypress.$('[data-cy=radio-group-právny-vzťah]', priznania)).find(`[data-cy=radio-správca]`).click()
-                  } else if (this.fileData.danZPozemkov.priznania[indexPriznania].pravnyVztah === 'najomca') {
-                    cy.wrap(Cypress.$('[data-cy=radio-group-právny-vzťah]', priznania)).find(`[data-cy=radio-nájomca]`).click()
-                  } else if (this.fileData.danZPozemkov.priznania[indexPriznania].pravnyVztah === 'uzivatel') {
-                    cy.wrap(Cypress.$('[data-cy=radio-group-právny-vzťah]', priznania)).find(`[data-cy=radio-užívateľ]`).click()
-                  }
+                  cy.selectLegalRelationship(priznania, indexPriznania, this.fileData.danZPozemkov.priznania[indexPriznania].pravnyVztah)
 
-                  if (this.fileData.danZPozemkov.priznania[indexPriznania].spoluvlastnictvo === 'somJedinyVlastnik') {
-                    cy.wrap(Cypress.$('[data-cy=radio-group-spoluvlastníctvo]', priznania)).find(`[data-cy=radio-som-jediný-vlastník]`).click()
-                  } else if (this.fileData.danZPozemkov.priznania[indexPriznania].spoluvlastnictvo === 'podieloveSpoluvlastnictvo') {
-                    cy.wrap(Cypress.$('[data-cy=radio-group-spoluvlastníctvo]', priznania)).find(`[data-cy=radio-podielové-spoluvlastníctvo]`).click()
-                  } else if (this.fileData.danZPozemkov.priznania[indexPriznania].spoluvlastnictvo === 'bezpodieloveSpoluvlastnictvoManzelov') {
-                    cy.wrap(Cypress.$('[data-cy=radio-group-spoluvlastníctvo]', priznania)).find(`[data-cy=radio-bezpodielové-spoluvlastníctvo-manželov]`).click()
-                  }
+                  cy.fillOwner(priznania, this.fileData.danZPozemkov.priznania[indexPriznania].spoluvlastnictvo)
 
                   cy.get(this.fileData.danZPozemkov.priznania[indexPriznania].pozemky).each((dataPozemky, indexPozemky) => {
                     if (indexPozemky > 0) {
@@ -213,8 +188,8 @@ describe('F05 -', { testIsolation: false }, () => {
                       cy.wrap(Cypress.$('[data-cy=select-druh-pozemku]', pozemky)).type(this.fileData.danZPozemkov.priznania[indexPriznania].pozemky[indexPozemky].druhPozemku + " – {enter}{enter}")
 
                       cy.wrap(Cypress.$('[data-cy=input-celkovaVymeraPozemku]', pozemky)).type(this.fileData.danZPozemkov.priznania[indexPriznania].pozemky[indexPozemky].celkovaVymeraPozemku)
-                      cy.wrap(Cypress.$('[data-cy=input-podielPriestoruNaSpolocnychCastiachAZariadeniachDomu]', pozemky)).type(this.fileData.danZPozemkov.priznania[indexPriznania].pozemky[0].podielPriestoruNaSpolocnychCastiachAZariadeniachDomu)
-                      cy.wrap(Cypress.$('[data-cy=input-spoluvlastnickyPodiel]', pozemky)).type(this.fileData.danZPozemkov.priznania[indexPriznania].pozemky[indexPozemky].spoluvlastnickyPodiel)
+
+                      cy.fillInApartmentInformation(pozemky, this.fileData.danZPozemkov.priznania[indexPriznania].pozemky[0].podielPriestoruNaSpolocnychCastiachAZariadeniachDomu, this.fileData.danZPozemkov.priznania[indexPriznania].pozemky[indexPozemky].spoluvlastnickyPodiel)
                     })
                   })
                 })
@@ -224,13 +199,15 @@ describe('F05 -', { testIsolation: false }, () => {
                 cy.dataCy(`section-priznania-${indexPriznania}`).within((priznania) => {
                   cy.get(this.fileData.danZPozemkov.priznania[indexPriznania].pozemky).each((dataPozemky, indexPozemky) => {
                     cy.dataCy(`section-pozemky-${indexPozemky}`).within((pozemky) => {
-                      cy.wrap(Cypress.$('[data-cy=input-podielPriestoruNaSpolocnychCastiachAZariadeniachDomu]', pozemky)).clear().type(this.fileData.danZPozemkov.priznania[indexPriznania].pozemky[0].podielPriestoruNaSpolocnychCastiachAZariadeniachDomu)
-                      cy.wrap(Cypress.$('[data-cy=input-spoluvlastnickyPodiel]', pozemky)).clear().type(this.fileData.danZPozemkov.priznania[indexPriznania].pozemky[indexPozemky].spoluvlastnickyPodiel)
+                      cy.wrap(Cypress.$('[data-cy=input-podielPriestoruNaSpolocnychCastiachAZariadeniachDomu]', pozemky)).focus().clear()
+                      cy.wrap(Cypress.$('[data-cy=input-spoluvlastnickyPodiel]', pozemky)).focus().clear()
+                      cy.fillInApartmentInformation(pozemky, this.fileData.danZPozemkov.priznania[indexPriznania].pozemky[0].podielPriestoruNaSpolocnychCastiachAZariadeniachDomu, this.fileData.danZPozemkov.priznania[indexPriznania].pozemky[indexPozemky].spoluvlastnickyPodiel)
                     })
                   })
                 })
               })
               
+              cy.wrap(Cypress.$(`[data-cy=continue-button-${device}]`, form)).click()
               cy.wrap(Cypress.$(`[data-cy=continue-button-${device}]`, form)).click()
             })
           }
@@ -246,10 +223,7 @@ describe('F05 -', { testIsolation: false }, () => {
             })
 
             cy.dataCy('form-container').then((form) => {
-              cy.wrap(Cypress.$(`[data-cy=continue-button-${device}]`, form)).click()
-
-              cy.wrap(Cypress.$('[aria-required=true]', form)).should('have.length', 12)     
-              cy.wrap(Cypress.$(onePurposeTaxBorderFields, form)).should('have.class', 'border-negative-700')
+              cy.checkFormValidation(device, form, 12, onePurposeTaxBorderFields)
             })
           } else {
             cy.dataCy('form-container').then((form) => {
@@ -271,29 +245,17 @@ describe('F05 -', { testIsolation: false }, () => {
                   cy.wrap(Cypress.$('[data-cy=add-button]', form).eq(0)).click()
                 }
                 cy.dataCy(`section-priznania-${indexPriznania}`).within((priznania) => {
-                  cy.wrap(Cypress.$('[data-cy=input-ulicaACisloDomu]', priznania)).type(this.fileData.danZoStaviebJedenUcel.priznania[indexPriznania].riadok1.ulicaACisloDomu)
-                  cy.wrap(Cypress.$('[data-cy=input-supisneCislo]', priznania)).type(this.fileData.danZoStaviebJedenUcel.priznania[indexPriznania].riadok1.supisneCislo)
-                  cy.wrap(Cypress.$('[data-cy=select-názov-katastrálneho-územia]', priznania)).click()
-                  cy.wrap(Cypress.$('[data-cy=select-názov-katastrálneho-územia]', priznania)).type(this.fileData.danZoStaviebJedenUcel.priznania[indexPriznania].riadok2.kataster + "{enter}{enter}")
-                  cy.wrap(Cypress.$('[data-cy=input-cisloParcely]', priznania)).type(this.fileData.danZoStaviebJedenUcel.priznania[indexPriznania].riadok2.cisloParcely)
 
-                  if (this.fileData.danZoStaviebJedenUcel.priznania[indexPriznania].pravnyVztah === 'vlastnik') {
-                    cy.wrap(Cypress.$('[data-cy=radio-group-právny-vzťah]', priznania)).find(`[data-cy=radio-vlastník]`).click()
-                  } else if (this.fileData.danZoStaviebJedenUcel.priznania[indexPriznania].pravnyVztah === 'spravca') {
-                    cy.wrap(Cypress.$('[data-cy=radio-group-právny-vzťah]', priznania)).find(`[data-cy=radio-správca]`).click()
-                  } else if (this.fileData.danZoStaviebJedenUcel.priznania[indexPriznania].pravnyVztah === 'najomca') {
-                    cy.wrap(Cypress.$('[data-cy=radio-group-právny-vzťah]', priznania)).find(`[data-cy=radio-nájomca]`).click()
-                  } else if (this.fileData.danZoStaviebJedenUcel.priznania[indexPriznania].pravnyVztah === 'uzivatel') {
-                    cy.wrap(Cypress.$('[data-cy=radio-group-právny-vzťah]', priznania)).find(`[data-cy=radio-užívateľ]`).click()
-                  }
+                  cy.fillHouseInformation(priznania, indexPriznania,
+                    this.fileData.danZoStaviebJedenUcel.priznania[indexPriznania].riadok1.ulicaACisloDomu,
+                    this.fileData.danZoStaviebJedenUcel.priznania[indexPriznania].riadok1.supisneCislo,
+                    this.fileData.danZoStaviebJedenUcel.priznania[indexPriznania].riadok2.kataster,
+                    this.fileData.danZoStaviebJedenUcel.priznania[indexPriznania].riadok2.cisloParcely
+                  )
 
-                  if (this.fileData.danZoStaviebJedenUcel.priznania[indexPriznania].spoluvlastnictvo === 'somJedinyVlastnik') {
-                    cy.wrap(Cypress.$('[data-cy=radio-group-spoluvlastníctvo]', priznania)).find(`[data-cy=radio-som-jediný-vlastník]`).click()
-                  } else if (this.fileData.danZoStaviebJedenUcel.priznania[indexPriznania].spoluvlastnictvo === 'podieloveSpoluvlastnictvo') {
-                    cy.wrap(Cypress.$('[data-cy=radio-group-spoluvlastníctvo]', priznania)).find(`[data-cy=radio-podielové-spoluvlastníctvo]`).click()
-                  } else if (this.fileData.danZoStaviebJedenUcel.priznania[indexPriznania].spoluvlastnictvo === 'bezpodieloveSpoluvlastnictvoManzelov') {
-                    cy.wrap(Cypress.$('[data-cy=radio-group-spoluvlastníctvo]', priznania)).find(`[data-cy=radio-bezpodielové-spoluvlastníctvo-manželov]`).click()
-                  }
+                  cy.selectLegalRelationship(priznania, indexPriznania, this.fileData.danZoStaviebJedenUcel.priznania[indexPriznania].pravnyVztah)
+
+                  cy.fillOwner(priznania, this.fileData.danZoStaviebJedenUcel.priznania[indexPriznania].spoluvlastnictvo)
                 })
 
                 cy.dataCy(`section-priznania-${indexPriznania}`).within((priznania) => {
@@ -350,10 +312,7 @@ describe('F05 -', { testIsolation: false }, () => {
             })
 
             cy.dataCy('form-container').then((form) => {
-              cy.wrap(Cypress.$(`[data-cy=continue-button-${device}]`, form)).click()
-
-              cy.wrap(Cypress.$('[aria-required=true]', form)).should('have.length', 14)     
-              cy.wrap(Cypress.$(multiPurposeTaxBorderFields, form)).should('have.class', 'border-negative-700')
+              cy.checkFormValidation(device, form, 14, multiPurposeTaxBorderFields)
             })
           } else {
             cy.dataCy('form-container').then((form) => {
@@ -375,31 +334,16 @@ describe('F05 -', { testIsolation: false }, () => {
                   cy.wrap(Cypress.$('[data-cy=add-button]', form).eq(1)).click()
                 }
                 cy.dataCy(`section-priznania-${indexPriznania}`).within((priznania) => {
-                  cy.wrap(Cypress.$('[data-cy=input-ulicaACisloDomu]', priznania)).type(this.fileData.danZoStaviebViacereUcely.priznania[indexPriznania].riadok1.ulicaACisloDomu)
-                  cy.wrap(Cypress.$('[data-cy=input-supisneCislo]', priznania)).type(this.fileData.danZoStaviebViacereUcely.priznania[indexPriznania].riadok1.supisneCislo)
+                  cy.fillHouseInformation(priznania, indexPriznania,
+                    this.fileData.danZoStaviebViacereUcely.priznania[indexPriznania].riadok1.ulicaACisloDomu,
+                    this.fileData.danZoStaviebViacereUcely.priznania[indexPriznania].riadok1.supisneCislo,
+                    this.fileData.danZoStaviebViacereUcely.priznania[indexPriznania].riadok2.kataster,
+                    this.fileData.danZoStaviebViacereUcely.priznania[indexPriznania].riadok2.cisloParcely
+                  )
 
-                  cy.wrap(Cypress.$('[data-cy=select-názov-katastrálneho-územia]', priznania)).click()
-                  cy.wrap(Cypress.$('[data-cy=select-názov-katastrálneho-územia]', priznania)).type(this.fileData.danZoStaviebViacereUcely.priznania[indexPriznania].riadok2.kataster + "{enter}{enter}")
+                  cy.selectLegalRelationship(priznania, indexPriznania, this.fileData.danZoStaviebViacereUcely.priznania[indexPriznania].pravnyVztah)
 
-                  cy.wrap(Cypress.$('[data-cy=input-cisloParcely]', priznania)).type(this.fileData.danZoStaviebViacereUcely.priznania[indexPriznania].riadok2.cisloParcely)
-
-                  if (this.fileData.danZoStaviebViacereUcely.priznania[indexPriznania].pravnyVztah === 'vlastnik') {
-                    cy.wrap(Cypress.$('[data-cy=radio-group-právny-vzťah]', priznania)).find(`[data-cy=radio-vlastník]`).click()
-                  } else if (this.fileData.danZoStaviebViacereUcely.priznania[indexPriznania].pravnyVztah === 'spravca') {
-                    cy.wrap(Cypress.$('[data-cy=radio-group-právny-vzťah]', priznania)).find(`[data-cy=radio-správca]`).click()
-                  } else if (this.fileData.danZoStaviebViacereUcely.priznania[indexPriznania].pravnyVztah === 'najomca') {
-                    cy.wrap(Cypress.$('[data-cy=radio-group-právny-vzťah]', priznania)).find(`[data-cy=radio-nájomca]`).click()
-                  } else if (this.fileData.danZoStaviebViacereUcely.priznania[indexPriznania].pravnyVztah === 'uzivatel') {
-                    cy.wrap(Cypress.$('[data-cy=radio-group-právny-vzťah]', priznania)).find(`[data-cy=radio-užívateľ]`).click()
-                  }
-
-                  if (this.fileData.danZoStaviebViacereUcely.priznania[indexPriznania].spoluvlastnictvo === 'somJedinyVlastnik') {
-                    cy.wrap(Cypress.$('[data-cy=radio-group-spoluvlastníctvo]', priznania)).find(`[data-cy=radio-som-jediný-vlastník]`).click()
-                  } else if (this.fileData.danZoStaviebViacereUcely.priznania[indexPriznania].spoluvlastnictvo === 'podieloveSpoluvlastnictvo') {
-                    cy.wrap(Cypress.$('[data-cy=radio-group-spoluvlastníctvo]', priznania)).find(`[data-cy=radio-podielové-spoluvlastníctvo]`).click()
-                  } else if (this.fileData.danZoStaviebViacereUcely.priznania[indexPriznania].spoluvlastnictvo === 'bezpodieloveSpoluvlastnictvoManzelov') {
-                    cy.wrap(Cypress.$('[data-cy=radio-group-spoluvlastníctvo]', priznania)).find(`[data-cy=radio-bezpodielové-spoluvlastníctvo-manželov]`).click()
-                  }
+                  cy.fillOwner(priznania, this.fileData.danZoStaviebViacereUcely.priznania[indexPriznania].spoluvlastnictvo)
                 })
 
                 cy.dataCy(`section-priznania-${indexPriznania}`).within((priznania) => {
@@ -445,9 +389,7 @@ describe('F05 -', { testIsolation: false }, () => {
                       cy.wrap(Cypress.$('[data-cy=select-účel-využitia-stavby]', nehnutelnosti)).click()
                       cy.wrap(Cypress.$('[data-cy=select-účel-využitia-stavby]', nehnutelnosti)).type(this.fileData.danZoStaviebViacereUcely.priznania[indexPriznania].nehnutelnosti.nehnutelnosti[indexNehnutelnosti].ucelVyuzitiaStavby + ") {enter}{enter}")
 
-                      cy.wrap(Cypress.$('[data-cy=input-podielPriestoruNaSpolocnychCastiachAZariadeniachDomu]', nehnutelnosti)).type(this.fileData.danZoStaviebViacereUcely.priznania[indexPriznania].nehnutelnosti.nehnutelnosti[indexNehnutelnosti].podielPriestoruNaSpolocnychCastiachAZariadeniachDomu)
-
-                      cy.wrap(Cypress.$('[data-cy=input-spoluvlastnickyPodiel]', nehnutelnosti)).type(this.fileData.danZoStaviebViacereUcely.priznania[indexPriznania].nehnutelnosti.nehnutelnosti[indexNehnutelnosti].spoluvlastnickyPodiel)
+                      cy.fillInApartmentInformation(nehnutelnosti, this.fileData.danZoStaviebViacereUcely.priznania[indexPriznania].nehnutelnosti.nehnutelnosti[indexNehnutelnosti].podielPriestoruNaSpolocnychCastiachAZariadeniachDomu, this.fileData.danZoStaviebViacereUcely.priznania[indexPriznania].nehnutelnosti.nehnutelnosti[indexNehnutelnosti].spoluvlastnickyPodiel)
                     })
                   })
                 })
@@ -477,10 +419,7 @@ describe('F05 -', { testIsolation: false }, () => {
             })
 
             cy.dataCy('form-container').then((form) => {
-              cy.wrap(Cypress.$(`[data-cy=continue-button-${device}]`, form)).click()
-
-              cy.wrap(Cypress.$('[aria-required=true]', form)).should('have.length', 9)     
-              cy.wrap(Cypress.$(nonResidentialTaxBorderFields, form)).should('have.class', 'border-negative-700')
+              cy.checkFormValidation(device, form, 9, nonResidentialTaxBorderFields)
             })
           } else {
             cy.dataCy('form-container').then((form) => {
@@ -502,14 +441,13 @@ describe('F05 -', { testIsolation: false }, () => {
                   cy.wrap(Cypress.$('[data-cy=add-button]', form).eq(1)).click()
                 }
                 cy.dataCy(`section-priznania-${indexPriznania}`).within((priznania) => {
-                  cy.wrap(Cypress.$('[data-cy=input-ulicaACisloDomu]', priznania)).type(this.fileData.danZBytovANebytovychPriestorov.priznania[indexPriznania].riadok1.ulicaACisloDomu)
-                  cy.wrap(Cypress.$('[data-cy=input-supisneCislo]', priznania)).type(this.fileData.danZBytovANebytovychPriestorov.priznania[indexPriznania].riadok1.supisneCislo)
-
-                  cy.wrap(Cypress.$('[data-cy=select-názov-katastrálneho-územia]', priznania)).click()
-                  cy.wrap(Cypress.$('[data-cy=select-názov-katastrálneho-územia]', priznania)).type(this.fileData.danZBytovANebytovychPriestorov.priznania[indexPriznania].riadok2.kataster + "{enter}{enter}")
-                  
                   cy.wrap(Cypress.$('[data-cy=input-cisloParcely]', priznania)).focus().clear()
-                  cy.wrap(Cypress.$('[data-cy=input-cisloParcely]', priznania)).type(this.fileData.danZBytovANebytovychPriestorov.priznania[indexPriznania].riadok2.cisloParcely)
+                  cy.fillHouseInformation(priznania, indexPriznania,
+                    this.fileData.danZBytovANebytovychPriestorov.priznania[indexPriznania].riadok1.ulicaACisloDomu,
+                    this.fileData.danZBytovANebytovychPriestorov.priznania[indexPriznania].riadok1.supisneCislo,
+                    this.fileData.danZBytovANebytovychPriestorov.priznania[indexPriznania].riadok2.kataster,
+                    this.fileData.danZBytovANebytovychPriestorov.priznania[indexPriznania].riadok2.cisloParcely
+                  )
 
                   if (this.fileData.danZBytovANebytovychPriestorov.priznania[indexPriznania].pravnyVztah === 'vlastnik') {
                     cy.wrap(Cypress.$('[data-cy=radio-group-právny-vzťah]', priznania)).find(`[data-cy=radio-vlastník]`).click()
@@ -517,13 +455,7 @@ describe('F05 -', { testIsolation: false }, () => {
                     cy.wrap(Cypress.$('[data-cy=radio-group-právny-vzťah]', priznania)).find(`[data-cy=radio-správca]`).click()
                   }
 
-                  if (this.fileData.danZBytovANebytovychPriestorov.priznania[indexPriznania].spoluvlastnictvo === 'somJedinyVlastnik') {
-                    cy.wrap(Cypress.$('[data-cy=radio-group-spoluvlastníctvo]', priznania)).find(`[data-cy=radio-som-jediný-vlastník]`).click()
-                  } else if (this.fileData.danZBytovANebytovychPriestorov.priznania[indexPriznania].spoluvlastnictvo === 'podieloveSpoluvlastnictvo') {
-                    cy.wrap(Cypress.$('[data-cy=radio-group-spoluvlastníctvo]', priznania)).find(`[data-cy=radio-podielové-spoluvlastníctvo]`).click()
-                  } else if (this.fileData.danZBytovANebytovychPriestorov.priznania[indexPriznania].spoluvlastnictvo === 'bezpodieloveSpoluvlastnictvoManzelov') {
-                    cy.wrap(Cypress.$('[data-cy=radio-group-spoluvlastníctvo]', priznania)).find(`[data-cy=radio-bezpodielové-spoluvlastníctvo-manželov]`).click()
-                  }
+                  cy.fillOwner(priznania, this.fileData.danZBytovANebytovychPriestorov.priznania[indexPriznania].spoluvlastnictvo)
                 })
 
                 cy.dataCy(`section-priznania-${indexPriznania}`).within((priznania) => {
@@ -564,8 +496,7 @@ describe('F05 -', { testIsolation: false }, () => {
                   if (this.fileData.danZBytovANebytovychPriestorov.priznania[indexPriznania].priznanieZaByt.priznanieZaByt) {
                     cy.wrap(Cypress.$('[data-cy=input-cisloBytu]', priznania)).type(this.fileData.danZBytovANebytovychPriestorov.priznania[indexPriznania].priznanieZaByt.cisloBytu)
 
-                    cy.wrap(Cypress.$('[data-cy=input-podielPriestoruNaSpolocnychCastiachAZariadeniachDomu]', priznania)).eq(0).type(this.fileData.danZBytovANebytovychPriestorov.priznania[indexPriznania].priznanieZaByt.podielPriestoruNaSpolocnychCastiachAZariadeniachDomu)
-                    cy.wrap(Cypress.$('[data-cy=input-spoluvlastnickyPodiel]', priznania)).eq(0).type(this.fileData.danZBytovANebytovychPriestorov.priznania[indexPriznania].priznanieZaByt.spoluvlastnickyPodiel)
+                    cy.fillInApartmentInformation(priznania, this.fileData.danZBytovANebytovychPriestorov.priznania[indexPriznania].priznanieZaByt.podielPriestoruNaSpolocnychCastiachAZariadeniachDomu, this.fileData.danZBytovANebytovychPriestorov.priznania[indexPriznania].priznanieZaByt.spoluvlastnickyPodiel)
                   }
                 })
 
@@ -578,17 +509,18 @@ describe('F05 -', { testIsolation: false }, () => {
                       }
 
                       cy.dataCy(`section-nebytovePriestory-${indexProstory}`).within((prostory) => {
-                        cy.wrap(Cypress.$('[data-cy=input-podielPriestoruNaSpolocnychCastiachAZariadeniachDomu]', prostory)).type(this.fileData.danZBytovANebytovychPriestorov.priznania[indexPriznania].priznanieZaNebytovyPriestor.nebytovePriestory[indexProstory].podielPriestoruNaSpolocnychCastiachAZariadeniachDomu)
-                        cy.wrap(Cypress.$('[data-cy=input-spoluvlastnickyPodiel]', prostory)).type(this.fileData.danZBytovANebytovychPriestorov.priznania[indexPriznania].priznanieZaNebytovyPriestor.nebytovePriestory[indexProstory].spoluvlastnickyPodiel)
+                        cy.fillInApartmentInformation(prostory, this.fileData.danZBytovANebytovychPriestorov.priznania[indexPriznania].priznanieZaNebytovyPriestor.nebytovePriestory[indexProstory].podielPriestoruNaSpolocnychCastiachAZariadeniachDomu, this.fileData.danZBytovANebytovychPriestorov.priznania[indexPriznania].priznanieZaNebytovyPriestor.nebytovePriestory[indexProstory].spoluvlastnickyPodiel)
                       })
                     })
                   }
                 })
               })
 
+              // TODO dulicated code
               if (this.fileData.danZoStaviebViacereUcely.vyplnitObject.vyplnit) {
                 cy.get(this.fileData.danZBytovANebytovychPriestorov.priznania).each((dataPriznania, indexPriznania) => {
                   cy.dataCy(`section-priznania-${indexPriznania}`).within((priznania) => {
+                    cy.wrap(Cypress.$('[data-cy=input-cisloParcely]', priznania)).focus().clear()
                     cy.wrap(Cypress.$('[data-cy=input-cisloParcely]', priznania)).type(this.fileData.danZBytovANebytovychPriestorov.priznania[indexPriznania].riadok2.cisloParcely)
                   })
                 })
@@ -604,10 +536,7 @@ describe('F05 -', { testIsolation: false }, () => {
           if (this.fileData.bezpodieloveSpoluvlastnictvoManzelov) {
             cy.dataCy('form-container').then((form) => {
               cy.checkActiveStep(7)
-
-              cy.wrap(Cypress.$(`[data-cy=continue-button-${device}]`, form)).click()
-              cy.wrap(Cypress.$('[aria-required=true]', form)).should('have.length', 4)     
-              cy.wrap(Cypress.$(husbandWifeBorderFields, form)).should('have.class', 'border-negative-700')
+              cy.checkFormValidation(device, form, 4, husbandWifeBorderFields)
             })
           }
         })
@@ -615,9 +544,7 @@ describe('F05 -', { testIsolation: false }, () => {
         it('15. Filling out "Husband/wife information" step.', () => {
           if (this.fileData.bezpodieloveSpoluvlastnictvoManzelov) {
             cy.dataCy('form-container').then((form) => {
-              cy.wrap(Cypress.$(`[data-cy=input-rodneCislo]`, form)).type(this.fileData.bezpodieloveSpoluvlastnictvoManzelov.rodneCislo)
-              cy.wrap(Cypress.$(`[data-cy=input-priezvisko]`, form)).type(this.fileData.bezpodieloveSpoluvlastnictvoManzelov.priezvisko)
-              cy.wrap(Cypress.$(`[data-cy=input-meno]`, form)).type(this.fileData.bezpodieloveSpoluvlastnictvoManzelov.menoTitul.meno + "{enter}")
+              cy.fillInLegalInformation(form, this.fileData.bezpodieloveSpoluvlastnictvoManzelov.rodneCislo, this.fileData.bezpodieloveSpoluvlastnictvoManzelov.priezvisko, this.fileData.bezpodieloveSpoluvlastnictvoManzelov.menoTitul.meno)
               if (this.fileData.bezpodieloveSpoluvlastnictvoManzelov.rovnakaAdresa) {
                 cy.wrap(Cypress.$('[data-cy=radio-group-má-trvalý-pobyt-na-rovnakej-adrese-ako-vy]', form)).find(`[data-cy=radio-áno]`).click()
               } else {
@@ -627,24 +554,23 @@ describe('F05 -', { testIsolation: false }, () => {
 
             cy.dataCy('form-container').then((form) => {
               if (this.fileData.bezpodieloveSpoluvlastnictvoManzelov.rovnakaAdresa == false) {
-                cy.wrap(Cypress.$(`[data-cy=input-ulica]`, form)).type(this.fileData.bezpodieloveSpoluvlastnictvoManzelov.ulicaCisloBezpodieloveSpoluvlastnictvoManzelov.ulica)
-                cy.wrap(Cypress.$(`[data-cy=input-cislo]`, form)).type(this.fileData.bezpodieloveSpoluvlastnictvoManzelov.ulicaCisloBezpodieloveSpoluvlastnictvoManzelov.cislo)
-                cy.wrap(Cypress.$(`[data-cy=input-obec]`, form)).type(this.fileData.bezpodieloveSpoluvlastnictvoManzelov.obecPsc.obec)
-                cy.wrap(Cypress.$(`[data-cy=input-psc]`, form)).type(this.fileData.bezpodieloveSpoluvlastnictvoManzelov.obecPsc.psc) 
+                cy.fillInAddress(
+                  form,
+                  this.fileData.bezpodieloveSpoluvlastnictvoManzelov.ulicaCisloBezpodieloveSpoluvlastnictvoManzelov.ulica,
+                  this.fileData.bezpodieloveSpoluvlastnictvoManzelov.ulicaCisloBezpodieloveSpoluvlastnictvoManzelov.cislo,
+                  this.fileData.bezpodieloveSpoluvlastnictvoManzelov.obecPsc.obec,
+                  this.fileData.bezpodieloveSpoluvlastnictvoManzelov.obecPsc.psc
+                )
     
-                if (this.fileData.bezpodieloveSpoluvlastnictvoManzelov.stat !== '703') {
-                  let state = esbsNationalityCiselnik.find((test) => {
-                    return test.Code === this.fileData.bezpodieloveSpoluvlastnictvoManzelov.stat
-                  })
-
-                  cy.wrap(Cypress.$('[data-cy=select-štát]', form)).click()
-                  cy.wrap(Cypress.$('[data-cy=select-štát]', form)).type(state.Name + "{enter}{enter}")
-                }
+                cy.selectState(form, esbsNationalityCiselnik, this.fileData.bezpodieloveSpoluvlastnictvoManzelov.stat)
               }
 
+              // TODO dulicated code
               cy.dataCy('form-container').then((form) => {
+                cy.wrap(Cypress.$(`[data-cy=input-meno]`, form)).focus().clear()
                 cy.wrap(Cypress.$(`[data-cy=input-meno]`, form)).type(this.fileData.bezpodieloveSpoluvlastnictvoManzelov.menoTitul.meno)
                 if (this.fileData.bezpodieloveSpoluvlastnictvoManzelov.rovnakaAdresa == false) {
+                  cy.wrap(Cypress.$(`[data-cy=input-psc]`, form)).focus().clear()
                   cy.wrap(Cypress.$(`[data-cy=input-psc]`, form)).type(this.fileData.bezpodieloveSpoluvlastnictvoManzelov.obecPsc.psc)
                 }
               })

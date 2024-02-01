@@ -21,6 +21,7 @@ export async function extractSignatureIdFromAsice(base64Asice: string | undefine
     const xmlTree = await parseStringPromise(signaturesXmlContent)
 
     // <asic:XAdESSignatures><ds:Signature Id="(signature_id)">...
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
     const id = xmlTree?.['asic:XAdESSignatures']?.['ds:Signature']?.[0]?.$?.Id
 
     if (typeof id !== 'string') {

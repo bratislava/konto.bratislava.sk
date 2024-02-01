@@ -1,8 +1,7 @@
-import { ChevronDownSmallIcon, CrossIcon, HamburgerIcon, ProfileIcon } from '@assets/ui-icons'
+import { ChevronDownSmallIcon, ProfileIcon } from '@assets/ui-icons'
 import * as NavigationMenu from '@radix-ui/react-navigation-menu'
 import cx from 'classnames'
-import { StatusBar, useStatusBarContext } from 'components/forms/info-components/StatusBar'
-import HamburgerMenu from 'components/forms/segments/HambergerMenu/HamburgerMenu'
+import { StatusBar } from 'components/forms/info-components/StatusBar'
 import Button from 'components/forms/simple-components/Button'
 import ButtonNew from 'components/forms/simple-components/ButtonNew'
 import IdentityVerificationStatus from 'components/forms/simple-components/IdentityVerificationStatus'
@@ -21,6 +20,7 @@ import { RemoveScroll } from 'react-remove-scroll'
 import { ROUTES } from '../../../../frontend/api/constants'
 import useElementSize from '../../../../frontend/hooks/useElementSize'
 import Brand from '../../simple-components/Brand'
+import { MobileNavBar } from './MobileNavBar'
 import { useNavMenuContext } from './navMenuContext'
 
 interface IProps extends LanguageSelectProps {
@@ -66,15 +66,12 @@ const Avatar = ({ userData }: { userData?: UserData | null }) => {
   )
 }
 
-// TODO - needs complete refactor using some accessibility library
 export const NavBar = ({ className, sectionsList, menuItems, hiddenHeaderNav }: IProps) => {
   const { userData, isAuthenticated, isLegalEntity } = useServerSideAuth()
 
-  const { statusBarConfiguration } = useStatusBarContext()
   const [isMenuOpen, setIsMenuOpen] = useState<boolean>(false)
-  const [desktopRef, { height: desktopHeight }] = useElementSize([statusBarConfiguration.content])
-  const [mobileRef, { height: mobileHeight }] = useElementSize([statusBarConfiguration.content])
-  const { menuValue, setMenuValue, isMobileMenuOpen, setMobileMenuOpen } = useNavMenuContext()
+  const { menuValue, setMenuValue } = useNavMenuContext()
+  const [alertRef, { height }] = useElementSize<HTMLDivElement>()
 
   const { t } = useTranslation(['common', 'account'])
   const router = useRouter()
@@ -90,21 +87,19 @@ export const NavBar = ({ className, sectionsList, menuItems, hiddenHeaderNav }: 
 
   const isActive = (sectionItem: MenuSectionItemBase) =>
     sectionItem.url === '/' ? router.pathname === '/' : router.pathname.startsWith(sectionItem.url)
-
   return (
-    <div style={{ marginBottom: Math.max(desktopHeight, mobileHeight) }}>
+    <>
       {/* Desktop */}
       <div
         id="desktop-navbar"
         className={cx(
           className,
-          'text-p2 items-center',
+          'text-p2 hidden items-center lg:block',
           'fixed left-0 top-0 z-40 w-full bg-white shadow',
         )}
-        ref={desktopRef}
       >
         <div className={RemoveScroll.classNames.fullWidth}>
-          <StatusBar className="hidden lg:flex" />
+          <StatusBar ref={alertRef} />
           <div
             className={cx('m-auto hidden h-[57px] max-w-screen-lg items-center gap-x-6 lg:flex')}
           >
@@ -201,46 +196,11 @@ export const NavBar = ({ className, sectionsList, menuItems, hiddenHeaderNav }: 
           )}
         </div>
       </div>
+      <div style={{ height }} aria-hidden className="hidden lg:block" />
+      <div className="hidden h-[114px] lg:block" aria-hidden />
       {/* Mobile */}
-      <div
-        id="mobile-navbar"
-        className={cx(className, 'fixed left-0 top-0 z-40 w-full gap-x-6 bg-white lg:hidden')}
-        ref={mobileRef}
-      >
-        <div className={RemoveScroll.classNames.fullWidth}>
-          {!isMobileMenuOpen && <StatusBar className="flex lg:hidden" />}
-          <div className="flex h-16 items-center border-b-2 px-8 py-5">
-            <Brand url={ROUTES.HOME} className="grow" />
-            {/* event onPress is propagating to menu itself casuing glitches when opening mobile menu, 
-            becasue of that we are using onClick event and thats why simple button is used */}
-            <button
-              type="button"
-              onClick={() => (isAuthenticated ? setMobileMenuOpen((prev) => !prev) : login())}
-              className="-mr-4 px-4 py-5"
-              data-cy="mobile-account-button"
-            >
-              <div className="flex w-6 items-center justify-center">
-                {isMobileMenuOpen ? (
-                  <CrossIcon className="h-6 w-6" />
-                ) : isAuthenticated && sectionsList ? (
-                  <HamburgerIcon />
-                ) : (
-                  <Avatar userData={userData} />
-                )}
-              </div>
-            </button>
-
-            {isMobileMenuOpen && (
-              <HamburgerMenu
-                sectionsList={sectionsList}
-                menuItems={menuItems}
-                closeMenu={() => setMobileMenuOpen(false)}
-              />
-            )}
-          </div>
-        </div>
-      </div>
-    </div>
+      <MobileNavBar className="lg:hidden" menuItems={menuItems} sectionsList={sectionsList} />
+    </>
   )
 }
 

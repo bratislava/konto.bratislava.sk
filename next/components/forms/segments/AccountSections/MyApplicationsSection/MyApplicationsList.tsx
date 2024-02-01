@@ -65,7 +65,7 @@ const MyApplicationsList = ({
 
   return (
     <div className="m-auto w-full max-w-screen-lg">
-      {applications?.items.length && applications.items.length > 0 ? (
+      {applications?.items.length ? (
         <>
           <ul className="my-0 flex flex-col gap-0 px-4 sm:px-6 lg:my-8 lg:gap-4 lg:px-0">
             {applications?.items.map((form, index) => {

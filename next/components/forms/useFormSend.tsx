@@ -124,9 +124,8 @@ const useGetContext = () => {
           formId,
           {
             formDataJson: formData,
-            // TODO consider adding this only on isValid
-            // TODO consider adding in other nasesControllerUpdateForm calls
-            ...(signature ? { formDataBase64: signature.signature } : {}),
+            // `null` must be set explicitly, otherwise the signature would not be removed if needed
+            formDataBase64: signature?.signature ?? null,
           },
           { accessToken: 'onlyAuthenticated' },
         ),

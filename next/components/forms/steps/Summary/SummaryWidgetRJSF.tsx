@@ -1,5 +1,6 @@
 import { getLocalTimeZone, parseDate } from '@internationalized/date'
 import { WidgetProps } from '@rjsf/utils'
+import cx from 'classnames'
 import React from 'react'
 import { useDateFormatter } from 'react-aria'
 import { CheckboxUiOptions, SelectUiOptions } from 'schema-generator/generator/uiOptionsTypes'
@@ -36,6 +37,7 @@ const ValueComponent = ({
   uiSchema,
 }: Pick<SummaryWidgetRJSFProps, 'widgetType' | 'value' | 'options' | 'uiSchema'>) => {
   const formatter = useDateFormatter()
+  const { isPdf } = useFormContext()
 
   if (value == null || (Array.isArray(value) && value.length === 0)) {
     return <>-</>
@@ -50,7 +52,13 @@ const ValueComponent = ({
           (options as SelectUiOptions)?.selectOptions?.[innerValue]?.title ?? innerValue,
       )
 
-      return <>{selectLabels.join(', ')}</>
+      return (
+        <div className="flex flex-col gap-1">
+          {selectLabels.map((label) => (
+            <span>{label}</span>
+          ))}
+        </div>
+      )
     case 'radioGroup':
       return (
         <>
@@ -59,23 +67,25 @@ const ValueComponent = ({
         </>
       )
     case 'textArea':
-      return <span className="line-clamp-3 whitespace-pre-wrap">{value}</span>
+      return <span className={cx('whitespace-pre-wrap', { 'line-clamp-3': !isPdf })}>{value}</span>
     case 'checkbox':
       if (value) {
         return <>{(options as CheckboxUiOptions).checkboxLabel}</>
       }
       return <>-</>
     case 'checkboxGroup':
+      const checkboxLabels = (value as string[]).map(
+        (checkboxValue) =>
+          options.enumOptions?.find((option) => option.value === checkboxValue)?.label ??
+          checkboxValue,
+      )
+
       return (
-        <>
-          {(value as string[])
-            .map(
-              (checkboxValue) =>
-                options.enumOptions?.find((option) => option.value === checkboxValue)?.label ??
-                checkboxValue,
-            )
-            .join(', ')}
-        </>
+        <div className="flex flex-col gap-1">
+          {checkboxLabels.map((label) => (
+            <span>{label}</span>
+          ))}
+        </div>
       )
     case 'fileUpload':
       return <SummaryFiles files={value} />
@@ -108,7 +118,7 @@ const SummaryWidgetRJSF = ({
   uiSchema,
   name,
 }: SummaryWidgetRJSFProps) => {
-  const { isReadonly } = useFormContext()
+  const { isReadonly, isPdf } = useFormContext()
   const { fieldHasError } = useFormSummary()
   const { goToStepByFieldId } = useFormState()
 
@@ -134,7 +144,7 @@ const SummaryWidgetRJSF = ({
         onGoToStep={() => {
           goToStepByFieldId(id)
         }}
-        isEditable={!isReadonly}
+        isEditable={isPdf ? false : !isReadonly}
         size="small"
       />
     </div>

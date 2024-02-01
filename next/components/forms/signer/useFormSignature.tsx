@@ -15,6 +15,7 @@ import React, {
 import { useIsClient, useIsMounted } from 'usehooks-ts'
 
 import useSnackbar from '../../../frontend/hooks/useSnackbar'
+import { createFormSignatureId } from '../../../frontend/utils/formSignature'
 import { useFormContext } from '../useFormContext'
 import { useFormModals } from '../useFormModals'
 import { useFormState } from '../useFormState'
@@ -23,7 +24,7 @@ import { SignerErrorType } from './mapDitecError'
 // import { signerExamplePayload } from './signerExamplePayload'
 import { SignerDeploymentStatus, useFormSigner } from './useFormSigner'
 
-type Signature = {
+export type FormSignature = {
   /**
    * We store the hash of the object that was signed. This is the easiest way to ensure the validity of the signature
    * for the current data.
@@ -41,7 +42,7 @@ declare global {
 const useGetContext = () => {
   const [openSnackbarError] = useSnackbar({ variant: 'error' })
   const { setSignerIsDeploying } = useFormModals()
-  const { isSigned } = useFormContext()
+  const { isSigned, initialSignature } = useFormContext()
   const { formData, formDataRef } = useFormState()
   const { sign: signerSign } = useFormSigner({
     onDeploymentStatusChange: (status) => {
@@ -59,7 +60,7 @@ const useGetContext = () => {
       }
     },
   })
-  const [signature, setSignature] = useState<Signature | null>(null)
+  const [signature, setSignature] = useState<FormSignature | null>(initialSignature ?? null)
   const isMounted = useIsMounted()
 
   const [showSignatureInConsole, setShowSignatureInConsole] = useState(false)
@@ -77,14 +78,17 @@ const useGetContext = () => {
     formDataRequest: GenericObjectType,
     signerPayload: TaxSignerDataResponseDto,
   ) => {
-    const result = await signerSign(signerPayload)
+    const requestHash = hash(formDataRequest)
+    const result = await signerSign({
+      ...signerPayload,
+      // The object hash is stored in the signature id, as it is retrieved later on when form is opened in `getInitialFormSignature`.
+      signatureId: createFormSignatureId(requestHash),
+    })
     if (!isMounted()) {
       return
     }
-    // The easiest way how to ensure stability (1. people can leave the signer open / open it multiple times, etc. and
-    // then sign the form, 2. the signer works in mysterious ways - it can spawn multiple instances) is to compare the
-    // hash of the current form data with the hash of the data that was signed.
-    const requestHash = hash(formDataRequest)
+    // It is possible to edit the data while the signer is open. The easiest way how to ensure the validity of the
+    // signature is to check the hash of the data that was signed versus the current data.
     const currentHash = hash(formDataRef.current)
     if (currentHash !== requestHash) {
       openSnackbarError('Údaje, ktoré ste upravili, je potrebné znova podpísať.')

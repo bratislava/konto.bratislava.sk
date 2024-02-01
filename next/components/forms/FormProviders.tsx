@@ -23,13 +23,13 @@ const FormProviders = ({ formContext, children }: PropsWithChildren<FormProvider
           <FormModalsProvider>
             <FormSignerLoaderProvider>
               <FormStateProvider>
-                <FormRedirectsProvider>
-                  <FormSignatureProvider>
+                <FormSignatureProvider>
+                  <FormRedirectsProvider>
                     <FormSendProvider>
                       <FormExportImportProvider>{children}</FormExportImportProvider>
                     </FormSendProvider>
-                  </FormSignatureProvider>
-                </FormRedirectsProvider>
+                  </FormRedirectsProvider>
+                </FormSignatureProvider>
               </FormStateProvider>
             </FormSignerLoaderProvider>
           </FormModalsProvider>

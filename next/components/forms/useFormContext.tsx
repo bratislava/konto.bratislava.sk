@@ -3,6 +3,7 @@ import { GenericObjectType, RJSFSchema, UiSchema } from '@rjsf/utils'
 import { createContext, PropsWithChildren, useContext } from 'react'
 
 import { FormFileUploadClientFileInfo } from '../../frontend/types/formFileUploadTypes'
+import type { FormSignature } from './signer/useFormSignature'
 
 export type FormContext = {
   slug: string
@@ -12,6 +13,7 @@ export type FormContext = {
   initialFormDataJson: GenericObjectType
   initialClientFiles?: FormFileUploadClientFileInfo[]
   initialServerFiles: GetFileResponseDto[]
+  initialSignature?: FormSignature | null
   oldSchemaVersion: boolean
   formSent: boolean
   formMigrationRequired: boolean

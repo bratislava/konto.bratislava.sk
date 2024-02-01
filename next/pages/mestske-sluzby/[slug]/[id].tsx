@@ -10,6 +10,7 @@ import {
   ServerSideAuthProviderHOC,
 } from '../../../components/logic/ServerSideAuthProvider'
 import { ROUTES } from '../../../frontend/api/constants'
+import { getInitialFormSignature } from '../../../frontend/utils/getInitialFormSignature'
 
 type Params = {
   slug: string
@@ -29,11 +30,6 @@ export const getServerSideProps: GetServerSideProps<FormPageWrapperProps, Params
       accessToken: 'onlyAuthenticated',
       accessTokenSsrReq: ctx.req,
     })
-    const { data: files } = await formsApi.filesControllerGetFilesStatusByForm(id, {
-      accessToken: 'onlyAuthenticated',
-      accessTokenSsrReq: ctx.req,
-    })
-
     if (
       !form ||
       /* If there wouldn't be this check it would be possible to open the page with any slug in the URL. */
@@ -41,6 +37,14 @@ export const getServerSideProps: GetServerSideProps<FormPageWrapperProps, Params
     ) {
       return { notFound: true }
     }
+
+    const [{ data: files }, initialSignature] = await Promise.all([
+      formsApi.filesControllerGetFilesStatusByForm(id, {
+        accessToken: 'onlyAuthenticated',
+        accessTokenSsrReq: ctx.req,
+      }),
+      getInitialFormSignature(form.formDataBase64),
+    ])
 
     const formSent = form.state !== GetFormResponseDtoStateEnum.Draft
     const locale = 'sk'
@@ -57,6 +61,7 @@ export const getServerSideProps: GetServerSideProps<FormPageWrapperProps, Params
           formId: id,
           initialFormDataJson: form.formDataJson ?? {},
           initialServerFiles: files,
+          initialSignature,
           oldSchemaVersion: !form.isLatestSchemaVersionForSlug,
           formSent,
           formMigrationRequired,

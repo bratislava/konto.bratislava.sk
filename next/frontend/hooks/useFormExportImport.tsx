@@ -18,6 +18,7 @@ import React, {
 import { useIsClient } from 'usehooks-ts'
 
 import { RegistrationModalType } from '../../components/forms/segments/RegistrationModal/RegistrationModal'
+import { useFormSignature } from '../../components/forms/signer/useFormSignature'
 import { useFormContext } from '../../components/forms/useFormContext'
 import { useFormLeaveProtection } from '../../components/forms/useFormLeaveProtection'
 import { useFormModals } from '../../components/forms/useFormModals'
@@ -41,6 +42,7 @@ export const useGetContext = () => {
   const { t } = useTranslation('forms')
   const { setConceptSaveErrorModal } = useFormModals()
   const { turnOffLeaveProtection } = useFormLeaveProtection()
+  const { signature } = useFormSignature()
   const router = useRouter()
   // track each imported/exported xml/pdf in analytics - event format should match the one in FormPagesWrapper
   const plausible = usePlausible()
@@ -73,6 +75,8 @@ export const useGetContext = () => {
         formId,
         {
           formDataJson: formData,
+          // `null` must be set explicitly, otherwise the signature would not be removed if needed
+          formDataBase64: signature?.signature ?? null,
         },
         { accessToken: 'onlyAuthenticated' },
       ),

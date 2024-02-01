@@ -7,6 +7,7 @@ import { createContext, PropsWithChildren, useContext } from 'react'
 
 import { ROUTES } from '../../frontend/api/constants'
 import useSnackbar from '../../frontend/hooks/useSnackbar'
+import { useFormSignature } from './signer/useFormSignature'
 import { useFormContext } from './useFormContext'
 import { useFormLeaveProtection } from './useFormLeaveProtection'
 import { useFormState } from './useFormState'
@@ -20,6 +21,7 @@ const useGetContext = () => {
   const [openSnackbarError] = useSnackbar({ variant: 'error' })
   const { turnOffLeaveProtection } = useFormLeaveProtection()
   const { setRedirectReturnRoute } = useLoginRegisterRedirect()
+  const { signature } = useFormSignature()
 
   const { mutate: saveConceptMutate } = useMutation({
     mutationFn: () =>
@@ -27,6 +29,8 @@ const useGetContext = () => {
         formId,
         {
           formDataJson: formData,
+          // `null` must be set explicitly, otherwise the signature would not be removed if needed
+          formDataBase64: signature?.signature ?? null,
         },
         { accessToken: 'onlyAuthenticated' },
       ),

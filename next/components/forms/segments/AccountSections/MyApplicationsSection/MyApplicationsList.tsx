@@ -59,10 +59,7 @@ const MyApplicationsList = ({
 
   const { refreshData } = useRefreshServerSideProps(applications)
 
-  const refreshListData = async () => {
-    await refetchApplicationsCount()
-    await refreshData()
-  }
+  const refreshListData = () => Promise.all([refetchApplicationsCount(), refreshData()])
 
   const totalPagesCount = applications?.countPages ?? 0
 

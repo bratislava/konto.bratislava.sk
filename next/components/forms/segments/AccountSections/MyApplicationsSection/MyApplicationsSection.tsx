@@ -109,7 +109,7 @@ const MyApplicationsSection = ({ selectedSection, applications }: MyApplications
         </div>
       </div>
       {sections.map((variant) => (
-        <TabPanel id={variant}>
+        <TabPanel key={variant} id={variant}>
           <MyApplicationsList
             variant={variant}
             applications={applications}

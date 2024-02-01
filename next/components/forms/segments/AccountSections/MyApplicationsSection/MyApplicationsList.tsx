@@ -68,9 +68,9 @@ const MyApplicationsList = ({
       {applications?.items.length ? (
         <>
           <ul className="my-0 flex flex-col gap-0 px-4 sm:px-6 lg:my-8 lg:gap-4 lg:px-0">
-            {applications.items.map((form, index) => {
+            {applications.items.map((form) => {
               return (
-                <li key={index}>
+                <li key={form.id}>
                   <MyApplicationsCard
                     form={form}
                     refreshListData={refreshListData}

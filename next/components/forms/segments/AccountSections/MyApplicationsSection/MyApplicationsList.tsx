@@ -38,7 +38,7 @@ export const getDraftApplications = async (
     undefined,
     variantToStates,
     undefined,
-    accessTokenSsrReq ? { accessToken: 'always', accessTokenSsrReq } : { accessToken: 'always' },
+    { accessToken: 'always', accessTokenSsrReq },
   )
   return response.data
 }

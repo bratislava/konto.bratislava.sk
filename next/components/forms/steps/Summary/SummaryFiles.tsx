@@ -54,8 +54,8 @@ const SummaryFiles = ({ files }: SummaryFilesProps) => {
 
   return (
     <div className="flex flex-col gap-2">
-      {filesArray.map((file) => (
-        <SummaryFile file={file} />
+      {filesArray.map((file, index) => (
+        <SummaryFile file={file} key={index} />
       ))}
     </div>
   )

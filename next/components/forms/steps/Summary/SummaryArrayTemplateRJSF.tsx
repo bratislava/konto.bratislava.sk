@@ -10,6 +10,7 @@ import { ComponentType } from 'react'
 import { ArrayFieldUiOptions } from 'schema-generator/generator/uiOptionsTypes'
 
 import { getArrayFieldItemTemplateTitle } from '../../../../frontend/utils/formArray'
+import { useFormContext } from '../../useFormContext'
 import { useFormSummary } from './useFormSummary'
 
 type AdditionalItemTemplateProps = {
@@ -29,12 +30,16 @@ const TopLevelArrayFieldItemTemplate = ({
   const { itemTitle } = parentUiOptions
   const title = getArrayFieldItemTemplateTitle(itemTitle, index)
 
+  const { isPdf } = useFormContext()
   const { fieldHasError } = useFormSummary()
 
   const hasError = fieldHasError(`${parentId}_${itemIndex}`)
 
   return (
-    <details className="group mb-4 rounded-xl border border-gray-200 open:border-gray-700 hover:border-gray-500 hover:open:border-gray-700">
+    <details
+      className="group mb-4 rounded-xl border border-gray-200 open:border-gray-700 hover:border-gray-500 hover:open:border-gray-700"
+      open={isPdf}
+    >
       <summary className="group flex w-full cursor-pointer p-6">
         <div className="flex grow flex-col gap-1">
           {title && <span className="text-p2-semibold">{title}</span>}
@@ -44,9 +49,11 @@ const TopLevelArrayFieldItemTemplate = ({
             </div>
           )}
         </div>
-        <span className="shrink-0" aria-hidden>
-          <ChevronDownIcon className="transition-transform group-open:rotate-180" />
-        </span>
+        {!isPdf && (
+          <span className="shrink-0" aria-hidden>
+            <ChevronDownIcon className="transition-transform group-open:rotate-180" />
+          </span>
+        )}
       </summary>
       <div className="p-6 pt-0">{children}</div>
     </details>

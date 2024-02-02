@@ -40,6 +40,7 @@
     "@tanstack/react-query": "^5.0.0",
     "@types/uuid": "^9.0.1",
     "add-to-calendar-button-react": "^2.2.3",
+    "adm-zip": "^0.5.10",
     "ajv": "8.12.0",
     "ajv-formats": "2.1.1",
     "aws-amplify": "^5.3.3",
@@ -98,6 +99,7 @@
     "usehooks-ts": "2.9.1",
     "uuid": "^9.0.0",
     "xml-loader": "^1.2.1",
+    "xml2js": "^0.6.2",
     "yet-another-react-lightbox": "^3.15.4"
   },
   "devDependencies": {
@@ -106,6 +108,7 @@
     "@tanstack/eslint-plugin-query": "^5.0.0",
     "@testing-library/jest-dom": "^5.16.5",
     "@testing-library/react": "^13.4.0",
+    "@types/adm-zip": "^0.5.5",
     "@types/lodash": "4.14.192",
     "@types/mime-types": "^2.1.1",
     "@types/node": "18.11.18",
@@ -114,6 +117,7 @@
     "@types/react-beforeunload": "^2.1.1",
     "@types/react-dom": "18.2.17",
     "@types/traverse": "^0.6.32",
+    "@types/xml2js": "^0.4.14",
     "@typescript-eslint/eslint-plugin": "^6.3.0",
     "@typescript-eslint/parser": "^6.3.0",
     "autoprefixer": "10.4.16",

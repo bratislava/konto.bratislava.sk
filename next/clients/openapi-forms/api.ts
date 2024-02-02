@@ -213,6 +213,12 @@ export interface CreateFormResponseDto {
    */
   formDataJson: object | null
   /**
+   * Signed ASiC-E container in Base64 format
+   * @type {string}
+   * @memberof CreateFormResponseDto
+   */
+  formDataBase64?: string | null
+  /**
    * Technical NASES id of sender
    * @type {string}
    * @memberof CreateFormResponseDto
@@ -380,11 +386,11 @@ export interface EidUpdateSendFormRequestDto {
    */
   formDataJson?: object
   /**
-   * Send Base64 data if you want to sent this. It is mainly used in Signed forms
+   * Signed ASiC-E container in Base64 format
    * @type {string}
    * @memberof EidUpdateSendFormRequestDto
    */
-  formDataBase64?: string
+  formDataBase64?: string | null
   /**
    * State of form
    * @type {object}
@@ -2189,6 +2195,12 @@ export interface GetFormResponseDto {
    * @memberof GetFormResponseDto
    */
   formDataJson: object | null
+  /**
+   * Signed ASiC-E container in Base64 format
+   * @type {string}
+   * @memberof GetFormResponseDto
+   */
+  formDataBase64?: string | null
   /**
    * Technical NASES id of sender
    * @type {string}
@@ -4313,12 +4325,6 @@ export interface TaxSignerDataResponseDto {
    * @memberof TaxSignerDataResponseDto
    */
   xdcNamespaceURI: string
-  /**
-   * Unique id generated for each signature
-   * @type {string}
-   * @memberof TaxSignerDataResponseDto
-   */
-  signatureId: string
 }
 /**
  *
@@ -4546,11 +4552,11 @@ export interface UpdateFormRequestDto {
    */
   formDataJson?: object
   /**
-   * Send Base64 data if you want to sent this. It is mainly used in Signed forms
+   * Signed ASiC-E container in Base64 format
    * @type {string}
    * @memberof UpdateFormRequestDto
    */
-  formDataBase64?: string
+  formDataBase64?: string | null
   /**
    * State of form
    * @type {object}

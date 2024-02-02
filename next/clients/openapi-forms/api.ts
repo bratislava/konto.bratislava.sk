@@ -3248,6 +3248,56 @@ export type NotFoundErrorDtoErrorNameEnum =
 /**
  *
  * @export
+ * @interface PdfPreviewDataRequestDto
+ */
+export interface PdfPreviewDataRequestDto {
+  /**
+   * JWT token for authorization
+   * @type {string}
+   * @memberof PdfPreviewDataRequestDto
+   */
+  jwtToken: string
+}
+/**
+ *
+ * @export
+ * @interface PdfPreviewDataResponseDto
+ */
+export interface PdfPreviewDataResponseDto {
+  /**
+   * schema.json
+   * @type {object}
+   * @memberof PdfPreviewDataResponseDto
+   */
+  jsonSchema: object
+  /**
+   * uiSchema.json
+   * @type {object}
+   * @memberof PdfPreviewDataResponseDto
+   */
+  uiSchema: object
+  /**
+   * Form values in JSON
+   * @type {object}
+   * @memberof PdfPreviewDataResponseDto
+   */
+  jsonForm: object
+  /**
+   *
+   * @type {Array<GetFileResponseDto>}
+   * @memberof PdfPreviewDataResponseDto
+   */
+  serverFiles: Array<GetFileResponseDto>
+  /**
+   * Additional metadata
+   * @type {object}
+   * @memberof PdfPreviewDataResponseDto
+   */
+  additionalMetadata?: object
+}
+/**
+ *
+ * @export
  * @interface PostFileResponseDto
  */
 export interface PostFileResponseDto {
@@ -5501,6 +5551,55 @@ export const ConvertApiAxiosParamCreator = function (configuration?: Configurati
         options: localVarRequestOptions,
       }
     },
+    /**
+     *
+     * @summary
+     * @param {PdfPreviewDataRequestDto} pdfPreviewDataRequestDto
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    convertControllerGetPdfPreviewData: async (
+      pdfPreviewDataRequestDto: PdfPreviewDataRequestDto,
+      options: AxiosRequestConfig = {},
+    ): Promise<RequestArgs> => {
+      // verify required parameter 'pdfPreviewDataRequestDto' is not null or undefined
+      assertParamExists(
+        'convertControllerGetPdfPreviewData',
+        'pdfPreviewDataRequestDto',
+        pdfPreviewDataRequestDto,
+      )
+      const localVarPath = `/convert/pdf-preview-data`
+      // use dummy base URL string because the URL constructor only accepts absolute URLs.
+      const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL)
+      let baseOptions
+      if (configuration) {
+        baseOptions = configuration.baseOptions
+      }
+
+      const localVarRequestOptions = { method: 'POST', ...baseOptions, ...options }
+      const localVarHeaderParameter = {} as any
+      const localVarQueryParameter = {} as any
+
+      localVarHeaderParameter['Content-Type'] = 'application/json'
+
+      setSearchParams(localVarUrlObj, localVarQueryParameter)
+      let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {}
+      localVarRequestOptions.headers = {
+        ...localVarHeaderParameter,
+        ...headersFromBaseOptions,
+        ...options.headers,
+      }
+      localVarRequestOptions.data = serializeDataIfNeeded(
+        pdfPreviewDataRequestDto,
+        localVarRequestOptions,
+        configuration,
+      )
+
+      return {
+        url: toPathString(localVarUrlObj),
+        options: localVarRequestOptions,
+      }
+    },
   }
 }
 
@@ -5571,6 +5670,25 @@ export const ConvertApiFp = function (configuration?: Configuration) {
       )
       return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)
     },
+    /**
+     *
+     * @summary
+     * @param {PdfPreviewDataRequestDto} pdfPreviewDataRequestDto
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    async convertControllerGetPdfPreviewData(
+      pdfPreviewDataRequestDto: PdfPreviewDataRequestDto,
+      options?: AxiosRequestConfig,
+    ): Promise<
+      (axios?: AxiosInstance, basePath?: string) => AxiosPromise<PdfPreviewDataResponseDto>
+    > {
+      const localVarAxiosArgs = await localVarAxiosParamCreator.convertControllerGetPdfPreviewData(
+        pdfPreviewDataRequestDto,
+        options,
+      )
+      return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)
+    },
   }
 }
 
@@ -5634,6 +5752,21 @@ export const ConvertApiFactory = function (
     ): AxiosPromise<XmlToJsonResponseDto> {
       return localVarFp
         .convertControllerConvertXmlToJson(id, xmlToJsonRequestDto, options)
+        .then((request) => request(axios, basePath))
+    },
+    /**
+     *
+     * @summary
+     * @param {PdfPreviewDataRequestDto} pdfPreviewDataRequestDto
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    convertControllerGetPdfPreviewData(
+      pdfPreviewDataRequestDto: PdfPreviewDataRequestDto,
+      options?: AxiosRequestConfig,
+    ): AxiosPromise<PdfPreviewDataResponseDto> {
+      return localVarFp
+        .convertControllerGetPdfPreviewData(pdfPreviewDataRequestDto, options)
         .then((request) => request(axios, basePath))
     },
   }
@@ -5700,6 +5833,23 @@ export class ConvertApi extends BaseAPI {
   ) {
     return ConvertApiFp(this.configuration)
       .convertControllerConvertXmlToJson(id, xmlToJsonRequestDto, options)
+      .then((request) => request(this.axios, this.basePath))
+  }
+
+  /**
+   *
+   * @summary
+   * @param {PdfPreviewDataRequestDto} pdfPreviewDataRequestDto
+   * @param {*} [options] Override http request option.
+   * @throws {RequiredError}
+   * @memberof ConvertApi
+   */
+  public convertControllerGetPdfPreviewData(
+    pdfPreviewDataRequestDto: PdfPreviewDataRequestDto,
+    options?: AxiosRequestConfig,
+  ) {
+    return ConvertApiFp(this.configuration)
+      .convertControllerGetPdfPreviewData(pdfPreviewDataRequestDto, options)
       .then((request) => request(this.axios, this.basePath))
   }
 }

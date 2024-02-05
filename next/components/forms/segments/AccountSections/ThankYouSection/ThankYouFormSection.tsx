@@ -6,9 +6,12 @@ import { useTranslation } from 'next-i18next'
 
 import { ROUTES } from '../../../../../frontend/api/constants'
 import { useFormContext } from '../../../useFormContext'
-import { taxFeedbackUrl } from '../../TaxFormPdfExportModal/TaxFormPdfExportModal'
 
-const ThankYouFormSection = () => {
+type ThankYouFormSectionProps = {
+  feedbackLink?: string
+}
+
+const ThankYouFormSection = ({ feedbackLink }: ThankYouFormSectionProps) => {
   const { isTaxForm } = useFormContext()
   const { t } = useTranslation('account')
 
@@ -25,7 +28,7 @@ const ThankYouFormSection = () => {
           content={
             isTaxForm ? t('thank_you.form_submit_tax.content') : t('thank_you.form_submit.content')
           }
-          overrideFeedbackUrl={isTaxForm ? taxFeedbackUrl : undefined}
+          feedbackUrl={feedbackLink}
         />
         <div className="mx-auto mt-0 w-full max-w-[734px] px-4 md:mt-10 md:px-0 lg:max-w-[800px]">
           <span className="text-p2 flex">

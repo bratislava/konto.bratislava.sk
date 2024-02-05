@@ -11,8 +11,6 @@ import Spinner from '../../simple-components/Spinner'
 import { useFormRedirects } from '../../useFormRedirects'
 import { TaxFormPdfExportModalState } from './TaxFormPdfExportModalState'
 
-export const taxFeedbackUrl = 'https://bravo.staffino.com/bratislava/id=WW14qo6q'
-
 type TaxFormPdfExportModalProps = {
   state: TaxFormPdfExportModalState | null
 } & ModalV2Props

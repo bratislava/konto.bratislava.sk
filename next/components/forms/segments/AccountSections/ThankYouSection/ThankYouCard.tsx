@@ -13,7 +13,7 @@ type ThankYouCardBase = {
   firstButtonTitle: string
   secondButtonTitle: string
   content?: string
-  overrideFeedbackUrl?: string
+  feedbackUrl?: string
 }
 
 const ThankYouCard = ({
@@ -22,7 +22,7 @@ const ThankYouCard = ({
   firstButtonTitle,
   secondButtonTitle,
   content,
-  overrideFeedbackUrl,
+  feedbackUrl,
 }: ThankYouCardBase) => {
   return (
     <div className="mx-auto flex h-full w-full max-w-[734px] flex-col items-center gap-4 rounded-none bg-gray-0 px-4 pb-4 pt-6 md:gap-6 md:rounded-2xl md:px-14 md:py-12 lg:max-w-[800px]">
@@ -48,17 +48,11 @@ const ThankYouCard = ({
       <div className="flex w-full flex-col items-center gap-4 px-0 sm:flex-row md:px-24">
         {success ? (
           <>
-            <a
-              href={
-                overrideFeedbackUrl ??
-                'https://forms.office.com/Pages/ResponsePage.aspx?id=Tudp_mYey0-ZxVjkotKgYzPfQUHlnllIsPHBW0o8KeNUQlMzWEw1WEZIWEM2SThRNVBUREhWNFlISC4u'
-              }
-              className="w-full"
-              target="_blank"
-              rel="noreferrer"
-            >
-              <Button text={firstButtonTitle} fullWidth />
-            </a>
+            {feedbackUrl && (
+              <a href={feedbackUrl} className="w-full" target="_blank" rel="noreferrer">
+                <Button text={firstButtonTitle} fullWidth />
+              </a>
+            )}
             <Link href="/" className="w-full">
               <Button variant="black-outline" text={secondButtonTitle} fullWidth />
             </Link>

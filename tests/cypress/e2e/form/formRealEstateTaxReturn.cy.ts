@@ -566,7 +566,7 @@ describe('F05 -', { testIsolation: false }, () => {
                 cy.selectState(form, esbsNationalityCiselnik, this.fileData.bezpodieloveSpoluvlastnictvoManzelov.stat)
               }
 
-              // TODO dulicated code
+              // TODO duplicated code
               cy.dataCy('form-container').then((form) => {
                 cy.wrap(Cypress.$(`[data-cy=input-meno]`, form)).focus().clear()
                 cy.wrap(Cypress.$(`[data-cy=input-meno]`, form)).type(this.fileData.bezpodieloveSpoluvlastnictvoManzelov.menoTitul.meno)

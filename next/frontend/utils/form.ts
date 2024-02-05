@@ -9,6 +9,7 @@ import { customizeValidator } from '@rjsf/validator-ajv8'
 import { CustomValidatorOptionsType } from '@rjsf/validator-ajv8/src/types'
 import type { Format, Options, SchemaValidateFunction } from 'ajv'
 import Ajv from 'ajv'
+import { isEqual } from 'lodash'
 import traverse from 'traverse'
 import { validate as validateUuid, version as uuidVersion } from 'uuid'
 
@@ -199,6 +200,37 @@ const validateFile = (fileInfo: FormFileUploadFileInfo) => {
 }
 
 /**
+ *
+ */
+const getDefaultFormStateRepeatedly: typeof getDefaultFormState = (
+  validator,
+  theSchema,
+  formData,
+  rootSchema?,
+  includeUndefinedValues?,
+  experimental_defaultFormStateBehavior?,
+) => {
+  let newFormData = formData
+  // eslint-disable-next-line no-plusplus
+  for (let i = 0; i < 10; i++) {
+    const previousFormData = newFormData
+    newFormData = getDefaultFormState(
+      validator,
+      theSchema,
+      previousFormData,
+      rootSchema,
+      includeUndefinedValues,
+      experimental_defaultFormStateBehavior,
+    ) as typeof formData
+    if (isEqual(newFormData, previousFormData)) {
+      break
+    }
+  }
+
+  return newFormData
+}
+
+/**
  * Validates the summary and returns error schema and info about files.
  *
  * This uses (or abuses) a possibility to provide a custom validate function for AJV. This is only
@@ -253,7 +285,8 @@ export const validateSummary = (
     },
   })
 
-  const defaultFormData = getDefaultFormState(
+  const now = performance.now()
+  const defaultFormData = getDefaultFormStateRepeatedly(
     validator,
     schema,
     formData,
@@ -261,7 +294,9 @@ export const validateSummary = (
     undefined,
     defaultFormStateBehavior,
   )
+  console.log('getDefaultFormStateRepeatedly', performance.now() - now)
   const { errorSchema } = validator.validateFormData(defaultFormData, schema)
+  console.log('validator.validateFormData', performance.now() - now)
 
   return { infectedFiles, scanningFiles, uploadingFiles, errorSchema }
 }

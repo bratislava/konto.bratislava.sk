@@ -29,7 +29,12 @@ const useGetContext = () => {
   const isFirst = useIsFirstRender()
 
   const [formData, setFormData, formDataRef] = useStateRef<GenericObjectType>(initialFormDataJson)
-  const stepsSchemas = useMemo(() => getEvaluatedStepsSchemas(schema, formData), [schema, formData])
+  const stepsSchemas = useMemo(() => {
+    const now = performance.now()
+    const re = getEvaluatedStepsSchemas(schema, formData)
+    console.log('stepsSchemas', performance.now() - now)
+    return re
+  }, [schema, formData])
 
   const { currentStepIndex, setCurrentStepIndex } = useCurrentStepIndex(stepsSchemas)
   const { setMigrationRequiredModal } = useFormModals()
@@ -40,10 +45,12 @@ const useGetContext = () => {
    */
   const [submittedStepsIndexes, setSubmittedStepsIndexes] = useState<Set<number>>(new Set())
 
-  const stepperData = useMemo(
-    () => getStepperData(stepsSchemas, submittedStepsIndexes, t('summary.title')),
-    [stepsSchemas, submittedStepsIndexes, t],
-  )
+  const stepperData = useMemo(() => {
+    const now = performance.now()
+    const re = getStepperData(stepsSchemas, submittedStepsIndexes, t('summary.title'))
+    console.log('stepperData', performance.now() - now)
+    return re
+  }, [stepsSchemas, submittedStepsIndexes, t])
 
   // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
   const currentStepperStep = stepperData.find((step) => step.index === currentStepIndex)!

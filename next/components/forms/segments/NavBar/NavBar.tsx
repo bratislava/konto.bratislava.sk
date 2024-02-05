@@ -166,8 +166,8 @@ export const NavBar = ({ className, sectionsList, menuItems, hiddenHeaderNav }: 
                 onValueChange={setMenuValue}
                 aria-label={t('NavMenu.aria.navMenuLabel')}
                 // because of this https://github.com/radix-ui/primitives/discussions/1874 we can't directly access subelement (<div style="position: relative;")
-                // of "nav" element that NavigationMenu.List creates when used. Solution is to add custom className to NavigationMenu.Root and then use it to access subelement in index.css
-                className="nav h-full w-full"
+                // of "<nav>" element that NavigationMenu.List creates when used. Solution is to add grid class to the parent element.
+                className="grid h-full w-full"
               >
                 <NavigationMenu.List className="flex h-full w-full items-center">
                   {sectionsList.map((sectionItem) => (

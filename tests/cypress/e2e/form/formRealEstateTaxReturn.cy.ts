@@ -290,6 +290,7 @@ describe('F05 -', { testIsolation: false }, () => {
                 })
               })
 
+              // TODO duplicated code
               cy.get(this.fileData.danZoStaviebJedenUcel.priznania).each((dataPriznania, indexPriznania) => {
                 cy.dataCy(`section-priznania-${indexPriznania}`).within((priznania) => {
                   cy.wrap(Cypress.$('[data-cy=input-cisloParcely]', priznania)).type(this.fileData.danZoStaviebJedenUcel.priznania[indexPriznania].riadok2.cisloParcely)

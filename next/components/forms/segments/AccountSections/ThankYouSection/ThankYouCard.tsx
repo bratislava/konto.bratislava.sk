@@ -48,9 +48,11 @@ const ThankYouCard = ({
       <div className="flex w-full flex-col items-center gap-4 px-0 sm:flex-row md:px-24">
         {success ? (
           <>
-            <a href={feedbackUrl} className="w-full" target="_blank" rel="noreferrer">
-              <Button text={firstButtonTitle} fullWidth />
-            </a>
+            {feedbackUrl && (
+              <a href={feedbackUrl} className="w-full" target="_blank" rel="noreferrer">
+                <Button text={firstButtonTitle} fullWidth />
+              </a>
+            )}
             <Link href="/" className="w-full">
               <Button variant="black-outline" text={secondButtonTitle} fullWidth />
             </Link>

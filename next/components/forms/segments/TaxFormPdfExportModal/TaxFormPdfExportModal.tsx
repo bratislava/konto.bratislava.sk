@@ -1,4 +1,5 @@
 import { CheckIcon } from '@assets/ui-icons'
+import { FormsFeedbackLinks } from 'frontend/constants/constants'
 import { Trans, useTranslation } from 'next-i18next'
 import React from 'react'
 import { mergeProps } from 'react-aria'
@@ -126,7 +127,7 @@ const SuccessContent = () => {
         <ButtonNew
           variant="black-outline"
           className="min-w-[240px] self-center"
-          href={taxFeedbackUrl}
+          href={FormsFeedbackLinks['priznanie-k-dani-z-nehnutelnosti']}
           target="_blank"
         >
           {t('tax_form_pdf_export_modal.feedback_button')}

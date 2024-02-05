@@ -1,4 +1,3 @@
-import { FormsFeedbackLinks } from 'frontend/constants/constants'
 import { useRouter } from 'next/router'
 import { usePlausible } from 'next-plausible'
 import React, { useEffect } from 'react'
@@ -61,7 +60,7 @@ const FormPageWrapper = ({ formContext }: FormPageWrapperProps) => {
       sentChildren={
         <FormContextProvider formContext={formContext}>
           <AccountPageLayout hiddenHeaderNav className="bg-gray-50">
-            <ThankYouFormSection feedbackLink={FormsFeedbackLinks[formContext.slug]} />
+            <ThankYouFormSection />
           </AccountPageLayout>
         </FormContextProvider>
       }

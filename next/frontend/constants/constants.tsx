@@ -456,7 +456,7 @@ export const serviceCards: ServiceCardBase[] = [
   },
 ]
 
-export const FormsFeedbackLinks = {
+export const formsFeedbackLinks = {
   'stanovisko-k-investicnemu-zameru': 'https://bravo.staffino.com/bratislava/id=WW1hkstR',
   'zavazne-stanovisko-k-investicnej-cinnosti': 'https://bravo.staffino.com/bratislava/id=WW1vhwT6',
   'platba-dane-z-nehnutelnosti':

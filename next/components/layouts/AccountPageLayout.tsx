@@ -92,17 +92,21 @@ const AccountPageLayout = ({ className, children, hiddenHeaderNav }: AccountPage
 
   return (
     <div className={cx('flex min-h-screen flex-col', className)}>
-      <NavBar
-        sectionsList={sectionsList}
-        menuItems={menuItems}
-        navHidden
-        hiddenHeaderNav={hiddenHeaderNav}
-        languages={[
-          { key: 'sk', title: t('language_long.sk') },
-          { key: 'en', title: t('language_long.en') },
-        ]}
-      />
-      <div className="bg-gray-0">{children}</div>
+      <header className="relative z-30">
+        <NavBar
+          sectionsList={sectionsList}
+          menuItems={menuItems}
+          navHidden
+          hiddenHeaderNav={hiddenHeaderNav}
+          languages={[
+            { key: 'sk', title: t('language_long.sk') },
+            { key: 'en', title: t('language_long.en') },
+          ]}
+        />
+      </header>
+      <main className="relative z-0">
+        <div className="bg-gray-0">{children}</div>
+      </main>
     </div>
   )
 }

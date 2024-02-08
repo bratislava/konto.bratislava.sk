@@ -20,10 +20,13 @@ import { useIsClient } from 'usehooks-ts'
 import { RegistrationModalType } from '../../components/forms/segments/RegistrationModal/RegistrationModal'
 import { useFormSignature } from '../../components/forms/signer/useFormSignature'
 import { useFormContext } from '../../components/forms/useFormContext'
+import { useFormFileUpload } from '../../components/forms/useFormFileUpload'
 import { useFormLeaveProtection } from '../../components/forms/useFormLeaveProtection'
 import { useFormModals } from '../../components/forms/useFormModals'
 import { useFormState } from '../../components/forms/useFormState'
+import type { PdfPreviewDataAdditionalMetadata } from '../../pages/pdf-preview'
 import { readFileToString } from '../utils/file'
+import { createSerializableFile } from '../utils/formExportImport'
 import { downloadBlob } from '../utils/general'
 import { useServerSideAuth } from './useServerSideAuth'
 import useSnackbar from './useSnackbar'
@@ -43,6 +46,8 @@ export const useGetContext = () => {
   const { setConceptSaveErrorModal } = useFormModals()
   const { turnOffLeaveProtection } = useFormLeaveProtection()
   const { signature } = useFormSignature()
+  const { clientFiles } = useFormFileUpload()
+
   const router = useRouter()
   // track each imported/exported xml/pdf in analytics - event format should match the one in FormPagesWrapper
   const plausible = usePlausible()
@@ -199,10 +204,17 @@ export const useGetContext = () => {
   }
 
   const runPdfExport = async (abortController?: AbortController) => {
-    const response = await formsApi.convertControllerConvertToPdf(
-      schemaVersionId,
+    const response = await formsApi.convertControllerConvertToPdfv2(
       {
-        jsonForm: formData,
+        schemaVersionId,
+        formId,
+        jsonData: formData,
+        additionalMetadata: {
+          clientFiles: clientFiles.map((fileInfo) => ({
+            ...fileInfo,
+            file: createSerializableFile(fileInfo.file),
+          })),
+        } satisfies PdfPreviewDataAdditionalMetadata,
       },
       {
         accessToken: 'onlyAuthenticated',

@@ -27,6 +27,8 @@ import { readFileToString } from '../utils/file'
 import { downloadBlob } from '../utils/general'
 import { useServerSideAuth } from './useServerSideAuth'
 import useSnackbar from './useSnackbar'
+import { useFormFileUpload } from '../../components/forms/useFormFileUpload'
+import type { PdfPreviewDataAdditionalMetadata } from '../../pages/pdf-preview'
 
 declare global {
   interface Window {
@@ -43,6 +45,8 @@ export const useGetContext = () => {
   const { setConceptSaveErrorModal } = useFormModals()
   const { turnOffLeaveProtection } = useFormLeaveProtection()
   const { signature } = useFormSignature()
+  const { clientFiles } = useFormFileUpload()
+
   const router = useRouter()
   // track each imported/exported xml/pdf in analytics - event format should match the one in FormPagesWrapper
   const plausible = usePlausible()
@@ -199,10 +203,15 @@ export const useGetContext = () => {
   }
 
   const runPdfExport = async (abortController?: AbortController) => {
-    const response = await formsApi.convertControllerConvertToPdf(
-      schemaVersionId,
+    const response = await formsApi.convertControllerConvertToPdfv2(
       {
-        jsonForm: formData,
+        schemaVersionId,
+        formId,
+        jsonData: formData,
+        additionalMetadata: {
+          // File is not serialized, but is needed to display file name properly in PDF
+          clientFiles: clientFiles.map(fileInfo => ({...fileInfo, file: {name: fileInfo.file.name } as File}))
+        } satisfies PdfPreviewDataAdditionalMetadata
       },
       {
         accessToken: 'onlyAuthenticated',

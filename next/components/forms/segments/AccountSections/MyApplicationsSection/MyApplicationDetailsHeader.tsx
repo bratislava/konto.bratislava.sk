@@ -9,6 +9,7 @@ import { downloadBlob } from 'frontend/utils/general'
 import logger from 'frontend/utils/logger'
 import Link from 'next/link'
 import { useTranslation } from 'next-i18next'
+import { PdfPreviewDataAdditionalMetadata } from '../../../../../pages/pdf-preview'
 
 type MyApplicationDetailsHeaderBase = {
   data?: GetFormResponseDto
@@ -46,12 +47,16 @@ const MyApplicationDetailsHeader = ({ data, ginisData }: MyApplicationDetailsHea
     try {
       if (!formData || !schemaVersionId)
         throw new Error(`No form data or schemaVersionId for form id: ${formId}`)
-      const response = await formsApi.convertControllerConvertToPdf(
-        schemaVersionId,
+      const response = await formsApi.convertControllerConvertToPdfv2(
         {
-          jsonForm: formData,
+          schemaVersionId,
+          formId,
+          jsonData: formData
         },
-        { accessToken: 'onlyAuthenticated', responseType: 'arraybuffer' },
+        {
+          accessToken: 'onlyAuthenticated',
+          responseType: 'arraybuffer',
+        },
       )
       const fileName = `${formSlug}_output.pdf`
       downloadBlob(new Blob([response.data as BlobPart]), fileName)

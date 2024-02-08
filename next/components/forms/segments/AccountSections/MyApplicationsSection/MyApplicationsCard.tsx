@@ -118,10 +118,11 @@ const MyApplicationsCard = ({ form, refreshListData, variant }: MyApplicationsCa
     try {
       if (!formData || !schemaVersionId)
         throw new Error(`No form data or schemaVersionId for form id: ${formId}`)
-      const response = await formsApi.convertControllerConvertToPdf(
-        schemaVersionId,
+      const response = await formsApi.convertControllerConvertToPdfv2(
         {
-          jsonForm: formData,
+          schemaVersionId,
+          formId,
+          jsonData: formData
         },
         { accessToken: 'onlyAuthenticated', responseType: 'arraybuffer' },
       )

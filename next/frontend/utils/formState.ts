@@ -2,7 +2,7 @@ import { GenericObjectType, retrieveSchema, RJSFSchema } from '@rjsf/utils'
 import { JSONSchema7 } from 'json-schema'
 import pick from 'lodash/pick'
 import { useRouter } from 'next/router'
-import { useCallback, useEffect, useState } from 'react'
+import { useCallback, useEffect, useMemo, useState } from 'react'
 import { useEffectOnceWhen } from 'rooks'
 
 import { FormStepIndex, FormStepperStep } from '../../components/forms/types/Steps'
@@ -163,96 +163,69 @@ const getStepHash = (stepSchema: JSONSchema7 | null) => {
  */
 export const useCurrentStepIndex = (stepSchemas: (JSONSchema7 | null)[]) => {
   const router = useRouter()
+  const stepQueryParam = useMemo(() => {
+    const { krok } = router.query
+    return typeof krok === 'string' ? krok : null
+  }, [router.query])
 
-  const initialValue = getFirstNonEmptyStepIndex(stepSchemas)
-  const [currentStepIndex, setCurrentStepIndex] = useState<FormStepIndex>(initialValue)
-
-  // Gets the current step and updates the hash if needed
-  const syncStepToHash = useCallback(
-    (index: FormStepIndex, replace: boolean = false) => {
-      const routerFn = replace ? router.replace : router.push
-
-      if (index === 'summary') {
-        // eslint-disable-next-line @typescript-eslint/no-floating-promises
-        routerFn(`#${SUMMARY_HASH}`)
-        return
+  const getStepIndexByParam = useCallback(
+    (param: string | null | undefined) => {
+      if (!param) {
+        return null
       }
-      const schema = stepSchemas?.[index]
-      const stepHash = getStepHash(schema)
 
-      if (!stepHash) {
-        return
+      if (param === SUMMARY_HASH) {
+        return 'summary' as const
       }
-      // eslint-disable-next-line @typescript-eslint/no-floating-promises
-      routerFn(`#${stepHash}`)
+
+      const paramStepIndex = stepSchemas.findIndex((schema) => getStepHash(schema) === param)
+
+      return paramStepIndex === -1 ? null : paramStepIndex
     },
-    [router, stepSchemas],
+    [stepSchemas],
   )
 
-  // Receives the current hash and updates the step index if needed
-  const onHashChange = useCallback(
-    (hash: string) => {
-      // eslint-disable-next-line security/detect-possible-timing-attacks
-      if (hash === `#${SUMMARY_HASH}`) {
-        setCurrentStepIndex('summary')
-        return
-      }
-
-      const hashStepIndex = stepSchemas.findIndex((schema) => {
-        const stepHash = getStepHash(schema)
-
-        if (!stepHash) {
-          return false
-        }
-
-        return hash === `#${stepHash}`
-      })
-
-      if (hashStepIndex !== -1 && hashStepIndex !== currentStepIndex) {
-        setCurrentStepIndex(hashStepIndex)
-      }
-
-      // If the hash in the URL is not a valid step, update the hash to the current step by replacing the router state
-      if (hashStepIndex === -1) {
-        // Calling hash change as hash change handler triggers "Error: Cancel rendering route" which is an expected behavior
-        syncStepToHash(currentStepIndex, true)
-      }
-    },
-    [currentStepIndex, stepSchemas, syncStepToHash],
+  const [currentStepIndex, setCurrentStepIndex] = useState<FormStepIndex>(
+    getStepIndexByParam(stepQueryParam) ?? getFirstNonEmptyStepIndex(stepSchemas),
   )
 
-  // Initially sync the hash and the step index
-  useEffectOnceWhen(() => {
-    // If the URL contains a hash, use it to set the current step
-    if (window.location.hash) {
-      onHashChange(window.location.hash)
-      return
+  // Gets the current step and updates the query parameter if needed
+  const syncStepToQueryParam = (index: FormStepIndex, replace: boolean = false) => {
+    const queryParam = index === 'summary' ? SUMMARY_HASH : getStepHash(stepSchemas?.[index])
+    const routerMethod = replace ? 'replace' : 'push'
+
+    const href = {
+      pathname: router.pathname,
+      query: { ...router.query, krok: queryParam },
     }
 
-    // Otherwise, sync the hash with the current step
-    syncStepToHash(currentStepIndex, true)
+    // eslint-disable-next-line @typescript-eslint/no-floating-promises
+    router[routerMethod](href, href, { shallow: true })
+  }
+
+  // Receives the current query parameter and updates the step index if needed
+  const syncQueryParamToStepIndex = () => {
+    const paramStepIndex = getStepIndexByParam(stepQueryParam)
+
+    if (paramStepIndex != null && paramStepIndex !== currentStepIndex) {
+      setCurrentStepIndex(paramStepIndex)
+    } else if (paramStepIndex == null) {
+      syncStepToQueryParam(currentStepIndex, true)
+    }
+  }
+
+  // Initially sync the query parameter and the step index
+  useEffectOnceWhen(() => {
+    syncStepToQueryParam(currentStepIndex, true)
   }, router.isReady)
 
   useEffect(() => {
-    const onWindowHashChange = () => onHashChange(window.location.hash)
-    const onNextHashChange = (url: string) => {
-      const urlInstance = new URL(url, window.location.origin)
-      onHashChange(urlInstance.hash)
-    }
+    syncQueryParamToStepIndex()
+  }, [stepQueryParam])
 
-    router.events.on('hashChangeStart', onNextHashChange)
-    window.addEventListener('hashchange', onWindowHashChange)
-    window.addEventListener('load', onWindowHashChange)
-    return () => {
-      router.events.off('hashChangeStart', onNextHashChange)
-      window.removeEventListener('load', onWindowHashChange)
-      window.removeEventListener('hashchange', onWindowHashChange)
-    }
-  }, [currentStepIndex, onHashChange, router.asPath, router.events, stepSchemas])
-
-  // Patched version of setCurrentStepIndex that also updates the hash
+  // Patched version of setCurrentStepIndex that also updates the query parameter
   const setCurrentStepIndexPatched = (index: FormStepIndex) => {
-    syncStepToHash(index)
+    syncStepToQueryParam(index)
     setCurrentStepIndex(index)
   }
 

@@ -1,6 +1,14 @@
+import Form from '@rjsf/core'
 import { GenericObjectType } from '@rjsf/utils'
 import { useTranslation } from 'next-i18next'
-import React, { createContext, PropsWithChildren, useContext, useMemo, useState } from 'react'
+import React, {
+  createContext,
+  createRef,
+  PropsWithChildren,
+  useContext,
+  useMemo,
+  useState,
+} from 'react'
 import useStateRef from 'react-usestateref'
 import { useIsFirstRender } from 'usehooks-ts'
 
@@ -19,6 +27,7 @@ import { useFormContext } from './useFormContext'
 import { useFormFileUpload } from './useFormFileUpload'
 import { useFormLeaveProtection } from './useFormLeaveProtection'
 import { useFormModals } from './useFormModals'
+import { useFormOmitData } from './useFormOmitData'
 
 const useGetContext = () => {
   const { schema, formMigrationRequired, initialFormDataJson, isReadonly } = useFormContext()
@@ -27,6 +36,8 @@ const useGetContext = () => {
   const { turnOnLeaveProtection } = useFormLeaveProtection()
   // eslint-disable-next-line testing-library/render-result-naming-convention
   const isFirst = useIsFirstRender()
+  const formRef = createRef<Form>()
+  const { omitData } = useFormOmitData(schema)
 
   const [formData, setFormData, formDataRef] = useStateRef<GenericObjectType>(initialFormDataJson)
   const stepsSchemas = useMemo(() => {
@@ -34,7 +45,8 @@ const useGetContext = () => {
     const re = getEvaluatedStepsSchemas(schema, formData)
     console.log('stepsSchemas', performance.now() - now)
     return re
-  }, [schema, formData])
+    // }, [schema, formData])
+  }, [])
 
   const { currentStepIndex, setCurrentStepIndex } = useCurrentStepIndex(stepsSchemas)
   const { setMigrationRequiredModal } = useFormModals()
@@ -50,7 +62,8 @@ const useGetContext = () => {
     const re = getStepperData(stepsSchemas, submittedStepsIndexes, t('summary.title'))
     console.log('stepperData', performance.now() - now)
     return re
-  }, [stepsSchemas, submittedStepsIndexes, t])
+    // }, [stepsSchemas, submittedStepsIndexes, t])
+  }, [])
 
   // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
   const currentStepperStep = stepperData.find((step) => step.index === currentStepIndex)!
@@ -58,6 +71,12 @@ const useGetContext = () => {
   const currentStepSchema = currentStepIndex === 'summary' ? null : stepsSchemas[currentStepIndex]
 
   const goToStep = (newIndex: FormStepIndex) => {
+    const now = performance.now()
+    debugger
+    const ommited = omitData(formData)
+    console.log('ommited', ommited, performance.now() - now)
+    setStepFormData(ommited)
+
     if (stepsSchemas[newIndex] !== null || newIndex === 'summary') {
       setCurrentStepIndex(newIndex)
     }
@@ -205,6 +224,7 @@ const useGetContext = () => {
     handleFormOnSubmit,
     goToStepByFieldId,
     setImportedFormData,
+    formRef,
   }
 }
 

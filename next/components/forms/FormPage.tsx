@@ -23,6 +23,7 @@ const FormPage = () => {
     formData,
     handleFormOnSubmit,
     handleFormOnChange,
+    formRef,
   } = useFormState()
 
   const { transformErrors } = useFormErrorTranslations()
@@ -54,6 +55,7 @@ const FormPage = () => {
                 )}
               </div>
               <ThemedForm
+                ref={formRef}
                 // This is a hack to force the form to re-render when the step changes, it's hard to say whether it
                 // is needed or not, but ensures 100% safety.
                 key={`form-step-${currentStepperStep.index}`}
@@ -73,8 +75,8 @@ const FormPage = () => {
                 showErrorList={false}
                 // This removes the extra conditional data for the current step, for removing the steps themselves see
                 // `handleFormOnChange` implementation.
-                omitExtraData
-                liveOmit
+                omitExtraData={false}
+                liveOmit={false}
                 experimental_defaultFormStateBehavior={defaultFormStateBehavior}
                 // HTML validation doesn't work for our use case, therefore it's turned off.
                 noHtml5Validate

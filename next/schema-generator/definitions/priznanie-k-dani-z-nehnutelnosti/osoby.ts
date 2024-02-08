@@ -28,7 +28,42 @@ const menoTitulField = object(
     objectDisplay: 'columns',
     objectColumnRatio: '3/1',
   },
-  [input('meno', { title: 'Meno', required: true }, {}), input('titul', { title: 'Titul' }, {})],
+  [
+    object(
+      'menoTitul',
+      { required: true },
+      {
+        objectDisplay: 'columns',
+        objectColumnRatio: '3/1',
+      },
+      [
+        object(
+          'menoTitul',
+          { required: true },
+          {
+            objectDisplay: 'columns',
+            objectColumnRatio: '3/1',
+          },
+          [
+            object(
+              'menoTitul',
+              { required: true },
+              {
+                objectDisplay: 'columns',
+                objectColumnRatio: '3/1',
+              },
+              [
+                input('meno', { title: 'Meno', required: true }, {}),
+                input('titul', { title: 'Titul', required: true }, {}),
+              ],
+            ),
+            input('titul', { title: 'Titul', required: true }, {}),
+          ],
+        ),
+      ],
+    ),
+    input('titul', { title: 'Titul', required: true }, {}),
+  ],
 )
 
 const ulicaCisloFields = (type: UlicaCisloTyp) =>

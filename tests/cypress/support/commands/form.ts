@@ -93,6 +93,51 @@ declare namespace Cypress {
      * @example cy.fillOwner(form, spoluvlastnictvo)
      */
     fillOwner(form: object, spoluvlastnictvo: string): Chainable<any>
+
+    /**
+     * Custom command to fill in type of tax return.
+     * @param form form object.
+     * @param druhPriznania data.
+     * @example cy.fillTypeOfTaxReturn(form, druhPriznania)
+     */
+    fillTypeOfTaxReturn(form: object, druhPriznania: string): Chainable<any>
+
+    /**
+     * Custom command to fill in calculator use.
+     * @param form form object.
+     * @param useCalculator data.
+     * @param checkboxGroup data.
+     * @example cy.useCalculator(form, useCalculator)
+     */
+    useCalculator(form: object, useCalculator: boolean, checkboxGroup: string): Chainable<any>
+
+    /**
+     * Custom command to fill in calculator use.
+     * @param form form object.
+     * @param device device type.
+     * @example cy.clickNoAndContinue(form, 'mobile')
+     */
+    clickNoAndContinue(form: object, device: string): Chainable<any>
+
+    /**
+     * Custom command to fill in calculator use.
+     * @param form form object.
+     * @param select data cy string.
+     * @param data data.
+     * @example cy.select(form, 'select-názov-katastrálneho-územia', data)
+     */
+    selectFromDropdown(form: object, select: string, data: string): Chainable<any>
+
+    /**
+     * Custom command to validate step.
+     * @param stepIndex step index.
+     * @param fillInStep boolean.
+     * @param device device.
+     * @param numberOfInputs number of inputs to check.
+     * @param inputs list on inputs.
+     * @example cy.stepValidation(6, this.fileData.danZBytovANebytovychPriestorov.vyplnitObject.vyplnit, device, 9, nonResidentialTaxBorderFields)
+     */
+    stepValidation(stepIndex: number, fillInStep: boolean, device: string, numberOfInputs: number, inputs: string): Chainable<any>
   }
 }
 
@@ -163,5 +208,52 @@ Cypress.Commands.add('fillOwner', (form, spoluvlastnictvo) => {
     cy.wrap(Cypress.$('[data-cy=radio-group-spoluvlastníctvo]', form)).find(`[data-cy=radio-podielové-spoluvlastníctvo]`).click()
   } else if (spoluvlastnictvo === 'bezpodieloveSpoluvlastnictvoManzelov') {
     cy.wrap(Cypress.$('[data-cy=radio-group-spoluvlastníctvo]', form)).find(`[data-cy=radio-bezpodielové-spoluvlastníctvo-manželov]`).click()
+  }
+})
+
+Cypress.Commands.add('fillTypeOfTaxReturn', (form, druhPriznania) => {
+  let radioGroup = cy.wrap(Cypress.$('[data-cy=radio-group-vyberte-druh-priznania]', form))
+  if (druhPriznania === 'priznanie') {
+    radioGroup.find(`[data-cy=radio-priznanie]`).click()
+  } else if (druhPriznania === 'ciastkovePriznanie') {
+    radioGroup.find(`[data-cy=radio-čiastkové-priznanie]`).click()
+  } else if (druhPriznania === 'ciastkovePriznanieNaZanikDanovejPovinnosti') {
+    radioGroup.find(`[data-cy=radio-čiastkové-priznanie-na-zánik-daňovej-povinnosti]`).click()
+  } else if (druhPriznania === 'opravnePriznanie') {
+    radioGroup.find(`[data-cy=radio-opravné-priznanie]`).click()
+  } else if (druhPriznania === 'dodatocnePriznanie') {
+    radioGroup.find(`[data-cy=radio-opravné-priznanie]`).click()
+  }
+})
+
+Cypress.Commands.add('useCalculator', (form, useCalculator, checkboxGroup) => {
+  if (!useCalculator) {
+    cy.wrap(Cypress.$(`[data-cy=${checkboxGroup}]`, form)).find(`[data-cy=checkbox-true]`).click()
+  }
+})
+
+Cypress.Commands.add('clickNoAndContinue', (form, device) => {
+  cy.wrap(Cypress.$('[data-cy=radio-nie]', form)).click()
+  cy.wrap(Cypress.$(`[data-cy=continue-button-${device}]`, form)).click()
+})
+
+Cypress.Commands.add('selectFromDropdown', (form, select, data) => {
+  cy.wrap(Cypress.$(`[data-cy=${select}]`, form)).click()
+  cy.wrap(Cypress.$(`[data-cy=${select}]`, form)).type(data + "{enter}{enter}")
+})
+
+Cypress.Commands.add('stepValidation', (stepIndex, fillInStep, device, numberOfInputs, inputs) => {
+  cy.checkActiveStep(stepIndex)
+  if (fillInStep) {
+    cy.dataCy('form-container').then((form) => {
+      cy.wrap(Cypress.$('[data-cy=radio-áno]', form)).click()
+    })
+    cy.dataCy('form-container').then((form) => {   
+      cy.checkFormValidation(device, form, numberOfInputs, inputs)
+    })
+  } else {
+    cy.dataCy('form-container').then((form) => {
+      cy.clickNoAndContinue(form, device)
+    })
   }
 })

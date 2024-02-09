@@ -6,23 +6,13 @@ const { esbsNationalityCiselnik } = require("../../../../next/schema-generator/d
 describe('F05 -', { testIsolation: false }, () => {
   const devices = ['desktop', 'mobile']
 
-  const taxpayerBorderFields = '[data-cy=input-email], [data-cy=input-rodneCislo], [data-cy=input-ulica], [data-cy=input-cislo], [data-cy=input-meno], [data-cy=input-telefon], [data-cy=input-obec], [data-cy=input-psc]'
-  
-  const landTaxBorderFields = '[data-cy=input-celkovaVymeraPozemku], [data-cy=input-cisloParcely], [data-cy=input-podielPriestoruNaSpolocnychCastiachAZariadeniachDomu], [data-cy=input-spoluvlastnickyPodiel]'
-
-  const onePurposeTaxBorderFields = '[data-cy=input-ulicaACisloDomu], [data-cy=input-supisneCislo], [data-cy=input-cisloParcely], [data-cy=input-celkovaZastavanaPlocha], [data-cy=input-spoluvlastnickyPodiel], [data-cy=input-pocetNadzemnychAPodzemnychPodlaziStavbyOkremPrvehoNadzemnehoPodlazia]'
-
-  const multiPurposeTaxBorderFields = '[data-cy=input-ulicaACisloDomu], [data-cy=input-supisneCislo], [data-cy=input-cisloParcely], [data-cy=input-popisStavby], [data-cy=input-celkovaVymera], [data-cy=input-spoluvlastnickyPodiel], [data-cy=input-podielPriestoruNaSpolocnychCastiachAZariadeniachDomu],[data-cy=input-pocetNadzemnychAPodzemnychPodlaziStavbyOkremPrvehoNadzemnehoPodlazia]'
-
-  const nonResidentialTaxBorderFields = '[data-cy=input-ulicaACisloDomu], [data-cy=input-supisneCislo], [data-cy=input-cisloParcely]'
-
-  const summaryBorderFields = '[data-cy=summary-row-rok], [data-cy=summary-row-rodneCislo], [data-cy=summary-row-priezvisko], [data-cy=summary-row-obec], [data-cy=summary-row-psc], [data-cy=summary-row-email], [data-cy=summary-row-telefon]'
-
-  const husbandWifeBorderFields = '[data-cy=input-rodneCislo], [input-meno], [data-cy=input-priezvisko]'
-
   before(() => {
     cy.fixture('formRealEstateTaxReturn-5.json').then((fileData) => {
       this.fileData = fileData
+    })
+
+    cy.fixture('formRealEstateTaxReturnInputs.json').then((fileData) => {
+      this.inputData = fileData
     })
   })
 
@@ -61,7 +51,7 @@ describe('F05 -', { testIsolation: false }, () => {
         it('4. Checking "Taxpayer data" step validation.', () => {
           cy.checkActiveStep(2)
           cy.dataCy('form-container').then((form) => {
-            cy.checkFormValidation(device, form, 13, taxpayerBorderFields)
+            cy.checkFormValidation(device, form, 13, this.inputData.taxpayerBorderFields)
           })
         })
 
@@ -108,7 +98,7 @@ describe('F05 -', { testIsolation: false }, () => {
         })
 
         it('6. Checking "Land tax return" step validation.', () => {
-          cy.stepValidation(3, this.fileData.danZPozemkov.vyplnitObject.vyplnit, device, 9, landTaxBorderFields)
+          cy.stepValidation(3, this.fileData.danZPozemkov.vyplnitObject.vyplnit, device, 9, this.inputData.landTaxBorderFields)
         })
 
         it('7. Filling out "Land tax return" step.', () => {
@@ -156,7 +146,7 @@ describe('F05 -', { testIsolation: false }, () => {
         })
 
         it('8. Checking "Construction tax return - one purpose" step validation.', () => {
-          cy.stepValidation(4, this.fileData.danZoStaviebJedenUcel.vyplnitObject.vyplnit, device, 12, onePurposeTaxBorderFields)
+          cy.stepValidation(4, this.fileData.danZoStaviebJedenUcel.vyplnitObject.vyplnit, device, 12, this.inputData.onePurposeTaxBorderFields)
         })
 
         it('9. Filling out "Construction tax return - one purpose" step.', () => { 
@@ -215,7 +205,7 @@ describe('F05 -', { testIsolation: false }, () => {
         })
 
         it('10. Checking "Construction tax return - multi purpose" step validation.', () => {
-          cy.stepValidation(5, this.fileData.danZoStaviebViacereUcely.vyplnitObject.vyplnit, device, 14, multiPurposeTaxBorderFields)
+          cy.stepValidation(5, this.fileData.danZoStaviebViacereUcely.vyplnitObject.vyplnit, device, 14, this.inputData.multiPurposeTaxBorderFields)
         })
 
         it('11. Filling out "Construction tax return - multi purpose" step.', () => {
@@ -292,7 +282,7 @@ describe('F05 -', { testIsolation: false }, () => {
         })
 
         it('12. Checking "Tax return - apartments and non residential" step validation.', () => {
-          cy.stepValidation(6, this.fileData.danZBytovANebytovychPriestorov.vyplnitObject.vyplnit, device, 9, nonResidentialTaxBorderFields)
+          cy.stepValidation(6, this.fileData.danZBytovANebytovychPriestorov.vyplnitObject.vyplnit, device, 9, this.inputData.nonResidentialTaxBorderFields)
         })
 
         it('13. Filling out "Tax return - apartments and non residential" step.', () => {
@@ -383,7 +373,7 @@ describe('F05 -', { testIsolation: false }, () => {
           if (this.fileData.bezpodieloveSpoluvlastnictvoManzelov) {
             cy.checkActiveStep(7)
             cy.dataCy('form-container').then((form) => {
-              cy.checkFormValidation(device, form, 4, husbandWifeBorderFields)
+              cy.checkFormValidation(device, form, 4, this.inputData.husbandWifeBorderFields)
             })
           }
         })
@@ -447,7 +437,7 @@ describe('F05 -', { testIsolation: false }, () => {
           cy.dataCy('alert-container').should('not.exist')
           cy.dataCy('form-container').then((form) => {
             this.fileData.bezpodieloveSpoluvlastnictvoManzelov ? cy.checkActiveStep(9) : cy.checkActiveStep(8)
-            cy.wrap(Cypress.$(summaryBorderFields, form)).should('not.have.class', 'border-red-500');
+            cy.wrap(Cypress.$(this.inputData.summaryBorderFields, form)).should('not.have.class', 'border-red-500');
             cy.wrap(Cypress.$(`[data-cy=download-pdf-button-${device}]`, form))
           })
         })

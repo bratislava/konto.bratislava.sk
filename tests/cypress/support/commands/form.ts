@@ -37,70 +37,70 @@ declare namespace Cypress {
     /**
      * Custom command to fill in address.
      * @param form form object.
-     * @param ulica data.
-     * @param cislo data.
-     * @param obec data.
-     * @param psc data.
+     * @param street data.
+     * @param number data.
+     * @param municipality data.
+     * @param zipCode data.
      * @example cy.fillInAddress(device, form, 13, taxpayerBorderFields)
      */
-    fillInAddress(form: object, ulica: string, cislo: string, obec: string, psc: string): Chainable<any>
+    fillInAddress(form: object, street: string, number: string, municipality: string, zipCode: string): Chainable<any>
 
     /**
      * Custom command to fill in legal information.
      * @param form form object.
-     * @param rodneCislo data.
-     * @param priezvisko data.
-     * @param meno data.
-     * @example cy.fillInLegalInformation(form, rodneCislo, priezvisko, meno)
+     * @param personalIdNumber data.
+     * @param surname data.
+     * @param name data.
+     * @example cy.fillInLegalInformation(form, personalIdNumber, surname, name)
      */
-    fillInLegalInformation(form: object, rodneCislo: string, priezvisko: string, meno: string): Chainable<any>
+    fillInLegalInformation(form: object, personalIdNumber: string, surname: string, name: string): Chainable<any>
 
     /**
      * Custom command to select legal relationship.
      * @param device device type.
      * @param form form object.
      * @param index index.
-     * @param vztah data.
-     * @example cy.selectLegalRelationship(form, 13, vztah)
+     * @param relationship data.
+     * @example cy.selectLegalRelationship(form, 13, relationship)
      */
-    selectLegalRelationship(form: object, index: number, vztah: string): Chainable<any>
+    selectLegalRelationship(form: object, index: number, relationship: string): Chainable<any>
 
     /**
      * Custom command to fill in apartment information.
      * @param form form object.
-     * @param podielPriestoru data.
-     * @param spoluvlastnickyPodiel data.
-     * @example cy.fillInApartmentInformation(device, form, 13, taxpayerBorderFields)
+     * @param shareOfSpace data.
+     * @param jointShare data.
+     * @example cy.fillInApartmentInformation(form, '1/2', '1/2')
      */
-    fillInApartmentInformation(form: object, podielPriestoru: string, spoluvlastnickyPodiel: string): Chainable<any>
+    fillInApartmentInformation(form: object, shareOfSpace: string, jointShare: string): Chainable<any>
 
     /**
      * Custom command to fill in house information.
      * @param form form object.
      * @param index index.
-     * @param ulicaACisloDomu data.
-     * @param supisneCislo data.
-     * @param kataster data.
-     * @param cisloParcely data.
-     * @example cy.fillHouseInformation(form, 13, ulicaACisloDomu, supisneCislo, kataster, cisloParcely)
+     * @param streetHouseNumber data.
+     * @param referenceNumber data.
+     * @param landRegistry data.
+     * @param parcelNumber data.
+     * @example cy.fillHouseInformation(form, 13, streetHouseNumber, referenceNumber, landRegistry, parcelNumber)
      */
-    fillHouseInformation(form: object, index: number, ulicaACisloDomu: string, supisneCislo: string, kataster: string, cisloParcely: string): Chainable<any>
+    fillHouseInformation(form: object, index: number, streetHouseNumber: string, referenceNumber: string, landRegistry: string, parcelNumber: string): Chainable<any>
 
     /**
      * Custom command to fill in owner information.
      * @param form form object.
-     * @param spoluvlastnictvo data.
-     * @example cy.fillOwner(form, spoluvlastnictvo)
+     * @param coownership data.
+     * @example cy.fillOwner(form, coownership)
      */
-    fillOwner(form: object, spoluvlastnictvo: string): Chainable<any>
+    fillOwner(form: object, coownership: string): Chainable<any>
 
     /**
      * Custom command to fill in type of tax return.
      * @param form form object.
-     * @param druhPriznania data.
-     * @example cy.fillTypeOfTaxReturn(form, druhPriznania)
+     * @param typeOfReturn data.
+     * @example cy.fillTypeOfTaxReturn(form, typeOfReturn)
      */
-    fillTypeOfTaxReturn(form: object, druhPriznania: string): Chainable<any>
+    fillTypeOfTaxReturn(form: object, typeOfReturn: string): Chainable<any>
 
     /**
      * Custom command to fill in calculator use.
@@ -138,6 +138,15 @@ declare namespace Cypress {
      * @example cy.stepValidation(6, this.fileData.danZBytovANebytovychPriestorov.vyplnitObject.vyplnit, device, 9, nonResidentialTaxBorderFields)
      */
     stepValidation(stepIndex: number, fillInStep: boolean, device: string, numberOfInputs: number, inputs: string): Chainable<any>
+
+    /**
+     * Custom command to click radio.
+     * @param form form object.
+     * @param radioGroup data cy string.
+     * @param condition data.
+     * @example cy.clickRadio(form, 'je-korešpondenčná-adresa-rovnáká-ako-adresa-trvalého-pobytu', this.fileData.udajeODanovnikovi.korespondencnaAdresa.korespondencnaAdresaRovnaka)
+     */
+    clickRadio(form: object, radioGroup: string, condition: boolean): Chainable<any>
   }
 }
 
@@ -162,66 +171,66 @@ Cypress.Commands.add('selectState', (form, esbsNationalityCiselnik, state) => {
   }
 })
 
-Cypress.Commands.add('fillInAddress', (form, ulica, cislo, obec, psc) => {
-  cy.wrap(Cypress.$(`[data-cy=input-ulica]`, form)).type(ulica)
-  cy.wrap(Cypress.$(`[data-cy=input-cislo]`, form)).type(cislo)
-  cy.wrap(Cypress.$(`[data-cy=input-obec]`, form)).type(obec)
-  cy.wrap(Cypress.$(`[data-cy=input-psc]`, form)).type(psc) 
+Cypress.Commands.add('fillInAddress', (form, street, number, municipality, zipCode) => {
+  cy.wrap(Cypress.$(`[data-cy=input-ulica]`, form)).type(street)
+  cy.wrap(Cypress.$(`[data-cy=input-cislo]`, form)).type(number)
+  cy.wrap(Cypress.$(`[data-cy=input-obec]`, form)).type(municipality)
+  cy.wrap(Cypress.$(`[data-cy=input-psc]`, form)).type(zipCode) 
 })
 
-Cypress.Commands.add('fillInLegalInformation', (form, rodneCislo, priezvisko, meno) => {
-  cy.wrap(Cypress.$(`[data-cy=input-rodneCislo]`, form)).type(rodneCislo)
-  cy.wrap(Cypress.$(`[data-cy=input-priezvisko]`, form)).type(priezvisko)
-  cy.wrap(Cypress.$(`[data-cy=input-meno]`, form)).type(meno)
+Cypress.Commands.add('fillInLegalInformation', (form, personalIdNumber, surname, name) => {
+  cy.wrap(Cypress.$(`[data-cy=input-rodneCislo]`, form)).type(personalIdNumber)
+  cy.wrap(Cypress.$(`[data-cy=input-priezvisko]`, form)).type(surname)
+  cy.wrap(Cypress.$(`[data-cy=input-meno]`, form)).type(name)
 })
 
-Cypress.Commands.add('selectLegalRelationship', (form, index, vztah) => {
-  if (vztah === 'vlastnik') {
+Cypress.Commands.add('selectLegalRelationship', (form, index, relationship) => {
+  if (relationship === 'vlastnik') {
     cy.wrap(Cypress.$('[data-cy=radio-group-právny-vzťah]', form)).find(`[data-cy=radio-vlastník]`).click()
-  } else if (vztah === 'spravca') {
+  } else if (relationship === 'spravca') {
     cy.wrap(Cypress.$('[data-cy=radio-group-právny-vzťah]', form)).find(`[data-cy=radio-správca]`).click()
-  } else if (vztah === 'najomca') {
+  } else if (relationship === 'najomca') {
     cy.wrap(Cypress.$('[data-cy=radio-group-právny-vzťah]', form)).find(`[data-cy=radio-nájomca]`).click()
-  } else if (vztah === 'uzivatel') {
+  } else if (relationship === 'uzivatel') {
     cy.wrap(Cypress.$('[data-cy=radio-group-právny-vzťah]', form)).find(`[data-cy=radio-užívateľ]`).click()
   }
 })
 
-Cypress.Commands.add('fillInApartmentInformation', (form, podielPriestoru, spoluvlastnickyPodiel) => {
-  cy.wrap(Cypress.$('[data-cy=input-podielPriestoruNaSpolocnychCastiachAZariadeniachDomu]', form)).eq(0).type(podielPriestoru)
+Cypress.Commands.add('fillInApartmentInformation', (form, shareOfSpace, jointShare) => {
+  cy.wrap(Cypress.$('[data-cy=input-podielPriestoruNaSpolocnychCastiachAZariadeniachDomu]', form)).eq(0).type(shareOfSpace)
   
-  cy.wrap(Cypress.$('[data-cy=input-spoluvlastnickyPodiel]', form)).eq(0).type(spoluvlastnickyPodiel)
+  cy.wrap(Cypress.$('[data-cy=input-spoluvlastnickyPodiel]', form)).eq(0).type(jointShare)
 })
 
-Cypress.Commands.add('fillHouseInformation', (form, index, ulicaACisloDomu, supisneCislo, kataster, cisloParcely) => {
-  cy.wrap(Cypress.$('[data-cy=input-ulicaACisloDomu]', form)).type(ulicaACisloDomu)
-  cy.wrap(Cypress.$('[data-cy=input-supisneCislo]', form)).type(supisneCislo)
+Cypress.Commands.add('fillHouseInformation', (form, index, streetHouseNumber, referenceNumber, landRegistry, parcelNumber) => {
+  cy.wrap(Cypress.$('[data-cy=input-ulicaACisloDomu]', form)).type(streetHouseNumber)
+  cy.wrap(Cypress.$('[data-cy=input-supisneCislo]', form)).type(referenceNumber)
   cy.wrap(Cypress.$('[data-cy=select-názov-katastrálneho-územia]', form)).click()
-  cy.wrap(Cypress.$('[data-cy=select-názov-katastrálneho-územia]', form)).type(kataster + "{enter}{enter}")
-  cy.wrap(Cypress.$('[data-cy=input-cisloParcely]', form)).type(cisloParcely)
+  cy.wrap(Cypress.$('[data-cy=select-názov-katastrálneho-územia]', form)).type(landRegistry + "{enter}{enter}")
+  cy.wrap(Cypress.$('[data-cy=input-cisloParcely]', form)).type(parcelNumber)
 })
 
-Cypress.Commands.add('fillOwner', (form, spoluvlastnictvo) => {
-  if (spoluvlastnictvo === 'somJedinyVlastnik') {
+Cypress.Commands.add('fillOwner', (form, coownership) => {
+  if (coownership === 'somJedinyVlastnik') {
     cy.wrap(Cypress.$('[data-cy=radio-group-spoluvlastníctvo]', form)).find(`[data-cy=radio-som-jediný-vlastník]`).click()
-  } else if (spoluvlastnictvo === 'podieloveSpoluvlastnictvo') {
+  } else if (coownership === 'podieloveSpoluvlastnictvo') {
     cy.wrap(Cypress.$('[data-cy=radio-group-spoluvlastníctvo]', form)).find(`[data-cy=radio-podielové-spoluvlastníctvo]`).click()
-  } else if (spoluvlastnictvo === 'bezpodieloveSpoluvlastnictvoManzelov') {
+  } else if (coownership === 'bezpodieloveSpoluvlastnictvoManzelov') {
     cy.wrap(Cypress.$('[data-cy=radio-group-spoluvlastníctvo]', form)).find(`[data-cy=radio-bezpodielové-spoluvlastníctvo-manželov]`).click()
   }
 })
 
-Cypress.Commands.add('fillTypeOfTaxReturn', (form, druhPriznania) => {
+Cypress.Commands.add('fillTypeOfTaxReturn', (form, typeOfReturn) => {
   let radioGroup = cy.wrap(Cypress.$('[data-cy=radio-group-vyberte-druh-priznania]', form))
-  if (druhPriznania === 'priznanie') {
+  if (typeOfReturn === 'priznanie') {
     radioGroup.find(`[data-cy=radio-priznanie]`).click()
-  } else if (druhPriznania === 'ciastkovePriznanie') {
+  } else if (typeOfReturn === 'ciastkovePriznanie') {
     radioGroup.find(`[data-cy=radio-čiastkové-priznanie]`).click()
-  } else if (druhPriznania === 'ciastkovePriznanieNaZanikDanovejPovinnosti') {
+  } else if (typeOfReturn === 'ciastkovePriznanieNaZanikDanovejPovinnosti') {
     radioGroup.find(`[data-cy=radio-čiastkové-priznanie-na-zánik-daňovej-povinnosti]`).click()
-  } else if (druhPriznania === 'opravnePriznanie') {
+  } else if (typeOfReturn === 'opravnePriznanie') {
     radioGroup.find(`[data-cy=radio-opravné-priznanie]`).click()
-  } else if (druhPriznania === 'dodatocnePriznanie') {
+  } else if (typeOfReturn === 'dodatocnePriznanie') {
     radioGroup.find(`[data-cy=radio-opravné-priznanie]`).click()
   }
 })
@@ -255,5 +264,14 @@ Cypress.Commands.add('stepValidation', (stepIndex, fillInStep, device, numberOfI
     cy.dataCy('form-container').then((form) => {
       cy.clickNoAndContinue(form, device)
     })
+  }
+})
+
+Cypress.Commands.add('clickRadio', (form, radioGroup, condition) => {
+  let radioGroupEl = cy.wrap(Cypress.$(`[data-cy=radio-group-${radioGroup}]`, form))
+  if (condition) {
+    radioGroupEl.find(`[data-cy=radio-áno]`).click()
+  } else {
+    radioGroupEl.find(`[data-cy=radio-nie]`).click()
   }
 })

@@ -99,6 +99,37 @@ export interface CanSendResponseDto {
 /**
  *
  * @export
+ * @interface ConvertToPdfV2RequestDto
+ */
+export interface ConvertToPdfV2RequestDto {
+  /**
+   * Form id
+   * @type {string}
+   * @memberof ConvertToPdfV2RequestDto
+   */
+  formId: string
+  /**
+   * Form values in JSON
+   * @type {object}
+   * @memberof ConvertToPdfV2RequestDto
+   */
+  jsonData: object
+  /**
+   * Schema version id
+   * @type {string}
+   * @memberof ConvertToPdfV2RequestDto
+   */
+  schemaVersionId: string
+  /**
+   * Some additional metadata
+   * @type {object}
+   * @memberof ConvertToPdfV2RequestDto
+   */
+  additionalMetadata?: object
+}
+/**
+ *
+ * @export
  * @interface CreateFormEidRequestDto
  */
 export interface CreateFormEidRequestDto {
@@ -2114,6 +2145,69 @@ export interface GetFileResponseDtoForms {
 /**
  *
  * @export
+ * @interface GetFileResponseReducedDto
+ */
+export interface GetFileResponseReducedDto {
+  /**
+   * id of the record in db
+   * @type {string}
+   * @memberof GetFileResponseReducedDto
+   */
+  id: string
+  /**
+   * Real file name of the file, but is used only for display
+   * @type {string}
+   * @memberof GetFileResponseReducedDto
+   */
+  fileName: string
+  /**
+   * File size in bytes
+   * @type {number}
+   * @memberof GetFileResponseReducedDto
+   */
+  fileSize: number
+  /**
+   * scan result
+   * @type {string}
+   * @memberof GetFileResponseReducedDto
+   */
+  status: GetFileResponseReducedDtoStatusEnum
+  /**
+   * order of this file in respective ginis submission
+   * @type {number}
+   * @memberof GetFileResponseReducedDto
+   */
+  ginisOrder: number | null
+  /**
+   * If the file was uploaded to GINIS
+   * @type {boolean}
+   * @memberof GetFileResponseReducedDto
+   */
+  ginisUploaded: boolean
+}
+
+export const GetFileResponseReducedDtoStatusEnum = {
+  Uploaded: 'UPLOADED',
+  Accepted: 'ACCEPTED',
+  Queued: 'QUEUED',
+  Scanning: 'SCANNING',
+  Safe: 'SAFE',
+  Infected: 'INFECTED',
+  NotFound: 'NOT_FOUND',
+  MoveErrorSafe: 'MOVE_ERROR_SAFE',
+  MoveErrorInfected: 'MOVE_ERROR_INFECTED',
+  ScanError: 'SCAN_ERROR',
+  ScanTimeout: 'SCAN_TIMEOUT',
+  ScanNotSuccessful: 'SCAN_NOT_SUCCESSFUL',
+  FormIdNotFound: 'FORM_ID_NOT_FOUND',
+} as const
+
+export type GetFileResponseReducedDtoStatusEnum =
+  (typeof GetFileResponseReducedDtoStatusEnum)[keyof typeof GetFileResponseReducedDtoStatusEnum]
+
+/**
+ *
+ * @export
  * @interface GetFormResponseDto
  */
 export interface GetFormResponseDto {
@@ -3252,7 +3346,7 @@ export type NotFoundErrorDtoErrorNameEnum =
  */
 export interface PdfPreviewDataRequestDto {
   /**
-   * JWT token for authorization
+   * JWT token for retrieving the form data from the data store
    * @type {string}
    * @memberof PdfPreviewDataRequestDto
    */
@@ -3284,12 +3378,12 @@ export interface PdfPreviewDataResponseDto {
   jsonForm: object
   /**
    *
-   * @type {Array<GetFileResponseDto>}
+   * @type {Array<GetFileResponseReducedDto>}
    * @memberof PdfPreviewDataResponseDto
    */
-  serverFiles: Array<GetFileResponseDto>
+  serverFiles: Array<GetFileResponseReducedDto>
   /**
-   * Additional metadata
+   * Additional metadata for Next server provided in convert PDF request.
    * @type {object}
    * @memberof PdfPreviewDataResponseDto
    */
@@ -5448,6 +5542,7 @@ export const ConvertApiAxiosParamCreator = function (configuration?: Configurati
      * @param {string} id
      * @param {JsonConvertRequestDto} jsonConvertRequestDto
      * @param {*} [options] Override http request option.
+     * @deprecated
      * @throws {RequiredError}
      */
     convertControllerConvertToPdf: async (
@@ -5486,6 +5581,55 @@ export const ConvertApiAxiosParamCreator = function (configuration?: Configurati
       }
       localVarRequestOptions.data = serializeDataIfNeeded(
         jsonConvertRequestDto,
+        localVarRequestOptions,
+        configuration,
+      )
+
+      return {
+        url: toPathString(localVarUrlObj),
+        options: localVarRequestOptions,
+      }
+    },
+    /**
+     * Generates PDF for a given schema version id and form json data.
+     * @summary
+     * @param {ConvertToPdfV2RequestDto} convertToPdfV2RequestDto
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    convertControllerConvertToPdfv2: async (
+      convertToPdfV2RequestDto: ConvertToPdfV2RequestDto,
+      options: AxiosRequestConfig = {},
+    ): Promise<RequestArgs> => {
+      // verify required parameter 'convertToPdfV2RequestDto' is not null or undefined
+      assertParamExists(
+        'convertControllerConvertToPdfv2',
+        'convertToPdfV2RequestDto',
+        convertToPdfV2RequestDto,
+      )
+      const localVarPath = `/convert/pdf-v2`
+      // use dummy base URL string because the URL constructor only accepts absolute URLs.
+      const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL)
+      let baseOptions
+      if (configuration) {
+        baseOptions = configuration.baseOptions
+      }
+
+      const localVarRequestOptions = { method: 'POST', ...baseOptions, ...options }
+      const localVarHeaderParameter = {} as any
+      const localVarQueryParameter = {} as any
+
+      localVarHeaderParameter['Content-Type'] = 'application/json'
+
+      setSearchParams(localVarUrlObj, localVarQueryParameter)
+      let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {}
+      localVarRequestOptions.headers = {
+        ...localVarHeaderParameter,
+        ...headersFromBaseOptions,
+        ...options.headers,
+      }
+      localVarRequestOptions.data = serializeDataIfNeeded(
+        convertToPdfV2RequestDto,
         localVarRequestOptions,
         configuration,
       )
@@ -5636,6 +5780,7 @@ export const ConvertApiFp = function (configuration?: Configuration) {
      * @param {string} id
      * @param {JsonConvertRequestDto} jsonConvertRequestDto
      * @param {*} [options] Override http request option.
+     * @deprecated
      * @throws {RequiredError}
      */
     async convertControllerConvertToPdf(
@@ -5646,6 +5791,23 @@ export const ConvertApiFp = function (configuration?: Configuration) {
       const localVarAxiosArgs = await localVarAxiosParamCreator.convertControllerConvertToPdf(
         id,
         jsonConvertRequestDto,
+        options,
+      )
+      return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)
+    },
+    /**
+     * Generates PDF for a given schema version id and form json data.
+     * @summary
+     * @param {ConvertToPdfV2RequestDto} convertToPdfV2RequestDto
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    async convertControllerConvertToPdfv2(
+      convertToPdfV2RequestDto: ConvertToPdfV2RequestDto,
+      options?: AxiosRequestConfig,
+    ): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<object>> {
+      const localVarAxiosArgs = await localVarAxiosParamCreator.convertControllerConvertToPdfv2(
+        convertToPdfV2RequestDto,
         options,
       )
       return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)
@@ -5726,6 +5888,7 @@ export const ConvertApiFactory = function (
      * @param {string} id
      * @param {JsonConvertRequestDto} jsonConvertRequestDto
      * @param {*} [options] Override http request option.
+     * @deprecated
      * @throws {RequiredError}
      */
     convertControllerConvertToPdf(
@@ -5735,6 +5898,21 @@ export const ConvertApiFactory = function (
     ): AxiosPromise<object> {
       return localVarFp
         .convertControllerConvertToPdf(id, jsonConvertRequestDto, options)
+        .then((request) => request(axios, basePath))
+    },
+    /**
+     * Generates PDF for a given schema version id and form json data.
+     * @summary
+     * @param {ConvertToPdfV2RequestDto} convertToPdfV2RequestDto
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    convertControllerConvertToPdfv2(
+      convertToPdfV2RequestDto: ConvertToPdfV2RequestDto,
+      options?: AxiosRequestConfig,
+    ): AxiosPromise<object> {
+      return localVarFp
+        .convertControllerConvertToPdfv2(convertToPdfV2RequestDto, options)
         .then((request) => request(axios, basePath))
     },
     /**
@@ -5804,6 +5982,7 @@ export class ConvertApi extends BaseAPI {
    * @param {string} id
    * @param {JsonConvertRequestDto} jsonConvertRequestDto
    * @param {*} [options] Override http request option.
+   * @deprecated
    * @throws {RequiredError}
    * @memberof ConvertApi
    */
@@ -5814,6 +5993,23 @@ export class ConvertApi extends BaseAPI {
   ) {
     return ConvertApiFp(this.configuration)
       .convertControllerConvertToPdf(id, jsonConvertRequestDto, options)
+      .then((request) => request(this.axios, this.basePath))
+  }
+
+  /**
+   * Generates PDF for a given schema version id and form json data.
+   * @summary
+   * @param {ConvertToPdfV2RequestDto} convertToPdfV2RequestDto
+   * @param {*} [options] Override http request option.
+   * @throws {RequiredError}
+   * @memberof ConvertApi
+   */
+  public convertControllerConvertToPdfv2(
+    convertToPdfV2RequestDto: ConvertToPdfV2RequestDto,
+    options?: AxiosRequestConfig,
+  ) {
+    return ConvertApiFp(this.configuration)
+      .convertControllerConvertToPdfv2(convertToPdfV2RequestDto, options)
       .then((request) => request(this.axios, this.basePath))
   }
 

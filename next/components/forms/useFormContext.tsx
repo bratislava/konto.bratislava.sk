@@ -1,4 +1,4 @@
-import { GetFileResponseDto } from '@clients/openapi-forms'
+import { GetFileResponseReducedDto } from '@clients/openapi-forms'
 import { GenericObjectType, RJSFSchema, UiSchema } from '@rjsf/utils'
 import { createContext, PropsWithChildren, useContext } from 'react'
 
@@ -12,7 +12,7 @@ export type FormContext = {
   uiSchema: UiSchema
   initialFormDataJson: GenericObjectType
   initialClientFiles?: FormFileUploadClientFileInfo[]
-  initialServerFiles: GetFileResponseDto[]
+  initialServerFiles: GetFileResponseReducedDto[]
   initialSignature?: FormSignature | null
   oldSchemaVersion: boolean
   formSent: boolean

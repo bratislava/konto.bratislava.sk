@@ -46,6 +46,7 @@ const MyApplicationDetailsHeader = ({ data, ginisData }: MyApplicationDetailsHea
     try {
       if (!formData || !schemaVersionId || !formId)
         throw new Error(
+          // eslint-disable-next-line sonarjs/no-nested-template-literals
           `No form data, schemaVersionId or form id ${formId && `for form id: ${formId}`}`,
         )
       const response = await formsApi.convertControllerConvertToPdfv2(

@@ -13,6 +13,7 @@ interface InputWidgetRJSFProps extends WidgetProps {
 }
 
 const InputWidgetRJSF = ({
+  id,
   label,
   options,
   placeholder = '',
@@ -45,7 +46,7 @@ const InputWidgetRJSF = ({
   }
 
   return (
-    <WidgetWrapper options={options}>
+    <WidgetWrapper id={id} options={options}>
       <FieldBlurWrapper value={value} onChange={handleOnChange}>
         {({ value: wrapperValue, onChange: wrapperOnChange, onBlur }) => (
           <InputField

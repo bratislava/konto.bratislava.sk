@@ -15,6 +15,7 @@ interface FileUploadWidgetRJSFProps extends WidgetProps {
 }
 
 const FileUploadWidgetRJSF = ({
+  id,
   options,
   schema,
   label,
@@ -83,7 +84,7 @@ const FileUploadWidgetRJSF = ({
   }
 
   return (
-    <WidgetWrapper options={options} className="w-full">
+    <WidgetWrapper id={id} options={options} className="w-full">
       <Upload
         value={value}
         errorMessage={rawErrors}

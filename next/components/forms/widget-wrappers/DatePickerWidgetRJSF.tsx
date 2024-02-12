@@ -14,6 +14,7 @@ interface DatePickerWidgetRJSFProps extends WidgetProps {
 }
 
 const DatePickerWidgetRJSF = ({
+  id,
   label,
   options,
   rawErrors,
@@ -26,7 +27,7 @@ const DatePickerWidgetRJSF = ({
   const { helptext, helptextHeader, tooltip, size, labelSize } = options
 
   return (
-    <WidgetWrapper options={options}>
+    <WidgetWrapper id={id} options={options}>
       <DatePicker
         label={label}
         errorMessage={rawErrors}

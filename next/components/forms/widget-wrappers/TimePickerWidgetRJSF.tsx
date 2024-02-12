@@ -15,6 +15,7 @@ interface TimePickerWidgetRJSFProps extends WidgetProps {
 }
 
 const TimePickerWidgetRJSF = ({
+  id,
   label,
   options,
   rawErrors = [],
@@ -27,7 +28,7 @@ const TimePickerWidgetRJSF = ({
   const { helptext, helptextHeader, tooltip, size, labelSize } = options
 
   return (
-    <WidgetWrapper options={options}>
+    <WidgetWrapper id={id} options={options}>
       <FieldBlurWrapper value={value} onChange={onChange}>
         {({ value: wrapperValue, onChange: wrapperOnChange, onBlur }) => (
           <TimePicker

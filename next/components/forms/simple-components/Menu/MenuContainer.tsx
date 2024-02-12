@@ -1,7 +1,7 @@
 import type { AriaMenuProps } from '@react-types/menu'
 import cx from 'classnames'
 import MenuItem from 'components/forms/simple-components/Menu/MenuItem'
-import React from 'react'
+import React, { useRef } from 'react'
 import { useMenu } from 'react-aria'
 import { useTreeState } from 'react-stately'
 
@@ -16,7 +16,7 @@ const MenuContainer = <T extends object>(props: MenuContainerProps<T>) => {
   const { containerHeaderEl, onAction, onClose, className } = props
 
   // Get props for the menu element
-  const ref = React.useRef(null)
+  const ref = useRef<HTMLUListElement>(null)
   const { menuProps } = useMenu(props, state, ref)
 
   return (

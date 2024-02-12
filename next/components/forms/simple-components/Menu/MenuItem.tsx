@@ -1,5 +1,5 @@
 import type { Key, Node } from '@react-types/shared'
-import React from 'react'
+import React, { useRef } from 'react'
 import { useMenuItem } from 'react-aria'
 import { TreeState } from 'react-stately'
 
@@ -11,7 +11,7 @@ interface MenuItemProps<T> {
 }
 
 const MenuItem = <T,>({ item, state, onAction, onClose }: MenuItemProps<T>) => {
-  const ref = React.useRef(null)
+  const ref = useRef<HTMLLIElement>(null)
   const { menuItemProps } = useMenuItem(
     {
       key: item.key,

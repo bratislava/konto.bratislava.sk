@@ -27,7 +27,7 @@ const Radio = ({
   ...rest
 }: RadioProps) => {
   const state = useContext(RadioContext)
-  const ref = useRef(null)
+  const ref = useRef<HTMLInputElement>(null)
   const { inputProps, isDisabled, isSelected } = useRadio({ ...rest }, state, ref)
 
   const isError = state?.validationState === 'invalid'
@@ -72,7 +72,12 @@ const Radio = ({
       {/* The input is inside of label, therefore it doesn't need an id. */}
       {/* eslint-disable-next-line jsx-a11y/label-has-associated-control */}
       <label className={containerStyle}>
-        <input {...inputProps} ref={ref} className={inputStyle} data-cy={`radio-${inputProps.value?.toString()}`} />
+        <input
+          {...inputProps}
+          ref={ref}
+          className={inputStyle}
+          data-cy={`radio-${inputProps.value?.toString()}`}
+        />
         <span className="flex grow flex-col gap-1">
           <span className={cx({ 'font-semibold': description || radioGroupHasDescription })}>
             {rest.children}

@@ -1,7 +1,7 @@
 import { CheckIcon, CrossIcon } from '@assets/ui-icons'
 import cx from 'classnames'
 import * as React from 'react'
-import { useId } from 'react'
+import { useId, useRef } from 'react'
 import { useFocusRing, useSwitch, VisuallyHidden } from 'react-aria'
 import { ToggleState, useToggleState } from 'react-stately'
 
@@ -21,7 +21,7 @@ const Toggle = ({ children, isDisabled = false, isSelected = true, ...rest }: To
   const state: ToggleState = useToggleState({ ...rest, isDisabled, isSelected })
   const generatedId = useId()
   const generatedOrProvidedId = rest.id ?? generatedId
-  const ref = React.useRef(null)
+  const ref = useRef<HTMLInputElement>(null)
   const { inputProps } = useSwitch(
     { ...rest, isDisabled, children, 'aria-label': generatedOrProvidedId },
     state,

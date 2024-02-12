@@ -20,10 +20,11 @@ const wrapWidget = (widgetType: SummaryWidgetType) =>
 
 const ObjectFieldTemplate = ({ title, properties, idSchema }: ObjectFieldTemplateProps) => {
   const splitId = idSchema.$id.split('_')
+  const isRootObject = splitId.length === 1 && splitId[0] === 'root'
   const isStepObject = splitId.length === 2 && splitId[0] === 'root'
 
   return (
-    <div className={cx({ 'mb-8': isStepObject })}>
+    <div className={cx({ 'flex flex-col gap-8': isRootObject })}>
       {isStepObject && <h2 className="text-h3-bold mb-4">{title}</h2>}
       {properties.map((element, index) => (
         <Fragment key={index}>{element.content}</Fragment>

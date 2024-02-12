@@ -1,8 +1,9 @@
 import { CalendarIcon } from '@assets/ui-icons'
 import { parseDate } from '@internationalized/date'
+import { useObjectRef } from '@react-aria/utils'
 import { useControlledState } from '@react-stately/utils'
 import { useTranslation } from 'next-i18next'
-import { forwardRef, RefObject, useMemo } from 'react'
+import { forwardRef, useMemo } from 'react'
 import { OverlayProvider, useDatePicker } from 'react-aria'
 import { useDatePickerState } from 'react-stately'
 
@@ -39,8 +40,9 @@ const DatePicker = forwardRef<HTMLDivElement, DatePickerProps>(
       displayOptionalLabel,
       ...rest
     },
-    ref,
+    forwardedRef,
   ) => {
+    const ref = useObjectRef(forwardedRef)
     const [valueControlled, setValueControlled] = useControlledState(value, null, onChange)
     const { t } = useTranslation('account', { keyPrefix: 'DatePicker' })
 
@@ -76,7 +78,7 @@ const DatePicker = forwardRef<HTMLDivElement, DatePickerProps>(
         ...rest,
       },
       state,
-      ref as RefObject<HTMLDivElement>,
+      ref,
     )
     const buttonPropsFixed = {
       ...buttonProps,

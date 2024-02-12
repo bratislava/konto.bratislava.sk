@@ -1,6 +1,7 @@
 import { LockIcon, PhoneIcon, ProfileIcon, RemoveIcon } from '@assets/ui-icons'
+import { useObjectRef } from '@react-aria/utils'
 import cx from 'classnames'
-import { forwardRef, ReactNode, RefObject, useEffect, useState } from 'react'
+import { forwardRef, ReactNode, useEffect, useState } from 'react'
 import { useTextField } from 'react-aria'
 
 import MailIcon from '../../../../assets/ui-icons/custom_mail.svg'
@@ -50,8 +51,9 @@ const InputField = forwardRef<HTMLInputElement, InputFieldProps>(
       displayOptionalLabel,
       ...rest
     },
-    ref,
+    forwardedRef,
   ) => {
+    const ref = useObjectRef(forwardedRef)
     const [valueState, setValueState] = useState<string>(value)
 
     useEffect(() => {
@@ -87,7 +89,7 @@ const InputField = forwardRef<HTMLInputElement, InputFieldProps>(
         isDisabled: disabled,
         autoComplete,
       },
-      ref as RefObject<HTMLInputElement>,
+      ref,
     )
     const leftIconSwitcher = (icon: string): ReactNode | null => {
       switch (icon) {
@@ -159,7 +161,13 @@ const InputField = forwardRef<HTMLInputElement, InputFieldProps>(
               {leftIconSwitcher(leftIcon)}
             </span>
           )}
-          <input {...inputProps} ref={ref} name={inputProps.id} className={style} data-cy={`input-${inputProps.name}`}/>
+          <input
+            {...inputProps}
+            ref={ref}
+            name={inputProps.id}
+            className={style}
+            data-cy={`input-${inputProps.name}`}
+          />
           {resetIcon && valueState && (
             <button
               type="button"

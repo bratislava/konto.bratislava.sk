@@ -1,13 +1,15 @@
+import { useObjectRef } from '@react-aria/utils'
 import { AriaButtonProps } from '@react-types/button'
-import React, { RefObject } from 'react'
+import React from 'react'
 import { mergeProps, useButton, useFocusRing } from 'react-aria'
 
 interface ButtonProps extends AriaButtonProps {
   isPressed: boolean
 }
 
-const MenuButton = React.forwardRef<HTMLButtonElement, ButtonProps>((props, ref) => {
-  const { buttonProps } = useButton(props, ref as RefObject<HTMLButtonElement>)
+const MenuButton = React.forwardRef<HTMLButtonElement, ButtonProps>((props, forwardedRef) => {
+  const ref = useObjectRef(forwardedRef)
+  const { buttonProps } = useButton(props, ref)
   const { focusProps } = useFocusRing()
   const { children } = props
 

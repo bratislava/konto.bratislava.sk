@@ -1,5 +1,4 @@
 import { CheckInCircleIcon, ChevronDownIcon, CrossIcon } from '@assets/ui-icons'
-import { useControlledState } from '@react-stately/utils'
 import cx from 'classnames'
 import { useTranslation } from 'next-i18next'
 import React from 'react'
@@ -154,7 +153,6 @@ const SelectField = <
 }: SelectMultiNewProps<Option, IsMulti, Group>) => {
   const { t } = useTranslation('account', { keyPrefix: 'SelectField' })
 
-  const [state, setState] = useControlledState(value, undefined, onChange)
   const isError = !!errorMessage?.length
   const hasDescriptions = someOptionHasDescription(options)
 
@@ -173,8 +171,8 @@ const SelectField = <
           placeholder={null}
           {...rest}
           unstyled
-          value={state}
-          onChange={setState}
+          value={value}
+          onChange={onChange}
           options={options}
           closeMenuOnSelect={!rest.isMulti}
           hideSelectedOptions={false}

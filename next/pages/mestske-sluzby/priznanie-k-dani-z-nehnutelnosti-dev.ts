@@ -1,7 +1,7 @@
 import { RJSFSchema, UiSchema } from '@rjsf/utils'
 import { GetServerSideProps } from 'next'
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
-import priznanieKDaniZNehnutelnosti from 'schema-generator/definitions/priznanieKDaniZNehnutelnosti'
+import priznanieKDaniZNehnutelnosti from 'schema-generator/definitions/priznanie-k-dani-z-nehnutelnosti'
 
 import FormPageWrapper, { FormPageWrapperProps } from '../../components/forms/FormPageWrapper'
 import {
@@ -32,16 +32,14 @@ export const getServerSideProps: GetServerSideProps<FormPageWrapperProps, Params
 
   return {
     props: {
-      schema: schema.schema,
-      uiSchema: schema.uiSchema,
       ssrCurrentAuthProps,
-      page: {
-        locale,
-      },
-      initialFormData: {
+      formContext: {
+        slug: 'priznanie-k-dani-z-nehnutelnosti',
+        schema: schema.schema,
+        uiSchema: schema.uiSchema,
         formId: '',
-        formDataJson: {},
-        files: [],
+        initialFormDataJson: {},
+        initialServerFiles: [],
         oldSchemaVersion: false,
         formSent: false,
         formMigrationRequired: false,

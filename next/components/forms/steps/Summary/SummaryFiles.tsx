@@ -24,22 +24,22 @@ const SummaryFile = ({ file }: SummaryFileProps) => {
   const isUploadingStyle = fileInfo.status.type === FormFileUploadStatusEnum.Uploading
   const isDefaultStyle = !isErrorStyle && !isDoneStyle && !isScanningStyle
 
-  const Icon = () =>
+  const Icon = (props) =>
     isErrorStyle ? (
-      <AlertIcon className="text-error" />
+      <AlertIcon className="text-error" {...props} />
     ) : isScanningStyle ? (
-      <ScanningIcon />
+      <ScanningIcon {...props} />
     ) : isDoneStyle ? (
-      <CheckInCircleIcon className="text-success-700" />
+      <CheckInCircleIcon className="text-success-700" {...props} />
     ) : isUploadingStyle ? (
-      <Spinner size="sm" className="h-6 w-6" />
+      <Spinner size="sm" className="h-6 w-6" {...props} />
     ) : isDefaultStyle ? (
-      <AttachmentIcon />
+      <AttachmentIcon {...props} />
     ) : null
 
   return (
     <div className={cx('flex items-center gap-3', { 'text-error': isErrorStyle })}>
-      <Icon />
+      <Icon data-cy="summary-row-icon" />
       {fileInfo.fileName}
     </div>
   )
@@ -54,8 +54,8 @@ const SummaryFiles = ({ files }: SummaryFilesProps) => {
 
   return (
     <div className="flex flex-col gap-2">
-      {filesArray.map((file) => (
-        <SummaryFile file={file} />
+      {filesArray.map((file, index) => (
+        <SummaryFile file={file} key={index} />
       ))}
     </div>
   )

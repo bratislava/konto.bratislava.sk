@@ -32,7 +32,7 @@ const TaxesFeesSection = () => {
   // <p>${t('account_section_payment.waiting_card_text')}</p>
   // `
   const taxesFeesErrorCardContent = `
-<h4>${t('account_section_payment.error_card_title')}</h4>
+<h3>${t('account_section_payment.error_card_title')}</h3>
 <div>${t('account_section_payment.error_card_content.title')}
 <ul>${
     !tierStatus.isIdentityVerified

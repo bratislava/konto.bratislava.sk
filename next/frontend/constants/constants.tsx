@@ -423,7 +423,7 @@ export const serviceCards: ServiceCardBase[] = [
     buttonText: 'account_section_services.cards.40.buttonText',
     icon: <PublicSpaceOccupationIcon className="h-10 w-10 text-main-600 lg:h-12 lg:w-12" />,
     category: [MunicipalServicesCategories.PUBLIC_SPACE_CATEGORY],
-    href: 'https://bratislava.sk/mesto-bratislava/transparentne-mesto/majetok-mesta/zaujatie-verejneho-priestranstvas',
+    href: 'https://bratislava.sk/mesto-bratislava/transparentne-mesto/majetok-mesta/zaujatie-verejneho-priestranstva',
   },
   {
     id: 41,
@@ -443,4 +443,23 @@ export const serviceCards: ServiceCardBase[] = [
     category: [MunicipalServicesCategories.GREEN_CATEGORY],
     href: 'https://bratislava.sk/zivotne-prostredie-a-vystavba/zelen/udrzba-a-tvorba-zelene/adopcia-zelene',
   },
+  {
+    id: 43,
+    title: 'account_section_services.cards.43.title',
+    description: 'account_section_services.cards.43.description',
+    buttonText: 'account_section_services.cards.43.buttonText',
+    icon: <TaxesIcon className="h-10 w-10 text-main-600 lg:h-12 lg:w-12" />,
+    tag: 'account_section_services.cards.43.tag',
+    tagStyle: 'text-main-700 bg-main-100',
+    category: [MunicipalServicesCategories.TAXES_CATEGORY],
+    href: ROUTES.MUNICIPAL_SERVICES_TAX,
+  },
 ]
+
+export const formsFeedbackLinks = {
+  'stanovisko-k-investicnemu-zameru': 'https://bravo.staffino.com/bratislava/id=WW1hkstR',
+  'zavazne-stanovisko-k-investicnej-cinnosti': 'https://bravo.staffino.com/bratislava/id=WW1vhwT6',
+  'platba-dane-z-nehnutelnosti':
+    'https://forms.office.com/Pages/DesignPageV2.aspx?origin=NeoPortalPage&subpage=design&id=Tudp_mYey0-ZxVjkotKgYzPfQUHlnllIsPHBW0o8KeNUQlMzWEw1WEZIWEM2SThRNVBUREhWNFlISC4u',
+  'priznanie-k-dani-z-nehnutelnosti': 'https://bravo.staffino.com/bratislava/id=WW14qo6q',
+}

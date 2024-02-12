@@ -16,37 +16,34 @@ import { useRefreshServerSideProps } from 'frontend/hooks/useRefreshServerSidePr
 import { useServerSideAuth } from 'frontend/hooks/useServerSideAuth'
 import { GENERIC_ERROR_MESSAGE, isError } from 'frontend/utils/errors'
 import { GetServerSidePropsContext } from 'next'
-import { useRouter } from 'next/router'
 import { useTranslation } from 'next-i18next'
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
-import { useEffect, useState } from 'react'
+import { useState } from 'react'
 
-import PageWrapper from '../components/layouts/PageWrapper'
 import { ROUTES } from '../frontend/api/constants'
 import logger from '../frontend/utils/logger'
-import { AsyncServerProps } from '../frontend/utils/types'
 
 export const getServerSideProps = async (ctx: GetServerSidePropsContext) => {
   const locale = ctx.locale ?? 'sk'
+  const ssrCurrentAuthProps = await getSSRCurrentAuth(ctx.req)
+  if (!ssrCurrentAuthProps.userData) {
+    return {
+      redirect: {
+        destination: `${ROUTES.LOGIN}?from=${ctx.resolvedUrl}`,
+        permanent: false,
+      },
+    }
+  }
 
   return {
     props: {
-      ssrCurrentAuthProps: await getSSRCurrentAuth(ctx.req),
-      page: {
-        locale: ctx.locale,
-        localizations: ['sk', 'en']
-          .filter((l) => l !== ctx.locale)
-          .map((l) => ({
-            slug: '',
-            locale: l,
-          })),
-      },
+      ssrCurrentAuthProps,
       ...(await serverSideTranslations(locale)),
     },
   }
 }
 
-const IdentityVerificationPage = ({ page }: AsyncServerProps<typeof getServerSideProps>) => {
+const IdentityVerificationPage = () => {
   const { t } = useTranslation('account')
   const [lastIco, setLastIco] = useState<string | undefined>()
   const [lastRc, setLastRc] = useState('')
@@ -54,19 +51,11 @@ const IdentityVerificationPage = ({ page }: AsyncServerProps<typeof getServerSid
 
   const [identityVerificationError, setIdentityVerificationError] = useState<Error | null>(null)
   // TODO fix is legal entity
-  const { isAuthenticated, tierStatus, isLegalEntity } = useServerSideAuth()
+  const { tierStatus, isLegalEntity } = useServerSideAuth()
 
-  const router = useRouter()
   const { redirect } = useLoginRegisterRedirect()
 
   const { refreshData } = useRefreshServerSideProps(tierStatus)
-  useEffect(() => {
-    if (!isAuthenticated) {
-      router
-        .push({ pathname: ROUTES.LOGIN, query: { from: router.route } })
-        .catch((error_) => logger.error('Failed redirect', error_))
-    }
-  }, [isAuthenticated, router])
 
   const verifyIdentityAndRefreshUserData = async (data: VerificationFormData) => {
     setLastIco(data.ico)
@@ -110,64 +99,62 @@ const IdentityVerificationPage = ({ page }: AsyncServerProps<typeof getServerSid
   }
 
   return (
-    <PageWrapper locale={page.locale} localizations={page.localizations}>
-      <LoginRegisterLayout backButtonHidden>
-        <AccountContainer className="mb-0 pt-0 md:mb-8 md:pt-6">
-          {tierStatus.isIdentityVerificationNotYetAttempted && (
-            <IdentityVerificationForm
-              isLegalEntity={isLegalEntity}
-              onSubmit={verifyIdentityAndRefreshUserData}
-              error={identityVerificationError}
-            />
-          )}
-          {tierStatus.tier === Tier.NOT_VERIFIED_IDENTITY_CARD && (
-            <IdentityVerificationForm
-              isLegalEntity={isLegalEntity}
-              onSubmit={verifyIdentityAndRefreshUserData}
-              error={identityVerificationError}
-            />
-          )}
-          {tierStatus.tier === Tier.QUEUE_IDENTITY_CARD && (
-            <AccountVerificationPendingAlert
-              title={t('identity_verification_pending_title')}
-              description={
-                isLegalEntity
-                  ? lastIco && lastRc && lastIdCard
-                    ? t('identity_verification_pending_description_legal_entity', {
-                        ico: lastIco,
-                        rc: lastRc,
-                        idCard: lastIdCard,
-                      })
-                    : t('identity_verification_pending_description_without_data_legal_entity')
-                  : lastRc && lastIdCard
-                    ? t('identity_verification_pending_description', {
-                        rc: lastRc,
-                        idCard: lastIdCard,
-                      })
-                    : t('identity_verification_pending_description_without_data')
-              }
-              confirmLabel={t('account_continue_link')}
-              onConfirm={() => redirect({ from: ROUTES.REGISTER })}
-            />
-          )}
-          {tierStatus.isIdentityVerified && (
-            <AccountSuccessAlert
-              title={t('identity_verification_success_title')}
-              description={
-                lastRc &&
-                lastIdCard &&
-                t('identity_verification_success_description', {
-                  rc: lastRc,
-                  idCard: lastIdCard,
-                })
-              }
-              confirmLabel={t('account_continue_link')}
-              onConfirm={() => redirect({ from: ROUTES.REGISTER })}
-            />
-          )}
-        </AccountContainer>
-      </LoginRegisterLayout>
-    </PageWrapper>
+    <LoginRegisterLayout backButtonHidden>
+      <AccountContainer className="mb-0 pt-0 md:mb-8 md:pt-6">
+        {tierStatus.isIdentityVerificationNotYetAttempted && (
+          <IdentityVerificationForm
+            isLegalEntity={isLegalEntity}
+            onSubmit={verifyIdentityAndRefreshUserData}
+            error={identityVerificationError}
+          />
+        )}
+        {tierStatus.tier === Tier.NOT_VERIFIED_IDENTITY_CARD && (
+          <IdentityVerificationForm
+            isLegalEntity={isLegalEntity}
+            onSubmit={verifyIdentityAndRefreshUserData}
+            error={identityVerificationError}
+          />
+        )}
+        {tierStatus.tier === Tier.QUEUE_IDENTITY_CARD && (
+          <AccountVerificationPendingAlert
+            title={t('identity_verification_pending_title')}
+            description={
+              isLegalEntity
+                ? lastIco && lastRc && lastIdCard
+                  ? t('identity_verification_pending_description_legal_entity', {
+                      ico: lastIco,
+                      rc: lastRc,
+                      idCard: lastIdCard,
+                    })
+                  : t('identity_verification_pending_description_without_data_legal_entity')
+                : lastRc && lastIdCard
+                  ? t('identity_verification_pending_description', {
+                      rc: lastRc,
+                      idCard: lastIdCard,
+                    })
+                  : t('identity_verification_pending_description_without_data')
+            }
+            confirmLabel={t('account_continue_link')}
+            onConfirm={() => redirect({ from: ROUTES.REGISTER })}
+          />
+        )}
+        {tierStatus.isIdentityVerified && (
+          <AccountSuccessAlert
+            title={t('identity_verification_success_title')}
+            description={
+              lastRc &&
+              lastIdCard &&
+              t('identity_verification_success_description', {
+                rc: lastRc,
+                idCard: lastIdCard,
+              })
+            }
+            confirmLabel={t('account_continue_link')}
+            onConfirm={() => redirect({ from: ROUTES.REGISTER })}
+          />
+        )}
+      </AccountContainer>
+    </LoginRegisterLayout>
   )
 }
 

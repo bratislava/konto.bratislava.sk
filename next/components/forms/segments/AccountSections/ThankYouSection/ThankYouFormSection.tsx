@@ -2,11 +2,14 @@ import BratislavaIcon from '@assets/images/bratislava-footer.svg'
 import AccountMarkdown from 'components/forms/segments/AccountMarkdown/AccountMarkdown'
 import ThankYouCard from 'components/forms/segments/AccountSections/ThankYouSection/ThankYouCard'
 import Button from 'components/forms/simple-components/Button'
+import { formsFeedbackLinks } from 'frontend/constants/constants'
 import { useTranslation } from 'next-i18next'
 
 import { ROUTES } from '../../../../../frontend/api/constants'
+import { useFormContext } from '../../../useFormContext'
 
 const ThankYouFormSection = () => {
+  const { isTaxForm, slug } = useFormContext()
   const { t } = useTranslation('account')
 
   return (
@@ -14,10 +17,15 @@ const ThankYouFormSection = () => {
       <div className="flex flex-col">
         <ThankYouCard
           success
-          title={t('thank_you.form_submit.title')}
+          title={
+            isTaxForm ? t('thank_you.form_submit_tax.title') : t('thank_you.form_submit.title')
+          }
           firstButtonTitle={t('thank_you.button_to_formular_text_2')}
           secondButtonTitle={t('thank_you.button_to_profil_text')}
-          content={t('thank_you.form_submit.content')}
+          content={
+            isTaxForm ? t('thank_you.form_submit_tax.content') : t('thank_you.form_submit.content')
+          }
+          feedbackUrl={formsFeedbackLinks[slug]}
         />
         <div className="mx-auto mt-0 w-full max-w-[734px] px-4 md:mt-10 md:px-0 lg:max-w-[800px]">
           <span className="text-p2 flex">

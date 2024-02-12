@@ -1,5 +1,4 @@
 import cx from 'classnames'
-import Alert from 'components/forms/info-components/Alert'
 import { useServerSideAuth } from 'frontend/hooks/useServerSideAuth'
 import { useTranslation } from 'next-i18next'
 import React from 'react'
@@ -27,6 +26,7 @@ const UserProfileSectionHeader = ({
 }: UserProfileSectionHeaderProps) => {
   const { tierStatus } = useServerSideAuth()
   const { t } = useTranslation('account')
+
   return (
     <div
       className={cx(
@@ -47,7 +47,7 @@ const UserProfileSectionHeader = ({
       >
         <div className="flex grow flex-col gap-1 md:gap-2">
           <div className="flex items-center gap-3 md:gap-2">
-            <h5 className={cx('text-h5-bold', 'md:text-h4-bold')}>{title}</h5>
+            <h2 className={cx('text-h5-bold', 'md:text-h4-bold')}>{title}</h2>
             {mainHeader && tierStatus.isIdentityVerified && (
               <span className="text-p3-medium rounded-[4px] bg-success-100 px-2 text-success-700">
                 {t('verification_status_success')}
@@ -58,20 +58,6 @@ const UserProfileSectionHeader = ({
         </div>
         {children && <div className={cx({ 'w-full md:w-fit': childrenToColumn })}>{children}</div>}
       </div>
-      {mainHeader && !tierStatus.isIdentityVerified && (
-        <Alert
-          title={t('verification_status_required')}
-          message={t('verification_status_required_alert')}
-          type="warning"
-          buttons={[
-            {
-              title: t('verification_url_text'),
-              link: '/overenie-identity',
-            },
-          ]}
-          fullWidth
-        />
-      )}
     </div>
   )
 }

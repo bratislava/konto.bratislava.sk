@@ -2,11 +2,13 @@ import React, { createContext, PropsWithChildren, useContext, useMemo } from 're
 
 import { validateSummary } from '../../../../frontend/utils/form'
 import { checkPathForErrors, formHasErrors } from '../../../../frontend/utils/formSummary'
+import { useFormContext } from '../../useFormContext'
 import { useFormFileUpload } from '../../useFormFileUpload'
 import { useFormState } from '../../useFormState'
 
 const useGetContext = () => {
-  const { formData, schema } = useFormState()
+  const { schema } = useFormContext()
+  const { formData } = useFormState()
 
   const { getFileInfoById } = useFormFileUpload()
 

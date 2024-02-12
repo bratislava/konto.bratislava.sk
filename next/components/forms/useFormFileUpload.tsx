@@ -1,5 +1,5 @@
 import { formsApi } from '@clients/forms'
-import { GetFileResponseDto } from '@clients/openapi-forms'
+import { GetFileResponseReducedDto } from '@clients/openapi-forms'
 import { Query, useQuery, useQueryClient } from '@tanstack/react-query'
 import React, {
   createContext,
@@ -22,17 +22,13 @@ import {
   FormFileUploadResponseFileStatus,
   FormFileUploadStatusEnum,
 } from '../../frontend/types/formFileUploadTypes'
-import { InitialFormData } from '../../frontend/types/initialFormData'
 import {
   getFileInfoForNewFiles,
   mergeClientAndServerFiles,
   shouldPollServerFiles,
   uploadFile,
 } from '../../frontend/utils/formFileUpload'
-
-export type FormFileUploadProviderProps = {
-  initialFormData: Pick<InitialFormData, 'files' | 'formId'>
-}
+import { useFormContext } from './useFormContext'
 
 const REFETCH_INTERVAL = 5000
 
@@ -60,7 +56,8 @@ const REFETCH_INTERVAL = 5000
  *
  *  At the end, the client and server files are merged and returned to the consumer.
  */
-export const useGetContext = ({ initialFormData }: FormFileUploadProviderProps) => {
+export const useGetContext = () => {
+  const { formId, initialServerFiles, initialClientFiles } = useFormContext()
   const queryClient = useQueryClient()
   const isMounted = useIsMounted()
 
@@ -71,22 +68,24 @@ export const useGetContext = ({ initialFormData }: FormFileUploadProviderProps) 
   // the current value of the client files is needed immediately. Also, the `uploadFile` callback would not have access
   // to the current value of the client files if it was stored only in the state.
   // The state should be only modified by the `updateClientFiles` function.
-  const [clientFiles, setClientFiles] = useState<FormFileUploadClientFileInfo[]>([])
+  const [clientFiles, setClientFiles] = useState<FormFileUploadClientFileInfo[]>(
+    initialClientFiles ?? [],
+  )
   const clientFilesRef = useRef(clientFiles)
   const getClientFiles = useCallback(() => clientFilesRef.current, [])
 
   const abortControllersRef = useRef<Record<string, AbortController>>({})
 
   const refetchInterval = useMemo(() => {
-    return (query: Query<GetFileResponseDto[]>) =>
+    return (query: Query<GetFileResponseReducedDto[]>) =>
       shouldPollServerFiles(query.state.data, clientFiles) ? REFETCH_INTERVAL : false
   }, [clientFiles])
 
-  const serverFilesQueryKey = ['serverFiles', initialFormData.formId]
+  const serverFilesQueryKey = ['serverFiles', formId]
   const serverFilesQuery = useQuery({
     queryKey: serverFilesQueryKey,
     queryFn: async () => {
-      const response = await formsApi.filesControllerGetFilesStatusByForm(initialFormData.formId, {
+      const response = await formsApi.filesControllerGetFilesStatusByForm(formId, {
         accessToken: 'onlyAuthenticated',
       })
       return response.data
@@ -95,7 +94,7 @@ export const useGetContext = ({ initialFormData }: FormFileUploadProviderProps) 
     retryDelay: 5000, // Retry every 5 seconds
     staleTime: Infinity,
     refetchInterval,
-    initialData: initialFormData.files,
+    initialData: initialServerFiles,
     initialDataUpdatedAt: Date.now(),
   })
 
@@ -149,7 +148,7 @@ export const useGetContext = ({ initialFormData }: FormFileUploadProviderProps) 
       })
 
       await uploadFile({
-        formId: initialFormData.formId,
+        formId,
         file: firstQueuedFile.file,
         id: firstQueuedFile.id,
         abortController,
@@ -163,7 +162,12 @@ export const useGetContext = ({ initialFormData }: FormFileUploadProviderProps) 
         onError: (error) => {
           updateFileStatus({
             type: FormFileUploadStatusEnum.UploadServerError,
-            error: { rawError: error.toString() },
+            error: {
+              // eslint-disable-next-line @typescript-eslint/no-base-to-string
+              rawError: error.toString(),
+              errorCode: error?.response?.data?.statusCode,
+              errorName: error?.response?.data?.errorName,
+            },
             canRetry: true,
           })
         },
@@ -316,6 +320,8 @@ export const useGetContext = ({ initialFormData }: FormFileUploadProviderProps) 
   }, [])
 
   return {
+    clientFiles,
+    serverFiles: serverFilesQuery.data,
     uploadFiles,
     removeFiles,
     keepFiles,
@@ -328,11 +334,8 @@ export const useGetContext = ({ initialFormData }: FormFileUploadProviderProps) 
 
 const FormFileUploadContext = createContext<ReturnType<typeof useGetContext> | undefined>(undefined)
 
-export const FormFileUploadProvider = ({
-  children,
-  ...rest
-}: PropsWithChildren<FormFileUploadProviderProps>) => {
-  const context = useGetContext(rest)
+export const FormFileUploadProvider = ({ children }: PropsWithChildren) => {
+  const context = useGetContext()
 
   return <FormFileUploadContext.Provider value={context}>{children}</FormFileUploadContext.Provider>
 }

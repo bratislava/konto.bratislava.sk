@@ -55,11 +55,11 @@ const enumOptions: SelectOption[] = [
 ]
 
 const foMunicipalServicesSection = [
-  34, 35, 1, 18, 32, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 33, 17, 19, 20, 21, 22, 23, 24, 25,
-  29, 26, 27, 28,
+  43, 34, 35, 1, 18, 32, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 33, 17, 19, 20, 21, 22, 23, 24,
+  25, 29, 26, 27, 28,
 ]
 const poMunicipalServicesSection = [
-  34, 35, 32, 3, 4, 6, 42, 8, 10, 11, 12, 13, 33, 17, 18, 7, 36, 37, 38, 39, 28, 14, 40, 41,
+  43, 34, 35, 32, 3, 4, 6, 42, 8, 10, 11, 12, 13, 33, 17, 18, 7, 36, 37, 38, 39, 28, 14, 40, 41,
 ]
 
 const MunicipalServicesSection = () => {
@@ -99,6 +99,7 @@ const MunicipalServicesSection = () => {
           fullWidth
           className="mx-4 mb-4 lg:mx-0 lg:mb-8"
         />
+        <h2 className="sr-only">{t('account_section_services.services_list')}</h2>
         <div className="grid grid-cols-1 gap-3 px-4 sm:gap-6 min-[615px]:grid-cols-2 md:gap-8 min-[960px]:grid-cols-3 lg:grid-cols-4 lg:px-0">
           {filteredServiceCards
             .filter(

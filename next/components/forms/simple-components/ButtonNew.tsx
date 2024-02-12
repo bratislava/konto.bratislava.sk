@@ -109,6 +109,10 @@ const Button = forwardRef<HTMLAnchorElement | HTMLButtonElement, PolymorphicProp
       variant === 'icon-wrapped' || variant === 'icon-wrapped-negative-margin'
     const isIconButton = Boolean(icon)
 
+    // https://github.com/tailwindlabs/tailwindcss/issues/1041#issuecomment-957425345
+    const stretchedStyle =
+      'stretched' in rest && rest.stretched ? 'after:absolute after:inset-0' : ''
+
     /* TODO
      *   - examine why `text-button` interferes with `text-[color]` and therefore is sometimes ignored
      *   - border should render inside button, not outside
@@ -116,7 +120,7 @@ const Button = forwardRef<HTMLAnchorElement | HTMLButtonElement, PolymorphicProp
      */
     const styles =
       variant === 'unstyled'
-        ? className
+        ? twMerge(stretchedStyle, className)
         : twMerge(
             // TODO text-button interferes with text-[color], as quickfix we set size and color here by arbitrary values
             'inline-flex h-auto items-center justify-center gap-2 text-[1rem] font-semibold leading-[1.5rem] transition',
@@ -133,9 +137,6 @@ const Button = forwardRef<HTMLAnchorElement | HTMLButtonElement, PolymorphicProp
 
                 // disabled or loading
                 'opacity-50': isLoadingOrDisabled,
-
-                // https://github.com/tailwindlabs/tailwindcss/issues/1041#issuecomment-957425345
-                'after:absolute after:inset-0': 'stretched' in rest && rest.stretched,
 
                 // width or fullwidth
                 'w-full': fullWidth,
@@ -202,7 +203,7 @@ const Button = forwardRef<HTMLAnchorElement | HTMLButtonElement, PolymorphicProp
                 // using custom `data-hovered:` because `hover:` is not working with `disabled` state
                 'data-hovered:border-category-600 data-hovered:bg-category-600':
                   variant === 'category-solid',
-                'text-gray-600 data-hovered:border-category-600': variant === 'category-outline',
+                'text-gray-700 data-hovered:border-category-600': variant === 'category-outline',
                 'data-hovered:bg-category-100 data-hovered:text-category-600':
                   variant === 'category-plain',
 
@@ -225,6 +226,7 @@ const Button = forwardRef<HTMLAnchorElement | HTMLButtonElement, PolymorphicProp
                 '[&>svg]:h-6 [&>svg]:w-6': size === 'large',
               },
             ),
+            stretchedStyle,
             className,
           )
 

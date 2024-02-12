@@ -17,12 +17,21 @@ import { useTranslation } from 'next-i18next'
 import { SchemaUiOptions } from 'schema-generator/generator/uiOptionsTypes'
 
 import { useFormExportImport } from '../../../frontend/hooks/useFormExportImport'
+import { useFormContext } from '../useFormContext'
 import { useFormModals } from '../useFormModals'
-import { useFormState } from '../useFormState'
 
 const FormHeader = () => {
-  const { isReadonly, isDeletable, uiSchema, schema } = useFormState()
-  const { exportXml, exportPdf, importXml, saveConcept, deleteConcept } = useFormExportImport()
+  const { uiSchema, schema, isTaxForm, isReadonly, isDeletable } = useFormContext()
+  const {
+    exportXml,
+    exportPdf,
+    importXml,
+    saveConcept,
+    deleteConcept,
+    showImportExportJson,
+    importJson,
+    exportJson,
+  } = useFormExportImport()
   const { t } = useTranslation('forms')
 
   const { setDeleteConceptModal } = useFormModals()
@@ -33,12 +42,28 @@ const FormHeader = () => {
       icon: <DownloadIcon className="h-6 w-6" />,
       onPress: exportXml,
     },
-    { title: t('menu_list.pdf'), icon: <PdfIcon className="h-6 w-6" />, onPress: exportPdf },
+    !isTaxForm
+      ? { title: t('menu_list.pdf'), icon: <PdfIcon className="h-6 w-6" />, onPress: exportPdf }
+      : null,
     !isReadonly
       ? {
           title: t('menu_list.upload_xml'),
           icon: <ConnectionIcon className="h-6 w-6" />,
           onPress: importXml,
+        }
+      : null,
+    showImportExportJson
+      ? {
+          title: t('menu_list.download_json'),
+          icon: <DownloadIcon className="h-6 w-6" />,
+          onPress: exportJson,
+        }
+      : null,
+    showImportExportJson
+      ? {
+          title: t('menu_list.upload_json'),
+          icon: <ConnectionIcon className="h-6 w-6" />,
+          onPress: importJson,
         }
       : null,
     !isDeletable

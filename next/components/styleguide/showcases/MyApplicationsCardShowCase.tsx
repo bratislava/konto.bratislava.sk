@@ -24,6 +24,7 @@ const getDummyData = (state: FormState, error: GetFormResponseDtoErrorEnum, over
     error,
     formDataJson: { mestoPSCstep: { mestoPSC: { mesto: 'Košice' } } },
     formDataGinis: null,
+    formDataBase64: null,
     ginisDocumentId: null,
     senderId: null,
     recipientId: null,
@@ -93,85 +94,113 @@ const MyApplicationsCardShowCase = () => {
           <MyApplicationsCard
             variant="DRAFT"
             form={getDummyData('DRAFT', 'NONE')}
-            refreshListData={async () => {}}
+            refreshListData={async (): Promise<[void, boolean]> => {
+              return [undefined, false]
+            }}
           />
           Expired draft
           <MyApplicationsCard
             variant="DRAFT"
             form={getDummyData('DRAFT', 'NONE', { isLatestSchemaVersionForSlug: false })}
-            refreshListData={async () => {}}
+            refreshListData={async (): Promise<[void, boolean]> => {
+              return [undefined, false]
+            }}
           />
           Sending in progress
           <MyApplicationsCard
             variant="SENDING"
             form={getDummyData('QUEUED', 'NONE')}
-            refreshListData={async () => {}}
+            refreshListData={async (): Promise<[void, boolean]> => {
+              return [undefined, false]
+            }}
           />
           Virus scan in progress
           <MyApplicationsCard
             variant="SENDING"
             form={getDummyData('QUEUED', 'NONE')}
-            refreshListData={async () => {}}
+            refreshListData={async (): Promise<[void, boolean]> => {
+              return [undefined, false]
+            }}
           />
           Virus scan failed (unable to scan)
           <MyApplicationsCard
             variant="SENDING"
             form={getDummyData('ERROR', 'UNABLE_TO_SCAN_FILES')}
-            refreshListData={async () => {}}
+            refreshListData={async (): Promise<[void, boolean]> => {
+              return [undefined, false]
+            }}
           />
           Virus scan failed (infected)
           <MyApplicationsCard
             variant="SENDING"
             form={getDummyData('ERROR', 'INFECTED_FILES')}
-            refreshListData={async () => {}}
+            refreshListData={async (): Promise<[void, boolean]> => {
+              return [undefined, false]
+            }}
           />
           Virus scan failed (nases_send_error)
           <MyApplicationsCard
             variant="SENDING"
             form={getDummyData('ERROR', 'NASES_SEND_ERROR')}
-            refreshListData={async () => {}}
+            refreshListData={async (): Promise<[void, boolean]> => {
+              return [undefined, false]
+            }}
           />
           Sent (progress - NASES)
           <MyApplicationsCard
             variant="SENT"
             form={getDummyData('DELIVERED_NASES', 'NONE')}
-            refreshListData={async () => {}}
+            refreshListData={async (): Promise<[void, boolean]> => {
+              return [undefined, false]
+            }}
           />
           Sent (progress - GINIS)
           <MyApplicationsCard
             variant="SENT"
             form={getDummyData('DELIVERED_GINIS', 'NONE')}
-            refreshListData={async () => {}}
+            refreshListData={async (): Promise<[void, boolean]> => {
+              return [undefined, false]
+            }}
           />
           Sent (progress - SENDING_TO_NASES)
           <MyApplicationsCard
             variant="SENT"
             form={getDummyData('SENDING_TO_NASES', 'NONE')}
-            refreshListData={async () => {}}
+            refreshListData={async (): Promise<[void, boolean]> => {
+              return [undefined, false]
+            }}
           />
           READY_FOR_PROCESSING
           <MyApplicationsCard
             variant="SENT"
             form={getDummyData('READY_FOR_PROCESSING', 'NONE')}
-            refreshListData={async () => {}}
+            refreshListData={async (): Promise<[void, boolean]> => {
+              return [undefined, false]
+            }}
           />
           PROCESSING
           <MyApplicationsCard
             variant="SENT"
             form={getDummyData('PROCESSING', 'NONE')}
-            refreshListData={async () => {}}
+            refreshListData={async (): Promise<[void, boolean]> => {
+              return [undefined, false]
+            }}
           />
           Rejected
           <MyApplicationsCard
             variant="SENT"
             form={getDummyData('REJECTED', 'NONE')}
-            refreshListData={async () => {}}
+            refreshListData={async (): Promise<[void, boolean]> => {
+              return [undefined, false]
+            }}
           />
           Finished
           <MyApplicationsCard
             variant="SENT"
             form={getDummyData('FINISHED', 'NONE')}
-            refreshListData={async () => {}}
+            refreshListData={async (): Promise<[void, boolean]> => {
+              return [undefined, false]
+            }}
           />
         </div>
       </Stack>

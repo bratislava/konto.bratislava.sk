@@ -22,6 +22,7 @@ const InputWidgetRJSF = ({
   onChange,
   rawErrors,
   readonly,
+  name,
 }: InputWidgetRJSFProps) => {
   const {
     helptext,
@@ -48,6 +49,7 @@ const InputWidgetRJSF = ({
       <FieldBlurWrapper value={value} onChange={handleOnChange}>
         {({ value: wrapperValue, onChange: wrapperOnChange, onBlur }) => (
           <InputField
+            name={name}
             label={label}
             type={type}
             placeholder={placeholder}

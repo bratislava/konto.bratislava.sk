@@ -9,56 +9,25 @@ import {
 } from '@assets/ui-icons'
 import { Auth } from 'aws-amplify'
 import cx from 'classnames'
-import AccountNavBar, {
-  MenuSectionItemBase,
-} from 'components/forms/segments/AccountNavBar/AccountNavBar'
+import NavBar, { MenuSectionItemBase } from 'components/forms/segments/NavBar/NavBar'
 import { MenuItemBase } from 'components/forms/simple-components/MenuDropdown/MenuDropdown'
-import { usePageWrapperContext } from 'components/layouts/PageWrapper'
-import { useServerSideAuth } from 'frontend/hooks/useServerSideAuth'
 import { useRouter } from 'next/router'
 import { useTranslation } from 'next-i18next'
-import { ReactNode, useEffect } from 'react'
+import { ReactNode } from 'react'
 
 import { ROUTES } from '../../frontend/api/constants'
 import { isDefined } from '../../frontend/utils/general'
-import logger from '../../frontend/utils/logger'
 
 type AccountPageLayoutBase = {
   className?: string
   children: ReactNode
   hiddenHeaderNav?: boolean
-  isPublicPage?: boolean
 }
 
-const AccountPageLayout = ({
-  className,
-  children,
-  hiddenHeaderNav,
-  isPublicPage,
-}: AccountPageLayoutBase) => {
-  const { locale, localizations = [] } = usePageWrapperContext()
-  const { isAuthenticated } = useServerSideAuth()
+const AccountPageLayout = ({ className, children, hiddenHeaderNav }: AccountPageLayoutBase) => {
   const router = useRouter()
 
-  useEffect(() => {
-    if (!isPublicPage && !isAuthenticated && router.route !== ROUTES.PAYMENT_RESULT) {
-      router
-        .push({ pathname: ROUTES.LOGIN, query: { from: router.route } })
-        .catch((error_) => logger.error('Redirect failed', error_))
-    }
-  }, [isAuthenticated, isPublicPage, router])
-
   const [t] = useTranslation('common')
-
-  const handleLanguageChange = async ({ key }: { key: string }) => {
-    const path = localizations.find((l) => l.locale === key)?.slug || ''
-    // eslint-disable-next-line @typescript-eslint/no-floating-promises
-    try {
-      await router.push(`/${path}`, undefined, { locale: key })
-    } catch (error) {
-      logger.error(error)
-    }
-  }
 
   const logoutHandler = async () => {
     await Auth.signOut()
@@ -123,19 +92,21 @@ const AccountPageLayout = ({
 
   return (
     <div className={cx('flex min-h-screen flex-col', className)}>
-      <AccountNavBar
-        currentLanguage={locale}
-        onLanguageChange={handleLanguageChange}
-        sectionsList={sectionsList}
-        menuItems={menuItems}
-        navHidden
-        hiddenHeaderNav={hiddenHeaderNav}
-        languages={[
-          { key: 'sk', title: t('language_long.sk') },
-          { key: 'en', title: t('language_long.en') },
-        ]}
-      />
-      <div className="bg-gray-0">{children}</div>
+      <header className="relative z-30">
+        <NavBar
+          sectionsList={sectionsList}
+          menuItems={menuItems}
+          navHidden
+          hiddenHeaderNav={hiddenHeaderNav}
+          languages={[
+            { key: 'sk', title: t('language_long.sk') },
+            { key: 'en', title: t('language_long.en') },
+          ]}
+        />
+      </header>
+      <main className="relative z-0">
+        <div className="bg-gray-0">{children}</div>
+      </main>
     </div>
   )
 }

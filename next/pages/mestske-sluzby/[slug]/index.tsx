@@ -50,9 +50,8 @@ export const getServerSideProps: GetServerSideProps<FormPageWrapperProps, Params
       }
       if (error.response?.status === 401 || error.response?.status === 403) {
         return {
-          // TODO: Redirect back after login
           redirect: {
-            destination: ROUTES.LOGIN,
+            destination: `${ROUTES.LOGIN}?from=${ctx.resolvedUrl}`,
             permanent: false,
           },
         }

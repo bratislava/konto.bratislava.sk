@@ -186,6 +186,13 @@ const Button = forwardRef<HTMLAnchorElement | HTMLButtonElement, PolymorphicProp
           variant === 'category' ||
           variant === 'category-outline',
 
+        'focus:ring-2':
+          variant === 'black' ||
+          variant === 'negative' ||
+          variant === 'black-outline' ||
+          variant === 'category' ||
+          variant === 'category-outline',
+
         // bg and border color
         'border-gray-700 bg-gray-700 focus:border-gray-800 focus:bg-gray-800': variant === 'black',
         'border-gray-200 bg-transparent text-gray-700 focus:border-gray-300 focus:text-gray-800':

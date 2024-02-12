@@ -15,10 +15,8 @@ import { useTranslation } from 'next-i18next'
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
 import { useState } from 'react'
 
-import PageWrapper from '../components/layouts/PageWrapper'
 import { ROUTES } from '../frontend/api/constants'
 import logger from '../frontend/utils/logger'
-import { AsyncServerProps } from '../frontend/utils/types'
 
 enum ForgotPasswordStatus {
   INIT = 'INIT',
@@ -32,21 +30,12 @@ export const getServerSideProps = async (ctx: GetServerSidePropsContext) => {
   return {
     props: {
       ssrCurrentAuthProps: await getSSRCurrentAuth(ctx.req),
-      page: {
-        locale: ctx.locale,
-        localizations: ['sk', 'en']
-          .filter((l) => l !== ctx.locale)
-          .map((l) => ({
-            slug: '',
-            locale: l,
-          })),
-      },
       ...(await serverSideTranslations(locale)),
     },
   }
 }
 
-const ForgottenPasswordPage = ({ page }: AsyncServerProps<typeof getServerSideProps>) => {
+const ForgottenPasswordPage = () => {
   const [lastEmail, setLastEmail] = useState('')
   const [forgotPasswordError, setForgotPasswordError] = useState<Error | null>(null)
   const [forgotPasswordStatus, setForgotPasswordStatus] = useState<ForgotPasswordStatus>(
@@ -95,37 +84,35 @@ const ForgottenPasswordPage = ({ page }: AsyncServerProps<typeof getServerSidePr
   }
 
   return (
-    <PageWrapper locale={page.locale} localizations={page.localizations}>
-      <LoginRegisterLayout
-        backButtonHidden={forgotPasswordStatus === ForgotPasswordStatus.NEW_PASSWORD_SUCCESS}
-      >
-        <AccountContainer>
-          {forgotPasswordStatus === ForgotPasswordStatus.NEW_PASSWORD_REQUIRED ? (
-            <NewPasswordForm
-              onSubmit={(verificationCode, newPassword) =>
-                forgotPasswordSubmit(verificationCode, newPassword)
-              }
-              onResend={() => forgotPassword(lastEmail)}
-              error={forgotPasswordError}
-              lastEmail={lastEmail}
-            />
-          ) : forgotPasswordStatus === ForgotPasswordStatus.INIT ? (
-            <ForgottenPasswordForm
-              onSubmit={(email: string) => forgotPassword(email)}
-              error={forgotPasswordError}
-              lastEmail={lastEmail}
-              setLastEmail={setLastEmail}
-            />
-          ) : (
-            <AccountSuccessAlert
-              title={t('forgotten_password_success_title')}
-              confirmLabel={t('account_continue_link')}
-              onConfirm={onConfirm}
-            />
-          )}
-        </AccountContainer>
-      </LoginRegisterLayout>
-    </PageWrapper>
+    <LoginRegisterLayout
+      backButtonHidden={forgotPasswordStatus === ForgotPasswordStatus.NEW_PASSWORD_SUCCESS}
+    >
+      <AccountContainer>
+        {forgotPasswordStatus === ForgotPasswordStatus.NEW_PASSWORD_REQUIRED ? (
+          <NewPasswordForm
+            onSubmit={(verificationCode, newPassword) =>
+              forgotPasswordSubmit(verificationCode, newPassword)
+            }
+            onResend={() => forgotPassword(lastEmail)}
+            error={forgotPasswordError}
+            lastEmail={lastEmail}
+          />
+        ) : forgotPasswordStatus === ForgotPasswordStatus.INIT ? (
+          <ForgottenPasswordForm
+            onSubmit={(email: string) => forgotPassword(email)}
+            error={forgotPasswordError}
+            lastEmail={lastEmail}
+            setLastEmail={setLastEmail}
+          />
+        ) : (
+          <AccountSuccessAlert
+            title={t('forgotten_password_success_title')}
+            confirmLabel={t('account_continue_link')}
+            onConfirm={onConfirm}
+          />
+        )}
+      </AccountContainer>
+    </LoginRegisterLayout>
   )
 }
 

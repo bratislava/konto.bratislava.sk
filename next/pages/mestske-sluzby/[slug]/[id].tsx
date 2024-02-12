@@ -10,6 +10,7 @@ import {
   ServerSideAuthProviderHOC,
 } from '../../../components/logic/ServerSideAuthProvider'
 import { ROUTES } from '../../../frontend/api/constants'
+import { getInitialFormSignature } from '../../../frontend/utils/getInitialFormSignature'
 
 type Params = {
   slug: string
@@ -29,11 +30,6 @@ export const getServerSideProps: GetServerSideProps<FormPageWrapperProps, Params
       accessToken: 'onlyAuthenticated',
       accessTokenSsrReq: ctx.req,
     })
-    const { data: files } = await formsApi.filesControllerGetFilesStatusByForm(id, {
-      accessToken: 'onlyAuthenticated',
-      accessTokenSsrReq: ctx.req,
-    })
-
     if (
       !form ||
       /* If there wouldn't be this check it would be possible to open the page with any slug in the URL. */
@@ -42,6 +38,14 @@ export const getServerSideProps: GetServerSideProps<FormPageWrapperProps, Params
       return { notFound: true }
     }
 
+    const [{ data: files }, initialSignature] = await Promise.all([
+      formsApi.filesControllerGetFilesStatusByForm(id, {
+        accessToken: 'onlyAuthenticated',
+        accessTokenSsrReq: ctx.req,
+      }),
+      getInitialFormSignature(form.formDataBase64),
+    ])
+
     const formSent = form.state !== GetFormResponseDtoStateEnum.Draft
     const locale = 'sk'
     // If the form was created by an unauthenticated user, a migration modal is displayed and form is not editable.
@@ -49,24 +53,23 @@ export const getServerSideProps: GetServerSideProps<FormPageWrapperProps, Params
 
     return {
       props: {
-        schema: form.schemaVersion.jsonSchema,
-        uiSchema: form.schemaVersion.uiSchema,
         ssrCurrentAuthProps,
-        page: {
-          locale,
-        },
-        initialFormData: {
+        formContext: {
+          slug,
+          schema: form.schemaVersion.jsonSchema,
+          uiSchema: form.schemaVersion.uiSchema,
           formId: id,
-          formDataJson: form.formDataJson ?? {},
-          files,
+          initialFormDataJson: form.formDataJson ?? {},
+          initialServerFiles: files,
+          initialSignature,
           oldSchemaVersion: !form.isLatestSchemaVersionForSlug,
           formSent,
           formMigrationRequired,
           schemaVersionId: form.schemaVersionId,
-          // Temporarily disable signing until online form is ready.
-          // isSigned: form.schemaVersion.isSigned,
-          isSigned: false,
-          // TODO Improve
+          isSigned:
+            form.schemaVersion.isSigned &&
+            // Temporarily allow signing only for beta users.
+            ssrCurrentAuthProps.userData?.['custom:2024_tax_form_beta'] === 'true',
           isTaxForm: slug === 'priznanie-k-dani-z-nehnutelnosti',
         },
         ...(await serverSideTranslations(locale)),
@@ -86,9 +89,8 @@ export const getServerSideProps: GetServerSideProps<FormPageWrapperProps, Params
       // If logged out user receives 403 for his/her form it might be theirs.
       if (is401 || (is403 && !isLoggedIn)) {
         return {
-          // TODO: Redirect back after login
           redirect: {
-            destination: ROUTES.LOGIN,
+            destination: `${ROUTES.LOGIN}?from=${ctx.resolvedUrl}`,
             permanent: false,
           },
         }

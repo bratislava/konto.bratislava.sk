@@ -76,7 +76,7 @@ const Banner = ({
         </div>
       </div>
       <div className="my-auto flex w-full sm:w-1/2">
-        <Image src={image} />
+        <Image src={image} alt="" />
       </div>
     </div>
   )

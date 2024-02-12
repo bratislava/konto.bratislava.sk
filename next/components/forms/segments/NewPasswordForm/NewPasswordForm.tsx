@@ -81,6 +81,7 @@ const NewPasswordForm = ({ onSubmit, error, onResend, lastEmail, fromMigration }
   return (
     <form
       className="flex flex-col space-y-4"
+      data-cy="new-password-form"
       onSubmit={handleSubmit((data: Data) => {
         setLastVerificationCode(data.verificationCode)
         onSubmit(data.verificationCode, data.password).catch((error_) =>

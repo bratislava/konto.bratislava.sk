@@ -6,6 +6,7 @@ import { useFormExportImport } from '../../../../frontend/hooks/useFormExportImp
 import { isFormSubmitDisabled } from '../../../../frontend/utils/formSummary'
 import { useFormSignature } from '../../signer/useFormSignature'
 import ButtonNew from '../../simple-components/ButtonNew'
+import { useFormContext } from '../../useFormContext'
 import { useFormSend } from '../../useFormSend'
 import { useFormState } from '../../useFormState'
 import { useFormSummary } from './useFormSummary'
@@ -13,7 +14,8 @@ import { useFormSummary } from './useFormSummary'
 const SummaryFormControls = () => {
   const { t } = useTranslation('forms')
 
-  const { isReadonly, goToPreviousStep, isTaxForm } = useFormState()
+  const { isTaxForm, isSigned, isReadonly } = useFormContext()
+  const { goToPreviousStep } = useFormState()
   const { exportPdf } = useFormExportImport()
   const { errorSchema, infectedFiles } = useFormSummary()
   const { isValidSignature } = useFormSignature()
@@ -24,7 +26,7 @@ const SummaryFormControls = () => {
   const { handleSendButtonPress, handleSendEidButtonPress } = useFormSend()
 
   if (isReadonly) {
-    // Cannot be null as RJFS will display its own submit button.
+    // Cannot be null as RJSF will display its own submit button.
     // eslint-disable-next-line react/jsx-no-useless-fragment
     return <></>
   }
@@ -44,10 +46,23 @@ const SummaryFormControls = () => {
         </div>
 
         <div className="flex flex-row flex-wrap gap-5">
+          {/* Temporary logic for tax form, will be cleaned up. */}
           {isTaxForm ? (
-            <ButtonNew variant="black-solid" onPress={exportPdf}>
-              {t('summary.export_pdf')}
-            </ButtonNew>
+            <>
+              <ButtonNew variant={isSigned ? 'black-outline' : 'black-solid'} onPress={exportPdf}>
+                {t('summary.export_pdf')}
+              </ButtonNew>
+              {isSigned && (
+                <ButtonNew
+                  isDisabled={submitDisabled}
+                  type="submit"
+                  variant="black-solid"
+                  onPress={handleSendEidButtonPress}
+                >
+                  {t('summary.button_send_eid')}
+                </ButtonNew>
+              )}
+            </>
           ) : (
             <>
               <ButtonNew
@@ -74,9 +89,27 @@ const SummaryFormControls = () => {
       {/* Mobile */}
       <div className="mt-4 flex flex-col gap-2 md:hidden">
         {isTaxForm ? (
-          <ButtonNew variant="black-solid" onPress={exportPdf} fullWidth>
-            {t('summary.export_pdf')}
-          </ButtonNew>
+          <>
+            <ButtonNew
+              variant={isSigned ? 'black-outline' : 'black-solid'}
+              onPress={exportPdf}
+              fullWidth
+            >
+              {t('summary.export_pdf')}
+            </ButtonNew>
+            {isSigned && (
+              <ButtonNew
+                isDisabled={submitDisabled}
+                size="small"
+                fullWidth
+                type="submit"
+                variant="black-solid"
+                onPress={handleSendEidButtonPress}
+              >
+                {t('summary.button_send_eid')}
+              </ButtonNew>
+            )}
+          </>
         ) : (
           <>
             <ButtonNew

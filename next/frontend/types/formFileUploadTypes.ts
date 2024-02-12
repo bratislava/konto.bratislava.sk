@@ -39,6 +39,8 @@ export type FormFileUploadResponseFileStatus = {
   type: FormFileUploadStatusEnum.UploadServerError
   error: {
     rawError: string
+    errorCode?: number
+    errorName?: string
   }
   canRetry: boolean
 }

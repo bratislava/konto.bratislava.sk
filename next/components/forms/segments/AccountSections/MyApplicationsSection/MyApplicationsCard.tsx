@@ -32,7 +32,7 @@ export type MyApplicationsCardVariant = 'DRAFT' | 'SENDING' | 'SENT'
 
 export type MyApplicationsCardProps = {
   form?: GetFormResponseDto | null
-  refreshListData: () => Promise<unknown>
+  refreshListData: () => Promise<[void, boolean]>
   variant: MyApplicationsCardVariant
 }
 
@@ -80,6 +80,8 @@ const MyApplicationsCard = ({ form, refreshListData, variant }: MyApplicationsCa
   const state = form?.state
   const error = form?.error
   const isLatestSchemaVersionForSlug = form?.isLatestSchemaVersionForSlug
+  const isTaxForm = formSlug === 'priznanie-k-dani-z-nehnutelnosti'
+  const canDownloadPdf = isLatestSchemaVersionForSlug && !isTaxForm
 
   // derived state
   const formPageHref = `${ROUTES.MUNICIPAL_SERVICES}/${form?.schemaVersion.schema?.slug}/${form?.id}`
@@ -114,12 +116,16 @@ const MyApplicationsCard = ({ form, refreshListData, variant }: MyApplicationsCa
   const exportPdf = async () => {
     openSnackbarInfo(ft('info_messages.pdf_export'))
     try {
-      if (!formData || !schemaVersionId)
-        throw new Error(`No form data or schemaVersionId for form id: ${formId}`)
-      const response = await formsApi.convertControllerConvertToPdf(
-        schemaVersionId,
+      if (!formData || !schemaVersionId || !formId)
+        throw new Error(
+          // eslint-disable-next-line sonarjs/no-nested-template-literals
+          `No form data, schemaVersionId or form id ${formId && `for form id: ${formId}`}`,
+        )
+      const response = await formsApi.convertControllerConvertToPdfv2(
         {
-          jsonForm: formData,
+          schemaVersionId,
+          formId,
+          jsonData: formData,
         },
         { accessToken: 'onlyAuthenticated', responseType: 'arraybuffer' },
       )
@@ -149,7 +155,7 @@ const MyApplicationsCard = ({ form, refreshListData, variant }: MyApplicationsCa
     }
   }
 
-  const conceptMenuContent: MenuItemBase[] = isLatestSchemaVersionForSlug
+  const conceptMenuContent: MenuItemBase[] = canDownloadPdf
     ? [
         {
           title: t('account_section_applications.concept_menu_list.download_xml'),

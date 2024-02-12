@@ -8,6 +8,7 @@ export interface SummaryRowData {
   schemaPath?: string
   isError: boolean
   isConditional?: boolean
+  name?: string
 }
 
 interface SummaryRowProps {
@@ -37,7 +38,7 @@ const SummaryRow = (props: SummaryRowProps) => {
   })
 
   return (
-    <div className={containerClassName}>
+    <div className={containerClassName} data-cy={`summary-row-${data.name}`}>
       <p className={labelClassName}>{data.label}</p>
       <div className="flex w-full flex-1 flex-row items-center">
         <span className={valueClassName}>{data.value || '-'}</span>

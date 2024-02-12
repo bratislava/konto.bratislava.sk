@@ -16,10 +16,8 @@ import { useTranslation } from 'next-i18next'
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
 import { useEffect, useState } from 'react'
 
-import PageWrapper from '../components/layouts/PageWrapper'
 import { ROUTES } from '../frontend/api/constants'
 import logger from '../frontend/utils/logger'
-import { AsyncServerProps } from '../frontend/utils/types'
 
 enum EmailChangeStatus {
   INIT = 'INIT',
@@ -33,21 +31,12 @@ export const getServerSideProps = async (ctx: GetServerSidePropsContext) => {
   return {
     props: {
       ssrCurrentAuthProps: await getSSRCurrentAuth(ctx.req),
-      page: {
-        locale: ctx.locale,
-        localizations: ['sk', 'en']
-          .filter((l) => l !== ctx.locale)
-          .map((l) => ({
-            slug: '',
-            locale: l,
-          })),
-      },
       ...(await serverSideTranslations(locale)),
     },
   }
 }
 
-const EmailChangePage = ({ page }: AsyncServerProps<typeof getServerSideProps>) => {
+const EmailChangePage = () => {
   const { t } = useTranslation('account')
   const router = useRouter()
   const [emailChangeStatus, setEmailChangeStatus] = useState<EmailChangeStatus>(
@@ -125,31 +114,29 @@ const EmailChangePage = ({ page }: AsyncServerProps<typeof getServerSideProps>) 
   }
 
   return (
-    <PageWrapper locale={page.locale} localizations={page.localizations}>
-      <LoginRegisterLayout
-        backButtonHidden={emailChangeStatus === EmailChangeStatus.EMAIL_VERIFICATION_SUCCESS}
-      >
-        <AccountContainer>
-          {emailChangeStatus === EmailChangeStatus.INIT ? (
-            <EmailChangeForm onSubmit={changeEmail} error={emailChangeError} />
-          ) : emailChangeStatus === EmailChangeStatus.EMAIL_VERIFICATION_REQUIRED ? (
-            <EmailVerificationForm
-              lastEmail={lastEmail}
-              onResend={resendVerificationCode}
-              onSubmit={verifyEmail}
-              error={emailChangeError}
-            />
-          ) : (
-            <AccountSuccessAlert
-              title={t('email_change_success_title')}
-              confirmLabel={t('account_continue_link')}
-              onConfirm={onConfirm}
-              description={t('email_change_success_description', { email: lastEmail })}
-            />
-          )}
-        </AccountContainer>
-      </LoginRegisterLayout>
-    </PageWrapper>
+    <LoginRegisterLayout
+      backButtonHidden={emailChangeStatus === EmailChangeStatus.EMAIL_VERIFICATION_SUCCESS}
+    >
+      <AccountContainer>
+        {emailChangeStatus === EmailChangeStatus.INIT ? (
+          <EmailChangeForm onSubmit={changeEmail} error={emailChangeError} />
+        ) : emailChangeStatus === EmailChangeStatus.EMAIL_VERIFICATION_REQUIRED ? (
+          <EmailVerificationForm
+            lastEmail={lastEmail}
+            onResend={resendVerificationCode}
+            onSubmit={verifyEmail}
+            error={emailChangeError}
+          />
+        ) : (
+          <AccountSuccessAlert
+            title={t('email_change_success_title')}
+            confirmLabel={t('account_continue_link')}
+            onConfirm={onConfirm}
+            description={t('email_change_success_description', { email: lastEmail })}
+          />
+        )}
+      </AccountContainer>
+    </LoginRegisterLayout>
   )
 }
 

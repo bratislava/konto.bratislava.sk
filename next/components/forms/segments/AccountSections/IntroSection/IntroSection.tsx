@@ -74,8 +74,8 @@ const IntroSection = () => {
     'account_section_intro.banner_content',
   )}</span>`
 
-  const foMunicipalServicesSection = [34, 35, 1, 4]
-  const poMunicipalServicesSection = [34, 35, 4, 42]
+  const foMunicipalServicesSection = [43, 34, 35, 1]
+  const poMunicipalServicesSection = [43, 34, 35, 4]
 
   const serviceCardIndexes = isLegalEntity ? poMunicipalServicesSection : foMunicipalServicesSection
 
@@ -96,9 +96,15 @@ const IntroSection = () => {
         />
       )}
       <div className="flex flex-col">
+        <h1 className="sr-only">{t('bratislava_account')}</h1>
         <AccountSectionHeader
-          title={`${t('account_section_intro.header_title')} ${name || ''}.`}
+          title={
+            name
+              ? `${t('account_section_intro.header_title')} ${name}.`
+              : `${t('account_section_intro.header_title_without_name')}`
+          }
           text={t('account_section_intro.header_text')}
+          titleAsParagraph
         />
         <div className="m-auto w-full max-w-screen-lg">
           <Announcements />

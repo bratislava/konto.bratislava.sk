@@ -3,7 +3,7 @@
  */
 import cx from 'classnames'
 import { useTranslation } from 'next-i18next'
-import React, { createContext, useContext, useState } from 'react'
+import React, { createContext, forwardRef, useContext, useState } from 'react'
 import { useEffectOnce } from 'usehooks-ts'
 
 import WarningIcon from '../icon-components/WarningIcon'
@@ -63,19 +63,17 @@ export const StatusBarProvider: React.FC<StatusBarProviderProps> = ({ children }
 
 export const useStatusBarContext = () => useContext(StatusBarContext)
 
-interface StatusBarProps {
-  className?: string
-}
-
-export const StatusBar = ({ className }: StatusBarProps) => {
+export const StatusBar = forwardRef<HTMLDivElement>((props, forwardedRef) => {
   const { statusBarConfiguration } = useStatusBarContext()
   return statusBarConfiguration.content ? (
     <div
-      className={cx('w-full text-white', className, {
+      ref={forwardedRef}
+      className={cx('w-full text-white', {
         'bg-negative-700': statusBarConfiguration.variant === 'error',
         'bg-warning-700': statusBarConfiguration.variant === 'warning',
         'bg-gray-700': statusBarConfiguration.variant === 'info',
       })}
+      data-cy="info-bar"
     >
       <div className="container mx-auto flex h-full items-center justify-center">
         <SectionContainer>
@@ -92,4 +90,4 @@ export const StatusBar = ({ className }: StatusBarProps) => {
       </div>
     </div>
   ) : null
-}
+})

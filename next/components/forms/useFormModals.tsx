@@ -2,9 +2,10 @@ import { useRouter } from 'next/router'
 import React, { createContext, PropsWithChildren, useContext, useState } from 'react'
 
 import { useServerSideAuth } from '../../frontend/hooks/useServerSideAuth'
-import { InitialFormData } from '../../frontend/types/initialFormData'
 import { FORM_SEND_EID_TOKEN_QUERY_KEY } from '../../frontend/utils/formSend'
 import { RegistrationModalType } from './segments/RegistrationModal/RegistrationModal'
+import { TaxFormPdfExportModalState } from './segments/TaxFormPdfExportModal/TaxFormPdfExportModalState'
+import { useFormContext } from './useFormContext'
 
 type ModalWithSendCallback =
   | {
@@ -15,7 +16,8 @@ type ModalWithSendCallback =
       sendCallback: (() => void) | (() => Promise<void>)
     }
 
-const useGetContext = (initialFormData: InitialFormData) => {
+const useGetContext = () => {
+  const { formMigrationRequired, oldSchemaVersion, isTaxForm } = useFormContext()
   const router = useRouter()
   const { isAuthenticated, tierStatus } = useServerSideAuth()
 
@@ -24,16 +26,13 @@ const useGetContext = (initialFormData: InitialFormData) => {
 
   const [conceptSaveErrorModal, setConceptSaveErrorModal] = useState(false)
   const [migrationRequiredModal, setMigrationRequiredModal] = useState<boolean>(
-    displayInitialWarningModals && initialFormData.formMigrationRequired,
+    displayInitialWarningModals && formMigrationRequired,
   )
   const [oldVersionSchemaModal, setOldSchemaVersionModal] = useState<boolean>(
-    displayInitialWarningModals && !migrationRequiredModal && initialFormData.oldSchemaVersion,
+    displayInitialWarningModals && !migrationRequiredModal && oldSchemaVersion,
   )
   const [registrationModal, setRegistrationModal] = useState<RegistrationModalType | null>(
-    displayInitialWarningModals &&
-      !oldVersionSchemaModal &&
-      !isAuthenticated &&
-      !initialFormData.isTaxForm
+    displayInitialWarningModals && !oldVersionSchemaModal && !isAuthenticated && !isTaxForm
       ? RegistrationModalType.Initial
       : null,
   )
@@ -42,7 +41,7 @@ const useGetContext = (initialFormData: InitialFormData) => {
       !oldVersionSchemaModal &&
       !migrationRequiredModal &&
       isAuthenticated &&
-      !initialFormData.isTaxForm &&
+      !isTaxForm &&
       !tierStatus.isIdentityVerified,
   )
 
@@ -85,11 +84,13 @@ const useGetContext = (initialFormData: InitialFormData) => {
    * again while redirecting.
    */
   const [redirectingToSlovenskoSkLogin, setRedirectingToSlovenskoSkLogin] = useState(false)
+  const [signerIsDeploying, setSignerIsDeploying] = useState(false)
 
   const eidSendConfirmationModalIsPending =
     sendEidSaveConceptPending || redirectingToSlovenskoSkLogin
 
-  const [taxFormPdfExportModal, setTaxFormPdfExportModal] = useState(false)
+  const [taxFormPdfExportModal, setTaxFormPdfExportModal] =
+    useState<TaxFormPdfExportModalState | null>(null)
 
   return {
     migrationRequiredModal,
@@ -139,20 +140,15 @@ const useGetContext = (initialFormData: InitialFormData) => {
     setDeleteConceptModal,
     taxFormPdfExportModal,
     setTaxFormPdfExportModal,
+    signerIsDeploying,
+    setSignerIsDeploying,
   }
 }
 
 const FormModalsContext = createContext<ReturnType<typeof useGetContext> | undefined>(undefined)
 
-type FormModalsProviderProps = {
-  initialFormData: InitialFormData
-}
-
-export const FormModalsProvider = ({
-  initialFormData,
-  children,
-}: PropsWithChildren<FormModalsProviderProps>) => {
-  const context = useGetContext(initialFormData)
+export const FormModalsProvider = ({ children }: PropsWithChildren) => {
+  const context = useGetContext()
 
   return <FormModalsContext.Provider value={context}>{children}</FormModalsContext.Provider>
 }

@@ -6,36 +6,69 @@ import { ROUTES } from 'frontend/api/constants'
 import logger from 'frontend/utils/logger'
 import { useRouter } from 'next/router'
 import { useTranslation } from 'next-i18next'
-import React, { createContext, PropsWithChildren, useContext, useRef } from 'react'
+import { usePlausible } from 'next-plausible'
+import React, {
+  createContext,
+  PropsWithChildren,
+  useContext,
+  useEffect,
+  useRef,
+  useState,
+} from 'react'
+import { useIsClient } from 'usehooks-ts'
 
 import { RegistrationModalType } from '../../components/forms/segments/RegistrationModal/RegistrationModal'
+import { useFormSignature } from '../../components/forms/signer/useFormSignature'
+import { useFormContext } from '../../components/forms/useFormContext'
+import { useFormFileUpload } from '../../components/forms/useFormFileUpload'
 import { useFormLeaveProtection } from '../../components/forms/useFormLeaveProtection'
 import { useFormModals } from '../../components/forms/useFormModals'
 import { useFormState } from '../../components/forms/useFormState'
-import { InitialFormData } from '../types/initialFormData'
+import type { PdfPreviewDataAdditionalMetadata } from '../../pages/pdf-preview'
 import { readFileToString } from '../utils/file'
+import { createSerializableFile } from '../utils/formExportImport'
 import { downloadBlob } from '../utils/general'
 import { useServerSideAuth } from './useServerSideAuth'
 import useSnackbar from './useSnackbar'
 
-type FormExportImportProviderProps = {
-  initialFormData: InitialFormData
+declare global {
+  interface Window {
+    __DEV_SHOW_IMPORT_EXPORT_JSON?: () => void
+  }
 }
 
-export const useGetContext = ({ initialFormData }: FormExportImportProviderProps) => {
+export const useGetContext = () => {
   const { isAuthenticated } = useServerSideAuth()
-  const { formId, formData, formSlug, setImportedFormData } = useFormState()
+  const { schemaVersionId, formId, slug, isTaxForm } = useFormContext()
+  const { formData, setImportedFormData } = useFormState()
   const { setRegistrationModal, setTaxFormPdfExportModal } = useFormModals()
   const { t } = useTranslation('forms')
   const { setConceptSaveErrorModal } = useFormModals()
   const { turnOffLeaveProtection } = useFormLeaveProtection()
+  const { signature } = useFormSignature()
+  const { clientFiles } = useFormFileUpload()
+
   const router = useRouter()
+  // track each imported/exported xml/pdf in analytics - event format should match the one in FormPagesWrapper
+  const plausible = usePlausible()
 
   const [openSnackbarError] = useSnackbar({ variant: 'error' })
   const [openSnackbarSuccess] = useSnackbar({ variant: 'success' })
   const [openSnackbarInfo, closeSnackbarInfo] = useSnackbar({ variant: 'info' })
 
   const importXmlButtonRef = useRef<HTMLButtonElement>(null)
+  const importJsonButtonRef = useRef<HTMLButtonElement>(null)
+
+  const [showImportExportJson, setShowImportExportJson] = useState(false)
+  const isClient = useIsClient()
+
+  useEffect(() => {
+    // Dev only debugging feature
+    if (isClient) {
+      // eslint-disable-next-line no-underscore-dangle
+      window.__DEV_SHOW_IMPORT_EXPORT_JSON = () => setShowImportExportJson(true)
+    }
+  }, [isClient, setShowImportExportJson])
 
   const { mutate: saveConceptMutate, isPending: saveConceptIsPending } = useMutation<
     AxiosResponse<GetFormResponseDto>,
@@ -47,6 +80,8 @@ export const useGetContext = ({ initialFormData }: FormExportImportProviderProps
         formId,
         {
           formDataJson: formData,
+          // `null` must be set explicitly, otherwise the signature would not be removed if needed
+          formDataBase64: signature?.signature ?? null,
         },
         { accessToken: 'onlyAuthenticated' },
       ),
@@ -96,23 +131,34 @@ export const useGetContext = ({ initialFormData }: FormExportImportProviderProps
     openSnackbarInfo(t('info_messages.xml_export'))
     try {
       const response = await formsApi.convertControllerConvertJsonToXml(
-        initialFormData.schemaVersionId,
+        schemaVersionId,
         {
           jsonForm: formData,
         },
         { accessToken: 'onlyAuthenticated' },
       )
-      const fileName = `${formSlug}_output.xml`
+      const fileName = `${slug}_output.xml`
       downloadBlob(new Blob([response.data.xmlForm]), fileName)
       closeSnackbarInfo()
       openSnackbarSuccess(t('success_messages.xml_export'))
+      plausible(`${slug}#export-xml`)
     } catch (error) {
       openSnackbarError(t('errors.xml_export'))
     }
   }
 
+  const exportJson = async () => {
+    const fileName = `${slug}_output.json`
+    downloadBlob(new Blob([JSON.stringify(formData)]), fileName)
+    openSnackbarSuccess(t('success_messages.json_export'))
+  }
+
   const triggerImportXml = () => {
     importXmlButtonRef.current?.click()
+  }
+
+  const triggerImportJson = () => {
+    importJsonButtonRef.current?.click()
   }
 
   const handleImportXml = async (files: FileList | null) => {
@@ -123,9 +169,9 @@ export const useGetContext = ({ initialFormData }: FormExportImportProviderProps
 
     try {
       openSnackbarInfo(t('info_messages.xml_import'))
-      const xmlData: string = await readFileToString(file)
+      const xmlData = await readFileToString(file)
       const response = await formsApi.convertControllerConvertXmlToJson(
-        initialFormData.schemaVersionId,
+        schemaVersionId,
         {
           xmlForm: xmlData,
         },
@@ -134,33 +180,83 @@ export const useGetContext = ({ initialFormData }: FormExportImportProviderProps
       setImportedFormData(response.data.jsonForm)
       closeSnackbarInfo()
       openSnackbarSuccess(t('success_messages.xml_import'))
+      plausible(`${slug}#import-xml`)
     } catch (error) {
       openSnackbarError(t('errors.xml_import'))
     }
   }
 
-  const exportPdf = async () => {
+  const handleImportJson = async (files: FileList | null) => {
+    if (!files || files.length === 0) {
+      return
+    }
+    const file = files[0]
+    const jsonForm = await readFileToString(file)
+    openSnackbarInfo(t('info_messages.json_import'))
+    try {
+      const parsed = JSON.parse(jsonForm)
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
+      setImportedFormData(parsed)
+    } catch (error) {
+      openSnackbarError(t('errors.json_import'))
+    }
+    openSnackbarSuccess(t('success_messages.json_import'))
+  }
+
+  const runPdfExport = async (abortController?: AbortController) => {
+    const response = await formsApi.convertControllerConvertToPdfv2(
+      {
+        schemaVersionId,
+        formId,
+        jsonData: formData,
+        additionalMetadata: {
+          clientFiles: clientFiles.map((fileInfo) => ({
+            ...fileInfo,
+            file: createSerializableFile(fileInfo.file),
+          })),
+        } satisfies PdfPreviewDataAdditionalMetadata,
+      },
+      {
+        accessToken: 'onlyAuthenticated',
+        responseType: 'arraybuffer',
+        signal: abortController?.signal,
+      },
+    )
+    const fileName = `${slug}_output.pdf`
+    downloadBlob(new Blob([response.data as BlobPart]), fileName)
+  }
+
+  const exportOrdinaryPdf = async () => {
     openSnackbarInfo(t('info_messages.pdf_export'))
     try {
-      const response = await formsApi.convertControllerConvertToPdf(
-        initialFormData.schemaVersionId,
-        {
-          jsonForm: formData,
-        },
-        { accessToken: 'onlyAuthenticated', responseType: 'arraybuffer' },
-      )
-      const fileName = `${formSlug}_output.pdf`
-      // TODO: Revisit when BE is fixed
-      downloadBlob(new Blob([response.data as BlobPart]), fileName)
-      closeSnackbarInfo()
-      if (initialFormData.isTaxForm) {
-        setTaxFormPdfExportModal(true)
-      } else {
-        openSnackbarSuccess(t('success_messages.pdf_export'))
-      }
+      await runPdfExport()
     } catch (error) {
+      closeSnackbarInfo()
       openSnackbarError(t('errors.pdf_export'))
+      return
     }
+    closeSnackbarInfo()
+    openSnackbarSuccess(t('success_messages.pdf_export'))
+  }
+
+  const exportTaxPdf = async () => {
+    const abortController = new AbortController()
+    setTaxFormPdfExportModal({ type: 'loading', onClose: () => abortController.abort() })
+    try {
+      await runPdfExport(abortController)
+    } catch (error) {
+      setTaxFormPdfExportModal(null)
+      if (!abortController.signal.aborted) {
+        openSnackbarError(t('errors.pdf_export'))
+      }
+      return
+    }
+    setTaxFormPdfExportModal({ type: 'success' })
+  }
+
+  const exportPdf = async () => {
+    await (isTaxForm ? exportTaxPdf() : exportOrdinaryPdf())
+    plausible(`${slug}#export-pdf`)
   }
 
   const saveConcept = async (fromModal?: boolean) => {
@@ -195,14 +291,19 @@ export const useGetContext = ({ initialFormData }: FormExportImportProviderProps
   return {
     exportXml,
     importXml: triggerImportXml,
+    exportJson,
+    importJson: triggerImportJson,
     exportPdf,
     saveConcept,
     saveConceptIsPending,
     migrateForm,
     migrateFormIsPending,
     importXmlButtonRef,
+    importJsonButtonRef,
     handleImportXml,
+    handleImportJson,
     deleteConcept,
+    showImportExportJson,
   }
 }
 
@@ -210,11 +311,8 @@ const FormExportImportContext = createContext<ReturnType<typeof useGetContext> |
   undefined,
 )
 
-export const FormExportImportProvider = ({
-  children,
-  ...rest
-}: PropsWithChildren<FormExportImportProviderProps>) => {
-  const context = useGetContext(rest)
+export const FormExportImportProvider = ({ children }: PropsWithChildren) => {
+  const context = useGetContext()
 
   return (
     <FormExportImportContext.Provider value={context}>{children}</FormExportImportContext.Provider>

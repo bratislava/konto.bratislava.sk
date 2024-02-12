@@ -6,6 +6,7 @@ import React from 'react'
 
 import { useFormExportImport } from '../../../../frontend/hooks/useFormExportImport'
 import Button from '../../simple-components/ButtonNew'
+import { useFormContext } from '../../useFormContext'
 import { useFormModals } from '../../useFormModals'
 import { useFormRedirects } from '../../useFormRedirects'
 import { useFormState } from '../../useFormState'
@@ -62,12 +63,15 @@ const FormModals = () => {
     setDeleteConceptModal,
     taxFormPdfExportModal,
     setTaxFormPdfExportModal,
+    signerIsDeploying,
+    setSignerIsDeploying,
   } = useFormModals()
   const { saveConcept, saveConceptIsPending, migrateForm, migrateFormIsPending } =
     useFormExportImport()
   const { login, register, verifyIdentity } = useFormRedirects()
 
-  const { formData, uiSchema } = useFormState()
+  const { uiSchema } = useFormContext()
+  const { formData } = useFormState()
   const uiOptions = getUiOptions(uiSchema)
   const title = getFormTitle(formData, uiOptions, t('form_title_fallback'))
 
@@ -526,6 +530,17 @@ const FormModals = () => {
       noCloseButton: true,
       children: t('concept_delete_modal.content', { conceptName: title }),
     },
+    {
+      key: 'signerIsDeploying',
+      isOpen: signerIsDeploying,
+      onOpenChange: setSignerIsDeploying,
+      type: 'info',
+      title: t('signer_deploying_modal.title'),
+      children: (
+        // TODO Replace statusBar variant
+        <AccountMarkdown variant="statusBar" content={t('signer_deploying_modal.content')} />
+      ),
+    },
   ]
 
   const { accountType } = useServerSideAuth()
@@ -544,10 +559,11 @@ const FormModals = () => {
         register={register}
       />
       <TaxFormPdfExportModal
-        isOpen={taxFormPdfExportModal}
+        state={taxFormPdfExportModal}
+        isOpen={taxFormPdfExportModal != null}
         onOpenChange={(value) => {
           if (!value) {
-            setTaxFormPdfExportModal(false)
+            setTaxFormPdfExportModal(null)
           }
         }}
       />

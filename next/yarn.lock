@@ -4870,7 +4870,7 @@
     "@react-types/tooltip" "^3.4.6"
     "@swc/helpers" "^0.5.0"
 
-"@react-aria/utils@^3.23.0":
+"@react-aria/utils@3.23.0", "@react-aria/utils@^3.23.0":
   version "3.23.0"
   resolved "https://registry.yarnpkg.com/@react-aria/utils/-/utils-3.23.0.tgz#15548db55fcb7da1920e21735467157328f0223f"
   integrity sha512-fJA63/VU4iQNT8WUvrmll3kvToqMurD69CcgVmbQ56V7ZbvlzFi44E7BpnoaofScYLLtFWRjVdaHsohT6O/big==

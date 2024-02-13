@@ -17,6 +17,7 @@ import { useIsClient, useIsMounted } from 'usehooks-ts'
 import useSnackbar from '../../../frontend/hooks/useSnackbar'
 import { createFormSignatureId } from '../../../frontend/utils/formSignature'
 import { useFormContext } from '../useFormContext'
+import { useFormLeaveProtection } from '../useFormLeaveProtection'
 import { useFormModals } from '../useFormModals'
 import { useFormState } from '../useFormState'
 import { SignerErrorType } from './mapDitecError'
@@ -44,6 +45,7 @@ const useGetContext = () => {
   const { setSignerIsDeploying } = useFormModals()
   const { isSigned, initialSignature } = useFormContext()
   const { formData, formDataRef } = useFormState()
+  const { turnOnLeaveProtection } = useFormLeaveProtection()
   const { sign: signerSign } = useFormSigner({
     onDeploymentStatusChange: (status) => {
       setSignerIsDeploying(status === SignerDeploymentStatus.Deploying)
@@ -65,6 +67,11 @@ const useGetContext = () => {
 
   const [showSignatureInConsole, setShowSignatureInConsole] = useState(false)
   const isClient = useIsClient()
+
+  const handleSignatureChange = (newSignature: FormSignature | null) => {
+    setSignature(newSignature)
+    turnOnLeaveProtection()
+  }
 
   useEffect(() => {
     // Dev only debugging feature
@@ -92,10 +99,10 @@ const useGetContext = () => {
     const currentHash = hash(formDataRef.current)
     if (currentHash !== requestHash) {
       openSnackbarError('Údaje, ktoré ste upravili, je potrebné znova podpísať.')
-      setSignature(null)
+      handleSignatureChange(null)
       return
     }
-    setSignature({ objectHash: currentHash, signature: result })
+    handleSignatureChange({ objectHash: currentHash, signature: result })
     if (showSignatureInConsole) {
       console.log('Signature:', result)
     }
@@ -130,7 +137,7 @@ const useGetContext = () => {
   }
 
   const remove = () => {
-    setSignature(null)
+    handleSignatureChange(null)
   }
 
   // This is an expensive calculation, therefore it's exposed as useCallback (not useMemo), therefore it's called only

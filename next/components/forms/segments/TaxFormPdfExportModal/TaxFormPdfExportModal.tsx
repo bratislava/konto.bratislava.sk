@@ -1,4 +1,5 @@
 import { CheckIcon } from '@assets/ui-icons'
+import { formsFeedbackLinks } from 'frontend/constants/constants'
 import { Trans, useTranslation } from 'next-i18next'
 import React from 'react'
 import { mergeProps } from 'react-aria'
@@ -10,8 +11,6 @@ import ModalV2, { ModalV2Props } from '../../simple-components/ModalV2'
 import Spinner from '../../simple-components/Spinner'
 import { useFormRedirects } from '../../useFormRedirects'
 import { TaxFormPdfExportModalState } from './TaxFormPdfExportModalState'
-
-export const taxFeedbackUrl = 'https://bravo.staffino.com/bratislava/id=WW14qo6q'
 
 type TaxFormPdfExportModalProps = {
   state: TaxFormPdfExportModalState | null
@@ -128,7 +127,7 @@ const SuccessContent = () => {
         <ButtonNew
           variant="black-outline"
           className="min-w-[240px] self-center"
-          href={taxFeedbackUrl}
+          href={formsFeedbackLinks['priznanie-k-dani-z-nehnutelnosti']}
           target="_blank"
         >
           {t('tax_form_pdf_export_modal.feedback_button')}

@@ -116,12 +116,16 @@ const MyApplicationsCard = ({ form, refreshListData, variant }: MyApplicationsCa
   const exportPdf = async () => {
     openSnackbarInfo(ft('info_messages.pdf_export'))
     try {
-      if (!formData || !schemaVersionId)
-        throw new Error(`No form data or schemaVersionId for form id: ${formId}`)
-      const response = await formsApi.convertControllerConvertToPdf(
-        schemaVersionId,
+      if (!formData || !schemaVersionId || !formId)
+        throw new Error(
+          // eslint-disable-next-line sonarjs/no-nested-template-literals
+          `No form data, schemaVersionId or form id ${formId && `for form id: ${formId}`}`,
+        )
+      const response = await formsApi.convertControllerConvertToPdfv2(
         {
-          jsonForm: formData,
+          schemaVersionId,
+          formId,
+          jsonData: formData,
         },
         { accessToken: 'onlyAuthenticated', responseType: 'arraybuffer' },
       )

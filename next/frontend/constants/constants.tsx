@@ -455,3 +455,11 @@ export const serviceCards: ServiceCardBase[] = [
     href: ROUTES.MUNICIPAL_SERVICES_TAX,
   },
 ]
+
+export const formsFeedbackLinks = {
+  'stanovisko-k-investicnemu-zameru': 'https://bravo.staffino.com/bratislava/id=WW1hkstR',
+  'zavazne-stanovisko-k-investicnej-cinnosti': 'https://bravo.staffino.com/bratislava/id=WW1vhwT6',
+  'platba-dane-z-nehnutelnosti':
+    'https://forms.office.com/Pages/DesignPageV2.aspx?origin=NeoPortalPage&subpage=design&id=Tudp_mYey0-ZxVjkotKgYzPfQUHlnllIsPHBW0o8KeNUQlMzWEw1WEZIWEM2SThRNVBUREhWNFlISC4u',
+  'priznanie-k-dani-z-nehnutelnosti': 'https://bravo.staffino.com/bratislava/id=WW14qo6q',
+}

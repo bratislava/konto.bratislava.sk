@@ -1,5 +1,5 @@
 import { formsApi } from '@clients/forms'
-import { GetFileResponseDto } from '@clients/openapi-forms'
+import { GetFileResponseReducedDto } from '@clients/openapi-forms'
 import { Query, useQuery, useQueryClient } from '@tanstack/react-query'
 import React, {
   createContext,
@@ -77,7 +77,7 @@ export const useGetContext = () => {
   const abortControllersRef = useRef<Record<string, AbortController>>({})
 
   const refetchInterval = useMemo(() => {
-    return (query: Query<GetFileResponseDto[]>) =>
+    return (query: Query<GetFileResponseReducedDto[]>) =>
       shouldPollServerFiles(query.state.data, clientFiles) ? REFETCH_INTERVAL : false
   }, [clientFiles])
 

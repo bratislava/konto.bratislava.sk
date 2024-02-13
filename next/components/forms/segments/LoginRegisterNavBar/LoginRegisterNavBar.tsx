@@ -51,7 +51,7 @@ export const LoginRegisterNavBar = ({
         )}
         ref={desktopRef}
       >
-        <StatusBar className="hidden lg:flex" />
+        <StatusBar />
         <div className="m-auto hidden h-[57px] w-full max-w-screen-lg items-center lg:flex">
           {!backButtonHidden && <BackButton />}
           <Brand
@@ -73,7 +73,7 @@ export const LoginRegisterNavBar = ({
         className={cx(className, 'fixed left-0 top-0 z-40 w-full gap-x-6 bg-white lg:hidden')}
         ref={mobileRef}
       >
-        <StatusBar className="flex lg:hidden" />
+        <StatusBar />
         <div className="flex h-16 items-center border-b-2 px-8 py-5">
           {!backButtonHidden && <BackButton />}
           <Brand

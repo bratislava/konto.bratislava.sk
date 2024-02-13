@@ -1,7 +1,7 @@
 import { formsApi } from '@clients/forms'
 import {
-  GetFileResponseDto,
   GetFileResponseDtoStatusEnum,
+  GetFileResponseReducedDto,
   PostFileResponseDto,
 } from '@clients/openapi-forms'
 import { AxiosError, AxiosProgressEvent, AxiosResponse } from 'axios'
@@ -65,7 +65,7 @@ export const uploadFile = async ({
  * yet in the server response.
  */
 export const shouldPollServerFiles = (
-  data: GetFileResponseDto[] | undefined,
+  data: GetFileResponseReducedDto[] | undefined,
   clientFiles: FormFileUploadClientFileInfo[],
 ) => {
   if (!data) {
@@ -131,7 +131,7 @@ const serverResponseToStatusMap: Record<GetFileResponseDtoStatusEnum, FormFileUp
  */
 export const mergeClientAndServerFiles = (
   clientFiles: FormFileUploadClientFileInfo[],
-  serverFiles: GetFileResponseDto[],
+  serverFiles: GetFileResponseReducedDto[],
 ) => {
   const clientMapped = clientFiles.map(
     (file) =>

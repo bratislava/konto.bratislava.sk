@@ -9,6 +9,7 @@ import 'react-loading-skeleton/dist/skeleton.css'
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import { StatusBarProvider } from 'components/forms/info-components/StatusBar'
 import CookieConsent from 'components/forms/segments/CookieConsent/CookieConsent'
+import { NavMenuContextProvider } from 'components/forms/segments/NavBar/navMenuContext'
 import { LoginRegisterRedirectProvider } from 'frontend/hooks/useLoginRegisterRedirect'
 import { AppProps } from 'next/app'
 import { Inter } from 'next/font/google'
@@ -69,10 +70,15 @@ const MyApp = ({ Component, pageProps }: AppProps) => {
                   // uncomment for local testing, needs to be run with `yarn build && yarn start`
                   // trackLocalhost
                 >
-                  <LoginRegisterRedirectProvider>
-                    <Component {...pageProps} />
-                    <CookieConsent />
-                  </LoginRegisterRedirectProvider>
+                  <NavMenuContextProvider>
+                    <LoginRegisterRedirectProvider>
+                      {/* used to lock body with overflow: hidden when mobile menu is open, look for useLockedBody */}
+                      <div id="root">
+                        <Component {...pageProps} />
+                      </div>
+                      <CookieConsent />
+                    </LoginRegisterRedirectProvider>
+                  </NavMenuContextProvider>
                 </PlausibleProvider>
               </SnackbarProvider>
             </QueryClientProvider>

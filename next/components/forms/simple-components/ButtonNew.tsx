@@ -203,7 +203,7 @@ const Button = forwardRef<HTMLAnchorElement | HTMLButtonElement, PolymorphicProp
                 // using custom `data-hovered:` because `hover:` is not working with `disabled` state
                 'data-hovered:border-category-600 data-hovered:bg-category-600':
                   variant === 'category-solid',
-                'text-gray-600 data-hovered:border-category-600': variant === 'category-outline',
+                'text-gray-700 data-hovered:border-category-600': variant === 'category-outline',
                 'data-hovered:bg-category-100 data-hovered:text-category-600':
                   variant === 'category-plain',
 

@@ -15,6 +15,7 @@ interface FileUploadWidgetRJSFProps extends WidgetProps {
 }
 
 const FileUploadWidgetRJSF = ({
+  id,
   options,
   schema,
   label,
@@ -58,32 +59,32 @@ const FileUploadWidgetRJSF = ({
     }
   }
 
-  const handleFileRemove = (id: string) => {
+  const handleFileRemove = (fileId: string) => {
     if (multiple) {
-      onChange((value as string[]).filter((v) => v !== id))
+      onChange((value as string[]).filter((v) => v !== fileId))
     } else {
       onChange(null)
     }
 
-    formFileUpload.removeFiles([id])
+    formFileUpload.removeFiles([fileId])
   }
 
-  const handleFileRetry = (id: string) => {
-    const newId = formFileUpload.retryFile(id, constraints)
+  const handleFileRetry = (fileId: string) => {
+    const newId = formFileUpload.retryFile(fileId, constraints)
     if (!newId) {
       return
     }
 
     if (multiple) {
       // Replaces the old id with the new one.
-      onChange((value as string[]).map((value) => (value === id ? newId : value)))
+      onChange((value as string[]).map((value) => (value === fileId ? newId : value)))
     } else {
       onChange(newId)
     }
   }
 
   return (
-    <WidgetWrapper options={options} className="w-full">
+    <WidgetWrapper id={id} options={options} className="w-full">
       <Upload
         value={value}
         errorMessage={rawErrors}

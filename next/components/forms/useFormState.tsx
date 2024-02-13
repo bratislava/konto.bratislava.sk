@@ -1,6 +1,13 @@
 import { GenericObjectType } from '@rjsf/utils'
 import { useTranslation } from 'next-i18next'
-import React, { createContext, PropsWithChildren, useContext, useMemo, useState } from 'react'
+import React, {
+  createContext,
+  PropsWithChildren,
+  useContext,
+  useMemo,
+  useRef,
+  useState,
+} from 'react'
 import useStateRef from 'react-usestateref'
 import { useIsFirstRender } from 'usehooks-ts'
 
@@ -33,6 +40,7 @@ const useGetContext = () => {
 
   const { currentStepIndex, setCurrentStepIndex } = useCurrentStepIndex(stepsSchemas)
   const { setMigrationRequiredModal } = useFormModals()
+  const scrollToFieldIdRef = useRef<string | null>(null)
 
   /**
    * This set holds indexes of steps that have been submitted (submit button has been pressed, which means they have been validated).
@@ -180,7 +188,14 @@ const useGetContext = () => {
 
     const index = stepsSchemas.findIndex((step) => getStepProperty(step) === stepProperty)
 
+    scrollToFieldIdRef.current = fieldId
     goToStep(index)
+  }
+
+  const popScrollToFieldId = () => {
+    const fieldId = scrollToFieldIdRef.current
+    scrollToFieldIdRef.current = null
+    return fieldId
   }
 
   return {
@@ -198,6 +213,7 @@ const useGetContext = () => {
     handleFormOnSubmit,
     goToStepByFieldId,
     setImportedFormData,
+    popScrollToFieldId,
   }
 }
 

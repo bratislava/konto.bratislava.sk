@@ -1,7 +1,7 @@
 import { CheckInCircleIcon, ChevronDownIcon, CrossIcon } from '@assets/ui-icons'
 import cx from 'classnames'
 import { useTranslation } from 'next-i18next'
-import React from 'react'
+import React, { useId } from 'react'
 import Select, {
   ClearIndicatorProps,
   components,
@@ -30,7 +30,10 @@ const DropdownIndicator = <
 
   return (
     <components.DropdownIndicator {...props}>
-      <ChevronDownIcon data-cy="dropdown-close" className={cx({ 'rotate-180': menuIsOpen, 'text-gray-400': isDisabled })} />
+      <ChevronDownIcon
+        data-cy="dropdown-close"
+        className={cx({ 'rotate-180': menuIsOpen, 'text-gray-400': isDisabled })}
+      />
     </components.DropdownIndicator>
   )
 }
@@ -151,6 +154,7 @@ const SelectField = <
   displayOptionalLabel,
   ...rest
 }: SelectMultiNewProps<Option, IsMulti, Group>) => {
+  const id = useId()
   const { t } = useTranslation('account', { keyPrefix: 'SelectField' })
 
   const isError = !!errorMessage?.length
@@ -166,10 +170,12 @@ const SelectField = <
         required={rest.required}
         errorMessage={errorMessage}
         displayOptionalLabel={displayOptionalLabel}
+        htmlFor={id}
       >
         <Select
           placeholder={null}
           {...rest}
+          id={id}
           unstyled
           value={value}
           onChange={onChange}

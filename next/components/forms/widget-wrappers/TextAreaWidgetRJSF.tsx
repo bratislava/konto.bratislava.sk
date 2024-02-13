@@ -14,6 +14,7 @@ interface TextAreaWidgetRJSFProps extends WidgetProps {
 }
 
 const TextAreaWidgetRJSF = ({
+  id,
   value,
   label,
   placeholder,
@@ -35,7 +36,7 @@ const TextAreaWidgetRJSF = ({
   }
 
   return (
-    <WidgetWrapper options={options}>
+    <WidgetWrapper id={id} options={options}>
       <FieldBlurWrapper value={value} onChange={handleOnChange}>
         {({ value: wrapperValue, onChange: wrapperOnChange, onBlur }) => (
           <TextAreaField

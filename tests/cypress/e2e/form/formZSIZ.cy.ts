@@ -47,27 +47,19 @@ describe('F02 -', { testIsolation: false }, () => {
 
         it('3. Checking "Applicant" step validation.', () => {
           cy.dataCy('form-container').then((form) => {
-            cy.wrap(Cypress.$(`[data-cy=continue-button-${device}]`, form)).click()
-
-            cy.wrap(Cypress.$('[aria-required=true]', form)).should('have.length', 7)
-
-            cy.wrap(Cypress.$(applicantErrorBorderFields, form)).should('have.class', 'border-negative-700')
+            cy.checkFormValidation(device, form, 7, applicantErrorBorderFields)
           })
 
           cy.dataCy('form-container').then((form) => {
             cy.wrap(Cypress.$('[data-cy=input-telefon]', form)).type(this.fileData.phone_number_wrong)
-            
-            cy.wrap(Cypress.$(`[data-cy=continue-button-${device}]`, form)).click()
-
-            cy.wrap(Cypress.$('[aria-required=true]', form)).should('have.length', 7)
-            cy.wrap(Cypress.$(applicantErrorBorderFields, form)).should('have.class', 'border-negative-700')
+            cy.checkFormValidation(device, form, 7, applicantErrorBorderFields)
           })
           cy.dataCy('form-container').should('be.visible').matchImage()
         })
 
         it('4. Filling out the "Applicant" step.', () => {
           cy.dataCy('form-container').then((form) => {
-            cy.wrap(Cypress.$('[data-cy=radio-value-0]', form)).should('be.visible')
+            cy.wrap(Cypress.$('[data-cy=radio-fyzická-osoba]', form)).should('be.checked')
 
             cy.wrap(Cypress.$('[data-cy=input-menoPriezvisko]', form)).type(this.fileData.name)
 
@@ -91,7 +83,7 @@ describe('F02 -', { testIsolation: false }, () => {
         it('5. Filling out the "Investor" step', () => {
           cy.dataCy('form-container').should('be.visible').matchImage()
           cy.dataCy('form-container').then((form) => {
-            cy.wrap(Cypress.$('[data-cy=radio-value-0]', form)).should('be.visible')
+            cy.wrap(Cypress.$('[data-cy=radio-áno]', form)).should('be.checked')
 
             cy.wrap(Cypress.$('[aria-required=true]', form)).should('have.length', 1)        
 
@@ -114,11 +106,8 @@ describe('F02 -', { testIsolation: false }, () => {
           cy.dataCy('form-container').then((form) => {
             cy.wrap(Cypress.$('[data-cy=input-projektantTelefon]', form)).type(this.fileData.phone_number_wrong)
             
-            cy.wrap(Cypress.$(`[data-cy=continue-button-${device}]`, form)).click()
-
-            cy.wrap(Cypress.$('[aria-required=true]', form)).should('have.length', 4)
+            cy.checkFormValidation(device, form, 4, designerErrorBorderFields)
             cy.wrap(Cypress.$('[data-cy=error-message]', form)).should('have.length', 5)
-            cy.wrap(Cypress.$(designerErrorBorderFields, form)).should('have.class', 'border-negative-700')
           })
           cy.dataCy('form-container').should('be.visible').matchImage()
         })
@@ -161,15 +150,14 @@ describe('F02 -', { testIsolation: false }, () => {
           cy.dataCy('form-container').then((form) => {
             cy.wrap(Cypress.$('[data-cy=input-nazov]', form)).type(this.fileData.construction_name)
 
-            cy.wrap(Cypress.$('[data-cy=radio-value-0]', form)).should('be.visible')
+            cy.wrap(Cypress.$('[data-cy=radio-bytový-dom]', form)).should('be.checked')
 
             cy.wrap(Cypress.$('[data-cy=input-ulica]', form)).type(this.fileData.address)
 
             cy.wrap(Cypress.$('[data-cy=input-supisneCislo]', form)).type(this.fileData.zip_code)
 
             cy.wrap(Cypress.$('[data-cy=input-parcelneCislo]', form)).type(this.fileData.zip_code)
-
-            cy.wrap(Cypress.$('input[type=text][role=combobox]', form).eq(0)).type("Devín")
+            cy.selectFromDropdown(form, 'select-katastrálne-územie', this.fileData.kataster)
           })
           cy.dataCy('form-container').then((form) => {
             cy.wrap(Cypress.$('[role=option]', form).eq(0)).click()

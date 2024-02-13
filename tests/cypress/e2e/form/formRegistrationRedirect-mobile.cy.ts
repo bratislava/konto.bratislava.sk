@@ -58,7 +58,7 @@ describe('F04 -', { testIsolation: false }, () => {
 
         it('4. Filling out the "Applicant" step.', () => {
           cy.dataCy('form-container').then((form) => {
-            cy.wrap(Cypress.$('[data-cy=radio-value-0]', form)).should('be.visible')
+            cy.wrap(Cypress.$('[data-cy=radio-fyzická-osoba]', form)).should('be.checked')
 
             cy.wrap(Cypress.$('[data-cy=input-menoPriezvisko]', form)).type(this.fileData.name)
 
@@ -73,8 +73,7 @@ describe('F04 -', { testIsolation: false }, () => {
             cy.wrap(Cypress.$('[data-cy=input-telefon]', form)).type(this.fileData.phone_number)
 
             // TODO - Continue button needs to be clicked twice to work. After first click, phone validation shows false error.
-            cy.wrap(Cypress.$(`[data-cy=continue-button-${device}]`, form)).click()
-            cy.wrap(Cypress.$(`[data-cy=continue-button-${device}]`, form)).click()
+            cy.wrap(Cypress.$(`[data-cy=continue-button-${device}]`, form)).click().click()
           })
         })
 
@@ -94,7 +93,7 @@ describe('F04 -', { testIsolation: false }, () => {
 
         it('6. Filling out the registration form.', () => {
           cy.dataCy('register-form').then((form) => {
-            cy.wrap(Cypress.$('[data-cy=radio-fo]', form)).should('be.visible')
+            cy.wrap(Cypress.$('[data-cy=radio-fyzická-osoba]', form)).should('be.checked')
 
             cy.wrap(Cypress.$('[data-cy=input-email]', form)).type(emailHash)
 
@@ -109,6 +108,7 @@ describe('F04 -', { testIsolation: false }, () => {
         })
 
         it('7. Check that required inputs are not in error state.', () => {
+          cy.hideInfoBar()
           cy.checkFormFieldsNotInErrorState('register-form', errorBorderFields)
           cy.dataCy('registration-container').should('be.visible').matchImage()
         })

@@ -1,11 +1,15 @@
 /* eslint-disable import/no-extraneous-dependencies */
 // @aws-amplify/auth & @aws-amplify/core are part of aws-amplify & safe enough to import here like this
 // this import fixes issues with Jest not being able to parse esm lib imported in the root of aws-amplify
-import { Amplify, Auth } from 'aws-amplify'
+import { AmplifyClass, Credentials } from '@aws-amplify/core'
+import { DataStore } from '@aws-amplify/datastore'
+import { Amplify, API, Auth } from 'aws-amplify'
 import { environment } from 'environment'
 import { ROUTES } from 'frontend/api/constants'
+import { NextPageContext } from 'next'
 
 import logger from './logger'
+import { UniversalStorage } from './universalStorage'
 
 // TODO once env handling is merged update not to use process.env directly
 Amplify.configure({
@@ -28,6 +32,7 @@ Amplify.configure({
     // OPTIONAL - This is used when autoSignIn is enabled for Auth.signUp
     // 'code' is used for Auth.confirmSignUp, 'link' is used for email link verification
     signUpVerificationMethod: 'code',
+    storage: new UniversalStorage(),
   },
   ssr: true,
 })
@@ -69,4 +74,46 @@ export const getCurrentAuthenticatedUser = async () => {
   } catch (error) {
     return null
   }
+}
+
+const requiredModules = [
+  // API cannot function without Auth
+  Auth,
+  // Auth cannot function without Credentials
+  Credentials,
+]
+
+// These modules have been tested with SSR
+const defaultModules = [API, Auth, DataStore]
+
+interface Context extends Pick<NextPageContext, 'req'> {
+  modules?: any[]
+}
+
+// adjusted withSSRContext function from aws-amplify library to be able to work with custom storage
+// https://github.com/aws-amplify/amplify-js/blob/fdd81d8c2/packages/aws-amplify/src/withSSRContext.ts#L27
+export function withSSRContext(context: Context = {}) {
+  const { modules = defaultModules, req } = context
+  const previousConfig = Amplify.configure()
+  const amplify = new AmplifyClass()
+  const storage = new UniversalStorage({ req })
+
+  requiredModules.forEach((m) => {
+    if (!modules.includes(m)) {
+      // @ts-ignore This expression is not constructable.
+      // Type 'Function' has no construct signatures.ts(2351)
+      amplify.register(new m.constructor())
+    }
+  })
+
+  // Associate new module instances with this amplify
+  modules.forEach((m) => {
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-unsafe-call
+    amplify.register(new m.constructor())
+  })
+
+  // Configure new Amplify instances with previous configuration
+  amplify.configure({ ...previousConfig, storage })
+
+  return amplify
 }

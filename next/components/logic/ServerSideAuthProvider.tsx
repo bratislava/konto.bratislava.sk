@@ -1,8 +1,8 @@
 // TODO remove eslint-disable when types are fixed in amplify-js v6 release
 /* eslint-disable @typescript-eslint/no-unsafe-call */
 /* eslint-disable @typescript-eslint/no-unsafe-member-access */
-import { withSSRContext } from 'aws-amplify'
 import { UserData } from 'frontend/dtos/accountDto'
+import { withSSRContext } from 'frontend/utils/amplify'
 import logger from 'frontend/utils/logger'
 import { GetServerSidePropsContext } from 'next'
 import { ComponentType, createContext } from 'react'
@@ -20,6 +20,7 @@ export const getSSRCurrentAuth = async (
   let userData = null
   try {
     const currentUser = await SSR.Auth.currentAuthenticatedUser()
+
     userData = currentUser.attributes || null
   } catch (error) {
     // TODO Auth throws this exact string, not an error object - refactor once amplify solves this

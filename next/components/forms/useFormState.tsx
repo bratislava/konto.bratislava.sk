@@ -19,10 +19,10 @@ import {
   getStepProperty,
   parseStepFromFieldId,
   removeUnusedPropertiesFromFormData,
-  useCurrentStepIndex,
 } from '../../frontend/utils/formState'
 import { FormStepIndex } from './types/Steps'
 import { useFormContext } from './useFormContext'
+import { useFormCurrentStepIndex } from './useFormCurrentStepIndex'
 import { useFormFileUpload } from './useFormFileUpload'
 import { useFormLeaveProtection } from './useFormLeaveProtection'
 import { useFormModals } from './useFormModals'
@@ -38,7 +38,7 @@ const useGetContext = () => {
   const [formData, setFormData, formDataRef] = useStateRef<GenericObjectType>(initialFormDataJson)
   const stepsSchemas = useMemo(() => getEvaluatedStepsSchemas(schema, formData), [schema, formData])
 
-  const { currentStepIndex, setCurrentStepIndex } = useCurrentStepIndex(stepsSchemas)
+  const { currentStepIndex, setCurrentStepIndex } = useFormCurrentStepIndex(stepsSchemas)
   const { setMigrationRequiredModal } = useFormModals()
   const scrollToFieldIdRef = useRef<string | null>(null)
 
@@ -211,6 +211,7 @@ const useGetContext = () => {
     goToNextStep,
     handleFormOnChange,
     handleFormOnSubmit,
+    goToStep,
     goToStepByFieldId,
     setImportedFormData,
     popScrollToFieldId,

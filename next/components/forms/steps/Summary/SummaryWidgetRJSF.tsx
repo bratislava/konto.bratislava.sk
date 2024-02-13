@@ -54,8 +54,8 @@ const ValueComponent = ({
 
       return (
         <div className="flex flex-col gap-1">
-          {selectLabels.map((label) => (
-            <span>{label}</span>
+          {selectLabels.map((label, index) => (
+            <span key={index}>{label}</span>
           ))}
         </div>
       )
@@ -82,8 +82,8 @@ const ValueComponent = ({
 
       return (
         <div className="flex flex-col gap-1">
-          {checkboxLabels.map((label) => (
-            <span>{label}</span>
+          {checkboxLabels.map((label, index) => (
+            <span key={index}>{label}</span>
           ))}
         </div>
       )

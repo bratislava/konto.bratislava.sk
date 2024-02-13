@@ -1,13 +1,13 @@
 import cx from 'classnames'
-import Link from 'next/link'
 import React from 'react'
+import { Button as AriaButton } from 'react-aria-components'
 
-import { FormStepperStep } from '../types/Steps'
+import { FormStepIndex, FormStepperStep } from '../types/Steps'
 import { useFormState } from '../useFormState'
 import StepperViewRow from './StepperViewRow'
 
 type StepperViewListProps = {
-  onSkipToStep: () => void
+  onSkipToStep: (stepIndex: FormStepIndex) => void
 }
 const StepperViewList = ({ onSkipToStep = () => {} }: StepperViewListProps) => {
   const { stepperData, currentStepperStep } = useFormState()
@@ -27,9 +27,12 @@ const StepperViewList = ({ onSkipToStep = () => {} }: StepperViewListProps) => {
             key={index}
             aria-current={isCurrent ? 'step' : undefined}
           >
-            <Link href={`#${step.hash}`} onClick={() => onSkipToStep()} data-cy={`stepper-step-${index + 1}`}>
+            <AriaButton
+              onPress={() => onSkipToStep(step.index)}
+              data-cy={`stepper-step-${index + 1}`}
+            >
               <StepperViewRow step={step} isCurrent={isCurrent} />
-            </Link>
+            </AriaButton>
           </li>
         )
       })}

@@ -20,12 +20,19 @@ const useGetContext = () => {
 
   // https://stackoverflow.com/a/73977517
   useEffect(() => {
-    const handler = () => {
-      // eslint-disable-next-line no-alert
-      if (enabledRef.current && !window.confirm(t('info_messages.form_leave_protection'))) {
+    const handler = (url: string, args?: { shallow?: boolean }) => {
+      /* Is same route navigation (when changing step) */
+      const isShallow = args?.shallow === true
+      if (
+        enabledRef.current &&
+        !isShallow &&
+        // eslint-disable-next-line no-alert
+        !window.confirm(t('info_messages.form_leave_protection'))
+      ) {
         router.events.emit('routeChangeError')
-        // this happens when user changes their mind when prompted about leaving
         logger.info('routeChange aborted.')
+        // This error must be thrown, otherwise the route change will continue
+        throw new Error('routeChange aborted.')
       }
     }
 

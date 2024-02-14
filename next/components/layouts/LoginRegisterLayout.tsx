@@ -8,6 +8,7 @@ interface LoginRegisterLayoutProps {
   backButtonHidden?: boolean
 }
 
+// TODO consider deleting this file and use AccountPageLayout instead
 const LoginRegisterLayout = ({
   className,
   children,

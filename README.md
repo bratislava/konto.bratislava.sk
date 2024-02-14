@@ -13,3 +13,7 @@ Each sub-project contains README which should get you up and running. More docum
 🏡 `/next` Next.js web app
 
 👀 `tests/cypress` Automated cypress tests
+
+🗄️ `/strapi` Strapi CMS server
+
+🐳 `docker-compose.yml` - if you need to quickly setup postgres or meilisearch instance, run `docker compose up postgres`. You need docker installed

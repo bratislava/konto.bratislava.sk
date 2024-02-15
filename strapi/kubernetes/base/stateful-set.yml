@@ -43,6 +43,7 @@ spec:
           service: database
       spec:
         accessModes: ['ReadWriteOnce']
+        storageClassName: 'vsan-default-storage-policy'
         resources:
           requests:
             storage: 10Gi

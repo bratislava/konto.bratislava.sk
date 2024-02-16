@@ -1,6 +1,6 @@
 import cx from 'classnames'
 import MenuList from 'components/forms/steps/MenuList'
-import { useLayoutEffect } from 'react'
+import { useIsomorphicLayoutEffect } from 'usehooks-ts'
 
 import { defaultFormStateBehavior, rjsfValidator } from '../../frontend/utils/form'
 import FormControls from './FormControls'
@@ -28,7 +28,7 @@ const FormPage = () => {
 
   const { transformErrors } = useFormErrorTranslations()
 
-  useLayoutEffect(() => {
+  useIsomorphicLayoutEffect(() => {
     const fieldId = popScrollToFieldId()
     const element = fieldId ? document.querySelector(`#${fieldId}`) : null
 

@@ -130,10 +130,11 @@ export const useGetContext = () => {
   const exportXml = async () => {
     openSnackbarInfo(t('info_messages.xml_export'))
     try {
-      const response = await formsApi.convertControllerConvertJsonToXml(
-        schemaVersionId,
+      const response = await formsApi.convertControllerConvertJsonToXmlV2(
         {
-          jsonForm: formData,
+          schemaVersionId,
+          formId,
+          jsonData: formData,
         },
         { accessToken: 'onlyAuthenticated' },
       )

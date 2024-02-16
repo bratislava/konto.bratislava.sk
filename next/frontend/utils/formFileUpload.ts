@@ -19,6 +19,7 @@ import {
   FormFileUploadStatusEnum,
   UploadErrors,
 } from '../types/formFileUploadTypes'
+import { isDefined } from './general'
 
 export const uploadFile = async ({
   formId,
@@ -198,9 +199,14 @@ const excludedFileExtensions = new Set([
 
 /**
  * File extensions mapped from MIME types except of the excluded file extensions.
+ * The list must be filtered first, as some mimetypes (e.g. application/x-zip-compressed) supported
+ * by BE are not present in this library, however are duplicates of other mimetypes (e.g. application/zip).
  */
 const supportedFileExtensions = flatten(
-  environment.formsMimetypes.map((format) => extensions[format].map((ext) => `.${ext}`)),
+  environment.formsMimetypes
+    .map((format) => extensions[format])
+    .filter(isDefined)
+    .map((extensionsList) => extensionsList.map((ext) => `.${ext}`)),
 ).filter((extension) => !excludedFileExtensions.has(extension))
 
 /**

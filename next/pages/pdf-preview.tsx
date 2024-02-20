@@ -4,8 +4,8 @@ import { GetServerSidePropsContext } from 'next'
 
 import PdfSummaryPage, { PdfSummaryPageProps } from '../components/forms/PdfSummaryPage'
 import { FormFileUploadClientFileInfo } from '../frontend/types/formFileUploadTypes'
-import logger from '../frontend/utils/logger'
 import { isProductionDeployment } from '../frontend/utils/general'
+import logger from '../frontend/utils/logger'
 
 export type PdfPreviewDataAdditionalMetadata = {
   clientFiles?: FormFileUploadClientFileInfo[]

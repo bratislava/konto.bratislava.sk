@@ -18,6 +18,8 @@ export const getServerSideProps = async (ctx: GetServerSidePropsContext) => {
     const { data: pdfPreviewData } = await formsApi.convertControllerGetPdfPreviewData({
       jwtToken: ctx.query.jwtToken as string,
     })
+    // Debug purposes
+    console.log(pdfPreviewData);
 
     return {
       props: {

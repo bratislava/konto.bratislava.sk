@@ -22,7 +22,7 @@ export const getServerSideProps = async (ctx: GetServerSidePropsContext) => {
     })
     // Debug purposes
     if (!isProductionDeployment()) {
-      logger.info('PDF preview data', pdfPreviewData)
+      logger.info(`PDF preview JWT token: ${ctx.query.jwtToken as string}`)
     }
 
     return {

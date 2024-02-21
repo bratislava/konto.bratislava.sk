@@ -51,7 +51,7 @@ describe('F03 -', { testIsolation: false }, () => {
 
         it('4. Filling out the "Applicant" step.', () => {
           cy.dataCy('form-container').then((form) => {
-            cy.wrap(Cypress.$('[data-cy=radio-value-0]', form)).should('be.visible')
+            cy.wrap(Cypress.$('[data-cy=radio-fyzická-osoba]', form)).should('be.checked')
 
             cy.wrap(Cypress.$('[data-cy=input-menoPriezvisko]', form)).type(this.fileData.name)
 

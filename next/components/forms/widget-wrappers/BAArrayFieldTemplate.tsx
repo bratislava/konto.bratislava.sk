@@ -108,6 +108,7 @@ const BAArrayFieldTemplate = <
               onPress={onAddClickPatched}
               isDisabled={!canAdd || disabled || readonly}
               fullWidth
+              data-cy="add-button"
             >
               {addButtonLabel}
             </ButtonNew>

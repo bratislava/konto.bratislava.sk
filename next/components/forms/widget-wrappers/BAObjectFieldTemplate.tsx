@@ -49,7 +49,7 @@ const BAObjectFieldTemplate = ({ idSchema, properties, uiSchema }: ObjectFieldTe
 
   return (
     <WidgetWrapper id={idSchema.$id} options={options} defaultSpacing={defaultSpacing}>
-      <fieldset className={fieldsetClassname} style={{ gridTemplateColumns }}>
+      <fieldset className={fieldsetClassname} style={{ gridTemplateColumns }} data-cy={`fieldset-${idSchema.$id}`}>
         {options.objectDisplay === 'boxed' && options.title && (
           <h3 className="text-h3 mb-3">{options.title}</h3>
         )}

@@ -49,7 +49,7 @@ const SummaryFormControls = () => {
           {/* Temporary logic for tax form, will be cleaned up. */}
           {isTaxForm ? (
             <>
-              <ButtonNew variant={isSigned ? 'black-outline' : 'black-solid'} onPress={exportPdf}>
+              <ButtonNew variant={isSigned ? 'black-outline' : 'black-solid'} onPress={exportPdf} data-cy="download-pdf-button-desktop">
                 {t('summary.export_pdf')}
               </ButtonNew>
               {isSigned && (
@@ -94,6 +94,7 @@ const SummaryFormControls = () => {
               variant={isSigned ? 'black-outline' : 'black-solid'}
               onPress={exportPdf}
               fullWidth
+              data-cy="download-pdf-button-mobile"
             >
               {t('summary.export_pdf')}
             </ButtonNew>

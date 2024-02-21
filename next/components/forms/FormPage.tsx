@@ -1,6 +1,6 @@
 import cx from 'classnames'
 import MenuList from 'components/forms/steps/MenuList'
-import { useEffect } from 'react'
+import { useIsomorphicLayoutEffect } from 'usehooks-ts'
 
 import { defaultFormStateBehavior, rjsfValidator } from '../../frontend/utils/form'
 import FormControls from './FormControls'
@@ -23,12 +23,22 @@ const FormPage = () => {
     formData,
     handleFormOnSubmit,
     handleFormOnChange,
+    popScrollToFieldId,
   } = useFormState()
 
   const { transformErrors } = useFormErrorTranslations()
 
-  useEffect(() => {
-    window.scrollTo({ top: 0, behavior: 'smooth' })
+  useIsomorphicLayoutEffect(() => {
+    const fieldId = popScrollToFieldId()
+    const element = fieldId ? document.querySelector(`#${fieldId}`) : null
+
+    if (element) {
+      element.scrollIntoView({ behavior: 'smooth', block: 'start', inline: 'start' })
+    } else {
+      window.scrollTo({ top: 0, behavior: 'smooth' })
+    }
+    // We don't want popScrollToFieldId to trigger the effect
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [currentStepIndex])
 
   return (

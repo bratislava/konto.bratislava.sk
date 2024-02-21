@@ -1,6 +1,7 @@
+import { useObjectRef } from '@react-aria/utils'
 import { PressEvent } from '@react-types/shared'
 import cx from 'classnames'
-import { forwardRef, ReactNode, RefObject } from 'react'
+import { forwardRef, ReactNode } from 'react'
 import { useButton } from 'react-aria'
 
 type PaginationButtonBase = {
@@ -12,19 +13,20 @@ type PaginationButtonBase = {
 }
 
 const PaginationButton = forwardRef<HTMLButtonElement, PaginationButtonBase>(
-  ({ type, variant = 'pagination', children, disabled, onPress }, ref) => {
+  ({ type, variant = 'pagination', children, disabled, onPress }, forwardedRef) => {
+    const ref = useObjectRef(forwardedRef)
     const { buttonProps } = useButton(
       {
         elementType: 'button',
         isDisabled: disabled,
         onPress,
       },
-      ref as RefObject<HTMLButtonElement>,
+      ref,
     )
     return (
       <button
         type="button"
-        ref={ref as RefObject<HTMLButtonElement>}
+        ref={ref}
         className={cx(
           'flex h-10 w-10 items-center justify-center rounded-full outline-none md:h-12 md:w-12',
           {

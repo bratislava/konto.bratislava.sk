@@ -17,6 +17,7 @@ interface RadioGroupWidgetRJSFProps extends WidgetProps {
 }
 
 const RadioGroupWidgetRJSF = ({
+  id,
   options,
   value,
   onChange,
@@ -65,7 +66,7 @@ const RadioGroupWidgetRJSF = ({
   const radioGroupHasDescription = radioOptions.some((option) => option.description)
 
   return (
-    <WidgetWrapper options={options}>
+    <WidgetWrapper id={id} options={options}>
       <RadioGroup
         errorMessage={rawErrors}
         value={valueMapped}

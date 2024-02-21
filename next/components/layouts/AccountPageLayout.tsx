@@ -7,13 +7,14 @@ import {
   ProfileIcon,
   ServicesIcon,
 } from '@assets/ui-icons'
+import { useResizeObserver } from '@react-aria/utils'
 import { Auth } from 'aws-amplify'
 import cx from 'classnames'
 import NavBar, { MenuSectionItemBase } from 'components/forms/segments/NavBar/NavBar'
 import { MenuItemBase } from 'components/forms/simple-components/MenuDropdown/MenuDropdown'
 import { useRouter } from 'next/router'
 import { useTranslation } from 'next-i18next'
-import { ReactNode } from 'react'
+import { ReactNode, useRef, useState } from 'react'
 
 import { ROUTES } from '../../frontend/api/constants'
 import { isDefined } from '../../frontend/utils/general'
@@ -24,8 +25,25 @@ type AccountPageLayoutBase = {
   hiddenHeaderNav?: boolean
 }
 
+declare module 'react' {
+  interface CSSProperties {
+    '--main-scroll-top-margin'?: string
+  }
+}
+
 const AccountPageLayout = ({ className, children, hiddenHeaderNav }: AccountPageLayoutBase) => {
   const router = useRouter()
+  const headerRef = useRef<HTMLDivElement>(null)
+  const mainRef = useRef<HTMLDivElement>(null)
+  // https://stackoverflow.com/a/59253905
+  const [mainScrollTopMargin, setMainScrollTopMargin] = useState(0)
+
+  useResizeObserver({
+    ref: headerRef,
+    onResize: () => {
+      setMainScrollTopMargin(mainRef.current?.offsetTop ?? 0)
+    },
+  })
 
   const [t] = useTranslation('common')
 
@@ -92,7 +110,7 @@ const AccountPageLayout = ({ className, children, hiddenHeaderNav }: AccountPage
 
   return (
     <div className={cx('flex min-h-screen flex-col', className)}>
-      <header className="relative z-30">
+      <header className="relative z-30" ref={headerRef}>
         <NavBar
           sectionsList={sectionsList}
           menuItems={menuItems}
@@ -104,7 +122,13 @@ const AccountPageLayout = ({ className, children, hiddenHeaderNav }: AccountPage
           ]}
         />
       </header>
-      <main className="relative z-0">
+      <main
+        ref={mainRef}
+        style={{
+          '--main-scroll-top-margin': `${mainScrollTopMargin}px`,
+        }}
+        className="relative z-0 [&_*]:scroll-mt-[--main-scroll-top-margin]"
+      >
         <div className="bg-gray-0">{children}</div>
       </main>
     </div>

@@ -1,8 +1,7 @@
 import { CheckInCircleIcon, ChevronDownIcon, CrossIcon } from '@assets/ui-icons'
-import { useControlledState } from '@react-stately/utils'
 import cx from 'classnames'
 import { useTranslation } from 'next-i18next'
-import React from 'react'
+import React, { useId } from 'react'
 import Select, {
   ClearIndicatorProps,
   components,
@@ -31,7 +30,10 @@ const DropdownIndicator = <
 
   return (
     <components.DropdownIndicator {...props}>
-      <ChevronDownIcon data-cy="dropdown-close" className={cx({ 'rotate-180': menuIsOpen, 'text-gray-400': isDisabled })} />
+      <ChevronDownIcon
+        data-cy="dropdown-close"
+        className={cx({ 'rotate-180': menuIsOpen, 'text-gray-400': isDisabled })}
+      />
     </components.DropdownIndicator>
   )
 }
@@ -152,9 +154,9 @@ const SelectField = <
   displayOptionalLabel,
   ...rest
 }: SelectMultiNewProps<Option, IsMulti, Group>) => {
+  const id = useId()
   const { t } = useTranslation('account', { keyPrefix: 'SelectField' })
 
-  const [state, setState] = useControlledState(value, undefined, onChange)
   const isError = !!errorMessage?.length
   const hasDescriptions = someOptionHasDescription(options)
 
@@ -168,14 +170,16 @@ const SelectField = <
         required={rest.required}
         errorMessage={errorMessage}
         displayOptionalLabel={displayOptionalLabel}
+        htmlFor={id}
       >
         <div data-cy={`select-${label.toLowerCase().replace(/ /g,"-")}`}>
           <Select
             placeholder={null}
             {...rest}
+            id={id}
             unstyled
-            value={state}
-            onChange={setState}
+            value={value}
+            onChange={onChange}
             options={options}
             closeMenuOnSelect={!rest.isMulti}
             hideSelectedOptions={false}
@@ -191,21 +195,7 @@ const SelectField = <
                 }),
               placeholder: ({ isDisabled }) => (isDisabled ? 'text-gray-500' : 'text-gray-600'),
               valueContainer: ({ isDisabled }) =>
-                cx('gap-x-2 gap-y-1 px-3 py-2 lg:px-4 lg:py-3', {
-                  // if rounded is not applied, the background overflows to the "control"
-                  'rounded-l-lg bg-gray-100 text-gray-500': isDisabled,
-                }),
-              multiValue: ({ isDisabled }) =>
-                cx(
-                  'items-center gap-1 rounded pl-2 pr-1.5',
-                  isDisabled ? 'bg-gray-200' : 'bg-gray-100',
-                ),
-              multiValueLabel: () => 'text-p3',
-              multiValueRemove: () =>
-                'hover:bg-negative-100 hover:text-red-800 rounded h-5 [&>svg]:w-4 [&>svg]:h-4',
-              indicatorsContainer: ({ isDisabled }) =>
-                // if rounded is not applied, the background overflows to the "control"
-                cx('gap-3 py-2 pr-3 lg:py-3 lg:pr-4', { 'rounded-r-lg bg-gray-100': isDisabled }),
+                cx('gap-x-2 gap-y-1 px-3 py-2 lg:px-4 lg:py-3'),
               clearIndicator: () => 'p-1.5 -m-1.5 rounded-md hover:bg-gray-100',
               indicatorSeparator: () => 'hidden',
               dropdownIndicator: () => 'p-1.5 -m-1.5 rounded-md',

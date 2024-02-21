@@ -9,11 +9,11 @@ interface CustomComponentsWidgetRJSFProps extends WidgetProps {
   options: CustomComponentFieldUiOptions
 }
 
-const CustomComponentsWidgetRJSF = ({ options }: CustomComponentsWidgetRJSFProps) => {
+const CustomComponentsWidgetRJSF = ({ id, options }: CustomComponentsWidgetRJSFProps) => {
   const { customComponents } = options
 
   return (
-    <WidgetWrapper options={options}>
+    <WidgetWrapper id={id} options={options}>
       <CustomComponents components={customComponents} />
     </WidgetWrapper>
   )

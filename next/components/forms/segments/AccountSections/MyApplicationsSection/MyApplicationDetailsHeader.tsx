@@ -28,7 +28,6 @@ const MyApplicationDetailsHeader = ({ data, ginisData }: MyApplicationDetailsHea
     ginisData?.documentHistory?.[(ginisData?.documentHistory?.length || 0) - 1]?.DatumZmeny
 
   const title = data?.frontendTitle
-  const formData = data?.formDataJson
   const formSlug = data?.schemaVersion.schema?.slug || ''
   const schemaVersionId = data?.schemaVersionId
   const formId = data?.id
@@ -44,21 +43,17 @@ const MyApplicationDetailsHeader = ({ data, ginisData }: MyApplicationDetailsHea
   const exportPdf = async () => {
     openSnackbarInfo(ft('info_messages.pdf_export'))
     try {
-      if (!formData || !schemaVersionId || !formId)
+      if (!schemaVersionId || !formId)
         throw new Error(
           // eslint-disable-next-line sonarjs/no-nested-template-literals
-          `No form data, schemaVersionId or form id ${formId && `for form id: ${formId}`}`,
+          `No schemaVersionId or form id ${formId && `for form id: ${formId}`}`,
         )
       const response = await formsApi.convertControllerConvertToPdfv2(
         {
           schemaVersionId,
           formId,
-          jsonData: formData,
         },
-        {
-          accessToken: 'onlyAuthenticated',
-          responseType: 'arraybuffer',
-        },
+        { accessToken: 'onlyAuthenticated', responseType: 'arraybuffer' },
       )
       const fileName = `${formSlug}_output.pdf`
       downloadBlob(new Blob([response.data as BlobPart]), fileName)

@@ -29,13 +29,13 @@ const StepperViewRow = ({ step, isCurrent, className }: StepperViewRowProps) => 
       <div className={iconClassName} data-cy={isCurrent ? 'stepper-step-active' : null}>
         {isCurrent || !isSubmitted ? displayIndex : <CheckIcon fill="white" className="h-6 w-6" />}
       </div>
-      <p className="text-p3-medium w-72 ">
+      <span className="text-p3-medium text-left">
         {isCurrent ? <span className="sr-only">{t('steps.current_sr')}</span> : null}
         {isSubmitted && !isCurrent ? (
           <span className="sr-only">{t('steps.submitted_sr')}</span>
         ) : null}
         {stepperTitle ?? title}
-      </p>
+      </span>
     </div>
   )
 }

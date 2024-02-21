@@ -1,6 +1,7 @@
 import { CheckIcon } from '@assets/ui-icons'
 import cx from 'classnames'
 import * as React from 'react'
+import { useRef } from 'react'
 import { useCheckboxGroupItem, useFocusRing, VisuallyHidden } from 'react-aria'
 
 import BATooltip from '../../info-components/Tooltip/BATooltip'
@@ -26,7 +27,7 @@ const CheckboxGroupItem = ({
   ...rest
 }: CheckBoxBase) => {
   const state = React.useContext(CheckboxGroupContext)
-  const ref = React.useRef(null)
+  const ref = useRef<HTMLInputElement>(null)
   const { inputProps } = useCheckboxGroupItem({ ...rest, isIndeterminate, children }, state, ref)
   const { focusProps } = useFocusRing()
   const isDisabled = state.isDisabled || rest.isDisabled

@@ -74,7 +74,6 @@ const MyApplicationsCard = ({ form, refreshListData, variant }: MyApplicationsCa
   // TODO replace - this won't be valid for forms processed on the GINIS side
   const updatedAt = form?.updatedAt
   const schemaVersionId = form?.schemaVersionId
-  const formData = form?.schemaVersion?.data
   const formSlug = form?.schemaVersion.schema?.slug || ''
   const formId = form?.id
   const state = form?.state
@@ -94,12 +93,15 @@ const MyApplicationsCard = ({ form, refreshListData, variant }: MyApplicationsCa
   const exportXml = async () => {
     openSnackbarInfo(ft('info_messages.xml_export'))
     try {
-      if (!formData || !schemaVersionId)
-        throw new Error(`No form data or schemaVersionId for form id: ${formId}`)
-      const response = await formsApi.convertControllerConvertJsonToXml(
-        schemaVersionId,
+      if (!schemaVersionId || !formId)
+        throw new Error(
+          // eslint-disable-next-line sonarjs/no-nested-template-literals
+          `No schemaVersionId or form id ${formId && `for form id: ${formId}`}`,
+        )
+      const response = await formsApi.convertControllerConvertJsonToXmlV2(
         {
-          jsonForm: formData,
+          schemaVersionId,
+          formId,
         },
         { accessToken: 'onlyAuthenticated' },
       )
@@ -116,16 +118,15 @@ const MyApplicationsCard = ({ form, refreshListData, variant }: MyApplicationsCa
   const exportPdf = async () => {
     openSnackbarInfo(ft('info_messages.pdf_export'))
     try {
-      if (!formData || !schemaVersionId || !formId)
+      if (!schemaVersionId || !formId)
         throw new Error(
           // eslint-disable-next-line sonarjs/no-nested-template-literals
-          `No form data, schemaVersionId or form id ${formId && `for form id: ${formId}`}`,
+          `No schemaVersionId or form id ${formId && `for form id: ${formId}`}`,
         )
       const response = await formsApi.convertControllerConvertToPdfv2(
         {
           schemaVersionId,
           formId,
-          jsonData: formData,
         },
         { accessToken: 'onlyAuthenticated', responseType: 'arraybuffer' },
       )

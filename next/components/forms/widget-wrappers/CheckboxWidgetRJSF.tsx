@@ -14,6 +14,7 @@ interface CheckboxRJSFProps extends WidgetProps {
 }
 
 const CheckboxWidgetRJSF = ({
+  id,
   options,
   value,
   onChange,
@@ -38,7 +39,7 @@ const CheckboxWidgetRJSF = ({
   }
 
   return (
-    <WidgetWrapper options={options}>
+    <WidgetWrapper id={id} options={options}>
       {/* TODO: Refactor SingleCheckBox to have field properties and use it.  */}
       <CheckboxGroup
         errorMessage={rawErrors}

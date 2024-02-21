@@ -1,6 +1,13 @@
 import { GenericObjectType } from '@rjsf/utils'
 import { useTranslation } from 'next-i18next'
-import React, { createContext, PropsWithChildren, useContext, useMemo, useState } from 'react'
+import React, {
+  createContext,
+  PropsWithChildren,
+  useContext,
+  useMemo,
+  useRef,
+  useState,
+} from 'react'
 import useStateRef from 'react-usestateref'
 import { useIsFirstRender } from 'usehooks-ts'
 
@@ -12,10 +19,10 @@ import {
   getStepProperty,
   parseStepFromFieldId,
   removeUnusedPropertiesFromFormData,
-  useCurrentStepIndex,
 } from '../../frontend/utils/formState'
 import { FormStepIndex } from './types/Steps'
 import { useFormContext } from './useFormContext'
+import { useFormCurrentStepIndex } from './useFormCurrentStepIndex'
 import { useFormFileUpload } from './useFormFileUpload'
 import { useFormLeaveProtection } from './useFormLeaveProtection'
 import { useFormModals } from './useFormModals'
@@ -31,8 +38,9 @@ const useGetContext = () => {
   const [formData, setFormData, formDataRef] = useStateRef<GenericObjectType>(initialFormDataJson)
   const stepsSchemas = useMemo(() => getEvaluatedStepsSchemas(schema, formData), [schema, formData])
 
-  const { currentStepIndex, setCurrentStepIndex } = useCurrentStepIndex(stepsSchemas)
+  const { currentStepIndex, setCurrentStepIndex } = useFormCurrentStepIndex(stepsSchemas)
   const { setMigrationRequiredModal } = useFormModals()
+  const scrollToFieldIdRef = useRef<string | null>(null)
 
   /**
    * This set holds indexes of steps that have been submitted (submit button has been pressed, which means they have been validated).
@@ -180,7 +188,14 @@ const useGetContext = () => {
 
     const index = stepsSchemas.findIndex((step) => getStepProperty(step) === stepProperty)
 
+    scrollToFieldIdRef.current = fieldId
     goToStep(index)
+  }
+
+  const popScrollToFieldId = () => {
+    const fieldId = scrollToFieldIdRef.current
+    scrollToFieldIdRef.current = null
+    return fieldId
   }
 
   return {
@@ -196,8 +211,10 @@ const useGetContext = () => {
     goToNextStep,
     handleFormOnChange,
     handleFormOnSubmit,
+    goToStep,
     goToStepByFieldId,
     setImportedFormData,
+    popScrollToFieldId,
   }
 }
 

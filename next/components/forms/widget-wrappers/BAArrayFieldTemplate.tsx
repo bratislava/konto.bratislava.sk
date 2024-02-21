@@ -25,21 +25,18 @@ const BAArrayFieldTemplate = <
   T = any,
   S extends StrictRJSFSchema = RJSFSchema,
   F extends FormContextType = any,
->(
-  props: ArrayFieldTemplateProps<T, S, F>,
-) => {
-  const {
-    canAdd,
-    disabled,
-    idSchema,
-    uiSchema,
-    items,
-    onAddClick,
-    readonly,
-    registry,
-    title,
-    rawErrors,
-  } = props
+>({
+  canAdd,
+  disabled,
+  idSchema,
+  uiSchema,
+  items,
+  onAddClick,
+  readonly,
+  registry,
+  title,
+  rawErrors,
+}: ArrayFieldTemplateProps<T, S, F>) => {
   const uiOptions = getUiOptions(uiSchema) as ArrayFieldUiOptions
   const { variant, description, addButtonLabel, hideTitle, cannotAddItemMessage } = uiOptions
   const ArrayFieldItemTemplate = getTemplate<'ArrayFieldItemTemplate', T, S, F>(
@@ -67,7 +64,7 @@ const BAArrayFieldTemplate = <
   }[variant]
 
   return (
-    <WidgetWrapper options={uiOptions} defaultSpacing={defaultSpacing}>
+    <WidgetWrapper id={idSchema.$id} options={uiOptions} defaultSpacing={defaultSpacing}>
       {!hideTitle && (
         <>
           {/* ArrayFieldTitleTemplate is not used */}

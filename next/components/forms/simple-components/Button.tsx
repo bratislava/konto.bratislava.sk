@@ -1,7 +1,8 @@
 import { ArrowRightIcon } from '@assets/ui-icons'
+import { useObjectRef } from '@react-aria/utils'
 import { LinkButtonProps } from '@react-types/button'
 import cx from 'classnames'
-import { forwardRef, ReactNode, RefObject } from 'react'
+import { forwardRef, MutableRefObject, ReactNode, RefObject } from 'react'
 import { AriaButtonProps, useButton } from 'react-aria'
 
 import MLink from './MLink'
@@ -75,8 +76,9 @@ const Button = forwardRef<HTMLAnchorElement | HTMLButtonElement, PolymorphicProp
       hrefTarget,
       ...rest
     },
-    ref,
+    forwardedRef,
   ) => {
+    const ref = useObjectRef(forwardedRef)
     const disabledStyling = disabled || loading
     const { buttonProps } = useButton(
       {
@@ -84,7 +86,7 @@ const Button = forwardRef<HTMLAnchorElement | HTMLButtonElement, PolymorphicProp
         elementType: rest.href ? 'a' : 'button',
         isDisabled: disabledStyling,
       },
-      ref as RefObject<HTMLAnchorElement | HTMLButtonElement>,
+      ref,
     )
 
     const style = cx(
@@ -249,7 +251,7 @@ const Button = forwardRef<HTMLAnchorElement | HTMLButtonElement, PolymorphicProp
           href={rest.href}
           label={rest.label}
           labelCenter={hrefLabelCenter}
-          ref={ref as RefObject<HTMLAnchorElement>}
+          ref={ref as MutableRefObject<HTMLAnchorElement>}
           className={style}
           {...buttonPropsFixed}
         >
@@ -283,7 +285,7 @@ const Button = forwardRef<HTMLAnchorElement | HTMLButtonElement, PolymorphicProp
     return (
       <button
         type="button"
-        ref={ref as RefObject<HTMLButtonElement>}
+        ref={ref as MutableRefObject<HTMLButtonElement>}
         className={style}
         form={form}
         {...buttonProps}

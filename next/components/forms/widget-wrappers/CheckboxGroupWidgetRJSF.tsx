@@ -14,6 +14,7 @@ interface CheckboxGroupRJSFProps extends WidgetProps {
 }
 
 const CheckboxGroupWidgetRJSF = ({
+  id,
   options,
   value,
   onChange,
@@ -39,7 +40,7 @@ const CheckboxGroupWidgetRJSF = ({
   }
 
   return (
-    <WidgetWrapper options={options}>
+    <WidgetWrapper id={id} options={options}>
       <CheckboxGroup
         errorMessage={rawErrors}
         value={value ?? undefined}

@@ -4,6 +4,7 @@ import { useTranslation } from 'next-i18next'
 import { useState } from 'react'
 import { Button as AriaButton, Dialog, Modal, ModalOverlay } from 'react-aria-components'
 
+import { FormStepIndex } from '../types/Steps'
 import { useFormState } from '../useFormState'
 import StepperViewList from './StepperViewList'
 import StepperViewRow from './StepperViewRow'
@@ -11,7 +12,7 @@ import StepperViewRow from './StepperViewRow'
 type StepperModalProps = {
   isOpen: boolean
   setIsOpen: (isOpen: boolean) => void
-  handleOnSkipToStep: () => void
+  handleOnSkipToStep: (stepIndex: FormStepIndex) => void
 }
 
 const StepperModal = ({ isOpen, setIsOpen, handleOnSkipToStep }: StepperModalProps) => {
@@ -50,7 +51,7 @@ const StepperModal = ({ isOpen, setIsOpen, handleOnSkipToStep }: StepperModalPro
 
 const StepperView = () => {
   const [isOpen, setIsOpen] = useState<boolean>(false)
-  const { currentStepperStep } = useFormState()
+  const { currentStepperStep, goToStep } = useFormState()
 
   const handleOnClickDropdownIcon = () => {
     if (!isOpen) {
@@ -58,13 +59,14 @@ const StepperView = () => {
     }
   }
 
-  const handleOnSkipToStep = () => {
+  const handleOnSkipToStep = (stepIndex: FormStepIndex) => {
+    goToStep(stepIndex)
     setIsOpen(false)
   }
 
   return (
     <>
-      <nav className="hidden lg:block" data-cy="stepper-desktop">
+      <nav className="hidden w-[332px] lg:block" data-cy="stepper-desktop">
         <StepperViewList onSkipToStep={handleOnSkipToStep} />
       </nav>
       <div className="lg:hidden">

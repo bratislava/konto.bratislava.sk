@@ -51,6 +51,7 @@ interface SelectWidgetRJSFProps extends WidgetProps {
 }
 
 const SelectWidgetRJSF = ({
+  id,
   label,
   options,
   value,
@@ -105,7 +106,7 @@ const SelectWidgetRJSF = ({
 
   if (isMulti) {
     return (
-      <WidgetWrapper options={options}>
+      <WidgetWrapper id={id} options={options}>
         <MultiSelect
           value={value as string[] | undefined}
           onChange={onChange}
@@ -116,7 +117,7 @@ const SelectWidgetRJSF = ({
   }
 
   return (
-    <WidgetWrapper options={options}>
+    <WidgetWrapper id={id} options={options}>
       <SingleSelect value={value as string | undefined} onChange={onChange} {...componentProps} />
     </WidgetWrapper>
   )

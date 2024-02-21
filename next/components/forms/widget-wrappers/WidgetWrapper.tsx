@@ -7,12 +7,14 @@ import CustomComponents from '../widget-components/CustomComponents/CustomCompon
 import { useWidgetSpacingContext } from './useWidgetSpacingContext'
 
 type WidgetWrapperProps = PropsWithChildren<{
+  id: string
   options: WidgetUiOptions
   className?: string
   defaultSpacing?: Partial<WidgetSpacing>
 }>
 
 const WidgetWrapper = ({
+  id,
   options,
   className,
   children,
@@ -42,6 +44,7 @@ const WidgetWrapper = ({
 
   return (
     <div
+      id={id ?? undefined}
       className={twMerge(
         'flex flex-col gap-4',
         className,

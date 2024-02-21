@@ -17,13 +17,12 @@ import Head from 'next/head'
 import { appWithTranslation } from 'next-i18next'
 import PlausibleProvider from 'next-plausible'
 import { NextAdapter } from 'next-query-params'
+import { useState } from 'react'
 import { I18nProvider } from 'react-aria'
 import SnackbarProvider from 'react-simple-snackbar'
 import { QueryParamProvider } from 'use-query-params'
 
 import { isProductionDeployment } from '../frontend/utils/general'
-
-const queryClient = new QueryClient()
 
 const inter = Inter({
   variable: '--inter-font',
@@ -31,6 +30,8 @@ const inter = Inter({
 })
 
 const MyApp = ({ Component, pageProps }: AppProps) => {
+  const [queryClient] = useState(() => new QueryClient())
+
   return (
     <>
       {/* https://nextjs.org/docs/pages/building-your-application/optimizing/fonts#apply-the-font-in-head */}

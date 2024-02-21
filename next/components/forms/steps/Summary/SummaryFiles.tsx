@@ -39,7 +39,7 @@ const SummaryFile = ({ file }: SummaryFileProps) => {
 
   return (
     <div className={cx('flex items-center gap-3', { 'text-error': isErrorStyle })}>
-      <Icon data-cy="summary-row-icon" />
+      <Icon data-cy="summary-row-icon" className="shrink-0" />
       {fileInfo.fileName}
     </div>
   )

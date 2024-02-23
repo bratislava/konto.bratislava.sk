@@ -32,7 +32,7 @@
     "@jest/globals": "^29.5.0",
     "@js-joda/core": "^5.5.3",
     "@legendapp/state": "^1.2.11",
-    "@radix-ui/react-dropdown-menu": "^2.0.4",
+    "@radix-ui/react-dropdown-menu": "^2.0.6",
     "@radix-ui/react-navigation-menu": "^1.1.4",
     "@react-aria/utils": "3.23.0",
     "@react-stately/utils": "3.9.0",

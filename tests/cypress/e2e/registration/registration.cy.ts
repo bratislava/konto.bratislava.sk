@@ -66,7 +66,7 @@ describe('RF01 -', { testIsolation: false }, () => {
         })
 
         it('7. Logout user.', () => {
-          cy.logout()
+          cy.logOutUser()
         })
       })
     })

@@ -96,7 +96,6 @@ describe('F04 -', { testIsolation: false }, () => {
             cy.wrap(Cypress.$('[data-cy=radio-fyzická-osoba]', form)).should('be.checked')
 
             cy.wrap(Cypress.$('[data-cy=input-email]', form)).type(emailHash)
-            cy.pause()
 
             cy.wrap(Cypress.$('[data-cy=input-given_name]', form)).type(this.registrationData.given_name)
 
@@ -122,7 +121,7 @@ describe('F04 -', { testIsolation: false }, () => {
         })
 
         it('8. Logout user.', () => {
-          cy.logout()
+          cy.logOutUser()
         })
       })
     })

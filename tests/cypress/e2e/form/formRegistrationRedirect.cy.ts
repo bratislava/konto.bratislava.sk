@@ -121,7 +121,7 @@ describe('F04 -', { testIsolation: false }, () => {
         })
 
         it('9. Logout user.', () => {
-          cy.logout()
+          cy.logOutUser()
         })
       })
     })

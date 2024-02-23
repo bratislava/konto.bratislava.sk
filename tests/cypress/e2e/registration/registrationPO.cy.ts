@@ -62,7 +62,7 @@ describe('RF02 -', { testIsolation: false }, () => {
         })
 
         it('8. Logout user.', () => {
-          cy.logout()
+          cy.logOutUser()
         })
       })
     })

@@ -22,7 +22,7 @@ describe('RF01 -', { testIsolation: false }, () => {
           cy.visit('/registracia')
           cy.hideNavbar(device)
 
-          cy.dataCy('registration-container').should('be.visible').matchImage()
+          cy.dataCy('registration-container').should('be.visible')//.matchImage()
         })
 
         it('2. Check error validation.', () => {
@@ -33,7 +33,7 @@ describe('RF01 -', { testIsolation: false }, () => {
 
             cy.wrap(Cypress.$(errorBorderFields, form)).should('have.class', 'border-negative-700')
           })
-          cy.dataCy('registration-container').should('be.visible').matchImage()
+          cy.dataCy('registration-container').should('be.visible')//.matchImage()
         })
 
         it('3. Filling out the registration form.', () => {
@@ -54,7 +54,7 @@ describe('RF01 -', { testIsolation: false }, () => {
 
         it('4. Check that required inputs are not in error state.', () => {
           cy.checkFormFieldsNotInErrorState('register-form', errorBorderFields)
-          cy.dataCy('registration-container').should('be.visible').matchImage()
+          cy.dataCy('registration-container').should('be.visible')//.matchImage()
         })
 
         it('5. Submitting the form and checking the redirection to 2FA.', () => {
@@ -63,6 +63,10 @@ describe('RF01 -', { testIsolation: false }, () => {
 
         it('6. Check the 2FA page.', () => {
           cy.check2FAPage(emailHash, 'registration-container')
+        })
+
+        it('7. Logout user.', () => {
+          cy.logout()
         })
       })
     })

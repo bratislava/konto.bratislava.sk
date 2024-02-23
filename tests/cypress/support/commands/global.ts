@@ -31,6 +31,12 @@ declare namespace Cypress {
      * @example cy.showNavbar('desktop')
      */
     showNavbar(device: string): Chainable<any>
+
+    /**
+     * Logout the user.
+     * @example cy.logout()
+     */
+    logout(): Chainable<any>
   }
 }
 
@@ -51,4 +57,9 @@ Cypress.Commands.add('hideInfoBar', () => {
 
 Cypress.Commands.add('showNavbar', (device) => {
   cy.get(`#${device}-navbar`).invoke('attr', 'style', '')
+})
+
+Cypress.Commands.add('logout', () => {
+  cy.visit("/logout")
+  cy.dataCy("cancel-button")
 })

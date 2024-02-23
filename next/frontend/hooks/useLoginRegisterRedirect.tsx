@@ -90,7 +90,6 @@ export const LoginRegisterRedirectProvider = ({ children }: { children: React.Re
           ROUTES.LOGIN,
           ROUTES.REGISTER,
           ROUTES.IDENTITY_VERIFICATION,
-          ROUTES.MIGRATION,
         ].includes(url)
       ) {
         resetRedirect()

@@ -37,7 +37,6 @@ const AccountSuccessAlert = ({
       )}
       {children}
       <Button
-        data-cy="cancel-button"
         onPress={onConfirm}
         className="min-w-full"
         variant="category"

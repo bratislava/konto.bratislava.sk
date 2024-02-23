@@ -35,6 +35,7 @@ const UserProfileDetailsButtons = (props: UserProfileDetailsButtonsProps) => {
               text={t('profile_detail.save_edit_button')}
               type="submit"
               form={formId}
+              data-cy="save-personal-information-button"
             />
             <CrossIcon
               className={cx('block h-6 w-6 cursor-pointer', 'md:hidden')}
@@ -50,11 +51,13 @@ const UserProfileDetailsButtons = (props: UserProfileDetailsButtonsProps) => {
               text={t('profile_detail.start_edit_button')}
               className="hidden md:block"
               onPress={() => onChangeIsEditing(true)}
+              data-cy="edit-personal-information-button"
             />
 
             <EditIcon
               className="block h-6 w-6 cursor-pointer md:hidden"
               onClick={() => onChangeIsEditing(true)}
+              data-cy="edit-personal-information-button-mobile"
             />
           </div>
         )

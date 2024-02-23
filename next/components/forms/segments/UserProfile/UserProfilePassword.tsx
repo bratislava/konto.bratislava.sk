@@ -25,6 +25,7 @@ const UserProfilePassword = () => {
           text={t('password_change.button')}
           onPress={() => push(ROUTES.PASSWORD_CHANGE)}
           className="w-full md:w-fit"
+          data-cy="change-password-button"
         />
       </UserProfileSectionHeader>
     </UserProfileSection>

@@ -143,6 +143,7 @@ const UserProfileDetailEdit = (props: UserProfileDetailEditProps) => {
       id={formId}
       className="flex grow flex-col gap-6 pb-20 md:pb-0"
       onSubmit={handleSubmit(handleSubmitCallback)}
+      data-cy="edit-personal-information-form-container"
     >
       <div className="gap flex flex-row flex-wrap gap-6">
         {isLegalEntity ? (
@@ -218,6 +219,7 @@ const UserProfileDetailEdit = (props: UserProfileDetailEditProps) => {
             text={t('profile_detail.email_button')}
             className="hidden md:block"
             onPress={onEmailChange}
+            data-cy="change-email-button"
           />
           <Button
             variant="black"
@@ -225,6 +227,7 @@ const UserProfileDetailEdit = (props: UserProfileDetailEditProps) => {
             text={t('profile_detail.email_button')}
             className="block md:hidden"
             onPress={onEmailChange}
+            data-cy="change-email-button-mobile"
           />
         </div>
       </div>
@@ -299,6 +302,7 @@ const UserProfileDetailEdit = (props: UserProfileDetailEditProps) => {
           type="submit"
           form={formId}
           className="w-full"
+          data-cy="save-personal-information-button-mobile"
         />
       </div>
     </form>

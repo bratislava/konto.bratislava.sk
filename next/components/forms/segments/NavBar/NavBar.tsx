@@ -146,6 +146,7 @@ export const NavBar = ({ className, sectionsList, menuItems, hiddenHeaderNav }: 
                     onPress={login}
                     variant="plain-black"
                     text={t('account:menu_login_link')}
+                    data-cy="login-button"
                   />
                   <Button
                     onPress={register}

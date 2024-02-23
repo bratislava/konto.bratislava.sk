@@ -25,7 +25,7 @@ const AccountSuccessAlert = ({
   children,
 }: Props) => {
   return (
-    <div className="flex flex-col space-y-6">
+    <div className="flex flex-col space-y-6" data-cy="success-alert">
       <div className="mx-auto h-14 w-14 rounded-full bg-success-100 p-4">
         <div className="flex h-6 w-6 items-center justify-center">
           <CheckIcon className="h-6 w-6 text-success-700" />
@@ -42,6 +42,7 @@ const AccountSuccessAlert = ({
         variant="category"
         text={confirmLabel}
         loading={confirmIsLoading}
+        data-cy={confirmLabel.replace(/ /g, "-").toLowerCase() + "-button"}
       />
       {onCancel && (
         <Button

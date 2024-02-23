@@ -21,6 +21,7 @@ const UserConsent = ({ consent, isLast, onChange }: UserConsentProps) => {
       className={cx('flex flex-col gap-4 border-gray-200 py-4', 'sm:flex-row sm:py-6', {
         'border-b-2': !isLast,
       })}
+      data-cy={consent.id.replace(/_/g, "-") + "-consent"}
     >
       <div className="w-full grow">
         <h3 className="text-h6">{consent.title}</h3>

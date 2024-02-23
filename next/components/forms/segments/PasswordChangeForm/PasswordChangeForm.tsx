@@ -60,6 +60,7 @@ const PasswordChangeForm = ({ onSubmit, error }: Props) => {
     <form
       className="flex flex-col space-y-4"
       onSubmit={handleSubmit((data: Data) => onSubmit(data.oldPassword, data.password))}
+      data-cy="change-password-form"
     >
       <h1 className="text-h3">{t('password_change_title')}</h1>
       <AccountErrorAlert error={error} />
@@ -111,6 +112,7 @@ const PasswordChangeForm = ({ onSubmit, error }: Props) => {
         text={t('old_password_submit_new')}
         variant="category"
         disabled={isSubmitting}
+        data-cy="change-password-submit"
       />
     </form>
   )

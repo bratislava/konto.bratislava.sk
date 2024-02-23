@@ -12,7 +12,7 @@ const LoginRegisterLayout = ({
   className,
   children,
   backButtonHidden,
-}: React.HTMLAttributes<HTMLDivElement> & LoginRegisterLayoutProps) => {
+}: LoginRegisterLayoutProps) => {
   return (
     <div className={cx('flex', 'flex-col', 'min-h-screen', className)}>
       <LoginRegisterNavBar backButtonHidden={backButtonHidden} />

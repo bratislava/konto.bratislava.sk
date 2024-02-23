@@ -22,9 +22,11 @@
     "update-react-aria": "yarn add @internationalized/date@latest @react-stately/utils@latest react-aria@latest react-aria-components@latest react-stately@latest @react-aria/utils@latest -E",
     "update-rjsf": "yarn add @rjsf/core@latest @rjsf/utils@latest @rjsf/validator-ajv8@latest ajv@latest ajv-formats@latest -E",
     "update-markdown": "yarn add remark-directive@latest remark-directive-rehype@latest remark-gfm@latest remark-supersub@latest rehype-raw@latest rehype-sanitize@latest",
-    "update-next": "yarn add next@latest react@latest react-dom@latest -E && yarn add @types/react@latest @types/react-dom@latest eslint-config-next@latest typescript@latest -D -E"
+    "update-next": "yarn add next@latest react@latest react-dom@latest -E && yarn add @types/react@latest @types/react-dom@latest eslint-config-next@latest typescript@latest -D -E",
+    "update-amplify": "yarn add aws-amplify@latest @aws-amplify/adapter-nextjs@latest -E"
   },
   "dependencies": {
+    "@aws-amplify/adapter-nextjs": "1.0.17",
     "@grafana/faro-core": "^1.0.5",
     "@grafana/faro-web-sdk": "^1.0.2",
     "@hookform/resolvers": "^2.9.10",
@@ -45,7 +47,7 @@
     "adm-zip": "^0.5.10",
     "ajv": "8.12.0",
     "ajv-formats": "2.1.1",
-    "aws-amplify": "^5.3.3",
+    "aws-amplify": "6.0.17",
     "axios": "^1.4.0",
     "classnames": "2.3.1",
     "conditional-wrap": "^1.0.2",

@@ -30,6 +30,7 @@ const StepperViewList = ({ onSkipToStep = () => {} }: StepperViewListProps) => {
             <AriaButton
               onPress={() => onSkipToStep(step.index)}
               data-cy={`stepper-step-${index + 1}`}
+              className="w-full"
             >
               <StepperViewRow step={step} isCurrent={isCurrent} />
             </AriaButton>

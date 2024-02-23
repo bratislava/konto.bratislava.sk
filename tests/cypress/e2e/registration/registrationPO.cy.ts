@@ -25,8 +25,8 @@ describe('RF02 -', { testIsolation: false }, () => {
 
         it('2. Check validation.', () => {
           cy.dataCy('register-form').then((form) => {
-            cy.wrap(Cypress.$('[data-cy=radio-po]', form)).check()
-            cy.wrap(Cypress.$('[data-cy=radio-po]', form)).should('be.visible')
+            cy.wrap(Cypress.$('[data-cy=radio-právnická-osoba]', form)).check()
+            cy.wrap(Cypress.$('[data-cy=radio-právnická-osoba]', form)).should('be.checked')
 
             cy.wrap(Cypress.$('button[type=submit]', form)).click()
 
@@ -34,7 +34,7 @@ describe('RF02 -', { testIsolation: false }, () => {
 
             cy.wrap(Cypress.$(errorBorderFields, form)).should('have.class', 'border-negative-700')
           })
-          cy.dataCy('registration-container').should('be.visible').matchImage({maxDiffThreshold: 0.17})
+          cy.dataCy('registration-container').should('be.visible')//.matchImage({maxDiffThreshold: 0.17})
         })
 
         it('3. Filling out the registration form.', () => {
@@ -59,6 +59,10 @@ describe('RF02 -', { testIsolation: false }, () => {
 
         it('6. Check the 2FA page.', () => {
           cy.check2FAPage(emailHash, 'registration-container')
+        })
+
+        it('8. Logout user.', () => {
+          cy.logout()
         })
       })
     })

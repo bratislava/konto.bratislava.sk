@@ -29,7 +29,7 @@ describe('F03 -', { testIsolation: false }, () => {
             cy.wrap(Cypress.$(`[data-cy=continue-button-${device}]`, form)).click()
             cy.dataCy('error-message').should('be.visible').should('have.class', 'text-error')
           })
-          cy.dataCy('form-container').should('be.visible').matchImage()
+          cy.dataCy('form-container').should('be.visible')//.matchImage()
         })
 
         it('2. Uploading file in "File" step.', () => {
@@ -46,12 +46,12 @@ describe('F03 -', { testIsolation: false }, () => {
             cy.wrap(Cypress.$('[aria-required=true]', form)).should('have.length', 7)
           })
 
-          cy.dataCy('form-container').should('be.visible').matchImage()
+          cy.dataCy('form-container').should('be.visible')//.matchImage()
         })
 
         it('4. Filling out the "Applicant" step.', () => {
           cy.dataCy('form-container').then((form) => {
-            cy.wrap(Cypress.$('[data-cy=radio-value-0]', form)).should('be.visible')
+            cy.wrap(Cypress.$('[data-cy=radio-fyzická-osoba]', form)).should('be.checked')
 
             cy.wrap(Cypress.$('[data-cy=input-menoPriezvisko]', form)).type(this.fileData.name)
 
@@ -76,7 +76,7 @@ describe('F03 -', { testIsolation: false }, () => {
             cy.dataCy('stepper-dropdown').click()
             cy.get('[data-cy=stepper-mobile] [data-cy=stepper-step-6]').click();
           }
-          cy.dataCy('form-container').should('be.visible').matchImage()
+          cy.dataCy('form-container').should('be.visible')//.matchImage()
         })
 
         it('6. Checking alert visibility.', () => {

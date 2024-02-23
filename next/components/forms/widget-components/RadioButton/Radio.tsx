@@ -76,7 +76,7 @@ const Radio = ({
           {...inputProps}
           ref={ref}
           className={inputStyle}
-          data-cy={`radio-${inputProps.value?.toString()}`}
+          data-cy={`radio-${rest.children?.toString().toLowerCase().replace(/ /g, '-').replace(/\./g, '')}`}
         />
         <span className="flex grow flex-col gap-1">
           <span className={cx({ 'font-semibold': description || radioGroupHasDescription })}>

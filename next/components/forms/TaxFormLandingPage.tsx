@@ -62,6 +62,7 @@ const TaxFormLandingPage = ({ latestVersionId, isBetaUser }: TaxFormLandingPageP
     {
       title: 'Vyplniť cez Bratislavské konto',
       isEid: false,
+      id: 'bratislavske-konto',
       description: isBetaUser ? (
         <>
           Vyplňte priznanie jednoducho, <strong>s návodom a pomocnými kalkulačkami</strong>, v
@@ -81,6 +82,7 @@ const TaxFormLandingPage = ({ latestVersionId, isBetaUser }: TaxFormLandingPageP
     !isBetaUser
       ? {
           title: 'Vyplniť a podať cez esluzby.bratislava.sk',
+          id: 'esluzby-bratislava-sk',
           isEid: true,
           description:
             'Vyplňte daňové priznanie cez esluzby.bratislava.sk. Na jeho odoslanie potrebujete mať aktívny elektronický občiansky preukaz (eID).',
@@ -91,6 +93,7 @@ const TaxFormLandingPage = ({ latestVersionId, isBetaUser }: TaxFormLandingPageP
       : null,
     {
       title: 'Stiahnuť PDF priznanie',
+      id: 'pdf-priznanie',
       isEid: false,
       description:
         'Ak si prajete vyplniť papierové priznanie ručne, stiahnite si PDF. Vyplnené papierové tlačivo je potrebné odoslať poštou.',

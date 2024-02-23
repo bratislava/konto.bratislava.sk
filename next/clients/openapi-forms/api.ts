@@ -97,6 +97,30 @@ export interface CanSendResponseDto {
   formId: string
 }
 /**
+ * @type ConvertControllerConvertJsonToXmlV2404Response
+ * @export
+ */
+export type ConvertControllerConvertJsonToXmlV2404Response =
+  | FormNotFoundErrorDto
+  | SchemaVersionNotFoundDto
+
+/**
+ * @type ConvertControllerConvertToPdfv2400Response
+ * @export
+ */
+export type ConvertControllerConvertToPdfv2400Response =
+  | PuppeteerFormNotFoundErrorDto
+  | PuppeteerPageFailedLoadErrorDto
+
+/**
+ * @type ConvertControllerGetPdfPreviewData422Response
+ * @export
+ */
+export type ConvertControllerGetPdfPreviewData422Response =
+  | InvalidJwtTokenErrorDto
+  | InvalidUuidErrorDto
+
+/**
  *
  * @export
  * @interface ConvertToPdfV2RequestDto
@@ -113,7 +137,7 @@ export interface ConvertToPdfV2RequestDto {
    * @type {object}
    * @memberof ConvertToPdfV2RequestDto
    */
-  jsonData: object
+  jsonData?: object
   /**
    * Schema version id
    * @type {string}
@@ -1768,6 +1792,56 @@ export type FormDataInvalidErrorDtoErrorNameEnum =
 /**
  *
  * @export
+ * @interface FormIdMissingErrorDto
+ */
+export interface FormIdMissingErrorDto {
+  /**
+   * Status Code
+   * @type {number}
+   * @memberof FormIdMissingErrorDto
+   */
+  statusCode: number
+  /**
+   * Detail error message
+   * @type {string}
+   * @memberof FormIdMissingErrorDto
+   */
+  message: string
+  /**
+   * status in text
+   * @type {string}
+   * @memberof FormIdMissingErrorDto
+   */
+  status: string
+  /**
+   * Exact error name
+   * @type {string}
+   * @memberof FormIdMissingErrorDto
+   */
+  errorName: FormIdMissingErrorDtoErrorNameEnum
+  /**
+   * Helper for sending additional data in error
+   * @type {object}
+   * @memberof FormIdMissingErrorDto
+   */
+  object?: object
+}
+
+export const FormIdMissingErrorDtoErrorNameEnum = {
+  NotFoundError: 'NOT_FOUND_ERROR',
+  DatabaseError: 'DATABASE_ERROR',
+  InternalServerError: 'INTERNAL_SERVER_ERROR',
+  UnauthorizedError: 'UNAUTHORIZED_ERROR',
+  UnprocessableEntityError: 'UNPROCESSABLE_ENTITY_ERROR',
+  BadRequestError: 'BAD_REQUEST_ERROR',
+} as const
+
+export type FormIdMissingErrorDtoErrorNameEnum =
+  (typeof FormIdMissingErrorDtoErrorNameEnum)[keyof typeof FormIdMissingErrorDtoErrorNameEnum]
+
+/**
+ *
+ * @export
  * @interface FormIsOwnedBySomeoneElseErrorDto
  */
 export interface FormIsOwnedBySomeoneElseErrorDto {
@@ -2747,6 +2821,56 @@ export type InvalidOrExpiredJwtTokenErrorDtoErrorNameEnum =
 /**
  *
  * @export
+ * @interface InvalidUuidErrorDto
+ */
+export interface InvalidUuidErrorDto {
+  /**
+   * Status Code
+   * @type {number}
+   * @memberof InvalidUuidErrorDto
+   */
+  statusCode: number
+  /**
+   * Detail error message
+   * @type {string}
+   * @memberof InvalidUuidErrorDto
+   */
+  message: string
+  /**
+   * status in text
+   * @type {string}
+   * @memberof InvalidUuidErrorDto
+   */
+  status: string
+  /**
+   * Exact error name
+   * @type {string}
+   * @memberof InvalidUuidErrorDto
+   */
+  errorName: InvalidUuidErrorDtoErrorNameEnum
+  /**
+   * Helper for sending additional data in error
+   * @type {object}
+   * @memberof InvalidUuidErrorDto
+   */
+  object?: object
+}
+
+export const InvalidUuidErrorDtoErrorNameEnum = {
+  NotFoundError: 'NOT_FOUND_ERROR',
+  DatabaseError: 'DATABASE_ERROR',
+  InternalServerError: 'INTERNAL_SERVER_ERROR',
+  UnauthorizedError: 'UNAUTHORIZED_ERROR',
+  UnprocessableEntityError: 'UNPROCESSABLE_ENTITY_ERROR',
+  BadRequestError: 'BAD_REQUEST_ERROR',
+} as const
+
+export type InvalidUuidErrorDtoErrorNameEnum =
+  (typeof InvalidUuidErrorDtoErrorNameEnum)[keyof typeof InvalidUuidErrorDtoErrorNameEnum]
+
+/**
+ *
+ * @export
  * @interface JsonConvertRequestDto
  */
 export interface JsonConvertRequestDto {
@@ -2769,6 +2893,31 @@ export interface JsonToXmlResponseDto {
    * @memberof JsonToXmlResponseDto
    */
   xmlForm: string
+}
+/**
+ *
+ * @export
+ * @interface JsonToXmlV2RequestDto
+ */
+export interface JsonToXmlV2RequestDto {
+  /**
+   * Form id. If jsonData is not provided, this is required.
+   * @type {string}
+   * @memberof JsonToXmlV2RequestDto
+   */
+  formId?: string
+  /**
+   * Schema version id
+   * @type {string}
+   * @memberof JsonToXmlV2RequestDto
+   */
+  schemaVersionId: string
+  /**
+   * Form values in JSON
+   * @type {object}
+   * @memberof JsonToXmlV2RequestDto
+   */
+  jsonData?: object
 }
 /**
  *
@@ -3543,6 +3692,106 @@ export const ProblemWithScannerErrorDtoErrorNameEnum = {
 
 export type ProblemWithScannerErrorDtoErrorNameEnum =
   (typeof ProblemWithScannerErrorDtoErrorNameEnum)[keyof typeof ProblemWithScannerErrorDtoErrorNameEnum]
+
+/**
+ *
+ * @export
+ * @interface PuppeteerFormNotFoundErrorDto
+ */
+export interface PuppeteerFormNotFoundErrorDto {
+  /**
+   * Status Code
+   * @type {number}
+   * @memberof PuppeteerFormNotFoundErrorDto
+   */
+  statusCode: number
+  /**
+   * Detail error message
+   * @type {string}
+   * @memberof PuppeteerFormNotFoundErrorDto
+   */
+  message: string
+  /**
+   * status in text
+   * @type {string}
+   * @memberof PuppeteerFormNotFoundErrorDto
+   */
+  status: string
+  /**
+   * Exact error name
+   * @type {string}
+   * @memberof PuppeteerFormNotFoundErrorDto
+   */
+  errorName: PuppeteerFormNotFoundErrorDtoErrorNameEnum
+  /**
+   * Helper for sending additional data in error
+   * @type {object}
+   * @memberof PuppeteerFormNotFoundErrorDto
+   */
+  object?: object
+}
+
+export const PuppeteerFormNotFoundErrorDtoErrorNameEnum = {
+  NotFoundError: 'NOT_FOUND_ERROR',
+  DatabaseError: 'DATABASE_ERROR',
+  InternalServerError: 'INTERNAL_SERVER_ERROR',
+  UnauthorizedError: 'UNAUTHORIZED_ERROR',
+  UnprocessableEntityError: 'UNPROCESSABLE_ENTITY_ERROR',
+  BadRequestError: 'BAD_REQUEST_ERROR',
+} as const
+
+export type PuppeteerFormNotFoundErrorDtoErrorNameEnum =
+  (typeof PuppeteerFormNotFoundErrorDtoErrorNameEnum)[keyof typeof PuppeteerFormNotFoundErrorDtoErrorNameEnum]
+
+/**
+ *
+ * @export
+ * @interface PuppeteerPageFailedLoadErrorDto
+ */
+export interface PuppeteerPageFailedLoadErrorDto {
+  /**
+   * Status Code
+   * @type {number}
+   * @memberof PuppeteerPageFailedLoadErrorDto
+   */
+  statusCode: number
+  /**
+   * Detail error message
+   * @type {string}
+   * @memberof PuppeteerPageFailedLoadErrorDto
+   */
+  message: string
+  /**
+   * status in text
+   * @type {string}
+   * @memberof PuppeteerPageFailedLoadErrorDto
+   */
+  status: string
+  /**
+   * Exact error name
+   * @type {string}
+   * @memberof PuppeteerPageFailedLoadErrorDto
+   */
+  errorName: PuppeteerPageFailedLoadErrorDtoErrorNameEnum
+  /**
+   * Helper for sending additional data in error
+   * @type {object}
+   * @memberof PuppeteerPageFailedLoadErrorDto
+   */
+  object?: object
+}
+
+export const PuppeteerPageFailedLoadErrorDtoErrorNameEnum = {
+  NotFoundError: 'NOT_FOUND_ERROR',
+  DatabaseError: 'DATABASE_ERROR',
+  InternalServerError: 'INTERNAL_SERVER_ERROR',
+  UnauthorizedError: 'UNAUTHORIZED_ERROR',
+  UnprocessableEntityError: 'UNPROCESSABLE_ENTITY_ERROR',
+  BadRequestError: 'BAD_REQUEST_ERROR',
+} as const
+
+export type PuppeteerPageFailedLoadErrorDtoErrorNameEnum =
+  (typeof PuppeteerPageFailedLoadErrorDtoErrorNameEnum)[keyof typeof PuppeteerPageFailedLoadErrorDtoErrorNameEnum]
 
 /**
  *
@@ -5486,6 +5735,7 @@ export const ConvertApiAxiosParamCreator = function (configuration?: Configurati
      * @param {string} id
      * @param {JsonConvertRequestDto} jsonConvertRequestDto
      * @param {*} [options] Override http request option.
+     * @deprecated
      * @throws {RequiredError}
      */
     convertControllerConvertJsonToXml: async (
@@ -5516,6 +5766,10 @@ export const ConvertApiAxiosParamCreator = function (configuration?: Configurati
       const localVarHeaderParameter = {} as any
       const localVarQueryParameter = {} as any
 
+      // authentication bearer required
+      // http bearer authentication required
+      await setBearerAuthToObject(localVarHeaderParameter, configuration)
+
       localVarHeaderParameter['Content-Type'] = 'application/json'
 
       setSearchParams(localVarUrlObj, localVarQueryParameter)
@@ -5527,6 +5781,59 @@ export const ConvertApiAxiosParamCreator = function (configuration?: Configurati
       }
       localVarRequestOptions.data = serializeDataIfNeeded(
         jsonConvertRequestDto,
+        localVarRequestOptions,
+        configuration,
+      )
+
+      return {
+        url: toPathString(localVarUrlObj),
+        options: localVarRequestOptions,
+      }
+    },
+    /**
+     * Generates XML form from given JSON data and schema version id. At least one of `formId` and `jsonData` must be provided.
+     * @summary
+     * @param {JsonToXmlV2RequestDto} jsonToXmlV2RequestDto
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    convertControllerConvertJsonToXmlV2: async (
+      jsonToXmlV2RequestDto: JsonToXmlV2RequestDto,
+      options: AxiosRequestConfig = {},
+    ): Promise<RequestArgs> => {
+      // verify required parameter 'jsonToXmlV2RequestDto' is not null or undefined
+      assertParamExists(
+        'convertControllerConvertJsonToXmlV2',
+        'jsonToXmlV2RequestDto',
+        jsonToXmlV2RequestDto,
+      )
+      const localVarPath = `/convert/json-to-xml-v2`
+      // use dummy base URL string because the URL constructor only accepts absolute URLs.
+      const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL)
+      let baseOptions
+      if (configuration) {
+        baseOptions = configuration.baseOptions
+      }
+
+      const localVarRequestOptions = { method: 'POST', ...baseOptions, ...options }
+      const localVarHeaderParameter = {} as any
+      const localVarQueryParameter = {} as any
+
+      // authentication bearer required
+      // http bearer authentication required
+      await setBearerAuthToObject(localVarHeaderParameter, configuration)
+
+      localVarHeaderParameter['Content-Type'] = 'application/json'
+
+      setSearchParams(localVarUrlObj, localVarQueryParameter)
+      let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {}
+      localVarRequestOptions.headers = {
+        ...localVarHeaderParameter,
+        ...headersFromBaseOptions,
+        ...options.headers,
+      }
+      localVarRequestOptions.data = serializeDataIfNeeded(
+        jsonToXmlV2RequestDto,
         localVarRequestOptions,
         configuration,
       )
@@ -5569,6 +5876,10 @@ export const ConvertApiAxiosParamCreator = function (configuration?: Configurati
       const localVarRequestOptions = { method: 'POST', ...baseOptions, ...options }
       const localVarHeaderParameter = {} as any
       const localVarQueryParameter = {} as any
+
+      // authentication bearer required
+      // http bearer authentication required
+      await setBearerAuthToObject(localVarHeaderParameter, configuration)
 
       localVarHeaderParameter['Content-Type'] = 'application/json'
 
@@ -5618,6 +5929,10 @@ export const ConvertApiAxiosParamCreator = function (configuration?: Configurati
       const localVarRequestOptions = { method: 'POST', ...baseOptions, ...options }
       const localVarHeaderParameter = {} as any
       const localVarQueryParameter = {} as any
+
+      // authentication bearer required
+      // http bearer authentication required
+      await setBearerAuthToObject(localVarHeaderParameter, configuration)
 
       localVarHeaderParameter['Content-Type'] = 'application/json'
 
@@ -5675,6 +5990,10 @@ export const ConvertApiAxiosParamCreator = function (configuration?: Configurati
       const localVarHeaderParameter = {} as any
       const localVarQueryParameter = {} as any
 
+      // authentication bearer required
+      // http bearer authentication required
+      await setBearerAuthToObject(localVarHeaderParameter, configuration)
+
       localVarHeaderParameter['Content-Type'] = 'application/json'
 
       setSearchParams(localVarUrlObj, localVarQueryParameter)
@@ -5696,7 +6015,7 @@ export const ConvertApiAxiosParamCreator = function (configuration?: Configurati
       }
     },
     /**
-     *
+     * Returns necessary data for frontend to generate pdf.
      * @summary
      * @param {PdfPreviewDataRequestDto} pdfPreviewDataRequestDto
      * @param {*} [options] Override http request option.
@@ -5723,6 +6042,10 @@ export const ConvertApiAxiosParamCreator = function (configuration?: Configurati
       const localVarRequestOptions = { method: 'POST', ...baseOptions, ...options }
       const localVarHeaderParameter = {} as any
       const localVarQueryParameter = {} as any
+
+      // authentication bearer required
+      // http bearer authentication required
+      await setBearerAuthToObject(localVarHeaderParameter, configuration)
 
       localVarHeaderParameter['Content-Type'] = 'application/json'
 
@@ -5760,6 +6083,7 @@ export const ConvertApiFp = function (configuration?: Configuration) {
      * @param {string} id
      * @param {JsonConvertRequestDto} jsonConvertRequestDto
      * @param {*} [options] Override http request option.
+     * @deprecated
      * @throws {RequiredError}
      */
     async convertControllerConvertJsonToXml(
@@ -5770,6 +6094,23 @@ export const ConvertApiFp = function (configuration?: Configuration) {
       const localVarAxiosArgs = await localVarAxiosParamCreator.convertControllerConvertJsonToXml(
         id,
         jsonConvertRequestDto,
+        options,
+      )
+      return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)
+    },
+    /**
+     * Generates XML form from given JSON data and schema version id. At least one of `formId` and `jsonData` must be provided.
+     * @summary
+     * @param {JsonToXmlV2RequestDto} jsonToXmlV2RequestDto
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    async convertControllerConvertJsonToXmlV2(
+      jsonToXmlV2RequestDto: JsonToXmlV2RequestDto,
+      options?: AxiosRequestConfig,
+    ): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<JsonToXmlResponseDto>> {
+      const localVarAxiosArgs = await localVarAxiosParamCreator.convertControllerConvertJsonToXmlV2(
+        jsonToXmlV2RequestDto,
         options,
       )
       return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)
@@ -5833,7 +6174,7 @@ export const ConvertApiFp = function (configuration?: Configuration) {
       return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)
     },
     /**
-     *
+     * Returns necessary data for frontend to generate pdf.
      * @summary
      * @param {PdfPreviewDataRequestDto} pdfPreviewDataRequestDto
      * @param {*} [options] Override http request option.
@@ -5871,6 +6212,7 @@ export const ConvertApiFactory = function (
      * @param {string} id
      * @param {JsonConvertRequestDto} jsonConvertRequestDto
      * @param {*} [options] Override http request option.
+     * @deprecated
      * @throws {RequiredError}
      */
     convertControllerConvertJsonToXml(
@@ -5880,6 +6222,21 @@ export const ConvertApiFactory = function (
     ): AxiosPromise<JsonToXmlResponseDto> {
       return localVarFp
         .convertControllerConvertJsonToXml(id, jsonConvertRequestDto, options)
+        .then((request) => request(axios, basePath))
+    },
+    /**
+     * Generates XML form from given JSON data and schema version id. At least one of `formId` and `jsonData` must be provided.
+     * @summary
+     * @param {JsonToXmlV2RequestDto} jsonToXmlV2RequestDto
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    convertControllerConvertJsonToXmlV2(
+      jsonToXmlV2RequestDto: JsonToXmlV2RequestDto,
+      options?: AxiosRequestConfig,
+    ): AxiosPromise<JsonToXmlResponseDto> {
+      return localVarFp
+        .convertControllerConvertJsonToXmlV2(jsonToXmlV2RequestDto, options)
         .then((request) => request(axios, basePath))
     },
     /**
@@ -5933,7 +6290,7 @@ export const ConvertApiFactory = function (
         .then((request) => request(axios, basePath))
     },
     /**
-     *
+     * Returns necessary data for frontend to generate pdf.
      * @summary
      * @param {PdfPreviewDataRequestDto} pdfPreviewDataRequestDto
      * @param {*} [options] Override http request option.
@@ -5963,6 +6320,7 @@ export class ConvertApi extends BaseAPI {
    * @param {string} id
    * @param {JsonConvertRequestDto} jsonConvertRequestDto
    * @param {*} [options] Override http request option.
+   * @deprecated
    * @throws {RequiredError}
    * @memberof ConvertApi
    */
@@ -5973,6 +6331,23 @@ export class ConvertApi extends BaseAPI {
   ) {
     return ConvertApiFp(this.configuration)
       .convertControllerConvertJsonToXml(id, jsonConvertRequestDto, options)
+      .then((request) => request(this.axios, this.basePath))
+  }
+
+  /**
+   * Generates XML form from given JSON data and schema version id. At least one of `formId` and `jsonData` must be provided.
+   * @summary
+   * @param {JsonToXmlV2RequestDto} jsonToXmlV2RequestDto
+   * @param {*} [options] Override http request option.
+   * @throws {RequiredError}
+   * @memberof ConvertApi
+   */
+  public convertControllerConvertJsonToXmlV2(
+    jsonToXmlV2RequestDto: JsonToXmlV2RequestDto,
+    options?: AxiosRequestConfig,
+  ) {
+    return ConvertApiFp(this.configuration)
+      .convertControllerConvertJsonToXmlV2(jsonToXmlV2RequestDto, options)
       .then((request) => request(this.axios, this.basePath))
   }
 
@@ -6033,7 +6408,7 @@ export class ConvertApi extends BaseAPI {
   }
 
   /**
-   *
+   * Returns necessary data for frontend to generate pdf.
    * @summary
    * @param {PdfPreviewDataRequestDto} pdfPreviewDataRequestDto
    * @param {*} [options] Override http request option.

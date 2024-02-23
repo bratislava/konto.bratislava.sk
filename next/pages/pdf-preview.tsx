@@ -4,6 +4,8 @@ import { GetServerSidePropsContext } from 'next'
 
 import PdfSummaryPage, { PdfSummaryPageProps } from '../components/forms/PdfSummaryPage'
 import { FormFileUploadClientFileInfo } from '../frontend/types/formFileUploadTypes'
+import { isProductionDeployment } from '../frontend/utils/general'
+import logger from '../frontend/utils/logger'
 
 export type PdfPreviewDataAdditionalMetadata = {
   clientFiles?: FormFileUploadClientFileInfo[]
@@ -18,6 +20,10 @@ export const getServerSideProps = async (ctx: GetServerSidePropsContext) => {
     const { data: pdfPreviewData } = await formsApi.convertControllerGetPdfPreviewData({
       jwtToken: ctx.query.jwtToken as string,
     })
+    // Debug purposes
+    if (!isProductionDeployment()) {
+      logger.info(`PDF preview JWT token: ${ctx.query.jwtToken as string}`)
+    }
 
     return {
       props: {

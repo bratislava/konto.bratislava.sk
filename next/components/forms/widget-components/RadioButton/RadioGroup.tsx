@@ -1,62 +1,108 @@
 import cx from 'classnames'
-import FieldHeader from 'components/forms/info-components/FieldHeader'
-import React from 'react'
-import { useRadioGroup } from 'react-aria'
-import { RadioGroupState, useRadioGroupState } from 'react-stately'
+import { useTranslation } from 'next-i18next'
+import React, { ReactNode } from 'react'
+import { Orientation, useRadioGroup } from 'react-aria'
+import {
+  RadioGroupProps as ReactStatelyRadioGroupProps,
+  RadioGroupState,
+  useRadioGroupState,
+} from 'react-stately'
 
-import FieldErrorMessage from '../../info-components/FieldErrorMessage'
+import ButtonNew from '../../simple-components/ButtonNew'
+import FieldWrapper, { FieldWrapperProps } from '../FieldWrapper'
 
-const radioGroupState = {}
-export const RadioContext = React.createContext(radioGroupState as RadioGroupState)
+export const RadioContext = React.createContext<RadioGroupState>({} as RadioGroupState)
 
-type RadioGroupBase = {
-  children: React.ReactNode
-  value?: string
-  label: string
+// TODO it should take RadioGroupProps from react-aria
+type RadioGroupProps = FieldWrapperProps & {
+  children: ReactNode
+  value?: string | null
   defaultValue?: string
-  isDisabled?: boolean
   isReadOnly?: boolean
-  onChange: (value: string) => void
+  onChange: (value: string | null) => void
+  orientation?: Orientation
   className?: string
-  errorMessage?: string[]
-  orientations?: 'column' | 'row'
-  required?: boolean
 }
 
-const RadioGroup = (props: RadioGroupBase) => {
+const RadioGroup = (props: RadioGroupProps) => {
+  const { t } = useTranslation('account', { keyPrefix: 'RadioGroup' })
+
   const {
     children,
     className,
-    orientations = 'column',
+    orientation = 'vertical',
     required,
     label,
-    isDisabled,
+    disabled,
     errorMessage,
+    helptext,
+    helptextHeader,
+    tooltip,
+    value,
+    size,
+    labelSize,
+    displayOptionalLabel,
   } = props
-  const state = useRadioGroupState(props)
-  const { radioGroupProps, labelProps, errorMessageProps } = useRadioGroup(props, state)
+
+  const propsReactAria = {
+    ...props,
+    isDisabled: disabled,
+    isRequired: required,
+    // it may receive "undefined" as value, which would make it uncontrolled
+    value: value == null ? null : value,
+  } as ReactStatelyRadioGroupProps
+
+  const state = useRadioGroupState(propsReactAria)
+  const { radioGroupProps, labelProps, errorMessageProps } = useRadioGroup(propsReactAria, state)
+
+  const handleReset = () => {
+    // setSelectedValue type supports only string, so we need to cast it as null works too
+    ;(state.setSelectedValue as (value: string | null) => void)(null)
+  }
 
   return (
-    <div {...radioGroupProps}>
-      <FieldHeader
+    <div {...radioGroupProps} className={className} data-cy={`radio-group-${label.toLowerCase().replace(/ /g, '-').replace(/[(),./?§]/g, "")}`}>
+      <FieldWrapper
         label={label}
         labelProps={labelProps}
         htmlFor={radioGroupProps.id}
+        helptext={helptext}
+        helptextHeader={helptextHeader}
+        tooltip={tooltip}
         required={required}
-      />
-      <RadioContext.Provider value={state}>
-        <div
-          className={cx(className, {
-            'flex flex-col gap-3': orientations === 'column',
-            'flex flex-row gap-6': orientations === 'row',
-          })}
-        >
-          {children}
-        </div>
-      </RadioContext.Provider>
-      {!isDisabled && (
-        <FieldErrorMessage errorMessage={errorMessage} errorMessageProps={errorMessageProps} />
-      )}
+        disabled={disabled}
+        errorMessage={errorMessage}
+        errorMessageProps={errorMessageProps}
+        size={size}
+        labelSize={labelSize}
+        customHeaderBottomMargin="mb-4"
+        displayOptionalLabel={displayOptionalLabel}
+      >
+        <RadioContext.Provider value={state}>
+          <div className="flex flex-col gap-2">
+            <div
+              className={cx({
+                'flex flex-col gap-3': orientation === 'vertical',
+                // Acts as vertical on xs
+                'flex flex-col gap-3 sm:flex-row sm:gap-4 md:gap-6': orientation === 'horizontal',
+              })}
+            >
+              {children}
+            </div>
+
+            {!required ? (
+              <ButtonNew
+                variant="black-plain"
+                size="small"
+                className="self-end font-medium"
+                onPress={handleReset}
+              >
+                {t('resetChoice')}
+              </ButtonNew>
+            ) : null}
+          </div>
+        </RadioContext.Provider>
+      </FieldWrapper>
     </div>
   )
 }

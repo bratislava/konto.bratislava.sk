@@ -1,5 +1,4 @@
-import ChevronRightIcon from '@assets/images/forms/chevron-right.svg'
-import FilledSelectedIcon from '@assets/images/new-icons/ui/check-mark.svg'
+import { CheckInCircleIcon, ChevronRightIcon } from '@assets/ui-icons'
 import cx from 'classnames'
 import React from 'react'
 
@@ -14,7 +13,6 @@ interface DropdownRowProps {
   selected?: boolean
   type: 'one' | 'multiple' | 'arrow' | 'radio'
   divider?: boolean
-  maxWordSize?: number
   onChooseOne: (option: SelectOption, close?: boolean) => void
   onUnChooseOne: (option: SelectOption, close?: boolean) => void
   onChooseMulti: (option: SelectOption) => void
@@ -27,7 +25,6 @@ const DropdownRow = ({
   selected,
   type,
   divider,
-  maxWordSize,
   onChooseOne,
   onUnChooseOne,
   onChooseMulti,
@@ -35,16 +32,19 @@ const DropdownRow = ({
 }: DropdownRowProps) => {
   // STYLES
   const rowClassName = cx(
-    'dropdown hover:bg-form-plain-black-hover flex flex-col w-full px-5 bg-white [&>div]:last:border-0 cursor-pointer',
+    'dropdown hover:bg-form-plain-black-hover flex w-full cursor-pointer flex-col bg-white px-5 [&>div]:last:border-0',
     {
       'h-14': !isBold,
       'h-full xs:h-[84px]': isBold,
     },
   )
 
-  const optionClassName = cx('dropdown text-16 w-full', {
-    'text-16-semibold': isBold,
-  })
+  const optionClassName = cx(
+    'dropdown text-16 w-full overflow-x-hidden overflow-ellipsis whitespace-nowrap scrollbar-hide',
+    {
+      'text-16-semibold': isBold,
+    },
+  )
 
   // EVENT HANDLERS
   const handleOnClick = () => {
@@ -59,17 +59,14 @@ const DropdownRow = ({
     type === 'multiple' ? (
       <CheckboxIcon checked={selected} />
     ) : type === 'one' && selected ? (
-      <FilledSelectedIcon className="w-6 h-6" />
+      <CheckInCircleIcon className="h-6 w-6" />
     ) : type === 'arrow' ? (
-      <ChevronRightIcon className="w-6 h-6" />
+      <ChevronRightIcon className="h-6 w-6" />
     ) : type === 'radio' ? (
       <RadioButtonIcon selected={selected} />
     ) : null
 
   const optionText = option.title ?? String(option.const)
-  const transformedOptionText = `${optionText.slice(0, maxWordSize)}${
-    maxWordSize && optionText.length > maxWordSize ? '...' : ''
-  }`
 
   // RENDER
   return (
@@ -82,7 +79,7 @@ const DropdownRow = ({
     >
       <div className="dropdown flex h-full flex-col justify-center">
         <div className="dropdown flex flex-row justify-center">
-          <p className={optionClassName}>{transformedOptionText}</p>
+          <p className={optionClassName}>{optionText}</p>
           <div className="dropdown relative flex flex-col justify-center">
             {rowIcon}
             <div className="dropdown absolute inset-0 z-10" />

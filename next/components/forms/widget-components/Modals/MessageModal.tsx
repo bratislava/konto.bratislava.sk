@@ -1,26 +1,24 @@
-import CloseIcon from '@assets/images/new-icons/ui/cross.svg'
 import cx from 'classnames'
-import React from 'react'
+import React, { Fragment, PropsWithChildren, ReactNode } from 'react'
+import { twMerge } from 'tailwind-merge'
 
-import { handleOnKeyPress } from '../../../../frontend/utils/general'
 import ErrorIcon from '../../icon-components/ErrorIcon'
 import InfoIcon from '../../icon-components/InfoIcon'
 import SuccessIcon from '../../icon-components/SuccessIcon'
 import WarningIcon from '../../icon-components/WarningIcon'
-import Button from '../../simple-components/Button'
+import ModalV2, { ModalV2Props } from '../../simple-components/ModalV2'
 
-type MessageModalBase = {
+export type MessageModalProps = PropsWithChildren<{
   type: 'warning' | 'info' | 'error' | 'success'
-  children: React.ReactNode
-  show: boolean
+  variant?: 'horizontal' | 'vertical'
+  buttonsAlign?: 'left' | 'center' | 'right'
   title: string
-  submitHandler: () => void
-  cancelHandler: () => void
-  confirmLabel?: string
-  cancelLabel?: string
-  className?: string
-  excludeButtons?: boolean
-}
+  buttons?: ReactNode[]
+  afterContent?: ReactNode
+  titleClassName?: string
+  childrenClassName?: string
+}> &
+  Pick<ModalV2Props, 'isOpen' | 'onOpenChange' | 'isDismissable' | 'noCloseButton'>
 
 const icons = {
   error: <ErrorIcon />,
@@ -31,84 +29,77 @@ const icons = {
 
 const MessageModal = ({
   type,
+  variant = 'horizontal',
+  buttonsAlign = 'right',
   children,
   title,
-  submitHandler,
-  cancelHandler,
-  confirmLabel,
-  show,
-  cancelLabel,
-  className,
-  excludeButtons,
-}: MessageModalBase) => {
-  // useEffect(() => {
-  //   document.body.style.overflow = show ? 'hidden' : 'visible'
-  // }, [show])
-
-  if (!show) {
-    return null
-  }
+  buttons,
+  afterContent,
+  titleClassName,
+  childrenClassName,
+  ...rest
+}: MessageModalProps) => {
   return (
-    <div
-      role="button"
-      tabIndex={0}
-      className="h-full fixed w-full z-50 top-0 flex items-center justify-center"
-      style={{ background: 'rgba(var(--color-gray-800), .4)', marginTop: '0' }}
-      onClick={cancelHandler}
-      onKeyPress={(event: React.KeyboardEvent) => handleOnKeyPress(event, cancelHandler)}
-    >
-      <div className={cx('flex flex-col items-end rounded-lg bg-white p-3', className)}>
-        <div className="absolute flex h-6 w-6 items-center justify-center">
-          <CloseIcon className="h-6 w-6" onClick={cancelHandler} type="info" />
+    <ModalV2 isDismissable {...rest}>
+      <div
+        className={cx('flex items-center gap-3 p-0 md:gap-5', {
+          'flex-col': variant === 'vertical',
+          'md:grid-row-2 flex-col md:grid md:grid-cols-[3.5rem] md:flex-row md:items-start':
+            variant === 'horizontal',
+        })}
+      >
+        <div
+          className={cx(
+            'relative flex flex-row items-start gap-2 rounded-full p-4 md:col-start-1 md:col-end-1 md:row-start-1 md:row-end-2',
+            {
+              'bg-gray-100': type === 'info',
+              'bg-warning-100': type === 'warning',
+              'bg-negative-100': type === 'error',
+              'bg-success-100': type === 'success',
+            },
+          )}
+        >
+          <div className="flex h-6 w-6 items-center justify-center">
+            <span className="">{icons[type]}</span>
+          </div>
         </div>
-        <div className="p-3">
+        <div
+          className={twMerge(
+            'flex h-14 items-center text-center text-h-base font-semibold md:col-start-2 md:col-end-3 md:row-start-1 md:row-end-1 md:text-left',
+            titleClassName,
+          )}
+        >
+          {title}
+        </div>
+        <div className="md:col-start-2 md:col-end-3 md:row-start-2 md:row-end-3">
           <div
-            className={cx(
-              'flex flex-col items-center gap-5 p-0',
-              'md:flex-row md:items-start md:gap-6',
+            className={twMerge(
+              'text-p2 whitespace-pre-wrap text-center md:text-left',
+              childrenClassName,
             )}
           >
+            {children}
+          </div>
+          {buttons && buttons.length > 0 && (
             <div
-              className={cx('flex relative flex-row items-start gap-2 rounded-full p-4', {
-                'bg-gray-100': type === 'info',
-                'bg-warning-100': type === 'warning',
-                'bg-negative-100': type === 'error',
-                'bg-success-100': type === 'success',
+              className={cx('order-1 mt-6 flex flex-wrap items-center gap-6 p-0', {
+                'flex-col-reverse justify-center md:flex-row md:justify-end':
+                  buttonsAlign === 'right',
+                'flex-col-reverse justify-center md:flex-row md:justify-start':
+                  buttonsAlign === 'left',
+                'flex-row justify-center': buttonsAlign === 'center',
               })}
             >
-              <div className="flex h-6 w-6 items-center justify-center">
-                <span className="">{icons[type]}</span>
-              </div>
-            </div>
-            <div className="flex flex-col items-end w-full gap-6 p-0">
-              <div className={cx('flex flex-col items-center p-0', 'md:items-start')}>
-                <div className="flex h-14 items-center text-h-base font-semibold">{title}</div>
-                <div className="text-p2">{children}</div>
-              </div>
-            </div>
-          </div>
-          {!excludeButtons && (
-            <div className="order-1 flex flex-row items-center gap-6 p-0 justify-end mt-6">
-              <div
-                role="button"
-                tabIndex={0}
-                className="text-p2 flex cursor-pointer flex-row items-center justify-center gap-2 py-1 px-2 font-semibold not-italic"
-                onClick={cancelHandler}
-                onKeyPress={(event: React.KeyboardEvent) => handleOnKeyPress(event, cancelHandler)}
-              >
-                {cancelLabel}
-              </div>
-              <Button
-                onPress={submitHandler}
-                variant={type === 'error' ? 'negative' : 'black'}
-                text={confirmLabel}
-                size="sm"
-              />
+              {buttons.map((button, index) => (
+                <Fragment key={index}>{button}</Fragment>
+              ))}
             </div>
           )}
         </div>
       </div>
-    </div>
+
+      {afterContent}
+    </ModalV2>
   )
 }
 

@@ -17,18 +17,14 @@ type TaxAndFeeMainContentBase = {
 
 const TaxAndFeeMainContent = ({ children }: TaxAndFeeMainContentBase) => {
   return (
-    <div className="flex flex-col items-center w-full max-w-screen-lg m-auto gap-12 py-12">
+    <div className="m-auto flex w-full max-w-screen-lg flex-col items-center gap-12 py-12">
       {children}
     </div>
   )
 }
 
-interface TaxesFeeSectionProps {
-  isProductionDeployment?: boolean
-}
-
-const TaxFeeSection: React.FC<TaxesFeeSectionProps> = () => {
-  const { data, error, isLoading } = useTaxes()
+const TaxFeeSection = () => {
+  const { data, error, isPending } = useTaxes()
   const router = useRouter()
 
   // TODO change this once we have multiple taxes
@@ -44,8 +40,8 @@ const TaxFeeSection: React.FC<TaxesFeeSectionProps> = () => {
     }
   }, [error, router])
 
-  let content = <Spinner className="mt-10 m-auto" />
-  if (!isLoading && !data) {
+  let content = <Spinner className="m-auto mt-10" />
+  if (!isPending && !data) {
     content = (
       <div>
         Neočakávaná chyba pri načítaní dát - kontaktujte prosím podporu na info@bratislava.sk

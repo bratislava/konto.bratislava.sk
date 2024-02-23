@@ -1,12 +1,16 @@
+/* eslint-disable eslint-comments/no-unlimited-disable,unicorn/no-abusive-eslint-disable */
+/* eslint-disable */
+// @ts-nocheck
+// TODO: Fix stepper showcase
 import { useState } from 'react'
 
 import StepperView from '../../forms/steps/StepperView'
-import { StepData } from '../../forms/types/TransformedFormData'
+import { FormStepperStep } from '../../forms/types/Steps'
 import { Stack } from '../Stack'
 import { Wrapper } from '../Wrapper'
 
 const StepperShowCase = () => {
-  const steps1: StepData[] = [
+  const steps1: FormStepperStep[] = [
     {
       title: 'Step name 1',
     },
@@ -23,10 +27,10 @@ const StepperShowCase = () => {
       title: 'Step name 5',
     },
   ]
-  const steps2: StepData[] = [
+  const steps2: FormStepperStep[] = [
     {
       title: 'Step name 1',
-      isFilled: true,
+      isSubmitted: true,
     },
     {
       title: 'Step name 2',
@@ -41,21 +45,21 @@ const StepperShowCase = () => {
       title: 'Step name 5',
     },
   ]
-  const steps3: StepData[] = [
+  const steps3: FormStepperStep[] = [
     {
       title: 'Step name 1',
-      isFilled: true,
+      isSubmitted: true,
     },
     {
       title: 'Step name 2',
-      isFilled: true,
+      isSubmitted: true,
     },
     {
       title: 'Step name 3',
     },
     {
       title: 'Step name 4',
-      isFilled: true,
+      isSubmitted: true,
     },
     {
       title: 'Step name 5',

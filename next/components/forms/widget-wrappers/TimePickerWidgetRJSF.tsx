@@ -1,24 +1,21 @@
 import { StrictRJSFSchema, WidgetProps } from '@rjsf/utils'
-import { WidgetOptions } from 'components/forms/types/WidgetOptions'
 import TimePicker from 'components/forms/widget-components/DateTimePicker/TimePicker'
 import WidgetWrapper from 'components/forms/widget-wrappers/WidgetWrapper'
 import React from 'react'
+import { TimePickerUiOptions } from 'schema-generator/generator/uiOptionsTypes'
 
-type TimePickerRJSFOptions = WidgetOptions
+import FieldBlurWrapper from '../widget-components/FieldBlurWrapper/FieldBlurWrapper'
 
 interface TimePickerWidgetRJSFProps extends WidgetProps {
-  label: string
-  options: TimePickerRJSFOptions
-  value: string | null
+  options: TimePickerUiOptions
+  value: string | undefined
   errorMessage?: string
-  required?: boolean
-  disabled?: boolean
   schema: StrictRJSFSchema
   onChange: (value?: string) => void
-  rawErrors?: string[]
 }
 
 const TimePickerWidgetRJSF = ({
+  id,
   label,
   options,
   rawErrors = [],
@@ -26,31 +23,31 @@ const TimePickerWidgetRJSF = ({
   disabled,
   value,
   onChange,
+  readonly,
 }: TimePickerWidgetRJSFProps) => {
-  const {
-    helptext,
-    tooltip,
-    accordion,
-    explicitOptional,
-    spaceBottom = 'none',
-    spaceTop = 'large',
-  } = options
-
-  const handleOnChange = (newValue?: string) => (newValue ? onChange(newValue) : onChange())
+  const { helptext, helptextHeader, tooltip, size, labelSize } = options
 
   return (
-    <WidgetWrapper accordion={accordion} spaceBottom={spaceBottom} spaceTop={spaceTop}>
-      <TimePicker
-        label={label}
-        errorMessage={rawErrors}
-        required={required}
-        disabled={disabled}
-        helptext={helptext}
-        tooltip={tooltip}
-        explicitOptional={explicitOptional}
-        value={value ?? undefined}
-        onChange={handleOnChange}
-      />
+    <WidgetWrapper id={id} options={options}>
+      <FieldBlurWrapper value={value} onChange={onChange}>
+        {({ value: wrapperValue, onChange: wrapperOnChange, onBlur }) => (
+          <TimePicker
+            label={label}
+            errorMessage={rawErrors}
+            required={required}
+            disabled={disabled || readonly}
+            helptext={helptext}
+            helptextHeader={helptextHeader}
+            tooltip={tooltip}
+            value={wrapperValue ?? null}
+            onChange={(value) => wrapperOnChange(value ?? undefined)}
+            onBlur={onBlur}
+            size={size}
+            labelSize={labelSize}
+            displayOptionalLabel
+          />
+        )}
+      </FieldBlurWrapper>
     </WidgetWrapper>
   )
 }

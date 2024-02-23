@@ -1,4 +1,4 @@
-import Icon from '@assets/images/account/mestske-konto-situacia-1-1.svg'
+import Icon from '@assets/images/mestske-konto-situacia-1-1.svg'
 import AccountMarkdown from 'components/forms/segments/AccountMarkdown/AccountMarkdown'
 import { useTranslation } from 'next-i18next'
 
@@ -10,19 +10,19 @@ const TaxesFeesWaitingCard = ({ content }: TaxesFeesWaitingCardBase) => {
   const { t } = useTranslation('account')
   return (
     <div className="flex flex-col gap-6">
-      <div className="w-full max-w-screen-lg m-auto mt-0 lg:mt-8 px-4 md:px-16 pt-5 lg:py-10 flex flex-col lg:flex-row justify-around border-0 lg:border-2 border-gray-200 rounded-lg">
+      <div className="m-auto mt-0 flex w-full max-w-screen-lg flex-col justify-around rounded-lg border-0 border-gray-200 px-4 pt-5 md:px-16 lg:mt-8 lg:flex-row lg:border-2 lg:py-10">
         <div className="flex justify-center">
-          <Icon className="w-[146px] h-[145px] sm:w-[298px] sm:h-[296px]" />
+          <Icon className="h-[145px] w-[146px] sm:h-[296px] sm:w-[298px]" />
         </div>
         <AccountMarkdown
-          className="flex flex-col justify-center max-w-none lg:max-w-[528px] mt-5 md:mt-0"
+          className="mt-5 flex max-w-none flex-col justify-center md:mt-0 lg:max-w-[528px]"
           content={content}
         />
       </div>
-      <div className="md:hidden block px-4">
-        <div className="w-full h-0.5 bg-gray-200" />
+      <div className="block px-4 md:hidden">
+        <div className="h-0.5 w-full bg-gray-200" />
       </div>
-      <div className="text-p2 md:px-16 lg:px-0 px-4 max-w-screen-lg m-auto md:whitespace-normal whitespace-pre-line">
+      <div className="text-p2 m-auto max-w-screen-lg whitespace-pre-line px-4 md:whitespace-normal md:px-16 lg:px-0">
         <AccountMarkdown variant="sm" content={t('tax_footer.register_info')} />
       </div>
     </div>

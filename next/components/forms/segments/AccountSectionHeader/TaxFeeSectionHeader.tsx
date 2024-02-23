@@ -1,24 +1,48 @@
-import ChevronLeft from '@assets/images/new-icons/ui/chevron-left.svg'
-import TimeIcon from '@assets/images/new-icons/ui/clock.svg'
-import SuccessIcon from '@assets/images/new-icons/ui/done.svg'
-import FileDownload from '@assets/images/new-icons/ui/download.svg'
-import ExclamationIcon from '@assets/images/new-icons/ui/exclamation-mark.svg'
-import PaymentIcon from '@assets/images/new-icons/ui/payment.svg'
+import {
+  CheckIcon,
+  ChevronLeftIcon,
+  ClockIcon,
+  DownloadIcon,
+  ErrorIcon,
+  PaymentIcon,
+} from '@assets/ui-icons'
 import cx from 'classnames'
+import { getAccessTokenOrLogout } from 'frontend/utils/amplify'
 import { useRouter } from 'next/router'
 import { useTranslation } from 'next-i18next'
 import { ReactNode } from 'react'
 
+import { environment } from '../../../../environment'
 import { getPaymentGatewayUrlApi } from '../../../../frontend/api/api'
 import { ROUTES } from '../../../../frontend/api/constants'
 import { Tax } from '../../../../frontend/dtos/taxDto'
-import useAccount from '../../../../frontend/hooks/useAccount'
 import { formatCurrency, formatDate, taxStatusHelper } from '../../../../frontend/utils/general'
 import logger from '../../../../frontend/utils/logger'
 import Button from '../../simple-components/Button'
 
 interface AccountSectionHeaderBase {
   tax: Tax
+}
+
+// https://stackoverflow.com/questions/32545632/how-can-i-download-a-file-using-window-fetch
+const downloadPdf = async () => {
+  const accessToken = await getAccessTokenOrLogout()
+  return fetch(`${String(environment.taxesUrl)}/tax/get-tax-pdf-by-year?year=2023`, {
+    headers: {
+      Authorization: `Bearer ${accessToken}`,
+    },
+  })
+    .then((res) => res.blob())
+    .then((blob) => {
+      const a = document.createElement('a')
+      a.href = URL.createObjectURL(blob)
+      a.setAttribute('download', 'dan-z-nehnutelnosti-2023.pdf')
+      a.click()
+      return null
+    })
+    .catch((error) => {
+      logger.error('Error downloading pdf', error)
+    })
 }
 
 const statusHandler = (status: 'negative' | 'warning' | 'success', text: string): ReactNode => {
@@ -30,7 +54,7 @@ const statusHandler = (status: 'negative' | 'warning' | 'success', text: string)
   const statusNode = (icon: ReactNode, statusTitle: string): ReactNode => {
     return (
       <>
-        <span className="h-6 w-6 flex justify-center items-center">{icon}</span>
+        <span className="flex h-6 w-6 items-center justify-center">{icon}</span>
         <span className={statusStyle}>{statusTitle}</span>
       </>
     )
@@ -38,11 +62,11 @@ const statusHandler = (status: 'negative' | 'warning' | 'success', text: string)
 
   switch (status) {
     case 'negative':
-      return statusNode(<ExclamationIcon className="text-negative-700 w-6 h-6" />, text)
+      return statusNode(<ErrorIcon className="h-6 w-6 text-negative-700" />, text)
     case 'warning':
-      return statusNode(<TimeIcon className="text-warning-700 w-6 h-6" />, text)
+      return statusNode(<ClockIcon className="h-6 w-6 text-warning-700" />, text)
     case 'success':
-      return statusNode(<SuccessIcon className="text-success-700 w-6 h-6" />, text)
+      return statusNode(<CheckIcon className="h-6 w-6 text-success-700" />, text)
 
     default:
       return null
@@ -50,7 +74,6 @@ const statusHandler = (status: 'negative' | 'warning' | 'success', text: string)
 }
 
 const TaxFeeSectionHeader = ({ tax }: AccountSectionHeaderBase) => {
-  const { lastAccessToken } = useAccount()
   const { t } = useTranslation('account')
   const router = useRouter()
 
@@ -58,7 +81,7 @@ const TaxFeeSectionHeader = ({ tax }: AccountSectionHeaderBase) => {
 
   const redirectToPaymentGateway = async () => {
     try {
-      const result = await getPaymentGatewayUrlApi(lastAccessToken)
+      const result = await getPaymentGatewayUrlApi()
       const resultUrl = result.url
       if (typeof resultUrl === 'string') {
         await router.push(resultUrl)
@@ -71,72 +94,53 @@ const TaxFeeSectionHeader = ({ tax }: AccountSectionHeaderBase) => {
     }
   }
 
-  // https://stackoverflow.com/questions/32545632/how-can-i-download-a-file-using-window-fetch
-  const downloadPdf = () =>
-    fetch(`${String(process.env.NEXT_PUBLIC_TAXES_URL)}/tax/get-tax-pdf-by-year?year=2023`, {
-      headers: {
-        Authorization: `Bearer ${lastAccessToken}`,
-      },
-    })
-      .then((res) => res.blob())
-      .then((blob) => {
-        const a = document.createElement('a')
-        a.href = URL.createObjectURL(blob)
-        a.setAttribute('download', 'dan-z-nehnutelnosti-2023.pdf')
-        a.click()
-        return null
-      })
-      .catch((error) => {
-        logger.error('Error downloading pdf', error)
-      })
-
   return (
-    <div className="lg:px-0 bg-gray-50 h-full px-4">
-      <div className="flex flex-col py-6 gap-4 max-w-screen-lg m-auto">
-        <div className="flex items-center gap-0.5 cursor-pointer">
-          <div className="w-5 h-5 flex justify-center items-center">
-            <ChevronLeft className="w-5 h-5" />
+    <div className="h-full bg-gray-50 px-4 lg:px-0">
+      <div className="m-auto flex max-w-screen-lg flex-col gap-4 py-6">
+        <div className="flex cursor-pointer items-center gap-0.5">
+          <div className="flex h-5 w-5 items-center justify-center">
+            <ChevronLeftIcon className="h-5 w-5" />
           </div>
           <button
             type="button"
-            className="text-p3-medium underline-offset-2 underline"
+            className="text-p3-medium underline underline-offset-2"
             onClick={() => router.push(ROUTES.TAXES_AND_FEES)}
           >
             {t('back_to_list')}
           </button>
         </div>
-        <div className="flex flex-col items-start gap-2 w-full h-full">
-          <div className="flex flex-col items-start gap-4 h-full w-full">
-            <div className="flex flex-row items-center gap-4 w-full">
+        <div className="flex h-full w-full flex-col items-start gap-2">
+          <div className="flex h-full w-full flex-col items-start gap-4">
+            <div className="flex w-full flex-row items-center gap-4">
               <div className="text-h1 grow">
                 {t('tax_detail_section.title', { year: tax?.year })}
               </div>
 
               {status.paymentStatus === 'unpaid' && (
                 <Button
-                  startIcon={<PaymentIcon fill="white" className="w-6 h-6" />}
+                  startIcon={<PaymentIcon fill="white" className="h-6 w-6" />}
                   variant="black"
                   text={t('pay_tax')}
                   size="sm"
-                  className="md:block hidden"
+                  className="hidden md:block"
                   onPress={redirectToPaymentGateway}
                 />
               )}
               <Button
-                startIcon={<FileDownload className="w-5 h-5" />}
+                startIcon={<DownloadIcon className="h-5 w-5" />}
                 variant="black-outline"
                 text={t('download_pdf')}
                 size="sm"
-                className="md:block hidden"
+                className="hidden md:block"
                 onPress={downloadPdf}
               />
             </div>
-            <div className="flex md:flex-row flex-col md:items-center items-start md:gap-4 gap-1">
+            <div className="flex flex-col items-start gap-1 md:flex-row md:items-center md:gap-4">
               <div className="flex gap-2">
                 <div className="lg:text-p2-semibold text-p3-semibold">{t('tax_created')}</div>
                 <div className="lg:text-p2 text-p3">{formatDate(tax?.createdAt)}</div>
               </div>
-              <div className="w-1.5 h-1.5 bg-black rounded-full md:block hidden" />
+              <div className="hidden h-1.5 w-1.5 rounded-full bg-black md:block" />
               <div className="lg:text-p2-bold text-p3">
                 {formatCurrency(tax.amount)}
                 {status.paymentStatus === 'partially_paid' ? (
@@ -148,7 +152,7 @@ const TaxFeeSectionHeader = ({ tax }: AccountSectionHeaderBase) => {
                   </span>
                 ) : null}
               </div>
-              <div className="w-1.5 h-1.5 bg-black rounded-full md:block hidden" />
+              <div className="hidden h-1.5 w-1.5 rounded-full bg-black md:block" />
               <div className="flex items-center gap-2">
                 <div className="flex items-center gap-2">
                   <div
@@ -159,8 +163,8 @@ const TaxFeeSectionHeader = ({ tax }: AccountSectionHeaderBase) => {
                     {status.paymentStatus === 'unpaid'
                       ? statusHandler('negative', t('tax_detail_section.tax_status.negative'))
                       : status.paymentStatus === 'partially_paid'
-                      ? statusHandler('warning', t('tax_detail_section.tax_status.warning'))
-                      : statusHandler('success', t('tax_detail_section.tax_status.success'))}
+                        ? statusHandler('warning', t('tax_detail_section.tax_status.warning'))
+                        : statusHandler('success', t('tax_detail_section.tax_status.success'))}
                   </div>
                   {/* <div className="lg:text-p2 text-p3">{formatDate(tax?.updatedAt)}</div> */}
                 </div>
@@ -168,11 +172,11 @@ const TaxFeeSectionHeader = ({ tax }: AccountSectionHeaderBase) => {
             </div>
 
             {/* for mobile version */}
-            <div className="w-full md:hidden block">
+            <div className="block w-full md:hidden">
               <div className="flex flex-col gap-3">
                 {status.paymentStatus === 'unpaid' && (
                   <Button
-                    startIcon={<PaymentIcon className="w-5 h-5" />}
+                    startIcon={<PaymentIcon className="h-5 w-5" />}
                     variant="black"
                     text={t('pay_tax')}
                     size="sm"
@@ -181,7 +185,7 @@ const TaxFeeSectionHeader = ({ tax }: AccountSectionHeaderBase) => {
                   />
                 )}
                 <Button
-                  startIcon={<FileDownload className="w-5 h-5" />}
+                  startIcon={<DownloadIcon className="h-5 w-5" />}
                   variant="black-outline"
                   text={t('download_pdf')}
                   size="sm"

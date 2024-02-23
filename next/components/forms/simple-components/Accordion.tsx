@@ -1,5 +1,4 @@
-import ExpandMore from '@assets/images/new-icons/ui/expand.svg'
-import PersonIcon from '@assets/images/new-icons/ui/profile.svg'
+import { ChevronDownIcon, ProfileIcon } from '@assets/ui-icons'
 import cx from 'classnames'
 import AccountMarkdown from 'components/forms/segments/AccountMarkdown/AccountMarkdown'
 import React, { useState } from 'react'
@@ -32,13 +31,13 @@ const Accordion = ({
   const accordionSize = isAccordionSizeType(size) as AccordionSizeType
 
   const accordionContainerStyle = cx(
-    'no-tap-highlight flex flex-col gap-4 w-full rounded-xl bg-gray-0 cursor-pointer',
+    'no-tap-highlight flex w-full cursor-pointer flex-col gap-4 rounded-xl bg-gray-0',
     className,
     {
       'px-4 py-3 lg:p-4': accordionSize === 'xs',
       'p-4 lg:p-5': accordionSize === 'sm',
-      'p-4 lg:py-6 lg:px-8': accordionSize === 'md',
-      'py-5 px-6 lg:py-8 lg:px-10': accordionSize === 'lg',
+      'p-4 lg:px-8 lg:py-6': accordionSize === 'md',
+      'px-6 py-5 lg:px-10 lg:py-8': accordionSize === 'lg',
       'border-gray-200': !isActive && !shadow,
       'border-gray-700': isActive && !shadow,
       'border-2 border-solid hover:border-gray-500': !shadow,
@@ -55,27 +54,27 @@ const Accordion = ({
       onClick={() => setIsActive(!isActive)}
       className={accordionContainerStyle}
     >
-      <div className={cx('w-full flex gap-4', {})}>
+      <div className={cx('flex w-full gap-4', {})}>
         {icon && (
           <div
             className={cx('flex items-center justify-center', {
-              'w-6 h-6': accordionSize === 'sm' || accordionSize === 'xs',
-              'w-8 h-8': accordionSize === 'md',
-              'w-10 h-10': accordionSize === 'lg',
+              'h-6 w-6': accordionSize === 'sm' || accordionSize === 'xs',
+              'h-8 w-8': accordionSize === 'md',
+              'h-10 w-10': accordionSize === 'lg',
             })}
           >
-            <PersonIcon
+            <ProfileIcon
               className={cx('fill-main-700', {
-                'w-6 h-6': accordionSize === 'sm' || accordionSize === 'xs',
-                'w-8 h-8': accordionSize === 'md',
-                'w-10 h-10': accordionSize === 'lg',
+                'h-6 w-6': accordionSize === 'sm' || accordionSize === 'xs',
+                'h-8 w-8': accordionSize === 'md',
+                'h-10 w-10': accordionSize === 'lg',
               })}
             />
           </div>
         )}
         <div className="flex w-full flex-col gap-2 lg:gap-4">
-          <div className="w-full flex justify-between gap-4">
-            <div
+          <div className="flex w-full justify-between gap-4">
+            <h4
               className={cx('flex grow text-left', {
                 'text-h6': accordionSize === 'xs',
                 'text-h5': accordionSize === 'sm',
@@ -84,24 +83,24 @@ const Accordion = ({
               })}
             >
               {title}
-            </div>
-            <div
-              className={cx('lg:font-semibold', {
+            </h4>
+            <p
+              className={cx('flex lg:font-semibold', {
                 'text-p-base': size === 'xs',
                 'text-h-base': size === 'sm',
-                'lg:text-h-md text-p-base': size === 'md',
+                'text-p-base lg:text-h-md': size === 'md',
                 'text-h-lg': size === 'lg',
               })}
             >
               {secondTitle}
-            </div>
-            <ExpandMore
+            </p>
+            <ChevronDownIcon
               className={cx('flex items-center justify-center text-negative-700', {
-                'lg:min-w-[40px] lg:w-10 lg:h-10 w-8 h-8 min-w-[32px]': accordionSize === 'lg',
-                'lg:min-w-[32px] lg:w-8 lg:h-8 w-6 h-6 min-w-[24px]': accordionSize === 'md',
-                'w-6 h-6 min-w-[24px]': accordionSize === 'sm' || accordionSize === 'xs',
-                'transform rotate-180': isActive,
-                'transform rotate-0': !isActive,
+                'h-8 w-8 min-w-[32px] lg:h-10 lg:w-10 lg:min-w-[40px]': accordionSize === 'lg',
+                'h-6 w-6 min-w-[24px] lg:h-8 lg:w-8 lg:min-w-[32px]': accordionSize === 'md',
+                'h-6 w-6 min-w-[24px]': accordionSize === 'sm' || accordionSize === 'xs',
+                'rotate-180 transform': isActive,
+                'rotate-0 transform': !isActive,
               })}
             />
           </div>

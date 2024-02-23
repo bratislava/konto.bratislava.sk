@@ -1,9 +1,10 @@
-import Check from '@assets/images/new-icons/ui/done.svg'
+import { CheckIcon } from '@assets/ui-icons'
 import cx from 'classnames'
-import Tooltip from 'components/forms/info-components/Tooltip/Tooltip'
 import React from 'react'
 import { useCheckbox, useFocusRing, VisuallyHidden } from 'react-aria'
 import { useToggleState } from 'react-stately'
+
+import BATooltip from '../../info-components/Tooltip/BATooltip'
 
 type CheckBoxBase = {
   variant?: 'basic' | 'boxed'
@@ -13,7 +14,6 @@ type CheckBoxBase = {
   isIndeterminate?: boolean
   isSelected?: boolean
   children: React.ReactNode
-  value: string
   tooltip?: string
   onChange?: (isSelected: boolean) => void
   fullWidth?: boolean
@@ -38,7 +38,7 @@ const SingleCheckBox = ({
   const isSelected = state.isSelected && !rest.isIndeterminate
 
   const checkboxStyle = cx(
-    'flex items-center justify-center min-w-[24px] w-6 h-6 rounded border-2 border-solid border-gray-700',
+    'flex h-6 w-6 min-w-[24px] items-center justify-center rounded border-2 border-solid border-gray-700',
     {
       'bg-gray-700': (isSelected || rest.isIndeterminate) && !error,
       'group-hover:border-gray-600':
@@ -49,19 +49,19 @@ const SingleCheckBox = ({
         !error,
       'group-hover:border-gray-600 group-hover:bg-gray-600':
         (variant === 'basic' || variant === 'boxed') && isSelected && !isDisabled && !error,
-      'opacity-50 cursor-not-allowed': isDisabled,
+      'cursor-not-allowed opacity-50': isDisabled,
 
       // error
       'border-negative-700': error && !isSelected && !isDisabled,
-      'bg-negative-700 border-negative-700': error && isSelected && !isDisabled,
+      'border-negative-700 bg-negative-700': error && isSelected && !isDisabled,
     },
   )
 
   const containerStyle = cx(
-    'group flex flex-row items-start justify-center p-0 gap-3',
+    'group flex flex-row items-start justify-center gap-3 p-0',
     rest.className,
     {
-      'py-3 px-4 bg-white border-2 border-solid rounded-lg': variant === 'boxed',
+      'rounded-lg border-2 border-solid bg-white px-4 py-3': variant === 'boxed',
       'border-gray-300 group-hover:border-gray-500':
         variant === 'boxed' && !isSelected && rest.isIndeterminate && !isDisabled && !error,
       'border-gray-700 group-hover:border-gray-500':
@@ -70,24 +70,26 @@ const SingleCheckBox = ({
       // error
       'border-negative-700': variant === 'boxed' && error,
       // disabled
-      'opacity-50 cursor-not-allowed': isDisabled,
+      'cursor-not-allowed opacity-50': isDisabled,
     },
   )
 
-  const labelStyle = cx('text-16 flex select-none text-gray-700 gap-3', {
+  const labelStyle = cx('text-16 flex select-none gap-3 text-gray-700', {
     'w-full': fullWidth,
   })
 
   return (
     <div>
-      <label htmlFor={rest.value} className={containerStyle}>
+      {/* The input is inside of label, therefore it doesn't need an id. */}
+      {/* eslint-disable-next-line jsx-a11y/label-has-associated-control */}
+      <label className={containerStyle}>
         <VisuallyHidden>
-          <input id={rest.value} {...inputProps} {...focusProps} ref={ref} />
+          <input {...inputProps} {...focusProps} ref={ref} />
         </VisuallyHidden>
         <div className={checkboxStyle}>
           {isSelected && (
-            <Check
-              className={cx('w-5 h-5 text-gray-0', {
+            <CheckIcon
+              className={cx('h-5 w-5 text-gray-0', {
                 hidden: !isSelected,
               })}
             />
@@ -109,13 +111,13 @@ const SingleCheckBox = ({
         <div className={labelStyle}>
           <div
             className={cx('relative', {
-              'after:text-16-semibold after:content-["*"] after:ml-0.5 after:absolute after:bottom-0.5 after:text-main-700':
+              'after:text-16-semibold after:absolute after:bottom-0.5 after:ml-0.5 after:text-main-700 after:content-["*"]':
                 required,
             })}
           >
             {children}
           </div>
-          {tooltip && <Tooltip text={tooltip} />}
+          {tooltip && <BATooltip>{tooltip}</BATooltip>}
         </div>
       </label>
     </div>

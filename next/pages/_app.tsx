@@ -2,24 +2,27 @@
 import './index.css'
 // initialize faro - TODO might need to ensure faro is initialized by providing it through react context and hook
 import '../frontend/utils/logger'
+// configure Amplify
+import '../frontend/utils/amplify'
+import 'react-loading-skeleton/dist/skeleton.css'
 
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import { StatusBarProvider } from 'components/forms/info-components/StatusBar'
 import CookieConsent from 'components/forms/segments/CookieConsent/CookieConsent'
-import { GlobalStateProvider } from 'components/forms/states/GlobalState'
-import { SSORedirectProvider } from 'frontend/hooks/useSSORedirect'
+import { NavMenuContextProvider } from 'components/forms/segments/NavBar/navMenuContext'
+import { LoginRegisterRedirectProvider } from 'frontend/hooks/useLoginRegisterRedirect'
 import { AppProps } from 'next/app'
 import { Inter } from 'next/font/google'
 import Head from 'next/head'
 import { appWithTranslation } from 'next-i18next'
+import PlausibleProvider from 'next-plausible'
 import { NextAdapter } from 'next-query-params'
-import { SSRProvider } from 'react-aria'
+import { useState } from 'react'
+import { I18nProvider } from 'react-aria'
 import SnackbarProvider from 'react-simple-snackbar'
 import { QueryParamProvider } from 'use-query-params'
 
-import { AccountProvider } from '../frontend/hooks/useAccount'
-
-const queryClient = new QueryClient()
+import { isProductionDeployment } from '../frontend/utils/general'
 
 const inter = Inter({
   variable: '--inter-font',
@@ -27,6 +30,8 @@ const inter = Inter({
 })
 
 const MyApp = ({ Component, pageProps }: AppProps) => {
+  const [queryClient] = useState(() => new QueryClient())
+
   return (
     <>
       {/* https://nextjs.org/docs/pages/building-your-application/optimizing/fonts#apply-the-font-in-head */}
@@ -37,6 +42,7 @@ const MyApp = ({ Component, pageProps }: AppProps) => {
         }
       `}</style>
       <Head>
+        <title>Bratislavské konto</title>
         <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
         <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png" />
         <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png" />
@@ -49,24 +55,37 @@ const MyApp = ({ Component, pageProps }: AppProps) => {
         {/* look for CookieConsent component for 3rd party scripts you'd expect to find here */}
       </Head>
 
-      <QueryParamProvider adapter={NextAdapter}>
-        <SSRProvider>
+      <I18nProvider locale="sk-SK">
+        <QueryParamProvider adapter={NextAdapter}>
           <StatusBarProvider>
             <QueryClientProvider client={queryClient}>
               <SnackbarProvider>
-                <AccountProvider>
-                  <GlobalStateProvider>
-                    <SSORedirectProvider>
-                      <Component {...pageProps} />
+                <PlausibleProvider
+                  domain={
+                    isProductionDeployment() ? 'konto.bratislava.sk' : 'testing.bratislava.sk'
+                  }
+                  // exclude instances of forms (i.e./mestske-sluzby/priznanie-k-dani-z-nehnutelnosti is still tracked)
+                  // we track those manually along with step hashes so that we can track "funnels" across steps
+                  exclude="/mestske-sluzby/*/*"
+                  taggedEvents
+                  // uncomment for local testing, needs to be run with `yarn build && yarn start`
+                  // trackLocalhost
+                >
+                  <NavMenuContextProvider>
+                    <LoginRegisterRedirectProvider>
+                      {/* used to lock body with overflow: hidden when mobile menu is open, look for useLockedBody */}
+                      <div id="root">
+                        <Component {...pageProps} />
+                      </div>
                       <CookieConsent />
-                    </SSORedirectProvider>
-                  </GlobalStateProvider>
-                </AccountProvider>
+                    </LoginRegisterRedirectProvider>
+                  </NavMenuContextProvider>
+                </PlausibleProvider>
               </SnackbarProvider>
             </QueryClientProvider>
           </StatusBarProvider>
-        </SSRProvider>
-      </QueryParamProvider>
+        </QueryParamProvider>
+      </I18nProvider>
     </>
   )
 }

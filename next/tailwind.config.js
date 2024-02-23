@@ -20,6 +20,7 @@ module.exports = {
   content: [
     join(__dirname, 'pages/**/*.{js,jsx,ts,tsx}'),
     join(__dirname, 'components/**/*.{js,jsx,ts,tsx}'),
+    join(__dirname, 'frontend/**/*.{js,jsx,ts,tsx}'),
   ],
   darkMode: 'media', // or 'class'
   theme: {
@@ -28,7 +29,8 @@ module.exports = {
       normal: '400',
       medium: '500',
       semibold: '600',
-      bold: '700',
+      // TODO our typography system shouldn't have different bold and semibold - this needs clearing up, keeping just one variant of weight 600
+      bold: '600',
     },
     screens: {
       xs: '360px',
@@ -66,13 +68,24 @@ module.exports = {
       'h-2xl': ['40px', '48px'],
       'h-3xl': ['56px', '64px'],
     },
+
+    data: {
+      hovered: 'hovered',
+      pressed: 'pressed',
+      focused: 'focused',
+      'focus-visible': 'focus-visible',
+    },
+
     extend: {
       rotate: {
         270: '270deg',
       },
       colors: {
         error: 'var(--error-color)',
-        font: 'var(--font-color)',
+        font: {
+          DEFAULT: 'rgb(var(--font-color))',
+          contrast: 'rgb(var(--font-contrast-color))',
+        },
         main: {
           100: 'rgb(var(--color-main-100))',
           200: 'rgb(var(--color-main-200))',
@@ -144,6 +157,8 @@ module.exports = {
           600: 'rgb(var(--color-gray-600))',
           700: 'rgb(var(--color-gray-700))',
           800: 'rgb(var(--color-gray-800))',
+          // TODO: Fix opacity in the whole project
+          '800/40': 'rgba(var(--color-gray-800), 0.4)',
         },
         success: {
           50: 'rgb(var(--color-success-50))',
@@ -207,6 +222,16 @@ module.exports = {
         100: '25rem',
         104: '26rem', // 416px
         200: '50rem', // 800px
+      },
+      keyframes: {
+        stepperSlide: {
+          '0%': { transform: 'translateY(100%)' },
+          '100%': { transform: 'translateY(0)' },
+        },
+      },
+      animation: {
+        stepperSlide: 'stepperSlide 500ms',
+        stepperSlideReverse: 'stepperSlide 500ms reverse',
       },
     },
   },

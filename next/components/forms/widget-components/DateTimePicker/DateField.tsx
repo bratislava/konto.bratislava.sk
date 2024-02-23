@@ -1,51 +1,18 @@
 import { createCalendar } from '@internationalized/date'
+import { DateValue } from '@react-types/datepicker'
 import cx from 'classnames'
 import React, { ReactNode } from 'react'
-import { useDateField, useDateSegment, useLocale } from 'react-aria'
-import { DateFieldState, DateSegment, useDateFieldState } from 'react-stately'
+import { AriaDatePickerProps, useDateField, useLocale } from 'react-aria'
+import { useDateFieldState } from 'react-stately'
 
-import FieldHeader from '../../info-components/FieldHeader'
-import { ExplicitOptionalType } from '../../types/ExplicitOptional'
+import FieldWrapper, { FieldWrapperProps } from '../FieldWrapper'
+import DateTimeSegment from './DateTimeSegment'
 
-type DateSegmentBase = {
-  segment: DateSegment
-  state: DateFieldState
-}
-
-const DateSegmentComponent = ({ segment, state }: DateSegmentBase) => {
-  const ref = React.useRef<HTMLDivElement>(null)
-  const { segmentProps } = useDateSegment(segment, state, ref)
-  return (
-    <div
-      {...segmentProps}
-      ref={ref}
-      className={cx('text-16', { 'focus:bg-gray-100 focus:outline-none': segment.isEditable })}
-    >
-      <span
-        className={cx('w-full text-center uppercase group-focus:text-white', {
-          'text-gray-500': segment?.isPlaceholder,
-        })}
-        style={{
-          opacity: segment?.isPlaceholder ? '1' : '0',
-        }}
-      >
-        {segment?.isPlaceholder ? segment?.placeholder : ''}
-      </span>
-      {segment?.isPlaceholder ? '' : segment?.text}
-    </div>
-  )
-}
-type DateFieldBase = {
-  label?: string
-  helptext?: string
-  tooltip?: string
-  required?: boolean
-  explicitOptional?: ExplicitOptionalType
+type DateFieldProps = FieldWrapperProps & {
   children?: ReactNode
-  disabled?: boolean
-  errorMessage?: string[]
   isOpen?: boolean
-}
+  popover?: ReactNode
+} & AriaDatePickerProps<DateValue>
 
 const DateField = ({
   errorMessage = [],
@@ -54,11 +21,16 @@ const DateField = ({
   label,
   tooltip,
   helptext,
+  helptextHeader,
   isOpen,
   required,
-  explicitOptional,
+  customErrorPlace,
+  popover,
+  size,
+  labelSize,
+  displayOptionalLabel,
   ...rest
-}: DateFieldBase) => {
+}: DateFieldProps) => {
   const ref = React.useRef<HTMLDivElement>(null)
   const { locale } = useLocale()
   const state = useDateFieldState({
@@ -72,36 +44,44 @@ const DateField = ({
     ...rest,
   })
 
-  const { fieldProps, labelProps, descriptionProps } = useDateField(
+  const { fieldProps, labelProps, descriptionProps, errorMessageProps } = useDateField(
     { errorMessage, isDisabled: disabled, label, ...rest },
     state,
     ref,
   )
-  const dateFieldStyle = cx('flex rounded-lg bg-white px-3 sm:px-4 py-1.5 sm:py-2.5 border-2', {
-    'hover:border-gray-400 border-gray-200': !disabled && !isOpen,
-    'hover:border-negative-700 border-negative-700': errorMessage?.length > 0 && !disabled,
-    'bg-gray-100 border-gray-300 pointer-events-none': disabled,
+  const dateFieldStyle = cx('flex rounded-lg border-2 px-3 py-2 lg:px-4 lg:py-3', {
+    'bg-white': !disabled,
+    'border-gray-200 hover:border-gray-400': !disabled && !isOpen,
+    'border-negative-700 hover:border-negative-700': errorMessage?.length > 0 && !disabled,
+    'pointer-events-none border-gray-300 bg-gray-100': disabled,
     'border-gray-700': isOpen && !disabled && !(errorMessage?.length > 0),
   })
   return (
-    <>
-      <FieldHeader
-        label={label || ''}
-        htmlFor={fieldProps?.id || ''}
-        labelProps={labelProps}
-        tooltip={tooltip}
-        helptext={helptext}
-        descriptionProps={descriptionProps}
-        required={required}
-        explicitOptional={explicitOptional}
-      />
+    <FieldWrapper
+      label={label}
+      htmlFor={fieldProps?.id}
+      labelProps={labelProps}
+      tooltip={tooltip}
+      helptext={helptext}
+      helptextHeader={helptextHeader}
+      descriptionProps={descriptionProps}
+      required={required}
+      disabled={disabled}
+      customErrorPlace={customErrorPlace}
+      errorMessage={errorMessage}
+      errorMessageProps={errorMessageProps}
+      size={size}
+      labelSize={labelSize}
+      displayOptionalLabel={displayOptionalLabel}
+    >
       <div {...fieldProps} ref={ref} className={dateFieldStyle}>
-        {state?.segments?.map((segment, i) => (
-          <DateSegmentComponent key={i} segment={segment} state={state} />
+        {state?.segments?.map((segment, index) => (
+          <DateTimeSegment key={index} segment={segment} state={state} />
         ))}
         <div className="ml-auto flex items-center">{children}</div>
       </div>
-    </>
+      {popover}
+    </FieldWrapper>
   )
 }
 

@@ -1,63 +1,60 @@
+import { getDraftApplications } from 'components/forms/segments/AccountSections/MyApplicationsSection/MyApplicationsList'
 import MyApplicationsSection from 'components/forms/segments/AccountSections/MyApplicationsSection/MyApplicationsSection'
 import AccountPageLayout from 'components/layouts/AccountPageLayout'
-import PageWrapper from 'components/layouts/PageWrapper'
-import { getApplicationConceptList, getApplicationSentList } from 'frontend/api/mocks/mocks'
-import { isProductionDeployment } from 'frontend/utils/general'
-import logger from 'frontend/utils/logger'
+import {
+  getSSRCurrentAuth,
+  ServerSideAuthProviderHOC,
+} from 'components/logic/ServerSideAuthProvider'
+import { ROUTES } from 'frontend/api/constants'
 import { AsyncServerProps } from 'frontend/utils/types'
 import { GetServerSidePropsContext } from 'next'
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
 
-export const getServerSideProps = async (ctx: GetServerSidePropsContext) => {
-  if (isProductionDeployment()) return { notFound: true }
-  const locale = ctx.locale ?? 'sk'
+export const sections = ['SENT', 'SENDING', 'DRAFT'] as const
 
-  let myApplicationSentList
-  let myApplicationConceptList
-  try {
-    myApplicationSentList = getApplicationSentList()
-    myApplicationConceptList = getApplicationConceptList()
-  } catch (error) {
-    logger.error(error)
-    return { notFound: true }
+export type ApplicationsListVariant = (typeof sections)[number]
+
+const slovakToEnglishSectionNames: Record<string, ApplicationsListVariant> = {
+  odoslane: 'SENT',
+  'odosiela-sa': 'SENDING',
+  koncepty: 'DRAFT',
+}
+
+export const getServerSideProps = async (ctx: GetServerSidePropsContext) => {
+  const locale = ctx.locale ?? 'sk'
+  const selectedSection = ctx.query.sekcia
+    ? slovakToEnglishSectionNames[ctx.query.sekcia as ApplicationsListVariant]
+    : 'SENT'
+  const currentPage = parseInt(ctx.query.strana as string, 10) || 1
+  const ssrCurrentAuthProps = await getSSRCurrentAuth(ctx.req)
+  if (!ssrCurrentAuthProps.userData) {
+    return {
+      redirect: {
+        destination: `${ROUTES.LOGIN}?from=${ctx.resolvedUrl}`,
+        permanent: false,
+      },
+    }
   }
 
   return {
     props: {
-      myApplicationSentList,
-      myApplicationConceptList,
-      page: {
-        locale: ctx.locale,
-        localizations: ['sk', 'en']
-          .filter((l) => l !== ctx.locale)
-          .map((l) => ({
-            slug: '',
-            locale: l,
-          })),
-      },
-      isProductionDeploy: isProductionDeployment(),
+      ssrCurrentAuthProps,
+      applications: await getDraftApplications(selectedSection, currentPage, ctx.req),
+      selectedSection,
       ...(await serverSideTranslations(locale)),
     },
   }
 }
 
 const AccountMyApplicationsPage = ({
-  page,
-  myApplicationSentList,
-  myApplicationConceptList,
-  isProductionDeploy,
+  selectedSection,
+  applications,
 }: AsyncServerProps<typeof getServerSideProps>) => {
   return (
-    <PageWrapper locale={page.locale} localizations={page.localizations}>
-      <AccountPageLayout isProductionDeploy={isProductionDeploy}>
-        <MyApplicationsSection
-          conceptCardsList={myApplicationConceptList}
-          sentCardsList={myApplicationSentList}
-          isProductionDeploy={isProductionDeploy}
-        />
-      </AccountPageLayout>
-    </PageWrapper>
+    <AccountPageLayout>
+      <MyApplicationsSection selectedSection={selectedSection} applications={applications} />
+    </AccountPageLayout>
   )
 }
 
-export default AccountMyApplicationsPage
+export default ServerSideAuthProviderHOC(AccountMyApplicationsPage)

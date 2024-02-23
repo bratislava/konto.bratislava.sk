@@ -4,11 +4,11 @@ import TaxesFeesCard from 'components/forms/segments/AccountSections/TaxesFeesSe
 import TaxesFeesErrorCard from 'components/forms/segments/AccountSections/TaxesFeesSection/TaxesFeesErrorCard'
 // import TaxesFeesWaitingCard from 'components/forms/segments/AccountSections/TaxesFeesSection/TaxesFeesWaitingCard'
 import Spinner from 'components/forms/simple-components/Spinner'
+import { useServerSideAuth } from 'frontend/hooks/useServerSideAuth'
 import { useTranslation } from 'next-i18next'
 
 import { ROUTES } from '../../../../../frontend/api/constants'
 import { useTaxes } from '../../../../../frontend/hooks/apiHooks'
-import useAccount, { AccountStatus } from '../../../../../frontend/hooks/useAccount'
 import { taxStatusHelper } from '../../../../../frontend/utils/general'
 import logger from '../../../../../frontend/utils/logger'
 
@@ -22,25 +22,20 @@ export type TaxesCardBase = {
   status: 'paid' | 'unpaid' | 'partially_paid'
 }
 
-interface TaxesFeesSectionProps {
-  isProductionDeployment?: boolean
-}
-
-const TaxesFeesSection: React.FC<TaxesFeesSectionProps> = () => {
+const TaxesFeesSection = () => {
   const { t } = useTranslation('account')
-  const { status } = useAccount()
-
-  const { data, isLoading } = useTaxes()
+  const { tierStatus } = useServerSideAuth()
+  const { data, isPending } = useTaxes()
 
   //   const taxesFeesWaitingCardContent = `
   // <h4>${t('account_section_payment.waiting_card_title')}</h4>
   // <p>${t('account_section_payment.waiting_card_text')}</p>
   // `
   const taxesFeesErrorCardContent = `
-<h4>${t('account_section_payment.error_card_title')}</h4>
+<h3>${t('account_section_payment.error_card_title')}</h3>
 <div>${t('account_section_payment.error_card_content.title')}
 <ul>${
-    status !== AccountStatus.IdentityVerificationSuccess
+    !tierStatus.isIdentityVerified
       ? t('account_section_payment.error_card_content.list.verification', {
           url: ROUTES.IDENTITY_VERIFICATION,
         })
@@ -53,11 +48,11 @@ const TaxesFeesSection: React.FC<TaxesFeesSectionProps> = () => {
 
   let content: JSX.Element | null = null
 
-  if (isLoading) {
-    content = <Spinner className="mt-10 m-auto" />
-  } else if (status !== AccountStatus.IdentityVerificationSuccess) {
+  if (isPending) {
+    content = <Spinner className="m-auto mt-10" />
+  } else if (!tierStatus.isIdentityVerified) {
     content = <TaxesFeesErrorCard content={taxesFeesErrorCardContent} />
-  } else if (!isLoading && !data) {
+  } else if (!isPending && !data) {
     content = (
       // error instanceof TaxApiError && error.status === 422 ? (
       //   <TaxesFeesWaitingCard content={taxesFeesWaitingCardContent} />
@@ -66,7 +61,7 @@ const TaxesFeesSection: React.FC<TaxesFeesSectionProps> = () => {
     )
   } else if (data) {
     content = (
-      <ul className="lg:px-0 my-2 lg:my-8 px-4 sm:px-6">
+      <ul className="my-2 px-4 sm:px-6 lg:my-8 lg:px-0">
         <li className="mb-2 lg:mb-6">
           <TaxesFeesCard
             title={t('account_section_payment.tax_card_title')}
@@ -92,7 +87,7 @@ const TaxesFeesSection: React.FC<TaxesFeesSectionProps> = () => {
   return (
     <div className="flex flex-col">
       <AccountSectionHeader title={t('account_section_payment.title')} />
-      <div className="max-w-screen-lg w-full m-auto">{content}</div>
+      <div className="m-auto w-full max-w-screen-lg">{content}</div>
     </div>
   )
 }

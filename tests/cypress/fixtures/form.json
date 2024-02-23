@@ -1,0 +1,14 @@
+{
+  "name": "Cypress_Name",
+  "address": "Test address 1",
+  "city": "City",
+  "zip_code": "12345",
+  "phone_number": "+421444333222",
+  "phone_number_wrong": "444333222",
+  "authorization_certificate_number": "4442423",
+  "day": "12",
+  "month": "12",
+  "year": "2023",
+  "construction_name": "Test",
+  "kataster": "Devín"
+}

@@ -1,8 +1,4 @@
-import SuccessIcon from '@assets/images/new-icons/ui/check-mark.svg'
-import CloseIcon from '@assets/images/new-icons/ui/cross.svg'
-import ErrorIcon from '@assets/images/new-icons/ui/exclamation-mark.svg'
-import WarningIcon from '@assets/images/new-icons/ui/exclamation-mark-triangle.svg'
-import InfoIcon from '@assets/images/new-icons/ui/info.svg'
+import { AlertIcon, CheckInCircleIcon, CrossIcon, ErrorIcon, InfoIcon } from '@assets/ui-icons'
 import cx from 'classnames'
 import Link from 'next/link'
 import React, { ReactNode } from 'react'
@@ -20,7 +16,7 @@ type AlertButtonsBase = {
 
 const AlertButtons = ({ buttons, className }: AlertButtonsBase) => {
   return buttons && buttons?.length > 0 ? (
-    <div className={cx('w-max flex items-start gap-5', className)}>
+    <div className={cx('flex w-max items-start gap-5', className)}>
       {buttons?.map((button, i) => (
         <React.Fragment key={i}>
           {button.link ? (
@@ -51,6 +47,10 @@ type AlertBase = {
   buttons?: AlertButtonBase[]
   fullWidth?: boolean
   solid?: boolean
+  /**
+   * @default true
+   */
+  hasIcon?: boolean
 }
 
 const Alert = ({
@@ -62,16 +62,17 @@ const Alert = ({
   buttons,
   fullWidth = false,
   solid = false,
+  hasIcon = true,
 }: AlertBase) => {
   const icons = {
-    error: <ErrorIcon className="w-6 h-6" />,
-    success: <SuccessIcon className="w-6 h-6" />,
-    info: <InfoIcon className="w-6 h-6" />,
-    warning: <WarningIcon className="w-6 h-6" />,
+    error: <ErrorIcon className="h-6 w-6" />,
+    success: <CheckInCircleIcon className="h-6 w-6" />,
+    info: <InfoIcon className="h-6 w-6" />,
+    warning: <AlertIcon className="h-6 w-6" />,
   }
 
   const alertContainer = cx(
-    'flex flex-col items-start gap-2 rounded-lg lg:px-5 px-3 lg:py-4 py-3',
+    'flex flex-col items-start gap-2 rounded-lg px-3 py-3 lg:px-5 lg:py-4',
     className,
     {
       'bg-negative-100 text-negative-700': type === 'error' && !solid,
@@ -84,11 +85,11 @@ const Alert = ({
       'bg-gray-700 text-white': type === 'info' && solid,
       'bg-warning-700 text-white': type === 'warning' && solid,
     },
-    { 'w-full max-w-none': fullWidth },
-    { 'w-full max-w-[480px]': !fullWidth },
+    { 'max-w-none': fullWidth },
+    { 'max-w-[480px]': !fullWidth },
   )
 
-  const contentStyle = cx('', {
+  const contentStyle = cx('w-full', {
     'text-16-semibold': title,
     'text-16': !title,
     'text-white': solid,
@@ -96,15 +97,15 @@ const Alert = ({
   })
 
   return (
-    <div className={alertContainer}>
-      <div className="w-full flex justify-between">
-        <div className="flex gap-[14px]">
-          <span className="flex min-w-[22px] justify-center">{icons[type]}</span>
+    <div className={alertContainer} data-cy="alert-container">
+      <div className="flex w-full justify-between">
+        <div className="flex w-full gap-[14px]">
+          {hasIcon && <span className="flex min-w-[22px] justify-center">{icons[type]}</span>}
           <div className={contentStyle}>{title || message}</div>
         </div>
         {close && (
-          <span className="flex h-6 w-6 items-center justify-center cursor-pointer">
-            <CloseIcon onClick={close} className="w-6 h-6" />
+          <span className="flex h-6 w-6 cursor-pointer items-center justify-center">
+            <CrossIcon onClick={close} className="h-6 w-6" />
           </span>
         )}
       </div>

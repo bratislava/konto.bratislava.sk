@@ -1,95 +1,91 @@
+import { AriaRadioProps } from '@react-types/radio'
 import cx from 'classnames'
-import Tooltip from 'components/forms/info-components/Tooltip/Tooltip'
 import * as React from 'react'
+import { useContext, useRef } from 'react'
 import { useRadio } from 'react-aria'
 
+import BATooltip from '../../info-components/Tooltip/BATooltip'
 import { RadioContext } from './RadioGroup'
 
-type RadioBase = {
+type RadioProps = {
   variant?: 'basic' | 'boxed' | 'card'
   className?: string
-  isDisabled?: boolean
-  error?: boolean
-  children: React.ReactNode
-  value: string
   tooltip?: string
-}
+  description?: string
+  /**
+   * Whether any of other radios in the group has a description. If they do, we want to display the label in semi-bold.
+   */
+  radioGroupHasDescription?: boolean
+} & AriaRadioProps
 
 const Radio = ({
-  error = false,
-  isDisabled = false,
-  tooltip,
   variant = 'basic',
   className,
+  tooltip,
+  description,
+  radioGroupHasDescription,
   ...rest
-}: RadioBase) => {
-  const state = React.useContext(RadioContext)
-  const ref = React.useRef(null)
-  const { inputProps } = useRadio({ ...rest, isDisabled: isDisabled || error }, state, ref)
+}: RadioProps) => {
+  const state = useContext(RadioContext)
+  const ref = useRef<HTMLInputElement>(null)
+  const { inputProps, isDisabled, isSelected } = useRadio({ ...rest }, state, ref)
+
+  const isError = state?.validationState === 'invalid'
 
   const inputStyle = cx(
-    'focus-visible:outline-none focus:outline-none appearance-none bg-white m-0 w-6 h-6 min-w-[24px] min-h-[24px] grid place-content-center left-0 right-0 top-0 bottom-0 rounded-full border-2 border-solid',
+    'bottom-0 left-0 right-0 top-0 m-0 grid h-6 min-h-[24px] w-6 min-w-[24px] appearance-none place-content-center self-start rounded-full border-2 bg-white outline-offset-4',
     {
-      'border-gray-700': !error,
-      'before:w-4 before:h-4 before:min-w-[16px] before:min-h-[16px] before:bg-gray-700 before:rounded-full':
-        inputProps.checked,
-      'border-negative-700 before:bg-negative-700': error,
+      // "before" pseudo-element is used to display the selected radio button
+      'before:h-4 before:min-h-[16px] before:w-4 before:min-w-[16px] before:rounded-full before:bg-gray-700':
+        isSelected,
+      'border-gray-700': !isError,
+      'border-negative-700 before:bg-negative-700': isError,
 
       // hover
-      'group-hover:before:bg-gray-600 group-hover:border-gray-600': !isDisabled && !error,
+      'group-hover:border-gray-600 group-hover:before:bg-gray-600': !isDisabled && !isError,
 
       // disabled
       'opacity-50': isDisabled,
-      'cursor-not-allowed': isDisabled || error,
+      'cursor-pointer': !isDisabled,
     },
   )
 
-  const containerStyle = cx(
-    'group flex relative flex-row items-center justify-between rounded-lg gap-3 ',
-    className,
-    {
-      'p-0': variant === 'basic' && !error,
-      'p-0 py-3 px-4 border-2 border-solid': variant === 'boxed',
-      'bg-white': variant !== 'basic',
-      'border-gray-200':
-        (variant === 'boxed' || variant === 'card') && !error && !inputProps.checked,
-      'rounded-8 border-negative-700': (variant === 'card' || variant === 'boxed') && error,
-      'rounded-8 flex-col p-6 border-2 border-solid': variant === 'card',
-      'border-gray-700 hover:border-gray-500':
-        (variant === 'boxed' || variant === 'card') && !error && inputProps.checked && !isDisabled,
-      'hover:border-gray-500':
-        (variant === 'boxed' || variant === 'card') && !error && !inputProps.checked && !isDisabled,
+  const containerStyle = cx('text-16 group relative flex w-full gap-3 rounded-lg', className, {
+    'bg-white': !isDisabled && (variant === 'card' || variant === 'boxed'),
+    'flex-row items-center': variant === 'basic' || variant === 'boxed',
+    'p-3 lg:px-4 lg:py-3': variant === 'boxed',
+    'flex-col items-start break-words p-5': variant === 'card',
+    'rounded-8 border-2 border-solid': variant === 'boxed' || variant === 'card',
+    'border-gray-200': !isError && !isSelected,
+    'border-negative-700': isError,
 
-      'opacity-50': isDisabled,
-      'cursor-pointer': !isDisabled && !error,
-      'cursor-not-allowed': isDisabled || error,
-    },
-  )
+    'border-gray-700 hover:border-gray-500': isSelected && !isDisabled && !isError,
+    'hover:border-gray-500': !isError && !isSelected && !isDisabled,
 
-  const stringValue = rest.value ? rest.value.toString() : ''
+    'opacity-50': isDisabled,
+    'cursor-pointer': !isDisabled,
+    'border-gray-300 bg-gray-100': isDisabled && (variant === 'boxed' || variant === 'card'),
+  })
 
   return (
     <div className="w-full">
-      <label htmlFor={stringValue} className={containerStyle}>
-        {variant === 'card' ? (
-          <div className="w-full flex flex-col items-start gap-3 p-0 ">
-            <input id={stringValue} {...inputProps} ref={ref} className={inputStyle} />
-            <div className="text-16 text-gray-700 break-words">
-              {rest.children}
-              {tooltip && (
-                <div className="mt-8 relative flex flex-row">
-                  <Tooltip position="top-right" text={tooltip} />
-                </div>
-              )}
-            </div>
-          </div>
-        ) : (
-          <div className={cx('flex items-center gap-3', {})}>
-            <input id={stringValue} {...inputProps} ref={ref} className={inputStyle} />
-            <div className={cx('text-16 flex text-gray-700 break-words', {})}>{rest.children}</div>
-          </div>
-        )}
-        {tooltip && variant !== 'card' && <Tooltip text={tooltip} />}
+      {/* The input is inside of label, therefore it doesn't need an id. */}
+      {/* eslint-disable-next-line jsx-a11y/label-has-associated-control */}
+      <label className={containerStyle}>
+        <input
+          {...inputProps}
+          ref={ref}
+          className={inputStyle}
+          data-cy={`radio-${rest.children?.toString().toLowerCase().replace(/ /g, '-').replace(/\./g, '')}`}
+        />
+        <span className="flex grow flex-col gap-1">
+          <span className={cx({ 'font-semibold': description || radioGroupHasDescription })}>
+            {rest.children}
+          </span>
+          {description && <span>{description}</span>}
+        </span>
+        {/* TODO Tooltip should have bigger top padding in 'card' variant */}
+        {tooltip && <BATooltip>{tooltip}</BATooltip>}
       </label>
     </div>
   )

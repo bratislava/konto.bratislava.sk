@@ -1,6 +1,6 @@
 import React, { DOMAttributes, FC } from 'react'
 
-interface FieldErrorMessageProps {
+export interface FieldErrorMessageProps {
   errorMessage?: string[]
   errorMessageProps?: DOMAttributes<never>
 }
@@ -10,7 +10,7 @@ const FieldErrorMessage: FC<FieldErrorMessageProps> = ({
   errorMessageProps,
 }) => {
   return errorMessage.length > 0 ? (
-    <div className="text-p3 sm:text-16 mt-1 text-error" {...errorMessageProps}>
+    <div className="text-p3 sm:text-16 mt-1 text-error" data-cy="error-message" {...errorMessageProps}>
       {errorMessage?.map((error, i) => (
         <div key={i}>{`${error.slice(0, 1).toUpperCase()}${error.slice(1)}${
           error.trim().slice(-1) === '.' ? '' : '.'

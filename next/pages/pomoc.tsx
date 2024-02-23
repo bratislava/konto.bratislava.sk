@@ -1,43 +1,29 @@
 import HelpSection from 'components/forms/segments/AccountSections/HelpSection/HelpSection'
 import AccountPageLayout from 'components/layouts/AccountPageLayout'
-import PageWrapper from 'components/layouts/PageWrapper'
+import {
+  getSSRCurrentAuth,
+  ServerSideAuthProviderHOC,
+} from 'components/logic/ServerSideAuthProvider'
 import { GetServerSidePropsContext } from 'next'
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
-
-import { isProductionDeployment } from '../frontend/utils/general'
-import { AsyncServerProps } from '../frontend/utils/types'
 
 export const getServerSideProps = async (ctx: GetServerSidePropsContext) => {
   const locale = ctx.locale ?? 'sk'
 
   return {
     props: {
-      page: {
-        locale: ctx.locale,
-        localizations: ['sk', 'en']
-          .filter((l) => l !== ctx.locale)
-          .map((l) => ({
-            slug: '',
-            locale: l,
-          })),
-      },
-      isProductionDeploy: isProductionDeployment(),
+      ssrCurrentAuthProps: await getSSRCurrentAuth(ctx.req),
       ...(await serverSideTranslations(locale)),
     },
   }
 }
 
-const AccountHelpPage = ({
-  page,
-  isProductionDeploy,
-}: AsyncServerProps<typeof getServerSideProps>) => {
+const AccountHelpPage = () => {
   return (
-    <PageWrapper locale={page.locale} localizations={page.localizations}>
-      <AccountPageLayout isProductionDeploy={isProductionDeploy}>
-        <HelpSection />
-      </AccountPageLayout>
-    </PageWrapper>
+    <AccountPageLayout>
+      <HelpSection />
+    </AccountPageLayout>
   )
 }
 
-export default AccountHelpPage
+export default ServerSideAuthProviderHOC(AccountHelpPage)

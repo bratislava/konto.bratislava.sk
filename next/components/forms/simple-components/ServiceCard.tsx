@@ -1,20 +1,20 @@
-import ArrowRightIcon from '@assets/images/new-icons/ui/arrow-right.svg'
-import ExportIcon from '@assets/images/new-icons/ui/export.svg'
+import { ArrowRightIcon, ExportIcon } from '@assets/ui-icons'
 import cx from 'classnames'
-import Link from 'next/link'
 import { ReactNode } from 'react'
+
+import MLinkNew, { LinkPlausibleProps } from './MLinkNew'
 
 type ServiceCardBase = {
   title: string
   description: string
   buttonText?: string
   className?: string
-  linkType?: 'internal' | 'external'
   icon: ReactNode
   href?: string
   tag?: string
   tagStyle?: string
   onPress?: () => void
+  plausibleProps?: LinkPlausibleProps
 }
 
 const ServiceCard = ({
@@ -27,9 +27,10 @@ const ServiceCard = ({
   icon,
   href,
   onPress,
+  plausibleProps,
 }: ServiceCardBase) => {
   const style = cx(
-    'group w-full min-w-[280px] bg-gray-0 border-gray-200 flex flex-col items-start p-4 gap-5 border-solid border-2 rounded-lg',
+    'group flex w-full min-w-[280px] flex-col items-start gap-5 rounded-lg border-2 border-solid border-gray-200 bg-gray-0 p-4',
     className,
     { 'cursor-pointer': buttonText },
     { 'cursor-default': !buttonText },
@@ -37,29 +38,29 @@ const ServiceCard = ({
 
   const Card = () => (
     <>
-      <div className="w-full flex justify-between">
-        <div className="p-1.5 lg:p-2.5 rounded-lg border-2 border-gray-200">{icon}</div>
-        <span className={cx('text-p3-medium h-min px-2 rounded-[4px]', tagStyle)}>{tag}</span>
+      <div className="flex w-full justify-between">
+        <div className="rounded-lg border-2 border-gray-200 p-1.5 lg:p-2.5">{icon}</div>
+        <span className={cx('text-p3-medium h-min rounded-[4px] px-2', tagStyle)}>{tag}</span>
       </div>
-      <div className="gap-3 flex flex-col items-start text-left w-full">
-        <h5
-          className={cx('text-h5 leading-5 lg:leading-7 font-semibold', {
+      <div className="flex w-full flex-col items-start gap-3 text-left">
+        <h3
+          className={cx('text-h5 font-semibold leading-5 lg:leading-7', {
             'group-hover:underline': buttonText,
           })}
         >
           {title}
-        </h5>
-        <div className="text-p-sm flex items-center font-normal">{description}</div>
+        </h3>
+        <div className="flex items-center text-p-sm font-normal">{description}</div>
       </div>
-      <div className="flex items-end w-full h-full">
-        <div className="flex justify-between items-center h-max w-full">
+      <div className="flex h-full w-full items-end">
+        <div className="flex h-max w-full items-center justify-between">
           <div className="text-p2-semibold">{buttonText}</div>
           {buttonText && (
-            <span className="w-10 h-10 min-w-[40px] rounded-full flex items-center justify-center bg-gray-50">
+            <span className="flex h-10 w-10 min-w-[40px] items-center justify-center rounded-full bg-gray-50">
               {href?.includes('http') ? (
-                <ExportIcon className="w-5 h-5" />
+                <ExportIcon className="h-5 w-5" />
               ) : (
-                <ArrowRightIcon className="w-5 h-5" />
+                <ArrowRightIcon className="h-5 w-5" />
               )}
             </span>
           )}
@@ -69,9 +70,14 @@ const ServiceCard = ({
   )
 
   return href ? (
-    <Link target={href?.includes('http') ? '_blank' : '_self'} href={href} className={style}>
+    <MLinkNew
+      target={href?.includes('http') ? '_blank' : '_self'}
+      href={href}
+      className={style}
+      plausibleProps={plausibleProps}
+    >
       <Card />
-    </Link>
+    </MLinkNew>
   ) : (
     <button type="button" onClick={onPress} className={style}>
       <Card />

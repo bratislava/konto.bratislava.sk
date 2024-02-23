@@ -1,12 +1,12 @@
 import cx from 'classnames'
 import Button from 'components/forms/simple-components/Button'
 import InputField from 'components/forms/widget-components/InputField/InputField'
-import { isValidPhoneNumber } from 'libphonenumber-js'
+import { AccountType, Address, UserData } from 'frontend/dtos/accountDto'
+import useHookForm from 'frontend/hooks/useHookForm'
+import useJsonParseMemo from 'frontend/hooks/useJsonParseMemo'
+import { ajvFormats } from 'frontend/utils/form'
 import { useTranslation } from 'next-i18next'
 import { Controller } from 'react-hook-form'
-
-import { UserData } from '../../../../frontend/hooks/useAccount'
-import useHookForm from '../../../../frontend/hooks/useHookForm'
 
 interface Data {
   email?: string
@@ -87,27 +87,34 @@ const poSchema = {
   required: ['email'],
 }
 
+const isValidPhoneNumber = (phoneNumber: string) => {
+  const regex = ajvFormats['phone-number']
+  return regex.test(phoneNumber)
+}
 interface UserProfileDetailEditProps {
   formId: string
   userData: UserData
-  onOpenEmailModal: () => void
+  onEmailChange: () => void
   onSubmit: (newUserData: UserData) => void
 }
 
 const UserProfileDetailEdit = (props: UserProfileDetailEditProps) => {
-  const { formId, userData, onOpenEmailModal, onSubmit } = props
+  const { formId, userData, onEmailChange, onSubmit } = props
   const { t } = useTranslation('account')
+  const { address, name, family_name, given_name, email, phone_number } = userData
+  const isLegalEntity = userData?.['custom:account_type'] !== AccountType.FyzickaOsoba
+  const parsedAddress = useJsonParseMemo<Address>(address)
   const { handleSubmit, control, errors, setError } = useHookForm<Data>({
-    schema: userData.account_type === 'po' ? poSchema : foSchema,
+    schema: isLegalEntity ? poSchema : foSchema,
     defaultValues: {
-      business_name: userData.name,
-      family_name: userData.family_name,
-      given_name: userData.given_name,
-      email: userData.email,
-      phone_number: userData.phone_number,
-      street_address: userData.address?.street_address,
-      city: userData.address?.locality,
-      postal_code: userData.address?.postal_code,
+      business_name: name,
+      family_name,
+      given_name,
+      email,
+      phone_number,
+      street_address: parsedAddress?.street_address,
+      city: parsedAddress?.locality,
+      postal_code: parsedAddress?.postal_code,
     },
   })
 
@@ -119,11 +126,11 @@ const UserProfileDetailEdit = (props: UserProfileDetailEditProps) => {
         given_name: data.given_name,
         family_name: data.family_name,
         phone_number: data.phone_number || '',
-        address: {
+        address: JSON.stringify({
           street_address: data.street_address,
           locality: data.city,
           postal_code: data.postal_code?.replaceAll(' ', ''),
-        },
+        }),
       }
       return onSubmit(newUserData)
     }
@@ -134,12 +141,12 @@ const UserProfileDetailEdit = (props: UserProfileDetailEditProps) => {
   return (
     <form
       id={formId}
-      className="flex flex-col grow gap-6 pb-20 md:pb-0"
+      className="flex grow flex-col gap-6 pb-20 md:pb-0"
       onSubmit={handleSubmit(handleSubmitCallback)}
     >
-      <div className="gap flex flex-wrap flex-row gap-6">
-        {userData.account_type === 'po' ? (
-          <div className="grow w-full md:w-fit">
+      <div className="gap flex flex-row flex-wrap gap-6">
+        {isLegalEntity ? (
+          <div className="w-full grow md:w-fit">
             <Controller
               name="business_name"
               control={control}
@@ -155,7 +162,7 @@ const UserProfileDetailEdit = (props: UserProfileDetailEditProps) => {
           </div>
         ) : (
           <>
-            <div className="grow w-full md:w-fit">
+            <div className="w-full grow md:w-fit">
               <Controller
                 name="given_name"
                 control={control}
@@ -170,7 +177,7 @@ const UserProfileDetailEdit = (props: UserProfileDetailEditProps) => {
                 )}
               />
             </div>
-            <div className="grow w-full md:w-fit">
+            <div className="w-full grow md:w-fit">
               <Controller
                 name="family_name"
                 control={control}
@@ -189,7 +196,7 @@ const UserProfileDetailEdit = (props: UserProfileDetailEditProps) => {
         )}
       </div>
       <div className="flex flex-row flex-wrap gap-4">
-        <div className={cx('grow w-full', 'md:w-fit')}>
+        <div className={cx('w-full grow', 'md:w-fit')}>
           <Controller
             name="email"
             control={control}
@@ -197,7 +204,6 @@ const UserProfileDetailEdit = (props: UserProfileDetailEditProps) => {
               <InputField
                 disabled
                 label={t('profile_detail.email')}
-                tooltip={t('profile_detail.email_tooltip')}
                 autoComplete="username"
                 {...field}
                 errorMessage={errors.email}
@@ -205,25 +211,25 @@ const UserProfileDetailEdit = (props: UserProfileDetailEditProps) => {
             )}
           />
         </div>
-        <div className="justify-end flex flex-col pt-1">
+        <div className="flex flex-col justify-end pt-1">
           <Button
             variant="black"
             size="lg"
             text={t('profile_detail.email_button')}
             className="hidden md:block"
-            onPress={onOpenEmailModal}
+            onPress={onEmailChange}
           />
           <Button
             variant="black"
             size="sm"
             text={t('profile_detail.email_button')}
-            className="md:hidden block"
-            onPress={onOpenEmailModal}
+            className="block md:hidden"
+            onPress={onEmailChange}
           />
         </div>
       </div>
-      <div className="gap flex flex-wrap flex-row gap-x-6">
-        <div className="grow w-full md:w-fit">
+      <div className="gap flex flex-row flex-wrap gap-x-6">
+        <div className="w-full grow md:w-fit">
           <Controller
             name="phone_number"
             control={control}
@@ -237,7 +243,7 @@ const UserProfileDetailEdit = (props: UserProfileDetailEditProps) => {
             )}
           />
         </div>
-        <div className="grow invisible h-0 w-full md:w-fit">
+        <div className="invisible h-0 w-full grow md:w-fit">
           <InputField label={t('profile_detail.phone_number')} />
         </div>
       </div>
@@ -255,7 +261,7 @@ const UserProfileDetailEdit = (props: UserProfileDetailEditProps) => {
           />
         )}
       />
-      <div className="gap flex flex-wrap flex-row gap-6">
+      <div className="gap flex flex-row flex-wrap gap-6">
         <div className="grow">
           <Controller
             name="city"

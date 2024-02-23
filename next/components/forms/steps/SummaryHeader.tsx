@@ -1,41 +1,56 @@
 import { useTranslation } from 'next-i18next'
 
-import { FileScan } from '../../../frontend/dtos/formStepperDto'
 import Alert from '../info-components/Alert'
+import { useFormContext } from '../useFormContext'
+import { useFormSummary } from './Summary/useFormSummary'
 
-interface SummaryHeaderProps {
-  fileScans: FileScan[]
-}
-
-const SummaryHeader = ({ fileScans }: SummaryHeaderProps) => {
+const SummaryHeader = () => {
+  const { isSigned } = useFormContext()
+  const { infectedFiles, uploadingFiles, hasErrors } = useFormSummary()
   const { t } = useTranslation('forms')
 
-  const errorFileScans: FileScan[] = fileScans.filter((scan) => scan.fileState === 'error')
-  const errorFileScansNames = errorFileScans.map((scan) => scan.originalName).join(', ')
+  const infectedFilesFilenames = infectedFiles.map((file) => file.fileName)
 
   return (
     <>
-      <h1 className="text-h1-medium font-semibold">{t('summary')}</h1>
-      {errorFileScans.length === 1 && (
+      <h1 className="text-h1-medium font-semibold">{t('summary.title')}</h1>
+      {hasErrors && (
         <Alert
           type="error"
-          message={t('errors.file_scan', { name: errorFileScansNames })}
+          message={isSigned ? t('summary.form_has_errors_signed') : t('summary.form_has_errors')}
           fullWidth
           className="mt-4"
-          solid
         />
       )}
-      {errorFileScans.length > 1 && (
+      {infectedFiles.length === 1 && (
         <Alert
           type="error"
-          message={t('errors.file_scan_multiple', { name: errorFileScansNames })}
+          message={t('summary.virus_alert', {
+            file: infectedFilesFilenames[0],
+          })}
           fullWidth
           className="mt-4"
-          solid
         />
       )}
-      {fileScans.some((scan) => scan.fileState === 'scan') && (
-        <Alert type="warning" message={t('warnings.file_scan')} fullWidth className="mt-4" />
+      {infectedFiles.length > 1 && (
+        <Alert
+          type="error"
+          message={t('summary.virus_alert_plural', {
+            files: infectedFilesFilenames.map((name) => `“${name}“`).join(', '),
+          })}
+          fullWidth
+          className="mt-4"
+        />
+      )}
+      {uploadingFiles.length > 0 && (
+        <Alert
+          type="warning"
+          message={t('summary.uploading_files', {
+            files: uploadingFiles.map((file) => file.fileName).join(', '),
+          })}
+          fullWidth
+          className="mt-4"
+        />
       )}
     </>
   )

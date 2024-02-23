@@ -1,301 +1,241 @@
-import ArrowDownIcon from '@assets/images/new-icons/ui/expand.svg'
-import ArrowUpIcon from '@assets/images/new-icons/ui/expand-less.svg'
+import { CheckInCircleIcon, ChevronDownIcon, CrossIcon } from '@assets/ui-icons'
 import cx from 'classnames'
-import React, {
-  ForwardedRef,
-  forwardRef,
-  ForwardRefRenderFunction,
-  RefObject,
-  useEffect,
-  useRef,
-  useState,
-} from 'react'
-import { useOnClickOutside } from 'usehooks-ts'
+import { useTranslation } from 'next-i18next'
+import React, { useId } from 'react'
+import Select, {
+  ClearIndicatorProps,
+  components,
+  DropdownIndicatorProps,
+  GroupBase,
+  MultiValueRemoveProps,
+  OptionProps,
+  Props as ReactSelectProps,
+} from 'react-select'
+import { OptionsOrGroups } from 'react-select/dist/declarations/src/types'
+import { twMerge } from 'tailwind-merge'
 
-import { handleOnKeyPress } from '../../../../frontend/utils/general'
-import FieldErrorMessage from '../../info-components/FieldErrorMessage'
-import FieldHeader from '../../info-components/FieldHeader'
-import { ExplicitOptionalType } from '../../types/ExplicitOptional'
-import Dropdown from './Dropdown'
-import SelectFieldBox from './SelectFieldBox'
-import { SelectOption } from './SelectOption.interface'
+import CheckboxIcon from '../../icon-components/CheckboxIcon'
+import FieldWrapper, { FieldWrapperProps } from '../FieldWrapper'
 
-interface SelectFieldProps {
-  label: string
-  type?: 'one' | 'multiple' | 'arrow' | 'radio'
-  value?: SelectOption[]
-  enumOptions?: SelectOption[]
-  tooltip?: string
-  dropdownDivider?: boolean
-  selectAllOption?: boolean
-  placeholder?: string
-  errorMessage?: string[]
-  helptext?: string
-  required?: boolean
-  explicitOptional?: ExplicitOptionalType
-  disabled?: boolean
-  hideScrollbar?: boolean
-  alwaysOneSelected?: boolean
-  maxWordSize?: number
-  className?: string
-  onChange: (values: SelectOption[]) => void
+export type SelectOption = { value: string; label: string; description?: string }
+
+const DropdownIndicator = <
+  Option,
+  IsMulti extends boolean = false,
+  Group extends GroupBase<Option> = GroupBase<Option>,
+>({
+  ...props
+}: DropdownIndicatorProps<Option, IsMulti, Group>) => {
+  const { menuIsOpen, isDisabled } = props.selectProps
+
+  return (
+    <components.DropdownIndicator {...props}>
+      <ChevronDownIcon
+        data-cy="dropdown-close"
+        className={cx({ 'rotate-180': menuIsOpen, 'text-gray-400': isDisabled })}
+      />
+    </components.DropdownIndicator>
+  )
 }
 
-const SelectFieldComponent: ForwardRefRenderFunction<HTMLDivElement, SelectFieldProps> = (
-  props: SelectFieldProps,
-  ref: ForwardedRef<HTMLDivElement>,
+const ClearIndicator = <
+  Option,
+  IsMulti extends boolean = false,
+  Group extends GroupBase<Option> = GroupBase<Option>,
+>(
+  props: ClearIndicatorProps<Option, IsMulti, Group>,
 ) => {
-  // PROPS
-  const {
-    label,
-    value,
-    enumOptions,
-    type = 'one',
-    selectAllOption,
-    placeholder,
-    helptext,
-    tooltip,
-    dropdownDivider,
-    errorMessage = [],
-    required,
-    explicitOptional,
-    disabled,
-    hideScrollbar,
-    alwaysOneSelected,
-    maxWordSize = 17,
-    className,
-    onChange,
-  } = props
-
-  const [isDropdownOpened, setIsDropdownOpened] = useState<boolean>(false)
-  // info if 'clickOutside event' was invoked by dropdown
-  const [isClickedOutsideDropdown, setIsClickedOutsideDropdown] = useState<boolean>(false)
-  // info if 'clickOutside event' was invoked by select body
-  const [isClickedOutsideSelect, setIsClickedOutsideSelect] = useState<boolean>(false)
-  // info if dropdown should be closed (used in combination with clickOutside)
-  const [shouldCloseClick, setShouldCloseClick] = useState<boolean>(false)
-  const [filter, setFilter] = useState<string>('')
-  const [filterRef] = useState<RefObject<HTMLInputElement>>(React.createRef<HTMLInputElement>())
-  const clickOutsideRef = useRef<HTMLDivElement>(null)
-
-  const selectClassName = cx(
-    'border-form-input-default flex flex-row bg-white rounded-lg border-2 items-center',
-    {
-      'hover:border-form-input-hover focus:border-form-input-pressed active:border-form-input-pressed':
-        !disabled,
-      'border-negative-700 hover:border-negative-700 focus:border-negative-700':
-        errorMessage?.length > 0 && !disabled,
-      'border-form-input-disabled opacity-50': disabled,
-    },
-  )
-
-  // reset help states when dropdown is opened or closed
-  useEffect(() => {
-    setIsClickedOutsideSelect(false)
-    setIsClickedOutsideDropdown(false)
-    setShouldCloseClick(false)
-  }, [isDropdownOpened])
-
-  // close dropdown if we click outside of dropdown or select body but not if clicked on arrow icon in select body (shouldCloseClick)
-  useEffect(() => {
-    if (isClickedOutsideDropdown && !shouldCloseClick && isClickedOutsideSelect) {
-      setIsDropdownOpened(false)
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [isClickedOutsideDropdown, isClickedOutsideSelect])
-
-  // close dropdown if it was opened and user clicked on arrow icon
-  useEffect(() => {
-    setIsDropdownOpened(false)
-  }, [shouldCloseClick])
-
-  useOnClickOutside(clickOutsideRef, () => {
-    setIsClickedOutsideSelect(true)
-  })
-
-  const handleOnChangeSelect = (selectedOptions: SelectOption[], close?: boolean) => {
-    if (!onChange) return
-    if (alwaysOneSelected && selectedOptions.length === 0 && enumOptions) {
-      selectedOptions.push(enumOptions[0])
-    }
-    onChange(selectedOptions)
-    if (type === 'multiple' || !close) {
-      setIsDropdownOpened(true)
-    }
-  }
-
-  const handleOnRemove = (optionId: number) => {
-    const newValue = value ? [...value] : []
-    newValue.splice(optionId, 1)
-    const close = type !== 'multiple'
-    handleOnChangeSelect(newValue, close)
-  }
-
-  const handleOnChooseOne = (option: SelectOption, close?: boolean) => {
-    if (close) setIsDropdownOpened(false)
-    handleOnChangeSelect([option], close)
-    setFilter('')
-  }
-
-  const handleOnUnChooseOne = (option: SelectOption, close?: boolean) => {
-    if (close) setIsDropdownOpened(false)
-    handleOnChangeSelect([], close)
-  }
-
-  const handleOnChooseMulti = (option: SelectOption) => {
-    const newValue = value ? [...value] : []
-    newValue.push(option)
-    handleOnChangeSelect(newValue)
-  }
-
-  const handleOnUnChooseMulti = (option: SelectOption) => {
-    const newValue = value
-      ? [...value].filter((valueOption) => {
-          return valueOption.const !== option.const
-        })
-      : []
-    handleOnChangeSelect(newValue)
-  }
-
-  const handleOnSelectFieldClick = (event: React.MouseEvent | React.KeyboardEvent) => {
-    const targetClassList = (event.target as Element).classList
-    if (!isDropdownOpened && !targetClassList.contains('tag') && !disabled) {
-      filterRef.current?.focus()
-      setIsDropdownOpened(true)
-    }
-  }
-
-  const handleOnArrowClick = (event: React.MouseEvent | React.KeyboardEvent) => {
-    if (isDropdownOpened) {
-      // thanks to this state, we can ignore handling of 'clickOutside' and use custom behaviour for arrow icon
-      // click on arrow icon will open or close in opposite of actual state
-      setShouldCloseClick(true)
-    } else {
-      // if closed, handle it as whole select body
-      // click on body of select outside of arrow icon will always keep open dropdown and active filter
-      handleOnSelectFieldClick(event)
-    }
-  }
-
-  const handleOnDeleteLastValue = () => {
-    const newValue = value ? [...value] : []
-    newValue.pop()
-    handleOnChangeSelect(newValue)
-  }
-
-  const handleOnSelectAll = () => {
-    const newValue = enumOptions ? [...enumOptions] : []
-    handleOnChangeSelect(newValue)
-  }
-
-  const handleOnDeselectAll = () => {
-    handleOnChangeSelect([])
-  }
-
-  const handleOnClickOutsideDropdown = () => {
-    setIsClickedOutsideDropdown(true)
-  }
-
-  // HELPER FUNCTIONS
-  const getDropdownValues = (): SelectOption[] => {
-    return value ? (type !== 'multiple' && value && value.length > 0 ? [value[0]] : value) : []
-  }
-
-  const getFilteredOptions = (): SelectOption[] => {
-    return enumOptions
-      ? enumOptions.filter((option: SelectOption) =>
-          String(option.title).toLowerCase().includes(filter.toLowerCase()),
-        )
-      : []
-  }
-
-  const isRowBold = enumOptions?.some(
-    (option: SelectOption) => option.description && option.description !== '',
-  )
-
-  // RENDER
   return (
-    <section
-      className={cx(
-        'relative w-full max-w-[200px] xs:max-w-[320px] flex flex-col transition-all',
-        className,
-      )}
-    >
-      {/* FIELD HEADER WITH DESCRIPTION AND LABEL */}
-      <FieldHeader
+    <components.ClearIndicator {...props}>
+      <CrossIcon />
+    </components.ClearIndicator>
+  )
+}
+
+const MultiValueRemove = (props: MultiValueRemoveProps) => {
+  return (
+    <components.MultiValueRemove {...props}>
+      <CrossIcon />
+    </components.MultiValueRemove>
+  )
+}
+
+const CustomOption = <
+  Option extends SelectOption,
+  IsMulti extends boolean = false,
+  Group extends GroupBase<Option> = GroupBase<Option>,
+>({
+  children,
+  selectHasDescriptions,
+  ...props
+}: OptionProps<Option, IsMulti, Group> & { selectHasDescriptions: boolean }) => {
+  const { data, isMulti, isSelected } = props
+  const { description } = data
+
+  return (
+    <>
+      <components.Option {...props}>
+        {selectHasDescriptions ? (
+          <div>
+            <div className="text-p1-semibold">{children}</div>
+            {description && <div className="text-p2">{description}</div>}
+          </div>
+        ) : (
+          <div>{children}</div>
+        )}
+        <div aria-hidden>
+          {isMulti ? (
+            <CheckboxIcon checked={isSelected} />
+          ) : isSelected ? (
+            <CheckInCircleIcon />
+          ) : null}
+        </div>
+      </components.Option>
+      <div className="mx-5 h-0.5 bg-gray-200 last:hidden" aria-hidden />
+    </>
+  )
+}
+
+type SelectMultiNewProps<
+  Option extends SelectOption,
+  IsMulti extends boolean = false,
+  Group extends GroupBase<Option> = GroupBase<Option>,
+> = Pick<
+  ReactSelectProps<Option, IsMulti, Group>,
+  | 'isDisabled'
+  | 'value'
+  | 'options'
+  | 'placeholder'
+  | 'isMulti'
+  | 'isSearchable'
+  | 'onChange'
+  | 'className'
+> &
+  FieldWrapperProps
+
+const someOptionHasDescription = <
+  Option extends SelectOption,
+  Group extends GroupBase<Option> = GroupBase<Option>,
+>(
+  options: OptionsOrGroups<Option, Group> | undefined,
+) => {
+  if (!options) return false
+
+  return options.some((option) =>
+    'options' in option ? someOptionHasDescription(option.options) : Boolean(option.description),
+  )
+}
+
+/**
+ * Inspiration: https://www.jussivirtanen.fi/writing/styling-react-select-with-tailwind
+ * Docs: https://react-select.com/home
+ * Figma: https://www.figma.com/file/17wbd0MDQcMW9NbXl6UPs8/DS-ESBS%2BBK%3A-Component-library?type=design&node-id=11794-3647&mode=design&t=QDLivrb2ukM9SiD9-0
+ * Figma Dropdowns: https://www.figma.com/file/17wbd0MDQcMW9NbXl6UPs8/DS-ESBS%2BBK%3A-Component-library?type=design&node-id=810-1889&mode=design&t=QDLivrb2ukM9SiD9-0
+ *
+ * TODO: The library accepts `isDisabled`, but FieldWrapper provides `disabled`. Synchronize these.
+ * TODO: Add possibility to remove value if it's not required.
+ */
+const SelectField = <
+  Option extends SelectOption,
+  IsMulti extends boolean = false,
+  Group extends GroupBase<Option> = GroupBase<Option>,
+>({
+  value,
+  label,
+  helptext,
+  helptextHeader,
+  tooltip,
+  errorMessage,
+  options,
+  onChange = () => null,
+  placeholder,
+  className,
+  size,
+  displayOptionalLabel,
+  ...rest
+}: SelectMultiNewProps<Option, IsMulti, Group>) => {
+  const id = useId()
+  const { t } = useTranslation('account', { keyPrefix: 'SelectField' })
+
+  const isError = !!errorMessage?.length
+  const hasDescriptions = someOptionHasDescription(options)
+
+  return (
+    <div className={twMerge('w-full', className)}>
+      <FieldWrapper
         label={label}
         helptext={helptext}
+        helptextHeader={helptextHeader}
         tooltip={tooltip}
-        required={required}
-        explicitOptional={explicitOptional}
-      />
-
-      {/* SELECT PART */}
-      <div className={selectClassName} ref={clickOutsideRef}>
-        {/* MAIN BODY OF SELECT */}
-        <SelectFieldBox
-          ref={ref}
-          value={value}
-          multiple={type === 'multiple'}
-          filter={filter}
-          filterRef={filterRef}
-          maxWordSize={maxWordSize}
-          placeholder={placeholder}
-          onRemove={handleOnRemove}
-          onRemoveAll={handleOnDeselectAll}
-          onFilterChange={setFilter}
-          onDeleteLastValue={handleOnDeleteLastValue}
-          onClick={handleOnSelectFieldClick}
-        />
-
-        {/* DROPDOWN ARROW */}
-        <div
-          role="button"
-          tabIndex={0}
-          className="dropdownButton flex flex-col items-center h-10 sm:h-12 cursor-pointer select-none rounded-lg px-3 sm:px-4 [&>svg]:m-1"
-          onClick={handleOnArrowClick}
-          onKeyPress={(event: React.KeyboardEvent) =>
-            handleOnKeyPress(event, () => handleOnArrowClick(event))
-          }
-        >
-          <div className="dropdownButton h-full w-6 items-center relative flex flex-col justify-center">
-            {isDropdownOpened ? <ArrowUpIcon /> : <ArrowDownIcon />}
-            <div className="dropdownButton absolute inset-0 z-10" />
-          </div>
-        </div>
-
-        {disabled && <div className="absolute inset-0 rounded-lg z-20" />}
-      </div>
-
-      {/* DROPDOWN */}
-      <div className="dropdown relative">
-        {isDropdownOpened && (
-          <Dropdown
-            enumOptions={getFilteredOptions()}
-            value={getDropdownValues()}
-            isRowBold={isRowBold}
-            type={type}
-            divider={dropdownDivider}
-            hideScrollbar={hideScrollbar}
-            selectAllOption={selectAllOption}
-            maxWordSize={maxWordSize + 5}
-            absolute
-            onChooseOne={handleOnChooseOne}
-            onUnChooseOne={handleOnUnChooseOne}
-            onSelectAll={handleOnSelectAll}
-            onDeselectAll={handleOnDeselectAll}
-            onChooseMulti={handleOnChooseMulti}
-            onUnChooseMulti={handleOnUnChooseMulti}
-            onClickOutside={handleOnClickOutsideDropdown}
+        required={rest.required}
+        errorMessage={errorMessage}
+        displayOptionalLabel={displayOptionalLabel}
+        htmlFor={id}
+      >
+        <div data-cy={`select-${label.toLowerCase().replace(/ /g,"-")}`}>
+          <Select
+            placeholder={null}
+            {...rest}
+            id={id}
+            unstyled
+            value={value}
+            onChange={onChange}
+            options={options}
+            closeMenuOnSelect={!rest.isMulti}
+            hideSelectedOptions={false}
+            noOptionsMessage={() => t('noOptions')}
+            className="w-full"
+            classNames={{
+              control: ({ isFocused, isDisabled }) =>
+              cx('rounded-lg border-2 bg-white hover:cursor-pointer', {
+                'border-negative-700': isError,
+                'border-gray-300': isDisabled && !isError,
+                'border-gray-900': isFocused && !isDisabled,
+                'border-gray-200 hover:border-gray-400': !isFocused && !isError && !isDisabled,
+              }),
+              placeholder: ({ isDisabled }) => (isDisabled ? 'text-gray-500' : 'text-gray-600'),
+              valueContainer: ({ isDisabled }) =>
+                cx('gap-x-2 gap-y-1 px-3 py-2 lg:px-4 lg:py-3', {
+                  // if rounded is not applied, the background overflows to the "control"
+                  'rounded-l-lg bg-gray-100 text-gray-500': isDisabled,
+                }),
+              multiValue: ({ isDisabled }) =>
+                cx(
+                  'items-center gap-1 rounded pl-2 pr-1.5',
+                  isDisabled ? 'bg-gray-200' : 'bg-gray-100',
+                ),
+              multiValueLabel: () => 'text-p3',
+              multiValueRemove: () =>
+                'hover:bg-negative-100 hover:text-red-800 rounded h-5 [&>svg]:w-4 [&>svg]:h-4',
+              indicatorsContainer: ({ isDisabled }) =>
+                // if rounded is not applied, the background overflows to the "control"
+                cx('gap-3 py-2 pr-3 lg:py-3 lg:pr-4', { 'rounded-r-lg bg-gray-100': isDisabled }),
+              clearIndicator: () => 'p-1.5 -m-1.5 rounded-md hover:bg-gray-100',
+              indicatorSeparator: () => 'hidden',
+              dropdownIndicator: () => 'p-1.5 -m-1.5 rounded-md',
+              menu: () => 'py-2 mt-2 border-2 border-gray-900 bg-white rounded-lg',
+              groupHeading: () => 'ml-3 mt-2 mb-1 text-gray-500 text-sm',
+              option: ({ isFocused }) =>
+                cx('!flex items-center justify-between px-5 py-3 hover:cursor-pointer', {
+                  'bg-gray-100 active:bg-gray-200': isFocused,
+                }),
+              noOptionsMessage: () => 'px-4 py-3',
+            }}
+            components={{
+              Option: ({ children, ...props }) => (
+                <CustomOption {...props} selectHasDescriptions={hasDescriptions}>
+                  {children}
+                </CustomOption>
+              ),
+              DropdownIndicator,
+              ClearIndicator,
+              MultiValueRemove,
+            }}
           />
-        )}
-      </div>
-
-      {/* ERROR MESSAGE */}
-      <FieldErrorMessage errorMessage={errorMessage} />
-    </section>
+        </div>
+      </FieldWrapper>
+    </div>
   )
 }
 
-const SelectField = forwardRef<HTMLDivElement, SelectFieldProps>(SelectFieldComponent)
 export default SelectField

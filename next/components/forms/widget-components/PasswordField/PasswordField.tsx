@@ -1,23 +1,16 @@
-import HiddenIcon from '@assets/images/new-icons/ui/eye.svg'
+import { EyeIcon } from '@assets/ui-icons'
 import InputField from 'components/forms/widget-components/InputField/InputField'
 import { forwardRef, useRef, useState } from 'react'
 import { useButton } from 'react-aria'
 
-import { ExplicitOptionalType } from '../../types/ExplicitOptional'
+import { FieldWrapperProps } from '../FieldWrapper'
 
-interface Props {
-  label: string
-  placeholder: string
-  errorMessage?: string[]
-  helptext?: string
-  className?: string
+type Props = FieldWrapperProps & {
   value?: string
-  required?: boolean
-  explicitOptional?: ExplicitOptionalType
-  disabled?: boolean
-  tooltip?: string
   autoComplete?: string
   onChange?: (value?: string) => void
+  placeholder?: string
+  className?: string
 }
 
 const PasswordField = forwardRef<HTMLInputElement, Props>(
@@ -27,9 +20,9 @@ const PasswordField = forwardRef<HTMLInputElement, Props>(
       placeholder,
       errorMessage = [],
       helptext,
+      helptextHeader,
       tooltip,
       required,
-      explicitOptional,
       value = '',
       disabled,
       className,
@@ -63,23 +56,23 @@ const PasswordField = forwardRef<HTMLInputElement, Props>(
         placeholder={placeholder}
         errorMessage={errorMessage}
         helptext={helptext}
+        helptextHeader={helptextHeader}
         value={value}
         className={className}
         required={required}
         disabled={disabled}
         tooltip={tooltip}
         onChange={onChange}
-        explicitOptional={explicitOptional}
         ref={ref}
         autoComplete={autoComplete}
         endIcon={
           <button
             type="button"
             ref={buttonRef}
-            className="flex items-center justify-center absolute inset-y-1/2 right-3 sm:right-4 h-6 w-6 -translate-y-2/4 cursor-pointer"
+            className="absolute inset-y-1/2 right-3 flex h-6 w-6 -translate-y-2/4 cursor-pointer items-center justify-center sm:right-4"
             {...buttonProps}
           >
-            <HiddenIcon />
+            <EyeIcon />
           </button>
         }
         {...rest}

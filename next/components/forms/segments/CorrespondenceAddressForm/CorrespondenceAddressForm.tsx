@@ -1,10 +1,10 @@
 import AccountErrorAlert from 'components/forms/segments/AccountErrorAlert/AccountErrorAlert'
 import Button from 'components/forms/simple-components/Button'
 import InputField from 'components/forms/widget-components/InputField/InputField'
+import { Address } from 'frontend/dtos/accountDto'
 import { useTranslation } from 'next-i18next'
 import { Controller } from 'react-hook-form'
 
-import { AccountError, Address } from '../../../../frontend/hooks/useAccount'
 import useHookForm from '../../../../frontend/hooks/useHookForm'
 
 const schema = {
@@ -34,7 +34,7 @@ const schema = {
 }
 
 interface Props {
-  error?: AccountError | null
+  error?: Error | null
   onHideError?: () => void
   onSubmit: ({ data }: { data?: Address }) => void
   defaultValues?: Address
@@ -55,7 +55,7 @@ const CorrespondenceAddressForm = ({ error, onHideError, onSubmit, defaultValues
 
   return (
     <form
-      className="flex flex-col space-y-4 w-full"
+      className="flex w-full flex-col space-y-4"
       onSubmit={handleSubmit((data: Address) => {
         const modifyData: Address = {
           ...data,
@@ -102,7 +102,7 @@ const CorrespondenceAddressForm = ({ error, onHideError, onSubmit, defaultValues
             tooltip={t('postal_code_tooltip')}
             label={t('postal_code_label')}
             placeholder={t('postal_code_placeholder')}
-            size="default"
+            size="medium"
             required
             {...field}
             errorMessage={errors.postal_code}

@@ -1,12 +1,11 @@
-import SelectField from 'components/forms/widget-components/SelectField/SelectField'
-import { SelectOption } from 'components/forms/widget-components/SelectField/SelectOption.interface'
 import { Dispatch, SetStateAction } from 'react'
-import { useWindowSize } from 'usehooks-ts'
+
+import SelectFieldNew, { SelectOption } from '../../widget-components/SelectField/SelectField'
 
 type MunicipalServicesSectionHeaderBase = {
   title: string
-  selectorValue: SelectOption[]
-  setSelectorValue: (val: SelectOption[]) => void
+  selectorValue: SelectOption
+  setSelectorValue: (val: SelectOption) => void
   setCurrentPage: Dispatch<SetStateAction<number>>
   enumOptions: SelectOption[]
 }
@@ -18,27 +17,22 @@ const MunicipalServicesSectionHeader = ({
   setCurrentPage,
   setSelectorValue,
 }: MunicipalServicesSectionHeaderBase) => {
-  const { width } = useWindowSize()
   return (
     <div className="bg-gray-50">
-      <span className="flex flex-col justify-end w-full h-full max-w-screen-lg m-auto pl-4 lg:px-0 pt-6 lg:pt-16 pb-4 lg:pb-8">
+      <div className="m-auto flex h-full w-full max-w-screen-lg flex-col justify-end pb-4 pl-4 pt-6 lg:px-0 lg:pb-8 lg:pt-16">
         <h1 className="text-h1 mb-4 md:mb-6">{title}</h1>
-        <SelectField
+        <SelectFieldNew
           label=""
-          className="max-w-none xs:max-w-[400px] pr-4"
-          type="one"
+          className="max-w-none pr-4 xs:max-w-[400px]"
           value={selectorValue}
           onChange={(val) => {
+            if (!val) return
             setSelectorValue(val)
             setCurrentPage(1)
           }}
-          dropdownDivider
-          hideScrollbar
-          alwaysOneSelected
-          enumOptions={enumOptions}
-          maxWordSize={width > 480 ? 45 : 25}
+          options={enumOptions}
         />
-      </span>
+      </div>
     </div>
   )
 }

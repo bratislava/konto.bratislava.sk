@@ -22,11 +22,13 @@
       "@utils": ["./utils"],
       "@utils/*": ["./utils/*"],
       "@assets/images": ["./assets/images/index.ts"],
+      "@assets/ui-icons": ["./assets/ui-icons/index.ts"],
       "@assets/images/*": ["./assets/images/*"],
+      "@assets/icons/*": ["./assets/icons/*"],
       "@backend/*": ["./backend/*"],
       "@clients/*": ["./clients/*"]
     }
   },
   "include": ["**/*.ts", "**/*.tsx", "**/*.js", "**/*.jsx", "next-env.d.ts"],
-  "exclude": ["node_modules"]
+  "exclude": ["node_modules", "schema-generator"]
 }

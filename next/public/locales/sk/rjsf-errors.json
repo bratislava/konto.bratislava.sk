@@ -1,0 +1,13 @@
+{
+  "required": "Vyplňte pole",
+  "minItems": "Nedostatočný počet položiek",
+  "minLength": "Zadaná hodnota obsahuje primálo znakov",
+  "pattern": "Zadajte hodnotu v požadovanom formáte",
+  "unknown": "Neznáma chyba",
+  "format": {
+    "unknown": "Zadajte hodnotu v požadovanom formáte",
+    "zip": "Zadajte PSČ v tvare \"81101\"",
+    "phone-number": "Zadajte telefónne číslo v medzinárodnom formáte +421..",
+    "email": "Zadajte e-mail v správnom formáte"
+  }
+}

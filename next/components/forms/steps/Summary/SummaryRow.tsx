@@ -1,11 +1,18 @@
-import EditIcon from '@assets/images/new-icons/ui/pen.svg'
-import UnionWaitIcon from '@assets/images/new-icons/ui/union-wait-icon.svg'
+import { EditIcon } from '@assets/ui-icons'
 import cx from 'classnames'
+import { ReactNode } from 'react'
 
-import { TransformedFormData } from './TransformedFormData'
+export interface SummaryRowData {
+  label: string
+  value?: ReactNode | string | null
+  schemaPath?: string
+  isError: boolean
+  isConditional?: boolean
+  name?: string
+}
 
 interface SummaryRowProps {
-  data: TransformedFormData
+  data: SummaryRowData
   size?: 'small' | 'large'
   isEditable?: boolean
   onGoToStep?: () => void
@@ -14,14 +21,13 @@ interface SummaryRowProps {
 const SummaryRow = (props: SummaryRowProps) => {
   const { data, size = 'large', isEditable = true, onGoToStep } = props
 
-  const containerClassName = cx('border-b-2 md:flex-nowrap flex flex-wrap flex-row py-2.5 gap-2', {
-    '[&>div>*]:block border-red-500': data.isError,
-    'border-gray-200 [&>div>*]:hover:block': !data.isError && data.fileScanState !== 'scan',
-    'border-orange-400 [&>div>*]:block': !data.isError && data.fileScanState === 'scan',
+  const containerClassName = cx('flex flex-row flex-wrap gap-2 border-b-2 py-2.5 md:flex-nowrap', {
+    'border-red-500 [&>div>*]:block': data.isError,
+    'border-gray-200 [&>div>*]:hover:block': !data.isError,
     'hover:border-gray-700': isEditable,
   })
 
-  const labelClassName = cx('w-full', {
+  const labelClassName = cx('w-full flex-1', {
     'text-p1-semibold': size === 'large',
     'text-p2-semibold': size === 'small',
   })
@@ -32,17 +38,13 @@ const SummaryRow = (props: SummaryRowProps) => {
   })
 
   return (
-    <div className={containerClassName}>
+    <div className={containerClassName} data-cy={`summary-row-${data.name}`}>
       <p className={labelClassName}>{data.label}</p>
-      <div className="w-full flex flex-row items-center">
-        <p className={valueClassName}>{data.value || '-'}</p>
+      <div className="flex w-full flex-1 flex-row items-center">
+        <span className={valueClassName}>{data.value || '-'}</span>
         {isEditable && (
           <div className="w-5 lg:hidden hover:lg:block">
-            {data.fileScanState === 'scan' ? (
-              <UnionWaitIcon className="cursor-pointer flex w-5 h-5" onClick={onGoToStep} />
-            ) : (
-              <EditIcon className="cursor-pointer flex w-5 h-5" onClick={onGoToStep} />
-            )}
+            <EditIcon className="flex h-5 w-5 cursor-pointer" onClick={onGoToStep} />
           </div>
         )}
       </div>

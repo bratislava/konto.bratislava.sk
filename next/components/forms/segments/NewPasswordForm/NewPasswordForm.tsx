@@ -3,14 +3,11 @@ import LoginAccountLink from 'components/forms/segments/LoginAccountLink/LoginAc
 import Button from 'components/forms/simple-components/Button'
 import InputField from 'components/forms/widget-components/InputField/InputField'
 import PasswordField from 'components/forms/widget-components/PasswordField/PasswordField'
+import useHookForm from 'frontend/hooks/useHookForm'
+import logger from 'frontend/utils/logger'
 import { useTranslation } from 'next-i18next'
 import { useEffect, useState } from 'react'
 import { Controller } from 'react-hook-form'
-
-import { AccountError } from '../../../../frontend/hooks/useAccount'
-import useHookForm from '../../../../frontend/hooks/useHookForm'
-import logger from '../../../../frontend/utils/logger'
-import { formatUnicorn } from '../../../../frontend/utils/string'
 
 interface Data {
   verificationCode: string
@@ -21,7 +18,7 @@ interface Data {
 interface Props {
   onSubmit: (verificationCode: string, password: string) => Promise<any>
   onResend: () => Promise<any>
-  error?: AccountError | null | undefined
+  error?: Error | null
   lastEmail: string
   fromMigration?: boolean
 }
@@ -84,6 +81,7 @@ const NewPasswordForm = ({ onSubmit, error, onResend, lastEmail, fromMigration }
   return (
     <form
       className="flex flex-col space-y-4"
+      data-cy="new-password-form"
       onSubmit={handleSubmit((data: Data) => {
         setLastVerificationCode(data.verificationCode)
         onSubmit(data.verificationCode, data.password).catch((error_) =>
@@ -94,9 +92,7 @@ const NewPasswordForm = ({ onSubmit, error, onResend, lastEmail, fromMigration }
       <h1 className="text-h3">
         {t(fromMigration ? 'migration_new_password_title' : 'new_password_title')}
       </h1>
-      <p className="text-p3 lg:text-p2">
-        {formatUnicorn(t('new_password_description'), { email: lastEmail })}
-      </p>
+      <p className="text-p3 lg:text-p2">{t('new_password_description', { email: lastEmail })}</p>
       <AccountErrorAlert
         error={error}
         args={{
@@ -162,7 +158,7 @@ const NewPasswordForm = ({ onSubmit, error, onResend, lastEmail, fromMigration }
       />
       <div className="text-p3 lg:text-p2">
         <span>{t('verification_description')}</span>
-        {cnt > 0 && <span>{` ${formatUnicorn(t('verification_cnt_description'), { cnt })}`}</span>}
+        {cnt > 0 && <span>{t('verification_cnt_description', { cnt })}</span>}
       </div>
       <Button
         onPress={handleResend}

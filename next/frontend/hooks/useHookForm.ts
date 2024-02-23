@@ -20,13 +20,14 @@ export default function useHookForm<T extends FieldValues>({ schema, defaultValu
     resolver: ajvResolver(schema as JSONSchemaType<T>, {
       formats: {
         file: () => true,
-        phone: '^\\+\\d{12}$',
+        phone: '^\\+\\d{6,18}$',
         email:
           "^[a-zA-Z0-9!#$%&'*+/=?^_`{|}~-]+(?:\\.[a-zA-Z0-9!#$%&'*+/=?^_`{|}~-]+)*@(?:[a-zA-Z0-9](?:[a-zA-Z0-9-]*[a-zA-Z0-9])?\\.)+[a-zA-Z0-9](?:[a-zA-Z0-9-]*[a-zA-Z0-9])?$",
         password: /^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?\d).{8,}$/,
         postalCode: '^\\s*(\\d\\s*\\d\\s*\\d\\s*\\d\\s*\\d)?\\s*$',
         // postalCode: '^([0-9]{5}|)$',
         idCard: '^([a-zA-Z]{2})([0-9]{6})([0-9]?)$',
+        ico: '^[0-9]{8}$',
         rc: (value: string) => {
           const formattedValue = value.replace('/', '')
 

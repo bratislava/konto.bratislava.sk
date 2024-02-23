@@ -1,71 +1,80 @@
 import cx from 'classnames'
-import { FormSpacingType } from 'components/forms/types/WidgetOptions'
-import React, { ReactNode, useId } from 'react'
+import React, { PropsWithChildren } from 'react'
+import { WidgetSpacing, WidgetUiOptions } from 'schema-generator/generator/uiOptionsTypes'
+import { twMerge } from 'tailwind-merge'
 
-import { isObject } from '../../../frontend/utils/general'
-import Accordion, { AccordionBase } from '../simple-components/Accordion'
+import CustomComponents from '../widget-components/CustomComponents/CustomComponents'
+import { useWidgetSpacingContext } from './useWidgetSpacingContext'
 
-type WidgetWrapperBase = {
-  children: ReactNode
+type WidgetWrapperProps = PropsWithChildren<{
+  id: string
+  options: WidgetUiOptions
   className?: string
-  spaceBottom?: FormSpacingType
-  spaceTop?: FormSpacingType
-  accordion?: AccordionBase | AccordionBase[]
-  id?: string
-}
-
-export const isFormSpacingType = (formSpacingType: string): formSpacingType is FormSpacingType => {
-  return ['large', 'default', 'small', 'medium', 'none'].includes(formSpacingType)
-}
+  defaultSpacing?: Partial<WidgetSpacing>
+}>
 
 const WidgetWrapper = ({
-  children,
-  className,
-  accordion,
-  spaceBottom = 'default',
-  spaceTop = 'default',
   id,
-}: WidgetWrapperBase) => {
-  const generatedId = useId()
-  const generatedOrProvidedId = id ?? generatedId
+  options,
+  className,
+  children,
+  defaultSpacing: {
+    spaceTop: spaceTopDefault = 'small',
+    spaceBottom: spaceBottomDefault = 'small',
+  } = {
+    spaceTop: 'small',
+    spaceBottom: 'small',
+  },
+}: WidgetWrapperProps) => {
+  const {
+    className: optionsClassName,
+    spaceBottom: spaceBottomExplicit,
+    spaceTop: spaceTopUiExplicit,
+    rightComponents,
+    belowComponents,
+  } = options
+
+  const { spaceTop: spaceTopContext, spaceBottom: spaceBottomContext } = useWidgetSpacingContext()
+
+  const spaceTop = spaceTopUiExplicit ?? spaceTopContext ?? spaceTopDefault
+  const spaceBottom = spaceBottomExplicit ?? spaceBottomContext ?? spaceBottomDefault
+
+  const hasRightComponents = rightComponents && rightComponents?.length > 0
+  const hasBelowComponents = belowComponents && belowComponents?.length > 0
+
   return (
     <div
-      className={cx('flex flex-col gap-4', className, {
-        'mb-0': spaceBottom === 'none',
-        'mb-10': spaceBottom === 'large',
-        'mb-8': spaceBottom === 'medium',
-        'mb-6': spaceBottom === 'small',
-        'mb-4': spaceBottom === 'default',
+      id={id ?? undefined}
+      className={twMerge(
+        'flex flex-col gap-4',
+        className,
+        optionsClassName,
+        cx({
+          'mb-0': spaceBottom === 'none',
+          'mb-10': spaceBottom === 'large',
+          'mb-8': spaceBottom === 'medium',
+          'mb-6': spaceBottom === 'small',
+          'mb-4': spaceBottom === 'default',
 
-        'mt-0': spaceTop === 'none',
-        'mt-10': spaceTop === 'large',
-        'mt-8': spaceTop === 'medium',
-        'mt-6': spaceTop === 'small',
-        'mt-4': spaceTop === 'default',
-      })}
-    >
-      {children}
-      {Array.isArray(accordion) &&
-        accordion.map((item, index) => {
-          const labelId = `${generatedOrProvidedId}-item-label-${index}`
-          return (
-            <Accordion
-              key={labelId}
-              size={item.size}
-              title={item.title}
-              shadow={item.shadow}
-              content={item.content}
-            />
-          )
-        })}
-      {isObject(accordion) && (
-        <Accordion
-          size={(accordion as AccordionBase)?.size}
-          title={(accordion as AccordionBase)?.title}
-          shadow={(accordion as AccordionBase)?.shadow}
-          content={(accordion as AccordionBase)?.content}
-        />
+          'mt-0': spaceTop === 'none',
+          'mt-10': spaceTop === 'large',
+          'mt-8': spaceTop === 'medium',
+          'mt-6': spaceTop === 'small',
+          'mt-4': spaceTop === 'default',
+        }),
       )}
+    >
+      {hasRightComponents ? (
+        <div className="sm:grid sm:grid-cols-2 sm:gap-4">
+          <div>{children}</div>
+          <div>
+            <CustomComponents components={rightComponents} />
+          </div>
+        </div>
+      ) : (
+        <div>{children}</div>
+      )}
+      {hasBelowComponents && <CustomComponents components={belowComponents} />}
     </div>
   )
 }

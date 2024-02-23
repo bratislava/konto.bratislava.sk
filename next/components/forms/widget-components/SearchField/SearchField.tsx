@@ -1,26 +1,16 @@
-import ResetIcon from '@assets/images/new-icons/ui/delete.svg'
-import DarkSearchIcon from '@assets/images/new-icons/ui/search.svg'
+import { RemoveIcon, SearchIcon } from '@assets/ui-icons'
 import cx from 'classnames'
 import { useRef, useState } from 'react'
 import { useTextField } from 'react-aria'
 
-import FieldErrorMessage from '../../info-components/FieldErrorMessage'
-import FieldHeader from '../../info-components/FieldHeader'
-import { ExplicitOptionalType } from '../../types/ExplicitOptional'
+import FieldWrapper, { FieldWrapperProps } from '../FieldWrapper'
 
-interface InputBase {
-  label: string
-  placeholder: string
-  errorMessage?: string[]
-  helptext?: string
-  className?: string
+type SearchFieldProps = FieldWrapperProps & {
   value?: string
-  required?: boolean
-  explicitOptional?: ExplicitOptionalType
   resetIcon?: boolean
-  disabled?: boolean
-  tooltip?: string
   onChange?: (e: string) => void
+  placeholder?: string
+  className?: string
 }
 
 const SearchField = ({
@@ -28,15 +18,18 @@ const SearchField = ({
   placeholder,
   errorMessage = [],
   helptext,
+  helptextHeader,
   tooltip,
   required,
-  explicitOptional,
   value = '',
   disabled,
   resetIcon,
   className,
+  size,
+  labelSize,
+  displayOptionalLabel,
   ...rest
-}: InputBase) => {
+}: SearchFieldProps) => {
   const [valueState, setValueState] = useState<string>(value)
   const ref = useRef<HTMLInputElement>(null)
   const { labelProps, inputProps, descriptionProps, errorMessageProps } = useTextField(
@@ -57,7 +50,7 @@ const SearchField = ({
   )
 
   const style = cx(
-    'sm:text-16 text-p3 w-full px-12 sm:px-[52px] py-2 sm:py-2.5 border-2 border-gray-200 rounded-lg caret-gray-700 focus:outline-none focus:border-gray-700 focus:placeholder-transparent',
+    'sm:text-16 text-p3 w-full rounded-lg border-2 border-gray-200 px-12 py-2 caret-gray-700 focus:border-gray-700 focus:placeholder-transparent focus:outline-none sm:px-[52px] sm:py-2.5',
     className,
     {
       // hover
@@ -74,49 +67,53 @@ const SearchField = ({
 
   return (
     <div className="flex w-full max-w-xs flex-col">
-      <FieldHeader
+      <FieldWrapper
         label={label}
         labelProps={labelProps}
         htmlFor={inputProps?.id}
         helptext={helptext}
+        helptextHeader={helptextHeader}
         descriptionProps={descriptionProps}
         required={required}
-        explicitOptional={explicitOptional}
         tooltip={tooltip}
-      />
-      <div className="relative">
-        <i
-          className={cx(
-            'flex items-center justify-center absolute inset-y-1/2 left-3 sm:left-4 h-6 w-6 -translate-y-2/4',
-            {
-              'opacity-50': disabled,
-            },
-          )}
-        >
-          <DarkSearchIcon />
-        </i>
-        <input
-          {...inputProps}
-          ref={ref}
-          value={valueState}
-          name={inputProps.id}
-          className={style}
-        />
-        {resetIcon && valueState && (
+        errorMessage={errorMessage}
+        errorMessageProps={errorMessageProps}
+        disabled={disabled}
+        size={size}
+        labelSize={labelSize}
+        displayOptionalLabel={displayOptionalLabel}
+      >
+        <div className="relative">
           <i
-            role="button"
-            tabIndex={0}
-            onKeyDown={() => setValueState('')}
-            onClick={() => setValueState('')}
-            className="flex items-center justify-center absolute inset-y-1/2 right-3 sm:right-4 h-6 w-6 -translate-y-2/4 cursor-pointer"
+            className={cx(
+              'absolute inset-y-1/2 left-3 flex h-6 w-6 -translate-y-2/4 items-center justify-center sm:left-4',
+              {
+                'opacity-50': disabled,
+              },
+            )}
           >
-            <ResetIcon />
+            <SearchIcon />
           </i>
-        )}
-      </div>
-      {!disabled && (
-        <FieldErrorMessage errorMessage={errorMessage} errorMessageProps={errorMessageProps} />
-      )}
+          <input
+            {...inputProps}
+            ref={ref}
+            value={valueState}
+            name={inputProps.id}
+            className={style}
+          />
+          {resetIcon && valueState && (
+            <i
+              role="button"
+              tabIndex={0}
+              onKeyDown={() => setValueState('')}
+              onClick={() => setValueState('')}
+              className="absolute inset-y-1/2 right-3 flex h-6 w-6 -translate-y-2/4 cursor-pointer items-center justify-center sm:right-4"
+            >
+              <RemoveIcon />
+            </i>
+          )}
+        </div>
+      </FieldWrapper>
     </div>
   )
 }

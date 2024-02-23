@@ -1,49 +1,41 @@
-import SelectedIcon from '@assets/images/new-icons/ui/done.svg'
+import { CheckIcon } from '@assets/ui-icons'
 import cx from 'classnames'
+import { useTranslation } from 'next-i18next'
 import React from 'react'
+import { twMerge } from 'tailwind-merge'
 
-import { handleOnKeyPress } from '../../../frontend/utils/general'
+import { FormStepperStep } from '../types/Steps'
 
 interface StepperViewRowProps {
-  title?: string
-  order: number
-  isCurrent?: boolean
-  isFilled?: boolean
-  isLast?: boolean
-  onClick?: () => void
+  step: FormStepperStep
+  isCurrent: boolean
   className?: string
 }
 
-const StepperViewRow = (props: StepperViewRowProps) => {
-  const { title, order, isCurrent, isFilled, isLast, onClick, className } = props
+const StepperViewRow = ({ step, isCurrent, className }: StepperViewRowProps) => {
+  const { t } = useTranslation('forms')
 
+  const { title, stepperTitle, isSubmitted, displayIndex } = step
   const iconClassName = cx(
-    'min-w-8 w-8 flex-row h-8 rounded-full flex justify-center items-center border-2 shrink-0',
+    'min-w-8 flex h-8 w-8 shrink-0 flex-row items-center justify-center rounded-full border-2',
     {
-      'bg-gray-700 border-gray-700 text-white': isFilled || isCurrent,
-      'border-gray-300 text-gray-300 bg-transparent': !isFilled && !isCurrent,
+      'border-gray-700 bg-gray-700 text-white': isSubmitted || isCurrent,
+      'border-gray-300 bg-transparent text-gray-300': !isSubmitted && !isCurrent,
     },
   )
 
   return (
-    <div className={cx('flex flex-col select-none', className)}>
-      <div
-        role="button"
-        tabIndex={0}
-        className="flex flex-row gap-3 items-center cursor-pointer"
-        onClick={onClick}
-        onKeyPress={(event: React.KeyboardEvent) => handleOnKeyPress(event, onClick)}
-      >
-        <div className={iconClassName}>
-          {isCurrent || !isFilled ? order : <SelectedIcon fill="white" className="w-6 h-6" />}
-        </div>
-        <p className="text-p3-medium w-72 ">{title}</p>
+    <div className={twMerge('flex flex-row items-center gap-3', className)}>
+      <div className={iconClassName} data-cy={isCurrent ? 'stepper-step-active' : null}>
+        {isCurrent || !isSubmitted ? displayIndex : <CheckIcon fill="white" className="h-6 w-6" />}
       </div>
-      {!isLast && (
-        <div className="w-8 h-8 flex flex-row justify-center items-center">
-          <div className="w-0.5 h-4 bg-gray-300 py-2" />
-        </div>
-      )}
+      <span className="text-p3-medium text-left">
+        {isCurrent ? <span className="sr-only">{t('steps.current_sr')}</span> : null}
+        {isSubmitted && !isCurrent ? (
+          <span className="sr-only">{t('steps.submitted_sr')}</span>
+        ) : null}
+        {stepperTitle ?? title}
+      </span>
     </div>
   )
 }

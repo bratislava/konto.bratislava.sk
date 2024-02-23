@@ -1,65 +1,69 @@
+import { Auth } from 'aws-amplify'
 import AccountContainer from 'components/forms/segments/AccountContainer/AccountContainer'
 import AccountSuccessAlert from 'components/forms/segments/AccountSuccessAlert/AccountSuccessAlert'
 import LoginRegisterLayout from 'components/layouts/LoginRegisterLayout'
-import useSSORedirect from 'frontend/hooks/useSSORedirect'
+import {
+  getSSRCurrentAuth,
+  ServerSideAuthProviderHOC,
+} from 'components/logic/ServerSideAuthProvider'
+import useLoginRegisterRedirect from 'frontend/hooks/useLoginRegisterRedirect'
+import { useServerSideAuth } from 'frontend/hooks/useServerSideAuth'
+import { GENERIC_ERROR_MESSAGE } from 'frontend/utils/errors'
 import logger from 'frontend/utils/logger'
 import { GetServerSidePropsContext } from 'next'
 import { useTranslation } from 'next-i18next'
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
-import { useEffect } from 'react'
-
-import PageWrapper from '../components/layouts/PageWrapper'
-import useAccount from '../frontend/hooks/useAccount'
-import { isProductionDeployment } from '../frontend/utils/general'
-import { AsyncServerProps } from '../frontend/utils/types'
+import { useEffect, useState } from 'react'
 
 export const getServerSideProps = async (ctx: GetServerSidePropsContext) => {
   const locale = ctx.locale ?? 'sk'
 
   return {
     props: {
-      page: {
-        locale: ctx.locale,
-        localizations: ['sk', 'en']
-          .filter((l) => l !== ctx.locale)
-          .map((l) => ({
-            slug: '',
-            locale: l,
-          })),
-      },
-      isProductionDeployment: isProductionDeployment(),
+      ssrCurrentAuthProps: await getSSRCurrentAuth(ctx.req),
       ...(await serverSideTranslations(locale)),
     },
   }
 }
 
-const LogoutPage = ({ page }: AsyncServerProps<typeof getServerSideProps>) => {
+const LogoutPage = () => {
   const { t } = useTranslation('account')
-  const { logout, isAuth } = useAccount()
-  const { redirect } = useSSORedirect()
+  const { isAuthenticated } = useServerSideAuth()
+  const { redirect } = useLoginRegisterRedirect()
+  const [isLoading, setIsLoading] = useState(false)
   useEffect(() => {
-    if (!isAuth) {
+    if (!isAuthenticated) {
       redirect().catch((error) => logger.error('Failed redirect logout useEffect', error))
     }
-  }, [isAuth, redirect])
+  }, [isAuthenticated, redirect])
 
-  // TODO replace AccountSuccessAlert with something more fitting
+  const logoutHandler = async () => {
+    setIsLoading(true)
+    try {
+      await Auth.signOut()
+      await redirect()
+    } catch (error) {
+      logger.error(`${GENERIC_ERROR_MESSAGE} logout screen`, error)
+    } finally {
+      setIsLoading(false)
+    }
+  }
+
   return (
-    <PageWrapper locale={page.locale} localizations={page.localizations}>
-      <LoginRegisterLayout backButtonHidden>
-        <AccountContainer className="md:pt-6 pt-0 mb-0 md:mb-8">
-          <AccountSuccessAlert
-            title={t('logout_page.title')}
-            description={t('logout_page.description')}
-            confirmLabel={t('logout_page.confirm_label')}
-            onConfirm={() => logout()}
-            cancelLabel={t('logout_page.cancel_label')}
-            onCancel={() => redirect()}
-          />
-        </AccountContainer>
-      </LoginRegisterLayout>
-    </PageWrapper>
+    <LoginRegisterLayout backButtonHidden>
+      <AccountContainer className="mb-0 pt-0 md:mb-8 md:pt-6">
+        <AccountSuccessAlert
+          title={t('logout_page.title')}
+          description={t('logout_page.description')}
+          confirmLabel={t('logout_page.confirm_label')}
+          onConfirm={logoutHandler}
+          confirmIsLoading={isLoading}
+          cancelLabel={t('logout_page.cancel_label')}
+          onCancel={() => redirect()}
+        />
+      </AccountContainer>
+    </LoginRegisterLayout>
   )
 }
 
-export default LogoutPage
+export default ServerSideAuthProviderHOC(LogoutPage)

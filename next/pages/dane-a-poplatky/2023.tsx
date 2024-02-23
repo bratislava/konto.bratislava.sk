@@ -1,43 +1,41 @@
 import AccountPageLayout from 'components/layouts/AccountPageLayout'
-import PageWrapper from 'components/layouts/PageWrapper'
+import {
+  getSSRCurrentAuth,
+  ServerSideAuthProviderHOC,
+} from 'components/logic/ServerSideAuthProvider'
 import { GetServerSidePropsContext } from 'next'
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
 
 import TaxFeeSection from '../../components/forms/segments/AccountSections/TaxesFeesSection/TaxFeeSection'
-import { isProductionDeployment as isProductionDeploymentFn } from '../../frontend/utils/general'
-import { AsyncServerProps } from '../../frontend/utils/types'
+import { ROUTES } from '../../frontend/api/constants'
 
 export const getServerSideProps = async (ctx: GetServerSidePropsContext) => {
   const locale = ctx.locale ?? 'sk'
 
+  const ssrCurrentAuthProps = await getSSRCurrentAuth(ctx.req)
+  if (!ssrCurrentAuthProps.userData) {
+    return {
+      redirect: {
+        destination: `${ROUTES.LOGIN}?from=${ctx.resolvedUrl}`,
+        permanent: false,
+      },
+    }
+  }
+
   return {
     props: {
-      page: {
-        locale: ctx.locale,
-        localizations: ['sk', 'en']
-          .filter((l) => l !== ctx.locale)
-          .map((l) => ({
-            slug: '',
-            locale: l,
-          })),
-      },
+      ssrCurrentAuthProps,
       ...(await serverSideTranslations(locale)),
-      isProductionDeployment: isProductionDeploymentFn(),
     },
   }
 }
 
-const AccountTaxesFeesPage = ({
-  page,
-  isProductionDeployment,
-}: AsyncServerProps<typeof getServerSideProps>) => {
+const AccountTaxesFeesPage = () => {
   return (
-    <PageWrapper locale={page.locale} localizations={page.localizations}>
-      <AccountPageLayout isProductionDeploy={isProductionDeployment}>
-        <TaxFeeSection isProductionDeployment={isProductionDeployment} />
-      </AccountPageLayout>
-    </PageWrapper>
+    <AccountPageLayout>
+      <TaxFeeSection />
+    </AccountPageLayout>
   )
 }
 
-export default AccountTaxesFeesPage
+export default ServerSideAuthProviderHOC(AccountTaxesFeesPage)

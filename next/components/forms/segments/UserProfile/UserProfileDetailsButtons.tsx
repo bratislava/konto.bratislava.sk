@@ -1,5 +1,4 @@
-import CloseIcon from '@assets/images/new-icons/ui/cross.svg'
-import WhiteEditIcon from '@assets/images/new-icons/ui/pen.svg'
+import { CrossIcon, EditIcon } from '@assets/ui-icons'
 import cx from 'classnames'
 import Button from 'components/forms/simple-components/Button'
 import { useTranslation } from 'next-i18next'
@@ -16,12 +15,12 @@ const UserProfileDetailsButtons = (props: UserProfileDetailsButtonsProps) => {
   const { t } = useTranslation('account')
 
   return (
-    <div className="width-fit">
+    <div className="w-fit">
       {
         // first button is to fix bug with autofocus of button 'cancel edit'
         isEditing ? (
-          <div className="flex flex-row gap-5 items-center">
-            <Button className="hidden w-0 h-0" />
+          <div className="flex flex-row items-center gap-5">
+            <Button className="hidden h-0 w-0" />
             <Button
               className={cx('hidden h-full', 'md:block')}
               variant="plain-black"
@@ -37,23 +36,24 @@ const UserProfileDetailsButtons = (props: UserProfileDetailsButtonsProps) => {
               type="submit"
               form={formId}
             />
-            <CloseIcon
-              className={cx('block cursor-pointer w-6 h-6', 'md:hidden')}
+            <CrossIcon
+              className={cx('block h-6 w-6 cursor-pointer', 'md:hidden')}
               onClick={onCancelEditing}
             />
           </div>
         ) : (
-          <div className="width-fit">
+          <div className="w-fit">
             <Button
               variant="black"
-              startIcon={<WhiteEditIcon fill="white" className="w-6 h-6" />}
+              startIcon={<EditIcon fill="white" className="h-6 w-6" />}
               size="sm"
               text={t('profile_detail.start_edit_button')}
               className="hidden md:block"
               onPress={() => onChangeIsEditing(true)}
             />
-            <WhiteEditIcon
-              className="block md:hidden cursor-pointer w-6 h-6"
+
+            <EditIcon
+              className="block h-6 w-6 cursor-pointer md:hidden"
               onClick={() => onChangeIsEditing(true)}
             />
           </div>

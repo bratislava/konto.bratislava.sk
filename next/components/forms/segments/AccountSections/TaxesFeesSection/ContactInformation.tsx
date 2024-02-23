@@ -1,8 +1,13 @@
+import { Auth } from 'aws-amplify'
+import { Address } from 'frontend/dtos/accountDto'
+import { Tax } from 'frontend/dtos/taxDto'
+import useJsonParseMemo from 'frontend/hooks/useJsonParseMemo'
+import { useServerSideAuth } from 'frontend/hooks/useServerSideAuth'
+import { GENERIC_ERROR_MESSAGE, isError } from 'frontend/utils/errors'
+import logger from 'frontend/utils/logger'
 import { useTranslation } from 'next-i18next'
 import { useState } from 'react'
 
-import { Tax } from '../../../../../frontend/dtos/taxDto'
-import useAccount, { Address } from '../../../../../frontend/hooks/useAccount'
 import useSnackbar from '../../../../../frontend/hooks/useSnackbar'
 import SummaryRowSimple from '../../../simple-components/SummaryRowSimple'
 import SummaryRow from '../../../steps/Summary/SummaryRow'
@@ -17,15 +22,39 @@ const postalCodeFormat = (code?: string): string =>
 
 const ContactInformationSection = ({ tax }: ContactInformationSectionProps) => {
   const { t } = useTranslation('account')
-  const { userData, updateUserData, error, resetError } = useAccount()
+  const { userData } = useServerSideAuth()
   const [showSnackbar] = useSnackbar({ variant: 'success' })
-  const postal_code_array = userData?.address?.postal_code?.replace(/\s/g, '')
+  const address = userData?.address
+  const parsedAddress = useJsonParseMemo<Address>(address)
+  const postal_code_array = parsedAddress?.postal_code?.replace(/\s/g, '')
   const [correspondenceAddressModalShow, setCorrespondenceAddressModalShow] = useState(false)
 
+  const [correspondenceAddressError, setCorrespondenceAddressError] = useState<Error | null>(null)
+  const resetError = () => {
+    setCorrespondenceAddressError(null)
+  }
+
   const onSubmitCorrespondenceAddress = async ({ data }: { data?: Address }) => {
-    if (await updateUserData({ address: data })) {
-      setCorrespondenceAddressModalShow(false)
-      showSnackbar(t('profile_detail.success_alert'))
+    try {
+      const user = await Auth.currentAuthenticatedUser()
+      if (
+        await Auth.updateUserAttributes(user, {
+          address: data,
+        })
+      ) {
+        setCorrespondenceAddressModalShow(false)
+        showSnackbar(t('profile_detail.success_alert'))
+      }
+    } catch (error) {
+      if (isError(error)) {
+        setCorrespondenceAddressError(error)
+      } else {
+        logger.error(
+          `${GENERIC_ERROR_MESSAGE} - unexpected object thrown in onSubmitCorrespondenceAddress:`,
+          error,
+        )
+        setCorrespondenceAddressError(new Error('Unknown error'))
+      }
     }
   }
 
@@ -35,14 +64,14 @@ const ContactInformationSection = ({ tax }: ContactInformationSectionProps) => {
         show={correspondenceAddressModalShow}
         onClose={() => setCorrespondenceAddressModalShow(false)}
         onSubmit={onSubmitCorrespondenceAddress}
-        defaultValues={userData?.address}
-        error={error}
+        defaultValues={parsedAddress || undefined}
+        error={correspondenceAddressError}
         onHideError={resetError}
       />
-      <div className="lg:px-0 flex flex-col items-start sm:gap-8 gap-6 w-full px-4">
-        <div className="flex flex-col w-full items-start gap-2">
+      <div className="flex w-full flex-col items-start gap-6 px-4 sm:gap-8 lg:px-0">
+        <div className="flex w-full flex-col items-start gap-2">
           <div className="text-h3">{t('personal_info')}</div>
-          <div className="flex flex-col w-full">
+          <div className="flex w-full flex-col">
             <SummaryRow
               size="small"
               isEditable={false}
@@ -79,15 +108,15 @@ const ContactInformationSection = ({ tax }: ContactInformationSectionProps) => {
                 label: t('correspondence_address'),
                 value:
                   userData &&
-                  (userData.address?.street_address ||
-                    userData.address?.postal_code ||
-                    userData.address?.locality)
+                  (parsedAddress?.street_address ||
+                    parsedAddress?.postal_code ||
+                    parsedAddress?.locality)
                     ? `${
-                        userData.address?.street_address &&
-                        (postal_code_array || userData.address?.locality)
-                          ? `${userData.address?.street_address},`
-                          : userData.address?.street_address || ''
-                      } ${postalCodeFormat(postal_code_array)} ${userData.address?.locality || ''}`
+                        parsedAddress?.street_address &&
+                        (postal_code_array || parsedAddress?.locality)
+                          ? `${parsedAddress?.street_address},`
+                          : parsedAddress?.street_address || ''
+                      } ${postalCodeFormat(postal_code_array)} ${parsedAddress?.locality || ''}`
                     : '',
                 schemaPath: '',
                 isError: false,
@@ -106,9 +135,9 @@ const ContactInformationSection = ({ tax }: ContactInformationSectionProps) => {
             />
           </div>
         </div>
-        <div className="flex flex-col w-full items-start gap-2">
+        <div className="flex w-full flex-col items-start gap-2">
           <div className="text-h3">{t('equips')}</div>
-          <div className="flex flex-col w-full">
+          <div className="flex w-full flex-col">
             <SummaryRow
               size="small"
               isEditable={false}

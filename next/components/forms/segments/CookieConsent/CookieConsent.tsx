@@ -1,6 +1,7 @@
 import Button from 'components/forms/simple-components/Button'
 import Cookies from 'js-cookie'
-import { mapValues, pick } from 'lodash'
+import mapValues from 'lodash/mapValues'
+import pick from 'lodash/pick'
 import Script from 'next/script'
 import { useTranslation } from 'next-i18next'
 import React, { useCallback, useEffect, useState } from 'react'
@@ -78,12 +79,6 @@ export const CookiesAndTracking = () => {
       {/* don't use any of the analytics/tracking in staging/dev - change this if you need testing */}
       {isProductionDeployment() ? (
         <>
-          {/* no consent needed for plausible - always load it after page is interactive */}
-          <Script
-            strategy="afterInteractive"
-            data-domain="konto.bratislava.sk"
-            src="https://plausible.io/js/plausible.js"
-          />
           {consents?.statistics ? (
             <Script
               id="hotjar"
@@ -105,7 +100,7 @@ export const CookiesAndTracking = () => {
 
       {shouldShowBanner ? (
         <div className="fixed inset-x-0 bottom-6 z-50 px-6">
-          <div className="mx-auto max-w-[1110px] rounded-lg bg-white py-8 px-6 shadow md:px-10">
+          <div className="mx-auto max-w-[1110px] rounded-lg bg-white px-6 py-8 shadow md:px-10">
             <h6 className="text-20-semibold mb-4"> {t('cookie_consent_modal_content_title')} </h6>
             <p className="text-p2 mb-8">
               {' '}
@@ -118,7 +113,7 @@ export const CookiesAndTracking = () => {
                 {t('cookie_consent_privacy_policy')}{' '}
               </a>
             </p>
-            <div className="flex flex-col md:flex-row gap-2">
+            <div className="flex flex-col gap-2 md:flex-row">
               <Button
                 className="text-16-medium h-12 px-6"
                 variant="category"

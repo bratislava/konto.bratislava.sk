@@ -1,4 +1,4 @@
-import EditIcon from '@assets/images/new-icons/ui/pen.svg'
+import { EditIcon } from '@assets/ui-icons'
 import cx from 'classnames'
 import { ReactElement } from 'react'
 
@@ -14,8 +14,8 @@ interface SummaryRowProps {
 const SummaryRowSimple = (props: SummaryRowProps) => {
   const { size = 'large', children, isError, label, isEditable = true, onGoToStep } = props
 
-  const containerClassName = cx('border-b-2 sm:flex-nowrap flex flex-wrap flex-row py-2.5 gap-2', {
-    '[&>div>*]:block border-red-500': isError,
+  const containerClassName = cx('flex flex-wrap gap-2 border-b-2 py-4 sm:flex-nowrap', {
+    'border-red-500 [&>div>*]:block': isError,
     'border-gray-200 [&>div>*]:hover:block': !isError,
     'hover:border-gray-700': isEditable,
   })
@@ -33,9 +33,9 @@ const SummaryRowSimple = (props: SummaryRowProps) => {
   return (
     <div className={containerClassName}>
       <p className={labelClassName}>{label}</p>
-      <div className="w-full flex flex-row items-center">
+      <div className="flex w-full flex-row items-center">
         <div className={valueClassName}>{children}</div>
-        {isEditable && <EditIcon className="cursor-pointer hidden" onClick={onGoToStep} />}
+        {isEditable && <EditIcon className="hidden cursor-pointer" onClick={onGoToStep} />}
       </div>
     </div>
   )

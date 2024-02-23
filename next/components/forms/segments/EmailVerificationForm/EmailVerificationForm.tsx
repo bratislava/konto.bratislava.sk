@@ -2,14 +2,11 @@ import AccountErrorAlert from 'components/forms/segments/AccountErrorAlert/Accou
 import AccountMarkdown from 'components/forms/segments/AccountMarkdown/AccountMarkdown'
 import Button from 'components/forms/simple-components/Button'
 import InputField from 'components/forms/widget-components/InputField/InputField'
+import useHookForm from 'frontend/hooks/useHookForm'
+import logger from 'frontend/utils/logger'
 import { useTranslation } from 'next-i18next'
 import { useEffect, useState } from 'react'
 import { Controller } from 'react-hook-form'
-
-import { AccountError } from '../../../../frontend/hooks/useAccount'
-import useHookForm from '../../../../frontend/hooks/useHookForm'
-import logger from '../../../../frontend/utils/logger'
-import { formatUnicorn } from '../../../../frontend/utils/string'
 
 interface Data {
   verificationCode: string
@@ -18,7 +15,7 @@ interface Data {
 interface Props {
   onSubmit: (verificationCode: string) => Promise<any>
   onResend: () => Promise<any>
-  error?: AccountError | null | undefined
+  error?: Error | null
   lastEmail: string
 }
 
@@ -41,6 +38,7 @@ const schema = {
 
 const EmailVerificationForm = ({ onSubmit, error, onResend, lastEmail }: Props) => {
   const [lastVerificationCode, setLastVerificationCode] = useState('')
+  const [resendIsLoading, setResendIsLoading] = useState(false)
   const { t } = useTranslation('account')
   const noError: boolean = error === null || error === undefined
   const {
@@ -61,25 +59,28 @@ const EmailVerificationForm = ({ onSubmit, error, onResend, lastEmail }: Props) 
 
   const handleResend = async () => {
     setCnt(60)
+    setResendIsLoading(true)
     await onResend()
+    setResendIsLoading(false)
   }
 
   return (
     <form
       className="flex flex-col space-y-4"
+      data-cy="verification-form"
       onSubmit={handleSubmit((data: Data) => {
         setLastVerificationCode(data.verificationCode)
         onSubmit(data.verificationCode).catch((error_) => logger.error('Submit failed', error_))
       })}
     >
       <h1 className="text-h3">{t('email_verification_title')}</h1>
-      <p className="text-p3 lg:text-p2">
-        {formatUnicorn(t('email_verification_description'), { email: lastEmail })}
+      <p className="text-p3 lg:text-p2" data-cy="verification-description">
+        {t('email_verification_description', { email: lastEmail || '' })}
       </p>
       <AccountErrorAlert
         error={error}
         args={{
-          email: lastEmail,
+          email: lastEmail || '',
           verificationCode: lastVerificationCode,
         }}
       />
@@ -110,13 +111,14 @@ const EmailVerificationForm = ({ onSubmit, error, onResend, lastEmail }: Props) 
         {noError && cnt > 0 && (
           <div className="mb-4">
             <span>{t('verification_description')}</span>
-            <span>{` ${formatUnicorn(t('verification_cnt_description'), { cnt })}`}</span>
+            <span>{t('verification_cnt_description', { cnt })}</span>
           </div>
         )}
         <AccountMarkdown variant="sm" content={t('verification_cnt_info')} />
       </div>
 
       <Button
+        loading={resendIsLoading}
         onPress={handleResend}
         className="min-w-full"
         text={t('verification_resend')}

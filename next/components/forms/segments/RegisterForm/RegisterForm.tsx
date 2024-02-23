@@ -6,16 +6,16 @@ import InputField from 'components/forms/widget-components/InputField/InputField
 import PasswordField from 'components/forms/widget-components/PasswordField/PasswordField'
 import Radio from 'components/forms/widget-components/RadioButton/Radio'
 import RadioGroup from 'components/forms/widget-components/RadioButton/RadioGroup'
+import { environment } from 'environment'
+import { AccountType, UserData } from 'frontend/dtos/accountDto'
+import useHookForm from 'frontend/hooks/useHookForm'
+import { isBrowser } from 'frontend/utils/general'
+import logger from 'frontend/utils/logger'
 import { useTranslation } from 'next-i18next'
 import { useState } from 'react'
 import { Controller } from 'react-hook-form'
 import Turnstile from 'react-turnstile'
-import { useCounter, useTimeout, useWindowSize } from 'usehooks-ts'
-
-import { AccountError, UserData } from '../../../../frontend/hooks/useAccount'
-import useHookForm from '../../../../frontend/hooks/useHookForm'
-import { isBrowser } from '../../../../frontend/utils/general'
-import logger from '../../../../frontend/utils/logger'
+import { useCounter, useTimeout } from 'usehooks-ts'
 
 interface Data {
   email: string
@@ -25,18 +25,17 @@ interface Data {
   password: string
   passwordConfirmation: string
   turnstileToken: string
-  account_type: 'fo' | 'po'
+  account_type: AccountType
 }
 
 interface Props {
   onSubmit: (
     email: string,
     password: string,
-    marketingConfirmation: boolean,
     turnstileToken: string,
     userData: UserData,
   ) => Promise<any>
-  error?: AccountError | null | undefined
+  error?: Error | null
   lastEmail?: string
   // used to disabled registration as a legal entity in production (for now)
   disablePO?: boolean
@@ -48,7 +47,7 @@ const schema = {
   properties: {
     account_type: {
       type: 'string',
-      enum: ['fo', 'po'],
+      enum: [...Object.values(AccountType)],
     },
     email: {
       type: 'string',
@@ -125,7 +124,7 @@ const RegisterForm = ({ onSubmit, error, lastEmail, disablePO }: Props) => {
   } = useHookForm<Data>({
     schema,
     defaultValues: {
-      account_type: 'fo',
+      account_type: AccountType.FyzickaOsoba,
       email: '',
       family_name: '',
       given_name: '',
@@ -141,28 +140,27 @@ const RegisterForm = ({ onSubmit, error, lastEmail, disablePO }: Props) => {
     setCaptchaWarning('show')
   }, 3000)
 
-  const { width } = useWindowSize()
-  const isMobile = width < 768
-
   const type = watch('account_type')
+
   return (
     <form
       className="flex flex-col space-y-4"
+      data-cy="register-form"
       onSubmit={handleSubmit((data: Data) => {
         const userData: UserData = {
           email: data.email,
           given_name: data.given_name,
           family_name: data.family_name,
           name: data.name,
-          account_type: data.account_type,
+          'custom:account_type': data.account_type,
         }
         // force rerender on submit - captcha is valid only for single submit
         incrementCaptchaKey()
         // marketing confirmation always set to true (with new gdpr document we get consent with the registration itself)
-        return onSubmit(data.email, data.password, true, data.turnstileToken, userData)
+        return onSubmit(data.email, data.password, data.turnstileToken, userData)
       })}
     >
-      <h1 className="text-h2">{t('register_title')}</h1>
+      <h1 className="text-h2" data-cy="register-form-title">{t('register_title')}</h1>
       <AccountErrorAlert error={error} args={{ email: lastEmail || '' }} />
 
       {!disablePO ? (
@@ -171,13 +169,17 @@ const RegisterForm = ({ onSubmit, error, lastEmail, disablePO }: Props) => {
           control={control}
           render={({ field }) => (
             <RadioGroup
+              required
               onChange={field.onChange}
               value={field.value}
               label={t('account_type_label')}
-              orientations={isMobile ? 'column' : 'row'}
+              orientation="vertical"
             >
               <Radio value="fo" variant="boxed">
                 {t('fo_label')}
+              </Radio>
+              <Radio value="fo-p" variant="boxed">
+                {t('fop_label')}
               </Radio>
               <Radio value="po" variant="boxed">
                 {t('po_label')}
@@ -201,7 +203,7 @@ const RegisterForm = ({ onSubmit, error, lastEmail, disablePO }: Props) => {
           />
         )}
       />
-      {type === 'fo' && (
+      {type === AccountType.FyzickaOsoba && (
         <>
           <Controller
             name="given_name"
@@ -233,7 +235,7 @@ const RegisterForm = ({ onSubmit, error, lastEmail, disablePO }: Props) => {
           />
         </>
       )}
-      {type === 'po' && (
+      {(type === AccountType.PravnickaOsoba || type === AccountType.FyzickaOsobaPodnikatel) && (
         <Controller
           name="name"
           control={control}
@@ -291,7 +293,7 @@ const RegisterForm = ({ onSubmit, error, lastEmail, disablePO }: Props) => {
             <Turnstile
               theme="light"
               key={captchaKey}
-              sitekey={process.env.NEXT_PUBLIC_CLOUDFLARE_TURNSTILE_SITE_KEY || ''}
+              sitekey={environment.cloudflareTurnstileSiteKey}
               onVerify={(token) => {
                 setCaptchaWarning('hide')
                 onChange(token)

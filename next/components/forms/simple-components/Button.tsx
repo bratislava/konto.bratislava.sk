@@ -1,7 +1,8 @@
-import ArrowRightIcon from '@assets/images/new-icons/ui/arrow-right.svg'
+import { ArrowRightIcon } from '@assets/ui-icons'
+import { useObjectRef } from '@react-aria/utils'
 import { LinkButtonProps } from '@react-types/button'
 import cx from 'classnames'
-import { forwardRef, ReactNode, RefObject } from 'react'
+import { forwardRef, MutableRefObject, ReactNode, RefObject } from 'react'
 import { AriaButtonProps, useButton } from 'react-aria'
 
 import MLink from './MLink'
@@ -75,8 +76,9 @@ const Button = forwardRef<HTMLAnchorElement | HTMLButtonElement, PolymorphicProp
       hrefTarget,
       ...rest
     },
-    ref,
+    forwardedRef,
   ) => {
+    const ref = useObjectRef(forwardedRef)
     const disabledStyling = disabled || loading
     const { buttonProps } = useButton(
       {
@@ -84,14 +86,14 @@ const Button = forwardRef<HTMLAnchorElement | HTMLButtonElement, PolymorphicProp
         elementType: rest.href ? 'a' : 'button',
         isDisabled: disabledStyling,
       },
-      ref as RefObject<HTMLAnchorElement | HTMLButtonElement>,
+      ref,
     )
 
     const style = cx(
       'inline-flex items-center',
       rest.href
         ? 'underline underline-offset-4 focus-visible:outline-none'
-        : 'h-fit justify-center text-center align-middle focus:outline-none rounded-lg',
+        : 'h-fit justify-center rounded-lg text-center align-middle focus:outline-none',
       className,
       {
         'w-full': fullWidth,
@@ -186,13 +188,20 @@ const Button = forwardRef<HTMLAnchorElement | HTMLButtonElement, PolymorphicProp
           variant === 'category' ||
           variant === 'category-outline',
 
+        'focus:ring-2':
+          variant === 'black' ||
+          variant === 'negative' ||
+          variant === 'black-outline' ||
+          variant === 'category' ||
+          variant === 'category-outline',
+
         // bg and border color
-        'border-gray-700 bg-gray-700 focus:bg-gray-800 focus:border-gray-800': variant === 'black',
+        'border-gray-700 bg-gray-700 focus:border-gray-800 focus:bg-gray-800': variant === 'black',
         'border-gray-200 bg-transparent text-gray-700 focus:border-gray-300 focus:text-gray-800':
           variant === 'black-outline',
-        'border-negative-700 bg-negative-700 focus:bg-negative-800 focus:border-negative-800':
+        'border-negative-700 bg-negative-700 focus:border-negative-800 focus:bg-negative-800':
           variant === 'negative',
-        'border-category-700 bg-category-700 focus:bg-category-800 focus:border-category-800':
+        'border-category-700 bg-category-700 focus:border-category-800 focus:bg-category-800':
           variant === 'category',
         'border-category-700 bg-transparent text-category-700 focus:border-category-800 focus:text-category-800':
           variant === 'category-outline',
@@ -207,13 +216,13 @@ const Button = forwardRef<HTMLAnchorElement | HTMLButtonElement, PolymorphicProp
         'text-gray-700 focus:text-gray-800': variant === 'link-black',
 
         // hover
-        'hover:bg-gray-600 hover:border-gray-600': variant === 'black' && !disabledStyling,
+        'hover:border-gray-600 hover:bg-gray-600': variant === 'black' && !disabledStyling,
         'hover:border-gray-200 hover:text-gray-600':
           variant === 'black-outline' && !disabledStyling,
-        'hover:bg-negative-600 hover:border-negative-600':
+        'hover:border-negative-600 hover:bg-negative-600':
           variant === 'negative' && !disabledStyling,
 
-        'hover:bg-category-600 hover:border-category-600':
+        'hover:border-category-600 hover:bg-category-600':
           variant === 'category' && !disabledStyling,
         'hover:border-category-600 hover:text-category-600':
           variant === 'category-outline' && !disabledStyling,
@@ -242,18 +251,18 @@ const Button = forwardRef<HTMLAnchorElement | HTMLButtonElement, PolymorphicProp
           href={rest.href}
           label={rest.label}
           labelCenter={hrefLabelCenter}
-          ref={ref as RefObject<HTMLAnchorElement>}
+          ref={ref as MutableRefObject<HTMLAnchorElement>}
           className={style}
           {...buttonPropsFixed}
         >
           {!hrefIconHidden && (
             <span
-              className={cx('flex justify-center items-center', {
+              className={cx('flex items-center justify-center', {
                 'ml-2 h-6 w-6': size === 'lg',
-                'w-5 h-5 ml-1': size === 'sm',
+                'ml-1 h-5 w-5': size === 'sm',
               })}
             >
-              <ArrowRightIcon className="w-6 h-6" />
+              <ArrowRightIcon className="h-6 w-6" />
             </span>
           )}
         </MLink>
@@ -268,15 +277,15 @@ const Button = forwardRef<HTMLAnchorElement | HTMLButtonElement, PolymorphicProp
     ].includes(variant)
       ? 'category'
       : ['black-outline', 'plain-black', 'link-black'].includes(variant)
-      ? 'black'
-      : ['negative', 'plain-negative'].includes(variant)
-      ? 'negative'
-      : 'gray'
+        ? 'black'
+        : ['negative', 'plain-negative'].includes(variant)
+          ? 'negative'
+          : 'gray'
 
     return (
       <button
         type="button"
-        ref={ref as RefObject<HTMLButtonElement>}
+        ref={ref as MutableRefObject<HTMLButtonElement>}
         className={style}
         form={form}
         {...buttonProps}
@@ -285,7 +294,7 @@ const Button = forwardRef<HTMLAnchorElement | HTMLButtonElement, PolymorphicProp
         {loading && (
           <div
             className={cx(
-              'absolute flex justify-center items-center',
+              'absolute flex items-center justify-center',
               { 'h-6 w-6': size === 'lg' },
               { 'h-5 w-5': size === 'sm' },
             )}
@@ -293,10 +302,10 @@ const Button = forwardRef<HTMLAnchorElement | HTMLButtonElement, PolymorphicProp
             <Spinner size="sm" variant={spinnerVariant} />
           </div>
         )}
-        <div className={cx('justify-center flex items-center', { invisible: loading })}>
+        <div className={cx('flex items-center justify-center', { invisible: loading })}>
           {startIcon && (
             <span
-              className={cx('flex justify-center items-center', {
+              className={cx('flex items-center justify-center', {
                 'mr-3 h-6 w-6': size === 'lg',
                 'mr-2.5 h-5 w-5': size === 'sm',
               })}
@@ -306,15 +315,20 @@ const Button = forwardRef<HTMLAnchorElement | HTMLButtonElement, PolymorphicProp
           )}
           {text && !icon && text}
           {!text && icon && (
-            <span className={cx({ 'h-6 w-6': size === 'lg', 'h-5 w-5': size === 'sm' })}>
+            <span
+              className={cx('flex items-center justify-center', {
+                'h-6 w-6': size === 'lg',
+                'h-5 w-5': size === 'sm',
+              })}
+            >
               {icon}
             </span>
           )}
           {endIcon && (
             <span
-              className={cx('flex justify-center items-center', {
+              className={cx('flex items-center justify-center', {
                 'ml-3 h-6 w-6': size === 'lg',
-                'w-5 h-5 ml-2.5': size === 'sm',
+                'ml-2.5 h-5 w-5': size === 'sm',
               })}
             >
               {endIcon}

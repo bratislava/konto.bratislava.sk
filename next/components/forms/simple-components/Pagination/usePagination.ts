@@ -8,13 +8,11 @@ const range = (start: number, end: number) => {
   return Array.from({ length }, (_, i) => start + i)
 }
 
-// eslint-disable-next-line no-secrets/no-secrets
 /**
  * @mui/material contains a really useful hook for pagination, so this is a copied version with added types.
  *
  * https://github.com/mui/material-ui/blob/512896973499adbbda057e7f3685d1b23cc02de9/packages/mui-material/src/usePagination/usePagination.js
  */
-// eslint-disable-next-line sonarjs/cognitive-complexity
 export default function usePagination(props: {
   boundaryCount?: number
   count?: number
@@ -83,8 +81,8 @@ export default function usePagination(props: {
     ...(siblingsStart > boundaryCount + 2
       ? ['start-ellipsis' as const]
       : boundaryCount + 1 < count - boundaryCount
-      ? [boundaryCount + 1]
-      : []),
+        ? [boundaryCount + 1]
+        : []),
 
     // Sibling pages
     ...range(siblingsStart, siblingsEnd),
@@ -94,8 +92,8 @@ export default function usePagination(props: {
     ...(siblingsEnd < count - boundaryCount - 1
       ? ['end-ellipsis' as const]
       : count - boundaryCount > boundaryCount
-      ? [count - boundaryCount]
-      : []),
+        ? [count - boundaryCount]
+        : []),
 
     ...endPages,
     ...(hideNextButton ? [] : ['next' as const]),

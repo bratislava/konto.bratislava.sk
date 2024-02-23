@@ -1,112 +1,105 @@
 import cx from 'classnames'
-import React, { ReactNode, useEffect, useRef, useState } from 'react'
-import { useTextField } from 'react-aria'
+import { useTranslation } from 'next-i18next'
+import React, { ReactNode, useRef } from 'react'
+import { TimeValue, useTimeField } from 'react-aria'
+import { useTimeFieldState } from 'react-stately'
 
-import FieldHeader from '../../info-components/FieldHeader'
-import { ExplicitOptionalType } from '../../types/ExplicitOptional'
+import FieldWrapper, { FieldWrapperProps } from '../FieldWrapper'
+import DateTimeSegment from './DateTimeSegment'
 
-type TimeFieldBase = {
-  label?: string
-  helptext?: string
-  tooltip?: string
-  required?: boolean
-  explicitOptional?: ExplicitOptionalType
+type TimeFieldProps = FieldWrapperProps & {
   children?: ReactNode
-  disabled?: boolean
-  errorMessage?: string[]
-  hour: string
-  minute: string
-  isOpen: boolean
-  onChange?: (value?: string) => void
-  value?: string
+  onChange?: (value: TimeValue | null) => void
+  onBlur?: () => void
+  value?: TimeValue | null
   readOnly?: boolean
-  setIsInputEdited?: React.Dispatch<React.SetStateAction<boolean>>
-  setPrevValue?: React.Dispatch<React.SetStateAction<string>>
+  minValue?: TimeValue
+  maxValue?: TimeValue
 }
 
-const TimeField = ({
-  label,
-  helptext,
-  tooltip,
-  required,
-  explicitOptional,
-  children,
-  disabled,
-  errorMessage = [],
-  hour,
-  minute,
-  onChange,
-  value = '',
-  isOpen,
-  setIsInputEdited,
-  readOnly,
-  ...rest
-}: TimeFieldBase) => {
-  const [inputValue, setInputValue] = useState<string>('')
+const TimeField = (props: TimeFieldProps) => {
+  const {
+    label,
+    helptext,
+    helptextHeader,
+    tooltip,
+    required,
+    children,
+    disabled,
+    errorMessage = [],
+    onChange,
+    value,
+    // setIsInputEdited,
+    readOnly,
+    customErrorPlace,
+    size,
+    labelSize,
+    displayOptionalLabel,
+    ...rest
+  } = props
+
   const ref = useRef<HTMLInputElement>(null)
 
-  useEffect(() => {
-    setInputValue(onChange ? value : inputValue)
-  }, [inputValue, onChange, value])
+  const { i18n } = useTranslation('account', { keyPrefix: 'TimePicker' })
 
-  const { labelProps, inputProps, descriptionProps } = useTextField(
-    {
-      label,
-      description: helptext,
-      placeholder: 'HH:MM',
-      isRequired: required,
-      isDisabled: disabled,
-      value: onChange && value ? value : inputValue,
-      onChange(val) {
-        setIsInputEdited?.(true)
-        if (onChange) {
-          onChange(val)
-          rest?.setPrevValue?.(val)
-        } else {
-          setInputValue(val)
-        }
-      },
-      errorMessage,
-      ...rest,
-    },
+  const propsReactAria = {
+    label,
+    description: helptext,
+    isRequired: required,
+    isDisabled: disabled,
+    isReadOnly: readOnly,
+    value,
+    onChange,
+    errorMessage,
+    ...rest,
+  }
+
+  const state = useTimeFieldState({ ...propsReactAria, locale: i18n.language })
+
+  const { labelProps, fieldProps, errorMessageProps, descriptionProps } = useTimeField(
+    propsReactAria,
+    state,
     ref,
   )
-  const timeFieldStyle = cx(
-    'sm:text-16 w-full max-w-xs flex rounded-lg bg-white border-2 px-3 sm:px-4 py-1.5 sm:py-2.5 focus:border-gray-700 focus-visible:outline-none placeholder:text-gray-500',
-    {
-      'hover:border-gray-400 border-gray-200': !disabled && !isOpen,
-      'border-negative-700 focus:border-negative-700 focus-visible:outline-none hover:border-negative-700':
-        errorMessage?.length > 0,
-      'pointer-events-none border-gray-300 bg-gray-100 text-gray-500': disabled,
-      'border-gray-700': isOpen && !disabled && !(errorMessage?.length > 0),
-    },
-  )
+
+  const timeFieldStyle = cx('flex rounded-lg border-2 bg-white px-3 py-2 lg:px-4 lg:py-3', {
+    'border-gray-200 focus-within:border-gray-700 hover:border-gray-400': !disabled,
+    'border-negative-700 hover:border-negative-700': errorMessage?.length > 0 && !disabled,
+    'pointer-events-none border-gray-300 bg-gray-100 text-gray-400': disabled,
+    // 'focus-visible:border-gray-700': !disabled && !(errorMessage?.length > 0),
+  })
 
   return (
-    <>
-      <FieldHeader
-        label={label || ''}
-        htmlFor={inputProps.id}
-        labelProps={labelProps}
-        tooltip={tooltip}
-        helptext={helptext}
-        descriptionProps={descriptionProps}
-        required={required}
-        explicitOptional={explicitOptional}
-      />
-      <div className="relative">
-        <input
-          {...inputProps}
-          readOnly={readOnly}
-          className={timeFieldStyle}
-          ref={ref}
-          name={inputProps.id}
-        />
-        <div className="absolute right-3 sm:right-4 top-2/4 flex -translate-y-2/4 items-center">
-          {children}
-        </div>
+    <FieldWrapper
+      label={label}
+      labelProps={labelProps}
+      tooltip={tooltip}
+      helptext={helptext}
+      helptextHeader={helptextHeader}
+      descriptionProps={descriptionProps}
+      required={required}
+      disabled={disabled}
+      customErrorPlace={customErrorPlace}
+      errorMessage={errorMessage}
+      errorMessageProps={errorMessageProps}
+      size={size}
+      labelSize={labelSize}
+      displayOptionalLabel={displayOptionalLabel}
+    >
+      <div {...fieldProps} ref={ref} className={timeFieldStyle}>
+        {state.segments.map((segment, index) => (
+          <DateTimeSegment key={index} segment={segment} state={state} />
+        ))}
       </div>
-    </>
+      {/* TODO button need proper arrangement and functionality */}
+      {/* <ButtonNew */}
+      {/*  variant="icon-wrapped-negative-margin" */}
+      {/*  icon={<ClockIcon />} */}
+      {/*  aria-label={t('aria.openClock') ?? 'Open clock'} */}
+      {/*  excludeFromTabOrder */}
+      {/*  className="cursor-default pointer-events-none" */}
+      {/* /> */}
+    </FieldWrapper>
   )
 }
 

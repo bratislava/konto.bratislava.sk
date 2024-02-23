@@ -1,5 +1,4 @@
-import ArrowLeft from '@assets/images/new-icons/ui/arrow-left.svg'
-import CloseIcon from '@assets/images/new-icons/ui/cross.svg'
+import { ArrowLeftIcon, CrossIcon } from '@assets/ui-icons'
 import cx from 'classnames'
 import React, { Dispatch, SetStateAction, useState } from 'react'
 
@@ -41,13 +40,13 @@ const ModalHeader = ({
   hasHeader,
 }: ModalHeaderBase) => {
   const headerStyle = cx(
-    'flex py-[18px] sm:py-4 px-4 sm:px-6 gap-6 bg-white sm:rounded-t-lg justify-between items-center',
+    'flex items-center justify-between gap-6 bg-white px-4 py-[18px] sm:rounded-t-lg sm:px-6 sm:py-4',
     {
       'border-b-solid border-b-form-input-default border-b-2': divider,
     },
   )
   const headlineStyle = cx('text-16-semibold sm:text-20-semibold leading-5 sm:leading-7', {
-    'text-center ml-1': currentScreenIndex > 0,
+    'ml-1 text-center': currentScreenIndex > 0,
   })
 
   if (!hasHeader) return null
@@ -58,7 +57,7 @@ const ModalHeader = ({
         <div
           role="button"
           tabIndex={0}
-          className="ml-1 flex flex-row cursor-pointer items-center"
+          className="ml-1 flex cursor-pointer flex-row items-center"
           onClick={() => {
             setCurrentScreenIndex(currentScreenIndex - 1)
           }}
@@ -66,12 +65,12 @@ const ModalHeader = ({
             handleOnKeyPress(event, () => setCurrentScreenIndex(currentScreenIndex - 1))
           }
         >
-          <ArrowLeft />
+          <ArrowLeftIcon />
         </div>
       ) : null}
       <div className={headlineStyle}>{header}</div>
-      <div className="ml-1 flex flex-row justify-end items-center">
-        <CloseIcon className="cursor-pointer w-5 h-5 sm:w-6 sm:h-6" type="info" onClick={onClose} />
+      <div className="ml-1 flex flex-row items-center justify-end">
+        <CrossIcon className="h-5 w-5 cursor-pointer sm:h-6 sm:w-6" type="info" onClick={onClose} />
       </div>
     </div>
   )
@@ -96,7 +95,7 @@ const ModalFooter = ({
   onSubmit,
 }: ModalFooterBase) => {
   const footerStyle = cx(
-    'w-592 flex h-18 bg-white items-center justify-between py-3 px-6 gap-6 rounded-b-lg',
+    'w-592 flex h-18 items-center justify-between gap-6 rounded-b-lg bg-white px-6 py-3',
     {
       'border-t-solid border-t-form-input-default border-t-2': divider,
     },
@@ -147,17 +146,17 @@ const ModalBody = ({
 }) => {
   return (
     <div
-      className={cx('flex h-full w-full flex-col bg-white sm:p-6 p-4', {
+      className={cx('flex h-full w-full flex-col bg-white p-4 sm:p-6', {
         'rounded-t-10': !hasHeader,
         'rounded-b-10': !hasFooter,
       })}
     >
       {!hasHeader ? (
-        <div className="ml-1 flex flex-row justify-end items-center">
-          <CloseIcon className="cursor-pointer" type="info" onClick={onClose} />
+        <div className="ml-1 flex flex-row items-center justify-end">
+          <CrossIcon className="cursor-pointer" type="info" onClick={onClose} />
         </div>
       ) : null}
-      <div className="h-[calc(100%-80px)] flex w-full flex-col items-start rounded-lg">
+      <div className="flex h-[calc(100%-80px)] w-full flex-col items-start rounded-lg">
         {Array.isArray(content)
           ? content.length - 1 >= currentScreenIndex && content[currentScreenIndex]()
           : content({ onSubmit })}
@@ -198,7 +197,7 @@ const Modal = ({
     <div
       role="button"
       tabIndex={0}
-      className="z-50 h-full fixed w-full inset-x-0 top-0 flex items-center justify-center"
+      className="fixed inset-x-0 top-0 z-50 flex h-full w-full items-center justify-center"
       style={{ background: 'rgba(var(--color-gray-800), .4)', marginTop: '0' }}
       onClick={handleOnClick}
       onKeyPress={(event: React.KeyboardEvent) => handleOnKeyPress(event, handleOnClick)}

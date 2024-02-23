@@ -1,0 +1,71 @@
+name: Cypress test
+
+on:
+  pull_request:
+    types: [labeled, synchronize]
+
+jobs:
+  cypress-tests:
+    if: (github.event.action == 'synchronize' && contains(github.event.pull_request.labels.*.name, 'pr:run cypress')) || github.event.label.name == 'pr:run cypress'
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+      
+      - name: Use Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '20.x'
+
+      - name: Install and build application
+        working-directory: next
+        run: |
+          yarn install
+          yarn build:e2e
+          yarn start &
+
+      - name: Run Cypress tests
+        uses: cypress-io/github-action@v5
+        with:
+          wait-on: "http://localhost:3000"
+          wait-on-timeout: 120
+          working-directory: tests
+          command: npm run cypress:ci
+      
+      - name: Screenshots of errors during E2E tests
+        uses: actions/upload-artifact@v3
+        if: always()
+        with:
+          name: cypress-screenshots
+          path: tests/cypress/screenshots
+          retention-days: 1
+
+      - name: Visual testing screenshots
+        uses: actions/upload-artifact@v3
+        if: always()
+        with:
+          name: visual-testing
+          path: tests/cypress/visualTesting
+          retention-days: 1
+
+
+  cleanup:
+    needs: cypress-tests
+    runs-on: ubuntu-latest
+    steps:
+      - name: Remove label
+        uses: actions/github-script@v4
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          script: |
+            const issueNumber = ${{ github.event.number }};
+            const labelToRemove = 'pr:run cypress';
+            github.issues.removeLabel({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: issueNumber,
+              name: labelToRemove
+            });
+

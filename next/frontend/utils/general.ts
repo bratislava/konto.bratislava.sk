@@ -1,6 +1,9 @@
+import { GenericObjectType, RJSFSchema, UIOptionsType } from '@rjsf/utils'
 import currency from 'currency.js'
+import get from 'lodash/get'
 import React from 'react'
 
+import { environment } from '../../environment'
 import { Tax } from '../dtos/taxDto'
 
 export interface DocumentsWrapper {
@@ -53,7 +56,7 @@ const isServer = () => typeof window === 'undefined'
 
 export const isBrowser = () => !isServer()
 
-export const isProductionDeployment = () => process.env.NEXT_PUBLIC_IS_STAGING !== 'true'
+export const isProductionDeployment = () => !environment.isStaging
 
 // https://stackoverflow.com/questions/8511281/check-if-a-value-is-an-object-in-javascript
 export const isObject = (value: any) =>
@@ -93,26 +96,38 @@ export const taxStatusHelper = (tax: Tax) => {
   return { paymentStatus, hasMultipleInstallments }
 }
 
-export const blobToString = (blob: Blob): Promise<string> => {
-  return new Promise<string>((resolve, reject) => {
-    const reader = new FileReader()
-
-    reader.addEventListener('loadend', () => {
-      const text = reader.result as string
-      resolve(text)
-    })
-    reader.addEventListener('error', (error) => {
-      reject(error)
-    })
-
-    reader.readAsText(blob)
-  })
-}
-
 export const downloadBlob = (blob: Blob, fileName: string) => {
   const link = document.createElement('a')
   link.href = URL.createObjectURL(blob)
   link.download = fileName
   link.click()
   URL.revokeObjectURL(link.href)
+}
+
+export function isDefined<T>(value: T | undefined | null): value is T {
+  return value !== undefined && value !== null
+}
+
+// to be used in context where we do not have backend data
+// otherwise, you can use frontendTitle field
+export const getFormTitle = (
+  uiOptions: UIOptionsType<any, RJSFSchema, any>,
+  formData?: GenericObjectType | null,
+  translationFallback?: string,
+): string => {
+  // TODO can be fixed by fixing OpenAPI types
+  // until then, safe enough with all the fallbacks
+  // eslint-disable-next-line @typescript-eslint/no-unsafe-return
+  return (
+    get(
+      formData,
+      uiOptions.titlePath &&
+        typeof uiOptions.titlePath !== 'boolean' &&
+        typeof uiOptions.titlePath !== 'object'
+        ? uiOptions.titlePath
+        : '__INVALID_PATH__',
+    ) ||
+    uiOptions?.titleFallback ||
+    translationFallback
+  )
 }

@@ -1,5 +1,4 @@
-import ArrowRight from '@assets/images/new-icons/ui/arrow-right.svg'
-import ChevronRight from '@assets/images/new-icons/ui/chevron-right.svg'
+import { ArrowRightIcon, ChevronRightIcon } from '@assets/ui-icons'
 import cx from 'classnames'
 
 type PaginationArrowBase = {
@@ -10,18 +9,18 @@ type PaginationArrowBase = {
 const PaginationArrow = ({ onPress, orientation = 'right' }: PaginationArrowBase) => {
   return (
     <div
-      className={cx('group cursor-pointer w-6 h-6 text-gray-700', {
+      className={cx('group h-6 w-6 cursor-pointer text-gray-700', {
         'ml-0 md:ml-3': orientation === 'right',
         'mr-0 md:mr-3': orientation === 'left',
       })}
     >
-      <span className="group-hover:hidden flex justify-center items-center h-full">
-        <ChevronRight className={cx('w-6 h-6', { 'rotate-180': orientation === 'left' })} />
+      <span className="flex h-full items-center justify-center group-hover:hidden">
+        <ChevronRightIcon className={cx('h-6 w-6', { 'rotate-180': orientation === 'left' })} />
       </span>
-      <span className="hidden group-hover:flex justify-center items-center text-gray-700">
-        <ArrowRight
+      <span className="hidden items-center justify-center text-gray-700 group-hover:flex">
+        <ArrowRightIcon
           onClick={onPress}
-          className={cx('w-6 h-6', { 'rotate-180': orientation === 'left' })}
+          className={cx('h-6 w-6', { 'rotate-180': orientation === 'left' })}
         />
       </span>
     </div>

@@ -1,8 +1,6 @@
-import type { AriaPopoverProps } from '@react-aria/overlays'
-import { DismissButton } from '@react-aria/overlays'
 import * as React from 'react'
 import { RefObject, useRef } from 'react'
-import { FocusScope, useOverlay } from 'react-aria'
+import { AriaPopoverProps, DismissButton, FocusScope, useOverlay } from 'react-aria'
 import type { OverlayTriggerState } from 'react-stately'
 
 interface PopoverProps extends Omit<AriaPopoverProps, 'popoverRef'> {
@@ -29,7 +27,7 @@ const MenuPopover = (props: PopoverProps) => {
       <div
         {...overlayProps}
         ref={triggerRef}
-        className="z-20 shadow-lg bg-white rounded-lg mt-1 absolute"
+        className="absolute z-20 mt-1 rounded-lg bg-white shadow-lg"
       >
         {children}
         <DismissButton onDismiss={() => state.close()} />

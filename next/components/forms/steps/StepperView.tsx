@@ -1,84 +1,91 @@
-import CloseIcon from '@assets/images/new-icons/ui/cross.svg'
+import { ChevronDownIcon, CrossIcon } from '@assets/ui-icons'
 import cx from 'classnames'
 import { useTranslation } from 'next-i18next'
 import { useState } from 'react'
+import { Button as AriaButton, Dialog, Modal, ModalOverlay } from 'react-aria-components'
 
-import ChevronDown from '../../../assets/images/forms/chevron-down.svg'
-import { StepData } from '../types/TransformedFormData'
+import { FormStepIndex } from '../types/Steps'
+import { useFormState } from '../useFormState'
 import StepperViewList from './StepperViewList'
 import StepperViewRow from './StepperViewRow'
 
-interface StepperViewProps {
-  steps: StepData[]
-  currentStep: number
-  forceMobileSize?: boolean
-  onChangeStep?: (stepIndex: number) => void
+type StepperModalProps = {
+  isOpen: boolean
+  setIsOpen: (isOpen: boolean) => void
+  handleOnSkipToStep: (stepIndex: FormStepIndex) => void
 }
 
-const StepperView = ({ steps, currentStep, forceMobileSize, onChangeStep }: StepperViewProps) => {
+const StepperModal = ({ isOpen, setIsOpen, handleOnSkipToStep }: StepperModalProps) => {
   const { t } = useTranslation('forms')
-  const [isCollapsed, setIsCollapsed] = useState<boolean>(true)
+
+  return (
+    <ModalOverlay
+      isOpen={isOpen}
+      onOpenChange={setIsOpen}
+      className="fixed left-0 top-0 z-50 h-[var(--visual-viewport-height)] w-screen bg-white outline-0 data-[entering]:animate-stepperSlide data-[exiting]:animate-stepperSlideReverse"
+      isDismissable
+    >
+      <Modal isDismissable isOpen={isOpen} onOpenChange={setIsOpen} className="h-full outline-0">
+        <Dialog className="flex h-full flex-col outline-0">
+          {({ close }) => (
+            <>
+              <div className="flex h-14 w-full flex-row items-center gap-1 bg-white p-4 drop-shadow-lg">
+                <h6 className="text-h6 grow">{t('all_steps')}</h6>
+                <AriaButton
+                  className="flex h-full cursor-pointer flex-col justify-center"
+                  onPress={close}
+                >
+                  <CrossIcon className="h-6 w-6" />
+                </AriaButton>
+              </div>
+              <nav className="w-full overflow-auto bg-white p-4" data-cy="stepper-mobile">
+                <StepperViewList onSkipToStep={handleOnSkipToStep} />
+              </nav>
+            </>
+          )}
+        </Dialog>
+      </Modal>
+    </ModalOverlay>
+  )
+}
+
+const StepperView = () => {
+  const [isOpen, setIsOpen] = useState<boolean>(false)
+  const { currentStepperStep, goToStep } = useFormState()
 
   const handleOnClickDropdownIcon = () => {
-    if (isCollapsed) {
-      setIsCollapsed(false)
+    if (!isOpen) {
+      setIsOpen(true)
     }
   }
 
-  const handleOnChangeStep = (stepIndex: number) => {
-    setIsCollapsed(true)
-    if (onChangeStep) {
-      onChangeStep(stepIndex)
-    }
+  const handleOnSkipToStep = (stepIndex: FormStepIndex) => {
+    goToStep(stepIndex)
+    setIsOpen(false)
   }
 
   return (
     <>
-      <div className={cx('hidden', { 'lg:block': !forceMobileSize })}>
-        <StepperViewList steps={steps} currentStep={currentStep} onChangeStep={onChangeStep} />
-      </div>
-      <div
-        className={cx('flex flex-col', { 'lg:hidden': !forceMobileSize })}
-        onClick={handleOnClickDropdownIcon}
-        onKeyDown={handleOnClickDropdownIcon}
-        role="button"
-        tabIndex={0}
-      >
-        <div className="h-14 p-4 w-full bg-white flex flex-row items-center gap-5 drop-shadow-lg cursor-pointer">
-          <StepperViewRow
-            className="grow"
-            title={currentStep === steps.length ? t('summary') : steps[currentStep]?.title}
-            order={currentStep + 1}
-            isCurrent
-            isLast
-          />
-          <ChevronDown className={cx({ 'rotate-180': !isCollapsed })} />
-        </div>
-        <div
-          className={cx('fixed bg-gray-200 w-full h-full inset-0 mt-1 z-50 flex flex-col gap-0.5', {
-            'transition-all duration-500 h-screen w-screen': true,
-            'translate-y-full': isCollapsed,
-            'translate-y-0': !isCollapsed,
-          })}
+      <nav className="hidden w-[332px] lg:block" data-cy="stepper-desktop">
+        <StepperViewList onSkipToStep={handleOnSkipToStep} />
+      </nav>
+      <div className="lg:hidden">
+        <AriaButton
+          className={cx(
+            'flex h-14 w-full cursor-pointer flex-row items-center gap-5 bg-white p-4 text-left drop-shadow-lg',
+          )}
+          data-cy="stepper-dropdown"
+          onPress={handleOnClickDropdownIcon}
         >
-          <div className="h-14 p-4 w-full bg-white flex flex-row items-center gap-1 drop-shadow-lg">
-            <h6 className="text-h6 grow">{t('all_steps')}</h6>
-            <button
-              type="button"
-              className="h-full cursor-pointer flex flex-col justify-center"
-              onClick={() => setIsCollapsed(true)}
-            >
-              <CloseIcon className="w-6 h-6" />
-            </button>
-          </div>
-          <div className="bg-white grow overflow-y-scroll overscroll-none pb-20 px-4 pt-4">
-            <StepperViewList
-              steps={steps}
-              currentStep={currentStep}
-              onChangeStep={handleOnChangeStep}
-            />
-          </div>
-        </div>
+          <StepperViewRow className="grow" step={currentStepperStep} isCurrent />
+          <ChevronDownIcon className={cx({ 'rotate-180': !isOpen })} />
+        </AriaButton>
+
+        <StepperModal
+          isOpen={isOpen}
+          setIsOpen={setIsOpen}
+          handleOnSkipToStep={handleOnSkipToStep}
+        />
       </div>
     </>
   )

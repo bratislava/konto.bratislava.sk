@@ -1,25 +1,20 @@
-import { DateValue } from '@internationalized/date'
 import { StrictRJSFSchema, WidgetProps } from '@rjsf/utils'
-import { WidgetOptions } from 'components/forms/types/WidgetOptions'
 import DatePicker from 'components/forms/widget-components/DateTimePicker/DatePicker'
 import WidgetWrapper from 'components/forms/widget-wrappers/WidgetWrapper'
 import React from 'react'
-
-type DatePickerRJSFOptions = WidgetOptions
+import { DatePickerUiOptions } from 'schema-generator/generator/uiOptionsTypes'
 
 interface DatePickerWidgetRJSFProps extends WidgetProps {
   label: string
-  options: DatePickerRJSFOptions
+  options: DatePickerUiOptions
   value: string | null
   errorMessage?: string
-  required?: boolean
-  disabled?: boolean
   schema: StrictRJSFSchema
   onChange: (value?: string) => void
-  rawErrors?: string[]
 }
 
 const DatePickerWidgetRJSF = ({
+  id,
   label,
   options,
   rawErrors,
@@ -27,31 +22,25 @@ const DatePickerWidgetRJSF = ({
   disabled,
   value,
   onChange,
+  readonly,
 }: DatePickerWidgetRJSFProps) => {
-  const {
-    helptext,
-    tooltip,
-    explicitOptional,
-    accordion,
-    spaceBottom = 'none',
-    spaceTop = 'large',
-  } = options
-
-  const handleOnChange = (newValue?: DateValue) =>
-    newValue ? onChange(newValue.toString()) : onChange()
+  const { helptext, helptextHeader, tooltip, size, labelSize } = options
 
   return (
-    <WidgetWrapper accordion={accordion} spaceBottom={spaceBottom} spaceTop={spaceTop}>
+    <WidgetWrapper id={id} options={options}>
       <DatePicker
         label={label}
         errorMessage={rawErrors}
         required={required}
-        disabled={disabled}
+        disabled={disabled || readonly}
         helptext={helptext}
+        helptextHeader={helptextHeader}
         tooltip={tooltip}
-        explicitOptional={explicitOptional}
-        value={value ?? undefined}
-        onChange={handleOnChange}
+        value={value ?? null}
+        onChange={(value) => onChange(value ?? undefined)}
+        size={size}
+        labelSize={labelSize}
+        displayOptionalLabel
       />
     </WidgetWrapper>
   )

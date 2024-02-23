@@ -14,14 +14,14 @@ const HelpSection = () => {
   return (
     <div className="flex flex-col">
       <AccountSectionHeader title={t('account_section_help.navigation')} />
-      <div className="w-full max-w-screen-lg mx-auto py-6 lg:py-16">
-        <h2 className="text-h2 justify-start flex px-4 lg:px-0">
+      <div className="mx-auto w-full max-w-screen-lg py-6 lg:py-16">
+        <h2 className="text-h2 flex justify-start px-4 lg:px-0">
           {t('account_section_help.faq.title')}
         </h2>
-        <div className="flex flex-col gap-2 md:gap-3 px-4 lg:px-0">
-          <h4 className="text-h4 justify-start flex mt-6">
+        <div className="flex flex-col gap-2 px-4 md:gap-3 lg:px-0">
+          <h3 className="text-h4 mt-6 flex justify-start">
             {t('account_section_help.faq.general_category')}
-          </h4>
+          </h3>
           <Accordion
             title={t('account_section_help.faq.1.question')}
             size="md"
@@ -87,9 +87,9 @@ const HelpSection = () => {
             size="md"
             content={t('account_section_help.faq.12.answer')}
           />
-          <h4 className="text-h4 justify-start flex mt-6 lg:mt-12">
+          <h3 className="text-h4 mt-6 flex justify-start lg:mt-12">
             {t('account_section_help.faq.taxes_category')}
-          </h4>
+          </h3>
           <Accordion
             title={t('account_section_help.faq.13.question')}
             size="md"

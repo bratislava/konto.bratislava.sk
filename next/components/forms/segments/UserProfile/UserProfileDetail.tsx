@@ -1,9 +1,10 @@
 import cx from 'classnames'
 import Alert from 'components/forms/info-components/Alert'
+import { UserData } from 'frontend/dtos/accountDto'
+import { useServerSideAuth } from 'frontend/hooks/useServerSideAuth'
 import { useTranslation } from 'next-i18next'
 import { useId } from 'react'
 
-import { UserData } from '../../../../frontend/hooks/useAccount'
 import UserProfileDetailEdit from './UserProfileDetailEdit'
 import UserProfileDetailsButtons from './UserProfileDetailsButtons'
 import UserProfileDetailView from './UserProfileDetailView'
@@ -19,7 +20,7 @@ interface UserProfileDetailProps {
   onChangeIsEditing: (isEditing: boolean) => void
   onCancelEditing: () => void
   onSubmit: (newUseData: UserData) => void
-  onOpenEmailModal: () => void
+  onEmailChange: () => void
 }
 
 const UserProfileDetail = (props: UserProfileDetailProps) => {
@@ -31,10 +32,11 @@ const UserProfileDetail = (props: UserProfileDetailProps) => {
     onChangeIsEditing,
     onCancelEditing,
     onSubmit,
-    onOpenEmailModal,
+    onEmailChange,
   } = props
   const { t } = useTranslation('account')
   const formId = `form-${useId()}`
+  const { tierStatus } = useServerSideAuth()
 
   const handleOnSubmit = (newUserData: UserData) => {
     onSubmit({
@@ -45,10 +47,28 @@ const UserProfileDetail = (props: UserProfileDetailProps) => {
 
   return (
     <div
-      className={cx(' flex flex-col', 'md:static md:z-0', {
+      className={cx('flex flex-col bg-white pt-3', 'md:static md:z-0', {
         'fixed inset-0 z-50': isEditing,
       })}
     >
+      {!tierStatus.isIdentityVerified && (
+        <div className="flex w-full items-center justify-center bg-white p-3 md:px-8 md:py-3">
+          <div className="md:max-w-screen-lg">
+            <Alert
+              title={t('verification_status_required')}
+              message={t('verification_status_required_alert')}
+              type="warning"
+              buttons={[
+                {
+                  title: t('verification_url_text'),
+                  link: '/overenie-identity',
+                },
+              ]}
+              fullWidth
+            />
+          </div>
+        </div>
+      )}
       <UserProfileSection>
         <UserProfileSectionHeader
           title={t('profile_detail.title')}
@@ -67,7 +87,7 @@ const UserProfileDetail = (props: UserProfileDetailProps) => {
         <div className="flex flex-col">
           {/* Alert only for alertType === error */}
           {isAlertOpened && (
-            <div className="flex flex-row p-2">
+            <div className="p-2">
               <Alert
                 fullWidth
                 type={alertType}
@@ -77,7 +97,7 @@ const UserProfileDetail = (props: UserProfileDetailProps) => {
             </div>
           )}
           <div
-            className={cx('flex p-4 flex-col gap-8', 'md:p-8 md:flex-row md:gap-16 md:flex-wrap')}
+            className={cx('flex flex-col gap-8 p-4', 'md:flex-row md:flex-wrap md:gap-16 md:p-8')}
           >
             <div className={cx({ 'hidden md:block': isEditing })}>
               <UserProfilePhoto userData={userData ?? {}} />
@@ -86,7 +106,7 @@ const UserProfileDetail = (props: UserProfileDetailProps) => {
               <UserProfileDetailEdit
                 formId={formId}
                 userData={userData ?? {}}
-                onOpenEmailModal={onOpenEmailModal}
+                onEmailChange={onEmailChange}
                 onSubmit={handleOnSubmit}
               />
             ) : (

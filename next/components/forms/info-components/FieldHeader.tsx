@@ -1,89 +1,93 @@
 import cx from 'classnames'
-import Tooltip, { TooltipPositionType } from 'components/forms/info-components/Tooltip/Tooltip'
+import { useTranslation } from 'next-i18next'
+import * as React from 'react'
 import { DOMAttributes } from 'react'
+import { LabelSize } from 'schema-generator/generator/uiOptionsTypes'
 
-import { ExplicitOptionalType } from '../types/ExplicitOptional'
+import FieldHelptext from './FieldHelptext'
+import BATooltip from './Tooltip/BATooltip'
 
-interface FieldHeaderProps {
+export type FieldHeaderProps = {
   label: string
-  htmlFor?: string
   required?: boolean
-  explicitOptional?: ExplicitOptionalType
-  helptext?: string
-  labelProps?: DOMAttributes<never>
-  descriptionProps?: DOMAttributes<never>
   tooltip?: string
-  tooltipPosition?: TooltipPositionType
+  labelSize?: LabelSize
+  htmlFor?: string
+  labelProps?: DOMAttributes<never>
+  helptextHeader?: string
+  descriptionProps?: DOMAttributes<never>
+  /**
+   * Some field types (radio, checkbox, upload...) need more spacing between the title and the field itself.
+   */
+  customHeaderBottomMargin?: string
+  /**
+   * This prop controls the display of the "Optional" label text for optional fields in the form.
+   * When set to false (default), an asterisk is displayed next to required fields and nothing is displayed next to optional ones.
+   * When set to true, the label text "Optional" is displayed next to optional fields and nothing is displayed next to required ones.
+   */
+  displayOptionalLabel?: boolean
 }
 
-const FieldHeader = (props: FieldHeaderProps) => {
-  const {
-    label,
-    htmlFor,
-    required,
-    explicitOptional = 'none',
-    helptext = '',
-    labelProps,
-    descriptionProps,
-    tooltip,
-    tooltipPosition,
-  } = props
+const FieldHeader = ({
+  label,
+  htmlFor,
+  required,
+  labelProps,
+  tooltip,
+  labelSize = 'default',
+  helptextHeader,
+  descriptionProps,
+  customHeaderBottomMargin = 'mb-1',
+  displayOptionalLabel,
+}: FieldHeaderProps) => {
+  const { t } = useTranslation('account', { keyPrefix: 'FieldHeader' })
 
-  // STYLES
-  const labelStyle = cx('text-p3-semibold sm:text-16-semibold relative text-gray-800', {
-    'after:text-16-semibold after:content-["*"] after:ml-0.5 after:absolute after:bottom-0.5 after:text-main-700':
-      required,
+  const useCustomBottomMargin = labelSize === 'default' || !helptextHeader
+
+  const wrapperStyle = cx('flex w-full flex-col', {
+    'gap-1': labelSize === 'default',
+    'gap-3': labelSize === 'h3' || labelSize === 'h4' || labelSize === 'h5',
+    [customHeaderBottomMargin]: useCustomBottomMargin,
+    // If there's helptext and large label, we need to have large margin at the bottom
+    'mb-8': !useCustomBottomMargin,
   })
 
-  const helptextHandler = () =>
-    helptext
-      .trim()
-      .split('\n')
-      .map((sentence, i) => <span key={i}>{sentence}</span>)
+  const showOptionalLabel = displayOptionalLabel && !required
+  const displayAsterisk = !displayOptionalLabel && required
+
+  const labelStyle = cx('relative text-gray-800', {
+    'text-p3-semibold sm:text-16-semibold after:text-p3-semibold after:sm:text-16-semibold':
+      labelSize === 'default',
+    'text-h3 after:text-h3': labelSize === 'h3',
+    'text-h4 after:text-h4': labelSize === 'h4',
+    'text-h5 after:text-h5': labelSize === 'h5',
+    'mr-2': showOptionalLabel,
+    'after:absolute after:ml-0.5 after:text-main-700 after:content-["*"]': displayAsterisk,
+  })
 
   return (
-    <div className="w-full">
-      <div className="flex justify-between mb-1">
-        <div className="flex w-full justify-between">
-          {/* LABEL */}
-          <label htmlFor={htmlFor} className={labelStyle} {...labelProps}>
+    <div className={wrapperStyle}>
+      <div className="flex">
+        <div className="grow">
+          <label htmlFor={htmlFor} {...labelProps} className={labelStyle}>
             {label}
           </label>
-          {
-            /* OPTIONAL */ !required && explicitOptional === 'left' && (
-              <p className="text-p3 sm:text-16 ml-2 flex items-center">(optional)</p>
-            )
-          }
-          <div className="flex-column flex items-center">
-            {
-              /* TOOLTIP */
-              tooltip && (
-                <div
-                  className={cx('flex-column flex items-center', {
-                    'ml-5': required,
-                    'ml-2': !required,
-                  })}
-                >
-                  <Tooltip text={tooltip} position={tooltipPosition} />
-                </div>
-              )
-            }
-          </div>
+          {showOptionalLabel && <span className="text-p3 sm:text-16">{t('optional')}</span>}
         </div>
-        {
-          /* OPTIONAL */ !required && explicitOptional === 'right' && (
-            <p className="text-p3 sm:text-16 ml-2 flex items-center">(optional)</p>
-          )
-        }
-      </div>
-      {
-        /* DESCRIPTION */
-        helptext && (
-          <div {...descriptionProps} className="text-p3 sm:text-16 mb-1 text-gray-700">
-            {helptextHandler()}
+        {tooltip && (
+          <div
+            className={cx('flex-column flex shrink-0 items-center', {
+              'ml-5': showOptionalLabel,
+              'ml-2': !showOptionalLabel,
+            })}
+          >
+            <BATooltip>{tooltip}</BATooltip>
           </div>
-        )
-      }
+        )}
+      </div>
+      {helptextHeader && (
+        <FieldHelptext helptext={helptextHeader} descriptionProps={descriptionProps} />
+      )}
     </div>
   )
 }

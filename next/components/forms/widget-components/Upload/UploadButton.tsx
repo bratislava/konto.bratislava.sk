@@ -1,80 +1,113 @@
-import UploadIcon from '@assets/images/new-icons/ui/upload.svg'
-import { UploadMinioFile } from '@backend/dtos/minio/upload-minio-file.dto'
+import { UploadIcon } from '@assets/ui-icons'
 import cx from 'classnames'
-import React, { ForwardedRef, forwardRef, ForwardRefRenderFunction } from 'react'
+import { useTranslation } from 'next-i18next'
+import React, { forwardRef } from 'react'
+import { Button as ReactAriaButton, FileTrigger } from 'react-aria-components'
 
-import { handleOnKeyPress } from '../../../../frontend/utils/general'
+import {
+  getDisplaySupportedFileExtensions,
+  getSupportedFileExtensions,
+} from '../../../../frontend/utils/formFileUpload'
+import PrettyBytes from '../../simple-components/PrettyBytes'
 
 interface UploadButtonProps {
-  value?: UploadMinioFile[]
   disabled?: boolean
   sizeLimit?: number
   supportedFormats?: string[]
   fileBrokenMessage?: string[]
-  onClick?: () => void
+  errorMessage?: string[]
+  allowsMultiple?: boolean
+  onUpload?: (files: File[]) => void
 }
 
-const UploadButtonComponent: ForwardRefRenderFunction<HTMLDivElement, UploadButtonProps> = (
-  props: UploadButtonProps,
-  ref: ForwardedRef<HTMLDivElement>,
-) => {
-  // STATE
-  const {
-    value,
-    disabled,
-    sizeLimit,
-    supportedFormats,
-    fileBrokenMessage,
-    onClick,
-  }: UploadButtonProps = props
-
-  // STYLES
-  const buttonClassNames = cx(
-    'h-full flex-col justify-center flex rounded-lg border-2 border-gray-300 py-3 px-4 bg-white',
+const UploadButton = forwardRef<HTMLButtonElement, UploadButtonProps>(
+  (
     {
-      'cursor-pointer': !disabled,
-      'hover:border-gray-400 focus:border-gray-700 active:border-gray-700':
-        !disabled && (!fileBrokenMessage || fileBrokenMessage.length === 0),
-      'border-red-500 hover:border-red-300':
-        !disabled && fileBrokenMessage && fileBrokenMessage.length > 0,
-      'opacity-50 cursor-not-allowed bg-gray-200': disabled,
+      disabled,
+      sizeLimit,
+      supportedFormats,
+      fileBrokenMessage,
+      errorMessage = [],
+      onUpload = () => {},
+      allowsMultiple,
     },
-  )
+    ref,
+  ) => {
+    const { t } = useTranslation('account', { keyPrefix: 'Upload' })
 
-  const buttonInfoClassNames = cx('text-p3 flex flex-col justify-center', {
-    'min-w-40': supportedFormats || sizeLimit,
-  })
+    const displaySupportedFileExtensions = getDisplaySupportedFileExtensions(supportedFormats)
 
-  // RENDER
-  return (
-    <div className="flex flex-row gap-4 w-fit h-fit">
-      <div
-        role="button"
-        tabIndex={0}
-        ref={ref}
-        data-value={value}
-        className={buttonClassNames}
-        onClick={onClick}
-        onKeyPress={(event: React.KeyboardEvent) => handleOnKeyPress(event, onClick)}
-      >
-        <div className="w-full flex gap-2">
-          <div className="h-6 w-6 flex justify-center items-center">
-            <UploadIcon className="w-6 h-6" />
-          </div>
-          <p className="text-16">Upload</p>
-        </div>
+    const buttonClassNames = cx(
+      'flex w-full items-center justify-center rounded-lg border-2 border-gray-300 bg-white px-6 py-2 lg:w-fit lg:py-3',
+      {
+        'cursor-pointer': !disabled,
+        'hover:border-gray-400 focus:border-gray-700 active:border-gray-700':
+          !disabled && (!fileBrokenMessage || fileBrokenMessage.length === 0),
+        'border-red-500 hover:border-red-300':
+          !disabled && fileBrokenMessage && fileBrokenMessage.length > 0,
+        'cursor-not-allowed bg-gray-200 opacity-50': disabled,
+
+        // error
+        'border-negative-700 hover:border-negative-700 focus:border-negative-700':
+          errorMessage?.length > 0 && !disabled,
+      },
+    )
+
+    const buttonInfoClassNames = cx('text-p3 flex flex-col justify-center', {
+      'min-w-40': supportedFormats || sizeLimit,
+    })
+
+    const handleOnSelect = async (files: FileList | null) => {
+      if (disabled) {
+        return
+      }
+
+      if (!files) {
+        onUpload([])
+        return
+      }
+
+      onUpload(Array.from(files))
+    }
+
+    return (
+      <div className="flex gap-x-6 gap-y-3 max-md:flex-col">
+        <FileTrigger
+          onSelect={handleOnSelect}
+          acceptedFileTypes={getSupportedFileExtensions(supportedFormats)}
+          allowsMultiple={allowsMultiple}
+        >
+          <ReactAriaButton className={buttonClassNames} ref={ref} isDisabled={disabled}>
+            <div className="flex items-center justify-center gap-2">
+              <span>
+                <UploadIcon />
+              </span>
+              <span>{allowsMultiple ? t('uploadFiles') : t('uploadFile')}</span>
+            </div>
+          </ReactAriaButton>
+        </FileTrigger>
+
+        {sizeLimit || supportedFormats?.length ? (
+          <dl className={buttonInfoClassNames}>
+            {sizeLimit ? (
+              <>
+                <dt className="sr-only">{t('sizeLimit')}</dt>
+                <dd>
+                  <PrettyBytes number={sizeLimit * 1000 * 1000} />
+                </dd>
+              </>
+            ) : null}
+            {displaySupportedFileExtensions?.length ? (
+              <>
+                <dt className="sr-only">{t('supportedFormats')}</dt>
+                <dd>{displaySupportedFileExtensions.join(', ')}</dd>
+              </>
+            ) : null}
+          </dl>
+        ) : null}
       </div>
-      {sizeLimit || supportedFormats ? (
-        <div className={buttonInfoClassNames}>
-          <p>
-            {sizeLimit} {sizeLimit && 'MB'}
-          </p>
-          <p>{supportedFormats?.join(' ')}</p>
-        </div>
-      ) : null}
-    </div>
-  )
-}
+    )
+  },
+)
 
-const UploadButton = forwardRef<HTMLDivElement, UploadButtonProps>(UploadButtonComponent)
 export default UploadButton

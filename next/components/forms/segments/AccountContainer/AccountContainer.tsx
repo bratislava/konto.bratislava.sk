@@ -1,9 +1,15 @@
 import cx from 'classnames'
 
-export const AccountContainer = ({ children, className }: React.HTMLAttributes<HTMLDivElement>) => (
+interface AccountContainerProps extends React.HTMLAttributes<HTMLDivElement> {
+  dataCyPrefix?: string;
+}
+
+
+export const AccountContainer = ({ children, className, dataCyPrefix }: AccountContainerProps) => (
   <div
+    data-cy={dataCyPrefix ? `${dataCyPrefix}-container` : null}
     className={cx(
-      'mx-auto w-full max-w-[696px] md:rounded-lg bg-gray-0 py-6 px-4 md:shadow md:px-12 md:py-8',
+      'mx-auto w-full max-w-[696px] bg-gray-0 px-4 py-6 md:rounded-lg md:px-12 md:py-8 md:shadow',
       className,
     )}
   >

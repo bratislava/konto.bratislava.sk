@@ -1,41 +1,47 @@
-import { withTheme } from '@rjsf/core'
+import { ThemeProps, withTheme } from '@rjsf/core'
+import { GenericObjectType, WidgetProps } from '@rjsf/utils'
+import { ArrayFieldTemplateItemType } from '@rjsf/utils/src/types'
 import DatePickerWidgetRJSF from 'components/forms/widget-wrappers/DatePickerWidgetRJSF'
-import InputFieldWidgetRJSF from 'components/forms/widget-wrappers/InputFieldWidgetRJSF'
 import TimePickerWidgetRJSF from 'components/forms/widget-wrappers/TimePickerWidgetRJSF'
+import { ComponentType } from 'react'
 
+import { wrapWidgetsInContext } from './useFormWidget'
+import BAArrayFieldItemTemplate from './widget-wrappers/BAArrayFieldItemTemplate'
+import BAArrayFieldTemplate from './widget-wrappers/BAArrayFieldTemplate'
+import BAObjectFieldTemplate from './widget-wrappers/BAObjectFieldTemplate'
+import CheckboxGroupWidgetRJSF from './widget-wrappers/CheckboxGroupWidgetRJSF'
 import CheckboxWidgetRJSF from './widget-wrappers/CheckboxWidgetRJSF'
-import DateFromToWidgetRJSF from './widget-wrappers/fieldGroupsRJSF/DateFromToWidgetRJSF'
-import DateTimeWidgetRJSF from './widget-wrappers/fieldGroupsRJSF/DateTimeWidgetRJSF'
-import DoubledInputWidgetFieldRJSF from './widget-wrappers/fieldGroupsRJSF/DoubledInputWidgetFieldRJSF'
-import TimeFromToWidgetRJSF from './widget-wrappers/fieldGroupsRJSF/TimeFromToWidgetRJSF'
-import RadioButtonsWidgetRJSF from './widget-wrappers/RadioButtonWidgetRJSF'
-import SelectFieldWidgetRJSF from './widget-wrappers/SelectFieldWidgetRJSF'
-import TextAreaFieldWidgetRJSF from './widget-wrappers/TextAreaFieldWidgetRJSF'
-import UploadWidgetRJSF from './widget-wrappers/UploadWidgetRJSF'
+import CustomComponentsWidgetRJSF from './widget-wrappers/CustomComponentsFieldWidgetRJSF'
+import FileUploadWidgetRJSF from './widget-wrappers/FileUploadWidgetRJSF'
+import InputWidgetRJSF from './widget-wrappers/InputWidgetRJSF'
+import RadioGroupWidgetRJSF from './widget-wrappers/RadioGroupWidgetRJSF'
+import SelectWidgetRJSF from './widget-wrappers/SelectWidgetRJSF'
+import TextAreaWidgetRJSF from './widget-wrappers/TextAreaWidgetRJSF'
 
-// you can add custom widgets as well as override the default ones
-// we'll want to override all the default widgets listed here https://react-jsonschema-form.readthedocs.io/en/latest/advanced-customization/custom-widgets-fields/
-const theme = {
-  widgets: {
-    SelectField: SelectFieldWidgetRJSF,
-    InputField: InputFieldWidgetRJSF,
-    RadioButton: RadioButtonsWidgetRJSF,
-    TextArea: TextAreaFieldWidgetRJSF,
-    Checkboxes: CheckboxWidgetRJSF,
-    Upload: UploadWidgetRJSF,
-    DatePicker: DatePickerWidgetRJSF,
-    TimePicker: TimePickerWidgetRJSF,
-  },
-  fields: {
-    doubledInput: DoubledInputWidgetFieldRJSF,
-    dateFromTo: DateFromToWidgetRJSF,
-    timeFromTo: TimeFromToWidgetRJSF,
-    dateTime: DateTimeWidgetRJSF,
+// ComponentType<WidgetProps> must be used for each widget, because the library won't accept our custom overridden
+// `options` property.
+const theme: ThemeProps = {
+  widgets: wrapWidgetsInContext({
+    Select: SelectWidgetRJSF as ComponentType<WidgetProps>,
+    Input: InputWidgetRJSF as ComponentType<WidgetProps>,
+    RadioGroup: RadioGroupWidgetRJSF as ComponentType<WidgetProps>,
+    TextArea: TextAreaWidgetRJSF as ComponentType<WidgetProps>,
+    CheckboxGroup: CheckboxGroupWidgetRJSF as ComponentType<WidgetProps>,
+    Checkbox: CheckboxWidgetRJSF as ComponentType<WidgetProps>,
+    FileUpload: FileUploadWidgetRJSF as ComponentType<WidgetProps>,
+    DatePicker: DatePickerWidgetRJSF as ComponentType<WidgetProps>,
+    TimePicker: TimePickerWidgetRJSF as ComponentType<WidgetProps>,
+    CustomComponents: CustomComponentsWidgetRJSF as ComponentType<WidgetProps>,
+  }),
+  templates: {
+    ObjectFieldTemplate: BAObjectFieldTemplate,
+    ArrayFieldTemplate: BAArrayFieldTemplate,
+    // It contains extra parentUiOptions prop that is not present in the original ArrayFieldItemTemplate, so we need to
+    // cast it to the original type
+    ArrayFieldItemTemplate: BAArrayFieldItemTemplate as ComponentType<ArrayFieldTemplateItemType>,
   },
 }
 
-// eslint-disable-next-line @typescript-eslint/ban-ts-comment
-// @ts-ignore
-export const ThemedForm = withTheme(theme)
+const ThemedForm = withTheme<GenericObjectType>(theme)
 
 export default ThemedForm

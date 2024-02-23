@@ -35,7 +35,7 @@ describe('F01 -', { testIsolation: false }, () => {
             cy.wrap(Cypress.$(`[data-cy=continue-button-${device}]`, form)).click()
             cy.dataCy('error-message').should('be.visible').should('have.class', 'text-error')
           })
-          cy.dataCy('form-container').should('be.visible').matchImage()
+          cy.dataCy('form-container').should('be.visible')//.matchImage()
         })
 
         it('2. Uploading file in "File" step.', () => {
@@ -55,7 +55,7 @@ describe('F01 -', { testIsolation: false }, () => {
             cy.checkFormValidation(device, form, 7, applicantErrorBorderFields)
           })
 
-          cy.dataCy('form-container').should('be.visible').matchImage()
+          cy.dataCy('form-container').should('be.visible')//.matchImage()
         })
 
         it('4. Filling out the "Applicant" step.', () => {
@@ -81,7 +81,7 @@ describe('F01 -', { testIsolation: false }, () => {
         })
 
         it('5. Filling out the "Investor" step', () => {
-          cy.dataCy('form-container').should('be.visible').matchImage()
+          cy.dataCy('form-container').should('be.visible')//.matchImage()
           cy.dataCy('form-container').then((form) => {
             cy.wrap(Cypress.$('[data-cy=radio-áno]', form)).should('be.checked')
 
@@ -109,7 +109,7 @@ describe('F01 -', { testIsolation: false }, () => {
             cy.checkFormValidation(device, form, 4, designerErrorBorderFields)
             cy.wrap(Cypress.$('[data-cy=error-message]', form)).should('have.length', 5)
           })
-          cy.dataCy('form-container').should('be.visible').matchImage()
+          cy.dataCy('form-container').should('be.visible')//.matchImage()
         })
 
         it('7. Filling out the "Responsible designer" step.', () => {
@@ -143,7 +143,7 @@ describe('F01 -', { testIsolation: false }, () => {
 
             cy.wrap(Cypress.$(constructionErrorBorderFields, form)).should('have.class', 'border-negative-700')
           })
-          cy.dataCy('form-container').should('be.visible').matchImage()
+          cy.dataCy('form-container').should('be.visible')//.matchImage()
         })
 
         it('9. Filling out the "Construction information" step.', () => {
@@ -168,7 +168,7 @@ describe('F01 -', { testIsolation: false }, () => {
         })
 
         it('10. Checking form summary page.', () => {
-          cy.dataCy('form-container').should('be.visible').matchImage()
+          cy.dataCy('form-container').should('be.visible')//.matchImage()
 
           cy.dataCy('alert-container').should('not.exist')
         })

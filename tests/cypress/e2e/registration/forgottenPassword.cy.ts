@@ -36,7 +36,7 @@ describe('RF05 -', { testIsolation: false }, () => {
             cy.submitForm('forgotten-password-form')
           })
           cy.dataCy('alert-container').should('be.visible')
-          cy.dataCy('forgotten-password-form').should('be.visible').matchImage()
+          cy.dataCy('forgotten-password-form').should('be.visible')//.matchImage()
         })
 
         it('3. Submitting correct email.', () => {

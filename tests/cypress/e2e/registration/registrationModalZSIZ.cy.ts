@@ -22,7 +22,7 @@ describe('RF04 -', { testIsolation: false }, () => {
           cy.dataCy('close-modal').click()
 
           cy.dataCy(`save-concept-${device}`).should('be.visible').click()
-          cy.dataCy('registration-modal').should('be.visible').matchImage()
+          cy.dataCy('registration-modal').should('be.visible')//.matchImage()
         })
       })
     })

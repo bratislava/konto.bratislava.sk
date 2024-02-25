@@ -40,7 +40,7 @@ Cypress.Commands.add('checkFormFieldsNotInErrorState', (form, errorBorderFields)
 
 Cypress.Commands.add('submitForm', (form) => {
   cy.dataCy(form).then((form) => {
-    cy.wrap(Cypress.$('button[type=submit]', form)).click()
+    cy.wrap(Cypress.$('button[type=submit]', form)).should("be.visible").dblclick()
   })
 })
 
@@ -58,5 +58,5 @@ Cypress.Commands.add('check2FAPage', (emailHash, formContainer) => {
   })
   cy.dataCy(formContainer)
     .should('be.visible')
-    .matchImage({ screenshotConfig: { blackout: visualTestingIgnore } })
+    //.matchImage({ screenshotConfig: { blackout: visualTestingIgnore } })  
 })

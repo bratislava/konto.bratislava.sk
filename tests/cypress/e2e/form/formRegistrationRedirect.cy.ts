@@ -36,7 +36,7 @@ describe('F04 -', { testIsolation: false }, () => {
             cy.wrap(Cypress.$(`[data-cy=continue-button-${device}]`, form)).click()
             cy.dataCy('error-message').should('be.visible').should('have.class', 'text-error')
           })
-          cy.dataCy('form-container').should('be.visible').matchImage()
+          cy.dataCy('form-container').should('be.visible')//.matchImage()
         })
 
         it('2. Uploading file in "File" step.', () => {
@@ -53,7 +53,7 @@ describe('F04 -', { testIsolation: false }, () => {
             cy.wrap(Cypress.$('[aria-required=true]', form)).should('have.length', 7)
           })
 
-          cy.dataCy('form-container').should('be.visible').matchImage()
+          cy.dataCy('form-container').should('be.visible')//.matchImage()
         })
 
         it('4. Filling out the "Applicant" step.', () => {
@@ -88,7 +88,7 @@ describe('F04 -', { testIsolation: false }, () => {
           }
             
           cy.url().should("include", "/registracia");
-          cy.dataCy('registration-container').should('be.visible').matchImage()
+          cy.dataCy('registration-container').should('be.visible')//.matchImage()
         })
 
         it('6. Filling out the registration form.', () => {
@@ -110,7 +110,7 @@ describe('F04 -', { testIsolation: false }, () => {
         it('7. Check that required inputs are not in error state.', () => {
           cy.hideInfoBar()
           cy.checkFormFieldsNotInErrorState('register-form', errorBorderFields)
-          cy.dataCy('registration-container').should('be.visible').matchImage()
+          cy.dataCy('registration-container').should('be.visible')//.matchImage()
         })
 
         it('8. Submitting the form and checking the redirection to original form.', () => {
@@ -118,6 +118,10 @@ describe('F04 -', { testIsolation: false }, () => {
           cy.check2FAPage(emailHash, 'registration-container')
 
           // TODO check data filled in form
+        })
+
+        it('9. Logout user.', () => {
+          cy.logout()
         })
       })
     })

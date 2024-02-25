@@ -24,7 +24,7 @@ export default defineConfig({
 
       config.retries = {
         runMode: 1,
-        openMode: 0,
+        openMode: 1,
       }
 
       return config

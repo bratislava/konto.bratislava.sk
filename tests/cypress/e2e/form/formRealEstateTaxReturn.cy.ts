@@ -26,7 +26,7 @@ describe('F05 -', { testIsolation: false }, () => {
           context(device, Cypress.env('resolution')[`${device}`], () => {
 
             before(() => {
-              cy.fixture(jsonSources[i]).then((fileData) => {
+              cy.fixture(jsonSources[i-1]).then((fileData) => {
                 this.fileData = fileData
               })
 

@@ -7,7 +7,7 @@ export type MenuItemBase = {
   id?: number
   title: string
   icon?: ReactNode
-  onPress?: () => Promise<void> | Promise<boolean> | void
+  onPress?: () => Promise<void> | void
   url?: string
   itemClassName?: string
 }

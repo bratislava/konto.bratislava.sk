@@ -40,12 +40,17 @@ const AccountPageLayout = ({ className, children, hiddenHeaderNav }: AccountPage
 
   // we need to keep the work in progress of the open form if navigating away form it
   const optionalFormRedirectsContext = useConditionalFormRedirects()
-  const login = () =>
-    optionalFormRedirectsContext ? optionalFormRedirectsContext.login() : router.push(ROUTES.LOGIN)
-  const register = () =>
-    optionalFormRedirectsContext
-      ? optionalFormRedirectsContext.register()
-      : router.push(ROUTES.REGISTER)
+  const login = optionalFormRedirectsContext
+    ? () => optionalFormRedirectsContext.login()
+    : async () => {
+        await router.push(ROUTES.LOGIN)
+      }
+
+  const register = optionalFormRedirectsContext
+    ? () => optionalFormRedirectsContext.register()
+    : async () => {
+        await router.push(ROUTES.REGISTER)
+      }
 
   const sectionsList: MenuSectionItemBase[] = [
     {

@@ -1,22 +1,17 @@
 import IntroSection from 'components/forms/segments/AccountSections/IntroSection/IntroSection'
 import AccountPageLayout from 'components/layouts/AccountPageLayout'
-import {
-  getSSRCurrentAuth,
-  ServerSideAuthProviderHOC,
-} from 'components/logic/ServerSideAuthProvider'
-import { GetServerSidePropsContext } from 'next'
-import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
 
-export const getServerSideProps = async (ctx: GetServerSidePropsContext) => {
-  const locale = ctx.locale ?? 'sk'
+import { SsrAuthProviderHOC } from '../components/logic/SsrAuthContext'
+import { amplifyGetServerSideProps } from '../frontend/utils/amplifyServer'
+import { slovakServerSideTranslations } from '../frontend/utils/slovakServerSideTranslations'
 
+export const getServerSideProps = amplifyGetServerSideProps(async () => {
   return {
     props: {
-      ssrCurrentAuthProps: await getSSRCurrentAuth(ctx.req),
-      ...(await serverSideTranslations(locale)),
+      ...(await slovakServerSideTranslations()),
     },
   }
-}
+})
 
 const AccountIntroPage = () => {
   return (
@@ -26,4 +21,4 @@ const AccountIntroPage = () => {
   )
 }
 
-export default ServerSideAuthProviderHOC(AccountIntroPage)
+export default SsrAuthProviderHOC(AccountIntroPage)

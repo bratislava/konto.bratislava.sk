@@ -1,29 +1,18 @@
 import { RJSFSchema, UiSchema } from '@rjsf/utils'
-import { GetServerSideProps } from 'next'
-import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
 import priznanieKDaniZNehnutelnosti from 'schema-generator/definitions/priznanie-k-dani-z-nehnutelnosti'
 
 import FormPageWrapper, { FormPageWrapperProps } from '../../components/forms/FormPageWrapper'
-import {
-  getSSRCurrentAuth,
-  ServerSideAuthProviderHOC,
-} from '../../components/logic/ServerSideAuthProvider'
+import { SsrAuthProviderHOC } from '../../components/logic/SsrAuthContext'
 import { environment } from '../../environment'
-
-type Params = {
-  slug: string
-  id: string
-}
+import { amplifyGetServerSideProps } from '../../frontend/utils/amplifyServer'
+import { slovakServerSideTranslations } from '../../frontend/utils/slovakServerSideTranslations'
 
 /**
  * Temporary route for previewing the tax form.
  */
-export const getServerSideProps: GetServerSideProps<FormPageWrapperProps, Params> = async (ctx) => {
+export const getServerSideProps = amplifyGetServerSideProps<FormPageWrapperProps>(async () => {
   if (!environment.featureToggles.priznanieKDaniZNehnutelnostiPreview) return { notFound: true }
 
-  const ssrCurrentAuthProps = await getSSRCurrentAuth(ctx.req)
-
-  const locale = 'sk'
   // To remove undefined values from the schema as they are not allowed by Next.js
   const schema = JSON.parse(JSON.stringify(priznanieKDaniZNehnutelnosti)) as {
     schema: RJSFSchema
@@ -32,7 +21,6 @@ export const getServerSideProps: GetServerSideProps<FormPageWrapperProps, Params
 
   return {
     props: {
-      ssrCurrentAuthProps,
       formContext: {
         slug: 'priznanie-k-dani-z-nehnutelnosti',
         schema: schema.schema,
@@ -47,9 +35,9 @@ export const getServerSideProps: GetServerSideProps<FormPageWrapperProps, Params
         isSigned: true,
         isTaxForm: true,
       },
-      ...(await serverSideTranslations(locale)),
+      ...(await slovakServerSideTranslations()),
     } satisfies FormPageWrapperProps,
   }
-}
+})
 
-export default ServerSideAuthProviderHOC(FormPageWrapper)
+export default SsrAuthProviderHOC(FormPageWrapper)

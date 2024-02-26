@@ -160,7 +160,9 @@ const RegisterForm = ({ onSubmit, error, lastEmail, disablePO }: Props) => {
         return onSubmit(data.email, data.password, data.turnstileToken, userData)
       })}
     >
-      <h1 className="text-h2" data-cy="register-form-title">{t('register_title')}</h1>
+      <h1 className="text-h2" data-cy="register-form-title">
+        {t('register_title')}
+      </h1>
       <AccountErrorAlert error={error} args={{ email: lastEmail || '' }} />
 
       {!disablePO ? (

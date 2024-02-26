@@ -93,7 +93,10 @@ const IdentityVerificationForm = ({ onSubmit, isLegalEntity, error }: Props) => 
     formState: { isSubmitting },
   } = useHookForm<VerificationFormData>({
     schema,
-    defaultValues: {},
+    defaultValues: {
+      rc: '',
+      idCard: '',
+    },
   })
   const [captchaWarning, setCaptchaWarning] = useState<'loading' | 'show' | 'hide'>('loading')
 
@@ -140,6 +143,7 @@ const IdentityVerificationForm = ({ onSubmit, isLegalEntity, error }: Props) => 
         render={({ field }) => (
           <InputField
             required
+            helptext={t('rc_description')}
             label={t(isLegalEntity ? 'rc_label_legal_entity' : 'rc_label')}
             placeholder={t('rc_placeholder')}
             {...field}

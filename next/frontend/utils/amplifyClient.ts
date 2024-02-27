@@ -1,5 +1,5 @@
 // eslint-disable-next-line import/no-extraneous-dependencies
-import { AuthError } from '@aws-amplify/auth/src'
+import { AuthError } from '@aws-amplify/auth'
 // eslint-disable-next-line import/no-extraneous-dependencies
 import { fetchAuthSession } from '@aws-amplify/core'
 import { getCurrentUser } from 'aws-amplify/auth'

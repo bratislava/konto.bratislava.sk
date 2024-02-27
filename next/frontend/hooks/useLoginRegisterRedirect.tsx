@@ -1,11 +1,12 @@
 import type { UrlObject } from 'node:url'
 
 import { ROUTES } from 'frontend/api/constants'
-import { getAccessTokenOrLogout, getCurrentAuthenticatedUser } from 'frontend/utils/amplify'
 import { GENERIC_ERROR_MESSAGE } from 'frontend/utils/errors'
 import logger from 'frontend/utils/logger'
 import { useRouter } from 'next/router'
 import React, { useCallback, useEffect, useState } from 'react'
+
+import { getAccessTokenOrLogout, getCurrentAuthenticatedUser } from '../utils/amplifyClient'
 
 interface LoginRegisterRedirectState {
   redirectTarget: string

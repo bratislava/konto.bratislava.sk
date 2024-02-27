@@ -4,7 +4,6 @@ import React, { useEffect } from 'react'
 import { useEffectOnce } from 'usehooks-ts'
 
 import AccountPageLayout from '../layouts/AccountPageLayout'
-import { GetSSRCurrentAuth } from '../logic/ServerSideAuthProvider'
 import FormPage from './FormPage'
 import FormProviders from './FormProviders'
 import ThankYouFormSection from './segments/AccountSections/ThankYouSection/ThankYouFormSection'
@@ -13,7 +12,6 @@ import { FormSentRenderer } from './useFormSent'
 
 export type FormPageWrapperProps = {
   formContext: FormContext
-  ssrCurrentAuthProps?: GetSSRCurrentAuth
 }
 
 // custom plausible tracking - we exclude '/mestske-sluzby/*/*' in top level plausible provider

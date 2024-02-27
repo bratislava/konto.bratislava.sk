@@ -1,7 +1,6 @@
 // TODO waiting on #305 to get merged, afterwards might move elsewhere
 // frontend code for calling api endpoints grouped
 import { ErrorObject } from 'ajv'
-import { getAccessTokenOrLogout } from 'frontend/utils/amplify'
 
 import { environment } from '../../environment'
 import {
@@ -13,6 +12,7 @@ import {
   UrlResult,
   User,
 } from '../dtos/generalApiDto'
+import { getAccessTokenOrLogout } from '../utils/amplifyClient'
 import logger, { developmentLog } from '../utils/logger'
 
 export const API_ERROR_TEXT = 'API_ERROR'

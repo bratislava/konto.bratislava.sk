@@ -4,7 +4,7 @@ import { ParsedUrlQuery } from 'node:querystring'
 import { createServerRunner } from '@aws-amplify/adapter-nextjs'
 import { AuthError } from '@aws-amplify/auth'
 import { fetchUserAttributes, getCurrentUser } from '@aws-amplify/auth/server'
-import { AmplifyServer } from '@aws-amplify/core/dist/esm/adapterCore'
+import type { AmplifyServer } from '@aws-amplify/core/dist/esm/adapterCore'
 import { fetchAuthSession } from '@aws-amplify/core/server'
 /* eslint-enable import/no-extraneous-dependencies */
 import { GetServerSideProps } from 'next'

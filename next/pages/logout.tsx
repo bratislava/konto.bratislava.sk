@@ -3,13 +3,13 @@ import AccountContainer from 'components/forms/segments/AccountContainer/Account
 import AccountSuccessAlert from 'components/forms/segments/AccountSuccessAlert/AccountSuccessAlert'
 import LoginRegisterLayout from 'components/layouts/LoginRegisterLayout'
 import useLoginRegisterRedirect from 'frontend/hooks/useLoginRegisterRedirect'
-import { useServerSideAuth } from 'frontend/hooks/useServerSideAuth'
 import { GENERIC_ERROR_MESSAGE } from 'frontend/utils/errors'
 import logger from 'frontend/utils/logger'
 import { useTranslation } from 'next-i18next'
 import { useEffect, useState } from 'react'
 
 import { SsrAuthProviderHOC } from '../components/logic/SsrAuthContext'
+import { useSsrAuth } from '../frontend/hooks/useSsrAuth'
 import { amplifyGetServerSideProps } from '../frontend/utils/amplifyServer'
 import { slovakServerSideTranslations } from '../frontend/utils/slovakServerSideTranslations'
 
@@ -26,7 +26,7 @@ export const getServerSideProps = amplifyGetServerSideProps(
 
 const LogoutPage = () => {
   const { t } = useTranslation('account')
-  const { isAuthenticated } = useServerSideAuth()
+  const { isAuthenticated } = useSsrAuth()
   const { redirect } = useLoginRegisterRedirect()
   const [isLoading, setIsLoading] = useState(false)
   useEffect(() => {

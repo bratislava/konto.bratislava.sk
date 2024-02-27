@@ -6,8 +6,8 @@ import { useTranslation } from 'next-i18next'
 import React from 'react'
 
 import { ROUTES } from '../../frontend/api/constants'
-import { useServerSideAuth } from '../../frontend/hooks/useServerSideAuth'
 import useSnackbar from '../../frontend/hooks/useSnackbar'
+import { useSsrAuth } from '../../frontend/hooks/useSsrAuth'
 import AccountPageLayout from '../layouts/AccountPageLayout'
 import TaxFormLandingPageCard, {
   TaxFormLandingPageCardProps,
@@ -25,7 +25,7 @@ export type TaxFormLandingPageProps = {
  * The layout is copied from `FormPage` and `FormHeader`.
  */
 const TaxFormLandingPage = ({ latestVersionId }: TaxFormLandingPageProps) => {
-  const { isAuthenticated, userData } = useServerSideAuth()
+  const { isAuthenticated, userData } = useSsrAuth()
   const isBetaUser = userData?.['custom:2024_tax_form_beta'] === 'true'
   const router = useRouter()
   const { t } = useTranslation('forms')

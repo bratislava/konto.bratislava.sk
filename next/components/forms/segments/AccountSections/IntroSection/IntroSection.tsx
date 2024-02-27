@@ -5,7 +5,6 @@ import Banner from 'components/forms/simple-components/Banner'
 import Button from 'components/forms/simple-components/Button'
 import ServiceCard from 'components/forms/simple-components/ServiceCard'
 import { serviceCards } from 'frontend/constants/constants'
-import { useServerSideAuth } from 'frontend/hooks/useServerSideAuth'
 import { GENERIC_ERROR_MESSAGE, isError } from 'frontend/utils/errors'
 import { isDefined } from 'frontend/utils/general'
 import logger from 'frontend/utils/logger'
@@ -14,13 +13,14 @@ import { useTranslation } from 'next-i18next'
 import { useEffect, useState } from 'react'
 
 import { ROUTES } from '../../../../../frontend/api/constants'
+import { useSsrAuth } from '../../../../../frontend/hooks/useSsrAuth'
 import { PhoneNumberData } from '../../PhoneNumberForm/PhoneNumberForm'
 import PhoneNumberModal from '../../PhoneNumberModal/PhoneNumberModal'
 import Announcements from './Announcements/Announcements'
 
 const IntroSection = () => {
   const { t } = useTranslation('account')
-  const { userData, isLegalEntity } = useServerSideAuth()
+  const { userData, isLegalEntity } = useSsrAuth()
   const router = useRouter()
   const [phoneNumberModal, setPhoneNumberModal] = useState<'hidden' | 'displayed' | 'dismissed'>(
     'hidden',

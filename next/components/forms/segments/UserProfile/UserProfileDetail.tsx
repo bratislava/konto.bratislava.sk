@@ -1,10 +1,10 @@
 import cx from 'classnames'
 import Alert from 'components/forms/info-components/Alert'
 import { UserData } from 'frontend/dtos/accountDto'
-import { useServerSideAuth } from 'frontend/hooks/useServerSideAuth'
 import { useTranslation } from 'next-i18next'
 import { useId } from 'react'
 
+import { useSsrAuth } from '../../../../frontend/hooks/useSsrAuth'
 import UserProfileDetailEdit from './UserProfileDetailEdit'
 import UserProfileDetailsButtons from './UserProfileDetailsButtons'
 import UserProfileDetailView from './UserProfileDetailView'
@@ -36,7 +36,7 @@ const UserProfileDetail = (props: UserProfileDetailProps) => {
   } = props
   const { t } = useTranslation('account')
   const formId = `form-${useId()}`
-  const { tierStatus } = useServerSideAuth()
+  const { tierStatus } = useSsrAuth()
 
   const handleOnSubmit = (newUserData: UserData) => {
     onSubmit({

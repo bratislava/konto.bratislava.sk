@@ -3,13 +3,13 @@ import { updateUserAttributes } from 'aws-amplify/auth'
 import { Address } from 'frontend/dtos/accountDto'
 import { Tax } from 'frontend/dtos/taxDto'
 import useJsonParseMemo from 'frontend/hooks/useJsonParseMemo'
-import { useServerSideAuth } from 'frontend/hooks/useServerSideAuth'
 import { GENERIC_ERROR_MESSAGE, isError } from 'frontend/utils/errors'
 import logger from 'frontend/utils/logger'
 import { useTranslation } from 'next-i18next'
 import { useState } from 'react'
 
 import useSnackbar from '../../../../../frontend/hooks/useSnackbar'
+import { useSsrAuth } from '../../../../../frontend/hooks/useSsrAuth'
 import SummaryRowSimple from '../../../simple-components/SummaryRowSimple'
 import SummaryRow from '../../../steps/Summary/SummaryRow'
 import CorrespondenceAddressModal from '../../CorrespondenceAddressModal/CorrespondenceAddressModal'
@@ -23,7 +23,7 @@ const postalCodeFormat = (code?: string): string =>
 
 const ContactInformationSection = ({ tax }: ContactInformationSectionProps) => {
   const { t } = useTranslation('account')
-  const { userData } = useServerSideAuth()
+  const { userData } = useSsrAuth()
   const [showSnackbar] = useSnackbar({ variant: 'success' })
   const address = userData?.address
   const parsedAddress = useJsonParseMemo<Address>(address)

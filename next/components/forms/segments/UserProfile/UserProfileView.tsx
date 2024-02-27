@@ -1,7 +1,6 @@
 import { updateUserAttributes } from 'aws-amplify/auth'
 import { UserData } from 'frontend/dtos/accountDto'
 import { useRefreshServerSideProps } from 'frontend/hooks/useRefreshServerSideProps'
-import { useServerSideAuth } from 'frontend/hooks/useServerSideAuth'
 import useSnackbar from 'frontend/hooks/useSnackbar'
 import { GENERIC_ERROR_MESSAGE, isError } from 'frontend/utils/errors'
 import logger from 'frontend/utils/logger'
@@ -12,6 +11,7 @@ import { useRouter } from 'next/router'
 import { useTranslation } from 'next-i18next'
 import { useEffect, useState } from 'react'
 
+import { useSsrAuth } from '../../../../frontend/hooks/useSsrAuth'
 import AccountMarkdown from '../AccountMarkdown/AccountMarkdown'
 import UserProfileConsents from './UserProfileConsents'
 import UserProfileDetail from './UserProfileDetail'
@@ -22,7 +22,7 @@ const UserProfileView = () => {
   const [isEditing, setIsEditing] = useState<boolean>(false)
   const [isAlertOpened, setIsAlertOpened] = useState(false)
   const [alertType, setAlertType] = useState<'success' | 'error'>('success')
-  const { userData } = useServerSideAuth()
+  const { userData } = useSsrAuth()
   const [openSnackbarSuccess] = useSnackbar({ variant: 'success' })
 
   const [updateUserDataError, setUpdateUserDataError] = useState<Error | null>(null)

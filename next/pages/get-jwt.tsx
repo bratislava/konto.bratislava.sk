@@ -1,9 +1,9 @@
 import Button from 'components/forms/simple-components/Button'
 import { Wrapper } from 'components/styleguide/Wrapper'
-import { useServerSideAuth } from 'frontend/hooks/useServerSideAuth'
 
 // import { resetRcApi } from '../frontend/api/api'
 import { ROUTES } from '../frontend/api/constants'
+import { useSsrAuth } from '../frontend/hooks/useSsrAuth'
 import { amplifyGetServerSideProps } from '../frontend/utils/amplifyServer'
 import { slovakServerSideTranslations } from '../frontend/utils/slovakServerSideTranslations'
 
@@ -36,7 +36,7 @@ const GetJwt = ({ accessToken }: GetJwtProps) => {
   //   }
   // }
 
-  const { isAuthenticated } = useServerSideAuth()
+  const { isAuthenticated } = useSsrAuth()
 
   return (
     <div className="min-h-screen bg-[#E5E5E5]">

@@ -28,8 +28,8 @@ import type { PdfPreviewDataAdditionalMetadata } from '../../pages/pdf-preview'
 import { readFileToString } from '../utils/file'
 import { createSerializableFile } from '../utils/formExportImport'
 import { downloadBlob } from '../utils/general'
-import { useServerSideAuth } from './useServerSideAuth'
 import useSnackbar from './useSnackbar'
+import { useSsrAuth } from './useSsrAuth'
 
 declare global {
   interface Window {
@@ -38,7 +38,7 @@ declare global {
 }
 
 export const useGetContext = () => {
-  const { isAuthenticated } = useServerSideAuth()
+  const { isAuthenticated } = useSsrAuth()
   const { schemaVersionId, formId, slug, isTaxForm } = useFormContext()
   const { formData, setImportedFormData } = useFormState()
   const { setRegistrationModal, setTaxFormPdfExportModal } = useFormModals()

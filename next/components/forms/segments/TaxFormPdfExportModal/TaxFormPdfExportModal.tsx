@@ -5,7 +5,7 @@ import React from 'react'
 import { mergeProps } from 'react-aria'
 import { Button as AriaButton } from 'react-aria-components'
 
-import { useServerSideAuth } from '../../../../frontend/hooks/useServerSideAuth'
+import { useSsrAuth } from '../../../../frontend/hooks/useSsrAuth'
 import ButtonNew from '../../simple-components/ButtonNew'
 import ModalV2, { ModalV2Props } from '../../simple-components/ModalV2'
 import Spinner from '../../simple-components/Spinner'
@@ -33,7 +33,7 @@ const LoadingContent = () => {
 const SuccessContent = () => {
   const { t } = useTranslation('forms')
   const { register } = useFormRedirects()
-  const { isAuthenticated } = useServerSideAuth()
+  const { isAuthenticated } = useSsrAuth()
 
   const actions = [
     'tax_form_pdf_export_modal.action_1',

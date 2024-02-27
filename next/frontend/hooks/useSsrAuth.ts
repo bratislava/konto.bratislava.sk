@@ -1,13 +1,16 @@
-import { ServerSideAuthContext } from 'components/logic/ServerSideAuthProvider'
 import { AccountType, Tier } from 'frontend/dtos/accountDto'
 import { useContext } from 'react'
 
-export const useServerSideAuth = () => {
-  const serverSideAuthContext = useContext(ServerSideAuthContext)
-  const { userData } = serverSideAuthContext
+import { SsrAuthContext, SsrAuthContextType } from '../../components/logic/SsrAuthContext'
+
+export const useSsrAuth = () => {
+  const ssrAuthContext =
+    useContext(SsrAuthContext) ??
+    ({ userData: null, isSignedIn: false } satisfies SsrAuthContextType)
+  const { userData } = ssrAuthContext
   const tier = userData?.['custom:tier']
   return {
-    ...serverSideAuthContext,
+    ...ssrAuthContext,
     isAuthenticated: !!userData,
     accountType: userData?.['custom:account_type'],
     // helper, since we usually determine what to display this way, slightly convoluted because of ts rules & undefined vs boolean

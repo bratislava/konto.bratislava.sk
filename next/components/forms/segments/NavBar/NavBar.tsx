@@ -10,7 +10,6 @@ import MenuDropdown, {
 } from 'components/forms/simple-components/MenuDropdown/MenuDropdown'
 import { useConditionalFormRedirects } from 'components/forms/useFormRedirects'
 import { UserData } from 'frontend/dtos/accountDto'
-import { useServerSideAuth } from 'frontend/hooks/useServerSideAuth'
 import NextLink from 'next/link'
 import { useRouter } from 'next/router'
 import { useTranslation } from 'next-i18next'
@@ -19,6 +18,7 @@ import { RemoveScroll } from 'react-remove-scroll'
 
 import { ROUTES } from '../../../../frontend/api/constants'
 import useElementSize from '../../../../frontend/hooks/useElementSize'
+import { useSsrAuth } from '../../../../frontend/hooks/useSsrAuth'
 import Brand from '../../simple-components/Brand'
 import { MobileNavBar } from './MobileNavBar'
 import { useNavMenuContext } from './navMenuContext'
@@ -67,7 +67,7 @@ const Avatar = ({ userData }: { userData?: UserData | null }) => {
 }
 
 export const NavBar = ({ className, sectionsList, menuItems, hiddenHeaderNav }: IProps) => {
-  const { userData, isAuthenticated, isLegalEntity } = useServerSideAuth()
+  const { userData, isAuthenticated, isLegalEntity } = useSsrAuth()
 
   const [isMenuOpen, setIsMenuOpen] = useState<boolean>(false)
   const { menuValue, setMenuValue } = useNavMenuContext()

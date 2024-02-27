@@ -9,13 +9,13 @@ import { verifyIdentityApi, verifyLegalEntityIdentityApi } from 'frontend/api/ap
 import { Tier } from 'frontend/dtos/accountDto'
 import useLoginRegisterRedirect from 'frontend/hooks/useLoginRegisterRedirect'
 import { useRefreshServerSideProps } from 'frontend/hooks/useRefreshServerSideProps'
-import { useServerSideAuth } from 'frontend/hooks/useServerSideAuth'
 import { GENERIC_ERROR_MESSAGE, isError } from 'frontend/utils/errors'
 import { useTranslation } from 'next-i18next'
 import { useState } from 'react'
 
 import { SsrAuthProviderHOC } from '../components/logic/SsrAuthContext'
 import { ROUTES } from '../frontend/api/constants'
+import { useSsrAuth } from '../frontend/hooks/useSsrAuth'
 import { amplifyGetServerSideProps } from '../frontend/utils/amplifyServer'
 import logger from '../frontend/utils/logger'
 import { slovakServerSideTranslations } from '../frontend/utils/slovakServerSideTranslations'
@@ -39,7 +39,7 @@ const IdentityVerificationPage = () => {
 
   const [identityVerificationError, setIdentityVerificationError] = useState<Error | null>(null)
   // TODO fix is legal entity
-  const { tierStatus, isLegalEntity } = useServerSideAuth()
+  const { tierStatus, isLegalEntity } = useSsrAuth()
 
   const { redirect } = useLoginRegisterRedirect()
 

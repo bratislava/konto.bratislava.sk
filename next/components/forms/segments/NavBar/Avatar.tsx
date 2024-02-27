@@ -1,8 +1,9 @@
 import { ProfileIcon } from '@assets/ui-icons'
-import { useServerSideAuth } from 'frontend/hooks/useServerSideAuth'
+
+import { useSsrAuth } from '../../../../frontend/hooks/useSsrAuth'
 
 export const Avatar = () => {
-  const { userData } = useServerSideAuth()
+  const { userData } = useSsrAuth()
 
   return (
     <div className="relative flex flex-row items-start gap-2 rounded-full bg-main-100 p-2">

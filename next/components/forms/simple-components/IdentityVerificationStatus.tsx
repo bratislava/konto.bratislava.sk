@@ -1,13 +1,13 @@
 import Button from 'components/forms/simple-components/Button'
 import { ROUTES } from 'frontend/api/constants'
-import { useServerSideAuth } from 'frontend/hooks/useServerSideAuth'
 import { useRouter } from 'next/router'
 import { useTranslation } from 'next-i18next'
 
+import { useSsrAuth } from '../../../frontend/hooks/useSsrAuth'
 import { useConditionalFormRedirects } from '../useFormRedirects'
 
 const IdentityVerificationStatus = () => {
-  const { isAuthenticated, tierStatus } = useServerSideAuth()
+  const { isAuthenticated, tierStatus } = useSsrAuth()
   const { t } = useTranslation('account')
   const router = useRouter()
 

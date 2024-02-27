@@ -2,7 +2,7 @@ import { GetFileResponseReducedDto } from '@clients/openapi-forms'
 import { GenericObjectType, RJSFSchema, UiSchema } from '@rjsf/utils'
 import { createContext, PropsWithChildren, useContext } from 'react'
 
-import { useServerSideAuth } from '../../frontend/hooks/useServerSideAuth'
+import { useSsrAuth } from '../../frontend/hooks/useSsrAuth'
 import { FormFileUploadClientFileInfo } from '../../frontend/types/formFileUploadTypes'
 import type { FormSignature } from './signer/useFormSignature'
 
@@ -41,7 +41,7 @@ export const useFormContext = () => {
   if (!context) {
     throw new Error('useFormContext must be used within a FormContextProvider')
   }
-  const { userData } = useServerSideAuth()
+  const { userData } = useSsrAuth()
   const { formMigrationRequired, oldSchemaVersion, formSent } = context
   const isReadonly = formMigrationRequired || oldSchemaVersion || formSent
   const isDeletable = (formMigrationRequired || oldSchemaVersion) && !formSent

@@ -13,12 +13,12 @@ import cx from 'classnames'
 import NavBar, { MenuSectionItemBase } from 'components/forms/segments/NavBar/NavBar'
 import { MenuItemBase } from 'components/forms/simple-components/MenuDropdown/MenuDropdown'
 import { useConditionalFormRedirects } from 'components/forms/useFormRedirects'
-import { useServerSideAuth } from 'frontend/hooks/useServerSideAuth'
 import { useRouter } from 'next/router'
 import { useTranslation } from 'next-i18next'
 import { ReactNode, useRef, useState } from 'react'
 
 import { ROUTES } from '../../frontend/api/constants'
+import { useSsrAuth } from '../../frontend/hooks/useSsrAuth'
 import { isDefined } from '../../frontend/utils/general'
 
 type AccountPageLayoutBase = {
@@ -34,7 +34,7 @@ declare module 'react' {
 }
 
 const AccountPageLayout = ({ className, children, hiddenHeaderNav }: AccountPageLayoutBase) => {
-  const { isAuthenticated } = useServerSideAuth()
+  const { isAuthenticated } = useSsrAuth()
 
   const router = useRouter()
   const headerRef = useRef<HTMLDivElement>(null)

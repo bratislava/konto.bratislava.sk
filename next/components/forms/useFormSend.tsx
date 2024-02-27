@@ -9,8 +9,8 @@ import { useEffectOnce } from 'usehooks-ts'
 
 import { environment } from '../../environment'
 import { AccountType } from '../../frontend/dtos/accountDto'
-import { useServerSideAuth } from '../../frontend/hooks/useServerSideAuth'
 import useSnackbar from '../../frontend/hooks/useSnackbar'
+import { useSsrAuth } from '../../frontend/hooks/useSsrAuth'
 import { validateSummary } from '../../frontend/utils/form'
 import {
   FORM_SEND_EID_TOKEN_QUERY_KEY,
@@ -65,7 +65,7 @@ const useGetContext = () => {
     isAuthenticated,
     accountType,
     tierStatus: { isIdentityVerified },
-  } = useServerSideAuth()
+  } = useSsrAuth()
   const { turnOffLeaveProtection } = useFormLeaveProtection()
   const { isValidSignature, signature } = useFormSignature()
 

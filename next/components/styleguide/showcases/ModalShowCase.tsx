@@ -8,7 +8,6 @@ import RegistrationModal, {
 //   RegistrationModalType,
 // } from 'components/forms/segments/RegistrationModal/RegistrationModal'
 import Modal from 'components/forms/widget-components/Modals/Modal'
-import { Address } from 'frontend/dtos/accountDto'
 import { useState } from 'react'
 
 import PhoneNumberModal from '../../forms/segments/PhoneNumberModal/PhoneNumberModal'
@@ -86,7 +85,7 @@ const ModalShowCase = () => {
   // TODO either remove these modals from showcase completely, or fix their dependency on useFormRedirects
   // const [identityVerificationModal, setIdentityVerificationModal] = useState(false)
 
-  const onSubmitCorrespondenceAddress = ({ data }: { data?: Address }) => {
+  const onSubmitCorrespondenceAddress = ({ data }: { data?: string }) => {
     setAddressModalData(data)
     setCorrenspondenceAddressModalShow(false)
   }

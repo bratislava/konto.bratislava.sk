@@ -9,7 +9,6 @@ import { ROUTES } from '../../frontend/api/constants'
 import { useServerSideAuth } from '../../frontend/hooks/useServerSideAuth'
 import useSnackbar from '../../frontend/hooks/useSnackbar'
 import AccountPageLayout from '../layouts/AccountPageLayout'
-import { GetSSRCurrentAuth } from '../logic/ServerSideAuthProvider'
 import TaxFormLandingPageCard, {
   TaxFormLandingPageCardProps,
 } from './info-components/TaxFormLandingPageCard'
@@ -19,16 +18,15 @@ import Waves from './simple-components/Waves/Waves'
 
 export type TaxFormLandingPageProps = {
   latestVersionId: string
-  ssrCurrentAuthProps?: GetSSRCurrentAuth
-  isBetaUser: boolean
 }
 
 /**
  * Temporary landing page only for tax form, until we create unified landing page for all forms.
  * The layout is copied from `FormPage` and `FormHeader`.
  */
-const TaxFormLandingPage = ({ latestVersionId, isBetaUser }: TaxFormLandingPageProps) => {
-  const { isAuthenticated } = useServerSideAuth()
+const TaxFormLandingPage = ({ latestVersionId }: TaxFormLandingPageProps) => {
+  const { isAuthenticated, userData } = useServerSideAuth()
+  const isBetaUser = userData?.['custom:2024_tax_form_beta'] === 'true'
   const router = useRouter()
   const { t } = useTranslation('forms')
   const [openSnackbarError] = useSnackbar({ variant: 'error' })

@@ -1,3 +1,6 @@
+// eslint-disable-next-line import/no-extraneous-dependencies
+import type { AuthUserAttributes } from '@aws-amplify/auth/dist/esm/types'
+
 export enum Tier {
   NEW = 'NEW',
   QUEUE_IDENTITY_CARD = 'QUEUE_IDENTITY_CARD',
@@ -22,18 +25,7 @@ export enum AccountType {
   FyzickaOsobaPodnikatel = 'fo-p',
 }
 
-// as returned by Amplify.Auth.currentAuthenticatedUser().attributes
-// sent from BE as server side props
-export interface UserData {
-  sub?: string
-  email_verified?: string
-  email?: string
-  name?: string
-  given_name?: string
-  family_name?: string
-  phone_number?: string
-  phone_verified?: string
-  address?: string
+export type UserData = AuthUserAttributes & {
   'custom:ifo'?: string
   'custom:tier'?: Tier
   'custom:account_type'?: AccountType

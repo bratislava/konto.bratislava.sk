@@ -50,14 +50,14 @@ export const LoginRegisterRedirectProvider = ({ children }: { children: React.Re
   const redirect = useCallback(
     async (sameSiteQuery?: UrlObject['query']) => {
       try {
-        const isAuthenticated = !!(await getCurrentAuthenticatedUser())
+        const isSignedIn = !!(await getCurrentAuthenticatedUser())
         if (redirectTarget.startsWith('/')) {
-          await (isAuthenticated
+          await (isSignedIn
             ? router.push({ pathname: redirectTarget, query: sameSiteQuery })
             : router.push(ROUTES.LOGIN))
           // if successful reset to default state to prevent further unexpected redirects
           resetRedirect()
-        } else if (isAuthenticated) {
+        } else if (isSignedIn) {
           const accessToken = await getAccessTokenOrLogout()
           const redirectUrlWithToken = new URL(redirectTarget)
           redirectUrlWithToken.searchParams.set('access_token', accessToken)

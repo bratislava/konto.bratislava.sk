@@ -62,7 +62,7 @@ const useGetContext = () => {
   const { formData } = useFormState()
   const { getFileInfoById } = useFormFileUpload()
   const {
-    isAuthenticated,
+    isSignedIn,
     accountType,
     tierStatus: { isIdentityVerified },
   } = useSsrAuth()
@@ -242,7 +242,7 @@ const useGetContext = () => {
       return
     }
 
-    if (!isAuthenticated) {
+    if (!isSignedIn) {
       setRegistrationModal(RegistrationModalType.NotAuthenticatedSubmitForm)
       return
     }
@@ -255,7 +255,7 @@ const useGetContext = () => {
     }
 
     // https://www.figma.com/file/SFbuULqG1ysocghIga9BZT/Bratislavske-konto%2C-ESBS---ready-for-dev-(Ma%C5%A5a)?type=design&node-id=7208-17403&mode=design&t=6CblQJSMOCtO5LBu-0
-    if (isAuthenticated && !isIdentityVerified && scanningFiles.length === 0) {
+    if (isSignedIn && !isIdentityVerified && scanningFiles.length === 0) {
       setSendFilesScanningNotVerified(modalValueEid)
       return
     }
@@ -300,7 +300,7 @@ const useGetContext = () => {
       return
     }
 
-    if (isAuthenticated && isIdentityVerified && scanningFiles.length > 0) {
+    if (isSignedIn && isIdentityVerified && scanningFiles.length > 0) {
       // eslint-disable-next-line @typescript-eslint/no-misused-promises
       setSendFilesScanningEidModal({
         isOpen: true,
@@ -309,12 +309,12 @@ const useGetContext = () => {
       return
     }
 
-    if (isAuthenticated && !isIdentityVerified && scanningFiles.length > 0) {
+    if (isSignedIn && !isIdentityVerified && scanningFiles.length > 0) {
       setSendFilesScanningNotVerifiedEidModal(true)
       return
     }
 
-    if (!isAuthenticated && scanningFiles.length > 0) {
+    if (!isSignedIn && scanningFiles.length > 0) {
       setSendFilesScanningNonAuthenticatedEidModal(true)
       return
     }
@@ -326,7 +326,7 @@ const useGetContext = () => {
       },
     }
 
-    if (!isAuthenticated) {
+    if (!isSignedIn) {
       setSendConfirmationNonAuthenticatedEidModal(modalValue)
       return
     }

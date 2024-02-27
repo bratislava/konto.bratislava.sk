@@ -25,7 +25,7 @@ export type TaxFormLandingPageProps = {
  * The layout is copied from `FormPage` and `FormHeader`.
  */
 const TaxFormLandingPage = ({ latestVersionId }: TaxFormLandingPageProps) => {
-  const { isAuthenticated, userData } = useSsrAuth()
+  const { isSignedIn, userData } = useSsrAuth()
   const isBetaUser = userData?.['custom:2024_tax_form_beta'] === 'true'
   const router = useRouter()
   const { t } = useTranslation('forms')
@@ -122,7 +122,7 @@ const TaxFormLandingPage = ({ latestVersionId }: TaxFormLandingPageProps) => {
           <AccountMarkdown content={t('tax_form_landing_page.instructions')} variant="sm" />
           <div className="flex flex-col gap-3">
             <h2 className="text-h2">Vyberte si ako vyplníte priznanie:</h2>
-            {!isAuthenticated && (
+            {!isSignedIn && (
               <p className="text-p2">
                 Ak ste súčasťou <strong>beta testovania</strong> nového odosielania s eID, prosím{' '}
                 <ButtonNew

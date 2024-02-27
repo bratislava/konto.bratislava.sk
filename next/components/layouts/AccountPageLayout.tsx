@@ -34,7 +34,7 @@ declare module 'react' {
 }
 
 const AccountPageLayout = ({ className, children, hiddenHeaderNav }: AccountPageLayoutBase) => {
-  const { isAuthenticated } = useSsrAuth()
+  const { isSignedIn } = useSsrAuth()
 
   const router = useRouter()
   const headerRef = useRef<HTMLDivElement>(null)
@@ -104,7 +104,7 @@ const AccountPageLayout = ({ className, children, hiddenHeaderNav }: AccountPage
   ].filter(isDefined)
 
   // TODO consider using this in desktop menu
-  const menuItems: MenuItemBase[] = isAuthenticated
+  const menuItems: MenuItemBase[] = isSignedIn
     ? [
         {
           id: 0,

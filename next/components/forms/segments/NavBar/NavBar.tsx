@@ -67,7 +67,7 @@ const Avatar = ({ userData }: { userData?: UserData | null }) => {
 }
 
 export const NavBar = ({ className, sectionsList, menuItems, hiddenHeaderNav }: IProps) => {
-  const { userData, isAuthenticated, isLegalEntity } = useSsrAuth()
+  const { userData, isSignedIn, isLegalEntity } = useSsrAuth()
 
   const [isMenuOpen, setIsMenuOpen] = useState<boolean>(false)
   const { menuValue, setMenuValue } = useNavMenuContext()
@@ -115,7 +115,7 @@ export const NavBar = ({ className, sectionsList, menuItems, hiddenHeaderNav }: 
             />
             <IdentityVerificationStatus />
             <nav className="flex gap-x-8 font-semibold text-font/75">
-              {isAuthenticated ? (
+              {isSignedIn ? (
                 <MenuDropdown
                   setIsOpen={setIsMenuOpen}
                   buttonTrigger={

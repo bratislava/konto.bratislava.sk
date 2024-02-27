@@ -7,14 +7,14 @@ import { useSsrAuth } from '../../../frontend/hooks/useSsrAuth'
 import { useConditionalFormRedirects } from '../useFormRedirects'
 
 const IdentityVerificationStatus = () => {
-  const { isAuthenticated, tierStatus } = useSsrAuth()
+  const { isSignedIn, tierStatus } = useSsrAuth()
   const { t } = useTranslation('account')
   const router = useRouter()
 
   // we need to save the WIP of the open form if navigating away form it
   const optionalFormRedirectsContext = useConditionalFormRedirects()
 
-  if (!isAuthenticated) return null
+  if (!isSignedIn) return null
 
   return tierStatus.isIdentityVerified ? (
     <div className="flex rounded bg-success-100 px-2 py-0 lg:px-3 lg:py-1.5">

@@ -26,14 +26,14 @@ export const getServerSideProps = amplifyGetServerSideProps(
 
 const LogoutPage = () => {
   const { t } = useTranslation('account')
-  const { isAuthenticated } = useSsrAuth()
+  const { isSignedIn } = useSsrAuth()
   const { redirect } = useLoginRegisterRedirect()
   const [isLoading, setIsLoading] = useState(false)
   useEffect(() => {
-    if (!isAuthenticated) {
+    if (!isSignedIn) {
       redirect().catch((error) => logger.error('Failed redirect logout useEffect', error))
     }
-  }, [isAuthenticated, redirect])
+  }, [isSignedIn, redirect])
 
   const logoutHandler = async () => {
     setIsLoading(true)

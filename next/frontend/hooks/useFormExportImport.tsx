@@ -38,7 +38,7 @@ declare global {
 }
 
 export const useGetContext = () => {
-  const { isAuthenticated } = useSsrAuth()
+  const { isSignedIn } = useSsrAuth()
   const { schemaVersionId, formId, slug, isTaxForm } = useFormContext()
   const { formData, setImportedFormData } = useFormState()
   const { setRegistrationModal, setTaxFormPdfExportModal } = useFormModals()
@@ -261,7 +261,7 @@ export const useGetContext = () => {
   }
 
   const saveConcept = async (fromModal?: boolean) => {
-    if (!isAuthenticated) {
+    if (!isSignedIn) {
       setRegistrationModal(RegistrationModalType.NotAuthenticatedConceptSave)
       return
     }

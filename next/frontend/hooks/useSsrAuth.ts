@@ -11,7 +11,6 @@ export const useSsrAuth = () => {
   const tier = userData?.['custom:tier']
   return {
     ...ssrAuthContext,
-    isAuthenticated: !!userData,
     accountType: userData?.['custom:account_type'],
     // helper, since we usually determine what to display this way, slightly convoluted because of ts rules & undefined vs boolean
     isLegalEntity: userData?.['custom:account_type']

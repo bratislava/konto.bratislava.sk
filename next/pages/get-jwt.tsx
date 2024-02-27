@@ -36,7 +36,7 @@ const GetJwt = ({ accessToken }: GetJwtProps) => {
   //   }
   // }
 
-  const { isAuthenticated } = useSsrAuth()
+  const { isSignedIn } = useSsrAuth()
 
   return (
     <div className="min-h-screen bg-[#E5E5E5]">
@@ -45,7 +45,7 @@ const GetJwt = ({ accessToken }: GetJwtProps) => {
           direction="column"
           title="Kód nižšie slúži na technické účeli a umožňuje prístup k Vášmu kontu. NIKDY HO S NIKÝM NEZDIEĽAJTE. This site is for development purposes, the code below allows anyone to access your account. NEVER SHARE IT WITH ANYONE."
         >
-          {isAuthenticated ? (
+          {isSignedIn ? (
             <div className="flex flex-col">
               <div>{accessToken}</div>
             </div>

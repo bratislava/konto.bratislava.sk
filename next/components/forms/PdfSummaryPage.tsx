@@ -2,6 +2,7 @@ import React from 'react'
 
 import FormProviders from './FormProviders'
 import SummaryForm from './steps/Summary/SummaryForm'
+import SummaryFormLegalText from './steps/Summary/SummaryFormLegalText'
 import { FormSummaryProvider } from './steps/Summary/useFormSummary'
 import { FormContext } from './useFormContext'
 
@@ -16,8 +17,11 @@ const PdfSummaryPage = ({ formContext }: PdfSummaryPageProps) => {
   return (
     <FormProviders formContext={formContext}>
       <FormSummaryProvider>
-        <h1 className="text-h1-form mb-4">{formContext.schema.title}</h1>
-        <SummaryForm />
+        <div className="flex flex-col gap-4">
+          <h1 className="text-h1-form">{formContext.schema.title}</h1>
+          <SummaryForm />
+          <SummaryFormLegalText />
+        </div>
       </FormSummaryProvider>
     </FormProviders>
   )

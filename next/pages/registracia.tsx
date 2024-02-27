@@ -5,7 +5,7 @@ import AccountSuccessAlert from 'components/forms/segments/AccountSuccessAlert/A
 import EmailVerificationForm from 'components/forms/segments/EmailVerificationForm/EmailVerificationForm'
 import RegisterForm from 'components/forms/segments/RegisterForm/RegisterForm'
 import LoginRegisterLayout from 'components/layouts/LoginRegisterLayout'
-import { UserData } from 'frontend/dtos/accountDto'
+import { UserAttributes } from 'frontend/dtos/accountDto'
 import useLoginRegisterRedirect from 'frontend/hooks/useLoginRegisterRedirect'
 import { GENERIC_ERROR_MESSAGE, isError } from 'frontend/utils/errors'
 import { useRouter } from 'next/router'
@@ -50,7 +50,7 @@ const RegisterPage = () => {
     email: string,
     password: string,
     turnstileToken: string,
-    data: UserData,
+    data: UserAttributes,
   ) => {
     try {
       setRegistrationError(null)

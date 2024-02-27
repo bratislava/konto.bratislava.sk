@@ -1,6 +1,6 @@
 import cx from 'classnames'
 import Alert from 'components/forms/info-components/Alert'
-import { UserData } from 'frontend/dtos/accountDto'
+import { UserAttributes } from 'frontend/dtos/accountDto'
 import { useTranslation } from 'next-i18next'
 import { useId } from 'react'
 
@@ -13,19 +13,19 @@ import UserProfileSection from './UserProfileSection'
 import UserProfileSectionHeader from './UserProfileSectionHeader'
 
 interface UserProfileDetailProps {
-  userData?: UserData | null
+  userAttributes?: UserAttributes | null
   isEditing?: boolean
   alertType: 'success' | 'error'
   isAlertOpened: boolean
   onChangeIsEditing: (isEditing: boolean) => void
   onCancelEditing: () => void
-  onSubmit: (newUseData: UserData) => void
+  onSubmit: (newUseData: UserAttributes) => void
   onEmailChange: () => void
 }
 
 const UserProfileDetail = (props: UserProfileDetailProps) => {
   const {
-    userData,
+    userAttributes,
     isEditing,
     isAlertOpened,
     alertType,
@@ -38,7 +38,7 @@ const UserProfileDetail = (props: UserProfileDetailProps) => {
   const formId = `form-${useId()}`
   const { tierStatus } = useSsrAuth()
 
-  const handleOnSubmit = (newUserData: UserData) => {
+  const handleOnSubmit = (newUserData: UserAttributes) => {
     onSubmit({
       ...newUserData,
       phone_number: newUserData.phone_number?.replace(' ', ''),
@@ -100,17 +100,17 @@ const UserProfileDetail = (props: UserProfileDetailProps) => {
             className={cx('flex flex-col gap-8 p-4', 'md:flex-row md:flex-wrap md:gap-16 md:p-8')}
           >
             <div className={cx({ 'hidden md:block': isEditing })}>
-              <UserProfilePhoto userData={userData ?? {}} />
+              <UserProfilePhoto userAttributes={userAttributes ?? {}} />
             </div>
             {isEditing ? (
               <UserProfileDetailEdit
                 formId={formId}
-                userData={userData ?? {}}
+                userAttributes={userAttributes ?? {}}
                 onEmailChange={onEmailChange}
                 onSubmit={handleOnSubmit}
               />
             ) : (
-              <UserProfileDetailView userData={userData ?? {}} />
+              <UserProfileDetailView userAttributes={userAttributes ?? {}} />
             )}
           </div>
         </div>

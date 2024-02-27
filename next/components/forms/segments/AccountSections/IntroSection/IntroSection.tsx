@@ -20,24 +20,24 @@ import Announcements from './Announcements/Announcements'
 
 const IntroSection = () => {
   const { t } = useTranslation('account')
-  const { userData, isLegalEntity } = useSsrAuth()
+  const { userAttributes, isLegalEntity } = useSsrAuth()
   const router = useRouter()
   const [phoneNumberModal, setPhoneNumberModal] = useState<'hidden' | 'displayed' | 'dismissed'>(
     'hidden',
   )
 
-  // because the effect depends on userData, which may get refreshed every few seconds
+  // because the effect depends on userAttributes, which may get refreshed every few seconds
   // we need to track if the modal was dismissed and stop showing it afterwards if that's the case
   useEffect(() => {
     if (
       phoneNumberModal === 'hidden' &&
-      userData &&
-      !userData.phone_number &&
+      userAttributes &&
+      !userAttributes.phone_number &&
       ROUTES.REGISTER === router.query.from
     ) {
       setPhoneNumberModal('displayed')
     }
-  }, [phoneNumberModal, router.query.from, userData])
+  }, [phoneNumberModal, router.query.from, userAttributes])
 
   // TODO should be part of phonenumber modal, refactor
   const [phoneNumberError, setPhoneNumberError] = useState<Error | null>(null)
@@ -70,7 +70,7 @@ const IntroSection = () => {
     }
   }
 
-  const name = isLegalEntity ? userData?.name : userData?.given_name
+  const name = isLegalEntity ? userAttributes?.name : userAttributes?.given_name
 
   const bannerContent = `<span className='text-p2'>${t(
     'account_section_intro.banner_content',
@@ -87,14 +87,14 @@ const IntroSection = () => {
 
   return (
     <>
-      {userData && (
+      {userAttributes && (
         <PhoneNumberModal
           show={phoneNumberModal === 'displayed'}
           onClose={() => setPhoneNumberModal('dismissed')}
           onSubmit={onSubmitPhoneNumber}
           error={phoneNumberError}
           onHideError={resetError}
-          defaultValues={{ phone_number: userData?.phone_number }}
+          defaultValues={{ phone_number: userAttributes?.phone_number }}
         />
       )}
       <div className="flex flex-col">

@@ -41,12 +41,12 @@ export const useFormContext = () => {
   if (!context) {
     throw new Error('useFormContext must be used within a FormContextProvider')
   }
-  const { userData } = useSsrAuth()
+  const { userAttributes } = useSsrAuth()
   const { formMigrationRequired, oldSchemaVersion, formSent } = context
   const isReadonly = formMigrationRequired || oldSchemaVersion || formSent
   const isDeletable = (formMigrationRequired || oldSchemaVersion) && !formSent
   // Temporarily allow signing only for beta users.
-  const isSigned = context.isSigned && userData?.['custom:2024_tax_form_beta'] === 'true'
+  const isSigned = context.isSigned && userAttributes?.['custom:2024_tax_form_beta'] === 'true'
 
   return { ...context, isSigned, isReadonly, isDeletable }
 }

@@ -25,8 +25,8 @@ export type TaxFormLandingPageProps = {
  * The layout is copied from `FormPage` and `FormHeader`.
  */
 const TaxFormLandingPage = ({ latestVersionId }: TaxFormLandingPageProps) => {
-  const { isSignedIn, userData } = useSsrAuth()
-  const isBetaUser = userData?.['custom:2024_tax_form_beta'] === 'true'
+  const { isSignedIn, userAttributes } = useSsrAuth()
+  const isBetaUser = userAttributes?.['custom:2024_tax_form_beta'] === 'true'
   const router = useRouter()
   const { t } = useTranslation('forms')
   const [openSnackbarError] = useSnackbar({ variant: 'error' })

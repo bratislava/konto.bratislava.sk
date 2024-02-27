@@ -25,7 +25,7 @@ export enum AccountType {
   FyzickaOsobaPodnikatel = 'fo-p',
 }
 
-export type UserData = AuthUserAttributes & {
+export type UserAttributes = AuthUserAttributes & {
   'custom:ifo'?: string
   'custom:tier'?: Tier
   'custom:account_type'?: AccountType

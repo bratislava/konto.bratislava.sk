@@ -1,11 +1,11 @@
-import { UserData } from 'frontend/dtos/accountDto'
+import { UserAttributes } from 'frontend/dtos/accountDto'
 import React, { ComponentType, createContext } from 'react'
 
 export const ssrAuthContextPropKey = '__ssrAuthContext'
 
 export interface SsrAuthContextType {
   isSignedIn: boolean
-  userData: UserData | null
+  userAttributes: UserAttributes | null
 }
 
 export const SsrAuthContext = createContext<SsrAuthContextType | null>(null)

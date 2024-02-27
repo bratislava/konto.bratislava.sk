@@ -23,9 +23,9 @@ const postalCodeFormat = (code?: string): string =>
 
 const ContactInformationSection = ({ tax }: ContactInformationSectionProps) => {
   const { t } = useTranslation('account')
-  const { userData } = useSsrAuth()
+  const { userAttributes } = useSsrAuth()
   const [showSnackbar] = useSnackbar({ variant: 'success' })
-  const address = userData?.address
+  const address = userAttributes?.address
   const parsedAddress = useJsonParseMemo<Address>(address)
   const postal_code_array = parsedAddress?.postal_code?.replace(/\s/g, '')
   const [correspondenceAddressModalShow, setCorrespondenceAddressModalShow] = useState(false)
@@ -82,7 +82,7 @@ const ContactInformationSection = ({ tax }: ContactInformationSectionProps) => {
                 label: t('name_and_surname'),
                 value:
                   tax.taxPayer?.name ||
-                  `${userData?.given_name || ''} ${userData?.family_name || ''}`,
+                  `${userAttributes?.given_name || ''} ${userAttributes?.family_name || ''}`,
                 schemaPath: '',
                 isError: false,
               }}
@@ -110,7 +110,7 @@ const ContactInformationSection = ({ tax }: ContactInformationSectionProps) => {
               data={{
                 label: t('correspondence_address'),
                 value:
-                  userData &&
+                  userAttributes &&
                   (parsedAddress?.street_address ||
                     parsedAddress?.postal_code ||
                     parsedAddress?.locality)

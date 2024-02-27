@@ -6,16 +6,16 @@ import { SsrAuthContext, SsrAuthContextType } from '../../components/logic/SsrAu
 export const useSsrAuth = () => {
   const ssrAuthContext =
     useContext(SsrAuthContext) ??
-    ({ userData: null, isSignedIn: false } satisfies SsrAuthContextType)
-  const { userData } = ssrAuthContext
-  const tier = userData?.['custom:tier']
+    ({ userAttributes: null, isSignedIn: false } satisfies SsrAuthContextType)
+  const { userAttributes } = ssrAuthContext
+  const tier = userAttributes?.['custom:tier']
   return {
     ...ssrAuthContext,
-    accountType: userData?.['custom:account_type'],
+    accountType: userAttributes?.['custom:account_type'],
     // helper, since we usually determine what to display this way, slightly convoluted because of ts rules & undefined vs boolean
-    isLegalEntity: userData?.['custom:account_type']
+    isLegalEntity: userAttributes?.['custom:account_type']
       ? [AccountType.FyzickaOsobaPodnikatel, AccountType.PravnickaOsoba].includes(
-          userData?.['custom:account_type'],
+          userAttributes?.['custom:account_type'],
         )
       : false,
     tierStatus: {

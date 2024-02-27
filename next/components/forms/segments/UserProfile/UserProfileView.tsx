@@ -1,5 +1,5 @@
 import { updateUserAttributes } from 'aws-amplify/auth'
-import { UserData } from 'frontend/dtos/accountDto'
+import { UserAttributes } from 'frontend/dtos/accountDto'
 import { useRefreshServerSideProps } from 'frontend/hooks/useRefreshServerSideProps'
 import useSnackbar from 'frontend/hooks/useSnackbar'
 import { GENERIC_ERROR_MESSAGE, isError } from 'frontend/utils/errors'
@@ -22,11 +22,11 @@ const UserProfileView = () => {
   const [isEditing, setIsEditing] = useState<boolean>(false)
   const [isAlertOpened, setIsAlertOpened] = useState(false)
   const [alertType, setAlertType] = useState<'success' | 'error'>('success')
-  const { userData } = useSsrAuth()
+  const { userAttributes } = useSsrAuth()
   const [openSnackbarSuccess] = useSnackbar({ variant: 'success' })
 
   const [updateUserDataError, setUpdateUserDataError] = useState<Error | null>(null)
-  const { refreshData } = useRefreshServerSideProps(userData)
+  const { refreshData } = useRefreshServerSideProps(userAttributes)
   const { push } = useRouter()
 
   useEffect(() => {
@@ -37,12 +37,12 @@ const UserProfileView = () => {
     setIsEditing(false)
   }
 
-  const handleOnSubmitEditing = async (newUserData: UserData) => {
+  const handleOnSubmitEditing = async (newUserAttributes: UserAttributes) => {
     try {
-      const userAttributes = mapValues(pickBy(newUserData, identity))
-      const keys = Object.keys(userAttributes)
+      const newUserAttributesFiltered = mapValues(pickBy(newUserAttributes, identity))
+      const keys = Object.keys(newUserAttributesFiltered)
       const result = await updateUserAttributes({
-        userAttributes,
+        userAttributes: newUserAttributesFiltered,
       })
       keys.forEach((key) => {
         const keyResult = result[key]
@@ -75,7 +75,7 @@ const UserProfileView = () => {
     <section className="h-full bg-gray-100">
       <div className="flex h-full flex-col gap-2 md:gap-0">
         <UserProfileDetail
-          userData={userData}
+          userAttributes={userAttributes}
           isEditing={isEditing}
           isAlertOpened={isAlertOpened}
           alertType={alertType}

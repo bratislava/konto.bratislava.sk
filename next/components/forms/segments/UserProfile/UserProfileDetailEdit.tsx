@@ -1,7 +1,7 @@
 import cx from 'classnames'
 import Button from 'components/forms/simple-components/Button'
 import InputField from 'components/forms/widget-components/InputField/InputField'
-import { AccountType, Address, UserData } from 'frontend/dtos/accountDto'
+import { AccountType, Address, UserAttributes } from 'frontend/dtos/accountDto'
 import useHookForm from 'frontend/hooks/useHookForm'
 import useJsonParseMemo from 'frontend/hooks/useJsonParseMemo'
 import { ajvFormats } from 'frontend/utils/form'
@@ -93,16 +93,16 @@ const isValidPhoneNumber = (phoneNumber: string) => {
 }
 interface UserProfileDetailEditProps {
   formId: string
-  userData: UserData
+  userAttributes: UserAttributes
   onEmailChange: () => void
-  onSubmit: (newUserData: UserData) => void
+  onSubmit: (newUserData: UserAttributes) => void
 }
 
 const UserProfileDetailEdit = (props: UserProfileDetailEditProps) => {
-  const { formId, userData, onEmailChange, onSubmit } = props
+  const { formId, userAttributes, onEmailChange, onSubmit } = props
   const { t } = useTranslation('account')
-  const { address, name, family_name, given_name, email, phone_number } = userData
-  const isLegalEntity = userData?.['custom:account_type'] !== AccountType.FyzickaOsoba
+  const { address, name, family_name, given_name, email, phone_number } = userAttributes
+  const isLegalEntity = userAttributes?.['custom:account_type'] !== AccountType.FyzickaOsoba
   const parsedAddress = useJsonParseMemo<Address>(address)
   const { handleSubmit, control, errors, setError } = useHookForm<Data>({
     schema: isLegalEntity ? poSchema : foSchema,
@@ -120,7 +120,7 @@ const UserProfileDetailEdit = (props: UserProfileDetailEditProps) => {
 
   const handleSubmitCallback = (data: Data) => {
     if (!data.phone_number || isValidPhoneNumber(data.phone_number)) {
-      const newUserData: UserData = {
+      const newUserData: UserAttributes = {
         email: data.email,
         name: data.business_name,
         given_name: data.given_name,

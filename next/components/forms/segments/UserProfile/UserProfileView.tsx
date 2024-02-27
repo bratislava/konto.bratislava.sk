@@ -1,4 +1,4 @@
-import { Auth } from 'aws-amplify'
+import { updateUserAttributes } from 'aws-amplify/auth'
 import { UserData } from 'frontend/dtos/accountDto'
 import { useRefreshServerSideProps } from 'frontend/hooks/useRefreshServerSideProps'
 import { useServerSideAuth } from 'frontend/hooks/useServerSideAuth'
@@ -39,8 +39,18 @@ const UserProfileView = () => {
 
   const handleOnSubmitEditing = async (newUserData: UserData) => {
     try {
-      const user = await Auth.currentAuthenticatedUser()
-      await Auth.updateUserAttributes(user, mapValues(pickBy(newUserData, identity)))
+      const userAttributes = mapValues(pickBy(newUserData, identity))
+      const keys = Object.keys(userAttributes)
+      const result = await updateUserAttributes({
+        userAttributes,
+      })
+      keys.forEach((key) => {
+        const keyResult = result[key]
+        if (!keyResult.isUpdated) {
+          throw new Error(`Unknown error - attribute ${key} was not updated`)
+        }
+      })
+
       // TODO why it's openSnackbarSuccess on success and setIsAlertOpened on error ?
       openSnackbarSuccess(t('profile_detail.success_alert'), 3000)
       await refreshData()

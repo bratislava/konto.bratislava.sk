@@ -1,5 +1,5 @@
 import BannerImage from '@assets/images/bratislava-dog.png'
-import { Auth } from 'aws-amplify'
+import { updateUserAttributes } from 'aws-amplify/auth'
 import AccountSectionHeader from 'components/forms/segments/AccountSectionHeader/AccountSectionHeader'
 import Banner from 'components/forms/simple-components/Banner'
 import Button from 'components/forms/simple-components/Button'
@@ -47,13 +47,15 @@ const IntroSection = () => {
 
   const onSubmitPhoneNumber = async (submitData: { data?: PhoneNumberData }) => {
     try {
-      const user = await Auth.currentAuthenticatedUser()
-      if (
-        await Auth.updateUserAttributes(user, {
-          phone_number: submitData.data?.phone_number,
-        })
-      ) {
+      const {
+        phone_number: { isUpdated },
+      } = await updateUserAttributes({
+        userAttributes: { phone_number: submitData.data?.phone_number },
+      })
+      if (isUpdated) {
         setPhoneNumberModal('dismissed')
+      } else {
+        throw new Error('Unknown error')
       }
     } catch (error) {
       if (isError(error)) {

@@ -1,4 +1,5 @@
-import { Auth } from 'aws-amplify'
+// eslint-disable-next-line import/no-extraneous-dependencies
+import { updateUserAttributes } from 'aws-amplify/auth'
 import { Address } from 'frontend/dtos/accountDto'
 import { Tax } from 'frontend/dtos/taxDto'
 import useJsonParseMemo from 'frontend/hooks/useJsonParseMemo'
@@ -34,16 +35,18 @@ const ContactInformationSection = ({ tax }: ContactInformationSectionProps) => {
     setCorrespondenceAddressError(null)
   }
 
-  const onSubmitCorrespondenceAddress = async ({ data }: { data?: Address }) => {
+  const onSubmitCorrespondenceAddress = async ({ data }: { data?: string }) => {
     try {
-      const user = await Auth.currentAuthenticatedUser()
-      if (
-        await Auth.updateUserAttributes(user, {
-          address: data,
-        })
-      ) {
+      const {
+        address: { isUpdated },
+      } = await updateUserAttributes({
+        userAttributes: { address: data },
+      })
+      if (isUpdated) {
         setCorrespondenceAddressModalShow(false)
         showSnackbar(t('profile_detail.success_alert'))
+      } else {
+        throw new Error('Unknown error')
       }
     } catch (error) {
       if (isError(error)) {

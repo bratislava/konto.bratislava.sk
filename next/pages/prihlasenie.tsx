@@ -1,57 +1,62 @@
-import { Auth } from 'aws-amplify'
-import AccountActivator from 'components/forms/segments/AccountActivator/AccountActivator'
+import { autoSignIn, confirmSignUp, resendSignUpCode, signIn } from 'aws-amplify/auth'
 import AccountContainer from 'components/forms/segments/AccountContainer/AccountContainer'
 import EmailVerificationForm from 'components/forms/segments/EmailVerificationForm/EmailVerificationForm'
 import LoginForm from 'components/forms/segments/LoginForm/LoginForm'
 import LoginRegisterLayout from 'components/layouts/LoginRegisterLayout'
-import {
-  getSSRCurrentAuth,
-  ServerSideAuthProviderHOC,
-} from 'components/logic/ServerSideAuthProvider'
 import useLoginRegisterRedirect from 'frontend/hooks/useLoginRegisterRedirect'
-import { useServerSideAuth } from 'frontend/hooks/useServerSideAuth'
-import { GENERIC_ERROR_MESSAGE, isError, isErrorWithCode } from 'frontend/utils/errors'
+import { GENERIC_ERROR_MESSAGE, isError } from 'frontend/utils/errors'
 import logger from 'frontend/utils/logger'
-import { GetServerSidePropsContext } from 'next'
-import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
-import { useCallback, useEffect, useState } from 'react'
+import { useCallback, useState } from 'react'
 
-export const getServerSideProps = async (ctx: GetServerSidePropsContext) => {
-  const locale = ctx.locale ?? 'sk'
+import { SsrAuthProviderHOC } from '../components/logic/SsrAuthContext'
+import { amplifyGetServerSideProps } from '../frontend/utils/amplifyServer'
+import { slovakServerSideTranslations } from '../frontend/utils/slovakServerSideTranslations'
+
+// eslint-disable-next-line @typescript-eslint/ban-types
+export const getServerSideProps = amplifyGetServerSideProps(async ({ context, isSignedIn }) => {
+  if (isSignedIn) {
+    const from = context.query.from as string | undefined
+    return {
+      redirect: {
+        destination: typeof from === 'string' ? from : '/',
+        permanent: false,
+      },
+    }
+  }
 
   return {
     props: {
-      ssrCurrentAuthProps: await getSSRCurrentAuth(ctx.req),
-      ...(await serverSideTranslations(locale)),
+      ...(await slovakServerSideTranslations()),
     },
   }
-}
+})
 
 const LoginPage = () => {
   const { redirect } = useLoginRegisterRedirect()
-  const { isAuthenticated } = useServerSideAuth()
   const [loginError, setLoginError] = useState<Error | null>(null)
   // if email is not yet verify login will fail - we stay on this page & render verification form for the last used email
   const [emailToVerify, setEmailToVerify] = useState('')
 
-  useEffect(() => {
-    if (isAuthenticated) {
-      redirect().catch((error) => logger.error('Failed redirect login useEffect', error))
-    }
-  }, [isAuthenticated, redirect])
+  const handleSignedIn = useCallback(async () => {
+    await redirect()
+  }, [redirect])
 
   const onLogin = async (email: string, password: string) => {
     try {
-      const loginResult = await Auth.signIn(email, password)
-      if (loginResult) {
-        await redirect()
+      const { nextStep, isSignedIn } = await signIn({ username: email, password })
+      if (isSignedIn) {
+        await handleSignedIn()
+        return
+      }
+      if (nextStep.signInStep === 'CONFIRM_SIGN_UP') {
+        setEmailToVerify(email)
+        await resendSignUpCode({ username: email })
+      } else {
+        throw new Error('Unknown error')
       }
     } catch (error) {
       if (isError(error)) {
         setLoginError(error)
-        if (isErrorWithCode(error) && error.code === 'UserNotConfirmedException') {
-          setEmailToVerify(email)
-        }
       } else {
         logger.error(`${GENERIC_ERROR_MESSAGE} - unexpected object thrown in onVerifyEmail:`, error)
         setLoginError(new Error(GENERIC_ERROR_MESSAGE))
@@ -59,35 +64,52 @@ const LoginPage = () => {
     }
   }
 
-  const onVerifyEmail = useCallback(
-    async (verificationCode: string) => {
-      try {
-        if (await Auth.confirmSignUp(emailToVerify, verificationCode)) {
-          await redirect()
-        }
-      } catch (error) {
-        if (isError(error)) {
-          setLoginError(error)
-        } else {
-          logger.error(
-            `${GENERIC_ERROR_MESSAGE} - unexpected object thrown in onVerifyEmail:`,
-            error,
-          )
-          setLoginError(new Error(GENERIC_ERROR_MESSAGE))
-        }
+  const handleAutoSignIn = async () => {
+    try {
+      const { isSignedIn } = await autoSignIn()
+      if (isSignedIn) {
+        await handleSignedIn()
+      } else {
+        throw new Error('Unknown error')
       }
-    },
-    [emailToVerify, redirect],
-  )
+    } catch (error) {
+      if (isError(error)) {
+        setLoginError(error)
+      } else {
+        logger.error(`${GENERIC_ERROR_MESSAGE} - unexpected object thrown in verifyEmail:`, error)
+        setLoginError(new Error(GENERIC_ERROR_MESSAGE))
+      }
+    }
+  }
+
+  const verifyEmail = async (confirmationCode: string) => {
+    try {
+      const { nextStep } = await confirmSignUp({
+        username: emailToVerify,
+        confirmationCode,
+      })
+      if (nextStep.signUpStep === 'COMPLETE_AUTO_SIGN_IN') {
+        await handleAutoSignIn()
+      } else {
+        throw new Error('Unknown error')
+      }
+    } catch (error) {
+      if (isError(error)) {
+        setLoginError(error)
+      } else {
+        logger.error(`${GENERIC_ERROR_MESSAGE} - unexpected object thrown in verifyEmail:`, error)
+        setLoginError(new Error(GENERIC_ERROR_MESSAGE))
+      }
+    }
+  }
 
   return (
     <LoginRegisterLayout backButtonHidden>
-      {!isAuthenticated && <AccountActivator />}
       <AccountContainer className="mb-0 pt-0 md:mb-8 md:pt-6">
         {emailToVerify ? (
           <EmailVerificationForm
-            onResend={() => Auth.resendSignUp(emailToVerify)}
-            onSubmit={onVerifyEmail}
+            onResend={() => resendSignUpCode({ username: emailToVerify })}
+            onSubmit={verifyEmail}
             error={loginError}
             lastEmail={emailToVerify}
           />
@@ -99,4 +121,4 @@ const LoginPage = () => {
   )
 }
 
-export default ServerSideAuthProviderHOC(LoginPage)
+export default SsrAuthProviderHOC(LoginPage)

@@ -8,7 +8,7 @@ import {
   ServicesIcon,
 } from '@assets/ui-icons'
 import { useResizeObserver } from '@react-aria/utils'
-import { Auth } from 'aws-amplify'
+import { signOut } from 'aws-amplify/auth'
 import cx from 'classnames'
 import NavBar, { MenuSectionItemBase } from 'components/forms/segments/NavBar/NavBar'
 import { MenuItemBase } from 'components/forms/simple-components/MenuDropdown/MenuDropdown'
@@ -52,7 +52,7 @@ const AccountPageLayout = ({ className, children, hiddenHeaderNav }: AccountPage
   const [t] = useTranslation('common')
 
   const logoutHandler = async () => {
-    await Auth.signOut()
+    await signOut()
     await router.push(ROUTES.LOGIN)
   }
 

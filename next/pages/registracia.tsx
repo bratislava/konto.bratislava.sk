@@ -1,4 +1,4 @@
-import { confirmSignUp, resendSignUpCode, signUp } from 'aws-amplify/auth'
+import { autoSignIn, confirmSignUp, resendSignUpCode, signUp } from 'aws-amplify/auth'
 import AccountActivator from 'components/forms/segments/AccountActivator/AccountActivator'
 import AccountContainer from 'components/forms/segments/AccountContainer/AccountContainer'
 import AccountSuccessAlert from 'components/forms/segments/AccountSuccessAlert/AccountSuccessAlert'
@@ -60,17 +60,16 @@ const RegisterPage = () => {
         password,
         options: {
           userAttributes: data,
+          autoSignIn: true,
+          validationData: {
+            'custom:turnstile_token': turnstileToken,
+          },
         },
-        // clientMetadata: {
-        //   'custom:turnstile_token': turnstileToken,
-        // },
       })
-      // Handle the next step, e.g., if verification is required:
-      if (
-        nextStep.signUpStep === 'CONFIRM_SIGN_UP' ||
-        nextStep.signUpStep === 'COMPLETE_AUTO_SIGN_IN'
-      ) {
+      if (nextStep.signUpStep === 'CONFIRM_SIGN_UP') {
         setRegistrationStatus(RegistrationStatus.EMAIL_VERIFICATION_REQUIRED)
+      } else {
+        throw new Error('Unknown error')
       }
     } catch (error) {
       if (isError(error)) {
@@ -99,20 +98,36 @@ const RegisterPage = () => {
     }
   }
 
-  const verifyEmail = async (code: string) => {
+  const handleAutoSignIn = async () => {
+    try {
+      const { isSignedIn } = await autoSignIn()
+      if (isSignedIn) {
+        setRegistrationStatus(RegistrationStatus.EMAIL_VERIFICATION_SUCCESS)
+      } else {
+        throw new Error('Unknown error')
+      }
+    } catch (error) {
+      if (isError(error)) {
+        setRegistrationError(error)
+      } else {
+        logger.error(`${GENERIC_ERROR_MESSAGE} - unexpected object thrown in verifyEmail:`, error)
+        setRegistrationError(new Error(GENERIC_ERROR_MESSAGE))
+      }
+    }
+  }
+
+  const verifyEmail = async (confirmationCode: string) => {
     try {
       setRegistrationError(null)
-      const { isSignUpComplete, nextStep } = await confirmSignUp({
+      const { nextStep } = await confirmSignUp({
         username: lastEmail,
-        confirmationCode: code,
+        confirmationCode,
       })
-      if (isSignUpComplete) {
-        setRegistrationStatus(RegistrationStatus.EMAIL_VERIFICATION_SUCCESS)
+      if (nextStep.signUpStep === 'COMPLETE_AUTO_SIGN_IN') {
+        await handleAutoSignIn()
+      } else {
+        throw new Error('Unknown error')
       }
-
-      // if (nextStep?.signUpStep === 'DONE') {
-      //   setRegistrationStatus(RegistrationStatus.EMAIL_VERIFICATION_SUCCESS)
-      // }
     } catch (error) {
       if (isError(error)) {
         setRegistrationError(error)

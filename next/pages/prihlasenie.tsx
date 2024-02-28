@@ -11,14 +11,25 @@ import { useCallback, useState } from 'react'
 import { SsrAuthProviderHOC } from '../components/logic/SsrAuthContext'
 import { amplifyGetServerSideProps } from '../frontend/utils/amplifyServer'
 import { slovakServerSideTranslations } from '../frontend/utils/slovakServerSideTranslations'
+import { getValidRedirectFromQuery } from '../frontend/utils/sso'
 
 // eslint-disable-next-line @typescript-eslint/ban-types
 export const getServerSideProps = amplifyGetServerSideProps(async ({ context, isSignedIn }) => {
   if (isSignedIn) {
     const from = context.query.from as string | undefined
+    if (from) {
+      const safeFrom = getValidRedirectFromQuery(from)
+      return {
+        redirect: {
+          destination: safeFrom ?? '/',
+          permanent: false,
+        },
+      }
+    }
+
     return {
       redirect: {
-        destination: typeof from === 'string' ? from : '/',
+        destination: '/',
         permanent: false,
       },
     }

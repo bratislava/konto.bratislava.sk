@@ -7,6 +7,7 @@ import { useRouter } from 'next/router'
 import React, { useCallback, useEffect, useState } from 'react'
 
 import { getAccessTokenOrLogout, getCurrentAuthenticatedUser } from '../utils/amplifyClient'
+import { APPROVED_SSO_ORIGINS } from '../utils/sso'
 
 interface LoginRegisterRedirectState {
   redirectTarget: string
@@ -60,8 +61,12 @@ export const LoginRegisterRedirectProvider = ({ children }: { children: React.Re
         } else if (isSignedIn) {
           const accessToken = await getAccessTokenOrLogout()
           const redirectUrlWithToken = new URL(redirectTarget)
-          redirectUrlWithToken.searchParams.set('access_token', accessToken)
-          window.location.href = redirectUrlWithToken.href
+          if (APPROVED_SSO_ORIGINS.includes(redirectUrlWithToken.origin)) {
+            redirectUrlWithToken.searchParams.set('access_token', accessToken)
+            window.location.href = redirectUrlWithToken.href
+          } else {
+            router.push(ROUTES.HOME)
+          }
         } else {
           window.location.href = redirectTarget
         }

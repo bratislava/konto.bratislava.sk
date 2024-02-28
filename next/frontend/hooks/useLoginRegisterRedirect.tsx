@@ -65,7 +65,7 @@ export const LoginRegisterRedirectProvider = ({ children }: { children: React.Re
             redirectUrlWithToken.searchParams.set('access_token', accessToken)
             window.location.href = redirectUrlWithToken.href
           } else {
-            router.push(ROUTES.HOME)
+            await router.push(ROUTES.HOME)
           }
         } else {
           window.location.href = redirectTarget

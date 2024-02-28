@@ -55,12 +55,11 @@ const MyApplicationDetails = ({ detailsData, ginisData }: MyApplicationsDetailsB
               <p>
                 {ginisData?.ownerPhone ? (
                   <a className="underline underline-offset-4" href={`tel:${ginisData.ownerPhone}`}>
-                    {ginisData.ownerPhone}
+                    {`${ginisData.ownerPhone}, `}
                   </a>
                 ) : (
-                  t('account_section_applications.details.application_details.phone_unavailable')
+                  ''
                 )}
-                {', '}
                 {ginisData?.ownerEmail ? (
                   <a
                     className="underline underline-offset-4"

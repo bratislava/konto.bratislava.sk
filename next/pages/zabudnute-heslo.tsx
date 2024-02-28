@@ -21,13 +21,16 @@ enum ForgotPasswordStatus {
   NEW_PASSWORD_SUCCESS = 'NEW_PASSWORD_SUCCESS',
 }
 
-export const getServerSideProps = amplifyGetServerSideProps(async () => {
-  return {
-    props: {
-      ...(await slovakServerSideTranslations()),
-    },
-  }
-})
+export const getServerSideProps = amplifyGetServerSideProps(
+  async () => {
+    return {
+      props: {
+        ...(await slovakServerSideTranslations()),
+      },
+    }
+  },
+  { requiresSignOut: true },
+)
 
 const ForgottenPasswordPage = () => {
   const [lastEmail, setLastEmail] = useState('')

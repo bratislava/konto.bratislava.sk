@@ -3,6 +3,7 @@ export const ROUTES = {
   REGISTER: '/registracia',
   IDENTITY_VERIFICATION: '/overenie-identity',
   LOGIN: '/prihlasenie',
+  LOGOUT: '/odhlasenie',
   FORGOTTEN_PASSWORD: '/zabudnute-heslo',
   PASSWORD_CHANGE: '/zmena-hesla',
   HELP: '/pomoc',

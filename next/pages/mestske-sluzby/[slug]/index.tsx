@@ -1,66 +1,59 @@
 import { formsApi } from '@clients/forms'
 import { isAxiosError } from 'axios'
-import { GetServerSideProps } from 'next'
 
-import { FormPageWrapperProps } from '../../../components/forms/FormPageWrapper'
 import { ROUTES } from '../../../frontend/api/constants'
+import { amplifyGetServerSideProps } from '../../../frontend/utils/amplifyServer'
 
 type Params = {
   slug: string
 }
 
-export const getServerSideProps: GetServerSideProps<FormPageWrapperProps, Params> = async (ctx) => {
-  if (!ctx.params) return { notFound: true }
+// eslint-disable-next-line @typescript-eslint/ban-types
+export const getServerSideProps = amplifyGetServerSideProps<{}, Params>(
+  async ({ context, getAccessToken }) => {
+    if (!context.params) return { notFound: true }
 
-  const { slug } = ctx.params
+    const { slug } = context.params
 
-  try {
-    const schema = await formsApi.schemasControllerGetSchema(slug, {
-      accessToken: 'onlyAuthenticated',
-      accessTokenSsrReq: ctx.req,
-    })
-    const { latestVersionId, latestVersion } = schema.data
-    if (!latestVersionId || !latestVersion) {
-      return {
-        notFound: true,
-      }
-    }
-
-    const { data: form } = await formsApi.nasesControllerCreateForm(
-      {
-        schemaVersionId: latestVersionId,
-      },
-      { accessToken: 'onlyAuthenticated', accessTokenSsrReq: ctx.req },
-    )
-
-    if (!form) {
-      return { notFound: true }
-    }
-
-    return {
-      redirect: {
-        destination: `${ROUTES.MUNICIPAL_SERVICES}/${slug}/${form.id}`,
-        permanent: false,
-      },
-    }
-  } catch (error) {
-    if (isAxiosError(error)) {
-      if (error.response?.status === 404) {
-        return { notFound: true }
-      }
-      if (error.response?.status === 401 || error.response?.status === 403) {
+    try {
+      const schema = await formsApi.schemasControllerGetSchema(slug, {
+        accessToken: 'onlyAuthenticated',
+        accessTokenSsrGetFn: getAccessToken,
+      })
+      const { latestVersionId, latestVersion } = schema.data
+      if (!latestVersionId || !latestVersion) {
         return {
-          redirect: {
-            destination: `${ROUTES.LOGIN}?from=${ctx.resolvedUrl}`,
-            permanent: false,
-          },
+          notFound: true,
         }
       }
-    }
 
-    throw error
-  }
-}
+      const { data: form } = await formsApi.nasesControllerCreateForm(
+        {
+          schemaVersionId: latestVersionId,
+        },
+        { accessToken: 'onlyAuthenticated', accessTokenSsrGetFn: getAccessToken },
+      )
+
+      if (!form) {
+        return { notFound: true }
+      }
+
+      return {
+        redirect: {
+          destination: `${ROUTES.MUNICIPAL_SERVICES}/${slug}/${form.id}`,
+          permanent: false,
+        },
+      }
+    } catch (error) {
+      if (isAxiosError(error) && error.response?.status === 404) {
+        return { notFound: true }
+      }
+
+      throw error
+    }
+  },
+  { skipSsrAuthContext: true },
+)
 
 const EmptyComponent = () => {}
 export default EmptyComponent

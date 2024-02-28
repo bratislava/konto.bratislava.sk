@@ -1,46 +1,42 @@
-import { Auth } from 'aws-amplify'
+import { signOut } from 'aws-amplify/auth'
 import AccountContainer from 'components/forms/segments/AccountContainer/AccountContainer'
 import AccountSuccessAlert from 'components/forms/segments/AccountSuccessAlert/AccountSuccessAlert'
 import LoginRegisterLayout from 'components/layouts/LoginRegisterLayout'
-import {
-  getSSRCurrentAuth,
-  ServerSideAuthProviderHOC,
-} from 'components/logic/ServerSideAuthProvider'
 import useLoginRegisterRedirect from 'frontend/hooks/useLoginRegisterRedirect'
-import { useServerSideAuth } from 'frontend/hooks/useServerSideAuth'
 import { GENERIC_ERROR_MESSAGE } from 'frontend/utils/errors'
 import logger from 'frontend/utils/logger'
-import { GetServerSidePropsContext } from 'next'
 import { useTranslation } from 'next-i18next'
-import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
 import { useEffect, useState } from 'react'
 
-export const getServerSideProps = async (ctx: GetServerSidePropsContext) => {
-  const locale = ctx.locale ?? 'sk'
+import { SsrAuthProviderHOC } from '../components/logic/SsrAuthContext'
+import { useSsrAuth } from '../frontend/hooks/useSsrAuth'
+import { amplifyGetServerSideProps } from '../frontend/utils/amplifyServer'
+import { slovakServerSideTranslations } from '../frontend/utils/slovakServerSideTranslations'
 
+export const getServerSideProps = amplifyGetServerSideProps(async () => {
   return {
     props: {
-      ssrCurrentAuthProps: await getSSRCurrentAuth(ctx.req),
-      ...(await serverSideTranslations(locale)),
+      ...(await slovakServerSideTranslations()),
     },
   }
-}
+})
 
 const LogoutPage = () => {
   const { t } = useTranslation('account')
-  const { isAuthenticated } = useServerSideAuth()
+  const { isSignedIn } = useSsrAuth()
   const { redirect } = useLoginRegisterRedirect()
   const [isLoading, setIsLoading] = useState(false)
   useEffect(() => {
-    if (!isAuthenticated) {
+    // TODO handle server side
+    if (!isSignedIn) {
       redirect().catch((error) => logger.error('Failed redirect logout useEffect', error))
     }
-  }, [isAuthenticated, redirect])
+  }, [isSignedIn, redirect])
 
   const logoutHandler = async () => {
     setIsLoading(true)
     try {
-      await Auth.signOut()
+      await signOut()
       await redirect()
     } catch (error) {
       logger.error(`${GENERIC_ERROR_MESSAGE} logout screen`, error)
@@ -66,4 +62,4 @@ const LogoutPage = () => {
   )
 }
 
-export default ServerSideAuthProviderHOC(LogoutPage)
+export default SsrAuthProviderHOC(LogoutPage)

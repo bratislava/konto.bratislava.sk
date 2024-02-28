@@ -1,23 +1,25 @@
-import { Auth } from 'aws-amplify'
+import {
+  AuthError,
+  confirmUserAttribute,
+  sendUserAttributeVerificationCode,
+  updatePassword,
+  updateUserAttributes,
+} from 'aws-amplify/auth'
 import AccountContainer from 'components/forms/segments/AccountContainer/AccountContainer'
 import AccountSuccessAlert from 'components/forms/segments/AccountSuccessAlert/AccountSuccessAlert'
 import EmailChangeForm from 'components/forms/segments/EmailChangeForm/EmailChangeForm'
 import EmailVerificationForm from 'components/forms/segments/EmailVerificationForm/EmailVerificationForm'
 import LoginRegisterLayout from 'components/layouts/LoginRegisterLayout'
-import {
-  getSSRCurrentAuth,
-  ServerSideAuthProviderHOC,
-} from 'components/logic/ServerSideAuthProvider'
-import { useServerSideAuth } from 'frontend/hooks/useServerSideAuth'
-import { GENERIC_ERROR_MESSAGE, isError } from 'frontend/utils/errors'
-import { GetServerSidePropsContext } from 'next'
+import { ErrorWithName, GENERIC_ERROR_MESSAGE, isError } from 'frontend/utils/errors'
 import { useRouter } from 'next/router'
 import { useTranslation } from 'next-i18next'
-import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
-import { useEffect, useState } from 'react'
+import { useState } from 'react'
 
+import { SsrAuthProviderHOC } from '../components/logic/SsrAuthContext'
 import { ROUTES } from '../frontend/api/constants'
+import { amplifyGetServerSideProps } from '../frontend/utils/amplifyServer'
 import logger from '../frontend/utils/logger'
+import { slovakServerSideTranslations } from '../frontend/utils/slovakServerSideTranslations'
 
 enum EmailChangeStatus {
   INIT = 'INIT',
@@ -25,16 +27,34 @@ enum EmailChangeStatus {
   EMAIL_VERIFICATION_SUCCESS = 'EMAIL_VERIFICATION_SUCCESS',
 }
 
-export const getServerSideProps = async (ctx: GetServerSidePropsContext) => {
-  const locale = ctx.locale ?? 'sk'
-
-  return {
-    props: {
-      ssrCurrentAuthProps: await getSSRCurrentAuth(ctx.req),
-      ...(await serverSideTranslations(locale)),
-    },
+/**
+ * This seems to be the only way how to check if password is correct. In Amplify v5 it was possible to trigger sign in,
+ * but in v6 it's not possible to sign in multiple times anymore.
+ */
+const verifyPassword = async (password: string) => {
+  try {
+    await updatePassword({
+      oldPassword: password,
+      newPassword: password,
+    })
+  } catch (error) {
+    if (error instanceof AuthError && error.name === 'NotAuthorizedException') {
+      throw new ErrorWithName('Incorrect password', 'IncorrectPasswordException')
+    }
+    throw error
   }
 }
+
+export const getServerSideProps = amplifyGetServerSideProps(
+  async () => {
+    return {
+      props: {
+        ...(await slovakServerSideTranslations()),
+      },
+    }
+  },
+  { requiresSignIn: true },
+)
 
 const EmailChangePage = () => {
   const { t } = useTranslation('account')
@@ -45,18 +65,12 @@ const EmailChangePage = () => {
   const [lastEmail, setLastEmail] = useState<string>('')
   const [emailChangeError, setEmailChangeError] = useState<Error | null>(null)
 
-  const { isAuthenticated } = useServerSideAuth()
-
-  useEffect(() => {
-    if (!isAuthenticated) {
-      router.push(ROUTES.LOGIN).catch((error_) => logger.error('Failed redirect', error_))
-    }
-  }, [isAuthenticated, router])
-
   const resendVerificationCode = async () => {
     try {
       setEmailChangeError(null)
-      await Auth.verifyCurrentUserAttribute('email')
+      await sendUserAttributeVerificationCode({
+        userAttributeKey: 'email',
+      })
     } catch (error) {
       if (isError(error)) {
         setEmailChangeError(error)
@@ -70,10 +84,13 @@ const EmailChangePage = () => {
     }
   }
 
-  const verifyEmail = async (code: string) => {
+  const verifyEmail = async (confirmationCode: string) => {
     try {
       setEmailChangeError(null)
-      await Auth.verifyCurrentUserAttributeSubmit('email', code)
+      await confirmUserAttribute({
+        userAttributeKey: 'email',
+        confirmationCode,
+      })
       setEmailChangeStatus(EmailChangeStatus.EMAIL_VERIFICATION_SUCCESS)
     } catch (error) {
       if (isError(error)) {
@@ -89,13 +106,15 @@ const EmailChangePage = () => {
     try {
       setEmailChangeError(null)
       setLastEmail(newEmail)
-      const user = (await Auth.currentAuthenticatedUser()) as {
-        attributes: { email: string }
+      await verifyPassword(password)
+      const result = await updateUserAttributes({
+        userAttributes: { email: newEmail },
+      })
+      if (result.email?.nextStep.updateAttributeStep === 'CONFIRM_ATTRIBUTE_WITH_CODE') {
+        setEmailChangeStatus(EmailChangeStatus.EMAIL_VERIFICATION_REQUIRED)
+      } else {
+        throw new Error('Unknown error')
       }
-      // check if password is correct
-      await Auth.signIn(user.attributes.email, password)
-      await Auth.updateUserAttributes(user, { email: newEmail })
-      setEmailChangeStatus(EmailChangeStatus.EMAIL_VERIFICATION_REQUIRED)
     } catch (error) {
       if (isError(error)) {
         setEmailChangeError(error)
@@ -140,4 +159,4 @@ const EmailChangePage = () => {
   )
 }
 
-export default ServerSideAuthProviderHOC(EmailChangePage)
+export default SsrAuthProviderHOC(EmailChangePage)

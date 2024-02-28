@@ -1,7 +1,6 @@
-import { Auth } from 'aws-amplify'
-import { UserData } from 'frontend/dtos/accountDto'
+import { updateUserAttributes } from 'aws-amplify/auth'
+import { UserAttributes } from 'frontend/dtos/accountDto'
 import { useRefreshServerSideProps } from 'frontend/hooks/useRefreshServerSideProps'
-import { useServerSideAuth } from 'frontend/hooks/useServerSideAuth'
 import useSnackbar from 'frontend/hooks/useSnackbar'
 import { GENERIC_ERROR_MESSAGE, isError } from 'frontend/utils/errors'
 import logger from 'frontend/utils/logger'
@@ -12,6 +11,7 @@ import { useRouter } from 'next/router'
 import { useTranslation } from 'next-i18next'
 import { useEffect, useState } from 'react'
 
+import { useSsrAuth } from '../../../../frontend/hooks/useSsrAuth'
 import AccountMarkdown from '../AccountMarkdown/AccountMarkdown'
 import UserProfileConsents from './UserProfileConsents'
 import UserProfileDetail from './UserProfileDetail'
@@ -22,11 +22,11 @@ const UserProfileView = () => {
   const [isEditing, setIsEditing] = useState<boolean>(false)
   const [isAlertOpened, setIsAlertOpened] = useState(false)
   const [alertType, setAlertType] = useState<'success' | 'error'>('success')
-  const { userData } = useServerSideAuth()
+  const { userAttributes } = useSsrAuth()
   const [openSnackbarSuccess] = useSnackbar({ variant: 'success' })
 
   const [updateUserDataError, setUpdateUserDataError] = useState<Error | null>(null)
-  const { refreshData } = useRefreshServerSideProps(userData)
+  const { refreshData } = useRefreshServerSideProps(userAttributes)
   const { push } = useRouter()
 
   useEffect(() => {
@@ -37,10 +37,20 @@ const UserProfileView = () => {
     setIsEditing(false)
   }
 
-  const handleOnSubmitEditing = async (newUserData: UserData) => {
+  const handleOnSubmitEditing = async (newUserAttributes: UserAttributes) => {
     try {
-      const user = await Auth.currentAuthenticatedUser()
-      await Auth.updateUserAttributes(user, mapValues(pickBy(newUserData, identity)))
+      const newUserAttributesFiltered = mapValues(pickBy(newUserAttributes, identity))
+      const keys = Object.keys(newUserAttributesFiltered)
+      const result = await updateUserAttributes({
+        userAttributes: newUserAttributesFiltered,
+      })
+      keys.forEach((key) => {
+        const keyResult = result[key]
+        if (!keyResult.isUpdated) {
+          throw new Error(`Unknown error - attribute ${key} was not updated`)
+        }
+      })
+
       // TODO why it's openSnackbarSuccess on success and setIsAlertOpened on error ?
       openSnackbarSuccess(t('profile_detail.success_alert'), 3000)
       await refreshData()
@@ -65,7 +75,7 @@ const UserProfileView = () => {
     <section className="h-full bg-gray-100">
       <div className="flex h-full flex-col gap-2 md:gap-0">
         <UserProfileDetail
-          userData={userData}
+          userAttributes={userAttributes}
           isEditing={isEditing}
           isAlertOpened={isAlertOpened}
           alertType={alertType}

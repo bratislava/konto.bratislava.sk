@@ -1,7 +1,7 @@
 import { useRouter } from 'next/router'
 import React, { createContext, PropsWithChildren, useContext, useState } from 'react'
 
-import { useServerSideAuth } from '../../frontend/hooks/useServerSideAuth'
+import { useSsrAuth } from '../../frontend/hooks/useSsrAuth'
 import { FORM_SEND_EID_TOKEN_QUERY_KEY } from '../../frontend/utils/formSend'
 import { RegistrationModalType } from './segments/RegistrationModal/RegistrationModal'
 import { TaxFormPdfExportModalState } from './segments/TaxFormPdfExportModal/TaxFormPdfExportModalState'
@@ -19,7 +19,7 @@ type ModalWithSendCallback =
 const useGetContext = () => {
   const { formMigrationRequired, oldSchemaVersion, isTaxForm } = useFormContext()
   const router = useRouter()
-  const { isAuthenticated, tierStatus } = useServerSideAuth()
+  const { isSignedIn, tierStatus } = useSsrAuth()
 
   // If the form has been sent via eID we don't want to display the initial warning modals.
   const displayInitialWarningModals = !router.query[FORM_SEND_EID_TOKEN_QUERY_KEY]
@@ -32,7 +32,7 @@ const useGetContext = () => {
     displayInitialWarningModals && !migrationRequiredModal && oldSchemaVersion,
   )
   const [registrationModal, setRegistrationModal] = useState<RegistrationModalType | null>(
-    displayInitialWarningModals && !oldVersionSchemaModal && !isAuthenticated && !isTaxForm
+    displayInitialWarningModals && !oldVersionSchemaModal && !isSignedIn && !isTaxForm
       ? RegistrationModalType.Initial
       : null,
   )
@@ -40,7 +40,7 @@ const useGetContext = () => {
     displayInitialWarningModals &&
       !oldVersionSchemaModal &&
       !migrationRequiredModal &&
-      isAuthenticated &&
+      isSignedIn &&
       !isTaxForm &&
       !tierStatus.isIdentityVerified,
   )

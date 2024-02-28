@@ -27,6 +27,7 @@ const BackButton = () => {
   )
 }
 
+// TODO consider deleting this file and use NavBar instead
 export const LoginRegisterNavBar = ({
   className,
   currentLanguage = 'sk',

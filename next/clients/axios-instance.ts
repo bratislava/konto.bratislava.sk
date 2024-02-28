@@ -1,8 +1,6 @@
 import axios from 'axios'
-import type { GetServerSidePropsContext } from 'next'
 
-import { getSSRAccessToken } from '../components/logic/ServerSideAuthProvider'
-import { getAccessToken, getAccessTokenOrLogout } from '../frontend/utils/amplify'
+import { getAccessToken, getAccessTokenOrLogout } from '../frontend/utils/amplifyClient'
 
 export const axiosInstance = axios.create()
 
@@ -18,9 +16,9 @@ declare module 'axios' {
      */
     accessToken?: 'always' | 'onlyAuthenticated' | false
     /**
-     * Route request is required when getting token in server environment.
+     * In server environment, a function to get access token must be provided.
      */
-    accessTokenSsrReq?: GetServerSidePropsContext['req']
+    accessTokenSsrGetFn?: () => Promise<string | null>
   }
 }
 axiosInstance.interceptors.request.use(async (config) => {
@@ -30,6 +28,7 @@ axiosInstance.interceptors.request.use(async (config) => {
 
   // for 'always' mode force logout client side, continue without token for onlyAuthenticated
   // process.browser is deprecated but assures that server code is not bundled in the client code
+  // Client side:
   if (process.browser) {
     const accessToken =
       config.accessToken === 'always' ? await getAccessTokenOrLogout() : await getAccessToken()
@@ -38,14 +37,16 @@ axiosInstance.interceptors.request.use(async (config) => {
       // eslint-disable-next-line no-param-reassign
       config.headers.Authorization = `Bearer ${accessToken}`
     }
-  } else {
-    if (!config.accessTokenSsrReq) {
+  }
+  // Server side:
+  else {
+    if (!config.accessTokenSsrGetFn) {
       throw new Error(
-        'accessTokenSsrReq is required when accessToken is set to true in server environment.',
+        'accessTokenSsrGetFn is required when accessToken is set to true in server environment.',
       )
     }
 
-    const accessToken = await getSSRAccessToken(config.accessTokenSsrReq)
+    const accessToken = await config.accessTokenSsrGetFn()
     if (accessToken) {
       // eslint-disable-next-line no-param-reassign
       config.headers.Authorization = `Bearer ${accessToken}`

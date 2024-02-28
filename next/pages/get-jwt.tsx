@@ -1,19 +1,29 @@
 import Button from 'components/forms/simple-components/Button'
-import {
-  getSSRAccessToken,
-  getSSRCurrentAuth,
-  ServerSideAuthProviderHOC,
-} from 'components/logic/ServerSideAuthProvider'
 import { Wrapper } from 'components/styleguide/Wrapper'
-import { useServerSideAuth } from 'frontend/hooks/useServerSideAuth'
-import { GetServerSidePropsContext } from 'next'
-import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
 
 // import { resetRcApi } from '../frontend/api/api'
 import { ROUTES } from '../frontend/api/constants'
-import { AsyncServerProps } from '../frontend/utils/types'
+import { useSsrAuth } from '../frontend/hooks/useSsrAuth'
+import { amplifyGetServerSideProps } from '../frontend/utils/amplifyServer'
+import { slovakServerSideTranslations } from '../frontend/utils/slovakServerSideTranslations'
 
-const GetJwt = ({ accessToken }: AsyncServerProps<typeof getServerSideProps>) => {
+type GetJwtProps = {
+  accessToken: string | null
+}
+
+export const getServerSideProps = amplifyGetServerSideProps<GetJwtProps>(
+  async ({ getAccessToken }) => {
+    return {
+      props: {
+        ...(await slovakServerSideTranslations()),
+        accessToken: await getAccessToken(),
+      },
+    }
+  },
+  { requiresSignIn: true, skipSsrAuthContext: true },
+)
+
+const GetJwt = ({ accessToken }: GetJwtProps) => {
   // resetting the birth number was not used for some time - if needed, this needs to be updated
   // const resetRc = async () => {
   //   try {
@@ -26,7 +36,7 @@ const GetJwt = ({ accessToken }: AsyncServerProps<typeof getServerSideProps>) =>
   //   }
   // }
 
-  const { isAuthenticated } = useServerSideAuth()
+  const { isSignedIn } = useSsrAuth()
 
   return (
     <div className="min-h-screen bg-[#E5E5E5]">
@@ -35,7 +45,7 @@ const GetJwt = ({ accessToken }: AsyncServerProps<typeof getServerSideProps>) =>
           direction="column"
           title="Kód nižšie slúži na technické účeli a umožňuje prístup k Vášmu kontu. NIKDY HO S NIKÝM NEZDIEĽAJTE. This site is for development purposes, the code below allows anyone to access your account. NEVER SHARE IT WITH ANYONE."
         >
-          {isAuthenticated ? (
+          {isSignedIn ? (
             <div className="flex flex-col">
               <div>{accessToken}</div>
             </div>
@@ -50,16 +60,4 @@ const GetJwt = ({ accessToken }: AsyncServerProps<typeof getServerSideProps>) =>
   )
 }
 
-export const getServerSideProps = async (ctx: GetServerSidePropsContext) => {
-  const locale = ctx.locale ?? 'sk'
-
-  return {
-    props: {
-      ssrCurrentAuthProps: await getSSRCurrentAuth(ctx.req),
-      accessToken: await getSSRAccessToken(ctx.req),
-      ...(await serverSideTranslations(locale)),
-    },
-  }
-}
-
-export default ServerSideAuthProviderHOC(GetJwt)
+export default GetJwt

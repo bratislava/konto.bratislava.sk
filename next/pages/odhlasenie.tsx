@@ -27,6 +27,7 @@ const LogoutPage = () => {
   const { redirect } = useLoginRegisterRedirect()
   const [isLoading, setIsLoading] = useState(false)
   useEffect(() => {
+    // TODO handle server side
     if (!isSignedIn) {
       redirect().catch((error) => logger.error('Failed redirect logout useEffect', error))
     }

@@ -3,16 +3,12 @@ import cx from 'classnames'
 import { StatusBar, useStatusBarContext } from 'components/forms/info-components/StatusBar'
 import HamburgerMenu from 'components/forms/segments/HambergerMenu/HamburgerMenu'
 import { MenuItemBase } from 'components/forms/simple-components/MenuDropdown/MenuDropdown'
-import { useConditionalFormRedirects } from 'components/forms/useFormRedirects'
 import FocusTrap from 'focus-trap-react'
-import { useServerSideAuth } from 'frontend/hooks/useServerSideAuth'
-import { useRouter } from 'next/router'
 import { ReactNode } from 'react'
 
 import { ROUTES } from '../../../../frontend/api/constants'
 import useElementSize from '../../../../frontend/hooks/useElementSize'
 import Brand from '../../simple-components/Brand'
-import { Avatar } from './Avatar'
 import { useNavMenuContext } from './navMenuContext'
 
 interface MobileMenuNavBarProps {
@@ -29,19 +25,11 @@ export interface MenuSectionItemBase {
 }
 
 export const MobileNavBar = ({ className, sectionsList, menuItems }: MobileMenuNavBarProps) => {
-  const { isAuthenticated } = useServerSideAuth()
   const [alertRef, { height }] = useElementSize<HTMLDivElement>()
 
   const { statusBarConfiguration } = useStatusBarContext()
   const [mobileRef] = useElementSize([statusBarConfiguration.content])
   const { isMobileMenuOpen, setMobileMenuOpen } = useNavMenuContext()
-
-  const router = useRouter()
-
-  // we need to keep the work in progress of the open form if navigating away form it
-  const optionalFormRedirectsContext = useConditionalFormRedirects()
-  const login = () =>
-    optionalFormRedirectsContext ? optionalFormRedirectsContext.login() : router.push(ROUTES.LOGIN)
 
   return (
     <div className={className}>
@@ -60,18 +48,12 @@ export const MobileNavBar = ({ className, sectionsList, menuItems }: MobileMenuN
                 becasue of that we are using onClick event and thats why simple button is used */}
                 <button
                   type="button"
-                  onClick={() => (isAuthenticated ? setMobileMenuOpen((prev) => !prev) : login())}
+                  onClick={() => setMobileMenuOpen((prev) => !prev)}
                   className="-mr-4 px-4 py-5"
                   data-cy="mobile-account-button"
                 >
                   <div className="flex w-6 items-center justify-center">
-                    {isMobileMenuOpen ? (
-                      <CrossIcon className="h-6 w-6" />
-                    ) : isAuthenticated && sectionsList ? (
-                      <HamburgerIcon />
-                    ) : (
-                      <Avatar />
-                    )}
+                    {isMobileMenuOpen ? <CrossIcon className="h-6 w-6" /> : <HamburgerIcon />}
                   </div>
                 </button>
               </div>

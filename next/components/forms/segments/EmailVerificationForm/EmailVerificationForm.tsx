@@ -110,7 +110,7 @@ const EmailVerificationForm = ({ onSubmit, error, onResend, lastEmail }: Props) 
       <div className="text-p3 lg:text-p2">
         {noError && cnt > 0 && (
           <div className="mb-4">
-            <span>{t('verification_description')}</span>
+            <span>{t('verification_description')}</span>{' '}
             <span>{t('verification_cnt_description', { cnt })}</span>
           </div>
         )}

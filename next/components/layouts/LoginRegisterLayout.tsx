@@ -8,11 +8,12 @@ interface LoginRegisterLayoutProps {
   backButtonHidden?: boolean
 }
 
+// TODO consider deleting this file and use AccountPageLayout instead
 const LoginRegisterLayout = ({
   className,
   children,
   backButtonHidden,
-}: React.HTMLAttributes<HTMLDivElement> & LoginRegisterLayoutProps) => {
+}: LoginRegisterLayoutProps) => {
   return (
     <div className={cx('flex', 'flex-col', 'min-h-screen', className)}>
       <LoginRegisterNavBar backButtonHidden={backButtonHidden} />

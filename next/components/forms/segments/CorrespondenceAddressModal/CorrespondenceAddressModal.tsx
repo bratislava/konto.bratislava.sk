@@ -8,7 +8,7 @@ import { useTranslation } from 'next-i18next'
 interface Props {
   show: boolean
   onClose: () => void
-  onSubmit: ({ data }: { data?: Address }) => void
+  onSubmit: ({ data }: { data?: string }) => void
   defaultValues?: Address
   error?: Error | null
   onHideError?: () => void

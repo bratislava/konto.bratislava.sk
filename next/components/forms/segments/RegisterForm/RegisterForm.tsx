@@ -7,7 +7,7 @@ import PasswordField from 'components/forms/widget-components/PasswordField/Pass
 import Radio from 'components/forms/widget-components/RadioButton/Radio'
 import RadioGroup from 'components/forms/widget-components/RadioButton/RadioGroup'
 import { environment } from 'environment'
-import { AccountType, UserData } from 'frontend/dtos/accountDto'
+import { AccountType, UserAttributes } from 'frontend/dtos/accountDto'
 import useHookForm from 'frontend/hooks/useHookForm'
 import { isBrowser } from 'frontend/utils/general'
 import logger from 'frontend/utils/logger'
@@ -33,7 +33,7 @@ interface Props {
     email: string,
     password: string,
     turnstileToken: string,
-    userData: UserData,
+    userAttributes: UserAttributes,
   ) => Promise<any>
   error?: Error | null
   lastEmail?: string
@@ -147,7 +147,7 @@ const RegisterForm = ({ onSubmit, error, lastEmail, disablePO }: Props) => {
       className="flex flex-col space-y-4"
       data-cy="register-form"
       onSubmit={handleSubmit((data: Data) => {
-        const userData: UserData = {
+        const userAttributes: UserAttributes = {
           email: data.email,
           given_name: data.given_name,
           family_name: data.family_name,
@@ -157,10 +157,12 @@ const RegisterForm = ({ onSubmit, error, lastEmail, disablePO }: Props) => {
         // force rerender on submit - captcha is valid only for single submit
         incrementCaptchaKey()
         // marketing confirmation always set to true (with new gdpr document we get consent with the registration itself)
-        return onSubmit(data.email, data.password, data.turnstileToken, userData)
+        return onSubmit(data.email, data.password, data.turnstileToken, userAttributes)
       })}
     >
-      <h1 className="text-h2" data-cy="register-form-title">{t('register_title')}</h1>
+      <h1 className="text-h2" data-cy="register-form-title">
+        {t('register_title')}
+      </h1>
       <AccountErrorAlert error={error} args={{ email: lastEmail || '' }} />
 
       {!disablePO ? (

@@ -1,25 +1,22 @@
-import { Auth } from 'aws-amplify'
+import { autoSignIn, confirmSignUp, resendSignUpCode, signUp } from 'aws-amplify/auth'
 import AccountActivator from 'components/forms/segments/AccountActivator/AccountActivator'
 import AccountContainer from 'components/forms/segments/AccountContainer/AccountContainer'
 import AccountSuccessAlert from 'components/forms/segments/AccountSuccessAlert/AccountSuccessAlert'
 import EmailVerificationForm from 'components/forms/segments/EmailVerificationForm/EmailVerificationForm'
 import RegisterForm from 'components/forms/segments/RegisterForm/RegisterForm'
 import LoginRegisterLayout from 'components/layouts/LoginRegisterLayout'
-import {
-  getSSRCurrentAuth,
-  ServerSideAuthProviderHOC,
-} from 'components/logic/ServerSideAuthProvider'
-import { UserData } from 'frontend/dtos/accountDto'
+import { UserAttributes } from 'frontend/dtos/accountDto'
 import useLoginRegisterRedirect from 'frontend/hooks/useLoginRegisterRedirect'
 import { GENERIC_ERROR_MESSAGE, isError } from 'frontend/utils/errors'
-import { GetServerSidePropsContext } from 'next'
 import { useRouter } from 'next/router'
 import { useTranslation } from 'next-i18next'
-import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
 import { useState } from 'react'
 
+import { SsrAuthProviderHOC } from '../components/logic/SsrAuthContext'
 import { ROUTES } from '../frontend/api/constants'
+import { amplifyGetServerSideProps } from '../frontend/utils/amplifyServer'
 import logger from '../frontend/utils/logger'
+import { slovakServerSideTranslations } from '../frontend/utils/slovakServerSideTranslations'
 
 enum RegistrationStatus {
   INIT = 'INIT',
@@ -27,16 +24,16 @@ enum RegistrationStatus {
   EMAIL_VERIFICATION_SUCCESS = 'EMAIL_VERIFICATION_SUCCESS',
 }
 
-export const getServerSideProps = async (ctx: GetServerSidePropsContext) => {
-  const locale = ctx.locale ?? 'sk'
-
-  return {
-    props: {
-      ssrCurrentAuthProps: await getSSRCurrentAuth(ctx.req),
-      ...(await serverSideTranslations(locale)),
-    },
-  }
-}
+export const getServerSideProps = amplifyGetServerSideProps(
+  async () => {
+    return {
+      props: {
+        ...(await slovakServerSideTranslations()),
+      },
+    }
+  },
+  { requiresSignOut: true },
+)
 
 const RegisterPage = () => {
   const { t } = useTranslation('account')
@@ -49,27 +46,31 @@ const RegisterPage = () => {
   const { redirect, verificationRequired } = useLoginRegisterRedirect()
   // only divert user from verification if he's coming from another site
 
-  const signUp = async (
+  const handleSignUp = async (
     email: string,
     password: string,
     turnstileToken: string,
-    data: UserData,
+    data: UserAttributes,
   ) => {
     try {
       setRegistrationError(null)
       setLastEmail(email)
-      await Auth.signUp({
+      const { nextStep } = await signUp({
         username: email,
         password,
-        attributes: data,
-        autoSignIn: {
-          enabled: true,
-        },
-        validationData: {
-          'custom:turnstile_token': turnstileToken,
+        options: {
+          userAttributes: data,
+          autoSignIn: true,
+          validationData: {
+            'custom:turnstile_token': turnstileToken,
+          },
         },
       })
-      setRegistrationStatus(RegistrationStatus.EMAIL_VERIFICATION_REQUIRED)
+      if (nextStep.signUpStep === 'CONFIRM_SIGN_UP') {
+        setRegistrationStatus(RegistrationStatus.EMAIL_VERIFICATION_REQUIRED)
+      } else {
+        throw new Error('Unknown error')
+      }
     } catch (error) {
       if (isError(error)) {
         setRegistrationError(error)
@@ -83,7 +84,7 @@ const RegisterPage = () => {
   const resendVerificationCode = async () => {
     try {
       setRegistrationError(null)
-      await Auth.resendSignUp(lastEmail)
+      await resendSignUpCode({ username: lastEmail })
     } catch (error) {
       if (isError(error)) {
         setRegistrationError(error)
@@ -97,11 +98,36 @@ const RegisterPage = () => {
     }
   }
 
-  const verifyEmail = async (code: string) => {
+  const handleAutoSignIn = async () => {
+    try {
+      const { isSignedIn } = await autoSignIn()
+      if (isSignedIn) {
+        setRegistrationStatus(RegistrationStatus.EMAIL_VERIFICATION_SUCCESS)
+      } else {
+        throw new Error('Unknown error')
+      }
+    } catch (error) {
+      if (isError(error)) {
+        setRegistrationError(error)
+      } else {
+        logger.error(`${GENERIC_ERROR_MESSAGE} - unexpected object thrown in verifyEmail:`, error)
+        setRegistrationError(new Error(GENERIC_ERROR_MESSAGE))
+      }
+    }
+  }
+
+  const verifyEmail = async (confirmationCode: string) => {
     try {
       setRegistrationError(null)
-      await Auth.confirmSignUp(lastEmail, code)
-      setRegistrationStatus(RegistrationStatus.EMAIL_VERIFICATION_SUCCESS)
+      const { nextStep } = await confirmSignUp({
+        username: lastEmail,
+        confirmationCode,
+      })
+      if (nextStep.signUpStep === 'COMPLETE_AUTO_SIGN_IN') {
+        await handleAutoSignIn()
+      } else {
+        throw new Error('Unknown error')
+      }
     } catch (error) {
       if (isError(error)) {
         setRegistrationError(error)
@@ -117,7 +143,7 @@ const RegisterPage = () => {
       {registrationStatus === RegistrationStatus.INIT && <AccountActivator />}
       <AccountContainer dataCyPrefix="registration" className="mb-0 pt-0 md:mb-8 md:pt-6">
         {registrationStatus === RegistrationStatus.INIT ? (
-          <RegisterForm lastEmail={lastEmail} onSubmit={signUp} error={registrationError} />
+          <RegisterForm lastEmail={lastEmail} onSubmit={handleSignUp} error={registrationError} />
         ) : registrationStatus === RegistrationStatus.EMAIL_VERIFICATION_REQUIRED ? (
           <EmailVerificationForm
             lastEmail={lastEmail}
@@ -152,4 +178,4 @@ const RegisterPage = () => {
   )
 }
 
-export default ServerSideAuthProviderHOC(RegisterPage)
+export default SsrAuthProviderHOC(RegisterPage)

@@ -5,7 +5,6 @@ import MyApplicationsList, {
 } from 'components/forms/segments/AccountSections/MyApplicationsSection/MyApplicationsList'
 import logger from 'frontend/utils/logger'
 import { useRouter } from 'next/router'
-import { GetServerSidePropsContext } from 'next/types'
 import { useTranslation } from 'next-i18next'
 import { ApplicationsListVariant, sections } from 'pages/moje-ziadosti'
 import { Tab, TabList, TabPanel, Tabs } from 'react-aria-components'
@@ -26,12 +25,12 @@ const englishToSlovakSectionNames: Record<ApplicationsListVariant, string> = {
 // when this task https://github.com/bratislava/konto.bratislava.sk/issues/670 is done it could be moved back to server side props
 export const getTotalNumberOfApplications = async (
   variant: ApplicationsListVariant,
-  accessTokenSsrReq?: GetServerSidePropsContext['req'],
+  accessTokenSsrGetFn?: () => Promise<string | null>,
 ) => {
-  const firstPage = await getDraftApplications(variant, 1, accessTokenSsrReq)
+  const firstPage = await getDraftApplications(variant, 1, accessTokenSsrGetFn)
   if (firstPage.countPages === 0) return 0
 
-  const lastPage = await getDraftApplications(variant, firstPage.countPages)
+  const lastPage = await getDraftApplications(variant, firstPage.countPages, accessTokenSsrGetFn)
   return (firstPage.countPages - 1) * firstPage.pagination + lastPage.items.length
 }
 

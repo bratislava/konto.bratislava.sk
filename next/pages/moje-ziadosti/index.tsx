@@ -1,15 +1,16 @@
+import { GetFormsResponseDto } from '@clients/openapi-forms'
 import { getDraftApplications } from 'components/forms/segments/AccountSections/MyApplicationsSection/MyApplicationsList'
 import MyApplicationsSection from 'components/forms/segments/AccountSections/MyApplicationsSection/MyApplicationsSection'
 import AccountPageLayout from 'components/layouts/AccountPageLayout'
-import {
-  getSSRCurrentAuth,
-  ServerSideAuthProviderHOC,
-} from 'components/logic/ServerSideAuthProvider'
-import { ROUTES } from 'frontend/api/constants'
-import { AsyncServerProps } from 'frontend/utils/types'
-import { GetServerSidePropsContext } from 'next'
-import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
 
+import { SsrAuthProviderHOC } from '../../components/logic/SsrAuthContext'
+import { amplifyGetServerSideProps } from '../../frontend/utils/amplifyServer'
+import { slovakServerSideTranslations } from '../../frontend/utils/slovakServerSideTranslations'
+
+type AccountMyApplicationsPageProps = {
+  applications: GetFormsResponseDto
+  selectedSection: ApplicationsListVariant
+}
 export const sections = ['SENT', 'SENDING', 'DRAFT'] as const
 
 export type ApplicationsListVariant = (typeof sections)[number]
@@ -20,36 +21,28 @@ const slovakToEnglishSectionNames: Record<string, ApplicationsListVariant> = {
   koncepty: 'DRAFT',
 }
 
-export const getServerSideProps = async (ctx: GetServerSidePropsContext) => {
-  const locale = ctx.locale ?? 'sk'
-  const selectedSection = ctx.query.sekcia
-    ? slovakToEnglishSectionNames[ctx.query.sekcia as ApplicationsListVariant]
-    : 'SENT'
-  const currentPage = parseInt(ctx.query.strana as string, 10) || 1
-  const ssrCurrentAuthProps = await getSSRCurrentAuth(ctx.req)
-  if (!ssrCurrentAuthProps.userData) {
+export const getServerSideProps = amplifyGetServerSideProps(
+  async ({ context, getAccessToken }) => {
+    const selectedSection = context.query.sekcia
+      ? slovakToEnglishSectionNames[context.query.sekcia as ApplicationsListVariant]
+      : 'SENT'
+    const currentPage = parseInt(context.query.strana as string, 10) || 1
+
     return {
-      redirect: {
-        destination: `${ROUTES.LOGIN}?from=${ctx.resolvedUrl}`,
-        permanent: false,
+      props: {
+        applications: await getDraftApplications(selectedSection, currentPage, getAccessToken),
+        selectedSection,
+        ...(await slovakServerSideTranslations()),
       },
     }
-  }
-
-  return {
-    props: {
-      ssrCurrentAuthProps,
-      applications: await getDraftApplications(selectedSection, currentPage, ctx.req),
-      selectedSection,
-      ...(await serverSideTranslations(locale)),
-    },
-  }
-}
+  },
+  { requiresSignIn: true },
+)
 
 const AccountMyApplicationsPage = ({
   selectedSection,
   applications,
-}: AsyncServerProps<typeof getServerSideProps>) => {
+}: AccountMyApplicationsPageProps) => {
   return (
     <AccountPageLayout>
       <MyApplicationsSection selectedSection={selectedSection} applications={applications} />
@@ -57,4 +50,4 @@ const AccountMyApplicationsPage = ({
   )
 }
 
-export default ServerSideAuthProviderHOC(AccountMyApplicationsPage)
+export default SsrAuthProviderHOC(AccountMyApplicationsPage)

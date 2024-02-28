@@ -5,43 +5,31 @@ import IdentityVerificationForm, {
   VerificationFormData,
 } from 'components/forms/segments/IdentityVerificationForm/IdentityVerificationForm'
 import LoginRegisterLayout from 'components/layouts/LoginRegisterLayout'
-import {
-  getSSRCurrentAuth,
-  ServerSideAuthProviderHOC,
-} from 'components/logic/ServerSideAuthProvider'
 import { verifyIdentityApi, verifyLegalEntityIdentityApi } from 'frontend/api/api'
 import { Tier } from 'frontend/dtos/accountDto'
 import useLoginRegisterRedirect from 'frontend/hooks/useLoginRegisterRedirect'
 import { useRefreshServerSideProps } from 'frontend/hooks/useRefreshServerSideProps'
-import { useServerSideAuth } from 'frontend/hooks/useServerSideAuth'
 import { GENERIC_ERROR_MESSAGE, isError } from 'frontend/utils/errors'
-import { GetServerSidePropsContext } from 'next'
 import { useTranslation } from 'next-i18next'
-import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
 import { useState } from 'react'
 
+import { SsrAuthProviderHOC } from '../components/logic/SsrAuthContext'
 import { ROUTES } from '../frontend/api/constants'
+import { useSsrAuth } from '../frontend/hooks/useSsrAuth'
+import { amplifyGetServerSideProps } from '../frontend/utils/amplifyServer'
 import logger from '../frontend/utils/logger'
+import { slovakServerSideTranslations } from '../frontend/utils/slovakServerSideTranslations'
 
-export const getServerSideProps = async (ctx: GetServerSidePropsContext) => {
-  const locale = ctx.locale ?? 'sk'
-  const ssrCurrentAuthProps = await getSSRCurrentAuth(ctx.req)
-  if (!ssrCurrentAuthProps.userData) {
+export const getServerSideProps = amplifyGetServerSideProps(
+  async () => {
     return {
-      redirect: {
-        destination: `${ROUTES.LOGIN}?from=${ctx.resolvedUrl}`,
-        permanent: false,
+      props: {
+        ...(await slovakServerSideTranslations()),
       },
     }
-  }
-
-  return {
-    props: {
-      ssrCurrentAuthProps,
-      ...(await serverSideTranslations(locale)),
-    },
-  }
-}
+  },
+  { requiresSignIn: true },
+)
 
 const IdentityVerificationPage = () => {
   const { t } = useTranslation('account')
@@ -51,7 +39,7 @@ const IdentityVerificationPage = () => {
 
   const [identityVerificationError, setIdentityVerificationError] = useState<Error | null>(null)
   // TODO fix is legal entity
-  const { tierStatus, isLegalEntity } = useServerSideAuth()
+  const { tierStatus, isLegalEntity } = useSsrAuth()
 
   const { redirect } = useLoginRegisterRedirect()
 
@@ -158,4 +146,4 @@ const IdentityVerificationPage = () => {
   )
 }
 
-export default ServerSideAuthProviderHOC(IdentityVerificationPage)
+export default SsrAuthProviderHOC(IdentityVerificationPage)

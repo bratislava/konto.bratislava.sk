@@ -1,11 +1,10 @@
 import BannerImage from '@assets/images/bratislava-dog.png'
-import { Auth } from 'aws-amplify'
+import { updateUserAttributes } from 'aws-amplify/auth'
 import AccountSectionHeader from 'components/forms/segments/AccountSectionHeader/AccountSectionHeader'
 import Banner from 'components/forms/simple-components/Banner'
 import Button from 'components/forms/simple-components/Button'
 import ServiceCard from 'components/forms/simple-components/ServiceCard'
 import { serviceCards } from 'frontend/constants/constants'
-import { useServerSideAuth } from 'frontend/hooks/useServerSideAuth'
 import { GENERIC_ERROR_MESSAGE, isError } from 'frontend/utils/errors'
 import { isDefined } from 'frontend/utils/general'
 import logger from 'frontend/utils/logger'
@@ -14,30 +13,31 @@ import { useTranslation } from 'next-i18next'
 import { useEffect, useState } from 'react'
 
 import { ROUTES } from '../../../../../frontend/api/constants'
+import { useSsrAuth } from '../../../../../frontend/hooks/useSsrAuth'
 import { PhoneNumberData } from '../../PhoneNumberForm/PhoneNumberForm'
 import PhoneNumberModal from '../../PhoneNumberModal/PhoneNumberModal'
 import Announcements from './Announcements/Announcements'
 
 const IntroSection = () => {
   const { t } = useTranslation('account')
-  const { userData, isLegalEntity } = useServerSideAuth()
+  const { userAttributes, isLegalEntity } = useSsrAuth()
   const router = useRouter()
   const [phoneNumberModal, setPhoneNumberModal] = useState<'hidden' | 'displayed' | 'dismissed'>(
     'hidden',
   )
 
-  // because the effect depends on userData, which may get refreshed every few seconds
+  // because the effect depends on userAttributes, which may get refreshed every few seconds
   // we need to track if the modal was dismissed and stop showing it afterwards if that's the case
   useEffect(() => {
     if (
       phoneNumberModal === 'hidden' &&
-      userData &&
-      !userData.phone_number &&
+      userAttributes &&
+      !userAttributes.phone_number &&
       ROUTES.REGISTER === router.query.from
     ) {
       setPhoneNumberModal('displayed')
     }
-  }, [phoneNumberModal, router.query.from, userData])
+  }, [phoneNumberModal, router.query.from, userAttributes])
 
   // TODO should be part of phonenumber modal, refactor
   const [phoneNumberError, setPhoneNumberError] = useState<Error | null>(null)
@@ -47,13 +47,15 @@ const IntroSection = () => {
 
   const onSubmitPhoneNumber = async (submitData: { data?: PhoneNumberData }) => {
     try {
-      const user = await Auth.currentAuthenticatedUser()
-      if (
-        await Auth.updateUserAttributes(user, {
-          phone_number: submitData.data?.phone_number,
-        })
-      ) {
+      const {
+        phone_number: { isUpdated },
+      } = await updateUserAttributes({
+        userAttributes: { phone_number: submitData.data?.phone_number },
+      })
+      if (isUpdated) {
         setPhoneNumberModal('dismissed')
+      } else {
+        throw new Error('Unknown error')
       }
     } catch (error) {
       if (isError(error)) {
@@ -68,7 +70,7 @@ const IntroSection = () => {
     }
   }
 
-  const name = isLegalEntity ? userData?.name : userData?.given_name
+  const name = isLegalEntity ? userAttributes?.name : userAttributes?.given_name
 
   const bannerContent = `<span className='text-p2'>${t(
     'account_section_intro.banner_content',
@@ -85,14 +87,14 @@ const IntroSection = () => {
 
   return (
     <>
-      {userData && (
+      {userAttributes && (
         <PhoneNumberModal
           show={phoneNumberModal === 'displayed'}
           onClose={() => setPhoneNumberModal('dismissed')}
           onSubmit={onSubmitPhoneNumber}
           error={phoneNumberError}
           onHideError={resetError}
-          defaultValues={{ phone_number: userData?.phone_number }}
+          defaultValues={{ phone_number: userAttributes?.phone_number }}
         />
       )}
       <div className="flex flex-col">

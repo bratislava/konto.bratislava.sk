@@ -1,35 +1,22 @@
 import UserProfileView from 'components/forms/segments/UserProfile/UserProfileView'
-import {
-  getSSRCurrentAuth,
-  ServerSideAuthProviderHOC,
-} from 'components/logic/ServerSideAuthProvider'
-import { ROUTES } from 'frontend/api/constants'
-import { GetServerSidePropsContext } from 'next'
 import { useTranslation } from 'next-i18next'
-import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
 
 import AccountSectionHeader from '../components/forms/segments/AccountSectionHeader/AccountSectionHeader'
 import AccountPageLayout from '../components/layouts/AccountPageLayout'
+import { SsrAuthProviderHOC } from '../components/logic/SsrAuthContext'
+import { amplifyGetServerSideProps } from '../frontend/utils/amplifyServer'
+import { slovakServerSideTranslations } from '../frontend/utils/slovakServerSideTranslations'
 
-export const getServerSideProps = async (ctx: GetServerSidePropsContext) => {
-  const locale = ctx.locale ?? 'sk'
-  const ssrCurrentAuthProps = await getSSRCurrentAuth(ctx.req)
-  if (!ssrCurrentAuthProps.userData) {
+export const getServerSideProps = amplifyGetServerSideProps(
+  async () => {
     return {
-      redirect: {
-        destination: `${ROUTES.LOGIN}?from=${ctx.resolvedUrl}`,
-        permanent: false,
+      props: {
+        ...(await slovakServerSideTranslations()),
       },
     }
-  }
-
-  return {
-    props: {
-      ssrCurrentAuthProps,
-      ...(await serverSideTranslations(locale)),
-    },
-  }
-}
+  },
+  { requiresSignIn: true },
+)
 
 const MojProfil = () => {
   const { t } = useTranslation('account')
@@ -42,4 +29,4 @@ const MojProfil = () => {
   )
 }
 
-export default ServerSideAuthProviderHOC(MojProfil)
+export default SsrAuthProviderHOC(MojProfil)

@@ -1,6 +1,6 @@
 import Alert from 'components/forms/info-components/Alert'
 import AccountMarkdown from 'components/forms/segments/AccountMarkdown/AccountMarkdown'
-import { GENERIC_ERROR_MESSAGE, isError, isErrorWithCode } from 'frontend/utils/errors'
+import { GENERIC_ERROR_MESSAGE, isError, isErrorWithoutName } from 'frontend/utils/errors'
 import { useTranslation } from 'next-i18next'
 import { useMemo } from 'react'
 
@@ -28,7 +28,7 @@ const AccountErrorAlert = ({ error, close, solid, args = {} }: Props) => {
       )
       return t(`account:errors.unknown`)
     }
-    if (!isErrorWithCode(error)) {
+    if (isErrorWithoutName(error)) {
       // JSON.stringify here because amplify returns custom errors which pino tries to serialize but fails (they either don't have 'message' attribute or have it as private)
       logger.error(
         `${GENERIC_ERROR_MESSAGE} - unknown error without error code in AccountErrorAlert: `,
@@ -37,13 +37,13 @@ const AccountErrorAlert = ({ error, close, solid, args = {} }: Props) => {
       )
       return t(`account:errors.unknown`)
     }
-    if (!i18n.exists(`account:errors.${error.code}`)) {
+    if (!i18n.exists(`account:errors.${error.name}`)) {
       logger.error(`${GENERIC_ERROR_MESSAGE} - unknown error with code`, error)
       return t(`account:errors.unknown`)
     }
     // this is the expected case - known error for which we have a translation string
-    const formattedMessage = t(`account:errors.${error.code}`, args)
-    logger.info('Known error', error.code, error.message, formattedMessage)
+    const formattedMessage = t(`account:errors.${error.name}`, args)
+    logger.info('Known error', error.name, error.message, formattedMessage)
     return formattedMessage
     // exhaustive-deps disabled because args tend to be passed in as an object re-created on every render
     // instead of fixing this, we may want to get rid of args/present version of formatUnicorn altogether

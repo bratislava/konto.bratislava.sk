@@ -1,10 +1,10 @@
 import { getUiOptions } from '@rjsf/utils'
-import { useServerSideAuth } from 'frontend/hooks/useServerSideAuth'
 import { getFormTitle } from 'frontend/utils/general'
 import { useTranslation } from 'next-i18next'
 import React from 'react'
 
 import { useFormExportImport } from '../../../../frontend/hooks/useFormExportImport'
+import { useSsrAuth } from '../../../../frontend/hooks/useSsrAuth'
 import Button from '../../simple-components/ButtonNew'
 import { useFormContext } from '../../useFormContext'
 import { useFormModals } from '../../useFormModals'
@@ -543,7 +543,7 @@ const FormModals = () => {
     },
   ]
 
-  const { accountType } = useServerSideAuth()
+  const { accountType } = useSsrAuth()
 
   return (
     <>

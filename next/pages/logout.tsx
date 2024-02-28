@@ -13,16 +13,13 @@ import { useSsrAuth } from '../frontend/hooks/useSsrAuth'
 import { amplifyGetServerSideProps } from '../frontend/utils/amplifyServer'
 import { slovakServerSideTranslations } from '../frontend/utils/slovakServerSideTranslations'
 
-export const getServerSideProps = amplifyGetServerSideProps(
-  async () => {
-    return {
-      props: {
-        ...(await slovakServerSideTranslations()),
-      },
-    }
-  },
-  { requiresSignOut: true },
-)
+export const getServerSideProps = amplifyGetServerSideProps(async () => {
+  return {
+    props: {
+      ...(await slovakServerSideTranslations()),
+    },
+  }
+})
 
 const LogoutPage = () => {
   const { t } = useTranslation('account')

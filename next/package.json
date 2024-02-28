@@ -36,7 +36,7 @@
     "@legendapp/state": "^1.2.11",
     "@radix-ui/react-dropdown-menu": "^2.0.6",
     "@radix-ui/react-navigation-menu": "^1.1.4",
-    "@react-aria/utils": "3.23.0",
+    "@react-aria/utils": "3.23.2",
     "@react-stately/utils": "3.9.0",
     "@rjsf/core": "5.15.0",
     "@rjsf/utils": "5.15.0",

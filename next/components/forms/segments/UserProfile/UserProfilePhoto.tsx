@@ -1,12 +1,12 @@
 import cx from 'classnames'
-import { UserData } from 'frontend/dtos/accountDto'
+import { UserAttributes } from 'frontend/dtos/accountDto'
 
 interface UserProfilePhotoProps {
-  userData: UserData
+  userAttributes: UserAttributes
 }
 
-const UserProfilePhoto = ({ userData }: UserProfilePhotoProps) => {
-  const { given_name, family_name, email, name } = userData
+const UserProfilePhoto = ({ userAttributes }: UserProfilePhotoProps) => {
+  const { given_name, family_name, email, name } = userAttributes
   const initialLetters =
     given_name || family_name
       ? (given_name ? given_name.slice(0, 1) : '') + (family_name ? family_name.slice(0, 1) : '')

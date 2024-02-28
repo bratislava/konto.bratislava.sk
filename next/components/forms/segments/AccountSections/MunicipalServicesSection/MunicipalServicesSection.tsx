@@ -3,12 +3,12 @@ import MunicipalServicesSectionHeader from 'components/forms/segments/AccountSec
 import Pagination from 'components/forms/simple-components/Pagination/Pagination'
 import ServiceCard from 'components/forms/simple-components/ServiceCard'
 import { MunicipalServicesCategories, serviceCards } from 'frontend/constants/constants'
-import { useServerSideAuth } from 'frontend/hooks/useServerSideAuth'
 import { isDefined } from 'frontend/utils/general'
 import { useTranslation } from 'next-i18next'
 import { useState } from 'react'
 import { useWindowSize } from 'usehooks-ts'
 
+import { useSsrAuth } from '../../../../../frontend/hooks/useSsrAuth'
 import { SelectOption } from '../../../widget-components/SelectField/SelectField'
 
 const enumOptions: SelectOption[] = [
@@ -70,7 +70,7 @@ const MunicipalServicesSection = () => {
   const selectorValueTitle: string = selectorValue?.label ?? ''
   const ITEMS_PER_PAGE = width > 480 ? 20 : 5
 
-  const { isLegalEntity } = useServerSideAuth()
+  const { isLegalEntity } = useSsrAuth()
 
   const serviceCardIndexes = isLegalEntity ? poMunicipalServicesSection : foMunicipalServicesSection
 

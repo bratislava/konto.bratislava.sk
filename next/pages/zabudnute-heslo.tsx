@@ -1,22 +1,19 @@
-import { Auth } from 'aws-amplify'
+import { confirmResetPassword, resetPassword } from 'aws-amplify/auth'
 import AccountContainer from 'components/forms/segments/AccountContainer/AccountContainer'
 import AccountSuccessAlert from 'components/forms/segments/AccountSuccessAlert/AccountSuccessAlert'
 import ForgottenPasswordForm from 'components/forms/segments/ForgottenPasswordForm/ForgottenPasswordForm'
 import NewPasswordForm from 'components/forms/segments/NewPasswordForm/NewPasswordForm'
 import LoginRegisterLayout from 'components/layouts/LoginRegisterLayout'
-import {
-  getSSRCurrentAuth,
-  ServerSideAuthProviderHOC,
-} from 'components/logic/ServerSideAuthProvider'
 import { GENERIC_ERROR_MESSAGE, isError } from 'frontend/utils/errors'
-import { GetServerSidePropsContext } from 'next'
 import { useRouter } from 'next/router'
 import { useTranslation } from 'next-i18next'
-import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
 import { useState } from 'react'
 
+import { SsrAuthProviderHOC } from '../components/logic/SsrAuthContext'
 import { ROUTES } from '../frontend/api/constants'
+import { amplifyGetServerSideProps } from '../frontend/utils/amplifyServer'
 import logger from '../frontend/utils/logger'
+import { slovakServerSideTranslations } from '../frontend/utils/slovakServerSideTranslations'
 
 enum ForgotPasswordStatus {
   INIT = 'INIT',
@@ -24,16 +21,16 @@ enum ForgotPasswordStatus {
   NEW_PASSWORD_SUCCESS = 'NEW_PASSWORD_SUCCESS',
 }
 
-export const getServerSideProps = async (ctx: GetServerSidePropsContext) => {
-  const locale = ctx.locale ?? 'sk'
-
-  return {
-    props: {
-      ssrCurrentAuthProps: await getSSRCurrentAuth(ctx.req),
-      ...(await serverSideTranslations(locale)),
-    },
-  }
-}
+export const getServerSideProps = amplifyGetServerSideProps(
+  async () => {
+    return {
+      props: {
+        ...(await slovakServerSideTranslations()),
+      },
+    }
+  },
+  { requiresSignOut: true },
+)
 
 const ForgottenPasswordPage = () => {
   const [lastEmail, setLastEmail] = useState('')
@@ -51,8 +48,12 @@ const ForgottenPasswordPage = () => {
   const forgotPassword = async (email: string) => {
     try {
       setLastEmail(email)
-      await Auth.forgotPassword(email)
-      setForgotPasswordStatus(ForgotPasswordStatus.NEW_PASSWORD_REQUIRED)
+      const result = await resetPassword({ username: email })
+      if (result.nextStep.resetPasswordStep === 'CONFIRM_RESET_PASSWORD_WITH_CODE') {
+        setForgotPasswordStatus(ForgotPasswordStatus.NEW_PASSWORD_REQUIRED)
+      } else {
+        throw new Error('Unknown error')
+      }
     } catch (error) {
       if (isError(error)) {
         setForgotPasswordError(error)
@@ -66,10 +67,13 @@ const ForgottenPasswordPage = () => {
     }
   }
 
-  const forgotPasswordSubmit = async (verificationCode: string, newPassword: string) => {
+  const forgotPasswordSubmit = async (confirmationCode: string, newPassword: string) => {
     try {
-      await Auth.forgotPasswordSubmit(lastEmail, verificationCode, newPassword)
-      setForgotPasswordStatus(ForgotPasswordStatus.NEW_PASSWORD_SUCCESS)
+      await confirmResetPassword({
+        username: lastEmail,
+        confirmationCode,
+        newPassword,
+      })
     } catch (error) {
       if (isError(error)) {
         setForgotPasswordError(error)
@@ -116,4 +120,4 @@ const ForgottenPasswordPage = () => {
   )
 }
 
-export default ServerSideAuthProviderHOC(ForgottenPasswordPage)
+export default SsrAuthProviderHOC(ForgottenPasswordPage)

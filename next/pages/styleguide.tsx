@@ -1,16 +1,11 @@
 import { StatusBar } from 'components/forms/info-components/StatusBar'
-import {
-  getSSRCurrentAuth,
-  ServerSideAuthProviderHOC,
-} from 'components/logic/ServerSideAuthProvider'
 import DatePickerShowCase from 'components/styleguide/showcases/DatePickerShowCase'
 import InputFieldShowCase from 'components/styleguide/showcases/InputFieldShowCase'
 import MyApplicationsCardShowCase from 'components/styleguide/showcases/MyApplicationsCardShowCase'
 import TimePickerShowCase from 'components/styleguide/showcases/TimePickerShowCase'
 import TooltipShowCase from 'components/styleguide/showcases/TooltipShowCase'
-import { GetServerSidePropsContext } from 'next'
-import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
 
+import { SsrAuthProviderHOC } from '../components/logic/SsrAuthContext'
 import AccordionShowCase from '../components/styleguide/showcases/AccordionShowCase'
 import AlertShowCase from '../components/styleguide/showcases/AlertShowCase'
 import BannerShowCase from '../components/styleguide/showcases/BannerShowCase'
@@ -36,7 +31,9 @@ import TextAreaFieldShowCase from '../components/styleguide/showcases/TextAreaFi
 import ToggleShowCase from '../components/styleguide/showcases/ToggleShowCase'
 import UploadShowCase from '../components/styleguide/showcases/UploadShowCase'
 import StyleGuideWrapper from '../components/styleguide/StyleGuideWrapper'
+import { amplifyGetServerSideProps } from '../frontend/utils/amplifyServer'
 import { isProductionDeployment } from '../frontend/utils/general'
+import { slovakServerSideTranslations } from '../frontend/utils/slovakServerSideTranslations'
 
 const Styleguide = () => {
   /**
@@ -85,17 +82,14 @@ const Styleguide = () => {
   )
 }
 
-export const getServerSideProps = async (ctx: GetServerSidePropsContext) => {
+export const getServerSideProps = amplifyGetServerSideProps(async () => {
   if (isProductionDeployment()) return { notFound: true }
-
-  const locale = ctx.locale ?? 'sk'
 
   return {
     props: {
-      ssrCurrentAuthProps: await getSSRCurrentAuth(ctx.req),
-      ...(await serverSideTranslations(locale)),
+      ...(await slovakServerSideTranslations()),
     },
   }
-}
+})
 
-export default ServerSideAuthProviderHOC(Styleguide)
+export default SsrAuthProviderHOC(Styleguide)

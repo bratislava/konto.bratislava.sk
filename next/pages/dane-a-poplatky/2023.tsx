@@ -1,35 +1,20 @@
 import AccountPageLayout from 'components/layouts/AccountPageLayout'
-import {
-  getSSRCurrentAuth,
-  ServerSideAuthProviderHOC,
-} from 'components/logic/ServerSideAuthProvider'
-import { GetServerSidePropsContext } from 'next'
-import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
 
 import TaxFeeSection from '../../components/forms/segments/AccountSections/TaxesFeesSection/TaxFeeSection'
-import { ROUTES } from '../../frontend/api/constants'
+import { SsrAuthProviderHOC } from '../../components/logic/SsrAuthContext'
+import { amplifyGetServerSideProps } from '../../frontend/utils/amplifyServer'
+import { slovakServerSideTranslations } from '../../frontend/utils/slovakServerSideTranslations'
 
-export const getServerSideProps = async (ctx: GetServerSidePropsContext) => {
-  const locale = ctx.locale ?? 'sk'
-
-  const ssrCurrentAuthProps = await getSSRCurrentAuth(ctx.req)
-  if (!ssrCurrentAuthProps.userData) {
+export const getServerSideProps = amplifyGetServerSideProps(
+  async () => {
     return {
-      redirect: {
-        destination: `${ROUTES.LOGIN}?from=${ctx.resolvedUrl}`,
-        permanent: false,
+      props: {
+        ...(await slovakServerSideTranslations()),
       },
     }
-  }
-
-  return {
-    props: {
-      ssrCurrentAuthProps,
-      ...(await serverSideTranslations(locale)),
-    },
-  }
-}
-
+  },
+  { requiresSignIn: true },
+)
 const AccountTaxesFeesPage = () => {
   return (
     <AccountPageLayout>
@@ -38,4 +23,4 @@ const AccountTaxesFeesPage = () => {
   )
 }
 
-export default ServerSideAuthProviderHOC(AccountTaxesFeesPage)
+export default SsrAuthProviderHOC(AccountTaxesFeesPage)

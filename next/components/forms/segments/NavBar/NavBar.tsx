@@ -9,8 +9,7 @@ import MenuDropdown, {
   MenuItemBase,
 } from 'components/forms/simple-components/MenuDropdown/MenuDropdown'
 import { useConditionalFormRedirects } from 'components/forms/useFormRedirects'
-import { UserData } from 'frontend/dtos/accountDto'
-import { useServerSideAuth } from 'frontend/hooks/useServerSideAuth'
+import { UserAttributes } from 'frontend/dtos/accountDto'
 import NextLink from 'next/link'
 import { useRouter } from 'next/router'
 import { useTranslation } from 'next-i18next'
@@ -19,6 +18,7 @@ import { RemoveScroll } from 'react-remove-scroll'
 
 import { ROUTES } from '../../../../frontend/api/constants'
 import useElementSize from '../../../../frontend/hooks/useElementSize'
+import { useSsrAuth } from '../../../../frontend/hooks/useSsrAuth'
 import Brand from '../../simple-components/Brand'
 import { MobileNavBar } from './MobileNavBar'
 import { useNavMenuContext } from './navMenuContext'
@@ -50,13 +50,13 @@ export interface MenuSectionItemBase {
   url: string
 }
 
-const Avatar = ({ userData }: { userData?: UserData | null }) => {
+const Avatar = ({ userAttributes }: { userAttributes?: UserAttributes | null }) => {
   return (
     <div className="relative flex flex-row items-start gap-2 rounded-full bg-main-100 p-2">
       <div className="flex h-6 w-6 items-center justify-center font-semibold text-main-700">
         <span className="uppercase">
-          {userData && userData.given_name && userData.family_name ? (
-            userData.given_name[0] + userData.family_name[0]
+          {userAttributes && userAttributes.given_name && userAttributes.family_name ? (
+            userAttributes.given_name[0] + userAttributes.family_name[0]
           ) : (
             <ProfileIcon className="h-6 w-6 text-main-700" />
           )}
@@ -67,7 +67,7 @@ const Avatar = ({ userData }: { userData?: UserData | null }) => {
 }
 
 export const NavBar = ({ className, sectionsList, menuItems, hiddenHeaderNav }: IProps) => {
-  const { userData, isAuthenticated, isLegalEntity } = useServerSideAuth()
+  const { userAttributes, isSignedIn, isLegalEntity } = useSsrAuth()
 
   const [isMenuOpen, setIsMenuOpen] = useState<boolean>(false)
   const { menuValue, setMenuValue } = useNavMenuContext()
@@ -115,7 +115,7 @@ export const NavBar = ({ className, sectionsList, menuItems, hiddenHeaderNav }: 
             />
             <IdentityVerificationStatus />
             <nav className="flex gap-x-8 font-semibold text-font/75">
-              {isAuthenticated ? (
+              {isSignedIn ? (
                 <MenuDropdown
                   setIsOpen={setIsMenuOpen}
                   buttonTrigger={
@@ -124,9 +124,9 @@ export const NavBar = ({ className, sectionsList, menuItems, hiddenHeaderNav }: 
                       data-cy="account-button"
                       className="flex items-center gap-4 font-semibold text-font/75"
                     >
-                      <Avatar userData={userData} />
+                      <Avatar userAttributes={userAttributes} />
                       <div className="flex items-center gap-1 font-light lg:font-semibold">
-                        {isLegalEntity ? userData?.name : userData?.given_name}
+                        {isLegalEntity ? userAttributes?.name : userAttributes?.given_name}
                         <ChevronDownSmallIcon
                           className={`hidden h-5 w-5 mix-blend-normal lg:flex ${
                             isMenuOpen ? '-rotate-180' : ''

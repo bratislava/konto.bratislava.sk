@@ -5,7 +5,6 @@ import Pagination from 'components/forms/simple-components/Pagination/Pagination
 import { useRefreshServerSideProps } from 'frontend/hooks/useRefreshServerSideProps'
 import logger from 'frontend/utils/logger'
 import { useRouter } from 'next/router'
-import { GetServerSidePropsContext } from 'next/types'
 import { ApplicationsListVariant } from 'pages/moje-ziadosti'
 import React from 'react'
 
@@ -17,7 +16,7 @@ const PAGE_SIZE = '10'
 export const getDraftApplications = async (
   variant: ApplicationsListVariant,
   page: number,
-  accessTokenSsrReq?: GetServerSidePropsContext['req'],
+  accessTokenSsrGetFn?: () => Promise<string | null>,
 ) => {
   const variantToStates: Array<GetFormResponseDtoStateEnum> = {
     SENT: [
@@ -38,7 +37,7 @@ export const getDraftApplications = async (
     undefined,
     variantToStates,
     undefined,
-    { accessToken: 'always', accessTokenSsrReq },
+    { accessToken: 'always', accessTokenSsrGetFn },
   )
   return response.data
 }

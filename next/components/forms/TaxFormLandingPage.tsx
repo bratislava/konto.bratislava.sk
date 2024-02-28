@@ -6,10 +6,9 @@ import { useTranslation } from 'next-i18next'
 import React from 'react'
 
 import { ROUTES } from '../../frontend/api/constants'
-import { useServerSideAuth } from '../../frontend/hooks/useServerSideAuth'
 import useSnackbar from '../../frontend/hooks/useSnackbar'
+import { useSsrAuth } from '../../frontend/hooks/useSsrAuth'
 import AccountPageLayout from '../layouts/AccountPageLayout'
-import { GetSSRCurrentAuth } from '../logic/ServerSideAuthProvider'
 import TaxFormLandingPageCard, {
   TaxFormLandingPageCardProps,
 } from './info-components/TaxFormLandingPageCard'
@@ -19,16 +18,15 @@ import Waves from './simple-components/Waves/Waves'
 
 export type TaxFormLandingPageProps = {
   latestVersionId: string
-  ssrCurrentAuthProps?: GetSSRCurrentAuth
-  isBetaUser: boolean
 }
 
 /**
  * Temporary landing page only for tax form, until we create unified landing page for all forms.
  * The layout is copied from `FormPage` and `FormHeader`.
  */
-const TaxFormLandingPage = ({ latestVersionId, isBetaUser }: TaxFormLandingPageProps) => {
-  const { isAuthenticated } = useServerSideAuth()
+const TaxFormLandingPage = ({ latestVersionId }: TaxFormLandingPageProps) => {
+  const { isSignedIn, userAttributes } = useSsrAuth()
+  const isBetaUser = userAttributes?.['custom:2024_tax_form_beta'] === 'true'
   const router = useRouter()
   const { t } = useTranslation('forms')
   const [openSnackbarError] = useSnackbar({ variant: 'error' })
@@ -124,7 +122,7 @@ const TaxFormLandingPage = ({ latestVersionId, isBetaUser }: TaxFormLandingPageP
           <AccountMarkdown content={t('tax_form_landing_page.instructions')} variant="sm" />
           <div className="flex flex-col gap-3">
             <h2 className="text-h2">Vyberte si ako vyplníte priznanie:</h2>
-            {!isAuthenticated && (
+            {!isSignedIn && (
               <p className="text-p2">
                 Ak ste súčasťou <strong>beta testovania</strong> nového odosielania s eID, prosím{' '}
                 <ButtonNew

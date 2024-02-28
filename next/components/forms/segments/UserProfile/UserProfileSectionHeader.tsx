@@ -1,7 +1,8 @@
 import cx from 'classnames'
-import { useServerSideAuth } from 'frontend/hooks/useServerSideAuth'
 import { useTranslation } from 'next-i18next'
 import React from 'react'
+
+import { useSsrAuth } from '../../../../frontend/hooks/useSsrAuth'
 
 interface UserProfileSectionHeaderProps {
   title: string
@@ -24,7 +25,7 @@ const UserProfileSectionHeader = ({
   mainHeader,
   childrenToColumn,
 }: UserProfileSectionHeaderProps) => {
-  const { tierStatus } = useServerSideAuth()
+  const { tierStatus } = useSsrAuth()
   const { t } = useTranslation('account')
 
   return (

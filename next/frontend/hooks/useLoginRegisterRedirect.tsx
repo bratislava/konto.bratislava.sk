@@ -1,11 +1,13 @@
 import type { UrlObject } from 'node:url'
 
 import { ROUTES } from 'frontend/api/constants'
-import { getAccessTokenOrLogout, getCurrentAuthenticatedUser } from 'frontend/utils/amplify'
 import { GENERIC_ERROR_MESSAGE } from 'frontend/utils/errors'
 import logger from 'frontend/utils/logger'
 import { useRouter } from 'next/router'
 import React, { useCallback, useEffect, useState } from 'react'
+
+import { getAccessTokenOrLogout, getCurrentAuthenticatedUser } from '../utils/amplifyClient'
+import { APPROVED_SSO_ORIGINS } from '../utils/sso'
 
 interface LoginRegisterRedirectState {
   redirectTarget: string
@@ -49,18 +51,22 @@ export const LoginRegisterRedirectProvider = ({ children }: { children: React.Re
   const redirect = useCallback(
     async (sameSiteQuery?: UrlObject['query']) => {
       try {
-        const isAuthenticated = !!(await getCurrentAuthenticatedUser())
+        const isSignedIn = !!(await getCurrentAuthenticatedUser())
         if (redirectTarget.startsWith('/')) {
-          await (isAuthenticated
+          await (isSignedIn
             ? router.push({ pathname: redirectTarget, query: sameSiteQuery })
             : router.push(ROUTES.LOGIN))
           // if successful reset to default state to prevent further unexpected redirects
           resetRedirect()
-        } else if (isAuthenticated) {
+        } else if (isSignedIn) {
           const accessToken = await getAccessTokenOrLogout()
           const redirectUrlWithToken = new URL(redirectTarget)
-          redirectUrlWithToken.searchParams.set('access_token', accessToken)
-          window.location.href = redirectUrlWithToken.href
+          if (APPROVED_SSO_ORIGINS.includes(redirectUrlWithToken.origin)) {
+            redirectUrlWithToken.searchParams.set('access_token', accessToken)
+            window.location.href = redirectUrlWithToken.href
+          } else {
+            await router.push(ROUTES.HOME)
+          }
         } else {
           window.location.href = redirectTarget
         }
@@ -90,7 +96,6 @@ export const LoginRegisterRedirectProvider = ({ children }: { children: React.Re
           ROUTES.LOGIN,
           ROUTES.REGISTER,
           ROUTES.IDENTITY_VERIFICATION,
-          ROUTES.MIGRATION,
         ].includes(url)
       ) {
         resetRedirect()

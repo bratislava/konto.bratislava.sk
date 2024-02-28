@@ -1,16 +1,16 @@
 import ConstructionSciFiImg from '@assets/images/construction-sci-fi.png'
 import CorporateIdentityImg from '@assets/images/corporate-identity.png'
 import AnnouncementBlock from 'components/forms/segments/AccountSections/IntroSection/Announcements/AnnouncementBlock'
-import { useServerSideAuth } from 'frontend/hooks/useServerSideAuth'
 import { useRouter } from 'next/router'
 import { useTranslation } from 'next-i18next'
 
 import { ROUTES } from '../../../../../../frontend/api/constants'
+import { useSsrAuth } from '../../../../../../frontend/hooks/useSsrAuth'
 
 const Announcements = () => {
   const { t } = useTranslation('account')
   const router = useRouter()
-  const { isLegalEntity } = useServerSideAuth()
+  const { isLegalEntity } = useSsrAuth()
 
   const announcementContentFirst = `
 <h3>${t('account_section_intro.announcement_card_title_first')}</h3><span>${t(

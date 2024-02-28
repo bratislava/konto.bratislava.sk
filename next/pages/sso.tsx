@@ -1,13 +1,30 @@
 import AccountMarkdown from 'components/forms/segments/AccountMarkdown/AccountMarkdown'
-import { getSSRAccessToken } from 'components/logic/ServerSideAuthProvider'
 import { postMessageToApprovedDomains, PostMessageTypes } from 'frontend/utils/sso'
-import { AsyncServerProps } from 'frontend/utils/types'
-import { GetServerSidePropsContext } from 'next'
 import { useTranslation } from 'next-i18next'
-import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
 import { useEffectOnce } from 'usehooks-ts'
 
-const SSOPage = ({ accessToken }: AsyncServerProps<typeof getServerSideProps>) => {
+import { amplifyGetServerSideProps } from '../frontend/utils/amplifyServer'
+import { isProductionDeployment } from '../frontend/utils/general'
+import { slovakServerSideTranslations } from '../frontend/utils/slovakServerSideTranslations'
+
+type SSOPageProps = {
+  accessToken: string | null
+}
+
+export const getServerSideProps = amplifyGetServerSideProps<SSOPageProps>(
+  async ({ getAccessToken }) => {
+    if (isProductionDeployment()) return { notFound: true }
+
+    return {
+      props: {
+        ...(await slovakServerSideTranslations()),
+        accessToken: await getAccessToken(),
+      },
+    }
+  },
+)
+
+const SSOPage = ({ accessToken }: SSOPageProps) => {
   const { t } = useTranslation('account')
 
   useEffectOnce(() => {
@@ -24,20 +41,6 @@ const SSOPage = ({ accessToken }: AsyncServerProps<typeof getServerSideProps>) =
   })
 
   return <AccountMarkdown content={t('sso_placeholder')} />
-}
-
-export const getServerSideProps = async (ctx: GetServerSidePropsContext) => {
-  const locale = ctx.locale ?? 'sk'
-
-  return {
-    props: {
-      accessToken: await getSSRAccessToken(ctx.req),
-      page: {
-        locale: ctx.locale,
-      },
-      ...(await serverSideTranslations(locale)),
-    },
-  }
 }
 
 export default SSOPage

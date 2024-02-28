@@ -1,14 +1,15 @@
-import { Auth } from 'aws-amplify'
+// eslint-disable-next-line import/no-extraneous-dependencies
+import { updateUserAttributes } from 'aws-amplify/auth'
 import { Address } from 'frontend/dtos/accountDto'
 import { Tax } from 'frontend/dtos/taxDto'
 import useJsonParseMemo from 'frontend/hooks/useJsonParseMemo'
-import { useServerSideAuth } from 'frontend/hooks/useServerSideAuth'
 import { GENERIC_ERROR_MESSAGE, isError } from 'frontend/utils/errors'
 import logger from 'frontend/utils/logger'
 import { useTranslation } from 'next-i18next'
 import { useState } from 'react'
 
 import useSnackbar from '../../../../../frontend/hooks/useSnackbar'
+import { useSsrAuth } from '../../../../../frontend/hooks/useSsrAuth'
 import SummaryRowSimple from '../../../simple-components/SummaryRowSimple'
 import SummaryRow from '../../../steps/Summary/SummaryRow'
 import CorrespondenceAddressModal from '../../CorrespondenceAddressModal/CorrespondenceAddressModal'
@@ -22,9 +23,9 @@ const postalCodeFormat = (code?: string): string =>
 
 const ContactInformationSection = ({ tax }: ContactInformationSectionProps) => {
   const { t } = useTranslation('account')
-  const { userData } = useServerSideAuth()
+  const { userAttributes } = useSsrAuth()
   const [showSnackbar] = useSnackbar({ variant: 'success' })
-  const address = userData?.address
+  const address = userAttributes?.address
   const parsedAddress = useJsonParseMemo<Address>(address)
   const postal_code_array = parsedAddress?.postal_code?.replace(/\s/g, '')
   const [correspondenceAddressModalShow, setCorrespondenceAddressModalShow] = useState(false)
@@ -34,16 +35,18 @@ const ContactInformationSection = ({ tax }: ContactInformationSectionProps) => {
     setCorrespondenceAddressError(null)
   }
 
-  const onSubmitCorrespondenceAddress = async ({ data }: { data?: Address }) => {
+  const onSubmitCorrespondenceAddress = async ({ data }: { data?: string }) => {
     try {
-      const user = await Auth.currentAuthenticatedUser()
-      if (
-        await Auth.updateUserAttributes(user, {
-          address: data,
-        })
-      ) {
+      const {
+        address: { isUpdated },
+      } = await updateUserAttributes({
+        userAttributes: { address: data },
+      })
+      if (isUpdated) {
         setCorrespondenceAddressModalShow(false)
         showSnackbar(t('profile_detail.success_alert'))
+      } else {
+        throw new Error('Unknown error')
       }
     } catch (error) {
       if (isError(error)) {
@@ -79,7 +82,7 @@ const ContactInformationSection = ({ tax }: ContactInformationSectionProps) => {
                 label: t('name_and_surname'),
                 value:
                   tax.taxPayer?.name ||
-                  `${userData?.given_name || ''} ${userData?.family_name || ''}`,
+                  `${userAttributes?.given_name || ''} ${userAttributes?.family_name || ''}`,
                 schemaPath: '',
                 isError: false,
               }}
@@ -107,7 +110,7 @@ const ContactInformationSection = ({ tax }: ContactInformationSectionProps) => {
               data={{
                 label: t('correspondence_address'),
                 value:
-                  userData &&
+                  userAttributes &&
                   (parsedAddress?.street_address ||
                     parsedAddress?.postal_code ||
                     parsedAddress?.locality)

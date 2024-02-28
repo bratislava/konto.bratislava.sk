@@ -1,19 +1,20 @@
 import { formsApi } from '@clients/forms'
 import { isAxiosError } from 'axios'
-import { GetServerSidePropsContext } from 'next'
-import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
+import { GetServerSideProps, GetServerSidePropsContext } from 'next'
 
 import PdfSummaryPage, { PdfSummaryPageProps } from '../components/forms/PdfSummaryPage'
 import { FormFileUploadClientFileInfo } from '../frontend/types/formFileUploadTypes'
 import { isProductionDeployment } from '../frontend/utils/general'
 import logger from '../frontend/utils/logger'
+import { slovakServerSideTranslations } from '../frontend/utils/slovakServerSideTranslations'
 
 export type PdfPreviewDataAdditionalMetadata = {
   clientFiles?: FormFileUploadClientFileInfo[]
 }
 
-export const getServerSideProps = async (ctx: GetServerSidePropsContext) => {
-  const locale = ctx.locale ?? 'sk'
+export const getServerSideProps: GetServerSideProps<PdfSummaryPageProps> = async (
+  ctx: GetServerSidePropsContext,
+) => {
   if (!ctx.query.jwtToken) {
     return { notFound: true }
   }
@@ -49,7 +50,7 @@ export const getServerSideProps = async (ctx: GetServerSidePropsContext) => {
           initialServerFiles: pdfPreviewData.serverFiles,
           isPdf: true,
         },
-        ...(await serverSideTranslations(locale)),
+        ...(await slovakServerSideTranslations()),
       } satisfies PdfSummaryPageProps,
     }
   } catch (error) {

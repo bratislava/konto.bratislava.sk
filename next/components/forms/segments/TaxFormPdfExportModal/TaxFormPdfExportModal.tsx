@@ -5,7 +5,7 @@ import React from 'react'
 import { mergeProps } from 'react-aria'
 import { Button as AriaButton } from 'react-aria-components'
 
-import { useServerSideAuth } from '../../../../frontend/hooks/useServerSideAuth'
+import { useSsrAuth } from '../../../../frontend/hooks/useSsrAuth'
 import ButtonNew from '../../simple-components/ButtonNew'
 import ModalV2, { ModalV2Props } from '../../simple-components/ModalV2'
 import Spinner from '../../simple-components/Spinner'
@@ -33,7 +33,7 @@ const LoadingContent = () => {
 const SuccessContent = () => {
   const { t } = useTranslation('forms')
   const { register } = useFormRedirects()
-  const { isAuthenticated } = useServerSideAuth()
+  const { isSignedIn } = useSsrAuth()
 
   const actions = [
     'tax_form_pdf_export_modal.action_1',
@@ -82,14 +82,14 @@ const SuccessContent = () => {
           <Trans
             ns="forms"
             i18nKey={
-              isAuthenticated
+              isSignedIn
                 ? 'tax_form_pdf_export_modal.tax_assessed_statement_authenticated'
                 : 'tax_form_pdf_export_modal.tax_assessed_statement'
             }
             components={{ strong: <strong className="font-semibold" /> }}
           />
         </p>
-        {!isAuthenticated && (
+        {!isSignedIn && (
           // Copied from RegistrationModal
           <>
             <div className="mt-3 flex w-full items-center md:mt-6">

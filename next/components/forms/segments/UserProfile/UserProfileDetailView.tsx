@@ -1,20 +1,20 @@
-import { AccountType, Address, UserData } from 'frontend/dtos/accountDto'
+import { AccountType, Address, UserAttributes } from 'frontend/dtos/accountDto'
 import useJsonParseMemo from 'frontend/hooks/useJsonParseMemo'
 import { useTranslation } from 'next-i18next'
 
 import UserProfileDetailViewRow from './UserProfileDetailViewRow'
 
 interface UserProfileDetailViewProps {
-  userData: UserData
+  userAttributes: UserAttributes
 }
 
 const postalCodeFormat = (code?: string): string =>
   code ? `${code?.slice(0, 3)} ${code?.slice(3)}` : ''
 
-const UserProfileDetailView = ({ userData }: UserProfileDetailViewProps) => {
+const UserProfileDetailView = ({ userAttributes }: UserProfileDetailViewProps) => {
   const { t } = useTranslation('account')
-  const { name, given_name, family_name, email, phone_number, address } = userData
-  const account_type = userData['custom:account_type']
+  const { name, given_name, family_name, email, phone_number, address } = userAttributes
+  const account_type = userAttributes['custom:account_type']
   const parsedAddress = useJsonParseMemo<Address>(address)
   const fullName =
     account_type === AccountType.FyzickaOsoba

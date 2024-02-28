@@ -8,17 +8,17 @@ import {
   ServicesIcon,
 } from '@assets/ui-icons'
 import { useResizeObserver } from '@react-aria/utils'
-import { Auth } from 'aws-amplify'
+import { signOut } from 'aws-amplify/auth'
 import cx from 'classnames'
 import NavBar, { MenuSectionItemBase } from 'components/forms/segments/NavBar/NavBar'
 import { MenuItemBase } from 'components/forms/simple-components/MenuDropdown/MenuDropdown'
 import { useConditionalFormRedirects } from 'components/forms/useFormRedirects'
-import { useServerSideAuth } from 'frontend/hooks/useServerSideAuth'
 import { useRouter } from 'next/router'
 import { useTranslation } from 'next-i18next'
 import { ReactNode, useRef, useState } from 'react'
 
 import { ROUTES } from '../../frontend/api/constants'
+import { useSsrAuth } from '../../frontend/hooks/useSsrAuth'
 import { isDefined } from '../../frontend/utils/general'
 
 type AccountPageLayoutBase = {
@@ -34,7 +34,7 @@ declare module 'react' {
 }
 
 const AccountPageLayout = ({ className, children, hiddenHeaderNav }: AccountPageLayoutBase) => {
-  const { isAuthenticated } = useServerSideAuth()
+  const { isSignedIn } = useSsrAuth()
 
   const router = useRouter()
   const headerRef = useRef<HTMLDivElement>(null)
@@ -52,7 +52,7 @@ const AccountPageLayout = ({ className, children, hiddenHeaderNav }: AccountPage
   const [t] = useTranslation('common')
 
   const logoutHandler = async () => {
-    await Auth.signOut()
+    await signOut()
     await router.push(ROUTES.LOGIN)
   }
 
@@ -104,7 +104,7 @@ const AccountPageLayout = ({ className, children, hiddenHeaderNav }: AccountPage
   ].filter(isDefined)
 
   // TODO consider using this in desktop menu
-  const menuItems: MenuItemBase[] = isAuthenticated
+  const menuItems: MenuItemBase[] = isSignedIn
     ? [
         {
           id: 0,

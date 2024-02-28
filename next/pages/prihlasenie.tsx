@@ -6,7 +6,7 @@ import LoginRegisterLayout from 'components/layouts/LoginRegisterLayout'
 import useLoginRegisterRedirect from 'frontend/hooks/useLoginRegisterRedirect'
 import { GENERIC_ERROR_MESSAGE, isError } from 'frontend/utils/errors'
 import logger from 'frontend/utils/logger'
-import { useCallback, useState } from 'react'
+import { useState } from 'react'
 
 import { SsrAuthProviderHOC } from '../components/logic/SsrAuthContext'
 import { amplifyGetServerSideProps } from '../frontend/utils/amplifyServer'
@@ -48,15 +48,11 @@ const LoginPage = () => {
   // if email is not yet verify login will fail - we stay on this page & render verification form for the last used email
   const [emailToVerify, setEmailToVerify] = useState('')
 
-  const handleSignedIn = useCallback(async () => {
-    await redirect()
-  }, [redirect])
-
   const onLogin = async (email: string, password: string) => {
     try {
       const { nextStep, isSignedIn } = await signIn({ username: email, password })
       if (isSignedIn) {
-        await handleSignedIn()
+        await redirect()
         return
       }
       if (nextStep.signInStep === 'CONFIRM_SIGN_UP') {
@@ -79,7 +75,7 @@ const LoginPage = () => {
     try {
       const { isSignedIn } = await autoSignIn()
       if (isSignedIn) {
-        await handleSignedIn()
+        await redirect()
       } else {
         throw new Error('Unknown error')
       }

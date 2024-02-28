@@ -39,7 +39,7 @@ const getAccessToken = async (amplifyContextSpec: AmplifyServer.ContextSpec) => 
  * In Amplify V6, `getServerSideProps` must run in Amplify server context to execute Amplify operations. This is a
  * wrapper for getServerSideProps that runs in Amplify server context and handles common SSR auth logic:
  *
- * - injects SSR auth context (is user signed in, user attributes) into props
+ * - injects SSR auth context (is user signed in, user attributes) into `ssrAuthContextPropKey` prop
  * - redirects to login page if requiresSignIn is set to true and user is not signed in
  * - redirects to home page if requiresSignOut is set to true and user is signed in
  *

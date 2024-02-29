@@ -45,7 +45,7 @@ Cypress.Commands.add('logInUser', (device, email, password) => {
 })
 
 Cypress.Commands.add('logOutUser', () => {
-  cy.visit('/logout')
+  cy.visit('/odhlasenie')
   cy.get('[data-cy=odhlásiť-sa-button]').click()
   cy.location('pathname', {timeout: 4000})
   .should('eq', '/prihlasenie');

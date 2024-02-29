@@ -28,10 +28,12 @@ declare namespace Cypress {
 }
 
 Cypress.Commands.add('logInUser', (device, email, password) => {
+  cy.visit('/')
   if (device === 'desktop') { 
     cy.get('[data-cy=login-button]').click()
   } else {
     cy.get('[data-cy=mobile-account-button]').click()
+    cy.get('[data-cy=Prihlásenie-menu-item]').click()
   }
   cy.location('pathname', {timeout: 4000})
   .should('eq', '/prihlasenie');

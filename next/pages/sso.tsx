@@ -1,10 +1,9 @@
 import AccountMarkdown from 'components/forms/segments/AccountMarkdown/AccountMarkdown'
-import { postMessageToApprovedDomains, PostMessageTypes } from 'frontend/utils/sso'
 import { useTranslation } from 'next-i18next'
 import { useEffectOnce } from 'usehooks-ts'
 
 import { amplifyGetServerSideProps } from '../frontend/utils/amplifyServer'
-import { isProductionDeployment } from '../frontend/utils/general'
+import { postMessageToApprovedDomains, PostMessageTypes } from '../frontend/utils/safeLoginRedirect'
 import { slovakServerSideTranslations } from '../frontend/utils/slovakServerSideTranslations'
 
 type SSOPageProps = {
@@ -13,8 +12,6 @@ type SSOPageProps = {
 
 export const getServerSideProps = amplifyGetServerSideProps<SSOPageProps>(
   async ({ getAccessToken }) => {
-    if (isProductionDeployment()) return { notFound: true }
-
     return {
       props: {
         ...(await slovakServerSideTranslations()),

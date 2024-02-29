@@ -2,7 +2,6 @@ import { ArrowRightIcon } from '@assets/ui-icons'
 import AccountErrorAlert from 'components/forms/segments/AccountErrorAlert/AccountErrorAlert'
 import Button from 'components/forms/simple-components/Button'
 import InputField from 'components/forms/widget-components/InputField/InputField'
-import { useRouter } from 'next/router'
 import { useTranslation } from 'next-i18next'
 import { useState } from 'react'
 import { Controller } from 'react-hook-form'
@@ -10,8 +9,8 @@ import Turnstile from 'react-turnstile'
 import { useCounter, useTimeout } from 'usehooks-ts'
 
 import { environment } from '../../../../environment'
-import { ROUTES } from '../../../../frontend/api/constants'
 import useHookForm from '../../../../frontend/hooks/useHookForm'
+import { useLoginRedirect } from '../../../../frontend/hooks/useLoginRedirect'
 import { isBrowser } from '../../../../frontend/utils/general'
 import logger from '../../../../frontend/utils/logger'
 
@@ -82,9 +81,9 @@ const foSchema = {
 }
 
 const IdentityVerificationForm = ({ onSubmit, isLegalEntity, error }: Props) => {
+  const { redirectAfterLogin } = useLoginRedirect()
   const { t } = useTranslation('account')
   const { count: captchaKey, increment: incrementCaptchaKey } = useCounter(0)
-  const router = useRouter()
   const schema = isLegalEntity ? poSchema : foSchema
   const {
     handleSubmit,
@@ -208,7 +207,7 @@ const IdentityVerificationForm = ({ onSubmit, isLegalEntity, error }: Props) => 
       <Button
         variant="plain-black"
         className="min-w-full"
-        onPress={() => router.push({ pathname: ROUTES.HOME, query: { from: ROUTES.REGISTER } })}
+        onPress={() => redirectAfterLogin()}
         text={t('identity_verification_skip')}
         endIcon={<ArrowRightIcon />}
       />

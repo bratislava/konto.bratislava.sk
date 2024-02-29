@@ -3,47 +3,57 @@ import AccountContainer from 'components/forms/segments/AccountContainer/Account
 import EmailVerificationForm from 'components/forms/segments/EmailVerificationForm/EmailVerificationForm'
 import LoginForm from 'components/forms/segments/LoginForm/LoginForm'
 import LoginRegisterLayout from 'components/layouts/LoginRegisterLayout'
-import useLoginRegisterRedirect from 'frontend/hooks/useLoginRegisterRedirect'
 import { GENERIC_ERROR_MESSAGE, isError } from 'frontend/utils/errors'
 import logger from 'frontend/utils/logger'
 import { useState } from 'react'
 
 import { SsrAuthProviderHOC } from '../components/logic/SsrAuthContext'
+import { useLoginRedirect } from '../frontend/hooks/useLoginRedirect'
 import { amplifyGetServerSideProps } from '../frontend/utils/amplifyServer'
+import {
+  getRedirectUrl,
+  getSafeLoginRedirect,
+  removeFromFromResolvedUrl,
+  shouldRemoveLoginRedirectParam,
+} from '../frontend/utils/safeLoginRedirect'
 import { slovakServerSideTranslations } from '../frontend/utils/slovakServerSideTranslations'
-import { getValidRedirectFromQuery } from '../frontend/utils/sso'
 
-// eslint-disable-next-line @typescript-eslint/ban-types
-export const getServerSideProps = amplifyGetServerSideProps(async ({ context, isSignedIn }) => {
-  if (isSignedIn) {
+export const getServerSideProps = amplifyGetServerSideProps(
+  async ({ context, isSignedIn, getAccessToken }) => {
     const from = context.query.from as string | undefined
-    if (from) {
-      const safeFrom = getValidRedirectFromQuery(from)
+    const shouldRemove = shouldRemoveLoginRedirectParam(from)
+    if (shouldRemove) {
       return {
         redirect: {
-          destination: safeFrom ?? '/',
+          destination: removeFromFromResolvedUrl(context.resolvedUrl),
+          permanent: false,
+        },
+      }
+    }
+
+    if (isSignedIn) {
+      const safeFrom = getSafeLoginRedirect(from)
+      const destination = await getRedirectUrl(safeFrom, getAccessToken)
+      console.log('destination', destination)
+
+      return {
+        redirect: {
+          destination,
           permanent: false,
         },
       }
     }
 
     return {
-      redirect: {
-        destination: '/',
-        permanent: false,
+      props: {
+        ...(await slovakServerSideTranslations()),
       },
     }
-  }
-
-  return {
-    props: {
-      ...(await slovakServerSideTranslations()),
-    },
-  }
-})
+  },
+)
 
 const LoginPage = () => {
-  const { redirect } = useLoginRegisterRedirect()
+  const { redirectAfterLogin } = useLoginRedirect()
   const [loginError, setLoginError] = useState<Error | null>(null)
   // if email is not yet verify login will fail - we stay on this page & render verification form for the last used email
   const [emailToVerify, setEmailToVerify] = useState('')
@@ -52,7 +62,7 @@ const LoginPage = () => {
     try {
       const { nextStep, isSignedIn } = await signIn({ username: email, password })
       if (isSignedIn) {
-        await redirect()
+        await redirectAfterLogin()
         return
       }
       if (nextStep.signInStep === 'CONFIRM_SIGN_UP') {
@@ -75,7 +85,7 @@ const LoginPage = () => {
     try {
       const { isSignedIn } = await autoSignIn()
       if (isSignedIn) {
-        await redirect()
+        await redirectAfterLogin()
       } else {
         throw new Error('Unknown error')
       }

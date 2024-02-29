@@ -1,19 +1,18 @@
 import AccountContainer from 'components/forms/segments/AccountContainer/AccountContainer'
 import AccountSuccessAlert from 'components/forms/segments/AccountSuccessAlert/AccountSuccessAlert'
 import LoginRegisterLayout from 'components/layouts/LoginRegisterLayout'
-import useLoginRegisterRedirect from 'frontend/hooks/useLoginRegisterRedirect'
 import { GENERIC_ERROR_MESSAGE } from 'frontend/utils/errors'
 import logger from 'frontend/utils/logger'
 import { useTranslation } from 'next-i18next'
-import { useEffect, useState } from 'react'
+import { useState } from 'react'
 
 import { SsrAuthProviderHOC } from '../components/logic/SsrAuthContext'
-import { useSsrAuth } from '../frontend/hooks/useSsrAuth'
+import { useLoginRedirect } from '../frontend/hooks/useLoginRedirect'
 import { useSignOut } from '../frontend/utils/amplifyClient'
 import { amplifyGetServerSideProps } from '../frontend/utils/amplifyServer'
 import { slovakServerSideTranslations } from '../frontend/utils/slovakServerSideTranslations'
 
-export const getServerSideProps = amplifyGetServerSideProps(async () => {
+export const getServerSideProps = amplifyGetServerSideProps(async ({ isSignedIn }) => {
   return {
     props: {
       ...(await slovakServerSideTranslations()),
@@ -22,17 +21,10 @@ export const getServerSideProps = amplifyGetServerSideProps(async () => {
 })
 
 const LogoutPage = () => {
+  const { redirectAfterLogin } = useLoginRedirect()
   const { t } = useTranslation('account')
-  const { isSignedIn } = useSsrAuth()
   const { signOut } = useSignOut()
-  const { redirect } = useLoginRegisterRedirect()
   const [isLoading, setIsLoading] = useState(false)
-  useEffect(() => {
-    // TODO handle server side
-    if (!isSignedIn) {
-      redirect().catch((error) => logger.error('Failed redirect logout useEffect', error))
-    }
-  }, [isSignedIn, redirect])
 
   const logoutHandler = async () => {
     setIsLoading(true)
@@ -55,7 +47,7 @@ const LogoutPage = () => {
           onConfirm={logoutHandler}
           confirmIsLoading={isLoading}
           cancelLabel={t('logout_page.cancel_label')}
-          onCancel={() => redirect()}
+          onCancel={() => redirectAfterLogin()}
         />
       </AccountContainer>
     </LoginRegisterLayout>

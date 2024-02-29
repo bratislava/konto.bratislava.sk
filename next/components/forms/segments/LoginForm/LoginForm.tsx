@@ -8,6 +8,8 @@ import useHookForm from 'frontend/hooks/useHookForm'
 import { useTranslation } from 'next-i18next'
 import { Controller } from 'react-hook-form'
 
+import { useLoginRedirect } from '../../../../frontend/hooks/useLoginRedirect'
+
 interface Data {
   email: string
   password: string
@@ -38,6 +40,7 @@ const schema = {
 }
 
 const LoginForm = ({ onSubmit, error }: Props) => {
+  const { getRouteWithLoginRedirectParam } = useLoginRedirect()
   const { t } = useTranslation('account')
 
   const {
@@ -86,7 +89,7 @@ const LoginForm = ({ onSubmit, error }: Props) => {
       <AccountLink
         label={t('forgotten_password_link')}
         description={t('forgotten_password_description')}
-        href={ROUTES.FORGOTTEN_PASSWORD}
+        href={getRouteWithLoginRedirectParam(ROUTES.FORGOTTEN_PASSWORD)}
       />
       <Button
         className="min-w-full"
@@ -97,7 +100,7 @@ const LoginForm = ({ onSubmit, error }: Props) => {
       />
       <AccountLink
         label={t('register_link')}
-        href={ROUTES.REGISTER}
+        href={getRouteWithLoginRedirectParam(ROUTES.REGISTER)}
         description={t('register_description')}
         variant="category"
       />

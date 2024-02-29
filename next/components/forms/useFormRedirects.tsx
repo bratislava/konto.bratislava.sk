@@ -1,11 +1,11 @@
 import { formsApi } from '@clients/forms'
 import { useMutation } from '@tanstack/react-query'
-import useLoginRegisterRedirect from 'frontend/hooks/useLoginRegisterRedirect'
 import { useRouter } from 'next/router'
 import { useTranslation } from 'next-i18next'
 import { createContext, PropsWithChildren, useContext } from 'react'
 
 import { ROUTES } from '../../frontend/api/constants'
+import { useLoginRedirect } from '../../frontend/hooks/useLoginRedirect'
 import useSnackbar from '../../frontend/hooks/useSnackbar'
 import { useFormSignature } from './signer/useFormSignature'
 import { useFormContext } from './useFormContext'
@@ -14,13 +14,13 @@ import { useFormState } from './useFormState'
 
 const useGetContext = () => {
   const router = useRouter()
+  const { getRouteWithCurrentUrlAsLoginRedirect } = useLoginRedirect()
   const { formId } = useFormContext()
   const { formData } = useFormState()
   const { t } = useTranslation('forms')
   const [openSnackbarInfo, closeSnackbarInfo] = useSnackbar({ variant: 'info' })
   const [openSnackbarError] = useSnackbar({ variant: 'error' })
   const { turnOffLeaveProtection } = useFormLeaveProtection()
-  const { setRedirectReturnRoute } = useLoginRegisterRedirect()
   const { signature } = useFormSignature()
 
   const { mutate: saveConceptMutate } = useMutation({
@@ -53,8 +53,7 @@ const useGetContext = () => {
     saveConceptMutate(undefined, {
       // eslint-disable-next-line @typescript-eslint/no-misused-promises
       onSuccess: async () => {
-        setRedirectReturnRoute(true)
-        await router.push(ROUTES.REGISTER)
+        await router.push(getRouteWithCurrentUrlAsLoginRedirect(ROUTES.REGISTER))
       },
     })
   }
@@ -63,8 +62,7 @@ const useGetContext = () => {
     saveConceptMutate(undefined, {
       // eslint-disable-next-line @typescript-eslint/no-misused-promises
       onSuccess: async () => {
-        setRedirectReturnRoute(true)
-        await router.push(ROUTES.LOGIN)
+        await router.push(getRouteWithCurrentUrlAsLoginRedirect(ROUTES.LOGIN))
       },
     })
   }
@@ -73,8 +71,7 @@ const useGetContext = () => {
     saveConceptMutate(undefined, {
       // eslint-disable-next-line @typescript-eslint/no-misused-promises
       onSuccess: async () => {
-        setRedirectReturnRoute(true)
-        await router.push(ROUTES.IDENTITY_VERIFICATION)
+        await router.push(getRouteWithCurrentUrlAsLoginRedirect(ROUTES.IDENTITY_VERIFICATION))
       },
     })
   }

@@ -27,7 +27,7 @@ const fetchAccessTokenString = async () => {
 
 export const getAccessToken = async () => {
   try {
-    return await fetchAccessTokenString()
+    return (await fetchAccessTokenString()) ?? null
   } catch (error) {
     if (error instanceof AuthError && error.name === 'NotAuthorizedException') {
       return null

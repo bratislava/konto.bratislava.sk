@@ -6,7 +6,6 @@ import EmailVerificationForm from 'components/forms/segments/EmailVerificationFo
 import RegisterForm from 'components/forms/segments/RegisterForm/RegisterForm'
 import LoginRegisterLayout from 'components/layouts/LoginRegisterLayout'
 import { UserAttributes } from 'frontend/dtos/accountDto'
-import useLoginRegisterRedirect from 'frontend/hooks/useLoginRegisterRedirect'
 import { GENERIC_ERROR_MESSAGE, isError } from 'frontend/utils/errors'
 import { useRouter } from 'next/router'
 import { useTranslation } from 'next-i18next'
@@ -14,8 +13,10 @@ import { useState } from 'react'
 
 import { SsrAuthProviderHOC } from '../components/logic/SsrAuthContext'
 import { ROUTES } from '../frontend/api/constants'
+import { useLoginRedirect } from '../frontend/hooks/useLoginRedirect'
 import { amplifyGetServerSideProps } from '../frontend/utils/amplifyServer'
 import logger from '../frontend/utils/logger'
+import { LoginRedirectType } from '../frontend/utils/safeLoginRedirect'
 import { slovakServerSideTranslations } from '../frontend/utils/slovakServerSideTranslations'
 
 enum RegistrationStatus {
@@ -36,6 +37,10 @@ export const getServerSideProps = amplifyGetServerSideProps(
 )
 
 const RegisterPage = () => {
+  const { safeLoginRedirect, getRouteWithLoginRedirectParam, redirectAfterLogin } =
+    useLoginRedirect()
+  const verificationRequired = safeLoginRedirect.type === LoginRedirectType.Local
+
   const { t } = useTranslation('account')
   const [registrationStatus, setRegistrationStatus] = useState<RegistrationStatus>(
     RegistrationStatus.INIT,
@@ -43,7 +48,6 @@ const RegisterPage = () => {
   const [registrationError, setRegistrationError] = useState<Error | null>(null)
   const [lastEmail, setLastEmail] = useState<string>('')
   const router = useRouter()
-  const { redirect, verificationRequired } = useLoginRegisterRedirect()
   // only divert user from verification if he's coming from another site
 
   const handleSignUp = async (
@@ -165,12 +169,12 @@ const RegisterPage = () => {
             onConfirm={() =>
               verificationRequired
                 ? router
-                    .push(ROUTES.IDENTITY_VERIFICATION)
+                    .push(getRouteWithLoginRedirectParam(ROUTES.IDENTITY_VERIFICATION))
                     .catch(() => logger.error(`${GENERIC_ERROR_MESSAGE} redirect failed`))
-                : redirect({ from: ROUTES.REGISTER })
+                : redirectAfterLogin()
             }
             cancelLabel={verificationRequired ? t('identity_verification_skip') : undefined}
-            onCancel={verificationRequired ? () => redirect({ from: ROUTES.REGISTER }) : undefined}
+            onCancel={verificationRequired ? () => redirectAfterLogin() : undefined}
           />
         )}
       </AccountContainer>

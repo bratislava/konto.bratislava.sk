@@ -17,6 +17,7 @@ import { useTranslation } from 'next-i18next'
 import { ReactNode, useRef, useState } from 'react'
 
 import { ROUTES } from '../../frontend/api/constants'
+import { useLoginRedirect } from '../../frontend/hooks/useLoginRedirect'
 import { useSsrAuth } from '../../frontend/hooks/useSsrAuth'
 import { useSignOut } from '../../frontend/utils/amplifyClient'
 import { isDefined } from '../../frontend/utils/general'
@@ -34,6 +35,7 @@ declare module 'react' {
 }
 
 const AccountPageLayout = ({ className, children, hiddenHeaderNav }: AccountPageLayoutBase) => {
+  const { getRouteWithCurrentUrlAsLoginRedirect } = useLoginRedirect()
   const { isSignedIn } = useSsrAuth()
   const { signOut } = useSignOut()
 
@@ -57,13 +59,13 @@ const AccountPageLayout = ({ className, children, hiddenHeaderNav }: AccountPage
   const login = optionalFormRedirectsContext
     ? () => optionalFormRedirectsContext.login()
     : async () => {
-        await router.push(ROUTES.LOGIN)
+        await router.push(getRouteWithCurrentUrlAsLoginRedirect(ROUTES.LOGIN))
       }
 
   const register = optionalFormRedirectsContext
     ? () => optionalFormRedirectsContext.register()
     : async () => {
-        await router.push(ROUTES.REGISTER)
+        await router.push(getRouteWithCurrentUrlAsLoginRedirect(ROUTES.REGISTER))
       }
 
   const sectionsList: MenuSectionItemBase[] = [

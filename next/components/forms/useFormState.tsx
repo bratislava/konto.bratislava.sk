@@ -60,6 +60,7 @@ const useGetContext = () => {
 
   const goToStep = (newIndex: FormStepIndex) => {
     if (stepsSchemas[newIndex] !== null || newIndex === 'summary') {
+      // eslint-disable-next-line @typescript-eslint/no-floating-promises
       setCurrentStepIndex(newIndex)
     }
   }
@@ -123,6 +124,7 @@ const useGetContext = () => {
       /* If the current step is empty after the import */
       evaluatedSchemas[currentStepIndex] == null
     ) {
+      // eslint-disable-next-line @typescript-eslint/no-floating-promises
       setCurrentStepIndex(getFirstNonEmptyStepIndex(evaluatedSchemas))
     }
 

@@ -157,7 +157,7 @@ const NewPasswordForm = ({ onSubmit, error, onResend, lastEmail, fromMigration }
         disabled={isSubmitting}
       />
       <div className="text-p3 lg:text-p2">
-        <span>{t('verification_description')}</span>
+        <span>{t('verification_description')}</span>{' '}
         {cnt > 0 && <span>{t('verification_cnt_description', { cnt })}</span>}
       </div>
       <Button

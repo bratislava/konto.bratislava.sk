@@ -26,7 +26,7 @@ yarn dev
 
 ## Run project for e2e testing
 
-Tests need captcha disabled, are run against staging backend & staging cognito, and may have other env changes - see `.env.e2e`. Otherwise they behave as a production build - to build & run the app in this setup:
+Tests need captcha disabled, are run against staging backend & staging cognito, and may have other env changes - see `.env.e2e`. Otherwise they behave as a production build - to build & run the app in this setup
 
 ```bash
 # only if you need to rebuild - this rewrites local .env.production.local

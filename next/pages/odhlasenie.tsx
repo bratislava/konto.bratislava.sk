@@ -9,6 +9,7 @@ import { useState } from 'react'
 import { SsrAuthProviderHOC } from '../components/logic/SsrAuthContext'
 import { useQueryParamRedirect } from '../frontend/hooks/useQueryParamRedirect'
 import { useSignOut } from '../frontend/utils/amplifyClient'
+import { useSignOut } from '../frontend/utils/amplifyClient'
 import { amplifyGetServerSideProps } from '../frontend/utils/amplifyServer'
 import { slovakServerSideTranslations } from '../frontend/utils/slovakServerSideTranslations'
 
@@ -24,9 +25,9 @@ export const getServerSideProps = amplifyGetServerSideProps(
 )
 
 const LogoutPage = () => {
-  const { redirect } = useQueryParamRedirect()
   const { t } = useTranslation('account')
   const { signOut } = useSignOut()
+  const { redirect } = useQueryParamRedirect()
   const [isLoading, setIsLoading] = useState(false)
 
   const logoutHandler = async () => {

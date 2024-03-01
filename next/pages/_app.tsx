@@ -10,7 +10,6 @@ import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import { StatusBarProvider } from 'components/forms/info-components/StatusBar'
 import CookieConsent from 'components/forms/segments/CookieConsent/CookieConsent'
 import { NavMenuContextProvider } from 'components/forms/segments/NavBar/navMenuContext'
-import { LoginRegisterRedirectProvider } from 'frontend/hooks/useLoginRegisterRedirect'
 import { AppProps } from 'next/app'
 import { Inter } from 'next/font/google'
 import Head from 'next/head'
@@ -74,13 +73,11 @@ const MyApp = ({ Component, pageProps }: AppProps) => {
                     // trackLocalhost
                   >
                     <NavMenuContextProvider>
-                      <LoginRegisterRedirectProvider>
-                        {/* used to lock body with overflow: hidden when mobile menu is open, look for useLockedBody */}
-                        <div id="root">
-                          <Component {...pageProps} />
-                        </div>
-                        <CookieConsent />
-                      </LoginRegisterRedirectProvider>
+                      {/* used to lock body with overflow: hidden when mobile menu is open, look for useLockedBody */}
+                      <div id="root">
+                        <Component {...pageProps} />
+                      </div>
+                      <CookieConsent />
                     </NavMenuContextProvider>
                   </PlausibleProvider>
                 </SnackbarProvider>

@@ -13,7 +13,7 @@ import { useTranslation } from 'next-i18next'
 import { useState } from 'react'
 
 import { SsrAuthProviderHOC } from '../components/logic/SsrAuthContext'
-import { useLoginRedirect } from '../frontend/hooks/useLoginRedirect'
+import { useQueryParamRedirect } from '../frontend/hooks/useQueryParamRedirect'
 import { useSsrAuth } from '../frontend/hooks/useSsrAuth'
 import { amplifyGetServerSideProps } from '../frontend/utils/amplifyServer'
 import logger from '../frontend/utils/logger'
@@ -27,11 +27,11 @@ export const getServerSideProps = amplifyGetServerSideProps(
       },
     }
   },
-  { requiresSignIn: true },
+  { requiresSignIn: true, redirectQueryParam: true },
 )
 
 const IdentityVerificationPage = () => {
-  const { redirectAfterLogin } = useLoginRedirect()
+  const { redirect } = useQueryParamRedirect()
   const { t } = useTranslation('account')
   const [lastIco, setLastIco] = useState<string | undefined>()
   const [lastRc, setLastRc] = useState('')
@@ -121,7 +121,7 @@ const IdentityVerificationPage = () => {
                   : t('identity_verification_pending_description_without_data')
             }
             confirmLabel={t('account_continue_link')}
-            onConfirm={() => redirectAfterLogin()}
+            onConfirm={() => redirect()}
           />
         )}
         {tierStatus.isIdentityVerified && (
@@ -136,7 +136,7 @@ const IdentityVerificationPage = () => {
               })
             }
             confirmLabel={t('account_continue_link')}
-            onConfirm={() => redirectAfterLogin()}
+            onConfirm={() => redirect()}
           />
         )}
       </AccountContainer>

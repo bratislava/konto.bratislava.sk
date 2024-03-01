@@ -18,7 +18,7 @@ import { RemoveScroll } from 'react-remove-scroll'
 
 import { ROUTES } from '../../../../frontend/api/constants'
 import useElementSize from '../../../../frontend/hooks/useElementSize'
-import { useLoginRedirect } from '../../../../frontend/hooks/useLoginRedirect'
+import { useQueryParamRedirect } from '../../../../frontend/hooks/useQueryParamRedirect'
 import { useSsrAuth } from '../../../../frontend/hooks/useSsrAuth'
 import Brand from '../../simple-components/Brand'
 import { MobileNavBar } from './MobileNavBar'
@@ -68,7 +68,7 @@ const Avatar = ({ userAttributes }: { userAttributes?: UserAttributes | null }) 
 }
 
 export const NavBar = ({ className, sectionsList, menuItems, hiddenHeaderNav }: IProps) => {
-  const { getRouteWithCurrentUrlAsLoginRedirect } = useLoginRedirect()
+  const { getRouteWithCurrentUrlRedirect } = useQueryParamRedirect()
   const { userAttributes, isSignedIn, isLegalEntity } = useSsrAuth()
 
   const [isMenuOpen, setIsMenuOpen] = useState<boolean>(false)
@@ -83,11 +83,11 @@ export const NavBar = ({ className, sectionsList, menuItems, hiddenHeaderNav }: 
   const login = () =>
     optionalFormRedirectsContext
       ? optionalFormRedirectsContext.login()
-      : router.push(getRouteWithCurrentUrlAsLoginRedirect(ROUTES.LOGIN))
+      : router.push(getRouteWithCurrentUrlRedirect(ROUTES.LOGIN))
   const register = () =>
     optionalFormRedirectsContext
       ? optionalFormRedirectsContext.register()
-      : router.push(getRouteWithCurrentUrlAsLoginRedirect(ROUTES.REGISTER))
+      : router.push(getRouteWithCurrentUrlRedirect(ROUTES.REGISTER))
 
   const isActive = (sectionItem: MenuSectionItemBase) =>
     sectionItem.url === '/' ? router.pathname === '/' : router.pathname.startsWith(sectionItem.url)

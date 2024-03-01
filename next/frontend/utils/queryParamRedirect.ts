@@ -13,69 +13,70 @@ const stagingOrigins = [
   'https://kupaliska.dev.bratislava.sk',
 ]
 
-export const loginRedirectQueryParam = 'from'
+export const redirectQueryParam = 'from'
 
 export const APPROVED_LOGIN_REDIRECT_ORIGINS = isProductionDeployment()
   ? productionOrigins
   : [...productionOrigins, ...stagingOrigins]
 
-export enum LoginRedirectType {
+export enum SafeRedirectType {
   Local = 'local',
   Remote = 'remote',
 }
 
-export type SafeLoginRedirectResult = {
+export type SafeRedirect = {
   url: string
-  type: LoginRedirectType
+  type: SafeRedirectType
 }
 
-const defaultSafeLoginRedirect: SafeLoginRedirectResult = {
+const defaultSafeRedirect: SafeRedirect = {
   url: ROUTES.HOME,
-  type: LoginRedirectType.Local,
+  type: SafeRedirectType.Local,
 }
 
-export const isDefaultLoginRedirect = (loginRedirectResult: SafeLoginRedirectResult) =>
+export const isDefaultRedirect = (loginRedirectResult: SafeRedirect) =>
   loginRedirectResult.url === ROUTES.HOME
 
-export const getSafeLoginRedirect = (loginRedirectUrl: string | unknown) => {
-  if (typeof loginRedirectUrl !== 'string') {
-    return defaultSafeLoginRedirect
+export const getSafeRedirect = (queryParam: string | unknown) => {
+  if (typeof queryParam !== 'string') {
+    return defaultSafeRedirect
   }
 
-  if (loginRedirectUrl.startsWith('/')) {
+  if (queryParam.startsWith('/')) {
     return {
-      url: loginRedirectUrl,
-      type: LoginRedirectType.Local,
+      url: queryParam,
+      type: SafeRedirectType.Local,
     }
   }
 
   try {
-    const url = new URL(loginRedirectUrl)
+    const url = new URL(queryParam)
     if (APPROVED_LOGIN_REDIRECT_ORIGINS.includes(url.origin)) {
       return {
-        url: loginRedirectUrl,
-        type: LoginRedirectType.Remote,
+        url: queryParam,
+        type: SafeRedirectType.Remote,
       }
     }
     // eslint-disable-next-line no-empty
   } catch (error) {}
 
-  return defaultSafeLoginRedirect
+  return defaultSafeRedirect
 }
 
-export const shouldRemoveLoginRedirectParam = (originalFrom: string | undefined | unknown) => {
-  if (originalFrom == null) {
+export const shouldRemoveRedirectQueryParam = (originalQueryParam: unknown) => {
+  if (typeof originalQueryParam !== 'string') {
     return false
   }
-  const safeLoginRedirect = getSafeLoginRedirect(originalFrom)
-  if (isDefaultLoginRedirect(safeLoginRedirect)) {
+
+  const safeRedirect = getSafeRedirect(originalQueryParam)
+  if (isDefaultRedirect(safeRedirect)) {
     return true
   }
 
-  return safeLoginRedirect?.url !== originalFrom
+  return safeRedirect?.url !== originalQueryParam
 }
 
-export const removeFromFromResolvedUrl = (resolvedUrl: string) => {
+export const removeRedirectQueryParam = (resolvedUrl: string) => {
   const splitUrl = resolvedUrl.split('?')
   if (splitUrl.length === 1) {
     return resolvedUrl
@@ -85,7 +86,7 @@ export const removeFromFromResolvedUrl = (resolvedUrl: string) => {
   const queryStringJoined = queryString.join('')
 
   const queryParams = qs.parse(queryStringJoined)
-  delete queryParams[loginRedirectQueryParam]
+  delete queryParams[redirectQueryParam]
   const newQueryString = qs.stringify(queryParams)
 
   if (newQueryString) {
@@ -95,10 +96,10 @@ export const removeFromFromResolvedUrl = (resolvedUrl: string) => {
 }
 
 export const getRedirectUrl = async (
-  fromResult: SafeLoginRedirectResult,
+  fromResult: SafeRedirect,
   getAccessToken: () => Promise<string | null>,
 ) => {
-  if (fromResult.type === LoginRedirectType.Remote) {
+  if (fromResult.type === SafeRedirectType.Remote) {
     const parsedUrl = new URL(fromResult.url)
     // add access token to the query string
     const accessToken = await getAccessToken()

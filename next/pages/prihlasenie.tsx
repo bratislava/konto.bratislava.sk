@@ -8,32 +8,22 @@ import logger from 'frontend/utils/logger'
 import { useState } from 'react'
 
 import { SsrAuthProviderHOC } from '../components/logic/SsrAuthContext'
-import { useLoginRedirect } from '../frontend/hooks/useLoginRedirect'
+import { useQueryParamRedirect } from '../frontend/hooks/useQueryParamRedirect'
 import { amplifyGetServerSideProps } from '../frontend/utils/amplifyServer'
 import {
   getRedirectUrl,
-  getSafeLoginRedirect,
-  removeFromFromResolvedUrl,
-  shouldRemoveLoginRedirectParam,
-} from '../frontend/utils/safeLoginRedirect'
+  getSafeRedirect,
+  redirectQueryParam,
+} from '../frontend/utils/queryParamRedirect'
 import { slovakServerSideTranslations } from '../frontend/utils/slovakServerSideTranslations'
 
 export const getServerSideProps = amplifyGetServerSideProps(
   async ({ context, isSignedIn, getAccessToken }) => {
-    const from = context.query.from as string | undefined
-    const shouldRemove = shouldRemoveLoginRedirectParam(from)
-    if (shouldRemove) {
-      return {
-        redirect: {
-          destination: removeFromFromResolvedUrl(context.resolvedUrl),
-          permanent: false,
-        },
-      }
-    }
+    const from = context.query[redirectQueryParam] as string | undefined
 
     if (isSignedIn) {
-      const safeFrom = getSafeLoginRedirect(from)
-      const destination = await getRedirectUrl(safeFrom, getAccessToken)
+      const safeRedirect = getSafeRedirect(from)
+      const destination = await getRedirectUrl(safeRedirect, getAccessToken)
       console.log('destination', destination)
 
       return {
@@ -50,10 +40,11 @@ export const getServerSideProps = amplifyGetServerSideProps(
       },
     }
   },
+  { requiresSignOut: true, redirectQueryParam: true },
 )
 
 const LoginPage = () => {
-  const { redirectAfterLogin } = useLoginRedirect()
+  const { redirect } = useQueryParamRedirect()
   const [loginError, setLoginError] = useState<Error | null>(null)
   // if email is not yet verify login will fail - we stay on this page & render verification form for the last used email
   const [emailToVerify, setEmailToVerify] = useState('')
@@ -62,7 +53,7 @@ const LoginPage = () => {
     try {
       const { nextStep, isSignedIn } = await signIn({ username: email, password })
       if (isSignedIn) {
-        await redirectAfterLogin()
+        await redirect()
         return
       }
       if (nextStep.signInStep === 'CONFIRM_SIGN_UP') {
@@ -85,7 +76,7 @@ const LoginPage = () => {
     try {
       const { isSignedIn } = await autoSignIn()
       if (isSignedIn) {
-        await redirectAfterLogin()
+        await redirect()
       } else {
         throw new Error('Unknown error')
       }

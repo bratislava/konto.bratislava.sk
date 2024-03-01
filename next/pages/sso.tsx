@@ -3,7 +3,10 @@ import { useTranslation } from 'next-i18next'
 import { useEffectOnce } from 'usehooks-ts'
 
 import { amplifyGetServerSideProps } from '../frontend/utils/amplifyServer'
-import { postMessageToApprovedDomains, PostMessageTypes } from '../frontend/utils/safeLoginRedirect'
+import {
+  postMessageToApprovedDomains,
+  PostMessageTypes,
+} from '../frontend/utils/queryParamRedirect'
 import { slovakServerSideTranslations } from '../frontend/utils/slovakServerSideTranslations'
 
 type SSOPageProps = {

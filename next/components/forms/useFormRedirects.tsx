@@ -5,7 +5,7 @@ import { useTranslation } from 'next-i18next'
 import { createContext, PropsWithChildren, useContext } from 'react'
 
 import { ROUTES } from '../../frontend/api/constants'
-import { useLoginRedirect } from '../../frontend/hooks/useLoginRedirect'
+import { useQueryParamRedirect } from '../../frontend/hooks/useQueryParamRedirect'
 import useSnackbar from '../../frontend/hooks/useSnackbar'
 import { useFormSignature } from './signer/useFormSignature'
 import { useFormContext } from './useFormContext'
@@ -14,7 +14,7 @@ import { useFormState } from './useFormState'
 
 const useGetContext = () => {
   const router = useRouter()
-  const { getRouteWithCurrentUrlAsLoginRedirect } = useLoginRedirect()
+  const { getRouteWithCurrentUrlRedirect } = useQueryParamRedirect()
   const { formId } = useFormContext()
   const { formData } = useFormState()
   const { t } = useTranslation('forms')
@@ -53,7 +53,7 @@ const useGetContext = () => {
     saveConceptMutate(undefined, {
       // eslint-disable-next-line @typescript-eslint/no-misused-promises
       onSuccess: async () => {
-        await router.push(getRouteWithCurrentUrlAsLoginRedirect(ROUTES.REGISTER))
+        await router.push(getRouteWithCurrentUrlRedirect(ROUTES.REGISTER))
       },
     })
   }
@@ -62,7 +62,7 @@ const useGetContext = () => {
     saveConceptMutate(undefined, {
       // eslint-disable-next-line @typescript-eslint/no-misused-promises
       onSuccess: async () => {
-        await router.push(getRouteWithCurrentUrlAsLoginRedirect(ROUTES.LOGIN))
+        await router.push(getRouteWithCurrentUrlRedirect(ROUTES.LOGIN))
       },
     })
   }
@@ -71,7 +71,7 @@ const useGetContext = () => {
     saveConceptMutate(undefined, {
       // eslint-disable-next-line @typescript-eslint/no-misused-promises
       onSuccess: async () => {
-        await router.push(getRouteWithCurrentUrlAsLoginRedirect(ROUTES.IDENTITY_VERIFICATION))
+        await router.push(getRouteWithCurrentUrlRedirect(ROUTES.IDENTITY_VERIFICATION))
       },
     })
   }

@@ -13,10 +13,10 @@ import { useState } from 'react'
 
 import { SsrAuthProviderHOC } from '../components/logic/SsrAuthContext'
 import { ROUTES } from '../frontend/api/constants'
-import { useLoginRedirect } from '../frontend/hooks/useLoginRedirect'
+import { useQueryParamRedirect } from '../frontend/hooks/useQueryParamRedirect'
 import { amplifyGetServerSideProps } from '../frontend/utils/amplifyServer'
 import logger from '../frontend/utils/logger'
-import { LoginRedirectType } from '../frontend/utils/safeLoginRedirect'
+import { SafeRedirectType } from '../frontend/utils/queryParamRedirect'
 import { slovakServerSideTranslations } from '../frontend/utils/slovakServerSideTranslations'
 
 enum RegistrationStatus {
@@ -33,13 +33,12 @@ export const getServerSideProps = amplifyGetServerSideProps(
       },
     }
   },
-  { requiresSignOut: true },
+  { requiresSignOut: true, redirectQueryParam: true },
 )
 
 const RegisterPage = () => {
-  const { safeLoginRedirect, getRouteWithLoginRedirectParam, redirectAfterLogin } =
-    useLoginRedirect()
-  const verificationRequired = safeLoginRedirect.type === LoginRedirectType.Local
+  const { safeRedirect, getRouteWithRedirect, redirect } = useQueryParamRedirect()
+  const verificationRequired = safeRedirect.type === SafeRedirectType.Local
 
   const { t } = useTranslation('account')
   const [registrationStatus, setRegistrationStatus] = useState<RegistrationStatus>(
@@ -169,12 +168,12 @@ const RegisterPage = () => {
             onConfirm={() =>
               verificationRequired
                 ? router
-                    .push(getRouteWithLoginRedirectParam(ROUTES.IDENTITY_VERIFICATION))
+                    .push(getRouteWithRedirect(ROUTES.IDENTITY_VERIFICATION))
                     .catch(() => logger.error(`${GENERIC_ERROR_MESSAGE} redirect failed`))
-                : redirectAfterLogin()
+                : redirect()
             }
             cancelLabel={verificationRequired ? t('identity_verification_skip') : undefined}
-            onCancel={verificationRequired ? () => redirectAfterLogin() : undefined}
+            onCancel={verificationRequired ? () => redirect() : undefined}
           />
         )}
       </AccountContainer>

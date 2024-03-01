@@ -10,7 +10,7 @@ import { useCounter, useTimeout } from 'usehooks-ts'
 
 import { environment } from '../../../../environment'
 import useHookForm from '../../../../frontend/hooks/useHookForm'
-import { useLoginRedirect } from '../../../../frontend/hooks/useLoginRedirect'
+import { useQueryParamRedirect } from '../../../../frontend/hooks/useQueryParamRedirect'
 import { isBrowser } from '../../../../frontend/utils/general'
 import logger from '../../../../frontend/utils/logger'
 
@@ -81,7 +81,7 @@ const foSchema = {
 }
 
 const IdentityVerificationForm = ({ onSubmit, isLegalEntity, error }: Props) => {
-  const { redirectAfterLogin } = useLoginRedirect()
+  const { redirect } = useQueryParamRedirect()
   const { t } = useTranslation('account')
   const { count: captchaKey, increment: incrementCaptchaKey } = useCounter(0)
   const schema = isLegalEntity ? poSchema : foSchema
@@ -207,7 +207,7 @@ const IdentityVerificationForm = ({ onSubmit, isLegalEntity, error }: Props) => 
       <Button
         variant="plain-black"
         className="min-w-full"
-        onPress={() => redirectAfterLogin()}
+        onPress={() => redirect()}
         text={t('identity_verification_skip')}
         endIcon={<ArrowRightIcon />}
       />

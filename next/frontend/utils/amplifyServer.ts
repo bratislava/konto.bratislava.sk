@@ -13,6 +13,13 @@ import { GetServerSidePropsContext, GetServerSidePropsResult, PreviewData } from
 import { ssrAuthContextPropKey, SsrAuthContextType } from '../../components/logic/SsrAuthContext'
 import { ROUTES } from '../api/constants'
 import { amplifyConfig } from './amplifyConfig'
+import {
+  getRedirectUrl,
+  getSafeRedirect,
+  redirectQueryParam,
+  removeRedirectQueryParam,
+  shouldRemoveRedirectQueryParam,
+} from './queryParamRedirect'
 
 export const { runWithAmplifyServerContext } = createServerRunner({
   config: amplifyConfig,
@@ -64,6 +71,7 @@ export const amplifyGetServerSideProps = <
     requiresSignIn?: boolean
     requiresSignOut?: boolean
     skipSsrAuthContext?: boolean
+    redirectQueryParam?: boolean
   },
 ) => {
   const wrappedFn: GetServerSideProps<Props, Params, Preview> = (context) =>
@@ -71,20 +79,43 @@ export const amplifyGetServerSideProps = <
       nextServerContext: { request: context.req, response: context.res },
       operation: async (contextSpec) => {
         const isSignedIn = await getIsSignedIn(contextSpec)
+        const getAccessTokenFn = isSignedIn
+          ? () => getAccessToken(contextSpec)
+          : () => Promise.resolve(null)
 
-        if (options?.requiresSignIn && !isSignedIn) {
+        if (
+          options?.redirectQueryParam &&
+          shouldRemoveRedirectQueryParam(context.query[redirectQueryParam])
+        ) {
           return {
             redirect: {
-              destination: `${ROUTES.LOGIN}?from=${context.resolvedUrl}`,
+              destination: removeRedirectQueryParam(context.resolvedUrl),
               permanent: false,
             },
           }
         }
 
-        if (options?.requiresSignOut && isSignedIn) {
+        const shouldRedirectNotSignedIn = options?.requiresSignIn && !isSignedIn
+        const shouldRedirectNotSignedOut = options?.requiresSignOut && isSignedIn
+
+        if (shouldRedirectNotSignedIn || shouldRedirectNotSignedOut) {
+          if (options?.redirectQueryParam) {
+            const safeRedirect = getSafeRedirect(context.query[redirectQueryParam])
+            const destination = await getRedirectUrl(safeRedirect, getAccessTokenFn)
+
+            return {
+              redirect: {
+                destination,
+                permanent: false,
+              },
+            }
+          }
+
           return {
             redirect: {
-              destination: ROUTES.HOME,
+              destination: shouldRedirectNotSignedIn
+                ? `${ROUTES.LOGIN}?from=${context.resolvedUrl}`
+                : ROUTES.HOME,
               permanent: false,
             },
           }
@@ -96,9 +127,7 @@ export const amplifyGetServerSideProps = <
           getServerSidePropsFn({
             context,
             amplifyContextSpec: contextSpec,
-            getAccessToken: isSignedIn
-              ? () => getAccessToken(contextSpec)
-              : () => Promise.resolve(null),
+            getAccessToken: getAccessTokenFn,
             isSignedIn,
           }),
         ])

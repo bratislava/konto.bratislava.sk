@@ -7,21 +7,24 @@ import { useTranslation } from 'next-i18next'
 import { useState } from 'react'
 
 import { SsrAuthProviderHOC } from '../components/logic/SsrAuthContext'
-import { useLoginRedirect } from '../frontend/hooks/useLoginRedirect'
+import { useQueryParamRedirect } from '../frontend/hooks/useQueryParamRedirect'
 import { useSignOut } from '../frontend/utils/amplifyClient'
 import { amplifyGetServerSideProps } from '../frontend/utils/amplifyServer'
 import { slovakServerSideTranslations } from '../frontend/utils/slovakServerSideTranslations'
 
-export const getServerSideProps = amplifyGetServerSideProps(async ({ isSignedIn }) => {
-  return {
-    props: {
-      ...(await slovakServerSideTranslations()),
-    },
-  }
-})
+export const getServerSideProps = amplifyGetServerSideProps(
+  async () => {
+    return {
+      props: {
+        ...(await slovakServerSideTranslations()),
+      },
+    }
+  },
+  { requiresSignIn: true, redirectQueryParam: true },
+)
 
 const LogoutPage = () => {
-  const { redirectAfterLogin } = useLoginRedirect()
+  const { redirect } = useQueryParamRedirect()
   const { t } = useTranslation('account')
   const { signOut } = useSignOut()
   const [isLoading, setIsLoading] = useState(false)
@@ -47,7 +50,7 @@ const LogoutPage = () => {
           onConfirm={logoutHandler}
           confirmIsLoading={isLoading}
           cancelLabel={t('logout_page.cancel_label')}
-          onCancel={() => redirectAfterLogin()}
+          onCancel={() => redirect()}
         />
       </AccountContainer>
     </LoginRegisterLayout>

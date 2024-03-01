@@ -6,7 +6,6 @@ import EmailVerificationForm from 'components/forms/segments/EmailVerificationFo
 import RegisterForm from 'components/forms/segments/RegisterForm/RegisterForm'
 import LoginRegisterLayout from 'components/layouts/LoginRegisterLayout'
 import { UserAttributes } from 'frontend/dtos/accountDto'
-import useLoginRegisterRedirect from 'frontend/hooks/useLoginRegisterRedirect'
 import { GENERIC_ERROR_MESSAGE, isError } from 'frontend/utils/errors'
 import { useRouter } from 'next/router'
 import { useTranslation } from 'next-i18next'
@@ -14,8 +13,10 @@ import { useState } from 'react'
 
 import { SsrAuthProviderHOC } from '../components/logic/SsrAuthContext'
 import { ROUTES } from '../frontend/api/constants'
+import { useQueryParamRedirect } from '../frontend/hooks/useQueryParamRedirect'
 import { amplifyGetServerSideProps } from '../frontend/utils/amplifyServer'
 import logger from '../frontend/utils/logger'
+import { SafeRedirectType } from '../frontend/utils/queryParamRedirect'
 import { slovakServerSideTranslations } from '../frontend/utils/slovakServerSideTranslations'
 
 enum RegistrationStatus {
@@ -32,10 +33,15 @@ export const getServerSideProps = amplifyGetServerSideProps(
       },
     }
   },
-  { requiresSignOut: true },
+  { requiresSignOut: true, redirectQueryParam: true },
 )
 
 const RegisterPage = () => {
+  const { safeRedirect, getRouteWithRedirect, redirect } = useQueryParamRedirect()
+  /* When users registers by redirecting from 3rd party site (query param contains redirect to the site), we don't want
+  to force them to unnecessary identity verification. */
+  const verificationRequired = safeRedirect.type === SafeRedirectType.Local
+
   const { t } = useTranslation('account')
   const [registrationStatus, setRegistrationStatus] = useState<RegistrationStatus>(
     RegistrationStatus.INIT,
@@ -43,7 +49,6 @@ const RegisterPage = () => {
   const [registrationError, setRegistrationError] = useState<Error | null>(null)
   const [lastEmail, setLastEmail] = useState<string>('')
   const router = useRouter()
-  const { redirect, verificationRequired } = useLoginRegisterRedirect()
   // only divert user from verification if he's coming from another site
 
   const handleSignUp = async (
@@ -165,12 +170,12 @@ const RegisterPage = () => {
             onConfirm={() =>
               verificationRequired
                 ? router
-                    .push(ROUTES.IDENTITY_VERIFICATION)
+                    .push(getRouteWithRedirect(ROUTES.IDENTITY_VERIFICATION))
                     .catch(() => logger.error(`${GENERIC_ERROR_MESSAGE} redirect failed`))
-                : redirect({ from: ROUTES.REGISTER })
+                : redirect()
             }
             cancelLabel={verificationRequired ? t('identity_verification_skip') : undefined}
-            onCancel={verificationRequired ? () => redirect({ from: ROUTES.REGISTER }) : undefined}
+            onCancel={verificationRequired ? () => redirect() : undefined}
           />
         )}
       </AccountContainer>

@@ -18,6 +18,7 @@ import { RemoveScroll } from 'react-remove-scroll'
 
 import { ROUTES } from '../../../../frontend/api/constants'
 import useElementSize from '../../../../frontend/hooks/useElementSize'
+import { useQueryParamRedirect } from '../../../../frontend/hooks/useQueryParamRedirect'
 import { useSsrAuth } from '../../../../frontend/hooks/useSsrAuth'
 import Brand from '../../simple-components/Brand'
 import { MobileNavBar } from './MobileNavBar'
@@ -67,6 +68,7 @@ const Avatar = ({ userAttributes }: { userAttributes?: UserAttributes | null }) 
 }
 
 export const NavBar = ({ className, sectionsList, menuItems, hiddenHeaderNav }: IProps) => {
+  const { getRouteWithCurrentUrlRedirect } = useQueryParamRedirect()
   const { userAttributes, isSignedIn, isLegalEntity } = useSsrAuth()
 
   const [isMenuOpen, setIsMenuOpen] = useState<boolean>(false)
@@ -79,11 +81,13 @@ export const NavBar = ({ className, sectionsList, menuItems, hiddenHeaderNav }: 
   // we need to keep the work in progress of the open form if navigating away form it
   const optionalFormRedirectsContext = useConditionalFormRedirects()
   const login = () =>
-    optionalFormRedirectsContext ? optionalFormRedirectsContext.login() : router.push(ROUTES.LOGIN)
+    optionalFormRedirectsContext
+      ? optionalFormRedirectsContext.login()
+      : router.push(getRouteWithCurrentUrlRedirect(ROUTES.LOGIN))
   const register = () =>
     optionalFormRedirectsContext
       ? optionalFormRedirectsContext.register()
-      : router.push(ROUTES.REGISTER)
+      : router.push(getRouteWithCurrentUrlRedirect(ROUTES.REGISTER))
 
   const isActive = (sectionItem: MenuSectionItemBase) =>
     sectionItem.url === '/' ? router.pathname === '/' : router.pathname.startsWith(sectionItem.url)

@@ -31,8 +31,8 @@
     "form_leave_protection": "Naozaj chcete odísť? Údaje, ktoré ste vyplnili sa nemusia uložiť.",
     "concept_delete": "Koncept sa maže."
   },
-  "concept_save_and_redirect": "Ukladám koncept a presmerovávam.",
-  "unable_to_save_concept_and_redirect": "'Nepodarilo sa uložiť koncept a presmerovať.'",
+  "concept_save_and_redirect": "Presmerovávam.",
+  "unable_to_save_concept_and_redirect": "'Nepodarilo sa presmerovať.'",
   "selectAll": "Vybrať všetko",
   "deselectAll": "Odobrať všetko",
   "options_zero": "Možností",

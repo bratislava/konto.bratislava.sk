@@ -22,7 +22,7 @@ export function AmplifyProvider({ children }: PropsWithChildren) {
 
 const fetchAccessTokenString = async () => {
   const session = await fetchAuthSession()
-  return session.tokens?.accessToken?.toString()
+  return session.tokens?.accessToken?.toString() ?? null
 }
 
 export const getAccessToken = async () => {

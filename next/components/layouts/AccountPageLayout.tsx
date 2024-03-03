@@ -8,7 +8,6 @@ import {
   ServicesIcon,
 } from '@assets/ui-icons'
 import { useResizeObserver } from '@react-aria/utils'
-import { signOut } from 'aws-amplify/auth'
 import cx from 'classnames'
 import NavBar, { MenuSectionItemBase } from 'components/forms/segments/NavBar/NavBar'
 import { MenuItemBase } from 'components/forms/simple-components/MenuDropdown/MenuDropdown'
@@ -19,6 +18,7 @@ import { ReactNode, useRef, useState } from 'react'
 
 import { ROUTES } from '../../frontend/api/constants'
 import { useSsrAuth } from '../../frontend/hooks/useSsrAuth'
+import { useSignOut } from '../../frontend/utils/amplifyClient'
 import { isDefined } from '../../frontend/utils/general'
 
 type AccountPageLayoutBase = {
@@ -35,6 +35,7 @@ declare module 'react' {
 
 const AccountPageLayout = ({ className, children, hiddenHeaderNav }: AccountPageLayoutBase) => {
   const { isSignedIn } = useSsrAuth()
+  const { signOut } = useSignOut()
 
   const router = useRouter()
   const headerRef = useRef<HTMLDivElement>(null)
@@ -50,11 +51,6 @@ const AccountPageLayout = ({ className, children, hiddenHeaderNav }: AccountPage
   })
 
   const [t] = useTranslation('common')
-
-  const logoutHandler = async () => {
-    await signOut()
-    await router.push(ROUTES.LOGIN)
-  }
 
   // we need to keep the work in progress of the open form if navigating away form it
   const optionalFormRedirectsContext = useConditionalFormRedirects()
@@ -122,7 +118,7 @@ const AccountPageLayout = ({ className, children, hiddenHeaderNav }: AccountPage
           id: 2,
           title: t('account:menu_logout_link'),
           icon: <LogoutIcon className="h-5 w-5 text-negative-700" />,
-          onPress: logoutHandler,
+          onPress: () => signOut(),
           itemClassName: 'bg-negative-50',
         },
       ]

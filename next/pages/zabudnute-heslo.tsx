@@ -74,6 +74,7 @@ const ForgottenPasswordPage = () => {
         confirmationCode,
         newPassword,
       })
+      setForgotPasswordStatus(ForgotPasswordStatus.NEW_PASSWORD_SUCCESS)
     } catch (error) {
       if (isError(error)) {
         setForgotPasswordError(error)

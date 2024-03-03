@@ -1,8 +1,10 @@
 // eslint-disable-next-line import/no-extraneous-dependencies
-import { AuthError } from '@aws-amplify/auth'
+import { AuthError, signOut as amplifySignOut } from '@aws-amplify/auth'
 // eslint-disable-next-line import/no-extraneous-dependencies
 import { fetchAuthSession } from '@aws-amplify/core'
+import { useQueryClient } from '@tanstack/react-query'
 import { getCurrentUser } from 'aws-amplify/auth'
+import { useRouter } from 'next/router'
 import { PropsWithChildren, useRef } from 'react'
 
 import { ROUTES } from '../api/constants'
@@ -59,4 +61,18 @@ export const getCurrentAuthenticatedUser = async () => {
   } catch (error) {
     return null
   }
+}
+
+export const useSignOut = () => {
+  const router = useRouter()
+  const queryClient = useQueryClient()
+
+  const signOut = async () => {
+    await amplifySignOut()
+    /* Removes user data from the cache */
+    queryClient.removeQueries()
+    await router.push(ROUTES.LOGIN)
+  }
+
+  return { signOut }
 }

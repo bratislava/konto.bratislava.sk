@@ -10308,6 +10308,11 @@ minizlib@^2.1.1:
     minipass "^3.0.0"
     yallist "^4.0.0"
 
+mitt@^3.0.1:
+  version "3.0.1"
+  resolved "https://registry.yarnpkg.com/mitt/-/mitt-3.0.1.tgz#ea36cf0cc30403601ae074c8f77b7092cdab36d1"
+  integrity sha512-vKivATfr97l2/QBCYAkXYDbrIWPM2IIKEl7YPhjCvKlG3kE2gm+uBo6nEXK3M5/Ffh/FLpKExzOQ3JJoJGFKBw==
+
 mkdir@0.0.2:
   version "0.0.2"
   resolved "https://registry.yarnpkg.com/mkdir/-/mkdir-0.0.2.tgz#3b9da7a4e5b13004ebc636581b160e1e04776851"
@@ -10511,6 +10516,13 @@ nth-check@^2.0.1:
   integrity sha512-lqjrjmaOoAnWfMmBPL+XNnynZh2+swxiX3WUE0s4yEHI6m+AwrK2UZOimIRl3X/4QctVqS8AiZjFqyOGrMXb/w==
   dependencies:
     boolbase "^1.0.0"
+
+nuqs@^1.17.0:
+  version "1.17.0"
+  resolved "https://registry.yarnpkg.com/nuqs/-/nuqs-1.17.0.tgz#b011a4b9ce445344db1cb9cd0d509a6c14659f9a"
+  integrity sha512-Lp2qLETMb7AAYhDtRtx20oAZNkYYTPApZcaX7Q5nQz7bfy893TCIe92IYVIfl9ZUqQLTsl9855KGEsA57dylPQ==
+  dependencies:
+    mitt "^3.0.1"
 
 nwsapi@^2.2.2:
   version "2.2.2"

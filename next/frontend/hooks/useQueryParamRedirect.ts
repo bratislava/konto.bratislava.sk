@@ -7,7 +7,7 @@ import { getAccessToken } from '../utils/amplifyClient'
 import {
   getRedirectUrl,
   getSafeRedirect,
-  isDefaultRedirect,
+  isHomeRedirect,
   redirectQueryParam,
 } from '../utils/queryParamRedirect'
 
@@ -26,7 +26,7 @@ export const useQueryParamRedirect = () => {
    */
   const getRouteWithRedirect = useCallback(
     (route: string) => {
-      if (!isDefaultRedirect(safeRedirect)) {
+      if (!isHomeRedirect(safeRedirect)) {
         return `${route}?${redirectQueryParam}=${safeRedirect.url}`
       }
 

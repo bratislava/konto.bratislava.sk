@@ -29,20 +29,22 @@ export type SafeRedirect = {
   type: SafeRedirectType
 }
 
-const defaultSafeRedirect: SafeRedirect = {
+const homeSafeRedirect: SafeRedirect = {
   url: ROUTES.HOME,
   type: SafeRedirectType.Local,
 }
 
-export const isDefaultRedirect = (loginRedirectResult: SafeRedirect) =>
+export const isHomeRedirect = (loginRedirectResult: SafeRedirect) =>
   loginRedirectResult.url === ROUTES.HOME
 
 /**
  * Returns a safe variant (including type) of the redirect query param. For remote URLs, we only allow a subset of origins.
+ *
+ * In case of invalid or unsafe redirect, the user is redirected to the home page.
  */
 export const getSafeRedirect = (queryParam: unknown) => {
   if (typeof queryParam !== 'string') {
-    return defaultSafeRedirect
+    return homeSafeRedirect
   }
 
   if (queryParam.startsWith('/')) {
@@ -63,7 +65,7 @@ export const getSafeRedirect = (queryParam: unknown) => {
     // eslint-disable-next-line no-empty
   } catch (error) {}
 
-  return defaultSafeRedirect
+  return homeSafeRedirect
 }
 
 /**
@@ -75,7 +77,7 @@ export const shouldRemoveRedirectQueryParam = (originalQueryParam: unknown) => {
   }
 
   const safeRedirect = getSafeRedirect(originalQueryParam)
-  if (isDefaultRedirect(safeRedirect)) {
+  if (isHomeRedirect(safeRedirect)) {
     return true
   }
 

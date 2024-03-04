@@ -14,14 +14,6 @@ describe('A03 -', { testIsolation: false }, () => {
     .forEach((device) => {
       context(device, Cypress.env('resolution')[`${device}`], () => {
 
-        before(() => {
-          if (device === 'mobile') {
-            cy.logOutUser()
-          }
-          
-          cy.visit('/')
-        })
-
         it('1. Logging in.', () => {
           cy.logInUser(device, this.fileData.email, this.fileData.password)
         })
@@ -38,12 +30,13 @@ describe('A03 -', { testIsolation: false }, () => {
           cy.get('[data-cy=receive-information-consent]').find('[data-cy=receive-information-toggle]').find('.bg-success-700')
         })
 
-        it('2. Validate toggle state.', () => {
+        it('3. Validate toggle state.', () => {
           cy.reload()
           cy.get('[data-cy=receive-information-consent]').find('[data-cy=receive-information-toggle]').find('.bg-success-700')
           cy.get('[data-cy=receive-information-consent]').find('[data-cy=receive-information-toggle]').click()
           cy.checkSuccessSnackbar()
           cy.get('[data-cy=receive-information-consent]').find('[data-cy=receive-information-toggle]').find('.bg-gray-400')
+          cy.logOutUser()
         })
       })
     })

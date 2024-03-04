@@ -42,6 +42,7 @@ describe('A05 -', { testIsolation: false }, () => {
         it('3. Validating redirect.', () => {
           cy.location('pathname', {timeout: 4000})
           .should('eq', '/overenie-identity');
+          cy.logOutUser()
         })
       })
     })

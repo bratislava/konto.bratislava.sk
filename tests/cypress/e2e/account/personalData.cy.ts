@@ -82,6 +82,7 @@ describe('A04 -', { testIsolation: false }, () => {
         it('3. Validating saved information', () => {
           cy.checkSuccessSnackbar()
           cy.get('[data-cy=meno-a-priezvisko-profile-row]').should('contain', nameHash + " " + surnameHash)
+          cy.logOutUser()
         })
       })
     })

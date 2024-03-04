@@ -1,38 +1,33 @@
 import AccountContainer from 'components/forms/segments/AccountContainer/AccountContainer'
 import AccountSuccessAlert from 'components/forms/segments/AccountSuccessAlert/AccountSuccessAlert'
 import LoginRegisterLayout from 'components/layouts/LoginRegisterLayout'
-import useLoginRegisterRedirect from 'frontend/hooks/useLoginRegisterRedirect'
 import { GENERIC_ERROR_MESSAGE } from 'frontend/utils/errors'
 import logger from 'frontend/utils/logger'
 import { useTranslation } from 'next-i18next'
-import { useEffect, useState } from 'react'
+import { useState } from 'react'
 
 import { SsrAuthProviderHOC } from '../components/logic/SsrAuthContext'
-import { useSsrAuth } from '../frontend/hooks/useSsrAuth'
+import { useQueryParamRedirect } from '../frontend/hooks/useQueryParamRedirect'
 import { useSignOut } from '../frontend/utils/amplifyClient'
 import { amplifyGetServerSideProps } from '../frontend/utils/amplifyServer'
 import { slovakServerSideTranslations } from '../frontend/utils/slovakServerSideTranslations'
 
-export const getServerSideProps = amplifyGetServerSideProps(async () => {
-  return {
-    props: {
-      ...(await slovakServerSideTranslations()),
-    },
-  }
-})
+export const getServerSideProps = amplifyGetServerSideProps(
+  async () => {
+    return {
+      props: {
+        ...(await slovakServerSideTranslations()),
+      },
+    }
+  },
+  { requiresSignIn: true, redirectQueryParam: true },
+)
 
 const LogoutPage = () => {
   const { t } = useTranslation('account')
-  const { isSignedIn } = useSsrAuth()
   const { signOut } = useSignOut()
-  const { redirect } = useLoginRegisterRedirect()
+  const { redirect } = useQueryParamRedirect()
   const [isLoading, setIsLoading] = useState(false)
-  useEffect(() => {
-    // TODO handle server side
-    if (!isSignedIn) {
-      redirect().catch((error) => logger.error('Failed redirect logout useEffect', error))
-    }
-  }, [isSignedIn, redirect])
 
   const logoutHandler = async () => {
     setIsLoading(true)

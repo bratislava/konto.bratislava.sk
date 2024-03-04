@@ -13,6 +13,13 @@ import { GetServerSidePropsContext, GetServerSidePropsResult, PreviewData } from
 import { ssrAuthContextPropKey, SsrAuthContextType } from '../../components/logic/SsrAuthContext'
 import { ROUTES } from '../api/constants'
 import { amplifyConfig } from './amplifyConfig'
+import {
+  getRedirectUrl,
+  getSafeRedirect,
+  redirectQueryParam,
+  removeRedirectQueryParamFromUrl,
+  shouldRemoveRedirectQueryParam,
+} from './queryParamRedirect'
 
 export const { runWithAmplifyServerContext } = createServerRunner({
   config: amplifyConfig,
@@ -38,10 +45,15 @@ const getAccessToken = async (amplifyContextSpec: AmplifyServer.ContextSpec) => 
 /**
  * In Amplify V6, `getServerSideProps` must run in Amplify server context to execute Amplify operations. This is a
  * wrapper for getServerSideProps that runs in Amplify server context and handles common SSR auth logic:
- *
  * - injects SSR auth context (is user signed in, user attributes) into `ssrAuthContextPropKey` prop
  * - redirects to login page if requiresSignIn is set to true and user is not signed in
  * - redirects to home page if requiresSignOut is set to true and user is signed in
+ *
+ * For auth pages that should redirect to specific URL after action (e.g. login/logout), `redirectQueryParam` needs to
+ * be set to `true` to:
+ * - remove the redirect query param from the URL if it is not a safe/viable redirect
+ * - redirect to desired URL if requiresSignIn is set to true and user is not signed in
+ * - redirect to desired URL if requiresSignOut is set to true and user is signed in
  *
  * Also, for some reason `fetchUserAttributes` takes very long (~450ms) to fetch (note - it takes only ~100ms in the
  * browser), in the past, this blocked the rendering of the page, so in this solution it is fetched in parallel with
@@ -64,6 +76,7 @@ export const amplifyGetServerSideProps = <
     requiresSignIn?: boolean
     requiresSignOut?: boolean
     skipSsrAuthContext?: boolean
+    redirectQueryParam?: boolean
   },
 ) => {
   const wrappedFn: GetServerSideProps<Props, Params, Preview> = (context) =>
@@ -71,20 +84,43 @@ export const amplifyGetServerSideProps = <
       nextServerContext: { request: context.req, response: context.res },
       operation: async (contextSpec) => {
         const isSignedIn = await getIsSignedIn(contextSpec)
+        const getAccessTokenFn = isSignedIn
+          ? () => getAccessToken(contextSpec)
+          : () => Promise.resolve(null)
 
-        if (options?.requiresSignIn && !isSignedIn) {
+        if (
+          options?.redirectQueryParam &&
+          shouldRemoveRedirectQueryParam(context.query[redirectQueryParam])
+        ) {
           return {
             redirect: {
-              destination: `${ROUTES.LOGIN}?from=${context.resolvedUrl}`,
+              destination: removeRedirectQueryParamFromUrl(context.resolvedUrl),
               permanent: false,
             },
           }
         }
 
-        if (options?.requiresSignOut && isSignedIn) {
+        const shouldRedirectNotSignedIn = options?.requiresSignIn && !isSignedIn
+        const shouldRedirectNotSignedOut = options?.requiresSignOut && isSignedIn
+
+        if (shouldRedirectNotSignedIn || shouldRedirectNotSignedOut) {
+          if (options?.redirectQueryParam) {
+            const safeRedirect = getSafeRedirect(context.query[redirectQueryParam])
+            const destination = await getRedirectUrl(safeRedirect, getAccessTokenFn)
+
+            return {
+              redirect: {
+                destination,
+                permanent: false,
+              },
+            }
+          }
+
           return {
             redirect: {
-              destination: ROUTES.HOME,
+              destination: shouldRedirectNotSignedIn
+                ? `${ROUTES.LOGIN}?from=${context.resolvedUrl}`
+                : ROUTES.HOME,
               permanent: false,
             },
           }
@@ -96,9 +132,7 @@ export const amplifyGetServerSideProps = <
           getServerSidePropsFn({
             context,
             amplifyContextSpec: contextSpec,
-            getAccessToken: isSignedIn
-              ? () => getAccessToken(contextSpec)
-              : () => Promise.resolve(null),
+            getAccessToken: getAccessTokenFn,
             isSignedIn,
           }),
         ])

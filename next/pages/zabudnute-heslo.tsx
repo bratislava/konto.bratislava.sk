@@ -11,6 +11,7 @@ import { useState } from 'react'
 
 import { SsrAuthProviderHOC } from '../components/logic/SsrAuthContext'
 import { ROUTES } from '../frontend/api/constants'
+import { useQueryParamRedirect } from '../frontend/hooks/useQueryParamRedirect'
 import { amplifyGetServerSideProps } from '../frontend/utils/amplifyServer'
 import logger from '../frontend/utils/logger'
 import { slovakServerSideTranslations } from '../frontend/utils/slovakServerSideTranslations'
@@ -29,7 +30,7 @@ export const getServerSideProps = amplifyGetServerSideProps(
       },
     }
   },
-  { requiresSignOut: true },
+  { requiresSignOut: true, redirectQueryParam: true },
 )
 
 const ForgottenPasswordPage = () => {
@@ -40,9 +41,12 @@ const ForgottenPasswordPage = () => {
   )
   const { t } = useTranslation('account')
   const router = useRouter()
+  const { getRouteWithRedirect } = useQueryParamRedirect()
 
   const onConfirm = async () => {
-    await router.push(ROUTES.HOME).catch((error) => logger.error('Failed redirect', error))
+    await router
+      .push(getRouteWithRedirect(ROUTES.LOGIN))
+      .catch((error) => logger.error('Failed redirect', error))
   }
 
   const forgotPassword = async (email: string) => {

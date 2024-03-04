@@ -3,47 +3,28 @@ import AccountContainer from 'components/forms/segments/AccountContainer/Account
 import EmailVerificationForm from 'components/forms/segments/EmailVerificationForm/EmailVerificationForm'
 import LoginForm from 'components/forms/segments/LoginForm/LoginForm'
 import LoginRegisterLayout from 'components/layouts/LoginRegisterLayout'
-import useLoginRegisterRedirect from 'frontend/hooks/useLoginRegisterRedirect'
 import { GENERIC_ERROR_MESSAGE, isError } from 'frontend/utils/errors'
 import logger from 'frontend/utils/logger'
 import { useState } from 'react'
 
 import { SsrAuthProviderHOC } from '../components/logic/SsrAuthContext'
+import { useQueryParamRedirect } from '../frontend/hooks/useQueryParamRedirect'
 import { amplifyGetServerSideProps } from '../frontend/utils/amplifyServer'
 import { slovakServerSideTranslations } from '../frontend/utils/slovakServerSideTranslations'
-import { getValidRedirectFromQuery } from '../frontend/utils/sso'
 
-// eslint-disable-next-line @typescript-eslint/ban-types
-export const getServerSideProps = amplifyGetServerSideProps(async ({ context, isSignedIn }) => {
-  if (isSignedIn) {
-    const from = context.query.from as string | undefined
-    if (from) {
-      const safeFrom = getValidRedirectFromQuery(from)
-      return {
-        redirect: {
-          destination: safeFrom ?? '/',
-          permanent: false,
-        },
-      }
-    }
-
+export const getServerSideProps = amplifyGetServerSideProps(
+  async () => {
     return {
-      redirect: {
-        destination: '/',
-        permanent: false,
+      props: {
+        ...(await slovakServerSideTranslations()),
       },
     }
-  }
-
-  return {
-    props: {
-      ...(await slovakServerSideTranslations()),
-    },
-  }
-})
+  },
+  { requiresSignOut: true, redirectQueryParam: true },
+)
 
 const LoginPage = () => {
-  const { redirect } = useLoginRegisterRedirect()
+  const { redirect } = useQueryParamRedirect()
   const [loginError, setLoginError] = useState<Error | null>(null)
   // if email is not yet verify login will fail - we stay on this page & render verification form for the last used email
   const [emailToVerify, setEmailToVerify] = useState('')

@@ -4,8 +4,8 @@
 import { CrossIcon } from '@assets/ui-icons'
 import cx from 'classnames'
 import { useTranslation } from 'next-i18next'
-import React, { createContext, forwardRef, useContext, useState } from 'react'
-import { useEffectOnce } from 'usehooks-ts'
+import React, { createContext, forwardRef, ReactNode, useContext, useState } from 'react'
+import { useEffectOnce, useLocalStorage } from 'usehooks-ts'
 
 import WarningIcon from '../icon-components/WarningIcon'
 import AccountMarkdown from '../segments/AccountMarkdown/AccountMarkdown'
@@ -67,10 +67,14 @@ export const useStatusBarContext = () => useContext(StatusBarContext)
 
 export const StatusBar = forwardRef<HTMLDivElement>((props, forwardedRef) => {
   const { t } = useTranslation('common')
-  const [showStatusBar, setShowStatusBar] = useState(true)
+  const [statusBarTextDissmissed, setStatusBarTextDissmissed] = useLocalStorage<null | ReactNode>(
+    'StatusBarText',
+    null,
+  )
 
   const { statusBarConfiguration } = useStatusBarContext()
-  return showStatusBar && statusBarConfiguration.content ? (
+  return statusBarTextDissmissed !== statusBarConfiguration.content &&
+    statusBarConfiguration.content ? (
     <div
       ref={forwardedRef}
       className={cx('w-full text-white', {
@@ -95,7 +99,7 @@ export const StatusBar = forwardRef<HTMLDivElement>((props, forwardedRef) => {
             className="h-fit shrink-0"
             icon={<CrossIcon />}
             aria-label={t('ariaCloseStatusBar') ?? ''}
-            onPress={() => setShowStatusBar(false)}
+            onPress={() => setStatusBarTextDissmissed(statusBarConfiguration.content || null)}
           />
         </div>
       </SectionContainer>

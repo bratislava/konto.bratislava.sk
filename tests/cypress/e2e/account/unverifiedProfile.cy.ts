@@ -13,15 +13,6 @@ describe('A05 -', { testIsolation: false }, () => {
     .filter((device) => Cypress.env('devices')[`${device}`])
     .forEach((device) => {
       context(device, Cypress.env('resolution')[`${device}`], () => {
-        
-        before(() => {
-          if (device === 'mobile') {
-            cy.logOutUser()
-          }
-          
-          cy.visit('/')
-        })
-
         it('1. Logging in.', () => {
           cy.logInUser(device, this.fileData.email, this.fileData.password)
         })

@@ -7,14 +7,13 @@ import IdentityVerificationForm, {
 import LoginRegisterLayout from 'components/layouts/LoginRegisterLayout'
 import { verifyIdentityApi, verifyLegalEntityIdentityApi } from 'frontend/api/api'
 import { Tier } from 'frontend/dtos/accountDto'
-import useLoginRegisterRedirect from 'frontend/hooks/useLoginRegisterRedirect'
 import { useRefreshServerSideProps } from 'frontend/hooks/useRefreshServerSideProps'
 import { GENERIC_ERROR_MESSAGE, isError } from 'frontend/utils/errors'
 import { useTranslation } from 'next-i18next'
 import { useState } from 'react'
 
 import { SsrAuthProviderHOC } from '../components/logic/SsrAuthContext'
-import { ROUTES } from '../frontend/api/constants'
+import { useQueryParamRedirect } from '../frontend/hooks/useQueryParamRedirect'
 import { useSsrAuth } from '../frontend/hooks/useSsrAuth'
 import { amplifyGetServerSideProps } from '../frontend/utils/amplifyServer'
 import logger from '../frontend/utils/logger'
@@ -28,10 +27,11 @@ export const getServerSideProps = amplifyGetServerSideProps(
       },
     }
   },
-  { requiresSignIn: true },
+  { requiresSignIn: true, redirectQueryParam: true },
 )
 
 const IdentityVerificationPage = () => {
+  const { redirect } = useQueryParamRedirect()
   const { t } = useTranslation('account')
   const [lastIco, setLastIco] = useState<string | undefined>()
   const [lastRc, setLastRc] = useState('')
@@ -40,8 +40,6 @@ const IdentityVerificationPage = () => {
   const [identityVerificationError, setIdentityVerificationError] = useState<Error | null>(null)
   // TODO fix is legal entity
   const { tierStatus, isLegalEntity } = useSsrAuth()
-
-  const { redirect } = useLoginRegisterRedirect()
 
   const { refreshData } = useRefreshServerSideProps(tierStatus)
 
@@ -123,7 +121,7 @@ const IdentityVerificationPage = () => {
                   : t('identity_verification_pending_description_without_data')
             }
             confirmLabel={t('account_continue_link')}
-            onConfirm={() => redirect({ from: ROUTES.REGISTER })}
+            onConfirm={() => redirect()}
           />
         )}
         {tierStatus.isIdentityVerified && (
@@ -138,7 +136,7 @@ const IdentityVerificationPage = () => {
               })
             }
             confirmLabel={t('account_continue_link')}
-            onConfirm={() => redirect({ from: ROUTES.REGISTER })}
+            onConfirm={() => redirect()}
           />
         )}
       </AccountContainer>

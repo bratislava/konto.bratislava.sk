@@ -18,7 +18,7 @@ const schema = {
       errorMessage: { format: 'forms:phone_format' },
     },
   },
-  required: [],
+  required: ['phone_number'],
 }
 
 interface Props {
@@ -55,7 +55,6 @@ const PhoneNumberForm = ({ error, onHideError, onSubmit, defaultValues }: Props)
         render={({ field }) => (
           <InputField
             label={t('profile_detail.phone_number')}
-            helptext={t('profile_detail.phone_number_pattern')}
             placeholder=""
             {...field}
             errorMessage={errors.phone_number}

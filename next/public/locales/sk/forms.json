@@ -53,7 +53,7 @@
   "postal_code_description": "Zadávajte bez medzier, napr. 11111",
   "postal_code_required": "PSČ je povinné",
   "postal_code_format": "PSČ nie je validné",
-  "phone_format": "Zadajte v správnom tvare (+421XXXXXXXXX)",
+  "phone_format": "Zadajte telefónne číslo v medzinárodnom formáte +421…",
   "buttons": {
     "previous": "Späť",
     "skip": "Preskočiť",

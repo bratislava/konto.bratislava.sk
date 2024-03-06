@@ -31,4 +31,5 @@ export type UserAttributes = AuthUserAttributes & {
   'custom:account_type'?: AccountType
   'custom:turnstile_token'?: string
   'custom:2024_tax_form_beta'?: string
+  'custom:hide_phone_modal'?: string
 }

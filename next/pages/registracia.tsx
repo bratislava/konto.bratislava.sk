@@ -64,8 +64,23 @@ const RegisterPage = () => {
   const [registrationError, setRegistrationError] = useState<Error | null>(null)
   const [lastEmail, setLastEmail] = useState<string>(getInitialState(router.query).lastEmail)
 
-  // only divert user from verification if he's coming from another site
-
+  const handleAutoSignIn = async () => {
+    try {
+      const { isSignedIn } = await autoSignIn()
+      if (isSignedIn) {
+        setRegistrationStatus(RegistrationStatus.EMAIL_VERIFICATION_SUCCESS)
+      } else {
+        throw new Error('Unknown error')
+      }
+    } catch (error) {
+      if (isError(error)) {
+        setRegistrationError(error)
+      } else {
+        logger.error(`${GENERIC_ERROR_MESSAGE} - unexpected object thrown in verifyEmail:`, error)
+        setRegistrationError(new Error(GENERIC_ERROR_MESSAGE))
+      }
+    }
+  }
   const handleSignUp = async (
     email: string,
     password: string,
@@ -86,7 +101,9 @@ const RegisterPage = () => {
           },
         },
       })
-      if (nextStep.signUpStep === 'CONFIRM_SIGN_UP') {
+      if (nextStep.signUpStep === 'COMPLETE_AUTO_SIGN_IN') {
+        await handleAutoSignIn()
+      } else if (nextStep.signUpStep === 'CONFIRM_SIGN_UP') {
         setRegistrationStatus(RegistrationStatus.EMAIL_VERIFICATION_REQUIRED)
       } else {
         throw new Error('Unknown error')
@@ -113,24 +130,6 @@ const RegisterPage = () => {
           `${GENERIC_ERROR_MESSAGE} - unexpected object thrown in resendVerificationCode:`,
           error,
         )
-        setRegistrationError(new Error(GENERIC_ERROR_MESSAGE))
-      }
-    }
-  }
-
-  const handleAutoSignIn = async () => {
-    try {
-      const { isSignedIn } = await autoSignIn()
-      if (isSignedIn) {
-        setRegistrationStatus(RegistrationStatus.EMAIL_VERIFICATION_SUCCESS)
-      } else {
-        throw new Error('Unknown error')
-      }
-    } catch (error) {
-      if (isError(error)) {
-        setRegistrationError(error)
-      } else {
-        logger.error(`${GENERIC_ERROR_MESSAGE} - unexpected object thrown in verifyEmail:`, error)
         setRegistrationError(new Error(GENERIC_ERROR_MESSAGE))
       }
     }

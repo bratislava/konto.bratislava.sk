@@ -11,7 +11,7 @@ import { UserAttributes } from 'frontend/dtos/accountDto'
 import { GENERIC_ERROR_MESSAGE, isError } from 'frontend/utils/errors'
 import { useRouter } from 'next/router'
 import { useTranslation } from 'next-i18next'
-import { useState } from 'react'
+import { useMemo, useState } from 'react'
 
 import { SsrAuthProviderHOC } from '../components/logic/SsrAuthContext'
 import { ROUTES } from '../frontend/api/constants'
@@ -53,9 +53,6 @@ const getInitialState = (query: ParsedUrlQuery) => {
 const RegisterPage = () => {
   const router = useRouter()
   const { safeRedirect, getRouteWithRedirect, redirect } = useQueryParamRedirect()
-  /* When users registers by redirecting from 3rd party site (query param contains redirect to the site), we don't want
-  to force them to unnecessary identity verification. */
-  const verificationRequired = safeRedirect.type === SafeRedirectType.Local
 
   const { t } = useTranslation('account')
   const [registrationStatus, setRegistrationStatus] = useState<RegistrationStatus>(
@@ -157,6 +154,32 @@ const RegisterPage = () => {
     }
   }
 
+  const accountSuccessAlertProps = useMemo(() => {
+    // eslint-disable-next-line security/detect-non-literal-regexp
+    const municipalServiceRegex = new RegExp(`^${ROUTES.MUNICIPAL_SERVICES}/.+$`)
+
+    // We are only allowed legally to redirect to identity verification from forms
+    const redirectToIdentityVerification =
+      safeRedirect.type === SafeRedirectType.Local && municipalServiceRegex.test(safeRedirect.url)
+
+    if (redirectToIdentityVerification) {
+      return {
+        confirmLabel: t('identity_verification_link'),
+        onConfirm: () =>
+          router
+            .push(getRouteWithRedirect(ROUTES.IDENTITY_VERIFICATION))
+            .catch(() => logger.error(`${GENERIC_ERROR_MESSAGE} redirect failed`)),
+        cancelLabel: t('identity_verification_skip'),
+        onCancel: () => redirect(),
+      }
+    }
+
+    return {
+      confirmLabel: t('identity_verification_not_required'),
+      onConfirm: () => redirect(),
+    }
+  }, [getRouteWithRedirect, redirect, router, safeRedirect, t])
+
   return (
     <LoginRegisterLayout backButtonHidden>
       {registrationStatus === RegistrationStatus.INIT && <AccountActivator />}
@@ -171,25 +194,10 @@ const RegisterPage = () => {
             error={registrationError}
           />
         ) : (
-          // When verification is not required, the modal has only single button (without cancelLabel/onCancel the second button is not rendered)
-          // This single button does the same action (redirects back) as the cancel button does in 2 button version
           <AccountSuccessAlert
             title={t('register_success_title')}
             description={t('register_success_description', { email: lastEmail })}
-            confirmLabel={
-              verificationRequired
-                ? t('identity_verification_link')
-                : t('identity_verification_not_required')
-            }
-            onConfirm={() =>
-              verificationRequired
-                ? router
-                    .push(getRouteWithRedirect(ROUTES.IDENTITY_VERIFICATION))
-                    .catch(() => logger.error(`${GENERIC_ERROR_MESSAGE} redirect failed`))
-                : redirect()
-            }
-            cancelLabel={verificationRequired ? t('identity_verification_skip') : undefined}
-            onCancel={verificationRequired ? () => redirect() : undefined}
+            {...accountSuccessAlertProps}
           />
         )}
       </AccountContainer>

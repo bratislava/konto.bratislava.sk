@@ -27,7 +27,7 @@ export const useQueryParamRedirect = () => {
   const getRouteWithRedirect = useCallback(
     (route: string) => {
       if (!isHomeRedirect(safeRedirect)) {
-        return `${route}?${redirectQueryParam}=${safeRedirect.url}`
+        return `${route}?${redirectQueryParam}=${encodeURIComponent(safeRedirect.url)}`
       }
 
       return route
@@ -56,7 +56,7 @@ export const useQueryParamRedirect = () => {
         return route
       }
 
-      return `${route}?from=${router.asPath}`
+      return `${route}?${redirectQueryParam}=${encodeURIComponent(router.asPath)}`
     },
     [router.asPath],
   )

@@ -1,6 +1,7 @@
 {
   "errors": {
     "unknown": "Nastala neočakávaná chyba. Skontrolujte svoje pripojenie alebo nás kontaktujte na <a href='mailto:info@bratislava.sk'>info@bratislava.sk</a>. Ďakujeme.",
+    "UserLambdaValidationException": "Zdá sa, že ste robot. Ak to tak náhodou nie je, prosíme, načítajte stránku znova, väčšinou to vyrieši problém.",
     "Bad Request": "Overenie bolo neúspešné. Skontrolujte správnosť údajov.",
     "NotAuthorizedException": "Nesprávne prihlasovacie údaje",
     "CodeMismatchException": "Zadaný kód je nesprávny alebo jeho platnosť vypršala. Skontrolujte správnosť overovacieho kódu alebo požiadajte o nový kód kliknutím na Odoslať nový kód. Platnosť overovacieho kódu je 60 minút.",
@@ -454,7 +455,6 @@
         "file_number": "Číslo spisu",
         "handle_person": "Vybavuje",
         "contact": "Kontakt",
-        "phone_unavailable": "Telefónne číslo nie je k dispozícii",
         "email_unavailable": "E-mailová adresa nie je k dispozícii"
       },
       "application_history": {
@@ -931,7 +931,7 @@
     }
   },
   "FieldHeader": {
-    "optional": "Nepovinné"
+    "optional": "(Nepovinné)"
   },
   "RadioGroup": {
     "resetChoice": "Vymazať výber"

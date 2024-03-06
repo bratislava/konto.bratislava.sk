@@ -1,74 +1,20 @@
 import BannerImage from '@assets/images/bratislava-dog.png'
-import { updateUserAttributes } from 'aws-amplify/auth'
 import AccountSectionHeader from 'components/forms/segments/AccountSectionHeader/AccountSectionHeader'
 import Banner from 'components/forms/simple-components/Banner'
 import Button from 'components/forms/simple-components/Button'
 import ServiceCard from 'components/forms/simple-components/ServiceCard'
 import { serviceCards } from 'frontend/constants/constants'
-import { GENERIC_ERROR_MESSAGE, isError } from 'frontend/utils/errors'
 import { isDefined } from 'frontend/utils/general'
-import logger from 'frontend/utils/logger'
-import { useRouter } from 'next/router'
 import { useTranslation } from 'next-i18next'
-import { useEffect, useState } from 'react'
 
 import { ROUTES } from '../../../../../frontend/api/constants'
 import { useSsrAuth } from '../../../../../frontend/hooks/useSsrAuth'
-import { PhoneNumberData } from '../../PhoneNumberForm/PhoneNumberForm'
 import PhoneNumberModal from '../../PhoneNumberModal/PhoneNumberModal'
 import Announcements from './Announcements/Announcements'
 
 const IntroSection = () => {
   const { t } = useTranslation('account')
   const { userAttributes, isLegalEntity } = useSsrAuth()
-  const router = useRouter()
-  const [phoneNumberModal, setPhoneNumberModal] = useState<'hidden' | 'displayed' | 'dismissed'>(
-    'hidden',
-  )
-
-  // because the effect depends on userAttributes, which may get refreshed every few seconds
-  // we need to track if the modal was dismissed and stop showing it afterwards if that's the case
-  useEffect(() => {
-    if (
-      phoneNumberModal === 'hidden' &&
-      userAttributes &&
-      !userAttributes.phone_number &&
-      ROUTES.REGISTER === router.query.from
-    ) {
-      setPhoneNumberModal('displayed')
-    }
-  }, [phoneNumberModal, router.query.from, userAttributes])
-
-  // TODO should be part of phonenumber modal, refactor
-  const [phoneNumberError, setPhoneNumberError] = useState<Error | null>(null)
-  const resetError = () => {
-    setPhoneNumberError(null)
-  }
-
-  const onSubmitPhoneNumber = async (submitData: { data?: PhoneNumberData }) => {
-    try {
-      const {
-        phone_number: { isUpdated },
-      } = await updateUserAttributes({
-        userAttributes: { phone_number: submitData.data?.phone_number },
-      })
-      if (isUpdated) {
-        setPhoneNumberModal('dismissed')
-      } else {
-        throw new Error('Unknown error')
-      }
-    } catch (error) {
-      if (isError(error)) {
-        setPhoneNumberError(error)
-      } else {
-        logger.error(
-          `${GENERIC_ERROR_MESSAGE} - unexpected object thrown in onSubmitPhoneNumber:`,
-          error,
-        )
-        setPhoneNumberError(new Error('Unknown error'))
-      }
-    }
-  }
 
   const name = isLegalEntity ? userAttributes?.name : userAttributes?.given_name
 
@@ -87,16 +33,7 @@ const IntroSection = () => {
 
   return (
     <>
-      {userAttributes && (
-        <PhoneNumberModal
-          show={phoneNumberModal === 'displayed'}
-          onClose={() => setPhoneNumberModal('dismissed')}
-          onSubmit={onSubmitPhoneNumber}
-          error={phoneNumberError}
-          onHideError={resetError}
-          defaultValues={{ phone_number: userAttributes?.phone_number }}
-        />
-      )}
+      <PhoneNumberModal />
       <div className="flex flex-col">
         <h1 className="sr-only">{t('bratislava_account')}</h1>
         <AccountSectionHeader

@@ -7,6 +7,7 @@ import { SsrAuthProviderHOC } from '../../../components/logic/SsrAuthContext'
 import { ROUTES } from '../../../frontend/api/constants'
 import { amplifyGetServerSideProps } from '../../../frontend/utils/amplifyServer'
 import { getInitialFormSignature } from '../../../frontend/utils/getInitialFormSignature'
+import { redirectQueryParam } from '../../../frontend/utils/queryParamRedirect'
 import { slovakServerSideTranslations } from '../../../frontend/utils/slovakServerSideTranslations'
 
 type Params = {
@@ -80,7 +81,9 @@ export const getServerSideProps = amplifyGetServerSideProps<FormPageWrapperProps
         if (is401 || (is403 && !isSignedIn)) {
           return {
             redirect: {
-              destination: `${ROUTES.LOGIN}?from=${context.resolvedUrl}`,
+              destination: `${ROUTES.LOGIN}?${redirectQueryParam}=${encodeURIComponent(
+                context.resolvedUrl,
+              )}`,
               permanent: false,
             },
           }

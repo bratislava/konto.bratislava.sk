@@ -6,6 +6,7 @@ import { useTranslation } from 'next-i18next'
 import React from 'react'
 
 import { ROUTES } from '../../frontend/api/constants'
+import { useQueryParamRedirect } from '../../frontend/hooks/useQueryParamRedirect'
 import useSnackbar from '../../frontend/hooks/useSnackbar'
 import { useSsrAuth } from '../../frontend/hooks/useSsrAuth'
 import AccountPageLayout from '../layouts/AccountPageLayout'
@@ -31,6 +32,7 @@ const TaxFormLandingPage = ({ latestVersionId }: TaxFormLandingPageProps) => {
   const { t } = useTranslation('forms')
   const [openSnackbarError] = useSnackbar({ variant: 'error' })
   const [openSnackbarInfo, closeSnackbarInfo] = useSnackbar({ variant: 'info' })
+  const { getRouteWithCurrentUrlRedirect } = useQueryParamRedirect()
 
   const { mutate, isPending } = useMutation({
     mutationFn: () =>
@@ -125,10 +127,7 @@ const TaxFormLandingPage = ({ latestVersionId }: TaxFormLandingPageProps) => {
             {!isSignedIn && (
               <p className="text-p2">
                 Ak ste súčasťou <strong>beta testovania</strong> nového odosielania s eID, prosím{' '}
-                <ButtonNew
-                  href={`/prihlasenie?from=${encodeURIComponent(ROUTES.MUNICIPAL_SERVICES_TAX)}`}
-                  variant="black-link"
-                >
+                <ButtonNew href={getRouteWithCurrentUrlRedirect(ROUTES.LOGIN)} variant="black-link">
                   prihláste sa
                 </ButtonNew>{' '}
                 do svojho Bratislavského konta.

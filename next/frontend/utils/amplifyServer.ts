@@ -119,7 +119,7 @@ export const amplifyGetServerSideProps = <
           return {
             redirect: {
               destination: shouldRedirectNotSignedIn
-                ? `${ROUTES.LOGIN}?from=${context.resolvedUrl}`
+                ? `${ROUTES.LOGIN}?${redirectQueryParam}=${encodeURIComponent(context.resolvedUrl)}`
                 : ROUTES.HOME,
               permanent: false,
             },

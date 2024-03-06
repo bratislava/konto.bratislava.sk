@@ -1,3 +1,5 @@
+import { ParsedUrlQuery } from 'node:querystring'
+
 import { autoSignIn, confirmSignUp, resendSignUpCode, signUp } from 'aws-amplify/auth'
 import AccountActivator from 'components/forms/segments/AccountActivator/AccountActivator'
 import AccountContainer from 'components/forms/segments/AccountContainer/AccountContainer'
@@ -18,6 +20,7 @@ import { amplifyGetServerSideProps } from '../frontend/utils/amplifyServer'
 import logger from '../frontend/utils/logger'
 import { SafeRedirectType } from '../frontend/utils/queryParamRedirect'
 import { slovakServerSideTranslations } from '../frontend/utils/slovakServerSideTranslations'
+import { loginConfirmSignUpEmailHiddenQueryParam } from './prihlasenie'
 
 enum RegistrationStatus {
   INIT = 'INIT',
@@ -36,7 +39,19 @@ export const getServerSideProps = amplifyGetServerSideProps(
   { requiresSignOut: true, redirectQueryParam: true },
 )
 
+const getInitialState = (query: ParsedUrlQuery) => {
+  const email = query[loginConfirmSignUpEmailHiddenQueryParam]
+  // In case user wanted to login, but needs to verify email, he/she is redirected to registration page with email in query
+  // to act as if he/she was registering.
+  if (email && typeof email === 'string') {
+    return { registrationStatus: RegistrationStatus.EMAIL_VERIFICATION_REQUIRED, lastEmail: email }
+  }
+
+  return { registrationStatus: RegistrationStatus.INIT, lastEmail: '' }
+}
+
 const RegisterPage = () => {
+  const router = useRouter()
   const { safeRedirect, getRouteWithRedirect, redirect } = useQueryParamRedirect()
   /* When users registers by redirecting from 3rd party site (query param contains redirect to the site), we don't want
   to force them to unnecessary identity verification. */
@@ -44,11 +59,11 @@ const RegisterPage = () => {
 
   const { t } = useTranslation('account')
   const [registrationStatus, setRegistrationStatus] = useState<RegistrationStatus>(
-    RegistrationStatus.INIT,
+    getInitialState(router.query).registrationStatus,
   )
   const [registrationError, setRegistrationError] = useState<Error | null>(null)
-  const [lastEmail, setLastEmail] = useState<string>('')
-  const router = useRouter()
+  const [lastEmail, setLastEmail] = useState<string>(getInitialState(router.query).lastEmail)
+
   // only divert user from verification if he's coming from another site
 
   const handleSignUp = async (

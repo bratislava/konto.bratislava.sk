@@ -32,7 +32,7 @@
     "concept_delete": "Koncept sa maže."
   },
   "concept_save_and_redirect": "Presmerovávam.",
-  "unable_to_save_concept_and_redirect": "'Nepodarilo sa presmerovať.'",
+  "unable_to_save_concept_and_redirect": "Nepodarilo sa presmerovať.",
   "selectAll": "Vybrať všetko",
   "deselectAll": "Odobrať všetko",
   "options_zero": "Možností",

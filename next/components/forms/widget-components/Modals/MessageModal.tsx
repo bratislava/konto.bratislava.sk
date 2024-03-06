@@ -18,7 +18,10 @@ export type MessageModalProps = PropsWithChildren<{
   titleClassName?: string
   childrenClassName?: string
 }> &
-  Pick<ModalV2Props, 'isOpen' | 'onOpenChange' | 'isDismissable' | 'noCloseButton'>
+  Pick<
+    ModalV2Props,
+    'isOpen' | 'onOpenChange' | 'isDismissable' | 'noCloseButton' | 'mobileFullScreen'
+  >
 
 const icons = {
   error: <ErrorIcon />,

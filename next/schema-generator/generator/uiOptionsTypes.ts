@@ -137,20 +137,23 @@ export type ArrayFieldUiOptions = Pick<WidgetUiOptions, 'spaceTop' | 'spaceBotto
   )
 
 export type ObjectFieldUiOptions = Pick<WidgetUiOptions, 'spaceTop' | 'spaceBottom'> &
-  (
+  ({
+    /* @defaultValue `wrapper` */
+    objectDisplay?: 'wrapper' | 'boxed'
+    title?: string
+    description?: string
+  } & (
     | {
-        objectDisplay?: 'columns'
+        columns?: false
+      }
+    | {
+        columns: true
         /**
          * Slash separated numeric values, e.g. '1/2' or '1/2/3'
          */
-        objectColumnRatio?: string
+        columnsRatio: string
       }
-    | {
-        objectDisplay?: 'boxed'
-        title?: string
-        description?: string
-      }
-  )
+  ))
 
 export type SchemaUiOptions = {
   moreInformationUrl?: string

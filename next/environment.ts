@@ -62,10 +62,10 @@ export const environment = {
         'NEXT_PUBLIC_FEATURE_TOGGLE_PRAVNICKA_OSOBA_REGISTRATION',
         process.env.NEXT_PUBLIC_FEATURE_TOGGLE_PRAVNICKA_OSOBA_REGISTRATION,
       ) === 'true',
-    priznanieKDaniZNehnutelnostiPreview:
+    developmentForms:
       assertEnv(
-        'NEXT_PUBLIC_FEATURE_TOGGLE_PRIZNANIE_K_DANI_Z_NEHNUTELNOSTI_PREVIEW',
-        process.env.NEXT_PUBLIC_FEATURE_TOGGLE_PRIZNANIE_K_DANI_Z_NEHNUTELNOSTI_PREVIEW,
+        'NEXT_PUBLIC_FEATURE_TOGGLE_DEVELOPMENT_FORMS',
+        process.env.NEXT_PUBLIC_FEATURE_TOGGLE_DEVELOPMENT_FORMS,
       ) === 'true',
   },
   formsMimetypes: assertEnv(

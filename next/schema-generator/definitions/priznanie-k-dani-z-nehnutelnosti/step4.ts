@@ -179,8 +179,8 @@ const innerArray = (kalkulacka: boolean) =>
           'castStavbyOslobodenaOdDaneDetaily',
           {},
           {
-            objectDisplay: 'columns',
-            objectColumnRatio: '1/1',
+            columns: true,
+            columnsRatio: '1/1',
           },
           [
             number(
@@ -214,8 +214,8 @@ const innerArray = (kalkulacka: boolean) =>
         'datumy',
         {},
         {
-          objectDisplay: 'columns',
-          objectColumnRatio: '1/1',
+          columns: true,
+          columnsRatio: '1/1',
         },
         [
           datePicker(

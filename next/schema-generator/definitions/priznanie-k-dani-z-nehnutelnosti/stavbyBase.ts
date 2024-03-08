@@ -13,8 +13,8 @@ export const stavbyBase = (step: StepEnum) => [
     'riadok1',
     { required: true },
     {
-      objectDisplay: 'columns',
-      objectColumnRatio: '3/1',
+      columns: true,
+      columnsRatio: '3/1',
     },
     [
       input('ulicaACisloDomu', { title: 'Ulica a číslo domu', required: true }, {}),
@@ -29,8 +29,8 @@ export const stavbyBase = (step: StepEnum) => [
     'riadok2',
     { required: true },
     {
-      objectDisplay: 'columns',
-      objectColumnRatio: '1/1',
+      columns: true,
+      columnsRatio: '1/1',
     },
     [
       select(

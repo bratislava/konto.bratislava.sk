@@ -158,8 +158,8 @@ const innerArray = (kalkulacka: boolean) =>
             'parcelneCisloSposobVyuzitiaPozemku',
             { required: true },
             {
-              objectDisplay: 'columns',
-              objectColumnRatio: '1/1',
+              columns: true,
+              columnsRatio: '1/1',
             },
             [
               input(
@@ -279,8 +279,8 @@ const innerArray = (kalkulacka: boolean) =>
             'datumy',
             {},
             {
-              objectDisplay: 'columns',
-              objectColumnRatio: '1/1',
+              columns: true,
+              columnsRatio: '1/1',
             },
             [
               datePicker(

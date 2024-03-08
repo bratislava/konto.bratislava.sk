@@ -45,8 +45,8 @@ const ziadatelInvestorFields = [
     'mestoPsc',
     { required: true },
     {
-      objectDisplay: 'columns',
-      objectColumnRatio: '3/1',
+      columns: true,
+      columnsRatio: '3/1',
     },
     [
       input('mesto', { title: 'Mesto', required: true }, {}),

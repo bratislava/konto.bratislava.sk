@@ -22,12 +22,7 @@ describe('F04 -', { testIsolation: false }, () => {
         const emailHash = `${Date.now() + device}@cypress.test`
         
         before(() => {
-          cy.setCookie('gdpr-consents', '{%22statistics%22:true}')
           cy.visit('/mestske-sluzby/stanovisko-k-investicnemu-zameru')
-        })
-
-        beforeEach(() => {
-          //cy.hideNavbar(device)
         })
         
         it('1. Checking "File" step validation.', () => {
@@ -78,7 +73,6 @@ describe('F04 -', { testIsolation: false }, () => {
         })
 
         it('5. Going to registration.', () => {
-          //cy.showNavbar(device)
           cy.get('[data-cy=mobile-account-button]').click()
           cy.dataCy("Registrácia-menu-item").click()            
           cy.url().should("include", "/registracia");

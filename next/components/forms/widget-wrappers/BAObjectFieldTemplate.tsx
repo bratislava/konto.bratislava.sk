@@ -63,7 +63,8 @@ const ColumnDisplay = ({
 /**
  * Our custom implementation of https://github.com/rjsf-team/react-jsonschema-form/blob/main/packages/core/src/components/templates/ObjectFieldTemplate.tsx
  * This allows us to provide specific UI options for styling the template (e.g. columns).
- * This implementation removes titles and descriptions from objects. It might be needed to add it back.
+ * This implementation removes `TitleFieldTemplate` and `DescriptionFieldTemplate` from the
+ * implementation and displays them directly.
  */
 const BAObjectFieldTemplate = ({ idSchema, properties, uiSchema }: ObjectFieldTemplateProps) => {
   const options = useMemo(() => {

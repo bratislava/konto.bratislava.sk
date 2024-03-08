@@ -25,8 +25,8 @@ const menoTitulField = object(
   'menoTitul',
   { required: true },
   {
-    objectDisplay: 'columns',
-    objectColumnRatio: '3/1',
+    columns: true,
+    columnsRatio: '3/1',
   },
   [input('meno', { title: 'Meno', required: true }, {}), input('titul', { title: 'Titul' }, {})],
 )
@@ -36,8 +36,8 @@ const ulicaCisloFields = (type: UlicaCisloTyp) =>
     `ulicaCislo${type}`,
     { required: true },
     {
-      objectDisplay: 'columns',
-      objectColumnRatio: '3/1',
+      columns: true,
+      columnsRatio: '3/1',
     },
     [
       input(
@@ -63,8 +63,8 @@ const obecPscField = object(
   'obecPsc',
   { required: true },
   {
-    objectDisplay: 'columns',
-    objectColumnRatio: '3/1',
+    columns: true,
+    columnsRatio: '3/1',
   },
   [
     input('obec', { title: 'Obec', required: true }, {}),

@@ -25,8 +25,6 @@ export interface MenuSectionItemBase {
 }
 
 export const MobileNavBar = ({ className, sectionsList, menuItems }: MobileMenuNavBarProps) => {
-  const [alertRef, { height }] = useElementSize<HTMLDivElement>()
-
   const { statusBarConfiguration } = useStatusBarContext()
   const [mobileRef] = useElementSize([statusBarConfiguration.content])
   const { isMobileMenuOpen, setMobileMenuOpen } = useNavMenuContext()
@@ -39,7 +37,6 @@ export const MobileNavBar = ({ className, sectionsList, menuItems }: MobileMenuN
         ref={mobileRef}
       >
         <div className="w-full">
-          {!isMobileMenuOpen && <StatusBar ref={alertRef} />}
           <FocusTrap active={isMobileMenuOpen}>
             <div className="flex h-16 w-full items-center border-b-2 px-8 py-5">
               <div className="flex w-full justify-between">
@@ -70,7 +67,7 @@ export const MobileNavBar = ({ className, sectionsList, menuItems }: MobileMenuN
         </div>
       </div>
       <div className={cx('h-16', className)} />
-      <div style={{ height }} aria-hidden className="lg:hidden" />
+      {!isMobileMenuOpen && <StatusBar />}
     </div>
   )
 }

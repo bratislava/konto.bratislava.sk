@@ -239,7 +239,6 @@ const UserProfileDetailEdit = (props: UserProfileDetailEditProps) => {
             render={({ field }) => (
               <InputField
                 label={t('profile_detail.phone_number')}
-                helptext={t('profile_detail.phone_number_pattern')}
                 {...field}
                 errorMessage={errors.phone_number}
               />

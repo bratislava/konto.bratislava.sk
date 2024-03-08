@@ -44,7 +44,7 @@ const BAArrayFieldItemTemplate = <
   })
 
   const contentStyle = cx({
-    'p-4 md:p-6': variant === 'nested',
+    'px-4 md:px-6': variant === 'nested',
   })
 
   const title = getArrayFieldItemTemplateTitle(itemTitle, index)
@@ -55,7 +55,7 @@ const BAArrayFieldItemTemplate = <
     onDropIndexClick(innerIndex)({ preventDefault: () => {} })
   }
 
-  const dataCyProps: ChildrenProps = children.props;
+  const dataCyProps: ChildrenProps = children.props
 
   return (
     <div className={boxStyle} data-cy={`section-${dataCyProps.name}`}>

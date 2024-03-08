@@ -1,6 +1,7 @@
 {
   "errors": {
     "unknown": "Nastala neočakávaná chyba. Skontrolujte svoje pripojenie alebo nás kontaktujte na <a href='mailto:info@bratislava.sk'>info@bratislava.sk</a>. Ďakujeme.",
+    "UserLambdaValidationException": "Zdá sa, že ste robot. Ak to tak náhodou nie je, prosíme, načítajte stránku znova, väčšinou to vyrieši problém.",
     "Bad Request": "Overenie bolo neúspešné. Skontrolujte správnosť údajov.",
     "NotAuthorizedException": "Nesprávne prihlasovacie údaje",
     "CodeMismatchException": "Zadaný kód je nesprávny alebo jeho platnosť vypršala. Skontrolujte správnosť overovacieho kódu alebo požiadajte o nový kód kliknutím na Odoslať nový kód. Platnosť overovacieho kódu je 60 minút.",
@@ -55,7 +56,7 @@
   "password_required": "Heslo je povinné",
   "password_format": "Heslo musí obsahovať minimálne 8 znakov, veľké aj malé písmeno a číslo.",
   "password_confirmation_required": "Heslá sa nezhodujú",
-  "phone_number_format": "Nesprávny formát - zadajte platné telefónne číslo vo formáte +421XXXXXX...",
+  "phone_number_format": "Zadajte telefónne číslo v medzinárodnom formáte +421…",
   "login_submit": "Prihlásiť sa",
   "login_description": "Máte už Bratislavské konto?",
   "login_link": "Prihlásiť sa",
@@ -454,7 +455,6 @@
         "file_number": "Číslo spisu",
         "handle_person": "Vybavuje",
         "contact": "Kontakt",
-        "phone_unavailable": "Telefónne číslo nie je k dispozícii",
         "email_unavailable": "E-mailová adresa nie je k dispozícii"
       },
       "application_history": {
@@ -647,8 +647,7 @@
     "family_name": "Priezvisko",
     "email": "E-mail",
     "email_button": "Zmeniť e-mail",
-    "phone_number": "Telefónne číslo",
-    "phone_number_pattern": "V tvare +421...",
+    "phone_number": "Telefónne číslo (v tvare +421…)",
     "address": "Korešpondenčná adresa",
     "street": "Ulica a číslo",
     "city": "Mesto",
@@ -931,7 +930,7 @@
     }
   },
   "FieldHeader": {
-    "optional": "Nepovinné"
+    "optional": "(Nepovinné)"
   },
   "RadioGroup": {
     "resetChoice": "Vymazať výber"

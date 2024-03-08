@@ -27,13 +27,24 @@ export const useQueryParamRedirect = () => {
   const getRouteWithRedirect = useCallback(
     (route: string) => {
       if (!isHomeRedirect(safeRedirect)) {
-        return `${route}?${redirectQueryParam}=${safeRedirect.url}`
+        return `${route}?${redirectQueryParam}=${encodeURIComponent(safeRedirect.url)}`
       }
 
       return route
     },
     [safeRedirect],
   )
+
+  /**
+   * Returns the redirect query params to be used in the next route.
+   */
+  const getRedirectQueryParams = useCallback(() => {
+    if (!isHomeRedirect(safeRedirect)) {
+      return { [redirectQueryParam]: safeRedirect.url }
+    }
+
+    return null
+  }, [safeRedirect])
 
   /**
    * Appends the current URL to the next route. Should be used when redirecting to login, signup, when want to return
@@ -45,7 +56,7 @@ export const useQueryParamRedirect = () => {
         return route
       }
 
-      return `${route}?from=${router.asPath}`
+      return `${route}?${redirectQueryParam}=${encodeURIComponent(router.asPath)}`
     },
     [router.asPath],
   )
@@ -61,6 +72,7 @@ export const useQueryParamRedirect = () => {
   return {
     safeRedirect,
     getRouteWithRedirect,
+    getRedirectQueryParams,
     getRouteWithCurrentUrlRedirect,
     redirect,
   }

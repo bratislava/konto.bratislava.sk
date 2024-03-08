@@ -1,6 +1,5 @@
 import CorrespondenceAddressModal from 'components/forms/segments/CorrespondenceAddressModal/CorrespondenceAddressModal'
 // import IdentityVerificationModal from 'components/forms/segments/IdentityVerificationModal/IdentityVerificationModal'
-import { PhoneNumberData } from 'components/forms/segments/PhoneNumberForm/PhoneNumberForm'
 import RegistrationModal, {
   RegistrationModalType,
 } from 'components/forms/segments/RegistrationModal/RegistrationModal'
@@ -10,7 +9,6 @@ import RegistrationModal, {
 import Modal from 'components/forms/widget-components/Modals/Modal'
 import { useState } from 'react'
 
-import PhoneNumberModal from '../../forms/segments/PhoneNumberModal/PhoneNumberModal'
 import Button from '../../forms/simple-components/Button'
 import ButtonNew from '../../forms/simple-components/ButtonNew'
 import MessageModal from '../../forms/widget-components/Modals/MessageModal'
@@ -77,10 +75,6 @@ const ModalShowCase = () => {
     locality: 'Bratislava',
     postal_code: '05801',
   })
-  const [phoneNumberModalShow, setPhoneNumberModalShow] = useState(false)
-  const [phoneNumberModalData, setPhoneNumberModalData] = useState<string | undefined>(
-    '+421999999999',
-  )
   const [registrationModal, setRegistrationModal] = useState(false)
   // TODO either remove these modals from showcase completely, or fix their dependency on useFormRedirects
   // const [identityVerificationModal, setIdentityVerificationModal] = useState(false)
@@ -88,11 +82,6 @@ const ModalShowCase = () => {
   const onSubmitCorrespondenceAddress = ({ data }: { data?: string }) => {
     setAddressModalData(data)
     setCorrenspondenceAddressModalShow(false)
-  }
-
-  const onSubmitPhoneNumber = async ({ data }: { data?: PhoneNumberData }) => {
-    setPhoneNumberModalData(data?.phone_number)
-    setPhoneNumberModalShow(false)
   }
 
   return (
@@ -121,12 +110,6 @@ const ModalShowCase = () => {
           variant="black"
           text="Open correspondence address modal"
           onPress={() => setCorrenspondenceAddressModalShow(true)}
-        />
-        <Button
-          size="sm"
-          variant="black"
-          text="Open phone number modal"
-          onPress={() => setPhoneNumberModalShow(true)}
         />
         {/* <Button
           size="sm"
@@ -184,12 +167,6 @@ const ModalShowCase = () => {
           onClose={() => setCorrenspondenceAddressModalShow(false)}
           onSubmit={onSubmitCorrespondenceAddress}
           defaultValues={addressModalData}
-        />
-        <PhoneNumberModal
-          show={phoneNumberModalShow}
-          onClose={() => setPhoneNumberModalShow(false)}
-          onSubmit={onSubmitPhoneNumber}
-          defaultValues={{ phone_number: phoneNumberModalData }}
         />
         <RegistrationModal
           type={RegistrationModalType.Initial}

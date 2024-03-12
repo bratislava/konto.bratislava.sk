@@ -38,6 +38,36 @@ describe('createCondition', () => {
     })
   })
 
+  it('should handle array properties correctly', () => {
+    const result = createCondition([
+      [['a', 'array:b', 'c'], { const: 'value1' }],
+      [['a', 'array:b', 'd'], { const: 'value2' }],
+    ])
+    expect(result).toEqual({
+      type: 'object',
+      properties: {
+        a: {
+          type: 'object',
+          properties: {
+            b: {
+              type: 'array',
+              items: {
+                type: 'object',
+                properties: {
+                  c: { const: 'value1' },
+                  d: { const: 'value2' },
+                },
+                required: ['c', 'd'],
+              },
+            },
+          },
+          required: ['b'],
+        },
+      },
+      required: ['a'],
+    })
+  })
+
   it('should handle duplicate paths correctly', () => {
     const result = createCondition([
       [['a', 'b'], { const: 'value1' }],
@@ -65,6 +95,42 @@ describe('createCondition', () => {
       properties: {},
       required: [],
     })
+  })
+
+  it('should throw an error if array tries to overwrite an existing object', () => {
+    expect(() =>
+      createCondition([
+        [['a', 'b', 'c'], { const: 'value' }],
+        [['a', 'array:b', 'c'], { const: 'value' }],
+      ]),
+    ).toThrowError('A non-array path already exists at "a.array:b"')
+  })
+
+  it('should throw an error if object tries to overwrite an existing array', () => {
+    expect(() =>
+      createCondition([
+        [['a', 'array:b', 'c'], { const: 'value' }],
+        [['a', 'b', 'c'], { const: 'value' }],
+      ]),
+    ).toThrowError('A non-object path already exists at "a.b"')
+  })
+
+  it('should throw an error if path interferes with already existing user object', () => {
+    expect(() =>
+      createCondition([
+        [
+          ['a', 'b'],
+          {
+            type: 'object',
+            properties: {
+              c: { const: 'value' },
+            },
+            required: ['c'],
+          },
+        ],
+        [['a', 'b', 'd'], { const: 'value' }],
+      ]),
+    ).toThrowError('Condition path cannot be written to user created object at "a.b"')
   })
 })
 

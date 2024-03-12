@@ -5893,8 +5893,20 @@ exports[`priznanieKDaniZNehnutelnosti matches snapshot 1`] = `
                       },
                       "type": "array",
                     },
+                    "vyplnitObject": {
+                      "properties": {
+                        "vyplnit": {
+                          "const": true,
+                        },
+                      },
+                      "required": [
+                        "vyplnit",
+                      ],
+                      "type": "object",
+                    },
                   },
                   "required": [
+                    "vyplnitObject",
                     "priznania",
                   ],
                   "type": "object",
@@ -5926,8 +5938,20 @@ exports[`priznanieKDaniZNehnutelnosti matches snapshot 1`] = `
                       },
                       "type": "array",
                     },
+                    "vyplnitObject": {
+                      "properties": {
+                        "vyplnit": {
+                          "const": true,
+                        },
+                      },
+                      "required": [
+                        "vyplnit",
+                      ],
+                      "type": "object",
+                    },
                   },
                   "required": [
+                    "vyplnitObject",
                     "priznania",
                   ],
                   "type": "object",
@@ -5959,8 +5983,20 @@ exports[`priznanieKDaniZNehnutelnosti matches snapshot 1`] = `
                       },
                       "type": "array",
                     },
+                    "vyplnitObject": {
+                      "properties": {
+                        "vyplnit": {
+                          "const": true,
+                        },
+                      },
+                      "required": [
+                        "vyplnit",
+                      ],
+                      "type": "object",
+                    },
                   },
                   "required": [
+                    "vyplnitObject",
                     "priznania",
                   ],
                   "type": "object",
@@ -5992,8 +6028,20 @@ exports[`priznanieKDaniZNehnutelnosti matches snapshot 1`] = `
                       },
                       "type": "array",
                     },
+                    "vyplnitObject": {
+                      "properties": {
+                        "vyplnit": {
+                          "const": true,
+                        },
+                      },
+                      "required": [
+                        "vyplnit",
+                      ],
+                      "type": "object",
+                    },
                   },
                   "required": [
+                    "vyplnitObject",
                     "priznania",
                   ],
                   "type": "object",

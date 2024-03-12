@@ -1,17 +1,30 @@
 import type { RJSFSchema } from '@rjsf/utils'
 import camelCase from 'lodash/camelCase'
 
-type ConditionObject<T> = { type: 'object'; properties: Record<string, T>; required: string[] }
+type ObjectJsonSchema = {
+  type: 'object'
+  properties: Record<string, ObjectJsonSchema | ArrayJsonSchema | RJSFSchema>
+  required: string[]
+}
+type ArrayJsonSchema = { type: 'array'; items: ObjectJsonSchema }
+
+const arrayPrefix = 'array:'
 
 /**
- * Create a condition object from a list of paths and values
+ * Create a condition object from a list of paths and values.
  *
- * Example input: [
+ * Most of the conditions in JSON Schema are repetitive and require a lot of boilerplate. This
+ * function simplifies the process by creating a condition object from a list of paths and values
+ * and expecting the whole tree to be required.
+ *
+ * @example
+ * createCondition([
  *  [['a', 'b'], { const: 'value1' }],
  *  [['a', 'c'], { const: 'value2' }],
- * ]
+ *  [['x', 'array:y', 'z'], { const: 'value3' }],
+ * ])
  *
- * Example output:
+ * // Outputs:
  * {
  *   type: 'object',
  *   properties: {
@@ -23,45 +36,91 @@ type ConditionObject<T> = { type: 'object'; properties: Record<string, T>; requi
  *       },
  *       required: ['b', 'c'],
  *     },
+ *     x: {
+ *       type: 'object',
+ *       properties: {
+ *         y: {
+ *           type: 'array',
+ *           items: {
+ *             type: 'object',
+ *             properties: {
+ *               z: { const: 'value3' },
+ *             },
+ *             required: ['z'],
+ *           },
+ *         },
+ *       },
+ *       required: ['y'],
+ *     },
  *   },
- *   required: ['a'],
+ *   required: ['a', 'x'],
  * }
  */
-export const createCondition = <T>(value: [string[], T][]) => {
-  const result = {
+export const createCondition = (conditions: [string[], RJSFSchema][]) => {
+  const result: ObjectJsonSchema = {
     type: 'object',
-    properties: {} as Record<string, T | ConditionObject<T>>,
-    required: [] as string[],
+    properties: {},
+    required: [],
   }
+  const ownObjects: (ObjectJsonSchema | ArrayJsonSchema)[] = [result]
 
-  value.forEach(([path, value]) => {
+  conditions.forEach(([path, value]) => {
     let currentLevel = result
-    path.forEach((key, index) => {
+    path.forEach((keyWithPrefix, index) => {
+      if (!ownObjects.includes(currentLevel)) {
+        // This function expects a strict schema to be followed, so if previous path is created by user, it's an error
+        // to try to write to it.
+        throw new Error(
+          `Condition path cannot be written to user created object at "${path
+            .slice(0, index)
+            .join('.')}"`,
+        )
+      }
+
+      const isArrayKey = keyWithPrefix.startsWith(arrayPrefix)
+      const key = isArrayKey ? keyWithPrefix.slice(arrayPrefix.length) : keyWithPrefix
+
+      if (index === path.length - 1) {
+        if (!currentLevel.required.includes(key)) {
+          currentLevel.required.push(key)
+        }
+
+        currentLevel.properties[key] = value
+        return
+      }
+
       if (!currentLevel.properties[key]) {
-        currentLevel.properties[key] = {
+        const newObject = {
           type: 'object',
           properties: {},
           required: [],
-        }
+        } as ObjectJsonSchema
+        ownObjects.push(newObject)
+
+        currentLevel.properties[key] = isArrayKey
+          ? ({ type: 'array', items: newObject } as ArrayJsonSchema)
+          : newObject
         currentLevel.required.push(key)
       }
-      if (index === path.length - 1) {
-        currentLevel.properties[key] =
-          typeof value === 'object' && value !== null && !Array.isArray(value)
-            ? { ...value }
-            : value
+
+      const nextLevel = currentLevel.properties[key]
+
+      if (isArrayKey) {
+        if (nextLevel.type !== 'array') {
+          throw new Error(
+            `A non-array path already exists at "${path.slice(0, index + 1).join('.')}"`,
+          )
+        }
+        currentLevel = nextLevel.items as ObjectJsonSchema
       } else {
-        currentLevel = currentLevel.properties[key] as ConditionObject<T>
+        if (nextLevel.type !== 'object') {
+          throw new Error(
+            `A non-object path already exists at "${path.slice(0, index + 1).join('.')}"`,
+          )
+        }
+        currentLevel = nextLevel as ObjectJsonSchema
       }
     })
-  })
-
-  // Merge properties and required arrays
-  Object.keys(result.properties).forEach((key) => {
-    const prop = result.properties[key]
-    if (prop && typeof prop === 'object' && 'type' in prop && prop.type === 'object') {
-      prop.required = Array.from(new Set([...prop.required, ...Object.keys(prop.properties)]))
-    }
   })
 
   return result as RJSFSchema

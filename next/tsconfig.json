@@ -28,7 +28,7 @@
       "@backend/*": ["./backend/*"],
       "@clients/*": ["./clients/*"],
       // TODO: Remove to separate package
-      "@schema-generator/*": ["./schema-generator/*"],
+      "@schema-generator/*": ["./schema-generator/src/*"],
     }
   },
   "include": ["**/*.ts", "**/*.tsx", "**/*.js", "**/*.jsx", "next-env.d.ts"],

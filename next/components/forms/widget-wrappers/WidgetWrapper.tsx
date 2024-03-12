@@ -1,6 +1,6 @@
+import { WidgetSpacing, WidgetUiOptions } from '@schema-generator/generator/uiOptionsTypes'
 import cx from 'classnames'
 import React, { PropsWithChildren } from 'react'
-import { WidgetSpacing, WidgetUiOptions } from 'schema-generator/generator/uiOptionsTypes'
 import { twMerge } from 'tailwind-merge'
 
 import CustomComponents from '../widget-components/CustomComponents/CustomComponents'

@@ -67,27 +67,42 @@ export const createCondition = <T>(value: [string[], T][]) => {
   return result as RJSFSchema
 }
 
+const assertUniqueOptions = (options: { value: string }[]) => {
+  const uniqueValues = new Set(options.map((option) => option.value))
+  if (uniqueValues.size !== options.length) {
+    throw new Error('Options must have unique values')
+  }
+}
+
 /**
  * Create options from a list of strings. For example:
  * ['Option 1', 'Option 2'] => [{ value: 'Option 1', title: 'Option 1', isDefault: true }, ...]
  */
-export const createStringOptions = (options: string[], addDefault = true) =>
-  options.map((option, index) => ({
+export const createStringOptions = (options: string[], addDefault = true) => {
+  const result = options.map((option, index) => ({
     value: option,
     title: option,
     isDefault: index === 0 && addDefault ? true : undefined,
   }))
 
+  assertUniqueOptions(result)
+  return result
+}
+
 /**
  * Create options with camelCase value from a list of strings. For example:
  * ['Option 1', 'Option 2'] => [{ value: 'option1', title: 'Option 1', isDefault: true }, ...]
  */
-export const createCamelCaseOptions = (options: string[], addDefault = true) =>
-  options.map((option, index) => ({
+export const createCamelCaseOptions = (options: string[], addDefault = true) => {
+  const result = options.map((option, index) => ({
     value: camelCase(option),
     title: option,
     isDefault: index === 0 && addDefault ? true : undefined,
   }))
+
+  assertUniqueOptions(result)
+  return result
+}
 
 /**
  * Create options with camelCase value from a list of objects. For example:
@@ -96,9 +111,13 @@ export const createCamelCaseOptions = (options: string[], addDefault = true) =>
 export const createCamelCaseOptionsV2 = <Option extends { title: string }>(
   options: Option[],
   addDefault = true,
-) =>
-  options.map((option, index) => ({
+) => {
+  const result = options.map((option, index) => ({
     value: camelCase(option.title),
     ...option,
     isDefault: index === 0 && addDefault ? true : undefined,
   }))
+
+  assertUniqueOptions(result)
+  return result
+}

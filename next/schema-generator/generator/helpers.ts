@@ -1,4 +1,3 @@
-/* eslint-disable import/no-extraneous-dependencies */
 import type { RJSFSchema } from '@rjsf/utils'
 import camelCase from 'lodash/camelCase'
 

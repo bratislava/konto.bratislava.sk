@@ -1,5 +1,5 @@
+import { CustomComponentType } from '@schema-generator/generator/uiOptionsTypes'
 import React from 'react'
-import { CustomComponentType } from 'schema-generator/generator/uiOptionsTypes'
 
 import PropertyTaxCalculator from '../../segments/PropertyTaxCalculator/PropertyTaxCalculator'
 import Accordion from '../../simple-components/Accordion'
@@ -9,9 +9,13 @@ const CustomComponent = ({ component }: { component: CustomComponentType }) => {
   if (component.type === 'accordion') {
     return (
       <Accordion
+        // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
         size={component.props?.size}
+        // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
         title={component.props?.title}
+        // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
         shadow={component.props?.shadow}
+        // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
         content={component.props?.content}
       />
     )

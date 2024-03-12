@@ -5,9 +5,9 @@ import {
   getTemplate,
   getUiOptions,
 } from '@rjsf/utils'
+import { ArrayFieldUiOptions } from '@schema-generator/generator/uiOptionsTypes'
 import { useTranslation } from 'next-i18next'
 import { ComponentType } from 'react'
-import { ArrayFieldUiOptions } from 'schema-generator/generator/uiOptionsTypes'
 
 import { getArrayFieldItemTemplateTitle } from '../../../../frontend/utils/formArray'
 import { useFormContext } from '../../useFormContext'

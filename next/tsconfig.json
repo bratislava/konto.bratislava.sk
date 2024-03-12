@@ -26,7 +26,8 @@
       "@assets/images/*": ["./assets/images/*"],
       "@assets/icons/*": ["./assets/icons/*"],
       "@backend/*": ["./backend/*"],
-      "@clients/*": ["./clients/*"]
+      "@clients/*": ["./clients/*"],
+      "@schema-generator/*": ["../schema-generator/*"],
     }
   },
   "include": ["**/*.ts", "**/*.tsx", "**/*.js", "**/*.jsx", "next-env.d.ts"],

@@ -29,7 +29,7 @@ import { FormFileUploadFileInfo, FormFileUploadStatusEnum } from '../types/formF
  * override this behaviour for specific fields using `overrideArrayMinItemsBehaviour` keyword.
  */
 export const defaultFormStateBehavior: Experimental_DefaultFormStateBehavior = {
-  arrayMinItems: { populate: 'never' },
+  arrayMinItems: { populate: 'requiredOnly' },
   // https://github.com/rjsf-team/react-jsonschema-form/issues/3832
   // https://github.com/rjsf-team/react-jsonschema-form/issues/3892
   allOf: 'populateDefaults',

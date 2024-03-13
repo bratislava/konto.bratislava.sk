@@ -30,6 +30,7 @@ export type DanZBytovANebytovychPriestorovPriznanie = {
   poznamka?: string
   pocetSpoluvlastnikov?: number
   naZakladeDohody?: boolean
+  splnomocnenie?: string[]
 }
 
 export type PriznanieZaByt = {
@@ -164,6 +165,7 @@ export type DanZoStaviebJedenUcelPriznania = {
   castStavbyOslobodenaOdDaneDetaily?: CastStavbyOslobodenaOdDaneDetaily
   pocetSpoluvlastnikov?: number
   naZakladeDohody?: boolean
+  splnomocnenie?: string[]
   zakladDane?: number
 }
 
@@ -194,6 +196,7 @@ export type DanZoStaviebViacereUcelyPriznania = {
   poznamka?: string
   pocetSpoluvlastnikov?: number
   naZakladeDohody?: boolean
+  splnomocnenie?: string[]
   zakladDane?: number
   vymeraPodlahovychPloch?: number
   castStavbyOslobodenaOdDaneDetaily?: CastStavbyOslobodenaOdDaneDetaily

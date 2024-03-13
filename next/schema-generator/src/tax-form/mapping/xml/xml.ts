@@ -65,7 +65,8 @@ export const removeEmptySubtrees = <T extends JSONValue>(objOrArrayOrValue: T): 
   }
   return objOrArrayOrValue
 }
-export const getTaxFormXml = (data: TaxFormData) => {
+
+export const getTaxFormXml = (data: TaxFormData, pretty = false) => {
   const jsonObj = {
     'E-form': {
       $: {
@@ -78,8 +79,6 @@ export const getTaxFormXml = (data: TaxFormData) => {
         RecipientId: 'ico://sk/00603481',
         Version: '201501.2',
         ZepRequired: false,
-        // EformUuid: '3cbf60c7-55f5-48d6-9ed7-25f0b39022b1',
-        // "SenderID": "mailto:_Jozef_Mrkva"
       },
       Body: {
         ...udajeODanovnikoviXml(data),
@@ -122,7 +121,7 @@ export const getTaxFormXml = (data: TaxFormData) => {
   const builder = new Builder({
     // eslint-disable-next-line unicorn/text-encoding-identifier-case
     xmldec: { version: '1.0', encoding: 'UTF-8' },
-    renderOpts: { pretty: false },
+    renderOpts: { pretty },
   })
   return builder.buildObject(jsonObjWithoutLeafs)
 }

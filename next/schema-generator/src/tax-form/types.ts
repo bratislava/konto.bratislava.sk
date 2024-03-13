@@ -209,16 +209,7 @@ export type SumarElement = {
   zakladDane?: number
 }
 
-export type UcelVyuzitiaStavby =
-  | 'a'
-  | 'b'
-  | 'c'
-  | 'd'
-  | 'e'
-  | 'f'
-  | 'g'
-  | 'h'
-  | 'i'
+export type UcelVyuzitiaStavby = 'a' | 'b' | 'c' | 'd' | 'e' | 'f' | 'g' | 'h' | 'i'
 
 export type NehnutelnostiElement = {
   ucelVyuzitiaStavby?: string
@@ -347,7 +338,7 @@ export interface BezpodieloveSpoluvlastnictvoManzelov {
   priezvisko?: string
   menoTitul?: MenoTitul
   rovnakaAdresa?: boolean
-  ulicaCislo?: UlicaCislo
+  ulicaCisloBezpodieloveSpoluvlastnictvoManzelov?: UlicaCislo
   obecPsc?: ObecPsc
   stat?: string
   email?: string

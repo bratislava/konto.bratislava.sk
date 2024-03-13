@@ -34,8 +34,16 @@ const bezpodieloveSpoluvlastnictvoManzelovPoznamka = (data: TaxFormData) => {
     safeBoolean(data.bezpodieloveSpoluvlastnictvoManzelov?.rovnakaAdresa) === true
 
   const bezpodieloveSpoluvlastnictvoManzelovAdresa = [
-    ['Ulica', data.bezpodieloveSpoluvlastnictvoManzelov?.ulicaCislo?.ulica],
-    ['Číslo', data.bezpodieloveSpoluvlastnictvoManzelov?.ulicaCislo?.cislo],
+    [
+      'Ulica',
+      data.bezpodieloveSpoluvlastnictvoManzelov?.ulicaCisloBezpodieloveSpoluvlastnictvoManzelov
+        ?.ulica,
+    ],
+    [
+      'Číslo',
+      data.bezpodieloveSpoluvlastnictvoManzelov?.ulicaCisloBezpodieloveSpoluvlastnictvoManzelov
+        ?.cislo,
+    ],
     ['Obec', data.bezpodieloveSpoluvlastnictvoManzelov?.obecPsc?.obec],
     ['PSČ', data.bezpodieloveSpoluvlastnictvoManzelov?.obecPsc?.psc],
     ['Štát', getTitleFromStatCiselnik(data.bezpodieloveSpoluvlastnictvoManzelov?.stat)],

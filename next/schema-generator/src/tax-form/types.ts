@@ -71,8 +71,7 @@ export type Riadok = {
 
 export type Riadok1 = {
   ulicaACisloDomu?: string
-  // TODO Temporary supisneCislo fix
-  supisneCislo?: string | number
+  supisneCislo?: number
 }
 
 export type Kataster =

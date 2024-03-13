@@ -283,7 +283,7 @@ Tento dokument bol vygenerovaný pomocou Bratislavského konta.",
   "2_Priloha7": undefined,
   "6_CisloBytu": "23",
   "6_CisloParcely": "1234/10",
-  "6_CisloSupisne": undefined,
+  "6_CisloSupisne": "1",
   "6_DatumVzniku": undefined,
   "6_DatumZaniku": undefined,
   "6_Ico": undefined,
@@ -1155,6 +1155,7 @@ exports[`tax-form should return correct XML for example 3 1`] = `
         <AdresaBytu>
           <UlicaACislo>
             <Ulica>Jána Smreka</Ulica>
+            <SupisneCislo>1</SupisneCislo>
             <OrientacneCislo>1</OrientacneCislo>
           </UlicaACislo>
           <Obec>

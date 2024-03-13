@@ -54,7 +54,7 @@ export const exampleTaxForm3 = {
     priznania: [
       {
         riadok1: {
-          supisneCislo: '1',
+          supisneCislo: 1,
           ulicaACisloDomu: 'Jána Smreka 1',
         },
         riadok2: {

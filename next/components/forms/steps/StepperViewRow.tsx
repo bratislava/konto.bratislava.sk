@@ -17,7 +17,7 @@ const StepperViewRow = ({ step, isCurrent, className }: StepperViewRowProps) => 
 
   const { title, stepperTitle, isSubmitted, displayIndex } = step
   const iconClassName = cx(
-    'min-w-8 flex h-8 w-8 shrink-0 flex-row items-center justify-center rounded-full border-2',
+    'flex h-8 w-8 min-w-8 shrink-0 flex-row items-center justify-center rounded-full border-2',
     {
       'border-gray-700 bg-gray-700 text-white': isSubmitted || isCurrent,
       'border-gray-300 bg-transparent text-gray-300': !isSubmitted && !isCurrent,

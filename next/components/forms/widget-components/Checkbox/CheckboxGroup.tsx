@@ -31,7 +31,10 @@ const CheckboxGroup = (props: CheckboxGroupProps) => {
   const state: CheckboxGroupState = useCheckboxGroupState(props)
   const { groupProps, labelProps, errorMessageProps } = useCheckboxGroup(props, state)
   return (
-    <div {...groupProps} data-cy={`checkbox-group-${label.toLowerCase().replace(/ /g, '-').replace(/\?/g, "")}`}>
+    <div
+      {...groupProps}
+      data-cy={`checkbox-group-${label.toLowerCase().replace(/ /g, '-').replace(/\?/g, '')}`}
+    >
       <FieldWrapper
         label={label}
         labelProps={labelProps}

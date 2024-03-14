@@ -1,9 +1,8 @@
 import cx from 'classnames'
 
 interface AccountContainerProps extends React.HTMLAttributes<HTMLDivElement> {
-  dataCyPrefix?: string;
+  dataCyPrefix?: string
 }
-
 
 export const AccountContainer = ({ children, className, dataCyPrefix }: AccountContainerProps) => (
   <div

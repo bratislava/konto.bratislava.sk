@@ -46,7 +46,10 @@ const LoginPage = () => {
         const redirectQueryParams = getRedirectQueryParams()
 
         await router.push(
-          { pathname: ROUTES.REGISTER, query: { ...redirectQueryParams, email } },
+          {
+            pathname: ROUTES.REGISTER,
+            query: { ...redirectQueryParams, [loginConfirmSignUpEmailHiddenQueryParam]: email },
+          },
           // This hides the param from the URL, but it's still accessible in the query object.
           getRouteWithRedirect(ROUTES.REGISTER),
         )

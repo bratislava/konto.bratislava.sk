@@ -28,7 +28,7 @@ const ThankYouCard = ({
     <div className="mx-auto flex h-full w-full max-w-[734px] flex-col items-center gap-4 rounded-none bg-gray-0 px-4 pb-4 pt-6 md:gap-6 md:rounded-2xl md:px-14 md:py-12 lg:max-w-[800px]">
       <span
         className={cx(
-          'min-w-14 flex h-14 w-14 items-center justify-center rounded-full bg-negative-100 md:h-[88px] md:w-[88px] md:min-w-[88px]',
+          'flex h-14 w-14 min-w-14 items-center justify-center rounded-full bg-negative-100 md:h-[88px] md:w-[88px] md:min-w-[88px]',
           {
             'bg-negative-100': !success,
             'bg-success-100': success,

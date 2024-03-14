@@ -1,9 +1,8 @@
-import Button from 'components/forms/simple-components/Button'
 import { Wrapper } from 'components/styleguide/Wrapper'
+import React from 'react'
 
+import ClipboardCopy from '../components/forms/simple-components/ClipboardCopy'
 // import { resetRcApi } from '../frontend/api/api'
-import { ROUTES } from '../frontend/api/constants'
-import { useSsrAuth } from '../frontend/hooks/useSsrAuth'
 import { amplifyGetServerSideProps } from '../frontend/utils/amplifyServer'
 import { slovakServerSideTranslations } from '../frontend/utils/slovakServerSideTranslations'
 
@@ -36,24 +35,16 @@ const GetJwt = ({ accessToken }: GetJwtProps) => {
   //   }
   // }
 
-  const { isSignedIn } = useSsrAuth()
-
   return (
     <div className="min-h-screen bg-[#E5E5E5]">
       <div className="mx-auto max-w-screen-lg pb-64 md:px-12 md:pt-12">
         <Wrapper
           direction="column"
-          title="Kód nižšie slúži na technické účeli a umožňuje prístup k Vášmu kontu. NIKDY HO S NIKÝM NEZDIEĽAJTE. This site is for development purposes, the code below allows anyone to access your account. NEVER SHARE IT WITH ANYONE."
+          title="Kód nižšie slúži na technické účely a umožňuje prístup k Vášmu kontu. NIKDY HO S NIKÝM NEZDIEĽAJTE. This site is for development purposes, the code below allows anyone to access your account. NEVER SHARE IT WITH ANYONE."
         >
-          {isSignedIn ? (
-            <div className="flex flex-col">
-              <div>{accessToken}</div>
-            </div>
-          ) : (
-            <div className="flex flex-col">
-              <Button href={ROUTES.LOGIN} label="No user - go to login" variant="link-category" />
-            </div>
-          )}
+          <div className="flex flex-col break-all">
+            {accessToken} {accessToken && <ClipboardCopy copyText={accessToken} />}
+          </div>
         </Wrapper>
       </div>
     </div>

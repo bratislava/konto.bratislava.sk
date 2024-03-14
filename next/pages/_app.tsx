@@ -15,11 +15,9 @@ import { Inter } from 'next/font/google'
 import Head from 'next/head'
 import { appWithTranslation } from 'next-i18next'
 import PlausibleProvider from 'next-plausible'
-import { NextAdapter } from 'next-query-params'
 import { useState } from 'react'
 import { I18nProvider } from 'react-aria'
 import SnackbarProvider from 'react-simple-snackbar'
-import { QueryParamProvider } from 'use-query-params'
 
 import { AmplifyProvider } from '../frontend/utils/amplifyClient'
 import { isProductionDeployment } from '../frontend/utils/general'
@@ -57,33 +55,31 @@ const MyApp = ({ Component, pageProps }: AppProps) => {
 
       <AmplifyProvider>
         <I18nProvider locale="sk-SK">
-          <QueryParamProvider adapter={NextAdapter}>
-            <StatusBarProvider>
-              <QueryClientProvider client={queryClient}>
-                <SnackbarProvider>
-                  <PlausibleProvider
-                    domain={
-                      isProductionDeployment() ? 'konto.bratislava.sk' : 'testing.bratislava.sk'
-                    }
-                    // exclude instances of forms (i.e./mestske-sluzby/priznanie-k-dani-z-nehnutelnosti is still tracked)
-                    // we track those manually along with step hashes so that we can track "funnels" across steps
-                    exclude="/mestske-sluzby/*/*"
-                    taggedEvents
-                    // uncomment for local testing, needs to be run with `yarn build && yarn start`
-                    // trackLocalhost
-                  >
-                    <NavMenuContextProvider>
-                      {/* used to lock body with overflow: hidden when mobile menu is open, look for useLockedBody */}
-                      <div id="root">
-                        <Component {...pageProps} />
-                      </div>
-                      <CookieConsent />
-                    </NavMenuContextProvider>
-                  </PlausibleProvider>
-                </SnackbarProvider>
-              </QueryClientProvider>
-            </StatusBarProvider>
-          </QueryParamProvider>
+          <StatusBarProvider>
+            <QueryClientProvider client={queryClient}>
+              <SnackbarProvider>
+                <PlausibleProvider
+                  domain={
+                    isProductionDeployment() ? 'konto.bratislava.sk' : 'testing.bratislava.sk'
+                  }
+                  // exclude instances of forms (i.e./mestske-sluzby/priznanie-k-dani-z-nehnutelnosti is still tracked)
+                  // we track those manually along with step hashes so that we can track "funnels" across steps
+                  exclude="/mestske-sluzby/*/*"
+                  taggedEvents
+                  // uncomment for local testing, needs to be run with `yarn build && yarn start`
+                  // trackLocalhost
+                >
+                  <NavMenuContextProvider>
+                    {/* used to lock body with overflow: hidden when mobile menu is open, look for useLockedBody */}
+                    <div id="root">
+                      <Component {...pageProps} />
+                    </div>
+                    <CookieConsent />
+                  </NavMenuContextProvider>
+                </PlausibleProvider>
+              </SnackbarProvider>
+            </QueryClientProvider>
+          </StatusBarProvider>
         </I18nProvider>
       </AmplifyProvider>
     </>

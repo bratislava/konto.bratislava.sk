@@ -73,7 +73,12 @@ const RegistrationModal = ({ type, login, register, ...rest }: RegistrationModal
   }
 
   return (
-    <ModalV2 modalClassname="md:max-w-[796px] md:pt-8" mobileFullScreen {...rest} data-cy="registration-modal">
+    <ModalV2
+      modalClassname="md:max-w-[796px] md:pt-8"
+      mobileFullScreen
+      {...rest}
+      data-cy="registration-modal"
+    >
       <div className="mb-6 flex flex-col gap-2">
         {title && <h3 className="text-h2 lg:text-h3">{title}</h3>}
         {subtitle && <AccountMarkdown className="text-p1" content={subtitle} />}

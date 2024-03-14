@@ -24,7 +24,7 @@
     "update-markdown": "yarn add remark-directive@latest remark-directive-rehype@latest remark-gfm@latest remark-supersub@latest rehype-raw@latest rehype-sanitize@latest",
     "update-next": "yarn add next@latest react@latest react-dom@latest sharp@latest -E && yarn add @types/react@latest @types/react-dom@latest eslint-config-next@latest typescript@latest -D -E",
     "update-amplify": "yarn add aws-amplify@latest @aws-amplify/adapter-nextjs@latest -E",
-    "update-tailwind": "yarn add tailwindcss@latest tailwind-merge@latest tailwind-scrollbar-hide@latest -E && yarn add autoprefixer@latest postcss@latest prettier-plugin-tailwindcss@latest eslint-plugin-tailwindcss@latest -D -E",
+    "update-tailwind": "yarn add tailwind-merge@latest tailwind-scrollbar-hide@latest -E && yarn add tailwindcss@latest autoprefixer@latest postcss@latest prettier-plugin-tailwindcss@latest eslint-plugin-tailwindcss@latest -D -E",
     "update-i18next": "yarn add i18next@latest next-i18next@latest react-i18next@latest -E",
     "update-prettier": "yarn add prettier@latest eslint-config-prettier@latest -D -E"
   },

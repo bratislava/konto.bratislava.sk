@@ -1,3 +1,4 @@
+import { markdownTextPrefix } from '@schema-generator/generator/uiOptionsTypes'
 import React from 'react'
 import ReactMarkdown from 'react-markdown'
 import rehypeSanitize from 'rehype-sanitize'
@@ -5,7 +6,6 @@ import { Schema } from 'rehype-sanitize/lib'
 import remarkDirective from 'remark-directive'
 import remarkDirectiveRehype from 'remark-directive-rehype'
 import remarkSupersub from 'remark-supersub'
-import { markdownTextPrefix } from 'schema-generator/generator/uiOptionsTypes'
 
 import MLinkNew from '../simple-components/MLinkNew'
 import FormLightboxModal from './FormLightboxModal'

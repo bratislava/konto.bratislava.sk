@@ -7,6 +7,7 @@ import {
   PdfIcon,
 } from '@assets/ui-icons'
 import { getUiOptions } from '@rjsf/utils'
+import { SchemaUiOptions } from '@schema-generator/generator/uiOptionsTypes'
 import ButtonNew from 'components/forms/simple-components/ButtonNew'
 import MenuDropdown, {
   MenuItemBase,
@@ -14,7 +15,6 @@ import MenuDropdown, {
 import Waves from 'components/forms/simple-components/Waves/Waves'
 import Link from 'next/link'
 import { useTranslation } from 'next-i18next'
-import { SchemaUiOptions } from 'schema-generator/generator/uiOptionsTypes'
 
 import { useFormExportImport } from '../../../frontend/hooks/useFormExportImport'
 import { useFormContext } from '../useFormContext'

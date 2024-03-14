@@ -1,5 +1,5 @@
+import { WidgetSpacing } from '@schema-generator/generator/uiOptionsTypes'
 import React, { createContext, PropsWithChildren, useContext } from 'react'
-import { WidgetSpacing } from 'schema-generator/generator/uiOptionsTypes'
 
 const WidgetSpacingContext = createContext<Partial<WidgetSpacing>>({})
 

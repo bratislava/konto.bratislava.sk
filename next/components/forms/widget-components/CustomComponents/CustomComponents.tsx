@@ -1,5 +1,5 @@
+import { CustomComponentType } from '@schema-generator/generator/uiOptionsTypes'
 import React from 'react'
-import { CustomComponentType } from 'schema-generator/generator/uiOptionsTypes'
 
 import PropertyTaxCalculator from '../../segments/PropertyTaxCalculator/PropertyTaxCalculator'
 import Accordion from '../../simple-components/Accordion'

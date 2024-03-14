@@ -1,14 +1,14 @@
 import { GenericObjectType } from '@rjsf/utils'
+import {
+  CustomComponentPropertyCalculator,
+  CustomComponentPropertyCalculatorProps,
+} from '@schema-generator/generator/uiOptionsTypes'
 import cx from 'classnames'
 import { Parser } from 'expr-eval'
 import clone from 'lodash/clone'
 import get from 'lodash/get'
 import React, { useMemo } from 'react'
 import { useNumberFormatter } from 'react-aria'
-import {
-  CustomComponentPropertyCalculator,
-  CustomComponentPropertyCalculatorProps,
-} from 'schema-generator/generator/uiOptionsTypes'
 
 import { parseRatio } from '../../../../frontend/utils/form'
 import FormMarkdown from '../../info-components/FormMarkdown'

@@ -1,4 +1,3 @@
-/* eslint-disable import/no-extraneous-dependencies */
 import type { Experimental_ArrayMinItems, RJSFSchema, UiSchema } from '@rjsf/utils'
 import intersection from 'lodash/intersection'
 import kebabCase from 'lodash/kebabCase'

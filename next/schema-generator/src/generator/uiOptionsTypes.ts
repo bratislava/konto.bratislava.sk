@@ -1,9 +1,9 @@
-/* eslint-disable import/no-extraneous-dependencies,import/no-relative-packages */
-import { AccordionBase } from '../../components/forms/simple-components/Accordion'
-import { FieldSize } from '../../components/forms/widget-components/FieldBase'
-
-// TODO: Reconsider stability of dependency on AccordionBase type
-export type CustomComponentAccordionProps = AccordionBase
+export type CustomComponentAccordionProps = {
+  size: 'xs' | 'sm' | 'md' | 'lg'
+  title: string
+  content: string
+  shadow?: boolean
+}
 
 export type CustomComponentAdditionalLinksProps = {
   links: {
@@ -61,7 +61,7 @@ export type WidgetUiOptions = WidgetSpacing & {
   className?: string
   belowComponents?: CustomComponentType[]
   rightComponents?: CustomComponentType[]
-  size?: FieldSize
+  size?: 'full' | 'medium' | 'small'
   labelSize?: LabelSize
 }
 

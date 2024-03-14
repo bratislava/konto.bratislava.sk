@@ -1,7 +1,7 @@
 import { StrictRJSFSchema, WidgetProps } from '@rjsf/utils'
+import { FileUploadUiOptions } from '@schema-generator/generator/uiOptionsTypes'
 import WidgetWrapper from 'components/forms/widget-wrappers/WidgetWrapper'
 import React from 'react'
-import { FileUploadUiOptions } from 'schema-generator/generator/uiOptionsTypes'
 
 import { useFormFileUpload } from '../useFormFileUpload'
 import Upload from '../widget-components/Upload/Upload'

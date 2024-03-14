@@ -1,7 +1,7 @@
 import { getUiOptions, ObjectFieldTemplateProps } from '@rjsf/utils'
+import { ObjectFieldUiOptions } from '@schema-generator/generator/uiOptionsTypes'
 import cx from 'classnames'
 import { PropsWithChildren, useMemo } from 'react'
-import { ObjectFieldUiOptions } from 'schema-generator/generator/uiOptionsTypes'
 
 import FormMarkdown from '../info-components/FormMarkdown'
 import { WidgetSpacingContextProvider } from './useWidgetSpacingContext'

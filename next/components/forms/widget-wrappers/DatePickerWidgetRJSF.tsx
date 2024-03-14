@@ -1,8 +1,8 @@
 import { StrictRJSFSchema, WidgetProps } from '@rjsf/utils'
+import { DatePickerUiOptions } from '@schema-generator/generator/uiOptionsTypes'
 import DatePicker from 'components/forms/widget-components/DateTimePicker/DatePicker'
 import WidgetWrapper from 'components/forms/widget-wrappers/WidgetWrapper'
 import React from 'react'
-import { DatePickerUiOptions } from 'schema-generator/generator/uiOptionsTypes'
 
 interface DatePickerWidgetRJSFProps extends WidgetProps {
   label: string

@@ -5240,19 +5240,19 @@ acorn@^8.1.0, acorn@^8.8.0, acorn@^8.8.1:
   resolved "https://registry.yarnpkg.com/acorn/-/acorn-8.8.2.tgz#1b2f25db02af965399b9776b0c2c391276d37c4a"
   integrity sha512-xjIYgE8HBrkpd/sJqOGNspf8uHG+NOHGOw6a/Urj8taM2EXfdNAH2oFcPeIFfsv3+kz/mJrS5VuMqbNLjCa2vw==
 
-add-to-calendar-button-react@^2.2.3:
-  version "2.2.3"
-  resolved "https://registry.yarnpkg.com/add-to-calendar-button-react/-/add-to-calendar-button-react-2.2.3.tgz#86f27be087cd88fe935e490a9279536a2d408317"
-  integrity sha512-SzmTZKiHPo+1eGEYl+fhAJIQbJJxTheI/itbwtzzEVf2bq/Uhx7E4wHSIGZ2utYTM+CRIdxtxz0edd1EM9dpiQ==
+add-to-calendar-button-react@^2.6.5:
+  version "2.6.5"
+  resolved "https://registry.yarnpkg.com/add-to-calendar-button-react/-/add-to-calendar-button-react-2.6.5.tgz#a62b800b973ebe9b1bcf58ff647ea7ddd8add24b"
+  integrity sha512-GZ/71KKKCJNliOG69dP3LLxYkoPKb5cs3Xhd0SC9Agnslt4FGa+lM3/HNewrV6WMDWjJccc4n1BfW4SQBwo1ng==
   dependencies:
-    add-to-calendar-button "^2.2.5"
+    add-to-calendar-button "^2.6.5"
 
-add-to-calendar-button@^2.2.5:
-  version "2.2.5"
-  resolved "https://registry.yarnpkg.com/add-to-calendar-button/-/add-to-calendar-button-2.2.5.tgz#8d27f622621d37e0ff99ec0803b38ab5dc677b8b"
-  integrity sha512-F2ehJs+keRCCOkVxyqOSPUp0c9dZWPsWwt8m3q7td03fl9hgzNh5KG+tnlxkPzLJgPYYfPtQtYr2ZDgoUDWhQw==
+add-to-calendar-button@^2.6.5:
+  version "2.6.5"
+  resolved "https://registry.yarnpkg.com/add-to-calendar-button/-/add-to-calendar-button-2.6.5.tgz#7b495abe726c69012ba36716d72f973377ba1794"
+  integrity sha512-m8fKClyiYtizVGDyV5SUlsylhiqnZ9D0VLKiWw8UaCJVPUIGOENQAZjqlBH3PNVY5Z1bG4I93R5GoerY+ywl9Q==
   dependencies:
-    timezones-ical-library "^1.6.1"
+    timezones-ical-library "^1.8.2"
 
 adm-zip@^0.5.10:
   version "0.5.10"
@@ -12508,10 +12508,10 @@ through@^2.3.6:
   resolved "https://registry.yarnpkg.com/through/-/through-2.3.8.tgz#0dd4c9ffaabc357960b1b724115d7e0e86a2e1f5"
   integrity sha512-w89qg7PI8wAdvX60bMDP+bFoD5Dvhm9oLheFp5O4a2QF0cSBGsBX4qZmadPMvVqlLJBBci+WqGGOAPvcDeNSVg==
 
-timezones-ical-library@^1.6.1:
-  version "1.6.1"
-  resolved "https://registry.yarnpkg.com/timezones-ical-library/-/timezones-ical-library-1.6.1.tgz#0e694a670517535b90b5fc015e9b6cfc349ad83b"
-  integrity sha512-KlYe1VeyaXlcfXM5rDqUJ8Xv1C80P3ek9A50r3MaOsFpt3YCoymPkAR2SB/wNYOk7hJjl0MoUrJC8B+IaDUtNg==
+timezones-ical-library@^1.8.2:
+  version "1.8.2"
+  resolved "https://registry.yarnpkg.com/timezones-ical-library/-/timezones-ical-library-1.8.2.tgz#33a96db1f2bcce87d5e00ee64f263b9925c37719"
+  integrity sha512-0bbCp+xXtTUOcBo7bAGkzK5yMiNnY/FmJblTlnkGcqW5O+SChvWNtvsOX9WqbU5/8sT+Nl/MKQ7c9qafIkUstA==
 
 tiny-glob@^0.2.9:
   version "0.2.9"

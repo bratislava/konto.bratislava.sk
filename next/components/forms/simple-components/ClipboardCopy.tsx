@@ -17,6 +17,7 @@ const ClipboardCopy = ({ copyText }: { copyText: string }) => {
       type="button"
       onClick={() => {
         copy(copyText)
+          // TODO add generic text
           .then(() => openSnackbarInfo(t('iban_copied'), 3000))
           .catch((error_) => logger.error('Submit failed', error_))
       }}

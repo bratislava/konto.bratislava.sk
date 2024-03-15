@@ -1,6 +1,6 @@
 import { CrossIcon, HamburgerIcon } from '@assets/ui-icons'
 import cx from 'classnames'
-import { StatusBar, useStatusBarContext } from 'components/forms/info-components/StatusBar'
+import { useStatusBarContext } from 'components/forms/info-components/StatusBar'
 import HamburgerMenu from 'components/forms/segments/HambergerMenu/HamburgerMenu'
 import { MenuItemBase } from 'components/forms/simple-components/MenuDropdown/MenuDropdown'
 import FocusTrap from 'focus-trap-react'
@@ -50,7 +50,7 @@ export const MobileNavBar = ({ className, sectionsList, menuItems }: MobileMenuN
                   data-cy="mobile-account-button"
                 >
                   <div className="flex w-6 items-center justify-center">
-                    {isMobileMenuOpen ? <CrossIcon className="h-6 w-6" /> : <HamburgerIcon />}
+                    {isMobileMenuOpen ? <CrossIcon className="size-6" /> : <HamburgerIcon />}
                   </div>
                 </button>
               </div>
@@ -67,7 +67,6 @@ export const MobileNavBar = ({ className, sectionsList, menuItems }: MobileMenuN
         </div>
       </div>
       <div className={cx('h-16', className)} />
-      {!isMobileMenuOpen && <StatusBar />}
     </div>
   )
 }

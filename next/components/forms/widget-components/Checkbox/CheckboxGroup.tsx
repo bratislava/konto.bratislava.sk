@@ -33,7 +33,7 @@ const CheckboxGroup = (props: CheckboxGroupProps) => {
   return (
     <div
       {...groupProps}
-      data-cy={`checkbox-group-${label.toLowerCase().replace(/ /g, '-').replace(/\?/g, '')}`}
+      data-cy={`checkbox-group-${label.toLowerCase().replaceAll(' ', '-').replaceAll('?', '')}`}
     >
       <FieldWrapper
         label={label}

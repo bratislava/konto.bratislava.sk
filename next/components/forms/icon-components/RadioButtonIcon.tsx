@@ -13,7 +13,7 @@ const RadioButtonIcon = ({ selected, className }: RadioButtonIconProps) => {
 
   return (
     <div className={radioButtonClassName}>
-      {selected && <div className="m-auto h-4 w-4 rounded-full bg-gray-800" />}
+      {selected && <div className="m-auto size-4 rounded-full bg-gray-800" />}
     </div>
   )
 }

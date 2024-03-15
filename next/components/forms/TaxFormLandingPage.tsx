@@ -79,8 +79,9 @@ const TaxFormLandingPage = ({ latestVersionId }: TaxFormLandingPageProps) => {
       disabled: isPending,
       isBetaUser,
     },
-    !isBetaUser
-      ? {
+    isBetaUser
+      ? null
+      : {
           title: 'Vyplniť a podať cez esluzby.bratislava.sk',
           id: 'esluzby-bratislava-sk',
           isEid: true,
@@ -89,8 +90,7 @@ const TaxFormLandingPage = ({ latestVersionId }: TaxFormLandingPageProps) => {
           icon: Tax48PxIcon,
           href: 'https://esluzby.bratislava.sk/info/203?slug=podavanie-danoveho-priznania-k-dani-z-nehnutelnosti',
           isBetaUser,
-        }
-      : null,
+        },
     {
       title: 'Stiahnuť PDF priznanie',
       id: 'pdf-priznanie',
@@ -106,7 +106,7 @@ const TaxFormLandingPage = ({ latestVersionId }: TaxFormLandingPageProps) => {
   return (
     <AccountPageLayout hiddenHeaderNav>
       <div className="relative flex flex-col">
-        <div className="h-full w-full bg-main-200 p-4 md:py-6 lg:min-h-[120px] lg:px-0 lg:py-12">
+        <div className="size-full bg-main-200 p-4 md:py-6 lg:min-h-[120px] lg:px-0 lg:py-12">
           <div className="mx-auto flex max-w-screen-lg justify-between">
             <div className="flex flex-col gap-2 lg:gap-4">
               <h1 className="text-h1-form">{t('tax_form_landing_page.title')}</h1>

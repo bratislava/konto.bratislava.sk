@@ -54,7 +54,7 @@ const statusHandler = (status: 'negative' | 'warning' | 'success', text: string)
   const statusNode = (icon: ReactNode, statusTitle: string): ReactNode => {
     return (
       <>
-        <span className="flex h-6 w-6 items-center justify-center">{icon}</span>
+        <span className="flex size-6 items-center justify-center">{icon}</span>
         <span className={statusStyle}>{statusTitle}</span>
       </>
     )
@@ -62,11 +62,11 @@ const statusHandler = (status: 'negative' | 'warning' | 'success', text: string)
 
   switch (status) {
     case 'negative':
-      return statusNode(<ErrorIcon className="h-6 w-6 text-negative-700" />, text)
+      return statusNode(<ErrorIcon className="size-6 text-negative-700" />, text)
     case 'warning':
-      return statusNode(<ClockIcon className="h-6 w-6 text-warning-700" />, text)
+      return statusNode(<ClockIcon className="size-6 text-warning-700" />, text)
     case 'success':
-      return statusNode(<CheckIcon className="h-6 w-6 text-success-700" />, text)
+      return statusNode(<CheckIcon className="size-6 text-success-700" />, text)
 
     default:
       return null
@@ -98,8 +98,8 @@ const TaxFeeSectionHeader = ({ tax }: AccountSectionHeaderBase) => {
     <div className="h-full bg-gray-50 px-4 lg:px-0">
       <div className="m-auto flex max-w-screen-lg flex-col gap-4 py-6">
         <div className="flex cursor-pointer items-center gap-0.5">
-          <div className="flex h-5 w-5 items-center justify-center">
-            <ChevronLeftIcon className="h-5 w-5" />
+          <div className="flex size-5 items-center justify-center">
+            <ChevronLeftIcon className="size-5" />
           </div>
           <button
             type="button"
@@ -109,8 +109,8 @@ const TaxFeeSectionHeader = ({ tax }: AccountSectionHeaderBase) => {
             {t('back_to_list')}
           </button>
         </div>
-        <div className="flex h-full w-full flex-col items-start gap-2">
-          <div className="flex h-full w-full flex-col items-start gap-4">
+        <div className="flex size-full flex-col items-start gap-2">
+          <div className="flex size-full flex-col items-start gap-4">
             <div className="flex w-full flex-row items-center gap-4">
               <div className="text-h1 grow">
                 {t('tax_detail_section.title', { year: tax?.year })}
@@ -118,7 +118,7 @@ const TaxFeeSectionHeader = ({ tax }: AccountSectionHeaderBase) => {
 
               {status.paymentStatus === 'unpaid' && (
                 <Button
-                  startIcon={<PaymentIcon fill="white" className="h-6 w-6" />}
+                  startIcon={<PaymentIcon fill="white" className="size-6" />}
                   variant="black"
                   text={t('pay_tax')}
                   size="sm"
@@ -127,7 +127,7 @@ const TaxFeeSectionHeader = ({ tax }: AccountSectionHeaderBase) => {
                 />
               )}
               <Button
-                startIcon={<DownloadIcon className="h-5 w-5" />}
+                startIcon={<DownloadIcon className="size-5" />}
                 variant="black-outline"
                 text={t('download_pdf')}
                 size="sm"
@@ -140,7 +140,7 @@ const TaxFeeSectionHeader = ({ tax }: AccountSectionHeaderBase) => {
                 <div className="lg:text-p2-semibold text-p3-semibold">{t('tax_created')}</div>
                 <div className="lg:text-p2 text-p3">{formatDate(tax?.createdAt)}</div>
               </div>
-              <div className="hidden h-1.5 w-1.5 rounded-full bg-black md:block" />
+              <div className="hidden size-1.5 rounded-full bg-black md:block" />
               <div className="lg:text-p2-bold text-p3">
                 {formatCurrency(tax.amount)}
                 {status.paymentStatus === 'partially_paid' ? (
@@ -152,7 +152,7 @@ const TaxFeeSectionHeader = ({ tax }: AccountSectionHeaderBase) => {
                   </span>
                 ) : null}
               </div>
-              <div className="hidden h-1.5 w-1.5 rounded-full bg-black md:block" />
+              <div className="hidden size-1.5 rounded-full bg-black md:block" />
               <div className="flex items-center gap-2">
                 <div className="flex items-center gap-2">
                   <div
@@ -176,7 +176,7 @@ const TaxFeeSectionHeader = ({ tax }: AccountSectionHeaderBase) => {
               <div className="flex flex-col gap-3">
                 {status.paymentStatus === 'unpaid' && (
                   <Button
-                    startIcon={<PaymentIcon className="h-5 w-5" />}
+                    startIcon={<PaymentIcon className="size-5" />}
                     variant="black"
                     text={t('pay_tax')}
                     size="sm"
@@ -185,7 +185,7 @@ const TaxFeeSectionHeader = ({ tax }: AccountSectionHeaderBase) => {
                   />
                 )}
                 <Button
-                  startIcon={<DownloadIcon className="h-5 w-5" />}
+                  startIcon={<DownloadIcon className="size-5" />}
                   variant="black-outline"
                   text={t('download_pdf')}
                   size="sm"

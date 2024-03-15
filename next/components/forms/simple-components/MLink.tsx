@@ -15,12 +15,7 @@ const MLink = forwardRef<HTMLAnchorElement, LinkProps>(
   ({ href, label, labelCenter, children, className, target, ...rest }, ref) => {
     const regEx = /^http/
 
-    return !regEx.test(href) ? (
-      <Link href={href} passHref ref={ref} {...rest} className={className}>
-        <p className={cx({ 'w-full text-center': labelCenter })}>{label}</p>
-        {children}
-      </Link>
-    ) : (
+    return regEx.test(href) ? (
       <a
         ref={ref}
         target={target || '_blank'}
@@ -32,6 +27,11 @@ const MLink = forwardRef<HTMLAnchorElement, LinkProps>(
         <p>{label}</p>
         {children}
       </a>
+    ) : (
+      <Link href={href} passHref ref={ref} {...rest} className={className}>
+        <p className={cx({ 'w-full text-center': labelCenter })}>{label}</p>
+        {children}
+      </Link>
     )
   },
 )

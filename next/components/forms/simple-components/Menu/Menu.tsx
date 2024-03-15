@@ -40,7 +40,7 @@ const Menu = <T extends object>(props: MenuProps<T>) => {
           {buttonLeftEl}
           <div className="ml-3 font-light lg:font-semibold">{label}</div>
           <ChevronDownSmallIcon
-            className={`ml-1 hidden h-5 w-5 mix-blend-normal lg:flex ${
+            className={`ml-1 hidden size-5 mix-blend-normal lg:flex ${
               state.isOpen ? '-rotate-180' : ''
             }`}
           />

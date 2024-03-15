@@ -101,7 +101,7 @@ const ValueComponent = ({
       return <>{value as string}</>
     case 'input':
       if (uiSchema?.['ui:options']?.type === 'password') {
-        return <>{(value as string).replace(/./g, '●')}</>
+        return <>{(value as string).replaceAll(/./g, '●')}</>
       }
       return <>{value as string}</>
     default:

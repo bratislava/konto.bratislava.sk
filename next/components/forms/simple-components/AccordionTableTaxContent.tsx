@@ -55,6 +55,8 @@ const TableHeaderRow = ({ dataType }: { dataType: string }) => {
         </th>
         {headerData?.map((header) => {
           return (
+            // False positive
+            // eslint-disable-next-line jsx-a11y/control-has-associated-label
             <th
               className="text-16 border-spacing-0 border-b-2 p-4 text-left first:rounded-tl last:rounded-tr lg:p-0 lg:py-4 [&:not(:first-child)]:text-center"
               key={header}
@@ -131,7 +133,7 @@ const AccordionTableTaxContent = ({
   const accordionSize = isAccordionSizeType(size) as AccordionSizeType
 
   const TableContent = () => (
-    <div className="flex h-full w-full flex-col gap-6">
+    <div className="flex size-full flex-col gap-6">
       <Table dataType={dataType} data={data} />
       <div className="flex rounded-lg bg-gray-100 p-4 lg:bg-gray-0 lg:p-0">
         <div className="text-h4-bold grow">Celkom</div>

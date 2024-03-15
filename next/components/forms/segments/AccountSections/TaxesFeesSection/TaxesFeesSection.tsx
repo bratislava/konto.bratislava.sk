@@ -35,11 +35,11 @@ const TaxesFeesSection = () => {
 <h3>${t('account_section_payment.error_card_title')}</h3>
 <div>${t('account_section_payment.error_card_content.title')}
 <ul>${
-    !tierStatus.isIdentityVerified
-      ? t('account_section_payment.error_card_content.list.verification', {
+    tierStatus.isIdentityVerified
+      ? ''
+      : t('account_section_payment.error_card_content.list.verification', {
           url: ROUTES.IDENTITY_VERIFICATION,
         })
-      : ''
   }${t('account_section_payment.error_card_content.list.other')}</ul><br />${t(
     'account_section_payment.error_card_content.help_text',
     { url: ROUTES.HELP },

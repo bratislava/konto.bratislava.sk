@@ -32,7 +32,7 @@ const NotFoundPage = () => {
             {t('sorryNoResultsFound')}
           </div>
           <Link href="/">
-            <Button text={t('toTheMainPage')} endIcon={<ArrowRightIcon className="h-6 w-6" />} />
+            <Button text={t('toTheMainPage')} endIcon={<ArrowRightIcon className="size-6" />} />
           </Link>
         </div>
       </div>

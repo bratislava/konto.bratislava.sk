@@ -18,7 +18,7 @@ const AccountModal = ({ show, onClose, content, header, onSubmit }: Props) => {
       onClose={onClose}
       onSubmit={onSubmit}
       content={() => content}
-      className="h-full w-full"
+      className="size-full"
     />
   )
 }

@@ -38,5 +38,5 @@ Run the following and let the script guide you. If you need modifications or you
 ```
 
 ## Notes
-- `resolutions` for `string-width` in package.json is because of https://github.com/iarna/wide-align/issues/63
+- `resolutions` for `jackspeak` in package.json is because of https://github.com/storybookjs/storybook/issues/22431#issuecomment-1630086092
 - `ts-config` based on https://github.com/tsconfig/bases/blob/main/bases/node-lts.json

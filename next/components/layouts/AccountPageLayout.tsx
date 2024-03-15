@@ -33,7 +33,7 @@ declare module 'react' {
   }
 }
 
-const AccountPageLayout = ({ className, children, hiddenHeaderNav }: AccountPageLayoutBase) => {
+const AccountPageLayout = ({ children, hiddenHeaderNav }: AccountPageLayoutBase) => {
   const { getRouteWithCurrentUrlRedirect } = useQueryParamRedirect()
   const { isSignedIn } = useSsrAuth()
   const { signOut } = useSignOut()

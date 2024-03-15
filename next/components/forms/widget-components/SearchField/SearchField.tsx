@@ -107,7 +107,7 @@ const SearchField = ({
               tabIndex={0}
               onKeyDown={() => setValueState('')}
               onClick={() => setValueState('')}
-              className="absolute inset-y-1/2 right-3 flex h-6 w-6 -translate-y-2/4 cursor-pointer items-center justify-center sm:right-4"
+              className="absolute inset-y-1/2 right-3 flex size-6 -translate-y-2/4 cursor-pointer items-center justify-center sm:right-4"
             >
               <RemoveIcon />
             </i>

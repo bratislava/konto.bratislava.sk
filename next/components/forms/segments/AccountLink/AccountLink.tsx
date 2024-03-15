@@ -8,7 +8,7 @@ interface Props {
 }
 
 const AccountLink = ({ description, label, href, variant = 'black' }: Props) => {
-  const name = href.replace(/\//g, '')
+  const name = href.replaceAll('/', '')
   return (
     <div className="flex flex-col justify-between md:flex-row">
       <div className="text-16-semibold text-gray-800">{description}</div>

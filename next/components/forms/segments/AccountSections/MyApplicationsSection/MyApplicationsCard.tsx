@@ -160,31 +160,31 @@ const MyApplicationsCard = ({ form, refreshListData, variant }: MyApplicationsCa
     ? [
         {
           title: t('account_section_applications.concept_menu_list.download_xml'),
-          icon: <DownloadIcon className="h-6 w-6" />,
+          icon: <DownloadIcon className="size-6" />,
           onPress: () => exportXml(),
         },
         {
           title: t('account_section_applications.concept_menu_list.download_pdf'),
-          icon: <PdfIcon className="h-6 w-6" />,
+          icon: <PdfIcon className="size-6" />,
           onPress: () => exportPdf(),
         },
         {
           title: t('account_section_applications.concept_menu_list.delete'),
           itemClassName: 'text-negative-700',
-          icon: <BinIcon className="h-6 w-6" />,
+          icon: <BinIcon className="size-6" />,
           onPress: () => setDeleteConceptModalShow(true),
         },
       ]
     : [
         {
           title: t('account_section_applications.concept_menu_list.download_xml'),
-          icon: <DownloadIcon className="h-6 w-6" />,
+          icon: <DownloadIcon className="size-6" />,
           onPress: () => exportXml(),
         },
         {
           title: t('account_section_applications.concept_menu_list.delete'),
           itemClassName: 'text-negative-700',
-          icon: <BinIcon className="h-6 w-6" />,
+          icon: <BinIcon className="size-6" />,
           onPress: () => setDeleteConceptModalShow(true),
         },
       ]
@@ -254,9 +254,9 @@ const MyApplicationsCard = ({ form, refreshListData, variant }: MyApplicationsCa
                       variant="black-outline"
                       startIcon={
                         isEditable ? (
-                          <EditIcon className="h-5 w-5" />
+                          <EditIcon className="size-5" />
                         ) : (
-                          <EyeIcon className="h-5 w-5" />
+                          <EyeIcon className="size-5" />
                         )
                       }
                       href={formPageHref}
@@ -356,7 +356,7 @@ const MyApplicationsCard = ({ form, refreshListData, variant }: MyApplicationsCa
                 isEditable ? (variant === 'DRAFT' ? 'continue' : 'edit') : 'view'
               }_button_text`,
             ),
-            icon: isEditable ? <EditIcon className="h-6 w-6" /> : <EyeIcon className="h-6 w-6" />,
+            icon: isEditable ? <EditIcon className="size-6" /> : <EyeIcon className="size-6" />,
             url: formPageHref,
           },
           ...conceptMenuContent,

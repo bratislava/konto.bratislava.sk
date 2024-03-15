@@ -37,7 +37,7 @@ const AnnouncementBlock = ({
           <>
             <Button
               className="hidden lg:flex"
-              endIcon={<ArrowRightIcon className="h-6 w-6" />}
+              endIcon={<ArrowRightIcon className="size-6" />}
               variant="category"
               text={buttonTitle}
               onPress={onPress}
@@ -45,7 +45,7 @@ const AnnouncementBlock = ({
             <Button
               className="flex lg:hidden"
               size="sm"
-              endIcon={<ArrowRightIcon className="h-5 w-5" />}
+              endIcon={<ArrowRightIcon className="size-5" />}
               variant="category"
               text={buttonTitle}
               onPress={onPress}

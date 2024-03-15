@@ -131,7 +131,7 @@ const AccordionTableTaxContent = ({
   const accordionSize = isAccordionSizeType(size) as AccordionSizeType
 
   const TableContent = () => (
-    <div className="flex h-full w-full flex-col gap-6">
+    <div className="flex size-full flex-col gap-6">
       <Table dataType={dataType} data={data} />
       <div className="flex rounded-lg bg-gray-100 p-4 lg:bg-gray-0 lg:p-0">
         <div className="text-h4-bold grow">Celkom</div>

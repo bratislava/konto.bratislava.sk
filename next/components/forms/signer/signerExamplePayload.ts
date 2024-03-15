@@ -169,8 +169,8 @@ export const signerExamplePayload = {
   xdcNamespaceURI: 'http://data.gov.sk/def/container/xmldatacontainer+xml/1.1',
   signatureId: `id_${v4()}_${new Date()
     .toISOString()
-    .replace(/[^\dT]/g, '')
-    .replace(/T/g, '-')}`,
+    .replaceAll(/[^\dT]/g, '')
+    .replaceAll('T', '-')}`,
   digestAlgUrl: '',
   signaturePolicyIdentifier: '',
 }

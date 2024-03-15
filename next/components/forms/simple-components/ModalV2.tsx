@@ -55,16 +55,16 @@ const ModalV2 = ({
         <Dialog className="outline-0">
           {({ close }) => (
             <>
-              {!noCloseButton ? (
+              {noCloseButton ? null : (
                 <AriaButton
                   className="absolute right-3 top-3 cursor-pointer md:right-4 md:top-4"
                   onPress={close}
                   data-cy="close-modal"
                 >
-                  <CrossIcon className="h-6 w-6" aria-hidden />
+                  <CrossIcon className="size-6" aria-hidden />
                   <span className="sr-only">{t('modal_close_aria')}</span>
                 </AriaButton>
-              ) : null}
+              )}
               {children}
             </>
           )}

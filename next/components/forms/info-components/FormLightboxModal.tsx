@@ -41,7 +41,7 @@ const FormLightboxModal = ({ children, imageUrl }: PropsWithChildren<FormLightbo
           buttonZoom: () => null,
           buttonClose: () => (
             <AriaButton onPress={() => setIsOpen(false)} className="p-2">
-              <CrossIcon className="h-6 w-6" aria-hidden />
+              <CrossIcon className="size-6" aria-hidden />
               <span className="sr-only">{t('modal_close_aria')}</span>
             </AriaButton>
           ),

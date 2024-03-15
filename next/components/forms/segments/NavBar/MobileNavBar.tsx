@@ -50,7 +50,7 @@ export const MobileNavBar = ({ className, sectionsList, menuItems }: MobileMenuN
                   data-cy="mobile-account-button"
                 >
                   <div className="flex w-6 items-center justify-center">
-                    {isMobileMenuOpen ? <CrossIcon className="h-6 w-6" /> : <HamburgerIcon />}
+                    {isMobileMenuOpen ? <CrossIcon className="size-6" /> : <HamburgerIcon />}
                   </div>
                 </button>
               </div>

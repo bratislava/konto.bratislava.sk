@@ -52,15 +52,15 @@ const ServiceCard = ({
         </h3>
         <div className="flex items-center text-p-sm font-normal">{description}</div>
       </div>
-      <div className="flex h-full w-full items-end">
+      <div className="flex size-full items-end">
         <div className="flex h-max w-full items-center justify-between">
           <div className="text-p2-semibold">{buttonText}</div>
           {buttonText && (
-            <span className="flex h-10 w-10 min-w-[40px] items-center justify-center rounded-full bg-gray-50">
+            <span className="flex size-10 min-w-[40px] items-center justify-center rounded-full bg-gray-50">
               {href?.includes('http') ? (
-                <ExportIcon className="h-5 w-5" />
+                <ExportIcon className="size-5" />
               ) : (
-                <ArrowRightIcon className="h-5 w-5" />
+                <ArrowRightIcon className="size-5" />
               )}
             </span>
           )}

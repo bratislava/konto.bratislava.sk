@@ -47,7 +47,7 @@ const schema = {
   properties: {
     account_type: {
       type: 'string',
-      enum: [...Object.values(AccountType)],
+      enum: Object.values(AccountType),
     },
     email: {
       type: 'string',
@@ -165,7 +165,7 @@ const RegisterForm = ({ onSubmit, error, lastEmail, disablePO }: Props) => {
       </h1>
       <AccountErrorAlert error={error} args={{ email: lastEmail || '' }} />
 
-      {!disablePO ? (
+      {disablePO ? null : (
         <Controller
           name="account_type"
           control={control}
@@ -189,7 +189,7 @@ const RegisterForm = ({ onSubmit, error, lastEmail, disablePO }: Props) => {
             </RadioGroup>
           )}
         />
-      ) : null}
+      )}
       <Controller
         name="email"
         control={control}

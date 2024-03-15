@@ -43,12 +43,12 @@ const SummaryFormSignature = () => {
           items={[
             {
               title: 'Podpísať znova',
-              icon: <EditIcon className="h-6 w-6" />,
+              icon: <EditIcon className="size-6" />,
               onPress: () => sign(),
             },
             {
               title: 'Odstrániť podpis',
-              icon: <BinIcon className="h-6 w-6" />,
+              icon: <BinIcon className="size-6" />,
               onPress: () => remove(),
               itemClassName: 'text-negative-700',
             },

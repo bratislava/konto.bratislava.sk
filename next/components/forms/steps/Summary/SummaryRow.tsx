@@ -44,7 +44,7 @@ const SummaryRow = (props: SummaryRowProps) => {
         <span className={valueClassName}>{data.value || '-'}</span>
         {isEditable && (
           <div className="w-5 lg:hidden hover:lg:block">
-            <EditIcon className="flex h-5 w-5 cursor-pointer" onClick={onGoToStep} />
+            <EditIcon className="flex size-5 cursor-pointer" onClick={onGoToStep} />
           </div>
         )}
       </div>

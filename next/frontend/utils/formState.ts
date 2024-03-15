@@ -115,7 +115,7 @@ export const parseStepFromFieldId = (fieldId: string) => {
  */
 export const getFirstNonEmptyStepIndex = (stepSchemas: (JSONSchema7 | null)[]) => {
   const firstStep = stepSchemas.findIndex((step) => step !== null)
-  return firstStep !== -1 ? firstStep : ('summary' as const)
+  return firstStep === -1 ? ('summary' as const) : firstStep
 }
 
 /**

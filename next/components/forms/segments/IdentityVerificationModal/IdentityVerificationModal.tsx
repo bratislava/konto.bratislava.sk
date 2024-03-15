@@ -46,7 +46,7 @@ const IdentityVerificationModal = ({ accountType, ...rest }: IdentityVerificatio
           <div className="mt-6 flex justify-center">
             <ButtonNew
               variant="black-plain"
-              endIcon={<ArrowRightIcon className="h-6 w-6" />}
+              endIcon={<ArrowRightIcon className="size-6" />}
               onPress={() => rest?.onOpenChange?.(false)}
             >
               {t('verification_modal.footer_desktop_continue')}

@@ -172,7 +172,7 @@ const SelectField = <
         displayOptionalLabel={displayOptionalLabel}
         htmlFor={id}
       >
-        <div data-cy={`select-${label.toLowerCase().replace(/ /g, '-')}`}>
+        <div data-cy={`select-${label.toLowerCase().replaceAll(' ', '-')}`}>
           <Select
             placeholder={null}
             {...rest}

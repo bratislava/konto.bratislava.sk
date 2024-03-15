@@ -20,25 +20,10 @@ export default conditionalStep(
           },
         ],
         [
-          [stepKey],
+          [stepKey, 'array:priznania', 'spoluvlastnictvo'],
           {
-            type: 'object',
-            properties: {
-              priznania: {
-                type: 'array',
-                items: {
-                  type: 'object',
-                  properties: {
-                    spoluvlastnictvo: {
-                      type: 'string',
-                      enum: ['bezpodieloveSpoluvlastnictvoManzelov'],
-                    },
-                  },
-                  required: ['spoluvlastnictvo'],
-                },
-              },
-            },
-            required: ['priznania'],
+            type: 'string',
+            enum: ['bezpodieloveSpoluvlastnictvoManzelov'],
           },
         ],
       ]),

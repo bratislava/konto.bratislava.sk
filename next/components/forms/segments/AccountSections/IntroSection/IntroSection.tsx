@@ -65,12 +65,11 @@ const IntroSection = () => {
                   key={card.id}
                   title={t(card.title)}
                   description={t(card.description)}
-                  buttonText={card.buttonText ? t(card.buttonText) : undefined}
+                  buttonText={t(card.buttonText)}
                   icon={card.icon}
                   href={card.href}
                   tag={card.tag ? t(card.tag) : undefined}
                   tagStyle={card.tagStyle}
-                  onPress={card.onPress}
                   plausibleProps={{ id: `Domov: ${t(card.title)}` }}
                 />
               ))}

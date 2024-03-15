@@ -25,7 +25,6 @@ import { useFormLeaveProtection } from '../../components/forms/useFormLeaveProte
 import { useFormModals } from '../../components/forms/useFormModals'
 import { useFormState } from '../../components/forms/useFormState'
 import type { PdfPreviewDataAdditionalMetadata } from '../../pages/pdf-preview'
-import { readFileToString } from '../utils/file'
 import { createSerializableFile } from '../utils/formExportImport'
 import { downloadBlob } from '../utils/general'
 import useSnackbar from './useSnackbar'
@@ -170,7 +169,7 @@ export const useGetContext = () => {
 
     try {
       openSnackbarInfo(t('info_messages.xml_import'))
-      const xmlData = await readFileToString(file)
+      const xmlData = await file.text()
       const response = await formsApi.convertControllerConvertXmlToJson(
         schemaVersionId,
         {
@@ -192,7 +191,7 @@ export const useGetContext = () => {
       return
     }
     const file = files[0]
-    const jsonForm = await readFileToString(file)
+    const jsonForm = await file.text()
     openSnackbarInfo(t('info_messages.json_import'))
     try {
       const parsed = JSON.parse(jsonForm)

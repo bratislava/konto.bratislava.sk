@@ -33,58 +33,58 @@ const MenuList = () => {
   const { setDeleteConceptModal } = useFormModals()
 
   const menuList = [
-    !isReadonly
-      ? {
+    isReadonly
+      ? null
+      : {
           title: t('menu_list.save_concept'),
-          icon: <DiscIcon className="h-6 w-6" />,
+          icon: <DiscIcon className="size-6" />,
           // eslint-disable-next-line @typescript-eslint/no-misused-promises
           onPress: () => saveConcept(),
           dataCy: 'save-concept-mobile',
-        }
-      : null,
+        },
     {
       title: t('menu_list.download_xml'),
-      icon: <DownloadIcon className="h-6 w-6" />,
+      icon: <DownloadIcon className="size-6" />,
       // eslint-disable-next-line @typescript-eslint/no-misused-promises
       onPress: () => exportXml(),
     },
-    !isTaxForm
-      ? {
+    isTaxForm
+      ? null
+      : {
           title: t('menu_list.pdf'),
-          icon: <PdfIcon className="h-6 w-6" />,
+          icon: <PdfIcon className="size-6" />,
           // eslint-disable-next-line @typescript-eslint/no-misused-promises
           onPress: () => exportPdf(),
-        }
-      : null,
-    !isReadonly
-      ? {
+        },
+    isReadonly
+      ? null
+      : {
           title: t('menu_list.upload_xml'),
-          icon: <ConnectionIcon className="h-6 w-6" />,
+          icon: <ConnectionIcon className="size-6" />,
           onPress: importXml,
-        }
-      : null,
+        },
     showImportExportJson
       ? {
           title: t('menu_list.download_json'),
-          icon: <DownloadIcon className="h-6 w-6" />,
+          icon: <DownloadIcon className="size-6" />,
           onPress: exportJson,
         }
       : null,
     showImportExportJson
       ? {
           title: t('menu_list.upload_json'),
-          icon: <ConnectionIcon className="h-6 w-6" />,
+          icon: <ConnectionIcon className="size-6" />,
           onPress: importJson,
         }
       : null,
-    !isDeletable
-      ? {
+    isDeletable
+      ? null
+      : {
           title: t('menu_list.delete'),
-          icon: <BinIcon className="h-6 w-6" />,
+          icon: <BinIcon className="size-6" />,
           onPress: () => setDeleteConceptModal({ isOpen: true, sendCallback: deleteConcept }),
           className: 'text-negative-700',
-        }
-      : null,
+        },
   ].filter(Boolean) as MenuItem[]
 
   return (

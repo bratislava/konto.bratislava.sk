@@ -88,7 +88,7 @@ export const StatusBar = forwardRef<HTMLDivElement>((props, forwardedRef) => {
         <div className="flex justify-between py-4">
           <div className="flex">
             <span className="mr-3">
-              <WarningIcon solid className="h-5 w-5" />
+              <WarningIcon solid className="size-5" />
             </span>
             <AccountMarkdown
               variant="statusBar"

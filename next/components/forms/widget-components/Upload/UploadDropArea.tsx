@@ -102,11 +102,11 @@ const UploadDropArea = forwardRef<HTMLButtonElement, UploadDropAreaProps>(
           >
             <ReactAriaButton
               ref={ref}
-              className="flex h-full w-full flex-col items-center justify-evenly p-6 text-center"
+              className="flex size-full flex-col items-center justify-evenly p-6 text-center"
               isDisabled={disabled}
             >
               <div className="flex justify-center">
-                <div className="flex h-12 w-12 items-center justify-center rounded-full bg-gray-100">
+                <div className="flex size-12 items-center justify-center rounded-full bg-gray-100">
                   <UploadIcon />
                 </div>
               </div>

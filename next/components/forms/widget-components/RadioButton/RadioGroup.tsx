@@ -66,8 +66,8 @@ const RadioGroup = (props: RadioGroupProps) => {
       className={className}
       data-cy={`radio-group-${label
         .toLowerCase()
-        .replace(/ /g, '-')
-        .replace(/[(),./?§]/g, '')}`}
+        .replaceAll(' ', '-')
+        .replaceAll(/[(),./?§]/g, '')}`}
     >
       <FieldWrapper
         label={label}
@@ -97,7 +97,7 @@ const RadioGroup = (props: RadioGroupProps) => {
               {children}
             </div>
 
-            {!required ? (
+            {required ? null : (
               <ButtonNew
                 variant="black-plain"
                 size="small"
@@ -106,7 +106,7 @@ const RadioGroup = (props: RadioGroupProps) => {
               >
                 {t('resetChoice')}
               </ButtonNew>
-            ) : null}
+            )}
           </div>
         </RadioContext.Provider>
       </FieldWrapper>

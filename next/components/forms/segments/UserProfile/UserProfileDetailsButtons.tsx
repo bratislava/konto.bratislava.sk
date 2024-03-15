@@ -20,7 +20,7 @@ const UserProfileDetailsButtons = (props: UserProfileDetailsButtonsProps) => {
         // first button is to fix bug with autofocus of button 'cancel edit'
         isEditing ? (
           <div className="flex flex-row items-center gap-5">
-            <Button className="hidden h-0 w-0" />
+            <Button className="hidden size-0" />
             <Button
               className={cx('hidden h-full', 'md:block')}
               variant="plain-black"
@@ -45,7 +45,7 @@ const UserProfileDetailsButtons = (props: UserProfileDetailsButtonsProps) => {
           <div className="w-fit">
             <Button
               variant="black"
-              startIcon={<EditIcon fill="white" className="h-6 w-6" />}
+              startIcon={<EditIcon fill="white" className="size-6" />}
               size="sm"
               text={t('profile_detail.start_edit_button')}
               className="hidden md:block"
@@ -53,7 +53,7 @@ const UserProfileDetailsButtons = (props: UserProfileDetailsButtonsProps) => {
             />
 
             <EditIcon
-              className="block h-6 w-6 cursor-pointer md:hidden"
+              className="block size-6 cursor-pointer md:hidden"
               onClick={() => onChangeIsEditing(true)}
             />
           </div>

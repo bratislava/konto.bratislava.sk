@@ -54,6 +54,7 @@ const ModalHeader = ({
   return (
     <div className={headerStyle}>
       {currentScreenIndex > 0 ? (
+        // eslint-disable-next-line jsx-a11y/control-has-associated-label
         <div
           role="button"
           tabIndex={0}
@@ -70,7 +71,7 @@ const ModalHeader = ({
       ) : null}
       <div className={headlineStyle}>{header}</div>
       <div className="ml-1 flex flex-row items-center justify-end">
-        <CrossIcon className="h-5 w-5 cursor-pointer sm:h-6 sm:w-6" type="info" onClick={onClose} />
+        <CrossIcon className="size-5 cursor-pointer sm:size-6" type="info" onClick={onClose} />
       </div>
     </div>
   )
@@ -151,11 +152,11 @@ const ModalBody = ({
         'rounded-b-10': !hasFooter,
       })}
     >
-      {!hasHeader ? (
+      {hasHeader ? null : (
         <div className="ml-1 flex flex-row items-center justify-end">
           <CrossIcon className="cursor-pointer" type="info" onClick={onClose} />
         </div>
-      ) : null}
+      )}
       <div className="flex h-[calc(100%-80px)] w-full flex-col items-start rounded-lg">
         {Array.isArray(content)
           ? content.length - 1 >= currentScreenIndex && content[currentScreenIndex]()
@@ -194,14 +195,16 @@ const Modal = ({
   const hasHeader = Array.isArray(content) || Boolean(header)
   const hasFooter = Array.isArray(content)
   return (
+    // eslint-disable-next-line jsx-a11y/control-has-associated-label
     <div
       role="button"
       tabIndex={0}
-      className="fixed inset-x-0 top-0 z-50 flex h-full w-full items-center justify-center"
+      className="fixed inset-x-0 top-0 z-50 flex size-full items-center justify-center"
       style={{ background: 'rgba(var(--color-gray-800), .4)', marginTop: '0' }}
       onClick={handleOnClick}
       onKeyPress={(event: React.KeyboardEvent) => handleOnKeyPress(event, handleOnClick)}
     >
+      {/* eslint-disable-next-line jsx-a11y/control-has-associated-label */}
       <div
         role="button"
         tabIndex={0}

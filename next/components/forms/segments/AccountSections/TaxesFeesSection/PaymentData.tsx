@@ -52,11 +52,11 @@ const PaymentData = ({ tax }: PaymentDataProps) => {
         <div className="flex w-full flex-col-reverse gap-6 md:flex-row lg:gap-8">
           <div className="flex w-full flex-col gap-5 rounded-lg border-0 border-solid border-gray-200 p-0 sm:border-2 sm:px-6 sm:py-5 md:w-[488px]">
             <div className="text-p2">{t('use_one_of_ibans_to_pay')}</div>
-            {status?.paymentStatus !== 'paid' ? (
+            {status?.paymentStatus === 'paid' ? null : (
               <div className="text-p2 rounded-5 bg-warning-100 p-3">
                 {t('tax_bank_transfer_slow_info')}
               </div>
-            ) : null}
+            )}
             <div className="flex flex-col items-start gap-4">
               <div className="isolate flex flex-col items-start gap-1 self-stretch">
                 <div className="text-p2">{t('bank_info.slovak_sporitelna')}</div>
@@ -64,7 +64,7 @@ const PaymentData = ({ tax }: PaymentDataProps) => {
                   <div className="text-16-semibold grow">
                     {t('bank_info.slovak_sporitelna_iban')}
                   </div>
-                  <div className="hidden h-6 w-6 cursor-pointer sm:block">
+                  <div className="hidden size-6 cursor-pointer sm:block">
                     <ClipboardCopy copyText={t('bank_info.slovak_sporitelna_iban')} />
                   </div>
                 </div>
@@ -74,7 +74,7 @@ const PaymentData = ({ tax }: PaymentDataProps) => {
                 <div className="text-p2">{t('bank_info.csob')}</div>
                 <div className="flex w-full">
                   <div className="text-16-semibold grow">{t('bank_info.csob_iban')}</div>
-                  <div className="hidden h-6 w-6 cursor-pointer sm:block">
+                  <div className="hidden size-6 cursor-pointer sm:block">
                     <ClipboardCopy copyText={t('bank_info.csob_iban')} />
                   </div>
                 </div>
@@ -147,7 +147,7 @@ const PaymentData = ({ tax }: PaymentDataProps) => {
                 </div>
                 {/* Desktop 'download' button */}
                 <Button
-                  startIcon={<DownloadIcon className="h-5 w-5" />}
+                  startIcon={<DownloadIcon className="size-5" />}
                   variant="black-outline"
                   text={t('download_image')}
                   size="sm"
@@ -163,7 +163,7 @@ const PaymentData = ({ tax }: PaymentDataProps) => {
 
               {/* Mobile 'download' button */}
               <Button
-                startIcon={<DownloadIcon className="h-5 w-5" />}
+                startIcon={<DownloadIcon className="size-5" />}
                 variant="black-outline"
                 text={t('download_image')}
                 size="sm"

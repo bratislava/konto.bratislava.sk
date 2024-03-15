@@ -67,10 +67,10 @@ const useGetContext = () => {
 
   const getPreviousStep = () => {
     const prevSteps = stepsSchemas
-      .slice(0, currentStepIndex !== 'summary' ? currentStepIndex : stepsSchemas.length)
+      .slice(0, currentStepIndex === 'summary' ? stepsSchemas.length : currentStepIndex)
       .reverse()
     const prevStepIndex = prevSteps.findIndex((step) => step != null)
-    return prevStepIndex !== -1 ? prevSteps.length - prevStepIndex - 1 : null
+    return prevStepIndex === -1 ? null : prevSteps.length - prevStepIndex - 1
   }
 
   const canGoToPreviousStep = getPreviousStep() !== null
@@ -86,7 +86,7 @@ const useGetContext = () => {
     if (currentStepIndex === 'summary') return null
     const nextSteps = stepsSchemas.slice(currentStepIndex + 1)
     const nextStepIndex = nextSteps.findIndex((step) => step != null)
-    return nextStepIndex !== -1 ? currentStepIndex + nextStepIndex + 1 : 'summary'
+    return nextStepIndex === -1 ? 'summary' : currentStepIndex + nextStepIndex + 1
   }
 
   const canGoToNextStep = getNextStep() !== null

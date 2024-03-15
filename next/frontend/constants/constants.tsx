@@ -45,13 +45,12 @@ type ServiceCardBase = {
   id: number
   title: string
   description: string
-  buttonText?: string
+  buttonText: string
   icon: ReactNode
-  href?: string
+  href: string
   tag?: string
   tagStyle?: string
   category: string[]
-  onPress?: () => void
 }
 
 export const serviceCards: ServiceCardBase[] = [

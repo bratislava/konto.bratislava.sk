@@ -54,6 +54,7 @@ const ModalHeader = ({
   return (
     <div className={headerStyle}>
       {currentScreenIndex > 0 ? (
+        // eslint-disable-next-line jsx-a11y/control-has-associated-label
         <div
           role="button"
           tabIndex={0}
@@ -194,6 +195,7 @@ const Modal = ({
   const hasHeader = Array.isArray(content) || Boolean(header)
   const hasFooter = Array.isArray(content)
   return (
+    // eslint-disable-next-line jsx-a11y/control-has-associated-label
     <div
       role="button"
       tabIndex={0}
@@ -202,6 +204,7 @@ const Modal = ({
       onClick={handleOnClick}
       onKeyPress={(event: React.KeyboardEvent) => handleOnKeyPress(event, handleOnClick)}
     >
+      {/* eslint-disable-next-line jsx-a11y/control-has-associated-label */}
       <div
         role="button"
         tabIndex={0}

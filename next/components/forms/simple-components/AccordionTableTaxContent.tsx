@@ -55,6 +55,8 @@ const TableHeaderRow = ({ dataType }: { dataType: string }) => {
         </th>
         {headerData?.map((header) => {
           return (
+            // False positive
+            // eslint-disable-next-line jsx-a11y/control-has-associated-label
             <th
               className="text-16 border-spacing-0 border-b-2 p-4 text-left first:rounded-tl last:rounded-tr lg:p-0 lg:py-4 [&:not(:first-child)]:text-center"
               key={header}

@@ -2,18 +2,18 @@ import { ArrowRightIcon, ExportIcon } from '@assets/ui-icons'
 import cx from 'classnames'
 import { ReactNode } from 'react'
 
-import MLinkNew, { LinkPlausibleProps } from './MLinkNew'
+import ButtonNew from './ButtonNew'
+import { LinkPlausibleProps } from './MLinkNew'
 
 type ServiceCardBase = {
   title: string
   description: string
-  buttonText?: string
+  buttonText: string
   className?: string
   icon: ReactNode
-  href?: string
+  href: string
   tag?: string
   tagStyle?: string
-  onPress?: () => void
   plausibleProps?: LinkPlausibleProps
 }
 
@@ -26,18 +26,17 @@ const ServiceCard = ({
   tagStyle,
   icon,
   href,
-  onPress,
   plausibleProps,
 }: ServiceCardBase) => {
   const style = cx(
-    'group flex w-full min-w-[280px] flex-col items-start gap-5 rounded-lg border-2 border-solid border-gray-200 bg-gray-0 p-4',
+    'group relative flex w-full min-w-[280px] flex-col items-start gap-5 rounded-lg border-2 border-solid border-gray-200 bg-gray-0 p-4',
     className,
     { 'cursor-pointer': buttonText },
     { 'cursor-default': !buttonText },
   )
 
-  const Card = () => (
-    <>
+  return (
+    <div className={style}>
       <div className="flex w-full justify-between">
         <div className="rounded-lg border-2 border-gray-200 p-1.5 lg:p-2.5">{icon}</div>
         <span className={cx('text-p3-medium h-min rounded-[4px] px-2', tagStyle)}>{tag}</span>
@@ -54,7 +53,15 @@ const ServiceCard = ({
       </div>
       <div className="flex size-full items-end">
         <div className="flex h-max w-full items-center justify-between">
-          <div className="text-p2-semibold">{buttonText}</div>
+          <ButtonNew
+            href={href}
+            variant="black-link"
+            className="text-p2-semibold"
+            stretched
+            plausibleProps={plausibleProps}
+          >
+            {buttonText}
+          </ButtonNew>
           {buttonText && (
             <span className="flex size-10 min-w-[40px] items-center justify-center rounded-full bg-gray-50">
               {href?.includes('http') ? (
@@ -66,22 +73,7 @@ const ServiceCard = ({
           )}
         </div>
       </div>
-    </>
-  )
-
-  return href ? (
-    <MLinkNew
-      target={href?.includes('http') ? '_blank' : '_self'}
-      href={href}
-      className={style}
-      plausibleProps={plausibleProps}
-    >
-      <Card />
-    </MLinkNew>
-  ) : (
-    <button type="button" onClick={onPress} className={style}>
-      <Card />
-    </button>
+    </div>
   )
 }
 

@@ -17,6 +17,8 @@ export async function extractSignatureIdFromAsice(base64Asice: string | undefine
       return null
     }
 
+    // Falsely mistakes AdmZip#readAsText for FileReader#readAsText
+    // eslint-disable-next-line unicorn/prefer-blob-reading-methods
     const signaturesXmlContent = zip.readAsText(signaturesXmlEntry)
     const xmlTree = await parseStringPromise(signaturesXmlContent)
 

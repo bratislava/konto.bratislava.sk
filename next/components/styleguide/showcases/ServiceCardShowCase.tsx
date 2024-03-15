@@ -25,7 +25,7 @@ const ServiceCardShowCase = () => {
             description="Žiadosť o dotáciu na kontajnerové stanovište alebo o nájom mestského pozemku."
             icon={<BasketServiceIcon className="size-10 text-environment-700 lg:size-12" />}
             buttonText="Prejsť na žiadosť"
-            onPress={() => alert('Hello')}
+            href="#"
           />
           <ServiceCard
             title="Digitálna platba dane z nehnuteľností"
@@ -39,7 +39,7 @@ const ServiceCardShowCase = () => {
             description="Kúpa online lístku alebo permanentky na všetky mestské kúpalíská v Bratislave."
             icon={<PoolServiceIcon className="size-10 text-education-700 lg:size-12" />}
             buttonText="Kúpiť lístok"
-            onPress={() => alert('Hello')}
+            href="#"
           />
         </div>
       </Stack>

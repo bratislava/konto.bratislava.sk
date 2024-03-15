@@ -1,8 +1,10 @@
 import { RemoveIcon, SearchIcon } from '@assets/ui-icons'
 import cx from 'classnames'
+import { useTranslation } from 'next-i18next'
 import { useRef, useState } from 'react'
 import { useTextField } from 'react-aria'
 
+import ButtonNew from '../../simple-components/ButtonNew'
 import FieldWrapper, { FieldWrapperProps } from '../FieldWrapper'
 
 type SearchFieldProps = FieldWrapperProps & {
@@ -32,6 +34,7 @@ const SearchField = ({
 }: SearchFieldProps) => {
   const [valueState, setValueState] = useState<string>(value)
   const ref = useRef<HTMLInputElement>(null)
+  const { t } = useTranslation('account')
   const { labelProps, inputProps, descriptionProps, errorMessageProps } = useTextField(
     {
       ...rest,
@@ -102,15 +105,14 @@ const SearchField = ({
             className={style}
           />
           {resetIcon && valueState && (
-            <i
-              role="button"
-              tabIndex={0}
-              onKeyDown={() => setValueState('')}
-              onClick={() => setValueState('')}
+            <ButtonNew
+              onPress={() => setValueState('')}
+              variant="unstyled"
               className="absolute inset-y-1/2 right-3 flex size-6 -translate-y-2/4 cursor-pointer items-center justify-center sm:right-4"
             >
               <RemoveIcon />
-            </i>
+              <span className="sr-only">{t('SearchField.aria.reset')}</span>
+            </ButtonNew>
           )}
         </div>
       </FieldWrapper>

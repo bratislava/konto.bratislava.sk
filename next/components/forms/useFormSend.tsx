@@ -133,6 +133,8 @@ const useGetContext = () => {
       onSuccess: async () => {
         setSendEidMetadata({ formSlug: slug, formId })
         turnOffLeaveProtection()
+        // We are redirecting to a trusted URL
+        // eslint-disable-next-line xss/no-location-href-assign
         window.location.href = environment.slovenskoSkLoginUrl
         setRedirectingToSlovenskoSkLogin(true)
       },
@@ -204,7 +206,6 @@ const useGetContext = () => {
     const url = new URL(window.location.href)
     const params = new URLSearchParams(url.search)
     params.delete(FORM_SEND_EID_TOKEN_QUERY_KEY)
-    // eslint-disable-next-line scanjs-rules/assign_to_search
     url.search = params.toString()
     // eslint-disable-next-line @typescript-eslint/no-floating-promises
     router.replace(url.toString(), undefined, { shallow: true })

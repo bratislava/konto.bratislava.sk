@@ -1,10 +1,12 @@
 import { LockIcon, PhoneIcon, ProfileIcon, RemoveIcon } from '@assets/ui-icons'
 import { useObjectRef } from '@react-aria/utils'
 import cx from 'classnames'
+import { useTranslation } from 'next-i18next'
 import { forwardRef, ReactNode, useEffect, useState } from 'react'
 import { useTextField } from 'react-aria'
 
 import MailIcon from '../../../../assets/ui-icons/custom_mail.svg'
+import ButtonNew from '../../simple-components/ButtonNew'
 import FieldWrapper, { FieldWrapperProps } from '../FieldWrapper'
 
 export type LeftIconVariants = 'person' | 'mail' | 'call' | 'lock'
@@ -55,6 +57,7 @@ const InputField = forwardRef<HTMLInputElement, InputFieldProps>(
   ) => {
     const ref = useObjectRef(forwardedRef)
     const [valueState, setValueState] = useState<string>(value)
+    const { t } = useTranslation('account')
 
     useEffect(() => {
       setValueState(onChange ? value : valueState)
@@ -169,14 +172,14 @@ const InputField = forwardRef<HTMLInputElement, InputFieldProps>(
             data-cy={`input-${inputProps.name}`}
           />
           {resetIcon && valueState && (
-            <button
-              type="button"
-              tabIndex={0}
-              onClick={resetIconHandler}
+            <ButtonNew
+              onPress={resetIconHandler}
+              variant="unstyled"
               className="absolute inset-y-1/2 right-3 flex size-6 -translate-y-2/4 cursor-pointer items-center justify-center sm:right-4"
             >
               <RemoveIcon />
-            </button>
+              <span className="sr-only">{t('InputField.aria.reset')}</span>
+            </ButtonNew>
           )}
           {endIcon}
         </div>

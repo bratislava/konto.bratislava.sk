@@ -2,10 +2,9 @@ import PaymentDeclined from '@assets/icons/other/payment-declined.svg'
 import { CheckIcon, CrossIcon, RepeatIcon } from '@assets/ui-icons'
 import cx from 'classnames'
 import AccountMarkdown from 'components/forms/segments/AccountMarkdown/AccountMarkdown'
-import Button from 'components/forms/simple-components/Button'
-import Link from 'next/link'
 
 import { ROUTES } from '../../../../../frontend/api/constants'
+import ButtonNew from '../../../simple-components/ButtonNew'
 
 type ThankYouCardBase = {
   success?: boolean
@@ -49,27 +48,32 @@ const ThankYouCard = ({
         {success ? (
           <>
             {feedbackUrl && (
-              <a href={feedbackUrl} className="w-full" target="_blank" rel="noreferrer">
-                <Button text={firstButtonTitle} fullWidth />
-              </a>
+              <ButtonNew href={feedbackUrl} variant="black-solid" fullWidth>
+                {firstButtonTitle}
+              </ButtonNew>
             )}
-            <Link href="/" className="w-full">
-              <Button variant="black-outline" text={secondButtonTitle} fullWidth />
-            </Link>
+            <ButtonNew href={ROUTES.HOME} variant="black-outline" fullWidth>
+              {secondButtonTitle}
+            </ButtonNew>
           </>
         ) : (
           <>
-            <Link href={`${ROUTES.TAXES_AND_FEES}/2023`} className="w-full">
-              <Button startIcon={<RepeatIcon />} text={firstButtonTitle} fullWidth />
-            </Link>
-            <Link href="/" className="w-full">
-              <Button
-                startIcon={<CrossIcon className="size-6" />}
-                variant="black-outline"
-                text={secondButtonTitle}
-                fullWidth
-              />
-            </Link>
+            <ButtonNew
+              href={`${ROUTES.TAXES_AND_FEES}/2023`}
+              variant="black-solid"
+              fullWidth
+              startIcon={<RepeatIcon />}
+            >
+              {firstButtonTitle}
+            </ButtonNew>
+            <ButtonNew
+              href={ROUTES.HOME}
+              variant="black-outline"
+              fullWidth
+              startIcon={<CrossIcon className="size-6" />}
+            >
+              {secondButtonTitle}
+            </ButtonNew>
           </>
         )}
       </div>

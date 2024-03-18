@@ -1,8 +1,8 @@
 /* eslint-disable @typescript-eslint/explicit-function-return-type,eslint-comments/disable-enable-pair,import/prefer-default-export */
 import { DanZoStaviebViacereUcelyPriznania, TaxFormData, UcelVyuzitiaStavby } from '../../types'
 import { parseDateFieldDate, safeArray, safeBoolean, safeNumber, safeString } from './functions'
-import { evaluateFormula } from './kalkulacky'
 import { oddielBaseShared } from './oddielBaseShared'
+import { calculateTaxCalculatorFormula } from '../../calculators'
 
 const getVymeryStaviebPodlaTypu = (
   stavba: DanZoStaviebViacereUcelyPriznania,
@@ -18,7 +18,7 @@ const getVymeryStaviebPodlaTypu = (
     return {
       ucelVyuzitiaStavby: safeString(nehnutelnost.ucelVyuzitiaStavby),
       vymeraPodlahovejPlochy:
-        evaluateFormula(
+        calculateTaxCalculatorFormula(
           // eslint-disable-next-line no-secrets/no-secrets
           'roundTo(ratioNumerator(podielPriestoruNaSpolocnychCastiachAZariadeniachDomu) * evalRatio(spoluvlastnickyPodiel) / 100, 2)',
           nehnutelnost,
@@ -41,14 +41,14 @@ const mapPriznanie = (data: TaxFormData, priznanie: DanZoStaviebViacereUcelyPriz
   const pouzitKalkulacku =
     safeBoolean(data.danZoStaviebViacereUcely?.kalkulackaWrapper?.pouzitKalkulacku) === true
   const zakladDane = pouzitKalkulacku
-    ? evaluateFormula(
+    ? calculateTaxCalculatorFormula(
         // eslint-disable-next-line no-secrets/no-secrets
         'f(n) = evalRatio(n.podielPriestoruNaSpolocnychCastiachAZariadeniachDomu) * evalRatio(n.spoluvlastnickyPodiel) * celkovaVymera; mapped = map(f, nehnutelnosti.nehnutelnosti); sum(a, b) = a+b; ceil fold(sum, 0, mapped)',
         priznanie,
       )
     : safeNumber(priznanie.zakladDane)
   const celkovaVymera = pouzitKalkulacku
-    ? evaluateFormula(
+    ? calculateTaxCalculatorFormula(
         // eslint-disable-next-line no-secrets/no-secrets
         'f(n) = ratioNumerator(n.podielPriestoruNaSpolocnychCastiachAZariadeniachDomu) * evalRatio(n.spoluvlastnickyPodiel) / 100; mapped = map(f, nehnutelnosti.nehnutelnosti); sum(a, b) = a+b; ceil fold(sum, 0, mapped)',
         priznanie,

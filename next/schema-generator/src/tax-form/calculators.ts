@@ -1,4 +1,6 @@
-import { Parser } from 'expr-eval'
+import { GenericObjectType } from '@rjsf/utils'
+import { Expression, Parser } from 'expr-eval'
+import { clone } from 'lodash'
 
 import { parseRatio } from '../form-utils/ajvFormats'
 
@@ -35,4 +37,28 @@ export function getTaxCalculatorExpression(formula: string) {
   } catch (error) {
     return null
   }
+}
+
+export function calculateTaxCalculatorExpression(
+  expression: Expression | null,
+  data: GenericObjectType,
+) {
+  try {
+    // It is not in the documentation, but `expr-eval` mutates the original data!
+    const clonedData = clone(data)
+    const evaluated = expression?.evaluate(clonedData) as unknown
+
+    if (!Number.isFinite(evaluated)) {
+      return null
+    }
+
+    return evaluated as number
+  } catch (error) {
+    return null
+  }
+}
+
+export function calculateTaxCalculatorFormula(formula: string, data: GenericObjectType) {
+  const expression = getTaxCalculatorExpression(formula)
+  return calculateTaxCalculatorExpression(expression, data)
 }

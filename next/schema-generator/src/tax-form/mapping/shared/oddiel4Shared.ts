@@ -1,8 +1,8 @@
 /* eslint-disable @typescript-eslint/explicit-function-return-type,eslint-comments/disable-enable-pair,import/prefer-default-export */
 import { DanZBytovANebytovychPriestorovPriznanie, TaxFormData } from '../../types'
 import { parseDateFieldDate, safeArray, safeBoolean, safeNumber, safeString } from './functions'
-import { evaluateFormula } from './kalkulacky'
 import { oddielBaseShared } from './oddielBaseShared'
+import { calculateTaxCalculatorFormula } from '../../calculators'
 
 // eslint-disable-next-line no-secrets/no-secrets
 const zakladDaneFormula = `denominator = ratioDenominator(podielPriestoruNaSpolocnychCastiachAZariadeniachDomu);
@@ -22,7 +22,7 @@ const priznanieZaBytMapping = (
   }
 
   const zakladDane = pouzitKalkulacku(data)
-    ? evaluateFormula(zakladDaneFormula, priznanie?.priznanieZaByt ?? {})
+    ? calculateTaxCalculatorFormula(zakladDaneFormula, priznanie?.priznanieZaByt ?? {})
     : safeNumber(priznanie?.priznanieZaByt?.vymeraPodlahovejPlochyBytu)
 
   return {
@@ -54,7 +54,7 @@ const priznanieZaNebytovePriestoryMapping = (
 
   return nebytovePriestory.map((nebytovyPriestor) => {
     const vymeraPodlahovychPlochNebytovehoPriestoruVBytovomDome = pouzitKalkulacku(data)
-      ? evaluateFormula(zakladDaneFormula, nebytovyPriestor)
+      ? calculateTaxCalculatorFormula(zakladDaneFormula, nebytovyPriestor)
       : safeNumber(nebytovyPriestor?.vymeraPodlahovychPlochNebytovehoPriestoruVBytovomDome)
 
     return {

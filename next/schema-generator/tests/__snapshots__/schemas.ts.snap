@@ -1,5 +1,1526 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
+exports[`komunitneZahrady default form state should match snapshot 1`] = `
+{
+  "obcianskeZdruzenie": {
+    "adresaSidla": {
+      "mestoPsc": {},
+    },
+    "statutar": {},
+  },
+  "pozemok": {
+    "typPozemku": "predschvalenyPozemok",
+  },
+  "prilohyPredschvalenyPozemok": {},
+  "zahrada": {},
+  "ziadatel": {
+    "adresa": {
+      "mestoPsc": {},
+    },
+    "menoPriezvisko": {},
+  },
+}
+`;
+
+exports[`komunitneZahrady matches snapshot 1`] = `
+{
+  "schema": {
+    "allOf": [
+      {
+        "properties": {
+          "ziadatel": {
+            "hash": "ziadatel",
+            "properties": {
+              "adresa": {
+                "properties": {
+                  "mestoPsc": {
+                    "properties": {
+                      "mesto": {
+                        "title": "Mesto",
+                        "type": "string",
+                      },
+                      "psc": {
+                        "format": "zip",
+                        "title": "PSČ",
+                        "type": "string",
+                      },
+                    },
+                    "required": [
+                      "mesto",
+                      "psc",
+                    ],
+                    "type": "object",
+                  },
+                  "ulicaACislo": {
+                    "title": "Ulica a číslo",
+                    "type": "string",
+                  },
+                },
+                "required": [
+                  "ulicaACislo",
+                  "mestoPsc",
+                ],
+                "type": "object",
+              },
+              "email": {
+                "format": "email",
+                "title": "E-mail",
+                "type": "string",
+              },
+              "menoPriezvisko": {
+                "properties": {
+                  "meno": {
+                    "title": "Meno",
+                    "type": "string",
+                  },
+                  "priezvisko": {
+                    "title": "Priezvisko",
+                    "type": "string",
+                  },
+                },
+                "required": [
+                  "meno",
+                  "priezvisko",
+                ],
+                "type": "object",
+              },
+              "telefon": {
+                "format": "phone-number",
+                "title": "Telefónne číslo",
+                "type": "string",
+              },
+            },
+            "required": [
+              "menoPriezvisko",
+              "adresa",
+              "email",
+              "telefon",
+            ],
+            "title": "Žiadateľ",
+            "type": "object",
+          },
+        },
+        "required": [
+          "ziadatel",
+        ],
+        "type": "object",
+      },
+      {
+        "properties": {
+          "obcianskeZdruzenie": {
+            "hash": "obcianske-zdruzenie",
+            "properties": {
+              "adresaSidla": {
+                "properties": {
+                  "mestoPsc": {
+                    "properties": {
+                      "mesto": {
+                        "title": "Mesto",
+                        "type": "string",
+                      },
+                      "psc": {
+                        "format": "zip",
+                        "title": "PSČ",
+                        "type": "string",
+                      },
+                    },
+                    "required": [
+                      "mesto",
+                      "psc",
+                    ],
+                    "type": "object",
+                  },
+                  "ulicaACislo": {
+                    "title": "Ulica a číslo",
+                    "type": "string",
+                  },
+                },
+                "required": [
+                  "ulicaACislo",
+                  "mestoPsc",
+                ],
+                "type": "object",
+              },
+              "ico": {
+                "title": "IČO",
+                "type": "string",
+              },
+              "nazovObcianskehoZdruzenia": {
+                "title": "Názov občianskeho združenia",
+                "type": "string",
+              },
+              "statutar": {
+                "properties": {
+                  "menoStatutara": {
+                    "title": "Meno",
+                    "type": "string",
+                  },
+                  "priezviskoStatutara": {
+                    "title": "Priezvisko",
+                    "type": "string",
+                  },
+                },
+                "required": [
+                  "menoStatutara",
+                  "priezviskoStatutara",
+                ],
+                "type": "object",
+              },
+            },
+            "required": [
+              "nazovObcianskehoZdruzenia",
+              "ico",
+              "adresaSidla",
+              "statutar",
+            ],
+            "title": "Občianske združenie",
+            "type": "object",
+          },
+        },
+        "required": [
+          "obcianskeZdruzenie",
+        ],
+        "type": "object",
+      },
+      {
+        "properties": {
+          "pozemok": {
+            "allOf": [
+              {
+                "if": {
+                  "properties": {
+                    "typPozemku": {
+                      "const": "predschvalenyPozemok",
+                    },
+                  },
+                  "required": [
+                    "typPozemku",
+                  ],
+                  "type": "object",
+                },
+                "then": {
+                  "properties": {
+                    "predschvalenyPozemokVyber": {
+                      "enum": [
+                        "Azalková",
+                        "Budatínska A",
+                        "Budatínska B",
+                        "Haburská A",
+                        "Haburská B",
+                        "Líščie údolie",
+                        "Machová",
+                        "Medzijárky",
+                        "Nejedlého",
+                        "Pri Kríži",
+                        "Staré záhrady",
+                        "Štefunkova",
+                        "Tokajícka",
+                        "Vyšehradská",
+                      ],
+                      "title": "Ponuka predschválených mestských pozemkov",
+                      "type": "string",
+                    },
+                  },
+                  "required": [
+                    "predschvalenyPozemokVyber",
+                  ],
+                  "type": "object",
+                },
+              },
+              {
+                "if": {
+                  "properties": {
+                    "typPozemku": {
+                      "const": "inyPozemok",
+                    },
+                  },
+                  "required": [
+                    "typPozemku",
+                  ],
+                  "type": "object",
+                },
+                "then": {
+                  "properties": {
+                    "adresaPozemku": {
+                      "title": "Adresa pozemku, na ktorom chcete vytvoriť komunitnú záhradu",
+                      "type": "string",
+                    },
+                    "mestskaCast": {
+                      "enum": [
+                        "Čunovo",
+                        "Devín",
+                        "Devínska Nová Ves",
+                        "Dúbravka",
+                        "Jarovce",
+                        "Karlova Ves",
+                        "Lamač",
+                        "Nové Mesto",
+                        "Petržalka",
+                        "Podunajské Biskupice",
+                        "Rača",
+                        "Rusovce",
+                        "Ružinov",
+                        "Staré Mesto",
+                        "Vajnory",
+                        "Vrakuňa",
+                        "Záhorská Bystrica",
+                      ],
+                      "title": "Mestská časť, v ktorej sa pozemok nachádza",
+                      "type": "string",
+                    },
+                    "parcelneCislo": {
+                      "title": "Číslo parcely",
+                      "type": "string",
+                    },
+                  },
+                  "required": [
+                    "adresaPozemku",
+                    "mestskaCast",
+                    "parcelneCislo",
+                  ],
+                  "type": "object",
+                },
+              },
+            ],
+            "description": "Odporúčame vám výber jedného z predschválených mestských pozemkov, vďaka čomu vieme žiadosť vybaviť rýchlejšie.",
+            "hash": "pozemok",
+            "properties": {
+              "typPozemku": {
+                "default": "predschvalenyPozemok",
+                "oneOf": [
+                  {
+                    "const": "predschvalenyPozemok",
+                    "title": "Predschválený mestský pozemok",
+                  },
+                  {
+                    "const": "inyPozemok",
+                    "title": "Iný mestský pozemok",
+                  },
+                ],
+                "title": "O aký pozemok máte záujem?",
+                "type": "string",
+              },
+            },
+            "required": [
+              "typPozemku",
+            ],
+            "title": "Pozemok",
+            "type": "object",
+          },
+        },
+        "required": [
+          "pozemok",
+        ],
+        "type": "object",
+      },
+      {
+        "properties": {
+          "zahrada": {
+            "hash": "zahrada",
+            "properties": {
+              "dovodyZalozenia": {
+                "title": "Dôvody založenia komunitnej záhrady na danom pozemku",
+                "type": "string",
+              },
+              "financovanie": {
+                "title": "Spôsob financovania záhrady",
+                "type": "string",
+              },
+              "inkluzivnost": {
+                "title": "Inkluzívnosť projektu a režim komunitnej záhrady",
+                "type": "string",
+              },
+              "organizacnyTim": {
+                "title": "Organizačný tím záhrady",
+                "type": "string",
+              },
+              "prevadzka": {
+                "title": "Prevádzka a údržba záhrady",
+                "type": "string",
+              },
+              "suhlasKomunity": {
+                "title": "Súhlas miestnej komunity",
+                "type": "string",
+              },
+            },
+            "required": [
+              "dovodyZalozenia",
+              "suhlasKomunity",
+              "organizacnyTim",
+              "prevadzka",
+              "inkluzivnost",
+              "financovanie",
+            ],
+            "title": "Záhrada",
+            "type": "object",
+          },
+        },
+        "required": [
+          "zahrada",
+        ],
+        "type": "object",
+      },
+      {
+        "if": {
+          "properties": {
+            "pozemok": {
+              "properties": {
+                "typPozemku": {
+                  "not": {
+                    "const": "inyPozemok",
+                  },
+                },
+              },
+              "required": [],
+              "type": "object",
+            },
+          },
+          "required": [],
+          "type": "object",
+        },
+        "then": {
+          "properties": {
+            "prilohyPredschvalenyPozemok": {
+              "hash": "prilohy-predschvaleny-pozemok",
+              "properties": {
+                "dizajn": {
+                  "file": true,
+                  "title": "Dizajn/projekt záhrady",
+                  "type": "string",
+                },
+                "fotografie": {
+                  "file": true,
+                  "title": "Fotografie miesta, na ktorom si chcete vytvoriť komunitnú záhradu",
+                  "type": "string",
+                },
+                "ine": {
+                  "file": true,
+                  "title": "Iné",
+                  "type": "string",
+                },
+                "umiestnenie": {
+                  "file": true,
+                  "title": "Presné umiestnenie záhrady na pozemku",
+                  "type": "string",
+                },
+              },
+              "required": [
+                "umiestnenie",
+                "dizajn",
+              ],
+              "title": "Prílohy",
+              "type": "object",
+            },
+          },
+          "required": [
+            "prilohyPredschvalenyPozemok",
+          ],
+          "type": "object",
+        },
+      },
+      {
+        "if": {
+          "properties": {
+            "pozemok": {
+              "properties": {
+                "typPozemku": {
+                  "not": {
+                    "const": "predschvalenyPozemok",
+                  },
+                },
+              },
+              "required": [
+                "typPozemku",
+              ],
+              "type": "object",
+            },
+          },
+          "required": [
+            "pozemok",
+          ],
+          "type": "object",
+        },
+        "then": {
+          "properties": {
+            "prilohyInyPozemok": {
+              "hash": "prilohy-iny-pozemok",
+              "properties": {
+                "dizajn": {
+                  "file": true,
+                  "title": "Dizajn/projekt záhrady",
+                  "type": "string",
+                },
+                "fotografie": {
+                  "file": true,
+                  "title": "Fotografie miesta, na ktorom si chcete vytvoriť komunitnú záhradu",
+                  "type": "string",
+                },
+                "ine": {
+                  "file": true,
+                  "title": "Iné",
+                  "type": "string",
+                },
+                "umiestnenie": {
+                  "file": true,
+                  "title": "Presné umiestnenie záhrady na pozemku",
+                  "type": "string",
+                },
+              },
+              "required": [
+                "fotografie",
+                "umiestnenie",
+                "dizajn",
+              ],
+              "title": "Prílohy",
+              "type": "object",
+            },
+          },
+          "required": [
+            "prilohyInyPozemok",
+          ],
+          "type": "object",
+        },
+      },
+    ],
+    "pospID": "00603481.komunitneZahrady",
+    "pospVersion": "1.0",
+    "title": "Komunitné záhrady",
+  },
+  "uiSchema": {
+    "obcianskeZdruzenie": {
+      "adresaSidla": {
+        "mestoPsc": {
+          "mesto": {
+            "ui:label": false,
+            "ui:options": {
+              "type": "text",
+            },
+            "ui:widget": "Input",
+          },
+          "psc": {
+            "ui:label": false,
+            "ui:options": {
+              "type": "text",
+            },
+            "ui:widget": "Input",
+          },
+          "ui:options": {
+            "columns": true,
+            "columnsRatio": "3/1",
+          },
+          "ui:order": [
+            "mesto",
+            "psc",
+          ],
+        },
+        "ui:options": {
+          "objectDisplay": "boxed",
+          "title": "Adresa sídla",
+        },
+        "ui:order": [
+          "ulicaACislo",
+          "mestoPsc",
+        ],
+        "ulicaACislo": {
+          "ui:label": false,
+          "ui:options": {
+            "type": "text",
+          },
+          "ui:widget": "Input",
+        },
+      },
+      "ico": {
+        "ui:label": false,
+        "ui:options": {
+          "size": "medium",
+          "type": "text",
+        },
+        "ui:widget": "Input",
+      },
+      "nazovObcianskehoZdruzenia": {
+        "ui:label": false,
+        "ui:options": {
+          "type": "text",
+        },
+        "ui:widget": "Input",
+      },
+      "statutar": {
+        "menoStatutara": {
+          "ui:label": false,
+          "ui:options": {
+            "type": "text",
+          },
+          "ui:widget": "Input",
+        },
+        "priezviskoStatutara": {
+          "ui:label": false,
+          "ui:options": {
+            "type": "text",
+          },
+          "ui:widget": "Input",
+        },
+        "ui:options": {
+          "columns": true,
+          "columnsRatio": "1/1",
+          "title": "Štatutár",
+        },
+        "ui:order": [
+          "menoStatutara",
+          "priezviskoStatutara",
+        ],
+      },
+      "ui:options": {},
+      "ui:order": [
+        "nazovObcianskehoZdruzenia",
+        "ico",
+        "adresaSidla",
+        "statutar",
+      ],
+    },
+    "pozemok": {
+      "adresaPozemku": {
+        "ui:label": false,
+        "ui:options": {
+          "type": "text",
+        },
+        "ui:widget": "Input",
+      },
+      "mestskaCast": {
+        "ui:options": {
+          "placeholder": "Vyberte",
+          "selectOptions": {
+            "Devín": {
+              "title": "Devín",
+            },
+            "Devínska Nová Ves": {
+              "title": "Devínska Nová Ves",
+            },
+            "Dúbravka": {
+              "title": "Dúbravka",
+            },
+            "Jarovce": {
+              "title": "Jarovce",
+            },
+            "Karlova Ves": {
+              "title": "Karlova Ves",
+            },
+            "Lamač": {
+              "title": "Lamač",
+            },
+            "Nové Mesto": {
+              "title": "Nové Mesto",
+            },
+            "Petržalka": {
+              "title": "Petržalka",
+            },
+            "Podunajské Biskupice": {
+              "title": "Podunajské Biskupice",
+            },
+            "Rača": {
+              "title": "Rača",
+            },
+            "Rusovce": {
+              "title": "Rusovce",
+            },
+            "Ružinov": {
+              "title": "Ružinov",
+            },
+            "Staré Mesto": {
+              "title": "Staré Mesto",
+            },
+            "Vajnory": {
+              "title": "Vajnory",
+            },
+            "Vrakuňa": {
+              "title": "Vrakuňa",
+            },
+            "Záhorská Bystrica": {
+              "title": "Záhorská Bystrica",
+            },
+            "Čunovo": {
+              "title": "Čunovo",
+            },
+          },
+        },
+        "ui:widget": "Select",
+      },
+      "parcelneCislo": {
+        "ui:label": false,
+        "ui:options": {
+          "helptextHeader": "markdown_gKgflRNwdS:Číslo parcely a bližšie informácie k pozemku a jeho vlastníkom nájdete na [katastrálnej mape ZBGIS](https://zbgis.skgeodesy.sk/mkzbgis/sk/kataster?pos=48.155530,17.129713,13).",
+          "size": "medium",
+          "type": "text",
+        },
+        "ui:widget": "Input",
+      },
+      "predschvalenyPozemokVyber": {
+        "ui:options": {
+          "helptextHeader": "markdown_gKgflRNwdS:Pre zaistenie kvalitného verejného priestoru sme na niektorých mestských pozemkoch zaviedli zopár [podmienok](https://bratislava.sk/zivotne-prostredie-a-vystavba/zelen/udrzba-a-tvorba-zelene/komunitne-zahrady) pre vznik komunitnej záhrady.",
+          "selectOptions": {
+            "Azalková": {
+              "title": "Azalková",
+            },
+            "Budatínska A": {
+              "title": "Budatínska A",
+            },
+            "Budatínska B": {
+              "title": "Budatínska B",
+            },
+            "Haburská A": {
+              "title": "Haburská A",
+            },
+            "Haburská B": {
+              "title": "Haburská B",
+            },
+            "Líščie údolie": {
+              "title": "Líščie údolie",
+            },
+            "Machová": {
+              "title": "Machová",
+            },
+            "Medzijárky": {
+              "title": "Medzijárky",
+            },
+            "Nejedlého": {
+              "title": "Nejedlého",
+            },
+            "Pri Kríži": {
+              "title": "Pri Kríži",
+            },
+            "Staré záhrady": {
+              "title": "Staré záhrady",
+            },
+            "Tokajícka": {
+              "title": "Tokajícka",
+            },
+            "Vyšehradská": {
+              "title": "Vyšehradská",
+            },
+            "Štefunkova": {
+              "title": "Štefunkova",
+            },
+          },
+        },
+        "ui:widget": "Select",
+      },
+      "typPozemku": {
+        "ui:options": {
+          "orientations": "column",
+          "radioOptions": [],
+          "variant": "boxed",
+        },
+        "ui:widget": "RadioGroup",
+      },
+      "ui:options": {},
+      "ui:order": [
+        "typPozemku",
+        "predschvalenyPozemokVyber",
+        "adresaPozemku",
+        "mestskaCast",
+        "parcelneCislo",
+      ],
+    },
+    "prilohyInyPozemok": {
+      "dizajn": {
+        "ui:options": {
+          "helptextHeader": "markdown_gKgflRNwdS:Situácia záhrady spracovaná v adekvátnej mierke, ktorá ilustruje plánované využitie a umiestnenie jednotlivých prvkov na záhrade.
+
+ Napríklad, záhony či pestovacie boxy, výsadbu akejkoľvek trvalkovej zelene, kríkov a stromov spolu s druhovým špecifikovaním tejto zelene, kompost, mobiliár, priestor na uskladnenie náradia a zariadenia záhrady, priestor pre využívanie grilu, spôsob zabezpečenia vody a jej distribúcie.",
+          "type": "dragAndDrop",
+        },
+        "ui:widget": "FileUpload",
+      },
+      "fotografie": {
+        "ui:options": {
+          "helptextHeader": "Zakreslenie presného umiestnenia záhrady na pozemku urýchli celý proces - mesto bude vedieť o ktorú časť pozemku máte konkrétne záujem.",
+          "type": "dragAndDrop",
+        },
+        "ui:widget": "FileUpload",
+      },
+      "ine": {
+        "ui:options": {
+          "type": "dragAndDrop",
+        },
+        "ui:widget": "FileUpload",
+      },
+      "ui:options": {},
+      "ui:order": [
+        "fotografie",
+        "umiestnenie",
+        "dizajn",
+        "ine",
+      ],
+      "umiestnenie": {
+        "ui:options": {
+          "helptextHeader": "markdown_gKgflRNwdS:Využiť môžete [katastrálnu mapu ZBGIS](https://zbgis.skgeodesy.sk/mkzbgis/sk/kataster?pos=48.155530,17.129713,13), kde nájdete pozemok. Na snímke obrazovky vyznačte presné umiestnenie záhrady (ohraničenie). Zakreslenie presného umiestnenia záhrady na pozemku urýchli celý proces - mesto bude vedieť o ktorú časť pozemku máte konkrétne záujem.",
+          "type": "dragAndDrop",
+        },
+        "ui:widget": "FileUpload",
+      },
+    },
+    "prilohyPredschvalenyPozemok": {
+      "dizajn": {
+        "ui:options": {
+          "helptextHeader": "markdown_gKgflRNwdS:Situácia záhrady spracovaná v adekvátnej mierke, ktorá ilustruje plánované využitie a umiestnenie jednotlivých prvkov na záhrade.
+
+ Napríklad, záhony či pestovacie boxy, výsadbu akejkoľvek trvalkovej zelene, kríkov a stromov spolu s druhovým špecifikovaním tejto zelene, kompost, mobiliár, priestor na uskladnenie náradia a zariadenia záhrady, priestor pre využívanie grilu, spôsob zabezpečenia vody a jej distribúcie.",
+          "type": "dragAndDrop",
+        },
+        "ui:widget": "FileUpload",
+      },
+      "fotografie": {
+        "ui:options": {
+          "type": "dragAndDrop",
+        },
+        "ui:widget": "FileUpload",
+      },
+      "ine": {
+        "ui:options": {
+          "type": "dragAndDrop",
+        },
+        "ui:widget": "FileUpload",
+      },
+      "ui:options": {},
+      "ui:order": [
+        "umiestnenie",
+        "dizajn",
+        "fotografie",
+        "ine",
+      ],
+      "umiestnenie": {
+        "ui:options": {
+          "helptextHeader": "markdown_gKgflRNwdS:Využiť môžete [katastrálnu mapu ZBGIS](https://zbgis.skgeodesy.sk/mkzbgis/sk/kataster?pos=48.155530,17.129713,13), kde nájdete pozemok. Na snímke obrazovky vyznačte presné umiestnenie záhrady (ohraničenie). Zakreslenie presného umiestnenia záhrady na pozemku urýchli celý proces - mesto bude vedieť o ktorú časť pozemku máte konkrétne záujem.",
+          "type": "dragAndDrop",
+        },
+        "ui:widget": "FileUpload",
+      },
+    },
+    "ui:hideError": true,
+    "ui:options": {
+      "moreInformationUrl": "https://bratislava.sk/zivotne-prostredie-a-vystavba/zelen/udrzba-a-tvorba-zelene/komunitne-zahrady",
+    },
+    "zahrada": {
+      "dovodyZalozenia": {
+        "ui:label": false,
+        "ui:options": {
+          "helptextHeader": "markdown_gKgflRNwdS:Vysvetlite, prečo považujete za vhodné zabrať daný verejný priestor a vytvoriť na ňom záhradu s menej verejným režimom (predpokladáme, že záhrady sú oplotené a poloverejné). Argumentmi môže byť doterajšie nevyužívanie alebo nevhodné využívanie priestoru, napríklad, nelegálne parkovisko na zeleni, zeleň bez udržiavaných sadových úprav, neprístupný/nevyužívaný priestor.",
+          "placeholder": "Popíšte",
+        },
+        "ui:widget": "TextArea",
+      },
+      "financovanie": {
+        "ui:label": false,
+        "ui:options": {
+          "helptextHeader": "Aké budete mať členské poplatky? Využijete na tvorbu záhrady granty? Aké zdroje už máte a aké plánujete získať? V prípade, že už máte (predbežný) rozpočet, nahrajte ho do poľa nižšie.",
+          "placeholder": "Popíšte",
+        },
+        "ui:widget": "TextArea",
+      },
+      "inkluzivnost": {
+        "ui:label": false,
+        "ui:options": {
+          "helptextHeader": "Ako zabezpečíte otvorenosť projektu, kto bude mať priamy či nepriamy úžitok z projektu, ako vyberiete, kto bude záhradkár? Ako sa vysporiadate so situáciou, ak budete mať väčší záujem o záhradkárčenie, než budete mať kapacitu nasýtiť?",
+          "placeholder": "Popíšte",
+        },
+        "ui:widget": "TextArea",
+      },
+      "organizacnyTim": {
+        "ui:label": false,
+        "ui:options": {
+          "placeholder": "Popíšte",
+        },
+        "ui:widget": "TextArea",
+      },
+      "prevadzka": {
+        "ui:label": false,
+        "ui:options": {
+          "helptextHeader": "Kto a akým spôsobom bude zabezpečovať prevádzku záhrady z hľadiska údržby zelene (napríklad kosenie) a starostlivosti o poriadok? Ako bude zabezpečený odpad? Ideálne je, napríklad, zaviazať sa ku zero-waste režimu a každý, kto vytvorí odpad bude zodpovedný za jeho likvidáciu.",
+          "placeholder": "Popíšte",
+        },
+        "ui:widget": "TextArea",
+      },
+      "suhlasKomunity": {
+        "ui:label": false,
+        "ui:options": {
+          "helptextHeader": "Dôležitý aspekt legitimity je zapojenie okolitej komunity – organizačný tím by mal získať súhlas miestnych obyvateľov a obyvateliek, ktorí priestor v súčasnosti využívajú.",
+          "placeholder": "Popíšte",
+        },
+        "ui:widget": "TextArea",
+      },
+      "ui:options": {},
+      "ui:order": [
+        "dovodyZalozenia",
+        "suhlasKomunity",
+        "organizacnyTim",
+        "prevadzka",
+        "inkluzivnost",
+        "financovanie",
+      ],
+    },
+    "ziadatel": {
+      "adresa": {
+        "mestoPsc": {
+          "mesto": {
+            "ui:label": false,
+            "ui:options": {
+              "type": "text",
+            },
+            "ui:widget": "Input",
+          },
+          "psc": {
+            "ui:label": false,
+            "ui:options": {
+              "type": "text",
+            },
+            "ui:widget": "Input",
+          },
+          "ui:options": {
+            "columns": true,
+            "columnsRatio": "3/1",
+          },
+          "ui:order": [
+            "mesto",
+            "psc",
+          ],
+        },
+        "ui:options": {
+          "objectDisplay": "boxed",
+          "title": "Adresa trvalého pobytu",
+        },
+        "ui:order": [
+          "ulicaACislo",
+          "mestoPsc",
+        ],
+        "ulicaACislo": {
+          "ui:label": false,
+          "ui:options": {
+            "type": "text",
+          },
+          "ui:widget": "Input",
+        },
+      },
+      "email": {
+        "ui:label": false,
+        "ui:options": {
+          "type": "email",
+        },
+        "ui:widget": "Input",
+      },
+      "menoPriezvisko": {
+        "meno": {
+          "ui:label": false,
+          "ui:options": {
+            "type": "text",
+          },
+          "ui:widget": "Input",
+        },
+        "priezvisko": {
+          "ui:label": false,
+          "ui:options": {
+            "type": "text",
+          },
+          "ui:widget": "Input",
+        },
+        "ui:options": {
+          "columns": true,
+          "columnsRatio": "1/1",
+        },
+        "ui:order": [
+          "meno",
+          "priezvisko",
+        ],
+      },
+      "telefon": {
+        "ui:label": false,
+        "ui:options": {
+          "placeholder": "+421",
+          "size": "medium",
+          "type": "tel",
+        },
+        "ui:widget": "Input",
+      },
+      "ui:options": {},
+      "ui:order": [
+        "menoPriezvisko",
+        "adresa",
+        "email",
+        "telefon",
+      ],
+    },
+  },
+}
+`;
+
+exports[`predzahradky default form state should match snapshot 1`] = `
+{
+  "predzahradka": {
+    "typRegistracie": "nova",
+  },
+  "prilohy": {},
+  "ziadatel": {
+    "adresa": {
+      "mestoPsc": {},
+    },
+    "menoPriezvisko": {},
+  },
+}
+`;
+
+exports[`predzahradky matches snapshot 1`] = `
+{
+  "schema": {
+    "allOf": [
+      {
+        "properties": {
+          "ziadatel": {
+            "hash": "ziadatel",
+            "properties": {
+              "adresa": {
+                "properties": {
+                  "mestoPsc": {
+                    "properties": {
+                      "mesto": {
+                        "title": "Mesto",
+                        "type": "string",
+                      },
+                      "psc": {
+                        "format": "zip",
+                        "title": "PSČ",
+                        "type": "string",
+                      },
+                    },
+                    "required": [
+                      "mesto",
+                      "psc",
+                    ],
+                    "type": "object",
+                  },
+                  "ulicaACislo": {
+                    "title": "Ulica a číslo",
+                    "type": "string",
+                  },
+                },
+                "required": [
+                  "ulicaACislo",
+                  "mestoPsc",
+                ],
+                "type": "object",
+              },
+              "email": {
+                "format": "email",
+                "title": "E-mail",
+                "type": "string",
+              },
+              "menoPriezvisko": {
+                "properties": {
+                  "meno": {
+                    "title": "Meno",
+                    "type": "string",
+                  },
+                  "priezvisko": {
+                    "title": "Priezvisko",
+                    "type": "string",
+                  },
+                },
+                "required": [
+                  "meno",
+                  "priezvisko",
+                ],
+                "type": "object",
+              },
+              "telefon": {
+                "format": "phone-number",
+                "title": "Telefónne číslo",
+                "type": "string",
+              },
+            },
+            "required": [
+              "menoPriezvisko",
+              "adresa",
+              "email",
+              "telefon",
+            ],
+            "title": "Žiadateľ",
+            "type": "object",
+          },
+        },
+        "required": [
+          "ziadatel",
+        ],
+        "type": "object",
+      },
+      {
+        "properties": {
+          "predzahradka": {
+            "allOf": [
+              {
+                "if": {
+                  "properties": {
+                    "typRegistracie": {
+                      "const": "nova",
+                    },
+                  },
+                  "required": [
+                    "typRegistracie",
+                  ],
+                  "type": "object",
+                },
+                "then": {
+                  "properties": {
+                    "rozlozenieNova": {
+                      "title": "Plánované rozloženie predzáhradky",
+                      "type": "string",
+                    },
+                  },
+                  "required": [
+                    "rozlozenieNova",
+                  ],
+                  "type": "object",
+                },
+              },
+              {
+                "if": {
+                  "properties": {
+                    "typRegistracie": {
+                      "const": "existujuca",
+                    },
+                  },
+                  "required": [
+                    "typRegistracie",
+                  ],
+                  "type": "object",
+                },
+                "then": {
+                  "properties": {
+                    "dobaStarostlivosti": {
+                      "title": "Ako dlho sa o predzáhradku staráte?",
+                      "type": "string",
+                    },
+                    "rozlozenieExistujuca": {
+                      "title": "Rozloženie predzáhradky",
+                      "type": "string",
+                    },
+                  },
+                  "required": [
+                    "rozlozenieExistujuca",
+                    "dobaStarostlivosti",
+                  ],
+                  "type": "object",
+                },
+              },
+            ],
+            "hash": "predzahradka",
+            "properties": {
+              "adresa": {
+                "title": "Ulica a číslo pozemku, na ktorom chcete vytvoriť predzáhradku",
+                "type": "string",
+              },
+              "ine": {
+                "title": "Iné",
+                "type": "string",
+              },
+              "mestskaCast": {
+                "enum": [
+                  "Čunovo",
+                  "Devín",
+                  "Devínska Nová Ves",
+                  "Dúbravka",
+                  "Jarovce",
+                  "Karlova Ves",
+                  "Lamač",
+                  "Nové Mesto",
+                  "Petržalka",
+                  "Podunajské Biskupice",
+                  "Rača",
+                  "Rusovce",
+                  "Ružinov",
+                  "Staré Mesto",
+                  "Vajnory",
+                  "Vrakuňa",
+                  "Záhorská Bystrica",
+                ],
+                "title": "Mestská časť, v ktorej sa pozemok nachádza",
+                "type": "string",
+              },
+              "parcelneCislo": {
+                "title": "Číslo parcely",
+                "type": "string",
+              },
+              "typRegistracie": {
+                "default": "nova",
+                "oneOf": [
+                  {
+                    "const": "nova",
+                    "title": "Vytvorenie novej predzáhradky",
+                  },
+                  {
+                    "const": "existujuca",
+                    "title": "Registrácia existujúcej predzáhradky",
+                  },
+                ],
+                "title": "Mám záujem o",
+                "type": "string",
+              },
+            },
+            "required": [
+              "typRegistracie",
+              "adresa",
+              "mestskaCast",
+              "parcelneCislo",
+              "ine",
+            ],
+            "title": "Predzáhradka",
+            "type": "object",
+          },
+        },
+        "required": [
+          "predzahradka",
+        ],
+        "type": "object",
+      },
+      {
+        "properties": {
+          "prilohy": {
+            "hash": "prilohy",
+            "properties": {
+              "fotografie": {
+                "file": true,
+                "title": "Fotografie predzáhradky alebo miesta, na ktorom si chcete vytvoriť predzáhradku",
+                "type": "string",
+              },
+              "inePrilohy": {
+                "file": true,
+                "title": "Iné",
+                "type": "string",
+              },
+              "mapa": {
+                "file": true,
+                "title": "Snímka z mapy so zakreslením miesta predzáhradky",
+                "type": "string",
+              },
+              "projekt": {
+                "file": true,
+                "title": "Projekt predzáhradky",
+                "type": "string",
+              },
+            },
+            "required": [
+              "mapa",
+              "fotografie",
+            ],
+            "title": "Prílohy",
+            "type": "object",
+          },
+        },
+        "required": [
+          "prilohy",
+        ],
+        "type": "object",
+      },
+    ],
+    "pospID": "00603481.predzahradky",
+    "pospVersion": "1.0",
+    "title": "Predzáhradky",
+  },
+  "uiSchema": {
+    "predzahradka": {
+      "adresa": {
+        "ui:label": false,
+        "ui:options": {
+          "helptextHeader": "Musí sa jednať o mestský pozemok.",
+          "type": "text",
+        },
+        "ui:widget": "Input",
+      },
+      "dobaStarostlivosti": {
+        "ui:label": false,
+        "ui:options": {
+          "type": "text",
+        },
+        "ui:widget": "Input",
+      },
+      "ine": {
+        "ui:label": false,
+        "ui:options": {
+          "helptextHeader": "Ak by ste nám chceli ešte niečo v súvislosti s predzáhradkou napísať, tu je na to priestor.",
+          "placeholder": "Popíšte",
+        },
+        "ui:widget": "TextArea",
+      },
+      "mestskaCast": {
+        "ui:options": {
+          "placeholder": "Vyberte",
+          "selectOptions": {
+            "Devín": {
+              "title": "Devín",
+            },
+            "Devínska Nová Ves": {
+              "title": "Devínska Nová Ves",
+            },
+            "Dúbravka": {
+              "title": "Dúbravka",
+            },
+            "Jarovce": {
+              "title": "Jarovce",
+            },
+            "Karlova Ves": {
+              "title": "Karlova Ves",
+            },
+            "Lamač": {
+              "title": "Lamač",
+            },
+            "Nové Mesto": {
+              "title": "Nové Mesto",
+            },
+            "Petržalka": {
+              "title": "Petržalka",
+            },
+            "Podunajské Biskupice": {
+              "title": "Podunajské Biskupice",
+            },
+            "Rača": {
+              "title": "Rača",
+            },
+            "Rusovce": {
+              "title": "Rusovce",
+            },
+            "Ružinov": {
+              "title": "Ružinov",
+            },
+            "Staré Mesto": {
+              "title": "Staré Mesto",
+            },
+            "Vajnory": {
+              "title": "Vajnory",
+            },
+            "Vrakuňa": {
+              "title": "Vrakuňa",
+            },
+            "Záhorská Bystrica": {
+              "title": "Záhorská Bystrica",
+            },
+            "Čunovo": {
+              "title": "Čunovo",
+            },
+          },
+        },
+        "ui:widget": "Select",
+      },
+      "parcelneCislo": {
+        "ui:label": false,
+        "ui:options": {
+          "helptextHeader": "markdown_gKgflRNwdS:Číslo parcely a bližšie informácie k pozemku a jeho vlastníkom nájdete na [katastrálnej mape ZBGIS](https://zbgis.skgeodesy.sk/mkzbgis/sk/kataster).",
+          "size": "medium",
+          "type": "text",
+        },
+        "ui:widget": "Input",
+      },
+      "rozlozenieExistujuca": {
+        "ui:label": false,
+        "ui:options": {
+          "helptextHeader": "Popíšte rozloženie jednotlivých prvkov predzáhradky.",
+          "placeholder": "Popíšte",
+        },
+        "ui:widget": "TextArea",
+      },
+      "rozlozenieNova": {
+        "ui:label": false,
+        "ui:options": {
+          "placeholder": "Popíšte",
+        },
+        "ui:widget": "TextArea",
+      },
+      "typRegistracie": {
+        "ui:options": {
+          "orientations": "column",
+          "radioOptions": [],
+          "variant": "boxed",
+        },
+        "ui:widget": "RadioGroup",
+      },
+      "ui:options": {},
+      "ui:order": [
+        "typRegistracie",
+        "adresa",
+        "mestskaCast",
+        "parcelneCislo",
+        "rozlozenieNova",
+        "rozlozenieExistujuca",
+        "dobaStarostlivosti",
+        "ine",
+      ],
+    },
+    "prilohy": {
+      "fotografie": {
+        "ui:options": {
+          "type": "dragAndDrop",
+        },
+        "ui:widget": "FileUpload",
+      },
+      "inePrilohy": {
+        "ui:options": {
+          "type": "dragAndDrop",
+        },
+        "ui:widget": "FileUpload",
+      },
+      "mapa": {
+        "ui:options": {
+          "type": "dragAndDrop",
+        },
+        "ui:widget": "FileUpload",
+      },
+      "projekt": {
+        "ui:options": {
+          "helptextHeader": "Napríklad, vo forme jednoduchého nákresu rozloženia jednotlivých prvkov.",
+          "type": "dragAndDrop",
+        },
+        "ui:widget": "FileUpload",
+      },
+      "ui:options": {},
+      "ui:order": [
+        "mapa",
+        "fotografie",
+        "projekt",
+        "inePrilohy",
+      ],
+    },
+    "ui:hideError": true,
+    "ui:options": {
+      "moreInformationUrl": "https://bratislava.sk/zivotne-prostredie-a-vystavba/zelen/udrzba-a-tvorba-zelene/predzahradky",
+    },
+    "ziadatel": {
+      "adresa": {
+        "mestoPsc": {
+          "mesto": {
+            "ui:label": false,
+            "ui:options": {
+              "type": "text",
+            },
+            "ui:widget": "Input",
+          },
+          "psc": {
+            "ui:label": false,
+            "ui:options": {
+              "type": "text",
+            },
+            "ui:widget": "Input",
+          },
+          "ui:options": {
+            "columns": true,
+            "columnsRatio": "3/1",
+          },
+          "ui:order": [
+            "mesto",
+            "psc",
+          ],
+        },
+        "ui:options": {
+          "objectDisplay": "boxed",
+          "title": "Adresa trvalého pobytu",
+        },
+        "ui:order": [
+          "ulicaACislo",
+          "mestoPsc",
+        ],
+        "ulicaACislo": {
+          "ui:label": false,
+          "ui:options": {
+            "type": "text",
+          },
+          "ui:widget": "Input",
+        },
+      },
+      "email": {
+        "ui:label": false,
+        "ui:options": {
+          "type": "email",
+        },
+        "ui:widget": "Input",
+      },
+      "menoPriezvisko": {
+        "meno": {
+          "ui:label": false,
+          "ui:options": {
+            "type": "text",
+          },
+          "ui:widget": "Input",
+        },
+        "priezvisko": {
+          "ui:label": false,
+          "ui:options": {
+            "type": "text",
+          },
+          "ui:widget": "Input",
+        },
+        "ui:options": {
+          "columns": true,
+          "columnsRatio": "1/1",
+        },
+        "ui:order": [
+          "meno",
+          "priezvisko",
+        ],
+      },
+      "telefon": {
+        "ui:label": false,
+        "ui:options": {
+          "placeholder": "+421",
+          "size": "medium",
+          "type": "tel",
+        },
+        "ui:widget": "Input",
+      },
+      "ui:options": {},
+      "ui:order": [
+        "menoPriezvisko",
+        "adresa",
+        "email",
+        "telefon",
+      ],
+    },
+  },
+}
+`;
+
+exports[`priznanieKDaniZNehnutelnosti default form state should match snapshot 1`] = `
+{
+  "danZBytovANebytovychPriestorov": {
+    "vyplnitObject": {
+      "vyplnit": false,
+    },
+  },
+  "danZPozemkov": {
+    "vyplnitObject": {
+      "vyplnit": false,
+    },
+  },
+  "danZoStaviebJedenUcel": {
+    "vyplnitObject": {
+      "vyplnit": false,
+    },
+  },
+  "danZoStaviebViacereUcely": {
+    "vyplnitObject": {
+      "vyplnit": false,
+    },
+  },
+  "druhPriznania": {
+    "druh": "priznanie",
+  },
+  "udajeODanovnikovi": {
+    "obecPsc": {},
+    "priznanieAko": "fyzickaOsoba",
+    "stat": "703",
+    "voSvojomMene": true,
+  },
+  "znizenieAleboOslobodenieOdDane": {
+    "byty": [],
+    "pozemky": [],
+    "stavby": [],
+  },
+}
+`;
+
 exports[`priznanieKDaniZNehnutelnosti matches snapshot 1`] = `
 {
   "schema": {
@@ -12479,6 +14000,26 @@ V prípade, že sa vás daň zo stavieb slúžiacich na viaceré účely netýka
 }
 `;
 
+exports[`stanoviskoKInvesticnemuZameru default form state should match snapshot 1`] = `
+{
+  "investor": {
+    "investorZiadatelom": true,
+  },
+  "prilohy": {
+    "architektonickaStudia": [],
+  },
+  "stavba": {
+    "druhStavby": "Bytový dom",
+    "kataster": [],
+  },
+  "ziadatel": {
+    "mestoPsc": {},
+    "typ": "Fyzická osoba",
+  },
+  "zodpovednyProjektant": {},
+}
+`;
+
 exports[`stanoviskoKInvesticnemuZameru matches snapshot 1`] = `
 {
   "schema": {
@@ -13528,6 +15069,29 @@ exports[`stanoviskoKInvesticnemuZameru matches snapshot 1`] = `
       ],
     },
   },
+}
+`;
+
+exports[`zavazneStanoviskoKInvesticnejCinnosti default form state should match snapshot 1`] = `
+{
+  "investor": {
+    "investorZiadatelom": true,
+  },
+  "konanieTyp": {
+    "typ": "Územné konanie",
+  },
+  "prilohy": {
+    "projektovaDokumentacia": [],
+  },
+  "stavba": {
+    "druhStavby": "Bytový dom",
+    "kataster": [],
+  },
+  "ziadatel": {
+    "mestoPsc": {},
+    "typ": "Fyzická osoba",
+  },
+  "zodpovednyProjektant": {},
 }
 `;
 

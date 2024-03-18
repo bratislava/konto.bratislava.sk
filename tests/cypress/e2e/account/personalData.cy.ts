@@ -60,7 +60,7 @@ describe('A04 -', { testIsolation: false }, () => {
 
           cy.dataCy('edit-personal-information-form-container').then((form) => {
             cy.wrap(Cypress.$('[data-cy=error-message]', form)).should('have.length', 1)
-            cy.wrap(Cypress.$('[data-cy=error-message]', form)).should('contain', 'Nesprávny formát - zadajte platné telefónne číslo vo formáte +421XXXXXX...')
+            cy.wrap(Cypress.$('[data-cy=error-message]', form)).should('contain', 'Zadajte telefónne číslo v medzinárodnom formáte +421…')
             cy.wrap(Cypress.$('[data-cy=input-phone_number]', form)).should('have.class', 'border-negative-700')
             cy.wrap(Cypress.$('[data-cy=input-phone_number]', form)).clear().type(this.fileData.phone_number)
           })

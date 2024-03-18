@@ -17,7 +17,7 @@ export default defineConfig({
           mobile: ['all', 'mobile'].includes(config.env.DEVICE),
         },
         resolution: {
-          desktop: { viewportWidth: 1440, viewportHeight: 1080 },
+          desktop: { viewportWidth: 1920, viewportHeight: 1080 },
           mobile: { viewportWidth: 360, viewportHeight: 640 },
         },
       }

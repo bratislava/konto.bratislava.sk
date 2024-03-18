@@ -1,11 +1,10 @@
-import { parseRatio } from '@form-utils/ajvFormats'
 import { GenericObjectType } from '@rjsf/utils'
 import {
   CustomComponentPropertyCalculator,
   CustomComponentPropertyCalculatorProps,
 } from '@schema-generator/generator/uiOptionsTypes'
+import { getTaxCalculatorExpression } from '@schema-generator/tax-form/calculators'
 import cx from 'classnames'
-import { Parser } from 'expr-eval'
 import clone from 'lodash/clone'
 import get from 'lodash/get'
 import React, { useMemo } from 'react'
@@ -57,40 +56,7 @@ const Calculator = ({
   const { formData } = useFormState()
   const { widget } = useFormWidget()
 
-  const expression = useMemo(() => {
-    const parser = new Parser()
-
-    // Ratio (e.g. "5/13") is a string that needs to be evaluated.
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
-    parser.functions.evalRatio = (arg: string) => {
-      if (parseRatio(arg).isValid) {
-        return parser.evaluate(arg)
-      }
-      return NaN
-    }
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
-    parser.functions.ratioNumerator = (arg: string) => {
-      const parsed = parseRatio(arg)
-      if (parsed.isValid) {
-        return parsed.numerator
-      }
-      return NaN
-    }
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
-    parser.functions.ratioDenominator = (arg: string) => {
-      const parsed = parseRatio(arg)
-      if (parsed.isValid) {
-        return parsed.denominator
-      }
-      return NaN
-    }
-
-    try {
-      return parser.parse(formula)
-    } catch (error) {
-      return null
-    }
-  }, [formula])
+  const expression = useMemo(() => getTaxCalculatorExpression(formula), [formula])
 
   const value = useMemo(() => {
     try {

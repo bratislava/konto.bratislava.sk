@@ -68,6 +68,15 @@ module.exports = {
       },
     ],
     '@typescript-eslint/ban-ts-comment': 'warn',
+    // Mistakes React component for HTML string
+    'xss/no-mixed-html': 'off',
+    // Many false positives, if we add email/phone we probably want to have it anyway
+    'pii/no-email': 'off',
+    'pii/no-phone-number': 'off',
+    // Good rationale, but doesn't work for us
+    'const-case/uppercase': 'off',
+    // Temporarily disabled because IDE problems
+    'prettier/prettier': 'off',
   },
   ignorePatterns: [
     '*.config.*',

@@ -1,7 +1,7 @@
 import { WidgetProps } from '@rjsf/utils'
+import { SelectUiOptions } from '@schema-generator/generator/uiOptionsTypes'
 import WidgetWrapper from 'components/forms/widget-wrappers/WidgetWrapper'
 import { ComponentProps } from 'react'
-import { SelectUiOptions } from 'schema-generator/generator/uiOptionsTypes'
 
 import { isDefined } from '../../../frontend/utils/general'
 import SelectField, { SelectOption } from '../widget-components/SelectField/SelectField'

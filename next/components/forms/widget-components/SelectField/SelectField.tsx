@@ -172,7 +172,7 @@ const SelectField = <
         displayOptionalLabel={displayOptionalLabel}
         htmlFor={id}
       >
-        <div data-cy={`select-${label.toLowerCase().replace(/ /g,"-")}`}>
+        <div data-cy={`select-${label.toLowerCase().replaceAll(' ', '-')}`}>
           <Select
             placeholder={null}
             {...rest}
@@ -187,12 +187,12 @@ const SelectField = <
             className="w-full"
             classNames={{
               control: ({ isFocused, isDisabled }) =>
-              cx('rounded-lg border-2 bg-white hover:cursor-pointer', {
-                'border-negative-700': isError,
-                'border-gray-300': isDisabled && !isError,
-                'border-gray-900': isFocused && !isDisabled,
-                'border-gray-200 hover:border-gray-400': !isFocused && !isError && !isDisabled,
-              }),
+                cx('rounded-lg border-2 bg-white hover:cursor-pointer', {
+                  'border-negative-700': isError,
+                  'border-gray-300': isDisabled && !isError,
+                  'border-gray-900': isFocused && !isDisabled,
+                  'border-gray-200 hover:border-gray-400': !isFocused && !isError && !isDisabled,
+                }),
               placeholder: ({ isDisabled }) => (isDisabled ? 'text-gray-500' : 'text-gray-600'),
               valueContainer: ({ isDisabled }) =>
                 cx('gap-x-2 gap-y-1 px-3 py-2 lg:px-4 lg:py-3', {

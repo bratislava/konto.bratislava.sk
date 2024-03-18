@@ -26,7 +26,7 @@ const TaxFormLandingPageCard = ({
   disabled,
   icon: IconComponent,
   isBetaUser,
-}: TaxFormLandingPageCardProps) => {  
+}: TaxFormLandingPageCardProps) => {
   return (
     // TODO stretched doesn't work for buttons, very temporary solution
     // eslint-disable-next-line jsx-a11y/click-events-have-key-events,jsx-a11y/no-static-element-interactions
@@ -34,12 +34,12 @@ const TaxFormLandingPageCard = ({
       className={cx('relative flex gap-5 border-b-2 border-gray-200 px-5 py-6 last:border-b-0', {
         'cursor-pointer': !disabled && onPress,
       })}
-      onClick={disabled ? () => { } : onPress}
+      onClick={disabled ? () => {} : onPress}
       data-cy={`tax-form-landing-page-card-${id}`}
     >
       <div className="hidden items-center justify-center md:flex">
-        <div className="flex h-18 w-18 shrink-0 flex-col items-center justify-center rounded-lg border-2 border-gray-300">
-          <IconComponent className="h-12 w-12" />
+        <div className="flex size-18 shrink-0 flex-col items-center justify-center rounded-lg border-2 border-gray-300">
+          <IconComponent className="size-12" />
         </div>
       </div>
       <div className="flex flex-col gap-2">
@@ -69,7 +69,7 @@ const TaxFormLandingPageCard = ({
         <span className="text-p3">{description}</span>
       </div>
       <div className="flex items-center justify-center">
-        <ChevronRightIcon className="h-6 w-6" />
+        <ChevronRightIcon className="size-6" />
       </div>
     </div>
   )

@@ -39,7 +39,7 @@ const SummaryFormControls = () => {
           <ButtonNew
             variant="black-plain"
             onPress={goToPreviousStep}
-            startIcon={<ChevronLeftIcon className="h-6 w-6" />}
+            startIcon={<ChevronLeftIcon className="size-6" />}
           >
             {t('buttons.previous')}
           </ButtonNew>
@@ -49,7 +49,11 @@ const SummaryFormControls = () => {
           {/* Temporary logic for tax form, will be cleaned up. */}
           {isTaxForm ? (
             <>
-              <ButtonNew variant={isSigned ? 'black-outline' : 'black-solid'} onPress={exportPdf} data-cy="download-pdf-button-desktop">
+              <ButtonNew
+                variant={isSigned ? 'black-outline' : 'black-solid'}
+                onPress={exportPdf}
+                data-cy="download-pdf-button-desktop"
+              >
                 {t('summary.export_pdf')}
               </ButtonNew>
               {isSigned && (

@@ -768,7 +768,6 @@
     "third_piece": "Tretia splátka v termíne ",
     "third_piece_to": "do 31. 10. 2023"
   },
-  "iban_copied": "IBAN bol skopírovaný",
   "tax_detail_section": {
     "title": "Daň z nehnuteľností za rok {{year}}",
     "tax_status": {
@@ -938,5 +937,21 @@
   "SelectField": {
     "noOptions": "Žiadne možnosti",
     "placeholder": "Vyberte…"
+  },
+  "InputField": {
+    "aria": {
+      "reset": "Vymazať hodnotu"
+    }
+  },
+  "SearchField": {
+    "aria": {
+      "reset": "Vymazať hodnotu"
+    }
+  },
+  "ClipboardCopy": {
+    "aria": {
+      "copyToClipboard": "Kopírovať do schránky"
+    },
+    "success": "Skopírované do schránky."
   }
 }

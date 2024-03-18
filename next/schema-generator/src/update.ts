@@ -130,11 +130,11 @@ ${chalk.reset.italic(
 
     if (!firstItem) {
       throw new Error(`No schema version found for slug ${slug}`)
-     }
+    }
 
-    const id =firstItem.id
-    const version =firstItem.version
-    const pospVersion =firstItem.pospVersion
+    const id = firstItem.id
+    const version = firstItem.version
+    const pospVersion = firstItem.pospVersion
 
     console.log(
       `Environment: ${

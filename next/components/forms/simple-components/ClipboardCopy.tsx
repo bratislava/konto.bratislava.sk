@@ -4,25 +4,24 @@ import { useCopyToClipboard } from 'usehooks-ts'
 
 import useSnackbar from '../../../frontend/hooks/useSnackbar'
 import logger from '../../../frontend/utils/logger'
+import ButtonNew from './ButtonNew'
 
 const ClipboardCopy = ({ copyText }: { copyText: string }) => {
   const [, copy] = useCopyToClipboard()
   const { t } = useTranslation('account')
   const [openSnackbarInfo] = useSnackbar({ variant: 'info' })
 
-  // TODO: use react aria Button
-  // FIXME add aria-label
+  const handleCopy = () => {
+    copy(copyText)
+      .then(() => openSnackbarInfo(t('ClipboardCopy.success'), 3000))
+      .catch((error_) => logger.error('Submit failed', error_))
+  }
+
   return (
-    <button
-      type="button"
-      onClick={() => {
-        copy(copyText)
-          .then(() => openSnackbarInfo(t('iban_copied'), 3000))
-          .catch((error_) => logger.error('Submit failed', error_))
-      }}
-    >
+    <ButtonNew onPress={handleCopy} variant="unstyled">
       <CopyIcon />
-    </button>
+      <span className="sr-only">{t('ClipboardCopy.aria.copyToClipboard')}</span>
+    </ButtonNew>
   )
 }
 

@@ -32,7 +32,7 @@ const SummaryFile = ({ file }: SummaryFileProps) => {
     ) : isDoneStyle ? (
       <CheckInCircleIcon className="text-success-700" {...props} />
     ) : isUploadingStyle ? (
-      <Spinner size="sm" className="h-6 w-6" {...props} />
+      <Spinner size="sm" className="size-6" {...props} />
     ) : isDefaultStyle ? (
       <AttachmentIcon {...props} />
     ) : null

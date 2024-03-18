@@ -19,7 +19,7 @@ const TaxesFeesCard = (props: TaxesCardBase) => {
     const statusNode = (icon: ReactNode, statusTitle: string): ReactNode => {
       return (
         <>
-          <span className="hidden h-6 w-6 items-center justify-center lg:flex">{icon}</span>
+          <span className="hidden size-6 items-center justify-center lg:flex">{icon}</span>
           <span className={statusStyle}>{statusTitle}</span>
         </>
       )
@@ -27,11 +27,11 @@ const TaxesFeesCard = (props: TaxesCardBase) => {
 
     switch (status) {
       case 'unpaid':
-        return statusNode(<ErrorIcon className="h-6 w-6 text-negative-700" />, 'Neuhradená')
+        return statusNode(<ErrorIcon className="size-6 text-negative-700" />, 'Neuhradená')
       case 'partially_paid':
-        return statusNode(<ClockIcon className="h-6 w-6 text-warning-700" />, 'Čiastočne uhradená')
+        return statusNode(<ClockIcon className="size-6 text-warning-700" />, 'Čiastočne uhradená')
       case 'paid':
-        return statusNode(<CheckIcon className="h-6 w-6 text-success-700" />, 'Uhradená')
+        return statusNode(<CheckIcon className="size-6 text-success-700" />, 'Uhradená')
       default:
         break
     }
@@ -72,7 +72,7 @@ const TaxesFeesCard = (props: TaxesCardBase) => {
           </div>
         </div>
         <div className="h-full w-16 min-w-[64px] cursor-pointer border-l-2">
-          <div className="flex h-full w-full items-center justify-center">
+          <div className="flex size-full items-center justify-center">
             <ChevronRightIcon />
           </div>
         </div>
@@ -84,7 +84,7 @@ const TaxesFeesCard = (props: TaxesCardBase) => {
       >
         <Link
           href={`${ROUTES.TAXES_AND_FEES}/2023`}
-          className="flex h-full w-full items-center justify-center"
+          className="flex size-full items-center justify-center"
         >
           <div className="flex w-full items-start justify-between">
             <div className="flex flex-col">
@@ -98,12 +98,12 @@ const TaxesFeesCard = (props: TaxesCardBase) => {
                   <span className="text-p3">{formatCurrency(finishPrice)}</span>
                 )}
                 <div className="flex items-center">
-                  <span className="mx-3 h-1 w-1 rounded-full bg-gray-700" />
+                  <span className="mx-3 size-1 rounded-full bg-gray-700" />
                   <div className="flex">{statusHandler()}</div>
                 </div>
               </div>
             </div>
-            <span className="flex h-5 w-5 items-center justify-center">
+            <span className="flex size-5 items-center justify-center">
               <ChevronRightIcon />
             </span>
           </div>

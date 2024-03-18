@@ -51,8 +51,8 @@ const SuccessContent = () => {
 
   return (
     <div className="flex flex-col items-center gap-6">
-      <div className="flex h-[88px] w-[88px] items-center justify-center rounded-full bg-success-100 p-4">
-        <CheckIcon className="h-10 w-10 text-success-700" />
+      <div className="flex size-[88px] items-center justify-center rounded-full bg-success-100 p-4">
+        <CheckIcon className="size-10 text-success-700" />
       </div>
       <div className="flex flex-col items-center gap-6">
         <div className="flex flex-col items-center gap-1">
@@ -64,7 +64,7 @@ const SuccessContent = () => {
             {actions.map((key, index) => (
               <li
                 key={index}
-                className="text-p1 flex [counter-increment:list-number-styling] before:mr-3 before:inline-flex before:h-8 before:w-8 before:shrink-0 before:items-center before:justify-center before:rounded-full before:border-2 before:border-gray-400 before:text-h-xs before:font-semibold before:text-gray-400 before:content-[counter(list-number-styling)] before:lg:mr-4 before:lg:h-8 before:lg:w-8"
+                className="text-p1 flex [counter-increment:list-number-styling] before:mr-3 before:inline-flex before:size-8 before:shrink-0 before:items-center before:justify-center before:rounded-full before:border-2 before:border-gray-400 before:text-h-xs before:font-semibold before:text-gray-400 before:content-[counter(list-number-styling)] before:lg:mr-4 before:lg:size-8"
               >
                 <span>
                   <Trans
@@ -103,8 +103,8 @@ const SuccessContent = () => {
                 <ul className="mt-6 flex flex-col gap-2 sm:gap-4">
                   {advantages.map((item, index) => (
                     <li key={index} className="flex items-center gap-4">
-                      <span className="flex h-5 w-5 min-w-[20px] items-center justify-center md:h-6 md:w-6 md:min-w-[24px]">
-                        <CheckIcon className="h-7 w-7" />
+                      <span className="flex size-5 min-w-[20px] items-center justify-center md:size-6 md:min-w-[24px]">
+                        <CheckIcon className="size-7" />
                       </span>
                       <p className="text-p3 md:text-p1">{item}</p>
                     </li>

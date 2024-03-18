@@ -8,9 +8,9 @@ import {
   RJSFSchema,
   StrictRJSFSchema,
 } from '@rjsf/utils'
+import { ArrayFieldUiOptions } from '@schema-generator/generator/uiOptionsTypes'
 import cx from 'classnames'
 import { ComponentType } from 'react'
-import { ArrayFieldUiOptions } from 'schema-generator/generator/uiOptionsTypes'
 
 import Alert from '../info-components/Alert'
 import FieldErrorMessage from '../info-components/FieldErrorMessage'

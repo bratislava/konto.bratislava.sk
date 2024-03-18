@@ -20,7 +20,7 @@ const UserProfilePassword = () => {
       >
         <Button
           variant="black"
-          startIcon={<LockIcon fill="white" className="h-6 w-6" />}
+          startIcon={<LockIcon fill="white" className="size-6" />}
           size="sm"
           text={t('password_change.button')}
           onPress={() => push(ROUTES.PASSWORD_CHANGE)}

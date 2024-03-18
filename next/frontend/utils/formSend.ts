@@ -21,14 +21,11 @@ type SendEidMetadata = {
 }
 
 export const setSendEidMetadata = (value: SendEidMetadata) => {
-  // eslint-disable-next-line scanjs-rules/identifier_sessionStorage
   sessionStorage.setItem(SEND_EID_SESSION_STORAGE_KEY, JSON.stringify(value))
 }
 
 export const popSendEidMetadata = () => {
-  // eslint-disable-next-line scanjs-rules/identifier_sessionStorage
   const value = sessionStorage.getItem(SEND_EID_SESSION_STORAGE_KEY)
-  // eslint-disable-next-line scanjs-rules/identifier_sessionStorage
   sessionStorage.removeItem(SEND_EID_SESSION_STORAGE_KEY)
   try {
     const parsed = JSON.parse(value || '')

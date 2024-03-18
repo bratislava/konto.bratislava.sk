@@ -29,7 +29,7 @@ const StepButtonGroup = (props: StepButtonGroupProps) => {
               variant="plain-black"
               onPress={previous}
               text={t('buttons.previous')}
-              startIcon={<ChevronLeftIcon className="h-6 w-6" />}
+              startIcon={<ChevronLeftIcon className="size-6" />}
             />
           )}
         </div>
@@ -41,7 +41,7 @@ const StepButtonGroup = (props: StepButtonGroupProps) => {
             <Button
               onPress={submitStep}
               text={t('buttons.continue')}
-              endIcon={<ArrowRightIcon className="h-6 w-6" />}
+              endIcon={<ArrowRightIcon className="size-6" />}
             />
           </div>
         )}

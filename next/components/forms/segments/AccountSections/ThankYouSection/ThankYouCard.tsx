@@ -2,10 +2,9 @@ import PaymentDeclined from '@assets/icons/other/payment-declined.svg'
 import { CheckIcon, CrossIcon, RepeatIcon } from '@assets/ui-icons'
 import cx from 'classnames'
 import AccountMarkdown from 'components/forms/segments/AccountMarkdown/AccountMarkdown'
-import Button from 'components/forms/simple-components/Button'
-import Link from 'next/link'
 
 import { ROUTES } from '../../../../../frontend/api/constants'
+import ButtonNew from '../../../simple-components/ButtonNew'
 
 type ThankYouCardBase = {
   success?: boolean
@@ -25,10 +24,10 @@ const ThankYouCard = ({
   feedbackUrl,
 }: ThankYouCardBase) => {
   return (
-    <div className="mx-auto flex h-full w-full max-w-[734px] flex-col items-center gap-4 rounded-none bg-gray-0 px-4 pb-4 pt-6 md:gap-6 md:rounded-2xl md:px-14 md:py-12 lg:max-w-[800px]">
+    <div className="mx-auto flex size-full max-w-[734px] flex-col items-center gap-4 rounded-none bg-gray-0 px-4 pb-4 pt-6 md:gap-6 md:rounded-2xl md:px-14 md:py-12 lg:max-w-[800px]">
       <span
         className={cx(
-          'min-w-14 flex h-14 w-14 items-center justify-center rounded-full bg-negative-100 md:h-[88px] md:w-[88px] md:min-w-[88px]',
+          'flex h-14 w-14 min-w-14 items-center justify-center rounded-full bg-negative-100 md:h-[88px] md:w-[88px] md:min-w-[88px]',
           {
             'bg-negative-100': !success,
             'bg-success-100': success,
@@ -36,9 +35,9 @@ const ThankYouCard = ({
         )}
       >
         {success ? (
-          <CheckIcon className="flex h-8 w-8 items-center justify-center text-success-700 md:h-10 md:w-10" />
+          <CheckIcon className="flex size-8 items-center justify-center text-success-700 md:size-10" />
         ) : (
-          <PaymentDeclined className="flex h-8 w-8 items-center justify-center text-negative-700 md:h-10 md:w-10" />
+          <PaymentDeclined className="flex size-8 items-center justify-center text-negative-700 md:size-10" />
         )}
       </span>
       <div className="flex flex-col items-center gap-8 md:gap-6">
@@ -49,27 +48,32 @@ const ThankYouCard = ({
         {success ? (
           <>
             {feedbackUrl && (
-              <a href={feedbackUrl} className="w-full" target="_blank" rel="noreferrer">
-                <Button text={firstButtonTitle} fullWidth />
-              </a>
+              <ButtonNew href={feedbackUrl} variant="black-solid" fullWidth>
+                {firstButtonTitle}
+              </ButtonNew>
             )}
-            <Link href="/" className="w-full">
-              <Button variant="black-outline" text={secondButtonTitle} fullWidth />
-            </Link>
+            <ButtonNew href={ROUTES.HOME} variant="black-outline" fullWidth>
+              {secondButtonTitle}
+            </ButtonNew>
           </>
         ) : (
           <>
-            <Link href={`${ROUTES.TAXES_AND_FEES}/2023`} className="w-full">
-              <Button startIcon={<RepeatIcon />} text={firstButtonTitle} fullWidth />
-            </Link>
-            <Link href="/" className="w-full">
-              <Button
-                startIcon={<CrossIcon className="h-6 w-6" />}
-                variant="black-outline"
-                text={secondButtonTitle}
-                fullWidth
-              />
-            </Link>
+            <ButtonNew
+              href={`${ROUTES.TAXES_AND_FEES}/2023`}
+              variant="black-solid"
+              fullWidth
+              startIcon={<RepeatIcon />}
+            >
+              {firstButtonTitle}
+            </ButtonNew>
+            <ButtonNew
+              href={ROUTES.HOME}
+              variant="black-outline"
+              fullWidth
+              startIcon={<CrossIcon className="size-6" />}
+            >
+              {secondButtonTitle}
+            </ButtonNew>
           </>
         )}
       </div>

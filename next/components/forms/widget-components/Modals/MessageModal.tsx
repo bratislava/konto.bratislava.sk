@@ -62,7 +62,7 @@ const MessageModal = ({
             },
           )}
         >
-          <div className="flex h-6 w-6 items-center justify-center">
+          <div className="flex size-6 items-center justify-center">
             <span className="">{icons[type]}</span>
           </div>
         </div>

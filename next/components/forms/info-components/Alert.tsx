@@ -65,10 +65,10 @@ const Alert = ({
   hasIcon = true,
 }: AlertBase) => {
   const icons = {
-    error: <ErrorIcon className="h-6 w-6" />,
-    success: <CheckInCircleIcon className="h-6 w-6" />,
-    info: <InfoIcon className="h-6 w-6" />,
-    warning: <AlertIcon className="h-6 w-6" />,
+    error: <ErrorIcon className="size-6" />,
+    success: <CheckInCircleIcon className="size-6" />,
+    info: <InfoIcon className="size-6" />,
+    warning: <AlertIcon className="size-6" />,
   }
 
   const alertContainer = cx(
@@ -104,8 +104,8 @@ const Alert = ({
           <div className={contentStyle} data-cy="alert-container-title">{title || message}</div>
         </div>
         {close && (
-          <span className="flex h-6 w-6 cursor-pointer items-center justify-center">
-            <CrossIcon onClick={close} className="h-6 w-6" />
+          <span className="flex size-6 cursor-pointer items-center justify-center">
+            <CrossIcon onClick={close} className="size-6" />
           </span>
         )}
       </div>

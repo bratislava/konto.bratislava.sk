@@ -1,9 +1,9 @@
 import { getLocalTimeZone, parseDate } from '@internationalized/date'
 import { WidgetProps } from '@rjsf/utils'
+import { CheckboxUiOptions, SelectUiOptions } from '@schema-generator/generator/uiOptionsTypes'
 import cx from 'classnames'
 import React from 'react'
 import { useDateFormatter } from 'react-aria'
-import { CheckboxUiOptions, SelectUiOptions } from 'schema-generator/generator/uiOptionsTypes'
 
 import { useFormContext } from '../../useFormContext'
 import { useFormState } from '../../useFormState'
@@ -101,7 +101,7 @@ const ValueComponent = ({
       return <>{value as string}</>
     case 'input':
       if (uiSchema?.['ui:options']?.type === 'password') {
-        return <>{(value as string).replace(/./g, '●')}</>
+        return <>{(value as string).replaceAll(/./g, '●')}</>
       }
       return <>{value as string}</>
     default:

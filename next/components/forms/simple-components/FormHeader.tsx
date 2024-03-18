@@ -7,6 +7,7 @@ import {
   PdfIcon,
 } from '@assets/ui-icons'
 import { getUiOptions } from '@rjsf/utils'
+import { SchemaUiOptions } from '@schema-generator/generator/uiOptionsTypes'
 import ButtonNew from 'components/forms/simple-components/ButtonNew'
 import MenuDropdown, {
   MenuItemBase,
@@ -14,7 +15,6 @@ import MenuDropdown, {
 import Waves from 'components/forms/simple-components/Waves/Waves'
 import Link from 'next/link'
 import { useTranslation } from 'next-i18next'
-import { SchemaUiOptions } from 'schema-generator/generator/uiOptionsTypes'
 
 import { useFormExportImport } from '../../../frontend/hooks/useFormExportImport'
 import { useFormContext } from '../useFormContext'
@@ -39,41 +39,41 @@ const FormHeader = () => {
   const formHeaderMenuContent = [
     {
       title: t('menu_list.download_xml'),
-      icon: <DownloadIcon className="h-6 w-6" />,
+      icon: <DownloadIcon className="size-6" />,
       onPress: exportXml,
     },
-    !isTaxForm
-      ? { title: t('menu_list.pdf'), icon: <PdfIcon className="h-6 w-6" />, onPress: exportPdf }
-      : null,
-    !isReadonly
-      ? {
+    isTaxForm
+      ? null
+      : { title: t('menu_list.pdf'), icon: <PdfIcon className="size-6" />, onPress: exportPdf },
+    isReadonly
+      ? null
+      : {
           title: t('menu_list.upload_xml'),
-          icon: <ConnectionIcon className="h-6 w-6" />,
+          icon: <ConnectionIcon className="size-6" />,
           onPress: importXml,
-        }
-      : null,
+        },
     showImportExportJson
       ? {
           title: t('menu_list.download_json'),
-          icon: <DownloadIcon className="h-6 w-6" />,
+          icon: <DownloadIcon className="size-6" />,
           onPress: exportJson,
         }
       : null,
     showImportExportJson
       ? {
           title: t('menu_list.upload_json'),
-          icon: <ConnectionIcon className="h-6 w-6" />,
+          icon: <ConnectionIcon className="size-6" />,
           onPress: importJson,
         }
       : null,
-    !isDeletable
-      ? {
+    isDeletable
+      ? null
+      : {
           title: t('menu_list.delete'),
-          icon: <BinIcon className="h-6 w-6" />,
+          icon: <BinIcon className="size-6" />,
           onPress: () => setDeleteConceptModal({ isOpen: true, sendCallback: deleteConcept }),
           itemClassName: 'text-negative-700',
-        }
-      : null,
+        },
   ].filter(Boolean) as MenuItemBase[]
 
   const uiOptions = getUiOptions(uiSchema) as SchemaUiOptions
@@ -83,7 +83,7 @@ const FormHeader = () => {
 
   return (
     <div className="relative flex flex-col">
-      <div className="min-h-none h-full w-full bg-main-200 p-4 md:py-6 lg:min-h-[120px] lg:px-0 lg:py-12">
+      <div className="min-h-none size-full bg-main-200 p-4 md:py-6 lg:min-h-[120px] lg:px-0 lg:py-12">
         <div className="mx-auto flex max-w-screen-lg justify-between">
           <div className="flex flex-col gap-2 lg:gap-4">
             <h1 className="text-h1-form">{schema.title}</h1>
@@ -98,7 +98,7 @@ const FormHeader = () => {
               <ButtonNew
                 size="small"
                 variant="category-outline"
-                startIcon={<DiscIcon className="h-5 w-5" />}
+                startIcon={<DiscIcon className="size-5" />}
                 onPress={() => saveConcept()}
                 data-cy="save-concept-desktop"
               >

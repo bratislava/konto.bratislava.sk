@@ -1,8 +1,8 @@
+import { LabelSize } from '@schema-generator/generator/uiOptionsTypes'
 import cx from 'classnames'
 import { useTranslation } from 'next-i18next'
 import * as React from 'react'
 import { DOMAttributes } from 'react'
-import { LabelSize } from 'schema-generator/generator/uiOptionsTypes'
 
 import FieldHelptext from './FieldHelptext'
 import BATooltip from './Tooltip/BATooltip'

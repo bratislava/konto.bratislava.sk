@@ -54,12 +54,12 @@ export interface MenuSectionItemBase {
 const Avatar = ({ userAttributes }: { userAttributes?: UserAttributes | null }) => {
   return (
     <div className="relative flex flex-row items-start gap-2 rounded-full bg-main-100 p-2">
-      <div className="flex h-6 w-6 items-center justify-center font-semibold text-main-700">
+      <div className="flex size-6 items-center justify-center font-semibold text-main-700">
         <span className="uppercase">
           {userAttributes && userAttributes.given_name && userAttributes.family_name ? (
             userAttributes.given_name[0] + userAttributes.family_name[0]
           ) : (
-            <ProfileIcon className="h-6 w-6 text-main-700" />
+            <ProfileIcon className="size-6 text-main-700" />
           )}
         </span>
       </div>
@@ -132,7 +132,7 @@ export const NavBar = ({ className, sectionsList, menuItems, hiddenHeaderNav }: 
                       <div className="flex items-center gap-1 font-light lg:font-semibold">
                         {isLegalEntity ? userAttributes?.name : userAttributes?.given_name}
                         <ChevronDownSmallIcon
-                          className={`hidden h-5 w-5 mix-blend-normal lg:flex ${
+                          className={`hidden size-5 mix-blend-normal lg:flex ${
                             isMenuOpen ? '-rotate-180' : ''
                           }`}
                         />
@@ -172,11 +172,11 @@ export const NavBar = ({ className, sectionsList, menuItems, hiddenHeaderNav }: 
                 aria-label={t('NavMenu.aria.navMenuLabel')}
                 // because of this https://github.com/radix-ui/primitives/discussions/1874 we can't directly access subelement (<div style="position: relative;")
                 // of "<nav>" element that NavigationMenu.List creates when used. Solution is to add grid class to the parent element.
-                className="grid h-full w-full"
+                className="grid size-full"
               >
-                <NavigationMenu.List className="flex h-full w-full items-center">
+                <NavigationMenu.List className="flex size-full items-center">
                   {sectionsList.map((sectionItem) => (
-                    <NavigationMenu.Item key={sectionItem.id} className="h-full w-full">
+                    <NavigationMenu.Item key={sectionItem.id} className="size-full">
                       <NavigationMenu.Link asChild>
                         <NextLink href={sectionItem.url}>
                           <div

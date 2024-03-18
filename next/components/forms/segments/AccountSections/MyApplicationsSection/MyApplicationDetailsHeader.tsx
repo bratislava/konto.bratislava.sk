@@ -67,10 +67,10 @@ const MyApplicationDetailsHeader = ({ data, ginisData }: MyApplicationDetailsHea
 
   return (
     <div className="bg-gray-50">
-      <div className="m-auto flex h-full w-full max-w-screen-lg flex-col justify-end gap-4 py-4 lg:gap-6 lg:px-0 lg:py-8">
+      <div className="m-auto flex size-full max-w-screen-lg flex-col justify-end gap-4 py-4 lg:gap-6 lg:px-0 lg:py-8">
         <div className="flex flex-col gap-4 px-4 lg:gap-6 lg:px-0">
           <Link href="/moje-ziadosti" className="flex w-max items-center gap-1">
-            <ChevronLeftIcon className="h-5 w-5" />
+            <ChevronLeftIcon className="size-5" />
             <span className="text-p3-medium underline underline-offset-2">{t('back_to_list')}</span>
           </Link>
           <div className="flex flex-col gap-4 lg:gap-6">
@@ -80,7 +80,7 @@ const MyApplicationDetailsHeader = ({ data, ginisData }: MyApplicationDetailsHea
                 <h1 className="text-h1">{title}</h1>
                 <Button
                   className="hidden md:flex"
-                  startIcon={<DownloadIcon className="h-6 w-6" />}
+                  startIcon={<DownloadIcon className="size-6" />}
                   text={t('download_pdf')}
                   onPress={exportPdf}
                 />
@@ -95,12 +95,12 @@ const MyApplicationDetailsHeader = ({ data, ginisData }: MyApplicationDetailsHea
                   <FormatDate>{createdAt || ''}</FormatDate>
                 </p>
               </div>
-              <span className="hidden h-1.5 w-1.5 rounded-full bg-gray-700 lg:block" />
+              <span className="hidden size-1.5 rounded-full bg-gray-700 lg:block" />
               <div className="flex items-center gap-1">
                 {icon}
                 {text}
               </div>
-              <span className="hidden h-1.5 w-1.5 rounded-full bg-gray-700 lg:block" />
+              <span className="hidden size-1.5 rounded-full bg-gray-700 lg:block" />
               <div className="flex items-center gap-1">
                 <p className="text-p3 lg:text-p2">
                   {t('account_section_applications.last_change')}
@@ -113,7 +113,7 @@ const MyApplicationDetailsHeader = ({ data, ginisData }: MyApplicationDetailsHea
             <Button
               fullWidth
               className="flex md:hidden"
-              startIcon={<DownloadIcon className="h-6 w-6" />}
+              startIcon={<DownloadIcon className="size-6" />}
               text={t('download_pdf')}
               onPress={exportPdf}
             />

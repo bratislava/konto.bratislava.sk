@@ -18,7 +18,7 @@ const FormControls = () => {
               variant="plain-black"
               onPress={goToPreviousStep}
               text={t('buttons.previous')}
-              startIcon={<ChevronLeftIcon className="h-6 w-6" />}
+              startIcon={<ChevronLeftIcon className="size-6" />}
             />
           )}
         </div>
@@ -31,14 +31,20 @@ const FormControls = () => {
             type="submit"
             data-cy="continue-button-desktop"
             text={t('buttons.continue')}
-            endIcon={<ArrowRightIcon className="h-6 w-6" />}
+            endIcon={<ArrowRightIcon className="size-6" />}
           />
         </div>
       </div>
 
       {/* Mobile */}
       <div className="mt-4 flex flex-col gap-2 md:hidden">
-        <Button type="submit" size="sm" fullWidth text={t('buttons.continue')} data-cy="continue-button-mobile" />
+        <Button
+          type="submit"
+          size="sm"
+          fullWidth
+          text={t('buttons.continue')}
+          data-cy="continue-button-mobile"
+        />
         <div className="flex items-center gap-3">
           {canGoToPreviousStep && (
             <Button

@@ -17,7 +17,7 @@ const StepperViewRow = ({ step, isCurrent, className }: StepperViewRowProps) => 
 
   const { title, stepperTitle, isSubmitted, displayIndex } = step
   const iconClassName = cx(
-    'min-w-8 flex h-8 w-8 shrink-0 flex-row items-center justify-center rounded-full border-2',
+    'flex h-8 w-8 min-w-8 shrink-0 flex-row items-center justify-center rounded-full border-2',
     {
       'border-gray-700 bg-gray-700 text-white': isSubmitted || isCurrent,
       'border-gray-300 bg-transparent text-gray-300': !isSubmitted && !isCurrent,
@@ -27,7 +27,7 @@ const StepperViewRow = ({ step, isCurrent, className }: StepperViewRowProps) => 
   return (
     <div className={twMerge('flex flex-row items-center gap-3', className)}>
       <div className={iconClassName} data-cy={isCurrent ? 'stepper-step-active' : null}>
-        {isCurrent || !isSubmitted ? displayIndex : <CheckIcon fill="white" className="h-6 w-6" />}
+        {isCurrent || !isSubmitted ? displayIndex : <CheckIcon fill="white" className="size-6" />}
       </div>
       <span className="text-p3-medium text-left">
         {isCurrent ? <span className="sr-only">{t('steps.current_sr')}</span> : null}

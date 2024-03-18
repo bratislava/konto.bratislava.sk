@@ -78,7 +78,7 @@ const BATooltip = ({ placement, children }: BATooltipProps) => {
           }
         }}
       >
-        <HelpIcon className="h-5 w-5 lg:h-6 lg:w-6" />
+        <HelpIcon className="size-5 lg:size-6" />
       </Button>
       <InnerTooltip placement={placement} offset={8}>
         {children}

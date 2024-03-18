@@ -23,7 +23,7 @@ const ButtonWithSubtext = ({ text, subtext, onPress }: ButtonWithSubtextProps) =
     <ButtonNew
       variant="black-outline"
       className="justify-start p-4 md:justify-center md:px-4 md:py-3"
-      endIcon={<ArrowRightIcon className="hidden h-6 w-6 md:block" />}
+      endIcon={<ArrowRightIcon className="hidden size-6 md:block" />}
       onPress={onPress}
       fullWidth
     >
@@ -31,7 +31,7 @@ const ButtonWithSubtext = ({ text, subtext, onPress }: ButtonWithSubtextProps) =
         <div className="md:hidden">{text}</div>
         <div className="inline-flex gap-2 text-main-700 md:text-gray-700">
           {subtext}
-          <ArrowRightIcon className="block h-6 w-6 md:hidden" />
+          <ArrowRightIcon className="block size-6 md:hidden" />
         </div>
       </div>
     </ButtonNew>
@@ -73,7 +73,12 @@ const RegistrationModal = ({ type, login, register, ...rest }: RegistrationModal
   }
 
   return (
-    <ModalV2 modalClassname="md:max-w-[796px] md:pt-8" mobileFullScreen {...rest} data-cy="registration-modal">
+    <ModalV2
+      modalClassname="md:max-w-[796px] md:pt-8"
+      mobileFullScreen
+      {...rest}
+      data-cy="registration-modal"
+    >
       <div className="mb-6 flex flex-col gap-2">
         {title && <h3 className="text-h2 lg:text-h3">{title}</h3>}
         {subtitle && <AccountMarkdown className="text-p1" content={subtitle} />}
@@ -85,8 +90,8 @@ const RegistrationModal = ({ type, login, register, ...rest }: RegistrationModal
             {/* eslint-disable-next-line @typescript-eslint/no-unsafe-call */}
             {bodyList.map((item, i) => (
               <li key={i} className="flex items-center gap-4">
-                <span className="flex h-5 w-5 min-w-[20px] items-center justify-center md:h-6 md:w-6 md:min-w-[24px]">
-                  <CheckIcon className="h-7 w-7" />
+                <span className="flex size-5 min-w-[20px] items-center justify-center md:size-6 md:min-w-[24px]">
+                  <CheckIcon className="size-7" />
                 </span>
                 <p className="text-p3 md:text-p1">{item}</p>
               </li>
@@ -145,7 +150,7 @@ const RegistrationModal = ({ type, login, register, ...rest }: RegistrationModal
                 </ButtonNew>
                 <ButtonNew
                   variant="black-outline"
-                  endIcon={<ArrowRightIcon className="h-6 w-6" />}
+                  endIcon={<ArrowRightIcon className="size-6" />}
                   onPress={close}
                   fullWidth
                 >

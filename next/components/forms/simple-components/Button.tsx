@@ -262,7 +262,7 @@ const Button = forwardRef<HTMLAnchorElement | HTMLButtonElement, PolymorphicProp
                 'ml-1 h-5 w-5': size === 'sm',
               })}
             >
-              <ArrowRightIcon className="h-6 w-6" />
+              <ArrowRightIcon className="size-6" />
             </span>
           )}
         </MLink>

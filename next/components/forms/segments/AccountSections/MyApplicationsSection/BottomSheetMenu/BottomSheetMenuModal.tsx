@@ -54,7 +54,7 @@ const BottomSheetMenuModal = ({
                     className="flex h-full cursor-pointer flex-col justify-center"
                     onPress={close}
                   >
-                    <CrossIcon className="h-6 w-6" />
+                    <CrossIcon className="size-6" />
                   </AriaButton>
                 </div>
                 <nav className="w-full overflow-auto bg-white px-4">

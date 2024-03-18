@@ -57,7 +57,7 @@ const FormPageWrapper = ({ formContext }: FormPageWrapperProps) => {
       }
       sentChildren={
         <FormContextProvider formContext={formContext}>
-          <AccountPageLayout hiddenHeaderNav className="bg-gray-50">
+          <AccountPageLayout className="bg-gray-50">
             <ThankYouFormSection />
           </AccountPageLayout>
         </FormContextProvider>

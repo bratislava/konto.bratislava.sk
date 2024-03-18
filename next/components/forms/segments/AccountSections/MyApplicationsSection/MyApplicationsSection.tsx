@@ -94,16 +94,23 @@ const MyApplicationsSection = ({ selectedSection, applications }: MyApplications
         <div className="m-auto size-full max-w-screen-lg flex-col justify-end gap-4 pt-6 lg:gap-6 lg:pt-14">
           <h1 className="text-h1 pt-4">{title}</h1>
           <TabList className="flex max-w-screen-lg gap-4 overflow-auto whitespace-nowrap pt-6 scrollbar-hide lg:gap-6 lg:pt-14">
-            {headerNavigationList.map((item) => (
-              <Tab
-                key={item.tag}
-                id={item.tag}
-                className="text-20 hover:text-20-semibold data-[selected]:text-20-semibold cursor-pointer py-4 transition-all hover:border-gray-700 data-[selected]:border-b-2 data-[selected]:border-gray-700"
-              >
-                {item.title}
-                {totalCounts[item.tag].data === undefined ? '' : ` (${totalCounts[item.tag].data})`}
-              </Tab>
-            ))}
+            {headerNavigationList.map((item) => {
+              const count = totalCounts[item.tag].data
+              const countText = count == null ? '' : ` (${count})`
+              const text = `${item.title}${countText}`
+
+              /* Hover without layout shift based on: https://stackoverflow.com/a/20249560 */
+              return (
+                <Tab
+                  key={item.tag}
+                  id={item.tag}
+                  data-before-text={text}
+                  className="text-20 hover:text-20-semibold data-[selected]:text-20-semibold before:text-20-semibold cursor-pointer py-4 text-center transition-all before:invisible before:block before:h-0 before:overflow-hidden before:content-[attr(data-before-text)] hover:border-gray-700 data-[selected]:border-b-2 data-[selected]:border-gray-700"
+                >
+                  {text}
+                </Tab>
+              )
+            })}
           </TabList>
         </div>
       </div>

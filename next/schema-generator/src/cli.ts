@@ -6,6 +6,8 @@ import priznanieKDaniZNehnutelnosti from './definitions/priznanie-k-dani-z-nehnu
 // import showcase from './definitions/showcase'
 import stanoviskoKInvesticnemuZameru from './definitions/stanovisko-k-investicnemu-zameru'
 import zavazneStanoviskoKInvesticnejCinnosti from './definitions/zavazne-stanovisko-k-investicnej-cinnosti'
+import komunitneZahrady from './definitions/komunitne-zahrady'
+import predzahradky from './definitions/predzahradky'
 
 type Args = {
   source: string
@@ -20,6 +22,8 @@ const definitions = {
   'stanovisko-k-investicnemu-zameru': stanoviskoKInvesticnemuZameru,
   'zavazne-stanovisko-k-investicnej-cinnosti': zavazneStanoviskoKInvesticnejCinnosti,
   'priznanie-k-dani-z-nehnutelnosti': priznanieKDaniZNehnutelnosti,
+  'komunitne-zahrady': komunitneZahrady,
+  predzahradky: predzahradky,
 } as const
 
 const chosenDefinitions: Array<keyof typeof definitions> = []

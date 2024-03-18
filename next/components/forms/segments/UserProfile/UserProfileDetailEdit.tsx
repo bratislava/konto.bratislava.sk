@@ -1,10 +1,10 @@
+import { baAjvFormats } from '@form-utils/ajvFormats'
 import cx from 'classnames'
 import Button from 'components/forms/simple-components/Button'
 import InputField from 'components/forms/widget-components/InputField/InputField'
 import { AccountType, Address, UserAttributes } from 'frontend/dtos/accountDto'
 import useHookForm from 'frontend/hooks/useHookForm'
 import useJsonParseMemo from 'frontend/hooks/useJsonParseMemo'
-import { ajvFormats } from 'frontend/utils/form'
 import { useTranslation } from 'next-i18next'
 import { Controller } from 'react-hook-form'
 
@@ -88,7 +88,7 @@ const poSchema = {
 }
 
 const isValidPhoneNumber = (phoneNumber: string) => {
-  const regex = ajvFormats['phone-number']
+  const regex = baAjvFormats['phone-number']
   return regex.test(phoneNumber)
 }
 interface UserProfileDetailEditProps {

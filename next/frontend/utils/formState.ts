@@ -1,9 +1,9 @@
+import { baRjsfValidator } from '@form-utils/validators'
 import { GenericObjectType, retrieveSchema, RJSFSchema } from '@rjsf/utils'
 import { JSONSchema7 } from 'json-schema'
 import pick from 'lodash/pick'
 
 import { FormStepIndex, FormStepperStep } from '../../components/forms/types/Steps'
-import { rjsfValidator } from './form'
 import { isDefined } from './general'
 
 export const SUMMARY_HASH = 'sumar'
@@ -22,7 +22,7 @@ export const getEvaluatedStepsSchemas = (
       if (typeof step === 'boolean') {
         return null
       }
-      const retrievedSchema = retrieveSchema(rjsfValidator, step, schema, formData)
+      const retrievedSchema = retrieveSchema(baRjsfValidator, step, schema, formData)
 
       return Object.keys(retrievedSchema).length > 0 ? retrievedSchema : null
     }) ?? []

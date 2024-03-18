@@ -1,3 +1,4 @@
+import { getFileUuidsNaive } from '@form-utils/fileUtils'
 import { GenericObjectType } from '@rjsf/utils'
 import { useTranslation } from 'next-i18next'
 import React, {
@@ -11,7 +12,7 @@ import React, {
 import useStateRef from 'react-usestateref'
 import { useIsFirstRender } from 'usehooks-ts'
 
-import { getFileUuidsNaive, validateSummary } from '../../frontend/utils/form'
+import { validateSummary } from '../../frontend/utils/form'
 import {
   getEvaluatedStepsSchemas,
   getFirstNonEmptyStepIndex,

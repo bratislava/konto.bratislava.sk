@@ -1,3 +1,4 @@
+import { baAjvFormats } from '@form-utils/ajvFormats'
 import { useQuery } from '@tanstack/react-query'
 import Ajv, { FuncKeywordDefinition } from 'ajv'
 import addFormats from 'ajv-formats'
@@ -6,7 +7,6 @@ import { useEffect } from 'react'
 import { getTaxApi } from '../api/api'
 import { TaxApiError } from '../dtos/generalApiDto'
 import { Tax, TaxJSONSchema } from '../dtos/taxDto'
-import { ajvFormats } from '../utils/form'
 import logger from '../utils/logger'
 
 export const ajvKeywords: FuncKeywordDefinition[] = [
@@ -61,7 +61,7 @@ export const useTaxes = () => {
       // todo use single ajv instance with multiple schemas, as per recommendations - https://ajv.js.org/guide/managing-schemas.html#compiling-during-initialization
       const ajv = new Ajv({
         keywords: ajvKeywords,
-        formats: ajvFormats,
+        formats: baAjvFormats,
       })
       addFormats(ajv)
 

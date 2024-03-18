@@ -1,3 +1,4 @@
+import { parseRatio } from '@form-utils/ajvFormats'
 import { GenericObjectType } from '@rjsf/utils'
 import {
   CustomComponentPropertyCalculator,
@@ -10,7 +11,6 @@ import get from 'lodash/get'
 import React, { useMemo } from 'react'
 import { useNumberFormatter } from 'react-aria'
 
-import { parseRatio } from '../../../../frontend/utils/form'
 import FormMarkdown from '../../info-components/FormMarkdown'
 import { useFormState } from '../../useFormState'
 import { useFormWidget } from '../../useFormWidget'

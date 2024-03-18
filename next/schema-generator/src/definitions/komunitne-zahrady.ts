@@ -342,7 +342,7 @@ export default schema(
         },
         required: [],
       },
-      { title: 'Prílohy', customHash: 'prilohyPredschvalenyPozemok' },
+      { title: 'Prílohy', customHash: 'prilohy-predschvaleny-pozemok' },
       [
         ...umiestnenieADizajn,
         fileUpload(
@@ -358,7 +358,7 @@ export default schema(
     conditionalStep(
       'prilohyInyPozemok',
       createCondition([[['pozemok', 'typPozemku'], { not: { const: 'predschvalenyPozemok' } }]]),
-      { title: 'Prílohy', customHash: 'prilohyInyPozemok' },
+      { title: 'Prílohy', customHash: 'prilohy-iny-pozemok' },
       [
         fileUpload(
           'fotografie',

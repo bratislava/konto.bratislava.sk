@@ -62,9 +62,8 @@ describe('RF01 -', { testIsolation: false }, () => {
           cy.submitForm('register-form')
         })
 
-        // Skipped due to an incorrect redirect by BE.
-        it.skip('6. Check the 2FA page.', () => {
-          cy.check2FAPage(emailHash, 'registration-container')
+        it('6. Check the 2FA page.', () => {
+          cy.check2FAPage(emailHash)
         })
 
         it('7. Logout user.', () => {
@@ -74,6 +73,8 @@ describe('RF01 -', { testIsolation: false }, () => {
         describe('A02 - change email and password', { testIsolation: false }, () => {
           it('1. Logging in.', () => {
             cy.logInUser(device, emailHash, password)
+            cy.get("[data-cy=add-phone-number]", {timeout: 10000})
+            cy.get("[data-cy=close-modal]").click({multiple: true})
           })
 
           it('2. Changing email.', () => {
@@ -98,9 +99,8 @@ describe('RF01 -', { testIsolation: false }, () => {
             })
           })
 
-          // Skipped due to an incorrect redirect by BE.
-          it.skip('3. Validating saved information', () => {
-            cy.check2FAPage(emailHash, 'verification-form')
+          it('3. Validating saved information', () => {
+            cy.check2FAPage(emailHash)
           })
 
           it('4. Changing password.', () => {

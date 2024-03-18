@@ -25,7 +25,7 @@ declare namespace Cypress {
      * @param formContainer Form container.
      * @example cy.check2FAPage(emailHash, 'registration-container')
      */
-    check2FAPage(emailHash: string, formContainer: string): Chainable<any>
+    check2FAPage(emailHash: string): Chainable<any>
   }
 }
 
@@ -44,19 +44,7 @@ Cypress.Commands.add('submitForm', (form) => {
   })
 })
 
-Cypress.Commands.add('check2FAPage', (emailHash, formContainer) => {
-  const visualTestingIgnore = ['[data-cy=verification-description]']
-
-  cy.dataCy('verification-description').contains(emailHash)
-  cy.dataCy('verification-form').then((form) => {
-    cy.wrap(Cypress.$('button[type=submit]', form)).click()
-
-    cy.wrap(Cypress.$('[data-cy=input-verificationCode]', form)).should(
-      'have.class',
-      'border-negative-700',
-    )
-  })
-  cy.dataCy(formContainer)
-    .should('be.visible')
-    //.matchImage({ screenshotConfig: { blackout: visualTestingIgnore } })  
+Cypress.Commands.add('check2FAPage', (emailHash) => {
+  cy.get('[data-cy=success-alert]', {timeout: 15000}).find("p").contains(emailHash)
+  cy.dataCy("pokračovať-do-konta-button").contains("Pokračovať do konta")
 })

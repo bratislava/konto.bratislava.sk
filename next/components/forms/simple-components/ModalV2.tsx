@@ -43,6 +43,7 @@ const ModalV2 = ({
       {...newProps}
     >
       <Modal
+        data-cy="add-phone-number"
         {...modalProps}
         className={twMerge(
           'relative overflow-auto bg-gray-0 px-4 outline-0 md:mx-4 md:h-min md:max-h-full md:max-w-[592px] md:rounded-2xl md:p-6',

@@ -57,9 +57,8 @@ describe('RF02 -', { testIsolation: false }, () => {
           cy.submitForm('register-form')
         })
 
-        // Skipped due to an incorrect redirect by BE.
-        it.skip('6. Check the 2FA page.', () => {
-          cy.check2FAPage(emailHash, 'registration-container')
+        it('6. Check the 2FA page.', () => {
+          cy.check2FAPage(emailHash)
         })
 
         it('8. Logout user.', () => {

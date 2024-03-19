@@ -12,7 +12,7 @@ import {
   textArea,
   timePicker,
 } from '../generator/functions'
-import { createCondition } from '../generator/helpers'
+import { createCondition, inputPhoneNumber } from '../generator/helpers'
 
 export default schema(
   {

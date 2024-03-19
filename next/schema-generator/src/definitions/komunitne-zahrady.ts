@@ -11,7 +11,7 @@ import {
   step,
   textArea,
 } from '../generator/functions'
-import { createCondition, createStringOptions } from '../generator/helpers'
+import { createCondition, createStringOptions, inputPhoneNumber } from '../generator/helpers'
 
 const umiestnenieADizajn = [
   fileUpload(
@@ -87,11 +87,7 @@ export default schema(
         ],
       ),
       input('email', { title: 'E-mail', required: true, type: 'email' }, {}),
-      input(
-        'telefon',
-        { title: 'Telefónne číslo', required: true, type: 'tel' },
-        { placeholder: '+421', size: 'medium' },
-      ),
+      inputPhoneNumber('telefon', true),
     ]),
 
     step('obcianskeZdruzenie', { title: 'Občianske združenie' }, [

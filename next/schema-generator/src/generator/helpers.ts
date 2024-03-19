@@ -1,6 +1,8 @@
 import type { RJSFSchema } from '@rjsf/utils'
 import camelCase from 'lodash/camelCase'
 
+import { input, object } from './functions'
+
 type ObjectJsonSchema = {
   type: 'object'
   properties: Record<string, ObjectJsonSchema | ArrayJsonSchema | RJSFSchema>
@@ -180,6 +182,16 @@ export const createCamelCaseOptionsV2 = <Option extends { title: string }>(
   assertUniqueOptions(result)
   return result
 }
+
+/**
+ * Create phone number input field consitent with all forms.
+ */
+export const inputPhoneNumber = (property: string, required: boolean, helptext?: string) =>
+  input(
+    property,
+    { title: 'Telefónne číslo', required, type: 'tel' },
+    { size: 'medium', placeholder: '+421', helptext },
+  )
 
 export const removeUndefinedValues = <T>(obj: T) => {
   return JSON.parse(JSON.stringify(obj)) as T

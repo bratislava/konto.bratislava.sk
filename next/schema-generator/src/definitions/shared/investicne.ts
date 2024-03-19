@@ -9,7 +9,7 @@ import {
   selectMultiple,
   step,
 } from '../../generator/functions'
-import { createCondition, createStringOptions } from '../../generator/helpers'
+import { createCondition, createStringOptions, inputPhoneNumber } from '../../generator/helpers'
 
 const ziadatelInvestorFields = [
   radioGroup(
@@ -57,11 +57,7 @@ const ziadatelInvestorFields = [
     input('kontaktnaOsoba', { title: 'Kontaktná osoba', required: true }, {}),
   ]),
   input('email', { title: 'E-mail', required: true, type: 'email' }, {}),
-  input(
-    'telefon',
-    { title: 'Telefónne číslo (v tvare +421...)', required: true, type: 'tel' },
-    { size: 'medium' },
-  ),
+  inputPhoneNumber('telefon', true),
 ]
 
 export const getSchema = (zavazne: boolean) =>
@@ -152,11 +148,7 @@ export const getSchema = (zavazne: boolean) =>
       step('zodpovednyProjektant', { title: 'Zodpovedný projektant' }, [
         input('menoPriezvisko', { title: 'Meno a priezvisko', required: true }, {}),
         input('email', { title: 'E-mail', required: true, type: 'email' }, {}),
-        input(
-          'projektantTelefon',
-          { title: 'Telefónne číslo (v tvare +421...)', required: true, type: 'tel' },
-          { size: 'medium' },
-        ),
+        inputPhoneNumber('projektantTelefon', true),
         input(
           'autorizacneOsvedcenie',
           { title: 'Číslo autorizačného osvedčenia', required: true },

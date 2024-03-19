@@ -40,3 +40,4 @@ Run the following and let the script guide you. If you need modifications or you
 ## Notes
 - `resolutions` for `jackspeak` in package.json is because of https://github.com/storybookjs/storybook/issues/22431#issuecomment-1630086092
 - `ts-config` based on https://github.com/tsconfig/bases/blob/main/bases/node-lts.json
+- `@rjsf+utils+5.15.0.patch` is duplicated patch from Next app, it will be removed after https://github.com/rjsf-team/react-jsonschema-form/pull/4121 is done

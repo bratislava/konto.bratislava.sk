@@ -3,14 +3,15 @@ import {
   CustomComponentPropertyCalculator,
   CustomComponentPropertyCalculatorProps,
 } from '@schema-generator/generator/uiOptionsTypes'
+import {
+  calculateTaxCalculatorExpression,
+  getTaxCalculatorExpression,
+} from '@schema-generator/tax-form/calculators'
 import cx from 'classnames'
-import { Parser } from 'expr-eval'
-import clone from 'lodash/clone'
 import get from 'lodash/get'
 import React, { useMemo } from 'react'
 import { useNumberFormatter } from 'react-aria'
 
-import { parseRatio } from '../../../../frontend/utils/form'
 import FormMarkdown from '../../info-components/FormMarkdown'
 import { useFormState } from '../../useFormState'
 import { useFormWidget } from '../../useFormWidget'
@@ -57,61 +58,16 @@ const Calculator = ({
   const { formData } = useFormState()
   const { widget } = useFormWidget()
 
-  const expression = useMemo(() => {
-    const parser = new Parser()
-
-    // Ratio (e.g. "5/13") is a string that needs to be evaluated.
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
-    parser.functions.evalRatio = (arg: string) => {
-      if (parseRatio(arg).isValid) {
-        return parser.evaluate(arg)
-      }
-      return NaN
-    }
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
-    parser.functions.ratioNumerator = (arg: string) => {
-      const parsed = parseRatio(arg)
-      if (parsed.isValid) {
-        return parsed.numerator
-      }
-      return NaN
-    }
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
-    parser.functions.ratioDenominator = (arg: string) => {
-      const parsed = parseRatio(arg)
-      if (parsed.isValid) {
-        return parsed.denominator
-      }
-      return NaN
-    }
-
-    try {
-      return parser.parse(formula)
-    } catch (error) {
-      return null
-    }
-  }, [formula])
+  const expression = useMemo(() => getTaxCalculatorExpression(formula), [formula])
 
   const value = useMemo(() => {
-    try {
-      const path = getPath(widget?.id ?? '', dataContextLevelsUp)
-      const dataAtPath = path ? (get(formData, path) as GenericObjectType) : null
-      if (dataAtPath == null) {
-        return null
-      }
-
-      // It is not in the documentation, but `expr-eval` mutates the original data!
-      const clonedData = clone(dataAtPath)
-      const evaluated = expression?.evaluate(clonedData)
-
-      if (!Number.isFinite(evaluated)) {
-        return null
-      }
-
-      return evaluated as number
-    } catch (error) {
+    const path = getPath(widget?.id ?? '', dataContextLevelsUp)
+    const dataAtPath = path ? (get(formData, path) as GenericObjectType) : null
+    if (dataAtPath == null) {
       return null
     }
+
+    return calculateTaxCalculatorExpression(expression, dataAtPath)
   }, [expression, formData, dataContextLevelsUp, widget?.id])
 
   const wrapperClassName = cx('inline-flex items-center justify-start gap-8 self-stretch py-5', {

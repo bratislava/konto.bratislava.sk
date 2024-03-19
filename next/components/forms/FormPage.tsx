@@ -1,8 +1,9 @@
+import { baDefaultFormStateBehavior } from '@form-utils/defaultFormState'
+import { baRjsfValidator } from '@form-utils/validators'
 import cx from 'classnames'
 import MenuList from 'components/forms/steps/MenuList'
 import { useIsomorphicLayoutEffect } from 'usehooks-ts'
 
-import { defaultFormStateBehavior, rjsfValidator } from '../../frontend/utils/form'
 import FormControls from './FormControls'
 import FormUploadXmlJson from './FormUploadXmlJson'
 import FormModals from './segments/FormModals/FormModals'
@@ -71,7 +72,7 @@ const FormPage = () => {
                 schema={currentStepSchema!}
                 uiSchema={uiSchema}
                 formData={formData}
-                validator={rjsfValidator}
+                validator={baRjsfValidator}
                 readonly={isReadonly}
                 onSubmit={(e) => {
                   handleFormOnSubmit(e.formData)
@@ -85,7 +86,7 @@ const FormPage = () => {
                 // `handleFormOnChange` implementation.
                 omitExtraData
                 liveOmit
-                experimental_defaultFormStateBehavior={defaultFormStateBehavior}
+                experimental_defaultFormStateBehavior={baDefaultFormStateBehavior}
                 // HTML validation doesn't work for our use case, therefore it's turned off.
                 noHtml5Validate
               >

@@ -1,14 +1,17 @@
 /* eslint-disable @typescript-eslint/explicit-function-return-type,eslint-comments/disable-enable-pair,import/prefer-default-export */
 import { DanZoStaviebJedenUcelPriznania, TaxFormData } from '../../types'
 import { parseDateFieldDate, safeArray, safeBoolean, safeNumber, safeString } from './functions'
-import { evaluateFormula } from './kalkulacky'
 import { oddielBaseShared } from './oddielBaseShared'
+import { calculateTaxCalculatorFormula } from '../../calculators'
 
 const mapPriznanie = (data: TaxFormData, priznanie: DanZoStaviebJedenUcelPriznania) => {
   const pouzitKalkulacku =
     safeBoolean(data.danZoStaviebJedenUcel?.kalkulackaWrapper?.pouzitKalkulacku) === true
   const zakladDane = pouzitKalkulacku
-    ? evaluateFormula('ceil (celkovaZastavanaPlocha * evalRatio(spoluvlastnickyPodiel))', priznanie)
+    ? calculateTaxCalculatorFormula(
+        'ceil (celkovaZastavanaPlocha * evalRatio(spoluvlastnickyPodiel))',
+        priznanie,
+      )
     : safeNumber(priznanie?.zakladDane)
 
   const cisloListuVlastnictva = safeString(priznanie.cisloListuVlastnictva)

@@ -180,3 +180,7 @@ export const createCamelCaseOptionsV2 = <Option extends { title: string }>(
   assertUniqueOptions(result)
   return result
 }
+
+export const removeUndefinedValues = <T>(obj: T) => {
+  return JSON.parse(JSON.stringify(obj)) as T
+}

@@ -9,7 +9,12 @@ import {
   selectMultiple,
   step,
 } from '../../generator/functions'
-import { createCondition, createStringOptions, inputPhoneNumber } from '../../generator/helpers'
+import {
+  createCondition,
+  createStringOptions,
+  inputAddress,
+  inputPhoneNumber,
+} from '../../generator/helpers'
 
 const ziadatelInvestorFields = [
   radioGroup(
@@ -30,29 +35,17 @@ const ziadatelInvestorFields = [
     createCondition([[['typ'], { const: 'Fyzická osoba' }]]),
     [
       input('menoPriezvisko', { title: 'Meno a priezvisko', required: true }, {}),
-      input('adresa', { title: 'Adresa trvalého pobytu', required: true }, {}),
+      inputAddress('adresa', 'Korešpondenčná adresa', true),
     ],
     [input('obchodneMeno', { title: 'Obchodné meno', required: true }, {})],
   ),
   conditionalFields(createCondition([[['typ'], { const: 'Fyzická osoba – podnikateľ' }]]), [
-    input('miestoPodnikania', { title: 'Miesto podnikania', required: true }, {}),
+    inputAddress('miestoPodnikania', 'Miesto podnikania', true),
   ]),
   conditionalFields(createCondition([[['typ'], { const: 'Právnická osoba' }]]), [
     input('ico', { title: 'IČO', required: true }, {}),
-    input('adresaSidla', { title: 'Adresa sídla', required: true }, {}),
+    inputAddress('adresaSidla', 'Adresa sídla', true),
   ]),
-  object(
-    'mestoPsc',
-    { required: true },
-    {
-      columns: true,
-      columnsRatio: '3/1',
-    },
-    [
-      input('mesto', { title: 'Mesto', required: true }, {}),
-      input('psc', { title: 'PSČ', required: true, format: 'zip' }, {}),
-    ],
-  ),
   conditionalFields(createCondition([[['typ'], { const: 'Právnická osoba' }]]), [
     input('kontaktnaOsoba', { title: 'Kontaktná osoba', required: true }, {}),
   ]),

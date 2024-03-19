@@ -196,3 +196,23 @@ export const inputPhoneNumber = (property: string, required: boolean, helptext?:
 export const removeUndefinedValues = <T>(obj: T) => {
   return JSON.parse(JSON.stringify(obj)) as T
 }
+
+/**
+ * Create address input fields.
+ */
+export const inputAddress = (property: string, title: string, required: boolean) =>
+  object(property, { required }, { objectDisplay: 'boxed', title }, [
+    input('ulicaACislo', { title: 'Ulica a číslo', required, type: 'text' }, {}),
+    object(
+      'mestoPsc',
+      { required: true },
+      {
+        columns: true,
+        columnsRatio: '3/1',
+      },
+      [
+        input('mesto', { title: 'Mesto', required: true }, {}),
+        input('psc', { title: 'PSČ', required: true, format: 'zip' }, {}),
+      ],
+    ),
+  ])

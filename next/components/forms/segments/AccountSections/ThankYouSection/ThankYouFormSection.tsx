@@ -13,7 +13,7 @@ const ThankYouFormSection = () => {
   const { t } = useTranslation('account')
 
   return (
-    <div className="flex h-screen flex-col justify-between bg-gray-0 pt-16 md:bg-gray-50 md:pt-28">
+    <div className="flex flex-col justify-between bg-gray-0 pt-16 md:bg-gray-50 md:pt-28">
       <div className="flex flex-col">
         <ThankYouCard
           success

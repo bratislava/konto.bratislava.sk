@@ -17,12 +17,13 @@ describe('RF01 -', { testIsolation: false }, () => {
     .forEach((device) => {
       context(device, Cypress.env('resolution')[`${device}`], () => {
         const emailHash = `${Date.now() + device}@cypress.test`
+        const wrongEmailHash = `${Date.now() + device}wrongemail@cypress.test`
 
         it('1. Submitting a empty registration form.', () => {
           cy.visit('/registracia')
           cy.hideNavbar(device)
 
-          cy.dataCy('registration-container').should('be.visible')//.matchImage()
+          cy.dataCy('registration-container').should('be.visible') //.matchImage()
         })
 
         it('2. Check error validation.', () => {
@@ -33,7 +34,7 @@ describe('RF01 -', { testIsolation: false }, () => {
 
             cy.wrap(Cypress.$(errorBorderFields, form)).should('have.class', 'border-negative-700')
           })
-          cy.dataCy('registration-container').should('be.visible')//.matchImage()
+          cy.dataCy('registration-container').should('be.visible') //.matchImage()
         })
 
         it('3. Filling out the registration form.', () => {
@@ -54,7 +55,7 @@ describe('RF01 -', { testIsolation: false }, () => {
 
         it('4. Check that required inputs are not in error state.', () => {
           cy.checkFormFieldsNotInErrorState('register-form', errorBorderFields)
-          cy.dataCy('registration-container').should('be.visible')//.matchImage()
+          cy.dataCy('registration-container').should('be.visible') //.matchImage()
         })
 
         it('5. Submitting the form and checking the redirection to 2FA.', () => {
@@ -62,11 +63,106 @@ describe('RF01 -', { testIsolation: false }, () => {
         })
 
         it('6. Check the 2FA page.', () => {
-          cy.check2FAPage(emailHash, 'registration-container')
+          cy.check2FAPage(emailHash)
         })
 
         it('7. Logout user.', () => {
-          cy.logout()
+          cy.logOutUser()
+        })
+
+        describe('A02 - change email and password', { testIsolation: false }, () => {
+          it('1. Logging in.', () => {
+            cy.logInUser(device, emailHash, password)
+            cy.get("[data-cy=add-phone-number]", {timeout: 10000})
+            cy.get("[data-cy=close-modal]").click({multiple: true})
+          })
+
+          it('2. Changing email.', () => {
+            if (device === 'desktop') {
+              cy.get('[data-cy=account-button]').click()
+            } else {
+              cy.get('[data-cy=mobile-account-button]').click()
+            }
+            cy.get('[data-cy=moj-profil-menu-item]').click()
+            if (device === 'desktop') {
+              cy.get('[data-cy=edit-personal-information-button]').click()
+              cy.get('[data-cy=change-email-button]').click()
+            } else {
+              cy.get('[data-cy=edit-personal-information-button-mobile]').click()
+              cy.get('[data-cy=change-email-button-mobile]').click()
+            }
+            cy.url().should('include', '/zmena-emailu')
+            cy.dataCy('change-email-form').then((form) => {
+              cy.wrap(Cypress.$('[data-cy=input-newEmail]', form)).clear().type(emailHash)
+              cy.wrap(Cypress.$('[data-cy=input-password]', form)).clear().type(password)
+              cy.get('[data-cy=change-email-submit]').click()
+            })
+          })
+
+          it('3. Validating saved information', () => {
+            cy.check2FAPage(emailHash)
+          })
+
+          it('4. Changing password.', () => {
+            cy.visit("/moj-profil")
+            cy.get('[data-cy=change-password-button]').click()
+            cy.location('pathname', {timeout: 4000})
+            .should('eq', '/zmena-hesla');
+            cy.dataCy('change-password-form').then((form) => {
+              cy.wrap(Cypress.$('[data-cy=input-oldPassword]', form)).clear().type(password)
+              cy.wrap(Cypress.$('[data-cy=input-password]', form)).clear().type(password)
+              cy.wrap(Cypress.$('[data-cy=input-passwordConfirmation]', form)).clear().type(password)
+              cy.get('[data-cy=change-password-submit]').click()
+            })
+          })
+  
+          it('5. Validating saved information', () => {
+            cy.location('pathname', {timeout: 4000})
+            .should('eq', '/zmena-hesla');
+            cy.get('[data-cy=success-alert]').should('be.visible')
+            cy.get('[data-cy=pokračovať-do-konta-button]').click()
+            cy.location('pathname', {timeout: 4000})
+            .should('eq', '/');
+            cy.logOutUser()
+          })
+        })
+
+        describe('RF05 - forgotten password', () => {
+          it('1. Submitting wrong value.', () => {
+            cy.visit('/zabudnute-heslo')
+            cy.hideNavbar(device)
+            cy.hideInfoBar()
+
+            cy.dataCy('forgotten-password-form').then((form) => {
+              cy.wrap(Cypress.$('[data-cy=input-email]', form)).type('test')
+
+              cy.submitForm('forgotten-password-form')
+
+              cy.wrap(Cypress.$('[data-cy=input-email]', form)).should(
+                'have.class',
+                'border-negative-700',
+              )
+            })
+          })
+
+          it('2. Submitting wrong email.', () => {
+            cy.dataCy('forgotten-password-form').then((form) => {
+              cy.wrap(Cypress.$('[data-cy=input-email]', form)).focus().clear().type(wrongEmailHash)
+
+              cy.submitForm('forgotten-password-form')
+            })
+            cy.dataCy('alert-container').should('be.visible')
+            cy.dataCy('forgotten-password-form').should('be.visible') //.matchImage()
+          })
+
+          it('3. Submitting correct email.', () => {
+            cy.dataCy('forgotten-password-form').then((form) => {
+              cy.wrap(Cypress.$('[data-cy=input-email]', form)).focus().clear().type(emailHash)
+
+              cy.submitForm('forgotten-password-form')
+            })
+            cy.dataCy('new-password-form').should('be.visible')
+          })
         })
       })
     })

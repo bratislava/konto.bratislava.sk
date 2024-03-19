@@ -8,7 +8,7 @@ jobs:
   cypress-tests:
     if: (github.event.action == 'synchronize' && contains(github.event.pull_request.labels.*.name, 'pr:run cypress')) || github.event.label.name == 'pr:run cypress'
     runs-on: ubuntu-latest
-    timeout-minutes: 10
+    timeout-minutes: 20
 
     steps:
       - name: Checkout code

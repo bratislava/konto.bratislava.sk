@@ -22,12 +22,7 @@ describe('F04 -', { testIsolation: false }, () => {
         const emailHash = `${Date.now() + device}@cypress.test`
         
         before(() => {
-          cy.setCookie('gdpr-consents', '{%22statistics%22:true}')
           cy.visit('/mestske-sluzby/stanovisko-k-investicnemu-zameru')
-        })
-
-        beforeEach(() => {
-          cy.hideNavbar(device)
         })
         
         it('1. Checking "File" step validation.', () => {
@@ -78,15 +73,8 @@ describe('F04 -', { testIsolation: false }, () => {
         })
 
         it('5. Going to registration.', () => {
-          cy.showNavbar(device)
-          if (device === 'desktop') {
-            cy.get('[data-cy=register-button]').click();
-          } else {
-            cy.get('[data-cy=mobile-account-button]').click()
-            cy.url().should("include", "/prihlasenie");
-            cy.get('[data-cy=registracia-button]').click();
-          }
-            
+          cy.get('[data-cy=mobile-account-button]').click()
+          cy.dataCy("Registrácia-menu-item").click()            
           cy.url().should("include", "/registracia");
           cy.dataCy('registration-container').should('be.visible')//.matchImage()
         })
@@ -96,7 +84,6 @@ describe('F04 -', { testIsolation: false }, () => {
             cy.wrap(Cypress.$('[data-cy=radio-fyzická-osoba]', form)).should('be.checked')
 
             cy.wrap(Cypress.$('[data-cy=input-email]', form)).type(emailHash)
-            cy.pause()
 
             cy.wrap(Cypress.$('[data-cy=input-given_name]', form)).type(this.registrationData.given_name)
 
@@ -112,17 +99,15 @@ describe('F04 -', { testIsolation: false }, () => {
           cy.hideInfoBar()
           cy.checkFormFieldsNotInErrorState('register-form', errorBorderFields)
           cy.dataCy('registration-container').should('be.visible')//.matchImage()
+          cy.submitForm('register-form')
         })
 
         it('8. Submitting the form and checking the redirection to original form.', () => {
-          cy.submitForm('register-form')
-          cy.check2FAPage(emailHash, 'registration-container')
-
-          // TODO check data filled in form
+          cy.check2FAPage(emailHash)
         })
 
-        it('8. Logout user.', () => {
-          cy.logout()
+        it('9. Logout user.', () => {
+          cy.logOutUser()
         })
       })
     })

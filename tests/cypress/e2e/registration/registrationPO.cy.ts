@@ -58,11 +58,11 @@ describe('RF02 -', { testIsolation: false }, () => {
         })
 
         it('6. Check the 2FA page.', () => {
-          cy.check2FAPage(emailHash, 'registration-container')
+          cy.check2FAPage(emailHash)
         })
 
         it('8. Logout user.', () => {
-          cy.logout()
+          cy.logOutUser()
         })
       })
     })

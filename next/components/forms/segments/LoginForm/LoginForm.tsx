@@ -57,6 +57,7 @@ const LoginForm = ({ onSubmit, error }: Props) => {
     <form
       className="flex flex-col space-y-4"
       onSubmit={handleSubmit((data: Data) => onSubmit(data.email, data.password))}
+      data-cy="login-container"
     >
       <h1 className="text-h3">{t('login_title')}</h1>
       <AccountErrorAlert error={error} />
@@ -97,6 +98,7 @@ const LoginForm = ({ onSubmit, error }: Props) => {
         text={t('login_submit')}
         variant="category"
         disabled={isSubmitting}
+        data-cy="login-button"
       />
       <AccountLink
         label={t('register_link')}

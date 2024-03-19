@@ -18,7 +18,7 @@ describe('RF03 -', { testIsolation: false }, () => {
           cy.url().should("include", "/registracia");
         })
 
-        it(`1. Reopening registration modal with save as a concept button.`, () => {
+        it(`2. Reopening registration modal with save as a concept button.`, () => {
           cy.dataCy('close-modal').click()
 
           cy.dataCy(`save-concept-${device}`).should('be.visible').click()

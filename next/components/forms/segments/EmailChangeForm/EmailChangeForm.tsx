@@ -52,6 +52,7 @@ const EmailChangeForm = ({ onSubmit, error }: Props) => {
     <form
       className="flex flex-col space-y-4"
       onSubmit={handleSubmit((data: Data) => onSubmit(data.newEmail, data.password))}
+      data-cy="change-email-form"
     >
       <h1 className="text-h3">{t('email_change_title')}</h1>
       <p className="text-p3 lg:text-p2">{t('new_email_text')}</p>
@@ -88,6 +89,7 @@ const EmailChangeForm = ({ onSubmit, error }: Props) => {
         text={t('new_email_submit')}
         variant="category"
         disabled={isSubmitting}
+        data-cy="change-email-submit"
       />
     </form>
   )

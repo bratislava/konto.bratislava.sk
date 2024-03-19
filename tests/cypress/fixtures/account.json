@@ -1,0 +1,10 @@
+{
+  "email": "accounttest@cypress.test",
+  "password": "password23A",
+  "wrong_phone_number": "333222111",
+  "phone_number": "+421333222111",
+  "address": "1234 Main St",
+  "wrong_postal_code": "1",
+  "postal_code": "12345",
+  "city": "San Francisco"
+}

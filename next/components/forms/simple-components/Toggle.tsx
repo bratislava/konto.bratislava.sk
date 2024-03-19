@@ -45,7 +45,7 @@ const Toggle = ({ children, isDisabled = false, isSelected = true, ...rest }: To
     'left-0.5': !state.isSelected,
   })
   return (
-    <label htmlFor={generatedOrProvidedId} className={toggleContainer}>
+    <label htmlFor={generatedOrProvidedId} className={toggleContainer} data-cy={`${rest.id?.replace(/_/g, "-")}-toggle`}>
       <VisuallyHidden>
         <input id={generatedOrProvidedId} {...inputProps} {...focusProps} ref={ref} />
       </VisuallyHidden>

@@ -1,5 +1,6 @@
 import './commands/global'
 import './commands/registration'
+import './commands/account'
 import './commands/form'
 import './triggers/before'
 import '@frsource/cypress-plugin-visual-regression-diff'

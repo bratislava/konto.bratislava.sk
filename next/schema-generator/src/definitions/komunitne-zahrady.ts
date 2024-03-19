@@ -11,7 +11,12 @@ import {
   step,
   textArea,
 } from '../generator/functions'
-import { createCondition, createStringOptions, inputPhoneNumber } from '../generator/helpers'
+import {
+  createCondition,
+  createStringOptions,
+  inputAddress,
+  inputPhoneNumber,
+} from '../generator/helpers'
 
 const umiestnenieADizajn = [
   fileUpload(
@@ -66,26 +71,7 @@ export default schema(
           input('priezvisko', { title: 'Priezvisko', required: true, type: 'text' }, {}),
         ],
       ),
-      object(
-        'adresa',
-        { required: true },
-        { objectDisplay: 'boxed', title: 'Adresa trvalého pobytu' },
-        [
-          input('ulicaACislo', { title: 'Ulica a číslo', required: true, type: 'text' }, {}),
-          object(
-            'mestoPsc',
-            { required: true },
-            {
-              columns: true,
-              columnsRatio: '3/1',
-            },
-            [
-              input('mesto', { title: 'Mesto', required: true }, {}),
-              input('psc', { title: 'PSČ', required: true, format: 'zip' }, {}),
-            ],
-          ),
-        ],
-      ),
+      inputAddress('adresa', 'Adresa trvalého pobytu', true),
       input('email', { title: 'E-mail', required: true, type: 'email' }, {}),
       inputPhoneNumber('telefon', true),
     ]),
@@ -97,21 +83,7 @@ export default schema(
         {},
       ),
       input('ico', { title: 'IČO', required: true, type: 'text' }, { size: 'medium' }),
-      object('adresaSidla', { required: true }, { objectDisplay: 'boxed', title: 'Adresa sídla' }, [
-        input('ulicaACislo', { title: 'Ulica a číslo', required: true, type: 'text' }, {}),
-        object(
-          'mestoPsc',
-          { required: true },
-          {
-            columns: true,
-            columnsRatio: '3/1',
-          },
-          [
-            input('mesto', { title: 'Mesto', required: true }, {}),
-            input('psc', { title: 'PSČ', required: true, format: 'zip' }, {}),
-          ],
-        ),
-      ]),
+      inputAddress('adresaSidla', 'Adresa sídla', true),
       object(
         'statutar',
         { required: true },

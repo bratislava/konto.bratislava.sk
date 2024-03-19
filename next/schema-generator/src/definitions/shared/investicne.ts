@@ -69,40 +69,6 @@ export const getSchema = (zavazne: boolean) =>
       titleFallback: 'Názov stavby/projektu',
     },
     [
-      step('prilohy', { title: 'Prílohy' }, [
-        fileUpload(
-          zavazne ? 'projektovaDokumentacia' : 'architektonickaStudia',
-          {
-            title: zavazne ? 'Projektová dokumentácia' : 'Architektonická štúdia',
-            required: true,
-            multiple: true,
-          },
-          {
-            type: 'dragAndDrop',
-            helptext: zavazne
-              ? 'Jednotlivé časti dokumentácie môžete nahrať samostatne alebo ako jeden súbor.'
-              : 'Jednotlivé časti štúdie môžete nahrať samostatne alebo ako jeden súbor.',
-            belowComponents: [
-              {
-                type: 'additionalLinks',
-                props: {
-                  links: [
-                    zavazne
-                      ? {
-                          href: 'https://bratislava.sk/zivotne-prostredie-a-vystavba/rozvoj-mesta/usmernovanie-vystavby/zavazne-stanovisko-k-investicnej-cinnosti',
-                          title: 'Čo všetko má obsahovať projektová dokumentácia',
-                        }
-                      : {
-                          href: 'https://bratislava.sk/zivotne-prostredie-a-vystavba/rozvoj-mesta/usmernovanie-vystavby/stanovisko-k-investicnemu-zameru',
-                          title: 'Čo všetko má obsahovať architektonická štúdia',
-                        },
-                  ],
-                },
-              },
-            ],
-          },
-        ),
-      ]),
       step('ziadatel', { title: 'Žiadateľ' }, ziadatelInvestorFields),
       step('investor', { title: 'Investor' }, [
         radioGroup(
@@ -281,5 +247,39 @@ export const getSchema = (zavazne: boolean) =>
             ]),
           ]
         : []),
+      step('prilohy', { title: 'Prílohy' }, [
+        fileUpload(
+          zavazne ? 'projektovaDokumentacia' : 'architektonickaStudia',
+          {
+            title: zavazne ? 'Projektová dokumentácia' : 'Architektonická štúdia',
+            required: true,
+            multiple: true,
+          },
+          {
+            type: 'dragAndDrop',
+            helptext: zavazne
+              ? 'Jednotlivé časti dokumentácie môžete nahrať samostatne alebo ako jeden súbor.'
+              : 'Jednotlivé časti štúdie môžete nahrať samostatne alebo ako jeden súbor.',
+            belowComponents: [
+              {
+                type: 'additionalLinks',
+                props: {
+                  links: [
+                    zavazne
+                      ? {
+                          href: 'https://bratislava.sk/zivotne-prostredie-a-vystavba/rozvoj-mesta/usmernovanie-vystavby/zavazne-stanovisko-k-investicnej-cinnosti',
+                          title: 'Čo všetko má obsahovať projektová dokumentácia',
+                        }
+                      : {
+                          href: 'https://bratislava.sk/zivotne-prostredie-a-vystavba/rozvoj-mesta/usmernovanie-vystavby/stanovisko-k-investicnemu-zameru',
+                          title: 'Čo všetko má obsahovať architektonická štúdia',
+                        },
+                  ],
+                },
+              },
+            ],
+          },
+        ),
+      ]),
     ],
   )

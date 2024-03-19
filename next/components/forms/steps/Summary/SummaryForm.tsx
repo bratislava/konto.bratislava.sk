@@ -1,3 +1,5 @@
+import { baDefaultFormStateBehavior } from '@form-utils/defaultFormState'
+import { baRjsfValidator } from '@form-utils/validators'
 import { ThemeProps, withTheme } from '@rjsf/core'
 import {
   ArrayFieldTemplateItemType,
@@ -7,7 +9,6 @@ import {
 import cx from 'classnames'
 import { ComponentType, Fragment } from 'react'
 
-import { defaultFormStateBehavior, rjsfValidator } from '../../../../frontend/utils/form'
 import { useFormContext } from '../../useFormContext'
 import { useFormState } from '../../useFormState'
 import { ArrayFieldItemTemplate, ArrayFieldTemplate } from './SummaryArrayTemplateRJSF'
@@ -74,8 +75,8 @@ const SummaryForm = () => {
       uiSchema={uiSchema}
       formData={formData}
       // The validator is not used, but it's required by the form. We use our own validation in `useFormSummary`.
-      validator={rjsfValidator}
-      experimental_defaultFormStateBehavior={defaultFormStateBehavior}
+      validator={baRjsfValidator}
+      experimental_defaultFormStateBehavior={baDefaultFormStateBehavior}
       readonly
       onSubmit={(e) => {
         console.log('form submit', e.formData)

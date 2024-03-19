@@ -3,6 +3,7 @@ import intersection from 'lodash/intersection'
 import kebabCase from 'lodash/kebabCase'
 import uniq from 'lodash/uniq'
 
+import { removeUndefinedValues } from './helpers'
 import {
   ArrayFieldUiOptions,
   CheckboxGroupUiOptions,
@@ -660,14 +661,14 @@ export const schema = (
   uiOptions: SchemaUiOptions,
   steps: ReturnType<typeof step | typeof conditionalStep>[],
 ) => {
-  return {
+  return removeUndefinedValues({
     schema: { ...options, allOf: steps.map((stepInner) => stepInner.schema()) },
     uiSchema: {
       ...Object.fromEntries(steps.map((stepInner) => [stepInner.property, stepInner.uiSchema()])),
       'ui:options': uiOptions,
       'ui:hideError': true,
     },
-  }
+  })
 }
 
 // TODO: Document

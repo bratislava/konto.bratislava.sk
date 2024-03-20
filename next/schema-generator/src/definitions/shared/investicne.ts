@@ -3,18 +3,13 @@ import {
   datePicker,
   fileUpload,
   input,
-  object,
   radioGroup,
   schema,
   selectMultiple,
   step,
 } from '../../generator/functions'
-import {
-  createCondition,
-  createStringOptions,
-  inputAddress,
-  inputPhoneNumber,
-} from '../../generator/helpers'
+import { createCondition, createStringOptions } from '../../generator/helpers'
+import { sharedAddressField, sharedPhoneNumberField } from './fields'
 
 const ziadatelInvestorFields = [
   radioGroup(
@@ -35,22 +30,22 @@ const ziadatelInvestorFields = [
     createCondition([[['typ'], { const: 'Fyzická osoba' }]]),
     [
       input('menoPriezvisko', { title: 'Meno a priezvisko', required: true }, {}),
-      inputAddress('adresa', 'Korešpondenčná adresa', true),
+      sharedAddressField('adresa', 'Korešpondenčná adresa', true),
     ],
     [input('obchodneMeno', { title: 'Obchodné meno', required: true }, {})],
   ),
   conditionalFields(createCondition([[['typ'], { const: 'Fyzická osoba – podnikateľ' }]]), [
-    inputAddress('miestoPodnikania', 'Miesto podnikania', true),
+    sharedAddressField('miestoPodnikania', 'Miesto podnikania', true),
   ]),
   conditionalFields(createCondition([[['typ'], { const: 'Právnická osoba' }]]), [
     input('ico', { title: 'IČO', required: true }, {}),
-    inputAddress('adresaSidla', 'Adresa sídla', true),
+    sharedAddressField('adresaSidla', 'Adresa sídla', true),
   ]),
   conditionalFields(createCondition([[['typ'], { const: 'Právnická osoba' }]]), [
     input('kontaktnaOsoba', { title: 'Kontaktná osoba', required: true }, {}),
   ]),
   input('email', { title: 'E-mail', required: true, type: 'email' }, {}),
-  inputPhoneNumber('telefon', true),
+  sharedPhoneNumberField('telefon', true),
 ]
 
 export const getSchema = (zavazne: boolean) =>
@@ -141,7 +136,7 @@ export const getSchema = (zavazne: boolean) =>
       step('zodpovednyProjektant', { title: 'Zodpovedný projektant' }, [
         input('menoPriezvisko', { title: 'Meno a priezvisko', required: true }, {}),
         input('email', { title: 'E-mail', required: true, type: 'email' }, {}),
-        inputPhoneNumber('projektantTelefon', true),
+        sharedPhoneNumberField('projektantTelefon', true),
         input(
           'autorizacneOsvedcenie',
           { title: 'Číslo autorizačného osvedčenia', required: true },

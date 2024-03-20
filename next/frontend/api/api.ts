@@ -140,6 +140,21 @@ export const resetRcApi = async () => {
   })
 }
 
+export const changeEmailApi = async (data: {
+  newEmail: string
+}): Promise<Omit<User, 'GdprData'>> => {
+  const token = await getAccessTokenOrLogout()
+
+  return fetchJsonApi(`${environment.cityAccountUrl}/user/change-email`, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      Authorization: `Bearer ${token}`,
+    },
+    body: JSON.stringify(data),
+  })
+}
+
 export const getTaxApi = async () => {
   const token = await getAccessTokenOrLogout()
 

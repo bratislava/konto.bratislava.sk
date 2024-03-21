@@ -183,7 +183,7 @@ const RegisterPage = () => {
   return (
     <LoginRegisterLayout backButtonHidden>
       {registrationStatus === RegistrationStatus.INIT && <AccountActivator />}
-      <AccountContainer dataCyPrefix="registration" className="mb-0 pt-0 md:mb-8 md:pt-6">
+      <AccountContainer dataCyPrefix="registration" className="mb-0 md:mb-8 md:pt-6">
         {registrationStatus === RegistrationStatus.INIT ? (
           <RegisterForm lastEmail={lastEmail} onSubmit={handleSignUp} error={registrationError} />
         ) : registrationStatus === RegistrationStatus.EMAIL_VERIFICATION_REQUIRED ? (

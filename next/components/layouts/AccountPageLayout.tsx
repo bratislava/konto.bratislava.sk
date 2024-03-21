@@ -7,7 +7,6 @@ import {
   ProfileIcon,
   ServicesIcon,
 } from '@assets/ui-icons'
-import { useResizeObserver } from '@react-aria/utils'
 import cx from 'classnames'
 import NavBar, { MenuSectionItemBase } from 'components/forms/segments/NavBar/NavBar'
 import { MenuItemBase } from 'components/forms/simple-components/MenuDropdown/MenuDropdown'
@@ -15,6 +14,7 @@ import { useConditionalFormRedirects } from 'components/forms/useFormRedirects'
 import { useRouter } from 'next/router'
 import { useTranslation } from 'next-i18next'
 import { ReactNode, useRef, useState } from 'react'
+import { useEventListener } from 'usehooks-ts'
 
 import { ROUTES } from '../../frontend/api/constants'
 import { useQueryParamRedirect } from '../../frontend/hooks/useQueryParamRedirect'
@@ -45,12 +45,12 @@ const AccountPageLayout = ({ className, children, hiddenHeaderNav }: AccountPage
   // https://stackoverflow.com/a/59253905
   const [mainScrollTopMargin, setMainScrollTopMargin] = useState(0)
 
-  useResizeObserver({
-    ref: headerRef,
-    onResize: () => {
-      setMainScrollTopMargin(mainRef.current?.offsetTop ?? 0)
-    },
-  })
+  const handleHeaderResize = () => {
+    console.log('resize')
+    setMainScrollTopMargin(mainRef.current?.offsetTop ?? 0)
+  }
+
+  useEventListener('scroll', handleHeaderResize)
 
   const [t] = useTranslation('common')
 
@@ -141,7 +141,7 @@ const AccountPageLayout = ({ className, children, hiddenHeaderNav }: AccountPage
 
   return (
     <div className={cx('flex min-h-screen flex-col', className)}>
-      <header className="relative z-30" ref={headerRef}>
+      <header className="relative z-30 contents" ref={headerRef}>
         <NavBar
           sectionsList={sectionsList}
           menuItems={menuItems}
@@ -151,6 +151,7 @@ const AccountPageLayout = ({ className, children, hiddenHeaderNav }: AccountPage
             { key: 'sk', title: t('language_long.sk') },
             { key: 'en', title: t('language_long.en') },
           ]}
+          onResize={handleHeaderResize}
         />
       </header>
       <main

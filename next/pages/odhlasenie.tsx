@@ -42,7 +42,7 @@ const LogoutPage = () => {
 
   return (
     <LoginRegisterLayout backButtonHidden>
-      <AccountContainer className="mb-0 pt-0 md:mb-8 md:pt-6">
+      <AccountContainer className="mb-0 md:mb-8 md:pt-6">
         <AccountSuccessAlert
           title={t('logout_page.title')}
           description={t('logout_page.description')}

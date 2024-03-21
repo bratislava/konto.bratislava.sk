@@ -1,20 +1,19 @@
 import { CrossIcon, HamburgerIcon } from '@assets/ui-icons'
-import cx from 'classnames'
-import { StatusBar, useStatusBarContext } from 'components/forms/info-components/StatusBar'
+import { useResizeObserver } from '@react-aria/utils'
+import { StatusBar } from 'components/forms/info-components/StatusBar'
 import HamburgerMenu from 'components/forms/segments/HambergerMenu/HamburgerMenu'
 import { MenuItemBase } from 'components/forms/simple-components/MenuDropdown/MenuDropdown'
 import FocusTrap from 'focus-trap-react'
-import { ReactNode } from 'react'
+import { ReactNode, useRef } from 'react'
 
 import { ROUTES } from '../../../../frontend/api/constants'
-import useElementSize from '../../../../frontend/hooks/useElementSize'
 import Brand from '../../simple-components/Brand'
 import { useNavMenuContext } from './navMenuContext'
 
 interface MobileMenuNavBarProps {
-  className?: string
   sectionsList?: MenuSectionItemBase[]
   menuItems: MenuItemBase[]
+  onResize?: () => void
 }
 
 export interface MenuSectionItemBase {
@@ -24,17 +23,23 @@ export interface MenuSectionItemBase {
   url: string
 }
 
-export const MobileNavBar = ({ className, sectionsList, menuItems }: MobileMenuNavBarProps) => {
-  const { statusBarConfiguration } = useStatusBarContext()
-  const [mobileRef] = useElementSize([statusBarConfiguration.content])
+export const MobileNavBar = ({
+  sectionsList,
+  menuItems,
+  onResize = () => {},
+}: MobileMenuNavBarProps) => {
   const { isMobileMenuOpen, setMobileMenuOpen } = useNavMenuContext()
+  const ref1 = useRef<HTMLDivElement>(null)
+  const ref2 = useRef<HTMLDivElement>(null)
+  useResizeObserver({ ref: ref1, onResize })
+  useResizeObserver({ ref: ref2, onResize })
 
   return (
-    <div className={className}>
+    <>
       <div
         id="mobile-navbar"
-        className={cx(className, 'fixed left-0 top-0 z-40 flex w-full gap-x-6 bg-white lg:hidden')}
-        ref={mobileRef}
+        className="sticky left-0 top-0 z-40 flex w-full gap-x-6 bg-white lg:hidden"
+        ref={ref1}
       >
         <div className="w-full">
           <FocusTrap active={isMobileMenuOpen}>
@@ -66,9 +71,10 @@ export const MobileNavBar = ({ className, sectionsList, menuItems }: MobileMenuN
           </FocusTrap>
         </div>
       </div>
-      <div className={cx('h-16', className)} />
-      {!isMobileMenuOpen && <StatusBar />}
-    </div>
+      <div className="lg:hidden" ref={ref2}>
+        <StatusBar />
+      </div>
+    </>
   )
 }
 

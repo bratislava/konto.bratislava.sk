@@ -1,5 +1,6 @@
 import { conditionalFields, input, object, radioGroup, select } from '../../generator/functions'
 import { createCamelCaseOptions, createCondition } from '../../generator/helpers'
+import { sharedPhoneNumberField } from '../shared/fields'
 import { esbsNationalityCiselnik } from './esbsCiselniky'
 
 enum UlicaCisloTyp {
@@ -94,10 +95,10 @@ const emailField = (required = true) =>
   )
 
 const telefonField = (required = true) =>
-  input(
+  sharedPhoneNumberField(
     'telefon',
-    { title: 'Telefónne číslo (v tvare +421...)', required, type: 'tel' },
-    { helptext: 'Telefónne číslo nám pomôže komunikovať s vami rýchlejšie.', size: 'medium' },
+    required,
+    'Telefónne číslo nám pomôže komunikovať s vami rýchlejšie.',
   )
 
 const icoField = input('ico', { title: 'IČO', required: true, format: 'ico' }, {})

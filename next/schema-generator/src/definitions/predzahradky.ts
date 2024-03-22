@@ -11,6 +11,7 @@ import {
   textArea,
 } from '../generator/functions'
 import { createCondition, createStringOptions } from '../generator/helpers'
+import { sharedAddressField, sharedPhoneNumberField } from './shared/fields'
 
 export default schema(
   {
@@ -36,32 +37,9 @@ export default schema(
           input('priezvisko', { title: 'Priezvisko', required: true, type: 'text' }, {}),
         ],
       ),
-      object(
-        'adresa',
-        { required: true },
-        { objectDisplay: 'boxed', title: 'Adresa trvalého pobytu' },
-        [
-          input('ulicaACislo', { title: 'Ulica a číslo', required: true, type: 'text' }, {}),
-          object(
-            'mestoPsc',
-            { required: true },
-            {
-              columns: true,
-              columnsRatio: '3/1',
-            },
-            [
-              input('mesto', { title: 'Mesto', required: true }, {}),
-              input('psc', { title: 'PSČ', required: true, format: 'zip' }, {}),
-            ],
-          ),
-        ],
-      ),
+      sharedAddressField('adresa', 'Adresa trvalého pobytu', true),
       input('email', { title: 'E-mail', required: true, type: 'email' }, {}),
-      input(
-        'telefon',
-        { title: 'Telefónne číslo', required: true, type: 'tel' },
-        { placeholder: '+421', size: 'medium' },
-      ),
+      sharedPhoneNumberField('telefon', true),
     ]),
 
     step(

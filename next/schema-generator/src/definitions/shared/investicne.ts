@@ -3,13 +3,13 @@ import {
   datePicker,
   fileUpload,
   input,
-  object,
   radioGroup,
   schema,
   selectMultiple,
   step,
 } from '../../generator/functions'
 import { createCondition, createStringOptions } from '../../generator/helpers'
+import { sharedAddressField, sharedPhoneNumberField } from './fields'
 
 const ziadatelInvestorFields = [
   radioGroup(
@@ -30,38 +30,22 @@ const ziadatelInvestorFields = [
     createCondition([[['typ'], { const: 'Fyzická osoba' }]]),
     [
       input('menoPriezvisko', { title: 'Meno a priezvisko', required: true }, {}),
-      input('adresa', { title: 'Adresa trvalého pobytu', required: true }, {}),
+      sharedAddressField('adresa', 'Korešpondenčná adresa', true),
     ],
     [input('obchodneMeno', { title: 'Obchodné meno', required: true }, {})],
   ),
   conditionalFields(createCondition([[['typ'], { const: 'Fyzická osoba – podnikateľ' }]]), [
-    input('miestoPodnikania', { title: 'Miesto podnikania', required: true }, {}),
+    sharedAddressField('miestoPodnikania', 'Miesto podnikania', true),
   ]),
   conditionalFields(createCondition([[['typ'], { const: 'Právnická osoba' }]]), [
     input('ico', { title: 'IČO', required: true }, {}),
-    input('adresaSidla', { title: 'Adresa sídla', required: true }, {}),
+    sharedAddressField('adresaSidla', 'Adresa sídla', true),
   ]),
-  object(
-    'mestoPsc',
-    { required: true },
-    {
-      columns: true,
-      columnsRatio: '3/1',
-    },
-    [
-      input('mesto', { title: 'Mesto', required: true }, {}),
-      input('psc', { title: 'PSČ', required: true, format: 'zip' }, {}),
-    ],
-  ),
   conditionalFields(createCondition([[['typ'], { const: 'Právnická osoba' }]]), [
     input('kontaktnaOsoba', { title: 'Kontaktná osoba', required: true }, {}),
   ]),
   input('email', { title: 'E-mail', required: true, type: 'email' }, {}),
-  input(
-    'telefon',
-    { title: 'Telefónne číslo (v tvare +421...)', required: true, type: 'tel' },
-    { size: 'medium' },
-  ),
+  sharedPhoneNumberField('telefon', true),
 ]
 
 export const getSchema = (zavazne: boolean) =>
@@ -85,40 +69,6 @@ export const getSchema = (zavazne: boolean) =>
       titleFallback: 'Názov stavby/projektu',
     },
     [
-      step('prilohy', { title: 'Prílohy' }, [
-        fileUpload(
-          zavazne ? 'projektovaDokumentacia' : 'architektonickaStudia',
-          {
-            title: zavazne ? 'Projektová dokumentácia' : 'Architektonická štúdia',
-            required: true,
-            multiple: true,
-          },
-          {
-            type: 'dragAndDrop',
-            helptext: zavazne
-              ? 'Jednotlivé časti dokumentácie môžete nahrať samostatne alebo ako jeden súbor.'
-              : 'Jednotlivé časti štúdie môžete nahrať samostatne alebo ako jeden súbor.',
-            belowComponents: [
-              {
-                type: 'additionalLinks',
-                props: {
-                  links: [
-                    zavazne
-                      ? {
-                          href: 'https://bratislava.sk/zivotne-prostredie-a-vystavba/rozvoj-mesta/usmernovanie-vystavby/zavazne-stanovisko-k-investicnej-cinnosti',
-                          title: 'Čo všetko má obsahovať projektová dokumentácia',
-                        }
-                      : {
-                          href: 'https://bratislava.sk/zivotne-prostredie-a-vystavba/rozvoj-mesta/usmernovanie-vystavby/stanovisko-k-investicnemu-zameru',
-                          title: 'Čo všetko má obsahovať architektonická štúdia',
-                        },
-                  ],
-                },
-              },
-            ],
-          },
-        ),
-      ]),
       step('ziadatel', { title: 'Žiadateľ' }, ziadatelInvestorFields),
       step('investor', { title: 'Investor' }, [
         radioGroup(
@@ -152,11 +102,7 @@ export const getSchema = (zavazne: boolean) =>
       step('zodpovednyProjektant', { title: 'Zodpovedný projektant' }, [
         input('menoPriezvisko', { title: 'Meno a priezvisko', required: true }, {}),
         input('email', { title: 'E-mail', required: true, type: 'email' }, {}),
-        input(
-          'projektantTelefon',
-          { title: 'Telefónne číslo (v tvare +421...)', required: true, type: 'tel' },
-          { size: 'medium' },
-        ),
+        sharedPhoneNumberField('projektantTelefon', true),
         input(
           'autorizacneOsvedcenie',
           { title: 'Číslo autorizačného osvedčenia', required: true },
@@ -301,5 +247,39 @@ export const getSchema = (zavazne: boolean) =>
             ]),
           ]
         : []),
+      step('prilohy', { title: 'Prílohy' }, [
+        fileUpload(
+          zavazne ? 'projektovaDokumentacia' : 'architektonickaStudia',
+          {
+            title: zavazne ? 'Projektová dokumentácia' : 'Architektonická štúdia',
+            required: true,
+            multiple: true,
+          },
+          {
+            type: 'dragAndDrop',
+            helptext: zavazne
+              ? 'Jednotlivé časti dokumentácie môžete nahrať samostatne alebo ako jeden súbor.'
+              : 'Jednotlivé časti štúdie môžete nahrať samostatne alebo ako jeden súbor.',
+            belowComponents: [
+              {
+                type: 'additionalLinks',
+                props: {
+                  links: [
+                    zavazne
+                      ? {
+                          href: 'https://bratislava.sk/zivotne-prostredie-a-vystavba/rozvoj-mesta/usmernovanie-vystavby/zavazne-stanovisko-k-investicnej-cinnosti',
+                          title: 'Čo všetko má obsahovať projektová dokumentácia',
+                        }
+                      : {
+                          href: 'https://bratislava.sk/zivotne-prostredie-a-vystavba/rozvoj-mesta/usmernovanie-vystavby/stanovisko-k-investicnemu-zameru',
+                          title: 'Čo všetko má obsahovať architektonická štúdia',
+                        },
+                  ],
+                },
+              },
+            ],
+          },
+        ),
+      ]),
     ],
   )

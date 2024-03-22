@@ -110,7 +110,10 @@ const EmailChangePage = () => {
       const result = await updateUserAttributes({
         userAttributes: { email: newEmail },
       })
-      if (result.email?.nextStep.updateAttributeStep === 'CONFIRM_ATTRIBUTE_WITH_CODE') {
+      // In E2E tests, confirmation with code is disabled, so the attribute is updated immediately
+      if (result.email?.nextStep.updateAttributeStep === 'DONE') {
+        setEmailChangeStatus(EmailChangeStatus.EMAIL_VERIFICATION_SUCCESS)
+      } else if (result.email?.nextStep.updateAttributeStep === 'CONFIRM_ATTRIBUTE_WITH_CODE') {
         setEmailChangeStatus(EmailChangeStatus.EMAIL_VERIFICATION_REQUIRED)
       } else {
         throw new Error('Unknown error')

@@ -78,11 +78,5 @@ module.exports = {
     // Temporarily disabled because IDE problems
     'prettier/prettier': 'off',
   },
-  ignorePatterns: [
-    '*.config.*',
-    '.eslintrc.js',
-    '/backend/forms/',
-    '/backend/client-openapi-forms/',
-    '/clients/openapi-forms/*.ts',
-  ],
+  ignorePatterns: ['*.config.*', '.eslintrc.js', '/clients/openapi-*/*.ts'],
 }

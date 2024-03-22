@@ -2010,7 +2010,8 @@ exports[`priznanieKDaniZNehnutelnosti matches snapshot 1`] = `
                         },
                         "telefon": {
                           "format": "phone-number",
-                          "title": "Telefónne číslo (v tvare +421...)",
+                          "pattern": undefined,
+                          "title": "Telefónne číslo",
                           "type": "string",
                         },
                       },
@@ -2688,7 +2689,8 @@ exports[`priznanieKDaniZNehnutelnosti matches snapshot 1`] = `
                         },
                         "telefon": {
                           "format": "phone-number",
-                          "title": "Telefónne číslo (v tvare +421...)",
+                          "pattern": undefined,
+                          "title": "Telefónne číslo",
                           "type": "string",
                         },
                         "ulicaCisloFyzickaOsoba": {
@@ -3397,7 +3399,8 @@ exports[`priznanieKDaniZNehnutelnosti matches snapshot 1`] = `
               },
               "telefon": {
                 "format": "phone-number",
-                "title": "Telefónne číslo (v tvare +421...)",
+                "pattern": undefined,
+                "title": "Telefónne číslo",
                 "type": "string",
               },
               "voSvojomMene": {
@@ -7294,7 +7297,8 @@ exports[`priznanieKDaniZNehnutelnosti matches snapshot 1`] = `
                 },
                 "telefon": {
                   "format": "phone-number",
-                  "title": "Telefónne číslo (v tvare +421...)",
+                  "pattern": undefined,
+                  "title": "Telefónne číslo",
                   "type": "string",
                 },
               },
@@ -8256,6 +8260,7 @@ exports[`priznanieKDaniZNehnutelnosti matches snapshot 1`] = `
         "ui:label": false,
         "ui:options": {
           "helptext": "Telefónne číslo nám pomôže komunikovať s vami rýchlejšie.",
+          "placeholder": "+421",
           "size": "medium",
           "type": "tel",
         },
@@ -11961,6 +11966,7 @@ V prípade, že sa vás daň zo stavieb slúžiacich na viaceré účely netýka
           "ui:label": false,
           "ui:options": {
             "helptext": "Telefónne číslo nám pomôže komunikovať s vami rýchlejšie.",
+            "placeholder": "+421",
             "size": "medium",
             "type": "tel",
           },
@@ -12946,6 +12952,7 @@ V prípade, že sa vás daň zo stavieb slúžiacich na viaceré účely netýka
         "ui:label": false,
         "ui:options": {
           "helptext": "Telefónne číslo nám pomôže komunikovať s vami rýchlejšie.",
+          "placeholder": "+421",
           "size": "medium",
           "type": "tel",
         },
@@ -13801,6 +13808,7 @@ V prípade, že sa vás daň zo stavieb slúžiacich na viaceré účely netýka
           "ui:label": false,
           "ui:options": {
             "helptext": "Telefónne číslo nám pomôže komunikovať s vami rýchlejšie.",
+            "placeholder": "+421",
             "size": "medium",
             "type": "tel",
           },
@@ -14026,34 +14034,6 @@ exports[`stanoviskoKInvesticnemuZameru matches snapshot 1`] = `
     "allOf": [
       {
         "properties": {
-          "prilohy": {
-            "hash": "prilohy",
-            "properties": {
-              "architektonickaStudia": {
-                "default": [],
-                "items": {
-                  "file": true,
-                  "type": "string",
-                },
-                "minItems": 1,
-                "title": "Architektonická štúdia",
-                "type": "array",
-              },
-            },
-            "required": [
-              "architektonickaStudia",
-            ],
-            "title": "Prílohy",
-            "type": "object",
-          },
-        },
-        "required": [
-          "prilohy",
-        ],
-        "type": "object",
-      },
-      {
-        "properties": {
           "ziadatel": {
             "allOf": [
               {
@@ -14083,8 +14063,45 @@ exports[`stanoviskoKInvesticnemuZameru matches snapshot 1`] = `
                 "then": {
                   "properties": {
                     "adresa": {
-                      "title": "Adresa trvalého pobytu",
-                      "type": "string",
+                      "allOf": undefined,
+                      "properties": {
+                        "mestoPsc": {
+                          "allOf": undefined,
+                          "properties": {
+                            "mesto": {
+                              "default": undefined,
+                              "format": undefined,
+                              "pattern": undefined,
+                              "title": "Mesto",
+                              "type": "string",
+                            },
+                            "psc": {
+                              "default": undefined,
+                              "format": "zip",
+                              "pattern": undefined,
+                              "title": "PSČ",
+                              "type": "string",
+                            },
+                          },
+                          "required": [
+                            "mesto",
+                            "psc",
+                          ],
+                          "type": "object",
+                        },
+                        "ulicaACislo": {
+                          "default": undefined,
+                          "format": undefined,
+                          "pattern": undefined,
+                          "title": "Ulica a číslo",
+                          "type": "string",
+                        },
+                      },
+                      "required": [
+                        "ulicaACislo",
+                        "mestoPsc",
+                      ],
+                      "type": "object",
                     },
                     "menoPriezvisko": {
                       "title": "Meno a priezvisko",
@@ -14113,8 +14130,45 @@ exports[`stanoviskoKInvesticnemuZameru matches snapshot 1`] = `
                 "then": {
                   "properties": {
                     "miestoPodnikania": {
-                      "title": "Miesto podnikania",
-                      "type": "string",
+                      "allOf": undefined,
+                      "properties": {
+                        "mestoPsc": {
+                          "allOf": undefined,
+                          "properties": {
+                            "mesto": {
+                              "default": undefined,
+                              "format": undefined,
+                              "pattern": undefined,
+                              "title": "Mesto",
+                              "type": "string",
+                            },
+                            "psc": {
+                              "default": undefined,
+                              "format": "zip",
+                              "pattern": undefined,
+                              "title": "PSČ",
+                              "type": "string",
+                            },
+                          },
+                          "required": [
+                            "mesto",
+                            "psc",
+                          ],
+                          "type": "object",
+                        },
+                        "ulicaACislo": {
+                          "default": undefined,
+                          "format": undefined,
+                          "pattern": undefined,
+                          "title": "Ulica a číslo",
+                          "type": "string",
+                        },
+                      },
+                      "required": [
+                        "ulicaACislo",
+                        "mestoPsc",
+                      ],
+                      "type": "object",
                     },
                   },
                   "required": [
@@ -14138,8 +14192,45 @@ exports[`stanoviskoKInvesticnemuZameru matches snapshot 1`] = `
                 "then": {
                   "properties": {
                     "adresaSidla": {
-                      "title": "Adresa sídla",
-                      "type": "string",
+                      "allOf": undefined,
+                      "properties": {
+                        "mestoPsc": {
+                          "allOf": undefined,
+                          "properties": {
+                            "mesto": {
+                              "default": undefined,
+                              "format": undefined,
+                              "pattern": undefined,
+                              "title": "Mesto",
+                              "type": "string",
+                            },
+                            "psc": {
+                              "default": undefined,
+                              "format": "zip",
+                              "pattern": undefined,
+                              "title": "PSČ",
+                              "type": "string",
+                            },
+                          },
+                          "required": [
+                            "mesto",
+                            "psc",
+                          ],
+                          "type": "object",
+                        },
+                        "ulicaACislo": {
+                          "default": undefined,
+                          "format": undefined,
+                          "pattern": undefined,
+                          "title": "Ulica a číslo",
+                          "type": "string",
+                        },
+                      },
+                      "required": [
+                        "ulicaACislo",
+                        "mestoPsc",
+                      ],
+                      "type": "object",
                     },
                     "ico": {
                       "title": "IČO",
@@ -14186,27 +14277,10 @@ exports[`stanoviskoKInvesticnemuZameru matches snapshot 1`] = `
                 "title": "E-mail",
                 "type": "string",
               },
-              "mestoPsc": {
-                "properties": {
-                  "mesto": {
-                    "title": "Mesto",
-                    "type": "string",
-                  },
-                  "psc": {
-                    "format": "zip",
-                    "title": "PSČ",
-                    "type": "string",
-                  },
-                },
-                "required": [
-                  "mesto",
-                  "psc",
-                ],
-                "type": "object",
-              },
               "telefon": {
                 "format": "phone-number",
-                "title": "Telefónne číslo (v tvare +421...)",
+                "pattern": undefined,
+                "title": "Telefónne číslo",
                 "type": "string",
               },
               "typ": {
@@ -14231,7 +14305,6 @@ exports[`stanoviskoKInvesticnemuZameru matches snapshot 1`] = `
             },
             "required": [
               "typ",
-              "mestoPsc",
               "email",
               "telefon",
             ],
@@ -14289,8 +14362,45 @@ exports[`stanoviskoKInvesticnemuZameru matches snapshot 1`] = `
                       "then": {
                         "properties": {
                           "adresa": {
-                            "title": "Adresa trvalého pobytu",
-                            "type": "string",
+                            "allOf": undefined,
+                            "properties": {
+                              "mestoPsc": {
+                                "allOf": undefined,
+                                "properties": {
+                                  "mesto": {
+                                    "default": undefined,
+                                    "format": undefined,
+                                    "pattern": undefined,
+                                    "title": "Mesto",
+                                    "type": "string",
+                                  },
+                                  "psc": {
+                                    "default": undefined,
+                                    "format": "zip",
+                                    "pattern": undefined,
+                                    "title": "PSČ",
+                                    "type": "string",
+                                  },
+                                },
+                                "required": [
+                                  "mesto",
+                                  "psc",
+                                ],
+                                "type": "object",
+                              },
+                              "ulicaACislo": {
+                                "default": undefined,
+                                "format": undefined,
+                                "pattern": undefined,
+                                "title": "Ulica a číslo",
+                                "type": "string",
+                              },
+                            },
+                            "required": [
+                              "ulicaACislo",
+                              "mestoPsc",
+                            ],
+                            "type": "object",
                           },
                           "menoPriezvisko": {
                             "title": "Meno a priezvisko",
@@ -14319,8 +14429,45 @@ exports[`stanoviskoKInvesticnemuZameru matches snapshot 1`] = `
                       "then": {
                         "properties": {
                           "miestoPodnikania": {
-                            "title": "Miesto podnikania",
-                            "type": "string",
+                            "allOf": undefined,
+                            "properties": {
+                              "mestoPsc": {
+                                "allOf": undefined,
+                                "properties": {
+                                  "mesto": {
+                                    "default": undefined,
+                                    "format": undefined,
+                                    "pattern": undefined,
+                                    "title": "Mesto",
+                                    "type": "string",
+                                  },
+                                  "psc": {
+                                    "default": undefined,
+                                    "format": "zip",
+                                    "pattern": undefined,
+                                    "title": "PSČ",
+                                    "type": "string",
+                                  },
+                                },
+                                "required": [
+                                  "mesto",
+                                  "psc",
+                                ],
+                                "type": "object",
+                              },
+                              "ulicaACislo": {
+                                "default": undefined,
+                                "format": undefined,
+                                "pattern": undefined,
+                                "title": "Ulica a číslo",
+                                "type": "string",
+                              },
+                            },
+                            "required": [
+                              "ulicaACislo",
+                              "mestoPsc",
+                            ],
+                            "type": "object",
                           },
                         },
                         "required": [
@@ -14344,8 +14491,45 @@ exports[`stanoviskoKInvesticnemuZameru matches snapshot 1`] = `
                       "then": {
                         "properties": {
                           "adresaSidla": {
-                            "title": "Adresa sídla",
-                            "type": "string",
+                            "allOf": undefined,
+                            "properties": {
+                              "mestoPsc": {
+                                "allOf": undefined,
+                                "properties": {
+                                  "mesto": {
+                                    "default": undefined,
+                                    "format": undefined,
+                                    "pattern": undefined,
+                                    "title": "Mesto",
+                                    "type": "string",
+                                  },
+                                  "psc": {
+                                    "default": undefined,
+                                    "format": "zip",
+                                    "pattern": undefined,
+                                    "title": "PSČ",
+                                    "type": "string",
+                                  },
+                                },
+                                "required": [
+                                  "mesto",
+                                  "psc",
+                                ],
+                                "type": "object",
+                              },
+                              "ulicaACislo": {
+                                "default": undefined,
+                                "format": undefined,
+                                "pattern": undefined,
+                                "title": "Ulica a číslo",
+                                "type": "string",
+                              },
+                            },
+                            "required": [
+                              "ulicaACislo",
+                              "mestoPsc",
+                            ],
+                            "type": "object",
                           },
                           "ico": {
                             "title": "IČO",
@@ -14391,24 +14575,6 @@ exports[`stanoviskoKInvesticnemuZameru matches snapshot 1`] = `
                       "title": "E-mail",
                       "type": "string",
                     },
-                    "mestoPsc": {
-                      "properties": {
-                        "mesto": {
-                          "title": "Mesto",
-                          "type": "string",
-                        },
-                        "psc": {
-                          "format": "zip",
-                          "title": "PSČ",
-                          "type": "string",
-                        },
-                      },
-                      "required": [
-                        "mesto",
-                        "psc",
-                      ],
-                      "type": "object",
-                    },
                     "splnomocnenie": {
                       "file": true,
                       "title": "Splnomocnenie na zastupovanie",
@@ -14416,7 +14582,8 @@ exports[`stanoviskoKInvesticnemuZameru matches snapshot 1`] = `
                     },
                     "telefon": {
                       "format": "phone-number",
-                      "title": "Telefónne číslo (v tvare +421...)",
+                      "pattern": undefined,
+                      "title": "Telefónne číslo",
                       "type": "string",
                     },
                     "typ": {
@@ -14442,7 +14609,6 @@ exports[`stanoviskoKInvesticnemuZameru matches snapshot 1`] = `
                   "required": [
                     "splnomocnenie",
                     "typ",
-                    "mestoPsc",
                     "email",
                     "telefon",
                   ],
@@ -14505,7 +14671,8 @@ exports[`stanoviskoKInvesticnemuZameru matches snapshot 1`] = `
               },
               "projektantTelefon": {
                 "format": "phone-number",
-                "title": "Telefónne číslo (v tvare +421...)",
+                "pattern": undefined,
+                "title": "Telefónne číslo",
                 "type": "string",
               },
             },
@@ -14626,6 +14793,37 @@ exports[`stanoviskoKInvesticnemuZameru matches snapshot 1`] = `
         ],
         "type": "object",
       },
+      {
+        "properties": {
+          "prilohy": {
+            "allOf": undefined,
+            "description": undefined,
+            "hash": "prilohy",
+            "properties": {
+              "architektonickaStudia": {
+                "default": [],
+                "items": {
+                  "file": true,
+                  "type": "string",
+                },
+                "minItems": 1,
+                "title": "Architektonická štúdia",
+                "type": "array",
+              },
+            },
+            "required": [
+              "architektonickaStudia",
+            ],
+            "stepperTitle": undefined,
+            "title": "Prílohy",
+            "type": "object",
+          },
+        },
+        "required": [
+          "prilohy",
+        ],
+        "type": "object",
+      },
     ],
     "pospID": "00603481.stanoviskoKInvesticnemuZameru",
     "pospVersion": "0.8",
@@ -14634,18 +14832,86 @@ exports[`stanoviskoKInvesticnemuZameru matches snapshot 1`] = `
   "uiSchema": {
     "investor": {
       "adresa": {
-        "ui:label": false,
-        "ui:options": {
-          "type": "text",
+        "mestoPsc": {
+          "mesto": {
+            "ui:label": false,
+            "ui:options": {
+              "type": "text",
+            },
+            "ui:widget": "Input",
+          },
+          "psc": {
+            "ui:label": false,
+            "ui:options": {
+              "type": "text",
+            },
+            "ui:widget": "Input",
+          },
+          "ui:options": {
+            "columns": true,
+            "columnsRatio": "3/1",
+          },
+          "ui:order": [
+            "mesto",
+            "psc",
+          ],
         },
-        "ui:widget": "Input",
+        "ui:options": {
+          "objectDisplay": "boxed",
+          "title": "Korešpondenčná adresa",
+        },
+        "ui:order": [
+          "ulicaACislo",
+          "mestoPsc",
+        ],
+        "ulicaACislo": {
+          "ui:label": false,
+          "ui:options": {
+            "type": "text",
+          },
+          "ui:widget": "Input",
+        },
       },
       "adresaSidla": {
-        "ui:label": false,
-        "ui:options": {
-          "type": "text",
+        "mestoPsc": {
+          "mesto": {
+            "ui:label": false,
+            "ui:options": {
+              "type": "text",
+            },
+            "ui:widget": "Input",
+          },
+          "psc": {
+            "ui:label": false,
+            "ui:options": {
+              "type": "text",
+            },
+            "ui:widget": "Input",
+          },
+          "ui:options": {
+            "columns": true,
+            "columnsRatio": "3/1",
+          },
+          "ui:order": [
+            "mesto",
+            "psc",
+          ],
         },
-        "ui:widget": "Input",
+        "ui:options": {
+          "objectDisplay": "boxed",
+          "title": "Adresa sídla",
+        },
+        "ui:order": [
+          "ulicaACislo",
+          "mestoPsc",
+        ],
+        "ulicaACislo": {
+          "ui:label": false,
+          "ui:options": {
+            "type": "text",
+          },
+          "ui:widget": "Input",
+        },
       },
       "email": {
         "ui:label": false,
@@ -14683,36 +14949,46 @@ exports[`stanoviskoKInvesticnemuZameru matches snapshot 1`] = `
         },
         "ui:widget": "Input",
       },
-      "mestoPsc": {
-        "mesto": {
-          "ui:label": false,
-          "ui:options": {
-            "type": "text",
+      "miestoPodnikania": {
+        "mestoPsc": {
+          "mesto": {
+            "ui:label": false,
+            "ui:options": {
+              "type": "text",
+            },
+            "ui:widget": "Input",
           },
-          "ui:widget": "Input",
-        },
-        "psc": {
-          "ui:label": false,
-          "ui:options": {
-            "type": "text",
+          "psc": {
+            "ui:label": false,
+            "ui:options": {
+              "type": "text",
+            },
+            "ui:widget": "Input",
           },
-          "ui:widget": "Input",
+          "ui:options": {
+            "columns": true,
+            "columnsRatio": "3/1",
+          },
+          "ui:order": [
+            "mesto",
+            "psc",
+          ],
         },
         "ui:options": {
-          "columns": true,
-          "columnsRatio": "3/1",
+          "objectDisplay": "boxed",
+          "title": "Miesto podnikania",
         },
         "ui:order": [
-          "mesto",
-          "psc",
+          "ulicaACislo",
+          "mestoPsc",
         ],
-      },
-      "miestoPodnikania": {
-        "ui:label": false,
-        "ui:options": {
-          "type": "text",
+        "ulicaACislo": {
+          "ui:label": false,
+          "ui:options": {
+            "type": "text",
+          },
+          "ui:widget": "Input",
         },
-        "ui:widget": "Input",
       },
       "obchodneMeno": {
         "ui:label": false,
@@ -14731,6 +15007,8 @@ exports[`stanoviskoKInvesticnemuZameru matches snapshot 1`] = `
       "telefon": {
         "ui:label": false,
         "ui:options": {
+          "helptext": undefined,
+          "placeholder": "+421",
           "size": "medium",
           "type": "tel",
         },
@@ -14754,7 +15032,6 @@ exports[`stanoviskoKInvesticnemuZameru matches snapshot 1`] = `
         "miestoPodnikania",
         "ico",
         "adresaSidla",
-        "mestoPsc",
         "kontaktnaOsoba",
         "email",
         "telefon",
@@ -14912,18 +15189,86 @@ exports[`stanoviskoKInvesticnemuZameru matches snapshot 1`] = `
     },
     "ziadatel": {
       "adresa": {
-        "ui:label": false,
-        "ui:options": {
-          "type": "text",
+        "mestoPsc": {
+          "mesto": {
+            "ui:label": false,
+            "ui:options": {
+              "type": "text",
+            },
+            "ui:widget": "Input",
+          },
+          "psc": {
+            "ui:label": false,
+            "ui:options": {
+              "type": "text",
+            },
+            "ui:widget": "Input",
+          },
+          "ui:options": {
+            "columns": true,
+            "columnsRatio": "3/1",
+          },
+          "ui:order": [
+            "mesto",
+            "psc",
+          ],
         },
-        "ui:widget": "Input",
+        "ui:options": {
+          "objectDisplay": "boxed",
+          "title": "Korešpondenčná adresa",
+        },
+        "ui:order": [
+          "ulicaACislo",
+          "mestoPsc",
+        ],
+        "ulicaACislo": {
+          "ui:label": false,
+          "ui:options": {
+            "type": "text",
+          },
+          "ui:widget": "Input",
+        },
       },
       "adresaSidla": {
-        "ui:label": false,
-        "ui:options": {
-          "type": "text",
+        "mestoPsc": {
+          "mesto": {
+            "ui:label": false,
+            "ui:options": {
+              "type": "text",
+            },
+            "ui:widget": "Input",
+          },
+          "psc": {
+            "ui:label": false,
+            "ui:options": {
+              "type": "text",
+            },
+            "ui:widget": "Input",
+          },
+          "ui:options": {
+            "columns": true,
+            "columnsRatio": "3/1",
+          },
+          "ui:order": [
+            "mesto",
+            "psc",
+          ],
         },
-        "ui:widget": "Input",
+        "ui:options": {
+          "objectDisplay": "boxed",
+          "title": "Adresa sídla",
+        },
+        "ui:order": [
+          "ulicaACislo",
+          "mestoPsc",
+        ],
+        "ulicaACislo": {
+          "ui:label": false,
+          "ui:options": {
+            "type": "text",
+          },
+          "ui:widget": "Input",
+        },
       },
       "email": {
         "ui:label": false,
@@ -14953,36 +15298,46 @@ exports[`stanoviskoKInvesticnemuZameru matches snapshot 1`] = `
         },
         "ui:widget": "Input",
       },
-      "mestoPsc": {
-        "mesto": {
-          "ui:label": false,
-          "ui:options": {
-            "type": "text",
+      "miestoPodnikania": {
+        "mestoPsc": {
+          "mesto": {
+            "ui:label": false,
+            "ui:options": {
+              "type": "text",
+            },
+            "ui:widget": "Input",
           },
-          "ui:widget": "Input",
-        },
-        "psc": {
-          "ui:label": false,
-          "ui:options": {
-            "type": "text",
+          "psc": {
+            "ui:label": false,
+            "ui:options": {
+              "type": "text",
+            },
+            "ui:widget": "Input",
           },
-          "ui:widget": "Input",
+          "ui:options": {
+            "columns": true,
+            "columnsRatio": "3/1",
+          },
+          "ui:order": [
+            "mesto",
+            "psc",
+          ],
         },
         "ui:options": {
-          "columns": true,
-          "columnsRatio": "3/1",
+          "objectDisplay": "boxed",
+          "title": "Miesto podnikania",
         },
         "ui:order": [
-          "mesto",
-          "psc",
+          "ulicaACislo",
+          "mestoPsc",
         ],
-      },
-      "miestoPodnikania": {
-        "ui:label": false,
-        "ui:options": {
-          "type": "text",
+        "ulicaACislo": {
+          "ui:label": false,
+          "ui:options": {
+            "type": "text",
+          },
+          "ui:widget": "Input",
         },
-        "ui:widget": "Input",
       },
       "obchodneMeno": {
         "ui:label": false,
@@ -14994,6 +15349,8 @@ exports[`stanoviskoKInvesticnemuZameru matches snapshot 1`] = `
       "telefon": {
         "ui:label": false,
         "ui:options": {
+          "helptext": undefined,
+          "placeholder": "+421",
           "size": "medium",
           "type": "tel",
         },
@@ -15015,7 +15372,6 @@ exports[`stanoviskoKInvesticnemuZameru matches snapshot 1`] = `
         "miestoPodnikania",
         "ico",
         "adresaSidla",
-        "mestoPsc",
         "kontaktnaOsoba",
         "email",
         "telefon",
@@ -15054,6 +15410,8 @@ exports[`stanoviskoKInvesticnemuZameru matches snapshot 1`] = `
       "projektantTelefon": {
         "ui:label": false,
         "ui:options": {
+          "helptext": undefined,
+          "placeholder": "+421",
           "size": "medium",
           "type": "tel",
         },
@@ -15101,34 +15459,6 @@ exports[`zavazneStanoviskoKInvesticnejCinnosti matches snapshot 1`] = `
     "allOf": [
       {
         "properties": {
-          "prilohy": {
-            "hash": "prilohy",
-            "properties": {
-              "projektovaDokumentacia": {
-                "default": [],
-                "items": {
-                  "file": true,
-                  "type": "string",
-                },
-                "minItems": 1,
-                "title": "Projektová dokumentácia",
-                "type": "array",
-              },
-            },
-            "required": [
-              "projektovaDokumentacia",
-            ],
-            "title": "Prílohy",
-            "type": "object",
-          },
-        },
-        "required": [
-          "prilohy",
-        ],
-        "type": "object",
-      },
-      {
-        "properties": {
           "ziadatel": {
             "allOf": [
               {
@@ -15158,8 +15488,45 @@ exports[`zavazneStanoviskoKInvesticnejCinnosti matches snapshot 1`] = `
                 "then": {
                   "properties": {
                     "adresa": {
-                      "title": "Adresa trvalého pobytu",
-                      "type": "string",
+                      "allOf": undefined,
+                      "properties": {
+                        "mestoPsc": {
+                          "allOf": undefined,
+                          "properties": {
+                            "mesto": {
+                              "default": undefined,
+                              "format": undefined,
+                              "pattern": undefined,
+                              "title": "Mesto",
+                              "type": "string",
+                            },
+                            "psc": {
+                              "default": undefined,
+                              "format": "zip",
+                              "pattern": undefined,
+                              "title": "PSČ",
+                              "type": "string",
+                            },
+                          },
+                          "required": [
+                            "mesto",
+                            "psc",
+                          ],
+                          "type": "object",
+                        },
+                        "ulicaACislo": {
+                          "default": undefined,
+                          "format": undefined,
+                          "pattern": undefined,
+                          "title": "Ulica a číslo",
+                          "type": "string",
+                        },
+                      },
+                      "required": [
+                        "ulicaACislo",
+                        "mestoPsc",
+                      ],
+                      "type": "object",
                     },
                     "menoPriezvisko": {
                       "title": "Meno a priezvisko",
@@ -15188,8 +15555,45 @@ exports[`zavazneStanoviskoKInvesticnejCinnosti matches snapshot 1`] = `
                 "then": {
                   "properties": {
                     "miestoPodnikania": {
-                      "title": "Miesto podnikania",
-                      "type": "string",
+                      "allOf": undefined,
+                      "properties": {
+                        "mestoPsc": {
+                          "allOf": undefined,
+                          "properties": {
+                            "mesto": {
+                              "default": undefined,
+                              "format": undefined,
+                              "pattern": undefined,
+                              "title": "Mesto",
+                              "type": "string",
+                            },
+                            "psc": {
+                              "default": undefined,
+                              "format": "zip",
+                              "pattern": undefined,
+                              "title": "PSČ",
+                              "type": "string",
+                            },
+                          },
+                          "required": [
+                            "mesto",
+                            "psc",
+                          ],
+                          "type": "object",
+                        },
+                        "ulicaACislo": {
+                          "default": undefined,
+                          "format": undefined,
+                          "pattern": undefined,
+                          "title": "Ulica a číslo",
+                          "type": "string",
+                        },
+                      },
+                      "required": [
+                        "ulicaACislo",
+                        "mestoPsc",
+                      ],
+                      "type": "object",
                     },
                   },
                   "required": [
@@ -15213,8 +15617,45 @@ exports[`zavazneStanoviskoKInvesticnejCinnosti matches snapshot 1`] = `
                 "then": {
                   "properties": {
                     "adresaSidla": {
-                      "title": "Adresa sídla",
-                      "type": "string",
+                      "allOf": undefined,
+                      "properties": {
+                        "mestoPsc": {
+                          "allOf": undefined,
+                          "properties": {
+                            "mesto": {
+                              "default": undefined,
+                              "format": undefined,
+                              "pattern": undefined,
+                              "title": "Mesto",
+                              "type": "string",
+                            },
+                            "psc": {
+                              "default": undefined,
+                              "format": "zip",
+                              "pattern": undefined,
+                              "title": "PSČ",
+                              "type": "string",
+                            },
+                          },
+                          "required": [
+                            "mesto",
+                            "psc",
+                          ],
+                          "type": "object",
+                        },
+                        "ulicaACislo": {
+                          "default": undefined,
+                          "format": undefined,
+                          "pattern": undefined,
+                          "title": "Ulica a číslo",
+                          "type": "string",
+                        },
+                      },
+                      "required": [
+                        "ulicaACislo",
+                        "mestoPsc",
+                      ],
+                      "type": "object",
                     },
                     "ico": {
                       "title": "IČO",
@@ -15261,27 +15702,10 @@ exports[`zavazneStanoviskoKInvesticnejCinnosti matches snapshot 1`] = `
                 "title": "E-mail",
                 "type": "string",
               },
-              "mestoPsc": {
-                "properties": {
-                  "mesto": {
-                    "title": "Mesto",
-                    "type": "string",
-                  },
-                  "psc": {
-                    "format": "zip",
-                    "title": "PSČ",
-                    "type": "string",
-                  },
-                },
-                "required": [
-                  "mesto",
-                  "psc",
-                ],
-                "type": "object",
-              },
               "telefon": {
                 "format": "phone-number",
-                "title": "Telefónne číslo (v tvare +421...)",
+                "pattern": undefined,
+                "title": "Telefónne číslo",
                 "type": "string",
               },
               "typ": {
@@ -15306,7 +15730,6 @@ exports[`zavazneStanoviskoKInvesticnejCinnosti matches snapshot 1`] = `
             },
             "required": [
               "typ",
-              "mestoPsc",
               "email",
               "telefon",
             ],
@@ -15364,8 +15787,45 @@ exports[`zavazneStanoviskoKInvesticnejCinnosti matches snapshot 1`] = `
                       "then": {
                         "properties": {
                           "adresa": {
-                            "title": "Adresa trvalého pobytu",
-                            "type": "string",
+                            "allOf": undefined,
+                            "properties": {
+                              "mestoPsc": {
+                                "allOf": undefined,
+                                "properties": {
+                                  "mesto": {
+                                    "default": undefined,
+                                    "format": undefined,
+                                    "pattern": undefined,
+                                    "title": "Mesto",
+                                    "type": "string",
+                                  },
+                                  "psc": {
+                                    "default": undefined,
+                                    "format": "zip",
+                                    "pattern": undefined,
+                                    "title": "PSČ",
+                                    "type": "string",
+                                  },
+                                },
+                                "required": [
+                                  "mesto",
+                                  "psc",
+                                ],
+                                "type": "object",
+                              },
+                              "ulicaACislo": {
+                                "default": undefined,
+                                "format": undefined,
+                                "pattern": undefined,
+                                "title": "Ulica a číslo",
+                                "type": "string",
+                              },
+                            },
+                            "required": [
+                              "ulicaACislo",
+                              "mestoPsc",
+                            ],
+                            "type": "object",
                           },
                           "menoPriezvisko": {
                             "title": "Meno a priezvisko",
@@ -15394,8 +15854,45 @@ exports[`zavazneStanoviskoKInvesticnejCinnosti matches snapshot 1`] = `
                       "then": {
                         "properties": {
                           "miestoPodnikania": {
-                            "title": "Miesto podnikania",
-                            "type": "string",
+                            "allOf": undefined,
+                            "properties": {
+                              "mestoPsc": {
+                                "allOf": undefined,
+                                "properties": {
+                                  "mesto": {
+                                    "default": undefined,
+                                    "format": undefined,
+                                    "pattern": undefined,
+                                    "title": "Mesto",
+                                    "type": "string",
+                                  },
+                                  "psc": {
+                                    "default": undefined,
+                                    "format": "zip",
+                                    "pattern": undefined,
+                                    "title": "PSČ",
+                                    "type": "string",
+                                  },
+                                },
+                                "required": [
+                                  "mesto",
+                                  "psc",
+                                ],
+                                "type": "object",
+                              },
+                              "ulicaACislo": {
+                                "default": undefined,
+                                "format": undefined,
+                                "pattern": undefined,
+                                "title": "Ulica a číslo",
+                                "type": "string",
+                              },
+                            },
+                            "required": [
+                              "ulicaACislo",
+                              "mestoPsc",
+                            ],
+                            "type": "object",
                           },
                         },
                         "required": [
@@ -15419,8 +15916,45 @@ exports[`zavazneStanoviskoKInvesticnejCinnosti matches snapshot 1`] = `
                       "then": {
                         "properties": {
                           "adresaSidla": {
-                            "title": "Adresa sídla",
-                            "type": "string",
+                            "allOf": undefined,
+                            "properties": {
+                              "mestoPsc": {
+                                "allOf": undefined,
+                                "properties": {
+                                  "mesto": {
+                                    "default": undefined,
+                                    "format": undefined,
+                                    "pattern": undefined,
+                                    "title": "Mesto",
+                                    "type": "string",
+                                  },
+                                  "psc": {
+                                    "default": undefined,
+                                    "format": "zip",
+                                    "pattern": undefined,
+                                    "title": "PSČ",
+                                    "type": "string",
+                                  },
+                                },
+                                "required": [
+                                  "mesto",
+                                  "psc",
+                                ],
+                                "type": "object",
+                              },
+                              "ulicaACislo": {
+                                "default": undefined,
+                                "format": undefined,
+                                "pattern": undefined,
+                                "title": "Ulica a číslo",
+                                "type": "string",
+                              },
+                            },
+                            "required": [
+                              "ulicaACislo",
+                              "mestoPsc",
+                            ],
+                            "type": "object",
                           },
                           "ico": {
                             "title": "IČO",
@@ -15466,24 +16000,6 @@ exports[`zavazneStanoviskoKInvesticnejCinnosti matches snapshot 1`] = `
                       "title": "E-mail",
                       "type": "string",
                     },
-                    "mestoPsc": {
-                      "properties": {
-                        "mesto": {
-                          "title": "Mesto",
-                          "type": "string",
-                        },
-                        "psc": {
-                          "format": "zip",
-                          "title": "PSČ",
-                          "type": "string",
-                        },
-                      },
-                      "required": [
-                        "mesto",
-                        "psc",
-                      ],
-                      "type": "object",
-                    },
                     "splnomocnenie": {
                       "file": true,
                       "title": "Splnomocnenie na zastupovanie",
@@ -15491,7 +16007,8 @@ exports[`zavazneStanoviskoKInvesticnejCinnosti matches snapshot 1`] = `
                     },
                     "telefon": {
                       "format": "phone-number",
-                      "title": "Telefónne číslo (v tvare +421...)",
+                      "pattern": undefined,
+                      "title": "Telefónne číslo",
                       "type": "string",
                     },
                     "typ": {
@@ -15517,7 +16034,6 @@ exports[`zavazneStanoviskoKInvesticnejCinnosti matches snapshot 1`] = `
                   "required": [
                     "splnomocnenie",
                     "typ",
-                    "mestoPsc",
                     "email",
                     "telefon",
                   ],
@@ -15580,7 +16096,8 @@ exports[`zavazneStanoviskoKInvesticnejCinnosti matches snapshot 1`] = `
               },
               "projektantTelefon": {
                 "format": "phone-number",
-                "title": "Telefónne číslo (v tvare +421...)",
+                "pattern": undefined,
+                "title": "Telefónne číslo",
                 "type": "string",
               },
             },
@@ -15826,6 +16343,37 @@ exports[`zavazneStanoviskoKInvesticnejCinnosti matches snapshot 1`] = `
         ],
         "type": "object",
       },
+      {
+        "properties": {
+          "prilohy": {
+            "allOf": undefined,
+            "description": undefined,
+            "hash": "prilohy",
+            "properties": {
+              "projektovaDokumentacia": {
+                "default": [],
+                "items": {
+                  "file": true,
+                  "type": "string",
+                },
+                "minItems": 1,
+                "title": "Projektová dokumentácia",
+                "type": "array",
+              },
+            },
+            "required": [
+              "projektovaDokumentacia",
+            ],
+            "stepperTitle": undefined,
+            "title": "Prílohy",
+            "type": "object",
+          },
+        },
+        "required": [
+          "prilohy",
+        ],
+        "type": "object",
+      },
     ],
     "pospID": "00603481.zavazneStanoviskoKInvesticnejCinnosti",
     "pospVersion": "0.7",
@@ -15834,18 +16382,86 @@ exports[`zavazneStanoviskoKInvesticnejCinnosti matches snapshot 1`] = `
   "uiSchema": {
     "investor": {
       "adresa": {
-        "ui:label": false,
-        "ui:options": {
-          "type": "text",
+        "mestoPsc": {
+          "mesto": {
+            "ui:label": false,
+            "ui:options": {
+              "type": "text",
+            },
+            "ui:widget": "Input",
+          },
+          "psc": {
+            "ui:label": false,
+            "ui:options": {
+              "type": "text",
+            },
+            "ui:widget": "Input",
+          },
+          "ui:options": {
+            "columns": true,
+            "columnsRatio": "3/1",
+          },
+          "ui:order": [
+            "mesto",
+            "psc",
+          ],
         },
-        "ui:widget": "Input",
+        "ui:options": {
+          "objectDisplay": "boxed",
+          "title": "Korešpondenčná adresa",
+        },
+        "ui:order": [
+          "ulicaACislo",
+          "mestoPsc",
+        ],
+        "ulicaACislo": {
+          "ui:label": false,
+          "ui:options": {
+            "type": "text",
+          },
+          "ui:widget": "Input",
+        },
       },
       "adresaSidla": {
-        "ui:label": false,
-        "ui:options": {
-          "type": "text",
+        "mestoPsc": {
+          "mesto": {
+            "ui:label": false,
+            "ui:options": {
+              "type": "text",
+            },
+            "ui:widget": "Input",
+          },
+          "psc": {
+            "ui:label": false,
+            "ui:options": {
+              "type": "text",
+            },
+            "ui:widget": "Input",
+          },
+          "ui:options": {
+            "columns": true,
+            "columnsRatio": "3/1",
+          },
+          "ui:order": [
+            "mesto",
+            "psc",
+          ],
         },
-        "ui:widget": "Input",
+        "ui:options": {
+          "objectDisplay": "boxed",
+          "title": "Adresa sídla",
+        },
+        "ui:order": [
+          "ulicaACislo",
+          "mestoPsc",
+        ],
+        "ulicaACislo": {
+          "ui:label": false,
+          "ui:options": {
+            "type": "text",
+          },
+          "ui:widget": "Input",
+        },
       },
       "email": {
         "ui:label": false,
@@ -15883,36 +16499,46 @@ exports[`zavazneStanoviskoKInvesticnejCinnosti matches snapshot 1`] = `
         },
         "ui:widget": "Input",
       },
-      "mestoPsc": {
-        "mesto": {
-          "ui:label": false,
-          "ui:options": {
-            "type": "text",
+      "miestoPodnikania": {
+        "mestoPsc": {
+          "mesto": {
+            "ui:label": false,
+            "ui:options": {
+              "type": "text",
+            },
+            "ui:widget": "Input",
           },
-          "ui:widget": "Input",
-        },
-        "psc": {
-          "ui:label": false,
-          "ui:options": {
-            "type": "text",
+          "psc": {
+            "ui:label": false,
+            "ui:options": {
+              "type": "text",
+            },
+            "ui:widget": "Input",
           },
-          "ui:widget": "Input",
+          "ui:options": {
+            "columns": true,
+            "columnsRatio": "3/1",
+          },
+          "ui:order": [
+            "mesto",
+            "psc",
+          ],
         },
         "ui:options": {
-          "columns": true,
-          "columnsRatio": "3/1",
+          "objectDisplay": "boxed",
+          "title": "Miesto podnikania",
         },
         "ui:order": [
-          "mesto",
-          "psc",
+          "ulicaACislo",
+          "mestoPsc",
         ],
-      },
-      "miestoPodnikania": {
-        "ui:label": false,
-        "ui:options": {
-          "type": "text",
+        "ulicaACislo": {
+          "ui:label": false,
+          "ui:options": {
+            "type": "text",
+          },
+          "ui:widget": "Input",
         },
-        "ui:widget": "Input",
       },
       "obchodneMeno": {
         "ui:label": false,
@@ -15931,6 +16557,8 @@ exports[`zavazneStanoviskoKInvesticnejCinnosti matches snapshot 1`] = `
       "telefon": {
         "ui:label": false,
         "ui:options": {
+          "helptext": undefined,
+          "placeholder": "+421",
           "size": "medium",
           "type": "tel",
         },
@@ -15954,7 +16582,6 @@ exports[`zavazneStanoviskoKInvesticnejCinnosti matches snapshot 1`] = `
         "miestoPodnikania",
         "ico",
         "adresaSidla",
-        "mestoPsc",
         "kontaktnaOsoba",
         "email",
         "telefon",
@@ -16148,18 +16775,86 @@ exports[`zavazneStanoviskoKInvesticnejCinnosti matches snapshot 1`] = `
     },
     "ziadatel": {
       "adresa": {
-        "ui:label": false,
-        "ui:options": {
-          "type": "text",
+        "mestoPsc": {
+          "mesto": {
+            "ui:label": false,
+            "ui:options": {
+              "type": "text",
+            },
+            "ui:widget": "Input",
+          },
+          "psc": {
+            "ui:label": false,
+            "ui:options": {
+              "type": "text",
+            },
+            "ui:widget": "Input",
+          },
+          "ui:options": {
+            "columns": true,
+            "columnsRatio": "3/1",
+          },
+          "ui:order": [
+            "mesto",
+            "psc",
+          ],
         },
-        "ui:widget": "Input",
+        "ui:options": {
+          "objectDisplay": "boxed",
+          "title": "Korešpondenčná adresa",
+        },
+        "ui:order": [
+          "ulicaACislo",
+          "mestoPsc",
+        ],
+        "ulicaACislo": {
+          "ui:label": false,
+          "ui:options": {
+            "type": "text",
+          },
+          "ui:widget": "Input",
+        },
       },
       "adresaSidla": {
-        "ui:label": false,
-        "ui:options": {
-          "type": "text",
+        "mestoPsc": {
+          "mesto": {
+            "ui:label": false,
+            "ui:options": {
+              "type": "text",
+            },
+            "ui:widget": "Input",
+          },
+          "psc": {
+            "ui:label": false,
+            "ui:options": {
+              "type": "text",
+            },
+            "ui:widget": "Input",
+          },
+          "ui:options": {
+            "columns": true,
+            "columnsRatio": "3/1",
+          },
+          "ui:order": [
+            "mesto",
+            "psc",
+          ],
         },
-        "ui:widget": "Input",
+        "ui:options": {
+          "objectDisplay": "boxed",
+          "title": "Adresa sídla",
+        },
+        "ui:order": [
+          "ulicaACislo",
+          "mestoPsc",
+        ],
+        "ulicaACislo": {
+          "ui:label": false,
+          "ui:options": {
+            "type": "text",
+          },
+          "ui:widget": "Input",
+        },
       },
       "email": {
         "ui:label": false,
@@ -16189,36 +16884,46 @@ exports[`zavazneStanoviskoKInvesticnejCinnosti matches snapshot 1`] = `
         },
         "ui:widget": "Input",
       },
-      "mestoPsc": {
-        "mesto": {
-          "ui:label": false,
-          "ui:options": {
-            "type": "text",
+      "miestoPodnikania": {
+        "mestoPsc": {
+          "mesto": {
+            "ui:label": false,
+            "ui:options": {
+              "type": "text",
+            },
+            "ui:widget": "Input",
           },
-          "ui:widget": "Input",
-        },
-        "psc": {
-          "ui:label": false,
-          "ui:options": {
-            "type": "text",
+          "psc": {
+            "ui:label": false,
+            "ui:options": {
+              "type": "text",
+            },
+            "ui:widget": "Input",
           },
-          "ui:widget": "Input",
+          "ui:options": {
+            "columns": true,
+            "columnsRatio": "3/1",
+          },
+          "ui:order": [
+            "mesto",
+            "psc",
+          ],
         },
         "ui:options": {
-          "columns": true,
-          "columnsRatio": "3/1",
+          "objectDisplay": "boxed",
+          "title": "Miesto podnikania",
         },
         "ui:order": [
-          "mesto",
-          "psc",
+          "ulicaACislo",
+          "mestoPsc",
         ],
-      },
-      "miestoPodnikania": {
-        "ui:label": false,
-        "ui:options": {
-          "type": "text",
+        "ulicaACislo": {
+          "ui:label": false,
+          "ui:options": {
+            "type": "text",
+          },
+          "ui:widget": "Input",
         },
-        "ui:widget": "Input",
       },
       "obchodneMeno": {
         "ui:label": false,
@@ -16230,6 +16935,8 @@ exports[`zavazneStanoviskoKInvesticnejCinnosti matches snapshot 1`] = `
       "telefon": {
         "ui:label": false,
         "ui:options": {
+          "helptext": undefined,
+          "placeholder": "+421",
           "size": "medium",
           "type": "tel",
         },
@@ -16251,7 +16958,6 @@ exports[`zavazneStanoviskoKInvesticnejCinnosti matches snapshot 1`] = `
         "miestoPodnikania",
         "ico",
         "adresaSidla",
-        "mestoPsc",
         "kontaktnaOsoba",
         "email",
         "telefon",
@@ -16290,6 +16996,8 @@ exports[`zavazneStanoviskoKInvesticnejCinnosti matches snapshot 1`] = `
       "projektantTelefon": {
         "ui:label": false,
         "ui:options": {
+          "helptext": undefined,
+          "placeholder": "+421",
           "size": "medium",
           "type": "tel",
         },

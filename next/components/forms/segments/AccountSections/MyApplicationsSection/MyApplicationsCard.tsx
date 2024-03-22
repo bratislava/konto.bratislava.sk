@@ -8,7 +8,7 @@ import {
   PdfIcon,
 } from '@assets/ui-icons'
 import { formsApi } from '@clients/forms'
-import { GetFormResponseDto, GetFormResponseDtoStateEnum } from '@clients/openapi-forms'
+import { GetFormResponseDtoStateEnum, GetFormResponseSimpleDto } from '@clients/openapi-forms'
 import Button from 'components/forms/simple-components/ButtonNew'
 import MenuDropdown, {
   MenuItemBase,
@@ -31,7 +31,7 @@ import BottomSheetMenuModal from './BottomSheetMenu/BottomSheetMenuModal'
 export type MyApplicationsCardVariant = 'DRAFT' | 'SENDING' | 'SENT'
 
 export type MyApplicationsCardProps = {
-  form?: GetFormResponseDto | null
+  form?: GetFormResponseSimpleDto | null
   refreshListData: () => Promise<[void, boolean]>
   variant: MyApplicationsCardVariant
 }

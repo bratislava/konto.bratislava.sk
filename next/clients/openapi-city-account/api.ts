@@ -360,7 +360,7 @@ export interface ResponseCustomErrorVerificationEidDto {
 export const ResponseCustomErrorVerificationEidDtoErrorNameEnum = {
   RfoAccessError: 'RFO_ACCESS_ERROR',
   RfoNotResponding: 'RFO_NOT_RESPONDING',
-  RfoNotResponding: 'RFO_NOT_RESPONDING',
+  RpoNotResponding: 'RPO_NOT_RESPONDING',
   DeadPerson: 'DEAD_PERSON',
   BirthNumberAndIdentityCardInconsistency: 'BIRTH_NUMBER_AND_IDENTITY_CARD_INCONSISTENCY',
   BirthnumberIfoDuplicity: 'BIRTHNUMBER_IFO_DUPLICITY',
@@ -409,7 +409,7 @@ export interface ResponseCustomErrorVerificationIdentityCardDto {
 export const ResponseCustomErrorVerificationIdentityCardDtoErrorNameEnum = {
   RfoAccessError: 'RFO_ACCESS_ERROR',
   RfoNotResponding: 'RFO_NOT_RESPONDING',
-  RfoNotResponding: 'RFO_NOT_RESPONDING',
+  RpoNotResponding: 'RPO_NOT_RESPONDING',
   DeadPerson: 'DEAD_PERSON',
   BirthNumberAndIdentityCardInconsistency: 'BIRTH_NUMBER_AND_IDENTITY_CARD_INCONSISTENCY',
   BirthnumberIfoDuplicity: 'BIRTHNUMBER_IFO_DUPLICITY',
@@ -689,7 +689,7 @@ export interface ResponseVerificationDto {
 export const ResponseVerificationDtoErrorNameEnum = {
   RfoAccessError: 'RFO_ACCESS_ERROR',
   RfoNotResponding: 'RFO_NOT_RESPONDING',
-  RfoNotResponding: 'RFO_NOT_RESPONDING',
+  RpoNotResponding: 'RPO_NOT_RESPONDING',
   DeadPerson: 'DEAD_PERSON',
   BirthNumberAndIdentityCardInconsistency: 'BIRTH_NUMBER_AND_IDENTITY_CARD_INCONSISTENCY',
   BirthnumberIfoDuplicity: 'BIRTHNUMBER_IFO_DUPLICITY',
@@ -751,7 +751,7 @@ export type ResponseVerificationIdentityCardToQueueDtoMessageEnum =
 export const ResponseVerificationIdentityCardToQueueDtoErrorNameEnum = {
   RfoAccessError: 'RFO_ACCESS_ERROR',
   RfoNotResponding: 'RFO_NOT_RESPONDING',
-  RfoNotResponding: 'RFO_NOT_RESPONDING',
+  RpoNotResponding: 'RPO_NOT_RESPONDING',
   DeadPerson: 'DEAD_PERSON',
   BirthNumberAndIdentityCardInconsistency: 'BIRTH_NUMBER_AND_IDENTITY_CARD_INCONSISTENCY',
   BirthnumberIfoDuplicity: 'BIRTHNUMBER_IFO_DUPLICITY',

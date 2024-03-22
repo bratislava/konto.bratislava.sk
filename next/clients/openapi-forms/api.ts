@@ -145,7 +145,7 @@ export interface ConvertToPdfV2RequestDto {
    */
   schemaVersionId: string
   /**
-   * Some additional metadata
+   * Additional metadata for Next server provided in convert PDF request.
    * @type {object}
    * @memberof ConvertToPdfV2RequestDto
    */
@@ -786,56 +786,6 @@ export type FileIdsNotFoundInDbErrorDtoErrorNameEnum =
 /**
  *
  * @export
- * @interface FileInMinioNotFoundErrorDto
- */
-export interface FileInMinioNotFoundErrorDto {
-  /**
-   * Status Code
-   * @type {number}
-   * @memberof FileInMinioNotFoundErrorDto
-   */
-  statusCode: number
-  /**
-   * Detail error message
-   * @type {string}
-   * @memberof FileInMinioNotFoundErrorDto
-   */
-  message: string
-  /**
-   * status in text
-   * @type {string}
-   * @memberof FileInMinioNotFoundErrorDto
-   */
-  status: string
-  /**
-   * Exact error name
-   * @type {string}
-   * @memberof FileInMinioNotFoundErrorDto
-   */
-  errorName: FileInMinioNotFoundErrorDtoErrorNameEnum
-  /**
-   * Helper for sending additional data in error
-   * @type {object}
-   * @memberof FileInMinioNotFoundErrorDto
-   */
-  object?: object
-}
-
-export const FileInMinioNotFoundErrorDtoErrorNameEnum = {
-  NotFoundError: 'NOT_FOUND_ERROR',
-  DatabaseError: 'DATABASE_ERROR',
-  InternalServerError: 'INTERNAL_SERVER_ERROR',
-  UnauthorizedError: 'UNAUTHORIZED_ERROR',
-  UnprocessableEntityError: 'UNPROCESSABLE_ENTITY_ERROR',
-  BadRequestError: 'BAD_REQUEST_ERROR',
-} as const
-
-export type FileInMinioNotFoundErrorDtoErrorNameEnum =
-  (typeof FileInMinioNotFoundErrorDtoErrorNameEnum)[keyof typeof FileInMinioNotFoundErrorDtoErrorNameEnum]
-
-/**
- *
- * @export
  * @interface FileInScannerNotFoundErrorDto
  */
 export interface FileInScannerNotFoundErrorDto {
@@ -982,56 +932,6 @@ export const FileNotFoundErrorDtoErrorNameEnum = {
 
 export type FileNotFoundErrorDtoErrorNameEnum =
   (typeof FileNotFoundErrorDtoErrorNameEnum)[keyof typeof FileNotFoundErrorDtoErrorNameEnum]
-
-/**
- *
- * @export
- * @interface FileOrUserNotFoundErrorDto
- */
-export interface FileOrUserNotFoundErrorDto {
-  /**
-   * Status Code
-   * @type {number}
-   * @memberof FileOrUserNotFoundErrorDto
-   */
-  statusCode: number
-  /**
-   * Detail error message
-   * @type {string}
-   * @memberof FileOrUserNotFoundErrorDto
-   */
-  message: string
-  /**
-   * status in text
-   * @type {string}
-   * @memberof FileOrUserNotFoundErrorDto
-   */
-  status: string
-  /**
-   * Exact error name
-   * @type {string}
-   * @memberof FileOrUserNotFoundErrorDto
-   */
-  errorName: FileOrUserNotFoundErrorDtoErrorNameEnum
-  /**
-   * Helper for sending additional data in error
-   * @type {object}
-   * @memberof FileOrUserNotFoundErrorDto
-   */
-  object?: object
-}
-
-export const FileOrUserNotFoundErrorDtoErrorNameEnum = {
-  NotFoundError: 'NOT_FOUND_ERROR',
-  DatabaseError: 'DATABASE_ERROR',
-  InternalServerError: 'INTERNAL_SERVER_ERROR',
-  UnauthorizedError: 'UNAUTHORIZED_ERROR',
-  UnprocessableEntityError: 'UNPROCESSABLE_ENTITY_ERROR',
-  BadRequestError: 'BAD_REQUEST_ERROR',
-} as const
-
-export type FileOrUserNotFoundErrorDtoErrorNameEnum =
-  (typeof FileOrUserNotFoundErrorDtoErrorNameEnum)[keyof typeof FileOrUserNotFoundErrorDtoErrorNameEnum]
 
 /**
  *
@@ -1382,106 +1282,6 @@ export const FilesControllerDownloadFile400ResponseErrorNameEnum = {
 
 export type FilesControllerDownloadFile400ResponseErrorNameEnum =
   (typeof FilesControllerDownloadFile400ResponseErrorNameEnum)[keyof typeof FilesControllerDownloadFile400ResponseErrorNameEnum]
-
-/**
- *
- * @export
- * @interface FilesControllerDownloadFile404Response
- */
-export interface FilesControllerDownloadFile404Response {
-  /**
-   * Status Code
-   * @type {number}
-   * @memberof FilesControllerDownloadFile404Response
-   */
-  statusCode: number
-  /**
-   * Detail error message
-   * @type {string}
-   * @memberof FilesControllerDownloadFile404Response
-   */
-  message: string
-  /**
-   * status in text
-   * @type {string}
-   * @memberof FilesControllerDownloadFile404Response
-   */
-  status: string
-  /**
-   * Exact error name
-   * @type {string}
-   * @memberof FilesControllerDownloadFile404Response
-   */
-  errorName: FilesControllerDownloadFile404ResponseErrorNameEnum
-  /**
-   * Helper for sending additional data in error
-   * @type {object}
-   * @memberof FilesControllerDownloadFile404Response
-   */
-  object?: object
-}
-
-export const FilesControllerDownloadFile404ResponseErrorNameEnum = {
-  NotFoundError: 'NOT_FOUND_ERROR',
-  DatabaseError: 'DATABASE_ERROR',
-  InternalServerError: 'INTERNAL_SERVER_ERROR',
-  UnauthorizedError: 'UNAUTHORIZED_ERROR',
-  UnprocessableEntityError: 'UNPROCESSABLE_ENTITY_ERROR',
-  BadRequestError: 'BAD_REQUEST_ERROR',
-} as const
-
-export type FilesControllerDownloadFile404ResponseErrorNameEnum =
-  (typeof FilesControllerDownloadFile404ResponseErrorNameEnum)[keyof typeof FilesControllerDownloadFile404ResponseErrorNameEnum]
-
-/**
- *
- * @export
- * @interface FilesControllerDownloadToken404Response
- */
-export interface FilesControllerDownloadToken404Response {
-  /**
-   * Status Code
-   * @type {number}
-   * @memberof FilesControllerDownloadToken404Response
-   */
-  statusCode: number
-  /**
-   * Detail error message
-   * @type {string}
-   * @memberof FilesControllerDownloadToken404Response
-   */
-  message: string
-  /**
-   * status in text
-   * @type {string}
-   * @memberof FilesControllerDownloadToken404Response
-   */
-  status: string
-  /**
-   * Exact error name
-   * @type {string}
-   * @memberof FilesControllerDownloadToken404Response
-   */
-  errorName: FilesControllerDownloadToken404ResponseErrorNameEnum
-  /**
-   * Helper for sending additional data in error
-   * @type {object}
-   * @memberof FilesControllerDownloadToken404Response
-   */
-  object?: object
-}
-
-export const FilesControllerDownloadToken404ResponseErrorNameEnum = {
-  NotFoundError: 'NOT_FOUND_ERROR',
-  DatabaseError: 'DATABASE_ERROR',
-  InternalServerError: 'INTERNAL_SERVER_ERROR',
-  UnauthorizedError: 'UNAUTHORIZED_ERROR',
-  UnprocessableEntityError: 'UNPROCESSABLE_ENTITY_ERROR',
-  BadRequestError: 'BAD_REQUEST_ERROR',
-} as const
-
-export type FilesControllerDownloadToken404ResponseErrorNameEnum =
-  (typeof FilesControllerDownloadToken404ResponseErrorNameEnum)[keyof typeof FilesControllerDownloadToken404ResponseErrorNameEnum]
 
 /**
  *
@@ -1992,56 +1792,6 @@ export type FormNotFoundErrorDtoErrorNameEnum =
 /**
  *
  * @export
- * @interface FormOrUserNotFoundErrorDto
- */
-export interface FormOrUserNotFoundErrorDto {
-  /**
-   * Status Code
-   * @type {number}
-   * @memberof FormOrUserNotFoundErrorDto
-   */
-  statusCode: number
-  /**
-   * Detail error message
-   * @type {string}
-   * @memberof FormOrUserNotFoundErrorDto
-   */
-  message: string
-  /**
-   * status in text
-   * @type {string}
-   * @memberof FormOrUserNotFoundErrorDto
-   */
-  status: string
-  /**
-   * Exact error name
-   * @type {string}
-   * @memberof FormOrUserNotFoundErrorDto
-   */
-  errorName: FormOrUserNotFoundErrorDtoErrorNameEnum
-  /**
-   * Helper for sending additional data in error
-   * @type {object}
-   * @memberof FormOrUserNotFoundErrorDto
-   */
-  object?: object
-}
-
-export const FormOrUserNotFoundErrorDtoErrorNameEnum = {
-  NotFoundError: 'NOT_FOUND_ERROR',
-  DatabaseError: 'DATABASE_ERROR',
-  InternalServerError: 'INTERNAL_SERVER_ERROR',
-  UnauthorizedError: 'UNAUTHORIZED_ERROR',
-  UnprocessableEntityError: 'UNPROCESSABLE_ENTITY_ERROR',
-  BadRequestError: 'BAD_REQUEST_ERROR',
-} as const
-
-export type FormOrUserNotFoundErrorDtoErrorNameEnum =
-  (typeof FormOrUserNotFoundErrorDtoErrorNameEnum)[keyof typeof FormOrUserNotFoundErrorDtoErrorNameEnum]
-
-/**
- *
- * @export
  * @enum {string}
  */
 
@@ -2279,6 +2029,19 @@ export const GetFileResponseReducedDtoStatusEnum = {
 export type GetFileResponseReducedDtoStatusEnum =
   (typeof GetFileResponseReducedDtoStatusEnum)[keyof typeof GetFileResponseReducedDtoStatusEnum]
 
+/**
+ *
+ * @export
+ * @interface GetFormMetaDto
+ */
+export interface GetFormMetaDto {
+  /**
+   * Number of forms for each state
+   * @type {object}
+   * @memberof GetFormMetaDto
+   */
+  countByState: object
+}
 /**
  *
  * @export
@@ -2578,6 +2341,122 @@ export interface GetFormResponseDtoSchemaVersion {
 /**
  *
  * @export
+ * @interface GetFormResponseSimpleDto
+ */
+export interface GetFormResponseSimpleDto {
+  /**
+   * Id of record
+   * @type {string}
+   * @memberof GetFormResponseSimpleDto
+   */
+  id: string
+  /**
+   * Create date of record
+   * @type {string}
+   * @memberof GetFormResponseSimpleDto
+   */
+  createdAt: string
+  /**
+   * Update date of record
+   * @type {string}
+   * @memberof GetFormResponseSimpleDto
+   */
+  updatedAt: string
+  /**
+   * State of form
+   * @type {string}
+   * @memberof GetFormResponseSimpleDto
+   */
+  state: GetFormResponseSimpleDtoStateEnum
+  /**
+   * Specific error type
+   * @type {string}
+   * @memberof GetFormResponseSimpleDto
+   */
+  error: GetFormResponseSimpleDtoErrorEnum
+  /**
+   * Data in JSON format
+   * @type {object}
+   * @memberof GetFormResponseSimpleDto
+   */
+  formDataJson: object | null
+  /**
+   * Schema version Id.
+   * @type {string}
+   * @memberof GetFormResponseSimpleDto
+   */
+  schemaVersionId: string
+  /**
+   *
+   * @type {GetFormResponseSimpleDtoSchemaVersion}
+   * @memberof GetFormResponseSimpleDto
+   */
+  schemaVersion: GetFormResponseSimpleDtoSchemaVersion
+  /**
+   * Flag marking if the schema version for this form is the latest version for the schema.
+   * @type {boolean}
+   * @memberof GetFormResponseSimpleDto
+   */
+  isLatestSchemaVersionForSlug: boolean
+  /**
+   * Message subject created from uiSchema
+   * @type {string}
+   * @memberof GetFormResponseSimpleDto
+   */
+  messageSubject: string
+  /**
+   * Title used in frontend when listing forms
+   * @type {string}
+   * @memberof GetFormResponseSimpleDto
+   */
+  frontendTitle: string
+}
+
+export const GetFormResponseSimpleDtoStateEnum = {
+  Draft: 'DRAFT',
+  Queued: 'QUEUED',
+  SendingToNases: 'SENDING_TO_NASES',
+  DeliveredNases: 'DELIVERED_NASES',
+  DeliveredGinis: 'DELIVERED_GINIS',
+  ReadyForProcessing: 'READY_FOR_PROCESSING',
+  Processing: 'PROCESSING',
+  Finished: 'FINISHED',
+  Rejected: 'REJECTED',
+  Error: 'ERROR',
+  ErrorUserCanRepair: 'ERROR_USER_CAN_REPAIR',
+} as const
+
+export type GetFormResponseSimpleDtoStateEnum =
+  (typeof GetFormResponseSimpleDtoStateEnum)[keyof typeof GetFormResponseSimpleDtoStateEnum]
+export const GetFormResponseSimpleDtoErrorEnum = {
+  None: 'NONE',
+  RabbitmqMaxTries: 'RABBITMQ_MAX_TRIES',
+  FilesNotYetScanned: 'FILES_NOT_YET_SCANNED',
+  UnableToScanFiles: 'UNABLE_TO_SCAN_FILES',
+  InfectedFiles: 'INFECTED_FILES',
+  NasesSendError: 'NASES_SEND_ERROR',
+  GinisSendError: 'GINIS_SEND_ERROR',
+} as const
+
+export type GetFormResponseSimpleDtoErrorEnum =
+  (typeof GetFormResponseSimpleDtoErrorEnum)[keyof typeof GetFormResponseSimpleDtoErrorEnum]
+
+/**
+ * Schema version
+ * @export
+ * @interface GetFormResponseSimpleDtoSchemaVersion
+ */
+export interface GetFormResponseSimpleDtoSchemaVersion {
+  /**
+   *
+   * @type {SchemaVersionResponseDtoSchema}
+   * @memberof GetFormResponseSimpleDtoSchemaVersion
+   */
+  schema?: SchemaVersionResponseDtoSchema
+}
+/**
+ *
+ * @export
  * @interface GetFormsResponseDto
  */
 export interface GetFormsResponseDto {
@@ -2601,10 +2480,29 @@ export interface GetFormsResponseDto {
   countPages: number
   /**
    * Items
-   * @type {Array<GetFormResponseDto>}
+   * @type {Array<GetFormResponseSimpleDto>}
    * @memberof GetFormsResponseDto
    */
-  items: Array<GetFormResponseDto>
+  items: Array<GetFormResponseSimpleDto>
+  /**
+   *
+   * @type {GetFormsResponseDtoMeta}
+   * @memberof GetFormsResponseDto
+   */
+  meta: GetFormsResponseDtoMeta
+}
+/**
+ * Meta data
+ * @export
+ * @interface GetFormsResponseDtoMeta
+ */
+export interface GetFormsResponseDtoMeta {
+  /**
+   * Number of forms for each state
+   * @type {object}
+   * @memberof GetFormsResponseDtoMeta
+   */
+  countByState: object
 }
 /**
  *
@@ -3091,56 +2989,6 @@ export type NasesControllerGetForms500ResponseErrorNameEnum =
 /**
  *
  * @export
- * @interface NasesControllerSendAndUpdateForm422Response
- */
-export interface NasesControllerSendAndUpdateForm422Response {
-  /**
-   * Status Code
-   * @type {number}
-   * @memberof NasesControllerSendAndUpdateForm422Response
-   */
-  statusCode: number
-  /**
-   * Detail error message
-   * @type {string}
-   * @memberof NasesControllerSendAndUpdateForm422Response
-   */
-  message: string
-  /**
-   * status in text
-   * @type {string}
-   * @memberof NasesControllerSendAndUpdateForm422Response
-   */
-  status: string
-  /**
-   * Exact error name
-   * @type {string}
-   * @memberof NasesControllerSendAndUpdateForm422Response
-   */
-  errorName: NasesControllerSendAndUpdateForm422ResponseErrorNameEnum
-  /**
-   * Helper for sending additional data in error
-   * @type {object}
-   * @memberof NasesControllerSendAndUpdateForm422Response
-   */
-  object?: object
-}
-
-export const NasesControllerSendAndUpdateForm422ResponseErrorNameEnum = {
-  NotFoundError: 'NOT_FOUND_ERROR',
-  DatabaseError: 'DATABASE_ERROR',
-  InternalServerError: 'INTERNAL_SERVER_ERROR',
-  UnauthorizedError: 'UNAUTHORIZED_ERROR',
-  UnprocessableEntityError: 'UNPROCESSABLE_ENTITY_ERROR',
-  BadRequestError: 'BAD_REQUEST_ERROR',
-} as const
-
-export type NasesControllerSendAndUpdateForm422ResponseErrorNameEnum =
-  (typeof NasesControllerSendAndUpdateForm422ResponseErrorNameEnum)[keyof typeof NasesControllerSendAndUpdateForm422ResponseErrorNameEnum]
-
-/**
- *
- * @export
  * @interface NasesControllerSendForm422Response
  */
 export interface NasesControllerSendForm422Response {
@@ -3387,56 +3235,6 @@ export const NoFileUploadDataErrorDtoErrorNameEnum = {
 
 export type NoFileUploadDataErrorDtoErrorNameEnum =
   (typeof NoFileUploadDataErrorDtoErrorNameEnum)[keyof typeof NoFileUploadDataErrorDtoErrorNameEnum]
-
-/**
- *
- * @export
- * @interface NoFormXmlDataErrorDto
- */
-export interface NoFormXmlDataErrorDto {
-  /**
-   * Status Code
-   * @type {number}
-   * @memberof NoFormXmlDataErrorDto
-   */
-  statusCode: number
-  /**
-   * Detail error message
-   * @type {string}
-   * @memberof NoFormXmlDataErrorDto
-   */
-  message: string
-  /**
-   * status in text
-   * @type {string}
-   * @memberof NoFormXmlDataErrorDto
-   */
-  status: string
-  /**
-   * Exact error name
-   * @type {string}
-   * @memberof NoFormXmlDataErrorDto
-   */
-  errorName: NoFormXmlDataErrorDtoErrorNameEnum
-  /**
-   * Helper for sending additional data in error
-   * @type {object}
-   * @memberof NoFormXmlDataErrorDto
-   */
-  object?: object
-}
-
-export const NoFormXmlDataErrorDtoErrorNameEnum = {
-  NotFoundError: 'NOT_FOUND_ERROR',
-  DatabaseError: 'DATABASE_ERROR',
-  InternalServerError: 'INTERNAL_SERVER_ERROR',
-  UnauthorizedError: 'UNAUTHORIZED_ERROR',
-  UnprocessableEntityError: 'UNPROCESSABLE_ENTITY_ERROR',
-  BadRequestError: 'BAD_REQUEST_ERROR',
-} as const
-
-export type NoFormXmlDataErrorDtoErrorNameEnum =
-  (typeof NoFormXmlDataErrorDtoErrorNameEnum)[keyof typeof NoFormXmlDataErrorDtoErrorNameEnum]
 
 /**
  *
@@ -4361,6 +4159,19 @@ export interface SchemaVersionResponseDtoSchema {
    * @memberof SchemaVersionResponseDtoSchema
    */
   latestVersionId: string | null
+}
+/**
+ *
+ * @export
+ * @interface SchemaVersionWithSchemaAndDataDto
+ */
+export interface SchemaVersionWithSchemaAndDataDto {
+  /**
+   *
+   * @type {SchemaVersionResponseDtoSchema}
+   * @memberof SchemaVersionWithSchemaAndDataDto
+   */
+  schema?: SchemaVersionResponseDtoSchema
 }
 /**
  *
@@ -7593,7 +7404,7 @@ export const NasesApiAxiosParamCreator = function (configuration?: Configuration
      * @param {string} [pagination] Number of items per page
      * @param {string} [pospID] Posp ID of Form
      * @param {string} [formName] Form Name
-     * @param {Array<FormState>} [states] States of form
+     * @param {Array<FormState>} [states] Forms in which states are searched - when omitted, all forms of the user are searched
      * @param {string} [schemaVersionId] Schema version Id.
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
@@ -8150,7 +7961,7 @@ export const NasesApiFp = function (configuration?: Configuration) {
      * @param {string} [pagination] Number of items per page
      * @param {string} [pospID] Posp ID of Form
      * @param {string} [formName] Form Name
-     * @param {Array<FormState>} [states] States of form
+     * @param {Array<FormState>} [states] Forms in which states are searched - when omitted, all forms of the user are searched
      * @param {string} [schemaVersionId] Schema version Id.
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
@@ -8403,7 +8214,7 @@ export const NasesApiFactory = function (
      * @param {string} [pagination] Number of items per page
      * @param {string} [pospID] Posp ID of Form
      * @param {string} [formName] Form Name
-     * @param {Array<FormState>} [states] States of form
+     * @param {Array<FormState>} [states] Forms in which states are searched - when omitted, all forms of the user are searched
      * @param {string} [schemaVersionId] Schema version Id.
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
@@ -8644,7 +8455,7 @@ export class NasesApi extends BaseAPI {
    * @param {string} [pagination] Number of items per page
    * @param {string} [pospID] Posp ID of Form
    * @param {string} [formName] Form Name
-   * @param {Array<FormState>} [states] States of form
+   * @param {Array<FormState>} [states] Forms in which states are searched - when omitted, all forms of the user are searched
    * @param {string} [schemaVersionId] Schema version Id.
    * @param {*} [options] Override http request option.
    * @throws {RequiredError}

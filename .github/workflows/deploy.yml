@@ -14,9 +14,39 @@ jobs:
     uses: bratislava/github-actions/.github/workflows/cluster-deploy-conditions.yml@stable
 
   deploy-dev:
+    name: after dev Strapi deploy Next
+    needs: [conditions, deploy-dev-strapi]
+    if: needs.conditions.outputs.dev == 'true'
+    uses: bratislava/github-actions/.github/workflows/deploy-with-bratiska-cli.yml@stable
+    with:
+      directory: next/
+      cluster: tkg-innov-dev
+      url: https://tkg.dev.bratislava.sk
+      debug: --debug
+      version: beta
+    secrets:
+      service-account: ${{ secrets.DEV_STANDALONE_TOKEN }}
+      registry-pass: ${{ secrets.HARBOR_REGISTRY_PASSWORD }}
+
+  deploy-dev-strapi:
+    name: dev Strapi
+    needs: conditions
+    if: needs.conditions.outputs.dev-strapi == 'true'
+    uses: bratislava/github-actions/.github/workflows/deploy-with-bratiska-cli.yml@stable
+    with:
+      directory: strapi/
+      cluster: tkg-innov-dev
+      url: https://tkg.dev.bratislava.sk
+      debug: --debug
+      version: beta
+    secrets:
+      service-account: ${{ secrets.DEV_STANDALONE_TOKEN }}
+      registry-pass: ${{ secrets.HARBOR_REGISTRY_PASSWORD }}
+
+  deploy-dev-next:
     name: dev Next
     needs: conditions
-    if: needs.conditions.outputs.dev == 'true'
+    if: needs.conditions.outputs.dev-next == 'true'
     uses: bratislava/github-actions/.github/workflows/deploy-with-bratiska-cli.yml@stable
     with:
       directory: next/

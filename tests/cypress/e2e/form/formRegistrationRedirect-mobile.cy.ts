@@ -99,7 +99,7 @@ describe('F04 -', { testIsolation: false }, () => {
           cy.hideInfoBar()
           cy.checkFormFieldsNotInErrorState('register-form', errorBorderFields)
           cy.dataCy('registration-container').should('be.visible')//.matchImage()
-          //cy.wait(500)
+          cy.wait(500)
           cy.submitForm('register-form')
         })
 

@@ -1,8 +1,10 @@
 import BannerPhone from '@assets/images/help-page-banner-image.png'
 import AccountSectionHeader from 'components/forms/segments/AccountSectionHeader/AccountSectionHeader'
-import Accordion from 'components/forms/simple-components/Accordion'
 import Banner from 'components/forms/simple-components/Banner'
 import { useTranslation } from 'next-i18next'
+
+import AccordionV2 from '../../../simple-components/AccordionV2'
+import AccountMarkdown from '../../AccountMarkdown/AccountMarkdown'
 
 const HelpSection = () => {
   const { t } = useTranslation('account')
@@ -10,6 +12,11 @@ const HelpSection = () => {
   const bannerContent = `<span className='text-p2'>${t(
     'account_section_help.banner_content',
   )}</span>`
+
+  const questions = Array.from({ length: 28 }, (_, i) => i + 1).map((i) => ({
+    question: t(`account_section_help.faq.${i}.question`),
+    answer: t(`account_section_help.faq.${i}.answer`),
+  }))
 
   return (
     <div className="flex flex-col">
@@ -22,149 +29,11 @@ const HelpSection = () => {
           <h3 className="text-h4 mt-6 flex justify-start">
             {t('account_section_help.faq.general_category')}
           </h3>
-          <Accordion
-            title={t('account_section_help.faq.1.question')}
-            size="md"
-            content={t('account_section_help.faq.1.answer')}
-          />
-          <Accordion
-            title={t('account_section_help.faq.2.question')}
-            size="md"
-            content={t('account_section_help.faq.2.answer')}
-          />
-          <Accordion
-            title={t('account_section_help.faq.3.question')}
-            size="md"
-            content={t('account_section_help.faq.3.answer')}
-          />
-          <Accordion
-            title={t('account_section_help.faq.4.question')}
-            size="md"
-            content={t('account_section_help.faq.4.answer')}
-          />
-          <Accordion
-            title={t('account_section_help.faq.5.question')}
-            size="md"
-            content={t('account_section_help.faq.5.answer')}
-          />
-          <Accordion
-            title={t('account_section_help.faq.6.question')}
-            size="md"
-            content={t('account_section_help.faq.6.answer')}
-          />
-          <Accordion
-            title={t('account_section_help.faq.7.question')}
-            size="md"
-            content={t('account_section_help.faq.7.answer')}
-          />
-          <Accordion
-            title={t('account_section_help.faq.28.question')}
-            size="md"
-            content={t('account_section_help.faq.28.answer')}
-          />
-          <Accordion
-            title={t('account_section_help.faq.8.question')}
-            size="md"
-            content={t('account_section_help.faq.8.answer')}
-          />
-          <Accordion
-            title={t('account_section_help.faq.9.question')}
-            size="md"
-            content={t('account_section_help.faq.9.answer')}
-          />
-          <Accordion
-            title={t('account_section_help.faq.10.question')}
-            size="md"
-            content={t('account_section_help.faq.10.answer')}
-          />
-          <Accordion
-            title={t('account_section_help.faq.11.question')}
-            size="md"
-            content={t('account_section_help.faq.11.answer')}
-          />
-          <Accordion
-            title={t('account_section_help.faq.12.question')}
-            size="md"
-            content={t('account_section_help.faq.12.answer')}
-          />
-          <h3 className="text-h4 mt-6 flex justify-start lg:mt-12">
-            {t('account_section_help.faq.taxes_category')}
-          </h3>
-          <Accordion
-            title={t('account_section_help.faq.13.question')}
-            size="md"
-            content={t('account_section_help.faq.13.answer')}
-          />
-          <Accordion
-            title={t('account_section_help.faq.14.question')}
-            size="md"
-            content={t('account_section_help.faq.14.answer')}
-          />
-          <Accordion
-            title={t('account_section_help.faq.15.question')}
-            size="md"
-            content={t('account_section_help.faq.15.answer')}
-          />
-          <Accordion
-            title={t('account_section_help.faq.16.question')}
-            size="md"
-            content={t('account_section_help.faq.16.answer')}
-          />
-          <Accordion
-            title={t('account_section_help.faq.17.question')}
-            size="md"
-            content={t('account_section_help.faq.17.answer')}
-          />
-          <Accordion
-            title={t('account_section_help.faq.18.question')}
-            size="md"
-            content={t('account_section_help.faq.18.answer')}
-          />
-          <Accordion
-            title={t('account_section_help.faq.19.question')}
-            size="md"
-            content={t('account_section_help.faq.19.answer')}
-          />
-          <Accordion
-            title={t('account_section_help.faq.20.question')}
-            size="md"
-            content={t('account_section_help.faq.20.answer')}
-          />
-          <Accordion
-            title={t('account_section_help.faq.21.question')}
-            size="md"
-            content={t('account_section_help.faq.21.answer')}
-          />
-          <Accordion
-            title={t('account_section_help.faq.22.question')}
-            size="md"
-            content={t('account_section_help.faq.22.answer')}
-          />
-          <Accordion
-            title={t('account_section_help.faq.23.question')}
-            size="md"
-            content={t('account_section_help.faq.23.answer')}
-          />
-          <Accordion
-            title={t('account_section_help.faq.24.question')}
-            size="md"
-            content={t('account_section_help.faq.24.answer')}
-          />
-          <Accordion
-            title={t('account_section_help.faq.25.question')}
-            size="md"
-            content={t('account_section_help.faq.25.answer')}
-          />
-          <Accordion
-            title={t('account_section_help.faq.26.question')}
-            size="md"
-            content={t('account_section_help.faq.26.answer')}
-          />
-          <Accordion
-            title={t('account_section_help.faq.27.question')}
-            size="md"
-            content={t('account_section_help.faq.27.answer')}
-          />
+          {questions.map((question, index) => (
+            <AccordionV2 key={index} title={question.question}>
+              <AccountMarkdown content={question.answer} />
+            </AccordionV2>
+          ))}
         </div>
       </div>
       <div className="bg-gray-50 py-0 lg:py-16">

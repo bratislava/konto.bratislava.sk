@@ -1,4 +1,3 @@
-import Alert from 'components/forms/info-components/Alert'
 import MunicipalServicesSectionHeader from 'components/forms/segments/AccountSectionHeader/MunicipalServicesSectionHeader'
 import Pagination from 'components/forms/simple-components/Pagination/Pagination'
 import ServiceCard from 'components/forms/simple-components/ServiceCard'
@@ -93,12 +92,6 @@ const MunicipalServicesSection = () => {
         title={t('account_section_services.navigation')}
       />
       <div className="mx-auto w-full max-w-screen-lg pt-4 lg:pt-8">
-        <Alert
-          message={t('account_section_services.alert_text')}
-          type="info"
-          fullWidth
-          className="mx-4 mb-4 lg:mx-0 lg:mb-8"
-        />
         <h2 className="sr-only">{t('account_section_services.services_list')}</h2>
         <div className="grid grid-cols-1 gap-3 px-4 sm:gap-6 min-[615px]:grid-cols-2 md:gap-8 min-[960px]:grid-cols-3 lg:grid-cols-4 lg:px-0">
           {filteredServiceCards

@@ -31,16 +31,17 @@ const TaxDetails = ({ tax }: TaxDetailsProps) => {
     <div className="flex w-full flex-col items-start gap-3 px-4 lg:gap-6 lg:px-0">
       <div className="text-h3">{t('tax_liability_breakdown')}</div>
       <div className="flex w-full flex-col gap-4">
-        {Object.keys(groupedTaxDetails).map((key) => (
-          <AccordionTableTaxContent
-            key={key}
-            size="md"
-            dataType={key}
-            title={t(`tax_detail_section.tax_type.${key}.title`)}
-            secondTitle={formatCurrency(sums[key])}
-            data={groupedTaxDetails[key]}
-          />
-        ))}
+        {Object.keys(groupedTaxDetails).map((key) => {
+          return (
+            <AccordionTableTaxContent
+              key={key}
+              dataType={key}
+              title={t(`tax_detail_section.tax_type.${key}.title`)}
+              secondTitle={formatCurrency(sums[key])}
+              data={groupedTaxDetails[key]}
+            />
+          )
+        })}
       </div>
       <div className="flex w-full flex-col items-start gap-4 rounded-lg bg-gray-50 p-4 lg:gap-6 lg:px-8 lg:py-6">
         <div className="flex w-full flex-col items-start gap-3 lg:gap-5">

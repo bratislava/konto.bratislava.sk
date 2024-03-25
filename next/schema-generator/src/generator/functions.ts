@@ -1,4 +1,4 @@
-import type { Experimental_ArrayMinItems, RJSFSchema, UiSchema } from '@rjsf/utils'
+import type { RJSFSchema, UiSchema } from '@rjsf/utils'
 import intersection from 'lodash/intersection'
 import kebabCase from 'lodash/kebabCase'
 import uniq from 'lodash/uniq'
@@ -544,9 +544,6 @@ export const arrayField = (
       items: objectSchema(),
       minItems: options.minItems ?? options.required ? 1 : undefined,
       maxItems: options.maxItems,
-      overrideArrayMinItemsBehaviour: {
-        populate: 'requiredOnly',
-      } satisfies Experimental_ArrayMinItems,
     }),
     uiSchema: () => ({
       'ui:options': uiOptions,

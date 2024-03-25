@@ -1,3 +1,14 @@
+declare module 'json-schema' {
+  export interface JSONSchema7 {
+    pospID?: string
+    pospVersion?: string
+    slug?: string
+    hash?: string
+    stepperTitle?: string
+    file?: boolean
+  }
+}
+
 export const baAjvKeywords = [
   // Root schema
   {
@@ -19,9 +30,5 @@ export const baAjvKeywords = [
   // File field schema
   {
     keyword: 'file',
-  },
-  // Array field schema
-  {
-    keyword: 'overrideArrayMinItemsBehaviour',
   },
 ]

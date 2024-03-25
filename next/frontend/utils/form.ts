@@ -5,20 +5,6 @@ import type { SchemaValidateFunction } from 'ajv'
 
 import { FormFileUploadFileInfo, FormFileUploadStatusEnum } from '../types/formFileUploadTypes'
 
-declare module 'json-schema' {
-  export interface JSONSchema7 {
-    pospID?: string
-    pospVersion?: string
-    hash?: string
-    stepperTitle?: string
-    file?: boolean
-    ciselnik?: {
-      id: string
-    }
-    // overrideArrayMinItemsBehaviour is declared in RJSF patch
-  }
-}
-
 /**
  * Returns whether file shouldn't have an error in summary. Although the other states might not be enough
  * for form to be sent, they are not erroneous (e.g. uploading).

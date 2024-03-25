@@ -3,7 +3,6 @@
   "version": "1.0.0",
   "license": "EUPL-1.2",
   "scripts": {
-    "postinstall": "patch-package",
     "generate:showcase": "ts-node src/cli.ts --source=showcase",
     "generate:stanovisko-k-investicnemu-zameru": "ts-node src/cli.ts --source=stanovisko-k-investicnemu-zameru",
     "generate:zavazne-stanovisko-k-investicnej-cinnosti": "ts-node src/cli.ts --source=zavazne-stanovisko-k-investicnej-cinnosti",
@@ -17,12 +16,13 @@
     "test": "jest",
     "test:update": "jest --u",
     "test:watch": "jest --watch",
-    "test:coverage": "jest --coverage"
+    "test:coverage": "jest --coverage",
+    "update-rjsf": "yarn add @rjsf/core@latest @rjsf/utils@latest @rjsf/validator-ajv8@latest ajv@latest ajv-formats@latest -E"
   },
   "dependencies": {
-    "@rjsf/core": "5.15.0",
-    "@rjsf/utils": "5.15.0",
-    "@rjsf/validator-ajv8": "5.15.0",
+    "@rjsf/core": "5.18.1",
+    "@rjsf/utils": "5.18.1",
+    "@rjsf/validator-ajv8": "5.18.1",
     "ajv": "8.12.0",
     "ajv-formats": "2.1.1",
     "chalk": "4.1.2",
@@ -31,8 +31,6 @@
     "expr-eval": "^2.0.2",
     "libphonenumber-js": "^1.10.58",
     "lodash": "^4.17.21",
-    "patch-package": "^8.0.0",
-    "postinstall-postinstall": "^2.1.0",
     "prompts": "^2.4.2",
     "rimraf": "^5.0.5",
     "rodnecislo": "^1.6.0",

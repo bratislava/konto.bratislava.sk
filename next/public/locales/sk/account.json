@@ -183,7 +183,6 @@
   "account_section_services": {
     "navigation": "Mestské služby",
     "select_field_placeholder": "Vyberte kategórie",
-    "alert_text": "Priamo v Bratislavskom konte viete momentálne zaplatiť daň z nehnuteľností a požiadať o záväzné stanovisko k investičnej činnosti alebo stanovisko k investičnému zámeru. Pri ostatných službách vás presmerujeme na externé webové stránky, ktoré môžu vyžadovať dodatočnú registráciu. Ďakujeme za pochopenie.",
     "new_service": "Nová služba",
     "services_list": "Zoznam mestských služieb",
     "cards": {

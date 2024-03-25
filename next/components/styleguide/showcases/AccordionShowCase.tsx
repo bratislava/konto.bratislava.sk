@@ -1,7 +1,7 @@
-import Accordion from 'components/forms/simple-components/Accordion'
 import React from 'react'
 
-import AccordionTableTaxContent from '../../forms/simple-components/AccordionTableTaxContent'
+import AccountMarkdown from '../../forms/segments/AccountMarkdown/AccountMarkdown'
+import AccordionV2 from '../../forms/simple-components/AccordionV2'
 import { Stack } from '../Stack'
 import { Wrapper } from '../Wrapper'
 
@@ -136,70 +136,9 @@ Hello
   return (
     <Wrapper direction="column" title="Accordion">
       <Stack direction="column">
-        <AccordionTableTaxContent
-          size="xs"
-          title="Accordion table xs"
-          secondTitle="0 €"
-          data={[]}
-          dataType="ground"
-        />
-        <AccordionTableTaxContent
-          size="sm"
-          title="Accordion table sm"
-          secondTitle="0 €"
-          data={[]}
-          dataType="construction"
-        />
-        <AccordionTableTaxContent
-          size="md"
-          title="Accordion table md"
-          secondTitle="0 €"
-          dataType="ground"
-          data={[]}
-        />
-        <AccordionTableTaxContent
-          size="lg"
-          title="Accordion table lg"
-          secondTitle="0 €"
-          data={[]}
-          dataType="apartment"
-        />
-        <Accordion
-          size="xs"
-          title="Headline xs"
-          secondTitle="0 €"
-          shadow
-          content={markdownSource}
-        />
-        <Accordion size="xs" title="Headline xs" content={markdownSource} />
-        <Accordion size="xs" title="Headline xs" icon content={markdownSource} />
-        <Accordion
-          size="sm"
-          title="Headline sm"
-          shadow
-          secondTitle="0 €"
-          content={markdownSource}
-        />
-        <Accordion size="sm" title="Headline sm" content={markdownSource} />
-        <Accordion size="sm" title="Headline sm" icon content={markdownSource} />
-        <Accordion
-          size="md"
-          title="Headline md"
-          shadow
-          secondTitle="0 €"
-          content={markdownSource}
-        />
-        <Accordion size="md" title="Headline md" content={markdownSource} />
-        <Accordion size="md" title="Headline md" icon content={markdownSource} />
-        <Accordion size="lg" title="Headline lg" secondTitle="0 €" content={markdownSource} />
-        <Accordion size="lg" title="Headline lg" shadow content={markdownSource} />
-        <Accordion
-          size="lg"
-          title="Headline lg"
-          icon
-          className="sm:max-w-[500px]"
-          content={markdownSource}
-        />
+        <AccordionV2 title="Accordion">
+          <AccountMarkdown content={markdownSource} />
+        </AccordionV2>
       </Stack>
     </Wrapper>
   )

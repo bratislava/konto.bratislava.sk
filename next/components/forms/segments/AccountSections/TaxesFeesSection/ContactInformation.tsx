@@ -1,7 +1,7 @@
 // eslint-disable-next-line import/no-extraneous-dependencies
+import { ResponseTaxDto } from '@clients/openapi-tax'
 import { updateUserAttributes } from 'aws-amplify/auth'
 import { Address } from 'frontend/dtos/accountDto'
-import { Tax } from 'frontend/dtos/taxDto'
 import useJsonParseMemo from 'frontend/hooks/useJsonParseMemo'
 import { GENERIC_ERROR_MESSAGE, isError } from 'frontend/utils/errors'
 import logger from 'frontend/utils/logger'
@@ -15,7 +15,7 @@ import SummaryRow from '../../../steps/Summary/SummaryRow'
 import CorrespondenceAddressModal from '../../CorrespondenceAddressModal/CorrespondenceAddressModal'
 
 interface ContactInformationSectionProps {
-  tax: Tax
+  tax: ResponseTaxDto
 }
 
 const postalCodeFormat = (code?: string): string =>

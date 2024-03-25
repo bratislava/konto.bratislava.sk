@@ -1,9 +1,9 @@
 import { ChevronDownIcon } from '@assets/ui-icons'
+import { ResponseTaxDetailsDto } from '@clients/openapi-tax'
 import cx from 'classnames'
 import { useTranslation } from 'next-i18next'
 import React, { useState } from 'react'
 
-import { Tax } from '../../../frontend/dtos/taxDto'
 import { formatCurrency } from '../../../frontend/utils/general'
 import PersonIcon from '../icon-components/PersonIcon'
 import AccountMarkdown from '../segments/AccountMarkdown/AccountMarkdown'
@@ -28,7 +28,7 @@ export type AccordionBase = {
   title: string
   secondTitle?: string
   dataType: string
-  data: Tax['taxDetails']
+  data: ResponseTaxDetailsDto[]
   icon?: boolean
   shadow?: boolean
   className?: string
@@ -70,7 +70,7 @@ const TableHeaderRow = ({ dataType }: { dataType: string }) => {
   )
 }
 
-const TableRow = ({ dataType, data }: { dataType: string; data: Tax['taxDetails'] }) => {
+const TableRow = ({ dataType, data }: { dataType: string; data: ResponseTaxDetailsDto[] }) => {
   const { t } = useTranslation('account')
   return (
     <tbody>
@@ -108,7 +108,7 @@ const TableRow = ({ dataType, data }: { dataType: string; data: Tax['taxDetails'
   )
 }
 
-const Table = ({ dataType, data }: { dataType: string; data: Tax['taxDetails'] }) => {
+const Table = ({ dataType, data }: { dataType: string; data: ResponseTaxDetailsDto[] }) => {
   return (
     <div className="no-scrollbar w-full overflow-x-auto">
       <table className="w-max table-auto border-separate border-spacing-0 rounded-lg border-2 border-solid border-gray-200 last:border-b-2 sm:w-full lg:rounded-none lg:border-0">

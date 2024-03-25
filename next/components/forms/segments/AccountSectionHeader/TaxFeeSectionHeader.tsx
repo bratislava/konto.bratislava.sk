@@ -16,7 +16,11 @@ import { environment } from '../../../../environment'
 import { getPaymentGatewayUrlApi } from '../../../../frontend/api/api'
 import { ROUTES } from '../../../../frontend/api/constants'
 import { getAccessTokenOrLogout } from '../../../../frontend/utils/amplifyClient'
-import { formatCurrency, formatDate, taxStatusHelper } from '../../../../frontend/utils/general'
+import {
+  FormatCurrencyFromCents,
+  useCurrencyFromCentsFormatter,
+} from '../../../../frontend/utils/formatCurrency'
+import { formatDate, taxStatusHelper } from '../../../../frontend/utils/general'
 import logger from '../../../../frontend/utils/logger'
 import Button from '../../simple-components/Button'
 
@@ -77,6 +81,7 @@ const TaxFeeSectionHeader = ({ tax }: AccountSectionHeaderBase) => {
   const { t } = useTranslation('account')
   const router = useRouter()
 
+  const currencyFromCentsFormatter = useCurrencyFromCentsFormatter()
   const status = taxStatusHelper(tax)
 
   const redirectToPaymentGateway = async () => {
@@ -142,12 +147,11 @@ const TaxFeeSectionHeader = ({ tax }: AccountSectionHeaderBase) => {
               </div>
               <div className="hidden size-1.5 rounded-full bg-black md:block" />
               <div className="lg:text-p2-bold text-p3">
-                {formatCurrency(tax.amount)}
+                <FormatCurrencyFromCents value={tax.amount} />
                 {status.paymentStatus === 'partially_paid' ? (
                   <span className="lg:text-p2 text-p-3">
-                    {' '}
                     {t('tax_detail_section.tax_remainder_text', {
-                      amount: formatCurrency(tax.amount - tax.payedAmount),
+                      amount: currencyFromCentsFormatter.format(tax.amount - tax.payedAmount),
                     })}
                   </span>
                 ) : null}

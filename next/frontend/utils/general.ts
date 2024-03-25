@@ -1,6 +1,5 @@
 import { ResponseTaxDto } from '@clients/openapi-tax'
 import { GenericObjectType, RJSFSchema, UIOptionsType } from '@rjsf/utils'
-import currency from 'currency.js'
 import get from 'lodash/get'
 import React from 'react'
 
@@ -80,12 +79,6 @@ export const formatDate = (dateISOString: string | undefined | null) => {
   if (!dateISOString) return ''
   const date = new Date(dateISOString)
   return date.toLocaleDateString('sk-SK')
-}
-
-// TODO types
-export const formatCurrency = (amount: number | undefined | null) => {
-  if (typeof amount !== 'number') return '-- €'
-  return currency(amount, { fromCents: true }).format({ symbol: '€', decimal: ',', separator: ' ' })
 }
 
 export const taxStatusHelper = (tax: ResponseTaxDto) => {

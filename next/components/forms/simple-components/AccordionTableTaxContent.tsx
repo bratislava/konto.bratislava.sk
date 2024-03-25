@@ -2,7 +2,7 @@ import { ResponseTaxDetailsDto } from '@clients/openapi-tax'
 import { useTranslation } from 'next-i18next'
 import React from 'react'
 
-import { formatCurrency } from '../../../frontend/utils/general'
+import { FormatCurrencyFromCents } from '../../../frontend/utils/formatCurrency'
 import AccountMarkdown from '../segments/AccountMarkdown/AccountMarkdown'
 import AccordionV2 from './AccordionV2'
 
@@ -88,7 +88,7 @@ const TableRow = ({ dataType, data }: { dataType: string; data: ResponseTaxDetai
                 : taxDetail.base}
             </td>
             <td className="lg:[&:not(:first-child)]:text-20-semibold [&:not(:first-child)]:text-16-semibold w-[15%] border-r-2 p-4 last:border-r-0 lg:p-0 lg:py-4 [&:not(:first-child)]:text-center">
-              {formatCurrency(taxDetail.amount)}
+              <FormatCurrencyFromCents value={taxDetail.amount} />
             </td>
           </tr>
         )

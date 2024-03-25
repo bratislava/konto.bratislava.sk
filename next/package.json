@@ -55,7 +55,6 @@
     "axios": "^1.4.0",
     "classnames": "2.5.1",
     "conditional-wrap": "^1.0.2",
-    "currency.js": "^2.0.4",
     "expr-eval": "^2.0.2",
     "focus-trap-react": "^10.2.3",
     "i18next": "23.10.1",

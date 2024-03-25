@@ -6,9 +6,22 @@ import {
   object,
   selectMultiple,
 } from '../../src/generator/functions'
-import { baGetDefaultFormState } from '../../src/form-utils/defaultFormState'
+import { baGetDefaultFormState, isFileMultipleSchema } from '../../src/form-utils/defaultFormState'
+import { ArrayFieldUiOptions } from '../../src/generator/uiOptionsTypes'
 
 describe('defaultFormState', () => {
+  it('isFileMultipleSchema should return true for file array schema', () => {
+    const definition = fileUpload('file', { title: 'File', multiple: true }, {})
+
+    expect(isFileMultipleSchema(definition.schema())).toBe(true)
+  })
+
+  it('isFileMultipleSchema should return false for any other schema', () => {
+    const definition = arrayField('array', { title: 'Array' }, {} as ArrayFieldUiOptions, [])
+
+    expect(isFileMultipleSchema(definition.schema())).toBe(false)
+  })
+
   it('getDefaultForm should return default values for arrays consistent with expected behavior', () => {
     const options = [
       {
@@ -58,16 +71,13 @@ describe('defaultFormState', () => {
         },
         {},
       ),
-      arrayField(
-        'arrayField',
-        { title: 'Array field' },
-        { variant: 'topLevel', addButtonLabel: '' },
-        [input('placeholderField', { title: 'Placeholder field' }, {})],
-      ),
+      arrayField('arrayField', { title: 'Array field' }, {} as ArrayFieldUiOptions, [
+        input('placeholderField', { title: 'Placeholder field' }, {}),
+      ]),
       arrayField(
         'arrayFieldRequired',
         { title: 'Array field required', required: true },
-        { variant: 'topLevel', addButtonLabel: '' },
+        {} as ArrayFieldUiOptions,
         [input('placeholderField', { title: 'Placeholder field' }, {})],
       ),
     ])

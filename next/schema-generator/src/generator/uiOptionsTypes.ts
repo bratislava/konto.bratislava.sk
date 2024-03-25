@@ -1,8 +1,6 @@
 export type CustomComponentAccordionProps = {
-  size: 'xs' | 'sm' | 'md' | 'lg'
   title: string
   content: string
-  shadow?: boolean
 }
 
 export type CustomComponentAdditionalLinksProps = {

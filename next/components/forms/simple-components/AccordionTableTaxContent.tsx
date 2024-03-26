@@ -87,6 +87,8 @@ const TableRow = ({ dataType, data }: { dataType: string; data: ResponseTaxDetai
                 ? (taxDetail.base / 100).toFixed(2).replace('.', ',')
                 : taxDetail.base}
             </td>
+            {/* Buggy detection */}
+            {/* eslint-disable-next-line jsx-a11y/control-has-associated-label */}
             <td className="lg:[&:not(:first-child)]:text-20-semibold [&:not(:first-child)]:text-16-semibold w-[15%] border-r-2 p-4 last:border-r-0 lg:p-0 lg:py-4 [&:not(:first-child)]:text-center">
               <FormatCurrencyFromCents value={taxDetail.amount} />
             </td>

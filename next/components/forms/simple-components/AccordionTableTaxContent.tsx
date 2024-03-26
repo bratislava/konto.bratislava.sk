@@ -1,13 +1,10 @@
-import { ChevronDownIcon } from '@assets/ui-icons'
 import { ResponseTaxDetailsDto } from '@clients/openapi-tax'
-import cx from 'classnames'
 import { useTranslation } from 'next-i18next'
-import React, { useState } from 'react'
+import React from 'react'
 
-import { formatCurrency } from '../../../frontend/utils/general'
-import PersonIcon from '../icon-components/PersonIcon'
+import { FormatCurrencyFromCents } from '../../../frontend/utils/formatCurrency'
 import AccountMarkdown from '../segments/AccountMarkdown/AccountMarkdown'
-import AccountMarkdownModal from '../segments/AccountModal/AccountModal'
+import AccordionV2 from './AccordionV2'
 
 const tableHeaderData = {
   subject: 'Predmet dane',
@@ -21,21 +18,13 @@ const matchHeader = {
   CONSTRUCTION: [tableHeaderData.base, tableHeaderData.total],
   APARTMENT: [tableHeaderData.base, tableHeaderData.total],
 }
-export type AccordionSizeType = 'xs' | 'sm' | 'md' | 'lg'
 
 export type AccordionBase = {
-  size: AccordionSizeType
   title: string
   secondTitle?: string
   dataType: string
   data: ResponseTaxDetailsDto[]
-  icon?: boolean
-  shadow?: boolean
-  className?: string
 }
-export const isAccordionSizeType = (size: string) =>
-  ['xs', 'sm', 'md', 'lg'].includes(size) ? size : 'sm'
-
 const TableHeaderRow = ({ dataType }: { dataType: string }) => {
   // TODO types can be better if validated as they come from API
   const headerData = Object.keys(matchHeader).includes(dataType)
@@ -98,8 +87,10 @@ const TableRow = ({ dataType, data }: { dataType: string; data: ResponseTaxDetai
                 ? (taxDetail.base / 100).toFixed(2).replace('.', ',')
                 : taxDetail.base}
             </td>
+            {/* Buggy detection */}
+            {/* eslint-disable-next-line jsx-a11y/control-has-associated-label */}
             <td className="lg:[&:not(:first-child)]:text-20-semibold [&:not(:first-child)]:text-16-semibold w-[15%] border-r-2 p-4 last:border-r-0 lg:p-0 lg:py-4 [&:not(:first-child)]:text-center">
-              {formatCurrency(taxDetail.amount)}
+              <FormatCurrencyFromCents value={taxDetail.amount} />
             </td>
           </tr>
         )
@@ -118,138 +109,25 @@ const Table = ({ dataType, data }: { dataType: string; data: ResponseTaxDetailsD
     </div>
   )
 }
-const AccordionTableTaxContent = ({
-  title,
-  secondTitle,
-  size = 'sm',
-  icon = false,
-  dataType,
-  data,
-  shadow = false,
-  className,
-}: AccordionBase) => {
-  const [isActive, setIsActive] = useState(false)
-
-  const accordionSize = isAccordionSizeType(size) as AccordionSizeType
-
-  const TableContent = () => (
-    <div className="flex size-full flex-col gap-6">
-      <Table dataType={dataType} data={data} />
-      <div className="flex rounded-lg bg-gray-100 p-4 lg:bg-gray-0 lg:p-0">
-        <div className="text-h4-bold grow">Celkom</div>
-        <div className="text-h4-bold">{secondTitle}</div>
-      </div>
-    </div>
-  )
-
-  const paddingStyles = cx({
-    'px-4 py-3 lg:p-4': accordionSize === 'xs',
-    'p-4 lg:p-5': accordionSize === 'sm',
-    'p-4 lg:px-8 lg:py-6': accordionSize === 'md',
-    'px-6 py-5 lg:px-10 lg:py-8': accordionSize === 'lg',
-  })
-
-  const accordionHeaderStyle = cx(
-    'flex w-full flex-col gap-4 rounded-xl bg-gray-0',
-    className,
-    paddingStyles,
-  )
-  const accordionContainerStyle = cx('flex w-full flex-col rounded-xl bg-gray-0', className, {
-    'border-gray-200': !isActive && !shadow,
-    'border-gray-700': isActive && !shadow,
-    'border-2 border-solid hover:border-gray-500': !shadow,
-    'border-2 border-solid hover:border-gray-700': !shadow && isActive,
-    'hover:shadow-[0_8px_16px_0_rgba(0,0,0,0.08)]': shadow,
-    'shadow-[0_0_16px_0_rgba(0,0,0,0.08)]': isActive && shadow,
-    'shadow-[0_4px_16px_0_rgba(0,0,0,0.08)]': !isActive && shadow,
-  })
+const AccordionTableTaxContent = ({ title, secondTitle, dataType, data }: AccordionBase) => {
   return (
-    <div className="h-auto w-full">
-      <div className="block lg:hidden">
-        <AccountMarkdownModal
-          show={isActive}
-          onClose={() => setIsActive(false)}
-          content={<TableContent />}
-          onSubmit={() => {}}
-          header={title}
-        />
+    <AccordionV2
+      title={
+        <div className="text-h4 flex min-w-0 grow justify-between font-semibold">
+          <h3>{title}</h3>
+          <span>{secondTitle}</span>
+        </div>
+      }
+      noTitleWrapper
+    >
+      <div className="flex size-full flex-col gap-6">
+        <Table dataType={dataType} data={data} />
+        <div className="flex rounded-lg bg-gray-100 p-4 lg:bg-gray-0 lg:p-0">
+          <div className="text-h4-bold grow">Celkom</div>
+          <div className="text-h4-bold">{secondTitle}</div>
+        </div>
       </div>
-      <div className={accordionContainerStyle}>
-        <button
-          type="button"
-          onClick={() => setIsActive(!isActive)}
-          className={cx('no-tap-highlight flex gap-4', accordionHeaderStyle)}
-        >
-          {icon && (
-            <div
-              className={cx('flex items-center justify-center', {
-                'h-6 w-6': accordionSize === 'sm' || accordionSize === 'xs',
-                'h-8 w-8': accordionSize === 'md',
-                'h-10 w-10': accordionSize === 'lg',
-              })}
-            >
-              <PersonIcon
-                className={cx('', {
-                  'h-4 w-4': accordionSize === 'sm' || accordionSize === 'xs',
-                  'h-5 w-5': accordionSize === 'md',
-                  'h-6 w-6': accordionSize === 'lg',
-                })}
-              />
-            </div>
-          )}
-          <div className="flex w-full flex-col gap-2 lg:gap-4">
-            <div className="flex items-center gap-4">
-              <div className="flex grow flex-col items-start sm:flex-row">
-                <div
-                  className={cx('flex grow', {
-                    'text-h6': accordionSize === 'xs',
-                    'text-h5': accordionSize === 'sm',
-                    'text-h4': accordionSize === 'md',
-                    'text-h3': accordionSize === 'lg',
-                  })}
-                >
-                  {title}
-                </div>
-                <div
-                  className={cx('md:font-semibold', {
-                    'text-p-base': size === 'xs',
-                    'text-h-base': size === 'sm',
-                    'text-p-base md:text-h-md': size === 'md',
-                    'text-h-lg': size === 'lg',
-                  })}
-                >
-                  {secondTitle}
-                </div>
-              </div>
-              <ChevronDownIcon
-                className={cx('flex items-center justify-center text-main-700', {
-                  'h-8 w-8 lg:h-10 lg:w-10': accordionSize === 'lg',
-                  'h-6 w-6 lg:h-8 lg:w-8': accordionSize === 'md',
-                  'h-6 w-6': accordionSize === 'sm' || accordionSize === 'xs',
-                  'rotate-180 transform': isActive,
-                  'rotate-270 transform md:rotate-0': !isActive,
-                })}
-              />
-            </div>
-          </div>
-        </button>
-        <div
-          className={cx('h-0.5 w-full bg-gray-200', {
-            hidden: !isActive,
-          })}
-        />
-        {isActive && (
-          <div
-            className={cx('hidden flex-col font-normal lg:block', paddingStyles, {
-              'text-h6': accordionSize === 'sm' || accordionSize === 'xs',
-              'text-20': accordionSize === 'lg' || accordionSize === 'md',
-            })}
-          >
-            <TableContent />
-          </div>
-        )}
-      </div>
-    </div>
+    </AccordionV2>
   )
 }
 

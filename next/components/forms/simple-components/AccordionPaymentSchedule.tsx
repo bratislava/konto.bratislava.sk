@@ -5,7 +5,7 @@ import cx from 'classnames'
 import { useTranslation } from 'next-i18next'
 import React, { useState } from 'react'
 
-import { formatCurrency } from '../../../frontend/utils/general'
+import { FormatCurrencyFromCents } from '../../../frontend/utils/formatCurrency'
 import PersonIcon from '../icon-components/PersonIcon'
 import AccountMarkdownModal from '../segments/AccountModal/AccountModal'
 
@@ -68,7 +68,9 @@ const PaymentScheduleView = ({ tax }: PaymentScheduleViewProps) => {
                 {t('payment_schedule.first_piece')}{' '}
                 <div className="text-h5 inline">{t('payment_schedule.first_piece_to')}</div>
               </div>
-              <div className="text-h5">{formatCurrency(tax.taxInstallments[0]?.amount)}</div>
+              <div className="text-h5">
+                <FormatCurrencyFromCents value={tax.taxInstallments[0]?.amount} />
+              </div>
             </div>
           )}
           {tax?.taxInstallments?.[1] && (
@@ -82,7 +84,9 @@ const PaymentScheduleView = ({ tax }: PaymentScheduleViewProps) => {
                   {t('payment_schedule.second_piece')}
                   <div className="text-h5 inline">{t('payment_schedule.second_piece_to')}</div>
                 </div>
-                <div className="text-h5">{formatCurrency(tax.taxInstallments[1]?.amount)}</div>
+                <div className="text-h5">
+                  <FormatCurrencyFromCents value={tax.taxInstallments[1]?.amount} />
+                </div>
               </div>
             </>
           )}
@@ -97,7 +101,9 @@ const PaymentScheduleView = ({ tax }: PaymentScheduleViewProps) => {
                   {t('payment_schedule.third_piece')}
                   <div className="text-h5 inline">{t('payment_schedule.third_piece_to')}</div>
                 </div>
-                <div className="text-h5">{formatCurrency(tax.taxInstallments[2]?.amount)}</div>
+                <div className="text-h5">
+                  <FormatCurrencyFromCents value={tax.taxInstallments[2]?.amount} />
+                </div>
               </div>
             </>
           )}

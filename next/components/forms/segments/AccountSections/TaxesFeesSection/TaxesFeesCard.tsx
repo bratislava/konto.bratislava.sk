@@ -2,10 +2,11 @@ import { CheckIcon, ChevronRightIcon, ClockIcon, ErrorIcon } from '@assets/ui-ic
 import cx from 'classnames'
 import { TaxesCardBase } from 'components/forms/segments/AccountSections/TaxesFeesSection/TaxesFeesSection'
 import Link from 'next/link'
-import { ReactNode } from 'react'
+import React, { ReactNode } from 'react'
 
 import { ROUTES } from '../../../../../frontend/api/constants'
-import { formatCurrency, formatDate } from '../../../../../frontend/utils/general'
+import { FormatCurrencyFromCents } from '../../../../../frontend/utils/formatCurrency'
+import { formatDate } from '../../../../../frontend/utils/general'
 
 const TaxesFeesCard = (props: TaxesCardBase) => {
   const { title, yearPay, createDate, currentPaid, finishPrice, paidDate = '', status } = props
@@ -58,11 +59,14 @@ const TaxesFeesCard = (props: TaxesCardBase) => {
             <div className="flex flex-col border-x-2 px-10">
               <span className="text-16-semibold mb-1">Suma</span>
               {status === 'partially_paid' && currentPaid ? (
-                <span className="flex w-max items-center">{`${formatCurrency(
-                  currentPaid,
-                )} / ${formatCurrency(finishPrice)}`}</span>
+                <span className="flex w-max items-center">
+                  <FormatCurrencyFromCents value={currentPaid} /> /{' '}
+                  <FormatCurrencyFromCents value={finishPrice} />
+                </span>
               ) : (
-                <span>{formatCurrency(finishPrice)}</span>
+                <span>
+                  <FormatCurrencyFromCents value={finishPrice} />
+                </span>
               )}
             </div>
             <div className="flex flex-col items-center px-10">
@@ -91,11 +95,14 @@ const TaxesFeesCard = (props: TaxesCardBase) => {
               <span className="text-p2-semibold mb-1 leading-5">{`${title} za rok ${yearPay}`}</span>
               <div className="flex flex-wrap items-center">
                 {status === 'partially_paid' && currentPaid ? (
-                  <span className="text-p3 flex w-max items-center">{`${formatCurrency(
-                    currentPaid,
-                  )} / ${formatCurrency(finishPrice)}`}</span>
+                  <span className="text-p3 flex w-max items-center">
+                    <FormatCurrencyFromCents value={currentPaid} /> /{' '}
+                    <FormatCurrencyFromCents value={finishPrice} />
+                  </span>
                 ) : (
-                  <span className="text-p3">{formatCurrency(finishPrice)}</span>
+                  <span className="text-p3">
+                    <FormatCurrencyFromCents value={finishPrice} />
+                  </span>
                 )}
                 <div className="flex items-center">
                   <span className="mx-3 size-1 rounded-full bg-gray-700" />

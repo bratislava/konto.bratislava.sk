@@ -1,19 +1,17 @@
 import { CustomComponentType } from '@schema-generator/generator/uiOptionsTypes'
 import React from 'react'
 
+import AccountMarkdown from '../../segments/AccountMarkdown/AccountMarkdown'
 import PropertyTaxCalculator from '../../segments/PropertyTaxCalculator/PropertyTaxCalculator'
-import Accordion from '../../simple-components/Accordion'
+import AccordionV2 from '../../simple-components/AccordionV2'
 import Button from '../../simple-components/ButtonNew'
 
 const CustomComponent = ({ component }: { component: CustomComponentType }) => {
   if (component.type === 'accordion') {
     return (
-      <Accordion
-        size={component.props?.size}
-        title={component.props?.title}
-        shadow={component.props?.shadow}
-        content={component.props?.content}
-      />
+      <AccordionV2 title={component.props?.title}>
+        <AccountMarkdown content={component.props?.content} />
+      </AccordionV2>
     )
   }
 

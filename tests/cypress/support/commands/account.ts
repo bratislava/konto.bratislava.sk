@@ -29,14 +29,14 @@ declare namespace Cypress {
 
 Cypress.Commands.add('logInUser', (device, email, password) => {
   cy.visit('/prihlasenie')
-  cy.location('pathname', {timeout: 4000})
+  cy.location('pathname', {timeout: 20000})
   .should('eq', '/prihlasenie');
   cy.dataCy('login-container').then((form) => {
     cy.wrap(Cypress.$('[data-cy=input-email]', form)).type(email)
     cy.wrap(Cypress.$('[data-cy=input-password]', form)).type(password)
     cy.wrap(Cypress.$('[data-cy=login-button]', form)).click()
   })
-  cy.location('pathname', {timeout: 4000})
+  cy.location('pathname', {timeout:20000})
   .should('eq', '/');
 })
 

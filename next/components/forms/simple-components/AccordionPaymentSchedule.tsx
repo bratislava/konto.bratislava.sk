@@ -1,5 +1,4 @@
 import { ChevronDownIcon } from '@assets/ui-icons'
-import { ResponseTaxDto } from '@clients/openapi-tax'
 import { AddToCalendarButton } from 'add-to-calendar-button-react'
 import cx from 'classnames'
 import { useTranslation } from 'next-i18next'
@@ -8,6 +7,7 @@ import React, { useState } from 'react'
 import { FormatCurrencyFromCents } from '../../../frontend/utils/formatCurrency'
 import PersonIcon from '../icon-components/PersonIcon'
 import AccountMarkdownModal from '../segments/AccountModal/AccountModal'
+import { useTaxFeeSection } from '../segments/AccountSections/TaxesFeesSection/useTaxFeeSection'
 
 export type AccordionSizeType = 'xs' | 'sm' | 'md' | 'lg'
 
@@ -16,16 +16,12 @@ export type AccordionBase = {
   title: string
   icon?: boolean
   className?: string
-  tax: ResponseTaxDto
 }
 export const isAccordionSizeType = (size: string) =>
   ['xs', 'sm', 'md', 'lg'].includes(size) ? size : 'sm'
 
-interface PaymentScheduleViewProps {
-  tax: ResponseTaxDto
-}
-
-const PaymentScheduleView = ({ tax }: PaymentScheduleViewProps) => {
+const PaymentScheduleView = () => {
+  const { taxData } = useTaxFeeSection()
   const { t } = useTranslation('account')
   return (
     <div className="no-scrollbar flex w-full flex-col items-start gap-4 overflow-auto lg:gap-6">
@@ -59,7 +55,7 @@ const PaymentScheduleView = ({ tax }: PaymentScheduleViewProps) => {
           />
         </div>
         <div className="flex w-full flex-col items-start gap-4 rounded-lg bg-gray-50 p-6 lg:gap-6">
-          {tax?.taxInstallments?.[0] && (
+          {taxData?.taxInstallments?.[0] && (
             <div
               id="content"
               className="flex w-full flex-col items-start gap-3 lg:flex-row lg:gap-6"
@@ -69,11 +65,11 @@ const PaymentScheduleView = ({ tax }: PaymentScheduleViewProps) => {
                 <div className="text-h5 inline">{t('payment_schedule.first_piece_to')}</div>
               </div>
               <div className="text-h5">
-                <FormatCurrencyFromCents value={tax.taxInstallments[0]?.amount} />
+                <FormatCurrencyFromCents value={taxData.taxInstallments[0]?.amount} />
               </div>
             </div>
           )}
-          {tax?.taxInstallments?.[1] && (
+          {taxData?.taxInstallments?.[1] && (
             <>
               <div id="divider" className="h-0.5 w-full bg-gray-200" />
               <div
@@ -85,12 +81,12 @@ const PaymentScheduleView = ({ tax }: PaymentScheduleViewProps) => {
                   <div className="text-h5 inline">{t('payment_schedule.second_piece_to')}</div>
                 </div>
                 <div className="text-h5">
-                  <FormatCurrencyFromCents value={tax.taxInstallments[1]?.amount} />
+                  <FormatCurrencyFromCents value={taxData.taxInstallments[1]?.amount} />
                 </div>
               </div>
             </>
           )}
-          {tax?.taxInstallments?.[2] && (
+          {taxData?.taxInstallments?.[2] && (
             <>
               <div id="divider" className="h-0.5 w-full bg-gray-200" />
               <div
@@ -102,7 +98,7 @@ const PaymentScheduleView = ({ tax }: PaymentScheduleViewProps) => {
                   <div className="text-h5 inline">{t('payment_schedule.third_piece_to')}</div>
                 </div>
                 <div className="text-h5">
-                  <FormatCurrencyFromCents value={tax.taxInstallments[2]?.amount} />
+                  <FormatCurrencyFromCents value={taxData.taxInstallments[2]?.amount} />
                 </div>
               </div>
             </>
@@ -122,7 +118,6 @@ const AccordionPaymentSchedule = ({
   size = 'sm',
   icon = false,
   className,
-  tax,
 }: AccordionBase) => {
   const [isActive, setIsActive] = useState(false)
 
@@ -154,7 +149,7 @@ const AccordionPaymentSchedule = ({
         <AccountMarkdownModal
           show={isActive}
           onClose={() => setIsActive(false)}
-          content={<PaymentScheduleView tax={tax} />}
+          content={<PaymentScheduleView />}
           onSubmit={() => {}}
           header={title}
         />
@@ -228,7 +223,7 @@ const AccordionPaymentSchedule = ({
               'text-20': accordionSize === 'lg' || accordionSize === 'md',
             })}
           >
-            <PaymentScheduleView tax={tax} />
+            <PaymentScheduleView />
           </div>
         )}
       </div>

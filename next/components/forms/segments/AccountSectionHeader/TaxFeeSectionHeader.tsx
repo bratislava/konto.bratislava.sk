@@ -6,7 +6,6 @@ import {
   ErrorIcon,
   PaymentIcon,
 } from '@assets/ui-icons'
-import { ResponseTaxDto } from '@clients/openapi-tax'
 import cx from 'classnames'
 import { useRouter } from 'next/router'
 import { useTranslation } from 'next-i18next'
@@ -23,10 +22,7 @@ import {
 import { formatDate, taxStatusHelper } from '../../../../frontend/utils/general'
 import logger from '../../../../frontend/utils/logger'
 import Button from '../../simple-components/Button'
-
-interface AccountSectionHeaderBase {
-  tax: ResponseTaxDto
-}
+import { useTaxFeeSection } from '../AccountSections/TaxesFeesSection/useTaxFeeSection'
 
 // https://stackoverflow.com/questions/32545632/how-can-i-download-a-file-using-window-fetch
 const downloadPdf = async () => {
@@ -77,12 +73,13 @@ const statusHandler = (status: 'negative' | 'warning' | 'success', text: string)
   }
 }
 
-const TaxFeeSectionHeader = ({ tax }: AccountSectionHeaderBase) => {
+const TaxFeeSectionHeader = () => {
+  const { taxData } = useTaxFeeSection()
   const { t } = useTranslation('account')
   const router = useRouter()
 
   const currencyFromCentsFormatter = useCurrencyFromCentsFormatter()
-  const status = taxStatusHelper(tax)
+  const status = taxStatusHelper(taxData)
 
   const redirectToPaymentGateway = async () => {
     try {
@@ -118,7 +115,7 @@ const TaxFeeSectionHeader = ({ tax }: AccountSectionHeaderBase) => {
           <div className="flex size-full flex-col items-start gap-4">
             <div className="flex w-full flex-row items-center gap-4">
               <div className="text-h1 grow">
-                {t('tax_detail_section.title', { year: tax?.year })}
+                {t('tax_detail_section.title', { year: taxData?.year })}
               </div>
 
               {status.paymentStatus === 'unpaid' && (
@@ -143,15 +140,17 @@ const TaxFeeSectionHeader = ({ tax }: AccountSectionHeaderBase) => {
             <div className="flex flex-col items-start gap-1 md:flex-row md:items-center md:gap-4">
               <div className="flex gap-2">
                 <div className="lg:text-p2-semibold text-p3-semibold">{t('tax_created')}</div>
-                <div className="lg:text-p2 text-p3">{formatDate(tax?.createdAt)}</div>
+                <div className="lg:text-p2 text-p3">{formatDate(taxData?.createdAt)}</div>
               </div>
               <div className="hidden size-1.5 rounded-full bg-black md:block" />
               <div className="lg:text-p2-bold text-p3">
-                <FormatCurrencyFromCents value={tax.amount} />
+                <FormatCurrencyFromCents value={taxData.amount} />
                 {status.paymentStatus === 'partially_paid' ? (
                   <span className="lg:text-p2 text-p-3">
                     {t('tax_detail_section.tax_remainder_text', {
-                      amount: currencyFromCentsFormatter.format(tax.amount - tax.payedAmount),
+                      amount: currencyFromCentsFormatter.format(
+                        taxData.amount - taxData.payedAmount,
+                      ),
                     })}
                   </span>
                 ) : null}

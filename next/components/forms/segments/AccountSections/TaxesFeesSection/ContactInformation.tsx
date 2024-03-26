@@ -1,5 +1,4 @@
 // eslint-disable-next-line import/no-extraneous-dependencies
-import { ResponseTaxDto } from '@clients/openapi-tax'
 import { useTranslation } from 'next-i18next'
 import { useState } from 'react'
 
@@ -9,10 +8,7 @@ import { isDefined } from '../../../../../frontend/utils/general'
 import SummaryRowSimple from '../../../simple-components/SummaryRowSimple'
 import SummaryRow from '../../../steps/Summary/SummaryRow'
 import CorrespondenceAddressModalV2 from '../../CorrespondenceAddressModal/CorrespondenceAddressModalV2'
-
-interface ContactInformationSectionProps {
-  tax: ResponseTaxDto
-}
+import { useTaxFeeSection } from './useTaxFeeSection'
 
 const formatZip = (zip?: string) => {
   if (!zip) return null
@@ -27,7 +23,8 @@ const formatZip = (zip?: string) => {
 const displayStrings = (strings: (string | undefined | null)[], separator: string) =>
   strings.filter(isDefined).join(separator)
 
-const ContactInformationSection = ({ tax }: ContactInformationSectionProps) => {
+const ContactInformationSection = () => {
+  const { taxData } = useTaxFeeSection()
   const { t } = useTranslation('account')
   const { userAttributes } = useSsrAuth()
   const [parsedAddress, setParsedAddress] = useState(() => {
@@ -40,13 +37,13 @@ const ContactInformationSection = ({ tax }: ContactInformationSectionProps) => {
   const [correspondenceAddressModalShow, setCorrespondenceAddressModalShow] = useState(false)
 
   const displayName =
-    tax.taxPayer?.name ??
+    taxData.taxPayer?.name ??
     displayStrings([userAttributes?.given_name, userAttributes?.family_name], ' ')
   const displayPermanentAddress = displayStrings(
     [
-      tax.taxPayer?.permanentResidenceStreet,
-      formatZip(tax.taxPayer?.permanentResidenceZip),
-      tax.taxPayer?.permanentResidenceCity,
+      taxData.taxPayer?.permanentResidenceStreet,
+      formatZip(taxData.taxPayer?.permanentResidenceZip),
+      taxData.taxPayer?.permanentResidenceCity,
     ],
     ', ',
   )
@@ -105,7 +102,7 @@ const ContactInformationSection = ({ tax }: ContactInformationSectionProps) => {
               isEditable={false}
               data={{
                 label: t('taxpayer_id'),
-                value: tax.taxPayer?.externalId,
+                value: taxData.taxPayer?.externalId,
                 schemaPath: '',
                 isError: false,
               }}
@@ -120,7 +117,7 @@ const ContactInformationSection = ({ tax }: ContactInformationSectionProps) => {
               isEditable={false}
               data={{
                 label: t('name_and_surname'),
-                value: tax?.taxEmployees?.name,
+                value: taxData?.taxEmployees?.name,
                 schemaPath: '',
                 isError: false,
               }}
@@ -130,17 +127,17 @@ const ContactInformationSection = ({ tax }: ContactInformationSectionProps) => {
                 <div>
                   <a
                     className="underline underline-offset-4"
-                    href={`tel:${tax?.taxEmployees?.phoneNumber}`}
+                    href={`tel:${taxData?.taxEmployees?.phoneNumber}`}
                   >
-                    {tax?.taxEmployees?.phoneNumber}
+                    {taxData?.taxEmployees?.phoneNumber}
                   </a>
                   ,
                 </div>
                 <a
                   className="underline underline-offset-4"
-                  href={`mailto:${tax?.taxEmployees?.email}`}
+                  href={`mailto:${taxData?.taxEmployees?.email}`}
                 >
-                  {tax?.taxEmployees?.email}
+                  {taxData?.taxEmployees?.email}
                 </a>
               </div>
             </SummaryRowSimple>

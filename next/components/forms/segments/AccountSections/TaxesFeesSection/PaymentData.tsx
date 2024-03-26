@@ -1,5 +1,4 @@
 import { DownloadIcon } from '@assets/ui-icons'
-import { ResponseTaxDto } from '@clients/openapi-tax'
 import { useRouter } from 'next/router'
 import { useTranslation } from 'next-i18next'
 import React from 'react'
@@ -11,17 +10,15 @@ import AccordionPaymentSchedule from '../../../simple-components/AccordionPaymen
 import Button from '../../../simple-components/Button'
 import ClipboardCopy from '../../../simple-components/ClipboardCopy'
 import TaxFooter from './TaxFooter'
+import { useTaxFeeSection } from './useTaxFeeSection'
 
-interface PaymentDataProps {
-  tax: ResponseTaxDto
-}
-
-const PaymentData = ({ tax }: PaymentDataProps) => {
+const PaymentData = () => {
+  const { taxData } = useTaxFeeSection()
   const { t } = useTranslation('account')
-  const status = taxStatusHelper(tax)
+  const status = taxStatusHelper(taxData)
   const router = useRouter()
 
-  const qrCodeBase64 = `data:image/png;base64,${tax?.qrCodeWeb}`
+  const qrCodeBase64 = `data:image/png;base64,${taxData?.qrCodeWeb}`
 
   const downloadImage = () => {
     const a = document.createElement('a')
@@ -87,14 +84,14 @@ const PaymentData = ({ tax }: PaymentDataProps) => {
                 </div>
                 <div className="flex flex-col items-start self-stretch lg:flex-row lg:gap-6">
                   <div className="text-16-semibold">{t('variable_symbol')}</div>
-                  <div className="text-16">{tax?.variableSymbol}</div>
+                  <div className="text-16">{taxData?.variableSymbol}</div>
                 </div>
               </div>
               <div className="hidden h-0.5 w-full bg-gray-200 sm:block" />
               <div className="flex w-full flex-col items-start gap-2">
                 <div className="text-16-semibold">{t('tax_due')}</div>
                 <div className="text-16">
-                  {tax?.taxInstallments?.length > 1 ? (
+                  {taxData?.taxInstallments?.length > 1 ? (
                     <>
                       <div className="inline">{t('tax_payable_in_installments_1')}</div>
                       <div className="text-16-semibold inline">
@@ -174,7 +171,7 @@ const PaymentData = ({ tax }: PaymentDataProps) => {
           </div>
         </div>
         {status.hasMultipleInstallments && (
-          <AccordionPaymentSchedule size="md" title={t('payment_schedule.title')} tax={tax} />
+          <AccordionPaymentSchedule size="md" title={t('payment_schedule.title')} />
         )}
       </div>
       <TaxFooter />

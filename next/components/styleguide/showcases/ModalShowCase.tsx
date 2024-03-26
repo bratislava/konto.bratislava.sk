@@ -1,4 +1,3 @@
-import CorrespondenceAddressModal from 'components/forms/segments/CorrespondenceAddressModal/CorrespondenceAddressModal'
 // import IdentityVerificationModal from 'components/forms/segments/IdentityVerificationModal/IdentityVerificationModal'
 import RegistrationModal, {
   RegistrationModalType,
@@ -161,13 +160,6 @@ const ModalShowCase = () => {
         >
           Lorem ipsum dolor sit amet, consectetur adipiscing elit.
         </MessageModal>
-
-        <CorrespondenceAddressModal
-          show={correnspondenceAddressModalShow}
-          onClose={() => setCorrenspondenceAddressModalShow(false)}
-          onSubmit={onSubmitCorrespondenceAddress}
-          defaultValues={addressModalData}
-        />
         <RegistrationModal
           type={RegistrationModalType.Initial}
           isOpen={registrationModal}

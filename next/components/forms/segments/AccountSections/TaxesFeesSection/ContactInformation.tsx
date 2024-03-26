@@ -5,6 +5,7 @@ import { useState } from 'react'
 
 import { Address } from '../../../../../frontend/dtos/accountDto'
 import { useSsrAuth } from '../../../../../frontend/hooks/useSsrAuth'
+import { isDefined } from '../../../../../frontend/utils/general'
 import SummaryRowSimple from '../../../simple-components/SummaryRowSimple'
 import SummaryRow from '../../../steps/Summary/SummaryRow'
 import CorrespondenceAddressModalV2 from '../../CorrespondenceAddressModal/CorrespondenceAddressModalV2'
@@ -13,8 +14,18 @@ interface ContactInformationSectionProps {
   tax: ResponseTaxDto
 }
 
-const postalCodeFormat = (code?: string): string =>
-  code ? `${code.slice(0, 3)} ${code.slice(3)}` : ''
+const formatZip = (zip?: string) => {
+  if (!zip) return null
+
+  if (/^\d{5}$/g.test(zip)) {
+    return `${zip.slice(0, 3)} ${zip.slice(3)}`
+  }
+
+  return zip
+}
+
+const displayStrings = (strings: (string | undefined | null)[], separator: string) =>
+  strings.filter(isDefined).join(separator)
 
 const ContactInformationSection = ({ tax }: ContactInformationSectionProps) => {
   const { t } = useTranslation('account')
@@ -26,8 +37,23 @@ const ContactInformationSection = ({ tax }: ContactInformationSectionProps) => {
       return {} as Address
     }
   })
-  const postal_code_array = parsedAddress?.postal_code?.replace(/\s/g, '')
   const [correspondenceAddressModalShow, setCorrespondenceAddressModalShow] = useState(false)
+
+  const displayName =
+    tax.taxPayer?.name ??
+    displayStrings([userAttributes?.given_name, userAttributes?.family_name], ' ')
+  const displayPermanentAddress = displayStrings(
+    [
+      tax.taxPayer?.permanentResidenceStreet,
+      formatZip(tax.taxPayer?.permanentResidenceZip),
+      tax.taxPayer?.permanentResidenceCity,
+    ],
+    ', ',
+  )
+  const displayCorrespondenceAddress = displayStrings(
+    [parsedAddress?.street_address, formatZip(parsedAddress?.postal_code), parsedAddress?.locality],
+    ', ',
+  )
 
   return (
     <>
@@ -49,9 +75,7 @@ const ContactInformationSection = ({ tax }: ContactInformationSectionProps) => {
               isEditable={false}
               data={{
                 label: t('name_and_surname'),
-                value:
-                  tax.taxPayer?.name ||
-                  `${userAttributes?.given_name || ''} ${userAttributes?.family_name || ''}`,
+                value: displayName,
                 schemaPath: '',
                 isError: false,
               }}
@@ -61,15 +85,7 @@ const ContactInformationSection = ({ tax }: ContactInformationSectionProps) => {
               isEditable={false}
               data={{
                 label: t('permanent_address'),
-                value: `${tax.taxPayer?.permanentResidenceStreet}${
-                  tax.taxPayer?.permanentResidenceZip
-                    ? `, ${tax.taxPayer?.permanentResidenceZip}`
-                    : ''
-                }${
-                  tax.taxPayer?.permanentResidenceCity
-                    ? `, ${tax.taxPayer?.permanentResidenceCity}`
-                    : ''
-                }`,
+                value: displayPermanentAddress,
                 schemaPath: '',
                 isError: false,
               }}
@@ -78,18 +94,7 @@ const ContactInformationSection = ({ tax }: ContactInformationSectionProps) => {
               size="small"
               data={{
                 label: t('correspondence_address'),
-                value:
-                  userAttributes &&
-                  (parsedAddress?.street_address ||
-                    parsedAddress?.postal_code ||
-                    parsedAddress?.locality)
-                    ? `${
-                        parsedAddress?.street_address &&
-                        (postal_code_array || parsedAddress?.locality)
-                          ? `${parsedAddress?.street_address},`
-                          : parsedAddress?.street_address || ''
-                      } ${postalCodeFormat(postal_code_array)} ${parsedAddress?.locality || ''}`
-                    : '',
+                value: displayCorrespondenceAddress,
                 schemaPath: '',
                 isError: false,
               }}

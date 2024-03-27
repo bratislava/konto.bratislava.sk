@@ -170,14 +170,6 @@ const MyApplicationsCardShowCase = () => {
               return [undefined, false]
             }}
           />
-          READY_FOR_PROCESSING
-          <MyApplicationsCard
-            variant="SENT"
-            form={getDummyData('READY_FOR_PROCESSING', 'NONE')}
-            refreshListData={async (): Promise<[void, boolean]> => {
-              return [undefined, false]
-            }}
-          />
           PROCESSING
           <MyApplicationsCard
             variant="SENT"

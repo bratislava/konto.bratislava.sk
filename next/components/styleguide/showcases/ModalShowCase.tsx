@@ -1,4 +1,3 @@
-import CorrespondenceAddressModal from 'components/forms/segments/CorrespondenceAddressModal/CorrespondenceAddressModal'
 // import IdentityVerificationModal from 'components/forms/segments/IdentityVerificationModal/IdentityVerificationModal'
 import RegistrationModal, {
   RegistrationModalType,
@@ -69,20 +68,9 @@ const ModalShowCase = () => {
   const [modalSingleShow, setModalSingleShow] = useState(false)
   const [modalShow, setModalShow] = useState(false)
   const [messageModal, setMessageModal] = useState(false)
-  const [correnspondenceAddressModalShow, setCorrenspondenceAddressModalShow] = useState(false)
-  const [addressModalData, setAddressModalData] = useState<any>({
-    street_address: 'Stef 12',
-    locality: 'Bratislava',
-    postal_code: '05801',
-  })
   const [registrationModal, setRegistrationModal] = useState(false)
   // TODO either remove these modals from showcase completely, or fix their dependency on useFormRedirects
   // const [identityVerificationModal, setIdentityVerificationModal] = useState(false)
-
-  const onSubmitCorrespondenceAddress = ({ data }: { data?: string }) => {
-    setAddressModalData(data)
-    setCorrenspondenceAddressModalShow(false)
-  }
 
   return (
     <Wrapper direction="column" title="Modal">
@@ -104,12 +92,6 @@ const ModalShowCase = () => {
           variant="black"
           text="Open message modal"
           onPress={() => setMessageModal(true)}
-        />
-        <Button
-          size="sm"
-          variant="black"
-          text="Open correspondence address modal"
-          onPress={() => setCorrenspondenceAddressModalShow(true)}
         />
         {/* <Button
           size="sm"
@@ -161,13 +143,6 @@ const ModalShowCase = () => {
         >
           Lorem ipsum dolor sit amet, consectetur adipiscing elit.
         </MessageModal>
-
-        <CorrespondenceAddressModal
-          show={correnspondenceAddressModalShow}
-          onClose={() => setCorrenspondenceAddressModalShow(false)}
-          onSubmit={onSubmitCorrespondenceAddress}
-          defaultValues={addressModalData}
-        />
         <RegistrationModal
           type={RegistrationModalType.Initial}
           isOpen={registrationModal}

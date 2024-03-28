@@ -1,49 +1,19 @@
 import { DownloadIcon } from '@assets/ui-icons'
-import { ResponseTaxDto } from '@clients/openapi-tax'
-import { useRouter } from 'next/router'
 import { useTranslation } from 'next-i18next'
 import React from 'react'
 
-import { getPaymentGatewayUrlApi } from '../../../../../frontend/api/api'
 import { taxStatusHelper } from '../../../../../frontend/utils/general'
-import logger from '../../../../../frontend/utils/logger'
 import AccordionPaymentSchedule from '../../../simple-components/AccordionPaymentSchedule'
 import Button from '../../../simple-components/Button'
 import ClipboardCopy from '../../../simple-components/ClipboardCopy'
 import TaxFooter from './TaxFooter'
+import { useTaxFeeSection } from './useTaxFeeSection'
 
-interface PaymentDataProps {
-  tax: ResponseTaxDto
-}
-
-const PaymentData = ({ tax }: PaymentDataProps) => {
+const PaymentData = () => {
+  const { taxData, redirectToPayment, downloadQrCode } = useTaxFeeSection()
   const { t } = useTranslation('account')
-  const status = taxStatusHelper(tax)
-  const router = useRouter()
-
-  const qrCodeBase64 = `data:image/png;base64,${tax?.qrCodeWeb}`
-
-  const downloadImage = () => {
-    const a = document.createElement('a')
-    a.href = qrCodeBase64
-    a.download = 'QR-dan-z-nehnutelnosti.png'
-    a.click()
-  }
-
-  const redirectToPaymentGateway = async () => {
-    try {
-      const result = await getPaymentGatewayUrlApi()
-      const resultUrl = result?.url
-      if (typeof resultUrl === 'string') {
-        await router.push(resultUrl)
-      } else {
-        logger.error(result)
-        throw new Error('Payment gateway url is not defined')
-      }
-    } catch (error) {
-      logger.error(error)
-    }
-  }
+  const status = taxStatusHelper(taxData)
+  const qrCodeBase64 = `data:image/png;base64,${taxData.qrCodeWeb}`
 
   return (
     <div className="flex w-full flex-col items-start gap-3 px-4 lg:gap-6 lg:px-0">
@@ -87,14 +57,14 @@ const PaymentData = ({ tax }: PaymentDataProps) => {
                 </div>
                 <div className="flex flex-col items-start self-stretch lg:flex-row lg:gap-6">
                   <div className="text-16-semibold">{t('variable_symbol')}</div>
-                  <div className="text-16">{tax?.variableSymbol}</div>
+                  <div className="text-16">{taxData?.variableSymbol}</div>
                 </div>
               </div>
               <div className="hidden h-0.5 w-full bg-gray-200 sm:block" />
               <div className="flex w-full flex-col items-start gap-2">
                 <div className="text-16-semibold">{t('tax_due')}</div>
                 <div className="text-16">
-                  {tax?.taxInstallments?.length > 1 ? (
+                  {taxData?.taxInstallments?.length > 1 ? (
                     <>
                       <div className="inline">{t('tax_payable_in_installments_1')}</div>
                       <div className="text-16-semibold inline">
@@ -126,7 +96,7 @@ const PaymentData = ({ tax }: PaymentDataProps) => {
                 size="lg"
                 text={t('to_pay')}
                 className="hidden min-w-max lg:block"
-                onPress={redirectToPaymentGateway}
+                onPress={redirectToPayment}
                 disabled={status?.paymentStatus !== 'unpaid'}
               />
               {/* Mobile 'To pay' button */}
@@ -135,7 +105,7 @@ const PaymentData = ({ tax }: PaymentDataProps) => {
                 size="sm"
                 text={t('to_pay')}
                 className="block min-w-full lg:hidden"
-                onPress={redirectToPaymentGateway}
+                onPress={redirectToPayment}
                 disabled={status?.paymentStatus !== 'unpaid'}
               />
             </div>
@@ -152,7 +122,7 @@ const PaymentData = ({ tax }: PaymentDataProps) => {
                   text={t('download_image')}
                   size="sm"
                   className="hidden lg:block"
-                  onPress={downloadImage}
+                  onPress={downloadQrCode}
                 />
               </div>
               <img
@@ -168,13 +138,13 @@ const PaymentData = ({ tax }: PaymentDataProps) => {
                 text={t('download_image')}
                 size="sm"
                 className="block min-w-full lg:hidden"
-                onPress={downloadImage}
+                onPress={downloadQrCode}
               />
             </div>
           </div>
         </div>
         {status.hasMultipleInstallments && (
-          <AccordionPaymentSchedule size="md" title={t('payment_schedule.title')} tax={tax} />
+          <AccordionPaymentSchedule size="md" title={t('payment_schedule.title')} />
         )}
       </div>
       <TaxFooter />

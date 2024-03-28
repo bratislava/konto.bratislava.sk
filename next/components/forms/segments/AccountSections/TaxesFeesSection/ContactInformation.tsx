@@ -1,75 +1,67 @@
 // eslint-disable-next-line import/no-extraneous-dependencies
-import { ResponseTaxDto } from '@clients/openapi-tax'
-import { updateUserAttributes } from 'aws-amplify/auth'
-import { Address } from 'frontend/dtos/accountDto'
-import useJsonParseMemo from 'frontend/hooks/useJsonParseMemo'
-import { GENERIC_ERROR_MESSAGE, isError } from 'frontend/utils/errors'
-import logger from 'frontend/utils/logger'
 import { useTranslation } from 'next-i18next'
 import { useState } from 'react'
 
-import useSnackbar from '../../../../../frontend/hooks/useSnackbar'
+import { Address } from '../../../../../frontend/dtos/accountDto'
 import { useSsrAuth } from '../../../../../frontend/hooks/useSsrAuth'
+import { isDefined } from '../../../../../frontend/utils/general'
 import SummaryRowSimple from '../../../simple-components/SummaryRowSimple'
 import SummaryRow from '../../../steps/Summary/SummaryRow'
-import CorrespondenceAddressModal from '../../CorrespondenceAddressModal/CorrespondenceAddressModal'
+import CorrespondenceAddressModalV2 from '../../CorrespondenceAddressModal/CorrespondenceAddressModalV2'
+import { useTaxFeeSection } from './useTaxFeeSection'
 
-interface ContactInformationSectionProps {
-  tax: ResponseTaxDto
+const formatZip = (zip?: string) => {
+  if (!zip) return null
+
+  if (/^\d{5}$/g.test(zip)) {
+    return `${zip.slice(0, 3)} ${zip.slice(3)}`
+  }
+
+  return zip
 }
 
-const postalCodeFormat = (code?: string): string =>
-  code ? `${code.slice(0, 3)} ${code.slice(3)}` : ''
+const displayStrings = (strings: (string | undefined | null)[], separator: string) =>
+  strings.filter(isDefined).join(separator)
 
-const ContactInformationSection = ({ tax }: ContactInformationSectionProps) => {
+const ContactInformationSection = () => {
+  const { taxData } = useTaxFeeSection()
   const { t } = useTranslation('account')
   const { userAttributes } = useSsrAuth()
-  const [showSnackbar] = useSnackbar({ variant: 'success' })
-  const address = userAttributes?.address
-  const parsedAddress = useJsonParseMemo<Address>(address)
-  const postal_code_array = parsedAddress?.postal_code?.replace(/\s/g, '')
+  const [parsedAddress, setParsedAddress] = useState(() => {
+    try {
+      return JSON.parse(userAttributes?.address ?? '{}') as Address
+    } catch {
+      return {} as Address
+    }
+  })
   const [correspondenceAddressModalShow, setCorrespondenceAddressModalShow] = useState(false)
 
-  const [correspondenceAddressError, setCorrespondenceAddressError] = useState<Error | null>(null)
-  const resetError = () => {
-    setCorrespondenceAddressError(null)
-  }
-
-  const onSubmitCorrespondenceAddress = async ({ data }: { data?: string }) => {
-    try {
-      const {
-        address: { isUpdated },
-      } = await updateUserAttributes({
-        userAttributes: { address: data },
-      })
-      if (isUpdated) {
-        setCorrespondenceAddressModalShow(false)
-        showSnackbar(t('profile_detail.success_alert'))
-      } else {
-        throw new Error('Unknown error')
-      }
-    } catch (error) {
-      if (isError(error)) {
-        setCorrespondenceAddressError(error)
-      } else {
-        logger.error(
-          `${GENERIC_ERROR_MESSAGE} - unexpected object thrown in onSubmitCorrespondenceAddress:`,
-          error,
-        )
-        setCorrespondenceAddressError(new Error('Unknown error'))
-      }
-    }
-  }
+  const displayName =
+    taxData.taxPayer?.name ??
+    displayStrings([userAttributes?.given_name, userAttributes?.family_name], ' ')
+  const displayPermanentAddress = displayStrings(
+    [
+      taxData.taxPayer?.permanentResidenceStreet,
+      formatZip(taxData.taxPayer?.permanentResidenceZip),
+      taxData.taxPayer?.permanentResidenceCity,
+    ],
+    ', ',
+  )
+  const displayCorrespondenceAddress = displayStrings(
+    [parsedAddress?.street_address, formatZip(parsedAddress?.postal_code), parsedAddress?.locality],
+    ', ',
+  )
 
   return (
     <>
-      <CorrespondenceAddressModal
-        show={correspondenceAddressModalShow}
-        onClose={() => setCorrespondenceAddressModalShow(false)}
-        onSubmit={onSubmitCorrespondenceAddress}
-        defaultValues={parsedAddress || undefined}
-        error={correspondenceAddressError}
-        onHideError={resetError}
+      <CorrespondenceAddressModalV2
+        parsedAddress={parsedAddress}
+        isOpen={correspondenceAddressModalShow}
+        onOpenChange={setCorrespondenceAddressModalShow}
+        onSuccess={(newAddress) => {
+          setParsedAddress(newAddress)
+          setCorrespondenceAddressModalShow(false)
+        }}
       />
       <div className="flex w-full flex-col items-start gap-6 px-4 sm:gap-8 lg:px-0">
         <div className="flex w-full flex-col items-start gap-2">
@@ -80,9 +72,7 @@ const ContactInformationSection = ({ tax }: ContactInformationSectionProps) => {
               isEditable={false}
               data={{
                 label: t('name_and_surname'),
-                value:
-                  tax.taxPayer?.name ||
-                  `${userAttributes?.given_name || ''} ${userAttributes?.family_name || ''}`,
+                value: displayName,
                 schemaPath: '',
                 isError: false,
               }}
@@ -92,15 +82,7 @@ const ContactInformationSection = ({ tax }: ContactInformationSectionProps) => {
               isEditable={false}
               data={{
                 label: t('permanent_address'),
-                value: `${tax.taxPayer?.permanentResidenceStreet}${
-                  tax.taxPayer?.permanentResidenceZip
-                    ? `, ${tax.taxPayer?.permanentResidenceZip}`
-                    : ''
-                }${
-                  tax.taxPayer?.permanentResidenceCity
-                    ? `, ${tax.taxPayer?.permanentResidenceCity}`
-                    : ''
-                }`,
+                value: displayPermanentAddress,
                 schemaPath: '',
                 isError: false,
               }}
@@ -109,18 +91,7 @@ const ContactInformationSection = ({ tax }: ContactInformationSectionProps) => {
               size="small"
               data={{
                 label: t('correspondence_address'),
-                value:
-                  userAttributes &&
-                  (parsedAddress?.street_address ||
-                    parsedAddress?.postal_code ||
-                    parsedAddress?.locality)
-                    ? `${
-                        parsedAddress?.street_address &&
-                        (postal_code_array || parsedAddress?.locality)
-                          ? `${parsedAddress?.street_address},`
-                          : parsedAddress?.street_address || ''
-                      } ${postalCodeFormat(postal_code_array)} ${parsedAddress?.locality || ''}`
-                    : '',
+                value: displayCorrespondenceAddress,
                 schemaPath: '',
                 isError: false,
               }}
@@ -131,7 +102,7 @@ const ContactInformationSection = ({ tax }: ContactInformationSectionProps) => {
               isEditable={false}
               data={{
                 label: t('taxpayer_id'),
-                value: tax.taxPayer?.externalId,
+                value: taxData.taxPayer?.externalId,
                 schemaPath: '',
                 isError: false,
               }}
@@ -146,7 +117,7 @@ const ContactInformationSection = ({ tax }: ContactInformationSectionProps) => {
               isEditable={false}
               data={{
                 label: t('name_and_surname'),
-                value: tax?.taxEmployees?.name,
+                value: taxData?.taxEmployees?.name,
                 schemaPath: '',
                 isError: false,
               }}
@@ -156,17 +127,17 @@ const ContactInformationSection = ({ tax }: ContactInformationSectionProps) => {
                 <div>
                   <a
                     className="underline underline-offset-4"
-                    href={`tel:${tax?.taxEmployees?.phoneNumber}`}
+                    href={`tel:${taxData?.taxEmployees?.phoneNumber}`}
                   >
-                    {tax?.taxEmployees?.phoneNumber}
+                    {taxData?.taxEmployees?.phoneNumber}
                   </a>
                   ,
                 </div>
                 <a
                   className="underline underline-offset-4"
-                  href={`mailto:${tax?.taxEmployees?.email}`}
+                  href={`mailto:${taxData?.taxEmployees?.email}`}
                 >
-                  {tax?.taxEmployees?.email}
+                  {taxData?.taxEmployees?.email}
                 </a>
               </div>
             </SummaryRowSimple>

@@ -36,7 +36,7 @@ const schema = {
 interface Props {
   error?: Error | null
   onHideError?: () => void
-  onSubmit: ({ data }: { data?: Address }) => void
+  onSubmit: ({ data }: { data: Address }) => void
   defaultValues?: Address
 }
 

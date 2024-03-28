@@ -1,4 +1,3 @@
-import { ResponseTaxDto } from '@clients/openapi-tax'
 import groupBy from 'lodash/groupBy'
 import mapValues from 'lodash/mapValues'
 import reduce from 'lodash/reduce'
@@ -10,16 +9,14 @@ import {
   useCurrencyFromCentsFormatter,
 } from '../../../../../frontend/utils/formatCurrency'
 import AccordionTableTaxContent from '../../../simple-components/AccordionTableTaxContent'
+import { useTaxFeeSection } from './useTaxFeeSection'
 
-interface TaxDetailsProps {
-  tax: ResponseTaxDto
-}
-
-const TaxDetails = ({ tax }: TaxDetailsProps) => {
+const TaxDetails = () => {
+  const { taxData } = useTaxFeeSection()
   const { t } = useTranslation('account')
   const currencyFromCentsFormatter = useCurrencyFromCentsFormatter()
 
-  const groupedTaxDetails = groupBy(tax.taxDetails, 'type')
+  const groupedTaxDetails = groupBy(taxData.taxDetails, 'type')
   // TODO use data from root obj
   const sums = mapValues(groupedTaxDetails, (taxDetails) => {
     return reduce(
@@ -63,7 +60,7 @@ const TaxDetails = ({ tax }: TaxDetailsProps) => {
           <div className="flex w-full flex-col gap-1 xs:flex-row">
             <div className="text-p2 w-full grow xs:w-min">{t('tax_detail_section.tax_total')}</div>
             <div className="text-p2 w-max">
-              <FormatCurrencyFromCents value={tax.amount} />
+              <FormatCurrencyFromCents value={taxData.amount} />
             </div>
           </div>
           <div className="flex w-full flex-col gap-1 xs:flex-row">
@@ -71,7 +68,7 @@ const TaxDetails = ({ tax }: TaxDetailsProps) => {
               {t('tax_detail_section.tax_already_paid')}
             </div>
             <div className="text-p2 w-max">
-              <FormatCurrencyFromCents value={tax.payedAmount} />
+              <FormatCurrencyFromCents value={taxData.payedAmount} />
             </div>
           </div>
         </div>
@@ -79,7 +76,7 @@ const TaxDetails = ({ tax }: TaxDetailsProps) => {
         <div className="flex w-full flex-col gap-2 xs:flex-row lg:gap-6">
           <div className="text-h4 w-full grow xs:w-min">{t('tax_detail_section.tax_to_pay')}</div>
           <div className="text-h4 w-max">
-            <FormatCurrencyFromCents value={tax.amount - tax.payedAmount} />
+            <FormatCurrencyFromCents value={taxData.amount - taxData.payedAmount} />
           </div>
         </div>
       </div>

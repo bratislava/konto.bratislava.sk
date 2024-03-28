@@ -3,15 +3,7 @@
 import { ErrorObject } from 'ajv'
 
 import { environment } from '../../environment'
-import {
-  ApiError,
-  Gdpr,
-  Identity,
-  LegalIdentity,
-  TaxApiError,
-  UrlResult,
-  User,
-} from '../dtos/generalApiDto'
+import { ApiError, Gdpr, Identity, LegalIdentity, TaxApiError, User } from '../dtos/generalApiDto'
 import { getAccessTokenOrLogout } from '../utils/amplifyClient'
 import logger, { developmentLog } from '../utils/logger'
 
@@ -160,30 +152,6 @@ export const getTaxApi = async () => {
 
   return fetchJsonApi(`${environment.taxesUrl}/tax/get-tax-by-year?year=2023`, {
     method: 'GET',
-    headers: {
-      'Content-Type': 'application/json',
-      Authorization: `Bearer ${token}`,
-    },
-  })
-}
-
-export const getTaxPdfApi = async () => {
-  const token = await getAccessTokenOrLogout()
-
-  return fetchJsonApi(`${environment.taxesUrl}/tax/get-tax-pdf-by-year?year=2023`, {
-    method: 'GET',
-    headers: {
-      'Content-Type': 'application/json',
-      Authorization: `Bearer ${token}`,
-    },
-  })
-}
-
-export const getPaymentGatewayUrlApi = async (): Promise<UrlResult> => {
-  const token = await getAccessTokenOrLogout()
-
-  return fetchJsonApi<UrlResult>(`${environment.taxesUrl}/payment/cardpay/by-year/2023`, {
-    method: 'POST',
     headers: {
       'Content-Type': 'application/json',
       Authorization: `Bearer ${token}`,

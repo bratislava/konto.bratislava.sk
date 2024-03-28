@@ -1,11 +1,8 @@
 import { DownloadIcon } from '@assets/ui-icons'
-import { useRouter } from 'next/router'
 import { useTranslation } from 'next-i18next'
 import React from 'react'
 
-import { getPaymentGatewayUrlApi } from '../../../../../frontend/api/api'
 import { taxStatusHelper } from '../../../../../frontend/utils/general'
-import logger from '../../../../../frontend/utils/logger'
 import AccordionPaymentSchedule from '../../../simple-components/AccordionPaymentSchedule'
 import Button from '../../../simple-components/Button'
 import ClipboardCopy from '../../../simple-components/ClipboardCopy'
@@ -13,34 +10,10 @@ import TaxFooter from './TaxFooter'
 import { useTaxFeeSection } from './useTaxFeeSection'
 
 const PaymentData = () => {
-  const { taxData } = useTaxFeeSection()
+  const { taxData, redirectToPayment, downloadQrCode } = useTaxFeeSection()
   const { t } = useTranslation('account')
   const status = taxStatusHelper(taxData)
-  const router = useRouter()
-
-  const qrCodeBase64 = `data:image/png;base64,${taxData?.qrCodeWeb}`
-
-  const downloadImage = () => {
-    const a = document.createElement('a')
-    a.href = qrCodeBase64
-    a.download = 'QR-dan-z-nehnutelnosti.png'
-    a.click()
-  }
-
-  const redirectToPaymentGateway = async () => {
-    try {
-      const result = await getPaymentGatewayUrlApi()
-      const resultUrl = result?.url
-      if (typeof resultUrl === 'string') {
-        await router.push(resultUrl)
-      } else {
-        logger.error(result)
-        throw new Error('Payment gateway url is not defined')
-      }
-    } catch (error) {
-      logger.error(error)
-    }
-  }
+  const qrCodeBase64 = `data:image/png;base64,${taxData.qrCodeWeb}`
 
   return (
     <div className="flex w-full flex-col items-start gap-3 px-4 lg:gap-6 lg:px-0">
@@ -123,7 +96,7 @@ const PaymentData = () => {
                 size="lg"
                 text={t('to_pay')}
                 className="hidden min-w-max lg:block"
-                onPress={redirectToPaymentGateway}
+                onPress={redirectToPayment}
                 disabled={status?.paymentStatus !== 'unpaid'}
               />
               {/* Mobile 'To pay' button */}
@@ -132,7 +105,7 @@ const PaymentData = () => {
                 size="sm"
                 text={t('to_pay')}
                 className="block min-w-full lg:hidden"
-                onPress={redirectToPaymentGateway}
+                onPress={redirectToPayment}
                 disabled={status?.paymentStatus !== 'unpaid'}
               />
             </div>
@@ -149,7 +122,7 @@ const PaymentData = () => {
                   text={t('download_image')}
                   size="sm"
                   className="hidden lg:block"
-                  onPress={downloadImage}
+                  onPress={downloadQrCode}
                 />
               </div>
               <img
@@ -165,7 +138,7 @@ const PaymentData = () => {
                 text={t('download_image')}
                 size="sm"
                 className="block min-w-full lg:hidden"
-                onPress={downloadImage}
+                onPress={downloadQrCode}
               />
             </div>
           </div>

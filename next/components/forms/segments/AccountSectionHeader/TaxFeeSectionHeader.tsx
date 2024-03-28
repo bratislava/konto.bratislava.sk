@@ -1,49 +1,17 @@
-import {
-  CheckIcon,
-  ChevronLeftIcon,
-  ClockIcon,
-  DownloadIcon,
-  ErrorIcon,
-  PaymentIcon,
-} from '@assets/ui-icons'
+import { CheckIcon, ChevronLeftIcon, ClockIcon, ErrorIcon, PaymentIcon } from '@assets/ui-icons'
 import cx from 'classnames'
 import { useRouter } from 'next/router'
 import { useTranslation } from 'next-i18next'
 import { ReactNode } from 'react'
 
-import { environment } from '../../../../environment'
-import { getPaymentGatewayUrlApi } from '../../../../frontend/api/api'
 import { ROUTES } from '../../../../frontend/api/constants'
-import { getAccessTokenOrLogout } from '../../../../frontend/utils/amplifyClient'
 import {
   FormatCurrencyFromCents,
   useCurrencyFromCentsFormatter,
 } from '../../../../frontend/utils/formatCurrency'
 import { formatDate, taxStatusHelper } from '../../../../frontend/utils/general'
-import logger from '../../../../frontend/utils/logger'
 import Button from '../../simple-components/Button'
 import { useTaxFeeSection } from '../AccountSections/TaxesFeesSection/useTaxFeeSection'
-
-// https://stackoverflow.com/questions/32545632/how-can-i-download-a-file-using-window-fetch
-const downloadPdf = async () => {
-  const accessToken = await getAccessTokenOrLogout()
-  return fetch(`${String(environment.taxesUrl)}/tax/get-tax-pdf-by-year?year=2023`, {
-    headers: {
-      Authorization: `Bearer ${accessToken}`,
-    },
-  })
-    .then((res) => res.blob())
-    .then((blob) => {
-      const a = document.createElement('a')
-      a.href = URL.createObjectURL(blob)
-      a.setAttribute('download', 'dan-z-nehnutelnosti-2023.pdf')
-      a.click()
-      return null
-    })
-    .catch((error) => {
-      logger.error('Error downloading pdf', error)
-    })
-}
 
 const statusHandler = (status: 'negative' | 'warning' | 'success', text: string): ReactNode => {
   const statusStyle: string = cx('lg:text-p2-semibold text-p3-semibold', {
@@ -74,27 +42,12 @@ const statusHandler = (status: 'negative' | 'warning' | 'success', text: string)
 }
 
 const TaxFeeSectionHeader = () => {
-  const { taxData } = useTaxFeeSection()
+  const { taxData, redirectToPayment } = useTaxFeeSection()
   const { t } = useTranslation('account')
   const router = useRouter()
 
   const currencyFromCentsFormatter = useCurrencyFromCentsFormatter()
   const status = taxStatusHelper(taxData)
-
-  const redirectToPaymentGateway = async () => {
-    try {
-      const result = await getPaymentGatewayUrlApi()
-      const resultUrl = result.url
-      if (typeof resultUrl === 'string') {
-        await router.push(resultUrl)
-      } else {
-        logger.error(result)
-        throw new Error('Payment gateway url is not defined')
-      }
-    } catch (error) {
-      logger.error(error)
-    }
-  }
 
   return (
     <div className="h-full bg-gray-50 px-4 lg:px-0">
@@ -125,17 +78,9 @@ const TaxFeeSectionHeader = () => {
                   text={t('pay_tax')}
                   size="sm"
                   className="hidden md:block"
-                  onPress={redirectToPaymentGateway}
+                  onPress={redirectToPayment}
                 />
               )}
-              <Button
-                startIcon={<DownloadIcon className="size-5" />}
-                variant="black-outline"
-                text={t('download_pdf')}
-                size="sm"
-                className="hidden md:block"
-                onPress={downloadPdf}
-              />
             </div>
             <div className="flex flex-col items-start gap-1 md:flex-row md:items-center md:gap-4">
               <div className="flex gap-2">
@@ -184,17 +129,9 @@ const TaxFeeSectionHeader = () => {
                     text={t('pay_tax')}
                     size="sm"
                     className="min-w-full"
-                    onPress={redirectToPaymentGateway}
+                    onPress={redirectToPayment}
                   />
                 )}
-                <Button
-                  startIcon={<DownloadIcon className="size-5" />}
-                  variant="black-outline"
-                  text={t('download_pdf')}
-                  size="sm"
-                  className="min-w-full"
-                  onPress={downloadPdf}
-                />
               </div>
             </div>
           </div>

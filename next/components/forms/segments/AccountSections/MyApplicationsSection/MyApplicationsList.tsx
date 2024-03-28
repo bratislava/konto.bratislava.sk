@@ -23,7 +23,6 @@ export const getDraftApplications = async (
       'REJECTED',
       'FINISHED',
       'PROCESSING',
-      'READY_FOR_PROCESSING',
       'DELIVERED_NASES',
       'DELIVERED_GINIS',
     ] satisfies Array<GetFormResponseDtoStateEnum>,

@@ -1,13 +1,13 @@
 import { CheckIcon, ChevronRightIcon, ClockIcon, ErrorIcon } from '@assets/ui-icons'
 import { ResponseGetTaxesBodyDto, TaxPaidStatusEnum } from '@clients/openapi-tax'
 import cx from 'classnames'
-import Link from 'next/link'
 import { useTranslation } from 'next-i18next'
 import React, { ReactNode } from 'react'
 
 import { ROUTES } from '../../../../../frontend/api/constants'
 import { FormatCurrencyFromCents } from '../../../../../frontend/utils/formatCurrency'
 import { formatDate } from '../../../../../frontend/utils/general'
+import MLinkNew from '../../../simple-components/MLinkNew'
 
 type TaxesFeesCardProps = {
   taxData: ResponseGetTaxesBodyDto
@@ -49,16 +49,17 @@ const TaxesFeesCard = ({ taxData }: TaxesFeesCardProps) => {
   }
 
   return (
-    <Link href={`${ROUTES.TAXES_AND_FEES}/${year}`}>
+    <>
       {/* Desktop */}
-      <div
-        id="desktop-card"
-        className="hidden h-[104px] w-full items-center justify-between rounded-lg border-2 border-gray-200 bg-white lg:flex"
-      >
+      <div className="relative hidden h-[104px] w-full items-center justify-between rounded-lg border-2 border-gray-200 bg-white lg:flex">
         <div className="flex w-full items-center justify-between">
           <div className="flex w-full flex-col pl-6">
-            <h3 className="text-20-semibold mb-1">{t('account_section_payment.tax_card_title')}</h3>
-            <span className="text-p3">{`za rok ${year}`}</span>
+            <MLinkNew href={`${ROUTES.TAXES_AND_FEES}/${year}`} variant="unstyled" stretched>
+              <h3 className="text-20-semibold mb-1">
+                {t('account_section_payment.tax_card_title')}
+              </h3>
+              <span className="text-p3">{`za rok ${year}`}</span>
+            </MLinkNew>
           </div>
           <div className="flex w-full items-center justify-end">
             <div className="flex flex-col px-10">
@@ -93,41 +94,38 @@ const TaxesFeesCard = ({ taxData }: TaxesFeesCardProps) => {
         </div>
       </div>
       {/* Mobile */}
-      <div
-        id="mobile-card"
-        className="flex h-24 w-full items-center justify-between border-b-2 border-gray-200 bg-white lg:hidden"
-      >
-        <Link
-          href={`${ROUTES.TAXES_AND_FEES}/2023`}
-          className="flex size-full items-center justify-center"
-        >
-          <div className="flex w-full items-start justify-between">
-            <div className="flex flex-col">
-              <span className="text-p2-semibold mb-1 leading-5">{`${t('account_section_payment.tax_card_title')} za rok ${year}`}</span>
-              <div className="flex flex-wrap items-center">
-                {paidStatus === TaxPaidStatusEnum.PartiallyPaid && paidAmount ? (
-                  <span className="text-p3 flex w-max items-center">
-                    <FormatCurrencyFromCents value={paidAmount} /> /{' '}
-                    <FormatCurrencyFromCents value={amount} />
-                  </span>
-                ) : (
-                  <span className="text-p3">
-                    <FormatCurrencyFromCents value={amount} />
-                  </span>
-                )}
-                <div className="flex items-center">
-                  <span className="mx-3 size-1 rounded-full bg-gray-700" />
-                  <div className="flex">{statusHandler()}</div>
-                </div>
+      <div className="relative flex h-24 w-full items-center justify-between border-b-2 border-gray-200 bg-white lg:hidden">
+        <div className="flex w-full items-start justify-between">
+          <div className="flex flex-col">
+            <MLinkNew
+              href={`${ROUTES.TAXES_AND_FEES}/${year}`}
+              variant="unstyled"
+              stretched
+              className="text-p2-semibold mb-1 leading-5"
+            >{`${t('account_section_payment.tax_card_title')} za rok ${year}`}</MLinkNew>
+            <div className="flex flex-wrap items-center">
+              {paidStatus === TaxPaidStatusEnum.PartiallyPaid && paidAmount ? (
+                <span className="text-p3 flex w-max items-center">
+                  <FormatCurrencyFromCents value={paidAmount} /> /{' '}
+                  <FormatCurrencyFromCents value={amount} />
+                </span>
+              ) : (
+                <span className="text-p3">
+                  <FormatCurrencyFromCents value={amount} />
+                </span>
+              )}
+              <div className="flex items-center">
+                <span className="mx-3 size-1 rounded-full bg-gray-700" />
+                <div className="flex">{statusHandler()}</div>
               </div>
             </div>
-            <span className="flex size-5 items-center justify-center">
-              <ChevronRightIcon />
-            </span>
           </div>
-        </Link>
+          <span className="flex size-5 items-center justify-center">
+            <ChevronRightIcon />
+          </span>
+        </div>
       </div>
-    </Link>
+    </>
   )
 }
 

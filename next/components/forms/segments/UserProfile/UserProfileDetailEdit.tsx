@@ -240,6 +240,7 @@ const UserProfileDetailEdit = (props: UserProfileDetailEditProps) => {
               <InputField
                 label={t('profile_detail.phone_number')}
                 {...field}
+                placeholder="+421"
                 errorMessage={errors.phone_number}
               />
             )}

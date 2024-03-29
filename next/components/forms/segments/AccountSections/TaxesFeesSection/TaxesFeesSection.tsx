@@ -1,16 +1,18 @@
-// import { TaxApiError } from '@utils/api'
+import { StrapiTaxAdministrator } from '@backend/utils/tax-administrator'
+import { ResponseGetTaxesDto, TaxPaidStatusEnum } from '@clients/openapi-tax'
 import AccountSectionHeader from 'components/forms/segments/AccountSectionHeader/AccountSectionHeader'
 import TaxesFeesCard from 'components/forms/segments/AccountSections/TaxesFeesSection/TaxesFeesCard'
-import TaxesFeesErrorCard from 'components/forms/segments/AccountSections/TaxesFeesSection/TaxesFeesErrorCard'
 // import TaxesFeesWaitingCard from 'components/forms/segments/AccountSections/TaxesFeesSection/TaxesFeesWaitingCard'
-import Spinner from 'components/forms/simple-components/Spinner'
 import { useTranslation } from 'next-i18next'
 
 import { ROUTES } from '../../../../../frontend/api/constants'
-import { useTaxes } from '../../../../../frontend/hooks/apiHooks'
 import { useSsrAuth } from '../../../../../frontend/hooks/useSsrAuth'
-import { taxStatusHelper } from '../../../../../frontend/utils/general'
-import logger from '../../../../../frontend/utils/logger'
+import TaxesFeesErrorCard from './TaxesFeesErrorCard'
+
+type TaxesFeesSectionProps = {
+  taxesData: ResponseGetTaxesDto
+  taxAdministrator: StrapiTaxAdministrator | null
+}
 
 export type TaxesCardBase = {
   title: string
@@ -19,22 +21,17 @@ export type TaxesCardBase = {
   currentPaid: number
   finishPrice: number
   paidDate?: string
-  status: 'paid' | 'unpaid' | 'partially_paid'
+  status: TaxPaidStatusEnum
 }
 
-const TaxesFeesSection = () => {
+const TaxesFeesSection = ({ taxesData }: TaxesFeesSectionProps) => {
   const { t } = useTranslation('account')
   const { tierStatus } = useSsrAuth()
-  const { data, isPending } = useTaxes()
 
-  //   const taxesFeesWaitingCardContent = `
-  // <h4>${t('account_section_payment.waiting_card_title')}</h4>
-  // <p>${t('account_section_payment.waiting_card_text')}</p>
-  // `
   const taxesFeesErrorCardContent = `
-<h3>${t('account_section_payment.error_card_title')}</h3>
-<div>${t('account_section_payment.error_card_content.title')}
-<ul>${
+  <h3>${t('account_section_payment.error_card_title')}</h3>
+  <div>${t('account_section_payment.error_card_content.title')}
+  <ul>${
     tierStatus.isIdentityVerified
       ? ''
       : t('account_section_payment.error_card_content.list.verification', {
@@ -44,50 +41,34 @@ const TaxesFeesSection = () => {
     'account_section_payment.error_card_content.help_text',
     { url: ROUTES.HELP },
   )}</div>
-`
+  `
 
-  let content: JSX.Element | null = null
-
-  if (isPending) {
-    content = <Spinner className="m-auto mt-10" />
-  } else if (!tierStatus.isIdentityVerified) {
-    content = <TaxesFeesErrorCard content={taxesFeesErrorCardContent} />
-  } else if (!isPending && !data) {
-    content = (
-      // error instanceof TaxApiError && error.status === 422 ? (
-      //   <TaxesFeesWaitingCard content={taxesFeesWaitingCardContent} />
-      // ) : (
-      <TaxesFeesErrorCard content={taxesFeesErrorCardContent} />
-    )
-  } else if (data) {
-    content = (
-      <ul className="my-2 px-4 sm:px-6 lg:my-8 lg:px-0">
-        <li className="mb-2 lg:mb-6">
-          <TaxesFeesCard
-            title={t('account_section_payment.tax_card_title')}
-            yearPay={data?.year}
-            createDate={new Date(data?.createdAt).toLocaleDateString('sk-SK')}
-            currentPaid={data?.payedAmount}
-            finishPrice={data?.amount}
-            status={taxStatusHelper(data).paymentStatus}
-            // paidDate={data?.updatedAt}
-          />
-        </li>
-      </ul>
-    )
-  } else {
-    logger.error('TaxesFeesSection.tsx: unknown error - shoud never happen')
-    content = (
-      <div>
-        Neočakávaná chyba pri načítaní dát - kontaktujte prosím podporu na info@bratislava.sk
-      </div>
-    )
-  }
+  // const taxesFeesWaitingCardContent = `
+  // <h4>${t('account_section_payment.waiting_card_title')}</h4>
+  // <p>${t('account_section_payment.waiting_card_text')}</p>
+  // `
 
   return (
     <div className="flex flex-col">
       <AccountSectionHeader title={t('account_section_payment.title')} />
-      <div className="m-auto w-full max-w-screen-lg">{content}</div>
+      <div className="m-auto w-full max-w-screen-lg">
+        {!taxesData.isInNoris && <TaxesFeesErrorCard content={taxesFeesErrorCardContent} />}
+        <ul className="my-2 px-4 sm:px-6 lg:my-8 lg:px-0">
+          <li className="mb-2 lg:mb-6">
+            {taxesData.items.map((item) => (
+              <TaxesFeesCard
+                title={t('account_section_payment.tax_card_title')}
+                yearPay={item?.year}
+                createDate={new Date(item?.createdAt).toLocaleDateString('sk-SK')}
+                currentPaid={item?.paidAmount}
+                finishPrice={item?.amount}
+                status={item.paidStatus}
+                // paidDate={data?.updatedAt}
+              />
+            ))}
+          </li>
+        </ul>
+      </div>
     </div>
   )
 }

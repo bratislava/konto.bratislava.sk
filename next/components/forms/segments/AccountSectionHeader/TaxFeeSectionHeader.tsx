@@ -1,4 +1,11 @@
-import { CheckIcon, ChevronLeftIcon, ClockIcon, ErrorIcon, PaymentIcon } from '@assets/ui-icons'
+import {
+  CheckIcon,
+  ChevronLeftIcon,
+  ClockIcon,
+  DownloadIcon,
+  ErrorIcon,
+  PaymentIcon,
+} from '@assets/ui-icons'
 import cx from 'classnames'
 import { useRouter } from 'next/router'
 import { useTranslation } from 'next-i18next'
@@ -42,7 +49,7 @@ const statusHandler = (status: 'negative' | 'warning' | 'success', text: string)
 }
 
 const TaxFeeSectionHeader = () => {
-  const { taxData, redirectToPayment } = useTaxFeeSection()
+  const { taxData, redirectToPayment, downloadPdf } = useTaxFeeSection()
   const { t } = useTranslation('account')
   const router = useRouter()
 
@@ -79,6 +86,16 @@ const TaxFeeSectionHeader = () => {
                   size="sm"
                   className="hidden md:block"
                   onPress={redirectToPayment}
+                />
+              )}
+              {taxData.pdfExport && (
+                <Button
+                  startIcon={<DownloadIcon className="size-5" />}
+                  variant="black-outline"
+                  text={t('download_pdf')}
+                  size="sm"
+                  className="hidden md:block"
+                  onPress={downloadPdf}
                 />
               )}
             </div>
@@ -130,6 +147,16 @@ const TaxFeeSectionHeader = () => {
                     size="sm"
                     className="min-w-full"
                     onPress={redirectToPayment}
+                  />
+                )}
+                {taxData.pdfExport && (
+                  <Button
+                    startIcon={<DownloadIcon className="size-5" />}
+                    variant="black-outline"
+                    text={t('download_pdf')}
+                    size="sm"
+                    className="min-w-full"
+                    onPress={downloadPdf}
                   />
                 )}
               </div>

@@ -1,22 +1,30 @@
 import { CheckIcon, ChevronRightIcon, ClockIcon, ErrorIcon } from '@assets/ui-icons'
-import { TaxPaidStatusEnum } from '@clients/openapi-tax'
+import { ResponseGetTaxesBodyDto, TaxPaidStatusEnum } from '@clients/openapi-tax'
 import cx from 'classnames'
-import { TaxesCardBase } from 'components/forms/segments/AccountSections/TaxesFeesSection/TaxesFeesSection'
 import Link from 'next/link'
+import { useTranslation } from 'next-i18next'
 import React, { ReactNode } from 'react'
 
 import { ROUTES } from '../../../../../frontend/api/constants'
 import { FormatCurrencyFromCents } from '../../../../../frontend/utils/formatCurrency'
 import { formatDate } from '../../../../../frontend/utils/general'
 
-const TaxesFeesCard = (props: TaxesCardBase) => {
-  const { title, yearPay, createDate, currentPaid, finishPrice, paidDate = '', status } = props
+type TaxesFeesCardProps = {
+  taxData: ResponseGetTaxesBodyDto
+}
+
+const TaxesFeesCard = ({ taxData }: TaxesFeesCardProps) => {
+  const { year, paidStatus, createdAt, paidAmount, amount } = taxData
+  const { t } = useTranslation('account')
+  const createdAtFormatted = new Date(createdAt).toLocaleDateString('sk-SK')
+  // TODO: Implement dates properly
+  const paidDate = false
 
   const statusHandler = (): ReactNode => {
     const statusStyle: string = cx('text-p3-semibold lg:text-16-semibold ml-0 w-max lg:ml-2', {
-      'text-negative-700': status === TaxPaidStatusEnum.NotPayed,
-      'text-warning-700': status === TaxPaidStatusEnum.PartiallyPaid,
-      'text-success-700': status === TaxPaidStatusEnum.Paid,
+      'text-negative-700': paidStatus === TaxPaidStatusEnum.NotPayed,
+      'text-warning-700': paidStatus === TaxPaidStatusEnum.PartiallyPaid,
+      'text-success-700': paidStatus === TaxPaidStatusEnum.Paid,
     })
     const statusNode = (icon: ReactNode, statusTitle: string): ReactNode => {
       return (
@@ -27,7 +35,7 @@ const TaxesFeesCard = (props: TaxesCardBase) => {
       )
     }
 
-    switch (status) {
+    switch (paidStatus) {
       case TaxPaidStatusEnum.NotPayed:
         return statusNode(<ErrorIcon className="size-6 text-negative-700" />, 'Neuhradená')
       case TaxPaidStatusEnum.PartiallyPaid:
@@ -41,7 +49,7 @@ const TaxesFeesCard = (props: TaxesCardBase) => {
   }
 
   return (
-    <Link href={`${ROUTES.TAXES_AND_FEES}/${yearPay}`}>
+    <Link href={`${ROUTES.TAXES_AND_FEES}/${year}`}>
       {/* Desktop */}
       <div
         id="desktop-card"
@@ -49,30 +57,30 @@ const TaxesFeesCard = (props: TaxesCardBase) => {
       >
         <div className="flex w-full items-center justify-between">
           <div className="flex w-full flex-col pl-6">
-            <h3 className="text-20-semibold mb-1">{title}</h3>
-            <span className="text-p3">{`za rok ${yearPay}`}</span>
+            <h3 className="text-20-semibold mb-1">{t('account_section_payment.tax_card_title')}</h3>
+            <span className="text-p3">{`za rok ${year}`}</span>
           </div>
           <div className="flex w-full items-center justify-end">
             <div className="flex flex-col px-10">
               <span className="text-16-semibold mb-1">Vytvorená</span>
-              <span className="w-max">{createDate}</span>
+              <span className="w-max">{createdAtFormatted}</span>
             </div>
             <div className="flex flex-col border-x-2 px-10">
               <span className="text-16-semibold mb-1">Suma</span>
-              {status === TaxPaidStatusEnum.PartiallyPaid && currentPaid ? (
+              {paidStatus === TaxPaidStatusEnum.PartiallyPaid && paidAmount ? (
                 <span className="flex w-max items-center">
-                  <FormatCurrencyFromCents value={currentPaid} /> /{' '}
-                  <FormatCurrencyFromCents value={finishPrice} />
+                  <FormatCurrencyFromCents value={paidAmount} /> /{' '}
+                  <FormatCurrencyFromCents value={amount} />
                 </span>
               ) : (
                 <span>
-                  <FormatCurrencyFromCents value={finishPrice} />
+                  <FormatCurrencyFromCents value={amount} />
                 </span>
               )}
             </div>
             <div className="flex flex-col items-center px-10">
               <div className="flex">{statusHandler()}</div>
-              {status !== TaxPaidStatusEnum.NotPayed && paidDate && (
+              {paidStatus !== TaxPaidStatusEnum.NotPayed && paidDate && (
                 <span className="">{formatDate(paidDate)}</span>
               )}
             </div>
@@ -95,16 +103,16 @@ const TaxesFeesCard = (props: TaxesCardBase) => {
         >
           <div className="flex w-full items-start justify-between">
             <div className="flex flex-col">
-              <span className="text-p2-semibold mb-1 leading-5">{`${title} za rok ${yearPay}`}</span>
+              <span className="text-p2-semibold mb-1 leading-5">{`${t('account_section_payment.tax_card_title')} za rok ${year}`}</span>
               <div className="flex flex-wrap items-center">
-                {status === TaxPaidStatusEnum.PartiallyPaid && currentPaid ? (
+                {paidStatus === TaxPaidStatusEnum.PartiallyPaid && paidAmount ? (
                   <span className="text-p3 flex w-max items-center">
-                    <FormatCurrencyFromCents value={currentPaid} /> /{' '}
-                    <FormatCurrencyFromCents value={finishPrice} />
+                    <FormatCurrencyFromCents value={paidAmount} /> /{' '}
+                    <FormatCurrencyFromCents value={amount} />
                   </span>
                 ) : (
                   <span className="text-p3">
-                    <FormatCurrencyFromCents value={finishPrice} />
+                    <FormatCurrencyFromCents value={amount} />
                   </span>
                 )}
                 <div className="flex items-center">

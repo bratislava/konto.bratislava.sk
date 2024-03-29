@@ -1,5 +1,5 @@
 import { StrapiTaxAdministrator } from '@backend/utils/tax-administrator'
-import { ResponseGetTaxesDto, TaxPaidStatusEnum } from '@clients/openapi-tax'
+import { ResponseGetTaxesDto } from '@clients/openapi-tax'
 import AccountSectionHeader from 'components/forms/segments/AccountSectionHeader/AccountSectionHeader'
 import TaxesFeesCard from 'components/forms/segments/AccountSections/TaxesFeesSection/TaxesFeesCard'
 import { useTranslation } from 'next-i18next'
@@ -11,16 +11,6 @@ import TaxesFeesTaxAdministratorCard from './TaxesFeesTaxAdministratorCard'
 type TaxesFeesSectionProps = {
   taxesData: ResponseGetTaxesDto
   taxAdministrator: StrapiTaxAdministrator | null
-}
-
-export type TaxesCardBase = {
-  title: string
-  yearPay: number
-  createDate: string
-  currentPaid: number
-  finishPrice: number
-  paidDate?: string
-  status: TaxPaidStatusEnum
 }
 
 const TaxesFeesSection = ({ taxesData, taxAdministrator }: TaxesFeesSectionProps) => {
@@ -46,16 +36,8 @@ const TaxesFeesSection = ({ taxesData, taxAdministrator }: TaxesFeesSectionProps
             {displayTaxCards && (
               <ul className="flex flex-col gap-4">
                 {taxesData.items.map((item) => (
-                  <li>
-                    <TaxesFeesCard
-                      key={item.year}
-                      title={t('account_section_payment.tax_card_title')}
-                      yearPay={item.year}
-                      createDate={new Date(item.createdAt).toLocaleDateString('sk-SK')}
-                      currentPaid={item.paidAmount}
-                      finishPrice={item.amount}
-                      status={item.paidStatus}
-                    />
+                  <li key={item.year}>
+                    <TaxesFeesCard taxData={item} />
                   </li>
                 ))}
               </ul>

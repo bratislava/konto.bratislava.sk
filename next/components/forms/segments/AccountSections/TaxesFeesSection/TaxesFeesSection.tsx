@@ -4,8 +4,6 @@ import AccountSectionHeader from 'components/forms/segments/AccountSectionHeader
 import TaxesFeesCard from 'components/forms/segments/AccountSections/TaxesFeesSection/TaxesFeesCard'
 import { useTranslation } from 'next-i18next'
 
-import { ROUTES } from '../../../../../frontend/api/constants'
-import { useSsrAuth } from '../../../../../frontend/hooks/useSsrAuth'
 import TaxesFeesErrorCard from './TaxesFeesErrorCard'
 import TaxesFeesPreparingCard from './TaxesFeesPreparingCard'
 import TaxesFeesTaxAdministratorCard from './TaxesFeesTaxAdministratorCard'
@@ -27,22 +25,6 @@ export type TaxesCardBase = {
 
 const TaxesFeesSection = ({ taxesData, taxAdministrator }: TaxesFeesSectionProps) => {
   const { t } = useTranslation('account')
-  const { tierStatus } = useSsrAuth()
-
-  const taxesFeesErrorCardContent = `
-  <h3>${t('account_section_payment.error_card_title')}</h3>
-  <div>${t('account_section_payment.error_card_content.title')}
-  <ul>${
-    tierStatus.isIdentityVerified
-      ? ''
-      : t('account_section_payment.error_card_content.list.verification', {
-          url: ROUTES.IDENTITY_VERIFICATION,
-        })
-  }${t('account_section_payment.error_card_content.list.other')}</ul><br />${t(
-    'account_section_payment.error_card_content.help_text',
-    { url: ROUTES.HELP },
-  )}</div>
-  `
 
   const displayErrorCard = !taxesData.isInNoris
   const displayInPreparationCard =
@@ -55,7 +37,7 @@ const TaxesFeesSection = ({ taxesData, taxAdministrator }: TaxesFeesSectionProps
       <AccountSectionHeader title={t('account_section_payment.title')} />
       <div className="m-auto flex w-full max-w-screen-lg flex-col gap-4 p-4 sm:px-6 lg:gap-8 lg:px-0 lg:py-8">
         {taxAdministrator && <TaxesFeesTaxAdministratorCard taxAdministrator={taxAdministrator} />}
-        {displayErrorCard && <TaxesFeesErrorCard content={taxesFeesErrorCardContent} />}
+        {displayErrorCard && <TaxesFeesErrorCard />}
         {(displayInPreparationCard || displayTaxCards) && (
           <div className="flex flex-col gap-4">
             {/* TODO: Translation */}

@@ -249,6 +249,75 @@ export interface ResponseGetPaymentUrlDto {
 /**
  *
  * @export
+ * @interface ResponseGetTaxesBodyDto
+ */
+export interface ResponseGetTaxesBodyDto {
+  /**
+   * Numeric id of tax
+   * @type {number}
+   * @memberof ResponseGetTaxesBodyDto
+   */
+  id: number
+  /**
+   * Uuid of tax
+   * @type {string}
+   * @memberof ResponseGetTaxesBodyDto
+   */
+  uuid: string
+  /**
+   * Date of tax creation in backend
+   * @type {string}
+   * @memberof ResponseGetTaxesBodyDto
+   */
+  createdAt: string
+  /**
+   * Amount to paid in cents
+   * @type {number}
+   * @memberof ResponseGetTaxesBodyDto
+   */
+  amount: number
+  /**
+   * Year of tax
+   * @type {number}
+   * @memberof ResponseGetTaxesBodyDto
+   */
+  year: number
+  /**
+   * Amount already paid
+   * @type {number}
+   * @memberof ResponseGetTaxesBodyDto
+   */
+  paidAmount: number
+  /**
+   *
+   * @type {TaxPaidStatusEnum}
+   * @memberof ResponseGetTaxesBodyDto
+   */
+  paidStatus: TaxPaidStatusEnum
+}
+
+/**
+ *
+ * @export
+ * @interface ResponseGetTaxesDto
+ */
+export interface ResponseGetTaxesDto {
+  /**
+   * Birth number of user is in Noris actual or historical Tax
+   * @type {boolean}
+   * @memberof ResponseGetTaxesDto
+   */
+  isInNoris: boolean
+  /**
+   *
+   * @type {Array<ResponseGetTaxesBodyDto>}
+   * @memberof ResponseGetTaxesDto
+   */
+  items: Array<ResponseGetTaxesBodyDto>
+}
+/**
+ *
+ * @export
  * @interface ResponseInternalServerErrorDto
  */
 export interface ResponseInternalServerErrorDto {
@@ -514,6 +583,18 @@ export interface ResponseTaxDto {
   qrCodeEmail: string
   /**
    *
+   * @type {TaxPaidStatusEnum}
+   * @memberof ResponseTaxDto
+   */
+  paidStatus: TaxPaidStatusEnum
+  /**
+   * Whether PDF export is available, since 2024 we stopped generating PDFs
+   * @type {boolean}
+   * @memberof ResponseTaxDto
+   */
+  pdfExport: boolean
+  /**
+   *
    * @type {ResponseTaxDtoTaxPayer}
    * @memberof ResponseTaxDto
    */
@@ -537,6 +618,7 @@ export interface ResponseTaxDto {
    */
   taxEmployees: ResponseTaxDtoTaxEmployees
 }
+
 /**
  * Tax into details on area type
  * @export
@@ -805,6 +887,20 @@ export interface ResponseTaxPayerDto {
    */
   permanentResidenceCity: string
 }
+/**
+ *
+ * @export
+ * @enum {string}
+ */
+
+export const TaxPaidStatusEnum = {
+  NotPayed: 'NOT_PAYED',
+  PartiallyPaid: 'PARTIALLY_PAID',
+  Paid: 'PAID',
+  OverPaid: 'OVER_PAID',
+} as const
+
+export type TaxPaidStatusEnum = (typeof TaxPaidStatusEnum)[keyof typeof TaxPaidStatusEnum]
 
 /**
  * AdminApi - axios parameter creator
@@ -1811,15 +1907,14 @@ export const TaxApiAxiosParamCreator = function (configuration?: Configuration) 
     },
     /**
      *
-     * @summary Get old already payed taxes from last years
+     * @summary Get all taxes (payed and not payed)
      * @param {*} [options] Override http request option.
-     * @deprecated
      * @throws {RequiredError}
      */
     taxControllerGetArchivedTaxes: async (
       options: AxiosRequestConfig = {},
     ): Promise<RequestArgs> => {
-      const localVarPath = `/tax/archived-taxes`
+      const localVarPath = `/tax/taxes`
       // use dummy base URL string because the URL constructor only accepts absolute URLs.
       const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL)
       let baseOptions
@@ -1853,6 +1948,7 @@ export const TaxApiAxiosParamCreator = function (configuration?: Configuration) 
      * @summary Get tax by year and how much is payed
      * @param {number} year
      * @param {*} [options] Override http request option.
+     * @deprecated
      * @throws {RequiredError}
      */
     taxControllerGetTaxByYearPdf: async (
@@ -1923,14 +2019,13 @@ export const TaxApiFp = function (configuration?: Configuration) {
     },
     /**
      *
-     * @summary Get old already payed taxes from last years
+     * @summary Get all taxes (payed and not payed)
      * @param {*} [options] Override http request option.
-     * @deprecated
      * @throws {RequiredError}
      */
     async taxControllerGetArchivedTaxes(
       options?: AxiosRequestConfig,
-    ): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<Array<object>>> {
+    ): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<ResponseGetTaxesDto>> {
       const localVarAxiosArgs =
         await localVarAxiosParamCreator.taxControllerGetArchivedTaxes(options)
       return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)
@@ -1940,6 +2035,7 @@ export const TaxApiFp = function (configuration?: Configuration) {
      * @summary Get tax by year and how much is payed
      * @param {number} year
      * @param {*} [options] Override http request option.
+     * @deprecated
      * @throws {RequiredError}
      */
     async taxControllerGetTaxByYearPdf(
@@ -1983,12 +2079,11 @@ export const TaxApiFactory = function (
     },
     /**
      *
-     * @summary Get old already payed taxes from last years
+     * @summary Get all taxes (payed and not payed)
      * @param {*} [options] Override http request option.
-     * @deprecated
      * @throws {RequiredError}
      */
-    taxControllerGetArchivedTaxes(options?: AxiosRequestConfig): AxiosPromise<Array<object>> {
+    taxControllerGetArchivedTaxes(options?: AxiosRequestConfig): AxiosPromise<ResponseGetTaxesDto> {
       return localVarFp
         .taxControllerGetArchivedTaxes(options)
         .then((request) => request(axios, basePath))
@@ -1998,6 +2093,7 @@ export const TaxApiFactory = function (
      * @summary Get tax by year and how much is payed
      * @param {number} year
      * @param {*} [options] Override http request option.
+     * @deprecated
      * @throws {RequiredError}
      */
     taxControllerGetTaxByYearPdf(
@@ -2034,9 +2130,8 @@ export class TaxApi extends BaseAPI {
 
   /**
    *
-   * @summary Get old already payed taxes from last years
+   * @summary Get all taxes (payed and not payed)
    * @param {*} [options] Override http request option.
-   * @deprecated
    * @throws {RequiredError}
    * @memberof TaxApi
    */
@@ -2051,6 +2146,7 @@ export class TaxApi extends BaseAPI {
    * @summary Get tax by year and how much is payed
    * @param {number} year
    * @param {*} [options] Override http request option.
+   * @deprecated
    * @throws {RequiredError}
    * @memberof TaxApi
    */

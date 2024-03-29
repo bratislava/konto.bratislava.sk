@@ -34,7 +34,16 @@ const useGetContext = ({ taxData }: TaxFeeSectionProviderProps) => {
     downloadBlob(new Blob([arrayBuffer], { type: 'image/png' }), 'QR-dan-z-nehnutelnosti.png')
   }
 
-  return { taxData, redirectToPayment, downloadQrCode }
+  const downloadPdf = async () => {
+    const { data } = await taxApi.taxControllerGetTaxByYearPdf(taxData.year, {
+      accessToken: 'always',
+      responseType: 'blob',
+    })
+    // @ts-expect-error `taxControllerGetTaxByYearPdf` returns wrong type
+    downloadBlob(data as Blob, `Dan-z-nehnutelnosti-${taxData.year}.pdf`)
+  }
+
+  return { taxData, redirectToPayment, downloadQrCode, downloadPdf }
 }
 
 const TaxFeeSectionContext = createContext<ReturnType<typeof useGetContext> | undefined>(undefined)

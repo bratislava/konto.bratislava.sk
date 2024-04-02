@@ -60,7 +60,10 @@ const LoginPage = () => {
       if (isError(error)) {
         setLoginError(error)
       } else {
-        logger.error(`${GENERIC_ERROR_MESSAGE} - unexpected object thrown in onLogin:`, error)
+        logger.error(
+          `${GENERIC_ERROR_MESSAGE} - unexpected object thrown in onLogin for email ${email}, user agent ${window.navigator.userAgent}:`,
+          error,
+        )
         setLoginError(new Error(GENERIC_ERROR_MESSAGE))
       }
     }

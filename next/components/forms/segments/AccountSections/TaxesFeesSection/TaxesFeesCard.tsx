@@ -1,13 +1,13 @@
-import { CheckIcon, ChevronRightIcon, ClockIcon, ErrorIcon } from '@assets/ui-icons'
+import { ChevronRightIcon } from '@assets/ui-icons'
 import { ResponseGetTaxesBodyDto, TaxPaidStatusEnum } from '@clients/openapi-tax'
-import cx from 'classnames'
 import { useTranslation } from 'next-i18next'
-import React, { ReactNode } from 'react'
+import React from 'react'
 
 import { ROUTES } from '../../../../../frontend/api/constants'
 import { FormatCurrencyFromCents } from '../../../../../frontend/utils/formatCurrency'
 import { formatDate } from '../../../../../frontend/utils/general'
 import MLinkNew from '../../../simple-components/MLinkNew'
+import TaxPaidStatus from './TaxPaidStatus'
 
 type TaxesFeesCardProps = {
   taxData: ResponseGetTaxesBodyDto
@@ -19,34 +19,6 @@ const TaxesFeesCard = ({ taxData }: TaxesFeesCardProps) => {
   const createdAtFormatted = new Date(createdAt).toLocaleDateString('sk-SK')
   // TODO: Implement dates properly
   const paidDate = false
-
-  const statusHandler = (): ReactNode => {
-    const statusStyle: string = cx('text-p3-semibold lg:text-16-semibold ml-0 w-max lg:ml-2', {
-      'text-negative-700': paidStatus === TaxPaidStatusEnum.NotPayed,
-      'text-warning-700': paidStatus === TaxPaidStatusEnum.PartiallyPaid,
-      'text-success-700': paidStatus === TaxPaidStatusEnum.Paid,
-    })
-    const statusNode = (icon: ReactNode, statusTitle: string): ReactNode => {
-      return (
-        <>
-          <span className="hidden size-6 items-center justify-center lg:flex">{icon}</span>
-          <span className={statusStyle}>{statusTitle}</span>
-        </>
-      )
-    }
-
-    switch (paidStatus) {
-      case TaxPaidStatusEnum.NotPayed:
-        return statusNode(<ErrorIcon className="size-6 text-negative-700" />, 'Neuhradená')
-      case TaxPaidStatusEnum.PartiallyPaid:
-        return statusNode(<ClockIcon className="size-6 text-warning-700" />, 'Čiastočne uhradená')
-      case TaxPaidStatusEnum.Paid:
-        return statusNode(<CheckIcon className="size-6 text-success-700" />, 'Uhradená')
-      default:
-        break
-    }
-    return null
-  }
 
   return (
     <>
@@ -80,7 +52,7 @@ const TaxesFeesCard = ({ taxData }: TaxesFeesCardProps) => {
               )}
             </div>
             <div className="flex flex-col items-center px-10">
-              <div className="flex">{statusHandler()}</div>
+              <TaxPaidStatus status={paidStatus} />
               {paidStatus !== TaxPaidStatusEnum.NotPayed && paidDate && (
                 <span className="">{formatDate(paidDate)}</span>
               )}
@@ -116,7 +88,7 @@ const TaxesFeesCard = ({ taxData }: TaxesFeesCardProps) => {
               )}
               <div className="flex items-center">
                 <span className="mx-3 size-1 rounded-full bg-gray-700" />
-                <div className="flex">{statusHandler()}</div>
+                <TaxPaidStatus status={paidStatus} />
               </div>
             </div>
           </div>

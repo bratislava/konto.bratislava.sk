@@ -749,7 +749,6 @@
     "button_text": "Viac informácií"
   },
   "tax_footer": {
-    "register_info": "Registrovaním sa do Bratislavského konta <strong>do 19. apríla 2023</strong>, a zároveň zaplatením plnej sumy dane online <strong>do 12. mája 2023</strong> súhlasíte s tým, že vám nebude zaslané rozhodnutie o dani z nehnuteľností na korešpondenčnú adresu a vy tak nemusíte ísť na poštu.",
     "register_info_help": "Radi by ste sa v niečom uistili alebo máte otázky? Pozrite si odpovede na tie, ktoré sú <a href={{url}}>často kladené</a>.<br />Ak nenájdete odpoveď na vašu otázku, neváhajte nás kontaktovať na platbadane@bratislava.sk."
   },
   "payment_schedule": {

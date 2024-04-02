@@ -17,7 +17,7 @@ jobs:
     name: after dev Strapi deploy Next
     needs: [conditions, deploy-dev-strapi]
     if: needs.conditions.outputs.dev == 'true'
-    uses: bratislava/github-actions/.github/workflows/deploy-with-bratiska-cli.yml@stable
+    uses: bratislava/github-actions/.github/workflows/deploy-with-bratiska-cli-inhouse.yml@stable
     with:
       directory: next/
       cluster: tkg-innov-dev
@@ -32,7 +32,7 @@ jobs:
     name: dev Strapi
     needs: conditions
     if: needs.conditions.outputs.dev-strapi == 'true'
-    uses: bratislava/github-actions/.github/workflows/deploy-with-bratiska-cli.yml@stable
+    uses: bratislava/github-actions/.github/workflows/deploy-with-bratiska-cli-inhouse.yml@stable
     with:
       directory: strapi/
       cluster: tkg-innov-dev
@@ -47,7 +47,7 @@ jobs:
     name: dev Next
     needs: conditions
     if: needs.conditions.outputs.dev-next == 'true'
-    uses: bratislava/github-actions/.github/workflows/deploy-with-bratiska-cli.yml@stable
+    uses: bratislava/github-actions/.github/workflows/deploy-with-bratiska-cli-inhouse.yml@stable
     with:
       directory: next/
       cluster: tkg-innov-dev
@@ -59,10 +59,10 @@ jobs:
       registry-pass: ${{ secrets.HARBOR_REGISTRY_PASSWORD }}
 
   deploy-staging:
-    name: staging Next
-    needs: conditions
+    name: after staging Strapi deploy Next
+    needs: [conditions, deploy-staging-strapi]
     if: needs.conditions.outputs.staging == 'true'
-    uses: bratislava/github-actions/.github/workflows/deploy-with-bratiska-cli.yml@stable
+    uses: bratislava/github-actions/.github/workflows/deploy-with-bratiska-cli-inhouse.yml@stable
     with:
       directory: next/
       cluster: tkg-innov-staging
@@ -73,15 +73,73 @@ jobs:
       service-account: ${{ secrets.STAGING_STANDALONE_TOKEN }}
       registry-pass: ${{ secrets.HARBOR_REGISTRY_PASSWORD }}
 
-  deploy-prod:
-    name: prod Next
+  deploy-staging-strapi:
+    name: staging Strapi
     needs: conditions
+    if: needs.conditions.outputs.staging-strapi == 'true'
+    uses: bratislava/github-actions/.github/workflows/deploy-with-bratiska-cli-inhouse.yml@stable
+    with:
+      directory: strapi/
+      cluster: tkg-innov-staging
+      url: https://tkg.staging.bratislava.sk
+      debug: --debug
+    secrets:
+      service-account: ${{ secrets.STAGING_STANDALONE_TOKEN }}
+      registry-pass: ${{ secrets.HARBOR_REGISTRY_PASSWORD }}
+
+  deploy-staging-next:
+    name: staging Next
+    needs: conditions
+    if: needs.conditions.outputs.staging-next == 'true'
+    uses: bratislava/github-actions/.github/workflows/deploy-with-bratiska-cli-inhouse.yml@stable
+    with:
+      directory: next/
+      cluster: tkg-innov-staging
+      url: https://tkg.staging.bratislava.sk
+      debug: --debug
+    secrets:
+      service-account: ${{ secrets.STAGING_STANDALONE_TOKEN }}
+      registry-pass: ${{ secrets.HARBOR_REGISTRY_PASSWORD }}
+
+  deploy-prod:
+    name: after prod Strapi deploy Next
+    needs: [conditions, deploy-prod-strapi]
     if: needs.conditions.outputs.prod == 'true'
-    uses: bratislava/github-actions/.github/workflows/deploy-with-bratiska-cli.yml@stable
+    uses: bratislava/github-actions/.github/workflows/deploy-with-bratiska-cli-inhouse.yml@stable
     with:
       directory: next/
       cluster: tkg-innov-prod
       url: https://tkg.bratislava.sk
+      flag: --production
+      debug: --debug
+    secrets:
+      service-account: ${{ secrets.PROD_STANDALONE_TOKEN }}
+      registry-pass: ${{ secrets.HARBOR_REGISTRY_PASSWORD }}
+
+  deploy-prod-strapi:
+    name: prod Strapi
+    needs: conditions
+    if: needs.conditions.outputs.prod-strapi == 'true'
+    uses: bratislava/github-actions/.github/workflows/deploy-with-bratiska-cli-inhouse.yml@stable
+    with:
+      directory: strapi/
+      cluster: tkg-innov-prod
+      url: https://tkg.prod.bratislava.sk
+      flag: --production
+      debug: --debug
+    secrets:
+      service-account: ${{ secrets.PROD_STANDALONE_TOKEN }}
+      registry-pass: ${{ secrets.HARBOR_REGISTRY_PASSWORD }}
+
+  deploy-prod-next:
+    name: prod Next
+    needs: conditions
+    if: needs.conditions.outputs.prod-next == 'true'
+    uses: bratislava/github-actions/.github/workflows/deploy-with-bratiska-cli-inhouse.yml@stable
+    with:
+      directory: next/
+      cluster: tkg-innov-prod
+      url: https://tkg.prod.bratislava.sk
       flag: --production
       debug: --debug
     secrets:

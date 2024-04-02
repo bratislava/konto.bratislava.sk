@@ -35,6 +35,9 @@ const LoginPage = () => {
     try {
       const { nextStep, isSignedIn } = await signIn({ username: email, password })
       if (isSignedIn) {
+        logger.info(
+          `Signed in successfully for email ${email}, user agent ${window.navigator.userAgent}`,
+        )
         await redirect()
         return
       }

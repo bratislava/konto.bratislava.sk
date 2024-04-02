@@ -58,6 +58,12 @@ const LoginPage = () => {
       }
     } catch (error) {
       if (isError(error)) {
+        // TODO remove
+        logger.error(
+          `${GENERIC_ERROR_MESSAGE} - unexpected object thrown in onLogin for email ${email}, user agent ${window.navigator.userAgent}:`,
+          error,
+        )
+
         setLoginError(error)
       } else {
         logger.error(

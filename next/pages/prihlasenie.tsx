@@ -57,6 +57,11 @@ const LoginPage = () => {
         throw new Error('Unknown error')
       }
     } catch (error) {
+      // TODO remove
+      logger.error(
+        `error thrown in onLogin for email ${email}, user agent ${window.navigator.userAgent}:`,
+        error,
+      )
       if (isError(error)) {
         setLoginError(error)
       } else {

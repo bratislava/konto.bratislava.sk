@@ -5,7 +5,7 @@ import TaxesFeesCard from 'components/forms/segments/AccountSections/TaxesFeesSe
 import { useTranslation } from 'next-i18next'
 
 import TaxesFeesErrorCard from './TaxesFeesErrorCard'
-import TaxesFeesPreparingCard from './TaxesFeesPreparingCard'
+import TaxesFeesInPreparationCard from './TaxesFeesInPreparationCard'
 import TaxesFeesTaxAdministratorCard from './TaxesFeesTaxAdministratorCard'
 
 type TaxesFeesSectionProps = {
@@ -32,7 +32,7 @@ const TaxesFeesSection = ({ taxesData, taxAdministrator }: TaxesFeesSectionProps
           <div className="flex flex-col gap-4">
             {/* TODO: Translation */}
             <h2 className="text-h5-bold">Daň z nehnuteľností</h2>
-            {displayInPreparationCard && <TaxesFeesPreparingCard />}
+            {displayInPreparationCard && <TaxesFeesInPreparationCard />}
             {displayTaxCards && (
               <ul className="flex flex-col gap-4">
                 {taxesData.items.map((item) => (

@@ -8,7 +8,6 @@ const TaxFooter = () => {
   return (
     <>
       <div className="my-4 block h-0.5 w-full bg-gray-200 md:hidden" />
-      <AccountMarkdown content={t('tax_footer.register_info')} className="mb-3 md:mb-0" />
       <AccountMarkdown content={t('tax_footer.register_info_help', { url: ROUTES.HELP })} />
     </>
   )

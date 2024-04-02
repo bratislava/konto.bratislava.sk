@@ -1,8 +1,8 @@
 import { DownloadIcon } from '@assets/ui-icons'
+import { TaxPaidStatusEnum } from '@clients/openapi-tax'
 import { useTranslation } from 'next-i18next'
 import React from 'react'
 
-import { taxStatusHelper } from '../../../../../frontend/utils/general'
 import AccordionPaymentSchedule from '../../../simple-components/AccordionPaymentSchedule'
 import Button from '../../../simple-components/Button'
 import ClipboardCopy from '../../../simple-components/ClipboardCopy'
@@ -12,8 +12,8 @@ import { useTaxFeeSection } from './useTaxFeeSection'
 const PaymentData = () => {
   const { taxData, redirectToPayment, downloadQrCode } = useTaxFeeSection()
   const { t } = useTranslation('account')
-  const status = taxStatusHelper(taxData)
   const qrCodeBase64 = `data:image/png;base64,${taxData.qrCodeWeb}`
+  const hasMultipleInstallments = taxData.taxInstallments.length > 1
 
   return (
     <div className="flex w-full flex-col items-start gap-3 px-4 lg:gap-6 lg:px-0">
@@ -22,7 +22,7 @@ const PaymentData = () => {
         <div className="flex w-full flex-col-reverse gap-6 md:flex-row lg:gap-8">
           <div className="flex w-full flex-col gap-5 rounded-lg border-0 border-solid border-gray-200 p-0 sm:border-2 sm:px-6 sm:py-5 md:w-[488px]">
             <div className="text-p2">{t('use_one_of_ibans_to_pay')}</div>
-            {status?.paymentStatus === 'paid' ? null : (
+            {taxData.paidStatus === TaxPaidStatusEnum.Paid ? null : (
               <div className="text-p2 rounded-5 bg-warning-100 p-3">
                 {t('tax_bank_transfer_slow_info')}
               </div>
@@ -97,7 +97,7 @@ const PaymentData = () => {
                 text={t('to_pay')}
                 className="hidden min-w-max lg:block"
                 onPress={redirectToPayment}
-                disabled={status?.paymentStatus !== 'unpaid'}
+                disabled={taxData.paidStatus !== TaxPaidStatusEnum.NotPayed}
               />
               {/* Mobile 'To pay' button */}
               <Button
@@ -106,7 +106,7 @@ const PaymentData = () => {
                 text={t('to_pay')}
                 className="block min-w-full lg:hidden"
                 onPress={redirectToPayment}
-                disabled={status?.paymentStatus !== 'unpaid'}
+                disabled={taxData.paidStatus !== TaxPaidStatusEnum.NotPayed}
               />
             </div>
             <div className="flex grow flex-col gap-4 self-stretch rounded-lg border-2 border-solid border-gray-200 p-4 lg:flex-row lg:p-6">
@@ -143,7 +143,7 @@ const PaymentData = () => {
             </div>
           </div>
         </div>
-        {status.hasMultipleInstallments && (
+        {hasMultipleInstallments && (
           <AccordionPaymentSchedule size="md" title={t('payment_schedule.title')} />
         )}
       </div>

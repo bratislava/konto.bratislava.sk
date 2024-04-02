@@ -1,5 +1,4 @@
-import { ResponseTaxDto } from '@clients/openapi-tax'
-import { GenericObjectType, RJSFSchema, UIOptionsType } from '@rjsf/utils'
+import { GenericObjectType, UIOptionsType } from '@rjsf/utils'
 import get from 'lodash/get'
 import React from 'react'
 
@@ -31,14 +30,6 @@ export const formatDate = (dateISOString: string | undefined | null) => {
   return date.toLocaleDateString('sk-SK')
 }
 
-export const taxStatusHelper = (tax: ResponseTaxDto) => {
-  // ignoring case when both tax paid and tax amount is not available
-  const paymentStatus: 'paid' | 'unpaid' | 'partially_paid' =
-    tax?.payedAmount === tax?.amount ? 'paid' : tax.payedAmount > 0 ? 'partially_paid' : 'unpaid'
-  const hasMultipleInstallments = tax?.taxInstallments?.length > 1
-  return { paymentStatus, hasMultipleInstallments }
-}
-
 export const base64ToArrayBuffer = (base64: string) => {
   const binaryString = window.atob(base64)
   const binaryLen = binaryString.length
@@ -66,7 +57,7 @@ export function isDefined<T>(value: T | undefined | null): value is T {
 // to be used in context where we do not have backend data
 // otherwise, you can use frontendTitle field
 export const getFormTitle = (
-  uiOptions: UIOptionsType<any, RJSFSchema, any>,
+  uiOptions: UIOptionsType,
   formData?: GenericObjectType | null,
   translationFallback?: string,
 ): string => {

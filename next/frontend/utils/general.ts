@@ -1,4 +1,4 @@
-import { GenericObjectType, RJSFSchema, UIOptionsType } from '@rjsf/utils'
+import { GenericObjectType, UIOptionsType } from '@rjsf/utils'
 import get from 'lodash/get'
 import React from 'react'
 
@@ -57,7 +57,7 @@ export function isDefined<T>(value: T | undefined | null): value is T {
 // to be used in context where we do not have backend data
 // otherwise, you can use frontendTitle field
 export const getFormTitle = (
-  uiOptions: UIOptionsType<any, RJSFSchema, any>,
+  uiOptions: UIOptionsType,
   formData?: GenericObjectType | null,
   translationFallback?: string,
 ): string => {

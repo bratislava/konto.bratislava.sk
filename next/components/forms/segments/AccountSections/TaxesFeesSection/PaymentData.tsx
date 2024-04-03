@@ -51,12 +51,10 @@ const PaymentData = () => {
               </div>
               <div className="hidden h-0.5 w-full bg-gray-200 sm:block" />
               <div className="flex flex-col items-start gap-2">
-                <div className="flex flex-col items-start self-stretch lg:flex-row lg:gap-6">
-                  <div className="text-16-semibold">{t('constant_symbol')}</div>
-                  <div className="text-16">{t('constant_symbol_number')}</div>
-                </div>
-                <div className="flex flex-col items-start self-stretch lg:flex-row lg:gap-6">
-                  <div className="text-16-semibold">{t('variable_symbol')}</div>
+                <div className="grid grid-cols-1 gap-1 lg:grid-cols-2 lg:gap-2">
+                  <div className="text-16-semibold lg:mr-4">{t('constant_symbol')}</div>
+                  <div className="text-16 mb-1 lg:mb-0">{t('constant_symbol_number')}</div>
+                  <div className="text-16-semibold lg:mr-4">{t('variable_symbol')}</div>
                   <div className="text-16">{taxData?.variableSymbol}</div>
                 </div>
               </div>

@@ -4,6 +4,7 @@
     "UserLambdaValidationException": "Zdá sa, že ste robot. Ak to tak náhodou nie je, prosíme, načítajte stránku znova, väčšinou to vyrieši problém.",
     "Bad Request": "Overenie bolo neúspešné. Skontrolujte správnosť údajov.",
     "NotAuthorizedException": "Nesprávne prihlasovacie údaje",
+    "NotAuthorizedException User is disabled.": "Konto so zadanou e-mailovou adresou bolo deaktivované. Kontaktujte podporu na <a href='mailto:info@bratislava.sk'>info@bratislava.sk</a>, ak si želáte znova ho aktivovať.", 
     "CodeMismatchException": "Zadaný kód je nesprávny alebo jeho platnosť vypršala. Skontrolujte správnosť overovacieho kódu alebo požiadajte o nový kód kliknutím na Odoslať nový kód. Platnosť overovacieho kódu je 60 minút.",
     "LimitExceededException": "Priveľa opakovaní. Skúste to znova neskôr.",
     "UserNotFoundException": "Konto so zadanou e-mailovou adresou zatiaľ neexistuje.",

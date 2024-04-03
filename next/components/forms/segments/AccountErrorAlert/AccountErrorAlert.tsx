@@ -37,12 +37,17 @@ const AccountErrorAlert = ({ error, close, solid, args = {} }: Props) => {
       )
       return t(`account:errors.unknown`)
     }
-    if (!i18n.exists(`account:errors.${error.name}`)) {
+    if (
+      !i18n.exists(`account:errors.${error.name}`) &&
+      !i18n.exists(`account:errors.${error.name} ${error.message}`)
+    ) {
       logger.error(`${GENERIC_ERROR_MESSAGE} - unknown error with code`, error)
       return t(`account:errors.unknown`)
     }
     // this is the expected case - known error for which we have a translation string
-    const formattedMessage = t(`account:errors.${error.name}`, args)
+    const formattedMessage = i18n.exists(`account:errors.${error.name} ${error.message}`)
+      ? t(`account:errors.${error.name} ${error.message}`, args)
+      : t(`account:errors.${error.name}`, args)
     logger.info('Known error', error.name, error.message, formattedMessage)
     return formattedMessage
     // exhaustive-deps disabled because args tend to be passed in as an object re-created on every render

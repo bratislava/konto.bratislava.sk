@@ -639,6 +639,7 @@
     "email": "E-mail",
     "email_button": "Zmeniť e-mail",
     "phone_number": "Telefónne číslo",
+    "phone_number_placeholder": "+421",
     "address": "Korešpondenčná adresa",
     "street": "Ulica a číslo",
     "city": "Mesto",

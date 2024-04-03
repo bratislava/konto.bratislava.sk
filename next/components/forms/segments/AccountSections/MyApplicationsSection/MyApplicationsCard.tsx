@@ -234,10 +234,9 @@ const MyApplicationsCard = ({ form, refreshListData, variant }: MyApplicationsCa
                     {variant === 'SENT' &&
                       (isLoading ? (
                         <Skeleton width="75%" />
-                      ) : state !== GetFormResponseDtoStateEnum.ReadyForProcessing &&
-                        state !== GetFormResponseDtoStateEnum.Processing ? (
+                      ) : state === GetFormResponseDtoStateEnum.Processing ? null : (
                         <FormatDate>{updatedAt || ''}</FormatDate>
-                      ) : null)}
+                      ))}
                   </div>
                 </div>
               )}

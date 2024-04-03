@@ -30,7 +30,8 @@
     "update-tailwind": "yarn add tailwind-merge@latest tailwind-scrollbar-hide@latest -E && yarn add tailwindcss@latest autoprefixer@latest postcss@latest prettier-plugin-tailwindcss@latest eslint-plugin-tailwindcss@latest -D -E",
     "update-i18next": "yarn add i18next@latest next-i18next@latest react-i18next@latest -E",
     "update-prettier": "yarn add prettier@latest eslint-config-prettier@latest -D -E",
-    "update-eslint": "yarn add eslint@latest @typescript-eslint/eslint-plugin@latest @typescript-eslint/parser@latest eslint-config-adjunct@latest eslint-config-airbnb@latest eslint-config-airbnb-typescript@latest eslint-config-auto@latest eslint-config-next@latest eslint-config-prettier@latest eslint-plugin-array-func@latest eslint-plugin-const-case@latest eslint-plugin-eslint-comments@latest eslint-plugin-html@latest eslint-plugin-import@latest eslint-plugin-jest@latest eslint-plugin-jest-async@latest eslint-plugin-jest-dom@latest eslint-plugin-json@latest eslint-plugin-lodash@latest eslint-plugin-lodash-fp@latest eslint-plugin-markdown@latest eslint-plugin-no-constructor-bind@latest eslint-plugin-no-secrets@latest eslint-plugin-no-unsanitized@latest eslint-plugin-no-use-extend-native@latest eslint-plugin-optimize-regex@latest eslint-plugin-pii@latest eslint-plugin-prettier@latest eslint-plugin-promise@latest eslint-plugin-react-hooks@latest eslint-plugin-scanjs-rules@latest eslint-plugin-security@latest eslint-plugin-simple-import-sort@latest eslint-plugin-sonarjs@latest eslint-plugin-switch-case@latest eslint-plugin-tailwindcss@latest eslint-plugin-testing-library@latest eslint-plugin-unicorn@latest eslint-plugin-xss@latest @tanstack/eslint-plugin-query@latest @typescript-eslint/eslint-plugin@latest @typescript-eslint/parser@latest -D -E"
+    "update-eslint": "yarn add eslint@latest @typescript-eslint/eslint-plugin@latest @typescript-eslint/parser@latest eslint-config-adjunct@latest eslint-config-airbnb@latest eslint-config-airbnb-typescript@latest eslint-config-auto@latest eslint-config-next@latest eslint-config-prettier@latest eslint-plugin-array-func@latest eslint-plugin-const-case@latest eslint-plugin-eslint-comments@latest eslint-plugin-html@latest eslint-plugin-import@latest eslint-plugin-jest@latest eslint-plugin-jest-async@latest eslint-plugin-jest-dom@latest eslint-plugin-json@latest eslint-plugin-lodash@latest eslint-plugin-lodash-fp@latest eslint-plugin-markdown@latest eslint-plugin-no-constructor-bind@latest eslint-plugin-no-secrets@latest eslint-plugin-no-unsanitized@latest eslint-plugin-no-use-extend-native@latest eslint-plugin-optimize-regex@latest eslint-plugin-pii@latest eslint-plugin-prettier@latest eslint-plugin-promise@latest eslint-plugin-react-hooks@latest eslint-plugin-scanjs-rules@latest eslint-plugin-security@latest eslint-plugin-simple-import-sort@latest eslint-plugin-sonarjs@latest eslint-plugin-switch-case@latest eslint-plugin-tailwindcss@latest eslint-plugin-testing-library@latest eslint-plugin-unicorn@latest eslint-plugin-xss@latest @tanstack/eslint-plugin-query@latest @typescript-eslint/eslint-plugin@latest @typescript-eslint/parser@latest -D -E",
+    "update-graphql": "yarn add @graphql-codegen/cli@latest @graphql-codegen/client-preset@latest @graphql-codegen/typescript-graphql-request@latest -D -E && yarn add graphql@latest graphql-request@latest graphql-tag@latest -E"
   },
   "dependencies": {
     "@aws-amplify/adapter-nextjs": "1.0.23",
@@ -116,7 +117,6 @@
     "@graphql-codegen/client-preset": "^4.2.5",
     "@graphql-codegen/typescript-graphql-request": "^6.2.0",
     "@openapitools/openapi-generator-cli": "^2.9.0",
-    "@parcel/watcher": "^2.4.1",
     "@svgr/webpack": "6.5.1",
     "@tanstack/eslint-plugin-query": "5.27.7",
     "@testing-library/jest-dom": "^5.16.5",
@@ -182,8 +182,7 @@
     "prettier": "3.2.5",
     "prettier-plugin-tailwindcss": "0.5.12",
     "tailwindcss": "3.4.1",
-    "ts-node": "^10.9.2",
-    "typescript": "^5.4.3"
+    "typescript": "5.4.2"
   },
   "engines": {
     "node": ">=20.9.x",

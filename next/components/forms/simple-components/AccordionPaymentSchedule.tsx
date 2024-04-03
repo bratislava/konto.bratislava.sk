@@ -1,4 +1,3 @@
-import { AddToCalendarButton } from 'add-to-calendar-button-react'
 import cx from 'classnames'
 import { useTranslation } from 'next-i18next'
 import React from 'react'
@@ -25,21 +24,21 @@ const PaymentScheduleView = () => {
         </div>
         <div className=" flex w-full flex-col items-center gap-4 md:flex-row lg:gap-6">
           <div className="text-h6 grow font-semibold md:text-h-md">{t('tax_determined')}</div>
-          <AddToCalendarButton
-            name="Splátka dane z nehnuteľností 2023"
-            dates={`[
-              {
-                "name":"Splátka dane z nehnuteľností 2023 2/3",
-                "startDate":"2023-08-31"
-              },
-              {
-                "name":"Splátka dane z nehnuteľností 2023 3/3",
-                "startDate":"2023-10-31"
-              }
-            ]`}
-            label="Pridať termíny do kalendára"
-            options={['Google', 'Microsoft365', 'Apple', 'iCal']}
-          />
+          {/* <AddToCalendarButton */}
+          {/*  name="Splátka dane z nehnuteľností 2023" */}
+          {/*  dates={`[ */}
+          {/*    { */}
+          {/*      "name":"Splátka dane z nehnuteľností 2023 2/3", */}
+          {/*      "startDate":"2023-08-31" */}
+          {/*    }, */}
+          {/*    { */}
+          {/*      "name":"Splátka dane z nehnuteľností 2023 3/3", */}
+          {/*      "startDate":"2023-10-31" */}
+          {/*    } */}
+          {/*  ]`} */}
+          {/*  label="Pridať termíny do kalendára" */}
+          {/*  options={['Google', 'Microsoft365', 'Apple', 'iCal']} */}
+          {/* /> */}
         </div>
         <div className="flex w-full flex-col items-start gap-4 rounded-lg bg-gray-50 p-6 lg:gap-6">
           {taxData?.taxInstallments?.[0] && (

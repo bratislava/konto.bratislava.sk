@@ -48,8 +48,8 @@ const TaxDetails = () => {
         <div className="flex w-full flex-col items-start gap-3 lg:gap-5">
           {Object.keys(groupedTaxDetails).map((key) => (
             <div className="flex w-full flex-row items-start gap-6" key={key}>
-              <div className="text-p1 grow">{t(`tax_detail_section.tax_type.${key}.title`)}</div>
-              <div className="text-p1">
+              <div className="text-p2 grow">{t(`tax_detail_section.tax_type.${key}.title`)}</div>
+              <div className="text-p2">
                 <FormatCurrencyFromCents value={sums[key]} />
               </div>
             </div>

@@ -3,14 +3,21 @@ import { useTranslation } from 'next-i18next'
 import React from 'react'
 
 import { FormatCurrencyFromCents } from '../../../frontend/utils/formatCurrency'
-import AccountMarkdown from '../segments/AccountMarkdown/AccountMarkdown'
 import AccordionV2 from './AccordionV2'
 
 const tableHeaderData = {
-  subject: 'Predmet dane',
-  area: 'Výmera pozemku v m<sup>2</sup>',
-  base: 'Základ dane m<sup>2</sup>',
-  total: 'Daň v EUR',
+  subject: <span>Predmet dane</span>,
+  area: (
+    <span>
+      Výmera pozemku v m<sup>2</sup>
+    </span>
+  ),
+  base: (
+    <span>
+      Základ dane m<sup>2</sup>
+    </span>
+  ),
+  total: <span>Daň v EUR</span>,
 }
 
 const matchHeader = {
@@ -27,33 +34,29 @@ export type AccordionBase = {
 }
 const TableHeaderRow = ({ dataType }: { dataType: string }) => {
   // TODO types can be better if validated as they come from API
-  const headerData = Object.keys(matchHeader).includes(dataType)
-    ? (matchHeader[dataType] as
-        | typeof matchHeader.GROUND
-        // eslint-disable-next-line @typescript-eslint/no-duplicate-type-constituents
-        | typeof matchHeader.CONSTRUCTION
-        // eslint-disable-next-line @typescript-eslint/no-duplicate-type-constituents
-        | typeof matchHeader.APARTMENT)
-    : matchHeader.APARTMENT
+  const headerData = [
+    <span>Predmet dane</span>,
+    ...(Object.keys(matchHeader).includes(dataType)
+      ? (matchHeader[dataType] as
+          | typeof matchHeader.GROUND
+          // eslint-disable-next-line @typescript-eslint/no-duplicate-type-constituents
+          | typeof matchHeader.CONSTRUCTION
+          // eslint-disable-next-line @typescript-eslint/no-duplicate-type-constituents
+          | typeof matchHeader.APARTMENT)
+      : matchHeader.APARTMENT),
+  ]
 
   return (
-    <thead className="self-stretch bg-gray-200 lg:bg-gray-0">
+    <thead className="self-stretch bg-gray-50 lg:bg-gray-0">
       <tr>
-        <th className="text-16 border-spacing-0 border-b-2 p-4 text-left first:rounded-tl last:rounded-tr lg:p-0 lg:py-4 [&:not(:first-child)]:text-center">
-          Predmet dane
-        </th>
-        {headerData?.map((header) => {
-          return (
-            // False positive
-            // eslint-disable-next-line jsx-a11y/control-has-associated-label
-            <th
-              className="text-16 border-spacing-0 border-b-2 p-4 text-left first:rounded-tl last:rounded-tr lg:p-0 lg:py-4 [&:not(:first-child)]:text-center"
-              key={header}
-            >
-              <AccountMarkdown content={`<div class="text-16 p-2">${header}</div>`} />
-            </th>
-          )
-        })}
+        {headerData.map((header, index) => (
+          <th
+            key={index}
+            className="text-16 border-spacing-0 border-b-2 p-4 text-left first:rounded-tl last:rounded-tr lg:p-0 lg:py-4 [&:not(:first-child)]:text-center"
+          >
+            {header}
+          </th>
+        ))}
       </tr>
     </thead>
   )

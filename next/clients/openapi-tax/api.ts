@@ -369,7 +369,7 @@ export interface ResponseTaxDetailInstallmentsDto {
    * @type {string}
    * @memberof ResponseTaxDetailInstallmentsDto
    */
-  order?: string
+  order?: string | null
   /**
    * Amount to pay of installment in cents - integer
    * @type {number}

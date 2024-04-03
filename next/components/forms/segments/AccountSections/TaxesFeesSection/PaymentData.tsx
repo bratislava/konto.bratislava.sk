@@ -5,12 +5,14 @@ import React from 'react'
 
 import AccordionPaymentSchedule from '../../../simple-components/AccordionPaymentSchedule'
 import Button from '../../../simple-components/Button'
+import ButtonNew from '../../../simple-components/ButtonNew'
 import ClipboardCopy from '../../../simple-components/ClipboardCopy'
 import TaxFooter from './TaxFooter'
 import { useTaxFeeSection } from './useTaxFeeSection'
 
 const PaymentData = () => {
-  const { taxData, redirectToPayment, downloadQrCode } = useTaxFeeSection()
+  const { taxData, redirectToPayment, redirectToPaymentIsPending, downloadQrCode } =
+    useTaxFeeSection()
   const { t } = useTranslation('account')
   const qrCodeBase64 = `data:image/png;base64,${taxData.qrCodeWeb}`
   const hasMultipleInstallments = taxData.taxInstallments.length > 1
@@ -51,12 +53,10 @@ const PaymentData = () => {
               </div>
               <div className="hidden h-0.5 w-full bg-gray-200 sm:block" />
               <div className="flex flex-col items-start gap-2">
-                <div className="flex flex-col items-start self-stretch lg:flex-row lg:gap-6">
-                  <div className="text-16-semibold">{t('constant_symbol')}</div>
-                  <div className="text-16">{t('constant_symbol_number')}</div>
-                </div>
-                <div className="flex flex-col items-start self-stretch lg:flex-row lg:gap-6">
-                  <div className="text-16-semibold">{t('variable_symbol')}</div>
+                <div className="grid grid-cols-1 gap-1 lg:grid-cols-2 lg:gap-2">
+                  <div className="text-16-semibold lg:mr-4">{t('constant_symbol')}</div>
+                  <div className="text-16 mb-1 lg:mb-0">{t('constant_symbol_number')}</div>
+                  <div className="text-16-semibold lg:mr-4">{t('variable_symbol')}</div>
                   <div className="text-16">{taxData?.variableSymbol}</div>
                 </div>
               </div>
@@ -85,29 +85,22 @@ const PaymentData = () => {
             </div>
           </div>
           <div className="flex grow flex-col gap-4">
-            <div className="flex w-full flex-col items-start gap-6 rounded-lg bg-main-200 p-4 lg:flex-row lg:items-center lg:px-6 lg:py-8">
+            <div className="flex w-full flex-col items-start gap-6 rounded-lg bg-gray-50 p-4 lg:flex-row lg:items-center lg:px-6 lg:py-8">
               <div className="flex grow flex-col items-start gap-2">
                 <div className="text-h4">{t('card_payment')}</div>
                 <div className="text-16">{t('you_will_be_redirected_to_the_payment_gateway')}</div>
               </div>
-              {/* Desktop 'To pay' button */}
-              <Button
-                variant="category"
-                size="lg"
-                text={t('to_pay')}
-                className="hidden min-w-max lg:block"
-                onPress={redirectToPayment}
-                disabled={taxData.paidStatus !== TaxPaidStatusEnum.NotPayed}
-              />
-              {/* Mobile 'To pay' button */}
-              <Button
-                variant="category"
-                size="sm"
-                text={t('to_pay')}
-                className="block min-w-full lg:hidden"
-                onPress={redirectToPayment}
-                disabled={taxData.paidStatus !== TaxPaidStatusEnum.NotPayed}
-              />
+              <ButtonNew
+                variant="black-solid"
+                onPress={() => redirectToPayment()}
+                isLoading={redirectToPaymentIsPending}
+                // TODO: Translation
+                isLoadingText="Presmerovávam…"
+                isDisabled={taxData.paidStatus !== TaxPaidStatusEnum.NotPayed}
+                fullWidthMobile
+              >
+                {t('to_pay')}
+              </ButtonNew>
             </div>
             <div className="flex grow flex-col gap-4 self-stretch rounded-lg border-2 border-solid border-gray-200 p-4 lg:flex-row lg:p-6">
               <div className="flex w-full grow flex-col items-start justify-between gap-2 self-stretch">
@@ -143,9 +136,7 @@ const PaymentData = () => {
             </div>
           </div>
         </div>
-        {hasMultipleInstallments && (
-          <AccordionPaymentSchedule size="md" title={t('payment_schedule.title')} />
-        )}
+        {hasMultipleInstallments && <AccordionPaymentSchedule />}
       </div>
       <TaxFooter />
     </div>

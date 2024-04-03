@@ -1,5 +1,6 @@
 import { ResponseTaxDto } from '@clients/openapi-tax'
 import { taxApi } from '@clients/tax'
+import { useMutation } from '@tanstack/react-query'
 import { useRouter } from 'next/router'
 import React, { createContext, PropsWithChildren, useContext } from 'react'
 
@@ -14,20 +15,28 @@ type TaxFeeSectionProviderProps = {
 const useGetContext = ({ taxData }: TaxFeeSectionProviderProps) => {
   const router = useRouter()
   const [openSnackbarError] = useSnackbar({ variant: 'error' })
+  const [openSnackbarInfo, closeSnackbarInfo] = useSnackbar({ variant: 'info' })
 
-  const redirectToPayment = async () => {
-    // TODO snackbar
-    try {
-      const { data } = await taxApi.paymentControllerPayment(String(taxData.year), {
+  const { mutate: redirectToPayment, isPending: redirectToPaymentIsPending } = useMutation({
+    mutationFn: () =>
+      taxApi.paymentControllerPayment(String(taxData.year), {
         accessToken: 'always',
-      })
-      await router.push(data.url)
-    } catch (error) {
-      // TODO translation
-      openSnackbarError('error.payment_redirect')
+      }),
+    networkMode: 'always',
+    onSuccess: async (response) => {
+      closeSnackbarInfo()
+      await router.push(response.data.url)
+    },
+    onMutate: () => {
+      // TODO: Translation
+      openSnackbarInfo('Presmerovávam na platbu.')
+    },
+    onError: (error) => {
+      // TODO: Translation
+      openSnackbarError('Nepodarilo sa presmerovať na platbu.')
       logger.error(error)
-    }
-  }
+    },
+  })
 
   const downloadQrCode = async () => {
     const arrayBuffer = base64ToArrayBuffer(taxData.qrCodeWeb)
@@ -43,7 +52,7 @@ const useGetContext = ({ taxData }: TaxFeeSectionProviderProps) => {
     downloadBlob(data as Blob, `Dan-z-nehnutelnosti-${taxData.year}.pdf`)
   }
 
-  return { taxData, redirectToPayment, downloadQrCode, downloadPdf }
+  return { taxData, redirectToPayment, redirectToPaymentIsPending, downloadQrCode, downloadPdf }
 }
 
 const TaxFeeSectionContext = createContext<ReturnType<typeof useGetContext> | undefined>(undefined)

@@ -87,16 +87,17 @@ const ContactInformationSection = () => {
                 isError: false,
               }}
             />
-            <SummaryRow
-              size="small"
-              data={{
-                label: t('correspondence_address'),
-                value: displayCorrespondenceAddress,
-                schemaPath: '',
-                isError: false,
-              }}
-              onGoToStep={() => setCorrespondenceAddressModalShow(true)}
-            />
+            {/* Temporarily hidden as this is not implemented on BE. */}
+            {/* <SummaryRow */}
+            {/*  size="small" */}
+            {/*  data={{ */}
+            {/*    label: t('correspondence_address'), */}
+            {/*    value: displayCorrespondenceAddress, */}
+            {/*    schemaPath: '', */}
+            {/*    isError: false, */}
+            {/*  }} */}
+            {/*  onGoToStep={() => setCorrespondenceAddressModalShow(true)} */}
+            {/* /> */}
             <SummaryRow
               size="small"
               isEditable={false}

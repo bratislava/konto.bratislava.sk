@@ -55,7 +55,7 @@ const PhoneNumberForm = ({ error, onHideError, onSubmit, defaultValues }: Props)
         render={({ field }) => (
           <InputField
             label={t('profile_detail.phone_number')}
-            placeholder=""
+            placeholder={t('profile_detail.phone_number_placeholder')}
             {...field}
             errorMessage={errors.phone_number}
           />

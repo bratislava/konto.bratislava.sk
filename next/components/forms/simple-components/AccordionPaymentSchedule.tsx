@@ -1,24 +1,11 @@
-import { ChevronDownIcon } from '@assets/ui-icons'
 import { AddToCalendarButton } from 'add-to-calendar-button-react'
 import cx from 'classnames'
 import { useTranslation } from 'next-i18next'
-import React, { useState } from 'react'
+import React from 'react'
 
 import { FormatCurrencyFromCents } from '../../../frontend/utils/formatCurrency'
-import PersonIcon from '../icon-components/PersonIcon'
-import AccountMarkdownModal from '../segments/AccountModal/AccountModal'
 import { useTaxFeeSection } from '../segments/AccountSections/TaxesFeesSection/useTaxFeeSection'
-
-export type AccordionSizeType = 'xs' | 'sm' | 'md' | 'lg'
-
-export type AccordionBase = {
-  size: AccordionSizeType
-  title: string
-  icon?: boolean
-  className?: string
-}
-export const isAccordionSizeType = (size: string) =>
-  ['xs', 'sm', 'md', 'lg'].includes(size) ? size : 'sm'
+import AccordionV2 from './AccordionV2'
 
 const PaymentScheduleView = () => {
   const { taxData } = useTaxFeeSection()
@@ -113,121 +100,13 @@ const PaymentScheduleView = () => {
   )
 }
 
-const AccordionPaymentSchedule = ({
-  title,
-  size = 'sm',
-  icon = false,
-  className,
-}: AccordionBase) => {
-  const [isActive, setIsActive] = useState(false)
-
-  const accordionSize = isAccordionSizeType(size) as AccordionSizeType
-
-  const paddingStyles = cx({
-    'px-4 py-3 lg:p-4': accordionSize === 'xs',
-    'p-4 lg:p-5': accordionSize === 'sm',
-    'p-4 lg:px-8 lg:py-6': accordionSize === 'md',
-    'px-6 py-5 lg:px-10 lg:py-8': accordionSize === 'lg',
-  })
-
-  const accordionHeaderStyle = cx(
-    'flex w-full flex-col gap-4 rounded-xl bg-gray-0',
-    className,
-    paddingStyles,
-  )
-  const accordionContainerStyle = cx(
-    'flex w-full flex-col rounded-xl border-2 border-solid border-gray-200 bg-gray-0 hover:border-gray-500',
-    className,
-    {
-      'border-2 border-gray-700 hover:border-gray-700': isActive,
-    },
-  )
+const AccordionPaymentSchedule = () => {
   const { t } = useTranslation('account')
+
   return (
-    <div className="h-auto w-full">
-      <div className="block lg:hidden">
-        <AccountMarkdownModal
-          show={isActive}
-          onClose={() => setIsActive(false)}
-          content={<PaymentScheduleView />}
-          onSubmit={() => {}}
-          header={title}
-        />
-      </div>
-      <div className={accordionContainerStyle}>
-        <button
-          type="button"
-          onClick={() => setIsActive(!isActive)}
-          onKeyDown={() => setIsActive(!isActive)}
-          className={cx('no-tap-highlight flex gap-4', accordionHeaderStyle)}
-        >
-          {icon && (
-            <div
-              className={cx('flex items-center justify-center lg:items-start', {
-                'h-6 w-6': accordionSize === 'sm' || accordionSize === 'xs',
-                'h-8 w-8': accordionSize === 'md',
-                'h-10 w-10': accordionSize === 'lg',
-              })}
-            >
-              <PersonIcon
-                className={cx('', {
-                  'h-4 w-4': accordionSize === 'sm' || accordionSize === 'xs',
-                  'h-5 w-5': accordionSize === 'md',
-                  'h-6 w-6': accordionSize === 'lg',
-                })}
-              />
-            </div>
-          )}
-          <div className="flex w-full flex-col gap-2 lg:gap-4">
-            <div className="flex items-center gap-4 lg:items-start">
-              <div className="flex grow flex-col items-start sm:flex-row">
-                <div className="flex grow flex-col items-start gap-3">
-                  <div
-                    className={cx('flex w-full grow', {
-                      'text-h6': accordionSize === 'xs',
-                      'text-h5': accordionSize === 'sm',
-                      'text-h4': accordionSize === 'md',
-                      'text-h3': accordionSize === 'lg',
-                    })}
-                  >
-                    {title}
-                  </div>
-                  <div className={cx('text-20 flex hidden w-max grow lg:block')}>
-                    {t('payment_schedule.three_pieces')}
-                    <div className="text-h5 inline">{t('payment_schedule.paid_at_once')}</div>
-                    {t('payment_schedule.not_later')}
-                  </div>
-                </div>
-              </div>
-              <ChevronDownIcon
-                className={cx('flex items-center justify-center text-main-700', {
-                  'h-8 w-8 lg:h-10 lg:w-10': accordionSize === 'lg',
-                  'h-6 w-6 lg:h-8 lg:w-8': accordionSize === 'md',
-                  'h-6 w-6': accordionSize === 'sm' || accordionSize === 'xs',
-                  'rotate-180 transform': isActive,
-                  'rotate-270 transform md:rotate-0': !isActive,
-                })}
-              />
-            </div>
-          </div>
-        </button>
-        <div
-          className={cx('h-0.5 w-full bg-gray-200', {
-            hidden: !isActive,
-          })}
-        />
-        {isActive && (
-          <div
-            className={cx('flex hidden flex-col font-normal lg:block', paddingStyles, {
-              'text-h6': accordionSize === 'sm' || accordionSize === 'xs',
-              'text-20': accordionSize === 'lg' || accordionSize === 'md',
-            })}
-          >
-            <PaymentScheduleView />
-          </div>
-        )}
-      </div>
-    </div>
+    <AccordionV2 title={t('payment_schedule.title')}>
+      <PaymentScheduleView />
+    </AccordionV2>
   )
 }
 

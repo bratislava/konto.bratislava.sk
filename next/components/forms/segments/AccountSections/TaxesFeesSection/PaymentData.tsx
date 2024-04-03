@@ -143,9 +143,7 @@ const PaymentData = () => {
             </div>
           </div>
         </div>
-        {hasMultipleInstallments && (
-          <AccordionPaymentSchedule size="md" title={t('payment_schedule.title')} />
-        )}
+        {hasMultipleInstallments && <AccordionPaymentSchedule />}
       </div>
       <TaxFooter />
     </div>

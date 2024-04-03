@@ -43,7 +43,11 @@ We are using [FOP](https://xmlgraphics.apache.org/fop/) to transform eForms to p
 
 ## API clients generation
 
-We are using [openapi-generator-cli](https://openapi-generator.tech/) to generate API clients based on OpenAPI specification provided by our BEs. To generate API clients run `yarn generate-clients`. `--skip-validate-spec` flag is required until all errors in the specification are resolved.
+We are using [openapi-generator-cli](https://openapi-generator.tech/) to generate API clients based on OpenAPI specification provided by our BEs.
+
+We are using [graphql-codegen](https://the-guild.dev/graphql/codegen) to generate GraphQL client from our Strapi (CMS) schema.
+
+To generate API clients run `yarn generate-clients`. `--skip-validate-spec` flag is required until all errors in the specification are resolved.
 
 Forms:
 
@@ -54,3 +58,12 @@ City account:
 
 - [Swagger](https://nest-city-account.staging.bratislava.sk/api)
 - [API JSON](https://nest-city-account.staging.bratislava.sk/api-json)
+
+Tax:
+
+- [Swagger](https://nest-tax-backend.staging.bratislava.sk/api)
+- [API JSON](https://nest-tax-backend.staging.bratislava.sk/api-json)
+
+City account Strapi:
+
+- [GraphQL playground](https://city-account-strapi.staging.bratislava.sk/graphql)

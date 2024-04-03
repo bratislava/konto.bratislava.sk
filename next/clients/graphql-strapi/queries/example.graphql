@@ -1,0 +1,6 @@
+# quries must not be empty or generate to work - remove when adding first real query
+query TestQuery {
+  __schema {
+    __typename
+  }
+}

@@ -1,4 +1,4 @@
-import { ChevronLeftIcon, DownloadIcon, PaymentIcon } from '@assets/ui-icons'
+import { ChevronLeftIcon, DownloadIcon } from '@assets/ui-icons'
 import { TaxPaidStatusEnum } from '@clients/openapi-tax'
 import { useRouter } from 'next/router'
 import { useTranslation } from 'next-i18next'
@@ -14,7 +14,7 @@ import TaxPaidStatus from '../AccountSections/TaxesFeesSection/TaxPaidStatus'
 import { useTaxFeeSection } from '../AccountSections/TaxesFeesSection/useTaxFeeSection'
 
 const TaxFeeSectionHeader = () => {
-  const { taxData, redirectToPayment, downloadPdf } = useTaxFeeSection()
+  const { taxData, downloadPdf } = useTaxFeeSection()
   const { t } = useTranslation('account')
   const router = useRouter()
 
@@ -42,16 +42,6 @@ const TaxFeeSectionHeader = () => {
                 {t('tax_detail_section.title', { year: taxData?.year })}
               </div>
 
-              {taxData.paidStatus === TaxPaidStatusEnum.NotPayed && (
-                <Button
-                  startIcon={<PaymentIcon fill="white" className="size-6" />}
-                  variant="black"
-                  text={t('pay_tax')}
-                  size="sm"
-                  className="hidden md:block"
-                  onPress={redirectToPayment}
-                />
-              )}
               {taxData.pdfExport && (
                 <Button
                   startIcon={<DownloadIcon className="size-5" />}
@@ -93,16 +83,6 @@ const TaxFeeSectionHeader = () => {
             {/* for mobile version */}
             <div className="block w-full md:hidden">
               <div className="flex flex-col gap-3">
-                {taxData.paidStatus === TaxPaidStatusEnum.NotPayed && (
-                  <Button
-                    startIcon={<PaymentIcon className="size-5" />}
-                    variant="black"
-                    text={t('pay_tax')}
-                    size="sm"
-                    className="min-w-full"
-                    onPress={redirectToPayment}
-                  />
-                )}
                 {taxData.pdfExport && (
                   <Button
                     startIcon={<DownloadIcon className="size-5" />}

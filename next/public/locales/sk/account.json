@@ -654,8 +654,7 @@
     "title": "Doplnenie telefónneho čísla",
     "description": "Prajete si, aby sme s vami v ojedinelých prípadoch komunikovali aj prostredníctvom SMS? Zanechajte nám vaše telefónne číslo a my vám pripomenieme, napríklad, blížiaci sa termín splatnosti dane aj cez SMS.\n\nTelefónne číslo môžete kedykoľvek doplniť do profilu. Neposkytnutie telefónneho čísla nemá vplyv na využívanie služieb v Bratislavskom konte."
   },
-  "pay_tax": "Zaplatiť daň",
-  "to_pay": "Zaplatiť",
+  "to_pay": "Prejsť na platbu",
   "back_to_list": "Späť na zoznam",
   "city": "Mesto",
   "tax_created": "Vytvorená",

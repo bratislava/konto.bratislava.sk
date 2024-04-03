@@ -45,6 +45,10 @@ export const environment = {
     'NEXT_PUBLIC_BRATISLAVA_STRAPI_URL',
     process.env.NEXT_PUBLIC_BRATISLAVA_STRAPI_URL,
   ),
+  cityAccountStrapiUrl: assertEnv(
+    'NEXT_PUBLIC_CITY_ACCOUNT_STRAPI_URL',
+    process.env.NEXT_PUBLIC_CITY_ACCOUNT_STRAPI_URL,
+  ),
   cloudflareTurnstileSiteKey: assertEnv(
     'NEXT_PUBLIC_CLOUDFLARE_TURNSTILE_SITE_KEY',
     process.env.NEXT_PUBLIC_CLOUDFLARE_TURNSTILE_SITE_KEY,

@@ -4,6 +4,7 @@ import { useTranslation } from 'next-i18next'
 import React from 'react'
 
 import AccordionPaymentSchedule from '../../../simple-components/AccordionPaymentSchedule'
+import Button from '../../../simple-components/Button'
 import ButtonNew from '../../../simple-components/ButtonNew'
 import ClipboardCopy from '../../../simple-components/ClipboardCopy'
 import TaxFooter from './TaxFooter'

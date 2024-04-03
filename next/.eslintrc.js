@@ -78,5 +78,10 @@ module.exports = {
     // Temporarily disabled because IDE problems
     'prettier/prettier': 'off',
   },
-  ignorePatterns: ['*.config.*', '.eslintrc.js', '/clients/openapi-*/*.ts'],
+  ignorePatterns: [
+    '*.config.*',
+    '.eslintrc.js',
+    '/clients/openapi-*/*.ts',
+    '/clients/graphql-*/*.ts',
+  ],
 }

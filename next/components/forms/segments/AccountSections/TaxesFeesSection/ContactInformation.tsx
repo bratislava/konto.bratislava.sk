@@ -47,10 +47,10 @@ const ContactInformationSection = () => {
     ],
     ', ',
   )
-  const displayCorrespondenceAddress = displayStrings(
-    [parsedAddress?.street_address, formatZip(parsedAddress?.postal_code), parsedAddress?.locality],
-    ', ',
-  )
+  // const displayCorrespondenceAddress = displayStrings(
+  //   [parsedAddress?.street_address, formatZip(parsedAddress?.postal_code), parsedAddress?.locality],
+  //   ', ',
+  // )
 
   return (
     <>

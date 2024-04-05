@@ -64,7 +64,7 @@ const PaymentData = () => {
               <div className="flex w-full flex-col items-start gap-2">
                 <div className="text-16-semibold">{t('tax_due')}</div>
                 <div className="text-16">
-                  {taxData?.taxInstallments?.length > 1 ? (
+                  {hasMultipleInstallments ? (
                     <>
                       <div className="inline">{t('tax_payable_in_installments_1')}</div>
                       <div className="text-16-semibold inline">

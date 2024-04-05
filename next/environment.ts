@@ -75,6 +75,16 @@ export const environment = {
         'NEXT_PUBLIC_FEATURE_TOGGLE_DEVELOPMENT_FORMS',
         process.env.NEXT_PUBLIC_FEATURE_TOGGLE_DEVELOPMENT_FORMS,
       ) === 'true',
+    taxReportCorrespondenceAddress:
+      assertEnv(
+        'NEXT_PUBLIC_FEATURE_TOGGLE_TAX_REPORT_CORRESPONDENCE_ADDRESS',
+        process.env.NEXT_PUBLIC_FEATURE_TOGGLE_TAX_REPORT_CORRESPONDENCE_ADDRESS,
+      ) === 'true',
+    taxReportDeliveryMethod:
+      assertEnv(
+        'NEXT_PUBLIC_FEATURE_TOGGLE_TAX_REPORT_DELIVERY_METHOD',
+        process.env.NEXT_PUBLIC_FEATURE_TOGGLE_TAX_REPORT_DELIVERY_METHOD,
+      ) === 'true',
   },
   formsMimetypes: assertEnv(
     'NEXT_PUBLIC_FORMS_MIMETYPE_WHITELIST',

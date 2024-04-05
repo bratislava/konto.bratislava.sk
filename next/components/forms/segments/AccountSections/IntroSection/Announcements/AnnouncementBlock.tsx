@@ -1,12 +1,19 @@
 import { ArrowRightIcon } from '@assets/ui-icons'
 import cx from 'classnames'
 import AccountMarkdown from 'components/forms/segments/AccountMarkdown/AccountMarkdown'
-import Button from 'components/forms/simple-components/Button'
 import Image from 'next/legacy/image'
 
-type ActualBlockBase = {
+import ButtonNew, { ButtonProps } from '../../../../simple-components/ButtonNew'
+
+type AnnouncementBlockProps = {
   announcementContent?: string
   imagePath?: string
+  buttons?: {
+    title: string
+    onPress: () => void
+    variant?: ButtonProps['variant']
+    arrowIcon?: boolean
+  }[]
   buttonTitle?: string
   onPress?: () => void
   reversed?: boolean
@@ -15,11 +22,14 @@ type ActualBlockBase = {
 const AnnouncementBlock = ({
   announcementContent,
   imagePath = '',
-  buttonTitle,
-  onPress,
   reversed,
-}: ActualBlockBase) => {
-  return announcementContent ? (
+  buttons = [],
+}: AnnouncementBlockProps) => {
+  if (!announcementContent) {
+    return null
+  }
+
+  return (
     <div
       className={cx(
         'flex w-full flex-col-reverse rounded-lg border-2 border-gray-200 lg:rounded-lg',
@@ -31,26 +41,21 @@ const AnnouncementBlock = ({
     >
       <div className="flex w-full flex-col justify-center gap-4 p-4 lg:w-1/2 lg:gap-6 lg:p-12 lg:pr-14">
         <div className="flex flex-col gap-2">
-          <AccountMarkdown content={announcementContent} />
+          <AccountMarkdown content={announcementContent} variant="sm" />
         </div>
-        {buttonTitle && (
-          <>
-            <Button
-              className="hidden lg:flex"
-              endIcon={<ArrowRightIcon className="size-6" />}
-              variant="category"
-              text={buttonTitle}
-              onPress={onPress}
-            />
-            <Button
-              className="flex lg:hidden"
-              size="sm"
-              endIcon={<ArrowRightIcon className="size-5" />}
-              variant="category"
-              text={buttonTitle}
-              onPress={onPress}
-            />
-          </>
+        {buttons.length > 0 && (
+          <div className="flex flex-col gap-4 lg:flex-row">
+            {buttons.map(({ title, onPress, variant, arrowIcon }, index) => (
+              <ButtonNew
+                key={index}
+                endIcon={arrowIcon && <ArrowRightIcon className="size-5 lg:size-6" />}
+                variant={variant}
+                onPress={onPress}
+              >
+                {title}
+              </ButtonNew>
+            ))}
+          </div>
         )}
       </div>
       <div className="relative flex h-[292px] w-full items-center justify-center rounded-t-lg lg:h-auto lg:w-1/2">
@@ -68,7 +73,7 @@ const AnnouncementBlock = ({
         />
       </div>
     </div>
-  ) : null
+  )
 }
 
 export default AnnouncementBlock

@@ -1,12 +1,11 @@
 import { ArrowLeftIcon } from '@assets/ui-icons'
 import cx from 'classnames'
-import { StatusBar, useStatusBarContext } from 'components/forms/info-components/StatusBar'
+import { StatusBar } from 'components/forms/info-components/StatusBar'
 import Brand from 'components/forms/simple-components/Brand'
 import { ROUTES } from 'frontend/api/constants'
 import { useRouter } from 'next/router'
 import { useTranslation } from 'next-i18next'
 
-import useElementSize from '../../../../frontend/hooks/useElementSize'
 import { getLanguageKey } from '../../../../frontend/utils/general'
 
 interface IProps {
@@ -35,24 +34,21 @@ export const LoginRegisterNavBar = ({
 }: IProps) => {
   const languageKey = getLanguageKey(currentLanguage)
 
-  const { statusBarConfiguration } = useStatusBarContext()
-  const [desktopRef, { height: desktopHeight }] = useElementSize([statusBarConfiguration.content])
-  const [mobileRef, { height: mobileHeight }] = useElementSize([statusBarConfiguration.content])
-
   const { t } = useTranslation('account')
   return (
-    <div data-cy="navbar" style={{ marginBottom: Math.max(desktopHeight, mobileHeight) }}>
+    <div data-cy="navbar" className="contents">
       {/* Desktop */}
+      <div className="hidden lg:block">
+        <StatusBar />
+      </div>
       <div
         id="desktop-navbar"
         className={cx(
           className,
           'text-p2 items-center',
-          'fixed left-0 top-0 z-40 w-full bg-white shadow',
+          'sticky left-0 top-0 z-40 w-full bg-white shadow',
         )}
-        ref={desktopRef}
       >
-        <StatusBar />
         <div className="m-auto hidden h-[57px] w-full max-w-screen-lg items-center lg:flex">
           {!backButtonHidden && <BackButton />}
           <Brand
@@ -71,10 +67,8 @@ export const LoginRegisterNavBar = ({
       {/* Mobile */}
       <div
         id="mobile-navbar"
-        className={cx(className, 'fixed left-0 top-0 z-40 w-full gap-x-6 bg-white lg:hidden')}
-        ref={mobileRef}
+        className={cx(className, 'sticky left-0 top-0 z-40 w-full gap-x-6 bg-white lg:hidden')}
       >
-        <StatusBar />
         <div className="flex h-16 items-center border-b-2 px-8 py-5">
           {!backButtonHidden && <BackButton />}
           <Brand
@@ -87,6 +81,9 @@ export const LoginRegisterNavBar = ({
             }
           />
         </div>
+      </div>
+      <div className="lg:hidden">
+        <StatusBar />
       </div>
     </div>
   )

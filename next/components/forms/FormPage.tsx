@@ -1,5 +1,6 @@
 import { baDefaultFormStateBehavior } from '@form-utils/defaultFormState'
 import { baRjsfValidator } from '@form-utils/validators'
+import { scrollIntoViewport } from '@react-aria/utils'
 import cx from 'classnames'
 import MenuList from 'components/forms/steps/MenuList'
 import { useIsomorphicLayoutEffect } from 'usehooks-ts'
@@ -34,6 +35,9 @@ const FormPage = () => {
     const element = fieldId ? document.querySelector(`#${fieldId}`) : null
 
     if (element) {
+      scrollIntoViewport(element, {
+        containingElement: (document.querySelector('main') as Element) ?? null,
+      })
       element.scrollIntoView({ behavior: 'smooth', block: 'start', inline: 'start' })
     } else {
       window.scrollTo({ top: 0, behavior: 'smooth' })

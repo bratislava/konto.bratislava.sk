@@ -13,7 +13,7 @@
  */
 
 import type { Configuration } from './configuration'
-import type { AxiosPromise, AxiosInstance, AxiosRequestConfig } from 'axios'
+import type { AxiosPromise, AxiosInstance, RawAxiosRequestConfig } from 'axios'
 import globalAxios from 'axios'
 // Some imports not used depending on template conditions
 // @ts-ignore
@@ -31,7 +31,7 @@ import {
 } from './common'
 import type { RequestArgs } from './base'
 // @ts-ignore
-import { BASE_PATH, COLLECTION_FORMATS, BaseAPI, RequiredError } from './base'
+import { BASE_PATH, COLLECTION_FORMATS, BaseAPI, RequiredError, operationServerMap } from './base'
 
 /**
  *
@@ -594,11 +594,11 @@ export interface ResponseTaxDto {
    */
   pdfExport: boolean
   /**
-   *
-   * @type {ResponseTaxDtoTaxPayer}
+   * Tax payer data
+   * @type {ResponseTaxPayerDto}
    * @memberof ResponseTaxDto
    */
-  taxPayer: ResponseTaxDtoTaxPayer
+  taxPayer: ResponseTaxPayerDto
   /**
    * Installments of payment tax - it can be array of 1 value or 3 values
    * @type {Array<ResponseTaxDetailInstallmentsDto>}
@@ -612,147 +612,13 @@ export interface ResponseTaxDto {
    */
   taxDetails: Array<ResponseTaxDetailsDto>
   /**
-   *
-   * @type {ResponseTaxDtoTaxEmployees}
+   * Tax into details on area type
+   * @type {ResponseTaxEmployeesDto}
    * @memberof ResponseTaxDto
    */
-  taxEmployees: ResponseTaxDtoTaxEmployees
+  taxEmployees: ResponseTaxEmployeesDto
 }
 
-/**
- * Tax into details on area type
- * @export
- * @interface ResponseTaxDtoTaxEmployees
- */
-export interface ResponseTaxDtoTaxEmployees {
-  /**
-   * Numeric id of Employee from noris
-   * @type {number}
-   * @memberof ResponseTaxDtoTaxEmployees
-   */
-  id: number
-  /**
-   * Created at timestamp
-   * @type {string}
-   * @memberof ResponseTaxDtoTaxEmployees
-   */
-  createdAt: string
-  /**
-   * Updated at timestamp
-   * @type {string}
-   * @memberof ResponseTaxDtoTaxEmployees
-   */
-  updatedAt: string
-  /**
-   * External of employee
-   * @type {string}
-   * @memberof ResponseTaxDtoTaxEmployees
-   */
-  externalId: string
-  /**
-   * Name of employee
-   * @type {string}
-   * @memberof ResponseTaxDtoTaxEmployees
-   */
-  name: string
-  /**
-   * Phone number of employee
-   * @type {string}
-   * @memberof ResponseTaxDtoTaxEmployees
-   */
-  phoneNumber: string
-  /**
-   * Email of employee
-   * @type {string}
-   * @memberof ResponseTaxDtoTaxEmployees
-   */
-  email: string
-}
-/**
- * Tax payer data
- * @export
- * @interface ResponseTaxDtoTaxPayer
- */
-export interface ResponseTaxDtoTaxPayer {
-  /**
-   * Numeric id of tax payer
-   * @type {number}
-   * @memberof ResponseTaxDtoTaxPayer
-   */
-  id: number
-  /**
-   * Uuid of tax payer
-   * @type {string}
-   * @memberof ResponseTaxDtoTaxPayer
-   */
-  uuid: string
-  /**
-   * Created at timestamp
-   * @type {string}
-   * @memberof ResponseTaxDtoTaxPayer
-   */
-  createdAt: string
-  /**
-   * Updated at timestamp
-   * @type {string}
-   * @memberof ResponseTaxDtoTaxPayer
-   */
-  updatedAt: string
-  /**
-   * Is tax payer active
-   * @type {boolean}
-   * @memberof ResponseTaxDtoTaxPayer
-   */
-  active: boolean
-  /**
-   * Permanent address of tax payer
-   * @type {string}
-   * @memberof ResponseTaxDtoTaxPayer
-   */
-  permanentResidenceAddress: string
-  /**
-   * Id of tax payer from Noris
-   * @type {string}
-   * @memberof ResponseTaxDtoTaxPayer
-   */
-  externalId: string
-  /**
-   * Name of taxpayer
-   * @type {string}
-   * @memberof ResponseTaxDtoTaxPayer
-   */
-  name: string
-  /**
-   * Text of descreption of name for pdf
-   * @type {string}
-   * @memberof ResponseTaxDtoTaxPayer
-   */
-  nameTxt: string
-  /**
-   * Text of descreption of street for pdf
-   * @type {string}
-   * @memberof ResponseTaxDtoTaxPayer
-   */
-  permanentResidenceStreetTxt: string
-  /**
-   * Street of permanent residence with number
-   * @type {string}
-   * @memberof ResponseTaxDtoTaxPayer
-   */
-  permanentResidenceStreet: string
-  /**
-   * Zip of permanent residence with number
-   * @type {string}
-   * @memberof ResponseTaxDtoTaxPayer
-   */
-  permanentResidenceZip: string
-  /**
-   * City of permanent residence with number
-   * @type {string}
-   * @memberof ResponseTaxDtoTaxPayer
-   */
-  permanentResidenceCity: string
-}
 /**
  *
  * @export
@@ -917,7 +783,7 @@ export const AdminApiAxiosParamCreator = function (configuration?: Configuration
      */
     adminControllerLoadDataFromNorris: async (
       requestPostNorisLoadDataDto: RequestPostNorisLoadDataDto,
-      options: AxiosRequestConfig = {},
+      options: RawAxiosRequestConfig = {},
     ): Promise<RequestArgs> => {
       // verify required parameter 'requestPostNorisLoadDataDto' is not null or undefined
       assertParamExists(
@@ -969,7 +835,7 @@ export const AdminApiAxiosParamCreator = function (configuration?: Configuration
      */
     adminControllerUpdateDataFromNorris: async (
       requestPostNorisLoadDataDto: RequestPostNorisLoadDataDto,
-      options: AxiosRequestConfig = {},
+      options: RawAxiosRequestConfig = {},
     ): Promise<RequestArgs> => {
       // verify required parameter 'requestPostNorisLoadDataDto' is not null or undefined
       assertParamExists(
@@ -1021,7 +887,7 @@ export const AdminApiAxiosParamCreator = function (configuration?: Configuration
      */
     adminControllerUpdatePaymentsFromNoris: async (
       requestPostNorisPaymentDataLoadDto: RequestPostNorisPaymentDataLoadDto,
-      options: AxiosRequestConfig = {},
+      options: RawAxiosRequestConfig = {},
     ): Promise<RequestArgs> => {
       // verify required parameter 'requestPostNorisPaymentDataLoadDto' is not null or undefined
       assertParamExists(
@@ -1083,13 +949,24 @@ export const AdminApiFp = function (configuration?: Configuration) {
      */
     async adminControllerLoadDataFromNorris(
       requestPostNorisLoadDataDto: RequestPostNorisLoadDataDto,
-      options?: AxiosRequestConfig,
+      options?: RawAxiosRequestConfig,
     ): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<void>> {
       const localVarAxiosArgs = await localVarAxiosParamCreator.adminControllerLoadDataFromNorris(
         requestPostNorisLoadDataDto,
         options,
       )
-      return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)
+      const localVarOperationServerIndex = configuration?.serverIndex ?? 0
+      const localVarOperationServerBasePath =
+        operationServerMap['AdminApi.adminControllerLoadDataFromNorris']?.[
+          localVarOperationServerIndex
+        ]?.url
+      return (axios, basePath) =>
+        createRequestFunction(
+          localVarAxiosArgs,
+          globalAxios,
+          BASE_PATH,
+          configuration,
+        )(axios, localVarOperationServerBasePath || basePath)
     },
     /**
      *
@@ -1100,13 +977,24 @@ export const AdminApiFp = function (configuration?: Configuration) {
      */
     async adminControllerUpdateDataFromNorris(
       requestPostNorisLoadDataDto: RequestPostNorisLoadDataDto,
-      options?: AxiosRequestConfig,
+      options?: RawAxiosRequestConfig,
     ): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<void>> {
       const localVarAxiosArgs = await localVarAxiosParamCreator.adminControllerUpdateDataFromNorris(
         requestPostNorisLoadDataDto,
         options,
       )
-      return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)
+      const localVarOperationServerIndex = configuration?.serverIndex ?? 0
+      const localVarOperationServerBasePath =
+        operationServerMap['AdminApi.adminControllerUpdateDataFromNorris']?.[
+          localVarOperationServerIndex
+        ]?.url
+      return (axios, basePath) =>
+        createRequestFunction(
+          localVarAxiosArgs,
+          globalAxios,
+          BASE_PATH,
+          configuration,
+        )(axios, localVarOperationServerBasePath || basePath)
     },
     /**
      *
@@ -1117,14 +1005,25 @@ export const AdminApiFp = function (configuration?: Configuration) {
      */
     async adminControllerUpdatePaymentsFromNoris(
       requestPostNorisPaymentDataLoadDto: RequestPostNorisPaymentDataLoadDto,
-      options?: AxiosRequestConfig,
+      options?: RawAxiosRequestConfig,
     ): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<void>> {
       const localVarAxiosArgs =
         await localVarAxiosParamCreator.adminControllerUpdatePaymentsFromNoris(
           requestPostNorisPaymentDataLoadDto,
           options,
         )
-      return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)
+      const localVarOperationServerIndex = configuration?.serverIndex ?? 0
+      const localVarOperationServerBasePath =
+        operationServerMap['AdminApi.adminControllerUpdatePaymentsFromNoris']?.[
+          localVarOperationServerIndex
+        ]?.url
+      return (axios, basePath) =>
+        createRequestFunction(
+          localVarAxiosArgs,
+          globalAxios,
+          BASE_PATH,
+          configuration,
+        )(axios, localVarOperationServerBasePath || basePath)
     },
   }
 }
@@ -1149,7 +1048,7 @@ export const AdminApiFactory = function (
      */
     adminControllerLoadDataFromNorris(
       requestPostNorisLoadDataDto: RequestPostNorisLoadDataDto,
-      options?: AxiosRequestConfig,
+      options?: any,
     ): AxiosPromise<void> {
       return localVarFp
         .adminControllerLoadDataFromNorris(requestPostNorisLoadDataDto, options)
@@ -1164,7 +1063,7 @@ export const AdminApiFactory = function (
      */
     adminControllerUpdateDataFromNorris(
       requestPostNorisLoadDataDto: RequestPostNorisLoadDataDto,
-      options?: AxiosRequestConfig,
+      options?: any,
     ): AxiosPromise<void> {
       return localVarFp
         .adminControllerUpdateDataFromNorris(requestPostNorisLoadDataDto, options)
@@ -1179,7 +1078,7 @@ export const AdminApiFactory = function (
      */
     adminControllerUpdatePaymentsFromNoris(
       requestPostNorisPaymentDataLoadDto: RequestPostNorisPaymentDataLoadDto,
-      options?: AxiosRequestConfig,
+      options?: any,
     ): AxiosPromise<void> {
       return localVarFp
         .adminControllerUpdatePaymentsFromNoris(requestPostNorisPaymentDataLoadDto, options)
@@ -1205,7 +1104,7 @@ export class AdminApi extends BaseAPI {
    */
   public adminControllerLoadDataFromNorris(
     requestPostNorisLoadDataDto: RequestPostNorisLoadDataDto,
-    options?: AxiosRequestConfig,
+    options?: RawAxiosRequestConfig,
   ) {
     return AdminApiFp(this.configuration)
       .adminControllerLoadDataFromNorris(requestPostNorisLoadDataDto, options)
@@ -1222,7 +1121,7 @@ export class AdminApi extends BaseAPI {
    */
   public adminControllerUpdateDataFromNorris(
     requestPostNorisLoadDataDto: RequestPostNorisLoadDataDto,
-    options?: AxiosRequestConfig,
+    options?: RawAxiosRequestConfig,
   ) {
     return AdminApiFp(this.configuration)
       .adminControllerUpdateDataFromNorris(requestPostNorisLoadDataDto, options)
@@ -1239,7 +1138,7 @@ export class AdminApi extends BaseAPI {
    */
   public adminControllerUpdatePaymentsFromNoris(
     requestPostNorisPaymentDataLoadDto: RequestPostNorisPaymentDataLoadDto,
-    options?: AxiosRequestConfig,
+    options?: RawAxiosRequestConfig,
   ) {
     return AdminApiFp(this.configuration)
       .adminControllerUpdatePaymentsFromNoris(requestPostNorisPaymentDataLoadDto, options)
@@ -1259,7 +1158,7 @@ export const DefaultApiAxiosParamCreator = function (configuration?: Configurati
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
-    appControllerHealth: async (options: AxiosRequestConfig = {}): Promise<RequestArgs> => {
+    appControllerHealth: async (options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
       const localVarPath = `/healthcheck`
       // use dummy base URL string because the URL constructor only accepts absolute URLs.
       const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL)
@@ -1302,10 +1201,19 @@ export const DefaultApiFp = function (configuration?: Configuration) {
      * @throws {RequiredError}
      */
     async appControllerHealth(
-      options?: AxiosRequestConfig,
+      options?: RawAxiosRequestConfig,
     ): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<string>> {
       const localVarAxiosArgs = await localVarAxiosParamCreator.appControllerHealth(options)
-      return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)
+      const localVarOperationServerIndex = configuration?.serverIndex ?? 0
+      const localVarOperationServerBasePath =
+        operationServerMap['DefaultApi.appControllerHealth']?.[localVarOperationServerIndex]?.url
+      return (axios, basePath) =>
+        createRequestFunction(
+          localVarAxiosArgs,
+          globalAxios,
+          BASE_PATH,
+          configuration,
+        )(axios, localVarOperationServerBasePath || basePath)
     },
   }
 }
@@ -1327,7 +1235,7 @@ export const DefaultApiFactory = function (
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
-    appControllerHealth(options?: AxiosRequestConfig): AxiosPromise<string> {
+    appControllerHealth(options?: any): AxiosPromise<string> {
       return localVarFp.appControllerHealth(options).then((request) => request(axios, basePath))
     },
   }
@@ -1347,7 +1255,7 @@ export class DefaultApi extends BaseAPI {
    * @throws {RequiredError}
    * @memberof DefaultApi
    */
-  public appControllerHealth(options?: AxiosRequestConfig) {
+  public appControllerHealth(options?: RawAxiosRequestConfig) {
     return DefaultApiFp(this.configuration)
       .appControllerHealth(options)
       .then((request) => request(this.axios, this.basePath))
@@ -1368,7 +1276,7 @@ export const PaymentApiAxiosParamCreator = function (configuration?: Configurati
      */
     paymentControllerGetQrCodeByTaxUuid: async (
       taxUuid: string,
-      options: AxiosRequestConfig = {},
+      options: RawAxiosRequestConfig = {},
     ): Promise<RequestArgs> => {
       // verify required parameter 'taxUuid' is not null or undefined
       assertParamExists('paymentControllerGetQrCodeByTaxUuid', 'taxUuid', taxUuid)
@@ -1409,7 +1317,7 @@ export const PaymentApiAxiosParamCreator = function (configuration?: Configurati
      */
     paymentControllerPayment: async (
       year: string,
-      options: AxiosRequestConfig = {},
+      options: RawAxiosRequestConfig = {},
     ): Promise<RequestArgs> => {
       // verify required parameter 'year' is not null or undefined
       assertParamExists('paymentControllerPayment', 'year', year)
@@ -1454,7 +1362,7 @@ export const PaymentApiAxiosParamCreator = function (configuration?: Configurati
      */
     paymentControllerPaymentByTaxId: async (
       uuid: string,
-      options: AxiosRequestConfig = {},
+      options: RawAxiosRequestConfig = {},
     ): Promise<RequestArgs> => {
       // verify required parameter 'uuid' is not null or undefined
       assertParamExists('paymentControllerPaymentByTaxId', 'uuid', uuid)
@@ -1506,7 +1414,7 @@ export const PaymentApiAxiosParamCreator = function (configuration?: Configurati
       dIGEST: string,
       dIGEST1: string,
       rESULTTEXT: string,
-      options: AxiosRequestConfig = {},
+      options: RawAxiosRequestConfig = {},
     ): Promise<RequestArgs> => {
       // verify required parameter 'oPERATION' is not null or undefined
       assertParamExists('paymentControllerPaymentResponse', 'oPERATION', oPERATION)
@@ -1593,13 +1501,24 @@ export const PaymentApiFp = function (configuration?: Configuration) {
      */
     async paymentControllerGetQrCodeByTaxUuid(
       taxUuid: string,
-      options?: AxiosRequestConfig,
+      options?: RawAxiosRequestConfig,
     ): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<void>> {
       const localVarAxiosArgs = await localVarAxiosParamCreator.paymentControllerGetQrCodeByTaxUuid(
         taxUuid,
         options,
       )
-      return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)
+      const localVarOperationServerIndex = configuration?.serverIndex ?? 0
+      const localVarOperationServerBasePath =
+        operationServerMap['PaymentApi.paymentControllerGetQrCodeByTaxUuid']?.[
+          localVarOperationServerIndex
+        ]?.url
+      return (axios, basePath) =>
+        createRequestFunction(
+          localVarAxiosArgs,
+          globalAxios,
+          BASE_PATH,
+          configuration,
+        )(axios, localVarOperationServerBasePath || basePath)
     },
     /**
      * If there is payment, there will be error, also if there is payed only one installment, user can not pay by paygate
@@ -1610,7 +1529,7 @@ export const PaymentApiFp = function (configuration?: Configuration) {
      */
     async paymentControllerPayment(
       year: string,
-      options?: AxiosRequestConfig,
+      options?: RawAxiosRequestConfig,
     ): Promise<
       (axios?: AxiosInstance, basePath?: string) => AxiosPromise<ResponseGetPaymentUrlDto>
     > {
@@ -1618,7 +1537,17 @@ export const PaymentApiFp = function (configuration?: Configuration) {
         year,
         options,
       )
-      return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)
+      const localVarOperationServerIndex = configuration?.serverIndex ?? 0
+      const localVarOperationServerBasePath =
+        operationServerMap['PaymentApi.paymentControllerPayment']?.[localVarOperationServerIndex]
+          ?.url
+      return (axios, basePath) =>
+        createRequestFunction(
+          localVarAxiosArgs,
+          globalAxios,
+          BASE_PATH,
+          configuration,
+        )(axios, localVarOperationServerBasePath || basePath)
     },
     /**
      * If there is payment, there will be error, also if there is payed only one installment, user can not pay by paygate
@@ -1629,13 +1558,24 @@ export const PaymentApiFp = function (configuration?: Configuration) {
      */
     async paymentControllerPaymentByTaxId(
       uuid: string,
-      options?: AxiosRequestConfig,
+      options?: RawAxiosRequestConfig,
     ): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<void>> {
       const localVarAxiosArgs = await localVarAxiosParamCreator.paymentControllerPaymentByTaxId(
         uuid,
         options,
       )
-      return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)
+      const localVarOperationServerIndex = configuration?.serverIndex ?? 0
+      const localVarOperationServerBasePath =
+        operationServerMap['PaymentApi.paymentControllerPaymentByTaxId']?.[
+          localVarOperationServerIndex
+        ]?.url
+      return (axios, basePath) =>
+        createRequestFunction(
+          localVarAxiosArgs,
+          globalAxios,
+          BASE_PATH,
+          configuration,
+        )(axios, localVarOperationServerBasePath || basePath)
     },
     /**
      *
@@ -1657,7 +1597,7 @@ export const PaymentApiFp = function (configuration?: Configuration) {
       dIGEST: string,
       dIGEST1: string,
       rESULTTEXT: string,
-      options?: AxiosRequestConfig,
+      options?: RawAxiosRequestConfig,
     ): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<void>> {
       const localVarAxiosArgs = await localVarAxiosParamCreator.paymentControllerPaymentResponse(
         oPERATION,
@@ -1669,7 +1609,18 @@ export const PaymentApiFp = function (configuration?: Configuration) {
         rESULTTEXT,
         options,
       )
-      return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)
+      const localVarOperationServerIndex = configuration?.serverIndex ?? 0
+      const localVarOperationServerBasePath =
+        operationServerMap['PaymentApi.paymentControllerPaymentResponse']?.[
+          localVarOperationServerIndex
+        ]?.url
+      return (axios, basePath) =>
+        createRequestFunction(
+          localVarAxiosArgs,
+          globalAxios,
+          BASE_PATH,
+          configuration,
+        )(axios, localVarOperationServerBasePath || basePath)
     },
   }
 }
@@ -1691,10 +1642,7 @@ export const PaymentApiFactory = function (
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
-    paymentControllerGetQrCodeByTaxUuid(
-      taxUuid: string,
-      options?: AxiosRequestConfig,
-    ): AxiosPromise<void> {
+    paymentControllerGetQrCodeByTaxUuid(taxUuid: string, options?: any): AxiosPromise<void> {
       return localVarFp
         .paymentControllerGetQrCodeByTaxUuid(taxUuid, options)
         .then((request) => request(axios, basePath))
@@ -1706,10 +1654,7 @@ export const PaymentApiFactory = function (
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
-    paymentControllerPayment(
-      year: string,
-      options?: AxiosRequestConfig,
-    ): AxiosPromise<ResponseGetPaymentUrlDto> {
+    paymentControllerPayment(year: string, options?: any): AxiosPromise<ResponseGetPaymentUrlDto> {
       return localVarFp
         .paymentControllerPayment(year, options)
         .then((request) => request(axios, basePath))
@@ -1721,10 +1666,7 @@ export const PaymentApiFactory = function (
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
-    paymentControllerPaymentByTaxId(
-      uuid: string,
-      options?: AxiosRequestConfig,
-    ): AxiosPromise<void> {
+    paymentControllerPaymentByTaxId(uuid: string, options?: any): AxiosPromise<void> {
       return localVarFp
         .paymentControllerPaymentByTaxId(uuid, options)
         .then((request) => request(axios, basePath))
@@ -1749,7 +1691,7 @@ export const PaymentApiFactory = function (
       dIGEST: string,
       dIGEST1: string,
       rESULTTEXT: string,
-      options?: AxiosRequestConfig,
+      options?: any,
     ): AxiosPromise<void> {
       return localVarFp
         .paymentControllerPaymentResponse(
@@ -1781,7 +1723,7 @@ export class PaymentApi extends BaseAPI {
    * @throws {RequiredError}
    * @memberof PaymentApi
    */
-  public paymentControllerGetQrCodeByTaxUuid(taxUuid: string, options?: AxiosRequestConfig) {
+  public paymentControllerGetQrCodeByTaxUuid(taxUuid: string, options?: RawAxiosRequestConfig) {
     return PaymentApiFp(this.configuration)
       .paymentControllerGetQrCodeByTaxUuid(taxUuid, options)
       .then((request) => request(this.axios, this.basePath))
@@ -1795,7 +1737,7 @@ export class PaymentApi extends BaseAPI {
    * @throws {RequiredError}
    * @memberof PaymentApi
    */
-  public paymentControllerPayment(year: string, options?: AxiosRequestConfig) {
+  public paymentControllerPayment(year: string, options?: RawAxiosRequestConfig) {
     return PaymentApiFp(this.configuration)
       .paymentControllerPayment(year, options)
       .then((request) => request(this.axios, this.basePath))
@@ -1809,7 +1751,7 @@ export class PaymentApi extends BaseAPI {
    * @throws {RequiredError}
    * @memberof PaymentApi
    */
-  public paymentControllerPaymentByTaxId(uuid: string, options?: AxiosRequestConfig) {
+  public paymentControllerPaymentByTaxId(uuid: string, options?: RawAxiosRequestConfig) {
     return PaymentApiFp(this.configuration)
       .paymentControllerPaymentByTaxId(uuid, options)
       .then((request) => request(this.axios, this.basePath))
@@ -1836,7 +1778,7 @@ export class PaymentApi extends BaseAPI {
     dIGEST: string,
     dIGEST1: string,
     rESULTTEXT: string,
-    options?: AxiosRequestConfig,
+    options?: RawAxiosRequestConfig,
   ) {
     return PaymentApiFp(this.configuration)
       .paymentControllerPaymentResponse(
@@ -1868,7 +1810,7 @@ export const TaxApiAxiosParamCreator = function (configuration?: Configuration) 
      */
     taxControllerGetActualTaxes: async (
       year: number,
-      options: AxiosRequestConfig = {},
+      options: RawAxiosRequestConfig = {},
     ): Promise<RequestArgs> => {
       // verify required parameter 'year' is not null or undefined
       assertParamExists('taxControllerGetActualTaxes', 'year', year)
@@ -1912,7 +1854,7 @@ export const TaxApiAxiosParamCreator = function (configuration?: Configuration) 
      * @throws {RequiredError}
      */
     taxControllerGetArchivedTaxes: async (
-      options: AxiosRequestConfig = {},
+      options: RawAxiosRequestConfig = {},
     ): Promise<RequestArgs> => {
       const localVarPath = `/tax/taxes`
       // use dummy base URL string because the URL constructor only accepts absolute URLs.
@@ -1953,7 +1895,7 @@ export const TaxApiAxiosParamCreator = function (configuration?: Configuration) 
      */
     taxControllerGetTaxByYearPdf: async (
       year: number,
-      options: AxiosRequestConfig = {},
+      options: RawAxiosRequestConfig = {},
     ): Promise<RequestArgs> => {
       // verify required parameter 'year' is not null or undefined
       assertParamExists('taxControllerGetTaxByYearPdf', 'year', year)
@@ -2009,13 +1951,23 @@ export const TaxApiFp = function (configuration?: Configuration) {
      */
     async taxControllerGetActualTaxes(
       year: number,
-      options?: AxiosRequestConfig,
+      options?: RawAxiosRequestConfig,
     ): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<ResponseTaxDto>> {
       const localVarAxiosArgs = await localVarAxiosParamCreator.taxControllerGetActualTaxes(
         year,
         options,
       )
-      return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)
+      const localVarOperationServerIndex = configuration?.serverIndex ?? 0
+      const localVarOperationServerBasePath =
+        operationServerMap['TaxApi.taxControllerGetActualTaxes']?.[localVarOperationServerIndex]
+          ?.url
+      return (axios, basePath) =>
+        createRequestFunction(
+          localVarAxiosArgs,
+          globalAxios,
+          BASE_PATH,
+          configuration,
+        )(axios, localVarOperationServerBasePath || basePath)
     },
     /**
      *
@@ -2024,11 +1976,21 @@ export const TaxApiFp = function (configuration?: Configuration) {
      * @throws {RequiredError}
      */
     async taxControllerGetArchivedTaxes(
-      options?: AxiosRequestConfig,
+      options?: RawAxiosRequestConfig,
     ): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<ResponseGetTaxesDto>> {
       const localVarAxiosArgs =
         await localVarAxiosParamCreator.taxControllerGetArchivedTaxes(options)
-      return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)
+      const localVarOperationServerIndex = configuration?.serverIndex ?? 0
+      const localVarOperationServerBasePath =
+        operationServerMap['TaxApi.taxControllerGetArchivedTaxes']?.[localVarOperationServerIndex]
+          ?.url
+      return (axios, basePath) =>
+        createRequestFunction(
+          localVarAxiosArgs,
+          globalAxios,
+          BASE_PATH,
+          configuration,
+        )(axios, localVarOperationServerBasePath || basePath)
     },
     /**
      *
@@ -2040,13 +2002,23 @@ export const TaxApiFp = function (configuration?: Configuration) {
      */
     async taxControllerGetTaxByYearPdf(
       year: number,
-      options?: AxiosRequestConfig,
+      options?: RawAxiosRequestConfig,
     ): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<ResponseTaxDto>> {
       const localVarAxiosArgs = await localVarAxiosParamCreator.taxControllerGetTaxByYearPdf(
         year,
         options,
       )
-      return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)
+      const localVarOperationServerIndex = configuration?.serverIndex ?? 0
+      const localVarOperationServerBasePath =
+        operationServerMap['TaxApi.taxControllerGetTaxByYearPdf']?.[localVarOperationServerIndex]
+          ?.url
+      return (axios, basePath) =>
+        createRequestFunction(
+          localVarAxiosArgs,
+          globalAxios,
+          BASE_PATH,
+          configuration,
+        )(axios, localVarOperationServerBasePath || basePath)
     },
   }
 }
@@ -2069,10 +2041,7 @@ export const TaxApiFactory = function (
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
-    taxControllerGetActualTaxes(
-      year: number,
-      options?: AxiosRequestConfig,
-    ): AxiosPromise<ResponseTaxDto> {
+    taxControllerGetActualTaxes(year: number, options?: any): AxiosPromise<ResponseTaxDto> {
       return localVarFp
         .taxControllerGetActualTaxes(year, options)
         .then((request) => request(axios, basePath))
@@ -2083,7 +2052,7 @@ export const TaxApiFactory = function (
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
-    taxControllerGetArchivedTaxes(options?: AxiosRequestConfig): AxiosPromise<ResponseGetTaxesDto> {
+    taxControllerGetArchivedTaxes(options?: any): AxiosPromise<ResponseGetTaxesDto> {
       return localVarFp
         .taxControllerGetArchivedTaxes(options)
         .then((request) => request(axios, basePath))
@@ -2096,10 +2065,7 @@ export const TaxApiFactory = function (
      * @deprecated
      * @throws {RequiredError}
      */
-    taxControllerGetTaxByYearPdf(
-      year: number,
-      options?: AxiosRequestConfig,
-    ): AxiosPromise<ResponseTaxDto> {
+    taxControllerGetTaxByYearPdf(year: number, options?: any): AxiosPromise<ResponseTaxDto> {
       return localVarFp
         .taxControllerGetTaxByYearPdf(year, options)
         .then((request) => request(axios, basePath))
@@ -2122,7 +2088,7 @@ export class TaxApi extends BaseAPI {
    * @throws {RequiredError}
    * @memberof TaxApi
    */
-  public taxControllerGetActualTaxes(year: number, options?: AxiosRequestConfig) {
+  public taxControllerGetActualTaxes(year: number, options?: RawAxiosRequestConfig) {
     return TaxApiFp(this.configuration)
       .taxControllerGetActualTaxes(year, options)
       .then((request) => request(this.axios, this.basePath))
@@ -2135,7 +2101,7 @@ export class TaxApi extends BaseAPI {
    * @throws {RequiredError}
    * @memberof TaxApi
    */
-  public taxControllerGetArchivedTaxes(options?: AxiosRequestConfig) {
+  public taxControllerGetArchivedTaxes(options?: RawAxiosRequestConfig) {
     return TaxApiFp(this.configuration)
       .taxControllerGetArchivedTaxes(options)
       .then((request) => request(this.axios, this.basePath))
@@ -2150,7 +2116,7 @@ export class TaxApi extends BaseAPI {
    * @throws {RequiredError}
    * @memberof TaxApi
    */
-  public taxControllerGetTaxByYearPdf(year: number, options?: AxiosRequestConfig) {
+  public taxControllerGetTaxByYearPdf(year: number, options?: RawAxiosRequestConfig) {
     return TaxApiFp(this.configuration)
       .taxControllerGetTaxByYearPdf(year, options)
       .then((request) => request(this.axios, this.basePath))

@@ -4,9 +4,9 @@ import AccountSectionHeader from 'components/forms/segments/AccountSectionHeader
 import TaxesFeesCard from 'components/forms/segments/AccountSections/TaxesFeesSection/TaxesFeesCard'
 import { useTranslation } from 'next-i18next'
 
+import TaxesFeesCards from './TaxesFeesCards'
 import TaxesFeesErrorCard from './TaxesFeesErrorCard'
 import TaxesFeesInPreparationCard from './TaxesFeesInPreparationCard'
-import TaxesFeesTaxAdministratorCard from './TaxesFeesTaxAdministratorCard'
 
 type TaxesFeesSectionProps = {
   taxesData: ResponseGetTaxesDto
@@ -26,7 +26,7 @@ const TaxesFeesSection = ({ taxesData, taxAdministrator }: TaxesFeesSectionProps
     <div className="flex flex-col">
       <AccountSectionHeader title={t('account_section_payment.title')} />
       <div className="m-auto flex w-full max-w-screen-lg flex-col gap-4 p-4 sm:px-6 lg:gap-8 lg:px-0 lg:py-8">
-        {taxAdministrator && <TaxesFeesTaxAdministratorCard taxAdministrator={taxAdministrator} />}
+        <TaxesFeesCards taxesData={taxesData} taxAdministrator={taxAdministrator} />
         {displayErrorCard && <TaxesFeesErrorCard />}
         {(displayInPreparationCard || displayTaxCards) && (
           <div className="flex flex-col gap-4">

@@ -13,7 +13,7 @@
  */
 
 import type { Configuration } from './configuration'
-import type { AxiosPromise, AxiosInstance, AxiosRequestConfig } from 'axios'
+import type { AxiosPromise, AxiosInstance, RawAxiosRequestConfig } from 'axios'
 import globalAxios from 'axios'
 // Some imports not used depending on template conditions
 // @ts-ignore
@@ -31,7 +31,7 @@ import {
 } from './common'
 import type { RequestArgs } from './base'
 // @ts-ignore
-import { BASE_PATH, COLLECTION_FORMATS, BaseAPI, RequiredError } from './base'
+import { BASE_PATH, COLLECTION_FORMATS, BaseAPI, RequiredError, operationServerMap } from './base'
 
 /**
  *
@@ -847,7 +847,7 @@ export const ADMINApiAxiosParamCreator = function (configuration?: Configuration
      */
     adminControllerCheckLegalPersonVerifyState: async (
       email: string,
-      options: AxiosRequestConfig = {},
+      options: RawAxiosRequestConfig = {},
     ): Promise<RequestArgs> => {
       // verify required parameter 'email' is not null or undefined
       assertParamExists('adminControllerCheckLegalPersonVerifyState', 'email', email)
@@ -891,7 +891,7 @@ export const ADMINApiAxiosParamCreator = function (configuration?: Configuration
      */
     adminControllerCheckUserVerifyState: async (
       email: string,
-      options: AxiosRequestConfig = {},
+      options: RawAxiosRequestConfig = {},
     ): Promise<RequestArgs> => {
       // verify required parameter 'email' is not null or undefined
       assertParamExists('adminControllerCheckUserVerifyState', 'email', email)
@@ -935,7 +935,7 @@ export const ADMINApiAxiosParamCreator = function (configuration?: Configuration
      */
     adminControllerGetUserDataByBirthNumber: async (
       birthNumber: string,
-      options: AxiosRequestConfig = {},
+      options: RawAxiosRequestConfig = {},
     ): Promise<RequestArgs> => {
       // verify required parameter 'birthNumber' is not null or undefined
       assertParamExists('adminControllerGetUserDataByBirthNumber', 'birthNumber', birthNumber)
@@ -990,11 +990,22 @@ export const ADMINApiFp = function (configuration?: Configuration) {
      */
     async adminControllerCheckLegalPersonVerifyState(
       email: string,
-      options?: AxiosRequestConfig,
+      options?: RawAxiosRequestConfig,
     ): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<LegalPersonVerifyState>> {
       const localVarAxiosArgs =
         await localVarAxiosParamCreator.adminControllerCheckLegalPersonVerifyState(email, options)
-      return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)
+      const localVarOperationServerIndex = configuration?.serverIndex ?? 0
+      const localVarOperationServerBasePath =
+        operationServerMap['ADMINApi.adminControllerCheckLegalPersonVerifyState']?.[
+          localVarOperationServerIndex
+        ]?.url
+      return (axios, basePath) =>
+        createRequestFunction(
+          localVarAxiosArgs,
+          globalAxios,
+          BASE_PATH,
+          configuration,
+        )(axios, localVarOperationServerBasePath || basePath)
     },
     /**
      * Return the state of user verifying.
@@ -1005,13 +1016,24 @@ export const ADMINApiFp = function (configuration?: Configuration) {
      */
     async adminControllerCheckUserVerifyState(
       email: string,
-      options?: AxiosRequestConfig,
+      options?: RawAxiosRequestConfig,
     ): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<UserVerifyState>> {
       const localVarAxiosArgs = await localVarAxiosParamCreator.adminControllerCheckUserVerifyState(
         email,
         options,
       )
-      return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)
+      const localVarOperationServerIndex = configuration?.serverIndex ?? 0
+      const localVarOperationServerBasePath =
+        operationServerMap['ADMINApi.adminControllerCheckUserVerifyState']?.[
+          localVarOperationServerIndex
+        ]?.url
+      return (axios, basePath) =>
+        createRequestFunction(
+          localVarAxiosArgs,
+          globalAxios,
+          BASE_PATH,
+          configuration,
+        )(axios, localVarOperationServerBasePath || basePath)
     },
     /**
      * Get user data by birthnumber
@@ -1022,7 +1044,7 @@ export const ADMINApiFp = function (configuration?: Configuration) {
      */
     async adminControllerGetUserDataByBirthNumber(
       birthNumber: string,
-      options?: AxiosRequestConfig,
+      options?: RawAxiosRequestConfig,
     ): Promise<
       (axios?: AxiosInstance, basePath?: string) => AxiosPromise<ResponseUserByBirthNumberDto>
     > {
@@ -1031,7 +1053,18 @@ export const ADMINApiFp = function (configuration?: Configuration) {
           birthNumber,
           options,
         )
-      return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)
+      const localVarOperationServerIndex = configuration?.serverIndex ?? 0
+      const localVarOperationServerBasePath =
+        operationServerMap['ADMINApi.adminControllerGetUserDataByBirthNumber']?.[
+          localVarOperationServerIndex
+        ]?.url
+      return (axios, basePath) =>
+        createRequestFunction(
+          localVarAxiosArgs,
+          globalAxios,
+          BASE_PATH,
+          configuration,
+        )(axios, localVarOperationServerBasePath || basePath)
     },
   }
 }
@@ -1056,7 +1089,7 @@ export const ADMINApiFactory = function (
      */
     adminControllerCheckLegalPersonVerifyState(
       email: string,
-      options?: AxiosRequestConfig,
+      options?: any,
     ): AxiosPromise<LegalPersonVerifyState> {
       return localVarFp
         .adminControllerCheckLegalPersonVerifyState(email, options)
@@ -1071,7 +1104,7 @@ export const ADMINApiFactory = function (
      */
     adminControllerCheckUserVerifyState(
       email: string,
-      options?: AxiosRequestConfig,
+      options?: any,
     ): AxiosPromise<UserVerifyState> {
       return localVarFp
         .adminControllerCheckUserVerifyState(email, options)
@@ -1086,7 +1119,7 @@ export const ADMINApiFactory = function (
      */
     adminControllerGetUserDataByBirthNumber(
       birthNumber: string,
-      options?: AxiosRequestConfig,
+      options?: any,
     ): AxiosPromise<ResponseUserByBirthNumberDto> {
       return localVarFp
         .adminControllerGetUserDataByBirthNumber(birthNumber, options)
@@ -1110,7 +1143,10 @@ export class ADMINApi extends BaseAPI {
    * @throws {RequiredError}
    * @memberof ADMINApi
    */
-  public adminControllerCheckLegalPersonVerifyState(email: string, options?: AxiosRequestConfig) {
+  public adminControllerCheckLegalPersonVerifyState(
+    email: string,
+    options?: RawAxiosRequestConfig,
+  ) {
     return ADMINApiFp(this.configuration)
       .adminControllerCheckLegalPersonVerifyState(email, options)
       .then((request) => request(this.axios, this.basePath))
@@ -1124,7 +1160,7 @@ export class ADMINApi extends BaseAPI {
    * @throws {RequiredError}
    * @memberof ADMINApi
    */
-  public adminControllerCheckUserVerifyState(email: string, options?: AxiosRequestConfig) {
+  public adminControllerCheckUserVerifyState(email: string, options?: RawAxiosRequestConfig) {
     return ADMINApiFp(this.configuration)
       .adminControllerCheckUserVerifyState(email, options)
       .then((request) => request(this.axios, this.basePath))
@@ -1140,7 +1176,7 @@ export class ADMINApi extends BaseAPI {
    */
   public adminControllerGetUserDataByBirthNumber(
     birthNumber: string,
-    options?: AxiosRequestConfig,
+    options?: RawAxiosRequestConfig,
   ) {
     return ADMINApiFp(this.configuration)
       .adminControllerGetUserDataByBirthNumber(birthNumber, options)
@@ -1160,7 +1196,7 @@ export const AuthApiAxiosParamCreator = function (configuration?: Configuration)
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
-    authControllerLogin: async (options: AxiosRequestConfig = {}): Promise<RequestArgs> => {
+    authControllerLogin: async (options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
       const localVarPath = `/auth/user`
       // use dummy base URL string because the URL constructor only accepts absolute URLs.
       const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL)
@@ -1207,10 +1243,19 @@ export const AuthApiFp = function (configuration?: Configuration) {
      * @throws {RequiredError}
      */
     async authControllerLogin(
-      options?: AxiosRequestConfig,
+      options?: RawAxiosRequestConfig,
     ): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<CognitoGetUserData>> {
       const localVarAxiosArgs = await localVarAxiosParamCreator.authControllerLogin(options)
-      return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)
+      const localVarOperationServerIndex = configuration?.serverIndex ?? 0
+      const localVarOperationServerBasePath =
+        operationServerMap['AuthApi.authControllerLogin']?.[localVarOperationServerIndex]?.url
+      return (axios, basePath) =>
+        createRequestFunction(
+          localVarAxiosArgs,
+          globalAxios,
+          BASE_PATH,
+          configuration,
+        )(axios, localVarOperationServerBasePath || basePath)
     },
   }
 }
@@ -1232,7 +1277,7 @@ export const AuthApiFactory = function (
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
-    authControllerLogin(options?: AxiosRequestConfig): AxiosPromise<CognitoGetUserData> {
+    authControllerLogin(options?: any): AxiosPromise<CognitoGetUserData> {
       return localVarFp.authControllerLogin(options).then((request) => request(axios, basePath))
     },
   }
@@ -1252,7 +1297,7 @@ export class AuthApi extends BaseAPI {
    * @throws {RequiredError}
    * @memberof AuthApi
    */
-  public authControllerLogin(options?: AxiosRequestConfig) {
+  public authControllerLogin(options?: RawAxiosRequestConfig) {
     return AuthApiFp(this.configuration)
       .authControllerLogin(options)
       .then((request) => request(this.axios, this.basePath))
@@ -1271,7 +1316,7 @@ export const DefaultApiAxiosParamCreator = function (configuration?: Configurati
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
-    appControllerHealthCheck: async (options: AxiosRequestConfig = {}): Promise<RequestArgs> => {
+    appControllerHealthCheck: async (options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
       const localVarPath = `/healthcheck`
       // use dummy base URL string because the URL constructor only accepts absolute URLs.
       const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL)
@@ -1314,10 +1359,20 @@ export const DefaultApiFp = function (configuration?: Configuration) {
      * @throws {RequiredError}
      */
     async appControllerHealthCheck(
-      options?: AxiosRequestConfig,
+      options?: RawAxiosRequestConfig,
     ): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<string>> {
       const localVarAxiosArgs = await localVarAxiosParamCreator.appControllerHealthCheck(options)
-      return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)
+      const localVarOperationServerIndex = configuration?.serverIndex ?? 0
+      const localVarOperationServerBasePath =
+        operationServerMap['DefaultApi.appControllerHealthCheck']?.[localVarOperationServerIndex]
+          ?.url
+      return (axios, basePath) =>
+        createRequestFunction(
+          localVarAxiosArgs,
+          globalAxios,
+          BASE_PATH,
+          configuration,
+        )(axios, localVarOperationServerBasePath || basePath)
     },
   }
 }
@@ -1339,7 +1394,7 @@ export const DefaultApiFactory = function (
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
-    appControllerHealthCheck(options?: AxiosRequestConfig): AxiosPromise<string> {
+    appControllerHealthCheck(options?: any): AxiosPromise<string> {
       return localVarFp
         .appControllerHealthCheck(options)
         .then((request) => request(axios, basePath))
@@ -1361,7 +1416,7 @@ export class DefaultApi extends BaseAPI {
    * @throws {RequiredError}
    * @memberof DefaultApi
    */
-  public appControllerHealthCheck(options?: AxiosRequestConfig) {
+  public appControllerHealthCheck(options?: RawAxiosRequestConfig) {
     return DefaultApiFp(this.configuration)
       .appControllerHealthCheck(options)
       .then((request) => request(this.axios, this.basePath))
@@ -1383,7 +1438,7 @@ export const UserVerificationsApiAxiosParamCreator = function (configuration?: C
      */
     verificationControllerVerifyBirthNumberAndIdentityCard: async (
       requestBodyVerifyIdentityCardDto: RequestBodyVerifyIdentityCardDto,
-      options: AxiosRequestConfig = {},
+      options: RawAxiosRequestConfig = {},
     ): Promise<RequestArgs> => {
       // verify required parameter 'requestBodyVerifyIdentityCardDto' is not null or undefined
       assertParamExists(
@@ -1436,7 +1491,7 @@ export const UserVerificationsApiAxiosParamCreator = function (configuration?: C
      */
     verificationControllerVerifyIcoBirthNumberAndIdentityCard: async (
       requestBodyVerifyWithRpoDto: RequestBodyVerifyWithRpoDto,
-      options: AxiosRequestConfig = {},
+      options: RawAxiosRequestConfig = {},
     ): Promise<RequestArgs> => {
       // verify required parameter 'requestBodyVerifyWithRpoDto' is not null or undefined
       assertParamExists(
@@ -1489,7 +1544,7 @@ export const UserVerificationsApiAxiosParamCreator = function (configuration?: C
      */
     verificationControllerVerifyWithEid: async (
       requestBodyVerifyWithEidDto: RequestBodyVerifyWithEidDto,
-      options: AxiosRequestConfig = {},
+      options: RawAxiosRequestConfig = {},
     ): Promise<RequestArgs> => {
       // verify required parameter 'requestBodyVerifyWithEidDto' is not null or undefined
       assertParamExists(
@@ -1552,7 +1607,7 @@ export const UserVerificationsApiFp = function (configuration?: Configuration) {
      */
     async verificationControllerVerifyBirthNumberAndIdentityCard(
       requestBodyVerifyIdentityCardDto: RequestBodyVerifyIdentityCardDto,
-      options?: AxiosRequestConfig,
+      options?: RawAxiosRequestConfig,
     ): Promise<
       (
         axios?: AxiosInstance,
@@ -1564,7 +1619,18 @@ export const UserVerificationsApiFp = function (configuration?: Configuration) {
           requestBodyVerifyIdentityCardDto,
           options,
         )
-      return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)
+      const localVarOperationServerIndex = configuration?.serverIndex ?? 0
+      const localVarOperationServerBasePath =
+        operationServerMap[
+          'UserVerificationsApi.verificationControllerVerifyBirthNumberAndIdentityCard'
+        ]?.[localVarOperationServerIndex]?.url
+      return (axios, basePath) =>
+        createRequestFunction(
+          localVarAxiosArgs,
+          globalAxios,
+          BASE_PATH,
+          configuration,
+        )(axios, localVarOperationServerBasePath || basePath)
     },
     /**
      * This endpoint validates users via the register of legal entities
@@ -1575,7 +1641,7 @@ export const UserVerificationsApiFp = function (configuration?: Configuration) {
      */
     async verificationControllerVerifyIcoBirthNumberAndIdentityCard(
       requestBodyVerifyWithRpoDto: RequestBodyVerifyWithRpoDto,
-      options?: AxiosRequestConfig,
+      options?: RawAxiosRequestConfig,
     ): Promise<
       (axios?: AxiosInstance, basePath?: string) => AxiosPromise<ResponseVerificationDto>
     > {
@@ -1584,7 +1650,18 @@ export const UserVerificationsApiFp = function (configuration?: Configuration) {
           requestBodyVerifyWithRpoDto,
           options,
         )
-      return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)
+      const localVarOperationServerIndex = configuration?.serverIndex ?? 0
+      const localVarOperationServerBasePath =
+        operationServerMap[
+          'UserVerificationsApi.verificationControllerVerifyIcoBirthNumberAndIdentityCard'
+        ]?.[localVarOperationServerIndex]?.url
+      return (axios, basePath) =>
+        createRequestFunction(
+          localVarAxiosArgs,
+          globalAxios,
+          BASE_PATH,
+          configuration,
+        )(axios, localVarOperationServerBasePath || basePath)
     },
     /**
      * This endpoint validates users via eid by contacting slovensko.sk and returns user data upon successful validation.
@@ -1595,7 +1672,7 @@ export const UserVerificationsApiFp = function (configuration?: Configuration) {
      */
     async verificationControllerVerifyWithEid(
       requestBodyVerifyWithEidDto: RequestBodyVerifyWithEidDto,
-      options?: AxiosRequestConfig,
+      options?: RawAxiosRequestConfig,
     ): Promise<
       (axios?: AxiosInstance, basePath?: string) => AxiosPromise<ResponseVerificationDto>
     > {
@@ -1603,7 +1680,18 @@ export const UserVerificationsApiFp = function (configuration?: Configuration) {
         requestBodyVerifyWithEidDto,
         options,
       )
-      return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)
+      const localVarOperationServerIndex = configuration?.serverIndex ?? 0
+      const localVarOperationServerBasePath =
+        operationServerMap['UserVerificationsApi.verificationControllerVerifyWithEid']?.[
+          localVarOperationServerIndex
+        ]?.url
+      return (axios, basePath) =>
+        createRequestFunction(
+          localVarAxiosArgs,
+          globalAxios,
+          BASE_PATH,
+          configuration,
+        )(axios, localVarOperationServerBasePath || basePath)
     },
   }
 }
@@ -1628,7 +1716,7 @@ export const UserVerificationsApiFactory = function (
      */
     verificationControllerVerifyBirthNumberAndIdentityCard(
       requestBodyVerifyIdentityCardDto: RequestBodyVerifyIdentityCardDto,
-      options?: AxiosRequestConfig,
+      options?: any,
     ): AxiosPromise<ResponseVerificationIdentityCardToQueueDto> {
       return localVarFp
         .verificationControllerVerifyBirthNumberAndIdentityCard(
@@ -1646,7 +1734,7 @@ export const UserVerificationsApiFactory = function (
      */
     verificationControllerVerifyIcoBirthNumberAndIdentityCard(
       requestBodyVerifyWithRpoDto: RequestBodyVerifyWithRpoDto,
-      options?: AxiosRequestConfig,
+      options?: any,
     ): AxiosPromise<ResponseVerificationDto> {
       return localVarFp
         .verificationControllerVerifyIcoBirthNumberAndIdentityCard(
@@ -1664,7 +1752,7 @@ export const UserVerificationsApiFactory = function (
      */
     verificationControllerVerifyWithEid(
       requestBodyVerifyWithEidDto: RequestBodyVerifyWithEidDto,
-      options?: AxiosRequestConfig,
+      options?: any,
     ): AxiosPromise<ResponseVerificationDto> {
       return localVarFp
         .verificationControllerVerifyWithEid(requestBodyVerifyWithEidDto, options)
@@ -1690,7 +1778,7 @@ export class UserVerificationsApi extends BaseAPI {
    */
   public verificationControllerVerifyBirthNumberAndIdentityCard(
     requestBodyVerifyIdentityCardDto: RequestBodyVerifyIdentityCardDto,
-    options?: AxiosRequestConfig,
+    options?: RawAxiosRequestConfig,
   ) {
     return UserVerificationsApiFp(this.configuration)
       .verificationControllerVerifyBirthNumberAndIdentityCard(
@@ -1710,7 +1798,7 @@ export class UserVerificationsApi extends BaseAPI {
    */
   public verificationControllerVerifyIcoBirthNumberAndIdentityCard(
     requestBodyVerifyWithRpoDto: RequestBodyVerifyWithRpoDto,
-    options?: AxiosRequestConfig,
+    options?: RawAxiosRequestConfig,
   ) {
     return UserVerificationsApiFp(this.configuration)
       .verificationControllerVerifyIcoBirthNumberAndIdentityCard(
@@ -1730,7 +1818,7 @@ export class UserVerificationsApi extends BaseAPI {
    */
   public verificationControllerVerifyWithEid(
     requestBodyVerifyWithEidDto: RequestBodyVerifyWithEidDto,
-    options?: AxiosRequestConfig,
+    options?: RawAxiosRequestConfig,
   ) {
     return UserVerificationsApiFp(this.configuration)
       .verificationControllerVerifyWithEid(requestBodyVerifyWithEidDto, options)
@@ -1753,7 +1841,7 @@ export const UsersManipulationApiAxiosParamCreator = function (configuration?: C
      */
     userControllerChangeEmail: async (
       newEmail: string,
-      options: AxiosRequestConfig = {},
+      options: RawAxiosRequestConfig = {},
     ): Promise<RequestArgs> => {
       // verify required parameter 'newEmail' is not null or undefined
       assertParamExists('userControllerChangeEmail', 'newEmail', newEmail)
@@ -1797,7 +1885,7 @@ export const UsersManipulationApiAxiosParamCreator = function (configuration?: C
      * @throws {RequiredError}
      */
     userControllerGetOrCreateUser: async (
-      options: AxiosRequestConfig = {},
+      options: RawAxiosRequestConfig = {},
     ): Promise<RequestArgs> => {
       const localVarPath = `/user/get-or-create`
       // use dummy base URL string because the URL constructor only accepts absolute URLs.
@@ -1834,7 +1922,7 @@ export const UsersManipulationApiAxiosParamCreator = function (configuration?: C
      * @throws {RequiredError}
      */
     userControllerRemoveBirthNumber: async (
-      options: AxiosRequestConfig = {},
+      options: RawAxiosRequestConfig = {},
     ): Promise<RequestArgs> => {
       const localVarPath = `/user/remove-birthnumber`
       // use dummy base URL string because the URL constructor only accepts absolute URLs.
@@ -1875,7 +1963,7 @@ export const UsersManipulationApiAxiosParamCreator = function (configuration?: C
      */
     userControllerSubscribeLoggedUser: async (
       requestGdprDataDto: RequestGdprDataDto,
-      options: AxiosRequestConfig = {},
+      options: RawAxiosRequestConfig = {},
     ): Promise<RequestArgs> => {
       // verify required parameter 'requestGdprDataDto' is not null or undefined
       assertParamExists(
@@ -1929,7 +2017,7 @@ export const UsersManipulationApiAxiosParamCreator = function (configuration?: C
      */
     userControllerSubscribePublicUser: async (
       requestPublicSubscriptionDto: RequestPublicSubscriptionDto,
-      options: AxiosRequestConfig = {},
+      options: RawAxiosRequestConfig = {},
     ): Promise<RequestArgs> => {
       // verify required parameter 'requestPublicSubscriptionDto' is not null or undefined
       assertParamExists(
@@ -1983,7 +2071,7 @@ export const UsersManipulationApiAxiosParamCreator = function (configuration?: C
      */
     userControllerUnsubscribeLoggedUser: async (
       requestGdprDataDto: RequestGdprDataDto,
-      options: AxiosRequestConfig = {},
+      options: RawAxiosRequestConfig = {},
     ): Promise<RequestArgs> => {
       // verify required parameter 'requestGdprDataDto' is not null or undefined
       assertParamExists(
@@ -2037,7 +2125,7 @@ export const UsersManipulationApiAxiosParamCreator = function (configuration?: C
      */
     userControllerUnsubscribePublicUser: async (
       id: string,
-      options: AxiosRequestConfig = {},
+      options: RawAxiosRequestConfig = {},
     ): Promise<RequestArgs> => {
       // verify required parameter 'id' is not null or undefined
       assertParamExists('userControllerUnsubscribePublicUser', 'id', id)
@@ -2092,7 +2180,7 @@ export const UsersManipulationApiFp = function (configuration?: Configuration) {
      */
     async userControllerChangeEmail(
       newEmail: string,
-      options?: AxiosRequestConfig,
+      options?: RawAxiosRequestConfig,
     ): Promise<
       (axios?: AxiosInstance, basePath?: string) => AxiosPromise<ResponseUserDataBasicDto>
     > {
@@ -2100,7 +2188,18 @@ export const UsersManipulationApiFp = function (configuration?: Configuration) {
         newEmail,
         options,
       )
-      return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)
+      const localVarOperationServerIndex = configuration?.serverIndex ?? 0
+      const localVarOperationServerBasePath =
+        operationServerMap['UsersManipulationApi.userControllerChangeEmail']?.[
+          localVarOperationServerIndex
+        ]?.url
+      return (axios, basePath) =>
+        createRequestFunction(
+          localVarAxiosArgs,
+          globalAxios,
+          BASE_PATH,
+          configuration,
+        )(axios, localVarOperationServerBasePath || basePath)
     },
     /**
      * This endpoint return all user data in database of city account and his gdpr latest gdpr data. Null in gdpr means is not subscribe neither unsubscribe. If this endpoint will create user, create automatically License subscription.
@@ -2109,11 +2208,22 @@ export const UsersManipulationApiFp = function (configuration?: Configuration) {
      * @throws {RequiredError}
      */
     async userControllerGetOrCreateUser(
-      options?: AxiosRequestConfig,
+      options?: RawAxiosRequestConfig,
     ): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<ResponseUserDataDto>> {
       const localVarAxiosArgs =
         await localVarAxiosParamCreator.userControllerGetOrCreateUser(options)
-      return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)
+      const localVarOperationServerIndex = configuration?.serverIndex ?? 0
+      const localVarOperationServerBasePath =
+        operationServerMap['UsersManipulationApi.userControllerGetOrCreateUser']?.[
+          localVarOperationServerIndex
+        ]?.url
+      return (axios, basePath) =>
+        createRequestFunction(
+          localVarAxiosArgs,
+          globalAxios,
+          BASE_PATH,
+          configuration,
+        )(axios, localVarOperationServerBasePath || basePath)
     },
     /**
      *
@@ -2121,11 +2231,22 @@ export const UsersManipulationApiFp = function (configuration?: Configuration) {
      * @throws {RequiredError}
      */
     async userControllerRemoveBirthNumber(
-      options?: AxiosRequestConfig,
+      options?: RawAxiosRequestConfig,
     ): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<ResponseUserDataDto>> {
       const localVarAxiosArgs =
         await localVarAxiosParamCreator.userControllerRemoveBirthNumber(options)
-      return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)
+      const localVarOperationServerIndex = configuration?.serverIndex ?? 0
+      const localVarOperationServerBasePath =
+        operationServerMap['UsersManipulationApi.userControllerRemoveBirthNumber']?.[
+          localVarOperationServerIndex
+        ]?.url
+      return (axios, basePath) =>
+        createRequestFunction(
+          localVarAxiosArgs,
+          globalAxios,
+          BASE_PATH,
+          configuration,
+        )(axios, localVarOperationServerBasePath || basePath)
     },
     /**
      * This endpoint is used only for logged user, user is paired by JWT token. You can send subscription data from model in array, or you can send empty array in gdprData and it will automatically create subscribed data.
@@ -2137,13 +2258,24 @@ export const UsersManipulationApiFp = function (configuration?: Configuration) {
      */
     async userControllerSubscribeLoggedUser(
       requestGdprDataDto: RequestGdprDataDto,
-      options?: AxiosRequestConfig,
+      options?: RawAxiosRequestConfig,
     ): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<ResponseUserDataDto>> {
       const localVarAxiosArgs = await localVarAxiosParamCreator.userControllerSubscribeLoggedUser(
         requestGdprDataDto,
         options,
       )
-      return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)
+      const localVarOperationServerIndex = configuration?.serverIndex ?? 0
+      const localVarOperationServerBasePath =
+        operationServerMap['UsersManipulationApi.userControllerSubscribeLoggedUser']?.[
+          localVarOperationServerIndex
+        ]?.url
+      return (axios, basePath) =>
+        createRequestFunction(
+          localVarAxiosArgs,
+          globalAxios,
+          BASE_PATH,
+          configuration,
+        )(axios, localVarOperationServerBasePath || basePath)
     },
     /**
      * This endpoint is used only for logged user, user is paired by JWTtoken. You can send subscription data from model in array, or you can send empty body and it will automatically create subscribed data.
@@ -2155,13 +2287,24 @@ export const UsersManipulationApiFp = function (configuration?: Configuration) {
      */
     async userControllerSubscribePublicUser(
       requestPublicSubscriptionDto: RequestPublicSubscriptionDto,
-      options?: AxiosRequestConfig,
+      options?: RawAxiosRequestConfig,
     ): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<ResponseUserDataDto>> {
       const localVarAxiosArgs = await localVarAxiosParamCreator.userControllerSubscribePublicUser(
         requestPublicSubscriptionDto,
         options,
       )
-      return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)
+      const localVarOperationServerIndex = configuration?.serverIndex ?? 0
+      const localVarOperationServerBasePath =
+        operationServerMap['UsersManipulationApi.userControllerSubscribePublicUser']?.[
+          localVarOperationServerIndex
+        ]?.url
+      return (axios, basePath) =>
+        createRequestFunction(
+          localVarAxiosArgs,
+          globalAxios,
+          BASE_PATH,
+          configuration,
+        )(axios, localVarOperationServerBasePath || basePath)
     },
     /**
      * This endpoint is used only for logged user, user is paired by JWTtoken. You can send unsubscription data from model in array, or you can send empty array in gdprData and it will automatically create unsubscribed data.
@@ -2173,13 +2316,24 @@ export const UsersManipulationApiFp = function (configuration?: Configuration) {
      */
     async userControllerUnsubscribeLoggedUser(
       requestGdprDataDto: RequestGdprDataDto,
-      options?: AxiosRequestConfig,
+      options?: RawAxiosRequestConfig,
     ): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<ResponseUserDataDto>> {
       const localVarAxiosArgs = await localVarAxiosParamCreator.userControllerUnsubscribeLoggedUser(
         requestGdprDataDto,
         options,
       )
-      return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)
+      const localVarOperationServerIndex = configuration?.serverIndex ?? 0
+      const localVarOperationServerBasePath =
+        operationServerMap['UsersManipulationApi.userControllerUnsubscribeLoggedUser']?.[
+          localVarOperationServerIndex
+        ]?.url
+      return (axios, basePath) =>
+        createRequestFunction(
+          localVarAxiosArgs,
+          globalAxios,
+          BASE_PATH,
+          configuration,
+        )(axios, localVarOperationServerBasePath || basePath)
     },
     /**
      * unsubscribe any user by uuid with different categories of subscription
@@ -2191,13 +2345,24 @@ export const UsersManipulationApiFp = function (configuration?: Configuration) {
      */
     async userControllerUnsubscribePublicUser(
       id: string,
-      options?: AxiosRequestConfig,
+      options?: RawAxiosRequestConfig,
     ): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<string>> {
       const localVarAxiosArgs = await localVarAxiosParamCreator.userControllerUnsubscribePublicUser(
         id,
         options,
       )
-      return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)
+      const localVarOperationServerIndex = configuration?.serverIndex ?? 0
+      const localVarOperationServerBasePath =
+        operationServerMap['UsersManipulationApi.userControllerUnsubscribePublicUser']?.[
+          localVarOperationServerIndex
+        ]?.url
+      return (axios, basePath) =>
+        createRequestFunction(
+          localVarAxiosArgs,
+          globalAxios,
+          BASE_PATH,
+          configuration,
+        )(axios, localVarOperationServerBasePath || basePath)
     },
   }
 }
@@ -2222,7 +2387,7 @@ export const UsersManipulationApiFactory = function (
      */
     userControllerChangeEmail(
       newEmail: string,
-      options?: AxiosRequestConfig,
+      options?: any,
     ): AxiosPromise<ResponseUserDataBasicDto> {
       return localVarFp
         .userControllerChangeEmail(newEmail, options)
@@ -2234,7 +2399,7 @@ export const UsersManipulationApiFactory = function (
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
-    userControllerGetOrCreateUser(options?: AxiosRequestConfig): AxiosPromise<ResponseUserDataDto> {
+    userControllerGetOrCreateUser(options?: any): AxiosPromise<ResponseUserDataDto> {
       return localVarFp
         .userControllerGetOrCreateUser(options)
         .then((request) => request(axios, basePath))
@@ -2244,9 +2409,7 @@ export const UsersManipulationApiFactory = function (
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
-    userControllerRemoveBirthNumber(
-      options?: AxiosRequestConfig,
-    ): AxiosPromise<ResponseUserDataDto> {
+    userControllerRemoveBirthNumber(options?: any): AxiosPromise<ResponseUserDataDto> {
       return localVarFp
         .userControllerRemoveBirthNumber(options)
         .then((request) => request(axios, basePath))
@@ -2261,7 +2424,7 @@ export const UsersManipulationApiFactory = function (
      */
     userControllerSubscribeLoggedUser(
       requestGdprDataDto: RequestGdprDataDto,
-      options?: AxiosRequestConfig,
+      options?: any,
     ): AxiosPromise<ResponseUserDataDto> {
       return localVarFp
         .userControllerSubscribeLoggedUser(requestGdprDataDto, options)
@@ -2277,7 +2440,7 @@ export const UsersManipulationApiFactory = function (
      */
     userControllerSubscribePublicUser(
       requestPublicSubscriptionDto: RequestPublicSubscriptionDto,
-      options?: AxiosRequestConfig,
+      options?: any,
     ): AxiosPromise<ResponseUserDataDto> {
       return localVarFp
         .userControllerSubscribePublicUser(requestPublicSubscriptionDto, options)
@@ -2293,7 +2456,7 @@ export const UsersManipulationApiFactory = function (
      */
     userControllerUnsubscribeLoggedUser(
       requestGdprDataDto: RequestGdprDataDto,
-      options?: AxiosRequestConfig,
+      options?: any,
     ): AxiosPromise<ResponseUserDataDto> {
       return localVarFp
         .userControllerUnsubscribeLoggedUser(requestGdprDataDto, options)
@@ -2307,10 +2470,7 @@ export const UsersManipulationApiFactory = function (
      * @deprecated
      * @throws {RequiredError}
      */
-    userControllerUnsubscribePublicUser(
-      id: string,
-      options?: AxiosRequestConfig,
-    ): AxiosPromise<string> {
+    userControllerUnsubscribePublicUser(id: string, options?: any): AxiosPromise<string> {
       return localVarFp
         .userControllerUnsubscribePublicUser(id, options)
         .then((request) => request(axios, basePath))
@@ -2333,7 +2493,7 @@ export class UsersManipulationApi extends BaseAPI {
    * @throws {RequiredError}
    * @memberof UsersManipulationApi
    */
-  public userControllerChangeEmail(newEmail: string, options?: AxiosRequestConfig) {
+  public userControllerChangeEmail(newEmail: string, options?: RawAxiosRequestConfig) {
     return UsersManipulationApiFp(this.configuration)
       .userControllerChangeEmail(newEmail, options)
       .then((request) => request(this.axios, this.basePath))
@@ -2346,7 +2506,7 @@ export class UsersManipulationApi extends BaseAPI {
    * @throws {RequiredError}
    * @memberof UsersManipulationApi
    */
-  public userControllerGetOrCreateUser(options?: AxiosRequestConfig) {
+  public userControllerGetOrCreateUser(options?: RawAxiosRequestConfig) {
     return UsersManipulationApiFp(this.configuration)
       .userControllerGetOrCreateUser(options)
       .then((request) => request(this.axios, this.basePath))
@@ -2358,7 +2518,7 @@ export class UsersManipulationApi extends BaseAPI {
    * @throws {RequiredError}
    * @memberof UsersManipulationApi
    */
-  public userControllerRemoveBirthNumber(options?: AxiosRequestConfig) {
+  public userControllerRemoveBirthNumber(options?: RawAxiosRequestConfig) {
     return UsersManipulationApiFp(this.configuration)
       .userControllerRemoveBirthNumber(options)
       .then((request) => request(this.axios, this.basePath))
@@ -2375,7 +2535,7 @@ export class UsersManipulationApi extends BaseAPI {
    */
   public userControllerSubscribeLoggedUser(
     requestGdprDataDto: RequestGdprDataDto,
-    options?: AxiosRequestConfig,
+    options?: RawAxiosRequestConfig,
   ) {
     return UsersManipulationApiFp(this.configuration)
       .userControllerSubscribeLoggedUser(requestGdprDataDto, options)
@@ -2393,7 +2553,7 @@ export class UsersManipulationApi extends BaseAPI {
    */
   public userControllerSubscribePublicUser(
     requestPublicSubscriptionDto: RequestPublicSubscriptionDto,
-    options?: AxiosRequestConfig,
+    options?: RawAxiosRequestConfig,
   ) {
     return UsersManipulationApiFp(this.configuration)
       .userControllerSubscribePublicUser(requestPublicSubscriptionDto, options)
@@ -2411,7 +2571,7 @@ export class UsersManipulationApi extends BaseAPI {
    */
   public userControllerUnsubscribeLoggedUser(
     requestGdprDataDto: RequestGdprDataDto,
-    options?: AxiosRequestConfig,
+    options?: RawAxiosRequestConfig,
   ) {
     return UsersManipulationApiFp(this.configuration)
       .userControllerUnsubscribeLoggedUser(requestGdprDataDto, options)
@@ -2427,7 +2587,7 @@ export class UsersManipulationApi extends BaseAPI {
    * @throws {RequiredError}
    * @memberof UsersManipulationApi
    */
-  public userControllerUnsubscribePublicUser(id: string, options?: AxiosRequestConfig) {
+  public userControllerUnsubscribePublicUser(id: string, options?: RawAxiosRequestConfig) {
     return UsersManipulationApiFp(this.configuration)
       .userControllerUnsubscribePublicUser(id, options)
       .then((request) => request(this.axios, this.basePath))

@@ -13,7 +13,7 @@
  */
 
 import type { Configuration } from './configuration'
-import type { AxiosPromise, AxiosInstance, AxiosRequestConfig } from 'axios'
+import type { AxiosPromise, AxiosInstance, RawAxiosRequestConfig } from 'axios'
 import globalAxios from 'axios'
 // Some imports not used depending on template conditions
 // @ts-ignore
@@ -31,27 +31,8 @@ import {
 } from './common'
 import type { RequestArgs } from './base'
 // @ts-ignore
-import { BASE_PATH, COLLECTION_FORMATS, BaseAPI, RequiredError } from './base'
+import { BASE_PATH, COLLECTION_FORMATS, BaseAPI, RequiredError, operationServerMap } from './base'
 
-/**
- *
- * @export
- * @interface AdminControllerGetEidJwt401Response
- */
-export interface AdminControllerGetEidJwt401Response {
-  /**
-   * Status Code
-   * @type {number}
-   * @memberof AdminControllerGetEidJwt401Response
-   */
-  statusCode: number
-  /**
-   * Detail error message
-   * @type {string}
-   * @memberof AdminControllerGetEidJwt401Response
-   */
-  message: string
-}
 /**
  *
  * @export
@@ -298,11 +279,11 @@ export interface CreateFormResponseDto {
    */
   schemaVersionId: string
   /**
-   *
-   * @type {GetFormResponseDtoSchemaVersion}
+   * Schema version
+   * @type {SchemaVersionResponseDto}
    * @memberof CreateFormResponseDto
    */
-  schemaVersion: GetFormResponseDtoSchemaVersion
+  schemaVersion: SchemaVersionResponseDto
   /**
    * Flag marking if the schema version for this form is the latest version for the schema.
    * @type {boolean}
@@ -1913,11 +1894,11 @@ export interface GetFileResponseDto {
    */
   updatedAt: string
   /**
-   *
-   * @type {GetFileResponseDtoForms}
+   * Info about user who sent the form
+   * @type {FormUserInformationDto}
    * @memberof GetFileResponseDto
    */
-  forms?: GetFileResponseDtoForms
+  forms?: FormUserInformationDto
 }
 
 export const GetFileResponseDtoStatusEnum = {
@@ -1939,31 +1920,6 @@ export const GetFileResponseDtoStatusEnum = {
 export type GetFileResponseDtoStatusEnum =
   (typeof GetFileResponseDtoStatusEnum)[keyof typeof GetFileResponseDtoStatusEnum]
 
-/**
- * Info about user who sent the form
- * @export
- * @interface GetFileResponseDtoForms
- */
-export interface GetFileResponseDtoForms {
-  /**
-   * User ID (from cognito) who submit this form, can be empty, if it was submitted by user through eID
-   * @type {string}
-   * @memberof GetFileResponseDtoForms
-   */
-  userExternalId: string | null
-  /**
-   * Uri for defining electronic sendbox, if person has it
-   * @type {string}
-   * @memberof GetFileResponseDtoForms
-   */
-  mainUri: string | null
-  /**
-   * Uri for defining electronic sendbox, if person has it
-   * @type {string}
-   * @memberof GetFileResponseDtoForms
-   */
-  actorUri: string | null
-}
 /**
  *
  * @export
@@ -2155,11 +2111,11 @@ export interface GetFormResponseDto {
    */
   schemaVersionId: string
   /**
-   *
-   * @type {GetFormResponseDtoSchemaVersion}
+   * Schema version
+   * @type {SchemaVersionResponseDto}
    * @memberof GetFormResponseDto
    */
-  schemaVersion: GetFormResponseDtoSchemaVersion
+  schemaVersion: SchemaVersionResponseDto
   /**
    * Flag marking if the schema version for this form is the latest version for the schema.
    * @type {boolean}
@@ -2209,133 +2165,6 @@ export type GetFormResponseDtoErrorEnum =
   (typeof GetFormResponseDtoErrorEnum)[keyof typeof GetFormResponseDtoErrorEnum]
 
 /**
- * Schema version
- * @export
- * @interface GetFormResponseDtoSchemaVersion
- */
-export interface GetFormResponseDtoSchemaVersion {
-  /**
-   * Id of the schema version.
-   * @type {string}
-   * @memberof GetFormResponseDtoSchemaVersion
-   */
-  id: string
-  /**
-   * Text representation of the version.
-   * @type {string}
-   * @memberof GetFormResponseDtoSchemaVersion
-   */
-  version: string | null
-  /**
-   * Version of the Posp form.
-   * @type {string}
-   * @memberof GetFormResponseDtoSchemaVersion
-   */
-  pospVersion: string
-  /**
-   * Description of the schema in current version.
-   * @type {string}
-   * @memberof GetFormResponseDtoSchemaVersion
-   */
-  formDescription: string | null
-  /**
-   * Posp ID of Form
-   * @type {string}
-   * @memberof GetFormResponseDtoSchemaVersion
-   */
-  pospID: string
-  /**
-   * Must be signed
-   * @type {boolean}
-   * @memberof GetFormResponseDtoSchemaVersion
-   */
-  isSigned: boolean
-  /**
-   * Previous version (for downgrade)
-   * @type {string}
-   * @memberof GetFormResponseDtoSchemaVersion
-   */
-  previousSchemaVersionId: string | null
-  /**
-   * data.json
-   * @type {object}
-   * @memberof GetFormResponseDtoSchemaVersion
-   */
-  data: object
-  /**
-   * data.xml
-   * @type {string}
-   * @memberof GetFormResponseDtoSchemaVersion
-   */
-  dataXml: string | null
-  /**
-   * form.fo.xslt
-   * @type {string}
-   * @memberof GetFormResponseDtoSchemaVersion
-   */
-  formFo: string
-  /**
-   * schema.json
-   * @type {object}
-   * @memberof GetFormResponseDtoSchemaVersion
-   */
-  jsonSchema: object
-  /**
-   * uiSchema.json
-   * @type {object}
-   * @memberof GetFormResponseDtoSchemaVersion
-   */
-  uiSchema: object
-  /**
-   * xmlTemplate
-   * @type {string}
-   * @memberof GetFormResponseDtoSchemaVersion
-   */
-  xmlTemplate: string
-  /**
-   * Id of the parent schema object.
-   * @type {string}
-   * @memberof GetFormResponseDtoSchemaVersion
-   */
-  schemaId: string
-  /**
-   * Created timestamp
-   * @type {string}
-   * @memberof GetFormResponseDtoSchemaVersion
-   */
-  createdAt: string
-  /**
-   * Updated timestamp
-   * @type {string}
-   * @memberof GetFormResponseDtoSchemaVersion
-   */
-  updatedAt: string
-  /**
-   * Subject format of the message
-   * @type {string}
-   * @memberof GetFormResponseDtoSchemaVersion
-   */
-  messageSubjectFormat: string | null
-  /**
-   * Organization to assign data to Ginis
-   * @type {string}
-   * @memberof GetFormResponseDtoSchemaVersion
-   */
-  ginisOrganizationName: string | null
-  /**
-   * Person to assign data to Ginis
-   * @type {string}
-   * @memberof GetFormResponseDtoSchemaVersion
-   */
-  ginisPersonName: string | null
-  /**
-   *
-   * @type {SchemaVersionResponseDtoSchema}
-   * @memberof GetFormResponseDtoSchemaVersion
-   */
-  schema?: SchemaVersionResponseDtoSchema
-}
-/**
  *
  * @export
  * @interface GetFormResponseSimpleDto
@@ -2384,11 +2213,11 @@ export interface GetFormResponseSimpleDto {
    */
   schemaVersionId: string
   /**
-   *
-   * @type {GetFormResponseSimpleDtoSchemaVersion}
+   * Schema version
+   * @type {SchemaVersionWithSchemaAndDataDto}
    * @memberof GetFormResponseSimpleDto
    */
-  schemaVersion: GetFormResponseSimpleDtoSchemaVersion
+  schemaVersion: SchemaVersionWithSchemaAndDataDto
   /**
    * Flag marking if the schema version for this form is the latest version for the schema.
    * @type {boolean}
@@ -2438,19 +2267,6 @@ export type GetFormResponseSimpleDtoErrorEnum =
   (typeof GetFormResponseSimpleDtoErrorEnum)[keyof typeof GetFormResponseSimpleDtoErrorEnum]
 
 /**
- * Schema version
- * @export
- * @interface GetFormResponseSimpleDtoSchemaVersion
- */
-export interface GetFormResponseSimpleDtoSchemaVersion {
-  /**
-   *
-   * @type {SchemaVersionResponseDtoSchema}
-   * @memberof GetFormResponseSimpleDtoSchemaVersion
-   */
-  schema?: SchemaVersionResponseDtoSchema
-}
-/**
  *
  * @export
  * @interface GetFormsResponseDto
@@ -2481,24 +2297,11 @@ export interface GetFormsResponseDto {
    */
   items: Array<GetFormResponseSimpleDto>
   /**
-   *
-   * @type {GetFormsResponseDtoMeta}
+   * Meta data
+   * @type {GetFormMetaDto}
    * @memberof GetFormsResponseDto
    */
-  meta: GetFormsResponseDtoMeta
-}
-/**
- * Meta data
- * @export
- * @interface GetFormsResponseDtoMeta
- */
-export interface GetFormsResponseDtoMeta {
-  /**
-   * Number of forms for each state
-   * @type {object}
-   * @memberof GetFormsResponseDtoMeta
-   */
-  countByState: object
+  meta: GetFormMetaDto
 }
 /**
  *
@@ -2835,156 +2638,6 @@ export interface MigrateFormResponseDto {
 /**
  *
  * @export
- * @interface NasesControllerDeleteForm400Response
- */
-export interface NasesControllerDeleteForm400Response {
-  /**
-   * Status Code
-   * @type {number}
-   * @memberof NasesControllerDeleteForm400Response
-   */
-  statusCode: number
-  /**
-   * Detail error message
-   * @type {string}
-   * @memberof NasesControllerDeleteForm400Response
-   */
-  message: string
-  /**
-   * status in text
-   * @type {string}
-   * @memberof NasesControllerDeleteForm400Response
-   */
-  status: string
-  /**
-   * Exact error name
-   * @type {string}
-   * @memberof NasesControllerDeleteForm400Response
-   */
-  errorName: NasesControllerDeleteForm400ResponseErrorNameEnum
-  /**
-   * Helper for sending additional data in error
-   * @type {object}
-   * @memberof NasesControllerDeleteForm400Response
-   */
-  object?: object
-}
-
-export const NasesControllerDeleteForm400ResponseErrorNameEnum = {
-  NotFoundError: 'NOT_FOUND_ERROR',
-  DatabaseError: 'DATABASE_ERROR',
-  InternalServerError: 'INTERNAL_SERVER_ERROR',
-  UnauthorizedError: 'UNAUTHORIZED_ERROR',
-  UnprocessableEntityError: 'UNPROCESSABLE_ENTITY_ERROR',
-  BadRequestError: 'BAD_REQUEST_ERROR',
-} as const
-
-export type NasesControllerDeleteForm400ResponseErrorNameEnum =
-  (typeof NasesControllerDeleteForm400ResponseErrorNameEnum)[keyof typeof NasesControllerDeleteForm400ResponseErrorNameEnum]
-
-/**
- *
- * @export
- * @interface NasesControllerGetForm404Response
- */
-export interface NasesControllerGetForm404Response {
-  /**
-   * Status Code
-   * @type {number}
-   * @memberof NasesControllerGetForm404Response
-   */
-  statusCode: number
-  /**
-   * Detail error message
-   * @type {string}
-   * @memberof NasesControllerGetForm404Response
-   */
-  message: string
-  /**
-   * status in text
-   * @type {string}
-   * @memberof NasesControllerGetForm404Response
-   */
-  status: string
-  /**
-   * Exact error name
-   * @type {string}
-   * @memberof NasesControllerGetForm404Response
-   */
-  errorName: NasesControllerGetForm404ResponseErrorNameEnum
-  /**
-   * Helper for sending additional data in error
-   * @type {object}
-   * @memberof NasesControllerGetForm404Response
-   */
-  object?: object
-}
-
-export const NasesControllerGetForm404ResponseErrorNameEnum = {
-  NotFoundError: 'NOT_FOUND_ERROR',
-  DatabaseError: 'DATABASE_ERROR',
-  InternalServerError: 'INTERNAL_SERVER_ERROR',
-  UnauthorizedError: 'UNAUTHORIZED_ERROR',
-  UnprocessableEntityError: 'UNPROCESSABLE_ENTITY_ERROR',
-  BadRequestError: 'BAD_REQUEST_ERROR',
-} as const
-
-export type NasesControllerGetForm404ResponseErrorNameEnum =
-  (typeof NasesControllerGetForm404ResponseErrorNameEnum)[keyof typeof NasesControllerGetForm404ResponseErrorNameEnum]
-
-/**
- *
- * @export
- * @interface NasesControllerGetForms500Response
- */
-export interface NasesControllerGetForms500Response {
-  /**
-   * Status Code
-   * @type {number}
-   * @memberof NasesControllerGetForms500Response
-   */
-  statusCode: number
-  /**
-   * Detail error message
-   * @type {string}
-   * @memberof NasesControllerGetForms500Response
-   */
-  message: string
-  /**
-   * status in text
-   * @type {string}
-   * @memberof NasesControllerGetForms500Response
-   */
-  status: string
-  /**
-   * Exact error name
-   * @type {string}
-   * @memberof NasesControllerGetForms500Response
-   */
-  errorName: NasesControllerGetForms500ResponseErrorNameEnum
-  /**
-   * Helper for sending additional data in error
-   * @type {object}
-   * @memberof NasesControllerGetForms500Response
-   */
-  object?: object
-}
-
-export const NasesControllerGetForms500ResponseErrorNameEnum = {
-  NotFoundError: 'NOT_FOUND_ERROR',
-  DatabaseError: 'DATABASE_ERROR',
-  InternalServerError: 'INTERNAL_SERVER_ERROR',
-  UnauthorizedError: 'UNAUTHORIZED_ERROR',
-  UnprocessableEntityError: 'UNPROCESSABLE_ENTITY_ERROR',
-  BadRequestError: 'BAD_REQUEST_ERROR',
-} as const
-
-export type NasesControllerGetForms500ResponseErrorNameEnum =
-  (typeof NasesControllerGetForms500ResponseErrorNameEnum)[keyof typeof NasesControllerGetForms500ResponseErrorNameEnum]
-
-/**
- *
- * @export
  * @interface NasesControllerSendForm422Response
  */
 export interface NasesControllerSendForm422Response {
@@ -3031,56 +2684,6 @@ export const NasesControllerSendForm422ResponseErrorNameEnum = {
 
 export type NasesControllerSendForm422ResponseErrorNameEnum =
   (typeof NasesControllerSendForm422ResponseErrorNameEnum)[keyof typeof NasesControllerSendForm422ResponseErrorNameEnum]
-
-/**
- *
- * @export
- * @interface NasesControllerUpdateForm400Response
- */
-export interface NasesControllerUpdateForm400Response {
-  /**
-   * Status Code
-   * @type {number}
-   * @memberof NasesControllerUpdateForm400Response
-   */
-  statusCode: number
-  /**
-   * Detail error message
-   * @type {string}
-   * @memberof NasesControllerUpdateForm400Response
-   */
-  message: string
-  /**
-   * status in text
-   * @type {string}
-   * @memberof NasesControllerUpdateForm400Response
-   */
-  status: string
-  /**
-   * Exact error name
-   * @type {string}
-   * @memberof NasesControllerUpdateForm400Response
-   */
-  errorName: NasesControllerUpdateForm400ResponseErrorNameEnum
-  /**
-   * Helper for sending additional data in error
-   * @type {object}
-   * @memberof NasesControllerUpdateForm400Response
-   */
-  object?: object
-}
-
-export const NasesControllerUpdateForm400ResponseErrorNameEnum = {
-  NotFoundError: 'NOT_FOUND_ERROR',
-  DatabaseError: 'DATABASE_ERROR',
-  InternalServerError: 'INTERNAL_SERVER_ERROR',
-  UnauthorizedError: 'UNAUTHORIZED_ERROR',
-  UnprocessableEntityError: 'UNPROCESSABLE_ENTITY_ERROR',
-  BadRequestError: 'BAD_REQUEST_ERROR',
-} as const
-
-export type NasesControllerUpdateForm400ResponseErrorNameEnum =
-  (typeof NasesControllerUpdateForm400ResponseErrorNameEnum)[keyof typeof NasesControllerUpdateForm400ResponseErrorNameEnum]
 
 /**
  *
@@ -3411,11 +3014,11 @@ export interface PostFileResponseDto {
    */
   updatedAt: string
   /**
-   *
-   * @type {GetFileResponseDtoForms}
+   * Info about user who sent the form
+   * @type {FormUserInformationDto}
    * @memberof PostFileResponseDto
    */
-  forms?: GetFileResponseDtoForms
+  forms?: FormUserInformationDto
 }
 
 export const PostFileResponseDtoStatusEnum = {
@@ -4095,66 +3698,11 @@ export interface SchemaVersionResponseDto {
    */
   ginisPersonName: string | null
   /**
-   *
-   * @type {SchemaVersionResponseDtoSchema}
+   * Parent schema object.
+   * @type {SchemaResponseWithoutLatestVersionDto}
    * @memberof SchemaVersionResponseDto
    */
-  schema?: SchemaVersionResponseDtoSchema
-}
-/**
- * Parent schema object.
- * @export
- * @interface SchemaVersionResponseDtoSchema
- */
-export interface SchemaVersionResponseDtoSchema {
-  /**
-   * Id of the schema.
-   * @type {string}
-   * @memberof SchemaVersionResponseDtoSchema
-   */
-  id: string
-  /**
-   * Name of the form
-   * @type {string}
-   * @memberof SchemaVersionResponseDtoSchema
-   */
-  formName: string
-  /**
-   * Form slug
-   * @type {string}
-   * @memberof SchemaVersionResponseDtoSchema
-   */
-  slug: string
-  /**
-   * Category of the form
-   * @type {string}
-   * @memberof SchemaVersionResponseDtoSchema
-   */
-  category: string | null
-  /**
-   * Subject of the message
-   * @type {string}
-   * @memberof SchemaVersionResponseDtoSchema
-   */
-  messageSubject: string
-  /**
-   * Created timestamp
-   * @type {string}
-   * @memberof SchemaVersionResponseDtoSchema
-   */
-  createdAt: string
-  /**
-   * Updated timestamp
-   * @type {string}
-   * @memberof SchemaVersionResponseDtoSchema
-   */
-  updatedAt: string
-  /**
-   * Id of the latest schema version.
-   * @type {string}
-   * @memberof SchemaVersionResponseDtoSchema
-   */
-  latestVersionId: string | null
+  schema?: SchemaResponseWithoutLatestVersionDto
 }
 /**
  *
@@ -4163,11 +3711,11 @@ export interface SchemaVersionResponseDtoSchema {
  */
 export interface SchemaVersionWithSchemaAndDataDto {
   /**
-   *
-   * @type {SchemaVersionResponseDtoSchema}
+   * Parent schema object.
+   * @type {SchemaResponseWithoutLatestVersionDto}
    * @memberof SchemaVersionWithSchemaAndDataDto
    */
-  schema?: SchemaVersionResponseDtoSchema
+  schema?: SchemaResponseWithoutLatestVersionDto
 }
 /**
  *
@@ -4707,11 +4255,11 @@ export interface UpdateFileStatusResponseDto {
    */
   updatedAt: string
   /**
-   *
-   * @type {GetFileResponseDtoForms}
+   * Info about user who sent the form
+   * @type {FormUserInformationDto}
    * @memberof UpdateFileStatusResponseDto
    */
-  forms?: GetFileResponseDtoForms
+  forms?: FormUserInformationDto
   /**
    * more info
    * @type {string}
@@ -4832,7 +4380,7 @@ export const ADMINApiAxiosParamCreator = function (configuration?: Configuration
     adminControllerCreateSchema: async (
       data?: object,
       files?: Array<any>,
-      options: AxiosRequestConfig = {},
+      options: RawAxiosRequestConfig = {},
     ): Promise<RequestArgs> => {
       const localVarPath = `/admin/schema/create`
       // use dummy base URL string because the URL constructor only accepts absolute URLs.
@@ -4887,7 +4435,7 @@ export const ADMINApiAxiosParamCreator = function (configuration?: Configuration
      */
     adminControllerDowngradeSchemaVersion: async (
       slug: string,
-      options: AxiosRequestConfig = {},
+      options: RawAxiosRequestConfig = {},
     ): Promise<RequestArgs> => {
       // verify required parameter 'slug' is not null or undefined
       assertParamExists('adminControllerDowngradeSchemaVersion', 'slug', slug)
@@ -4929,7 +4477,7 @@ export const ADMINApiAxiosParamCreator = function (configuration?: Configuration
      * @throws {RequiredError}
      */
     adminControllerGetAdministrationJwt: async (
-      options: AxiosRequestConfig = {},
+      options: RawAxiosRequestConfig = {},
     ): Promise<RequestArgs> => {
       const localVarPath = `/admin/administration-jwt`
       // use dummy base URL string because the URL constructor only accepts absolute URLs.
@@ -4965,7 +4513,7 @@ export const ADMINApiAxiosParamCreator = function (configuration?: Configuration
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
-    adminControllerGetEidJwt: async (options: AxiosRequestConfig = {}): Promise<RequestArgs> => {
+    adminControllerGetEidJwt: async (options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
       const localVarPath = `/admin/eid-jwt`
       // use dummy base URL string because the URL constructor only accepts absolute URLs.
       const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL)
@@ -5001,7 +4549,7 @@ export const ADMINApiAxiosParamCreator = function (configuration?: Configuration
      * @throws {RequiredError}
      */
     adminControllerGetTechnicalJwt: async (
-      options: AxiosRequestConfig = {},
+      options: RawAxiosRequestConfig = {},
     ): Promise<RequestArgs> => {
       const localVarPath = `/admin/technical-jwt`
       // use dummy base URL string because the URL constructor only accepts absolute URLs.
@@ -5044,7 +4592,7 @@ export const ADMINApiAxiosParamCreator = function (configuration?: Configuration
       id: string,
       data?: object,
       files?: Array<any>,
-      options: AxiosRequestConfig = {},
+      options: RawAxiosRequestConfig = {},
     ): Promise<RequestArgs> => {
       // verify required parameter 'id' is not null or undefined
       assertParamExists('adminControllerUpdateSchemaVersion', 'id', id)
@@ -5108,7 +4656,7 @@ export const ADMINApiAxiosParamCreator = function (configuration?: Configuration
       slug: string,
       data?: object,
       files?: Array<any>,
-      options: AxiosRequestConfig = {},
+      options: RawAxiosRequestConfig = {},
     ): Promise<RequestArgs> => {
       // verify required parameter 'slug' is not null or undefined
       assertParamExists('adminControllerUpgradeSchemaVersion', 'slug', slug)
@@ -5180,14 +4728,24 @@ export const ADMINApiFp = function (configuration?: Configuration) {
     async adminControllerCreateSchema(
       data?: object,
       files?: Array<any>,
-      options?: AxiosRequestConfig,
+      options?: RawAxiosRequestConfig,
     ): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<void>> {
       const localVarAxiosArgs = await localVarAxiosParamCreator.adminControllerCreateSchema(
         data,
         files,
         options,
       )
-      return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)
+      const localVarOperationServerIndex = configuration?.serverIndex ?? 0
+      const localVarOperationServerBasePath =
+        operationServerMap['ADMINApi.adminControllerCreateSchema']?.[localVarOperationServerIndex]
+          ?.url
+      return (axios, basePath) =>
+        createRequestFunction(
+          localVarAxiosArgs,
+          globalAxios,
+          BASE_PATH,
+          configuration,
+        )(axios, localVarOperationServerBasePath || basePath)
     },
     /**
      * Downgrade schema to previous
@@ -5198,11 +4756,22 @@ export const ADMINApiFp = function (configuration?: Configuration) {
      */
     async adminControllerDowngradeSchemaVersion(
       slug: string,
-      options?: AxiosRequestConfig,
+      options?: RawAxiosRequestConfig,
     ): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<void>> {
       const localVarAxiosArgs =
         await localVarAxiosParamCreator.adminControllerDowngradeSchemaVersion(slug, options)
-      return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)
+      const localVarOperationServerIndex = configuration?.serverIndex ?? 0
+      const localVarOperationServerBasePath =
+        operationServerMap['ADMINApi.adminControllerDowngradeSchemaVersion']?.[
+          localVarOperationServerIndex
+        ]?.url
+      return (axios, basePath) =>
+        createRequestFunction(
+          localVarAxiosArgs,
+          globalAxios,
+          BASE_PATH,
+          configuration,
+        )(axios, localVarOperationServerBasePath || basePath)
     },
     /**
      * Return administration account JWT token
@@ -5211,11 +4780,22 @@ export const ADMINApiFp = function (configuration?: Configuration) {
      * @throws {RequiredError}
      */
     async adminControllerGetAdministrationJwt(
-      options?: AxiosRequestConfig,
+      options?: RawAxiosRequestConfig,
     ): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<object>> {
       const localVarAxiosArgs =
         await localVarAxiosParamCreator.adminControllerGetAdministrationJwt(options)
-      return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)
+      const localVarOperationServerIndex = configuration?.serverIndex ?? 0
+      const localVarOperationServerBasePath =
+        operationServerMap['ADMINApi.adminControllerGetAdministrationJwt']?.[
+          localVarOperationServerIndex
+        ]?.url
+      return (axios, basePath) =>
+        createRequestFunction(
+          localVarAxiosArgs,
+          globalAxios,
+          BASE_PATH,
+          configuration,
+        )(axios, localVarOperationServerBasePath || basePath)
     },
     /**
      * Return eid user JWT token
@@ -5224,10 +4804,19 @@ export const ADMINApiFp = function (configuration?: Configuration) {
      * @throws {RequiredError}
      */
     async adminControllerGetEidJwt(
-      options?: AxiosRequestConfig,
+      options?: RawAxiosRequestConfig,
     ): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<object>> {
       const localVarAxiosArgs = await localVarAxiosParamCreator.adminControllerGetEidJwt(options)
-      return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)
+      const localVarOperationServerIndex = configuration?.serverIndex ?? 0
+      const localVarOperationServerBasePath =
+        operationServerMap['ADMINApi.adminControllerGetEidJwt']?.[localVarOperationServerIndex]?.url
+      return (axios, basePath) =>
+        createRequestFunction(
+          localVarAxiosArgs,
+          globalAxios,
+          BASE_PATH,
+          configuration,
+        )(axios, localVarOperationServerBasePath || basePath)
     },
     /**
      * Return technical account JWT token
@@ -5236,11 +4825,22 @@ export const ADMINApiFp = function (configuration?: Configuration) {
      * @throws {RequiredError}
      */
     async adminControllerGetTechnicalJwt(
-      options?: AxiosRequestConfig,
+      options?: RawAxiosRequestConfig,
     ): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<object>> {
       const localVarAxiosArgs =
         await localVarAxiosParamCreator.adminControllerGetTechnicalJwt(options)
-      return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)
+      const localVarOperationServerIndex = configuration?.serverIndex ?? 0
+      const localVarOperationServerBasePath =
+        operationServerMap['ADMINApi.adminControllerGetTechnicalJwt']?.[
+          localVarOperationServerIndex
+        ]?.url
+      return (axios, basePath) =>
+        createRequestFunction(
+          localVarAxiosArgs,
+          globalAxios,
+          BASE_PATH,
+          configuration,
+        )(axios, localVarOperationServerBasePath || basePath)
     },
     /**
      * Update version of schema, without creating nie version, it is not downgradable
@@ -5255,7 +4855,7 @@ export const ADMINApiFp = function (configuration?: Configuration) {
       id: string,
       data?: object,
       files?: Array<any>,
-      options?: AxiosRequestConfig,
+      options?: RawAxiosRequestConfig,
     ): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<void>> {
       const localVarAxiosArgs = await localVarAxiosParamCreator.adminControllerUpdateSchemaVersion(
         id,
@@ -5263,7 +4863,18 @@ export const ADMINApiFp = function (configuration?: Configuration) {
         files,
         options,
       )
-      return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)
+      const localVarOperationServerIndex = configuration?.serverIndex ?? 0
+      const localVarOperationServerBasePath =
+        operationServerMap['ADMINApi.adminControllerUpdateSchemaVersion']?.[
+          localVarOperationServerIndex
+        ]?.url
+      return (axios, basePath) =>
+        createRequestFunction(
+          localVarAxiosArgs,
+          globalAxios,
+          BASE_PATH,
+          configuration,
+        )(axios, localVarOperationServerBasePath || basePath)
     },
     /**
      * Upgrade version of schema, which create new schema version and can be rollbacked with downgrade schema
@@ -5278,7 +4889,7 @@ export const ADMINApiFp = function (configuration?: Configuration) {
       slug: string,
       data?: object,
       files?: Array<any>,
-      options?: AxiosRequestConfig,
+      options?: RawAxiosRequestConfig,
     ): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<void>> {
       const localVarAxiosArgs = await localVarAxiosParamCreator.adminControllerUpgradeSchemaVersion(
         slug,
@@ -5286,7 +4897,18 @@ export const ADMINApiFp = function (configuration?: Configuration) {
         files,
         options,
       )
-      return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)
+      const localVarOperationServerIndex = configuration?.serverIndex ?? 0
+      const localVarOperationServerBasePath =
+        operationServerMap['ADMINApi.adminControllerUpgradeSchemaVersion']?.[
+          localVarOperationServerIndex
+        ]?.url
+      return (axios, basePath) =>
+        createRequestFunction(
+          localVarAxiosArgs,
+          globalAxios,
+          BASE_PATH,
+          configuration,
+        )(axios, localVarOperationServerBasePath || basePath)
     },
   }
 }
@@ -5313,7 +4935,7 @@ export const ADMINApiFactory = function (
     adminControllerCreateSchema(
       data?: object,
       files?: Array<any>,
-      options?: AxiosRequestConfig,
+      options?: any,
     ): AxiosPromise<void> {
       return localVarFp
         .adminControllerCreateSchema(data, files, options)
@@ -5326,10 +4948,7 @@ export const ADMINApiFactory = function (
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
-    adminControllerDowngradeSchemaVersion(
-      slug: string,
-      options?: AxiosRequestConfig,
-    ): AxiosPromise<void> {
+    adminControllerDowngradeSchemaVersion(slug: string, options?: any): AxiosPromise<void> {
       return localVarFp
         .adminControllerDowngradeSchemaVersion(slug, options)
         .then((request) => request(axios, basePath))
@@ -5340,7 +4959,7 @@ export const ADMINApiFactory = function (
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
-    adminControllerGetAdministrationJwt(options?: AxiosRequestConfig): AxiosPromise<object> {
+    adminControllerGetAdministrationJwt(options?: any): AxiosPromise<object> {
       return localVarFp
         .adminControllerGetAdministrationJwt(options)
         .then((request) => request(axios, basePath))
@@ -5351,7 +4970,7 @@ export const ADMINApiFactory = function (
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
-    adminControllerGetEidJwt(options?: AxiosRequestConfig): AxiosPromise<object> {
+    adminControllerGetEidJwt(options?: any): AxiosPromise<object> {
       return localVarFp
         .adminControllerGetEidJwt(options)
         .then((request) => request(axios, basePath))
@@ -5362,7 +4981,7 @@ export const ADMINApiFactory = function (
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
-    adminControllerGetTechnicalJwt(options?: AxiosRequestConfig): AxiosPromise<object> {
+    adminControllerGetTechnicalJwt(options?: any): AxiosPromise<object> {
       return localVarFp
         .adminControllerGetTechnicalJwt(options)
         .then((request) => request(axios, basePath))
@@ -5380,7 +4999,7 @@ export const ADMINApiFactory = function (
       id: string,
       data?: object,
       files?: Array<any>,
-      options?: AxiosRequestConfig,
+      options?: any,
     ): AxiosPromise<void> {
       return localVarFp
         .adminControllerUpdateSchemaVersion(id, data, files, options)
@@ -5399,7 +5018,7 @@ export const ADMINApiFactory = function (
       slug: string,
       data?: object,
       files?: Array<any>,
-      options?: AxiosRequestConfig,
+      options?: any,
     ): AxiosPromise<void> {
       return localVarFp
         .adminControllerUpgradeSchemaVersion(slug, data, files, options)
@@ -5427,7 +5046,7 @@ export class ADMINApi extends BaseAPI {
   public adminControllerCreateSchema(
     data?: object,
     files?: Array<any>,
-    options?: AxiosRequestConfig,
+    options?: RawAxiosRequestConfig,
   ) {
     return ADMINApiFp(this.configuration)
       .adminControllerCreateSchema(data, files, options)
@@ -5442,7 +5061,7 @@ export class ADMINApi extends BaseAPI {
    * @throws {RequiredError}
    * @memberof ADMINApi
    */
-  public adminControllerDowngradeSchemaVersion(slug: string, options?: AxiosRequestConfig) {
+  public adminControllerDowngradeSchemaVersion(slug: string, options?: RawAxiosRequestConfig) {
     return ADMINApiFp(this.configuration)
       .adminControllerDowngradeSchemaVersion(slug, options)
       .then((request) => request(this.axios, this.basePath))
@@ -5455,7 +5074,7 @@ export class ADMINApi extends BaseAPI {
    * @throws {RequiredError}
    * @memberof ADMINApi
    */
-  public adminControllerGetAdministrationJwt(options?: AxiosRequestConfig) {
+  public adminControllerGetAdministrationJwt(options?: RawAxiosRequestConfig) {
     return ADMINApiFp(this.configuration)
       .adminControllerGetAdministrationJwt(options)
       .then((request) => request(this.axios, this.basePath))
@@ -5468,7 +5087,7 @@ export class ADMINApi extends BaseAPI {
    * @throws {RequiredError}
    * @memberof ADMINApi
    */
-  public adminControllerGetEidJwt(options?: AxiosRequestConfig) {
+  public adminControllerGetEidJwt(options?: RawAxiosRequestConfig) {
     return ADMINApiFp(this.configuration)
       .adminControllerGetEidJwt(options)
       .then((request) => request(this.axios, this.basePath))
@@ -5481,7 +5100,7 @@ export class ADMINApi extends BaseAPI {
    * @throws {RequiredError}
    * @memberof ADMINApi
    */
-  public adminControllerGetTechnicalJwt(options?: AxiosRequestConfig) {
+  public adminControllerGetTechnicalJwt(options?: RawAxiosRequestConfig) {
     return ADMINApiFp(this.configuration)
       .adminControllerGetTechnicalJwt(options)
       .then((request) => request(this.axios, this.basePath))
@@ -5501,7 +5120,7 @@ export class ADMINApi extends BaseAPI {
     id: string,
     data?: object,
     files?: Array<any>,
-    options?: AxiosRequestConfig,
+    options?: RawAxiosRequestConfig,
   ) {
     return ADMINApiFp(this.configuration)
       .adminControllerUpdateSchemaVersion(id, data, files, options)
@@ -5522,7 +5141,7 @@ export class ADMINApi extends BaseAPI {
     slug: string,
     data?: object,
     files?: Array<any>,
-    options?: AxiosRequestConfig,
+    options?: RawAxiosRequestConfig,
   ) {
     return ADMINApiFp(this.configuration)
       .adminControllerUpgradeSchemaVersion(slug, data, files, options)
@@ -5548,7 +5167,7 @@ export const ConvertApiAxiosParamCreator = function (configuration?: Configurati
     convertControllerConvertJsonToXml: async (
       id: string,
       jsonConvertRequestDto: JsonConvertRequestDto,
-      options: AxiosRequestConfig = {},
+      options: RawAxiosRequestConfig = {},
     ): Promise<RequestArgs> => {
       // verify required parameter 'id' is not null or undefined
       assertParamExists('convertControllerConvertJsonToXml', 'id', id)
@@ -5606,7 +5225,7 @@ export const ConvertApiAxiosParamCreator = function (configuration?: Configurati
      */
     convertControllerConvertJsonToXmlV2: async (
       jsonToXmlV2RequestDto: JsonToXmlV2RequestDto,
-      options: AxiosRequestConfig = {},
+      options: RawAxiosRequestConfig = {},
     ): Promise<RequestArgs> => {
       // verify required parameter 'jsonToXmlV2RequestDto' is not null or undefined
       assertParamExists(
@@ -5662,7 +5281,7 @@ export const ConvertApiAxiosParamCreator = function (configuration?: Configurati
     convertControllerConvertToPdf: async (
       id: string,
       jsonConvertRequestDto: JsonConvertRequestDto,
-      options: AxiosRequestConfig = {},
+      options: RawAxiosRequestConfig = {},
     ): Promise<RequestArgs> => {
       // verify required parameter 'id' is not null or undefined
       assertParamExists('convertControllerConvertToPdf', 'id', id)
@@ -5717,7 +5336,7 @@ export const ConvertApiAxiosParamCreator = function (configuration?: Configurati
      */
     convertControllerConvertToPdfv2: async (
       convertToPdfV2RequestDto: ConvertToPdfV2RequestDto,
-      options: AxiosRequestConfig = {},
+      options: RawAxiosRequestConfig = {},
     ): Promise<RequestArgs> => {
       // verify required parameter 'convertToPdfV2RequestDto' is not null or undefined
       assertParamExists(
@@ -5772,7 +5391,7 @@ export const ConvertApiAxiosParamCreator = function (configuration?: Configurati
     convertControllerConvertXmlToJson: async (
       id: string,
       xmlToJsonRequestDto: XmlToJsonRequestDto,
-      options: AxiosRequestConfig = {},
+      options: RawAxiosRequestConfig = {},
     ): Promise<RequestArgs> => {
       // verify required parameter 'id' is not null or undefined
       assertParamExists('convertControllerConvertXmlToJson', 'id', id)
@@ -5830,7 +5449,7 @@ export const ConvertApiAxiosParamCreator = function (configuration?: Configurati
      */
     convertControllerGetPdfPreviewData: async (
       pdfPreviewDataRequestDto: PdfPreviewDataRequestDto,
-      options: AxiosRequestConfig = {},
+      options: RawAxiosRequestConfig = {},
     ): Promise<RequestArgs> => {
       // verify required parameter 'pdfPreviewDataRequestDto' is not null or undefined
       assertParamExists(
@@ -5896,14 +5515,25 @@ export const ConvertApiFp = function (configuration?: Configuration) {
     async convertControllerConvertJsonToXml(
       id: string,
       jsonConvertRequestDto: JsonConvertRequestDto,
-      options?: AxiosRequestConfig,
+      options?: RawAxiosRequestConfig,
     ): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<JsonToXmlResponseDto>> {
       const localVarAxiosArgs = await localVarAxiosParamCreator.convertControllerConvertJsonToXml(
         id,
         jsonConvertRequestDto,
         options,
       )
-      return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)
+      const localVarOperationServerIndex = configuration?.serverIndex ?? 0
+      const localVarOperationServerBasePath =
+        operationServerMap['ConvertApi.convertControllerConvertJsonToXml']?.[
+          localVarOperationServerIndex
+        ]?.url
+      return (axios, basePath) =>
+        createRequestFunction(
+          localVarAxiosArgs,
+          globalAxios,
+          BASE_PATH,
+          configuration,
+        )(axios, localVarOperationServerBasePath || basePath)
     },
     /**
      * Generates XML form from given JSON data and schema version id. At least one of `formId` and `jsonData` must be provided.
@@ -5914,13 +5544,24 @@ export const ConvertApiFp = function (configuration?: Configuration) {
      */
     async convertControllerConvertJsonToXmlV2(
       jsonToXmlV2RequestDto: JsonToXmlV2RequestDto,
-      options?: AxiosRequestConfig,
+      options?: RawAxiosRequestConfig,
     ): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<JsonToXmlResponseDto>> {
       const localVarAxiosArgs = await localVarAxiosParamCreator.convertControllerConvertJsonToXmlV2(
         jsonToXmlV2RequestDto,
         options,
       )
-      return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)
+      const localVarOperationServerIndex = configuration?.serverIndex ?? 0
+      const localVarOperationServerBasePath =
+        operationServerMap['ConvertApi.convertControllerConvertJsonToXmlV2']?.[
+          localVarOperationServerIndex
+        ]?.url
+      return (axios, basePath) =>
+        createRequestFunction(
+          localVarAxiosArgs,
+          globalAxios,
+          BASE_PATH,
+          configuration,
+        )(axios, localVarOperationServerBasePath || basePath)
     },
     /**
      * Generates PDF for a given schema version id and form json data.
@@ -5934,14 +5575,25 @@ export const ConvertApiFp = function (configuration?: Configuration) {
     async convertControllerConvertToPdf(
       id: string,
       jsonConvertRequestDto: JsonConvertRequestDto,
-      options?: AxiosRequestConfig,
+      options?: RawAxiosRequestConfig,
     ): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<object>> {
       const localVarAxiosArgs = await localVarAxiosParamCreator.convertControllerConvertToPdf(
         id,
         jsonConvertRequestDto,
         options,
       )
-      return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)
+      const localVarOperationServerIndex = configuration?.serverIndex ?? 0
+      const localVarOperationServerBasePath =
+        operationServerMap['ConvertApi.convertControllerConvertToPdf']?.[
+          localVarOperationServerIndex
+        ]?.url
+      return (axios, basePath) =>
+        createRequestFunction(
+          localVarAxiosArgs,
+          globalAxios,
+          BASE_PATH,
+          configuration,
+        )(axios, localVarOperationServerBasePath || basePath)
     },
     /**
      * Generates PDF for a given schema version id and form json data.
@@ -5952,13 +5604,24 @@ export const ConvertApiFp = function (configuration?: Configuration) {
      */
     async convertControllerConvertToPdfv2(
       convertToPdfV2RequestDto: ConvertToPdfV2RequestDto,
-      options?: AxiosRequestConfig,
+      options?: RawAxiosRequestConfig,
     ): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<object>> {
       const localVarAxiosArgs = await localVarAxiosParamCreator.convertControllerConvertToPdfv2(
         convertToPdfV2RequestDto,
         options,
       )
-      return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)
+      const localVarOperationServerIndex = configuration?.serverIndex ?? 0
+      const localVarOperationServerBasePath =
+        operationServerMap['ConvertApi.convertControllerConvertToPdfv2']?.[
+          localVarOperationServerIndex
+        ]?.url
+      return (axios, basePath) =>
+        createRequestFunction(
+          localVarAxiosArgs,
+          globalAxios,
+          BASE_PATH,
+          configuration,
+        )(axios, localVarOperationServerBasePath || basePath)
     },
     /**
      * Generates JSON form from given XML data and schema version id
@@ -5971,14 +5634,25 @@ export const ConvertApiFp = function (configuration?: Configuration) {
     async convertControllerConvertXmlToJson(
       id: string,
       xmlToJsonRequestDto: XmlToJsonRequestDto,
-      options?: AxiosRequestConfig,
+      options?: RawAxiosRequestConfig,
     ): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<XmlToJsonResponseDto>> {
       const localVarAxiosArgs = await localVarAxiosParamCreator.convertControllerConvertXmlToJson(
         id,
         xmlToJsonRequestDto,
         options,
       )
-      return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)
+      const localVarOperationServerIndex = configuration?.serverIndex ?? 0
+      const localVarOperationServerBasePath =
+        operationServerMap['ConvertApi.convertControllerConvertXmlToJson']?.[
+          localVarOperationServerIndex
+        ]?.url
+      return (axios, basePath) =>
+        createRequestFunction(
+          localVarAxiosArgs,
+          globalAxios,
+          BASE_PATH,
+          configuration,
+        )(axios, localVarOperationServerBasePath || basePath)
     },
     /**
      * Returns necessary data for frontend to generate pdf.
@@ -5989,7 +5663,7 @@ export const ConvertApiFp = function (configuration?: Configuration) {
      */
     async convertControllerGetPdfPreviewData(
       pdfPreviewDataRequestDto: PdfPreviewDataRequestDto,
-      options?: AxiosRequestConfig,
+      options?: RawAxiosRequestConfig,
     ): Promise<
       (axios?: AxiosInstance, basePath?: string) => AxiosPromise<PdfPreviewDataResponseDto>
     > {
@@ -5997,7 +5671,18 @@ export const ConvertApiFp = function (configuration?: Configuration) {
         pdfPreviewDataRequestDto,
         options,
       )
-      return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)
+      const localVarOperationServerIndex = configuration?.serverIndex ?? 0
+      const localVarOperationServerBasePath =
+        operationServerMap['ConvertApi.convertControllerGetPdfPreviewData']?.[
+          localVarOperationServerIndex
+        ]?.url
+      return (axios, basePath) =>
+        createRequestFunction(
+          localVarAxiosArgs,
+          globalAxios,
+          BASE_PATH,
+          configuration,
+        )(axios, localVarOperationServerBasePath || basePath)
     },
   }
 }
@@ -6025,7 +5710,7 @@ export const ConvertApiFactory = function (
     convertControllerConvertJsonToXml(
       id: string,
       jsonConvertRequestDto: JsonConvertRequestDto,
-      options?: AxiosRequestConfig,
+      options?: any,
     ): AxiosPromise<JsonToXmlResponseDto> {
       return localVarFp
         .convertControllerConvertJsonToXml(id, jsonConvertRequestDto, options)
@@ -6040,7 +5725,7 @@ export const ConvertApiFactory = function (
      */
     convertControllerConvertJsonToXmlV2(
       jsonToXmlV2RequestDto: JsonToXmlV2RequestDto,
-      options?: AxiosRequestConfig,
+      options?: any,
     ): AxiosPromise<JsonToXmlResponseDto> {
       return localVarFp
         .convertControllerConvertJsonToXmlV2(jsonToXmlV2RequestDto, options)
@@ -6058,7 +5743,7 @@ export const ConvertApiFactory = function (
     convertControllerConvertToPdf(
       id: string,
       jsonConvertRequestDto: JsonConvertRequestDto,
-      options?: AxiosRequestConfig,
+      options?: any,
     ): AxiosPromise<object> {
       return localVarFp
         .convertControllerConvertToPdf(id, jsonConvertRequestDto, options)
@@ -6073,7 +5758,7 @@ export const ConvertApiFactory = function (
      */
     convertControllerConvertToPdfv2(
       convertToPdfV2RequestDto: ConvertToPdfV2RequestDto,
-      options?: AxiosRequestConfig,
+      options?: any,
     ): AxiosPromise<object> {
       return localVarFp
         .convertControllerConvertToPdfv2(convertToPdfV2RequestDto, options)
@@ -6090,7 +5775,7 @@ export const ConvertApiFactory = function (
     convertControllerConvertXmlToJson(
       id: string,
       xmlToJsonRequestDto: XmlToJsonRequestDto,
-      options?: AxiosRequestConfig,
+      options?: any,
     ): AxiosPromise<XmlToJsonResponseDto> {
       return localVarFp
         .convertControllerConvertXmlToJson(id, xmlToJsonRequestDto, options)
@@ -6105,7 +5790,7 @@ export const ConvertApiFactory = function (
      */
     convertControllerGetPdfPreviewData(
       pdfPreviewDataRequestDto: PdfPreviewDataRequestDto,
-      options?: AxiosRequestConfig,
+      options?: any,
     ): AxiosPromise<PdfPreviewDataResponseDto> {
       return localVarFp
         .convertControllerGetPdfPreviewData(pdfPreviewDataRequestDto, options)
@@ -6134,7 +5819,7 @@ export class ConvertApi extends BaseAPI {
   public convertControllerConvertJsonToXml(
     id: string,
     jsonConvertRequestDto: JsonConvertRequestDto,
-    options?: AxiosRequestConfig,
+    options?: RawAxiosRequestConfig,
   ) {
     return ConvertApiFp(this.configuration)
       .convertControllerConvertJsonToXml(id, jsonConvertRequestDto, options)
@@ -6151,7 +5836,7 @@ export class ConvertApi extends BaseAPI {
    */
   public convertControllerConvertJsonToXmlV2(
     jsonToXmlV2RequestDto: JsonToXmlV2RequestDto,
-    options?: AxiosRequestConfig,
+    options?: RawAxiosRequestConfig,
   ) {
     return ConvertApiFp(this.configuration)
       .convertControllerConvertJsonToXmlV2(jsonToXmlV2RequestDto, options)
@@ -6171,7 +5856,7 @@ export class ConvertApi extends BaseAPI {
   public convertControllerConvertToPdf(
     id: string,
     jsonConvertRequestDto: JsonConvertRequestDto,
-    options?: AxiosRequestConfig,
+    options?: RawAxiosRequestConfig,
   ) {
     return ConvertApiFp(this.configuration)
       .convertControllerConvertToPdf(id, jsonConvertRequestDto, options)
@@ -6188,7 +5873,7 @@ export class ConvertApi extends BaseAPI {
    */
   public convertControllerConvertToPdfv2(
     convertToPdfV2RequestDto: ConvertToPdfV2RequestDto,
-    options?: AxiosRequestConfig,
+    options?: RawAxiosRequestConfig,
   ) {
     return ConvertApiFp(this.configuration)
       .convertControllerConvertToPdfv2(convertToPdfV2RequestDto, options)
@@ -6207,7 +5892,7 @@ export class ConvertApi extends BaseAPI {
   public convertControllerConvertXmlToJson(
     id: string,
     xmlToJsonRequestDto: XmlToJsonRequestDto,
-    options?: AxiosRequestConfig,
+    options?: RawAxiosRequestConfig,
   ) {
     return ConvertApiFp(this.configuration)
       .convertControllerConvertXmlToJson(id, xmlToJsonRequestDto, options)
@@ -6224,7 +5909,7 @@ export class ConvertApi extends BaseAPI {
    */
   public convertControllerGetPdfPreviewData(
     pdfPreviewDataRequestDto: PdfPreviewDataRequestDto,
-    options?: AxiosRequestConfig,
+    options?: RawAxiosRequestConfig,
   ) {
     return ConvertApiFp(this.configuration)
       .convertControllerGetPdfPreviewData(pdfPreviewDataRequestDto, options)
@@ -6247,7 +5932,7 @@ export const FilesApiAxiosParamCreator = function (configuration?: Configuration
      */
     filesControllerDownloadFile: async (
       jwtToken: string,
-      options: AxiosRequestConfig = {},
+      options: RawAxiosRequestConfig = {},
     ): Promise<RequestArgs> => {
       // verify required parameter 'jwtToken' is not null or undefined
       assertParamExists('filesControllerDownloadFile', 'jwtToken', jwtToken)
@@ -6292,7 +5977,7 @@ export const FilesApiAxiosParamCreator = function (configuration?: Configuration
      */
     filesControllerDownloadToken: async (
       fileId: string,
-      options: AxiosRequestConfig = {},
+      options: RawAxiosRequestConfig = {},
     ): Promise<RequestArgs> => {
       // verify required parameter 'fileId' is not null or undefined
       assertParamExists('filesControllerDownloadToken', 'fileId', fileId)
@@ -6337,7 +6022,7 @@ export const FilesApiAxiosParamCreator = function (configuration?: Configuration
      */
     filesControllerGetFile: async (
       fileId: string,
-      options: AxiosRequestConfig = {},
+      options: RawAxiosRequestConfig = {},
     ): Promise<RequestArgs> => {
       // verify required parameter 'fileId' is not null or undefined
       assertParamExists('filesControllerGetFile', 'fileId', fileId)
@@ -6382,7 +6067,7 @@ export const FilesApiAxiosParamCreator = function (configuration?: Configuration
      */
     filesControllerGetFilesStatusByForm: async (
       formId: string,
-      options: AxiosRequestConfig = {},
+      options: RawAxiosRequestConfig = {},
     ): Promise<RequestArgs> => {
       // verify required parameter 'formId' is not null or undefined
       assertParamExists('filesControllerGetFilesStatusByForm', 'formId', formId)
@@ -6429,7 +6114,7 @@ export const FilesApiAxiosParamCreator = function (configuration?: Configuration
     filesControllerUpdateFileStatusScannerId: async (
       scannerId: string,
       updateFileStatusRequestDto: UpdateFileStatusRequestDto,
-      options: AxiosRequestConfig = {},
+      options: RawAxiosRequestConfig = {},
     ): Promise<RequestArgs> => {
       // verify required parameter 'scannerId' is not null or undefined
       assertParamExists('filesControllerUpdateFileStatusScannerId', 'scannerId', scannerId)
@@ -6497,7 +6182,7 @@ export const FilesApiAxiosParamCreator = function (configuration?: Configuration
       file?: File,
       filename?: string,
       id?: string,
-      options: AxiosRequestConfig = {},
+      options: RawAxiosRequestConfig = {},
     ): Promise<RequestArgs> => {
       // verify required parameter 'formId' is not null or undefined
       assertParamExists('filesControllerUploadFile', 'formId', formId)
@@ -6568,13 +6253,23 @@ export const FilesApiFp = function (configuration?: Configuration) {
      */
     async filesControllerDownloadFile(
       jwtToken: string,
-      options?: AxiosRequestConfig,
+      options?: RawAxiosRequestConfig,
     ): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<void>> {
       const localVarAxiosArgs = await localVarAxiosParamCreator.filesControllerDownloadFile(
         jwtToken,
         options,
       )
-      return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)
+      const localVarOperationServerIndex = configuration?.serverIndex ?? 0
+      const localVarOperationServerBasePath =
+        operationServerMap['FilesApi.filesControllerDownloadFile']?.[localVarOperationServerIndex]
+          ?.url
+      return (axios, basePath) =>
+        createRequestFunction(
+          localVarAxiosArgs,
+          globalAxios,
+          BASE_PATH,
+          configuration,
+        )(axios, localVarOperationServerBasePath || basePath)
     },
     /**
      * To be able to download file you need to obtain jwt token.
@@ -6585,7 +6280,7 @@ export const FilesApiFp = function (configuration?: Configuration) {
      */
     async filesControllerDownloadToken(
       fileId: string,
-      options?: AxiosRequestConfig,
+      options?: RawAxiosRequestConfig,
     ): Promise<
       (axios?: AxiosInstance, basePath?: string) => AxiosPromise<DownloadTokenResponseDataDto>
     > {
@@ -6593,7 +6288,17 @@ export const FilesApiFp = function (configuration?: Configuration) {
         fileId,
         options,
       )
-      return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)
+      const localVarOperationServerIndex = configuration?.serverIndex ?? 0
+      const localVarOperationServerBasePath =
+        operationServerMap['FilesApi.filesControllerDownloadToken']?.[localVarOperationServerIndex]
+          ?.url
+      return (axios, basePath) =>
+        createRequestFunction(
+          localVarAxiosArgs,
+          globalAxios,
+          BASE_PATH,
+          configuration,
+        )(axios, localVarOperationServerBasePath || basePath)
     },
     /**
      * You get all file info based on fileId.
@@ -6604,13 +6309,22 @@ export const FilesApiFp = function (configuration?: Configuration) {
      */
     async filesControllerGetFile(
       fileId: string,
-      options?: AxiosRequestConfig,
+      options?: RawAxiosRequestConfig,
     ): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<GetFileResponseDto>> {
       const localVarAxiosArgs = await localVarAxiosParamCreator.filesControllerGetFile(
         fileId,
         options,
       )
-      return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)
+      const localVarOperationServerIndex = configuration?.serverIndex ?? 0
+      const localVarOperationServerBasePath =
+        operationServerMap['FilesApi.filesControllerGetFile']?.[localVarOperationServerIndex]?.url
+      return (axios, basePath) =>
+        createRequestFunction(
+          localVarAxiosArgs,
+          globalAxios,
+          BASE_PATH,
+          configuration,
+        )(axios, localVarOperationServerBasePath || basePath)
     },
     /**
      * If you need list of files and their file statuses based on formId.
@@ -6621,7 +6335,7 @@ export const FilesApiFp = function (configuration?: Configuration) {
      */
     async filesControllerGetFilesStatusByForm(
       formId: string,
-      options?: AxiosRequestConfig,
+      options?: RawAxiosRequestConfig,
     ): Promise<
       (axios?: AxiosInstance, basePath?: string) => AxiosPromise<Array<GetFileResponseDto>>
     > {
@@ -6629,7 +6343,18 @@ export const FilesApiFp = function (configuration?: Configuration) {
         formId,
         options,
       )
-      return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)
+      const localVarOperationServerIndex = configuration?.serverIndex ?? 0
+      const localVarOperationServerBasePath =
+        operationServerMap['FilesApi.filesControllerGetFilesStatusByForm']?.[
+          localVarOperationServerIndex
+        ]?.url
+      return (axios, basePath) =>
+        createRequestFunction(
+          localVarAxiosArgs,
+          globalAxios,
+          BASE_PATH,
+          configuration,
+        )(axios, localVarOperationServerBasePath || basePath)
     },
     /**
      * You have to provide scannerId and status which you want to update. Service will return updated file with status saying that file was updated. If not then proper error will be propagated.
@@ -6642,7 +6367,7 @@ export const FilesApiFp = function (configuration?: Configuration) {
     async filesControllerUpdateFileStatusScannerId(
       scannerId: string,
       updateFileStatusRequestDto: UpdateFileStatusRequestDto,
-      options?: AxiosRequestConfig,
+      options?: RawAxiosRequestConfig,
     ): Promise<
       (axios?: AxiosInstance, basePath?: string) => AxiosPromise<UpdateFileStatusResponseDto>
     > {
@@ -6652,7 +6377,18 @@ export const FilesApiFp = function (configuration?: Configuration) {
           updateFileStatusRequestDto,
           options,
         )
-      return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)
+      const localVarOperationServerIndex = configuration?.serverIndex ?? 0
+      const localVarOperationServerBasePath =
+        operationServerMap['FilesApi.filesControllerUpdateFileStatusScannerId']?.[
+          localVarOperationServerIndex
+        ]?.url
+      return (axios, basePath) =>
+        createRequestFunction(
+          localVarAxiosArgs,
+          globalAxios,
+          BASE_PATH,
+          configuration,
+        )(axios, localVarOperationServerBasePath || basePath)
     },
     /**
      * You can upload file to form.
@@ -6669,7 +6405,7 @@ export const FilesApiFp = function (configuration?: Configuration) {
       file?: File,
       filename?: string,
       id?: string,
-      options?: AxiosRequestConfig,
+      options?: RawAxiosRequestConfig,
     ): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<PostFileResponseDto>> {
       const localVarAxiosArgs = await localVarAxiosParamCreator.filesControllerUploadFile(
         formId,
@@ -6678,7 +6414,17 @@ export const FilesApiFp = function (configuration?: Configuration) {
         id,
         options,
       )
-      return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)
+      const localVarOperationServerIndex = configuration?.serverIndex ?? 0
+      const localVarOperationServerBasePath =
+        operationServerMap['FilesApi.filesControllerUploadFile']?.[localVarOperationServerIndex]
+          ?.url
+      return (axios, basePath) =>
+        createRequestFunction(
+          localVarAxiosArgs,
+          globalAxios,
+          BASE_PATH,
+          configuration,
+        )(axios, localVarOperationServerBasePath || basePath)
     },
   }
 }
@@ -6701,10 +6447,7 @@ export const FilesApiFactory = function (
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
-    filesControllerDownloadFile(
-      jwtToken: string,
-      options?: AxiosRequestConfig,
-    ): AxiosPromise<void> {
+    filesControllerDownloadFile(jwtToken: string, options?: any): AxiosPromise<void> {
       return localVarFp
         .filesControllerDownloadFile(jwtToken, options)
         .then((request) => request(axios, basePath))
@@ -6718,7 +6461,7 @@ export const FilesApiFactory = function (
      */
     filesControllerDownloadToken(
       fileId: string,
-      options?: AxiosRequestConfig,
+      options?: any,
     ): AxiosPromise<DownloadTokenResponseDataDto> {
       return localVarFp
         .filesControllerDownloadToken(fileId, options)
@@ -6731,10 +6474,7 @@ export const FilesApiFactory = function (
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
-    filesControllerGetFile(
-      fileId: string,
-      options?: AxiosRequestConfig,
-    ): AxiosPromise<GetFileResponseDto> {
+    filesControllerGetFile(fileId: string, options?: any): AxiosPromise<GetFileResponseDto> {
       return localVarFp
         .filesControllerGetFile(fileId, options)
         .then((request) => request(axios, basePath))
@@ -6748,7 +6488,7 @@ export const FilesApiFactory = function (
      */
     filesControllerGetFilesStatusByForm(
       formId: string,
-      options?: AxiosRequestConfig,
+      options?: any,
     ): AxiosPromise<Array<GetFileResponseDto>> {
       return localVarFp
         .filesControllerGetFilesStatusByForm(formId, options)
@@ -6765,7 +6505,7 @@ export const FilesApiFactory = function (
     filesControllerUpdateFileStatusScannerId(
       scannerId: string,
       updateFileStatusRequestDto: UpdateFileStatusRequestDto,
-      options?: AxiosRequestConfig,
+      options?: any,
     ): AxiosPromise<UpdateFileStatusResponseDto> {
       return localVarFp
         .filesControllerUpdateFileStatusScannerId(scannerId, updateFileStatusRequestDto, options)
@@ -6786,7 +6526,7 @@ export const FilesApiFactory = function (
       file?: File,
       filename?: string,
       id?: string,
-      options?: AxiosRequestConfig,
+      options?: any,
     ): AxiosPromise<PostFileResponseDto> {
       return localVarFp
         .filesControllerUploadFile(formId, file, filename, id, options)
@@ -6810,7 +6550,7 @@ export class FilesApi extends BaseAPI {
    * @throws {RequiredError}
    * @memberof FilesApi
    */
-  public filesControllerDownloadFile(jwtToken: string, options?: AxiosRequestConfig) {
+  public filesControllerDownloadFile(jwtToken: string, options?: RawAxiosRequestConfig) {
     return FilesApiFp(this.configuration)
       .filesControllerDownloadFile(jwtToken, options)
       .then((request) => request(this.axios, this.basePath))
@@ -6824,7 +6564,7 @@ export class FilesApi extends BaseAPI {
    * @throws {RequiredError}
    * @memberof FilesApi
    */
-  public filesControllerDownloadToken(fileId: string, options?: AxiosRequestConfig) {
+  public filesControllerDownloadToken(fileId: string, options?: RawAxiosRequestConfig) {
     return FilesApiFp(this.configuration)
       .filesControllerDownloadToken(fileId, options)
       .then((request) => request(this.axios, this.basePath))
@@ -6838,7 +6578,7 @@ export class FilesApi extends BaseAPI {
    * @throws {RequiredError}
    * @memberof FilesApi
    */
-  public filesControllerGetFile(fileId: string, options?: AxiosRequestConfig) {
+  public filesControllerGetFile(fileId: string, options?: RawAxiosRequestConfig) {
     return FilesApiFp(this.configuration)
       .filesControllerGetFile(fileId, options)
       .then((request) => request(this.axios, this.basePath))
@@ -6852,7 +6592,7 @@ export class FilesApi extends BaseAPI {
    * @throws {RequiredError}
    * @memberof FilesApi
    */
-  public filesControllerGetFilesStatusByForm(formId: string, options?: AxiosRequestConfig) {
+  public filesControllerGetFilesStatusByForm(formId: string, options?: RawAxiosRequestConfig) {
     return FilesApiFp(this.configuration)
       .filesControllerGetFilesStatusByForm(formId, options)
       .then((request) => request(this.axios, this.basePath))
@@ -6870,7 +6610,7 @@ export class FilesApi extends BaseAPI {
   public filesControllerUpdateFileStatusScannerId(
     scannerId: string,
     updateFileStatusRequestDto: UpdateFileStatusRequestDto,
-    options?: AxiosRequestConfig,
+    options?: RawAxiosRequestConfig,
   ) {
     return FilesApiFp(this.configuration)
       .filesControllerUpdateFileStatusScannerId(scannerId, updateFileStatusRequestDto, options)
@@ -6893,7 +6633,7 @@ export class FilesApi extends BaseAPI {
     file?: File,
     filename?: string,
     id?: string,
-    options?: AxiosRequestConfig,
+    options?: RawAxiosRequestConfig,
   ) {
     return FilesApiFp(this.configuration)
       .filesControllerUploadFile(formId, file, filename, id, options)
@@ -6916,7 +6656,7 @@ export const GinisApiAxiosParamCreator = function (configuration?: Configuration
      */
     ginisControllerGetGinisDocumentByFormId: async (
       formId: string,
-      options: AxiosRequestConfig = {},
+      options: RawAxiosRequestConfig = {},
     ): Promise<RequestArgs> => {
       // verify required parameter 'formId' is not null or undefined
       assertParamExists('ginisControllerGetGinisDocumentByFormId', 'formId', formId)
@@ -6971,13 +6711,24 @@ export const GinisApiFp = function (configuration?: Configuration) {
      */
     async ginisControllerGetGinisDocumentByFormId(
       formId: string,
-      options?: AxiosRequestConfig,
+      options?: RawAxiosRequestConfig,
     ): Promise<
       (axios?: AxiosInstance, basePath?: string) => AxiosPromise<GinisDocumentDetailResponseDto>
     > {
       const localVarAxiosArgs =
         await localVarAxiosParamCreator.ginisControllerGetGinisDocumentByFormId(formId, options)
-      return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)
+      const localVarOperationServerIndex = configuration?.serverIndex ?? 0
+      const localVarOperationServerBasePath =
+        operationServerMap['GinisApi.ginisControllerGetGinisDocumentByFormId']?.[
+          localVarOperationServerIndex
+        ]?.url
+      return (axios, basePath) =>
+        createRequestFunction(
+          localVarAxiosArgs,
+          globalAxios,
+          BASE_PATH,
+          configuration,
+        )(axios, localVarOperationServerBasePath || basePath)
     },
   }
 }
@@ -7002,7 +6753,7 @@ export const GinisApiFactory = function (
      */
     ginisControllerGetGinisDocumentByFormId(
       formId: string,
-      options?: AxiosRequestConfig,
+      options?: any,
     ): AxiosPromise<GinisDocumentDetailResponseDto> {
       return localVarFp
         .ginisControllerGetGinisDocumentByFormId(formId, options)
@@ -7026,7 +6777,7 @@ export class GinisApi extends BaseAPI {
    * @throws {RequiredError}
    * @memberof GinisApi
    */
-  public ginisControllerGetGinisDocumentByFormId(formId: string, options?: AxiosRequestConfig) {
+  public ginisControllerGetGinisDocumentByFormId(formId: string, options?: RawAxiosRequestConfig) {
     return GinisApiFp(this.configuration)
       .ginisControllerGetGinisDocumentByFormId(formId, options)
       .then((request) => request(this.axios, this.basePath))
@@ -7045,7 +6796,7 @@ export const HealthcheckApiAxiosParamCreator = function (configuration?: Configu
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
-    appControllerGetHello: async (options: AxiosRequestConfig = {}): Promise<RequestArgs> => {
+    appControllerGetHello: async (options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
       const localVarPath = `/healthcheck`
       // use dummy base URL string because the URL constructor only accepts absolute URLs.
       const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL)
@@ -7088,10 +6839,20 @@ export const HealthcheckApiFp = function (configuration?: Configuration) {
      * @throws {RequiredError}
      */
     async appControllerGetHello(
-      options?: AxiosRequestConfig,
+      options?: RawAxiosRequestConfig,
     ): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<object>> {
       const localVarAxiosArgs = await localVarAxiosParamCreator.appControllerGetHello(options)
-      return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)
+      const localVarOperationServerIndex = configuration?.serverIndex ?? 0
+      const localVarOperationServerBasePath =
+        operationServerMap['HealthcheckApi.appControllerGetHello']?.[localVarOperationServerIndex]
+          ?.url
+      return (axios, basePath) =>
+        createRequestFunction(
+          localVarAxiosArgs,
+          globalAxios,
+          BASE_PATH,
+          configuration,
+        )(axios, localVarOperationServerBasePath || basePath)
     },
   }
 }
@@ -7113,7 +6874,7 @@ export const HealthcheckApiFactory = function (
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
-    appControllerGetHello(options?: AxiosRequestConfig): AxiosPromise<object> {
+    appControllerGetHello(options?: any): AxiosPromise<object> {
       return localVarFp.appControllerGetHello(options).then((request) => request(axios, basePath))
     },
   }
@@ -7133,7 +6894,7 @@ export class HealthcheckApi extends BaseAPI {
    * @throws {RequiredError}
    * @memberof HealthcheckApi
    */
-  public appControllerGetHello(options?: AxiosRequestConfig) {
+  public appControllerGetHello(options?: RawAxiosRequestConfig) {
     return HealthcheckApiFp(this.configuration)
       .appControllerGetHello(options)
       .then((request) => request(this.axios, this.basePath))
@@ -7157,7 +6918,7 @@ export const NasesApiAxiosParamCreator = function (configuration?: Configuration
     nasesControllerCheckSendConditions: async (
       id: string,
       eidSendFormRequestDto: EidSendFormRequestDto,
-      options: AxiosRequestConfig = {},
+      options: RawAxiosRequestConfig = {},
     ): Promise<RequestArgs> => {
       // verify required parameter 'id' is not null or undefined
       assertParamExists('nasesControllerCheckSendConditions', 'id', id)
@@ -7215,7 +6976,7 @@ export const NasesApiAxiosParamCreator = function (configuration?: Configuration
      */
     nasesControllerCreateForm: async (
       createFormRequestDto: CreateFormRequestDto,
-      options: AxiosRequestConfig = {},
+      options: RawAxiosRequestConfig = {},
     ): Promise<RequestArgs> => {
       // verify required parameter 'createFormRequestDto' is not null or undefined
       assertParamExists('nasesControllerCreateForm', 'createFormRequestDto', createFormRequestDto)
@@ -7265,7 +7026,7 @@ export const NasesApiAxiosParamCreator = function (configuration?: Configuration
      */
     nasesControllerCreateFormEid: async (
       createFormEidRequestDto: CreateFormEidRequestDto,
-      options: AxiosRequestConfig = {},
+      options: RawAxiosRequestConfig = {},
     ): Promise<RequestArgs> => {
       // verify required parameter 'createFormEidRequestDto' is not null or undefined
       assertParamExists(
@@ -7318,7 +7079,7 @@ export const NasesApiAxiosParamCreator = function (configuration?: Configuration
      */
     nasesControllerDeleteForm: async (
       id: string,
-      options: AxiosRequestConfig = {},
+      options: RawAxiosRequestConfig = {},
     ): Promise<RequestArgs> => {
       // verify required parameter 'id' is not null or undefined
       assertParamExists('nasesControllerDeleteForm', 'id', id)
@@ -7360,7 +7121,7 @@ export const NasesApiAxiosParamCreator = function (configuration?: Configuration
      */
     nasesControllerGetForm: async (
       id: string,
-      options: AxiosRequestConfig = {},
+      options: RawAxiosRequestConfig = {},
     ): Promise<RequestArgs> => {
       // verify required parameter 'id' is not null or undefined
       assertParamExists('nasesControllerGetForm', 'id', id)
@@ -7412,7 +7173,7 @@ export const NasesApiAxiosParamCreator = function (configuration?: Configuration
       formName?: string,
       states?: Array<FormState>,
       schemaVersionId?: string,
-      options: AxiosRequestConfig = {},
+      options: RawAxiosRequestConfig = {},
     ): Promise<RequestArgs> => {
       const localVarPath = `/nases/forms`
       // use dummy base URL string because the URL constructor only accepts absolute URLs.
@@ -7476,7 +7237,7 @@ export const NasesApiAxiosParamCreator = function (configuration?: Configuration
      */
     nasesControllerMigrateForm: async (
       id: string,
-      options: AxiosRequestConfig = {},
+      options: RawAxiosRequestConfig = {},
     ): Promise<RequestArgs> => {
       // verify required parameter 'id' is not null or undefined
       assertParamExists('nasesControllerMigrateForm', 'id', id)
@@ -7523,7 +7284,7 @@ export const NasesApiAxiosParamCreator = function (configuration?: Configuration
     nasesControllerSendAndUpdateForm: async (
       id: string,
       updateFormRequestDto: UpdateFormRequestDto,
-      options: AxiosRequestConfig = {},
+      options: RawAxiosRequestConfig = {},
     ): Promise<RequestArgs> => {
       // verify required parameter 'id' is not null or undefined
       assertParamExists('nasesControllerSendAndUpdateForm', 'id', id)
@@ -7583,7 +7344,7 @@ export const NasesApiAxiosParamCreator = function (configuration?: Configuration
     nasesControllerSendAndUpdateFormEid: async (
       id: string,
       eidUpdateSendFormRequestDto: EidUpdateSendFormRequestDto,
-      options: AxiosRequestConfig = {},
+      options: RawAxiosRequestConfig = {},
     ): Promise<RequestArgs> => {
       // verify required parameter 'id' is not null or undefined
       assertParamExists('nasesControllerSendAndUpdateFormEid', 'id', id)
@@ -7641,7 +7402,7 @@ export const NasesApiAxiosParamCreator = function (configuration?: Configuration
      */
     nasesControllerSendForm: async (
       id: string,
-      options: AxiosRequestConfig = {},
+      options: RawAxiosRequestConfig = {},
     ): Promise<RequestArgs> => {
       // verify required parameter 'id' is not null or undefined
       assertParamExists('nasesControllerSendForm', 'id', id)
@@ -7688,7 +7449,7 @@ export const NasesApiAxiosParamCreator = function (configuration?: Configuration
     nasesControllerSendFormEid: async (
       id: string,
       eidSendFormRequestDto: EidSendFormRequestDto,
-      options: AxiosRequestConfig = {},
+      options: RawAxiosRequestConfig = {},
     ): Promise<RequestArgs> => {
       // verify required parameter 'id' is not null or undefined
       assertParamExists('nasesControllerSendFormEid', 'id', id)
@@ -7748,7 +7509,7 @@ export const NasesApiAxiosParamCreator = function (configuration?: Configuration
     nasesControllerUpdateForm: async (
       id: string,
       updateFormRequestDto: UpdateFormRequestDto,
-      options: AxiosRequestConfig = {},
+      options: RawAxiosRequestConfig = {},
     ): Promise<RequestArgs> => {
       // verify required parameter 'id' is not null or undefined
       assertParamExists('nasesControllerUpdateForm', 'id', id)
@@ -7805,7 +7566,7 @@ export const NasesApiAxiosParamCreator = function (configuration?: Configuration
     nasesControllerUpdateFormEid: async (
       id: string,
       updateFormRequestDto: UpdateFormRequestDto,
-      options: AxiosRequestConfig = {},
+      options: RawAxiosRequestConfig = {},
     ): Promise<RequestArgs> => {
       // verify required parameter 'id' is not null or undefined
       assertParamExists('nasesControllerUpdateFormEid', 'id', id)
@@ -7875,14 +7636,25 @@ export const NasesApiFp = function (configuration?: Configuration) {
     async nasesControllerCheckSendConditions(
       id: string,
       eidSendFormRequestDto: EidSendFormRequestDto,
-      options?: AxiosRequestConfig,
+      options?: RawAxiosRequestConfig,
     ): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<CanSendResponseDto>> {
       const localVarAxiosArgs = await localVarAxiosParamCreator.nasesControllerCheckSendConditions(
         id,
         eidSendFormRequestDto,
         options,
       )
-      return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)
+      const localVarOperationServerIndex = configuration?.serverIndex ?? 0
+      const localVarOperationServerBasePath =
+        operationServerMap['NasesApi.nasesControllerCheckSendConditions']?.[
+          localVarOperationServerIndex
+        ]?.url
+      return (axios, basePath) =>
+        createRequestFunction(
+          localVarAxiosArgs,
+          globalAxios,
+          BASE_PATH,
+          configuration,
+        )(axios, localVarOperationServerBasePath || basePath)
     },
     /**
      * Create id in our backend, which you need to send in form as external id. Save also data necessary for envelope to send message to NASES
@@ -7893,13 +7665,23 @@ export const NasesApiFp = function (configuration?: Configuration) {
      */
     async nasesControllerCreateForm(
       createFormRequestDto: CreateFormRequestDto,
-      options?: AxiosRequestConfig,
+      options?: RawAxiosRequestConfig,
     ): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<GetFormResponseDto>> {
       const localVarAxiosArgs = await localVarAxiosParamCreator.nasesControllerCreateForm(
         createFormRequestDto,
         options,
       )
-      return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)
+      const localVarOperationServerIndex = configuration?.serverIndex ?? 0
+      const localVarOperationServerBasePath =
+        operationServerMap['NasesApi.nasesControllerCreateForm']?.[localVarOperationServerIndex]
+          ?.url
+      return (axios, basePath) =>
+        createRequestFunction(
+          localVarAxiosArgs,
+          globalAxios,
+          BASE_PATH,
+          configuration,
+        )(axios, localVarOperationServerBasePath || basePath)
     },
     /**
      * Create only id in our backend, which you need to send in form as external id. There is only one mandatory parameter - email, rest of body is not mandatory, you can add form name, category version and some tags
@@ -7911,13 +7693,23 @@ export const NasesApiFp = function (configuration?: Configuration) {
      */
     async nasesControllerCreateFormEid(
       createFormEidRequestDto: CreateFormEidRequestDto,
-      options?: AxiosRequestConfig,
+      options?: RawAxiosRequestConfig,
     ): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<GetFormResponseDto>> {
       const localVarAxiosArgs = await localVarAxiosParamCreator.nasesControllerCreateFormEid(
         createFormEidRequestDto,
         options,
       )
-      return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)
+      const localVarOperationServerIndex = configuration?.serverIndex ?? 0
+      const localVarOperationServerBasePath =
+        operationServerMap['NasesApi.nasesControllerCreateFormEid']?.[localVarOperationServerIndex]
+          ?.url
+      return (axios, basePath) =>
+        createRequestFunction(
+          localVarAxiosArgs,
+          globalAxios,
+          BASE_PATH,
+          configuration,
+        )(axios, localVarOperationServerBasePath || basePath)
     },
     /**
      * Archive form (hide from user but keep in database)
@@ -7928,13 +7720,23 @@ export const NasesApiFp = function (configuration?: Configuration) {
      */
     async nasesControllerDeleteForm(
       id: string,
-      options?: AxiosRequestConfig,
+      options?: RawAxiosRequestConfig,
     ): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<void>> {
       const localVarAxiosArgs = await localVarAxiosParamCreator.nasesControllerDeleteForm(
         id,
         options,
       )
-      return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)
+      const localVarOperationServerIndex = configuration?.serverIndex ?? 0
+      const localVarOperationServerBasePath =
+        operationServerMap['NasesApi.nasesControllerDeleteForm']?.[localVarOperationServerIndex]
+          ?.url
+      return (axios, basePath) =>
+        createRequestFunction(
+          localVarAxiosArgs,
+          globalAxios,
+          BASE_PATH,
+          configuration,
+        )(axios, localVarOperationServerBasePath || basePath)
     },
     /**
      * Return form by ID and by logged user
@@ -7945,10 +7747,19 @@ export const NasesApiFp = function (configuration?: Configuration) {
      */
     async nasesControllerGetForm(
       id: string,
-      options?: AxiosRequestConfig,
+      options?: RawAxiosRequestConfig,
     ): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<GetFormResponseDto>> {
       const localVarAxiosArgs = await localVarAxiosParamCreator.nasesControllerGetForm(id, options)
-      return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)
+      const localVarOperationServerIndex = configuration?.serverIndex ?? 0
+      const localVarOperationServerBasePath =
+        operationServerMap['NasesApi.nasesControllerGetForm']?.[localVarOperationServerIndex]?.url
+      return (axios, basePath) =>
+        createRequestFunction(
+          localVarAxiosArgs,
+          globalAxios,
+          BASE_PATH,
+          configuration,
+        )(axios, localVarOperationServerBasePath || basePath)
     },
     /**
      * Get paginated forms
@@ -7969,7 +7780,7 @@ export const NasesApiFp = function (configuration?: Configuration) {
       formName?: string,
       states?: Array<FormState>,
       schemaVersionId?: string,
-      options?: AxiosRequestConfig,
+      options?: RawAxiosRequestConfig,
     ): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<GetFormsResponseDto>> {
       const localVarAxiosArgs = await localVarAxiosParamCreator.nasesControllerGetForms(
         currentPage,
@@ -7980,7 +7791,16 @@ export const NasesApiFp = function (configuration?: Configuration) {
         schemaVersionId,
         options,
       )
-      return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)
+      const localVarOperationServerIndex = configuration?.serverIndex ?? 0
+      const localVarOperationServerBasePath =
+        operationServerMap['NasesApi.nasesControllerGetForms']?.[localVarOperationServerIndex]?.url
+      return (axios, basePath) =>
+        createRequestFunction(
+          localVarAxiosArgs,
+          globalAxios,
+          BASE_PATH,
+          configuration,
+        )(axios, localVarOperationServerBasePath || basePath)
     },
     /**
      * Assign form with no assigned user to the authenticated user
@@ -7991,13 +7811,23 @@ export const NasesApiFp = function (configuration?: Configuration) {
      */
     async nasesControllerMigrateForm(
       id: string,
-      options?: AxiosRequestConfig,
+      options?: RawAxiosRequestConfig,
     ): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<MigrateFormResponseDto>> {
       const localVarAxiosArgs = await localVarAxiosParamCreator.nasesControllerMigrateForm(
         id,
         options,
       )
-      return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)
+      const localVarOperationServerIndex = configuration?.serverIndex ?? 0
+      const localVarOperationServerBasePath =
+        operationServerMap['NasesApi.nasesControllerMigrateForm']?.[localVarOperationServerIndex]
+          ?.url
+      return (axios, basePath) =>
+        createRequestFunction(
+          localVarAxiosArgs,
+          globalAxios,
+          BASE_PATH,
+          configuration,
+        )(axios, localVarOperationServerBasePath || basePath)
     },
     /**
      * This endpoint is used for updating from and sending it to NASES. First is form updated then send to rabbitmq, then is controlled if everything is okay and files are scanned and after that is send to NASES
@@ -8010,14 +7840,25 @@ export const NasesApiFp = function (configuration?: Configuration) {
     async nasesControllerSendAndUpdateForm(
       id: string,
       updateFormRequestDto: UpdateFormRequestDto,
-      options?: AxiosRequestConfig,
+      options?: RawAxiosRequestConfig,
     ): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<SendFormResponseDto>> {
       const localVarAxiosArgs = await localVarAxiosParamCreator.nasesControllerSendAndUpdateForm(
         id,
         updateFormRequestDto,
         options,
       )
-      return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)
+      const localVarOperationServerIndex = configuration?.serverIndex ?? 0
+      const localVarOperationServerBasePath =
+        operationServerMap['NasesApi.nasesControllerSendAndUpdateForm']?.[
+          localVarOperationServerIndex
+        ]?.url
+      return (axios, basePath) =>
+        createRequestFunction(
+          localVarAxiosArgs,
+          globalAxios,
+          BASE_PATH,
+          configuration,
+        )(axios, localVarOperationServerBasePath || basePath)
     },
     /**
      * This endpoint is used for updating from and sending it to NASES. First is form updated then send to rabbitmq, then is controlled if everything is okay and files are scanned and after that is send to NASES
@@ -8030,14 +7871,25 @@ export const NasesApiFp = function (configuration?: Configuration) {
     async nasesControllerSendAndUpdateFormEid(
       id: string,
       eidUpdateSendFormRequestDto: EidUpdateSendFormRequestDto,
-      options?: AxiosRequestConfig,
+      options?: RawAxiosRequestConfig,
     ): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<SendFormResponseDto>> {
       const localVarAxiosArgs = await localVarAxiosParamCreator.nasesControllerSendAndUpdateFormEid(
         id,
         eidUpdateSendFormRequestDto,
         options,
       )
-      return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)
+      const localVarOperationServerIndex = configuration?.serverIndex ?? 0
+      const localVarOperationServerBasePath =
+        operationServerMap['NasesApi.nasesControllerSendAndUpdateFormEid']?.[
+          localVarOperationServerIndex
+        ]?.url
+      return (axios, basePath) =>
+        createRequestFunction(
+          localVarAxiosArgs,
+          globalAxios,
+          BASE_PATH,
+          configuration,
+        )(axios, localVarOperationServerBasePath || basePath)
     },
     /**
      * This endpoint is used for sending form to NASES. First is form send to rabbitmq, then is controlled if everything is okay and files are scanned and after that is send to NASES
@@ -8048,10 +7900,19 @@ export const NasesApiFp = function (configuration?: Configuration) {
      */
     async nasesControllerSendForm(
       id: string,
-      options?: AxiosRequestConfig,
+      options?: RawAxiosRequestConfig,
     ): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<SendFormResponseDto>> {
       const localVarAxiosArgs = await localVarAxiosParamCreator.nasesControllerSendForm(id, options)
-      return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)
+      const localVarOperationServerIndex = configuration?.serverIndex ?? 0
+      const localVarOperationServerBasePath =
+        operationServerMap['NasesApi.nasesControllerSendForm']?.[localVarOperationServerIndex]?.url
+      return (axios, basePath) =>
+        createRequestFunction(
+          localVarAxiosArgs,
+          globalAxios,
+          BASE_PATH,
+          configuration,
+        )(axios, localVarOperationServerBasePath || basePath)
     },
     /**
      * This endpoint is used for sending form to NASES. First is form send to rabbitmq, then is controlled if everything is okay and files are scanned and after that is send to NASES
@@ -8064,14 +7925,24 @@ export const NasesApiFp = function (configuration?: Configuration) {
     async nasesControllerSendFormEid(
       id: string,
       eidSendFormRequestDto: EidSendFormRequestDto,
-      options?: AxiosRequestConfig,
+      options?: RawAxiosRequestConfig,
     ): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<SendFormResponseDto>> {
       const localVarAxiosArgs = await localVarAxiosParamCreator.nasesControllerSendFormEid(
         id,
         eidSendFormRequestDto,
         options,
       )
-      return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)
+      const localVarOperationServerIndex = configuration?.serverIndex ?? 0
+      const localVarOperationServerBasePath =
+        operationServerMap['NasesApi.nasesControllerSendFormEid']?.[localVarOperationServerIndex]
+          ?.url
+      return (axios, basePath) =>
+        createRequestFunction(
+          localVarAxiosArgs,
+          globalAxios,
+          BASE_PATH,
+          configuration,
+        )(axios, localVarOperationServerBasePath || basePath)
     },
     /**
      * Update form
@@ -8084,14 +7955,24 @@ export const NasesApiFp = function (configuration?: Configuration) {
     async nasesControllerUpdateForm(
       id: string,
       updateFormRequestDto: UpdateFormRequestDto,
-      options?: AxiosRequestConfig,
+      options?: RawAxiosRequestConfig,
     ): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<GetFormResponseDto>> {
       const localVarAxiosArgs = await localVarAxiosParamCreator.nasesControllerUpdateForm(
         id,
         updateFormRequestDto,
         options,
       )
-      return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)
+      const localVarOperationServerIndex = configuration?.serverIndex ?? 0
+      const localVarOperationServerBasePath =
+        operationServerMap['NasesApi.nasesControllerUpdateForm']?.[localVarOperationServerIndex]
+          ?.url
+      return (axios, basePath) =>
+        createRequestFunction(
+          localVarAxiosArgs,
+          globalAxios,
+          BASE_PATH,
+          configuration,
+        )(axios, localVarOperationServerBasePath || basePath)
     },
     /**
      * Create id in our backend, which you need to send in form as external id. Save also data necessary for envelope to send message to NASES
@@ -8105,14 +7986,24 @@ export const NasesApiFp = function (configuration?: Configuration) {
     async nasesControllerUpdateFormEid(
       id: string,
       updateFormRequestDto: UpdateFormRequestDto,
-      options?: AxiosRequestConfig,
+      options?: RawAxiosRequestConfig,
     ): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<GetFormResponseDto>> {
       const localVarAxiosArgs = await localVarAxiosParamCreator.nasesControllerUpdateFormEid(
         id,
         updateFormRequestDto,
         options,
       )
-      return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)
+      const localVarOperationServerIndex = configuration?.serverIndex ?? 0
+      const localVarOperationServerBasePath =
+        operationServerMap['NasesApi.nasesControllerUpdateFormEid']?.[localVarOperationServerIndex]
+          ?.url
+      return (axios, basePath) =>
+        createRequestFunction(
+          localVarAxiosArgs,
+          globalAxios,
+          BASE_PATH,
+          configuration,
+        )(axios, localVarOperationServerBasePath || basePath)
     },
   }
 }
@@ -8139,7 +8030,7 @@ export const NasesApiFactory = function (
     nasesControllerCheckSendConditions(
       id: string,
       eidSendFormRequestDto: EidSendFormRequestDto,
-      options?: AxiosRequestConfig,
+      options?: any,
     ): AxiosPromise<CanSendResponseDto> {
       return localVarFp
         .nasesControllerCheckSendConditions(id, eidSendFormRequestDto, options)
@@ -8154,7 +8045,7 @@ export const NasesApiFactory = function (
      */
     nasesControllerCreateForm(
       createFormRequestDto: CreateFormRequestDto,
-      options?: AxiosRequestConfig,
+      options?: any,
     ): AxiosPromise<GetFormResponseDto> {
       return localVarFp
         .nasesControllerCreateForm(createFormRequestDto, options)
@@ -8170,7 +8061,7 @@ export const NasesApiFactory = function (
      */
     nasesControllerCreateFormEid(
       createFormEidRequestDto: CreateFormEidRequestDto,
-      options?: AxiosRequestConfig,
+      options?: any,
     ): AxiosPromise<GetFormResponseDto> {
       return localVarFp
         .nasesControllerCreateFormEid(createFormEidRequestDto, options)
@@ -8183,7 +8074,7 @@ export const NasesApiFactory = function (
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
-    nasesControllerDeleteForm(id: string, options?: AxiosRequestConfig): AxiosPromise<void> {
+    nasesControllerDeleteForm(id: string, options?: any): AxiosPromise<void> {
       return localVarFp
         .nasesControllerDeleteForm(id, options)
         .then((request) => request(axios, basePath))
@@ -8195,10 +8086,7 @@ export const NasesApiFactory = function (
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
-    nasesControllerGetForm(
-      id: string,
-      options?: AxiosRequestConfig,
-    ): AxiosPromise<GetFormResponseDto> {
+    nasesControllerGetForm(id: string, options?: any): AxiosPromise<GetFormResponseDto> {
       return localVarFp
         .nasesControllerGetForm(id, options)
         .then((request) => request(axios, basePath))
@@ -8222,7 +8110,7 @@ export const NasesApiFactory = function (
       formName?: string,
       states?: Array<FormState>,
       schemaVersionId?: string,
-      options?: AxiosRequestConfig,
+      options?: any,
     ): AxiosPromise<GetFormsResponseDto> {
       return localVarFp
         .nasesControllerGetForms(
@@ -8243,10 +8131,7 @@ export const NasesApiFactory = function (
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
-    nasesControllerMigrateForm(
-      id: string,
-      options?: AxiosRequestConfig,
-    ): AxiosPromise<MigrateFormResponseDto> {
+    nasesControllerMigrateForm(id: string, options?: any): AxiosPromise<MigrateFormResponseDto> {
       return localVarFp
         .nasesControllerMigrateForm(id, options)
         .then((request) => request(axios, basePath))
@@ -8262,7 +8147,7 @@ export const NasesApiFactory = function (
     nasesControllerSendAndUpdateForm(
       id: string,
       updateFormRequestDto: UpdateFormRequestDto,
-      options?: AxiosRequestConfig,
+      options?: any,
     ): AxiosPromise<SendFormResponseDto> {
       return localVarFp
         .nasesControllerSendAndUpdateForm(id, updateFormRequestDto, options)
@@ -8279,7 +8164,7 @@ export const NasesApiFactory = function (
     nasesControllerSendAndUpdateFormEid(
       id: string,
       eidUpdateSendFormRequestDto: EidUpdateSendFormRequestDto,
-      options?: AxiosRequestConfig,
+      options?: any,
     ): AxiosPromise<SendFormResponseDto> {
       return localVarFp
         .nasesControllerSendAndUpdateFormEid(id, eidUpdateSendFormRequestDto, options)
@@ -8292,10 +8177,7 @@ export const NasesApiFactory = function (
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
-    nasesControllerSendForm(
-      id: string,
-      options?: AxiosRequestConfig,
-    ): AxiosPromise<SendFormResponseDto> {
+    nasesControllerSendForm(id: string, options?: any): AxiosPromise<SendFormResponseDto> {
       return localVarFp
         .nasesControllerSendForm(id, options)
         .then((request) => request(axios, basePath))
@@ -8311,7 +8193,7 @@ export const NasesApiFactory = function (
     nasesControllerSendFormEid(
       id: string,
       eidSendFormRequestDto: EidSendFormRequestDto,
-      options?: AxiosRequestConfig,
+      options?: any,
     ): AxiosPromise<SendFormResponseDto> {
       return localVarFp
         .nasesControllerSendFormEid(id, eidSendFormRequestDto, options)
@@ -8328,7 +8210,7 @@ export const NasesApiFactory = function (
     nasesControllerUpdateForm(
       id: string,
       updateFormRequestDto: UpdateFormRequestDto,
-      options?: AxiosRequestConfig,
+      options?: any,
     ): AxiosPromise<GetFormResponseDto> {
       return localVarFp
         .nasesControllerUpdateForm(id, updateFormRequestDto, options)
@@ -8346,7 +8228,7 @@ export const NasesApiFactory = function (
     nasesControllerUpdateFormEid(
       id: string,
       updateFormRequestDto: UpdateFormRequestDto,
-      options?: AxiosRequestConfig,
+      options?: any,
     ): AxiosPromise<GetFormResponseDto> {
       return localVarFp
         .nasesControllerUpdateFormEid(id, updateFormRequestDto, options)
@@ -8374,7 +8256,7 @@ export class NasesApi extends BaseAPI {
   public nasesControllerCheckSendConditions(
     id: string,
     eidSendFormRequestDto: EidSendFormRequestDto,
-    options?: AxiosRequestConfig,
+    options?: RawAxiosRequestConfig,
   ) {
     return NasesApiFp(this.configuration)
       .nasesControllerCheckSendConditions(id, eidSendFormRequestDto, options)
@@ -8391,7 +8273,7 @@ export class NasesApi extends BaseAPI {
    */
   public nasesControllerCreateForm(
     createFormRequestDto: CreateFormRequestDto,
-    options?: AxiosRequestConfig,
+    options?: RawAxiosRequestConfig,
   ) {
     return NasesApiFp(this.configuration)
       .nasesControllerCreateForm(createFormRequestDto, options)
@@ -8409,7 +8291,7 @@ export class NasesApi extends BaseAPI {
    */
   public nasesControllerCreateFormEid(
     createFormEidRequestDto: CreateFormEidRequestDto,
-    options?: AxiosRequestConfig,
+    options?: RawAxiosRequestConfig,
   ) {
     return NasesApiFp(this.configuration)
       .nasesControllerCreateFormEid(createFormEidRequestDto, options)
@@ -8424,7 +8306,7 @@ export class NasesApi extends BaseAPI {
    * @throws {RequiredError}
    * @memberof NasesApi
    */
-  public nasesControllerDeleteForm(id: string, options?: AxiosRequestConfig) {
+  public nasesControllerDeleteForm(id: string, options?: RawAxiosRequestConfig) {
     return NasesApiFp(this.configuration)
       .nasesControllerDeleteForm(id, options)
       .then((request) => request(this.axios, this.basePath))
@@ -8438,7 +8320,7 @@ export class NasesApi extends BaseAPI {
    * @throws {RequiredError}
    * @memberof NasesApi
    */
-  public nasesControllerGetForm(id: string, options?: AxiosRequestConfig) {
+  public nasesControllerGetForm(id: string, options?: RawAxiosRequestConfig) {
     return NasesApiFp(this.configuration)
       .nasesControllerGetForm(id, options)
       .then((request) => request(this.axios, this.basePath))
@@ -8464,7 +8346,7 @@ export class NasesApi extends BaseAPI {
     formName?: string,
     states?: Array<FormState>,
     schemaVersionId?: string,
-    options?: AxiosRequestConfig,
+    options?: RawAxiosRequestConfig,
   ) {
     return NasesApiFp(this.configuration)
       .nasesControllerGetForms(
@@ -8487,7 +8369,7 @@ export class NasesApi extends BaseAPI {
    * @throws {RequiredError}
    * @memberof NasesApi
    */
-  public nasesControllerMigrateForm(id: string, options?: AxiosRequestConfig) {
+  public nasesControllerMigrateForm(id: string, options?: RawAxiosRequestConfig) {
     return NasesApiFp(this.configuration)
       .nasesControllerMigrateForm(id, options)
       .then((request) => request(this.axios, this.basePath))
@@ -8505,7 +8387,7 @@ export class NasesApi extends BaseAPI {
   public nasesControllerSendAndUpdateForm(
     id: string,
     updateFormRequestDto: UpdateFormRequestDto,
-    options?: AxiosRequestConfig,
+    options?: RawAxiosRequestConfig,
   ) {
     return NasesApiFp(this.configuration)
       .nasesControllerSendAndUpdateForm(id, updateFormRequestDto, options)
@@ -8524,7 +8406,7 @@ export class NasesApi extends BaseAPI {
   public nasesControllerSendAndUpdateFormEid(
     id: string,
     eidUpdateSendFormRequestDto: EidUpdateSendFormRequestDto,
-    options?: AxiosRequestConfig,
+    options?: RawAxiosRequestConfig,
   ) {
     return NasesApiFp(this.configuration)
       .nasesControllerSendAndUpdateFormEid(id, eidUpdateSendFormRequestDto, options)
@@ -8539,7 +8421,7 @@ export class NasesApi extends BaseAPI {
    * @throws {RequiredError}
    * @memberof NasesApi
    */
-  public nasesControllerSendForm(id: string, options?: AxiosRequestConfig) {
+  public nasesControllerSendForm(id: string, options?: RawAxiosRequestConfig) {
     return NasesApiFp(this.configuration)
       .nasesControllerSendForm(id, options)
       .then((request) => request(this.axios, this.basePath))
@@ -8557,7 +8439,7 @@ export class NasesApi extends BaseAPI {
   public nasesControllerSendFormEid(
     id: string,
     eidSendFormRequestDto: EidSendFormRequestDto,
-    options?: AxiosRequestConfig,
+    options?: RawAxiosRequestConfig,
   ) {
     return NasesApiFp(this.configuration)
       .nasesControllerSendFormEid(id, eidSendFormRequestDto, options)
@@ -8576,7 +8458,7 @@ export class NasesApi extends BaseAPI {
   public nasesControllerUpdateForm(
     id: string,
     updateFormRequestDto: UpdateFormRequestDto,
-    options?: AxiosRequestConfig,
+    options?: RawAxiosRequestConfig,
   ) {
     return NasesApiFp(this.configuration)
       .nasesControllerUpdateForm(id, updateFormRequestDto, options)
@@ -8596,7 +8478,7 @@ export class NasesApi extends BaseAPI {
   public nasesControllerUpdateFormEid(
     id: string,
     updateFormRequestDto: UpdateFormRequestDto,
-    options?: AxiosRequestConfig,
+    options?: RawAxiosRequestConfig,
   ) {
     return NasesApiFp(this.configuration)
       .nasesControllerUpdateFormEid(id, updateFormRequestDto, options)
@@ -8625,7 +8507,7 @@ export const SchemasApiAxiosParamCreator = function (configuration?: Configurati
       slug?: string,
       currentPage?: string,
       pagination?: string,
-      options: AxiosRequestConfig = {},
+      options: RawAxiosRequestConfig = {},
     ): Promise<RequestArgs> => {
       const localVarPath = `/schemas`
       // use dummy base URL string because the URL constructor only accepts absolute URLs.
@@ -8683,7 +8565,7 @@ export const SchemasApiAxiosParamCreator = function (configuration?: Configurati
       slug?: string,
       currentPage?: string,
       pagination?: string,
-      options: AxiosRequestConfig = {},
+      options: RawAxiosRequestConfig = {},
     ): Promise<RequestArgs> => {
       const localVarPath = `/schemas/schema-versions`
       // use dummy base URL string because the URL constructor only accepts absolute URLs.
@@ -8735,7 +8617,7 @@ export const SchemasApiAxiosParamCreator = function (configuration?: Configurati
      */
     schemasControllerGetSchema: async (
       schemaSlug: string,
-      options: AxiosRequestConfig = {},
+      options: RawAxiosRequestConfig = {},
     ): Promise<RequestArgs> => {
       // verify required parameter 'schemaSlug' is not null or undefined
       assertParamExists('schemasControllerGetSchema', 'schemaSlug', schemaSlug)
@@ -8778,7 +8660,7 @@ export const SchemasApiAxiosParamCreator = function (configuration?: Configurati
     schemasControllerGetSchemaVersion: async (
       id: string,
       includeSchema?: boolean,
-      options: AxiosRequestConfig = {},
+      options: RawAxiosRequestConfig = {},
     ): Promise<RequestArgs> => {
       // verify required parameter 'id' is not null or undefined
       assertParamExists('schemasControllerGetSchemaVersion', 'id', id)
@@ -8839,7 +8721,7 @@ export const SchemasApiFp = function (configuration?: Configuration) {
       slug?: string,
       currentPage?: string,
       pagination?: string,
-      options?: AxiosRequestConfig,
+      options?: RawAxiosRequestConfig,
     ): Promise<
       (axios?: AxiosInstance, basePath?: string) => AxiosPromise<SchemaVersionsResponseDto>
     > {
@@ -8850,7 +8732,18 @@ export const SchemasApiFp = function (configuration?: Configuration) {
         pagination,
         options,
       )
-      return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)
+      const localVarOperationServerIndex = configuration?.serverIndex ?? 0
+      const localVarOperationServerBasePath =
+        operationServerMap['SchemasApi.schemasControllerGetAllSchemas']?.[
+          localVarOperationServerIndex
+        ]?.url
+      return (axios, basePath) =>
+        createRequestFunction(
+          localVarAxiosArgs,
+          globalAxios,
+          BASE_PATH,
+          configuration,
+        )(axios, localVarOperationServerBasePath || basePath)
     },
     /**
      * Returns schema versions according to query.
@@ -8867,7 +8760,7 @@ export const SchemasApiFp = function (configuration?: Configuration) {
       slug?: string,
       currentPage?: string,
       pagination?: string,
-      options?: AxiosRequestConfig,
+      options?: RawAxiosRequestConfig,
     ): Promise<
       (axios?: AxiosInstance, basePath?: string) => AxiosPromise<SchemaVersionsResponseDto>
     > {
@@ -8878,7 +8771,18 @@ export const SchemasApiFp = function (configuration?: Configuration) {
         pagination,
         options,
       )
-      return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)
+      const localVarOperationServerIndex = configuration?.serverIndex ?? 0
+      const localVarOperationServerBasePath =
+        operationServerMap['SchemasApi.schemasControllerGetAllVersions']?.[
+          localVarOperationServerIndex
+        ]?.url
+      return (axios, basePath) =>
+        createRequestFunction(
+          localVarAxiosArgs,
+          globalAxios,
+          BASE_PATH,
+          configuration,
+        )(axios, localVarOperationServerBasePath || basePath)
     },
     /**
      * Returns schema by a unique slug, along with its last version.
@@ -8889,13 +8793,23 @@ export const SchemasApiFp = function (configuration?: Configuration) {
      */
     async schemasControllerGetSchema(
       schemaSlug: string,
-      options?: AxiosRequestConfig,
+      options?: RawAxiosRequestConfig,
     ): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<SchemaResponseDto>> {
       const localVarAxiosArgs = await localVarAxiosParamCreator.schemasControllerGetSchema(
         schemaSlug,
         options,
       )
-      return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)
+      const localVarOperationServerIndex = configuration?.serverIndex ?? 0
+      const localVarOperationServerBasePath =
+        operationServerMap['SchemasApi.schemasControllerGetSchema']?.[localVarOperationServerIndex]
+          ?.url
+      return (axios, basePath) =>
+        createRequestFunction(
+          localVarAxiosArgs,
+          globalAxios,
+          BASE_PATH,
+          configuration,
+        )(axios, localVarOperationServerBasePath || basePath)
     },
     /**
      * Returns schema version info by id.
@@ -8908,7 +8822,7 @@ export const SchemasApiFp = function (configuration?: Configuration) {
     async schemasControllerGetSchemaVersion(
       id: string,
       includeSchema?: boolean,
-      options?: AxiosRequestConfig,
+      options?: RawAxiosRequestConfig,
     ): Promise<
       (axios?: AxiosInstance, basePath?: string) => AxiosPromise<SchemaVersionResponseDto>
     > {
@@ -8917,7 +8831,18 @@ export const SchemasApiFp = function (configuration?: Configuration) {
         includeSchema,
         options,
       )
-      return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)
+      const localVarOperationServerIndex = configuration?.serverIndex ?? 0
+      const localVarOperationServerBasePath =
+        operationServerMap['SchemasApi.schemasControllerGetSchemaVersion']?.[
+          localVarOperationServerIndex
+        ]?.url
+      return (axios, basePath) =>
+        createRequestFunction(
+          localVarAxiosArgs,
+          globalAxios,
+          BASE_PATH,
+          configuration,
+        )(axios, localVarOperationServerBasePath || basePath)
     },
   }
 }
@@ -8948,7 +8873,7 @@ export const SchemasApiFactory = function (
       slug?: string,
       currentPage?: string,
       pagination?: string,
-      options?: AxiosRequestConfig,
+      options?: any,
     ): AxiosPromise<SchemaVersionsResponseDto> {
       return localVarFp
         .schemasControllerGetAllSchemas(onlyLatest, slug, currentPage, pagination, options)
@@ -8969,7 +8894,7 @@ export const SchemasApiFactory = function (
       slug?: string,
       currentPage?: string,
       pagination?: string,
-      options?: AxiosRequestConfig,
+      options?: any,
     ): AxiosPromise<SchemaVersionsResponseDto> {
       return localVarFp
         .schemasControllerGetAllVersions(onlyLatest, slug, currentPage, pagination, options)
@@ -8982,10 +8907,7 @@ export const SchemasApiFactory = function (
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
-    schemasControllerGetSchema(
-      schemaSlug: string,
-      options?: AxiosRequestConfig,
-    ): AxiosPromise<SchemaResponseDto> {
+    schemasControllerGetSchema(schemaSlug: string, options?: any): AxiosPromise<SchemaResponseDto> {
       return localVarFp
         .schemasControllerGetSchema(schemaSlug, options)
         .then((request) => request(axios, basePath))
@@ -9001,7 +8923,7 @@ export const SchemasApiFactory = function (
     schemasControllerGetSchemaVersion(
       id: string,
       includeSchema?: boolean,
-      options?: AxiosRequestConfig,
+      options?: any,
     ): AxiosPromise<SchemaVersionResponseDto> {
       return localVarFp
         .schemasControllerGetSchemaVersion(id, includeSchema, options)
@@ -9033,7 +8955,7 @@ export class SchemasApi extends BaseAPI {
     slug?: string,
     currentPage?: string,
     pagination?: string,
-    options?: AxiosRequestConfig,
+    options?: RawAxiosRequestConfig,
   ) {
     return SchemasApiFp(this.configuration)
       .schemasControllerGetAllSchemas(onlyLatest, slug, currentPage, pagination, options)
@@ -9056,7 +8978,7 @@ export class SchemasApi extends BaseAPI {
     slug?: string,
     currentPage?: string,
     pagination?: string,
-    options?: AxiosRequestConfig,
+    options?: RawAxiosRequestConfig,
   ) {
     return SchemasApiFp(this.configuration)
       .schemasControllerGetAllVersions(onlyLatest, slug, currentPage, pagination, options)
@@ -9071,7 +8993,7 @@ export class SchemasApi extends BaseAPI {
    * @throws {RequiredError}
    * @memberof SchemasApi
    */
-  public schemasControllerGetSchema(schemaSlug: string, options?: AxiosRequestConfig) {
+  public schemasControllerGetSchema(schemaSlug: string, options?: RawAxiosRequestConfig) {
     return SchemasApiFp(this.configuration)
       .schemasControllerGetSchema(schemaSlug, options)
       .then((request) => request(this.axios, this.basePath))
@@ -9089,7 +9011,7 @@ export class SchemasApi extends BaseAPI {
   public schemasControllerGetSchemaVersion(
     id: string,
     includeSchema?: boolean,
-    options?: AxiosRequestConfig,
+    options?: RawAxiosRequestConfig,
   ) {
     return SchemasApiFp(this.configuration)
       .schemasControllerGetSchemaVersion(id, includeSchema, options)
@@ -9110,7 +9032,7 @@ export const StatusesApiAxiosParamCreator = function (configuration?: Configurat
      * @throws {RequiredError}
      */
     statusControllerIsFormsRunning: async (
-      options: AxiosRequestConfig = {},
+      options: RawAxiosRequestConfig = {},
     ): Promise<RequestArgs> => {
       const localVarPath = `/status/scanner`
       // use dummy base URL string because the URL constructor only accepts absolute URLs.
@@ -9144,7 +9066,7 @@ export const StatusesApiAxiosParamCreator = function (configuration?: Configurat
      * @throws {RequiredError}
      */
     statusControllerIsMinioRunning: async (
-      options: AxiosRequestConfig = {},
+      options: RawAxiosRequestConfig = {},
     ): Promise<RequestArgs> => {
       const localVarPath = `/status/minio`
       // use dummy base URL string because the URL constructor only accepts absolute URLs.
@@ -9178,7 +9100,7 @@ export const StatusesApiAxiosParamCreator = function (configuration?: Configurat
      * @throws {RequiredError}
      */
     statusControllerIsPrismaRunning: async (
-      options: AxiosRequestConfig = {},
+      options: RawAxiosRequestConfig = {},
     ): Promise<RequestArgs> => {
       const localVarPath = `/status/prisma`
       // use dummy base URL string because the URL constructor only accepts absolute URLs.
@@ -9211,7 +9133,7 @@ export const StatusesApiAxiosParamCreator = function (configuration?: Configurat
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
-    statusControllerStatus: async (options: AxiosRequestConfig = {}): Promise<RequestArgs> => {
+    statusControllerStatus: async (options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
       const localVarPath = `/status`
       // use dummy base URL string because the URL constructor only accepts absolute URLs.
       const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL)
@@ -9254,11 +9176,22 @@ export const StatusesApiFp = function (configuration?: Configuration) {
      * @throws {RequiredError}
      */
     async statusControllerIsFormsRunning(
-      options?: AxiosRequestConfig,
+      options?: RawAxiosRequestConfig,
     ): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<ServiceRunningDto>> {
       const localVarAxiosArgs =
         await localVarAxiosParamCreator.statusControllerIsFormsRunning(options)
-      return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)
+      const localVarOperationServerIndex = configuration?.serverIndex ?? 0
+      const localVarOperationServerBasePath =
+        operationServerMap['StatusesApi.statusControllerIsFormsRunning']?.[
+          localVarOperationServerIndex
+        ]?.url
+      return (axios, basePath) =>
+        createRequestFunction(
+          localVarAxiosArgs,
+          globalAxios,
+          BASE_PATH,
+          configuration,
+        )(axios, localVarOperationServerBasePath || basePath)
     },
     /**
      * This endpoint checks if minio is running
@@ -9267,11 +9200,22 @@ export const StatusesApiFp = function (configuration?: Configuration) {
      * @throws {RequiredError}
      */
     async statusControllerIsMinioRunning(
-      options?: AxiosRequestConfig,
+      options?: RawAxiosRequestConfig,
     ): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<ServiceRunningDto>> {
       const localVarAxiosArgs =
         await localVarAxiosParamCreator.statusControllerIsMinioRunning(options)
-      return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)
+      const localVarOperationServerIndex = configuration?.serverIndex ?? 0
+      const localVarOperationServerBasePath =
+        operationServerMap['StatusesApi.statusControllerIsMinioRunning']?.[
+          localVarOperationServerIndex
+        ]?.url
+      return (axios, basePath) =>
+        createRequestFunction(
+          localVarAxiosArgs,
+          globalAxios,
+          BASE_PATH,
+          configuration,
+        )(axios, localVarOperationServerBasePath || basePath)
     },
     /**
      * This endpoint checks if prisma is running
@@ -9280,11 +9224,22 @@ export const StatusesApiFp = function (configuration?: Configuration) {
      * @throws {RequiredError}
      */
     async statusControllerIsPrismaRunning(
-      options?: AxiosRequestConfig,
+      options?: RawAxiosRequestConfig,
     ): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<ServiceRunningDto>> {
       const localVarAxiosArgs =
         await localVarAxiosParamCreator.statusControllerIsPrismaRunning(options)
-      return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)
+      const localVarOperationServerIndex = configuration?.serverIndex ?? 0
+      const localVarOperationServerBasePath =
+        operationServerMap['StatusesApi.statusControllerIsPrismaRunning']?.[
+          localVarOperationServerIndex
+        ]?.url
+      return (axios, basePath) =>
+        createRequestFunction(
+          localVarAxiosArgs,
+          globalAxios,
+          BASE_PATH,
+          configuration,
+        )(axios, localVarOperationServerBasePath || basePath)
     },
     /**
      * This endpoint checks all services status
@@ -9293,10 +9248,20 @@ export const StatusesApiFp = function (configuration?: Configuration) {
      * @throws {RequiredError}
      */
     async statusControllerStatus(
-      options?: AxiosRequestConfig,
+      options?: RawAxiosRequestConfig,
     ): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<StatusResponseDto>> {
       const localVarAxiosArgs = await localVarAxiosParamCreator.statusControllerStatus(options)
-      return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)
+      const localVarOperationServerIndex = configuration?.serverIndex ?? 0
+      const localVarOperationServerBasePath =
+        operationServerMap['StatusesApi.statusControllerStatus']?.[localVarOperationServerIndex]
+          ?.url
+      return (axios, basePath) =>
+        createRequestFunction(
+          localVarAxiosArgs,
+          globalAxios,
+          BASE_PATH,
+          configuration,
+        )(axios, localVarOperationServerBasePath || basePath)
     },
   }
 }
@@ -9318,7 +9283,7 @@ export const StatusesApiFactory = function (
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
-    statusControllerIsFormsRunning(options?: AxiosRequestConfig): AxiosPromise<ServiceRunningDto> {
+    statusControllerIsFormsRunning(options?: any): AxiosPromise<ServiceRunningDto> {
       return localVarFp
         .statusControllerIsFormsRunning(options)
         .then((request) => request(axios, basePath))
@@ -9329,7 +9294,7 @@ export const StatusesApiFactory = function (
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
-    statusControllerIsMinioRunning(options?: AxiosRequestConfig): AxiosPromise<ServiceRunningDto> {
+    statusControllerIsMinioRunning(options?: any): AxiosPromise<ServiceRunningDto> {
       return localVarFp
         .statusControllerIsMinioRunning(options)
         .then((request) => request(axios, basePath))
@@ -9340,7 +9305,7 @@ export const StatusesApiFactory = function (
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
-    statusControllerIsPrismaRunning(options?: AxiosRequestConfig): AxiosPromise<ServiceRunningDto> {
+    statusControllerIsPrismaRunning(options?: any): AxiosPromise<ServiceRunningDto> {
       return localVarFp
         .statusControllerIsPrismaRunning(options)
         .then((request) => request(axios, basePath))
@@ -9351,7 +9316,7 @@ export const StatusesApiFactory = function (
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
-    statusControllerStatus(options?: AxiosRequestConfig): AxiosPromise<StatusResponseDto> {
+    statusControllerStatus(options?: any): AxiosPromise<StatusResponseDto> {
       return localVarFp.statusControllerStatus(options).then((request) => request(axios, basePath))
     },
   }
@@ -9371,7 +9336,7 @@ export class StatusesApi extends BaseAPI {
    * @throws {RequiredError}
    * @memberof StatusesApi
    */
-  public statusControllerIsFormsRunning(options?: AxiosRequestConfig) {
+  public statusControllerIsFormsRunning(options?: RawAxiosRequestConfig) {
     return StatusesApiFp(this.configuration)
       .statusControllerIsFormsRunning(options)
       .then((request) => request(this.axios, this.basePath))
@@ -9384,7 +9349,7 @@ export class StatusesApi extends BaseAPI {
    * @throws {RequiredError}
    * @memberof StatusesApi
    */
-  public statusControllerIsMinioRunning(options?: AxiosRequestConfig) {
+  public statusControllerIsMinioRunning(options?: RawAxiosRequestConfig) {
     return StatusesApiFp(this.configuration)
       .statusControllerIsMinioRunning(options)
       .then((request) => request(this.axios, this.basePath))
@@ -9397,7 +9362,7 @@ export class StatusesApi extends BaseAPI {
    * @throws {RequiredError}
    * @memberof StatusesApi
    */
-  public statusControllerIsPrismaRunning(options?: AxiosRequestConfig) {
+  public statusControllerIsPrismaRunning(options?: RawAxiosRequestConfig) {
     return StatusesApiFp(this.configuration)
       .statusControllerIsPrismaRunning(options)
       .then((request) => request(this.axios, this.basePath))
@@ -9410,7 +9375,7 @@ export class StatusesApi extends BaseAPI {
    * @throws {RequiredError}
    * @memberof StatusesApi
    */
-  public statusControllerStatus(options?: AxiosRequestConfig) {
+  public statusControllerStatus(options?: RawAxiosRequestConfig) {
     return StatusesApiFp(this.configuration)
       .statusControllerStatus(options)
       .then((request) => request(this.axios, this.basePath))
@@ -9432,7 +9397,7 @@ export const TaxApiAxiosParamCreator = function (configuration?: Configuration) 
      */
     taxControllerConvertJsonToXml: async (
       taxJsonToXmlRequestDto: TaxJsonToXmlRequestDto,
-      options: AxiosRequestConfig = {},
+      options: RawAxiosRequestConfig = {},
     ): Promise<RequestArgs> => {
       // verify required parameter 'taxJsonToXmlRequestDto' is not null or undefined
       assertParamExists(
@@ -9481,7 +9446,7 @@ export const TaxApiAxiosParamCreator = function (configuration?: Configuration) 
      */
     taxControllerSignerData: async (
       jsonConvertRequestDto: JsonConvertRequestDto,
-      options: AxiosRequestConfig = {},
+      options: RawAxiosRequestConfig = {},
     ): Promise<RequestArgs> => {
       // verify required parameter 'jsonConvertRequestDto' is not null or undefined
       assertParamExists('taxControllerSignerData', 'jsonConvertRequestDto', jsonConvertRequestDto)
@@ -9536,13 +9501,23 @@ export const TaxApiFp = function (configuration?: Configuration) {
      */
     async taxControllerConvertJsonToXml(
       taxJsonToXmlRequestDto: TaxJsonToXmlRequestDto,
-      options?: AxiosRequestConfig,
+      options?: RawAxiosRequestConfig,
     ): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<JsonToXmlResponseDto>> {
       const localVarAxiosArgs = await localVarAxiosParamCreator.taxControllerConvertJsonToXml(
         taxJsonToXmlRequestDto,
         options,
       )
-      return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)
+      const localVarOperationServerIndex = configuration?.serverIndex ?? 0
+      const localVarOperationServerBasePath =
+        operationServerMap['TaxApi.taxControllerConvertJsonToXml']?.[localVarOperationServerIndex]
+          ?.url
+      return (axios, basePath) =>
+        createRequestFunction(
+          localVarAxiosArgs,
+          globalAxios,
+          BASE_PATH,
+          configuration,
+        )(axios, localVarOperationServerBasePath || basePath)
     },
     /**
      * Returns input data for ditec signer from JSON data and shcema version id
@@ -9553,7 +9528,7 @@ export const TaxApiFp = function (configuration?: Configuration) {
      */
     async taxControllerSignerData(
       jsonConvertRequestDto: JsonConvertRequestDto,
-      options?: AxiosRequestConfig,
+      options?: RawAxiosRequestConfig,
     ): Promise<
       (axios?: AxiosInstance, basePath?: string) => AxiosPromise<TaxSignerDataResponseDto>
     > {
@@ -9561,7 +9536,16 @@ export const TaxApiFp = function (configuration?: Configuration) {
         jsonConvertRequestDto,
         options,
       )
-      return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)
+      const localVarOperationServerIndex = configuration?.serverIndex ?? 0
+      const localVarOperationServerBasePath =
+        operationServerMap['TaxApi.taxControllerSignerData']?.[localVarOperationServerIndex]?.url
+      return (axios, basePath) =>
+        createRequestFunction(
+          localVarAxiosArgs,
+          globalAxios,
+          BASE_PATH,
+          configuration,
+        )(axios, localVarOperationServerBasePath || basePath)
     },
   }
 }
@@ -9586,7 +9570,7 @@ export const TaxApiFactory = function (
      */
     taxControllerConvertJsonToXml(
       taxJsonToXmlRequestDto: TaxJsonToXmlRequestDto,
-      options?: AxiosRequestConfig,
+      options?: any,
     ): AxiosPromise<JsonToXmlResponseDto> {
       return localVarFp
         .taxControllerConvertJsonToXml(taxJsonToXmlRequestDto, options)
@@ -9601,7 +9585,7 @@ export const TaxApiFactory = function (
      */
     taxControllerSignerData(
       jsonConvertRequestDto: JsonConvertRequestDto,
-      options?: AxiosRequestConfig,
+      options?: any,
     ): AxiosPromise<TaxSignerDataResponseDto> {
       return localVarFp
         .taxControllerSignerData(jsonConvertRequestDto, options)
@@ -9627,7 +9611,7 @@ export class TaxApi extends BaseAPI {
    */
   public taxControllerConvertJsonToXml(
     taxJsonToXmlRequestDto: TaxJsonToXmlRequestDto,
-    options?: AxiosRequestConfig,
+    options?: RawAxiosRequestConfig,
   ) {
     return TaxApiFp(this.configuration)
       .taxControllerConvertJsonToXml(taxJsonToXmlRequestDto, options)
@@ -9644,7 +9628,7 @@ export class TaxApi extends BaseAPI {
    */
   public taxControllerSignerData(
     jsonConvertRequestDto: JsonConvertRequestDto,
-    options?: AxiosRequestConfig,
+    options?: RawAxiosRequestConfig,
   ) {
     return TaxApiFp(this.configuration)
       .taxControllerSignerData(jsonConvertRequestDto, options)

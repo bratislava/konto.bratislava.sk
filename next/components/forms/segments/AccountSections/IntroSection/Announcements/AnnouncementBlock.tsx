@@ -19,7 +19,11 @@ const AnnouncementBlock = ({
   onPress,
   reversed,
 }: ActualBlockBase) => {
-  return announcementContent ? (
+  if (!announcementContent) {
+    return null
+  }
+
+  return (
     <div
       className={cx(
         'flex w-full flex-col-reverse rounded-lg border-2 border-gray-200 lg:rounded-lg',
@@ -68,7 +72,7 @@ const AnnouncementBlock = ({
         />
       </div>
     </div>
-  ) : null
+  )
 }
 
 export default AnnouncementBlock

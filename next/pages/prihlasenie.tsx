@@ -1,5 +1,3 @@
-// eslint-disable-next-line import/no-extraneous-dependencies
-import { UNEXPECTED_SIGN_IN_INTERRUPTION_EXCEPTION } from '@aws-amplify/auth/dist/esm/errors/constants'
 import { AuthError, resendSignUpCode, signIn } from 'aws-amplify/auth'
 import AccountContainer from 'components/forms/segments/AccountContainer/AccountContainer'
 import LoginForm from 'components/forms/segments/LoginForm/LoginForm'
@@ -80,7 +78,7 @@ const LoginPage = () => {
         `error thrown in onLogin for email ${email}, user agent ${window.navigator.userAgent}:`,
         error,
       )
-      if (error instanceof AuthError && error.name === UNEXPECTED_SIGN_IN_INTERRUPTION_EXCEPTION) {
+      if (error instanceof AuthError && error.name === 'UnexpectedSignInInterruptionException') {
         removeAllCookiesAndClearLocalStorage()
         logger.info(
           `Removed all cookies and cleared local storage for email ${email}, user agent ${window.navigator.userAgent}`,

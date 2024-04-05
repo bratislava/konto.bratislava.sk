@@ -2,6 +2,7 @@
 import { useTranslation } from 'next-i18next'
 import { useState } from 'react'
 
+import { environment } from '../../../../../environment'
 import { Address } from '../../../../../frontend/dtos/accountDto'
 import { useSsrAuth } from '../../../../../frontend/hooks/useSsrAuth'
 import { isDefined } from '../../../../../frontend/utils/general'
@@ -47,22 +48,24 @@ const ContactInformationSection = () => {
     ],
     ', ',
   )
-  // const displayCorrespondenceAddress = displayStrings(
-  //   [parsedAddress?.street_address, formatZip(parsedAddress?.postal_code), parsedAddress?.locality],
-  //   ', ',
-  // )
+  const displayCorrespondenceAddress = displayStrings(
+    [parsedAddress?.street_address, formatZip(parsedAddress?.postal_code), parsedAddress?.locality],
+    ', ',
+  )
 
   return (
     <>
-      <CorrespondenceAddressModalV2
-        parsedAddress={parsedAddress}
-        isOpen={correspondenceAddressModalShow}
-        onOpenChange={setCorrespondenceAddressModalShow}
-        onSuccess={(newAddress) => {
-          setParsedAddress(newAddress)
-          setCorrespondenceAddressModalShow(false)
-        }}
-      />
+      {environment.featureToggles.taxReportCorrespondenceAddress && (
+        <CorrespondenceAddressModalV2
+          parsedAddress={parsedAddress}
+          isOpen={correspondenceAddressModalShow}
+          onOpenChange={setCorrespondenceAddressModalShow}
+          onSuccess={(newAddress) => {
+            setParsedAddress(newAddress)
+            setCorrespondenceAddressModalShow(false)
+          }}
+        />
+      )}
       <div className="flex w-full flex-col items-start gap-6 px-4 sm:gap-8 lg:px-0">
         <div className="flex w-full flex-col items-start gap-2">
           <div className="text-h3">{t('personal_info')}</div>
@@ -88,16 +91,18 @@ const ContactInformationSection = () => {
               }}
             />
             {/* Temporarily hidden as this is not implemented on BE. */}
-            {/* <SummaryRow */}
-            {/*  size="small" */}
-            {/*  data={{ */}
-            {/*    label: t('correspondence_address'), */}
-            {/*    value: displayCorrespondenceAddress, */}
-            {/*    schemaPath: '', */}
-            {/*    isError: false, */}
-            {/*  }} */}
-            {/*  onGoToStep={() => setCorrespondenceAddressModalShow(true)} */}
-            {/* /> */}
+            {environment.featureToggles.taxReportCorrespondenceAddress && (
+              <SummaryRow
+                size="small"
+                data={{
+                  label: t('correspondence_address'),
+                  value: displayCorrespondenceAddress,
+                  schemaPath: '',
+                  isError: false,
+                }}
+                onGoToStep={() => setCorrespondenceAddressModalShow(true)}
+              />
+            )}
             <SummaryRow
               size="small"
               isEditable={false}

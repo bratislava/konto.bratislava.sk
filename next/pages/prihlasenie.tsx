@@ -16,7 +16,7 @@ import { amplifyGetServerSideProps } from '../frontend/utils/amplifyServer'
 import { slovakServerSideTranslations } from '../frontend/utils/slovakServerSideTranslations'
 
 // Attempts to fix https://github.com/aws-amplify/amplify-js/issues/13182
-function removeAllCookiesExceptGDPRConsents(): void {
+function removeAllCookiesAndClearLocalStorage() {
   const cookies = document.cookie.split(';').map((cookie) => cookie.trim())
   cookies.forEach((cookie) => {
     const cookieName = cookie.split('=')[0]
@@ -25,6 +25,7 @@ function removeAllCookiesExceptGDPRConsents(): void {
       document.cookie = `${cookieName}=; expires=Thu, 01 Jan 1970 00:00:00 GMT; path=/`
     }
   })
+  localStorage.clear()
 }
 
 export const getServerSideProps = amplifyGetServerSideProps(
@@ -80,9 +81,9 @@ const LoginPage = () => {
         error,
       )
       if (error instanceof AuthError && error.name === UNEXPECTED_SIGN_IN_INTERRUPTION_EXCEPTION) {
-        removeAllCookiesExceptGDPRConsents()
+        removeAllCookiesAndClearLocalStorage()
         logger.info(
-          `Removed all cookies for email ${email}, user agent ${window.navigator.userAgent}`,
+          `Removed all cookies and cleared local storage for email ${email}, user agent ${window.navigator.userAgent}`,
         )
       }
 

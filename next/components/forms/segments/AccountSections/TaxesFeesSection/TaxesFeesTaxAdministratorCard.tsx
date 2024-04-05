@@ -23,7 +23,7 @@ const TaxesFeesTaxAdministratorCard = ({
       </div>
       <div className="flex flex-col gap-3">
         <div className="flex flex-col gap-1">
-          <span className="text-p2">Váš kontakt pre daň z nehnuteľností</span>
+          <span className="text-p2">Kontaktná osoba pre daň z nehnuteľností</span>
           <span className="text-p1-semibold">{taxAdministrator.name}</span>
         </div>
         <div>

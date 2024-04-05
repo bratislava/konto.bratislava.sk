@@ -86,7 +86,7 @@ const IdentityVerificationPage = () => {
 
   return (
     <LoginRegisterLayout backButtonHidden>
-      <AccountContainer className="mb-0 pt-0 md:mb-8 md:pt-6">
+      <AccountContainer className="mb-0 md:mb-8 md:pt-6">
         {tierStatus.isIdentityVerificationNotYetAttempted && (
           <IdentityVerificationForm
             isLegalEntity={isLegalEntity}

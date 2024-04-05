@@ -45,12 +45,23 @@ const AccountPageLayout = ({ className, children, hiddenHeaderNav }: AccountPage
   // https://stackoverflow.com/a/59253905
   const [mainScrollTopMargin, setMainScrollTopMargin] = useState(0)
 
-  useResizeObserver({
-    ref: headerRef,
-    onResize: () => {
-      setMainScrollTopMargin(mainRef.current?.offsetTop ?? 0)
-    },
-  })
+  // It is not possible to measure the height of header directly, because it is `display: contents`, the header also
+  // might include status bar, that we don't want to include in the height calculation because it hides when scrolling
+  // (as it is not sticky)
+  const desktopNavbarRef = useRef<HTMLDivElement>(null)
+  const mobileNavbarRef = useRef<HTMLDivElement>(null)
+
+  const handleHeaderResize = () => {
+    setMainScrollTopMargin(
+      Math.max(
+        desktopNavbarRef.current?.getBoundingClientRect().height ?? 0,
+        mobileNavbarRef.current?.getBoundingClientRect().height ?? 0,
+      ),
+    )
+  }
+
+  useResizeObserver({ ref: desktopNavbarRef, onResize: handleHeaderResize })
+  useResizeObserver({ ref: mobileNavbarRef, onResize: handleHeaderResize })
 
   const [t] = useTranslation('common')
 
@@ -141,7 +152,8 @@ const AccountPageLayout = ({ className, children, hiddenHeaderNav }: AccountPage
 
   return (
     <div className={cx('flex min-h-screen flex-col', className)}>
-      <header className="relative z-30" ref={headerRef}>
+      {/* `contents` is here for sticky elements inside to work */}
+      <header className="relative z-30 contents" ref={headerRef}>
         <NavBar
           sectionsList={sectionsList}
           menuItems={menuItems}
@@ -151,6 +163,8 @@ const AccountPageLayout = ({ className, children, hiddenHeaderNav }: AccountPage
             { key: 'sk', title: t('language_long.sk') },
             { key: 'en', title: t('language_long.en') },
           ]}
+          desktopNavbarRef={desktopNavbarRef}
+          mobileNavbarRef={mobileNavbarRef}
         />
       </header>
       <main

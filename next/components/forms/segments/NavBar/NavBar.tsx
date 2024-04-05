@@ -1,7 +1,6 @@
 import { ChevronDownSmallIcon, ProfileIcon } from '@assets/ui-icons'
 import * as NavigationMenu from '@radix-ui/react-navigation-menu'
 import cx from 'classnames'
-import { StatusBar } from 'components/forms/info-components/StatusBar'
 import Button from 'components/forms/simple-components/Button'
 import ButtonNew from 'components/forms/simple-components/ButtonNew'
 import IdentityVerificationStatus from 'components/forms/simple-components/IdentityVerificationStatus'
@@ -13,13 +12,12 @@ import { UserAttributes } from 'frontend/dtos/accountDto'
 import NextLink from 'next/link'
 import { useRouter } from 'next/router'
 import { useTranslation } from 'next-i18next'
-import { ReactNode, useState } from 'react'
-import { RemoveScroll } from 'react-remove-scroll'
+import { ReactNode, RefObject, useState } from 'react'
 
 import { ROUTES } from '../../../../frontend/api/constants'
-import useElementSize from '../../../../frontend/hooks/useElementSize'
 import { useQueryParamRedirect } from '../../../../frontend/hooks/useQueryParamRedirect'
 import { useSsrAuth } from '../../../../frontend/hooks/useSsrAuth'
+import { StatusBar } from '../../info-components/StatusBar'
 import Brand from '../../simple-components/Brand'
 import { MobileNavBar } from './MobileNavBar'
 import { useNavMenuContext } from './navMenuContext'
@@ -30,6 +28,8 @@ interface IProps extends LanguageSelectProps {
   sectionsList?: MenuSectionItemBase[]
   menuItems: MenuItemBase[]
   hiddenHeaderNav?: boolean
+  desktopNavbarRef: RefObject<HTMLDivElement>
+  mobileNavbarRef: RefObject<HTMLDivElement>
 }
 
 interface LanguageSelectProps {
@@ -67,13 +67,19 @@ const Avatar = ({ userAttributes }: { userAttributes?: UserAttributes | null }) 
   )
 }
 
-export const NavBar = ({ className, sectionsList, menuItems, hiddenHeaderNav }: IProps) => {
+export const NavBar = ({
+  className,
+  sectionsList,
+  menuItems,
+  hiddenHeaderNav,
+  desktopNavbarRef,
+  mobileNavbarRef,
+}: IProps) => {
   const { getRouteWithCurrentUrlRedirect } = useQueryParamRedirect()
   const { userAttributes, isSignedIn, isLegalEntity } = useSsrAuth()
 
   const [isMenuOpen, setIsMenuOpen] = useState<boolean>(false)
   const { menuValue, setMenuValue } = useNavMenuContext()
-  const [alertRef, { height }] = useElementSize<HTMLDivElement>()
 
   const { t } = useTranslation(['common', 'account'])
   const router = useRouter()
@@ -93,118 +99,118 @@ export const NavBar = ({ className, sectionsList, menuItems, hiddenHeaderNav }: 
     sectionItem.url === '/' ? router.pathname === '/' : router.pathname.startsWith(sectionItem.url)
   return (
     <>
+      <div className="hidden lg:block">
+        <StatusBar />
+      </div>
       {/* Desktop */}
       <div
         id="desktop-navbar"
         className={cx(
           className,
-          'text-p2 hidden items-center lg:block',
-          'fixed left-0 top-0 z-40 w-full bg-white shadow',
+          'text-p2 sticky left-0 top-0 z-40 hidden w-full items-center bg-white shadow lg:block',
         )}
+        ref={desktopNavbarRef}
       >
-        <div className={RemoveScroll.classNames.fullWidth}>
-          <StatusBar ref={alertRef} />
-          <div
-            className={cx('m-auto hidden h-[57px] max-w-screen-lg items-center gap-x-6 lg:flex')}
-          >
-            <Brand
-              className="group grow"
-              url={ROUTES.HOME}
-              title={
-                <p className="text-p2 text-font group-hover:text-gray-600">
-                  {t('common:capitalCity')}
-                  <span className="font-semibold"> Bratislava</span>
-                </p>
-              }
-            />
-            <IdentityVerificationStatus />
-            <nav className="flex gap-x-8 font-semibold text-font/75">
-              {isSignedIn ? (
-                <MenuDropdown
-                  setIsOpen={setIsMenuOpen}
-                  buttonTrigger={
-                    <ButtonNew
-                      variant="unstyled"
-                      data-cy="account-button"
-                      className="flex items-center gap-4 font-semibold text-font/75"
-                    >
-                      <Avatar userAttributes={userAttributes} />
-                      <div className="flex items-center gap-1 font-light lg:font-semibold">
-                        {isLegalEntity ? userAttributes?.name : userAttributes?.given_name}
-                        <ChevronDownSmallIcon
-                          className={`hidden size-5 mix-blend-normal lg:flex ${
-                            isMenuOpen ? '-rotate-180' : ''
-                          }`}
-                        />
-                      </div>
-                    </ButtonNew>
-                  }
-                  itemVariant="header"
-                  items={menuItems}
+        <div className="m-auto hidden h-[57px] max-w-screen-lg items-center gap-x-6 lg:flex">
+          <Brand
+            className="group grow"
+            url={ROUTES.HOME}
+            title={
+              <p className="text-p2 text-font group-hover:text-gray-600">
+                {t('common:capitalCity')}
+                <span className="font-semibold"> Bratislava</span>
+              </p>
+            }
+          />
+          <IdentityVerificationStatus />
+          <nav className="flex gap-x-8 font-semibold text-font/75">
+            {isSignedIn ? (
+              <MenuDropdown
+                setIsOpen={setIsMenuOpen}
+                buttonTrigger={
+                  <ButtonNew
+                    variant="unstyled"
+                    data-cy="account-button"
+                    className="flex items-center gap-4 font-semibold text-font/75"
+                  >
+                    <Avatar userAttributes={userAttributes} />
+                    <div className="flex items-center gap-1 font-light lg:font-semibold">
+                      {isLegalEntity ? userAttributes?.name : userAttributes?.given_name}
+                      <ChevronDownSmallIcon
+                        className={`hidden size-5 mix-blend-normal lg:flex ${
+                          isMenuOpen ? '-rotate-180' : ''
+                        }`}
+                      />
+                    </div>
+                  </ButtonNew>
+                }
+                itemVariant="header"
+                items={menuItems}
+              />
+            ) : (
+              <div className="flex items-center gap-x-6 font-semibold text-font/75">
+                <Button
+                  className="whitespace-nowrap lg:flex"
+                  size="sm"
+                  onPress={login}
+                  variant="plain-black"
+                  text={t('account:menu_login_link')}
+                  data-cy="login-button"
                 />
-              ) : (
-                <div className="flex items-center gap-x-6 font-semibold text-font/75">
-                  <Button
-                    className="whitespace-nowrap lg:flex"
-                    size="sm"
-                    onPress={login}
-                    variant="plain-black"
-                    text={t('account:menu_login_link')}
-                    data-cy="login-button"
-                  />
-                  <Button
-                    onPress={register}
-                    variant="negative"
-                    text={t('account:menu_register_link')}
-                    size="sm"
-                    data-cy="register-button"
-                  />
-                </div>
-              )}
-            </nav>
-          </div>
-          {/* Header bottom navigation */}
-          {sectionsList && !hiddenHeaderNav && (
-            <div className="m-auto hidden h-[57px] w-full max-w-screen-lg items-center justify-between border-t border-gray-200 lg:flex">
-              <NavigationMenu.Root
-                value={menuValue}
-                onValueChange={setMenuValue}
-                aria-label={t('NavMenu.aria.navMenuLabel')}
-                // because of this https://github.com/radix-ui/primitives/discussions/1874 we can't directly access subelement (<div style="position: relative;")
-                // of "<nav>" element that NavigationMenu.List creates when used. Solution is to add grid class to the parent element.
-                className="grid size-full"
-              >
-                <NavigationMenu.List className="flex size-full items-center">
-                  {sectionsList.map((sectionItem) => (
-                    <NavigationMenu.Item key={sectionItem.id} className="size-full">
-                      <NavigationMenu.Link asChild>
-                        <NextLink href={sectionItem.url}>
-                          <div
-                            className={cx(
-                              'text-p2-semibold flex h-full w-full cursor-pointer items-center justify-center border-b-2 transition-all hover:border-main-700 hover:text-main-700',
-                              {
-                                'border-main-700 text-main-700': isActive(sectionItem),
-                                'border-transparent': !isActive(sectionItem),
-                              },
-                            )}
-                          >
-                            {sectionItem.icon}
-                            <span className="ml-3">{t(sectionItem?.title)}</span>
-                          </div>
-                        </NextLink>
-                      </NavigationMenu.Link>
-                    </NavigationMenu.Item>
-                  ))}
-                </NavigationMenu.List>
-              </NavigationMenu.Root>
-            </div>
-          )}
+                <Button
+                  onPress={register}
+                  variant="negative"
+                  text={t('account:menu_register_link')}
+                  size="sm"
+                  data-cy="register-button"
+                />
+              </div>
+            )}
+          </nav>
         </div>
+        {/* Header bottom navigation */}
+        {sectionsList && !hiddenHeaderNav && (
+          <div className="m-auto hidden h-[57px] w-full max-w-screen-lg items-center justify-between border-t border-gray-200 lg:flex">
+            <NavigationMenu.Root
+              value={menuValue}
+              onValueChange={setMenuValue}
+              aria-label={t('NavMenu.aria.navMenuLabel')}
+              // because of this https://github.com/radix-ui/primitives/discussions/1874 we can't directly access subelement (<div style="position: relative;")
+              // of "<nav>" element that NavigationMenu.List creates when used. Solution is to add grid class to the parent element.
+              className="grid size-full"
+            >
+              <NavigationMenu.List className="flex size-full items-center">
+                {sectionsList.map((sectionItem) => (
+                  <NavigationMenu.Item key={sectionItem.id} className="size-full">
+                    <NavigationMenu.Link asChild>
+                      <NextLink href={sectionItem.url}>
+                        <div
+                          className={cx(
+                            'text-p2-semibold flex h-full w-full cursor-pointer items-center justify-center border-b-2 transition-all hover:border-main-700 hover:text-main-700',
+                            {
+                              'border-main-700 text-main-700': isActive(sectionItem),
+                              'border-transparent': !isActive(sectionItem),
+                            },
+                          )}
+                        >
+                          {sectionItem.icon}
+                          <span className="ml-3">{t(sectionItem?.title)}</span>
+                        </div>
+                      </NextLink>
+                    </NavigationMenu.Link>
+                  </NavigationMenu.Item>
+                ))}
+              </NavigationMenu.List>
+            </NavigationMenu.Root>
+          </div>
+        )}
       </div>
-      <div style={{ height }} aria-hidden className="hidden lg:block" />
-      <div className="hidden h-[114px] lg:block" aria-hidden />
       {/* Mobile */}
-      <MobileNavBar className="lg:hidden" menuItems={menuItems} sectionsList={sectionsList} />
+      <MobileNavBar
+        menuItems={menuItems}
+        sectionsList={sectionsList}
+        mobileNavbarRef={mobileNavbarRef}
+      />
     </>
   )
 }

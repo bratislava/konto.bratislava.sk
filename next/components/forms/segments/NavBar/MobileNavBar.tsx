@@ -1,20 +1,18 @@
 import { CrossIcon, HamburgerIcon } from '@assets/ui-icons'
-import cx from 'classnames'
-import { StatusBar, useStatusBarContext } from 'components/forms/info-components/StatusBar'
+import { StatusBar } from 'components/forms/info-components/StatusBar'
 import HamburgerMenu from 'components/forms/segments/HambergerMenu/HamburgerMenu'
 import { MenuItemBase } from 'components/forms/simple-components/MenuDropdown/MenuDropdown'
 import FocusTrap from 'focus-trap-react'
-import { ReactNode } from 'react'
+import { ReactNode, RefObject } from 'react'
 
 import { ROUTES } from '../../../../frontend/api/constants'
-import useElementSize from '../../../../frontend/hooks/useElementSize'
 import Brand from '../../simple-components/Brand'
 import { useNavMenuContext } from './navMenuContext'
 
 interface MobileMenuNavBarProps {
-  className?: string
   sectionsList?: MenuSectionItemBase[]
   menuItems: MenuItemBase[]
+  mobileNavbarRef: RefObject<HTMLDivElement>
 }
 
 export interface MenuSectionItemBase {
@@ -24,17 +22,19 @@ export interface MenuSectionItemBase {
   url: string
 }
 
-export const MobileNavBar = ({ className, sectionsList, menuItems }: MobileMenuNavBarProps) => {
-  const { statusBarConfiguration } = useStatusBarContext()
-  const [mobileRef] = useElementSize([statusBarConfiguration.content])
+export const MobileNavBar = ({
+  sectionsList,
+  menuItems,
+  mobileNavbarRef,
+}: MobileMenuNavBarProps) => {
   const { isMobileMenuOpen, setMobileMenuOpen } = useNavMenuContext()
 
   return (
-    <div className={className}>
+    <>
       <div
         id="mobile-navbar"
-        className={cx(className, 'fixed left-0 top-0 z-40 flex w-full gap-x-6 bg-white lg:hidden')}
-        ref={mobileRef}
+        className="sticky left-0 top-0 z-40 flex w-full gap-x-6 bg-white lg:hidden"
+        ref={mobileNavbarRef}
       >
         <div className="w-full">
           <FocusTrap active={isMobileMenuOpen}>
@@ -66,9 +66,10 @@ export const MobileNavBar = ({ className, sectionsList, menuItems }: MobileMenuN
           </FocusTrap>
         </div>
       </div>
-      <div className={cx('h-16', className)} />
-      {!isMobileMenuOpen && <StatusBar />}
-    </div>
+      <div className="lg:hidden">
+        <StatusBar />
+      </div>
+    </>
   )
 }
 

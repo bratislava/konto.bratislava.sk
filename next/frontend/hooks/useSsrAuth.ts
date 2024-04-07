@@ -21,6 +21,7 @@ export const useSsrAuth = () => {
       tier,
       isIdentityVerified: tier === Tier.IDENTITY_CARD || tier === Tier.EID,
       isIdentityVerificationNotYetAttempted: !tier || tier === Tier.NEW,
+      isInQueue: tier === Tier.QUEUE_IDENTITY_CARD,
     },
   }
 }

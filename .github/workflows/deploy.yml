@@ -122,11 +122,11 @@ jobs:
     name: prod Strapi
     needs: conditions
     if: needs.conditions.outputs.prod-strapi == 'true'
-    uses: bratislava/github-actions/.github/workflows/deploy-with-bratiska-cli-inhouse.yml@beta
+    uses: bratislava/github-actions/.github/workflows/deploy-with-bratiska-cli-inhouse.yml@stable
     with:
       directory: strapi/
       cluster: tkg-innov-prod
-      url: https://tkg.prod.bratislava.sk
+      url: https://tkg.bratislava.sk
       flag: --production
       debug: --debug
     secrets:
@@ -137,11 +137,11 @@ jobs:
     name: prod Next
     needs: conditions
     if: needs.conditions.outputs.prod-next == 'true'
-    uses: bratislava/github-actions/.github/workflows/deploy-with-bratiska-cli-inhouse.yml@beta
+    uses: bratislava/github-actions/.github/workflows/deploy-with-bratiska-cli-inhouse.yml@stable
     with:
       directory: next/
       cluster: tkg-innov-prod
-      url: https://tkg.prod.bratislava.sk
+      url: https://tkg.bratislava.sk
       flag: --production
       debug: --debug
     secrets:

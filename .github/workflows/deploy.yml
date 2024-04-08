@@ -122,7 +122,7 @@ jobs:
     name: prod Strapi
     needs: conditions
     if: needs.conditions.outputs.prod-strapi == 'true'
-    uses: bratislava/github-actions/.github/workflows/deploy-with-bratiska-cli-inhouse.yml@stable
+    uses: bratislava/github-actions/.github/workflows/deploy-with-bratiska-cli-inhouse.yml@beta
     with:
       directory: strapi/
       cluster: tkg-innov-prod
@@ -137,7 +137,7 @@ jobs:
     name: prod Next
     needs: conditions
     if: needs.conditions.outputs.prod-next == 'true'
-    uses: bratislava/github-actions/.github/workflows/deploy-with-bratiska-cli-inhouse.yml@stable
+    uses: bratislava/github-actions/.github/workflows/deploy-with-bratiska-cli-inhouse.yml@beta
     with:
       directory: next/
       cluster: tkg-innov-prod

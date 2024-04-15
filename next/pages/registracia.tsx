@@ -46,9 +46,9 @@ export const getServerSideProps = amplifyGetServerSideProps(
 
 /**
  * In a race condition, it is possible that the user is already confirmed, but user can still ask for confirmation.
- * In this case, we want to proceed to manual sign in. Also, the error is confusing for NotAuthorizedException is confusing
- * for this case. It is not possible to distinguish this case from other cases of NotAuthorizedException, so we have to
- * check the error message.
+ * In this case, we want to proceed to manual sign in. Also, the displayed error is confusing for NotAuthorizedException.
+ * It is not possible to distinguish this case from other cases of NotAuthorizedException, so we have to check the error
+ * message.
  */
 const isSpecialAlreadyConfirmedError = (error: unknown) =>
   error instanceof AuthError &&
@@ -57,7 +57,7 @@ const isSpecialAlreadyConfirmedError = (error: unknown) =>
 
 const getInitialState = (query: ParsedUrlQuery) => {
   const email = query[loginConfirmSignUpEmailHiddenQueryParam]
-  // In case user wanted to login, but needs to verify email, he/she is redirected to registration page with email in query
+  // In case user wanted to log in, but needs to verify email, he/she is redirected to registration page with email in query
   // to act as if he/she was registering.
   if (email && typeof email === 'string') {
     return { registrationStatus: RegistrationStatus.EMAIL_VERIFICATION_REQUIRED, lastEmail: email }

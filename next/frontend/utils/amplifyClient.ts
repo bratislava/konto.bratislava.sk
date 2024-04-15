@@ -3,11 +3,11 @@ import { AuthError, signOut as amplifySignOut } from '@aws-amplify/auth'
 // eslint-disable-next-line import/no-extraneous-dependencies
 import { fetchAuthSession } from '@aws-amplify/core'
 import { useQueryClient } from '@tanstack/react-query'
-import { getCurrentUser } from 'aws-amplify/auth'
 import { useRouter } from 'next/router'
 import { PropsWithChildren, useRef } from 'react'
 
 import { ROUTES } from '../api/constants'
+import { useSsrAuth } from '../hooks/useSsrAuth'
 import { amplifyConfig } from './amplifyConfig'
 import logger from './logger'
 
@@ -50,28 +50,31 @@ export const getAccessTokenOrLogout = async () => {
   }
 }
 
-// TODO remove
-// Auth.getCurrentAuthenticatedUser throws when not authenticated
-// this helper changes that and ignores any other potential errors
-export const getCurrentAuthenticatedUser = async () => {
-  try {
-    return await getCurrentUser()
-    // TODO should be solved in v6 release of aws-amplify
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-return
-  } catch (error) {
-    return null
-  }
-}
-
 export const useSignOut = () => {
   const router = useRouter()
   const queryClient = useQueryClient()
+  const { userAttributes } = useSsrAuth()
 
   const signOut = async () => {
-    await amplifySignOut()
-    /* Removes user data from the cache */
-    queryClient.removeQueries()
-    await router.push(ROUTES.LOGIN)
+    try {
+      logger.info(
+        `[AUTH] Attempting to sign out email ${userAttributes?.email}, user agent ${window.navigator.userAgent}`,
+      )
+      await amplifySignOut()
+      logger.info(
+        `[AUTH] Successfully signed out email ${userAttributes?.email}, user agent ${window.navigator.userAgent}`,
+      )
+      // Removes user data from the cache.
+      queryClient.removeQueries()
+      await router.push(ROUTES.LOGIN)
+    } catch (error) {
+      logger.error(
+        `[AUTH] Failed to sign out email ${userAttributes?.email}, user agent ${window.navigator.userAgent}`,
+        error,
+      )
+      // Rethrow the error to be handled by the caller.
+      throw error
+    }
   }
 
   return { signOut }

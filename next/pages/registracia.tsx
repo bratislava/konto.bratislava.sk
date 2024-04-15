@@ -25,7 +25,12 @@ import { loginConfirmSignUpEmailHiddenQueryParam } from './prihlasenie'
 enum RegistrationStatus {
   INIT = 'INIT',
   EMAIL_VERIFICATION_REQUIRED = 'EMAIL_VERIFICATION_REQUIRED',
-  EMAIL_VERIFICATION_SUCCESS = 'EMAIL_VERIFICATION_SUCCESS',
+  SUCCESS_AUTO_SIGN_IN = 'SUCCESS_AUTO_SIGN_IN',
+  /**
+   * In case if the email verification is not triggered by `signUp` with `autoSignIn: true`, but by being redirected
+   * from login page, it is not possible to use auto sign in, so user has to manually sign in afterward.
+   */
+  SUCCESS_MANUAL_SIGN_IN = 'SUCCESS_MANUAL_SIGN_IN',
 }
 
 export const getServerSideProps = amplifyGetServerSideProps(
@@ -76,7 +81,7 @@ const RegisterPage = () => {
       const { isSignedIn, nextStep } = await autoSignIn()
       if (isSignedIn) {
         logger.info(`[AUTH] Successfully completed auto sign in for email ${lastEmail}`)
-        setRegistrationStatus(RegistrationStatus.EMAIL_VERIFICATION_SUCCESS)
+        setRegistrationStatus(RegistrationStatus.SUCCESS_AUTO_SIGN_IN)
       } else {
         throw new Error(
           `Unknown "nextStep" after trying to complete auto sign in: ${JSON.stringify(nextStep)}`,
@@ -112,12 +117,18 @@ const RegisterPage = () => {
           },
         },
       })
+      // eslint-disable-next-line unicorn/prefer-switch
       if (nextStep.signUpStep === 'COMPLETE_AUTO_SIGN_IN') {
         logger.info(`[AUTH] Completing auto sign in after successful sing up for email ${email}`)
         await handleAutoSignIn()
       } else if (nextStep.signUpStep === 'CONFIRM_SIGN_UP') {
         logger.info(`[AUTH] Requesting sign-up code for email ${email}`)
         setRegistrationStatus(RegistrationStatus.EMAIL_VERIFICATION_REQUIRED)
+      } else if (nextStep.signUpStep === 'DONE') {
+        logger.info(
+          `[AUTH] Successfully signed up for email ${email}, proceeding to manual sign in`,
+        )
+        setRegistrationStatus(RegistrationStatus.SUCCESS_MANUAL_SIGN_IN)
       } else {
         throw new Error(`Unknown "nextStep" after trying to sign up: ${JSON.stringify(nextStep)}`)
       }
@@ -160,6 +171,11 @@ const RegisterPage = () => {
           `[AUTH] Completing auto sign in after successful email verification for email ${lastEmail}`,
         )
         await handleAutoSignIn()
+      } else if (nextStep.signUpStep === 'DONE') {
+        logger.info(
+          `[AUTH] Successfully verified email for email ${lastEmail}, proceeding to manual sign in`,
+        )
+        setRegistrationStatus(RegistrationStatus.SUCCESS_MANUAL_SIGN_IN)
       } else {
         throw new Error(
           `Unknown "nextStep" after trying to verify email: ${JSON.stringify(nextStep)}`,
@@ -176,6 +192,16 @@ const RegisterPage = () => {
   }
 
   const accountSuccessAlertProps = useMemo(() => {
+    if (registrationStatus === RegistrationStatus.SUCCESS_MANUAL_SIGN_IN) {
+      return {
+        confirmLabel: t('register_success_go_to_login'),
+        onConfirm: () =>
+          router
+            .push(getRouteWithRedirect(ROUTES.LOGIN))
+            .catch(() => logger.error(`${GENERIC_ERROR_MESSAGE} redirect failed`)),
+      }
+    }
+
     // eslint-disable-next-line security/detect-non-literal-regexp
     const municipalServiceRegex = new RegExp(`^${ROUTES.MUNICIPAL_SERVICES}/.+$`)
 
@@ -199,22 +225,25 @@ const RegisterPage = () => {
       confirmLabel: t('identity_verification_not_required'),
       onConfirm: () => redirect(),
     }
-  }, [getRouteWithRedirect, redirect, router, safeRedirect, t])
+  }, [getRouteWithRedirect, redirect, registrationStatus, router, safeRedirect, t])
 
   return (
     <LoginRegisterLayout backButtonHidden>
       {registrationStatus === RegistrationStatus.INIT && <AccountActivator />}
       <AccountContainer dataCyPrefix="registration" className="mb-0 md:mb-8 md:pt-6">
-        {registrationStatus === RegistrationStatus.INIT ? (
+        {registrationStatus === RegistrationStatus.INIT && (
           <RegisterForm lastEmail={lastEmail} onSubmit={handleSignUp} error={registrationError} />
-        ) : registrationStatus === RegistrationStatus.EMAIL_VERIFICATION_REQUIRED ? (
+        )}
+        {registrationStatus === RegistrationStatus.EMAIL_VERIFICATION_REQUIRED && (
           <EmailVerificationForm
             lastEmail={lastEmail}
             onResend={resendVerificationCode}
             onSubmit={verifyEmail}
             error={registrationError}
           />
-        ) : (
+        )}
+        {(registrationStatus === RegistrationStatus.SUCCESS_AUTO_SIGN_IN ||
+          registrationStatus === RegistrationStatus.SUCCESS_MANUAL_SIGN_IN) && (
           <AccountSuccessAlert
             title={t('register_success_title')}
             description={t('register_success_description', { email: lastEmail })}

@@ -653,6 +653,49 @@ export interface PluginUsersPermissionsUser extends Schema.CollectionType {
   }
 }
 
+export interface ApiGeneralGeneral extends Schema.SingleType {
+  collectionName: 'generals'
+  info: {
+    singularName: 'general'
+    pluralName: 'generals'
+    displayName: 'General'
+  }
+  options: {
+    draftAndPublish: false
+  }
+  attributes: {
+    alerts: Attribute.Component<'general.alert', true>
+    createdAt: Attribute.DateTime
+    updatedAt: Attribute.DateTime
+    createdBy: Attribute.Relation<'api::general.general', 'oneToOne', 'admin::user'> &
+      Attribute.Private
+    updatedBy: Attribute.Relation<'api::general.general', 'oneToOne', 'admin::user'> &
+      Attribute.Private
+  }
+}
+
+export interface ApiHelpPageHelpPage extends Schema.SingleType {
+  collectionName: 'help_pages'
+  info: {
+    singularName: 'help-page'
+    pluralName: 'help-pages'
+    displayName: 'Help page'
+    description: ''
+  }
+  options: {
+    draftAndPublish: false
+  }
+  attributes: {
+    categories: Attribute.Component<'blocks.help-category', true> & Attribute.Required
+    createdAt: Attribute.DateTime
+    updatedAt: Attribute.DateTime
+    createdBy: Attribute.Relation<'api::help-page.help-page', 'oneToOne', 'admin::user'> &
+      Attribute.Private
+    updatedBy: Attribute.Relation<'api::help-page.help-page', 'oneToOne', 'admin::user'> &
+      Attribute.Private
+  }
+}
+
 declare module '@strapi/types' {
   export module Shared {
     export interface ContentTypes {
@@ -671,6 +714,8 @@ declare module '@strapi/types' {
       'plugin::users-permissions.permission': PluginUsersPermissionsPermission
       'plugin::users-permissions.role': PluginUsersPermissionsRole
       'plugin::users-permissions.user': PluginUsersPermissionsUser
+      'api::general.general': ApiGeneralGeneral
+      'api::help-page.help-page': ApiHelpPageHelpPage
     }
   }
 }

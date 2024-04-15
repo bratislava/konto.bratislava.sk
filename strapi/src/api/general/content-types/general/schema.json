@@ -1,0 +1,21 @@
+{
+  "kind": "singleType",
+  "collectionName": "generals",
+  "info": {
+    "singularName": "general",
+    "pluralName": "generals",
+    "displayName": "General"
+  },
+  "options": {
+    "draftAndPublish": false
+  },
+  "pluginOptions": {},
+  "attributes": {
+    "alerts": {
+      "displayName": "Alert",
+      "type": "component",
+      "repeatable": true,
+      "component": "general.alert"
+    }
+  }
+}

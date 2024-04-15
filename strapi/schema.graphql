@@ -27,6 +27,69 @@ input BooleanFilterInput {
   startsWith: Boolean
 }
 
+type ComponentBlocksHelpCategory {
+  id: ID!
+  items(filters: ComponentBlocksHelpItemFiltersInput, pagination: PaginationArg = {}, sort: [String] = []): [ComponentBlocksHelpItem]!
+  title: String!
+}
+
+input ComponentBlocksHelpCategoryFiltersInput {
+  and: [ComponentBlocksHelpCategoryFiltersInput]
+  items: ComponentBlocksHelpItemFiltersInput
+  not: ComponentBlocksHelpCategoryFiltersInput
+  or: [ComponentBlocksHelpCategoryFiltersInput]
+  title: StringFilterInput
+}
+
+input ComponentBlocksHelpCategoryInput {
+  id: ID
+  items: [ComponentBlocksHelpItemInput]
+  title: String
+}
+
+type ComponentBlocksHelpItem {
+  content: String!
+  id: ID!
+  title: String!
+}
+
+input ComponentBlocksHelpItemFiltersInput {
+  and: [ComponentBlocksHelpItemFiltersInput]
+  content: StringFilterInput
+  not: ComponentBlocksHelpItemFiltersInput
+  or: [ComponentBlocksHelpItemFiltersInput]
+  title: StringFilterInput
+}
+
+input ComponentBlocksHelpItemInput {
+  content: String
+  id: ID
+  title: String
+}
+
+type ComponentGeneralAlert {
+  content: String!
+  dateFrom: DateTime
+  dateTo: DateTime
+  id: ID!
+}
+
+input ComponentGeneralAlertFiltersInput {
+  and: [ComponentGeneralAlertFiltersInput]
+  content: StringFilterInput
+  dateFrom: DateTimeFilterInput
+  dateTo: DateTimeFilterInput
+  not: ComponentGeneralAlertFiltersInput
+  or: [ComponentGeneralAlertFiltersInput]
+}
+
+input ComponentGeneralAlertInput {
+  content: String
+  dateFrom: DateTime
+  dateTo: DateTime
+  id: ID
+}
+
 type ContentReleasesRelease {
   actions(filters: ContentReleasesReleaseActionFiltersInput, pagination: PaginationArg = {}, sort: [String] = []): ContentReleasesReleaseActionRelationResponseCollection
   createdAt: DateTime
@@ -226,7 +289,81 @@ input FloatFilterInput {
   startsWith: Float
 }
 
-union GenericMorph = ContentReleasesRelease | ContentReleasesReleaseAction | I18NLocale | UploadFile | UploadFolder | UsersPermissionsPermission | UsersPermissionsRole | UsersPermissionsUser
+type General {
+  alerts(filters: ComponentGeneralAlertFiltersInput, pagination: PaginationArg = {}, sort: [String] = []): [ComponentGeneralAlert]
+  createdAt: DateTime
+  updatedAt: DateTime
+}
+
+type GeneralEntity {
+  attributes: General
+  id: ID
+}
+
+type GeneralEntityResponse {
+  data: GeneralEntity
+}
+
+type GeneralEntityResponseCollection {
+  data: [GeneralEntity!]!
+  meta: ResponseCollectionMeta!
+}
+
+input GeneralFiltersInput {
+  alerts: ComponentGeneralAlertFiltersInput
+  and: [GeneralFiltersInput]
+  createdAt: DateTimeFilterInput
+  not: GeneralFiltersInput
+  or: [GeneralFiltersInput]
+  updatedAt: DateTimeFilterInput
+}
+
+input GeneralInput {
+  alerts: [ComponentGeneralAlertInput]
+}
+
+type GeneralRelationResponseCollection {
+  data: [GeneralEntity!]!
+}
+
+union GenericMorph = ComponentBlocksHelpCategory | ComponentBlocksHelpItem | ComponentGeneralAlert | ContentReleasesRelease | ContentReleasesReleaseAction | General | HelpPage | I18NLocale | UploadFile | UploadFolder | UsersPermissionsPermission | UsersPermissionsRole | UsersPermissionsUser
+
+type HelpPage {
+  categories(filters: ComponentBlocksHelpCategoryFiltersInput, pagination: PaginationArg = {}, sort: [String] = []): [ComponentBlocksHelpCategory]!
+  createdAt: DateTime
+  updatedAt: DateTime
+}
+
+type HelpPageEntity {
+  attributes: HelpPage
+  id: ID
+}
+
+type HelpPageEntityResponse {
+  data: HelpPageEntity
+}
+
+type HelpPageEntityResponseCollection {
+  data: [HelpPageEntity!]!
+  meta: ResponseCollectionMeta!
+}
+
+input HelpPageFiltersInput {
+  and: [HelpPageFiltersInput]
+  categories: ComponentBlocksHelpCategoryFiltersInput
+  createdAt: DateTimeFilterInput
+  not: HelpPageFiltersInput
+  or: [HelpPageFiltersInput]
+  updatedAt: DateTimeFilterInput
+}
+
+input HelpPageInput {
+  categories: [ComponentBlocksHelpCategoryInput]
+}
+
+type HelpPageRelationResponseCollection {
+  data: [HelpPageEntity!]!
+}
 
 type I18NLocale {
   code: String
@@ -397,6 +534,8 @@ type Mutation {
   createUsersPermissionsUser(data: UsersPermissionsUserInput!): UsersPermissionsUserEntityResponse!
   deleteContentReleasesRelease(id: ID!): ContentReleasesReleaseEntityResponse
   deleteContentReleasesReleaseAction(id: ID!): ContentReleasesReleaseActionEntityResponse
+  deleteGeneral: GeneralEntityResponse
+  deleteHelpPage: HelpPageEntityResponse
   deleteUploadFile(id: ID!): UploadFileEntityResponse
   deleteUploadFolder(id: ID!): UploadFolderEntityResponse
 
@@ -425,6 +564,8 @@ type Mutation {
   updateContentReleasesRelease(data: ContentReleasesReleaseInput!, id: ID!): ContentReleasesReleaseEntityResponse
   updateContentReleasesReleaseAction(data: ContentReleasesReleaseActionInput!, id: ID!): ContentReleasesReleaseActionEntityResponse
   updateFileInfo(id: ID!, info: FileInfoInput): UploadFileEntityResponse!
+  updateGeneral(data: GeneralInput!): GeneralEntityResponse
+  updateHelpPage(data: HelpPageInput!): HelpPageEntityResponse
   updateUploadFile(data: UploadFileInput!, id: ID!): UploadFileEntityResponse
   updateUploadFolder(data: UploadFolderInput!, id: ID!): UploadFolderEntityResponse
 
@@ -460,6 +601,8 @@ type Query {
   contentReleasesReleaseAction(id: ID): ContentReleasesReleaseActionEntityResponse
   contentReleasesReleaseActions(filters: ContentReleasesReleaseActionFiltersInput, pagination: PaginationArg = {}, sort: [String] = []): ContentReleasesReleaseActionEntityResponseCollection
   contentReleasesReleases(filters: ContentReleasesReleaseFiltersInput, pagination: PaginationArg = {}, sort: [String] = []): ContentReleasesReleaseEntityResponseCollection
+  general: GeneralEntityResponse
+  helpPage: HelpPageEntityResponse
   i18NLocale(id: ID): I18NLocaleEntityResponse
   i18NLocales(filters: I18NLocaleFiltersInput, pagination: PaginationArg = {}, sort: [String] = []): I18NLocaleEntityResponseCollection
   me: UsersPermissionsMe

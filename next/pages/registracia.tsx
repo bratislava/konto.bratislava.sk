@@ -1,6 +1,6 @@
 import { ParsedUrlQuery } from 'node:querystring'
 
-import { autoSignIn, confirmSignUp, resendSignUpCode, signUp } from 'aws-amplify/auth'
+import { AuthError, autoSignIn, confirmSignUp, resendSignUpCode, signUp } from 'aws-amplify/auth'
 import AccountActivator from 'components/forms/segments/AccountActivator/AccountActivator'
 import AccountContainer from 'components/forms/segments/AccountContainer/AccountContainer'
 import AccountSuccessAlert from 'components/forms/segments/AccountSuccessAlert/AccountSuccessAlert'
@@ -43,6 +43,17 @@ export const getServerSideProps = amplifyGetServerSideProps(
   },
   { requiresSignOut: true, redirectQueryParam: true },
 )
+
+/**
+ * In a race condition, it is possible that the user is already confirmed, but user can still ask for confirmation.
+ * In this case, we want to proceed to manual sign in. Also, the error is confusing for NotAuthorizedException is confusing
+ * for this case. It is not possible to distinguish this case from other cases of NotAuthorizedException, so we have to
+ * check the error message.
+ */
+const isSpecialAlreadyConfirmedError = (error: unknown) =>
+  error instanceof AuthError &&
+  error.name === 'NotAuthorizedException' &&
+  error.message === 'User cannot be confirmed. Current status is CONFIRMED'
 
 const getInitialState = (query: ParsedUrlQuery) => {
   const email = query[loginConfirmSignUpEmailHiddenQueryParam]
@@ -150,6 +161,16 @@ const RegisterPage = () => {
       logger.info(`[AUTH] Successfully resent verification code for email ${lastEmail}`)
     } catch (error) {
       logger.error(`[AUTH] Failed to resend verification code for email ${lastEmail}`, error)
+
+      if (isSpecialAlreadyConfirmedError(error)) {
+        logger.info(
+          `[AUTH] Email for email ${lastEmail} is already verified, proceeding to manual sign in`,
+        )
+        setRegistrationError(null)
+        setRegistrationStatus(RegistrationStatus.SUCCESS_MANUAL_SIGN_IN)
+        return
+      }
+
       if (isError(error)) {
         setRegistrationError(error)
       } else {
@@ -183,6 +204,15 @@ const RegisterPage = () => {
       }
     } catch (error) {
       logger.error(`[AUTH] Failed to verify email for email ${lastEmail}`, error)
+
+      if (isSpecialAlreadyConfirmedError(error)) {
+        logger.info(
+          `[AUTH] Email for email ${lastEmail} is already verified, proceeding to manual sign in`,
+        )
+        setRegistrationError(null)
+        setRegistrationStatus(RegistrationStatus.SUCCESS_MANUAL_SIGN_IN)
+        return
+      }
       if (isError(error)) {
         setRegistrationError(error)
       } else {

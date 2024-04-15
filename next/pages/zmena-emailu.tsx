@@ -70,19 +70,17 @@ const EmailChangePage = () => {
 
   const resendVerificationCode = async () => {
     try {
-      logger.info(
-        `[AUTH] Resending email verification code for email ${userAttributes?.email}, user agent ${window.navigator.userAgent}`,
-      )
+      logger.info(`[AUTH] Resending email verification code for email ${userAttributes?.email}`)
       setEmailChangeError(null)
       await sendUserAttributeVerificationCode({
         userAttributeKey: 'email',
       })
       logger.info(
-        `[AUTH] Successfully resent email verification code for email ${userAttributes?.email}, user agent ${window.navigator.userAgent}`,
+        `[AUTH] Successfully resent email verification code for email ${userAttributes?.email}`,
       )
     } catch (error) {
       logger.error(
-        `[AUTH] Failed to resend email verification code for email ${userAttributes?.email}, user agent ${window.navigator.userAgent}`,
+        `[AUTH] Failed to resend email verification code for email ${userAttributes?.email}`,
         error,
       )
       if (isError(error)) {
@@ -96,7 +94,7 @@ const EmailChangePage = () => {
   const verifyEmail = async (confirmationCode: string) => {
     try {
       logger.info(
-        `[AUTH] Attempting to verify new email ${lastEmail} for email ${userAttributes?.email}, user agent ${window.navigator.userAgent}`,
+        `[AUTH] Attempting to verify new email ${lastEmail} for email ${userAttributes?.email}`,
       )
       setEmailChangeError(null)
       await confirmUserAttribute({
@@ -105,12 +103,12 @@ const EmailChangePage = () => {
       })
       await changeEmailApi({ newEmail: lastEmail })
       logger.info(
-        `[AUTH] Successfully verified new email ${lastEmail} for email ${userAttributes?.email}, user agent ${window.navigator.userAgent}`,
+        `[AUTH] Successfully verified new email ${lastEmail} for email ${userAttributes?.email}`,
       )
       setEmailChangeStatus(EmailChangeStatus.EMAIL_VERIFICATION_SUCCESS)
     } catch (error) {
       logger.error(
-        `[AUTH] Failed to verify new email ${lastEmail} for email ${userAttributes?.email}, user agent ${window.navigator.userAgent}`,
+        `[AUTH] Failed to verify new email ${lastEmail} for email ${userAttributes?.email}`,
         error,
       )
       if (isError(error)) {
@@ -124,26 +122,24 @@ const EmailChangePage = () => {
   const changeEmail = async (newEmail: string, password: string) => {
     try {
       logger.info(
-        `[AUTH] Attempting to change email to ${newEmail} for email ${userAttributes?.email}, user agent ${window.navigator.userAgent}`,
+        `[AUTH] Attempting to change email to ${newEmail} for email ${userAttributes?.email}`,
       )
       setEmailChangeError(null)
       setLastEmail(newEmail)
       await verifyPassword(password)
-      logger.info(
-        `[AUTH] Successfully verified password for email ${userAttributes?.email}, user agent ${window.navigator.userAgent}`,
-      )
+      logger.info(`[AUTH] Successfully verified password for email ${userAttributes?.email}`)
       const result = await updateUserAttributes({
         userAttributes: { email: newEmail },
       })
       // In E2E tests, confirmation with code is disabled, so the attribute is updated immediately
       if (result.email?.nextStep.updateAttributeStep === 'DONE') {
         logger.info(
-          `[AUTH] Successfully changed email to ${newEmail} for email ${userAttributes?.email}, user agent ${window.navigator.userAgent}`,
+          `[AUTH] Successfully changed email to ${newEmail} for email ${userAttributes?.email}`,
         )
         setEmailChangeStatus(EmailChangeStatus.EMAIL_VERIFICATION_SUCCESS)
       } else if (result.email?.nextStep.updateAttributeStep === 'CONFIRM_ATTRIBUTE_WITH_CODE') {
         logger.info(
-          `[AUTH] Requesting email verification code after email change to ${newEmail} for email ${userAttributes?.email}, user agent ${window.navigator.userAgent}`,
+          `[AUTH] Requesting email verification code after email change to ${newEmail} for email ${userAttributes?.email}`,
         )
         setEmailChangeStatus(EmailChangeStatus.EMAIL_VERIFICATION_REQUIRED)
       } else {
@@ -155,7 +151,7 @@ const EmailChangePage = () => {
       }
     } catch (error) {
       logger.error(
-        `[AUTH] Failed to change email to ${newEmail} for email ${userAttributes?.email}, user agent ${window.navigator.userAgent}`,
+        `[AUTH] Failed to change email to ${newEmail} for email ${userAttributes?.email}`,
         error,
       )
       if (isError(error)) {

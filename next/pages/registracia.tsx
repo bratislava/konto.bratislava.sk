@@ -65,21 +65,17 @@ const RegisterPage = () => {
   useEffect(() => {
     if (initialState.registrationStatus === RegistrationStatus.EMAIL_VERIFICATION_REQUIRED) {
       logger.info(
-        `[AUTH] User redirected to registration page to verify email for email ${initialState.lastEmail}, user agent ${window.navigator.userAgent}`,
+        `[AUTH] User redirected to registration page to verify email for email ${initialState.lastEmail}`,
       )
     }
   }, [initialState])
 
   const handleAutoSignIn = async () => {
     try {
-      logger.info(
-        `[AUTH] Attempting to complete auto sign in for email ${lastEmail}, user agent ${window.navigator.userAgent}`,
-      )
+      logger.info(`[AUTH] Attempting to complete auto sign in for email ${lastEmail}`)
       const { isSignedIn, nextStep } = await autoSignIn()
       if (isSignedIn) {
-        logger.info(
-          `[AUTH] Successfully completed auto sign in for email ${lastEmail}, user agent ${window.navigator.userAgent}`,
-        )
+        logger.info(`[AUTH] Successfully completed auto sign in for email ${lastEmail}`)
         setRegistrationStatus(RegistrationStatus.EMAIL_VERIFICATION_SUCCESS)
       } else {
         throw new Error(
@@ -87,10 +83,7 @@ const RegisterPage = () => {
         )
       }
     } catch (error) {
-      logger.error(
-        `[AUTH] Failed to complete auto sign in for email ${lastEmail}, user agent ${window.navigator.userAgent}`,
-        error,
-      )
+      logger.error(`[AUTH] Failed to complete auto sign in for email ${lastEmail}`, error)
       if (isError(error)) {
         setRegistrationError(error)
       } else {
@@ -105,9 +98,7 @@ const RegisterPage = () => {
     data: UserAttributes,
   ) => {
     try {
-      logger.info(
-        `[AUTH] Attempting to sign up for email ${email}, user agent ${window.navigator.userAgent}`,
-      )
+      logger.info(`[AUTH] Attempting to sign up for email ${email}`)
       setRegistrationError(null)
       setLastEmail(email)
       const { nextStep } = await signUp({
@@ -122,23 +113,16 @@ const RegisterPage = () => {
         },
       })
       if (nextStep.signUpStep === 'COMPLETE_AUTO_SIGN_IN') {
-        logger.info(
-          `[AUTH] Completing auto sign in after successful sing up for email ${email}, user agent ${window.navigator.userAgent}`,
-        )
+        logger.info(`[AUTH] Completing auto sign in after successful sing up for email ${email}`)
         await handleAutoSignIn()
       } else if (nextStep.signUpStep === 'CONFIRM_SIGN_UP') {
-        logger.info(
-          `[AUTH] Requesting sign-up code for email ${email}, user agent ${window.navigator.userAgent}`,
-        )
+        logger.info(`[AUTH] Requesting sign-up code for email ${email}`)
         setRegistrationStatus(RegistrationStatus.EMAIL_VERIFICATION_REQUIRED)
       } else {
         throw new Error(`Unknown "nextStep" after trying to sign up: ${JSON.stringify(nextStep)}`)
       }
     } catch (error) {
-      logger.error(
-        `[AUTH] Failed to sign up for email ${email}, user agent ${window.navigator.userAgent}`,
-        error,
-      )
+      logger.error(`[AUTH] Failed to sign up for email ${email}`, error)
       if (isError(error)) {
         setRegistrationError(error)
       } else {
@@ -149,19 +133,12 @@ const RegisterPage = () => {
 
   const resendVerificationCode = async () => {
     try {
-      logger.info(
-        `[AUTH] Resending verification code for email ${lastEmail}, user agent ${window.navigator.userAgent}`,
-      )
+      logger.info(`[AUTH] Resending verification code for email ${lastEmail}`)
       setRegistrationError(null)
       await resendSignUpCode({ username: lastEmail })
-      logger.info(
-        `[AUTH] Successfully resent verification code for email ${lastEmail}, user agent ${window.navigator.userAgent}`,
-      )
+      logger.info(`[AUTH] Successfully resent verification code for email ${lastEmail}`)
     } catch (error) {
-      logger.error(
-        `[AUTH] Failed to resend verification code for email ${lastEmail}, user agent ${window.navigator.userAgent}`,
-        error,
-      )
+      logger.error(`[AUTH] Failed to resend verification code for email ${lastEmail}`, error)
       if (isError(error)) {
         setRegistrationError(error)
       } else {
@@ -172,9 +149,7 @@ const RegisterPage = () => {
 
   const verifyEmail = async (confirmationCode: string) => {
     try {
-      logger.info(
-        `[AUTH] Attempting to verify email for email ${lastEmail}, user agent ${window.navigator.userAgent}`,
-      )
+      logger.info(`[AUTH] Attempting to verify email for email ${lastEmail}`)
       setRegistrationError(null)
       const { nextStep } = await confirmSignUp({
         username: lastEmail,
@@ -182,7 +157,7 @@ const RegisterPage = () => {
       })
       if (nextStep.signUpStep === 'COMPLETE_AUTO_SIGN_IN') {
         logger.info(
-          `[AUTH] Completing auto sign in after successful email verification for email ${lastEmail}, user agent ${window.navigator.userAgent}`,
+          `[AUTH] Completing auto sign in after successful email verification for email ${lastEmail}`,
         )
         await handleAutoSignIn()
       } else {
@@ -191,10 +166,7 @@ const RegisterPage = () => {
         )
       }
     } catch (error) {
-      logger.error(
-        `[AUTH] Failed to verify email for email ${lastEmail}, user agent ${window.navigator.userAgent}`,
-        error,
-      )
+      logger.error(`[AUTH] Failed to verify email for email ${lastEmail}`, error)
       if (isError(error)) {
         setRegistrationError(error)
       } else {

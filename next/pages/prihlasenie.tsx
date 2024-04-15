@@ -45,11 +45,14 @@ const LoginPage = () => {
   const [loginError, setLoginError] = useState<Error | null>(null)
 
   const onLogin = async (email: string, password: string) => {
+    logger.info(
+      `[AUTH] Attempting to sign in for email ${email}, user agent ${window.navigator.userAgent}`,
+    )
     try {
       const { nextStep, isSignedIn } = await signIn({ username: email, password })
       if (isSignedIn) {
         logger.info(
-          `Signed in successfully for email ${email}, user agent ${window.navigator.userAgent}`,
+          `[AUTH] Successfully signed in for email ${email}, user agent ${window.navigator.userAgent}`,
         )
         await redirect()
         return
@@ -58,9 +61,15 @@ const LoginPage = () => {
         // In case of user didn't confirm the code in the registration process, we want to redirect him/her to the
         // registration page in the state as they would be activating their account. For simplicity, we request the code
         // here.
+        logger.info(
+          `[AUTH] User didn't confirm the code in the registration process, requesting sign-up code for email ${email}, user agent ${window.navigator.userAgent}`,
+        )
         await resendSignUpCode({ username: email })
         const redirectQueryParams = getRedirectQueryParams()
 
+        logger.info(
+          `[AUTH] Redirecting to registration page for sign up confirmation for email ${email}, user agent ${window.navigator.userAgent}`,
+        )
         await router.push(
           {
             pathname: ROUTES.REGISTER,
@@ -70,28 +79,23 @@ const LoginPage = () => {
           getRouteWithRedirect(ROUTES.REGISTER),
         )
       } else {
-        throw new Error('Unknown error')
+        throw new Error(`Unknown "nextStep" after trying to sign in: ${JSON.stringify(nextStep)}`)
       }
     } catch (error) {
-      // TODO remove
       logger.error(
-        `error thrown in onLogin for email ${email}, user agent ${window.navigator.userAgent}:`,
+        `[AUTH] Failed to sign in for email ${email}, user agent ${window.navigator.userAgent}`,
         error,
       )
       if (error instanceof AuthError && error.name === 'UnexpectedSignInInterruptionException') {
         removeAllCookiesAndClearLocalStorage()
         logger.info(
-          `Removed all cookies and cleared local storage for email ${email}, user agent ${window.navigator.userAgent}`,
+          `[AUTH] Removed all cookies and cleared local storage for email ${email}, user agent ${window.navigator.userAgent}`,
         )
       }
 
       if (isError(error)) {
         setLoginError(error)
       } else {
-        logger.error(
-          `${GENERIC_ERROR_MESSAGE} - unexpected object thrown in onLogin for email ${email}, user agent ${window.navigator.userAgent}:`,
-          error,
-        )
         setLoginError(new Error(GENERIC_ERROR_MESSAGE))
       }
     }

@@ -51,21 +51,29 @@ const ForgottenPasswordPage = () => {
 
   const forgotPassword = async (email: string) => {
     try {
+      logger.info(
+        `[AUTH] Attempting to request password reset for email ${email}, user agent ${window.navigator.userAgent}`,
+      )
       setLastEmail(email)
       const result = await resetPassword({ username: email })
       if (result.nextStep.resetPasswordStep === 'CONFIRM_RESET_PASSWORD_WITH_CODE') {
+        logger.info(
+          `[AUTH] Successfully requested password reset for email ${email}, user agent ${window.navigator.userAgent}`,
+        )
         setForgotPasswordStatus(ForgotPasswordStatus.NEW_PASSWORD_REQUIRED)
       } else {
-        throw new Error('Unknown error')
+        throw new Error(
+          `Unknown "nextStep" after trying to request password reset: ${JSON.stringify(result.nextStep)}`,
+        )
       }
     } catch (error) {
+      logger.error(
+        `[AUTH] Failed to request password reset for email ${email}, user agent ${window.navigator.userAgent}`,
+        error,
+      )
       if (isError(error)) {
         setForgotPasswordError(error)
       } else {
-        logger.error(
-          `${GENERIC_ERROR_MESSAGE} - unexpected object thrown in forgotPassword:`,
-          error,
-        )
         setForgotPasswordError(new Error(GENERIC_ERROR_MESSAGE))
       }
     }
@@ -73,20 +81,26 @@ const ForgottenPasswordPage = () => {
 
   const forgotPasswordSubmit = async (confirmationCode: string, newPassword: string) => {
     try {
+      logger.info(
+        `[AUTH] Attempting to reset password for email ${lastEmail}, user agent ${window.navigator.userAgent}`,
+      )
       await confirmResetPassword({
         username: lastEmail,
         confirmationCode,
         newPassword,
       })
+      logger.info(
+        `[AUTH] Successfully reset password for email ${lastEmail}, user agent ${window.navigator.userAgent}`,
+      )
       setForgotPasswordStatus(ForgotPasswordStatus.NEW_PASSWORD_SUCCESS)
     } catch (error) {
+      logger.error(
+        `[AUTH] Failed to reset password for email ${lastEmail}, user agent ${window.navigator.userAgent}`,
+        error,
+      )
       if (isError(error)) {
         setForgotPasswordError(error)
       } else {
-        logger.error(
-          `${GENERIC_ERROR_MESSAGE} - unexpected object thrown in forgotPasswordSubmit:`,
-          error,
-        )
         setForgotPasswordError(new Error(GENERIC_ERROR_MESSAGE))
       }
     }

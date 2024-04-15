@@ -10,6 +10,7 @@ import { useState } from 'react'
 
 import { SsrAuthProviderHOC } from '../components/logic/SsrAuthContext'
 import { ROUTES } from '../frontend/api/constants'
+import { useSsrAuth } from '../frontend/hooks/useSsrAuth'
 import { amplifyGetServerSideProps } from '../frontend/utils/amplifyServer'
 import logger from '../frontend/utils/logger'
 import { slovakServerSideTranslations } from '../frontend/utils/slovakServerSideTranslations'
@@ -31,6 +32,8 @@ export const getServerSideProps = amplifyGetServerSideProps(
 )
 
 const PasswordChangePage = () => {
+  const { userAttributes } = useSsrAuth()
+
   const { t } = useTranslation('account')
   const router = useRouter()
   const [passwordChangeError, setPasswordChangeError] = useState<Error | null>(null)
@@ -44,20 +47,26 @@ const PasswordChangePage = () => {
 
   const changePassword = async (oldPassword: string, newPassword: string) => {
     try {
+      logger.info(
+        `[AUTH] Attempting to change password for email ${userAttributes?.email}, user agent ${window.navigator.userAgent}`,
+      )
       setPasswordChangeError(null)
       await updatePassword({
         oldPassword,
         newPassword,
       })
+      logger.info(
+        `[AUTH] Successfully changed password for email ${userAttributes?.email}, user agent ${window.navigator.userAgent}`,
+      )
       setPasswordChangeStatus(PasswordChangeStatus.NEW_PASSWORD_SUCCESS)
     } catch (error) {
+      logger.error(
+        `[AUTH] Failed to change password for email ${userAttributes?.email}, user agent ${window.navigator.userAgent}`,
+        error,
+      )
       if (isError(error)) {
         setPasswordChangeError(error)
       } else {
-        logger.error(
-          `${GENERIC_ERROR_MESSAGE} - unexpected object thrown in forgotPasswordSubmit:`,
-          error,
-        )
         setPasswordChangeError(new Error(GENERIC_ERROR_MESSAGE))
       }
     }

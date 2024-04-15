@@ -47,23 +47,16 @@ const PasswordChangePage = () => {
 
   const changePassword = async (oldPassword: string, newPassword: string) => {
     try {
-      logger.info(
-        `[AUTH] Attempting to change password for email ${userAttributes?.email}, user agent ${window.navigator.userAgent}`,
-      )
+      logger.info(`[AUTH] Attempting to change password for email ${userAttributes?.email}`)
       setPasswordChangeError(null)
       await updatePassword({
         oldPassword,
         newPassword,
       })
-      logger.info(
-        `[AUTH] Successfully changed password for email ${userAttributes?.email}, user agent ${window.navigator.userAgent}`,
-      )
+      logger.info(`[AUTH] Successfully changed password for email ${userAttributes?.email}`)
       setPasswordChangeStatus(PasswordChangeStatus.NEW_PASSWORD_SUCCESS)
     } catch (error) {
-      logger.error(
-        `[AUTH] Failed to change password for email ${userAttributes?.email}, user agent ${window.navigator.userAgent}`,
-        error,
-      )
+      logger.error(`[AUTH] Failed to change password for email ${userAttributes?.email}`, error)
       if (isError(error)) {
         setPasswordChangeError(error)
       } else {

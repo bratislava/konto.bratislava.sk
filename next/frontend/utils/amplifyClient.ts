@@ -57,21 +57,14 @@ export const useSignOut = () => {
 
   const signOut = async () => {
     try {
-      logger.info(
-        `[AUTH] Attempting to sign out email ${userAttributes?.email}, user agent ${window.navigator.userAgent}`,
-      )
+      logger.info(`[AUTH] Attempting to sign out email ${userAttributes?.email}`)
       await amplifySignOut()
-      logger.info(
-        `[AUTH] Successfully signed out email ${userAttributes?.email}, user agent ${window.navigator.userAgent}`,
-      )
+      logger.info(`[AUTH] Successfully signed out email ${userAttributes?.email}`)
       // Removes user data from the cache.
       queryClient.removeQueries()
       await router.push(ROUTES.LOGIN)
     } catch (error) {
-      logger.error(
-        `[AUTH] Failed to sign out email ${userAttributes?.email}, user agent ${window.navigator.userAgent}`,
-        error,
-      )
+      logger.error(`[AUTH] Failed to sign out email ${userAttributes?.email}`, error)
       // Rethrow the error to be handled by the caller.
       throw error
     }

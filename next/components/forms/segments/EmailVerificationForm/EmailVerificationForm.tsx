@@ -70,7 +70,9 @@ const EmailVerificationForm = ({ onSubmit, error, onResend, lastEmail }: Props) 
       data-cy="verification-form"
       onSubmit={handleSubmit((data: Data) => {
         setLastVerificationCode(data.verificationCode)
-        onSubmit(data.verificationCode).catch((error_) => logger.error('Submit failed', error_))
+        return onSubmit(data.verificationCode).catch((error_) =>
+          logger.error('Submit failed', error_),
+        )
       })}
     >
       <h1 className="text-h3">{t('email_verification_title')}</h1>

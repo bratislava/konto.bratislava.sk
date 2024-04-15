@@ -84,7 +84,7 @@ const NewPasswordForm = ({ onSubmit, error, onResend, lastEmail, fromMigration }
       data-cy="new-password-form"
       onSubmit={handleSubmit((data: Data) => {
         setLastVerificationCode(data.verificationCode)
-        onSubmit(data.verificationCode, data.password).catch((error_) =>
+        return onSubmit(data.verificationCode, data.password).catch((error_) =>
           logger.error('Submit failed', error_),
         )
       })}

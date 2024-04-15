@@ -103,6 +103,7 @@
   "email_verification_submit": "Overiť e-mail",
   "register_success_title": "Bratislavské konto bolo vytvorené",
   "register_success_description": "E-mailová adresa {{email}} bola overená.",
+  "register_success_go_to_login": "Pokračovať na prihlásenie",
   "identity_verification_skip": "Preskočiť a overiť neskôr",
   "identity_verification_not_required": "Pokračovať do konta",
   "identity_verification_link": "Pokračovať do konta",

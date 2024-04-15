@@ -1,0 +1,17 @@
+{
+  "collectionName": "components_blocks_help_items",
+  "info": {
+    "displayName": "Help item"
+  },
+  "options": {},
+  "attributes": {
+    "title": {
+      "type": "string",
+      "required": true
+    },
+    "content": {
+      "type": "richtext",
+      "required": true
+    }
+  }
+}

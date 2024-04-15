@@ -1,0 +1,22 @@
+{
+  "kind": "singleType",
+  "collectionName": "help_pages",
+  "info": {
+    "singularName": "help-page",
+    "pluralName": "help-pages",
+    "displayName": "Help page",
+    "description": ""
+  },
+  "options": {
+    "draftAndPublish": false
+  },
+  "pluginOptions": {},
+  "attributes": {
+    "categories": {
+      "type": "component",
+      "repeatable": true,
+      "component": "blocks.help-category",
+      "required": true
+    }
+  }
+}

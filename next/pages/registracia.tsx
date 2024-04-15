@@ -11,7 +11,7 @@ import { UserAttributes } from 'frontend/dtos/accountDto'
 import { GENERIC_ERROR_MESSAGE, isError } from 'frontend/utils/errors'
 import { useRouter } from 'next/router'
 import { useTranslation } from 'next-i18next'
-import { useMemo, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 
 import { SsrAuthProviderHOC } from '../components/logic/SsrAuthContext'
 import { ROUTES } from '../frontend/api/constants'
@@ -55,25 +55,45 @@ const RegisterPage = () => {
   const { safeRedirect, getRouteWithRedirect, redirect } = useQueryParamRedirect()
 
   const { t } = useTranslation('account')
+  const [initialState] = useState(getInitialState(router.query))
   const [registrationStatus, setRegistrationStatus] = useState<RegistrationStatus>(
-    getInitialState(router.query).registrationStatus,
+    initialState.registrationStatus,
   )
   const [registrationError, setRegistrationError] = useState<Error | null>(null)
-  const [lastEmail, setLastEmail] = useState<string>(getInitialState(router.query).lastEmail)
+  const [lastEmail, setLastEmail] = useState<string>(initialState.lastEmail)
+
+  useEffect(() => {
+    if (initialState.registrationStatus === RegistrationStatus.EMAIL_VERIFICATION_REQUIRED) {
+      logger.info(
+        `[AUTH] User redirected to registration page to verify email for email ${initialState.lastEmail}, user agent ${window.navigator.userAgent}`,
+      )
+    }
+  }, [initialState])
 
   const handleAutoSignIn = async () => {
     try {
-      const { isSignedIn } = await autoSignIn()
+      logger.info(
+        `[AUTH] Attempting to complete auto sign in for email ${lastEmail}, user agent ${window.navigator.userAgent}`,
+      )
+      const { isSignedIn, nextStep } = await autoSignIn()
       if (isSignedIn) {
+        logger.info(
+          `[AUTH] Successfully completed auto sign in for email ${lastEmail}, user agent ${window.navigator.userAgent}`,
+        )
         setRegistrationStatus(RegistrationStatus.EMAIL_VERIFICATION_SUCCESS)
       } else {
-        throw new Error('Unknown error')
+        throw new Error(
+          `Unknown "nextStep" after trying to complete auto sign in: ${JSON.stringify(nextStep)}`,
+        )
       }
     } catch (error) {
+      logger.error(
+        `[AUTH] Failed to complete auto sign in for email ${lastEmail}, user agent ${window.navigator.userAgent}`,
+        error,
+      )
       if (isError(error)) {
         setRegistrationError(error)
       } else {
-        logger.error(`${GENERIC_ERROR_MESSAGE} - unexpected object thrown in verifyEmail:`, error)
         setRegistrationError(new Error(GENERIC_ERROR_MESSAGE))
       }
     }
@@ -85,6 +105,9 @@ const RegisterPage = () => {
     data: UserAttributes,
   ) => {
     try {
+      logger.info(
+        `[AUTH] Attempting to sign up for email ${email}, user agent ${window.navigator.userAgent}`,
+      )
       setRegistrationError(null)
       setLastEmail(email)
       const { nextStep } = await signUp({
@@ -99,17 +122,26 @@ const RegisterPage = () => {
         },
       })
       if (nextStep.signUpStep === 'COMPLETE_AUTO_SIGN_IN') {
+        logger.info(
+          `[AUTH] Completing auto sign in after successful sing up for email ${email}, user agent ${window.navigator.userAgent}`,
+        )
         await handleAutoSignIn()
       } else if (nextStep.signUpStep === 'CONFIRM_SIGN_UP') {
+        logger.info(
+          `[AUTH] Requesting sign-up code for email ${email}, user agent ${window.navigator.userAgent}`,
+        )
         setRegistrationStatus(RegistrationStatus.EMAIL_VERIFICATION_REQUIRED)
       } else {
-        throw new Error('Unknown error')
+        throw new Error(`Unknown "nextStep" after trying to sign up: ${JSON.stringify(nextStep)}`)
       }
     } catch (error) {
+      logger.error(
+        `[AUTH] Failed to sign up for email ${email}, user agent ${window.navigator.userAgent}`,
+        error,
+      )
       if (isError(error)) {
         setRegistrationError(error)
       } else {
-        logger.error(`${GENERIC_ERROR_MESSAGE} - unexpected object thrown in signUp:`, error)
         setRegistrationError(new Error(GENERIC_ERROR_MESSAGE))
       }
     }
@@ -117,16 +149,22 @@ const RegisterPage = () => {
 
   const resendVerificationCode = async () => {
     try {
+      logger.info(
+        `[AUTH] Resending verification code for email ${lastEmail}, user agent ${window.navigator.userAgent}`,
+      )
       setRegistrationError(null)
       await resendSignUpCode({ username: lastEmail })
+      logger.info(
+        `[AUTH] Successfully resent verification code for email ${lastEmail}, user agent ${window.navigator.userAgent}`,
+      )
     } catch (error) {
+      logger.error(
+        `[AUTH] Failed to resend verification code for email ${lastEmail}, user agent ${window.navigator.userAgent}`,
+        error,
+      )
       if (isError(error)) {
         setRegistrationError(error)
       } else {
-        logger.error(
-          `${GENERIC_ERROR_MESSAGE} - unexpected object thrown in resendVerificationCode:`,
-          error,
-        )
         setRegistrationError(new Error(GENERIC_ERROR_MESSAGE))
       }
     }
@@ -134,21 +172,32 @@ const RegisterPage = () => {
 
   const verifyEmail = async (confirmationCode: string) => {
     try {
+      logger.info(
+        `[AUTH] Attempting to verify email for email ${lastEmail}, user agent ${window.navigator.userAgent}`,
+      )
       setRegistrationError(null)
       const { nextStep } = await confirmSignUp({
         username: lastEmail,
         confirmationCode,
       })
       if (nextStep.signUpStep === 'COMPLETE_AUTO_SIGN_IN') {
+        logger.info(
+          `[AUTH] Completing auto sign in after successful email verification for email ${lastEmail}, user agent ${window.navigator.userAgent}`,
+        )
         await handleAutoSignIn()
       } else {
-        throw new Error('Unknown error')
+        throw new Error(
+          `Unknown "nextStep" after trying to verify email: ${JSON.stringify(nextStep)}`,
+        )
       }
     } catch (error) {
+      logger.error(
+        `[AUTH] Failed to verify email for email ${lastEmail}, user agent ${window.navigator.userAgent}`,
+        error,
+      )
       if (isError(error)) {
         setRegistrationError(error)
       } else {
-        logger.error(`${GENERIC_ERROR_MESSAGE} - unexpected object thrown in verifyEmail:`, error)
         setRegistrationError(new Error(GENERIC_ERROR_MESSAGE))
       }
     }

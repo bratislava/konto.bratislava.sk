@@ -18,6 +18,7 @@ import { useState } from 'react'
 
 import { SsrAuthProviderHOC } from '../components/logic/SsrAuthContext'
 import { ROUTES } from '../frontend/api/constants'
+import { useSsrAuth } from '../frontend/hooks/useSsrAuth'
 import { amplifyGetServerSideProps } from '../frontend/utils/amplifyServer'
 import logger from '../frontend/utils/logger'
 import { slovakServerSideTranslations } from '../frontend/utils/slovakServerSideTranslations'
@@ -60,6 +61,7 @@ export const getServerSideProps = amplifyGetServerSideProps(
 const EmailChangePage = () => {
   const { t } = useTranslation('account')
   const router = useRouter()
+  const { userAttributes } = useSsrAuth()
   const [emailChangeStatus, setEmailChangeStatus] = useState<EmailChangeStatus>(
     EmailChangeStatus.INIT,
   )
@@ -68,18 +70,24 @@ const EmailChangePage = () => {
 
   const resendVerificationCode = async () => {
     try {
+      logger.info(
+        `[AUTH] Resending email verification code for email ${userAttributes?.email}, user agent ${window.navigator.userAgent}`,
+      )
       setEmailChangeError(null)
       await sendUserAttributeVerificationCode({
         userAttributeKey: 'email',
       })
+      logger.info(
+        `[AUTH] Successfully resent email verification code for email ${userAttributes?.email}, user agent ${window.navigator.userAgent}`,
+      )
     } catch (error) {
+      logger.error(
+        `[AUTH] Failed to resend email verification code for email ${userAttributes?.email}, user agent ${window.navigator.userAgent}`,
+        error,
+      )
       if (isError(error)) {
         setEmailChangeError(error)
       } else {
-        logger.error(
-          `${GENERIC_ERROR_MESSAGE} - unexpected object thrown in resendVerificationCode:`,
-          error,
-        )
         setEmailChangeError(new Error(GENERIC_ERROR_MESSAGE))
       }
     }
@@ -87,18 +95,27 @@ const EmailChangePage = () => {
 
   const verifyEmail = async (confirmationCode: string) => {
     try {
+      logger.info(
+        `[AUTH] Attempting to verify new email ${lastEmail} for email ${userAttributes?.email}, user agent ${window.navigator.userAgent}`,
+      )
       setEmailChangeError(null)
       await confirmUserAttribute({
         userAttributeKey: 'email',
         confirmationCode,
       })
       await changeEmailApi({ newEmail: lastEmail })
+      logger.info(
+        `[AUTH] Successfully verified new email ${lastEmail} for email ${userAttributes?.email}, user agent ${window.navigator.userAgent}`,
+      )
       setEmailChangeStatus(EmailChangeStatus.EMAIL_VERIFICATION_SUCCESS)
     } catch (error) {
+      logger.error(
+        `[AUTH] Failed to verify new email ${lastEmail} for email ${userAttributes?.email}, user agent ${window.navigator.userAgent}`,
+        error,
+      )
       if (isError(error)) {
         setEmailChangeError(error)
       } else {
-        logger.error(`${GENERIC_ERROR_MESSAGE} - unexpected object thrown in verifyEmail:`, error)
         setEmailChangeError(new Error(GENERIC_ERROR_MESSAGE))
       }
     }
@@ -106,28 +123,44 @@ const EmailChangePage = () => {
 
   const changeEmail = async (newEmail: string, password: string) => {
     try {
+      logger.info(
+        `[AUTH] Attempting to change email to ${newEmail} for email ${userAttributes?.email}, user agent ${window.navigator.userAgent}`,
+      )
       setEmailChangeError(null)
       setLastEmail(newEmail)
       await verifyPassword(password)
+      logger.info(
+        `[AUTH] Successfully verified password for email ${userAttributes?.email}, user agent ${window.navigator.userAgent}`,
+      )
       const result = await updateUserAttributes({
         userAttributes: { email: newEmail },
       })
       // In E2E tests, confirmation with code is disabled, so the attribute is updated immediately
       if (result.email?.nextStep.updateAttributeStep === 'DONE') {
+        logger.info(
+          `[AUTH] Successfully changed email to ${newEmail} for email ${userAttributes?.email}, user agent ${window.navigator.userAgent}`,
+        )
         setEmailChangeStatus(EmailChangeStatus.EMAIL_VERIFICATION_SUCCESS)
       } else if (result.email?.nextStep.updateAttributeStep === 'CONFIRM_ATTRIBUTE_WITH_CODE') {
+        logger.info(
+          `[AUTH] Requesting email verification code after email change to ${newEmail} for email ${userAttributes?.email}, user agent ${window.navigator.userAgent}`,
+        )
         setEmailChangeStatus(EmailChangeStatus.EMAIL_VERIFICATION_REQUIRED)
       } else {
-        throw new Error('Unknown error')
+        throw new Error(
+          `Unknown "nextStep" after trying to change email: ${JSON.stringify(
+            result.email?.nextStep,
+          )}`,
+        )
       }
     } catch (error) {
+      logger.error(
+        `[AUTH] Failed to change email to ${newEmail} for email ${userAttributes?.email}, user agent ${window.navigator.userAgent}`,
+        error,
+      )
       if (isError(error)) {
         setEmailChangeError(error)
       } else {
-        logger.error(
-          `${GENERIC_ERROR_MESSAGE} - unexpected object thrown in forgotPasswordSubmit:`,
-          error,
-        )
         setEmailChangeError(new Error(GENERIC_ERROR_MESSAGE))
       }
     }

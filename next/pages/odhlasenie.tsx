@@ -1,13 +1,13 @@
 import AccountContainer from 'components/forms/segments/AccountContainer/AccountContainer'
 import AccountSuccessAlert from 'components/forms/segments/AccountSuccessAlert/AccountSuccessAlert'
 import LoginRegisterLayout from 'components/layouts/LoginRegisterLayout'
-import { GENERIC_ERROR_MESSAGE } from 'frontend/utils/errors'
 import logger from 'frontend/utils/logger'
 import { useTranslation } from 'next-i18next'
 import { useState } from 'react'
 
 import { SsrAuthProviderHOC } from '../components/logic/SsrAuthContext'
 import { useQueryParamRedirect } from '../frontend/hooks/useQueryParamRedirect'
+import { useSsrAuth } from '../frontend/hooks/useSsrAuth'
 import { useSignOut } from '../frontend/utils/amplifyClient'
 import { amplifyGetServerSideProps } from '../frontend/utils/amplifyServer'
 import { slovakServerSideTranslations } from '../frontend/utils/slovakServerSideTranslations'
@@ -24,6 +24,7 @@ export const getServerSideProps = amplifyGetServerSideProps(
 )
 
 const LogoutPage = () => {
+  const { userAttributes } = useSsrAuth()
   const { t } = useTranslation('account')
   const { signOut } = useSignOut()
   const { redirect } = useQueryParamRedirect()
@@ -32,9 +33,19 @@ const LogoutPage = () => {
   const logoutHandler = async () => {
     setIsLoading(true)
     try {
+      logger.info(
+        `[AUTH] Attempting to sign out email ${userAttributes?.email}, user agent ${window.navigator.userAgent}`,
+      )
       await signOut()
+      logger.info(
+        `[AUTH] Successfully signed out email ${userAttributes?.email}, user agent ${window.navigator.userAgent}`,
+      )
     } catch (error) {
-      logger.error(`${GENERIC_ERROR_MESSAGE} logout screen`, error)
+      logger.error(
+        `[AUTH] Failed to sign out email ${userAttributes?.email}, user agent ${window.navigator.userAgent}`,
+        error,
+      )
+      // TODO: Display error message to the user.
     } finally {
       setIsLoading(false)
     }

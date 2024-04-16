@@ -5,7 +5,7 @@ import LoginRegisterLayout from 'components/layouts/LoginRegisterLayout'
 import { GENERIC_ERROR_MESSAGE, isError } from 'frontend/utils/errors'
 import logger from 'frontend/utils/logger'
 import { useRouter } from 'next/router'
-import { useState } from 'react'
+import { useRef, useState } from 'react'
 
 import { SsrAuthProviderHOC } from '../components/logic/SsrAuthContext'
 import { ROUTES } from '../frontend/api/constants'
@@ -43,6 +43,15 @@ const LoginPage = () => {
   const router = useRouter()
   const { redirect, getRouteWithRedirect, getRedirectQueryParams } = useQueryParamRedirect()
   const [loginError, setLoginError] = useState<Error | null>(null)
+  const accountContainerRef = useRef<HTMLDivElement>(null)
+
+  const handleErrorChange = (error: Error | null) => {
+    setLoginError(error)
+
+    if (error) {
+      accountContainerRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' })
+    }
+  }
 
   const onLogin = async (email: string, password: string) => {
     logger.info(`[AUTH] Attempting to sign in for email ${email}`)
@@ -85,16 +94,16 @@ const LoginPage = () => {
       }
 
       if (isError(error)) {
-        setLoginError(error)
+        handleErrorChange(error)
       } else {
-        setLoginError(new Error(GENERIC_ERROR_MESSAGE))
+        handleErrorChange(new Error(GENERIC_ERROR_MESSAGE))
       }
     }
   }
 
   return (
     <LoginRegisterLayout backButtonHidden>
-      <AccountContainer className="mb-0 md:mb-8 md:pt-6">
+      <AccountContainer className="mb-0 md:mb-8 md:pt-6" ref={accountContainerRef}>
         <LoginForm onSubmit={onLogin} error={loginError} />
       </AccountContainer>
     </LoginRegisterLayout>

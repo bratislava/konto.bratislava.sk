@@ -14,7 +14,7 @@ import { changeEmailApi } from 'frontend/api/api'
 import { ErrorWithName, GENERIC_ERROR_MESSAGE, isError } from 'frontend/utils/errors'
 import { useRouter } from 'next/router'
 import { useTranslation } from 'next-i18next'
-import { useState } from 'react'
+import { useRef, useState } from 'react'
 
 import { SsrAuthProviderHOC } from '../components/logic/SsrAuthContext'
 import { ROUTES } from '../frontend/api/constants'
@@ -68,10 +68,20 @@ const EmailChangePage = () => {
   const [lastEmail, setLastEmail] = useState<string>('')
   const [emailChangeError, setEmailChangeError] = useState<Error | null>(null)
 
+  const accountContainerRef = useRef<HTMLDivElement>(null)
+
+  const handleErrorChange = (error: Error | null) => {
+    setEmailChangeError(error)
+
+    if (error) {
+      accountContainerRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' })
+    }
+  }
+
   const resendVerificationCode = async () => {
     try {
       logger.info(`[AUTH] Resending email verification code for email ${userAttributes?.email}`)
-      setEmailChangeError(null)
+      handleErrorChange(null)
       await sendUserAttributeVerificationCode({
         userAttributeKey: 'email',
       })
@@ -84,9 +94,9 @@ const EmailChangePage = () => {
         error,
       )
       if (isError(error)) {
-        setEmailChangeError(error)
+        handleErrorChange(error)
       } else {
-        setEmailChangeError(new Error(GENERIC_ERROR_MESSAGE))
+        handleErrorChange(new Error(GENERIC_ERROR_MESSAGE))
       }
     }
   }
@@ -96,7 +106,7 @@ const EmailChangePage = () => {
       logger.info(
         `[AUTH] Attempting to verify new email ${lastEmail} for email ${userAttributes?.email}`,
       )
-      setEmailChangeError(null)
+      handleErrorChange(null)
       await confirmUserAttribute({
         userAttributeKey: 'email',
         confirmationCode,
@@ -112,9 +122,9 @@ const EmailChangePage = () => {
         error,
       )
       if (isError(error)) {
-        setEmailChangeError(error)
+        handleErrorChange(error)
       } else {
-        setEmailChangeError(new Error(GENERIC_ERROR_MESSAGE))
+        handleErrorChange(new Error(GENERIC_ERROR_MESSAGE))
       }
     }
   }
@@ -124,7 +134,7 @@ const EmailChangePage = () => {
       logger.info(
         `[AUTH] Attempting to change email to ${newEmail} for email ${userAttributes?.email}`,
       )
-      setEmailChangeError(null)
+      handleErrorChange(null)
       setLastEmail(newEmail)
       await verifyPassword(password)
       logger.info(`[AUTH] Successfully verified password for email ${userAttributes?.email}`)
@@ -155,9 +165,9 @@ const EmailChangePage = () => {
         error,
       )
       if (isError(error)) {
-        setEmailChangeError(error)
+        handleErrorChange(error)
       } else {
-        setEmailChangeError(new Error(GENERIC_ERROR_MESSAGE))
+        handleErrorChange(new Error(GENERIC_ERROR_MESSAGE))
       }
     }
   }
@@ -170,7 +180,7 @@ const EmailChangePage = () => {
     <LoginRegisterLayout
       backButtonHidden={emailChangeStatus === EmailChangeStatus.EMAIL_VERIFICATION_SUCCESS}
     >
-      <AccountContainer>
+      <AccountContainer ref={accountContainerRef}>
         {emailChangeStatus === EmailChangeStatus.INIT ? (
           <EmailChangeForm onSubmit={changeEmail} error={emailChangeError} />
         ) : emailChangeStatus === EmailChangeStatus.EMAIL_VERIFICATION_REQUIRED ? (

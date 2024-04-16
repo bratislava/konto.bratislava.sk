@@ -11,7 +11,7 @@ import { UserAttributes } from 'frontend/dtos/accountDto'
 import { GENERIC_ERROR_MESSAGE, isError } from 'frontend/utils/errors'
 import { useRouter } from 'next/router'
 import { useTranslation } from 'next-i18next'
-import { useEffect, useMemo, useState } from 'react'
+import { useEffect, useMemo, useRef, useState } from 'react'
 
 import { SsrAuthProviderHOC } from '../components/logic/SsrAuthContext'
 import { ROUTES } from '../frontend/api/constants'
@@ -95,6 +95,16 @@ const RegisterPage = () => {
     }
   }, [initialState])
 
+  const accountContainerRef = useRef<HTMLDivElement>(null)
+
+  const handleErrorChange = (error: Error | null) => {
+    setRegistrationError(error)
+
+    if (error) {
+      accountContainerRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' })
+    }
+  }
+
   const handleAutoSignIn = async () => {
     try {
       logger.info(`[AUTH] Attempting to complete auto sign in for email ${lastEmail}`)
@@ -110,9 +120,9 @@ const RegisterPage = () => {
     } catch (error) {
       logger.error(`[AUTH] Failed to complete auto sign in for email ${lastEmail}`, error)
       if (isError(error)) {
-        setRegistrationError(error)
+        handleErrorChange(error)
       } else {
-        setRegistrationError(new Error(GENERIC_ERROR_MESSAGE))
+        handleErrorChange(new Error(GENERIC_ERROR_MESSAGE))
       }
     }
   }
@@ -124,7 +134,7 @@ const RegisterPage = () => {
   ) => {
     try {
       logger.info(`[AUTH] Attempting to sign up for email ${email}`)
-      setRegistrationError(null)
+      handleErrorChange(null)
       setLastEmail(email)
       const { nextStep } = await signUp({
         username: email,
@@ -155,9 +165,9 @@ const RegisterPage = () => {
     } catch (error) {
       logger.error(`[AUTH] Failed to sign up for email ${email}`, error)
       if (isError(error)) {
-        setRegistrationError(error)
+        handleErrorChange(error)
       } else {
-        setRegistrationError(new Error(GENERIC_ERROR_MESSAGE))
+        handleErrorChange(new Error(GENERIC_ERROR_MESSAGE))
       }
     }
   }
@@ -165,7 +175,7 @@ const RegisterPage = () => {
   const resendVerificationCode = async () => {
     try {
       logger.info(`[AUTH] Resending verification code for email ${lastEmail}`)
-      setRegistrationError(null)
+      handleErrorChange(null)
       await resendSignUpCode({ username: lastEmail })
       logger.info(`[AUTH] Successfully resent verification code for email ${lastEmail}`)
     } catch (error) {
@@ -175,15 +185,15 @@ const RegisterPage = () => {
         logger.info(
           `[AUTH] Email for email ${lastEmail} is already verified, proceeding to manual sign in`,
         )
-        setRegistrationError(null)
+        handleErrorChange(null)
         setRegistrationStatus(RegistrationStatus.SUCCESS_MANUAL_SIGN_IN)
         return
       }
 
       if (isError(error)) {
-        setRegistrationError(error)
+        handleErrorChange(error)
       } else {
-        setRegistrationError(new Error(GENERIC_ERROR_MESSAGE))
+        handleErrorChange(new Error(GENERIC_ERROR_MESSAGE))
       }
     }
   }
@@ -191,7 +201,7 @@ const RegisterPage = () => {
   const verifyEmail = async (confirmationCode: string) => {
     try {
       logger.info(`[AUTH] Attempting to verify email for email ${lastEmail}`)
-      setRegistrationError(null)
+      handleErrorChange(null)
       const { nextStep } = await confirmSignUp({
         username: lastEmail,
         confirmationCode,
@@ -218,14 +228,14 @@ const RegisterPage = () => {
         logger.info(
           `[AUTH] Email for email ${lastEmail} is already verified, proceeding to manual sign in`,
         )
-        setRegistrationError(null)
+        handleErrorChange(null)
         setRegistrationStatus(RegistrationStatus.SUCCESS_MANUAL_SIGN_IN)
         return
       }
       if (isError(error)) {
-        setRegistrationError(error)
+        handleErrorChange(error)
       } else {
-        setRegistrationError(new Error(GENERIC_ERROR_MESSAGE))
+        handleErrorChange(new Error(GENERIC_ERROR_MESSAGE))
       }
     }
   }
@@ -269,7 +279,11 @@ const RegisterPage = () => {
   return (
     <LoginRegisterLayout backButtonHidden>
       {registrationStatus === RegistrationStatus.INIT && <AccountActivator />}
-      <AccountContainer dataCyPrefix="registration" className="mb-0 md:mb-8 md:pt-6">
+      <AccountContainer
+        dataCyPrefix="registration"
+        className="mb-0 md:mb-8 md:pt-6"
+        ref={accountContainerRef}
+      >
         {registrationStatus === RegistrationStatus.INIT && (
           <RegisterForm lastEmail={lastEmail} onSubmit={handleSignUp} error={registrationError} />
         )}

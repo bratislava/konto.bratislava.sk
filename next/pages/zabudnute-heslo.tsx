@@ -7,7 +7,7 @@ import LoginRegisterLayout from 'components/layouts/LoginRegisterLayout'
 import { GENERIC_ERROR_MESSAGE, isError } from 'frontend/utils/errors'
 import { useRouter } from 'next/router'
 import { useTranslation } from 'next-i18next'
-import { useState } from 'react'
+import { useRef, useState } from 'react'
 
 import { SsrAuthProviderHOC } from '../components/logic/SsrAuthContext'
 import { ROUTES } from '../frontend/api/constants'
@@ -42,6 +42,15 @@ const ForgottenPasswordPage = () => {
   const { t } = useTranslation('account')
   const router = useRouter()
   const { getRouteWithRedirect } = useQueryParamRedirect()
+  const accountContainerRef = useRef<HTMLDivElement>(null)
+
+  const handleErrorChange = (error: Error | null) => {
+    setForgotPasswordError(error)
+
+    if (error) {
+      accountContainerRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' })
+    }
+  }
 
   const onConfirm = async () => {
     await router
@@ -65,9 +74,9 @@ const ForgottenPasswordPage = () => {
     } catch (error) {
       logger.error(`[AUTH] Failed to request password reset for email ${email}`, error)
       if (isError(error)) {
-        setForgotPasswordError(error)
+        handleErrorChange(error)
       } else {
-        setForgotPasswordError(new Error(GENERIC_ERROR_MESSAGE))
+        handleErrorChange(new Error(GENERIC_ERROR_MESSAGE))
       }
     }
   }
@@ -85,9 +94,9 @@ const ForgottenPasswordPage = () => {
     } catch (error) {
       logger.error(`[AUTH] Failed to reset password for email ${lastEmail}`, error)
       if (isError(error)) {
-        setForgotPasswordError(error)
+        handleErrorChange(error)
       } else {
-        setForgotPasswordError(new Error(GENERIC_ERROR_MESSAGE))
+        handleErrorChange(new Error(GENERIC_ERROR_MESSAGE))
       }
     }
   }
@@ -96,7 +105,7 @@ const ForgottenPasswordPage = () => {
     <LoginRegisterLayout
       backButtonHidden={forgotPasswordStatus === ForgotPasswordStatus.NEW_PASSWORD_SUCCESS}
     >
-      <AccountContainer>
+      <AccountContainer ref={accountContainerRef}>
         {forgotPasswordStatus === ForgotPasswordStatus.NEW_PASSWORD_REQUIRED ? (
           <NewPasswordForm
             onSubmit={(verificationCode, newPassword) =>

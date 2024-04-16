@@ -6,7 +6,7 @@ import LoginRegisterLayout from 'components/layouts/LoginRegisterLayout'
 import { GENERIC_ERROR_MESSAGE, isError } from 'frontend/utils/errors'
 import { useRouter } from 'next/router'
 import { useTranslation } from 'next-i18next'
-import { useState } from 'react'
+import { useRef, useState } from 'react'
 
 import { SsrAuthProviderHOC } from '../components/logic/SsrAuthContext'
 import { ROUTES } from '../frontend/api/constants'
@@ -41,6 +41,16 @@ const PasswordChangePage = () => {
     PasswordChangeStatus.INIT,
   )
 
+  const accountContainerRef = useRef<HTMLDivElement>(null)
+
+  const handleErrorChange = (error: Error | null) => {
+    setPasswordChangeError(error)
+
+    if (error) {
+      accountContainerRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' })
+    }
+  }
+
   const onConfirm = async () => {
     await router.push(ROUTES.HOME).catch((error_) => logger.error('Failed redirect', error_))
   }
@@ -48,7 +58,7 @@ const PasswordChangePage = () => {
   const changePassword = async (oldPassword: string, newPassword: string) => {
     try {
       logger.info(`[AUTH] Attempting to change password for email ${userAttributes?.email}`)
-      setPasswordChangeError(null)
+      handleErrorChange(null)
       await updatePassword({
         oldPassword,
         newPassword,
@@ -58,9 +68,9 @@ const PasswordChangePage = () => {
     } catch (error) {
       logger.error(`[AUTH] Failed to change password for email ${userAttributes?.email}`, error)
       if (isError(error)) {
-        setPasswordChangeError(error)
+        handleErrorChange(error)
       } else {
-        setPasswordChangeError(new Error(GENERIC_ERROR_MESSAGE))
+        handleErrorChange(new Error(GENERIC_ERROR_MESSAGE))
       }
     }
   }
@@ -69,7 +79,7 @@ const PasswordChangePage = () => {
     <LoginRegisterLayout
       backButtonHidden={passwordChangeStatus === PasswordChangeStatus.NEW_PASSWORD_SUCCESS}
     >
-      <AccountContainer>
+      <AccountContainer ref={accountContainerRef}>
         {passwordChangeStatus === PasswordChangeStatus.NEW_PASSWORD_SUCCESS ? (
           <AccountSuccessAlert
             title={t('password_change_success_title')}

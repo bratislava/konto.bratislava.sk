@@ -10,7 +10,7 @@ import { Tier } from 'frontend/dtos/accountDto'
 import { useRefreshServerSideProps } from 'frontend/hooks/useRefreshServerSideProps'
 import { GENERIC_ERROR_MESSAGE, isError } from 'frontend/utils/errors'
 import { useTranslation } from 'next-i18next'
-import { useState } from 'react'
+import { useRef, useState } from 'react'
 
 import { SsrAuthProviderHOC } from '../components/logic/SsrAuthContext'
 import { useQueryParamRedirect } from '../frontend/hooks/useQueryParamRedirect'
@@ -43,6 +43,16 @@ const IdentityVerificationPage = () => {
 
   const { refreshData } = useRefreshServerSideProps(tierStatus)
 
+  const accountContainerRef = useRef<HTMLDivElement>(null)
+
+  const handleErrorChange = (error: Error | null) => {
+    setIdentityVerificationError(error)
+
+    if (error) {
+      accountContainerRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' })
+    }
+  }
+
   const verifyIdentityAndRefreshUserData = async (data: VerificationFormData) => {
     setLastIco(data.ico)
     setLastRc(data.rc)
@@ -73,20 +83,20 @@ const IdentityVerificationPage = () => {
       await refreshData()
     } catch (error) {
       if (isError(error)) {
-        setIdentityVerificationError(error)
+        handleErrorChange(error)
       } else {
         logger.error(
           `${GENERIC_ERROR_MESSAGE} - unexpected object thrown in verifyIdentityAndRefreshUserData:`,
           error,
         )
-        setIdentityVerificationError(new Error('Unknown error'))
+        handleErrorChange(new Error('Unknown error'))
       }
     }
   }
 
   return (
     <LoginRegisterLayout backButtonHidden>
-      <AccountContainer className="mb-0 md:mb-8 md:pt-6">
+      <AccountContainer className="mb-0 md:mb-8 md:pt-6" ref={accountContainerRef}>
         {tierStatus.isIdentityVerificationNotYetAttempted && (
           <IdentityVerificationForm
             isLegalEntity={isLegalEntity}

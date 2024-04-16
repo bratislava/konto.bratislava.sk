@@ -40,8 +40,6 @@ const AccountPageLayout = ({ className, children, hiddenHeaderNav }: AccountPage
   const { signOut } = useSignOut()
 
   const router = useRouter()
-  const headerRef = useRef<HTMLDivElement>(null)
-  const mainRef = useRef<HTMLDivElement>(null)
   // https://stackoverflow.com/a/59253905
   const [mainScrollTopMargin, setMainScrollTopMargin] = useState(0)
 
@@ -153,7 +151,7 @@ const AccountPageLayout = ({ className, children, hiddenHeaderNav }: AccountPage
   return (
     <div className={cx('flex min-h-screen flex-col', className)}>
       {/* `contents` is here for sticky elements inside to work */}
-      <header className="relative z-30 contents" ref={headerRef}>
+      <header className="relative z-30 contents">
         <NavBar
           sectionsList={sectionsList}
           menuItems={menuItems}
@@ -168,7 +166,6 @@ const AccountPageLayout = ({ className, children, hiddenHeaderNav }: AccountPage
         />
       </header>
       <main
-        ref={mainRef}
         style={{
           '--main-scroll-top-margin': `${mainScrollTopMargin}px`,
         }}

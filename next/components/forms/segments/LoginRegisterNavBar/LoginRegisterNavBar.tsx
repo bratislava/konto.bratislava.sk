@@ -5,13 +5,16 @@ import Brand from 'components/forms/simple-components/Brand'
 import { ROUTES } from 'frontend/api/constants'
 import { useRouter } from 'next/router'
 import { useTranslation } from 'next-i18next'
+import { RefObject } from 'react'
 
 import { getLanguageKey } from '../../../../frontend/utils/general'
 
-interface IProps {
+interface LoginRegisterNavBarProps {
   className?: string
   currentLanguage?: string
   backButtonHidden?: boolean
+  desktopNavbarRef: RefObject<HTMLDivElement>
+  mobileNavbarRef: RefObject<HTMLDivElement>
 }
 
 const BackButton = () => {
@@ -31,7 +34,9 @@ export const LoginRegisterNavBar = ({
   className,
   currentLanguage = 'sk',
   backButtonHidden,
-}: IProps) => {
+  desktopNavbarRef,
+  mobileNavbarRef,
+}: LoginRegisterNavBarProps) => {
   const languageKey = getLanguageKey(currentLanguage)
 
   const { t } = useTranslation('account')
@@ -48,6 +53,7 @@ export const LoginRegisterNavBar = ({
           'text-p2 items-center',
           'sticky left-0 top-0 z-40 w-full bg-white shadow',
         )}
+        ref={desktopNavbarRef}
       >
         <div className="m-auto hidden h-[57px] w-full max-w-screen-lg items-center lg:flex">
           {!backButtonHidden && <BackButton />}
@@ -68,6 +74,7 @@ export const LoginRegisterNavBar = ({
       <div
         id="mobile-navbar"
         className={cx(className, 'sticky left-0 top-0 z-40 w-full gap-x-6 bg-white lg:hidden')}
+        ref={mobileNavbarRef}
       >
         <div className="flex h-16 items-center border-b-2 px-8 py-5">
           {!backButtonHidden && <BackButton />}

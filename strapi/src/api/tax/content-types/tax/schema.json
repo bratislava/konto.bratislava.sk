@@ -1,0 +1,27 @@
+{
+  "kind": "singleType",
+  "collectionName": "taxes",
+  "info": {
+    "singularName": "tax",
+    "pluralName": "taxes",
+    "displayName": "Tax"
+  },
+  "options": {
+    "draftAndPublish": false
+  },
+  "pluginOptions": {},
+  "attributes": {
+    "accountCommunicationConsentText": {
+      "type": "richtext",
+      "required": true
+    },
+    "displayCurrentYearTaxInPreparation": {
+      "type": "boolean",
+      "default": false,
+      "required": true
+    },
+    "currentYearTaxInPreparationText": {
+      "type": "richtext"
+    }
+  }
+}

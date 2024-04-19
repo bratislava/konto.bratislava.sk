@@ -696,6 +696,29 @@ export interface ApiHelpPageHelpPage extends Schema.SingleType {
   }
 }
 
+export interface ApiTaxTax extends Schema.SingleType {
+  collectionName: 'taxes'
+  info: {
+    singularName: 'tax'
+    pluralName: 'taxes'
+    displayName: 'Tax'
+  }
+  options: {
+    draftAndPublish: false
+  }
+  attributes: {
+    accountCommunicationConsentText: Attribute.RichText & Attribute.Required
+    displayCurrentYearTaxInPreparation: Attribute.Boolean &
+      Attribute.Required &
+      Attribute.DefaultTo<false>
+    currentYearTaxInPreparationText: Attribute.RichText
+    createdAt: Attribute.DateTime
+    updatedAt: Attribute.DateTime
+    createdBy: Attribute.Relation<'api::tax.tax', 'oneToOne', 'admin::user'> & Attribute.Private
+    updatedBy: Attribute.Relation<'api::tax.tax', 'oneToOne', 'admin::user'> & Attribute.Private
+  }
+}
+
 declare module '@strapi/types' {
   export module Shared {
     export interface ContentTypes {
@@ -716,6 +739,7 @@ declare module '@strapi/types' {
       'plugin::users-permissions.user': PluginUsersPermissionsUser
       'api::general.general': ApiGeneralGeneral
       'api::help-page.help-page': ApiHelpPageHelpPage
+      'api::tax.tax': ApiTaxTax
     }
   }
 }

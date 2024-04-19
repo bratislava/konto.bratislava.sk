@@ -2,9 +2,7 @@
 import { CodegenConfig } from '@graphql-codegen/cli'
 
 const codegenConfig: CodegenConfig = {
-  // set inline directly in npm script
-  // eslint-disable-next-line  no-process-env
-  schema: process.env.CODEGEN_STRAPI_GRAPHQL_URL,
+  schema: 'http://localhost:1337/graphql',
   documents: './clients/graphql-strapi/queries/**/*.{gql,graphql}',
   generates: {
     './clients/graphql-strapi/api.ts': {

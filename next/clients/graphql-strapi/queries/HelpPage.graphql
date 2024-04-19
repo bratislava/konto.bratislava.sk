@@ -1,0 +1,29 @@
+fragment HelpItem on ComponentBlocksHelpItem {
+  id
+  title
+  content
+}
+
+fragment HelpCategory on ComponentBlocksHelpCategory {
+  id
+  title
+  items {
+    ...HelpItem
+  }
+}
+
+fragment HelpPage on HelpPage {
+  categories {
+    ...HelpCategory
+  }
+}
+
+query HelpPage {
+  helpPage {
+    data {
+      attributes {
+        ...HelpPage
+      }
+    }
+  }
+}

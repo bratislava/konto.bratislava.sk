@@ -5,4 +5,4 @@ import { environment } from 'environment'
 
 const gql = new GraphQLClient(`${environment.cityAccountStrapiUrl}/graphql`)
 
-export const client = getSdk(gql)
+export const strapiClient = getSdk(gql)

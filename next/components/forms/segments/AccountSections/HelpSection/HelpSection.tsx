@@ -1,22 +1,23 @@
 import BannerPhone from '@assets/images/help-page-banner-image.png'
+import { HelpPageFragment } from '@clients/graphql-strapi/api'
 import AccountSectionHeader from 'components/forms/segments/AccountSectionHeader/AccountSectionHeader'
 import Banner from 'components/forms/simple-components/Banner'
 import { useTranslation } from 'next-i18next'
 
+import { isDefined } from '../../../../../frontend/utils/general'
 import AccordionV2 from '../../../simple-components/AccordionV2'
 import AccountMarkdown from '../../AccountMarkdown/AccountMarkdown'
 
-const HelpSection = () => {
+type HelpSectionProps = {
+  helpPage: HelpPageFragment
+}
+
+const HelpSection = ({ helpPage }: HelpSectionProps) => {
   const { t } = useTranslation('account')
 
   const bannerContent = `<span className='text-p2'>${t(
     'account_section_help.banner_content',
   )}</span>`
-
-  const questions = Array.from({ length: 28 }, (_, i) => i + 1).map((i) => ({
-    question: t(`account_section_help.faq.${i}.question`),
-    answer: t(`account_section_help.faq.${i}.answer`),
-  }))
 
   return (
     <div className="flex flex-col">
@@ -26,13 +27,15 @@ const HelpSection = () => {
           {t('account_section_help.faq.title')}
         </h2>
         <div className="flex flex-col gap-2 px-4 md:gap-3 lg:px-0">
-          <h3 className="text-h4 mt-6 flex justify-start">
-            {t('account_section_help.faq.general_category')}
-          </h3>
-          {questions.map((question, index) => (
-            <AccordionV2 key={index} title={question.question}>
-              <AccountMarkdown content={question.answer} />
-            </AccordionV2>
+          {helpPage.categories.filter(isDefined).map((category) => (
+            <div className="flex flex-col gap-2 md:gap-3" key={category.id}>
+              <h3 className="text-h4 mt-6 flex justify-start">{category.title}</h3>
+              {category.items.filter(isDefined).map((item, index) => (
+                <AccordionV2 key={index} title={item.title}>
+                  <AccountMarkdown content={item.content} />
+                </AccordionV2>
+              ))}
+            </div>
           ))}
         </div>
       </div>

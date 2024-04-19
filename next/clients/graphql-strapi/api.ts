@@ -38,6 +38,7 @@ export type BooleanFilterInput = {
   lt?: InputMaybe<Scalars['Boolean']['input']>
   lte?: InputMaybe<Scalars['Boolean']['input']>
   ne?: InputMaybe<Scalars['Boolean']['input']>
+  nei?: InputMaybe<Scalars['Boolean']['input']>
   not?: InputMaybe<BooleanFilterInput>
   notContains?: InputMaybe<Scalars['Boolean']['input']>
   notContainsi?: InputMaybe<Scalars['Boolean']['input']>
@@ -46,6 +47,187 @@ export type BooleanFilterInput = {
   null?: InputMaybe<Scalars['Boolean']['input']>
   or?: InputMaybe<Array<InputMaybe<Scalars['Boolean']['input']>>>
   startsWith?: InputMaybe<Scalars['Boolean']['input']>
+}
+
+export type ComponentBlocksHelpCategory = {
+  __typename?: 'ComponentBlocksHelpCategory'
+  id: Scalars['ID']['output']
+  items: Array<Maybe<ComponentBlocksHelpItem>>
+  title: Scalars['String']['output']
+}
+
+export type ComponentBlocksHelpCategoryItemsArgs = {
+  filters?: InputMaybe<ComponentBlocksHelpItemFiltersInput>
+  pagination?: InputMaybe<PaginationArg>
+  sort?: InputMaybe<Array<InputMaybe<Scalars['String']['input']>>>
+}
+
+export type ComponentBlocksHelpCategoryFiltersInput = {
+  and?: InputMaybe<Array<InputMaybe<ComponentBlocksHelpCategoryFiltersInput>>>
+  items?: InputMaybe<ComponentBlocksHelpItemFiltersInput>
+  not?: InputMaybe<ComponentBlocksHelpCategoryFiltersInput>
+  or?: InputMaybe<Array<InputMaybe<ComponentBlocksHelpCategoryFiltersInput>>>
+  title?: InputMaybe<StringFilterInput>
+}
+
+export type ComponentBlocksHelpCategoryInput = {
+  id?: InputMaybe<Scalars['ID']['input']>
+  items?: InputMaybe<Array<InputMaybe<ComponentBlocksHelpItemInput>>>
+  title?: InputMaybe<Scalars['String']['input']>
+}
+
+export type ComponentBlocksHelpItem = {
+  __typename?: 'ComponentBlocksHelpItem'
+  content: Scalars['String']['output']
+  id: Scalars['ID']['output']
+  title: Scalars['String']['output']
+}
+
+export type ComponentBlocksHelpItemFiltersInput = {
+  and?: InputMaybe<Array<InputMaybe<ComponentBlocksHelpItemFiltersInput>>>
+  content?: InputMaybe<StringFilterInput>
+  not?: InputMaybe<ComponentBlocksHelpItemFiltersInput>
+  or?: InputMaybe<Array<InputMaybe<ComponentBlocksHelpItemFiltersInput>>>
+  title?: InputMaybe<StringFilterInput>
+}
+
+export type ComponentBlocksHelpItemInput = {
+  content?: InputMaybe<Scalars['String']['input']>
+  id?: InputMaybe<Scalars['ID']['input']>
+  title?: InputMaybe<Scalars['String']['input']>
+}
+
+export type ComponentGeneralAlert = {
+  __typename?: 'ComponentGeneralAlert'
+  content: Scalars['String']['output']
+  dateFrom?: Maybe<Scalars['DateTime']['output']>
+  dateTo?: Maybe<Scalars['DateTime']['output']>
+  id: Scalars['ID']['output']
+}
+
+export type ComponentGeneralAlertFiltersInput = {
+  and?: InputMaybe<Array<InputMaybe<ComponentGeneralAlertFiltersInput>>>
+  content?: InputMaybe<StringFilterInput>
+  dateFrom?: InputMaybe<DateTimeFilterInput>
+  dateTo?: InputMaybe<DateTimeFilterInput>
+  not?: InputMaybe<ComponentGeneralAlertFiltersInput>
+  or?: InputMaybe<Array<InputMaybe<ComponentGeneralAlertFiltersInput>>>
+}
+
+export type ComponentGeneralAlertInput = {
+  content?: InputMaybe<Scalars['String']['input']>
+  dateFrom?: InputMaybe<Scalars['DateTime']['input']>
+  dateTo?: InputMaybe<Scalars['DateTime']['input']>
+  id?: InputMaybe<Scalars['ID']['input']>
+}
+
+export type ContentReleasesRelease = {
+  __typename?: 'ContentReleasesRelease'
+  actions?: Maybe<ContentReleasesReleaseActionRelationResponseCollection>
+  createdAt?: Maybe<Scalars['DateTime']['output']>
+  name: Scalars['String']['output']
+  releasedAt?: Maybe<Scalars['DateTime']['output']>
+  scheduledAt?: Maybe<Scalars['DateTime']['output']>
+  timezone?: Maybe<Scalars['String']['output']>
+  updatedAt?: Maybe<Scalars['DateTime']['output']>
+}
+
+export type ContentReleasesReleaseActionsArgs = {
+  filters?: InputMaybe<ContentReleasesReleaseActionFiltersInput>
+  pagination?: InputMaybe<PaginationArg>
+  sort?: InputMaybe<Array<InputMaybe<Scalars['String']['input']>>>
+}
+
+export type ContentReleasesReleaseAction = {
+  __typename?: 'ContentReleasesReleaseAction'
+  contentType: Scalars['String']['output']
+  createdAt?: Maybe<Scalars['DateTime']['output']>
+  entry?: Maybe<GenericMorph>
+  locale?: Maybe<Scalars['String']['output']>
+  release?: Maybe<ContentReleasesReleaseEntityResponse>
+  type: Enum_Contentreleasesreleaseaction_Type
+  updatedAt?: Maybe<Scalars['DateTime']['output']>
+}
+
+export type ContentReleasesReleaseActionEntity = {
+  __typename?: 'ContentReleasesReleaseActionEntity'
+  attributes?: Maybe<ContentReleasesReleaseAction>
+  id?: Maybe<Scalars['ID']['output']>
+}
+
+export type ContentReleasesReleaseActionEntityResponse = {
+  __typename?: 'ContentReleasesReleaseActionEntityResponse'
+  data?: Maybe<ContentReleasesReleaseActionEntity>
+}
+
+export type ContentReleasesReleaseActionEntityResponseCollection = {
+  __typename?: 'ContentReleasesReleaseActionEntityResponseCollection'
+  data: Array<ContentReleasesReleaseActionEntity>
+  meta: ResponseCollectionMeta
+}
+
+export type ContentReleasesReleaseActionFiltersInput = {
+  and?: InputMaybe<Array<InputMaybe<ContentReleasesReleaseActionFiltersInput>>>
+  contentType?: InputMaybe<StringFilterInput>
+  createdAt?: InputMaybe<DateTimeFilterInput>
+  id?: InputMaybe<IdFilterInput>
+  locale?: InputMaybe<StringFilterInput>
+  not?: InputMaybe<ContentReleasesReleaseActionFiltersInput>
+  or?: InputMaybe<Array<InputMaybe<ContentReleasesReleaseActionFiltersInput>>>
+  release?: InputMaybe<ContentReleasesReleaseFiltersInput>
+  type?: InputMaybe<StringFilterInput>
+  updatedAt?: InputMaybe<DateTimeFilterInput>
+}
+
+export type ContentReleasesReleaseActionInput = {
+  contentType?: InputMaybe<Scalars['String']['input']>
+  locale?: InputMaybe<Scalars['String']['input']>
+  release?: InputMaybe<Scalars['ID']['input']>
+  type?: InputMaybe<Enum_Contentreleasesreleaseaction_Type>
+}
+
+export type ContentReleasesReleaseActionRelationResponseCollection = {
+  __typename?: 'ContentReleasesReleaseActionRelationResponseCollection'
+  data: Array<ContentReleasesReleaseActionEntity>
+}
+
+export type ContentReleasesReleaseEntity = {
+  __typename?: 'ContentReleasesReleaseEntity'
+  attributes?: Maybe<ContentReleasesRelease>
+  id?: Maybe<Scalars['ID']['output']>
+}
+
+export type ContentReleasesReleaseEntityResponse = {
+  __typename?: 'ContentReleasesReleaseEntityResponse'
+  data?: Maybe<ContentReleasesReleaseEntity>
+}
+
+export type ContentReleasesReleaseEntityResponseCollection = {
+  __typename?: 'ContentReleasesReleaseEntityResponseCollection'
+  data: Array<ContentReleasesReleaseEntity>
+  meta: ResponseCollectionMeta
+}
+
+export type ContentReleasesReleaseFiltersInput = {
+  actions?: InputMaybe<ContentReleasesReleaseActionFiltersInput>
+  and?: InputMaybe<Array<InputMaybe<ContentReleasesReleaseFiltersInput>>>
+  createdAt?: InputMaybe<DateTimeFilterInput>
+  id?: InputMaybe<IdFilterInput>
+  name?: InputMaybe<StringFilterInput>
+  not?: InputMaybe<ContentReleasesReleaseFiltersInput>
+  or?: InputMaybe<Array<InputMaybe<ContentReleasesReleaseFiltersInput>>>
+  releasedAt?: InputMaybe<DateTimeFilterInput>
+  scheduledAt?: InputMaybe<DateTimeFilterInput>
+  timezone?: InputMaybe<StringFilterInput>
+  updatedAt?: InputMaybe<DateTimeFilterInput>
+}
+
+export type ContentReleasesReleaseInput = {
+  actions?: InputMaybe<Array<InputMaybe<Scalars['ID']['input']>>>
+  name?: InputMaybe<Scalars['String']['input']>
+  releasedAt?: InputMaybe<Scalars['DateTime']['input']>
+  scheduledAt?: InputMaybe<Scalars['DateTime']['input']>
+  timezone?: InputMaybe<Scalars['String']['input']>
 }
 
 export type DateTimeFilterInput = {
@@ -62,6 +244,7 @@ export type DateTimeFilterInput = {
   lt?: InputMaybe<Scalars['DateTime']['input']>
   lte?: InputMaybe<Scalars['DateTime']['input']>
   ne?: InputMaybe<Scalars['DateTime']['input']>
+  nei?: InputMaybe<Scalars['DateTime']['input']>
   not?: InputMaybe<DateTimeFilterInput>
   notContains?: InputMaybe<Scalars['DateTime']['input']>
   notContainsi?: InputMaybe<Scalars['DateTime']['input']>
@@ -70,6 +253,11 @@ export type DateTimeFilterInput = {
   null?: InputMaybe<Scalars['Boolean']['input']>
   or?: InputMaybe<Array<InputMaybe<Scalars['DateTime']['input']>>>
   startsWith?: InputMaybe<Scalars['DateTime']['input']>
+}
+
+export enum Enum_Contentreleasesreleaseaction_Type {
+  Publish = 'publish',
+  Unpublish = 'unpublish',
 }
 
 export type FileInfoInput = {
@@ -92,6 +280,7 @@ export type FloatFilterInput = {
   lt?: InputMaybe<Scalars['Float']['input']>
   lte?: InputMaybe<Scalars['Float']['input']>
   ne?: InputMaybe<Scalars['Float']['input']>
+  nei?: InputMaybe<Scalars['Float']['input']>
   not?: InputMaybe<FloatFilterInput>
   notContains?: InputMaybe<Scalars['Float']['input']>
   notContainsi?: InputMaybe<Scalars['Float']['input']>
@@ -102,13 +291,76 @@ export type FloatFilterInput = {
   startsWith?: InputMaybe<Scalars['Float']['input']>
 }
 
+export type General = {
+  __typename?: 'General'
+  alerts?: Maybe<Array<Maybe<ComponentGeneralAlert>>>
+  createdAt?: Maybe<Scalars['DateTime']['output']>
+  updatedAt?: Maybe<Scalars['DateTime']['output']>
+}
+
+export type GeneralAlertsArgs = {
+  filters?: InputMaybe<ComponentGeneralAlertFiltersInput>
+  pagination?: InputMaybe<PaginationArg>
+  sort?: InputMaybe<Array<InputMaybe<Scalars['String']['input']>>>
+}
+
+export type GeneralEntity = {
+  __typename?: 'GeneralEntity'
+  attributes?: Maybe<General>
+  id?: Maybe<Scalars['ID']['output']>
+}
+
+export type GeneralEntityResponse = {
+  __typename?: 'GeneralEntityResponse'
+  data?: Maybe<GeneralEntity>
+}
+
+export type GeneralInput = {
+  alerts?: InputMaybe<Array<InputMaybe<ComponentGeneralAlertInput>>>
+}
+
 export type GenericMorph =
+  | ComponentBlocksHelpCategory
+  | ComponentBlocksHelpItem
+  | ComponentGeneralAlert
+  | ContentReleasesRelease
+  | ContentReleasesReleaseAction
+  | General
+  | HelpPage
   | I18NLocale
   | UploadFile
   | UploadFolder
   | UsersPermissionsPermission
   | UsersPermissionsRole
   | UsersPermissionsUser
+
+export type HelpPage = {
+  __typename?: 'HelpPage'
+  categories: Array<Maybe<ComponentBlocksHelpCategory>>
+  createdAt?: Maybe<Scalars['DateTime']['output']>
+  updatedAt?: Maybe<Scalars['DateTime']['output']>
+}
+
+export type HelpPageCategoriesArgs = {
+  filters?: InputMaybe<ComponentBlocksHelpCategoryFiltersInput>
+  pagination?: InputMaybe<PaginationArg>
+  sort?: InputMaybe<Array<InputMaybe<Scalars['String']['input']>>>
+}
+
+export type HelpPageEntity = {
+  __typename?: 'HelpPageEntity'
+  attributes?: Maybe<HelpPage>
+  id?: Maybe<Scalars['ID']['output']>
+}
+
+export type HelpPageEntityResponse = {
+  __typename?: 'HelpPageEntityResponse'
+  data?: Maybe<HelpPageEntity>
+}
+
+export type HelpPageInput = {
+  categories?: InputMaybe<Array<InputMaybe<ComponentBlocksHelpCategoryInput>>>
+}
 
 export type I18NLocale = {
   __typename?: 'I18NLocale'
@@ -160,6 +412,7 @@ export type IdFilterInput = {
   lt?: InputMaybe<Scalars['ID']['input']>
   lte?: InputMaybe<Scalars['ID']['input']>
   ne?: InputMaybe<Scalars['ID']['input']>
+  nei?: InputMaybe<Scalars['ID']['input']>
   not?: InputMaybe<IdFilterInput>
   notContains?: InputMaybe<Scalars['ID']['input']>
   notContainsi?: InputMaybe<Scalars['ID']['input']>
@@ -184,6 +437,7 @@ export type IntFilterInput = {
   lt?: InputMaybe<Scalars['Int']['input']>
   lte?: InputMaybe<Scalars['Int']['input']>
   ne?: InputMaybe<Scalars['Int']['input']>
+  nei?: InputMaybe<Scalars['Int']['input']>
   not?: InputMaybe<IntFilterInput>
   notContains?: InputMaybe<Scalars['Int']['input']>
   notContainsi?: InputMaybe<Scalars['Int']['input']>
@@ -208,6 +462,7 @@ export type JsonFilterInput = {
   lt?: InputMaybe<Scalars['JSON']['input']>
   lte?: InputMaybe<Scalars['JSON']['input']>
   ne?: InputMaybe<Scalars['JSON']['input']>
+  nei?: InputMaybe<Scalars['JSON']['input']>
   not?: InputMaybe<JsonFilterInput>
   notContains?: InputMaybe<Scalars['JSON']['input']>
   notContainsi?: InputMaybe<Scalars['JSON']['input']>
@@ -222,12 +477,18 @@ export type Mutation = {
   __typename?: 'Mutation'
   /** Change user password. Confirm with the current password. */
   changePassword?: Maybe<UsersPermissionsLoginPayload>
+  createContentReleasesRelease?: Maybe<ContentReleasesReleaseEntityResponse>
+  createContentReleasesReleaseAction?: Maybe<ContentReleasesReleaseActionEntityResponse>
   createUploadFile?: Maybe<UploadFileEntityResponse>
   createUploadFolder?: Maybe<UploadFolderEntityResponse>
   /** Create a new role */
   createUsersPermissionsRole?: Maybe<UsersPermissionsCreateRolePayload>
   /** Create a new user */
   createUsersPermissionsUser: UsersPermissionsUserEntityResponse
+  deleteContentReleasesRelease?: Maybe<ContentReleasesReleaseEntityResponse>
+  deleteContentReleasesReleaseAction?: Maybe<ContentReleasesReleaseActionEntityResponse>
+  deleteGeneral?: Maybe<GeneralEntityResponse>
+  deleteHelpPage?: Maybe<HelpPageEntityResponse>
   deleteUploadFile?: Maybe<UploadFileEntityResponse>
   deleteUploadFolder?: Maybe<UploadFolderEntityResponse>
   /** Delete an existing role */
@@ -245,7 +506,11 @@ export type Mutation = {
   removeFile?: Maybe<UploadFileEntityResponse>
   /** Reset user password. Confirm with a code (resetToken from forgotPassword) */
   resetPassword?: Maybe<UsersPermissionsLoginPayload>
+  updateContentReleasesRelease?: Maybe<ContentReleasesReleaseEntityResponse>
+  updateContentReleasesReleaseAction?: Maybe<ContentReleasesReleaseActionEntityResponse>
   updateFileInfo: UploadFileEntityResponse
+  updateGeneral?: Maybe<GeneralEntityResponse>
+  updateHelpPage?: Maybe<HelpPageEntityResponse>
   updateUploadFile?: Maybe<UploadFileEntityResponse>
   updateUploadFolder?: Maybe<UploadFolderEntityResponse>
   /** Update an existing role */
@@ -259,6 +524,14 @@ export type MutationChangePasswordArgs = {
   currentPassword: Scalars['String']['input']
   password: Scalars['String']['input']
   passwordConfirmation: Scalars['String']['input']
+}
+
+export type MutationCreateContentReleasesReleaseArgs = {
+  data: ContentReleasesReleaseInput
+}
+
+export type MutationCreateContentReleasesReleaseActionArgs = {
+  data: ContentReleasesReleaseActionInput
 }
 
 export type MutationCreateUploadFileArgs = {
@@ -275,6 +548,14 @@ export type MutationCreateUsersPermissionsRoleArgs = {
 
 export type MutationCreateUsersPermissionsUserArgs = {
   data: UsersPermissionsUserInput
+}
+
+export type MutationDeleteContentReleasesReleaseArgs = {
+  id: Scalars['ID']['input']
+}
+
+export type MutationDeleteContentReleasesReleaseActionArgs = {
+  id: Scalars['ID']['input']
 }
 
 export type MutationDeleteUploadFileArgs = {
@@ -326,9 +607,27 @@ export type MutationResetPasswordArgs = {
   passwordConfirmation: Scalars['String']['input']
 }
 
+export type MutationUpdateContentReleasesReleaseArgs = {
+  data: ContentReleasesReleaseInput
+  id: Scalars['ID']['input']
+}
+
+export type MutationUpdateContentReleasesReleaseActionArgs = {
+  data: ContentReleasesReleaseActionInput
+  id: Scalars['ID']['input']
+}
+
 export type MutationUpdateFileInfoArgs = {
   id: Scalars['ID']['input']
   info?: InputMaybe<FileInfoInput>
+}
+
+export type MutationUpdateGeneralArgs = {
+  data: GeneralInput
+}
+
+export type MutationUpdateHelpPageArgs = {
+  data: HelpPageInput
 }
 
 export type MutationUpdateUploadFileArgs = {
@@ -376,6 +675,12 @@ export type PaginationArg = {
 
 export type Query = {
   __typename?: 'Query'
+  contentReleasesRelease?: Maybe<ContentReleasesReleaseEntityResponse>
+  contentReleasesReleaseAction?: Maybe<ContentReleasesReleaseActionEntityResponse>
+  contentReleasesReleaseActions?: Maybe<ContentReleasesReleaseActionEntityResponseCollection>
+  contentReleasesReleases?: Maybe<ContentReleasesReleaseEntityResponseCollection>
+  general?: Maybe<GeneralEntityResponse>
+  helpPage?: Maybe<HelpPageEntityResponse>
   i18NLocale?: Maybe<I18NLocaleEntityResponse>
   i18NLocales?: Maybe<I18NLocaleEntityResponseCollection>
   me?: Maybe<UsersPermissionsMe>
@@ -387,6 +692,26 @@ export type Query = {
   usersPermissionsRoles?: Maybe<UsersPermissionsRoleEntityResponseCollection>
   usersPermissionsUser?: Maybe<UsersPermissionsUserEntityResponse>
   usersPermissionsUsers?: Maybe<UsersPermissionsUserEntityResponseCollection>
+}
+
+export type QueryContentReleasesReleaseArgs = {
+  id?: InputMaybe<Scalars['ID']['input']>
+}
+
+export type QueryContentReleasesReleaseActionArgs = {
+  id?: InputMaybe<Scalars['ID']['input']>
+}
+
+export type QueryContentReleasesReleaseActionsArgs = {
+  filters?: InputMaybe<ContentReleasesReleaseActionFiltersInput>
+  pagination?: InputMaybe<PaginationArg>
+  sort?: InputMaybe<Array<InputMaybe<Scalars['String']['input']>>>
+}
+
+export type QueryContentReleasesReleasesArgs = {
+  filters?: InputMaybe<ContentReleasesReleaseFiltersInput>
+  pagination?: InputMaybe<PaginationArg>
+  sort?: InputMaybe<Array<InputMaybe<Scalars['String']['input']>>>
 }
 
 export type QueryI18NLocaleArgs = {
@@ -458,6 +783,7 @@ export type StringFilterInput = {
   lt?: InputMaybe<Scalars['String']['input']>
   lte?: InputMaybe<Scalars['String']['input']>
   ne?: InputMaybe<Scalars['String']['input']>
+  nei?: InputMaybe<Scalars['String']['input']>
   not?: InputMaybe<StringFilterInput>
   notContains?: InputMaybe<Scalars['String']['input']>
   notContainsi?: InputMaybe<Scalars['String']['input']>
@@ -837,200 +1163,102 @@ export type UsersPermissionsUserRelationResponseCollection = {
   data: Array<UsersPermissionsUserEntity>
 }
 
-/**
- * A Directive provides a way to describe alternate runtime execution and type validation behavior in a GraphQL document.
- *
- * In some cases, you need to provide options to alter GraphQL's execution behavior in ways field arguments will not suffice, such as conditionally including or skipping a field. Directives provide this by describing additional information to the executor.
- */
-export type __Directive = {
-  __typename?: '__Directive'
-  name: Scalars['String']['output']
-  description?: Maybe<Scalars['String']['output']>
-  isRepeatable: Scalars['Boolean']['output']
-  locations: Array<__DirectiveLocation>
-  args: Array<__InputValue>
+export type HelpItemFragment = {
+  __typename?: 'ComponentBlocksHelpItem'
+  id: string
+  title: string
+  content: string
 }
 
-/**
- * A Directive provides a way to describe alternate runtime execution and type validation behavior in a GraphQL document.
- *
- * In some cases, you need to provide options to alter GraphQL's execution behavior in ways field arguments will not suffice, such as conditionally including or skipping a field. Directives provide this by describing additional information to the executor.
- */
-export type __DirectiveArgsArgs = {
-  includeDeprecated?: InputMaybe<Scalars['Boolean']['input']>
+export type HelpCategoryFragment = {
+  __typename?: 'ComponentBlocksHelpCategory'
+  id: string
+  title: string
+  items: Array<{
+    __typename?: 'ComponentBlocksHelpItem'
+    id: string
+    title: string
+    content: string
+  } | null>
 }
 
-/** A Directive can be adjacent to many parts of the GraphQL language, a __DirectiveLocation describes one such possible adjacencies. */
-export enum __DirectiveLocation {
-  /** Location adjacent to a query operation. */
-  Query = 'QUERY',
-  /** Location adjacent to a mutation operation. */
-  Mutation = 'MUTATION',
-  /** Location adjacent to a subscription operation. */
-  Subscription = 'SUBSCRIPTION',
-  /** Location adjacent to a field. */
-  Field = 'FIELD',
-  /** Location adjacent to a fragment definition. */
-  FragmentDefinition = 'FRAGMENT_DEFINITION',
-  /** Location adjacent to a fragment spread. */
-  FragmentSpread = 'FRAGMENT_SPREAD',
-  /** Location adjacent to an inline fragment. */
-  InlineFragment = 'INLINE_FRAGMENT',
-  /** Location adjacent to a variable definition. */
-  VariableDefinition = 'VARIABLE_DEFINITION',
-  /** Location adjacent to a schema definition. */
-  Schema = 'SCHEMA',
-  /** Location adjacent to a scalar definition. */
-  Scalar = 'SCALAR',
-  /** Location adjacent to an object type definition. */
-  Object = 'OBJECT',
-  /** Location adjacent to a field definition. */
-  FieldDefinition = 'FIELD_DEFINITION',
-  /** Location adjacent to an argument definition. */
-  ArgumentDefinition = 'ARGUMENT_DEFINITION',
-  /** Location adjacent to an interface definition. */
-  Interface = 'INTERFACE',
-  /** Location adjacent to a union definition. */
-  Union = 'UNION',
-  /** Location adjacent to an enum definition. */
-  Enum = 'ENUM',
-  /** Location adjacent to an enum value definition. */
-  EnumValue = 'ENUM_VALUE',
-  /** Location adjacent to an input object type definition. */
-  InputObject = 'INPUT_OBJECT',
-  /** Location adjacent to an input object field definition. */
-  InputFieldDefinition = 'INPUT_FIELD_DEFINITION',
+export type HelpPageFragment = {
+  __typename?: 'HelpPage'
+  categories: Array<{
+    __typename?: 'ComponentBlocksHelpCategory'
+    id: string
+    title: string
+    items: Array<{
+      __typename?: 'ComponentBlocksHelpItem'
+      id: string
+      title: string
+      content: string
+    } | null>
+  } | null>
 }
 
-/** One possible value for a given Enum. Enum values are unique values, not a placeholder for a string or numeric value. However an Enum value is returned in a JSON response as a string. */
-export type __EnumValue = {
-  __typename?: '__EnumValue'
-  name: Scalars['String']['output']
-  description?: Maybe<Scalars['String']['output']>
-  isDeprecated: Scalars['Boolean']['output']
-  deprecationReason?: Maybe<Scalars['String']['output']>
+export type HelpPageQueryVariables = Exact<{ [key: string]: never }>
+
+export type HelpPageQuery = {
+  __typename?: 'Query'
+  helpPage?: {
+    __typename?: 'HelpPageEntityResponse'
+    data?: {
+      __typename?: 'HelpPageEntity'
+      attributes?: {
+        __typename?: 'HelpPage'
+        categories: Array<{
+          __typename?: 'ComponentBlocksHelpCategory'
+          id: string
+          title: string
+          items: Array<{
+            __typename?: 'ComponentBlocksHelpItem'
+            id: string
+            title: string
+            content: string
+          } | null>
+        } | null>
+      } | null
+    } | null
+  } | null
 }
 
-/** Object and Interface types are described by a list of Fields, each of which has a name, potentially a list of arguments, and a return type. */
-export type __Field = {
-  __typename?: '__Field'
-  name: Scalars['String']['output']
-  description?: Maybe<Scalars['String']['output']>
-  args: Array<__InputValue>
-  type: __Type
-  isDeprecated: Scalars['Boolean']['output']
-  deprecationReason?: Maybe<Scalars['String']['output']>
-}
-
-/** Object and Interface types are described by a list of Fields, each of which has a name, potentially a list of arguments, and a return type. */
-export type __FieldArgsArgs = {
-  includeDeprecated?: InputMaybe<Scalars['Boolean']['input']>
-}
-
-/** Arguments provided to Fields or Directives and the input fields of an InputObject are represented as Input Values which describe their type and optionally a default value. */
-export type __InputValue = {
-  __typename?: '__InputValue'
-  name: Scalars['String']['output']
-  description?: Maybe<Scalars['String']['output']>
-  type: __Type
-  /** A GraphQL-formatted string representing the default value for this input value. */
-  defaultValue?: Maybe<Scalars['String']['output']>
-  isDeprecated: Scalars['Boolean']['output']
-  deprecationReason?: Maybe<Scalars['String']['output']>
-}
-
-/** A GraphQL Schema defines the capabilities of a GraphQL server. It exposes all available types and directives on the server, as well as the entry points for query, mutation, and subscription operations. */
-export type __Schema = {
-  __typename?: '__Schema'
-  description?: Maybe<Scalars['String']['output']>
-  /** A list of all types supported by this server. */
-  types: Array<__Type>
-  /** The type that query operations will be rooted at. */
-  queryType: __Type
-  /** If this server supports mutation, the type that mutation operations will be rooted at. */
-  mutationType?: Maybe<__Type>
-  /** If this server support subscription, the type that subscription operations will be rooted at. */
-  subscriptionType?: Maybe<__Type>
-  /** A list of all directives supported by this server. */
-  directives: Array<__Directive>
-}
-
-/**
- * The fundamental unit of any GraphQL Schema is the type. There are many kinds of types in GraphQL as represented by the `__TypeKind` enum.
- *
- * Depending on the kind of a type, certain fields describe information about that type. Scalar types provide no information beyond a name, description and optional `specifiedByURL`, while Enum types provide their values. Object and Interface types provide the fields they describe. Abstract types, Union and Interface, provide the Object types possible at runtime. List and NonNull types compose other types.
- */
-export type __Type = {
-  __typename?: '__Type'
-  kind: __TypeKind
-  name?: Maybe<Scalars['String']['output']>
-  description?: Maybe<Scalars['String']['output']>
-  specifiedByURL?: Maybe<Scalars['String']['output']>
-  fields?: Maybe<Array<__Field>>
-  interfaces?: Maybe<Array<__Type>>
-  possibleTypes?: Maybe<Array<__Type>>
-  enumValues?: Maybe<Array<__EnumValue>>
-  inputFields?: Maybe<Array<__InputValue>>
-  ofType?: Maybe<__Type>
-}
-
-/**
- * The fundamental unit of any GraphQL Schema is the type. There are many kinds of types in GraphQL as represented by the `__TypeKind` enum.
- *
- * Depending on the kind of a type, certain fields describe information about that type. Scalar types provide no information beyond a name, description and optional `specifiedByURL`, while Enum types provide their values. Object and Interface types provide the fields they describe. Abstract types, Union and Interface, provide the Object types possible at runtime. List and NonNull types compose other types.
- */
-export type __TypeFieldsArgs = {
-  includeDeprecated?: InputMaybe<Scalars['Boolean']['input']>
-}
-
-/**
- * The fundamental unit of any GraphQL Schema is the type. There are many kinds of types in GraphQL as represented by the `__TypeKind` enum.
- *
- * Depending on the kind of a type, certain fields describe information about that type. Scalar types provide no information beyond a name, description and optional `specifiedByURL`, while Enum types provide their values. Object and Interface types provide the fields they describe. Abstract types, Union and Interface, provide the Object types possible at runtime. List and NonNull types compose other types.
- */
-export type __TypeEnumValuesArgs = {
-  includeDeprecated?: InputMaybe<Scalars['Boolean']['input']>
-}
-
-/**
- * The fundamental unit of any GraphQL Schema is the type. There are many kinds of types in GraphQL as represented by the `__TypeKind` enum.
- *
- * Depending on the kind of a type, certain fields describe information about that type. Scalar types provide no information beyond a name, description and optional `specifiedByURL`, while Enum types provide their values. Object and Interface types provide the fields they describe. Abstract types, Union and Interface, provide the Object types possible at runtime. List and NonNull types compose other types.
- */
-export type __TypeInputFieldsArgs = {
-  includeDeprecated?: InputMaybe<Scalars['Boolean']['input']>
-}
-
-/** An enum describing what kind of type a given `__Type` is. */
-export enum __TypeKind {
-  /** Indicates this type is a scalar. */
-  Scalar = 'SCALAR',
-  /** Indicates this type is an object. `fields` and `interfaces` are valid fields. */
-  Object = 'OBJECT',
-  /** Indicates this type is an interface. `fields`, `interfaces`, and `possibleTypes` are valid fields. */
-  Interface = 'INTERFACE',
-  /** Indicates this type is a union. `possibleTypes` is a valid field. */
-  Union = 'UNION',
-  /** Indicates this type is an enum. `enumValues` is a valid field. */
-  Enum = 'ENUM',
-  /** Indicates this type is an input object. `inputFields` is a valid field. */
-  InputObject = 'INPUT_OBJECT',
-  /** Indicates this type is a list. `ofType` is a valid field. */
-  List = 'LIST',
-  /** Indicates this type is a non-null. `ofType` is a valid field. */
-  NonNull = 'NON_NULL',
-}
-
-export type TestQueryQueryVariables = Exact<{ [key: string]: never }>
-
-export type TestQueryQuery = { __typename?: 'Query'; __schema: { __typename: '__Schema' } }
-
-export const TestQueryDocument = gql`
-  query TestQuery {
-    __schema {
-      __typename
+export const HelpItemFragmentDoc = gql`
+  fragment HelpItem on ComponentBlocksHelpItem {
+    id
+    title
+    content
+  }
+`
+export const HelpCategoryFragmentDoc = gql`
+  fragment HelpCategory on ComponentBlocksHelpCategory {
+    id
+    title
+    items {
+      ...HelpItem
     }
   }
+  ${HelpItemFragmentDoc}
+`
+export const HelpPageFragmentDoc = gql`
+  fragment HelpPage on HelpPage {
+    categories {
+      ...HelpCategory
+    }
+  }
+  ${HelpCategoryFragmentDoc}
+`
+export const HelpPageDocument = gql`
+  query HelpPage {
+    helpPage {
+      data {
+        attributes {
+          ...HelpPage
+        }
+      }
+    }
+  }
+  ${HelpPageFragmentDoc}
 `
 
 export type SdkFunctionWrapper = <T>(
@@ -1045,17 +1273,17 @@ const defaultWrapper: SdkFunctionWrapper = (action, _operationName, _operationTy
 
 export function getSdk(client: GraphQLClient, withWrapper: SdkFunctionWrapper = defaultWrapper) {
   return {
-    TestQuery(
-      variables?: TestQueryQueryVariables,
+    HelpPage(
+      variables?: HelpPageQueryVariables,
       requestHeaders?: GraphQLClientRequestHeaders,
-    ): Promise<TestQueryQuery> {
+    ): Promise<HelpPageQuery> {
       return withWrapper(
         (wrappedRequestHeaders) =>
-          client.request<TestQueryQuery>(TestQueryDocument, variables, {
+          client.request<HelpPageQuery>(HelpPageDocument, variables, {
             ...requestHeaders,
             ...wrappedRequestHeaders,
           }),
-        'TestQuery',
+        'HelpPage',
         'query',
         variables,
       )

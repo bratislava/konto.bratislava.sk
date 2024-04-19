@@ -326,7 +326,7 @@ type GeneralRelationResponseCollection {
   data: [GeneralEntity!]!
 }
 
-union GenericMorph = ComponentBlocksHelpCategory | ComponentBlocksHelpItem | ComponentGeneralAlert | ContentReleasesRelease | ContentReleasesReleaseAction | General | HelpPage | I18NLocale | UploadFile | UploadFolder | UsersPermissionsPermission | UsersPermissionsRole | UsersPermissionsUser
+union GenericMorph = ComponentBlocksHelpCategory | ComponentBlocksHelpItem | ComponentGeneralAlert | ContentReleasesRelease | ContentReleasesReleaseAction | General | HelpPage | I18NLocale | Tax | UploadFile | UploadFolder | UsersPermissionsPermission | UsersPermissionsRole | UsersPermissionsUser
 
 type HelpPage {
   categories(filters: ComponentBlocksHelpCategoryFiltersInput, pagination: PaginationArg = {}, sort: [String] = []): [ComponentBlocksHelpCategory]!
@@ -536,6 +536,7 @@ type Mutation {
   deleteContentReleasesReleaseAction(id: ID!): ContentReleasesReleaseActionEntityResponse
   deleteGeneral: GeneralEntityResponse
   deleteHelpPage: HelpPageEntityResponse
+  deleteTax: TaxEntityResponse
   deleteUploadFile(id: ID!): UploadFileEntityResponse
   deleteUploadFolder(id: ID!): UploadFolderEntityResponse
 
@@ -566,6 +567,7 @@ type Mutation {
   updateFileInfo(id: ID!, info: FileInfoInput): UploadFileEntityResponse!
   updateGeneral(data: GeneralInput!): GeneralEntityResponse
   updateHelpPage(data: HelpPageInput!): HelpPageEntityResponse
+  updateTax(data: TaxInput!): TaxEntityResponse
   updateUploadFile(data: UploadFileInput!, id: ID!): UploadFileEntityResponse
   updateUploadFolder(data: UploadFolderInput!, id: ID!): UploadFolderEntityResponse
 
@@ -606,6 +608,7 @@ type Query {
   i18NLocale(id: ID): I18NLocaleEntityResponse
   i18NLocales(filters: I18NLocaleFiltersInput, pagination: PaginationArg = {}, sort: [String] = []): I18NLocaleEntityResponseCollection
   me: UsersPermissionsMe
+  tax: TaxEntityResponse
   uploadFile(id: ID): UploadFileEntityResponse
   uploadFiles(filters: UploadFileFiltersInput, pagination: PaginationArg = {}, sort: [String] = []): UploadFileEntityResponseCollection
   uploadFolder(id: ID): UploadFolderEntityResponse
@@ -643,6 +646,49 @@ input StringFilterInput {
   null: Boolean
   or: [String]
   startsWith: String
+}
+
+type Tax {
+  accountCommunicationConsentText: String!
+  createdAt: DateTime
+  currentYearTaxInPreparationText: String
+  displayCurrentYearTaxInPreparation: Boolean!
+  updatedAt: DateTime
+}
+
+type TaxEntity {
+  attributes: Tax
+  id: ID
+}
+
+type TaxEntityResponse {
+  data: TaxEntity
+}
+
+type TaxEntityResponseCollection {
+  data: [TaxEntity!]!
+  meta: ResponseCollectionMeta!
+}
+
+input TaxFiltersInput {
+  accountCommunicationConsentText: StringFilterInput
+  and: [TaxFiltersInput]
+  createdAt: DateTimeFilterInput
+  currentYearTaxInPreparationText: StringFilterInput
+  displayCurrentYearTaxInPreparation: BooleanFilterInput
+  not: TaxFiltersInput
+  or: [TaxFiltersInput]
+  updatedAt: DateTimeFilterInput
+}
+
+input TaxInput {
+  accountCommunicationConsentText: String
+  currentYearTaxInPreparationText: String
+  displayCurrentYearTaxInPreparation: Boolean
+}
+
+type TaxRelationResponseCollection {
+  data: [TaxEntity!]!
 }
 
 """A time string with format HH:mm:ss.SSS"""

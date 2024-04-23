@@ -1,21 +1,7 @@
 import qs from 'qs'
 
+import { environment } from '../../environment'
 import { ROUTES } from '../api/constants'
-import { isProductionDeployment } from './general'
-
-const productionOrigins = ['https://kupaliska.bratislava.sk', 'https://bratislava.sk']
-const stagingOrigins = [
-  'http://localhost:3000',
-  'http://localhost:3001',
-  'http://localhost:3002',
-  'http://localhost:3003',
-  'https://kupaliska.staging.bratislava.sk',
-  'https://kupaliska.dev.bratislava.sk',
-]
-
-export const APPROVED_LOGIN_REDIRECT_ORIGINS = isProductionDeployment()
-  ? productionOrigins
-  : [...productionOrigins, ...stagingOrigins]
 
 export enum SafeRedirectType {
   Local = 'local',
@@ -56,7 +42,7 @@ export const getSafeRedirect = (queryParam: unknown) => {
 
   try {
     const url = new URL(queryParam)
-    if (APPROVED_LOGIN_REDIRECT_ORIGINS.includes(url.origin)) {
+    if (environment.authApprovedOrigins.includes(url.origin)) {
       return {
         url: queryParam,
         type: SafeRedirectType.Remote,
@@ -147,7 +133,7 @@ export interface CityAccountPostMessage {
 // in reality only one message will be sent, this exists to limit the possible domains only to hardcoded list in APPROVED_SSO_ORIGINS
 export const postMessageToApprovedDomains = (message: CityAccountPostMessage) => {
   // TODO - log to faro if none of the origins match
-  APPROVED_LOGIN_REDIRECT_ORIGINS.forEach((domain) => {
+  environment.authApprovedOrigins.forEach((domain) => {
     window?.top?.postMessage(message, domain)
   })
 }

@@ -11,6 +11,28 @@ function assertEnv<T>(variable: string, value: T) {
   return value
 }
 
+function getOriginsArray<T>(variable: string, value: T) {
+  assertEnv(variable, value)
+
+  const array = (value as string).split(',')
+  array.forEach((origin) => {
+    let parsedUrl: URL
+    try {
+      // eslint-disable-next-line no-new
+      parsedUrl = new URL(origin)
+    } catch (error) {
+      throw new Error(`Invalid origin in ${variable}: ${origin} is not a valid URL`)
+    }
+
+    // We only want to support strings that are in URL#origin format
+    if (parsedUrl.origin !== origin) {
+      throw new Error(`Invalid origin in ${variable}: ${origin} is not in URL#origin format`)
+    }
+  })
+
+  return array
+}
+
 export const environment = {
   nodeEnv: assertEnv('NODE_ENV', process.env.NODE_ENV),
   isStaging: assertEnv('NEXT_PUBLIC_IS_STAGING', process.env.NEXT_PUBLIC_IS_STAGING) === 'true',
@@ -52,6 +74,10 @@ export const environment = {
   cloudflareTurnstileSiteKey: assertEnv(
     'NEXT_PUBLIC_CLOUDFLARE_TURNSTILE_SITE_KEY',
     process.env.NEXT_PUBLIC_CLOUDFLARE_TURNSTILE_SITE_KEY,
+  ),
+  authApprovedOrigins: getOriginsArray(
+    'NEXT_PUBLIC_AUTH_APPROVED_ORIGINS',
+    process.env.NEXT_PUBLIC_AUTH_APPROVED_ORIGINS,
   ),
   faroSecret: assertEnv('NEXT_PUBLIC_FARO_SECRET', process.env.NEXT_PUBLIC_FARO_SECRET),
   featureToggles: {

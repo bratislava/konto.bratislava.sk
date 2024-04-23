@@ -24,9 +24,9 @@ function getOriginsArray<T>(variable: string, value: T) {
       throw new Error(`Invalid origin in ${variable}: ${origin} is not a valid URL`)
     }
 
-    // We want to only supports strings that are in URL#origin format
+    // We only want to support strings that are in URL#origin format
     if (parsedUrl.origin !== origin) {
-      throw new Error(`Invalid origin in ${variable}: ${origin} is not in origin format`)
+      throw new Error(`Invalid origin in ${variable}: ${origin} is not in URL#origin format`)
     }
   })
 

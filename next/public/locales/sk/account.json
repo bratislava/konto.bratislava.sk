@@ -126,7 +126,7 @@
   "id_card_placeholder": "Číslo dokladu",
   "id_card_description": "Zadávajte bez medzier.",
   "id_card_tooltip": "**Číslo tohto dokladu** potrebujeme poznať na to, aby sme overili vašu identitu voči štátnym registrom. Bez toho nebudete schopný/á odoslať elektronicky všetky žiadosti.",
-  "id_card_required": "Pole je povinné",
+  "id_card_required": "Číslo je povinné",
   "id_card_format": "Číslo nie je validné",
   "identity_verification_submit": "Overiť údaje",
   "identity_verification_success_title": "Overenie bolo úspešné",

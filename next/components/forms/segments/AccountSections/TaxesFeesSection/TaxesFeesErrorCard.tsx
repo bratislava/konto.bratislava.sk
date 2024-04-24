@@ -3,11 +3,13 @@ import AccountMarkdown from 'components/forms/segments/AccountMarkdown/AccountMa
 import { useTranslation } from 'next-i18next'
 
 import { ROUTES } from '../../../../../frontend/api/constants'
+import { useQueryParamRedirect } from '../../../../../frontend/hooks/useQueryParamRedirect'
 import { useSsrAuth } from '../../../../../frontend/hooks/useSsrAuth'
 
 const TaxesFeesErrorCard = () => {
   const { t } = useTranslation('account')
   const { tierStatus } = useSsrAuth()
+  const { getRouteWithCurrentUrlRedirect } = useQueryParamRedirect()
 
   const content = `
   <h3>${t('account_section_payment.error_card_title')}</h3>
@@ -16,7 +18,7 @@ const TaxesFeesErrorCard = () => {
     tierStatus.isIdentityVerified
       ? ''
       : t('account_section_payment.error_card_content.list.verification', {
-          url: ROUTES.IDENTITY_VERIFICATION,
+          url: getRouteWithCurrentUrlRedirect(ROUTES.IDENTITY_VERIFICATION),
         })
   }${t('account_section_payment.error_card_content.list.other')}</ul><br />${t(
     'account_section_payment.error_card_content.help_text',

@@ -10,7 +10,7 @@ import TaxesFeesSection from 'components/forms/segments/AccountSections/TaxesFee
 import AccountPageLayout from 'components/layouts/AccountPageLayout'
 
 import { SsrAuthProviderHOC } from '../../components/logic/SsrAuthContext'
-import { prefetchUserQuery } from '../../frontend/hooks/useUserV2'
+import { prefetchUserQuery } from '../../frontend/hooks/useUser'
 import { amplifyGetServerSideProps } from '../../frontend/utils/amplifyServer'
 import { slovakServerSideTranslations } from '../../frontend/utils/slovakServerSideTranslations'
 

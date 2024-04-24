@@ -7,7 +7,7 @@ import cx from 'classnames'
 import { useTranslation } from 'next-i18next'
 
 import useSnackbar from '../../../../frontend/hooks/useSnackbar'
-import { useUserV2 } from '../../../../frontend/hooks/useUserV2'
+import { useUser } from '../../../../frontend/hooks/useUser'
 import UserConsent from './UserConsent'
 import UserProfileSection from './UserProfileSection'
 import UserProfileSectionHeader from './UserProfileSectionHeader'
@@ -20,7 +20,7 @@ const UserProfileConsents = () => {
     taxesMarketingUnsubscribe,
     taxesMarketingUnsubscribeIsPending,
     taxesMarketingSubscribeIsPending,
-  } = useUserV2()
+  } = useUser()
 
   const [openSnackbarSuccess] = useSnackbar({ variant: 'success' })
   const [openSnackbarError] = useSnackbar({ variant: 'error' })

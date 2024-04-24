@@ -55,7 +55,7 @@ const useSubscribeUnsubscribe = (gdprData: GdprDataDto) => {
   return [subscribeMutation, unsubscribeMutation]
 }
 
-export const useUserV2 = () => {
+export const useUser = () => {
   const queryClient = useQueryClient()
   const initialData = queryClient.getQueryData(userQueryKey)
 

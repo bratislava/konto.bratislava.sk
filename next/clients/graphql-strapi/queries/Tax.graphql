@@ -1,0 +1,12 @@
+query Tax {
+  tax {
+    data {
+      attributes {
+        accountCommunicationConsentText
+        currentYearTaxInPreparationText
+        currentYearTaxInPreparationTitle
+        displayCurrentYearTaxInPreparation
+      }
+    }
+  }
+}

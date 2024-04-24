@@ -8,13 +8,19 @@ import TaxesFeesInPreparationCard from './TaxesFeesInPreparationCard'
 import { useTaxFeesSection } from './useTaxFeesSection'
 
 const TaxesFeesSection = () => {
-  const { taxesData, taxAdministrator } = useTaxFeesSection()
+  const {
+    taxesData,
+    taxAdministrator,
+    strapiTax: { displayCurrentYearTaxInPreparation },
+  } = useTaxFeesSection()
   const { t } = useTranslation('account')
 
   const displayErrorCard = !taxesData.isInNoris
   const displayInPreparationCard =
     // TODO: Move this logic to BE
-    taxesData.isInNoris && !taxesData.items.some((item) => item.year === new Date().getFullYear())
+    taxesData.isInNoris &&
+    !taxesData.items.some((item) => item.year === new Date().getFullYear()) &&
+    displayCurrentYearTaxInPreparation
   const displayTaxCards = taxesData.items.length > 0
 
   return (

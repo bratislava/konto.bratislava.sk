@@ -1259,6 +1259,14 @@ export type HelpPageQuery = {
   } | null
 }
 
+export type TaxFragment = {
+  __typename?: 'Tax'
+  accountCommunicationConsentText: string
+  currentYearTaxInPreparationText?: string | null
+  currentYearTaxInPreparationTitle?: string | null
+  displayCurrentYearTaxInPreparation: boolean
+}
+
 export type TaxQueryVariables = Exact<{ [key: string]: never }>
 
 export type TaxQuery = {
@@ -1303,6 +1311,14 @@ export const HelpPageFragmentDoc = gql`
   }
   ${HelpCategoryFragmentDoc}
 `
+export const TaxFragmentDoc = gql`
+  fragment Tax on Tax {
+    accountCommunicationConsentText
+    currentYearTaxInPreparationText
+    currentYearTaxInPreparationTitle
+    displayCurrentYearTaxInPreparation
+  }
+`
 export const HelpPageDocument = gql`
   query HelpPage {
     helpPage {
@@ -1320,14 +1336,12 @@ export const TaxDocument = gql`
     tax {
       data {
         attributes {
-          accountCommunicationConsentText
-          currentYearTaxInPreparationText
-          currentYearTaxInPreparationTitle
-          displayCurrentYearTaxInPreparation
+          ...Tax
         }
       }
     }
   }
+  ${TaxFragmentDoc}
 `
 
 export type SdkFunctionWrapper = <T>(

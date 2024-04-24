@@ -5,6 +5,7 @@ import { isAxiosError } from 'axios'
 import AccountPageLayout from 'components/layouts/AccountPageLayout'
 
 import TaxFeeSection from '../../components/forms/segments/AccountSections/TaxesFeesSection/TaxFeeSection'
+import { TaxFeeSectionProvider } from '../../components/forms/segments/AccountSections/TaxesFeesSection/useTaxFeeSection'
 import { SsrAuthProviderHOC } from '../../components/logic/SsrAuthContext'
 import { prefetchUserQuery } from '../../frontend/hooks/useUser'
 import { amplifyGetServerSideProps } from '../../frontend/utils/amplifyServer'
@@ -78,7 +79,9 @@ const AccountTaxesFeesPage = ({ taxData, dehydratedState }: AccountTaxesFeesPage
   return (
     <HydrationBoundary state={dehydratedState}>
       <AccountPageLayout>
-        <TaxFeeSection taxData={taxData} />
+        <TaxFeeSectionProvider taxData={taxData}>
+          <TaxFeeSection />
+        </TaxFeeSectionProvider>
       </AccountPageLayout>
     </HydrationBoundary>
   )

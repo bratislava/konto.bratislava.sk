@@ -328,6 +328,7 @@ export type GenericMorph =
   | General
   | HelpPage
   | I18NLocale
+  | Tax
   | UploadFile
   | UploadFolder
   | UsersPermissionsPermission
@@ -489,6 +490,7 @@ export type Mutation = {
   deleteContentReleasesReleaseAction?: Maybe<ContentReleasesReleaseActionEntityResponse>
   deleteGeneral?: Maybe<GeneralEntityResponse>
   deleteHelpPage?: Maybe<HelpPageEntityResponse>
+  deleteTax?: Maybe<TaxEntityResponse>
   deleteUploadFile?: Maybe<UploadFileEntityResponse>
   deleteUploadFolder?: Maybe<UploadFolderEntityResponse>
   /** Delete an existing role */
@@ -511,6 +513,7 @@ export type Mutation = {
   updateFileInfo: UploadFileEntityResponse
   updateGeneral?: Maybe<GeneralEntityResponse>
   updateHelpPage?: Maybe<HelpPageEntityResponse>
+  updateTax?: Maybe<TaxEntityResponse>
   updateUploadFile?: Maybe<UploadFileEntityResponse>
   updateUploadFolder?: Maybe<UploadFolderEntityResponse>
   /** Update an existing role */
@@ -630,6 +633,10 @@ export type MutationUpdateHelpPageArgs = {
   data: HelpPageInput
 }
 
+export type MutationUpdateTaxArgs = {
+  data: TaxInput
+}
+
 export type MutationUpdateUploadFileArgs = {
   data: UploadFileInput
   id: Scalars['ID']['input']
@@ -684,6 +691,7 @@ export type Query = {
   i18NLocale?: Maybe<I18NLocaleEntityResponse>
   i18NLocales?: Maybe<I18NLocaleEntityResponseCollection>
   me?: Maybe<UsersPermissionsMe>
+  tax?: Maybe<TaxEntityResponse>
   uploadFile?: Maybe<UploadFileEntityResponse>
   uploadFiles?: Maybe<UploadFileEntityResponseCollection>
   uploadFolder?: Maybe<UploadFolderEntityResponse>
@@ -792,6 +800,34 @@ export type StringFilterInput = {
   null?: InputMaybe<Scalars['Boolean']['input']>
   or?: InputMaybe<Array<InputMaybe<Scalars['String']['input']>>>
   startsWith?: InputMaybe<Scalars['String']['input']>
+}
+
+export type Tax = {
+  __typename?: 'Tax'
+  accountCommunicationConsentText: Scalars['String']['output']
+  createdAt?: Maybe<Scalars['DateTime']['output']>
+  currentYearTaxInPreparationText?: Maybe<Scalars['String']['output']>
+  currentYearTaxInPreparationTitle?: Maybe<Scalars['String']['output']>
+  displayCurrentYearTaxInPreparation: Scalars['Boolean']['output']
+  updatedAt?: Maybe<Scalars['DateTime']['output']>
+}
+
+export type TaxEntity = {
+  __typename?: 'TaxEntity'
+  attributes?: Maybe<Tax>
+  id?: Maybe<Scalars['ID']['output']>
+}
+
+export type TaxEntityResponse = {
+  __typename?: 'TaxEntityResponse'
+  data?: Maybe<TaxEntity>
+}
+
+export type TaxInput = {
+  accountCommunicationConsentText?: InputMaybe<Scalars['String']['input']>
+  currentYearTaxInPreparationText?: InputMaybe<Scalars['String']['input']>
+  currentYearTaxInPreparationTitle?: InputMaybe<Scalars['String']['input']>
+  displayCurrentYearTaxInPreparation?: InputMaybe<Scalars['Boolean']['input']>
 }
 
 export type UploadFile = {
@@ -1223,6 +1259,33 @@ export type HelpPageQuery = {
   } | null
 }
 
+export type TaxFragment = {
+  __typename?: 'Tax'
+  accountCommunicationConsentText: string
+  currentYearTaxInPreparationText?: string | null
+  currentYearTaxInPreparationTitle?: string | null
+  displayCurrentYearTaxInPreparation: boolean
+}
+
+export type TaxQueryVariables = Exact<{ [key: string]: never }>
+
+export type TaxQuery = {
+  __typename?: 'Query'
+  tax?: {
+    __typename?: 'TaxEntityResponse'
+    data?: {
+      __typename?: 'TaxEntity'
+      attributes?: {
+        __typename?: 'Tax'
+        accountCommunicationConsentText: string
+        currentYearTaxInPreparationText?: string | null
+        currentYearTaxInPreparationTitle?: string | null
+        displayCurrentYearTaxInPreparation: boolean
+      } | null
+    } | null
+  } | null
+}
+
 export const HelpItemFragmentDoc = gql`
   fragment HelpItem on ComponentBlocksHelpItem {
     id
@@ -1248,6 +1311,14 @@ export const HelpPageFragmentDoc = gql`
   }
   ${HelpCategoryFragmentDoc}
 `
+export const TaxFragmentDoc = gql`
+  fragment Tax on Tax {
+    accountCommunicationConsentText
+    currentYearTaxInPreparationText
+    currentYearTaxInPreparationTitle
+    displayCurrentYearTaxInPreparation
+  }
+`
 export const HelpPageDocument = gql`
   query HelpPage {
     helpPage {
@@ -1259,6 +1330,18 @@ export const HelpPageDocument = gql`
     }
   }
   ${HelpPageFragmentDoc}
+`
+export const TaxDocument = gql`
+  query Tax {
+    tax {
+      data {
+        attributes {
+          ...Tax
+        }
+      }
+    }
+  }
+  ${TaxFragmentDoc}
 `
 
 export type SdkFunctionWrapper = <T>(
@@ -1284,6 +1367,21 @@ export function getSdk(client: GraphQLClient, withWrapper: SdkFunctionWrapper = 
             ...wrappedRequestHeaders,
           }),
         'HelpPage',
+        'query',
+        variables,
+      )
+    },
+    Tax(
+      variables?: TaxQueryVariables,
+      requestHeaders?: GraphQLClientRequestHeaders,
+    ): Promise<TaxQuery> {
+      return withWrapper(
+        (wrappedRequestHeaders) =>
+          client.request<TaxQuery>(TaxDocument, variables, {
+            ...requestHeaders,
+            ...wrappedRequestHeaders,
+          }),
+        'Tax',
         'query',
         variables,
       )

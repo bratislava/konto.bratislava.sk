@@ -36,12 +36,12 @@ const UserProfileConsents = () => {
   const isDisabled =
     !userData || taxesMarketingSubscribeIsPending || taxesMarketingUnsubscribeIsPending
 
-  const handleOnChangeConsent = async (isSelected: boolean) => {
+  const handleOnChangeConsent = async (value: boolean) => {
     if (isDisabled) {
       return
     }
 
-    const mutation = isSelected ? taxesMarketingSubscribe : taxesMarketingUnsubscribe
+    const mutation = value ? taxesMarketingSubscribe : taxesMarketingUnsubscribe
     await mutation(undefined, {
       onSuccess: () => {
         openSnackbarSuccess(t('profile_detail.success_alert'), 3000)

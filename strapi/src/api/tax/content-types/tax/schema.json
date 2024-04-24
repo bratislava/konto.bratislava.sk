@@ -4,7 +4,8 @@
   "info": {
     "singularName": "tax",
     "pluralName": "taxes",
-    "displayName": "Tax"
+    "displayName": "Tax",
+    "description": ""
   },
   "options": {
     "draftAndPublish": false
@@ -19,6 +20,9 @@
       "type": "boolean",
       "default": false,
       "required": true
+    },
+    "currentYearTaxInPreparationTitle": {
+      "type": "string"
     },
     "currentYearTaxInPreparationText": {
       "type": "richtext"

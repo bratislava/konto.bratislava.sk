@@ -652,6 +652,7 @@ type Tax {
   accountCommunicationConsentText: String!
   createdAt: DateTime
   currentYearTaxInPreparationText: String
+  currentYearTaxInPreparationTitle: String
   displayCurrentYearTaxInPreparation: Boolean!
   updatedAt: DateTime
 }
@@ -675,6 +676,7 @@ input TaxFiltersInput {
   and: [TaxFiltersInput]
   createdAt: DateTimeFilterInput
   currentYearTaxInPreparationText: StringFilterInput
+  currentYearTaxInPreparationTitle: StringFilterInput
   displayCurrentYearTaxInPreparation: BooleanFilterInput
   not: TaxFiltersInput
   or: [TaxFiltersInput]
@@ -684,6 +686,7 @@ input TaxFiltersInput {
 input TaxInput {
   accountCommunicationConsentText: String
   currentYearTaxInPreparationText: String
+  currentYearTaxInPreparationTitle: String
   displayCurrentYearTaxInPreparation: Boolean
 }
 

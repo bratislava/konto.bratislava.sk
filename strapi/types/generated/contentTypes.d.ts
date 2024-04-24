@@ -702,6 +702,7 @@ export interface ApiTaxTax extends Schema.SingleType {
     singularName: 'tax'
     pluralName: 'taxes'
     displayName: 'Tax'
+    description: ''
   }
   options: {
     draftAndPublish: false
@@ -711,6 +712,7 @@ export interface ApiTaxTax extends Schema.SingleType {
     displayCurrentYearTaxInPreparation: Attribute.Boolean &
       Attribute.Required &
       Attribute.DefaultTo<false>
+    currentYearTaxInPreparationTitle: Attribute.String
     currentYearTaxInPreparationText: Attribute.RichText
     createdAt: Attribute.DateTime
     updatedAt: Attribute.DateTime

@@ -59,10 +59,10 @@ export interface CognitoGetUserData {
   name?: string
   /**
    * Which type of verified tier it is?
-   * @type {string}
+   * @type {object}
    * @memberof CognitoGetUserData
    */
-  'custom:tier'?: CognitoGetUserDataCustomtierEnum
+  'custom:tier'?: object
   /**
    * Which type of account it is?
    * @type {string}
@@ -119,16 +119,6 @@ export interface CognitoGetUserData {
   UserStatus?: CognitoGetUserDataUserStatusEnum
 }
 
-export const CognitoGetUserDataCustomtierEnum = {
-  New: 'NEW',
-  QueueIdentityCard: 'QUEUE_IDENTITY_CARD',
-  NotVerifiedIdentityCard: 'NOT_VERIFIED_IDENTITY_CARD',
-  IdentityCard: 'IDENTITY_CARD',
-  Eid: 'EID',
-} as const
-
-export type CognitoGetUserDataCustomtierEnum =
-  (typeof CognitoGetUserDataCustomtierEnum)[keyof typeof CognitoGetUserDataCustomtierEnum]
 export const CognitoGetUserDataCustomaccountTypeEnum = {
   Fo: 'fo',
   Po: 'po',
@@ -158,17 +148,33 @@ export type CognitoGetUserDataUserStatusEnum =
 export interface GdprDataDto {
   /**
    * Type of Gdpr subscription
-   * @type {object}
+   * @type {string}
    * @memberof GdprDataDto
    */
-  type: object
+  type: GdprDataDtoTypeEnum
   /**
    * Type of Gdpr category
-   * @type {object}
+   * @type {string}
    * @memberof GdprDataDto
    */
-  category: object
+  category: GdprDataDtoCategoryEnum
 }
+
+export const GdprDataDtoTypeEnum = {
+  License: 'LICENSE',
+  Marketing: 'MARKETING',
+  FormalCommunication: 'FORMAL_COMMUNICATION',
+} as const
+
+export type GdprDataDtoTypeEnum = (typeof GdprDataDtoTypeEnum)[keyof typeof GdprDataDtoTypeEnum]
+export const GdprDataDtoCategoryEnum = {
+  Taxes: 'TAXES',
+  Esbs: 'ESBS',
+} as const
+
+export type GdprDataDtoCategoryEnum =
+  (typeof GdprDataDtoCategoryEnum)[keyof typeof GdprDataDtoCategoryEnum]
+
 /**
  *
  * @export
@@ -230,6 +236,57 @@ export const LegalPersonVerifyStateCognitoTierEnum = {
 export type LegalPersonVerifyStateCognitoTierEnum =
   (typeof LegalPersonVerifyStateCognitoTierEnum)[keyof typeof LegalPersonVerifyStateCognitoTierEnum]
 
+/**
+ *
+ * @export
+ * @interface ManuallyVerifyUserRequestDto
+ */
+export interface ManuallyVerifyUserRequestDto {
+  /**
+   * userBirthNumber
+   * @type {string}
+   * @memberof ManuallyVerifyUserRequestDto
+   */
+  birthNumber: string
+  /**
+   * Ifo of the user
+   * @type {string}
+   * @memberof ManuallyVerifyUserRequestDto
+   */
+  ifo: string
+  /**
+   * ico
+   * @type {string}
+   * @memberof ManuallyVerifyUserRequestDto
+   */
+  ico?: string
+}
+/**
+ *
+ * @export
+ * @interface OnlySuccessDto
+ */
+export interface OnlySuccessDto {
+  /**
+   * Marks if the operation has been successful
+   * @type {boolean}
+   * @memberof OnlySuccessDto
+   */
+  success: boolean
+}
+/**
+ *
+ * @export
+ * @interface RequestBodyValidateEdeskForUserIdsDto
+ */
+export interface RequestBodyValidateEdeskForUserIdsDto {
+  /**
+   * How many records to skip
+   * @type {number}
+   * @memberof RequestBodyValidateEdeskForUserIdsDto
+   */
+  offset?: number
+}
 /**
  *
  * @export
@@ -334,6 +391,19 @@ export interface RequestPublicSubscriptionDto {
 /**
  *
  * @export
+ * @interface RequestValidatePhysicalEntityRfoDto
+ */
+export interface RequestValidatePhysicalEntityRfoDto {
+  /**
+   * Id of the physical entity object in db
+   * @type {string}
+   * @memberof RequestValidatePhysicalEntityRfoDto
+   */
+  physicalEntityId: string
+}
+/**
+ *
+ * @export
  * @interface ResponseCustomErrorVerificationEidDto
  */
 export interface ResponseCustomErrorVerificationEidDto {
@@ -375,6 +445,8 @@ export const ResponseCustomErrorVerificationEidDtoErrorNameEnum = {
   NoIfFoundForStatutory: 'NO_IF_FOUND_FOR_STATUTORY',
   UnexpectedMagproxyResponseError: 'UNEXPECTED_MAGPROXY_RESPONSE_ERROR',
   RpoFieldNotExists: 'RPO_FIELD_NOT_EXISTS',
+  IcoNotProvided: 'ICO_NOT_PROVIDED',
+  VerificationDataNotProvided: 'VERIFICATION_DATA_NOT_PROVIDED',
 } as const
 
 export type ResponseCustomErrorVerificationEidDtoErrorNameEnum =
@@ -424,6 +496,8 @@ export const ResponseCustomErrorVerificationIdentityCardDtoErrorNameEnum = {
   NoIfFoundForStatutory: 'NO_IF_FOUND_FOR_STATUTORY',
   UnexpectedMagproxyResponseError: 'UNEXPECTED_MAGPROXY_RESPONSE_ERROR',
   RpoFieldNotExists: 'RPO_FIELD_NOT_EXISTS',
+  IcoNotProvided: 'ICO_NOT_PROVIDED',
+  VerificationDataNotProvided: 'VERIFICATION_DATA_NOT_PROVIDED',
 } as const
 
 export type ResponseCustomErrorVerificationIdentityCardDtoErrorNameEnum =
@@ -456,9 +530,7 @@ export interface ResponseGdprUserDataDto {
 }
 
 export const ResponseGdprUserDataDtoCategoryEnum = {
-  Swimmingpools: 'SWIMMINGPOOLS',
   Taxes: 'TAXES',
-  City: 'CITY',
   Esbs: 'ESBS',
 } as const
 
@@ -466,9 +538,8 @@ export type ResponseGdprUserDataDtoCategoryEnum =
   (typeof ResponseGdprUserDataDtoCategoryEnum)[keyof typeof ResponseGdprUserDataDtoCategoryEnum]
 export const ResponseGdprUserDataDtoTypeEnum = {
   License: 'LICENSE',
-  Dataprocessing: 'DATAPROCESSING',
   Marketing: 'MARKETING',
-  Analytics: 'ANALYTICS',
+  FormalCommunication: 'FORMAL_COMMUNICATION',
 } as const
 
 export type ResponseGdprUserDataDtoTypeEnum =
@@ -604,7 +675,26 @@ export interface ResponseUserDataBasicDto {
    * @memberof ResponseUserDataBasicDto
    */
   birthNumber: string
+  /**
+   *
+   * @type {UserOfficialCorrespondenceChannelEnum}
+   * @memberof ResponseUserDataBasicDto
+   */
+  officialCorrespondenceChannel: UserOfficialCorrespondenceChannelEnum
+  /**
+   * True if user was registered and have verified birth number until 2024-04-22. This date can be varied every year. In this date, user are sent into Noris and taxes will be generated.
+   * @type {boolean}
+   * @memberof ResponseUserDataBasicDto
+   */
+  wasVerifiedBeforeTaxDeadline: boolean
+  /**
+   * Can show banner for formal communication through email? If it was shown and clicked, it will not be shown.
+   * @type {boolean}
+   * @memberof ResponseUserDataBasicDto
+   */
+  showEmailCommunicationBanner: boolean
 }
+
 /**
  *
  * @export
@@ -648,11 +738,55 @@ export interface ResponseUserDataDto {
    */
   birthNumber: string
   /**
+   *
+   * @type {UserOfficialCorrespondenceChannelEnum}
+   * @memberof ResponseUserDataDto
+   */
+  officialCorrespondenceChannel: UserOfficialCorrespondenceChannelEnum
+  /**
+   * True if user was registered and have verified birth number until 2024-04-22. This date can be varied every year. In this date, user are sent into Noris and taxes will be generated.
+   * @type {boolean}
+   * @memberof ResponseUserDataDto
+   */
+  wasVerifiedBeforeTaxDeadline: boolean
+  /**
+   * Can show banner for formal communication through email? If it was shown and clicked, it will not be shown.
+   * @type {boolean}
+   * @memberof ResponseUserDataDto
+   */
+  showEmailCommunicationBanner: boolean
+  /**
    * Subscription Data in array
    * @type {Array<ResponseGdprUserDataDto>}
    * @memberof ResponseUserDataDto
    */
   gdprData: Array<ResponseGdprUserDataDto>
+}
+
+/**
+ *
+ * @export
+ * @interface ResponseValidatePhysicalEntityRfoDto
+ */
+export interface ResponseValidatePhysicalEntityRfoDto {
+  /**
+   * Entity data (updated if new info was found in state registry)
+   * @type {object}
+   * @memberof ResponseValidatePhysicalEntityRfoDto
+   */
+  physicalEntity: object
+  /**
+   * Data received from RFO
+   * @type {object}
+   * @memberof ResponseValidatePhysicalEntityRfoDto
+   */
+  rfoData: object
+  /**
+   * Data received from UPVS
+   * @type {object}
+   * @memberof ResponseValidatePhysicalEntityRfoDto
+   */
+  upvsResult: object
 }
 /**
  *
@@ -704,6 +838,8 @@ export const ResponseVerificationDtoErrorNameEnum = {
   NoIfFoundForStatutory: 'NO_IF_FOUND_FOR_STATUTORY',
   UnexpectedMagproxyResponseError: 'UNEXPECTED_MAGPROXY_RESPONSE_ERROR',
   RpoFieldNotExists: 'RPO_FIELD_NOT_EXISTS',
+  IcoNotProvided: 'ICO_NOT_PROVIDED',
+  VerificationDataNotProvided: 'VERIFICATION_DATA_NOT_PROVIDED',
 } as const
 
 export type ResponseVerificationDtoErrorNameEnum =
@@ -766,10 +902,27 @@ export const ResponseVerificationIdentityCardToQueueDtoErrorNameEnum = {
   NoIfFoundForStatutory: 'NO_IF_FOUND_FOR_STATUTORY',
   UnexpectedMagproxyResponseError: 'UNEXPECTED_MAGPROXY_RESPONSE_ERROR',
   RpoFieldNotExists: 'RPO_FIELD_NOT_EXISTS',
+  IcoNotProvided: 'ICO_NOT_PROVIDED',
+  VerificationDataNotProvided: 'VERIFICATION_DATA_NOT_PROVIDED',
 } as const
 
 export type ResponseVerificationIdentityCardToQueueDtoErrorNameEnum =
   (typeof ResponseVerificationIdentityCardToQueueDtoErrorNameEnum)[keyof typeof ResponseVerificationIdentityCardToQueueDtoErrorNameEnum]
+
+/**
+ *
+ * @export
+ * @enum {string}
+ */
+
+export const UserOfficialCorrespondenceChannelEnum = {
+  Postal: 'POSTAL',
+  Edesk: 'EDESK',
+  Email: 'EMAIL',
+} as const
+
+export type UserOfficialCorrespondenceChannelEnum =
+  (typeof UserOfficialCorrespondenceChannelEnum)[keyof typeof UserOfficialCorrespondenceChannelEnum]
 
 /**
  *
@@ -831,6 +984,107 @@ export const UserVerifyStateCognitoTierEnum = {
 
 export type UserVerifyStateCognitoTierEnum =
   (typeof UserVerifyStateCognitoTierEnum)[keyof typeof UserVerifyStateCognitoTierEnum]
+
+/**
+ *
+ * @export
+ * @interface ValidateEdeskForUserIdsResponseDto
+ */
+export interface ValidateEdeskForUserIdsResponseDto {
+  /**
+   * Number of users that were validated
+   * @type {number}
+   * @memberof ValidateEdeskForUserIdsResponseDto
+   */
+  validatedUsers: number
+  /**
+   * Temp debug data
+   * @type {object}
+   * @memberof ValidateEdeskForUserIdsResponseDto
+   */
+  enitites: object
+}
+/**
+ *
+ * @export
+ * @interface ValidatedUsersToPhysicalEntitiesResponseDto
+ */
+export interface ValidatedUsersToPhysicalEntitiesResponseDto {
+  /**
+   *
+   * @type {number}
+   * @memberof ValidatedUsersToPhysicalEntitiesResponseDto
+   */
+  existingPhysicalEntitiesUpdated: number
+  /**
+   *
+   * @type {number}
+   * @memberof ValidatedUsersToPhysicalEntitiesResponseDto
+   */
+  newPhysicalEntitiesCreated: number
+}
+/**
+ *
+ * @export
+ * @interface VerificationDataForUser
+ */
+export interface VerificationDataForUser {
+  /**
+   * Id of the user in cognito.
+   * @type {string}
+   * @memberof VerificationDataForUser
+   */
+  userId: string
+  /**
+   * userBirthNumber
+   * @type {string}
+   * @memberof VerificationDataForUser
+   */
+  birthNumber: string
+  /**
+   * Id card used for verification.
+   * @type {string}
+   * @memberof VerificationDataForUser
+   */
+  idCard: string
+  /**
+   * Ico used for verification.
+   * @type {string}
+   * @memberof VerificationDataForUser
+   */
+  ico?: string
+  /**
+   * Created timestamp
+   * @type {string}
+   * @memberof VerificationDataForUser
+   */
+  verifyStart: string
+}
+/**
+ *
+ * @export
+ * @interface VerificationDataForUserResponseDto
+ */
+export interface VerificationDataForUserResponseDto {
+  /**
+   * Id of the user in cognito.
+   * @type {string}
+   * @memberof VerificationDataForUserResponseDto
+   */
+  externalId: string
+  /**
+   * Email of the user.
+   * @type {string}
+   * @memberof VerificationDataForUserResponseDto
+   */
+  email: string
+  /**
+   * Verification data for the user in the last month. Ordered by start date descending.
+   * @type {Array<VerificationDataForUser>}
+   * @memberof VerificationDataForUserResponseDto
+   */
+  verificationDataLastMonth: Array<VerificationDataForUser>
+}
 
 /**
  * ADMINApi - axios parameter creator
@@ -927,6 +1181,50 @@ export const ADMINApiAxiosParamCreator = function (configuration?: Configuration
       }
     },
     /**
+     * Deactivates user account in cognito and deletes personal info from database.
+     * @summary Deactivate user account
+     * @param {string} externalId
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    adminControllerDeactivateAccount: async (
+      externalId: string,
+      options: RawAxiosRequestConfig = {},
+    ): Promise<RequestArgs> => {
+      // verify required parameter 'externalId' is not null or undefined
+      assertParamExists('adminControllerDeactivateAccount', 'externalId', externalId)
+      const localVarPath = `/admin/deactivate/{externalId}`.replace(
+        `{${'externalId'}}`,
+        encodeURIComponent(String(externalId)),
+      )
+      // use dummy base URL string because the URL constructor only accepts absolute URLs.
+      const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL)
+      let baseOptions
+      if (configuration) {
+        baseOptions = configuration.baseOptions
+      }
+
+      const localVarRequestOptions = { method: 'GET', ...baseOptions, ...options }
+      const localVarHeaderParameter = {} as any
+      const localVarQueryParameter = {} as any
+
+      // authentication apiKey required
+      await setApiKeyToObject(localVarHeaderParameter, 'apiKey', configuration)
+
+      setSearchParams(localVarUrlObj, localVarQueryParameter)
+      let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {}
+      localVarRequestOptions.headers = {
+        ...localVarHeaderParameter,
+        ...headersFromBaseOptions,
+        ...options.headers,
+      }
+
+      return {
+        url: toPathString(localVarUrlObj),
+        options: localVarRequestOptions,
+      }
+    },
+    /**
      * Get user data by birthnumber
      * @summary Get user data
      * @param {string} birthNumber userBirthNumber
@@ -965,6 +1263,250 @@ export const ADMINApiAxiosParamCreator = function (configuration?: Configuration
         ...headersFromBaseOptions,
         ...options.headers,
       }
+
+      return {
+        url: toPathString(localVarUrlObj),
+        options: localVarRequestOptions,
+      }
+    },
+    /**
+     * Returns data used for verification by identity card for given user in the last month. If the email is for a legal person, it returns the data for the given legal person.
+     * @summary Get verification data for user.
+     * @param {string} email
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    adminControllerGetVerificationDataForUser: async (
+      email: string,
+      options: RawAxiosRequestConfig = {},
+    ): Promise<RequestArgs> => {
+      // verify required parameter 'email' is not null or undefined
+      assertParamExists('adminControllerGetVerificationDataForUser', 'email', email)
+      const localVarPath = `/admin/user/id-card-verification-data/{email}`.replace(
+        `{${'email'}}`,
+        encodeURIComponent(String(email)),
+      )
+      // use dummy base URL string because the URL constructor only accepts absolute URLs.
+      const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL)
+      let baseOptions
+      if (configuration) {
+        baseOptions = configuration.baseOptions
+      }
+
+      const localVarRequestOptions = { method: 'GET', ...baseOptions, ...options }
+      const localVarHeaderParameter = {} as any
+      const localVarQueryParameter = {} as any
+
+      // authentication apiKey required
+      await setApiKeyToObject(localVarHeaderParameter, 'apiKey', configuration)
+
+      setSearchParams(localVarUrlObj, localVarQueryParameter)
+      let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {}
+      localVarRequestOptions.headers = {
+        ...localVarHeaderParameter,
+        ...headersFromBaseOptions,
+        ...options.headers,
+      }
+
+      return {
+        url: toPathString(localVarUrlObj),
+        options: localVarRequestOptions,
+      }
+    },
+    /**
+     * Take up to 100 physicalEntities linked to users without any attempts to validate uri and try using cognito data to validate
+     * @summary Validate edesk for physicalEntities
+     * @param {RequestBodyValidateEdeskForUserIdsDto} requestBodyValidateEdeskForUserIdsDto
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    adminControllerValidateEdeskForUserIds: async (
+      requestBodyValidateEdeskForUserIdsDto: RequestBodyValidateEdeskForUserIdsDto,
+      options: RawAxiosRequestConfig = {},
+    ): Promise<RequestArgs> => {
+      // verify required parameter 'requestBodyValidateEdeskForUserIdsDto' is not null or undefined
+      assertParamExists(
+        'adminControllerValidateEdeskForUserIds',
+        'requestBodyValidateEdeskForUserIdsDto',
+        requestBodyValidateEdeskForUserIdsDto,
+      )
+      const localVarPath = `/admin/validate-edesk-by-cognito-where-first-try`
+      // use dummy base URL string because the URL constructor only accepts absolute URLs.
+      const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL)
+      let baseOptions
+      if (configuration) {
+        baseOptions = configuration.baseOptions
+      }
+
+      const localVarRequestOptions = { method: 'POST', ...baseOptions, ...options }
+      const localVarHeaderParameter = {} as any
+      const localVarQueryParameter = {} as any
+
+      // authentication apiKey required
+      await setApiKeyToObject(localVarHeaderParameter, 'apiKey', configuration)
+
+      localVarHeaderParameter['Content-Type'] = 'application/json'
+
+      setSearchParams(localVarUrlObj, localVarQueryParameter)
+      let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {}
+      localVarRequestOptions.headers = {
+        ...localVarHeaderParameter,
+        ...headersFromBaseOptions,
+        ...options.headers,
+      }
+      localVarRequestOptions.data = serializeDataIfNeeded(
+        requestBodyValidateEdeskForUserIdsDto,
+        localVarRequestOptions,
+        configuration,
+      )
+
+      return {
+        url: toPathString(localVarUrlObj),
+        options: localVarRequestOptions,
+      }
+    },
+    /**
+     *
+     * @summary Manually update entity data against RFO (and UPVS) if possible
+     * @param {RequestValidatePhysicalEntityRfoDto} requestValidatePhysicalEntityRfoDto
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    adminControllerValidatePhysicalEntityRfo: async (
+      requestValidatePhysicalEntityRfoDto: RequestValidatePhysicalEntityRfoDto,
+      options: RawAxiosRequestConfig = {},
+    ): Promise<RequestArgs> => {
+      // verify required parameter 'requestValidatePhysicalEntityRfoDto' is not null or undefined
+      assertParamExists(
+        'adminControllerValidatePhysicalEntityRfo',
+        'requestValidatePhysicalEntityRfoDto',
+        requestValidatePhysicalEntityRfoDto,
+      )
+      const localVarPath = `/admin/validate-physical-entity-rfo`
+      // use dummy base URL string because the URL constructor only accepts absolute URLs.
+      const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL)
+      let baseOptions
+      if (configuration) {
+        baseOptions = configuration.baseOptions
+      }
+
+      const localVarRequestOptions = { method: 'POST', ...baseOptions, ...options }
+      const localVarHeaderParameter = {} as any
+      const localVarQueryParameter = {} as any
+
+      // authentication apiKey required
+      await setApiKeyToObject(localVarHeaderParameter, 'apiKey', configuration)
+
+      localVarHeaderParameter['Content-Type'] = 'application/json'
+
+      setSearchParams(localVarUrlObj, localVarQueryParameter)
+      let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {}
+      localVarRequestOptions.headers = {
+        ...localVarHeaderParameter,
+        ...headersFromBaseOptions,
+        ...options.headers,
+      }
+      localVarRequestOptions.data = serializeDataIfNeeded(
+        requestValidatePhysicalEntityRfoDto,
+        localVarRequestOptions,
+        configuration,
+      )
+
+      return {
+        url: toPathString(localVarUrlObj),
+        options: localVarRequestOptions,
+      }
+    },
+    /**
+     * Warning - do not run this in parallel, you risk creating duplicates. Processes up to 1000 at once. Where physicalEntity with matching birth number but no linked user is found, it is automatically linked instead of creating a new one
+     * @summary Create physicalEntity records for validated users
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    adminControllerValidatedUsersToPhysicalEntities: async (
+      options: RawAxiosRequestConfig = {},
+    ): Promise<RequestArgs> => {
+      const localVarPath = `/admin/validated-users-to-physical-entities`
+      // use dummy base URL string because the URL constructor only accepts absolute URLs.
+      const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL)
+      let baseOptions
+      if (configuration) {
+        baseOptions = configuration.baseOptions
+      }
+
+      const localVarRequestOptions = { method: 'POST', ...baseOptions, ...options }
+      const localVarHeaderParameter = {} as any
+      const localVarQueryParameter = {} as any
+
+      // authentication apiKey required
+      await setApiKeyToObject(localVarHeaderParameter, 'apiKey', configuration)
+
+      setSearchParams(localVarUrlObj, localVarQueryParameter)
+      let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {}
+      localVarRequestOptions.headers = {
+        ...localVarHeaderParameter,
+        ...headersFromBaseOptions,
+        ...options.headers,
+      }
+
+      return {
+        url: toPathString(localVarUrlObj),
+        options: localVarRequestOptions,
+      }
+    },
+    /**
+     * Manually verify user, or legal person (depending on data in cognito), with provided data like birth number etc.
+     * @summary Manually verify user.
+     * @param {string} email
+     * @param {ManuallyVerifyUserRequestDto} manuallyVerifyUserRequestDto
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    adminControllerVerifyUserManually: async (
+      email: string,
+      manuallyVerifyUserRequestDto: ManuallyVerifyUserRequestDto,
+      options: RawAxiosRequestConfig = {},
+    ): Promise<RequestArgs> => {
+      // verify required parameter 'email' is not null or undefined
+      assertParamExists('adminControllerVerifyUserManually', 'email', email)
+      // verify required parameter 'manuallyVerifyUserRequestDto' is not null or undefined
+      assertParamExists(
+        'adminControllerVerifyUserManually',
+        'manuallyVerifyUserRequestDto',
+        manuallyVerifyUserRequestDto,
+      )
+      const localVarPath = `/admin/user/verify-manually/{email}`.replace(
+        `{${'email'}}`,
+        encodeURIComponent(String(email)),
+      )
+      // use dummy base URL string because the URL constructor only accepts absolute URLs.
+      const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL)
+      let baseOptions
+      if (configuration) {
+        baseOptions = configuration.baseOptions
+      }
+
+      const localVarRequestOptions = { method: 'POST', ...baseOptions, ...options }
+      const localVarHeaderParameter = {} as any
+      const localVarQueryParameter = {} as any
+
+      // authentication apiKey required
+      await setApiKeyToObject(localVarHeaderParameter, 'apiKey', configuration)
+
+      localVarHeaderParameter['Content-Type'] = 'application/json'
+
+      setSearchParams(localVarUrlObj, localVarQueryParameter)
+      let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {}
+      localVarRequestOptions.headers = {
+        ...localVarHeaderParameter,
+        ...headersFromBaseOptions,
+        ...options.headers,
+      }
+      localVarRequestOptions.data = serializeDataIfNeeded(
+        manuallyVerifyUserRequestDto,
+        localVarRequestOptions,
+        configuration,
+      )
 
       return {
         url: toPathString(localVarUrlObj),
@@ -1036,6 +1578,34 @@ export const ADMINApiFp = function (configuration?: Configuration) {
         )(axios, localVarOperationServerBasePath || basePath)
     },
     /**
+     * Deactivates user account in cognito and deletes personal info from database.
+     * @summary Deactivate user account
+     * @param {string} externalId
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    async adminControllerDeactivateAccount(
+      externalId: string,
+      options?: RawAxiosRequestConfig,
+    ): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<OnlySuccessDto>> {
+      const localVarAxiosArgs = await localVarAxiosParamCreator.adminControllerDeactivateAccount(
+        externalId,
+        options,
+      )
+      const localVarOperationServerIndex = configuration?.serverIndex ?? 0
+      const localVarOperationServerBasePath =
+        operationServerMap['ADMINApi.adminControllerDeactivateAccount']?.[
+          localVarOperationServerIndex
+        ]?.url
+      return (axios, basePath) =>
+        createRequestFunction(
+          localVarAxiosArgs,
+          globalAxios,
+          BASE_PATH,
+          configuration,
+        )(axios, localVarOperationServerBasePath || basePath)
+    },
+    /**
      * Get user data by birthnumber
      * @summary Get user data
      * @param {string} birthNumber userBirthNumber
@@ -1056,6 +1626,159 @@ export const ADMINApiFp = function (configuration?: Configuration) {
       const localVarOperationServerIndex = configuration?.serverIndex ?? 0
       const localVarOperationServerBasePath =
         operationServerMap['ADMINApi.adminControllerGetUserDataByBirthNumber']?.[
+          localVarOperationServerIndex
+        ]?.url
+      return (axios, basePath) =>
+        createRequestFunction(
+          localVarAxiosArgs,
+          globalAxios,
+          BASE_PATH,
+          configuration,
+        )(axios, localVarOperationServerBasePath || basePath)
+    },
+    /**
+     * Returns data used for verification by identity card for given user in the last month. If the email is for a legal person, it returns the data for the given legal person.
+     * @summary Get verification data for user.
+     * @param {string} email
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    async adminControllerGetVerificationDataForUser(
+      email: string,
+      options?: RawAxiosRequestConfig,
+    ): Promise<
+      (axios?: AxiosInstance, basePath?: string) => AxiosPromise<VerificationDataForUserResponseDto>
+    > {
+      const localVarAxiosArgs =
+        await localVarAxiosParamCreator.adminControllerGetVerificationDataForUser(email, options)
+      const localVarOperationServerIndex = configuration?.serverIndex ?? 0
+      const localVarOperationServerBasePath =
+        operationServerMap['ADMINApi.adminControllerGetVerificationDataForUser']?.[
+          localVarOperationServerIndex
+        ]?.url
+      return (axios, basePath) =>
+        createRequestFunction(
+          localVarAxiosArgs,
+          globalAxios,
+          BASE_PATH,
+          configuration,
+        )(axios, localVarOperationServerBasePath || basePath)
+    },
+    /**
+     * Take up to 100 physicalEntities linked to users without any attempts to validate uri and try using cognito data to validate
+     * @summary Validate edesk for physicalEntities
+     * @param {RequestBodyValidateEdeskForUserIdsDto} requestBodyValidateEdeskForUserIdsDto
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    async adminControllerValidateEdeskForUserIds(
+      requestBodyValidateEdeskForUserIdsDto: RequestBodyValidateEdeskForUserIdsDto,
+      options?: RawAxiosRequestConfig,
+    ): Promise<
+      (axios?: AxiosInstance, basePath?: string) => AxiosPromise<ValidateEdeskForUserIdsResponseDto>
+    > {
+      const localVarAxiosArgs =
+        await localVarAxiosParamCreator.adminControllerValidateEdeskForUserIds(
+          requestBodyValidateEdeskForUserIdsDto,
+          options,
+        )
+      const localVarOperationServerIndex = configuration?.serverIndex ?? 0
+      const localVarOperationServerBasePath =
+        operationServerMap['ADMINApi.adminControllerValidateEdeskForUserIds']?.[
+          localVarOperationServerIndex
+        ]?.url
+      return (axios, basePath) =>
+        createRequestFunction(
+          localVarAxiosArgs,
+          globalAxios,
+          BASE_PATH,
+          configuration,
+        )(axios, localVarOperationServerBasePath || basePath)
+    },
+    /**
+     *
+     * @summary Manually update entity data against RFO (and UPVS) if possible
+     * @param {RequestValidatePhysicalEntityRfoDto} requestValidatePhysicalEntityRfoDto
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    async adminControllerValidatePhysicalEntityRfo(
+      requestValidatePhysicalEntityRfoDto: RequestValidatePhysicalEntityRfoDto,
+      options?: RawAxiosRequestConfig,
+    ): Promise<
+      (
+        axios?: AxiosInstance,
+        basePath?: string,
+      ) => AxiosPromise<ResponseValidatePhysicalEntityRfoDto>
+    > {
+      const localVarAxiosArgs =
+        await localVarAxiosParamCreator.adminControllerValidatePhysicalEntityRfo(
+          requestValidatePhysicalEntityRfoDto,
+          options,
+        )
+      const localVarOperationServerIndex = configuration?.serverIndex ?? 0
+      const localVarOperationServerBasePath =
+        operationServerMap['ADMINApi.adminControllerValidatePhysicalEntityRfo']?.[
+          localVarOperationServerIndex
+        ]?.url
+      return (axios, basePath) =>
+        createRequestFunction(
+          localVarAxiosArgs,
+          globalAxios,
+          BASE_PATH,
+          configuration,
+        )(axios, localVarOperationServerBasePath || basePath)
+    },
+    /**
+     * Warning - do not run this in parallel, you risk creating duplicates. Processes up to 1000 at once. Where physicalEntity with matching birth number but no linked user is found, it is automatically linked instead of creating a new one
+     * @summary Create physicalEntity records for validated users
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    async adminControllerValidatedUsersToPhysicalEntities(
+      options?: RawAxiosRequestConfig,
+    ): Promise<
+      (
+        axios?: AxiosInstance,
+        basePath?: string,
+      ) => AxiosPromise<ValidatedUsersToPhysicalEntitiesResponseDto>
+    > {
+      const localVarAxiosArgs =
+        await localVarAxiosParamCreator.adminControllerValidatedUsersToPhysicalEntities(options)
+      const localVarOperationServerIndex = configuration?.serverIndex ?? 0
+      const localVarOperationServerBasePath =
+        operationServerMap['ADMINApi.adminControllerValidatedUsersToPhysicalEntities']?.[
+          localVarOperationServerIndex
+        ]?.url
+      return (axios, basePath) =>
+        createRequestFunction(
+          localVarAxiosArgs,
+          globalAxios,
+          BASE_PATH,
+          configuration,
+        )(axios, localVarOperationServerBasePath || basePath)
+    },
+    /**
+     * Manually verify user, or legal person (depending on data in cognito), with provided data like birth number etc.
+     * @summary Manually verify user.
+     * @param {string} email
+     * @param {ManuallyVerifyUserRequestDto} manuallyVerifyUserRequestDto
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    async adminControllerVerifyUserManually(
+      email: string,
+      manuallyVerifyUserRequestDto: ManuallyVerifyUserRequestDto,
+      options?: RawAxiosRequestConfig,
+    ): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<OnlySuccessDto>> {
+      const localVarAxiosArgs = await localVarAxiosParamCreator.adminControllerVerifyUserManually(
+        email,
+        manuallyVerifyUserRequestDto,
+        options,
+      )
+      const localVarOperationServerIndex = configuration?.serverIndex ?? 0
+      const localVarOperationServerBasePath =
+        operationServerMap['ADMINApi.adminControllerVerifyUserManually']?.[
           localVarOperationServerIndex
         ]?.url
       return (axios, basePath) =>
@@ -1111,6 +1834,21 @@ export const ADMINApiFactory = function (
         .then((request) => request(axios, basePath))
     },
     /**
+     * Deactivates user account in cognito and deletes personal info from database.
+     * @summary Deactivate user account
+     * @param {string} externalId
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    adminControllerDeactivateAccount(
+      externalId: string,
+      options?: any,
+    ): AxiosPromise<OnlySuccessDto> {
+      return localVarFp
+        .adminControllerDeactivateAccount(externalId, options)
+        .then((request) => request(axios, basePath))
+    },
+    /**
      * Get user data by birthnumber
      * @summary Get user data
      * @param {string} birthNumber userBirthNumber
@@ -1123,6 +1861,81 @@ export const ADMINApiFactory = function (
     ): AxiosPromise<ResponseUserByBirthNumberDto> {
       return localVarFp
         .adminControllerGetUserDataByBirthNumber(birthNumber, options)
+        .then((request) => request(axios, basePath))
+    },
+    /**
+     * Returns data used for verification by identity card for given user in the last month. If the email is for a legal person, it returns the data for the given legal person.
+     * @summary Get verification data for user.
+     * @param {string} email
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    adminControllerGetVerificationDataForUser(
+      email: string,
+      options?: any,
+    ): AxiosPromise<VerificationDataForUserResponseDto> {
+      return localVarFp
+        .adminControllerGetVerificationDataForUser(email, options)
+        .then((request) => request(axios, basePath))
+    },
+    /**
+     * Take up to 100 physicalEntities linked to users without any attempts to validate uri and try using cognito data to validate
+     * @summary Validate edesk for physicalEntities
+     * @param {RequestBodyValidateEdeskForUserIdsDto} requestBodyValidateEdeskForUserIdsDto
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    adminControllerValidateEdeskForUserIds(
+      requestBodyValidateEdeskForUserIdsDto: RequestBodyValidateEdeskForUserIdsDto,
+      options?: any,
+    ): AxiosPromise<ValidateEdeskForUserIdsResponseDto> {
+      return localVarFp
+        .adminControllerValidateEdeskForUserIds(requestBodyValidateEdeskForUserIdsDto, options)
+        .then((request) => request(axios, basePath))
+    },
+    /**
+     *
+     * @summary Manually update entity data against RFO (and UPVS) if possible
+     * @param {RequestValidatePhysicalEntityRfoDto} requestValidatePhysicalEntityRfoDto
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    adminControllerValidatePhysicalEntityRfo(
+      requestValidatePhysicalEntityRfoDto: RequestValidatePhysicalEntityRfoDto,
+      options?: any,
+    ): AxiosPromise<ResponseValidatePhysicalEntityRfoDto> {
+      return localVarFp
+        .adminControllerValidatePhysicalEntityRfo(requestValidatePhysicalEntityRfoDto, options)
+        .then((request) => request(axios, basePath))
+    },
+    /**
+     * Warning - do not run this in parallel, you risk creating duplicates. Processes up to 1000 at once. Where physicalEntity with matching birth number but no linked user is found, it is automatically linked instead of creating a new one
+     * @summary Create physicalEntity records for validated users
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    adminControllerValidatedUsersToPhysicalEntities(
+      options?: any,
+    ): AxiosPromise<ValidatedUsersToPhysicalEntitiesResponseDto> {
+      return localVarFp
+        .adminControllerValidatedUsersToPhysicalEntities(options)
+        .then((request) => request(axios, basePath))
+    },
+    /**
+     * Manually verify user, or legal person (depending on data in cognito), with provided data like birth number etc.
+     * @summary Manually verify user.
+     * @param {string} email
+     * @param {ManuallyVerifyUserRequestDto} manuallyVerifyUserRequestDto
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    adminControllerVerifyUserManually(
+      email: string,
+      manuallyVerifyUserRequestDto: ManuallyVerifyUserRequestDto,
+      options?: any,
+    ): AxiosPromise<OnlySuccessDto> {
+      return localVarFp
+        .adminControllerVerifyUserManually(email, manuallyVerifyUserRequestDto, options)
         .then((request) => request(axios, basePath))
     },
   }
@@ -1167,6 +1980,20 @@ export class ADMINApi extends BaseAPI {
   }
 
   /**
+   * Deactivates user account in cognito and deletes personal info from database.
+   * @summary Deactivate user account
+   * @param {string} externalId
+   * @param {*} [options] Override http request option.
+   * @throws {RequiredError}
+   * @memberof ADMINApi
+   */
+  public adminControllerDeactivateAccount(externalId: string, options?: RawAxiosRequestConfig) {
+    return ADMINApiFp(this.configuration)
+      .adminControllerDeactivateAccount(externalId, options)
+      .then((request) => request(this.axios, this.basePath))
+  }
+
+  /**
    * Get user data by birthnumber
    * @summary Get user data
    * @param {string} birthNumber userBirthNumber
@@ -1180,6 +2007,86 @@ export class ADMINApi extends BaseAPI {
   ) {
     return ADMINApiFp(this.configuration)
       .adminControllerGetUserDataByBirthNumber(birthNumber, options)
+      .then((request) => request(this.axios, this.basePath))
+  }
+
+  /**
+   * Returns data used for verification by identity card for given user in the last month. If the email is for a legal person, it returns the data for the given legal person.
+   * @summary Get verification data for user.
+   * @param {string} email
+   * @param {*} [options] Override http request option.
+   * @throws {RequiredError}
+   * @memberof ADMINApi
+   */
+  public adminControllerGetVerificationDataForUser(email: string, options?: RawAxiosRequestConfig) {
+    return ADMINApiFp(this.configuration)
+      .adminControllerGetVerificationDataForUser(email, options)
+      .then((request) => request(this.axios, this.basePath))
+  }
+
+  /**
+   * Take up to 100 physicalEntities linked to users without any attempts to validate uri and try using cognito data to validate
+   * @summary Validate edesk for physicalEntities
+   * @param {RequestBodyValidateEdeskForUserIdsDto} requestBodyValidateEdeskForUserIdsDto
+   * @param {*} [options] Override http request option.
+   * @throws {RequiredError}
+   * @memberof ADMINApi
+   */
+  public adminControllerValidateEdeskForUserIds(
+    requestBodyValidateEdeskForUserIdsDto: RequestBodyValidateEdeskForUserIdsDto,
+    options?: RawAxiosRequestConfig,
+  ) {
+    return ADMINApiFp(this.configuration)
+      .adminControllerValidateEdeskForUserIds(requestBodyValidateEdeskForUserIdsDto, options)
+      .then((request) => request(this.axios, this.basePath))
+  }
+
+  /**
+   *
+   * @summary Manually update entity data against RFO (and UPVS) if possible
+   * @param {RequestValidatePhysicalEntityRfoDto} requestValidatePhysicalEntityRfoDto
+   * @param {*} [options] Override http request option.
+   * @throws {RequiredError}
+   * @memberof ADMINApi
+   */
+  public adminControllerValidatePhysicalEntityRfo(
+    requestValidatePhysicalEntityRfoDto: RequestValidatePhysicalEntityRfoDto,
+    options?: RawAxiosRequestConfig,
+  ) {
+    return ADMINApiFp(this.configuration)
+      .adminControllerValidatePhysicalEntityRfo(requestValidatePhysicalEntityRfoDto, options)
+      .then((request) => request(this.axios, this.basePath))
+  }
+
+  /**
+   * Warning - do not run this in parallel, you risk creating duplicates. Processes up to 1000 at once. Where physicalEntity with matching birth number but no linked user is found, it is automatically linked instead of creating a new one
+   * @summary Create physicalEntity records for validated users
+   * @param {*} [options] Override http request option.
+   * @throws {RequiredError}
+   * @memberof ADMINApi
+   */
+  public adminControllerValidatedUsersToPhysicalEntities(options?: RawAxiosRequestConfig) {
+    return ADMINApiFp(this.configuration)
+      .adminControllerValidatedUsersToPhysicalEntities(options)
+      .then((request) => request(this.axios, this.basePath))
+  }
+
+  /**
+   * Manually verify user, or legal person (depending on data in cognito), with provided data like birth number etc.
+   * @summary Manually verify user.
+   * @param {string} email
+   * @param {ManuallyVerifyUserRequestDto} manuallyVerifyUserRequestDto
+   * @param {*} [options] Override http request option.
+   * @throws {RequiredError}
+   * @memberof ADMINApi
+   */
+  public adminControllerVerifyUserManually(
+    email: string,
+    manuallyVerifyUserRequestDto: ManuallyVerifyUserRequestDto,
+    options?: RawAxiosRequestConfig,
+  ) {
+    return ADMINApiFp(this.configuration)
+      .adminControllerVerifyUserManually(email, manuallyVerifyUserRequestDto, options)
       .then((request) => request(this.axios, this.basePath))
   }
 }
@@ -1958,7 +2865,6 @@ export const UsersManipulationApiAxiosParamCreator = function (configuration?: C
      * @summary Create subscribed or unsubscribed log for logged in users
      * @param {RequestGdprDataDto} requestGdprDataDto
      * @param {*} [options] Override http request option.
-     * @deprecated
      * @throws {RequiredError}
      */
     userControllerSubscribeLoggedUser: async (
@@ -2012,7 +2918,6 @@ export const UsersManipulationApiAxiosParamCreator = function (configuration?: C
      * @summary Create subscribed or unsubscribed log for logged in users
      * @param {RequestPublicSubscriptionDto} requestPublicSubscriptionDto
      * @param {*} [options] Override http request option.
-     * @deprecated
      * @throws {RequiredError}
      */
     userControllerSubscribePublicUser: async (
@@ -2066,7 +2971,6 @@ export const UsersManipulationApiAxiosParamCreator = function (configuration?: C
      * @summary Unsubscribe logged user
      * @param {RequestGdprDataDto} requestGdprDataDto
      * @param {*} [options] Override http request option.
-     * @deprecated
      * @throws {RequiredError}
      */
     userControllerUnsubscribeLoggedUser: async (
@@ -2119,16 +3023,23 @@ export const UsersManipulationApiAxiosParamCreator = function (configuration?: C
      * unsubscribe any user by uuid with different categories of subscription
      * @summary Unsubscribe user by uuid
      * @param {string} id
+     * @param {UserControllerUnsubscribePublicUserTypeEnum} type Type of Gdpr subscription
+     * @param {UserControllerUnsubscribePublicUserCategoryEnum} category Type of Gdpr category
      * @param {*} [options] Override http request option.
-     * @deprecated
      * @throws {RequiredError}
      */
     userControllerUnsubscribePublicUser: async (
       id: string,
+      type: UserControllerUnsubscribePublicUserTypeEnum,
+      category: UserControllerUnsubscribePublicUserCategoryEnum,
       options: RawAxiosRequestConfig = {},
     ): Promise<RequestArgs> => {
       // verify required parameter 'id' is not null or undefined
       assertParamExists('userControllerUnsubscribePublicUser', 'id', id)
+      // verify required parameter 'type' is not null or undefined
+      assertParamExists('userControllerUnsubscribePublicUser', 'type', type)
+      // verify required parameter 'category' is not null or undefined
+      assertParamExists('userControllerUnsubscribePublicUser', 'category', category)
       const localVarPath = `/user/public/unsubscribe/{id}`.replace(
         `{${'id'}}`,
         encodeURIComponent(String(id)),
@@ -2147,6 +3058,14 @@ export const UsersManipulationApiAxiosParamCreator = function (configuration?: C
       // authentication bearer required
       // http bearer authentication required
       await setBearerAuthToObject(localVarHeaderParameter, configuration)
+
+      if (type !== undefined) {
+        localVarQueryParameter['type'] = type
+      }
+
+      if (category !== undefined) {
+        localVarQueryParameter['category'] = category
+      }
 
       setSearchParams(localVarUrlObj, localVarQueryParameter)
       let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {}
@@ -2253,7 +3172,6 @@ export const UsersManipulationApiFp = function (configuration?: Configuration) {
      * @summary Create subscribed or unsubscribed log for logged in users
      * @param {RequestGdprDataDto} requestGdprDataDto
      * @param {*} [options] Override http request option.
-     * @deprecated
      * @throws {RequiredError}
      */
     async userControllerSubscribeLoggedUser(
@@ -2282,7 +3200,6 @@ export const UsersManipulationApiFp = function (configuration?: Configuration) {
      * @summary Create subscribed or unsubscribed log for logged in users
      * @param {RequestPublicSubscriptionDto} requestPublicSubscriptionDto
      * @param {*} [options] Override http request option.
-     * @deprecated
      * @throws {RequiredError}
      */
     async userControllerSubscribePublicUser(
@@ -2311,7 +3228,6 @@ export const UsersManipulationApiFp = function (configuration?: Configuration) {
      * @summary Unsubscribe logged user
      * @param {RequestGdprDataDto} requestGdprDataDto
      * @param {*} [options] Override http request option.
-     * @deprecated
      * @throws {RequiredError}
      */
     async userControllerUnsubscribeLoggedUser(
@@ -2339,16 +3255,21 @@ export const UsersManipulationApiFp = function (configuration?: Configuration) {
      * unsubscribe any user by uuid with different categories of subscription
      * @summary Unsubscribe user by uuid
      * @param {string} id
+     * @param {UserControllerUnsubscribePublicUserTypeEnum} type Type of Gdpr subscription
+     * @param {UserControllerUnsubscribePublicUserCategoryEnum} category Type of Gdpr category
      * @param {*} [options] Override http request option.
-     * @deprecated
      * @throws {RequiredError}
      */
     async userControllerUnsubscribePublicUser(
       id: string,
+      type: UserControllerUnsubscribePublicUserTypeEnum,
+      category: UserControllerUnsubscribePublicUserCategoryEnum,
       options?: RawAxiosRequestConfig,
     ): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<string>> {
       const localVarAxiosArgs = await localVarAxiosParamCreator.userControllerUnsubscribePublicUser(
         id,
+        type,
+        category,
         options,
       )
       const localVarOperationServerIndex = configuration?.serverIndex ?? 0
@@ -2419,7 +3340,6 @@ export const UsersManipulationApiFactory = function (
      * @summary Create subscribed or unsubscribed log for logged in users
      * @param {RequestGdprDataDto} requestGdprDataDto
      * @param {*} [options] Override http request option.
-     * @deprecated
      * @throws {RequiredError}
      */
     userControllerSubscribeLoggedUser(
@@ -2435,7 +3355,6 @@ export const UsersManipulationApiFactory = function (
      * @summary Create subscribed or unsubscribed log for logged in users
      * @param {RequestPublicSubscriptionDto} requestPublicSubscriptionDto
      * @param {*} [options] Override http request option.
-     * @deprecated
      * @throws {RequiredError}
      */
     userControllerSubscribePublicUser(
@@ -2451,7 +3370,6 @@ export const UsersManipulationApiFactory = function (
      * @summary Unsubscribe logged user
      * @param {RequestGdprDataDto} requestGdprDataDto
      * @param {*} [options] Override http request option.
-     * @deprecated
      * @throws {RequiredError}
      */
     userControllerUnsubscribeLoggedUser(
@@ -2466,13 +3384,19 @@ export const UsersManipulationApiFactory = function (
      * unsubscribe any user by uuid with different categories of subscription
      * @summary Unsubscribe user by uuid
      * @param {string} id
+     * @param {UserControllerUnsubscribePublicUserTypeEnum} type Type of Gdpr subscription
+     * @param {UserControllerUnsubscribePublicUserCategoryEnum} category Type of Gdpr category
      * @param {*} [options] Override http request option.
-     * @deprecated
      * @throws {RequiredError}
      */
-    userControllerUnsubscribePublicUser(id: string, options?: any): AxiosPromise<string> {
+    userControllerUnsubscribePublicUser(
+      id: string,
+      type: UserControllerUnsubscribePublicUserTypeEnum,
+      category: UserControllerUnsubscribePublicUserCategoryEnum,
+      options?: any,
+    ): AxiosPromise<string> {
       return localVarFp
-        .userControllerUnsubscribePublicUser(id, options)
+        .userControllerUnsubscribePublicUser(id, type, category, options)
         .then((request) => request(axios, basePath))
     },
   }
@@ -2529,7 +3453,6 @@ export class UsersManipulationApi extends BaseAPI {
    * @summary Create subscribed or unsubscribed log for logged in users
    * @param {RequestGdprDataDto} requestGdprDataDto
    * @param {*} [options] Override http request option.
-   * @deprecated
    * @throws {RequiredError}
    * @memberof UsersManipulationApi
    */
@@ -2547,7 +3470,6 @@ export class UsersManipulationApi extends BaseAPI {
    * @summary Create subscribed or unsubscribed log for logged in users
    * @param {RequestPublicSubscriptionDto} requestPublicSubscriptionDto
    * @param {*} [options] Override http request option.
-   * @deprecated
    * @throws {RequiredError}
    * @memberof UsersManipulationApi
    */
@@ -2565,7 +3487,6 @@ export class UsersManipulationApi extends BaseAPI {
    * @summary Unsubscribe logged user
    * @param {RequestGdprDataDto} requestGdprDataDto
    * @param {*} [options] Override http request option.
-   * @deprecated
    * @throws {RequiredError}
    * @memberof UsersManipulationApi
    */
@@ -2582,14 +3503,40 @@ export class UsersManipulationApi extends BaseAPI {
    * unsubscribe any user by uuid with different categories of subscription
    * @summary Unsubscribe user by uuid
    * @param {string} id
+   * @param {UserControllerUnsubscribePublicUserTypeEnum} type Type of Gdpr subscription
+   * @param {UserControllerUnsubscribePublicUserCategoryEnum} category Type of Gdpr category
    * @param {*} [options] Override http request option.
-   * @deprecated
    * @throws {RequiredError}
    * @memberof UsersManipulationApi
    */
-  public userControllerUnsubscribePublicUser(id: string, options?: RawAxiosRequestConfig) {
+  public userControllerUnsubscribePublicUser(
+    id: string,
+    type: UserControllerUnsubscribePublicUserTypeEnum,
+    category: UserControllerUnsubscribePublicUserCategoryEnum,
+    options?: RawAxiosRequestConfig,
+  ) {
     return UsersManipulationApiFp(this.configuration)
-      .userControllerUnsubscribePublicUser(id, options)
+      .userControllerUnsubscribePublicUser(id, type, category, options)
       .then((request) => request(this.axios, this.basePath))
   }
 }
+
+/**
+ * @export
+ */
+export const UserControllerUnsubscribePublicUserTypeEnum = {
+  License: 'LICENSE',
+  Marketing: 'MARKETING',
+  FormalCommunication: 'FORMAL_COMMUNICATION',
+} as const
+export type UserControllerUnsubscribePublicUserTypeEnum =
+  (typeof UserControllerUnsubscribePublicUserTypeEnum)[keyof typeof UserControllerUnsubscribePublicUserTypeEnum]
+/**
+ * @export
+ */
+export const UserControllerUnsubscribePublicUserCategoryEnum = {
+  Taxes: 'TAXES',
+  Esbs: 'ESBS',
+} as const
+export type UserControllerUnsubscribePublicUserCategoryEnum =
+  (typeof UserControllerUnsubscribePublicUserCategoryEnum)[keyof typeof UserControllerUnsubscribePublicUserCategoryEnum]

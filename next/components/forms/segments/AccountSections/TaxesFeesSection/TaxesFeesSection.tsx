@@ -1,5 +1,3 @@
-import { StrapiTaxAdministrator } from '@backend/utils/tax-administrator'
-import { ResponseGetTaxesDto } from '@clients/openapi-tax'
 import AccountSectionHeader from 'components/forms/segments/AccountSectionHeader/AccountSectionHeader'
 import TaxesFeesCard from 'components/forms/segments/AccountSections/TaxesFeesSection/TaxesFeesCard'
 import { useTranslation } from 'next-i18next'
@@ -7,13 +5,10 @@ import { useTranslation } from 'next-i18next'
 import TaxesFeesCards from './TaxesFeesCards'
 import TaxesFeesErrorCard from './TaxesFeesErrorCard'
 import TaxesFeesInPreparationCard from './TaxesFeesInPreparationCard'
+import { useTaxFeesSection } from './useTaxFeesSection'
 
-type TaxesFeesSectionProps = {
-  taxesData: ResponseGetTaxesDto
-  taxAdministrator: StrapiTaxAdministrator | null
-}
-
-const TaxesFeesSection = ({ taxesData, taxAdministrator }: TaxesFeesSectionProps) => {
+const TaxesFeesSection = () => {
+  const { taxesData, taxAdministrator } = useTaxFeesSection()
   const { t } = useTranslation('account')
 
   const displayErrorCard = !taxesData.isInNoris

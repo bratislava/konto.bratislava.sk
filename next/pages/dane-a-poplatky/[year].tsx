@@ -1,15 +1,18 @@
 import { ResponseTaxDto } from '@clients/openapi-tax'
 import { taxApi } from '@clients/tax'
+import { dehydrate, DehydratedState, HydrationBoundary, QueryClient } from '@tanstack/react-query'
 import { isAxiosError } from 'axios'
 import AccountPageLayout from 'components/layouts/AccountPageLayout'
 
 import TaxFeeSection from '../../components/forms/segments/AccountSections/TaxesFeesSection/TaxFeeSection'
 import { SsrAuthProviderHOC } from '../../components/logic/SsrAuthContext'
+import { prefetchUserQuery } from '../../frontend/hooks/useUser'
 import { amplifyGetServerSideProps } from '../../frontend/utils/amplifyServer'
 import { slovakServerSideTranslations } from '../../frontend/utils/slovakServerSideTranslations'
 
 type AccountTaxesFeesPageProps = {
   taxData: ResponseTaxDto
+  dehydratedState: DehydratedState
 }
 
 type Params = {
@@ -32,15 +35,21 @@ export const getServerSideProps = amplifyGetServerSideProps<AccountTaxesFeesPage
       return { notFound: true }
     }
 
+    const queryClient = new QueryClient()
+
     try {
-      const { data } = await taxApi.taxControllerGetActualTaxes(yearNumber, {
-        accessToken: 'onlyAuthenticated',
-        accessTokenSsrGetFn: getAccessToken,
-      })
+      const [{ data: taxData }] = await Promise.all([
+        taxApi.taxControllerGetActualTaxes(yearNumber, {
+          accessToken: 'onlyAuthenticated',
+          accessTokenSsrGetFn: getAccessToken,
+        }),
+        prefetchUserQuery(queryClient, getAccessToken),
+      ])
 
       return {
         props: {
-          taxData: data,
+          taxData,
+          dehydratedState: dehydrate(queryClient),
           ...(await slovakServerSideTranslations()),
         },
       }
@@ -65,11 +74,13 @@ export const getServerSideProps = amplifyGetServerSideProps<AccountTaxesFeesPage
   { requiresSignIn: true },
 )
 
-const AccountTaxesFeesPage = ({ taxData }: AccountTaxesFeesPageProps) => {
+const AccountTaxesFeesPage = ({ taxData, dehydratedState }: AccountTaxesFeesPageProps) => {
   return (
-    <AccountPageLayout>
-      <TaxFeeSection taxData={taxData} />
-    </AccountPageLayout>
+    <HydrationBoundary state={dehydratedState}>
+      <AccountPageLayout>
+        <TaxFeeSection taxData={taxData} />
+      </AccountPageLayout>
+    </HydrationBoundary>
   )
 }
 

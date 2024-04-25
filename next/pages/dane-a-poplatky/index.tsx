@@ -4,17 +4,20 @@ import {
 } from '@backend/utils/tax-administrator'
 import { ResponseGetTaxesDto } from '@clients/openapi-tax'
 import { taxApi } from '@clients/tax'
+import { dehydrate, DehydratedState, HydrationBoundary, QueryClient } from '@tanstack/react-query'
 import { isAxiosError } from 'axios'
 import TaxesFeesSection from 'components/forms/segments/AccountSections/TaxesFeesSection/TaxesFeesSection'
 import AccountPageLayout from 'components/layouts/AccountPageLayout'
 
 import { SsrAuthProviderHOC } from '../../components/logic/SsrAuthContext'
+import { prefetchUserQuery } from '../../frontend/hooks/useUser'
 import { amplifyGetServerSideProps } from '../../frontend/utils/amplifyServer'
 import { slovakServerSideTranslations } from '../../frontend/utils/slovakServerSideTranslations'
 
 type AccountTaxesFeesPageProps = {
   taxesData: ResponseGetTaxesDto
   taxAdministrator: StrapiTaxAdministrator | null
+  dehydratedState: DehydratedState
 }
 
 /**
@@ -42,16 +45,20 @@ const getTaxes = async (getAccessToken: () => Promise<string | null>) => {
 
 export const getServerSideProps = amplifyGetServerSideProps<AccountTaxesFeesPageProps>(
   async ({ amplifyContextSpec, getAccessToken }) => {
+    const queryClient = new QueryClient()
+
     try {
       const [taxesData, taxAdministrator] = await Promise.all([
         getTaxes(getAccessToken),
         getTaxAdministratorForUser(amplifyContextSpec),
+        prefetchUserQuery(queryClient, getAccessToken),
       ])
 
       return {
         props: {
           taxesData,
           taxAdministrator: taxAdministrator ?? null,
+          dehydratedState: dehydrate(queryClient),
           ...(await slovakServerSideTranslations()),
         },
       }
@@ -67,11 +74,17 @@ export const getServerSideProps = amplifyGetServerSideProps<AccountTaxesFeesPage
   { requiresSignIn: true },
 )
 
-const AccountTaxesFeesPage = ({ taxesData, taxAdministrator }: AccountTaxesFeesPageProps) => {
+const AccountTaxesFeesPage = ({
+  taxesData,
+  taxAdministrator,
+  dehydratedState,
+}: AccountTaxesFeesPageProps) => {
   return (
-    <AccountPageLayout>
-      <TaxesFeesSection taxAdministrator={taxAdministrator} taxesData={taxesData} />
-    </AccountPageLayout>
+    <HydrationBoundary state={dehydratedState}>
+      <AccountPageLayout>
+        <TaxesFeesSection taxAdministrator={taxAdministrator} taxesData={taxesData} />
+      </AccountPageLayout>
+    </HydrationBoundary>
   )
 }
 

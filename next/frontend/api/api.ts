@@ -3,7 +3,7 @@
 import { ErrorObject } from 'ajv'
 
 import { environment } from '../../environment'
-import { ApiError, Gdpr, Identity, LegalIdentity, TaxApiError, User } from '../dtos/generalApiDto'
+import { ApiError, Identity, LegalIdentity, TaxApiError } from '../dtos/generalApiDto'
 import { getAccessTokenOrLogout } from '../utils/amplifyClient'
 import logger, { developmentLog } from '../utils/logger'
 
@@ -81,59 +81,7 @@ export const verifyLegalEntityIdentityApi = async (data: LegalIdentity) => {
   })
 }
 
-export const subscribeApi = async (data: { gdprData?: Gdpr[] }): Promise<User> => {
-  const token = await getAccessTokenOrLogout()
-
-  return fetchJsonApi<User>(`${environment.cityAccountUrl}/user/subscribe`, {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-      Authorization: `Bearer ${token}`,
-    },
-    body: JSON.stringify(data),
-  })
-}
-
-export const unsubscribeApi = async (data: { gdprData?: Gdpr[] }): Promise<User> => {
-  const token = await getAccessTokenOrLogout()
-
-  return fetchJsonApi<User>(`${environment.cityAccountUrl}/user/unsubscribe`, {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-      Authorization: `Bearer ${token}`,
-    },
-    body: JSON.stringify(data),
-  })
-}
-
-export const getUserApi = async (): Promise<User> => {
-  const token = await getAccessTokenOrLogout()
-
-  return fetchJsonApi<User>(`${environment.cityAccountUrl}/user/get-or-create`, {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-      Authorization: `Bearer ${token}`,
-    },
-  })
-}
-
-export const resetRcApi = async () => {
-  const token = await getAccessTokenOrLogout()
-
-  return fetchJsonApi(`${environment.cityAccountUrl}/user/remove-birthnumber`, {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-      Authorization: `Bearer ${token}`,
-    },
-  })
-}
-
-export const changeEmailApi = async (data: {
-  newEmail: string
-}): Promise<Omit<User, 'GdprData'>> => {
+export const changeEmailApi = async (data: { newEmail: string }) => {
   const token = await getAccessTokenOrLogout()
 
   return fetchJsonApi(`${environment.cityAccountUrl}/user/change-email`, {

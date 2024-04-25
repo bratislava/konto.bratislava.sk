@@ -1828,11 +1828,11 @@ export interface GetFileResponseDto {
    */
   fileName: string
   /**
-   * Hashed file uid under which is file stored in minio
+   * Name under which is file stored in minio
    * @type {string}
    * @memberof GetFileResponseDto
    */
-  fileUid: string
+  minioFileName: string
   /**
    * Form type
    * @type {string}
@@ -2948,11 +2948,11 @@ export interface PostFileResponseDto {
    */
   fileName: string
   /**
-   * Hashed file uid under which is file stored in minio
+   * Name under which is file stored in minio
    * @type {string}
    * @memberof PostFileResponseDto
    */
-  fileUid: string
+  minioFileName: string
   /**
    * Form type
    * @type {string}
@@ -4189,11 +4189,11 @@ export interface UpdateFileStatusResponseDto {
    */
   fileName: string
   /**
-   * Hashed file uid under which is file stored in minio
+   * Name under which is file stored in minio
    * @type {string}
    * @memberof UpdateFileStatusResponseDto
    */
-  fileUid: string
+  minioFileName: string
   /**
    * Form type
    * @type {string}

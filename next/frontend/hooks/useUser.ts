@@ -1,10 +1,11 @@
 import { cityAccountApi } from '@clients/city-account'
 import {
   GdprDataDto,
-  GdprDataDtoCategoryEnum,
-  GdprDataDtoTypeEnum,
+  ResponseGdprUserDataDtoSubTypeEnum,
+  ResponseUserDataDto,
 } from '@clients/openapi-city-account'
 import { QueryClient, useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
+import { AxiosError, AxiosResponse } from 'axios'
 
 const userQueryKey = ['user']
 
@@ -22,47 +23,8 @@ export const prefetchUserQuery = async (
         .then((response) => response.data),
   })
 
-const useSubscriptionByType = (gdprData: GdprDataDto, type: 'subscribe' | 'unsubscribe') => {
-  const queryClient = useQueryClient()
-  const endpoint = {
-    subscribe: cityAccountApi.userControllerSubscribeLoggedUser,
-    unsubscribe: cityAccountApi.userControllerUnsubscribeLoggedUser,
-  }[type]
-
-  return useMutation({
-    mutationFn: () =>
-      endpoint(
-        {
-          gdprData: [gdprData],
-        },
-        {
-          accessToken: 'always',
-        },
-      ),
-    onSuccess: (response) => {
-      // Subscribe / unsubscribe endpoints return new user data, so we can update the cache and there is no need for
-      // refetch.
-      queryClient.setQueryData(userQueryKey, () => response.data)
-    },
-    networkMode: 'always',
-  })
-}
-
-const useSubscribeUnsubscribe = (gdprData: GdprDataDto) => {
-  const subscribeMutation = useSubscriptionByType(gdprData, 'subscribe')
-  const unsubscribeMutation = useSubscriptionByType(gdprData, 'unsubscribe')
-
-  return [subscribeMutation, unsubscribeMutation]
-}
-
 export const useUser = () => {
   const queryClient = useQueryClient()
-  const initialData = queryClient.getQueryData(userQueryKey)
-
-  if (!initialData) {
-    // This hook relies on the user data being prefetched, so we throw an error if it's not.
-    throw new Error('User data has not been prefetched')
-  }
 
   const { data: userData } = useQuery({
     queryKey: userQueryKey,
@@ -73,37 +35,54 @@ export const useUser = () => {
     staleTime: Infinity,
   })
 
-  const [
-    { mutate: taxesMarketingSubscribe, isPending: taxesMarketingSubscribeIsPending },
-    { mutate: taxesMarketingUnsubscribe, isPending: taxesMarketingUnsubscribeIsPending },
-  ] = useSubscribeUnsubscribe({
-    category: GdprDataDtoCategoryEnum.Taxes,
-    type: GdprDataDtoTypeEnum.Marketing,
-  })
-
-  const [
-    {
-      mutate: taxesFormalCommunicationSubscribe,
-      isPending: taxesFormalCommunicationSubscribeIsPending,
-    },
-    {
-      mutate: taxesFormalCommunicationUnsubscribe,
-      isPending: taxesFormalCommunicationUnsubscribeIsPending,
-    },
-  ] = useSubscribeUnsubscribe({
-    category: GdprDataDtoCategoryEnum.Taxes,
-    type: GdprDataDtoTypeEnum.FormalCommunication,
-  })
+  const initialData = queryClient.getQueryData(userQueryKey)
+  if (!initialData || !userData) {
+    // This hook relies on the user data being prefetched, so we throw an error if it's not.
+    throw new Error('User data has not been prefetched')
+  }
 
   return {
     userData,
-    taxesMarketingSubscribe,
-    taxesMarketingSubscribeIsPending,
-    taxesMarketingUnsubscribe,
-    taxesMarketingUnsubscribeIsPending,
-    taxesFormalCommunicationSubscribe,
-    taxesFormalCommunicationSubscribeIsPending,
-    taxesFormalCommunicationUnsubscribe,
-    taxesFormalCommunicationUnsubscribeIsPending,
   }
+}
+
+export const useUserSubscription = (gdprData: GdprDataDto) => {
+  const queryClient = useQueryClient()
+  const { userData } = useUser()
+
+  const currentGdprData = userData?.gdprData.find(
+    ({ category, type }) => category === gdprData.category && type === gdprData.type,
+  )
+
+  const subType = currentGdprData?.subType
+  const isSubscribed = subType === ResponseGdprUserDataDtoSubTypeEnum.Subscribe ?? false
+
+  const { mutateAsync: changeSubscription, isPending: subscriptionChangePending } = useMutation<
+    AxiosResponse<ResponseUserDataDto>,
+    AxiosError,
+    boolean
+  >({
+    mutationFn: (subscribe) => {
+      const endpoint = subscribe
+        ? cityAccountApi.userControllerSubscribeLoggedUser
+        : cityAccountApi.userControllerUnsubscribeLoggedUser
+
+      return endpoint(
+        {
+          gdprData: [gdprData],
+        },
+        {
+          accessToken: 'always',
+        },
+      )
+    },
+    onSuccess: (response) => {
+      // Subscribe / unsubscribe endpoints return new user data, so we can update the cache and there is no need for
+      // refetch.
+      queryClient.setQueryData(userQueryKey, () => response.data)
+    },
+    networkMode: 'always',
+  })
+
+  return { subType, isSubscribed, changeSubscription, subscriptionChangePending }
 }

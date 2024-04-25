@@ -1,8 +1,9 @@
+import { TaxFragment } from '@clients/graphql-strapi/api'
 import { ResponseTaxDto } from '@clients/openapi-tax'
 import { taxApi } from '@clients/tax'
 import { useMutation } from '@tanstack/react-query'
 import { useRouter } from 'next/router'
-import React, { createContext, PropsWithChildren, useContext } from 'react'
+import React, { createContext, PropsWithChildren, useContext, useState } from 'react'
 
 import useSnackbar from '../../../../../frontend/hooks/useSnackbar'
 import { base64ToArrayBuffer, downloadBlob } from '../../../../../frontend/utils/general'
@@ -10,9 +11,13 @@ import logger from '../../../../../frontend/utils/logger'
 
 type TaxFeeSectionProviderProps = {
   taxData: ResponseTaxDto
+  strapiTax: TaxFragment
 }
 
-const useGetContext = ({ taxData }: TaxFeeSectionProviderProps) => {
+const useGetContext = ({ taxData, strapiTax }: TaxFeeSectionProviderProps) => {
+  const [officialCorrespondenceChannelModalOpen, setOfficialCorrespondenceChannelModalOpen] =
+    useState(false)
+
   const router = useRouter()
   const [openSnackbarError] = useSnackbar({ variant: 'error' })
   const [openSnackbarInfo, closeSnackbarInfo] = useSnackbar({ variant: 'info' })
@@ -52,7 +57,16 @@ const useGetContext = ({ taxData }: TaxFeeSectionProviderProps) => {
     downloadBlob(data as Blob, `Dan-z-nehnutelnosti-${taxData.year}.pdf`)
   }
 
-  return { taxData, redirectToPayment, redirectToPaymentIsPending, downloadQrCode, downloadPdf }
+  return {
+    taxData,
+    strapiTax,
+    redirectToPayment,
+    redirectToPaymentIsPending,
+    downloadQrCode,
+    downloadPdf,
+    officialCorrespondenceChannelModalOpen,
+    setOfficialCorrespondenceChannelModalOpen,
+  }
 }
 
 const TaxFeeSectionContext = createContext<ReturnType<typeof useGetContext> | undefined>(undefined)

@@ -1,3 +1,5 @@
+import { strapiClient } from '@clients/graphql-strapi'
+import { TaxFragment } from '@clients/graphql-strapi/api'
 import { ResponseTaxDto } from '@clients/openapi-tax'
 import { taxApi } from '@clients/tax'
 import { dehydrate, DehydratedState, HydrationBoundary, QueryClient } from '@tanstack/react-query'
@@ -5,6 +7,7 @@ import { isAxiosError } from 'axios'
 import AccountPageLayout from 'components/layouts/AccountPageLayout'
 
 import TaxFeeSection from '../../components/forms/segments/AccountSections/TaxesFeesSection/TaxFeeSection'
+import { TaxFeeSectionProvider } from '../../components/forms/segments/AccountSections/TaxesFeesSection/useTaxFeeSection'
 import { SsrAuthProviderHOC } from '../../components/logic/SsrAuthContext'
 import { prefetchUserQuery } from '../../frontend/hooks/useUser'
 import { amplifyGetServerSideProps } from '../../frontend/utils/amplifyServer'
@@ -12,6 +15,7 @@ import { slovakServerSideTranslations } from '../../frontend/utils/slovakServerS
 
 type AccountTaxesFeesPageProps = {
   taxData: ResponseTaxDto
+  strapiTax: TaxFragment
   dehydratedState: DehydratedState
 }
 
@@ -38,17 +42,23 @@ export const getServerSideProps = amplifyGetServerSideProps<AccountTaxesFeesPage
     const queryClient = new QueryClient()
 
     try {
-      const [{ data: taxData }] = await Promise.all([
+      const [{ data: taxData }, strapiTax] = await Promise.all([
         taxApi.taxControllerGetActualTaxes(yearNumber, {
           accessToken: 'onlyAuthenticated',
           accessTokenSsrGetFn: getAccessToken,
         }),
+        strapiClient.Tax().then((response) => response.tax?.data?.attributes),
         prefetchUserQuery(queryClient, getAccessToken),
       ])
+
+      if (!strapiTax) {
+        return { notFound: true }
+      }
 
       return {
         props: {
           taxData,
+          strapiTax,
           dehydratedState: dehydrate(queryClient),
           ...(await slovakServerSideTranslations()),
         },
@@ -74,11 +84,17 @@ export const getServerSideProps = amplifyGetServerSideProps<AccountTaxesFeesPage
   { requiresSignIn: true },
 )
 
-const AccountTaxesFeesPage = ({ taxData, dehydratedState }: AccountTaxesFeesPageProps) => {
+const AccountTaxesFeesPage = ({
+  taxData,
+  strapiTax,
+  dehydratedState,
+}: AccountTaxesFeesPageProps) => {
   return (
     <HydrationBoundary state={dehydratedState}>
       <AccountPageLayout>
-        <TaxFeeSection taxData={taxData} />
+        <TaxFeeSectionProvider taxData={taxData} strapiTax={strapiTax}>
+          <TaxFeeSection />
+        </TaxFeeSectionProvider>
       </AccountPageLayout>
     </HydrationBoundary>
   )

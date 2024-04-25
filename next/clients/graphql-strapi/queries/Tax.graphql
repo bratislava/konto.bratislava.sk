@@ -1,0 +1,16 @@
+fragment Tax on Tax {
+  accountCommunicationConsentText
+  currentYearTaxInPreparationText
+  currentYearTaxInPreparationTitle
+  displayCurrentYearTaxInPreparation
+}
+
+query Tax {
+  tax {
+    data {
+      attributes {
+        ...Tax
+      }
+    }
+  }
+}

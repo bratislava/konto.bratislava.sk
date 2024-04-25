@@ -59,7 +59,8 @@ const ThankYouCard = ({
         ) : (
           <>
             <ButtonNew
-              href={`${ROUTES.TAXES_AND_FEES}/2023`}
+              // TODO: Right now it is not possible to determine the year that it is being paid for.
+              href={ROUTES.TAXES_AND_FEES_YEAR(new Date().getFullYear())}
               variant="black-solid"
               fullWidth
               startIcon={<RepeatIcon />}

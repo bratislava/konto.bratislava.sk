@@ -26,7 +26,7 @@ const TaxesFeesCard = ({ taxData }: TaxesFeesCardProps) => {
       <div className="relative hidden h-[104px] w-full items-center justify-between rounded-lg border-2 border-gray-200 bg-white lg:flex">
         <div className="flex w-full items-center justify-between">
           <div className="flex w-full flex-col pl-6">
-            <MLinkNew href={`${ROUTES.TAXES_AND_FEES}/${year}`} variant="unstyled" stretched>
+            <MLinkNew href={ROUTES.TAXES_AND_FEES_YEAR(year)} variant="unstyled" stretched>
               <h3 className="text-20-semibold mb-1">
                 {t('account_section_payment.tax_card_title')}
               </h3>
@@ -70,7 +70,7 @@ const TaxesFeesCard = ({ taxData }: TaxesFeesCardProps) => {
         <div className="flex w-full items-start justify-between">
           <div className="flex flex-col">
             <MLinkNew
-              href={`${ROUTES.TAXES_AND_FEES}/${year}`}
+              href={ROUTES.TAXES_AND_FEES_YEAR(year)}
               variant="unstyled"
               stretched
               className="text-p2-semibold mb-1 leading-5"

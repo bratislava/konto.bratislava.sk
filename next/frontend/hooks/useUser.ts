@@ -25,12 +25,6 @@ export const prefetchUserQuery = async (
 
 export const useUser = () => {
   const queryClient = useQueryClient()
-  const initialData = queryClient.getQueryData(userQueryKey)
-
-  if (!initialData) {
-    // This hook relies on the user data being prefetched, so we throw an error if it's not.
-    throw new Error('User data has not been prefetched')
-  }
 
   const { data: userData } = useQuery({
     queryKey: userQueryKey,
@@ -40,6 +34,12 @@ export const useUser = () => {
         .then((response) => response.data),
     staleTime: Infinity,
   })
+
+  const initialData = queryClient.getQueryData(userQueryKey)
+  if (!initialData || !userData) {
+    // This hook relies on the user data being prefetched, so we throw an error if it's not.
+    throw new Error('User data has not been prefetched')
+  }
 
   return {
     userData,

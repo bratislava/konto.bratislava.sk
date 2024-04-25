@@ -6,10 +6,9 @@ import { ROUTES } from '../../../../../frontend/api/constants'
 const TaxFooter = () => {
   const { t } = useTranslation('account')
   return (
-    <>
-      <div className="my-4 block h-0.5 w-full bg-gray-200 md:hidden" />
+    <div className="flex w-full flex-col px-4 lg:px-0">
       <AccountMarkdown content={t('tax_footer.register_info_help', { url: ROUTES.HELP })} />
-    </>
+    </div>
   )
 }
 

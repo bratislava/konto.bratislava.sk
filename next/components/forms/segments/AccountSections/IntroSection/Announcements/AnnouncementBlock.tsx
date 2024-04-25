@@ -1,4 +1,3 @@
-import { ArrowRightIcon } from '@assets/ui-icons'
 import cx from 'classnames'
 import AccountMarkdown from 'components/forms/segments/AccountMarkdown/AccountMarkdown'
 import Image from 'next/legacy/image'
@@ -8,13 +7,7 @@ import ButtonNew, { ButtonProps } from '../../../../simple-components/ButtonNew'
 type AnnouncementBlockProps = {
   announcementContent?: string
   imagePath?: string
-  buttons?: {
-    title: string
-    onPress: () => void
-    variant?: ButtonProps['variant']
-    arrowIcon?: boolean
-  }[]
-  buttonTitle?: string
+  buttons?: ButtonProps[]
   onPress?: () => void
   reversed?: boolean
 }
@@ -45,15 +38,8 @@ const AnnouncementBlock = ({
         </div>
         {buttons.length > 0 && (
           <div className="flex flex-col gap-4 lg:flex-row">
-            {buttons.map(({ title, onPress, variant, arrowIcon }, index) => (
-              <ButtonNew
-                key={index}
-                endIcon={arrowIcon && <ArrowRightIcon className="size-5 lg:size-6" />}
-                variant={variant}
-                onPress={onPress}
-              >
-                {title}
-              </ButtonNew>
+            {buttons.map((props, index) => (
+              <ButtonNew key={index} {...props} />
             ))}
           </div>
         )}

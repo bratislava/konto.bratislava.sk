@@ -1,27 +1,28 @@
-import { StrapiTaxAdministrator } from '@backend/utils/tax-administrator'
-import { ResponseGetTaxesDto } from '@clients/openapi-tax'
 import cx from 'classnames'
 import React from 'react'
 
 import { environment } from '../../../../../environment'
 import { AccountType } from '../../../../../frontend/dtos/accountDto'
 import { useSsrAuth } from '../../../../../frontend/hooks/useSsrAuth'
+import { useUser } from '../../../../../frontend/hooks/useUser'
 import TaxesFeesDeliveryMethodBanner from './TaxesFeesDeliveryMethodBanner'
 import TaxesFeesDeliveryMethodCard from './TaxesFeesDeliveryMethodCard'
+import TaxesFeesDeliveryMethodDelayed from './TaxesFeesDeliveryMethodDelayed'
 import TaxesFeesTaxAdministratorCard from './TaxesFeesTaxAdministratorCard'
+import { useTaxFeesSection } from './useTaxFeesSection'
 
-type TaxesFeesCardsProps = {
-  taxesData: ResponseGetTaxesDto
-  taxAdministrator: StrapiTaxAdministrator | null
-}
-
-const TaxesFeesCards = ({ taxAdministrator }: TaxesFeesCardsProps) => {
+const TaxesFeesCards = () => {
+  const { userData } = useUser()
   const { accountType } = useSsrAuth()
+  const { taxAdministrator, setOfficialCorrespondenceChannelModalOpen } = useTaxFeesSection()
   const displayTaxAdministratorCard =
     taxAdministrator !== null && accountType === AccountType.FyzickaOsoba
-  const displayDeliveryMethodBanner = environment.featureToggles.taxReportDeliveryMethod // && TODO implement
+  const displayDeliveryMethodBanner =
+    environment.featureToggles.taxReportDeliveryMethod && userData.showEmailCommunicationBanner
   const displayDeliveryMethodCard =
     environment.featureToggles.taxReportDeliveryMethod && !displayDeliveryMethodBanner
+  const displayDeliveryMethodDelayed =
+    environment.featureToggles.taxReportDeliveryMethod && !userData.wasVerifiedBeforeTaxDeadline
 
   if (!displayTaxAdministratorCard && !displayDeliveryMethodCard && !displayDeliveryMethodBanner) {
     return null
@@ -32,12 +33,23 @@ const TaxesFeesCards = ({ taxAdministrator }: TaxesFeesCardsProps) => {
   })
 
   return (
-    <div className={wrapperStyle}>
-      {displayDeliveryMethodBanner && <TaxesFeesDeliveryMethodBanner />}
-      {displayDeliveryMethodCard && <TaxesFeesDeliveryMethodCard />}
-      {displayTaxAdministratorCard && (
-        <TaxesFeesTaxAdministratorCard taxAdministrator={taxAdministrator} />
-      )}
+    <div className="flex flex-col gap-4">
+      <div className={wrapperStyle}>
+        {displayDeliveryMethodBanner && (
+          <TaxesFeesDeliveryMethodBanner
+            onDeliveryMethodChange={() => setOfficialCorrespondenceChannelModalOpen(true)}
+          />
+        )}
+        {displayDeliveryMethodCard && (
+          <TaxesFeesDeliveryMethodCard
+            onDeliveryMethodChange={() => setOfficialCorrespondenceChannelModalOpen(true)}
+          />
+        )}
+        {displayTaxAdministratorCard && (
+          <TaxesFeesTaxAdministratorCard taxAdministrator={taxAdministrator} />
+        )}
+      </div>
+      {displayDeliveryMethodDelayed && <TaxesFeesDeliveryMethodDelayed />}
     </div>
   )
 }

@@ -46,18 +46,6 @@ export interface RequestPostNorisLoadDataDto {
    */
   year: number
   /**
-   * user name to noris
-   * @type {string}
-   * @memberof RequestPostNorisLoadDataDto
-   */
-  msq_username: string
-  /**
-   * password to noris
-   * @type {string}
-   * @memberof RequestPostNorisLoadDataDto
-   */
-  msq_password: string
-  /**
    * Birth numbers or ALL
    * @type {object}
    * @memberof RequestPostNorisLoadDataDto
@@ -187,6 +175,7 @@ export interface ResponseCustomPaymentErrorDto {
 export const ResponseCustomPaymentErrorDtoErrorNameEnum = {
   TaxNotFound: 'TAX_NOT_FOUND',
   PaymentAlreadyPayed: 'PAYMENT_ALREADY_PAYED',
+  OldTaxNotPayable: 'OLD_TAX_NOT_PAYABLE',
   DatabaseError: 'DATABASE_ERROR',
   CreatePaymentUrl: 'CREATE_PAYMENT_URL',
 } as const
@@ -294,6 +283,12 @@ export interface ResponseGetTaxesBodyDto {
    * @memberof ResponseGetTaxesBodyDto
    */
   paidStatus: TaxPaidStatusEnum
+  /**
+   * Is tax payable (is tax from this year), and frontend can show payment data?
+   * @type {boolean}
+   * @memberof ResponseGetTaxesBodyDto
+   */
+  isPayable: boolean
 }
 
 /**
@@ -369,7 +364,7 @@ export interface ResponseTaxDetailInstallmentsDto {
    * @type {string}
    * @memberof ResponseTaxDetailInstallmentsDto
    */
-  order?: string | null
+  order: string | null
   /**
    * Amount to pay of installment in cents - integer
    * @type {number}
@@ -414,17 +409,17 @@ export interface ResponseTaxDetailsDto {
    */
   taxId: number
   /**
-   * Type of tax detail - object of tax
-   * @type {string}
+   *
+   * @type {TaxDetailTypeEnum}
    * @memberof ResponseTaxDetailsDto
    */
-  type: ResponseTaxDetailsDtoTypeEnum
+  type: TaxDetailTypeEnum
   /**
-   * Area type of tax detail - exact type of object of tax
-   * @type {string}
+   *
+   * @type {TaxDetailTypeEnum}
    * @memberof ResponseTaxDetailsDto
    */
-  areaType: ResponseTaxDetailsDtoAreaTypeEnum
+  areaType: TaxDetailTypeEnum
   /**
    * Area of tax detail - square meters
    * @type {string}
@@ -444,34 +439,6 @@ export interface ResponseTaxDetailsDto {
    */
   amount: number
 }
-
-export const ResponseTaxDetailsDtoTypeEnum = {
-  Apartment: 'APARTMENT',
-  Construction: 'CONSTRUCTION',
-  Ground: 'GROUND',
-} as const
-
-export type ResponseTaxDetailsDtoTypeEnum =
-  (typeof ResponseTaxDetailsDtoTypeEnum)[keyof typeof ResponseTaxDetailsDtoTypeEnum]
-export const ResponseTaxDetailsDtoAreaTypeEnum = {
-  Nonresidential: 'NONRESIDENTIAL',
-  Residential: 'RESIDENTIAL',
-  A: 'A',
-  B: 'B',
-  C: 'C',
-  D: 'D',
-  E: 'E',
-  F: 'F',
-  G: 'G',
-  H: 'H',
-  JH: 'jH',
-  JI: 'jI',
-  Byt: 'byt',
-  Nebyt: 'nebyt',
-} as const
-
-export type ResponseTaxDetailsDtoAreaTypeEnum =
-  (typeof ResponseTaxDetailsDtoAreaTypeEnum)[keyof typeof ResponseTaxDetailsDtoAreaTypeEnum]
 
 /**
  *
@@ -587,6 +554,12 @@ export interface ResponseTaxDto {
    * @memberof ResponseTaxDto
    */
   paidStatus: TaxPaidStatusEnum
+  /**
+   * Is tax payable (is tax from this year), and frontend can show payment data?
+   * @type {boolean}
+   * @memberof ResponseTaxDto
+   */
+  isPayable: boolean
   /**
    * Whether PDF export is available, since 2024 we stopped generating PDFs
    * @type {boolean}
@@ -754,7 +727,21 @@ export interface ResponseTaxPayerDto {
   permanentResidenceCity: string
 }
 /**
- *
+ * Area type of tax detail - exact type of object of tax
+ * @export
+ * @enum {string}
+ */
+
+export const TaxDetailTypeEnum = {
+  Apartment: 'APARTMENT',
+  Construction: 'CONSTRUCTION',
+  Ground: 'GROUND',
+} as const
+
+export type TaxDetailTypeEnum = (typeof TaxDetailTypeEnum)[keyof typeof TaxDetailTypeEnum]
+
+/**
+ * Type of paid status
  * @export
  * @enum {string}
  */
@@ -1202,7 +1189,7 @@ export const DefaultApiFp = function (configuration?: Configuration) {
      */
     async appControllerHealth(
       options?: RawAxiosRequestConfig,
-    ): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<string>> {
+    ): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<void>> {
       const localVarAxiosArgs = await localVarAxiosParamCreator.appControllerHealth(options)
       const localVarOperationServerIndex = configuration?.serverIndex ?? 0
       const localVarOperationServerBasePath =
@@ -1235,7 +1222,7 @@ export const DefaultApiFactory = function (
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
-    appControllerHealth(options?: any): AxiosPromise<string> {
+    appControllerHealth(options?: any): AxiosPromise<void> {
       return localVarFp.appControllerHealth(options).then((request) => request(axios, basePath))
     },
   }

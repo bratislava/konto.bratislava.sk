@@ -1,48 +1,29 @@
-import {
-  GdprDataDtoCategoryEnum,
-  GdprDataDtoTypeEnum,
-  ResponseGdprUserDataDtoSubTypeEnum,
-} from '@clients/openapi-city-account'
+import { GdprDataDtoCategoryEnum, GdprDataDtoTypeEnum } from '@clients/openapi-city-account'
 import cx from 'classnames'
 import { useTranslation } from 'next-i18next'
 
 import useSnackbar from '../../../../frontend/hooks/useSnackbar'
-import { useUser } from '../../../../frontend/hooks/useUser'
+import { useUserSubscription } from '../../../../frontend/hooks/useUser'
 import UserConsent from './UserConsent'
 import UserProfileSection from './UserProfileSection'
 import UserProfileSectionHeader from './UserProfileSectionHeader'
 
 const UserProfileConsents = () => {
   const { t } = useTranslation('account')
-  const {
-    userData,
-    taxesMarketingSubscribe,
-    taxesMarketingUnsubscribe,
-    taxesMarketingUnsubscribeIsPending,
-    taxesMarketingSubscribeIsPending,
-  } = useUser()
+  const { isSubscribed, changeSubscription, subscriptionChangePending } = useUserSubscription({
+    category: GdprDataDtoCategoryEnum.Taxes,
+    type: GdprDataDtoTypeEnum.Marketing,
+  })
 
   const [openSnackbarSuccess] = useSnackbar({ variant: 'success' })
   const [openSnackbarError] = useSnackbar({ variant: 'error' })
 
-  const isSelected =
-    userData?.gdprData.some(
-      ({ category, type, subType }) =>
-        category === GdprDataDtoCategoryEnum.Taxes &&
-        type === GdprDataDtoTypeEnum.Marketing &&
-        subType === ResponseGdprUserDataDtoSubTypeEnum.Subscribe,
-    ) ?? false
-
-  const isDisabled =
-    !userData || taxesMarketingSubscribeIsPending || taxesMarketingUnsubscribeIsPending
-
   const handleOnChangeConsent = async (value: boolean) => {
-    if (isDisabled) {
+    if (subscriptionChangePending) {
       return
     }
 
-    const mutation = value ? taxesMarketingSubscribe : taxesMarketingUnsubscribe
-    await mutation(undefined, {
+    await changeSubscription(value, {
       onSuccess: () => {
         openSnackbarSuccess(t('profile_detail.success_alert'), 3000)
       },
@@ -66,8 +47,8 @@ const UserProfileConsents = () => {
             id: 'receive_information',
             title: t('consents.receive_information.title'),
             text: t('consents.receive_information.text'),
-            isDisabled,
-            isSelected,
+            isDisabled: subscriptionChangePending,
+            isSelected: isSubscribed,
           }}
           isLast
           onChange={handleOnChangeConsent}

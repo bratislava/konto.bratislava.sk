@@ -3,7 +3,7 @@ import { ResponseTaxDto } from '@clients/openapi-tax'
 import { taxApi } from '@clients/tax'
 import { useMutation } from '@tanstack/react-query'
 import { useRouter } from 'next/router'
-import React, { createContext, PropsWithChildren, useContext } from 'react'
+import React, { createContext, PropsWithChildren, useContext, useState } from 'react'
 
 import useSnackbar from '../../../../../frontend/hooks/useSnackbar'
 import { base64ToArrayBuffer, downloadBlob } from '../../../../../frontend/utils/general'
@@ -15,6 +15,9 @@ type TaxFeeSectionProviderProps = {
 }
 
 const useGetContext = ({ taxData, strapiTax }: TaxFeeSectionProviderProps) => {
+  const [officialCorrespondenceChannelModalOpen, setOfficialCorrespondenceChannelModalOpen] =
+    useState(false)
+
   const router = useRouter()
   const [openSnackbarError] = useSnackbar({ variant: 'error' })
   const [openSnackbarInfo, closeSnackbarInfo] = useSnackbar({ variant: 'info' })
@@ -61,6 +64,8 @@ const useGetContext = ({ taxData, strapiTax }: TaxFeeSectionProviderProps) => {
     redirectToPaymentIsPending,
     downloadQrCode,
     downloadPdf,
+    officialCorrespondenceChannelModalOpen,
+    setOfficialCorrespondenceChannelModalOpen,
   }
 }
 

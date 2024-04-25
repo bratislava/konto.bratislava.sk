@@ -1,7 +1,7 @@
 import { StrapiTaxAdministrator } from '@backend/utils/tax-administrator'
 import { TaxFragment } from '@clients/graphql-strapi/api'
 import { ResponseGetTaxesDto } from '@clients/openapi-tax'
-import React, { createContext, PropsWithChildren, useContext } from 'react'
+import React, { createContext, PropsWithChildren, useContext, useState } from 'react'
 
 type TaxFeesSectionProviderProps = {
   taxesData: ResponseGetTaxesDto
@@ -10,7 +10,16 @@ type TaxFeesSectionProviderProps = {
 }
 
 const useGetContext = ({ taxesData, taxAdministrator, strapiTax }: TaxFeesSectionProviderProps) => {
-  return { taxesData, taxAdministrator, strapiTax }
+  const [officialCorrespondenceChannelModalOpen, setOfficialCorrespondenceChannelModalOpen] =
+    useState(false)
+
+  return {
+    taxesData,
+    taxAdministrator,
+    strapiTax,
+    officialCorrespondenceChannelModalOpen,
+    setOfficialCorrespondenceChannelModalOpen,
+  }
 }
 
 const TaxFeesSectionContext = createContext<ReturnType<typeof useGetContext> | undefined>(undefined)

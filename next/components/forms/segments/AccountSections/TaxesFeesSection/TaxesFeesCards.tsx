@@ -1,3 +1,4 @@
+import { UserOfficialCorrespondenceChannelEnum } from '@clients/openapi-city-account'
 import cx from 'classnames'
 import React from 'react'
 
@@ -22,7 +23,9 @@ const TaxesFeesCards = () => {
   const displayDeliveryMethodCard =
     environment.featureToggles.taxReportDeliveryMethod && !displayDeliveryMethodBanner
   const displayDeliveryMethodDelayed =
-    environment.featureToggles.taxReportDeliveryMethod && !userData.wasVerifiedBeforeTaxDeadline
+    environment.featureToggles.taxReportDeliveryMethod &&
+    !userData.wasVerifiedBeforeTaxDeadline &&
+    userData.officialCorrespondenceChannel === UserOfficialCorrespondenceChannelEnum.Email
 
   if (!displayTaxAdministratorCard && !displayDeliveryMethodCard && !displayDeliveryMethodBanner) {
     return null

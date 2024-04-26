@@ -643,9 +643,9 @@
     "first_piece": "Prvá splátka v termíne ",
     "first_piece_to": "do 15 dní odo dňa právoplatnosti rozhodnutia.",
     "second_piece": "Druhá splátka v termíne ",
-    "second_piece_to": "do 31. 8. 2023",
+    "second_piece_to": "do 31. 8. 2024",
     "third_piece": "Tretia splátka v termíne ",
-    "third_piece_to": "do 31. 10. 2023"
+    "third_piece_to": "do 31. 10. 2024"
   },
   "tax_detail_section": {
     "title": "Daň z nehnuteľností za rok {{year}}",

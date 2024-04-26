@@ -11,6 +11,7 @@ import { useTaxFeeSection } from './useTaxFeeSection'
 
 const TaxFeeSection = () => {
   const {
+    taxData,
     officialCorrespondenceChannelModalOpen,
     setOfficialCorrespondenceChannelModalOpen,
     strapiTax: { accountCommunicationConsentText },
@@ -33,8 +34,7 @@ const TaxFeeSection = () => {
           </div>
           <ContactInformationSection />
           <TaxDetails />
-          {/* {taxData.isPayable && <PaymentData />} */}
-          <PaymentData />
+          {taxData.isPayable && <PaymentData />}
           <TaxFooter />
         </div>
       </div>

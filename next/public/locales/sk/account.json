@@ -569,6 +569,7 @@
   "download_image": "Stiahnuť obrázok",
   "use_one_of_ibans_to_pay": "Pri bankovom prevode použite na úhradu jeden z nasledujúcich IBAN účtov:",
   "you_will_be_redirected_to_the_payment_gateway": "Budete presmerovaný na platobnú bránu.",
+  "payment_not_possible": "Platba touto možnosťou je dostupná len pre úhradu celej sumy dane z nehnuteľností, prosím využite QR kód alebo prevod.",
   "use_your_banking_app_to_load": "Na načítanie použite bankovú aplikáciu.",
   "tax_constructions": "Daň zo stavieb",
   "tax_bank_transfer_slow_info": "Spracovanie platby pri platbe prevodom môže trvať niekoľko dní.",

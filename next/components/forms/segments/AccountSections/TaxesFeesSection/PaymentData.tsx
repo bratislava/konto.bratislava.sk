@@ -25,6 +25,7 @@ const Details = () => {
   const qrCodeBase64 = `data:image/png;base64,${taxData.qrCodeWeb}`
   const hasMultipleInstallments = taxData.taxInstallments.length > 1
   const displayDeliveryMethodCard = environment.featureToggles.taxReportDeliveryMethod
+  const cardPaymentDisabled = taxData.paidStatus !== TaxPaidStatusEnum.NotPayed
 
   return (
     <div className="flex w-full flex-col gap-6">
@@ -98,7 +99,11 @@ const Details = () => {
           <div className="flex w-full flex-col items-start gap-6 rounded-lg bg-gray-50 p-4 lg:flex-row lg:items-center lg:px-6 lg:py-8">
             <div className="flex grow flex-col items-start gap-2">
               <div className="text-h4">{t('card_payment')}</div>
-              <div className="text-16">{t('you_will_be_redirected_to_the_payment_gateway')}</div>
+              <div className="text-16">
+                {cardPaymentDisabled
+                  ? t('payment_not_possible')
+                  : t('you_will_be_redirected_to_the_payment_gateway')}
+              </div>
             </div>
             <ButtonNew
               variant="black-solid"
@@ -106,7 +111,7 @@ const Details = () => {
               isLoading={redirectToPaymentIsPending}
               // TODO: Translation
               isLoadingText="Presmerovávam…"
-              isDisabled={taxData.paidStatus !== TaxPaidStatusEnum.NotPayed}
+              isDisabled={cardPaymentDisabled}
               fullWidthMobile
             >
               {t('to_pay')}

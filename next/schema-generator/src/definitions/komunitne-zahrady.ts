@@ -160,7 +160,7 @@ export default schema(
           input(
             'adresaPozemku',
             {
-              title: 'Adresa pozemku, na ktorom chcete vytvoriť komunitnú záhradu',
+              title: 'Adresa komunitnej záhrady (ulica, číslo)',
               type: 'text',
               required: true,
             },

@@ -67,11 +67,11 @@ export default schema(
         input(
           'adresa',
           {
-            title: 'Ulica a číslo pozemku, na ktorom chcete vytvoriť predzáhradku',
+            title: 'Adresa predzáhradky (ulica, číslo)',
             required: true,
             type: 'text',
           },
-          { helptextHeader: 'Musí sa jednať o mestský pozemok.' },
+          {},
         ),
         select(
           'mestskaCast',
@@ -108,7 +108,7 @@ export default schema(
           { title: 'Číslo parcely', required: true, type: 'text' },
           {
             helptextHeader: markdownText(
-              'Číslo parcely a bližšie informácie k pozemku a jeho vlastníkom nájdete na [katastrálnej mape ZBGIS](https://zbgis.skgeodesy.sk/mkzbgis/sk/kataster).',
+              'Číslo parcely a bližšie informácie k pozemku a jeho vlastníkom nájdete na [katastrálnej mape ZBGIS](https://zbgis.skgeodesy.sk/mkzbgis/sk/kataster?pos=48.155530,17.129713,13). Pre schválenie žiadosti sa musí jednať o mestský pozemok.',
             ),
             size: 'medium',
           },

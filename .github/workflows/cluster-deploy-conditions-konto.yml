@@ -192,23 +192,10 @@ jobs:
           echo "condition=true" >> $GITHUB_OUTPUT
           echo ":soon: **prod-next** " >> $GITHUB_STEP_SUMMARY
 
-      - id: conditions-count-two-summary
-        if: env.COUNT > 1
-        run: |
-          echo ":heavy_exclamation_mark: There can be only one deployment to cluster. Now we have more then one. You have probably different affected files and different tag." >> $GITHUB_STEP_SUMMARY
-
       - id: conditions-count-zero-summary
         if: env.COUNT == 0
         run: |
           echo ":heavy_exclamation_mark: We have zero deployments based on conditions. Exiting pipeline with Fail status." >> $GITHUB_STEP_SUMMARY
-
-      - id: conditions-count-two
-        name: Checking if there is only one condition true
-        if: env.COUNT > 1
-        uses: actions/github-script@v7.0.1
-        with:
-          script: |
-            core.setFailed('There can be only one deployment to cluster. Now we have more then one. You have probably different affected files and different tag.')
 
       - id: conditions-count-zero
         name: Checking if there is only zero condition true

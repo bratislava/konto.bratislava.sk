@@ -11,15 +11,30 @@ on:
 jobs:
   conditions:
     name: Check for cluster conditions
-    uses: bratislava/github-actions/.github/workflows/cluster-deploy-conditions.yml@stable
+    uses: bratislava/konto.bratislava.sk/.github/workflows/cluster-deploy-conditions-konto.yml@beta
 
   deploy-dev:
-    name: after dev Strapi deploy Next
-    needs: [conditions, deploy-dev-strapi]
+    name: after dev Backends deploy Next
+    needs: [conditions, deploy-dev-strapi, deploy-dev-nest-forms-backend]
     if: needs.conditions.outputs.dev == 'true'
     uses: bratislava/github-actions/.github/workflows/deploy-with-bratiska-cli-inhouse.yml@stable
     with:
       directory: next/
+      cluster: tkg-innov-dev
+      url: https://tkg.dev.bratislava.sk
+      debug: --debug
+      version: beta
+    secrets:
+      service-account: ${{ secrets.DEV_STANDALONE_TOKEN }}
+      registry-pass: ${{ secrets.HARBOR_REGISTRY_PASSWORD }}
+
+  deploy-dev-nest-forms-backend:
+    name: dev nest-forms-backend
+    needs: conditions
+    if: needs.conditions.outputs.dev-nest-forms-backend == 'true'
+    uses: bratislava/github-actions/.github/workflows/deploy-with-bratiska-cli-inhouse.yml@stable
+    with:
+      directory: nest-forms-backend/
       cluster: tkg-innov-dev
       url: https://tkg.dev.bratislava.sk
       debug: --debug
@@ -59,12 +74,27 @@ jobs:
       registry-pass: ${{ secrets.HARBOR_REGISTRY_PASSWORD }}
 
   deploy-staging:
-    name: after staging Strapi deploy Next
-    needs: [conditions, deploy-staging-strapi]
+    name: after staging Backends deploy Next
+    needs: [conditions, deploy-staging-strapi, deploy-staging-nest-forms-backend]
     if: needs.conditions.outputs.staging == 'true'
     uses: bratislava/github-actions/.github/workflows/deploy-with-bratiska-cli-inhouse.yml@stable
     with:
       directory: next/
+      cluster: tkg-innov-staging
+      url: https://tkg.staging.bratislava.sk
+      debug: --debug
+      flag: --staging
+    secrets:
+      service-account: ${{ secrets.STAGING_STANDALONE_TOKEN }}
+      registry-pass: ${{ secrets.HARBOR_REGISTRY_PASSWORD }}
+
+  deploy-staging-nest-forms-backend:
+    name: staging nest-forms-backend
+    needs: conditions
+    if: needs.conditions.outputs.staging-nest-forms-backend == 'true'
+    uses: bratislava/github-actions/.github/workflows/deploy-with-bratiska-cli-inhouse.yml@stable
+    with:
+      directory: nest-forms-backend/
       cluster: tkg-innov-staging
       url: https://tkg.staging.bratislava.sk
       debug: --debug
@@ -104,8 +134,8 @@ jobs:
       registry-pass: ${{ secrets.HARBOR_REGISTRY_PASSWORD }}
 
   deploy-prod:
-    name: after prod Strapi deploy Next
-    needs: [conditions, deploy-prod-strapi]
+    name: after prod Backends deploy Next
+    needs: [conditions, deploy-prod-strapi, deploy-prod-nest-forms-backend]
     if: needs.conditions.outputs.prod == 'true'
     uses: bratislava/github-actions/.github/workflows/deploy-with-bratiska-cli-inhouse.yml@stable
     with:
@@ -117,6 +147,22 @@ jobs:
     secrets:
       service-account: ${{ secrets.PROD_STANDALONE_TOKEN }}
       registry-pass: ${{ secrets.HARBOR_REGISTRY_PASSWORD }}
+
+  deploy-prod-nest-forms-backend:
+    name: prod nest-forms-backend
+    needs: conditions
+    if: needs.conditions.outputs.prod-nest-forms-backend == 'true'
+    uses: bratislava/github-actions/.github/workflows/deploy-with-bratiska-cli-inhouse.yml@stable
+    with:
+      directory: nest-forms-backend/
+      cluster: tkg-innov-prod
+      url: https://tkg.bratislava.sk
+      flag: --production
+      debug: --debug
+    secrets:
+      service-account: ${{ secrets.PROD_STANDALONE_TOKEN }}
+      registry-pass: ${{ secrets.HARBOR_REGISTRY_PASSWORD }}
+
 
   deploy-prod-strapi:
     name: prod Strapi

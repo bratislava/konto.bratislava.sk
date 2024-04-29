@@ -17,7 +17,7 @@ jobs:
     name: after dev Backends deploy Next
     needs: [conditions, deploy-dev-nest-forms-backend, deploy-dev-strapi]
     if: needs.conditions.outputs.dev == 'true'
-    uses: bratislava/github-actions/.github/workflows/deploy-with-bratiska-cli-inhouse.yml@stable
+    uses: bratislava/github-actions/.github/workflows/deploy-with-bratiska-cli-inhouse.yml@beta
     with:
       directory: next/
       cluster: tkg-innov-dev

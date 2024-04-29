@@ -49,7 +49,7 @@ const Details = () => {
         />
       )}
       <div className="flex w-full flex-col-reverse gap-6 md:flex-row lg:gap-8">
-        <div className="flex w-full flex-col gap-5 rounded-lg border-0 border-solid border-gray-200 p-0 sm:border-2 sm:px-6 sm:py-5 md:w-[488px]">
+        <div className="flex w-full flex-col gap-5 rounded-lg border-0 border-solid border-gray-200 p-0 sm:border-2 sm:px-4 sm:py-5 md:w-[488px] lg:px-6">
           <div className="text-p2">{t('use_one_of_ibans_to_pay')}</div>
           {taxData.paidStatus === TaxPaidStatusEnum.Paid ? null : (
             <div className="text-p2 rounded-5 bg-warning-100 p-3">

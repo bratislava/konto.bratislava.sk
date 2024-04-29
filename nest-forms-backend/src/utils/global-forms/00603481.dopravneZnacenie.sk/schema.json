@@ -1,0 +1,818 @@
+{
+  "pospID": "dopravneZnacenie",
+  "pospVersion": "0.1",
+  "title": "Dopravné značenie",
+  "required": [
+    "zoznamPriloh",
+    "ziadatel",
+    "dopravneZnacenie",
+    "kontaktnaOsobaRovnakaAkoZiadatel",
+    "zodpovednyProjektant",
+    "dorucenie",
+    "zakladneVyhlasenie"
+  ],
+  "type": "object",
+  "allOf": [
+    {
+      "properties": {
+        "zoznamPriloh": {
+          "title": "ZoznamPriloh",
+          "type": "object",
+          "description": "Zoznam priložených príloh",
+          "properties": {
+            "projektOrganizacieDopravy": {
+              "title": "ProjektOrganizacieDopravy",
+              "type": "array",
+              "description": "Priložená príloha",
+              "items": {
+                "type": "string",
+                "format": "file"
+              }
+            },
+            "zavazneStanoviskoKrajskehoDopravnehoInspektoratu": {
+              "title": "ZavazneStanoviskoKrajskehoDopravnehoInspektoratu",
+              "type": "array",
+              "description": "Priložená príloha",
+              "items": {
+                "type": "string",
+                "format": "file"
+              }
+            },
+            "situaciaSirsichVztahov": {
+              "title": "SituaciaSirsichVztahov",
+              "type": "array",
+              "description": "Priložená príloha",
+              "items": {
+                "type": "string",
+                "format": "file"
+              }
+            },
+            "stanoviskaSpravcovCiest": {
+              "title": "StanoviskaSpravcovCiest",
+              "type": "array",
+              "description": "Priložená príloha",
+              "items": {
+                "type": "string",
+                "format": "file"
+              }
+            },
+            "kopiaPovoleniaStavebnehoUradu": {
+              "title": "KopiaPovoleniaStavebnehoUradu",
+              "type": "array",
+              "description": "Priložená príloha",
+              "items": {
+                "type": "string",
+                "format": "file"
+              }
+            },
+            "stanoviskoDopravnehoPodnikuBratislava": {
+              "title": "StanoviskoDopravnehoPodnikuBratislava",
+              "type": "array",
+              "description": "Priložená príloha",
+              "items": {
+                "type": "string",
+                "format": "file"
+              }
+            },
+            "vyhradenehoParkovanieVztahKPrevadzke": {
+              "title": "VyhradenehoParkovanieVztahKPrevadzke",
+              "type": "array",
+              "description": "Priložená príloha",
+              "items": {
+                "type": "string",
+                "format": "file"
+              }
+            },
+            "vyhradenehoParkovaniePreukazTZP": {
+              "title": "VyhradenehoParkovaniePreukazTZP",
+              "type": "array",
+              "description": "Priložená príloha",
+              "items": {
+                "type": "string",
+                "format": "file"
+              }
+            },
+            "splnomocnenieNaZastupovanie": {
+              "title": "SplnomocnenieNaZastupovanie",
+              "type": "array",
+              "description": "Priložená príloha",
+              "items": {
+                "type": "string",
+                "format": "file"
+              }
+            }
+          },
+          "required": [
+            "projektOrganizacieDopravy",
+            "zavazneStanoviskoKrajskehoDopravnehoInspektoratu"
+          ]
+        }
+      }
+    },
+    {
+      "properties": {
+        "ziadatel": {
+          "title": "Ziadatel",
+          "type": "object",
+          "description": "Žiadateľ",
+          "properties": {
+            "voSvojomMene": {
+              "title": "VoSvojomMene",
+              "type": "boolean"
+            },
+            "typOsoby": {
+              "title": "TypOsoby",
+              "type": "string",
+              "format": "ciselnik",
+              "ciselnik": { "id": "UPVSIAM_001" }
+            },
+            "kontakt": {
+              "title": "Kontakt",
+              "type": "object",
+              "properties": {
+                "telefonneCislo": {
+                  "title": "TelefonneCislo",
+                  "type": "object",
+                  "properties": {
+                    "medzinarodneVolacieCislo": {
+                      "title": "MedzinarodneVolacieCislo",
+                      "type": "string",
+                      "pattern": "(((\\+[1-9])|(\\+[1-9][0-9]{1,8}))|((00[1-9])|(00[1-9][0-9]{1,7})))"
+                    },
+                    "predvolba": {
+                      "title": "Predvolba",
+                      "type": "string",
+                      "pattern": "[1-9][0-9]*"
+                    },
+                    "cislo": {
+                      "title": "Cislo",
+                      "type": "string",
+                      "pattern": "[0-9]*"
+                    }
+                  },
+                  "required": ["medzinarodneVolacieCislo", "predvolba", "cislo"]
+                },
+                "telefonneCisloCele": {
+                  "title": "TelefonneCisloCele",
+                  "type": "string"
+                },
+                "email": {
+                  "title": "Email",
+                  "type": "string",
+                  "pattern": "([a-zA-Z0-9_\\-\\.]+)@((\\[[0-9]{1,3}\\.[0-9]{1,3}\\.[0-9]{1,3}\\.)|(([a-zA-Z0-9\\-]+\\.)+))([a-zA-Z]{2,6}|[0-9]{1,3})(\\]?)"
+                },
+                "kontaktnaOsoba": {
+                  "title": "KontaktnaOsoba",
+                  "type": "object",
+                  "properties": {
+                    "meno": {
+                      "title": "Meno",
+                      "type": "string"
+                    },
+                    "priezvisko": {
+                      "title": "Priezvisko",
+                      "type": "string"
+                    }
+                  },
+                  "required": ["meno", "priezvisko"]
+                }
+              },
+              "required": []
+            },
+            "adresa": {
+              "title": "Adresa",
+              "type": "object",
+              "properties": {
+                "meno": {
+                  "title": "Meno",
+                  "type": "string"
+                },
+                "priezvisko": {
+                  "title": "Priezvisko",
+                  "type": "string"
+                },
+                "obchodneMenoNazov": {
+                  "title": "ObchodneMenoNazov",
+                  "type": "string"
+                },
+                "ulicaACislo": {
+                  "title": "UlicaACislo",
+                  "type": "object",
+                  "properties": {
+                    "ulica": {
+                      "title": "Ulica",
+                      "type": "string"
+                    },
+                    "supisneCislo": {
+                      "title": "SupisneCislo",
+                      "type": "number"
+                    },
+                    "orientacneCislo": {
+                      "title": "OrientacneCislo",
+                      "type": "string"
+                    }
+                  },
+                  "required": ["ulica"]
+                },
+                "pOBOX": {
+                  "title": "POBOX",
+                  "type": "string"
+                },
+                "poschodieACisloBytu": {
+                  "title": "PoschodieACisloBytu",
+                  "type": "string"
+                },
+                "pSC": {
+                  "title": "PSC",
+                  "type": "string"
+                },
+                "obec": {
+                  "title": "Obec",
+                  "type": "string",
+                  "description": "Položka číselníka",
+                  "format": "ciselnik",
+                  "ciselnik": { "id": "SUSR_0025" }
+                },
+                "castObce": {
+                  "title": "CastObce",
+                  "type": "string"
+                },
+                "stat": {
+                  "title": "Stat",
+                  "type": "string",
+                  "description": "Číselník SUSR_0086 - Krajiny OSN",
+                  "format": "ciselnik",
+                  "ciselnik": { "id": "SUSR_0086" }
+                }
+              },
+              "required": ["obec"]
+            }
+          },
+          "required": ["voSvojomMene", "typOsoby", "kontakt", "adresa"]
+        }
+      }
+    },
+    {
+      "properties": {
+        "dopravneZnacenie": {
+          "title": "DopravneZnacenie",
+          "type": "object",
+          "description": "Detaily o dopravnom značení",
+          "properties": {
+            "nazvyUlic": {
+              "title": "NazvyUlic",
+              "type": "string"
+            },
+            "dovodZmenyVDopravnomZnaceni": {
+              "title": "DovodZmenyVDopravnomZnaceni",
+              "type": "string",
+              "default": "RozkopavkovePrace",
+              "enum": [
+                "RozkopavkovePrace",
+                "StavebnePrace",
+                "KulturneAleboSportovePodujatia",
+                "VyhradeneParkovanie",
+                "Ine"
+              ]
+            },
+            "vyhradeneParkovanie": {
+              "title": "VyhradeneParkovanie",
+              "type": "object",
+              "description": "Vyhradené parkovanie",
+              "properties": {
+                "typ": {
+                  "title": "Typ",
+                  "type": "string",
+                  "default": "Nove",
+                  "enum": ["Nove", "Predlzenie", "Zmena", "Zrusenie"]
+                },
+                "pocetParkovacichMiest": {
+                  "title": "PocetParkovacichMiest",
+                  "type": "number"
+                },
+                "uzivanaPlochaJednehoMiestaDlzka": {
+                  "title": "UzivanaPlochaJednehoMiestaDlzka",
+                  "type": "string"
+                },
+                "uzivanaPlochaJednehoMiestaSirka": {
+                  "title": "UzivanaPlochaJednehoMiestaSirka",
+                  "type": "string"
+                },
+                "terminVyhradeniaMiestaOd": {
+                  "title": "TerminVyhradeniaMiestaOd",
+                  "type": "string",
+                  "format": "date"
+                },
+                "terminVyhradeniaMiestaDo": {
+                  "title": "TerminVyhradeniaMiestaDo",
+                  "type": "string",
+                  "format": "date"
+                },
+                "terminPredlzeniaDo": {
+                  "title": "TerminPredlzeniaDo",
+                  "type": "string",
+                  "format": "date"
+                },
+                "prehlasenie": {
+                  "title": "Prehlasenie",
+                  "type": "string"
+                },
+                "prehlasenieSuhlas": {
+                  "title": "PrehlasenieSuhlas",
+                  "type": "boolean"
+                },
+                "zmenaECV": {
+                  "title": "ZmenaECV",
+                  "type": "string"
+                },
+                "inaZmena": {
+                  "title": "InaZmena",
+                  "type": "string"
+                },
+                "cisloPlatnehoPovolenia": {
+                  "title": "CisloPlatnehoPovolenia",
+                  "type": "string"
+                },
+                "terminZruseniaMiestaOd": {
+                  "title": "TerminZruseniaMiestaOd",
+                  "type": "string",
+                  "format": "date"
+                }
+              },
+              "required": ["typ"]
+            },
+            "nazovStavby": {
+              "title": "NazovStavby",
+              "type": "string"
+            },
+            "nazovPodujatia": {
+              "title": "NazovPodujatia",
+              "type": "string"
+            },
+            "ineOdpoved": {
+              "title": "IneOdpoved",
+              "type": "string"
+            },
+            "trvacnostDopravnehoZnacenia": {
+              "title": "TrvacnostDopravnehoZnacenia",
+              "type": "string",
+              "default": "Trvale",
+              "enum": ["Trvale", "Docasne"]
+            },
+            "datumUmiestneniaDopravnehoZnacenia": {
+              "title": "DatumUmiestneniaDopravnehoZnacenia",
+              "type": "string",
+              "format": "date"
+            },
+            "datumOdstraneniaDopravnehoZnacenia": {
+              "title": "DatumOdstraneniaDopravnehoZnacenia",
+              "type": "string",
+              "format": "date"
+            }
+          },
+          "required": ["nazvyUlic", "dovodZmenyVDopravnomZnaceni", "trvacnostDopravnehoZnacenia"]
+        }
+      }
+    },
+    {
+      "properties": {
+        "uzavierka": {
+          "title": "Uzavierka",
+          "type": "object",
+          "description": "Uzávierka",
+          "properties": {
+            "typ": {
+              "title": "Typ",
+              "type": "string",
+              "default": "Ciastocna",
+              "enum": ["Ciastocna", "Uplna"]
+            },
+            "sirkaVolnehoJazdnehoPruhu": {
+              "title": "SirkaVolnehoJazdnehoPruhu",
+              "type": "string"
+            },
+            "uliceOd": {
+              "title": "UliceOd",
+              "type": "string"
+            },
+            "uliceDo": {
+              "title": "UliceDo",
+              "type": "string"
+            },
+            "dlzkaVMetroch": {
+              "title": "DlzkaVMetroch",
+              "type": "string"
+            },
+            "sirkaVMetroch": {
+              "title": "SirkaVMetroch",
+              "type": "string"
+            },
+            "datumACasOd": {
+              "title": "DatumACasOd",
+              "type": "string",
+              "format": "date-time"
+            },
+            "datumACasDo": {
+              "title": "DatumACasDo",
+              "type": "string",
+              "format": "date-time"
+            },
+            "popis": {
+              "title": "Popis",
+              "type": "string"
+            }
+          },
+          "required": [
+            "typ",
+            "uliceOd",
+            "uliceDo",
+            "dlzkaVMetroch",
+            "sirkaVMetroch",
+            "datumACasOd",
+            "datumACasDo",
+            "popis"
+          ]
+        }
+      }
+    },
+    {
+      "properties": {
+        "kontaktnaOsobaRovnakaAkoZiadatel": {
+          "title": "KontaktnaOsobaRovnakaAkoZiadatel",
+          "type": "boolean"
+        }
+      }
+    },
+    {
+      "properties": {
+        "kontaktnaOsoba": {
+          "title": "KontaktnaOsoba",
+          "type": "object",
+          "properties": {
+            "telefonneCislo": {
+              "title": "TelefonneCislo",
+              "type": "object",
+              "properties": {
+                "medzinarodneVolacieCislo": {
+                  "title": "MedzinarodneVolacieCislo",
+                  "type": "string",
+                  "pattern": "(((\\+[1-9])|(\\+[1-9][0-9]{1,8}))|((00[1-9])|(00[1-9][0-9]{1,7})))"
+                },
+                "predvolba": {
+                  "title": "Predvolba",
+                  "type": "string",
+                  "pattern": "[1-9][0-9]*"
+                },
+                "cislo": {
+                  "title": "Cislo",
+                  "type": "string",
+                  "pattern": "[0-9]*"
+                }
+              },
+              "required": ["medzinarodneVolacieCislo", "predvolba", "cislo"]
+            },
+            "telefonneCisloCele": {
+              "title": "TelefonneCisloCele",
+              "type": "string"
+            },
+            "email": {
+              "title": "Email",
+              "type": "string",
+              "pattern": "([a-zA-Z0-9_\\-\\.]+)@((\\[[0-9]{1,3}\\.[0-9]{1,3}\\.[0-9]{1,3}\\.)|(([a-zA-Z0-9\\-]+\\.)+))([a-zA-Z]{2,6}|[0-9]{1,3})(\\]?)"
+            },
+            "kontaktnaOsoba": {
+              "title": "KontaktnaOsoba",
+              "type": "object",
+              "properties": {
+                "meno": {
+                  "title": "Meno",
+                  "type": "string"
+                },
+                "priezvisko": {
+                  "title": "Priezvisko",
+                  "type": "string"
+                }
+              },
+              "required": ["meno", "priezvisko"]
+            }
+          },
+          "required": []
+        }
+      }
+    },
+    {
+      "properties": {
+        "zodpovednyProjektant": {
+          "title": "ZodpovednyProjektant",
+          "type": "object",
+          "description": "Zodpovedny Projektant za projekt organizacie dopravy (POD)",
+          "properties": {
+            "obchodneMeno": {
+              "title": "ObchodneMeno",
+              "type": "string"
+            },
+            "iCO": {
+              "title": "ICO",
+              "type": "string"
+            },
+            "kontakt": {
+              "title": "Kontakt",
+              "type": "object",
+              "properties": {
+                "telefonneCislo": {
+                  "title": "TelefonneCislo",
+                  "type": "object",
+                  "properties": {
+                    "medzinarodneVolacieCislo": {
+                      "title": "MedzinarodneVolacieCislo",
+                      "type": "string",
+                      "pattern": "(((\\+[1-9])|(\\+[1-9][0-9]{1,8}))|((00[1-9])|(00[1-9][0-9]{1,7})))"
+                    },
+                    "predvolba": {
+                      "title": "Predvolba",
+                      "type": "string",
+                      "pattern": "[1-9][0-9]*"
+                    },
+                    "cislo": {
+                      "title": "Cislo",
+                      "type": "string",
+                      "pattern": "[0-9]*"
+                    }
+                  },
+                  "required": ["medzinarodneVolacieCislo", "predvolba", "cislo"]
+                },
+                "telefonneCisloCele": {
+                  "title": "TelefonneCisloCele",
+                  "type": "string"
+                },
+                "email": {
+                  "title": "Email",
+                  "type": "string",
+                  "pattern": "([a-zA-Z0-9_\\-\\.]+)@((\\[[0-9]{1,3}\\.[0-9]{1,3}\\.[0-9]{1,3}\\.)|(([a-zA-Z0-9\\-]+\\.)+))([a-zA-Z]{2,6}|[0-9]{1,3})(\\]?)"
+                },
+                "kontaktnaOsoba": {
+                  "title": "KontaktnaOsoba",
+                  "type": "object",
+                  "properties": {
+                    "meno": {
+                      "title": "Meno",
+                      "type": "string"
+                    },
+                    "priezvisko": {
+                      "title": "Priezvisko",
+                      "type": "string"
+                    }
+                  },
+                  "required": ["meno", "priezvisko"]
+                }
+              },
+              "required": []
+            }
+          },
+          "required": ["obchodneMeno", "iCO", "kontakt"]
+        }
+      }
+    },
+    {
+      "properties": {
+        "dorucenie": {
+          "title": "Dorucenie",
+          "type": "object",
+          "properties": {
+            "adresatPodania": {
+              "title": "AdresatPodania",
+              "type": "object",
+              "properties": {
+                "adresatPodania": {
+                  "title": "AdresatPodania",
+                  "type": "string",
+                  "default": "Mesto",
+                  "enum": ["Mesto", "Mestská časť"]
+                },
+                "mestskaCast": {
+                  "title": "MestskaCast",
+                  "type": "string",
+                  "description": "Položka číselníka",
+                  "format": "ciselnik",
+                  "ciselnik": { "id": "SUSR_0025" }
+                }
+              },
+              "required": ["adresatPodania"]
+            },
+            "checkbox": {
+              "title": "Checkbox",
+              "type": "object",
+              "properties": {
+                "notifikacia": {
+                  "title": "Notifikacia",
+                  "type": "boolean"
+                }
+              },
+              "required": []
+            },
+            "formaOdoslaniaZiadosti": {
+              "title": "FormaOdoslaniaZiadosti",
+              "type": "string",
+              "default": "Elektronicky",
+              "enum": ["Elektronicky", "Listinne"]
+            },
+            "formaDoruceniaRozhodnutia": {
+              "title": "FormaDoruceniaRozhodnutia",
+              "type": "object",
+              "properties": {
+                "typSposobuDorucenia": {
+                  "title": "TypSposobuDorucenia",
+                  "type": "string",
+                  "default": "Pošta",
+                  "enum": [
+                    "Pošta",
+                    "Elektronická schránka",
+                    "Osobne",
+                    "Fax",
+                    "Telefonicky",
+                    "E-mail",
+                    "Bez odpovede"
+                  ]
+                },
+                "adresaDoruceniaRozhodnutia": {
+                  "title": "AdresaDoruceniaRozhodnutia",
+                  "type": "object",
+                  "properties": {
+                    "meno": {
+                      "title": "Meno",
+                      "type": "string"
+                    },
+                    "priezvisko": {
+                      "title": "Priezvisko",
+                      "type": "string"
+                    },
+                    "obchodneMenoNazov": {
+                      "title": "ObchodneMenoNazov",
+                      "type": "string"
+                    },
+                    "ulicaACislo": {
+                      "title": "UlicaACislo",
+                      "type": "object",
+                      "properties": {
+                        "ulica": {
+                          "title": "Ulica",
+                          "type": "string"
+                        },
+                        "supisneCislo": {
+                          "title": "SupisneCislo",
+                          "type": "number"
+                        },
+                        "orientacneCislo": {
+                          "title": "OrientacneCislo",
+                          "type": "string"
+                        }
+                      },
+                      "required": ["ulica"]
+                    },
+                    "pOBOX": {
+                      "title": "POBOX",
+                      "type": "string"
+                    },
+                    "poschodieACisloBytu": {
+                      "title": "PoschodieACisloBytu",
+                      "type": "string"
+                    },
+                    "pSC": {
+                      "title": "PSC",
+                      "type": "string"
+                    },
+                    "obec": {
+                      "title": "Obec",
+                      "type": "string",
+                      "description": "Položka číselníka",
+                      "format": "ciselnik",
+                      "ciselnik": { "id": "SUSR_0025" }
+                    },
+                    "castObce": {
+                      "title": "CastObce",
+                      "type": "string"
+                    },
+                    "stat": {
+                      "title": "Stat",
+                      "type": "string",
+                      "description": "Číselník SUSR_0086 - Krajiny OSN",
+                      "format": "ciselnik",
+                      "ciselnik": { "id": "SUSR_0086" }
+                    }
+                  },
+                  "required": ["obec"]
+                },
+                "adresatPodania": {
+                  "title": "AdresatPodania",
+                  "type": "string",
+                  "default": "Mesto",
+                  "enum": ["Mesto", "Mestská časť"]
+                },
+                "mestskaCast": {
+                  "title": "MestskaCast",
+                  "type": "string",
+                  "description": "Položka číselníka",
+                  "format": "ciselnik",
+                  "ciselnik": { "id": "SUSR_0025" }
+                },
+                "faxPreDorucenie": {
+                  "title": "FaxPreDorucenie",
+                  "type": "object",
+                  "properties": {
+                    "medzinarodneVolacieCislo": {
+                      "title": "MedzinarodneVolacieCislo",
+                      "type": "string",
+                      "pattern": "(((\\+[1-9])|(\\+[1-9][0-9]{1,8}))|((00[1-9])|(00[1-9][0-9]{1,7})))"
+                    },
+                    "predvolba": {
+                      "title": "Predvolba",
+                      "type": "string",
+                      "pattern": "[1-9][0-9]*"
+                    },
+                    "cislo": {
+                      "title": "Cislo",
+                      "type": "string",
+                      "pattern": "[0-9]*"
+                    }
+                  },
+                  "required": ["medzinarodneVolacieCislo", "predvolba", "cislo"]
+                },
+                "telefonPreDorucenie": {
+                  "title": "TelefonPreDorucenie",
+                  "type": "object",
+                  "properties": {
+                    "medzinarodneVolacieCislo": {
+                      "title": "MedzinarodneVolacieCislo",
+                      "type": "string",
+                      "pattern": "(((\\+[1-9])|(\\+[1-9][0-9]{1,8}))|((00[1-9])|(00[1-9][0-9]{1,7})))"
+                    },
+                    "predvolba": {
+                      "title": "Predvolba",
+                      "type": "string",
+                      "pattern": "[1-9][0-9]*"
+                    },
+                    "cislo": {
+                      "title": "Cislo",
+                      "type": "string",
+                      "pattern": "[0-9]*"
+                    }
+                  },
+                  "required": ["medzinarodneVolacieCislo", "predvolba", "cislo"]
+                },
+                "emailPreDorucenie": {
+                  "title": "EmailPreDorucenie",
+                  "type": "string",
+                  "pattern": "([a-zA-Z0-9_\\-\\.]+)@((\\[[0-9]{1,3}\\.[0-9]{1,3}\\.[0-9]{1,3}\\.)|(([a-zA-Z0-9\\-]+\\.)+))([a-zA-Z]{2,6}|[0-9]{1,3})(\\]?)"
+                }
+              },
+              "required": ["typSposobuDorucenia"]
+            }
+          },
+          "required": ["adresatPodania", "formaOdoslaniaZiadosti"]
+        }
+      }
+    },
+    {
+      "properties": {
+        "zakladneVyhlasenie": {
+          "title": "ZakladneVyhlasenie",
+          "type": "object",
+          "properties": {
+            "spravnostUdajovText": {
+              "title": "SpravnostUdajovText",
+              "type": "string"
+            },
+            "suhlasSoSpracovanimText": {
+              "title": "SuhlasSoSpracovanimText",
+              "type": "string"
+            },
+            "poskytujemSuhlas": {
+              "title": "PoskytujemSuhlas",
+              "type": "boolean"
+            },
+            "poskytujemSuhlasText": {
+              "title": "PoskytujemSuhlasText",
+              "type": "string"
+            },
+            "neposkytujemSuhlas": {
+              "title": "NeposkytujemSuhlas",
+              "type": "boolean"
+            },
+            "neposkytujemSuhlasText": {
+              "title": "NeposkytujemSuhlasText",
+              "type": "string"
+            }
+          },
+          "required": [
+            "spravnostUdajovText",
+            "suhlasSoSpracovanimText",
+            "poskytujemSuhlas",
+            "poskytujemSuhlasText",
+            "neposkytujemSuhlas",
+            "neposkytujemSuhlasText"
+          ]
+        }
+      }
+    }
+  ]
+}

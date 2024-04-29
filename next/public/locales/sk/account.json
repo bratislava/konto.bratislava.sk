@@ -638,12 +638,9 @@
     "not_later": "najneskôr v lehote splatnosti prvej splátky.",
     "pay_with_qr": "Zaplatiť môžete okrem platobných údajov aj pomocou QR kódu.",
     "change_amount": "V bankovej aplikácii zmeňte sumu na vyššie uvedenú sumu splátky dane.",
-    "first_piece": "Prvá splátka v termíne ",
-    "first_piece_to": "do 15 dní odo dňa právoplatnosti rozhodnutia.",
-    "second_piece": "Druhá splátka v termíne ",
-    "second_piece_to": "do 31. 8. 2023",
-    "third_piece": "Tretia splátka v termíne ",
-    "third_piece_to": "do 31. 10. 2023"
+    "first_installment": "Prvá splátka v termíne <strong>do 15 dní odo dňa právoplatnosti rozhodnutia</strong>",
+    "second_installment": "Druhá splátka v termíne <strong>do 31. 8. 2024</strong>",
+    "third_installment": "Tretia splátka v termíne <strong>do 31. 10. 2024</strong>"
   },
   "tax_detail_section": {
     "title": "Daň z nehnuteľností za rok {{year}}",

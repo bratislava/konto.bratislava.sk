@@ -31,7 +31,7 @@ on:
         value: ${{ jobs.conditions.outputs.prod }}
       prod-nest-forms-backend:
         description: "Returns true if staging-nest-forms-backend can be deployed"
-        value: ${{ jobs.conditions.outputs.staging-nest-forms-backend }}
+        value: ${{ jobs.conditions.outputs.prod-nest-forms-backend }}
       prod-strapi:
         description: "Returns true if prod-strapi can be deployed"
         value: ${{ jobs.conditions.outputs.prod-strapi }}
@@ -74,15 +74,15 @@ jobs:
       COUNT: 0
     outputs:
       dev: ${{ steps.dev.outputs.condition }}
-      dev-nest-froms-backend: ${{ steps.dev-nest-froms-backend.outputs.condition }}
+      dev-nest-forms-backend: ${{ steps.dev-nest-forms-backend.outputs.condition }}
       dev-strapi: ${{ steps.dev-strapi.outputs.condition }}
       dev-next: ${{ steps.dev-next.outputs.condition }}
       staging: ${{ steps.staging.outputs.condition }}
-      staging-nest-froms-backend: ${{ steps.staging-nest-froms-backend.outputs.condition }}
+      staging-nest-forms-backend: ${{ steps.staging-nest-forms-backend.outputs.condition }}
       staging-strapi: ${{ steps.staging-strapi.outputs.condition }}
       staging-next: ${{ steps.staging-next.outputs.condition }}
       prod: ${{ steps.prod.outputs.condition }}
-      prod-nest-froms-backend: ${{ steps.prod-nest-froms-backend.outputs.condition }}
+      prod-nest-forms-backend: ${{ steps.prod-nest-forms-backend.outputs.condition }}
       prod-strapi: ${{ steps.prod-strapi.outputs.condition }}
       prod-next: ${{ steps.prod-next.outputs.condition }}
     steps:
@@ -130,7 +130,7 @@ jobs:
 
       - id: staging
         name: Check for deployment of whole project to staging
-        if: (startsWith(github.ref, 'refs/tags/staging') && startsWith(github.ref, 'refs/tags/staging-strapi') == false && startsWith(github.ref, 'refs/tags/staging-nest-froms-backend') == false && startsWith(github.ref, 'refs/tags/staging-next') == false) || (github.event_name == 'push' && github.ref == 'refs/heads/master')
+        if: (startsWith(github.ref, 'refs/tags/staging') && startsWith(github.ref, 'refs/tags/staging-strapi') == false && startsWith(github.ref, 'refs/tags/staging-nest-forms-backend') == false && startsWith(github.ref, 'refs/tags/staging-next') == false) || (github.event_name == 'push' && github.ref == 'refs/heads/master')
         run: |
           echo "COUNT=0" >> $GITHUB_ENV
           echo "condition=true" >> $GITHUB_OUTPUT

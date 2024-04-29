@@ -617,14 +617,12 @@
     "csob": "ČSOB, a.s.",
     "csob_iban": "SK31 7500 0000 0000 2574 7653"
   },
-  "tax_payable_within": "Daň je splatná v termíne ",
-  "validity_decision": "odo dňa právoplatnosti rozhodnutia.",
-  "validity_decision_with_schedule": " do 15 dní odo dňa právoplatnosti rozhodnutia.",
-  "according_schedule": "podľa splátkového kalendára.",
-  "tax_payable_in_installments_1": "Daň je splatná v troch splátkach, ",
-  "tax_payable_in_installments_2": "môže byť uhradená aj naraz, ",
-  "tax_payable_in_installments_3": "najneskôr v lehote splatnosti prvej splátky.",
+  "tax_due_multiple_installments": "Daň je splatná v troch splátkach, <strong>môže byť uhradená aj naraz</strong>, najneskôr v lehote splatnosti prvej splátky.",
+  "tax_due_email_channel": "Daň je splatná v termíne <strong>do 15 dní.</strong>",
+  "tax_due_standard": "Daň je splatná v termíne do 15 dní <strong>odo dňa právoplatnosti rozhodnutia.</strong>",
+  "payment_method_access_prompt": "Po zvolení jednej z nasledujúcich možností, sprístupníme platobné metódy.",
   "tax_determined": "Splátky dane určené správcom dane v rozhodnutí",
+  "redirect_to_payment_loading": "Presmerovávam…",
   "account_activator": {
     "title": "Vitajte v Bratislavskom konte",
     "content": "Vytvorte si svoj účet a majte rôzne služby mesta na jednom mieste, zaplaťte daň z nehnuteľností online alebo si kúpte lístok na kúpalisko bez čakania v rade.",
@@ -635,17 +633,12 @@
   },
   "payment_schedule": {
     "title": "Splátkový kalendár",
-    "three_pieces": "Daň je splatná v troch splátkach, ",
-    "paid_at_once": "môže byť uhradená aj naraz, ",
-    "not_later": "najneskôr v lehote splatnosti prvej splátky.",
+    "subtitle": "Daň je splatná v troch splátkach, <strong>môže byť uhradená aj naraz</strong>, najneskôr v lehote splatnosti prvej splátky.",
     "pay_with_qr": "Zaplatiť môžete okrem platobných údajov aj pomocou QR kódu.",
     "change_amount": "V bankovej aplikácii zmeňte sumu na vyššie uvedenú sumu splátky dane.",
-    "first_piece": "Prvá splátka v termíne ",
-    "first_piece_to": "do 15 dní odo dňa právoplatnosti rozhodnutia.",
-    "second_piece": "Druhá splátka v termíne ",
-    "second_piece_to": "do 31. 8. 2023",
-    "third_piece": "Tretia splátka v termíne ",
-    "third_piece_to": "do 31. 10. 2023"
+    "first_installment": "Prvá splátka v termíne <strong>do 15 dní odo dňa právoplatnosti rozhodnutia</strong>",
+    "second_installment": "Druhá splátka v termíne <strong>do 31. 8. 2024</strong>",
+    "third_installment": "Tretia splátka v termíne <strong>do 31. 10. 2024</strong>"
   },
   "tax_detail_section": {
     "title": "Daň z nehnuteľností za rok {{year}}",

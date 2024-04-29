@@ -1,5 +1,4 @@
-import cx from 'classnames'
-import { useTranslation } from 'next-i18next'
+import { Trans, useTranslation } from 'next-i18next'
 import React from 'react'
 
 import { FormatCurrencyFromCents } from '../../../frontend/utils/formatCurrency'
@@ -9,21 +8,27 @@ import AccordionV2 from './AccordionV2'
 const PaymentScheduleView = () => {
   const { taxData } = useTaxFeeSection()
   const { t } = useTranslation('account')
+  const taxInstallmentsTranslationKeys = [
+    'payment_schedule.first_installment',
+    'payment_schedule.second_installment',
+    'payment_schedule.third_installment',
+  ]
+
   return (
     <div className="no-scrollbar flex w-full flex-col items-start gap-4 overflow-auto lg:gap-6">
       <div className="flex w-full flex-col items-start gap-4 lg:gap-6">
-        <div className="flex w-full flex-col gap-4 lg:hidden">
-          <div className={cx('text-h6-normal flex')}>
-            <div className={cx('text-h6-normal grow')}>
-              {t('payment_schedule.three_pieces')}
-              <div className="inline">{t('payment_schedule.paid_at_once')}</div>
-              {t('payment_schedule.not_later')}
-            </div>
-          </div>
+        <div className="flex w-full flex-col gap-4">
+          <span className="text-p1">
+            <Trans
+              ns="account"
+              i18nKey="payment_schedule.subtitle"
+              components={{ strong: <strong className="font-semibold" /> }}
+            />
+          </span>
           <div id="divider" className="h-0.5 w-full bg-gray-200" />
         </div>
-        <div className=" flex w-full flex-col items-center gap-4 md:flex-row lg:gap-6">
-          <div className="text-h6 grow font-semibold md:text-h-md">{t('tax_determined')}</div>
+        <div className="flex w-full flex-col gap-4 md:flex-row lg:gap-6">
+          <div className="text-h4 grow font-semibold">{t('tax_determined')}</div>
           {/* <AddToCalendarButton */}
           {/*  name="Splátka dane z nehnuteľností 2023" */}
           {/*  dates={`[ */}
@@ -40,60 +45,32 @@ const PaymentScheduleView = () => {
           {/*  options={['Google', 'Microsoft365', 'Apple', 'iCal']} */}
           {/* /> */}
         </div>
-        <div className="flex w-full flex-col items-start gap-4 rounded-lg bg-gray-50 p-6 lg:gap-6">
-          {taxData?.taxInstallments?.[0] && (
-            <div
-              id="content"
-              className="flex w-full flex-col items-start gap-3 lg:flex-row lg:gap-6"
-            >
-              <div className="grow items-start">
-                {t('payment_schedule.first_piece')}{' '}
-                <div className="text-h5 inline">{t('payment_schedule.first_piece_to')}</div>
-              </div>
-              <div className="text-h5">
-                <FormatCurrencyFromCents value={taxData.taxInstallments[0]?.amount} />
-              </div>
-            </div>
-          )}
-          {taxData?.taxInstallments?.[1] && (
+        <div className="flex w-full flex-col items-start gap-4 rounded-lg bg-gray-50 p-4 lg:gap-6 lg:p-6">
+          {taxData.taxInstallments?.map((taxInstallment, index) => (
             <>
-              <div id="divider" className="h-0.5 w-full bg-gray-200" />
+              {index !== 0 && <div className="h-0.5 w-full bg-gray-200" />}
               <div
-                id="content"
-                className="flex w-full flex-col items-start gap-3 lg:flex-row lg:gap-6"
+                key={index}
+                className="flex w-full flex-col items-start gap-3 lg:flex-row lg:items-center lg:gap-6"
               >
-                <div className="grow items-start">
-                  {t('payment_schedule.second_piece')}
-                  <div className="text-h5 inline">{t('payment_schedule.second_piece_to')}</div>
+                <div className="text-p1 grow">
+                  <Trans
+                    ns="account"
+                    i18nKey={taxInstallmentsTranslationKeys[index]}
+                    components={{ strong: <strong className="font-semibold" /> }}
+                  />
                 </div>
-                <div className="text-h5">
-                  <FormatCurrencyFromCents value={taxData.taxInstallments[1]?.amount} />
+                <div className="text-p1-semibold">
+                  <FormatCurrencyFromCents value={taxInstallment.amount} />
                 </div>
               </div>
             </>
-          )}
-          {taxData?.taxInstallments?.[2] && (
-            <>
-              <div id="divider" className="h-0.5 w-full bg-gray-200" />
-              <div
-                id="content"
-                className="flex w-full flex-col items-start gap-3 lg:flex-row lg:gap-6"
-              >
-                <div className="grow items-start">
-                  {t('payment_schedule.third_piece')}
-                  <div className="text-h5 inline">{t('payment_schedule.third_piece_to')}</div>
-                </div>
-                <div className="text-h5">
-                  <FormatCurrencyFromCents value={taxData.taxInstallments[2]?.amount} />
-                </div>
-              </div>
-            </>
-          )}
+          ))}
         </div>
       </div>
-      <div className="flex flex-col gap-3 lg:gap-0">
-        <div className="text-h5">{t('payment_schedule.pay_with_qr')}</div>
-        <div className="text-h5-normal">{t('payment_schedule.change_amount')}</div>
+      <div>
+        <p className="text-p1-semibold">{t('payment_schedule.pay_with_qr')}</p>
+        <p className="text-p1">{t('payment_schedule.change_amount')}</p>
       </div>
     </div>
   )

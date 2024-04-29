@@ -129,23 +129,21 @@ const ContactInformationSection = () => {
               }}
             />
             <SummaryRowSimple size="small" isEditable={false} label={t('contact')} isError={false}>
-              <div className="flex gap-2">
-                <div>
-                  <a
-                    className="underline underline-offset-4"
-                    href={`tel:${taxData?.taxEmployees?.phoneNumber}`}
-                  >
-                    {taxData?.taxEmployees?.phoneNumber}
-                  </a>
-                  ,
-                </div>
+              <>
+                <a
+                  className="underline underline-offset-4"
+                  href={`tel:${taxData?.taxEmployees?.phoneNumber}`}
+                >
+                  {taxData?.taxEmployees?.phoneNumber}
+                </a>
+                ,{' '}
                 <a
                   className="underline underline-offset-4"
                   href={`mailto:${taxData?.taxEmployees?.email}`}
                 >
                   {taxData?.taxEmployees?.email}
                 </a>
-              </div>
+              </>
             </SummaryRowSimple>
           </div>
         </div>

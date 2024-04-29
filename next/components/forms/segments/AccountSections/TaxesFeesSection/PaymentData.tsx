@@ -1,6 +1,7 @@
 import { DownloadIcon } from '@assets/ui-icons'
+import { UserOfficialCorrespondenceChannelEnum } from '@clients/openapi-city-account'
 import { TaxPaidStatusEnum } from '@clients/openapi-tax'
-import { useTranslation } from 'next-i18next'
+import { Trans, useTranslation } from 'next-i18next'
 import React from 'react'
 
 import { environment } from '../../../../../environment'
@@ -21,11 +22,24 @@ const Details = () => {
     downloadQrCode,
     setOfficialCorrespondenceChannelModalOpen,
   } = useTaxFeeSection()
+  const {
+    userData: { officialCorrespondenceChannel },
+  } = useUser()
   const { t } = useTranslation('account')
   const qrCodeBase64 = `data:image/png;base64,${taxData.qrCodeWeb}`
   const hasMultipleInstallments = taxData.taxInstallments.length > 1
   const displayDeliveryMethodCard = environment.featureToggles.taxReportDeliveryMethod
   const cardPaymentDisabled = taxData.paidStatus !== TaxPaidStatusEnum.NotPayed
+  const taxDueTextKey = (() => {
+    if (hasMultipleInstallments) {
+      return 'tax_due_multiple_installments'
+    }
+    if (officialCorrespondenceChannel === UserOfficialCorrespondenceChannelEnum.Email) {
+      return 'tax_due_email_channel'
+    }
+
+    return 'tax_due_standard'
+  })()
 
   return (
     <div className="flex w-full flex-col gap-6">
@@ -35,7 +49,7 @@ const Details = () => {
         />
       )}
       <div className="flex w-full flex-col-reverse gap-6 md:flex-row lg:gap-8">
-        <div className="flex w-full flex-col gap-5 rounded-lg border-0 border-solid border-gray-200 p-0 sm:border-2 sm:px-6 sm:py-5 md:w-[488px]">
+        <div className="flex w-full flex-col gap-5 rounded-lg border-0 border-solid border-gray-200 p-0 sm:border-2 sm:px-4 sm:py-5 md:w-[488px] lg:px-6">
           <div className="text-p2">{t('use_one_of_ibans_to_pay')}</div>
           {taxData.paidStatus === TaxPaidStatusEnum.Paid ? null : (
             <div className="text-p2 rounded-5 bg-warning-100 p-3">
@@ -75,22 +89,11 @@ const Details = () => {
             <div className="flex w-full flex-col items-start gap-2">
               <div className="text-16-semibold">{t('tax_due')}</div>
               <div className="text-16">
-                {hasMultipleInstallments ? (
-                  <>
-                    <div className="inline">{t('tax_payable_in_installments_1')}</div>
-                    <div className="text-16-semibold inline">
-                      {t('tax_payable_in_installments_2')}
-                    </div>{' '}
-                    <div className="inline">{t('tax_payable_in_installments_3')}</div>
-                  </>
-                ) : (
-                  <>
-                    <div className="inline">{t('tax_payable_within')}</div>
-                    <div className="text-16-semibold inline">
-                      {t('validity_decision_with_schedule')}
-                    </div>
-                  </>
-                )}
+                <Trans
+                  ns="account"
+                  i18nKey={taxDueTextKey}
+                  components={{ strong: <span className="text-16-semibold" /> }}
+                />
               </div>
             </div>
           </div>
@@ -109,8 +112,7 @@ const Details = () => {
               variant="black-solid"
               onPress={() => redirectToPayment()}
               isLoading={redirectToPaymentIsPending}
-              // TODO: Translation
-              isLoadingText="Presmerovávam…"
+              isLoadingText={t('redirect_to_payment_loading')}
               isDisabled={cardPaymentDisabled}
               fullWidthMobile
             >
@@ -168,10 +170,7 @@ const PaymentData = () => {
       <div className="text-h3">{t('payment_data')}</div>
       {displayDeliveryMethodBanner ? (
         <div className="flex flex-col gap-6">
-          <p className="text-p2">
-            {/* TODO: Translations */}
-            Po zvolení jednej z nasledujúcich možností, sprístupníme platobné metódy.
-          </p>
+          <p className="text-p2">{t('payment_method_access_prompt')}</p>
           <TaxesFeesDeliveryMethodBanner
             onDeliveryMethodChange={() => setOfficialCorrespondenceChannelModalOpen(true)}
           />

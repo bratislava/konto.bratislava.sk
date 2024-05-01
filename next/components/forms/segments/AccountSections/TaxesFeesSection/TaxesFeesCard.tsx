@@ -16,9 +16,6 @@ type TaxesFeesCardProps = {
 const TaxesFeesCard = ({ taxData }: TaxesFeesCardProps) => {
   const { year, paidStatus, createdAt, paidAmount, amount } = taxData
   const { t } = useTranslation('account')
-  const createdAtFormatted = new Date(createdAt).toLocaleDateString('sk-SK')
-  // TODO: Implement dates properly
-  const paidDate = false
 
   return (
     <>
@@ -36,7 +33,7 @@ const TaxesFeesCard = ({ taxData }: TaxesFeesCardProps) => {
           <div className="flex w-full items-center justify-end">
             <div className="flex flex-col px-10">
               <span className="text-16-semibold mb-1">Vytvorená</span>
-              <span className="w-max">{createdAtFormatted}</span>
+              <span className="w-max">{formatDate(createdAt)}</span>
             </div>
             <div className="flex flex-col border-x-2 px-10">
               <span className="text-16-semibold mb-1">Suma</span>
@@ -53,9 +50,6 @@ const TaxesFeesCard = ({ taxData }: TaxesFeesCardProps) => {
             </div>
             <div className="flex flex-col items-center px-10">
               <TaxPaidStatus status={paidStatus} />
-              {paidStatus !== TaxPaidStatusEnum.NotPayed && paidDate && (
-                <span className="">{formatDate(paidDate)}</span>
-              )}
             </div>
           </div>
         </div>

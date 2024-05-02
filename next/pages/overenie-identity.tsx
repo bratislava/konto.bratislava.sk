@@ -8,7 +8,7 @@ import LoginRegisterLayout from 'components/layouts/LoginRegisterLayout'
 import { verifyIdentityApi, verifyLegalEntityIdentityApi } from 'frontend/api/api'
 import { Tier } from 'frontend/dtos/accountDto'
 import { useRefreshServerSideProps } from 'frontend/hooks/useRefreshServerSideProps'
-import { GENERIC_ERROR_MESSAGE, isError } from 'frontend/utils/errors'
+import { ErrorWithName, GENERIC_ERROR_MESSAGE, isError } from 'frontend/utils/errors'
 import { useTranslation } from 'next-i18next'
 import { useRef, useState } from 'react'
 
@@ -82,6 +82,14 @@ const IdentityVerificationPage = () => {
       })
       // status will be set according to current cognito tier - pending if still processing
       await refreshData()
+      if (tierStatus.tier === Tier.NOT_VERIFIED_IDENTITY_CARD) {
+        handleErrorChange(
+          new ErrorWithName(
+            'Unsuccessful identity verification',
+            'unsuccessful-identity-verification',
+          ),
+        )
+      }
     } catch (error) {
       if (isError(error)) {
         handleErrorChange(error)

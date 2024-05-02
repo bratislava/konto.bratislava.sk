@@ -15,9 +15,7 @@ const tableHeaderData = {
     </span>
   ),
   base: (
-    <span>
-      Základ dane m<sup>2</sup>
-    </span>
+    <span>Základ dane</span>
   ),
   total: <span>Daň v EUR</span>,
 }

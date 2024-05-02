@@ -18,6 +18,7 @@ export const getDraftApplications = async (
   page: number,
   accessTokenSsrGetFn?: () => Promise<string | null>,
 ) => {
+  // TODO - required functionality per product docs - SENDING tab will display only the ERRORs that the user can edit + queued/sending_to_nases
   const variantToStates: Array<GetFormResponseDtoStateEnum> = {
     SENT: [
       'REJECTED',
@@ -35,6 +36,9 @@ export const getDraftApplications = async (
     undefined,
     undefined,
     variantToStates,
+    undefined,
+    // TODO update when backend behaviour changes
+    // if this is set varianToStates would be ignored, that does not match the required functionality in any of the tabs
     undefined,
     { accessToken: 'always', accessTokenSsrGetFn },
   )

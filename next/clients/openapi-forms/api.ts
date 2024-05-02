@@ -314,7 +314,6 @@ export const CreateFormResponseDtoStateEnum = {
   Finished: 'FINISHED',
   Rejected: 'REJECTED',
   Error: 'ERROR',
-  ErrorUserCanRepair: 'ERROR_USER_CAN_REPAIR',
 } as const
 
 export type CreateFormResponseDtoStateEnum =
@@ -1672,42 +1671,42 @@ export type FormIsOwnedBySomeoneElseErrorDtoErrorNameEnum =
 /**
  *
  * @export
- * @interface FormNotDraftErrorDto
+ * @interface FormNotEditableErrorDto
  */
-export interface FormNotDraftErrorDto {
+export interface FormNotEditableErrorDto {
   /**
    * Status Code
    * @type {number}
-   * @memberof FormNotDraftErrorDto
+   * @memberof FormNotEditableErrorDto
    */
   statusCode: number
   /**
    * Detail error message
    * @type {string}
-   * @memberof FormNotDraftErrorDto
+   * @memberof FormNotEditableErrorDto
    */
   message: string
   /**
    * status in text
    * @type {string}
-   * @memberof FormNotDraftErrorDto
+   * @memberof FormNotEditableErrorDto
    */
   status: string
   /**
    * Exact error name
    * @type {string}
-   * @memberof FormNotDraftErrorDto
+   * @memberof FormNotEditableErrorDto
    */
-  errorName: FormNotDraftErrorDtoErrorNameEnum
+  errorName: FormNotEditableErrorDtoErrorNameEnum
   /**
    * Helper for sending additional data in error
    * @type {object}
-   * @memberof FormNotDraftErrorDto
+   * @memberof FormNotEditableErrorDto
    */
   object?: object
 }
 
-export const FormNotDraftErrorDtoErrorNameEnum = {
+export const FormNotEditableErrorDtoErrorNameEnum = {
   NotFoundError: 'NOT_FOUND_ERROR',
   DatabaseError: 'DATABASE_ERROR',
   InternalServerError: 'INTERNAL_SERVER_ERROR',
@@ -1716,8 +1715,8 @@ export const FormNotDraftErrorDtoErrorNameEnum = {
   BadRequestError: 'BAD_REQUEST_ERROR',
 } as const
 
-export type FormNotDraftErrorDtoErrorNameEnum =
-  (typeof FormNotDraftErrorDtoErrorNameEnum)[keyof typeof FormNotDraftErrorDtoErrorNameEnum]
+export type FormNotEditableErrorDtoErrorNameEnum =
+  (typeof FormNotEditableErrorDtoErrorNameEnum)[keyof typeof FormNotEditableErrorDtoErrorNameEnum]
 
 /**
  *
@@ -1785,7 +1784,6 @@ export const FormState = {
   Finished: 'FINISHED',
   Rejected: 'REJECTED',
   Error: 'ERROR',
-  ErrorUserCanRepair: 'ERROR_USER_CAN_REPAIR',
 } as const
 
 export type FormState = (typeof FormState)[keyof typeof FormState]
@@ -2146,7 +2144,6 @@ export const GetFormResponseDtoStateEnum = {
   Finished: 'FINISHED',
   Rejected: 'REJECTED',
   Error: 'ERROR',
-  ErrorUserCanRepair: 'ERROR_USER_CAN_REPAIR',
 } as const
 
 export type GetFormResponseDtoStateEnum =
@@ -2248,7 +2245,6 @@ export const GetFormResponseSimpleDtoStateEnum = {
   Finished: 'FINISHED',
   Rejected: 'REJECTED',
   Error: 'ERROR',
-  ErrorUserCanRepair: 'ERROR_USER_CAN_REPAIR',
 } as const
 
 export type GetFormResponseSimpleDtoStateEnum =
@@ -2834,6 +2830,56 @@ export const NoFileUploadDataErrorDtoErrorNameEnum = {
 
 export type NoFileUploadDataErrorDtoErrorNameEnum =
   (typeof NoFileUploadDataErrorDtoErrorNameEnum)[keyof typeof NoFileUploadDataErrorDtoErrorNameEnum]
+
+/**
+ *
+ * @export
+ * @interface NoFormXmlDataErrorDto
+ */
+export interface NoFormXmlDataErrorDto {
+  /**
+   * Status Code
+   * @type {number}
+   * @memberof NoFormXmlDataErrorDto
+   */
+  statusCode: number
+  /**
+   * Detail error message
+   * @type {string}
+   * @memberof NoFormXmlDataErrorDto
+   */
+  message: string
+  /**
+   * status in text
+   * @type {string}
+   * @memberof NoFormXmlDataErrorDto
+   */
+  status: string
+  /**
+   * Exact error name
+   * @type {string}
+   * @memberof NoFormXmlDataErrorDto
+   */
+  errorName: NoFormXmlDataErrorDtoErrorNameEnum
+  /**
+   * Helper for sending additional data in error
+   * @type {object}
+   * @memberof NoFormXmlDataErrorDto
+   */
+  object?: object
+}
+
+export const NoFormXmlDataErrorDtoErrorNameEnum = {
+  NotFoundError: 'NOT_FOUND_ERROR',
+  DatabaseError: 'DATABASE_ERROR',
+  InternalServerError: 'INTERNAL_SERVER_ERROR',
+  UnauthorizedError: 'UNAUTHORIZED_ERROR',
+  UnprocessableEntityError: 'UNPROCESSABLE_ENTITY_ERROR',
+  BadRequestError: 'BAD_REQUEST_ERROR',
+} as const
+
+export type NoFormXmlDataErrorDtoErrorNameEnum =
+  (typeof NoFormXmlDataErrorDtoErrorNameEnum)[keyof typeof NoFormXmlDataErrorDtoErrorNameEnum]
 
 /**
  *
@@ -7163,6 +7209,7 @@ export const NasesApiAxiosParamCreator = function (configuration?: Configuration
      * @param {string} [formName] Form Name
      * @param {Array<FormState>} [states] Forms in which states are searched - when omitted, all forms of the user are searched
      * @param {string} [schemaVersionId] Schema version Id.
+     * @param {boolean} [userCanEdit] Get only forms in such a state, that user can still edit it.
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
@@ -7173,6 +7220,7 @@ export const NasesApiAxiosParamCreator = function (configuration?: Configuration
       formName?: string,
       states?: Array<FormState>,
       schemaVersionId?: string,
+      userCanEdit?: boolean,
       options: RawAxiosRequestConfig = {},
     ): Promise<RequestArgs> => {
       const localVarPath = `/nases/forms`
@@ -7213,6 +7261,10 @@ export const NasesApiAxiosParamCreator = function (configuration?: Configuration
 
       if (schemaVersionId !== undefined) {
         localVarQueryParameter['schemaVersionId'] = schemaVersionId
+      }
+
+      if (userCanEdit !== undefined) {
+        localVarQueryParameter['userCanEdit'] = userCanEdit
       }
 
       setSearchParams(localVarUrlObj, localVarQueryParameter)
@@ -7770,6 +7822,7 @@ export const NasesApiFp = function (configuration?: Configuration) {
      * @param {string} [formName] Form Name
      * @param {Array<FormState>} [states] Forms in which states are searched - when omitted, all forms of the user are searched
      * @param {string} [schemaVersionId] Schema version Id.
+     * @param {boolean} [userCanEdit] Get only forms in such a state, that user can still edit it.
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
@@ -7780,6 +7833,7 @@ export const NasesApiFp = function (configuration?: Configuration) {
       formName?: string,
       states?: Array<FormState>,
       schemaVersionId?: string,
+      userCanEdit?: boolean,
       options?: RawAxiosRequestConfig,
     ): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<GetFormsResponseDto>> {
       const localVarAxiosArgs = await localVarAxiosParamCreator.nasesControllerGetForms(
@@ -7789,6 +7843,7 @@ export const NasesApiFp = function (configuration?: Configuration) {
         formName,
         states,
         schemaVersionId,
+        userCanEdit,
         options,
       )
       const localVarOperationServerIndex = configuration?.serverIndex ?? 0
@@ -8100,6 +8155,7 @@ export const NasesApiFactory = function (
      * @param {string} [formName] Form Name
      * @param {Array<FormState>} [states] Forms in which states are searched - when omitted, all forms of the user are searched
      * @param {string} [schemaVersionId] Schema version Id.
+     * @param {boolean} [userCanEdit] Get only forms in such a state, that user can still edit it.
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
@@ -8110,6 +8166,7 @@ export const NasesApiFactory = function (
       formName?: string,
       states?: Array<FormState>,
       schemaVersionId?: string,
+      userCanEdit?: boolean,
       options?: any,
     ): AxiosPromise<GetFormsResponseDto> {
       return localVarFp
@@ -8120,6 +8177,7 @@ export const NasesApiFactory = function (
           formName,
           states,
           schemaVersionId,
+          userCanEdit,
           options,
         )
         .then((request) => request(axios, basePath))
@@ -8335,6 +8393,7 @@ export class NasesApi extends BaseAPI {
    * @param {string} [formName] Form Name
    * @param {Array<FormState>} [states] Forms in which states are searched - when omitted, all forms of the user are searched
    * @param {string} [schemaVersionId] Schema version Id.
+   * @param {boolean} [userCanEdit] Get only forms in such a state, that user can still edit it.
    * @param {*} [options] Override http request option.
    * @throws {RequiredError}
    * @memberof NasesApi
@@ -8346,6 +8405,7 @@ export class NasesApi extends BaseAPI {
     formName?: string,
     states?: Array<FormState>,
     schemaVersionId?: string,
+    userCanEdit?: boolean,
     options?: RawAxiosRequestConfig,
   ) {
     return NasesApiFp(this.configuration)
@@ -8356,6 +8416,7 @@ export class NasesApi extends BaseAPI {
         formName,
         states,
         schemaVersionId,
+        userCanEdit,
         options,
       )
       .then((request) => request(this.axios, this.basePath))

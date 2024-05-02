@@ -57,6 +57,7 @@ const IdentityVerificationPage = () => {
     setLastIco(data.ico)
     setLastRc(data.rc)
     setLastIdCard(data.idCard)
+    handleErrorChange(null)
 
     // sanity check
     if (isLegalEntity && !data.ico) {

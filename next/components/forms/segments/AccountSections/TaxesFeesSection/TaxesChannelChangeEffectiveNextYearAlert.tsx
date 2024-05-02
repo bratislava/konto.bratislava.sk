@@ -2,7 +2,7 @@ import React from 'react'
 
 import Alert from '../../../info-components/Alert'
 
-const TaxesFeesDeliveryMethodDelayed = () => {
+const TaxesChannelChangeEffectiveNextYearAlert = () => {
   // TODO: Integrate with Strapi
 
   return (
@@ -24,4 +24,4 @@ const TaxesFeesDeliveryMethodDelayed = () => {
   )
 }
 
-export default TaxesFeesDeliveryMethodDelayed
+export default TaxesChannelChangeEffectiveNextYearAlert

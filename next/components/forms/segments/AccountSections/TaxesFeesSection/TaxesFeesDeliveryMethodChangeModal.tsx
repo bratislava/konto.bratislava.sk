@@ -182,13 +182,6 @@ const TaxesFeesDeliveryMethodChangeModal = ({
   })
   const [openSnackbarError] = useSnackbar({ variant: 'error' })
 
-  //
-  // if (!userData) {
-  //   return null
-  // }
-  // const { t } = useTranslation('account')
-  // const [error, setError] = useState<Error | null>(null)
-
   const handleSubmit = async ({ data }: { data: FormData }) => {
     return changeSubscription(data.isSubscribed, {
       onSuccess: () => {

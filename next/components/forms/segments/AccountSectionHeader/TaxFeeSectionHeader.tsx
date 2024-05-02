@@ -81,9 +81,9 @@ const TaxFeeSectionHeader = () => {
             </div>
 
             {/* for mobile version */}
-            <div className="block w-full md:hidden">
-              <div className="flex flex-col gap-3">
-                {taxData.pdfExport && (
+            {taxData.pdfExport && (
+              <div className="block w-full md:hidden">
+                <div className="flex flex-col gap-3">
                   <Button
                     startIcon={<DownloadIcon className="size-5" />}
                     variant="black-outline"
@@ -92,9 +92,9 @@ const TaxFeeSectionHeader = () => {
                     className="min-w-full"
                     onPress={downloadPdf}
                   />
-                )}
+                </div>
               </div>
-            </div>
+            )}
           </div>
         </div>
       </div>

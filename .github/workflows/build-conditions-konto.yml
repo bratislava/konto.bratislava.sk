@@ -48,7 +48,7 @@ jobs:
     outputs:
       strapi: ${{ steps.strapi.outputs.condition }}
       next: ${{ steps.next.outputs.condition }}
-      nest-forms-backend: ${{ steps.next.outputs.nest-forms-backend }}
+      nest-forms-backend: ${{ steps.nest-forms-backend.outputs.condition }}
     steps:
       - name: Print pipeline comment
         if: github.event_name == 'pull_request'

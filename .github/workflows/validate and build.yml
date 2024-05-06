@@ -1,4 +1,4 @@
-name: Build with bratiska-cli
+name: Build and Validate with bratiska-cli
 on:
   pull_request:
     branches:
@@ -30,7 +30,7 @@ jobs:
     permissions: write-all
 
   validate-next:
-    name: build next
+    name: validate next
     needs: conditions
     if: needs.conditions.outputs.next == 'true'
     uses: bratislava/github-actions/.github/workflows/validate-typescript.yml@stable

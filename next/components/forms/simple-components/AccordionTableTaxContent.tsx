@@ -1,8 +1,10 @@
 import { ResponseTaxDetailsDto } from '@clients/openapi-tax'
+import cx from 'classnames'
 import { useTranslation } from 'next-i18next'
-import React from 'react'
+import React, { useRef } from 'react'
 
 import { FormatCurrencyFromCents } from '../../../frontend/utils/formatCurrency'
+import { useHorizontalScrollFade } from '../../../frontend/utils/useHorizontalScrollFade'
 import AccordionV2 from './AccordionV2'
 
 const tableHeaderData = {
@@ -12,26 +14,28 @@ const tableHeaderData = {
       Výmera pozemku v m<sup>2</sup>
     </span>
   ),
-  base: (
+  baseMetric: (
     <span>
       Základ dane m<sup>2</sup>
     </span>
   ),
+  baseMonetary: <span>Základ dane v EUR</span>,
   total: <span>Daň v EUR</span>,
 }
 
 const matchHeader = {
-  GROUND: [tableHeaderData.area, tableHeaderData.base, tableHeaderData.total],
-  CONSTRUCTION: [tableHeaderData.base, tableHeaderData.total],
-  APARTMENT: [tableHeaderData.base, tableHeaderData.total],
+  GROUND: [tableHeaderData.area, tableHeaderData.baseMonetary, tableHeaderData.total],
+  CONSTRUCTION: [tableHeaderData.baseMetric, tableHeaderData.total],
+  APARTMENT: [tableHeaderData.baseMetric, tableHeaderData.total],
 }
 
-export type AccordionBase = {
+type AccordionTableTaxContentProps = {
   title: string
   secondTitle?: string
   dataType: string
   data: ResponseTaxDetailsDto[]
 }
+
 const TableHeaderRow = ({ dataType }: { dataType: string }) => {
   // TODO types can be better if validated as they come from API
   const headerData = [
@@ -103,16 +107,26 @@ const TableRow = ({ dataType, data }: { dataType: string; data: ResponseTaxDetai
 }
 
 const Table = ({ dataType, data }: { dataType: string; data: ResponseTaxDetailsDto[] }) => {
+  const tableWrapperRef = useRef<HTMLDivElement>(null)
+  const { scrollFadeClassNames } = useHorizontalScrollFade({ ref: tableWrapperRef })
+
   return (
-    <div className="no-scrollbar w-full overflow-x-auto">
-      <table className="w-max table-auto border-separate border-spacing-0 rounded-lg border-2 border-solid border-gray-200 last:border-b-2 sm:w-full lg:rounded-none lg:border-0">
-        <TableHeaderRow dataType={dataType} />
-        <TableRow dataType={dataType} data={data} />
-      </table>
+    <div className="relative w-full">
+      <div className={cx('overflow-x-auto', scrollFadeClassNames)} ref={tableWrapperRef}>
+        <table className="w-max table-auto border-separate border-spacing-0 rounded-lg border-2 border-solid border-gray-200 last:border-b-2 sm:w-full lg:rounded-none lg:border-0">
+          <TableHeaderRow dataType={dataType} />
+          <TableRow dataType={dataType} data={data} />
+        </table>
+      </div>
     </div>
   )
 }
-const AccordionTableTaxContent = ({ title, secondTitle, dataType, data }: AccordionBase) => {
+const AccordionTableTaxContent = ({
+  title,
+  secondTitle,
+  dataType,
+  data,
+}: AccordionTableTaxContentProps) => {
   return (
     <AccordionV2
       title={

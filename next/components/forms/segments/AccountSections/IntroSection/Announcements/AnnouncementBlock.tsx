@@ -2,12 +2,12 @@ import cx from 'classnames'
 import AccountMarkdown from 'components/forms/segments/AccountMarkdown/AccountMarkdown'
 import Image from 'next/legacy/image'
 
-import ButtonNew, { ButtonProps } from '../../../../simple-components/ButtonNew'
+import ButtonNew, { AnchorProps, ButtonProps } from '../../../../simple-components/ButtonNew'
 
 type AnnouncementBlockProps = {
   announcementContent?: string
   imagePath?: string
-  buttons?: ButtonProps[]
+  buttons?: (ButtonProps | AnchorProps)[]
   onPress?: () => void
   reversed?: boolean
 }

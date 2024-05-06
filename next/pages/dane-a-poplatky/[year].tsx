@@ -44,7 +44,7 @@ export const getServerSideProps = amplifyGetServerSideProps<AccountTaxesFeesPage
     try {
       const [{ data: taxData }, strapiTax] = await Promise.all([
         taxApi.taxControllerGetActualTaxes(yearNumber, {
-          accessToken: 'onlyAuthenticated',
+          accessToken: 'always',
           accessTokenSsrGetFn: getAccessToken,
         }),
         strapiClient.Tax().then((response) => response.tax?.data?.attributes),

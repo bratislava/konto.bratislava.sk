@@ -45,5 +45,4 @@ jobs:
     uses: bratislava/github-actions/.github/workflows/build-with-bratiska-cli.yml@stable
     with:
       directory: nest-forms-backend/
-      debug: --debug
     permissions: write-all

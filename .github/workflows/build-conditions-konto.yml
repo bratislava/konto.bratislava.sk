@@ -127,5 +127,3 @@ jobs:
         with:
           script: |
             core.notice(':heavy_exclamation_mark: We have zero builds based on conditions. Exiting pipeline.')
-
-

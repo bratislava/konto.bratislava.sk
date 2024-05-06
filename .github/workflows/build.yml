@@ -6,7 +6,7 @@ on:
 jobs:
   conditions:
     name: Check for build conditions
-    uses: bratislava/github-actions/.github/workflows/build-conditions.yml@stable
+    uses: bratislava/konto.bratislava.sk/.github/workflows/build-conditions-konto.ymll@beta
     permissions: write-all
 
   strapi:
@@ -28,3 +28,14 @@ jobs:
       directory: next/
       debug: --debug
     permissions: write-all
+
+  nest-forms-backend:
+    name: build nest-forms-backend
+    needs: conditions
+    if: needs.conditions.outputs.nest-forms-backend == 'true'
+    uses: bratislava/github-actions/.github/workflows/build-with-bratiska-cli.yml@stable
+    with:
+      directory: nest-forms-backend/
+      debug: --debug
+    permissions: write-all
+

@@ -1,0 +1,131 @@
+name: Workflow which determines, what should be built on konto.bratislava.sk projects
+on:
+  workflow_call:
+    outputs:
+      strapi:
+        description: "Returns true if strapi can be built"
+        value: ${{ jobs.conditions.outputs.strapi }}
+      next:
+        description: "Returns true if next can be built"
+        value: ${{ jobs.conditions.outputs.next }}
+      nest-forms-backend:
+        description: "Returns true if nest-forms-backend can be built"
+        value: ${{ jobs.conditions.outputs.nest-forms-backend }}
+jobs:
+  changes:
+    name: Checking for directory changes in repository
+    runs-on: ubuntu-latest
+    outputs:
+      strapi: ${{ steps.filter.outputs.strapi }}
+      next: ${{ steps.filter.outputs.next }}
+      nest-forms-backend: ${{ steps.filter.outputs.nest-forms-backend }}
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 2
+
+      - name: Pipelines Version
+        run: |
+          echo "Pipelines version: 2.2.1"
+
+      - uses: dorny/paths-filter@v3
+        id: filter
+        with:
+          filters: |
+            strapi:
+              - 'strapi/**'
+            next:
+              - 'next/**'
+            nest-forms-backend:
+              - 'nest-forms-backend/**'
+  conditions:
+    name: Checking build conditions
+    needs: changes
+    runs-on: ubuntu-latest
+    env:
+      COUNT: 0
+    outputs:
+      strapi: ${{ steps.strapi.outputs.condition }}
+      next: ${{ steps.next.outputs.condition }}
+      nest-forms-backend: ${{ steps.next.outputs.nest-forms-backend }}
+    steps:
+      - name: Print pipeline comment
+        if: github.event_name == 'pull_request'
+        uses: marocchino/sticky-pull-request-comment@v2.9.0
+        with:
+          header: Build Conditions
+          recreate: true
+          message: |
+            <b> Test build pipeline info :rocket: </b><br/>
+            Changes in the code and tag info: <br/>
+            :arrow_right: Changes in strapi: <b>${{ needs.changes.outputs.strapi }}</b><br/>
+            :arrow_right: Changes in next: <b>${{ needs.changes.outputs.next }}</b><br/>
+            :arrow_right: Changes in nest-forms-backend: <b>${{ needs.changes.outputs.nest-forms-backend }}</b><br/>
+            We are going to build :ship:
+
+      - id: nest-forms-backend
+        name: Check for build nest-forms-backend
+        if: needs.changes.outputs.nest-forms-backend == 'true'
+        run: |
+          echo "COUNT=$(($COUNT+1))" >> $GITHUB_ENV
+          echo "condition=true" >> $GITHUB_OUTPUT
+
+      - name: Print pipeline comment
+        if: needs.changes.outputs.nest-forms-backend == 'true'
+        uses: marocchino/sticky-pull-request-comment@v2.9.0
+        with:
+          header: Build Conditions
+          append: true
+          message: |
+            :soon: <b>nest-forms-backend<b><br/>
+
+      - id: strapi
+        name: Check for build strapi
+        if: needs.changes.outputs.strapi == 'true'
+        run: |
+          echo "COUNT=$(($COUNT+1))" >> $GITHUB_ENV
+          echo "condition=true" >> $GITHUB_OUTPUT
+
+      - name: Print pipeline comment
+        if: needs.changes.outputs.strapi == 'true'
+        uses: marocchino/sticky-pull-request-comment@v2.9.0
+        with:
+          header: Build Conditions
+          append: true
+          message: |
+            :soon: <b>strapi<b><br/>
+
+      - id: next
+        name: Check for build next
+        if: needs.changes.outputs.next == 'true'
+        run: |
+          echo "COUNT=$(($COUNT+1))" >> $GITHUB_ENV
+          echo "condition=true" >> $GITHUB_OUTPUT
+
+      - name: Print pipeline comment
+        if: needs.changes.outputs.next == 'true'
+        uses: marocchino/sticky-pull-request-comment@v2.9.0
+        with:
+          header: Build Conditions
+          append: true
+          message: |
+            :soon: <b>next<b><br/>
+
+      - name: Print pipeline comment
+        if: env.COUNT == 0
+        uses: marocchino/sticky-pull-request-comment@v2.9.0
+        with:
+          recreate: true
+          message: |
+            :heavy_exclamation_mark: We have zero builds based on conditions. Exiting pipeline.
+
+      - id: conditions-count-zero
+        name: Checking if there is only zero condition true
+        if: env.COUNT == 0
+        uses: actions/github-script@v7.0.1
+        with:
+          script: |
+            core.notice(':heavy_exclamation_mark: We have zero builds based on conditions. Exiting pipeline.')
+
+

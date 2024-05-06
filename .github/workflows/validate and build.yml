@@ -5,7 +5,7 @@ on:
       - master
 jobs:
   conditions:
-    name: Check for build conditions
+    name: Check for conditions
     uses: bratislava/konto.bratislava.sk/.github/workflows/build-conditions-konto.yml@beta
     permissions: write-all
 

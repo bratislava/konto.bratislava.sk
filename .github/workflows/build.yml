@@ -6,7 +6,7 @@ on:
 jobs:
   conditions:
     name: Check for build conditions
-    uses: bratislava/konto.bratislava.sk/.github/workflows/build-conditions-konto.ymll@beta
+    uses: bratislava/konto.bratislava.sk/.github/workflows/build-conditions-konto.yml@beta
     permissions: write-all
 
   strapi:

@@ -9,7 +9,7 @@ jobs:
     uses: bratislava/konto.bratislava.sk/.github/workflows/build-conditions-konto.yml@beta
     permissions: write-all
 
-  strapi:
+  build-strapi:
     name: build Strapi
     needs: conditions
     if: needs.conditions.outputs.strapi == 'true'
@@ -19,7 +19,7 @@ jobs:
       debug: --debug
     permissions: write-all
 
-  next:
+  build-next:
     name: build next
     needs: conditions
     if: needs.conditions.outputs.next == 'true'
@@ -29,7 +29,16 @@ jobs:
       debug: --debug
     permissions: write-all
 
-  nest-forms-backend:
+  validate-next:
+    name: build next
+    needs: conditions
+    if: needs.conditions.outputs.next == 'true'
+    uses: bratislava/github-actions/.github/workflows/validate-typescript.yml@stable
+    with:
+      workdir: next/
+    permissions: write-all
+
+  build-nest-forms-backend:
     name: build nest-forms-backend
     needs: conditions
     if: needs.conditions.outputs.nest-forms-backend == 'true'
@@ -38,4 +47,3 @@ jobs:
       directory: nest-forms-backend/
       debug: --debug
     permissions: write-all
-

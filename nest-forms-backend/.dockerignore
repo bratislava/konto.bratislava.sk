@@ -1,0 +1,12 @@
+.gitignore
+.dockerignore
+Dockerfile
+dist
+node_modules
+npm-debug.log
+.env
+.env.example
+.env.test
+misc
+.idea
+.nvmrc

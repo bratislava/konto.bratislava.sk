@@ -147,13 +147,13 @@ const Form = ({ onSubmit, defaultValues, agreementContent }: FormProps) => {
           control={control}
           render={({ field }) => (
             <div className="flex flex-col gap-4">
-              <p className="text-p2">
-                Pre pokračovanie je nutné prečítať celý text súhlasu.
-              </p>
               <Agreement
                 onScrollToBottom={() => field.onChange(true)}
                 agreementContent={agreementContent}
               />
+              <p className="text-p2">
+                Pre pokračovanie je nutné prečítať celý text súhlasu.
+              </p>
             </div>
           )}
         />

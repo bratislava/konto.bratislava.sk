@@ -16,4 +16,16 @@ Each sub-project contains README which should get you up and running. More docum
 
 🗄️ `/strapi` Strapi CMS server
 
+🗄️ `/nest-forms-backend` Service which is handling incoming and outcoming forms created by users
+
 🐳 `docker-compose.yml` - if you need to quickly setup postgres or meilisearch instance, run `docker compose up postgres`. You need docker installed
+
+## Development
+In this section, you will find instructions for development.
+
+### Deployment
+You can simply deploy a whole project to clusters by creating tag `dev`, `staging`, `prod` plus version, like `prod1.0.0`. This will first deploy backend apps, and at the end the frontend.
+If you wish to deploy only a concrete project, you can do a tag `dev-next` or `dev-nest-forms-backend`. This will fit also for `staging` and `prod`.
+
+### Validation and build pipelines
+By creating a PR, GitHub actions will run validation pipelines and build pipeliness with `bratiska-cli`.

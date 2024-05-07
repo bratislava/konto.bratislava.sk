@@ -12,7 +12,6 @@ import { SsrAuthProviderHOC } from '../../components/logic/SsrAuthContext'
 import { prefetchUserQuery } from '../../frontend/hooks/useUser'
 import { amplifyGetServerSideProps } from '../../frontend/utils/amplifyServer'
 import { slovakServerSideTranslations } from '../../frontend/utils/slovakServerSideTranslations'
-import { cityAccountApi } from '@clients/city-account'
 
 type AccountTaxesFeesPageProps = {
   taxData: ResponseTaxDto

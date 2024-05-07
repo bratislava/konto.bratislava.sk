@@ -102,7 +102,7 @@ jobs:
         run: |
           echo "COUNT=0" >> $GITHUB_ENV
           echo "condition=true" >> $GITHUB_OUTPUT
-          echo ":soon: **dev**" >> $GITHUB_STEP_SUMMARY
+          echo ":soon: **dev-next**" >> $GITHUB_STEP_SUMMARY
 
       - id: dev-nest-forms-backend
         name: Check for dev nest-forms-backend
@@ -134,7 +134,7 @@ jobs:
         run: |
           echo "COUNT=0" >> $GITHUB_ENV
           echo "condition=true" >> $GITHUB_OUTPUT
-          echo ":soon: **staging**" >> $GITHUB_STEP_SUMMARY
+          echo ":soon: **staging-next**" >> $GITHUB_STEP_SUMMARY
 
       - id: staging-nest-forms-backend
         name: Check for staging nest-forms-backend
@@ -166,7 +166,7 @@ jobs:
         run: |
           echo "COUNT=0" >> $GITHUB_ENV
           echo "condition=true" >> $GITHUB_OUTPUT
-          echo ":soon: **prod**" >> $GITHUB_STEP_SUMMARY
+          echo ":soon: **prod-next**" >> $GITHUB_STEP_SUMMARY
 
       - id: prod-nest-forms-backend
         name: Check for prod nest-forms-backend

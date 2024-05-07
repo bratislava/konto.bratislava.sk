@@ -146,10 +146,15 @@ const Form = ({ onSubmit, defaultValues, agreementContent }: FormProps) => {
           name="scrolledToBottom"
           control={control}
           render={({ field }) => (
-            <Agreement
-              onScrollToBottom={() => field.onChange(true)}
-              agreementContent={agreementContent}
-            />
+            <div className="flex flex-col gap-4">
+              <Agreement
+                onScrollToBottom={() => field.onChange(true)}
+                agreementContent={agreementContent}
+              />
+              <p className="text-p2">
+                Pre pokračovanie je nutné prečítať celý text súhlasu.
+              </p>
+            </div>
           )}
         />
       )}

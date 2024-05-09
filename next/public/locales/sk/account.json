@@ -621,7 +621,7 @@
   "tax_due_multiple_installments": "Daň je splatná v troch splátkach, <strong>môže byť uhradená aj naraz</strong>, najneskôr v lehote splatnosti prvej splátky.",
   "tax_due_email_channel": "Daň je splatná v termíne <strong>do 15 dní.</strong>",
   "tax_due_standard": "Daň je splatná v termíne do 15 dní <strong>odo dňa právoplatnosti rozhodnutia.</strong>",
-  "payment_method_access_prompt": "Po zvolení jednej z nasledujúcich možností, sprístupníme platobné metódy.",
+  "payment_method_access_prompt": "Po zvolení jednej z nasledujúcich možností Vám sprístupníme platobné metódy.",
   "tax_determined": "Splátky dane určené správcom dane v rozhodnutí",
   "redirect_to_payment_loading": "Presmerovávam…",
   "account_activator": {

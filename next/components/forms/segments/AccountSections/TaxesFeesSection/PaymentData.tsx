@@ -4,6 +4,7 @@ import { TaxPaidStatusEnum } from '@clients/openapi-tax'
 import { Trans, useTranslation } from 'next-i18next'
 import React from 'react'
 
+import Alert from '../../../info-components/Alert'
 import AccordionPaymentSchedule from '../../../simple-components/AccordionPaymentSchedule'
 import Button from '../../../simple-components/Button'
 import ButtonNew from '../../../simple-components/ButtonNew'
@@ -166,7 +167,7 @@ const PaymentData = () => {
       <div className="text-h3">{t('payment_data')}</div>
       {showEmailCommunicationBanner ? (
         <div className="flex flex-col gap-6">
-          <p className="text-p2">{t('payment_method_access_prompt')}</p>
+          <Alert type="warning" fullWidth message={t('payment_method_access_prompt')} />
           <TaxesFeesDeliveryMethodBanner
             onDeliveryMethodChange={() => setOfficialCorrespondenceChannelModalOpen(true)}
           />

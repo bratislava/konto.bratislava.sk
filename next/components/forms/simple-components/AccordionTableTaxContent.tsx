@@ -14,26 +14,28 @@ const tableHeaderData = {
       Výmera pozemku v m<sup>2</sup>
     </span>
   ),
-  base: (
+  baseMetric: (
     <span>
       Základ dane m<sup>2</sup>
     </span>
   ),
+  baseMonetary: <span>Základ dane v EUR</span>,
   total: <span>Daň v EUR</span>,
 }
 
 const matchHeader = {
-  GROUND: [tableHeaderData.area, tableHeaderData.base, tableHeaderData.total],
-  CONSTRUCTION: [tableHeaderData.base, tableHeaderData.total],
-  APARTMENT: [tableHeaderData.base, tableHeaderData.total],
+  GROUND: [tableHeaderData.area, tableHeaderData.baseMonetary, tableHeaderData.total],
+  CONSTRUCTION: [tableHeaderData.baseMetric, tableHeaderData.total],
+  APARTMENT: [tableHeaderData.baseMetric, tableHeaderData.total],
 }
 
-export type AccordionBase = {
+type AccordionTableTaxContentProps = {
   title: string
   secondTitle?: string
   dataType: string
   data: ResponseTaxDetailsDto[]
 }
+
 const TableHeaderRow = ({ dataType }: { dataType: string }) => {
   // TODO types can be better if validated as they come from API
   const headerData = [
@@ -119,7 +121,12 @@ const Table = ({ dataType, data }: { dataType: string; data: ResponseTaxDetailsD
     </div>
   )
 }
-const AccordionTableTaxContent = ({ title, secondTitle, dataType, data }: AccordionBase) => {
+const AccordionTableTaxContent = ({
+  title,
+  secondTitle,
+  dataType,
+  data,
+}: AccordionTableTaxContentProps) => {
   return (
     <AccordionV2
       title={

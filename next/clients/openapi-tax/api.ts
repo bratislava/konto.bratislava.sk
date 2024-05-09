@@ -725,6 +725,12 @@ export interface ResponseTaxPayerDto {
    * @memberof ResponseTaxPayerDto
    */
   permanentResidenceCity: string
+  /**
+   * Birth number with slash
+   * @type {string}
+   * @memberof ResponseTaxPayerDto
+   */
+  birthNumber: string
 }
 /**
  * Area type of tax detail - exact type of object of tax

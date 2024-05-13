@@ -135,7 +135,7 @@ export const getServerSideProps: GetServerSideProps<AccountTaxesFeesPageProps, P
     `Generated server side props for ${email}, props email ${emailFromProps}, for tax year ${ctx.params?.year}, request id: ${id}, mismatch ${emailMismatch}`,
   )
   if (emailMismatch) {
-    return { notFound: true }
+    throw new Error('Email mismatch')
   }
 
   return props

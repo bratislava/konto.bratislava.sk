@@ -1,13 +1,33 @@
 // eslint-disable-next-line import/no-extraneous-dependencies
+import { createServerRunner } from '@aws-amplify/adapter-nextjs'
+// eslint-disable-next-line import/no-extraneous-dependencies
 import { fetchUserAttributes } from '@aws-amplify/auth/server'
 import type { AmplifyServer } from '@aws-amplify/core/dist/esm/adapterCore'
 import { GetServerSideProps } from 'next'
 
-import { runWithAmplifyServerContext } from '../frontend/utils/amplifyServer'
+import { environment } from '../environment'
 
-type AmplifyTestPageProps = {
+type AmplifyTestOwnRunnerPageProps = {
   email: string | null | undefined
 }
+
+export const { runWithAmplifyServerContext } = createServerRunner({
+  config: {
+    Auth: {
+      Cognito: {
+        //  Amazon Cognito User Pool ID
+        userPoolId: environment.cognitoUserPoolId,
+        // OPTIONAL - Amazon Cognito Web Client ID (26-char alphanumeric string)
+        userPoolClientId: environment.cognitoClientId,
+        // REQUIRED only for Federated Authentication - Amazon Cognito Identity Pool ID
+        identityPoolId: environment.cognitoIdentityPoolId,
+        // OPTIONAL - This is used when autoSignIn is enabled for Auth.signUp
+        // 'code' is used for Auth.confirmSignUp, 'link' is used for email link verification
+        signUpVerificationMethod: 'code', // 'code' | 'link'
+      },
+    },
+  },
+})
 
 function randomDelayPromise() {
   // Generate a random delay between 0 and 2000 milliseconds
@@ -21,7 +41,9 @@ function randomDelayPromise() {
   })
 }
 
-export const getServerSideProps: GetServerSideProps<AmplifyTestPageProps> = async (ctx) => {
+export const getServerSideProps: GetServerSideProps<AmplifyTestOwnRunnerPageProps> = async (
+  ctx,
+) => {
   const email = await runWithAmplifyServerContext({
     nextServerContext: { request: ctx.req, response: ctx.res },
     operation: async (contextSpec: AmplifyServer.ContextSpec) => {
@@ -43,6 +65,6 @@ export const getServerSideProps: GetServerSideProps<AmplifyTestPageProps> = asyn
 }
 
 // eslint-disable-next-line react/function-component-definition
-export default function AmplifyTest({ email }: AmplifyTestPageProps) {
+export default function AmplifyTestOwnRunner({ email }: AmplifyTestOwnRunnerPageProps) {
   return <div>{email}</div>
 }

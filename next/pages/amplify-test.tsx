@@ -2,6 +2,7 @@ import type { AmplifyServer } from '@aws-amplify/core/dist/esm/adapterCore'
 import { fetchUserAttributes } from 'aws-amplify/auth/server'
 import { GetServerSideProps } from 'next'
 
+import { assertContextSpecSignInDetails } from '../frontend/utils/amplifyAssert'
 import { baRunWithAmplifyServerContext } from '../frontend/utils/amplifyServerRunner'
 
 type AmplifyTestPageProps = {
@@ -21,9 +22,15 @@ function randomDelayPromise() {
 }
 
 export const getServerSideProps: GetServerSideProps<AmplifyTestPageProps> = async (ctx) => {
+  const queryAssert = ctx.query.assert === 'true'
+
   const email = await baRunWithAmplifyServerContext({
     nextServerContext: { request: ctx.req, response: ctx.res },
     operation: async (contextSpec: AmplifyServer.ContextSpec) => {
+      if (queryAssert) {
+        await assertContextSpecSignInDetails(ctx, contextSpec)
+      }
+
       try {
         const attributes = await fetchUserAttributes(contextSpec)
         await randomDelayPromise()

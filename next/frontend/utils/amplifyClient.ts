@@ -4,21 +4,10 @@ import { AuthError, signOut as amplifySignOut } from '@aws-amplify/auth'
 import { fetchAuthSession } from '@aws-amplify/core'
 import { useQueryClient } from '@tanstack/react-query'
 import { useRouter } from 'next/router'
-import { PropsWithChildren, useRef } from 'react'
 
 import { ROUTES } from '../api/constants'
 import { useSsrAuth } from '../hooks/useSsrAuth'
-import { amplifyConfig } from './amplifyConfig'
 import logger from './logger'
-
-/**
- * Based on: https://docs.amplify.aws/nextjs/build-a-backend/server-side-rendering/nextjs/#configure-amplify-library-for-client-side-usage
- */
-export function AmplifyProvider({ children }: PropsWithChildren) {
-  useRef(amplifyConfig) // This is a hack to make sure amplifyConfig is used, so that it's not tree-shaken away.
-
-  return children
-}
 
 const fetchAccessTokenString = async () => {
   const session = await fetchAuthSession()

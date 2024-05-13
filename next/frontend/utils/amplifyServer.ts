@@ -25,9 +25,9 @@ export const { runWithAmplifyServerContext } = createServerRunner({
   config: amplifyConfig,
 })
 
-const getIsSignedIn = async (context: AmplifyServer.ContextSpec) => {
+const getIsSignedIn = async (amplifyContextSpec: AmplifyServer.ContextSpec) => {
   try {
-    const { userId } = await getCurrentUser(context)
+    const { userId } = await getCurrentUser(amplifyContextSpec)
     return Boolean(userId)
   } catch (error) {
     if (error instanceof AuthError && error.name === 'UserUnAuthenticatedException') {

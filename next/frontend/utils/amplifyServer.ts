@@ -8,7 +8,7 @@ import { GetServerSidePropsContext, GetServerSidePropsResult, PreviewData } from
 
 import { ssrAuthContextPropKey, SsrAuthContextType } from '../../components/logic/SsrAuthContext'
 import { ROUTES } from '../api/constants'
-import { runWithAmplifyServerContext } from './amplifyServerRunner'
+import { baRunWithAmplifyServerContext } from './amplifyServerRunner'
 import {
   getRedirectUrl,
   getSafeRedirect,
@@ -72,7 +72,7 @@ export const amplifyGetServerSideProps = <
   },
 ) => {
   const wrappedFn: GetServerSideProps<Props, Params, Preview> = (context) =>
-    runWithAmplifyServerContext({
+    baRunWithAmplifyServerContext({
       nextServerContext: { request: context.req, response: context.res },
       operation: async (contextSpec) => {
         const isSignedIn = await getIsSignedIn(contextSpec)

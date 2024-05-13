@@ -2,6 +2,6 @@ import { createServerRunner } from '@aws-amplify/adapter-nextjs'
 
 import { amplifyConfig } from './amplifyConfig'
 
-export const { runWithAmplifyServerContext } = createServerRunner({
+export const { runWithAmplifyServerContext: baRunWithAmplifyServerContext } = createServerRunner({
   config: amplifyConfig,
 })

@@ -19,7 +19,7 @@ import { TaxFeesSectionProvider } from '../../components/forms/segments/AccountS
 import { SsrAuthProviderHOC } from '../../components/logic/SsrAuthContext'
 import { prefetchUserQuery } from '../../frontend/hooks/useUser'
 import { amplifyGetServerSideProps } from '../../frontend/utils/amplifyServer'
-import { runWithAmplifyServerContext } from '../../frontend/utils/amplifyServerRunner'
+import { baRunWithAmplifyServerContext } from '../../frontend/utils/amplifyServerRunner'
 import { slovakServerSideTranslations } from '../../frontend/utils/slovakServerSideTranslations'
 
 type AccountTaxesFeesPageProps = {
@@ -54,7 +54,7 @@ const getTaxes = async (getAccessToken: () => Promise<string | null>) => {
 
 export const getServerSideProps: GetServerSideProps<AccountTaxesFeesPageProps> = async (ctx) => {
   const id = v4()
-  const email = await runWithAmplifyServerContext({
+  const email = await baRunWithAmplifyServerContext({
     nextServerContext: { request: ctx.req, response: ctx.res },
     operation: async (contextSpec: AmplifyServer.ContextSpec) => {
       try {

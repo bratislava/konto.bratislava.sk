@@ -19,7 +19,7 @@ import { useState } from 'react'
 import { I18nProvider } from 'react-aria'
 import SnackbarProvider from 'react-simple-snackbar'
 
-import AmplifyClientProvider from '../frontend/utils/amplifyClientProvider'
+import AmplifyClientProvider from '../frontend/utils/AmplifyClientProvider'
 import { isProductionDeployment } from '../frontend/utils/general'
 
 const inter = Inter({

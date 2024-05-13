@@ -1,23 +1,16 @@
-import type { AmplifyServer } from '@aws-amplify/core/dist/esm/adapterCore'
 import { strapiClient } from '@clients/graphql-strapi'
 import { TaxFragment } from '@clients/graphql-strapi/api'
 import { ResponseTaxDto } from '@clients/openapi-tax'
 import { taxApi } from '@clients/tax'
 import { dehydrate, DehydratedState, HydrationBoundary, QueryClient } from '@tanstack/react-query'
-import { fetchAuthSession, fetchUserAttributes } from 'aws-amplify/auth/server'
 import { isAxiosError } from 'axios'
 import AccountPageLayout from 'components/layouts/AccountPageLayout'
-import { GetServerSideProps } from 'next'
-import { GetServerSidePropsResult } from 'next/types'
-import { v4 } from 'uuid'
 
 import TaxFeeSection from '../../components/forms/segments/AccountSections/TaxesFeesSection/TaxFeeSection'
 import { TaxFeeSectionProvider } from '../../components/forms/segments/AccountSections/TaxesFeesSection/useTaxFeeSection'
-import { ssrAuthContextPropKey, SsrAuthProviderHOC } from '../../components/logic/SsrAuthContext'
-import { ROUTES } from '../../frontend/api/constants'
+import { SsrAuthProviderHOC } from '../../components/logic/SsrAuthContext'
 import { prefetchUserQuery } from '../../frontend/hooks/useUser'
-import { baRunWithAmplifyServerContext } from '../../frontend/utils/amplifyServerRunner'
-import { redirectQueryParam } from '../../frontend/utils/queryParamRedirect'
+import { amplifyGetServerSideProps } from '../../frontend/utils/amplifyServer'
 import { slovakServerSideTranslations } from '../../frontend/utils/slovakServerSideTranslations'
 
 type AccountTaxesFeesPageProps = {
@@ -38,109 +31,73 @@ function convertYearToNumber(input: string | undefined) {
   return parseInt(input, 10)
 }
 
-const getAccessToken = async (amplifyContextSpec: AmplifyServer.ContextSpec) => {
-  const authSession = await fetchAuthSession(amplifyContextSpec)
-  return authSession.tokens?.accessToken.toString() ?? null
-}
-
-export const getServerSideProps: GetServerSideProps<AccountTaxesFeesPageProps, Params> = async (
-  ctx,
-) => {
-  const id = v4()
-  const email = await baRunWithAmplifyServerContext({
-    nextServerContext: { request: ctx.req, response: ctx.res },
-    operation: async (contextSpec: AmplifyServer.ContextSpec) => {
-      try {
-        const attributes = await fetchUserAttributes(contextSpec)
-        return attributes.email
-      } catch (error) {
-        return null
-      }
-    },
-  })
-
-  console.log(
-    `Generating server side props for ${email}, for tax year ${ctx.params?.year}, request id: ${id}`,
-  )
-  if (!email) {
-    return {
-      redirect: {
-        destination: `${ROUTES.LOGIN}?${redirectQueryParam}=${encodeURIComponent(ctx.resolvedUrl)}`,
-        permanent: false,
-      },
+export const getServerSideProps = amplifyGetServerSideProps<AccountTaxesFeesPageProps, Params>(
+  async ({ context, getAccessToken }) => {
+    const year = context.params?.year
+    const yearNumber = convertYearToNumber(year)
+    if (!yearNumber) {
+      return { notFound: true }
     }
-  }
 
-  const props = await baRunWithAmplifyServerContext<
-    GetServerSidePropsResult<AccountTaxesFeesPageProps>
-  >({
-    nextServerContext: { request: ctx.req, response: ctx.res },
-    operation: async (contextSpec: AmplifyServer.ContextSpec) => {
-      const year = ctx.params?.year
-      const yearNumber = convertYearToNumber(year)
-      if (!yearNumber) {
+    const queryClient = new QueryClient()
+
+    try {
+      const [{ data: taxData }, strapiTax, user] = await Promise.all([
+        taxApi.taxControllerGetActualTaxes(yearNumber, {
+          accessToken: 'always',
+          accessTokenSsrGetFn: getAccessToken,
+        }),
+        strapiClient.Tax().then((response) => response.tax?.data?.attributes),
+        prefetchUserQuery(queryClient, getAccessToken),
+      ])
+
+      if (!strapiTax) {
         return { notFound: true }
       }
 
-      const queryClient = new QueryClient()
-
-      try {
-        const [{ data: taxData }, strapiTax, userAttributes] = await Promise.all([
-          taxApi.taxControllerGetActualTaxes(yearNumber, {
-            accessToken: 'always',
-            accessTokenSsrGetFn: () => getAccessToken(contextSpec),
-          }),
-          strapiClient.Tax().then((response) => response.tax?.data?.attributes),
-          fetchUserAttributes(contextSpec),
-          prefetchUserQuery(queryClient, () => getAccessToken(contextSpec)),
-        ])
-
-        if (!strapiTax) {
-          return { notFound: true } as const
-        }
-
-        return {
-          props: {
-            taxData,
-            strapiTax,
-            dehydratedState: dehydrate(queryClient),
-            ...(await slovakServerSideTranslations()),
-            [ssrAuthContextPropKey]: { isSignedIn: true, userAttributes },
-          } as AccountTaxesFeesPageProps,
-        }
-      } catch (error) {
-        // TAXYEAR_OR_USER_NOT_FOUND
-        if (isAxiosError(error)) {
-          const is422Error = error.response?.status === 422
-          // The user is not verified, the BE returns 403, but it means that the tax doesn't exist
-          const isForbiddenTierError =
-            error.response?.status === 403 &&
-            // TODO: This should be replaced with a proper error code (which is not returned)
-            error.response?.data?.message === 'Forbidden tier'
-
-          if (is422Error || isForbiddenTierError) {
-            return { notFound: true } as const
-          }
-        }
-
-        throw error
+      if (!user.birthNumber || !taxData.taxPayer.birthNumber) {
+        // TODO needs close monitoring, I can't tell enough about our tax data yet - but this condition failing may potentially lead to displaying of incorrect tax data
+        throw new Error(
+          `Error (Status-500): User or tax birthnumber is missing! Invalid invariant (not aborting request). user: ${user.birthNumber} tax: ${taxData.taxPayer.birthNumber}`,
+        )
+      } else if (
+        // account birthnumbers may be without slashes, the tax one should always have them (but I did not see enough of that data)
+        user.birthNumber.replaceAll('/', '') !== taxData.taxPayer.birthNumber.replaceAll('/', '')
+      ) {
+        // this definitely leads to displaying of incorrect tax data
+        throw new Error(
+          `Tax and user birthnumber does not match! Server error. user: ${user.birthNumber} tax: ${taxData.taxPayer.birthNumber}`,
+        )
       }
-    },
-  })
 
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any,no-underscore-dangle
-  const emailFromProps = (props as any)?.props?.__ssrAuthContext?.userAttributes?.email
-  const emailMismatch = email && emailFromProps && email !== emailFromProps
-  // eslint-disable-next-line no-console
-  console.log(
-    `Generated server side props for ${email}, props email ${emailFromProps}, for tax year ${ctx.params?.year}, request id: ${id}, mismatch ${emailMismatch}`,
-  )
-  if (emailMismatch) {
-    throw new Error('Email mismatch')
-  }
+      return {
+        props: {
+          taxData,
+          strapiTax,
+          dehydratedState: dehydrate(queryClient),
+          ...(await slovakServerSideTranslations()),
+        },
+      }
+    } catch (error) {
+      // TAXYEAR_OR_USER_NOT_FOUND
+      if (isAxiosError(error)) {
+        const is422Error = error.response?.status === 422
+        // The user is not verified, the BE returns 403, but it means that the tax doesn't exist
+        const isForbiddenTierError =
+          error.response?.status === 403 &&
+          // TODO: This should be replaced with a proper error code (which is not returned)
+          error.response?.data?.message === 'Forbidden tier'
 
-  return props
-}
+        if (is422Error || isForbiddenTierError) {
+          return { notFound: true }
+        }
+      }
+
+      throw error
+    }
+  },
+  { requiresSignIn: true },
+)
 
 const AccountTaxesFeesPage = ({
   taxData,

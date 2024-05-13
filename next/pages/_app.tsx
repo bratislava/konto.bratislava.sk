@@ -19,7 +19,7 @@ import { useState } from 'react'
 import { I18nProvider } from 'react-aria'
 import SnackbarProvider from 'react-simple-snackbar'
 
-import { AmplifyProvider } from '../frontend/utils/amplifyClient'
+import AmplifyClientProvider from '../frontend/utils/amplifyClientProvider'
 import { isProductionDeployment } from '../frontend/utils/general'
 
 const inter = Inter({
@@ -53,7 +53,7 @@ const MyApp = ({ Component, pageProps }: AppProps) => {
         {/* look for CookieConsent component for 3rd party scripts you'd expect to find here */}
       </Head>
 
-      <AmplifyProvider>
+      <AmplifyClientProvider>
         <I18nProvider locale="sk-SK">
           <StatusBarProvider>
             <QueryClientProvider client={queryClient}>
@@ -81,7 +81,7 @@ const MyApp = ({ Component, pageProps }: AppProps) => {
             </QueryClientProvider>
           </StatusBarProvider>
         </I18nProvider>
-      </AmplifyProvider>
+      </AmplifyClientProvider>
     </>
   )
 }

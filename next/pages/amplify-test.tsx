@@ -1,13 +1,19 @@
 // eslint-disable-next-line import/no-extraneous-dependencies
+import { createServerRunner } from '@aws-amplify/adapter-nextjs'
+// eslint-disable-next-line import/no-extraneous-dependencies
 import { fetchUserAttributes } from '@aws-amplify/auth/server'
 import type { AmplifyServer } from '@aws-amplify/core/dist/esm/adapterCore'
 import { GetServerSideProps } from 'next'
 
-import { runWithAmplifyServerContext } from '../frontend/utils/amplifyServer'
+import { amplifyConfig } from '../frontend/utils/amplifyConfig'
 
 type AmplifyTestPageProps = {
   email: string | null | undefined
 }
+
+export const { runWithAmplifyServerContext } = createServerRunner({
+  config: amplifyConfig,
+})
 
 function randomDelayPromise() {
   // Generate a random delay between 0 and 2000 milliseconds

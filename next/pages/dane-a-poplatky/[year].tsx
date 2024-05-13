@@ -88,7 +88,7 @@ export const getServerSideProps: GetServerSideProps<AccountTaxesFeesPageProps, P
       const queryClient = new QueryClient()
 
       try {
-        const [{ data: taxData }, strapiTax, userAttributes, user] = await Promise.all([
+        const [{ data: taxData }, strapiTax, userAttributes] = await Promise.all([
           taxApi.taxControllerGetActualTaxes(yearNumber, {
             accessToken: 'always',
             accessTokenSsrGetFn: () => getAccessToken(contextSpec),

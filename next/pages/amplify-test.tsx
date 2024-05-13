@@ -1,9 +1,8 @@
-// eslint-disable-next-line import/no-extraneous-dependencies
-import { fetchUserAttributes } from '@aws-amplify/auth/server'
 import type { AmplifyServer } from '@aws-amplify/core/dist/esm/adapterCore'
+import { fetchUserAttributes } from 'aws-amplify/auth/server'
 import { GetServerSideProps } from 'next'
 
-import { runWithAmplifyServerContext } from '../frontend/utils/amplifyServer'
+import { runWithAmplifyServerContext } from '../frontend/utils/amplifyServerRunner'
 
 type AmplifyTestPageProps = {
   email: string | null | undefined

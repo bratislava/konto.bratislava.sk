@@ -1,6 +1,8 @@
 // eslint-disable-next-line import/no-extraneous-dependencies
 import { fetchUserAttributes } from '@aws-amplify/auth/server'
 import type { AmplifyServer } from '@aws-amplify/core/dist/esm/adapterCore'
+// eslint-disable-next-line import/no-extraneous-dependencies
+import { fetchAuthSession } from '@aws-amplify/core/server'
 import { strapiClient } from '@clients/graphql-strapi'
 import { TaxFragment } from '@clients/graphql-strapi/api'
 import { ResponseTaxDto } from '@clients/openapi-tax'
@@ -9,16 +11,16 @@ import { dehydrate, DehydratedState, HydrationBoundary, QueryClient } from '@tan
 import { isAxiosError } from 'axios'
 import AccountPageLayout from 'components/layouts/AccountPageLayout'
 import { GetServerSideProps } from 'next'
+import { GetServerSidePropsResult } from 'next/types'
 import { v4 } from 'uuid'
 
 import TaxFeeSection from '../../components/forms/segments/AccountSections/TaxesFeesSection/TaxFeeSection'
 import { TaxFeeSectionProvider } from '../../components/forms/segments/AccountSections/TaxesFeesSection/useTaxFeeSection'
-import { SsrAuthProviderHOC } from '../../components/logic/SsrAuthContext'
+import { ssrAuthContextPropKey, SsrAuthProviderHOC } from '../../components/logic/SsrAuthContext'
+import { ROUTES } from '../../frontend/api/constants'
 import { prefetchUserQuery } from '../../frontend/hooks/useUser'
-import {
-  amplifyGetServerSideProps,
-  runWithAmplifyServerContext,
-} from '../../frontend/utils/amplifyServer'
+import { runWithAmplifyServerContext } from '../../frontend/utils/amplifyServer'
+import { redirectQueryParam } from '../../frontend/utils/queryParamRedirect'
 import { slovakServerSideTranslations } from '../../frontend/utils/slovakServerSideTranslations'
 
 type AccountTaxesFeesPageProps = {
@@ -39,6 +41,11 @@ function convertYearToNumber(input: string | undefined) {
   return parseInt(input, 10)
 }
 
+const getAccessToken = async (amplifyContextSpec: AmplifyServer.ContextSpec) => {
+  const authSession = await fetchAuthSession(amplifyContextSpec)
+  return authSession.tokens?.accessToken.toString() ?? null
+}
+
 export const getServerSideProps: GetServerSideProps<AccountTaxesFeesPageProps, Params> = async (
   ctx,
 ) => {
@@ -54,13 +61,25 @@ export const getServerSideProps: GetServerSideProps<AccountTaxesFeesPageProps, P
       }
     },
   })
+
   console.log(
     `Generating server side props for ${email}, for tax year ${ctx.params?.year}, request id: ${id}`,
   )
+  if (!email) {
+    return {
+      redirect: {
+        destination: `${ROUTES.LOGIN}?${redirectQueryParam}=${encodeURIComponent(ctx.resolvedUrl)}`,
+        permanent: false,
+      },
+    }
+  }
 
-  const fn = amplifyGetServerSideProps<AccountTaxesFeesPageProps, Params>(
-    async ({ context, getAccessToken }) => {
-      const year = context.params?.year
+  const props = await runWithAmplifyServerContext<
+    GetServerSidePropsResult<AccountTaxesFeesPageProps>
+  >({
+    nextServerContext: { request: ctx.req, response: ctx.res },
+    operation: async (contextSpec: AmplifyServer.ContextSpec) => {
+      const year = ctx.params?.year
       const yearNumber = convertYearToNumber(year)
       if (!yearNumber) {
         return { notFound: true }
@@ -69,32 +88,18 @@ export const getServerSideProps: GetServerSideProps<AccountTaxesFeesPageProps, P
       const queryClient = new QueryClient()
 
       try {
-        const [{ data: taxData }, strapiTax, user] = await Promise.all([
+        const [{ data: taxData }, strapiTax, userAttributes, user] = await Promise.all([
           taxApi.taxControllerGetActualTaxes(yearNumber, {
             accessToken: 'always',
-            accessTokenSsrGetFn: getAccessToken,
+            accessTokenSsrGetFn: () => getAccessToken(contextSpec),
           }),
           strapiClient.Tax().then((response) => response.tax?.data?.attributes),
-          prefetchUserQuery(queryClient, getAccessToken),
+          fetchUserAttributes(contextSpec),
+          prefetchUserQuery(queryClient, () => getAccessToken(contextSpec)),
         ])
 
         if (!strapiTax) {
-          return { notFound: true }
-        }
-
-        if (!user.birthNumber || !taxData.taxPayer.birthNumber) {
-          // TODO needs close monitoring, I can't tell enough about our tax data yet - but this condition failing may potentially lead to displaying of incorrect tax data
-          throw new Error(
-            `Error (Status-500): User or tax birthnumber is missing! Invalid invariant (not aborting request). user: ${user.birthNumber} tax: ${taxData.taxPayer.birthNumber}`,
-          )
-        } else if (
-          // account birthnumbers may be without slashes, the tax one should always have them (but I did not see enough of that data)
-          user.birthNumber.replaceAll('/', '') !== taxData.taxPayer.birthNumber.replaceAll('/', '')
-        ) {
-          // this definitely leads to displaying of incorrect tax data
-          throw new Error(
-            `Tax and user birthnumber does not match! Server error. user: ${user.birthNumber} tax: ${taxData.taxPayer.birthNumber}`,
-          )
+          return { notFound: true } as const
         }
 
         return {
@@ -103,7 +108,8 @@ export const getServerSideProps: GetServerSideProps<AccountTaxesFeesPageProps, P
             strapiTax,
             dehydratedState: dehydrate(queryClient),
             ...(await slovakServerSideTranslations()),
-          },
+            [ssrAuthContextPropKey]: { isSignedIn: true, userAttributes },
+          } as AccountTaxesFeesPageProps,
         }
       } catch (error) {
         // TAXYEAR_OR_USER_NOT_FOUND
@@ -116,17 +122,15 @@ export const getServerSideProps: GetServerSideProps<AccountTaxesFeesPageProps, P
             error.response?.data?.message === 'Forbidden tier'
 
           if (is422Error || isForbiddenTierError) {
-            return { notFound: true }
+            return { notFound: true } as const
           }
         }
 
         throw error
       }
     },
-    { requiresSignIn: true },
-  )
+  })
 
-  const props = await fn(ctx)
   // eslint-disable-next-line @typescript-eslint/no-explicit-any,no-underscore-dangle
   const emailFromProps = (props as any)?.props?.__ssrAuthContext?.userAttributes?.email
   const emailMismatch = email && emailFromProps && email !== emailFromProps

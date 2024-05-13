@@ -1,8 +1,5 @@
-// eslint-disable-next-line import/no-extraneous-dependencies
-import { AuthError, signOut as amplifySignOut } from '@aws-amplify/auth'
-// eslint-disable-next-line import/no-extraneous-dependencies
-import { fetchAuthSession } from '@aws-amplify/core'
 import { useQueryClient } from '@tanstack/react-query'
+import { AuthError, fetchAuthSession, signOut as amplifySignOut } from 'aws-amplify/auth'
 import { useRouter } from 'next/router'
 
 import { ROUTES } from '../api/constants'

@@ -1,5 +1,3 @@
-// eslint-disable-next-line import/no-extraneous-dependencies
-import { fetchUserAttributes } from '@aws-amplify/auth/server'
 import type { AmplifyServer } from '@aws-amplify/core/dist/esm/adapterCore'
 import {
   getTaxAdministratorForUser,
@@ -10,6 +8,7 @@ import { TaxFragment } from '@clients/graphql-strapi/api'
 import { ResponseGetTaxesDto } from '@clients/openapi-tax'
 import { taxApi } from '@clients/tax'
 import { dehydrate, DehydratedState, HydrationBoundary, QueryClient } from '@tanstack/react-query'
+import { fetchUserAttributes } from 'aws-amplify/auth/server'
 import { isAxiosError } from 'axios'
 import TaxesFeesSection from 'components/forms/segments/AccountSections/TaxesFeesSection/TaxesFeesSection'
 import AccountPageLayout from 'components/layouts/AccountPageLayout'
@@ -19,10 +18,8 @@ import { v4 } from 'uuid'
 import { TaxFeesSectionProvider } from '../../components/forms/segments/AccountSections/TaxesFeesSection/useTaxFeesSection'
 import { SsrAuthProviderHOC } from '../../components/logic/SsrAuthContext'
 import { prefetchUserQuery } from '../../frontend/hooks/useUser'
-import {
-  amplifyGetServerSideProps,
-  runWithAmplifyServerContext,
-} from '../../frontend/utils/amplifyServer'
+import { amplifyGetServerSideProps } from '../../frontend/utils/amplifyServer'
+import { baRunWithAmplifyServerContext } from '../../frontend/utils/amplifyServerRunner'
 import { slovakServerSideTranslations } from '../../frontend/utils/slovakServerSideTranslations'
 
 type AccountTaxesFeesPageProps = {
@@ -57,7 +54,7 @@ const getTaxes = async (getAccessToken: () => Promise<string | null>) => {
 
 export const getServerSideProps: GetServerSideProps<AccountTaxesFeesPageProps> = async (ctx) => {
   const id = v4()
-  const email = await runWithAmplifyServerContext({
+  const email = await baRunWithAmplifyServerContext({
     nextServerContext: { request: ctx.req, response: ctx.res },
     operation: async (contextSpec: AmplifyServer.ContextSpec) => {
       try {

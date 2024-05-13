@@ -1,9 +1,8 @@
-// eslint-disable-next-line import/no-extraneous-dependencies
-import { fetchUserAttributes } from '@aws-amplify/auth/server'
 import type { AmplifyServer } from '@aws-amplify/core/dist/esm/adapterCore'
+import { fetchUserAttributes } from 'aws-amplify/auth/server'
 import { GetServerSideProps } from 'next'
 
-import { runWithAmplifyServerContext } from '../frontend/utils/amplifyServer'
+import { baRunWithAmplifyServerContext } from '../frontend/utils/amplifyServerRunner'
 
 type AmplifyTestPageProps = {
   email: string | null | undefined
@@ -22,7 +21,7 @@ function randomDelayPromise() {
 }
 
 export const getServerSideProps: GetServerSideProps<AmplifyTestPageProps> = async (ctx) => {
-  const email = await runWithAmplifyServerContext({
+  const email = await baRunWithAmplifyServerContext({
     nextServerContext: { request: ctx.req, response: ctx.res },
     operation: async (contextSpec: AmplifyServer.ContextSpec) => {
       try {

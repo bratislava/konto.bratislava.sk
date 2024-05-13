@@ -1,18 +1,14 @@
 import { ParsedUrlQuery } from 'node:querystring'
 
-/* eslint-disable import/no-extraneous-dependencies */
-import { createServerRunner } from '@aws-amplify/adapter-nextjs'
-import { AuthError } from '@aws-amplify/auth'
-import { fetchUserAttributes, getCurrentUser } from '@aws-amplify/auth/server'
 import type { AmplifyServer } from '@aws-amplify/core/dist/esm/adapterCore'
-import { fetchAuthSession } from '@aws-amplify/core/server'
-/* eslint-enable import/no-extraneous-dependencies */
+import { AuthError } from 'aws-amplify/auth'
+import { fetchAuthSession, fetchUserAttributes, getCurrentUser } from 'aws-amplify/auth/server'
 import { GetServerSideProps } from 'next'
 import { GetServerSidePropsContext, GetServerSidePropsResult, PreviewData } from 'next/types'
 
 import { ssrAuthContextPropKey, SsrAuthContextType } from '../../components/logic/SsrAuthContext'
 import { ROUTES } from '../api/constants'
-import { amplifyConfig } from './amplifyConfig'
+import { baRunWithAmplifyServerContext } from './amplifyServerRunner'
 import {
   getRedirectUrl,
   getSafeRedirect,
@@ -20,10 +16,6 @@ import {
   removeRedirectQueryParamFromUrl,
   shouldRemoveRedirectQueryParam,
 } from './queryParamRedirect'
-
-export const { runWithAmplifyServerContext } = createServerRunner({
-  config: amplifyConfig,
-})
 
 const getIsSignedIn = async (amplifyContextSpec: AmplifyServer.ContextSpec) => {
   try {
@@ -80,7 +72,7 @@ export const amplifyGetServerSideProps = <
   },
 ) => {
   const wrappedFn: GetServerSideProps<Props, Params, Preview> = (context) =>
-    runWithAmplifyServerContext({
+    baRunWithAmplifyServerContext({
       nextServerContext: { request: context.req, response: context.res },
       operation: async (contextSpec) => {
         const isSignedIn = await getIsSignedIn(contextSpec)

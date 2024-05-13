@@ -1,13 +1,10 @@
-// eslint-disable-next-line import/no-extraneous-dependencies
-import { fetchUserAttributes } from '@aws-amplify/auth/server'
 import type { AmplifyServer } from '@aws-amplify/core/dist/esm/adapterCore'
-// eslint-disable-next-line import/no-extraneous-dependencies
-import { fetchAuthSession } from '@aws-amplify/core/server'
 import { strapiClient } from '@clients/graphql-strapi'
 import { TaxFragment } from '@clients/graphql-strapi/api'
 import { ResponseTaxDto } from '@clients/openapi-tax'
 import { taxApi } from '@clients/tax'
 import { dehydrate, DehydratedState, HydrationBoundary, QueryClient } from '@tanstack/react-query'
+import { fetchAuthSession, fetchUserAttributes } from 'aws-amplify/auth/server'
 import { isAxiosError } from 'axios'
 import AccountPageLayout from 'components/layouts/AccountPageLayout'
 import { GetServerSideProps } from 'next'
@@ -19,7 +16,7 @@ import { TaxFeeSectionProvider } from '../../components/forms/segments/AccountSe
 import { ssrAuthContextPropKey, SsrAuthProviderHOC } from '../../components/logic/SsrAuthContext'
 import { ROUTES } from '../../frontend/api/constants'
 import { prefetchUserQuery } from '../../frontend/hooks/useUser'
-import { runWithAmplifyServerContext } from '../../frontend/utils/amplifyServer'
+import { baRunWithAmplifyServerContext } from '../../frontend/utils/amplifyServerRunner'
 import { redirectQueryParam } from '../../frontend/utils/queryParamRedirect'
 import { slovakServerSideTranslations } from '../../frontend/utils/slovakServerSideTranslations'
 
@@ -50,7 +47,7 @@ export const getServerSideProps: GetServerSideProps<AccountTaxesFeesPageProps, P
   ctx,
 ) => {
   const id = v4()
-  const email = await runWithAmplifyServerContext({
+  const email = await baRunWithAmplifyServerContext({
     nextServerContext: { request: ctx.req, response: ctx.res },
     operation: async (contextSpec: AmplifyServer.ContextSpec) => {
       try {
@@ -74,7 +71,7 @@ export const getServerSideProps: GetServerSideProps<AccountTaxesFeesPageProps, P
     }
   }
 
-  const props = await runWithAmplifyServerContext<
+  const props = await baRunWithAmplifyServerContext<
     GetServerSidePropsResult<AccountTaxesFeesPageProps>
   >({
     nextServerContext: { request: ctx.req, response: ctx.res },

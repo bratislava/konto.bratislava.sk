@@ -1,4 +1,3 @@
-import { createServerRunner } from '@aws-amplify/adapter-nextjs'
 import type { AmplifyServer } from '@aws-amplify/core/dist/esm/adapterCore'
 import { strapiClient } from '@clients/graphql-strapi'
 import { TaxFragment } from '@clients/graphql-strapi/api'
@@ -17,7 +16,7 @@ import { TaxFeeSectionProvider } from '../../components/forms/segments/AccountSe
 import { ssrAuthContextPropKey, SsrAuthProviderHOC } from '../../components/logic/SsrAuthContext'
 import { ROUTES } from '../../frontend/api/constants'
 import { prefetchUserQuery } from '../../frontend/hooks/useUser'
-import { amplifyConfig } from '../../frontend/utils/amplifyConfig'
+import { baRunWithAmplifyServerContext } from '../../frontend/utils/amplifyServerRunner'
 import { redirectQueryParam } from '../../frontend/utils/queryParamRedirect'
 import { slovakServerSideTranslations } from '../../frontend/utils/slovakServerSideTranslations'
 
@@ -47,10 +46,6 @@ const getAccessToken = async (amplifyContextSpec: AmplifyServer.ContextSpec) => 
 export const getServerSideProps: GetServerSideProps<AccountTaxesFeesPageProps, Params> = async (
   ctx,
 ) => {
-  const { runWithAmplifyServerContext: baRunWithAmplifyServerContext } = createServerRunner({
-    config: amplifyConfig,
-  })
-
   const id = v4()
   const email = await baRunWithAmplifyServerContext({
     nextServerContext: { request: ctx.req, response: ctx.res },

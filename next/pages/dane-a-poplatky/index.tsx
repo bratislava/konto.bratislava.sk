@@ -1,4 +1,3 @@
-import { createServerRunner } from '@aws-amplify/adapter-nextjs'
 import type { AmplifyServer } from '@aws-amplify/core/dist/esm/adapterCore'
 import {
   getTaxAdministratorForUser,
@@ -19,8 +18,8 @@ import { v4 } from 'uuid'
 import { TaxFeesSectionProvider } from '../../components/forms/segments/AccountSections/TaxesFeesSection/useTaxFeesSection'
 import { SsrAuthProviderHOC } from '../../components/logic/SsrAuthContext'
 import { prefetchUserQuery } from '../../frontend/hooks/useUser'
-import { amplifyConfig } from '../../frontend/utils/amplifyConfig'
 import { amplifyGetServerSideProps } from '../../frontend/utils/amplifyServer'
+import { baRunWithAmplifyServerContext } from '../../frontend/utils/amplifyServerRunner'
 import { slovakServerSideTranslations } from '../../frontend/utils/slovakServerSideTranslations'
 
 type AccountTaxesFeesPageProps = {
@@ -54,10 +53,6 @@ const getTaxes = async (getAccessToken: () => Promise<string | null>) => {
 }
 
 export const getServerSideProps: GetServerSideProps<AccountTaxesFeesPageProps> = async (ctx) => {
-  const { runWithAmplifyServerContext: baRunWithAmplifyServerContext } = createServerRunner({
-    config: amplifyConfig,
-  })
-
   const id = v4()
   const email = await baRunWithAmplifyServerContext({
     nextServerContext: { request: ctx.req, response: ctx.res },

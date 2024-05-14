@@ -84,8 +84,9 @@ const assertIdTokenCookie = (userId: string, idToken: string) => {
     throw new Error('Token verification failed')
   }
 
-  if (decoded.payload['cognito:username'] !== userId) {
-    throw new Error('Token does not match user')
+  const payloadUserName = decoded.payload['cognito:username']
+  if (payloadUserName !== userId) {
+    throw new Error(`Token does not match user, expected ${userId} but got ${payloadUserName}`)
   }
 }
 
@@ -94,11 +95,13 @@ export const assertContextSpecAndIdToken = async (
   contextSpec: AmplifyServer.ContextSpec,
 ) => {
   const userId = await getUserId(contextSpec)
+  // The request is not authenticated
   if (!userId) {
     return
   }
 
-  const idTokenCookie = (Object.entries(context.req.cookies) as [string, string][]).find(([key]) =>
+  const cookieEntries = Object.entries(context.req.cookies) as [string, string][]
+  const idTokenCookie = cookieEntries.find(([key]) =>
     /^CognitoIdentityServiceProvider\..+?\.idToken$/.test(key),
   )
   if (!idTokenCookie) {

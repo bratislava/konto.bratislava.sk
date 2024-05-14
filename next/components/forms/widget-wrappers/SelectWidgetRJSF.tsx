@@ -1,5 +1,5 @@
 import { WidgetProps } from '@rjsf/utils'
-import { SelectUiOptions } from '@schema-generator/generator/uiOptionsTypes'
+import { SelectUiOptions } from '@shared/generator/uiOptionsTypes'
 import WidgetWrapper from 'components/forms/widget-wrappers/WidgetWrapper'
 import { ComponentProps } from 'react'
 

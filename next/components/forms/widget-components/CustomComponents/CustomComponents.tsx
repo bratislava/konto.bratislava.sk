@@ -1,4 +1,4 @@
-import { CustomComponentType } from '@schema-generator/generator/uiOptionsTypes'
+import { CustomComponentType } from '@shared/generator/uiOptionsTypes'
 import React from 'react'
 
 import AccountMarkdown from '../../segments/AccountMarkdown/AccountMarkdown'

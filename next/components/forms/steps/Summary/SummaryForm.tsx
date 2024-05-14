@@ -1,11 +1,11 @@
-import { baDefaultFormStateBehavior } from '@form-utils/defaultFormState'
-import { baRjsfValidator } from '@form-utils/validators'
 import { ThemeProps, withTheme } from '@rjsf/core'
 import {
   ArrayFieldTemplateItemType,
   GenericObjectType,
   ObjectFieldTemplateProps,
 } from '@rjsf/utils'
+import { baDefaultFormStateBehavior } from '@shared/form-utils/defaultFormState'
+import { baRjsfValidator } from '@shared/form-utils/validators'
 import cx from 'classnames'
 import { ComponentType, Fragment } from 'react'
 

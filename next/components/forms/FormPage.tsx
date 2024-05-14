@@ -1,5 +1,5 @@
-import { baDefaultFormStateBehavior } from '@form-utils/defaultFormState'
-import { baRjsfValidator } from '@form-utils/validators'
+import { baDefaultFormStateBehavior } from '@shared/form-utils/defaultFormState'
+import { baRjsfValidator } from '@shared/form-utils/validators'
 import cx from 'classnames'
 import MenuList from 'components/forms/steps/MenuList'
 import { useIsomorphicLayoutEffect } from 'usehooks-ts'

@@ -1,5 +1,5 @@
 import { EnumOptionsType, StrictRJSFSchema, WidgetProps } from '@rjsf/utils'
-import { CheckboxGroupUiOptions } from '@schema-generator/generator/uiOptionsTypes'
+import { CheckboxGroupUiOptions } from '@shared/generator/uiOptionsTypes'
 import WidgetWrapper from 'components/forms/widget-wrappers/WidgetWrapper'
 import React from 'react'
 

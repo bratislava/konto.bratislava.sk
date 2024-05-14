@@ -1,5 +1,5 @@
 import { StrictRJSFSchema, WidgetProps } from '@rjsf/utils'
-import { RadioGroupUiOptions } from '@schema-generator/generator/uiOptionsTypes'
+import { RadioGroupUiOptions } from '@shared/generator/uiOptionsTypes'
 import WidgetWrapper from 'components/forms/widget-wrappers/WidgetWrapper'
 import React from 'react'
 

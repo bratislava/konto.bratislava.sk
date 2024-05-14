@@ -5,7 +5,7 @@ import {
   RJSFSchema,
   StrictRJSFSchema,
 } from '@rjsf/utils'
-import { ArrayFieldUiOptions } from '@schema-generator/generator/uiOptionsTypes'
+import { ArrayFieldUiOptions } from '@shared/generator/uiOptionsTypes'
 import cx from 'classnames'
 
 import { getArrayFieldItemTemplateTitle } from '../../../frontend/utils/formArray'

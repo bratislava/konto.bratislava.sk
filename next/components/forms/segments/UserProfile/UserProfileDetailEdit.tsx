@@ -1,4 +1,4 @@
-import { baAjvFormats } from '@form-utils/ajvFormats'
+import { baAjvFormats } from '@shared/form-utils/ajvFormats'
 import cx from 'classnames'
 import Button from 'components/forms/simple-components/Button'
 import InputField from 'components/forms/widget-components/InputField/InputField'

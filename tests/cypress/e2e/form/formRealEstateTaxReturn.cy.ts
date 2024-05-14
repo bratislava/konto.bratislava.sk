@@ -1,7 +1,7 @@
 /// <reference types="cypress" />
 
 const path = require("path");
-const { esbsNationalityCiselnik } = require("../../../../next/schema-generator/src/definitions/priznanie-k-dani-z-nehnutelnosti/esbsCiselniky")
+const { esbsNationalityCiselnik } = require("../../../../shared/src/definitions/priznanie-k-dani-z-nehnutelnosti/esbsCiselniky")
 
 describe('F05 -', { testIsolation: false }, () => {
   const devices = ['desktop', 'mobile']

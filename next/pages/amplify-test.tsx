@@ -2,11 +2,12 @@ import type { AmplifyServer } from '@aws-amplify/core/dist/esm/adapterCore'
 import { fetchUserAttributes } from 'aws-amplify/auth/server'
 import { GetServerSideProps } from 'next'
 
-import { assertContextSpecSignInDetails } from '../frontend/utils/amplifyAssert'
+import { assertContextSpecAndIdToken } from '../frontend/utils/amplifyAssert'
 import { baRunWithAmplifyServerContext } from '../frontend/utils/amplifyServerRunner'
 
 type AmplifyTestPageProps = {
   email: string | null | undefined
+  assert: boolean
 }
 
 function randomDelayPromise() {
@@ -22,13 +23,13 @@ function randomDelayPromise() {
 }
 
 export const getServerSideProps: GetServerSideProps<AmplifyTestPageProps> = async (ctx) => {
-  const queryAssert = ctx.query.assert === 'true'
+  const assert = ctx.query.assert === 'true'
 
   const email = await baRunWithAmplifyServerContext({
     nextServerContext: { request: ctx.req, response: ctx.res },
     operation: async (contextSpec: AmplifyServer.ContextSpec) => {
-      if (queryAssert) {
-        await assertContextSpecSignInDetails(ctx, contextSpec)
+      if (assert) {
+        await assertContextSpecAndIdToken(ctx, contextSpec)
       }
 
       try {
@@ -44,11 +45,16 @@ export const getServerSideProps: GetServerSideProps<AmplifyTestPageProps> = asyn
   return {
     props: {
       email,
+      assert,
     },
   }
 }
 
 // eslint-disable-next-line react/function-component-definition
-export default function AmplifyTest({ email }: AmplifyTestPageProps) {
-  return <div>{email}</div>
+export default function AmplifyTest({ email, assert }: AmplifyTestPageProps) {
+  return (
+    <div>
+      {email} {assert}
+    </div>
+  )
 }

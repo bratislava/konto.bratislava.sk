@@ -1,6 +1,5 @@
 import { ParsedUrlQuery } from 'node:querystring'
 
-import { createServerRunner } from '@aws-amplify/adapter-nextjs'
 import type { AmplifyServer } from '@aws-amplify/core/dist/esm/adapterCore'
 import { AuthError } from 'aws-amplify/auth'
 import { fetchAuthSession, fetchUserAttributes, getCurrentUser } from 'aws-amplify/auth/server'
@@ -9,7 +8,8 @@ import { GetServerSidePropsContext, GetServerSidePropsResult, PreviewData } from
 
 import { ssrAuthContextPropKey, SsrAuthContextType } from '../../components/logic/SsrAuthContext'
 import { ROUTES } from '../api/constants'
-import { amplifyConfig } from './amplifyConfig'
+import { assertContextSpecSignInDetails } from './amplifyAssert'
+import { baRunWithAmplifyServerContext } from './amplifyServerRunner'
 import {
   getRedirectUrl,
   getSafeRedirect,
@@ -72,14 +72,12 @@ export const amplifyGetServerSideProps = <
     redirectQueryParam?: boolean
   },
 ) => {
-  const wrappedFn: GetServerSideProps<Props, Params, Preview> = (context) => {
-    const { runWithAmplifyServerContext: baRunWithAmplifyServerContext } = createServerRunner({
-      config: amplifyConfig,
-    })
-
-    return baRunWithAmplifyServerContext({
+  const wrappedFn: GetServerSideProps<Props, Params, Preview> = (context) =>
+    baRunWithAmplifyServerContext({
       nextServerContext: { request: context.req, response: context.res },
       operation: async (contextSpec) => {
+        await assertContextSpecSignInDetails(context, contextSpec)
+
         const isSignedIn = await getIsSignedIn(contextSpec)
         const getAccessTokenFn = isSignedIn
           ? () => getAccessToken(contextSpec)
@@ -149,7 +147,6 @@ export const amplifyGetServerSideProps = <
         return getServerSidePropsResult
       },
     })
-  }
 
   return wrappedFn
 }

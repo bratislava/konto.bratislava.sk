@@ -2,7 +2,7 @@ import type { AmplifyServer } from '@aws-amplify/core/dist/esm/adapterCore'
 import { fetchUserAttributes } from 'aws-amplify/auth/server'
 import { GetServerSideProps } from 'next'
 
-import { assertContextSpecSignInDetails } from '../frontend/utils/amplifyAssert'
+import { assertContextSpecAndIdToken } from '../frontend/utils/amplifyAssert'
 import { baRunWithAmplifyServerContext } from '../frontend/utils/amplifyServerRunner'
 
 type AmplifyTestPageProps = {
@@ -28,7 +28,7 @@ export const getServerSideProps: GetServerSideProps<AmplifyTestPageProps> = asyn
     nextServerContext: { request: ctx.req, response: ctx.res },
     operation: async (contextSpec: AmplifyServer.ContextSpec) => {
       if (queryAssert) {
-        await assertContextSpecSignInDetails(ctx, contextSpec)
+        await assertContextSpecAndIdToken(ctx, contextSpec)
       }
 
       try {

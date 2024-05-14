@@ -7,6 +7,7 @@ import { baRunWithAmplifyServerContext } from '../frontend/utils/amplifyServerRu
 
 type AmplifyTestPageProps = {
   email: string | null | undefined
+  assert: boolean
 }
 
 function randomDelayPromise() {
@@ -22,12 +23,12 @@ function randomDelayPromise() {
 }
 
 export const getServerSideProps: GetServerSideProps<AmplifyTestPageProps> = async (ctx) => {
-  const queryAssert = ctx.query.assert === 'true'
+  const assert = ctx.query.assert === 'true'
 
   const email = await baRunWithAmplifyServerContext({
     nextServerContext: { request: ctx.req, response: ctx.res },
     operation: async (contextSpec: AmplifyServer.ContextSpec) => {
-      if (queryAssert) {
+      if (assert) {
         await assertContextSpecAndIdToken(ctx, contextSpec)
       }
 
@@ -44,11 +45,16 @@ export const getServerSideProps: GetServerSideProps<AmplifyTestPageProps> = asyn
   return {
     props: {
       email,
+      assert,
     },
   }
 }
 
 // eslint-disable-next-line react/function-component-definition
-export default function AmplifyTest({ email }: AmplifyTestPageProps) {
-  return <div>{email}</div>
+export default function AmplifyTest({ email, assert }: AmplifyTestPageProps) {
+  return (
+    <div>
+      {email} {assert}
+    </div>
+  )
 }

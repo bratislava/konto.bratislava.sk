@@ -1,4 +1,3 @@
-// eslint-disable-next-line import/no-extraneous-dependencies
 import type { AuthUserAttributes } from '@aws-amplify/auth/dist/esm/types'
 
 export enum Tier {

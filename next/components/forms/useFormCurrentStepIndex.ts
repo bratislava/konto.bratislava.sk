@@ -1,4 +1,4 @@
-import { JSONSchema7 } from 'json-schema'
+import { FormsJSONSchema7 } from '@form-utils/ajvKeywords'
 import { createParser, useQueryState } from 'nuqs'
 import { useMemo, useRef } from 'react'
 import { useEffectOnce } from 'usehooks-ts'
@@ -13,7 +13,7 @@ import { FormStepIndex } from './types/Steps'
 /**
  * Retrieves the query param of a step from provided schema.
  */
-const getStepQueryParam = (stepSchema: JSONSchema7 | null) => {
+const getStepQueryParam = (stepSchema: FormsJSONSchema7 | null) => {
   if (!stepSchema) {
     return null
   }
@@ -23,12 +23,12 @@ const getStepQueryParam = (stepSchema: JSONSchema7 | null) => {
     return null
   }
 
-  const step = stepSchema?.properties?.[stepProperty] as JSONSchema7 & { hash?: string }
+  const step = stepSchema?.properties?.[stepProperty] as FormsJSONSchema7 & { hash?: string }
   return step.hash
 }
 
 const getStepIndexByQueryParam = (
-  stepSchemas: (JSONSchema7 | null)[],
+  stepSchemas: (FormsJSONSchema7 | null)[],
   queryParam: string | null | undefined,
 ) => {
   if (!queryParam) {
@@ -45,7 +45,7 @@ const getStepIndexByQueryParam = (
 }
 
 const getQueryParamByStepIndex = (
-  stepSchemas: (JSONSchema7 | null)[],
+  stepSchemas: (FormsJSONSchema7 | null)[],
   stepIndex: FormStepIndex,
 ) => {
   if (stepIndex === null || stepIndex === undefined) {
@@ -62,7 +62,7 @@ const getQueryParamByStepIndex = (
 /**
  * A hook that holds the state of the current step index and synchronizes its value with `krok` query param in the URL.
  */
-export const useFormCurrentStepIndex = (stepSchemas: (JSONSchema7 | null)[]) => {
+export const useFormCurrentStepIndex = (stepSchemas: (FormsJSONSchema7 | null)[]) => {
   // `nuqs` takes only the initial value of the parser, so we need to use a ref to access `stepSchemas` inside the parser
   const stepSchemasRef = useRef(stepSchemas)
   stepSchemasRef.current = stepSchemas

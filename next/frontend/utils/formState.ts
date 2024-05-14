@@ -1,6 +1,6 @@
+import { FormsJSONSchema7 } from '@form-utils/ajvKeywords'
 import { baRjsfValidator } from '@form-utils/validators'
 import { GenericObjectType, retrieveSchema, RJSFSchema } from '@rjsf/utils'
-import { JSONSchema7 } from 'json-schema'
 import pick from 'lodash/pick'
 
 import { FormStepIndex, FormStepperStep } from '../../components/forms/types/Steps'
@@ -16,7 +16,7 @@ export const SUMMARY_HASH = 'sumar'
 export const getEvaluatedStepsSchemas = (
   schema: RJSFSchema,
   formData: GenericObjectType,
-): (JSONSchema7 | null)[] => {
+): (FormsJSONSchema7 | null)[] => {
   return (
     schema.allOf?.map((step) => {
       if (typeof step === 'boolean') {
@@ -32,7 +32,7 @@ export const getEvaluatedStepsSchemas = (
 /**
  * Each non-empty step defines exactly one property, this function returns the name of that property.
  */
-export const getStepProperty = (step: JSONSchema7 | null) => {
+export const getStepProperty = (step: FormsJSONSchema7 | null) => {
   if (!step?.properties) {
     return null
   }
@@ -42,7 +42,7 @@ export const getStepProperty = (step: JSONSchema7 | null) => {
 }
 
 export const getStepperData = (
-  stepsSchemas: (JSONSchema7 | null)[],
+  stepsSchemas: (FormsJSONSchema7 | null)[],
   submittedSteps: Set<FormStepIndex>,
   summaryTitle: string,
 ): FormStepperStep[] => {
@@ -62,7 +62,7 @@ export const getStepperData = (
       const stepProperty = getStepProperty(step)!
       const { title, hash, stepperTitle, description } = step.properties[
         stepProperty
-      ] as JSONSchema7
+      ] as FormsJSONSchema7
 
       // displayIndex is only incremented for non-empty steps
       displayIndex += 1
@@ -113,7 +113,7 @@ export const parseStepFromFieldId = (fieldId: string) => {
 /**
  * Returns a first non-empty step index.
  */
-export const getFirstNonEmptyStepIndex = (stepSchemas: (JSONSchema7 | null)[]) => {
+export const getFirstNonEmptyStepIndex = (stepSchemas: (FormsJSONSchema7 | null)[]) => {
   const firstStep = stepSchemas.findIndex((step) => step !== null)
   return firstStep === -1 ? ('summary' as const) : firstStep
 }

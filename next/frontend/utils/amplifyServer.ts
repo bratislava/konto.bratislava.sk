@@ -10,6 +10,7 @@ import { ssrAuthContextPropKey, SsrAuthContextType } from '../../components/logi
 import { ROUTES } from '../api/constants'
 import { assertContextSpecAndIdToken } from './amplifyAssert'
 import { baRunWithAmplifyServerContext } from './amplifyServerRunner'
+import logger from './logger'
 import {
   getRedirectUrl,
   getSafeRedirect,
@@ -76,7 +77,18 @@ export const amplifyGetServerSideProps = <
     baRunWithAmplifyServerContext({
       nextServerContext: { request: context.req, response: context.res },
       operation: async (contextSpec) => {
-        await assertContextSpecAndIdToken(context, contextSpec)
+        try {
+          await assertContextSpecAndIdToken(context, contextSpec)
+        } catch (error) {
+          logger.error('Error in assertContextSpecAndIdToken')
+          logger.error(error)
+          return {
+            redirect: {
+              destination: '/force-logout',
+              permanent: false,
+            },
+          }
+        }
 
         const isSignedIn = await getIsSignedIn(contextSpec)
         const getAccessTokenFn = isSignedIn

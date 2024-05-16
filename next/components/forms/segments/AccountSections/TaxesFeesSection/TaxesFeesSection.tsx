@@ -1,3 +1,4 @@
+import Alert from 'components/forms/info-components/Alert'
 import AccountSectionHeader from 'components/forms/segments/AccountSectionHeader/AccountSectionHeader'
 import TaxesFeesCard from 'components/forms/segments/AccountSections/TaxesFeesSection/TaxesFeesCard'
 import { useTranslation } from 'next-i18next'
@@ -8,7 +9,6 @@ import TaxesFeesDeliveryMethodChangeModal from './TaxesFeesDeliveryMethodChangeM
 import TaxesFeesErrorCard from './TaxesFeesErrorCard'
 import TaxesFeesInPreparationCard from './TaxesFeesInPreparationCard'
 import { useTaxFeesSection } from './useTaxFeesSection'
-import Alert from 'components/forms/info-components/Alert'
 
 const TaxesFeesSection = () => {
   const {

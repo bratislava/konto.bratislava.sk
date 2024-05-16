@@ -2,6 +2,7 @@ import { AuthError, resendSignUpCode, signIn } from 'aws-amplify/auth'
 import AccountContainer from 'components/forms/segments/AccountContainer/AccountContainer'
 import LoginForm from 'components/forms/segments/LoginForm/LoginForm'
 import LoginRegisterLayout from 'components/layouts/LoginRegisterLayout'
+import { removeAllCookiesAndClearLocalStorage } from 'frontend/utils/amplifyClient'
 import { GENERIC_ERROR_MESSAGE, isError } from 'frontend/utils/errors'
 import logger from 'frontend/utils/logger'
 import { useRouter } from 'next/router'
@@ -12,19 +13,6 @@ import { ROUTES } from '../frontend/api/constants'
 import { useQueryParamRedirect } from '../frontend/hooks/useQueryParamRedirect'
 import { amplifyGetServerSideProps } from '../frontend/utils/amplifyServer'
 import { slovakServerSideTranslations } from '../frontend/utils/slovakServerSideTranslations'
-
-// Attempts to fix https://github.com/aws-amplify/amplify-js/issues/13182
-function removeAllCookiesAndClearLocalStorage() {
-  const cookies = document.cookie.split(';').map((cookie) => cookie.trim())
-  cookies.forEach((cookie) => {
-    const cookieName = cookie.split('=')[0]
-    if (cookieName !== 'gdpr-consents') {
-      // https://stackoverflow.com/questions/179355/clearing-all-cookies-with-javascript
-      document.cookie = `${cookieName}=; expires=Thu, 01 Jan 1970 00:00:00 GMT; path=/`
-    }
-  })
-  localStorage.clear()
-}
 
 export const getServerSideProps = amplifyGetServerSideProps(
   async () => {

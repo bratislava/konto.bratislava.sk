@@ -31,7 +31,7 @@ const ForceLogoutPage = () => {
     })
   })
 
-  return 'Neokávaná chyba, prosím znovu sa prihláste.'
+  return 'Neočakávaná chyba, prosím znovu sa prihláste.'
 }
 
 export default ForceLogoutPage

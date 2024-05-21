@@ -1,7 +1,5 @@
-/* eslint-disable import/no-extraneous-dependencies */
-import { fetchUserAttributes } from '@aws-amplify/auth/server'
 import type { AmplifyServer } from '@aws-amplify/core/dist/esm/adapterCore'
-/* eslint-enable import/no-extraneous-dependencies */
+import { fetchUserAttributes } from 'aws-amplify/auth/server'
 import axios from 'axios'
 
 import { environment } from '../../environment'

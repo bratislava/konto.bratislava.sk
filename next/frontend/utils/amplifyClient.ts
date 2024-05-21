@@ -1,23 +1,22 @@
-// eslint-disable-next-line import/no-extraneous-dependencies
-import { AuthError, signOut as amplifySignOut } from '@aws-amplify/auth'
-// eslint-disable-next-line import/no-extraneous-dependencies
-import { fetchAuthSession } from '@aws-amplify/core'
 import { useQueryClient } from '@tanstack/react-query'
+import { AuthError, fetchAuthSession, signOut as amplifySignOut } from 'aws-amplify/auth'
 import { useRouter } from 'next/router'
-import { PropsWithChildren, useRef } from 'react'
 
 import { ROUTES } from '../api/constants'
 import { useSsrAuth } from '../hooks/useSsrAuth'
-import { amplifyConfig } from './amplifyConfig'
 import logger from './logger'
 
-/**
- * Based on: https://docs.amplify.aws/nextjs/build-a-backend/server-side-rendering/nextjs/#configure-amplify-library-for-client-side-usage
- */
-export function AmplifyProvider({ children }: PropsWithChildren) {
-  useRef(amplifyConfig) // This is a hack to make sure amplifyConfig is used, so that it's not tree-shaken away.
-
-  return children
+// Attempts to fix https://github.com/aws-amplify/amplify-js/issues/13182
+export const removeAllCookiesAndClearLocalStorage = () => {
+  const cookies = document.cookie.split(';').map((cookie) => cookie.trim())
+  cookies.forEach((cookie) => {
+    const cookieName = cookie.split('=')[0]
+    if (cookieName !== 'gdpr-consents') {
+      // https://stackoverflow.com/questions/179355/clearing-all-cookies-with-javascript
+      document.cookie = `${cookieName}=; expires=Thu, 01 Jan 1970 00:00:00 GMT; path=/`
+    }
+  })
+  localStorage.clear()
 }
 
 const fetchAccessTokenString = async () => {

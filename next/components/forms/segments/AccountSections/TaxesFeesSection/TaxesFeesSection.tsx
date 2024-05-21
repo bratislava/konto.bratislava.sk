@@ -1,3 +1,4 @@
+import Alert from 'components/forms/info-components/Alert'
 import AccountSectionHeader from 'components/forms/segments/AccountSectionHeader/AccountSectionHeader'
 import TaxesFeesCard from 'components/forms/segments/AccountSections/TaxesFeesSection/TaxesFeesCard'
 import { useTranslation } from 'next-i18next'
@@ -42,7 +43,17 @@ const TaxesFeesSection = () => {
             <div className="flex flex-col gap-4">
               {/* TODO: Translation */}
               <h2 className="text-h5-bold">Daň z nehnuteľností</h2>
-              {displayInPreparationCard && <TaxesFeesInPreparationCard />}
+              {displayInPreparationCard ? (
+                <TaxesFeesInPreparationCard />
+              ) : (
+                <Alert
+                  type="warning"
+                  className="mb-8"
+                  fullWidth
+                  message="Ak ste platili prevodom alebo QR kódom platbu pravdepodobne zaznamenáme až po 24.5."
+                />
+              )}
+
               {displayTaxCards && (
                 <ul className="flex flex-col gap-4">
                   {taxesData.items.map((item) => (

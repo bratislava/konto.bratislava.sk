@@ -7,6 +7,7 @@ import { useEffectOnce } from 'usehooks-ts'
 import useHookForm from '../../../../../frontend/hooks/useHookForm'
 import useSnackbar from '../../../../../frontend/hooks/useSnackbar'
 import { useUserSubscription } from '../../../../../frontend/hooks/useUser'
+import logger from '../../../../../frontend/utils/logger'
 import ButtonNew from '../../../simple-components/ButtonNew'
 import ModalV2, { ModalV2Props } from '../../../simple-components/ModalV2'
 import Radio from '../../../widget-components/RadioButton/Radio'
@@ -192,7 +193,8 @@ const TaxesFeesDeliveryMethodChangeModal = ({
       onSuccess: () => {
         onOpenChange?.(false)
       },
-      onError: () => {
+      onError: (error) => {
+        logger.error(error)
         openSnackbarError('Nepodarilo sa zmeniť spôsob doručovania.')
       },
     })

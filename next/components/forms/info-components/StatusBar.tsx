@@ -47,7 +47,7 @@ export const StatusBarProvider: React.FC<StatusBarProviderProps> = ({ children }
     setStatusBarConfiguration({
       // If translation is empty, status bar will be hidden
       content: t('common:statusBarContent'),
-      variant: 'info',
+      variant: 'warning',
     })
   })
 

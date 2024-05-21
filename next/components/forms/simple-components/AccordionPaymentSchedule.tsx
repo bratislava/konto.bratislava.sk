@@ -1,15 +1,21 @@
+import { UserOfficialCorrespondenceChannelEnum } from '@clients/openapi-city-account'
 import { Trans, useTranslation } from 'next-i18next'
 import React from 'react'
 
 import { FormatCurrencyFromCents } from '../../../frontend/utils/formatCurrency'
+import { useTaxChannel } from '../segments/AccountSections/TaxesFeesSection/useTaxChannel'
 import { useTaxFeeSection } from '../segments/AccountSections/TaxesFeesSection/useTaxFeeSection'
 import AccordionV2 from './AccordionV2'
 
 const PaymentScheduleView = () => {
   const { taxData } = useTaxFeeSection()
+  const { channelCurrentYearEffective } = useTaxChannel()
+
   const { t } = useTranslation('account')
   const taxInstallmentsTranslationKeys = [
-    'payment_schedule.first_installment',
+    channelCurrentYearEffective === UserOfficialCorrespondenceChannelEnum.Email
+      ? 'payment_schedule.first_installment_email_channel'
+      : 'payment_schedule.first_installment',
     'payment_schedule.second_installment',
     'payment_schedule.third_installment',
   ]

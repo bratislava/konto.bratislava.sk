@@ -1,4 +1,5 @@
 FROM node:20.9-alpine AS base
+FROM harbor.bratislava.sk/standalone/shared:latest as shared
 
 FROM base AS build-base
 WORKDIR /build
@@ -11,7 +12,11 @@ RUN --mount=type=cache,target=/build/.cache/yarn \
  && yarn install --production --frozen-lockfile
 
 FROM install-prod AS build
-COPY . ./
+RUN echo "$PWD"
+COPY . ./next
+COPY --chown=node:node --from=shared . ./shared
+WORKDIR /next
+RUN echo "$PWD"
 ENV NEXT_TELEMETRY_DISABLED=1
 RUN --mount=type=cache,target=/build/.cache/yarn \
     yarn install --development --frozen-lockfile \
@@ -19,10 +24,12 @@ RUN --mount=type=cache,target=/build/.cache/yarn \
 
 FROM base AS app-base
 RUN apk add --no-cache tini
-RUN mkdir -p /home/node/app \
- && chown node:node /home/node/app
+RUN mkdir -p /home/node/app/next \
+ && chown node:node /home/node/app/next
+RUN mkdir -p /home/node/app/shared \
+ && chown node:node /home/node/app/shared
 USER node
-WORKDIR /home/node/app
+WORKDIR /home/node/app/next
 ENV NEXT_TELEMETRY_DISABLED=1
 ENV NODE_ENV=production
 EXPOSE 3000
@@ -40,7 +47,7 @@ CMD [ "yarn", "develop" ]
 
 FROM app-base AS prod
 COPY --chown=node:node .env.*.local ./
-COPY --chown=node:node --from=build /build/.next/standalone ./
-COPY --chown=node:node --from=build /build/public ./public
-COPY --chown=node:node --from=build /build/.next/static ./.next/static
+COPY --chown=node:node --from=build /next/build/.next/standalone ./
+COPY --chown=node:node --from=build /next/build/public ./public
+COPY --chown=node:node --from=build /next/build/.next/static ./.next/static
 CMD [ "node", "server.js" ]

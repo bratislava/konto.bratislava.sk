@@ -1,10 +1,14 @@
 import { AmqpConnection } from '@golevelup/nestjs-rabbitmq'
 import { Injectable, Logger } from '@nestjs/common'
-import { Options, Replies } from 'amqplib'
+import { Replies } from 'amqplib'
 
 import { GinisCheckNasesPayloadDto } from '../ginis/dtos/ginis.response.dto'
 import { RabbitPayloadDto } from '../nases-consumer/nases-consumer.dto'
-import { RABBIT_MQ, RABBIT_NASES } from '../utils/constants'
+import {
+  RABBIT_GINIS_AUTOMATION,
+  RABBIT_MQ,
+  RABBIT_NASES,
+} from '../utils/constants'
 
 @Injectable()
 export default class RabbitmqClientService {
@@ -22,6 +26,9 @@ export default class RabbitmqClientService {
       RABBIT_MQ.EXCHANGE,
       RABBIT_MQ.ROUTING_KEY,
       message,
+      {
+        contentType: 'application/json',
+      },
     )
   }
 
@@ -41,6 +48,7 @@ export default class RabbitmqClientService {
         headers: {
           'x-delay': delay,
         },
+        contentType: 'application/json',
       },
     )
   }
@@ -61,20 +69,27 @@ export default class RabbitmqClientService {
           // 'x-delay': 60_000,
           // TODO change back when NASES getting messages will be fixed
         },
+        contentType: 'application/json',
       },
     )
   }
 
-  public async publishMessageRoutingKey(
+  public async publishMessageToGinisAutomation(
     routingKey: string,
     message: object,
-    options?: Options.Publish,
+    replyTo: string,
   ): Promise<boolean> {
+    this.logger.log(
+      `Publishing message to ginis automation, Exchange: ${RABBIT_GINIS_AUTOMATION.EXCHANGE}, Routing key: ${routingKey}, message: ${JSON.stringify(message)}`,
+    )
     return this.amqpConnection.publish(
-      RABBIT_MQ.EXCHANGE,
+      RABBIT_GINIS_AUTOMATION.EXCHANGE,
       routingKey,
       message,
-      options,
+      {
+        replyTo,
+        contentType: 'application/json',
+      },
     )
   }
 }

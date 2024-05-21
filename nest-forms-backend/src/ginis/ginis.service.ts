@@ -7,7 +7,11 @@ import { Channel, ConsumeMessage } from 'amqplib'
 
 import PrismaService from '../prisma/prisma.service'
 import RabbitmqClientService from '../rabbitmq-client/rabbitmq-client.service'
-import { RABBIT_MQ, RABBIT_NASES } from '../utils/constants'
+import {
+  RABBIT_GINIS_AUTOMATION,
+  RABBIT_MQ,
+  RABBIT_NASES,
+} from '../utils/constants'
 import { ErrorsEnum } from '../utils/global-enums/errors.enum'
 import { MailgunTemplateEnum } from '../utils/global-services/mailgun/mailgun.constants'
 import MailgunService from '../utils/global-services/mailgun/mailgun.service'
@@ -37,6 +41,11 @@ const REGISTER_SUBMISSION_QUEUE = 'submission.register'
 const ASSIGN_QUEUE = 'submission.assign'
 const EDIT_SUBMISSION_QUEUE = 'submission.edit'
 
+const GINIS_AUTOMATION_UPLOAD_QUEUE = 'ginis-automation.upload'
+const GINIS_AUTOMATION_REGISTER_SUBMISSION_QUEUE = 'ginis-automation.register'
+const GINIS_AUTOMATION_ASSIGN_QUEUE = 'ginis-automation.assign'
+const GINIS_AUTOMATION_EDIT_SUBMISSION_QUEUE = 'ginis-automation.edit'
+
 @Injectable()
 export default class GinisService {
   private readonly logger: Logger
@@ -64,12 +73,12 @@ export default class GinisService {
   }
 
   @RabbitRPC({
-    exchange: RABBIT_MQ.EXCHANGE,
+    exchange: RABBIT_GINIS_AUTOMATION.EXCHANGE,
     routingKey: REGISTER_SUBMISSION_QUEUE,
     queue: REGISTER_SUBMISSION_QUEUE,
     errorHandler: (channel: Channel, message: ConsumeMessage, error: Error) => {
       alertError(
-        `GinisService RABBIT_MQ_ERROR: ${JSON.stringify(error)}`,
+        `GinisService RABBIT_MQ_ERROR: ${JSON.stringify(error)}, message: ${JSON.stringify(message)}`,
         new Logger('GinisService'),
       )
       channel.reject(message, false)
@@ -81,6 +90,9 @@ export default class GinisService {
       GinisRegisterSubmissionResponseInfo
     >,
   ): Promise<Nack> {
+    this.logger.log(
+      `Consuming register ginis message, content: ${JSON.stringify(content)}`,
+    )
     if (content.status === 'failure') {
       await this.prismaService.forms.update({
         where: {
@@ -113,7 +125,7 @@ export default class GinisService {
   }
 
   @RabbitRPC({
-    exchange: RABBIT_MQ.EXCHANGE,
+    exchange: RABBIT_GINIS_AUTOMATION.EXCHANGE,
     routingKey: UPLOAD_QUEUE,
     queue: UPLOAD_QUEUE,
     errorHandler: (channel: Channel, message: ConsumeMessage, error: Error) => {
@@ -130,6 +142,9 @@ export default class GinisService {
       GinisUploadFileResponseInfo
     >,
   ): Promise<Nack> {
+    this.logger.log(
+      `Consuming ginis file uploaded message, content: ${JSON.stringify(content)}`,
+    )
     if (content.status === 'failure') {
       await this.prismaService.files.update({
         where: {
@@ -160,7 +175,7 @@ export default class GinisService {
   }
 
   @RabbitRPC({
-    exchange: RABBIT_MQ.EXCHANGE,
+    exchange: RABBIT_GINIS_AUTOMATION.EXCHANGE,
     routingKey: EDIT_SUBMISSION_QUEUE,
     queue: EDIT_SUBMISSION_QUEUE,
     errorHandler: (channel: Channel, message: ConsumeMessage, error: Error) => {
@@ -177,6 +192,9 @@ export default class GinisService {
       GinisEditSubmissionResponseInfo
     >,
   ): Promise<Nack> {
+    this.logger.log(
+      `Consuming edit ginis submission message, content: ${JSON.stringify(content)}`,
+    )
     if (content.status === 'failure') {
       await this.prismaService.forms.update({
         where: {
@@ -207,7 +225,7 @@ export default class GinisService {
   }
 
   @RabbitRPC({
-    exchange: RABBIT_MQ.EXCHANGE,
+    exchange: RABBIT_GINIS_AUTOMATION.EXCHANGE,
     routingKey: ASSIGN_QUEUE,
     queue: ASSIGN_QUEUE,
     errorHandler: (channel: Channel, message: ConsumeMessage, error: Error) => {
@@ -224,6 +242,9 @@ export default class GinisService {
       GinisAssignSubmissionResponseInfo
     >,
   ): Promise<Nack> {
+    this.logger.log(
+      `Consuming assign ginis submission message, content: ${JSON.stringify(content)}`,
+    )
     if (content.status === 'failure') {
       await this.prismaService.forms.update({
         where: {
@@ -265,8 +286,8 @@ export default class GinisService {
       },
     })
 
-    await this.rabbitMqClientService.publishMessageRoutingKey(
-      REGISTER_SUBMISSION_QUEUE,
+    await this.rabbitMqClientService.publishMessageToGinisAutomation(
+      GINIS_AUTOMATION_REGISTER_SUBMISSION_QUEUE,
       process.env.NODE_ENV === 'production'
         ? {
             msg_id: formId,
@@ -276,6 +297,7 @@ export default class GinisService {
             msg_id: formId,
             document_type: pospId,
           },
+      REGISTER_SUBMISSION_QUEUE,
     )
   }
 
@@ -294,8 +316,8 @@ export default class GinisService {
       form.files.map(async (file) => {
         if (file.ginisUploaded) return
 
-        await this.rabbitMqClientService.publishMessageRoutingKey(
-          UPLOAD_QUEUE,
+        await this.rabbitMqClientService.publishMessageToGinisAutomation(
+          GINIS_AUTOMATION_UPLOAD_QUEUE,
           {
             doc_id: form.ginisDocumentId,
             msg_id: form.id,
@@ -305,6 +327,7 @@ export default class GinisService {
             filename: file.fileName,
             file_id: file.id,
           },
+          UPLOAD_QUEUE,
         )
       }),
     )
@@ -321,14 +344,15 @@ export default class GinisService {
       },
     })
 
-    await this.rabbitMqClientService.publishMessageRoutingKey(
-      EDIT_SUBMISSION_QUEUE,
+    await this.rabbitMqClientService.publishMessageToGinisAutomation(
+      GINIS_AUTOMATION_EDIT_SUBMISSION_QUEUE,
       {
         doc_id: documentId,
         actions: {
           Vec: newSubject,
         },
       },
+      EDIT_SUBMISSION_QUEUE,
     )
   }
 
@@ -347,11 +371,15 @@ export default class GinisService {
       },
     })
 
-    await this.rabbitMqClientService.publishMessageRoutingKey(ASSIGN_QUEUE, {
-      doc_id: documentId,
-      organization,
-      person,
-    })
+    await this.rabbitMqClientService.publishMessageToGinisAutomation(
+      GINIS_AUTOMATION_ASSIGN_QUEUE,
+      {
+        doc_id: documentId,
+        organization,
+        person,
+      },
+      ASSIGN_QUEUE,
+    )
   }
 
   async nackTrueWithWait(seconds: number): Promise<Nack> {

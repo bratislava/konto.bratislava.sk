@@ -62,26 +62,6 @@ spec:
             secretKeyRef:
               name: ${BUILD_REPOSITORY_NAME}-rabbitmq-default-user
               key: host
-        - name: RABBIT_MQ_GINIS_PASSWORD
-          valueFrom:
-            secretKeyRef:
-              name: ginis-automation-rabbitmq-default-user
-              key: password
-        - name: RABBIT_MQ_GINIS_USERNAME
-          valueFrom:
-            secretKeyRef:
-              name: ginis-automation-rabbitmq-default-user
-              key: username
-        - name: RABBIT_MQ_GINIS_PORT
-          valueFrom:
-            secretKeyRef:
-              name: ginis-automation-rabbitmq-default-user
-              key: port
-        - name: RABBIT_MQ_GINIS_HOST
-          valueFrom:
-            secretKeyRef:
-              name: ginis-automation-rabbitmq-default-user
-              key: host
         - name: RABBIT_MQ_URI
           value: amqp://$(RABBIT_MQ_USERNAME):$(RABBIT_MQ_PASSWORD)@$(RABBIT_MQ_HOST):$(RABBIT_MQ_PORT)
         envFrom:

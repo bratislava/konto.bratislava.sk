@@ -50,10 +50,10 @@ describe('GinisService', () => {
       MAILGUN_DOMAIN: 'test',
       MAILGUN_HOST: 'test',
       MAILGUN_EMAIL_FROM: 'test',
-      RABBIT_MQ_GINIS_USERNAME: 'test',
-      RABBIT_MQ_GINIS_PASSWORD: 'test',
-      RABBIT_MQ_GINIS_HOST: 'test',
-      RABBIT_MQ_GINIS_PORT: 'test',
+      RABBIT_MQ_USERNAME: 'test',
+      RABBIT_MQ_PASSWORD: 'test',
+      RABBIT_MQ_HOST: 'test',
+      RABBIT_MQ_PORT: 'test',
       NODE_ENV: 'development',
       JEST_WORKER_ID: JEST_WORKER_ID ?? '1',
     }
@@ -75,7 +75,7 @@ describe('GinisService', () => {
     service = module.get<GinisService>(GinisService)
 
     Object.defineProperty(service, 'logger', {
-      value: { error: jest.fn(), debug: jest.fn() },
+      value: { error: jest.fn(), debug: jest.fn(), log: jest.fn() },
     })
   })
 

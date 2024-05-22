@@ -24,7 +24,7 @@ Each sub-project contains README which should get you up and running. More docum
 In this section, you will find instructions for development.
 
 ### Deployment
-You can simply deploy a whole project to clusters by creating tag `dev`, `staging`, `prod` plus version, like `prod1.0.0`. This will first deploy backend apps, and at the end the frontend.
+You can easily deploy the whole project to clusters by creating tag `dev`, `staging` or `prod` plus version, like `prod1.0.0`. This will first deploy the backend apps, and at the end the frontend.
 If you wish to deploy only a concrete project, you can do a tag `dev-next` or `dev-nest-forms-backend`. This will fit also for `staging` and `prod`.
 
 ### Validation and build pipelines

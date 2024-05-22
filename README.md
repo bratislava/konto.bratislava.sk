@@ -25,7 +25,7 @@ In this section, you will find instructions for development.
 
 ### Deployment
 You can easily deploy the whole project to clusters by creating tag `dev`, `staging` or `prod` plus version, like `prod1.0.0`. This will first deploy the backend apps, and at the end the frontend.
-If you wish to deploy only a concrete project, you can do a tag `dev-next` or `dev-nest-forms-backend`. This will fit also for `staging` and `prod`.
+If you wish to deploy only a specific project, you can use a tag like `dev-next` or `dev-nest-forms-backend`, i.e. `div-nest-forms-backend1.0.0`. This will work for `staging` and `prod` as well.
 
 ### Validation and build pipelines
 By creating a PR, GitHub actions will run validation pipelines and build pipeliness with `bratiska-cli`.

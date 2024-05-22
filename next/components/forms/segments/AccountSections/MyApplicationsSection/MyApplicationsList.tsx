@@ -94,7 +94,6 @@ const MyApplicationsList = ({
                       query: { ...router.query, strana: page },
                     },
                     undefined,
-                    { shallow: true },
                   )
                   .catch((error) => logger.error(error))
               }

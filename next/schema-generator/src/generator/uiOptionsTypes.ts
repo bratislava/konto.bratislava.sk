@@ -69,7 +69,7 @@ export type CheckboxGroupUiOptions = {
 
 export type CheckboxUiOptions = {
   variant?: 'basic' | 'boxed'
-  checkboxLabel?: string
+  checkboxLabel: string
 } & WidgetUiOptions
 
 export type DatePickerUiOptions = WidgetUiOptions
@@ -163,3 +163,15 @@ export type SchemaUiOptions = {
  * Unique prefix for Markdown text.
  */
 export const markdownTextPrefix = `markdown_gKgflRNwdS:`
+
+export type BaWidgetType =
+  | 'Select'
+  | 'Input'
+  | 'RadioGroup'
+  | 'TextArea'
+  | 'Checkbox'
+  | 'CheckboxGroup'
+  | 'FileUpload'
+  | 'DatePicker'
+  | 'TimePicker'
+  | 'CustomComponents'

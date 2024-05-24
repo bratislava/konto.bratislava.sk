@@ -1,6 +1,8 @@
 const { withPlausibleProxy } = require('next-plausible')
 const { i18n } = require('./next-i18next.config')
 
+const withBundleAnalyzer = require('@next/bundle-analyzer')()
+
 /**
  * @type {import('next').NextConfig}
  */
@@ -92,7 +94,7 @@ const nextConfig = {
       },
     ]
   },
-  webpack(config) {
+  webpack(config, { webpack, isServer }) {
     config.module.rules.push({
       test: /\.svg$/,
       use: {
@@ -109,6 +111,11 @@ const nextConfig = {
         },
       },
     })
+
+    if (!isServer) {
+      // Prevents `getSummaryJsonNode` from being included, see function description for more info
+      config.resolve.alias['jsdom'] = false
+    }
 
     return config
   },

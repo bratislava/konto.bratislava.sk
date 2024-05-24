@@ -33,7 +33,7 @@ export const isFileMultipleSchema = (schema: RJSFSchema) =>
  *    implements a special `isMultiSelect` check that flags those to not prefill.
  *    https://github.com/rjsf-team/react-jsonschema-form/blob/294b9e3d37c96888a0e8bb3c68a5b2b1afd452bf/packages/utils/src/schema/getDefaultFormState.ts#L403
  *  - `fileUpload` with `multiple: true` - these fields would get prefilled with `requiredOnly` strategy and RJSF doesn't
- *    handle this case, therefore custom `computeSkipPopulate` is needed, in case this is not present, RJSF prefils it
+ *    handle this case, therefore custom `computeSkipPopulate` is needed, in case this is not present, RJSF prefills it
  *    as `[null]` which is not correct and causes bugs.
  *    This needed to be implemented for this use case: https://github.com/rjsf-team/react-jsonschema-form/pull/4121
  *
@@ -74,3 +74,54 @@ export const baGetDefaultFormState = (
     undefined,
     baDefaultFormStateBehavior,
   )
+
+/**
+ * Ensures deep initialization of form data against a JSON Schema, addressing a limitation with the default form state
+ * initialization where only the first level is populated. This enhanced function iteratively applies default values to
+ * all nested objects, crucial for comprehensive validation and error reporting in complex schemas.
+ *
+ * @example
+ * // Given a schema with nested objects:
+ * const schema = {
+ *   "type": "object",
+ *   "properties": {
+ *     "object1": {
+ *       "type": "object",
+ *       "properties": {
+ *         "object2": {
+ *           "type": "object",
+ *           "properties": {}
+ *         }
+ *       },
+ *       "required": ["object2"]
+ *     }
+ *   },
+ *   "required": ["object1"]
+ * };
+ *
+ * // Using the default function (for comparison):
+ * baGetDefaultFormState(schema, {}); // Output: { object1: {} }
+ *
+ * // Using the deep function:
+ * baGetDefaultFormStateDeep(schema, {}); // Output: { object1: { object2: {} } }
+ */
+export const baGetDefaultFormStateDeep = (
+  schema: RJSFSchema,
+  formData: GenericObjectType,
+  rootSchema?: RJSFSchema,
+  customValidator?: ValidatorType,
+) => {
+  let previousResult
+  let currentResult = baGetDefaultFormState(schema, formData, rootSchema, customValidator)
+  let callCount = 1
+
+  // Loop until the result stabilizes or reaches the call limit.
+  while (callCount < 10) {
+    previousResult = currentResult
+    currentResult = baGetDefaultFormState(schema, previousResult, rootSchema, customValidator)
+    // eslint-disable-next-line no-plusplus
+    callCount++
+  }
+
+  return currentResult
+}

@@ -1,4 +1,4 @@
-import { baGetDefaultFormState } from '@form-utils/defaultFormState'
+import { baGetDefaultFormStateDeep } from '@form-utils/defaultFormState'
 import { getFileValidatorBaRjsf } from '@form-utils/validators'
 import { GenericObjectType, RJSFSchema } from '@rjsf/utils'
 import type { SchemaValidateFunction } from 'ajv'
@@ -69,7 +69,7 @@ export const validateSummary = (
 
   const validator = getFileValidatorBaRjsf(fileValidateFn)
 
-  const defaultFormData = baGetDefaultFormState(schema, formData, undefined, validator)
+  const defaultFormData = baGetDefaultFormStateDeep(schema, formData, undefined, validator)
   const { errorSchema } = validator.validateFormData(defaultFormData, schema)
 
   return { infectedFiles, scanningFiles, uploadingFiles, errorSchema }

@@ -52,9 +52,7 @@ const theme: ThemeProps = {
     FileUpload: wrapWidget('fileUpload'),
     DatePicker: wrapWidget('datePicker'),
     TimePicker: wrapWidget('timePicker'),
-    CustomComponents: () => {
-      return null
-    },
+    CustomComponents: wrapWidget('textArea'),
   },
 }
 

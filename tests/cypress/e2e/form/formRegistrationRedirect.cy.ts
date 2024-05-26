@@ -29,24 +29,9 @@ describe('F04 -', { testIsolation: false }, () => {
         beforeEach(() => {
           cy.hideNavbar(device)
         })
-        
-        it('1. Checking "File" step validation.', () => {
+
+        it('1. Checking "Applicant" step validation.', () => {
           cy.dataCy('close-modal').click()
-          cy.dataCy('form-container').then((form) => {
-            cy.wrap(Cypress.$(`[data-cy=continue-button-${device}]`, form)).click()
-            cy.dataCy('error-message').should('be.visible').should('have.class', 'text-error')
-          })
-          cy.dataCy('form-container').should('be.visible')//.matchImage()
-        })
-
-        it('2. Uploading file in "File" step.', () => {
-          cy.dataCy('form-container').then((form) => {
-            cy.wrap(Cypress.$('[data-cy=file-input]', form)).attachFile('../files/test.pdf');
-            cy.wrap(Cypress.$(`[data-cy=continue-button-${device}]`, form)).click()
-          })
-        })
-
-        it('3. Checking "Applicant" step validation.', () => {
           cy.dataCy('form-container').then((form) => {
             cy.wrap(Cypress.$(`[data-cy=continue-button-${device}]`, form)).click()
 
@@ -56,13 +41,13 @@ describe('F04 -', { testIsolation: false }, () => {
           cy.dataCy('form-container').should('be.visible')//.matchImage()
         })
 
-        it('4. Filling out the "Applicant" step.', () => {
+        it('2. Filling out the "Applicant" step.', () => {
           cy.dataCy('form-container').then((form) => {
             cy.wrap(Cypress.$('[data-cy=radio-fyzická-osoba]', form)).should('be.checked')
 
             cy.wrap(Cypress.$('[data-cy=input-menoPriezvisko]', form)).type(this.fileData.name)
 
-            cy.wrap(Cypress.$('[data-cy=input-adresa]', form)).type(this.fileData.address)
+            cy.wrap(Cypress.$('[data-cy=input-ulicaACislo]', form)).type(this.fileData.address)
 
             cy.wrap(Cypress.$('[data-cy=input-mesto]', form)).type(this.fileData.city)
 
@@ -77,7 +62,7 @@ describe('F04 -', { testIsolation: false }, () => {
           })
         })
 
-        it('5. Going to registration.', () => {
+        it('3. Going to registration.', () => {
           cy.showNavbar(device)
           if (device === 'desktop') {
             cy.get('[data-cy=register-button]').click();
@@ -91,7 +76,7 @@ describe('F04 -', { testIsolation: false }, () => {
           cy.dataCy('registration-container').should('be.visible')//.matchImage()
         })
 
-        it('6. Filling out the registration form.', () => {
+        it('4. Filling out the registration form.', () => {
           cy.dataCy('register-form').then((form) => {
             cy.wrap(Cypress.$('[data-cy=radio-fyzická-osoba]', form)).should('be.checked')
 
@@ -107,7 +92,7 @@ describe('F04 -', { testIsolation: false }, () => {
           })
         })
 
-        it('7. Check that required inputs are not in error state.', () => {
+        it('5. Check that required inputs are not in error state.', () => {
           cy.hideInfoBar()
           cy.checkFormFieldsNotInErrorState('register-form', errorBorderFields)
           cy.dataCy('registration-container').should('be.visible')//.matchImage()
@@ -115,11 +100,11 @@ describe('F04 -', { testIsolation: false }, () => {
           cy.submitForm('register-form')
         })
 
-        it('8. Submitting the form and checking the redirection to original form.', () => {
+        it('6. Submitting the form and checking the redirection to original form.', () => {
           cy.check2FAPage(emailHash)
         })
 
-        it('9. Logout user.', () => {
+        it('7. Logout user.', () => {
           cy.logOutUser()
         })
       })

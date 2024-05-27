@@ -1,6 +1,5 @@
 import { ThemeProps, withTheme } from '@rjsf/core'
-import { GenericObjectType, WidgetProps } from '@rjsf/utils'
-import { ArrayFieldTemplateItemType } from '@rjsf/utils/src/types'
+import { ArrayFieldTemplateItemType, GenericObjectType, WidgetProps } from '@rjsf/utils'
 import DatePickerWidgetRJSF from 'components/forms/widget-wrappers/DatePickerWidgetRJSF'
 import TimePickerWidgetRJSF from 'components/forms/widget-wrappers/TimePickerWidgetRJSF'
 import { ComponentType } from 'react'

@@ -46,6 +46,8 @@ jobs:
     with:
       directory: next/
       debug: --debug
+    secrets:
+      registry-pass: ${{ secrets.HARBOR_REGISTRY_PASSWORD }}
     permissions: write-all
 
   validate-nest-forms-backend:

@@ -242,7 +242,7 @@ exports[`komunitneZahrady matches snapshot 1`] = `
                 "then": {
                   "properties": {
                     "adresaPozemku": {
-                      "title": "Adresa pozemku, na ktorom chcete vytvoriť komunitnú záhradu",
+                      "title": "Adresa komunitnej záhrady (ulica, číslo)",
                       "type": "string",
                     },
                     "mestskaCast": {
@@ -1112,7 +1112,7 @@ exports[`predzahradky matches snapshot 1`] = `
             "hash": "predzahradka",
             "properties": {
               "adresa": {
-                "title": "Ulica a číslo pozemku, na ktorom chcete vytvoriť predzáhradku",
+                "title": "Adresa predzáhradky (ulica, číslo)",
                 "type": "string",
               },
               "ine": {
@@ -1227,7 +1227,6 @@ exports[`predzahradky matches snapshot 1`] = `
       "adresa": {
         "ui:label": false,
         "ui:options": {
-          "helptextHeader": "Musí sa jednať o mestský pozemok.",
           "type": "text",
         },
         "ui:widget": "Input",
@@ -1309,7 +1308,7 @@ exports[`predzahradky matches snapshot 1`] = `
       "parcelneCislo": {
         "ui:label": false,
         "ui:options": {
-          "helptextHeader": "markdown_gKgflRNwdS:Číslo parcely a bližšie informácie k pozemku a jeho vlastníkom nájdete na [katastrálnej mape ZBGIS](https://zbgis.skgeodesy.sk/mkzbgis/sk/kataster).",
+          "helptextHeader": "markdown_gKgflRNwdS:Číslo parcely a bližšie informácie k pozemku a jeho vlastníkom nájdete na [katastrálnej mape ZBGIS](https://zbgis.skgeodesy.sk/mkzbgis/sk/kataster?pos=48.155530,17.129713,13). Pre schválenie žiadosti sa musí jednať o mestský pozemok.",
           "size": "medium",
           "type": "text",
         },
@@ -3712,9 +3711,6 @@ exports[`priznanieKDaniZNehnutelnosti matches snapshot 1`] = `
                                   },
                                   "maxItems": 17,
                                   "minItems": 1,
-                                  "overrideArrayMinItemsBehaviour": {
-                                    "populate": "requiredOnly",
-                                  },
                                   "title": "Pozemky",
                                   "type": "array",
                                 },
@@ -3773,9 +3769,6 @@ exports[`priznanieKDaniZNehnutelnosti matches snapshot 1`] = `
                               "type": "object",
                             },
                             "minItems": 1,
-                            "overrideArrayMinItemsBehaviour": {
-                              "populate": "requiredOnly",
-                            },
                             "title": "Priznania k dani z pozemkov",
                             "type": "array",
                           },
@@ -4073,9 +4066,6 @@ exports[`priznanieKDaniZNehnutelnosti matches snapshot 1`] = `
                                   },
                                   "maxItems": 17,
                                   "minItems": 1,
-                                  "overrideArrayMinItemsBehaviour": {
-                                    "populate": "requiredOnly",
-                                  },
                                   "title": "Pozemky",
                                   "type": "array",
                                 },
@@ -4134,9 +4124,6 @@ exports[`priznanieKDaniZNehnutelnosti matches snapshot 1`] = `
                               "type": "object",
                             },
                             "minItems": 1,
-                            "overrideArrayMinItemsBehaviour": {
-                              "populate": "requiredOnly",
-                            },
                             "title": "Priznania k dani z pozemkov",
                             "type": "array",
                           },
@@ -4528,9 +4515,6 @@ exports[`priznanieKDaniZNehnutelnosti matches snapshot 1`] = `
                               "type": "object",
                             },
                             "minItems": 1,
-                            "overrideArrayMinItemsBehaviour": {
-                              "populate": "requiredOnly",
-                            },
                             "title": "Priznania k dani zo stavieb slúžiacich na jeden účel",
                             "type": "array",
                           },
@@ -4866,9 +4850,6 @@ exports[`priznanieKDaniZNehnutelnosti matches snapshot 1`] = `
                               "type": "object",
                             },
                             "minItems": 1,
-                            "overrideArrayMinItemsBehaviour": {
-                              "populate": "requiredOnly",
-                            },
                             "title": "Priznania k dani zo stavieb slúžiacich na jeden účel",
                             "type": "array",
                           },
@@ -5145,9 +5126,6 @@ exports[`priznanieKDaniZNehnutelnosti matches snapshot 1`] = `
                                         "type": "object",
                                       },
                                       "minItems": 1,
-                                      "overrideArrayMinItemsBehaviour": {
-                                        "populate": "requiredOnly",
-                                      },
                                       "title": "Aké nehnuteľnosti máte v tejto budove z hľadiska účelu?",
                                       "type": "array",
                                     },
@@ -5304,9 +5282,6 @@ exports[`priznanieKDaniZNehnutelnosti matches snapshot 1`] = `
                               "type": "object",
                             },
                             "minItems": 1,
-                            "overrideArrayMinItemsBehaviour": {
-                              "populate": "requiredOnly",
-                            },
                             "title": "Priznania k dani zo stavieb slúžiacich na viaceré účely",
                             "type": "array",
                           },
@@ -5531,9 +5506,6 @@ exports[`priznanieKDaniZNehnutelnosti matches snapshot 1`] = `
                                         "type": "object",
                                       },
                                       "minItems": 1,
-                                      "overrideArrayMinItemsBehaviour": {
-                                        "populate": "requiredOnly",
-                                      },
                                       "title": "Aké nehnuteľnosti máte v tejto budove z hľadiska účelu?",
                                       "type": "array",
                                     },
@@ -5670,9 +5642,6 @@ exports[`priznanieKDaniZNehnutelnosti matches snapshot 1`] = `
                               "type": "object",
                             },
                             "minItems": 1,
-                            "overrideArrayMinItemsBehaviour": {
-                              "populate": "requiredOnly",
-                            },
                             "title": "Priznania k dani zo stavieb slúžiacich na viaceré účely",
                             "type": "array",
                           },
@@ -6062,9 +6031,6 @@ exports[`priznanieKDaniZNehnutelnosti matches snapshot 1`] = `
                                             },
                                             "maxItems": 15,
                                             "minItems": 1,
-                                            "overrideArrayMinItemsBehaviour": {
-                                              "populate": "requiredOnly",
-                                            },
                                             "title": "Nebytové priestory",
                                             "type": "array",
                                           },
@@ -6184,9 +6150,6 @@ exports[`priznanieKDaniZNehnutelnosti matches snapshot 1`] = `
                               "type": "object",
                             },
                             "minItems": 1,
-                            "overrideArrayMinItemsBehaviour": {
-                              "populate": "requiredOnly",
-                            },
                             "title": "Priznania k dani z bytov a z nebytových priestorov v bytovom dome",
                             "type": "array",
                           },
@@ -6546,9 +6509,6 @@ exports[`priznanieKDaniZNehnutelnosti matches snapshot 1`] = `
                                             },
                                             "maxItems": 15,
                                             "minItems": 1,
-                                            "overrideArrayMinItemsBehaviour": {
-                                              "populate": "requiredOnly",
-                                            },
                                             "title": "Nebytové priestory",
                                             "type": "array",
                                           },
@@ -6668,9 +6628,6 @@ exports[`priznanieKDaniZNehnutelnosti matches snapshot 1`] = `
                               "type": "object",
                             },
                             "minItems": 1,
-                            "overrideArrayMinItemsBehaviour": {
-                              "populate": "requiredOnly",
-                            },
                             "title": "Priznania k dani z bytov a z nebytových priestorov v bytovom dome",
                             "type": "array",
                           },

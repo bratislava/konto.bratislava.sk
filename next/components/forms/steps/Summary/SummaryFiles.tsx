@@ -10,7 +10,7 @@ type SummaryFileProps = {
   file: string
 }
 
-const SummaryFile = ({ file }: SummaryFileProps) => {
+export const SummaryFile = ({ file }: SummaryFileProps) => {
   const { getFileInfoById } = useFormFileUpload()
   const fileInfo = getFileInfoById(file)
 

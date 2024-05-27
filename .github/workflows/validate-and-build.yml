@@ -10,7 +10,7 @@ jobs:
     with:
       directory: shared/
       build_image_no_registry: ''
-      tag: '--tag=shared'
+      tag: '--tag=latest'
     secrets:
       registry-pass: ${{ secrets.HARBOR_REGISTRY_PASSWORD }}
 

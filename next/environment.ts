@@ -106,6 +106,11 @@ export const environment = {
         'NEXT_PUBLIC_FEATURE_TOGGLE_TAX_REPORT_CORRESPONDENCE_ADDRESS',
         process.env.NEXT_PUBLIC_FEATURE_TOGGLE_TAX_REPORT_CORRESPONDENCE_ADDRESS,
       ) === 'true',
+    newSummaryDetails:
+      assertEnv(
+        'NEXT_PUBLIC_FEATURE_TOGGLE_NEW_SUMMARY_DETAILS',
+        process.env.NEXT_PUBLIC_FEATURE_TOGGLE_NEW_SUMMARY_DETAILS,
+      ) === 'true',
   },
   formsMimetypes: assertEnv(
     'NEXT_PUBLIC_FORMS_MIMETYPE_WHITELIST',

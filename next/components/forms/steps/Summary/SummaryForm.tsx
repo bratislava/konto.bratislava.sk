@@ -4,8 +4,8 @@ import {
   GenericObjectType,
   ObjectFieldTemplateProps,
 } from '@rjsf/utils'
-import { baDefaultFormStateBehavior } from '@shared/form-utils/defaultFormState'
-import { baRjsfValidator } from '@shared/form-utils/validators'
+import { baDefaultFormStateBehavior } from '@forms-shared/form-utils/defaultFormState'
+import { baRjsfValidator } from '@forms-shared/form-utils/validators'
 import cx from 'classnames'
 import { ComponentType, Fragment } from 'react'
 

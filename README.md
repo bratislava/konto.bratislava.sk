@@ -14,7 +14,7 @@ Each sub-project contains README which should get you up and running. More docum
 
 👀 `tests/cypress` Automated cypress tests
 
-📟 `/shared` Shared components and utils for frontend and backend
+📟 `/forms-shared` Shared components and utils for frontend and backend
 
 🗄️ `/strapi` Strapi CMS server
 

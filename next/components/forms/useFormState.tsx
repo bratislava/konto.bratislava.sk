@@ -1,5 +1,5 @@
 import { GenericObjectType } from '@rjsf/utils'
-import { getFileUuidsNaive } from '@shared/form-utils/fileUtils'
+import { getFileUuidsNaive } from '@forms-shared/form-utils/fileUtils'
 import { useTranslation } from 'next-i18next'
 import React, {
   createContext,

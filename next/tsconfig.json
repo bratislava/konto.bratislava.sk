@@ -27,7 +27,7 @@
       "@assets/icons/*": ["./assets/icons/*"],
       "@backend/*": ["./backend/*"],
       "@clients/*": ["./clients/*"],
-      "@shared/*": ["../shared/src/*"],
+      "@forms-shared/*": ["../forms-shared/src/*"],
     }
   },
   "include": ["**/*.ts", "**/*.tsx", "**/*.js", "**/*.jsx", "next-env.d.ts"],

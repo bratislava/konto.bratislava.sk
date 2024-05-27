@@ -1,4 +1,4 @@
-import { markdownTextPrefix } from '@shared/generator/uiOptionsTypes'
+import { markdownTextPrefix } from '@forms-shared/generator/uiOptionsTypes'
 import React from 'react'
 import ReactMarkdown from 'react-markdown'
 import rehypeSanitize from 'rehype-sanitize'

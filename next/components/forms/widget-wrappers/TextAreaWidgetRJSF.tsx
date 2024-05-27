@@ -1,5 +1,5 @@
 import { WidgetProps } from '@rjsf/utils'
-import { TextAreaUiOptions } from '@shared/generator/uiOptionsTypes'
+import { TextAreaUiOptions } from '@forms-shared/generator/uiOptionsTypes'
 import cx from 'classnames'
 import WidgetWrapper from 'components/forms/widget-wrappers/WidgetWrapper'
 import React from 'react'

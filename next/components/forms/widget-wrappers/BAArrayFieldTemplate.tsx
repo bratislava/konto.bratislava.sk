@@ -8,7 +8,7 @@ import {
   RJSFSchema,
   StrictRJSFSchema,
 } from '@rjsf/utils'
-import { ArrayFieldUiOptions } from '@shared/generator/uiOptionsTypes'
+import { ArrayFieldUiOptions } from '@forms-shared/generator/uiOptionsTypes'
 import cx from 'classnames'
 import { ComponentType } from 'react'
 

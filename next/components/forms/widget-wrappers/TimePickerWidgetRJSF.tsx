@@ -1,5 +1,5 @@
 import { StrictRJSFSchema, WidgetProps } from '@rjsf/utils'
-import { TimePickerUiOptions } from '@shared/generator/uiOptionsTypes'
+import { TimePickerUiOptions } from '@forms-shared/generator/uiOptionsTypes'
 import TimePicker from 'components/forms/widget-components/DateTimePicker/TimePicker'
 import WidgetWrapper from 'components/forms/widget-wrappers/WidgetWrapper'
 import React from 'react'

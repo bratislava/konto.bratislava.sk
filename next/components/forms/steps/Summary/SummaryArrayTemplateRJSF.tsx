@@ -5,7 +5,7 @@ import {
   getTemplate,
   getUiOptions,
 } from '@rjsf/utils'
-import { ArrayFieldUiOptions } from '@shared/generator/uiOptionsTypes'
+import { ArrayFieldUiOptions } from '@forms-shared/generator/uiOptionsTypes'
 import { useTranslation } from 'next-i18next'
 import { ComponentType } from 'react'
 

@@ -1,4 +1,4 @@
-import { FormsJSONSchema7 } from '@shared/form-utils/ajvKeywords'
+import { FormsJSONSchema7 } from '@forms-shared/form-utils/ajvKeywords'
 import { createParser, useQueryState } from 'nuqs'
 import { useMemo, useRef } from 'react'
 import { useEffectOnce } from 'usehooks-ts'

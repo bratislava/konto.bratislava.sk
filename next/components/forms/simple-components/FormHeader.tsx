@@ -7,7 +7,7 @@ import {
   PdfIcon,
 } from '@assets/ui-icons'
 import { getUiOptions } from '@rjsf/utils'
-import { SchemaUiOptions } from '@shared/generator/uiOptionsTypes'
+import { SchemaUiOptions } from '@forms-shared/generator/uiOptionsTypes'
 import ButtonNew from 'components/forms/simple-components/ButtonNew'
 import MenuDropdown, {
   MenuItemBase,

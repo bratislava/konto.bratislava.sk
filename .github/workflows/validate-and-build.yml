@@ -4,11 +4,11 @@ on:
     branches:
       - master
 jobs:
-  build-shared:
-    name: Build shared resources
+  build-forms-shared:
+    name: Build forms shared resources
     uses: bratislava/github-actions/.github/workflows/build-with-bratiska-cli.yml@beta
     with:
-      directory: shared/
+      directory: forms-shared/
       build_image_no_registry: ''
       tag: '--tag=latest'
     secrets:

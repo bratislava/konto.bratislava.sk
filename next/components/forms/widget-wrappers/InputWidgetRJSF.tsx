@@ -1,5 +1,5 @@
+import { InputUiOptions } from '@forms-shared/generator/uiOptionsTypes'
 import { WidgetProps } from '@rjsf/utils'
-import { InputUiOptions } from '@schema-generator/generator/uiOptionsTypes'
 import InputField from 'components/forms/widget-components/InputField/InputField'
 import WidgetWrapper from 'components/forms/widget-wrappers/WidgetWrapper'
 import React from 'react'

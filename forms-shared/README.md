@@ -1,9 +1,9 @@
-# Schema generator
+# Shared resources
 
-It turned out that it's challenging and error-prone to write schemas and UI schemas for `react-jsonschema-form` manually. Therefore we've created this generator. It has numerous advantages:
+It turned out that it's challenging and error-prone to write schemas and UI schemas for `react-jsonschema-form` manually. Therefore, we've created this generator. It has numerous advantages:
 
-- It allows us programmatically write the definitions. The definitions are code, so their parts can be reused, stored as variables, custom helpers can be created, etc.
-- JSONSchema supports vast amount of features, our implementation of the form supports only a tiny subset of them. Using the generator assures that the schemas contain only the supported features. For example, there is a specific way how files are represented in the form. The generator outputs the correct schema each time and it's easy to change the implementation both in the generator and in the form implementation at the same time.
+- It allows us to programmatically write the definitions. The definitions are code, so their parts can be reused, stored as variables, custom helpers can be created, etc.
+- JSONSchema supports vast amount of features, our implementation of the form supports only a tiny subset of them. Using the generator assures that the schemas contain only the supported features. For example, there is a specific way how files are represented in the form. The generator outputs the correct schema each time, and it's easy to change the implementation both in the generator and in the form implementation at the same time.
 - We can encapsulate our custom logic into more meaningful components. For example, steps are not something that is supported natively by the form library. Each step is an item in the root `allOf` array of the schema. However, the generator exposes the `step` function which allows us to write the steps in a more declarative way.
 - The types are shared between the generator and the application logic. This brings us type safety and allows us to refactor the code with confidence.
 
@@ -21,7 +21,7 @@ To generate all schemas:
   yarn generate:all
 ```
 
-for single schema, for example:
+for a single schema, for example:
 
 ```bash
   yarn generate:stanovisko-k-investicnemu-zameru
@@ -31,7 +31,7 @@ for single schema, for example:
 
 > To generate required xml files, you need @bratislava/jsxt installed locally
 
-Run the following and let the script guide you. If you need modifications or you need to perform just some of the steps, modify `update.ts` to your needs.
+Run the following and let the script guide you. If you need modifications, or you need to perform just some of the steps, modify `update.ts` to your needs.
 
 ```bash
   yarn update

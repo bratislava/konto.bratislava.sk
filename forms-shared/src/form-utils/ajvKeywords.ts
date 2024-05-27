@@ -1,3 +1,5 @@
+import 'json-schema';
+import { JSONSchema7 } from 'json-schema'
 declare module 'json-schema' {
   export interface JSONSchema7 {
     pospID?: string
@@ -8,6 +10,8 @@ declare module 'json-schema' {
     file?: boolean
   }
 }
+
+export type BAJSONSchema7 = JSONSchema7
 
 export const baAjvKeywords = [
   // Root schema

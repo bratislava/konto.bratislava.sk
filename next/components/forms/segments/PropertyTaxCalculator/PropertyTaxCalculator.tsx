@@ -1,12 +1,12 @@
-import { GenericObjectType } from '@rjsf/utils'
 import {
   CustomComponentPropertyCalculator,
   CustomComponentPropertyCalculatorProps,
-} from '@schema-generator/generator/uiOptionsTypes'
+} from '@forms-shared/generator/uiOptionsTypes'
 import {
   calculateTaxCalculatorExpression,
   getTaxCalculatorExpression,
-} from '@schema-generator/tax-form/calculators'
+} from '@forms-shared/tax-form/calculators'
+import { GenericObjectType } from '@rjsf/utils'
 import cx from 'classnames'
 import get from 'lodash/get'
 import React, { useMemo } from 'react'

@@ -112,6 +112,9 @@ const nextConfig = {
 
     return config
   },
+  experimental: {
+    externalDir: true,
+  },
 }
 
 // https://github.com/4lejandrito/next-plausible#proxy-the-analytics-script

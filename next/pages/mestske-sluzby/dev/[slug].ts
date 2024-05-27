@@ -1,9 +1,9 @@
+import komunitneZahrady from '@forms-shared/definitions/komunitne-zahrady'
+import predzahradky from '@forms-shared/definitions/predzahradky'
+import priznanieKDaniZNehnutelnosti from '@forms-shared/definitions/priznanie-k-dani-z-nehnutelnosti'
+import stanoviskoKInvesticnemuZameru from '@forms-shared/definitions/stanovisko-k-investicnemu-zameru'
+import zavazneStanoviskoKInvesticnejCinnosti from '@forms-shared/definitions/zavazne-stanovisko-k-investicnej-cinnosti'
 import { RJSFSchema, UiSchema } from '@rjsf/utils'
-import komunitneZahrady from '@schema-generator/definitions/komunitne-zahrady'
-import predzahradky from '@schema-generator/definitions/predzahradky'
-import priznanieKDaniZNehnutelnosti from '@schema-generator/definitions/priznanie-k-dani-z-nehnutelnosti'
-import stanoviskoKInvesticnemuZameru from '@schema-generator/definitions/stanovisko-k-investicnemu-zameru'
-import zavazneStanoviskoKInvesticnejCinnosti from '@schema-generator/definitions/zavazne-stanovisko-k-investicnej-cinnosti'
 
 import FormPageWrapper, { FormPageWrapperProps } from '../../../components/forms/FormPageWrapper'
 import { SsrAuthProviderHOC } from '../../../components/logic/SsrAuthContext'
@@ -20,7 +20,7 @@ const slugSchemasMap = {
 }
 
 /**
- * A route to preview forms in `schema-generator` folder. Backend functionality doesn't work. Works only in development.
+ * A route to preview forms in `forms-shared` folder. Backend functionality doesn't work. Works only in development.
  */
 export const getServerSideProps = amplifyGetServerSideProps<FormPageWrapperProps>(
   async ({ context }) => {

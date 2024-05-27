@@ -27,11 +27,9 @@
       "@assets/icons/*": ["./assets/icons/*"],
       "@backend/*": ["./backend/*"],
       "@clients/*": ["./clients/*"],
-      // TODO: Remove to separate package
-      "@schema-generator/*": ["./schema-generator/src/*"],
-      "@form-utils/*": ["./schema-generator/src/form-utils/*"]
+      "@forms-shared/*": ["../forms-shared/src/*"],
     }
   },
   "include": ["**/*.ts", "**/*.tsx", "**/*.js", "**/*.jsx", "next-env.d.ts"],
-  "exclude": ["node_modules", "schema-generator"]
+  "exclude": ["node_modules"]
 }

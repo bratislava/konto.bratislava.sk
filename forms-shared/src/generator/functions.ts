@@ -22,6 +22,11 @@ import {
   TimePickerUiOptions,
 } from './uiOptionsTypes'
 
+export type Schemas = {
+  schema: RJSFSchema
+  uiSchema: UiSchema
+}
+
 export type Field = {
   property: string
   schema: () => RJSFSchema
@@ -657,14 +662,14 @@ export const schema = (
   },
   uiOptions: SchemaUiOptions,
   steps: ReturnType<typeof step | typeof conditionalStep>[],
-) => {
+): Schemas => {
   return removeUndefinedValues({
-    schema: { ...options, allOf: steps.map((stepInner) => stepInner.schema()) },
+    schema: { ...options, allOf: steps.map((stepInner) => stepInner.schema()) } as RJSFSchema,
     uiSchema: {
       ...Object.fromEntries(steps.map((stepInner) => [stepInner.property, stepInner.uiSchema()])),
       'ui:options': uiOptions,
       'ui:hideError': true,
-    },
+    } as UiSchema,
   })
 }
 

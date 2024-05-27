@@ -11,7 +11,7 @@ declare module 'json-schema' {
   }
 }
 
-export type FormsJSONSchema7 = JSONSchema7
+export type BAJSONSchema7 = JSONSchema7
 
 export const baAjvKeywords = [
   // Root schema

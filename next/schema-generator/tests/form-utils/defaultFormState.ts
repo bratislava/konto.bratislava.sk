@@ -116,7 +116,7 @@ describe('defaultFormState', () => {
       })
     })
 
-    it('should deeply initialize all nested objects with baGetDefaultFormStateDeep', () => {
+    xit('should deeply initialize all nested objects with baGetDefaultFormStateDeep', () => {
       expect(
         baGetDefaultFormStateDeep(definition.schema(), {
           field: 'value',

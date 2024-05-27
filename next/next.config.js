@@ -23,7 +23,6 @@ const nextConfig = {
   eslint: {
     dirs: ['components/', 'pages/', 'utils/', 'backend/', 'frontend/'],
   },
-  transpilePackages: ['ui'],
   async redirects() {
     return [
       {
@@ -112,6 +111,9 @@ const nextConfig = {
     })
 
     return config
+  },
+  experimental: {
+    externalDir: true,
   },
 }
 

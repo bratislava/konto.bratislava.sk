@@ -1,9 +1,9 @@
-import { RJSFSchema, UiSchema } from '@rjsf/utils'
 import komunitneZahrady from '@forms-shared/definitions/komunitne-zahrady'
 import predzahradky from '@forms-shared/definitions/predzahradky'
 import priznanieKDaniZNehnutelnosti from '@forms-shared/definitions/priznanie-k-dani-z-nehnutelnosti'
 import stanoviskoKInvesticnemuZameru from '@forms-shared/definitions/stanovisko-k-investicnemu-zameru'
 import zavazneStanoviskoKInvesticnejCinnosti from '@forms-shared/definitions/zavazne-stanovisko-k-investicnej-cinnosti'
+import { RJSFSchema, UiSchema } from '@rjsf/utils'
 
 import FormPageWrapper, { FormPageWrapperProps } from '../../../components/forms/FormPageWrapper'
 import { SsrAuthProviderHOC } from '../../../components/logic/SsrAuthContext'

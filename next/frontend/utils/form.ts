@@ -1,6 +1,6 @@
-import { GenericObjectType, RJSFSchema } from '@rjsf/utils'
 import { baGetDefaultFormState } from '@forms-shared/form-utils/defaultFormState'
 import { getFileValidatorBaRjsf } from '@forms-shared/form-utils/validators'
+import { GenericObjectType, RJSFSchema } from '@rjsf/utils'
 import type { SchemaValidateFunction } from 'ajv'
 
 import { FormFileUploadFileInfo, FormFileUploadStatusEnum } from '../types/formFileUploadTypes'

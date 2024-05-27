@@ -1,11 +1,11 @@
 import { RemoveIcon } from '@assets/ui-icons'
+import { ArrayFieldUiOptions } from '@forms-shared/generator/uiOptionsTypes'
 import {
   ArrayFieldTemplateItemType,
   FormContextType,
   RJSFSchema,
   StrictRJSFSchema,
 } from '@rjsf/utils'
-import { ArrayFieldUiOptions } from '@forms-shared/generator/uiOptionsTypes'
 import cx from 'classnames'
 
 import { getArrayFieldItemTemplateTitle } from '../../../frontend/utils/formArray'

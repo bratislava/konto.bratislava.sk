@@ -1,4 +1,5 @@
 import { AddIcon } from '@assets/ui-icons'
+import { ArrayFieldUiOptions } from '@forms-shared/generator/uiOptionsTypes'
 import {
   ArrayFieldTemplateItemType,
   ArrayFieldTemplateProps,
@@ -8,7 +9,6 @@ import {
   RJSFSchema,
   StrictRJSFSchema,
 } from '@rjsf/utils'
-import { ArrayFieldUiOptions } from '@forms-shared/generator/uiOptionsTypes'
 import cx from 'classnames'
 import { ComponentType } from 'react'
 

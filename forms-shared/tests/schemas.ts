@@ -11,6 +11,7 @@ import { exampleTaxForm4 } from '../src/tax-form/examples/exampleTaxForm4'
 import { exampleTaxForm5 } from '../src/tax-form/examples/exampleTaxForm5'
 import { RJSFSchema } from '@rjsf/utils'
 import { baGetDefaultFormState } from '../src/form-utils/defaultFormState'
+import { getSummaryJsonNode } from '../src/summary-json/getSummaryJsonNode'
 
 const definitions = [
   {
@@ -63,6 +64,16 @@ definitions.forEach((definition) => {
             definition.schema.schema as RJSFSchema,
           ),
         ).toBe(true)
+      })
+
+      it(`should match summary snapshot ${index + 1} correctly`, () => {
+        expect(
+          getSummaryJsonNode(
+            definition.schema.schema as RJSFSchema,
+            definition.schema.uiSchema,
+            formData,
+          ),
+        ).toMatchSnapshot()
       })
     })
   })

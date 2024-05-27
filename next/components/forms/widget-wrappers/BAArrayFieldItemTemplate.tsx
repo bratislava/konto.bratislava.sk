@@ -1,4 +1,5 @@
 import { RemoveIcon } from '@assets/ui-icons'
+import { getArrayItemTitle } from '@forms-shared/form-utils/getArrayItemTitle'
 import { ArrayFieldUiOptions } from '@forms-shared/generator/uiOptionsTypes'
 import {
   ArrayFieldTemplateItemType,
@@ -8,7 +9,6 @@ import {
 } from '@rjsf/utils'
 import cx from 'classnames'
 
-import { getArrayFieldItemTemplateTitle } from '../../../frontend/utils/formArray'
 import Button from '../simple-components/ButtonNew'
 
 interface ChildrenProps {
@@ -47,7 +47,7 @@ const BAArrayFieldItemTemplate = <
     'px-4 md:px-6': variant === 'nested',
   })
 
-  const title = getArrayFieldItemTemplateTitle(itemTitle, index)
+  const title = getArrayItemTitle(itemTitle, index)
 
   const onDropIndexClickPatched = (innerIndex: number) => () => {
     // The RJSF expects the event to have a `preventDefault` method, but the `onPress` handler

@@ -93,7 +93,7 @@ const nextConfig = {
       },
     ]
   },
-  webpack(config) {
+  webpack(config, { isServer }) {
     config.module.rules.push({
       test: /\.svg$/,
       use: {
@@ -110,6 +110,11 @@ const nextConfig = {
         },
       },
     })
+
+    if (!isServer) {
+      // Prevents `getSummaryJsonNode` from being included, see function description for more info
+      config.resolve.alias['jsdom'] = false
+    }
 
     return config
   },

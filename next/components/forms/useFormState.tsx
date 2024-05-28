@@ -1,4 +1,4 @@
-import { getFileUuidsNaive } from '@form-utils/fileUtils'
+import { getFileUuidsNaive } from '@forms-shared/form-utils/fileUtils'
 import { GenericObjectType } from '@rjsf/utils'
 import { useTranslation } from 'next-i18next'
 import React, {

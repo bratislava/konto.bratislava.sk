@@ -1,4 +1,4 @@
-import { LabelSize } from '@schema-generator/generator/uiOptionsTypes'
+import { LabelSize } from '@forms-shared/generator/uiOptionsTypes'
 import cx from 'classnames'
 import { useTranslation } from 'next-i18next'
 import * as React from 'react'

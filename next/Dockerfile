@@ -1,6 +1,9 @@
 FROM node:20.9-alpine AS base
+FROM harbor.bratislava.sk/standalone/forms-shared:latest as shared
 
 FROM base AS build-base
+WORKDIR /forms-shared
+COPY --from=shared . ./
 WORKDIR /build
 COPY ./package.json ./yarn.lock ./
 

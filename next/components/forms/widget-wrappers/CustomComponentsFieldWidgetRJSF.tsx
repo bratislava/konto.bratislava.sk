@@ -1,5 +1,5 @@
+import { CustomComponentFieldUiOptions } from '@forms-shared/generator/uiOptionsTypes'
 import { WidgetProps } from '@rjsf/utils'
-import { CustomComponentFieldUiOptions } from '@schema-generator/generator/uiOptionsTypes'
 import WidgetWrapper from 'components/forms/widget-wrappers/WidgetWrapper'
 import React from 'react'
 

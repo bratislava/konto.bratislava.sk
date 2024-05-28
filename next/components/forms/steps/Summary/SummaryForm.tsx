@@ -1,5 +1,5 @@
-import { baDefaultFormStateBehavior } from '@form-utils/defaultFormState'
-import { baRjsfValidator } from '@form-utils/validators'
+import { baDefaultFormStateBehavior } from '@forms-shared/form-utils/defaultFormState'
+import { baRjsfValidator } from '@forms-shared/form-utils/validators'
 import { ThemeProps, withTheme } from '@rjsf/core'
 import {
   ArrayFieldTemplateItemType,

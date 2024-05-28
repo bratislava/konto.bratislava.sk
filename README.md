@@ -14,6 +14,8 @@ Each sub-project contains README which should get you up and running. More docum
 
 👀 `tests/cypress` Automated cypress tests
 
+📟 `/forms-shared` Shared components and utils for frontend and backend
+
 🗄️ `/strapi` Strapi CMS server
 
 🗄️ `/nest-forms-backend` Service which is handling incoming and outcoming forms created by users

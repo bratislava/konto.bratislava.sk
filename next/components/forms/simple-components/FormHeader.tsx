@@ -6,8 +6,8 @@ import {
   EllipsisVerticalIcon,
   PdfIcon,
 } from '@assets/ui-icons'
+import { SchemaUiOptions } from '@forms-shared/generator/uiOptionsTypes'
 import { getUiOptions } from '@rjsf/utils'
-import { SchemaUiOptions } from '@schema-generator/generator/uiOptionsTypes'
 import ButtonNew from 'components/forms/simple-components/ButtonNew'
 import MenuDropdown, {
   MenuItemBase,

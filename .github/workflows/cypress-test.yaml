@@ -19,6 +19,11 @@ jobs:
         with:
           node-version: '20.x'
 
+      - name: Install dependencies in forms-shared
+        working-directory: forms-shared
+        run: |
+          yarn install
+
       - name: Install and build application
         working-directory: next
         run: |

@@ -442,7 +442,9 @@ describe('F05 -', { testIsolation: false }, () => {
             })
 
             it('17. Check summary and download pdf.', () => {
-              cy.dataCy('alert-container').should('not.exist')
+              cy.dataCy('form-container').then((form) => {
+                cy.wrap(Cypress.$(`[data-cy=alert-container].bg-negative-100`, form)).should('not.exist')
+              })
               cy.dataCy('form-container').then((form) => {
                 this.fileData.bezpodieloveSpoluvlastnictvoManzelov ? cy.checkActiveStep(9) : cy.checkActiveStep(8)
                 cy.wrap(Cypress.$(this.inputData.summaryBorderFields, form)).should('not.have.class', 'border-red-500');

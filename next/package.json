@@ -56,7 +56,6 @@
     "aws-amplify": "6.3.2",
     "axios": "^1.4.0",
     "classnames": "2.5.1",
-    "conditional-wrap": "^1.0.2",
     "expr-eval": "^2.0.2",
     "focus-trap-react": "^10.2.3",
     "graphql": "16.8.1",

@@ -1,4 +1,5 @@
 /* eslint-disable no-console */
+import { baRjsfValidator } from '@forms-shared/form-utils/validators'
 import { ValidationPipe } from '@nestjs/common'
 import { NestFactory } from '@nestjs/core'
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger'
@@ -71,6 +72,7 @@ async function bootstrap(): Promise<void> {
   await app.listen(port)
   console.log(`Nest is running on port: ${port}`)
   console.log(`RabbitMQ uri: ${<string>process.env.RABBIT_MQ_URI}`)
+  console.log(baRjsfValidator)
 }
 // eslint-disable-next-line unicorn/prefer-top-level-await, @typescript-eslint/no-floating-promises
 bootstrap()

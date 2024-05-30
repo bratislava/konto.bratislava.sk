@@ -7,6 +7,8 @@ import { getTaxFormPdfMapping } from '../src/tax-form/mapping/pdf/pdf'
 import { getTaxFormXml } from '../src/tax-form/mapping/xml/xml'
 import generateTaxPdf from '../src/tax-form/generateTaxPdf'
 import { expectPdfToMatchSnapshot } from './test-utils/expectPdfToMatchSnapshot'
+import { exampleTaxFormPdfChunking } from '../src/tax-form/examples/exampleTaxFormPdfChunking'
+import { chunkFormData } from '../src/tax-form/mapping/pdf/chunkFormData'
 
 const examples = [
   exampleTaxForm1,
@@ -14,6 +16,7 @@ const examples = [
   exampleTaxForm3,
   exampleTaxForm4,
   exampleTaxForm5,
+  exampleTaxFormPdfChunking,
 ]
 describe('tax-form', () => {
   const mockDate = new Date('2024-01-01')
@@ -32,5 +35,11 @@ describe('tax-form', () => {
 
       await expectPdfToMatchSnapshot(`data:application/pdf;base64,${base64Pdf}`)
     }, /* The PDFs take a while to generate, so they need an increased timeout. */ 10000)
+  })
+
+  it('should match snapshot for chunked form data example', () => {
+    const chunkedData = chunkFormData(exampleTaxFormPdfChunking)
+
+    expect(chunkedData).toMatchSnapshot()
   })
 })

@@ -20,6 +20,7 @@ import { zobrazitOslobodenie } from './mapping/shared/oslobodenieShared'
 import { getTaxFormPdfMapping } from './mapping/pdf/pdf'
 import { TaxFormData } from './types'
 import * as path from 'node:path'
+import { chunkFormData } from './mapping/pdf/chunkFormData'
 
 export type GenerateTaxPdfPayload = {
   formData: TaxFormData
@@ -81,7 +82,9 @@ export default async function ({ formData, formId, currentDate }: GenerateTaxPdf
     return pdfDoc.saveAsBase64()
   }
 
-  if (!zobrazitOslobodenie(formData)) {
+  const formDataChunked = chunkFormData(formData)
+
+  if (!zobrazitOslobodenie(formDataChunked)) {
     ;[12, 11].forEach((index) => {
       pdfDoc.removePage(index)
     })
@@ -98,7 +101,7 @@ export default async function ({ formData, formId, currentDate }: GenerateTaxPdf
   })
 
   const { pocetPozemkov, pocetStaviebJedenUcel, pocetStaviebViacereUcely, pocetBytov } =
-    getPocty(formData)
+    getPocty(formDataChunked)
   // Pages must be copied or removed in reverse order, because the existing pages are shifted when a new page is
   // inserted or removed.
   await copyOrRemovePages(pdfDoc, 5, pocetBytov)
@@ -116,7 +119,7 @@ export default async function ({ formData, formId, currentDate }: GenerateTaxPdf
   pdfDoc.registerFontkit(fontkit)
   const liberationSansFont = await pdfDoc.embedFont(font)
 
-  const mapping = getTaxFormPdfMapping(formData, formId, currentDate)
+  const mapping = getTaxFormPdfMapping(formDataChunked, formId, currentDate)
 
   const fields = pdfDoc.getForm().getFields()
   fields.forEach((field) => {

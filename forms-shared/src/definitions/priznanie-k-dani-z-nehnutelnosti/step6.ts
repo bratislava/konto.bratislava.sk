@@ -267,14 +267,12 @@ const innerArray = (kalkulacka: boolean) =>
           conditionalFields(createCondition([[['priznanieZaNebytovyPriestor'], { const: true }]]), [
             arrayField(
               'nebytovePriestory',
-              { title: 'Nebytové priestory', required: true, maxItems: 15 },
+              { title: 'Nebytové priestory', required: true },
               {
                 hideTitle: true,
                 variant: 'nested',
                 addButtonLabel: 'Pridať ďalší nebytový priestor v tom istom bytovom dome',
                 itemTitle: 'Nebytový priestor č. {index}',
-                cannotAddItemMessage:
-                  'Dosiahli ste maximálny počet nebytových pozemkov (15) na jedno priznanie. Pridajte ďalšie priznanie.',
               },
               [
                 object(

@@ -14,7 +14,6 @@ import MenuDropdown, {
   MenuItemBase,
 } from 'components/forms/simple-components/MenuDropdown/MenuDropdown'
 import MessageModal from 'components/forms/widget-components/Modals/MessageModal'
-import ConditionalWrap from 'conditional-wrap'
 import { ROUTES } from 'frontend/api/constants'
 import useFormStateComponents from 'frontend/hooks/useFormStateComponents'
 import useSnackbar from 'frontend/hooks/useSnackbar'
@@ -25,6 +24,7 @@ import { useTranslation } from 'next-i18next'
 import { useState } from 'react'
 import Skeleton from 'react-loading-skeleton'
 
+import ConditionalWrap from '../../../simple-components/ConditionalWrap'
 import FormatDate from '../../../simple-components/FormatDate'
 import BottomSheetMenuModal from './BottomSheetMenu/BottomSheetMenuModal'
 

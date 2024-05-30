@@ -1,6 +1,10 @@
 const { withPlausibleProxy } = require('next-plausible')
 const { i18n } = require('./next-i18next.config')
 
+const withBundleAnalyzer = require('@next/bundle-analyzer')({
+  enabled: process.env.ANALYZE === 'true',
+})
+
 /**
  * @type {import('next').NextConfig}
  */
@@ -119,5 +123,5 @@ const nextConfig = {
 
 // https://github.com/4lejandrito/next-plausible#proxy-the-analytics-script
 module.exports = withPlausibleProxy()({
-  ...nextConfig,
+  ...withBundleAnalyzer(nextConfig),
 })

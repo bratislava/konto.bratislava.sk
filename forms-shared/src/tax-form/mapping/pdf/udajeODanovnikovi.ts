@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/explicit-function-return-type,eslint-comments/disable-enable-pair,import/prefer-default-export,consistent-return */
 import { udajeODanovnikoviShared } from '../shared/udajeODanovnikoviShared'
 import { TaxFormData } from '../../types'
 import { formatRodneCisloFirstPartPdf, formatRodneCisloSecondPartPdf } from './functions'

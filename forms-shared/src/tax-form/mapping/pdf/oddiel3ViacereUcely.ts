@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/explicit-function-return-type,eslint-comments/disable-enable-pair,import/prefer-default-export */
 import { formatDatePdf } from '../shared/dates'
 import { oddiel3ViacereUcelyShared } from '../shared/oddiel3ViacereUcelyShared'
 import { TaxFormData } from '../../types'

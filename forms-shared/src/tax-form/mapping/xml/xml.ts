@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/explicit-function-return-type,eslint-comments/disable-enable-pair */
 import { Builder } from 'xml2js'
 
 import { TaxFormData } from '../../types'
@@ -119,7 +118,6 @@ export const getTaxFormXml = (data: TaxFormData, pretty = false, currentDate = n
 
   // Convert JSON to XML
   const builder = new Builder({
-    // eslint-disable-next-line unicorn/text-encoding-identifier-case
     xmldec: { version: '1.0', encoding: 'UTF-8' },
     renderOpts: { pretty },
   })

@@ -1,5 +1,3 @@
-/* eslint-disable @typescript-eslint/explicit-function-return-type,eslint-comments/disable-enable-pair,consistent-return */
-
 import { rodnecislo } from 'rodnecislo'
 
 import {
@@ -11,7 +9,6 @@ import {
 } from '../../types'
 import { fixDate, parseDate } from './dates'
 
-/* eslint-disable @typescript-eslint/no-explicit-any, @typescript-eslint/no-unsafe-return */
 export function safeArray<T>(array: T[] | undefined): T[]
 export function safeArray(array: any): []
 export function safeArray<T>(array: T[] | any): T[] {
@@ -45,7 +42,6 @@ export function safeBoolean(boolean: boolean | any, undefinedFalse = true): bool
     return false
   }
 }
-/* eslint-enable @typescript-eslint/no-explicit-any, @typescript-eslint/no-unsafe-return */
 
 const getPocet = (
   oddiel:
@@ -116,7 +112,6 @@ export function parseRodneCislo(rodneCisloOrBirthDate: string | undefined): Pars
   }
 }
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
 export function parseBirthDate(rodneCisloOrBirthDate: string | any) {
   if (typeof rodneCisloOrBirthDate !== 'string') {
     return

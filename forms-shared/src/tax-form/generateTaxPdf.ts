@@ -73,7 +73,6 @@ const copyOrRemovePages = async (pdfDoc: PDFDocument, index: number, count: numb
 /**
  * @returns Base64 encoded PDF
  */
-// eslint-disable-next-line sonarjs/cognitive-complexity,func-names
 export default async function ({ formData, formId, currentDate }: GenerateTaxPdfPayload) {
   const pdfDoc = await PDFDocument.load(pdfBytes, {
     parseSpeed: ParseSpeeds.Fastest,

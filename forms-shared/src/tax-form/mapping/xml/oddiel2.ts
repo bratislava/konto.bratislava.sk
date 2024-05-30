@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/explicit-function-return-type,eslint-comments/disable-enable-pair,import/prefer-default-export,no-secrets/no-secrets */
 import { esbsDruhPozemkuDaneCiselnik } from '../shared/esbsCiselniky'
 import { Oddiel2PriznanieShared, oddiel2Shared } from '../shared/oddiel2Shared'
 import { TaxFormData } from '../../types'

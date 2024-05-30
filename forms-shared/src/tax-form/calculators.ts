@@ -8,14 +8,12 @@ export function getTaxCalculatorExpression(formula: string) {
   const parser = new Parser()
 
   // Ratio (e.g. "5/13") is a string that needs to be evaluated.
-  // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
   parser.functions.evalRatio = (arg: string) => {
     if (parseRatio(arg).isValid) {
       return parser.evaluate(arg)
     }
     return NaN
   }
-  // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
   parser.functions.ratioNumerator = (arg: string) => {
     const parsed = parseRatio(arg)
     if (parsed.isValid) {
@@ -23,7 +21,6 @@ export function getTaxCalculatorExpression(formula: string) {
     }
     return NaN
   }
-  // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
   parser.functions.ratioDenominator = (arg: string) => {
     const parsed = parseRatio(arg)
     if (parsed.isValid) {

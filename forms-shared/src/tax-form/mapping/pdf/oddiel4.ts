@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/explicit-function-return-type,eslint-comments/disable-enable-pair,import/prefer-default-export */
 import { formatDatePdf } from '../shared/dates'
 import { oddiel4Shared } from '../shared/oddiel4Shared'
 import { TaxFormData } from '../../types'
@@ -33,7 +32,6 @@ export const oddiel4 = (data: TaxFormData) => {
             nebytovyPriestor.cisloNebytovehoPriestoruVBytovomDome,
           [getUcelVyuzitiaFieldName(fixedIndex)]:
             nebytovyPriestor.ucelVyuzitiaNebytovehoPriestoruVBytovomDome,
-          // eslint-disable-next-line @typescript-eslint/no-unsafe-call
           [`6_DatumVzniku${fixedIndex}`]: formatDatePdf(
             nebytovyPriestor.datumVznikuDanovejPovinnosti,
           ),

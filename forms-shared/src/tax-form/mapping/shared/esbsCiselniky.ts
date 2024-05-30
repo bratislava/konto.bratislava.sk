@@ -1,4 +1,3 @@
-/* eslint-disable no-secrets/no-secrets,eslint-comments/disable-enable-pair */
 /*
  * Those are "ciselniky" that are loaded when ESBS form is loaded and are used in the XML mapping.
  *

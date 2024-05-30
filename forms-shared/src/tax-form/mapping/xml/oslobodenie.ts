@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/explicit-function-return-type,eslint-comments/disable-enable-pair,import/prefer-default-export */
 import { oslobodenieShared } from '../shared/oslobodenieShared'
 import { TaxFormData } from '../../types'
 

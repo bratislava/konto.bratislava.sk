@@ -66,7 +66,7 @@ export const removeEmptySubtrees = <T extends JSONValue>(objOrArrayOrValue: T): 
   return objOrArrayOrValue
 }
 
-export const getTaxFormXml = (data: TaxFormData, pretty = false) => {
+export const getTaxFormXml = (data: TaxFormData, pretty = false, currentDate = new Date()) => {
   const jsonObj = {
     'E-form': {
       $: {
@@ -88,7 +88,7 @@ export const getTaxFormXml = (data: TaxFormData, pretty = false) => {
         ...oddiel4Xml(data),
         ...oslobodenieXml(data),
         ...prilohyXml(data),
-        DatumZadaniaPodania: formatXsDateTimeXml(new Date()),
+        DatumZadaniaPodania: formatXsDateTimeXml(currentDate),
         ZakladneVyhlasenie: {
           SpravnostUdajovText:
             'Všeobecné informácie o poskytnutí, spracovaní a ochrane osobných údajov nájdete na https://esluzby.bratislava.sk/page/ochrana-osobnych-udajov',

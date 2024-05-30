@@ -1,7 +1,6 @@
 import fs from 'node:fs'
 
 import fontkit from '@pdf-lib/fontkit'
-import { Prisma } from '@prisma/client'
 import {
   cleanText,
   mergeLines,
@@ -16,25 +15,24 @@ import {
   PDFTextField,
 } from 'pdf-lib'
 
-import { taxPdfMapping } from '../tax-pdf-mapping'
-import { getPocty } from './functions'
-import { zobrazitOslobodenie } from './oslobodenie'
+import { getPocty } from './mapping/shared/functions'
+import { zobrazitOslobodenie } from './mapping/shared/oslobodenieShared'
+import { getTaxFormPdfMapping } from './mapping/pdf/pdf'
+import { TaxFormData } from './types'
+import * as path from 'node:path'
 
 export type GenerateTaxPdfPayload = {
-  formData: Prisma.JsonValue | null | undefined
+  formData: TaxFormData
   formId?: string
+  currentDate?: Date
 }
 
 // This preloads the PDF and font into memory, so that they don't have to be loaded from disk every time a job is
 // processed.
-const pdfBytes = fs.readFileSync('./res/Priznanie_komplet_tlacivo.pdf')
-const font = fs.readFileSync('./res/LiberationSans.ttf')
+const pdfBytes = fs.readFileSync(path.join(__dirname, './Priznanie_komplet_tlacivo.pdf'))
+const font = fs.readFileSync(path.join(__dirname, './LiberationSans.ttf'))
 
-const copyOrRemovePages = async (
-  pdfDoc: PDFDocument,
-  index: number,
-  count: number,
-): Promise<void> => {
+const copyOrRemovePages = async (pdfDoc: PDFDocument, index: number, count: number) => {
   if (count === 0) {
     pdfDoc.removePage(index)
     return
@@ -51,10 +49,7 @@ const copyOrRemovePages = async (
     // This is a pretty esoteric code to rename all the fields on the copied page.
     // Our modification is to postfix all the field names with "_Copy{copyIndex + 1}".
     // https://github.com/Hopding/pdf-lib/issues/151#issuecomment-517965052
-    const acroForm = copiedPage.doc.catalog.lookup(
-      PDFName.of('AcroForm'),
-      PDFDict,
-    )
+    const acroForm = copiedPage.doc.catalog.lookup(PDFName.of('AcroForm'), PDFDict)
     const acroFields = acroForm.lookup(PDFName.of('Fields'), PDFArray)
 
     acroForm.set(PDFName.of('NeedAppearances'), PDFBool.True)
@@ -64,9 +59,7 @@ const copyOrRemovePages = async (
     // eslint-disable-next-line no-plusplus
     for (let idx = 0; idx < annots.size(); idx++) {
       const annot = annots.lookup(idx, PDFDict)
-      const tVal = (
-        annot.lookup(PDFName.of('T')) as unknown as { value: string }
-      ).value
+      const tVal = (annot.lookup(PDFName.of('T')) as unknown as { value: string }).value
 
       annot.set(PDFName.of('P'), copiedPage.ref)
       annot.set(PDFName.of('T'), PDFString.of(`${tVal}_Copy${copyIndex + 1}`))
@@ -83,15 +76,11 @@ const copyOrRemovePages = async (
  * @returns Base64 encoded PDF
  */
 // eslint-disable-next-line sonarjs/cognitive-complexity,func-names
-export default async function ({
-  formData,
-  formId,
-}: GenerateTaxPdfPayload): Promise<string> {
+export default async function ({ formData, formId, currentDate }: GenerateTaxPdfPayload) {
   const pdfDoc = await PDFDocument.load(pdfBytes, {
     parseSpeed: ParseSpeeds.Fastest,
   })
-  // if we get unexpected data return empty pdf
-  if (typeof formData !== 'object' || Array.isArray(formData) || !formData) {
+  if (!formData) {
     return pdfDoc.saveAsBase64()
   }
 
@@ -111,12 +100,10 @@ export default async function ({
     pdfDoc.removePage(index)
   })
 
-  const {
-    pocetPozemkov,
-    pocetStaviebJedenUcel,
-    pocetStaviebViacereUcely,
-    pocetBytov,
-  } = getPocty(formData)
+  const { pocetPozemkov, pocetStaviebJedenUcel, pocetStaviebViacereUcely, pocetBytov } =
+    getPocty(formData)
+  // Pages must be copied or removed in reverse order, because the existing pages are shifted when a new page is
+  // inserted or removed.
   await copyOrRemovePages(pdfDoc, 5, pocetBytov)
   await copyOrRemovePages(pdfDoc, 4, pocetStaviebViacereUcely)
   await copyOrRemovePages(pdfDoc, 3, pocetStaviebJedenUcel)
@@ -132,7 +119,7 @@ export default async function ({
   pdfDoc.registerFontkit(fontkit)
   const liberationSansFont = await pdfDoc.embedFont(font)
 
-  const mapping = taxPdfMapping(formData, formId)
+  const mapping = getTaxFormPdfMapping(formData, formId, currentDate)
 
   const fields = pdfDoc.getForm().getFields()
   fields.forEach((field) => {

@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/explicit-function-return-type,eslint-comments/disable-enable-pair,import/prefer-default-export */
 import { DanZoStaviebViacereUcelyPriznania, TaxFormData, UcelVyuzitiaStavby } from '../../types'
 import { parseDateFieldDate, safeArray, safeBoolean, safeNumber, safeString } from './functions'
 import { oddielBaseShared } from './oddielBaseShared'
@@ -19,7 +18,6 @@ const getVymeryStaviebPodlaTypu = (
       ucelVyuzitiaStavby: safeString(nehnutelnost.ucelVyuzitiaStavby),
       vymeraPodlahovejPlochy:
         calculateTaxCalculatorFormula(
-          // eslint-disable-next-line no-secrets/no-secrets
           'roundTo(ratioNumerator(podielPriestoruNaSpolocnychCastiachAZariadeniachDomu) * evalRatio(spoluvlastnickyPodiel) / 100, 2)',
           nehnutelnost,
         ) ?? undefined,
@@ -42,14 +40,12 @@ const mapPriznanie = (data: TaxFormData, priznanie: DanZoStaviebViacereUcelyPriz
     safeBoolean(data.danZoStaviebViacereUcely?.kalkulackaWrapper?.pouzitKalkulacku) === true
   const zakladDane = pouzitKalkulacku
     ? calculateTaxCalculatorFormula(
-        // eslint-disable-next-line no-secrets/no-secrets
         'f(n) = evalRatio(n.podielPriestoruNaSpolocnychCastiachAZariadeniachDomu) * evalRatio(n.spoluvlastnickyPodiel) * celkovaVymera; mapped = map(f, nehnutelnosti.nehnutelnosti); sum(a, b) = a+b; ceil fold(sum, 0, mapped)',
         priznanie,
       )
     : safeNumber(priznanie.zakladDane)
   const celkovaVymera = pouzitKalkulacku
     ? calculateTaxCalculatorFormula(
-        // eslint-disable-next-line no-secrets/no-secrets
         'f(n) = ratioNumerator(n.podielPriestoruNaSpolocnychCastiachAZariadeniachDomu) * evalRatio(n.spoluvlastnickyPodiel) / 100; mapped = map(f, nehnutelnosti.nehnutelnosti); sum(a, b) = a+b; ceil fold(sum, 0, mapped)',
         priznanie,
       )

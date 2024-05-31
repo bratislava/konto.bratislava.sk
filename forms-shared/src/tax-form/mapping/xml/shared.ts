@@ -1,18 +1,15 @@
-/* eslint-disable @typescript-eslint/explicit-function-return-type,eslint-comments/disable-enable-pair */
 import { ParsedRodneCislo } from '../shared/functions'
 import { udajeODanovnikoviShared } from '../shared/udajeODanovnikoviShared'
 import { TaxFormData } from '../../types'
 
 export const formatRodneCisloXml = (parsedRodneCislo: ParsedRodneCislo | undefined) => {
   if (!parsedRodneCislo?.isValid) {
-    // eslint-disable-next-line unicorn/no-useless-undefined
     return undefined
   }
 
   return `${parsedRodneCislo.firstPart}${parsedRodneCislo.secondPart}`
 }
 
-// eslint-disable-next-line no-secrets/no-secrets
 /**
  * Parses the input string to extract street name and orientation number.
  *
@@ -32,7 +29,6 @@ export const formatRodneCisloXml = (parsedRodneCislo: ParsedRodneCislo | undefin
  */
 export function parseUlicaACisloDomu(ulicaACisloDomu: string | undefined) {
   if (!ulicaACisloDomu) {
-    // eslint-disable-next-line unicorn/no-useless-undefined
     return undefined
   }
 

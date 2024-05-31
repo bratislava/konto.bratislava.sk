@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/explicit-function-return-type,eslint-comments/disable-enable-pair,import/prefer-default-export */
 import { getPocty } from '../shared/functions'
 import { prilohyShared } from '../shared/prilohyShared'
 import { TaxFormData, TaxPdfMapping } from '../../types'
@@ -35,19 +34,16 @@ function getPrilohaCisloFields(data: TaxFormData) {
   poctyKeys.forEach((key) => {
     const pocet = pocty[key]
     if (pocet) {
-      // eslint-disable-next-line no-plusplus
       for (let i = 0; i < pocet; i++) {
         const prefixIndex = typeIndexMapping[key]
         // Copied section pages have _Copy{index} suffix.
         const prilohyKey = i === 0 ? `${prefixIndex}_Priloha` : `${prefixIndex}_Priloha_Copy${i}`
 
-        // eslint-disable-next-line no-plusplus
         prilohaCisloFields[prilohyKey] = String(count++)
       }
     }
   })
   if (zobrazitOslobodenie) {
-    // eslint-disable-next-line no-plusplus
     prilohaCisloFields['12_Priloha'] = String(count++)
   }
 
@@ -58,9 +54,9 @@ function formatNonZeroInteger(value: number) {
   return value === 0 ? undefined : formatIntegerPdf(value)
 }
 
-export const prilohy = (data: TaxFormData) => {
+export const prilohy = (data: TaxFormData, currentDate?: Date) => {
   const mapping = prilohyShared(data)
-  const currentDate = new Date()
+  const currentDateInner = currentDate ?? new Date()
   const prilohaCisloFields = getPrilohaCisloFields(data)
 
   return {
@@ -68,9 +64,9 @@ export const prilohy = (data: TaxFormData) => {
     '2_Priloha2': formatNonZeroInteger(mapping.oddiel3),
     '2_Priloha3': formatNonZeroInteger(mapping.oddiel4),
     '2_Priloha7': mapping.zobrazitOslobodenie ? '1' : undefined,
-    '2_Datum1': currentDate.getDate().toString().padStart(2, '0'),
-    '2_Datum2': (currentDate.getMonth() + 1).toString().padStart(2, '0'),
-    '2_Datum4': currentDate.getFullYear().toString().slice(-2),
+    '2_Datum1': currentDateInner.getDate().toString().padStart(2, '0'),
+    '2_Datum2': (currentDateInner.getMonth() + 1).toString().padStart(2, '0'),
+    '2_Datum4': currentDateInner.getFullYear().toString().slice(-2),
     ...prilohaCisloFields,
   }
 }

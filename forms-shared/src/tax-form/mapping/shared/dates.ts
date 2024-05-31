@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/explicit-function-return-type,eslint-comments/disable-enable-pair,consistent-return */
 import dayjs from 'dayjs'
 import customParseFormat from 'dayjs/plugin/customParseFormat'
 import localizedFormat from 'dayjs/plugin/localizedFormat'
@@ -12,7 +11,6 @@ dayjs.extend(localizedFormat)
 
 const bratislavaTimezone = 'Europe/Bratislava'
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
 export function parseDate(date: string | any, format: string) {
   if (typeof date !== 'string') {
     return
@@ -29,7 +27,6 @@ export function parseDate(date: string | any, format: string) {
     if (parsedDate.isValid() && isStrictlyParsed) {
       return parsedDate.toDate()
     }
-    // eslint-disable-next-line no-empty
   } catch (error) {}
 }
 

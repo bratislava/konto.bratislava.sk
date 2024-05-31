@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/explicit-function-return-type,eslint-comments/disable-enable-pair,import/prefer-default-export */
 import parsePhoneNumber from 'libphonenumber-js'
 
 import { formatDate } from '../shared/dates'
@@ -69,7 +68,6 @@ export const phoneNumberXml = (value: string | undefined | null) => {
     return
   }
 
-  // eslint-disable-next-line consistent-return
   return {
     MedzinarodneVolacieCislo: medzinarodneVolacieCislo,
     Predvolba: predvolba,

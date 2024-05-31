@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/explicit-function-return-type,eslint-comments/disable-enable-pair,import/prefer-default-export */
 import { Oddiel4PriznanieShared, oddiel4Shared } from '../shared/oddiel4Shared'
 import { TaxFormData } from '../../types'
 import { adresaStavbyBytu, katastralneUzemie, pravnyVztah, spoluvlastnictvo } from './ciselniky'

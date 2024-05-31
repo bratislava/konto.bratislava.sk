@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/explicit-function-return-type,eslint-comments/disable-enable-pair */
 import { Builder } from 'xml2js'
 
 import { TaxFormData } from '../../types'
@@ -66,7 +65,7 @@ export const removeEmptySubtrees = <T extends JSONValue>(objOrArrayOrValue: T): 
   return objOrArrayOrValue
 }
 
-export const getTaxFormXml = (data: TaxFormData, pretty = false) => {
+export const getTaxFormXml = (data: TaxFormData, pretty = false, currentDate = new Date()) => {
   const jsonObj = {
     'E-form': {
       $: {
@@ -88,7 +87,7 @@ export const getTaxFormXml = (data: TaxFormData, pretty = false) => {
         ...oddiel4Xml(data),
         ...oslobodenieXml(data),
         ...prilohyXml(data),
-        DatumZadaniaPodania: formatXsDateTimeXml(new Date()),
+        DatumZadaniaPodania: formatXsDateTimeXml(currentDate),
         ZakladneVyhlasenie: {
           SpravnostUdajovText:
             'Všeobecné informácie o poskytnutí, spracovaní a ochrane osobných údajov nájdete na https://esluzby.bratislava.sk/page/ochrana-osobnych-udajov',
@@ -119,7 +118,6 @@ export const getTaxFormXml = (data: TaxFormData, pretty = false) => {
 
   // Convert JSON to XML
   const builder = new Builder({
-    // eslint-disable-next-line unicorn/text-encoding-identifier-case
     xmldec: { version: '1.0', encoding: 'UTF-8' },
     renderOpts: { pretty },
   })

@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/explicit-function-return-type,eslint-comments/disable-enable-pair,import/prefer-default-export */
 import { getTitleFromStatCiselnik } from '../pdf/statCiselnik'
 import { TaxFormData } from '../../types'
 import { formatDatePdf } from './dates'
@@ -76,7 +75,6 @@ const rodneCisloDatumNarodeniaPoznamka = (data: TaxFormData) => {
   }
 
   if (datumNarodenia != null) {
-    // eslint-disable-next-line @typescript-eslint/restrict-template-expressions
     return `Dátum narodenia: ${formatDatePdf(datumNarodenia)}`
   }
 

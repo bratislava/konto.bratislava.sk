@@ -8,10 +8,14 @@ import { prilohy } from './prilohy'
 import { udajeODanovnikovi } from './udajeODanovnikovi'
 import { TaxFormData, TaxPdfMapping } from '../../types'
 
-export const getTaxFormPdfMapping = (data: TaxFormData, formId?: string): TaxPdfMapping => ({
+export const getTaxFormPdfMapping = (
+  data: TaxFormData,
+  formId?: string,
+  currentDate?: Date,
+): TaxPdfMapping => ({
   ...udajeODanovnikovi(data),
   ...poznamka(data, formId),
-  ...prilohy(data),
+  ...prilohy(data, currentDate),
   ...oddiel2(data),
   ...oddiel3JedenUcel(data),
   ...oddiel3ViacereUcely(data),

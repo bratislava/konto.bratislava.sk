@@ -62,6 +62,7 @@
     "typescript": "^5.4.2"
   },
   "resolutions": {
-    "jackspeak": "2.1.1"
+    "wrap-ansi": "7.0.0",
+    "string-width": "4.1.0"
   }
 }

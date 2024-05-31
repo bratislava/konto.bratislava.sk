@@ -1,5 +1,6 @@
 import { baDefaultFormStateBehavior } from '@forms-shared/form-utils/defaultFormState'
 import { baRjsfValidator } from '@forms-shared/form-utils/validators'
+import { BaWidgetType } from '@forms-shared/generator/uiOptionsTypes'
 import { ThemeProps, withTheme } from '@rjsf/core'
 import {
   ArrayFieldTemplateItemType,
@@ -12,9 +13,9 @@ import { ComponentType, Fragment } from 'react'
 import { useFormContext } from '../../useFormContext'
 import { useFormState } from '../../useFormState'
 import { ArrayFieldItemTemplate, ArrayFieldTemplate } from './SummaryArrayTemplateRJSF'
-import SummaryWidgetRJSF, { SummaryWidgetRJSFProps, SummaryWidgetType } from './SummaryWidgetRJSF'
+import SummaryWidgetRJSF, { SummaryWidgetRJSFProps } from './SummaryWidgetRJSF'
 
-const wrapWidget = (widgetType: SummaryWidgetType) =>
+const wrapWidget = (widgetType: BaWidgetType) =>
   function wrap(props: Omit<SummaryWidgetRJSFProps, 'widgetType'>) {
     return <SummaryWidgetRJSF {...props} widgetType={widgetType} />
   }
@@ -43,16 +44,16 @@ const theme: ThemeProps = {
     ArrayFieldTemplate,
   },
   widgets: {
-    Select: wrapWidget('select'),
-    Input: wrapWidget('input'),
-    RadioGroup: wrapWidget('radioGroup'),
-    TextArea: wrapWidget('textArea'),
-    Checkbox: wrapWidget('checkbox'),
-    CheckboxGroup: wrapWidget('checkboxGroup'),
-    FileUpload: wrapWidget('fileUpload'),
-    DatePicker: wrapWidget('datePicker'),
-    TimePicker: wrapWidget('timePicker'),
-    CustomComponents: () => {
+    [BaWidgetType.Select]: wrapWidget(BaWidgetType.Select),
+    [BaWidgetType.Input]: wrapWidget(BaWidgetType.Input),
+    [BaWidgetType.RadioGroup]: wrapWidget(BaWidgetType.RadioGroup),
+    [BaWidgetType.TextArea]: wrapWidget(BaWidgetType.TextArea),
+    [BaWidgetType.Checkbox]: wrapWidget(BaWidgetType.Checkbox),
+    [BaWidgetType.CheckboxGroup]: wrapWidget(BaWidgetType.CheckboxGroup),
+    [BaWidgetType.FileUpload]: wrapWidget(BaWidgetType.FileUpload),
+    [BaWidgetType.DatePicker]: wrapWidget(BaWidgetType.DatePicker),
+    [BaWidgetType.TimePicker]: wrapWidget(BaWidgetType.TimePicker),
+    [BaWidgetType.CustomComponents]: () => {
       return null
     },
   },

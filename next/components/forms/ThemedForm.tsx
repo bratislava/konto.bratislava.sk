@@ -1,3 +1,4 @@
+import { BaWidgetType } from '@forms-shared/generator/uiOptionsTypes'
 import { ThemeProps, withTheme } from '@rjsf/core'
 import { ArrayFieldTemplateItemType, GenericObjectType, WidgetProps } from '@rjsf/utils'
 import DatePickerWidgetRJSF from 'components/forms/widget-wrappers/DatePickerWidgetRJSF'
@@ -21,16 +22,16 @@ import TextAreaWidgetRJSF from './widget-wrappers/TextAreaWidgetRJSF'
 // `options` property.
 const theme: ThemeProps = {
   widgets: wrapWidgetsInContext({
-    Select: SelectWidgetRJSF as ComponentType<WidgetProps>,
-    Input: InputWidgetRJSF as ComponentType<WidgetProps>,
-    RadioGroup: RadioGroupWidgetRJSF as ComponentType<WidgetProps>,
-    TextArea: TextAreaWidgetRJSF as ComponentType<WidgetProps>,
-    CheckboxGroup: CheckboxGroupWidgetRJSF as ComponentType<WidgetProps>,
-    Checkbox: CheckboxWidgetRJSF as ComponentType<WidgetProps>,
-    FileUpload: FileUploadWidgetRJSF as ComponentType<WidgetProps>,
-    DatePicker: DatePickerWidgetRJSF as ComponentType<WidgetProps>,
-    TimePicker: TimePickerWidgetRJSF as ComponentType<WidgetProps>,
-    CustomComponents: CustomComponentsWidgetRJSF as ComponentType<WidgetProps>,
+    [BaWidgetType.Select]: SelectWidgetRJSF as ComponentType<WidgetProps>,
+    [BaWidgetType.Input]: InputWidgetRJSF as ComponentType<WidgetProps>,
+    [BaWidgetType.RadioGroup]: RadioGroupWidgetRJSF as ComponentType<WidgetProps>,
+    [BaWidgetType.TextArea]: TextAreaWidgetRJSF as ComponentType<WidgetProps>,
+    [BaWidgetType.CheckboxGroup]: CheckboxGroupWidgetRJSF as ComponentType<WidgetProps>,
+    [BaWidgetType.Checkbox]: CheckboxWidgetRJSF as ComponentType<WidgetProps>,
+    [BaWidgetType.FileUpload]: FileUploadWidgetRJSF as ComponentType<WidgetProps>,
+    [BaWidgetType.DatePicker]: DatePickerWidgetRJSF as ComponentType<WidgetProps>,
+    [BaWidgetType.TimePicker]: TimePickerWidgetRJSF as ComponentType<WidgetProps>,
+    [BaWidgetType.CustomComponents]: CustomComponentsWidgetRJSF as ComponentType<WidgetProps>,
   }),
   templates: {
     ObjectFieldTemplate: BAObjectFieldTemplate,

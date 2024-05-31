@@ -18,6 +18,7 @@ import {
 import { createSchemaUtils, getUiOptions, optionsList } from '@rjsf/utils'
 import { baRjsfValidator } from '../../src/form-utils/validators'
 import { baDefaultFormStateBehavior } from '../../src/form-utils/defaultFormState'
+import { BaWidgetType } from '../../src/generator/uiOptionsTypes'
 
 const getSchemaAndUiOptions = (field: Field) => {
   const schema = field.schema()
@@ -47,22 +48,27 @@ describe('getSummaryDisplayValues', () => {
     const { schema, uiOptions } = getSchemaAndUiOptions(field)
 
     it('returns correct label for a valid single select value', () => {
-      const result = getSummaryDisplayValues('value-1', 'Select', schema, uiOptions)
+      const result = getSummaryDisplayValues('value-1', BaWidgetType.Select, schema, uiOptions)
       expect(result).toEqual([{ type: SummaryDisplayValueType.String, value: 'Label 1' }])
     })
 
     it('returns invalid value for an unknown select value', () => {
-      const result = getSummaryDisplayValues('unknown', 'Select', schema, uiOptions)
+      const result = getSummaryDisplayValues('unknown', BaWidgetType.Select, schema, uiOptions)
       expect(result).toEqual([{ type: SummaryDisplayValueType.Invalid }])
     })
 
     it('returns none value for undefined select value', () => {
-      const result = getSummaryDisplayValues(undefined, 'Select', schema, uiOptions)
+      const result = getSummaryDisplayValues(undefined, BaWidgetType.Select, schema, uiOptions)
       expect(result).toEqual([{ type: SummaryDisplayValueType.None }])
     })
 
     it('returns invalid value for a multi select value passed to single select field', () => {
-      const result = getSummaryDisplayValues(['value-1', 'value-2'], 'Select', schema, uiOptions)
+      const result = getSummaryDisplayValues(
+        ['value-1', 'value-2'],
+        BaWidgetType.Select,
+        schema,
+        uiOptions,
+      )
       expect(result).toEqual([{ type: SummaryDisplayValueType.Invalid }])
     })
   })
@@ -82,17 +88,22 @@ describe('getSummaryDisplayValues', () => {
     const { schema, uiOptions } = getSchemaAndUiOptions(field)
 
     it('returns none value for an empty select multiple value', () => {
-      const result = getSummaryDisplayValues([], 'Select', schema, uiOptions)
+      const result = getSummaryDisplayValues([], BaWidgetType.Select, schema, uiOptions)
       expect(result).toEqual([{ type: SummaryDisplayValueType.None }])
     })
 
     it('returns correct label for a valid single select multiple value', () => {
-      const result = getSummaryDisplayValues(['value-1'], 'Select', schema, uiOptions)
+      const result = getSummaryDisplayValues(['value-1'], BaWidgetType.Select, schema, uiOptions)
       expect(result).toEqual([{ type: SummaryDisplayValueType.String, value: 'Label 1' }])
     })
 
     it('returns correct labels for valid select multiple values', () => {
-      const result = getSummaryDisplayValues(['value-1', 'value-2'], 'Select', schema, uiOptions)
+      const result = getSummaryDisplayValues(
+        ['value-1', 'value-2'],
+        BaWidgetType.Select,
+        schema,
+        uiOptions,
+      )
       expect(result).toEqual([
         { type: SummaryDisplayValueType.String, value: 'Label 1' },
         { type: SummaryDisplayValueType.String, value: 'Label 2' },
@@ -100,7 +111,12 @@ describe('getSummaryDisplayValues', () => {
     })
 
     it('returns correct label and invalid value for a mix of known and unknown select multiple values', () => {
-      const result = getSummaryDisplayValues(['value-1', 'unknown'], 'Select', schema, uiOptions)
+      const result = getSummaryDisplayValues(
+        ['value-1', 'unknown'],
+        BaWidgetType.Select,
+        schema,
+        uiOptions,
+      )
       expect(result).toEqual([
         { type: SummaryDisplayValueType.String, value: 'Label 1' },
         { type: SummaryDisplayValueType.Invalid },
@@ -108,7 +124,7 @@ describe('getSummaryDisplayValues', () => {
     })
 
     it('returns invalid value for a single select value passed to select multiple field', () => {
-      const result = getSummaryDisplayValues('value-1', 'Select', schema, uiOptions)
+      const result = getSummaryDisplayValues('value-1', BaWidgetType.Select, schema, uiOptions)
       expect(result).toEqual([{ type: SummaryDisplayValueType.Invalid }])
     })
   })
@@ -129,17 +145,22 @@ describe('getSummaryDisplayValues', () => {
     const { schema, uiOptions } = getSchemaAndUiOptions(field)
 
     it('returns correct label for a valid radio group value', () => {
-      const result = getSummaryDisplayValues('value1', 'RadioGroup', schema, uiOptions)
+      const result = getSummaryDisplayValues('value1', BaWidgetType.RadioGroup, schema, uiOptions)
       expect(result).toEqual([{ type: SummaryDisplayValueType.String, value: 'Label 1' }])
     })
 
     it('returns invalid value for an unknown radio group value', () => {
-      const result = getSummaryDisplayValues('unknownValue', 'RadioGroup', schema, uiOptions)
+      const result = getSummaryDisplayValues(
+        'unknownValue',
+        BaWidgetType.RadioGroup,
+        schema,
+        uiOptions,
+      )
       expect(result).toEqual([{ type: SummaryDisplayValueType.Invalid }])
     })
 
     it('returns none value for undefined radio group value', () => {
-      const result = getSummaryDisplayValues(undefined, 'RadioGroup', schema, uiOptions)
+      const result = getSummaryDisplayValues(undefined, BaWidgetType.RadioGroup, schema, uiOptions)
       expect(result).toEqual([{ type: SummaryDisplayValueType.None }])
     })
   })
@@ -149,17 +170,17 @@ describe('getSummaryDisplayValues', () => {
     const { schema, uiOptions } = getSchemaAndUiOptions(field)
 
     it('returns the input string for TextArea widget', () => {
-      const result = getSummaryDisplayValues('Test input', 'TextArea', schema, uiOptions)
+      const result = getSummaryDisplayValues('Test input', BaWidgetType.TextArea, schema, uiOptions)
       expect(result).toEqual([{ type: SummaryDisplayValueType.String, value: 'Test input' }])
     })
 
     it('returns none value for undefined TextArea value', () => {
-      const result = getSummaryDisplayValues(undefined, 'TextArea', schema, uiOptions)
+      const result = getSummaryDisplayValues(undefined, BaWidgetType.TextArea, schema, uiOptions)
       expect(result).toEqual([{ type: SummaryDisplayValueType.None }])
     })
 
     it('returns invalid value for non-string TextArea value', () => {
-      const result = getSummaryDisplayValues(1234, 'TextArea', schema, uiOptions)
+      const result = getSummaryDisplayValues(1234, BaWidgetType.TextArea, schema, uiOptions)
       expect(result).toEqual([{ type: SummaryDisplayValueType.Invalid }])
     })
   })
@@ -169,17 +190,17 @@ describe('getSummaryDisplayValues', () => {
     const { schema, uiOptions } = getSchemaAndUiOptions(field)
 
     it('returns the input string for Input widget', () => {
-      const result = getSummaryDisplayValues('Test input', 'Input', schema, uiOptions)
+      const result = getSummaryDisplayValues('Test input', BaWidgetType.Input, schema, uiOptions)
       expect(result).toEqual([{ type: SummaryDisplayValueType.String, value: 'Test input' }])
     })
 
     it('returns none value for undefined Input value', () => {
-      const result = getSummaryDisplayValues(undefined, 'Input', schema, uiOptions)
+      const result = getSummaryDisplayValues(undefined, BaWidgetType.Input, schema, uiOptions)
       expect(result).toEqual([{ type: SummaryDisplayValueType.None }])
     })
 
     it('returns invalid value for non-string Input value', () => {
-      const result = getSummaryDisplayValues(true, 'Input', schema, uiOptions)
+      const result = getSummaryDisplayValues(true, BaWidgetType.Input, schema, uiOptions)
       expect(result).toEqual([{ type: SummaryDisplayValueType.Invalid }])
     })
   })
@@ -190,24 +211,24 @@ describe('getSummaryDisplayValues', () => {
 
     it('returns formatted string for a valid decimal number', () => {
       const validNumber = 123.45
-      const result = getSummaryDisplayValues(validNumber, 'Input', schema, uiOptions)
+      const result = getSummaryDisplayValues(validNumber, BaWidgetType.Input, schema, uiOptions)
       expect(result).toEqual([{ type: SummaryDisplayValueType.String, value: '123.45' }])
     })
 
     it('returns formatted string for a valid integer number', () => {
       const validInteger = 123
-      const result = getSummaryDisplayValues(validInteger, 'Input', schema, uiOptions)
+      const result = getSummaryDisplayValues(validInteger, BaWidgetType.Input, schema, uiOptions)
       expect(result).toEqual([{ type: SummaryDisplayValueType.String, value: '123' }])
     })
 
     it('returns invalid value for a non-numeric input', () => {
       const nonNumberValue = 'not-a-number'
-      const result = getSummaryDisplayValues(nonNumberValue, 'Input', schema, uiOptions)
+      const result = getSummaryDisplayValues(nonNumberValue, BaWidgetType.Input, schema, uiOptions)
       expect(result).toEqual([{ type: SummaryDisplayValueType.Invalid }])
     })
 
     it('returns none value for undefined Number value', () => {
-      const result = getSummaryDisplayValues(undefined, 'Input', schema, uiOptions)
+      const result = getSummaryDisplayValues(undefined, BaWidgetType.Input, schema, uiOptions)
       expect(result).toEqual([{ type: SummaryDisplayValueType.None }])
     })
   })
@@ -218,17 +239,17 @@ describe('getSummaryDisplayValues', () => {
     const { schema, uiOptions } = getSchemaAndUiOptions(field)
 
     it('returns checkbox label for true value', () => {
-      const result = getSummaryDisplayValues(true, 'Checkbox', schema, uiOptions)
+      const result = getSummaryDisplayValues(true, BaWidgetType.Checkbox, schema, uiOptions)
       expect(result).toEqual([{ type: SummaryDisplayValueType.String, value: checkboxLabel }])
     })
 
     it('returns none value for false Checkbox value', () => {
-      const result = getSummaryDisplayValues(false, 'Checkbox', schema, uiOptions)
+      const result = getSummaryDisplayValues(false, BaWidgetType.Checkbox, schema, uiOptions)
       expect(result).toEqual([{ type: SummaryDisplayValueType.None }])
     })
 
     it('returns invalid value for non-boolean Checkbox value', () => {
-      const result = getSummaryDisplayValues('true', 'Checkbox', schema, uiOptions)
+      const result = getSummaryDisplayValues('true', BaWidgetType.Checkbox, schema, uiOptions)
       expect(result).toEqual([{ type: SummaryDisplayValueType.Invalid }])
     })
   })
@@ -251,7 +272,12 @@ describe('getSummaryDisplayValues', () => {
 
     it('returns correct labels for selected CheckboxGroup options', () => {
       const selectedOptions = ['option1', 'option3']
-      const result = getSummaryDisplayValues(selectedOptions, 'CheckboxGroup', schema, uiOptions)
+      const result = getSummaryDisplayValues(
+        selectedOptions,
+        BaWidgetType.CheckboxGroup,
+        schema,
+        uiOptions,
+      )
       expect(result).toEqual([
         { type: SummaryDisplayValueType.String, value: 'Title 1' },
         { type: SummaryDisplayValueType.String, value: 'Title 3' },
@@ -260,7 +286,12 @@ describe('getSummaryDisplayValues', () => {
 
     it('returns correct label and invalid value for a mix of known and unknown CheckboxGroup options', () => {
       const selectedOptions = ['option1', 'unknownOption']
-      const result = getSummaryDisplayValues(selectedOptions, 'CheckboxGroup', schema, uiOptions)
+      const result = getSummaryDisplayValues(
+        selectedOptions,
+        BaWidgetType.CheckboxGroup,
+        schema,
+        uiOptions,
+      )
       expect(result).toEqual([
         { type: SummaryDisplayValueType.String, value: 'Title 1' },
         { type: SummaryDisplayValueType.Invalid },
@@ -268,12 +299,17 @@ describe('getSummaryDisplayValues', () => {
     })
 
     it('returns invalid value for a single value passed to CheckboxGroup', () => {
-      const result = getSummaryDisplayValues('option1', 'CheckboxGroup', schema, uiOptions)
+      const result = getSummaryDisplayValues(
+        'option1',
+        BaWidgetType.CheckboxGroup,
+        schema,
+        uiOptions,
+      )
       expect(result).toEqual([{ type: SummaryDisplayValueType.Invalid }])
     })
 
     it('returns none value for an empty CheckboxGroup selection', () => {
-      const result = getSummaryDisplayValues([], 'CheckboxGroup', schema, uiOptions)
+      const result = getSummaryDisplayValues([], BaWidgetType.CheckboxGroup, schema, uiOptions)
       expect(result).toEqual([{ type: SummaryDisplayValueType.None }])
     })
   })
@@ -284,12 +320,12 @@ describe('getSummaryDisplayValues', () => {
 
     it('returns the file ID for a single file upload', () => {
       const fileUUID = '30200bc4-ea66-448b-ad8f-00e1e1ccdfb0'
-      const result = getSummaryDisplayValues(fileUUID, 'FileUpload', schema, uiOptions)
+      const result = getSummaryDisplayValues(fileUUID, BaWidgetType.FileUpload, schema, uiOptions)
       expect(result).toEqual([{ type: SummaryDisplayValueType.File, id: fileUUID }])
     })
 
     it('returns invalid value for non-string FileUpload value', () => {
-      const result = getSummaryDisplayValues(12345, 'FileUpload', schema, uiOptions)
+      const result = getSummaryDisplayValues(12345, BaWidgetType.FileUpload, schema, uiOptions)
       expect(result).toEqual([{ type: SummaryDisplayValueType.Invalid }])
     })
   })
@@ -307,7 +343,7 @@ describe('getSummaryDisplayValues', () => {
         '30200bc4-ea66-448b-ad8f-00e1e1ccdfb0',
         '8f8877a4-8e52-4ce9-b996-ea2b25d134f1',
       ]
-      const result = getSummaryDisplayValues(fileUUIDs, 'FileUpload', schema, uiOptions)
+      const result = getSummaryDisplayValues(fileUUIDs, BaWidgetType.FileUpload, schema, uiOptions)
       expect(result).toEqual([
         { type: SummaryDisplayValueType.File, id: fileUUIDs[0] },
         { type: SummaryDisplayValueType.File, id: fileUUIDs[1] },
@@ -316,7 +352,7 @@ describe('getSummaryDisplayValues', () => {
 
     it('returns a mix of file ID and invalid value for a combination of valid and invalid FileUpload values', () => {
       const inputs = ['30200bc4-ea66-448b-ad8f-00e1e1ccdfb0', 12345]
-      const result = getSummaryDisplayValues(inputs, 'FileUpload', schema, uiOptions)
+      const result = getSummaryDisplayValues(inputs, BaWidgetType.FileUpload, schema, uiOptions)
       expect(result).toEqual([
         { type: SummaryDisplayValueType.File, id: '30200bc4-ea66-448b-ad8f-00e1e1ccdfb0' },
         { type: SummaryDisplayValueType.Invalid },
@@ -325,7 +361,7 @@ describe('getSummaryDisplayValues', () => {
 
     it('returns none value for an empty FileUpload array', () => {
       const inputs: string[] = []
-      const result = getSummaryDisplayValues(inputs, 'FileUpload', schema, uiOptions)
+      const result = getSummaryDisplayValues(inputs, BaWidgetType.FileUpload, schema, uiOptions)
       expect(result).toEqual([{ type: SummaryDisplayValueType.None }])
     })
   })
@@ -336,24 +372,34 @@ describe('getSummaryDisplayValues', () => {
 
     it('returns formatted date for a valid DatePicker value', () => {
       const validDate = '2023-01-01'
-      const result = getSummaryDisplayValues(validDate, 'DatePicker', schema, uiOptions)
+      const result = getSummaryDisplayValues(validDate, BaWidgetType.DatePicker, schema, uiOptions)
       expect(result).toEqual([{ type: SummaryDisplayValueType.String, value: '1. 1. 2023' }])
     })
 
     it('returns invalid value for an invalid DatePicker value', () => {
       const invalidDate = 'not-a-date'
-      const result = getSummaryDisplayValues(invalidDate, 'DatePicker', schema, uiOptions)
+      const result = getSummaryDisplayValues(
+        invalidDate,
+        BaWidgetType.DatePicker,
+        schema,
+        uiOptions,
+      )
       expect(result).toEqual([{ type: SummaryDisplayValueType.Invalid }])
     })
 
     it('returns none value for undefined DatePicker value', () => {
-      const result = getSummaryDisplayValues(undefined, 'DatePicker', schema, uiOptions)
+      const result = getSummaryDisplayValues(undefined, BaWidgetType.DatePicker, schema, uiOptions)
       expect(result).toEqual([{ type: SummaryDisplayValueType.None }])
     })
 
     it('returns invalid value for non-string DatePicker value', () => {
       const nonStringValue = 123456
-      const result = getSummaryDisplayValues(nonStringValue, 'DatePicker', schema, uiOptions)
+      const result = getSummaryDisplayValues(
+        nonStringValue,
+        BaWidgetType.DatePicker,
+        schema,
+        uiOptions,
+      )
       expect(result).toEqual([{ type: SummaryDisplayValueType.Invalid }])
     })
   })

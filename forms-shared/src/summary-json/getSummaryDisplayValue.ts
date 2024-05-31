@@ -89,7 +89,7 @@ export const getSummaryDisplayValues = (
     return [noneValue]
   }
 
-  if (widgetType === 'Select') {
+  if (widgetType === BaWidgetType.Select) {
     const isSingleSelect = schema.type === 'string' && typeof value === 'string'
     const isMultiSelect = schema.type === 'array' && Array.isArray(value)
 
@@ -113,7 +113,7 @@ export const getSummaryDisplayValues = (
       return createStringValue(option.title)
     })
   }
-  if (widgetType === 'RadioGroup') {
+  if (widgetType === BaWidgetType.RadioGroup) {
     const option = uiOptions.enumOptions?.find((enumOption) => enumOption.value === value)
     if (!option) {
       return [invalidValue]
@@ -121,7 +121,7 @@ export const getSummaryDisplayValues = (
 
     return [createStringValue(option.label)]
   }
-  if (widgetType === 'Input') {
+  if (widgetType === BaWidgetType.Input) {
     const isString = schema.type === 'string' && typeof value === 'string'
     const isNumber =
       (schema.type === 'number' || schema.type === 'integer') && typeof value === 'number'
@@ -137,14 +137,14 @@ export const getSummaryDisplayValues = (
 
     return [invalidValue]
   }
-  if (widgetType === 'TextArea' || widgetType === 'TimePicker') {
+  if (widgetType === BaWidgetType.TextArea || widgetType === BaWidgetType.TimePicker) {
     if (typeof value !== 'string') {
       return [invalidValue]
     }
 
     return [createStringValue(value)]
   }
-  if (widgetType === 'Checkbox') {
+  if (widgetType === BaWidgetType.Checkbox) {
     if (typeof value !== 'boolean') {
       return [invalidValue]
     }
@@ -152,7 +152,7 @@ export const getSummaryDisplayValues = (
     const checkboxUiOptions = uiOptions as CheckboxUiOptions
     return value ? [createStringValue(checkboxUiOptions.checkboxLabel)] : [noneValue]
   }
-  if (widgetType === 'CheckboxGroup') {
+  if (widgetType === BaWidgetType.CheckboxGroup) {
     if (!Array.isArray(value)) {
       return [invalidValue]
     }
@@ -170,7 +170,7 @@ export const getSummaryDisplayValues = (
       return createStringValue(option.label)
     })
   }
-  if (widgetType === 'FileUpload') {
+  if (widgetType === BaWidgetType.FileUpload) {
     const isSingleFile = schema.type === 'string' && isFileUuid(value)
     const isMultiFile = schema.type === 'array' && Array.isArray(value)
 
@@ -194,7 +194,7 @@ export const getSummaryDisplayValues = (
 
     return [invalidValue]
   }
-  if (widgetType === 'DatePicker') {
+  if (widgetType === BaWidgetType.DatePicker) {
     try {
       const parsed = parseDate(value as string)
       // TODO: Use shared date formatter

@@ -22,24 +22,9 @@ describe('F03 -', { testIsolation: false }, () => {
         beforeEach(() => {
           cy.hideNavbar(device)
         })
-        
-        it('1. Checking "File" step validation.', () => {
+
+        it('1. Checking "Applicant" step validation.', () => {
           cy.dataCy('close-modal').click()
-          cy.dataCy('form-container').then((form) => {
-            cy.wrap(Cypress.$(`[data-cy=continue-button-${device}]`, form)).click()
-            cy.dataCy('error-message').should('be.visible').should('have.class', 'text-error')
-          })
-          cy.dataCy('form-container').should('be.visible')//.matchImage()
-        })
-
-        it('2. Uploading file in "File" step.', () => {
-          cy.dataCy('form-container').then((form) => {
-            cy.wrap(Cypress.$('[data-cy=file-input]', form)).attachFile('../files/test.pdf');
-            cy.wrap(Cypress.$(`[data-cy=continue-button-${device}]`, form)).click()
-          })
-        })
-
-        it('3. Checking "Applicant" step validation.', () => {
           cy.dataCy('form-container').then((form) => {
             cy.wrap(Cypress.$(`[data-cy=continue-button-${device}]`, form)).click()
 
@@ -49,13 +34,13 @@ describe('F03 -', { testIsolation: false }, () => {
           cy.dataCy('form-container').should('be.visible')//.matchImage()
         })
 
-        it('4. Filling out the "Applicant" step.', () => {
+        it('2. Filling out the "Applicant" step.', () => {
           cy.dataCy('form-container').then((form) => {
             cy.wrap(Cypress.$('[data-cy=radio-fyzická-osoba]', form)).should('be.checked')
 
             cy.wrap(Cypress.$('[data-cy=input-menoPriezvisko]', form)).type(this.fileData.name)
 
-            cy.wrap(Cypress.$('[data-cy=input-adresa]', form)).type(this.fileData.address)
+            cy.wrap(Cypress.$('[data-cy=input-ulicaACislo]', form)).type(this.fileData.address)
 
             cy.wrap(Cypress.$('[data-cy=input-mesto]', form)).type(this.fileData.city)
 
@@ -69,7 +54,7 @@ describe('F03 -', { testIsolation: false }, () => {
           })
         })
 
-        it('5. Going to summary.', () => {
+        it('3. Going to summary.', () => {
           if (device === 'desktop') {
             cy.get('[data-cy=stepper-desktop] [data-cy=stepper-step-6]').click();
           } else {
@@ -79,17 +64,15 @@ describe('F03 -', { testIsolation: false }, () => {
           cy.dataCy('form-container').should('be.visible')//.matchImage()
         })
 
-        it('6. Checking alert visibility.', () => {
+        it('4. Checking alert visibility.', () => {
           cy.dataCy('alert-container').should('exist').should('be.visible')
         })
 
-        it('7. Checking filled in information are saved', () => {
+        it('5. Checking filled in information are saved', () => {
           cy.dataCy('form-container').then((form) => {
-            cy.wrap(Cypress.$('[data-cy=summary-row-architektonickaStudia]', form)).find('[data-cy=summary-row-icon]').should('have.not.class', 'text-error')
-
             cy.wrap(Cypress.$('[data-cy=summary-row-menoPriezvisko]', form)).should('contain', this.fileData.name)
 
-            cy.wrap(Cypress.$('[data-cy=summary-row-adresa]', form)).should('contain', this.fileData.address)
+            cy.wrap(Cypress.$('[data-cy=summary-row-ulicaACislo]', form)).should('contain', this.fileData.address)
 
             cy.wrap(Cypress.$('[data-cy=summary-row-mesto]', form)).should('contain', this.fileData.city)
 

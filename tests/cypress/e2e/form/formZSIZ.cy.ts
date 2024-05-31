@@ -28,24 +28,9 @@ describe('F02 -', { testIsolation: false }, () => {
         beforeEach(() => {
           cy.hideNavbar(device)
         })
-        
-        it('1. Checking "File" step validation.', () => {
+
+        it('1. Checking "Applicant" step validation.', () => {
           cy.dataCy('close-modal').click()
-          cy.dataCy('form-container').then((form) => {
-            cy.wrap(Cypress.$(`[data-cy=continue-button-${device}]`, form)).click()
-            cy.dataCy('error-message').should('be.visible').should('have.class', 'text-error')
-          })
-          cy.dataCy('form-container').should('be.visible')//.matchImage()
-        })
-
-        it('2. Uploading file in "File" step.', () => {
-          cy.dataCy('form-container').then((form) => {
-            cy.wrap(Cypress.$('[data-cy=file-input]', form)).attachFile('../files/test.pdf');
-            cy.wrap(Cypress.$(`[data-cy=continue-button-${device}]`, form)).click()
-          })
-        })
-
-        it('3. Checking "Applicant" step validation.', () => {
           cy.dataCy('form-container').then((form) => {
             cy.checkFormValidation(device, form, 7, applicantErrorBorderFields)
           })
@@ -57,13 +42,13 @@ describe('F02 -', { testIsolation: false }, () => {
           cy.dataCy('form-container').should('be.visible')//.matchImage()
         })
 
-        it('4. Filling out the "Applicant" step.', () => {
+        it('2. Filling out the "Applicant" step.', () => {
           cy.dataCy('form-container').then((form) => {
             cy.wrap(Cypress.$('[data-cy=radio-fyzická-osoba]', form)).should('be.checked')
 
             cy.wrap(Cypress.$('[data-cy=input-menoPriezvisko]', form)).type(this.fileData.name)
 
-            cy.wrap(Cypress.$('[data-cy=input-adresa]', form)).type(this.fileData.address)
+            cy.wrap(Cypress.$('[data-cy=input-ulicaACislo]', form)).type(this.fileData.address)
 
             cy.wrap(Cypress.$('[data-cy=input-mesto]', form)).type(this.fileData.city)
 
@@ -80,7 +65,7 @@ describe('F02 -', { testIsolation: false }, () => {
           })
         })
 
-        it('5. Filling out the "Investor" step', () => {
+        it('3. Filling out the "Investor" step', () => {
           cy.dataCy('form-container').should('be.visible')//.matchImage()
           cy.dataCy('form-container').then((form) => {
             cy.wrap(Cypress.$('[data-cy=radio-áno]', form)).should('be.checked')
@@ -91,7 +76,7 @@ describe('F02 -', { testIsolation: false }, () => {
           })
         })
 
-        it('6. Checking "Responsible designer" step validation.', () => {
+        it('4. Checking "Responsible designer" step validation.', () => {
           cy.dataCy('form-container').then((form) => {
             cy.wrap(Cypress.$(`[data-cy=continue-button-${device}]`, form)).click()
           })
@@ -112,7 +97,7 @@ describe('F02 -', { testIsolation: false }, () => {
           cy.dataCy('form-container').should('be.visible')//.matchImage()
         })
 
-        it('7. Filling out the "Responsible designer" step.', () => {
+        it('5. Filling out the "Responsible designer" step.', () => {
           cy.dataCy('form-container').then((form) => {
             cy.wrap(Cypress.$('[data-cy=input-menoPriezvisko]', form)).type(this.fileData.name)
 
@@ -132,7 +117,7 @@ describe('F02 -', { testIsolation: false }, () => {
           })
         })
 
-        it('8. Checking "Construction information" step validation.', () => {
+        it('6. Checking "Construction information" step validation.', () => {
           cy.dataCy('form-container').then((form) => {
             cy.wrap(Cypress.$(`[data-cy=continue-button-${device}]`, form)).click()
           })
@@ -146,7 +131,7 @@ describe('F02 -', { testIsolation: false }, () => {
           cy.dataCy('form-container').should('be.visible')//.matchImage()
         })
 
-        it('9. Filling out the "Construction information" step.', () => {
+        it('7. Filling out the "Construction information" step.', () => {
           cy.dataCy('form-container').then((form) => {
             cy.wrap(Cypress.$('[data-cy=input-nazov]', form)).type(this.fileData.construction_name)
 
@@ -167,16 +152,39 @@ describe('F02 -', { testIsolation: false }, () => {
           })
         })
 
-        it('10. Filling out the "Type of action" step.', () => {
+        it('8. Filling out the "Type of action" step.', () => {
           cy.dataCy('form-container').then((form) => {
             cy.wrap(Cypress.$(`[data-cy=continue-button-${device}]`, form)).click()
           })
         })
 
-        it('11. Checking form summary page.', () => {
+        it('9. Checking "File" step validation.', () => {
+          cy.dataCy('form-container').then((form) => {
+            cy.wrap(Cypress.$(`[data-cy=continue-button-${device}]`, form)).click()
+            cy.dataCy('error-message').should('be.visible').should('have.class', 'text-error')
+          })
+          cy.dataCy('form-container').should('be.visible')//.matchImage()
+        })
+
+        it('11. Uploading file in "File" step.', () => {
+          cy.dataCy('form-container').then((form) => {
+            cy.wrap(Cypress.$('[data-cy=file-input]', form)).attachFile('../files/test.pdf');
+            cy.wrap(Cypress.$('[data-cy=file-input]', form)).attachFile('../files/test.pdf');
+            cy.wrap(Cypress.$('[data-cy=file-input]', form)).attachFile('../files/test.pdf');
+            cy.wrap(Cypress.$('[data-cy=file-input]', form)).attachFile('../files/test.pdf');
+            cy.wrap(Cypress.$('[data-cy=file-input]', form)).attachFile('../files/test.pdf');
+            cy.wrap(Cypress.$('[data-cy=file-input]', form)).attachFile('../files/test.pdf');
+            cy.wait(5000)
+            cy.wrap(Cypress.$(`[data-cy=continue-button-${device}]`, form)).click()
+          })
+        })
+
+        it('12. Checking form summary page.', () => {
           cy.dataCy('form-container').should('be.visible')//.matchImage()
 
-          cy.dataCy('alert-container').should('not.exist')
+          cy.dataCy('form-container').then((form) => {
+            cy.wrap(Cypress.$(`[data-cy=alert-container].bg-negative-100`, form)).should('not.exist')
+          })
         })
       })
     })

@@ -119,10 +119,15 @@ const nextConfig = {
       config.resolve.alias['jsdom'] = false
     }
 
+    // https://github.com/konvajs/konva/issues/1458#issuecomment-1356122802
+    config.externals = [...config.externals, { canvas: 'canvas' }]
+
     return config
   },
   experimental: {
     externalDir: true,
+    // https://github.com/konvajs/konva/issues/1458#issuecomment-1356122802
+    esmExternals: 'loose',
   },
 }
 

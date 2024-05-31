@@ -1,5 +1,3 @@
-/* eslint-disable @typescript-eslint/explicit-function-return-type,eslint-comments/disable-enable-pair,import/prefer-default-export */
-
 import { poznamkaShared } from '../shared/poznamkaShared'
 import { prilohyShared } from '../shared/prilohyShared'
 import { TaxFormData } from '../../types'

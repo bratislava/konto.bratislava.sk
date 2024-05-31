@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/explicit-function-return-type,eslint-comments/disable-enable-pair,import/prefer-default-export */
 import { DanZPozemkovPriznania, TaxFormData } from '../../types'
 import { parseDateFieldDate, safeArray, safeBoolean, safeNumber, safeString } from './functions'
 import { oddielBaseShared } from './oddielBaseShared'
@@ -19,7 +18,6 @@ const mapPriznanie = (data: TaxFormData, priznanie: DanZPozemkovPriznania) => {
       safeBoolean(data.danZPozemkov?.kalkulackaWrapper?.pouzitKalkulacku) === true
     const vymeraPozemku = pouzitKalkulacku
       ? calculateTaxCalculatorFormula(
-          // eslint-disable-next-line no-secrets/no-secrets
           'roundTo(evalRatio(podielPriestoruNaSpolocnychCastiachAZariadeniachDomu) * evalRatio(spoluvlastnickyPodiel) * celkovaVymeraPozemku, 2)',
           pozemok,
         )

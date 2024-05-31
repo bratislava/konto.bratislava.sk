@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/explicit-function-return-type,eslint-comments/disable-enable-pair,import/prefer-default-export */
 import { formatDatePdf } from '../shared/dates'
 import { oddiel3JedenUcelShared } from '../shared/oddiel3JedenUcelShared'
 import { TaxFormData } from '../../types'
@@ -10,7 +9,6 @@ import {
 } from './functions'
 import { udajeODanovnikovi } from './udajeODanovnikovi'
 
-// eslint-disable-next-line sonarjs/cognitive-complexity
 export const oddiel3JedenUcel = (data: TaxFormData) => {
   const udaje = udajeODanovnikovi(data)
   const mapping = oddiel3JedenUcelShared(data)

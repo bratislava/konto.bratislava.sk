@@ -1,6 +1,5 @@
 // Hardcoded until issues with code lists are resolved
 // Downloaded from:
-// eslint-disable-next-line no-secrets/no-secrets
 // https://zber.statistics.sk/sk/metaudaje/ciselniky?p_p_id=sk_susr_isis_pub_codelist_portlet_CodelistPortlet_INSTANCE_mvcy&p_p_lifecycle=1&p_p_state=normal&p_p_mode=view&_sk_susr_isis_pub_codelist_portlet_CodelistPortlet_INSTANCE_mvcy_javax.portlet.action=showCodelistDetail&_sk_susr_isis_pub_codelist_portlet_CodelistPortlet_INSTANCE_mvcy_navigationType=CODELIST_DETAIL_VIEW&p_auth=IZQkJLXQ&clCode=CL010580&clVersion=1
 // Same as here:
 // https://github.com/bratislava/konto.bratislava.sk/blob/master/next/schema-generator/definitions/priznanieKDaniZNehnutelnosti/statCiselnik.ts
@@ -1020,11 +1019,9 @@ export const statCiselnik = [
   },
 ]
 
-// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 export function getTitleFromStatCiselnik(value?: string) {
   if (!value) {
     return
   }
-  // eslint-disable-next-line consistent-return
   return statCiselnik.find((item) => item.value === value)?.title
 }

@@ -1,11 +1,9 @@
-/* eslint-disable @typescript-eslint/explicit-function-return-type,eslint-comments/disable-enable-pair,import/prefer-default-export,consistent-return */
 import { mapKeys } from 'lodash'
 
 import { ParsedRodneCislo } from '../shared/functions'
 import { TaxPdfMapping } from '../../types'
 
 export function mergeObjects<T extends object>(array: T[]): T {
-  // eslint-disable-next-line unicorn/no-array-reduce
   return array.reduce((acc, object) => ({ ...acc, ...object }), {} as T)
 }
 

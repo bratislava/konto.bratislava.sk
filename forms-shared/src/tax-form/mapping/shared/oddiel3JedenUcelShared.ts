@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/explicit-function-return-type,eslint-comments/disable-enable-pair,import/prefer-default-export */
 import { DanZoStaviebJedenUcelPriznania, TaxFormData } from '../../types'
 import { parseDateFieldDate, safeArray, safeBoolean, safeNumber, safeString } from './functions'
 import { oddielBaseShared } from './oddielBaseShared'

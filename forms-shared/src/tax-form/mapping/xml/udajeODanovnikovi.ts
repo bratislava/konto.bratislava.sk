@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/explicit-function-return-type,eslint-comments/disable-enable-pair,no-secrets/no-secrets,import/prefer-default-export */
 import {
   esbsDruhPriznaniaCiselnik,
   esbsNationalityCiselnik,

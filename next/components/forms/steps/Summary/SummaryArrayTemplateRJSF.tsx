@@ -1,4 +1,5 @@
 import { ChevronDownIcon } from '@assets/ui-icons'
+import { getArrayItemTitle } from '@forms-shared/form-utils/getArrayItemTitle'
 import { ArrayFieldUiOptions } from '@forms-shared/generator/uiOptionsTypes'
 import {
   ArrayFieldTemplateItemType,
@@ -9,7 +10,6 @@ import {
 import { useTranslation } from 'next-i18next'
 import { ComponentType } from 'react'
 
-import { getArrayFieldItemTemplateTitle } from '../../../../frontend/utils/formArray'
 import { useFormContext } from '../../useFormContext'
 import { useFormSummary } from './useFormSummary'
 
@@ -28,7 +28,7 @@ const TopLevelArrayFieldItemTemplate = ({
 }: ArrayFieldTemplateItemType & AdditionalItemTemplateProps) => {
   const { t } = useTranslation('forms')
   const { itemTitle } = parentUiOptions
-  const title = getArrayFieldItemTemplateTitle(itemTitle, index)
+  const title = getArrayItemTitle(itemTitle, index)
 
   const { isPdf } = useFormContext()
   const { fieldHasError } = useFormSummary()
@@ -64,7 +64,7 @@ export const ArrayFieldItemTemplate = (
 ) => {
   const { index, children, parentUiOptions } = props
   const { itemTitle, variant } = parentUiOptions
-  const title = getArrayFieldItemTemplateTitle(itemTitle, index)
+  const title = getArrayItemTitle(itemTitle, index)
 
   if (variant === 'topLevel') {
     return <TopLevelArrayFieldItemTemplate {...props}>{children}</TopLevelArrayFieldItemTemplate>

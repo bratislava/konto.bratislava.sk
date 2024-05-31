@@ -26,9 +26,7 @@ const SummaryFormControls = () => {
   const { handleSendButtonPress, handleSendEidButtonPress } = useFormSend()
 
   if (isReadonly) {
-    // Cannot be null as RJSF will display its own submit button.
-    // eslint-disable-next-line react/jsx-no-useless-fragment
-    return <></>
+    return null
   }
 
   return (

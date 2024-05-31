@@ -33,7 +33,7 @@ export const isFileMultipleSchema = (schema: RJSFSchema) =>
  *    implements a special `isMultiSelect` check that flags those to not prefill.
  *    https://github.com/rjsf-team/react-jsonschema-form/blob/294b9e3d37c96888a0e8bb3c68a5b2b1afd452bf/packages/utils/src/schema/getDefaultFormState.ts#L403
  *  - `fileUpload` with `multiple: true` - these fields would get prefilled with `requiredOnly` strategy and RJSF doesn't
- *    handle this case, therefore custom `computeSkipPopulate` is needed, in case this is not present, RJSF prefils it
+ *    handle this case, therefore custom `computeSkipPopulate` is needed, in case this is not present, RJSF prefills it
  *    as `[null]` which is not correct and causes bugs.
  *    This needed to be implemented for this use case: https://github.com/rjsf-team/react-jsonschema-form/pull/4121
  *

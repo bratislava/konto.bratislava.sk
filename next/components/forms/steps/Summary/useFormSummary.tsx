@@ -1,7 +1,8 @@
+import { checkPathForErrors } from '@forms-shared/summary-renderer/checkPathForErrors'
 import React, { createContext, PropsWithChildren, useContext, useMemo } from 'react'
 
 import { validateSummary } from '../../../../frontend/utils/form'
-import { checkPathForErrors, formHasErrors } from '../../../../frontend/utils/formSummary'
+import { formHasErrors } from '../../../../frontend/utils/formSummary'
 import { useFormContext } from '../../useFormContext'
 import { useFormFileUpload } from '../../useFormFileUpload'
 import { useFormState } from '../../useFormState'

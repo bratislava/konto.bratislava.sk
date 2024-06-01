@@ -12,6 +12,8 @@ import { exampleTaxForm5 } from '../src/tax-form/examples/exampleTaxForm5'
 import { RJSFSchema } from '@rjsf/utils'
 import { baGetDefaultFormState } from '../src/form-utils/defaultFormState'
 import { getSummaryJsonNode } from '../src/summary-json/getSummaryJsonNode'
+import { renderSummaryPdf } from '../src/summary-pdf/renderSummaryPdf'
+import { expectPdfToMatchSnapshot } from './test-utils/expectPdfToMatchSnapshot'
 
 const definitions = [
   {
@@ -74,6 +76,16 @@ definitions.forEach((definition) => {
             formData,
           ),
         ).toMatchSnapshot()
+      })
+
+      it(`${definition.name} should PDF snapshot ${index + 1} correctly`, async () => {
+        const pdfBuffer = await renderSummaryPdf(
+          definition.schema.schema as RJSFSchema,
+          definition.schema.uiSchema,
+          formData,
+        )
+
+        await expectPdfToMatchSnapshot(pdfBuffer)
       })
     })
   })

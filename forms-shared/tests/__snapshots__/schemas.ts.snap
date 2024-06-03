@@ -14455,14 +14455,22 @@ exports[`priznanieKDaniZNehnutelnosti should match summary snapshot 1 correctly 
           ],
         },
         {
-          "displayValues": [],
+          "displayValues": [
+            {
+              "type": "None",
+            },
+          ],
           "id": "root_znizenieAleboOslobodenieOdDane_stavby",
           "label": "Stavby",
           "type": "Field",
           "value": [],
         },
         {
-          "displayValues": [],
+          "displayValues": [
+            {
+              "type": "None",
+            },
+          ],
           "id": "root_znizenieAleboOslobodenieOdDane_byty",
           "label": "Byty",
           "type": "Field",
@@ -15223,21 +15231,33 @@ exports[`priznanieKDaniZNehnutelnosti should match summary snapshot 2 correctly 
     {
       "children": [
         {
-          "displayValues": [],
+          "displayValues": [
+            {
+              "type": "None",
+            },
+          ],
           "id": "root_znizenieAleboOslobodenieOdDane_pozemky",
           "label": "Pozemky",
           "type": "Field",
           "value": [],
         },
         {
-          "displayValues": [],
+          "displayValues": [
+            {
+              "type": "None",
+            },
+          ],
           "id": "root_znizenieAleboOslobodenieOdDane_stavby",
           "label": "Stavby",
           "type": "Field",
           "value": [],
         },
         {
-          "displayValues": [],
+          "displayValues": [
+            {
+              "type": "None",
+            },
+          ],
           "id": "root_znizenieAleboOslobodenieOdDane_byty",
           "label": "Byty",
           "type": "Field",
@@ -15670,7 +15690,11 @@ exports[`priznanieKDaniZNehnutelnosti should match summary snapshot 3 correctly 
                   "value": true,
                 },
                 {
-                  "displayValues": [],
+                  "displayValues": [
+                    {
+                      "type": "None",
+                    },
+                  ],
                   "id": "root_danZBytovANebytovychPriestorov_priznania_0_splnomocnenie",
                   "label": "Nahrajte sken dohody o určení zástupcu na podanie priznania k dani z nehnuteľností",
                   "type": "Field",
@@ -15803,21 +15827,33 @@ exports[`priznanieKDaniZNehnutelnosti should match summary snapshot 3 correctly 
     {
       "children": [
         {
-          "displayValues": [],
+          "displayValues": [
+            {
+              "type": "None",
+            },
+          ],
           "id": "root_znizenieAleboOslobodenieOdDane_pozemky",
           "label": "Pozemky",
           "type": "Field",
           "value": [],
         },
         {
-          "displayValues": [],
+          "displayValues": [
+            {
+              "type": "None",
+            },
+          ],
           "id": "root_znizenieAleboOslobodenieOdDane_stavby",
           "label": "Stavby",
           "type": "Field",
           "value": [],
         },
         {
-          "displayValues": [],
+          "displayValues": [
+            {
+              "type": "None",
+            },
+          ],
           "id": "root_znizenieAleboOslobodenieOdDane_byty",
           "label": "Byty",
           "type": "Field",
@@ -16130,21 +16166,33 @@ exports[`priznanieKDaniZNehnutelnosti should match summary snapshot 4 correctly 
     {
       "children": [
         {
-          "displayValues": [],
+          "displayValues": [
+            {
+              "type": "None",
+            },
+          ],
           "id": "root_znizenieAleboOslobodenieOdDane_pozemky",
           "label": "Pozemky",
           "type": "Field",
           "value": [],
         },
         {
-          "displayValues": [],
+          "displayValues": [
+            {
+              "type": "None",
+            },
+          ],
           "id": "root_znizenieAleboOslobodenieOdDane_stavby",
           "label": "Stavby",
           "type": "Field",
           "value": [],
         },
         {
-          "displayValues": [],
+          "displayValues": [
+            {
+              "type": "None",
+            },
+          ],
           "id": "root_znizenieAleboOslobodenieOdDane_byty",
           "label": "Byty",
           "type": "Field",
@@ -16793,7 +16841,11 @@ exports[`priznanieKDaniZNehnutelnosti should match summary snapshot 5 correctly 
                   "value": true,
                 },
                 {
-                  "displayValues": [],
+                  "displayValues": [
+                    {
+                      "type": "None",
+                    },
+                  ],
                   "id": "root_danZoStaviebJedenUcel_priznania_0_splnomocnenie",
                   "label": "Nahrajte sken dohody o určení zástupcu na podanie priznania k dani z nehnuteľností",
                   "type": "Field",

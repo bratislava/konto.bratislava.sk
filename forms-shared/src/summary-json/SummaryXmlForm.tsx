@@ -164,16 +164,16 @@ const theme: ThemeProps = {
     ArrayFieldItemTemplate: ArrayFieldItemTemplate as ComponentType<ArrayFieldTemplateItemType>,
   },
   widgets: {
-    Select: wrapWidget('Select'),
-    Input: wrapWidget('Input'),
-    RadioGroup: wrapWidget('RadioGroup'),
-    TextArea: wrapWidget('TextArea'),
-    Checkbox: wrapWidget('Checkbox'),
-    CheckboxGroup: wrapWidget('CheckboxGroup'),
-    FileUpload: wrapWidget('FileUpload'),
-    DatePicker: wrapWidget('DatePicker'),
-    TimePicker: wrapWidget('TimePicker'),
-    CustomComponents: () => {
+    [BaWidgetType.Select]: wrapWidget(BaWidgetType.Select),
+    [BaWidgetType.Input]: wrapWidget(BaWidgetType.Input),
+    [BaWidgetType.RadioGroup]: wrapWidget(BaWidgetType.RadioGroup),
+    [BaWidgetType.TextArea]: wrapWidget(BaWidgetType.TextArea),
+    [BaWidgetType.Checkbox]: wrapWidget(BaWidgetType.Checkbox),
+    [BaWidgetType.CheckboxGroup]: wrapWidget(BaWidgetType.CheckboxGroup),
+    [BaWidgetType.FileUpload]: wrapWidget(BaWidgetType.FileUpload),
+    [BaWidgetType.DatePicker]: wrapWidget(BaWidgetType.DatePicker),
+    [BaWidgetType.TimePicker]: wrapWidget(BaWidgetType.TimePicker),
+    [BaWidgetType.CustomComponents]: () => {
       return null
     },
   } satisfies Record<BaWidgetType, ComponentType<WidgetProps>>,

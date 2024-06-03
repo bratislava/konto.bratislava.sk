@@ -164,14 +164,15 @@ export type SchemaUiOptions = {
  */
 export const markdownTextPrefix = `markdown_gKgflRNwdS:`
 
-export type BaWidgetType =
-  | 'Select'
-  | 'Input'
-  | 'RadioGroup'
-  | 'TextArea'
-  | 'Checkbox'
-  | 'CheckboxGroup'
-  | 'FileUpload'
-  | 'DatePicker'
-  | 'TimePicker'
-  | 'CustomComponents'
+export enum BaWidgetType {
+  Select = 'Select',
+  Input = 'Input',
+  RadioGroup = 'RadioGroup',
+  TextArea = 'TextArea',
+  Checkbox = 'Checkbox',
+  CheckboxGroup = 'CheckboxGroup',
+  FileUpload = 'FileUpload',
+  DatePicker = 'DatePicker',
+  TimePicker = 'TimePicker',
+  CustomComponents = 'CustomComponents',
+}

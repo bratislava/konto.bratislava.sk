@@ -1,3 +1,4 @@
+import { BaWidgetType } from '@forms-shared/generator/uiOptionsTypes'
 import { WidgetProps } from '@rjsf/utils'
 import { ComponentType, createContext, useContext } from 'react'
 
@@ -19,7 +20,7 @@ export const useFormWidget = () => {
  * Wraps all the widgets into FormWidgetContext.
  */
 export const wrapWidgetsInContext = <
-  WidgetsObject extends Record<string, ComponentType<WidgetProps>>,
+  WidgetsObject extends Record<BaWidgetType, ComponentType<WidgetProps>>,
 >(
   widgets: WidgetsObject,
 ): typeof widgets =>

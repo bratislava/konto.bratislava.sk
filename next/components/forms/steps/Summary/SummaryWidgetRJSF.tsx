@@ -1,4 +1,8 @@
-import { CheckboxUiOptions, SelectUiOptions } from '@forms-shared/generator/uiOptionsTypes'
+import {
+  BaWidgetType,
+  CheckboxUiOptions,
+  SelectUiOptions,
+} from '@forms-shared/generator/uiOptionsTypes'
 import { getLocalTimeZone, parseDate } from '@internationalized/date'
 import { WidgetProps } from '@rjsf/utils'
 import cx from 'classnames'
@@ -11,22 +15,11 @@ import SummaryFiles from './SummaryFiles'
 import SummaryRow from './SummaryRow'
 import { useFormSummary } from './useFormSummary'
 
-export type SummaryWidgetType =
-  | 'select'
-  | 'input'
-  | 'radioGroup'
-  | 'textArea'
-  | 'checkbox'
-  | 'checkboxGroup'
-  | 'fileUpload'
-  | 'datePicker'
-  | 'timePicker'
-
 export type SummaryWidgetRJSFProps = Pick<
   WidgetProps,
   'id' | 'label' | 'value' | 'uiSchema' | 'readonly' | 'name'
 > & {
-  widgetType: SummaryWidgetType
+  widgetType: BaWidgetType
   options: WidgetProps['options']
 }
 
@@ -44,7 +37,7 @@ const ValueComponent = ({
   }
 
   switch (widgetType) {
-    case 'select':
+    case BaWidgetType.Select:
       const selectArray = (Array.isArray(value) ? value : [value]) as string[]
 
       const selectLabels = selectArray.map(
@@ -59,21 +52,21 @@ const ValueComponent = ({
           ))}
         </div>
       )
-    case 'radioGroup':
+    case BaWidgetType.RadioGroup:
       return (
         <>
           {options.enumOptions?.find((option) => option.value === value)?.label ??
             (value as string)}
         </>
       )
-    case 'textArea':
+    case BaWidgetType.TextArea:
       return <span className={cx('whitespace-pre-wrap', { 'line-clamp-3': !isPdf })}>{value}</span>
-    case 'checkbox':
+    case BaWidgetType.Checkbox:
       if (value) {
         return <>{(options as CheckboxUiOptions).checkboxLabel}</>
       }
       return <>-</>
-    case 'checkboxGroup':
+    case BaWidgetType.CheckboxGroup:
       const checkboxLabels = (value as string[]).map(
         (checkboxValue) =>
           options.enumOptions?.find((option) => option.value === checkboxValue)?.label ??
@@ -87,9 +80,9 @@ const ValueComponent = ({
           ))}
         </div>
       )
-    case 'fileUpload':
+    case BaWidgetType.FileUpload:
       return <SummaryFiles files={value} />
-    case 'datePicker':
+    case BaWidgetType.DatePicker:
       try {
         const parsed = parseDate(value as string)
         return <>{formatter.format(parsed.toDate(getLocalTimeZone()))}</>
@@ -97,9 +90,9 @@ const ValueComponent = ({
         // TODO improve
         return <>{value as string}</>
       }
-    case 'timePicker':
+    case BaWidgetType.TimePicker:
       return <>{value as string}</>
-    case 'input':
+    case BaWidgetType.Input:
       if (uiSchema?.['ui:options']?.type === 'password') {
         return <>{(value as string).replaceAll(/./g, '●')}</>
       }

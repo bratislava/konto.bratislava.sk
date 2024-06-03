@@ -6,6 +6,7 @@ import uniq from 'lodash/uniq'
 import { removeUndefinedValues } from './helpers'
 import {
   ArrayFieldUiOptions,
+  BaWidgetType,
   CheckboxGroupUiOptions,
   CheckboxUiOptions,
   CustomComponentFieldUiOptions,
@@ -87,7 +88,7 @@ export const select = (
       )
 
       return {
-        'ui:widget': 'Select',
+        'ui:widget': BaWidgetType.Select,
         'ui:options': {
           ...uiOptions,
           selectOptions: Object.fromEntries(selectOptionsArray),
@@ -138,7 +139,7 @@ export const selectMultiple = (
       )
 
       return {
-        'ui:widget': 'Select',
+        'ui:widget': BaWidgetType.Select,
         'ui:options': {
           ...uiOptions,
           selectOptions: Object.fromEntries(selectOptionsArray),
@@ -208,7 +209,7 @@ export const input = (
       }
     },
     uiSchema: () => ({
-      'ui:widget': 'Input',
+      'ui:widget': BaWidgetType.Input,
       'ui:label': false,
       'ui:options': { ...uiOptions, type: options.type ?? 'text' },
     }),
@@ -240,7 +241,7 @@ export const number = (
       exclusiveMaximum: options.exclusiveMaximum,
     }),
     uiSchema: () => ({
-      'ui:widget': 'Input',
+      'ui:widget': BaWidgetType.Input,
       'ui:label': false,
       'ui:options': { ...uiOptions, type: 'number' },
     }),
@@ -278,7 +279,7 @@ export const radioGroup = <T extends 'string' | 'number' | 'boolean'>(
       oneOf: options.options.map(({ value, title }) => ({ const: value, title })),
     }),
     uiSchema: () => ({
-      'ui:widget': 'RadioGroup',
+      'ui:widget': BaWidgetType.RadioGroup,
       'ui:options': {
         ...uiOptions,
         radioOptions: options.options
@@ -300,7 +301,7 @@ export const textArea = (
     property,
     schema: () => ({ type: 'string', title: options.title }),
     uiSchema: () => ({
-      'ui:widget': 'TextArea',
+      'ui:widget': BaWidgetType.TextArea,
       'ui:label': false,
       'ui:options': uiOptions,
     }),
@@ -321,7 +322,7 @@ export const checkbox = (
       default: options.default,
     }),
     uiSchema: () => ({
-      'ui:widget': 'Checkbox',
+      'ui:widget': BaWidgetType.Checkbox,
       'ui:options': uiOptions,
     }),
     required: Boolean(options.required),
@@ -356,7 +357,7 @@ export const checkboxGroup = (
       default: options.options.filter(({ isDefault }) => isDefault).map(({ value }) => value),
     }),
     uiSchema: () => ({
-      'ui:widget': 'CheckboxGroup',
+      'ui:widget': BaWidgetType.CheckboxGroup,
       'ui:options': uiOptions,
     }),
     required: Boolean(options.required),
@@ -393,7 +394,7 @@ export const fileUpload = (
         file: true,
       }
     },
-    uiSchema: () => ({ 'ui:widget': 'FileUpload', 'ui:options': uiOptions }),
+    uiSchema: () => ({ 'ui:widget': BaWidgetType.FileUpload, 'ui:options': uiOptions }),
     required: Boolean(options.required),
   }
 }
@@ -412,7 +413,7 @@ export const datePicker = (
       default: options.default,
     }),
     uiSchema: () => ({
-      'ui:widget': 'DatePicker',
+      'ui:widget': BaWidgetType.DatePicker,
       'ui:options': uiOptions,
     }),
     required: Boolean(options.required),
@@ -433,7 +434,7 @@ export const timePicker = (
       default: options.default,
     }),
     uiSchema: () => ({
-      'ui:widget': 'TimePicker',
+      'ui:widget': BaWidgetType.TimePicker,
       'ui:options': uiOptions,
     }),
     required: Boolean(options.required),
@@ -460,7 +461,7 @@ export const customComponentsField = (
     uiSchema: () => {
       const array = Array.isArray(customComponents) ? customComponents : [customComponents]
       return {
-        'ui:widget': 'CustomComponents',
+        'ui:widget': BaWidgetType.CustomComponents,
         'ui:options': { ...uiOptions, customComponents: array },
       }
     },

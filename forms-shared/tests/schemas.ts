@@ -9,9 +9,10 @@ import { exampleTaxForm2 } from '../src/tax-form/examples/exampleTaxForm2'
 import { exampleTaxForm3 } from '../src/tax-form/examples/exampleTaxForm3'
 import { exampleTaxForm4 } from '../src/tax-form/examples/exampleTaxForm4'
 import { exampleTaxForm5 } from '../src/tax-form/examples/exampleTaxForm5'
-import { RJSFSchema } from '@rjsf/utils'
 import { baGetDefaultFormState } from '../src/form-utils/defaultFormState'
 import { getSummaryJsonNode } from '../src/summary-json/getSummaryJsonNode'
+import { renderSummaryPdf } from '../src/summary-pdf/renderSummaryPdf'
+import { expectPdfToMatchSnapshot } from './test-utils/expectPdfToMatchSnapshot'
 
 const definitions = [
   {
@@ -52,28 +53,30 @@ definitions.forEach((definition) => {
     })
 
     it('default form state should match snapshot', () => {
-      expect(baGetDefaultFormState(definition.schema.schema as RJSFSchema, {})).toMatchSnapshot()
+      expect(baGetDefaultFormState(definition.schema.schema, {})).toMatchSnapshot()
     })
 
     definition.data.forEach((formData, index) => {
       it(`should validate example ${index + 1} correctly`, () => {
         expect(
-          baRjsfValidator.isValid(
-            definition.schema.schema as RJSFSchema,
-            formData,
-            definition.schema.schema as RJSFSchema,
-          ),
+          baRjsfValidator.isValid(definition.schema.schema, formData, definition.schema.schema),
         ).toBe(true)
       })
 
       it(`should match summary snapshot ${index + 1} correctly`, () => {
         expect(
-          getSummaryJsonNode(
-            definition.schema.schema as RJSFSchema,
-            definition.schema.uiSchema,
-            formData,
-          ),
+          getSummaryJsonNode(definition.schema.schema, definition.schema.uiSchema, formData),
         ).toMatchSnapshot()
+      })
+
+      it(`should match PDF snapshot ${index + 1} correctly`, async () => {
+        const pdfBuffer = await renderSummaryPdf(
+          definition.schema.schema,
+          definition.schema.uiSchema,
+          formData,
+        )
+
+        await expectPdfToMatchSnapshot(pdfBuffer)
       })
     })
   })

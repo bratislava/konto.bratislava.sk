@@ -96,6 +96,11 @@ export const environment = {
         'NEXT_PUBLIC_FEATURE_TOGGLE_NEW_SUMMARY_DETAILS',
         process.env.NEXT_PUBLIC_FEATURE_TOGGLE_NEW_SUMMARY_DETAILS,
       ) === 'true',
+    eIdTaxWithoutBetaFlag:
+      assertEnv(
+        'NEXT_PUBLIC_FEATURE_TOGGLE_EID_TAX_WITHOUT_BETA_FLAG',
+        process.env.NEXT_PUBLIC_FEATURE_TOGGLE_EID_TAX_WITHOUT_BETA_FLAG,
+      ) === 'true',
   },
   formsMimetypes: assertEnv(
     'NEXT_PUBLIC_FORMS_MIMETYPE_WHITELIST',

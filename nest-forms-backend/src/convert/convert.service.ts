@@ -3,11 +3,12 @@ import { PassThrough, Readable } from 'node:stream'
 import { Cache, CACHE_MANAGER } from '@nestjs/cache-manager'
 import { Inject, Injectable, StreamableFile } from '@nestjs/common'
 import { ConfigService } from '@nestjs/config'
-import { Prisma, SchemaVersion } from '@prisma/client'
+import { Prisma } from '@prisma/client'
 import { GenericObjectType, RJSFSchema, UiSchema } from '@rjsf/utils'
 import axios, { AxiosResponse } from 'axios'
 import * as cheerio from 'cheerio'
 import { Response } from 'express'
+import { getFormDefinitionBySlug } from '../../../forms-shared/src/form-utils/definitions'
 import * as jwt from 'jsonwebtoken'
 import puppeteer from 'puppeteer'
 import { v4 as uuidv4 } from 'uuid'
@@ -21,10 +22,6 @@ import {
 } from '../forms/forms.errors.enum'
 import FormsService from '../forms/forms.service'
 import PrismaService from '../prisma/prisma.service'
-import {
-  SchemasErrorsEnum,
-  SchemasErrorsResponseEnum,
-} from '../schemas/schemas.errors.enum'
 import TaxService from '../tax/tax.service'
 import { ErrorsEnum } from '../utils/global-enums/errors.enum'
 import { JsonSchema } from '../utils/global-forms'
@@ -81,16 +78,9 @@ export default class ConvertService {
     ico: string | null,
     user?: CognitoGetUserData,
   ): Promise<JsonToXmlResponseDto> {
-    const schemaVersion = await this.prismaService.schemaVersion.findUnique({
-      where: {
-        id: data.schemaVersionId,
-      },
-    })
-    if (schemaVersion === null) {
-      throw this.throwerErrorGuard.NotFoundException(
-        SchemasErrorsEnum.SCHEMA_VERSION_NOT_FOUND,
-        SchemasErrorsResponseEnum.SCHEMA_VERSION_NOT_FOUND,
-      )
+    const formDefinition = getFormDefinitionBySlug(data.slug)
+    if (formDefinition === null) {
+      throw new Error() // TODO
     }
 
     let jsonFormData = data.jsonData
@@ -111,7 +101,7 @@ export default class ConvertService {
       jsonFormData = form.formDataJson
     }
 
-    const $ = cheerio.load(schemaVersion.xmlTemplate, {
+    const $ = cheerio.load(formDefinition.schemas.xmlTemplate, {
       xmlMode: true,
       decodeEntities: false,
     })
@@ -119,7 +109,7 @@ export default class ConvertService {
       ['E-form', 'Body'],
       $,
       jsonFormData,
-      schemaVersion.jsonSchema as JsonSchema,
+      formDefinition.schemas.schema,
     )
     return {
       xmlForm: $('E-form').prop('outerHTML') ?? '',

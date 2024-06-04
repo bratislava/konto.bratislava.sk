@@ -17,6 +17,8 @@ type FormDefinitionBase = {
   title: string
   schemas: Schemas
   termsAndConditions: string
+  messageSubjectFormat: string
+  messageSubjectDefault: string
 }
 
 type FormDefinitionSlovenskoSk = FormDefinitionBase & {
@@ -28,9 +30,10 @@ type FormDefinitionSlovenskoSk = FormDefinitionBase & {
 type FormDefinitionEmail = FormDefinitionBase & {
   type: FormDefinitionType.Email
   email: string
+  pospID?: string
 }
 
-type FormDefinition = FormDefinitionSlovenskoSk | FormDefinitionEmail
+export type FormDefinition = FormDefinitionSlovenskoSk | FormDefinitionEmail
 
 export const formDefinitions: FormDefinition[] = [
   {

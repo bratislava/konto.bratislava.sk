@@ -1,5 +1,5 @@
 import { Injectable, Logger } from '@nestjs/common'
-import { GenericObjectType } from '@rjsf/utils'
+import { GenericObjectType, RJSFSchema } from '@rjsf/utils'
 import * as cheerio from 'cheerio'
 import { dropRight, find, last } from 'lodash'
 
@@ -84,7 +84,7 @@ export default class JsonXmlConvertService {
     currentPath: string[],
     cheerioInstance: cheerio.CheerioAPI,
     node: unknown,
-    jsonSchema?: JsonSchema,
+    jsonSchema?: RJSFSchema,
   ): void {
     const nodeName = this.firstCharToUpper(last(currentPath))
     const parentPath = dropRight(currentPath).join(' ')
@@ -136,7 +136,7 @@ export default class JsonXmlConvertService {
       }
     } else if (node && typeof node === 'string') {
       let stringNode: string = node
-      if (jsonSchema && jsonSchema !== true) {
+      if (jsonSchema) {
         const format =
           jsonSchema.type === 'array'
             ? this.getFormatFromItems(jsonSchema.items)

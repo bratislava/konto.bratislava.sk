@@ -2,20 +2,14 @@
 import { randomUUID } from 'node:crypto'
 
 import { Test, TestingModule } from '@nestjs/testing'
-import {
-  Files,
-  FormError,
-  FormState,
-  GinisState,
-  SchemaVersion,
-} from '@prisma/client'
+import { Files, FormError, FormState, GinisState } from '@prisma/client'
 
 import prismaMock from '../../test/singleton'
 import PrismaService from '../prisma/prisma.service'
 import RabbitmqClientService from '../rabbitmq-client/rabbitmq-client.service'
 import MailgunService from '../utils/global-services/mailgun/mailgun.service'
 import ThrowerErrorGuard from '../utils/guards/thrower-error.guard'
-import { FormWithSchemaVersionAndFiles } from '../utils/types/prisma'
+import { FormWithFiles } from '../utils/types/prisma'
 import {
   GinisAssignSubmissionResponseInfo,
   GinisAutomationResponse,
@@ -263,13 +257,12 @@ describe('GinisService', () => {
       },
     }
 
-    const formBase: FormWithSchemaVersionAndFiles = {
-      schemaVersion: { pospID: 'pospId' } as SchemaVersion,
+    const formBase: FormWithFiles = {
       files: [] as Files[],
       id: 'id1',
       ginisState: GinisState.CREATED,
       state: FormState.DELIVERED_NASES,
-    } as FormWithSchemaVersionAndFiles
+    } as FormWithFiles
 
     it('should error when form does not exist', async () => {
       prismaMock.forms.findUnique.mockResolvedValue(null)
@@ -283,8 +276,7 @@ describe('GinisService', () => {
     it('should error when form has no pospId', async () => {
       prismaMock.forms.findUnique.mockResolvedValue({
         ...formBase,
-        schemaVersion: {},
-      } as FormWithSchemaVersionAndFiles)
+      } as FormWithFiles)
       await service.onQueueConsumption(messageBase)
 
       const spy = jest.spyOn(service['ginisHelper'], 'setFormToError')
@@ -338,7 +330,7 @@ describe('GinisService', () => {
             ginisUploaded: false,
           } as unknown as Files,
         ],
-      } as FormWithSchemaVersionAndFiles)
+      } as FormWithFiles)
       const uploadSpy = jest
         .spyOn(service, 'uploadAttachments')
         .mockResolvedValue()
@@ -363,7 +355,7 @@ describe('GinisService', () => {
             ginisUploaded: false,
           } as unknown as Files,
         ],
-      } as FormWithSchemaVersionAndFiles)
+      } as FormWithFiles)
       result = await service.onQueueConsumption(messageBase)
       expect(result.requeue).toBeTruthy()
       expect(uploadSpy).not.toHaveBeenCalled()
@@ -383,7 +375,7 @@ describe('GinisService', () => {
             ginisUploaded: false,
           } as unknown as Files,
         ],
-      } as FormWithSchemaVersionAndFiles)
+      } as FormWithFiles)
       result = await service.onQueueConsumption(messageBase)
       expect(result.requeue).toBeTruthy()
       expect(uploadSpy).not.toHaveBeenCalled()
@@ -399,7 +391,7 @@ describe('GinisService', () => {
             ginisUploaded: false,
           } as unknown as Files,
         ],
-      } as FormWithSchemaVersionAndFiles)
+      } as FormWithFiles)
       result = await service.onQueueConsumption(messageBase)
       expect(result.requeue).toBeTruthy()
       expect(uploadSpy).not.toHaveBeenCalled()
@@ -410,7 +402,7 @@ describe('GinisService', () => {
         ...formBase,
         ginisState: GinisState.RUNNING_UPLOAD_ATTACHMENTS,
         files: [],
-      } as FormWithSchemaVersionAndFiles)
+      } as FormWithFiles)
       result = await service.onQueueConsumption(messageBase)
       expect(result.requeue).toBeTruthy()
       expect(uploadSpy).not.toHaveBeenCalled()
@@ -515,12 +507,8 @@ describe('GinisService', () => {
       prismaMock.forms.findUnique.mockResolvedValue({
         ...formBase,
         ginisDocumentId: 'docId',
-        schemaVersion: {
-          ...formBase.schemaVersion,
-          ginisOrganizationName: 'orgName',
-        } as SchemaVersion,
         ginisState: GinisState.SUBMISSION_EDITED,
-      } as FormWithSchemaVersionAndFiles)
+      } as FormWithFiles)
       result = await service.onQueueConsumption(messageBase)
       expect(result.requeue).toBeTruthy() // there is no ginisPersonName
       expect(assignSpy).not.toHaveBeenCalled()
@@ -528,13 +516,8 @@ describe('GinisService', () => {
       prismaMock.forms.findUnique.mockResolvedValue({
         ...formBase,
         ginisDocumentId: 'docId',
-        schemaVersion: {
-          ...formBase.schemaVersion,
-          ginisOrganizationName: 'orgName',
-          ginisPersonName: 'personName',
-        } as SchemaVersion,
         ginisState: GinisState.SUBMISSION_EDITED,
-      } as FormWithSchemaVersionAndFiles)
+      } as FormWithFiles)
       result = await service.onQueueConsumption(messageBase)
       expect(result.requeue).toBeTruthy()
       expect(assignSpy).toHaveBeenCalledWith('docId', 'orgName', 'personName')
@@ -544,13 +527,7 @@ describe('GinisService', () => {
       prismaMock.forms.findUnique.mockResolvedValue({
         ...formBase,
         ginisState: GinisState.SUBMISSION_ASSIGNED,
-        schemaVersion: {
-          ...formBase.schemaVersion,
-          schema: {
-            slug: 'slug',
-          },
-        },
-      } as FormWithSchemaVersionAndFiles)
+      } as FormWithFiles)
 
       const sendMailSpy = jest
         .spyOn(service['mailgunService'], 'sendEmail')
@@ -579,13 +556,7 @@ describe('GinisService', () => {
       prismaMock.forms.findUnique.mockResolvedValue({
         ...formBase,
         ginisState: GinisState.SUBMISSION_ASSIGNED,
-        schemaVersion: {
-          ...formBase.schemaVersion,
-          schema: {
-            slug: 'slug',
-          },
-        },
-      } as FormWithSchemaVersionAndFiles)
+      } as FormWithFiles)
       result = await service.onQueueConsumption(messageBase)
       expect(result.requeue).toBeFalsy() // all processed
       expect(prismaMock.forms['update']).toHaveBeenCalledWith(
@@ -616,12 +587,11 @@ describe('GinisService', () => {
 
   describe('uploadAttachments', () => {
     const formMock = {
-      schemaVersion: {},
       files: [{} as File, {} as File],
-    } as unknown as FormWithSchemaVersionAndFiles
+    } as unknown as FormWithFiles
 
     it('should update file to RUNNING_UPLOAD_ATTACHMENTS', async () => {
-      await service.uploadAttachments(formMock)
+      await service.uploadAttachments(formMock, 'mockPospID')
       expect(prismaMock.forms['update']).toHaveBeenCalledWith(
         expect.objectContaining({
           data: {

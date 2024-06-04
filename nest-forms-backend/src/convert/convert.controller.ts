@@ -32,8 +32,6 @@ import {
   FormNotFoundErrorDto,
 } from '../forms/forms.errors.dto'
 import { ResponseGdprDataDto } from '../nases/dtos/responses.dto'
-import { SchemaVersionNotFoundDto } from '../schemas/schemas.errors.dto'
-import SchemasService from '../schemas/schemas.service'
 import { User, UserInfo } from '../utils/decorators/request.decorator'
 import { JsonSchema } from '../utils/global-forms'
 import MinioClientSubservice from '../utils/subservices/minio-client.subservice'
@@ -62,7 +60,6 @@ import {
 export default class ConvertController {
   constructor(
     private readonly convertService: ConvertService,
-    private readonly schemasService: SchemasService,
     private readonly minioClientSubservice: MinioClientSubservice,
   ) {}
 
@@ -76,11 +73,6 @@ export default class ConvertController {
     status: 200,
     description: 'Return XML form',
     type: JsonToXmlResponseDto,
-  })
-  @ApiResponse({
-    status: 404,
-    description: 'Schema version not found',
-    type: SchemaVersionNotFoundDto,
   })
   @Post('json-to-xml/:id')
   async convertJsonToXml(
@@ -105,15 +97,12 @@ export default class ConvertController {
     description: 'Return XML form',
     type: JsonToXmlResponseDto,
   })
-  @ApiExtraModels(SchemaVersionNotFoundDto, FormNotFoundErrorDto)
+  @ApiExtraModels(FormNotFoundErrorDto)
   @ApiResponse({
     status: 404,
     description: 'Schema version or form not found',
     schema: {
       oneOf: [
-        {
-          $ref: getSchemaPath(SchemaVersionNotFoundDto),
-        },
         {
           $ref: getSchemaPath(FormNotFoundErrorDto),
         },
@@ -154,11 +143,6 @@ export default class ConvertController {
     description: 'Return Json form',
     type: XmlToJsonResponseDto,
   })
-  @ApiResponse({
-    status: 404,
-    description: 'Schema version not found',
-    type: SchemaVersionNotFoundDto,
-  })
   @ApiBadRequestResponse({
     status: 400,
     description: 'There was an error during converting to json.',
@@ -180,11 +164,6 @@ export default class ConvertController {
     description:
       'Generates PDF for a given schema version id and form json data.',
     deprecated: true,
-  })
-  @ApiNotFoundResponse({
-    status: 404,
-    description: 'Schema version not found',
-    type: SchemaVersionNotFoundDto,
   })
   @ApiBadRequestResponse({
     status: 400,
@@ -287,11 +266,6 @@ export default class ConvertController {
     summary: '',
     description:
       'Generates PDF for a given schema version id and form json data.',
-  })
-  @ApiNotFoundResponse({
-    status: 404,
-    description: 'Schema version not found',
-    type: SchemaVersionNotFoundDto,
   })
   @ApiNotFoundResponse({
     status: 404,

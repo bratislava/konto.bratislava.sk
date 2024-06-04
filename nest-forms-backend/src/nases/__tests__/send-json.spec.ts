@@ -1,6 +1,7 @@
 import { randomUUID } from 'node:crypto'
 
 import { Test, TestingModule } from '@nestjs/testing'
+import { Forms } from '@prisma/client'
 
 import prismaMock from '../../../test/singleton'
 import ConvertService from '../../convert/convert.service'
@@ -8,7 +9,6 @@ import JsonXmlConvertService from '../../convert/utils-services/json-xml.convert
 import FormsValidator from '../../forms/forms.validator'
 import PrismaService from '../../prisma/prisma.service'
 import ThrowerErrorGuard from '../../utils/guards/thrower-error.guard'
-import { FormWithSchemaAndVersion } from '../../utils/types/prisma'
 import NasesUtilsService from '../utils-services/tokens.nases.service'
 
 /* eslint-disable no-secrets/no-secrets, pii/no-phone-number, unicorn/no-thenable */
@@ -699,20 +699,7 @@ describe('SendJsonToNases', () => {
     const response = await service.sendMessageNases(jwt, {
       id: messageId,
       formDataJson,
-      schemaVersion: {
-        xmlTemplate,
-        jsonSchema,
-        // eslint-disable-next-line no-secrets/no-secrets
-        pospID: '00603481.zavazneStanoviskoKInvesticnejCinnosti.sk',
-        pospVersion: '0.1',
-        isSigned: false,
-        formDescription: 'formular',
-        schema: {
-          messageSubject: 'Podanie',
-          formName: 'Zavazne stanovisko',
-        },
-      },
-    } as unknown as FormWithSchemaAndVersion)
+    } as unknown as Forms)
     expect(response.status).toBe(200)
   })
 })

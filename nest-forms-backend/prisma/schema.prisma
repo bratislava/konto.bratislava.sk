@@ -39,8 +39,7 @@ model Forms {
   recipientId      String?
   // kedy to bolo podane
   finishSubmission DateTime?
-  schemaVersion    SchemaVersion  @relation(fields: [schemaVersionId], references: [id])
-  schemaVersionId  String
+  slug             String
   // relation to files
   files            Files[]
   archived         Boolean        @default(false)
@@ -150,73 +149,4 @@ enum FileStatus {
   SCAN_NOT_SUCCESSFUL
   // when file id is not found in forms
   FORM_ID_NOT_FOUND
-}
-
-model Schema {
-  id              String          @id @default(uuid())
-  formName        String
-  // Unique slug representation of the schema in kebab case, like zastita-primatora
-  slug            String          @unique
-  // Optional category of the form schema
-  category        String?
-  // List of all versions of the schema
-  versions        SchemaVersion[] @relation(name: "SchemaToVersion")
-  // Default subject formularu co dotecie do schranky nasesu
-  messageSubject  String
-  createdAt       DateTime        @default(now())
-  updatedAt       DateTime        @updatedAt
-  // Latest (actual) version of the schema
-  latestVersion   SchemaVersion?  @relation(name: "SchemaToLatestVersion", fields: [latestVersionId], references: [id]) // Unique relation name
-  latestVersionId String?         @unique
-  // If only verified accounts can send these forms
-  onlyVerified    Boolean         @default(true)
-}
-
-model SchemaVersion {
-  id              String  @id @default(uuid())
-  // Text representation of the version (i.e. v1.0.1)
-  version         String?
-  // By nases
-  pospID          String
-  pospVersion     String
-  formDescription String?
-
-  // These fields are contens of the former files for each form
-  // data.json
-  data        Json
-  // data.xml
-  dataXml     String?
-  // form.fo.xslt
-  formFo      String
-  // schema.json
-  jsonSchema  Json
-  // uiSchema.json
-  uiSchema    Json
-  // xmlTemplate
-  xmlTemplate String
-
-  // Dynamic message subject to send to nases
-  messageSubjectFormat String?
-
-  // For which schema is this version
-  schema    Schema   @relation(name: "SchemaToVersion", fields: [schemaId], references: [id])
-  schemaId  String
-  // Must be signed?
-  isSigned  Boolean  @default(false)
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-
-  // Opposite relation field for forms
-  Forms           Forms[]
-  // Opposite relation field for latestVerion in Schema.
-  latestSchemaFor Schema? @relation(name: "SchemaToLatestVersion")
-
-  //if schema was upgraded, remember previous schema ID
-  previousSchemaVersionId String?
-
-  // organisiation to assign in ginis
-  ginisOrganizationName String?
-
-  // person to assign in ginis
-  ginisPersonName String?
 }

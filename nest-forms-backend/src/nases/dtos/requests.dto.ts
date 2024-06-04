@@ -15,10 +15,6 @@ import {
 } from 'class-validator'
 
 import {
-  SchemaVersionResponseDto,
-  SchemaVersionWithSchemaAndDataDto,
-} from '../../schemas/dtos/schemas.dto'
-import {
   DEFAULT_PAGE,
   DEFAULT_PAGE_SIZE,
   JSON_FORM_EXAMPLE,
@@ -51,12 +47,12 @@ export class JwtNasesPayloadDto {
 
 export class CreateFormRequestDto {
   @ApiProperty({
-    description: 'Version of Schema',
-    default: 'f69559da-5eca-4ed7-80fd-370d09dc3632',
+    description: 'Slug of the form definition',
+    example: 'zavazne-stanovisko-k-investicnej-cinnosti',
   })
   @IsNotEmpty()
-  @IsUUID()
-  declare schemaVersionId: string
+  @IsString()
+  declare slug: string
 }
 
 /* eslint-disable pii/no-email */
@@ -290,29 +286,6 @@ export class GetFormResponseDto {
   declare finishSubmission: Date | null
 
   @ApiProperty({
-    description: 'Schema version Id.',
-    example: 'f69559da-5eca-4ed7-80fd-370d09dc3632',
-  })
-  @IsUUID()
-  declare schemaVersionId: string
-
-  @Type(() => SchemaVersionResponseDto)
-  @ApiProperty({
-    description: 'Schema version',
-    type: SchemaVersionResponseDto,
-  })
-  @IsDefined()
-  declare schemaVersion: SchemaVersionResponseDto
-
-  @ApiProperty({
-    description:
-      'Flag marking if the schema version for this form is the latest version for the schema.',
-    example: true,
-  })
-  @IsBoolean()
-  declare isLatestSchemaVersionForSlug: boolean
-
-  @ApiProperty({
     description: 'Message subject created from uiSchema',
     example:
       'e-ZST ž. “Ulica” “Názov stavby / projektu”, pč “Parcelné číslo” kú “Katastrálne územie"',
@@ -375,29 +348,6 @@ export class GetFormResponseSimpleDto {
   })
   @IsOptional()
   declare formDataJson: Prisma.JsonValue | null
-
-  @ApiProperty({
-    description: 'Schema version Id.',
-    example: 'f69559da-5eca-4ed7-80fd-370d09dc3632',
-  })
-  @IsUUID()
-  declare schemaVersionId: string
-
-  @Type(() => SchemaVersionWithSchemaAndDataDto)
-  @ApiProperty({
-    description: 'Schema version',
-    type: SchemaVersionWithSchemaAndDataDto,
-  })
-  @IsDefined()
-  declare schemaVersion: SchemaVersionWithSchemaAndDataDto
-
-  @ApiProperty({
-    description:
-      'Flag marking if the schema version for this form is the latest version for the schema.',
-    example: true,
-  })
-  @IsBoolean()
-  declare isLatestSchemaVersionForSlug: boolean
 
   @ApiProperty({
     description: 'Message subject created from uiSchema',

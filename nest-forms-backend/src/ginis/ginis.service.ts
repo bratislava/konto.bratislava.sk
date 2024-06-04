@@ -2,8 +2,9 @@ import { setTimeout } from 'node:timers/promises'
 
 import { Nack, RabbitRPC } from '@golevelup/nestjs-rabbitmq'
 import { Injectable, Logger } from '@nestjs/common'
-import { FormError, FormState, GinisState } from '@prisma/client'
+import { FormError, Forms, FormState, GinisState } from '@prisma/client'
 import { Channel, ConsumeMessage } from 'amqplib'
+import { getFormDefinitionBySlug } from '../../../forms-shared/src/form-utils/definitions'
 
 import PrismaService from '../prisma/prisma.service'
 import RabbitmqClientService from '../rabbitmq-client/rabbitmq-client.service'
@@ -21,7 +22,7 @@ import {
   getSubjectTextFromForm,
 } from '../utils/handlers/text.handler'
 import alertError from '../utils/logging'
-import { FormWithSchemaVersionAndFiles } from '../utils/types/prisma'
+import { FormWithFiles } from '../utils/types/prisma'
 import {
   GinisAssignSubmissionResponseInfo,
   GinisAutomationResponse,
@@ -301,7 +302,7 @@ export default class GinisService {
     )
   }
 
-  async uploadAttachments(form: FormWithSchemaVersionAndFiles): Promise<void> {
+  async uploadAttachments(form: FormWithFiles, pospID: string): Promise<void> {
     this.logger.debug('---- start to upload attachments ----')
     await this.prismaService.forms.update({
       where: {
@@ -321,9 +322,7 @@ export default class GinisService {
           {
             doc_id: form.ginisDocumentId,
             msg_id: form.id,
-            s3_path: `${process.env.MINIO_SAFE_BUCKET ?? ''}/${
-              form.schemaVersion.pospID
-            }/${form.id}/${file.minioFileName}`,
+            s3_path: `${process.env.MINIO_SAFE_BUCKET ?? ''}/${pospID}/${form.id}/${file.minioFileName}`,
             filename: file.fileName,
             file_id: file.id,
           },
@@ -413,7 +412,6 @@ export default class GinisService {
             ginisUploaded: false,
           },
         },
-        schemaVersion: { include: { schema: true } },
       },
     })
 
@@ -427,12 +425,18 @@ export default class GinisService {
       return new Nack(false)
     }
 
-    if (!form.schemaVersion.pospID) {
+    const formDefinition = getFormDefinitionBySlug(form.slug)
+    if (!formDefinition) {
+      throw new Error() // TODO
+    }
+
+    if (!formDefinition.pospID) {
       await this.ginisHelper.setFormToError(data.formId)
       alertError(
         `ERROR - posp id in form do not exists in Ginis consumption queue. Form id: ${form.id}`,
         this.logger,
       )
+      return new Nack(false)
     }
 
     const errorFiles = form.files.filter(
@@ -445,7 +449,7 @@ export default class GinisService {
       form.ginisState === GinisState.CREATED ||
       form.ginisState === GinisState.ERROR_REGISTER
     ) {
-      await this.registerToGinis(form.id, form.schemaVersion.pospID)
+      await this.registerToGinis(form.id, formDefinition.pospID)
       return this.nackTrueWithWait(20_000)
     }
 
@@ -455,7 +459,7 @@ export default class GinisService {
 
     // Attachments upload
     if (form.ginisState === GinisState.REGISTERED && form.files.length > 0) {
-      await this.uploadAttachments(form)
+      await this.uploadAttachments(form, formDefinition.pospID)
       return this.nackTrueWithWait(20_000)
     }
 
@@ -512,7 +516,7 @@ export default class GinisService {
       }
       await this.editSubmission(
         form.ginisDocumentId,
-        getSubjectTextFromForm(form),
+        getSubjectTextFromForm(form, formDefinition),
       )
       return this.nackTrueWithWait(20_000)
     }
@@ -552,14 +556,14 @@ export default class GinisService {
       if (data.userData.email) {
         // fallback to messageSubject if title can't be parsed
         const formTitle =
-          getFrontendFormTitleFromForm(form) || getSubjectTextFromForm(form)
+          getFrontendFormTitleFromForm(form, formDefinition) || getSubjectTextFromForm(form, formDefinition)
         await this.mailgunService.sendEmail({
           template: MailgunTemplateEnum.GINIS_DELIVERED,
           data: {
             formId: form.id,
             firstName: data.userData.firstName,
             messageSubject: formTitle,
-            slug: form.schemaVersion.schema.slug,
+            slug: form.slug,
           },
           to: data.userData.email,
         })

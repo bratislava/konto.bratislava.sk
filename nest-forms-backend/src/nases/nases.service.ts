@@ -2,6 +2,7 @@ import { Injectable, Logger } from '@nestjs/common'
 import { FormOwnerType, Forms, FormState } from '@prisma/client'
 import { RJSFSchema } from '@rjsf/utils'
 import axios, { AxiosResponse } from 'axios'
+import { getFormDefinitionBySlug } from '../../../forms-shared/src/form-utils/definitions'
 
 import { CognitoGetUserData } from '../auth/dtos/cognito.dto'
 import verifyUserByEidToken from '../common/utils/city-account'
@@ -114,12 +115,16 @@ export default class NasesService {
             : undefined,
     }
     const result = await this.formsService.createForm(data)
-    const messageSubject = getSubjectTextFromForm(result)
-    const frontendTitle = getFrontendFormTitleFromForm(result) || messageSubject
+    const formDefinition = getFormDefinitionBySlug(result.slug)
+    if (!formDefinition) {
+      throw new Error() // TODO
+    }
+
+    const messageSubject = getSubjectTextFromForm(result, formDefinition)
+    const frontendTitle =
+      getFrontendFormTitleFromForm(result, formDefinition) || messageSubject
     return {
       ...result,
-      isLatestSchemaVersionForSlug:
-        result.schemaVersion.schema.latestVersionId === result.schemaVersionId,
       messageSubject,
       frontendTitle,
     }
@@ -173,14 +178,17 @@ export default class NasesService {
     ico: string | null,
     userExternalId?: string,
   ): Promise<GetFormResponseDto> {
-    const form = await this.formsService.getForm(id, true, ico, userExternalId)
-    const isLatestSchemaVersionForSlug =
-      form.schemaVersionId === form.schemaVersion.schema.latestVersionId
-    const messageSubject = getSubjectTextFromForm(form)
-    const frontendTitle = getFrontendFormTitleFromForm(form) || messageSubject
+    const form = await this.formsService.getForm(id, ico, userExternalId)
+    const formDefinition = getFormDefinitionBySlug(form.slug)
+    if (!formDefinition) {
+      throw new Error() // TODO
+    }
+
+    const messageSubject = getSubjectTextFromForm(form, formDefinition)
+    const frontendTitle =
+      getFrontendFormTitleFromForm(form, formDefinition) || messageSubject
     return {
       ...form,
-      isLatestSchemaVersionForSlug,
       messageSubject,
       frontendTitle,
     }

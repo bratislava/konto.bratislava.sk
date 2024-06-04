@@ -1,12 +1,12 @@
 import { randomUUID } from 'node:crypto'
 
 import { Test, TestingModule } from '@nestjs/testing'
+import { Forms } from '@prisma/client'
 
 import prismaMock from '../../../test/singleton'
 import ConvertService from '../../convert/convert.service'
 import PrismaService from '../../prisma/prisma.service'
 import ThrowerErrorGuard from '../../utils/guards/thrower-error.guard'
-import { FormWithSchemaAndVersion } from '../../utils/types/prisma'
 import NasesUtilsService from '../utils-services/tokens.nases.service'
 
 jest.mock('../../convert/convert.service')
@@ -52,10 +52,7 @@ describe('SendXmlToNases', () => {
       .fn()
       .mockReturnValue(generateMessageXml(messageId))
 
-    const response = await service.sendMessageNases(
-      jwt,
-      {} as FormWithSchemaAndVersion,
-    )
+    const response = await service.sendMessageNases(jwt, {} as Forms)
     expect(response.status).toBe(200)
   })
 })

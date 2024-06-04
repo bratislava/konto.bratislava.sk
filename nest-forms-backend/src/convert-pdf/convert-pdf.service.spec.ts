@@ -1,6 +1,5 @@
 import { ConfigService } from '@nestjs/config'
 import { Test, TestingModule } from '@nestjs/testing'
-import { SchemaVersion } from '@prisma/client'
 
 import prismaMock from '../../test/singleton'
 import { jsonSchema, testJsonData, xmlTemplate } from '../__tests__/constants'
@@ -80,12 +79,7 @@ describe('ConvertPdfService', () => {
     prismaMock.forms.findUnique.mockResolvedValue({
       id: formId,
       formDataJson: testJsonData,
-      schemaVersion: {
-        jsonSchema,
-        xmlTemplate,
-        pospID: pospId,
-      },
-    } as SchemaVersion)
+    })
 
     // mocks default of not finding an existing file when uploading
     prismaMock.files.findMany.mockResolvedValue([])

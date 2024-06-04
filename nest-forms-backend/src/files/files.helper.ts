@@ -2,7 +2,7 @@ import { createHash } from 'node:crypto'
 
 import { Injectable, Logger } from '@nestjs/common'
 import { ConfigService } from '@nestjs/config'
-import { Files, FileStatus, Prisma } from '@prisma/client'
+import { Files, FileStatus, Forms, Prisma } from '@prisma/client'
 import { BucketItemStat } from 'minio'
 import traverse from 'traverse'
 import { validate as validateUuid, version as uuidVersion } from 'uuid'
@@ -17,9 +17,9 @@ import {
 } from '../utils/global-enums/errors.enum'
 import ThrowerErrorGuard from '../utils/guards/thrower-error.guard'
 import MinioClientSubservice from '../utils/subservices/minio-client.subservice'
-import { FormWithSchemaAndVersion } from '../utils/types/prisma'
 import { BasicFileDto, BufferedFileDto, FormInfo } from './files.dto'
 import { FilesErrorsEnum, FilesErrorsResponseEnum } from './files.errors.enum'
+import { getFormDefinitionBySlug } from '../../../forms-shared/src/form-utils/definitions'
 
 // TODO missing tests
 @Injectable()
@@ -298,10 +298,14 @@ export default class FilesHelper {
     return <string>this.configService.get('MINIO_UNSCANNED_BUCKET')
   }
 
-  forms2formInfo(forms: FormWithSchemaAndVersion): FormInfo {
+  forms2formInfo(form: Forms): FormInfo {
+    const formDefinition = getFormDefinitionBySlug(form.slug)
+    if (!formDefinition) {
+      throw new Error() // TODO
+    }
     return {
-      pospId: forms.schemaVersion.pospID,
-      formId: forms.id,
+      pospId: formDefinition.pospID ?? '',
+      formId: form.id,
     }
   }
 

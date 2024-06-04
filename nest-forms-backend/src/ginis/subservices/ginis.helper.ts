@@ -45,7 +45,7 @@ export default class GinisHelper {
   async isFormInGinisError(formId: string): Promise<boolean> {
     // TODOERIKQUESTION
     return this.formsService
-      .getUniqueForm(formId, true)
+      .getUniqueForm(formId)
       .then(
         (form) => form === null || form.error === FormError.GINIS_SEND_ERROR,
       )

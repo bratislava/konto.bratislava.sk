@@ -36,11 +36,11 @@ export class JsonToXmlV2RequestDto {
   formId?: string
 
   @ApiProperty({
-    description: 'Schema version id',
-    example: 'e45559da-4a77-8efd-370d-810d09dc3632',
+    description: 'Slug of the form definition',
+    example: 'zavazne-stanovisko-k-investicnej-cinnosti',
   })
-  @IsUUID()
-  schemaVersionId: string
+  @IsString()
+  slug: string
 
   @IsObject()
   @ApiPropertyOptional({

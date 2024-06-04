@@ -17,7 +17,6 @@ import { JsonSchema } from '../../utils/global-forms'
 import ThrowerErrorGuard from '../../utils/guards/thrower-error.guard'
 import alertError from '../../utils/logging'
 import MinioClientSubservice from '../../utils/subservices/minio-client.subservice'
-import { FormWithSchemaAndVersion } from '../../utils/types/prisma'
 import {
   NasesIsMessageDeliveredDto,
   NasesSendFormDataDto,
@@ -30,6 +29,7 @@ import {
   NasesErrorsEnum,
   NasesErrorsResponseEnum,
 } from '../nases.errors.enum'
+import { Forms } from '@prisma/client'
 
 @Injectable()
 export default class NasesUtilsService {
@@ -81,7 +81,7 @@ export default class NasesUtilsService {
 
   // TODO error handling of this function
   private async createAttachmentsIfExists(
-    form: FormWithSchemaAndVersion,
+    form: Forms,
   ): Promise<string> {
     let result = ''
     const files = await this.prismaService.files.findMany({
@@ -311,7 +311,7 @@ export default class NasesUtilsService {
    */
 
   private async createEnvelopeSendMessage(
-    data: FormWithSchemaAndVersion,
+    data: Forms,
     senderUri?: string,
   ): Promise<string> {
     const { xmlTemplate, jsonSchema, isSigned } = data.schemaVersion
@@ -457,7 +457,7 @@ export default class NasesUtilsService {
 
   async sendMessageNases(
     jwt: string,
-    data: FormWithSchemaAndVersion,
+    data: Forms,
     senderUri?: string,
   ): Promise<NasesSendResponse> {
     const message = await this.createEnvelopeSendMessage(data, senderUri)

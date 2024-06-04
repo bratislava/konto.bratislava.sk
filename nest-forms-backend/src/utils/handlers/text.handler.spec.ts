@@ -1,6 +1,6 @@
-import { Prisma } from '@prisma/client'
+import { Forms, Prisma } from '@prisma/client'
+import { FormDefinition } from '../../../../forms-shared/src/definitions/form-definitions'
 
-import { FormWithSchemaAndVersion } from '../types/prisma'
 import {
   getFrontendFormTitleFromForm,
   getSubjectTextFromForm,
@@ -8,12 +8,12 @@ import {
 
 describe('getSubjectTextFromForm', () => {
   it('should return message subject if there is no format', () => {
-    const result = getSubjectTextFromForm({
-      schemaVersion: {
-        schema: { messageSubject: 'Subject' },
-        messageSubjectFormat: null,
-      },
-    } as FormWithSchemaAndVersion)
+    const result = getSubjectTextFromForm(
+      {
+        slug: 'no-format',
+      } as Forms,
+      { messageSubjectDefault: 'Subject' } as FormDefinition,
+    )
     expect(result).toBe('Subject')
   })
 
@@ -27,7 +27,7 @@ describe('getSubjectTextFromForm', () => {
         schema: { messageSubject: 'Subject' },
         messageSubjectFormat: 'Subject {data1.data2} value {data3}',
       },
-    } as FormWithSchemaAndVersion)
+    } as Forms)
     expect(result).toBe('Subject data2Val value data3Val')
   })
 
@@ -41,7 +41,7 @@ describe('getSubjectTextFromForm', () => {
         schema: { messageSubject: 'Subject' },
         messageSubjectFormat: 'Subject {data1.data2} value {data3}',
       },
-    } as FormWithSchemaAndVersion)
+    } as Forms)
     expect(result).toBe('Subject  value data3Val')
   })
 
@@ -51,11 +51,7 @@ describe('getSubjectTextFromForm', () => {
         data1: {},
         data3: 'data3Val',
       } as Prisma.JsonValue,
-      schemaVersion: {
-        schema: { messageSubject: 'Subject' },
-        messageSubjectFormat: 'Subject {data1.data2} value {data3}',
-      },
-    } as FormWithSchemaAndVersion)
+    } as Forms)
     expect(result).toBe('Subject  value data3Val')
   })
 
@@ -65,11 +61,7 @@ describe('getSubjectTextFromForm', () => {
         data1: { data2: ['data2_1', 'data2_2', 'data2_3'] },
         data3: 'data3Val',
       } as Prisma.JsonValue,
-      schemaVersion: {
-        schema: { messageSubject: 'Subject' },
-        messageSubjectFormat: 'Subject {data1.data2} value {data3}',
-      },
-    } as FormWithSchemaAndVersion)
+    } as Forms)
     expect(result).toBe('Subject data2_1, data2_2, data2_3 value data3Val')
   })
 
@@ -79,11 +71,7 @@ describe('getSubjectTextFromForm', () => {
         data1: { data2: ['data2_1', 'data2_2', { data4: 'something' }] },
         data3: 'data3Val',
       } as Prisma.JsonValue,
-      schemaVersion: {
-        schema: { messageSubject: 'Subject' },
-        messageSubjectFormat: 'Subject {data1.data2} value {data3}',
-      },
-    } as FormWithSchemaAndVersion)
+    } as Forms)
     expect(result).toBe('Subject  value data3Val')
   })
 })
@@ -111,7 +99,7 @@ describe('getFrontendFormTitleFromForm', () => {
         },
       },
     },
-  } as unknown as FormWithSchemaAndVersion
+  } as unknown as Forms
 
   it('should return correct title when available in uiSchema', () => {
     const result = getFrontendFormTitleFromForm(data)
@@ -122,7 +110,7 @@ describe('getFrontendFormTitleFromForm', () => {
     const result = getFrontendFormTitleFromForm({
       ...data,
       schemaVersion: {},
-    } as FormWithSchemaAndVersion)
+    } as Forms)
     expect(result).toBe(result)
   })
 
@@ -144,7 +132,7 @@ describe('getFrontendFormTitleFromForm', () => {
           },
         },
       },
-    } as unknown as FormWithSchemaAndVersion)
+    } as unknown as Forms)
     expect(result).toBeNull()
   })
 })

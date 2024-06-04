@@ -11,7 +11,6 @@ import PrismaService from '../prisma/prisma.service'
 import ScannerClientService from '../scanner-client/scanner-client.service'
 import ThrowerErrorGuard from '../utils/guards/thrower-error.guard'
 import MinioClientSubservice from '../utils/subservices/minio-client.subservice'
-import { FormWithSchemaAndVersion } from '../utils/types/prisma'
 import FormsHelper from './forms.helper'
 import FormsService from './forms.service'
 
@@ -52,10 +51,9 @@ describe('FormsService', () => {
 
   describe('getForms', () => {
     it('should count correctly', async () => {
-      const spy = jest.spyOn(prismaMock.forms, 'findMany').mockResolvedValue([
-        { id: '1', schemaVersion: { schema: { latestVersionId: 'version1' } } },
-        { id: '2', schemaVersion: { schema: { latestVersionId: 'version2' } } },
-      ] as FormWithSchemaAndVersion[])
+      const spy = jest
+        .spyOn(prismaMock.forms, 'findMany')
+        .mockResolvedValue([{ id: '1' }, { id: '2' }] as Forms[])
       prismaMock.forms.count.mockResolvedValue(63)
       prismaMock.forms.groupBy = jest.fn().mockResolvedValue([])
       Object.defineProperty(prismaMock.forms, 'fields', {
@@ -132,15 +130,11 @@ describe('FormsService', () => {
         items: [
           {
             id: '1',
-            isLatestSchemaVersionForSlug: false,
-            schemaVersion: { schema: { latestVersionId: 'version1' } },
           },
           {
             id: '2',
-            isLatestSchemaVersionForSlug: false,
-            schemaVersion: { schema: { latestVersionId: 'version2' } },
           },
-        ] as unknown as FormWithSchemaAndVersion[],
+        ] as unknown as Forms[],
         currentPage: 2,
         pagination: 20,
         meta: {

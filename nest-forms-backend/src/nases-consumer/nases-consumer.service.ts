@@ -2,7 +2,7 @@ import { setTimeout } from 'node:timers/promises'
 
 import { Nack, RabbitRPC } from '@golevelup/nestjs-rabbitmq'
 import { Injectable, Logger } from '@nestjs/common'
-import { FormError, FormState } from '@prisma/client'
+import { FormError, Forms, FormState } from '@prisma/client'
 
 import ConvertPdfService from '../convert-pdf/convert-pdf.service'
 import FilesService from '../files/files.service'
@@ -18,7 +18,6 @@ import {
   getSubjectTextFromForm,
 } from '../utils/handlers/text.handler'
 import alertError from '../utils/logging'
-import { FormWithSchemaAndVersion } from '../utils/types/prisma'
 import {
   RabbitPayloadDto,
   RabbitPayloadUserDataDto,
@@ -55,7 +54,7 @@ export default class NasesConsumerService {
       `Consuming message for formId: ${data.formId} on try: ${data.tries}`,
     )
 
-    const form = await this.formsService.getUniqueForm(data.formId, true)
+    const form = await this.formsService.getUniqueForm(data.formId)
     if (form === null) {
       alertError(
         `ERROR onQueueConsumption: NotFoundException - Form with id ${data.formId} not found.`,
@@ -100,7 +99,7 @@ export default class NasesConsumerService {
             formId: form.id,
             messageSubject: formTitle,
             firstName: data.userData.firstName,
-            slug: form.schemaVersion.schema.slug,
+            slug: form.slug,
           },
         })
       }
@@ -116,7 +115,7 @@ export default class NasesConsumerService {
             formId: form.id,
             messageSubject: formTitle,
             firstName: data.userData.firstName,
-            slug: form.schemaVersion.schema.slug,
+            slug: form.slug,
           },
         })
       }
@@ -135,7 +134,7 @@ export default class NasesConsumerService {
 
   public async sendToNasesAndUpdateState(
     jwt: string,
-    form: FormWithSchemaAndVersion,
+    form: Forms,
     data: RabbitPayloadDto,
     senderUri?: string,
   ): Promise<boolean> {
@@ -234,7 +233,7 @@ export default class NasesConsumerService {
 
   private async checkAttachments(
     data: RabbitPayloadDto,
-    form: FormWithSchemaAndVersion,
+    form: Forms,
   ): Promise<CheckAttachmentsEnum> {
     const formAttachmentsReady =
       await this.filesService.areFormAttachmentsReady(data.formId)
@@ -259,7 +258,7 @@ export default class NasesConsumerService {
               formId: form.id,
               messageSubject: formTitle,
               firstName: data.userData.firstName,
-              slug: form.schemaVersion.schema.slug,
+              slug: form.slug,
             },
           })
         }

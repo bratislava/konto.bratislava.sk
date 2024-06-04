@@ -3,7 +3,6 @@ import { ConfigModule, ConfigService } from '@nestjs/config'
 import { ScheduleModule } from '@nestjs/schedule'
 import { MinioModule } from 'nestjs-minio-client'
 
-import AdminModule from './admin/admin.module'
 import AppController from './app.controller'
 import AppService from './app.service'
 import AuthModule from './auth/auth.module'
@@ -16,7 +15,6 @@ import NasesModule from './nases/nases.module'
 import NasesConsumerModule from './nases-consumer/nases-consumer.module'
 import PrismaModule from './prisma/prisma.module'
 import RabbitmqClientModule from './rabbitmq-client/rabbitmq-client.module'
-import SchemasModule from './schemas/schemas.module'
 import StatusModule from './status/status.module'
 import TaxModule from './tax/tax.module'
 import AppLoggerMiddleware from './utils/middlewares/logger.service'
@@ -46,9 +44,7 @@ import AppLoggerMiddleware from './utils/middlewares/logger.service'
     NasesConsumerModule,
     ConvertModule,
     ConvertPdfModule,
-    SchemasModule,
     GinisModule,
-    AdminModule,
     TaxModule,
     ScheduleModule.forRoot(),
   ],

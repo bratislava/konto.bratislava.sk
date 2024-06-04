@@ -271,8 +271,12 @@ export default class NasesService {
     user: CognitoGetUserData,
   ): Promise<SendFormResponseDto> {
     const form = await this.formsService.checkFormBeforeSending(id)
+    const formDefinition = getFormDefinitionBySlug(form.slug)
+    if (!formDefinition) {
+      throw new Error() // TODO
+    }
 
-    if (form.schemaVersion.schema.onlyVerified && !isUserVerified(user)) {
+    if (!isUserVerified(user)) {
       throw this.throwerErrorGuard.ForbiddenException(
         NasesErrorsEnum.SEND_UNVERIFIED,
         NasesErrorsResponseEnum.SEND_UNVERIFIED,
@@ -287,7 +291,7 @@ export default class NasesService {
     }
     if (
       !this.formsValidator.validateFormData(
-        form.schemaVersion.jsonSchema as RJSFSchema,
+        formDefinition.schemas.schema,
         form.formDataJson,
         id,
       )

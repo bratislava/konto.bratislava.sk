@@ -528,8 +528,8 @@ export default class GinisService {
     ) {
       if (
         !form.ginisDocumentId ||
-        !form.schemaVersion.ginisOrganizationName ||
-        !form.schemaVersion.ginisPersonName
+        !formDefinition.ginisAssignment?.ginisOrganizationName ||
+        !formDefinition.ginisAssignment.ginisPersonName
       ) {
         alertError(
           `ERROR - documentId or Organization to ginis or Person to ginis  do not exists in form - Ginis consumption queue. Form id: ${form.id}`,
@@ -539,8 +539,8 @@ export default class GinisService {
       }
       await this.assignSubmission(
         form.ginisDocumentId,
-        form.schemaVersion.ginisOrganizationName,
-        form.schemaVersion.ginisPersonName,
+        formDefinition.ginisAssignment.ginisOrganizationName,
+        formDefinition.ginisAssignment.ginisPersonName,
       )
       return this.nackTrueWithWait(20_000)
     }

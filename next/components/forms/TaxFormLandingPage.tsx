@@ -26,8 +26,7 @@ export type TaxFormLandingPageProps = {
  * The layout is copied from `FormPage` and `FormHeader`.
  */
 const TaxFormLandingPage = ({ latestVersionId }: TaxFormLandingPageProps) => {
-  const { isSignedIn, userAttributes } = useSsrAuth()
-  const isBetaUser = userAttributes?.['custom:2024_tax_form_beta'] === 'true'
+  const { isSignedIn, eIdTaxFormAllowed } = useSsrAuth()
   const router = useRouter()
   const { t } = useTranslation('forms')
   const [openSnackbarError] = useSnackbar({ variant: 'error' })
@@ -63,7 +62,7 @@ const TaxFormLandingPage = ({ latestVersionId }: TaxFormLandingPageProps) => {
       title: 'Vyplniť cez Bratislavské konto',
       isEid: false,
       id: 'bratislavske-konto',
-      description: isBetaUser ? (
+      description: eIdTaxFormAllowed ? (
         <>
           Vyplňte priznanie jednoducho, <strong>s návodom a pomocnými kalkulačkami</strong>, v
           Bratislavskom konte. Priznanie na konci buď <strong>podpíšete a odošlete s eID</strong>{' '}
@@ -77,9 +76,9 @@ const TaxFormLandingPage = ({ latestVersionId }: TaxFormLandingPageProps) => {
         mutate()
       },
       disabled: isPending,
-      isBetaUser,
+      eIdTaxFormAllowed,
     },
-    isBetaUser
+    eIdTaxFormAllowed
       ? null
       : {
           title: 'Vyplniť a podať cez esluzby.bratislava.sk',
@@ -89,7 +88,7 @@ const TaxFormLandingPage = ({ latestVersionId }: TaxFormLandingPageProps) => {
             'Vyplňte daňové priznanie cez esluzby.bratislava.sk. Na jeho odoslanie potrebujete mať aktívny elektronický občiansky preukaz (eID).',
           icon: Tax48PxIcon,
           href: 'https://esluzby.bratislava.sk/info/203?slug=podavanie-danoveho-priznania-k-dani-z-nehnutelnosti',
-          isBetaUser,
+          eIdTaxFormAllowed,
         },
     {
       title: 'Stiahnuť PDF priznanie',
@@ -99,7 +98,7 @@ const TaxFormLandingPage = ({ latestVersionId }: TaxFormLandingPageProps) => {
         'Ak si prajete vyplniť papierové priznanie ručne, stiahnite si PDF. Vyplnené papierové tlačivo je potrebné odoslať poštou.',
       icon: Pdf48PxIcon,
       href: 'https://cdn-api.bratislava.sk/strapi-homepage/upload/Priznanie_k_dani_z_nehnutelnosti_1bda8bd949.pdf',
-      isBetaUser,
+      eIdTaxFormAllowed,
     },
   ].filter(Boolean) as TaxFormLandingPageCardProps[]
 

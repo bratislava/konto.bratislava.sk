@@ -81,21 +81,6 @@ export const environment = {
   ),
   faroSecret: assertEnv('NEXT_PUBLIC_FARO_SECRET', process.env.NEXT_PUBLIC_FARO_SECRET),
   featureToggles: {
-    forms:
-      assertEnv(
-        'NEXT_PUBLIC_FEATURE_TOGGLE_FORMS',
-        process.env.NEXT_PUBLIC_FEATURE_TOGGLE_FORMS,
-      ) === 'true',
-    formsInMenu:
-      assertEnv(
-        'NEXT_PUBLIC_FEATURE_TOGGLE_FORMS_IN_MENU',
-        process.env.NEXT_PUBLIC_FEATURE_TOGGLE_FORMS_IN_MENU,
-      ) === 'true',
-    pravnickaOsobaRegistration:
-      assertEnv(
-        'NEXT_PUBLIC_FEATURE_TOGGLE_PRAVNICKA_OSOBA_REGISTRATION',
-        process.env.NEXT_PUBLIC_FEATURE_TOGGLE_PRAVNICKA_OSOBA_REGISTRATION,
-      ) === 'true',
     developmentForms:
       assertEnv(
         'NEXT_PUBLIC_FEATURE_TOGGLE_DEVELOPMENT_FORMS',

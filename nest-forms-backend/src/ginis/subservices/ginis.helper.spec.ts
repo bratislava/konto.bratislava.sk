@@ -173,13 +173,13 @@ describe('GinisHelper', () => {
     })
   })
 
-  it('should return Vícenová Marcela', () => {
+  it('should return Simeunovičová Ľudmila', () => {
     process.env.GINIS_TEMP_REFERENT_OVERRIDE = 'false'
 
     const result = helper.getReferentForPospID('123')
     expect(result).toEqual({
       organization: 'OUIC',
-      person: 'Vícenová Marcela',
+      person: 'Simeunovičová Ľudmila',
     })
   })
 })

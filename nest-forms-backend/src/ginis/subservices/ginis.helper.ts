@@ -76,7 +76,7 @@ export default class GinisHelper {
         }
       : {
           organization: 'OUIC',
-          person: 'Vícenová Marcela',
+          person: 'Simeunovičová Ľudmila',
         }
   }
 }

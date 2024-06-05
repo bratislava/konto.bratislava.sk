@@ -91,6 +91,7 @@ function parseXml(domParserInstance: DOMParser, xmlString: string) {
         return {
           type: SummaryJsonType.Form,
           id: element.getAttribute('id'),
+          title: element.getAttribute('title'),
           steps: getChildren(),
         } as SummaryJsonForm
 

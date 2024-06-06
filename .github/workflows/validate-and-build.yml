@@ -1,4 +1,4 @@
-name: Validate and build with bratiska-cli
+name: Validate and build resources with bratiska-cli
 on:
   pull_request:
     branches:

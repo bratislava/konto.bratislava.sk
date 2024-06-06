@@ -181,11 +181,9 @@ export default class FormsService {
     userExternalId: string,
     ico: string | null,
   ): Promise<GetFormsResponseDto> {
-    const { currentPage, pagination } = query
+    const { slug, currentPage, pagination, states, userCanEdit } = query
     const take = +(pagination ?? DEFAULT_PAGE_SIZE)
     const skip = (+(currentPage ?? DEFAULT_PAGE) - 1) * take
-
-    const { formName, pospID, states, userCanEdit } = query // TODO add filters somehow
 
     const editableStates = [
       { state: FormState.DRAFT },
@@ -211,6 +209,7 @@ export default class FormsService {
       ...statesFilter,
       userExternalId,
       archived: false,
+      formDefinitionSlug: slug,
       formDataJson: {
         not: {
           equals: null,

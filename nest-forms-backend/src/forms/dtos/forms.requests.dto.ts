@@ -43,14 +43,6 @@ export class FormCreateBodyDto {
   @IsOptional()
   senderId?: string
 
-  @ApiProperty({
-    description: 'UUID of Schema version',
-    default: 'f69559da-5eca-4ed7-80fd-370d09dc3632',
-  })
-  @IsNotEmpty()
-  @IsUUID()
-  schemaVersionId: string
-
   @ApiPropertyOptional({
     description: 'Type of owner (FO/PO)',
     example: FormOwnerType.FO,

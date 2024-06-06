@@ -427,22 +427,6 @@ export class GetFormsRequestDto {
   pagination?: string
 
   @ApiPropertyOptional({
-    description: 'Posp ID of Form',
-    example: 'esmao.eforms.bratislava.obec_082',
-  })
-  @IsOptional()
-  @IsString()
-  pospID?: string
-
-  @ApiPropertyOptional({
-    description: 'Form Name',
-    example: 'Všeobecná agenda',
-  })
-  @IsOptional()
-  @IsString()
-  formName?: string
-
-  @ApiPropertyOptional({
     description:
       'Forms in which states are searched - when omitted, all forms of the user are searched',
     example: [FormState.DRAFT, FormState.QUEUED],
@@ -455,14 +439,6 @@ export class GetFormsRequestDto {
   states?: FormState[]
 
   @ApiPropertyOptional({
-    description: 'Schema version Id.',
-    example: 'f69559da-5eca-4ed7-80fd-370d09dc3632',
-  })
-  @IsUUID()
-  @IsOptional()
-  schemaVersionId?: string
-
-  @ApiPropertyOptional({
     description: 'Get only forms in such a state, that user can still edit it.',
     default: false,
   })
@@ -470,6 +446,14 @@ export class GetFormsRequestDto {
   @IsBoolean()
   @ToBoolean()
   userCanEdit?: boolean
+
+  @ApiPropertyOptional({
+    description: 'Slug of the form definition',
+    example: 'zavazne-stanovisko-k-investicnej-cinnosti',
+  })
+  @IsString()
+  @IsOptional()
+  slug?: string
 }
 
 export class SendFormResponseDto {

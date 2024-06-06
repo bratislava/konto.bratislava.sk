@@ -143,13 +143,6 @@ export class ConvertToPdfV2RequestDto {
   @IsOptional()
   jsonData?: Prisma.JsonValue
 
-  @ApiProperty({
-    description: 'Schema version id',
-    example: 'f69559da-5eca-4ed7-80fd-370d09dc3632',
-  })
-  @IsUUID()
-  schemaVersionId: string
-
   @IsObject()
   @ApiPropertyOptional({
     description:

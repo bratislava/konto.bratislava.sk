@@ -76,10 +76,7 @@ describe('FormsService', () => {
       const query: GetFormsRequestDto = {
         currentPage: '2',
         pagination: '20',
-        formName: 'formName',
-        pospID: 'pospId',
         states: [FormState.DRAFT, FormState.PROCESSING],
-        schemaVersionId: 'xxx',
       }
       const userExternalId = 'userId'
 
@@ -93,25 +90,11 @@ describe('FormsService', () => {
           state: true,
           error: true,
           formDataJson: true,
-          schemaVersionId: true,
-          schemaVersion: {
-            select: {
-              messageSubjectFormat: true,
-              schema: true,
-              uiSchema: true,
-            },
-          },
+          formDefinitionSlug: true,
         },
         where: {
           archived: false,
-          schemaVersionId: 'xxx',
           userExternalId: 'userId',
-          schemaVersion: {
-            pospID: 'pospId',
-            schema: {
-              formName: 'formName',
-            },
-          },
           formDataJson: {
             not: {
               equals: null,

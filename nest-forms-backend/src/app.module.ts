@@ -3,6 +3,7 @@ import { ConfigModule, ConfigService } from '@nestjs/config'
 import { ScheduleModule } from '@nestjs/schedule'
 import { MinioModule } from 'nestjs-minio-client'
 
+import AdminModule from './admin/admin.module'
 import AppController from './app.controller'
 import AppService from './app.service'
 import AuthModule from './auth/auth.module'
@@ -36,6 +37,7 @@ import AppLoggerMiddleware from './utils/middlewares/logger.service'
     }),
     PrismaModule,
     AuthModule,
+    AdminModule,
     FormsModule,
     FilesModule,
     NasesModule,

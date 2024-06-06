@@ -15,6 +15,7 @@ import { PDF_EXPORT_FILE_NAME } from '../utils/files'
 import ThrowerErrorGuard from '../utils/guards/thrower-error.guard'
 import MinioClientSubservice from '../utils/subservices/minio-client.subservice'
 import ConvertPdfService from './convert-pdf.service'
+import { FormDefinition } from '../../../forms-shared/src/definitions/form-definitions'
 
 jest.mock('../files/files.service')
 
@@ -88,9 +89,6 @@ describe('ConvertPdfService', () => {
     convertService.generatePdfV2 = jest
       .fn()
       .mockResolvedValue(expectedPdfExportPath)
-    convertPdfService.getPdfExportFilePath = jest
-      .fn()
-      .mockResolvedValue(expectedPdfExportPath)
 
     filesHelper.upsertFileByUid = jest.fn().mockResolvedValue(fakeFile)
   })
@@ -99,16 +97,9 @@ describe('ConvertPdfService', () => {
     expect(convertPdfService).toBeDefined()
   })
 
-  describe('get pdf file path', () => {
-    it('should return correct path', async () => {
-      const filePath = await convertPdfService.getPdfExportFilePath(formId)
-      expect(filePath).toBe(expectedPdfExportPath)
-    })
-  })
-
   describe('convert pdf', () => {
     it('calls all services it depends on and does not explode in the process', async () => {
-      const filePath = await convertPdfService.createPdfImageInFormFiles(formId)
+      const filePath = await convertPdfService.createPdfImageInFormFiles(formId, {} as FormDefinition)
       expect(filePath).toBe(expectedPdfExportPath)
 
       expect(putObject).toHaveBeenCalled()

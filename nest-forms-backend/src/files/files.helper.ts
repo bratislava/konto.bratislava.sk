@@ -20,6 +20,7 @@ import MinioClientSubservice from '../utils/subservices/minio-client.subservice'
 import { BasicFileDto, BufferedFileDto, FormInfo } from './files.dto'
 import { FilesErrorsEnum, FilesErrorsResponseEnum } from './files.errors.enum'
 import { getFormDefinitionBySlug } from '../../../forms-shared/src/form-utils/definitions'
+import { FormsErrorsEnum, FormsErrorsResponseEnum } from '../forms/forms.errors.enum'
 
 // TODO missing tests
 @Injectable()
@@ -301,7 +302,7 @@ export default class FilesHelper {
   forms2formInfo(form: Forms): FormInfo {
     const formDefinition = getFormDefinitionBySlug(form.formDefinitionSlug)
     if (!formDefinition) {
-      throw new Error() // TODO
+      throw this.throwerErrorGuard.NotFoundException(FormsErrorsEnum.FORM_DEFINITION_NOT_FOUND, `${FormsErrorsResponseEnum.FORM_DEFINITION_NOT_FOUND} ${form.formDefinitionSlug}`)
     }
     return {
       pospId: formDefinition.pospID ?? '',

@@ -1,5 +1,3 @@
-import { PassThrough } from 'node:stream'
-
 import {
   Body,
   Controller,
@@ -28,6 +26,7 @@ import { Response } from 'express'
 import { CognitoGetUserData } from '../auth/dtos/cognito.dto'
 import CognitoGuard from '../auth/guards/cognito.guard'
 import {
+  FormDefinitionNotFoundErrorDto,
   FormIsOwnedBySomeoneElseErrorDto,
   FormNotFoundErrorDto,
 } from '../forms/forms.errors.dto'
@@ -49,7 +48,6 @@ import {
   PuppeteerFormNotFoundErrorDto,
   PuppeteerPageFailedLoadErrorDto,
 } from './errors/convert.errors.dto'
-import { getFormDefinitionBySlug } from '../../../forms-shared/src/form-utils/definitions'
 
 @ApiTags('convert')
 @ApiBearerAuth()
@@ -69,17 +67,10 @@ export default class ConvertController {
     description: 'Return XML form',
     type: String,
   })
-  @ApiExtraModels(FormNotFoundErrorDto)
-  @ApiResponse({
-    status: 404,
-    description: 'Schema version or form not found',
-    schema: {
-      oneOf: [
-        {
-          $ref: getSchemaPath(FormNotFoundErrorDto),
-        },
-      ],
-    },
+  @ApiNotFoundResponse({
+    status: HttpStatusCode.NotFound,
+    description: 'Form definition was not found',
+    type: FormDefinitionNotFoundErrorDto
   })
   @ApiBadRequestResponse({
     status: HttpStatusCode.BadRequest,
@@ -119,19 +110,19 @@ export default class ConvertController {
     status: 400,
     description: 'There was an error during converting to json.',
   })
+  @ApiNotFoundResponse({
+    status: HttpStatusCode.NotFound,
+    description: 'Form definition was not found',
+    type: FormDefinitionNotFoundErrorDto
+  })
   @Post('xml-to-json/:slug')
   async convertXmlToJson(
     @Body() data: XmlToJsonRequestDto,
     @Param('slug') slug: string,
   ): Promise<XmlToJsonResponseDto> {
-    const formDefinition = getFormDefinitionBySlug(slug)
-    if (!formDefinition) {
-      throw new Error() // TODO
-    }
-
     return this.convertService.convertXmlToJson(
       data.xmlForm,
-      formDefinition.schemas.schema,
+      slug,
     )
   }
 
@@ -142,8 +133,17 @@ export default class ConvertController {
   })
   @ApiNotFoundResponse({
     status: 404,
-    description: 'Form not found',
-    type: FormNotFoundErrorDto,
+    description: 'Form or form description not found',
+    schema: {
+      oneOf: [
+        {
+          $ref: getSchemaPath(FormNotFoundErrorDto)
+        },
+        {
+          $ref: getSchemaPath(FormDefinitionNotFoundErrorDto)
+        }
+      ]
+    }
   })
   @ApiForbiddenResponse({
     status: HttpStatusCode.Forbidden,

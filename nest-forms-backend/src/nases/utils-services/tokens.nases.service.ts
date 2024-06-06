@@ -32,6 +32,7 @@ import {
 import { Forms } from '@prisma/client'
 import { getFormDefinitionBySlug } from '../../../../forms-shared/src/form-utils/definitions'
 import { FormDefinitionSlovenskoSk } from '../../../../forms-shared/src/definitions/form-definitions'
+import { FormsErrorsEnum, FormsErrorsResponseEnum } from '../../forms/forms.errors.enum'
 
 @Injectable()
 export default class NasesUtilsService {
@@ -321,9 +322,9 @@ export default class NasesUtilsService {
   ): Promise<string> {
     const formDefinition = getFormDefinitionBySlug<FormDefinitionSlovenskoSk>(form.formDefinitionSlug)
     if (!formDefinition) {
-      throw new Error() //
+      throw this.throwerErrorGuard.NotFoundException(FormsErrorsEnum.FORM_DEFINITION_NOT_FOUND, `${FormsErrorsResponseEnum.FORM_DEFINITION_NOT_FOUND} ${form.formDefinitionSlug}`)
     }
-    const { schemas, isSigned } = formDefinition
+    const { isSigned } = formDefinition
 
     let message: string | null = null
 

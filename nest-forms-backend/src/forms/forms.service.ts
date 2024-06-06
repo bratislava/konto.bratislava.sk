@@ -163,7 +163,7 @@ export default class FormsService {
 
     const formDefinition = getFormDefinitionBySlug(form.formDefinitionSlug)
     if (!formDefinition) {
-      throw new Error() // TODO
+      throw this.throwerErrorGuard.NotFoundException(FormsErrorsEnum.FORM_DEFINITION_NOT_FOUND, `${FormsErrorsResponseEnum.FORM_DEFINITION_NOT_FOUND} ${form.formDefinitionSlug}`)
     }
     const frontendTitle = getFrontendFormTitleFromForm(form, formDefinition)
 
@@ -261,7 +261,7 @@ export default class FormsService {
     Object.values(data).forEach((form) => {
       const formDefinition = getFormDefinitionBySlug(form.formDefinitionSlug)
       if (!formDefinition) {
-        throw new Error() // TODO
+        throw this.throwerErrorGuard.NotFoundException(FormsErrorsEnum.FORM_DEFINITION_NOT_FOUND, `${FormsErrorsResponseEnum.FORM_DEFINITION_NOT_FOUND} ${form.formDefinitionSlug}`)
       }
 
       const messageSubject = getSubjectTextFromForm(form, formDefinition)

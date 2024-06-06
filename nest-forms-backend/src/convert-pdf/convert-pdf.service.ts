@@ -11,7 +11,7 @@ import FormsService from '../forms/forms.service'
 import { PDF_EXPORT_FILE_NAME } from '../utils/files'
 import ThrowerErrorGuard from '../utils/guards/thrower-error.guard'
 import MinioClientSubservice from '../utils/subservices/minio-client.subservice'
-import { getFormDefinitionBySlug } from '../../../forms-shared/src/form-utils/definitions'
+import { FormDefinition } from '../../../forms-shared/src/definitions/form-definitions'
 
 /**
  * Creates a pdf file from filled-in form and uploads it to minio among SAFE form files.
@@ -32,17 +32,13 @@ export default class ConvertPdfService {
    * @param formId id of our form object
    * @returns expected path within the bucket, without the bucket itself
    */
-  async getPdfExportFilePathWithoutBucket(formId: string): Promise<string> {
+  async getPdfExportFilePathWithoutBucket(formId: string, formDefinition: FormDefinition): Promise<string> {
     const form = await this.formsService.getUniqueForm(formId)
     if (!form) {
       throw this.throwerErrorGuard.NotFoundException(
         FormsErrorsEnum.FORM_NOT_FOUND_ERROR,
         `${FormsErrorsResponseEnum.FORM_NOT_FOUND_ERROR} id: ${formId}.`,
       )
-    }
-    const formDefinition = getFormDefinitionBySlug(form.formDefinitionSlug)
-    if (!formDefinition) {
-      throw new Error() // TODO
     }
 
     const formInfo: FormInfo = {
@@ -53,18 +49,12 @@ export default class ConvertPdfService {
     return `${formPath}${PDF_EXPORT_FILE_NAME}`
   }
 
-  async getPdfExportFilePath(formId: string): Promise<string> {
-    return `${this.filesHelper.getBucketUid(
-      'SAFE',
-    )}${await this.getPdfExportFilePathWithoutBucket(formId)}`
-  }
-
   /**
    * Creates a pdf file from filled-in form and uploads it to minio among SAFE form files.
    * Also saves the file record to the database among the rest fo the form files.
    * @param formId id of the form
    */
-  async createPdfImageInFormFiles(formId: string): Promise<string> {
+  async createPdfImageInFormFiles(formId: string, formDefinition: FormDefinition): Promise<string> {
     const form = await this.formsService.getUniqueForm(formId)
     if (!form) {
       throw this.throwerErrorGuard.NotFoundException(
@@ -72,17 +62,14 @@ export default class ConvertPdfService {
         `${FormsErrorsResponseEnum.FORM_NOT_FOUND_ERROR} id: ${formId}.`,
       )
     }
-    const formDefinition = getFormDefinitionBySlug(form.formDefinitionSlug)
-    if (!formDefinition) {
-      throw new Error() // TODO
-    }
 
     // putObject requires bucket name on it's own
-    const filePath = await this.getPdfExportFilePathWithoutBucket(formId)
+    const filePath = await this.getPdfExportFilePathWithoutBucket(formId, formDefinition)
 
     const file = await this.convertService.generatePdfV2(
       form.formDataJson,
       formId,
+      formDefinition
     )
 
     await this.minioClientSubservice

@@ -91,3 +91,17 @@ export class FormDataInvalidErrorDto extends NotAcceptedErrorDto {
   })
   declare message: string
 }
+
+export class FormDefinitionNotFoundErrorDto extends NotFoundErrorDto {
+  @ApiProperty({
+    example: FormsErrorsEnum.FORM_DEFINITION_NOT_FOUND,
+    default: FormsErrorsEnum.FORM_DEFINITION_NOT_FOUND,
+  })
+  declare errorName: string
+
+  @ApiProperty({
+    example: FormsErrorsResponseEnum.FORM_DEFINITION_NOT_FOUND,
+    default: FormsErrorsResponseEnum.FORM_DEFINITION_NOT_FOUND,
+  })
+  declare message: string
+}

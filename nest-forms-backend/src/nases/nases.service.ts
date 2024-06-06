@@ -117,7 +117,7 @@ export default class NasesService {
     const result = await this.formsService.createForm(data)
     const formDefinition = getFormDefinitionBySlug(result.formDefinitionSlug)
     if (!formDefinition) {
-      throw new Error() // TODO
+      throw this.throwerErrorGuard.NotFoundException(FormsErrorsEnum.FORM_DEFINITION_NOT_FOUND, `${FormsErrorsResponseEnum.FORM_DEFINITION_NOT_FOUND} ${result.formDefinitionSlug}`)
     }
 
     const messageSubject = getSubjectTextFromForm(result, formDefinition)
@@ -181,7 +181,7 @@ export default class NasesService {
     const form = await this.formsService.getForm(id, ico, userExternalId)
     const formDefinition = getFormDefinitionBySlug(form.formDefinitionSlug)
     if (!formDefinition) {
-      throw new Error() // TODO
+      throw this.throwerErrorGuard.NotFoundException(FormsErrorsEnum.FORM_DEFINITION_NOT_FOUND, `${FormsErrorsResponseEnum.FORM_DEFINITION_NOT_FOUND} ${form.formDefinitionSlug}`)
     }
 
     const messageSubject = getSubjectTextFromForm(form, formDefinition)
@@ -273,7 +273,7 @@ export default class NasesService {
     const form = await this.formsService.checkFormBeforeSending(id)
     const formDefinition = getFormDefinitionBySlug(form.formDefinitionSlug)
     if (!formDefinition) {
-      throw new Error() // TODO
+      throw this.throwerErrorGuard.NotFoundException(FormsErrorsEnum.FORM_DEFINITION_NOT_FOUND, `${FormsErrorsResponseEnum.FORM_DEFINITION_NOT_FOUND} ${form.formDefinitionSlug}`)
     }
 
     if (!isUserVerified(user)) {
@@ -361,8 +361,9 @@ export default class NasesService {
  
     const formDefinition = getFormDefinitionBySlug(form.formDefinitionSlug)
     if (!formDefinition) {
-      throw new Error() // TODO
+      throw this.throwerErrorGuard.NotFoundException(FormsErrorsEnum.FORM_DEFINITION_NOT_FOUND, `${FormsErrorsResponseEnum.FORM_DEFINITION_NOT_FOUND} ${form.formDefinitionSlug}`)
     }
+    
     // TODO - rethink/address, skipping formData validation for is signed as in this step, the form data can be different from what we are sending anyway
     if (
       !formDefinition.isSigned &&

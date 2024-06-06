@@ -36,6 +36,7 @@ import {
 } from './dtos/ginis.response.dto'
 import GinisHelper from './subservices/ginis.helper'
 import { FormDefinitionSlovenskoSk } from '../../../forms-shared/src/definitions/form-definitions'
+import { FormsErrorsEnum, FormsErrorsResponseEnum } from '../forms/forms.errors.enum'
 
 const UPLOAD_QUEUE = 'submission.upload'
 const REGISTER_SUBMISSION_QUEUE = 'submission.register'
@@ -428,7 +429,7 @@ export default class GinisService {
 
     const formDefinition = getFormDefinitionBySlug<FormDefinitionSlovenskoSk>(form.formDefinitionSlug)
     if (!formDefinition) {
-      throw new Error() // TODO
+      throw this.throwerErrorGuard.NotFoundException(FormsErrorsEnum.FORM_DEFINITION_NOT_FOUND, `${FormsErrorsResponseEnum.FORM_DEFINITION_NOT_FOUND} ${form.formDefinitionSlug}`)
     }
 
     if (!formDefinition.pospID) {

@@ -39,7 +39,7 @@ import {
 import JsonXmlConvertService from './utils-services/json-xml.convert.service'
 import { JsonSchema } from '../utils/global-forms'
 import { createXmlTemplate } from './utils-services/createXmlTemplate'
-import { FormDefinitionSlovenskoSk } from '../../../forms-shared/src/definitions/form-definitions'
+import { FormDefinition, FormDefinitionSlovenskoSk } from '../../../forms-shared/src/definitions/form-definitions'
 
 @Injectable()
 export default class ConvertService {
@@ -65,7 +65,7 @@ export default class ConvertService {
   ): Promise<string> {
     const formDefinition = getFormDefinitionBySlug<FormDefinitionSlovenskoSk>(data.slug)
     if (formDefinition === null) {
-      throw new Error() // TODO
+      throw this.throwerErrorGuard.NotFoundException(FormsErrorsEnum.FORM_DEFINITION_NOT_FOUND, `${FormsErrorsResponseEnum.FORM_DEFINITION_NOT_FOUND} ${data.slug}`)
     }
 
     let jsonFormData = data.jsonData
@@ -101,8 +101,13 @@ export default class ConvertService {
 
   async convertXmlToJson(
     xmlData: string,
-    schema: RJSFSchema,
+    formDefinitionSlug: string,
   ): Promise<XmlToJsonResponseDto> {
+    const formDefinition = getFormDefinitionBySlug(formDefinitionSlug)
+    if (!formDefinition) {
+      throw this.throwerErrorGuard.NotFoundException(FormsErrorsEnum.FORM_DEFINITION_NOT_FOUND, `${FormsErrorsResponseEnum.FORM_DEFINITION_NOT_FOUND} ${formDefinitionSlug}`)
+    }
+
     // xml2js has issues when top level element isn't a single node
     const wrappedXmlString = `<wrapper>${xmlData}</wrapper>`
     const obj: { wrapper: GenericObjectType } = (await parseStringPromise(
@@ -120,7 +125,7 @@ export default class ConvertService {
     this.jsonXmlService.removeNeedlessXmlTransformArraysRecursive(
       body,
       [],
-      schema as JsonSchema,
+      formDefinition.schemas.schema as JsonSchema,
     )
     return {
       jsonForm: body,
@@ -249,6 +254,7 @@ export default class ConvertService {
   public async generatePdfV2(
     jsonForm: Prisma.JsonValue,
     formId: string,
+    formDefinition: FormDefinition,
     additionalMetadata?: Prisma.JsonObject,
   ): Promise<Readable> {
     const form = await this.prismaService.forms.findUnique({
@@ -264,11 +270,6 @@ export default class ConvertService {
         FormsErrorsEnum.FORM_NOT_FOUND_ERROR,
         FormsErrorsResponseEnum.FORM_NOT_FOUND_ERROR,
       )
-    }
-
-    const formDefinition = getFormDefinitionBySlug(form.formDefinitionSlug)
-    if (!formDefinition) {
-      throw new Error() // TODO
     }
 
     if (formDefinition.pospID === process.env.TAX_FORM_POSP_ID) {
@@ -319,7 +320,7 @@ export default class ConvertService {
 
     const formDefinition = getFormDefinitionBySlug(form.formDefinitionSlug)
     if (!formDefinition) {
-      throw new Error() // TODO
+      throw this.throwerErrorGuard.NotFoundException(FormsErrorsEnum.FORM_DEFINITION_NOT_FOUND, `${FormsErrorsResponseEnum.FORM_DEFINITION_NOT_FOUND} ${form.formDefinitionSlug}`)
     }
 
     let formJsonData = data.jsonData
@@ -361,6 +362,7 @@ export default class ConvertService {
     const file = await this.generatePdfV2(
       formJsonData,
       data.formId,
+      formDefinition,
       data.additionalMetadata,
     )
 

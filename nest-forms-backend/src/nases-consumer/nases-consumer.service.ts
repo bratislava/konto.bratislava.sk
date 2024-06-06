@@ -24,7 +24,8 @@ import {
 } from './nases-consumer.dto'
 import { CheckAttachmentsEnum } from './nases-consumer.enum'
 import { getFormDefinitionBySlug } from '../../../forms-shared/src/form-utils/definitions'
-import { FormDefinition, FormDefinitionSlovenskoSk } from '../../../forms-shared/src/definitions/form-definitions'
+import { FormDefinition } from '../../../forms-shared/src/definitions/form-definitions'
+import { FormsErrorsResponseEnum } from '../forms/forms.errors.enum'
 
 @Injectable()
 export default class NasesConsumerService {
@@ -73,7 +74,16 @@ export default class NasesConsumerService {
       return new Nack(false)
     }
 
-    const checkedAttachments = await this.checkAttachments(data, form)
+    const formDefinition = getFormDefinitionBySlug(form.formDefinitionSlug)
+    if (!formDefinition) {
+      alertError(
+        `ERROR onQueueConsumption: NotFoundException - ${FormsErrorsResponseEnum.FORM_DEFINITION_NOT_FOUND} ${form.formDefinitionSlug}.`,
+        this.logger,
+      )
+      return new Nack(false)
+    }
+
+    const checkedAttachments = await this.checkAttachments(data, form, formDefinition)
     if (checkedAttachments === CheckAttachmentsEnum.REQUEUE) {
       const requeueAttachment = await this.nackTrueWithWait(20_000)
       return requeueAttachment
@@ -85,11 +95,6 @@ export default class NasesConsumerService {
     this.logger.debug(
       `All files are in final state, sending message to nases for formId: ${data.formId}`,
     )
-
-    const formDefinition = getFormDefinitionBySlug(form.formDefinitionSlug)
-    if (!formDefinition) {
-      throw new Error()
-    }
 
     const jwt = this.nasesUtilsService.createTechnicalAccountJwtToken()
     const isSent = await this.sendToNasesAndUpdateState(jwt, form, data, formDefinition)
@@ -148,7 +153,7 @@ export default class NasesConsumerService {
   ): Promise<boolean> {
     // TODO find a nicer place to do this
     // create a pdf image of the form, upload it to minio and at it among form files
-    await this.convertPdfService.createPdfImageInFormFiles(data.formId)
+    await this.convertPdfService.createPdfImageInFormFiles(data.formId, formDefinition)
 
     // prisma update form status to SENDING_TO_NASES
     await this.formsService.updateForm(data.formId, {
@@ -242,6 +247,7 @@ export default class NasesConsumerService {
   private async checkAttachments(
     data: RabbitPayloadDto,
     form: Forms,
+    formDefinition: FormDefinition,
   ): Promise<CheckAttachmentsEnum> {
     const formAttachmentsReady =
       await this.filesService.areFormAttachmentsReady(data.formId)
@@ -255,11 +261,6 @@ export default class NasesConsumerService {
       })
       if (formAttachmentsReady.error === 'INFECTED_FILES') {
         const toEmail = data.userData.email || form.email
-
-        const formDefinition = getFormDefinitionBySlug(form.formDefinitionSlug)
-        if (!formDefinition) {
-          throw new Error()
-        }
 
         // fallback to messageSubject if title can't be parsed
         const formTitle =

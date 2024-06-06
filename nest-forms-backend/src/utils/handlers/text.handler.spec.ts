@@ -5,6 +5,7 @@ import {
   getFrontendFormTitleFromForm,
   getSubjectTextFromForm,
 } from './text.handler'
+import { Schemas } from '../../../../forms-shared/src/generator/functions'
 
 describe('getSubjectTextFromForm', () => {
   it('should return message subject if there is no format', () => {
@@ -24,7 +25,9 @@ describe('getSubjectTextFromForm', () => {
         data3: 'data3Val',
       } as Prisma.JsonValue,
     } as Forms,
-  {} as FormDefinition)
+    {
+      messageSubjectFormat: 'Subject {data1.data2} value {data3}'
+    } as FormDefinition)
     expect(result).toBe('Subject data2Val value data3Val')
   })
 
@@ -35,7 +38,9 @@ describe('getSubjectTextFromForm', () => {
         data3: 'data3Val',
       } as Prisma.JsonValue,
     } as Forms,
-    {} as FormDefinition)
+    {
+      messageSubjectFormat: 'Subject {data1.data2} value {data3}'
+    } as FormDefinition)
     expect(result).toBe('Subject  value data3Val')
   })
 
@@ -46,7 +51,9 @@ describe('getSubjectTextFromForm', () => {
         data3: 'data3Val',
       } as Prisma.JsonValue,
     } as Forms,
-    {} as FormDefinition)
+    {
+      messageSubjectFormat: 'Subject {data1.data2} value {data3}'
+    } as FormDefinition)
     expect(result).toBe('Subject  value data3Val')
   })
 
@@ -57,7 +64,9 @@ describe('getSubjectTextFromForm', () => {
         data3: 'data3Val',
       } as Prisma.JsonValue,
     } as Forms,
-    {} as FormDefinition)
+    {
+      messageSubjectFormat: 'Subject {data1.data2} value {data3}'
+    } as FormDefinition)
     expect(result).toBe('Subject data2_1, data2_2, data2_3 value data3Val')
   })
 
@@ -68,7 +77,9 @@ describe('getSubjectTextFromForm', () => {
         data3: 'data3Val',
       } as Prisma.JsonValue,
     } as Forms,
-    {} as FormDefinition)
+    {
+      messageSubjectFormat: 'Subject {data1.data2} value {data3}'
+    } as FormDefinition)
     expect(result).toBe('Subject  value data3Val')
   })
 })
@@ -88,23 +99,35 @@ describe('getFrontendFormTitleFromForm', () => {
         },
       },
     },
-    schemaVersion: {
-      uiSchema: {
-        'ui:options': {
-          titlePath,
-          titleFallback,
-        },
-      },
-    },
   } as unknown as Forms
 
   it('should return correct title when available in uiSchema', () => {
-    const result = getFrontendFormTitleFromForm(data, {} as FormDefinition)
+    const result = getFrontendFormTitleFromForm(data, {
+      schemas: {
+        uiSchema: {
+          'ui:options': {
+            titlePath,
+            titleFallback,
+          },
+        },
+        schema: {}
+      } as Schemas
+    } as FormDefinition)
     expect(result).toBe(title)
   })
 
   it('should be fine without uiSchema', () => {
-    const result = getFrontendFormTitleFromForm(data, {} as FormDefinition)
+    const result = getFrontendFormTitleFromForm(data, {
+      schemas: {
+        uiSchema: {
+          'ui:options': {
+            titlePath,
+            titleFallback,
+          },
+        },
+        schema: {}
+      } as Schemas
+    } as FormDefinition)
     expect(result).toBe(result)
   })
 
@@ -113,12 +136,31 @@ describe('getFrontendFormTitleFromForm', () => {
       ...data,
       formDataJson: {},
     },
-    {} as FormDefinition)
+    {
+      schemas: {
+        uiSchema: {
+          'ui:options': {
+            titlePath,
+            titleFallback,
+          },
+        },
+        schema: {}
+      } as Schemas
+    } as FormDefinition)
     expect(result).toBe(titleFallback)
   })
 
   it('should return null if not given fallback', () => {
-    const result = getFrontendFormTitleFromForm({} as Forms, {} as FormDefinition)
+    const result = getFrontendFormTitleFromForm({} as Forms, {
+      schemas: {
+        uiSchema: {
+          'ui:options': {
+            titlePath,
+          },
+        },
+        schema: {}
+      } as Schemas
+    } as FormDefinition)
     expect(result).toBeNull()
   })
 })

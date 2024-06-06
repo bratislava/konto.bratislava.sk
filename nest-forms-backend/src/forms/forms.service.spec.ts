@@ -14,6 +14,9 @@ import MinioClientSubservice from '../utils/subservices/minio-client.subservice'
 import FormsHelper from './forms.helper'
 import FormsService from './forms.service'
 
+jest.mock('../../../forms-shared/src/form-utils/definitions', () => ({
+  getFormDefinitionBySlug: jest.fn()
+}))
 jest.mock('@nestjs/config')
 jest.mock('./forms.helper')
 jest.mock('../files/files.helper')
@@ -51,6 +54,14 @@ describe('FormsService', () => {
 
   describe('getForms', () => {
     it('should count correctly', async () => {
+      const { getFormDefinitionBySlug } = require('../../../forms-shared/src/form-utils/definitions')
+      getFormDefinitionBySlug.mockReturnValue({
+        schemas: {
+          uiSchema: {
+            'ui:options': {}
+          }
+        }
+      })
       const spy = jest
         .spyOn(prismaMock.forms, 'findMany')
         .mockResolvedValue([{ id: '1' }, { id: '2' }] as Forms[])

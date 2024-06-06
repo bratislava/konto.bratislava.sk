@@ -23,6 +23,9 @@ import {
 import GinisService from './ginis.service'
 import GinisHelper from './subservices/ginis.helper'
 
+jest.mock('../../../forms-shared/src/form-utils/definitions', () => ({
+  getFormDefinitionBySlug: jest.fn()
+}))
 jest.mock('./subservices/ginis.helper')
 jest.mock('../utils/global-services/mailgun/mailgun.service')
 jest.mock('../utils/handlers/text.handler')
@@ -262,6 +265,7 @@ describe('GinisService', () => {
       id: 'id1',
       ginisState: GinisState.CREATED,
       state: FormState.DELIVERED_NASES,
+      formDefinitionSlug: 'slug'
     } as FormWithFiles
 
     it('should error when form does not exist', async () => {
@@ -274,6 +278,9 @@ describe('GinisService', () => {
     })
 
     it('should error when form has no pospId', async () => {
+      const { getFormDefinitionBySlug } = require('../../../forms-shared/src/form-utils/definitions')
+      getFormDefinitionBySlug.mockReturnValue({})
+
       prismaMock.forms.findUnique.mockResolvedValue({
         ...formBase,
       } as FormWithFiles)
@@ -285,6 +292,9 @@ describe('GinisService', () => {
     })
 
     it('should run register if not yet registered', async () => {
+      const { getFormDefinitionBySlug } = require('../../../forms-shared/src/form-utils/definitions')
+      getFormDefinitionBySlug.mockReturnValue({ pospID: 'pospIdValue' })
+
       prismaMock.forms.findUnique.mockResolvedValue(formBase)
 
       const registerSpy = jest
@@ -297,6 +307,7 @@ describe('GinisService', () => {
       jest.resetAllMocks()
 
       // should just requeue if register is still running
+      getFormDefinitionBySlug.mockReturnValue({ pospID: 'pospIdValue' })
       prismaMock.forms.findUnique.mockResolvedValue({
         ...formBase,
         ginisState: GinisState.RUNNING_REGISTER,
@@ -307,6 +318,7 @@ describe('GinisService', () => {
       jest.resetAllMocks()
 
       // should regiser again if there was error
+      getFormDefinitionBySlug.mockReturnValue({ pospID: 'pospIdValue' })
       prismaMock.forms.findUnique.mockResolvedValue({
         ...formBase,
         ginisState: GinisState.ERROR_REGISTER,
@@ -317,6 +329,9 @@ describe('GinisService', () => {
     })
 
     it('should upload files', async () => {
+      const { getFormDefinitionBySlug } = require('../../../forms-shared/src/form-utils/definitions')
+      getFormDefinitionBySlug.mockReturnValue({ pospID: 'pospIdValue' })
+
       prismaMock.forms.findUnique.mockResolvedValue({
         ...formBase,
         ginisState: GinisState.REGISTERED,
@@ -342,6 +357,7 @@ describe('GinisService', () => {
       jest.resetAllMocks()
 
       // When one error - requeue but do not upload
+      getFormDefinitionBySlug.mockReturnValue({ pospID: 'pospIdValue' })
       prismaMock.forms.findUnique.mockResolvedValue({
         ...formBase,
         ginisState: GinisState.RUNNING_UPLOAD_ATTACHMENTS,
@@ -362,6 +378,7 @@ describe('GinisService', () => {
       jest.resetAllMocks()
 
       // When two errors, don't call upload just report error (TODO update behavior)
+      getFormDefinitionBySlug.mockReturnValue({ pospID: 'pospIdValue' })
       prismaMock.forms.findUnique.mockResolvedValue({
         ...formBase,
         ginisState: GinisState.RUNNING_UPLOAD_ATTACHMENTS,
@@ -382,6 +399,7 @@ describe('GinisService', () => {
       jest.resetAllMocks()
 
       // When one still uploading, second uploaded, don't call upload just report error (TODO update behavior)
+      getFormDefinitionBySlug.mockReturnValue({ pospID: 'pospIdValue' })
       prismaMock.forms.findUnique.mockResolvedValue({
         ...formBase,
         ginisState: GinisState.RUNNING_UPLOAD_ATTACHMENTS,
@@ -398,6 +416,7 @@ describe('GinisService', () => {
       jest.resetAllMocks()
 
       // When no more files, change to Attachments uploaded
+      getFormDefinitionBySlug.mockReturnValue({ pospID: 'pospIdValue' })
       prismaMock.forms.findUnique.mockResolvedValue({
         ...formBase,
         ginisState: GinisState.RUNNING_UPLOAD_ATTACHMENTS,
@@ -417,6 +436,9 @@ describe('GinisService', () => {
     })
 
     it('should mark as files uploaded if there are no files', async () => {
+      const { getFormDefinitionBySlug } = require('../../../forms-shared/src/form-utils/definitions')
+      getFormDefinitionBySlug.mockReturnValue({ pospID: 'pospIdValue' })
+
       prismaMock.forms.findUnique.mockResolvedValue({
         ...formBase,
         ginisState: GinisState.REGISTERED,
@@ -440,6 +462,9 @@ describe('GinisService', () => {
     })
 
     it('should edit submission if all files are uploaded', async () => {
+      const { getFormDefinitionBySlug } = require('../../../forms-shared/src/form-utils/definitions')
+      getFormDefinitionBySlug.mockReturnValue({ pospID: 'pospIdValue' })
+
       prismaMock.forms.findUnique.mockResolvedValue({
         ...formBase,
         ginisState: GinisState.ATTACHMENTS_UPLOADED,
@@ -462,6 +487,7 @@ describe('GinisService', () => {
       jest.resetAllMocks()
 
       // The same should happen if the state is ERROR EDIT SUBMISSION
+      getFormDefinitionBySlug.mockReturnValue({ pospID: 'pospIdValue' })
       prismaMock.forms.findUnique.mockResolvedValue({
         ...formBase,
         ginisState: GinisState.ERROR_EDIT_SUBMISSION,
@@ -483,6 +509,8 @@ describe('GinisService', () => {
     })
 
     it('should assign submission after edit', async () => {
+      const { getFormDefinitionBySlug } = require('../../../forms-shared/src/form-utils/definitions')
+      getFormDefinitionBySlug.mockReturnValue({ pospID: 'pospIdValue' })
       prismaMock.forms.findUnique.mockResolvedValue({
         ...formBase,
         ginisState: GinisState.SUBMISSION_EDITED,
@@ -495,6 +523,7 @@ describe('GinisService', () => {
       expect(result.requeue).toBeTruthy() // there is no ginisDocumentId
       expect(assignSpy).not.toHaveBeenCalled()
 
+      getFormDefinitionBySlug.mockReturnValue({ pospID: 'pospIdValue', ginisAssignment: { ginisPersonName: 'personName' } })
       prismaMock.forms.findUnique.mockResolvedValue({
         ...formBase,
         ginisDocumentId: 'docId',
@@ -503,6 +532,8 @@ describe('GinisService', () => {
       result = await service.onQueueConsumption(messageBase)
       expect(result.requeue).toBeTruthy() // there is no ginisOrganizationName
       expect(assignSpy).not.toHaveBeenCalled()
+
+      getFormDefinitionBySlug.mockReturnValue({ pospID: 'pospIdValue', ginisAssignment: { ginisOrganizationName: 'orgName' } })
 
       prismaMock.forms.findUnique.mockResolvedValue({
         ...formBase,
@@ -513,6 +544,7 @@ describe('GinisService', () => {
       expect(result.requeue).toBeTruthy() // there is no ginisPersonName
       expect(assignSpy).not.toHaveBeenCalled()
 
+      getFormDefinitionBySlug.mockReturnValue({ pospID: 'pospIdValue', ginisAssignment: { ginisOrganizationName: 'orgName', ginisPersonName: 'personName' } })
       prismaMock.forms.findUnique.mockResolvedValue({
         ...formBase,
         ginisDocumentId: 'docId',
@@ -524,6 +556,8 @@ describe('GinisService', () => {
     })
 
     it('should mark as ready for processing', async () => {
+      const { getFormDefinitionBySlug } = require('../../../forms-shared/src/form-utils/definitions')
+      getFormDefinitionBySlug.mockReturnValue({ pospID: 'pospIdValue' })
       prismaMock.forms.findUnique.mockResolvedValue({
         ...formBase,
         ginisState: GinisState.SUBMISSION_ASSIGNED,
@@ -553,6 +587,7 @@ describe('GinisService', () => {
       expect(sendMailSpy).not.toHaveBeenCalled()
 
       jest.resetAllMocks()
+      getFormDefinitionBySlug.mockReturnValue({ pospID: 'pospIdValue' })
       prismaMock.forms.findUnique.mockResolvedValue({
         ...formBase,
         ginisState: GinisState.SUBMISSION_ASSIGNED,

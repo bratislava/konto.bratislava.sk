@@ -2,7 +2,7 @@ import { ConfigService } from '@nestjs/config'
 import { Test, TestingModule } from '@nestjs/testing'
 
 import prismaMock from '../../test/singleton'
-import { jsonSchema, testJsonData, xmlTemplate } from '../__tests__/constants'
+import { testJsonData } from '../__tests__/constants'
 import ConvertService from '../convert/convert.service'
 import JsonXmlConvertService from '../convert/utils-services/json-xml.convert.service'
 import FilesHelper from '../files/files.helper'
@@ -49,6 +49,13 @@ describe('ConvertPdfService', () => {
     createdAt: new Date(),
     updatedAt: new Date(),
   } as const
+
+  beforeAll(async () => {
+    process.env = {
+      ...process.env,
+      MIMETYPE_WHITELIST: 'a b c'
+    }
+  })
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({

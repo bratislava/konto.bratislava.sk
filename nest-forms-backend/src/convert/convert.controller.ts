@@ -59,7 +59,7 @@ export default class ConvertController {
   @ApiOperation({
     summary: '',
     description:
-      'Generates XML form from given JSON data and schema version id. At least one of `formId` and `jsonData` must be provided.',
+      'Generates XML form from given JSON data and form definition slug. At least one of `formId` and `jsonData` must be provided.',
   })
   @ApiResponse({
     status: 200,
@@ -130,7 +130,7 @@ export default class ConvertController {
   @ApiOperation({
     summary: '',
     description:
-      'Generates PDF for a given schema version id and form json data.',
+      'Generates PDF for given form data.',
   })
   @ApiNotFoundResponse({
     status: 404,

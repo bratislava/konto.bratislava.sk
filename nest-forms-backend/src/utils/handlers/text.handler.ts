@@ -1,11 +1,10 @@
-import { Forms } from '@prisma/client'
 import lodash from 'lodash'
 
 import { FormDefinition } from '../../../../forms-shared/src/definitions/form-definitions'
-import { FormWithFiles, FormWithSelectedProperties } from '../types/prisma'
+import { FormWithSelectedProperties } from '../types/prisma'
 
 export const getSubjectTextFromForm = (
-  data: Forms | FormWithSelectedProperties,
+  data: FormWithSelectedProperties,
   formDefinition: FormDefinition,
 ): string => {
   if (!formDefinition.messageSubjectFormat) {
@@ -28,7 +27,7 @@ export const getSubjectTextFromForm = (
 }
 
 export const getFrontendFormTitleFromForm = (
-  data: Forms | FormWithSelectedProperties,
+  data: FormWithSelectedProperties,
   formDefinition: FormDefinition,
 ): string | null => {
   type MinimalUiSchema = {

@@ -1,5 +1,5 @@
 import { Injectable, Logger } from '@nestjs/common'
-import { GenericObjectType, RJSFSchema } from '@rjsf/utils'
+import { GenericObjectType } from '@rjsf/utils'
 import * as cheerio from 'cheerio'
 import { dropRight, find, last } from 'lodash'
 

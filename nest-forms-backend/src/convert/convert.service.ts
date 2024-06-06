@@ -7,6 +7,10 @@ import { Prisma } from '@prisma/client'
 import { GenericObjectType, RJSFSchema, UiSchema } from '@rjsf/utils'
 import * as cheerio from 'cheerio'
 import { Response } from 'express'
+import {
+  FormDefinition,
+  FormDefinitionSlovenskoSk,
+} from '../../../forms-shared/src/definitions/form-definitions'
 import { getFormDefinitionBySlug } from '../../../forms-shared/src/form-utils/definitions'
 import * as jwt from 'jsonwebtoken'
 import puppeteer from 'puppeteer'
@@ -23,6 +27,7 @@ import FormsService from '../forms/forms.service'
 import PrismaService from '../prisma/prisma.service'
 import TaxService from '../tax/tax.service'
 import { ErrorsEnum } from '../utils/global-enums/errors.enum'
+import { JsonSchema } from '../utils/global-forms'
 import ThrowerErrorGuard from '../utils/guards/thrower-error.guard'
 import MinioClientSubservice from '../utils/subservices/minio-client.subservice'
 import { PdfPreviewJwtPayload } from '../utils/types/global'
@@ -36,10 +41,8 @@ import {
   ConvertErrorsEnum,
   ConvertErrorsResponseEnum,
 } from './errors/convert.errors.enum'
-import JsonXmlConvertService from './utils-services/json-xml.convert.service'
-import { JsonSchema } from '../utils/global-forms'
 import { createXmlTemplate } from './utils-services/createXmlTemplate'
-import { FormDefinition, FormDefinitionSlovenskoSk } from '../../../forms-shared/src/definitions/form-definitions'
+import JsonXmlConvertService from './utils-services/json-xml.convert.service'
 
 @Injectable()
 export default class ConvertService {
@@ -63,9 +66,14 @@ export default class ConvertService {
     ico: string | null,
     user?: CognitoGetUserData,
   ): Promise<string> {
-    const formDefinition = getFormDefinitionBySlug<FormDefinitionSlovenskoSk>(data.slug)
+    const formDefinition = getFormDefinitionBySlug<FormDefinitionSlovenskoSk>(
+      data.slug,
+    )
     if (formDefinition === null) {
-      throw this.throwerErrorGuard.NotFoundException(FormsErrorsEnum.FORM_DEFINITION_NOT_FOUND, `${FormsErrorsResponseEnum.FORM_DEFINITION_NOT_FOUND} ${data.slug}`)
+      throw this.throwerErrorGuard.NotFoundException(
+        FormsErrorsEnum.FORM_DEFINITION_NOT_FOUND,
+        `${FormsErrorsResponseEnum.FORM_DEFINITION_NOT_FOUND} ${data.slug}`,
+      )
     }
 
     let jsonFormData = data.jsonData
@@ -105,7 +113,10 @@ export default class ConvertService {
   ): Promise<XmlToJsonResponseDto> {
     const formDefinition = getFormDefinitionBySlug(formDefinitionSlug)
     if (!formDefinition) {
-      throw this.throwerErrorGuard.NotFoundException(FormsErrorsEnum.FORM_DEFINITION_NOT_FOUND, `${FormsErrorsResponseEnum.FORM_DEFINITION_NOT_FOUND} ${formDefinitionSlug}`)
+      throw this.throwerErrorGuard.NotFoundException(
+        FormsErrorsEnum.FORM_DEFINITION_NOT_FOUND,
+        `${FormsErrorsResponseEnum.FORM_DEFINITION_NOT_FOUND} ${formDefinitionSlug}`,
+      )
     }
 
     // xml2js has issues when top level element isn't a single node
@@ -320,7 +331,10 @@ export default class ConvertService {
 
     const formDefinition = getFormDefinitionBySlug(form.formDefinitionSlug)
     if (!formDefinition) {
-      throw this.throwerErrorGuard.NotFoundException(FormsErrorsEnum.FORM_DEFINITION_NOT_FOUND, `${FormsErrorsResponseEnum.FORM_DEFINITION_NOT_FOUND} ${form.formDefinitionSlug}`)
+      throw this.throwerErrorGuard.NotFoundException(
+        FormsErrorsEnum.FORM_DEFINITION_NOT_FOUND,
+        `${FormsErrorsResponseEnum.FORM_DEFINITION_NOT_FOUND} ${form.formDefinitionSlug}`,
+      )
     }
 
     let formJsonData = data.jsonData
@@ -388,9 +402,7 @@ export default class ConvertService {
     res.set({
       'Content-Type': 'application/pdf',
       'Access-Control-Expose-Headers': 'Content-Disposition',
-      'Content-Disposition': `attachment; filename="${
-        form.formDefinitionSlug
-      }.pdf"`,
+      'Content-Disposition': `attachment; filename="${form.formDefinitionSlug}.pdf"`,
     })
 
     return new StreamableFile(responseStream)

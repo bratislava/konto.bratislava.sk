@@ -4,12 +4,17 @@ import * as crypto from 'node:crypto'
 import { Stream } from 'node:stream'
 
 import { Injectable, Logger } from '@nestjs/common'
+import { Forms } from '@prisma/client'
 import axios, { AxiosResponse } from 'axios'
 import mime from 'mime-types'
 import { v1 as uuidv1, v4 as uuidv4 } from 'uuid'
 
 import { CognitoGetUserData } from '../../auth/dtos/cognito.dto'
 import ConvertService from '../../convert/convert.service'
+import {
+  FormsErrorsEnum,
+  FormsErrorsResponseEnum,
+} from '../../forms/forms.errors.enum'
 import PrismaService from '../../prisma/prisma.service'
 import TaxService from '../../tax/tax.service'
 import { ErrorsEnum } from '../../utils/global-enums/errors.enum'
@@ -29,10 +34,8 @@ import {
   NasesErrorsEnum,
   NasesErrorsResponseEnum,
 } from '../nases.errors.enum'
-import { Forms } from '@prisma/client'
 import { getFormDefinitionBySlug } from '../../../../forms-shared/src/form-utils/definitions'
 import { FormDefinitionSlovenskoSk } from '../../../../forms-shared/src/definitions/form-definitions'
-import { FormsErrorsEnum, FormsErrorsResponseEnum } from '../../forms/forms.errors.enum'
 
 @Injectable()
 export default class NasesUtilsService {
@@ -83,9 +86,7 @@ export default class NasesUtilsService {
   }
 
   // TODO error handling of this function
-  private async createAttachmentsIfExists(
-    form: Forms,
-  ): Promise<string> {
+  private async createAttachmentsIfExists(form: Forms): Promise<string> {
     let result = ''
     const files = await this.prismaService.files.findMany({
       where: {
@@ -320,9 +321,14 @@ export default class NasesUtilsService {
     form: Forms,
     senderUri?: string,
   ): Promise<string> {
-    const formDefinition = getFormDefinitionBySlug<FormDefinitionSlovenskoSk>(form.formDefinitionSlug)
+    const formDefinition = getFormDefinitionBySlug<FormDefinitionSlovenskoSk>(
+      form.formDefinitionSlug,
+    )
     if (!formDefinition) {
-      throw this.throwerErrorGuard.NotFoundException(FormsErrorsEnum.FORM_DEFINITION_NOT_FOUND, `${FormsErrorsResponseEnum.FORM_DEFINITION_NOT_FOUND} ${form.formDefinitionSlug}`)
+      throw this.throwerErrorGuard.NotFoundException(
+        FormsErrorsEnum.FORM_DEFINITION_NOT_FOUND,
+        `${FormsErrorsResponseEnum.FORM_DEFINITION_NOT_FOUND} ${form.formDefinitionSlug}`,
+      )
     }
     const { isSigned } = formDefinition
 

@@ -1,7 +1,7 @@
 import { Forms } from '@prisma/client'
-import { FormDefinition } from '../../../../forms-shared/src/definitions/form-definitions'
 import lodash from 'lodash'
 
+import { FormDefinition } from '../../../../forms-shared/src/definitions/form-definitions'
 import { FormWithFiles, FormWithSelectedProperties } from '../types/prisma'
 
 export const getSubjectTextFromForm = (

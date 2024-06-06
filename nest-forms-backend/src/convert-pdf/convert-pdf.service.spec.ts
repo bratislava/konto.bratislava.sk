@@ -53,7 +53,7 @@ describe('ConvertPdfService', () => {
   beforeAll(async () => {
     process.env = {
       ...process.env,
-      MIMETYPE_WHITELIST: 'a b c'
+      MIMETYPE_WHITELIST: 'a b c',
     }
   })
 
@@ -106,7 +106,10 @@ describe('ConvertPdfService', () => {
 
   describe('convert pdf', () => {
     it('calls all services it depends on and does not explode in the process', async () => {
-      const filePath = await convertPdfService.createPdfImageInFormFiles(formId, {} as FormDefinition)
+      const filePath = await convertPdfService.createPdfImageInFormFiles(
+        formId,
+        {} as FormDefinition,
+      )
       expect(filePath).toBe(expectedPdfExportPath)
 
       expect(putObject).toHaveBeenCalled()

@@ -24,7 +24,7 @@ import GinisService from './ginis.service'
 import GinisHelper from './subservices/ginis.helper'
 
 jest.mock('../../../forms-shared/src/form-utils/definitions', () => ({
-  getFormDefinitionBySlug: jest.fn()
+  getFormDefinitionBySlug: jest.fn(),
 }))
 jest.mock('./subservices/ginis.helper')
 jest.mock('../utils/global-services/mailgun/mailgun.service')
@@ -265,7 +265,7 @@ describe('GinisService', () => {
       id: 'id1',
       ginisState: GinisState.CREATED,
       state: FormState.DELIVERED_NASES,
-      formDefinitionSlug: 'slug'
+      formDefinitionSlug: 'slug',
     } as FormWithFiles
 
     it('should error when form does not exist', async () => {
@@ -278,7 +278,9 @@ describe('GinisService', () => {
     })
 
     it('should error when form has no pospId', async () => {
-      const { getFormDefinitionBySlug } = require('../../../forms-shared/src/form-utils/definitions')
+      const {
+        getFormDefinitionBySlug,
+      } = require('../../../forms-shared/src/form-utils/definitions')
       getFormDefinitionBySlug.mockReturnValue({})
 
       prismaMock.forms.findUnique.mockResolvedValue({
@@ -292,7 +294,9 @@ describe('GinisService', () => {
     })
 
     it('should run register if not yet registered', async () => {
-      const { getFormDefinitionBySlug } = require('../../../forms-shared/src/form-utils/definitions')
+      const {
+        getFormDefinitionBySlug,
+      } = require('../../../forms-shared/src/form-utils/definitions')
       getFormDefinitionBySlug.mockReturnValue({ pospID: 'pospIdValue' })
 
       prismaMock.forms.findUnique.mockResolvedValue(formBase)
@@ -329,7 +333,9 @@ describe('GinisService', () => {
     })
 
     it('should upload files', async () => {
-      const { getFormDefinitionBySlug } = require('../../../forms-shared/src/form-utils/definitions')
+      const {
+        getFormDefinitionBySlug,
+      } = require('../../../forms-shared/src/form-utils/definitions')
       getFormDefinitionBySlug.mockReturnValue({ pospID: 'pospIdValue' })
 
       prismaMock.forms.findUnique.mockResolvedValue({
@@ -436,7 +442,9 @@ describe('GinisService', () => {
     })
 
     it('should mark as files uploaded if there are no files', async () => {
-      const { getFormDefinitionBySlug } = require('../../../forms-shared/src/form-utils/definitions')
+      const {
+        getFormDefinitionBySlug,
+      } = require('../../../forms-shared/src/form-utils/definitions')
       getFormDefinitionBySlug.mockReturnValue({ pospID: 'pospIdValue' })
 
       prismaMock.forms.findUnique.mockResolvedValue({
@@ -462,7 +470,9 @@ describe('GinisService', () => {
     })
 
     it('should edit submission if all files are uploaded', async () => {
-      const { getFormDefinitionBySlug } = require('../../../forms-shared/src/form-utils/definitions')
+      const {
+        getFormDefinitionBySlug,
+      } = require('../../../forms-shared/src/form-utils/definitions')
       getFormDefinitionBySlug.mockReturnValue({ pospID: 'pospIdValue' })
 
       prismaMock.forms.findUnique.mockResolvedValue({
@@ -509,7 +519,9 @@ describe('GinisService', () => {
     })
 
     it('should assign submission after edit', async () => {
-      const { getFormDefinitionBySlug } = require('../../../forms-shared/src/form-utils/definitions')
+      const {
+        getFormDefinitionBySlug,
+      } = require('../../../forms-shared/src/form-utils/definitions')
       getFormDefinitionBySlug.mockReturnValue({ pospID: 'pospIdValue' })
       prismaMock.forms.findUnique.mockResolvedValue({
         ...formBase,
@@ -523,7 +535,10 @@ describe('GinisService', () => {
       expect(result.requeue).toBeTruthy() // there is no ginisDocumentId
       expect(assignSpy).not.toHaveBeenCalled()
 
-      getFormDefinitionBySlug.mockReturnValue({ pospID: 'pospIdValue', ginisAssignment: { ginisPersonName: 'personName' } })
+      getFormDefinitionBySlug.mockReturnValue({
+        pospID: 'pospIdValue',
+        ginisAssignment: { ginisPersonName: 'personName' },
+      })
       prismaMock.forms.findUnique.mockResolvedValue({
         ...formBase,
         ginisDocumentId: 'docId',
@@ -533,7 +548,10 @@ describe('GinisService', () => {
       expect(result.requeue).toBeTruthy() // there is no ginisOrganizationName
       expect(assignSpy).not.toHaveBeenCalled()
 
-      getFormDefinitionBySlug.mockReturnValue({ pospID: 'pospIdValue', ginisAssignment: { ginisOrganizationName: 'orgName' } })
+      getFormDefinitionBySlug.mockReturnValue({
+        pospID: 'pospIdValue',
+        ginisAssignment: { ginisOrganizationName: 'orgName' },
+      })
 
       prismaMock.forms.findUnique.mockResolvedValue({
         ...formBase,
@@ -544,7 +562,13 @@ describe('GinisService', () => {
       expect(result.requeue).toBeTruthy() // there is no ginisPersonName
       expect(assignSpy).not.toHaveBeenCalled()
 
-      getFormDefinitionBySlug.mockReturnValue({ pospID: 'pospIdValue', ginisAssignment: { ginisOrganizationName: 'orgName', ginisPersonName: 'personName' } })
+      getFormDefinitionBySlug.mockReturnValue({
+        pospID: 'pospIdValue',
+        ginisAssignment: {
+          ginisOrganizationName: 'orgName',
+          ginisPersonName: 'personName',
+        },
+      })
       prismaMock.forms.findUnique.mockResolvedValue({
         ...formBase,
         ginisDocumentId: 'docId',
@@ -556,7 +580,9 @@ describe('GinisService', () => {
     })
 
     it('should mark as ready for processing', async () => {
-      const { getFormDefinitionBySlug } = require('../../../forms-shared/src/form-utils/definitions')
+      const {
+        getFormDefinitionBySlug,
+      } = require('../../../forms-shared/src/form-utils/definitions')
       getFormDefinitionBySlug.mockReturnValue({ pospID: 'pospIdValue' })
       prismaMock.forms.findUnique.mockResolvedValue({
         ...formBase,

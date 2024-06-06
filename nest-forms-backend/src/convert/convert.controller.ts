@@ -53,9 +53,7 @@ import {
 @ApiBearerAuth()
 @Controller('convert')
 export default class ConvertController {
-  constructor(
-    private readonly convertService: ConvertService,
-  ) {}
+  constructor(private readonly convertService: ConvertService) {}
 
   @ApiOperation({
     summary: '',
@@ -70,7 +68,7 @@ export default class ConvertController {
   @ApiNotFoundResponse({
     status: HttpStatusCode.NotFound,
     description: 'Form definition was not found',
-    type: FormDefinitionNotFoundErrorDto
+    type: FormDefinitionNotFoundErrorDto,
   })
   @ApiBadRequestResponse({
     status: HttpStatusCode.BadRequest,
@@ -113,17 +111,14 @@ export default class ConvertController {
   @ApiNotFoundResponse({
     status: HttpStatusCode.NotFound,
     description: 'Form definition was not found',
-    type: FormDefinitionNotFoundErrorDto
+    type: FormDefinitionNotFoundErrorDto,
   })
   @Post('xml-to-json/:slug')
   async convertXmlToJson(
     @Body() data: XmlToJsonRequestDto,
     @Param('slug') slug: string,
   ): Promise<XmlToJsonResponseDto> {
-    return this.convertService.convertXmlToJson(
-      data.xmlForm,
-      slug,
-    )
+    return this.convertService.convertXmlToJson(data.xmlForm, slug)
   }
 
   @ApiOperation({
@@ -137,13 +132,13 @@ export default class ConvertController {
     schema: {
       oneOf: [
         {
-          $ref: getSchemaPath(FormNotFoundErrorDto)
+          $ref: getSchemaPath(FormNotFoundErrorDto),
         },
         {
-          $ref: getSchemaPath(FormDefinitionNotFoundErrorDto)
-        }
-      ]
-    }
+          $ref: getSchemaPath(FormDefinitionNotFoundErrorDto),
+        },
+      ],
+    },
   })
   @ApiForbiddenResponse({
     status: HttpStatusCode.Forbidden,

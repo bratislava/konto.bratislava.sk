@@ -286,8 +286,8 @@ export default class FilesController {
           $ref: getSchemaPath(FileInScannerNotFoundErrorDto),
         },
         {
-          $ref: getSchemaPath(FormDefinitionNotFoundErrorDto)
-        }
+          $ref: getSchemaPath(FormDefinitionNotFoundErrorDto),
+        },
       ],
     },
   })

@@ -586,8 +586,8 @@ export default class NasesController {
           $ref: getSchemaPath(FormNotFoundErrorDto),
         },
         {
-          $ref: getSchemaPath(FormDefinitionNotFoundErrorDto)
-        }
+          $ref: getSchemaPath(FormDefinitionNotFoundErrorDto),
+        },
       ],
     },
   })

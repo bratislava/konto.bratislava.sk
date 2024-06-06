@@ -427,9 +427,14 @@ export default class GinisService {
       return new Nack(false)
     }
 
-    const formDefinition = getFormDefinitionBySlug<FormDefinitionSlovenskoSk>(form.formDefinitionSlug)
+    const formDefinition = getFormDefinitionBySlug<FormDefinitionSlovenskoSk>(
+      form.formDefinitionSlug,
+    )
     if (!formDefinition) {
-      throw this.throwerErrorGuard.NotFoundException(FormsErrorsEnum.FORM_DEFINITION_NOT_FOUND, `${FormsErrorsResponseEnum.FORM_DEFINITION_NOT_FOUND} ${form.formDefinitionSlug}`)
+      throw this.throwerErrorGuard.NotFoundException(
+        FormsErrorsEnum.FORM_DEFINITION_NOT_FOUND,
+        `${FormsErrorsResponseEnum.FORM_DEFINITION_NOT_FOUND} ${form.formDefinitionSlug}`,
+      )
     }
 
     if (!formDefinition.pospID) {
@@ -558,7 +563,8 @@ export default class GinisService {
       if (data.userData.email) {
         // fallback to messageSubject if title can't be parsed
         const formTitle =
-          getFrontendFormTitleFromForm(form, formDefinition) || getSubjectTextFromForm(form, formDefinition)
+          getFrontendFormTitleFromForm(form, formDefinition) ||
+          getSubjectTextFromForm(form, formDefinition)
         await this.mailgunService.sendEmail({
           template: MailgunTemplateEnum.GINIS_DELIVERED,
           data: {

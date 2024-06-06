@@ -32,7 +32,10 @@ export default class ConvertPdfService {
    * @param formId id of our form object
    * @returns expected path within the bucket, without the bucket itself
    */
-  async getPdfExportFilePathWithoutBucket(formId: string, formDefinition: FormDefinition): Promise<string> {
+  async getPdfExportFilePathWithoutBucket(
+    formId: string,
+    formDefinition: FormDefinition,
+  ): Promise<string> {
     const form = await this.formsService.getUniqueForm(formId)
     if (!form) {
       throw this.throwerErrorGuard.NotFoundException(
@@ -54,7 +57,10 @@ export default class ConvertPdfService {
    * Also saves the file record to the database among the rest fo the form files.
    * @param formId id of the form
    */
-  async createPdfImageInFormFiles(formId: string, formDefinition: FormDefinition): Promise<string> {
+  async createPdfImageInFormFiles(
+    formId: string,
+    formDefinition: FormDefinition,
+  ): Promise<string> {
     const form = await this.formsService.getUniqueForm(formId)
     if (!form) {
       throw this.throwerErrorGuard.NotFoundException(
@@ -64,12 +70,15 @@ export default class ConvertPdfService {
     }
 
     // putObject requires bucket name on it's own
-    const filePath = await this.getPdfExportFilePathWithoutBucket(formId, formDefinition)
+    const filePath = await this.getPdfExportFilePathWithoutBucket(
+      formId,
+      formDefinition,
+    )
 
     const file = await this.convertService.generatePdfV2(
       form.formDataJson,
       formId,
-      formDefinition
+      formDefinition,
     )
 
     await this.minioClientSubservice

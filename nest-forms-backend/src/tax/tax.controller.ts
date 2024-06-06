@@ -6,9 +6,7 @@ import {
   ApiTags,
 } from '@nestjs/swagger'
 
-import {
-  JsonConvertRequestDto,
-} from '../convert/dtos/form.dto'
+import { JsonConvertRequestDto } from '../convert/dtos/form.dto'
 import {
   TaxJsonToXmlRequestDto,
   TaxJsonToXmlResponseDto,

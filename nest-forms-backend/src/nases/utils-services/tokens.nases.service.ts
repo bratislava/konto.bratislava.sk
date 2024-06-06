@@ -18,7 +18,6 @@ import {
 import PrismaService from '../../prisma/prisma.service'
 import TaxService from '../../tax/tax.service'
 import { ErrorsEnum } from '../../utils/global-enums/errors.enum'
-import { JsonSchema } from '../../utils/global-forms'
 import ThrowerErrorGuard from '../../utils/guards/thrower-error.guard'
 import alertError from '../../utils/logging'
 import MinioClientSubservice from '../../utils/subservices/minio-client.subservice'
@@ -302,8 +301,8 @@ export default class NasesUtilsService {
   }
 
   /**
-   * Dynamically creates a subject of the submission. If there is not a subject format in the schema version,
-   * it uses default from the schema.
+   * Dynamically creates a subject of the submission. If there is not a subject format in the form definition,
+   * it uses default from the form definition.
    *
    * It replaces an occurence of "{path}" with a value from data.formDataJson, at the given path. There are three possibilities:
    * - If there is a string, it just prints the string
@@ -410,7 +409,7 @@ export default class NasesUtilsService {
     let attachments = ''
 
     if (isSigned) {
-      subject = 'Podávanie daňového priznanie k dani z nehnuteľností' // TODO fix in schema, quickfix here data?.schemaVersion.schema.messageSubject
+      subject = 'Podávanie daňového priznanie k dani z nehnuteľností' // TODO fix in formDefinition, quickfix here formDefinition.messageSubjectDefault
       mimeType = 'application/vnd.etsi.asic-e+zip'
       encoding = 'Base64'
       attachments = await this.createAttachmentsIfExists(form)

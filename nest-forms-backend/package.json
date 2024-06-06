@@ -167,8 +167,5 @@
     "testPathIgnorePatterns": [
       "<rootDir>/nases/__tests__"
     ]
-  },
-  "prisma": {
-    "seed": "ts-node prisma/seed.ts"
   }
 }

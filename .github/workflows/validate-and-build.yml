@@ -34,7 +34,7 @@ jobs:
     name: validate next
     needs: conditions
     if: needs.conditions.outputs.next == 'true'
-    uses: bratislava/github-actions/.github/workflows/validate-typescript.yml@stable
+    uses: bratislava/github-actions/.github/workflows/validate-typescript.yml@beta
     with:
       directory: next/
     permissions: write-all

@@ -84,7 +84,7 @@ export default class JsonXmlConvertService {
     currentPath: string[],
     cheerioInstance: cheerio.CheerioAPI,
     node: unknown,
-    jsonSchema?: RJSFSchema,
+    jsonSchema?: JsonSchema,
   ): void {
     const nodeName = this.firstCharToUpper(last(currentPath))
     const parentPath = dropRight(currentPath).join(' ')
@@ -136,7 +136,7 @@ export default class JsonXmlConvertService {
       }
     } else if (node && typeof node === 'string') {
       let stringNode: string = node
-      if (jsonSchema) {
+      if (jsonSchema && jsonSchema !== true) {
         const format =
           jsonSchema.type === 'array'
             ? this.getFormatFromItems(jsonSchema.items)

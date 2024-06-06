@@ -91,6 +91,9 @@ export default class NasesUtilsService {
         formId: form.id,
       },
     })
+
+    const formDefinition = getFormDefinitionBySlug(form.formDefinitionSlug)
+
     // eslint-disable-next-line no-restricted-syntax
     for (const file of files) {
       const mimeType = mime.lookup(file.fileName) || 'application/pdf'
@@ -103,7 +106,7 @@ export default class NasesUtilsService {
       const fileBase64 = fileBuffer.toString('base64')
       result += `<Object Id="${file.id}" IsSigned="false" Name="${file.fileName}" Description="ATTACHMENT" Class="ATTACHMENT" MimeType="${mimeType}" Encoding="Base64">${fileBase64}</Object>`
     }
-    if (form.schemaVersion?.pospID === process.env.TAX_FORM_POSP_ID) {
+    if (formDefinition?.pospID === process.env.TAX_FORM_POSP_ID) {
       try {
         const base64FormPdf = await this.taxService.getFilledInPdfBase64(
           form.formDataJson,
@@ -386,7 +389,7 @@ export default class NasesUtilsService {
     //   </Body>
     // </SKTalkMessage>
     // `
-    const { pospID, pospVersion, schema, formDescription } = formDefinition
+    const { pospID, pospVersion } = formDefinition
     const senderId = senderUri ?? process.env.NASES_SENDER_URI ?? ''
     const correlationId = uuidv4()
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
@@ -426,9 +429,7 @@ export default class NasesUtilsService {
                   <MessageSubject>${subject}</MessageSubject>
                   <Object Id="${form.id}" IsSigned="${
                     isSigned ? 'true' : 'false'
-                  }" Name="${schema.formName}" Description="${
-                    formDescription ?? ''
-                  }" Class="FORM" MimeType="${mimeType}" Encoding="${encoding}">${message}</Object>
+                  }" Name="${formDefinition.title}" Description="" Class="FORM" MimeType="${mimeType}" Encoding="${encoding}">${message}</Object>
     ${attachments}
                 </MessageContainer>
               </Body>

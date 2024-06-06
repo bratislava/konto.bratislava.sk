@@ -37,6 +37,9 @@ import {
   ConvertErrorsResponseEnum,
 } from './errors/convert.errors.enum'
 import JsonXmlConvertService from './utils-services/json-xml.convert.service'
+import { JsonSchema } from '../utils/global-forms'
+import { createXmlTemplate } from './utils-services/createXmlTemplate'
+import { FormDefinitionSlovenskoSk } from '../../../forms-shared/src/definitions/form-definitions'
 
 @Injectable()
 export default class ConvertService {
@@ -60,7 +63,7 @@ export default class ConvertService {
     ico: string | null,
     user?: CognitoGetUserData,
   ): Promise<string> {
-    const formDefinition = getFormDefinitionBySlug(data.slug)
+    const formDefinition = getFormDefinitionBySlug<FormDefinitionSlovenskoSk>(data.slug)
     if (formDefinition === null) {
       throw new Error() // TODO
     }
@@ -82,7 +85,8 @@ export default class ConvertService {
       jsonFormData = form.formDataJson
     }
 
-    const $ = cheerio.load(formDefinition.schemas.xmlTemplate, {
+    const xmlTemplate = createXmlTemplate(formDefinition)
+    const $ = cheerio.load(xmlTemplate, {
       xmlMode: true,
       decodeEntities: false,
     })
@@ -90,7 +94,7 @@ export default class ConvertService {
       ['E-form', 'Body'],
       $,
       jsonFormData,
-      formDefinition.schemas.schema,
+      formDefinition.schemas.schema as JsonSchema,
     )
     return $('E-form').prop('outerHTML') ?? ''
   }
@@ -116,7 +120,7 @@ export default class ConvertService {
     this.jsonXmlService.removeNeedlessXmlTransformArraysRecursive(
       body,
       [],
-      schema,
+      schema as JsonSchema,
     )
     return {
       jsonForm: body,

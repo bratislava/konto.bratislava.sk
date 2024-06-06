@@ -24,13 +24,14 @@ type FormDefinitionBase = {
   termsAndConditions: string
   messageSubjectFormat?: string
   messageSubjectDefault: string
-  ginisAssignment?: GinisAssignment // TODO only in FormDefinitionSlovenskoSk
-  pospID?: string // TODO only in FormDefinitionSlovenskoSk
+  isSigned: boolean
+  pospID?: string
 }
 
-type FormDefinitionSlovenskoSk = FormDefinitionBase & {
+export type FormDefinitionSlovenskoSk = FormDefinitionBase & {
   type: FormDefinitionType.SlovenskoSk | FormDefinitionType.Tax
   pospVersion: string
+  ginisAssignment?: GinisAssignment
 }
 
 type FormDefinitionEmail = FormDefinitionBase & {
@@ -54,7 +55,8 @@ export const formDefinitions: FormDefinition[] = [
     ginisAssignment: {
       ginisOrganizationName: 'OUIC',
       ginisPersonName: "Vícenová Marcela"
-    }
+    },
+    isSigned: false,
   },
   {
     type: FormDefinitionType.SlovenskoSk,
@@ -69,7 +71,8 @@ export const formDefinitions: FormDefinition[] = [
     ginisAssignment: {
       ginisOrganizationName: 'OUIC',
       ginisPersonName: "Vícenová Marcela"
-    }
+    },
+    isSigned: false,
   },
   {
     type: FormDefinitionType.SlovenskoSk,
@@ -80,7 +83,8 @@ export const formDefinitions: FormDefinition[] = [
     pospVersion: '1.0',
     termsAndConditions: generalTermsAndConditions,
     messageSubjectFormat: 'Registrácia - {predzahradka.typRegistracie} predzáhradka',
-    messageSubjectDefault: 'Registrácia predzáhradky'
+    messageSubjectDefault: 'Registrácia predzáhradky',
+    isSigned: false,
   },
   {
     type: FormDefinitionType.SlovenskoSk,
@@ -91,7 +95,8 @@ export const formDefinitions: FormDefinition[] = [
     pospVersion: '1.0',
     termsAndConditions: generalTermsAndConditions,
     messageSubjectDefault: 'Žiadosť o komunitnú záhradu',
-    messageSubjectFormat: 'Žiadosť o komunitnú záhradu - {pozemok.typPozemku} mestský pozemok'
+    messageSubjectFormat: 'Žiadosť o komunitnú záhradu - {pozemok.typPozemku} mestský pozemok',
+    isSigned: false,
   },
   {
     type: FormDefinitionType.Tax,
@@ -101,6 +106,7 @@ export const formDefinitions: FormDefinition[] = [
     pospID: 'esmao.eforms.bratislava.obec_024',
     pospVersion: '201501.2',
     termsAndConditions: taxTermsAndConditions,
-    messageSubjectDefault: 'Priznanie k dani z nehnuteľností'
+    messageSubjectDefault: 'Priznanie k dani z nehnuteľností',
+    isSigned: true,
   },
 ]

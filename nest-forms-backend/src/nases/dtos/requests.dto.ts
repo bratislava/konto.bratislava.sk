@@ -52,7 +52,7 @@ export class CreateFormRequestDto {
   })
   @IsNotEmpty()
   @IsString()
-  declare slug: string
+  declare formDefinitionSlug: string
 }
 
 /* eslint-disable pii/no-email */

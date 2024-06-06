@@ -8,7 +8,6 @@ import {
 
 import {
   JsonConvertRequestDto,
-  JsonToXmlResponseDto,
 } from '../convert/dtos/form.dto'
 import {
   TaxJsonToXmlRequestDto,
@@ -29,7 +28,7 @@ export default class TaxController {
   @ApiResponse({
     status: 200,
     description: 'Return XML form',
-    type: JsonToXmlResponseDto,
+    type: String,
   })
   @ApiBadRequestResponse({
     status: 400,

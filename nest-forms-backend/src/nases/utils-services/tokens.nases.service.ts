@@ -30,6 +30,8 @@ import {
   NasesErrorsResponseEnum,
 } from '../nases.errors.enum'
 import { Forms } from '@prisma/client'
+import { getFormDefinitionBySlug } from '../../../../forms-shared/src/form-utils/definitions'
+import { FormDefinitionSlovenskoSk } from '../../../../forms-shared/src/definitions/form-definitions'
 
 @Injectable()
 export default class NasesUtilsService {
@@ -311,30 +313,30 @@ export default class NasesUtilsService {
    */
 
   private async createEnvelopeSendMessage(
-    data: Forms,
+    form: Forms,
     senderUri?: string,
   ): Promise<string> {
-    const { xmlTemplate, jsonSchema, isSigned } = data.schemaVersion
-
-    if (jsonSchema === null) {
-      throw this.throwerErrorGuard.UnprocessableEntityException(
-        ErrorsEnum.UNPROCESSABLE_ENTITY_ERROR,
-        `Json schema for schema version with id ${data.schemaVersionId} is null.`,
-      )
+    const formDefinition = getFormDefinitionBySlug<FormDefinitionSlovenskoSk>(form.formDefinitionSlug)
+    if (!formDefinition) {
+      throw new Error() //
     }
+    const { schemas, isSigned } = formDefinition
 
     let message: string | null = null
 
-    if (data.formDataBase64) {
-      message = data.formDataBase64
+    if (form.formDataBase64) {
+      message = form.formDataBase64
     }
     if (!isSigned) {
       try {
-        message = this.convertService.convertJsonToXml(
-          data.formDataJson,
-          xmlTemplate,
-          jsonSchema as JsonSchema,
-        ).xmlForm
+        message = await this.convertService.convertJsonToXmlV2(
+          {
+            formId: form.id,
+            slug: form.formDefinitionSlug,
+            jsonData: form.formDataJson,
+          },
+          null,
+        )
       } catch (error) {
         throw this.throwerErrorGuard.InternalServerErrorException(
           ErrorsEnum.INTERNAL_SERVER_ERROR,
@@ -384,12 +386,12 @@ export default class NasesUtilsService {
     //   </Body>
     // </SKTalkMessage>
     // `
-    const { pospID, pospVersion, schema, formDescription } = data.schemaVersion
+    const { pospID, pospVersion, schema, formDescription } = formDefinition
     const senderId = senderUri ?? process.env.NASES_SENDER_URI ?? ''
     const correlationId = uuidv4()
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const objectId = uuidv4()
-    let subject: string = data.id
+    let subject: string = form.id
     let mimeType = 'application/x-eform-xml'
     let encoding = 'XML'
     let attachments = ''
@@ -398,7 +400,7 @@ export default class NasesUtilsService {
       subject = 'Podávanie daňového priznanie k dani z nehnuteľností' // TODO fix in schema, quickfix here data?.schemaVersion.schema.messageSubject
       mimeType = 'application/vnd.etsi.asic-e+zip'
       encoding = 'Base64'
-      attachments = await this.createAttachmentsIfExists(data)
+      attachments = await this.createAttachmentsIfExists(form)
     }
     envelope = `
             <?xml version="1.0" encoding="utf-8"?>
@@ -409,20 +411,20 @@ export default class NasesUtilsService {
                   <Class>EGOV_APPLICATION</Class>
                   <PospID>${pospID}</PospID>
                   <PospVersion>${pospVersion}</PospVersion>
-                  <MessageID>${data.id}</MessageID>
+                  <MessageID>${form.id}</MessageID>
                   <CorrelationID>${correlationId}</CorrelationID>
                 </MessageInfo>
               </Header>
               <Body>
                 <MessageContainer xmlns="http://schemas.gov.sk/core/MessageContainer/1.0">
-                  <MessageId>${data.id}</MessageId>
+                  <MessageId>${form.id}</MessageId>
                   <SenderId>${senderId}</SenderId>
                   <RecipientId>${
                     process.env.NASES_RECIPIENT_URI ?? ''
                   }</RecipientId>
                   <MessageType>${pospID}</MessageType>
                   <MessageSubject>${subject}</MessageSubject>
-                  <Object Id="${data.id}" IsSigned="${
+                  <Object Id="${form.id}" IsSigned="${
                     isSigned ? 'true' : 'false'
                   }" Name="${schema.formName}" Description="${
                     formDescription ?? ''

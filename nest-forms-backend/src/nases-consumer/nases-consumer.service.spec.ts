@@ -27,6 +27,7 @@ import MinioClientSubservice from '../utils/subservices/minio-client.subservice'
 import { FormWithFiles } from '../utils/types/prisma'
 import NasesConsumerHelper from './nases-consumer.helper'
 import NasesConsumerService from './nases-consumer.service'
+import { FormDefinition } from '../../../forms-shared/src/definitions/form-definitions'
 
 jest.mock('../rabbitmq-client/rabbitmq-client.service')
 jest.mock('../files/files.service')
@@ -159,6 +160,7 @@ describe('NasesConsumerService', () => {
             firstName: 'Tester',
           },
         },
+        {} as FormDefinition,
         '',
       )
 
@@ -193,6 +195,7 @@ describe('NasesConsumerService', () => {
             firstName: 'Tester',
           },
         },
+        {} as FormDefinition,
         '',
       )
 

@@ -35,6 +35,7 @@ import {
   GinisUploadInfo,
 } from './dtos/ginis.response.dto'
 import GinisHelper from './subservices/ginis.helper'
+import { FormDefinitionSlovenskoSk } from '../../../forms-shared/src/definitions/form-definitions'
 
 const UPLOAD_QUEUE = 'submission.upload'
 const REGISTER_SUBMISSION_QUEUE = 'submission.register'
@@ -425,7 +426,7 @@ export default class GinisService {
       return new Nack(false)
     }
 
-    const formDefinition = getFormDefinitionBySlug(form.slug)
+    const formDefinition = getFormDefinitionBySlug<FormDefinitionSlovenskoSk>(form.formDefinitionSlug)
     if (!formDefinition) {
       throw new Error() // TODO
     }
@@ -563,7 +564,7 @@ export default class GinisService {
             formId: form.id,
             firstName: data.userData.firstName,
             messageSubject: formTitle,
-            slug: form.slug,
+            slug: form.formDefinitionSlug,
           },
           to: data.userData.email,
         })

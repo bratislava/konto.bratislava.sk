@@ -12,38 +12,38 @@ datasource db {
 }
 
 model Forms {
-  id               String         @id @default(uuid())
-  createdAt        DateTime       @default(now())
-  updatedAt        DateTime       @updatedAt
+  id                 String         @id @default(uuid())
+  createdAt          DateTime       @default(now())
+  updatedAt          DateTime       @updatedAt
   // dotecie z ginisu neskor
-  externalId       String?
+  externalId         String?
   // z ba konta ale nemusi
-  userExternalId   String?        @db.Uuid
+  userExternalId     String?        @db.Uuid
   // same as above
-  email            String?
+  email              String?
   // nases id
-  mainUri          String?
-  actorUri         String?
-  ownerType        FormOwnerType?
-  ico              String?
-  state            FormState      @default(DRAFT)
-  error            FormError      @default(NONE)
-  formDataJson     Json?
-  formDataGinis    String?
-  formDataBase64   String?
+  mainUri            String?
+  actorUri           String?
+  ownerType          FormOwnerType?
+  ico                String?
+  state              FormState      @default(DRAFT)
+  error              FormError      @default(NONE)
+  formDataJson       Json?
+  formDataGinis      String?
+  formDataBase64     String?
   // ID from Ginis, which is generated after registering the submission
-  ginisDocumentId  String?        @unique
+  ginisDocumentId    String?        @unique
   // nases id FO, PO, alebo mesto cez tech. ucet
-  senderId         String?
+  senderId           String?
   // always BA
-  recipientId      String?
+  recipientId        String?
   // kedy to bolo podane
-  finishSubmission DateTime?
-  slug             String
+  finishSubmission   DateTime?
+  formDefinitionSlug String
   // relation to files
-  files            Files[]
-  archived         Boolean        @default(false)
-  ginisState       GinisState     @default(CREATED)
+  files              Files[]
+  archived           Boolean        @default(false)
+  ginisState         GinisState     @default(CREATED)
 }
 
 enum GinisState {

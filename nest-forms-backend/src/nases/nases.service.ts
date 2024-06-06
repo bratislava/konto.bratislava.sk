@@ -115,7 +115,7 @@ export default class NasesService {
             : undefined,
     }
     const result = await this.formsService.createForm(data)
-    const formDefinition = getFormDefinitionBySlug(result.slug)
+    const formDefinition = getFormDefinitionBySlug(result.formDefinitionSlug)
     if (!formDefinition) {
       throw new Error() // TODO
     }
@@ -179,7 +179,7 @@ export default class NasesService {
     userExternalId?: string,
   ): Promise<GetFormResponseDto> {
     const form = await this.formsService.getForm(id, ico, userExternalId)
-    const formDefinition = getFormDefinitionBySlug(form.slug)
+    const formDefinition = getFormDefinitionBySlug(form.formDefinitionSlug)
     if (!formDefinition) {
       throw new Error() // TODO
     }
@@ -271,7 +271,7 @@ export default class NasesService {
     user: CognitoGetUserData,
   ): Promise<SendFormResponseDto> {
     const form = await this.formsService.checkFormBeforeSending(id)
-    const formDefinition = getFormDefinitionBySlug(form.slug)
+    const formDefinition = getFormDefinitionBySlug(form.formDefinitionSlug)
     if (!formDefinition) {
       throw new Error() // TODO
     }
@@ -358,12 +358,16 @@ export default class NasesService {
         NasesErrorsResponseEnum.FORBIDDEN_SEND,
       )
     }
-
+ 
+    const formDefinition = getFormDefinitionBySlug(form.formDefinitionSlug)
+    if (!formDefinition) {
+      throw new Error() // TODO
+    }
     // TODO - rethink/address, skipping formData validation for is signed as in this step, the form data can be different from what we are sending anyway
     if (
-      !form.schemaVersion.isSigned &&
+      !formDefinition.isSigned &&
       !this.formsValidator.validateFormData(
-        form.schemaVersion.jsonSchema as RJSFSchema,
+        formDefinition.schemas.schema,
         form.formDataJson,
         id,
       )
@@ -403,6 +407,7 @@ export default class NasesService {
       jwt,
       form,
       data,
+      formDefinition,
       user.sub,
     )
 

@@ -40,7 +40,7 @@ export default class ConvertPdfService {
         `${FormsErrorsResponseEnum.FORM_NOT_FOUND_ERROR} id: ${formId}.`,
       )
     }
-    const formDefinition = getFormDefinitionBySlug(form.slug)
+    const formDefinition = getFormDefinitionBySlug(form.formDefinitionSlug)
     if (!formDefinition) {
       throw new Error() // TODO
     }
@@ -72,7 +72,7 @@ export default class ConvertPdfService {
         `${FormsErrorsResponseEnum.FORM_NOT_FOUND_ERROR} id: ${formId}.`,
       )
     }
-    const formDefinition = getFormDefinitionBySlug(form.slug)
+    const formDefinition = getFormDefinitionBySlug(form.formDefinitionSlug)
     if (!formDefinition) {
       throw new Error() // TODO
     }

@@ -161,7 +161,7 @@ export default class FormsService {
       )
     }
 
-    const formDefinition = getFormDefinitionBySlug(form.slug)
+    const formDefinition = getFormDefinitionBySlug(form.formDefinitionSlug)
     if (!formDefinition) {
       throw new Error() // TODO
     }
@@ -252,14 +252,14 @@ export default class FormsService {
             state: true,
             error: true,
             formDataJson: true,
-            slug: true,
+            formDefinitionSlug: true,
           },
         })
       : []
 
     const dataWithLatestFlag: GetFormResponseSimpleDto[] = []
     Object.values(data).forEach((form) => {
-      const formDefinition = getFormDefinitionBySlug(form.slug)
+      const formDefinition = getFormDefinitionBySlug(form.formDefinitionSlug)
       if (!formDefinition) {
         throw new Error() // TODO
       }

@@ -299,7 +299,7 @@ export default class FilesHelper {
   }
 
   forms2formInfo(form: Forms): FormInfo {
-    const formDefinition = getFormDefinitionBySlug(form.slug)
+    const formDefinition = getFormDefinitionBySlug(form.formDefinitionSlug)
     if (!formDefinition) {
       throw new Error() // TODO
     }

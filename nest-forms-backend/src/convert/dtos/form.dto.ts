@@ -52,15 +52,6 @@ export class JsonToXmlV2RequestDto {
   jsonData?: Prisma.JsonValue
 }
 
-export class JsonToXmlResponseDto {
-  @ApiProperty({
-    description: 'Form values in XML',
-    example: XML_FORM_EXAMPLE,
-  })
-  @IsString()
-  xmlForm!: string
-}
-
 export class XmlToJsonRequestDto {
   @ApiProperty({
     description: 'Form values in XML',

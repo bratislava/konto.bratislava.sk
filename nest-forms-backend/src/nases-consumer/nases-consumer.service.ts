@@ -23,6 +23,8 @@ import {
   RabbitPayloadUserDataDto,
 } from './nases-consumer.dto'
 import { CheckAttachmentsEnum } from './nases-consumer.enum'
+import { getFormDefinitionBySlug } from '../../../forms-shared/src/form-utils/definitions'
+import { FormDefinition, FormDefinitionSlovenskoSk } from '../../../forms-shared/src/definitions/form-definitions'
 
 @Injectable()
 export default class NasesConsumerService {
@@ -84,11 +86,16 @@ export default class NasesConsumerService {
       `All files are in final state, sending message to nases for formId: ${data.formId}`,
     )
 
+    const formDefinition = getFormDefinitionBySlug(form.formDefinitionSlug)
+    if (!formDefinition) {
+      throw new Error()
+    }
+
     const jwt = this.nasesUtilsService.createTechnicalAccountJwtToken()
-    const isSent = await this.sendToNasesAndUpdateState(jwt, form, data)
+    const isSent = await this.sendToNasesAndUpdateState(jwt, form, data, formDefinition)
     // fallback to messageSubject if title can't be parsed
     const formTitle =
-      getFrontendFormTitleFromForm(form) || getSubjectTextFromForm(form)
+      getFrontendFormTitleFromForm(form, formDefinition) || getSubjectTextFromForm(form, formDefinition)
     if (isSent) {
       const toEmail = data.userData.email || form.email
       if (toEmail) {
@@ -99,7 +106,7 @@ export default class NasesConsumerService {
             formId: form.id,
             messageSubject: formTitle,
             firstName: data.userData.firstName,
-            slug: form.slug,
+            slug: form.formDefinitionSlug,
           },
         })
       }
@@ -115,7 +122,7 @@ export default class NasesConsumerService {
             formId: form.id,
             messageSubject: formTitle,
             firstName: data.userData.firstName,
-            slug: form.slug,
+            slug: form.formDefinitionSlug,
           },
         })
       }
@@ -136,6 +143,7 @@ export default class NasesConsumerService {
     jwt: string,
     form: Forms,
     data: RabbitPayloadDto,
+    formDefinition: FormDefinition,
     senderUri?: string,
   ): Promise<boolean> {
     // TODO find a nicer place to do this
@@ -177,7 +185,7 @@ export default class NasesConsumerService {
     // Start checking if the message is in Nases
 
     // TODO this is only because of is signed is only for tax from properties, (this if should be removed after integration ginis / noris)
-    if (!form.schemaVersion.isSigned) {
+    if (!formDefinition.isSigned) {
       await this.rabbitmqClientService.publishNasesCheck({
         formId: data.formId,
         tries: 0,
@@ -247,9 +255,15 @@ export default class NasesConsumerService {
       })
       if (formAttachmentsReady.error === 'INFECTED_FILES') {
         const toEmail = data.userData.email || form.email
+
+        const formDefinition = getFormDefinitionBySlug(form.formDefinitionSlug)
+        if (!formDefinition) {
+          throw new Error()
+        }
+
         // fallback to messageSubject if title can't be parsed
         const formTitle =
-          getFrontendFormTitleFromForm(form) || getSubjectTextFromForm(form)
+          getFrontendFormTitleFromForm(form, formDefinition) || getSubjectTextFromForm(form, formDefinition)
         if (toEmail) {
           await this.mailgunService.sendEmail({
             to: toEmail,
@@ -258,7 +272,7 @@ export default class NasesConsumerService {
               formId: form.id,
               messageSubject: formTitle,
               firstName: data.userData.firstName,
-              slug: form.slug,
+              slug: form.formDefinitionSlug,
             },
           })
         }

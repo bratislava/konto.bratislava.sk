@@ -10,7 +10,7 @@ describe('getSubjectTextFromForm', () => {
   it('should return message subject if there is no format', () => {
     const result = getSubjectTextFromForm(
       {
-        slug: 'no-format',
+        formDefinitionSlug: 'no-format',
       } as Forms,
       { messageSubjectDefault: 'Subject' } as FormDefinition,
     )
@@ -23,11 +23,8 @@ describe('getSubjectTextFromForm', () => {
         data1: { data2: 'data2Val' },
         data3: 'data3Val',
       } as Prisma.JsonValue,
-      schemaVersion: {
-        schema: { messageSubject: 'Subject' },
-        messageSubjectFormat: 'Subject {data1.data2} value {data3}',
-      },
-    } as Forms)
+    } as Forms,
+  {} as FormDefinition)
     expect(result).toBe('Subject data2Val value data3Val')
   })
 
@@ -37,11 +34,8 @@ describe('getSubjectTextFromForm', () => {
         data1: { data2: { data4: 'data4Val' } },
         data3: 'data3Val',
       } as Prisma.JsonValue,
-      schemaVersion: {
-        schema: { messageSubject: 'Subject' },
-        messageSubjectFormat: 'Subject {data1.data2} value {data3}',
-      },
-    } as Forms)
+    } as Forms,
+    {} as FormDefinition)
     expect(result).toBe('Subject  value data3Val')
   })
 
@@ -51,7 +45,8 @@ describe('getSubjectTextFromForm', () => {
         data1: {},
         data3: 'data3Val',
       } as Prisma.JsonValue,
-    } as Forms)
+    } as Forms,
+    {} as FormDefinition)
     expect(result).toBe('Subject  value data3Val')
   })
 
@@ -61,7 +56,8 @@ describe('getSubjectTextFromForm', () => {
         data1: { data2: ['data2_1', 'data2_2', 'data2_3'] },
         data3: 'data3Val',
       } as Prisma.JsonValue,
-    } as Forms)
+    } as Forms,
+    {} as FormDefinition)
     expect(result).toBe('Subject data2_1, data2_2, data2_3 value data3Val')
   })
 
@@ -71,7 +67,8 @@ describe('getSubjectTextFromForm', () => {
         data1: { data2: ['data2_1', 'data2_2', { data4: 'something' }] },
         data3: 'data3Val',
       } as Prisma.JsonValue,
-    } as Forms)
+    } as Forms,
+    {} as FormDefinition)
     expect(result).toBe('Subject  value data3Val')
   })
 })
@@ -102,15 +99,12 @@ describe('getFrontendFormTitleFromForm', () => {
   } as unknown as Forms
 
   it('should return correct title when available in uiSchema', () => {
-    const result = getFrontendFormTitleFromForm(data)
+    const result = getFrontendFormTitleFromForm(data, {} as FormDefinition)
     expect(result).toBe(title)
   })
 
   it('should be fine without uiSchema', () => {
-    const result = getFrontendFormTitleFromForm({
-      ...data,
-      schemaVersion: {},
-    } as Forms)
+    const result = getFrontendFormTitleFromForm(data, {} as FormDefinition)
     expect(result).toBe(result)
   })
 
@@ -118,21 +112,13 @@ describe('getFrontendFormTitleFromForm', () => {
     const result = getFrontendFormTitleFromForm({
       ...data,
       formDataJson: {},
-    })
+    },
+    {} as FormDefinition)
     expect(result).toBe(titleFallback)
   })
 
   it('should return null if not given fallback', () => {
-    const result = getFrontendFormTitleFromForm({
-      data: {},
-      schemaVersion: {
-        uiSchema: {
-          'ui:options': {
-            titlePath,
-          },
-        },
-      },
-    } as unknown as Forms)
+    const result = getFrontendFormTitleFromForm({} as Forms, {} as FormDefinition)
     expect(result).toBeNull()
   })
 })

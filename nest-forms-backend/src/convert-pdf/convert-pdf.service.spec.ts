@@ -16,6 +16,7 @@ import ThrowerErrorGuard from '../utils/guards/thrower-error.guard'
 import MinioClientSubservice from '../utils/subservices/minio-client.subservice'
 import ConvertPdfService from './convert-pdf.service'
 import { FormDefinition } from '../../../forms-shared/src/definitions/form-definitions'
+import { Forms } from '@prisma/client'
 
 jest.mock('../files/files.service')
 
@@ -81,13 +82,10 @@ describe('ConvertPdfService', () => {
     filesHelper = module.get<FilesHelper>(FilesHelper)
     convertService = module.get<ConvertService>(ConvertService)
 
-    // TODO did not find a way to mock with 'include' of schemaVersion and valid ts typing
-    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-    // @ts-ignore
     prismaMock.forms.findUnique.mockResolvedValue({
       id: formId,
       formDataJson: testJsonData,
-    })
+    } as unknown as Forms)
 
     // mocks default of not finding an existing file when uploading
     prismaMock.files.findMany.mockResolvedValue([])

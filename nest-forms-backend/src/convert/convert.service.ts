@@ -10,6 +10,7 @@ import { Response } from 'express'
 import {
   FormDefinition,
   FormDefinitionSlovenskoSk,
+  FormDefinitionType,
 } from '../../../forms-shared/src/definitions/form-definitions'
 import { getFormDefinitionBySlug } from '../../../forms-shared/src/form-utils/definitions'
 import * as jwt from 'jsonwebtoken'
@@ -66,13 +67,19 @@ export default class ConvertService {
     ico: string | null,
     user?: CognitoGetUserData,
   ): Promise<string> {
-    const formDefinition = getFormDefinitionBySlug<FormDefinitionSlovenskoSk>(
+    const formDefinition = getFormDefinitionBySlug(
       data.slug,
     )
     if (formDefinition === null) {
       throw this.throwerErrorGuard.NotFoundException(
         FormsErrorsEnum.FORM_DEFINITION_NOT_FOUND,
         `${FormsErrorsResponseEnum.FORM_DEFINITION_NOT_FOUND} ${data.slug}`,
+      )
+    }
+    if (formDefinition.type !== FormDefinitionType.SlovenskoSk && formDefinition.type !== FormDefinitionType.Tax) {
+      throw this.throwerErrorGuard.UnprocessableEntityException(
+        FormsErrorsEnum.FORM_DEFINITION_GOT_EMAIL,
+        FormsErrorsResponseEnum.FORM_DEFINITION_GOT_EMAIL,
       )
     }
 

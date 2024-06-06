@@ -21,6 +21,7 @@ import {
   ApiResponse,
   ApiTags,
   ApiUnauthorizedResponse,
+  ApiUnprocessableEntityResponse,
   getSchemaPath,
 } from '@nestjs/swagger'
 import { Forms } from '@prisma/client'
@@ -35,6 +36,7 @@ import {
 import FormDeleteResponseDto from '../forms/dtos/forms.responses.dto'
 import {
   FormDataInvalidErrorDto,
+  FormDefinitionGotEmailErrorDto,
   FormDefinitionNotFoundErrorDto,
   FormIsOwnedBySomeoneElseErrorDto,
   FormNotEditableErrorDto,
@@ -624,6 +626,11 @@ export default class NasesController {
     description: 'Provided data is not sendable, usually it is not valid.',
     type: FormDataInvalidErrorDto,
   })
+  @ApiUnprocessableEntityResponse({
+    status: HttpStatus.UNPROCESSABLE_ENTITY,
+    description: 'Got wrong type of form definition for its slug.',
+    type: FormDefinitionGotEmailErrorDto
+  })
   @UseGuards(new CognitoGuard(true))
   @Post('eid/send-form/:id')
   async sendFormEid(
@@ -786,6 +793,11 @@ export default class NasesController {
     status: 406,
     description: 'Provided data is not sendable, usually it is not valid.',
     type: FormDataInvalidErrorDto,
+  })
+  @ApiUnprocessableEntityResponse({
+    status: HttpStatus.UNPROCESSABLE_ENTITY,
+    description: 'Got wrong type of form definition for its slug.',
+    type: FormDefinitionGotEmailErrorDto
   })
   @UseGuards(new CognitoGuard(true))
   @Post('eid/send-and-update-form/:id')

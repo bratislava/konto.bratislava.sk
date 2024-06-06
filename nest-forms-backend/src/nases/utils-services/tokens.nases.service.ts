@@ -35,7 +35,7 @@ import {
   NasesErrorsResponseEnum,
 } from '../nases.errors.enum'
 import { getFormDefinitionBySlug } from '../../../../forms-shared/src/form-utils/definitions'
-import { FormDefinitionSlovenskoSk } from '../../../../forms-shared/src/definitions/form-definitions'
+import { FormDefinitionType } from '../../../../forms-shared/src/definitions/form-definitions'
 
 @Injectable()
 export default class NasesUtilsService {
@@ -321,7 +321,7 @@ export default class NasesUtilsService {
     form: Forms,
     senderUri?: string,
   ): Promise<string> {
-    const formDefinition = getFormDefinitionBySlug<FormDefinitionSlovenskoSk>(
+    const formDefinition = getFormDefinitionBySlug(
       form.formDefinitionSlug,
     )
     if (!formDefinition) {
@@ -330,7 +330,13 @@ export default class NasesUtilsService {
         `${FormsErrorsResponseEnum.FORM_DEFINITION_NOT_FOUND} ${form.formDefinitionSlug}`,
       )
     }
-    const { isSigned } = formDefinition
+    if (formDefinition.type !== FormDefinitionType.SlovenskoSk && formDefinition.type !== FormDefinitionType.Tax) {
+      throw this.throwerErrorGuard.UnprocessableEntityException(
+        FormsErrorsEnum.FORM_DEFINITION_GOT_EMAIL,
+        FormsErrorsResponseEnum.FORM_DEFINITION_GOT_EMAIL,
+      )
+    }
+    const { isSigned, pospID, pospVersion } = formDefinition
 
     let message: string | null = null
 
@@ -396,11 +402,8 @@ export default class NasesUtilsService {
     //   </Body>
     // </SKTalkMessage>
     // `
-    const { pospID, pospVersion } = formDefinition
     const senderId = senderUri ?? process.env.NASES_SENDER_URI ?? ''
     const correlationId = uuidv4()
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    const objectId = uuidv4()
     let subject: string = form.id
     let mimeType = 'application/x-eform-xml'
     let encoding = 'XML'

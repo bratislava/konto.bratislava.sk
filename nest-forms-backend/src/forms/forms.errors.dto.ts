@@ -105,3 +105,17 @@ export class FormDefinitionNotFoundErrorDto extends NotFoundErrorDto {
   })
   declare message: string
 }
+
+export class FormDefinitionGotEmailErrorDto extends UnprocessableEntityErrorDto {
+  @ApiProperty({
+    example: FormsErrorsEnum.FORM_DEFINITION_GOT_EMAIL,
+    default: FormsErrorsEnum.FORM_DEFINITION_GOT_EMAIL,
+  })
+  declare errorName: string
+
+  @ApiProperty({
+    example: FormsErrorsResponseEnum.FORM_DEFINITION_GOT_EMAIL,
+    default: FormsErrorsResponseEnum.FORM_DEFINITION_GOT_EMAIL,
+  })
+  declare message: string
+}

@@ -26,6 +26,7 @@ import { Response } from 'express'
 import { CognitoGetUserData } from '../auth/dtos/cognito.dto'
 import CognitoGuard from '../auth/guards/cognito.guard'
 import {
+  FormDefinitionGotEmailErrorDto,
   FormDefinitionNotFoundErrorDto,
   FormIsOwnedBySomeoneElseErrorDto,
   FormNotFoundErrorDto,
@@ -79,6 +80,11 @@ export default class ConvertController {
     status: HttpStatusCode.Forbidden,
     description: 'Form is owned by someone else.',
     type: FormIsOwnedBySomeoneElseErrorDto,
+  })
+  @ApiUnprocessableEntityResponse({
+    status: HttpStatusCode.UnprocessableEntity,
+    description: 'Got wrong type of form definition for its slug.',
+    type: FormDefinitionGotEmailErrorDto
   })
   @UseGuards(new CognitoGuard(true))
   @Post('json-to-xml-v2')

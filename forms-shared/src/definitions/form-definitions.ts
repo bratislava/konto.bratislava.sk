@@ -6,7 +6,7 @@ import { generalTermsAndConditions, taxTermsAndConditions } from './terms-and-co
 import zavazneStanoviskoKInvesticnejCinnosti from './zavazne-stanovisko-k-investicnej-cinnosti'
 import komunitneZahrady from './komunitne-zahrady'
 
-enum FormDefinitionType {
+export enum FormDefinitionType {
   SlovenskoSk = 'SlovenskoSk',
   Tax = 'Tax',
   Email = 'Email',

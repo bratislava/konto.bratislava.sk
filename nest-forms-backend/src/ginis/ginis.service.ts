@@ -35,7 +35,7 @@ import {
   GinisUploadInfo,
 } from './dtos/ginis.response.dto'
 import GinisHelper from './subservices/ginis.helper'
-import { FormDefinitionSlovenskoSk } from '../../../forms-shared/src/definitions/form-definitions'
+import { FormDefinitionType } from '../../../forms-shared/src/definitions/form-definitions'
 import { FormsErrorsEnum, FormsErrorsResponseEnum } from '../forms/forms.errors.enum'
 
 const UPLOAD_QUEUE = 'submission.upload'
@@ -427,13 +427,19 @@ export default class GinisService {
       return new Nack(false)
     }
 
-    const formDefinition = getFormDefinitionBySlug<FormDefinitionSlovenskoSk>(
+    const formDefinition = getFormDefinitionBySlug(
       form.formDefinitionSlug,
     )
     if (!formDefinition) {
       throw this.throwerErrorGuard.NotFoundException(
         FormsErrorsEnum.FORM_DEFINITION_NOT_FOUND,
         `${FormsErrorsResponseEnum.FORM_DEFINITION_NOT_FOUND} ${form.formDefinitionSlug}`,
+      )
+    }
+    if (formDefinition.type !== FormDefinitionType.SlovenskoSk && formDefinition.type !== FormDefinitionType.Tax) {
+      throw this.throwerErrorGuard.UnprocessableEntityException(
+        FormsErrorsEnum.FORM_DEFINITION_GOT_EMAIL,
+        FormsErrorsResponseEnum.FORM_DEFINITION_GOT_EMAIL,
       )
     }
 

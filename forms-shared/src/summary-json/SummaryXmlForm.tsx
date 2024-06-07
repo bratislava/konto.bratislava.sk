@@ -30,6 +30,7 @@ export enum SummaryXmlFormTag {
 
 type SummaryXmlFormFormAttributes = {
   id: string
+  title: string
 }
 
 type SummaryXmlFormStepAttributes = {
@@ -130,7 +131,7 @@ const ArrayFieldTemplate = ({
   )
 }
 
-const ObjectFieldTemplate = ({ properties, idSchema, title }: ObjectFieldTemplateProps) => {
+const ObjectFieldTemplate = ({ schema, properties, idSchema, title }: ObjectFieldTemplateProps) => {
   const id = idSchema.$id
   const splitId = id.split('_')
   const isFormObject = splitId.length === 1 && splitId[0] === 'root'
@@ -141,7 +142,11 @@ const ObjectFieldTemplate = ({ properties, idSchema, title }: ObjectFieldTemplat
   ))
 
   if (isFormObject) {
-    return <SummaryXmlFormTag.Form id={id}>{content}</SummaryXmlFormTag.Form>
+    return (
+      <SummaryXmlFormTag.Form id={id} title={schema.title!}>
+        {content}
+      </SummaryXmlFormTag.Form>
+    )
   }
 
   if (isStepObject) {

@@ -1,4 +1,4 @@
-name: Next deploy pipeline
+name: Monorepo deploy pipelines
 on:
   push:
     tags:

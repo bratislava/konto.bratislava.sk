@@ -11,6 +11,7 @@ export enum SummaryJsonType {
 export type SummaryJsonForm = {
   type: SummaryJsonType.Form
   id: string
+  title: string
   steps: SummaryJsonStep[]
 }
 

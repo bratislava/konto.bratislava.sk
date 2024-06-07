@@ -7,6 +7,7 @@ import { getTaxFormPdfMapping } from '../src/tax-form/mapping/pdf/pdf'
 import { getTaxFormXml } from '../src/tax-form/mapping/xml/xml'
 import generateTaxPdf from '../src/tax-form/generateTaxPdf'
 import { expectPdfToMatchSnapshot } from '../test-utils/expectPdfToMatchSnapshot'
+import { filterConsole } from '../test-utils/filterConsole'
 
 const examples = [
   exampleTaxForm1,
@@ -28,6 +29,13 @@ describe('tax-form', () => {
     })
 
     it(`should match snapshot for generated PDF example ${index + 1}`, async () => {
+      filterConsole(
+        'log',
+        (message) =>
+          message ===
+          'Warning: _getAppearance: OffscreenCanvas is not supported, annotation may not render correctly.',
+      )
+
       const base64Pdf = await generateTaxPdf({ formData, currentDate: mockDate })
 
       await expectPdfToMatchSnapshot(`data:application/pdf;base64,${base64Pdf}`)

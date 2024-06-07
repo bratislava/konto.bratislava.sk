@@ -6,7 +6,7 @@ import { exampleTaxForm5 } from '../src/tax-form/examples/exampleTaxForm5'
 import { getTaxFormPdfMapping } from '../src/tax-form/mapping/pdf/pdf'
 import { getTaxFormXml } from '../src/tax-form/mapping/xml/xml'
 import generateTaxPdf from '../src/tax-form/generateTaxPdf'
-import { expectPdfToMatchSnapshot } from './test-utils/expectPdfToMatchSnapshot'
+import { expectPdfToMatchSnapshot } from '../test-utils/expectPdfToMatchSnapshot'
 
 const examples = [
   exampleTaxForm1,

@@ -12,7 +12,7 @@ import { exampleTaxForm5 } from '../src/tax-form/examples/exampleTaxForm5'
 import { baGetDefaultFormState } from '../src/form-utils/defaultFormState'
 import { getSummaryJsonNode } from '../src/summary-json/getSummaryJsonNode'
 import { renderSummaryPdf } from '../src/summary-pdf/renderSummaryPdf'
-import { expectPdfToMatchSnapshot } from './test-utils/expectPdfToMatchSnapshot'
+import { expectPdfToMatchSnapshot } from '../test-utils/expectPdfToMatchSnapshot'
 
 const definitions = [
   {

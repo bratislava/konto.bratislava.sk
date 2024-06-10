@@ -290,7 +290,7 @@ export default class ConvertService {
       )
     }
 
-    if (formDefinition.pospID === process.env.TAX_FORM_POSP_ID) {
+    if (formDefinition.type === FormDefinitionType.Tax) {
       return this.generateTaxPdf(jsonForm, formId)
     }
 

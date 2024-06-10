@@ -14492,6 +14492,7 @@ exports[`priznanieKDaniZNehnutelnosti should match summary snapshot 1 correctly 
       "type": "Step",
     },
   ],
+  "title": "Priznanie k dani z nehnuteľností",
   "type": "Form",
 }
 `;
@@ -15279,6 +15280,7 @@ exports[`priznanieKDaniZNehnutelnosti should match summary snapshot 2 correctly 
       "type": "Step",
     },
   ],
+  "title": "Priznanie k dani z nehnuteľností",
   "type": "Form",
 }
 `;
@@ -15875,6 +15877,7 @@ exports[`priznanieKDaniZNehnutelnosti should match summary snapshot 3 correctly 
       "type": "Step",
     },
   ],
+  "title": "Priznanie k dani z nehnuteľností",
   "type": "Form",
 }
 `;
@@ -16214,6 +16217,7 @@ exports[`priznanieKDaniZNehnutelnosti should match summary snapshot 4 correctly 
       "type": "Step",
     },
   ],
+  "title": "Priznanie k dani z nehnuteľností",
   "type": "Form",
 }
 `;
@@ -17860,6 +17864,7 @@ exports[`priznanieKDaniZNehnutelnosti should match summary snapshot 5 correctly 
       "type": "Step",
     },
   ],
+  "title": "Priznanie k dani z nehnuteľností",
   "type": "Form",
 }
 `;

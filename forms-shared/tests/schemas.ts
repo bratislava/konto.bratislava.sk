@@ -12,7 +12,8 @@ import { exampleTaxForm5 } from '../src/tax-form/examples/exampleTaxForm5'
 import { baGetDefaultFormState } from '../src/form-utils/defaultFormState'
 import { getSummaryJsonNode } from '../src/summary-json/getSummaryJsonNode'
 import { renderSummaryPdf } from '../src/summary-pdf/renderSummaryPdf'
-import { expectPdfToMatchSnapshot } from './test-utils/expectPdfToMatchSnapshot'
+import { expectPdfToMatchSnapshot } from '../test-utils/expectPdfToMatchSnapshot'
+import { filterConsole } from '../test-utils/filterConsole'
 
 const definitions = [
   {
@@ -53,6 +54,12 @@ definitions.forEach((definition) => {
     })
 
     it('default form state should match snapshot', () => {
+      filterConsole(
+        'warn',
+        (message) =>
+          typeof message === 'string' && message.includes('could not merge subschemas in allOf'),
+      )
+
       expect(baGetDefaultFormState(definition.schema.schema, {})).toMatchSnapshot()
     })
 
@@ -70,6 +77,15 @@ definitions.forEach((definition) => {
       })
 
       it(`should match PDF snapshot ${index + 1} correctly`, async () => {
+        filterConsole(
+          'error',
+          (message) =>
+            typeof message === 'string' &&
+            message.includes(
+              'Support for defaultProps will be removed from function components in a future major release.',
+            ),
+        )
+
         const pdfBuffer = await renderSummaryPdf(
           definition.schema.schema,
           definition.schema.uiSchema,

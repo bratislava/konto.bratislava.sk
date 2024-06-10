@@ -8,6 +8,7 @@ import {
 } from '../../src/generator/functions'
 import { baGetDefaultFormState, isFileMultipleSchema } from '../../src/form-utils/defaultFormState'
 import { ArrayFieldUiOptions } from '../../src/generator/uiOptionsTypes'
+import { filterConsole } from '../../test-utils/filterConsole'
 
 describe('defaultFormState', () => {
   it('isFileMultipleSchema should return true for file array schema', () => {
@@ -82,6 +83,11 @@ describe('defaultFormState', () => {
       ),
     ])
 
+    filterConsole(
+      'warn',
+      (message) =>
+        typeof message === 'string' && message.includes('could not merge subschemas in allOf'),
+    )
     expect(baGetDefaultFormState(definition.schema(), {})).toEqual({
       fileMultiple: [],
       fileMultipleRequired: [],

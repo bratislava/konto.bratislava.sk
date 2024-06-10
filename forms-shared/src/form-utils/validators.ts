@@ -11,6 +11,7 @@ const getBaRjsfValidator = (customKeywords?: Vocabulary) =>
     // The type in @rjsf/validator-ajv8 is wrong.
     customFormats: baAjvFormats as unknown as CustomValidatorOptionsType['customFormats'],
     ajvOptionsOverrides: {
+      // @ts-expect-error: The type in @rjsf/validator-ajv8 is wrong.
       keywords: customKeywords ?? baAjvKeywords,
     },
   })

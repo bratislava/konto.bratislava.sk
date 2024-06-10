@@ -27,7 +27,7 @@ export const renderSummaryPdf = async (
   const renderedString = renderToString(
     <SummaryPdf cssToInject={cssToInject} summaryJson={summaryJson}></SummaryPdf>,
   )
-  const browser = await chromium.launch()
+  const browser = await chromium.launch({ executablePath: process.env.CHROME_BIN })
 
   try {
     const page = await browser.newPage()

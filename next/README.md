@@ -4,12 +4,12 @@ This readme should get you up & running. For more detailed documentation, check 
 
 ## First-time setup
 
-You need `node` and `yarn` installed locally.
+You need `node` and `npm` installed locally.
 
 To install dependencies run:
 
 ```
-yarn
+npm install
 ```
 
 ### VSCode support
@@ -21,7 +21,7 @@ VSCode supports this plugin out of the box. However, sometimes it can use its ow
 ## Run project locally
 
 ```
-yarn dev
+npm run dev
 ```
 
 ## Run project for e2e testing
@@ -30,9 +30,9 @@ Tests need captcha disabled, are run against staging backend & staging cognito, 
 
 ```bash
 # only if you need to rebuild - this rewrites local .env.production.local
-yarn build:e2e
+npm run build:e2e
 # start the same way as you would start the app in production
-yarn start
+npm run start
 ```
 
 ## FOP
@@ -47,7 +47,7 @@ We are using [openapi-generator-cli](https://openapi-generator.tech/) to generat
 
 We are using [graphql-codegen](https://the-guild.dev/graphql/codegen) to generate GraphQL client from our Strapi (CMS) schema.
 
-To generate API clients run `yarn generate-clients`. `--skip-validate-spec` flag is required until all errors in the specification are resolved.
+To generate API clients run `npm run generate-clients`. `--skip-validate-spec` flag is required until all errors in the specification are resolved.
 
 Forms:
 

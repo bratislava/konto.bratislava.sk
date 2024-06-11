@@ -47,13 +47,13 @@ The generator is a simple TypeScript application. To create a new form, add a de
 To generate all schemas:
 
 ```bash
-  yarn generate:all
+  npm run generate:all
 ```
 
 for a single schema, for example:
 
 ```bash
-  yarn generate:stanovisko-k-investicnemu-zameru
+  npm run generate:stanovisko-k-investicnemu-zameru
 ```
 
 ### Generate all schemas and files for BE and NASES, update them on BE
@@ -63,7 +63,7 @@ for a single schema, for example:
 Run the following and let the script guide you. If you need modifications, or you need to perform just some of the steps, modify `update.ts` to your needs.
 
 ```bash
-  yarn update
+  npm run update
 ```
 
 ## Notes

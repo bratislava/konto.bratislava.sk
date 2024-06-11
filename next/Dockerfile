@@ -1,24 +1,11 @@
 FROM node:20.9-alpine AS base
-FROM harbor.bratislava.sk/standalone/forms-shared:latest as shared
+FROM harbor.bratislava.sk/standalone/forms-shared:npm as shared
 
 FROM base AS build-base
 WORKDIR /forms-shared
 COPY --from=shared . ./
 WORKDIR /build
-COPY ./package.json ./yarn.lock ./
-
-FROM build-base AS install-prod
-ENV YARN_CACHE_FOLDER=/build/.cache/yarn
-RUN --mount=type=cache,target=/build/.cache/yarn \
-    yarn config set network-timeout 600000 -g \
- && yarn install --production --frozen-lockfile
-
-FROM install-prod AS build
-COPY . ./
-ENV NEXT_TELEMETRY_DISABLED=1
-RUN --mount=type=cache,target=/build/.cache/yarn \
-    yarn install --development --frozen-lockfile \
- && yarn build
+COPY ./package.json ./package-lock.json ./
 
 FROM base AS app-base
 RUN apk add --no-cache tini
@@ -36,10 +23,24 @@ LABEL org.opencontainers.image.revision="${GIT_COMMIT}" \
       org.opencontainers.image.licenses="EUPL-1.2"
 ENTRYPOINT [ "/sbin/tini", "--" ]
 
+FROM build-base AS install-prod
+ENV NPM_CONFIG_CACHE=/build/.npm
+RUN --mount=type=cache,target=/build/.npm \
+    npm config set cache /build/.npm \
+ && npm ci --omit=dev --frozen-lockfile
+
+FROM install-prod AS build
+COPY . ./
+ENV NEXT_TELEMETRY_DISABLED=1
+RUN --mount=type=cache,target=/build/.npm \
+    npm config set cache /build/.npm \
+    && npm ci --include=dev --frozen-lockfile \
+    && npm run build
+
 FROM app-base AS dev
 ENV NODE_ENV=development
 COPY --chown=node:node --from=build /build/node_modules ./node_modules
-CMD [ "yarn", "develop" ]
+CMD [ "npm run", "develop" ]
 
 FROM app-base AS prod
 COPY --chown=node:node .env.*.local ./
@@ -47,3 +48,4 @@ COPY --chown=node:node --from=build /build/.next/standalone ./
 COPY --chown=node:node --from=build /build/public ./public
 COPY --chown=node:node --from=build /build/.next/static ./.next/static
 CMD [ "node", "server.js" ]
+

@@ -11,6 +11,35 @@ The generator is part of the `/next` folder out of necessity. It's not possible 
 
 ## Usage
 
+### Instalation
+First, you need to install required prerequisites on macOS:
+https://github.com/Automattic/node-canvas/wiki/Installation%3A-Mac-OS-X
+
+```bash
+  brew install pkg-config cairo pango libpng jpeg giflib librsvg
+```
+
+Then to install node dependencies on macOS:
+
+```bash
+  npm install
+```
+
+if you are having problems with npm installing, you need to propably relink brew libraries:
+
+```bash
+  export PKG_CONFIG_PATH=/usr/local/lib/pkgconfig:/opt/X11/lib/pkgconfig
+  brew install glib
+  brew link glib 
+  # if command above not working use: brew link --overwrite glib
+```
+
+on Windows just use npm install as the binaries are included in the npm packages:
+
+```bash
+  npm install 
+```
+
 ### Generating just schema and uiSchema
 
 The generator is a simple TypeScript application. To create a new form, add a definition to `/definition` and implement it the `/cli.ts` file. **Keep the definition names (subdirectories) in sync with the slugs used on backend**. Add the script to `package.json` and then run it to generate the schemas. The schemas are located in `/dist`.

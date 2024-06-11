@@ -5,7 +5,4 @@ RUN apk add --no-cache make gcc g++ python3 pkgconfig pixman-dev cairo-dev pango
 COPY . ./
 
 FROM base as prod
-ENV YARN_CACHE_FOLDER=/build/.cache/yarn
-RUN --mount=type=cache,target=/build/.cache/yarn \
-    yarn config set network-timeout 600000 -g \
- && yarn install --development --frozen-lockfile
+RUN npm ci --include=dev --frozen-lockfile

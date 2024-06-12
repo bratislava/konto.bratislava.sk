@@ -9,3 +9,11 @@ updates:
     directory: '/next' # Location of package manifests
     schedule:
       interval: 'weekly'
+  - package-ecosystem: 'npm'
+    directory: '/nest-forms-backend'
+    schedule:
+      interval: 'weekly'
+  - package-ecosystem: 'npm'
+    directory: '/forms-shared'
+    schedule:
+      interval: 'weekly'

@@ -1,5 +1,5 @@
 FROM node:20.9-alpine AS base
-FROM harbor.bratislava.sk/standalone/forms-shared:npm as shared
+FROM harbor.bratislava.sk/standalone/forms-shared:latest as shared
 
 FROM base AS build-base
 WORKDIR /forms-shared

@@ -1,12 +1,7 @@
 FROM node:20.9-alpine AS base
 FROM harbor.bratislava.sk/standalone/forms-shared:latest as shared
 
-FROM base AS build-base
-WORKDIR /forms-shared
-COPY --from=shared . ./
-WORKDIR /build
-COPY ./package.json ./package-lock.json ./
-
+# used as app-base in prodution and development image
 FROM base AS app-base
 RUN apk add --no-cache tini
 RUN mkdir -p /home/node/app \
@@ -22,6 +17,13 @@ LABEL org.opencontainers.image.revision="${GIT_COMMIT}" \
       org.opencontainers.image.source="https://github.com/bratislava/konto.bratislava.sk" \
       org.opencontainers.image.licenses="EUPL-1.2"
 ENTRYPOINT [ "/sbin/tini", "--" ]
+
+# used for build-base for building only
+FROM base AS build-base
+WORKDIR /forms-shared
+COPY --from=shared . ./
+WORKDIR /build
+COPY ./package.json ./package-lock.json ./
 
 FROM build-base AS install-prod
 ENV NPM_CONFIG_CACHE=/build/.npm

@@ -1,8 +1,13 @@
 import { AlertIcon, AttachmentIcon, CheckInCircleIcon, ScanningIcon } from '@assets/ui-icons'
+import {
+  isDoneFileStatusType,
+  isErrorFileStatusType,
+  isScanFileStatusType,
+  isUploadFileStatusType,
+} from '@forms-shared/form-files/fileStatus'
 import cx from 'classnames'
 import React from 'react'
 
-import { FormFileUploadStatusEnum } from '../../../../frontend/types/formFileUploadTypes'
 import Spinner from '../../simple-components/Spinner'
 import { useFormFileUpload } from '../../useFormFileUpload'
 
@@ -14,14 +19,10 @@ export const SummaryFile = ({ file }: SummaryFileProps) => {
   const { getFileInfoById } = useFormFileUpload()
   const fileInfo = getFileInfoById(file)
 
-  const isErrorStyle =
-    fileInfo.status.type === FormFileUploadStatusEnum.UploadError ||
-    fileInfo.status.type === FormFileUploadStatusEnum.ScanError ||
-    fileInfo.status.type === FormFileUploadStatusEnum.ScanInfected ||
-    fileInfo.status.type === FormFileUploadStatusEnum.UnknownFile
-  const isScanningStyle = fileInfo.status.type === FormFileUploadStatusEnum.Scanning
-  const isDoneStyle = fileInfo.status.type === FormFileUploadStatusEnum.ScanDone
-  const isUploadingStyle = fileInfo.status.type === FormFileUploadStatusEnum.Uploading
+  const isErrorStyle = isErrorFileStatusType(fileInfo.status.type)
+  const isScanningStyle = isScanFileStatusType(fileInfo.status.type)
+  const isDoneStyle = isDoneFileStatusType(fileInfo.status.type)
+  const isUploadingStyle = isUploadFileStatusType(fileInfo.status.type)
   const isDefaultStyle = !isErrorStyle && !isDoneStyle && !isScanningStyle
 
   const Icon = (props) =>

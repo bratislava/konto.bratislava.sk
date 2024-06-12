@@ -1,15 +1,15 @@
 import { formsApi } from '@clients/forms'
+import { ClientFileInfo } from '@forms-shared/form-files/fileStatus'
 import { isAxiosError } from 'axios'
 import { GetServerSideProps, GetServerSidePropsContext } from 'next'
 
 import PdfSummaryPage, { PdfSummaryPageProps } from '../components/forms/PdfSummaryPage'
-import { FormFileUploadClientFileInfo } from '../frontend/types/formFileUploadTypes'
 import { isProductionDeployment } from '../frontend/utils/general'
 import logger from '../frontend/utils/logger'
 import { slovakServerSideTranslations } from '../frontend/utils/slovakServerSideTranslations'
 
 export type PdfPreviewDataAdditionalMetadata = {
-  clientFiles?: FormFileUploadClientFileInfo[]
+  clientFiles?: ClientFileInfo[]
 }
 
 export const getServerSideProps: GetServerSideProps<PdfSummaryPageProps> = async (

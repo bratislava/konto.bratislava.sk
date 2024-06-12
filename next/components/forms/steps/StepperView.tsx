@@ -8,6 +8,7 @@ import { FormStepIndex } from '../types/Steps'
 import { useFormState } from '../useFormState'
 import StepperViewList from './StepperViewList'
 import StepperViewRow from './StepperViewRow'
+import { useFormSummary } from './Summary/useFormSummary'
 
 type StepperModalProps = {
   isOpen: boolean
@@ -52,9 +53,11 @@ const StepperModal = ({ isOpen, setIsOpen, handleOnSkipToStep }: StepperModalPro
 const StepperView = () => {
   const [isOpen, setIsOpen] = useState<boolean>(false)
   const { currentStepperStep, goToStep } = useFormState()
+  const { precalculateSummary } = useFormSummary()
 
   const handleOnClickDropdownIcon = () => {
     if (!isOpen) {
+      precalculateSummary()
       setIsOpen(true)
     }
   }

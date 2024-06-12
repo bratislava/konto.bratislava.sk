@@ -22,4 +22,10 @@ describe('checkPathForErrors', () => {
   test('returns false for a path without errors', () => {
     expect(checkPathForErrors('root_anotherStep', errorSchema)).toBe(false)
   })
+
+  test('throws an error if the field ID does not start with "root"', () => {
+    expect(() => checkPathForErrors('step_field', errorSchema)).toThrow(
+      'Field ID must start with "root"',
+    )
+  })
 })

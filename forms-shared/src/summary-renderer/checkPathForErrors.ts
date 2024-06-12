@@ -33,7 +33,11 @@ import { ErrorSchema } from '@rjsf/utils'
  *
  */
 export function checkPathForErrors(fieldId: string, errorSchema: ErrorSchema) {
-  const fieldIdComponents = fieldId.split('_').slice(1)
+  const splitFieldId = fieldId.split('_')
+  if (splitFieldId[0] !== 'root') {
+    throw new Error('Field ID must start with "root"')
+  }
+  const fieldIdComponents = splitFieldId.slice(1)
 
   let current: ErrorSchema | undefined = errorSchema
 

@@ -1,4 +1,6 @@
+import { mergeClientAndServerFilesSummary } from '@forms-shared/form-files/mergeClientAndServerFiles'
 import { getFileUuidsNaive } from '@forms-shared/form-utils/fileUtils'
+import { validateSummary } from '@forms-shared/summary-renderer/validateSummary'
 import { GenericObjectType } from '@rjsf/utils'
 import { useTranslation } from 'next-i18next'
 import React, {
@@ -12,7 +14,6 @@ import React, {
 import useStateRef from 'react-usestateref'
 import { useIsFirstRender } from 'usehooks-ts'
 
-import { validateSummary } from '../../frontend/utils/form'
 import {
   getEvaluatedStepsSchemas,
   getFirstNonEmptyStepIndex,
@@ -31,7 +32,7 @@ import { useFormModals } from './useFormModals'
 const useGetContext = () => {
   const { schema, formMigrationRequired, initialFormDataJson, isReadonly } = useFormContext()
   const { t } = useTranslation('forms')
-  const { keepFiles, refetchAfterImportIfNeeded, getFileInfoById } = useFormFileUpload()
+  const { keepFiles, refetchAfterImportIfNeeded, clientFiles, serverFiles } = useFormFileUpload()
   const { turnOnLeaveProtection } = useFormLeaveProtection()
   // eslint-disable-next-line testing-library/render-result-naming-convention
   const isFirst = useIsFirstRender()
@@ -141,7 +142,8 @@ const useGetContext = () => {
     // validateSummary validates the entire form and returns errors by sections
     // missing step in errorSummary === no error on the step
     // we treat errorless steps as "complete"
-    const { errorSchema } = validateSummary(schema, pickedPropertiesData, getFileInfoById)
+    const fileInfos = mergeClientAndServerFilesSummary(clientFiles, serverFiles)
+    const { errorSchema } = validateSummary(schema, pickedPropertiesData, fileInfos)
     const keysWithErrors = Object.keys(errorSchema)
     const stepIndexesWithoutErrors = evaluatedSchemas
       .map((value, index) => {

@@ -11,7 +11,6 @@ import { environment } from '../../environment'
 import { AccountType } from '../../frontend/dtos/accountDto'
 import useSnackbar from '../../frontend/hooks/useSnackbar'
 import { useSsrAuth } from '../../frontend/hooks/useSsrAuth'
-import { validateSummary } from '../../frontend/utils/form'
 import {
   FORM_SEND_EID_TOKEN_QUERY_KEY,
   popSendEidMetadata,
@@ -20,8 +19,8 @@ import {
 import { isFormSubmitDisabled } from '../../frontend/utils/formSummary'
 import { RegistrationModalType } from './segments/RegistrationModal/RegistrationModal'
 import { useFormSignature } from './signer/useFormSignature'
+import { useFormSummary } from './steps/Summary/useFormSummary'
 import { useFormContext } from './useFormContext'
-import { useFormFileUpload } from './useFormFileUpload'
 import { useFormLeaveProtection } from './useFormLeaveProtection'
 import { useFormModals } from './useFormModals'
 import { useFormSent } from './useFormSent'
@@ -58,9 +57,9 @@ const useGetContext = () => {
   const [openSnackbarError] = useSnackbar({ variant: 'error' })
   // As the token is immediately removed from the URL, we need to store it in a ref.
   const sendEidTokenRef = useRef<string | null>(null)
-  const { formId, slug, schema } = useFormContext()
+  const { formId, slug } = useFormContext()
   const { formData } = useFormState()
-  const { getFileInfoById } = useFormFileUpload()
+  const { getValidatedSummary, getUploadFiles, getScanFiles } = useFormSummary()
   const {
     isSignedIn,
     accountType,
@@ -232,12 +231,8 @@ const useGetContext = () => {
   })
 
   const handleSendButtonPress = async () => {
-    const { errorSchema, infectedFiles, uploadingFiles, scanningFiles } = validateSummary(
-      schema,
-      formData,
-      getFileInfoById,
-    )
-    const submitDisabled = isFormSubmitDisabled(errorSchema, infectedFiles, isValidSignature())
+    const validatedSummary = getValidatedSummary()
+    const submitDisabled = isFormSubmitDisabled(validatedSummary, isValidSignature())
 
     if (submitDisabled || sendFormIsPending) {
       return
@@ -256,7 +251,7 @@ const useGetContext = () => {
     }
 
     // https://www.figma.com/file/SFbuULqG1ysocghIga9BZT/Bratislavske-konto%2C-ESBS---ready-for-dev-(Ma%C5%A5a)?type=design&node-id=7208-17403&mode=design&t=6CblQJSMOCtO5LBu-0
-    if (isSignedIn && !isIdentityVerified && scanningFiles.length === 0) {
+    if (isSignedIn && !isIdentityVerified && getScanFiles().length === 0) {
       setSendFilesScanningNotVerified(modalValueEid)
       return
     }
@@ -266,7 +261,7 @@ const useGetContext = () => {
       return
     }
 
-    if (uploadingFiles.length > 0) {
+    if (getUploadFiles().length > 0) {
       setSendFilesUploadingModal(true)
       return
     }
@@ -276,7 +271,7 @@ const useGetContext = () => {
       sendCallback: () => sendFormMutate(),
     }
 
-    if (scanningFiles.length > 0) {
+    if (getScanFiles().length > 0) {
       setSendFilesScanningModal(modalValue)
       return
     }
@@ -285,23 +280,19 @@ const useGetContext = () => {
   }
 
   const handleSendEidButtonPress = () => {
-    const { errorSchema, infectedFiles, uploadingFiles, scanningFiles } = validateSummary(
-      schema,
-      formData,
-      getFileInfoById,
-    )
-    const submitDisabled = isFormSubmitDisabled(errorSchema, infectedFiles, isValidSignature())
+    const validatedSummary = getValidatedSummary()
+    const submitDisabled = isFormSubmitDisabled(validatedSummary, isValidSignature())
 
     if (submitDisabled || sendFormEidIsPending) {
       return
     }
 
-    if (uploadingFiles.length > 0) {
+    if (getUploadFiles().length > 0) {
       setSendFilesUploadingModal(true)
       return
     }
 
-    if (isSignedIn && isIdentityVerified && scanningFiles.length > 0) {
+    if (isSignedIn && isIdentityVerified && getScanFiles().length > 0) {
       // eslint-disable-next-line @typescript-eslint/no-misused-promises
       setSendFilesScanningEidModal({
         isOpen: true,
@@ -310,12 +301,12 @@ const useGetContext = () => {
       return
     }
 
-    if (isSignedIn && !isIdentityVerified && scanningFiles.length > 0) {
+    if (isSignedIn && !isIdentityVerified && getScanFiles().length > 0) {
       setSendFilesScanningNotVerifiedEidModal(true)
       return
     }
 
-    if (!isSignedIn && scanningFiles.length > 0) {
+    if (!isSignedIn && getScanFiles().length > 0) {
       setSendFilesScanningNonAuthenticatedEidModal(true)
       return
     }

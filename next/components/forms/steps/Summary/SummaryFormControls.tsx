@@ -17,11 +17,11 @@ const SummaryFormControls = () => {
   const { isTaxForm, isSigned, isReadonly } = useFormContext()
   const { goToPreviousStep } = useFormState()
   const { exportPdf } = useFormExportImport()
-  const { errorSchema, infectedFiles } = useFormSummary()
+  const { getValidatedSummary } = useFormSummary()
   const { isValidSignature } = useFormSignature()
   const submitDisabled = useMemo(
-    () => isFormSubmitDisabled(errorSchema, infectedFiles, isValidSignature()),
-    [errorSchema, infectedFiles, isValidSignature],
+    () => isFormSubmitDisabled(getValidatedSummary(), isValidSignature()),
+    [getValidatedSummary, isValidSignature],
   )
   const { handleSendButtonPress, handleSendEidButtonPress } = useFormSend()
 

@@ -112,7 +112,8 @@ const SummaryWidgetRJSF = ({
   name,
 }: SummaryWidgetRJSFProps) => {
   const { isReadonly, isPdf } = useFormContext()
-  const { fieldHasError } = useFormSummary()
+  const { getValidatedSummary } = useFormSummary()
+  const { pathHasError } = getValidatedSummary()
   const { goToStepByFieldId } = useFormState()
 
   return (
@@ -132,7 +133,7 @@ const SummaryWidgetRJSF = ({
             </div>
           ),
           name,
-          isError: fieldHasError(id),
+          isError: pathHasError(id),
         }}
         onGoToStep={() => {
           goToStepByFieldId(id)

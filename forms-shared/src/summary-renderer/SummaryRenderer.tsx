@@ -1,4 +1,3 @@
-import { ErrorSchema } from '@rjsf/utils'
 import React, { Fragment, PropsWithChildren, ReactNode } from 'react'
 
 import { SummaryDisplayValue } from '../summary-json/getSummaryDisplayValue'
@@ -12,6 +11,7 @@ import {
   SummaryJsonType,
 } from '../summary-json/summaryJsonTypes'
 import { checkPathForErrors } from './checkPathForErrors'
+import { ValidatedSummary } from './validateSummary'
 
 export type SummaryFormRendererProps = PropsWithChildren<{
   form: SummaryJsonForm
@@ -44,7 +44,7 @@ export type SummaryDisplayValueRendererProps = {
 
 type SummaryRendererProps = {
   summaryJson: SummaryJsonForm
-  errorSchema?: ErrorSchema
+  validatedSummary?: ValidatedSummary
   renderForm: (props: SummaryFormRendererProps) => ReactNode
   renderStep: (props: SummaryStepRendererProps) => ReactNode
   renderField: (props: SummaryFieldRendererProps) => ReactNode
@@ -60,7 +60,7 @@ type SummaryRendererProps = {
  */
 const SummaryRenderer = ({
   summaryJson,
-  errorSchema,
+  validatedSummary,
   renderForm,
   renderStep,
   renderField,
@@ -71,7 +71,9 @@ const SummaryRenderer = ({
   const renderElement = (element: SummaryJsonElement): ReactNode => {
     const renderChildren = (children: SummaryJsonElement[]) =>
       children.map((child) => <Fragment key={child.id}>{renderElement(child)}</Fragment>)
-    const hasError = errorSchema ? checkPathForErrors(element.id, errorSchema) : false
+    const hasError = validatedSummary?.errorSchema
+      ? checkPathForErrors(element.id, validatedSummary.errorSchema)
+      : false
 
     switch (element.type) {
       case SummaryJsonType.Form:

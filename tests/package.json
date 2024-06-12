@@ -3,7 +3,7 @@
   "scripts": {
     "lint": "eslint '**/*.ts'",
     "typecheck": "tsc",
-    "start:e2e": "cd ../next && yarn build:e2e && yarn start",
+    "start:e2e": "cd ../next && npm run build:e2e && npm run start",
     "cypress:open": "node ./run-cypress.js open --browser chrome --device all --visualTesting local",
     "cypress:run": "node ./run-cypress.js run --browser chrome --device all --visualTesting local",
     "cypress:ci": "node ./run-cypress.js run --browser chrome --device all --visualTesting ci",

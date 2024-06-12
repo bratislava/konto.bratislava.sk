@@ -3,7 +3,7 @@
 The tests are configured to run against http://localhost:3000, so you must have the app running locally. You can set up your environment for end-to-end (e2e) testing by following the instructions in the [Next app README](../next/README.md), or you can quickly rebuild and restart the app using the following command from this directory:
 
 ```sh
-yarn start:e2e
+npm run start:e2e
 ```
 
 ## Run Cypress Locally
@@ -11,13 +11,13 @@ yarn start:e2e
 To interactively open Cypress in the Chrome browser, use:
 
 ```sh
-yarn cypress:open
+npm run cypress:open
 ```
 
 To execute Cypress tests in terminal mode, use:
 
 ```sh
-yarn cypress:run
+npm run cypress:run
 ```
 
 Alternatively, you can directly use the `run-cypress.js` script with Node.js to specify additional options. This script utilizes `yargs` for command-line argument parsing, offering a more flexible way to configure your Cypress tests.

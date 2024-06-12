@@ -117,6 +117,7 @@
     "vop_agreement_required": "Pre odoslanie formulára musíte súhlasiť so spracovaním osobných údajov.",
     "virus_alert": "Súbor “{{file}}“ obsahuje vírus. Vráťte sa k prílohám a nahrajte iné súbory. Bez povinných príloh nebudete vedieť žiadosť odoslať.",
     "virus_alert_plural": "Súbory {{files}} obsahujú vírus. Vráťte sa k prílohám a nahrajte iné súbory. Bez povinných príloh nebudete vedieť žiadosť odoslať.",
+    "uploading_files": "Prílohy, ktoré ste vložili sa ešte nahrávajú. Žiadosť je možné odoslať až po dokončení nahrávania. Nahrávané súbory: {{files}}",
     "button_back": "Späť",
     "button_send": "Odoslať žiadosť",
     "button_send_eid": "Odoslať s eID",

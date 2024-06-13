@@ -1,0 +1,10 @@
+{
+  "name": "konto.bratislava.sk",
+  "workspaces": [
+    "forms-shared",
+    "nest-forms-backend",
+    "next",
+    "strapi",
+    "tests"
+  ]
+}

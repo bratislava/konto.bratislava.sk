@@ -71,8 +71,6 @@ export const useGetContext = () => {
   const clientFilesRef = useRef(clientFiles)
   const getClientFiles = useCallback(() => clientFilesRef.current, [])
 
-  const abortControllersRef = useRef<Record<string, AbortController>>({})
-
   const refetchInterval = useMemo(() => {
     return (query: Query<GetFileResponseReducedDto[]>) =>
       shouldPollServerFiles(query.state.data, clientFiles) ? REFETCH_INTERVAL : false
@@ -135,11 +133,11 @@ export const useGetContext = () => {
       }
 
       const abortController = new AbortController()
-      abortControllersRef.current[firstQueuedFile.id] = abortController
 
       updateFileStatus({
         type: FileStatusType.Uploading,
         progress: 0,
+        abortController,
       })
 
       await uploadFile({
@@ -165,6 +163,7 @@ export const useGetContext = () => {
           updateFileStatus({
             type: FileStatusType.Uploading,
             progress,
+            abortController,
           })
         },
       })
@@ -188,7 +187,7 @@ export const useGetContext = () => {
       .filter((file) => ids.includes(file.id))
       .forEach((file) => {
         if (file.status.type === FileStatusType.Uploading) {
-          abortControllersRef.current[file.id]?.abort()
+          file.status.abortController.abort()
         }
       })
 
@@ -297,8 +296,7 @@ export const useGetContext = () => {
     return () => {
       clientFilesRef.current.forEach((file) => {
         if (file.status.type === FileStatusType.Uploading) {
-          // eslint-disable-next-line react-hooks/exhaustive-deps
-          abortControllersRef.current[file.id]?.abort()
+          file.status.abortController.abort()
         }
       })
       // Don't persist the data between page navigations.

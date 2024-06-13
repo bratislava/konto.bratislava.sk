@@ -13,6 +13,8 @@ import UploadFileCard from '../../forms/widget-components/Upload/UploadFileCard'
 import { Stack } from '../Stack'
 import { Wrapper } from '../Wrapper'
 
+const mockAbortController = new AbortController()
+
 const UploadWrapped = ({
   multiple,
   ...props
@@ -92,21 +94,33 @@ const UploadShowCase = () => {
         <UploadFileCard
           fileInfo={{
             fileName: 'test.jpg',
-            status: { type: FileStatusType.Uploading, progress: 50 },
+            status: {
+              type: FileStatusType.Uploading,
+              progress: 50,
+              abortController: mockAbortController,
+            },
             fileSize: 5_000_000,
           }}
         />
         <UploadFileCard
           fileInfo={{
             fileName: 'test.jpg',
-            status: { type: FileStatusType.Uploading, progress: 1 },
+            status: {
+              type: FileStatusType.Uploading,
+              progress: 1,
+              abortController: mockAbortController,
+            },
             fileSize: 5_000_000,
           }}
         />
         <UploadFileCard
           fileInfo={{
             fileName: 'test.jpg',
-            status: { type: FileStatusType.Uploading, progress: 100 },
+            status: {
+              type: FileStatusType.Uploading,
+              progress: 100,
+              abortController: mockAbortController,
+            },
             fileSize: 5_000_000,
           }}
         />

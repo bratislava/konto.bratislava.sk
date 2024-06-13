@@ -34,6 +34,7 @@ export type FileStatus =
   | {
       type: FileStatusType.Uploading
       progress: number
+      abortController: AbortController
     }
   | {
       type: FileStatusType.UploadClientError

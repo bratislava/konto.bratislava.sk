@@ -67,3 +67,13 @@ Tax:
 City account Strapi:
 
 - [GraphQL playground](https://city-account-strapi.staging.bratislava.sk/graphql)
+
+## TODOs
+
+After removing a snackbar plugin, these overrides can be safely removed from package.json:
+```json
+"overrides": {
+"react": "18.3.1",
+"react-dom": "18.3.1"
+}
+```

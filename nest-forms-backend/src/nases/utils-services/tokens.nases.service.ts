@@ -107,7 +107,7 @@ export default class NasesUtilsService {
       const fileBase64 = fileBuffer.toString('base64')
       result += `<Object Id="${file.id}" IsSigned="false" Name="${file.fileName}" Description="ATTACHMENT" Class="ATTACHMENT" MimeType="${mimeType}" Encoding="Base64">${fileBase64}</Object>`
     }
-    if (formDefinition?.pospID === process.env.TAX_FORM_POSP_ID) {
+    if (formDefinition?.type === FormDefinitionType.Tax) {
       try {
         const base64FormPdf = await this.taxService.getFilledInPdfBase64(
           form.formDataJson,
@@ -331,8 +331,8 @@ export default class NasesUtilsService {
     }
     if (formDefinition.type !== FormDefinitionType.SlovenskoSk && formDefinition.type !== FormDefinitionType.Tax) {
       throw this.throwerErrorGuard.UnprocessableEntityException(
-        FormsErrorsEnum.FORM_DEFINITION_GOT_EMAIL,
-        FormsErrorsResponseEnum.FORM_DEFINITION_GOT_EMAIL,
+        FormsErrorsEnum.FORM_DEFINITION_NOT_SUPPORTED_TYPE,
+        `createEnvelopeSendMessage: ${FormsErrorsResponseEnum.FORM_DEFINITION_NOT_SUPPORTED_TYPE}: ${formDefinition.type}`,
       )
     }
     const { isSigned, pospID, pospVersion } = formDefinition

@@ -78,8 +78,8 @@ export default class ConvertService {
     }
     if (formDefinition.type !== FormDefinitionType.SlovenskoSk && formDefinition.type !== FormDefinitionType.Tax) {
       throw this.throwerErrorGuard.UnprocessableEntityException(
-        FormsErrorsEnum.FORM_DEFINITION_GOT_EMAIL,
-        FormsErrorsResponseEnum.FORM_DEFINITION_GOT_EMAIL,
+        FormsErrorsEnum.FORM_DEFINITION_NOT_SUPPORTED_TYPE,
+        `convertJsonToXmlv2: ${FormsErrorsResponseEnum.FORM_DEFINITION_NOT_SUPPORTED_TYPE}: ${formDefinition.type}`,
       )
     }
 
@@ -328,7 +328,6 @@ export default class ConvertService {
     let directoryName = ''
     let stringifiedData = ''
     let shouldStoreDebugPdfData = false
-    const taxFormPospId = process.env.TAX_FORM_POSP_ID
 
     const form = await this.formsService.getFormWithAccessCheck(
       data.formId,
@@ -350,7 +349,7 @@ export default class ConvertService {
     }
 
     // common init for both json and pdf debug storage
-    if (taxFormPospId && formDefinition.pospID === taxFormPospId && user) {
+    if (formDefinition.type === FormDefinitionType.Tax) {
       try {
         taxDebugBucket = process.env.TAX_PDF_DEBUG_BUCKET || 'forms-tax-debug'
         directoryName = this.getTaxDebugBucketDirectoryName(formJsonData)
@@ -409,7 +408,7 @@ export default class ConvertService {
     res.set({
       'Content-Type': 'application/pdf',
       'Access-Control-Expose-Headers': 'Content-Disposition',
-      'Content-Disposition': `attachment; filename="${form.formDefinitionSlug}.pdf"`,
+      'Content-Disposition': `attachment; filename="${formDefinition.slug}.pdf"`,
     })
 
     return new StreamableFile(responseStream)

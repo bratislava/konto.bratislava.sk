@@ -106,16 +106,16 @@ export class FormDefinitionNotFoundErrorDto extends NotFoundErrorDto {
   declare message: string
 }
 
-export class FormDefinitionGotEmailErrorDto extends UnprocessableEntityErrorDto {
+export class FormDefinitionNotSupportedTypeErrorDto extends UnprocessableEntityErrorDto {
   @ApiProperty({
-    example: FormsErrorsEnum.FORM_DEFINITION_GOT_EMAIL,
-    default: FormsErrorsEnum.FORM_DEFINITION_GOT_EMAIL,
+    example: FormsErrorsEnum.FORM_DEFINITION_NOT_SUPPORTED_TYPE,
+    default: FormsErrorsEnum.FORM_DEFINITION_NOT_SUPPORTED_TYPE,
   })
   declare errorName: string
 
   @ApiProperty({
-    example: FormsErrorsResponseEnum.FORM_DEFINITION_GOT_EMAIL,
-    default: FormsErrorsResponseEnum.FORM_DEFINITION_GOT_EMAIL,
+    example: FormsErrorsResponseEnum.FORM_DEFINITION_NOT_SUPPORTED_TYPE,
+    default: FormsErrorsResponseEnum.FORM_DEFINITION_NOT_SUPPORTED_TYPE,
   })
   declare message: string
 }

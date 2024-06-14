@@ -142,7 +142,8 @@ const ArrayItemRenderer = ({ arrayItem, children, hasError }: SummaryArrayItemRe
 
 const SummaryDetails = () => {
   const { formData } = useFormState()
-  const { errorSchema } = useFormSummary()
+  const { getValidatedSummary } = useFormSummary()
+  const validatedSummary = getValidatedSummary()
   const { schema, uiSchema } = useFormContext()
   const summaryJson = useMemo(() => {
     // `getSummaryJsonNode` must never be included in the client bundle, see description in the function.
@@ -157,7 +158,7 @@ const SummaryDetails = () => {
   return (
     <SummaryRenderer
       summaryJson={summaryJson}
-      errorSchema={errorSchema}
+      validatedSummary={validatedSummary}
       renderForm={FormRenderer}
       renderStep={StepRenderer}
       renderField={FieldRenderer}

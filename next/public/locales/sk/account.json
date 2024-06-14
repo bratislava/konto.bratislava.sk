@@ -767,24 +767,18 @@
     "uploadFile": "Nahrať súbor",
     "uploadFiles": "Nahrať súbory",
     "uploadingList": "Nahrávané súbory",
-    "errors": {
-      "largeFile": "Súbor je príliš veľký, maximálna veľkosť {{additionalParam}}.",
-      "invalidFileType": "Nepodporovaný formát súboru, podporované formáty: {{additionalParam}}.",
-      "formNotFound": "Systém nenašiel formulár, ku ktorému sa snažíte nahrať súbor. Formulár mohol byť vymazaný alebo došlo k chybe. Prosím, skúste obnoviť stránku a ak problém pretrváva, kontaktujte nás na podporu.",
-      "fileSizeZero": "Nemôžete nahrať tento súbor, pretože má nulovú veľkosť. Skontrolujte, či súbor nie je prázdny, a skúste to znova."
+    "messages": {
+      "upload_queued": "Čaká sa na nahratie",
+      "uploading": "Nahráva sa",
+      "waiting_for_scan": "Čaká na antivírovú kontrolu",
+      "scanning": "Prebieha antivírová kontrola"
     },
-    "fileUploadStatus": {
-      "UploadQueued": "Nahráva sa",
-      "Uploading": "Nahráva sa",
-      "UploadError": "Súbor sa nepodarilo nahrať. Skúste to znova.",
-      "UploadDone": "Čaká na antivírovú kontrolu",
-      "Scanning": "Prebieha antivírová kontrola",
-      "ScanError": "Nastala chyba pri antivírovej kontrole. Skúste to znova.",
-      "ScanDone": "",
-      "ScanInfected": "Súbor obsahuje vírus. Nahrajte iný súbor.",
-      "UnknownFile": "Nastala nečakaná chyba. Skúste to znova.",
-      "UnknownStatus": "Zisťuje sa stav náhrávania súboru.",
-      "UploadServerError": ""
+    "errors": {
+      "large_file": "Súbor je príliš veľký, maximálna veľkosť {{maxFileSize}}.",
+      "invalid_file_type": "Nepodporovaný formát súboru, podporované formáty: {{supportedFormats}}.",
+      "scan_error": "Nastala chyba pri antivírovej kontrole. Skúste to znova.",
+      "scan_infected": "Súbor obsahuje vírus. Nahrajte iný súbor.",
+      "unknown_error": "Súbor sa nepodarilo nahrať. Skúste to znova."
     }
   },
   "DatePicker": {

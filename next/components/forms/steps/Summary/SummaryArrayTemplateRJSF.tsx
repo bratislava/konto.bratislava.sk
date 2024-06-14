@@ -31,9 +31,10 @@ const TopLevelArrayFieldItemTemplate = ({
   const title = getArrayItemTitle(itemTitle, index)
 
   const { isPdf } = useFormContext()
-  const { fieldHasError } = useFormSummary()
+  const { getValidatedSummary } = useFormSummary()
+  const { pathHasError } = getValidatedSummary()
 
-  const hasError = fieldHasError(`${parentId}_${itemIndex}`)
+  const hasError = pathHasError(`${parentId}_${itemIndex}`)
 
   return (
     <details

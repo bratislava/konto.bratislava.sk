@@ -5,18 +5,21 @@ import { Button as AriaButton } from 'react-aria-components'
 import { FormStepIndex, FormStepperStep } from '../types/Steps'
 import { useFormState } from '../useFormState'
 import StepperViewRow from './StepperViewRow'
+import { useFormSummary } from './Summary/useFormSummary'
 
 type StepperViewListProps = {
   onSkipToStep: (stepIndex: FormStepIndex) => void
 }
 const StepperViewList = ({ onSkipToStep = () => {} }: StepperViewListProps) => {
   const { stepperData, currentStepperStep } = useFormState()
+  const { precalculateSummary } = useFormSummary()
 
   return (
     <ol>
       {stepperData.map((step: FormStepperStep, index: number) => {
         const isLast = index === stepperData.length - 1
         const isCurrent = step === currentStepperStep
+        const isSummary = step.index === 'summary'
 
         return (
           <li
@@ -31,6 +34,7 @@ const StepperViewList = ({ onSkipToStep = () => {} }: StepperViewListProps) => {
               onPress={() => onSkipToStep(step.index)}
               data-cy={`stepper-step-${index + 1}`}
               className="w-full"
+              onHoverStart={isSummary ? precalculateSummary : undefined}
             >
               <StepperViewRow step={step} isCurrent={isCurrent} />
             </AriaButton>

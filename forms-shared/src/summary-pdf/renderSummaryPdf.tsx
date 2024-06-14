@@ -6,26 +6,34 @@ import { renderToString } from 'react-dom/server'
 import { getTailwindCss } from './tailwindCss'
 import { SummaryPdf } from './SummaryPdf'
 import { getInterCss } from './interCss'
+import { FormsBackendFile } from '../form-files/serverFilesTypes'
+import { ClientFileInfo } from '../form-files/fileStatus'
+import { mergeClientAndServerFilesSummary } from '../form-files/mergeClientAndServerFiles'
+import { validateSummary } from '../summary-renderer/validateSummary'
 
 /**
  * Renders a summary PDF from the given JSON schema, UI schema and data.
- *
- * TODO: Not production ready:
- *  - Visually not completed.
- *  - Files are not supported (only id is displayed).
- *  - Errors are not displayed.
  */
 export const renderSummaryPdf = async (
   jsonSchema: RJSFSchema,
   uiSchema: UiSchema,
-  data: GenericObjectType,
+  formData: GenericObjectType,
+  serverFiles: FormsBackendFile[] = [],
+  clientFiles: ClientFileInfo[] = [],
 ) => {
   const cssArray = await Promise.all([getTailwindCss(), getInterCss()])
   const cssToInject = cssArray.join('\n')
-  const summaryJson = getSummaryJsonNode(jsonSchema, uiSchema, data)
+  const summaryJson = getSummaryJsonNode(jsonSchema, uiSchema, formData)
+
+  const fileInfos = mergeClientAndServerFilesSummary(clientFiles, serverFiles)
+  const validatedSummary = validateSummary(jsonSchema, formData, fileInfos)
 
   const renderedString = renderToString(
-    <SummaryPdf cssToInject={cssToInject} summaryJson={summaryJson}></SummaryPdf>,
+    <SummaryPdf
+      cssToInject={cssToInject}
+      summaryJson={summaryJson}
+      validatedSummary={validatedSummary}
+    ></SummaryPdf>,
   )
   const browser = await chromium.launch()
 

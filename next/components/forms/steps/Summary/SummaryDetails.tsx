@@ -16,7 +16,7 @@ import React, { useMemo } from 'react'
 
 import { useFormContext } from '../../useFormContext'
 import { useFormState } from '../../useFormState'
-import SummaryFile from './SummaryFiles'
+import SummaryFile from './SummaryFile'
 import SummaryRow from './SummaryRow'
 import { useFormSummary } from './useFormSummary'
 

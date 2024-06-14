@@ -1,5 +1,6 @@
 import { AlertIcon, AttachmentIcon, CheckInCircleIcon, ScanningIcon } from '@assets/ui-icons'
 import {
+  FileInfoSummary,
   isDoneFileStatusType,
   isErrorFileStatusType,
   isScanFileStatusType,
@@ -9,23 +10,19 @@ import cx from 'classnames'
 import React from 'react'
 
 import Spinner from '../../simple-components/Spinner'
-import { useFormFileUpload } from '../../useFormFileUpload'
 
 type SummaryFileProps = {
-  file: string
+  fileInfo: FileInfoSummary
 }
 
-export const SummaryFile = ({ file }: SummaryFileProps) => {
-  const { getFileInfoById } = useFormFileUpload()
-  const fileInfo = getFileInfoById(file)
-
-  const isErrorStyle = isErrorFileStatusType(fileInfo.status.type)
-  const isScanningStyle = isScanFileStatusType(fileInfo.status.type)
-  const isDoneStyle = isDoneFileStatusType(fileInfo.status.type)
-  const isUploadingStyle = isUploadFileStatusType(fileInfo.status.type)
+const SummaryFile = ({ fileInfo }: SummaryFileProps) => {
+  const isErrorStyle = isErrorFileStatusType(fileInfo.statusType)
+  const isScanningStyle = isScanFileStatusType(fileInfo.statusType)
+  const isDoneStyle = isDoneFileStatusType(fileInfo.statusType)
+  const isUploadingStyle = isUploadFileStatusType(fileInfo.statusType)
   const isDefaultStyle = !isErrorStyle && !isDoneStyle && !isScanningStyle
 
-  const Icon = (props) =>
+  const Icon = (props: { 'data-cy': string }) =>
     isErrorStyle ? (
       <AlertIcon className="text-error" {...props} />
     ) : isScanningStyle ? (
@@ -48,20 +45,4 @@ export const SummaryFile = ({ file }: SummaryFileProps) => {
   )
 }
 
-type SummaryFilesProps = {
-  files: string | string[]
-}
-
-const SummaryFiles = ({ files }: SummaryFilesProps) => {
-  const filesArray = Array.isArray(files) ? files : [files]
-
-  return (
-    <div className="flex flex-col gap-2">
-      {filesArray.map((file, index) => (
-        <SummaryFile file={file} key={index} />
-      ))}
-    </div>
-  )
-}
-
-export default SummaryFiles
+export default SummaryFile

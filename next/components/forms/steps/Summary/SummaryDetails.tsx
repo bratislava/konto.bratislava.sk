@@ -1,14 +1,14 @@
 import { AlertIcon, ChevronDownIcon } from '@assets/ui-icons'
-import { SummaryDisplayValueType } from '@forms-shared/summary-json/getSummaryDisplayValue'
 import { getSummaryJsonBrowser } from '@forms-shared/summary-json/getSummaryJsonBrowser'
 import { getSummaryJsonNode } from '@forms-shared/summary-json/getSummaryJsonNode'
 import SummaryRenderer, {
   SummaryArrayItemRendererProps,
   SummaryArrayRendererProps,
-  SummaryDisplayValueRendererProps,
   SummaryFieldRendererProps,
+  SummaryFileValueRendererProps,
   SummaryFormRendererProps,
   SummaryStepRendererProps,
+  SummaryStringValueRendererProps,
 } from '@forms-shared/summary-renderer/SummaryRenderer'
 import cx from 'classnames'
 import { useTranslation } from 'next-i18next'
@@ -16,7 +16,7 @@ import React, { useMemo } from 'react'
 
 import { useFormContext } from '../../useFormContext'
 import { useFormState } from '../../useFormState'
-import { SummaryFile } from './SummaryFiles'
+import SummaryFile from './SummaryFiles'
 import SummaryRow from './SummaryRow'
 import { useFormSummary } from './useFormSummary'
 
@@ -54,35 +54,35 @@ const FieldRenderer = ({ field, hasError, children }: SummaryFieldRendererProps)
   )
 }
 
-const DisplayValueRenderer = ({ displayValue }: SummaryDisplayValueRendererProps) => {
-  const { t } = useTranslation('forms')
+const StringValueRenderer = ({ value }: SummaryStringValueRendererProps) => {
   const { isPdf } = useFormContext()
 
-  switch (displayValue.type) {
-    case SummaryDisplayValueType.String:
-      return (
-        <span className={cx('whitespace-pre-wrap', { 'line-clamp-3': !isPdf })}>
-          {displayValue.value}
-        </span>
-      )
-    case SummaryDisplayValueType.File:
-      return <SummaryFile file={displayValue.id} />
-    case SummaryDisplayValueType.Invalid:
-      return (
-        <span>
-          <div className="flex items-center gap-3 text-error">
-            <div className="shrink-0">
-              <AlertIcon />
-            </div>
-            {t('summary.unknown_value')}
-          </div>
-        </span>
-      )
-    case SummaryDisplayValueType.None:
-      return <span>{t('summary.none_value')}</span>
-    default:
-      return null
-  }
+  return <span className={cx('whitespace-pre-wrap', { 'line-clamp-3': !isPdf })}>{value}</span>
+}
+
+const FileValueRenderer = ({ fileInfo }: SummaryFileValueRendererProps) => {
+  return <SummaryFile fileInfo={fileInfo} />
+}
+
+const NoneValueRenderer = () => {
+  const { t } = useTranslation('forms')
+
+  return <span>{t('summary.none_value')}</span>
+}
+
+const InvalidValueRenderer = () => {
+  const { t } = useTranslation('forms')
+
+  return (
+    <span>
+      <div className="flex items-center gap-3 text-error">
+        <div className="shrink-0">
+          <AlertIcon />
+        </div>
+        {t('summary.invalid_value')}
+      </div>
+    </span>
+  )
 }
 
 const ArrayRenderer = ({ array, children }: SummaryArrayRendererProps) => {
@@ -164,7 +164,10 @@ const SummaryDetails = () => {
       renderField={FieldRenderer}
       renderArray={ArrayRenderer}
       renderArrayItem={ArrayItemRenderer}
-      renderDisplayValue={DisplayValueRenderer}
+      renderStringValue={StringValueRenderer}
+      renderFileValue={FileValueRenderer}
+      renderNoneValue={NoneValueRenderer}
+      renderInvalidValue={InvalidValueRenderer}
     />
   )
 }

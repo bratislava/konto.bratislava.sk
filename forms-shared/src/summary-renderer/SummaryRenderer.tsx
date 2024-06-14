@@ -1,6 +1,4 @@
 import React, { Fragment, PropsWithChildren, ReactNode } from 'react'
-
-import { SummaryDisplayValue } from '../summary-json/getSummaryDisplayValue'
 import {
   SummaryJsonArray,
   SummaryJsonArrayItem,
@@ -11,6 +9,11 @@ import {
   SummaryJsonType,
 } from '../summary-json/summaryJsonTypes'
 import { ValidatedSummary } from './validateSummary'
+import { FileInfoSummary } from '../form-files/fileStatus'
+import {
+  SummaryDisplayValue,
+  SummaryDisplayValueType,
+} from '../summary-json/getSummaryDisplayValue'
 
 export type SummaryFormRendererProps = PropsWithChildren<{
   form: SummaryJsonForm
@@ -37,19 +40,59 @@ export type SummaryArrayItemRendererProps = PropsWithChildren<{
   hasError: boolean
 }>
 
-export type SummaryDisplayValueRendererProps = {
+export type SummaryStringValueRendererProps = {
+  value: string
+}
+
+export type SummaryFileValueRendererProps = {
+  id: string
+  fileInfo: FileInfoSummary
+}
+
+type DisplayValueRendererProps = {
   displayValue: SummaryDisplayValue
+  validatedSummary: ValidatedSummary
+  renderStringValue: (props: SummaryStringValueRendererProps) => ReactNode
+  renderFileValue: (props: SummaryFileValueRendererProps) => ReactNode
+  renderNoneValue: () => ReactNode
+  renderInvalidValue: () => ReactNode
 }
 
 type SummaryRendererProps = {
   summaryJson: SummaryJsonForm
-  validatedSummary?: ValidatedSummary
+  validatedSummary: ValidatedSummary
   renderForm: (props: SummaryFormRendererProps) => ReactNode
   renderStep: (props: SummaryStepRendererProps) => ReactNode
   renderField: (props: SummaryFieldRendererProps) => ReactNode
   renderArray: (props: SummaryArrayRendererProps) => ReactNode
   renderArrayItem: (props: SummaryArrayItemRendererProps) => ReactNode
-  renderDisplayValue: (props: SummaryDisplayValueRendererProps) => ReactNode
+} & Omit<DisplayValueRendererProps, 'displayValue'>
+
+const DisplayValueRenderer = ({
+  validatedSummary,
+  displayValue,
+  renderStringValue,
+  renderFileValue,
+  renderNoneValue,
+  renderInvalidValue,
+}: DisplayValueRendererProps) => {
+  switch (displayValue.type) {
+    case SummaryDisplayValueType.String:
+      return <>{renderStringValue({ value: displayValue.value })}</>
+    case SummaryDisplayValueType.File:
+      const fileInfo = validatedSummary?.getFileById(displayValue.id)
+      if (!fileInfo) {
+        return <>{renderInvalidValue()}</>
+      }
+
+      return <>{renderFileValue({ id: displayValue.id, fileInfo })}</>
+    case SummaryDisplayValueType.None:
+      return <>{renderNoneValue()}</>
+    case SummaryDisplayValueType.Invalid:
+      return <>{renderInvalidValue()}</>
+    default:
+      return null
+  }
 }
 
 /**
@@ -65,7 +108,7 @@ const SummaryRenderer = ({
   renderField,
   renderArray,
   renderArrayItem,
-  renderDisplayValue,
+  ...rest
 }: SummaryRendererProps) => {
   const renderElement = (element: SummaryJsonElement): ReactNode => {
     const renderChildren = (children: SummaryJsonElement[]) =>
@@ -90,7 +133,12 @@ const SummaryRenderer = ({
           field: element,
           hasError,
           children: element.displayValues.map((displayValue, index) => (
-            <Fragment key={index}>{renderDisplayValue({ displayValue })}</Fragment>
+            <DisplayValueRenderer
+              key={index}
+              validatedSummary={validatedSummary}
+              displayValue={displayValue}
+              {...rest}
+            ></DisplayValueRenderer>
           )),
         })
       case SummaryJsonType.Array:

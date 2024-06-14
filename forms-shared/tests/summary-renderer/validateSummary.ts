@@ -46,6 +46,7 @@ describe('validateSummary', () => {
         { file: 'e37359e2-2547-42a9-82d6-d40054f17da0' },
         {
           'e37359e2-2547-42a9-82d6-d40054f17da0': {
+            id: 'e37359e2-2547-42a9-82d6-d40054f17da0',
             statusType: FileStatusType.ScanDone,
             fileName: '',
           },
@@ -56,6 +57,7 @@ describe('validateSummary', () => {
       expect(result.pathHasError('root_file')).toBe(false)
       expect(result.errors.length).toBe(0)
       expect(result.filesInFormData.length).toBe(1)
+      expect(result.getFileById('e37359e2-2547-42a9-82d6-d40054f17da0')).toBeDefined()
     })
 
     it('should report errors for files with errors', () => {
@@ -64,6 +66,7 @@ describe('validateSummary', () => {
         { file: 'e37359e2-2547-42a9-82d6-d40054f17da0' },
         {
           'e37359e2-2547-42a9-82d6-d40054f17da0': {
+            id: 'e37359e2-2547-42a9-82d6-d40054f17da0',
             statusType: FileStatusType.UploadServerError,
             fileName: '',
           },
@@ -74,6 +77,7 @@ describe('validateSummary', () => {
       expect(result.pathHasError('root_file')).toBe(true)
       expect(result.errors.length).toBe(1)
       expect(result.filesInFormData.length).toBe(1)
+      expect(result.getFileById('e37359e2-2547-42a9-82d6-d40054f17da0')).toBeDefined()
     })
 
     it('should report errors for missing file information', () => {
@@ -83,6 +87,7 @@ describe('validateSummary', () => {
       expect(result.pathHasError('root_file')).toBe(true)
       expect(result.errors.length).toBe(1)
       expect(result.filesInFormData.length).toBe(0)
+      expect(result.getFileById('e37359e2-2547-42a9-82d6-d40054f17da0')).toBeUndefined()
     })
   })
 
@@ -103,15 +108,18 @@ describe('validateSummary', () => {
         },
         {
           'e37359e2-2547-42a9-82d6-d40054f17da0': {
+            id: 'e37359e2-2547-42a9-82d6-d40054f17da0',
             statusType: FileStatusType.ScanDone,
             fileName: '',
           },
           'b3d0cd96-d255-4bfb-8b1a-56a185d467f3': {
+            id: 'b3d0cd96-d255-4bfb-8b1a-56a185d467f3',
             statusType: FileStatusType.UploadServerError,
             fileName: '',
           },
           // Extra file not in the form data
           '96f23f75-6d20-4a85-af35-bbc901d02def': {
+            id: '96f23f75-6d20-4a85-af35-bbc901d02def',
             statusType: FileStatusType.ScanDone,
             fileName: '',
           },
@@ -125,6 +133,9 @@ describe('validateSummary', () => {
       expect(result.pathHasError('root_files_2')).toBe(true)
       expect(result.errors.length).toBe(2)
       expect(result.filesInFormData.length).toBe(2)
+      expect(result.getFileById('e37359e2-2547-42a9-82d6-d40054f17da0')).toBeDefined()
+      expect(result.getFileById('b3d0cd96-d255-4bfb-8b1a-56a185d467f3')).toBeDefined()
+      expect(result.getFileById('7459535f-96c2-47ed-bf32-55143e52a4ea')).toBeUndefined()
     })
   })
 })

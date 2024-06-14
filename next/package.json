@@ -35,7 +35,7 @@
     "update-graphql": "yarn add @graphql-codegen/cli@latest @graphql-codegen/client-preset@latest @graphql-codegen/typescript-graphql-request@latest -D -E && yarn add graphql@latest graphql-request@latest graphql-tag@latest -E"
   },
   "dependencies": {
-    "@aws-amplify/adapter-nextjs": "1.2.4",
+    "@aws-amplify/adapter-nextjs": "1.1.8",
     "@grafana/faro-core": "^1.0.5",
     "@grafana/faro-web-sdk": "^1.0.2",
     "@hookform/resolvers": "^2.9.10",
@@ -54,7 +54,7 @@
     "adm-zip": "^0.5.10",
     "ajv": "8.14.0",
     "ajv-formats": "3.0.1",
-    "aws-amplify": "6.3.6",
+    "aws-amplify": "6.3.2",
     "axios": "^1.4.0",
     "classnames": "2.5.1",
     "expr-eval": "^2.0.2",

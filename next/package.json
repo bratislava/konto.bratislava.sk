@@ -12,8 +12,8 @@
     "start": "next start",
     "typecheck": "tsc",
     "lint": "eslint assets backend clients components frontend pages",
-    "lint:quiet": "yarn lint --quiet",
-    "lint:fix": "yarn lint --fix",
+    "lint:quiet": "npm run lint --quiet",
+    "lint:fix": "npm run lint --fix",
     "test": "jest --watch",
     "test:ci": "jest --ci",
     "prettier": "prettier --write .",
@@ -22,17 +22,21 @@
     "generate-client-tax": "openapi-generator-cli generate -i https://nest-tax-backend.staging.bratislava.sk/api-json -g typescript-axios -o ./clients/openapi-tax --skip-validate-spec && prettier --write ./clients/openapi-tax",
     "generate-client-city-account": "openapi-generator-cli generate -i https://nest-city-account.staging.bratislava.sk/api-json -g typescript-axios -o ./clients/openapi-city-account --skip-validate-spec && prettier --write ./clients/openapi-city-account",
     "generate-client-strapi": "graphql-codegen && prettier --write ./clients/graphql-strapi/api.ts",
-    "generate-clients": "yarn generate-client-forms && yarn generate-client-tax && yarn generate-client-city-account && yarn generate-client-strapi",
-    "update-react-aria": "yarn add @internationalized/date@latest @react-stately/utils@latest react-aria@latest react-aria-components@latest react-stately@latest @react-aria/utils@latest -E",
-    "update-rjsf": "yarn add @rjsf/core@latest @rjsf/utils@latest @rjsf/validator-ajv8@latest ajv@latest ajv-formats@latest -E",
-    "update-markdown": "yarn add remark-directive@latest remark-directive-rehype@latest remark-gfm@latest remark-supersub@latest rehype-raw@latest rehype-sanitize@latest",
-    "update-next": "yarn add next@latest react@latest react-dom@latest sharp@latest -E && yarn add @types/react@latest @types/react-dom@latest eslint-config-next@latest typescript@latest @next/bundle-analyzer -D -E",
-    "update-amplify": "yarn add aws-amplify@latest @aws-amplify/adapter-nextjs@latest -E",
-    "update-tailwind": "yarn add tailwind-merge@latest tailwind-scrollbar-hide@latest -E && yarn add tailwindcss@latest autoprefixer@latest postcss@latest prettier-plugin-tailwindcss@latest eslint-plugin-tailwindcss@latest -D -E",
-    "update-i18next": "yarn add i18next@latest next-i18next@latest react-i18next@latest -E",
-    "update-prettier": "yarn add prettier@latest eslint-config-prettier@latest -D -E",
-    "update-eslint": "yarn add eslint@latest @typescript-eslint/eslint-plugin@latest @typescript-eslint/parser@latest eslint-config-adjunct@latest eslint-config-airbnb@latest eslint-config-airbnb-typescript@latest eslint-config-auto@latest eslint-config-next@latest eslint-config-prettier@latest eslint-plugin-array-func@latest eslint-plugin-const-case@latest eslint-plugin-eslint-comments@latest eslint-plugin-html@latest eslint-plugin-import@latest eslint-plugin-jest@latest eslint-plugin-jest-async@latest eslint-plugin-jest-dom@latest eslint-plugin-json@latest eslint-plugin-lodash@latest eslint-plugin-lodash-fp@latest eslint-plugin-markdown@latest eslint-plugin-no-constructor-bind@latest eslint-plugin-no-secrets@latest eslint-plugin-no-unsanitized@latest eslint-plugin-no-use-extend-native@latest eslint-plugin-optimize-regex@latest eslint-plugin-pii@latest eslint-plugin-prettier@latest eslint-plugin-promise@latest eslint-plugin-react-hooks@latest eslint-plugin-scanjs-rules@latest eslint-plugin-security@latest eslint-plugin-simple-import-sort@latest eslint-plugin-sonarjs@latest eslint-plugin-switch-case@latest eslint-plugin-tailwindcss@latest eslint-plugin-testing-library@latest eslint-plugin-unicorn@latest eslint-plugin-xss@latest @tanstack/eslint-plugin-query@latest @typescript-eslint/eslint-plugin@latest @typescript-eslint/parser@latest -D -E",
-    "update-graphql": "yarn add @graphql-codegen/cli@latest @graphql-codegen/client-preset@latest @graphql-codegen/typescript-graphql-request@latest -D -E && yarn add graphql@latest graphql-request@latest graphql-tag@latest -E"
+    "generate-clients": "npm run generate-client-forms && npm run generate-client-tax && npm run generate-client-city-account && npm run generate-client-strapi",
+    "update-react-aria": "npm install @internationalized/date@latest @react-stately/utils@latest react-aria@latest react-aria-components@latest react-stately@latest @react-aria/utils@latest --save-exact --save-exact-dev",
+    "update-rjsf": "npm install @rjsf/core@latest @rjsf/utils@latest @rjsf/validator-ajv8@latest ajv@latest ajv-formats@latest --save-exact",
+    "update-markdown": "npm install remark-directive@latest remark-directive-rehype@latest remark-gfm@latest remark-supersub@latest rehype-raw@latest rehype-sanitize@latest",
+    "update-next": "npm install next@latest react@latest react-dom@latest sharp@latest --save-exact && npm install @types/react@latest @types/react-dom@latest eslint-config-next@latest typescript@latest @next/bundle-analyzer --save-dev --save-exact",
+    "update-amplify": "npm install aws-amplify@latest @aws-amplify/adapter-nextjs@latest --save-exact",
+    "update-tailwind": "npm install tailwind-merge@latest tailwind-scrollbar-hide@latest --save-exact && npm install tailwindcss@latest autoprefixer@latest postcss@latest prettier-plugin-tailwindcss@latest eslint-plugin-tailwindcss@latest --save-dev --save-exact",
+    "update-i18next": "npm install i18next@latest next-i18next@latest react-i18next@latest --save-exact",
+    "update-prettier": "npm install prettier@latest eslint-config-prettier@latest --save-dev --save-exact",
+    "update-eslint": "npm install eslint@latest @typescript-eslint/eslint-plugin@latest @typescript-eslint/parser@latest eslint-config-adjunct@latest eslint-config-airbnb@latest eslint-config-airbnb-typescript@latest eslint-config-auto@latest eslint-config-next@latest eslint-config-prettier@latest eslint-plugin-array-func@latest eslint-plugin-const-case@latest eslint-plugin-eslint-comments@latest eslint-plugin-html@latest eslint-plugin-import@latest eslint-plugin-jest@latest eslint-plugin-jest-async@latest eslint-plugin-jest-dom@latest eslint-plugin-json@latest eslint-plugin-lodash@latest eslint-plugin-lodash-fp@latest eslint-plugin-markdown@latest eslint-plugin-no-constructor-bind@latest eslint-plugin-no-secrets@latest eslint-plugin-no-unsanitized@latest eslint-plugin-no-use-extend-native@latest eslint-plugin-optimize-regex@latest eslint-plugin-pii@latest eslint-plugin-prettier@latest eslint-plugin-promise@latest eslint-plugin-react-hooks@latest eslint-plugin-scanjs-rules@latest eslint-plugin-security@latest eslint-plugin-simple-import-sort@latest eslint-plugin-sonarjs@latest eslint-plugin-switch-case@latest eslint-plugin-tailwindcss@latest eslint-plugin-testing-library@latest eslint-plugin-unicorn@latest eslint-plugin-xss@latest @tanstack/eslint-plugin-query@latest @typescript-eslint/eslint-plugin@latest @typescript-eslint/parser@latest --save-dev --save-exact",
+    "update-graphql": "npm install @graphql-codegen/cli@latest @graphql-codegen/client-preset@latest @graphql-codegen/typescript-graphql-request@latest --save-dev --save-exact && npm install graphql@latest graphql-request@latest graphql-tag@latest --save-exact"
+  },
+  "overrides": {
+    "react": "18.3.1",
+    "react-dom": "18.3.1"
   },
   "dependencies": {
     "@aws-amplify/adapter-nextjs": "1.1.8",
@@ -189,11 +193,10 @@
   },
   "engines": {
     "node": ">=20.9.x",
-    "npm": ">=6.0.0",
-    "yarn": "1.22"
+    "npm": ">=10.8.x"
   },
   "volta": {
     "node": "20.9.0",
-    "yarn": "1.22.19"
+    "npm": "10.8.1"
   }
 }

@@ -17,7 +17,7 @@
     "test:update": "jest --u",
     "test:watch": "jest --watch",
     "test:coverage": "jest --coverage",
-    "update-rjsf": "yarn add @rjsf/core@latest @rjsf/utils@latest @rjsf/validator-ajv8@latest ajv@latest ajv-formats@latest -E"
+    "update-rjsf": "npm install @rjsf/core@latest @rjsf/utils@latest @rjsf/validator-ajv8@latest ajv@latest ajv-formats@latest -E"
   },
   "dependencies": {
     "@fontsource/inter": "^5.0.18",
@@ -78,5 +78,13 @@
   "resolutions": {
     "wrap-ansi": "7.0.0",
     "string-width": "4.1.0"
+  },
+  "engines": {
+    "node": ">=20.9.x",
+    "npm": ">=10.8.x"
+  },
+  "volta": {
+    "node": "20.9.0",
+    "npm": "10.8.1"
   }
 }

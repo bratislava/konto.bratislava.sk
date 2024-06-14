@@ -5,7 +5,7 @@
 Before you start, install all dependencies and create `.env.local` file which is .gitignored used for local dev
 
 ```
-yarn
+npm install
 cp .env.example .env.local
 ```
 
@@ -15,7 +15,7 @@ If you need to quickly setup postgres see the readme and the docker-compose file
 
 ### Starting from empty database
 
-While not recommended once data is in, you can start by simply running `yarn dev` with an empty database. Strapi will create the tables and you can start from scratch.
+While not recommended once data is in, you can start by simply running `npm run dev` with an empty database. Strapi will create the tables and you can start from scratch.
 
 ### Seeding the database
 
@@ -28,7 +28,7 @@ We may provide a db dump as part of the project in the future - for now please c
 Start the development server:
 
 ```bash
-yarn dev
+npm run dev
 ```
 
 ## Patches
@@ -38,5 +38,5 @@ We use [patch-package](https://github.com/ds300/patch-package) to slightly chang
 When updating these packages, please run also `patch-package`:
 
 ```
-yarn patch-package @strapi/plugin-users-permissions
+npm run patch-package @strapi/plugin-users-permissions
 ```

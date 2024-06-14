@@ -9,7 +9,7 @@
   },
   "scripts": {
     "build": "strapi build",
-    "dev": "yarn develop",
+    "dev": "npm run develop",
     "develop": "cross-env ENV_PATH='./.env.local' strapi develop",
     "postinstall": "patch-package",
     "start": "strapi start",
@@ -37,12 +37,12 @@
     "eslint-scope": "^7.1.1"
   },
   "engines": {
-    "node": ">=18.x.x",
-    "npm": ">=9.8.1",
-    "yarn": "1.22"
+    "node": ">=20.9.x",
+    "npm": ">=10.8.x"
   },
   "volta": {
-    "node": "18.17.1"
+    "node": "20.9.0",
+    "npm": "10.8.1"
   },
   "strapi": {
     "uuid": "61130046-63b5-40a0-a617-713763ba3913"

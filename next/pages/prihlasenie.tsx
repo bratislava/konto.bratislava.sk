@@ -47,7 +47,6 @@ const LoginPage = () => {
       const { nextStep, isSignedIn } = await signIn({ username: email, password })
       if (isSignedIn) {
         logger.info(`[AUTH] Successfully signed in for email ${email}`)
-
         await redirect()
         return
       }
@@ -82,8 +81,8 @@ const LoginPage = () => {
         logger.info(`[AUTH] Removed all cookies and cleared local storage for email ${email}`)
       }
 
-      // Handles a bug in Amplify after update to 6.3.6. Server context doesn't detect users signed in in previous
-      // versions of the library. The client does, and in attempt to sign in it throws this error.
+      // Handles a bug in Amplify after update. Server context doesn't detect users signed in in previous versions of
+      // the library. The client does, and in attempt to sign in it throws this error.
       if (error instanceof AuthError && error.name === 'UserAlreadyAuthenticatedException') {
         const currentUser = await getCurrentUser()
         if (currentUser.signInDetails?.loginId === email) {

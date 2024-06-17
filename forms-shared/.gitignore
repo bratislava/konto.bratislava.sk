@@ -1,2 +1,5 @@
 /dist
 .env
+
+# workspace
+package-lock.json

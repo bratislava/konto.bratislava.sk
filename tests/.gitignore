@@ -3,3 +3,6 @@
 */videos/*
 **/**.actual.png
 **/**.diff.png
+
+# workspace
+package-lock.json

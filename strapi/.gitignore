@@ -113,3 +113,6 @@ exports
 build
 .strapi-updater.json
 dist
+
+# workspace
+package-lock.json

@@ -1,7 +1,7 @@
 import { JSDOM } from 'jsdom'
 import { parseStringPromise } from 'xml2js'
 
-interface Metadata {
+interface SlovenskoSkMetadataXml {
   'meta:metadata': {
     $: {
       'xmlns:attachment': string
@@ -48,6 +48,6 @@ export async function fetchSlovenskoSkFormMetadata(url: string) {
     throw new Error('Textarea with ID "PlaceHolderMain_metadataTextBox" not found')
   }
   const xmlContent = textarea.value
-
-  return (await parseStringPromise(xmlContent)) as Metadata
+  const parsedXml = (await parseStringPromise(xmlContent)) as SlovenskoSkMetadataXml
+  return parsedXml['meta:metadata']
 }

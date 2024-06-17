@@ -3,6 +3,7 @@
 import * as crypto from 'node:crypto'
 import { Stream } from 'node:stream'
 
+import { FormDefinitionSlovenskoSk } from '@forms-shared/definitions/form-definitions'
 import {
   getFormDefinitionBySlug,
   isSlovenskoSkFormDefinition,
@@ -88,15 +89,16 @@ export default class NasesUtilsService {
   }
 
   // TODO error handling of this function
-  private async createAttachmentsIfExists(form: Forms): Promise<string> {
+  private async createAttachmentsIfExists(
+    form: Forms,
+    formDefinition: FormDefinitionSlovenskoSk,
+  ): Promise<string> {
     let result = ''
     const files = await this.prismaService.files.findMany({
       where: {
         formId: form.id,
       },
     })
-
-    const formDefinition = getFormDefinitionBySlug(form.formDefinitionSlug)
 
     // eslint-disable-next-line no-restricted-syntax
     for (const file of files) {
@@ -409,11 +411,11 @@ export default class NasesUtilsService {
     let encoding = 'XML'
     let attachments = ''
 
-    if (isSigned) {
+    if (isSlovenskoSkTaxFormDefinition(formDefinition)) {
       subject = 'Podávanie daňového priznanie k dani z nehnuteľností' // TODO fix in formDefinition, quickfix here formDefinition.messageSubjectDefault
       mimeType = 'application/vnd.etsi.asic-e+zip'
       encoding = 'Base64'
-      attachments = await this.createAttachmentsIfExists(form)
+      attachments = await this.createAttachmentsIfExists(form, formDefinition)
     }
     envelope = `
             <?xml version="1.0" encoding="utf-8"?>

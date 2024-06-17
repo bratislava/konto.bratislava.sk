@@ -1,6 +1,9 @@
 import { createHash } from 'node:crypto'
 
-import { getFormDefinitionBySlug } from '@forms-shared/definitions/form-definitions-helpers'
+import {
+  getFormDefinitionBySlug,
+  isSlovenskoSkFormDefinition,
+} from '@forms-shared/definitions/form-definitions-helpers'
 import { Injectable, Logger } from '@nestjs/common'
 import { ConfigService } from '@nestjs/config'
 import { Files, FileStatus, Forms, Prisma } from '@prisma/client'
@@ -310,8 +313,18 @@ export default class FilesHelper {
         `${FormsErrorsResponseEnum.FORM_DEFINITION_NOT_FOUND} ${form.formDefinitionSlug}`,
       )
     }
+
+    // TODO: Remove this, it is only needed because of `formDefinition.pospID`. When migrating to non-Slovensko.sk forms,
+    // different identifier must be used.
+    if (!isSlovenskoSkFormDefinition(formDefinition)) {
+      throw this.throwerErrorGuard.UnprocessableEntityException(
+        FormsErrorsEnum.FORM_DEFINITION_NOT_SUPPORTED_TYPE,
+        `${FormsErrorsResponseEnum.FORM_DEFINITION_NOT_SUPPORTED_TYPE} ${form.formDefinitionSlug}`,
+      )
+    }
+
     return {
-      pospId: formDefinition.pospID ?? '',
+      pospId: formDefinition.pospID,
       formId: form.id,
     }
   }

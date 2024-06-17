@@ -1,4 +1,4 @@
-import { FormDefinition } from '@forms-shared/definitions/form-definitions'
+import { FormDefinitionSlovenskoSk } from '@forms-shared/definitions/form-definitions'
 import { Injectable } from '@nestjs/common'
 
 import ConvertService from '../convert/convert.service'
@@ -34,7 +34,7 @@ export default class ConvertPdfService {
    */
   async getPdfExportFilePathWithoutBucket(
     formId: string,
-    formDefinition: FormDefinition,
+    formDefinition: FormDefinitionSlovenskoSk,
   ): Promise<string> {
     const form = await this.formsService.getUniqueForm(formId)
     if (!form) {
@@ -45,7 +45,7 @@ export default class ConvertPdfService {
     }
 
     const formInfo: FormInfo = {
-      pospId: formDefinition.pospID ?? '',
+      pospId: formDefinition.pospID,
       formId,
     }
     const formPath = this.filesHelper.getPath(formInfo)
@@ -59,7 +59,7 @@ export default class ConvertPdfService {
    */
   async createPdfImageInFormFiles(
     formId: string,
-    formDefinition: FormDefinition,
+    formDefinition: FormDefinitionSlovenskoSk,
   ): Promise<string> {
     const form = await this.formsService.getUniqueForm(formId)
     if (!form) {
@@ -86,7 +86,7 @@ export default class ConvertPdfService {
       .putObject(this.filesHelper.getBucketUid('SAFE'), filePath, file)
 
     // save file to database, from this point onwards it behaves like other files attached to form
-    const pospId = formDefinition.pospID ?? ''
+    const pospId = formDefinition.pospID
     const minioFileName = PDF_EXPORT_FILE_NAME
     const fileName = PDF_EXPORT_FILE_NAME
     // TODO I'm not sure how to easily get the size, and it's not used as we don't display these files to the user

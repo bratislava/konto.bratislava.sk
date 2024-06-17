@@ -1,4 +1,4 @@
-import { FormDefinition } from '@forms-shared/definitions/form-definitions'
+import { FormDefinitionSlovenskoSk } from '@forms-shared/definitions/form-definitions'
 import { ConfigService } from '@nestjs/config'
 import { Test, TestingModule } from '@nestjs/testing'
 import { Forms } from '@prisma/client'
@@ -106,7 +106,7 @@ describe('ConvertPdfService', () => {
     it('calls all services it depends on and does not explode in the process', async () => {
       const filePath = await convertPdfService.createPdfImageInFormFiles(
         formId,
-        {} as FormDefinition,
+        {} as FormDefinitionSlovenskoSk,
       )
       expect(filePath).toBe(expectedPdfExportPath)
 

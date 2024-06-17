@@ -1,7 +1,13 @@
 import { setTimeout } from 'node:timers/promises'
 
-import { FormDefinition } from '@forms-shared/definitions/form-definitions'
-import { getFormDefinitionBySlug } from '@forms-shared/definitions/form-definitions-helpers'
+import {
+  FormDefinition,
+  FormDefinitionSlovenskoSk,
+} from '@forms-shared/definitions/form-definitions'
+import {
+  getFormDefinitionBySlug,
+  isSlovenskoSkFormDefinition,
+} from '@forms-shared/definitions/form-definitions-helpers'
 import { Nack, RabbitRPC } from '@golevelup/nestjs-rabbitmq'
 import { Injectable, Logger } from '@nestjs/common'
 import { FormError, Forms, FormState } from '@prisma/client'
@@ -83,6 +89,14 @@ export default class NasesConsumerService {
       return new Nack(false)
     }
 
+    if (!isSlovenskoSkFormDefinition(formDefinition)) {
+      alertError(
+        `ERROR onQueueConsumption: UnprocessableEntityException - ${FormsErrorsResponseEnum.FORM_DEFINITION_NOT_SUPPORTED_TYPE} ${form.formDefinitionSlug}.`,
+        this.logger,
+      )
+      return new Nack(false)
+    }
+
     const checkedAttachments = await this.checkAttachments(
       data,
       form,
@@ -158,7 +172,7 @@ export default class NasesConsumerService {
     jwt: string,
     form: Forms,
     data: RabbitPayloadDto,
-    formDefinition: FormDefinition,
+    formDefinition: FormDefinitionSlovenskoSk,
     senderUri?: string,
   ): Promise<boolean> {
     // TODO find a nicer place to do this

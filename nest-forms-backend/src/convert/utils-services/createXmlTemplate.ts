@@ -1,12 +1,7 @@
-import {
-  FormDefinitionSlovenskoSkGeneric,
-  FormDefinitionSlovenskoSkTax,
-} from '@forms-shared/definitions/form-definitions'
+import { FormDefinitionSlovenskoSk } from '@forms-shared/definitions/form-definitions'
 
 export const createXmlTemplate = (
-  formDefinition:
-    | FormDefinitionSlovenskoSkGeneric
-    | FormDefinitionSlovenskoSkTax,
+  formDefinition: FormDefinitionSlovenskoSk,
 ): string => `
     <?xml version="1.0" encoding="utf-8"?>
     <E-form xmlns="http://schemas.gov.sk/form/${formDefinition.pospID}/${formDefinition.pospVersion}"

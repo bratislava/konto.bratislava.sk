@@ -1,4 +1,7 @@
-import { getFormDefinitionBySlug } from '@forms-shared/definitions/form-definitions-helpers'
+import {
+  getFormDefinitionBySlug,
+  isSlovenskoSkFormDefinition,
+} from '@forms-shared/definitions/form-definitions-helpers'
 import { Injectable, Logger } from '@nestjs/common'
 import { FormOwnerType, Forms, FormState } from '@prisma/client'
 import axios, { AxiosResponse } from 'axios'
@@ -372,6 +375,13 @@ export default class NasesService {
       throw this.throwerErrorGuard.NotFoundException(
         FormsErrorsEnum.FORM_DEFINITION_NOT_FOUND,
         `${FormsErrorsResponseEnum.FORM_DEFINITION_NOT_FOUND} ${form.formDefinitionSlug}`,
+      )
+    }
+
+    if (!isSlovenskoSkFormDefinition(formDefinition)) {
+      throw this.throwerErrorGuard.UnprocessableEntityException(
+        FormsErrorsEnum.FORM_DEFINITION_NOT_SUPPORTED_TYPE,
+        `sendFormEid: ${FormsErrorsResponseEnum.FORM_DEFINITION_NOT_SUPPORTED_TYPE}: ${formDefinition.type}, form id: ${form.id}`,
       )
     }
 

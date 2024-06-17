@@ -14,7 +14,8 @@ import MinioClientSubservice from '../utils/subservices/minio-client.subservice'
 import FormsHelper from './forms.helper'
 import FormsService from './forms.service'
 
-jest.mock('@forms-shared/form-utils/definitions', () => ({
+jest.mock('@forms-shared/definitions/form-definitions-helpers', () => ({
+  ...jest.requireActual('@forms-shared/definitions/form-definitions-helpers'),
   getFormDefinitionBySlug: jest.fn(),
 }))
 jest.mock('@nestjs/config')
@@ -56,7 +57,7 @@ describe('FormsService', () => {
     it('should count correctly', async () => {
       const {
         getFormDefinitionBySlug,
-      } = require('@forms-shared/form-utils/definitions')
+      } = require('@forms-shared/definitions/form-definitions-helpers')
       getFormDefinitionBySlug.mockReturnValue({
         schemas: {
           uiSchema: {

@@ -1,6 +1,6 @@
 import { Readable } from 'node:stream'
 
-import { FormDefinition } from '@forms-shared/definitions/form-definitions'
+import { FormDefinitionSlovenskoSk } from '@forms-shared/definitions/form-definitions'
 import { createMock } from '@golevelup/ts-jest'
 import { getQueueToken } from '@nestjs/bull'
 import { CacheModule } from '@nestjs/cache-manager'
@@ -160,7 +160,7 @@ describe('NasesConsumerService', () => {
             firstName: 'Tester',
           },
         },
-        {} as FormDefinition,
+        {} as FormDefinitionSlovenskoSk,
         '',
       )
 
@@ -195,7 +195,7 @@ describe('NasesConsumerService', () => {
             firstName: 'Tester',
           },
         },
-        {} as FormDefinition,
+        {} as FormDefinitionSlovenskoSk,
         '',
       )
 

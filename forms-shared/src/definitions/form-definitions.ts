@@ -7,14 +7,9 @@ import zavazneStanoviskoKInvesticnejCinnosti from './zavazne-stanovisko-k-invest
 import komunitneZahrady from './komunitne-zahrady'
 
 export enum FormDefinitionType {
-  SlovenskoSk = 'SlovenskoSk',
-  Tax = 'Tax',
+  SlovenskoSkGeneric = 'SlovenskoSkGeneric',
+  SlovenskoSkTax = 'SlovenskoSkTax',
   Email = 'Email',
-}
-
-type GinisAssignment = {
-  ginisOrganizationName: string
-  ginisPersonName: string
 }
 
 type FormDefinitionBase = {
@@ -25,25 +20,38 @@ type FormDefinitionBase = {
   messageSubjectFormat?: string
   messageSubjectDefault: string
   isSigned: boolean
-  pospID?: string
 }
 
-export type FormDefinitionSlovenskoSk = FormDefinitionBase & {
-  type: FormDefinitionType.SlovenskoSk | FormDefinitionType.Tax
+type FormDefinitionSlovenskoSkBase = FormDefinitionBase & {
+  pospID: string
   pospVersion: string
-  ginisAssignment?: GinisAssignment
+  ginisAssignment?: {
+    ginisOrganizationName: string
+    ginisPersonName: string
+  }
 }
 
-type FormDefinitionEmail = FormDefinitionBase & {
+export type FormDefinitionSlovenskoSkGeneric = FormDefinitionSlovenskoSkBase & {
+  type: FormDefinitionType.SlovenskoSkGeneric
+}
+
+export type FormDefinitionSlovenskoSkTax = FormDefinitionSlovenskoSkBase & {
+  type: FormDefinitionType.SlovenskoSkTax
+}
+
+export type FormDefinitionEmail = FormDefinitionBase & {
   type: FormDefinitionType.Email
   email: string
 }
 
-export type FormDefinition = FormDefinitionSlovenskoSk | FormDefinitionEmail
+export type FormDefinition =
+  | FormDefinitionSlovenskoSkGeneric
+  | FormDefinitionSlovenskoSkTax
+  | FormDefinitionEmail
 
 export const formDefinitions: FormDefinition[] = [
   {
-    type: FormDefinitionType.SlovenskoSk,
+    type: FormDefinitionType.SlovenskoSkGeneric,
     slug: 'stanovisko-k-investicnemu-zameru',
     title: 'Žiadosť o stanovisko k investičnému zámeru',
     schemas: stanoviskoKInvesticnemuZameru,
@@ -51,15 +59,16 @@ export const formDefinitions: FormDefinition[] = [
     pospVersion: '0.7',
     termsAndConditions: generalTermsAndConditions,
     messageSubjectDefault: 'Podanie',
-    messageSubjectFormat: 'e-ZST ž. {stavba.ulica} {stavba.nazov}, p.č. {stavba.parcelneCislo} kú {stavba.kataster}',
+    messageSubjectFormat:
+      'e-ZST ž. {stavba.ulica} {stavba.nazov}, p.č. {stavba.parcelneCislo} kú {stavba.kataster}',
     ginisAssignment: {
       ginisOrganizationName: 'OUIC',
-      ginisPersonName: "Vícenová Marcela"
+      ginisPersonName: 'Vícenová Marcela',
     },
     isSigned: false,
   },
   {
-    type: FormDefinitionType.SlovenskoSk,
+    type: FormDefinitionType.SlovenskoSkGeneric,
     slug: 'zavazne-stanovisko-k-investicnej-cinnosti',
     title: 'Žiadosť o záväzné stanovisko k investičnej činnosti',
     schemas: zavazneStanoviskoKInvesticnejCinnosti,
@@ -67,15 +76,16 @@ export const formDefinitions: FormDefinition[] = [
     pospVersion: '0.7',
     termsAndConditions: generalTermsAndConditions,
     messageSubjectDefault: 'Podanie',
-    messageSubjectFormat: 'e-SIZ ž. {stavba.ulica} {stavba.nazov}, p.č. {stavba.parcelneCislo} kú {stavba.kataster}',
+    messageSubjectFormat:
+      'e-SIZ ž. {stavba.ulica} {stavba.nazov}, p.č. {stavba.parcelneCislo} kú {stavba.kataster}',
     ginisAssignment: {
       ginisOrganizationName: 'OUIC',
-      ginisPersonName: "Vícenová Marcela"
+      ginisPersonName: 'Vícenová Marcela',
     },
     isSigned: false,
   },
   {
-    type: FormDefinitionType.SlovenskoSk,
+    type: FormDefinitionType.SlovenskoSkGeneric,
     slug: 'predzahradky',
     title: 'Predzáhradky',
     schemas: predzahradky,
@@ -87,7 +97,7 @@ export const formDefinitions: FormDefinition[] = [
     isSigned: false,
   },
   {
-    type: FormDefinitionType.SlovenskoSk,
+    type: FormDefinitionType.SlovenskoSkGeneric,
     slug: 'komunitne-zahrady',
     title: 'Komunitné záhrady',
     schemas: komunitneZahrady,
@@ -99,7 +109,7 @@ export const formDefinitions: FormDefinition[] = [
     isSigned: false,
   },
   {
-    type: FormDefinitionType.Tax,
+    type: FormDefinitionType.SlovenskoSkTax,
     title: 'Priznanie k dani z nehnuteľností',
     slug: 'priznanie-k-dani-z-nehnutelnosti',
     schemas: priznanieKDaniZNehnutelnosti,

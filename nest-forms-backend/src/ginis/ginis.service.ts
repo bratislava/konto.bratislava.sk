@@ -1,6 +1,6 @@
 import { setTimeout } from 'node:timers/promises'
 
-import { FormDefinitionType } from '@forms-shared/definitions/form-definitions'
+import { isSlovenskoSkFormDefinition } from '@forms-shared/definitions/form-definitions-helpers'
 import { getFormDefinitionBySlug } from '@forms-shared/form-utils/definitions'
 import { Nack, RabbitRPC } from '@golevelup/nestjs-rabbitmq'
 import { Injectable, Logger } from '@nestjs/common'
@@ -437,10 +437,7 @@ export default class GinisService {
         `${FormsErrorsResponseEnum.FORM_DEFINITION_NOT_FOUND} ${form.formDefinitionSlug}`,
       )
     }
-    if (
-      formDefinition.type !== FormDefinitionType.SlovenskoSk &&
-      formDefinition.type !== FormDefinitionType.Tax
-    ) {
+    if (!isSlovenskoSkFormDefinition(formDefinition)) {
       throw this.throwerErrorGuard.UnprocessableEntityException(
         FormsErrorsEnum.FORM_DEFINITION_NOT_SUPPORTED_TYPE,
         `onQueueConsumption: ${FormsErrorsResponseEnum.FORM_DEFINITION_NOT_SUPPORTED_TYPE}: ${formDefinition.type}, form id: ${form.id}`,

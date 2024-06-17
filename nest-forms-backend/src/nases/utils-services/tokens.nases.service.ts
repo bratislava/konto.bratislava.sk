@@ -3,7 +3,10 @@
 import * as crypto from 'node:crypto'
 import { Stream } from 'node:stream'
 
-import { FormDefinitionType } from '@forms-shared/definitions/form-definitions'
+import {
+  isSlovenskoSkFormDefinition,
+  isSlovenskoSkTaxFormDefinition,
+} from '@forms-shared/definitions/form-definitions-helpers'
 import { getFormDefinitionBySlug } from '@forms-shared/form-utils/definitions'
 import { Injectable, Logger } from '@nestjs/common'
 import { Forms } from '@prisma/client'
@@ -107,7 +110,7 @@ export default class NasesUtilsService {
       const fileBase64 = fileBuffer.toString('base64')
       result += `<Object Id="${file.id}" IsSigned="false" Name="${file.fileName}" Description="ATTACHMENT" Class="ATTACHMENT" MimeType="${mimeType}" Encoding="Base64">${fileBase64}</Object>`
     }
-    if (formDefinition?.type === FormDefinitionType.Tax) {
+    if (isSlovenskoSkTaxFormDefinition(formDefinition)) {
       try {
         const base64FormPdf = await this.taxService.getFilledInPdfBase64(
           form.formDataJson,
@@ -327,10 +330,7 @@ export default class NasesUtilsService {
         `${FormsErrorsResponseEnum.FORM_DEFINITION_NOT_FOUND} ${form.formDefinitionSlug}`,
       )
     }
-    if (
-      formDefinition.type !== FormDefinitionType.SlovenskoSk &&
-      formDefinition.type !== FormDefinitionType.Tax
-    ) {
+    if (!isSlovenskoSkFormDefinition(formDefinition)) {
       throw this.throwerErrorGuard.UnprocessableEntityException(
         FormsErrorsEnum.FORM_DEFINITION_NOT_SUPPORTED_TYPE,
         `createEnvelopeSendMessage: ${FormsErrorsResponseEnum.FORM_DEFINITION_NOT_SUPPORTED_TYPE}: ${formDefinition.type}, form id: ${form.id}`,

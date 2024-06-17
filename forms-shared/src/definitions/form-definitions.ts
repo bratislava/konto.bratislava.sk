@@ -17,8 +17,8 @@ type FormDefinitionBase = {
   title: string
   schemas: Schemas
   termsAndConditions: string
-  messageSubjectFormat?: string
   messageSubjectDefault: string
+  messageSubjectFormat?: string
 }
 
 type FormDefinitionSlovenskoSkBase = FormDefinitionBase & {

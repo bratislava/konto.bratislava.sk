@@ -1,6 +1,5 @@
-FROM node:20.9 AS base
 FROM harbor.bratislava.sk/standalone/forms-shared:latest as shared
-
+FROM node:20.9 AS base
 
 # Based on https://github.com/puppeteer/puppeteer/blob/main/docker/Dockerfile
 RUN apt-get update \

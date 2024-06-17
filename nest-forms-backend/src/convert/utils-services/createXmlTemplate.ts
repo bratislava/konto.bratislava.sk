@@ -10,7 +10,7 @@ export const createXmlTemplate = (
       <Meta>
         <ID>${formDefinition.pospID}</ID>
         <Name>${formDefinition.title}</Name>
-        <Gestor>Martin Pinter</Gestor>
+        <Gestor>${formDefinition.gestor}</Gestor>
         <RecipientId></RecipientId>
         <Version>${formDefinition.pospVersion}</Version>
         <ZepRequired>0</ZepRequired>

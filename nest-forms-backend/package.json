@@ -166,6 +166,9 @@
     ],
     "testPathIgnorePatterns": [
       "<rootDir>/nases/__tests__"
-    ]
+    ],
+    "moduleNameMapper": {
+      "^@forms-shared/(.*)$": "<rootDir>/../../forms-shared/src/$1"
+    }
   }
 }

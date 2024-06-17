@@ -19,7 +19,6 @@ type FormDefinitionBase = {
   termsAndConditions: string
   messageSubjectFormat?: string
   messageSubjectDefault: string
-  isSigned: boolean
 }
 
 type FormDefinitionSlovenskoSkBase = FormDefinitionBase & {
@@ -29,6 +28,7 @@ type FormDefinitionSlovenskoSkBase = FormDefinitionBase & {
     ginisOrganizationName: string
     ginisPersonName: string
   }
+  isSigned: boolean
 }
 
 export type FormDefinitionSlovenskoSkGeneric = FormDefinitionSlovenskoSkBase & {

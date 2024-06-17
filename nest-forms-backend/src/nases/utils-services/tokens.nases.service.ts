@@ -3,6 +3,8 @@
 import * as crypto from 'node:crypto'
 import { Stream } from 'node:stream'
 
+import { FormDefinitionType } from '@forms-shared/definitions/form-definitions'
+import { getFormDefinitionBySlug } from '@forms-shared/form-utils/definitions'
 import { Injectable, Logger } from '@nestjs/common'
 import { Forms } from '@prisma/client'
 import axios, { AxiosResponse } from 'axios'
@@ -33,8 +35,6 @@ import {
   NasesErrorsEnum,
   NasesErrorsResponseEnum,
 } from '../nases.errors.enum'
-import { getFormDefinitionBySlug } from '../../../../forms-shared/src/form-utils/definitions'
-import { FormDefinitionType } from '../../../../forms-shared/src/definitions/form-definitions'
 
 @Injectable()
 export default class NasesUtilsService {
@@ -320,16 +320,17 @@ export default class NasesUtilsService {
     form: Forms,
     senderUri?: string,
   ): Promise<string> {
-    const formDefinition = getFormDefinitionBySlug(
-      form.formDefinitionSlug,
-    )
+    const formDefinition = getFormDefinitionBySlug(form.formDefinitionSlug)
     if (!formDefinition) {
       throw this.throwerErrorGuard.NotFoundException(
         FormsErrorsEnum.FORM_DEFINITION_NOT_FOUND,
         `${FormsErrorsResponseEnum.FORM_DEFINITION_NOT_FOUND} ${form.formDefinitionSlug}`,
       )
     }
-    if (formDefinition.type !== FormDefinitionType.SlovenskoSk && formDefinition.type !== FormDefinitionType.Tax) {
+    if (
+      formDefinition.type !== FormDefinitionType.SlovenskoSk &&
+      formDefinition.type !== FormDefinitionType.Tax
+    ) {
       throw this.throwerErrorGuard.UnprocessableEntityException(
         FormsErrorsEnum.FORM_DEFINITION_NOT_SUPPORTED_TYPE,
         `createEnvelopeSendMessage: ${FormsErrorsResponseEnum.FORM_DEFINITION_NOT_SUPPORTED_TYPE}: ${formDefinition.type}, form id: ${form.id}`,

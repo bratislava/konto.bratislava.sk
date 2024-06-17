@@ -1,5 +1,6 @@
 import { createHash } from 'node:crypto'
 
+import { getFormDefinitionBySlug } from '@forms-shared/form-utils/definitions'
 import { Injectable, Logger } from '@nestjs/common'
 import { ConfigService } from '@nestjs/config'
 import { Files, FileStatus, Forms, Prisma } from '@prisma/client'
@@ -23,7 +24,6 @@ import ThrowerErrorGuard from '../utils/guards/thrower-error.guard'
 import MinioClientSubservice from '../utils/subservices/minio-client.subservice'
 import { BasicFileDto, BufferedFileDto, FormInfo } from './files.dto'
 import { FilesErrorsEnum, FilesErrorsResponseEnum } from './files.errors.enum'
-import { getFormDefinitionBySlug } from '../../../forms-shared/src/form-utils/definitions'
 
 // TODO missing tests
 @Injectable()

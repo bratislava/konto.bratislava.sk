@@ -1,18 +1,17 @@
 import { PassThrough, Readable } from 'node:stream'
 
+import {
+  FormDefinition,
+  FormDefinitionType,
+} from '@forms-shared/definitions/form-definitions'
+import { getFormDefinitionBySlug } from '@forms-shared/form-utils/definitions'
 import { Cache, CACHE_MANAGER } from '@nestjs/cache-manager'
 import { Inject, Injectable, StreamableFile } from '@nestjs/common'
 import { ConfigService } from '@nestjs/config'
 import { Prisma } from '@prisma/client'
-import { GenericObjectType, RJSFSchema, UiSchema } from '@rjsf/utils'
+import { GenericObjectType, RJSFSchema } from '@rjsf/utils'
 import * as cheerio from 'cheerio'
 import { Response } from 'express'
-import {
-  FormDefinition,
-  FormDefinitionSlovenskoSk,
-  FormDefinitionType,
-} from '../../../forms-shared/src/definitions/form-definitions'
-import { getFormDefinitionBySlug } from '../../../forms-shared/src/form-utils/definitions'
 import * as jwt from 'jsonwebtoken'
 import puppeteer from 'puppeteer'
 import { v4 as uuidv4 } from 'uuid'
@@ -67,16 +66,17 @@ export default class ConvertService {
     ico: string | null,
     user?: CognitoGetUserData,
   ): Promise<string> {
-    const formDefinition = getFormDefinitionBySlug(
-      data.slug,
-    )
+    const formDefinition = getFormDefinitionBySlug(data.slug)
     if (formDefinition === null) {
       throw this.throwerErrorGuard.NotFoundException(
         FormsErrorsEnum.FORM_DEFINITION_NOT_FOUND,
         `${FormsErrorsResponseEnum.FORM_DEFINITION_NOT_FOUND} ${data.slug}`,
       )
     }
-    if (formDefinition.type !== FormDefinitionType.SlovenskoSk && formDefinition.type !== FormDefinitionType.Tax) {
+    if (
+      formDefinition.type !== FormDefinitionType.SlovenskoSk &&
+      formDefinition.type !== FormDefinitionType.Tax
+    ) {
       throw this.throwerErrorGuard.UnprocessableEntityException(
         FormsErrorsEnum.FORM_DEFINITION_NOT_SUPPORTED_TYPE,
         `convertJsonToXmlv2: ${FormsErrorsResponseEnum.FORM_DEFINITION_NOT_SUPPORTED_TYPE}: ${formDefinition.type}, slug: ${data.slug}`,

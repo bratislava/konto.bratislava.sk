@@ -1,5 +1,7 @@
+import { FormDefinition } from '@forms-shared/definitions/form-definitions'
 import { ConfigService } from '@nestjs/config'
 import { Test, TestingModule } from '@nestjs/testing'
+import { Forms } from '@prisma/client'
 
 import prismaMock from '../../test/singleton'
 import { testJsonData } from '../__tests__/constants'
@@ -15,8 +17,6 @@ import { PDF_EXPORT_FILE_NAME } from '../utils/files'
 import ThrowerErrorGuard from '../utils/guards/thrower-error.guard'
 import MinioClientSubservice from '../utils/subservices/minio-client.subservice'
 import ConvertPdfService from './convert-pdf.service'
-import { FormDefinition } from '../../../forms-shared/src/definitions/form-definitions'
-import { Forms } from '@prisma/client'
 
 jest.mock('../files/files.service')
 

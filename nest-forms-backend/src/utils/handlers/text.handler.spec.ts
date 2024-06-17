@@ -1,10 +1,11 @@
+import { FormDefinition } from '@forms-shared/definitions/form-definitions'
+import { Schemas } from '@forms-shared/generator/functions'
 import { Forms, Prisma } from '@prisma/client'
+
 import {
   getFrontendFormTitleFromForm,
   getSubjectTextFromForm,
 } from './text.handler'
-import { Schemas } from '../../../../forms-shared/src/generator/functions'
-import { FormDefinition } from '../../../../forms-shared/src/definitions/form-definitions'
 
 describe('getSubjectTextFromForm', () => {
   it('should return message subject if there is no format', () => {

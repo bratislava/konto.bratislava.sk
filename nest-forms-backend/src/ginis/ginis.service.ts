@@ -1,11 +1,16 @@
 import { setTimeout } from 'node:timers/promises'
 
+import { FormDefinitionType } from '@forms-shared/definitions/form-definitions'
+import { getFormDefinitionBySlug } from '@forms-shared/form-utils/definitions'
 import { Nack, RabbitRPC } from '@golevelup/nestjs-rabbitmq'
 import { Injectable, Logger } from '@nestjs/common'
-import { FormError, Forms, FormState, GinisState } from '@prisma/client'
+import { FormError, FormState, GinisState } from '@prisma/client'
 import { Channel, ConsumeMessage } from 'amqplib'
-import { getFormDefinitionBySlug } from '../../../forms-shared/src/form-utils/definitions'
 
+import {
+  FormsErrorsEnum,
+  FormsErrorsResponseEnum,
+} from '../forms/forms.errors.enum'
 import PrismaService from '../prisma/prisma.service'
 import RabbitmqClientService from '../rabbitmq-client/rabbitmq-client.service'
 import {
@@ -35,8 +40,6 @@ import {
   GinisUploadInfo,
 } from './dtos/ginis.response.dto'
 import GinisHelper from './subservices/ginis.helper'
-import { FormDefinitionType } from '../../../forms-shared/src/definitions/form-definitions'
-import { FormsErrorsEnum, FormsErrorsResponseEnum } from '../forms/forms.errors.enum'
 
 const UPLOAD_QUEUE = 'submission.upload'
 const REGISTER_SUBMISSION_QUEUE = 'submission.register'
@@ -427,16 +430,17 @@ export default class GinisService {
       return new Nack(false)
     }
 
-    const formDefinition = getFormDefinitionBySlug(
-      form.formDefinitionSlug,
-    )
+    const formDefinition = getFormDefinitionBySlug(form.formDefinitionSlug)
     if (!formDefinition) {
       throw this.throwerErrorGuard.NotFoundException(
         FormsErrorsEnum.FORM_DEFINITION_NOT_FOUND,
         `${FormsErrorsResponseEnum.FORM_DEFINITION_NOT_FOUND} ${form.formDefinitionSlug}`,
       )
     }
-    if (formDefinition.type !== FormDefinitionType.SlovenskoSk && formDefinition.type !== FormDefinitionType.Tax) {
+    if (
+      formDefinition.type !== FormDefinitionType.SlovenskoSk &&
+      formDefinition.type !== FormDefinitionType.Tax
+    ) {
       throw this.throwerErrorGuard.UnprocessableEntityException(
         FormsErrorsEnum.FORM_DEFINITION_NOT_SUPPORTED_TYPE,
         `onQueueConsumption: ${FormsErrorsResponseEnum.FORM_DEFINITION_NOT_SUPPORTED_TYPE}: ${formDefinition.type}, form id: ${form.id}`,

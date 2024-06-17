@@ -1,6 +1,6 @@
+import { getFormDefinitionBySlug } from '@forms-shared/form-utils/definitions'
 import { forwardRef, Inject, Injectable, Logger } from '@nestjs/common'
 import { Forms, FormState, Prisma } from '@prisma/client'
-import { getFormDefinitionBySlug } from '../../../forms-shared/src/form-utils/definitions'
 
 // eslint-disable-next-line import/no-cycle
 import FilesService from '../files/files.service'

@@ -1,4 +1,4 @@
-import { FormDefinitionSlovenskoSk } from '../../../../forms-shared/src/definitions/form-definitions'
+import { FormDefinitionSlovenskoSk } from '@forms-shared/definitions/form-definitions'
 
 export const createXmlTemplate = (
   formDefinition: FormDefinitionSlovenskoSk,

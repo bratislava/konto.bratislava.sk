@@ -1,5 +1,7 @@
 import { setTimeout } from 'node:timers/promises'
 
+import { FormDefinition } from '@forms-shared/definitions/form-definitions'
+import { getFormDefinitionBySlug } from '@forms-shared/form-utils/definitions'
 import { Nack, RabbitRPC } from '@golevelup/nestjs-rabbitmq'
 import { Injectable, Logger } from '@nestjs/common'
 import { FormError, Forms, FormState } from '@prisma/client'
@@ -24,8 +26,6 @@ import {
   RabbitPayloadUserDataDto,
 } from './nases-consumer.dto'
 import { CheckAttachmentsEnum } from './nases-consumer.enum'
-import { getFormDefinitionBySlug } from '../../../forms-shared/src/form-utils/definitions'
-import { FormDefinition } from '../../../forms-shared/src/definitions/form-definitions'
 
 @Injectable()
 export default class NasesConsumerService {

@@ -1,3 +1,4 @@
+import { FormDefinition } from '@forms-shared/definitions/form-definitions'
 import { Injectable } from '@nestjs/common'
 
 import ConvertService from '../convert/convert.service'
@@ -11,7 +12,6 @@ import FormsService from '../forms/forms.service'
 import { PDF_EXPORT_FILE_NAME } from '../utils/files'
 import ThrowerErrorGuard from '../utils/guards/thrower-error.guard'
 import MinioClientSubservice from '../utils/subservices/minio-client.subservice'
-import { FormDefinition } from '../../../forms-shared/src/definitions/form-definitions'
 
 /**
  * Creates a pdf file from filled-in form and uploads it to minio among SAFE form files.

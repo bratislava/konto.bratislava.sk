@@ -1,6 +1,6 @@
+import { FormDefinition } from '@forms-shared/definitions/form-definitions'
 import lodash from 'lodash'
 
-import { FormDefinition } from '../../../../forms-shared/src/definitions/form-definitions'
 import { FormWithSelectedProperties } from '../types/prisma'
 
 export const getSubjectTextFromForm = (

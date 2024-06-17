@@ -1,6 +1,6 @@
 import { createHash } from 'node:crypto'
 
-import { getFormDefinitionBySlug } from '@forms-shared/form-utils/definitions'
+import { getFormDefinitionBySlug } from '@forms-shared/definitions/form-definitions-helpers'
 import { Injectable, Logger } from '@nestjs/common'
 import { ConfigService } from '@nestjs/config'
 import { Files, FileStatus, Forms, Prisma } from '@prisma/client'

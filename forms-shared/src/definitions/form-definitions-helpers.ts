@@ -1,6 +1,7 @@
 import {
   FormDefinition,
   FormDefinitionEmail,
+  formDefinitions,
   FormDefinitionSlovenskoSkGeneric,
   FormDefinitionSlovenskoSkTax,
   FormDefinitionType,
@@ -25,3 +26,8 @@ export const isSlovenskoSkFormDefinition = (
 export const isEmailFormDefinition = (
   formDefinition: FormDefinition,
 ): formDefinition is FormDefinitionEmail => formDefinition.type === FormDefinitionType.Email
+
+export const getFormDefinitionBySlug = (slug: string): FormDefinition | null => {
+  const formDefinition = formDefinitions.find((formDefinition) => formDefinition.slug === slug)
+  return formDefinition ?? null
+}

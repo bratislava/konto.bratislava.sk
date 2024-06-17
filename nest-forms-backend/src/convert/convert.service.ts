@@ -2,10 +2,10 @@ import { PassThrough, Readable } from 'node:stream'
 
 import { FormDefinition } from '@forms-shared/definitions/form-definitions'
 import {
+  getFormDefinitionBySlug,
   isSlovenskoSkFormDefinition,
   isSlovenskoSkTaxFormDefinition,
 } from '@forms-shared/definitions/form-definitions-helpers'
-import { getFormDefinitionBySlug } from '@forms-shared/form-utils/definitions'
 import { Cache, CACHE_MANAGER } from '@nestjs/cache-manager'
 import { Inject, Injectable, StreamableFile } from '@nestjs/common'
 import { ConfigService } from '@nestjs/config'

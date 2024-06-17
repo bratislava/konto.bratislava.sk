@@ -4,10 +4,10 @@ import * as crypto from 'node:crypto'
 import { Stream } from 'node:stream'
 
 import {
+  getFormDefinitionBySlug,
   isSlovenskoSkFormDefinition,
   isSlovenskoSkTaxFormDefinition,
 } from '@forms-shared/definitions/form-definitions-helpers'
-import { getFormDefinitionBySlug } from '@forms-shared/form-utils/definitions'
 import { Injectable, Logger } from '@nestjs/common'
 import { Forms } from '@prisma/client'
 import axios, { AxiosResponse } from 'axios'

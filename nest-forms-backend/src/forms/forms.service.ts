@@ -1,4 +1,4 @@
-import { getFormDefinitionBySlug } from '@forms-shared/form-utils/definitions'
+import { getFormDefinitionBySlug } from '@forms-shared/definitions/form-definitions-helpers'
 import { forwardRef, Inject, Injectable, Logger } from '@nestjs/common'
 import { Forms, FormState, Prisma } from '@prisma/client'
 

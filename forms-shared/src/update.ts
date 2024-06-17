@@ -71,12 +71,12 @@ const handleOnStateAborter = (state: any) => {
 ${chalk.redBright('This will delete the entire dist directory!')}
 ${chalk.reset.italic(
   'This step requires that you have @bratislava/jsxt installed globally. If you need just schema.json and uiSchema.json for all forms without the xml transforms you may use ',
-)}${chalk.reset('yarn generate:all')}
+)}${chalk.reset('npm run generate:all')}
 `,
   })
   if (response.value) {
     rimrafSync('./dist', {}) // Empty options object as second argument
-    await execSync('yarn generate:all')
+    await execSync('npm run generate:all')
     const subdirs = fs.readdirSync('./dist')
     const gestor = isProduction ? 'Martin Pinter' : 'Tisici Janko'
     console.log(`Generating with gestor ${chalk.bold(gestor)}:`)

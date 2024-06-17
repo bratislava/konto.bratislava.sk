@@ -18,14 +18,11 @@ const SummaryFormSignature = () => {
   const { isReadonly } = useFormContext()
   const { isLoading, isReady, isError, isNotSupported, retry } = useFormSignerLoader()
   const { signature, sign, isValidSignature, remove, getSingerDataIsPending } = useFormSignature()
-  const { errorSchema, infectedFiles } = useFormSummary()
+  const { getValidatedSummary } = useFormSummary()
 
   const validSignature = useMemo(() => isValidSignature(), [isValidSignature])
   const signerButtonDisabled =
-    isReadonly ||
-    !isReady ||
-    getSingerDataIsPending ||
-    isFormSigningDisabled(errorSchema, infectedFiles)
+    isReadonly || !isReady || getSingerDataIsPending || isFormSigningDisabled(getValidatedSummary())
 
   const AlertContent = ({ children }: PropsWithChildren) => (
     <div className="flex w-full">

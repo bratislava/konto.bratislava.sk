@@ -1,4 +1,4 @@
-import { AuthError, resendSignUpCode, signIn } from 'aws-amplify/auth'
+import { AuthError, getCurrentUser, resendSignUpCode, signIn } from 'aws-amplify/auth'
 import AccountContainer from 'components/forms/segments/AccountContainer/AccountContainer'
 import LoginForm from 'components/forms/segments/LoginForm/LoginForm'
 import LoginRegisterLayout from 'components/layouts/LoginRegisterLayout'
@@ -79,6 +79,20 @@ const LoginPage = () => {
       if (error instanceof AuthError && error.name === 'UnexpectedSignInInterruptionException') {
         removeAllCookiesAndClearLocalStorage()
         logger.info(`[AUTH] Removed all cookies and cleared local storage for email ${email}`)
+      }
+
+      // Handles a bug in Amplify after update. Server context doesn't detect users signed in in previous versions of
+      // the library. The client does, and in attempt to sign in it throws this error.
+      if (error instanceof AuthError && error.name === 'UserAlreadyAuthenticatedException') {
+        const currentUser = await getCurrentUser()
+        if (currentUser.signInDetails?.loginId === email) {
+          logger.info(`[AUTH] Special case, user already authenticated for email ${email}`)
+          await redirect()
+          return
+        }
+        logger.error(
+          `[AUTH] Special case, user already authenticated, but not for email ${email}, signed in as ${currentUser.signInDetails?.loginId}.`,
+        )
       }
 
       if (isError(error)) {

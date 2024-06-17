@@ -3,6 +3,7 @@ import React, { PropsWithChildren } from 'react'
 import { FormExportImportProvider } from '../../frontend/hooks/useFormExportImport'
 import { FormSignatureProvider } from './signer/useFormSignature'
 import { FormSignerLoaderProvider } from './signer/useFormSignerLoader'
+import { FormSummaryProvider } from './steps/Summary/useFormSummary'
 import { FormContext, FormContextProvider } from './useFormContext'
 import { FormFileUploadProvider } from './useFormFileUpload'
 import { FormLeaveProtectionProvider } from './useFormLeaveProtection'
@@ -25,9 +26,11 @@ const FormProviders = ({ formContext, children }: PropsWithChildren<FormProvider
               <FormStateProvider>
                 <FormSignatureProvider>
                   <FormRedirectsProvider>
-                    <FormSendProvider>
-                      <FormExportImportProvider>{children}</FormExportImportProvider>
-                    </FormSendProvider>
+                    <FormSummaryProvider>
+                      <FormSendProvider>
+                        <FormExportImportProvider>{children}</FormExportImportProvider>
+                      </FormSendProvider>
+                    </FormSummaryProvider>
                   </FormRedirectsProvider>
                 </FormSignatureProvider>
               </FormStateProvider>

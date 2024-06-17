@@ -1,7 +1,7 @@
+import { FileInfo } from '@forms-shared/form-files/fileStatus'
 import cx from 'classnames'
 import React, { forwardRef } from 'react'
 
-import { FormFileUploadFileInfo } from '../../../../frontend/types/formFileUploadTypes'
 import FieldWrapper, { FieldWrapperProps } from '../FieldWrapper'
 import UploadButton from './UploadButton'
 import UploadDropArea from './UploadDropArea'
@@ -13,7 +13,7 @@ type UploadProps = FieldWrapperProps & {
   value?: string | string[] | null
   sizeLimit?: number
   supportedFormats?: string[]
-  getFileInfoById: (id: string) => FormFileUploadFileInfo
+  getFileInfoById: (id: string) => FileInfo
   onUpload?: (files: File[]) => void
   onFileRemove?: (id: string) => void
   onFileRetry?: (id: string) => void

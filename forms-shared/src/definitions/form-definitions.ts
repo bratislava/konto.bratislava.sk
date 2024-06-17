@@ -39,6 +39,10 @@ export type FormDefinitionSlovenskoSkTax = FormDefinitionSlovenskoSkBase & {
   type: FormDefinitionType.SlovenskoSkTax
 }
 
+export type FormDefinitionSlovenskoSk =
+  | FormDefinitionSlovenskoSkGeneric
+  | FormDefinitionSlovenskoSkTax
+
 export type FormDefinitionEmail = FormDefinitionBase & {
   type: FormDefinitionType.Email
   email: string

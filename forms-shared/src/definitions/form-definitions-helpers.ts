@@ -2,6 +2,7 @@ import {
   FormDefinition,
   FormDefinitionEmail,
   formDefinitions,
+  FormDefinitionSlovenskoSk,
   FormDefinitionSlovenskoSkGeneric,
   FormDefinitionSlovenskoSkTax,
   FormDefinitionType,
@@ -19,7 +20,7 @@ export const isSlovenskoSkTaxFormDefinition = (
 
 export const isSlovenskoSkFormDefinition = (
   formDefinition: FormDefinition,
-): formDefinition is FormDefinitionSlovenskoSkGeneric | FormDefinitionSlovenskoSkTax =>
+): formDefinition is FormDefinitionSlovenskoSk =>
   isSlovenskoSkGenericFormDefinition(formDefinition) ||
   isSlovenskoSkTaxFormDefinition(formDefinition)
 

@@ -51,7 +51,10 @@ jobs:
       - name: Move to directory
         run: cd ${{ inputs.directory }}
 
+      - run: pwd
+
       - run: npm ci
+
       - run: cp .env.example .env
         continue-on-error: true
       - run: npx prisma generate

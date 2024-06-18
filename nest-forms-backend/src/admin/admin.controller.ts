@@ -1,12 +1,6 @@
 import { IncomingHttpHeaders } from 'node:http'
 
-import {
-  Controller,
-  Get,
-  HttpStatus,
-  UseGuards,
-  Headers,
-} from '@nestjs/common'
+import { Controller, Get, HttpStatus, UseGuards, Headers } from '@nestjs/common'
 import {
   ApiExtraModels,
   ApiOperation,

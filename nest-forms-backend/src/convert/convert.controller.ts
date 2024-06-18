@@ -84,7 +84,7 @@ export default class ConvertController {
   @ApiUnprocessableEntityResponse({
     status: HttpStatusCode.UnprocessableEntity,
     description: 'Got wrong type of form definition for its slug.',
-    type: FormDefinitionNotSupportedTypeErrorDto
+    type: FormDefinitionNotSupportedTypeErrorDto,
   })
   @UseGuards(new CognitoGuard(true))
   @Post('json-to-xml-v2')
@@ -129,8 +129,7 @@ export default class ConvertController {
 
   @ApiOperation({
     summary: '',
-    description:
-      'Generates PDF for given form data.',
+    description: 'Generates PDF for given form data.',
   })
   @ApiNotFoundResponse({
     status: 404,

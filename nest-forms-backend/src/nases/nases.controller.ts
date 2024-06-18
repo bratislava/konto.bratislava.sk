@@ -629,7 +629,7 @@ export default class NasesController {
   @ApiUnprocessableEntityResponse({
     status: HttpStatus.UNPROCESSABLE_ENTITY,
     description: 'Got wrong type of form definition for its slug.',
-    type: FormDefinitionNotSupportedTypeErrorDto
+    type: FormDefinitionNotSupportedTypeErrorDto,
   })
   @UseGuards(new CognitoGuard(true))
   @Post('eid/send-form/:id')
@@ -797,7 +797,7 @@ export default class NasesController {
   @ApiUnprocessableEntityResponse({
     status: HttpStatus.UNPROCESSABLE_ENTITY,
     description: 'Got wrong type of form definition for its slug.',
-    type: FormDefinitionNotSupportedTypeErrorDto
+    type: FormDefinitionNotSupportedTypeErrorDto,
   })
   @UseGuards(new CognitoGuard(true))
   @Post('eid/send-and-update-form/:id')

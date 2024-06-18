@@ -1,3 +1,5 @@
+import * as formDefinitionsHelpers from '@forms-shared/definitions/form-definitions-helpers'
+import { getFormDefinitionBySlug } from '@forms-shared/definitions/form-definitions-helpers'
 import { ConfigService } from '@nestjs/config'
 import { Test } from '@nestjs/testing'
 import { Forms, FormState } from '@prisma/client'
@@ -15,7 +17,9 @@ import FormsHelper from './forms.helper'
 import FormsService from './forms.service'
 
 jest.mock('@forms-shared/definitions/form-definitions-helpers', () => ({
-  ...jest.requireActual('@forms-shared/definitions/form-definitions-helpers'),
+  ...jest.requireActual<typeof formDefinitionsHelpers>(
+    '@forms-shared/definitions/form-definitions-helpers',
+  ),
   getFormDefinitionBySlug: jest.fn(),
 }))
 jest.mock('@nestjs/config')
@@ -55,11 +59,7 @@ describe('FormsService', () => {
 
   describe('getForms', () => {
     it('should count correctly', async () => {
-      const {
-        getFormDefinitionBySlug,
-        // eslint-disable-next-line @typescript-eslint/no-var-requires
-      } = require('@forms-shared/definitions/form-definitions-helpers')
-      getFormDefinitionBySlug.mockReturnValue({
+      ;(getFormDefinitionBySlug as jest.Mock).mockReturnValue({
         schemas: {
           uiSchema: {
             'ui:options': {},

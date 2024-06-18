@@ -18,9 +18,9 @@
     "test:ci": "jest --ci",
     "prettier": "prettier --write .",
     "prettier:check": "prettier --check .",
-    "generate-client-forms": "openapi-generator-cli generate -i https://nest-forms-backend.staging.bratislava.sk/api-json -g typescript-axios -o ./clients/openapi-forms --skip-validate-spec && prettier --write ./clients/openapi-forms",
-    "generate-client-tax": "openapi-generator-cli generate -i https://nest-tax-backend.staging.bratislava.sk/api-json -g typescript-axios -o ./clients/openapi-tax --skip-validate-spec && prettier --write ./clients/openapi-tax",
-    "generate-client-city-account": "openapi-generator-cli generate -i https://nest-city-account.staging.bratislava.sk/api-json -g typescript-axios -o ./clients/openapi-city-account --skip-validate-spec && prettier --write ./clients/openapi-city-account",
+    "generate-client-forms": "ts-node generateOpenApiClient.ts forms",
+    "generate-client-tax": "ts-node generateOpenApiClient.ts tax",
+    "generate-client-city-account": "ts-node generateOpenApiClient.ts city-account",
     "generate-client-strapi": "graphql-codegen && prettier --write ./clients/graphql-strapi/api.ts",
     "generate-clients": "npm run generate-client-forms && npm run generate-client-tax && npm run generate-client-city-account && npm run generate-client-strapi",
     "update-react-aria": "npm install @internationalized/date@latest @react-stately/utils@latest react-aria@latest react-aria-components@latest react-stately@latest @react-aria/utils@latest --save-exact --save-exact-dev",
@@ -122,7 +122,6 @@
     "@graphql-codegen/client-preset": "4.2.5",
     "@graphql-codegen/typescript-graphql-request": "6.2.0",
     "@next/bundle-analyzer": "14.2.3",
-    "@openapitools/openapi-generator-cli": "^2.13.1",
     "@svgr/webpack": "6.5.1",
     "@tanstack/eslint-plugin-query": "5.27.7",
     "@testing-library/jest-dom": "^5.16.5",
@@ -190,6 +189,7 @@
     "prettier": "3.2.5",
     "prettier-plugin-tailwindcss": "0.5.12",
     "tailwindcss": "3.4.1",
+    "ts-node": "^10.9.2",
     "typescript": "5.4.5"
   },
   "engines": {

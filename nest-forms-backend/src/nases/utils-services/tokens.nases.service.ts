@@ -338,7 +338,7 @@ export default class NasesUtilsService {
         `createEnvelopeSendMessage: ${FormsErrorsResponseEnum.FORM_DEFINITION_NOT_SUPPORTED_TYPE}: ${formDefinition.type}, form id: ${form.id}`,
       )
     }
-    const { isSigned, pospID, pospVersion } = formDefinition
+    const { isSigned, pospID, pospVersion, title } = formDefinition
 
     let message: string | null = null
 
@@ -441,7 +441,7 @@ export default class NasesUtilsService {
                   <MessageSubject>${subject}</MessageSubject>
                   <Object Id="${form.id}" IsSigned="${
                     isSigned ? 'true' : 'false'
-                  }" Name="${formDefinition.title}" Description="" Class="FORM" MimeType="${mimeType}" Encoding="${encoding}">${message}</Object>
+                  }" Name="${title}" Description="" Class="FORM" MimeType="${mimeType}" Encoding="${encoding}">${message}</Object>
     ${attachments}
                 </MessageContainer>
               </Body>

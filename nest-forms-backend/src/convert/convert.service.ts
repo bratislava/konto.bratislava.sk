@@ -42,7 +42,7 @@ import {
   ConvertErrorsEnum,
   ConvertErrorsResponseEnum,
 } from './errors/convert.errors.enum'
-import { createXmlTemplate } from './utils-services/createXmlTemplate'
+import createXmlTemplate from './utils-services/createXmlTemplate'
 import JsonXmlConvertService from './utils-services/json-xml.convert.service'
 
 @Injectable()

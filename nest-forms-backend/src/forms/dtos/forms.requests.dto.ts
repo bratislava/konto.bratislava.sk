@@ -1,7 +1,7 @@
 /* eslint-disable pii/no-phone-number */
 /* eslint-disable pii/no-email */
 
-import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger'
+import { ApiPropertyOptional } from '@nestjs/swagger'
 import { FormError, FormOwnerType, FormState, Prisma } from '@prisma/client'
 import { Type } from 'class-transformer'
 import {

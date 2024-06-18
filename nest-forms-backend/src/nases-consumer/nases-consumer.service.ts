@@ -58,6 +58,7 @@ export default class NasesConsumerService {
     routingKey: RABBIT_MQ.ROUTING_KEY,
     queue: RABBIT_MQ.QUEUE,
   })
+  // eslint-disable-next-line sonarjs/cognitive-complexity
   public async onQueueConsumption(data: RabbitPayloadDto): Promise<Nack> {
     this.logger.debug(
       `Consuming message for formId: ${data.formId} on try: ${data.tries}`,

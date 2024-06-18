@@ -57,6 +57,7 @@ describe('FormsService', () => {
     it('should count correctly', async () => {
       const {
         getFormDefinitionBySlug,
+        // eslint-disable-next-line @typescript-eslint/no-var-requires
       } = require('@forms-shared/definitions/form-definitions-helpers')
       getFormDefinitionBySlug.mockReturnValue({
         schemas: {

@@ -45,7 +45,6 @@ jobs:
         run: |
           cd forms-shared
           npm ci
-          npm run build
           cd ..
 
       # move to directory

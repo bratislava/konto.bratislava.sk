@@ -4981,7 +4981,7 @@ export const ADMINApiFactory = function (
     adminControllerCreateSchema(
       data?: object,
       files?: Array<any>,
-      options?: any,
+      options?: RawAxiosRequestConfig,
     ): AxiosPromise<void> {
       return localVarFp
         .adminControllerCreateSchema(data, files, options)
@@ -4994,7 +4994,10 @@ export const ADMINApiFactory = function (
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
-    adminControllerDowngradeSchemaVersion(slug: string, options?: any): AxiosPromise<void> {
+    adminControllerDowngradeSchemaVersion(
+      slug: string,
+      options?: RawAxiosRequestConfig,
+    ): AxiosPromise<void> {
       return localVarFp
         .adminControllerDowngradeSchemaVersion(slug, options)
         .then((request) => request(axios, basePath))
@@ -5005,7 +5008,7 @@ export const ADMINApiFactory = function (
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
-    adminControllerGetAdministrationJwt(options?: any): AxiosPromise<object> {
+    adminControllerGetAdministrationJwt(options?: RawAxiosRequestConfig): AxiosPromise<object> {
       return localVarFp
         .adminControllerGetAdministrationJwt(options)
         .then((request) => request(axios, basePath))
@@ -5016,7 +5019,7 @@ export const ADMINApiFactory = function (
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
-    adminControllerGetEidJwt(options?: any): AxiosPromise<object> {
+    adminControllerGetEidJwt(options?: RawAxiosRequestConfig): AxiosPromise<object> {
       return localVarFp
         .adminControllerGetEidJwt(options)
         .then((request) => request(axios, basePath))
@@ -5027,7 +5030,7 @@ export const ADMINApiFactory = function (
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
-    adminControllerGetTechnicalJwt(options?: any): AxiosPromise<object> {
+    adminControllerGetTechnicalJwt(options?: RawAxiosRequestConfig): AxiosPromise<object> {
       return localVarFp
         .adminControllerGetTechnicalJwt(options)
         .then((request) => request(axios, basePath))
@@ -5045,7 +5048,7 @@ export const ADMINApiFactory = function (
       id: string,
       data?: object,
       files?: Array<any>,
-      options?: any,
+      options?: RawAxiosRequestConfig,
     ): AxiosPromise<void> {
       return localVarFp
         .adminControllerUpdateSchemaVersion(id, data, files, options)
@@ -5064,7 +5067,7 @@ export const ADMINApiFactory = function (
       slug: string,
       data?: object,
       files?: Array<any>,
-      options?: any,
+      options?: RawAxiosRequestConfig,
     ): AxiosPromise<void> {
       return localVarFp
         .adminControllerUpgradeSchemaVersion(slug, data, files, options)
@@ -5756,7 +5759,7 @@ export const ConvertApiFactory = function (
     convertControllerConvertJsonToXml(
       id: string,
       jsonConvertRequestDto: JsonConvertRequestDto,
-      options?: any,
+      options?: RawAxiosRequestConfig,
     ): AxiosPromise<JsonToXmlResponseDto> {
       return localVarFp
         .convertControllerConvertJsonToXml(id, jsonConvertRequestDto, options)
@@ -5771,7 +5774,7 @@ export const ConvertApiFactory = function (
      */
     convertControllerConvertJsonToXmlV2(
       jsonToXmlV2RequestDto: JsonToXmlV2RequestDto,
-      options?: any,
+      options?: RawAxiosRequestConfig,
     ): AxiosPromise<JsonToXmlResponseDto> {
       return localVarFp
         .convertControllerConvertJsonToXmlV2(jsonToXmlV2RequestDto, options)
@@ -5789,7 +5792,7 @@ export const ConvertApiFactory = function (
     convertControllerConvertToPdf(
       id: string,
       jsonConvertRequestDto: JsonConvertRequestDto,
-      options?: any,
+      options?: RawAxiosRequestConfig,
     ): AxiosPromise<object> {
       return localVarFp
         .convertControllerConvertToPdf(id, jsonConvertRequestDto, options)
@@ -5804,7 +5807,7 @@ export const ConvertApiFactory = function (
      */
     convertControllerConvertToPdfv2(
       convertToPdfV2RequestDto: ConvertToPdfV2RequestDto,
-      options?: any,
+      options?: RawAxiosRequestConfig,
     ): AxiosPromise<object> {
       return localVarFp
         .convertControllerConvertToPdfv2(convertToPdfV2RequestDto, options)
@@ -5821,7 +5824,7 @@ export const ConvertApiFactory = function (
     convertControllerConvertXmlToJson(
       id: string,
       xmlToJsonRequestDto: XmlToJsonRequestDto,
-      options?: any,
+      options?: RawAxiosRequestConfig,
     ): AxiosPromise<XmlToJsonResponseDto> {
       return localVarFp
         .convertControllerConvertXmlToJson(id, xmlToJsonRequestDto, options)
@@ -5836,7 +5839,7 @@ export const ConvertApiFactory = function (
      */
     convertControllerGetPdfPreviewData(
       pdfPreviewDataRequestDto: PdfPreviewDataRequestDto,
-      options?: any,
+      options?: RawAxiosRequestConfig,
     ): AxiosPromise<PdfPreviewDataResponseDto> {
       return localVarFp
         .convertControllerGetPdfPreviewData(pdfPreviewDataRequestDto, options)
@@ -6493,7 +6496,10 @@ export const FilesApiFactory = function (
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
-    filesControllerDownloadFile(jwtToken: string, options?: any): AxiosPromise<void> {
+    filesControllerDownloadFile(
+      jwtToken: string,
+      options?: RawAxiosRequestConfig,
+    ): AxiosPromise<void> {
       return localVarFp
         .filesControllerDownloadFile(jwtToken, options)
         .then((request) => request(axios, basePath))
@@ -6507,7 +6513,7 @@ export const FilesApiFactory = function (
      */
     filesControllerDownloadToken(
       fileId: string,
-      options?: any,
+      options?: RawAxiosRequestConfig,
     ): AxiosPromise<DownloadTokenResponseDataDto> {
       return localVarFp
         .filesControllerDownloadToken(fileId, options)
@@ -6520,7 +6526,10 @@ export const FilesApiFactory = function (
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
-    filesControllerGetFile(fileId: string, options?: any): AxiosPromise<GetFileResponseDto> {
+    filesControllerGetFile(
+      fileId: string,
+      options?: RawAxiosRequestConfig,
+    ): AxiosPromise<GetFileResponseDto> {
       return localVarFp
         .filesControllerGetFile(fileId, options)
         .then((request) => request(axios, basePath))
@@ -6534,7 +6543,7 @@ export const FilesApiFactory = function (
      */
     filesControllerGetFilesStatusByForm(
       formId: string,
-      options?: any,
+      options?: RawAxiosRequestConfig,
     ): AxiosPromise<Array<GetFileResponseDto>> {
       return localVarFp
         .filesControllerGetFilesStatusByForm(formId, options)
@@ -6551,7 +6560,7 @@ export const FilesApiFactory = function (
     filesControllerUpdateFileStatusScannerId(
       scannerId: string,
       updateFileStatusRequestDto: UpdateFileStatusRequestDto,
-      options?: any,
+      options?: RawAxiosRequestConfig,
     ): AxiosPromise<UpdateFileStatusResponseDto> {
       return localVarFp
         .filesControllerUpdateFileStatusScannerId(scannerId, updateFileStatusRequestDto, options)
@@ -6572,7 +6581,7 @@ export const FilesApiFactory = function (
       file?: File,
       filename?: string,
       id?: string,
-      options?: any,
+      options?: RawAxiosRequestConfig,
     ): AxiosPromise<PostFileResponseDto> {
       return localVarFp
         .filesControllerUploadFile(formId, file, filename, id, options)
@@ -6799,7 +6808,7 @@ export const GinisApiFactory = function (
      */
     ginisControllerGetGinisDocumentByFormId(
       formId: string,
-      options?: any,
+      options?: RawAxiosRequestConfig,
     ): AxiosPromise<GinisDocumentDetailResponseDto> {
       return localVarFp
         .ginisControllerGetGinisDocumentByFormId(formId, options)
@@ -6920,7 +6929,7 @@ export const HealthcheckApiFactory = function (
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
-    appControllerGetHello(options?: any): AxiosPromise<object> {
+    appControllerGetHello(options?: RawAxiosRequestConfig): AxiosPromise<object> {
       return localVarFp.appControllerGetHello(options).then((request) => request(axios, basePath))
     },
   }
@@ -8085,7 +8094,7 @@ export const NasesApiFactory = function (
     nasesControllerCheckSendConditions(
       id: string,
       eidSendFormRequestDto: EidSendFormRequestDto,
-      options?: any,
+      options?: RawAxiosRequestConfig,
     ): AxiosPromise<CanSendResponseDto> {
       return localVarFp
         .nasesControllerCheckSendConditions(id, eidSendFormRequestDto, options)
@@ -8100,7 +8109,7 @@ export const NasesApiFactory = function (
      */
     nasesControllerCreateForm(
       createFormRequestDto: CreateFormRequestDto,
-      options?: any,
+      options?: RawAxiosRequestConfig,
     ): AxiosPromise<GetFormResponseDto> {
       return localVarFp
         .nasesControllerCreateForm(createFormRequestDto, options)
@@ -8116,7 +8125,7 @@ export const NasesApiFactory = function (
      */
     nasesControllerCreateFormEid(
       createFormEidRequestDto: CreateFormEidRequestDto,
-      options?: any,
+      options?: RawAxiosRequestConfig,
     ): AxiosPromise<GetFormResponseDto> {
       return localVarFp
         .nasesControllerCreateFormEid(createFormEidRequestDto, options)
@@ -8129,7 +8138,7 @@ export const NasesApiFactory = function (
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
-    nasesControllerDeleteForm(id: string, options?: any): AxiosPromise<void> {
+    nasesControllerDeleteForm(id: string, options?: RawAxiosRequestConfig): AxiosPromise<void> {
       return localVarFp
         .nasesControllerDeleteForm(id, options)
         .then((request) => request(axios, basePath))
@@ -8141,7 +8150,10 @@ export const NasesApiFactory = function (
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
-    nasesControllerGetForm(id: string, options?: any): AxiosPromise<GetFormResponseDto> {
+    nasesControllerGetForm(
+      id: string,
+      options?: RawAxiosRequestConfig,
+    ): AxiosPromise<GetFormResponseDto> {
       return localVarFp
         .nasesControllerGetForm(id, options)
         .then((request) => request(axios, basePath))
@@ -8167,7 +8179,7 @@ export const NasesApiFactory = function (
       states?: Array<FormState>,
       schemaVersionId?: string,
       userCanEdit?: boolean,
-      options?: any,
+      options?: RawAxiosRequestConfig,
     ): AxiosPromise<GetFormsResponseDto> {
       return localVarFp
         .nasesControllerGetForms(
@@ -8189,7 +8201,10 @@ export const NasesApiFactory = function (
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
-    nasesControllerMigrateForm(id: string, options?: any): AxiosPromise<MigrateFormResponseDto> {
+    nasesControllerMigrateForm(
+      id: string,
+      options?: RawAxiosRequestConfig,
+    ): AxiosPromise<MigrateFormResponseDto> {
       return localVarFp
         .nasesControllerMigrateForm(id, options)
         .then((request) => request(axios, basePath))
@@ -8205,7 +8220,7 @@ export const NasesApiFactory = function (
     nasesControllerSendAndUpdateForm(
       id: string,
       updateFormRequestDto: UpdateFormRequestDto,
-      options?: any,
+      options?: RawAxiosRequestConfig,
     ): AxiosPromise<SendFormResponseDto> {
       return localVarFp
         .nasesControllerSendAndUpdateForm(id, updateFormRequestDto, options)
@@ -8222,7 +8237,7 @@ export const NasesApiFactory = function (
     nasesControllerSendAndUpdateFormEid(
       id: string,
       eidUpdateSendFormRequestDto: EidUpdateSendFormRequestDto,
-      options?: any,
+      options?: RawAxiosRequestConfig,
     ): AxiosPromise<SendFormResponseDto> {
       return localVarFp
         .nasesControllerSendAndUpdateFormEid(id, eidUpdateSendFormRequestDto, options)
@@ -8235,7 +8250,10 @@ export const NasesApiFactory = function (
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
-    nasesControllerSendForm(id: string, options?: any): AxiosPromise<SendFormResponseDto> {
+    nasesControllerSendForm(
+      id: string,
+      options?: RawAxiosRequestConfig,
+    ): AxiosPromise<SendFormResponseDto> {
       return localVarFp
         .nasesControllerSendForm(id, options)
         .then((request) => request(axios, basePath))
@@ -8251,7 +8269,7 @@ export const NasesApiFactory = function (
     nasesControllerSendFormEid(
       id: string,
       eidSendFormRequestDto: EidSendFormRequestDto,
-      options?: any,
+      options?: RawAxiosRequestConfig,
     ): AxiosPromise<SendFormResponseDto> {
       return localVarFp
         .nasesControllerSendFormEid(id, eidSendFormRequestDto, options)
@@ -8268,7 +8286,7 @@ export const NasesApiFactory = function (
     nasesControllerUpdateForm(
       id: string,
       updateFormRequestDto: UpdateFormRequestDto,
-      options?: any,
+      options?: RawAxiosRequestConfig,
     ): AxiosPromise<GetFormResponseDto> {
       return localVarFp
         .nasesControllerUpdateForm(id, updateFormRequestDto, options)
@@ -8286,7 +8304,7 @@ export const NasesApiFactory = function (
     nasesControllerUpdateFormEid(
       id: string,
       updateFormRequestDto: UpdateFormRequestDto,
-      options?: any,
+      options?: RawAxiosRequestConfig,
     ): AxiosPromise<GetFormResponseDto> {
       return localVarFp
         .nasesControllerUpdateFormEid(id, updateFormRequestDto, options)
@@ -8934,7 +8952,7 @@ export const SchemasApiFactory = function (
       slug?: string,
       currentPage?: string,
       pagination?: string,
-      options?: any,
+      options?: RawAxiosRequestConfig,
     ): AxiosPromise<SchemaVersionsResponseDto> {
       return localVarFp
         .schemasControllerGetAllSchemas(onlyLatest, slug, currentPage, pagination, options)
@@ -8955,7 +8973,7 @@ export const SchemasApiFactory = function (
       slug?: string,
       currentPage?: string,
       pagination?: string,
-      options?: any,
+      options?: RawAxiosRequestConfig,
     ): AxiosPromise<SchemaVersionsResponseDto> {
       return localVarFp
         .schemasControllerGetAllVersions(onlyLatest, slug, currentPage, pagination, options)
@@ -8968,7 +8986,10 @@ export const SchemasApiFactory = function (
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
-    schemasControllerGetSchema(schemaSlug: string, options?: any): AxiosPromise<SchemaResponseDto> {
+    schemasControllerGetSchema(
+      schemaSlug: string,
+      options?: RawAxiosRequestConfig,
+    ): AxiosPromise<SchemaResponseDto> {
       return localVarFp
         .schemasControllerGetSchema(schemaSlug, options)
         .then((request) => request(axios, basePath))
@@ -8984,7 +9005,7 @@ export const SchemasApiFactory = function (
     schemasControllerGetSchemaVersion(
       id: string,
       includeSchema?: boolean,
-      options?: any,
+      options?: RawAxiosRequestConfig,
     ): AxiosPromise<SchemaVersionResponseDto> {
       return localVarFp
         .schemasControllerGetSchemaVersion(id, includeSchema, options)
@@ -9344,7 +9365,9 @@ export const StatusesApiFactory = function (
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
-    statusControllerIsFormsRunning(options?: any): AxiosPromise<ServiceRunningDto> {
+    statusControllerIsFormsRunning(
+      options?: RawAxiosRequestConfig,
+    ): AxiosPromise<ServiceRunningDto> {
       return localVarFp
         .statusControllerIsFormsRunning(options)
         .then((request) => request(axios, basePath))
@@ -9355,7 +9378,9 @@ export const StatusesApiFactory = function (
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
-    statusControllerIsMinioRunning(options?: any): AxiosPromise<ServiceRunningDto> {
+    statusControllerIsMinioRunning(
+      options?: RawAxiosRequestConfig,
+    ): AxiosPromise<ServiceRunningDto> {
       return localVarFp
         .statusControllerIsMinioRunning(options)
         .then((request) => request(axios, basePath))
@@ -9366,7 +9391,9 @@ export const StatusesApiFactory = function (
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
-    statusControllerIsPrismaRunning(options?: any): AxiosPromise<ServiceRunningDto> {
+    statusControllerIsPrismaRunning(
+      options?: RawAxiosRequestConfig,
+    ): AxiosPromise<ServiceRunningDto> {
       return localVarFp
         .statusControllerIsPrismaRunning(options)
         .then((request) => request(axios, basePath))
@@ -9377,7 +9404,7 @@ export const StatusesApiFactory = function (
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
-    statusControllerStatus(options?: any): AxiosPromise<StatusResponseDto> {
+    statusControllerStatus(options?: RawAxiosRequestConfig): AxiosPromise<StatusResponseDto> {
       return localVarFp.statusControllerStatus(options).then((request) => request(axios, basePath))
     },
   }
@@ -9631,7 +9658,7 @@ export const TaxApiFactory = function (
      */
     taxControllerConvertJsonToXml(
       taxJsonToXmlRequestDto: TaxJsonToXmlRequestDto,
-      options?: any,
+      options?: RawAxiosRequestConfig,
     ): AxiosPromise<JsonToXmlResponseDto> {
       return localVarFp
         .taxControllerConvertJsonToXml(taxJsonToXmlRequestDto, options)
@@ -9646,7 +9673,7 @@ export const TaxApiFactory = function (
      */
     taxControllerSignerData(
       jsonConvertRequestDto: JsonConvertRequestDto,
-      options?: any,
+      options?: RawAxiosRequestConfig,
     ): AxiosPromise<TaxSignerDataResponseDto> {
       return localVarFp
         .taxControllerSignerData(jsonConvertRequestDto, options)

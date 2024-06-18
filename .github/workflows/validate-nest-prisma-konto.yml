@@ -43,23 +43,20 @@ jobs:
       # build forms-shared first
       - name: Build forms-shared
         run: |
-          cd forms-shared
+          cd forms-shared/
           npm ci
           cd ..
 
       # move to directory
-      - name: Move to directory
-        run: cd ${{ inputs.directory }}
-
-      - run: pwd
-
-      - run: npm ci
-
-      - run: cp .env.example .env
-        continue-on-error: true
-      - run: npx prisma generate
+      - name: Instal dependencies
+        working-directory: ${{ inputs.directory }}
+        run: | 
+          pwd
+          npm ci
+          npx prisma generate
 
       - name: Run unit tests
+        working-directory: ${{ inputs.directory }}
         run: npm run test
 
       - name: Typescript reviewdog check
@@ -81,7 +78,9 @@ jobs:
           workdir: ${{ inputs.typescript-directory }}
 
       - name: Typescript check
+        working-directory: ${{ inputs.directory }}
         run: npx tsc
 
       - name: ESlint check
+        working-directory: ${{ inputs.directory }}
         run: npm run lint

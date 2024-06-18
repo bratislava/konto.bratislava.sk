@@ -58,6 +58,7 @@ describe('ConvertPdfService', () => {
     process.env = {
       ...process.env,
       MIMETYPE_WHITELIST: 'a b c',
+      MINIO_SAFE_BUCKET: 'calmav-clean-bucket',
     }
   })
 

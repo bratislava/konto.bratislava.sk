@@ -21,7 +21,7 @@ COPY --from=shared . ./
 
 RUN apt-get update && apt-get install git
 
-WORKDIR /root/app
+WORKDIR /root/nest-forms-backend
 COPY package*.json ./
 # COPY prisma ./prisma/
 
@@ -43,7 +43,7 @@ RUN apt-get update && apt-get install -y git \
     curl \
     vim
 
-WORKDIR /home/node/app
+WORKDIR /home/node/nest-forms-backend
 COPY package*.json ./
 
 RUN npm install

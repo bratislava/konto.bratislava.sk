@@ -278,6 +278,12 @@ export interface CreateFormResponseDto {
    * @memberof CreateFormResponseDto
    */
   frontendTitle: string
+  /**
+   * Slug of the form definition
+   * @type {string}
+   * @memberof CreateFormResponseDto
+   */
+  formDefinitionSlug: string
 }
 
 export const CreateFormResponseDtoStateEnum = {
@@ -2190,6 +2196,12 @@ export interface GetFormResponseDto {
    * @memberof GetFormResponseDto
    */
   frontendTitle: string
+  /**
+   * Slug of the form definition
+   * @type {string}
+   * @memberof GetFormResponseDto
+   */
+  formDefinitionSlug: string
 }
 
 export const GetFormResponseDtoStateEnum = {
@@ -2273,6 +2285,12 @@ export interface GetFormResponseSimpleDto {
    * @memberof GetFormResponseSimpleDto
    */
   frontendTitle: string
+  /**
+   * Slug of the form definition
+   * @type {string}
+   * @memberof GetFormResponseSimpleDto
+   */
+  formDefinitionSlug: string
 }
 
 export const GetFormResponseSimpleDtoStateEnum = {
@@ -3028,17 +3046,11 @@ export interface PdfPreviewDataRequestDto {
  */
 export interface PdfPreviewDataResponseDto {
   /**
-   * schema.json
-   * @type {object}
+   * Slug of the form definition
+   * @type {string}
    * @memberof PdfPreviewDataResponseDto
    */
-  jsonSchema: object
-  /**
-   * uiSchema.json
-   * @type {object}
-   * @memberof PdfPreviewDataResponseDto
-   */
-  uiSchema: object
+  formDefinitionSlug: string
   /**
    * Form values in JSON
    * @type {object}
@@ -5901,7 +5913,7 @@ export const NasesApiAxiosParamCreator = function (configuration?: Configuration
      * @param {string} [pagination] Number of items per page
      * @param {Array<FormState>} [states] Forms in which states are searched - when omitted, all forms of the user are searched
      * @param {boolean} [userCanEdit] Get only forms in such a state, that user can still edit it.
-     * @param {string} [slug] Slug of the form definition
+     * @param {string} [formDefinitionSlug] Slug of the form definition
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
@@ -5910,7 +5922,7 @@ export const NasesApiAxiosParamCreator = function (configuration?: Configuration
       pagination?: string,
       states?: Array<FormState>,
       userCanEdit?: boolean,
-      slug?: string,
+      formDefinitionSlug?: string,
       options: RawAxiosRequestConfig = {},
     ): Promise<RequestArgs> => {
       const localVarPath = `/nases/forms`
@@ -5945,8 +5957,8 @@ export const NasesApiAxiosParamCreator = function (configuration?: Configuration
         localVarQueryParameter['userCanEdit'] = userCanEdit
       }
 
-      if (slug !== undefined) {
-        localVarQueryParameter['slug'] = slug
+      if (formDefinitionSlug !== undefined) {
+        localVarQueryParameter['formDefinitionSlug'] = formDefinitionSlug
       }
 
       setSearchParams(localVarUrlObj, localVarQueryParameter)
@@ -6502,7 +6514,7 @@ export const NasesApiFp = function (configuration?: Configuration) {
      * @param {string} [pagination] Number of items per page
      * @param {Array<FormState>} [states] Forms in which states are searched - when omitted, all forms of the user are searched
      * @param {boolean} [userCanEdit] Get only forms in such a state, that user can still edit it.
-     * @param {string} [slug] Slug of the form definition
+     * @param {string} [formDefinitionSlug] Slug of the form definition
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
@@ -6511,7 +6523,7 @@ export const NasesApiFp = function (configuration?: Configuration) {
       pagination?: string,
       states?: Array<FormState>,
       userCanEdit?: boolean,
-      slug?: string,
+      formDefinitionSlug?: string,
       options?: RawAxiosRequestConfig,
     ): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<GetFormsResponseDto>> {
       const localVarAxiosArgs = await localVarAxiosParamCreator.nasesControllerGetForms(
@@ -6519,7 +6531,7 @@ export const NasesApiFp = function (configuration?: Configuration) {
         pagination,
         states,
         userCanEdit,
-        slug,
+        formDefinitionSlug,
         options,
       )
       const localVarOperationServerIndex = configuration?.serverIndex ?? 0
@@ -6829,7 +6841,7 @@ export const NasesApiFactory = function (
      * @param {string} [pagination] Number of items per page
      * @param {Array<FormState>} [states] Forms in which states are searched - when omitted, all forms of the user are searched
      * @param {boolean} [userCanEdit] Get only forms in such a state, that user can still edit it.
-     * @param {string} [slug] Slug of the form definition
+     * @param {string} [formDefinitionSlug] Slug of the form definition
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
@@ -6838,11 +6850,18 @@ export const NasesApiFactory = function (
       pagination?: string,
       states?: Array<FormState>,
       userCanEdit?: boolean,
-      slug?: string,
+      formDefinitionSlug?: string,
       options?: any,
     ): AxiosPromise<GetFormsResponseDto> {
       return localVarFp
-        .nasesControllerGetForms(currentPage, pagination, states, userCanEdit, slug, options)
+        .nasesControllerGetForms(
+          currentPage,
+          pagination,
+          states,
+          userCanEdit,
+          formDefinitionSlug,
+          options,
+        )
         .then((request) => request(axios, basePath))
     },
     /**
@@ -7054,7 +7073,7 @@ export class NasesApi extends BaseAPI {
    * @param {string} [pagination] Number of items per page
    * @param {Array<FormState>} [states] Forms in which states are searched - when omitted, all forms of the user are searched
    * @param {boolean} [userCanEdit] Get only forms in such a state, that user can still edit it.
-   * @param {string} [slug] Slug of the form definition
+   * @param {string} [formDefinitionSlug] Slug of the form definition
    * @param {*} [options] Override http request option.
    * @throws {RequiredError}
    * @memberof NasesApi
@@ -7064,11 +7083,18 @@ export class NasesApi extends BaseAPI {
     pagination?: string,
     states?: Array<FormState>,
     userCanEdit?: boolean,
-    slug?: string,
+    formDefinitionSlug?: string,
     options?: RawAxiosRequestConfig,
   ) {
     return NasesApiFp(this.configuration)
-      .nasesControllerGetForms(currentPage, pagination, states, userCanEdit, slug, options)
+      .nasesControllerGetForms(
+        currentPage,
+        pagination,
+        states,
+        userCanEdit,
+        formDefinitionSlug,
+        options,
+      )
       .then((request) => request(this.axios, this.basePath))
   }
 

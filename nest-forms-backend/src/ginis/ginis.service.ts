@@ -2,7 +2,7 @@ import { setTimeout } from 'node:timers/promises'
 
 import {
   getFormDefinitionBySlug,
-  isSlovenskoSkFormDefinition,
+  isSlovenskoSkGenericFormDefinition,
 } from '@forms-shared/definitions/form-definitions-helpers'
 import { Nack, RabbitRPC } from '@golevelup/nestjs-rabbitmq'
 import { Injectable, Logger } from '@nestjs/common'
@@ -439,7 +439,7 @@ export default class GinisService {
         `${FormsErrorsResponseEnum.FORM_DEFINITION_NOT_FOUND} ${form.formDefinitionSlug}`,
       )
     }
-    if (!isSlovenskoSkFormDefinition(formDefinition)) {
+    if (!isSlovenskoSkGenericFormDefinition(formDefinition)) {
       throw this.throwerErrorGuard.UnprocessableEntityException(
         FormsErrorsEnum.FORM_DEFINITION_NOT_SUPPORTED_TYPE,
         `onQueueConsumption: ${FormsErrorsResponseEnum.FORM_DEFINITION_NOT_SUPPORTED_TYPE}: ${formDefinition.type}, form id: ${form.id}`,
@@ -533,13 +533,9 @@ export default class GinisService {
       form.ginisState === GinisState.SUBMISSION_EDITED ||
       form.ginisState === GinisState.ERROR_ASSIGN_SUBMISSION
     ) {
-      if (
-        !form.ginisDocumentId ||
-        !formDefinition.ginisAssignment?.ginisOrganizationName ||
-        !formDefinition.ginisAssignment.ginisPersonName
-      ) {
+      if (!form.ginisDocumentId) {
         alertError(
-          `ERROR - documentId or Organization to ginis or Person to ginis  do not exists in form - Ginis consumption queue. Form id: ${form.id}`,
+          `ERROR - documentId does not exists in form - Ginis consumption queue. Form id: ${form.id}`,
           this.logger,
         )
         return this.nackTrueWithWait(20_000)

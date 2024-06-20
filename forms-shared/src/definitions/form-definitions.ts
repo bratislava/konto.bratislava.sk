@@ -26,15 +26,15 @@ type FormDefinitionSlovenskoSkBase = FormDefinitionBase & {
   pospID: string
   pospVersion: string
   gestor: string
-  ginisAssignment?: {
-    ginisOrganizationName: string
-    ginisPersonName: string
-  }
   isSigned: boolean
 }
 
 export type FormDefinitionSlovenskoSkGeneric = FormDefinitionSlovenskoSkBase & {
   type: FormDefinitionType.SlovenskoSkGeneric
+  ginisAssignment: {
+    ginisOrganizationName: string
+    ginisPersonName: string
+  }
 }
 
 export type FormDefinitionSlovenskoSkTax = FormDefinitionSlovenskoSkBase & {
@@ -111,6 +111,10 @@ export const formDefinitions: FormDefinition[] = [
     messageSubjectFormat: 'Registrácia - {predzahradka.typRegistracie} predzáhradka',
     messageSubjectDefault: 'Registrácia predzáhradky',
     isSigned: false,
+    ginisAssignment: {
+      ginisOrganizationName: 'OUIC',
+      ginisPersonName: 'Vícenová Marcela',
+    },
   },
   {
     type: FormDefinitionType.SlovenskoSkGeneric,
@@ -126,6 +130,10 @@ export const formDefinitions: FormDefinition[] = [
     messageSubjectDefault: 'Žiadosť o komunitnú záhradu',
     messageSubjectFormat: 'Žiadosť o komunitnú záhradu - {pozemok.typPozemku} mestský pozemok',
     isSigned: false,
+    ginisAssignment: {
+      ginisOrganizationName: 'OUIC',
+      ginisPersonName: 'Vícenová Marcela',
+    },
   },
   {
     type: FormDefinitionType.SlovenskoSkTax,

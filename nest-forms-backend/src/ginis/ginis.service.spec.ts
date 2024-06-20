@@ -283,19 +283,30 @@ describe('GinisService', () => {
       expect(spy).toHaveBeenCalled()
     })
 
-    it('should error when form has no pospId', async () => {
+    it('should error when form definition does not exist', async () => {
+      ;(getFormDefinitionBySlug as jest.Mock).mockReturnValue(null)
+
+      prismaMock.forms.findUnique.mockResolvedValue({
+        ...formBase,
+      } as FormWithFiles)
+
+      await expect(service.onQueueConsumption(messageBase)).rejects.toThrow(
+        'Form definition was not found for given slug. slug',
+      )
+    })
+
+    it('should error when form definition is not of a SlovenskoSkGeneric type', async () => {
       ;(getFormDefinitionBySlug as jest.Mock).mockReturnValue({
-        type: FormDefinitionType.SlovenskoSkGeneric,
+        type: FormDefinitionType.SlovenskoSkTax,
       })
 
       prismaMock.forms.findUnique.mockResolvedValue({
         ...formBase,
       } as FormWithFiles)
-      await service.onQueueConsumption(messageBase)
 
-      const spy = jest.spyOn(service['ginisHelper'], 'setFormToError')
-      // Do not check for requeue - this just logs the error
-      expect(spy).toHaveBeenCalled()
+      await expect(service.onQueueConsumption(messageBase)).rejects.toThrow(
+        'onQueueConsumption: Got unsupported type of FormDefinition.: SlovenskoSkTax, form id: id1',
+      )
     })
 
     it('should run register if not yet registered', async () => {

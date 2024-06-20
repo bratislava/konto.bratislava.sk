@@ -299,6 +299,14 @@ export class GetFormResponseDto {
   })
   @IsString()
   declare frontendTitle: string
+
+  @ApiProperty({
+    description: 'Slug of the form definition',
+    example: 'zavazne-stanovisko-k-investicnej-cinnosti',
+  })
+  @IsNotEmpty()
+  @IsString()
+  declare formDefinitionSlug: string
 }
 
 export class GetFormResponseSimpleDto {
@@ -363,6 +371,14 @@ export class GetFormResponseSimpleDto {
   })
   @IsString()
   declare frontendTitle: string
+
+  @ApiProperty({
+    description: 'Slug of the form definition',
+    example: 'zavazne-stanovisko-k-investicnej-cinnosti',
+  })
+  @IsNotEmpty()
+  @IsString()
+  declare formDefinitionSlug: string
 }
 
 class GetFormMetaDto {
@@ -453,7 +469,7 @@ export class GetFormsRequestDto {
   })
   @IsString()
   @IsOptional()
-  slug?: string
+  formDefinitionSlug?: string
 }
 
 export class SendFormResponseDto {

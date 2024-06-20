@@ -199,6 +199,7 @@ export default class NasesService {
       ...form,
       messageSubject,
       frontendTitle,
+      formDefinitionSlug: formDefinition.slug,
     }
   }
 

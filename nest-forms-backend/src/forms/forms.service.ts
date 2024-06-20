@@ -181,7 +181,8 @@ export default class FormsService {
     userExternalId: string,
     ico: string | null,
   ): Promise<GetFormsResponseDto> {
-    const { slug, currentPage, pagination, states, userCanEdit } = query
+    const { formDefinitionSlug, currentPage, pagination, states, userCanEdit } =
+      query
     const take = +(pagination ?? DEFAULT_PAGE_SIZE)
     const skip = (+(currentPage ?? DEFAULT_PAGE) - 1) * take
 
@@ -209,7 +210,7 @@ export default class FormsService {
       ...statesFilter,
       userExternalId,
       archived: false,
-      formDefinitionSlug: slug,
+      formDefinitionSlug,
       formDataJson: {
         not: {
           equals: null,
@@ -280,6 +281,7 @@ export default class FormsService {
         ...formWithoutUiSchema,
         messageSubject,
         frontendTitle,
+        formDefinitionSlug: formDefinition.slug,
       })
     })
 

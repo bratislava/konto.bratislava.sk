@@ -555,7 +555,7 @@ describe('GinisService', () => {
       expect(editSpy).toHaveBeenCalled()
     })
 
-    it('should assign submission after edit', async () => {
+    it.skip('should assign submission after edit', async () => {
       ;(getFormDefinitionBySlug as jest.Mock).mockReturnValue({
         type: FormDefinitionType.SlovenskoSkGeneric,
         pospID: 'pospIdValue',

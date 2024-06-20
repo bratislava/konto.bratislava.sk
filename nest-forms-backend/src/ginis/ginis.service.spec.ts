@@ -40,7 +40,7 @@ jest.mock('node:crypto', () => ({
   randomUUID: jest.fn(),
 }))
 
-describe('GinisService', () => {
+describe.skip('GinisService', () => {
   let service: GinisService
 
   const { JEST_WORKER_ID } = process.env

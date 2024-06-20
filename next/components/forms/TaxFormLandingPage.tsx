@@ -17,15 +17,11 @@ import AccountMarkdown from './segments/AccountMarkdown/AccountMarkdown'
 import ButtonNew from './simple-components/ButtonNew'
 import Waves from './simple-components/Waves/Waves'
 
-export type TaxFormLandingPageProps = {
-  latestVersionId: string
-}
-
 /**
  * Temporary landing page only for tax form, until we create unified landing page for all forms.
  * The layout is copied from `FormPage` and `FormHeader`.
  */
-const TaxFormLandingPage = ({ latestVersionId }: TaxFormLandingPageProps) => {
+const TaxFormLandingPage = () => {
   const { isSignedIn, eIdTaxFormAllowed } = useSsrAuth()
   const router = useRouter()
   const { t } = useTranslation('forms')
@@ -37,7 +33,7 @@ const TaxFormLandingPage = ({ latestVersionId }: TaxFormLandingPageProps) => {
     mutationFn: () =>
       formsApi.nasesControllerCreateForm(
         {
-          schemaVersionId: latestVersionId,
+          formDefinitionSlug: 'priznanie-k-dani-z-nehnutelnosti',
         },
         { accessToken: 'onlyAuthenticated' },
       ),

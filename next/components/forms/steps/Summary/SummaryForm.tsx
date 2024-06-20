@@ -67,7 +67,11 @@ const theme: ThemeProps = {
 const ThemedForm = withTheme<GenericObjectType>(theme)
 
 const SummaryForm = () => {
-  const { schema, uiSchema } = useFormContext()
+  const {
+    formDefinition: {
+      schemas: { schema, uiSchema },
+    },
+  } = useFormContext()
   const { formData } = useFormState()
 
   return (

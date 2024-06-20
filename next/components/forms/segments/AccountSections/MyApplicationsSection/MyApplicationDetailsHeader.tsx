@@ -11,11 +11,16 @@ import Link from 'next/link'
 import { useTranslation } from 'next-i18next'
 
 type MyApplicationDetailsHeaderBase = {
+  formDefinitionTitle: string
   data?: GetFormResponseDto
   ginisData?: GinisDocumentDetailResponseDto | null
 }
 
-const MyApplicationDetailsHeader = ({ data, ginisData }: MyApplicationDetailsHeaderBase) => {
+const MyApplicationDetailsHeader = ({
+  formDefinitionTitle,
+  data,
+  ginisData,
+}: MyApplicationDetailsHeaderBase) => {
   const { t } = useTranslation('account')
   const { t: ft } = useTranslation('forms')
 
@@ -28,29 +33,25 @@ const MyApplicationDetailsHeader = ({ data, ginisData }: MyApplicationDetailsHea
     ginisData?.documentHistory?.[(ginisData?.documentHistory?.length || 0) - 1]?.DatumZmeny
 
   const title = data?.frontendTitle
-  const formSlug = data?.schemaVersion.schema?.slug || ''
-  const schemaVersionId = data?.schemaVersionId
+  const formSlug = data?.formDefinitionSlug
   const formId = data?.id
-  const category = data?.schemaVersion.schema?.formName
   const createdAt = firstGinisChangeDate || data?.createdAt
   const updatedAt = latestGinisChangeDate || data?.updatedAt
   const state = data?.state
   const error = data?.error
-  const isLatestSchemaVersionForSlug = data?.isLatestSchemaVersionForSlug
 
-  const { icon, text } = useFormStateComponents({ error, isLatestSchemaVersionForSlug, state })
+  const { icon, text } = useFormStateComponents({ error, state })
 
   const exportPdf = async () => {
     openSnackbarInfo(ft('info_messages.pdf_export'))
     try {
-      if (!schemaVersionId || !formId)
+      if (!formId)
         throw new Error(
           // eslint-disable-next-line sonarjs/no-nested-template-literals
-          `No schemaVersionId or form id ${formId && `for form id: ${formId}`}`,
+          `No form id.`,
         )
       const response = await formsApi.convertControllerConvertToPdfv2(
         {
-          schemaVersionId,
           formId,
         },
         { accessToken: 'onlyAuthenticated', responseType: 'arraybuffer' },
@@ -75,7 +76,7 @@ const MyApplicationDetailsHeader = ({ data, ginisData }: MyApplicationDetailsHea
           </Link>
           <div className="flex flex-col gap-4 lg:gap-6">
             <div className="flex flex-col gap-2">
-              <p className="text-p2-semibold text-main-700">{category}</p>
+              <p className="text-p2-semibold text-main-700">{formDefinitionTitle}</p>
               <div className="flex w-full items-center justify-between">
                 <h1 className="text-h1">{title}</h1>
                 <Button

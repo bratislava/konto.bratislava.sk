@@ -6,15 +6,24 @@ import SummaryRow from 'components/forms/steps/Summary/SummaryRow'
 import { useTranslation } from 'next-i18next'
 
 type MyApplicationsDetailsBase = {
+  formDefinitionTitle: string
   detailsData: GetFormResponseDto
   ginisData: GinisDocumentDetailResponseDto | null
 }
 
-const MyApplicationDetails = ({ detailsData, ginisData }: MyApplicationsDetailsBase) => {
+const MyApplicationDetails = ({
+  formDefinitionTitle,
+  detailsData,
+  ginisData,
+}: MyApplicationsDetailsBase) => {
   const { t } = useTranslation('account')
   return (
     <div className="flex flex-col">
-      <MyApplicationDetailsHeader data={detailsData} ginisData={ginisData} />
+      <MyApplicationDetailsHeader
+        formDefinitionTitle={formDefinitionTitle}
+        data={detailsData}
+        ginisData={ginisData}
+      />
       <div className="mx-auto flex w-full max-w-screen-lg flex-col gap-16 py-12">
         <div className="flex flex-col gap-2 px-4 lg:px-0">
           <h3 className="text-h3">

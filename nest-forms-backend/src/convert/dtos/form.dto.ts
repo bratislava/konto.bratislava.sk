@@ -1,6 +1,6 @@
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger'
 import { Prisma } from '@prisma/client'
-import { RJSFSchema, UiSchema } from '@rjsf/utils'
+import { RJSFSchema } from '@rjsf/utils'
 import { Type } from 'class-transformer'
 import {
   IsDefined,
@@ -80,23 +80,13 @@ export class PdfPreviewDataRequestDto {
 }
 
 export class PdfPreviewDataResponseDto {
-  @IsObject()
   @ApiProperty({
-    description: 'schema.json',
-    default: {},
+    description: 'Slug of the form definition',
+    example: 'zavazne-stanovisko-k-investicnej-cinnosti',
   })
-  @IsJSON()
   @IsNotEmpty()
-  jsonSchema: RJSFSchema
-
-  @IsObject()
-  @ApiProperty({
-    description: 'uiSchema.json',
-    default: {},
-  })
-  @IsJSON()
-  @IsNotEmpty()
-  uiSchema: UiSchema
+  @IsString()
+  formDefinitionSlug: string
 
   @IsObject()
   @ApiProperty({

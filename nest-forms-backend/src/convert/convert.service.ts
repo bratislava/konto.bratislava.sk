@@ -293,8 +293,7 @@ export default class ConvertService {
     }
 
     const pdfData: PdfPreviewDataResponseDto = {
-      jsonSchema: formDefinition.schemas.schema,
-      uiSchema: formDefinition.schemas.uiSchema,
+      formDefinitionSlug: formDefinition.slug,
       jsonForm,
       serverFiles: form.files,
       additionalMetadata,

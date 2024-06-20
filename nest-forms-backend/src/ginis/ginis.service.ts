@@ -446,15 +446,6 @@ export default class GinisService {
       )
     }
 
-    if (!formDefinition.pospID) {
-      await this.ginisHelper.setFormToError(data.formId)
-      alertError(
-        `ERROR - posp id in form do not exists in Ginis consumption queue. Form id: ${form.id}`,
-        this.logger,
-      )
-      return new Nack(false)
-    }
-
     const errorFiles = form.files.filter(
       (file) => file.ginisUploadedError === true,
     )

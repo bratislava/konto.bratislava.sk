@@ -13,7 +13,7 @@
     "start:dev": "nest start --watch",
     "start:debug": "nest start --debug --watch",
     "start:prod": "node dist/src/main",
-    "seed:prod": "node dist/prisma/seed.js",
+    "seed:prod": "node dist/seed.js",
     "lint": "eslint \"{src,apps,libs,test}/**/*.{ts,js}\"",
     "lint:report": "eslint -f json -o eslint-report.json \"{src,apps,libs,test}/**/*.{ts,js}\"",
     "lint:fix": "eslint \"{src,apps,libs,test}/**/*.{ts,js}\" --fix",

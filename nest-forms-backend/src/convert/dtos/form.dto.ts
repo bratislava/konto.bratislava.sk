@@ -1,6 +1,6 @@
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger'
 import { Prisma } from '@prisma/client'
-import { RJSFSchema, UiSchema } from '@rjsf/utils'
+import { RJSFSchema } from '@rjsf/utils'
 import { Type } from 'class-transformer'
 import {
   IsDefined,
@@ -36,11 +36,11 @@ export class JsonToXmlV2RequestDto {
   formId?: string
 
   @ApiProperty({
-    description: 'Schema version id',
-    example: 'e45559da-4a77-8efd-370d-810d09dc3632',
+    description: 'Slug of the form definition',
+    example: 'zavazne-stanovisko-k-investicnej-cinnosti',
   })
-  @IsUUID()
-  schemaVersionId: string
+  @IsString()
+  slug: string
 
   @IsObject()
   @ApiPropertyOptional({
@@ -50,15 +50,6 @@ export class JsonToXmlV2RequestDto {
   @IsNotEmpty()
   @IsOptional()
   jsonData?: Prisma.JsonValue
-}
-
-export class JsonToXmlResponseDto {
-  @ApiProperty({
-    description: 'Form values in XML',
-    example: XML_FORM_EXAMPLE,
-  })
-  @IsString()
-  xmlForm!: string
 }
 
 export class XmlToJsonRequestDto {
@@ -89,23 +80,13 @@ export class PdfPreviewDataRequestDto {
 }
 
 export class PdfPreviewDataResponseDto {
-  @IsObject()
   @ApiProperty({
-    description: 'schema.json',
-    default: {},
+    description: 'Slug of the form definition',
+    example: 'zavazne-stanovisko-k-investicnej-cinnosti',
   })
-  @IsJSON()
   @IsNotEmpty()
-  jsonSchema: RJSFSchema
-
-  @IsObject()
-  @ApiProperty({
-    description: 'uiSchema.json',
-    default: {},
-  })
-  @IsJSON()
-  @IsNotEmpty()
-  uiSchema: UiSchema
+  @IsString()
+  formDefinitionSlug: string
 
   @IsObject()
   @ApiProperty({
@@ -151,13 +132,6 @@ export class ConvertToPdfV2RequestDto {
   @IsNotEmpty()
   @IsOptional()
   jsonData?: Prisma.JsonValue
-
-  @ApiProperty({
-    description: 'Schema version id',
-    example: 'f69559da-5eca-4ed7-80fd-370d09dc3632',
-  })
-  @IsUUID()
-  schemaVersionId: string
 
   @IsObject()
   @ApiPropertyOptional({

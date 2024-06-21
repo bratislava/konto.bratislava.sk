@@ -15,21 +15,51 @@ import {
   getSummaryDisplayValues,
   SummaryDisplayValueType,
 } from '../../src/summary-json/getSummaryDisplayValue'
-import { createSchemaUtils, getUiOptions, optionsList } from '@rjsf/utils'
 import { baRjsfValidator } from '../../src/form-utils/validators'
 import { baDefaultFormStateBehavior } from '../../src/form-utils/defaultFormState'
 import { BaWidgetType } from '../../src/generator/uiOptionsTypes'
+import { RJSFSchema, WidgetProps } from '@rjsf/utils'
+import { withTheme } from '@rjsf/core'
+import { renderToString } from 'react-dom/server'
+import React from 'react'
 
-const getSchemaAndUiOptions = (field: Field) => {
-  const schema = field.schema()
-  const uiSchema = field.uiSchema()
+/**
+ * RJSF heavily processes the schema and the uiSchema before rendering the specific widget. For example, for select-like
+ * widgets `enumOptions` are added. To test the behavior exactly as it happens in the real form, we need to retrieve the
+ * processed schema and uiOptions from the widget. This function renders the minimal form with the widget and retrieves
+ * the values.
+ */
+const retrieveSchemaAndUiOptions = ({ schema, uiSchema }: Field) => {
+  const widgetType = uiSchema()['ui:widget'] as BaWidgetType
 
-  const schemaUtils = createSchemaUtils(baRjsfValidator, schema, baDefaultFormStateBehavior)
-  const enumOptions = schemaUtils.isSelect(schema) ? optionsList(schema) : undefined
+  let retrievedSchema: RJSFSchema
+  let retrievedOptions: WidgetProps['options']
 
-  const uiOptions = { ...getUiOptions(uiSchema), enumOptions }
+  const Form = withTheme({
+    widgets: {
+      [widgetType]: (props: WidgetProps) => {
+        retrievedSchema = props.schema
+        retrievedOptions = props.options
+        return null
+      },
+    },
+  })
 
-  return { schema, uiOptions }
+  renderToString(
+    <Form
+      schema={schema()}
+      uiSchema={uiSchema()}
+      validator={baRjsfValidator}
+      experimental_defaultFormStateBehavior={baDefaultFormStateBehavior}
+    />,
+  )
+
+  // @ts-expect-error TypeScript cannot detect that `retrievedSchema` and `retrievedOptions` are set in the widget
+  if (!retrievedSchema || !retrievedOptions) {
+    throw new Error('Schema and uiOptions not retrieved')
+  }
+
+  return { schema: retrievedSchema, uiOptions: retrievedOptions }
 }
 
 describe('getSummaryDisplayValues', () => {
@@ -45,7 +75,7 @@ describe('getSummaryDisplayValues', () => {
       },
       {},
     )
-    const { schema, uiOptions } = getSchemaAndUiOptions(field)
+    const { schema, uiOptions } = retrieveSchemaAndUiOptions(field)
 
     it('returns correct label for a valid single select value', () => {
       const result = getSummaryDisplayValues('value-1', BaWidgetType.Select, schema, uiOptions)
@@ -85,7 +115,7 @@ describe('getSummaryDisplayValues', () => {
       },
       {},
     )
-    const { schema, uiOptions } = getSchemaAndUiOptions(field)
+    const { schema, uiOptions } = retrieveSchemaAndUiOptions(field)
 
     it('returns none value for an empty select multiple value', () => {
       const result = getSummaryDisplayValues([], BaWidgetType.Select, schema, uiOptions)
@@ -142,7 +172,7 @@ describe('getSummaryDisplayValues', () => {
       },
       {},
     )
-    const { schema, uiOptions } = getSchemaAndUiOptions(field)
+    const { schema, uiOptions } = retrieveSchemaAndUiOptions(field)
 
     it('returns correct label for a valid radio group value', () => {
       const result = getSummaryDisplayValues('value1', BaWidgetType.RadioGroup, schema, uiOptions)
@@ -167,7 +197,7 @@ describe('getSummaryDisplayValues', () => {
 
   describe('TextArea', () => {
     const field = textArea('textAreaProperty', { title: 'TextArea Title' }, {})
-    const { schema, uiOptions } = getSchemaAndUiOptions(field)
+    const { schema, uiOptions } = retrieveSchemaAndUiOptions(field)
 
     it('returns the input string for TextArea widget', () => {
       const result = getSummaryDisplayValues('Test input', BaWidgetType.TextArea, schema, uiOptions)
@@ -187,7 +217,7 @@ describe('getSummaryDisplayValues', () => {
 
   describe('Input', () => {
     const field = input('inputProperty', { title: 'Input Title', type: 'text' }, {})
-    const { schema, uiOptions } = getSchemaAndUiOptions(field)
+    const { schema, uiOptions } = retrieveSchemaAndUiOptions(field)
 
     it('returns the input string for Input widget', () => {
       const result = getSummaryDisplayValues('Test input', BaWidgetType.Input, schema, uiOptions)
@@ -207,7 +237,7 @@ describe('getSummaryDisplayValues', () => {
 
   describe('Number', () => {
     const field = number('numberProperty', { title: 'Number title', type: 'number' }, {})
-    const { schema, uiOptions } = getSchemaAndUiOptions(field)
+    const { schema, uiOptions } = retrieveSchemaAndUiOptions(field)
 
     it('returns formatted string for a valid decimal number', () => {
       const validNumber = 123.45
@@ -236,7 +266,7 @@ describe('getSummaryDisplayValues', () => {
   describe('Checkbox', () => {
     const checkboxLabel = 'I agree to the terms'
     const field = checkbox('checkboxProperty', { title: 'Checkbox Title' }, { checkboxLabel })
-    const { schema, uiOptions } = getSchemaAndUiOptions(field)
+    const { schema, uiOptions } = retrieveSchemaAndUiOptions(field)
 
     it('returns checkbox label for true value', () => {
       const result = getSummaryDisplayValues(true, BaWidgetType.Checkbox, schema, uiOptions)
@@ -254,8 +284,7 @@ describe('getSummaryDisplayValues', () => {
     })
   })
 
-  // TODO: CheckboxGroup tests are disabled, because `enumOptions` are not correctly added in `getSchemaAndUiOptions`
-  xdescribe('CheckboxGroup', () => {
+  describe('CheckboxGroup', () => {
     const field = checkboxGroup(
       'checkboxGroupProperty',
       {
@@ -268,7 +297,7 @@ describe('getSummaryDisplayValues', () => {
       },
       {},
     )
-    const { schema, uiOptions } = getSchemaAndUiOptions(field)
+    const { schema, uiOptions } = retrieveSchemaAndUiOptions(field)
 
     it('returns correct labels for selected CheckboxGroup options', () => {
       const selectedOptions = ['option1', 'option3']
@@ -316,7 +345,7 @@ describe('getSummaryDisplayValues', () => {
 
   describe('FileUpload Single', () => {
     const field = fileUpload('fileUploadSingleProperty', { title: 'File Upload Single Title' }, {})
-    const { schema, uiOptions } = getSchemaAndUiOptions(field)
+    const { schema, uiOptions } = retrieveSchemaAndUiOptions(field)
 
     it('returns the file ID for a single file upload', () => {
       const fileUUID = '30200bc4-ea66-448b-ad8f-00e1e1ccdfb0'
@@ -336,7 +365,7 @@ describe('getSummaryDisplayValues', () => {
       { title: 'File Upload Multiple Title', multiple: true },
       {},
     )
-    const { schema, uiOptions } = getSchemaAndUiOptions(field)
+    const { schema, uiOptions } = retrieveSchemaAndUiOptions(field)
 
     it('returns file IDs for multiple file uploads', () => {
       const fileUUIDs = [
@@ -368,7 +397,7 @@ describe('getSummaryDisplayValues', () => {
 
   describe('DatePicker', () => {
     const field = datePicker('datePickerProperty', { title: 'DatePicker Title' }, {})
-    const { schema, uiOptions } = getSchemaAndUiOptions(field)
+    const { schema, uiOptions } = retrieveSchemaAndUiOptions(field)
 
     it('returns formatted date for a valid DatePicker value', () => {
       const validDate = '2023-01-01'

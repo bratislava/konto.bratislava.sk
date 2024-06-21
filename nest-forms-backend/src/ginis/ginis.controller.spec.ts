@@ -44,7 +44,7 @@ describe('GinisController', () => {
           sub: 'sub',
         } as CognitoGetUserData)
       } catch (error) {
-        expect(spy).toHaveBeenLastCalledWith('123', 'sub', null, false)
+        expect(spy).toHaveBeenLastCalledWith('123', 'sub', null)
       }
 
       try {
@@ -52,7 +52,7 @@ describe('GinisController', () => {
           ico: 'ico1',
         } as ResponseGdprDataDto)
       } catch (error) {
-        expect(spy).toHaveBeenLastCalledWith('123', null, 'ico1', false)
+        expect(spy).toHaveBeenLastCalledWith('123', null, 'ico1')
       }
     })
 

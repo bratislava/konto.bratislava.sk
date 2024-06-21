@@ -144,7 +144,11 @@ const SummaryDetails = () => {
   const { formData } = useFormState()
   const { getValidatedSummary } = useFormSummary()
   const validatedSummary = getValidatedSummary()
-  const { schema, uiSchema } = useFormContext()
+  const {
+    formDefinition: {
+      schemas: { schema, uiSchema },
+    },
+  } = useFormContext()
   const summaryJson = useMemo(() => {
     // `getSummaryJsonNode` must never be included in the client bundle, see description in the function.
     // This check doesn't prevent itself from being included, it must be filtered in the webpack config.

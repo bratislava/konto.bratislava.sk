@@ -1,4 +1,5 @@
 import { formsApi } from '@clients/forms'
+import { getFormDefinitionBySlug } from '@forms-shared/definitions/form-definitions-helpers'
 import { isAxiosError } from 'axios'
 
 import { ROUTES } from '../../../frontend/api/constants'
@@ -8,28 +9,22 @@ type Params = {
   slug: string
 }
 
-// eslint-disable-next-line @typescript-eslint/ban-types
 export const getServerSideProps = amplifyGetServerSideProps<{}, Params>(
   async ({ context, getAccessToken }) => {
-    if (!context.params) return { notFound: true }
+    if (!context.params) {
+      return { notFound: true }
+    }
 
     const { slug } = context.params
+    const formDefinition = getFormDefinitionBySlug(slug)
+    if (!formDefinition) {
+      return { notFound: true }
+    }
 
     try {
-      const schema = await formsApi.schemasControllerGetSchema(slug, {
-        accessToken: 'onlyAuthenticated',
-        accessTokenSsrGetFn: getAccessToken,
-      })
-      const { latestVersionId, latestVersion } = schema.data
-      if (!latestVersionId || !latestVersion) {
-        return {
-          notFound: true,
-        }
-      }
-
       const { data: form } = await formsApi.nasesControllerCreateForm(
         {
-          schemaVersionId: latestVersionId,
+          formDefinitionSlug: slug,
         },
         { accessToken: 'onlyAuthenticated', accessTokenSsrGetFn: getAccessToken },
       )

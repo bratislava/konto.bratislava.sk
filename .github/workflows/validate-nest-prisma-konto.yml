@@ -1,0 +1,86 @@
+name: Validate nest-prisma code
+on:
+  workflow_call:
+    inputs:
+      directory:
+        description: "Base dir where whole app is located."
+        type: string
+        required: false
+        default: './'
+      typescript-directory:
+        description: "Where typescript have to be checked"
+        type: string
+        required: false
+        default: './src'
+      node:
+        description: "Define node version"
+        type: string
+        required: false
+        default: '20'
+      level:
+        description: "Change reporter level if you need"
+        type: string
+        required: false
+        default: 'warning'
+
+jobs:
+  test:
+    name: Unit tests and lint
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Pipelines Version
+        run: |
+          echo "Pipelines version: 2.3.0"  
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ inputs.node }}
+
+      # build forms-shared first
+      - name: Build forms-shared
+        run: |
+          cd forms-shared/
+          npm ci
+          cd ..
+
+      # move to directory
+      - name: Instal dependencies
+        working-directory: ${{ inputs.directory }}
+        run: | 
+          pwd
+          npm ci
+          npx prisma generate
+
+      - name: Run unit tests
+        working-directory: ${{ inputs.directory }}
+        run: npm run test
+
+      - name: Typescript reviewdog check
+        uses: EPMatt/reviewdog-action-tsc@v1.7.0
+        # Review dog will fail when pull request has more than 300 changed files.
+        # We want that next typescript check will do its job for all files
+        continue-on-error: true
+        with:
+          # Change reviewdog reporter if you need
+          # [github-pr-check,github-check,github-pr-review].
+          # More about reviewdog reporters at
+          # https://github.com/reviewdog/reviewdog#reporters
+          reporter: github-check
+          # Change reporter level if you need
+          # [info,warning,error].
+          # More about reviewdog reporter level at
+          # https://github.com/reviewdog/reviewdog#reporters
+          level: ${{inputs.level}}
+          workdir: ${{ inputs.typescript-directory }}
+
+      - name: Typescript check
+        working-directory: ${{ inputs.directory }}
+        run: npx tsc
+
+      - name: ESlint check
+        working-directory: ${{ inputs.directory }}
+        run: npm run lint

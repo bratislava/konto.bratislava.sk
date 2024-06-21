@@ -1,3 +1,4 @@
+import fs from 'node:fs'
 import { PassThrough, Readable } from 'node:stream'
 
 import { FormDefinition } from '@forms-shared/definitions/form-definitions'
@@ -46,6 +47,9 @@ import {
 } from './errors/convert.errors.enum'
 import createXmlTemplate from './utils-services/createXmlTemplate'
 import JsonXmlConvertService from './utils-services/json-xml.convert.service'
+
+const pdfBytes = fs.readFileSync('./res/Priznanie_komplet_tlacivo.pdf')
+const font = fs.readFileSync('./res/LiberationSans.ttf')
 
 @Injectable()
 export default class ConvertService {
@@ -158,6 +162,10 @@ export default class ConvertService {
       const base64Pdf = await generateTaxPdf({
         formData: formDataJson as TaxFormData,
         formId,
+        loadedResources: {
+          pdfBytes,
+          font,
+        },
       })
 
       const buffer = Buffer.from(base64Pdf, 'base64')

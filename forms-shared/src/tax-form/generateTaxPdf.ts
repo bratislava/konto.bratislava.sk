@@ -1,4 +1,4 @@
-import fs from 'node:fs'
+import { promises as fs } from 'node:fs'
 
 import fontkit from '@pdf-lib/fontkit'
 import {
@@ -21,18 +21,33 @@ import { getTaxFormPdfMapping } from './mapping/pdf/pdf'
 import { TaxFormData } from './types'
 import * as path from 'node:path'
 
+type LoadedResources = {
+  pdfBytes: Uint8Array
+  font: Uint8Array
+}
+
 export type GenerateTaxPdfPayload = {
   formData: TaxFormData
   formId?: string
   currentDate?: Date
+  loadedResources?: LoadedResources
 }
 
-// This preloads the PDF and font into memory, so that they don't have to be loaded from disk every time a job is
-// processed.
-const pdfBytes = fs.readFileSync(
-  path.join(__dirname, './pdf-resources/Priznanie_komplet_tlacivo.pdf'),
-)
-const font = fs.readFileSync(path.join(__dirname, './pdf-resources/LiberationSans.ttf'))
+let loadedResources: LoadedResources | null = null
+
+const loadResources = async () => {
+  if (loadedResources) {
+    return loadedResources
+  }
+
+  const [pdfBytes, font] = await Promise.all([
+    fs.readFile(path.join(__dirname, './pdf-resources/Priznanie_komplet_tlacivo.pdf')),
+    fs.readFile(path.join(__dirname, './pdf-resources/LiberationSans.ttf')),
+  ])
+  loadedResources = { pdfBytes, font }
+
+  return loadedResources
+}
 
 const copyOrRemovePages = async (pdfDoc: PDFDocument, index: number, count: number) => {
   if (count === 0) {
@@ -73,8 +88,17 @@ const copyOrRemovePages = async (pdfDoc: PDFDocument, index: number, count: numb
 /**
  * @returns Base64 encoded PDF
  */
-export async function generateTaxPdf({ formData, formId, currentDate }: GenerateTaxPdfPayload) {
-  const pdfDoc = await PDFDocument.load(pdfBytes, {
+export async function generateTaxPdf({
+  formData,
+  formId,
+  currentDate,
+  loadedResources,
+}: GenerateTaxPdfPayload) {
+  if (!loadedResources) {
+    loadedResources = await loadResources()
+  }
+
+  const pdfDoc = await PDFDocument.load(loadedResources.pdfBytes, {
     parseSpeed: ParseSpeeds.Fastest,
   })
   if (!formData) {
@@ -114,7 +138,7 @@ export async function generateTaxPdf({ formData, formId, currentDate }: Generate
   // we use "Liberation Sans", which is a free alternative to "Arial", instead.
   // More info about Unicode in PDF: https://github.com/Hopding/pdf-lib?tab=readme-ov-file#fonts-and-unicode
   pdfDoc.registerFontkit(fontkit)
-  const liberationSansFont = await pdfDoc.embedFont(font)
+  const liberationSansFont = await pdfDoc.embedFont(loadedResources.font)
 
   const mapping = getTaxFormPdfMapping(formData, formId, currentDate)
 

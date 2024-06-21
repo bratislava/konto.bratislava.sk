@@ -57,7 +57,10 @@ const useGetContext = () => {
   const [openSnackbarError] = useSnackbar({ variant: 'error' })
   // As the token is immediately removed from the URL, we need to store it in a ref.
   const sendEidTokenRef = useRef<string | null>(null)
-  const { formId, slug } = useFormContext()
+  const {
+    formId,
+    formDefinition: { slug },
+  } = useFormContext()
   const { formData } = useFormState()
   const { getValidatedSummary, getUploadFiles, getScanFiles } = useFormSummary()
   const {

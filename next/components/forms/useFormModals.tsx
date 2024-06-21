@@ -17,7 +17,7 @@ type ModalWithSendCallback =
     }
 
 const useGetContext = () => {
-  const { formMigrationRequired, oldSchemaVersion, isTaxForm } = useFormContext()
+  const { formMigrationRequired, isTaxForm } = useFormContext()
   const router = useRouter()
   const { isSignedIn, tierStatus } = useSsrAuth()
 
@@ -28,17 +28,11 @@ const useGetContext = () => {
   const [migrationRequiredModal, setMigrationRequiredModal] = useState<boolean>(
     displayInitialWarningModals && formMigrationRequired,
   )
-  const [oldVersionSchemaModal, setOldSchemaVersionModal] = useState<boolean>(
-    displayInitialWarningModals && !migrationRequiredModal && oldSchemaVersion,
-  )
   const [registrationModal, setRegistrationModal] = useState<RegistrationModalType | null>(
-    displayInitialWarningModals && !oldVersionSchemaModal && !isSignedIn && !isTaxForm
-      ? RegistrationModalType.Initial
-      : null,
+    displayInitialWarningModals && !isSignedIn && !isTaxForm ? RegistrationModalType.Initial : null,
   )
   const [identityVerificationModal, setIdentityVerificationModal] = useState(
     displayInitialWarningModals &&
-      !oldVersionSchemaModal &&
       !migrationRequiredModal &&
       isSignedIn &&
       !isTaxForm &&
@@ -95,8 +89,6 @@ const useGetContext = () => {
   return {
     migrationRequiredModal,
     setMigrationRequiredModal,
-    oldVersionSchemaModal,
-    setOldSchemaVersionModal,
     registrationModal,
     setRegistrationModal,
     identityVerificationModal,

@@ -87,7 +87,6 @@ export default class GinisController {
       formId,
       user ? user.sub : null,
       userInfo?.ico ?? null,
-      false,
     )
     const { ginisDocumentId } = form
     if (!ginisDocumentId) {

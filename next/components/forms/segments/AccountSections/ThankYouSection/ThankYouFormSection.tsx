@@ -9,7 +9,10 @@ import { ROUTES } from '../../../../../frontend/api/constants'
 import { useFormContext } from '../../../useFormContext'
 
 const ThankYouFormSection = () => {
-  const { isTaxForm, slug } = useFormContext()
+  const {
+    isTaxForm,
+    formDefinition: { slug },
+  } = useFormContext()
   const { t } = useTranslation('account')
 
   return (

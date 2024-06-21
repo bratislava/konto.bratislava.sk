@@ -6,10 +6,7 @@ import {
   ApiTags,
 } from '@nestjs/swagger'
 
-import {
-  JsonConvertRequestDto,
-  JsonToXmlResponseDto,
-} from '../convert/dtos/form.dto'
+import { JsonConvertRequestDto } from '../convert/dtos/form.dto'
 import {
   TaxJsonToXmlRequestDto,
   TaxJsonToXmlResponseDto,
@@ -29,7 +26,7 @@ export default class TaxController {
   @ApiResponse({
     status: 200,
     description: 'Return XML form',
-    type: JsonToXmlResponseDto,
+    type: String,
   })
   @ApiBadRequestResponse({
     status: 400,

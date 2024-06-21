@@ -18,7 +18,7 @@ const PdfSummaryPage = ({ formContext }: PdfSummaryPageProps) => {
     <FormProviders formContext={formContext}>
       <FormSummaryProvider>
         <div className="flex flex-col gap-4">
-          <h1 className="text-h1-form">{formContext.schema.title}</h1>
+          <h1 className="text-h1-form">{formContext.formDefinition.schemas.schema.title}</h1>
           <SummaryForm />
           <SummaryFormLegalText />
         </div>

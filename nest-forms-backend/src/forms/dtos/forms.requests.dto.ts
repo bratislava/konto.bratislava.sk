@@ -1,7 +1,7 @@
 /* eslint-disable pii/no-phone-number */
 /* eslint-disable pii/no-email */
 
-import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger'
+import { ApiPropertyOptional } from '@nestjs/swagger'
 import { FormError, FormOwnerType, FormState, Prisma } from '@prisma/client'
 import { Type } from 'class-transformer'
 import {
@@ -42,14 +42,6 @@ export class FormCreateBodyDto {
   @IsString()
   @IsOptional()
   senderId?: string
-
-  @ApiProperty({
-    description: 'UUID of Schema version',
-    default: 'f69559da-5eca-4ed7-80fd-370d09dc3632',
-  })
-  @IsNotEmpty()
-  @IsUUID()
-  schemaVersionId: string
 
   @ApiPropertyOptional({
     description: 'Type of owner (FO/PO)',

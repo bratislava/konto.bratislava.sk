@@ -1,22 +1,17 @@
+import { FormDefinition } from '@forms-shared/definitions/form-definitions'
 import lodash from 'lodash'
 
-import {
-  FormWithSchemaAndVersion,
-  FormWithSchemaVersionAndFiles,
-  FormWithSelectedProperties,
-} from '../types/prisma'
+import { FormWithSelectedProperties } from '../types/prisma'
 
 export const getSubjectTextFromForm = (
-  data:
-    | FormWithSchemaAndVersion
-    | FormWithSchemaVersionAndFiles
-    | FormWithSelectedProperties,
+  data: FormWithSelectedProperties,
+  formDefinition: FormDefinition,
 ): string => {
-  if (!data.schemaVersion.messageSubjectFormat) {
-    return data.schemaVersion.schema.messageSubject
+  if (!formDefinition.messageSubjectFormat) {
+    return formDefinition.messageSubjectDefault
   }
 
-  return data.schemaVersion.messageSubjectFormat.replaceAll(
+  return formDefinition.messageSubjectFormat.replaceAll(
     /{([^}]+)}/g,
     (match) => {
       const atPath = lodash.get(data.formDataJson, match.slice(1, -1), '')
@@ -32,7 +27,8 @@ export const getSubjectTextFromForm = (
 }
 
 export const getFrontendFormTitleFromForm = (
-  data: FormWithSchemaAndVersion | FormWithSelectedProperties,
+  data: FormWithSelectedProperties,
+  formDefinition: FormDefinition,
 ): string | null => {
   type MinimalUiSchema = {
     'ui:options'?: {
@@ -40,7 +36,7 @@ export const getFrontendFormTitleFromForm = (
       titleFallback?: string
     }
   }
-  const uiOptions = (data.schemaVersion?.uiSchema as MinimalUiSchema)?.[
+  const uiOptions = (formDefinition.schemas.uiSchema as MinimalUiSchema)?.[
     'ui:options'
   ]
   return (

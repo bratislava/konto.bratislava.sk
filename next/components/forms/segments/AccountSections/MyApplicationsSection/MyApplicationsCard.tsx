@@ -34,6 +34,7 @@ export type MyApplicationsCardProps = {
   form?: GetFormResponseSimpleDto | null
   refreshListData: () => Promise<[void, boolean]>
   variant: MyApplicationsCardVariant
+  formDefinitionSlugTitleMap: Record<string, string>
 }
 
 export type WrapperProps = {
@@ -56,7 +57,12 @@ const Wrapper = ({ children, variant, href, onClick }: WrapperProps) => {
 // designs here https://www.figma.com/file/SFbuULqG1ysocghIga9BZT/Bratislavske-konto%2C-ESBS---ready-for-dev-(Ma%C5%A5a)?node-id=7120%3A20498&mode=dev
 // TODO write docs
 
-const MyApplicationsCard = ({ form, refreshListData, variant }: MyApplicationsCardProps) => {
+const MyApplicationsCard = ({
+  form,
+  refreshListData,
+  variant,
+  formDefinitionSlugTitleMap,
+}: MyApplicationsCardProps) => {
   const { t } = useTranslation('account')
   const { t: ft } = useTranslation('forms')
   const [deleteConceptModalShow, setDeleteConceptModalShow] = useState<boolean>(false)
@@ -69,44 +75,42 @@ const MyApplicationsCard = ({ form, refreshListData, variant }: MyApplicationsCa
   // everything used in jsx should get mapped here
   const isLoading = !form
   const title = form?.frontendTitle || ft('form_title_fallback')
-  const category = form?.schemaVersion.schema?.formName
+  const formSlug = form?.formDefinitionSlug
+  const category = formSlug ? formDefinitionSlugTitleMap[formSlug] : undefined
   const createdAt = form?.createdAt
   // TODO replace - this won't be valid for forms processed on the GINIS side
   const updatedAt = form?.updatedAt
-  const schemaVersionId = form?.schemaVersionId
-  const formSlug = form?.schemaVersion.schema?.slug || ''
   const formId = form?.id
   const state = form?.state
   const error = form?.error
-  const isLatestSchemaVersionForSlug = form?.isLatestSchemaVersionForSlug
   const isTaxForm = formSlug === 'priznanie-k-dani-z-nehnutelnosti'
-  const canDownloadPdf = isLatestSchemaVersionForSlug && !isTaxForm
+  const canDownloadPdf = !isTaxForm
 
   // derived state
-  const formPageHref = `${ROUTES.MUNICIPAL_SERVICES}/${form?.schemaVersion.schema?.slug}/${form?.id}`
+  const formPageHref = `${ROUTES.MUNICIPAL_SERVICES}/${formSlug}/${form?.id}`
   const detailPageHref = `${ROUTES.MY_APPLICATIONS}/${form?.id}`
   // TODO verify the error state
-  const isEditable = state && ['DRAFT', 'ERROR'].includes(state) && isLatestSchemaVersionForSlug
+  const isEditable = state && ['DRAFT', 'ERROR'].includes(state)
 
   // xml and pdf exports copied from useFormExportImport
   // TODO refactor, same as next/frontend/hooks/useFormExportImport.tsx
   const exportXml = async () => {
     openSnackbarInfo(ft('info_messages.xml_export'))
     try {
-      if (!schemaVersionId || !formId)
+      if (!formSlug || !formId)
         throw new Error(
           // eslint-disable-next-line sonarjs/no-nested-template-literals
-          `No schemaVersionId or form id ${formId && `for form id: ${formId}`}`,
+          `No formSlug or form id ${formId && `for form id: ${formId}`}`,
         )
       const response = await formsApi.convertControllerConvertJsonToXmlV2(
         {
-          schemaVersionId,
           formId,
+          slug: formSlug,
         },
         { accessToken: 'onlyAuthenticated' },
       )
       const fileName = `${formSlug}_output.xml`
-      downloadBlob(new Blob([response.data.xmlForm]), fileName)
+      downloadBlob(new Blob([response.data]), fileName)
       closeSnackbarInfo()
       openSnackbarSuccess(ft('success_messages.xml_export'))
     } catch (error) {
@@ -118,14 +122,13 @@ const MyApplicationsCard = ({ form, refreshListData, variant }: MyApplicationsCa
   const exportPdf = async () => {
     openSnackbarInfo(ft('info_messages.pdf_export'))
     try {
-      if (!schemaVersionId || !formId)
+      if (!formSlug || !formId)
         throw new Error(
           // eslint-disable-next-line sonarjs/no-nested-template-literals
-          `No schemaVersionId or form id ${formId && `for form id: ${formId}`}`,
+          `No formSlug or form id ${formId && `for form id: ${formId}`}`,
         )
       const response = await formsApi.convertControllerConvertToPdfv2(
         {
-          schemaVersionId,
           formId,
         },
         { accessToken: 'onlyAuthenticated', responseType: 'arraybuffer' },
@@ -189,7 +192,7 @@ const MyApplicationsCard = ({ form, refreshListData, variant }: MyApplicationsCa
         },
       ]
 
-  const stateIconAndText = useFormStateComponents({ error, isLatestSchemaVersionForSlug, state })
+  const stateIconAndText = useFormStateComponents({ error, state })
 
   const openBottomSheetModal = () => {
     if (variant === 'SENT') return

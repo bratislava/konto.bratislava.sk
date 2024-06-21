@@ -78,20 +78,20 @@ export interface CanSendResponseDto {
   formId: string
 }
 /**
- * @type ConvertControllerConvertJsonToXmlV2404Response
- * @export
- */
-export type ConvertControllerConvertJsonToXmlV2404Response =
-  | FormNotFoundErrorDto
-  | SchemaVersionNotFoundDto
-
-/**
  * @type ConvertControllerConvertToPdfv2400Response
  * @export
  */
 export type ConvertControllerConvertToPdfv2400Response =
   | PuppeteerFormNotFoundErrorDto
   | PuppeteerPageFailedLoadErrorDto
+
+/**
+ * @type ConvertControllerConvertToPdfv2404Response
+ * @export
+ */
+export type ConvertControllerConvertToPdfv2404Response =
+  | FormDefinitionNotFoundErrorDto
+  | FormNotFoundErrorDto
 
 /**
  * @type ConvertControllerGetPdfPreviewData422Response
@@ -120,12 +120,6 @@ export interface ConvertToPdfV2RequestDto {
    */
   jsonData?: object
   /**
-   * Schema version id
-   * @type {string}
-   * @memberof ConvertToPdfV2RequestDto
-   */
-  schemaVersionId: string
-  /**
    * Additional metadata for Next server provided in convert PDF request.
    * @type {object}
    * @memberof ConvertToPdfV2RequestDto
@@ -139,11 +133,11 @@ export interface ConvertToPdfV2RequestDto {
  */
 export interface CreateFormEidRequestDto {
   /**
-   * Version of Schema
+   * Slug of the form definition
    * @type {string}
    * @memberof CreateFormEidRequestDto
    */
-  schemaVersionId: string
+  formDefinitionSlug: string
   /**
    * Email, if it is not registered user by city account, and it is logged in only by Eid
    * @type {string}
@@ -158,11 +152,11 @@ export interface CreateFormEidRequestDto {
  */
 export interface CreateFormRequestDto {
   /**
-   * Version of Schema
+   * Slug of the form definition
    * @type {string}
    * @memberof CreateFormRequestDto
    */
-  schemaVersionId: string
+  formDefinitionSlug: string
 }
 /**
  *
@@ -273,24 +267,6 @@ export interface CreateFormResponseDto {
    */
   finishSubmission: string | null
   /**
-   * Schema version Id.
-   * @type {string}
-   * @memberof CreateFormResponseDto
-   */
-  schemaVersionId: string
-  /**
-   * Schema version
-   * @type {SchemaVersionResponseDto}
-   * @memberof CreateFormResponseDto
-   */
-  schemaVersion: SchemaVersionResponseDto
-  /**
-   * Flag marking if the schema version for this form is the latest version for the schema.
-   * @type {boolean}
-   * @memberof CreateFormResponseDto
-   */
-  isLatestSchemaVersionForSlug: boolean
-  /**
    * Message subject created from uiSchema
    * @type {string}
    * @memberof CreateFormResponseDto
@@ -302,6 +278,12 @@ export interface CreateFormResponseDto {
    * @memberof CreateFormResponseDto
    */
   frontendTitle: string
+  /**
+   * Slug of the form definition
+   * @type {string}
+   * @memberof CreateFormResponseDto
+   */
+  formDefinitionSlug: string
 }
 
 export const CreateFormResponseDtoStateEnum = {
@@ -1571,6 +1553,106 @@ export type FormDataInvalidErrorDtoErrorNameEnum =
 /**
  *
  * @export
+ * @interface FormDefinitionNotFoundErrorDto
+ */
+export interface FormDefinitionNotFoundErrorDto {
+  /**
+   * Status Code
+   * @type {number}
+   * @memberof FormDefinitionNotFoundErrorDto
+   */
+  statusCode: number
+  /**
+   * Detail error message
+   * @type {string}
+   * @memberof FormDefinitionNotFoundErrorDto
+   */
+  message: string
+  /**
+   * status in text
+   * @type {string}
+   * @memberof FormDefinitionNotFoundErrorDto
+   */
+  status: string
+  /**
+   * Exact error name
+   * @type {string}
+   * @memberof FormDefinitionNotFoundErrorDto
+   */
+  errorName: FormDefinitionNotFoundErrorDtoErrorNameEnum
+  /**
+   * Helper for sending additional data in error
+   * @type {object}
+   * @memberof FormDefinitionNotFoundErrorDto
+   */
+  object?: object
+}
+
+export const FormDefinitionNotFoundErrorDtoErrorNameEnum = {
+  NotFoundError: 'NOT_FOUND_ERROR',
+  DatabaseError: 'DATABASE_ERROR',
+  InternalServerError: 'INTERNAL_SERVER_ERROR',
+  UnauthorizedError: 'UNAUTHORIZED_ERROR',
+  UnprocessableEntityError: 'UNPROCESSABLE_ENTITY_ERROR',
+  BadRequestError: 'BAD_REQUEST_ERROR',
+} as const
+
+export type FormDefinitionNotFoundErrorDtoErrorNameEnum =
+  (typeof FormDefinitionNotFoundErrorDtoErrorNameEnum)[keyof typeof FormDefinitionNotFoundErrorDtoErrorNameEnum]
+
+/**
+ *
+ * @export
+ * @interface FormDefinitionNotSupportedTypeErrorDto
+ */
+export interface FormDefinitionNotSupportedTypeErrorDto {
+  /**
+   * Status Code
+   * @type {number}
+   * @memberof FormDefinitionNotSupportedTypeErrorDto
+   */
+  statusCode: number
+  /**
+   * Detail error message
+   * @type {string}
+   * @memberof FormDefinitionNotSupportedTypeErrorDto
+   */
+  message: string
+  /**
+   * status in text
+   * @type {string}
+   * @memberof FormDefinitionNotSupportedTypeErrorDto
+   */
+  status: string
+  /**
+   * Exact error name
+   * @type {string}
+   * @memberof FormDefinitionNotSupportedTypeErrorDto
+   */
+  errorName: FormDefinitionNotSupportedTypeErrorDtoErrorNameEnum
+  /**
+   * Helper for sending additional data in error
+   * @type {object}
+   * @memberof FormDefinitionNotSupportedTypeErrorDto
+   */
+  object?: object
+}
+
+export const FormDefinitionNotSupportedTypeErrorDtoErrorNameEnum = {
+  NotFoundError: 'NOT_FOUND_ERROR',
+  DatabaseError: 'DATABASE_ERROR',
+  InternalServerError: 'INTERNAL_SERVER_ERROR',
+  UnauthorizedError: 'UNAUTHORIZED_ERROR',
+  UnprocessableEntityError: 'UNPROCESSABLE_ENTITY_ERROR',
+  BadRequestError: 'BAD_REQUEST_ERROR',
+} as const
+
+export type FormDefinitionNotSupportedTypeErrorDtoErrorNameEnum =
+  (typeof FormDefinitionNotSupportedTypeErrorDtoErrorNameEnum)[keyof typeof FormDefinitionNotSupportedTypeErrorDtoErrorNameEnum]
+
+/**
+ *
+ * @export
  * @interface FormIdMissingErrorDto
  */
 export interface FormIdMissingErrorDto {
@@ -2103,24 +2185,6 @@ export interface GetFormResponseDto {
    */
   finishSubmission: string | null
   /**
-   * Schema version Id.
-   * @type {string}
-   * @memberof GetFormResponseDto
-   */
-  schemaVersionId: string
-  /**
-   * Schema version
-   * @type {SchemaVersionResponseDto}
-   * @memberof GetFormResponseDto
-   */
-  schemaVersion: SchemaVersionResponseDto
-  /**
-   * Flag marking if the schema version for this form is the latest version for the schema.
-   * @type {boolean}
-   * @memberof GetFormResponseDto
-   */
-  isLatestSchemaVersionForSlug: boolean
-  /**
    * Message subject created from uiSchema
    * @type {string}
    * @memberof GetFormResponseDto
@@ -2132,6 +2196,12 @@ export interface GetFormResponseDto {
    * @memberof GetFormResponseDto
    */
   frontendTitle: string
+  /**
+   * Slug of the form definition
+   * @type {string}
+   * @memberof GetFormResponseDto
+   */
+  formDefinitionSlug: string
 }
 
 export const GetFormResponseDtoStateEnum = {
@@ -2204,24 +2274,6 @@ export interface GetFormResponseSimpleDto {
    */
   formDataJson: object | null
   /**
-   * Schema version Id.
-   * @type {string}
-   * @memberof GetFormResponseSimpleDto
-   */
-  schemaVersionId: string
-  /**
-   * Schema version
-   * @type {SchemaVersionWithSchemaAndDataDto}
-   * @memberof GetFormResponseSimpleDto
-   */
-  schemaVersion: SchemaVersionWithSchemaAndDataDto
-  /**
-   * Flag marking if the schema version for this form is the latest version for the schema.
-   * @type {boolean}
-   * @memberof GetFormResponseSimpleDto
-   */
-  isLatestSchemaVersionForSlug: boolean
-  /**
    * Message subject created from uiSchema
    * @type {string}
    * @memberof GetFormResponseSimpleDto
@@ -2233,6 +2285,12 @@ export interface GetFormResponseSimpleDto {
    * @memberof GetFormResponseSimpleDto
    */
   frontendTitle: string
+  /**
+   * Slug of the form definition
+   * @type {string}
+   * @memberof GetFormResponseSimpleDto
+   */
+  formDefinitionSlug: string
 }
 
 export const GetFormResponseSimpleDtoStateEnum = {
@@ -2577,19 +2635,6 @@ export interface JsonConvertRequestDto {
 /**
  *
  * @export
- * @interface JsonToXmlResponseDto
- */
-export interface JsonToXmlResponseDto {
-  /**
-   * Form values in XML
-   * @type {string}
-   * @memberof JsonToXmlResponseDto
-   */
-  xmlForm: string
-}
-/**
- *
- * @export
  * @interface JsonToXmlV2RequestDto
  */
 export interface JsonToXmlV2RequestDto {
@@ -2600,11 +2645,11 @@ export interface JsonToXmlV2RequestDto {
    */
   formId?: string
   /**
-   * Schema version id
+   * Slug of the form definition
    * @type {string}
    * @memberof JsonToXmlV2RequestDto
    */
-  schemaVersionId: string
+  slug: string
   /**
    * Form values in JSON
    * @type {object}
@@ -2631,6 +2676,56 @@ export interface MigrateFormResponseDto {
    */
   success: boolean
 }
+/**
+ *
+ * @export
+ * @interface NasesControllerGetForm404Response
+ */
+export interface NasesControllerGetForm404Response {
+  /**
+   * Status Code
+   * @type {number}
+   * @memberof NasesControllerGetForm404Response
+   */
+  statusCode: number
+  /**
+   * Detail error message
+   * @type {string}
+   * @memberof NasesControllerGetForm404Response
+   */
+  message: string
+  /**
+   * status in text
+   * @type {string}
+   * @memberof NasesControllerGetForm404Response
+   */
+  status: string
+  /**
+   * Exact error name
+   * @type {string}
+   * @memberof NasesControllerGetForm404Response
+   */
+  errorName: NasesControllerGetForm404ResponseErrorNameEnum
+  /**
+   * Helper for sending additional data in error
+   * @type {object}
+   * @memberof NasesControllerGetForm404Response
+   */
+  object?: object
+}
+
+export const NasesControllerGetForm404ResponseErrorNameEnum = {
+  NotFoundError: 'NOT_FOUND_ERROR',
+  DatabaseError: 'DATABASE_ERROR',
+  InternalServerError: 'INTERNAL_SERVER_ERROR',
+  UnauthorizedError: 'UNAUTHORIZED_ERROR',
+  UnprocessableEntityError: 'UNPROCESSABLE_ENTITY_ERROR',
+  BadRequestError: 'BAD_REQUEST_ERROR',
+} as const
+
+export type NasesControllerGetForm404ResponseErrorNameEnum =
+  (typeof NasesControllerGetForm404ResponseErrorNameEnum)[keyof typeof NasesControllerGetForm404ResponseErrorNameEnum]
+
 /**
  *
  * @export
@@ -2951,17 +3046,11 @@ export interface PdfPreviewDataRequestDto {
  */
 export interface PdfPreviewDataResponseDto {
   /**
-   * schema.json
-   * @type {object}
+   * Slug of the form definition
+   * @type {string}
    * @memberof PdfPreviewDataResponseDto
    */
-  jsonSchema: object
-  /**
-   * uiSchema.json
-   * @type {object}
-   * @memberof PdfPreviewDataResponseDto
-   */
-  uiSchema: object
+  formDefinitionSlug: string
   /**
    * Form values in JSON
    * @type {object}
@@ -3286,635 +3375,6 @@ export const ScannerNoResponseErrorDtoErrorNameEnum = {
 export type ScannerNoResponseErrorDtoErrorNameEnum =
   (typeof ScannerNoResponseErrorDtoErrorNameEnum)[keyof typeof ScannerNoResponseErrorDtoErrorNameEnum]
 
-/**
- *
- * @export
- * @interface SchemaNotFoundDto
- */
-export interface SchemaNotFoundDto {
-  /**
-   * Status Code
-   * @type {number}
-   * @memberof SchemaNotFoundDto
-   */
-  statusCode: number
-  /**
-   * Detail error message
-   * @type {string}
-   * @memberof SchemaNotFoundDto
-   */
-  message: string
-  /**
-   * status in text
-   * @type {string}
-   * @memberof SchemaNotFoundDto
-   */
-  status: string
-  /**
-   * Exact error name
-   * @type {string}
-   * @memberof SchemaNotFoundDto
-   */
-  errorName: SchemaNotFoundDtoErrorNameEnum
-  /**
-   * Helper for sending additional data in error
-   * @type {object}
-   * @memberof SchemaNotFoundDto
-   */
-  object?: object
-}
-
-export const SchemaNotFoundDtoErrorNameEnum = {
-  NotFoundError: 'NOT_FOUND_ERROR',
-  DatabaseError: 'DATABASE_ERROR',
-  InternalServerError: 'INTERNAL_SERVER_ERROR',
-  UnauthorizedError: 'UNAUTHORIZED_ERROR',
-  UnprocessableEntityError: 'UNPROCESSABLE_ENTITY_ERROR',
-  BadRequestError: 'BAD_REQUEST_ERROR',
-} as const
-
-export type SchemaNotFoundDtoErrorNameEnum =
-  (typeof SchemaNotFoundDtoErrorNameEnum)[keyof typeof SchemaNotFoundDtoErrorNameEnum]
-
-/**
- *
- * @export
- * @interface SchemaResponseDto
- */
-export interface SchemaResponseDto {
-  /**
-   * Id of the schema.
-   * @type {string}
-   * @memberof SchemaResponseDto
-   */
-  id: string
-  /**
-   * Name of the form
-   * @type {string}
-   * @memberof SchemaResponseDto
-   */
-  formName: string
-  /**
-   * Form slug
-   * @type {string}
-   * @memberof SchemaResponseDto
-   */
-  slug: string
-  /**
-   * Category of the form
-   * @type {string}
-   * @memberof SchemaResponseDto
-   */
-  category: string | null
-  /**
-   * Subject of the message
-   * @type {string}
-   * @memberof SchemaResponseDto
-   */
-  messageSubject: string
-  /**
-   * Created timestamp
-   * @type {string}
-   * @memberof SchemaResponseDto
-   */
-  createdAt: string
-  /**
-   * Updated timestamp
-   * @type {string}
-   * @memberof SchemaResponseDto
-   */
-  updatedAt: string
-  /**
-   * Id of the latest schema version.
-   * @type {string}
-   * @memberof SchemaResponseDto
-   */
-  latestVersionId: string | null
-  /**
-   *
-   * @type {SchemaResponseDtoLatestVersion}
-   * @memberof SchemaResponseDto
-   */
-  latestVersion: SchemaResponseDtoLatestVersion | null
-}
-/**
- * Id of the latest schema version.
- * @export
- * @interface SchemaResponseDtoLatestVersion
- */
-export interface SchemaResponseDtoLatestVersion {
-  /**
-   * Id of the schema version.
-   * @type {string}
-   * @memberof SchemaResponseDtoLatestVersion
-   */
-  id: string
-  /**
-   * Text representation of the version.
-   * @type {string}
-   * @memberof SchemaResponseDtoLatestVersion
-   */
-  version: string | null
-  /**
-   * Version of the Posp form.
-   * @type {string}
-   * @memberof SchemaResponseDtoLatestVersion
-   */
-  pospVersion: string
-  /**
-   * Description of the schema in current version.
-   * @type {string}
-   * @memberof SchemaResponseDtoLatestVersion
-   */
-  formDescription: string | null
-  /**
-   * Posp ID of Form
-   * @type {string}
-   * @memberof SchemaResponseDtoLatestVersion
-   */
-  pospID: string
-  /**
-   * Must be signed
-   * @type {boolean}
-   * @memberof SchemaResponseDtoLatestVersion
-   */
-  isSigned: boolean
-  /**
-   * Previous version (for downgrade)
-   * @type {string}
-   * @memberof SchemaResponseDtoLatestVersion
-   */
-  previousSchemaVersionId: string | null
-  /**
-   * data.json
-   * @type {object}
-   * @memberof SchemaResponseDtoLatestVersion
-   */
-  data: object
-  /**
-   * data.xml
-   * @type {string}
-   * @memberof SchemaResponseDtoLatestVersion
-   */
-  dataXml: string | null
-  /**
-   * form.fo.xslt
-   * @type {string}
-   * @memberof SchemaResponseDtoLatestVersion
-   */
-  formFo: string
-  /**
-   * schema.json
-   * @type {object}
-   * @memberof SchemaResponseDtoLatestVersion
-   */
-  jsonSchema: object
-  /**
-   * uiSchema.json
-   * @type {object}
-   * @memberof SchemaResponseDtoLatestVersion
-   */
-  uiSchema: object
-  /**
-   * xmlTemplate
-   * @type {string}
-   * @memberof SchemaResponseDtoLatestVersion
-   */
-  xmlTemplate: string
-  /**
-   * Id of the parent schema object.
-   * @type {string}
-   * @memberof SchemaResponseDtoLatestVersion
-   */
-  schemaId: string
-  /**
-   * Created timestamp
-   * @type {string}
-   * @memberof SchemaResponseDtoLatestVersion
-   */
-  createdAt: string
-  /**
-   * Updated timestamp
-   * @type {string}
-   * @memberof SchemaResponseDtoLatestVersion
-   */
-  updatedAt: string
-  /**
-   * Subject format of the message
-   * @type {string}
-   * @memberof SchemaResponseDtoLatestVersion
-   */
-  messageSubjectFormat: string | null
-  /**
-   * Organization to assign data to Ginis
-   * @type {string}
-   * @memberof SchemaResponseDtoLatestVersion
-   */
-  ginisOrganizationName: string | null
-  /**
-   * Person to assign data to Ginis
-   * @type {string}
-   * @memberof SchemaResponseDtoLatestVersion
-   */
-  ginisPersonName: string | null
-}
-/**
- *
- * @export
- * @interface SchemaResponseWithoutLatestVersionDto
- */
-export interface SchemaResponseWithoutLatestVersionDto {
-  /**
-   * Id of the schema.
-   * @type {string}
-   * @memberof SchemaResponseWithoutLatestVersionDto
-   */
-  id: string
-  /**
-   * Name of the form
-   * @type {string}
-   * @memberof SchemaResponseWithoutLatestVersionDto
-   */
-  formName: string
-  /**
-   * Form slug
-   * @type {string}
-   * @memberof SchemaResponseWithoutLatestVersionDto
-   */
-  slug: string
-  /**
-   * Category of the form
-   * @type {string}
-   * @memberof SchemaResponseWithoutLatestVersionDto
-   */
-  category: string | null
-  /**
-   * Subject of the message
-   * @type {string}
-   * @memberof SchemaResponseWithoutLatestVersionDto
-   */
-  messageSubject: string
-  /**
-   * Created timestamp
-   * @type {string}
-   * @memberof SchemaResponseWithoutLatestVersionDto
-   */
-  createdAt: string
-  /**
-   * Updated timestamp
-   * @type {string}
-   * @memberof SchemaResponseWithoutLatestVersionDto
-   */
-  updatedAt: string
-  /**
-   * Id of the latest schema version.
-   * @type {string}
-   * @memberof SchemaResponseWithoutLatestVersionDto
-   */
-  latestVersionId: string | null
-}
-/**
- *
- * @export
- * @interface SchemaVersionNotFoundDto
- */
-export interface SchemaVersionNotFoundDto {
-  /**
-   * Status Code
-   * @type {number}
-   * @memberof SchemaVersionNotFoundDto
-   */
-  statusCode: number
-  /**
-   * Detail error message
-   * @type {string}
-   * @memberof SchemaVersionNotFoundDto
-   */
-  message: string
-  /**
-   * status in text
-   * @type {string}
-   * @memberof SchemaVersionNotFoundDto
-   */
-  status: string
-  /**
-   * Exact error name
-   * @type {string}
-   * @memberof SchemaVersionNotFoundDto
-   */
-  errorName: SchemaVersionNotFoundDtoErrorNameEnum
-  /**
-   * Helper for sending additional data in error
-   * @type {object}
-   * @memberof SchemaVersionNotFoundDto
-   */
-  object?: object
-}
-
-export const SchemaVersionNotFoundDtoErrorNameEnum = {
-  NotFoundError: 'NOT_FOUND_ERROR',
-  DatabaseError: 'DATABASE_ERROR',
-  InternalServerError: 'INTERNAL_SERVER_ERROR',
-  UnauthorizedError: 'UNAUTHORIZED_ERROR',
-  UnprocessableEntityError: 'UNPROCESSABLE_ENTITY_ERROR',
-  BadRequestError: 'BAD_REQUEST_ERROR',
-} as const
-
-export type SchemaVersionNotFoundDtoErrorNameEnum =
-  (typeof SchemaVersionNotFoundDtoErrorNameEnum)[keyof typeof SchemaVersionNotFoundDtoErrorNameEnum]
-
-/**
- *
- * @export
- * @interface SchemaVersionResponseDto
- */
-export interface SchemaVersionResponseDto {
-  /**
-   * Id of the schema version.
-   * @type {string}
-   * @memberof SchemaVersionResponseDto
-   */
-  id: string
-  /**
-   * Text representation of the version.
-   * @type {string}
-   * @memberof SchemaVersionResponseDto
-   */
-  version: string | null
-  /**
-   * Version of the Posp form.
-   * @type {string}
-   * @memberof SchemaVersionResponseDto
-   */
-  pospVersion: string
-  /**
-   * Description of the schema in current version.
-   * @type {string}
-   * @memberof SchemaVersionResponseDto
-   */
-  formDescription: string | null
-  /**
-   * Posp ID of Form
-   * @type {string}
-   * @memberof SchemaVersionResponseDto
-   */
-  pospID: string
-  /**
-   * Must be signed
-   * @type {boolean}
-   * @memberof SchemaVersionResponseDto
-   */
-  isSigned: boolean
-  /**
-   * Previous version (for downgrade)
-   * @type {string}
-   * @memberof SchemaVersionResponseDto
-   */
-  previousSchemaVersionId: string | null
-  /**
-   * data.json
-   * @type {object}
-   * @memberof SchemaVersionResponseDto
-   */
-  data: object
-  /**
-   * data.xml
-   * @type {string}
-   * @memberof SchemaVersionResponseDto
-   */
-  dataXml: string | null
-  /**
-   * form.fo.xslt
-   * @type {string}
-   * @memberof SchemaVersionResponseDto
-   */
-  formFo: string
-  /**
-   * schema.json
-   * @type {object}
-   * @memberof SchemaVersionResponseDto
-   */
-  jsonSchema: object
-  /**
-   * uiSchema.json
-   * @type {object}
-   * @memberof SchemaVersionResponseDto
-   */
-  uiSchema: object
-  /**
-   * xmlTemplate
-   * @type {string}
-   * @memberof SchemaVersionResponseDto
-   */
-  xmlTemplate: string
-  /**
-   * Id of the parent schema object.
-   * @type {string}
-   * @memberof SchemaVersionResponseDto
-   */
-  schemaId: string
-  /**
-   * Created timestamp
-   * @type {string}
-   * @memberof SchemaVersionResponseDto
-   */
-  createdAt: string
-  /**
-   * Updated timestamp
-   * @type {string}
-   * @memberof SchemaVersionResponseDto
-   */
-  updatedAt: string
-  /**
-   * Subject format of the message
-   * @type {string}
-   * @memberof SchemaVersionResponseDto
-   */
-  messageSubjectFormat: string | null
-  /**
-   * Organization to assign data to Ginis
-   * @type {string}
-   * @memberof SchemaVersionResponseDto
-   */
-  ginisOrganizationName: string | null
-  /**
-   * Person to assign data to Ginis
-   * @type {string}
-   * @memberof SchemaVersionResponseDto
-   */
-  ginisPersonName: string | null
-  /**
-   * Parent schema object.
-   * @type {SchemaResponseWithoutLatestVersionDto}
-   * @memberof SchemaVersionResponseDto
-   */
-  schema?: SchemaResponseWithoutLatestVersionDto
-}
-/**
- *
- * @export
- * @interface SchemaVersionWithSchemaAndDataDto
- */
-export interface SchemaVersionWithSchemaAndDataDto {
-  /**
-   * Parent schema object.
-   * @type {SchemaResponseWithoutLatestVersionDto}
-   * @memberof SchemaVersionWithSchemaAndDataDto
-   */
-  schema?: SchemaResponseWithoutLatestVersionDto
-}
-/**
- *
- * @export
- * @interface SchemaVersionWithoutSchemaDto
- */
-export interface SchemaVersionWithoutSchemaDto {
-  /**
-   * Id of the schema version.
-   * @type {string}
-   * @memberof SchemaVersionWithoutSchemaDto
-   */
-  id: string
-  /**
-   * Text representation of the version.
-   * @type {string}
-   * @memberof SchemaVersionWithoutSchemaDto
-   */
-  version: string | null
-  /**
-   * Version of the Posp form.
-   * @type {string}
-   * @memberof SchemaVersionWithoutSchemaDto
-   */
-  pospVersion: string
-  /**
-   * Description of the schema in current version.
-   * @type {string}
-   * @memberof SchemaVersionWithoutSchemaDto
-   */
-  formDescription: string | null
-  /**
-   * Posp ID of Form
-   * @type {string}
-   * @memberof SchemaVersionWithoutSchemaDto
-   */
-  pospID: string
-  /**
-   * Must be signed
-   * @type {boolean}
-   * @memberof SchemaVersionWithoutSchemaDto
-   */
-  isSigned: boolean
-  /**
-   * Previous version (for downgrade)
-   * @type {string}
-   * @memberof SchemaVersionWithoutSchemaDto
-   */
-  previousSchemaVersionId: string | null
-  /**
-   * data.json
-   * @type {object}
-   * @memberof SchemaVersionWithoutSchemaDto
-   */
-  data: object
-  /**
-   * data.xml
-   * @type {string}
-   * @memberof SchemaVersionWithoutSchemaDto
-   */
-  dataXml: string | null
-  /**
-   * form.fo.xslt
-   * @type {string}
-   * @memberof SchemaVersionWithoutSchemaDto
-   */
-  formFo: string
-  /**
-   * schema.json
-   * @type {object}
-   * @memberof SchemaVersionWithoutSchemaDto
-   */
-  jsonSchema: object
-  /**
-   * uiSchema.json
-   * @type {object}
-   * @memberof SchemaVersionWithoutSchemaDto
-   */
-  uiSchema: object
-  /**
-   * xmlTemplate
-   * @type {string}
-   * @memberof SchemaVersionWithoutSchemaDto
-   */
-  xmlTemplate: string
-  /**
-   * Id of the parent schema object.
-   * @type {string}
-   * @memberof SchemaVersionWithoutSchemaDto
-   */
-  schemaId: string
-  /**
-   * Created timestamp
-   * @type {string}
-   * @memberof SchemaVersionWithoutSchemaDto
-   */
-  createdAt: string
-  /**
-   * Updated timestamp
-   * @type {string}
-   * @memberof SchemaVersionWithoutSchemaDto
-   */
-  updatedAt: string
-  /**
-   * Subject format of the message
-   * @type {string}
-   * @memberof SchemaVersionWithoutSchemaDto
-   */
-  messageSubjectFormat: string | null
-  /**
-   * Organization to assign data to Ginis
-   * @type {string}
-   * @memberof SchemaVersionWithoutSchemaDto
-   */
-  ginisOrganizationName: string | null
-  /**
-   * Person to assign data to Ginis
-   * @type {string}
-   * @memberof SchemaVersionWithoutSchemaDto
-   */
-  ginisPersonName: string | null
-}
-/**
- *
- * @export
- * @interface SchemaVersionsResponseDto
- */
-export interface SchemaVersionsResponseDto {
-  /**
-   * actual page
-   * @type {number}
-   * @memberof SchemaVersionsResponseDto
-   */
-  currentPage: number
-  /**
-   * number of items in one page
-   * @type {number}
-   * @memberof SchemaVersionsResponseDto
-   */
-  pagination: number
-  /**
-   * Total number of items
-   * @type {number}
-   * @memberof SchemaVersionsResponseDto
-   */
-  countPages: number
-  /**
-   * Items
-   * @type {Array<SchemaVersionResponseDto>}
-   * @memberof SchemaVersionsResponseDto
-   */
-  items: Array<SchemaVersionResponseDto>
-}
 /**
  *
  * @export
@@ -4416,107 +3876,6 @@ export interface XmlToJsonResponseDto {
 export const ADMINApiAxiosParamCreator = function (configuration?: Configuration) {
   return {
     /**
-     * Create schema with all files
-     * @summary Create new schema
-     * @param {object} [data]
-     * @param {Array<any>} [files] Required files: data.json, form.fo.xslt, schema.json, uiSchema.json, xmlTemplate.xml   Optional files: data.xml
-     * @param {*} [options] Override http request option.
-     * @throws {RequiredError}
-     */
-    adminControllerCreateSchema: async (
-      data?: object,
-      files?: Array<any>,
-      options: RawAxiosRequestConfig = {},
-    ): Promise<RequestArgs> => {
-      const localVarPath = `/admin/schema/create`
-      // use dummy base URL string because the URL constructor only accepts absolute URLs.
-      const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL)
-      let baseOptions
-      if (configuration) {
-        baseOptions = configuration.baseOptions
-      }
-
-      const localVarRequestOptions = { method: 'POST', ...baseOptions, ...options }
-      const localVarHeaderParameter = {} as any
-      const localVarQueryParameter = {} as any
-      const localVarFormParams = new ((configuration && configuration.formDataCtor) || FormData)()
-
-      // authentication apiKey required
-      await setApiKeyToObject(localVarHeaderParameter, 'apiKey', configuration)
-
-      if (data !== undefined) {
-        localVarFormParams.append(
-          'data',
-          new Blob([JSON.stringify(data)], { type: 'application/json' }),
-        )
-      }
-      if (files) {
-        files.forEach((element) => {
-          localVarFormParams.append('files', element as any)
-        })
-      }
-
-      localVarHeaderParameter['Content-Type'] = 'multipart/form-data'
-
-      setSearchParams(localVarUrlObj, localVarQueryParameter)
-      let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {}
-      localVarRequestOptions.headers = {
-        ...localVarHeaderParameter,
-        ...headersFromBaseOptions,
-        ...options.headers,
-      }
-      localVarRequestOptions.data = localVarFormParams
-
-      return {
-        url: toPathString(localVarUrlObj),
-        options: localVarRequestOptions,
-      }
-    },
-    /**
-     * Downgrade schema to previous
-     * @summary Downgrade version of schema
-     * @param {string} slug
-     * @param {*} [options] Override http request option.
-     * @throws {RequiredError}
-     */
-    adminControllerDowngradeSchemaVersion: async (
-      slug: string,
-      options: RawAxiosRequestConfig = {},
-    ): Promise<RequestArgs> => {
-      // verify required parameter 'slug' is not null or undefined
-      assertParamExists('adminControllerDowngradeSchemaVersion', 'slug', slug)
-      const localVarPath = `/admin/schema/downgrade/{slug}`.replace(
-        `{${'slug'}}`,
-        encodeURIComponent(String(slug)),
-      )
-      // use dummy base URL string because the URL constructor only accepts absolute URLs.
-      const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL)
-      let baseOptions
-      if (configuration) {
-        baseOptions = configuration.baseOptions
-      }
-
-      const localVarRequestOptions = { method: 'POST', ...baseOptions, ...options }
-      const localVarHeaderParameter = {} as any
-      const localVarQueryParameter = {} as any
-
-      // authentication apiKey required
-      await setApiKeyToObject(localVarHeaderParameter, 'apiKey', configuration)
-
-      setSearchParams(localVarUrlObj, localVarQueryParameter)
-      let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {}
-      localVarRequestOptions.headers = {
-        ...localVarHeaderParameter,
-        ...headersFromBaseOptions,
-        ...options.headers,
-      }
-
-      return {
-        url: toPathString(localVarUrlObj),
-        options: localVarRequestOptions,
-      }
-    },
-    /**
      * Return administration account JWT token
      * @summary
      * @param {*} [options] Override http request option.
@@ -4625,134 +3984,6 @@ export const ADMINApiAxiosParamCreator = function (configuration?: Configuration
         options: localVarRequestOptions,
       }
     },
-    /**
-     * Update version of schema, without creating nie version, it is not downgradable
-     * @summary Update version of schema
-     * @param {string} id
-     * @param {object} [data]
-     * @param {Array<any>} [files] Updateable files: data.json, uiSchema.json, data.xml, schema.json
-     * @param {*} [options] Override http request option.
-     * @throws {RequiredError}
-     */
-    adminControllerUpdateSchemaVersion: async (
-      id: string,
-      data?: object,
-      files?: Array<any>,
-      options: RawAxiosRequestConfig = {},
-    ): Promise<RequestArgs> => {
-      // verify required parameter 'id' is not null or undefined
-      assertParamExists('adminControllerUpdateSchemaVersion', 'id', id)
-      const localVarPath = `/admin/schema-version/{id}`.replace(
-        `{${'id'}}`,
-        encodeURIComponent(String(id)),
-      )
-      // use dummy base URL string because the URL constructor only accepts absolute URLs.
-      const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL)
-      let baseOptions
-      if (configuration) {
-        baseOptions = configuration.baseOptions
-      }
-
-      const localVarRequestOptions = { method: 'PATCH', ...baseOptions, ...options }
-      const localVarHeaderParameter = {} as any
-      const localVarQueryParameter = {} as any
-      const localVarFormParams = new ((configuration && configuration.formDataCtor) || FormData)()
-
-      // authentication apiKey required
-      await setApiKeyToObject(localVarHeaderParameter, 'apiKey', configuration)
-
-      if (data !== undefined) {
-        localVarFormParams.append(
-          'data',
-          new Blob([JSON.stringify(data)], { type: 'application/json' }),
-        )
-      }
-      if (files) {
-        files.forEach((element) => {
-          localVarFormParams.append('files', element as any)
-        })
-      }
-
-      localVarHeaderParameter['Content-Type'] = 'multipart/form-data'
-
-      setSearchParams(localVarUrlObj, localVarQueryParameter)
-      let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {}
-      localVarRequestOptions.headers = {
-        ...localVarHeaderParameter,
-        ...headersFromBaseOptions,
-        ...options.headers,
-      }
-      localVarRequestOptions.data = localVarFormParams
-
-      return {
-        url: toPathString(localVarUrlObj),
-        options: localVarRequestOptions,
-      }
-    },
-    /**
-     * Upgrade version of schema, which create new schema version and can be rollbacked with downgrade schema
-     * @summary Upgrade version of schema
-     * @param {string} slug
-     * @param {object} [data]
-     * @param {Array<any>} [files] Optional files: data.json, data.xml, form.fo.xslt, schema.json, uiSchema.json, xmlTemplate.xml
-     * @param {*} [options] Override http request option.
-     * @throws {RequiredError}
-     */
-    adminControllerUpgradeSchemaVersion: async (
-      slug: string,
-      data?: object,
-      files?: Array<any>,
-      options: RawAxiosRequestConfig = {},
-    ): Promise<RequestArgs> => {
-      // verify required parameter 'slug' is not null or undefined
-      assertParamExists('adminControllerUpgradeSchemaVersion', 'slug', slug)
-      const localVarPath = `/admin/schema/upgrade/{slug}`.replace(
-        `{${'slug'}}`,
-        encodeURIComponent(String(slug)),
-      )
-      // use dummy base URL string because the URL constructor only accepts absolute URLs.
-      const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL)
-      let baseOptions
-      if (configuration) {
-        baseOptions = configuration.baseOptions
-      }
-
-      const localVarRequestOptions = { method: 'POST', ...baseOptions, ...options }
-      const localVarHeaderParameter = {} as any
-      const localVarQueryParameter = {} as any
-      const localVarFormParams = new ((configuration && configuration.formDataCtor) || FormData)()
-
-      // authentication apiKey required
-      await setApiKeyToObject(localVarHeaderParameter, 'apiKey', configuration)
-
-      if (data !== undefined) {
-        localVarFormParams.append(
-          'data',
-          new Blob([JSON.stringify(data)], { type: 'application/json' }),
-        )
-      }
-      if (files) {
-        files.forEach((element) => {
-          localVarFormParams.append('files', element as any)
-        })
-      }
-
-      localVarHeaderParameter['Content-Type'] = 'multipart/form-data'
-
-      setSearchParams(localVarUrlObj, localVarQueryParameter)
-      let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {}
-      localVarRequestOptions.headers = {
-        ...localVarHeaderParameter,
-        ...headersFromBaseOptions,
-        ...options.headers,
-      }
-      localVarRequestOptions.data = localVarFormParams
-
-      return {
-        url: toPathString(localVarUrlObj),
-        options: localVarRequestOptions,
-      }
-    },
   }
 }
 
@@ -4763,62 +3994,6 @@ export const ADMINApiAxiosParamCreator = function (configuration?: Configuration
 export const ADMINApiFp = function (configuration?: Configuration) {
   const localVarAxiosParamCreator = ADMINApiAxiosParamCreator(configuration)
   return {
-    /**
-     * Create schema with all files
-     * @summary Create new schema
-     * @param {object} [data]
-     * @param {Array<any>} [files] Required files: data.json, form.fo.xslt, schema.json, uiSchema.json, xmlTemplate.xml   Optional files: data.xml
-     * @param {*} [options] Override http request option.
-     * @throws {RequiredError}
-     */
-    async adminControllerCreateSchema(
-      data?: object,
-      files?: Array<any>,
-      options?: RawAxiosRequestConfig,
-    ): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<void>> {
-      const localVarAxiosArgs = await localVarAxiosParamCreator.adminControllerCreateSchema(
-        data,
-        files,
-        options,
-      )
-      const localVarOperationServerIndex = configuration?.serverIndex ?? 0
-      const localVarOperationServerBasePath =
-        operationServerMap['ADMINApi.adminControllerCreateSchema']?.[localVarOperationServerIndex]
-          ?.url
-      return (axios, basePath) =>
-        createRequestFunction(
-          localVarAxiosArgs,
-          globalAxios,
-          BASE_PATH,
-          configuration,
-        )(axios, localVarOperationServerBasePath || basePath)
-    },
-    /**
-     * Downgrade schema to previous
-     * @summary Downgrade version of schema
-     * @param {string} slug
-     * @param {*} [options] Override http request option.
-     * @throws {RequiredError}
-     */
-    async adminControllerDowngradeSchemaVersion(
-      slug: string,
-      options?: RawAxiosRequestConfig,
-    ): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<void>> {
-      const localVarAxiosArgs =
-        await localVarAxiosParamCreator.adminControllerDowngradeSchemaVersion(slug, options)
-      const localVarOperationServerIndex = configuration?.serverIndex ?? 0
-      const localVarOperationServerBasePath =
-        operationServerMap['ADMINApi.adminControllerDowngradeSchemaVersion']?.[
-          localVarOperationServerIndex
-        ]?.url
-      return (axios, basePath) =>
-        createRequestFunction(
-          localVarAxiosArgs,
-          globalAxios,
-          BASE_PATH,
-          configuration,
-        )(axios, localVarOperationServerBasePath || basePath)
-    },
     /**
      * Return administration account JWT token
      * @summary
@@ -4888,74 +4063,6 @@ export const ADMINApiFp = function (configuration?: Configuration) {
           configuration,
         )(axios, localVarOperationServerBasePath || basePath)
     },
-    /**
-     * Update version of schema, without creating nie version, it is not downgradable
-     * @summary Update version of schema
-     * @param {string} id
-     * @param {object} [data]
-     * @param {Array<any>} [files] Updateable files: data.json, uiSchema.json, data.xml, schema.json
-     * @param {*} [options] Override http request option.
-     * @throws {RequiredError}
-     */
-    async adminControllerUpdateSchemaVersion(
-      id: string,
-      data?: object,
-      files?: Array<any>,
-      options?: RawAxiosRequestConfig,
-    ): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<void>> {
-      const localVarAxiosArgs = await localVarAxiosParamCreator.adminControllerUpdateSchemaVersion(
-        id,
-        data,
-        files,
-        options,
-      )
-      const localVarOperationServerIndex = configuration?.serverIndex ?? 0
-      const localVarOperationServerBasePath =
-        operationServerMap['ADMINApi.adminControllerUpdateSchemaVersion']?.[
-          localVarOperationServerIndex
-        ]?.url
-      return (axios, basePath) =>
-        createRequestFunction(
-          localVarAxiosArgs,
-          globalAxios,
-          BASE_PATH,
-          configuration,
-        )(axios, localVarOperationServerBasePath || basePath)
-    },
-    /**
-     * Upgrade version of schema, which create new schema version and can be rollbacked with downgrade schema
-     * @summary Upgrade version of schema
-     * @param {string} slug
-     * @param {object} [data]
-     * @param {Array<any>} [files] Optional files: data.json, data.xml, form.fo.xslt, schema.json, uiSchema.json, xmlTemplate.xml
-     * @param {*} [options] Override http request option.
-     * @throws {RequiredError}
-     */
-    async adminControllerUpgradeSchemaVersion(
-      slug: string,
-      data?: object,
-      files?: Array<any>,
-      options?: RawAxiosRequestConfig,
-    ): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<void>> {
-      const localVarAxiosArgs = await localVarAxiosParamCreator.adminControllerUpgradeSchemaVersion(
-        slug,
-        data,
-        files,
-        options,
-      )
-      const localVarOperationServerIndex = configuration?.serverIndex ?? 0
-      const localVarOperationServerBasePath =
-        operationServerMap['ADMINApi.adminControllerUpgradeSchemaVersion']?.[
-          localVarOperationServerIndex
-        ]?.url
-      return (axios, basePath) =>
-        createRequestFunction(
-          localVarAxiosArgs,
-          globalAxios,
-          BASE_PATH,
-          configuration,
-        )(axios, localVarOperationServerBasePath || basePath)
-    },
   }
 }
 
@@ -4970,35 +4077,6 @@ export const ADMINApiFactory = function (
 ) {
   const localVarFp = ADMINApiFp(configuration)
   return {
-    /**
-     * Create schema with all files
-     * @summary Create new schema
-     * @param {object} [data]
-     * @param {Array<any>} [files] Required files: data.json, form.fo.xslt, schema.json, uiSchema.json, xmlTemplate.xml   Optional files: data.xml
-     * @param {*} [options] Override http request option.
-     * @throws {RequiredError}
-     */
-    adminControllerCreateSchema(
-      data?: object,
-      files?: Array<any>,
-      options?: any,
-    ): AxiosPromise<void> {
-      return localVarFp
-        .adminControllerCreateSchema(data, files, options)
-        .then((request) => request(axios, basePath))
-    },
-    /**
-     * Downgrade schema to previous
-     * @summary Downgrade version of schema
-     * @param {string} slug
-     * @param {*} [options] Override http request option.
-     * @throws {RequiredError}
-     */
-    adminControllerDowngradeSchemaVersion(slug: string, options?: any): AxiosPromise<void> {
-      return localVarFp
-        .adminControllerDowngradeSchemaVersion(slug, options)
-        .then((request) => request(axios, basePath))
-    },
     /**
      * Return administration account JWT token
      * @summary
@@ -5032,44 +4110,6 @@ export const ADMINApiFactory = function (
         .adminControllerGetTechnicalJwt(options)
         .then((request) => request(axios, basePath))
     },
-    /**
-     * Update version of schema, without creating nie version, it is not downgradable
-     * @summary Update version of schema
-     * @param {string} id
-     * @param {object} [data]
-     * @param {Array<any>} [files] Updateable files: data.json, uiSchema.json, data.xml, schema.json
-     * @param {*} [options] Override http request option.
-     * @throws {RequiredError}
-     */
-    adminControllerUpdateSchemaVersion(
-      id: string,
-      data?: object,
-      files?: Array<any>,
-      options?: any,
-    ): AxiosPromise<void> {
-      return localVarFp
-        .adminControllerUpdateSchemaVersion(id, data, files, options)
-        .then((request) => request(axios, basePath))
-    },
-    /**
-     * Upgrade version of schema, which create new schema version and can be rollbacked with downgrade schema
-     * @summary Upgrade version of schema
-     * @param {string} slug
-     * @param {object} [data]
-     * @param {Array<any>} [files] Optional files: data.json, data.xml, form.fo.xslt, schema.json, uiSchema.json, xmlTemplate.xml
-     * @param {*} [options] Override http request option.
-     * @throws {RequiredError}
-     */
-    adminControllerUpgradeSchemaVersion(
-      slug: string,
-      data?: object,
-      files?: Array<any>,
-      options?: any,
-    ): AxiosPromise<void> {
-      return localVarFp
-        .adminControllerUpgradeSchemaVersion(slug, data, files, options)
-        .then((request) => request(axios, basePath))
-    },
   }
 }
 
@@ -5080,39 +4120,6 @@ export const ADMINApiFactory = function (
  * @extends {BaseAPI}
  */
 export class ADMINApi extends BaseAPI {
-  /**
-   * Create schema with all files
-   * @summary Create new schema
-   * @param {object} [data]
-   * @param {Array<any>} [files] Required files: data.json, form.fo.xslt, schema.json, uiSchema.json, xmlTemplate.xml   Optional files: data.xml
-   * @param {*} [options] Override http request option.
-   * @throws {RequiredError}
-   * @memberof ADMINApi
-   */
-  public adminControllerCreateSchema(
-    data?: object,
-    files?: Array<any>,
-    options?: RawAxiosRequestConfig,
-  ) {
-    return ADMINApiFp(this.configuration)
-      .adminControllerCreateSchema(data, files, options)
-      .then((request) => request(this.axios, this.basePath))
-  }
-
-  /**
-   * Downgrade schema to previous
-   * @summary Downgrade version of schema
-   * @param {string} slug
-   * @param {*} [options] Override http request option.
-   * @throws {RequiredError}
-   * @memberof ADMINApi
-   */
-  public adminControllerDowngradeSchemaVersion(slug: string, options?: RawAxiosRequestConfig) {
-    return ADMINApiFp(this.configuration)
-      .adminControllerDowngradeSchemaVersion(slug, options)
-      .then((request) => request(this.axios, this.basePath))
-  }
-
   /**
    * Return administration account JWT token
    * @summary
@@ -5151,48 +4158,6 @@ export class ADMINApi extends BaseAPI {
       .adminControllerGetTechnicalJwt(options)
       .then((request) => request(this.axios, this.basePath))
   }
-
-  /**
-   * Update version of schema, without creating nie version, it is not downgradable
-   * @summary Update version of schema
-   * @param {string} id
-   * @param {object} [data]
-   * @param {Array<any>} [files] Updateable files: data.json, uiSchema.json, data.xml, schema.json
-   * @param {*} [options] Override http request option.
-   * @throws {RequiredError}
-   * @memberof ADMINApi
-   */
-  public adminControllerUpdateSchemaVersion(
-    id: string,
-    data?: object,
-    files?: Array<any>,
-    options?: RawAxiosRequestConfig,
-  ) {
-    return ADMINApiFp(this.configuration)
-      .adminControllerUpdateSchemaVersion(id, data, files, options)
-      .then((request) => request(this.axios, this.basePath))
-  }
-
-  /**
-   * Upgrade version of schema, which create new schema version and can be rollbacked with downgrade schema
-   * @summary Upgrade version of schema
-   * @param {string} slug
-   * @param {object} [data]
-   * @param {Array<any>} [files] Optional files: data.json, data.xml, form.fo.xslt, schema.json, uiSchema.json, xmlTemplate.xml
-   * @param {*} [options] Override http request option.
-   * @throws {RequiredError}
-   * @memberof ADMINApi
-   */
-  public adminControllerUpgradeSchemaVersion(
-    slug: string,
-    data?: object,
-    files?: Array<any>,
-    options?: RawAxiosRequestConfig,
-  ) {
-    return ADMINApiFp(this.configuration)
-      .adminControllerUpgradeSchemaVersion(slug, data, files, options)
-      .then((request) => request(this.axios, this.basePath))
-  }
 }
 
 /**
@@ -5202,68 +4167,7 @@ export class ADMINApi extends BaseAPI {
 export const ConvertApiAxiosParamCreator = function (configuration?: Configuration) {
   return {
     /**
-     * Generates XML form from given JSON data and schema version id
-     * @summary
-     * @param {string} id
-     * @param {JsonConvertRequestDto} jsonConvertRequestDto
-     * @param {*} [options] Override http request option.
-     * @deprecated
-     * @throws {RequiredError}
-     */
-    convertControllerConvertJsonToXml: async (
-      id: string,
-      jsonConvertRequestDto: JsonConvertRequestDto,
-      options: RawAxiosRequestConfig = {},
-    ): Promise<RequestArgs> => {
-      // verify required parameter 'id' is not null or undefined
-      assertParamExists('convertControllerConvertJsonToXml', 'id', id)
-      // verify required parameter 'jsonConvertRequestDto' is not null or undefined
-      assertParamExists(
-        'convertControllerConvertJsonToXml',
-        'jsonConvertRequestDto',
-        jsonConvertRequestDto,
-      )
-      const localVarPath = `/convert/json-to-xml/{id}`.replace(
-        `{${'id'}}`,
-        encodeURIComponent(String(id)),
-      )
-      // use dummy base URL string because the URL constructor only accepts absolute URLs.
-      const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL)
-      let baseOptions
-      if (configuration) {
-        baseOptions = configuration.baseOptions
-      }
-
-      const localVarRequestOptions = { method: 'POST', ...baseOptions, ...options }
-      const localVarHeaderParameter = {} as any
-      const localVarQueryParameter = {} as any
-
-      // authentication bearer required
-      // http bearer authentication required
-      await setBearerAuthToObject(localVarHeaderParameter, configuration)
-
-      localVarHeaderParameter['Content-Type'] = 'application/json'
-
-      setSearchParams(localVarUrlObj, localVarQueryParameter)
-      let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {}
-      localVarRequestOptions.headers = {
-        ...localVarHeaderParameter,
-        ...headersFromBaseOptions,
-        ...options.headers,
-      }
-      localVarRequestOptions.data = serializeDataIfNeeded(
-        jsonConvertRequestDto,
-        localVarRequestOptions,
-        configuration,
-      )
-
-      return {
-        url: toPathString(localVarUrlObj),
-        options: localVarRequestOptions,
-      }
-    },
-    /**
-     * Generates XML form from given JSON data and schema version id. At least one of `formId` and `jsonData` must be provided.
+     * Generates XML form from given JSON data and form definition slug. At least one of `formId` and `jsonData` must be provided.
      * @summary
      * @param {JsonToXmlV2RequestDto} jsonToXmlV2RequestDto
      * @param {*} [options] Override http request option.
@@ -5316,65 +4220,7 @@ export const ConvertApiAxiosParamCreator = function (configuration?: Configurati
       }
     },
     /**
-     * Generates PDF for a given schema version id and form json data.
-     * @summary
-     * @param {string} id
-     * @param {JsonConvertRequestDto} jsonConvertRequestDto
-     * @param {*} [options] Override http request option.
-     * @deprecated
-     * @throws {RequiredError}
-     */
-    convertControllerConvertToPdf: async (
-      id: string,
-      jsonConvertRequestDto: JsonConvertRequestDto,
-      options: RawAxiosRequestConfig = {},
-    ): Promise<RequestArgs> => {
-      // verify required parameter 'id' is not null or undefined
-      assertParamExists('convertControllerConvertToPdf', 'id', id)
-      // verify required parameter 'jsonConvertRequestDto' is not null or undefined
-      assertParamExists(
-        'convertControllerConvertToPdf',
-        'jsonConvertRequestDto',
-        jsonConvertRequestDto,
-      )
-      const localVarPath = `/convert/pdf/{id}`.replace(`{${'id'}}`, encodeURIComponent(String(id)))
-      // use dummy base URL string because the URL constructor only accepts absolute URLs.
-      const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL)
-      let baseOptions
-      if (configuration) {
-        baseOptions = configuration.baseOptions
-      }
-
-      const localVarRequestOptions = { method: 'POST', ...baseOptions, ...options }
-      const localVarHeaderParameter = {} as any
-      const localVarQueryParameter = {} as any
-
-      // authentication bearer required
-      // http bearer authentication required
-      await setBearerAuthToObject(localVarHeaderParameter, configuration)
-
-      localVarHeaderParameter['Content-Type'] = 'application/json'
-
-      setSearchParams(localVarUrlObj, localVarQueryParameter)
-      let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {}
-      localVarRequestOptions.headers = {
-        ...localVarHeaderParameter,
-        ...headersFromBaseOptions,
-        ...options.headers,
-      }
-      localVarRequestOptions.data = serializeDataIfNeeded(
-        jsonConvertRequestDto,
-        localVarRequestOptions,
-        configuration,
-      )
-
-      return {
-        url: toPathString(localVarUrlObj),
-        options: localVarRequestOptions,
-      }
-    },
-    /**
-     * Generates PDF for a given schema version id and form json data.
+     * Generates PDF for given form data.
      * @summary
      * @param {ConvertToPdfV2RequestDto} convertToPdfV2RequestDto
      * @param {*} [options] Override http request option.
@@ -5427,29 +4273,29 @@ export const ConvertApiAxiosParamCreator = function (configuration?: Configurati
       }
     },
     /**
-     * Generates JSON form from given XML data and schema version id
+     * Generates JSON form from given XML data and form definition slug
      * @summary
-     * @param {string} id
+     * @param {string} slug
      * @param {XmlToJsonRequestDto} xmlToJsonRequestDto
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
     convertControllerConvertXmlToJson: async (
-      id: string,
+      slug: string,
       xmlToJsonRequestDto: XmlToJsonRequestDto,
       options: RawAxiosRequestConfig = {},
     ): Promise<RequestArgs> => {
-      // verify required parameter 'id' is not null or undefined
-      assertParamExists('convertControllerConvertXmlToJson', 'id', id)
+      // verify required parameter 'slug' is not null or undefined
+      assertParamExists('convertControllerConvertXmlToJson', 'slug', slug)
       // verify required parameter 'xmlToJsonRequestDto' is not null or undefined
       assertParamExists(
         'convertControllerConvertXmlToJson',
         'xmlToJsonRequestDto',
         xmlToJsonRequestDto,
       )
-      const localVarPath = `/convert/xml-to-json/{id}`.replace(
-        `{${'id'}}`,
-        encodeURIComponent(String(id)),
+      const localVarPath = `/convert/xml-to-json/{slug}`.replace(
+        `{${'slug'}}`,
+        encodeURIComponent(String(slug)),
       )
       // use dummy base URL string because the URL constructor only accepts absolute URLs.
       const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL)
@@ -5550,39 +4396,7 @@ export const ConvertApiFp = function (configuration?: Configuration) {
   const localVarAxiosParamCreator = ConvertApiAxiosParamCreator(configuration)
   return {
     /**
-     * Generates XML form from given JSON data and schema version id
-     * @summary
-     * @param {string} id
-     * @param {JsonConvertRequestDto} jsonConvertRequestDto
-     * @param {*} [options] Override http request option.
-     * @deprecated
-     * @throws {RequiredError}
-     */
-    async convertControllerConvertJsonToXml(
-      id: string,
-      jsonConvertRequestDto: JsonConvertRequestDto,
-      options?: RawAxiosRequestConfig,
-    ): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<JsonToXmlResponseDto>> {
-      const localVarAxiosArgs = await localVarAxiosParamCreator.convertControllerConvertJsonToXml(
-        id,
-        jsonConvertRequestDto,
-        options,
-      )
-      const localVarOperationServerIndex = configuration?.serverIndex ?? 0
-      const localVarOperationServerBasePath =
-        operationServerMap['ConvertApi.convertControllerConvertJsonToXml']?.[
-          localVarOperationServerIndex
-        ]?.url
-      return (axios, basePath) =>
-        createRequestFunction(
-          localVarAxiosArgs,
-          globalAxios,
-          BASE_PATH,
-          configuration,
-        )(axios, localVarOperationServerBasePath || basePath)
-    },
-    /**
-     * Generates XML form from given JSON data and schema version id. At least one of `formId` and `jsonData` must be provided.
+     * Generates XML form from given JSON data and form definition slug. At least one of `formId` and `jsonData` must be provided.
      * @summary
      * @param {JsonToXmlV2RequestDto} jsonToXmlV2RequestDto
      * @param {*} [options] Override http request option.
@@ -5591,7 +4405,7 @@ export const ConvertApiFp = function (configuration?: Configuration) {
     async convertControllerConvertJsonToXmlV2(
       jsonToXmlV2RequestDto: JsonToXmlV2RequestDto,
       options?: RawAxiosRequestConfig,
-    ): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<JsonToXmlResponseDto>> {
+    ): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<string>> {
       const localVarAxiosArgs = await localVarAxiosParamCreator.convertControllerConvertJsonToXmlV2(
         jsonToXmlV2RequestDto,
         options,
@@ -5610,39 +4424,7 @@ export const ConvertApiFp = function (configuration?: Configuration) {
         )(axios, localVarOperationServerBasePath || basePath)
     },
     /**
-     * Generates PDF for a given schema version id and form json data.
-     * @summary
-     * @param {string} id
-     * @param {JsonConvertRequestDto} jsonConvertRequestDto
-     * @param {*} [options] Override http request option.
-     * @deprecated
-     * @throws {RequiredError}
-     */
-    async convertControllerConvertToPdf(
-      id: string,
-      jsonConvertRequestDto: JsonConvertRequestDto,
-      options?: RawAxiosRequestConfig,
-    ): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<object>> {
-      const localVarAxiosArgs = await localVarAxiosParamCreator.convertControllerConvertToPdf(
-        id,
-        jsonConvertRequestDto,
-        options,
-      )
-      const localVarOperationServerIndex = configuration?.serverIndex ?? 0
-      const localVarOperationServerBasePath =
-        operationServerMap['ConvertApi.convertControllerConvertToPdf']?.[
-          localVarOperationServerIndex
-        ]?.url
-      return (axios, basePath) =>
-        createRequestFunction(
-          localVarAxiosArgs,
-          globalAxios,
-          BASE_PATH,
-          configuration,
-        )(axios, localVarOperationServerBasePath || basePath)
-    },
-    /**
-     * Generates PDF for a given schema version id and form json data.
+     * Generates PDF for given form data.
      * @summary
      * @param {ConvertToPdfV2RequestDto} convertToPdfV2RequestDto
      * @param {*} [options] Override http request option.
@@ -5670,20 +4452,20 @@ export const ConvertApiFp = function (configuration?: Configuration) {
         )(axios, localVarOperationServerBasePath || basePath)
     },
     /**
-     * Generates JSON form from given XML data and schema version id
+     * Generates JSON form from given XML data and form definition slug
      * @summary
-     * @param {string} id
+     * @param {string} slug
      * @param {XmlToJsonRequestDto} xmlToJsonRequestDto
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
     async convertControllerConvertXmlToJson(
-      id: string,
+      slug: string,
       xmlToJsonRequestDto: XmlToJsonRequestDto,
       options?: RawAxiosRequestConfig,
     ): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<XmlToJsonResponseDto>> {
       const localVarAxiosArgs = await localVarAxiosParamCreator.convertControllerConvertXmlToJson(
-        id,
+        slug,
         xmlToJsonRequestDto,
         options,
       )
@@ -5745,25 +4527,7 @@ export const ConvertApiFactory = function (
   const localVarFp = ConvertApiFp(configuration)
   return {
     /**
-     * Generates XML form from given JSON data and schema version id
-     * @summary
-     * @param {string} id
-     * @param {JsonConvertRequestDto} jsonConvertRequestDto
-     * @param {*} [options] Override http request option.
-     * @deprecated
-     * @throws {RequiredError}
-     */
-    convertControllerConvertJsonToXml(
-      id: string,
-      jsonConvertRequestDto: JsonConvertRequestDto,
-      options?: any,
-    ): AxiosPromise<JsonToXmlResponseDto> {
-      return localVarFp
-        .convertControllerConvertJsonToXml(id, jsonConvertRequestDto, options)
-        .then((request) => request(axios, basePath))
-    },
-    /**
-     * Generates XML form from given JSON data and schema version id. At least one of `formId` and `jsonData` must be provided.
+     * Generates XML form from given JSON data and form definition slug. At least one of `formId` and `jsonData` must be provided.
      * @summary
      * @param {JsonToXmlV2RequestDto} jsonToXmlV2RequestDto
      * @param {*} [options] Override http request option.
@@ -5772,31 +4536,13 @@ export const ConvertApiFactory = function (
     convertControllerConvertJsonToXmlV2(
       jsonToXmlV2RequestDto: JsonToXmlV2RequestDto,
       options?: any,
-    ): AxiosPromise<JsonToXmlResponseDto> {
+    ): AxiosPromise<string> {
       return localVarFp
         .convertControllerConvertJsonToXmlV2(jsonToXmlV2RequestDto, options)
         .then((request) => request(axios, basePath))
     },
     /**
-     * Generates PDF for a given schema version id and form json data.
-     * @summary
-     * @param {string} id
-     * @param {JsonConvertRequestDto} jsonConvertRequestDto
-     * @param {*} [options] Override http request option.
-     * @deprecated
-     * @throws {RequiredError}
-     */
-    convertControllerConvertToPdf(
-      id: string,
-      jsonConvertRequestDto: JsonConvertRequestDto,
-      options?: any,
-    ): AxiosPromise<object> {
-      return localVarFp
-        .convertControllerConvertToPdf(id, jsonConvertRequestDto, options)
-        .then((request) => request(axios, basePath))
-    },
-    /**
-     * Generates PDF for a given schema version id and form json data.
+     * Generates PDF for given form data.
      * @summary
      * @param {ConvertToPdfV2RequestDto} convertToPdfV2RequestDto
      * @param {*} [options] Override http request option.
@@ -5811,20 +4557,20 @@ export const ConvertApiFactory = function (
         .then((request) => request(axios, basePath))
     },
     /**
-     * Generates JSON form from given XML data and schema version id
+     * Generates JSON form from given XML data and form definition slug
      * @summary
-     * @param {string} id
+     * @param {string} slug
      * @param {XmlToJsonRequestDto} xmlToJsonRequestDto
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
     convertControllerConvertXmlToJson(
-      id: string,
+      slug: string,
       xmlToJsonRequestDto: XmlToJsonRequestDto,
       options?: any,
     ): AxiosPromise<XmlToJsonResponseDto> {
       return localVarFp
-        .convertControllerConvertXmlToJson(id, xmlToJsonRequestDto, options)
+        .convertControllerConvertXmlToJson(slug, xmlToJsonRequestDto, options)
         .then((request) => request(axios, basePath))
     },
     /**
@@ -5853,27 +4599,7 @@ export const ConvertApiFactory = function (
  */
 export class ConvertApi extends BaseAPI {
   /**
-   * Generates XML form from given JSON data and schema version id
-   * @summary
-   * @param {string} id
-   * @param {JsonConvertRequestDto} jsonConvertRequestDto
-   * @param {*} [options] Override http request option.
-   * @deprecated
-   * @throws {RequiredError}
-   * @memberof ConvertApi
-   */
-  public convertControllerConvertJsonToXml(
-    id: string,
-    jsonConvertRequestDto: JsonConvertRequestDto,
-    options?: RawAxiosRequestConfig,
-  ) {
-    return ConvertApiFp(this.configuration)
-      .convertControllerConvertJsonToXml(id, jsonConvertRequestDto, options)
-      .then((request) => request(this.axios, this.basePath))
-  }
-
-  /**
-   * Generates XML form from given JSON data and schema version id. At least one of `formId` and `jsonData` must be provided.
+   * Generates XML form from given JSON data and form definition slug. At least one of `formId` and `jsonData` must be provided.
    * @summary
    * @param {JsonToXmlV2RequestDto} jsonToXmlV2RequestDto
    * @param {*} [options] Override http request option.
@@ -5890,27 +4616,7 @@ export class ConvertApi extends BaseAPI {
   }
 
   /**
-   * Generates PDF for a given schema version id and form json data.
-   * @summary
-   * @param {string} id
-   * @param {JsonConvertRequestDto} jsonConvertRequestDto
-   * @param {*} [options] Override http request option.
-   * @deprecated
-   * @throws {RequiredError}
-   * @memberof ConvertApi
-   */
-  public convertControllerConvertToPdf(
-    id: string,
-    jsonConvertRequestDto: JsonConvertRequestDto,
-    options?: RawAxiosRequestConfig,
-  ) {
-    return ConvertApiFp(this.configuration)
-      .convertControllerConvertToPdf(id, jsonConvertRequestDto, options)
-      .then((request) => request(this.axios, this.basePath))
-  }
-
-  /**
-   * Generates PDF for a given schema version id and form json data.
+   * Generates PDF for given form data.
    * @summary
    * @param {ConvertToPdfV2RequestDto} convertToPdfV2RequestDto
    * @param {*} [options] Override http request option.
@@ -5927,21 +4633,21 @@ export class ConvertApi extends BaseAPI {
   }
 
   /**
-   * Generates JSON form from given XML data and schema version id
+   * Generates JSON form from given XML data and form definition slug
    * @summary
-   * @param {string} id
+   * @param {string} slug
    * @param {XmlToJsonRequestDto} xmlToJsonRequestDto
    * @param {*} [options] Override http request option.
    * @throws {RequiredError}
    * @memberof ConvertApi
    */
   public convertControllerConvertXmlToJson(
-    id: string,
+    slug: string,
     xmlToJsonRequestDto: XmlToJsonRequestDto,
     options?: RawAxiosRequestConfig,
   ) {
     return ConvertApiFp(this.configuration)
-      .convertControllerConvertXmlToJson(id, xmlToJsonRequestDto, options)
+      .convertControllerConvertXmlToJson(slug, xmlToJsonRequestDto, options)
       .then((request) => request(this.axios, this.basePath))
   }
 
@@ -7205,22 +5911,18 @@ export const NasesApiAxiosParamCreator = function (configuration?: Configuration
      * @summary Get paginated forms
      * @param {string} [currentPage] Page number
      * @param {string} [pagination] Number of items per page
-     * @param {string} [pospID] Posp ID of Form
-     * @param {string} [formName] Form Name
      * @param {Array<FormState>} [states] Forms in which states are searched - when omitted, all forms of the user are searched
-     * @param {string} [schemaVersionId] Schema version Id.
      * @param {boolean} [userCanEdit] Get only forms in such a state, that user can still edit it.
+     * @param {string} [formDefinitionSlug] Slug of the form definition
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
     nasesControllerGetForms: async (
       currentPage?: string,
       pagination?: string,
-      pospID?: string,
-      formName?: string,
       states?: Array<FormState>,
-      schemaVersionId?: string,
       userCanEdit?: boolean,
+      formDefinitionSlug?: string,
       options: RawAxiosRequestConfig = {},
     ): Promise<RequestArgs> => {
       const localVarPath = `/nases/forms`
@@ -7247,24 +5949,16 @@ export const NasesApiAxiosParamCreator = function (configuration?: Configuration
         localVarQueryParameter['pagination'] = pagination
       }
 
-      if (pospID !== undefined) {
-        localVarQueryParameter['pospID'] = pospID
-      }
-
-      if (formName !== undefined) {
-        localVarQueryParameter['formName'] = formName
-      }
-
       if (states) {
         localVarQueryParameter['states'] = states
       }
 
-      if (schemaVersionId !== undefined) {
-        localVarQueryParameter['schemaVersionId'] = schemaVersionId
-      }
-
       if (userCanEdit !== undefined) {
         localVarQueryParameter['userCanEdit'] = userCanEdit
+      }
+
+      if (formDefinitionSlug !== undefined) {
+        localVarQueryParameter['formDefinitionSlug'] = formDefinitionSlug
       }
 
       setSearchParams(localVarUrlObj, localVarQueryParameter)
@@ -7818,32 +6512,26 @@ export const NasesApiFp = function (configuration?: Configuration) {
      * @summary Get paginated forms
      * @param {string} [currentPage] Page number
      * @param {string} [pagination] Number of items per page
-     * @param {string} [pospID] Posp ID of Form
-     * @param {string} [formName] Form Name
      * @param {Array<FormState>} [states] Forms in which states are searched - when omitted, all forms of the user are searched
-     * @param {string} [schemaVersionId] Schema version Id.
      * @param {boolean} [userCanEdit] Get only forms in such a state, that user can still edit it.
+     * @param {string} [formDefinitionSlug] Slug of the form definition
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
     async nasesControllerGetForms(
       currentPage?: string,
       pagination?: string,
-      pospID?: string,
-      formName?: string,
       states?: Array<FormState>,
-      schemaVersionId?: string,
       userCanEdit?: boolean,
+      formDefinitionSlug?: string,
       options?: RawAxiosRequestConfig,
     ): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<GetFormsResponseDto>> {
       const localVarAxiosArgs = await localVarAxiosParamCreator.nasesControllerGetForms(
         currentPage,
         pagination,
-        pospID,
-        formName,
         states,
-        schemaVersionId,
         userCanEdit,
+        formDefinitionSlug,
         options,
       )
       const localVarOperationServerIndex = configuration?.serverIndex ?? 0
@@ -8151,33 +6839,27 @@ export const NasesApiFactory = function (
      * @summary Get paginated forms
      * @param {string} [currentPage] Page number
      * @param {string} [pagination] Number of items per page
-     * @param {string} [pospID] Posp ID of Form
-     * @param {string} [formName] Form Name
      * @param {Array<FormState>} [states] Forms in which states are searched - when omitted, all forms of the user are searched
-     * @param {string} [schemaVersionId] Schema version Id.
      * @param {boolean} [userCanEdit] Get only forms in such a state, that user can still edit it.
+     * @param {string} [formDefinitionSlug] Slug of the form definition
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
     nasesControllerGetForms(
       currentPage?: string,
       pagination?: string,
-      pospID?: string,
-      formName?: string,
       states?: Array<FormState>,
-      schemaVersionId?: string,
       userCanEdit?: boolean,
+      formDefinitionSlug?: string,
       options?: any,
     ): AxiosPromise<GetFormsResponseDto> {
       return localVarFp
         .nasesControllerGetForms(
           currentPage,
           pagination,
-          pospID,
-          formName,
           states,
-          schemaVersionId,
           userCanEdit,
+          formDefinitionSlug,
           options,
         )
         .then((request) => request(axios, basePath))
@@ -8389,11 +7071,9 @@ export class NasesApi extends BaseAPI {
    * @summary Get paginated forms
    * @param {string} [currentPage] Page number
    * @param {string} [pagination] Number of items per page
-   * @param {string} [pospID] Posp ID of Form
-   * @param {string} [formName] Form Name
    * @param {Array<FormState>} [states] Forms in which states are searched - when omitted, all forms of the user are searched
-   * @param {string} [schemaVersionId] Schema version Id.
    * @param {boolean} [userCanEdit] Get only forms in such a state, that user can still edit it.
+   * @param {string} [formDefinitionSlug] Slug of the form definition
    * @param {*} [options] Override http request option.
    * @throws {RequiredError}
    * @memberof NasesApi
@@ -8401,22 +7081,18 @@ export class NasesApi extends BaseAPI {
   public nasesControllerGetForms(
     currentPage?: string,
     pagination?: string,
-    pospID?: string,
-    formName?: string,
     states?: Array<FormState>,
-    schemaVersionId?: string,
     userCanEdit?: boolean,
+    formDefinitionSlug?: string,
     options?: RawAxiosRequestConfig,
   ) {
     return NasesApiFp(this.configuration)
       .nasesControllerGetForms(
         currentPage,
         pagination,
-        pospID,
-        formName,
         states,
-        schemaVersionId,
         userCanEdit,
+        formDefinitionSlug,
         options,
       )
       .then((request) => request(this.axios, this.basePath))
@@ -8543,539 +7219,6 @@ export class NasesApi extends BaseAPI {
   ) {
     return NasesApiFp(this.configuration)
       .nasesControllerUpdateFormEid(id, updateFormRequestDto, options)
-      .then((request) => request(this.axios, this.basePath))
-  }
-}
-
-/**
- * SchemasApi - axios parameter creator
- * @export
- */
-export const SchemasApiAxiosParamCreator = function (configuration?: Configuration) {
-  return {
-    /**
-     * Returns schema versions according to query.
-     * @summary
-     * @param {boolean} [onlyLatest] True if only the latest version of each form is desirable
-     * @param {string} [slug] Schema slug for which the versions should be retrieved
-     * @param {string} [currentPage] Page number
-     * @param {string} [pagination] Number of items per page
-     * @param {*} [options] Override http request option.
-     * @throws {RequiredError}
-     */
-    schemasControllerGetAllSchemas: async (
-      onlyLatest?: boolean,
-      slug?: string,
-      currentPage?: string,
-      pagination?: string,
-      options: RawAxiosRequestConfig = {},
-    ): Promise<RequestArgs> => {
-      const localVarPath = `/schemas`
-      // use dummy base URL string because the URL constructor only accepts absolute URLs.
-      const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL)
-      let baseOptions
-      if (configuration) {
-        baseOptions = configuration.baseOptions
-      }
-
-      const localVarRequestOptions = { method: 'GET', ...baseOptions, ...options }
-      const localVarHeaderParameter = {} as any
-      const localVarQueryParameter = {} as any
-
-      if (onlyLatest !== undefined) {
-        localVarQueryParameter['onlyLatest'] = onlyLatest
-      }
-
-      if (slug !== undefined) {
-        localVarQueryParameter['slug'] = slug
-      }
-
-      if (currentPage !== undefined) {
-        localVarQueryParameter['currentPage'] = currentPage
-      }
-
-      if (pagination !== undefined) {
-        localVarQueryParameter['pagination'] = pagination
-      }
-
-      setSearchParams(localVarUrlObj, localVarQueryParameter)
-      let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {}
-      localVarRequestOptions.headers = {
-        ...localVarHeaderParameter,
-        ...headersFromBaseOptions,
-        ...options.headers,
-      }
-
-      return {
-        url: toPathString(localVarUrlObj),
-        options: localVarRequestOptions,
-      }
-    },
-    /**
-     * Returns schema versions according to query.
-     * @summary
-     * @param {boolean} [onlyLatest] True if only the latest version of each form is desirable
-     * @param {string} [slug] Schema slug for which the versions should be retrieved
-     * @param {string} [currentPage] Page number
-     * @param {string} [pagination] Number of items per page
-     * @param {*} [options] Override http request option.
-     * @throws {RequiredError}
-     */
-    schemasControllerGetAllVersions: async (
-      onlyLatest?: boolean,
-      slug?: string,
-      currentPage?: string,
-      pagination?: string,
-      options: RawAxiosRequestConfig = {},
-    ): Promise<RequestArgs> => {
-      const localVarPath = `/schemas/schema-versions`
-      // use dummy base URL string because the URL constructor only accepts absolute URLs.
-      const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL)
-      let baseOptions
-      if (configuration) {
-        baseOptions = configuration.baseOptions
-      }
-
-      const localVarRequestOptions = { method: 'GET', ...baseOptions, ...options }
-      const localVarHeaderParameter = {} as any
-      const localVarQueryParameter = {} as any
-
-      if (onlyLatest !== undefined) {
-        localVarQueryParameter['onlyLatest'] = onlyLatest
-      }
-
-      if (slug !== undefined) {
-        localVarQueryParameter['slug'] = slug
-      }
-
-      if (currentPage !== undefined) {
-        localVarQueryParameter['currentPage'] = currentPage
-      }
-
-      if (pagination !== undefined) {
-        localVarQueryParameter['pagination'] = pagination
-      }
-
-      setSearchParams(localVarUrlObj, localVarQueryParameter)
-      let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {}
-      localVarRequestOptions.headers = {
-        ...localVarHeaderParameter,
-        ...headersFromBaseOptions,
-        ...options.headers,
-      }
-
-      return {
-        url: toPathString(localVarUrlObj),
-        options: localVarRequestOptions,
-      }
-    },
-    /**
-     * Returns schema by a unique slug, along with its last version.
-     * @summary
-     * @param {string} schemaSlug
-     * @param {*} [options] Override http request option.
-     * @throws {RequiredError}
-     */
-    schemasControllerGetSchema: async (
-      schemaSlug: string,
-      options: RawAxiosRequestConfig = {},
-    ): Promise<RequestArgs> => {
-      // verify required parameter 'schemaSlug' is not null or undefined
-      assertParamExists('schemasControllerGetSchema', 'schemaSlug', schemaSlug)
-      const localVarPath = `/schemas/schema/{schemaSlug}`.replace(
-        `{${'schemaSlug'}}`,
-        encodeURIComponent(String(schemaSlug)),
-      )
-      // use dummy base URL string because the URL constructor only accepts absolute URLs.
-      const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL)
-      let baseOptions
-      if (configuration) {
-        baseOptions = configuration.baseOptions
-      }
-
-      const localVarRequestOptions = { method: 'GET', ...baseOptions, ...options }
-      const localVarHeaderParameter = {} as any
-      const localVarQueryParameter = {} as any
-
-      setSearchParams(localVarUrlObj, localVarQueryParameter)
-      let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {}
-      localVarRequestOptions.headers = {
-        ...localVarHeaderParameter,
-        ...headersFromBaseOptions,
-        ...options.headers,
-      }
-
-      return {
-        url: toPathString(localVarUrlObj),
-        options: localVarRequestOptions,
-      }
-    },
-    /**
-     * Returns schema version info by id.
-     * @summary
-     * @param {string} id
-     * @param {boolean} [includeSchema] True if schema should be included, not only schema id
-     * @param {*} [options] Override http request option.
-     * @throws {RequiredError}
-     */
-    schemasControllerGetSchemaVersion: async (
-      id: string,
-      includeSchema?: boolean,
-      options: RawAxiosRequestConfig = {},
-    ): Promise<RequestArgs> => {
-      // verify required parameter 'id' is not null or undefined
-      assertParamExists('schemasControllerGetSchemaVersion', 'id', id)
-      const localVarPath = `/schemas/schema-version/{id}`.replace(
-        `{${'id'}}`,
-        encodeURIComponent(String(id)),
-      )
-      // use dummy base URL string because the URL constructor only accepts absolute URLs.
-      const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL)
-      let baseOptions
-      if (configuration) {
-        baseOptions = configuration.baseOptions
-      }
-
-      const localVarRequestOptions = { method: 'GET', ...baseOptions, ...options }
-      const localVarHeaderParameter = {} as any
-      const localVarQueryParameter = {} as any
-
-      if (includeSchema !== undefined) {
-        localVarQueryParameter['includeSchema'] = includeSchema
-      }
-
-      setSearchParams(localVarUrlObj, localVarQueryParameter)
-      let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {}
-      localVarRequestOptions.headers = {
-        ...localVarHeaderParameter,
-        ...headersFromBaseOptions,
-        ...options.headers,
-      }
-
-      return {
-        url: toPathString(localVarUrlObj),
-        options: localVarRequestOptions,
-      }
-    },
-  }
-}
-
-/**
- * SchemasApi - functional programming interface
- * @export
- */
-export const SchemasApiFp = function (configuration?: Configuration) {
-  const localVarAxiosParamCreator = SchemasApiAxiosParamCreator(configuration)
-  return {
-    /**
-     * Returns schema versions according to query.
-     * @summary
-     * @param {boolean} [onlyLatest] True if only the latest version of each form is desirable
-     * @param {string} [slug] Schema slug for which the versions should be retrieved
-     * @param {string} [currentPage] Page number
-     * @param {string} [pagination] Number of items per page
-     * @param {*} [options] Override http request option.
-     * @throws {RequiredError}
-     */
-    async schemasControllerGetAllSchemas(
-      onlyLatest?: boolean,
-      slug?: string,
-      currentPage?: string,
-      pagination?: string,
-      options?: RawAxiosRequestConfig,
-    ): Promise<
-      (axios?: AxiosInstance, basePath?: string) => AxiosPromise<SchemaVersionsResponseDto>
-    > {
-      const localVarAxiosArgs = await localVarAxiosParamCreator.schemasControllerGetAllSchemas(
-        onlyLatest,
-        slug,
-        currentPage,
-        pagination,
-        options,
-      )
-      const localVarOperationServerIndex = configuration?.serverIndex ?? 0
-      const localVarOperationServerBasePath =
-        operationServerMap['SchemasApi.schemasControllerGetAllSchemas']?.[
-          localVarOperationServerIndex
-        ]?.url
-      return (axios, basePath) =>
-        createRequestFunction(
-          localVarAxiosArgs,
-          globalAxios,
-          BASE_PATH,
-          configuration,
-        )(axios, localVarOperationServerBasePath || basePath)
-    },
-    /**
-     * Returns schema versions according to query.
-     * @summary
-     * @param {boolean} [onlyLatest] True if only the latest version of each form is desirable
-     * @param {string} [slug] Schema slug for which the versions should be retrieved
-     * @param {string} [currentPage] Page number
-     * @param {string} [pagination] Number of items per page
-     * @param {*} [options] Override http request option.
-     * @throws {RequiredError}
-     */
-    async schemasControllerGetAllVersions(
-      onlyLatest?: boolean,
-      slug?: string,
-      currentPage?: string,
-      pagination?: string,
-      options?: RawAxiosRequestConfig,
-    ): Promise<
-      (axios?: AxiosInstance, basePath?: string) => AxiosPromise<SchemaVersionsResponseDto>
-    > {
-      const localVarAxiosArgs = await localVarAxiosParamCreator.schemasControllerGetAllVersions(
-        onlyLatest,
-        slug,
-        currentPage,
-        pagination,
-        options,
-      )
-      const localVarOperationServerIndex = configuration?.serverIndex ?? 0
-      const localVarOperationServerBasePath =
-        operationServerMap['SchemasApi.schemasControllerGetAllVersions']?.[
-          localVarOperationServerIndex
-        ]?.url
-      return (axios, basePath) =>
-        createRequestFunction(
-          localVarAxiosArgs,
-          globalAxios,
-          BASE_PATH,
-          configuration,
-        )(axios, localVarOperationServerBasePath || basePath)
-    },
-    /**
-     * Returns schema by a unique slug, along with its last version.
-     * @summary
-     * @param {string} schemaSlug
-     * @param {*} [options] Override http request option.
-     * @throws {RequiredError}
-     */
-    async schemasControllerGetSchema(
-      schemaSlug: string,
-      options?: RawAxiosRequestConfig,
-    ): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<SchemaResponseDto>> {
-      const localVarAxiosArgs = await localVarAxiosParamCreator.schemasControllerGetSchema(
-        schemaSlug,
-        options,
-      )
-      const localVarOperationServerIndex = configuration?.serverIndex ?? 0
-      const localVarOperationServerBasePath =
-        operationServerMap['SchemasApi.schemasControllerGetSchema']?.[localVarOperationServerIndex]
-          ?.url
-      return (axios, basePath) =>
-        createRequestFunction(
-          localVarAxiosArgs,
-          globalAxios,
-          BASE_PATH,
-          configuration,
-        )(axios, localVarOperationServerBasePath || basePath)
-    },
-    /**
-     * Returns schema version info by id.
-     * @summary
-     * @param {string} id
-     * @param {boolean} [includeSchema] True if schema should be included, not only schema id
-     * @param {*} [options] Override http request option.
-     * @throws {RequiredError}
-     */
-    async schemasControllerGetSchemaVersion(
-      id: string,
-      includeSchema?: boolean,
-      options?: RawAxiosRequestConfig,
-    ): Promise<
-      (axios?: AxiosInstance, basePath?: string) => AxiosPromise<SchemaVersionResponseDto>
-    > {
-      const localVarAxiosArgs = await localVarAxiosParamCreator.schemasControllerGetSchemaVersion(
-        id,
-        includeSchema,
-        options,
-      )
-      const localVarOperationServerIndex = configuration?.serverIndex ?? 0
-      const localVarOperationServerBasePath =
-        operationServerMap['SchemasApi.schemasControllerGetSchemaVersion']?.[
-          localVarOperationServerIndex
-        ]?.url
-      return (axios, basePath) =>
-        createRequestFunction(
-          localVarAxiosArgs,
-          globalAxios,
-          BASE_PATH,
-          configuration,
-        )(axios, localVarOperationServerBasePath || basePath)
-    },
-  }
-}
-
-/**
- * SchemasApi - factory interface
- * @export
- */
-export const SchemasApiFactory = function (
-  configuration?: Configuration,
-  basePath?: string,
-  axios?: AxiosInstance,
-) {
-  const localVarFp = SchemasApiFp(configuration)
-  return {
-    /**
-     * Returns schema versions according to query.
-     * @summary
-     * @param {boolean} [onlyLatest] True if only the latest version of each form is desirable
-     * @param {string} [slug] Schema slug for which the versions should be retrieved
-     * @param {string} [currentPage] Page number
-     * @param {string} [pagination] Number of items per page
-     * @param {*} [options] Override http request option.
-     * @throws {RequiredError}
-     */
-    schemasControllerGetAllSchemas(
-      onlyLatest?: boolean,
-      slug?: string,
-      currentPage?: string,
-      pagination?: string,
-      options?: any,
-    ): AxiosPromise<SchemaVersionsResponseDto> {
-      return localVarFp
-        .schemasControllerGetAllSchemas(onlyLatest, slug, currentPage, pagination, options)
-        .then((request) => request(axios, basePath))
-    },
-    /**
-     * Returns schema versions according to query.
-     * @summary
-     * @param {boolean} [onlyLatest] True if only the latest version of each form is desirable
-     * @param {string} [slug] Schema slug for which the versions should be retrieved
-     * @param {string} [currentPage] Page number
-     * @param {string} [pagination] Number of items per page
-     * @param {*} [options] Override http request option.
-     * @throws {RequiredError}
-     */
-    schemasControllerGetAllVersions(
-      onlyLatest?: boolean,
-      slug?: string,
-      currentPage?: string,
-      pagination?: string,
-      options?: any,
-    ): AxiosPromise<SchemaVersionsResponseDto> {
-      return localVarFp
-        .schemasControllerGetAllVersions(onlyLatest, slug, currentPage, pagination, options)
-        .then((request) => request(axios, basePath))
-    },
-    /**
-     * Returns schema by a unique slug, along with its last version.
-     * @summary
-     * @param {string} schemaSlug
-     * @param {*} [options] Override http request option.
-     * @throws {RequiredError}
-     */
-    schemasControllerGetSchema(schemaSlug: string, options?: any): AxiosPromise<SchemaResponseDto> {
-      return localVarFp
-        .schemasControllerGetSchema(schemaSlug, options)
-        .then((request) => request(axios, basePath))
-    },
-    /**
-     * Returns schema version info by id.
-     * @summary
-     * @param {string} id
-     * @param {boolean} [includeSchema] True if schema should be included, not only schema id
-     * @param {*} [options] Override http request option.
-     * @throws {RequiredError}
-     */
-    schemasControllerGetSchemaVersion(
-      id: string,
-      includeSchema?: boolean,
-      options?: any,
-    ): AxiosPromise<SchemaVersionResponseDto> {
-      return localVarFp
-        .schemasControllerGetSchemaVersion(id, includeSchema, options)
-        .then((request) => request(axios, basePath))
-    },
-  }
-}
-
-/**
- * SchemasApi - object-oriented interface
- * @export
- * @class SchemasApi
- * @extends {BaseAPI}
- */
-export class SchemasApi extends BaseAPI {
-  /**
-   * Returns schema versions according to query.
-   * @summary
-   * @param {boolean} [onlyLatest] True if only the latest version of each form is desirable
-   * @param {string} [slug] Schema slug for which the versions should be retrieved
-   * @param {string} [currentPage] Page number
-   * @param {string} [pagination] Number of items per page
-   * @param {*} [options] Override http request option.
-   * @throws {RequiredError}
-   * @memberof SchemasApi
-   */
-  public schemasControllerGetAllSchemas(
-    onlyLatest?: boolean,
-    slug?: string,
-    currentPage?: string,
-    pagination?: string,
-    options?: RawAxiosRequestConfig,
-  ) {
-    return SchemasApiFp(this.configuration)
-      .schemasControllerGetAllSchemas(onlyLatest, slug, currentPage, pagination, options)
-      .then((request) => request(this.axios, this.basePath))
-  }
-
-  /**
-   * Returns schema versions according to query.
-   * @summary
-   * @param {boolean} [onlyLatest] True if only the latest version of each form is desirable
-   * @param {string} [slug] Schema slug for which the versions should be retrieved
-   * @param {string} [currentPage] Page number
-   * @param {string} [pagination] Number of items per page
-   * @param {*} [options] Override http request option.
-   * @throws {RequiredError}
-   * @memberof SchemasApi
-   */
-  public schemasControllerGetAllVersions(
-    onlyLatest?: boolean,
-    slug?: string,
-    currentPage?: string,
-    pagination?: string,
-    options?: RawAxiosRequestConfig,
-  ) {
-    return SchemasApiFp(this.configuration)
-      .schemasControllerGetAllVersions(onlyLatest, slug, currentPage, pagination, options)
-      .then((request) => request(this.axios, this.basePath))
-  }
-
-  /**
-   * Returns schema by a unique slug, along with its last version.
-   * @summary
-   * @param {string} schemaSlug
-   * @param {*} [options] Override http request option.
-   * @throws {RequiredError}
-   * @memberof SchemasApi
-   */
-  public schemasControllerGetSchema(schemaSlug: string, options?: RawAxiosRequestConfig) {
-    return SchemasApiFp(this.configuration)
-      .schemasControllerGetSchema(schemaSlug, options)
-      .then((request) => request(this.axios, this.basePath))
-  }
-
-  /**
-   * Returns schema version info by id.
-   * @summary
-   * @param {string} id
-   * @param {boolean} [includeSchema] True if schema should be included, not only schema id
-   * @param {*} [options] Override http request option.
-   * @throws {RequiredError}
-   * @memberof SchemasApi
-   */
-  public schemasControllerGetSchemaVersion(
-    id: string,
-    includeSchema?: boolean,
-    options?: RawAxiosRequestConfig,
-  ) {
-    return SchemasApiFp(this.configuration)
-      .schemasControllerGetSchemaVersion(id, includeSchema, options)
       .then((request) => request(this.axios, this.basePath))
   }
 }
@@ -9563,7 +7706,7 @@ export const TaxApiFp = function (configuration?: Configuration) {
     async taxControllerConvertJsonToXml(
       taxJsonToXmlRequestDto: TaxJsonToXmlRequestDto,
       options?: RawAxiosRequestConfig,
-    ): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<JsonToXmlResponseDto>> {
+    ): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<string>> {
       const localVarAxiosArgs = await localVarAxiosParamCreator.taxControllerConvertJsonToXml(
         taxJsonToXmlRequestDto,
         options,
@@ -9632,7 +7775,7 @@ export const TaxApiFactory = function (
     taxControllerConvertJsonToXml(
       taxJsonToXmlRequestDto: TaxJsonToXmlRequestDto,
       options?: any,
-    ): AxiosPromise<JsonToXmlResponseDto> {
+    ): AxiosPromise<string> {
       return localVarFp
         .taxControllerConvertJsonToXml(taxJsonToXmlRequestDto, options)
         .then((request) => request(axios, basePath))

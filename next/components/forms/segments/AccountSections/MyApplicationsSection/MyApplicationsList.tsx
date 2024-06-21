@@ -33,12 +33,10 @@ export const getDraftApplications = async (
   const response = await formsApi.nasesControllerGetForms(
     page?.toString(),
     PAGE_SIZE,
-    undefined,
-    undefined,
     variantToStates,
-    undefined,
     // TODO update when backend behaviour changes
     // if this is set varianToStates would be ignored, that does not match the required functionality in any of the tabs
+    undefined,
     undefined,
     { accessToken: 'always', accessTokenSsrGetFn },
   )
@@ -49,12 +47,14 @@ type MyApplicationsListProps = {
   variant: ApplicationsListVariant
   applications?: GetFormsResponseDto
   refetchApplicationsCount: () => Promise<void>
+  formDefinitionSlugTitleMap: Record<string, string>
 }
 
 const MyApplicationsList = ({
   variant,
   applications,
   refetchApplicationsCount,
+  formDefinitionSlugTitleMap,
 }: MyApplicationsListProps) => {
   const router = useRouter()
   const currentPage = parseInt(router.query.strana as string, 10) || 1
@@ -77,6 +77,7 @@ const MyApplicationsList = ({
                     form={form}
                     refreshListData={refreshListData}
                     variant={variant}
+                    formDefinitionSlugTitleMap={formDefinitionSlugTitleMap}
                   />
                 </li>
               )

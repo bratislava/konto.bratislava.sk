@@ -1,3 +1,4 @@
+import { getFormDefinitionBySlug } from '@forms-shared/definitions/form-definitions-helpers'
 import { forwardRef, Inject, Injectable, Logger } from '@nestjs/common'
 import { Forms, FormState, Prisma } from '@prisma/client'
 
@@ -23,7 +24,6 @@ import {
   getFrontendFormTitleFromForm,
   getSubjectTextFromForm,
 } from '../utils/handlers/text.handler'
-import { FormWithSchemaAndVersion } from '../utils/types/prisma'
 import { FormUpdateBodyDto } from './dtos/forms.requests.dto'
 import { FormsErrorsEnum, FormsErrorsResponseEnum } from './forms.errors.enum'
 import FormsHelper from './forms.helper'
@@ -42,13 +42,10 @@ export default class FormsService {
     this.logger = new Logger('FormsService')
   }
 
-  async createForm(
-    data: Prisma.FormsUncheckedCreateInput,
-  ): Promise<FormWithSchemaAndVersion> {
+  async createForm(data: Prisma.FormsUncheckedCreateInput): Promise<Forms> {
     try {
       return await this.prisma.forms.create({
         data,
-        include: { schemaVersion: { include: { schema: true } } },
       })
     } catch (error) {
       throw this.throwerErrorGuard.InternalServerErrorException(
@@ -60,7 +57,7 @@ export default class FormsService {
 
   async updateForm(id: string, data: FormUpdateBodyDto): Promise<Forms> {
     // Try if this form with such id exists and is not archived
-    const form = await this.getUniqueForm(id, false)
+    const form = await this.getUniqueForm(id)
     if (form === null) {
       throw this.throwerErrorGuard.NotFoundException(
         FormsErrorsEnum.FORM_NOT_FOUND_ERROR,
@@ -93,7 +90,7 @@ export default class FormsService {
     user: string | null,
     ico: string | null,
   ): Promise<void> {
-    const form = await this.getFormWithAccessCheck(id, user, ico, false)
+    const form = await this.getFormWithAccessCheck(id, user, ico)
     if (!FormsHelper.isEditable(form)) {
       throw this.throwerErrorGuard.BadRequestException(
         FormsErrorsEnum.FORM_NOT_EDITABLE_ERROR,
@@ -118,26 +115,9 @@ export default class FormsService {
     }
   }
 
-  async getUniqueForm<B extends boolean>(
-    id: string,
-    includeSchema: B,
-  ): Promise<(B extends true ? FormWithSchemaAndVersion : Forms) | null>
-
-  async getUniqueForm(
-    id: string,
-    includeSchema: boolean,
-  ): Promise<FormWithSchemaAndVersion | Forms | null> {
+  async getUniqueForm(id: string): Promise<Forms | null> {
     const form = await this.prisma.forms.findUnique({
       where: { id },
-      include: includeSchema
-        ? {
-            schemaVersion: {
-              include: {
-                schema: true,
-              },
-            },
-          }
-        : undefined,
     })
 
     // This is needed because in findUnique only unique fields can be used in the where clause, so not 'archived'
@@ -146,36 +126,16 @@ export default class FormsService {
     return form
   }
 
-  async getForm<B extends boolean>(
-    id: string,
-    includeSchema: B,
-    ico: string | null,
-    userExternalId?: string,
-  ): Promise<B extends true ? FormWithSchemaAndVersion : Forms>
-
   // we can't get the frontend title unless we ask to include schema - without it we always return frontendTitle: null
   async getForm(
     id: string,
-    includeSchema: boolean,
     ico: string | null,
     userExternalId?: string,
-  ): Promise<
-    (FormWithSchemaAndVersion | Forms) & { frontendTitle: string | null }
-  > {
-    let form: FormWithSchemaAndVersion | Forms
-    let frontendTitle: string | null = null
+  ): Promise<Forms & { frontendTitle: string | null }> {
+    let form: Forms
     try {
       form = await this.prisma.forms.findUniqueOrThrow({
         where: { id },
-        include: includeSchema
-          ? {
-              schemaVersion: {
-                include: {
-                  schema: true,
-                },
-              },
-            }
-          : undefined,
       })
     } catch (error) {
       throw this.throwerErrorGuard.NotFoundException(
@@ -201,11 +161,14 @@ export default class FormsService {
       )
     }
 
-    if (includeSchema) {
-      frontendTitle = getFrontendFormTitleFromForm(
-        form as FormWithSchemaAndVersion,
+    const formDefinition = getFormDefinitionBySlug(form.formDefinitionSlug)
+    if (!formDefinition) {
+      throw this.throwerErrorGuard.NotFoundException(
+        FormsErrorsEnum.FORM_DEFINITION_NOT_FOUND,
+        `${FormsErrorsResponseEnum.FORM_DEFINITION_NOT_FOUND} ${form.formDefinitionSlug}`,
       )
     }
+    const frontendTitle = getFrontendFormTitleFromForm(form, formDefinition)
 
     return {
       ...form,
@@ -218,11 +181,10 @@ export default class FormsService {
     userExternalId: string,
     ico: string | null,
   ): Promise<GetFormsResponseDto> {
-    const { currentPage, pagination } = query
+    const { formDefinitionSlug, currentPage, pagination, states, userCanEdit } =
+      query
     const take = +(pagination ?? DEFAULT_PAGE_SIZE)
     const skip = (+(currentPage ?? DEFAULT_PAGE) - 1) * take
-
-    const { formName, pospID, states, schemaVersionId, userCanEdit } = query
 
     const editableStates = [
       { state: FormState.DRAFT },
@@ -248,13 +210,7 @@ export default class FormsService {
       ...statesFilter,
       userExternalId,
       archived: false,
-      schemaVersionId,
-      schemaVersion: {
-        pospID,
-        schema: {
-          formName,
-        },
-      },
+      formDefinitionSlug,
       formDataJson: {
         not: {
           equals: null,
@@ -299,37 +255,33 @@ export default class FormsService {
             state: true,
             error: true,
             formDataJson: true,
-            schemaVersionId: true,
-            schemaVersion: {
-              select: {
-                messageSubjectFormat: true,
-                schema: true,
-                uiSchema: true,
-              },
-            },
+            formDefinitionSlug: true,
           },
         })
       : []
 
     const dataWithLatestFlag: GetFormResponseSimpleDto[] = []
     Object.values(data).forEach((form) => {
-      const isLatestSchemaVersionForSlug =
-        form.schemaVersionId === form.schemaVersion.schema.latestVersionId
-      const messageSubject = getSubjectTextFromForm(form)
+      const formDefinition = getFormDefinitionBySlug(form.formDefinitionSlug)
+      if (!formDefinition) {
+        throw this.throwerErrorGuard.NotFoundException(
+          FormsErrorsEnum.FORM_DEFINITION_NOT_FOUND,
+          `${FormsErrorsResponseEnum.FORM_DEFINITION_NOT_FOUND} ${form.formDefinitionSlug}`,
+        )
+      }
+
+      const messageSubject = getSubjectTextFromForm(form, formDefinition)
       // fallback to messageSubject if title can't be parsed
-      const frontendTitle = getFrontendFormTitleFromForm(form) || messageSubject
+      const frontendTitle =
+        getFrontendFormTitleFromForm(form, formDefinition) || messageSubject
       const formWithoutUiSchema = {
         ...form,
-        schemaVersion: {
-          ...form.schemaVersion,
-          uiSchema: undefined,
-        },
       }
       dataWithLatestFlag.push({
         ...formWithoutUiSchema,
-        isLatestSchemaVersionForSlug,
         messageSubject,
         frontendTitle,
+        formDefinitionSlug: formDefinition.slug,
       })
     })
 
@@ -371,10 +323,9 @@ export default class FormsService {
     return result
   }
 
-  async checkFormBeforeSending(id: string): Promise<FormWithSchemaAndVersion> {
+  async checkFormBeforeSending(id: string): Promise<Forms> {
     const form = await this.prisma.forms.findUnique({
       where: { id },
-      include: { schemaVersion: { include: { schema: true } } },
     })
     if (!form || form.archived) {
       throw this.throwerErrorGuard.NotFoundException(
@@ -392,20 +343,12 @@ export default class FormsService {
     return form
   }
 
-  async getFormWithAccessCheck<B extends boolean>(
-    formId: string,
-    user: string | null,
-    ico: string | null,
-    includeSchema: B,
-  ): Promise<B extends true ? FormWithSchemaAndVersion : Forms>
-
   async getFormWithAccessCheck(
     formId: string,
     user: string | null,
     ico: string | null,
-    includeSchema: boolean,
-  ): Promise<FormWithSchemaAndVersion | Forms> {
-    const form = await this.getUniqueForm(formId, includeSchema)
+  ): Promise<Forms> {
+    const form = await this.getUniqueForm(formId)
 
     if (!form) {
       throw this.throwerErrorGuard.NotFoundException(

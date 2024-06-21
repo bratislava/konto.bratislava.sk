@@ -38,7 +38,11 @@ declare global {
 
 export const useGetContext = () => {
   const { isSignedIn } = useSsrAuth()
-  const { schemaVersionId, formId, slug, isTaxForm } = useFormContext()
+  const {
+    formDefinition: { slug },
+    formId,
+    isTaxForm,
+  } = useFormContext()
   const { formData, setImportedFormData } = useFormState()
   const { setRegistrationModal, setTaxFormPdfExportModal } = useFormModals()
   const { t } = useTranslation('forms')
@@ -131,14 +135,14 @@ export const useGetContext = () => {
     try {
       const response = await formsApi.convertControllerConvertJsonToXmlV2(
         {
-          schemaVersionId,
           formId,
           jsonData: formData,
+          slug,
         },
         { accessToken: 'onlyAuthenticated' },
       )
       const fileName = `${slug}_output.xml`
-      downloadBlob(new Blob([response.data.xmlForm]), fileName)
+      downloadBlob(new Blob([response.data]), fileName)
       closeSnackbarInfo()
       openSnackbarSuccess(t('success_messages.xml_export'))
       plausible(`${slug}#export-xml`)
@@ -171,7 +175,7 @@ export const useGetContext = () => {
       openSnackbarInfo(t('info_messages.xml_import'))
       const xmlData = await file.text()
       const response = await formsApi.convertControllerConvertXmlToJson(
-        schemaVersionId,
+        slug,
         {
           xmlForm: xmlData,
         },
@@ -206,7 +210,6 @@ export const useGetContext = () => {
   const runPdfExport = async (abortController?: AbortController) => {
     const response = await formsApi.convertControllerConvertToPdfv2(
       {
-        schemaVersionId,
         formId,
         jsonData: formData,
         additionalMetadata: {

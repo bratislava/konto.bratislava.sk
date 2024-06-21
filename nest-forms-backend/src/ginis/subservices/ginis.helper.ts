@@ -45,7 +45,7 @@ export default class GinisHelper {
   async isFormInGinisError(formId: string): Promise<boolean> {
     // TODOERIKQUESTION
     return this.formsService
-      .getUniqueForm(formId, true)
+      .getUniqueForm(formId)
       .then(
         (form) => form === null || form.error === FormError.GINIS_SEND_ERROR,
       )
@@ -53,7 +53,7 @@ export default class GinisHelper {
   }
 
   /**
-   * @param pospId id of schemaVersion, same as the id by which the form is registered in NASES.
+   * @param pospId posp id of form definition, the id by which the form is registered in NASES.
    * @returns properties for ginis-automation register submission - determines the official who processes the form further
    */
   getReferentForPospID(pospId: string): {

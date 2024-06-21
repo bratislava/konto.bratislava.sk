@@ -16,7 +16,12 @@ import { useFormErrorTranslations } from './useFormErrorTranslations'
 import { useFormState } from './useFormState'
 
 const FormPage = () => {
-  const { uiSchema, isReadonly } = useFormContext()
+  const {
+    formDefinition: {
+      schemas: { uiSchema },
+    },
+    isReadonly,
+  } = useFormContext()
   const {
     currentStepIndex,
     currentStepperStep,

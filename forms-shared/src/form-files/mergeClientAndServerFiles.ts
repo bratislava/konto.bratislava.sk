@@ -11,6 +11,7 @@ const mapClientFile = (clientFileInfo: ClientFileInfo): Record<string, FileInfo>
 
 const mapClientFileSummary = (clientFileInfo: ClientFileInfo): Record<string, FileInfoSummary> => ({
   [clientFileInfo.id]: {
+    id: clientFileInfo.id,
     statusType: clientFileInfo.status.type,
     fileName: clientFileInfo.file.name,
   },
@@ -44,6 +45,7 @@ const mapServerFileSummary = (
   serverFileInfo: FormsBackendFile,
 ): Record<string, FileInfoSummary> => ({
   [serverFileInfo.id]: {
+    id: serverFileInfo.id,
     statusType: serverResponseToStatusMap[serverFileInfo.status],
     fileName: serverFileInfo.fileName,
   },

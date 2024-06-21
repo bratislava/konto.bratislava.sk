@@ -109,7 +109,7 @@ const korespondencnaAdresaPoznamka = (data: TaxFormData) => {
 
 export const poznamkaShared = (data: TaxFormData, formId?: string) => {
   const generated = [
-    `Tento dokument bol vygenerovaný pomocou Bratislavského konta.`,
+    `Tento dokument bol vygenerovaný pomocou Bratislavského konta. Test`,
     formId ? `ID formulára: ${formId}` : null,
   ]
     .filter(Boolean)

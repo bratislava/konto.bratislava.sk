@@ -73,7 +73,7 @@ const copyOrRemovePages = async (pdfDoc: PDFDocument, index: number, count: numb
 /**
  * @returns Base64 encoded PDF
  */
-export default async function ({ formData, formId, currentDate }: GenerateTaxPdfPayload) {
+export async function generateTaxPdf({ formData, formId, currentDate }: GenerateTaxPdfPayload) {
   const pdfDoc = await PDFDocument.load(pdfBytes, {
     parseSpeed: ParseSpeeds.Fastest,
   })

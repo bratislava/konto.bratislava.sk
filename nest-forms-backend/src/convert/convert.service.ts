@@ -6,6 +6,8 @@ import {
   isSlovenskoSkFormDefinition,
   isSlovenskoSkTaxFormDefinition,
 } from '@forms-shared/definitions/form-definitions-helpers'
+import { generateTaxPdf } from '@forms-shared/tax-form/generateTaxPdf'
+import { TaxFormData } from '@forms-shared/tax-form/types'
 import { Cache, CACHE_MANAGER } from '@nestjs/cache-manager'
 import { Inject, Injectable, StreamableFile } from '@nestjs/common'
 import { ConfigService } from '@nestjs/config'
@@ -153,10 +155,10 @@ export default class ConvertService {
     formId?: string,
   ): Promise<Readable> {
     try {
-      const base64Pdf = await this.taxService.getFilledInPdfBase64(
-        formDataJson,
+      const base64Pdf = await generateTaxPdf({
+        formData: formDataJson as TaxFormData,
         formId,
-      )
+      })
 
       const buffer = Buffer.from(base64Pdf, 'base64')
       return Readable.from(buffer)

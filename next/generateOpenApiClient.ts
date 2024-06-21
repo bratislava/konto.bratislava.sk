@@ -11,14 +11,10 @@ const { rimrafSync } = require('rimraf')
  *   automatically.
  * 2. Removes the existing client directory before generating a new one.
  * 3. Replaces all `options?: any` with `options?: RawAxiosRequestConfig` in the generated client. This is needed until
- *   the respective issue is fixed.
+ *   https://github.com/OpenAPITools/openapi-generator/issues/15985 is fixed.
  * 4. Formats the generated client with Prettier.
  */
 
-/**
- * Replaces all `options?: any` with `options?: AxiosRequestConfig`.
- * Needed until https://github.com/OpenAPITools/openapi-generator/issues/15985 is fixed
- */
 async function replaceOptionsType(filePath: string) {
   try {
     const data = await readFile(filePath, 'utf-8')

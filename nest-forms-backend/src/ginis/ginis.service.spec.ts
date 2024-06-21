@@ -555,10 +555,14 @@ describe('GinisService', () => {
       expect(editSpy).toHaveBeenCalled()
     })
 
-    it.skip('should assign submission after edit', async () => {
+    it('should assign submission after edit', async () => {
       ;(getFormDefinitionBySlug as jest.Mock).mockReturnValue({
         type: FormDefinitionType.SlovenskoSkGeneric,
         pospID: 'pospIdValue',
+        ginisAssignment: {
+          ginisOrganizationName: 'orgName',
+          ginisPersonName: 'personName',
+        },
       })
       prismaMock.forms.findUnique.mockResolvedValue({
         ...formBase,
@@ -571,41 +575,7 @@ describe('GinisService', () => {
       let result = await service.onQueueConsumption(messageBase)
       expect(result.requeue).toBeTruthy() // there is no ginisDocumentId
       expect(assignSpy).not.toHaveBeenCalled()
-      ;(getFormDefinitionBySlug as jest.Mock).mockReturnValue({
-        type: FormDefinitionType.SlovenskoSkGeneric,
-        pospID: 'pospIdValue',
-        ginisAssignment: { ginisPersonName: 'personName' },
-      })
-      prismaMock.forms.findUnique.mockResolvedValue({
-        ...formBase,
-        ginisDocumentId: 'docId',
-        ginisState: GinisState.SUBMISSION_EDITED,
-      })
-      result = await service.onQueueConsumption(messageBase)
-      expect(result.requeue).toBeTruthy() // there is no ginisOrganizationName
-      expect(assignSpy).not.toHaveBeenCalled()
-      ;(getFormDefinitionBySlug as jest.Mock).mockReturnValue({
-        type: FormDefinitionType.SlovenskoSkGeneric,
-        pospID: 'pospIdValue',
-        ginisAssignment: { ginisOrganizationName: 'orgName' },
-      })
 
-      prismaMock.forms.findUnique.mockResolvedValue({
-        ...formBase,
-        ginisDocumentId: 'docId',
-        ginisState: GinisState.SUBMISSION_EDITED,
-      } as FormWithFiles)
-      result = await service.onQueueConsumption(messageBase)
-      expect(result.requeue).toBeTruthy() // there is no ginisPersonName
-      expect(assignSpy).not.toHaveBeenCalled()
-      ;(getFormDefinitionBySlug as jest.Mock).mockReturnValue({
-        type: FormDefinitionType.SlovenskoSkGeneric,
-        pospID: 'pospIdValue',
-        ginisAssignment: {
-          ginisOrganizationName: 'orgName',
-          ginisPersonName: 'personName',
-        },
-      })
       prismaMock.forms.findUnique.mockResolvedValue({
         ...formBase,
         ginisDocumentId: 'docId',

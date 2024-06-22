@@ -1,6 +1,7 @@
 import {
   Body,
   Controller,
+  Get,
   Param,
   Post,
   Res,
@@ -222,5 +223,18 @@ export default class ConvertController {
     @Body() data: PdfPreviewDataRequestDto,
   ): Promise<PdfPreviewDataResponseDto> {
     return this.convertService.getPdfPreviewData(data.jwtToken)
+  }
+
+  @Get('playwright-test')
+  @ApiOperation({
+    summary: '',
+    description: 'Test',
+  })
+  @ApiResponse({
+    status: 200,
+    type: String,
+  })
+  async getPlaywrightTest(): Promise<string> {
+    return this.convertService.playwrightTest()
   }
 }

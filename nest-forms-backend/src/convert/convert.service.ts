@@ -30,6 +30,7 @@ import TaxService from '../tax/tax.service'
 import { ErrorsEnum } from '../utils/global-enums/errors.enum'
 import { JsonSchema } from '../utils/global-forms'
 import ThrowerErrorGuard from '../utils/guards/thrower-error.guard'
+import { getPlaywrightBrowserInstance } from '../utils/playwright'
 import MinioClientSubservice from '../utils/subservices/minio-client.subservice'
 import { PdfPreviewJwtPayload } from '../utils/types/global'
 import {
@@ -432,5 +433,12 @@ export default class ConvertService {
       .join('-')
     /* eslint-enable @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-member-access, @typescript-eslint/restrict-template-expressions */
     return directoryName
+  }
+
+  async playwrightTest(): Promise<string> {
+    const browser = await getPlaywrightBrowserInstance()
+    const result = browser.browserType().name()
+    await browser.close()
+    return result
   }
 }

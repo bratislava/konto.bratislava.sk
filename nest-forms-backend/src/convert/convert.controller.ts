@@ -225,7 +225,6 @@ export default class ConvertController {
     return this.convertService.getPdfPreviewData(data.jwtToken)
   }
 
-  @Get('playwright-test')
   @ApiOperation({
     summary: '',
     description: 'Test',
@@ -234,6 +233,7 @@ export default class ConvertController {
     status: 200,
     type: String,
   })
+  @Get('playwright-test')
   async getPlaywrightTest(): Promise<string> {
     return this.convertService.playwrightTest()
   }

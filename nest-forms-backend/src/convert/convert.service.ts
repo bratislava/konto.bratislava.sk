@@ -199,15 +199,6 @@ export default class ConvertService {
         )
       }
 
-      const formElement = await page.$('form')
-
-      if (formElement === null) {
-        throw this.throwerErrorGuard.BadRequestException(
-          ConvertErrorsEnum.PUPPETEER_FORM_NOT_FOUND,
-          ConvertErrorsResponseEnum.PUPPETEER_FORM_NOT_FOUND,
-        )
-      }
-
       const pdfBuffer = await page.pdf({
         format: 'A4',
         printBackground: true,

@@ -46,7 +46,6 @@ import {
   FormIdMissingErrorDto,
   InvalidJwtTokenErrorDto,
   InvalidUuidErrorDto,
-  PuppeteerFormNotFoundErrorDto,
   PuppeteerPageFailedLoadErrorDto,
 } from './errors/convert.errors.dto'
 
@@ -154,10 +153,7 @@ export default class ConvertController {
     status: HttpStatusCode.InternalServerError,
     description: 'There was an error during generating tax pdf.',
   })
-  @ApiExtraModels(
-    PuppeteerPageFailedLoadErrorDto,
-    PuppeteerFormNotFoundErrorDto,
-  )
+  @ApiExtraModels(PuppeteerPageFailedLoadErrorDto)
   @ApiBadRequestResponse({
     status: HttpStatusCode.BadRequest,
     description: 'There was an error during generating pdf.',
@@ -165,9 +161,6 @@ export default class ConvertController {
       oneOf: [
         {
           $ref: getSchemaPath(PuppeteerPageFailedLoadErrorDto),
-        },
-        {
-          $ref: getSchemaPath(PuppeteerFormNotFoundErrorDto),
         },
       ],
     },

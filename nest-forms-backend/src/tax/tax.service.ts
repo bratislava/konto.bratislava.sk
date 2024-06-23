@@ -1,4 +1,5 @@
 /* eslint-disable @typescript-eslint/explicit-function-return-type,sonarjs/cognitive-complexity,eslint-comments/disable-enable-pair */
+import { generateTaxXml } from '@forms-shared/tax-form/generateTaxXml'
 import { InjectQueue } from '@nestjs/bull'
 import { Injectable } from '@nestjs/common'
 import { ConfigService } from '@nestjs/config'
@@ -10,7 +11,6 @@ import { TAX_XSD, TAX_XSLT } from '../utils/constants'
 import { ErrorsEnum } from '../utils/global-enums/errors.enum'
 import ThrowerErrorGuard from '../utils/guards/thrower-error.guard'
 import { GenerateTaxPdfPayload } from '../utils/tax/tax-pdf-mapping/generateTaxPdf'
-import { generateTaxXml } from '../utils/tax/tax-xml-mapping/xml'
 import { TaxSignerDataResponseDto } from './dtos/tax.dto'
 
 @Injectable()

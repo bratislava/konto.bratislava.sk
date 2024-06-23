@@ -1,3 +1,4 @@
+import { ClientFileInfo } from '@forms-shared/form-files/fileStatus'
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger'
 import { Prisma } from '@prisma/client'
 import { RJSFSchema } from '@rjsf/utils'
@@ -135,10 +136,9 @@ export class ConvertToPdfV2RequestDto {
 
   @IsObject()
   @ApiPropertyOptional({
-    description:
-      'Additional metadata for Next server provided in convert PDF request.',
+    description: 'Additional client files to display in the PDF.',
   })
   @IsNotEmpty()
   @IsOptional()
-  additionalMetadata?: Prisma.JsonObject
+  clientFiles?: ClientFileInfo[]
 }

@@ -19,6 +19,7 @@
     "esModuleInterop": true,
     "paths": {
       "@forms-shared/*": ["../forms-shared/src/*"],
-    }
+    },
+    "jsx": "react-jsx",
   }
 }

@@ -16,9 +16,9 @@ import React, {
 } from 'react'
 
 import { getArrayItemTitle } from '../form-utils/getArrayItemTitle'
-import { baRjsfValidator } from '../form-utils/validators'
 import { ArrayFieldUiOptions, BaWidgetType } from '../generator/uiOptionsTypes'
 import { getSummaryDisplayValues } from './getSummaryDisplayValue'
+import { baFormDefaults } from '../form-utils/formDefaults'
 
 export enum SummaryXmlFormTag {
   Form = 'summary-form',
@@ -217,9 +217,9 @@ const SummaryXmlForm = ({ schema, uiSchema, formData }: SummaryXmlFormProps) => 
       schema={schema}
       uiSchema={uiSchema}
       formData={formData}
-      validator={baRjsfValidator}
       // RJSF renders the form in <form> tag by default.
       tagName={({ children }: PropsWithChildren) => <>{children}</>}
+      {...baFormDefaults}
     >
       {/* There must be an empty fragment inside the form, otherwise RJSF renders submit button
        * inside the form. */}

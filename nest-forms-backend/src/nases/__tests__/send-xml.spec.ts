@@ -10,6 +10,7 @@ import ThrowerErrorGuard from '../../utils/guards/thrower-error.guard'
 import NasesUtilsService from '../utils-services/tokens.nases.service'
 
 jest.mock('../../convert/convert.service')
+jest.mock('@forms-shared/summary-pdf/renderSummaryPdf')
 
 const generateMessageXml = (messageId: string): string =>
   // note - needs to be single line without spaces, otherwise it will get rejected by upvs

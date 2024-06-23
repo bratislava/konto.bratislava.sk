@@ -103,6 +103,7 @@ export const SummaryPdf = ({ cssToInject, summaryJson, validatedSummary }: Summa
       </head>
       <body className="font-sans text-[#333]">
         <div className="flex flex-col gap-8">
+          {/* @ts-ignore */}
           <SummaryRenderer
             summaryJson={summaryJson}
             validatedSummary={validatedSummary}

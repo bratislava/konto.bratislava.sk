@@ -183,7 +183,7 @@ const theme: ThemeProps = {
     },
   } satisfies Record<BaWidgetType, ComponentType<WidgetProps>>,
   fields: {
-    AnyOfField: (props) => {
+    AnyOfField: (props: any) => {
       // RJSF renders unnecessary <div>s for MultiSchemaField, which breaks the XML structure.
       // https://github.com/rjsf-team/react-jsonschema-form/blob/ec932db942dd046640303056c89e3501b16ec469/packages/core/src/components/fields/MultiSchemaField.tsx#L217
       const options = getUiOptions(props.uiSchema)

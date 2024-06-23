@@ -17,9 +17,9 @@ export const renderSummaryPdf = async (
   jsonSchema: RJSFSchema,
   uiSchema: UiSchema,
   formData: GenericObjectType,
+  launchBrowser: () => Promise<Browser>,
   serverFiles: FormsBackendFile[] = [],
   clientFiles: ClientFileInfo[] = [],
-  launchBrowser: () => Promise<Browser>,
 ) => {
   const summaryJson = getSummaryJsonNode(jsonSchema, uiSchema, formData)
 

@@ -195,9 +195,9 @@ export default class ConvertService {
       formDefinition.schemas.schema,
       formDefinition.schemas.uiSchema,
       jsonForm as GenericObjectType,
+      () => chromium.launch(),
       form.files,
       clientFiles,
-      () => chromium.launch(),
     )
     return Readable.from(pdfBuffer)
   }

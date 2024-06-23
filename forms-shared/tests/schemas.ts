@@ -14,6 +14,7 @@ import { getSummaryJsonNode } from '../src/summary-json/getSummaryJsonNode'
 import { renderSummaryPdf } from '../src/summary-pdf/renderSummaryPdf'
 import { expectPdfToMatchSnapshot } from '../test-utils/expectPdfToMatchSnapshot'
 import { filterConsole } from '../test-utils/filterConsole'
+import { chromium } from 'playwright'
 
 const definitions = [
   {
@@ -90,6 +91,7 @@ definitions.forEach((definition) => {
           definition.schema.schema,
           definition.schema.uiSchema,
           formData,
+          () => chromium.launch(),
         )
 
         await expectPdfToMatchSnapshot(pdfBuffer)

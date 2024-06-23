@@ -14,6 +14,7 @@ import ConvertService from './convert.service'
 import JsonXmlConvertService from './utils-services/json-xml.convert.service'
 
 jest.mock('./utils-services/json-xml.convert.service')
+jest.mock('@forms-shared/summary-pdf/renderSummaryPdf')
 
 describe('ConvertService', () => {
   let service: ConvertService

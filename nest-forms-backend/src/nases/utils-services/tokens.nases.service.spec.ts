@@ -17,6 +17,7 @@ import NasesUtilsService from './tokens.nases.service'
 jest.mock('axios')
 jest.mock('../../utils/subservices/minio-client.subservice')
 jest.mock('../../convert/convert.service')
+jest.mock('@forms-shared/summary-pdf/renderSummaryPdf')
 
 describe('NasesUtilsService', () => {
   let service: NasesUtilsService

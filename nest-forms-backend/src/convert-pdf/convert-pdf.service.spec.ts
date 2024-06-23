@@ -22,6 +22,7 @@ import MinioClientSubservice from '../utils/subservices/minio-client.subservice'
 import ConvertPdfService from './convert-pdf.service'
 
 jest.mock('../files/files.service')
+jest.mock('@forms-shared/summary-pdf/renderSummaryPdf')
 
 describe('ConvertPdfService', () => {
   let convertPdfService: ConvertPdfService

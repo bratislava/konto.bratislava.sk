@@ -20,6 +20,6 @@
     "paths": {
       "@forms-shared/*": ["../forms-shared/src/*"],
     },
-    "jsx": "react-jsx",
+    "jsx": "react"
   }
 }

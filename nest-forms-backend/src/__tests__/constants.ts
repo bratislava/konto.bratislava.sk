@@ -1,9 +1,9 @@
 /* eslint-disable pii/no-email */
 /* eslint-disable no-secrets/no-secrets */
+/* eslint-disable unicorn/no-thenable */
 
 import { JsonSchema } from "../utils/types/global"
 
-/* eslint-disable unicorn/no-thenable */
 export const jsonSchema = {
   pospID: '00603481.zavazneStanoviskoKInvesticnejCinnosti.sk',
   pospVersion: '0.1',

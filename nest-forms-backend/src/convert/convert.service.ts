@@ -19,7 +19,6 @@ import { v4 as uuidv4 } from 'uuid'
 import { parseStringPromise } from 'xml2js'
 import { firstCharLowerCase } from 'xml2js/lib/processors'
 
-
 import { CognitoGetUserData } from '../auth/dtos/cognito.dto'
 import {
   FormsErrorsEnum,

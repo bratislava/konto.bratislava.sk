@@ -3,13 +3,12 @@ import { chromium } from 'playwright'
 import { GenericObjectType, RJSFSchema, UiSchema } from '@rjsf/utils'
 import { getSummaryJsonNode } from '../summary-json/getSummaryJsonNode'
 import { renderToString } from 'react-dom/server'
-import { getTailwindCss } from './tailwindCss'
 import { SummaryPdf } from './SummaryPdf'
-import { getInterCss } from './interCss'
 import { FormsBackendFile } from '../form-files/serverFilesTypes'
 import { ClientFileInfo } from '../form-files/fileStatus'
 import { mergeClientAndServerFilesSummary } from '../form-files/mergeClientAndServerFiles'
 import { validateSummary } from '../summary-renderer/validateSummary'
+import summaryPdfCss from '../generated-assets/summaryPdfCss'
 
 /**
  * Renders a summary PDF from the given JSON schema, UI schema and data.
@@ -21,8 +20,6 @@ export const renderSummaryPdf = async (
   serverFiles: FormsBackendFile[] = [],
   clientFiles: ClientFileInfo[] = [],
 ) => {
-  const cssArray = await Promise.all([getTailwindCss(), getInterCss()])
-  const cssToInject = cssArray.join('\n')
   const summaryJson = getSummaryJsonNode(jsonSchema, uiSchema, formData)
 
   const fileInfos = mergeClientAndServerFilesSummary(clientFiles, serverFiles)
@@ -30,7 +27,7 @@ export const renderSummaryPdf = async (
 
   const renderedString = renderToString(
     <SummaryPdf
-      cssToInject={cssToInject}
+      cssToInject={summaryPdfCss.toString()}
       summaryJson={summaryJson}
       validatedSummary={validatedSummary}
     ></SummaryPdf>,

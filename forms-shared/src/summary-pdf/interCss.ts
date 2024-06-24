@@ -13,19 +13,12 @@ const getInlinedFontCssByPath = async (filePath: string) => {
   return content
 }
 
-let generatedInterCss: string
-
 export const getInterCss = async () => {
-  if (generatedInterCss) {
-    return generatedInterCss
-  }
-
   const paths = [
     require.resolve('@fontsource/inter/latin.css'),
     require.resolve('@fontsource/inter/latin-ext.css'),
   ]
   const css = await Promise.all(paths.map(getInlinedFontCssByPath))
-  generatedInterCss = css.join('\n')
 
-  return generatedInterCss
+  return css.join('\n')
 }

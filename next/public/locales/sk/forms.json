@@ -111,8 +111,6 @@
     "form_has_errors_signed": "Pre podpísanie a odoslanie opravte vyznačené chyby.",
     "files_scanning_warning": "Prílohy, ktoré ste nahrali prechádzajú antivírovou kontrolou. Žiadosť však môžete odoslať cez Bratislavské konto aj bez čakania na jej ukončenie. V prípade, že by nahraté prílohy obsahovali vírus, budeme vás kontaktovať na e-mailovej adrese, ktorou sa prihlasujete do svojho konta.",
     "vop_agreement_title": "Ochrana osobných údajov",
-    "vop_agreement_content": "Stiahnutím, uložením a/alebo odoslaním Žiadosti výslovne vyhlasujem, že som sa oboznámil s [podmienkami spracúvania osobných údajov Hlavného mesta](https://bratislava.sk/konto/vyhlasenie-o-spracovani-osobnych-udajov) ako prevádzkovateľa osobných údajov a beriem na vedomie, že ich spracúvanie je nevyhnutné na splnenie zákonných povinností Hlavného mesta v súvislosti s vybavením tejto žiadosti.",
-    "vop_agreement_content_tax": "Uložením a/alebo odoslaním daňového priznania výslovne vyhlasujem, že som sa oboznámil s [podmienkami spracúvania osobných údajov Hlavného mesta](https://bratislava.sk/konto/vyhlasenie-o-spracovani-osobnych-udajov) ako prevádzkovateľa osobných údajov a beriem na vedomie, že ich spracúvanie je nevyhnutné na správne vyrubenie dane a/ alebo splnenie ďalších súvisiacich zákonných povinností.",
     "vop_agreement_checkbox": "Súhlasím so spracovaním osobných údajov pre účely odoslania žiadosti",
     "vop_agreement_required": "Pre odoslanie formulára musíte súhlasiť so spracovaním osobných údajov.",
     "virus_alert": "Súbor “{{file}}“ obsahuje vírus. Vráťte sa k prílohám a nahrajte iné súbory. Bez povinných príloh nebudete vedieť žiadosť odoslať.",
@@ -122,7 +120,7 @@
     "button_send": "Odoslať žiadosť",
     "button_send_eid": "Odoslať s eID",
     "contains_errors": "Obsahuje chyby",
-    "unknown_value": "Neznáma hodnota",
+    "invalid_value": "Neznáma hodnota",
     "none_value": "-",
     "export_pdf": "Stiahnuť ako PDF"
   },
@@ -134,10 +132,6 @@
     "button_discard": "Začať odznova",
     "button_title": "Pokračovať vo vypĺňaní",
     "button_title_loading": "Prebieha migrácia"
-  },
-  "old_schema_version_modal": {
-    "title": "Koncept nie je možné upravovať",
-    "content": "Ľutujeme, v dôsledku aktualizácie Bratislavského konta, už nie je možné pokračovať v úpravách tejto žiadosti. Koncept si viete pozrieť, ale nie upraviť."
   },
   "concept_save_error_modal": {
     "title": "Žiadosť sa nepodarilo uložiť",

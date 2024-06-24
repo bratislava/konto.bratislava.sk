@@ -41,7 +41,7 @@ const useCustomPlausibleFormPagesTracking = (formSlug: string) => {
 }
 
 const FormPageWrapper = ({ formContext }: FormPageWrapperProps) => {
-  useCustomPlausibleFormPagesTracking(formContext.slug)
+  useCustomPlausibleFormPagesTracking(formContext.formDefinition.slug)
 
   return (
     <FormSentRenderer

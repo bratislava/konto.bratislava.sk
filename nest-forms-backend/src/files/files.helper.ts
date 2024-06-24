@@ -1,13 +1,19 @@
 import { createHash } from 'node:crypto'
 
+import { isSlovenskoSkFormDefinition } from '@forms-shared/definitions/formDefinitionTypes'
+import { getFormDefinitionBySlug } from '@forms-shared/definitions/getFormDefinitionBySlug'
 import { Injectable, Logger } from '@nestjs/common'
 import { ConfigService } from '@nestjs/config'
-import { Files, FileStatus, Prisma } from '@prisma/client'
+import { Files, FileStatus, Forms, Prisma } from '@prisma/client'
 import { BucketItemStat } from 'minio'
 import traverse from 'traverse'
 import { validate as validateUuid, version as uuidVersion } from 'uuid'
 
 import { isValidScanStatus } from '../common/utils/helpers'
+import {
+  FormsErrorsEnum,
+  FormsErrorsResponseEnum,
+} from '../forms/forms.errors.enum'
 import PrismaService from '../prisma/prisma.service'
 import PostScanFileResponseDto from '../scanner-client/scanner-client.dto'
 import ScannerClientService from '../scanner-client/scanner-client.service'
@@ -17,7 +23,6 @@ import {
 } from '../utils/global-enums/errors.enum'
 import ThrowerErrorGuard from '../utils/guards/thrower-error.guard'
 import MinioClientSubservice from '../utils/subservices/minio-client.subservice'
-import { FormWithSchemaAndVersion } from '../utils/types/prisma'
 import { BasicFileDto, BufferedFileDto, FormInfo } from './files.dto'
 import { FilesErrorsEnum, FilesErrorsResponseEnum } from './files.errors.enum'
 
@@ -298,10 +303,27 @@ export default class FilesHelper {
     return <string>this.configService.get('MINIO_UNSCANNED_BUCKET')
   }
 
-  forms2formInfo(forms: FormWithSchemaAndVersion): FormInfo {
+  forms2formInfo(form: Forms): FormInfo {
+    const formDefinition = getFormDefinitionBySlug(form.formDefinitionSlug)
+    if (!formDefinition) {
+      throw this.throwerErrorGuard.NotFoundException(
+        FormsErrorsEnum.FORM_DEFINITION_NOT_FOUND,
+        `${FormsErrorsResponseEnum.FORM_DEFINITION_NOT_FOUND} ${form.formDefinitionSlug}`,
+      )
+    }
+
+    // TODO: Remove this, it is only needed because of `formDefinition.pospID`. When migrating to non-Slovensko.sk forms,
+    // different identifier must be used.
+    if (!isSlovenskoSkFormDefinition(formDefinition)) {
+      throw this.throwerErrorGuard.UnprocessableEntityException(
+        FormsErrorsEnum.FORM_DEFINITION_NOT_SUPPORTED_TYPE,
+        `${FormsErrorsResponseEnum.FORM_DEFINITION_NOT_SUPPORTED_TYPE} ${form.formDefinitionSlug}`,
+      )
+    }
+
     return {
-      pospId: forms.schemaVersion.pospID,
-      formId: forms.id,
+      pospId: formDefinition.pospID,
+      formId: form.id,
     }
   }
 

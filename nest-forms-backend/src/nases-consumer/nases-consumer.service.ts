@@ -1,11 +1,18 @@
 import { setTimeout } from 'node:timers/promises'
 
+import {
+  FormDefinition,
+  FormDefinitionSlovenskoSk,
+  isSlovenskoSkFormDefinition,
+} from '@forms-shared/definitions/formDefinitionTypes'
+import { getFormDefinitionBySlug } from '@forms-shared/definitions/getFormDefinitionBySlug'
 import { Nack, RabbitRPC } from '@golevelup/nestjs-rabbitmq'
 import { Injectable, Logger } from '@nestjs/common'
-import { FormError, FormState } from '@prisma/client'
+import { FormError, Forms, FormState } from '@prisma/client'
 
 import ConvertPdfService from '../convert-pdf/convert-pdf.service'
 import FilesService from '../files/files.service'
+import { FormsErrorsResponseEnum } from '../forms/forms.errors.enum'
 import FormsService from '../forms/forms.service'
 import NasesUtilsService from '../nases/utils-services/tokens.nases.service'
 import RabbitmqClientService from '../rabbitmq-client/rabbitmq-client.service'
@@ -18,7 +25,6 @@ import {
   getSubjectTextFromForm,
 } from '../utils/handlers/text.handler'
 import alertError from '../utils/logging'
-import { FormWithSchemaAndVersion } from '../utils/types/prisma'
 import {
   RabbitPayloadDto,
   RabbitPayloadUserDataDto,
@@ -50,12 +56,13 @@ export default class NasesConsumerService {
     routingKey: RABBIT_MQ.ROUTING_KEY,
     queue: RABBIT_MQ.QUEUE,
   })
+  // eslint-disable-next-line sonarjs/cognitive-complexity
   public async onQueueConsumption(data: RabbitPayloadDto): Promise<Nack> {
     this.logger.debug(
       `Consuming message for formId: ${data.formId} on try: ${data.tries}`,
     )
 
-    const form = await this.formsService.getUniqueForm(data.formId, true)
+    const form = await this.formsService.getUniqueForm(data.formId)
     if (form === null) {
       alertError(
         `ERROR onQueueConsumption: NotFoundException - Form with id ${data.formId} not found.`,
@@ -72,7 +79,28 @@ export default class NasesConsumerService {
       return new Nack(false)
     }
 
-    const checkedAttachments = await this.checkAttachments(data, form)
+    const formDefinition = getFormDefinitionBySlug(form.formDefinitionSlug)
+    if (!formDefinition) {
+      alertError(
+        `ERROR onQueueConsumption: NotFoundException - ${FormsErrorsResponseEnum.FORM_DEFINITION_NOT_FOUND} ${form.formDefinitionSlug}.`,
+        this.logger,
+      )
+      return new Nack(false)
+    }
+
+    if (!isSlovenskoSkFormDefinition(formDefinition)) {
+      alertError(
+        `ERROR onQueueConsumption: UnprocessableEntityException - ${FormsErrorsResponseEnum.FORM_DEFINITION_NOT_SUPPORTED_TYPE} ${form.formDefinitionSlug}.`,
+        this.logger,
+      )
+      return new Nack(false)
+    }
+
+    const checkedAttachments = await this.checkAttachments(
+      data,
+      form,
+      formDefinition,
+    )
     if (checkedAttachments === CheckAttachmentsEnum.REQUEUE) {
       const requeueAttachment = await this.nackTrueWithWait(20_000)
       return requeueAttachment
@@ -86,10 +114,16 @@ export default class NasesConsumerService {
     )
 
     const jwt = this.nasesUtilsService.createTechnicalAccountJwtToken()
-    const isSent = await this.sendToNasesAndUpdateState(jwt, form, data)
+    const isSent = await this.sendToNasesAndUpdateState(
+      jwt,
+      form,
+      data,
+      formDefinition,
+    )
     // fallback to messageSubject if title can't be parsed
     const formTitle =
-      getFrontendFormTitleFromForm(form) || getSubjectTextFromForm(form)
+      getFrontendFormTitleFromForm(form, formDefinition) ||
+      getSubjectTextFromForm(form, formDefinition)
     if (isSent) {
       const toEmail = data.userData.email || form.email
       if (toEmail) {
@@ -100,7 +134,7 @@ export default class NasesConsumerService {
             formId: form.id,
             messageSubject: formTitle,
             firstName: data.userData.firstName,
-            slug: form.schemaVersion.schema.slug,
+            slug: form.formDefinitionSlug,
           },
         })
       }
@@ -116,7 +150,7 @@ export default class NasesConsumerService {
             formId: form.id,
             messageSubject: formTitle,
             firstName: data.userData.firstName,
-            slug: form.schemaVersion.schema.slug,
+            slug: form.formDefinitionSlug,
           },
         })
       }
@@ -135,13 +169,17 @@ export default class NasesConsumerService {
 
   public async sendToNasesAndUpdateState(
     jwt: string,
-    form: FormWithSchemaAndVersion,
+    form: Forms,
     data: RabbitPayloadDto,
+    formDefinition: FormDefinitionSlovenskoSk,
     senderUri?: string,
   ): Promise<boolean> {
     // TODO find a nicer place to do this
     // create a pdf image of the form, upload it to minio and at it among form files
-    await this.convertPdfService.createPdfImageInFormFiles(data.formId)
+    await this.convertPdfService.createPdfImageInFormFiles(
+      data.formId,
+      formDefinition,
+    )
 
     // prisma update form status to SENDING_TO_NASES
     await this.formsService.updateForm(data.formId, {
@@ -178,7 +216,7 @@ export default class NasesConsumerService {
     // Start checking if the message is in Nases
 
     // TODO this is only because of is signed is only for tax from properties, (this if should be removed after integration ginis / noris)
-    if (!form.schemaVersion.isSigned) {
+    if (!formDefinition.isSigned) {
       await this.rabbitmqClientService.publishNasesCheck({
         formId: data.formId,
         tries: 0,
@@ -234,7 +272,8 @@ export default class NasesConsumerService {
 
   private async checkAttachments(
     data: RabbitPayloadDto,
-    form: FormWithSchemaAndVersion,
+    form: Forms,
+    formDefinition: FormDefinition,
   ): Promise<CheckAttachmentsEnum> {
     const formAttachmentsReady =
       await this.filesService.areFormAttachmentsReady(data.formId)
@@ -248,9 +287,11 @@ export default class NasesConsumerService {
       })
       if (formAttachmentsReady.error === 'INFECTED_FILES') {
         const toEmail = data.userData.email || form.email
+
         // fallback to messageSubject if title can't be parsed
         const formTitle =
-          getFrontendFormTitleFromForm(form) || getSubjectTextFromForm(form)
+          getFrontendFormTitleFromForm(form, formDefinition) ||
+          getSubjectTextFromForm(form, formDefinition)
         if (toEmail) {
           await this.mailgunService.sendEmail({
             to: toEmail,
@@ -259,7 +300,7 @@ export default class NasesConsumerService {
               formId: form.id,
               messageSubject: formTitle,
               firstName: data.userData.firstName,
-              slug: form.schemaVersion.schema.slug,
+              slug: form.formDefinitionSlug,
             },
           })
         }

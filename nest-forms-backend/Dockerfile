@@ -1,3 +1,4 @@
+FROM harbor.bratislava.sk/standalone/forms-shared:latest as shared
 FROM node:20.9 AS base
 
 # Based on https://github.com/puppeteer/puppeteer/blob/main/docker/Dockerfile
@@ -15,12 +16,13 @@ ENV PUPPETEER_EXECUTABLE_PATH /usr/bin/google-chrome-stable
 
 # build
 FROM base AS build
+WORKDIR /root/forms-shared
+COPY --from=shared . ./
 
 RUN apt-get update && apt-get install git
 
-WORKDIR /root/app
+WORKDIR /root/nest-forms-backend
 COPY package*.json ./
-# COPY prisma ./prisma/
 
 RUN npm ci
 
@@ -40,7 +42,7 @@ RUN apt-get update && apt-get install -y git \
     curl \
     vim
 
-WORKDIR /home/node/app
+WORKDIR /home/node/nest-forms-backend
 COPY package*.json ./
 
 RUN npm install
@@ -59,15 +61,13 @@ USER node
 RUN mkdir -p /home/node/app && chown -R node:node /home/node/app
 WORKDIR /home/node/app
 
-COPY --chown=node:node --from=build /root/app/package*.json ./
-COPY --chown=node:node --from=build /root/app/node_modules ./node_modules
+COPY --chown=node:node --from=build /root/nest-forms-backend/package*.json ./
+COPY --chown=node:node --from=build /root/nest-forms-backend/node_modules ./node_modules
 RUN npm prune --production
 
-COPY --chown=node:node --from=build /root/app/dist ./dist
-COPY --chown=node:node --from=build /root/app/res ./res
-COPY --chown=node:node --from=build /root/app/prisma ./prisma
+COPY --chown=node:node --from=build /root/nest-forms-backend/dist ./dist
+COPY --chown=node:node --from=build /root/nest-forms-backend/res ./res
+COPY --chown=node:node --from=build /root/nest-forms-backend/prisma ./prisma
 COPY --chown=node:node nest-cli.json ./nest-cli.json
 
 ENTRYPOINT npx prisma migrate deploy && npm run start:prod
-
-

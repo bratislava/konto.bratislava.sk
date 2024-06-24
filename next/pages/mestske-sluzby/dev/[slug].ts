@@ -1,9 +1,4 @@
-import komunitneZahrady from '@forms-shared/definitions/komunitne-zahrady'
-import predzahradky from '@forms-shared/definitions/predzahradky'
-import priznanieKDaniZNehnutelnosti from '@forms-shared/definitions/priznanie-k-dani-z-nehnutelnosti'
-import stanoviskoKInvesticnemuZameru from '@forms-shared/definitions/stanovisko-k-investicnemu-zameru'
-import zavazneStanoviskoKInvesticnejCinnosti from '@forms-shared/definitions/zavazne-stanovisko-k-investicnej-cinnosti'
-import { RJSFSchema, UiSchema } from '@rjsf/utils'
+import { getFormDefinitionBySlug } from '@forms-shared/definitions/getFormDefinitionBySlug'
 
 import FormPageWrapper, { FormPageWrapperProps } from '../../../components/forms/FormPageWrapper'
 import { SsrAuthProviderHOC } from '../../../components/logic/SsrAuthContext'
@@ -11,53 +6,34 @@ import { environment } from '../../../environment'
 import { amplifyGetServerSideProps } from '../../../frontend/utils/amplifyServer'
 import { slovakServerSideTranslations } from '../../../frontend/utils/slovakServerSideTranslations'
 
-const slugSchemasMap = {
-  'priznanie-k-dani-z-nehnutelnosti': priznanieKDaniZNehnutelnosti,
-  'stanovisko-k-investicnemu-zameru': stanoviskoKInvesticnemuZameru,
-  'zavazne-stanovisko-k-investicnej-cinnosti': zavazneStanoviskoKInvesticnejCinnosti,
-  'komunitne-zahrady': komunitneZahrady,
-  predzahradky,
+type Params = {
+  slug: string
 }
 
 /**
  * A route to preview forms in `forms-shared` folder. Backend functionality doesn't work. Works only in development.
  */
-export const getServerSideProps = amplifyGetServerSideProps<FormPageWrapperProps>(
+export const getServerSideProps = amplifyGetServerSideProps<FormPageWrapperProps, Params>(
   async ({ context }) => {
-    if (!environment.featureToggles.developmentForms) {
+    if (!environment.featureToggles.developmentForms || !context.params) {
       return { notFound: true }
     }
 
-    const slug = context.params?.slug as string
-    const schema = slugSchemasMap[slug]
-
-    if (!schema) {
+    const { slug } = context.params
+    const formDefinition = getFormDefinitionBySlug(slug)
+    if (!formDefinition) {
       return { notFound: true }
     }
-
-    // To remove undefined values from the schema as they are not allowed by Next.js
-    const parsedSchema = JSON.parse(JSON.stringify(schema)) as {
-      schema: RJSFSchema
-      uiSchema: UiSchema
-    }
-
-    const isTaxForm = slug === 'priznanie-k-dani-z-nehnutelnosti'
 
     return {
       props: {
         formContext: {
-          slug,
-          schema: parsedSchema.schema,
-          uiSchema: parsedSchema.uiSchema,
+          formDefinition,
           formId: '',
           initialFormDataJson: {},
           initialServerFiles: [],
-          oldSchemaVersion: false,
           formSent: false,
           formMigrationRequired: false,
-          schemaVersionId: '',
-          isTaxForm,
-          isSigned: isTaxForm,
         },
         ...(await slovakServerSideTranslations()),
       } satisfies FormPageWrapperProps,

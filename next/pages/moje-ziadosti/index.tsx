@@ -1,4 +1,5 @@
 import { GetFormsResponseDto } from '@clients/openapi-forms'
+import { formDefinitions } from '@forms-shared/definitions/formDefinitions'
 import { getDraftApplications } from 'components/forms/segments/AccountSections/MyApplicationsSection/MyApplicationsList'
 import MyApplicationsSection from 'components/forms/segments/AccountSections/MyApplicationsSection/MyApplicationsSection'
 import AccountPageLayout from 'components/layouts/AccountPageLayout'
@@ -10,6 +11,7 @@ import { slovakServerSideTranslations } from '../../frontend/utils/slovakServerS
 type AccountMyApplicationsPageProps = {
   applications: GetFormsResponseDto
   selectedSection: ApplicationsListVariant
+  formDefinitionSlugTitleMap: Record<string, string>
 }
 export const sections = ['SENT', 'SENDING', 'DRAFT'] as const
 
@@ -20,6 +22,9 @@ const slovakToEnglishSectionNames: Record<string, ApplicationsListVariant> = {
   'odosiela-sa': 'SENDING',
   koncepty: 'DRAFT',
 }
+
+const getFormDefinitionSlugTitleMap = () =>
+  Object.fromEntries(formDefinitions.map((form) => [form.slug, form.title]))
 
 export const getServerSideProps = amplifyGetServerSideProps(
   async ({ context, getAccessToken }) => {
@@ -32,6 +37,7 @@ export const getServerSideProps = amplifyGetServerSideProps(
       props: {
         applications: await getDraftApplications(selectedSection, currentPage, getAccessToken),
         selectedSection,
+        formDefinitionSlugTitleMap: getFormDefinitionSlugTitleMap(),
         ...(await slovakServerSideTranslations()),
       },
     }
@@ -42,10 +48,15 @@ export const getServerSideProps = amplifyGetServerSideProps(
 const AccountMyApplicationsPage = ({
   selectedSection,
   applications,
+  formDefinitionSlugTitleMap,
 }: AccountMyApplicationsPageProps) => {
   return (
     <AccountPageLayout>
-      <MyApplicationsSection selectedSection={selectedSection} applications={applications} />
+      <MyApplicationsSection
+        selectedSection={selectedSection}
+        applications={applications}
+        formDefinitionSlugTitleMap={formDefinitionSlugTitleMap}
+      />
     </AccountPageLayout>
   )
 }

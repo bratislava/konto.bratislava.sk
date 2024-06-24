@@ -2,15 +2,15 @@ import React from 'react'
 import SummaryRenderer, {
   SummaryArrayItemRendererProps,
   SummaryArrayRendererProps,
-  SummaryDisplayValueRendererProps,
   SummaryFieldRendererProps,
+  SummaryFileValueRendererProps,
   SummaryFormRendererProps,
   SummaryStepRendererProps,
+  SummaryStringValueRendererProps,
 } from '../summary-renderer/SummaryRenderer'
-import { SummaryDisplayValueType } from '../summary-json/getSummaryDisplayValue'
 import { SummaryJsonForm } from '../summary-json/summaryJsonTypes'
 import Markdown from 'react-markdown'
-import { generalTermsAndConditions } from '../definitions/terms-and-conditions'
+import { generalTermsAndConditions } from '../definitions/termsAndConditions'
 import cx from 'classnames'
 import { ValidatedSummary } from '../summary-renderer/validateSummary'
 
@@ -48,19 +48,20 @@ const FieldRenderer = ({ field, hasError, children }: SummaryFieldRendererProps)
   )
 }
 
-const DisplayValueRenderer = ({ displayValue }: SummaryDisplayValueRendererProps) => {
-  switch (displayValue.type) {
-    case SummaryDisplayValueType.String:
-      return <span>{displayValue.value}</span>
-    case SummaryDisplayValueType.File:
-      return <span>{displayValue.id}</span>
-    case SummaryDisplayValueType.Invalid:
-      return <span className="text-red-500">Neznáma hodnota</span>
-    case SummaryDisplayValueType.None:
-      return <span>-</span>
-    default:
-      return null
-  }
+const StringValueRenderer = ({ value }: SummaryStringValueRendererProps) => {
+  return <span>{value}</span>
+}
+
+const FileValueRenderer = ({ fileInfo }: SummaryFileValueRendererProps) => {
+  return <span>{fileInfo.fileName}</span>
+}
+
+const NoneValueRenderer = () => {
+  return <span>-</span>
+}
+
+const InvalidValueRenderer = () => {
+  return <span className="text-red-500">Neznáma hodnota</span>
 }
 
 const ArrayRenderer = ({ array, children }: SummaryArrayRendererProps) => (
@@ -110,7 +111,10 @@ export const SummaryPdf = ({ cssToInject, summaryJson, validatedSummary }: Summa
             renderField={FieldRenderer}
             renderArray={ArrayRenderer}
             renderArrayItem={ArrayItemRenderer}
-            renderDisplayValue={DisplayValueRenderer}
+            renderStringValue={StringValueRenderer}
+            renderFileValue={FileValueRenderer}
+            renderNoneValue={NoneValueRenderer}
+            renderInvalidValue={InvalidValueRenderer}
           />
           <div className="flex flex-col gap-4">
             <h2 className="text-xl font-semibold">Ochrana osobných údajov</h2>

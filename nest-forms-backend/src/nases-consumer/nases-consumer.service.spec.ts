@@ -1,11 +1,12 @@
 import { Readable } from 'node:stream'
 
+import { FormDefinitionSlovenskoSk } from '@forms-shared/definitions/formDefinitionTypes'
 import { createMock } from '@golevelup/ts-jest'
 import { getQueueToken } from '@nestjs/bull'
 import { CacheModule } from '@nestjs/cache-manager'
 import { ConfigService } from '@nestjs/config'
 import { Test, TestingModule } from '@nestjs/testing'
-import { FormError, SchemaVersion } from '@prisma/client'
+import { FormError, Forms } from '@prisma/client'
 
 import prismaMock from '../../test/singleton'
 import ConvertService from '../convert/convert.service'
@@ -24,10 +25,7 @@ import MailgunService from '../utils/global-services/mailgun/mailgun.service'
 import ThrowerErrorGuard from '../utils/guards/thrower-error.guard'
 import rabbitmqRequeueDelay from '../utils/handlers/rabbitmq.handlers'
 import MinioClientSubservice from '../utils/subservices/minio-client.subservice'
-import {
-  FormWithSchemaAndVersion,
-  FormWithSchemaVersionAndFiles,
-} from '../utils/types/prisma'
+import { FormWithFiles } from '../utils/types/prisma'
 import NasesConsumerHelper from './nases-consumer.helper'
 import NasesConsumerService from './nases-consumer.service'
 
@@ -129,10 +127,7 @@ describe('NasesConsumerService', () => {
     // mock resolving mick form & saving file to db in each convert-pdf call
     formsService['getUniqueForm'] = jest.fn().mockResolvedValue({
       id: 'id',
-      schemaVersion: {
-        pospID: 'pospId',
-      } as SchemaVersion,
-    } as FormWithSchemaVersionAndFiles)
+    } as FormWithFiles)
     filesHelper.upsertFileByUid = jest.fn().mockResolvedValue(fakeFile)
   })
 
@@ -156,7 +151,7 @@ describe('NasesConsumerService', () => {
 
       await service.sendToNasesAndUpdateState(
         '',
-        {} as FormWithSchemaAndVersion,
+        {} as Forms,
         {
           formId: '',
           tries: 1,
@@ -165,6 +160,7 @@ describe('NasesConsumerService', () => {
             firstName: 'Tester',
           },
         },
+        {} as FormDefinitionSlovenskoSk,
         '',
       )
 
@@ -190,7 +186,7 @@ describe('NasesConsumerService', () => {
 
       await service.sendToNasesAndUpdateState(
         '',
-        { schemaVersion: { isSigned: false } } as FormWithSchemaAndVersion,
+        {} as Forms,
         {
           formId: 'formIdVal',
           tries: 1,
@@ -199,6 +195,7 @@ describe('NasesConsumerService', () => {
             firstName: 'Tester',
           },
         },
+        {} as FormDefinitionSlovenskoSk,
         '',
       )
 

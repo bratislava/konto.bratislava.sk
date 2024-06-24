@@ -3,21 +3,30 @@
 import * as crypto from 'node:crypto'
 import { Stream } from 'node:stream'
 
+import {
+  FormDefinitionSlovenskoSk,
+  isSlovenskoSkFormDefinition,
+  isSlovenskoSkTaxFormDefinition,
+} from '@forms-shared/definitions/formDefinitionTypes'
+import { getFormDefinitionBySlug } from '@forms-shared/definitions/getFormDefinitionBySlug'
 import { Injectable, Logger } from '@nestjs/common'
+import { Forms } from '@prisma/client'
 import axios, { AxiosResponse } from 'axios'
 import mime from 'mime-types'
 import { v1 as uuidv1, v4 as uuidv4 } from 'uuid'
 
 import { CognitoGetUserData } from '../../auth/dtos/cognito.dto'
 import ConvertService from '../../convert/convert.service'
+import {
+  FormsErrorsEnum,
+  FormsErrorsResponseEnum,
+} from '../../forms/forms.errors.enum'
 import PrismaService from '../../prisma/prisma.service'
 import TaxService from '../../tax/tax.service'
 import { ErrorsEnum } from '../../utils/global-enums/errors.enum'
-import { JsonSchema } from '../../utils/global-forms'
 import ThrowerErrorGuard from '../../utils/guards/thrower-error.guard'
 import alertError from '../../utils/logging'
 import MinioClientSubservice from '../../utils/subservices/minio-client.subservice'
-import { FormWithSchemaAndVersion } from '../../utils/types/prisma'
 import {
   NasesIsMessageDeliveredDto,
   NasesSendFormDataDto,
@@ -81,7 +90,8 @@ export default class NasesUtilsService {
 
   // TODO error handling of this function
   private async createAttachmentsIfExists(
-    form: FormWithSchemaAndVersion,
+    form: Forms,
+    formDefinition: FormDefinitionSlovenskoSk,
   ): Promise<string> {
     let result = ''
     const files = await this.prismaService.files.findMany({
@@ -89,6 +99,7 @@ export default class NasesUtilsService {
         formId: form.id,
       },
     })
+
     // eslint-disable-next-line no-restricted-syntax
     for (const file of files) {
       const mimeType = mime.lookup(file.fileName) || 'application/pdf'
@@ -101,7 +112,7 @@ export default class NasesUtilsService {
       const fileBase64 = fileBuffer.toString('base64')
       result += `<Object Id="${file.id}" IsSigned="false" Name="${file.fileName}" Description="ATTACHMENT" Class="ATTACHMENT" MimeType="${mimeType}" Encoding="Base64">${fileBase64}</Object>`
     }
-    if (form.schemaVersion?.pospID === process.env.TAX_FORM_POSP_ID) {
+    if (isSlovenskoSkTaxFormDefinition(formDefinition)) {
       try {
         const base64FormPdf = await this.taxService.getFilledInPdfBase64(
           form.formDataJson,
@@ -295,8 +306,8 @@ export default class NasesUtilsService {
   }
 
   /**
-   * Dynamically creates a subject of the submission. If there is not a subject format in the schema version,
-   * it uses default from the schema.
+   * Dynamically creates a subject of the submission. If there is not a subject format in the form definition,
+   * it uses default from the form definition.
    *
    * It replaces an occurence of "{path}" with a value from data.formDataJson, at the given path. There are three possibilities:
    * - If there is a string, it just prints the string
@@ -311,30 +322,39 @@ export default class NasesUtilsService {
    */
 
   private async createEnvelopeSendMessage(
-    data: FormWithSchemaAndVersion,
+    form: Forms,
     senderUri?: string,
   ): Promise<string> {
-    const { xmlTemplate, jsonSchema, isSigned } = data.schemaVersion
-
-    if (jsonSchema === null) {
-      throw this.throwerErrorGuard.UnprocessableEntityException(
-        ErrorsEnum.UNPROCESSABLE_ENTITY_ERROR,
-        `Json schema for schema version with id ${data.schemaVersionId} is null.`,
+    const formDefinition = getFormDefinitionBySlug(form.formDefinitionSlug)
+    if (!formDefinition) {
+      throw this.throwerErrorGuard.NotFoundException(
+        FormsErrorsEnum.FORM_DEFINITION_NOT_FOUND,
+        `${FormsErrorsResponseEnum.FORM_DEFINITION_NOT_FOUND} ${form.formDefinitionSlug}`,
       )
     }
+    if (!isSlovenskoSkFormDefinition(formDefinition)) {
+      throw this.throwerErrorGuard.UnprocessableEntityException(
+        FormsErrorsEnum.FORM_DEFINITION_NOT_SUPPORTED_TYPE,
+        `createEnvelopeSendMessage: ${FormsErrorsResponseEnum.FORM_DEFINITION_NOT_SUPPORTED_TYPE}: ${formDefinition.type}, form id: ${form.id}`,
+      )
+    }
+    const { isSigned, pospID, pospVersion, title } = formDefinition
 
     let message: string | null = null
 
-    if (data.formDataBase64) {
-      message = data.formDataBase64
+    if (form.formDataBase64) {
+      message = form.formDataBase64
     }
     if (!isSigned) {
       try {
-        message = this.convertService.convertJsonToXml(
-          data.formDataJson,
-          xmlTemplate,
-          jsonSchema as JsonSchema,
-        ).xmlForm
+        message = await this.convertService.convertJsonToXmlV2(
+          {
+            formId: form.id,
+            slug: form.formDefinitionSlug,
+            jsonData: form.formDataJson,
+          },
+          null,
+        )
       } catch (error) {
         throw this.throwerErrorGuard.InternalServerErrorException(
           ErrorsEnum.INTERNAL_SERVER_ERROR,
@@ -384,21 +404,18 @@ export default class NasesUtilsService {
     //   </Body>
     // </SKTalkMessage>
     // `
-    const { pospID, pospVersion, schema, formDescription } = data.schemaVersion
     const senderId = senderUri ?? process.env.NASES_SENDER_URI ?? ''
     const correlationId = uuidv4()
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    const objectId = uuidv4()
-    let subject: string = data.id
+    let subject: string = form.id
     let mimeType = 'application/x-eform-xml'
     let encoding = 'XML'
     let attachments = ''
 
-    if (isSigned) {
-      subject = 'Podávanie daňového priznanie k dani z nehnuteľností' // TODO fix in schema, quickfix here data?.schemaVersion.schema.messageSubject
+    if (isSlovenskoSkTaxFormDefinition(formDefinition)) {
+      subject = 'Podávanie daňového priznanie k dani z nehnuteľností' // TODO fix in formDefinition, quickfix here formDefinition.messageSubjectDefault
       mimeType = 'application/vnd.etsi.asic-e+zip'
       encoding = 'Base64'
-      attachments = await this.createAttachmentsIfExists(data)
+      attachments = await this.createAttachmentsIfExists(form, formDefinition)
     }
     envelope = `
             <?xml version="1.0" encoding="utf-8"?>
@@ -409,24 +426,22 @@ export default class NasesUtilsService {
                   <Class>EGOV_APPLICATION</Class>
                   <PospID>${pospID}</PospID>
                   <PospVersion>${pospVersion}</PospVersion>
-                  <MessageID>${data.id}</MessageID>
+                  <MessageID>${form.id}</MessageID>
                   <CorrelationID>${correlationId}</CorrelationID>
                 </MessageInfo>
               </Header>
               <Body>
                 <MessageContainer xmlns="http://schemas.gov.sk/core/MessageContainer/1.0">
-                  <MessageId>${data.id}</MessageId>
+                  <MessageId>${form.id}</MessageId>
                   <SenderId>${senderId}</SenderId>
                   <RecipientId>${
                     process.env.NASES_RECIPIENT_URI ?? ''
                   }</RecipientId>
                   <MessageType>${pospID}</MessageType>
                   <MessageSubject>${subject}</MessageSubject>
-                  <Object Id="${data.id}" IsSigned="${
+                  <Object Id="${form.id}" IsSigned="${
                     isSigned ? 'true' : 'false'
-                  }" Name="${schema.formName}" Description="${
-                    formDescription ?? ''
-                  }" Class="FORM" MimeType="${mimeType}" Encoding="${encoding}">${message}</Object>
+                  }" Name="${title}" Description="" Class="FORM" MimeType="${mimeType}" Encoding="${encoding}">${message}</Object>
     ${attachments}
                 </MessageContainer>
               </Body>
@@ -457,7 +472,7 @@ export default class NasesUtilsService {
 
   async sendMessageNases(
     jwt: string,
-    data: FormWithSchemaAndVersion,
+    data: Forms,
     senderUri?: string,
   ): Promise<NasesSendResponse> {
     const message = await this.createEnvelopeSendMessage(data, senderUri)

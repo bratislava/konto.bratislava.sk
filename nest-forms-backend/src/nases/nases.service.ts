@@ -1,6 +1,7 @@
+import { isSlovenskoSkFormDefinition } from '@forms-shared/definitions/formDefinitionTypes'
+import { getFormDefinitionBySlug } from '@forms-shared/definitions/getFormDefinitionBySlug'
 import { Injectable, Logger } from '@nestjs/common'
 import { FormOwnerType, Forms, FormState } from '@prisma/client'
-import { RJSFSchema } from '@rjsf/utils'
 import axios, { AxiosResponse } from 'axios'
 
 import { CognitoGetUserData } from '../auth/dtos/cognito.dto'
@@ -114,12 +115,19 @@ export default class NasesService {
             : undefined,
     }
     const result = await this.formsService.createForm(data)
-    const messageSubject = getSubjectTextFromForm(result)
-    const frontendTitle = getFrontendFormTitleFromForm(result) || messageSubject
+    const formDefinition = getFormDefinitionBySlug(result.formDefinitionSlug)
+    if (!formDefinition) {
+      throw this.throwerErrorGuard.NotFoundException(
+        FormsErrorsEnum.FORM_DEFINITION_NOT_FOUND,
+        `${FormsErrorsResponseEnum.FORM_DEFINITION_NOT_FOUND} ${result.formDefinitionSlug}`,
+      )
+    }
+
+    const messageSubject = getSubjectTextFromForm(result, formDefinition)
+    const frontendTitle =
+      getFrontendFormTitleFromForm(result, formDefinition) || messageSubject
     return {
       ...result,
-      isLatestSchemaVersionForSlug:
-        result.schemaVersion.schema.latestVersionId === result.schemaVersionId,
       messageSubject,
       frontendTitle,
     }
@@ -173,16 +181,23 @@ export default class NasesService {
     ico: string | null,
     userExternalId?: string,
   ): Promise<GetFormResponseDto> {
-    const form = await this.formsService.getForm(id, true, ico, userExternalId)
-    const isLatestSchemaVersionForSlug =
-      form.schemaVersionId === form.schemaVersion.schema.latestVersionId
-    const messageSubject = getSubjectTextFromForm(form)
-    const frontendTitle = getFrontendFormTitleFromForm(form) || messageSubject
+    const form = await this.formsService.getForm(id, ico, userExternalId)
+    const formDefinition = getFormDefinitionBySlug(form.formDefinitionSlug)
+    if (!formDefinition) {
+      throw this.throwerErrorGuard.NotFoundException(
+        FormsErrorsEnum.FORM_DEFINITION_NOT_FOUND,
+        `${FormsErrorsResponseEnum.FORM_DEFINITION_NOT_FOUND} ${form.formDefinitionSlug}`,
+      )
+    }
+
+    const messageSubject = getSubjectTextFromForm(form, formDefinition)
+    const frontendTitle =
+      getFrontendFormTitleFromForm(form, formDefinition) || messageSubject
     return {
       ...form,
-      isLatestSchemaVersionForSlug,
       messageSubject,
       frontendTitle,
+      formDefinitionSlug: formDefinition.slug,
     }
   }
 
@@ -263,8 +278,15 @@ export default class NasesService {
     user: CognitoGetUserData,
   ): Promise<SendFormResponseDto> {
     const form = await this.formsService.checkFormBeforeSending(id)
+    const formDefinition = getFormDefinitionBySlug(form.formDefinitionSlug)
+    if (!formDefinition) {
+      throw this.throwerErrorGuard.NotFoundException(
+        FormsErrorsEnum.FORM_DEFINITION_NOT_FOUND,
+        `${FormsErrorsResponseEnum.FORM_DEFINITION_NOT_FOUND} ${form.formDefinitionSlug}`,
+      )
+    }
 
-    if (form.schemaVersion.schema.onlyVerified && !isUserVerified(user)) {
+    if (!isUserVerified(user)) {
       throw this.throwerErrorGuard.ForbiddenException(
         NasesErrorsEnum.SEND_UNVERIFIED,
         NasesErrorsResponseEnum.SEND_UNVERIFIED,
@@ -279,7 +301,7 @@ export default class NasesService {
     }
     if (
       !this.formsValidator.validateFormData(
-        form.schemaVersion.jsonSchema as RJSFSchema,
+        formDefinition.schemas.schema,
         form.formDataJson,
         id,
       )
@@ -347,11 +369,26 @@ export default class NasesService {
       )
     }
 
+    const formDefinition = getFormDefinitionBySlug(form.formDefinitionSlug)
+    if (!formDefinition) {
+      throw this.throwerErrorGuard.NotFoundException(
+        FormsErrorsEnum.FORM_DEFINITION_NOT_FOUND,
+        `${FormsErrorsResponseEnum.FORM_DEFINITION_NOT_FOUND} ${form.formDefinitionSlug}`,
+      )
+    }
+
+    if (!isSlovenskoSkFormDefinition(formDefinition)) {
+      throw this.throwerErrorGuard.UnprocessableEntityException(
+        FormsErrorsEnum.FORM_DEFINITION_NOT_SUPPORTED_TYPE,
+        `sendFormEid: ${FormsErrorsResponseEnum.FORM_DEFINITION_NOT_SUPPORTED_TYPE}: ${formDefinition.type}, form id: ${form.id}`,
+      )
+    }
+
     // TODO - rethink/address, skipping formData validation for is signed as in this step, the form data can be different from what we are sending anyway
     if (
-      !form.schemaVersion.isSigned &&
+      !formDefinition.isSigned &&
       !this.formsValidator.validateFormData(
-        form.schemaVersion.jsonSchema as RJSFSchema,
+        formDefinition.schemas.schema,
         form.formDataJson,
         id,
       )
@@ -391,6 +428,7 @@ export default class NasesService {
       jwt,
       form,
       data,
+      formDefinition,
       user.sub,
     )
 

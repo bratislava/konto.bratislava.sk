@@ -1,5 +1,6 @@
 import { formsApi } from '@clients/forms'
 import { GetFormResponseDtoStateEnum } from '@clients/openapi-forms'
+import { getFormDefinitionBySlug } from '@forms-shared/definitions/getFormDefinitionBySlug'
 import { isAxiosError } from 'axios'
 
 import FormPageWrapper, { FormPageWrapperProps } from '../../../components/forms/FormPageWrapper'
@@ -17,26 +18,32 @@ type Params = {
 
 export const getServerSideProps = amplifyGetServerSideProps<FormPageWrapperProps, Params>(
   async ({ context, getAccessToken, isSignedIn }) => {
-    if (!context.params) return { notFound: true }
+    if (!context.params) {
+      return { notFound: true }
+    }
 
-    const { slug, id } = context.params
+    const { slug, id: formId } = context.params
+    const formDefinition = getFormDefinitionBySlug(slug)
+    if (!formDefinition) {
+      return { notFound: true }
+    }
 
     try {
       // These promises cannot be run in parallel because the redirects in catch blocks depends on the error response of the first promise.
-      const { data: form } = await formsApi.nasesControllerGetForm(id, {
+      const { data: form } = await formsApi.nasesControllerGetForm(formId, {
         accessToken: 'onlyAuthenticated',
         accessTokenSsrGetFn: getAccessToken,
       })
       if (
         !form ||
         /* If there wouldn't be this check it would be possible to open the page with any slug in the URL. */
-        form.schemaVersion.schema?.slug !== slug
+        form.formDefinitionSlug !== slug
       ) {
         return { notFound: true }
       }
 
       const [{ data: files }, initialSignature] = await Promise.all([
-        formsApi.filesControllerGetFilesStatusByForm(id, {
+        formsApi.filesControllerGetFilesStatusByForm(formId, {
           accessToken: 'onlyAuthenticated',
           accessTokenSsrGetFn: getAccessToken,
         }),
@@ -50,19 +57,13 @@ export const getServerSideProps = amplifyGetServerSideProps<FormPageWrapperProps
       return {
         props: {
           formContext: {
-            slug,
-            schema: form.schemaVersion.jsonSchema,
-            uiSchema: form.schemaVersion.uiSchema,
-            formId: id,
+            formDefinition,
+            formId,
             initialFormDataJson: form.formDataJson ?? {},
             initialServerFiles: files,
             initialSignature,
-            oldSchemaVersion: !form.isLatestSchemaVersionForSlug,
             formSent,
             formMigrationRequired,
-            schemaVersionId: form.schemaVersionId,
-            isSigned: form.schemaVersion.isSigned,
-            isTaxForm: slug === 'priznanie-k-dani-z-nehnutelnosti',
           },
           ...(await slovakServerSideTranslations()),
         } satisfies FormPageWrapperProps,

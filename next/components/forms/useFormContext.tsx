@@ -1,26 +1,25 @@
 import { GetFileResponseReducedDto } from '@clients/openapi-forms'
+import {
+  FormDefinition,
+  isSlovenskoSkGenericFormDefinition,
+  isSlovenskoSkTaxFormDefinition,
+} from '@forms-shared/definitions/formDefinitionTypes'
 import { ClientFileInfo } from '@forms-shared/form-files/fileStatus'
-import { GenericObjectType, RJSFSchema, UiSchema } from '@rjsf/utils'
+import { GenericObjectType } from '@rjsf/utils'
 import { createContext, PropsWithChildren, useContext } from 'react'
 
 import { useSsrAuth } from '../../frontend/hooks/useSsrAuth'
 import type { FormSignature } from './signer/useFormSignature'
 
 export type FormContext = {
-  slug: string
+  formDefinition: FormDefinition
   formId: string
-  schema: RJSFSchema
-  uiSchema: UiSchema
   initialFormDataJson: GenericObjectType
   initialClientFiles?: ClientFileInfo[]
   initialServerFiles: GetFileResponseReducedDto[]
   initialSignature?: FormSignature | null
-  oldSchemaVersion: boolean
   formSent: boolean
   formMigrationRequired: boolean
-  schemaVersionId: string
-  isSigned: boolean
-  isTaxForm: boolean
   isPdf?: boolean
 }
 
@@ -41,11 +40,15 @@ export const useFormContext = () => {
   if (!context) {
     throw new Error('useFormContext must be used within a FormContextProvider')
   }
+  const isTaxForm = isSlovenskoSkTaxFormDefinition(context.formDefinition)
   const { eIdTaxFormAllowed } = useSsrAuth()
-  const { formMigrationRequired, oldSchemaVersion, formSent } = context
-  const isReadonly = formMigrationRequired || oldSchemaVersion || formSent
-  const isDeletable = (formMigrationRequired || oldSchemaVersion) && !formSent
-  const isSigned = context.isSigned && eIdTaxFormAllowed
+  const { formMigrationRequired, formSent } = context
+  const isReadonly = formMigrationRequired || formSent
+  const isDeletable = formMigrationRequired && !formSent
+  const isSigned =
+    isSlovenskoSkGenericFormDefinition(context.formDefinition) &&
+    context.formDefinition.isSigned &&
+    eIdTaxFormAllowed
 
-  return { ...context, isSigned, isReadonly, isDeletable }
+  return { ...context, isTaxForm, isSigned, isReadonly, isDeletable }
 }

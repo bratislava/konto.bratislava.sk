@@ -12,8 +12,8 @@
     "start": "nest start",
     "start:dev": "nest start --watch",
     "start:debug": "nest start --debug --watch",
-    "start:prod": "node dist/src/main",
-    "seed:prod": "node dist/prisma/seed.js",
+    "start:prod": "node dist/nest-forms-backend/src/main",
+    "seed:prod": "node dist/nest-forms-backend/prisma/seed.js",
     "lint": "eslint \"{src,apps,libs,test}/**/*.{ts,js}\"",
     "lint:report": "eslint -f json -o eslint-report.json \"{src,apps,libs,test}/**/*.{ts,js}\"",
     "lint:fix": "eslint \"{src,apps,libs,test}/**/*.{ts,js}\" --fix",
@@ -41,7 +41,7 @@
     "@nestjs/swagger": "^7.3.1",
     "@pdf-lib/fontkit": "^1.1.1",
     "@prisma/client": "^5.12.1",
-    "@rjsf/utils": "^5.18.2",
+    "@rjsf/utils": "^5.18.4",
     "ajv": "^8.12.0",
     "ajv-formats": "^2.1.1",
     "amqplib": "^0.10.4",
@@ -133,7 +133,7 @@
     "jest-mock-extended": "^3.0.4",
     "minio": "^7.1.1",
     "path": "^0.12.7",
-    "prettier": "^3.2.5",
+    "prettier": "^3.3.2",
     "prisma": "^5.12.1",
     "ts-jest": "^29.1.2",
     "ts-loader": "^9.5.1",
@@ -154,7 +154,6 @@
     },
     "collectCoverageFrom": [
       "**/*.(t|j)s",
-      "!<rootDir>/utils/global-forms/**/*",
       "!**/*.dto.ts",
       "!**/*.module.ts",
       "!**/*.enum.ts"
@@ -166,9 +165,9 @@
     ],
     "testPathIgnorePatterns": [
       "<rootDir>/nases/__tests__"
-    ]
-  },
-  "prisma": {
-    "seed": "ts-node prisma/seed.ts"
+    ],
+    "moduleNameMapper": {
+      "^@forms-shared/(.*)$": "<rootDir>/../../forms-shared/src/$1"
+    }
   }
 }

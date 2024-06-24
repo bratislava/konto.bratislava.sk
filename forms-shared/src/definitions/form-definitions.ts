@@ -1,10 +1,10 @@
 import { Schemas } from '../generator/functions'
-import stanoviskoKInvesticnemuZameru from './stanovisko-k-investicnemu-zameru'
-import predzahradky from './predzahradky'
-import priznanieKDaniZNehnutelnosti from './priznanie-k-dani-z-nehnutelnosti'
+import stanoviskoKInvesticnemuZameru from '../schemas/stanoviskoKInvesticnemuZameru'
+import predzahradky from '../schemas/predzahradky'
+import priznanieKDaniZNehnutelnosti from '../schemas/priznanieKDaniZNehnutelnosti'
 import { generalTermsAndConditions, taxTermsAndConditions } from './terms-and-conditions'
-import zavazneStanoviskoKInvesticnejCinnosti from './zavazne-stanovisko-k-investicnej-cinnosti'
-import komunitneZahrady from './komunitne-zahrady'
+import zavazneStanoviskoKInvesticnejCinnosti from '../schemas/zavazneStanoviskoKInvesticnejCinnosti'
+import komunitneZahrady from '../schemas/komunitneZahrady'
 
 export enum FormDefinitionType {
   SlovenskoSkGeneric = 'SlovenskoSkGeneric',

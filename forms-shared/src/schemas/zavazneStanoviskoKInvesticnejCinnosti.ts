@@ -1,3 +1,3 @@
-import { getSchema } from './shared/investicne'
+import { getSurSchema } from './sekcia-uzemneho-rozvoja/surSchemas'
 
-export default getSchema(true)
+export default getSurSchema(true)

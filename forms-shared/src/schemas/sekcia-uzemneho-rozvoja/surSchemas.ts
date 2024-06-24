@@ -9,7 +9,7 @@ import {
   step,
 } from '../../generator/functions'
 import { createCondition, createStringOptions } from '../../generator/helpers'
-import { sharedAddressField, sharedPhoneNumberField } from './fields'
+import { sharedAddressField, sharedPhoneNumberField } from '../shared/fields'
 
 const ziadatelInvestorFields = [
   radioGroup(
@@ -48,7 +48,7 @@ const ziadatelInvestorFields = [
   sharedPhoneNumberField('telefon', true),
 ]
 
-export const getSchema = (zavazne: boolean) =>
+export const getSurSchema = (zavazne: boolean) =>
   schema(
     zavazne
       ? {

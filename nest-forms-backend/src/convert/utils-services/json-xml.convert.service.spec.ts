@@ -1,8 +1,8 @@
 import { Test, TestingModule } from '@nestjs/testing'
 
 import ThrowerErrorGuard from '../../utils/guards/thrower-error.guard'
-import JsonXmlConvertService from './json-xml.convert.service'
 import { JsonSchema } from '../../utils/types/global'
+import JsonXmlConvertService from './json-xml.convert.service'
 
 describe('JsonXmlConvertService', () => {
   let service: JsonXmlConvertService

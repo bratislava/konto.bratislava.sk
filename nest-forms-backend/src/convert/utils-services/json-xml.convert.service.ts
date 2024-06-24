@@ -4,11 +4,11 @@ import * as cheerio from 'cheerio'
 import { dropRight, find, last } from 'lodash'
 
 import ThrowerErrorGuard from '../../utils/guards/thrower-error.guard'
+import { JsonSchema } from '../../utils/types/global'
 import {
   ConvertErrorsEnum,
   ConvertErrorsResponseEnum,
 } from '../errors/convert.errors.enum'
-import { JsonSchema } from '../../utils/types/global'
 
 interface Ciselnik {
   id?: string

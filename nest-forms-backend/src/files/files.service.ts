@@ -134,7 +134,6 @@ export default class FilesService {
       formId,
       user ? user.sub : null,
       ico,
-      false,
     )
 
     let files
@@ -293,7 +292,6 @@ export default class FilesService {
       formId,
       userId,
       ico,
-      true,
     )
     const maybeFile = await this.filesHelper.checkIfFileExistsInDatabase(fileId)
     if (maybeFile) {

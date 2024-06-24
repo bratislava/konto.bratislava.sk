@@ -15,10 +15,6 @@ import {
 } from 'class-validator'
 
 import {
-  SchemaVersionResponseDto,
-  SchemaVersionWithSchemaAndDataDto,
-} from '../../schemas/dtos/schemas.dto'
-import {
   DEFAULT_PAGE,
   DEFAULT_PAGE_SIZE,
   JSON_FORM_EXAMPLE,
@@ -51,12 +47,12 @@ export class JwtNasesPayloadDto {
 
 export class CreateFormRequestDto {
   @ApiProperty({
-    description: 'Version of Schema',
-    default: 'f69559da-5eca-4ed7-80fd-370d09dc3632',
+    description: 'Slug of the form definition',
+    example: 'zavazne-stanovisko-k-investicnej-cinnosti',
   })
   @IsNotEmpty()
-  @IsUUID()
-  declare schemaVersionId: string
+  @IsString()
+  declare formDefinitionSlug: string
 }
 
 /* eslint-disable pii/no-email */
@@ -290,29 +286,6 @@ export class GetFormResponseDto {
   declare finishSubmission: Date | null
 
   @ApiProperty({
-    description: 'Schema version Id.',
-    example: 'f69559da-5eca-4ed7-80fd-370d09dc3632',
-  })
-  @IsUUID()
-  declare schemaVersionId: string
-
-  @Type(() => SchemaVersionResponseDto)
-  @ApiProperty({
-    description: 'Schema version',
-    type: SchemaVersionResponseDto,
-  })
-  @IsDefined()
-  declare schemaVersion: SchemaVersionResponseDto
-
-  @ApiProperty({
-    description:
-      'Flag marking if the schema version for this form is the latest version for the schema.',
-    example: true,
-  })
-  @IsBoolean()
-  declare isLatestSchemaVersionForSlug: boolean
-
-  @ApiProperty({
     description: 'Message subject created from uiSchema',
     example:
       'e-ZST ž. “Ulica” “Názov stavby / projektu”, pč “Parcelné číslo” kú “Katastrálne územie"',
@@ -326,6 +299,14 @@ export class GetFormResponseDto {
   })
   @IsString()
   declare frontendTitle: string
+
+  @ApiProperty({
+    description: 'Slug of the form definition',
+    example: 'zavazne-stanovisko-k-investicnej-cinnosti',
+  })
+  @IsNotEmpty()
+  @IsString()
+  declare formDefinitionSlug: string
 }
 
 export class GetFormResponseSimpleDto {
@@ -377,29 +358,6 @@ export class GetFormResponseSimpleDto {
   declare formDataJson: Prisma.JsonValue | null
 
   @ApiProperty({
-    description: 'Schema version Id.',
-    example: 'f69559da-5eca-4ed7-80fd-370d09dc3632',
-  })
-  @IsUUID()
-  declare schemaVersionId: string
-
-  @Type(() => SchemaVersionWithSchemaAndDataDto)
-  @ApiProperty({
-    description: 'Schema version',
-    type: SchemaVersionWithSchemaAndDataDto,
-  })
-  @IsDefined()
-  declare schemaVersion: SchemaVersionWithSchemaAndDataDto
-
-  @ApiProperty({
-    description:
-      'Flag marking if the schema version for this form is the latest version for the schema.',
-    example: true,
-  })
-  @IsBoolean()
-  declare isLatestSchemaVersionForSlug: boolean
-
-  @ApiProperty({
     description: 'Message subject created from uiSchema',
     example:
       'e-ZST ž. “Ulica” “Názov stavby / projektu”, pč “Parcelné číslo” kú “Katastrálne územie"',
@@ -413,6 +371,14 @@ export class GetFormResponseSimpleDto {
   })
   @IsString()
   declare frontendTitle: string
+
+  @ApiProperty({
+    description: 'Slug of the form definition',
+    example: 'zavazne-stanovisko-k-investicnej-cinnosti',
+  })
+  @IsNotEmpty()
+  @IsString()
+  declare formDefinitionSlug: string
 }
 
 class GetFormMetaDto {
@@ -477,22 +443,6 @@ export class GetFormsRequestDto {
   pagination?: string
 
   @ApiPropertyOptional({
-    description: 'Posp ID of Form',
-    example: 'esmao.eforms.bratislava.obec_082',
-  })
-  @IsOptional()
-  @IsString()
-  pospID?: string
-
-  @ApiPropertyOptional({
-    description: 'Form Name',
-    example: 'Všeobecná agenda',
-  })
-  @IsOptional()
-  @IsString()
-  formName?: string
-
-  @ApiPropertyOptional({
     description:
       'Forms in which states are searched - when omitted, all forms of the user are searched',
     example: [FormState.DRAFT, FormState.QUEUED],
@@ -505,14 +455,6 @@ export class GetFormsRequestDto {
   states?: FormState[]
 
   @ApiPropertyOptional({
-    description: 'Schema version Id.',
-    example: 'f69559da-5eca-4ed7-80fd-370d09dc3632',
-  })
-  @IsUUID()
-  @IsOptional()
-  schemaVersionId?: string
-
-  @ApiPropertyOptional({
     description: 'Get only forms in such a state, that user can still edit it.',
     default: false,
   })
@@ -520,6 +462,14 @@ export class GetFormsRequestDto {
   @IsBoolean()
   @ToBoolean()
   userCanEdit?: boolean
+
+  @ApiPropertyOptional({
+    description: 'Slug of the form definition',
+    example: 'zavazne-stanovisko-k-investicnej-cinnosti',
+  })
+  @IsString()
+  @IsOptional()
+  formDefinitionSlug?: string
 }
 
 export class SendFormResponseDto {

@@ -33,7 +33,11 @@ const useCreateGetFilesByStatusType = (
  * This includes many optimizations as `validateSummary` is expensive (takes hundreds of milliseconds).
  */
 const useGetContext = () => {
-  const { schema } = useFormContext()
+  const {
+    formDefinition: {
+      schemas: { schema },
+    },
+  } = useFormContext()
   const { formData, currentStepIndex } = useFormState()
 
   const { clientFiles, serverFiles } = useFormFileUpload()

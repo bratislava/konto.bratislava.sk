@@ -9,8 +9,6 @@ import FormsService from '../forms/forms.service'
 import FormsValidator from '../forms/forms.validator'
 import PrismaService from '../prisma/prisma.service'
 import ScannerClientModule from '../scanner-client/scanner-client.module'
-import SchemasModule from '../schemas/schemas.module'
-import SchemasService from '../schemas/schemas.service'
 import TaxModule from '../tax/tax.module'
 import ThrowerErrorGuard from '../utils/guards/thrower-error.guard'
 import MinioClientSubservice from '../utils/subservices/minio-client.subservice'
@@ -21,7 +19,6 @@ import JsonXmlConvertService from './utils-services/json-xml.convert.service'
 @Module({
   controllers: [ConvertController],
   imports: [
-    SchemasModule,
     FormsModule,
     ScannerClientModule,
     FilesModule,
@@ -31,7 +28,6 @@ import JsonXmlConvertService from './utils-services/json-xml.convert.service'
   providers: [
     ConvertService,
     JsonXmlConvertService,
-    SchemasService,
     ThrowerErrorGuard,
     PrismaService,
     FormsService,

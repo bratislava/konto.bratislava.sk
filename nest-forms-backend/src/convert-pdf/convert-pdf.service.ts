@@ -1,3 +1,4 @@
+import { FormDefinitionSlovenskoSk } from '@forms-shared/definitions/form-definitions'
 import { Injectable } from '@nestjs/common'
 
 import ConvertService from '../convert/convert.service'
@@ -31,26 +32,24 @@ export default class ConvertPdfService {
    * @param formId id of our form object
    * @returns expected path within the bucket, without the bucket itself
    */
-  async getPdfExportFilePathWithoutBucket(formId: string): Promise<string> {
-    const form = await this.formsService.getUniqueForm(formId, true)
+  async getPdfExportFilePathWithoutBucket(
+    formId: string,
+    formDefinition: FormDefinitionSlovenskoSk,
+  ): Promise<string> {
+    const form = await this.formsService.getUniqueForm(formId)
     if (!form) {
       throw this.throwerErrorGuard.NotFoundException(
         FormsErrorsEnum.FORM_NOT_FOUND_ERROR,
         `${FormsErrorsResponseEnum.FORM_NOT_FOUND_ERROR} id: ${formId}.`,
       )
     }
+
     const formInfo: FormInfo = {
-      pospId: form.schemaVersion.pospID,
+      pospId: formDefinition.pospID,
       formId,
     }
     const formPath = this.filesHelper.getPath(formInfo)
     return `${formPath}${PDF_EXPORT_FILE_NAME}`
-  }
-
-  async getPdfExportFilePath(formId: string): Promise<string> {
-    return `${this.filesHelper.getBucketUid(
-      'SAFE',
-    )}${await this.getPdfExportFilePathWithoutBucket(formId)}`
   }
 
   /**
@@ -58,20 +57,28 @@ export default class ConvertPdfService {
    * Also saves the file record to the database among the rest fo the form files.
    * @param formId id of the form
    */
-  async createPdfImageInFormFiles(formId: string): Promise<string> {
-    const form = await this.formsService.getUniqueForm(formId, true)
+  async createPdfImageInFormFiles(
+    formId: string,
+    formDefinition: FormDefinitionSlovenskoSk,
+  ): Promise<string> {
+    const form = await this.formsService.getUniqueForm(formId)
     if (!form) {
       throw this.throwerErrorGuard.NotFoundException(
         FormsErrorsEnum.FORM_NOT_FOUND_ERROR,
         `${FormsErrorsResponseEnum.FORM_NOT_FOUND_ERROR} id: ${formId}.`,
       )
     }
+
     // putObject requires bucket name on it's own
-    const filePath = await this.getPdfExportFilePathWithoutBucket(formId)
+    const filePath = await this.getPdfExportFilePathWithoutBucket(
+      formId,
+      formDefinition,
+    )
 
     const file = await this.convertService.generatePdfV2(
       form.formDataJson,
       formId,
+      formDefinition,
     )
 
     await this.minioClientSubservice
@@ -79,7 +86,7 @@ export default class ConvertPdfService {
       .putObject(this.filesHelper.getBucketUid('SAFE'), filePath, file)
 
     // save file to database, from this point onwards it behaves like other files attached to form
-    const pospId = form.schemaVersion.pospID
+    const pospId = formDefinition.pospID
     const minioFileName = PDF_EXPORT_FILE_NAME
     const fileName = PDF_EXPORT_FILE_NAME
     // TODO I'm not sure how to easily get the size, and it's not used as we don't display these files to the user

@@ -16,7 +16,6 @@ import NasesModule from './nases/nases.module'
 import NasesConsumerModule from './nases-consumer/nases-consumer.module'
 import PrismaModule from './prisma/prisma.module'
 import RabbitmqClientModule from './rabbitmq-client/rabbitmq-client.module'
-import SchemasModule from './schemas/schemas.module'
 import StatusModule from './status/status.module'
 import TaxModule from './tax/tax.module'
 import AppLoggerMiddleware from './utils/middlewares/logger.service'
@@ -38,6 +37,7 @@ import AppLoggerMiddleware from './utils/middlewares/logger.service'
     }),
     PrismaModule,
     AuthModule,
+    AdminModule,
     FormsModule,
     FilesModule,
     NasesModule,
@@ -46,9 +46,7 @@ import AppLoggerMiddleware from './utils/middlewares/logger.service'
     NasesConsumerModule,
     ConvertModule,
     ConvertPdfModule,
-    SchemasModule,
     GinisModule,
-    AdminModule,
     TaxModule,
     ScheduleModule.forRoot(),
   ],

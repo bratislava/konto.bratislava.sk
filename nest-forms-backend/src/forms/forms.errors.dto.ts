@@ -91,3 +91,31 @@ export class FormDataInvalidErrorDto extends NotAcceptedErrorDto {
   })
   declare message: string
 }
+
+export class FormDefinitionNotFoundErrorDto extends NotFoundErrorDto {
+  @ApiProperty({
+    example: FormsErrorsEnum.FORM_DEFINITION_NOT_FOUND,
+    default: FormsErrorsEnum.FORM_DEFINITION_NOT_FOUND,
+  })
+  declare errorName: string
+
+  @ApiProperty({
+    example: FormsErrorsResponseEnum.FORM_DEFINITION_NOT_FOUND,
+    default: FormsErrorsResponseEnum.FORM_DEFINITION_NOT_FOUND,
+  })
+  declare message: string
+}
+
+export class FormDefinitionNotSupportedTypeErrorDto extends UnprocessableEntityErrorDto {
+  @ApiProperty({
+    example: FormsErrorsEnum.FORM_DEFINITION_NOT_SUPPORTED_TYPE,
+    default: FormsErrorsEnum.FORM_DEFINITION_NOT_SUPPORTED_TYPE,
+  })
+  declare errorName: string
+
+  @ApiProperty({
+    example: FormsErrorsResponseEnum.FORM_DEFINITION_NOT_SUPPORTED_TYPE,
+    default: FormsErrorsResponseEnum.FORM_DEFINITION_NOT_SUPPORTED_TYPE,
+  })
+  declare message: string
+}

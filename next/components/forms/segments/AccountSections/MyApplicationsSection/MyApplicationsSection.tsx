@@ -46,9 +46,14 @@ const useTotalCount = (variant: ApplicationsListVariant) => {
 type MyApplicationsSectionProps = {
   selectedSection: ApplicationsListVariant
   applications?: GetFormsResponseDto
+  formDefinitionSlugTitleMap: Record<string, string>
 }
 
-const MyApplicationsSection = ({ selectedSection, applications }: MyApplicationsSectionProps) => {
+const MyApplicationsSection = ({
+  selectedSection,
+  applications,
+  formDefinitionSlugTitleMap,
+}: MyApplicationsSectionProps) => {
   const { t } = useTranslation('account')
   const title = t('account_section_applications.navigation')
   const router = useRouter()
@@ -120,6 +125,7 @@ const MyApplicationsSection = ({ selectedSection, applications }: MyApplications
             variant={variant}
             applications={applications}
             refetchApplicationsCount={refetchApplicationsCount}
+            formDefinitionSlugTitleMap={formDefinitionSlugTitleMap}
           />
         </TabPanel>
       ))}

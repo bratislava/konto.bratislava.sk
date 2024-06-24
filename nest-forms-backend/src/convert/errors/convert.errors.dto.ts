@@ -23,20 +23,6 @@ export class PuppeteerPageFailedLoadErrorDto extends BadRequestErrorDto {
   declare message: string
 }
 
-export class PuppeteerFormNotFoundErrorDto extends BadRequestErrorDto {
-  @ApiProperty({
-    example: ConvertErrorsEnum.PUPPETEER_FORM_NOT_FOUND,
-    default: ConvertErrorsEnum.PUPPETEER_FORM_NOT_FOUND,
-  })
-  declare errorName: string
-
-  @ApiProperty({
-    example: ConvertErrorsResponseEnum.PUPPETEER_FORM_NOT_FOUND,
-    default: ConvertErrorsResponseEnum.PUPPETEER_FORM_NOT_FOUND,
-  })
-  declare message: string
-}
-
 export class InvalidJwtTokenErrorDto extends UnprocessableEntityErrorDto {
   @ApiProperty({
     example: ConvertErrorsEnum.INVALID_JWT_TOKEN,

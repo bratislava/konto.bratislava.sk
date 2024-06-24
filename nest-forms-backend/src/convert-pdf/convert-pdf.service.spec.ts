@@ -1,9 +1,13 @@
+import {
+  FormDefinitionSlovenskoSk,
+  FormDefinitionType,
+} from '@forms-shared/definitions/form-definitions'
 import { ConfigService } from '@nestjs/config'
 import { Test, TestingModule } from '@nestjs/testing'
-import { SchemaVersion } from '@prisma/client'
+import { Forms } from '@prisma/client'
 
 import prismaMock from '../../test/singleton'
-import { jsonSchema, testJsonData, xmlTemplate } from '../__tests__/constants'
+import { testJsonData } from '../__tests__/constants'
 import ConvertService from '../convert/convert.service'
 import JsonXmlConvertService from '../convert/utils-services/json-xml.convert.service'
 import FilesHelper from '../files/files.helper'
@@ -50,6 +54,14 @@ describe('ConvertPdfService', () => {
     updatedAt: new Date(),
   } as const
 
+  beforeAll(async () => {
+    process.env = {
+      ...process.env,
+      MIMETYPE_WHITELIST: 'a b c',
+      MINIO_SAFE_BUCKET: 'calmav-clean-bucket',
+    }
+  })
+
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
       providers: [
@@ -74,27 +86,16 @@ describe('ConvertPdfService', () => {
     filesHelper = module.get<FilesHelper>(FilesHelper)
     convertService = module.get<ConvertService>(ConvertService)
 
-    // TODO did not find a way to mock with 'include' of schemaVersion and valid ts typing
-    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-    // @ts-ignore
     prismaMock.forms.findUnique.mockResolvedValue({
       id: formId,
       formDataJson: testJsonData,
-      schemaVersion: {
-        jsonSchema,
-        xmlTemplate,
-        pospID: pospId,
-      },
-    } as SchemaVersion)
+    } as unknown as Forms)
 
     // mocks default of not finding an existing file when uploading
     prismaMock.files.findMany.mockResolvedValue([])
     prismaMock.files.create.mockResolvedValue(fakeFile)
     prismaMock.files.update.mockResolvedValue(fakeFile)
     convertService.generatePdfV2 = jest
-      .fn()
-      .mockResolvedValue(expectedPdfExportPath)
-    convertPdfService.getPdfExportFilePath = jest
       .fn()
       .mockResolvedValue(expectedPdfExportPath)
 
@@ -105,16 +106,15 @@ describe('ConvertPdfService', () => {
     expect(convertPdfService).toBeDefined()
   })
 
-  describe('get pdf file path', () => {
-    it('should return correct path', async () => {
-      const filePath = await convertPdfService.getPdfExportFilePath(formId)
-      expect(filePath).toBe(expectedPdfExportPath)
-    })
-  })
-
   describe('convert pdf', () => {
     it('calls all services it depends on and does not explode in the process', async () => {
-      const filePath = await convertPdfService.createPdfImageInFormFiles(formId)
+      const filePath = await convertPdfService.createPdfImageInFormFiles(
+        formId,
+        {
+          type: FormDefinitionType.SlovenskoSkGeneric,
+          pospID: pospId,
+        } as FormDefinitionSlovenskoSk,
+      )
       expect(filePath).toBe(expectedPdfExportPath)
 
       expect(putObject).toHaveBeenCalled()

@@ -1,4 +1,4 @@
-import { Castle48PxIcon, Pdf48PxIcon, Tax48PxIcon } from '@assets/ui-icons'
+import { Castle48PxIcon, Pdf48PxIcon } from '@assets/ui-icons'
 import { formsApi } from '@clients/forms'
 import { useMutation } from '@tanstack/react-query'
 import { useRouter } from 'next/router'
@@ -17,15 +17,11 @@ import AccountMarkdown from './segments/AccountMarkdown/AccountMarkdown'
 import ButtonNew from './simple-components/ButtonNew'
 import Waves from './simple-components/Waves/Waves'
 
-export type TaxFormLandingPageProps = {
-  latestVersionId: string
-}
-
 /**
  * Temporary landing page only for tax form, until we create unified landing page for all forms.
  * The layout is copied from `FormPage` and `FormHeader`.
  */
-const TaxFormLandingPage = ({ latestVersionId }: TaxFormLandingPageProps) => {
+const TaxFormLandingPage = () => {
   const { isSignedIn, eIdTaxFormAllowed } = useSsrAuth()
   const router = useRouter()
   const { t } = useTranslation('forms')
@@ -37,7 +33,7 @@ const TaxFormLandingPage = ({ latestVersionId }: TaxFormLandingPageProps) => {
     mutationFn: () =>
       formsApi.nasesControllerCreateForm(
         {
-          schemaVersionId: latestVersionId,
+          formDefinitionSlug: 'priznanie-k-dani-z-nehnutelnosti',
         },
         { accessToken: 'onlyAuthenticated' },
       ),
@@ -78,18 +74,6 @@ const TaxFormLandingPage = ({ latestVersionId }: TaxFormLandingPageProps) => {
       disabled: isPending,
       eIdTaxFormAllowed,
     },
-    eIdTaxFormAllowed
-      ? null
-      : {
-          title: 'Vyplniť a podať cez esluzby.bratislava.sk',
-          id: 'esluzby-bratislava-sk',
-          isEid: true,
-          description:
-            'Vyplňte daňové priznanie cez esluzby.bratislava.sk. Na jeho odoslanie potrebujete mať aktívny elektronický občiansky preukaz (eID).',
-          icon: Tax48PxIcon,
-          href: 'https://esluzby.bratislava.sk/info/203?slug=podavanie-danoveho-priznania-k-dani-z-nehnutelnosti',
-          eIdTaxFormAllowed,
-        },
     {
       title: 'Stiahnuť PDF priznanie',
       id: 'pdf-priznanie',

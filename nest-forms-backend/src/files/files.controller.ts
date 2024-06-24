@@ -39,6 +39,7 @@ import { CognitoGetUserData } from '../auth/dtos/cognito.dto'
 import BasicGuard from '../auth/guards/auth-basic.guard'
 import CognitoGuard from '../auth/guards/cognito.guard'
 import {
+  FormDefinitionNotFoundErrorDto,
   FormIsOwnedBySomeoneElseErrorDto,
   FormNotFoundErrorDto,
 } from '../forms/forms.errors.dto'
@@ -283,6 +284,9 @@ export default class FilesController {
         },
         {
           $ref: getSchemaPath(FileInScannerNotFoundErrorDto),
+        },
+        {
+          $ref: getSchemaPath(FormDefinitionNotFoundErrorDto),
         },
       ],
     },

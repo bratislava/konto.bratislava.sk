@@ -1,13 +1,8 @@
 import * as fs from 'node:fs'
 
 import { parse } from 'ts-command-line-args'
-
-import priznanieKDaniZNehnutelnosti from './definitions/priznanie-k-dani-z-nehnutelnosti'
-// import showcase from './definitions/showcase'
-import stanoviskoKInvesticnemuZameru from './definitions/stanovisko-k-investicnemu-zameru'
-import zavazneStanoviskoKInvesticnejCinnosti from './definitions/zavazne-stanovisko-k-investicnej-cinnosti'
-import komunitneZahrady from './definitions/komunitne-zahrady'
-import predzahradky from './definitions/predzahradky'
+import { formDefinitions } from './definitions/formDefinitions'
+import { getFormDefinitionBySlug } from './definitions/getFormDefinitionBySlug'
 
 type Args = {
   source: string
@@ -17,35 +12,27 @@ export const args = parse<Args>({
   source: String,
 })
 
-const definitions = {
-  // showcase,
-  'stanovisko-k-investicnemu-zameru': stanoviskoKInvesticnemuZameru,
-  'zavazne-stanovisko-k-investicnej-cinnosti': zavazneStanoviskoKInvesticnejCinnosti,
-  'priznanie-k-dani-z-nehnutelnosti': priznanieKDaniZNehnutelnosti,
-  'komunitne-zahrady': komunitneZahrady,
-  predzahradky: predzahradky,
-} as const
+let chosenDefinitions: typeof formDefinitions
 
-const chosenDefinitions: Array<keyof typeof definitions> = []
-
-// ugly because of ts - pushes either the chosen definition or all definitions according to source
-if (definitions[args.source as keyof typeof definitions])
-  chosenDefinitions.push(args.source as keyof typeof definitions)
-if (args.source === 'all')
-  chosenDefinitions.push(...(Object.keys(definitions) as typeof chosenDefinitions))
-
-if (chosenDefinitions.length) {
-  chosenDefinitions.forEach((definitionKey) => {
-    fs.mkdirSync(`./dist/${definitionKey}`, { recursive: true })
-    fs.writeFileSync(
-      `./dist/${definitionKey}/schema.json`,
-      JSON.stringify(definitions[definitionKey].schema, null, 2),
-    )
-    fs.writeFileSync(
-      `./dist/${definitionKey}/uiSchema.json`,
-      JSON.stringify(definitions[definitionKey].uiSchema, null, 2),
-    )
-  })
+if (args.source === 'all') {
+  chosenDefinitions = formDefinitions
 } else {
-  console.error(`Definition for ${args.source} not found.`)
+  const formDefinition = getFormDefinitionBySlug(args.source)
+  if (!formDefinition) {
+    console.error(`Form definition for ${args.source} not found.`)
+    process.exit(1)
+  }
+  chosenDefinitions = [formDefinition]
 }
+
+chosenDefinitions.forEach((formDefinition) => {
+  fs.mkdirSync(`./dist/${formDefinition.slug}`, { recursive: true })
+  fs.writeFileSync(
+    `./dist/${formDefinition.slug}/schema.json`,
+    JSON.stringify(formDefinition.schemas.schema, null, 2),
+  )
+  fs.writeFileSync(
+    `./dist/${formDefinition.slug}/uiSchema.json`,
+    JSON.stringify(formDefinition.schemas.uiSchema, null, 2),
+  )
+})

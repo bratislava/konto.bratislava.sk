@@ -26,13 +26,13 @@ if (args.source === 'all') {
 }
 
 chosenDefinitions.forEach((formDefinition) => {
-  fs.mkdirSync(`./dist/${formDefinition.slug}`, { recursive: true })
+  fs.mkdirSync(`./dist-schemas/${formDefinition.slug}`, { recursive: true })
   fs.writeFileSync(
-    `./dist/${formDefinition.slug}/schema.json`,
+    `./dist-schemas/${formDefinition.slug}/schema.json`,
     JSON.stringify(formDefinition.schemas.schema, null, 2),
   )
   fs.writeFileSync(
-    `./dist/${formDefinition.slug}/uiSchema.json`,
+    `./dist-schemas/${formDefinition.slug}/uiSchema.json`,
     JSON.stringify(formDefinition.schemas.uiSchema, null, 2),
   )
 })

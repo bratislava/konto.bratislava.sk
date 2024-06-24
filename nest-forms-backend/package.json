@@ -154,7 +154,6 @@
     },
     "collectCoverageFrom": [
       "**/*.(t|j)s",
-      "!<rootDir>/utils/global-forms/**/*",
       "!**/*.dto.ts",
       "!**/*.module.ts",
       "!**/*.enum.ts"

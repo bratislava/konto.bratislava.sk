@@ -3,8 +3,8 @@ import { GenericObjectType } from '@rjsf/utils'
 import * as cheerio from 'cheerio'
 import { dropRight, find, last } from 'lodash'
 
-import { JsonSchema } from '../../utils/global-forms'
 import ThrowerErrorGuard from '../../utils/guards/thrower-error.guard'
+import { JsonSchema } from '../../utils/types/global'
 import {
   ConvertErrorsEnum,
   ConvertErrorsResponseEnum,

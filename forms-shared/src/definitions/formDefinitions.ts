@@ -1,7 +1,7 @@
 import stanoviskoKInvesticnemuZameru from '../schemas/stanoviskoKInvesticnemuZameru'
 import predzahradky from '../schemas/predzahradky'
 import priznanieKDaniZNehnutelnosti from '../schemas/priznanieKDaniZNehnutelnosti'
-import { generalTermsAndConditions, taxTermsAndConditions } from './terms-and-conditions'
+import { generalTermsAndConditions, taxTermsAndConditions } from './termsAndConditions'
 import zavazneStanoviskoKInvesticnejCinnosti from '../schemas/zavazneStanoviskoKInvesticnejCinnosti'
 import komunitneZahrady from '../schemas/komunitneZahrady'
 import { FormDefinition, FormDefinitionType } from './formDefinitionTypes'

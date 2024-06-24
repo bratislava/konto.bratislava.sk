@@ -1,7 +1,7 @@
 import {
   FormDefinitionSlovenskoSk,
   FormDefinitionType,
-} from '@forms-shared/definitions/form-definitions'
+} from '@forms-shared/definitions/formDefinitionTypes'
 import { ConfigService } from '@nestjs/config'
 import { Test, TestingModule } from '@nestjs/testing'
 import { Forms } from '@prisma/client'

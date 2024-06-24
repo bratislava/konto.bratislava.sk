@@ -1,5 +1,5 @@
 import { formsApi } from '@clients/forms'
-import { getFormDefinitionBySlug } from '@forms-shared/definitions/form-definitions-helpers'
+import { getFormDefinitionBySlug } from '@forms-shared/definitions/getFormDefinitionBySlug'
 import { isAxiosError } from 'axios'
 
 import { ROUTES } from '../../../frontend/api/constants'

@@ -1,9 +1,7 @@
 import { createHash } from 'node:crypto'
 
-import {
-  getFormDefinitionBySlug,
-  isSlovenskoSkFormDefinition,
-} from '@forms-shared/definitions/form-definitions-helpers'
+import { isSlovenskoSkFormDefinition } from '@forms-shared/definitions/formDefinitionTypes'
+import { getFormDefinitionBySlug } from '@forms-shared/definitions/getFormDefinitionBySlug'
 import { Injectable, Logger } from '@nestjs/common'
 import { ConfigService } from '@nestjs/config'
 import { Files, FileStatus, Forms, Prisma } from '@prisma/client'

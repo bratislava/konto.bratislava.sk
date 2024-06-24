@@ -3,11 +3,9 @@ import { setTimeout } from 'node:timers/promises'
 import {
   FormDefinition,
   FormDefinitionSlovenskoSk,
-} from '@forms-shared/definitions/form-definitions'
-import {
-  getFormDefinitionBySlug,
   isSlovenskoSkFormDefinition,
-} from '@forms-shared/definitions/form-definitions-helpers'
+} from '@forms-shared/definitions/formDefinitionTypes'
+import { getFormDefinitionBySlug } from '@forms-shared/definitions/getFormDefinitionBySlug'
 import { Nack, RabbitRPC } from '@golevelup/nestjs-rabbitmq'
 import { Injectable, Logger } from '@nestjs/common'
 import { FormError, Forms, FormState } from '@prisma/client'

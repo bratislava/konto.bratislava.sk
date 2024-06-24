@@ -18,8 +18,7 @@
     "test:watch": "jest --watch",
     "test:coverage": "jest --coverage",
     "update-rjsf": "npm install @rjsf/core@latest @rjsf/utils@latest @rjsf/validator-ajv8@latest ajv@latest ajv-formats@latest -E",
-    "generate-assets": "ts-node scripts/assets/generate.ts",
-    "postinstall": "npm run generate-assets"
+    "generate-assets": "ts-node scripts/assets/generate.ts"
   },
   "dependencies": {
     "@fontsource/inter": "^5.0.18",

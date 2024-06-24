@@ -75,6 +75,7 @@ export type FileInfo = {
 }
 
 export type FileInfoSummary = {
+  id: string
   statusType: FileStatusType
   fileName: string
 }

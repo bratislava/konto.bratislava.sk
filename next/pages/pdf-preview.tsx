@@ -1,4 +1,5 @@
 import { formsApi } from '@clients/forms'
+import { getFormDefinitionBySlug } from '@forms-shared/definitions/form-definitions-helpers'
 import { ClientFileInfo } from '@forms-shared/form-files/fileStatus'
 import { isAxiosError } from 'axios'
 import { GetServerSideProps, GetServerSidePropsContext } from 'next'
@@ -28,21 +29,20 @@ export const getServerSideProps: GetServerSideProps<PdfSummaryPageProps> = async
       logger.info(`PDF preview JWT token: ${ctx.query.jwtToken as string}`)
     }
 
+    const formDefinition = getFormDefinitionBySlug(pdfPreviewData.formDefinitionSlug)
+    if (!formDefinition) {
+      return { notFound: true }
+    }
+
     return {
       props: {
         formContext: {
+          formDefinition,
           // Not needed for PDF preview START
-          slug: '',
           formId: '',
-          schemaVersionId: '',
-          oldSchemaVersion: false,
           formMigrationRequired: false,
           formSent: false,
-          isSigned: false,
-          isTaxForm: false,
           // END
-          schema: pdfPreviewData.jsonSchema,
-          uiSchema: pdfPreviewData.uiSchema,
           initialFormDataJson: pdfPreviewData.jsonForm,
           initialClientFiles: (
             pdfPreviewData.additionalMetadata as PdfPreviewDataAdditionalMetadata

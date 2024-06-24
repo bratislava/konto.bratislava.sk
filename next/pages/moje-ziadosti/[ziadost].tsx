@@ -1,5 +1,6 @@
 import { formsApi } from '@clients/forms'
 import { GetFormResponseDto, GinisDocumentDetailResponseDto } from '@clients/openapi-forms'
+import { getFormDefinitionBySlug } from '@forms-shared/definitions/form-definitions-helpers'
 import MyApplicationDetails from 'components/forms/segments/AccountSections/MyApplicationsSection/MyApplicationDetails'
 import AccountPageLayout from 'components/layouts/AccountPageLayout'
 import { modifyGinisDataForSchemaSlug } from 'frontend/utils/ginis'
@@ -10,6 +11,7 @@ import { amplifyGetServerSideProps } from '../../frontend/utils/amplifyServer'
 import { slovakServerSideTranslations } from '../../frontend/utils/slovakServerSideTranslations'
 
 type AccountMyApplicationsPageProps = {
+  formDefinitionTitle: string
   myApplicationDetailsData: GetFormResponseDto
   myApplicationGinisData: GinisDocumentDetailResponseDto | null
 }
@@ -42,12 +44,18 @@ export const getServerSideProps = amplifyGetServerSideProps<AccountMyApplication
 
     if (!myApplicationDetailsData) return { notFound: true }
 
+    const formDefinition = getFormDefinitionBySlug(myApplicationDetailsData.formDefinitionSlug)
+    if (!formDefinition) {
+      return { notFound: true }
+    }
+
     return {
       props: {
+        formDefinitionTitle: formDefinition.title,
         myApplicationDetailsData,
         myApplicationGinisData: modifyGinisDataForSchemaSlug(
           myApplicationGinisData,
-          myApplicationDetailsData.schemaVersion.schema?.slug,
+          myApplicationDetailsData.formDefinitionSlug,
         ),
         ...(await slovakServerSideTranslations()),
       },
@@ -57,12 +65,14 @@ export const getServerSideProps = amplifyGetServerSideProps<AccountMyApplication
 )
 
 const AccountMyApplicationsPage = ({
+  formDefinitionTitle,
   myApplicationDetailsData,
   myApplicationGinisData,
 }: AccountMyApplicationsPageProps) => {
   return (
     <AccountPageLayout>
       <MyApplicationDetails
+        formDefinitionTitle={formDefinitionTitle}
         ginisData={myApplicationGinisData}
         detailsData={myApplicationDetailsData}
       />

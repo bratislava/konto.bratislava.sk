@@ -55,7 +55,7 @@ jobs:
     name: validate nest-forms-backend
     needs: conditions
     if: needs.conditions.outputs.nest-forms-backend == 'true'
-    uses: bratislava/github-actions/.github/workflows/validate-nest-prisma.yml@beta
+    uses: bratislava/konto.bratislava.sk/.github/workflows/validate-nest-prisma-konto.yml@beta
     with:
       directory: nest-forms-backend/
     permissions: write-all

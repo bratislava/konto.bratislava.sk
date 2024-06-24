@@ -22,8 +22,6 @@ const FormModals = () => {
   const {
     migrationRequiredModal,
     setMigrationRequiredModal,
-    oldVersionSchemaModal,
-    setOldSchemaVersionModal,
     registrationModal,
     setRegistrationModal,
     identityVerificationModal,
@@ -70,7 +68,11 @@ const FormModals = () => {
     useFormExportImport()
   const { login, register, verifyIdentity } = useFormRedirects()
 
-  const { uiSchema } = useFormContext()
+  const {
+    formDefinition: {
+      schemas: { uiSchema },
+    },
+  } = useFormContext()
   const { formData } = useFormState()
   const uiOptions = getUiOptions(uiSchema)
   const title = getFormTitle(formData, uiOptions, t('form_title_fallback'))
@@ -98,14 +100,6 @@ const FormModals = () => {
         </Button>,
       ],
       children: t('migration_required_modal.content'),
-    },
-    {
-      key: 'oldVersionSchemaModal',
-      isOpen: oldVersionSchemaModal,
-      onOpenChange: setOldSchemaVersionModal,
-      type: 'warning',
-      title: t('old_schema_version_modal.title'),
-      children: t('old_schema_version_modal.content'),
     },
     {
       key: 'conceptSaveErrorModal',

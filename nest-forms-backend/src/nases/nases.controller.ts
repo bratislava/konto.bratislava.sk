@@ -21,6 +21,7 @@ import {
   ApiResponse,
   ApiTags,
   ApiUnauthorizedResponse,
+  ApiUnprocessableEntityResponse,
   getSchemaPath,
 } from '@nestjs/swagger'
 import { Forms } from '@prisma/client'
@@ -35,6 +36,8 @@ import {
 import FormDeleteResponseDto from '../forms/dtos/forms.responses.dto'
 import {
   FormDataInvalidErrorDto,
+  FormDefinitionNotFoundErrorDto,
+  FormDefinitionNotSupportedTypeErrorDto,
   FormIsOwnedBySomeoneElseErrorDto,
   FormNotEditableErrorDto,
   FormNotFoundErrorDto,
@@ -119,6 +122,9 @@ export default class NasesController {
         {
           $ref: getSchemaPath(FormNotFoundErrorDto),
         },
+        {
+          $ref: getSchemaPath(FormDefinitionNotFoundErrorDto),
+        },
       ],
     },
   })
@@ -150,6 +156,11 @@ export default class NasesController {
     status: 200,
     description: 'Return forms',
     type: GetFormsResponseDto,
+  })
+  @ApiNotFoundResponse({
+    status: 404,
+    description: 'Form definition not found',
+    type: FormDefinitionNotFoundErrorDto,
   })
   @ApiExtraModels(DatabaseErrorDto)
   @ApiInternalServerErrorResponse({
@@ -234,6 +245,11 @@ export default class NasesController {
     status: 200,
     description: 'Create form in db',
     type: GetFormResponseDto,
+  })
+  @ApiNotFoundResponse({
+    status: 404,
+    description: 'Form definition not found',
+    type: FormDefinitionNotFoundErrorDto,
   })
   @ApiExtraModels(DatabaseErrorDto)
   @ApiInternalServerErrorResponse({
@@ -489,6 +505,7 @@ export default class NasesController {
   @ApiExtraModels(FormNotEditableErrorDto)
   @ApiExtraModels(NoFormXmlDataErrorDto)
   @ApiExtraModels(FormNotFoundErrorDto)
+  @ApiExtraModels(FormDefinitionNotFoundErrorDto)
   @ApiResponse({
     status: 404,
     description: 'Not found error.',
@@ -496,6 +513,9 @@ export default class NasesController {
       anyOf: [
         {
           $ref: getSchemaPath(FormNotFoundErrorDto),
+        },
+        {
+          $ref: getSchemaPath(FormDefinitionNotFoundErrorDto),
         },
       ],
     },
@@ -558,6 +578,7 @@ export default class NasesController {
   @ApiExtraModels(UnableAddFormToRabbitErrorDto)
   @ApiExtraModels(FormNotFoundErrorDto)
   @ApiExtraModels(FormNotEditableErrorDto)
+  @ApiExtraModels(FormDefinitionNotFoundErrorDto)
   @ApiResponse({
     status: 404,
     description: 'Not found error.',
@@ -565,6 +586,9 @@ export default class NasesController {
       anyOf: [
         {
           $ref: getSchemaPath(FormNotFoundErrorDto),
+        },
+        {
+          $ref: getSchemaPath(FormDefinitionNotFoundErrorDto),
         },
       ],
     },
@@ -601,6 +625,11 @@ export default class NasesController {
     status: 406,
     description: 'Provided data is not sendable, usually it is not valid.',
     type: FormDataInvalidErrorDto,
+  })
+  @ApiUnprocessableEntityResponse({
+    status: HttpStatus.UNPROCESSABLE_ENTITY,
+    description: 'Got wrong type of form definition for its slug.',
+    type: FormDefinitionNotSupportedTypeErrorDto,
   })
   @UseGuards(new CognitoGuard(true))
   @Post('eid/send-form/:id')
@@ -642,6 +671,7 @@ export default class NasesController {
   @ApiExtraModels(DatabaseErrorDto)
   @ApiExtraModels(UnableAddFormToRabbitErrorDto)
   @ApiExtraModels(FormNotFoundErrorDto)
+  @ApiExtraModels(FormDefinitionNotFoundErrorDto)
   @ApiResponse({
     status: 400,
     description: 'Bad request error.',
@@ -660,6 +690,9 @@ export default class NasesController {
       anyOf: [
         {
           $ref: getSchemaPath(FormNotFoundErrorDto),
+        },
+        {
+          $ref: getSchemaPath(FormDefinitionNotFoundErrorDto),
         },
       ],
     },
@@ -713,6 +746,7 @@ export default class NasesController {
   @ApiExtraModels(UnableAddFormToRabbitErrorDto)
   @ApiExtraModels(FormNotFoundErrorDto)
   @ApiExtraModels(FormNotEditableErrorDto)
+  @ApiExtraModels(FormDefinitionNotFoundErrorDto)
   @ApiResponse({
     status: 404,
     description: 'Not found error.',
@@ -720,6 +754,9 @@ export default class NasesController {
       anyOf: [
         {
           $ref: getSchemaPath(FormNotFoundErrorDto),
+        },
+        {
+          $ref: getSchemaPath(FormDefinitionNotFoundErrorDto),
         },
       ],
     },
@@ -756,6 +793,11 @@ export default class NasesController {
     status: 406,
     description: 'Provided data is not sendable, usually it is not valid.',
     type: FormDataInvalidErrorDto,
+  })
+  @ApiUnprocessableEntityResponse({
+    status: HttpStatus.UNPROCESSABLE_ENTITY,
+    description: 'Got wrong type of form definition for its slug.',
+    type: FormDefinitionNotSupportedTypeErrorDto,
   })
   @UseGuards(new CognitoGuard(true))
   @Post('eid/send-and-update-form/:id')

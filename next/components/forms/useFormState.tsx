@@ -30,7 +30,14 @@ import { useFormLeaveProtection } from './useFormLeaveProtection'
 import { useFormModals } from './useFormModals'
 
 const useGetContext = () => {
-  const { schema, formMigrationRequired, initialFormDataJson, isReadonly } = useFormContext()
+  const {
+    formDefinition: {
+      schemas: { schema },
+    },
+    formMigrationRequired,
+    initialFormDataJson,
+    isReadonly,
+  } = useFormContext()
   const { t } = useTranslation('forms')
   const { keepFiles, refetchAfterImportIfNeeded, clientFiles, serverFiles } = useFormFileUpload()
   const { turnOnLeaveProtection } = useFormLeaveProtection()

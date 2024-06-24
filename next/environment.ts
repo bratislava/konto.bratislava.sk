@@ -91,11 +91,6 @@ export const environment = {
         'NEXT_PUBLIC_FEATURE_TOGGLE_TAX_REPORT_CORRESPONDENCE_ADDRESS',
         process.env.NEXT_PUBLIC_FEATURE_TOGGLE_TAX_REPORT_CORRESPONDENCE_ADDRESS,
       ) === 'true',
-    newSummaryDetails:
-      assertEnv(
-        'NEXT_PUBLIC_FEATURE_TOGGLE_NEW_SUMMARY_DETAILS',
-        process.env.NEXT_PUBLIC_FEATURE_TOGGLE_NEW_SUMMARY_DETAILS,
-      ) === 'true',
     eIdTaxWithoutBetaFlag:
       assertEnv(
         'NEXT_PUBLIC_FEATURE_TOGGLE_EID_TAX_WITHOUT_BETA_FLAG',

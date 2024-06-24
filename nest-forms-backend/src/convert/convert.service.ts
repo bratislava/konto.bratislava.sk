@@ -1,11 +1,16 @@
 import { PassThrough, Readable } from 'node:stream'
 
+import { FormDefinition } from '@forms-shared/definitions/form-definitions'
+import {
+  getFormDefinitionBySlug,
+  isSlovenskoSkFormDefinition,
+  isSlovenskoSkTaxFormDefinition,
+} from '@forms-shared/definitions/form-definitions-helpers'
 import { Cache, CACHE_MANAGER } from '@nestjs/cache-manager'
 import { Inject, Injectable, StreamableFile } from '@nestjs/common'
 import { ConfigService } from '@nestjs/config'
-import { Prisma, SchemaVersion } from '@prisma/client'
-import { GenericObjectType, RJSFSchema, UiSchema } from '@rjsf/utils'
-import axios, { AxiosResponse } from 'axios'
+import { Prisma } from '@prisma/client'
+import { GenericObjectType, RJSFSchema } from '@rjsf/utils'
 import * as cheerio from 'cheerio'
 import { Response } from 'express'
 import * as jwt from 'jsonwebtoken'
@@ -21,10 +26,6 @@ import {
 } from '../forms/forms.errors.enum'
 import FormsService from '../forms/forms.service'
 import PrismaService from '../prisma/prisma.service'
-import {
-  SchemasErrorsEnum,
-  SchemasErrorsResponseEnum,
-} from '../schemas/schemas.errors.enum'
 import TaxService from '../tax/tax.service'
 import { ErrorsEnum } from '../utils/global-enums/errors.enum'
 import { JsonSchema } from '../utils/global-forms'
@@ -33,7 +34,6 @@ import MinioClientSubservice from '../utils/subservices/minio-client.subservice'
 import { PdfPreviewJwtPayload } from '../utils/types/global'
 import {
   ConvertToPdfV2RequestDto,
-  JsonToXmlResponseDto,
   JsonToXmlV2RequestDto,
   PdfPreviewDataResponseDto,
   XmlToJsonResponseDto,
@@ -42,6 +42,7 @@ import {
   ConvertErrorsEnum,
   ConvertErrorsResponseEnum,
 } from './errors/convert.errors.enum'
+import createXmlTemplate from './utils-services/createXmlTemplate'
 import JsonXmlConvertService from './utils-services/json-xml.convert.service'
 
 @Injectable()
@@ -61,35 +62,22 @@ export default class ConvertService {
     this.jwtSecret = this.configService.get('JWT_SECRET') ?? ''
   }
 
-  convertJsonToXml(
-    data: Prisma.JsonValue,
-    xmlTemplate: string,
-    schema: JsonSchema,
-  ): JsonToXmlResponseDto {
-    const $ = cheerio.load(xmlTemplate, {
-      xmlMode: true,
-      decodeEntities: false,
-    })
-    this.jsonXmlService.buildXmlRecursive(['E-form', 'Body'], $, data, schema)
-    return {
-      xmlForm: $('E-form').prop('outerHTML') ?? '',
-    }
-  }
-
   async convertJsonToXmlV2(
     data: JsonToXmlV2RequestDto,
     ico: string | null,
     user?: CognitoGetUserData,
-  ): Promise<JsonToXmlResponseDto> {
-    const schemaVersion = await this.prismaService.schemaVersion.findUnique({
-      where: {
-        id: data.schemaVersionId,
-      },
-    })
-    if (schemaVersion === null) {
+  ): Promise<string> {
+    const formDefinition = getFormDefinitionBySlug(data.slug)
+    if (formDefinition === null) {
       throw this.throwerErrorGuard.NotFoundException(
-        SchemasErrorsEnum.SCHEMA_VERSION_NOT_FOUND,
-        SchemasErrorsResponseEnum.SCHEMA_VERSION_NOT_FOUND,
+        FormsErrorsEnum.FORM_DEFINITION_NOT_FOUND,
+        `${FormsErrorsResponseEnum.FORM_DEFINITION_NOT_FOUND} ${data.slug}`,
+      )
+    }
+    if (!isSlovenskoSkFormDefinition(formDefinition)) {
+      throw this.throwerErrorGuard.UnprocessableEntityException(
+        FormsErrorsEnum.FORM_DEFINITION_NOT_SUPPORTED_TYPE,
+        `convertJsonToXmlv2: ${FormsErrorsResponseEnum.FORM_DEFINITION_NOT_SUPPORTED_TYPE}: ${formDefinition.type}, slug: ${data.slug}`,
       )
     }
 
@@ -106,12 +94,12 @@ export default class ConvertService {
         data.formId,
         user?.sub ?? null,
         ico,
-        false,
       )
       jsonFormData = form.formDataJson
     }
 
-    const $ = cheerio.load(schemaVersion.xmlTemplate, {
+    const xmlTemplate = createXmlTemplate(formDefinition)
+    const $ = cheerio.load(xmlTemplate, {
       xmlMode: true,
       decodeEntities: false,
     })
@@ -119,17 +107,23 @@ export default class ConvertService {
       ['E-form', 'Body'],
       $,
       jsonFormData,
-      schemaVersion.jsonSchema as JsonSchema,
+      formDefinition.schemas.schema as JsonSchema,
     )
-    return {
-      xmlForm: $('E-form').prop('outerHTML') ?? '',
-    }
+    return $('E-form').prop('outerHTML') ?? ''
   }
 
   async convertXmlToJson(
     xmlData: string,
-    schema: JsonSchema,
+    formDefinitionSlug: string,
   ): Promise<XmlToJsonResponseDto> {
+    const formDefinition = getFormDefinitionBySlug(formDefinitionSlug)
+    if (!formDefinition) {
+      throw this.throwerErrorGuard.NotFoundException(
+        FormsErrorsEnum.FORM_DEFINITION_NOT_FOUND,
+        `${FormsErrorsResponseEnum.FORM_DEFINITION_NOT_FOUND} ${formDefinitionSlug}`,
+      )
+    }
+
     // xml2js has issues when top level element isn't a single node
     const wrappedXmlString = `<wrapper>${xmlData}</wrapper>`
     const obj: { wrapper: GenericObjectType } = (await parseStringPromise(
@@ -147,7 +141,7 @@ export default class ConvertService {
     this.jsonXmlService.removeNeedlessXmlTransformArraysRecursive(
       body,
       [],
-      schema,
+      formDefinition.schemas.schema as JsonSchema,
     )
     return {
       jsonForm: body,
@@ -172,52 +166,6 @@ export default class ConvertService {
         `There was an error during generating pdf. ${<string>error}`,
       )
     }
-  }
-
-  async generatePdf(
-    formDataJson: Prisma.JsonValue,
-    schemaVersion: SchemaVersion,
-    // will be placed inside the tax pdfs if provided
-    formId?: string,
-  ): Promise<Readable> {
-    if (schemaVersion?.pospID === process.env.TAX_FORM_POSP_ID) {
-      return this.generateTaxPdf(formDataJson, formId)
-    }
-
-    let xml: JsonToXmlResponseDto
-    try {
-      xml = this.convertJsonToXml(
-        formDataJson,
-        schemaVersion.xmlTemplate,
-        schemaVersion.jsonSchema as JsonSchema,
-      )
-    } catch (error) {
-      throw this.throwerErrorGuard.InternalServerErrorException(
-        ErrorsEnum.INTERNAL_SERVER_ERROR,
-        `There was an error during converting json to xml. ${<string>error}`,
-      )
-    }
-
-    const url = `${process.env.FOP_BRATISLAVA_API ?? ''}/fop`
-    const result = await axios({
-      method: 'post',
-      url,
-      responseType: 'stream',
-      data: {
-        data: xml.xmlForm,
-        xslt: schemaVersion.formFo,
-      },
-    })
-      .then((response: AxiosResponse) => response.data as Readable)
-      .catch((error) => {
-        throw this.throwerErrorGuard.InternalServerErrorException(
-          ErrorsEnum.INTERNAL_SERVER_ERROR,
-          `There was an error during converting to pdf. Url: ${url}. Error: ${<
-            string
-          >error}`,
-        )
-      })
-    return result
   }
 
   private async generatePuppeteerPdf(jwtToken: string): Promise<Buffer> {
@@ -248,15 +196,6 @@ export default class ConvertService {
         throw this.throwerErrorGuard.BadRequestException(
           ConvertErrorsEnum.PUPPETEER_PAGE_FAILED_LOAD,
           ConvertErrorsResponseEnum.PUPPETEER_PAGE_FAILED_LOAD,
-        )
-      }
-
-      const formElement = await page.$('form')
-
-      if (formElement === null) {
-        throw this.throwerErrorGuard.BadRequestException(
-          ConvertErrorsEnum.PUPPETEER_FORM_NOT_FOUND,
-          ConvertErrorsResponseEnum.PUPPETEER_FORM_NOT_FOUND,
         )
       }
 
@@ -322,6 +261,7 @@ export default class ConvertService {
   public async generatePdfV2(
     jsonForm: Prisma.JsonValue,
     formId: string,
+    formDefinition: FormDefinition,
     additionalMetadata?: Prisma.JsonObject,
   ): Promise<Readable> {
     const form = await this.prismaService.forms.findUnique({
@@ -329,7 +269,6 @@ export default class ConvertService {
         id: formId,
       },
       include: {
-        schemaVersion: true,
         files: true,
       },
     })
@@ -340,13 +279,12 @@ export default class ConvertService {
       )
     }
 
-    if (form.schemaVersion?.pospID === process.env.TAX_FORM_POSP_ID) {
+    if (isSlovenskoSkTaxFormDefinition(formDefinition)) {
       return this.generateTaxPdf(jsonForm, formId)
     }
 
     const pdfData: PdfPreviewDataResponseDto = {
-      jsonSchema: form.schemaVersion.jsonSchema as RJSFSchema,
-      uiSchema: form.schemaVersion.uiSchema as UiSchema,
+      formDefinitionSlug: formDefinition.slug,
       jsonForm,
       serverFiles: form.files,
       additionalMetadata,
@@ -373,35 +311,25 @@ export default class ConvertService {
     res: Response,
     user?: CognitoGetUserData,
   ): Promise<StreamableFile> {
-    const schemaVersion = await this.prismaService.schemaVersion.findUnique({
-      where: {
-        id: data.schemaVersionId,
-      },
-      include: {
-        schema: true,
-      },
-    })
-
-    if (schemaVersion === null) {
-      throw this.throwerErrorGuard.NotFoundException(
-        SchemasErrorsEnum.SCHEMA_VERSION_NOT_FOUND,
-        SchemasErrorsResponseEnum.SCHEMA_VERSION_NOT_FOUND,
-      )
-    }
-
     // for eligible tax forms (those of signed-in users) store json before transform and the transformed pdf itself for debug purposes
     let taxDebugBucket = ''
     let directoryName = ''
     let stringifiedData = ''
     let shouldStoreDebugPdfData = false
-    const taxFormPospId = process.env.TAX_FORM_POSP_ID
 
     const form = await this.formsService.getFormWithAccessCheck(
       data.formId,
       user?.sub ?? null,
       ico,
-      true,
     )
+
+    const formDefinition = getFormDefinitionBySlug(form.formDefinitionSlug)
+    if (!formDefinition) {
+      throw this.throwerErrorGuard.NotFoundException(
+        FormsErrorsEnum.FORM_DEFINITION_NOT_FOUND,
+        `${FormsErrorsResponseEnum.FORM_DEFINITION_NOT_FOUND} ${form.formDefinitionSlug}`,
+      )
+    }
 
     let formJsonData = data.jsonData
     if (formJsonData === undefined) {
@@ -409,7 +337,7 @@ export default class ConvertService {
     }
 
     // common init for both json and pdf debug storage
-    if (taxFormPospId && schemaVersion.pospID === taxFormPospId && user) {
+    if (isSlovenskoSkTaxFormDefinition(formDefinition)) {
       try {
         taxDebugBucket = process.env.TAX_PDF_DEBUG_BUCKET || 'forms-tax-debug'
         directoryName = this.getTaxDebugBucketDirectoryName(formJsonData)
@@ -442,6 +370,7 @@ export default class ConvertService {
     const file = await this.generatePdfV2(
       formJsonData,
       data.formId,
+      formDefinition,
       data.additionalMetadata,
     )
 
@@ -467,9 +396,7 @@ export default class ConvertService {
     res.set({
       'Content-Type': 'application/pdf',
       'Access-Control-Expose-Headers': 'Content-Disposition',
-      'Content-Disposition': `attachment; filename="${
-        schemaVersion.schema ? schemaVersion.schema.slug : 'form'
-      }.pdf"`,
+      'Content-Disposition': `attachment; filename="${formDefinition.slug}.pdf"`,
     })
 
     return new StreamableFile(responseStream)

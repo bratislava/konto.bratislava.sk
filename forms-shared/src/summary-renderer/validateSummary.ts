@@ -9,6 +9,7 @@ export type ValidatedSummary = {
   hasErrors: boolean
   pathHasError: (path: string) => boolean
   filesInFormData: FileInfoSummary[]
+  getFileById: (id: string) => FileInfoSummary | undefined
 } & ValidationData<any>
 
 /**
@@ -51,11 +52,13 @@ export const validateSummary = (
 
   const hasErrors = Object.keys(validationResults.errorSchema).length > 0
   const pathHasError = (path: string) => checkPathForErrors(path, validationResults.errorSchema)
+  const getFileById = (id: string) => filesInFormData.find((file) => file.id === id)
 
   return {
     ...validationResults,
     hasErrors,
     pathHasError,
     filesInFormData,
+    getFileById,
   }
 }

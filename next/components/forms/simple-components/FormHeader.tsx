@@ -21,7 +21,14 @@ import { useFormContext } from '../useFormContext'
 import { useFormModals } from '../useFormModals'
 
 const FormHeader = () => {
-  const { uiSchema, schema, isTaxForm, isReadonly, isDeletable } = useFormContext()
+  const {
+    formDefinition: {
+      schemas: { schema, uiSchema },
+    },
+    isTaxForm,
+    isReadonly,
+    isDeletable,
+  } = useFormContext()
   const {
     exportXml,
     exportPdf,

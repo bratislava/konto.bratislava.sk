@@ -19,6 +19,7 @@ import { v4 as uuidv4 } from 'uuid'
 import { parseStringPromise } from 'xml2js'
 import { firstCharLowerCase } from 'xml2js/lib/processors'
 
+
 import { CognitoGetUserData } from '../auth/dtos/cognito.dto'
 import {
   FormsErrorsEnum,
@@ -28,10 +29,9 @@ import FormsService from '../forms/forms.service'
 import PrismaService from '../prisma/prisma.service'
 import TaxService from '../tax/tax.service'
 import { ErrorsEnum } from '../utils/global-enums/errors.enum'
-import { JsonSchema } from '../utils/global-forms'
 import ThrowerErrorGuard from '../utils/guards/thrower-error.guard'
 import MinioClientSubservice from '../utils/subservices/minio-client.subservice'
-import { PdfPreviewJwtPayload } from '../utils/types/global'
+import { JsonSchema, PdfPreviewJwtPayload } from '../utils/types/global'
 import {
   ConvertToPdfV2RequestDto,
   JsonToXmlV2RequestDto,

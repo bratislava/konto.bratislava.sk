@@ -1,8 +1,8 @@
 import * as fs from 'node:fs'
 
 import { parse } from 'ts-command-line-args'
-import { formDefinitions } from './definitions/formDefinitions'
-import { getFormDefinitionBySlug } from './definitions/getFormDefinitionBySlug'
+import { formDefinitions } from '../src/definitions/formDefinitions'
+import { getFormDefinitionBySlug } from '../src/definitions/getFormDefinitionBySlug'
 
 type Args = {
   source: string

@@ -1,4 +1,4 @@
-import { formDefinitions } from './form-definitions'
+import { formDefinitions } from './formDefinitions'
 import { FormDefinition } from './formDefinitionTypes'
 
 export const getFormDefinitionBySlug = (slug: string): FormDefinition | null => {

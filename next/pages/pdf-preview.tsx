@@ -1,5 +1,5 @@
 import { formsApi } from '@clients/forms'
-import { getFormDefinitionBySlug } from '@forms-shared/definitions/form-definitions-helpers'
+import { getFormDefinitionBySlug } from '@forms-shared/definitions/getFormDefinitionBySlug'
 import { ClientFileInfo } from '@forms-shared/form-files/fileStatus'
 import { isAxiosError } from 'axios'
 import { GetServerSideProps, GetServerSidePropsContext } from 'next'

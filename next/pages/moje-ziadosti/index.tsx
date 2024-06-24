@@ -1,5 +1,5 @@
 import { GetFormsResponseDto } from '@clients/openapi-forms'
-import { formDefinitions } from '@forms-shared/definitions/form-definitions'
+import { formDefinitions } from '@forms-shared/definitions/formDefinitions'
 import { getDraftApplications } from 'components/forms/segments/AccountSections/MyApplicationsSection/MyApplicationsList'
 import MyApplicationsSection from 'components/forms/segments/AccountSections/MyApplicationsSection/MyApplicationsSection'
 import AccountPageLayout from 'components/layouts/AccountPageLayout'

@@ -1,7 +1,5 @@
-import {
-  getFormDefinitionBySlug,
-  isSlovenskoSkFormDefinition,
-} from '@forms-shared/definitions/form-definitions-helpers'
+import { isSlovenskoSkFormDefinition } from '@forms-shared/definitions/formDefinitionTypes'
+import { getFormDefinitionBySlug } from '@forms-shared/definitions/getFormDefinitionBySlug'
 import { Injectable, Logger } from '@nestjs/common'
 import { FormOwnerType, Forms, FormState } from '@prisma/client'
 import axios, { AxiosResponse } from 'axios'

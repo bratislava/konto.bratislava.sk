@@ -19,18 +19,10 @@ const tailwindCss = `@tailwind base;
 @tailwind components;
 @tailwind utilities;`
 
-let generatedTailwindCss: string
-
 export const getTailwindCss = async () => {
-  if (generatedTailwindCss) {
-    return generatedTailwindCss
-  }
-
   const postCssResult = await postcss([tailwindcss(tailwindConfig), autoprefixer]).process(
     tailwindCss,
-    { from: undefined } /* Added { from: undefined } to avoid a warning */,
+    { from: undefined } /* Required to avoid a warning */,
   )
-  generatedTailwindCss = postCssResult.css
-
-  return generatedTailwindCss
+  return postCssResult.css
 }

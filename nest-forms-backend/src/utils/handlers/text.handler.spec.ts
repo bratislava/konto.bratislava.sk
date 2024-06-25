@@ -1,6 +1,6 @@
-import { FormDefinition } from '@forms-shared/definitions/formDefinitionTypes'
-import { Schemas } from '@forms-shared/generator/functions'
 import { Forms, Prisma } from '@prisma/client'
+import { FormDefinition } from 'forms-shared/definitions/formDefinitionTypes'
+import { Schemas } from 'forms-shared/generator/functions'
 
 import {
   getFrontendFormTitleFromForm,

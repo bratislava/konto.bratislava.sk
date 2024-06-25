@@ -1,6 +1,7 @@
 import { AlertIcon, ChevronDownIcon } from '@assets/ui-icons'
-import { getSummaryJsonBrowser } from '@forms-shared/summary-json/getSummaryJsonBrowser'
-import { getSummaryJsonNode } from '@forms-shared/summary-json/getSummaryJsonNode'
+import cx from 'classnames'
+import { getSummaryJsonBrowser } from 'forms-shared/summary-json/getSummaryJsonBrowser'
+import { getSummaryJsonNode } from 'forms-shared/summary-json/getSummaryJsonNode'
 import {
   SummaryArrayItemRendererProps,
   SummaryArrayRendererProps,
@@ -10,8 +11,7 @@ import {
   SummaryRenderer,
   SummaryStepRendererProps,
   SummaryStringValueRendererProps,
-} from '@forms-shared/summary-renderer/SummaryRenderer'
-import cx from 'classnames'
+} from 'forms-shared/summary-renderer/SummaryRenderer'
 import { useTranslation } from 'next-i18next'
 import React, { useMemo } from 'react'
 

@@ -1,5 +1,5 @@
-import { LabelSize } from '@forms-shared/generator/uiOptionsTypes'
 import cx from 'classnames'
+import { LabelSize } from 'forms-shared/generator/uiOptionsTypes'
 import { useTranslation } from 'next-i18next'
 import * as React from 'react'
 import { DOMAttributes } from 'react'

@@ -1,5 +1,5 @@
-import { FileInfo } from '@forms-shared/form-files/fileStatus'
 import cx from 'classnames'
+import { FileInfo } from 'forms-shared/form-files/fileStatus'
 import React, { forwardRef } from 'react'
 
 import FieldWrapper, { FieldWrapperProps } from '../FieldWrapper'

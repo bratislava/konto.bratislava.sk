@@ -1,5 +1,5 @@
-import { isUploadFileStatusType } from '@forms-shared/form-files/fileStatus'
-import { ValidatedSummary } from '@forms-shared/summary-renderer/validateSummary'
+import { isUploadFileStatusType } from 'forms-shared/form-files/fileStatus'
+import { ValidatedSummary } from 'forms-shared/summary-renderer/validateSummary'
 
 export const isFormSigningDisabled = ({ hasErrors }: ValidatedSummary) => hasErrors
 

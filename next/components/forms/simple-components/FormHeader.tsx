@@ -6,13 +6,13 @@ import {
   EllipsisVerticalIcon,
   PdfIcon,
 } from '@assets/ui-icons'
-import { SchemaUiOptions } from '@forms-shared/generator/uiOptionsTypes'
 import { getUiOptions } from '@rjsf/utils'
 import ButtonNew from 'components/forms/simple-components/ButtonNew'
 import MenuDropdown, {
   MenuItemBase,
 } from 'components/forms/simple-components/MenuDropdown/MenuDropdown'
 import Waves from 'components/forms/simple-components/Waves/Waves'
+import { SchemaUiOptions } from 'forms-shared/generator/uiOptionsTypes'
 import Link from 'next/link'
 import { useTranslation } from 'next-i18next'
 

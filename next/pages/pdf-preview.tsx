@@ -1,7 +1,7 @@
 import { formsApi } from '@clients/forms'
-import { getFormDefinitionBySlug } from '@forms-shared/definitions/getFormDefinitionBySlug'
-import { ClientFileInfo } from '@forms-shared/form-files/fileStatus'
 import { isAxiosError } from 'axios'
+import { getFormDefinitionBySlug } from 'forms-shared/definitions/getFormDefinitionBySlug'
+import { ClientFileInfo } from 'forms-shared/form-files/fileStatus'
 import { GetServerSideProps, GetServerSidePropsContext } from 'next'
 
 import PdfSummaryPage, { PdfSummaryPageProps } from '../components/forms/PdfSummaryPage'

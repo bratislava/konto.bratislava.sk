@@ -1,5 +1,4 @@
-import { baDefaultFormStateBehavior } from '@forms-shared/form-utils/defaultFormState'
-import { baRjsfValidator } from '@forms-shared/form-utils/validators'
+import { baFormDefaults } from '@forms-shared/form-utils/formDefaults'
 import cx from 'classnames'
 import MenuList from 'components/forms/steps/MenuList'
 import { useIsomorphicLayoutEffect } from 'usehooks-ts'
@@ -77,7 +76,6 @@ const FormPage = () => {
                 schema={currentStepSchema!}
                 uiSchema={uiSchema}
                 formData={formData}
-                validator={baRjsfValidator}
                 readonly={isReadonly}
                 onSubmit={(e) => {
                   handleFormOnSubmit(e.formData)
@@ -91,9 +89,9 @@ const FormPage = () => {
                 // `handleFormOnChange` implementation.
                 omitExtraData
                 liveOmit
-                experimental_defaultFormStateBehavior={baDefaultFormStateBehavior}
                 // HTML validation doesn't work for our use case, therefore it's turned off.
                 noHtml5Validate
+                {...baFormDefaults}
               >
                 {
                   // returning null would make RJSF render the default submit button

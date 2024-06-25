@@ -77,10 +77,6 @@
     "ts-jest": "^29.1.2",
     "typescript": "^5.4.5"
   },
-  "resolutions": {
-    "wrap-ansi": "7.0.0",
-    "string-width": "4.1.0"
-  },
   "engines": {
     "node": ">=20.9.x",
     "npm": ">=10.7.x"

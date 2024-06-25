@@ -69,6 +69,5 @@ Run the following and let the script guide you. If you need modifications, or yo
 
 ## Notes
 
-- `resolutions` for `wrap-ansi` and `string-width` in package.json is because of https://stackoverflow.com/a/78025659
 - `ts-config` based on https://github.com/tsconfig/bases/blob/main/bases/node-lts.json
 - `react-markdown` is fixed on version 6, until we use a compiler, see https://stackoverflow.com/a/69469619

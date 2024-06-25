@@ -1,12 +1,12 @@
 import { AlertIcon, AttachmentIcon, CheckInCircleIcon, ScanningIcon } from '@assets/ui-icons'
+import cx from 'classnames'
 import {
   FileInfoSummary,
   isDoneFileStatusType,
   isErrorFileStatusType,
   isScanFileStatusType,
   isUploadFileStatusType,
-} from '@forms-shared/form-files/fileStatus'
-import cx from 'classnames'
+} from 'forms-shared/form-files/fileStatus'
 import React, { useMemo } from 'react'
 
 import Spinner from '../../simple-components/Spinner'

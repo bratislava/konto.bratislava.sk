@@ -1,3 +1,4 @@
+// @ts-ignore
 import type { AuthUserAttributes } from '@aws-amplify/auth/dist/esm/types'
 
 export enum Tier {

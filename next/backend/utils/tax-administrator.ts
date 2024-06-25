@@ -1,3 +1,4 @@
+// @ts-ignore
 import type { AmplifyServer } from '@aws-amplify/core/dist/esm/adapterCore'
 import { fetchUserAttributes } from 'aws-amplify/auth/server'
 import axios from 'axios'

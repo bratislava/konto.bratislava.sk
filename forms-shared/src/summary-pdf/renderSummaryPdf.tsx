@@ -1,5 +1,5 @@
 import React from 'react'
-import { chromium } from 'playwright'
+import type { Browser } from 'playwright'
 import { GenericObjectType, RJSFSchema, UiSchema } from '@rjsf/utils'
 import { getSummaryJsonNode } from '../summary-json/getSummaryJsonNode'
 import { renderToString } from 'react-dom/server'
@@ -17,6 +17,7 @@ export const renderSummaryPdf = async (
   jsonSchema: RJSFSchema,
   uiSchema: UiSchema,
   formData: GenericObjectType,
+  launchBrowser: () => Promise<Browser>,
   serverFiles: FormsBackendFile[] = [],
   clientFiles: ClientFileInfo[] = [],
 ) => {
@@ -32,7 +33,7 @@ export const renderSummaryPdf = async (
       validatedSummary={validatedSummary}
     ></SummaryPdf>,
   )
-  const browser = await chromium.launch()
+  const browser = await launchBrowser()
 
   try {
     const page = await browser.newPage()

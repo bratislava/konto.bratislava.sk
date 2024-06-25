@@ -1,3 +1,4 @@
+// @ts-ignore
 import type { AmplifyServer } from '@aws-amplify/core/dist/esm/adapterCore'
 import { AuthError } from 'aws-amplify/auth'
 import { getCurrentUser } from 'aws-amplify/auth/server'

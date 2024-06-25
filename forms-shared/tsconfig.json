@@ -11,5 +11,5 @@
     "moduleResolution": "node16",
     "jsx": "react"
   },
-  "include": ["./src/**/*", "./tests/**/*"]
+  "include": ["./src/**/*", "./tests/**/*", "./scripts/**/*"],
 }

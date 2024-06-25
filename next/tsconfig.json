@@ -11,7 +11,7 @@
     "forceConsistentCasingInFileNames": true,
     "noEmit": true,
     "module": "esnext",
-    "moduleResolution": "node",
+    "moduleResolution": "Bundler",
     "resolveJsonModule": true,
     "isolatedModules": true,
     "incremental": true,
@@ -26,8 +26,7 @@
       "@assets/images/*": ["./assets/images/*"],
       "@assets/icons/*": ["./assets/icons/*"],
       "@backend/*": ["./backend/*"],
-      "@clients/*": ["./clients/*"],
-      "@forms-shared/*": ["../forms-shared/src/*"],
+      "@clients/*": ["./clients/*"]
     }
   },
   "include": ["**/*.ts", "**/*.tsx", "**/*.js", "**/*.jsx", "next-env.d.ts"],

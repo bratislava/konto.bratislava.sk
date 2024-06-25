@@ -1,5 +1,6 @@
 import { ParsedUrlQuery } from 'node:querystring'
 
+// @ts-ignore
 import type { AmplifyServer } from '@aws-amplify/core/dist/esm/adapterCore'
 import { AuthError } from 'aws-amplify/auth'
 import { fetchAuthSession, fetchUserAttributes, getCurrentUser } from 'aws-amplify/auth/server'

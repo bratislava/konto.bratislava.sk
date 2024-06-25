@@ -1,7 +1,7 @@
 import { CheckInCircleIcon, ChevronDownIcon, CrossIcon } from '@assets/ui-icons'
 import cx from 'classnames'
 import { useTranslation } from 'next-i18next'
-import React, { useId } from 'react'
+import React, { ComponentProps, useId } from 'react'
 import Select, {
   ClearIndicatorProps,
   components,
@@ -11,7 +11,6 @@ import Select, {
   OptionProps,
   Props as ReactSelectProps,
 } from 'react-select'
-import { OptionsOrGroups } from 'react-select/dist/declarations/src/types'
 import { twMerge } from 'tailwind-merge'
 
 import CheckboxIcon from '../../icon-components/CheckboxIcon'
@@ -113,15 +112,20 @@ type SelectMultiNewProps<
 > &
   FieldWrapperProps
 
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+type OptionsOrGroups = ComponentProps<Select>['options']
+
 const someOptionHasDescription = <
   Option extends SelectOption,
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   Group extends GroupBase<Option> = GroupBase<Option>,
 >(
-  options: OptionsOrGroups<Option, Group> | undefined,
+  options: OptionsOrGroups | undefined,
 ) => {
   if (!options) return false
 
   return options.some((option) =>
+    // @ts-ignore
     'options' in option ? someOptionHasDescription(option.options) : Boolean(option.description),
   )
 }

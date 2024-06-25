@@ -1,7 +1,7 @@
-import { mergeClientAndServerFilesSummary } from '@forms-shared/form-files/mergeClientAndServerFiles'
-import { getFileUuidsNaive } from '@forms-shared/form-utils/fileUtils'
-import { validateSummary } from '@forms-shared/summary-renderer/validateSummary'
 import { GenericObjectType } from '@rjsf/utils'
+import { mergeClientAndServerFilesSummary } from 'forms-shared/form-files/mergeClientAndServerFiles'
+import { getFileUuidsNaive } from 'forms-shared/form-utils/fileUtils'
+import { validateSummary } from 'forms-shared/summary-renderer/validateSummary'
 import { useTranslation } from 'next-i18next'
 import React, {
   createContext,

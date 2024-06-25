@@ -29,14 +29,14 @@ FROM build-base AS install-prod
 ENV NPM_CONFIG_CACHE=/build/.npm
 RUN --mount=type=cache,target=/build/.npm \
     npm config set cache /build/.npm \
- && npm ci --omit=dev --frozen-lockfile
+ && npm ci --omit=dev --frozen-lockfile --install-links
 
 FROM install-prod AS build
 COPY . ./
 ENV NEXT_TELEMETRY_DISABLED=1
 RUN --mount=type=cache,target=/build/.npm \
     npm config set cache /build/.npm \
-    && npm ci --include=dev --frozen-lockfile \
+    && npm ci --include=dev --frozen-lockfile --install-links \
     && npm run build
 
 FROM app-base AS dev

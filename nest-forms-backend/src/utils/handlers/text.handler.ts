@@ -1,4 +1,4 @@
-import { FormDefinition } from '@forms-shared/definitions/formDefinitionTypes'
+import { FormDefinition } from 'forms-shared/definitions/formDefinitionTypes'
 import lodash from 'lodash'
 
 import { FormWithSelectedProperties } from '../types/prisma'

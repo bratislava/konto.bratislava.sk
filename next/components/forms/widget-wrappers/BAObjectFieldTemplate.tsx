@@ -1,6 +1,6 @@
-import { ObjectFieldUiOptions } from '@forms-shared/generator/uiOptionsTypes'
 import { getUiOptions, ObjectFieldTemplateProps } from '@rjsf/utils'
 import cx from 'classnames'
+import { ObjectFieldUiOptions } from 'forms-shared/generator/uiOptionsTypes'
 import { PropsWithChildren, useMemo } from 'react'
 
 import FormMarkdown from '../info-components/FormMarkdown'

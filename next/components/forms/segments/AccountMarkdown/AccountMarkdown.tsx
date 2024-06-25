@@ -2,7 +2,6 @@ import cx from 'classnames'
 import Link from 'next/link'
 import React from 'react'
 import ReactMarkdown from 'react-markdown'
-import type { PluggableList } from 'react-markdown/lib'
 import rehypeRaw from 'rehype-raw'
 import remarkDirective from 'remark-directive'
 import remarkDirectiveRehype from 'remark-directive-rehype'
@@ -36,7 +35,11 @@ const AccountMarkdown = ({
   variant = 'normal',
   uLinkVariant = 'default',
 }: AccountMarkdownBase) => {
-  const remarkPlugins: PluggableList = []
+  const remarkPlugins: (
+    | typeof remarkGfm
+    | typeof remarkDirective
+    | typeof remarkDirectiveRehype
+  )[] = []
   if (!disableRemarkGfm) {
     remarkPlugins.push(remarkGfm)
   }

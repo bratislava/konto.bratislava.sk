@@ -1,7 +1,7 @@
-import { baAjvFormats } from '@forms-shared/form-utils/ajvFormats'
 import cx from 'classnames'
 import Button from 'components/forms/simple-components/Button'
 import InputField from 'components/forms/widget-components/InputField/InputField'
+import { baAjvFormats } from 'forms-shared/form-utils/ajvFormats'
 import { AccountType, Address, UserAttributes } from 'frontend/dtos/accountDto'
 import useHookForm from 'frontend/hooks/useHookForm'
 import useJsonParseMemo from 'frontend/hooks/useJsonParseMemo'

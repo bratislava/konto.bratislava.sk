@@ -1,6 +1,6 @@
-import { CheckboxGroupUiOptions } from '@forms-shared/generator/uiOptionsTypes'
 import { EnumOptionsType, StrictRJSFSchema, WidgetProps } from '@rjsf/utils'
 import WidgetWrapper from 'components/forms/widget-wrappers/WidgetWrapper'
+import { CheckboxGroupUiOptions } from 'forms-shared/generator/uiOptionsTypes'
 import React from 'react'
 
 import Checkbox from '../widget-components/Checkbox/Checkbox'

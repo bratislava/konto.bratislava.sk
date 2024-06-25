@@ -1,5 +1,5 @@
-import { WidgetSpacing, WidgetUiOptions } from '@forms-shared/generator/uiOptionsTypes'
 import cx from 'classnames'
+import { WidgetSpacing, WidgetUiOptions } from 'forms-shared/generator/uiOptionsTypes'
 import React, { PropsWithChildren } from 'react'
 import { twMerge } from 'tailwind-merge'
 

@@ -1,4 +1,4 @@
-import { CustomComponentType } from '@forms-shared/generator/uiOptionsTypes'
+import { CustomComponentType } from 'forms-shared/generator/uiOptionsTypes'
 import React from 'react'
 
 import AccountMarkdown from '../../segments/AccountMarkdown/AccountMarkdown'

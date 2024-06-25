@@ -55,6 +55,7 @@
     "crypto": "^1.0.1",
     "dayjs": "^1.11.10",
     "expr-eval": "^2.0.2",
+    "forms-shared": "file:../forms-shared",
     "jsonwebtoken": "^9.0.2",
     "jwks-rsa": "^3.1.0",
     "libphonenumber-js": "^1.10.53",
@@ -165,9 +166,6 @@
     ],
     "testPathIgnorePatterns": [
       "<rootDir>/nases/__tests__"
-    ],
-    "moduleNameMapper": {
-      "^@forms-shared/(.*)$": "<rootDir>/../../forms-shared/src/$1"
-    }
+    ]
   }
 }

@@ -1,12 +1,13 @@
 import { AlertIcon, ChevronDownIcon } from '@assets/ui-icons'
 import { getSummaryJsonBrowser } from '@forms-shared/summary-json/getSummaryJsonBrowser'
 import { getSummaryJsonNode } from '@forms-shared/summary-json/getSummaryJsonNode'
-import SummaryRenderer, {
+import {
   SummaryArrayItemRendererProps,
   SummaryArrayRendererProps,
   SummaryFieldRendererProps,
   SummaryFileValueRendererProps,
   SummaryFormRendererProps,
+  SummaryRenderer,
   SummaryStepRendererProps,
   SummaryStringValueRendererProps,
 } from '@forms-shared/summary-renderer/SummaryRenderer'

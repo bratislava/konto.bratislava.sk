@@ -1,0 +1,16 @@
+{
+  "envs": {
+    "NEST_CPU_LIMITS": "1",
+    "NEST_MEMORY_LIMITS": "1Gi",
+    "NEST_CPU_REQUESTS": "20m",
+    "NEST_MEMORY_REQUESTS": "128Mi",
+    "DB_CPU_LIMITS": "2",
+    "DB_MEMORY_LIMITS": "3Gi",
+    "DB_CPU_REQUESTS": "50m",
+    "DB_MEMORY_REQUESTS": "256Mi",
+    "RABBIT_CPU_LIMITS": "1000m",
+    "RABBIT_MEMORY_LIMITS": "2Gi",
+    "RABBIT_CPU_REQUESTS": "100m",
+    "RABBIT_MEMORY_REQUESTS": "1Gi"
+  }
+}

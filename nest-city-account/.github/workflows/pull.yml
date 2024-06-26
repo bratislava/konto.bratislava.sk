@@ -1,0 +1,16 @@
+name: Validate code
+on:
+  # push:
+  #   tags:
+  #     - 'dev**'
+  #     - 'staging**'
+  #     - 'prod**'
+  #   branches:
+  #     - master
+  pull_request:
+    branches:
+      - master
+jobs:
+  validate:
+    name: Validate code
+    uses: bratislava/github-actions/.github/workflows/validate-nest-prisma-inhouse.yml@stable

@@ -1,0 +1,63 @@
+apiVersion: rabbitmq.com/v1beta1
+kind: RabbitmqCluster
+metadata:
+  name: rabbitmq
+  namespace: ${NAMESPACE}
+spec:
+  replicas: 1
+  resources:
+    limits:
+      cpu: ${RABBIT_CPU_LIMITS}
+      memory: ${RABBIT_MEMORY_LIMITS}
+    requests:
+      cpu: ${RABBIT_CPU_REQUESTS}
+      memory: ${RABBIT_MEMORY_REQUESTS}
+  persistence:
+   storageClassName: "vsan-default-storage-policy"
+   storage: 10Gi
+  override:
+    statefulSet:
+      spec:
+        template:
+          spec:
+            containers:
+              - name: rabbitmq
+                lifecycle:
+                  postStart:
+                    exec:
+                      command:
+                        - /bin/sh
+                        - '-c'
+                        - >-
+                          cp
+                          /opt/community-plugins/*.ez
+                          /opt/bitnami/rabbitmq/plugins
+                volumeMounts:
+                  - mountPath: /opt/community-plugins
+                    name: community-plugins
+            volumes:
+              - name: community-plugins
+                emptyDir: {}
+            initContainers:
+              - command:
+                  - sh
+                  - -c
+                  - curl -L -v https://github.com/rabbitmq/rabbitmq-delayed-message-exchange/releases/download/3.11.1/rabbitmq_delayed_message_exchange-3.11.1.ez --output /community-plugins/rabbitmq_delayed_message_exchange-3.11.1.ez
+                image: curlimages/curl
+                imagePullPolicy: IfNotPresent
+                name: copy-community-plugins
+                resources:
+                  limits:
+                    cpu: 100m
+                    memory: 500Mi
+                  requests:
+                    cpu: 10m
+                    memory: 500Mi
+                volumeMounts:
+                  - mountPath: /community-plugins/
+                    name: community-plugins
+  rabbitmq:
+    additionalPlugins:
+      - rabbitmq_delayed_message_exchange
+    envConfig: |
+      PLUGINS_DIR=/opt/bitnami/rabbitmq/plugins

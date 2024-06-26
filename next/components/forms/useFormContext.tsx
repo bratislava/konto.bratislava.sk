@@ -1,9 +1,9 @@
 import { GetFileResponseReducedDto } from '@clients/openapi-forms'
-import { FormDefinition } from '@forms-shared/definitions/form-definitions'
 import {
+  FormDefinition,
   isSlovenskoSkGenericFormDefinition,
   isSlovenskoSkTaxFormDefinition,
-} from '@forms-shared/definitions/form-definitions-helpers'
+} from '@forms-shared/definitions/formDefinitionTypes'
 import { ClientFileInfo } from '@forms-shared/form-files/fileStatus'
 import { GenericObjectType } from '@rjsf/utils'
 import { createContext, PropsWithChildren, useContext } from 'react'

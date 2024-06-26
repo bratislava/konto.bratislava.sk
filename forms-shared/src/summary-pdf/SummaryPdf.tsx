@@ -10,7 +10,7 @@ import SummaryRenderer, {
 } from '../summary-renderer/SummaryRenderer'
 import { SummaryJsonForm } from '../summary-json/summaryJsonTypes'
 import Markdown from 'react-markdown'
-import { generalTermsAndConditions } from '../definitions/terms-and-conditions'
+import { generalTermsAndConditions } from '../definitions/termsAndConditions'
 import cx from 'classnames'
 import { ValidatedSummary } from '../summary-renderer/validateSummary'
 

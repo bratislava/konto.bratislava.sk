@@ -1,59 +1,10 @@
-import { Schemas } from '../generator/functions'
-import stanoviskoKInvesticnemuZameru from './stanovisko-k-investicnemu-zameru'
-import predzahradky from './predzahradky'
-import priznanieKDaniZNehnutelnosti from './priznanie-k-dani-z-nehnutelnosti'
-import { generalTermsAndConditions, taxTermsAndConditions } from './terms-and-conditions'
-import zavazneStanoviskoKInvesticnejCinnosti from './zavazne-stanovisko-k-investicnej-cinnosti'
-import komunitneZahrady from './komunitne-zahrady'
-
-export enum FormDefinitionType {
-  SlovenskoSkGeneric = 'SlovenskoSkGeneric',
-  SlovenskoSkTax = 'SlovenskoSkTax',
-  Email = 'Email',
-}
-
-type FormDefinitionBase = {
-  slug: string
-  title: string
-  schemas: Schemas
-  termsAndConditions: string
-  messageSubjectDefault: string
-  messageSubjectFormat?: string
-}
-
-type FormDefinitionSlovenskoSkBase = FormDefinitionBase & {
-  slovenskoSkUrl: string
-  pospID: string
-  pospVersion: string
-  gestor: string
-  isSigned: boolean
-}
-
-export type FormDefinitionSlovenskoSkGeneric = FormDefinitionSlovenskoSkBase & {
-  type: FormDefinitionType.SlovenskoSkGeneric
-  ginisAssignment: {
-    ginisOrganizationName: string
-    ginisPersonName: string
-  }
-}
-
-export type FormDefinitionSlovenskoSkTax = FormDefinitionSlovenskoSkBase & {
-  type: FormDefinitionType.SlovenskoSkTax
-}
-
-export type FormDefinitionSlovenskoSk =
-  | FormDefinitionSlovenskoSkGeneric
-  | FormDefinitionSlovenskoSkTax
-
-export type FormDefinitionEmail = FormDefinitionBase & {
-  type: FormDefinitionType.Email
-  email: string
-}
-
-export type FormDefinition =
-  | FormDefinitionSlovenskoSkGeneric
-  | FormDefinitionSlovenskoSkTax
-  | FormDefinitionEmail
+import stanoviskoKInvesticnemuZameru from '../schemas/stanoviskoKInvesticnemuZameru'
+import predzahradky from '../schemas/predzahradky'
+import priznanieKDaniZNehnutelnosti from '../schemas/priznanieKDaniZNehnutelnosti'
+import { generalTermsAndConditions, taxTermsAndConditions } from './termsAndConditions'
+import zavazneStanoviskoKInvesticnejCinnosti from '../schemas/zavazneStanoviskoKInvesticnejCinnosti'
+import komunitneZahrady from '../schemas/komunitneZahrady'
+import { FormDefinition, FormDefinitionType } from './formDefinitionTypes'
 
 export const formDefinitions: FormDefinition[] = [
   {

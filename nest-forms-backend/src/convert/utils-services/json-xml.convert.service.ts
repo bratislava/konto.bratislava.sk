@@ -5,11 +5,11 @@ import { dropRight, find, last } from 'lodash'
 
 import ThrowerErrorGuard from '../../utils/guards/thrower-error.guard'
 import { JsonSchema } from '../../utils/types/global'
+import escapeXml from '../../utils/xml'
 import {
   ConvertErrorsEnum,
   ConvertErrorsResponseEnum,
 } from '../errors/convert.errors.enum'
-import { escapeXml } from '../../utils/xml'
 
 interface Ciselnik {
   id?: string

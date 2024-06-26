@@ -9,6 +9,7 @@ import {
   ConvertErrorsEnum,
   ConvertErrorsResponseEnum,
 } from '../errors/convert.errors.enum'
+import { escapeXml } from '../../utils/xml'
 
 interface Ciselnik {
   id?: string
@@ -135,7 +136,8 @@ export default class JsonXmlConvertService {
         }
       }
     } else if (node && typeof node === 'string') {
-      let stringNode: string = node
+      const xmlEscapedNode = escapeXml(node)
+      let stringNode: string = xmlEscapedNode
       if (jsonSchema && jsonSchema !== true) {
         const format =
           jsonSchema.type === 'array'
@@ -146,11 +148,11 @@ export default class JsonXmlConvertService {
             typeof jsonSchema !== 'boolean' && 'ciselnik' in jsonSchema
               ? (jsonSchema.ciselnik as Ciselnik)
               : ({} as Ciselnik)
-          stringNode = `<Code>${node}</Code><Name>${node}</Name><WsEnumCode>${String(
+          stringNode = `<Code>${xmlEscapedNode}</Code><Name>${xmlEscapedNode}</Name><WsEnumCode>${String(
             ciselnikProperty?.id,
           )}</WsEnumCode>`
         } else if (format === 'file') {
-          stringNode = `<Nazov>${node}</Nazov><Prilozena>true</Prilozena>`
+          stringNode = `<Nazov>${xmlEscapedNode}</Nazov><Prilozena>true</Prilozena>`
         }
       }
 

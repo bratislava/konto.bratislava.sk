@@ -1,6 +1,6 @@
 import { Readable } from 'node:stream'
 
-import { FormDefinitionSlovenskoSk } from '@forms-shared/definitions/form-definitions'
+import { FormDefinitionSlovenskoSk } from '@forms-shared/definitions/formDefinitionTypes'
 import { createMock } from '@golevelup/ts-jest'
 import { getQueueToken } from '@nestjs/bull'
 import { CacheModule } from '@nestjs/cache-manager'

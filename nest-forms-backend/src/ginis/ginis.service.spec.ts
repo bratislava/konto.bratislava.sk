@@ -1,9 +1,9 @@
 /* eslint-disable pii/no-email */
 import { randomUUID } from 'node:crypto'
 
-import { FormDefinitionType } from '@forms-shared/definitions/form-definitions'
-import * as formDefinitionsHelpers from '@forms-shared/definitions/form-definitions-helpers'
-import { getFormDefinitionBySlug } from '@forms-shared/definitions/form-definitions-helpers'
+import { FormDefinitionType } from '@forms-shared/definitions/formDefinitionTypes'
+import * as formDefinitionsHelpers from '@forms-shared/definitions/getFormDefinitionBySlug'
+import { getFormDefinitionBySlug } from '@forms-shared/definitions/getFormDefinitionBySlug'
 import { Test, TestingModule } from '@nestjs/testing'
 import { Files, FormError, FormState, GinisState } from '@prisma/client'
 
@@ -26,9 +26,9 @@ import {
 import GinisService from './ginis.service'
 import GinisHelper from './subservices/ginis.helper'
 
-jest.mock('@forms-shared/definitions/form-definitions-helpers', () => ({
+jest.mock('@forms-shared/definitions/getFormDefinitionBySlug', () => ({
   ...jest.requireActual<typeof formDefinitionsHelpers>(
-    '@forms-shared/definitions/form-definitions-helpers',
+    '@forms-shared/definitions/getFormDefinitionBySlug',
   ),
   getFormDefinitionBySlug: jest.fn(),
 }))

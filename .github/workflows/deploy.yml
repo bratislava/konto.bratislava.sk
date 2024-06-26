@@ -26,7 +26,7 @@ jobs:
 
   deploy-dev:
     name: after dev Backends deploy Next
-    needs: [conditions, deploy-dev-nest-forms-backend,deploy-dev-nest-city-account, deploy-dev-strapi]
+    needs: [conditions, deploy-dev-nest-forms-backend, deploy-dev-nest-city-account, deploy-dev-strapi]
     if: needs.conditions.outputs.dev == 'true'
     uses: bratislava/github-actions/.github/workflows/deploy-with-bratiska-cli-inhouse.yml@beta
     with:
@@ -71,7 +71,7 @@ jobs:
 
   deploy-dev-strapi:
     name: dev Strapi
-    needs: conditions
+    needs: [conditions, deploy-dev-nest-forms-backend, deploy-dev-nest-city-account]
     if: needs.conditions.outputs.dev-strapi == 'true'
     uses: bratislava/github-actions/.github/workflows/deploy-with-bratiska-cli-inhouse.yml@stable
     with:
@@ -146,7 +146,7 @@ jobs:
 
   deploy-staging-strapi:
     name: staging Strapi
-    needs: conditions
+    needs: [conditions, deploy-staging-nest-forms-backend, deploy-staging-nest-city-account]
     if: needs.conditions.outputs.staging-strapi == 'true'
     uses: bratislava/github-actions/.github/workflows/deploy-with-bratiska-cli-inhouse.yml@stable
     with:
@@ -221,7 +221,7 @@ jobs:
 
   deploy-prod-strapi:
     name: prod Strapi
-    needs: conditions
+    needs: [conditions, deploy-prod-nest-forms-backend, deploy-prod-nest-city-account]
     if: needs.conditions.outputs.prod-strapi == 'true'
     uses: bratislava/github-actions/.github/workflows/deploy-with-bratiska-cli-inhouse.yml@stable
     with:

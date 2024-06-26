@@ -20,6 +20,8 @@ Each sub-project contains README which should get you up and running. More docum
 
 🗄️ `/nest-forms-backend` Service which is handling incoming and outcoming forms created by users
 
+🗄️ `/nest-city-account` Service which is handling user related logic for konto
+
 🐳 `docker-compose.yml` - if you need to quickly setup postgres or meilisearch instance, run `docker compose up postgres`. You need docker installed
 
 ## Development

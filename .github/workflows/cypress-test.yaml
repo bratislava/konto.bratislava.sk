@@ -10,16 +10,17 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
-      
+
       - name: Use Node.js
         uses: actions/setup-node@v4
         with:
           node-version: '20.10'
 
-      - name: Install dependencies in forms-shared
+      - name: Build forms-shared
         working-directory: forms-shared
         run: |
           npm install
+          npm run build
 
       - name: Install and build application
         working-directory: next
@@ -35,7 +36,7 @@ jobs:
           wait-on-timeout: 120
           working-directory: tests
           command: npm run cypress:ci
-      
+
       - name: Screenshots of errors during E2E tests
         uses: actions/upload-artifact@v4
         if: always()

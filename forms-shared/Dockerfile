@@ -6,3 +6,4 @@ COPY . ./
 
 FROM base as prod
 RUN npm ci --include=dev --frozen-lockfile
+RUN npm run build

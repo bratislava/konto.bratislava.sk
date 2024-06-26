@@ -28,8 +28,7 @@
       "@assets/images/*": ["./assets/images/*"],
       "@assets/icons/*": ["./assets/icons/*"],
       "@backend/*": ["./backend/*"],
-      "@clients/*": ["./clients/*"],
-      "@forms-shared/*": ["../forms-shared/src/*"]
+      "@clients/*": ["./clients/*"]
     }
   },
   "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", ".next/types/**/*.ts"],

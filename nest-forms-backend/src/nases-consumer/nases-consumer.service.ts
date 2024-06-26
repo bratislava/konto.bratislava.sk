@@ -1,14 +1,14 @@
 import { setTimeout } from 'node:timers/promises'
 
+import { Nack, RabbitRPC } from '@golevelup/nestjs-rabbitmq'
+import { Injectable, Logger } from '@nestjs/common'
+import { FormError, Forms, FormState } from '@prisma/client'
 import {
   FormDefinition,
   FormDefinitionSlovenskoSk,
   isSlovenskoSkFormDefinition,
-} from '@forms-shared/definitions/formDefinitionTypes'
-import { getFormDefinitionBySlug } from '@forms-shared/definitions/getFormDefinitionBySlug'
-import { Nack, RabbitRPC } from '@golevelup/nestjs-rabbitmq'
-import { Injectable, Logger } from '@nestjs/common'
-import { FormError, Forms, FormState } from '@prisma/client'
+} from 'forms-shared/definitions/formDefinitionTypes'
+import { getFormDefinitionBySlug } from 'forms-shared/definitions/getFormDefinitionBySlug'
 
 import ConvertPdfService from '../convert-pdf/convert-pdf.service'
 import FilesService from '../files/files.service'

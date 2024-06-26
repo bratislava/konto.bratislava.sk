@@ -6,6 +6,7 @@ import {
   ErrorIcon,
   ScanningIcon,
 } from '@assets/ui-icons'
+import cx from 'classnames'
 import {
   FileInfo,
   FileStatusType,
@@ -15,8 +16,7 @@ import {
   isScanFileStatusType,
   isUploadFileStatusType,
   UploadClientErrorReasonType,
-} from '@forms-shared/form-files/fileStatus'
-import cx from 'classnames'
+} from 'forms-shared/form-files/fileStatus'
 import { useTranslation } from 'next-i18next'
 import React from 'react'
 import { Button as ReactAriaButton } from 'react-aria-components'

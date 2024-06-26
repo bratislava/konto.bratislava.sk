@@ -1,13 +1,13 @@
 import { formsApi } from '@clients/forms'
 import { GetFileResponseReducedDto } from '@clients/openapi-forms'
+import { Query, useQuery, useQueryClient } from '@tanstack/react-query'
 import {
   ClientFileInfo,
   FileInfo,
   FileStatus,
   FileStatusType,
-} from '@forms-shared/form-files/fileStatus'
-import { mergeClientAndServerFiles } from '@forms-shared/form-files/mergeClientAndServerFiles'
-import { Query, useQuery, useQueryClient } from '@tanstack/react-query'
+} from 'forms-shared/form-files/fileStatus'
+import { mergeClientAndServerFiles } from 'forms-shared/form-files/mergeClientAndServerFiles'
 import React, {
   createContext,
   PropsWithChildren,

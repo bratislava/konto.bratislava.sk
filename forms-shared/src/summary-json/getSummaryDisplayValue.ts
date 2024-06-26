@@ -1,9 +1,10 @@
 import { DateFormatter, parseDate } from '@internationalized/date'
-import { WidgetProps } from '@rjsf/utils/src/types'
+
 import { JSONSchema7 } from 'json-schema'
 import { validate, version } from 'uuid'
 
 import { BaWidgetType, CheckboxUiOptions, SelectUiOptions } from '../generator/uiOptionsTypes'
+import { WidgetProps } from '@rjsf/utils'
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 function isFileUuid(value: any): boolean {

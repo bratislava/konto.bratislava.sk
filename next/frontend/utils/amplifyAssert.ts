@@ -1,4 +1,3 @@
-import type { AmplifyServer } from '@aws-amplify/core/dist/esm/adapterCore'
 import { AuthError } from 'aws-amplify/auth'
 import { getCurrentUser } from 'aws-amplify/auth/server'
 import jwt from 'jsonwebtoken'
@@ -6,6 +5,7 @@ import jwkToPem from 'jwk-to-pem'
 import { GetServerSidePropsContext } from 'next/types'
 
 import { environment } from '../../environment'
+import { AmplifyServerContextSpec } from './amplifyTypes'
 import { isProductionDeployment } from './general'
 
 const jwks = isProductionDeployment()
@@ -48,7 +48,7 @@ const jwks = isProductionDeployment()
       },
     ]
 
-const getUserId = async (contextSpec: AmplifyServer.ContextSpec) => {
+const getUserId = async (contextSpec: AmplifyServerContextSpec) => {
   try {
     const { userId } = await getCurrentUser(contextSpec)
     return userId
@@ -92,7 +92,7 @@ const assertIdTokenCookie = (userId: string, idToken: string) => {
 
 export const assertContextSpecAndIdToken = async (
   context: GetServerSidePropsContext,
-  contextSpec: AmplifyServer.ContextSpec,
+  contextSpec: AmplifyServerContextSpec,
 ) => {
   const userId = await getUserId(contextSpec)
   // The request is not authenticated

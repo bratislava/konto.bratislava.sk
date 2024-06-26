@@ -189,7 +189,7 @@ const useGetContext = () => {
       return
     }
 
-    setSubmittedStepsIndexes((prev) => new Set([...prev, currentStepIndex]))
+    setSubmittedStepsIndexes((prev) => new Set([...Array.from(prev), currentStepIndex]))
     setStepFormData(newFormData)
     goToNextStep()
   }

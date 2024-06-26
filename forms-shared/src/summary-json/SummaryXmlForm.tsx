@@ -211,7 +211,7 @@ type SummaryXmlFormProps = Pick<FormProps, 'schema' | 'uiSchema' | 'formData'>
  * Unfortunately, it is not possible to generate a JSON summary directly, so the XML is later parsed into JSON.
  * The generated XML is tightly coupled with its parsing in `getSummaryJson` function, and it is not used anywhere else.
  */
-const SummaryXmlForm = ({ schema, uiSchema, formData }: SummaryXmlFormProps) => {
+export const SummaryXmlForm = ({ schema, uiSchema, formData }: SummaryXmlFormProps) => {
   return (
     <ThemedForm
       schema={schema}
@@ -228,5 +228,3 @@ const SummaryXmlForm = ({ schema, uiSchema, formData }: SummaryXmlFormProps) => 
     </ThemedForm>
   )
 }
-
-export default SummaryXmlForm

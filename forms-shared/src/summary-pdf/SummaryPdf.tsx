@@ -1,10 +1,11 @@
 import React from 'react'
-import SummaryRenderer, {
+import {
   SummaryArrayItemRendererProps,
   SummaryArrayRendererProps,
   SummaryFieldRendererProps,
   SummaryFileValueRendererProps,
   SummaryFormRendererProps,
+  SummaryRenderer,
   SummaryStepRendererProps,
   SummaryStringValueRendererProps,
 } from '../summary-renderer/SummaryRenderer'

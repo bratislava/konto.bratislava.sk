@@ -1,0 +1,2 @@
+-- AlterEnum
+ALTER TYPE "FormError" ADD VALUE 'SHAREPOINT_SEND_ERROR';

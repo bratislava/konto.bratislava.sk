@@ -32,6 +32,7 @@ export type FormDefinitionSlovenskoSkGeneric = FormDefinitionSlovenskoSkBase & {
   }
   sharepointData?: SharepointData
 }
+
 export type FormDefinitionSlovenskoSkTax = FormDefinitionSlovenskoSkBase & {
   type: FormDefinitionType.SlovenskoSkTax
 }

@@ -36,6 +36,18 @@ export default class SharepointSubservice {
     private prismaService: PrismaService,
   ) {
     this.logger = new Logger('SharepointSubservice')
+
+    if (
+      !process.env.SHAREPOINT_TENANT_ID ||
+      !process.env.SHAREPOINT_CLIENT_ID ||
+      !process.env.SHAREPOINT_CLIENT_SECRET ||
+      !process.env.SHAREPOINT_DOMAIN ||
+      !process.env.SHAREPOINT_URL
+    ) {
+      throw new Error(
+        'Missing Sharepoint .env values, one of: SHAREPOINT_TENANT_ID, SHAREPOINT_CLIENT_ID, SHAREPOINT_CLIENT_SECRET, SHAREPOINT_DOMAIN, SHAREPOINT_URL',
+      )
+    }
   }
 
   @Process()

@@ -10,7 +10,7 @@ jobs:
     with:
       directory: forms-shared/
       build_image_no_registry: ''
-      tag: '--tag=latest'
+      tag: '--tag=${{ github.ref_name }}'
     secrets:
       registry-pass: ${{ secrets.HARBOR_REGISTRY_PASSWORD }}
 
@@ -46,6 +46,7 @@ jobs:
     uses: bratislava/github-actions/.github/workflows/build-with-bratiska-cli.yml@stable
     with:
       directory: next/
+      build_arg: '--tag="FORMS_SHARED_TAG=${{ github.ref_name }}"'
       debug: --debug
     secrets:
       registry-pass: ${{ secrets.HARBOR_REGISTRY_PASSWORD }}
@@ -67,6 +68,7 @@ jobs:
     uses: bratislava/github-actions/.github/workflows/build-with-bratiska-cli.yml@stable
     with:
       directory: nest-forms-backend/
+      build_arg: '--tag="FORMS_SHARED_TAG=${{ github.ref_name }}"'
     secrets:
       registry-pass: ${{ secrets.HARBOR_REGISTRY_PASSWORD }}
     permissions: write-all

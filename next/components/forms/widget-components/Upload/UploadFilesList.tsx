@@ -1,4 +1,4 @@
-import { FileInfo } from '@forms-shared/form-files/fileStatus'
+import { FileInfo } from 'forms-shared/form-files/fileStatus'
 import { useTranslation } from 'next-i18next'
 import React from 'react'
 

@@ -11,7 +11,6 @@ import Select, {
   OptionProps,
   Props as ReactSelectProps,
 } from 'react-select'
-import { OptionsOrGroups } from 'react-select/dist/declarations/src/types'
 import { twMerge } from 'tailwind-merge'
 
 import CheckboxIcon from '../../icon-components/CheckboxIcon'
@@ -115,9 +114,10 @@ type SelectMultiNewProps<
 
 const someOptionHasDescription = <
   Option extends SelectOption,
-  Group extends GroupBase<Option> = GroupBase<Option>,
+  IsMulti extends boolean,
+  Group extends GroupBase<Option>,
 >(
-  options: OptionsOrGroups<Option, Group> | undefined,
+  options: ReactSelectProps<Option, IsMulti, Group>['options'] | undefined,
 ) => {
   if (!options) return false
 
@@ -158,7 +158,7 @@ const SelectField = <
   const { t } = useTranslation('account', { keyPrefix: 'SelectField' })
 
   const isError = !!errorMessage?.length
-  const hasDescriptions = someOptionHasDescription(options)
+  const hasDescriptions = someOptionHasDescription<Option, IsMulti, Group>(options)
 
   return (
     <div className={twMerge('w-full', className)}>

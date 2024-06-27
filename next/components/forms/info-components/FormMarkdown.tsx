@@ -1,8 +1,7 @@
-import { markdownTextPrefix } from '@forms-shared/generator/uiOptionsTypes'
+import { markdownTextPrefix } from 'forms-shared/generator/uiOptionsTypes'
 import React from 'react'
 import ReactMarkdown from 'react-markdown'
 import rehypeSanitize from 'rehype-sanitize'
-import { Schema } from 'rehype-sanitize/lib'
 import remarkDirective from 'remark-directive'
 import remarkDirectiveRehype from 'remark-directive-rehype'
 import remarkSupersub from 'remark-supersub'
@@ -60,7 +59,7 @@ const FormMarkdown = ({ children, pAsSpan }: FormMarkdownProps) => {
                 'form-image-preview': ['src'],
                 a: ['href'],
               },
-            } as Schema,
+            },
           ],
         ]}
         components={{

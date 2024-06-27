@@ -1,6 +1,6 @@
-import { RadioGroupUiOptions } from '@forms-shared/generator/uiOptionsTypes'
 import { StrictRJSFSchema, WidgetProps } from '@rjsf/utils'
 import WidgetWrapper from 'components/forms/widget-wrappers/WidgetWrapper'
+import { RadioGroupUiOptions } from 'forms-shared/generator/uiOptionsTypes'
 import React from 'react'
 
 import Radio from '../widget-components/RadioButton/Radio'

@@ -5,8 +5,5 @@
   "testRegex": ".spec.ts$",
   "transform": {
     "^.+\\.(t|j)s$": "ts-jest"
-  },
-  "moduleNameMapper": {
-    "^@forms-shared/(.*)$": "<rootDir>/../../../../forms-shared/src/$1"
   }
 }

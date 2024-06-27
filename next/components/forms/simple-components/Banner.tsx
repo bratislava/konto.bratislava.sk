@@ -1,6 +1,7 @@
 import { PhoneIcon } from '@assets/ui-icons'
 import cx from 'classnames'
 import AccountMarkdown from 'components/forms/segments/AccountMarkdown/AccountMarkdown'
+import { ImageProps } from 'next/image'
 import Image from 'next/legacy/image'
 
 import Button from './Button'
@@ -13,7 +14,7 @@ type BannerBase = {
   href?: string
   onPress?: () => void
   className?: string
-  image: string
+  image: ImageProps['src']
 }
 
 const Banner = ({

@@ -1,4 +1,4 @@
-import { getFormDefinitionBySlug } from '@forms-shared/definitions/getFormDefinitionBySlug'
+import { getFormDefinitionBySlug } from 'forms-shared/definitions/getFormDefinitionBySlug'
 
 import FormPageWrapper, { FormPageWrapperProps } from '../../../components/forms/FormPageWrapper'
 import { SsrAuthProviderHOC } from '../../../components/logic/SsrAuthContext'

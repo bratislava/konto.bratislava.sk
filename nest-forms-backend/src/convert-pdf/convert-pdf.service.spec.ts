@@ -1,10 +1,10 @@
-import {
-  FormDefinitionSlovenskoSk,
-  FormDefinitionType,
-} from '@forms-shared/definitions/formDefinitionTypes'
 import { ConfigService } from '@nestjs/config'
 import { Test, TestingModule } from '@nestjs/testing'
 import { Forms } from '@prisma/client'
+import {
+  FormDefinitionSlovenskoSk,
+  FormDefinitionType,
+} from 'forms-shared/definitions/formDefinitionTypes'
 
 import prismaMock from '../../test/singleton'
 import { testJsonData } from '../__tests__/constants'

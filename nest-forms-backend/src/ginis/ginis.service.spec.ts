@@ -1,11 +1,10 @@
 /* eslint-disable pii/no-email */
 import { randomUUID } from 'node:crypto'
 
-import { FormDefinitionType } from '@forms-shared/definitions/formDefinitionTypes'
-import * as formDefinitionsHelpers from '@forms-shared/definitions/getFormDefinitionBySlug'
-import { getFormDefinitionBySlug } from '@forms-shared/definitions/getFormDefinitionBySlug'
 import { Test, TestingModule } from '@nestjs/testing'
 import { Files, FormError, FormState, GinisState } from '@prisma/client'
+import { FormDefinitionType } from 'forms-shared/definitions/formDefinitionTypes'
+import { getFormDefinitionBySlug } from 'forms-shared/definitions/getFormDefinitionBySlug'
 
 import prismaMock from '../../test/singleton'
 import PrismaService from '../prisma/prisma.service'
@@ -26,10 +25,7 @@ import {
 import GinisService from './ginis.service'
 import GinisHelper from './subservices/ginis.helper'
 
-jest.mock('@forms-shared/definitions/getFormDefinitionBySlug', () => ({
-  ...jest.requireActual<typeof formDefinitionsHelpers>(
-    '@forms-shared/definitions/getFormDefinitionBySlug',
-  ),
+jest.mock('forms-shared/definitions/getFormDefinitionBySlug', () => ({
   getFormDefinitionBySlug: jest.fn(),
 }))
 jest.mock('./subservices/ginis.helper')

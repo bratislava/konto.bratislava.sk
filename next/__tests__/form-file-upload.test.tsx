@@ -1,6 +1,6 @@
-import { FileStatusType } from '@forms-shared/form-files/fileStatus'
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import { act, renderHook, waitFor } from '@testing-library/react'
+import { FileStatusType } from 'forms-shared/form-files/fileStatus'
 import React from 'react'
 
 import { FormContext, FormContextProvider } from '../components/forms/useFormContext'

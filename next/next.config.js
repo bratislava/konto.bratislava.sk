@@ -124,11 +124,6 @@ const nextConfig = {
 
     return config
   },
-  experimental: {
-    externalDir: true,
-    // https://github.com/konvajs/konva/issues/1458#issuecomment-1356122802
-    esmExternals: 'loose',
-  },
 }
 
 // https://github.com/4lejandrito/next-plausible#proxy-the-analytics-script

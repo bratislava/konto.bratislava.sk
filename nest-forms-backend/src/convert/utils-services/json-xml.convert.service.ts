@@ -5,6 +5,7 @@ import { dropRight, find, last } from 'lodash'
 
 import ThrowerErrorGuard from '../../utils/guards/thrower-error.guard'
 import { JsonSchema } from '../../utils/types/global'
+import escapeXml from '../../utils/xml'
 import {
   ConvertErrorsEnum,
   ConvertErrorsResponseEnum,
@@ -135,7 +136,8 @@ export default class JsonXmlConvertService {
         }
       }
     } else if (node && typeof node === 'string') {
-      let stringNode: string = node
+      const xmlEscapedNode = escapeXml(node)
+      let stringNode: string = xmlEscapedNode
       if (jsonSchema && jsonSchema !== true) {
         const format =
           jsonSchema.type === 'array'
@@ -146,11 +148,11 @@ export default class JsonXmlConvertService {
             typeof jsonSchema !== 'boolean' && 'ciselnik' in jsonSchema
               ? (jsonSchema.ciselnik as Ciselnik)
               : ({} as Ciselnik)
-          stringNode = `<Code>${node}</Code><Name>${node}</Name><WsEnumCode>${String(
+          stringNode = `<Code>${xmlEscapedNode}</Code><Name>${xmlEscapedNode}</Name><WsEnumCode>${String(
             ciselnikProperty?.id,
           )}</WsEnumCode>`
         } else if (format === 'file') {
-          stringNode = `<Nazov>${node}</Nazov><Prilozena>true</Prilozena>`
+          stringNode = `<Nazov>${xmlEscapedNode}</Nazov><Prilozena>true</Prilozena>`
         }
       }
 

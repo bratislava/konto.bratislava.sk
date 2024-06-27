@@ -5,7 +5,7 @@ import { exampleTaxForm4 } from '../src/tax-form/examples/exampleTaxForm4'
 import { exampleTaxForm5 } from '../src/tax-form/examples/exampleTaxForm5'
 import { getTaxFormPdfMapping } from '../src/tax-form/mapping/pdf/pdf'
 import { getTaxFormXml } from '../src/tax-form/mapping/xml/xml'
-import generateTaxPdf from '../src/tax-form/generateTaxPdf'
+import { generateTaxPdf } from '../src/tax-form/generateTaxPdf'
 import { expectPdfToMatchSnapshot } from '../test-utils/expectPdfToMatchSnapshot'
 import { filterConsole } from '../test-utils/filterConsole'
 

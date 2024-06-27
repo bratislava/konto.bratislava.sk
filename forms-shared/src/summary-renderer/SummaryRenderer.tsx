@@ -100,7 +100,7 @@ const DisplayValueRenderer = ({
  *
  * This encapsulates the common logic of rendering the summary JSON into a React component. See usage for more details.
  */
-const SummaryRenderer = ({
+export const SummaryRenderer = ({
   summaryJson,
   validatedSummary,
   renderForm,
@@ -160,5 +160,3 @@ const SummaryRenderer = ({
 
   return renderElement(summaryJson)
 }
-
-export default SummaryRenderer

@@ -1,8 +1,8 @@
 import { formsApi } from '@clients/forms'
 import { GetFormResponseDto, GinisDocumentDetailResponseDto } from '@clients/openapi-forms'
-import { getFormDefinitionBySlug } from '@forms-shared/definitions/getFormDefinitionBySlug'
 import MyApplicationDetails from 'components/forms/segments/AccountSections/MyApplicationsSection/MyApplicationDetails'
 import AccountPageLayout from 'components/layouts/AccountPageLayout'
+import { getFormDefinitionBySlug } from 'forms-shared/definitions/getFormDefinitionBySlug'
 import { modifyGinisDataForSchemaSlug } from 'frontend/utils/ginis'
 import logger from 'frontend/utils/logger'
 

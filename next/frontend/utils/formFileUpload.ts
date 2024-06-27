@@ -4,13 +4,13 @@ import {
   GetFileResponseReducedDto,
   PostFileResponseDto,
 } from '@clients/openapi-forms'
+import { AxiosError, AxiosProgressEvent, AxiosResponse } from 'axios'
 import {
   ClientFileInfo,
   FileStatus,
   FileStatusType,
   UploadClientErrorReasonType,
-} from '@forms-shared/form-files/fileStatus'
-import { AxiosError, AxiosProgressEvent, AxiosResponse } from 'axios'
+} from 'forms-shared/form-files/fileStatus'
 import flatten from 'lodash/flatten'
 import { extensions } from 'mime-types'
 import { v4 as createUuid } from 'uuid'

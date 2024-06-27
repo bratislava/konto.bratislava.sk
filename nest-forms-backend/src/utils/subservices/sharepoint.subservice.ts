@@ -1,19 +1,31 @@
-import { Injectable, Logger } from "@nestjs/common"
-import { FormError, FormState, Forms, Prisma } from "@prisma/client"
-import { SharepointColumnMapValue } from "forms-shared/definitions/sharepoint"
-import { FormDefinition } from 'forms-shared/definitions/formDefinitionTypes'
-import ThrowerErrorGuard from "../guards/thrower-error.guard"
-import { SharepointErrorsEnum, SharepointErrorsResponseEnum } from "./dtos/sharepoint.errors.enum"
-import { escape, filter, get as lodashGet, List } from 'lodash'
-import { getFrontendFormTitleFromForm, getSubjectTextFromForm } from "../handlers/text.handler"
-import axios, { AxiosResponse } from "axios"
-import PrismaService from "../../prisma/prisma.service"
-import { FormsErrorsEnum, FormsErrorsResponseEnum } from "../../forms/forms.errors.enum"
+import { OnQueueFailed, Process } from '@nestjs/bull'
+import { Injectable, Logger } from '@nestjs/common'
+import { FormError, Forms, FormState, Prisma } from '@prisma/client'
+import axios, { AxiosResponse } from 'axios'
+import { Job } from 'bull'
+import {
+  FormDefinition,
+  FormDefinitionType,
+} from 'forms-shared/definitions/formDefinitionTypes'
 import { getFormDefinitionBySlug } from 'forms-shared/definitions/getFormDefinitionBySlug'
-import { Job } from "bull"
-import { OnQueueFailed, Process } from "@nestjs/bull"
-import alertError from "../logging"
+import { SharepointColumnMapValue } from 'forms-shared/definitions/sharepoint'
+import { escape, filter, get as lodashGet, List } from 'lodash'
 
+import {
+  FormsErrorsEnum,
+  FormsErrorsResponseEnum,
+} from '../../forms/forms.errors.enum'
+import PrismaService from '../../prisma/prisma.service'
+import ThrowerErrorGuard from '../guards/thrower-error.guard'
+import {
+  getFrontendFormTitleFromForm,
+  getSubjectTextFromForm,
+} from '../handlers/text.handler'
+import alertError from '../logging'
+import {
+  SharepointErrorsEnum,
+  SharepointErrorsResponseEnum,
+} from './dtos/sharepoint.errors.enum'
 
 @Injectable()
 export default class SharepointSubservice {
@@ -21,11 +33,10 @@ export default class SharepointSubservice {
 
   constructor(
     private throwerErrorGuard: ThrowerErrorGuard,
-    private prismaService: PrismaService
+    private prismaService: PrismaService,
   ) {
     this.logger = new Logger('SharepointSubservice')
   }
-
 
   @Process()
   async transcode(job: Job<{ formId: string }>): Promise<void> {
@@ -80,8 +91,18 @@ export default class SharepointSubservice {
       )
     }
 
+    if (
+      formDefinition.type !== FormDefinitionType.SlovenskoSkGeneric ||
+      !formDefinition.sharepointData
+    ) {
+      throw this.throwerErrorGuard.UnprocessableEntityException(
+        SharepointErrorsEnum.SHAREPOINT_DATA_NOT_PROVIDED,
+        `${SharepointErrorsResponseEnum.SHAREPOINT_DATA_NOT_PROVIDED} Form id: ${form.id}.`,
+      )
+    }
+
     const accessToken = await this.getAccessToken()
-    const sharepointData = formDefinition.sharepointData
+    const { sharepointData } = formDefinition
     const fields = await this.mapColumnsToFields(
       Object.keys(sharepointData.columnMap),
       accessToken,
@@ -92,7 +113,12 @@ export default class SharepointSubservice {
       sharepointData.databaseName,
       sharepointData.tableName,
       accessToken,
-      this.getValuesForFields(fields, sharepointData.columnMap, form, formDefinition),
+      this.getValuesForFields(
+        fields,
+        sharepointData.columnMap,
+        form,
+        formDefinition,
+      ),
     )
 
     await this.prismaService.forms.update({
@@ -232,7 +258,7 @@ export default class SharepointSubservice {
     fields: Record<string, string>,
     paths: Record<string, SharepointColumnMapValue>,
     form: Forms,
-    formDefinition: FormDefinition
+    formDefinition: FormDefinition,
   ): Record<string, string> {
     const result: Record<string, string> = {}
     Object.keys(fields).forEach((key) => {

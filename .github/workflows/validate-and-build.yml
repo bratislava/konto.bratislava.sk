@@ -47,6 +47,7 @@ jobs:
     with:
       directory: next/
       build_arg: '--build_arg="FORMS_SHARED_TAG=${{ github.head_ref || github.ref_name }}"'
+      version: beta
       debug: --debug
     secrets:
       registry-pass: ${{ secrets.HARBOR_REGISTRY_PASSWORD }}
@@ -69,6 +70,7 @@ jobs:
     with:
       directory: nest-forms-backend/
       build_arg: '--build_arg="FORMS_SHARED_TAG=${{ github.head_ref || github.ref_name }}"'
+      version: beta
     secrets:
       registry-pass: ${{ secrets.HARBOR_REGISTRY_PASSWORD }}
     permissions: write-all

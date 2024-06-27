@@ -63,7 +63,7 @@ WORKDIR /home/node/app
 
 COPY --chown=node:node --from=build /root/nest-forms-backend/package*.json ./
 COPY --chown=node:node --from=build /root/nest-forms-backend/node_modules ./node_modules
-RUN npm prune --production
+# RUN npm prune --production
 
 COPY --chown=node:node --from=build /root/nest-forms-backend/dist ./dist
 COPY --chown=node:node --from=build /root/nest-forms-backend/res ./res

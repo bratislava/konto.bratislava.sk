@@ -6,7 +6,10 @@ import { CacheModule } from '@nestjs/cache-manager'
 import { ConfigService } from '@nestjs/config'
 import { Test, TestingModule } from '@nestjs/testing'
 import { FormError, Forms } from '@prisma/client'
-import { FormDefinitionSlovenskoSk, FormDefinitionType } from 'forms-shared/definitions/formDefinitionTypes'
+import {
+  FormDefinitionSlovenskoSk,
+  FormDefinitionType,
+} from 'forms-shared/definitions/formDefinitionTypes'
 
 import prismaMock from '../../test/singleton'
 import ConvertService from '../convert/convert.service'
@@ -196,7 +199,7 @@ describe('NasesConsumerService', () => {
           },
         },
         {
-          type: FormDefinitionType.SlovenskoSkGeneric
+          type: FormDefinitionType.SlovenskoSkGeneric,
         } as FormDefinitionSlovenskoSk,
         '',
       )

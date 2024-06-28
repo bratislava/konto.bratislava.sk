@@ -177,7 +177,7 @@ describe('NasesConsumerService', () => {
       const spyDelay = jest.spyOn(service as any, 'queueDelayedForm')
       const spyPublish = jest.spyOn(
         service['rabbitmqClientService'],
-        'publishNasesCheck',
+        'publishToGinis',
       )
 
       const convertSpy = jest

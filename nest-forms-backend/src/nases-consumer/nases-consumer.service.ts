@@ -7,6 +7,7 @@ import {
   FormDefinition,
   FormDefinitionSlovenskoSk,
   isSlovenskoSkFormDefinition,
+  isSlovenskoSkGenericFormDefinition,
 } from 'forms-shared/definitions/formDefinitionTypes'
 import { getFormDefinitionBySlug } from 'forms-shared/definitions/getFormDefinitionBySlug'
 
@@ -213,11 +214,9 @@ export default class NasesConsumerService {
       error: FormError.NONE,
     })
 
-    // Start checking if the message is in Nases
-
-    // TODO this is only because of is signed is only for tax from properties, (this if should be removed after integration ginis / noris)
-    if (!formDefinition.isSigned) {
-      await this.rabbitmqClientService.publishNasesCheck({
+    // Send the form to ginis if should be sent
+    if (isSlovenskoSkGenericFormDefinition(formDefinition)) {
+      await this.rabbitmqClientService.publishToGinis({
         formId: data.formId,
         tries: 0,
         userData: data.userData,

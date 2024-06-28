@@ -214,7 +214,7 @@ export default class NasesConsumerService {
       error: FormError.NONE,
     })
 
-    // Start checking if the message is in Nases
+    // Send the form to ginis if should be sent
     if (isSlovenskoSkGenericFormDefinition(formDefinition)) {
       await this.rabbitmqClientService.publishToGinis({
         formId: data.formId,

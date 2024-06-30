@@ -6,9 +6,7 @@ import { SsrAuthProviderHOC } from '../components/logic/SsrAuthContext'
 import { amplifyGetServerSideProps } from '../frontend/utils/amplifyServer'
 import { slovakServerSideTranslations } from '../frontend/utils/slovakServerSideTranslations'
 
-type AccountIntroPageProps = {
-  displayTaxToPayBanner: boolean
-}
+type AccountIntroPageProps = {}
 
 /* Temporary promo banner for 2024 tax. */
 const getDisplayTaxToPayBanner = async (
@@ -42,10 +40,11 @@ export const getServerSideProps = amplifyGetServerSideProps<AccountIntroPageProp
   },
 )
 
-const AccountIntroPage = ({ displayTaxToPayBanner }: AccountIntroPageProps) => {
+// eslint-disable-next-line no-empty-pattern
+const AccountIntroPage = ({}: AccountIntroPageProps) => {
   return (
     <AccountPageLayout>
-      <IntroSection displayTaxToPayBanner={displayTaxToPayBanner} />
+      <IntroSection />
     </AccountPageLayout>
   )
 }

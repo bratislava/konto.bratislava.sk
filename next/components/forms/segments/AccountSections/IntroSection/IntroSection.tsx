@@ -12,11 +12,10 @@ import { useSsrAuth } from '../../../../../frontend/hooks/useSsrAuth'
 import PhoneNumberModal from '../../PhoneNumberModal/PhoneNumberModal'
 import Announcements from './Announcements/Announcements'
 
-type IntroSectionProps = {
-  displayTaxToPayBanner: boolean
-}
+type IntroSectionProps = {}
 
-const IntroSection = ({ displayTaxToPayBanner }: IntroSectionProps) => {
+// eslint-disable-next-line no-empty-pattern
+const IntroSection = ({}: IntroSectionProps) => {
   const { t } = useTranslation('account')
   const { userAttributes, isLegalEntity } = useSsrAuth()
 
@@ -26,7 +25,7 @@ const IntroSection = ({ displayTaxToPayBanner }: IntroSectionProps) => {
     'account_section_intro.banner_content',
   )}</span>`
 
-  const foMunicipalServicesSection = [43, 34, 35, 1]
+  const foMunicipalServicesSection = [32, 9, 19, 34]
   const poMunicipalServicesSection = [43, 34, 35, 4]
 
   const serviceCardIndexes = isLegalEntity ? poMunicipalServicesSection : foMunicipalServicesSection
@@ -50,7 +49,7 @@ const IntroSection = ({ displayTaxToPayBanner }: IntroSectionProps) => {
           titleAsParagraph
         />
         <div className="m-auto w-full max-w-screen-lg">
-          <Announcements displayTaxToPayBanner={displayTaxToPayBanner} />
+          <Announcements />
           <div className="mx-4 border-b-2 border-gray-200 lg:mx-0" />
           <div className="flex flex-col gap-6 py-6 lg:py-16">
             <div className="flex w-full items-center justify-between px-4 lg:px-0">

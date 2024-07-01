@@ -1,4 +1,5 @@
-FROM harbor.bratislava.sk/standalone/forms-shared:latest as shared
+ARG FORMS_SHARED_TAG=latest
+FROM harbor.bratislava.sk/standalone/forms-shared:${FORMS_SHARED_TAG} as shared
 FROM node:20.9 AS base
 
 # Based on https://github.com/puppeteer/puppeteer/blob/main/docker/Dockerfile

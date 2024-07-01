@@ -15,7 +15,7 @@ jobs:
     with:
       directory: forms-shared/
       build_image_no_registry: ''
-      tag: '--tag=latest'
+      tag: '--tag=${{ github.sha }}'
     secrets:
       registry-pass: ${{ secrets.HARBOR_REGISTRY_PASSWORD }}
 
@@ -31,6 +31,7 @@ jobs:
     uses: bratislava/github-actions/.github/workflows/deploy-with-bratiska-cli-inhouse.yml@beta
     with:
       directory: next/
+      build_arg: '--build_arg="FORMS_SHARED_TAG=${{ github.sha }}"'
       cluster: tkg-innov-dev
       url: https://tkg.dev.bratislava.sk
       debug: --debug
@@ -43,9 +44,10 @@ jobs:
     name: dev nest-forms-backend
     needs: conditions
     if: needs.conditions.outputs.dev-nest-forms-backend == 'true'
-    uses: bratislava/github-actions/.github/workflows/deploy-with-bratiska-cli-inhouse.yml@stable
+    uses: bratislava/github-actions/.github/workflows/deploy-with-bratiska-cli-inhouse.yml@beta
     with:
       directory: nest-forms-backend/
+      build_arg: '--build_arg="FORMS_SHARED_TAG=${{ github.sha }}"'
       cluster: tkg-innov-dev
       url: https://tkg.dev.bratislava.sk
       debug: --debug
@@ -58,7 +60,7 @@ jobs:
     name: dev Strapi
     needs: conditions
     if: needs.conditions.outputs.dev-strapi == 'true'
-    uses: bratislava/github-actions/.github/workflows/deploy-with-bratiska-cli-inhouse.yml@stable
+    uses: bratislava/github-actions/.github/workflows/deploy-with-bratiska-cli-inhouse.yml@beta
     with:
       directory: strapi/
       cluster: tkg-innov-dev
@@ -73,9 +75,10 @@ jobs:
     name: dev Next
     needs: conditions
     if: needs.conditions.outputs.dev-next == 'true'
-    uses: bratislava/github-actions/.github/workflows/deploy-with-bratiska-cli-inhouse.yml@stable
+    uses: bratislava/github-actions/.github/workflows/deploy-with-bratiska-cli-inhouse.yml@beta
     with:
       directory: next/
+      build_arg: '--build_arg="FORMS_SHARED_TAG=${{ github.sha }}"'
       cluster: tkg-innov-dev
       url: https://tkg.dev.bratislava.sk
       debug: --debug
@@ -91,6 +94,7 @@ jobs:
     uses: bratislava/github-actions/.github/workflows/deploy-with-bratiska-cli-inhouse.yml@stable
     with:
       directory: next/
+      build_arg: '--build_arg="FORMS_SHARED_TAG=${{ github.sha }}"'
       cluster: tkg-innov-staging
       url: https://tkg.staging.bratislava.sk
       debug: --debug
@@ -106,6 +110,7 @@ jobs:
     uses: bratislava/github-actions/.github/workflows/deploy-with-bratiska-cli-inhouse.yml@stable
     with:
       directory: nest-forms-backend/
+      build_arg: '--build_arg="FORMS_SHARED_TAG=${{ github.sha }}"'
       cluster: tkg-innov-staging
       url: https://tkg.staging.bratislava.sk
       debug: --debug
@@ -136,6 +141,7 @@ jobs:
     uses: bratislava/github-actions/.github/workflows/deploy-with-bratiska-cli-inhouse.yml@stable
     with:
       directory: next/
+      build_arg: '--build_arg="FORMS_SHARED_TAG=${{ github.sha }}"'
       cluster: tkg-innov-staging
       url: https://tkg.staging.bratislava.sk
       debug: --debug
@@ -151,6 +157,7 @@ jobs:
     uses: bratislava/github-actions/.github/workflows/deploy-with-bratiska-cli-inhouse.yml@stable
     with:
       directory: next/
+      build_arg: '--build_arg="FORMS_SHARED_TAG=${{ github.sha }}"'
       cluster: tkg-innov-prod
       url: https://tkg.bratislava.sk
       flag: --production
@@ -166,6 +173,7 @@ jobs:
     uses: bratislava/github-actions/.github/workflows/deploy-with-bratiska-cli-inhouse.yml@stable
     with:
       directory: nest-forms-backend/
+      build_arg: '--build_arg="FORMS_SHARED_TAG=${{ github.sha }}"'
       cluster: tkg-innov-prod
       url: https://tkg.bratislava.sk
       flag: --production
@@ -197,6 +205,7 @@ jobs:
     uses: bratislava/github-actions/.github/workflows/deploy-with-bratiska-cli-inhouse.yml@stable
     with:
       directory: next/
+      build_arg: '--build_arg="FORMS_SHARED_TAG=${{ github.sha }}"'
       cluster: tkg-innov-prod
       url: https://tkg.bratislava.sk
       flag: --production

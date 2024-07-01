@@ -140,7 +140,7 @@ export const serviceCards: ServiceCardBase[] = [
       MunicipalServicesCategories.CULTURE_CATEGORY,
       MunicipalServicesCategories.JOIN_CATEGORY,
     ],
-    href: 'https://bratislavskisusedia.sk/temy/komunitne-zahrady',
+    href: 'https://konto.bratislava.sk/mestske-sluzby/komunitne-zahrady',
   },
   {
     id: 10,
@@ -232,7 +232,7 @@ export const serviceCards: ServiceCardBase[] = [
     tag: 'account_section_services.cards.19.tag',
     tagStyle: 'text-environment-700 bg-environment-100',
     category: [MunicipalServicesCategories.GREEN_CATEGORY],
-    href: 'https://bratislavskisusedia.sk/temy/predzahradky',
+    href: 'https://konto.bratislava.sk/mestske-sluzby/predzahradky',
   },
   {
     id: 20,

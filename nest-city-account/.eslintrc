@@ -1,0 +1,39 @@
+{
+  "root": true,
+  "env": {
+    "es2021": true,
+    "node": true
+  },
+  "extends": [
+    "airbnb-typescript/base",
+    "plugin:@darraghor/nestjs-typed/no-swagger",
+    "plugin:@typescript-eslint/recommended",
+    "prettier"
+  ],
+  "parser": "@typescript-eslint/parser",
+  "parserOptions": {
+    "project": "./tsconfig.json",
+    "sourceType": "module",
+    "ecmaVersion": 2021
+  },
+  "plugins": [
+    "@darraghor/nestjs-typed",
+    "@typescript-eslint/eslint-plugin",
+    "prettier",
+    "import",
+    "sonarjs",
+    "promise"
+  ],
+  "rules": {
+    "sonarjs/no-duplicate-string": ["error", 5],
+    "sonarjs/cognitive-complexity": ["error", 20],
+    "promise/prefer-await-to-then": "error",
+    "key-spacing": ["error", { "afterColon": true }],
+    "comma-spacing": ["error", { "before": false, "after": true }],
+    "no-multiple-empty-lines": ["error", { "max": 1, "maxEOF": 0 }],
+    "prefer-arrow-callback": "error"
+  },
+  "ignorePatterns": [
+    "src/generated-clients/**/*"
+  ]
+}

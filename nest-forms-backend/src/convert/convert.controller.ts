@@ -37,16 +37,12 @@ import ConvertService from './convert.service'
 import {
   ConvertToPdfV2RequestDto,
   JsonToXmlV2RequestDto,
-  PdfPreviewDataRequestDto,
-  PdfPreviewDataResponseDto,
   XmlToJsonRequestDto,
   XmlToJsonResponseDto,
 } from './dtos/form.dto'
 import {
   FormIdMissingErrorDto,
-  InvalidJwtTokenErrorDto,
-  InvalidUuidErrorDto,
-  PuppeteerPageFailedLoadErrorDto,
+  PdfGenerationFailedErrorDto,
 } from './errors/convert.errors.dto'
 
 @ApiTags('convert')
@@ -153,17 +149,11 @@ export default class ConvertController {
     status: HttpStatusCode.InternalServerError,
     description: 'There was an error during generating tax pdf.',
   })
-  @ApiExtraModels(PuppeteerPageFailedLoadErrorDto)
-  @ApiBadRequestResponse({
-    status: HttpStatusCode.BadRequest,
+  @ApiExtraModels(PdfGenerationFailedErrorDto)
+  @ApiInternalServerErrorResponse({
+    status: HttpStatusCode.InternalServerError,
     description: 'There was an error during generating pdf.',
-    schema: {
-      oneOf: [
-        {
-          $ref: getSchemaPath(PuppeteerPageFailedLoadErrorDto),
-        },
-      ],
-    },
+    type: PdfGenerationFailedErrorDto,
   })
   @ApiResponse({
     status: 200,
@@ -184,36 +174,5 @@ export default class ConvertController {
       res,
       user,
     )
-  }
-
-  @ApiOperation({
-    summary: '',
-    description: 'Returns necessary data for frontend to generate pdf.',
-  })
-  @ApiResponse({
-    status: 200,
-    type: PdfPreviewDataResponseDto,
-  })
-  @ApiExtraModels(InvalidUuidErrorDto, InvalidJwtTokenErrorDto)
-  @ApiUnprocessableEntityResponse({
-    status: HttpStatusCode.UnprocessableEntity,
-    description: 'There was an error during fetching data for pdf from cache.',
-    schema: {
-      oneOf: [
-        {
-          $ref: getSchemaPath(InvalidUuidErrorDto),
-        },
-        {
-          $ref: getSchemaPath(InvalidJwtTokenErrorDto),
-        },
-      ],
-    },
-  })
-  @Post('pdf-preview-data')
-  async getPdfPreviewData(
-    @Res({ passthrough: true }) res: Response,
-    @Body() data: PdfPreviewDataRequestDto,
-  ): Promise<PdfPreviewDataResponseDto> {
-    return this.convertService.getPdfPreviewData(data.jwtToken)
   }
 }

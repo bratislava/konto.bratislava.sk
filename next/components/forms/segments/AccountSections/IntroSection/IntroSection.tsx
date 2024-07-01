@@ -23,7 +23,7 @@ const IntroSection = () => {
   )}</span>`
 
   const foMunicipalServicesSection = [32, 9, 19, 34]
-  const poMunicipalServicesSection = [43, 34, 35, 4]
+  const poMunicipalServicesSection = [34, 35, 43, 4]
 
   const serviceCardIndexes = isLegalEntity ? poMunicipalServicesSection : foMunicipalServicesSection
 

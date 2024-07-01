@@ -30,7 +30,7 @@ import ThrowerErrorGuard from '../utils/guards/thrower-error.guard'
 import MinioClientSubservice from '../utils/subservices/minio-client.subservice'
 import { JsonSchema } from '../utils/types/global'
 import {
-  ConvertToPdfV2RequestDto,
+  ConvertToPdfRequestDto,
   JsonToXmlV2RequestDto,
   XmlToJsonResponseDto,
 } from './dtos/form.dto'
@@ -158,7 +158,7 @@ export default class ConvertService {
     }
   }
 
-  public async generatePdfV2(
+  public async generatePdf(
     jsonForm: Prisma.JsonValue,
     formId: string,
     formDefinition: FormDefinition,
@@ -203,8 +203,8 @@ export default class ConvertService {
     return Readable.from(pdfBuffer)
   }
 
-  async convertToPdfV2(
-    data: ConvertToPdfV2RequestDto,
+  async convertToPdf(
+    data: ConvertToPdfRequestDto,
     ico: string | null,
     res: Response,
     user?: CognitoGetUserData,
@@ -265,7 +265,7 @@ export default class ConvertService {
         })
     }
 
-    const file = await this.generatePdfV2(
+    const file = await this.generatePdf(
       formJsonData,
       data.formId,
       formDefinition,

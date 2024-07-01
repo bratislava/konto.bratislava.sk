@@ -35,7 +35,7 @@ import { ResponseGdprDataDto } from '../nases/dtos/responses.dto'
 import { User, UserInfo } from '../utils/decorators/request.decorator'
 import ConvertService from './convert.service'
 import {
-  ConvertToPdfV2RequestDto,
+  ConvertToPdfRequestDto,
   JsonToXmlV2RequestDto,
   XmlToJsonRequestDto,
   XmlToJsonResponseDto,
@@ -161,14 +161,14 @@ export default class ConvertController {
     type: StreamableFile,
   })
   @UseGuards(new CognitoGuard(true))
-  @Post('pdf-v2')
-  async convertToPdfv2(
+  @Post('pdf')
+  async convertToPdf(
     @Res({ passthrough: true }) res: Response,
-    @Body() data: ConvertToPdfV2RequestDto,
+    @Body() data: ConvertToPdfRequestDto,
     @User() user?: CognitoGetUserData,
     @UserInfo() userInfo?: ResponseGdprDataDto,
   ): Promise<StreamableFile> {
-    return this.convertService.convertToPdfV2(
+    return this.convertService.convertToPdf(
       data,
       userInfo?.ico ?? null,
       res,

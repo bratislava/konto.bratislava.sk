@@ -147,7 +147,7 @@ describe('NasesConsumerService', () => {
         .mockResolvedValue({ status: 401 })
 
       const convertSpy = jest
-        .spyOn(convertService, 'generatePdfV2')
+        .spyOn(convertService, 'generatePdf')
         .mockResolvedValue(new Readable())
 
       const spyLog = jest.spyOn(service['logger'], 'error')
@@ -184,7 +184,7 @@ describe('NasesConsumerService', () => {
       )
 
       const convertSpy = jest
-        .spyOn(convertService, 'generatePdfV2')
+        .spyOn(convertService, 'generatePdf')
         .mockResolvedValue(new Readable())
 
       await service.sendToNasesAndUpdateState(

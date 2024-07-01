@@ -68,7 +68,7 @@ export class XmlToJsonResponseDto {
   jsonForm!: RJSFSchema
 }
 
-export class ConvertToPdfV2RequestDto {
+export class ConvertToPdfRequestDto {
   @ApiProperty({
     description: 'Form id',
     example: 'f69559da-5eca-4ed7-80fd-370d09dc3632',

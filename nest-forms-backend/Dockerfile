@@ -27,6 +27,13 @@ COPY package*.json ./
 
 RUN npm ci
 
+# forms-shared is installed as a symlink, so it is not copied to new images, therefore the contents must be copied manually
+# TODO: Examine why chmod is needed, if chmod is not present the build fails on npm prune command on permissions
+RUN rm -rf /root/nest-forms-backend/node_modules/forms-shared && \
+    cp -R /root/forms-shared /root/nest-forms-backend/node_modules/forms-shared && \
+    find /root/nest-forms-backend/node_modules/forms-shared -type d -exec chmod 755 {} \; && \
+    find /root/nest-forms-backend/node_modules/forms-shared -type f -exec chmod 644 {} \;
+
 COPY . ./
 
 RUN npx prisma generate --schema=./prisma/schema.prisma

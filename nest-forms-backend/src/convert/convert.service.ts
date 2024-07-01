@@ -229,10 +229,7 @@ export default class ConvertService {
       )
     }
 
-    let formJsonData = data.jsonData
-    if (formJsonData === undefined) {
-      formJsonData = form.formDataJson
-    }
+    const formJsonData = data.jsonData ?? form.formDataJson
 
     // common init for both json and pdf debug storage
     if (isSlovenskoSkTaxFormDefinition(formDefinition)) {

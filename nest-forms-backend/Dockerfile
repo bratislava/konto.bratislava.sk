@@ -2,19 +2,6 @@ ARG FORMS_SHARED_TAG=latest
 FROM harbor.bratislava.sk/standalone/forms-shared:${FORMS_SHARED_TAG} as shared
 FROM node:20.9 AS base
 
-# Based on https://github.com/puppeteer/puppeteer/blob/main/docker/Dockerfile
-RUN apt-get update \
-    && apt-get install -y wget gnupg \
-    && wget -q -O - https://dl-ssl.google.com/linux/linux_signing_key.pub | apt-key add - \
-    && sh -c 'echo "deb [arch=amd64] http://dl.google.com/linux/chrome/deb/ stable main" >> /etc/apt/sources.list.d/google.list' \
-    && apt-get update \
-    && apt-get install -y google-chrome-stable fonts-ipafont-gothic fonts-wqy-zenhei fonts-thai-tlwg fonts-kacst fonts-freefont-ttf libxss1 \
-      --no-install-recommends \
-    && rm -rf /var/lib/apt/lists/*
-
-ENV PUPPETEER_SKIP_DOWNLOAD true
-ENV PUPPETEER_EXECUTABLE_PATH /usr/bin/google-chrome-stable
-
 # build
 FROM base AS build
 WORKDIR /root/forms-shared
@@ -26,6 +13,7 @@ WORKDIR /root/nest-forms-backend
 COPY package*.json ./
 
 RUN npm ci
+RUN npx playwright install --with-deps
 
 # forms-shared is installed as a symlink, so it is not copied to new images, therefore the contents must be copied manually
 # TODO: Examine why chmod is needed, if chmod is not present the build fails on npm prune command on permissions

@@ -1,7 +1,7 @@
 import priznanieKDaniZNehnutelnosti from '../src/schemas/priznanieKDaniZNehnutelnosti'
 import stanoviskoKInvesticnemuZameru from '../src/schemas/stanoviskoKInvesticnemuZameru'
 import zavazneStanoviskoKInvesticnejCinnosti from '../src/schemas/zavazneStanoviskoKInvesticnejCinnosti'
-import { baAjvValidator, baRjsfValidator } from '../src/form-utils/validators'
+import { baRjsfValidator } from '../src/form-utils/validators'
 import komunitneZahrady from '../src/schemas/komunitneZahrady'
 import predzahradky from '../src/schemas/predzahradky'
 import { exampleTaxForm1 } from '../src/tax-form/examples/exampleTaxForm1'
@@ -50,7 +50,7 @@ definitions.forEach((definition) => {
     })
 
     it('is valid schema', () => {
-      expect(baAjvValidator.validateSchema(definition.schema.schema, true)).toBe(true)
+      expect(baRjsfValidator.ajv.validateSchema(definition.schema.schema, true)).toBe(true)
     })
 
     it('default form state should match snapshot', () => {

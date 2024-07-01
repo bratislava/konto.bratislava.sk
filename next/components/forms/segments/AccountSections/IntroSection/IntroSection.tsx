@@ -12,10 +12,7 @@ import { useSsrAuth } from '../../../../../frontend/hooks/useSsrAuth'
 import PhoneNumberModal from '../../PhoneNumberModal/PhoneNumberModal'
 import Announcements from './Announcements/Announcements'
 
-type IntroSectionProps = {}
-
-// eslint-disable-next-line no-empty-pattern
-const IntroSection = ({}: IntroSectionProps) => {
+const IntroSection = () => {
   const { t } = useTranslation('account')
   const { userAttributes, isLegalEntity } = useSsrAuth()
 

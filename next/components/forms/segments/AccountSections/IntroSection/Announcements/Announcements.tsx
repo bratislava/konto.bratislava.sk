@@ -7,10 +7,7 @@ import React from 'react'
 
 import { AnchorProps } from '../../../../simple-components/ButtonNew'
 
-type AnnouncementsProps = {}
-
-// eslint-disable-next-line no-empty-pattern
-const Announcements = ({}: AnnouncementsProps) => {
+const Announcements = () => {
   const { t } = useTranslation('account')
 
   const announcementContentFirst = `<h3>${t('account_section_intro.announcement_card_title_first')}</h3><span>${t(

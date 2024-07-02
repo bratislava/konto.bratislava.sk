@@ -1,12 +1,20 @@
 export type FormStepIndex = number | 'summary'
 
-export interface FormStepperStep {
-  index: FormStepIndex
+type StepBase = {
   displayIndex: number
-  title: string
-  description?: string
-  stepperTitle?: string
   queryParam: string
-  isSubmitted: boolean
-  isSummary: boolean
 }
+
+type GenericStep = StepBase & {
+  index: number
+  title: string
+  stepperTitle?: string
+  isSubmitted: boolean
+  description?: string
+}
+
+type SummaryStep = StepBase & {
+  index: 'summary'
+}
+
+export type FormStepperStep = GenericStep | SummaryStep

@@ -46,7 +46,6 @@ export const getStepperData = (
   stepsSchemas: (BAJSONSchema7 | null)[],
   uiSchema: UiSchema,
   submittedSteps: Set<FormStepIndex>,
-  summaryTitle: string,
 ): FormStepperStep[] => {
   if (!stepsSchemas || !Array.isArray(stepsSchemas)) return []
   let displayIndex = 0
@@ -71,6 +70,9 @@ export const getStepperData = (
         stepUiSchema,
       ) as StepUiOptions
       const { title, description } = step.properties[stepProperty] as BAJSONSchema7
+      if (!title || !queryParam) {
+        throw new Error(`Title or queryParam not found for step ${stepProperty}`)
+      }
 
       // displayIndex is only incremented for non-empty steps
       displayIndex += 1
@@ -81,9 +83,8 @@ export const getStepperData = (
         stepperTitle,
         description,
         isSubmitted: submittedSteps.has(index),
-        isSummary: false,
         queryParam,
-      } as FormStepperStep
+      } satisfies FormStepperStep
     })
     .filter(isDefined)
 
@@ -92,11 +93,8 @@ export const getStepperData = (
     {
       index: 'summary',
       displayIndex: displayIndex + 1,
-      title: summaryTitle,
-      isSubmitted: submittedSteps.has(steps.length),
-      isSummary: true,
       queryParam: SUMMARY_QUERY_PARAM,
-    } as FormStepperStep,
+    } satisfies FormStepperStep,
   ]
 }
 

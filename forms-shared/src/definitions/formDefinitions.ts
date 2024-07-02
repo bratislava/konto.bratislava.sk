@@ -12,7 +12,7 @@ export const formDefinitions: FormDefinition[] = [
     slovenskoSkUrl:
       'https://formulare.slovensko.sk/_layouts/eFLCM/DetailVzoruEFormulara.aspx?vid=00603481.stanoviskoKInvesticnemuZameru&vh=0&vl=8',
     slug: 'stanovisko-k-investicnemu-zameru',
-    title: 'Žiadosť o stanovisko k investičnému zámeru',
+    title: 'Žiadosť o stanovisko k investičnému zámeru test',
     schemas: stanoviskoKInvesticnemuZameru,
     pospID: '00603481.stanoviskoKInvesticnemuZameru',
     pospVersion: '0.8',

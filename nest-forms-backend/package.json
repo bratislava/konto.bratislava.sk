@@ -70,7 +70,7 @@
     "pdf-lib": "^1.17.1",
     "playwright": "^1.45.0",
     "reflect-metadata": "^0.2.2",
-    "rimraf": "^5.0.1",
+    "rimraf": "^5.0.7",
     "rodnecislo": "^1.6.0",
     "traverse": "^0.6.7",
     "uuid": "^9.0.1",

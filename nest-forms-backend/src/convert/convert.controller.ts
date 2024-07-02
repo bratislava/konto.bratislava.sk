@@ -10,7 +10,6 @@ import {
 import {
   ApiBadRequestResponse,
   ApiBearerAuth,
-  ApiExtraModels,
   ApiForbiddenResponse,
   ApiInternalServerErrorResponse,
   ApiNotFoundResponse,
@@ -149,7 +148,6 @@ export default class ConvertController {
     status: HttpStatusCode.InternalServerError,
     description: 'There was an error during generating tax pdf.',
   })
-  @ApiExtraModels(PdfGenerationFailedErrorDto)
   @ApiInternalServerErrorResponse({
     status: HttpStatusCode.InternalServerError,
     description: 'There was an error during generating pdf.',

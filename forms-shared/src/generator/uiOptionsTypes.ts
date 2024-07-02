@@ -153,6 +153,11 @@ export type ObjectFieldUiOptions = Pick<WidgetUiOptions, 'spaceTop' | 'spaceBott
       }
   ))
 
+export type StepUiOptions = {
+  hash?: string
+  stepperTitle?: string
+}
+
 export type SchemaUiOptions = {
   moreInformationUrl?: string
   titlePath?: string

@@ -47,20 +47,19 @@ const useGetContext = () => {
   const [formData, setFormData, formDataRef] = useStateRef<GenericObjectType>(initialFormDataJson)
   const stepsSchemas = useMemo(() => getEvaluatedStepsSchemas(schema, formData), [schema, formData])
 
-  const { currentStepIndex, setCurrentStepIndex } = useFormCurrentStepIndex(stepsSchemas)
-  const { setMigrationRequiredModal } = useFormModals()
-  const scrollToFieldIdRef = useRef<string | null>(null)
-
   /**
    * This set holds indexes of steps that have been submitted (submit button has been pressed, which means they have been validated).
    * A condition in different step might invalidate the step, but it is not easily detectable.
    */
   const [submittedStepsIndexes, setSubmittedStepsIndexes] = useState<Set<number>>(new Set())
-
   const stepperData = useMemo(
     () => getStepperData(stepsSchemas, submittedStepsIndexes, t('summary.title')),
     [stepsSchemas, submittedStepsIndexes, t],
   )
+
+  const { currentStepIndex, setCurrentStepIndex } = useFormCurrentStepIndex(stepperData)
+  const { setMigrationRequiredModal } = useFormModals()
+  const scrollToFieldIdRef = useRef<string | null>(null)
 
   // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
   const currentStepperStep = stepperData.find((step) => step.index === currentStepIndex)!

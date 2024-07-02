@@ -2,7 +2,6 @@ import { GenericObjectType } from '@rjsf/utils'
 import { mergeClientAndServerFilesSummary } from 'forms-shared/form-files/mergeClientAndServerFiles'
 import { getFileUuidsNaive } from 'forms-shared/form-utils/fileUtils'
 import { validateSummary } from 'forms-shared/summary-renderer/validateSummary'
-import { useTranslation } from 'next-i18next'
 import React, {
   createContext,
   PropsWithChildren,
@@ -16,7 +15,6 @@ import { useIsFirstRender } from 'usehooks-ts'
 
 import {
   getEvaluatedStepsSchemas,
-  getFirstNonEmptyStepIndex,
   getStepperData,
   getStepProperty,
   parseStepFromFieldId,
@@ -38,7 +36,6 @@ const useGetContext = () => {
     initialFormDataJson,
     isReadonly,
   } = useFormContext()
-  const { t } = useTranslation('forms')
   const { keepFiles, refetchAfterImportIfNeeded, clientFiles, serverFiles } = useFormFileUpload()
   const { turnOnLeaveProtection } = useFormLeaveProtection()
   // eslint-disable-next-line testing-library/render-result-naming-convention
@@ -53,8 +50,8 @@ const useGetContext = () => {
    */
   const [submittedStepsIndexes, setSubmittedStepsIndexes] = useState<Set<number>>(new Set())
   const stepperData = useMemo(
-    () => getStepperData(stepsSchemas, uiSchema, submittedStepsIndexes, t('summary.title')),
-    [stepsSchemas, submittedStepsIndexes, t, uiSchema],
+    () => getStepperData(stepsSchemas, uiSchema, submittedStepsIndexes),
+    [stepsSchemas, submittedStepsIndexes, uiSchema],
   )
 
   const { currentStepIndex, setCurrentStepIndex } = useFormCurrentStepIndex(stepperData)
@@ -127,13 +124,11 @@ const useGetContext = () => {
     const pickedPropertiesData = removeUnusedPropertiesFromFormData(schema, importedFormData)
 
     const evaluatedSchemas = getEvaluatedStepsSchemas(schema, importedFormData)
-    if (
-      currentStepIndex !== 'summary' &&
-      /* If the current step is empty after the import */
-      evaluatedSchemas[currentStepIndex] == null
-    ) {
+    const afterImportStepperData = getStepperData(evaluatedSchemas, uiSchema, submittedStepsIndexes)
+
+    if (!afterImportStepperData.some((step) => step.index === currentStepIndex)) {
       // eslint-disable-next-line @typescript-eslint/no-floating-promises
-      setCurrentStepIndex(getFirstNonEmptyStepIndex(evaluatedSchemas))
+      setCurrentStepIndex(afterImportStepperData[0].index)
     }
 
     const fileUuids = getFileUuidsNaive(pickedPropertiesData)

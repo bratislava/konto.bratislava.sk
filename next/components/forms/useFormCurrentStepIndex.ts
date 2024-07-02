@@ -2,7 +2,6 @@ import { createParser, useQueryState } from 'nuqs'
 import { useMemo, useRef } from 'react'
 import { useEffectOnce } from 'usehooks-ts'
 
-import { getFirstNonEmptyStepIndex } from '../../frontend/utils/formState'
 import { FormStepIndex, FormStepperStep } from './types/Steps'
 
 const getStepIndexByQueryParam = (
@@ -47,7 +46,7 @@ export const useFormCurrentStepIndex = (stepperData: FormStepperStep[]) => {
         },
       })
         .withOptions({ history: 'push' })
-        .withDefault(getFirstNonEmptyStepIndex(getCurrentStepSchemas())),
+        .withDefault(getCurrentStepSchemas()[0].index),
     [],
   )
 

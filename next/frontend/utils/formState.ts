@@ -117,14 +117,6 @@ export const parseStepFromFieldId = (fieldId: string) => {
 }
 
 /**
- * Returns a first non-empty step index.
- */
-export const getFirstNonEmptyStepIndex = (stepSchemas: (BAJSONSchema7 | null)[]) => {
-  const firstStep = stepSchemas.findIndex((step) => step !== null)
-  return firstStep === -1 ? ('summary' as const) : firstStep
-}
-
-/**
  * Removes unused steps from formData. The schema is evaluated with provided data, the only non-empty steps properties
  * are kept.
  *

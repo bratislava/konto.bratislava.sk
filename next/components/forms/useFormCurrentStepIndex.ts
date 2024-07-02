@@ -25,6 +25,8 @@ const getQueryParamByStepIndex = (steps: FormStepperStep[], stepIndex: FormStepI
   return step?.queryParam ?? null
 }
 
+const STEP_QUERY_PARAM = 'krok'
+
 /**
  * A hook that holds the state of the current step index and synchronizes its value with `krok` query param in the URL.
  */
@@ -50,7 +52,7 @@ export const useFormCurrentStepIndex = (stepperData: FormStepperStep[]) => {
     [],
   )
 
-  const [currentStepIndex, setCurrentStepIndex] = useQueryState('krok', parser)
+  const [currentStepIndex, setCurrentStepIndex] = useQueryState(STEP_QUERY_PARAM, parser)
 
   useEffectOnce(() => {
     // Initially if the query param is not present this sets it (`currentStepIndex` already contains default value)

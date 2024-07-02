@@ -1,6 +1,6 @@
 import { PassThrough, Readable } from 'node:stream'
 
-import { Injectable, StreamableFile } from '@nestjs/common'
+import { Injectable, Logger, StreamableFile } from '@nestjs/common'
 import { Prisma } from '@prisma/client'
 import { GenericObjectType, RJSFSchema } from '@rjsf/utils'
 import * as cheerio from 'cheerio'
@@ -43,6 +43,8 @@ import JsonXmlConvertService from './utils-services/json-xml.convert.service'
 
 @Injectable()
 export default class ConvertService {
+  private readonly logger: Logger
+
   constructor(
     private readonly jsonXmlService: JsonXmlConvertService,
     private readonly taxService: TaxService,
@@ -50,7 +52,9 @@ export default class ConvertService {
     private readonly formsService: FormsService,
     private readonly prismaService: PrismaService,
     private readonly minioClientSubservice: MinioClientSubservice,
-  ) {}
+  ) {
+    this.logger = new Logger('ConvertService')
+  }
 
   async convertJsonToXmlV2(
     data: JsonToXmlV2RequestDto,
@@ -194,6 +198,8 @@ export default class ConvertService {
         serverFiles: form.files,
       })
     } catch (error) {
+      this.logger.error(`Error during generating PDF: ${<string>error}`)
+
       throw this.throwerErrorGuard.InternalServerErrorException(
         ConvertErrorsEnum.PDF_GENERATION_FAILED,
         ConvertErrorsResponseEnum.PDF_GENERATION_FAILED,

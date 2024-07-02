@@ -2,6 +2,8 @@ ARG FORMS_SHARED_TAG=latest
 FROM harbor.bratislava.sk/standalone/forms-shared:${FORMS_SHARED_TAG} as shared
 FROM node:20.9 AS base
 
+RUN npx playwright install-deps chromium
+
 # build
 FROM base AS build
 WORKDIR /root/forms-shared
@@ -13,7 +15,6 @@ WORKDIR /root/nest-forms-backend
 COPY package*.json ./
 
 RUN npm ci
-RUN npx playwright install --with-deps chromium
 
 COPY . ./
 
@@ -46,6 +47,8 @@ CMD [ "npm", "run", "start:debug" ]
 FROM base AS prod
 
 USER node
+
+RUN npx playwright install chromium
 
 # When copying from build, it copies symlink in node_modules to ../../forms-shared and expects the original directory
 # to be present.

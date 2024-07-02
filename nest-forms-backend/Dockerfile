@@ -13,7 +13,7 @@ WORKDIR /root/nest-forms-backend
 COPY package*.json ./
 
 RUN npm ci
-RUN npx playwright install --with-deps
+RUN npx playwright install --with-deps chromium
 
 COPY . ./
 

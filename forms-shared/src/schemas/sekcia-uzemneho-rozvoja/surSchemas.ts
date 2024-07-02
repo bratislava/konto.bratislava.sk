@@ -50,17 +50,11 @@ const ziadatelInvestorFields = [
 
 export const getSurSchema = (zavazne: boolean) =>
   schema(
-    zavazne
-      ? {
-          title: 'Žiadosť o záväzné stanovisko k investičnej činnosti',
-          pospID: '00603481.zavazneStanoviskoKInvesticnejCinnosti',
-          pospVersion: '0.7',
-        }
-      : {
-          title: 'Žiadosť o stanovisko k investičnému zámeru',
-          pospID: '00603481.stanoviskoKInvesticnemuZameru',
-          pospVersion: '0.8',
-        },
+    {
+      title: zavazne
+        ? 'Žiadosť o záväzné stanovisko k investičnej činnosti'
+        : 'Žiadosť o stanovisko k investičnému zámeru',
+    },
     {
       moreInformationUrl: zavazne
         ? 'https://bratislava.sk/zivotne-prostredie-a-vystavba/rozvoj-mesta/usmernovanie-vystavby/zavazne-stanovisko-k-investicnej-cinnosti'

@@ -32,7 +32,7 @@ import { useFormModals } from './useFormModals'
 const useGetContext = () => {
   const {
     formDefinition: {
-      schemas: { schema },
+      schemas: { schema, uiSchema },
     },
     formMigrationRequired,
     initialFormDataJson,
@@ -53,8 +53,8 @@ const useGetContext = () => {
    */
   const [submittedStepsIndexes, setSubmittedStepsIndexes] = useState<Set<number>>(new Set())
   const stepperData = useMemo(
-    () => getStepperData(stepsSchemas, submittedStepsIndexes, t('summary.title')),
-    [stepsSchemas, submittedStepsIndexes, t],
+    () => getStepperData(stepsSchemas, uiSchema, submittedStepsIndexes, t('summary.title')),
+    [stepsSchemas, submittedStepsIndexes, t, uiSchema],
   )
 
   const { currentStepIndex, setCurrentStepIndex } = useFormCurrentStepIndex(stepperData)

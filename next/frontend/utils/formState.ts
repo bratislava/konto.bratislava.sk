@@ -1,6 +1,7 @@
-import { GenericObjectType, retrieveSchema, RJSFSchema } from '@rjsf/utils'
+import { GenericObjectType, getUiOptions, retrieveSchema, RJSFSchema, UiSchema } from '@rjsf/utils'
 import { BAJSONSchema7 } from 'forms-shared/form-utils/ajvKeywords'
 import { baRjsfValidator } from 'forms-shared/form-utils/validators'
+import { StepUiOptions } from 'forms-shared/generator/uiOptionsTypes'
 import pick from 'lodash/pick'
 
 import { FormStepIndex, FormStepperStep } from '../../components/forms/types/Steps'
@@ -43,6 +44,7 @@ export const getStepProperty = (step: BAJSONSchema7 | null) => {
 
 export const getStepperData = (
   stepsSchemas: (BAJSONSchema7 | null)[],
+  uiSchema: UiSchema,
   submittedSteps: Set<FormStepIndex>,
   summaryTitle: string,
 ): FormStepperStep[] => {
@@ -60,9 +62,13 @@ export const getStepperData = (
       }
 
       const stepProperty = getStepProperty(step)!
-      const { title, hash, stepperTitle, description } = step.properties[
-        stepProperty
-      ] as BAJSONSchema7
+      const stepUiSchema = uiSchema[stepProperty]
+      if (!stepUiSchema) {
+        throw new Error(`Step UI schema not found for step ${stepProperty}`)
+      }
+
+      const { stepperTitle, hash } = getUiOptions(stepUiSchema) as StepUiOptions
+      const { title, description } = step.properties[stepProperty] as BAJSONSchema7
 
       // displayIndex is only incremented for non-empty steps
       displayIndex += 1

@@ -1987,6 +1987,69 @@ export type GetFileResponseDtoStatusEnum =
 /**
  *
  * @export
+ * @interface GetFileResponseReducedDto
+ */
+export interface GetFileResponseReducedDto {
+  /**
+   * id of the record in db
+   * @type {string}
+   * @memberof GetFileResponseReducedDto
+   */
+  id: string
+  /**
+   * Real file name of the file, but is used only for display
+   * @type {string}
+   * @memberof GetFileResponseReducedDto
+   */
+  fileName: string
+  /**
+   * File size in bytes
+   * @type {number}
+   * @memberof GetFileResponseReducedDto
+   */
+  fileSize: number
+  /**
+   * scan result
+   * @type {string}
+   * @memberof GetFileResponseReducedDto
+   */
+  status: GetFileResponseReducedDtoStatusEnum
+  /**
+   * order of this file in respective ginis submission
+   * @type {number}
+   * @memberof GetFileResponseReducedDto
+   */
+  ginisOrder: number | null
+  /**
+   * If the file was uploaded to GINIS
+   * @type {boolean}
+   * @memberof GetFileResponseReducedDto
+   */
+  ginisUploaded: boolean
+}
+
+export const GetFileResponseReducedDtoStatusEnum = {
+  Uploaded: 'UPLOADED',
+  Accepted: 'ACCEPTED',
+  Queued: 'QUEUED',
+  Scanning: 'SCANNING',
+  Safe: 'SAFE',
+  Infected: 'INFECTED',
+  NotFound: 'NOT_FOUND',
+  MoveErrorSafe: 'MOVE_ERROR_SAFE',
+  MoveErrorInfected: 'MOVE_ERROR_INFECTED',
+  ScanError: 'SCAN_ERROR',
+  ScanTimeout: 'SCAN_TIMEOUT',
+  ScanNotSuccessful: 'SCAN_NOT_SUCCESSFUL',
+  FormIdNotFound: 'FORM_ID_NOT_FOUND',
+} as const
+
+export type GetFileResponseReducedDtoStatusEnum =
+  (typeof GetFileResponseReducedDtoStatusEnum)[keyof typeof GetFileResponseReducedDtoStatusEnum]
+
+/**
+ *
+ * @export
  * @interface GetFormMetaDto
  */
 export interface GetFormMetaDto {
@@ -2896,56 +2959,6 @@ export const NotFoundErrorDtoErrorNameEnum = {
 
 export type NotFoundErrorDtoErrorNameEnum =
   (typeof NotFoundErrorDtoErrorNameEnum)[keyof typeof NotFoundErrorDtoErrorNameEnum]
-
-/**
- *
- * @export
- * @interface PdfGenerationFailedErrorDto
- */
-export interface PdfGenerationFailedErrorDto {
-  /**
-   * Status Code
-   * @type {number}
-   * @memberof PdfGenerationFailedErrorDto
-   */
-  statusCode: number
-  /**
-   * Detail error message
-   * @type {string}
-   * @memberof PdfGenerationFailedErrorDto
-   */
-  message: string
-  /**
-   * status in text
-   * @type {string}
-   * @memberof PdfGenerationFailedErrorDto
-   */
-  status: string
-  /**
-   * Exact error name
-   * @type {string}
-   * @memberof PdfGenerationFailedErrorDto
-   */
-  errorName: PdfGenerationFailedErrorDtoErrorNameEnum
-  /**
-   * Helper for sending additional data in error
-   * @type {object}
-   * @memberof PdfGenerationFailedErrorDto
-   */
-  object?: object
-}
-
-export const PdfGenerationFailedErrorDtoErrorNameEnum = {
-  NotFoundError: 'NOT_FOUND_ERROR',
-  DatabaseError: 'DATABASE_ERROR',
-  InternalServerError: 'INTERNAL_SERVER_ERROR',
-  UnauthorizedError: 'UNAUTHORIZED_ERROR',
-  UnprocessableEntityError: 'UNPROCESSABLE_ENTITY_ERROR',
-  BadRequestError: 'BAD_REQUEST_ERROR',
-} as const
-
-export type PdfGenerationFailedErrorDtoErrorNameEnum =
-  (typeof PdfGenerationFailedErrorDtoErrorNameEnum)[keyof typeof PdfGenerationFailedErrorDtoErrorNameEnum]
 
 /**
  *
@@ -4751,7 +4764,7 @@ export const FilesApiFp = function (configuration?: Configuration) {
       formId: string,
       options?: RawAxiosRequestConfig,
     ): Promise<
-      (axios?: AxiosInstance, basePath?: string) => AxiosPromise<Array<GetFileResponseDto>>
+      (axios?: AxiosInstance, basePath?: string) => AxiosPromise<Array<GetFileResponseReducedDto>>
     > {
       const localVarAxiosArgs = await localVarAxiosParamCreator.filesControllerGetFilesStatusByForm(
         formId,
@@ -4909,7 +4922,7 @@ export const FilesApiFactory = function (
     filesControllerGetFilesStatusByForm(
       formId: string,
       options?: RawAxiosRequestConfig,
-    ): AxiosPromise<Array<GetFileResponseDto>> {
+    ): AxiosPromise<Array<GetFileResponseReducedDto>> {
       return localVarFp
         .filesControllerGetFilesStatusByForm(formId, options)
         .then((request) => request(axios, basePath))

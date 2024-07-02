@@ -23,7 +23,7 @@ export const formDefinitions: FormDefinition[] = [
       'e-ZST ž. {stavba.ulica} {stavba.nazov}, p.č. {stavba.parcelneCislo} kú {stavba.kataster}',
     ginisAssignment: {
       ginisOrganizationName: 'OUIC',
-      ginisPersonName: 'Vícenová Marcela',
+      ginisPersonName: 'Simeunovičová Ľudmila',
     },
     isSigned: false,
   },
@@ -44,7 +44,7 @@ export const formDefinitions: FormDefinition[] = [
       'e-SIZ ž. {stavba.ulica} {stavba.nazov}, p.č. {stavba.parcelneCislo} kú {stavba.kataster}',
     ginisAssignment: {
       ginisOrganizationName: 'OUIC',
-      ginisPersonName: 'Vícenová Marcela',
+      ginisPersonName: 'Simeunovičová Ľudmila',
     },
     isSigned: false,
   },
@@ -64,7 +64,7 @@ export const formDefinitions: FormDefinition[] = [
     isSigned: false,
     ginisAssignment: {
       ginisOrganizationName: 'OUIC',
-      ginisPersonName: 'Vícenová Marcela',
+      ginisPersonName: 'Simeunovičová Ľudmila',
     },
   },
   {
@@ -83,7 +83,7 @@ export const formDefinitions: FormDefinition[] = [
     isSigned: false,
     ginisAssignment: {
       ginisOrganizationName: 'OUIC',
-      ginisPersonName: 'Vícenová Marcela',
+      ginisPersonName: 'Simeunovičová Ľudmila',
     },
   },
   {

@@ -50,8 +50,8 @@ const useGetContext = () => {
    */
   const [submittedStepsIndexes, setSubmittedStepsIndexes] = useState<Set<number>>(new Set())
   const stepperData = useMemo(
-    () => getStepperData(stepsSchemas, uiSchema, submittedStepsIndexes),
-    [stepsSchemas, submittedStepsIndexes, uiSchema],
+    () => getStepperData(stepsSchemas, uiSchema),
+    [stepsSchemas, uiSchema],
   )
 
   const { currentStepIndex, setCurrentStepIndex } = useFormCurrentStepIndex(stepperData)
@@ -124,7 +124,7 @@ const useGetContext = () => {
     const pickedPropertiesData = removeUnusedPropertiesFromFormData(schema, importedFormData)
 
     const evaluatedSchemas = getEvaluatedStepsSchemas(schema, importedFormData)
-    const afterImportStepperData = getStepperData(evaluatedSchemas, uiSchema, submittedStepsIndexes)
+    const afterImportStepperData = getStepperData(evaluatedSchemas, uiSchema)
 
     if (!afterImportStepperData.some((step) => step.index === currentStepIndex)) {
       // eslint-disable-next-line @typescript-eslint/no-floating-promises
@@ -208,6 +208,7 @@ const useGetContext = () => {
     formData,
     formDataRef,
     currentStepIndex,
+    submittedStepsIndexes,
     stepperData,
     currentStepperStep,
     currentStepSchema,

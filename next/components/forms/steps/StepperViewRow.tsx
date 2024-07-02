@@ -5,6 +5,7 @@ import React from 'react'
 import { twMerge } from 'tailwind-merge'
 
 import { FormStepperStep } from '../types/Steps'
+import { useFormState } from '../useFormState'
 
 interface StepperViewRowProps {
   step: FormStepperStep
@@ -13,9 +14,10 @@ interface StepperViewRowProps {
 }
 
 const StepperViewRow = ({ step, isCurrent, className }: StepperViewRowProps) => {
+  const { submittedStepsIndexes } = useFormState()
   const { t } = useTranslation('forms')
 
-  const isSubmitted = 'isSubmitted' in step ? step.isSubmitted : false
+  const isSubmitted = step.index === 'summary' ? false : submittedStepsIndexes.has(step.index)
   const getTitle = () => {
     if (step.index === 'summary') {
       return t('summary.title')

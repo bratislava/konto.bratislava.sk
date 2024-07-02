@@ -9,7 +9,6 @@ type GenericStep = StepBase & {
   index: number
   title: string
   stepperTitle?: string
-  isSubmitted: boolean
   description?: string
 }
 

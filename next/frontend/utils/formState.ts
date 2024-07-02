@@ -4,7 +4,7 @@ import { baRjsfValidator } from 'forms-shared/form-utils/validators'
 import { StepUiOptions } from 'forms-shared/generator/uiOptionsTypes'
 import pick from 'lodash/pick'
 
-import { FormStepIndex, FormStepperStep } from '../../components/forms/types/Steps'
+import { FormStepperStep } from '../../components/forms/types/Steps'
 import { isDefined } from './general'
 
 export const SUMMARY_QUERY_PARAM = 'sumar'
@@ -45,7 +45,6 @@ export const getStepProperty = (step: BAJSONSchema7 | null) => {
 export const getStepperData = (
   stepsSchemas: (BAJSONSchema7 | null)[],
   uiSchema: UiSchema,
-  submittedSteps: Set<FormStepIndex>,
 ): FormStepperStep[] => {
   if (!stepsSchemas || !Array.isArray(stepsSchemas)) return []
   let displayIndex = 0
@@ -82,7 +81,6 @@ export const getStepperData = (
         title,
         stepperTitle,
         description,
-        isSubmitted: submittedSteps.has(index),
         queryParam,
       } satisfies FormStepperStep
     })

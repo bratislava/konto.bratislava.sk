@@ -1,7 +1,7 @@
-import { TextAreaUiOptions } from '@forms-shared/generator/uiOptionsTypes'
 import { WidgetProps } from '@rjsf/utils'
 import cx from 'classnames'
 import WidgetWrapper from 'components/forms/widget-wrappers/WidgetWrapper'
+import { TextAreaUiOptions } from 'forms-shared/generator/uiOptionsTypes'
 import React from 'react'
 
 import FieldBlurWrapper from '../widget-components/FieldBlurWrapper/FieldBlurWrapper'

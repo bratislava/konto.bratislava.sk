@@ -170,8 +170,12 @@
     "header_text": "Ďakujeme, že využívate digitálne služby Bratislavského konta.",
     "all_services": "Všetky služby",
     "announcement_title": "Aktuálne",
-    "announcement_card_title_first": "Digitálna platba dane z nehnuteľností",
-    "announcement_card_text_first": "Informácie o dani z nehnuteľností budú v kontách pribúdať postupne <strong>od 29. apríla 2024</strong>. Ak sa platba dane týka aj vás, <strong>dostanete notifikačný e-mail</strong>, keď bude pripravená na úhradu.",
+    "announcement_card_title_first": "Online lístky na kúpaliská",
+    "announcement_card_text_first": "Otvorili sme mestské kúpaliská! Kúpte si lístok alebo permanentku online a ušetrite nie len čas strávený v rade, ale aj peniaze. Užite si zlaté časy pri vode. ",
+    "announcement_card_button_first": "Viac informácií",
+    "announcement_card_title_second": "Založte si komunitnú záhradu",
+    "announcement_card_text_second": "Vytvorte miesto pre aktívny susedský život. Priestor pre záhradkarčenie, oddych, zdravý pohyb, vzdelávanie, stretávanie sa, aktivity pre všetky vekové kategórie. Vyberte si jeden z mestských predschválených pozemkov a začnite ešte tento rok.",
+    "announcement_card_button_second": "Viac informácií",
     "banner_title": "Potrebujete pomôcť?",
     "banner_content": "Aké služby nájdem v Bratislavskom konte? Prečo vzniklo Bratislavské konto? Ako si viem zmeniť heslo? Nevidím svoju daň, čo mám robiť?<br /><br />Aj toto sú niektoré z otázok, na ktoré nájdete odpovede v časti Pomoc.",
     "banner_button_text": "Prejsť na otázky"
@@ -225,7 +229,8 @@
       "9": {
         "title": "Komunitné záhrady",
         "description": "Možnosť založenia komunitnej záhrady na mestskom pozemku a vytvorenia miesta pre aktívny susedský život.",
-        "buttonText": "Vytvoriť si záhradu"
+        "buttonText": "Vytvoriť si záhradu",
+        "tag": "Nová služba"
       },
       "10": {
         "title": "Lístky na divadelné predstavenia",
@@ -275,7 +280,8 @@
       "19": {
         "title": "Predzáhradky",
         "description": "Vytvorenie alebo registrácia predzáhradky na mestskom pozemku. Odporúčania, ktoré rastliny je možné a dobré vysádzať.",
-        "buttonText": "Vytvoriť predzáhradku"
+        "buttonText": "Vytvoriť predzáhradku",
+        "tag": "Nová služba"
       },
       "20": {
         "title": "Evidencia neodvezeného odpadu",
@@ -350,14 +356,12 @@
       "34": {
         "title": "Záväzné stanovisko k investičnej činnosti",
         "description": "Žiadosť o záväzné stanovisko k investičnej činnosti, ktoré slúži ako podklad pre konanie vedené na príslušnom stavebnom úrade.",
-        "buttonText": "Požiadať",
-        "tag": "Nová služba"
+        "buttonText": "Požiadať"
       },
       "35": {
         "title": "Stanovisko k investičnému zámeru",
         "description": "Žiadosť o stanovisko k investičnému zámeru, ktoré slúži na overenie si zámeru ešte pred územným konaním a vydaním záväzného stanoviska.",
-        "buttonText": "Požiadať",
-        "tag": "Nová služba"
+        "buttonText": "Požiadať"
       },
       "36": {
         "title": "Mimoriadny odvoz a likvidácia komunálneho odpadu",

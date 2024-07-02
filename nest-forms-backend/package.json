@@ -12,8 +12,8 @@
     "start": "nest start",
     "start:dev": "nest start --watch",
     "start:debug": "nest start --debug --watch",
-    "start:prod": "node dist/nest-forms-backend/src/main",
-    "seed:prod": "node dist/nest-forms-backend/prisma/seed.js",
+    "start:prod": "node dist/src/main",
+    "seed:prod": "node dist/prisma/seed.js",
     "lint": "eslint \"{src,apps,libs,test}/**/*.{ts,js}\"",
     "lint:report": "eslint -f json -o eslint-report.json \"{src,apps,libs,test}/**/*.{ts,js}\"",
     "lint:fix": "eslint \"{src,apps,libs,test}/**/*.{ts,js}\" --fix",
@@ -55,6 +55,7 @@
     "crypto": "^1.0.1",
     "dayjs": "^1.11.10",
     "expr-eval": "^2.0.2",
+    "forms-shared": "file:../forms-shared",
     "jsonwebtoken": "^9.0.2",
     "jwks-rsa": "^3.1.0",
     "libphonenumber-js": "^1.10.53",
@@ -165,9 +166,6 @@
     ],
     "testPathIgnorePatterns": [
       "<rootDir>/nases/__tests__"
-    ],
-    "moduleNameMapper": {
-      "^@forms-shared/(.*)$": "<rootDir>/../../forms-shared/src/$1"
-    }
+    ]
   }
 }

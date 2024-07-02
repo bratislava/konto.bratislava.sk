@@ -1,4 +1,5 @@
-FROM harbor.bratislava.sk/standalone/forms-shared:latest as shared
+ARG FORMS_SHARED_TAG=latest
+FROM harbor.bratislava.sk/standalone/forms-shared:${FORMS_SHARED_TAG} as shared
 FROM node:20.9 AS base
 
 # Based on https://github.com/puppeteer/puppeteer/blob/main/docker/Dockerfile
@@ -57,6 +58,13 @@ CMD [ "npm", "run", "start:debug" ]
 FROM base AS prod
 
 USER node
+
+# When copying from build, it copies symlink in node_modules to ../../forms-shared and expects the original directory
+# to be present.
+# TODO: Find a way how to use --install-links flag in npm install to avoid this.
+RUN mkdir -p /home/node/forms-shared && chown -R node:node /home/node/forms-shared
+WORKDIR /home/node/forms-shared
+COPY --chown=node:node --from=shared . ./
 
 RUN mkdir -p /home/node/app && chown -R node:node /home/node/app
 WORKDIR /home/node/app

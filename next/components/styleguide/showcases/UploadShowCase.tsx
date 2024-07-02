@@ -2,7 +2,7 @@ import {
   FileInfo,
   FileStatusType,
   UploadClientErrorReasonType,
-} from '@forms-shared/form-files/fileStatus'
+} from 'forms-shared/form-files/fileStatus'
 import React, { ComponentProps, useState } from 'react'
 import { v4 as createUuid } from 'uuid'
 

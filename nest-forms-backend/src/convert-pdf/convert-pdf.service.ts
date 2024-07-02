@@ -1,5 +1,5 @@
-import { FormDefinitionSlovenskoSk } from '@forms-shared/definitions/formDefinitionTypes'
 import { Injectable } from '@nestjs/common'
+import { FormDefinitionSlovenskoSk } from 'forms-shared/definitions/formDefinitionTypes'
 
 import ConvertService from '../convert/convert.service'
 import { FormInfo } from '../files/files.dto'

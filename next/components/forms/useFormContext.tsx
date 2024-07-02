@@ -1,11 +1,11 @@
 import { GetFileResponseReducedDto } from '@clients/openapi-forms'
+import { GenericObjectType } from '@rjsf/utils'
 import {
   FormDefinition,
   isSlovenskoSkGenericFormDefinition,
   isSlovenskoSkTaxFormDefinition,
-} from '@forms-shared/definitions/formDefinitionTypes'
-import { ClientFileInfo } from '@forms-shared/form-files/fileStatus'
-import { GenericObjectType } from '@rjsf/utils'
+} from 'forms-shared/definitions/formDefinitionTypes'
+import { ClientFileInfo } from 'forms-shared/form-files/fileStatus'
 import { createContext, PropsWithChildren, useContext } from 'react'
 
 import { useSsrAuth } from '../../frontend/hooks/useSsrAuth'

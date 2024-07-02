@@ -53,11 +53,11 @@ export default class RabbitmqClientService {
     )
   }
 
-  public async publishNasesCheck(
+  public async publishToGinis(
     message: GinisCheckNasesPayloadDto,
   ): Promise<Replies.Empty> {
     this.logger.debug(
-      `Publishing nases check message to: ${RABBIT_MQ.EXCHANGE} with routing key: ${RABBIT_NASES.ROUTING_KEY}`,
+      `Publishing send to ginis message to: ${RABBIT_MQ.EXCHANGE} with routing key: ${RABBIT_NASES.ROUTING_KEY}`,
     )
     return this.amqpConnection.publish(
       RABBIT_MQ.EXCHANGE,

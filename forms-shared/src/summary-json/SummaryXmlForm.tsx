@@ -16,9 +16,9 @@ import React, {
 } from 'react'
 
 import { getArrayItemTitle } from '../form-utils/getArrayItemTitle'
-import { baRjsfValidator } from '../form-utils/validators'
 import { ArrayFieldUiOptions, BaWidgetType } from '../generator/uiOptionsTypes'
 import { getSummaryDisplayValues } from './getSummaryDisplayValue'
+import { baFormDefaults } from '../form-utils/formDefaults'
 
 export enum SummaryXmlFormTag {
   Form = 'summary-form',
@@ -211,15 +211,15 @@ type SummaryXmlFormProps = Pick<FormProps, 'schema' | 'uiSchema' | 'formData'>
  * Unfortunately, it is not possible to generate a JSON summary directly, so the XML is later parsed into JSON.
  * The generated XML is tightly coupled with its parsing in `getSummaryJson` function, and it is not used anywhere else.
  */
-const SummaryXmlForm = ({ schema, uiSchema, formData }: SummaryXmlFormProps) => {
+export const SummaryXmlForm = ({ schema, uiSchema, formData }: SummaryXmlFormProps) => {
   return (
     <ThemedForm
       schema={schema}
       uiSchema={uiSchema}
       formData={formData}
-      validator={baRjsfValidator}
       // RJSF renders the form in <form> tag by default.
       tagName={({ children }: PropsWithChildren) => <>{children}</>}
+      {...baFormDefaults}
     >
       {/* There must be an empty fragment inside the form, otherwise RJSF renders submit button
        * inside the form. */}
@@ -228,5 +228,3 @@ const SummaryXmlForm = ({ schema, uiSchema, formData }: SummaryXmlFormProps) => 
     </ThemedForm>
   )
 }
-
-export default SummaryXmlForm

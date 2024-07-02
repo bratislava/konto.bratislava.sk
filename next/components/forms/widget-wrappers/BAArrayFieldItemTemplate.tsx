@@ -1,6 +1,4 @@
 import { RemoveIcon } from '@assets/ui-icons'
-import { getArrayItemTitle } from '@forms-shared/form-utils/getArrayItemTitle'
-import { ArrayFieldUiOptions } from '@forms-shared/generator/uiOptionsTypes'
 import {
   ArrayFieldTemplateItemType,
   FormContextType,
@@ -8,6 +6,8 @@ import {
   StrictRJSFSchema,
 } from '@rjsf/utils'
 import cx from 'classnames'
+import { getArrayItemTitle } from 'forms-shared/form-utils/getArrayItemTitle'
+import { ArrayFieldUiOptions } from 'forms-shared/generator/uiOptionsTypes'
 
 import Button from '../simple-components/ButtonNew'
 

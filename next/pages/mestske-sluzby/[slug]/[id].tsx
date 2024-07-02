@@ -1,7 +1,7 @@
 import { formsApi } from '@clients/forms'
 import { GetFormResponseDtoStateEnum } from '@clients/openapi-forms'
-import { getFormDefinitionBySlug } from '@forms-shared/definitions/getFormDefinitionBySlug'
 import { isAxiosError } from 'axios'
+import { getFormDefinitionBySlug } from 'forms-shared/definitions/getFormDefinitionBySlug'
 
 import FormPageWrapper, { FormPageWrapperProps } from '../../../components/forms/FormPageWrapper'
 import { SsrAuthProviderHOC } from '../../../components/logic/SsrAuthContext'

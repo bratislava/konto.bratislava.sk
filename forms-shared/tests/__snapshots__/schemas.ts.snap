@@ -29,7 +29,6 @@ exports[`komunitneZahrady matches snapshot 1`] = `
       {
         "properties": {
           "ziadatel": {
-            "hash": "ziadatel",
             "properties": {
               "adresa": {
                 "properties": {
@@ -108,7 +107,6 @@ exports[`komunitneZahrady matches snapshot 1`] = `
       {
         "properties": {
           "obcianskeZdruzenie": {
-            "hash": "obcianske-zdruzenie",
             "properties": {
               "adresaSidla": {
                 "properties": {
@@ -283,7 +281,6 @@ exports[`komunitneZahrady matches snapshot 1`] = `
               },
             ],
             "description": "Odporúčame vám výber jedného z predschválených mestských pozemkov, vďaka čomu vieme žiadosť vybaviť rýchlejšie.",
-            "hash": "pozemok",
             "properties": {
               "typPozemku": {
                 "default": "predschvalenyPozemok",
@@ -316,7 +313,6 @@ exports[`komunitneZahrady matches snapshot 1`] = `
       {
         "properties": {
           "zahrada": {
-            "hash": "zahrada",
             "properties": {
               "dovodyZalozenia": {
                 "title": "Dôvody založenia komunitnej záhrady na danom pozemku",
@@ -381,7 +377,6 @@ exports[`komunitneZahrady matches snapshot 1`] = `
         "then": {
           "properties": {
             "prilohyPredschvalenyPozemok": {
-              "hash": "prilohy-predschvaleny-pozemok",
               "properties": {
                 "dizajn": {
                   "file": true,
@@ -443,7 +438,6 @@ exports[`komunitneZahrady matches snapshot 1`] = `
         "then": {
           "properties": {
             "prilohyInyPozemok": {
-              "hash": "prilohy-iny-pozemok",
               "properties": {
                 "dizajn": {
                   "file": true,
@@ -482,8 +476,6 @@ exports[`komunitneZahrady matches snapshot 1`] = `
         },
       },
     ],
-    "pospID": "00603481.komunitneZahrady",
-    "pospVersion": "1.0",
     "title": "Komunitné záhrady",
   },
   "uiSchema": {
@@ -569,7 +561,9 @@ exports[`komunitneZahrady matches snapshot 1`] = `
           "priezviskoStatutara",
         ],
       },
-      "ui:options": {},
+      "ui:options": {
+        "stepQueryParam": "obcianske-zdruzenie",
+      },
       "ui:order": [
         "nazovObcianskehoZdruzenia",
         "ico",
@@ -711,7 +705,9 @@ exports[`komunitneZahrady matches snapshot 1`] = `
         },
         "ui:widget": "RadioGroup",
       },
-      "ui:options": {},
+      "ui:options": {
+        "stepQueryParam": "pozemok",
+      },
       "ui:order": [
         "typPozemku",
         "predschvalenyPozemokVyber",
@@ -743,7 +739,9 @@ exports[`komunitneZahrady matches snapshot 1`] = `
         },
         "ui:widget": "FileUpload",
       },
-      "ui:options": {},
+      "ui:options": {
+        "stepQueryParam": "prilohy-iny-pozemok",
+      },
       "ui:order": [
         "fotografie",
         "umiestnenie",
@@ -780,7 +778,9 @@ exports[`komunitneZahrady matches snapshot 1`] = `
         },
         "ui:widget": "FileUpload",
       },
-      "ui:options": {},
+      "ui:options": {
+        "stepQueryParam": "prilohy-predschvaleny-pozemok",
+      },
       "ui:order": [
         "umiestnenie",
         "dizajn",
@@ -847,7 +847,9 @@ exports[`komunitneZahrady matches snapshot 1`] = `
         },
         "ui:widget": "TextArea",
       },
-      "ui:options": {},
+      "ui:options": {
+        "stepQueryParam": "zahrada",
+      },
       "ui:order": [
         "dovodyZalozenia",
         "suhlasKomunity",
@@ -939,7 +941,9 @@ exports[`komunitneZahrady matches snapshot 1`] = `
         },
         "ui:widget": "Input",
       },
-      "ui:options": {},
+      "ui:options": {
+        "stepQueryParam": "ziadatel",
+      },
       "ui:order": [
         "menoPriezvisko",
         "adresa",
@@ -973,7 +977,6 @@ exports[`predzahradky matches snapshot 1`] = `
       {
         "properties": {
           "ziadatel": {
-            "hash": "ziadatel",
             "properties": {
               "adresa": {
                 "properties": {
@@ -1109,7 +1112,6 @@ exports[`predzahradky matches snapshot 1`] = `
                 },
               },
             ],
-            "hash": "predzahradka",
             "properties": {
               "adresa": {
                 "title": "Adresa predzáhradky (ulica, číslo)",
@@ -1181,7 +1183,6 @@ exports[`predzahradky matches snapshot 1`] = `
       {
         "properties": {
           "prilohy": {
-            "hash": "prilohy",
             "properties": {
               "fotografie": {
                 "file": true,
@@ -1218,8 +1219,6 @@ exports[`predzahradky matches snapshot 1`] = `
         "type": "object",
       },
     ],
-    "pospID": "00603481.predzahradky",
-    "pospVersion": "1.0",
     "title": "Predzáhradky",
   },
   "uiSchema": {
@@ -1337,7 +1336,9 @@ exports[`predzahradky matches snapshot 1`] = `
         },
         "ui:widget": "RadioGroup",
       },
-      "ui:options": {},
+      "ui:options": {
+        "stepQueryParam": "predzahradka",
+      },
       "ui:order": [
         "typRegistracie",
         "adresa",
@@ -1375,7 +1376,9 @@ exports[`predzahradky matches snapshot 1`] = `
         },
         "ui:widget": "FileUpload",
       },
-      "ui:options": {},
+      "ui:options": {
+        "stepQueryParam": "prilohy",
+      },
       "ui:order": [
         "mapa",
         "fotografie",
@@ -1469,7 +1472,9 @@ exports[`predzahradky matches snapshot 1`] = `
         },
         "ui:widget": "Input",
       },
-      "ui:options": {},
+      "ui:options": {
+        "stepQueryParam": "ziadatel",
+      },
       "ui:order": [
         "menoPriezvisko",
         "adresa",
@@ -1527,7 +1532,6 @@ exports[`priznanieKDaniZNehnutelnosti matches snapshot 1`] = `
       {
         "properties": {
           "druhPriznania": {
-            "hash": "druh-priznania",
             "properties": {
               "druh": {
                 "default": "priznanie",
@@ -3091,7 +3095,6 @@ exports[`priznanieKDaniZNehnutelnosti matches snapshot 1`] = `
                 },
               },
             ],
-            "hash": "udaje-o-danovnikovi",
             "properties": {
               "email": {
                 "format": "email",
@@ -4155,7 +4158,6 @@ exports[`priznanieKDaniZNehnutelnosti matches snapshot 1`] = `
                 },
               },
             ],
-            "hash": "dan-z-pozemkov",
             "properties": {
               "vyplnitObject": {
                 "properties": {
@@ -4182,7 +4184,6 @@ exports[`priznanieKDaniZNehnutelnosti matches snapshot 1`] = `
               },
             },
             "required": [],
-            "stepperTitle": "Daň z pozemkov",
             "title": "Priznanie k dani z pozemkov",
             "type": "object",
           },
@@ -4882,7 +4883,6 @@ exports[`priznanieKDaniZNehnutelnosti matches snapshot 1`] = `
               },
             ],
             "description": "napr. rodinný dom, samostatne stojaca garáž, skleníky, stavby na podnikanie atď.",
-            "hash": "dan-zo-stavieb-stavba-sluziaca-na-jeden-ucel",
             "properties": {
               "vyplnitObject": {
                 "properties": {
@@ -4909,7 +4909,6 @@ exports[`priznanieKDaniZNehnutelnosti matches snapshot 1`] = `
               },
             },
             "required": [],
-            "stepperTitle": "Daň zo stavieb (stavba slúžiaca na jeden účel)",
             "title": "Priznanie k dani zo stavieb – stavba slúžiaca na jeden účel",
             "type": "object",
           },
@@ -5674,7 +5673,6 @@ exports[`priznanieKDaniZNehnutelnosti matches snapshot 1`] = `
               },
             ],
             "description": "napr. byt, apartmán, nebytový priestor, garáž, v polyfunkčnej stavbe",
-            "hash": "dan-zo-stavieb-stavba-sluziaca-na-viacere-ucely",
             "properties": {
               "vyplnitObject": {
                 "properties": {
@@ -5701,7 +5699,6 @@ exports[`priznanieKDaniZNehnutelnosti matches snapshot 1`] = `
               },
             },
             "required": [],
-            "stepperTitle": "Daň zo stavieb (stavba slúžiaca na viaceré účely)",
             "title": "Priznanie k dani zo stavieb – stavba slúžiaca na viaceré účely",
             "type": "object",
           },
@@ -6659,7 +6656,6 @@ exports[`priznanieKDaniZNehnutelnosti matches snapshot 1`] = `
                 },
               },
             ],
-            "hash": "dan-z-bytov-a-z-nebytovych-priestorov-v-bytovom-dome",
             "properties": {
               "vyplnitObject": {
                 "properties": {
@@ -6686,7 +6682,6 @@ exports[`priznanieKDaniZNehnutelnosti matches snapshot 1`] = `
               },
             },
             "required": [],
-            "stepperTitle": "Daň z bytov a z nebytových priestorov (v bytovom dome)",
             "title": "Priznanie k dani z bytov a z nebytových priestorov v bytovom dome",
             "type": "object",
           },
@@ -7203,7 +7198,6 @@ exports[`priznanieKDaniZNehnutelnosti matches snapshot 1`] = `
                   },
                 },
               ],
-              "hash": "udaje-o-manzelovi-manzelke",
               "properties": {
                 "email": {
                   "format": "email",
@@ -7274,7 +7268,6 @@ exports[`priznanieKDaniZNehnutelnosti matches snapshot 1`] = `
       {
         "properties": {
           "znizenieAleboOslobodenieOdDane": {
-            "hash": "znizenie-alebo-oslobodenie-od-dane",
             "properties": {
               "byty": {
                 "default": [],
@@ -7358,8 +7351,6 @@ exports[`priznanieKDaniZNehnutelnosti matches snapshot 1`] = `
         "type": "object",
       },
     ],
-    "pospID": "esmao.eforms.bratislava.obec_024",
-    "pospVersion": "201501.2",
     "title": "Priznanie k dani z nehnuteľností",
   },
   "uiSchema": {
@@ -8219,7 +8210,9 @@ exports[`priznanieKDaniZNehnutelnosti matches snapshot 1`] = `
         },
         "ui:widget": "Input",
       },
-      "ui:options": {},
+      "ui:options": {
+        "stepQueryParam": "udaje-o-manzelovi-manzelke",
+      },
       "ui:order": [
         "rodneCislo",
         "priezvisko",
@@ -8767,7 +8760,10 @@ exports[`priznanieKDaniZNehnutelnosti matches snapshot 1`] = `
           "variant": "topLevel",
         },
       },
-      "ui:options": {},
+      "ui:options": {
+        "stepQueryParam": "dan-z-bytov-a-z-nebytovych-priestorov-v-bytovom-dome",
+        "stepperTitle": "Daň z bytov a z nebytových priestorov (v bytovom dome)",
+      },
       "ui:order": [
         "vyplnitObject",
         "kalkulackaWrapper",
@@ -9162,7 +9158,10 @@ V prípade, že sa vás daň z bytov a z nebytových priestorov netýka, túto �
           "variant": "topLevel",
         },
       },
-      "ui:options": {},
+      "ui:options": {
+        "stepQueryParam": "dan-z-pozemkov",
+        "stepperTitle": "Daň z pozemkov",
+      },
       "ui:order": [
         "vyplnitObject",
         "kalkulackaWrapper",
@@ -9576,7 +9575,10 @@ V prípade, že sa vás daň z pozemkov netýka, túto časť preskočte.
           "variant": "topLevel",
         },
       },
-      "ui:options": {},
+      "ui:options": {
+        "stepQueryParam": "dan-zo-stavieb-stavba-sluziaca-na-jeden-ucel",
+        "stepperTitle": "Daň zo stavieb (stavba slúžiaca na jeden účel)",
+      },
       "ui:order": [
         "vyplnitObject",
         "kalkulackaWrapper",
@@ -10073,7 +10075,10 @@ V prípade, že sa vás daň zo stavieb slúžiacich na jeden účel netýka, t�
           "variant": "topLevel",
         },
       },
-      "ui:options": {},
+      "ui:options": {
+        "stepQueryParam": "dan-zo-stavieb-stavba-sluziaca-na-viacere-ucely",
+        "stepperTitle": "Daň zo stavieb (stavba slúžiaca na viaceré účely)",
+      },
       "ui:order": [
         "vyplnitObject",
         "kalkulackaWrapper",
@@ -10144,7 +10149,9 @@ V prípade, že sa vás daň zo stavieb slúžiacich na viaceré účely netýka
         },
         "ui:widget": "Input",
       },
-      "ui:options": {},
+      "ui:options": {
+        "stepQueryParam": "druh-priznania",
+      },
       "ui:order": [
         "druh",
         "rok",
@@ -13807,7 +13814,9 @@ V prípade, že sa vás daň zo stavieb slúžiacich na viaceré účely netýka
           },
         },
       },
-      "ui:options": {},
+      "ui:options": {
+        "stepQueryParam": "udaje-o-danovnikovi",
+      },
       "ui:order": [
         "voSvojomMene",
         "opravnenaOsoba",
@@ -13949,7 +13958,9 @@ V prípade, že sa vás daň zo stavieb slúžiacich na viaceré účely netýka
         },
         "ui:widget": "CheckboxGroup",
       },
-      "ui:options": {},
+      "ui:options": {
+        "stepQueryParam": "znizenie-alebo-oslobodenie-od-dane",
+      },
       "ui:order": [
         "pozemky",
         "stavby",
@@ -18100,7 +18111,6 @@ exports[`stanoviskoKInvesticnemuZameru matches snapshot 1`] = `
                 },
               },
             ],
-            "hash": "ziadatel",
             "properties": {
               "email": {
                 "format": "email",
@@ -18414,7 +18424,6 @@ exports[`stanoviskoKInvesticnemuZameru matches snapshot 1`] = `
                 },
               },
             ],
-            "hash": "investor",
             "properties": {
               "investorZiadatelom": {
                 "default": true,
@@ -18447,7 +18456,6 @@ exports[`stanoviskoKInvesticnemuZameru matches snapshot 1`] = `
       {
         "properties": {
           "zodpovednyProjektant": {
-            "hash": "zodpovedny-projektant",
             "properties": {
               "autorizacneOsvedcenie": {
                 "title": "Číslo autorizačného osvedčenia",
@@ -18492,7 +18500,6 @@ exports[`stanoviskoKInvesticnemuZameru matches snapshot 1`] = `
       {
         "properties": {
           "stavba": {
-            "hash": "informacie-o-stavbe",
             "properties": {
               "druhStavby": {
                 "default": "Bytový dom",
@@ -18593,7 +18600,6 @@ exports[`stanoviskoKInvesticnemuZameru matches snapshot 1`] = `
       {
         "properties": {
           "prilohy": {
-            "hash": "prilohy",
             "properties": {
               "architektonickaStudia": {
                 "default": [],
@@ -18619,8 +18625,6 @@ exports[`stanoviskoKInvesticnemuZameru matches snapshot 1`] = `
         "type": "object",
       },
     ],
-    "pospID": "00603481.stanoviskoKInvesticnemuZameru",
-    "pospVersion": "0.8",
     "title": "Žiadosť o stanovisko k investičnému zámeru",
   },
   "uiSchema": {
@@ -18814,7 +18818,9 @@ exports[`stanoviskoKInvesticnemuZameru matches snapshot 1`] = `
         },
         "ui:widget": "RadioGroup",
       },
-      "ui:options": {},
+      "ui:options": {
+        "stepQueryParam": "investor",
+      },
       "ui:order": [
         "investorZiadatelom",
         "splnomocnenie",
@@ -18851,7 +18857,9 @@ exports[`stanoviskoKInvesticnemuZameru matches snapshot 1`] = `
         },
         "ui:widget": "FileUpload",
       },
-      "ui:options": {},
+      "ui:options": {
+        "stepQueryParam": "prilohy",
+      },
       "ui:order": [
         "architektonickaStudia",
       ],
@@ -18956,7 +18964,9 @@ exports[`stanoviskoKInvesticnemuZameru matches snapshot 1`] = `
         },
         "ui:widget": "Input",
       },
-      "ui:options": {},
+      "ui:options": {
+        "stepQueryParam": "informacie-o-stavbe",
+      },
       "ui:order": [
         "nazov",
         "druhStavby",
@@ -19155,7 +19165,9 @@ exports[`stanoviskoKInvesticnemuZameru matches snapshot 1`] = `
         },
         "ui:widget": "RadioGroup",
       },
-      "ui:options": {},
+      "ui:options": {
+        "stepQueryParam": "ziadatel",
+      },
       "ui:order": [
         "typ",
         "menoPriezvisko",
@@ -19208,7 +19220,9 @@ exports[`stanoviskoKInvesticnemuZameru matches snapshot 1`] = `
         },
         "ui:widget": "Input",
       },
-      "ui:options": {},
+      "ui:options": {
+        "stepQueryParam": "zodpovedny-projektant",
+      },
       "ui:order": [
         "menoPriezvisko",
         "email",
@@ -19455,7 +19469,6 @@ exports[`zavazneStanoviskoKInvesticnejCinnosti matches snapshot 1`] = `
                 },
               },
             ],
-            "hash": "ziadatel",
             "properties": {
               "email": {
                 "format": "email",
@@ -19769,7 +19782,6 @@ exports[`zavazneStanoviskoKInvesticnejCinnosti matches snapshot 1`] = `
                 },
               },
             ],
-            "hash": "investor",
             "properties": {
               "investorZiadatelom": {
                 "default": true,
@@ -19802,7 +19814,6 @@ exports[`zavazneStanoviskoKInvesticnejCinnosti matches snapshot 1`] = `
       {
         "properties": {
           "zodpovednyProjektant": {
-            "hash": "zodpovedny-projektant",
             "properties": {
               "autorizacneOsvedcenie": {
                 "title": "Číslo autorizačného osvedčenia",
@@ -19847,7 +19858,6 @@ exports[`zavazneStanoviskoKInvesticnejCinnosti matches snapshot 1`] = `
       {
         "properties": {
           "stavba": {
-            "hash": "informacie-o-stavbe",
             "properties": {
               "druhStavby": {
                 "default": "Bytový dom",
@@ -20028,7 +20038,6 @@ exports[`zavazneStanoviskoKInvesticnejCinnosti matches snapshot 1`] = `
                 },
               },
             ],
-            "hash": "typ-konania-na-stavebnom-urade",
             "properties": {
               "typ": {
                 "default": "Územné konanie",
@@ -20073,7 +20082,6 @@ exports[`zavazneStanoviskoKInvesticnejCinnosti matches snapshot 1`] = `
       {
         "properties": {
           "prilohy": {
-            "hash": "prilohy",
             "properties": {
               "projektovaDokumentacia": {
                 "default": [],
@@ -20099,8 +20107,6 @@ exports[`zavazneStanoviskoKInvesticnejCinnosti matches snapshot 1`] = `
         "type": "object",
       },
     ],
-    "pospID": "00603481.zavazneStanoviskoKInvesticnejCinnosti",
-    "pospVersion": "0.7",
     "title": "Žiadosť o záväzné stanovisko k investičnej činnosti",
   },
   "uiSchema": {
@@ -20294,7 +20300,9 @@ exports[`zavazneStanoviskoKInvesticnejCinnosti matches snapshot 1`] = `
         },
         "ui:widget": "RadioGroup",
       },
-      "ui:options": {},
+      "ui:options": {
+        "stepQueryParam": "investor",
+      },
       "ui:order": [
         "investorZiadatelom",
         "splnomocnenie",
@@ -20331,7 +20339,9 @@ exports[`zavazneStanoviskoKInvesticnejCinnosti matches snapshot 1`] = `
         },
         "ui:widget": "RadioGroup",
       },
-      "ui:options": {},
+      "ui:options": {
+        "stepQueryParam": "typ-konania-na-stavebnom-urade",
+      },
       "ui:order": [
         "typ",
         "ziadostOdovodnenie",
@@ -20367,7 +20377,9 @@ exports[`zavazneStanoviskoKInvesticnejCinnosti matches snapshot 1`] = `
         },
         "ui:widget": "FileUpload",
       },
-      "ui:options": {},
+      "ui:options": {
+        "stepQueryParam": "prilohy",
+      },
       "ui:order": [
         "projektovaDokumentacia",
       ],
@@ -20472,7 +20484,9 @@ exports[`zavazneStanoviskoKInvesticnejCinnosti matches snapshot 1`] = `
         },
         "ui:widget": "Input",
       },
-      "ui:options": {},
+      "ui:options": {
+        "stepQueryParam": "informacie-o-stavbe",
+      },
       "ui:order": [
         "nazov",
         "druhStavby",
@@ -20671,7 +20685,9 @@ exports[`zavazneStanoviskoKInvesticnejCinnosti matches snapshot 1`] = `
         },
         "ui:widget": "RadioGroup",
       },
-      "ui:options": {},
+      "ui:options": {
+        "stepQueryParam": "ziadatel",
+      },
       "ui:order": [
         "typ",
         "menoPriezvisko",
@@ -20724,7 +20740,9 @@ exports[`zavazneStanoviskoKInvesticnejCinnosti matches snapshot 1`] = `
         },
         "ui:widget": "Input",
       },
-      "ui:options": {},
+      "ui:options": {
+        "stepQueryParam": "zodpovedny-projektant",
+      },
       "ui:order": [
         "menoPriezvisko",
         "email",

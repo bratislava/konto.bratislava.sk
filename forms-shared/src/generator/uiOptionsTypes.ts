@@ -153,6 +153,11 @@ export type ObjectFieldUiOptions = Pick<WidgetUiOptions, 'spaceTop' | 'spaceBott
       }
   ))
 
+export type StepUiOptions = {
+  stepQueryParam?: string
+  stepperTitle?: string
+}
+
 export type SchemaUiOptions = {
   moreInformationUrl?: string
   titlePath?: string

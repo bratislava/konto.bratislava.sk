@@ -58,7 +58,7 @@ const FormPage = () => {
           <FormModals />
         </div>
         <div className={cx('grow px-4', 'lg:px-0')}>
-          {currentStepperStep.isSummary ? (
+          {currentStepperStep.index === 'summary' ? (
             <FormSummary />
           ) : (
             <>

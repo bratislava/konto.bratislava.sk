@@ -46,8 +46,6 @@ const umiestnenieADizajn = [
 export default schema(
   {
     title: 'Komunitné záhrady',
-    pospID: '00603481.komunitneZahrady',
-    pospVersion: '1.0',
   },
   {
     moreInformationUrl:

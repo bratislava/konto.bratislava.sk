@@ -2,7 +2,6 @@ import { GenericObjectType } from '@rjsf/utils'
 import { mergeClientAndServerFilesSummary } from 'forms-shared/form-files/mergeClientAndServerFiles'
 import { getFileUuidsNaive } from 'forms-shared/form-utils/fileUtils'
 import { validateSummary } from 'forms-shared/summary-renderer/validateSummary'
-import { useTranslation } from 'next-i18next'
 import React, {
   createContext,
   PropsWithChildren,
@@ -16,7 +15,6 @@ import { useIsFirstRender } from 'usehooks-ts'
 
 import {
   getEvaluatedStepsSchemas,
-  getFirstNonEmptyStepIndex,
   getStepperData,
   getStepProperty,
   parseStepFromFieldId,
@@ -32,13 +30,12 @@ import { useFormModals } from './useFormModals'
 const useGetContext = () => {
   const {
     formDefinition: {
-      schemas: { schema },
+      schemas: { schema, uiSchema },
     },
     formMigrationRequired,
     initialFormDataJson,
     isReadonly,
   } = useFormContext()
-  const { t } = useTranslation('forms')
   const { keepFiles, refetchAfterImportIfNeeded, clientFiles, serverFiles } = useFormFileUpload()
   const { turnOnLeaveProtection } = useFormLeaveProtection()
   // eslint-disable-next-line testing-library/render-result-naming-convention
@@ -47,20 +44,19 @@ const useGetContext = () => {
   const [formData, setFormData, formDataRef] = useStateRef<GenericObjectType>(initialFormDataJson)
   const stepsSchemas = useMemo(() => getEvaluatedStepsSchemas(schema, formData), [schema, formData])
 
-  const { currentStepIndex, setCurrentStepIndex } = useFormCurrentStepIndex(stepsSchemas)
-  const { setMigrationRequiredModal } = useFormModals()
-  const scrollToFieldIdRef = useRef<string | null>(null)
-
   /**
    * This set holds indexes of steps that have been submitted (submit button has been pressed, which means they have been validated).
    * A condition in different step might invalidate the step, but it is not easily detectable.
    */
   const [submittedStepsIndexes, setSubmittedStepsIndexes] = useState<Set<number>>(new Set())
-
   const stepperData = useMemo(
-    () => getStepperData(stepsSchemas, submittedStepsIndexes, t('summary.title')),
-    [stepsSchemas, submittedStepsIndexes, t],
+    () => getStepperData(stepsSchemas, uiSchema),
+    [stepsSchemas, uiSchema],
   )
+
+  const { currentStepIndex, setCurrentStepIndex } = useFormCurrentStepIndex(stepperData)
+  const { setMigrationRequiredModal } = useFormModals()
+  const scrollToFieldIdRef = useRef<string | null>(null)
 
   // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
   const currentStepperStep = stepperData.find((step) => step.index === currentStepIndex)!
@@ -128,13 +124,11 @@ const useGetContext = () => {
     const pickedPropertiesData = removeUnusedPropertiesFromFormData(schema, importedFormData)
 
     const evaluatedSchemas = getEvaluatedStepsSchemas(schema, importedFormData)
-    if (
-      currentStepIndex !== 'summary' &&
-      /* If the current step is empty after the import */
-      evaluatedSchemas[currentStepIndex] == null
-    ) {
+    const afterImportStepperData = getStepperData(evaluatedSchemas, uiSchema)
+
+    if (!afterImportStepperData.some((step) => step.index === currentStepIndex)) {
       // eslint-disable-next-line @typescript-eslint/no-floating-promises
-      setCurrentStepIndex(getFirstNonEmptyStepIndex(evaluatedSchemas))
+      setCurrentStepIndex(afterImportStepperData[0].index)
     }
 
     const fileUuids = getFileUuidsNaive(pickedPropertiesData)
@@ -214,6 +208,7 @@ const useGetContext = () => {
     formData,
     formDataRef,
     currentStepIndex,
+    submittedStepsIndexes,
     stepperData,
     currentStepperStep,
     currentStepSchema,

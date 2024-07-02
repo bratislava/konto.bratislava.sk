@@ -1,18 +1,15 @@
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger'
 import { Prisma } from '@prisma/client'
 import { RJSFSchema } from '@rjsf/utils'
-import { Type } from 'class-transformer'
 import {
-  IsDefined,
-  IsJSON,
   IsNotEmpty,
   IsObject,
   IsOptional,
   IsString,
   IsUUID,
 } from 'class-validator'
+import { ClientFileInfo } from 'forms-shared/form-files/fileStatus'
 
-import { GetFileResponseReducedDto } from '../../files/files.dto'
 import { JSON_FORM_EXAMPLE, XML_FORM_EXAMPLE } from '../../utils/constants'
 
 export class JsonConvertRequestDto {
@@ -71,52 +68,7 @@ export class XmlToJsonResponseDto {
   jsonForm!: RJSFSchema
 }
 
-export class PdfPreviewDataRequestDto {
-  @ApiProperty({
-    description: 'JWT token for retrieving the form data from the data store',
-  })
-  @IsString()
-  jwtToken!: string
-}
-
-export class PdfPreviewDataResponseDto {
-  @ApiProperty({
-    description: 'Slug of the form definition',
-    example: 'zavazne-stanovisko-k-investicnej-cinnosti',
-  })
-  @IsNotEmpty()
-  @IsString()
-  formDefinitionSlug: string
-
-  @IsObject()
-  @ApiProperty({
-    description: 'Form values in JSON',
-    example: JSON_FORM_EXAMPLE,
-  })
-  @IsJSON()
-  @IsNotEmpty()
-  @IsOptional()
-  jsonForm: Prisma.JsonValue
-
-  @IsDefined()
-  @ApiProperty({
-    type: [GetFileResponseReducedDto],
-  })
-  @Type(() => GetFileResponseReducedDto)
-  serverFiles: GetFileResponseReducedDto[]
-
-  @IsOptional()
-  @IsObject()
-  @ApiPropertyOptional({
-    description:
-      'Additional metadata for Next server provided in convert PDF request.',
-    type: 'object',
-    default: {},
-  })
-  additionalMetadata?: Prisma.JsonObject
-}
-
-export class ConvertToPdfV2RequestDto {
+export class ConvertToPdfRequestDto {
   @ApiProperty({
     description: 'Form id',
     example: 'f69559da-5eca-4ed7-80fd-370d09dc3632',
@@ -133,12 +85,10 @@ export class ConvertToPdfV2RequestDto {
   @IsOptional()
   jsonData?: Prisma.JsonValue
 
-  @IsObject()
   @ApiPropertyOptional({
     description:
-      'Additional metadata for Next server provided in convert PDF request.',
+      'Used only in the FE requests to display files not yet uploaded to the server.',
   })
-  @IsNotEmpty()
   @IsOptional()
-  additionalMetadata?: Prisma.JsonObject
+  clientFiles?: ClientFileInfo[]
 }

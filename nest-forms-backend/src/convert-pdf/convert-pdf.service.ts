@@ -75,7 +75,7 @@ export default class ConvertPdfService {
       formDefinition,
     )
 
-    const file = await this.convertService.generatePdfV2(
+    const file = await this.convertService.generatePdf(
       form.formDataJson,
       formId,
       formDefinition,

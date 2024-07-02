@@ -10,7 +10,6 @@ import {
 import {
   ApiBadRequestResponse,
   ApiBearerAuth,
-  ApiExtraModels,
   ApiForbiddenResponse,
   ApiInternalServerErrorResponse,
   ApiNotFoundResponse,
@@ -35,18 +34,14 @@ import { ResponseGdprDataDto } from '../nases/dtos/responses.dto'
 import { User, UserInfo } from '../utils/decorators/request.decorator'
 import ConvertService from './convert.service'
 import {
-  ConvertToPdfV2RequestDto,
+  ConvertToPdfRequestDto,
   JsonToXmlV2RequestDto,
-  PdfPreviewDataRequestDto,
-  PdfPreviewDataResponseDto,
   XmlToJsonRequestDto,
   XmlToJsonResponseDto,
 } from './dtos/form.dto'
 import {
   FormIdMissingErrorDto,
-  InvalidJwtTokenErrorDto,
-  InvalidUuidErrorDto,
-  PuppeteerPageFailedLoadErrorDto,
+  PdfGenerationFailedErrorDto,
 } from './errors/convert.errors.dto'
 
 @ApiTags('convert')
@@ -153,17 +148,10 @@ export default class ConvertController {
     status: HttpStatusCode.InternalServerError,
     description: 'There was an error during generating tax pdf.',
   })
-  @ApiExtraModels(PuppeteerPageFailedLoadErrorDto)
-  @ApiBadRequestResponse({
-    status: HttpStatusCode.BadRequest,
+  @ApiInternalServerErrorResponse({
+    status: HttpStatusCode.InternalServerError,
     description: 'There was an error during generating pdf.',
-    schema: {
-      oneOf: [
-        {
-          $ref: getSchemaPath(PuppeteerPageFailedLoadErrorDto),
-        },
-      ],
-    },
+    type: PdfGenerationFailedErrorDto,
   })
   @ApiResponse({
     status: 200,
@@ -171,49 +159,18 @@ export default class ConvertController {
     type: StreamableFile,
   })
   @UseGuards(new CognitoGuard(true))
-  @Post('pdf-v2')
-  async convertToPdfv2(
+  @Post('pdf')
+  async convertToPdf(
     @Res({ passthrough: true }) res: Response,
-    @Body() data: ConvertToPdfV2RequestDto,
+    @Body() data: ConvertToPdfRequestDto,
     @User() user?: CognitoGetUserData,
     @UserInfo() userInfo?: ResponseGdprDataDto,
   ): Promise<StreamableFile> {
-    return this.convertService.convertToPdfV2(
+    return this.convertService.convertToPdf(
       data,
       userInfo?.ico ?? null,
       res,
       user,
     )
-  }
-
-  @ApiOperation({
-    summary: '',
-    description: 'Returns necessary data for frontend to generate pdf.',
-  })
-  @ApiResponse({
-    status: 200,
-    type: PdfPreviewDataResponseDto,
-  })
-  @ApiExtraModels(InvalidUuidErrorDto, InvalidJwtTokenErrorDto)
-  @ApiUnprocessableEntityResponse({
-    status: HttpStatusCode.UnprocessableEntity,
-    description: 'There was an error during fetching data for pdf from cache.',
-    schema: {
-      oneOf: [
-        {
-          $ref: getSchemaPath(InvalidUuidErrorDto),
-        },
-        {
-          $ref: getSchemaPath(InvalidJwtTokenErrorDto),
-        },
-      ],
-    },
-  })
-  @Post('pdf-preview-data')
-  async getPdfPreviewData(
-    @Res({ passthrough: true }) res: Response,
-    @Body() data: PdfPreviewDataRequestDto,
-  ): Promise<PdfPreviewDataResponseDto> {
-    return this.convertService.getPdfPreviewData(data.jwtToken)
   }
 }

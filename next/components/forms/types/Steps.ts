@@ -6,7 +6,7 @@ export interface FormStepperStep {
   title: string
   description?: string
   stepperTitle?: string
-  hash: string
+  queryParam: string
   isSubmitted: boolean
   isSummary: boolean
 }

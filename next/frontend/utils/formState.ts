@@ -7,7 +7,7 @@ import pick from 'lodash/pick'
 import { FormStepIndex, FormStepperStep } from '../../components/forms/types/Steps'
 import { isDefined } from './general'
 
-export const SUMMARY_HASH = 'sumar'
+export const SUMMARY_QUERY_PARAM = 'sumar'
 
 /**
  * Evaluates each step with current form data and returns an array of schemas.
@@ -67,7 +67,9 @@ export const getStepperData = (
         throw new Error(`Step UI schema not found for step ${stepProperty}`)
       }
 
-      const { stepperTitle, hash } = getUiOptions(stepUiSchema) as StepUiOptions
+      const { stepperTitle, stepQueryParam: queryParam } = getUiOptions(
+        stepUiSchema,
+      ) as StepUiOptions
       const { title, description } = step.properties[stepProperty] as BAJSONSchema7
 
       // displayIndex is only incremented for non-empty steps
@@ -80,7 +82,7 @@ export const getStepperData = (
         description,
         isSubmitted: submittedSteps.has(index),
         isSummary: false,
-        hash,
+        queryParam,
       } as FormStepperStep
     })
     .filter(isDefined)
@@ -93,7 +95,7 @@ export const getStepperData = (
       title: summaryTitle,
       isSubmitted: submittedSteps.has(steps.length),
       isSummary: true,
-      hash: SUMMARY_HASH,
+      queryParam: SUMMARY_QUERY_PARAM,
     } as FormStepperStep,
   ]
 }

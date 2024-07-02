@@ -154,7 +154,7 @@ export type ObjectFieldUiOptions = Pick<WidgetUiOptions, 'spaceTop' | 'spaceBott
   ))
 
 export type StepUiOptions = {
-  hash?: string
+  stepQueryParam?: string
   stepperTitle?: string
 }
 

@@ -599,7 +599,7 @@ export const step = (
       'ui:options': {
         ...uiSchema()['ui:options'],
         stepperTitle: options.stepperTitle,
-        hash: getHash(),
+        stepQueryParam: getHash(),
       } satisfies StepUiOptions,
     }),
   }

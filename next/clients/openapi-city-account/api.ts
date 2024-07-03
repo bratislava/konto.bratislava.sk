@@ -156,6 +156,36 @@ export type CognitoGetUserDataUserStatusEnum =
 /**
  *
  * @export
+ * @interface DeactivateAccountResponseDto
+ */
+export interface DeactivateAccountResponseDto {
+  /**
+   * Marks if the operation has been successful
+   * @type {boolean}
+   * @memberof DeactivateAccountResponseDto
+   */
+  success: boolean
+  /**
+   * Status of the anonymization of user in bloomreach
+   * @type {string}
+   * @memberof DeactivateAccountResponseDto
+   */
+  bloomreachRemovedStatus: DeactivateAccountResponseDtoBloomreachRemovedStatusEnum
+}
+
+export const DeactivateAccountResponseDtoBloomreachRemovedStatusEnum = {
+  NotFound: 'NOT_FOUND',
+  NotActive: 'NOT_ACTIVE',
+  Error: 'ERROR',
+  Success: 'SUCCESS',
+} as const
+
+export type DeactivateAccountResponseDtoBloomreachRemovedStatusEnum =
+  (typeof DeactivateAccountResponseDtoBloomreachRemovedStatusEnum)[keyof typeof DeactivateAccountResponseDtoBloomreachRemovedStatusEnum]
+
+/**
+ *
+ * @export
  * @interface GdprDataDto
  */
 export interface GdprDataDto {
@@ -1478,7 +1508,9 @@ export const ADMINApiFp = function (configuration?: Configuration) {
     async adminControllerDeactivateAccount(
       externalId: string,
       options?: RawAxiosRequestConfig,
-    ): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<OnlySuccessDto>> {
+    ): Promise<
+      (axios?: AxiosInstance, basePath?: string) => AxiosPromise<DeactivateAccountResponseDto>
+    > {
       const localVarAxiosArgs = await localVarAxiosParamCreator.adminControllerDeactivateAccount(
         externalId,
         options,
@@ -1719,7 +1751,7 @@ export const ADMINApiFactory = function (
     adminControllerDeactivateAccount(
       externalId: string,
       options?: RawAxiosRequestConfig,
-    ): AxiosPromise<OnlySuccessDto> {
+    ): AxiosPromise<DeactivateAccountResponseDto> {
       return localVarFp
         .adminControllerDeactivateAccount(externalId, options)
         .then((request) => request(axios, basePath))

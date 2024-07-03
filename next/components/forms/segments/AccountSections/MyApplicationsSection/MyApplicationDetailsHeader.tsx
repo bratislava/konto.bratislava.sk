@@ -50,7 +50,7 @@ const MyApplicationDetailsHeader = ({
           // eslint-disable-next-line sonarjs/no-nested-template-literals
           `No form id.`,
         )
-      const response = await formsApi.convertControllerConvertToPdfv2(
+      const response = await formsApi.convertControllerConvertToPdf(
         {
           formId,
         },

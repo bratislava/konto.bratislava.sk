@@ -14,6 +14,7 @@ import { getSummaryJsonNode } from '../src/summary-json/getSummaryJsonNode'
 import { renderSummaryPdf } from '../src/summary-pdf/renderSummaryPdf'
 import { expectPdfToMatchSnapshot } from '../test-utils/expectPdfToMatchSnapshot'
 import { filterConsole } from '../test-utils/filterConsole'
+import { launchPlaywrightTest } from '../test-utils/launchPlaywright'
 
 const definitions = [
   {
@@ -86,11 +87,12 @@ definitions.forEach((definition) => {
             ),
         )
 
-        const pdfBuffer = await renderSummaryPdf(
-          definition.schema.schema,
-          definition.schema.uiSchema,
+        const pdfBuffer = await renderSummaryPdf({
+          jsonSchema: definition.schema.schema,
+          uiSchema: definition.schema.uiSchema,
           formData,
-        )
+          launchBrowser: launchPlaywrightTest,
+        })
 
         await expectPdfToMatchSnapshot(pdfBuffer)
       })

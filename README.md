@@ -31,3 +31,7 @@ If you wish to deploy only a specific project, you can use a tag like `dev-next`
 
 ### Validation and build pipelines
 By creating a PR, GitHub actions will run validation pipelines and build pipeliness with `bratiska-cli`.
+
+## Product specification
+
+[Product specification](https://magistratba.sharepoint.com/:w:/s/InnovationTeam/EbkNEpF0x5dNgH-nfmNf03UB8oJLmVhrDIkOe0aZ9JrEPA?e=ZXjH7z)

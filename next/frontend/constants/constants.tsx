@@ -451,7 +451,7 @@ export const serviceCards: ServiceCardBase[] = [
     tag: 'account_section_services.cards.43.tag',
     tagStyle: 'text-main-700 bg-main-100',
     category: [MunicipalServicesCategories.TAXES_CATEGORY],
-    href: ROUTES.MUNICIPAL_SERVICES_FORM('platba-dane-z-nehnutelnosti'),
+    href: ROUTES.MUNICIPAL_SERVICES_FORM('priznanie-k-dani-z-nehnutelnosti'),
   },
 ]
 

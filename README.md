@@ -23,15 +23,18 @@ Each sub-project contains README which should get you up and running. More docum
 🐳 `docker-compose.yml` - if you need to quickly setup postgres or meilisearch instance, run `docker compose up postgres`. You need docker installed
 
 ## Development
+
 In this section, you will find instructions for development.
 
 ### Deployment
+
 You can easily deploy the whole project to clusters by creating tag `dev`, `staging` or `prod` plus version, like `prod1.0.0`. This will first deploy the backend apps, and at the end the frontend.
 If you wish to deploy only a specific project, you can use a tag like `dev-next` or `dev-nest-forms-backend`, i.e. `div-nest-forms-backend1.0.0`. This will work for `staging` and `prod` as well.
 
 ### Validation and build pipelines
+
 By creating a PR, GitHub actions will run validation pipelines and build pipeliness with `bratiska-cli`.
 
 ## Product specification
 
-[Product specification](https://magistratba.sharepoint.com/:w:/s/InnovationTeam/EbkNEpF0x5dNgH-nfmNf03UB8oJLmVhrDIkOe0aZ9JrEPA?e=ZXjH7z)
+[Product specification](https://magistratba.sharepoint.com/:w:/s/InnovationTeam/Ee7urGwpSLBGnhyBYT5OJyAB9yPAd8xctA2I_xU6rYWbuA?e=ofobAR)

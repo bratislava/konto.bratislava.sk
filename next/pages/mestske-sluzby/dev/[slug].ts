@@ -34,6 +34,7 @@ export const getServerSideProps = amplifyGetServerSideProps<FormPageWrapperProps
           initialServerFiles: [],
           formSent: false,
           formMigrationRequired: false,
+          isDevRoute: true,
         },
         ...(await slovakServerSideTranslations()),
       } satisfies FormPageWrapperProps,

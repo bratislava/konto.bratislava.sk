@@ -23,6 +23,11 @@ export type CustomComponentPropertyCalculator = {
   dataContextLevelsUp?: number
 }
 
+export type CustomComponentAlertProps = {
+  type: 'info' | 'warning' | 'error' | 'success'
+  message: string
+}
+
 export type CustomComponentPropertyCalculatorProps = {
   label?: string
   variant: 'white' | 'black'
@@ -41,6 +46,10 @@ export type CustomComponentType =
   | {
       type: 'propertyTaxCalculator'
       props: CustomComponentPropertyCalculatorProps
+    }
+  | {
+      type: 'alert'
+      props: CustomComponentAlertProps
     }
 
 export type LabelSize = 'default' | 'h5' | 'h4' | 'h3'

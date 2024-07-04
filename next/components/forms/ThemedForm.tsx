@@ -42,6 +42,6 @@ const theme: ThemeProps = {
   },
 }
 
-const ThemedForm = withTheme<GenericObjectType>(theme)
+const ThemedForm = withTheme(theme)
 
 export default ThemedForm

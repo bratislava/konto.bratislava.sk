@@ -1,4 +1,4 @@
-import { FormDefinitionSlovenskoSk } from '@forms-shared/definitions/form-definitions'
+import { FormDefinitionSlovenskoSk } from 'forms-shared/definitions/formDefinitionTypes'
 
 export default (formDefinition: FormDefinitionSlovenskoSk): string => `
     <?xml version="1.0" encoding="utf-8"?>

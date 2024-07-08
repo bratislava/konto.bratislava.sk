@@ -1,8 +1,7 @@
-import * as formDefinitionsHelpers from '@forms-shared/definitions/form-definitions-helpers'
-import { getFormDefinitionBySlug } from '@forms-shared/definitions/form-definitions-helpers'
 import { ConfigService } from '@nestjs/config'
 import { Test } from '@nestjs/testing'
 import { Forms, FormState } from '@prisma/client'
+import { getFormDefinitionBySlug } from 'forms-shared/definitions/getFormDefinitionBySlug'
 
 import prismaMock from '../../test/singleton'
 import FilesHelper from '../files/files.helper'
@@ -16,10 +15,7 @@ import MinioClientSubservice from '../utils/subservices/minio-client.subservice'
 import FormsHelper from './forms.helper'
 import FormsService from './forms.service'
 
-jest.mock('@forms-shared/definitions/form-definitions-helpers', () => ({
-  ...jest.requireActual<typeof formDefinitionsHelpers>(
-    '@forms-shared/definitions/form-definitions-helpers',
-  ),
+jest.mock('forms-shared/definitions/getFormDefinitionBySlug', () => ({
   getFormDefinitionBySlug: jest.fn(),
 }))
 jest.mock('@nestjs/config')

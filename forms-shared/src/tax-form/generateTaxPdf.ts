@@ -1,5 +1,3 @@
-import fs from 'node:fs'
-
 import fontkit from '@pdf-lib/fontkit'
 import {
   cleanText,
@@ -19,20 +17,14 @@ import { getPocty } from './mapping/shared/functions'
 import { zobrazitOslobodenie } from './mapping/shared/oslobodenieShared'
 import { getTaxFormPdfMapping } from './mapping/pdf/pdf'
 import { TaxFormData } from './types'
-import * as path from 'node:path'
+import taxPdf from '../generated-assets/taxPdf'
+import taxPdfFont from '../generated-assets/taxPdfFont'
 
 export type GenerateTaxPdfPayload = {
   formData: TaxFormData
   formId?: string
   currentDate?: Date
 }
-
-// This preloads the PDF and font into memory, so that they don't have to be loaded from disk every time a job is
-// processed.
-const pdfBytes = fs.readFileSync(
-  path.join(__dirname, './pdf-resources/Priznanie_komplet_tlacivo.pdf'),
-)
-const font = fs.readFileSync(path.join(__dirname, './pdf-resources/LiberationSans.ttf'))
 
 const copyOrRemovePages = async (pdfDoc: PDFDocument, index: number, count: number) => {
   if (count === 0) {
@@ -73,8 +65,8 @@ const copyOrRemovePages = async (pdfDoc: PDFDocument, index: number, count: numb
 /**
  * @returns Base64 encoded PDF
  */
-export default async function ({ formData, formId, currentDate }: GenerateTaxPdfPayload) {
-  const pdfDoc = await PDFDocument.load(pdfBytes, {
+export async function generateTaxPdf({ formData, formId, currentDate }: GenerateTaxPdfPayload) {
+  const pdfDoc = await PDFDocument.load(taxPdf, {
     parseSpeed: ParseSpeeds.Fastest,
   })
   if (!formData) {
@@ -114,7 +106,7 @@ export default async function ({ formData, formId, currentDate }: GenerateTaxPdf
   // we use "Liberation Sans", which is a free alternative to "Arial", instead.
   // More info about Unicode in PDF: https://github.com/Hopding/pdf-lib?tab=readme-ov-file#fonts-and-unicode
   pdfDoc.registerFontkit(fontkit)
-  const liberationSansFont = await pdfDoc.embedFont(font)
+  const liberationSansFont = await pdfDoc.embedFont(taxPdfFont)
 
   const mapping = getTaxFormPdfMapping(formData, formId, currentDate)
 

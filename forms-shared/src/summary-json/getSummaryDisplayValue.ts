@@ -1,9 +1,10 @@
 import { DateFormatter, parseDate } from '@internationalized/date'
-import { WidgetProps } from '@rjsf/utils/src/types'
+
 import { JSONSchema7 } from 'json-schema'
 import { validate, version } from 'uuid'
 
 import { BaWidgetType, CheckboxUiOptions, SelectUiOptions } from '../generator/uiOptionsTypes'
+import { WidgetProps } from '@rjsf/utils'
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 function isFileUuid(value: any): boolean {
@@ -53,11 +54,14 @@ const noneValue: SummaryDisplayValue = {
   type: SummaryDisplayValueType.None,
 }
 
+const bratislavaTimeZone = 'Europe/Bratislava'
+
 // TODO: Use shared date formatter
 const dateFormatter = new DateFormatter('sk-SK', {
   day: 'numeric',
   month: 'numeric',
   year: 'numeric',
+  timeZone: bratislavaTimeZone,
 })
 
 /**
@@ -198,7 +202,7 @@ export const getSummaryDisplayValues = (
     try {
       const parsed = parseDate(value as string)
       // TODO: Use shared date formatter
-      const formatted = dateFormatter.format(parsed.toDate('Europe/Bratislava'))
+      const formatted = dateFormatter.format(parsed.toDate(bratislavaTimeZone))
       return [createStringValue(formatted)]
     } catch (error) {
       return [invalidValue]

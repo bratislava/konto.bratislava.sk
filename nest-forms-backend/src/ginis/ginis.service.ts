@@ -1,13 +1,11 @@
 import { setTimeout } from 'node:timers/promises'
 
-import {
-  getFormDefinitionBySlug,
-  isSlovenskoSkGenericFormDefinition,
-} from '@forms-shared/definitions/form-definitions-helpers'
 import { Nack, RabbitRPC } from '@golevelup/nestjs-rabbitmq'
 import { Injectable, Logger } from '@nestjs/common'
 import { FormError, FormState, GinisState } from '@prisma/client'
 import { Channel, ConsumeMessage } from 'amqplib'
+import { isSlovenskoSkGenericFormDefinition } from 'forms-shared/definitions/formDefinitionTypes'
+import { getFormDefinitionBySlug } from 'forms-shared/definitions/getFormDefinitionBySlug'
 
 import {
   FormsErrorsEnum,

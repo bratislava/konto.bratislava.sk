@@ -1,12 +1,10 @@
 import { createHash } from 'node:crypto'
 
-import {
-  getFormDefinitionBySlug,
-  isSlovenskoSkFormDefinition,
-} from '@forms-shared/definitions/form-definitions-helpers'
 import { Injectable, Logger } from '@nestjs/common'
 import { ConfigService } from '@nestjs/config'
 import { Files, FileStatus, Forms, Prisma } from '@prisma/client'
+import { isSlovenskoSkFormDefinition } from 'forms-shared/definitions/formDefinitionTypes'
+import { getFormDefinitionBySlug } from 'forms-shared/definitions/getFormDefinitionBySlug'
 import { BucketItemStat } from 'minio'
 import traverse from 'traverse'
 import { validate as validateUuid, version as uuidVersion } from 'uuid'

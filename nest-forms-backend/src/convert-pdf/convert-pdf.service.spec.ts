@@ -1,10 +1,10 @@
-import {
-  FormDefinitionSlovenskoSk,
-  FormDefinitionType,
-} from '@forms-shared/definitions/form-definitions'
 import { ConfigService } from '@nestjs/config'
 import { Test, TestingModule } from '@nestjs/testing'
 import { Forms } from '@prisma/client'
+import {
+  FormDefinitionSlovenskoSk,
+  FormDefinitionType,
+} from 'forms-shared/definitions/formDefinitionTypes'
 
 import prismaMock from '../../test/singleton'
 import { testJsonData } from '../__tests__/constants'
@@ -95,7 +95,7 @@ describe('ConvertPdfService', () => {
     prismaMock.files.findMany.mockResolvedValue([])
     prismaMock.files.create.mockResolvedValue(fakeFile)
     prismaMock.files.update.mockResolvedValue(fakeFile)
-    convertService.generatePdfV2 = jest
+    convertService.generatePdf = jest
       .fn()
       .mockResolvedValue(expectedPdfExportPath)
 
@@ -120,7 +120,7 @@ describe('ConvertPdfService', () => {
       expect(putObject).toHaveBeenCalled()
       // TODO should this rule be disabled for tests globally ? or am I doing something wrong ?
       // eslint-disable-next-line @typescript-eslint/unbound-method
-      expect(convertService.generatePdfV2).toHaveBeenCalled()
+      expect(convertService.generatePdf).toHaveBeenCalled()
       // eslint-disable-next-line @typescript-eslint/unbound-method
       expect(filesHelper.upsertFileByUid).toHaveBeenCalled()
     })

@@ -1,9 +1,9 @@
-import priznanieKDaniZNehnutelnosti from '../src/definitions/priznanie-k-dani-z-nehnutelnosti'
-import stanoviskoKInvesticnemuZameru from '../src/definitions/stanovisko-k-investicnemu-zameru'
-import zavazneStanoviskoKInvesticnejCinnosti from '../src/definitions/zavazne-stanovisko-k-investicnej-cinnosti'
+import priznanieKDaniZNehnutelnosti from '../src/schemas/priznanieKDaniZNehnutelnosti'
+import stanoviskoKInvesticnemuZameru from '../src/schemas/stanoviskoKInvesticnemuZameru'
+import zavazneStanoviskoKInvesticnejCinnosti from '../src/schemas/zavazneStanoviskoKInvesticnejCinnosti'
 import { baAjvValidator, baRjsfValidator } from '../src/form-utils/validators'
-import komunitneZahrady from '../src/definitions/komunitne-zahrady'
-import predzahradky from '../src/definitions/predzahradky'
+import komunitneZahrady from '../src/schemas/komunitneZahrady'
+import predzahradky from '../src/schemas/predzahradky'
 import { exampleTaxForm1 } from '../src/tax-form/examples/exampleTaxForm1'
 import { exampleTaxForm2 } from '../src/tax-form/examples/exampleTaxForm2'
 import { exampleTaxForm3 } from '../src/tax-form/examples/exampleTaxForm3'
@@ -14,6 +14,7 @@ import { getSummaryJsonNode } from '../src/summary-json/getSummaryJsonNode'
 import { renderSummaryPdf } from '../src/summary-pdf/renderSummaryPdf'
 import { expectPdfToMatchSnapshot } from '../test-utils/expectPdfToMatchSnapshot'
 import { filterConsole } from '../test-utils/filterConsole'
+import { launchPlaywrightTest } from '../test-utils/launchPlaywright'
 
 const definitions = [
   {
@@ -86,11 +87,12 @@ definitions.forEach((definition) => {
             ),
         )
 
-        const pdfBuffer = await renderSummaryPdf(
-          definition.schema.schema,
-          definition.schema.uiSchema,
+        const pdfBuffer = await renderSummaryPdf({
+          jsonSchema: definition.schema.schema,
+          uiSchema: definition.schema.uiSchema,
           formData,
-        )
+          launchBrowser: launchPlaywrightTest,
+        })
 
         await expectPdfToMatchSnapshot(pdfBuffer)
       })

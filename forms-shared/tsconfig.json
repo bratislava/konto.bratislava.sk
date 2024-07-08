@@ -9,7 +9,9 @@
     "skipLibCheck": true,
     "forceConsistentCasingInFileNames": true,
     "moduleResolution": "node16",
-    "jsx": "react"
+    "jsx": "react",
+    "declaration": true,
+    "outDir": "./dist",
   },
-  "include": ["./src/**/*", "./tests/**/*"]
+  "include": ["./src/**/*", "./tests/**/*", "./scripts/**/*"]
 }

@@ -12,6 +12,7 @@ The generator is part of the `/next` folder out of necessity. It's not possible 
 ## Usage
 
 ### Instalation
+
 First, you need to install required prerequisites on macOS:
 https://github.com/Automattic/node-canvas/wiki/Installation%3A-Mac-OS-X
 
@@ -30,14 +31,14 @@ if you are having problems with npm installing, you need to propably relink brew
 ```bash
   export PKG_CONFIG_PATH=/usr/local/lib/pkgconfig:/opt/X11/lib/pkgconfig
   brew install glib
-  brew link glib 
+  brew link glib
   # if command above not working use: brew link --overwrite glib
 ```
 
 on Windows just use npm install as the binaries are included in the npm packages:
 
 ```bash
-  npm install 
+  npm install
 ```
 
 ### Generating just schema and uiSchema
@@ -67,6 +68,6 @@ Run the following and let the script guide you. If you need modifications, or yo
 ```
 
 ## Notes
-- `resolutions` for `wrap-ansi` and `string-width` in package.json is because of https://stackoverflow.com/a/78025659
+
 - `ts-config` based on https://github.com/tsconfig/bases/blob/main/bases/node-lts.json
 - `react-markdown` is fixed on version 6, until we use a compiler, see https://stackoverflow.com/a/69469619

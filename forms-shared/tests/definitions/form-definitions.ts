@@ -1,6 +1,6 @@
-import { formDefinitions } from '../../src/definitions/form-definitions'
-import { isSlovenskoSkFormDefinition } from '../../src/definitions/form-definitions-helpers'
+import { formDefinitions } from '../../src/definitions/formDefinitions'
 import { fetchSlovenskoSkFormMetadata } from '../../test-utils/fetchSlovenskoSkFormMetadata'
+import { isSlovenskoSkFormDefinition } from '../../src/definitions/formDefinitionTypes'
 
 describe('Form definitions', () => {
   formDefinitions.filter(isSlovenskoSkFormDefinition).forEach((formDefinition) => {

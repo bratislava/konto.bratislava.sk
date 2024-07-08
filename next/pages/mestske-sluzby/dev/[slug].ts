@@ -1,4 +1,4 @@
-import { getFormDefinitionBySlug } from '@forms-shared/definitions/form-definitions-helpers'
+import { getFormDefinitionBySlugDev } from 'forms-shared/definitions/getFormDefinitionBySlug'
 
 import FormPageWrapper, { FormPageWrapperProps } from '../../../components/forms/FormPageWrapper'
 import { SsrAuthProviderHOC } from '../../../components/logic/SsrAuthContext'
@@ -20,7 +20,7 @@ export const getServerSideProps = amplifyGetServerSideProps<FormPageWrapperProps
     }
 
     const { slug } = context.params
-    const formDefinition = getFormDefinitionBySlug(slug)
+    const formDefinition = getFormDefinitionBySlugDev(slug)
     if (!formDefinition) {
       return { notFound: true }
     }
@@ -34,6 +34,7 @@ export const getServerSideProps = amplifyGetServerSideProps<FormPageWrapperProps
           initialServerFiles: [],
           formSent: false,
           formMigrationRequired: false,
+          isDevRoute: true,
         },
         ...(await slovakServerSideTranslations()),
       } satisfies FormPageWrapperProps,

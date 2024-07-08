@@ -1,6 +1,6 @@
-import { SelectUiOptions } from '@forms-shared/generator/uiOptionsTypes'
 import { WidgetProps } from '@rjsf/utils'
 import WidgetWrapper from 'components/forms/widget-wrappers/WidgetWrapper'
+import { SelectUiOptions } from 'forms-shared/generator/uiOptionsTypes'
 import { ComponentProps } from 'react'
 
 import { isDefined } from '../../../frontend/utils/general'

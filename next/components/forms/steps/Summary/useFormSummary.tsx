@@ -1,12 +1,12 @@
+import { useDeepMemo } from '@react-aria/utils'
 import {
   FileStatusType,
   isInfectedFileStatusType,
   isScanFileStatusType,
   isUploadFileStatusType,
-} from '@forms-shared/form-files/fileStatus'
-import { mergeClientAndServerFilesSummary } from '@forms-shared/form-files/mergeClientAndServerFiles'
-import { ValidatedSummary, validateSummary } from '@forms-shared/summary-renderer/validateSummary'
-import { useDeepMemo } from '@react-aria/utils'
+} from 'forms-shared/form-files/fileStatus'
+import { mergeClientAndServerFilesSummary } from 'forms-shared/form-files/mergeClientAndServerFiles'
+import { ValidatedSummary, validateSummary } from 'forms-shared/summary-renderer/validateSummary'
 import isEqual from 'lodash/isEqual'
 import memoizeOne from 'memoize-one'
 import React, { createContext, PropsWithChildren, useCallback, useContext } from 'react'

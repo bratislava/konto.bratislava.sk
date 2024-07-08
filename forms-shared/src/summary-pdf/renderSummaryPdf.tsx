@@ -1,28 +1,39 @@
 import React from 'react'
-import { chromium } from 'playwright'
+import type { Browser } from 'playwright'
 import { GenericObjectType, RJSFSchema, UiSchema } from '@rjsf/utils'
 import { getSummaryJsonNode } from '../summary-json/getSummaryJsonNode'
 import { renderToString } from 'react-dom/server'
-import { getTailwindCss } from './tailwindCss'
 import { SummaryPdf } from './SummaryPdf'
-import { getInterCss } from './interCss'
 import { FormsBackendFile } from '../form-files/serverFilesTypes'
 import { ClientFileInfo } from '../form-files/fileStatus'
 import { mergeClientAndServerFilesSummary } from '../form-files/mergeClientAndServerFiles'
 import { validateSummary } from '../summary-renderer/validateSummary'
+import summaryPdfCss from '../generated-assets/summaryPdfCss'
+
+export type RenderSummaryPdfPayload = {
+  jsonSchema: RJSFSchema
+  uiSchema: UiSchema
+  formData: GenericObjectType
+  /**
+   * Playwright must be installed and managed by the consumer of this function (e.g. in Docker) to run correctly, and is
+   * only a peer dependency of this package.
+   */
+  launchBrowser: () => Promise<Browser>
+  serverFiles?: FormsBackendFile[]
+  clientFiles?: ClientFileInfo[]
+}
 
 /**
  * Renders a summary PDF from the given JSON schema, UI schema and data.
  */
-export const renderSummaryPdf = async (
-  jsonSchema: RJSFSchema,
-  uiSchema: UiSchema,
-  formData: GenericObjectType,
-  serverFiles: FormsBackendFile[] = [],
-  clientFiles: ClientFileInfo[] = [],
-) => {
-  const cssArray = await Promise.all([getTailwindCss(), getInterCss()])
-  const cssToInject = cssArray.join('\n')
+export const renderSummaryPdf = async ({
+  jsonSchema,
+  uiSchema,
+  formData,
+  launchBrowser,
+  clientFiles,
+  serverFiles,
+}: RenderSummaryPdfPayload) => {
   const summaryJson = getSummaryJsonNode(jsonSchema, uiSchema, formData)
 
   const fileInfos = mergeClientAndServerFilesSummary(clientFiles, serverFiles)
@@ -30,12 +41,12 @@ export const renderSummaryPdf = async (
 
   const renderedString = renderToString(
     <SummaryPdf
-      cssToInject={cssToInject}
+      cssToInject={summaryPdfCss.toString()}
       summaryJson={summaryJson}
       validatedSummary={validatedSummary}
     ></SummaryPdf>,
   )
-  const browser = await chromium.launch()
+  const browser = await launchBrowser()
 
   try {
     const page = await browser.newPage()

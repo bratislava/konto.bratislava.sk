@@ -63,6 +63,7 @@
     "classnames": "2.5.1",
     "expr-eval": "^2.0.2",
     "focus-trap-react": "^10.2.3",
+    "forms-shared": "file:../forms-shared",
     "graphql": "16.8.1",
     "graphql-request": "6.1.0",
     "graphql-tag": "2.12.6",

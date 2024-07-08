@@ -4,8 +4,8 @@ import { exampleTaxForm3 } from '../src/tax-form/examples/exampleTaxForm3'
 import { exampleTaxForm4 } from '../src/tax-form/examples/exampleTaxForm4'
 import { exampleTaxForm5 } from '../src/tax-form/examples/exampleTaxForm5'
 import { getTaxFormPdfMapping } from '../src/tax-form/mapping/pdf/pdf'
-import { getTaxFormXml } from '../src/tax-form/mapping/xml/xml'
-import generateTaxPdf from '../src/tax-form/generateTaxPdf'
+import { generateTaxPdf } from '../src/tax-form/generateTaxPdf'
+import { generateTaxXml } from '../src/tax-form/generateTaxXml'
 import { expectPdfToMatchSnapshot } from '../test-utils/expectPdfToMatchSnapshot'
 import { filterConsole } from '../test-utils/filterConsole'
 
@@ -25,7 +25,7 @@ describe('tax-form', () => {
     })
 
     it(`should return correct XML for example ${index + 1}`, () => {
-      expect(getTaxFormXml(formData, true, mockDate)).toMatchSnapshot()
+      expect(generateTaxXml(formData, true, mockDate)).toMatchSnapshot()
     })
 
     it(`should match snapshot for generated PDF example ${index + 1}`, async () => {

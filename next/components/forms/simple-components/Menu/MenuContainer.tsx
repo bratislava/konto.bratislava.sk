@@ -23,7 +23,7 @@ const MenuContainer = <T extends object>(props: MenuContainerProps<T>) => {
     <ul {...menuProps} ref={ref} className="focus:outline-none">
       {containerHeaderEl}
       <div className={cx('py-2', className)}>
-        {[...state.collection].map((item) => (
+        {Array.from(state.collection).map((item) => (
           <MenuItem
             key={item.key}
             item={item}

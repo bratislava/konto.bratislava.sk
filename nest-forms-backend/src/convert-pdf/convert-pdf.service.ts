@@ -1,5 +1,5 @@
-import { FormDefinitionSlovenskoSk } from '@forms-shared/definitions/form-definitions'
 import { Injectable } from '@nestjs/common'
+import { FormDefinitionSlovenskoSk } from 'forms-shared/definitions/formDefinitionTypes'
 
 import ConvertService from '../convert/convert.service'
 import { FormInfo } from '../files/files.dto'
@@ -75,7 +75,7 @@ export default class ConvertPdfService {
       formDefinition,
     )
 
-    const file = await this.convertService.generatePdfV2(
+    const file = await this.convertService.generatePdf(
       form.formDataJson,
       formId,
       formDefinition,

@@ -1,5 +1,5 @@
-import { BaWidgetType } from '@forms-shared/generator/uiOptionsTypes'
 import { WidgetProps } from '@rjsf/utils'
+import { BaWidgetType } from 'forms-shared/generator/uiOptionsTypes'
 import { ComponentType, createContext, useContext } from 'react'
 
 const FormWidgetContext = createContext<{ widget?: WidgetProps }>({

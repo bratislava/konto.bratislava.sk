@@ -1,6 +1,6 @@
-import { BAJSONSchema7 } from '@forms-shared/form-utils/ajvKeywords'
-import { baRjsfValidator } from '@forms-shared/form-utils/validators'
 import { GenericObjectType, retrieveSchema, RJSFSchema } from '@rjsf/utils'
+import { BAJSONSchema7 } from 'forms-shared/form-utils/ajvKeywords'
+import { baRjsfValidator } from 'forms-shared/form-utils/validators'
 import pick from 'lodash/pick'
 
 import { FormStepIndex, FormStepperStep } from '../../components/forms/types/Steps'

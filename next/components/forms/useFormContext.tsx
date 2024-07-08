@@ -1,11 +1,11 @@
 import { GetFileResponseReducedDto } from '@clients/openapi-forms'
-import { FormDefinition } from '@forms-shared/definitions/form-definitions'
+import { GenericObjectType } from '@rjsf/utils'
 import {
+  FormDefinition,
   isSlovenskoSkGenericFormDefinition,
   isSlovenskoSkTaxFormDefinition,
-} from '@forms-shared/definitions/form-definitions-helpers'
-import { ClientFileInfo } from '@forms-shared/form-files/fileStatus'
-import { GenericObjectType } from '@rjsf/utils'
+} from 'forms-shared/definitions/formDefinitionTypes'
+import { ClientFileInfo } from 'forms-shared/form-files/fileStatus'
 import { createContext, PropsWithChildren, useContext } from 'react'
 
 import { useSsrAuth } from '../../frontend/hooks/useSsrAuth'
@@ -20,7 +20,7 @@ export type FormContext = {
   initialSignature?: FormSignature | null
   formSent: boolean
   formMigrationRequired: boolean
-  isPdf?: boolean
+  isDevRoute?: boolean
 }
 
 const FormContextContext = createContext<FormContext | undefined>(undefined)

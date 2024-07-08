@@ -41,6 +41,7 @@ export const useGetContext = () => {
     formDefinition: { slug },
     formId,
     isTaxForm,
+    isDevRoute,
   } = useFormContext()
   const { formData, setImportedFormData } = useFormState()
   const { setRegistrationModal, setTaxFormPdfExportModal } = useFormModals()
@@ -61,7 +62,7 @@ export const useGetContext = () => {
   const importXmlButtonRef = useRef<HTMLButtonElement>(null)
   const importJsonButtonRef = useRef<HTMLButtonElement>(null)
 
-  const [showImportExportJson, setShowImportExportJson] = useState(false)
+  const [showImportExportJson, setShowImportExportJson] = useState(Boolean(isDevRoute))
   const isClient = useIsClient()
 
   useEffect(() => {

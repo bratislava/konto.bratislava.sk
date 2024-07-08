@@ -1,71 +1,17 @@
 import { Builder } from 'xml2js'
 
-import { TaxFormData } from '../../types'
-import { formatXsDateTimeXml } from './functions'
-import { oddiel2Xml } from './oddiel2'
-import { oddiel3JedenUcelXml } from './oddiel3JedenUcel'
-import { oddiel3ViacereUcelyXml } from './oddiel3ViacereUcely'
-import { oddiel4Xml } from './oddiel4'
-import { oslobodenieXml } from './oslobodenie'
-import { prilohyXml } from './prilohy'
-import { udajeODanovnikoviXml } from './udajeODanovnikovi'
+import { TaxFormData } from './types'
+import { formatXsDateTimeXml } from './mapping/xml/functions'
+import { oddiel2Xml } from './mapping/xml/oddiel2'
+import { oddiel3JedenUcelXml } from './mapping/xml/oddiel3JedenUcel'
+import { oddiel3ViacereUcelyXml } from './mapping/xml/oddiel3ViacereUcely'
+import { oddiel4Xml } from './mapping/xml/oddiel4'
+import { oslobodenieXml } from './mapping/xml/oslobodenie'
+import { prilohyXml } from './mapping/xml/prilohy'
+import { udajeODanovnikoviXml } from './mapping/xml/udajeODanovnikovi'
+import { removeEmptySubtrees } from './helpers/removeEmptySubtrees'
 
-type JSONPrimitive = string | number | boolean | null | undefined
-type JSONArray = Array<JSONValue>
-type JSONObject = { [key: string]: JSONValue }
-type JSONValue = JSONPrimitive | JSONArray | JSONObject
-
-/**
- * Recursively removes all subtrees from a JSON object or array that do not contain a primitive value.
- * Empty objects and arrays are considered as having no value and are also removed.
- *
- * JSON generated from the mapping contains lot of `undefined` values, as they are not checked for each key whether
- * the respective value exists, this makes the XML invalid.
- *
- * For example, in this:
- * ``
- * {
- *   "WithValue": {
- *       "Key": "Value",
- *   },
- *   "WithoutValue": [
- *       {
- *          "WithoutValueKey: {}
- *       },
- *       []
- *   ]
- * }
- * ```
- * the `WithoutValue` subtree is removed.
- */
-export const removeEmptySubtrees = <T extends JSONValue>(objOrArrayOrValue: T): T | null => {
-  if (Array.isArray(objOrArrayOrValue)) {
-    const newArray: JSONArray = objOrArrayOrValue
-      .map((item) => removeEmptySubtrees(item))
-      .filter((value) => value != null) as JSONArray
-    if (newArray.length === 0) {
-      return null
-    }
-    return newArray as T
-  }
-  if (
-    typeof objOrArrayOrValue === 'object' &&
-    /* null is also an object */
-    objOrArrayOrValue !== null
-  ) {
-    const newEntries = Object.entries(objOrArrayOrValue)
-      .map(([key, value]) => [key, removeEmptySubtrees(value)])
-      .filter(([, value]) => value != null)
-
-    if (newEntries.length === 0) {
-      return null
-    }
-    return Object.fromEntries(newEntries) as T
-  }
-  return objOrArrayOrValue
-}
-
-export const getTaxFormXml = (data: TaxFormData, pretty = false, currentDate = new Date()) => {
+export const generateTaxXml = (data: TaxFormData, pretty = false, currentDate = new Date()) => {
   const jsonObj = {
     'E-form': {
       $: {
@@ -116,7 +62,6 @@ export const getTaxFormXml = (data: TaxFormData, pretty = false, currentDate = n
 
   const jsonObjWithoutLeafs = removeEmptySubtrees(jsonObj)
 
-  // Convert JSON to XML
   const builder = new Builder({
     xmldec: { version: '1.0', encoding: 'UTF-8' },
     renderOpts: { pretty },

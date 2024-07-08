@@ -479,14 +479,17 @@ export const object = (
   property: string | null,
   options: { required?: boolean },
   uiOptions: ObjectFieldUiOptions,
-  fields: FieldType[],
+  fields: (FieldType | null)[],
 ): ObjectField => {
-  const ordinaryFields = fields.filter((field) => !('condition' in field)) as Field[]
+  const filteredFields = fields.filter((field) => field !== null) as FieldType[]
+  const ordinaryFields = filteredFields.filter((field) => !('condition' in field)) as Field[]
   const ordinaryFieldsWithSchema = ordinaryFields.filter((field) => !field.skipSchema)
   const ordinaryFieldsWithUiSchema = ordinaryFields.filter((field) => !field.skipUiSchema)
-  const conditionalFields = fields.filter((field) => 'condition' in field) as ConditionalFields[]
+  const conditionalFields = filteredFields.filter(
+    (field) => 'condition' in field,
+  ) as ConditionalFields[]
   const fieldProperties = uniq(
-    fields
+    filteredFields
       .filter((field) => ('skipUiSchema' in field ? !field.skipUiSchema : true))
       .flatMap((field) => ('condition' in field ? field.fieldProperties : [field.property]))
       .filter((field) => field !== null) as string[],
@@ -539,7 +542,7 @@ export const arrayField = (
   property: string,
   options: BaseOptions & { minItems?: number; maxItems?: number },
   uiOptions: ArrayFieldUiOptions,
-  fields: FieldType[],
+  fields: (FieldType | null)[],
 ): Field => {
   const { schema: objectSchema, uiSchema: objectUiSchema } = object(null, {}, {}, fields)
   return {
@@ -567,7 +570,7 @@ export const step = (
     stepperTitle?: string
     customHash?: string
   },
-  fields: FieldType[],
+  fields: (FieldType | null)[],
 ) => {
   const { schema, uiSchema } = object(property, { required: true }, {}, fields)
   const getHash = () => {
@@ -606,7 +609,7 @@ export const conditionalStep = (
     title: string
     customHash?: string
   },
-  fields: FieldType[],
+  fields: (FieldType | null)[],
 ) => {
   const { schema, uiSchema } = step(property, options, fields)
   return {
@@ -619,24 +622,27 @@ export const conditionalStep = (
 
 export const conditionalFields = (
   condition: RJSFSchema,
-  thenFields: FieldType[],
-  elseFields: FieldType[] = [],
+  thenFields: (FieldType | null)[],
+  elseFields: (FieldType | null)[] = [],
 ): ConditionalFields => {
+  const filteredThenFields = thenFields.filter((field) => field !== null) as FieldType[]
+  const filteredElseFields = elseFields.filter((field) => field !== null) as FieldType[]
+
   const {
     schema: thenSchema,
     uiSchema: thenUiSchema,
     fieldProperties: thenFieldProperties,
-  } = object(null, {}, {}, thenFields)
+  } = object(null, {}, {}, filteredThenFields)
   const {
     schema: elseSchema,
     uiSchema: elseUiSchema,
     fieldProperties: elseFieldProperties,
-  } = object(null, {}, {}, elseFields)
+  } = object(null, {}, {}, filteredElseFields)
 
   return {
     condition,
     thenSchema,
-    elseSchema: elseFields.length > 0 ? elseSchema : undefined,
+    elseSchema: filteredElseFields.length > 0 ? elseSchema : undefined,
     uiSchema: () => {
       const intersectionProperties = intersection(thenFieldProperties, elseFieldProperties)
       if (intersectionProperties.length > 0) {

@@ -1,5 +1,4 @@
 import { AlertIcon, ChevronDownIcon } from '@assets/ui-icons'
-import cx from 'classnames'
 import { getSummaryJsonBrowser } from 'forms-shared/summary-json/getSummaryJsonBrowser'
 import { getSummaryJsonNode } from 'forms-shared/summary-json/getSummaryJsonNode'
 import {
@@ -35,7 +34,6 @@ const StepRenderer = ({ step, children }: SummaryStepRendererProps) => {
 }
 
 const FieldRenderer = ({ field, hasError, children }: SummaryFieldRendererProps) => {
-  const { isPdf } = useFormContext()
   const { goToStepByFieldId } = useFormState()
 
   return (
@@ -49,16 +47,14 @@ const FieldRenderer = ({ field, hasError, children }: SummaryFieldRendererProps)
       onGoToStep={() => {
         goToStepByFieldId(field.id)
       }}
-      isEditable={!isPdf}
+      isEditable
       size="small"
     />
   )
 }
 
 const StringValueRenderer = ({ value }: SummaryStringValueRendererProps) => {
-  const { isPdf } = useFormContext()
-
-  return <span className={cx('whitespace-pre-wrap', { 'line-clamp-3': !isPdf })}>{value}</span>
+  return <span className="line-clamp-3 whitespace-pre-wrap">{value}</span>
 }
 
 const FileValueRenderer = ({ fileInfo }: SummaryFileValueRendererProps) => {
@@ -102,14 +98,13 @@ const getArrayDepth = (id: string) => id.split('_').filter((part) => part.match(
 
 const ArrayItemRenderer = ({ arrayItem, children, hasError }: SummaryArrayItemRendererProps) => {
   const { t } = useTranslation('forms')
-  const { isPdf } = useFormContext()
   const arrayDepth = getArrayDepth(arrayItem.id)
 
   if (arrayDepth === 1) {
     return (
       <details
         className="group mb-4 rounded-xl border border-gray-200 open:border-gray-700 hover:border-gray-500 hover:open:border-gray-700"
-        open={isPdf}
+        open={false}
       >
         <summary className="group flex w-full cursor-pointer p-6">
           <div className="flex grow flex-col gap-1">
@@ -120,11 +115,9 @@ const ArrayItemRenderer = ({ arrayItem, children, hasError }: SummaryArrayItemRe
               </div>
             )}
           </div>
-          {!isPdf && (
-            <span className="shrink-0" aria-hidden>
-              <ChevronDownIcon className="transition-transform group-open:rotate-180" />
-            </span>
-          )}
+          <span className="shrink-0" aria-hidden>
+            <ChevronDownIcon className="transition-transform group-open:rotate-180" />
+          </span>
         </summary>
         <div className="p-6 pt-0">{children}</div>
       </details>

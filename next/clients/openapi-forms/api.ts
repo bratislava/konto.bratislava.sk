@@ -78,53 +78,37 @@ export interface CanSendResponseDto {
   formId: string
 }
 /**
- * @type ConvertControllerConvertToPdfv2400Response
+ * @type ConvertControllerConvertToPdf404Response
  * @export
  */
-export type ConvertControllerConvertToPdfv2400Response =
-  | PuppeteerFormNotFoundErrorDto
-  | PuppeteerPageFailedLoadErrorDto
-
-/**
- * @type ConvertControllerConvertToPdfv2404Response
- * @export
- */
-export type ConvertControllerConvertToPdfv2404Response =
+export type ConvertControllerConvertToPdf404Response =
   | FormDefinitionNotFoundErrorDto
   | FormNotFoundErrorDto
 
 /**
- * @type ConvertControllerGetPdfPreviewData422Response
- * @export
- */
-export type ConvertControllerGetPdfPreviewData422Response =
-  | InvalidJwtTokenErrorDto
-  | InvalidUuidErrorDto
-
-/**
  *
  * @export
- * @interface ConvertToPdfV2RequestDto
+ * @interface ConvertToPdfRequestDto
  */
-export interface ConvertToPdfV2RequestDto {
+export interface ConvertToPdfRequestDto {
   /**
    * Form id
    * @type {string}
-   * @memberof ConvertToPdfV2RequestDto
+   * @memberof ConvertToPdfRequestDto
    */
   formId: string
   /**
    * Form values in JSON
    * @type {object}
-   * @memberof ConvertToPdfV2RequestDto
+   * @memberof ConvertToPdfRequestDto
    */
   jsonData?: object
   /**
-   * Additional metadata for Next server provided in convert PDF request.
-   * @type {object}
-   * @memberof ConvertToPdfV2RequestDto
+   * Used only in the FE requests to display files not yet uploaded to the server.
+   * @type {Array<object>}
+   * @memberof ConvertToPdfRequestDto
    */
-  additionalMetadata?: object
+  clientFiles?: Array<object>
 }
 /**
  *
@@ -2572,56 +2556,6 @@ export type InvalidOrExpiredJwtTokenErrorDtoErrorNameEnum =
 /**
  *
  * @export
- * @interface InvalidUuidErrorDto
- */
-export interface InvalidUuidErrorDto {
-  /**
-   * Status Code
-   * @type {number}
-   * @memberof InvalidUuidErrorDto
-   */
-  statusCode: number
-  /**
-   * Detail error message
-   * @type {string}
-   * @memberof InvalidUuidErrorDto
-   */
-  message: string
-  /**
-   * status in text
-   * @type {string}
-   * @memberof InvalidUuidErrorDto
-   */
-  status: string
-  /**
-   * Exact error name
-   * @type {string}
-   * @memberof InvalidUuidErrorDto
-   */
-  errorName: InvalidUuidErrorDtoErrorNameEnum
-  /**
-   * Helper for sending additional data in error
-   * @type {object}
-   * @memberof InvalidUuidErrorDto
-   */
-  object?: object
-}
-
-export const InvalidUuidErrorDtoErrorNameEnum = {
-  NotFoundError: 'NOT_FOUND_ERROR',
-  DatabaseError: 'DATABASE_ERROR',
-  InternalServerError: 'INTERNAL_SERVER_ERROR',
-  UnauthorizedError: 'UNAUTHORIZED_ERROR',
-  UnprocessableEntityError: 'UNPROCESSABLE_ENTITY_ERROR',
-  BadRequestError: 'BAD_REQUEST_ERROR',
-} as const
-
-export type InvalidUuidErrorDtoErrorNameEnum =
-  (typeof InvalidUuidErrorDtoErrorNameEnum)[keyof typeof InvalidUuidErrorDtoErrorNameEnum]
-
-/**
- *
- * @export
  * @interface JsonConvertRequestDto
  */
 export interface JsonConvertRequestDto {
@@ -3029,50 +2963,6 @@ export type NotFoundErrorDtoErrorNameEnum =
 /**
  *
  * @export
- * @interface PdfPreviewDataRequestDto
- */
-export interface PdfPreviewDataRequestDto {
-  /**
-   * JWT token for retrieving the form data from the data store
-   * @type {string}
-   * @memberof PdfPreviewDataRequestDto
-   */
-  jwtToken: string
-}
-/**
- *
- * @export
- * @interface PdfPreviewDataResponseDto
- */
-export interface PdfPreviewDataResponseDto {
-  /**
-   * Slug of the form definition
-   * @type {string}
-   * @memberof PdfPreviewDataResponseDto
-   */
-  formDefinitionSlug: string
-  /**
-   * Form values in JSON
-   * @type {object}
-   * @memberof PdfPreviewDataResponseDto
-   */
-  jsonForm: object
-  /**
-   *
-   * @type {Array<GetFileResponseReducedDto>}
-   * @memberof PdfPreviewDataResponseDto
-   */
-  serverFiles: Array<GetFileResponseReducedDto>
-  /**
-   * Additional metadata for Next server provided in convert PDF request.
-   * @type {object}
-   * @memberof PdfPreviewDataResponseDto
-   */
-  additionalMetadata?: object
-}
-/**
- *
- * @export
  * @interface PostFileResponseDto
  */
 export interface PostFileResponseDto {
@@ -3224,106 +3114,6 @@ export const ProblemWithScannerErrorDtoErrorNameEnum = {
 
 export type ProblemWithScannerErrorDtoErrorNameEnum =
   (typeof ProblemWithScannerErrorDtoErrorNameEnum)[keyof typeof ProblemWithScannerErrorDtoErrorNameEnum]
-
-/**
- *
- * @export
- * @interface PuppeteerFormNotFoundErrorDto
- */
-export interface PuppeteerFormNotFoundErrorDto {
-  /**
-   * Status Code
-   * @type {number}
-   * @memberof PuppeteerFormNotFoundErrorDto
-   */
-  statusCode: number
-  /**
-   * Detail error message
-   * @type {string}
-   * @memberof PuppeteerFormNotFoundErrorDto
-   */
-  message: string
-  /**
-   * status in text
-   * @type {string}
-   * @memberof PuppeteerFormNotFoundErrorDto
-   */
-  status: string
-  /**
-   * Exact error name
-   * @type {string}
-   * @memberof PuppeteerFormNotFoundErrorDto
-   */
-  errorName: PuppeteerFormNotFoundErrorDtoErrorNameEnum
-  /**
-   * Helper for sending additional data in error
-   * @type {object}
-   * @memberof PuppeteerFormNotFoundErrorDto
-   */
-  object?: object
-}
-
-export const PuppeteerFormNotFoundErrorDtoErrorNameEnum = {
-  NotFoundError: 'NOT_FOUND_ERROR',
-  DatabaseError: 'DATABASE_ERROR',
-  InternalServerError: 'INTERNAL_SERVER_ERROR',
-  UnauthorizedError: 'UNAUTHORIZED_ERROR',
-  UnprocessableEntityError: 'UNPROCESSABLE_ENTITY_ERROR',
-  BadRequestError: 'BAD_REQUEST_ERROR',
-} as const
-
-export type PuppeteerFormNotFoundErrorDtoErrorNameEnum =
-  (typeof PuppeteerFormNotFoundErrorDtoErrorNameEnum)[keyof typeof PuppeteerFormNotFoundErrorDtoErrorNameEnum]
-
-/**
- *
- * @export
- * @interface PuppeteerPageFailedLoadErrorDto
- */
-export interface PuppeteerPageFailedLoadErrorDto {
-  /**
-   * Status Code
-   * @type {number}
-   * @memberof PuppeteerPageFailedLoadErrorDto
-   */
-  statusCode: number
-  /**
-   * Detail error message
-   * @type {string}
-   * @memberof PuppeteerPageFailedLoadErrorDto
-   */
-  message: string
-  /**
-   * status in text
-   * @type {string}
-   * @memberof PuppeteerPageFailedLoadErrorDto
-   */
-  status: string
-  /**
-   * Exact error name
-   * @type {string}
-   * @memberof PuppeteerPageFailedLoadErrorDto
-   */
-  errorName: PuppeteerPageFailedLoadErrorDtoErrorNameEnum
-  /**
-   * Helper for sending additional data in error
-   * @type {object}
-   * @memberof PuppeteerPageFailedLoadErrorDto
-   */
-  object?: object
-}
-
-export const PuppeteerPageFailedLoadErrorDtoErrorNameEnum = {
-  NotFoundError: 'NOT_FOUND_ERROR',
-  DatabaseError: 'DATABASE_ERROR',
-  InternalServerError: 'INTERNAL_SERVER_ERROR',
-  UnauthorizedError: 'UNAUTHORIZED_ERROR',
-  UnprocessableEntityError: 'UNPROCESSABLE_ENTITY_ERROR',
-  BadRequestError: 'BAD_REQUEST_ERROR',
-} as const
-
-export type PuppeteerPageFailedLoadErrorDtoErrorNameEnum =
-  (typeof PuppeteerPageFailedLoadErrorDtoErrorNameEnum)[keyof typeof PuppeteerPageFailedLoadErrorDtoErrorNameEnum]
 
 /**
  *
@@ -4222,21 +4012,21 @@ export const ConvertApiAxiosParamCreator = function (configuration?: Configurati
     /**
      * Generates PDF for given form data.
      * @summary
-     * @param {ConvertToPdfV2RequestDto} convertToPdfV2RequestDto
+     * @param {ConvertToPdfRequestDto} convertToPdfRequestDto
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
-    convertControllerConvertToPdfv2: async (
-      convertToPdfV2RequestDto: ConvertToPdfV2RequestDto,
+    convertControllerConvertToPdf: async (
+      convertToPdfRequestDto: ConvertToPdfRequestDto,
       options: RawAxiosRequestConfig = {},
     ): Promise<RequestArgs> => {
-      // verify required parameter 'convertToPdfV2RequestDto' is not null or undefined
+      // verify required parameter 'convertToPdfRequestDto' is not null or undefined
       assertParamExists(
-        'convertControllerConvertToPdfv2',
-        'convertToPdfV2RequestDto',
-        convertToPdfV2RequestDto,
+        'convertControllerConvertToPdf',
+        'convertToPdfRequestDto',
+        convertToPdfRequestDto,
       )
-      const localVarPath = `/convert/pdf-v2`
+      const localVarPath = `/convert/pdf`
       // use dummy base URL string because the URL constructor only accepts absolute URLs.
       const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL)
       let baseOptions
@@ -4262,7 +4052,7 @@ export const ConvertApiAxiosParamCreator = function (configuration?: Configurati
         ...options.headers,
       }
       localVarRequestOptions.data = serializeDataIfNeeded(
-        convertToPdfV2RequestDto,
+        convertToPdfRequestDto,
         localVarRequestOptions,
         configuration,
       )
@@ -4332,59 +4122,6 @@ export const ConvertApiAxiosParamCreator = function (configuration?: Configurati
         options: localVarRequestOptions,
       }
     },
-    /**
-     * Returns necessary data for frontend to generate pdf.
-     * @summary
-     * @param {PdfPreviewDataRequestDto} pdfPreviewDataRequestDto
-     * @param {*} [options] Override http request option.
-     * @throws {RequiredError}
-     */
-    convertControllerGetPdfPreviewData: async (
-      pdfPreviewDataRequestDto: PdfPreviewDataRequestDto,
-      options: RawAxiosRequestConfig = {},
-    ): Promise<RequestArgs> => {
-      // verify required parameter 'pdfPreviewDataRequestDto' is not null or undefined
-      assertParamExists(
-        'convertControllerGetPdfPreviewData',
-        'pdfPreviewDataRequestDto',
-        pdfPreviewDataRequestDto,
-      )
-      const localVarPath = `/convert/pdf-preview-data`
-      // use dummy base URL string because the URL constructor only accepts absolute URLs.
-      const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL)
-      let baseOptions
-      if (configuration) {
-        baseOptions = configuration.baseOptions
-      }
-
-      const localVarRequestOptions = { method: 'POST', ...baseOptions, ...options }
-      const localVarHeaderParameter = {} as any
-      const localVarQueryParameter = {} as any
-
-      // authentication bearer required
-      // http bearer authentication required
-      await setBearerAuthToObject(localVarHeaderParameter, configuration)
-
-      localVarHeaderParameter['Content-Type'] = 'application/json'
-
-      setSearchParams(localVarUrlObj, localVarQueryParameter)
-      let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {}
-      localVarRequestOptions.headers = {
-        ...localVarHeaderParameter,
-        ...headersFromBaseOptions,
-        ...options.headers,
-      }
-      localVarRequestOptions.data = serializeDataIfNeeded(
-        pdfPreviewDataRequestDto,
-        localVarRequestOptions,
-        configuration,
-      )
-
-      return {
-        url: toPathString(localVarUrlObj),
-        options: localVarRequestOptions,
-      }
-    },
   }
 }
 
@@ -4426,21 +4163,21 @@ export const ConvertApiFp = function (configuration?: Configuration) {
     /**
      * Generates PDF for given form data.
      * @summary
-     * @param {ConvertToPdfV2RequestDto} convertToPdfV2RequestDto
+     * @param {ConvertToPdfRequestDto} convertToPdfRequestDto
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
-    async convertControllerConvertToPdfv2(
-      convertToPdfV2RequestDto: ConvertToPdfV2RequestDto,
+    async convertControllerConvertToPdf(
+      convertToPdfRequestDto: ConvertToPdfRequestDto,
       options?: RawAxiosRequestConfig,
     ): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<object>> {
-      const localVarAxiosArgs = await localVarAxiosParamCreator.convertControllerConvertToPdfv2(
-        convertToPdfV2RequestDto,
+      const localVarAxiosArgs = await localVarAxiosParamCreator.convertControllerConvertToPdf(
+        convertToPdfRequestDto,
         options,
       )
       const localVarOperationServerIndex = configuration?.serverIndex ?? 0
       const localVarOperationServerBasePath =
-        operationServerMap['ConvertApi.convertControllerConvertToPdfv2']?.[
+        operationServerMap['ConvertApi.convertControllerConvertToPdf']?.[
           localVarOperationServerIndex
         ]?.url
       return (axios, basePath) =>
@@ -4472,36 +4209,6 @@ export const ConvertApiFp = function (configuration?: Configuration) {
       const localVarOperationServerIndex = configuration?.serverIndex ?? 0
       const localVarOperationServerBasePath =
         operationServerMap['ConvertApi.convertControllerConvertXmlToJson']?.[
-          localVarOperationServerIndex
-        ]?.url
-      return (axios, basePath) =>
-        createRequestFunction(
-          localVarAxiosArgs,
-          globalAxios,
-          BASE_PATH,
-          configuration,
-        )(axios, localVarOperationServerBasePath || basePath)
-    },
-    /**
-     * Returns necessary data for frontend to generate pdf.
-     * @summary
-     * @param {PdfPreviewDataRequestDto} pdfPreviewDataRequestDto
-     * @param {*} [options] Override http request option.
-     * @throws {RequiredError}
-     */
-    async convertControllerGetPdfPreviewData(
-      pdfPreviewDataRequestDto: PdfPreviewDataRequestDto,
-      options?: RawAxiosRequestConfig,
-    ): Promise<
-      (axios?: AxiosInstance, basePath?: string) => AxiosPromise<PdfPreviewDataResponseDto>
-    > {
-      const localVarAxiosArgs = await localVarAxiosParamCreator.convertControllerGetPdfPreviewData(
-        pdfPreviewDataRequestDto,
-        options,
-      )
-      const localVarOperationServerIndex = configuration?.serverIndex ?? 0
-      const localVarOperationServerBasePath =
-        operationServerMap['ConvertApi.convertControllerGetPdfPreviewData']?.[
           localVarOperationServerIndex
         ]?.url
       return (axios, basePath) =>
@@ -4544,16 +4251,16 @@ export const ConvertApiFactory = function (
     /**
      * Generates PDF for given form data.
      * @summary
-     * @param {ConvertToPdfV2RequestDto} convertToPdfV2RequestDto
+     * @param {ConvertToPdfRequestDto} convertToPdfRequestDto
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
-    convertControllerConvertToPdfv2(
-      convertToPdfV2RequestDto: ConvertToPdfV2RequestDto,
+    convertControllerConvertToPdf(
+      convertToPdfRequestDto: ConvertToPdfRequestDto,
       options?: RawAxiosRequestConfig,
     ): AxiosPromise<object> {
       return localVarFp
-        .convertControllerConvertToPdfv2(convertToPdfV2RequestDto, options)
+        .convertControllerConvertToPdf(convertToPdfRequestDto, options)
         .then((request) => request(axios, basePath))
     },
     /**
@@ -4571,21 +4278,6 @@ export const ConvertApiFactory = function (
     ): AxiosPromise<XmlToJsonResponseDto> {
       return localVarFp
         .convertControllerConvertXmlToJson(slug, xmlToJsonRequestDto, options)
-        .then((request) => request(axios, basePath))
-    },
-    /**
-     * Returns necessary data for frontend to generate pdf.
-     * @summary
-     * @param {PdfPreviewDataRequestDto} pdfPreviewDataRequestDto
-     * @param {*} [options] Override http request option.
-     * @throws {RequiredError}
-     */
-    convertControllerGetPdfPreviewData(
-      pdfPreviewDataRequestDto: PdfPreviewDataRequestDto,
-      options?: RawAxiosRequestConfig,
-    ): AxiosPromise<PdfPreviewDataResponseDto> {
-      return localVarFp
-        .convertControllerGetPdfPreviewData(pdfPreviewDataRequestDto, options)
         .then((request) => request(axios, basePath))
     },
   }
@@ -4618,17 +4310,17 @@ export class ConvertApi extends BaseAPI {
   /**
    * Generates PDF for given form data.
    * @summary
-   * @param {ConvertToPdfV2RequestDto} convertToPdfV2RequestDto
+   * @param {ConvertToPdfRequestDto} convertToPdfRequestDto
    * @param {*} [options] Override http request option.
    * @throws {RequiredError}
    * @memberof ConvertApi
    */
-  public convertControllerConvertToPdfv2(
-    convertToPdfV2RequestDto: ConvertToPdfV2RequestDto,
+  public convertControllerConvertToPdf(
+    convertToPdfRequestDto: ConvertToPdfRequestDto,
     options?: RawAxiosRequestConfig,
   ) {
     return ConvertApiFp(this.configuration)
-      .convertControllerConvertToPdfv2(convertToPdfV2RequestDto, options)
+      .convertControllerConvertToPdf(convertToPdfRequestDto, options)
       .then((request) => request(this.axios, this.basePath))
   }
 
@@ -4648,23 +4340,6 @@ export class ConvertApi extends BaseAPI {
   ) {
     return ConvertApiFp(this.configuration)
       .convertControllerConvertXmlToJson(slug, xmlToJsonRequestDto, options)
-      .then((request) => request(this.axios, this.basePath))
-  }
-
-  /**
-   * Returns necessary data for frontend to generate pdf.
-   * @summary
-   * @param {PdfPreviewDataRequestDto} pdfPreviewDataRequestDto
-   * @param {*} [options] Override http request option.
-   * @throws {RequiredError}
-   * @memberof ConvertApi
-   */
-  public convertControllerGetPdfPreviewData(
-    pdfPreviewDataRequestDto: PdfPreviewDataRequestDto,
-    options?: RawAxiosRequestConfig,
-  ) {
-    return ConvertApiFp(this.configuration)
-      .convertControllerGetPdfPreviewData(pdfPreviewDataRequestDto, options)
       .then((request) => request(this.axios, this.basePath))
   }
 }
@@ -5089,7 +4764,7 @@ export const FilesApiFp = function (configuration?: Configuration) {
       formId: string,
       options?: RawAxiosRequestConfig,
     ): Promise<
-      (axios?: AxiosInstance, basePath?: string) => AxiosPromise<Array<GetFileResponseDto>>
+      (axios?: AxiosInstance, basePath?: string) => AxiosPromise<Array<GetFileResponseReducedDto>>
     > {
       const localVarAxiosArgs = await localVarAxiosParamCreator.filesControllerGetFilesStatusByForm(
         formId,
@@ -5247,7 +4922,7 @@ export const FilesApiFactory = function (
     filesControllerGetFilesStatusByForm(
       formId: string,
       options?: RawAxiosRequestConfig,
-    ): AxiosPromise<Array<GetFileResponseDto>> {
+    ): AxiosPromise<Array<GetFileResponseReducedDto>> {
       return localVarFp
         .filesControllerGetFilesStatusByForm(formId, options)
         .then((request) => request(axios, basePath))

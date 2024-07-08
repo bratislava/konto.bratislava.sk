@@ -60,7 +60,6 @@ const mapServerFileSummary = (
 export const mergeClientAndServerFiles = (
   clientFiles: ClientFileInfo[],
   serverFiles: FormsBackendFile[],
-  simple = false,
 ) => {
   const clientFilesMapped = clientFiles.map(mapClientFile)
   const serverFilesMapped = serverFiles.map(mapServerFile)
@@ -73,9 +72,8 @@ export const mergeClientAndServerFiles = (
 }
 
 export const mergeClientAndServerFilesSummary = (
-  clientFiles: ClientFileInfo[],
-  serverFiles: FormsBackendFile[],
-  simple = false,
+  clientFiles: ClientFileInfo[] = [],
+  serverFiles: FormsBackendFile[] = [],
 ) => {
   const clientFilesMapped = clientFiles.map(mapClientFileSummary)
   const serverFilesMapped = serverFiles.map(mapServerFileSummary)

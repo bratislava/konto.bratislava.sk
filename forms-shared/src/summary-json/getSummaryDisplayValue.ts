@@ -54,11 +54,14 @@ const noneValue: SummaryDisplayValue = {
   type: SummaryDisplayValueType.None,
 }
 
+const bratislavaTimeZone = 'Europe/Bratislava'
+
 // TODO: Use shared date formatter
 const dateFormatter = new DateFormatter('sk-SK', {
   day: 'numeric',
   month: 'numeric',
   year: 'numeric',
+  timeZone: bratislavaTimeZone,
 })
 
 /**
@@ -199,7 +202,7 @@ export const getSummaryDisplayValues = (
     try {
       const parsed = parseDate(value as string)
       // TODO: Use shared date formatter
-      const formatted = dateFormatter.format(parsed.toDate('Europe/Bratislava'))
+      const formatted = dateFormatter.format(parsed.toDate(bratislavaTimeZone))
       return [createStringValue(formatted)]
     } catch (error) {
       return [invalidValue]

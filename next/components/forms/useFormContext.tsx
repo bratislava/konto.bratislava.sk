@@ -20,7 +20,7 @@ export type FormContext = {
   initialSignature?: FormSignature | null
   formSent: boolean
   formMigrationRequired: boolean
-  isPdf?: boolean
+  isDevRoute?: boolean
 }
 
 const FormContextContext = createContext<FormContext | undefined>(undefined)

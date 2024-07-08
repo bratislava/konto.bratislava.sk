@@ -6,7 +6,10 @@ import { CacheModule } from '@nestjs/cache-manager'
 import { ConfigService } from '@nestjs/config'
 import { Test, TestingModule } from '@nestjs/testing'
 import { FormError, Forms } from '@prisma/client'
-import { FormDefinitionSlovenskoSk } from 'forms-shared/definitions/formDefinitionTypes'
+import {
+  FormDefinitionSlovenskoSk,
+  FormDefinitionType,
+} from 'forms-shared/definitions/formDefinitionTypes'
 
 import prismaMock from '../../test/singleton'
 import ConvertService from '../convert/convert.service'
@@ -144,7 +147,7 @@ describe('NasesConsumerService', () => {
         .mockResolvedValue({ status: 401 })
 
       const convertSpy = jest
-        .spyOn(convertService, 'generatePdfV2')
+        .spyOn(convertService, 'generatePdf')
         .mockResolvedValue(new Readable())
 
       const spyLog = jest.spyOn(service['logger'], 'error')
@@ -177,11 +180,11 @@ describe('NasesConsumerService', () => {
       const spyDelay = jest.spyOn(service as any, 'queueDelayedForm')
       const spyPublish = jest.spyOn(
         service['rabbitmqClientService'],
-        'publishNasesCheck',
+        'publishToGinis',
       )
 
       const convertSpy = jest
-        .spyOn(convertService, 'generatePdfV2')
+        .spyOn(convertService, 'generatePdf')
         .mockResolvedValue(new Readable())
 
       await service.sendToNasesAndUpdateState(
@@ -195,7 +198,9 @@ describe('NasesConsumerService', () => {
             firstName: 'Tester',
           },
         },
-        {} as FormDefinitionSlovenskoSk,
+        {
+          type: FormDefinitionType.SlovenskoSkGeneric,
+        } as FormDefinitionSlovenskoSk,
         '',
       )
 

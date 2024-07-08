@@ -1,5 +1,6 @@
+ARG FORMS_SHARED_TAG=latest
+FROM harbor.bratislava.sk/standalone/forms-shared:${FORMS_SHARED_TAG} as shared
 FROM node:20.9-alpine AS base
-FROM harbor.bratislava.sk/standalone/forms-shared:latest as shared
 
 # used as app-base in prodution and development image
 FROM base AS app-base

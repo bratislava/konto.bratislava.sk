@@ -10,7 +10,7 @@ jobs:
     with:
       directory: forms-shared/
       build_image_no_registry: ''
-      tag: '--tag=latest'
+      tag: '--tag=${{ github.sha }}'
     secrets:
       registry-pass: ${{ secrets.HARBOR_REGISTRY_PASSWORD }}
 
@@ -46,6 +46,7 @@ jobs:
     uses: bratislava/github-actions/.github/workflows/build-with-bratiska-cli.yml@stable
     with:
       directory: next/
+      build_arg: '--build_arg="FORMS_SHARED_TAG=${{ github.sha }}"'
       debug: --debug
     secrets:
       registry-pass: ${{ secrets.HARBOR_REGISTRY_PASSWORD }}
@@ -55,7 +56,7 @@ jobs:
     name: validate nest-forms-backend
     needs: conditions
     if: needs.conditions.outputs.nest-forms-backend == 'true'
-    uses: bratislava/konto.bratislava.sk/.github/workflows/validate-nest-prisma-konto.yml@beta
+    uses: bratislava/konto.bratislava.sk/.github/workflows/validate-nest-prisma-konto.yml@stable
     with:
       directory: nest-forms-backend/
     permissions: write-all
@@ -67,6 +68,7 @@ jobs:
     uses: bratislava/github-actions/.github/workflows/build-with-bratiska-cli.yml@stable
     with:
       directory: nest-forms-backend/
+      build_arg: '--build_arg="FORMS_SHARED_TAG=${{ github.sha }}"'
     secrets:
       registry-pass: ${{ secrets.HARBOR_REGISTRY_PASSWORD }}
     permissions: write-all

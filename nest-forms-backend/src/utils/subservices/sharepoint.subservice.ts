@@ -1,4 +1,4 @@
-import { OnQueueFailed, Process } from '@nestjs/bull'
+import { OnQueueFailed, Process, Processor } from '@nestjs/bull'
 import { Injectable, Logger } from '@nestjs/common'
 import { FormError, Forms, FormState, Prisma } from '@prisma/client'
 import axios, { AxiosResponse } from 'axios'
@@ -28,6 +28,7 @@ import {
 } from './dtos/sharepoint.errors.enum'
 
 @Injectable()
+@Processor('sharepoint')
 export default class SharepointSubservice {
   private readonly logger: Logger
 

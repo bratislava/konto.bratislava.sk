@@ -1,9 +1,11 @@
 import { setTimeout } from 'node:timers/promises'
 
 import { Nack, RabbitRPC } from '@golevelup/nestjs-rabbitmq'
+import { InjectQueue } from '@nestjs/bull'
 import { Injectable, Logger } from '@nestjs/common'
 import { FormError, FormState, GinisState } from '@prisma/client'
 import { Channel, ConsumeMessage } from 'amqplib'
+import { Queue } from 'bull'
 import { isSlovenskoSkGenericFormDefinition } from 'forms-shared/definitions/formDefinitionTypes'
 import { getFormDefinitionBySlug } from 'forms-shared/definitions/getFormDefinitionBySlug'
 
@@ -62,6 +64,7 @@ export default class GinisService {
     private mailgunService: MailgunService,
     private prismaService: PrismaService,
     private readonly rabbitMqClientService: RabbitmqClientService,
+    @InjectQueue('sharepoint') private readonly sharepointQueue: Queue,
   ) {
     this.logger = new Logger('GinisService')
 
@@ -549,11 +552,19 @@ export default class GinisService {
       await this.prismaService.forms.update({
         where: { id: form.id },
         data: {
-          state: FormState.PROCESSING,
+          state: formDefinition.sharepointData
+            ? FormState.SENDING_TO_SHAREPOINT
+            : FormState.PROCESSING,
           ginisState: GinisState.FINISHED,
           error: FormError.NONE,
         },
       })
+
+      if (formDefinition.sharepointData) {
+        await this.sendToSharepoint(form.id)
+      }
+
+      // TODO do we want to send the mail now? Or after sharepoint delivery
       if (data.userData.email) {
         // fallback to messageSubject if title can't be parsed
         const formTitle =
@@ -574,5 +585,20 @@ export default class GinisService {
       return new Nack(false)
     }
     return this.nackTrueWithWait(20_000)
+  }
+
+  private async sendToSharepoint(formId: string): Promise<void> {
+    await this.sharepointQueue.add(
+      {
+        formId,
+      },
+      {
+        removeOnComplete: true,
+        backoff: {
+          type: 'fixed',
+          delay: 10_800_000, // 3 hours
+        },
+      },
+    )
   }
 }

@@ -1,3 +1,4 @@
+import { BullModule } from '@nestjs/bull'
 import { MiddlewareConsumer, Module, NestModule } from '@nestjs/common'
 import { ConfigModule, ConfigService } from '@nestjs/config'
 import { ScheduleModule } from '@nestjs/schedule'
@@ -19,6 +20,7 @@ import RabbitmqClientModule from './rabbitmq-client/rabbitmq-client.module'
 import StatusModule from './status/status.module'
 import TaxModule from './tax/tax.module'
 import AppLoggerMiddleware from './utils/middlewares/logger.service'
+import SharepointSubservice from './utils/subservices/sharepoint.subservice'
 
 @Module({
   imports: [
@@ -48,10 +50,24 @@ import AppLoggerMiddleware from './utils/middlewares/logger.service'
     ConvertPdfModule,
     GinisModule,
     TaxModule,
+    // BEWARE: If Bull doesn't connect to Redis successfully, it will silently fail!
+    // https://github.com/nestjs/bull/issues/1076
+    BullModule.forRootAsync({
+      imports: [ConfigModule],
+      useFactory: async (configService: ConfigService) => ({
+        redis: {
+          host: <string>configService.get('REDIS_SERVICE'),
+          port: parseInt(<string>configService.get('REDIS_PORT') ?? '6379', 10),
+          username: <string>configService.get('REDIS_USERNAME'),
+          password: <string>configService.get('REDIS_PASSWORD'),
+        },
+      }),
+      inject: [ConfigService],
+    }),
     ScheduleModule.forRoot(),
   ],
   controllers: [AppController],
-  providers: [AppService],
+  providers: [AppService, SharepointSubservice],
 })
 export default class AppModule implements NestModule {
   configure(consumer: MiddlewareConsumer): void {

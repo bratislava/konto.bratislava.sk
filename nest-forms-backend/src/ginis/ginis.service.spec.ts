@@ -1,6 +1,7 @@
 /* eslint-disable pii/no-email */
 import { randomUUID } from 'node:crypto'
 
+import { getQueueToken } from '@nestjs/bull'
 import { Test, TestingModule } from '@nestjs/testing'
 import { Files, FormError, FormState, GinisState } from '@prisma/client'
 import { FormDefinitionType } from 'forms-shared/definitions/formDefinitionTypes'
@@ -68,6 +69,7 @@ describe('GinisService', () => {
         ThrowerErrorGuard,
         RabbitmqClientService,
         { provide: PrismaService, useValue: prismaMock },
+        { provide: getQueueToken('sharepoint'), useValue: { add: jest.fn() } },
       ],
     }).compile()
 
@@ -582,7 +584,7 @@ describe('GinisService', () => {
       expect(assignSpy).toHaveBeenCalledWith('docId', 'orgName', 'personName')
     })
 
-    it('should mark as ready for processing', async () => {
+    it('should mark as ready for processing if there is no sharepoint', async () => {
       ;(getFormDefinitionBySlug as jest.Mock).mockReturnValue({
         type: FormDefinitionType.SlovenskoSkGeneric,
         pospID: 'pospIdValue',
@@ -595,6 +597,7 @@ describe('GinisService', () => {
       const sendMailSpy = jest
         .spyOn(service['mailgunService'], 'sendEmail')
         .mockResolvedValue()
+      const sendToSharepointSpy = jest.spyOn(service['sharepointQueue'], 'add')
 
       let result = await service.onQueueConsumption({
         ...messageBase,
@@ -614,6 +617,7 @@ describe('GinisService', () => {
         }),
       )
       expect(sendMailSpy).not.toHaveBeenCalled()
+      expect(sendToSharepointSpy).not.toHaveBeenCalled()
 
       jest.resetAllMocks()
       ;(getFormDefinitionBySlug as jest.Mock).mockReturnValue({
@@ -636,6 +640,84 @@ describe('GinisService', () => {
         }),
       )
       expect(sendMailSpy).toHaveBeenCalled()
+      expect(sendToSharepointSpy).not.toHaveBeenCalled()
+    })
+
+    it('should send to sharepoint', async () => {
+      ;(getFormDefinitionBySlug as jest.Mock).mockReturnValue({
+        type: FormDefinitionType.SlovenskoSkGeneric,
+        pospID: 'pospIdValue',
+        sharepointData: {
+          databaseName: 'test',
+          tableName: 'test',
+          columnMap: {
+            col1: {
+              type: 'mag_number',
+            },
+          },
+        },
+      })
+      prismaMock.forms.findUnique.mockResolvedValue({
+        ...formBase,
+        ginisState: GinisState.SUBMISSION_ASSIGNED,
+      } as FormWithFiles)
+
+      const sendMailSpy = jest
+        .spyOn(service['mailgunService'], 'sendEmail')
+        .mockResolvedValue()
+      const sendToSharepointSpy = jest.spyOn(service['sharepointQueue'], 'add')
+
+      let result = await service.onQueueConsumption({
+        ...messageBase,
+        userData: {
+          firstName: 'first',
+          email: null,
+        },
+      })
+      expect(result.requeue).toBeFalsy() // all processed
+      expect(prismaMock.forms['update']).toHaveBeenCalledWith(
+        expect.objectContaining({
+          data: {
+            state: FormState.SENDING_TO_SHAREPOINT,
+            ginisState: GinisState.FINISHED,
+            error: FormError.NONE,
+          },
+        }),
+      )
+      expect(sendMailSpy).not.toHaveBeenCalled()
+      expect(sendToSharepointSpy).toHaveBeenCalled()
+
+      jest.resetAllMocks()
+      ;(getFormDefinitionBySlug as jest.Mock).mockReturnValue({
+        type: FormDefinitionType.SlovenskoSkGeneric,
+        pospID: 'pospIdValue',
+        sharepointData: {
+          databaseName: 'test',
+          tableName: 'test',
+          columnMap: {
+            col1: {
+              type: 'mag_number',
+            },
+          },
+        },
+      })
+      prismaMock.forms.findUnique.mockResolvedValue({
+        ...formBase,
+        ginisState: GinisState.SUBMISSION_ASSIGNED,
+      } as FormWithFiles)
+      result = await service.onQueueConsumption(messageBase)
+      expect(result.requeue).toBeFalsy() // all processed
+      expect(prismaMock.forms['update']).toHaveBeenCalledWith(
+        expect.objectContaining({
+          data: {
+            state: FormState.SENDING_TO_SHAREPOINT,
+            ginisState: GinisState.FINISHED,
+            error: FormError.NONE,
+          },
+        }),
+      )
+      expect(sendMailSpy).toHaveBeenCalled()
+      expect(sendToSharepointSpy).toHaveBeenCalled()
     })
   })
 

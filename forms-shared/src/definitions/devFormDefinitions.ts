@@ -1,7 +1,7 @@
 import { FormDefinition, FormDefinitionType } from './formDefinitionTypes'
 import { generalTermsAndConditions } from './termsAndConditions'
 import ziadostNajomne from '../schemas/ziadostOPridelenieNajomnehoBytu'
-import { defaultColumnMapNajomneByvanie, replacePrefixInInfo } from '../sharepoint/ziadost-o-pridelenie-najomneho-bytu'
+import { defaultColumnMapNajomneByvanie, defaultColumnMapNajomneByvanieDieta, replacePrefixInInfo } from '../sharepoint/ziadost-o-pridelenie-najomneho-bytu'
 
 export const devFormDefinitions: FormDefinition[] = [
   {
@@ -22,27 +22,27 @@ export const devFormDefinitions: FormDefinition[] = [
     },
     isSigned: false,
     sharepointData: {
-      databaseName: 'najomne-byvanie-test',
-      tableName: 'najomne-byvanie-test',
+      databaseName: 'dtb_NajomneByvanieTest',
+      tableName: 'SP.Data.Dtb_x005f_NajomneByvanieTestListItem',
       columnMap: defaultColumnMapNajomneByvanie,
       oneToMany: {
         'deti.zoznamDeti': {
-          databaseName: 'TODO',
-          tableName: 'TODO',
-          originalTableId: 'TODO - ZiadatelId?',
-          columnMap: {} // TODO
+          databaseName: 'dtb_NajomneByvanieDieta',
+          tableName: 'SP.Data.Dtb_x005f_NajomneByvanieDietaListItem',
+          originalTableId: 'ZiadatelID',
+          columnMap: defaultColumnMapNajomneByvanieDieta,
         }
       },
       oneToOne: [
         {
-          databaseName: 'TODO',
-          tableName: 'TODO',
+          databaseName: 'dtb_NajomneByvanieManzelTest',
+          tableName: 'SP.Data.Dtb_x005f_NajomneByvanieManzelTestListItem',
           originalTableId: 'ManzelManzelka',
           columnMap: replacePrefixInInfo(defaultColumnMapNajomneByvanie, 'ziadatelZiadatelka', 'manzelManzelka')
         },
         {
-          databaseName: 'TODO',
-          tableName: 'TODO',
+          databaseName: 'dtb_NajomneByvanieDruh',
+          tableName: 'SP.Data.Dtb_x005f_NajomneByvanieDruhListItem',
           originalTableId: 'DruhDruzka',
           columnMap: replacePrefixInInfo(defaultColumnMapNajomneByvanie, 'ziadatelZiadatelka', 'druhDruzka')
         }

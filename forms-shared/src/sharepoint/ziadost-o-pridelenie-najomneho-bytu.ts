@@ -162,6 +162,117 @@ export const defaultColumnMapNajomneByvanie: Record<string, SharepointColumnMapV
   },
 }
 
+export const defaultColumnMapNajomneByvanieDieta: Record<string, SharepointColumnMapValue> = {
+  Meno: {
+    type: 'json_path',
+    info: 'menoPriezvisko.meno'
+  },
+  Priezvisko: {
+    type: 'json_path',
+    info: 'menoPriezvisko.priezvisko'
+  },
+  RodnePriezvisko: {
+    type: 'json_path',
+    info: 'rodnePriezvisko'
+  },
+  DatumNarodenia: {
+    type: 'json_path',
+    info: 'datumNarodenia'
+  },
+  StatnaPrislusnost: {
+    type: 'json_path',
+    info: 'statnaPrislusnost'
+  },
+  RodinnyStav: {
+    type: 'json_path',
+    info: 'rodinnyStav'
+  },
+  TrvalyPobytRovnaky: {
+    type: 'json_path',
+    info: 'adresaTrvalehoPobytu.adresaTrvalehoPobytuRovnaka'
+  },
+  TrvalyPobytUlicaACislo: {
+    type: 'json_path',
+    info: 'adresaTrvalehoPobytu.ulicaACislo'
+  },
+  TrvalyPobytMesto: {
+    type: 'json_path',
+    info: 'adresaTrvalehoPobytu.mesto'
+  },
+  TrvalyPobytPsc: {
+    type: 'json_path',
+    info: 'adresaTrvalehoPobytu.psc'
+  },
+  SkutocnyPobytRovnakyAkoTrvaly: {
+    type: 'json_path',
+    info: 'adresaTrvalehoPobytu.adresaSkutcnehoPobytuRovnaka'
+  },
+  SkutocnyPobytUlica: {
+    type: 'json_path',
+    info: 'adresaTrvalehoPobytu.adresaSkutocnehoPobytu.ulicaACislo'
+  },
+  SkutocnyPobytMesto: {
+    type: 'json_path',
+    info: 'adresaTrvalehoPobytu.adresaSkutocnehoPobytu.mestoPsc.mesto'
+  },
+  SkutocnyPobytPsc: {
+    type: 'json_path',
+    info: 'adresaTrvalehoPobytu.adresaSkutocnehoPobytu.mestoPsc.psc'
+  },
+  PrijemVyska: {
+    type: 'json_path',
+    info: 'prijem.prijemVyska'
+  },
+  Student: {
+    type: 'json_path',
+    info: 'prijem.student'
+  },
+  FunkcnaPorucha: {
+    type: 'json_path',
+    info: 'zdravotnyStav.funkcnaPoruchaWrapper.funkcnaPorucha'
+  },
+  MieraFunkcnejPoruchy: {
+    type: 'json_path',
+    info: 'zdravotnyStav.funkcnaPoruchaWrapper.mieraFunkcnejPoruchy'
+  },
+  Diagnozy: {
+    type: 'json_path',
+    info: 'zdravotnyStav.funkcnaPoruchaWrapper.diagnozy'
+  },
+  ExistujuceDiagnozy: {
+    type: 'json_path',
+    info: 'zdravotnyStav.funkcnaPoruchaWrapper.existujuceDiagnozy'
+  },
+  StupenOdkazanosti: {
+    type: 'json_path',
+    info: 'zdravotnyStav.odkazanostWrapper.stupenOdkazanosti'
+  },
+  Invalidita: {
+    type: 'json_path',
+    info: 'zdravotnyStav.bezbarierovyBytWrapper.invalidita'
+  },
+  MieraPoklesu: {
+    type: 'json_path',
+    info: 'zdravotnyStav.bezbarierovyBytWrapper.mieraPoklesu'
+  },
+  RizikoveFaktory: {
+    type: 'json_path',
+    info: 'rizikoveFaktoryWrapper.rizikoveFaktory'
+  },
+  ZoznamRizikovychFaktorov: {
+    type: 'json_path',
+    info: 'rizikoveFaktoryWrapper.zoznamRizikovychFaktorov'
+  },
+  SucasneByvanieRovnakeAkoVase: {
+    type: 'json_path',
+    info: 'sucasneByvanie.situaciaRovnakaAkoVasa'
+  },
+  SucasneByvanieDietata: {
+    type: 'json_path',
+    info: 'sucasneByvanie.sucasneByvanieDietata'
+  },
+}
+
 export function replacePrefixInInfo(obj: Record<string, SharepointColumnMapValue>, prefix: string, newPrefix: string): Record<string, SharepointColumnMapValue> {
   const result: Record<string, SharepointColumnMapValue> = {};
 

@@ -212,7 +212,7 @@ export default class SharepointSubservice {
   ): Promise<Record<string, string>> {
     const result: Record<string, string> = {}
     const { SHAREPOINT_URL } = process.env
-    const url = `${escape(SHAREPOINT_URL)}/getbytitle('${dtbName}')/fields`
+    const url = `${escape(SHAREPOINT_URL)}/lists/getbytitle('${dtbName}')/fields`
 
     const fields = await axios
       .get(url, {
@@ -255,7 +255,7 @@ export default class SharepointSubservice {
     fieldValues: Record<string, string>,
   ): Promise<string> {
     const { SHAREPOINT_URL } = process.env
-    const url = `${escape(SHAREPOINT_URL)}/getbytitle('${dtbName}')/items`
+    const url = `${escape(SHAREPOINT_URL)}/lists/getbytitle('${dtbName}')/items`
     const postData = {
       ...fieldValues,
       __metadata: {

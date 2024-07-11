@@ -1,7 +1,7 @@
 import { FormDefinition, FormDefinitionType } from './formDefinitionTypes'
 import { generalTermsAndConditions } from './termsAndConditions'
 import ziadostNajomne from '../schemas/ziadostOPridelenieNajomnehoBytu'
-import { defaultColumnMapNajomneByvanie, defaultColumnMapNajomneByvanieDieta, replacePrefixInInfo } from '../sharepoint/ziadost-o-pridelenie-najomneho-bytu'
+import { defaultColumnMapNajomneByvanie, defaultColumnMapNajomneByvanieDieta, defaultColumnMapNajomneByvanieDruhDruzka, defaultColumnMapNajomneByvanieManzelManzelka } from '../sharepoint/ziadost-o-pridelenie-najomneho-bytu'
 
 export const devFormDefinitions: FormDefinition[] = [
   {
@@ -23,12 +23,10 @@ export const devFormDefinitions: FormDefinition[] = [
     isSigned: false,
     sharepointData: {
       databaseName: 'dtb_NajomneByvanieTest',
-      tableName: 'SP.Data.Dtb_x005f_NajomneByvanieTestListItem',
       columnMap: defaultColumnMapNajomneByvanie,
       oneToMany: {
         'deti.zoznamDeti': {
           databaseName: 'dtb_NajomneByvanieDieta',
-          tableName: 'SP.Data.Dtb_x005f_NajomneByvanieDietaListItem',
           originalTableId: 'ZiadatelID',
           columnMap: defaultColumnMapNajomneByvanieDieta,
         }
@@ -36,15 +34,13 @@ export const devFormDefinitions: FormDefinition[] = [
       oneToOne: [
         {
           databaseName: 'dtb_NajomneByvanieManzelTest',
-          tableName: 'SP.Data.Dtb_x005f_NajomneByvanieManzelTestListItem',
           originalTableId: 'ManzelManzelka',
-          columnMap: replacePrefixInInfo(defaultColumnMapNajomneByvanie, 'ziadatelZiadatelka', 'manzelManzelka')
+          columnMap: defaultColumnMapNajomneByvanieManzelManzelka
         },
         {
           databaseName: 'dtb_NajomneByvanieDruh',
-          tableName: 'SP.Data.Dtb_x005f_NajomneByvanieDruhListItem',
           originalTableId: 'DruhDruzka',
-          columnMap: replacePrefixInInfo(defaultColumnMapNajomneByvanie, 'ziadatelZiadatelka', 'druhDruzka')
+          columnMap: defaultColumnMapNajomneByvanieDruhDruzka
         }
       ]
     }

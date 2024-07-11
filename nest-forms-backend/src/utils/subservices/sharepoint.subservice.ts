@@ -145,8 +145,7 @@ export default class SharepointSubservice {
           )
 
           const addedId = await this.postDataToSharepoint(
-            sharepointData.databaseName,
-            sharepointData.tableName,
+            value.databaseName,
             accessToken,
             valuesForFieldsOneToOne,
           )
@@ -158,7 +157,6 @@ export default class SharepointSubservice {
 
     const baseId = await this.postDataToSharepoint(
       sharepointData.databaseName,
-      sharepointData.tableName,
       accessToken,
       valuesForFields,
     )
@@ -183,8 +181,7 @@ export default class SharepointSubservice {
               )
     
               await this.postDataToSharepoint(
-                sharepointData.databaseName,
-                sharepointData.tableName,
+                value.databaseName,
                 accessToken,
                 valuesForFieldsOneToMany,
               )
@@ -239,18 +236,18 @@ export default class SharepointSubservice {
       if (filtered.length === 0) {
         throw this.throwerErrorGuard.BadRequestException(
           SharepointErrorsEnum.UNKNOWN_COLUMN,
-          `${SharepointErrorsResponseEnum.UNKNOWN_COLUMN} Column: ${col}.`,
+          `${SharepointErrorsResponseEnum.UNKNOWN_COLUMN} Column: ${col}, dtb name: ${dtbName}.`,
         )
       }
       result[col] = filtered[0].StaticName
     })
 
+    console.log(result)
     return result
   }
 
   private async postDataToSharepoint(
     dtbName: string,
-    tableName: string,
     accessToken: string,
     fieldValues: Record<string, string>,
   ): Promise<string> {
@@ -258,16 +255,16 @@ export default class SharepointSubservice {
     const url = `${escape(SHAREPOINT_URL)}/lists/getbytitle('${dtbName}')/items`
     const postData = {
       ...fieldValues,
-      __metadata: {
-        type: tableName,
-      },
     }
+
+    console.log(accessToken)
+    console.log(url)
+    console.log(postData)
 
     const result = await axios
       .post(url, postData, {
         headers: {
           Accept: 'application/json;odata=verbose',
-          'Content-Type': 'application/json;odata=verbose',
           Authorization: `Bearer ${accessToken}`,
         },
       })
@@ -276,7 +273,7 @@ export default class SharepointSubservice {
           SharepointErrorsEnum.POST_DATA_TO_SHAREPOINT_ERROR,
           `${
             SharepointErrorsResponseEnum.POST_DATA_TO_SHAREPOINT_ERROR
-          } Error: ${<string>error}, posted data: ${postData.toString()}.`,
+          } Error: ${<string>error} when sending to database: ${dtbName}, posted data: ${JSON.stringify(postData)} .`,
         )
       })
       .then((res: AxiosResponse<{ d: { ID: string | number } }, object>) =>
@@ -387,9 +384,7 @@ export default class SharepointSubservice {
       )
     }
     let atPath = lodashGet(jsonFormData, columnMapValue.info, '')
-    if (typeof atPath === 'boolean') {
-      atPath = atPath ? 'áno' : 'nie'
-    } else if (Array.isArray(atPath)) {
+    if (Array.isArray(atPath)) {
       atPath = (atPath as Array<object>).map((x) => x.toString()).join(', ')
     }
     return atPath

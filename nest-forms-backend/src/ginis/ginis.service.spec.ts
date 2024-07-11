@@ -649,7 +649,6 @@ describe('GinisService', () => {
         pospID: 'pospIdValue',
         sharepointData: {
           databaseName: 'test',
-          tableName: 'test',
           columnMap: {
             col1: {
               type: 'mag_number',
@@ -693,7 +692,6 @@ describe('GinisService', () => {
         pospID: 'pospIdValue',
         sharepointData: {
           databaseName: 'test',
-          tableName: 'test',
           columnMap: {
             col1: {
               type: 'mag_number',

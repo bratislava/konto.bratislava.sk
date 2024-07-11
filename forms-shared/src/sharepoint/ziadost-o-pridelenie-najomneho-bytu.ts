@@ -42,35 +42,35 @@ export const defaultColumnMapNajomneByvanie: Record<string, SharepointColumnMapV
   },
   TrvalyPobytMesto: {
     type: 'json_path',
-    info: 'ziadatelZiadatelka.adresaTrvalehoPobytu.mesto'
+    info: 'ziadatelZiadatelka.adresaTrvalehoPobytu.mestoPsc.mesto'
   },
   TrvalyPobytPsc: {
     type: 'json_path',
-    info: 'ziadatelZiadatelka.adresaTrvalehoPobytu.psc'
+    info: 'ziadatelZiadatelka.adresaTrvalehoPobytu.mestoPsc.psc'
   },
   TrvalyPobytVlastnikNehnutelnosti: {
     type: 'json_path',
-    info: 'ziadatelZiadatelka.vlastnikNehnutelnosti'
+    info: 'ziadatelZiadatelka.adresaTrvalehoPobytu.vlastnikNehnutelnosti'
   },
   TrvalyPobytPobytMenejAkoRok: {
     type: 'json_path',
-    info: 'ziadatelZiadatelka.pobytMenejAkoRok'
+    info: 'ziadatelZiadatelka.adresaTrvalehoPobytu.pobytMenejAkoRok'
   },
   SkutocnyPobytRovnakyAkoTrvaly: {
     type: 'json_path',
-    info: 'ziadatelZiadatelka.adresaSkutcnehoPobytuRovnaka'
+    info: 'ziadatelZiadatelka.adresaTrvalehoPobytu.adresaSkutcnehoPobytuRovnaka'
   },
   SkutocnyPobytUlica: {
     type: 'json_path',
-    info: 'ziadatelZiadatelka.adresaSkutocnehoPobytu.ulicaACislo'
+    info: 'ziadatelZiadatelka.adresaTrvalehoPobytu.adresaSkutocnehoPobytu.ulicaACislo'
   },
   SkutocnyPobytMesto: {
     type: 'json_path',
-    info: 'ziadatelZiadatelka.adresaSkutocnehoPobytu.mestoPsc.mesto'
+    info: 'ziadatelZiadatelka.adresaTrvalehoPobytu.adresaSkutocnehoPobytu.mestoPsc.mesto'
   },
   SkutocnyPobytPsc: {
     type: 'json_path',
-    info: 'ziadatelZiadatelka.adresaSkutocnehoPobytu.mestoPsc.psc'
+    info: 'ziadatelZiadatelka.adresaTrvalehoPobytu.adresaSkutocnehoPobytu.mestoPsc.psc'
   },
   ZamestnaniePrijem: {
     type: 'json_path',
@@ -273,7 +273,160 @@ export const defaultColumnMapNajomneByvanieDieta: Record<string, SharepointColum
   },
 }
 
-export function replacePrefixInInfo(obj: Record<string, SharepointColumnMapValue>, prefix: string, newPrefix: string): Record<string, SharepointColumnMapValue> {
+export const defaultColumnMapNajomneByvanieDruhDruzka: Record<string, SharepointColumnMapValue> = {
+  Meno: {
+    type: 'json_path',
+    info: 'druhDruzka.menoPriezvisko.meno'
+  },
+  Priezvisko: {
+    type: 'json_path',
+    info: 'druhDruzka.menoPriezvisko.priezvisko'
+  },
+  RodnePriezvisko: {
+    type: 'json_path',
+    info: 'druhDruzka.rodnePriezvisko'
+  },
+  DatumNarodenia: {
+    type: 'json_path',
+    info: 'druhDruzka.datumNarodenia'
+  },
+  StatnaPrislusnost: {
+    type: 'json_path',
+    info: 'druhDruzka.statnaPrislusnost'
+  },
+  RodinnyStav: {
+    type: 'json_path',
+    info: 'druhDruzka.rodinnyStav'
+  },
+  TrvalyPobytUlicaACislo: {
+    type: 'json_path',
+    info: 'druhDruzka.adresaTrvalehoPobytu.ulicaACislo'
+  },
+  TrvalyPobytMesto: {
+    type: 'json_path',
+    info: 'druhDruzka.adresaTrvalehoPobytu.mestoPsc.mesto'
+  },
+  TrvalyPobytPsc: {
+    type: 'json_path',
+    info: 'druhDruzka.adresaTrvalehoPobytu.mestoPsc.psc'
+  },
+  TrvalyPobytVlastnikNehnutelnosti: {
+    type: 'json_path',
+    info: 'druhDruzka.adresaTrvalehoPobytu.vlastnikNehnutelnosti'
+  },
+  SkutocnyPobytRovnakyAkoTrvaly: {
+    type: 'json_path',
+    info: 'druhDruzka.adresaTrvalehoPobytu.adresaSkutcnehoPobytuRovnaka'
+  },
+  SkutocnyPobytUlica: {
+    type: 'json_path',
+    info: 'druhDruzka.adresaTrvalehoPobytu.adresaSkutocnehoPobytu.ulicaACislo'
+  },
+  SkutocnyPobytMesto: {
+    type: 'json_path',
+    info: 'druhDruzka.adresaTrvalehoPobytu.adresaSkutocnehoPobytu.mestoPsc.mesto'
+  },
+  SkutocnyPobytPsc: {
+    type: 'json_path',
+    info: 'druhDruzka.adresaTrvalehoPobytu.adresaSkutocnehoPobytu.mestoPsc.psc'
+  },
+  ZamestnaniePrijem: {
+    type: 'json_path',
+    info: 'druhDruzka.prijem.zamestnaniePrijem'
+  },
+  SamostatnaZarobkovaCinnostPrijem: {
+    type: 'json_path',
+    info: 'druhDruzka.prijem.samostatnaZarobkovaCinnostPrijem'
+  },
+  DochodokVyska: {
+    type: 'json_path',
+    info: 'druhDruzka.prijem.dochodokVyska'
+  },
+  VyzivneVyska: {
+    type: 'json_path',
+    info: 'druhDruzka.prijem.vyzivneVyska'
+  },
+  DavkaVNezamestnanostiVyska: {
+    type: 'json_path',
+    info: 'druhDruzka.prijem.davkaVNezamestnanostiVyska'
+  },
+  InePrijmyVyska: {
+    type: 'json_path',
+    info: 'druhDruzka.prijem.inePrijmyVyska'
+  },
+  FunkcnaPorucha: {
+    type: 'json_path',
+    info: 'druhDruzka.zdravotnyStav.funkcnaPoruchaWrapper.funkcnaPorucha'
+  },
+  MieraFunkcnejPoruchy: {
+    type: 'json_path',
+    info: 'druhDruzka.zdravotnyStav.funkcnaPoruchaWrapper.mieraFunkcnejPoruchy'
+  },
+  Diagnozy: {
+    type: 'json_path',
+    info: 'druhDruzka.zdravotnyStav.funkcnaPoruchaWrapper.diagnozy'
+  },
+  ExistujuceDiagnozy: {
+    type: 'json_path',
+    info: 'druhDruzka.zdravotnyStav.funkcnaPoruchaWrapper.existujuceDiagnozy'
+  },
+  StupenOdkazanosti: {
+    type: 'json_path',
+    info: 'druhDruzka.zdravotnyStav.odkazanostWrapper.stupenOdkazanosti'
+  },
+  BezbarierovyByt: {
+    type: 'json_path',
+    info: 'druhDruzka.zdravotnyStav.bezbarierovyBytWrapper.bezbarierovyByt'
+  },
+  Invalidita: {
+    type: 'json_path',
+    info: 'druhDruzka.zdravotnyStav.bezbarierovyBytWrapper.invalidita'
+  },
+  MieraPoklesu: {
+    type: 'json_path',
+    info: 'druhDruzka.zdravotnyStav.bezbarierovyBytWrapper.mieraPoklesu'
+  },
+  BytovaNudza: {
+    type: 'json_path',
+    info: 'druhDruzka.sucasneByvanie.bytovaNudza'
+  },
+  SucasneByvaniaRovnakaSituacia: {
+    type: 'json_path',
+    info: 'druhDruzka.sucasneByvanie.situaciaRovnakaAkoVasa'
+  },
+  TypSkutocnehoByvania: {
+    type: 'json_path',
+    info: 'druhDruzka.sucasneByvanie.typSkutocnehoByvania'
+  },
+  DlzkaBytovejNudze: {
+    type: 'json_path',
+    info: 'druhDruzka.sucasneByvanie.dlzkaBytovejNudze'
+  },
+  NakladyNaByvanie: {
+    type: 'json_path',
+    info: 'druhDruzka.sucasneByvanie.nakladyNaByvanie'
+  },
+  DovodNevyhovujucehoByvania: {
+    type: 'json_path',
+    info: 'druhDruzka.sucasneByvanie.dovodNevyhovujucehoByvania'
+  },
+  RizikoveFaktory: {
+    type: 'json_path',
+    info: 'druhDruzka.rizikoveFaktoryWrapper.rizikoveFaktory'
+  },
+  ZoznamRizikovychFaktorov: {
+    type: 'json_path',
+    info: 'druhDruzka.rizikoveFaktoryWrapper.zoznamRizikovychFaktorov'
+  },
+  Vek: {
+    type: 'json_path',
+    info: 'druhDruzka.rizikoveFaktoryWrapper.vek'
+  },
+}
+
+export const defaultColumnMapNajomneByvanieManzelManzelka = replacePrefixInInfo(defaultColumnMapNajomneByvanieDruhDruzka, 'druhDruzka', 'manzelManzelka')
+
+function replacePrefixInInfo(obj: Record<string, SharepointColumnMapValue>, prefix: string, newPrefix: string): Record<string, SharepointColumnMapValue> {
   const result: Record<string, SharepointColumnMapValue> = {};
 
   for (const key in obj) {

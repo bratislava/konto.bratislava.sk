@@ -8,7 +8,10 @@ import {
   FormDefinitionType,
 } from 'forms-shared/definitions/formDefinitionTypes'
 import { getFormDefinitionBySlug } from 'forms-shared/definitions/getFormDefinitionBySlug'
-import { SharepointColumnMapValue } from 'forms-shared/definitions/sharepoint'
+import {
+  SharepointColumnMapValue,
+  SharepointData,
+} from 'forms-shared/definitions/sharepointTypes'
 import { escape, filter, get as lodashGet, List } from 'lodash'
 
 import {
@@ -116,23 +119,78 @@ export default class SharepointSubservice {
 
     const accessToken = await this.getAccessToken()
     const { sharepointData } = formDefinition
-    const fields = await this.mapColumnsToFields(
-      Object.keys(sharepointData.columnMap),
+    const valuesForFields = await this.getValuesForFields(
+      sharepointData,
+      form,
+      formDefinition,
       accessToken,
-      sharepointData.databaseName,
     )
 
-    await this.postDataToSharepoint(
+    if (sharepointData.oneToOne) {
+      const fields = await this.mapColumnsToFields(
+        Object.values(sharepointData.oneToOne).map((record) => {
+          return record.originalTableId
+        }),
+        accessToken,
+        sharepointData.databaseName
+      )
+
+      await Promise.all(
+        Object.values(sharepointData.oneToOne).map(async (value) => {
+          const valuesForFieldsOneToOne = await this.getValuesForFields(
+            value,
+            form,
+            formDefinition,
+            accessToken,
+          )
+
+          const addedId = await this.postDataToSharepoint(
+            sharepointData.databaseName,
+            sharepointData.tableName,
+            accessToken,
+            valuesForFieldsOneToOne,
+          )
+
+          valuesForFields[fields[value.originalTableId]] = addedId
+        }),
+      )
+    }
+
+    const baseId = await this.postDataToSharepoint(
       sharepointData.databaseName,
       sharepointData.tableName,
       accessToken,
-      this.getValuesForFields(
-        fields,
-        sharepointData.columnMap,
-        form,
-        formDefinition,
-      ),
+      valuesForFields,
     )
+
+    if (sharepointData.oneToMany) {
+      // TODO this needs more logic... We need to loop through all on the key (path to the array) and perform the following.
+      await Promise.all(
+        Object.entries(sharepointData.oneToMany).map(async ([key, value]) => {
+          // TODO get the array at path `key`
+
+          // TODO loop through all records and perform the code under this comment for each of them.
+
+          const extraFields: Record<string, string> = {}
+          extraFields[value.originalTableId] = baseId
+
+          const valuesForFieldsOneToMany = await this.getValuesForFields(
+            value,
+            form,
+            formDefinition,
+            accessToken,
+            extraFields
+          )
+
+          await this.postDataToSharepoint(
+            sharepointData.databaseName,
+            sharepointData.tableName,
+            accessToken,
+            valuesForFieldsOneToMany,
+          )
+        }),
+      )
+    }
 
     await this.prismaService.forms.update({
       where: {
@@ -267,35 +325,48 @@ export default class SharepointSubservice {
     return result ?? ''
   }
 
-  private getValuesForFields(
-    fields: Record<string, string>,
-    paths: Record<string, SharepointColumnMapValue>,
+  private async getValuesForFields(
+    sharepointData: SharepointData,
     form: Forms,
     formDefinition: FormDefinition,
-  ): Record<string, string> {
+    accessToken: string,
+    extraFields?: Record<string, string>
+  ): Promise<Record<string, string>> {
+    const fields = await this.mapColumnsToFields(
+      Object.keys(sharepointData.columnMap).concat(extraFields ? Object.keys(extraFields) : []),
+      accessToken,
+      sharepointData.databaseName,
+    )
+
     const result: Record<string, string> = {}
     Object.keys(fields).forEach((key) => {
-      switch (paths[key].type) {
-        case 'json_path':
-          result[fields[key]] = this.getValueAtJsonPath(
-            form.formDataJson,
-            paths[key],
-          )
-          break
-
-        case 'mag_number':
-          result[fields[key]] = form.ginisDocumentId ?? ''
-          break
-
-        case 'title':
-          result[fields[key]] = this.getTitle(form, formDefinition)
-          break
-
-        default:
-          throw this.throwerErrorGuard.NotAcceptableException(
-            SharepointErrorsEnum.UNKNOWNN_TYPE_IN_SHAREPOINT_DATA,
-            `${SharepointErrorsResponseEnum.UNKNOWNN_TYPE_IN_SHAREPOINT_DATA}. Type: ${paths[key].type}`,
-          )
+      if (sharepointData.columnMap[key]) {
+        switch (sharepointData.columnMap[key].type) {
+          case 'json_path':
+            result[fields[key]] = this.getValueAtJsonPath(
+              form.formDataJson,
+              sharepointData.columnMap[key],
+            )
+            break
+  
+          case 'mag_number':
+            result[fields[key]] = form.ginisDocumentId ?? ''
+            break
+  
+          case 'title':
+            result[fields[key]] = this.getTitle(form, formDefinition)
+            break
+  
+          default:
+            throw this.throwerErrorGuard.NotAcceptableException(
+              SharepointErrorsEnum.UNKNOWNN_TYPE_IN_SHAREPOINT_DATA,
+              `${SharepointErrorsResponseEnum.UNKNOWNN_TYPE_IN_SHAREPOINT_DATA}. Type: ${sharepointData.columnMap[key].type}`,
+            )
+        }
+      } else if (extraFields) {
+        result[fields[key]] = extraFields[key]
+      } else {
+        // TODO throw some error
       }
     })
 
@@ -306,7 +377,7 @@ export default class SharepointSubservice {
     jsonFormData: Prisma.JsonValue,
     columnMapValue: SharepointColumnMapValue,
   ): string {
-    if (columnMapValue.info === undefined) {
+    if (columnMapValue.type !== 'json_path') {
       throw this.throwerErrorGuard.UnprocessableEntityException(
         SharepointErrorsEnum.SHAREPOINT_DATA_NOT_PROVIDED,
         `${SharepointErrorsResponseEnum.SHAREPOINT_DATA_NOT_PROVIDED} There must be an info field for json_path.`,

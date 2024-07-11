@@ -1,5 +1,5 @@
 import { Schemas } from '../generator/functions'
-import { SharepointData } from './sharepoint'
+import { SharepointData } from './sharepointTypes'
 
 export enum FormDefinitionType {
   SlovenskoSkGeneric = 'SlovenskoSkGeneric',

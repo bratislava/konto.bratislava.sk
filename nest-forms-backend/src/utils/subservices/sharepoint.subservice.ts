@@ -164,29 +164,31 @@ export default class SharepointSubservice {
     )
 
     if (sharepointData.oneToMany) {
-      // TODO this needs more logic... We need to loop through all on the key (path to the array) and perform the following.
       await Promise.all(
         Object.entries(sharepointData.oneToMany).map(async ([key, value]) => {
-          // TODO get the array at path `key`
+          const recordsArray = this.getArrayForOneToMany(form, key)
 
-          // TODO loop through all records and perform the code under this comment for each of them.
-
-          const extraFields: Record<string, string> = {}
-          extraFields[value.originalTableId] = baseId
-
-          const valuesForFieldsOneToMany = await this.getValuesForFields(
-            value,
-            form,
-            formDefinition,
-            accessToken,
-            extraFields
-          )
-
-          await this.postDataToSharepoint(
-            sharepointData.databaseName,
-            sharepointData.tableName,
-            accessToken,
-            valuesForFieldsOneToMany,
+          await Promise.all(
+            recordsArray.map(async (record) => {
+              const extraFields: Record<string, string> = {}
+              extraFields[value.originalTableId] = baseId
+    
+              const valuesForFieldsOneToMany = await this.getValuesForFields(
+                value,
+                form,
+                formDefinition,
+                accessToken,
+                record,
+                extraFields
+              )
+    
+              await this.postDataToSharepoint(
+                sharepointData.databaseName,
+                sharepointData.tableName,
+                accessToken,
+                valuesForFieldsOneToMany,
+              )
+            })
           )
         }),
       )
@@ -330,6 +332,7 @@ export default class SharepointSubservice {
     form: Forms,
     formDefinition: FormDefinition,
     accessToken: string,
+    jsonData?: Prisma.JsonValue,
     extraFields?: Record<string, string>
   ): Promise<Record<string, string>> {
     const fields = await this.mapColumnsToFields(
@@ -344,7 +347,7 @@ export default class SharepointSubservice {
         switch (sharepointData.columnMap[key].type) {
           case 'json_path':
             result[fields[key]] = this.getValueAtJsonPath(
-              form.formDataJson,
+              jsonData ?? form.formDataJson,
               sharepointData.columnMap[key],
             )
             break
@@ -366,7 +369,7 @@ export default class SharepointSubservice {
       } else if (extraFields) {
         result[fields[key]] = extraFields[key]
       } else {
-        // TODO throw some error
+        throw new Error(`Provided key ${key} not found in column map or extra keys. Slug: ${form.formDefinitionSlug}.`)
       }
     })
 
@@ -388,6 +391,17 @@ export default class SharepointSubservice {
       atPath = atPath ? 'áno' : 'nie'
     } else if (Array.isArray(atPath)) {
       atPath = (atPath as Array<object>).map((x) => x.toString()).join(', ')
+    }
+    return atPath
+  }
+
+  private getArrayForOneToMany(
+    form: Forms,
+    path: string
+  ): Array<Prisma.JsonValue> {
+    const atPath = lodashGet(form.formDataJson, path, null)
+    if (!Array.isArray(atPath)) {
+      throw new Error(`Getting array data for oneToMany in form ${form.id} on path ${path} did not return array. Instead got value: ${atPath}`)
     }
     return atPath
   }

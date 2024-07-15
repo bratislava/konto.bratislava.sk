@@ -62,10 +62,10 @@ export type FileStatus =
   | { type: FileStatusType.ScanDone }
   | { type: FileStatusType.ScanInfected }
 
-export class ClientFileInfo {
-  declare status: FileStatus
-  declare id: string
-  declare file: File
+export type ClientFileInfo = {
+  status: FileStatus
+  id: string
+  file: File
 }
 
 export type FileInfo = {

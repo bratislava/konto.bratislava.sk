@@ -84,7 +84,7 @@ exports[`komunitneZahrady matches snapshot 1`] = `
                 "type": "object",
               },
               "telefon": {
-                "format": "phone-number",
+                "format": "ba-phone-number",
                 "title": "Telefónne číslo",
                 "type": "string",
               },
@@ -1040,7 +1040,7 @@ exports[`predzahradky matches snapshot 1`] = `
                 "type": "object",
               },
               "telefon": {
-                "format": "phone-number",
+                "format": "ba-phone-number",
                 "title": "Telefónne číslo",
                 "type": "string",
               },
@@ -2025,7 +2025,7 @@ exports[`priznanieKDaniZNehnutelnosti matches snapshot 1`] = `
                           "type": "string",
                         },
                         "telefon": {
-                          "format": "phone-number",
+                          "format": "ba-phone-number",
                           "title": "Telefónne číslo",
                           "type": "string",
                         },
@@ -2703,7 +2703,7 @@ exports[`priznanieKDaniZNehnutelnosti matches snapshot 1`] = `
                           "type": "string",
                         },
                         "telefon": {
-                          "format": "phone-number",
+                          "format": "ba-phone-number",
                           "title": "Telefónne číslo",
                           "type": "string",
                         },
@@ -3411,7 +3411,7 @@ exports[`priznanieKDaniZNehnutelnosti matches snapshot 1`] = `
                 "type": "string",
               },
               "telefon": {
-                "format": "phone-number",
+                "format": "ba-phone-number",
                 "title": "Telefónne číslo",
                 "type": "string",
               },
@@ -7267,7 +7267,7 @@ exports[`priznanieKDaniZNehnutelnosti matches snapshot 1`] = `
                   "type": "boolean",
                 },
                 "telefon": {
-                  "format": "phone-number",
+                  "format": "ba-phone-number",
                   "title": "Telefónne číslo",
                   "type": "string",
                 },
@@ -18141,7 +18141,7 @@ exports[`stanoviskoKInvesticnemuZameru matches snapshot 1`] = `
                 "type": "string",
               },
               "telefon": {
-                "format": "phone-number",
+                "format": "ba-phone-number",
                 "title": "Telefónne číslo",
                 "type": "string",
               },
@@ -18414,7 +18414,7 @@ exports[`stanoviskoKInvesticnemuZameru matches snapshot 1`] = `
                       "type": "string",
                     },
                     "telefon": {
-                      "format": "phone-number",
+                      "format": "ba-phone-number",
                       "title": "Telefónne číslo",
                       "type": "string",
                     },
@@ -18500,7 +18500,7 @@ exports[`stanoviskoKInvesticnemuZameru matches snapshot 1`] = `
                 "type": "string",
               },
               "projektantTelefon": {
-                "format": "phone-number",
+                "format": "ba-phone-number",
                 "title": "Telefónne číslo",
                 "type": "string",
               },
@@ -19501,7 +19501,7 @@ exports[`zavazneStanoviskoKInvesticnejCinnosti matches snapshot 1`] = `
                 "type": "string",
               },
               "telefon": {
-                "format": "phone-number",
+                "format": "ba-phone-number",
                 "title": "Telefónne číslo",
                 "type": "string",
               },
@@ -19774,7 +19774,7 @@ exports[`zavazneStanoviskoKInvesticnejCinnosti matches snapshot 1`] = `
                       "type": "string",
                     },
                     "telefon": {
-                      "format": "phone-number",
+                      "format": "ba-phone-number",
                       "title": "Telefónne číslo",
                       "type": "string",
                     },
@@ -19860,7 +19860,7 @@ exports[`zavazneStanoviskoKInvesticnejCinnosti matches snapshot 1`] = `
                 "type": "string",
               },
               "projektantTelefon": {
-                "format": "phone-number",
+                "format": "ba-phone-number",
                 "title": "Telefónne číslo",
                 "type": "string",
               },

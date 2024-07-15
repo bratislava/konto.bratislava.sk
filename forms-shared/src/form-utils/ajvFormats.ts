@@ -16,6 +16,9 @@ function compareBaTime(s1: string, s2: string): number | undefined {
   return t1 - t2
 }
 
+// https://blog.kevinchisholm.com/javascript/javascript-e164-phone-number-validation/
+export const baPhoneNumberRegex = /^\+[1-9]\d{10,14}$/
+
 export const parseRatio = (value: string) => {
   const ratioRegex = /^(0|[1-9]\d*)\/([1-9]\d*)$/
   if (!ratioRegex.test(value)) {
@@ -39,8 +42,7 @@ export const validateBaFileUuid = (value: unknown): value is string => {
 
 export const baAjvFormats = {
   'ba-slovak-zip': /\b\d{5}\b/,
-  // https://blog.kevinchisholm.com/javascript/javascript-e164-phone-number-validation/
-  'phone-number': /^\+[1-9]\d{10,14}$/,
+  'ba-phone-number': baPhoneNumberRegex,
   'ba-time': {
     // https://stackoverflow.com/a/51177696
     validate: baTimeRegex,

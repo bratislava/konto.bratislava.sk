@@ -185,7 +185,7 @@ export const input = (
           return 'email'
         }
         if (options.type === 'tel') {
-          return 'phone-number'
+          return 'ba-phone-number'
         }
 
         // eslint-disable-next-line unicorn/no-useless-undefined

@@ -432,7 +432,7 @@ export const timePicker = (
     property,
     schema: () => ({
       type: 'string',
-      format: 'localTime',
+      format: 'ba-time',
       title: options.title,
       default: options.default,
     }),

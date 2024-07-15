@@ -1,11 +1,14 @@
 import { validate as validateUuid, version as uuidVersion } from 'uuid'
 
+// https://stackoverflow.com/a/51177696
+export const baTimeRegex = /^(\d|0\d|1\d|2[0-3]):[0-5]\d$/
+
 /**
  * Compares two time strings in format HH:MM.
  *
  * Copied from: https://github.com/ajv-validator/ajv-formats/blob/4dd65447575b35d0187c6b125383366969e6267e/src/formats.ts#L180C1-L186C2
  */
-function compareTime(s1: string, s2: string): number | undefined {
+function compareBaTime(s1: string, s2: string): number | undefined {
   if (!(s1 && s2)) return undefined
   const t1 = new Date(`2020-01-01T${s1}`).valueOf()
   const t2 = new Date(`2020-01-01T${s2}`).valueOf()
@@ -38,10 +41,10 @@ export const baAjvFormats = {
   zip: /\b\d{5}\b/,
   // https://blog.kevinchisholm.com/javascript/javascript-e164-phone-number-validation/
   'phone-number': /^\+[1-9]\d{10,14}$/,
-  localTime: {
+  'ba-time': {
     // https://stackoverflow.com/a/51177696
-    validate: /^(\d|0\d|1\d|2[0-3]):[0-5]\d$/,
-    compare: compareTime,
+    validate: baTimeRegex,
+    compare: compareBaTime,
   },
   ratio: {
     validate: (value: string) => parseRatio(value).isValid,

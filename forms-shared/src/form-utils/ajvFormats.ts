@@ -51,7 +51,7 @@ export const baAjvFormats = {
   'ba-ratio': {
     validate: (value: string) => parseRatio(value).isValid,
   },
-  ico: /^\d{6,8}$/,
+  'ba-ico': /^\d{6,8}$/,
   'ba-file-uuid': {
     validate: validateBaFileUuid,
   },

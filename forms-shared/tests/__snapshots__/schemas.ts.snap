@@ -2163,7 +2163,7 @@ exports[`priznanieKDaniZNehnutelnosti matches snapshot 1`] = `
                 "then": {
                   "properties": {
                     "ico": {
-                      "format": "ico",
+                      "format": "ba-ico",
                       "title": "IČO",
                       "type": "string",
                     },

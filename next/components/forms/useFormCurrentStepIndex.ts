@@ -2,13 +2,14 @@ import { createParser, useQueryState } from 'nuqs'
 import { useMemo, useRef } from 'react'
 import { useEffectOnce } from 'usehooks-ts'
 
+import { isDefined } from '../../frontend/utils/general'
 import { FormStepIndex, FormStepperStep } from './types/Steps'
 
 const getStepIndexByQueryParam = (
   steps: FormStepperStep[],
   queryParam: string | null | undefined,
 ) => {
-  if (queryParam == null) {
+  if (!isDefined(queryParam)) {
     return null
   }
 

@@ -48,7 +48,7 @@ export const baAjvFormats = {
     validate: baTimeRegex,
     compare: compareBaTime,
   },
-  ratio: {
+  'ba-ratio': {
     validate: (value: string) => parseRatio(value).isValid,
   },
   ico: /^\d{6,8}$/,

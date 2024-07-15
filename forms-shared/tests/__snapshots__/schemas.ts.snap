@@ -4064,12 +4064,12 @@ exports[`priznanieKDaniZNehnutelnosti matches snapshot 1`] = `
                                         "type": "object",
                                       },
                                       "podielPriestoruNaSpolocnychCastiachAZariadeniachDomu": {
-                                        "format": "ratio",
+                                        "format": "ba-ratio",
                                         "title": "Podiel priestoru na spoločných častiach a zariadeniach domu",
                                         "type": "string",
                                       },
                                       "spoluvlastnickyPodiel": {
-                                        "format": "ratio",
+                                        "format": "ba-ratio",
                                         "title": "Spoluvlastnícky podiel",
                                         "type": "string",
                                       },
@@ -4832,7 +4832,7 @@ exports[`priznanieKDaniZNehnutelnosti matches snapshot 1`] = `
                                   "type": "object",
                                 },
                                 "spoluvlastnickyPodiel": {
-                                  "format": "ratio",
+                                  "format": "ba-ratio",
                                   "title": "Spoluvlastnícky podiel",
                                   "type": "string",
                                 },
@@ -5493,12 +5493,12 @@ exports[`priznanieKDaniZNehnutelnosti matches snapshot 1`] = `
                                             ],
                                           },
                                           "podielPriestoruNaSpolocnychCastiachAZariadeniachDomu": {
-                                            "format": "ratio",
+                                            "format": "ba-ratio",
                                             "title": "Podiel priestoru na spoločných častiach a zariadeniach domu",
                                             "type": "string",
                                           },
                                           "spoluvlastnickyPodiel": {
-                                            "format": "ratio",
+                                            "format": "ba-ratio",
                                             "title": "Spoluvlastnícky podiel",
                                             "type": "string",
                                           },
@@ -5881,7 +5881,7 @@ exports[`priznanieKDaniZNehnutelnosti matches snapshot 1`] = `
                                             "if": {
                                               "properties": {
                                                 "podielPriestoruNaSpolocnychCastiachAZariadeniachDomu": {
-                                                  "format": "ratio",
+                                                  "format": "ba-ratio",
                                                   "pattern": "^\\d+\\/([1-9]0{3,})$",
                                                   "type": "string",
                                                 },
@@ -5986,7 +5986,7 @@ exports[`priznanieKDaniZNehnutelnosti matches snapshot 1`] = `
                                                   "if": {
                                                     "properties": {
                                                       "podielPriestoruNaSpolocnychCastiachAZariadeniachDomu": {
-                                                        "format": "ratio",
+                                                        "format": "ba-ratio",
                                                         "pattern": "^\\d+\\/([1-9]0{3,})$",
                                                         "type": "string",
                                                       },
@@ -6322,7 +6322,7 @@ exports[`priznanieKDaniZNehnutelnosti matches snapshot 1`] = `
                                             "if": {
                                               "properties": {
                                                 "podielPriestoruNaSpolocnychCastiachAZariadeniachDomu": {
-                                                  "format": "ratio",
+                                                  "format": "ba-ratio",
                                                   "pattern": "^\\d+\\/([1-9]0{3,})$",
                                                   "type": "string",
                                                 },
@@ -6374,7 +6374,7 @@ exports[`priznanieKDaniZNehnutelnosti matches snapshot 1`] = `
                                             "type": "object",
                                           },
                                           "podielPriestoruNaSpolocnychCastiachAZariadeniachDomu": {
-                                            "format": "ratio",
+                                            "format": "ba-ratio",
                                             "title": "Podiel priestoru na spoločných častiach a zariadeniach domu",
                                             "type": "string",
                                           },
@@ -6383,7 +6383,7 @@ exports[`priznanieKDaniZNehnutelnosti matches snapshot 1`] = `
                                             "type": "string",
                                           },
                                           "spoluvlastnickyPodiel": {
-                                            "format": "ratio",
+                                            "format": "ba-ratio",
                                             "title": "Spoluvlastnícky podiel",
                                             "type": "string",
                                           },
@@ -6446,7 +6446,7 @@ exports[`priznanieKDaniZNehnutelnosti matches snapshot 1`] = `
                                                   "if": {
                                                     "properties": {
                                                       "podielPriestoruNaSpolocnychCastiachAZariadeniachDomu": {
-                                                        "format": "ratio",
+                                                        "format": "ba-ratio",
                                                         "pattern": "^\\d+\\/([1-9]0{3,})$",
                                                         "type": "string",
                                                       },
@@ -6494,7 +6494,7 @@ exports[`priznanieKDaniZNehnutelnosti matches snapshot 1`] = `
                                                   "type": "object",
                                                 },
                                                 "podielPriestoruNaSpolocnychCastiachAZariadeniachDomu": {
-                                                  "format": "ratio",
+                                                  "format": "ba-ratio",
                                                   "title": "Podiel priestoru na spoločných častiach a zariadeniach domu",
                                                   "type": "string",
                                                 },
@@ -6516,7 +6516,7 @@ exports[`priznanieKDaniZNehnutelnosti matches snapshot 1`] = `
                                                   "type": "object",
                                                 },
                                                 "spoluvlastnickyPodiel": {
-                                                  "format": "ratio",
+                                                  "format": "ba-ratio",
                                                   "title": "Spoluvlastnícky podiel",
                                                   "type": "string",
                                                 },

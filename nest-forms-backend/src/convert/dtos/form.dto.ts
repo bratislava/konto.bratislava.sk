@@ -90,5 +90,6 @@ export class ConvertToPdfRequestDto {
       'Used only in the FE requests to display files not yet uploaded to the server.',
   })
   @IsOptional()
+  @IsObject({ each: true })
   clientFiles?: ClientFileInfo[]
 }

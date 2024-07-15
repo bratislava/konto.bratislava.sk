@@ -140,7 +140,7 @@ export const serviceCards: ServiceCardBase[] = [
       MunicipalServicesCategories.CULTURE_CATEGORY,
       MunicipalServicesCategories.JOIN_CATEGORY,
     ],
-    href: 'https://konto.bratislava.sk/mestske-sluzby/komunitne-zahrady',
+    href: ROUTES.MUNICIPAL_SERVICES_FORM('komunitne-zahrady'),
   },
   {
     id: 10,
@@ -232,7 +232,7 @@ export const serviceCards: ServiceCardBase[] = [
     tag: 'account_section_services.cards.19.tag',
     tagStyle: 'text-environment-700 bg-environment-100',
     category: [MunicipalServicesCategories.GREEN_CATEGORY],
-    href: 'https://konto.bratislava.sk/mestske-sluzby/predzahradky',
+    href: ROUTES.MUNICIPAL_SERVICES_FORM('predzahradky'),
   },
   {
     id: 20,
@@ -368,7 +368,7 @@ export const serviceCards: ServiceCardBase[] = [
     buttonText: 'account_section_services.cards.34.buttonText',
     icon: <SpatialPlanningIcon className="size-10 text-environment-700 lg:size-12" />,
     category: [MunicipalServicesCategories.CONSTRUCTION_CATEGORY],
-    href: ROUTES.MUNICIPAL_SERVICES_INVESTING,
+    href: ROUTES.MUNICIPAL_SERVICES_FORM('zavazne-stanovisko-k-investicnej-cinnosti'),
   },
   {
     id: 35,
@@ -377,7 +377,7 @@ export const serviceCards: ServiceCardBase[] = [
     buttonText: 'account_section_services.cards.35.buttonText',
     icon: <SpatialPlanningIcon className="size-10 text-environment-700 lg:size-12" />,
     category: [MunicipalServicesCategories.CONSTRUCTION_CATEGORY],
-    href: ROUTES.MUNICIPAL_SERVICES_INVESTING_INTENT,
+    href: ROUTES.MUNICIPAL_SERVICES_FORM('stanovisko-k-investicnemu-zameru'),
   },
   {
     id: 36,
@@ -451,7 +451,7 @@ export const serviceCards: ServiceCardBase[] = [
     tag: 'account_section_services.cards.43.tag',
     tagStyle: 'text-main-700 bg-main-100',
     category: [MunicipalServicesCategories.TAXES_CATEGORY],
-    href: ROUTES.MUNICIPAL_SERVICES_TAX,
+    href: ROUTES.MUNICIPAL_SERVICES_FORM('priznanie-k-dani-z-nehnutelnosti'),
   },
 ]
 

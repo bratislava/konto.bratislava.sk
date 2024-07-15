@@ -382,6 +382,7 @@ export const fileUpload = (
           type: 'array',
           items: {
             type: 'string',
+            format: 'ba-file-uuid',
             file: true,
           },
           minItems: options.required ? 1 : undefined,
@@ -392,6 +393,7 @@ export const fileUpload = (
       return {
         ...base,
         type: 'string',
+        format: 'ba-file-uuid',
         file: true,
       }
     },

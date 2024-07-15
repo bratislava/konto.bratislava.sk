@@ -380,21 +380,25 @@ exports[`komunitneZahrady matches snapshot 1`] = `
               "properties": {
                 "dizajn": {
                   "file": true,
+                  "format": "ba-file-uuid",
                   "title": "Dizajn/projekt záhrady",
                   "type": "string",
                 },
                 "fotografie": {
                   "file": true,
+                  "format": "ba-file-uuid",
                   "title": "Fotografie miesta, na ktorom si chcete vytvoriť komunitnú záhradu",
                   "type": "string",
                 },
                 "ine": {
                   "file": true,
+                  "format": "ba-file-uuid",
                   "title": "Iné",
                   "type": "string",
                 },
                 "umiestnenie": {
                   "file": true,
+                  "format": "ba-file-uuid",
                   "title": "Presné umiestnenie záhrady na pozemku",
                   "type": "string",
                 },
@@ -441,21 +445,25 @@ exports[`komunitneZahrady matches snapshot 1`] = `
               "properties": {
                 "dizajn": {
                   "file": true,
+                  "format": "ba-file-uuid",
                   "title": "Dizajn/projekt záhrady",
                   "type": "string",
                 },
                 "fotografie": {
                   "file": true,
+                  "format": "ba-file-uuid",
                   "title": "Fotografie miesta, na ktorom si chcete vytvoriť komunitnú záhradu",
                   "type": "string",
                 },
                 "ine": {
                   "file": true,
+                  "format": "ba-file-uuid",
                   "title": "Iné",
                   "type": "string",
                 },
                 "umiestnenie": {
                   "file": true,
+                  "format": "ba-file-uuid",
                   "title": "Presné umiestnenie záhrady na pozemku",
                   "type": "string",
                 },
@@ -1186,21 +1194,25 @@ exports[`predzahradky matches snapshot 1`] = `
             "properties": {
               "fotografie": {
                 "file": true,
+                "format": "ba-file-uuid",
                 "title": "Fotografie predzáhradky alebo miesta, na ktorom si chcete vytvoriť predzáhradku",
                 "type": "string",
               },
               "inePrilohy": {
                 "file": true,
+                "format": "ba-file-uuid",
                 "title": "Iné",
                 "type": "string",
               },
               "mapa": {
                 "file": true,
+                "format": "ba-file-uuid",
                 "title": "Snímka z mapy so zakreslením miesta predzáhradky",
                 "type": "string",
               },
               "projekt": {
                 "file": true,
+                "format": "ba-file-uuid",
                 "title": "Projekt predzáhradky",
                 "type": "string",
               },
@@ -1746,6 +1758,7 @@ exports[`priznanieKDaniZNehnutelnosti matches snapshot 1`] = `
                           "default": [],
                           "items": {
                             "file": true,
+                            "format": "ba-file-uuid",
                             "type": "string",
                           },
                           "title": "Nahrajte splnomocnenie",
@@ -3531,6 +3544,7 @@ exports[`priznanieKDaniZNehnutelnosti matches snapshot 1`] = `
                                         "default": [],
                                         "items": {
                                           "file": true,
+                                          "format": "ba-file-uuid",
                                           "type": "string",
                                         },
                                         "title": "Nahrajte sken dohody o určení zástupcu na podanie priznania k dani z nehnuteľností",
@@ -3610,6 +3624,7 @@ exports[`priznanieKDaniZNehnutelnosti matches snapshot 1`] = `
                                               "default": [],
                                               "items": {
                                                 "file": true,
+                                                "format": "ba-file-uuid",
                                                 "type": "string",
                                               },
                                               "title": "Nahrajte znalecký posudok",
@@ -3869,6 +3884,7 @@ exports[`priznanieKDaniZNehnutelnosti matches snapshot 1`] = `
                                         "default": [],
                                         "items": {
                                           "file": true,
+                                          "format": "ba-file-uuid",
                                           "type": "string",
                                         },
                                         "title": "Nahrajte sken dohody o určení zástupcu na podanie priznania k dani z nehnuteľností",
@@ -3948,6 +3964,7 @@ exports[`priznanieKDaniZNehnutelnosti matches snapshot 1`] = `
                                               "default": [],
                                               "items": {
                                                 "file": true,
+                                                "format": "ba-file-uuid",
                                                 "type": "string",
                                               },
                                               "title": "Nahrajte znalecký posudok",
@@ -4289,6 +4306,7 @@ exports[`priznanieKDaniZNehnutelnosti matches snapshot 1`] = `
                                         "default": [],
                                         "items": {
                                           "file": true,
+                                          "format": "ba-file-uuid",
                                           "type": "string",
                                         },
                                         "title": "Nahrajte sken dohody o určení zástupcu na podanie priznania k dani z nehnuteľností",
@@ -4613,6 +4631,7 @@ exports[`priznanieKDaniZNehnutelnosti matches snapshot 1`] = `
                                         "default": [],
                                         "items": {
                                           "file": true,
+                                          "format": "ba-file-uuid",
                                           "type": "string",
                                         },
                                         "title": "Nahrajte sken dohody o určení zástupcu na podanie priznania k dani z nehnuteľností",
@@ -5014,6 +5033,7 @@ exports[`priznanieKDaniZNehnutelnosti matches snapshot 1`] = `
                                         "default": [],
                                         "items": {
                                           "file": true,
+                                          "format": "ba-file-uuid",
                                           "type": "string",
                                         },
                                         "title": "Nahrajte sken dohody o určení zástupcu na podanie priznania k dani z nehnuteľností",
@@ -5378,6 +5398,7 @@ exports[`priznanieKDaniZNehnutelnosti matches snapshot 1`] = `
                                         "default": [],
                                         "items": {
                                           "file": true,
+                                          "format": "ba-file-uuid",
                                           "type": "string",
                                         },
                                         "title": "Nahrajte sken dohody o určení zástupcu na podanie priznania k dani z nehnuteľností",
@@ -5804,6 +5825,7 @@ exports[`priznanieKDaniZNehnutelnosti matches snapshot 1`] = `
                                         "default": [],
                                         "items": {
                                           "file": true,
+                                          "format": "ba-file-uuid",
                                           "type": "string",
                                         },
                                         "title": "Nahrajte sken dohody o určení zástupcu na podanie priznania k dani z nehnuteľností",
@@ -6244,6 +6266,7 @@ exports[`priznanieKDaniZNehnutelnosti matches snapshot 1`] = `
                                         "default": [],
                                         "items": {
                                           "file": true,
+                                          "format": "ba-file-uuid",
                                           "type": "string",
                                         },
                                         "title": "Nahrajte sken dohody o určení zástupcu na podanie priznania k dani z nehnuteľností",
@@ -18386,6 +18409,7 @@ exports[`stanoviskoKInvesticnemuZameru matches snapshot 1`] = `
                     },
                     "splnomocnenie": {
                       "file": true,
+                      "format": "ba-file-uuid",
                       "title": "Splnomocnenie na zastupovanie",
                       "type": "string",
                     },
@@ -18605,6 +18629,7 @@ exports[`stanoviskoKInvesticnemuZameru matches snapshot 1`] = `
                 "default": [],
                 "items": {
                   "file": true,
+                  "format": "ba-file-uuid",
                   "type": "string",
                 },
                 "minItems": 1,
@@ -19744,6 +19769,7 @@ exports[`zavazneStanoviskoKInvesticnejCinnosti matches snapshot 1`] = `
                     },
                     "splnomocnenie": {
                       "file": true,
+                      "format": "ba-file-uuid",
                       "title": "Splnomocnenie na zastupovanie",
                       "type": "string",
                     },
@@ -20013,6 +20039,7 @@ exports[`zavazneStanoviskoKInvesticnejCinnosti matches snapshot 1`] = `
                       "default": [],
                       "items": {
                         "file": true,
+                        "format": "ba-file-uuid",
                         "type": "string",
                       },
                       "minItems": 1,
@@ -20023,6 +20050,7 @@ exports[`zavazneStanoviskoKInvesticnejCinnosti matches snapshot 1`] = `
                       "default": [],
                       "items": {
                         "file": true,
+                        "format": "ba-file-uuid",
                         "type": "string",
                       },
                       "minItems": 1,
@@ -20087,6 +20115,7 @@ exports[`zavazneStanoviskoKInvesticnejCinnosti matches snapshot 1`] = `
                 "default": [],
                 "items": {
                   "file": true,
+                  "format": "ba-file-uuid",
                   "type": "string",
                 },
                 "minItems": 1,

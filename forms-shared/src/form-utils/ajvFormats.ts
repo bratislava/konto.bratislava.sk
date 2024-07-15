@@ -1,3 +1,5 @@
+import { validate as validateUuid, version as uuidVersion } from 'uuid'
+
 /**
  * Compares two time strings in format HH:MM.
  *
@@ -28,6 +30,10 @@ export const parseRatio = (value: string) => {
   return { isValid: true, numerator, denominator }
 }
 
+export const validateBaFileUuid = (value: unknown): value is string => {
+  return typeof value === 'string' && validateUuid(value) && uuidVersion(value) === 4
+}
+
 export const baAjvFormats = {
   zip: /\b\d{5}\b/,
   // https://blog.kevinchisholm.com/javascript/javascript-e164-phone-number-validation/
@@ -41,4 +47,7 @@ export const baAjvFormats = {
     validate: (value: string) => parseRatio(value).isValid,
   },
   ico: /^\d{6,8}$/,
+  'ba-file-uuid': {
+    validate: validateBaFileUuid,
+  },
 }

@@ -14,6 +14,12 @@ jobs:
     secrets:
       registry-pass: ${{ secrets.HARBOR_REGISTRY_PASSWORD }}
 
+  test-forms-shared:
+    name: Run tests on forms-shared
+    uses: bratislava/konto.bratislava.sk/.github/workflows/validate-forms-shared-konto.yml@beta
+    with:
+      directory: forms-shared/
+
   conditions:
     name: Check for conditions
     needs: build-forms-shared

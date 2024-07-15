@@ -1,0 +1,42 @@
+name: Validate forms-shared
+on:
+  workflow_call:
+    inputs:
+      directory:
+        description: "Base dir where whole app is located."
+        type: string
+        required: false
+        default: './forms-shared'
+      node:
+        description: "Define node version"
+        type: string
+        required: false
+        default: '20'
+
+jobs:
+  test:
+    name: Forms-shared tests
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Pipelines Version
+        run: |
+          echo "Pipelines version: 2.3.0"  
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ inputs.node }}
+
+      # build forms-shared first
+      - name: Build forms-shared
+        working-directory: ${{ inputs.directory }}
+        run: |
+          npm ci
+          npm run build
+
+      - name: Run unit tests
+        working-directory: ${{ inputs.directory }}
+        run: npm run test

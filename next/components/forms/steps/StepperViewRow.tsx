@@ -5,6 +5,7 @@ import React from 'react'
 import { twMerge } from 'tailwind-merge'
 
 import { FormStepperStep } from '../types/Steps'
+import { useFormState } from '../useFormState'
 
 interface StepperViewRowProps {
   step: FormStepperStep
@@ -13,9 +14,18 @@ interface StepperViewRowProps {
 }
 
 const StepperViewRow = ({ step, isCurrent, className }: StepperViewRowProps) => {
+  const { submittedStepsIndexes } = useFormState()
   const { t } = useTranslation('forms')
 
-  const { title, stepperTitle, isSubmitted, displayIndex } = step
+  const isSubmitted = step.index === 'summary' ? false : submittedStepsIndexes.has(step.index)
+  const getTitle = () => {
+    if (step.index === 'summary') {
+      return t('summary.title')
+    }
+
+    return step.stepperTitle ?? step.title
+  }
+
   const iconClassName = cx(
     'flex h-8 w-8 min-w-8 shrink-0 flex-row items-center justify-center rounded-full border-2',
     {
@@ -27,14 +37,18 @@ const StepperViewRow = ({ step, isCurrent, className }: StepperViewRowProps) => 
   return (
     <div className={twMerge('flex flex-row items-center gap-3', className)}>
       <div className={iconClassName} data-cy={isCurrent ? 'stepper-step-active' : null}>
-        {isCurrent || !isSubmitted ? displayIndex : <CheckIcon fill="white" className="size-6" />}
+        {isCurrent || !isSubmitted ? (
+          step.displayIndex
+        ) : (
+          <CheckIcon fill="white" className="size-6" />
+        )}
       </div>
       <span className="text-p3-medium text-left">
         {isCurrent ? <span className="sr-only">{t('steps.current_sr')}</span> : null}
         {isSubmitted && !isCurrent ? (
           <span className="sr-only">{t('steps.submitted_sr')}</span>
         ) : null}
-        {stepperTitle ?? title}
+        {getTitle()}
       </span>
     </div>
   )

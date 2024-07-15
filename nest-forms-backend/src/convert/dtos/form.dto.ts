@@ -1,14 +1,12 @@
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger'
 import { Prisma } from '@prisma/client'
 import { RJSFSchema } from '@rjsf/utils'
-import { Type } from 'class-transformer'
 import {
   IsNotEmpty,
   IsObject,
   IsOptional,
   IsString,
   IsUUID,
-  ValidateNested,
 } from 'class-validator'
 import { ClientFileInfo } from 'forms-shared/form-files/fileStatus'
 
@@ -92,7 +90,6 @@ export class ConvertToPdfRequestDto {
       'Used only in the FE requests to display files not yet uploaded to the server.',
   })
   @IsOptional()
-  @ValidateNested({ each: true })
-  @Type(() => ClientFileInfo)
+  @IsObject({ each: true })
   clientFiles?: ClientFileInfo[]
 }

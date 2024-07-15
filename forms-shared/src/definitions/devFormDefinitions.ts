@@ -27,7 +27,7 @@ export const devFormDefinitions: FormDefinition[] = [
       oneToMany: {
         'deti.zoznamDeti': {
           databaseName: 'dtb_NajomneByvanieDieta',
-          originalTableId: 'ZiadatelID',
+          originalTableId: 'Ziadatel',
           columnMap: defaultColumnMapNajomneByvanieDieta,
         }
       },

@@ -39,7 +39,7 @@ exports[`komunitneZahrady matches snapshot 1`] = `
                         "type": "string",
                       },
                       "psc": {
-                        "format": "zip",
+                        "format": "ba-slovak-zip",
                         "title": "PSČ",
                         "type": "string",
                       },
@@ -117,7 +117,7 @@ exports[`komunitneZahrady matches snapshot 1`] = `
                         "type": "string",
                       },
                       "psc": {
-                        "format": "zip",
+                        "format": "ba-slovak-zip",
                         "title": "PSČ",
                         "type": "string",
                       },
@@ -995,7 +995,7 @@ exports[`predzahradky matches snapshot 1`] = `
                         "type": "string",
                       },
                       "psc": {
-                        "format": "zip",
+                        "format": "ba-slovak-zip",
                         "title": "PSČ",
                         "type": "string",
                       },
@@ -17965,7 +17965,7 @@ exports[`stanoviskoKInvesticnemuZameru matches snapshot 1`] = `
                               "type": "string",
                             },
                             "psc": {
-                              "format": "zip",
+                              "format": "ba-slovak-zip",
                               "title": "PSČ",
                               "type": "string",
                             },
@@ -18022,7 +18022,7 @@ exports[`stanoviskoKInvesticnemuZameru matches snapshot 1`] = `
                               "type": "string",
                             },
                             "psc": {
-                              "format": "zip",
+                              "format": "ba-slovak-zip",
                               "title": "PSČ",
                               "type": "string",
                             },
@@ -18074,7 +18074,7 @@ exports[`stanoviskoKInvesticnemuZameru matches snapshot 1`] = `
                               "type": "string",
                             },
                             "psc": {
-                              "format": "zip",
+                              "format": "ba-slovak-zip",
                               "title": "PSČ",
                               "type": "string",
                             },
@@ -18232,7 +18232,7 @@ exports[`stanoviskoKInvesticnemuZameru matches snapshot 1`] = `
                                     "type": "string",
                                   },
                                   "psc": {
-                                    "format": "zip",
+                                    "format": "ba-slovak-zip",
                                     "title": "PSČ",
                                     "type": "string",
                                   },
@@ -18289,7 +18289,7 @@ exports[`stanoviskoKInvesticnemuZameru matches snapshot 1`] = `
                                     "type": "string",
                                   },
                                   "psc": {
-                                    "format": "zip",
+                                    "format": "ba-slovak-zip",
                                     "title": "PSČ",
                                     "type": "string",
                                   },
@@ -18341,7 +18341,7 @@ exports[`stanoviskoKInvesticnemuZameru matches snapshot 1`] = `
                                     "type": "string",
                                   },
                                   "psc": {
-                                    "format": "zip",
+                                    "format": "ba-slovak-zip",
                                     "title": "PSČ",
                                     "type": "string",
                                   },
@@ -19325,7 +19325,7 @@ exports[`zavazneStanoviskoKInvesticnejCinnosti matches snapshot 1`] = `
                               "type": "string",
                             },
                             "psc": {
-                              "format": "zip",
+                              "format": "ba-slovak-zip",
                               "title": "PSČ",
                               "type": "string",
                             },
@@ -19382,7 +19382,7 @@ exports[`zavazneStanoviskoKInvesticnejCinnosti matches snapshot 1`] = `
                               "type": "string",
                             },
                             "psc": {
-                              "format": "zip",
+                              "format": "ba-slovak-zip",
                               "title": "PSČ",
                               "type": "string",
                             },
@@ -19434,7 +19434,7 @@ exports[`zavazneStanoviskoKInvesticnejCinnosti matches snapshot 1`] = `
                               "type": "string",
                             },
                             "psc": {
-                              "format": "zip",
+                              "format": "ba-slovak-zip",
                               "title": "PSČ",
                               "type": "string",
                             },
@@ -19592,7 +19592,7 @@ exports[`zavazneStanoviskoKInvesticnejCinnosti matches snapshot 1`] = `
                                     "type": "string",
                                   },
                                   "psc": {
-                                    "format": "zip",
+                                    "format": "ba-slovak-zip",
                                     "title": "PSČ",
                                     "type": "string",
                                   },
@@ -19649,7 +19649,7 @@ exports[`zavazneStanoviskoKInvesticnejCinnosti matches snapshot 1`] = `
                                     "type": "string",
                                   },
                                   "psc": {
-                                    "format": "zip",
+                                    "format": "ba-slovak-zip",
                                     "title": "PSČ",
                                     "type": "string",
                                   },
@@ -19701,7 +19701,7 @@ exports[`zavazneStanoviskoKInvesticnejCinnosti matches snapshot 1`] = `
                                     "type": "string",
                                   },
                                   "psc": {
-                                    "format": "zip",
+                                    "format": "ba-slovak-zip",
                                     "title": "PSČ",
                                     "type": "string",
                                   },

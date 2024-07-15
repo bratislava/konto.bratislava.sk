@@ -158,7 +158,7 @@ export const input = (
       | {
           type?: 'text'
           // TODO: Add more formats
-          format?: 'zip' | 'ratio' | 'ico'
+          format?: 'ba-slovak-zip' | 'ratio' | 'ico'
           pattern?: RegExp
         }
       | {

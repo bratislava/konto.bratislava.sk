@@ -38,7 +38,7 @@ export const validateBaFileUuid = (value: unknown): value is string => {
 }
 
 export const baAjvFormats = {
-  zip: /\b\d{5}\b/,
+  'ba-slovak-zip': /\b\d{5}\b/,
   // https://blog.kevinchisholm.com/javascript/javascript-e164-phone-number-validation/
   'phone-number': /^\+[1-9]\d{10,14}$/,
   'ba-time': {

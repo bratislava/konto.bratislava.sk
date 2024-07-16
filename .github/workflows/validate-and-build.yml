@@ -12,6 +12,7 @@ jobs:
 
   build-forms-shared:
     name: Build image of forms-shared and push it to harbor
+    needs: test-forms-shared
     uses: bratislava/github-actions/.github/workflows/build-with-bratiska-cli.yml@stable
     with:
       directory: forms-shared/

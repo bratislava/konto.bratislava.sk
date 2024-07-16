@@ -26,7 +26,12 @@ jobs:
 
       - name: Pipelines Version
         run: |
-          echo "Pipelines version: 2.3.0"  
+          echo "Pipelines version: 2.3.0"
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ inputs.node }}
 
       - name: Install dependencies
         run: |

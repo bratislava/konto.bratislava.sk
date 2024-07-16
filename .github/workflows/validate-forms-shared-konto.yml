@@ -30,6 +30,11 @@ jobs:
         with:
           node-version: ${{ inputs.node }}
 
+      - name: Instal dependencies
+        working-directory: ${{ inputs.directory }}
+        run: |
+          sudo apt-get install build-essential libcairo2-dev libpango1.0-dev libjpeg-dev libgif-dev librsvg2-dev
+
       # build forms-shared first
       - name: Build forms-shared
         working-directory: ${{ inputs.directory }}

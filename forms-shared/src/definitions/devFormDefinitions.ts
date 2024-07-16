@@ -1,6 +1,6 @@
 import { FormDefinition, FormDefinitionType } from './formDefinitionTypes'
 import { generalTermsAndConditions } from './termsAndConditions'
-import ziadostNajomne from '../schemas/ziadostOPridelenieNajomnehoBytu'
+import ziadostOPridelenieNajomnehoBytu from '../schemas/ziadostOPridelenieNajomnehoBytu'
 
 export const devFormDefinitions: FormDefinition[] = [
   {
@@ -8,7 +8,7 @@ export const devFormDefinitions: FormDefinition[] = [
     slovenskoSkUrl: '',
     slug: 'ziadost-o-pridelenie-najomneho-bytu',
     title: 'Žiadosť o pridelenie nájomného bytu',
-    schemas: ziadostNajomne,
+    schemas: ziadostOPridelenieNajomnehoBytu,
     pospID: '',
     pospVersion: '',
     gestor: 'Martin Pinter',

@@ -17,8 +17,6 @@ import { createCondition } from '../generator/helpers'
 export default schema(
   {
     title: 'Showcase Schema',
-    pospID: 'showcase.schema',
-    pospVersion: '0.1',
   },
   {
     moreInformationUrl: 'https://example.com',

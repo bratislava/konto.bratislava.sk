@@ -19,6 +19,7 @@ import {
   RadioGroupUiOptions,
   SchemaUiOptions,
   SelectUiOptions,
+  StepUiOptions,
   TextAreaUiOptions,
   TimePickerUiOptions,
 } from './uiOptionsTypes'
@@ -591,14 +592,19 @@ export const step = (
         [property]: {
           title: options.title,
           description: options.description,
-          stepperTitle: options.stepperTitle,
-          hash: getHash(),
           ...schema(),
         },
       },
       required: [property],
     }),
-    uiSchema,
+    uiSchema: () => ({
+      ...uiSchema(),
+      'ui:options': {
+        ...uiSchema()['ui:options'],
+        stepperTitle: options.stepperTitle,
+        stepQueryParam: getHash(),
+      } satisfies StepUiOptions,
+    }),
   }
 }
 
@@ -662,8 +668,6 @@ export const conditionalFields = (
 
 export const schema = (
   options: {
-    pospID: string
-    pospVersion: string
     title: string
     description?: string
   },

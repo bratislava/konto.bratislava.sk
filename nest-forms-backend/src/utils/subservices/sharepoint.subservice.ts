@@ -320,15 +320,17 @@ export default class SharepointSubservice {
   }
 
   /**
-   * TODO
+   * Maps columns to their respective fields in SharePoint and fills them with data.
+   * It first creates a mapping from the displayed name of the column in SharePoint to the API name,
+   * then finds and parses the data to be filled.
    * 
-   * @param sharepointData 
-   * @param form 
-   * @param formDefinition 
-   * @param accessToken 
-   * @param jsonData 
-   * @param foreignFields 
-   * @returns 
+   * @param {SharepointData} sharepointData - Object containing needed information to fill in the SharePoint table.
+   * @param {Forms} form - Form object containing the form data.
+   * @param {FormDefinition} formDefinition - Definition of the form structure.
+   * @param {string} accessToken - Access token received from SharePoint OAuth.
+   * @param {Prisma.JsonValue} [jsonData] - Optional JSON data to use for filling the fields.
+   * @param {Record<string, string>} [foreignFields] - Optional record of foreign fields columns with their values (like oneToOne relation with id of the record as the value).
+   * @returns {Promise<Record<string, any>>} - A promise that resolves to an object mapping API fields to their respective values.
    */
   private async getValuesForFields(
     sharepointData: SharepointData,

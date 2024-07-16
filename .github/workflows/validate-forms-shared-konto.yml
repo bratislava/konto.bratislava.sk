@@ -16,7 +16,10 @@ on:
 jobs:
   test:
     name: Forms-shared tests
-    runs-on: linux
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: ${{ inputs.directory }}
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
@@ -25,13 +28,7 @@ jobs:
         run: |
           echo "Pipelines version: 2.3.0"  
 
-      - name: Set up Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version: ${{ inputs.node }}
-
-      - name: Instal dependencies
-        working-directory: ${{ inputs.directory }}
+      - name: Install dependencies
         run: |
           sudo apt-get install build-essential libcairo2-dev libpango1.0-dev libjpeg-dev libgif-dev librsvg2-dev
           npx playwright install-deps chromium
@@ -39,11 +36,21 @@ jobs:
 
       # build forms-shared first
       - name: Build forms-shared
-        working-directory: ${{ inputs.directory }}
         run: |
           npm ci
           npm run build
 
+      - name: Create assets
+        run: |
+          npm run generate-assets
+
+      - name: Upload artifacts
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: generated-assets
+          path: /src/generated-assets
+          retention-days: 1
+
       - name: Run unit tests
-        working-directory: ${{ inputs.directory }}
         run: npm run test

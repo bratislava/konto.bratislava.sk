@@ -7,7 +7,7 @@ RUN npx playwright install-deps chromium
 # build
 FROM base AS build
 WORKDIR /root/forms-shared
-COPY --from=shared . ./
+COPY --from=shared /app ./
 
 RUN apt-get update && apt-get install git
 

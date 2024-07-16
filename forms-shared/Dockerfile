@@ -1,4 +1,7 @@
 FROM node:20.9-slim AS base
+
+WORKDIR /app
+
 # Install dependencies needed for "pdf-to-img" which uses "node-canvas"
 RUN apt-get update && apt-get install -y \
     build-essential \
@@ -11,12 +14,14 @@ RUN apt-get update && apt-get install -y \
 
 COPY package.json package-lock.json ./
 RUN npm ci --include=dev --frozen-lockfile
-COPY . ./
 
 FROM base as prod
+
+COPY . ./
 RUN npm run build
 
 FROM base as test
-RUN npx playwright install-deps chromium
-RUN npx playwright install chromium
+
+RUN npx playwright install chromium --with-deps
+COPY . ./
 CMD [ "npm", "run", "test" ]

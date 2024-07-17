@@ -172,6 +172,7 @@ const theme: ThemeProps = {
     [BaWidgetType.Select]: wrapWidget(BaWidgetType.Select),
     [BaWidgetType.SelectMultiple]: wrapWidget(BaWidgetType.SelectMultiple),
     [BaWidgetType.Input]: wrapWidget(BaWidgetType.Input),
+    [BaWidgetType.Number]: wrapWidget(BaWidgetType.Number),
     [BaWidgetType.RadioGroup]: wrapWidget(BaWidgetType.RadioGroup),
     [BaWidgetType.TextArea]: wrapWidget(BaWidgetType.TextArea),
     [BaWidgetType.Checkbox]: wrapWidget(BaWidgetType.Checkbox),

@@ -264,24 +264,24 @@ describe('getSummaryDisplayValues', () => {
 
     it('returns formatted string for a valid decimal number', () => {
       const validNumber = 123.45
-      const result = getSummaryDisplayValues(validNumber, BaWidgetType.Input, schema, uiOptions)
+      const result = getSummaryDisplayValues(validNumber, BaWidgetType.Number, schema, uiOptions)
       expect(result).toEqual([{ type: SummaryDisplayValueType.String, value: '123.45' }])
     })
 
     it('returns formatted string for a valid integer number', () => {
       const validInteger = 123
-      const result = getSummaryDisplayValues(validInteger, BaWidgetType.Input, schema, uiOptions)
+      const result = getSummaryDisplayValues(validInteger, BaWidgetType.Number, schema, uiOptions)
       expect(result).toEqual([{ type: SummaryDisplayValueType.String, value: '123' }])
     })
 
     it('returns invalid value for a non-numeric input', () => {
       const nonNumberValue = 'not-a-number'
-      const result = getSummaryDisplayValues(nonNumberValue, BaWidgetType.Input, schema, uiOptions)
+      const result = getSummaryDisplayValues(nonNumberValue, BaWidgetType.Number, schema, uiOptions)
       expect(result).toEqual([{ type: SummaryDisplayValueType.Invalid }])
     })
 
     it('returns none value for undefined Number value', () => {
-      const result = getSummaryDisplayValues(undefined, BaWidgetType.Input, schema, uiOptions)
+      const result = getSummaryDisplayValues(undefined, BaWidgetType.Number, schema, uiOptions)
       expect(result).toEqual([{ type: SummaryDisplayValueType.None }])
     })
   })

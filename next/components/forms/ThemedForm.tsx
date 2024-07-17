@@ -14,6 +14,7 @@ import CheckboxWidgetRJSF from './widget-wrappers/CheckboxWidgetRJSF'
 import CustomComponentsWidgetRJSF from './widget-wrappers/CustomComponentsFieldWidgetRJSF'
 import FileUploadWidgetRJSF from './widget-wrappers/FileUploadWidgetRJSF'
 import InputWidgetRJSF from './widget-wrappers/InputWidgetRJSF'
+import NumberWidgetRJSF from './widget-wrappers/NumberWidgetRJSF'
 import RadioGroupWidgetRJSF from './widget-wrappers/RadioGroupWidgetRJSF'
 import SelectMultipleWidgetRJSF from './widget-wrappers/SelectMultipleWidgetRJSF'
 import SelectWidgetRJSF from './widget-wrappers/SelectWidgetRJSF'
@@ -26,6 +27,7 @@ const theme: ThemeProps = {
     [BaWidgetType.Select]: SelectWidgetRJSF as ComponentType<WidgetProps>,
     [BaWidgetType.SelectMultiple]: SelectMultipleWidgetRJSF as ComponentType<WidgetProps>,
     [BaWidgetType.Input]: InputWidgetRJSF as ComponentType<WidgetProps>,
+    [BaWidgetType.Number]: NumberWidgetRJSF as ComponentType<WidgetProps>,
     [BaWidgetType.RadioGroup]: RadioGroupWidgetRJSF as ComponentType<WidgetProps>,
     [BaWidgetType.TextArea]: TextAreaWidgetRJSF as ComponentType<WidgetProps>,
     [BaWidgetType.CheckboxGroup]: CheckboxGroupWidgetRJSF as ComponentType<WidgetProps>,
@@ -34,7 +36,7 @@ const theme: ThemeProps = {
     [BaWidgetType.DatePicker]: DatePickerWidgetRJSF as ComponentType<WidgetProps>,
     [BaWidgetType.TimePicker]: TimePickerWidgetRJSF as ComponentType<WidgetProps>,
     [BaWidgetType.CustomComponents]: CustomComponentsWidgetRJSF as ComponentType<WidgetProps>,
-  }),
+  } satisfies Record<BaWidgetType, ComponentType<WidgetProps>>),
   templates: {
     ObjectFieldTemplate: BAObjectFieldTemplate,
     ArrayFieldTemplate: BAArrayFieldTemplate,

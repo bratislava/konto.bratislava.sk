@@ -132,28 +132,20 @@ export const getSummaryDisplayValues = (
 
     return [createStringValue(option.label)]
   }
-  if (widgetType === BaWidgetType.Input) {
-    const isString = schema.type === 'string' && typeof value === 'string'
-    const isNumber =
-      (schema.type === 'number' || schema.type === 'integer') && typeof value === 'number'
-
-    if (isNumber) {
-      // TODO: Format number
-      return [createStringValue(value.toString())]
-    }
-
-    if (isString) {
-      return [createStringValue(value)]
-    }
-
-    return [invalidValue]
-  }
-  if (widgetType === BaWidgetType.TextArea) {
+  if (widgetType === BaWidgetType.Input || widgetType === BaWidgetType.TextArea) {
     if (typeof value !== 'string') {
       return [invalidValue]
     }
 
     return [createStringValue(value)]
+  }
+  if (widgetType === BaWidgetType.Number) {
+    if (typeof value !== 'number') {
+      return [invalidValue]
+    }
+
+    // TODO: Format number
+    return [createStringValue(value.toString())]
   }
   if (widgetType === BaWidgetType.TimePicker) {
     if (typeof value !== 'string' || !baTimeRegex.test(value)) {

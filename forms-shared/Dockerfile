@@ -11,16 +11,16 @@ RUN apt-get update && apt-get install -y \
     && rm -rf /var/lib/apt/lists/*
 
 WORKDIR /app
-
 COPY package.json package-lock.json ./
 RUN npm ci --include=dev --frozen-lockfile
 
-FROM base as app-base
-COPY . ./
 
-FROM app-base as prod
+FROM base as prod
+COPY . ./
 RUN npm run build
 
-FROM app-base as test
+FROM base as test
 RUN npx playwright install chromium --with-deps
+# COPY needs to by after playwright to make it more cache friendly
+COPY . ./
 CMD [ "npm", "run", "test" ]

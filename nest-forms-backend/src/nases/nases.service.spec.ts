@@ -9,7 +9,6 @@ import { CognitoGetUserData } from '../auth/dtos/cognito.dto'
 import FilesService from '../files/files.service'
 import FormsHelper from '../forms/forms.helper'
 import FormsService from '../forms/forms.service'
-import FormsValidator from '../forms/forms.validator'
 import NasesConsumerService from '../nases-consumer/nases-consumer.service'
 import PrismaService from '../prisma/prisma.service'
 import RabbitmqClientService from '../rabbitmq-client/rabbitmq-client.service'
@@ -22,7 +21,6 @@ import NasesUtilsService from './utils-services/tokens.nases.service'
 jest.mock('../forms/forms.service')
 jest.mock('../files/files.service')
 jest.mock('../rabbitmq-client/rabbitmq-client.service')
-jest.mock('../forms/forms.validator')
 jest.mock('../forms/forms.helper')
 jest.mock('../nases-consumer/nases-consumer.service')
 jest.mock('./utils-services/tokens.nases.service')
@@ -43,7 +41,6 @@ describe('NasesService', () => {
         NasesConsumerService,
         RabbitmqClientService,
         ThrowerErrorGuard,
-        FormsValidator,
         NasesUtilsService,
         TaxService,
         {

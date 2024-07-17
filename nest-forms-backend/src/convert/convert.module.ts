@@ -6,7 +6,6 @@ import FilesModule from '../files/files.module'
 import FormsHelper from '../forms/forms.helper'
 import FormsModule from '../forms/forms.module'
 import FormsService from '../forms/forms.service'
-import FormsValidator from '../forms/forms.validator'
 import PrismaService from '../prisma/prisma.service'
 import ScannerClientModule from '../scanner-client/scanner-client.module'
 import TaxModule from '../tax/tax.module'
@@ -33,7 +32,6 @@ import JsonXmlConvertService from './utils-services/json-xml.convert.service'
     FormsService,
     FormsHelper,
     ConfigService,
-    FormsValidator,
     MinioClientSubservice,
   ],
   exports: [ConvertService],

@@ -1,7 +1,7 @@
 import cx from 'classnames'
 import Button from 'components/forms/simple-components/Button'
 import InputField from 'components/forms/widget-components/InputField/InputField'
-import { baAjvFormats } from 'forms-shared/form-utils/ajvFormats'
+import { baPhoneNumberRegex } from 'forms-shared/form-utils/ajvFormats'
 import { AccountType, Address, UserAttributes } from 'frontend/dtos/accountDto'
 import useHookForm from 'frontend/hooks/useHookForm'
 import useJsonParseMemo from 'frontend/hooks/useJsonParseMemo'
@@ -88,8 +88,7 @@ const poSchema = {
 }
 
 const isValidPhoneNumber = (phoneNumber: string) => {
-  const regex = baAjvFormats['phone-number']
-  return regex.test(phoneNumber)
+  return baPhoneNumberRegex.test(phoneNumber)
 }
 interface UserProfileDetailEditProps {
   formId: string

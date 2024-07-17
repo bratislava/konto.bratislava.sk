@@ -3,6 +3,7 @@ import { FormOwnerType, Forms, FormState } from '@prisma/client'
 import axios, { AxiosResponse } from 'axios'
 import { isSlovenskoSkFormDefinition } from 'forms-shared/definitions/formDefinitionTypes'
 import { getFormDefinitionBySlug } from 'forms-shared/definitions/getFormDefinitionBySlug'
+import { baRjsfValidator } from 'forms-shared/form-utils/validators'
 
 import { CognitoGetUserData } from '../auth/dtos/cognito.dto'
 import verifyUserByEidToken from '../common/utils/city-account'
@@ -15,7 +16,6 @@ import {
 } from '../forms/forms.errors.enum'
 import FormsHelper from '../forms/forms.helper'
 import FormsService from '../forms/forms.service'
-import FormsValidator from '../forms/forms.validator'
 import { RabbitPayloadDto } from '../nases-consumer/nases-consumer.dto'
 import NasesConsumerService from '../nases-consumer/nases-consumer.service'
 import PrismaService from '../prisma/prisma.service'
@@ -49,7 +49,6 @@ export default class NasesService {
 
   constructor(
     private readonly formsService: FormsService,
-    private readonly formsValidator: FormsValidator,
     private readonly filesService: FilesService,
     private readonly formsHelper: FormsHelper,
     private readonly nasesConsumerService: NasesConsumerService,
@@ -299,13 +298,17 @@ export default class NasesService {
         NasesErrorsResponseEnum.FORBIDDEN_SEND,
       )
     }
-    if (
-      !this.formsValidator.validateFormData(
-        formDefinition.schemas.schema,
-        form.formDataJson,
-        id,
+    const validationResult = baRjsfValidator.validateFormData(
+      form.formDataJson,
+      formDefinition.schemas.schema,
+    )
+    if (validationResult.errors.length > 0) {
+      this.logger.error(
+        `Data for form with id ${id} is invalid: ${JSON.stringify(
+          validationResult.errors,
+        )}`,
       )
-    ) {
+
       throw this.throwerErrorGuard.NotAcceptableException(
         FormsErrorsEnum.FORM_DATA_INVALID,
         FormsErrorsResponseEnum.FORM_DATA_INVALID,
@@ -384,15 +387,17 @@ export default class NasesService {
       )
     }
 
-    // TODO - rethink/address, skipping formData validation for is signed as in this step, the form data can be different from what we are sending anyway
-    if (
-      !formDefinition.isSigned &&
-      !this.formsValidator.validateFormData(
-        formDefinition.schemas.schema,
-        form.formDataJson,
-        id,
+    const validationResult = baRjsfValidator.validateFormData(
+      form.formDataJson,
+      formDefinition.schemas.schema,
+    )
+    if (validationResult.errors.length > 0) {
+      this.logger.error(
+        `Data for form with id ${id} is invalid: ${JSON.stringify(
+          validationResult.errors,
+        )}`,
       )
-    ) {
+
       throw this.throwerErrorGuard.NotAcceptableException(
         FormsErrorsEnum.FORM_DATA_INVALID,
         FormsErrorsResponseEnum.FORM_DATA_INVALID,

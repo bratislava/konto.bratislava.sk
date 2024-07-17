@@ -11,7 +11,6 @@ import MinioClientSubservice from '../utils/subservices/minio-client.subservice'
 import FormsController from './forms.controller'
 import FormsHelper from './forms.helper'
 import FormsService from './forms.service'
-import FormsValidator from './forms.validator'
 
 @Module({
   imports: [PrismaModule, ScannerClientModule, forwardRef(() => FilesModule)],
@@ -19,7 +18,6 @@ import FormsValidator from './forms.validator'
     FormsService,
     FormsHelper,
     FilesService,
-    FormsValidator,
     NasesConsumerHelper,
     ThrowerErrorGuard,
     MinioClientSubservice,

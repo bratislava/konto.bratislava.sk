@@ -10,6 +10,7 @@ import {
   select,
   selectMultiple,
   textArea,
+  timePicker,
 } from '../../src/generator/functions'
 import {
   getSummaryDisplayValues,
@@ -203,6 +204,26 @@ describe('getSummaryDisplayValues', () => {
 
     it('returns invalid value for non-string TextArea value', () => {
       const result = getSummaryDisplayValues(1234, BaWidgetType.TextArea, schema, uiOptions)
+      expect(result).toEqual([{ type: SummaryDisplayValueType.Invalid }])
+    })
+  })
+
+  describe('TimePicker', () => {
+    const field = timePicker('timePickerProperty', { title: 'TimePicker Title' }, {})
+    const { schema, uiOptions } = retrieveSchemaAndUiOptions(field)
+
+    it('returns the input string for correct TimePicker value', () => {
+      const result = getSummaryDisplayValues('12:34', BaWidgetType.TimePicker, schema, uiOptions)
+      expect(result).toEqual([{ type: SummaryDisplayValueType.String, value: '12:34' }])
+    })
+
+    it('returns none value for undefined TimePicker value', () => {
+      const result = getSummaryDisplayValues(undefined, BaWidgetType.TimePicker, schema, uiOptions)
+      expect(result).toEqual([{ type: SummaryDisplayValueType.None }])
+    })
+
+    it('returns invalid value for incorrect TimePickerValue', () => {
+      const result = getSummaryDisplayValues('12:60', BaWidgetType.TimePicker, schema, uiOptions)
       expect(result).toEqual([{ type: SummaryDisplayValueType.Invalid }])
     })
   })

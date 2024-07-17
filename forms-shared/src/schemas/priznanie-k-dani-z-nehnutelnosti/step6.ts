@@ -27,9 +27,9 @@ const specialCaseCondition = createCondition([
     ['podielPriestoruNaSpolocnychCastiachAZariadeniachDomu'],
     {
       type: 'string',
-      format: 'ratio',
+      format: 'ba-ratio',
       // The regex itself doesn't validate all the requirements for ratio, but works as an addition to the
-      // format: 'ratio' validation to ensure that the denominator is a number starting with 1-9 followed
+      // format: 'ba-ratio' validation to ensure that the denominator is a number starting with 1-9 followed
       // by 3 or more zeroes.
       pattern: '^\\d+\\/([1-9]0{3,})$',
     },
@@ -100,7 +100,7 @@ const podielPriestoruNaSpolocnychCastiachAZariadeniachDomu = (typ: Typ) =>
     {
       title: 'Podiel priestoru na spoločných častiach a zariadeniach domu',
       required: true,
-      format: 'ratio',
+      format: 'ba-ratio',
     },
     {
       placeholder: typ === Typ.Byt ? 'Napr. 4827/624441' : 'Napr. 124827/624441',
@@ -115,7 +115,7 @@ const podielPriestoruNaSpolocnychCastiachAZariadeniachDomu = (typ: Typ) =>
 const spoluvlastnickyPodiel = (typ: Typ) =>
   input(
     'spoluvlastnickyPodiel',
-    { title: 'Spoluvlastnícky podiel', required: true, format: 'ratio' },
+    { title: 'Spoluvlastnícky podiel', required: true, format: 'ba-ratio' },
     {
       placeholder: 'Napr. 1/150',
       helptext: markdownText(

@@ -15,6 +15,7 @@ import CustomComponentsWidgetRJSF from './widget-wrappers/CustomComponentsFieldW
 import FileUploadWidgetRJSF from './widget-wrappers/FileUploadWidgetRJSF'
 import InputWidgetRJSF from './widget-wrappers/InputWidgetRJSF'
 import RadioGroupWidgetRJSF from './widget-wrappers/RadioGroupWidgetRJSF'
+import SelectMultipleWidgetRJSF from './widget-wrappers/SelectMultipleWidgetRJSF'
 import SelectWidgetRJSF from './widget-wrappers/SelectWidgetRJSF'
 import TextAreaWidgetRJSF from './widget-wrappers/TextAreaWidgetRJSF'
 
@@ -23,6 +24,7 @@ import TextAreaWidgetRJSF from './widget-wrappers/TextAreaWidgetRJSF'
 const theme: ThemeProps = {
   widgets: wrapWidgetsInContext({
     [BaWidgetType.Select]: SelectWidgetRJSF as ComponentType<WidgetProps>,
+    [BaWidgetType.SelectMultiple]: SelectMultipleWidgetRJSF as ComponentType<WidgetProps>,
     [BaWidgetType.Input]: InputWidgetRJSF as ComponentType<WidgetProps>,
     [BaWidgetType.RadioGroup]: RadioGroupWidgetRJSF as ComponentType<WidgetProps>,
     [BaWidgetType.TextArea]: TextAreaWidgetRJSF as ComponentType<WidgetProps>,

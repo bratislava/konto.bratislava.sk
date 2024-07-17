@@ -95,21 +95,27 @@ export const getSummaryDisplayValues = (
   }
 
   if (widgetType === BaWidgetType.Select) {
-    const isSingleSelect = schema.type === 'string' && typeof value === 'string'
-    const isMultiSelect = schema.type === 'array' && Array.isArray(value)
+    const selectUiOptions = uiOptions as SelectUiOptions
 
-    if (!isSingleSelect && !isMultiSelect) {
+    const option = selectUiOptions.selectOptions?.[value]
+    if (!option) {
       return [invalidValue]
     }
 
+    return [createStringValue(option.title)]
+  }
+  if (widgetType === BaWidgetType.SelectMultiple) {
     const selectUiOptions = uiOptions as SelectUiOptions
-    const selectArray = (isMultiSelect ? value : [value]) as string[]
 
-    if (selectArray.length === 0) {
+    if (!Array.isArray(value)) {
+      return [invalidValue]
+    }
+
+    if (value.length === 0) {
       return [noneValue]
     }
 
-    return selectArray.map((item) => {
+    return value.map((item) => {
       const option = selectUiOptions.selectOptions?.[item]
       if (!option) {
         return invalidValue

@@ -111,19 +111,24 @@ describe('getSummaryDisplayValues', () => {
     const { schema, uiOptions } = retrieveSchemaAndUiOptions(field)
 
     it('returns none value for an empty select multiple value', () => {
-      const result = getSummaryDisplayValues([], BaWidgetType.Select, schema, uiOptions)
+      const result = getSummaryDisplayValues([], BaWidgetType.SelectMultiple, schema, uiOptions)
       expect(result).toEqual([{ type: SummaryDisplayValueType.None }])
     })
 
     it('returns correct label for a valid single select multiple value', () => {
-      const result = getSummaryDisplayValues(['value-1'], BaWidgetType.Select, schema, uiOptions)
+      const result = getSummaryDisplayValues(
+        ['value-1'],
+        BaWidgetType.SelectMultiple,
+        schema,
+        uiOptions,
+      )
       expect(result).toEqual([{ type: SummaryDisplayValueType.String, value: 'Label 1' }])
     })
 
     it('returns correct labels for valid select multiple values', () => {
       const result = getSummaryDisplayValues(
         ['value-1', 'value-2'],
-        BaWidgetType.Select,
+        BaWidgetType.SelectMultiple,
         schema,
         uiOptions,
       )
@@ -136,7 +141,7 @@ describe('getSummaryDisplayValues', () => {
     it('returns correct label and invalid value for a mix of known and unknown select multiple values', () => {
       const result = getSummaryDisplayValues(
         ['value-1', 'unknown'],
-        BaWidgetType.Select,
+        BaWidgetType.SelectMultiple,
         schema,
         uiOptions,
       )
@@ -147,7 +152,12 @@ describe('getSummaryDisplayValues', () => {
     })
 
     it('returns invalid value for a single select value passed to select multiple field', () => {
-      const result = getSummaryDisplayValues('value-1', BaWidgetType.Select, schema, uiOptions)
+      const result = getSummaryDisplayValues(
+        'value-1',
+        BaWidgetType.SelectMultiple,
+        schema,
+        uiOptions,
+      )
       expect(result).toEqual([{ type: SummaryDisplayValueType.Invalid }])
     })
   })

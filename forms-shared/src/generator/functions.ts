@@ -140,7 +140,7 @@ export const selectMultiple = (
       )
 
       return {
-        'ui:widget': BaWidgetType.Select,
+        'ui:widget': BaWidgetType.SelectMultiple,
         'ui:options': {
           ...uiOptions,
           selectOptions: Object.fromEntries(selectOptionsArray),

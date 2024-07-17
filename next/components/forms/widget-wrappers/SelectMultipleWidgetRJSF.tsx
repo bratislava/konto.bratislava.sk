@@ -2,16 +2,17 @@ import { WidgetProps } from '@rjsf/utils'
 import WidgetWrapper from 'components/forms/widget-wrappers/WidgetWrapper'
 import { SelectUiOptions } from 'forms-shared/generator/uiOptionsTypes'
 
+import { isDefined } from '../../../frontend/utils/general'
 import SelectField, { SelectOption } from '../widget-components/SelectField/SelectField'
 import { createSelectOptionsFromEnumOptions } from './createSelectOptionsFromEnumOptions'
 
-interface SelectWidgetRJSFProps extends WidgetProps {
+interface SelectMultipleWidgetRJSFProps extends WidgetProps {
   options: SelectUiOptions & Pick<WidgetProps['options'], 'enumOptions'>
-  value: string | undefined
-  onChange: (value?: string | undefined) => void
+  value: string[] | undefined
+  onChange: (value?: string[] | undefined) => void
 }
 
-const SelectWidgetRJSF = ({
+const SelectMultipleWidgetRJSF = ({
   id,
   label,
   options,
@@ -22,7 +23,7 @@ const SelectWidgetRJSF = ({
   onChange,
   rawErrors,
   readonly,
-}: SelectWidgetRJSFProps) => {
+}: SelectMultipleWidgetRJSFProps) => {
   const {
     enumOptions,
     helptext,
@@ -36,15 +37,18 @@ const SelectWidgetRJSF = ({
 
   const componentOptions = createSelectOptionsFromEnumOptions(enumOptions, selectOptions)
 
-  const selectValue = componentOptions.find((option) => option.value === value)
+  const selectValue =
+    value
+      ?.map((value) => componentOptions.find((option) => option.value === value))
+      .filter(isDefined) ?? []
 
-  const handleChange = (newValue: SelectOption | null) =>
-    onChange(newValue ? newValue.value : undefined)
+  const handleChange = (newValue: readonly SelectOption[]) =>
+    onChange(newValue.map((option) => option.value).filter(isDefined))
 
   return (
     <WidgetWrapper id={id} options={options}>
       <SelectField
-        isMulti={false}
+        isMulti
         label={label}
         helptext={helptext}
         helptextHeader={helptextHeader}
@@ -65,4 +69,4 @@ const SelectWidgetRJSF = ({
   )
 }
 
-export default SelectWidgetRJSF
+export default SelectMultipleWidgetRJSF

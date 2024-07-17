@@ -170,6 +170,7 @@ const theme: ThemeProps = {
   },
   widgets: {
     [BaWidgetType.Select]: wrapWidget(BaWidgetType.Select),
+    [BaWidgetType.SelectMultiple]: wrapWidget(BaWidgetType.SelectMultiple),
     [BaWidgetType.Input]: wrapWidget(BaWidgetType.Input),
     [BaWidgetType.RadioGroup]: wrapWidget(BaWidgetType.RadioGroup),
     [BaWidgetType.TextArea]: wrapWidget(BaWidgetType.TextArea),

@@ -180,6 +180,7 @@ export const markdownTextPrefix = `markdown_gKgflRNwdS:`
 
 export enum BaWidgetType {
   Select = 'Select',
+  SelectMultiple = 'SelectMultiple',
   Input = 'Input',
   RadioGroup = 'RadioGroup',
   TextArea = 'TextArea',

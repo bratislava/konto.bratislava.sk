@@ -178,6 +178,7 @@ const theme: ThemeProps = {
     [BaWidgetType.Checkbox]: wrapWidget(BaWidgetType.Checkbox),
     [BaWidgetType.CheckboxGroup]: wrapWidget(BaWidgetType.CheckboxGroup),
     [BaWidgetType.FileUpload]: wrapWidget(BaWidgetType.FileUpload),
+    [BaWidgetType.FileUploadMultiple]: wrapWidget(BaWidgetType.FileUploadMultiple),
     [BaWidgetType.DatePicker]: wrapWidget(BaWidgetType.DatePicker),
     [BaWidgetType.TimePicker]: wrapWidget(BaWidgetType.TimePicker),
     [BaWidgetType.CustomComponents]: () => {

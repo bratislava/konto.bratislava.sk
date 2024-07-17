@@ -398,7 +398,10 @@ export const fileUpload = (
         file: true,
       }
     },
-    uiSchema: () => ({ 'ui:widget': BaWidgetType.FileUpload, 'ui:options': uiOptions }),
+    uiSchema: () => ({
+      'ui:widget': options.multiple ? BaWidgetType.FileUploadMultiple : BaWidgetType.FileUpload,
+      'ui:options': uiOptions,
+    }),
     required: Boolean(options.required),
   }
 }

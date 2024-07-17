@@ -190,6 +190,7 @@ export enum BaWidgetType {
   Checkbox = 'Checkbox',
   CheckboxGroup = 'CheckboxGroup',
   FileUpload = 'FileUpload',
+  FileUploadMultiple = 'FileUploadMultiple',
   DatePicker = 'DatePicker',
   TimePicker = 'TimePicker',
   CustomComponents = 'CustomComponents',

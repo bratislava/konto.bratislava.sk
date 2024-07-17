@@ -384,7 +384,7 @@ describe('getSummaryDisplayValues', () => {
 
   describe('FileUpload Multiple', () => {
     const field = fileUpload(
-      'fileUploadMultipleMultiple',
+      'fileUploadMultiple',
       { title: 'File Upload Multiple Title', multiple: true },
       {},
     )
@@ -395,7 +395,12 @@ describe('getSummaryDisplayValues', () => {
         '30200bc4-ea66-448b-ad8f-00e1e1ccdfb0',
         '8f8877a4-8e52-4ce9-b996-ea2b25d134f1',
       ]
-      const result = getSummaryDisplayValues(fileUUIDs, BaWidgetType.FileUpload, schema, uiOptions)
+      const result = getSummaryDisplayValues(
+        fileUUIDs,
+        BaWidgetType.FileUploadMultiple,
+        schema,
+        uiOptions,
+      )
       expect(result).toEqual([
         { type: SummaryDisplayValueType.File, id: fileUUIDs[0] },
         { type: SummaryDisplayValueType.File, id: fileUUIDs[1] },
@@ -404,7 +409,12 @@ describe('getSummaryDisplayValues', () => {
 
     it('returns a mix of file ID and invalid value for a combination of valid and invalid FileUpload values', () => {
       const inputs = ['30200bc4-ea66-448b-ad8f-00e1e1ccdfb0', 12345]
-      const result = getSummaryDisplayValues(inputs, BaWidgetType.FileUpload, schema, uiOptions)
+      const result = getSummaryDisplayValues(
+        inputs,
+        BaWidgetType.FileUploadMultiple,
+        schema,
+        uiOptions,
+      )
       expect(result).toEqual([
         { type: SummaryDisplayValueType.File, id: '30200bc4-ea66-448b-ad8f-00e1e1ccdfb0' },
         { type: SummaryDisplayValueType.Invalid },
@@ -413,7 +423,12 @@ describe('getSummaryDisplayValues', () => {
 
     it('returns none value for an empty FileUpload array', () => {
       const inputs: string[] = []
-      const result = getSummaryDisplayValues(inputs, BaWidgetType.FileUpload, schema, uiOptions)
+      const result = getSummaryDisplayValues(
+        inputs,
+        BaWidgetType.FileUploadMultiple,
+        schema,
+        uiOptions,
+      )
       expect(result).toEqual([{ type: SummaryDisplayValueType.None }])
     })
   })

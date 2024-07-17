@@ -181,28 +181,28 @@ export const getSummaryDisplayValues = (
     })
   }
   if (widgetType === BaWidgetType.FileUpload) {
-    const isSingleFile = schema.type === 'string' && isFileUuid(value)
-    const isMultiFile = schema.type === 'array' && Array.isArray(value)
-
-    if (isSingleFile) {
+    if (isFileUuid(value)) {
       return [createFileValue(value)]
     }
 
-    if (isMultiFile) {
-      if (value.length === 0) {
-        return [noneValue]
-      }
-
-      return value.map((item) => {
-        if (!isFileUuid(item)) {
-          return invalidValue
-        }
-
-        return createFileValue(item)
-      })
+    return [invalidValue]
+  }
+  if (widgetType === BaWidgetType.FileUploadMultiple) {
+    if (!Array.isArray(value)) {
+      return [invalidValue]
     }
 
-    return [invalidValue]
+    if (value.length === 0) {
+      return [noneValue]
+    }
+
+    return value.map((item) => {
+      if (!isFileUuid(item)) {
+        return invalidValue
+      }
+
+      return createFileValue(item)
+    })
   }
   if (widgetType === BaWidgetType.DatePicker) {
     try {

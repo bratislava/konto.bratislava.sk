@@ -174,7 +174,7 @@ const adresaSharedFields = [
     },
     [
       input('mesto', { title: 'Mesto', required: true }, {}),
-      input('psc', { title: 'PSČ', required: true, format: 'zip' }, {}),
+      input('psc', { title: 'PSČ', required: true, format: 'ba-slovak-zip' }, {}),
     ],
   ),
 ]

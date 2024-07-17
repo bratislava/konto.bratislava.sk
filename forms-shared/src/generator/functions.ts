@@ -158,7 +158,7 @@ export const input = (
       | {
           type?: 'text'
           // TODO: Add more formats
-          format?: 'zip' | 'ratio' | 'ico'
+          format?: 'ba-slovak-zip' | 'ba-ratio' | 'ba-ico'
           pattern?: RegExp
         }
       | {
@@ -185,7 +185,7 @@ export const input = (
           return 'email'
         }
         if (options.type === 'tel') {
-          return 'phone-number'
+          return 'ba-phone-number'
         }
 
         // eslint-disable-next-line unicorn/no-useless-undefined
@@ -382,6 +382,7 @@ export const fileUpload = (
           type: 'array',
           items: {
             type: 'string',
+            format: 'ba-file-uuid',
             file: true,
           },
           minItems: options.required ? 1 : undefined,
@@ -392,6 +393,7 @@ export const fileUpload = (
       return {
         ...base,
         type: 'string',
+        format: 'ba-file-uuid',
         file: true,
       }
     },
@@ -430,7 +432,7 @@ export const timePicker = (
     property,
     schema: () => ({
       type: 'string',
-      format: 'localTime',
+      format: 'ba-time',
       title: options.title,
       default: options.default,
     }),

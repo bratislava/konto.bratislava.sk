@@ -33,7 +33,7 @@ const spoluvlastnickyPodiel = input(
   {
     title: 'Spoluvlastnícky podiel',
     required: true,
-    format: 'ratio',
+    format: 'ba-ratio',
   },
   {
     placeholder: 'Napr. 1/1',

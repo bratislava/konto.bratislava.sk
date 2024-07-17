@@ -5,6 +5,7 @@ import { validate, version } from 'uuid'
 
 import { BaWidgetType, CheckboxUiOptions, SelectUiOptions } from '../generator/uiOptionsTypes'
 import { WidgetProps } from '@rjsf/utils'
+import { baTimeRegex } from '../form-utils/ajvFormats'
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 function isFileUuid(value: any): boolean {
@@ -141,8 +142,15 @@ export const getSummaryDisplayValues = (
 
     return [invalidValue]
   }
-  if (widgetType === BaWidgetType.TextArea || widgetType === BaWidgetType.TimePicker) {
+  if (widgetType === BaWidgetType.TextArea) {
     if (typeof value !== 'string') {
+      return [invalidValue]
+    }
+
+    return [createStringValue(value)]
+  }
+  if (widgetType === BaWidgetType.TimePicker) {
+    if (typeof value !== 'string' || !baTimeRegex.test(value)) {
       return [invalidValue]
     }
 

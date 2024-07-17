@@ -25,7 +25,7 @@ export const sharedAddressField = (property: string, title: string, required: bo
       },
       [
         input('mesto', { title: 'Mesto', required: true }, {}),
-        input('psc', { title: 'PSČ', required: true, format: 'zip' }, {}),
+        input('psc', { title: 'PSČ', required: true, format: 'ba-slovak-zip' }, {}),
       ],
     ),
   ])

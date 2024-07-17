@@ -12,7 +12,6 @@
 //   xmlTemplate,
 // } from '../__tests__/constants'
 // import FormsHelper from '../forms/forms.helper'
-// import FormsValidator from '../forms/forms.validator'
 // import PrismaService from '../prisma/prisma.service'
 // import SchemasService from '../schemas/schemas.service'
 // import TaxService from '../tax/tax.service'
@@ -35,7 +34,6 @@ describe('ConvertController', () => {
     //     ThrowerErrorGuard,
     //     FormsHelper,
     //     ConfigService,
-    //     FormsValidator,
     //     { provide: PrismaService, useValue: prismaMock },
     //   ],
     // }).compile()

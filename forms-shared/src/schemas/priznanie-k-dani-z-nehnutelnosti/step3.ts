@@ -34,7 +34,7 @@ const podielPriestoruNaSpolocnychCastiachAZariadeniachDomu = input(
   {
     title: 'Podiel priestoru na spoločných častiach a zariadeniach domu',
     required: true,
-    format: 'ratio',
+    format: 'ba-ratio',
   },
   {
     placeholder: 'Napr. 4827/624441',
@@ -46,7 +46,7 @@ const podielPriestoruNaSpolocnychCastiachAZariadeniachDomu = input(
 
 const spoluvlastnickyPodiel = input(
   'spoluvlastnickyPodiel',
-  { title: 'Spoluvlastnícky podiel', required: true, format: 'ratio' },
+  { title: 'Spoluvlastnícky podiel', required: true, format: 'ba-ratio' },
   {
     placeholder: 'Napr. 1/1 alebo 1/105',
     helptext: markdownText(

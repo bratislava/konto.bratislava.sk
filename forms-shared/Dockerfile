@@ -19,7 +19,7 @@ FROM base as prod
 COPY . ./
 RUN npm run build
 
-FROM app-base as test
+FROM base as test
 RUN npx playwright install chromium --with-deps
 # COPY needs to by after playwright to make it more cache friendly
 COPY . ./

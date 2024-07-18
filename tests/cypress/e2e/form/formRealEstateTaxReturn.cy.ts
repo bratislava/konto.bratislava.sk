@@ -56,8 +56,9 @@ describe('F05 -', { testIsolation: false }, () => {
                 cy.wrap(Cypress.$('[data-cy=input-rok]', form)).type(
                   this.fileData.druhPriznania.rok,
                 )
+                cy.focused().blur()
                 cy.wrap(Cypress.$(`[data-cy=continue-button-${device}]`, form))
-                  .click()
+                  .focus()
                   .click()
               })
             })
@@ -107,7 +108,9 @@ describe('F05 -', { testIsolation: false }, () => {
                   taxpayer.korespondencnaAdresa.korespondencnaAdresaRovnaka,
                 )
                 cy.wrap(Cypress.$('[data-cy=input-email]', form)).type(taxpayer.email)
+                cy.focused().blur()
                 cy.wrap(Cypress.$('[data-cy=input-telefon]', form)).type(taxpayer.telefon)
+                cy.focused().blur()
               })
               const correspondenceAddress = taxpayer.korespondencnaAdresa
               if (!correspondenceAddress.korespondencnaAdresaRovnaka) {
@@ -125,7 +128,7 @@ describe('F05 -', { testIsolation: false }, () => {
               }
               cy.dataCy('form-container').then((form) => {
                 cy.wrap(Cypress.$(`[data-cy=continue-button-${device}]`, form))
-                  .click()
+                  .focus()
                   .click()
               })
             })
@@ -172,6 +175,7 @@ describe('F05 -', { testIsolation: false }, () => {
                               landTax.priznania[indexPriznania].pozemky[indexPozemky]
                                 .cisloListuVlastnictva,
                             )
+                            cy.focused().blur()
                             cy.selectFromDropdown(
                               pozemky,
                               'select-názov-katastrálneho-územia',
@@ -181,6 +185,7 @@ describe('F05 -', { testIsolation: false }, () => {
                               landTax.priznania[indexPriznania].pozemky[indexPozemky]
                                 .parcelneCisloSposobVyuzitiaPozemku.cisloParcely,
                             )
+                            cy.focused().blur()
                             cy.selectFromDropdown(
                               pozemky,
                               'select-druh-pozemku',
@@ -193,6 +198,7 @@ describe('F05 -', { testIsolation: false }, () => {
                               landTax.priznania[indexPriznania].pozemky[indexPozemky]
                                 .celkovaVymeraPozemku,
                             )
+                            cy.focused().blur()
                             cy.fillInApartmentInformation(
                               pozemky,
                               landTax.priznania[indexPriznania].pozemky[0]
@@ -235,7 +241,7 @@ describe('F05 -', { testIsolation: false }, () => {
                     })
                   })
                   cy.wrap(Cypress.$(`[data-cy=continue-button-${device}]`, form))
-                    .click()
+                    .focus()
                     .click()
                 })
               }
@@ -293,9 +299,11 @@ describe('F05 -', { testIsolation: false }, () => {
                       cy.wrap(Cypress.$('[data-cy=input-celkovaZastavanaPlocha]', priznania)).type(
                         onePurposeTax.priznania[indexPriznania].celkovaZastavanaPlocha,
                       )
+                      cy.focused().blur()
                       cy.wrap(Cypress.$('[data-cy=input-spoluvlastnickyPodiel]', priznania)).type(
                         onePurposeTax.priznania[indexPriznania].spoluvlastnickyPodiel + '{enter}',
                       )
+                      cy.focused().blur()
                       cy.wrap(
                         Cypress.$(
                           '[data-cy=input-pocetNadzemnychAPodzemnychPodlaziStavbyOkremPrvehoNadzemnehoPodlazia]',
@@ -306,6 +314,7 @@ describe('F05 -', { testIsolation: false }, () => {
                           .pocetNadzemnychAPodzemnychPodlaziStavbyOkremPrvehoNadzemnehoPodlazia +
                           '{enter}',
                       )
+                      cy.focused().blur()
                       if (
                         onePurposeTax.priznania[indexPriznania].castStavbyOslobodenaOdDaneDetaily
                       ) {
@@ -328,6 +337,7 @@ describe('F05 -', { testIsolation: false }, () => {
                         cy.wrap(Cypress.$('[data-cy=input-pocetSpoluvlastnikov]', priznania)).type(
                           onePurposeTax.priznania[indexPriznania].pocetSpoluvlastnikov + '{enter}',
                         )
+                        cy.focused().blur()
                         cy.clickRadio(
                           priznania,
                           'podávate-priznanie-za-všetkých-spoluvlastníkov-na-základe-dohody',
@@ -347,6 +357,7 @@ describe('F05 -', { testIsolation: false }, () => {
                           onePurposeTax.priznania[indexPriznania].castStavbyOslobodenaOdDaneDetaily
                             .celkovaVymeraPodlahovychPlochVsetkychPodlaziStavby,
                         )
+                        cy.focused().blur()
                         cy.wrap(
                           Cypress.$(
                             '[data-cy=input-vymeraPodlahovychPlochCastiStavbyOslobodenejOdDaneZoStavieb]',
@@ -356,6 +367,7 @@ describe('F05 -', { testIsolation: false }, () => {
                           onePurposeTax.priznania[indexPriznania].castStavbyOslobodenaOdDaneDetaily
                             .vymeraPodlahovychPlochCastiStavbyOslobodenejOdDaneZoStavieb,
                         )
+                        cy.focused().blur()
                       }
                     })
                   })
@@ -366,10 +378,13 @@ describe('F05 -', { testIsolation: false }, () => {
                       cy.wrap(Cypress.$('[data-cy=input-cisloParcely]', priznania)).type(
                         onePurposeTax.priznania[indexPriznania].riadok2.cisloParcely,
                       )
+                      cy.focused().blur()
                     })
                   })
 
-                  cy.wrap(Cypress.$(`[data-cy=continue-button-${device}]`, form)).click()
+                  cy.wrap(Cypress.$(`[data-cy=continue-button-${device}]`, form))
+                    .focus()
+                    .click()
                 })
               }
             })
@@ -425,6 +440,7 @@ describe('F05 -', { testIsolation: false }, () => {
                         cy.wrap(Cypress.$('[data-cy=input-pocetSpoluvlastnikov]', priznania)).type(
                           multiPurposeTax.priznania[indexPriznania].pocetSpoluvlastnikov,
                         )
+                        cy.focused().blur()
                         cy.clickRadio(
                           priznania,
                           'podávate-priznanie-za-všetkých-spoluvlastníkov-na-základe-dohody',
@@ -446,9 +462,11 @@ describe('F05 -', { testIsolation: false }, () => {
                       cy.wrap(Cypress.$('[data-cy=input-popisStavby]', priznania)).type(
                         multiPurposeTax.priznania[indexPriznania].popisStavby,
                       )
+                      cy.focused().blur()
                       cy.wrap(Cypress.$('[data-cy=input-celkovaVymera]', priznania)).type(
                         multiPurposeTax.priznania[indexPriznania].celkovaVymera,
                       )
+                      cy.focused().blur()
                       cy.wrap(
                         Cypress.$(
                           '[data-cy=input-pocetNadzemnychAPodzemnychPodlaziStavbyOkremPrvehoNadzemnehoPodlazia]',
@@ -458,6 +476,7 @@ describe('F05 -', { testIsolation: false }, () => {
                         multiPurposeTax.priznania[indexPriznania]
                           .pocetNadzemnychAPodzemnychPodlaziStavbyOkremPrvehoNadzemnehoPodlazia,
                       )
+                      cy.focused().blur()
 
                       if (
                         multiPurposeTax.priznania[indexPriznania].castStavbyOslobodenaOdDaneDetaily
@@ -486,6 +505,7 @@ describe('F05 -', { testIsolation: false }, () => {
                           multiPurposeTax.priznania[indexPriznania]
                             .celkovaVymeraPodlahovychPlochVsetkychPodlaziStavby,
                         )
+                        cy.focused().blur()
                         cy.wrap(
                           Cypress.$(
                             '[data-cy=input-vymeraPodlahovychPlochCastiStavbyOslobodenejOdDaneZoStavieb]',
@@ -495,6 +515,7 @@ describe('F05 -', { testIsolation: false }, () => {
                           multiPurposeTax.priznania[indexPriznania]
                             .vymeraPodlahovychPlochCastiStavbyOslobodenejOdDaneZoStavieb,
                         )
+                        cy.focused().blur()
                       }
                     })
 
@@ -535,12 +556,13 @@ describe('F05 -', { testIsolation: false }, () => {
                         cy.wrap(Cypress.$('[data-cy=input-cisloParcely]', priznania)).type(
                           multiPurposeTax.priznania[indexPriznania].riadok2.cisloParcely,
                         )
+                        cy.focused().blur()
                       })
                     })
                   }
 
                   cy.wrap(Cypress.$(`[data-cy=continue-button-${device}]`, form))
-                    .click()
+                    .focus()
                     .click()
                 })
               }
@@ -624,6 +646,7 @@ describe('F05 -', { testIsolation: false }, () => {
                           flatAndNonResTax.priznania[indexPriznania].pocetSpoluvlastnikov +
                             '{enter}',
                         )
+                        cy.focused().blur()
                         cy.clickRadio(
                           priznania,
                           'podávate-priznanie-za-všetkých-spoluvlastníkov-na-základe-dohody',
@@ -651,6 +674,7 @@ describe('F05 -', { testIsolation: false }, () => {
                         cy.wrap(Cypress.$('[data-cy=input-cisloBytu]', priznania)).type(
                           flatAndNonResTax.priznania[indexPriznania].priznanieZaByt.cisloBytu,
                         )
+                        cy.focused().blur()
 
                         cy.fillInApartmentInformation(
                           priznania,
@@ -701,11 +725,12 @@ describe('F05 -', { testIsolation: false }, () => {
                         cy.wrap(Cypress.$('[data-cy=input-cisloParcely]', priznania)).type(
                           flatAndNonResTax.priznania[indexPriznania].riadok2.cisloParcely,
                         )
+                        cy.focused().blur()
                       })
                     })
                   }
                   cy.wrap(Cypress.$(`[data-cy=continue-button-${device}]`, form))
-                    .click()
+                    .focus()
                     .click()
                 })
               }
@@ -753,14 +778,18 @@ describe('F05 -', { testIsolation: false }, () => {
                     cy.wrap(Cypress.$(`[data-cy=input-meno]`, form)).type(
                       spouseCoOwnership.menoTitul.meno,
                     )
+                    cy.focused().blur()
                     if (spouseCoOwnership.rovnakaAdresa == false) {
                       cy.wrap(Cypress.$(`[data-cy=input-psc]`, form)).focus().clear()
                       cy.wrap(Cypress.$(`[data-cy=input-psc]`, form)).type(
                         spouseCoOwnership.obecPsc.psc,
                       )
+                      cy.focused().blur()
                     }
                   })
-                  cy.wrap(Cypress.$(`[data-cy=continue-button-${device}]`, form)).click()
+                  cy.wrap(Cypress.$(`[data-cy=continue-button-${device}]`, form))
+                    .focus()
+                    .click()
                 })
               }
             })

@@ -39,7 +39,7 @@ jobs:
   validate-next:
     name: validate next
     needs: conditions
-    if: needs.conditions.outputs.next == 'true'
+    if: needs.conditions.outputs.next == 'true' || needs.conditions.outputs.forms-shared == 'true'
     uses: bratislava/github-actions/.github/workflows/validate-typescript.yml@stable
     with:
       directory: next/
@@ -48,7 +48,7 @@ jobs:
   build-next:
     name: build next
     needs: [conditions, validate-next]
-    if: needs.conditions.outputs.next == 'true'
+    if: needs.conditions.outputs.next == 'true' || needs.conditions.outputs.forms-shared == 'true'
     uses: bratislava/github-actions/.github/workflows/build-with-bratiska-cli.yml@stable
     with:
       directory: next/
@@ -61,7 +61,7 @@ jobs:
   validate-nest-forms-backend:
     name: validate nest-forms-backend
     needs: conditions
-    if: needs.conditions.outputs.nest-forms-backend == 'true'
+    if: needs.conditions.outputs.nest-forms-backend == 'true' || needs.conditions.outputs.forms-shared == 'true'
     uses: bratislava/konto.bratislava.sk/.github/workflows/validate-nest-prisma-konto.yml@stable
     with:
       directory: nest-forms-backend/
@@ -70,7 +70,7 @@ jobs:
   build-nest-forms-backend:
     name: build nest-forms-backend
     needs: [conditions, validate-nest-forms-backend]
-    if: needs.conditions.outputs.nest-forms-backend == 'true'
+    if: needs.conditions.outputs.nest-forms-backend == 'true' || needs.conditions.outputs.forms-shared == 'true'
     uses: bratislava/github-actions/.github/workflows/build-with-bratiska-cli.yml@stable
     with:
       directory: nest-forms-backend/

@@ -19,11 +19,13 @@ export function safeArray<T>(array: T[] | any): T[] {
   return []
 }
 
-// TODO enums
-export function safeString<T extends string>(string: T | any): T | undefined {
+export function safeString<T extends string>(string: T | undefined): T | undefined
+export function safeString(string: string | undefined): string | undefined
+export function safeString(string: unknown): string | undefined {
   if (typeof string === 'string') {
-    return string as T
+    return string
   }
+  return undefined
 }
 
 export function safeNumber(number: number | any): number | undefined {

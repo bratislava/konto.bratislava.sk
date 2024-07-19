@@ -4,6 +4,7 @@ import { getInterCss } from '../../src/summary-pdf/interCss'
 import { getTailwindCss } from '../../src/summary-pdf/tailwindCss'
 // synchronizedPrettier must be used until https://github.com/jestjs/jest/issues/14305 is solved
 import synchronizedPrettier from '@prettier/sync'
+import { get as getAppRootDir } from 'app-root-dir'
 
 /*
  * This script generates base64-encoded assets from files and strings and writes them to the src/generated-assets
@@ -22,7 +23,7 @@ function convertStringToBase64(str: string) {
   return Buffer.from(str).toString('base64')
 }
 
-const rootDir = path.join(__dirname, '../../')
+const rootDir = getAppRootDir()
 
 const assetsList = [
   {
@@ -51,10 +52,7 @@ const assetsList = [
 ]
 
 const reformatWithPrettier = (code: string) => {
-  const configFile = synchronizedPrettier.resolveConfigFile(rootDir)
-  if (!configFile) {
-    throw new Error('Prettier config file not found')
-  }
+  const configFile = path.join(rootDir, './.prettierrc.js')
   const options = synchronizedPrettier.resolveConfig(configFile)
   if (!options) {
     throw new Error('Prettier options not found')

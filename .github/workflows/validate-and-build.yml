@@ -4,8 +4,14 @@ on:
     branches:
       - master
 jobs:
+  test-forms-shared:
+    name: Run tests on forms-shared
+    uses: bratislava/konto.bratislava.sk/.github/workflows/validate-forms-shared-konto.yml@beta
+    with:
+      directory: forms-shared/
+
   build-forms-shared:
-    name: Build and push forms shared image
+    name: Build image of forms-shared and push it to harbor
     uses: bratislava/github-actions/.github/workflows/build-with-bratiska-cli.yml@stable
     with:
       directory: forms-shared/
@@ -16,7 +22,7 @@ jobs:
 
   conditions:
     name: Check for conditions
-    needs: build-forms-shared
+    needs: [test-forms-shared, build-forms-shared]
     uses: bratislava/konto.bratislava.sk/.github/workflows/build-conditions-konto.yml@stable
     permissions: write-all
 

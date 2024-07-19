@@ -7,7 +7,10 @@ describe('Verify assets', () => {
     await Promise.all(
       assets.map(async ({ path, content }) => {
         const fileContent = await fs.readFile(path, 'utf-8')
-        expect(fileContent).toEqual(content)
+        // Normalize line endings to \n
+        const normalizedFileContent = fileContent.replace(/\r\n/g, '\n')
+
+        expect(normalizedFileContent).toEqual(content)
       }),
     )
   })

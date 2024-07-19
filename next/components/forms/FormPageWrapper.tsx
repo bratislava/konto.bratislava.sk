@@ -1,3 +1,5 @@
+import '@iframe-resizer/child'
+
 import { useRouter } from 'next/router'
 import { usePlausible } from 'next-plausible'
 import React, { useEffect } from 'react'
@@ -40,6 +42,15 @@ const useCustomPlausibleFormPagesTracking = (formSlug: string) => {
   })
 }
 
+if (typeof window !== 'undefined') {
+  // @ts-ignore
+  window.iframeResizer = {
+    onReady: () => {
+      console.log('ready')
+    },
+  }
+}
+
 const FormPageWrapper = ({ formContext }: FormPageWrapperProps) => {
   useCustomPlausibleFormPagesTracking(formContext.formDefinition.slug)
 
@@ -50,9 +61,9 @@ const FormPageWrapper = ({ formContext }: FormPageWrapperProps) => {
       initialFormSent={false}
       notSentChildren={
         <FormProviders formContext={formContext}>
-          <AccountPageLayout>
-            <FormPage />
-          </AccountPageLayout>
+          {/* <AccountPageLayout> */}
+          <FormPage />
+          {/* </AccountPageLayout> */}
         </FormProviders>
       }
       sentChildren={

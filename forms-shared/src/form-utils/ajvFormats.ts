@@ -1,5 +1,5 @@
 import { validate as validateUuid, version as uuidVersion } from 'uuid'
-
+import { electronicFormatIBAN, validateIBAN } from 'ibantools'
 // https://stackoverflow.com/a/51177696
 export const baTimeRegex = /^(\d|0\d|1\d|2[0-3]):[0-5]\d$/
 
@@ -54,5 +54,14 @@ export const baAjvFormats = {
   'ba-ico': /^\d{6,8}$/,
   'ba-file-uuid': {
     validate: validateBaFileUuid,
+  },
+  'ba-iban': {
+    validate: (value: string) => {
+      const electronicFormat = electronicFormatIBAN(value)
+      if (!electronicFormat) {
+        return false
+      }
+      return validateIBAN(electronicFormat).valid
+    },
   },
 }

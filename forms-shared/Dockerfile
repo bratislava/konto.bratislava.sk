@@ -1,6 +1,7 @@
 FROM node:20.9-slim AS base
 
 # Install dependencies needed for "pdf-to-img" which uses "node-canvas"
+# https://github.com/Automattic/node-canvas/wiki/Installation%3A-Ubuntu-and-other-Debian-based-systems
 RUN apt-get update && apt-get install -y \
     build-essential \
     libcairo2-dev \

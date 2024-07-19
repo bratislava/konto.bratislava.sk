@@ -1,8 +1,17 @@
 import { input, object } from '../../src/generator/functions'
 import { omitExtraData } from '../../src/form-utils/omitExtraData'
 import priznanieKDaniZNehnutelnosti from '../../src/schemas/priznanieKDaniZNehnutelnosti'
+import { filterConsole } from '../../test-utils/filterConsole'
 
 describe('omitExtraData', () => {
+  beforeEach(() => {
+    filterConsole(
+      'warn',
+      (message) =>
+        typeof message === 'string' && message.includes('could not merge subschemas in allOf'),
+    )
+  })
+
   it('should omit extra data for simple schema', () => {
     const schema = object('wrapper', {}, {}, [input('input', { title: 'Input title' }, {})])
 
@@ -13,7 +22,7 @@ describe('omitExtraData', () => {
     expect(result).toEqual({ input: 'value' })
   })
 
-  // "Údaje o danovníkovi" step in "Priznanie k dani z nehnuteľnosti" contains a lot of conditional fields, the original
+  // "Údaje o daňovníkovi" step in "Priznanie k dani z nehnuteľnosti" contains a lot of conditional fields, the original
   // data consists of all possible fields, therefore it is a good test case for omitting extra data.
   it('should omit extra data for complex schema', () => {
     const result = omitExtraData(priznanieKDaniZNehnutelnosti.schema, {

@@ -15,6 +15,7 @@ import {
   FileUploadUiOptions,
   InputUiOptions,
   markdownTextPrefix,
+  NumberUiOptions,
   ObjectFieldUiOptions,
   RadioGroupUiOptions,
   SchemaUiOptions,
@@ -140,7 +141,7 @@ export const selectMultiple = (
       )
 
       return {
-        'ui:widget': BaWidgetType.Select,
+        'ui:widget': BaWidgetType.SelectMultiple,
         'ui:options': {
           ...uiOptions,
           selectOptions: Object.fromEntries(selectOptionsArray),
@@ -228,7 +229,7 @@ export const number = (
     maximum?: number
     exclusiveMaximum?: number
   },
-  uiOptions: Omit<InputUiOptions, 'type'>,
+  uiOptions: NumberUiOptions,
 ): Field => {
   return {
     property,
@@ -242,9 +243,9 @@ export const number = (
       exclusiveMaximum: options.exclusiveMaximum,
     }),
     uiSchema: () => ({
-      'ui:widget': BaWidgetType.Input,
+      'ui:widget': BaWidgetType.Number,
       'ui:label': false,
-      'ui:options': { ...uiOptions, type: 'number' },
+      'ui:options': { ...uiOptions },
     }),
     required: Boolean(options.required),
   }
@@ -397,7 +398,10 @@ export const fileUpload = (
         file: true,
       }
     },
-    uiSchema: () => ({ 'ui:widget': BaWidgetType.FileUpload, 'ui:options': uiOptions }),
+    uiSchema: () => ({
+      'ui:widget': options.multiple ? BaWidgetType.FileUploadMultiple : BaWidgetType.FileUpload,
+      'ui:options': uiOptions,
+    }),
     required: Boolean(options.required),
   }
 }

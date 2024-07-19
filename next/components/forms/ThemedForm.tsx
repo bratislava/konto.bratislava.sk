@@ -12,9 +12,12 @@ import BAObjectFieldTemplate from './widget-wrappers/BAObjectFieldTemplate'
 import CheckboxGroupWidgetRJSF from './widget-wrappers/CheckboxGroupWidgetRJSF'
 import CheckboxWidgetRJSF from './widget-wrappers/CheckboxWidgetRJSF'
 import CustomComponentsWidgetRJSF from './widget-wrappers/CustomComponentsFieldWidgetRJSF'
+import FileUploadMultipleWidgetRJSF from './widget-wrappers/FileUploadMultipleWidgetRJSF'
 import FileUploadWidgetRJSF from './widget-wrappers/FileUploadWidgetRJSF'
 import InputWidgetRJSF from './widget-wrappers/InputWidgetRJSF'
+import NumberWidgetRJSF from './widget-wrappers/NumberWidgetRJSF'
 import RadioGroupWidgetRJSF from './widget-wrappers/RadioGroupWidgetRJSF'
+import SelectMultipleWidgetRJSF from './widget-wrappers/SelectMultipleWidgetRJSF'
 import SelectWidgetRJSF from './widget-wrappers/SelectWidgetRJSF'
 import TextAreaWidgetRJSF from './widget-wrappers/TextAreaWidgetRJSF'
 
@@ -23,16 +26,19 @@ import TextAreaWidgetRJSF from './widget-wrappers/TextAreaWidgetRJSF'
 const theme: ThemeProps = {
   widgets: wrapWidgetsInContext({
     [BaWidgetType.Select]: SelectWidgetRJSF as ComponentType<WidgetProps>,
+    [BaWidgetType.SelectMultiple]: SelectMultipleWidgetRJSF as ComponentType<WidgetProps>,
     [BaWidgetType.Input]: InputWidgetRJSF as ComponentType<WidgetProps>,
+    [BaWidgetType.Number]: NumberWidgetRJSF as ComponentType<WidgetProps>,
     [BaWidgetType.RadioGroup]: RadioGroupWidgetRJSF as ComponentType<WidgetProps>,
     [BaWidgetType.TextArea]: TextAreaWidgetRJSF as ComponentType<WidgetProps>,
     [BaWidgetType.CheckboxGroup]: CheckboxGroupWidgetRJSF as ComponentType<WidgetProps>,
     [BaWidgetType.Checkbox]: CheckboxWidgetRJSF as ComponentType<WidgetProps>,
     [BaWidgetType.FileUpload]: FileUploadWidgetRJSF as ComponentType<WidgetProps>,
+    [BaWidgetType.FileUploadMultiple]: FileUploadMultipleWidgetRJSF as ComponentType<WidgetProps>,
     [BaWidgetType.DatePicker]: DatePickerWidgetRJSF as ComponentType<WidgetProps>,
     [BaWidgetType.TimePicker]: TimePickerWidgetRJSF as ComponentType<WidgetProps>,
     [BaWidgetType.CustomComponents]: CustomComponentsWidgetRJSF as ComponentType<WidgetProps>,
-  }),
+  } satisfies Record<BaWidgetType, ComponentType<WidgetProps>>),
   templates: {
     ObjectFieldTemplate: BAObjectFieldTemplate,
     ArrayFieldTemplate: BAArrayFieldTemplate,

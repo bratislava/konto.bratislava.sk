@@ -95,21 +95,27 @@ export const getSummaryDisplayValues = (
   }
 
   if (widgetType === BaWidgetType.Select) {
-    const isSingleSelect = schema.type === 'string' && typeof value === 'string'
-    const isMultiSelect = schema.type === 'array' && Array.isArray(value)
+    const selectUiOptions = uiOptions as SelectUiOptions
 
-    if (!isSingleSelect && !isMultiSelect) {
+    const option = selectUiOptions.selectOptions?.[value]
+    if (!option) {
       return [invalidValue]
     }
 
+    return [createStringValue(option.title)]
+  }
+  if (widgetType === BaWidgetType.SelectMultiple) {
     const selectUiOptions = uiOptions as SelectUiOptions
-    const selectArray = (isMultiSelect ? value : [value]) as string[]
 
-    if (selectArray.length === 0) {
+    if (!Array.isArray(value)) {
+      return [invalidValue]
+    }
+
+    if (value.length === 0) {
       return [noneValue]
     }
 
-    return selectArray.map((item) => {
+    return value.map((item) => {
       const option = selectUiOptions.selectOptions?.[item]
       if (!option) {
         return invalidValue
@@ -126,28 +132,20 @@ export const getSummaryDisplayValues = (
 
     return [createStringValue(option.label)]
   }
-  if (widgetType === BaWidgetType.Input) {
-    const isString = schema.type === 'string' && typeof value === 'string'
-    const isNumber =
-      (schema.type === 'number' || schema.type === 'integer') && typeof value === 'number'
-
-    if (isNumber) {
-      // TODO: Format number
-      return [createStringValue(value.toString())]
-    }
-
-    if (isString) {
-      return [createStringValue(value)]
-    }
-
-    return [invalidValue]
-  }
-  if (widgetType === BaWidgetType.TextArea) {
+  if (widgetType === BaWidgetType.Input || widgetType === BaWidgetType.TextArea) {
     if (typeof value !== 'string') {
       return [invalidValue]
     }
 
     return [createStringValue(value)]
+  }
+  if (widgetType === BaWidgetType.Number) {
+    if (typeof value !== 'number') {
+      return [invalidValue]
+    }
+
+    // TODO: Format number
+    return [createStringValue(value.toString())]
   }
   if (widgetType === BaWidgetType.TimePicker) {
     if (typeof value !== 'string' || !baTimeRegex.test(value)) {
@@ -183,28 +181,28 @@ export const getSummaryDisplayValues = (
     })
   }
   if (widgetType === BaWidgetType.FileUpload) {
-    const isSingleFile = schema.type === 'string' && isFileUuid(value)
-    const isMultiFile = schema.type === 'array' && Array.isArray(value)
-
-    if (isSingleFile) {
+    if (isFileUuid(value)) {
       return [createFileValue(value)]
     }
 
-    if (isMultiFile) {
-      if (value.length === 0) {
-        return [noneValue]
-      }
-
-      return value.map((item) => {
-        if (!isFileUuid(item)) {
-          return invalidValue
-        }
-
-        return createFileValue(item)
-      })
+    return [invalidValue]
+  }
+  if (widgetType === BaWidgetType.FileUploadMultiple) {
+    if (!Array.isArray(value)) {
+      return [invalidValue]
     }
 
-    return [invalidValue]
+    if (value.length === 0) {
+      return [noneValue]
+    }
+
+    return value.map((item) => {
+      if (!isFileUuid(item)) {
+        return invalidValue
+      }
+
+      return createFileValue(item)
+    })
   }
   if (widgetType === BaWidgetType.DatePicker) {
     try {

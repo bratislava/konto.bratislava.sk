@@ -6,13 +6,13 @@ import React from 'react'
 import { useFormFileUpload } from '../useFormFileUpload'
 import Upload from '../widget-components/Upload/Upload'
 
-interface FileUploadWidgetRJSFProps extends WidgetProps {
+interface FileUploadMultipleWidgetRJSFProps extends WidgetProps {
   options: FileUploadUiOptions
-  value: string | null
-  onChange: (value?: string | null) => void
+  value: string[]
+  onChange: (value?: string[]) => void
 }
 
-const FileUploadWidgetRJSF = ({
+const FileUploadMultipleWidgetRJSF = ({
   id,
   options,
   label,
@@ -22,7 +22,7 @@ const FileUploadWidgetRJSF = ({
   onChange,
   rawErrors,
   readonly,
-}: FileUploadWidgetRJSFProps) => {
+}: FileUploadMultipleWidgetRJSFProps) => {
   const {
     sizeLimit,
     accept,
@@ -45,22 +45,26 @@ const FileUploadWidgetRJSF = ({
       return
     }
 
-    if (value) {
-      formFileUpload.removeFiles([value])
-    }
-    onChange(ids[0])
+    onChange([...(value ?? []), ...ids])
   }
 
   const handleFileRemove = (fileId: string) => {
-    onChange(null)
+    if (!value) {
+      return
+    }
+
+    onChange(value.filter((valueInner) => valueInner !== fileId))
     formFileUpload.removeFiles([fileId])
   }
 
   const handleFileRetry = (fileId: string) => {
     const newId = formFileUpload.retryFile(fileId, constraints)
-    if (newId) {
-      onChange(newId)
+    if (!newId || !value) {
+      return
     }
+
+    // Replaces the old id with the new one.
+    onChange(value.map((valueInner) => (valueInner === fileId ? newId : valueInner)))
   }
 
   return (
@@ -71,7 +75,7 @@ const FileUploadWidgetRJSF = ({
         type={type}
         label={label}
         required={required}
-        multiple={false}
+        multiple
         className={className}
         helptext={helptext}
         helptextHeader={helptextHeader}
@@ -91,4 +95,4 @@ const FileUploadWidgetRJSF = ({
   )
 }
 
-export default FileUploadWidgetRJSF
+export default FileUploadMultipleWidgetRJSF

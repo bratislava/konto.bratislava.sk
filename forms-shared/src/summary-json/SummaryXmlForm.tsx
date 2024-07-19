@@ -170,12 +170,15 @@ const theme: ThemeProps = {
   },
   widgets: {
     [BaWidgetType.Select]: wrapWidget(BaWidgetType.Select),
+    [BaWidgetType.SelectMultiple]: wrapWidget(BaWidgetType.SelectMultiple),
     [BaWidgetType.Input]: wrapWidget(BaWidgetType.Input),
+    [BaWidgetType.Number]: wrapWidget(BaWidgetType.Number),
     [BaWidgetType.RadioGroup]: wrapWidget(BaWidgetType.RadioGroup),
     [BaWidgetType.TextArea]: wrapWidget(BaWidgetType.TextArea),
     [BaWidgetType.Checkbox]: wrapWidget(BaWidgetType.Checkbox),
     [BaWidgetType.CheckboxGroup]: wrapWidget(BaWidgetType.CheckboxGroup),
     [BaWidgetType.FileUpload]: wrapWidget(BaWidgetType.FileUpload),
+    [BaWidgetType.FileUploadMultiple]: wrapWidget(BaWidgetType.FileUploadMultiple),
     [BaWidgetType.DatePicker]: wrapWidget(BaWidgetType.DatePicker),
     [BaWidgetType.TimePicker]: wrapWidget(BaWidgetType.TimePicker),
     [BaWidgetType.CustomComponents]: () => {

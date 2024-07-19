@@ -84,11 +84,13 @@ export type CheckboxUiOptions = {
 export type DatePickerUiOptions = WidgetUiOptions
 
 export type InputUiOptions = {
-  type?: 'text' | 'password' | 'email' | 'tel' | 'number'
+  type?: 'text' | 'password' | 'email' | 'tel'
   resetIcon?: boolean
   leftIcon?: 'person' | 'mail' | 'call' | 'lock'
   placeholder?: string
 } & WidgetUiOptions
+
+export type NumberUiOptions = Omit<InputUiOptions, 'type'>
 
 type RadioOption = {
   value: string
@@ -180,12 +182,15 @@ export const markdownTextPrefix = `markdown_gKgflRNwdS:`
 
 export enum BaWidgetType {
   Select = 'Select',
+  SelectMultiple = 'SelectMultiple',
   Input = 'Input',
+  Number = 'Number',
   RadioGroup = 'RadioGroup',
   TextArea = 'TextArea',
   Checkbox = 'Checkbox',
   CheckboxGroup = 'CheckboxGroup',
   FileUpload = 'FileUpload',
+  FileUploadMultiple = 'FileUploadMultiple',
   DatePicker = 'DatePicker',
   TimePicker = 'TimePicker',
   CustomComponents = 'CustomComponents',

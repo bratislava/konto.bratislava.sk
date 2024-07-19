@@ -22,6 +22,6 @@ RUN npm run build
 
 FROM base as test
 RUN npx playwright install chromium --with-deps
-# COPY needs to by after playwright to make it more cache friendly
+# COPY needs to be after Playwright installation to make it more cache friendly.
 COPY . ./
 CMD [ "npm", "run", "test" ]

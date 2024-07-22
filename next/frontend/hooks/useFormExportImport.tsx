@@ -276,7 +276,6 @@ export const useGetContext = () => {
   const deleteConcept = async () => {
     openSnackbarInfo(t('info_messages.concept_delete'))
     try {
-      if (!formId) throw new Error(`No formId provided on deleteConcept`)
       await formsApi.nasesControllerDeleteForm(formId, {
         accessToken: 'onlyAuthenticated',
       })

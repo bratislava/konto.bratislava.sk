@@ -17,15 +17,22 @@ const examples = [
   exampleTaxForm5,
 ]
 describe('tax-form', () => {
-  const mockDate = new Date('2024-01-01')
+  beforeEach(() => {
+    // Without `advanceTimers` the PDF generation would hang indefinitely.
+    jest.useFakeTimers({ now: new Date('2024-01-01'), advanceTimers: 1 })
+  })
+
+  afterAll(() => {
+    jest.useRealTimers()
+  })
 
   examples.forEach((formData, index) => {
     it(`should return correct PDF mapping for example ${index + 1}`, () => {
-      expect(getTaxFormPdfMapping(formData, undefined, mockDate)).toMatchSnapshot()
+      expect(getTaxFormPdfMapping(formData, undefined)).toMatchSnapshot()
     })
 
     it(`should return correct XML for example ${index + 1}`, () => {
-      expect(generateTaxXml(formData, true, mockDate)).toMatchSnapshot()
+      expect(generateTaxXml(formData, true)).toMatchSnapshot()
     })
 
     it(`should match snapshot for generated PDF example ${index + 1}`, async () => {
@@ -36,7 +43,7 @@ describe('tax-form', () => {
           'Warning: _getAppearance: OffscreenCanvas is not supported, annotation may not render correctly.',
       )
 
-      const base64Pdf = await generateTaxPdf({ formData, currentDate: mockDate })
+      const base64Pdf = await generateTaxPdf({ formData })
 
       await expectPdfToMatchSnapshot(`data:application/pdf;base64,${base64Pdf}`)
     }, /* The PDFs take a while to generate, so they need an increased timeout. */ 10000)

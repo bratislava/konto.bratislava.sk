@@ -8,7 +8,6 @@ import {
   IsString,
   IsUUID,
 } from 'class-validator'
-import { ClientFileInfo } from 'forms-shared/form-files/fileStatus'
 
 import { JSON_FORM_EXAMPLE, XML_FORM_EXAMPLE } from '../../utils/constants'
 
@@ -68,6 +67,22 @@ export class XmlToJsonResponseDto {
   jsonForm!: RJSFSchema
 }
 
+/**
+ * Simplified representation of `ClientFileInfo` from `forms-shared/src/form-files/fileStatus.ts`.
+ */
+class SimplifiedClientFileInfoDto {
+  @IsString()
+  id: string
+
+  @IsObject()
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  file: Record<string, any>
+
+  @IsObject()
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  status: Record<string, any>
+}
+
 export class ConvertToPdfRequestDto {
   @ApiProperty({
     description: 'Form id',
@@ -91,5 +106,5 @@ export class ConvertToPdfRequestDto {
   })
   @IsOptional()
   @IsObject({ each: true })
-  clientFiles?: ClientFileInfo[]
+  clientFiles?: SimplifiedClientFileInfoDto[]
 }

@@ -7,6 +7,7 @@ import AccountPageLayout from '../layouts/AccountPageLayout'
 import FormPage from './FormPage'
 import FormProviders from './FormProviders'
 import ThankYouFormSection from './segments/AccountSections/ThankYouSection/ThankYouFormSection'
+import ConditionalWrap from './simple-components/ConditionalWrap'
 import { FormContext, FormContextProvider } from './useFormContext'
 import { FormSentRenderer } from './useFormSent'
 
@@ -41,7 +42,8 @@ const useCustomPlausibleFormPagesTracking = (formSlug: string) => {
 }
 
 const FormPageWrapper = ({ formContext }: FormPageWrapperProps) => {
-  useCustomPlausibleFormPagesTracking(formContext.formDefinition.slug)
+  const { formDefinition, isEmbedded } = formContext
+  useCustomPlausibleFormPagesTracking(formDefinition.slug)
 
   return (
     <FormSentRenderer
@@ -50,16 +52,24 @@ const FormPageWrapper = ({ formContext }: FormPageWrapperProps) => {
       initialFormSent={false}
       notSentChildren={
         <FormProviders formContext={formContext}>
-          <AccountPageLayout>
+          <ConditionalWrap
+            condition={!isEmbedded}
+            wrap={(children) => <AccountPageLayout>{children}</AccountPageLayout>}
+          >
             <FormPage />
-          </AccountPageLayout>
+          </ConditionalWrap>
         </FormProviders>
       }
       sentChildren={
         <FormContextProvider formContext={formContext}>
-          <AccountPageLayout className="bg-gray-50">
+          <ConditionalWrap
+            condition={!isEmbedded}
+            wrap={(children) => (
+              <AccountPageLayout className="bg-gray-50">{children}</AccountPageLayout>
+            )}
+          >
             <ThankYouFormSection />
-          </AccountPageLayout>
+          </ConditionalWrap>
         </FormContextProvider>
       }
     />

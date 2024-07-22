@@ -20,6 +20,7 @@ const FormPage = () => {
       schemas: { uiSchema },
     },
     isReadonly,
+    displayHeaderAndMenu,
   } = useFormContext()
   const {
     currentStepIndex,
@@ -48,7 +49,7 @@ const FormPage = () => {
 
   return (
     <>
-      <FormHeader />
+      {displayHeaderAndMenu && <FormHeader />}
       <div
         className="mx-auto flex w-full max-w-screen-lg flex-col gap-10 pb-6 pt-0 lg:flex-row lg:gap-20 lg:py-10"
         data-cy="form-container"
@@ -101,7 +102,7 @@ const FormPage = () => {
               </ThemedForm>
             </>
           )}
-          <MenuList />
+          {displayHeaderAndMenu && <MenuList />}
         </div>
       </div>
       <FormUploadXmlJson />

@@ -34,6 +34,7 @@ export const getServerSideProps = amplifyGetServerSideProps<FormPageWrapperProps
           initialServerFiles: [],
           formSent: false,
           formMigrationRequired: false,
+          isEmbedded: context.query['externa-sluzba'] === 'true',
           isDevRoute: true,
         },
         ...(await slovakServerSideTranslations()),

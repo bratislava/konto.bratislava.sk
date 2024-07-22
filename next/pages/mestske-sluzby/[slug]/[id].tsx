@@ -64,6 +64,8 @@ export const getServerSideProps = amplifyGetServerSideProps<FormPageWrapperProps
             initialSignature,
             formSent,
             formMigrationRequired,
+            // TODO: To be implemented.
+            isEmbedded: false,
           },
           ...(await slovakServerSideTranslations()),
         } satisfies FormPageWrapperProps,

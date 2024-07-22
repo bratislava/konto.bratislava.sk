@@ -1,7 +1,6 @@
 import { useRouter } from 'next/router'
 import React, { createContext, PropsWithChildren, useContext, useState } from 'react'
 
-import { useSsrAuth } from '../../frontend/hooks/useSsrAuth'
 import { FORM_SEND_EID_TOKEN_QUERY_KEY } from '../../frontend/utils/formSend'
 import { RegistrationModalType } from './segments/RegistrationModal/RegistrationModal'
 import { TaxFormPdfExportModalState } from './segments/TaxFormPdfExportModal/TaxFormPdfExportModalState'
@@ -23,8 +22,7 @@ enum InitialModal {
 }
 
 const useInitialModal = () => {
-  const { isSignedIn, tierStatus } = useSsrAuth()
-  const { formMigrationRequired, isTaxForm } = useFormContext()
+  const { formMigrationRequired, signInMissing, verificationMissing } = useFormContext()
   const router = useRouter()
 
   // If the form has been sent via eID we don't want to display the initial warning modals.
@@ -37,15 +35,11 @@ const useInitialModal = () => {
     return InitialModal.MigrationRequired
   }
 
-  if (isTaxForm) {
-    return null
-  }
-
-  if (!isSignedIn) {
+  if (signInMissing) {
     return InitialModal.Registration
   }
 
-  if (!tierStatus.isIdentityVerified) {
+  if (verificationMissing) {
     return InitialModal.IdentityVerification
   }
 

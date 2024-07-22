@@ -8,8 +8,8 @@ import Upload from '../widget-components/Upload/Upload'
 
 interface FileUploadWidgetRJSFProps extends WidgetProps {
   options: FileUploadUiOptions
-  value: string | null
-  onChange: (value?: string | null) => void
+  value: string | undefined
+  onChange: (value?: string | undefined) => void
 }
 
 const FileUploadWidgetRJSF = ({
@@ -52,7 +52,7 @@ const FileUploadWidgetRJSF = ({
   }
 
   const handleFileRemove = (fileId: string) => {
-    onChange(null)
+    onChange()
     formFileUpload.removeFiles([fileId])
   }
 

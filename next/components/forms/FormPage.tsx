@@ -1,6 +1,7 @@
 import cx from 'classnames'
 import MenuList from 'components/forms/steps/MenuList'
 import { baFormDefaults } from 'forms-shared/form-utils/formDefaults'
+import Script from 'next/script'
 import { useIsomorphicLayoutEffect } from 'usehooks-ts'
 
 import FormControls from './FormControls'
@@ -21,6 +22,7 @@ const FormPage = () => {
     },
     isReadonly,
     displayHeaderAndMenu,
+    isEmbedded,
   } = useFormContext()
   const {
     currentStepIndex,
@@ -49,6 +51,8 @@ const FormPage = () => {
 
   return (
     <>
+      {/* Must be copied in next.config.js to work correctly. */}
+      {isEmbedded && <Script src="/scripts/iframe-resizer-child.js" async />}
       {displayHeaderAndMenu && <FormHeader />}
       <div
         className="mx-auto flex w-full max-w-screen-lg flex-col gap-10 pb-6 pt-0 lg:flex-row lg:gap-20 lg:py-10"

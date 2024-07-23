@@ -50,7 +50,7 @@ const FieldRenderer = ({ field, hasError, children }: SummaryFieldRendererProps)
 }
 
 const StringValueRenderer = ({ value }: SummaryStringValueRendererProps) => {
-  return <span>{value}</span>
+  return <span className="whitespace-pre-wrap">{value}</span>
 }
 
 const FileIcon = () => (

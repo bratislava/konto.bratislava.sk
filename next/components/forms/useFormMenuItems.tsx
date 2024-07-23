@@ -44,13 +44,13 @@ export const useFormMenuItems = (): FormMenuItem[] => {
         }
       : null,
     pdfDownloadInMenuAllowed
-      ? null
-      : {
+      ? {
           title: t('menu_list.pdf'),
           icon: <PdfIcon className="size-6" />,
           // eslint-disable-next-line @typescript-eslint/no-misused-promises
           onPress: () => exportPdf(),
-        },
+        }
+      : null,
     !isReadonly && xmlImportExportAllowed
       ? {
           title: t('menu_list.upload_xml'),

@@ -3,6 +3,7 @@ import { Readable } from 'node:stream'
 import { Injectable, Logger } from '@nestjs/common'
 import { ConfigService } from '@nestjs/config'
 import { Files, FileStatus, FormError, FormState, Prisma } from '@prisma/client'
+import { getFileUuidsNaive } from 'forms-shared/form-utils/fileUtils'
 import * as jwt from 'jsonwebtoken'
 
 import { CognitoGetUserData } from '../auth/dtos/cognito.dto'
@@ -495,8 +496,7 @@ export default class FilesService {
     formId: string,
     formDataJson: Prisma.JsonObject,
   ): Promise<void> {
-    const fileUuidsFromForm: string[] =
-      this.filesHelper.getAllFileUuidsFromJson(formDataJson)
+    const fileUuidsFromForm = getFileUuidsNaive(formDataJson)
     const fileUuidsFromDatabase: string[] =
       await this.filesHelper.getFileUuidsFromDatabase(formId)
 

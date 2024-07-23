@@ -15,7 +15,7 @@ import {
   FormsErrorsResponseEnum,
 } from '../forms/forms.errors.enum'
 import PrismaService from '../prisma/prisma.service'
-import PostScanFileResponseDto from '../scanner-client/scanner-client.dto'
+import PostScanFileResponseDto, { GetScanFileDto } from '../scanner-client/scanner-client.dto'
 import ScannerClientService from '../scanner-client/scanner-client.service'
 import {
   ErrorsEnum,
@@ -393,5 +393,27 @@ export default class FilesHelper {
       }
       return acc
     }, []) as string[]
+  }
+
+  /*
+  Sends request to nest-clamav-scanner to delete file from scanner database, so the file will not be scanned
+   */
+  async deleteFileFromScannerClient(
+    scannerId: string,
+  ): Promise<GetScanFileDto | undefined> {
+    this.logger.log(
+      `Deleting file with scannerId: ${scannerId} from scanner...`,
+    )
+
+    const responseScanner =
+      await this.scannerClientService.deleteFile(scannerId)
+
+    if (responseScanner) {
+      this.logger.log(
+        `File with scannerId: ${scannerId} was deleted from scanner.`,
+      )
+    }
+
+    return responseScanner
   }
 }

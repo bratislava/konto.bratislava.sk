@@ -15,7 +15,9 @@ import {
   FormsErrorsResponseEnum,
 } from '../forms/forms.errors.enum'
 import PrismaService from '../prisma/prisma.service'
-import PostScanFileResponseDto, { GetScanFileDto } from '../scanner-client/scanner-client.dto'
+import PostScanFileResponseDto, {
+  GetScanFileDto,
+} from '../scanner-client/scanner-client.dto'
 import ScannerClientService from '../scanner-client/scanner-client.service'
 import {
   ErrorsEnum,

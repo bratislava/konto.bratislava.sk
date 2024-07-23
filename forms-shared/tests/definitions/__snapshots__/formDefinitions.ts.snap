@@ -22,7 +22,7 @@ exports[`Form definitions komunitne-zahrady default form state should match snap
 }
 `;
 
-exports[`Form definitions komunitne-zahrady schemas matches snapshot 1`] = `
+exports[`Form definitions komunitne-zahrady schemas match snapshot 1`] = `
 {
   "schema": {
     "allOf": [
@@ -978,7 +978,7 @@ exports[`Form definitions predzahradky default form state should match snapshot 
 }
 `;
 
-exports[`Form definitions predzahradky schemas matches snapshot 1`] = `
+exports[`Form definitions predzahradky schemas match snapshot 1`] = `
 {
   "schema": {
     "allOf": [
@@ -1537,7 +1537,7 @@ exports[`Form definitions priznanie-k-dani-z-nehnutelnosti default form state sh
 }
 `;
 
-exports[`Form definitions priznanie-k-dani-z-nehnutelnosti schemas matches snapshot 1`] = `
+exports[`Form definitions priznanie-k-dani-z-nehnutelnosti schemas match snapshot 1`] = `
 {
   "schema": {
     "allOf": [
@@ -13985,7 +13985,7 @@ exports[`Form definitions stanovisko-k-investicnemu-zameru default form state sh
 }
 `;
 
-exports[`Form definitions stanovisko-k-investicnemu-zameru schemas matches snapshot 1`] = `
+exports[`Form definitions stanovisko-k-investicnemu-zameru schemas match snapshot 1`] = `
 {
   "schema": {
     "allOf": [
@@ -15345,7 +15345,7 @@ exports[`Form definitions zavazne-stanovisko-k-investicnej-cinnosti default form
 }
 `;
 
-exports[`Form definitions zavazne-stanovisko-k-investicnej-cinnosti schemas matches snapshot 1`] = `
+exports[`Form definitions zavazne-stanovisko-k-investicnej-cinnosti schemas match snapshot 1`] = `
 {
   "schema": {
     "allOf": [

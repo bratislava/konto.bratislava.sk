@@ -9,7 +9,7 @@ import { getExampleFormPairs } from '../../src/example-forms/getExampleFormPairs
 describe('Form definitions', () => {
   formDefinitions.forEach((formDefinition) => {
     describe(formDefinition.slug, () => {
-      it('schemas matches snapshot', () => {
+      it('schemas match snapshot', () => {
         expect(formDefinition.schemas).toMatchSnapshot()
       })
 

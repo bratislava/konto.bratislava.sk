@@ -6,8 +6,6 @@ import { Files, FileStatus, Forms, Prisma } from '@prisma/client'
 import { isSlovenskoSkFormDefinition } from 'forms-shared/definitions/formDefinitionTypes'
 import { getFormDefinitionBySlug } from 'forms-shared/definitions/getFormDefinitionBySlug'
 import { BucketItemStat } from 'minio'
-import traverse from 'traverse'
-import { validate as validateUuid, version as uuidVersion } from 'uuid'
 
 import { isValidScanStatus } from '../common/utils/helpers'
 import {
@@ -368,30 +366,5 @@ export default class FilesHelper {
       uuids.push(file.id)
     })
     return uuids
-  }
-
-  /**
-   * Extracts used file UUIDs from form data.
-   *
-   * This is a naive implementation that extracts all the valid UUIDs, but is very performant compared
-   * to the "normal" version.
-   */
-  getAllFileUuidsFromJson(formDataJson: Prisma.JsonObject): string[] {
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-call,unicorn/no-array-reduce,@typescript-eslint/no-unsafe-member-access
-    return traverse(formDataJson).reduce(function traverseFn(
-      acc: string[],
-      value,
-    ) {
-      if (
-        // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
-        this.isLeaf &&
-        typeof value === 'string' &&
-        validateUuid(value) &&
-        uuidVersion(value) === 4
-      ) {
-        acc.push(value)
-      }
-      return acc
-    }, []) as string[]
   }
 }

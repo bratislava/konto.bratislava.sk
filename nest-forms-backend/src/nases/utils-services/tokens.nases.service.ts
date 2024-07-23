@@ -14,6 +14,7 @@ import {
 import { getFormDefinitionBySlug } from 'forms-shared/definitions/getFormDefinitionBySlug'
 import mime from 'mime-types'
 import { v1 as uuidv1, v4 as uuidv4 } from 'uuid'
+import { Builder } from 'xml2js'
 
 import { CognitoGetUserData } from '../../auth/dtos/cognito.dto'
 import ConvertService from '../../convert/convert.service'
@@ -33,6 +34,7 @@ import {
   NasesSendResponse,
   ResponseGdprDataDto,
 } from '../dtos/responses.dto'
+import { XmlObjectList } from '../dtos/xml.dto'
 import {
   NasesErrorCodesEnum,
   NasesErrorCodesResponseEnum,
@@ -92,8 +94,8 @@ export default class NasesUtilsService {
   private async createAttachmentsIfExists(
     form: Forms,
     formDefinition: FormDefinitionSlovenskoSk,
-  ): Promise<string> {
-    let result = ''
+  ): Promise<XmlObjectList> {
+    const result: XmlObjectList = []
     const files = await this.prismaService.files.findMany({
       where: {
         formId: form.id,
@@ -110,7 +112,17 @@ export default class NasesUtilsService {
       // eslint-disable-next-line no-restricted-syntax
       const fileBuffer = await this.stream2buffer(fileStream)
       const fileBase64 = fileBuffer.toString('base64')
-      result += `<Object Id="${file.id}" IsSigned="false" Name="${file.fileName}" Description="ATTACHMENT" Class="ATTACHMENT" MimeType="${mimeType}" Encoding="Base64">${fileBase64}</Object>`
+      result.push({
+        $: {
+          IsSigned: 'false',
+          Name: file.fileName,
+          Description: 'ATTACHMENT',
+          Class: 'attachment',
+          MimeType: mimeType,
+          Encoding: 'Base64',
+        },
+        _: fileBase64,
+      })
     }
     if (isSlovenskoSkTaxFormDefinition(formDefinition)) {
       try {
@@ -118,7 +130,18 @@ export default class NasesUtilsService {
           form.formDataJson,
           form.id,
         )
-        result += `<Object Id="${uuidv1()}" IsSigned="false" Name="printed-form.pdf" Description="ATTACHMENT" Class="ATTACHMENT" MimeType="application/pdf" Encoding="Base64">${base64FormPdf}</Object>`
+        result.push({
+          $: {
+            Id: uuidv1(),
+            IsSigned: 'false',
+            Name: 'printed-form.pdf',
+            Description: 'ATTACHMENT',
+            Class: 'ATTACHMENT',
+            MimeType: 'application/pdf',
+            Encoding: 'Base64',
+          },
+          _: base64FormPdf,
+        })
       } catch (error) {
         console.error(
           `ERROR - Printing form to attachment to Nases and Noris error for form id ${form.id}`,
@@ -372,7 +395,6 @@ export default class NasesUtilsService {
       )
     }
     // message = Buffer.from(message, 'binary').toString('base64');
-    let envelope: string
     // envelope = `
     // <?xml version="1.0" encoding="utf-8"?>
     // <SKTalkMessage xmlns="http://gov.sk/SKTalkMessage" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
@@ -409,7 +431,7 @@ export default class NasesUtilsService {
     let subject: string = form.id
     let mimeType = 'application/x-eform-xml'
     let encoding = 'XML'
-    let attachments = ''
+    let attachments: XmlObjectList = []
 
     if (isSlovenskoSkTaxFormDefinition(formDefinition)) {
       subject = 'Podávanie daňového priznanie k dani z nehnuteľností' // TODO fix in formDefinition, quickfix here formDefinition.messageSubjectDefault
@@ -417,40 +439,71 @@ export default class NasesUtilsService {
       encoding = 'Base64'
       attachments = await this.createAttachmentsIfExists(form, formDefinition)
     }
-    envelope = `
-            <?xml version="1.0" encoding="utf-8"?>
-            <SKTalkMessage xmlns="http://gov.sk/SKTalkMessage" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
-              <EnvelopeVersion>3.0</EnvelopeVersion>
-              <Header>
-                <MessageInfo>
-                  <Class>EGOV_APPLICATION</Class>
-                  <PospID>${pospID}</PospID>
-                  <PospVersion>${pospVersion}</PospVersion>
-                  <MessageID>${form.id}</MessageID>
-                  <CorrelationID>${correlationId}</CorrelationID>
-                </MessageInfo>
-              </Header>
-              <Body>
-                <MessageContainer xmlns="http://schemas.gov.sk/core/MessageContainer/1.0">
-                  <MessageId>${form.id}</MessageId>
-                  <SenderId>${senderId}</SenderId>
-                  <RecipientId>${
-                    process.env.NASES_RECIPIENT_URI ?? ''
-                  }</RecipientId>
-                  <MessageType>${pospID}</MessageType>
-                  <MessageSubject>${subject}</MessageSubject>
-                  <Object Id="${form.id}" IsSigned="${
-                    isSigned ? 'true' : 'false'
-                  }" Name="${title}" Description="" Class="FORM" MimeType="${mimeType}" Encoding="${encoding}">${message}</Object>
-    ${attachments}
-                </MessageContainer>
-              </Body>
-            </SKTalkMessage>
-      `
+
+    attachments.push({
+      $: {
+        Id: form.id,
+        IsSigned: isSigned ? 'true' : 'false',
+        Name: title,
+        Description: '',
+        Class: 'FORM',
+        MimeType: mimeType,
+        Encoding: encoding,
+      },
+      // TODO When message should be created as object
+      _: message,
+    })
+
+    const template = {
+      SKTalkMessage: {
+        $: {
+          xmlns: 'http://gov.sk/SKTalkMessage',
+          'xmlns:xsi': 'http://www.w3.org/2001/XMLSchema-instance',
+          'xmlns:xsd': 'http://www.w3.org/2001/XMLSchema',
+        },
+        EnvelopeVersion: '3.0',
+        Header: {
+          MessageInfo: {
+            Class: 'EGOV_APPLICATION',
+            PospID: pospID,
+            PospVersion: pospVersion,
+            MessageID: form.id,
+            CorrelationID: correlationId,
+          },
+        },
+        Body: {
+          MessageContainer: {
+            $: {
+              xmlns: 'http://schemas.gov.sk/core/MessageContainer/1.0',
+            },
+            MessageId: form.id,
+            SenderId: senderId,
+            RecipientId: process.env.NASES_RECIPIENT_URI ?? '',
+            MessageType: pospID,
+            MessageSubject: subject,
+            Object: attachments,
+          },
+        },
+      },
+    }
     // <Object Id="${data.id}" IsSigned="${String(data.isSigned)}" Name="${data.formName}" Description="${data.fromDescription}" Class="FORM" MimeType="application/vnd.etsi.asic-e+zip" Encoding="Base64">
     // <Object Id="${data.id}" IsSigned="${String(data.isSigned)}" Name="${data.formName}" Description="${data.fromDescription}" Class="FORM" MimeType="application/x-eform-xml" Encoding="XML">
-    envelope = this.formatXmlToOneLine(envelope)
-    return envelope
+
+    // We have already (safe?) xml we want to pase in and xml2js can't do that.
+    // So we paste it as CDATA and remove tags for the same result
+    const builder = new Builder({
+      // eslint-disable-next-line unicorn/text-encoding-identifier-case
+      xmldec: { version: '1.0', encoding: 'utf-8' },
+      cdata: true,
+      renderOpts: {
+        pretty: false,
+      },
+    })
+    const envelope = builder.buildObject(template)
+    // TODO removing of CDATA tag is unsafe
+    return this.formatXmlToOneLine(envelope)
+      .replaceAll('<![CDATA[', '')
+      .replaceAll(']]>', '')
   }
 
   private getNasesError(code: number): string {

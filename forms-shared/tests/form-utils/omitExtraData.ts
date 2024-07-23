@@ -2,6 +2,7 @@ import { input, object } from '../../src/generator/functions'
 import { omitExtraData } from '../../src/form-utils/omitExtraData'
 import priznanieKDaniZNehnutelnosti from '../../src/schemas/priznanieKDaniZNehnutelnosti'
 import { filterConsole } from '../../test-utils/filterConsole'
+import { getExampleFormPairs } from '../../src/example-forms/getExampleFormPairs'
 
 describe('omitExtraData', () => {
   beforeEach(() => {
@@ -132,6 +133,13 @@ describe('omitExtraData', () => {
         },
         voSvojomMene: true,
       },
+    })
+  })
+
+  getExampleFormPairs().forEach(({ formDefinition, exampleForm }) => {
+    it(`${exampleForm.name} should not contain extra data`, () => {
+      const result = omitExtraData(formDefinition.schemas.schema, exampleForm.formData)
+      expect(result).toEqual(exampleForm.formData)
     })
   })
 })

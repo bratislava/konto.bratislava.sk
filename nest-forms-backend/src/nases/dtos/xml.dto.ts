@@ -1,4 +1,4 @@
-export type XmlObject = {
+export type NasesAttachementXmlObject = {
   $: {
     Id?: string
     IsSigned: string
@@ -8,7 +8,5 @@ export type XmlObject = {
     MimeType: string
     Encoding: string
   }
-  _?: string
+  _?: string | object
 }
-
-export type XmlObjectList = XmlObject[]

@@ -14,7 +14,7 @@ import {
 import { getFormDefinitionBySlug } from 'forms-shared/definitions/getFormDefinitionBySlug'
 import mime from 'mime-types'
 import { v1 as uuidv1, v4 as uuidv4 } from 'uuid'
-import { Builder } from 'xml2js'
+import { Builder, Parser } from 'xml2js'
 
 import { CognitoGetUserData } from '../../auth/dtos/cognito.dto'
 import ConvertService from '../../convert/convert.service'
@@ -34,7 +34,7 @@ import {
   NasesSendResponse,
   ResponseGdprDataDto,
 } from '../dtos/responses.dto'
-import { XmlObjectList } from '../dtos/xml.dto'
+import { NasesAttachementXmlObject } from '../dtos/xml.dto'
 import {
   NasesErrorCodesEnum,
   NasesErrorCodesResponseEnum,
@@ -94,8 +94,8 @@ export default class NasesUtilsService {
   private async createAttachmentsIfExists(
     form: Forms,
     formDefinition: FormDefinitionSlovenskoSk,
-  ): Promise<XmlObjectList> {
-    const result: XmlObjectList = []
+  ): Promise<NasesAttachementXmlObject[]> {
+    const result: NasesAttachementXmlObject[] = []
     const files = await this.prismaService.files.findMany({
       where: {
         formId: form.id,
@@ -363,14 +363,16 @@ export default class NasesUtilsService {
     }
     const { isSigned, pospID, pospVersion, title } = formDefinition
 
-    let message: string | null = null
+    let message: unknown = null
 
     if (form.formDataBase64) {
       message = form.formDataBase64
     }
+
+    const parser = new Parser()
     if (!isSigned) {
       try {
-        message = await this.convertService.convertJsonToXmlV2(
+        const messageXml = await this.convertService.convertJsonToXmlV2(
           {
             formId: form.id,
             slug: form.formDefinitionSlug,
@@ -378,6 +380,15 @@ export default class NasesUtilsService {
           },
           null,
         )
+        // TODO this parsing only checks format and does not guard against injection
+        console.log(`Parsing: ${messageXml}`)
+        parser.parseString(messageXml, (err, result) => {
+          if (err) {
+            throw err
+          }
+          message = result
+        })
+        console.log(`PARSED: >>> ${JSON.stringify(message, null, 2)} <<<`)
       } catch (error) {
         throw this.throwerErrorGuard.InternalServerErrorException(
           ErrorsEnum.INTERNAL_SERVER_ERROR,
@@ -431,7 +442,7 @@ export default class NasesUtilsService {
     let subject: string = form.id
     let mimeType = 'application/x-eform-xml'
     let encoding = 'XML'
-    let attachments: XmlObjectList = []
+    let attachments: NasesAttachementXmlObject[] = []
 
     if (isSlovenskoSkTaxFormDefinition(formDefinition)) {
       subject = 'Podávanie daňového priznanie k dani z nehnuteľností' // TODO fix in formDefinition, quickfix here formDefinition.messageSubjectDefault
@@ -440,19 +451,33 @@ export default class NasesUtilsService {
       attachments = await this.createAttachmentsIfExists(form, formDefinition)
     }
 
-    attachments.push({
-      $: {
-        Id: form.id,
-        IsSigned: isSigned ? 'true' : 'false',
-        Name: title,
-        Description: '',
-        Class: 'FORM',
-        MimeType: mimeType,
-        Encoding: encoding,
-      },
-      // TODO When message should be created as object
-      _: message,
-    })
+    if (typeof message === 'string') {
+      attachments.push({
+        $: {
+          Id: form.id,
+          IsSigned: isSigned ? 'true' : 'false',
+          Name: title,
+          Description: '',
+          Class: 'FORM',
+          MimeType: mimeType,
+          Encoding: encoding,
+        },
+        _: message,
+      })
+    } else if (typeof message === 'object') {
+      attachments.push({
+        $: {
+          Id: form.id,
+          IsSigned: isSigned ? 'true' : 'false',
+          Name: title,
+          Description: '',
+          Class: 'FORM',
+          MimeType: mimeType,
+          Encoding: encoding,
+        },
+        ...message,
+      })
+    }
 
     const template = {
       SKTalkMessage: {
@@ -489,21 +514,14 @@ export default class NasesUtilsService {
     // <Object Id="${data.id}" IsSigned="${String(data.isSigned)}" Name="${data.formName}" Description="${data.fromDescription}" Class="FORM" MimeType="application/vnd.etsi.asic-e+zip" Encoding="Base64">
     // <Object Id="${data.id}" IsSigned="${String(data.isSigned)}" Name="${data.formName}" Description="${data.fromDescription}" Class="FORM" MimeType="application/x-eform-xml" Encoding="XML">
 
-    // We have already (safe?) xml we want to pase in and xml2js can't do that.
-    // So we paste it as CDATA and remove tags for the same result
     const builder = new Builder({
       // eslint-disable-next-line unicorn/text-encoding-identifier-case
       xmldec: { version: '1.0', encoding: 'utf-8' },
-      cdata: true,
       renderOpts: {
         pretty: false,
       },
     })
-    const envelope = builder.buildObject(template)
-    // TODO removing of CDATA tag is unsafe
-    return this.formatXmlToOneLine(envelope)
-      .replaceAll('<![CDATA[', '')
-      .replaceAll(']]>', '')
+    return builder.buildObject(template)
   }
 
   private getNasesError(code: number): string {

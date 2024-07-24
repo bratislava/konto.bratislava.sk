@@ -117,7 +117,7 @@ export default class NasesUtilsService {
           IsSigned: 'false',
           Name: file.fileName,
           Description: 'ATTACHMENT',
-          Class: 'attachment',
+          Class: 'ATTACHMENT',
           MimeType: mimeType,
           Encoding: 'Base64',
         },

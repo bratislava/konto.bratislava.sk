@@ -104,20 +104,26 @@ const DisplayValueRenderer = ({
   isFirst,
   isLast,
 }: DisplayValueRendererProps) => {
+  const childPropsBase = {
+    index,
+    isFirst,
+    isLast,
+  }
+
   switch (displayValue.type) {
     case SummaryDisplayValueType.String:
-      return <>{renderStringValue({ value: displayValue.value, index, isFirst, isLast })}</>
+      return <>{renderStringValue({ value: displayValue.value, ...childPropsBase })}</>
     case SummaryDisplayValueType.File:
       const fileInfo = validatedSummary?.getFileById(displayValue.id)
       if (!fileInfo) {
-        return <>{renderInvalidValue({ index, isFirst, isLast })}</>
+        return <>{renderInvalidValue(childPropsBase)}</>
       }
 
-      return <>{renderFileValue({ id: displayValue.id, fileInfo, index, isFirst, isLast })}</>
+      return <>{renderFileValue({ id: displayValue.id, fileInfo, ...childPropsBase })}</>
     case SummaryDisplayValueType.None:
-      return <>{renderNoneValue({ index, isFirst, isLast })}</>
+      return <>{renderNoneValue(childPropsBase)}</>
     case SummaryDisplayValueType.Invalid:
-      return <>{renderInvalidValue({ index, isFirst, isLast })}</>
+      return <>{renderInvalidValue(childPropsBase)}</>
     default:
       return null
   }

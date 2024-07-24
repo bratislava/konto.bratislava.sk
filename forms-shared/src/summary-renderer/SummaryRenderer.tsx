@@ -15,48 +15,70 @@ import {
   SummaryDisplayValueType,
 } from '../summary-json/getSummaryDisplayValue'
 
-export type SummaryFormRendererProps = PropsWithChildren<{
-  form: SummaryJsonForm
+type RendererPropsBase = {
   hasError: boolean
-}>
+  index: number
+  isFirst: boolean
+  isLast: boolean
+}
 
-export type SummaryStepRendererProps = PropsWithChildren<{
-  step: SummaryJsonStep
-  hasError: boolean
-}>
+export type SummaryFormRendererProps = PropsWithChildren<
+  {
+    form: SummaryJsonForm
+  } & RendererPropsBase
+>
 
-export type SummaryArrayRendererProps = PropsWithChildren<{
-  array: SummaryJsonArray
-  hasError: boolean
-}>
+export type SummaryStepRendererProps = PropsWithChildren<
+  {
+    step: SummaryJsonStep
+  } & RendererPropsBase
+>
 
-export type SummaryFieldRendererProps = PropsWithChildren<{
-  field: SummaryJsonField
-  hasError: boolean
-}>
+export type SummaryArrayRendererProps = PropsWithChildren<
+  {
+    array: SummaryJsonArray
+  } & RendererPropsBase
+>
 
-export type SummaryArrayItemRendererProps = PropsWithChildren<{
-  arrayItem: SummaryJsonArrayItem
-  hasError: boolean
-}>
+export type SummaryFieldRendererProps = PropsWithChildren<
+  {
+    field: SummaryJsonField
+  } & RendererPropsBase
+>
+
+export type SummaryArrayItemRendererProps = PropsWithChildren<
+  {
+    arrayItem: SummaryJsonArrayItem
+  } & RendererPropsBase
+>
+
+type ValueRendererBase = {
+  index: number
+  isFirst: boolean
+  isLast: boolean
+}
 
 export type SummaryStringValueRendererProps = {
   value: string
-}
+} & ValueRendererBase
 
 export type SummaryFileValueRendererProps = {
   id: string
   fileInfo: FileInfoSummary
-}
+} & ValueRendererBase
+
+export type SummaryNoneValueRendererProps = ValueRendererBase
+
+export type SummaryInvalidValueRendererProps = ValueRendererBase
 
 type DisplayValueRendererProps = {
   displayValue: SummaryDisplayValue
   validatedSummary: ValidatedSummary
   renderStringValue: (props: SummaryStringValueRendererProps) => ReactNode
   renderFileValue: (props: SummaryFileValueRendererProps) => ReactNode
-  renderNoneValue: () => ReactNode
-  renderInvalidValue: () => ReactNode
-}
+  renderNoneValue: (props: SummaryNoneValueRendererProps) => ReactNode
+  renderInvalidValue: (props: SummaryInvalidValueRendererProps) => ReactNode
+} & ValueRendererBase
 
 type SummaryRendererProps = {
   summaryJson: SummaryJsonForm
@@ -66,7 +88,10 @@ type SummaryRendererProps = {
   renderField: (props: SummaryFieldRendererProps) => ReactNode
   renderArray: (props: SummaryArrayRendererProps) => ReactNode
   renderArrayItem: (props: SummaryArrayItemRendererProps) => ReactNode
-} & Omit<DisplayValueRendererProps, 'displayValue'>
+} & Pick<
+  DisplayValueRendererProps,
+  'renderStringValue' | 'renderFileValue' | 'renderNoneValue' | 'renderInvalidValue'
+>
 
 const DisplayValueRenderer = ({
   validatedSummary,
@@ -75,21 +100,24 @@ const DisplayValueRenderer = ({
   renderFileValue,
   renderNoneValue,
   renderInvalidValue,
+  index,
+  isFirst,
+  isLast,
 }: DisplayValueRendererProps) => {
   switch (displayValue.type) {
     case SummaryDisplayValueType.String:
-      return <>{renderStringValue({ value: displayValue.value })}</>
+      return <>{renderStringValue({ value: displayValue.value, index, isFirst, isLast })}</>
     case SummaryDisplayValueType.File:
       const fileInfo = validatedSummary?.getFileById(displayValue.id)
       if (!fileInfo) {
-        return <>{renderInvalidValue()}</>
+        return <>{renderInvalidValue({ index, isFirst, isLast })}</>
       }
 
-      return <>{renderFileValue({ id: displayValue.id, fileInfo })}</>
+      return <>{renderFileValue({ id: displayValue.id, fileInfo, index, isFirst, isLast })}</>
     case SummaryDisplayValueType.None:
-      return <>{renderNoneValue()}</>
+      return <>{renderNoneValue({ index, isFirst, isLast })}</>
     case SummaryDisplayValueType.Invalid:
-      return <>{renderInvalidValue()}</>
+      return <>{renderInvalidValue({ index, isFirst, isLast })}</>
     default:
       return null
   }
@@ -108,55 +136,77 @@ export const SummaryRenderer = ({
   renderField,
   renderArray,
   renderArrayItem,
-  ...rest
+  renderStringValue,
+  renderFileValue,
+  renderNoneValue,
+  renderInvalidValue,
 }: SummaryRendererProps) => {
-  const renderElement = (element: SummaryJsonElement): ReactNode => {
+  const renderElement = (
+    element: SummaryJsonElement,
+    index: number,
+    isLast: boolean,
+  ): ReactNode => {
     const renderChildren = (children: SummaryJsonElement[]) =>
-      children.map((child) => <Fragment key={child.id}>{renderElement(child)}</Fragment>)
-    const hasError = validatedSummary?.pathHasError(element.id) ?? false
+      children.map((child, childIndex) => {
+        const isLastChild = childIndex === children.length - 1
+
+        return <Fragment key={child.id}>{renderElement(child, childIndex, isLastChild)}</Fragment>
+      })
+    const base = {
+      hasError: validatedSummary?.pathHasError(element.id) ?? false,
+      index,
+      isFirst: index === 0,
+      isLast,
+    }
 
     switch (element.type) {
       case SummaryJsonType.Form:
         return renderForm({
           form: element,
           children: renderChildren(element.steps),
-          hasError,
+          ...base,
         })
       case SummaryJsonType.Step:
         return renderStep({
           step: element,
           children: renderChildren(element.children),
-          hasError,
+          ...base,
         })
       case SummaryJsonType.Field:
         return renderField({
           field: element,
-          hasError,
           children: element.displayValues.map((displayValue, index) => (
             <DisplayValueRenderer
               key={index}
               validatedSummary={validatedSummary}
               displayValue={displayValue}
-              {...rest}
+              renderStringValue={renderStringValue}
+              renderFileValue={renderFileValue}
+              renderNoneValue={renderNoneValue}
+              renderInvalidValue={renderInvalidValue}
+              index={index}
+              isFirst={index === 0}
+              isLast={index === element.displayValues.length - 1}
             ></DisplayValueRenderer>
           )),
+          ...base,
         })
       case SummaryJsonType.Array:
         return renderArray({
           array: element,
           children: renderChildren(element.items),
-          hasError,
+          ...base,
         })
       case SummaryJsonType.ArrayItem:
         return renderArrayItem({
           arrayItem: element,
           children: renderChildren(element.children),
-          hasError,
+          ...base,
         })
       default:
         throw new Error(`Invalid element type`)
     }
   }
 
-  return renderElement(summaryJson)
+  return renderElement(summaryJson, 0, true)
 }

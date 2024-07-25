@@ -14,9 +14,9 @@ describe('omitExtraData', () => {
   })
 
   it('should omit extra data for simple schema', () => {
-    const schema = object('wrapper', {}, {}, [input('input', { title: 'Input title' }, {})])
+    const { schema } = object('wrapper', {}, {}, [input('input', { title: 'Input title' }, {})])
 
-    const result = omitExtraData(schema.schema(), {
+    const result = omitExtraData(schema, {
       input: 'value',
       extraField: 'extra value',
     })

@@ -19,7 +19,7 @@ describe('validateSummary', () => {
     ])
 
     it('should validate successfully when required field is provided', () => {
-      const result = validateSummary(schema(), { requiredInput: 'some value' }, {})
+      const result = validateSummary(schema, { requiredInput: 'some value' }, {})
 
       expect(result.hasErrors).toBe(false)
       expect(result.pathHasError('root_requiredInput')).toBe(false)
@@ -28,7 +28,7 @@ describe('validateSummary', () => {
     })
 
     it('should report errors for missing required field', () => {
-      const result = validateSummary(schema(), {}, {})
+      const result = validateSummary(schema, {}, {})
 
       expect(result.hasErrors).toBe(true)
       expect(result.pathHasError('root_requiredInput')).toBe(true)
@@ -42,7 +42,7 @@ describe('validateSummary', () => {
 
     it('should validate successfully for valid file status', () => {
       const result = validateSummary(
-        schema(),
+        schema,
         { file: 'e37359e2-2547-42a9-82d6-d40054f17da0' },
         {
           'e37359e2-2547-42a9-82d6-d40054f17da0': {
@@ -62,7 +62,7 @@ describe('validateSummary', () => {
 
     it('should report errors for files with errors', () => {
       const result = validateSummary(
-        schema(),
+        schema,
         { file: 'e37359e2-2547-42a9-82d6-d40054f17da0' },
         {
           'e37359e2-2547-42a9-82d6-d40054f17da0': {
@@ -81,7 +81,7 @@ describe('validateSummary', () => {
     })
 
     it('should report errors for missing file information', () => {
-      const result = validateSummary(schema(), { file: 'e37359e2-2547-42a9-82d6-d40054f17da0' }, {})
+      const result = validateSummary(schema, { file: 'e37359e2-2547-42a9-82d6-d40054f17da0' }, {})
 
       expect(result.hasErrors).toBe(true)
       expect(result.pathHasError('root_file')).toBe(true)
@@ -98,7 +98,7 @@ describe('validateSummary', () => {
 
     it('should handle multiple file upload scenario', () => {
       const result = validateSummary(
-        schema(),
+        schema,
         {
           files: [
             'e37359e2-2547-42a9-82d6-d40054f17da0',

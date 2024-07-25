@@ -320,7 +320,7 @@ export default class NasesUtilsService {
     isSigned: boolean,
   ): Promise<string | object | null> {
     let message: string | object | null = null
-    const parser = new Parser()
+    const parser = new Parser({ normalize: true, trim: true })
 
     if (form.formDataBase64) {
       message = form.formDataBase64

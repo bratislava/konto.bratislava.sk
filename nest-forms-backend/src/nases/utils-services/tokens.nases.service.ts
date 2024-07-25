@@ -315,24 +315,59 @@ export default class NasesUtilsService {
     return result; */
   }
 
-  private formatXmlToOneLine(xml: string): string {
-    const result = xml
-      .replaceAll(/\s+/g, ' ') // replace all multiple whitespaces with just one space
-      .replaceAll(/>\s+</g, '><') // delete all whitespaces between tags
-      .replaceAll(/\s*<\s*/g, '<') // delete all whitespaces (spaces) around tag marks
-      .replaceAll(/\s*>\s*/g, '>')
-      .replaceAll(/\s*\/>/g, '/>')
-      .replaceAll(/<\/\s*/g, '</')
-      .trim()
+  private async handleFormConversion(
+    form: Forms,
+    isSigned: boolean,
+  ): Promise<string | object | null> {
+    let message: string | object | null = null
+    const parser = new Parser()
 
-    return result
+    if (form.formDataBase64) {
+      message = form.formDataBase64
+    }
+
+    if (!isSigned) {
+      try {
+        const messageXml = await this.convertService.convertJsonToXmlV2(
+          {
+            formId: form.id,
+            slug: form.formDefinitionSlug,
+            jsonData: form.formDataJson,
+          },
+          null,
+        )
+
+        parser.parseString(messageXml, (err, result) => {
+          if (err) {
+            throw err
+          }
+          if (typeof result === 'object') {
+            message = result as object
+          }
+        })
+      } catch (error) {
+        throw this.throwerErrorGuard.InternalServerErrorException(
+          ErrorsEnum.INTERNAL_SERVER_ERROR,
+          `There was an error during converting json form data to xml: ${<string>error}`,
+        )
+      }
+    }
+
+    if (!message) {
+      throw this.throwerErrorGuard.UnprocessableEntityException(
+        ErrorsEnum.UNPROCESSABLE_ENTITY_ERROR,
+        `Message of body is not defined. There is no base64 nor schema`,
+      )
+    }
+
+    return message
   }
 
   /**
    * Dynamically creates a subject of the submission. If there is not a subject format in the form definition,
    * it uses default from the form definition.
    *
-   * It replaces an occurence of "{path}" with a value from data.formDataJson, at the given path. There are three possibilities:
+   * It replaces an occurrence of "{path}" with a value from data.formDataJson, at the given path. There are three possibilities:
    * - If there is a string, it just prints the string
    * - If there is an array of strings, it prints them separated by a comma
    * - Otherwise prints empty string ""
@@ -343,7 +378,6 @@ export default class NasesUtilsService {
    * @param data Form instance
    * @returns message subject generated for the given form
    */
-
   private async createEnvelopeSendMessage(
     form: Forms,
     senderUri?: string,
@@ -363,48 +397,7 @@ export default class NasesUtilsService {
     }
     const { isSigned, pospID, pospVersion, title } = formDefinition
 
-    let message: unknown = null
-
-    if (form.formDataBase64) {
-      message = form.formDataBase64
-    }
-
-    const parser = new Parser()
-    if (!isSigned) {
-      try {
-        const messageXml = await this.convertService.convertJsonToXmlV2(
-          {
-            formId: form.id,
-            slug: form.formDefinitionSlug,
-            jsonData: form.formDataJson,
-          },
-          null,
-        )
-        // TODO this parsing only checks format and does not guard against injection
-        console.log(`Parsing: ${messageXml}`)
-        parser.parseString(messageXml, (err, result) => {
-          if (err) {
-            throw err
-          }
-          message = result
-        })
-        console.log(`PARSED: >>> ${JSON.stringify(message, null, 2)} <<<`)
-      } catch (error) {
-        throw this.throwerErrorGuard.InternalServerErrorException(
-          ErrorsEnum.INTERNAL_SERVER_ERROR,
-          `There was an error during converting json form data to xml: ${<
-            string
-          >error}`,
-        )
-      }
-    }
-
-    if (!message) {
-      throw this.throwerErrorGuard.UnprocessableEntityException(
-        ErrorsEnum.UNPROCESSABLE_ENTITY_ERROR,
-        `Message of body is not defined. There is no base64 nor schema`,
-      )
-    }
+    const message = await this.handleFormConversion(form, isSigned)
     // message = Buffer.from(message, 'binary').toString('base64');
     // envelope = `
     // <?xml version="1.0" encoding="utf-8"?>

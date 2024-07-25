@@ -3,6 +3,7 @@
 import { getQueueToken } from '@nestjs/bull'
 import { ConfigService } from '@nestjs/config'
 import { Test, TestingModule } from '@nestjs/testing'
+import { v4 } from 'uuid'
 
 import prismaMock from '../../../test/singleton'
 import { CognitoGetUserData } from '../../auth/dtos/cognito.dto'
@@ -17,6 +18,9 @@ import NasesUtilsService from './tokens.nases.service'
 jest.mock('axios')
 jest.mock('../../utils/subservices/minio-client.subservice')
 jest.mock('../../convert/convert.service')
+jest.mock('uuid', () => ({
+  v4: jest.fn(),
+}))
 
 describe('NasesUtilsService', () => {
   let service: NasesUtilsService
@@ -72,8 +76,8 @@ describe('NasesUtilsService', () => {
     })
   })
 
-  describe('formatXmlToOneLine', () => {
-    it('should correctly put xml into one line', () => {
+  describe('createEnvelopeSendMessage', () => {
+    it('should create XML', async () => {
       const xml = `
         <root>
           < tag1   attribute="value1"/>
@@ -82,20 +86,43 @@ describe('NasesUtilsService', () => {
           <tag3      >Another content    
                </  tag3>     
         </root>`
-
-      const xmlNormal = `
-        <root>
-          <tag1 attribute="value1"/>
-          <tag2 attribute="value2">Content</tag2>
-          <tag3>Another content</tag3>
-        </root>`
+      ;(v4 as jest.Mock).mockReturnValue('12345678-1234-1234-1234-123456789012')
       // eslint-disable-next-line xss/no-mixed-html
-      const expected =
-        // eslint-disable-next-line no-secrets/no-secrets
-        '<root><tag1 attribute="value1"/><tag2 attribute="value2">Content</tag2><tag3>Another content</tag3></root>'
+      service['convertService'].convertJsonToXmlV2 = jest
+        .fn()
+        .mockResolvedValue(xml)
 
-      expect(service['formatXmlToOneLine'](xml)).toBe(expected)
-      expect(service['formatXmlToOneLine'](xmlNormal)).toBe(expected)
+      const returnXmlString = await service['createEnvelopeSendMessage']({
+        id: '123456678901234567890',
+        formDefinitionSlug: 'stanovisko-k-investicnemu-zameru',
+        createdAt: new Date(),
+        updatedAt: new Date(),
+        externalId: null,
+        userExternalId: null,
+        email: null,
+        finishSubmission: new Date(),
+        mainUri: null,
+        actorUri: null,
+        ownerType: 'FO',
+        ico: '12345678',
+        state: 'QUEUED',
+        error: 'NONE',
+        formDataJson: null,
+        formDataGinis: null,
+        // eslint-disable-next-line xss/no-mixed-html
+        formDataBase64: 'L:UHIOQWALIUil<tag>uh<\tag>liaUWHDL====',
+        ginisDocumentId: null,
+        senderId: null,
+        recipientId: null,
+        archived: false,
+        ginisState: 'CREATED',
+      })
+
+      // eslint-disable-next-line xss/no-mixed-html
+      expect(returnXmlString).toBe(
+        // eslint-disable-next-line no-secrets/no-secrets
+        '<?xml version="1.0" encoding="utf-8"?><SKTalkMessage xmlns="http://gov.sk/SKTalkMessage" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema"><EnvelopeVersion>3.0</EnvelopeVersion><Header><MessageInfo><Class>EGOV_APPLICATION</Class><PospID>00603481.stanoviskoKInvesticnemuZameru</PospID><PospVersion>0.8</PospVersion><MessageID>123456678901234567890</MessageID><CorrelationID>12345678-1234-1234-1234-123456789012</CorrelationID></MessageInfo></Header><Body><MessageContainer xmlns="http://schemas.gov.sk/core/MessageContainer/1.0"><MessageId>123456678901234567890</MessageId><SenderId>banana</SenderId><RecipientId>banana</RecipientId><MessageType>00603481.stanoviskoKInvesticnemuZameru</MessageType><MessageSubject>123456678901234567890</MessageSubject><Object Id="123456678901234567890" IsSigned="false" Name="Žiadosť o stanovisko k investičnému zámeru" Description="" Class="FORM" MimeType="application/x-eform-xml" Encoding="XML"><root><tag1 attribute="value1"/><tag2 attribute="value2">Content</tag2><tag3>Another content</tag3></root></Object></MessageContainer></Body></SKTalkMessage>',
+      )
     })
   })
 })

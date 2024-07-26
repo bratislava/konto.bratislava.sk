@@ -21,6 +21,30 @@ COPY . ./
 RUN npm run build
 
 FROM base as test
+# Install Java and other dependencies
+RUN apt-get update && apt-get install -y \
+    default-jre \
+    wget \
+    unzip \
+    libxml2 \
+    libxslt1.1 \
+    && rm -rf /var/lib/apt/lists/*
+
+# Install Apache FOP 1.1
+RUN wget https://archive.apache.org/dist/xmlgraphics/fop/binaries/fop-1.1-bin.zip \
+    && unzip fop-1.1-bin.zip \
+    && mv fop-1.1 /opt/fop-1.1 \
+    && rm fop-1.1-bin.zip
+
+ENV FOP_HOME=/opt/fop-1.1
+
+# Download and setup fop.zip from slovensko.sk
+RUN wget https://www.slovensko.sk/_img/CMS4/fop.zip \
+    && unzip fop.zip -d /opt/slovensko-fop \
+    && rm fop.zip
+
+ENV SLOVENSKO_FOP_CONF=/opt/slovensko-fop/fop.xconf
+
 RUN npx playwright install chromium --with-deps
 # COPY needs to be after Playwright installation to make it more cache friendly.
 COPY . ./

@@ -36,7 +36,9 @@ describe('renderApacheFopPdf', () => {
 `
 
   it('should render a PDF using Apache FOP that matches the snapshot', async () => {
+    const now = performance.now()
     const result = await renderApacheFopPdf(xmlString, xslString)
+    console.log('Time taken:', performance.now() - now)
 
     await expectPdfToMatchSnapshot(result)
   }, 10000)

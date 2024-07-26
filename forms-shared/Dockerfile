@@ -21,6 +21,8 @@ COPY . ./
 RUN npm run build
 
 FROM base as test
+ENV DOCKER_TEST_ENVIRONMENT=true
+
 # Install Java and other dependencies
 RUN apt-get update && apt-get install -y \
     default-jre \
@@ -44,6 +46,13 @@ RUN wget https://www.slovensko.sk/_img/CMS4/fop.zip \
     && rm fop.zip
 
 ENV SLOVENSKO_FOP_CONF=/opt/slovensko-fop/fop.xconf
+
+# Install Saxon
+RUN wget https://github.com/Saxonica/Saxon-HE/raw/main/12/Java/SaxonHE12-5J.zip \
+    && unzip SaxonHE12-5J.zip -d /opt/saxon \
+    && rm SaxonHE12-5J.zip
+
+ENV SAXON_HOME=/opt/saxon
 
 RUN npx playwright install chromium --with-deps
 # COPY needs to be after Playwright installation to make it more cache friendly.

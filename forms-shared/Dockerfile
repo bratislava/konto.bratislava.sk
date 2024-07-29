@@ -36,7 +36,8 @@ RUN wget https://archive.apache.org/dist/xmlgraphics/fop/binaries/fop-1.1-bin.zi
     && mv fop-1.1 /opt/fop-1.1 \
     && rm fop-1.1-bin.zip
 
-ENV FOP_HOME=/opt/fop-1.1
+ENV FOP_JAR=/opt/fop-1.1/build/fop.jar
+ENV FOP_LIB=/opt/fop-1.1/lib
 
 # Download and setup fop.zip from slovensko.sk
 RUN wget https://www.slovensko.sk/_img/CMS4/fop.zip \

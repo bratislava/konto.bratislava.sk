@@ -36,7 +36,8 @@ RUN wget https://archive.apache.org/dist/xmlgraphics/fop/binaries/fop-1.1-bin.zi
     && mv fop-1.1 /opt/fop-1.1 \
     && rm fop-1.1-bin.zip
 
-ENV FOP_HOME=/opt/fop-1.1
+ENV FOP_JAR=/opt/fop-1.1/build/fop.jar
+ENV FOP_LIB=/opt/fop-1.1/lib
 
 # Download and setup fop.zip from slovensko.sk
 RUN wget https://www.slovensko.sk/_img/CMS4/fop.zip \
@@ -44,6 +45,13 @@ RUN wget https://www.slovensko.sk/_img/CMS4/fop.zip \
     && rm fop.zip
 
 ENV SLOVENSKO_FOP_CONF=/opt/slovensko-fop/fop.xconf
+
+# Install Saxon
+RUN wget https://github.com/Saxonica/Saxon-HE/raw/main/12/Java/SaxonHE12-5J.zip \
+    && unzip SaxonHE12-5J.zip -d /opt/saxon \
+    && rm SaxonHE12-5J.zip
+
+ENV SAXON_JAR=/opt/saxon/saxon-he-12.5.jar
 
 RUN npx playwright install chromium --with-deps
 # COPY needs to be after Playwright installation to make it more cache friendly.

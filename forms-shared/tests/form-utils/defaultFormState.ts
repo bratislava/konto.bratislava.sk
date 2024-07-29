@@ -14,13 +14,13 @@ describe('defaultFormState', () => {
   it('isFileMultipleSchema should return true for file array schema', () => {
     const definition = fileUpload('file', { title: 'File', multiple: true }, {})
 
-    expect(isFileMultipleSchema(definition.schema())).toBe(true)
+    expect(isFileMultipleSchema(definition.schema)).toBe(true)
   })
 
   it('isFileMultipleSchema should return false for any other schema', () => {
     const definition = arrayField('array', { title: 'Array' }, {} as ArrayFieldUiOptions, [])
 
-    expect(isFileMultipleSchema(definition.schema())).toBe(false)
+    expect(isFileMultipleSchema(definition.schema)).toBe(false)
   })
 
   it('getDefaultForm should return default values for arrays consistent with expected behavior', () => {
@@ -88,7 +88,7 @@ describe('defaultFormState', () => {
       (message) =>
         typeof message === 'string' && message.includes('could not merge subschemas in allOf'),
     )
-    expect(baGetDefaultFormState(definition.schema(), {})).toEqual({
+    expect(baGetDefaultFormState(definition.schema, {})).toEqual({
       fileMultiple: [],
       fileMultipleRequired: [],
       select: [],

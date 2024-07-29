@@ -13,5 +13,5 @@
     "declaration": true,
     "outDir": "./dist",
   },
-  "include": ["./src/**/*", "./tests/**/*", "./scripts/**/*"]
+  "include": ["./src/**/*", "./tests/**/*", "./scripts/**/*", "./test-utils/**/*"],
 }

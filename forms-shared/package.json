@@ -83,7 +83,7 @@
     "tailwindcss": "^3.4.4",
     "tmp-promise": "^3.0.3",
     "ts-command-line-args": "^2.5.1",
-    "ts-jest": "^29.2.2",
+    "ts-jest": "^29.2.3",
     "ts-node": "^10.9.2",
     "typescript": "^5.4.5"
   },

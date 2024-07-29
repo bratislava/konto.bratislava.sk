@@ -45,6 +45,13 @@ RUN wget https://www.slovensko.sk/_img/CMS4/fop.zip \
 
 ENV SLOVENSKO_FOP_CONF=/opt/slovensko-fop/fop.xconf
 
+# Install Saxon
+RUN wget https://github.com/Saxonica/Saxon-HE/raw/main/12/Java/SaxonHE12-5J.zip \
+    && unzip SaxonHE12-5J.zip -d /opt/saxon \
+    && rm SaxonHE12-5J.zip
+
+ENV SAXON_JAR=/opt/saxon/saxon-he-12.5.jar
+
 RUN npx playwright install chromium --with-deps
 # COPY needs to be after Playwright installation to make it more cache friendly.
 COPY . ./

@@ -114,6 +114,7 @@ export default class NasesUtilsService {
       const fileBase64 = fileBuffer.toString('base64')
       result.push({
         $: {
+          Id: file.id,
           IsSigned: 'false',
           Name: file.fileName,
           Description: 'ATTACHMENT',
@@ -315,7 +316,7 @@ export default class NasesUtilsService {
     return result; */
   }
 
-  private async handleFormConversion(
+  private async getFormMessage(
     form: Forms,
     isSigned: boolean,
   ): Promise<string | object | null> {
@@ -337,14 +338,20 @@ export default class NasesUtilsService {
           null,
         )
 
-        parser.parseString(messageXml, (err, result) => {
-          if (err) {
-            throw err
-          }
-          if (typeof result === 'object') {
-            message = result as object
-          }
-        })
+        message = parser
+          .parseStringPromise(messageXml)
+          .then((result) => {
+            if (typeof result === 'object') {
+              return result as object
+            }
+            return null
+          })
+          .catch((error) => {
+            throw this.throwerErrorGuard.InternalServerErrorException(
+              ErrorsEnum.INTERNAL_SERVER_ERROR,
+              `There was an error during converting json form data to xml: ${<string>error}`,
+            )
+          })
       } catch (error) {
         throw this.throwerErrorGuard.InternalServerErrorException(
           ErrorsEnum.INTERNAL_SERVER_ERROR,
@@ -397,7 +404,7 @@ export default class NasesUtilsService {
     }
     const { isSigned, pospID, pospVersion, title } = formDefinition
 
-    const message = await this.handleFormConversion(form, isSigned)
+    const message = await this.getFormMessage(form, isSigned)
     // message = Buffer.from(message, 'binary').toString('base64');
     // envelope = `
     // <?xml version="1.0" encoding="utf-8"?>
@@ -444,30 +451,26 @@ export default class NasesUtilsService {
       attachments = await this.createAttachmentsIfExists(form, formDefinition)
     }
 
+    const attachmentBase = {
+      $: {
+        Id: form.id,
+        IsSigned: isSigned ? 'true' : 'false',
+        Name: title,
+        Description: '',
+        Class: 'FORM',
+        MimeType: mimeType,
+        Encoding: encoding,
+      },
+    }
+
     if (typeof message === 'string') {
       attachments.push({
-        $: {
-          Id: form.id,
-          IsSigned: isSigned ? 'true' : 'false',
-          Name: title,
-          Description: '',
-          Class: 'FORM',
-          MimeType: mimeType,
-          Encoding: encoding,
-        },
+        ...attachmentBase,
         _: message,
       })
     } else if (typeof message === 'object') {
       attachments.push({
-        $: {
-          Id: form.id,
-          IsSigned: isSigned ? 'true' : 'false',
-          Name: title,
-          Description: '',
-          Class: 'FORM',
-          MimeType: mimeType,
-          Encoding: encoding,
-        },
+        ...attachmentBase,
         ...message,
       })
     }

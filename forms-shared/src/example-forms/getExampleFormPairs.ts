@@ -1,7 +1,10 @@
 import { FormDefinition } from '../definitions/formDefinitionTypes'
-import { getFormDefinitionBySlug } from '../definitions/getFormDefinitionBySlug'
+import {
+  getFormDefinitionBySlug,
+  getFormDefinitionBySlugDev,
+} from '../definitions/getFormDefinitionBySlug'
 import flatten from 'lodash/flatten'
-import { exampleForms } from './exampleForms'
+import { exampleDevForms, exampleForms } from './exampleForms'
 import { ExampleForm } from './types'
 
 type ExampleFormPair = {
@@ -11,18 +14,25 @@ type ExampleFormPair = {
 
 export function getExampleFormPairs({
   formDefinitionFilterFn = () => true,
+  devForms = false,
 }: {
   formDefinitionFilterFn?: (formDefinition: FormDefinition) => boolean
+  devForms?: boolean
 } = {}): ExampleFormPair[] {
-  const slugs = Object.keys(exampleForms)
+  const getFormDefinitionBySlugLocal = devForms
+    ? getFormDefinitionBySlugDev
+    : getFormDefinitionBySlug
+  const exampleFormsLocal = devForms ? exampleDevForms : exampleForms
+
+  const slugs = Object.keys(exampleFormsLocal)
   const formDefinitions = slugs
-    .map(getFormDefinitionBySlug)
+    .map(getFormDefinitionBySlugLocal)
     .filter(
       (formDefinition) => formDefinition != null && formDefinitionFilterFn(formDefinition),
     ) as FormDefinition[]
 
   const withExampleForms = formDefinitions.map((formDefinition) => {
-    const exampleFormsBySlug = exampleForms[formDefinition.slug]
+    const exampleFormsBySlug = exampleFormsLocal[formDefinition.slug]
     return exampleFormsBySlug.map((exampleForm) => ({ formDefinition, exampleForm }))
   })
 

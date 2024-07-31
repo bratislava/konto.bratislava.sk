@@ -127,7 +127,7 @@ export const selectMultiple = (
         // Array [ 0: Object { stack: "function nested too deeply", message: "Neznáma chyba" } ]
         enum: options.options.map(({ value }) => value),
       },
-      minItems: options.minItems ?? options.required ? 1 : undefined,
+      minItems: options.minItems ?? (options.required ? 1 : undefined),
       maxItems: options.maxItems,
       uniqueItems: true,
       default: options.options.filter(({ isDefault }) => isDefault).map(({ value }) => value),
@@ -342,7 +342,7 @@ export const checkboxGroup = (
     schema: removeUndefinedValues({
       type: 'array',
       title: options.title,
-      minItems: options.minItems ?? options.required ? 1 : undefined,
+      minItems: options.minItems ?? (options.required ? 1 : undefined),
       maxItems: options.maxItems,
       uniqueItems: true,
       items: {
@@ -550,7 +550,7 @@ export const arrayField = (
       title: options.title,
       type: 'array',
       items: objectSchema,
-      minItems: options.minItems ?? options.required ? 1 : undefined,
+      minItems: options.minItems ?? (options.required ? 1 : undefined),
       maxItems: options.maxItems,
     }),
     uiSchema: removeUndefinedValues({

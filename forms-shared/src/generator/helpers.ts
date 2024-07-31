@@ -181,6 +181,10 @@ export const createCamelCaseOptionsV2 = <Option extends { title: string }>(
   return result
 }
 
+/**
+ * All generated schemas must not have `undefined` values in objects, RJSF relies on checks like `'oneOf' in schema`
+ * which returns `true` for `{ oneOf: undefined }`.
+ */
 export const removeUndefinedValues = <T>(obj: T) => {
   return JSON.parse(JSON.stringify(obj)) as T
 }

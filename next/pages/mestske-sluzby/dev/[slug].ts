@@ -5,6 +5,7 @@ import { SsrAuthProviderHOC } from '../../../components/logic/SsrAuthContext'
 import { environment } from '../../../environment'
 import { amplifyGetServerSideProps } from '../../../frontend/utils/amplifyServer'
 import { getEmbeddedFormsAllowedOrigins } from '../../../frontend/utils/embeddedFormsAllowedOrigins'
+import { getDefaultFormDataForFormDefinition } from '../../../frontend/utils/getDefaultFormDataForFormDefinition'
 import { slovakServerSideTranslations } from '../../../frontend/utils/slovakServerSideTranslations'
 
 type Params = {
@@ -45,7 +46,7 @@ export const getServerSideProps = amplifyGetServerSideProps<FormPageWrapperProps
         formContext: {
           formDefinition,
           formId: '',
-          initialFormDataJson: {},
+          initialFormDataJson: getDefaultFormDataForFormDefinition(formDefinition),
           initialServerFiles: [],
           formSent: false,
           formMigrationRequired: false,

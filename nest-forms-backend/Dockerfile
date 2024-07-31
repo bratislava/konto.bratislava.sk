@@ -7,7 +7,7 @@ RUN npx playwright install-deps chromium
 # build
 FROM base AS build
 WORKDIR /root/forms-shared
-COPY --from=shared . ./
+COPY --from=shared /app/ ./
 
 RUN apt-get update && apt-get install git
 
@@ -55,7 +55,7 @@ RUN npx playwright install chromium
 # TODO: Find a way how to use --install-links flag in npm install to avoid this.
 RUN mkdir -p /home/node/forms-shared && chown -R node:node /home/node/forms-shared
 WORKDIR /home/node/forms-shared
-COPY --chown=node:node --from=shared . ./
+COPY --chown=node:node --from=shared /app/ ./
 
 RUN mkdir -p /home/node/app && chown -R node:node /home/node/app
 WORKDIR /home/node/app

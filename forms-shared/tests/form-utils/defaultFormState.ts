@@ -1,26 +1,32 @@
 import {
   arrayField,
   checkboxGroup,
+  conditionalFields,
   fileUpload,
   input,
   object,
   selectMultiple,
 } from '../../src/generator/functions'
-import { baGetDefaultFormState, isFileMultipleSchema } from '../../src/form-utils/defaultFormState'
+import {
+  baGetDefaultFormState,
+  baGetDefaultFormStateStable,
+  isFileMultipleSchema,
+} from '../../src/form-utils/defaultFormState'
 import { ArrayFieldUiOptions } from '../../src/generator/uiOptionsTypes'
 import { filterConsole } from '../../test-utils/filterConsole'
+import { createCondition } from '../../src/generator/helpers'
 
 describe('defaultFormState', () => {
   it('isFileMultipleSchema should return true for file array schema', () => {
     const definition = fileUpload('file', { title: 'File', multiple: true }, {})
 
-    expect(isFileMultipleSchema(definition.schema())).toBe(true)
+    expect(isFileMultipleSchema(definition.schema)).toBe(true)
   })
 
   it('isFileMultipleSchema should return false for any other schema', () => {
     const definition = arrayField('array', { title: 'Array' }, {} as ArrayFieldUiOptions, [])
 
-    expect(isFileMultipleSchema(definition.schema())).toBe(false)
+    expect(isFileMultipleSchema(definition.schema)).toBe(false)
   })
 
   it('getDefaultForm should return default values for arrays consistent with expected behavior', () => {
@@ -88,7 +94,7 @@ describe('defaultFormState', () => {
       (message) =>
         typeof message === 'string' && message.includes('could not merge subschemas in allOf'),
     )
-    expect(baGetDefaultFormState(definition.schema(), {})).toEqual({
+    expect(baGetDefaultFormState(definition.schema, {})).toEqual({
       fileMultiple: [],
       fileMultipleRequired: [],
       select: [],
@@ -97,5 +103,28 @@ describe('defaultFormState', () => {
       checkboxGroupRequired: [],
       arrayFieldRequired: [{}],
     })
+  })
+})
+
+describe('baGetDefaultFormStateStable', () => {
+  const { schema } = object('wrapper', { required: true }, {}, [
+    input('input1', { title: 'Input 1', default: 'value1', required: true }, {}),
+    conditionalFields(createCondition([[['input1'], { const: 'value1' }]]), [
+      input('input2', { title: 'Input 2', default: 'value2', required: true }, {}),
+    ]),
+  ])
+
+  it('should return correct default values', () => {
+    filterConsole(
+      'warn',
+      (message) =>
+        typeof message === 'string' && message.includes('could not merge subschemas in allOf'),
+    )
+
+    const result = baGetDefaultFormState(schema, {})
+    const resultStable = baGetDefaultFormStateStable(schema, {})
+
+    expect(result).toEqual({ input1: 'value1' })
+    expect(resultStable).toEqual({ input1: 'value1', input2: 'value2' })
   })
 })

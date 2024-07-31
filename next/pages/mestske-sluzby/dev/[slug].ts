@@ -4,6 +4,8 @@ import FormPageWrapper, { FormPageWrapperProps } from '../../../components/forms
 import { SsrAuthProviderHOC } from '../../../components/logic/SsrAuthContext'
 import { environment } from '../../../environment'
 import { amplifyGetServerSideProps } from '../../../frontend/utils/amplifyServer'
+import { getEmbeddedFormsAllowedOrigins } from '../../../frontend/utils/embeddedFormsAllowedOrigins'
+import { getDefaultFormDataForFormDefinition } from '../../../frontend/utils/getDefaultFormDataForFormDefinition'
 import { slovakServerSideTranslations } from '../../../frontend/utils/slovakServerSideTranslations'
 
 type Params = {
@@ -25,15 +27,30 @@ export const getServerSideProps = amplifyGetServerSideProps<FormPageWrapperProps
       return { notFound: true }
     }
 
+    const isEmbeddedQueryParam = context.query['externa-sluzba'] === 'true'
+
+    if (isEmbeddedQueryParam) {
+      const allowedOrigins = getEmbeddedFormsAllowedOrigins(formDefinition)
+      if (!allowedOrigins) {
+        return { notFound: true }
+      }
+
+      context.res.setHeader(
+        'Content-Security-Policy',
+        `frame-ancestors ${allowedOrigins.join(' ')}`,
+      )
+    }
+
     return {
       props: {
         formContext: {
           formDefinition,
           formId: '',
-          initialFormDataJson: {},
+          initialFormDataJson: getDefaultFormDataForFormDefinition(formDefinition),
           initialServerFiles: [],
           formSent: false,
           formMigrationRequired: false,
+          isEmbedded: isEmbeddedQueryParam,
           isDevRoute: true,
         },
         ...(await slovakServerSideTranslations()),

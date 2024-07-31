@@ -16,8 +16,6 @@ import { sharedAddressField, sharedPhoneNumberField } from './shared/fields'
 export default schema(
   {
     title: 'Predzáhradky',
-    pospID: '00603481.predzahradky',
-    pospVersion: '1.0',
   },
   {
     moreInformationUrl:

@@ -11,7 +11,7 @@ import { prilohyXml } from './mapping/xml/prilohy'
 import { udajeODanovnikoviXml } from './mapping/xml/udajeODanovnikovi'
 import { removeEmptySubtrees } from './helpers/removeEmptySubtrees'
 
-export const generateTaxXml = (data: TaxFormData, pretty = false, currentDate = new Date()) => {
+export const generateTaxXml = (data: TaxFormData, pretty = false) => {
   const jsonObj = {
     'E-form': {
       $: {
@@ -33,7 +33,7 @@ export const generateTaxXml = (data: TaxFormData, pretty = false, currentDate = 
         ...oddiel4Xml(data),
         ...oslobodenieXml(data),
         ...prilohyXml(data),
-        DatumZadaniaPodania: formatXsDateTimeXml(currentDate),
+        DatumZadaniaPodania: formatXsDateTimeXml(new Date()),
         ZakladneVyhlasenie: {
           SpravnostUdajovText:
             'Všeobecné informácie o poskytnutí, spracovaní a ochrane osobných údajov nájdete na https://esluzby.bratislava.sk/page/ochrana-osobnych-udajov',

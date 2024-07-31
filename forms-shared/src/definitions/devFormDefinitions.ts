@@ -1,7 +1,8 @@
 import { FormDefinition, FormDefinitionType } from './formDefinitionTypes'
 import { generalTermsAndConditions } from './termsAndConditions'
-import ziadostNajomne from '../schemas/ziadostOPridelenieNajomnehoBytu'
 import { defaultColumnMapNajomneByvanie, defaultColumnMapNajomneByvanieDieta, defaultColumnMapNajomneByvanieDruhDruzka, defaultColumnMapNajomneByvanieManzelManzelka } from '../sharepoint/ziadost-o-pridelenie-najomneho-bytu'
+import ziadostOPridelenieNajomnehoBytu from '../schemas/ziadostOPridelenieNajomnehoBytu'
+import mimoriadnyOdvozALikvidaciaOdpadu from '../schemas/olo/mimoriadnyOdvozALikvidaciaOdpadu'
 
 export const devFormDefinitions: FormDefinition[] = [
   {
@@ -9,7 +10,7 @@ export const devFormDefinitions: FormDefinition[] = [
     slovenskoSkUrl: '',
     slug: 'ziadost-o-pridelenie-najomneho-bytu',
     title: 'Žiadosť o pridelenie nájomného bytu',
-    schemas: ziadostNajomne,
+    schemas: ziadostOPridelenieNajomnehoBytu,
     pospID: '',
     pospVersion: '',
     gestor: 'Martin Pinter',
@@ -44,5 +45,15 @@ export const devFormDefinitions: FormDefinition[] = [
         }
       ]
     }
+  },
+  {
+    type: FormDefinitionType.Email,
+    slug: 'olo-mimoriadny-odvoz-a-likvidacia-odpadu',
+    title: 'Mimoriadny odvoz a likvidácia odpadu',
+    schemas: mimoriadnyOdvozALikvidaciaOdpadu,
+    email: '',
+    termsAndConditions: generalTermsAndConditions,
+    messageSubjectDefault: '',
+    embedded: 'olo',
   },
 ]

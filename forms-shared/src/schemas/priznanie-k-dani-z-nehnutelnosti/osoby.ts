@@ -101,7 +101,7 @@ const telefonField = (required = true) =>
     'Telefónne číslo nám pomôže komunikovať s vami rýchlejšie.',
   )
 
-const icoField = input('ico', { title: 'IČO', required: true, format: 'ico' }, {})
+const icoField = input('ico', { title: 'IČO', required: true, format: 'ba-ico' }, {})
 
 const pravnaFormaField = select(
   'pravnaForma',

@@ -6,8 +6,9 @@
   "unknown": "Neznáma chyba",
   "format": {
     "unknown": "Zadajte hodnotu v požadovanom formáte",
-    "zip": "Zadajte PSČ v tvare \"81101\"",
-    "phone-number": "Zadajte telefónne číslo v medzinárodnom formáte +421…",
+    "ba-zip": "Zadajte PSČ v tvare \"81101\"",
+    "ba-phone-number": "Zadajte telefónne číslo v medzinárodnom formáte +421…",
+    "ba-iban": "Zadajte IBAN v správnom formáte",
     "email": "Zadajte e-mail v správnom formáte"
   }
 }

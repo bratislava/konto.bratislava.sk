@@ -21,6 +21,38 @@ COPY . ./
 RUN npm run build
 
 FROM base as test
+# Install Java and other dependencies
+RUN apt-get update && apt-get install -y \
+    default-jre \
+    wget \
+    unzip \
+    libxml2 \
+    libxslt1.1 \
+    && rm -rf /var/lib/apt/lists/*
+
+# Install Apache FOP 1.1
+RUN wget https://archive.apache.org/dist/xmlgraphics/fop/binaries/fop-1.1-bin.zip \
+    && unzip fop-1.1-bin.zip \
+    && mv fop-1.1 /opt/fop-1.1 \
+    && rm fop-1.1-bin.zip
+
+ENV FOP_JAR=/opt/fop-1.1/build/fop.jar
+ENV FOP_LIB=/opt/fop-1.1/lib
+
+# Download and setup fop.zip from slovensko.sk
+RUN wget https://www.slovensko.sk/_img/CMS4/fop.zip \
+    && unzip fop.zip -d /opt/slovensko-fop \
+    && rm fop.zip
+
+ENV SLOVENSKO_FOP_CONF=/opt/slovensko-fop/fop.xconf
+
+# Install Saxon
+RUN wget https://github.com/Saxonica/Saxon-HE/raw/main/12/Java/SaxonHE12-5J.zip \
+    && unzip SaxonHE12-5J.zip -d /opt/saxon \
+    && rm SaxonHE12-5J.zip
+
+ENV SAXON_JAR=/opt/saxon/saxon-he-12.5.jar
+
 RUN npx playwright install chromium --with-deps
 # COPY needs to be after Playwright installation to make it more cache friendly.
 COPY . ./

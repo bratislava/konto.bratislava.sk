@@ -272,7 +272,7 @@ export default class ConvertService {
       formJsonData,
       data.formId,
       formDefinition,
-      data.clientFiles,
+      data.clientFiles as ClientFileInfo[],
     )
 
     // we need two separate streams to read from - reading just from the file stream above would empty it and no data would be left for response

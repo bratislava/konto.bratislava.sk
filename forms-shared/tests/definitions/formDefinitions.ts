@@ -1,8 +1,42 @@
 import { formDefinitions } from '../../src/definitions/formDefinitions'
 import { fetchSlovenskoSkFormMetadata } from '../../test-utils/fetchSlovenskoSkFormMetadata'
 import { isSlovenskoSkFormDefinition } from '../../src/definitions/formDefinitionTypes'
+import { baRjsfValidator } from '../../src/form-utils/validators'
+import { filterConsole } from '../../test-utils/filterConsole'
+import { baGetDefaultFormState } from '../../src/form-utils/defaultFormState'
+import { getExampleFormPairs } from '../../src/example-forms/getExampleFormPairs'
 
 describe('Form definitions', () => {
+  formDefinitions.forEach((formDefinition) => {
+    describe(formDefinition.slug, () => {
+      it('schemas match snapshot', () => {
+        expect(formDefinition.schemas).toMatchSnapshot()
+      })
+
+      it('is valid schema', () => {
+        expect(baRjsfValidator.ajv.validateSchema(formDefinition.schemas.schema, true)).toBe(true)
+      })
+
+      it('default form state should match snapshot', () => {
+        filterConsole(
+          'warn',
+          (message) =>
+            typeof message === 'string' && message.includes('could not merge subschemas in allOf'),
+        )
+
+        expect(baGetDefaultFormState(formDefinition.schemas.schema, {})).toMatchSnapshot()
+      })
+
+      it('has at least one example form', () => {
+        const examples = getExampleFormPairs({
+          formDefinitionFilterFn: (formDefinitionInner) =>
+            formDefinitionInner.slug === formDefinition.slug,
+        })
+        expect(examples.length).toBeGreaterThan(0)
+      })
+    })
+  })
+
   formDefinitions.filter(isSlovenskoSkFormDefinition).forEach((formDefinition) => {
     it(`should match Slovensko.sk data for ${formDefinition.title}`, async () => {
       const metadata = await fetchSlovenskoSkFormMetadata(formDefinition.slovenskoSkUrl)

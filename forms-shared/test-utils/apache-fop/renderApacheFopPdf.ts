@@ -6,7 +6,8 @@ import { promisify } from 'util'
 declare global {
   namespace NodeJS {
     interface ProcessEnv {
-      FOP_HOME: string
+      FOP_JAR: string
+      FOP_LIB: string
       SLOVENSKO_FOP_CONF: string
     }
   }
@@ -49,7 +50,7 @@ export async function renderApacheFopPdf(xmlString: string, xslString: string) {
     await fs.writeFile(xmlInputPath, xmlString)
     await fs.writeFile(xslInputPath, xslString)
 
-    const javaCommand = `java -cp ${process.env.FOP_HOME}/build/fop.jar:${process.env.FOP_HOME}/lib/* org.apache.fop.cli.Main -xml ${xmlInputPath} -c ${fopConfigPath} -xsl ${xslInputPath} -pdf ${pdfOutputPath}`
+    const javaCommand = `java -cp ${process.env.FOP_JAR}:${process.env.FOP_LIB}/* org.apache.fop.cli.Main -xml ${xmlInputPath} -c ${fopConfigPath} -xsl ${xslInputPath} -pdf ${pdfOutputPath}`
 
     await execAsync(javaCommand)
 

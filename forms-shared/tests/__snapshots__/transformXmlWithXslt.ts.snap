@@ -1,0 +1,44 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`transformXmlWithXslt transforms XML using XSLT matches snapshot 1`] = `
+"<!DOCTYPE HTML>
+<html xmlns:bar="http://www.bar.org" xmlns:foo="http://www.foo.org/">
+   <body>
+      <h2>My CD Collection</h2>
+      <table border="1">
+         <tr bgcolor="#9acd32">
+            <th>Title</th>
+            <th>Artist</th>
+            <th>Country</th>
+            <th>Company</th>
+            <th>Price</th>
+            <th>Year</th>
+         </tr>
+         <tr>
+            <td>Empire Burlesque</td>
+            <td>Bob Dylan</td>
+            <td>USA</td>
+            <td>Columbia</td>
+            <td>10.90</td>
+            <td>1985</td>
+         </tr>
+         <tr>
+            <td>Hide your heart</td>
+            <td>Bonnie Tyler</td>
+            <td>UK</td>
+            <td>CBS Records</td>
+            <td>9.90</td>
+            <td>1988</td>
+         </tr>
+         <tr>
+            <td>Greatest Hits</td>
+            <td>Dolly Parton</td>
+            <td>USA</td>
+            <td>RCA</td>
+            <td>9.90</td>
+            <td>1982</td>
+         </tr>
+      </table>
+   </body>
+</html>"
+`;

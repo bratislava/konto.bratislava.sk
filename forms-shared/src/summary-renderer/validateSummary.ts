@@ -2,7 +2,7 @@ import { GenericObjectType, RJSFSchema, ValidationData } from '@rjsf/utils'
 import { FileInfoSummary, isErrorFileStatusType } from '../form-files/fileStatus'
 import { SchemaValidateFunction } from 'ajv'
 import { getFileValidatorBaRjsf } from '../form-utils/validators'
-import { baGetDefaultFormState } from '../form-utils/defaultFormState'
+import { baGetDefaultFormStateStable } from '../form-utils/defaultFormState'
 import { checkPathForErrors } from './checkPathForErrors'
 
 export type ValidatedSummary = {
@@ -47,7 +47,16 @@ export const validateSummary = (
 
   const validator = getFileValidatorBaRjsf(fileValidateFn)
 
-  const defaultFormData = baGetDefaultFormState(schema, formData, undefined, validator)
+  // When displaying summary, all the default data must be present to get correct error schema for each field, e.g. when
+  // we have schema like this:
+  //  - `wrapper` (object, required)
+  //    - `field1` (string, required)
+  //    - `field2` (string, optional)
+  // but the initial data is `{}`, the error schema will be:
+  // { property: 'wrapper', message: "must have required property 'wrapper'" }
+  // if default data are added it correctly returns:
+  // { property: 'wrapper.field1', message: "must have required property 'wrapper.field1'" }
+  const defaultFormData = baGetDefaultFormStateStable(schema, formData, undefined, validator)
   const validationResults = validator.validateFormData(defaultFormData, schema)
 
   const hasErrors = Object.keys(validationResults.errorSchema).length > 0

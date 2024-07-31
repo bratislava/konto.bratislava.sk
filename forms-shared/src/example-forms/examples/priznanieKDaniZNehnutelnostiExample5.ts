@@ -45,6 +45,22 @@ const exampleForm: ExampleForm<TaxFormData> = {
               },
               podielPriestoruNaSpolocnychCastiachAZariadeniachDomu: '4587/53994',
             },
+            {
+              datumy: {
+                datumVznikuDanovejPovinnosti: '2024-01-13',
+                datumZanikuDanovejPovinnosti: '2024-01-04',
+              },
+              kataster: 'Devínska Nová Ves',
+              druhPozemku: 'B',
+              celkovaVymeraPozemku: 218,
+              cisloListuVlastnictva: '4589',
+              spoluvlastnickyPodiel: '1/1',
+              parcelneCisloSposobVyuzitiaPozemku: {
+                cisloParcely: '7986/1',
+                sposobVyuzitiaPozemku: 'Ložisko',
+              },
+              podielPriestoruNaSpolocnychCastiachAZariadeniachDomu: '4587/53994',
+            },
           ],
           pravnyVztah: 'vlastnik',
           spoluvlastnictvo: 'somJedinyVlastnik',
